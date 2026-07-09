@@ -23,9 +23,80 @@
     .teacher-box { background:#f7f9fc; border-right:8px solid var(--purple); border-radius:18px; padding:18px; margin:14px 0; }
     .teacher-box h3 { margin:0 0 8px; color:var(--purple); font-size:1.35rem; }
     .two-cols { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
-    .code-blocks { counter-reset:block-step; display:grid; gap:10px; margin-top:14px; }
-    .code-block { counter-increment:block-step; background:#eef2ff; border:3px solid rgba(108,92,231,.18); border-radius:18px; padding:12px 16px; font-weight:900; }
-    .code-block::before { content:counter(block-step) '. '; color:var(--purple); }
+    .code-blocks { display:grid; gap:8px; margin-top:14px; direction:rtl; }
+    .blockly-solution { background:#f8fafc; border:3px dashed #dbe4ff; border-radius:22px; padding:18px; margin:14px 0; }
+    .blockly-caption { color:var(--purple); font-weight:900; margin-bottom:10px; font-size:1.1rem; }
+    .visual-block {
+      --block-color:#9966ff;
+      position:relative;
+      display:block;
+      width:max-content;
+      max-width:92%;
+      color:white;
+      background:var(--block-color);
+      border:3px solid rgba(0,0,0,.18);
+      border-radius:14px 14px 14px 14px;
+      padding:12px 20px 12px 18px;
+      font-size:clamp(1rem,1.8vw,1.35rem);
+      font-weight:900;
+      box-shadow:0 5px 0 rgba(0,0,0,.16), inset 0 2px 0 rgba(255,255,255,.18);
+      margin:0 0 4px auto;
+      text-shadow:0 1px 1px rgba(0,0,0,.18);
+    }
+    .visual-block::before {
+      content:'';
+      position:absolute;
+      top:-8px;
+      right:28px;
+      width:34px;
+      height:12px;
+      border-radius:0 0 8px 8px;
+      background:rgba(255,255,255,.34);
+    }
+    .visual-block::after {
+      content:'';
+      position:absolute;
+      bottom:-11px;
+      right:28px;
+      width:34px;
+      height:12px;
+      border-radius:8px 8px 0 0;
+      background:var(--block-color);
+      border:3px solid rgba(0,0,0,.14);
+      border-bottom:0;
+    }
+    .visual-block.event { --block-color:#ffab19; color:#263238; text-shadow:none; border-radius:26px 14px 14px 26px; }
+    .visual-block.sensor { --block-color:#40bf4a; }
+    .visual-block.control { --block-color:#ff8c1a; color:#263238; text-shadow:none; }
+    .visual-block.motion { --block-color:#4c97ff; }
+    .visual-block.action { --block-color:#9966ff; }
+    .visual-block.sound { --block-color:#cf63cf; }
+    .visual-block.stop { --block-color:#ff8c1a; color:#263238; text-shadow:none; }
+    .visual-block.street-light { --block-color:#f59e0b; color:#263238; text-shadow:none; }
+    .visual-block.say { --block-color:#9966ff; }
+    .visual-block.nested { margin-right:54px; }
+    .visual-block.if-block { min-width:420px; padding-bottom:16px; }
+    .visual-block.if-block .condition-pill {
+      display:inline-block;
+      background:#40bf4a;
+      color:white;
+      border-radius:999px;
+      padding:4px 12px;
+      margin:0 6px;
+      border:2px solid rgba(0,0,0,.18);
+    }
+    .visual-block.connector {
+      width:24px;
+      height:15px;
+      padding:0;
+      margin:-5px 76px -2px auto;
+      border-radius:0;
+      box-shadow:none;
+      opacity:.55;
+    }
+    .visual-block.connector::before, .visual-block.connector::after { display:none; }
+    .teacher-note { background:#fff7ed; border-right:8px solid #fb923c; border-radius:18px; padding:14px 18px; margin-top:12px; font-size:clamp(1rem,1.6vw,1.25rem); }
+    .exercise-kind { display:inline-flex; align-items:center; gap:8px; background:#eef2ff; color:var(--purple); border-radius:999px; padding:8px 14px; font-weight:900; margin-bottom:12px; }
     .emoji { font-size:6rem; margin-bottom:14px; }
     .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:20px; }
     .card { background:#f7f9fc; border-radius:22px; padding:22px; font-size:1.3rem; font-weight:800; }
@@ -44,7 +115,7 @@
     <a class="back" id="backToLesson" href="../smart-city.html">🏙️ לעיר</a>
   </nav>
 
-  <script src="../js/lessons-data.js?v=20260709-stop-names"></script>
+  <script src="../js/lessons-data.js?v=20260709-solution-blocks"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const lesson = window.getSensiLesson(params.get('id'));
@@ -53,13 +124,69 @@
     document.title = `${lesson.emoji} שיעור ${lesson.id}: ${lesson.title}`;
     document.getElementById('backToLesson').href = `../index.html?lesson=${lesson.id}`;
 
+    function escapeHtml(value) {
+      return String(value || '').replace(/[&<>"']/g, (char) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char]));
+    }
+
+    function normalizeBlockLabel(text) {
+      return String(text || '')
+        .replace(/^בתוך ה[”"]?אם[”"]?:\s*/,'')
+        .replace(/^בתוך ה[”"]?אם[”"]?,\s*/,'')
+        .replace(/^מתחת ל[^:]+:\s*/,'')
+        .replace(/^אחרי התנאי הראשון:\s*/,'')
+        .replace(/^מתחת לפנס, עדיין בתוך ה[”"]?אם[”"]?:\s*/,'')
+        .replace(/^מתחת להודעה, עדיין בתוך ה[”"]?אם[”"]?:\s*/,'')
+        .replace(/^מתחת ל“עצור רכב”, עדיין בתוך ה[”"]?אם[”"]?:\s*/,'')
+        .replace(/^עדיין בתוך ה[”"]?אם[”"]?:\s*/,'')
+        .trim();
+    }
+
+    function blockClass(text) {
+      const label = normalizeBlockLabel(text);
+      if (/כאשר|לוחצים/.test(label)) return 'event';
+      if (/^אם/.test(label)) return 'control if-block';
+      if (/חיישן|מריח|נוגע|עוצמת|רעש|אור/.test(label) && !/^אם/.test(label)) return 'sensor';
+      if (/זוז|סובב|רכב|אחורה|קדימה/.test(label)) return 'motion';
+      if (/עצור תוכנית/.test(label)) return 'stop';
+      if (/עצור רכב|עצור$/.test(label)) return 'motion';
+      if (/השמע|אזעקה|ביפ/.test(label)) return 'sound';
+      if (/פנס רחוב/.test(label)) return 'street-light';
+      if (/אמור|הודעה/.test(label)) return 'say';
+      return 'action';
+    }
+
+    function isNestedAnswerLine(text) {
+      return /^בתוך|^מתחת|^עדיין/.test(String(text || '').trim());
+    }
+
+    function renderVisualBlock(text) {
+      const label = normalizeBlockLabel(text);
+      const cls = blockClass(text);
+      if (/^אם\s+/.test(label)) {
+        const condition = label.replace(/^אם\s+/, '').trim();
+        return `<div class="visual-block ${cls}">אם <span class="condition-pill">${escapeHtml(condition)}</span> אז</div>`;
+      }
+      return `<div class="visual-block ${cls}${isNestedAnswerLine(text) ? ' nested' : ''}">${escapeHtml(label)}</div>`;
+    }
+
+    function renderSolutionBlocks(answerBlocks) {
+      const blocks = answerBlocks || [];
+      const html = blocks.map((block, index) => {
+        const current = renderVisualBlock(block);
+        const next = blocks[index + 1];
+        const connector = next ? `<div class="visual-block connector ${isNestedAnswerLine(next) ? 'nested' : ''}"></div>` : '';
+        return current + connector;
+      }).join('');
+      return `<div class="blockly-solution"><div class="blockly-caption">כך הפתרון נראה בבלוקים:</div><div class="code-blocks">${html}</div></div>`;
+    }
+
     function exerciseSlidesForStep(step) {
       const exercises = (lesson.programmingExercises || []).filter((exercise) => exercise.afterFlowMinutes === step.minutes);
-      return exercises.flatMap((exercise, index) => {
+      return exercises.flatMap((exercise) => {
         const exerciseNumber = (lesson.programmingExercises || []).indexOf(exercise) + 1;
         return [
-          { html: `<span class="time-badge">${step.minutes}</span><div class="kicker">תרגול תכנות ${exerciseNumber}</div><h2>${exercise.title}</h2><p>${exercise.studentPrompt}</p><div class="teacher-box"><h3>מה לבקש מהתלמידים עכשיו</h3><ul>${exercise.testSteps.map(testStep => `<li>${testStep}</li>`).join('')}</ul></div>` },
-          { html: `<span class="time-badge">${step.minutes}</span><div class="kicker">פתרון למדריך — תרגול ${exerciseNumber}</div><h2>${exercise.answerTitle}</h2><div class="code-blocks">${exercise.answerBlocks.map(block => `<div class="code-block">${block}</div>`).join('')}</div><p><strong>תוצאה מצופה:</strong> ${exercise.expectedResult}</p><p><strong>טעות נפוצה:</strong> ${exercise.commonMistake}</p>` }
+          { html: `<span class="time-badge">${step.minutes}</span><div class="exercise-kind">🧩 תרגול תכנות ${exerciseNumber} — עכשיו בכיתה</div><h2>${exercise.title}</h2><p>${exercise.studentPrompt}</p><div class="teacher-box"><h3>מה לבקש מהתלמידים עכשיו</h3><ul>${(exercise.testSteps || []).map(testStep => `<li>${testStep}</li>`).join('')}</ul></div><div class="teacher-note"><strong>למדריך:</strong> השקף הזה מגיע מיד אחרי חלק “${step.title}”, כדי שהתרגול יופיע בדיוק בזמן הנכון ברצף השיעור.</div>` },
+          { html: `<span class="time-badge">${step.minutes}</span><div class="exercise-kind">✅ פתרון למדריך — תרגול ${exerciseNumber}</div><h2>${exercise.answerTitle}</h2>${renderSolutionBlocks(exercise.answerBlocks)}<p><strong>תוצאה מצופה:</strong> ${exercise.expectedResult}</p><p><strong>טעות נפוצה:</strong> ${exercise.commonMistake}</p>` }
         ];
       });
     }
