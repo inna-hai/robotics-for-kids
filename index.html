@@ -1155,12 +1155,19 @@
             return Math.sqrt(dx * dx + dy * dy) < radius;
         }
         
+        function hitTestCar(pos) {
+            // Lesson 3 car is wider than the robot emoji. Allow dragging from the whole car body.
+            return currentLesson === 3 &&
+                pos.x >= robot.x - 65 && pos.x <= robot.x + 70 &&
+                pos.y >= robot.y - 40 && pos.y <= robot.y + 45;
+        }
+        
         function onDragStart(e) {
             if (isRunning) return;
             const pos = getMousePos(e);
             
-            // Check what was clicked (robot first, then objects)
-            if (hitTest(pos, robot, 40)) {
+            // Check what was clicked (robot/car first, then objects)
+            if (hitTestCar(pos) || hitTest(pos, robot, 40)) {
                 dragging = 'robot';
                 dragOffset = { x: pos.x - robot.x, y: pos.y - robot.y };
             } else if (environment.obstacle && hitTest(pos, objects.wall, 50)) {
