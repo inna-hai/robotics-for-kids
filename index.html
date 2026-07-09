@@ -802,7 +802,7 @@
         function resetPositions() {
             // Reset robot to center
             robot.x = canvas.width / 2;
-            robot.y = currentLesson === 3 ? canvas.height * 0.58 : canvas.height / 2;
+            robot.y = currentLesson === 3 ? canvas.height * 0.58 : currentLesson === 4 ? canvas.height * 0.62 : canvas.height / 2;
             robot.angle = 0;
             robot.vehicleStopped = false;
             
@@ -811,8 +811,8 @@
             objects.wall.y = currentLesson === 3 ? canvas.height * 0.58 : canvas.height / 2;
             objects.sound.x = 60;
             objects.sound.y = canvas.height - 60;
-            objects.smoke.x = canvas.width / 2;
-            objects.smoke.y = 60;
+            objects.smoke.x = currentLesson === 4 ? canvas.width * 0.72 : canvas.width / 2;
+            objects.smoke.y = currentLesson === 4 ? canvas.height * 0.43 : 60;
             objects.sun.x = 80;
             objects.sun.y = 60;
         }
@@ -921,9 +921,89 @@
                 ctx.fillText(robot.streetLightOn ? 'הפנס דולק' : 'הפנס כבוי', lampX - 58, lampY + 45);
             }
             
+            // Fire station scene for lesson 4
+            if (currentLesson === 4) {
+                const stationX = canvas.width * 0.08;
+                const stationY = canvas.height * 0.18;
+                const stationW = Math.min(250, canvas.width * 0.34);
+                const stationH = 135;
+
+                // Warm emergency background
+                const fireGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                fireGradient.addColorStop(0, 'rgba(255, 243, 224, 0.55)');
+                fireGradient.addColorStop(1, 'rgba(255, 224, 178, 0.22)');
+                ctx.fillStyle = fireGradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Fire station building
+                ctx.fillStyle = '#fff7ed';
+                ctx.strokeStyle = '#c2410c';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.roundRect(stationX, stationY, stationW, stationH, 16);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#ef4444';
+                ctx.fillRect(stationX, stationY, stationW, 34);
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 18px Rubik';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('תחנת כיבוי', stationX + stationW / 2, stationY + 18);
+
+                // Garage doors
+                ctx.fillStyle = '#fee2e2';
+                ctx.strokeStyle = '#991b1b';
+                ctx.lineWidth = 3;
+                const doorW = stationW * 0.34;
+                ctx.fillRect(stationX + stationW * 0.12, stationY + 52, doorW, 72);
+                ctx.strokeRect(stationX + stationW * 0.12, stationY + 52, doorW, 72);
+                ctx.fillRect(stationX + stationW * 0.54, stationY + 52, doorW, 72);
+                ctx.strokeRect(stationX + stationW * 0.54, stationY + 52, doorW, 72);
+
+                ctx.fillStyle = '#dc2626';
+                ctx.beginPath();
+                ctx.arc(stationX + stationW + 26, stationY + 20, 15, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = Date.now() % 700 < 350 ? '#fde047' : '#ffffff';
+                ctx.font = '22px Arial';
+                ctx.fillText('🚨', stationX + stationW + 26, stationY + 20);
+
+                // Emergency call line
+                ctx.strokeStyle = 'rgba(220, 38, 38, 0.55)';
+                ctx.setLineDash([8, 8]);
+                ctx.beginPath();
+                ctx.moveTo(stationX + stationW, stationY + stationH - 22);
+                ctx.lineTo(objects.smoke.x, objects.smoke.y);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                ctx.font = 'bold 14px Rubik';
+                ctx.fillStyle = canSenseSmoke() ? '#dc2626' : '#475569';
+                ctx.textAlign = 'center';
+                ctx.fillText(canSenseSmoke() ? 'קריאת חירום: עשן קרוב!' : 'גררו עשן קרוב לכבאית', canvas.width / 2, 28);
+            }
+            
             // Draggable Smoke
             if (environment.smoke) {
-                ctx.font = '50px Arial';
+                if (currentLesson === 4) {
+                    ctx.fillStyle = '#fef3c7';
+                    ctx.strokeStyle = '#fb923c';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.roundRect(objects.smoke.x - 44, objects.smoke.y + 20, 88, 56, 10);
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.font = '30px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('🏢', objects.smoke.x, objects.smoke.y + 48);
+                    ctx.font = '36px Arial';
+                    ctx.fillText('🔥', objects.smoke.x - 28, objects.smoke.y + 8);
+                }
+
+                ctx.font = currentLesson === 4 ? '56px Arial' : '50px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('💨', objects.smoke.x, objects.smoke.y);
@@ -942,7 +1022,7 @@
                 if (!isRunning) {
                     ctx.font = '12px Rubik';
                     ctx.fillStyle = '#666';
-                    ctx.fillText('גרור אותי!', objects.smoke.x, objects.smoke.y + 45);
+                    ctx.fillText(currentLesson === 4 ? 'גררו עשן לכבאית!' : 'גרור אותי!', objects.smoke.x, objects.smoke.y + (currentLesson === 4 ? 95 : 45));
                 }
             }
             
@@ -1004,7 +1084,7 @@
             
             // Robot shadow
             ctx.beginPath();
-            ctx.ellipse(0, currentLesson === 3 ? 34 : 40, currentLesson === 3 ? 48 : 35, 10, 0, 0, Math.PI * 2);
+            ctx.ellipse(0, (currentLesson === 3 || currentLesson === 4) ? 34 : 40, (currentLesson === 3 || currentLesson === 4) ? 54 : 35, 10, 0, 0, Math.PI * 2);
             ctx.fillStyle = 'rgba(0,0,0,0.28)';
             ctx.fill();
             
@@ -1059,6 +1139,69 @@
                 
                 ctx.font = '18px Arial';
                 ctx.fillText('🤖', -11, 1);
+            } else if (currentLesson === 4) {
+                // Sensi inside a fire truck.
+                const flashOn = Date.now() % 600 < 300;
+                ctx.fillStyle = '#dc2626';
+                ctx.strokeStyle = '#7f1d1d';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.roundRect(-64, -28, 105, 50, 12);
+                ctx.fill();
+                ctx.stroke();
+
+                // Cab/front faces right.
+                ctx.fillStyle = '#ef4444';
+                ctx.beginPath();
+                ctx.moveTo(22, -28);
+                ctx.lineTo(54, -14);
+                ctx.lineTo(61, 16);
+                ctx.lineTo(22, 22);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // Windows and Sensi driver.
+                ctx.fillStyle = '#dff9ff';
+                ctx.fillRect(28, -18, 20, 15);
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '20px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('🤖', 4, -4);
+
+                // Ladder and emergency light.
+                ctx.strokeStyle = '#fde68a';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.moveTo(-54, -36);
+                ctx.lineTo(25, -36);
+                ctx.stroke();
+                ctx.lineWidth = 2;
+                for (let lx = -45; lx <= 15; lx += 15) {
+                    ctx.beginPath();
+                    ctx.moveTo(lx, -42);
+                    ctx.lineTo(lx + 8, -30);
+                    ctx.stroke();
+                }
+                ctx.fillStyle = flashOn ? '#60a5fa' : '#facc15';
+                ctx.beginPath();
+                ctx.arc(-8, -38, 8, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Wheels, bumper, label.
+                ctx.fillStyle = '#111827';
+                ctx.beginPath();
+                ctx.arc(-40, 25, 11, 0, Math.PI * 2);
+                ctx.arc(34, 25, 11, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 13px Rubik';
+                ctx.fillText('102', -30, 4);
+                ctx.fillStyle = '#fef3c7';
+                ctx.beginPath();
+                ctx.arc(60, 2, 6, 0, Math.PI * 2);
+                ctx.fill();
             } else {
                 // Robot body
                 ctx.font = '60px Arial';
@@ -1074,24 +1217,25 @@
                 ctx.font = '12px Rubik';
                 ctx.fillStyle = '#666';
                 ctx.textAlign = 'center';
-                ctx.fillText(currentLesson === 3 ? 'גררו את הרכב!' : 'גרור אותי!', robot.x, robot.y + 55);
+                ctx.fillText(currentLesson === 3 ? 'גררו את הרכב!' : currentLesson === 4 ? 'גררו את הכבאית!' : 'גרור אותי!', robot.x, robot.y + 58);
             }
             
             // Speech bubble
             if (robot.speaking) {
                 const bubbleX = robot.x;
-                const bubbleY = robot.y - 60;
+                const bubbleY = robot.y - (currentLesson === 4 ? 78 : 60);
+                const bubbleWidth = Math.max(130, Math.min(260, robot.speaking.length * 10 + 34));
                 
                 ctx.fillStyle = 'white';
                 ctx.strokeStyle = '#333';
                 ctx.lineWidth = 2;
                 ctx.beginPath();
-                ctx.roundRect(bubbleX - 60, bubbleY - 20, 120, 40, 15);
+                ctx.roundRect(bubbleX - bubbleWidth / 2, bubbleY - 22, bubbleWidth, 44, 15);
                 ctx.fill();
                 ctx.stroke();
                 
                 ctx.fillStyle = '#333';
-                ctx.font = 'bold 16px Rubik';
+                ctx.font = 'bold 15px Rubik';
                 ctx.textAlign = 'center';
                 ctx.fillText(robot.speaking, bubbleX, bubbleY);
             }
@@ -1116,11 +1260,11 @@
             return Math.sqrt(dx * dx + dy * dy) < radius;
         }
         
-        function hitTestCar(pos) {
-            // Lesson 3 car is wider than the robot emoji. Allow dragging from the whole car body.
-            return currentLesson === 3 &&
-                pos.x >= robot.x - 65 && pos.x <= robot.x + 70 &&
-                pos.y >= robot.y - 40 && pos.y <= robot.y + 45;
+        function hitTestVehicle(pos) {
+            // Vehicle lessons use wider drawn bodies than the robot emoji.
+            if (currentLesson !== 3 && currentLesson !== 4) return false;
+            return pos.x >= robot.x - 70 && pos.x <= robot.x + 75 &&
+                pos.y >= robot.y - 48 && pos.y <= robot.y + 48;
         }
         
         function onDragStart(e) {
@@ -1128,7 +1272,7 @@
             const pos = getMousePos(e);
             
             // Check what was clicked (robot/car first, then objects)
-            if (hitTestCar(pos) || hitTest(pos, robot, 40)) {
+            if (hitTestVehicle(pos) || hitTest(pos, robot, 40)) {
                 dragging = 'robot';
                 dragOffset = { x: pos.x - robot.x, y: pos.y - robot.y };
             } else if (environment.obstacle && hitTest(pos, objects.wall, 50)) {
