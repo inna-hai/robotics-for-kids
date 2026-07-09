@@ -1048,39 +1048,56 @@
             ctx.fill();
             
             if (currentLesson === 3) {
-                // High-contrast car body for road lesson
+                // High-contrast car body for road lesson.
+                // Front faces +X (right), which is also Blockly "move forward" at angle 0.
                 ctx.fillStyle = 'rgba(255,255,255,0.96)';
                 ctx.strokeStyle = '#111827';
                 ctx.lineWidth = 4;
                 ctx.beginPath();
-                ctx.roundRect(-48, -26, 96, 48, 16);
+                ctx.roundRect(-54, -26, 88, 48, 16);
+                ctx.moveTo(34, -22);
+                ctx.lineTo(58, -6);
+                ctx.lineTo(58, 12);
+                ctx.lineTo(34, 22);
+                ctx.closePath();
                 ctx.fill();
                 ctx.stroke();
                 
                 ctx.fillStyle = '#0984e3';
                 ctx.beginPath();
-                ctx.roundRect(-34, -18, 68, 32, 12);
+                ctx.roundRect(-38, -18, 62, 32, 12);
                 ctx.fill();
                 
+                // Windows: rear window on the left, front windshield angled to the right.
                 ctx.fillStyle = '#dff9ff';
-                ctx.fillRect(-22, -14, 18, 14);
-                ctx.fillRect(8, -14, 18, 14);
+                ctx.fillRect(-27, -14, 18, 14);
+                ctx.beginPath();
+                ctx.moveTo(0, -14);
+                ctx.lineTo(22, -14);
+                ctx.lineTo(29, 0);
+                ctx.lineTo(0, 0);
+                ctx.closePath();
+                ctx.fill();
                 
                 ctx.fillStyle = '#111827';
                 ctx.beginPath();
-                ctx.arc(-28, 24, 10, 0, Math.PI * 2);
-                ctx.arc(28, 24, 10, 0, Math.PI * 2);
+                ctx.arc(-30, 24, 10, 0, Math.PI * 2);
+                ctx.arc(30, 24, 10, 0, Math.PI * 2);
                 ctx.fill();
                 
+                // Headlight and direction arrow on the right/front.
                 ctx.fillStyle = '#fdcb6e';
                 ctx.beginPath();
-                ctx.arc(45, -2, 5, 0, Math.PI * 2);
+                ctx.arc(56, 0, 6, 0, Math.PI * 2);
                 ctx.fill();
-                
-                ctx.font = '18px Arial';
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 18px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText('🤖', 0, 0);
+                ctx.fillText('→', 12, 7);
+                
+                ctx.font = '18px Arial';
+                ctx.fillText('🤖', -11, 1);
             } else {
                 // Robot body
                 ctx.font = '60px Arial';
