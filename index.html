@@ -805,7 +805,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260709-lesson2-ready"></script>
+    <script src="js/lessons-data.js?v=20260709-sound-levels"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1273,8 +1273,14 @@
             Blockly.Blocks['sensor_sound'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField('👂 שומע צליל?')
-                        .appendField(new Blockly.FieldDropdown([['כן 🔊', 'YES'], ['לא 🔇', 'NO']]), 'VAL');
+                        .appendField('👂 עוצמת רעש =')
+                        .appendField(new Blockly.FieldDropdown([
+                            ['חזק מדי 🚨', 'LOUD'],
+                            ['חלש 🔉', 'SOFT'],
+                            ['שקט 🔇', 'QUIET'],
+                            ['יש צליל 🔊', 'YES'],
+                            ['אין צליל', 'NO']
+                        ]), 'VAL');
                     this.setOutput(true, 'Boolean');
                     this.setColour('#40BF4A');
                 }
@@ -1471,9 +1477,16 @@
             return environment.light;
         }
         
+        function getSoundLevel() {
+            if (!environment.sound) return 'QUIET';
+            const distance = distanceToObject(objects.sound);
+            if (distance < 90) return 'LOUD';
+            if (distance < 230) return 'SOFT';
+            return 'QUIET';
+        }
+        
         function canSenseSound() {
-            // Sound can be heard within 200 pixels
-            return environment.sound && distanceToObject(objects.sound) < 200;
+            return getSoundLevel() !== 'QUIET';
         }
         
         function canSenseTouch() {
@@ -1493,8 +1506,12 @@
             switch (block.type) {
                 case 'sensor_light':
                     return val === 'BRIGHT' ? canSenseLight() : !canSenseLight();
-                case 'sensor_sound':
-                    return val === 'YES' ? canSenseSound() : !canSenseSound();
+                case 'sensor_sound': {
+                    const level = getSoundLevel();
+                    if (val === 'YES') return level !== 'QUIET';
+                    if (val === 'NO') return level === 'QUIET';
+                    return level === val;
+                }
                 case 'sensor_touch':
                     return val === 'YES' ? canSenseTouch() : !canSenseTouch();
                 case 'sensor_smell':
@@ -1539,12 +1556,13 @@
         function updateSensors() {
             // Use proximity-based sensing
             const sensesLight = canSenseLight();
-            const sensesSound = canSenseSound();
+            const soundLevel = getSoundLevel();
+            const sensesSound = soundLevel !== 'QUIET';
             const sensesTouch = canSenseTouch();
             const sensesSmoke = canSenseSmoke();
             
             document.getElementById('lightText').textContent = sensesLight ? 'בהיר!' : 'חשוך';
-            document.getElementById('soundText').textContent = sensesSound ? 'שומע!' : 'שקט';
+            document.getElementById('soundText').textContent = soundLevel === 'LOUD' ? 'חזק מדי!' : soundLevel === 'SOFT' ? 'חלש' : 'שקט';
             document.getElementById('touchText').textContent = sensesTouch ? 'קיר!' : 'פנוי';
             document.getElementById('smellText').textContent = sensesSmoke ? 'עשן!' : 'נקי';
             
