@@ -805,13 +805,13 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260709-stop-fix"></script>
+    <script src="js/lessons-data.js?v=20260709-stop-names"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
         let workspace = null;
         let completedTasks = [];
-        let robot = { x: 150, y: 180, angle: 0, speaking: '', streetLightOn: false };
+        let robot = { x: 150, y: 180, angle: 0, speaking: '', streetLightOn: false, vehicleStopped: false };
         let environment = { light: false, sound: false, obstacle: false, smoke: false };
         let isRunning = false;
         let drawerOpen = false;
@@ -844,6 +844,7 @@
             robot.x = canvas.width / 2;
             robot.y = currentLesson === 3 ? canvas.height * 0.58 : canvas.height / 2;
             robot.angle = 0;
+            robot.vehicleStopped = false;
             
             // Reset objects to default positions
             objects.wall.x = currentLesson === 3 ? canvas.width * 0.72 : canvas.width - 80;
@@ -1249,7 +1250,7 @@
                             { kind: 'block', type: 'move_backward' },
                             { kind: 'block', type: 'turn_right' },
                             { kind: 'block', type: 'turn_left' },
-                            { kind: 'block', type: 'stop' }
+                            { kind: 'block', type: 'stop_vehicle' }
                         ]
                     },
                     {
@@ -1270,7 +1271,8 @@
                         contents: [
                             { kind: 'block', type: 'control_if' },
                             { kind: 'block', type: 'control_forever' },
-                            { kind: 'block', type: 'control_wait' }
+                            { kind: 'block', type: 'control_wait' },
+                            { kind: 'block', type: 'stop_program' }
                         ]
                     },
                     {
@@ -1353,14 +1355,17 @@
                 }
             };
             
-            Blockly.Blocks['stop'] = {
+            Blockly.Blocks['stop_vehicle'] = {
                 init: function() {
-                    this.appendDummyInput().appendField('🛑 עצור');
+                    this.appendDummyInput().appendField('🛑 עצור רכב');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
                     this.setColour('#4C97FF');
                 }
             };
+
+            // Backward compatibility for old saved workspaces that used the generic stop block.
+            Blockly.Blocks['stop'] = Blockly.Blocks['stop_vehicle'];
             
             // Sensors
             Blockly.Blocks['sensor_light'] = {
@@ -1440,6 +1445,15 @@
                     this.setColour('#FF8C1A');
                 }
             };
+
+            Blockly.Blocks['stop_program'] = {
+                init: function() {
+                    this.appendDummyInput().appendField('⏹️ עצור תוכנית');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#FF8C1A');
+                }
+            };
             
             // Actions
             Blockly.Blocks['action_say'] = {
@@ -1480,6 +1494,7 @@
         async function runCode() {
             if (isRunning) return;
             isRunning = true;
+            robot.vehicleStopped = false;
             
             const blocks = workspace.getTopBlocks(true);
             for (const block of blocks) {
@@ -1492,6 +1507,7 @@
         
         function stopCode() {
             isRunning = false;
+            robot.vehicleStopped = true;
             robot.speaking = '';
         }
         
@@ -1500,6 +1516,10 @@
             
             switch (block.type) {
                 case 'move_forward':
+                    if (robot.vehicleStopped) {
+                        await sleep(250);
+                        break;
+                    }
                     robot.x += Math.cos(robot.angle * Math.PI / 180) * 30;
                     robot.y += Math.sin(robot.angle * Math.PI / 180) * 30;
                     robot.x = Math.max(40, Math.min(canvas.width - 40, robot.x));
@@ -1508,6 +1528,7 @@
                     break;
                     
                 case 'move_backward':
+                    robot.vehicleStopped = false;
                     robot.x -= Math.cos(robot.angle * Math.PI / 180) * 30;
                     robot.y -= Math.sin(robot.angle * Math.PI / 180) * 30;
                     robot.x = Math.max(40, Math.min(canvas.width - 40, robot.x));
@@ -1525,10 +1546,18 @@
                     await sleep(300);
                     break;
                     
+                case 'stop_vehicle':
                 case 'stop':
+                    robot.vehicleStopped = true;
+                    robot.speaking = currentLesson === 3 ? 'הרכב עצר!' : 'עצרתי תנועה';
+                    await sleep(500);
+                    break;
+
+                case 'stop_program':
                     isRunning = false;
-                    robot.speaking = currentLesson === 3 ? 'עצרתי!' : '';
-                    await sleep(300);
+                    robot.vehicleStopped = true;
+                    robot.speaking = 'התוכנית נעצרה';
+                    await sleep(500);
                     break;
                     
                 case 'control_if':
@@ -1655,6 +1684,7 @@
             document.querySelectorAll('.env-btn').forEach(b => b.classList.remove('active'));
             robot.speaking = '';
             robot.streetLightOn = false;
+            robot.vehicleStopped = false;
             resetPositions();
             updateSensors();
         }
@@ -1696,7 +1726,7 @@
                 tasks: [
                     'גררו בלוק "כאשר לוחצים ▶️"',
                     'הוסיפו "אם חיישן צליל = שומע"',
-                    'הוסיפו "עצור" בתוך התנאי',
+                    'הוסיפו "עצור תוכנית" בתוך התנאי',
                     'לחצו ▶️ והשמיעו צליל!'
                 ],
                 tip: 'לחצו על 🔊 בכפתורי הסביבה כדי להשמיע צליל ולראות איך סנסי מגיב!'
