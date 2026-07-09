@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🤖 סנסי הרובוט - לומדים חושים!</title>
+    <title>🏙️ סנסי בעיר החכמה - 15 שיעורי רובוטיקה</title>
     <script src="https://unpkg.com/blockly/blockly.min.js"></script>
     <script src="https://unpkg.com/blockly/msg/he.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -635,18 +635,12 @@
     <header class="header">
         <div class="logo">
             <span class="logo-robot">🤖</span>
-            <span class="logo-text">סנסי הרובוט</span>
-            <a href="smart-city.html" class="city-link" title="סנסי בעיר החכמה">🏙️</a>
-            <a href="about.html" class="about-link" title="אודות הלומדה">ℹ️</a>
+            <span class="logo-text">סנסי בעיר החכמה</span>
+            <a href="smart-city.html" class="city-link" title="מפת 15 השיעורים">🏙️</a>
+            <a href="about.html?v=20260709-smart-city-about" class="about-link" title="אודות מסלול 15 השיעורים">ℹ️</a>
         </div>
         
-        <div class="lesson-tabs">
-            <button class="lesson-tab active" onclick="selectLesson(1)" title="ראייה">👁️</button>
-            <button class="lesson-tab" onclick="selectLesson(2)" title="שמיעה">👂</button>
-            <button class="lesson-tab" onclick="selectLesson(3)" title="מישוש">✋</button>
-            <button class="lesson-tab" onclick="selectLesson(4)" title="ריח">👃</button>
-            <button class="lesson-tab" onclick="selectLesson(5)" title="פרויקט">⭐</button>
-        </div>
+        <div class="lesson-tabs" id="lessonTabs" aria-label="בחירת שיעור במסלול 15 השיעורים"></div>
         
         <div class="play-buttons">
             <a href="slides/lesson1.html" target="_blank" class="presentation-link" id="presentationLink">📽️ מצגת</a>
@@ -748,49 +742,15 @@
     <!-- Welcome Modal -->
     <div class="modal active" id="welcomeModal">
         <div class="modal-content">
-            <div class="modal-robot">🤖</div>
-            <h2 class="modal-title">שלום! אני סנסי!</h2>
-            <p class="modal-subtitle">בואו נלמד איך רובוטים "חשים" את העולם!</p>
+            <div class="modal-robot">🤖🏙️</div>
+            <h2 class="modal-title">ברוכים הבאים לסנסי בעיר החכמה!</h2>
+            <p class="modal-subtitle">בחרו תחנה בעיר — בכל שיעור פותרים בעיה אמיתית עם חיישנים ותכנות.</p>
             
-            <div class="lesson-cards">
-                <div class="lesson-card" onclick="startLesson(1)">
-                    <div class="num">👁️</div>
-                    <div class="info">
-                        <h3>שיעור 1: ראייה</h3>
-                        <p>הרובוט רואה אור!</p>
-                    </div>
-                </div>
-                <div class="lesson-card" onclick="startLesson(2)">
-                    <div class="num">👂</div>
-                    <div class="info">
-                        <h3>שיעור 2: שמיעה</h3>
-                        <p>הרובוט שומע צלילים!</p>
-                    </div>
-                </div>
-                <div class="lesson-card" onclick="startLesson(3)">
-                    <div class="num">✋</div>
-                    <div class="info">
-                        <h3>שיעור 3: מישוש</h3>
-                        <p>הרובוט מרגיש מגע!</p>
-                    </div>
-                </div>
-                <div class="lesson-card" onclick="startLesson(4)">
-                    <div class="num">👃</div>
-                    <div class="info">
-                        <h3>שיעור 4: ריח</h3>
-                        <p>הרובוט מריח עשן!</p>
-                    </div>
-                </div>
-                <div class="lesson-card" onclick="startLesson(5)">
-                    <div class="num">⭐</div>
-                    <div class="info">
-                        <h3>שיעור 5: פרויקט!</h3>
-                        <p>רובוט עם כל החושים!</p>
-                    </div>
-                </div>
+            <div class="lesson-cards" id="welcomeLessons">
+                <!-- Smart city lessons will be populated by JavaScript -->
             </div>
             
-            <button class="btn-start" onclick="startLesson(1)">🚀 בואו נתחיל!</button>
+            <button class="btn-start" onclick="startLesson(1)">🚀 התחילו בשיעור 1</button>
         </div>
     </div>
     
@@ -1802,19 +1762,42 @@
         }
         
         // ===== LESSONS =====
+        function renderLessonTabs() {
+            const tabs = document.getElementById('lessonTabs');
+            if (!tabs) return;
+            const lessons = window.SENSI_LESSONS || [];
+            tabs.innerHTML = lessons.map(lesson => `
+                <button class="lesson-tab" onclick="selectLesson(${lesson.id})" title="שיעור ${lesson.id}: ${lesson.title}">
+                    <span>${lesson.emoji}</span><span class="lesson-num">${lesson.id}</span>
+                </button>
+            `).join('');
+        }
+
+        function renderWelcomeLessons() {
+            const list = document.getElementById('welcomeLessons');
+            if (!list) return;
+            const lessons = window.SENSI_LESSONS || [];
+            list.innerHTML = lessons.map(lesson => `
+                <div class="lesson-card" onclick="startLesson(${lesson.id})">
+                    <div class="num">${lesson.emoji}</div>
+                    <div class="info">
+                        <h3>שיעור ${lesson.id}: ${lesson.title}</h3>
+                        <p>${lesson.cityZone || ''} · ${lesson.sensorFocus || 'מערכת חכמה'}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
         function selectLesson(num) {
             currentLesson = num;
-            document.querySelectorAll('.lesson-tab').forEach((t, i) => 
-                t.classList.toggle('active', i + 1 === num));
+            document.querySelectorAll('.lesson-tab').forEach((t) => 
+                t.classList.toggle('active', Number(t.querySelector('.lesson-num')?.textContent) === num));
             document.getElementById('welcomeModal').classList.remove('active');
             
             const cityLesson = window.getSensiLesson ? window.getSensiLesson(num) : null;
-            const legacyTitles = ['👁️ שיעור 1: סנסי רואה!', '👂 שיעור 2: סנסי שומע!', 
-                           '✋ שיעור 3: סנסי מרגיש!', '👃 שיעור 4: סנסי מריח!', 
-                           '⭐ שיעור 5: פרויקט מסכם!'];
             const title = cityLesson
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
-                : legacyTitles[num-1];
+                : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
             document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num;
             resetPositions();
@@ -1855,6 +1838,8 @@
         window.onload = function() {
             resizeCanvas();
             initBlockly();
+            renderLessonTabs();
+            renderWelcomeLessons();
             draw();
             updateSensors();
             selectLesson(getInitialLessonFromUrl());
