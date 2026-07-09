@@ -734,6 +734,11 @@
             <!-- Tasks will be populated by JavaScript -->
         </ul>
         
+        <div class="tip-box" id="lessonFlowBox" style="display:none; background: linear-gradient(135deg, #E8F4FF, #DFF7FF);">
+            <h4>⏱️ מהלך שיעור 60 דקות</h4>
+            <ul id="lessonFlowList" style="padding-right: 1.1rem; line-height: 1.7;"></ul>
+        </div>
+        
         <div class="tip-box" id="tipBox">
             <h4>💡 טיפ!</h4>
             <p id="tipText">לחצו על 💡 בכפתורי הסביבה כדי להדליק אור ולראות מה סנסי עושה!</p>
@@ -1605,6 +1610,8 @@
             const taskList = document.getElementById('taskList');
             const tipText = document.getElementById('tipText');
             const lessonStory = document.getElementById('lessonStory');
+            const lessonFlowBox = document.getElementById('lessonFlowBox');
+            const lessonFlowList = document.getElementById('lessonFlowList');
             const cityLesson = window.getSensiLesson ? window.getSensiLesson(lessonNum) : null;
             const legacyLesson = lessonTasks[lessonNum];
             const tasks = cityLesson?.studentTasks || legacyLesson?.tasks || [];
@@ -1619,6 +1626,17 @@
             tipText.textContent = cityLesson?.tip || legacyLesson?.tip || 'נסו לשנות את הסביבה ולבדוק איך סנסי מגיב.';
             if (lessonStory) {
                 lessonStory.textContent = cityLesson ? `${cityLesson.emoji} ${cityLesson.story}` : '';
+            }
+            if (lessonFlowBox && lessonFlowList) {
+                if (cityLesson?.sixtyMinuteFlow?.length) {
+                    lessonFlowBox.style.display = 'block';
+                    lessonFlowList.innerHTML = cityLesson.sixtyMinuteFlow.map(step =>
+                        `<li><strong>${step.minutes} — ${step.title}:</strong> ${step.tasks[0]}</li>`
+                    ).join('');
+                } else {
+                    lessonFlowBox.style.display = 'none';
+                    lessonFlowList.innerHTML = '';
+                }
             }
         }
         

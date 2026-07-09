@@ -53,7 +53,9 @@
       { html: `<h2>🧩 רעיון תכנותי</h2><p><strong>${lesson.codingConcept}</strong></p><p>במקום לתת לרובוט הוראה אחת קבועה, אנחנו מלמדים אותו לבדוק מצב ולקבל החלטה.</p>` },
       { html: `<h2>🧱 בלוקים שנשתמש בהם</h2><div class="cards">${lesson.blocks.map(block => `<div class="card">${block}</div>`).join('')}</div>` },
       { html: `<h2>✅ המשימה שלכם</h2><ul>${lesson.studentTasks.map(task => `<li>${task}</li>`).join('')}</ul>` },
+      ...(lesson.sixtyMinuteFlow ? [{ html: `<h2>⏱️ מהלך שיעור 60 דקות</h2><ul>${lesson.sixtyMinuteFlow.map(step => `<li><strong>${step.minutes} — ${step.title}:</strong> ${step.tasks.join(' · ')}</li>`).join('')}</ul>` }] : []),
       { html: `<h2>💬 שאלת חשיבה</h2><p>${lesson.teacherNotes.discussionQuestions[0] || 'איפה עוד בעיר אפשר להשתמש ברעיון הזה?'}</p>` },
+
       { html: `<h2>🚀 עוברים לבנייה</h2><p>פתחו את הסימולטור, בנו את הבלוקים, בדקו, שפרו — ואז הסבירו לחבר איך סנסי חושב.</p>` }
     ];
 
