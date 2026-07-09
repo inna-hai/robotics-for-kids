@@ -1,438 +1,327 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🤖 סנסי הרובוט - אודות הלומדה</title>
-    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        :root {
-            --pink: #FF6B9D;
-            --purple: #9B5DE5;
-            --blue: #00BBF9;
-            --green: #00F5D4;
-            --yellow: #FEE440;
-            --orange: #F15BB5;
-            --dark: #2D3047;
-        }
-        
-        body {
-            font-family: 'Rubik', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            min-height: 100vh;
-            color: var(--dark);
-            line-height: 1.7;
-        }
-        
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        /* Header */
-        .header {
-            text-align: center;
-            padding: 2rem;
-            background: white;
-            border-radius: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        }
-        
-        .logo {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            animation: bounce 2s infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, var(--purple), var(--pink));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
-        }
-        
-        .subtitle {
-            font-size: 1.25rem;
-            color: #666;
-        }
-        
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: linear-gradient(135deg, var(--purple), var(--pink));
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            margin-top: 1.5rem;
-            transition: transform 0.3s;
-        }
-        
-        .back-btn:hover {
-            transform: scale(1.05);
-        }
-        
-        /* Sections */
-        .section {
-            background: white;
-            border-radius: 1.5rem;
-            padding: 2rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        }
-        
-        .section h2 {
-            font-size: 1.75rem;
-            color: var(--purple);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        
-        .section h2 .icon {
-            font-size: 2rem;
-        }
-        
-        .section p {
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-        }
-        
-        .section ul {
-            margin-right: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .section li {
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
-        
-        /* Lessons Grid */
-        .lessons-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-        
-        .lesson-card {
-            background: linear-gradient(135deg, #f8f9ff, #fff);
-            border: 3px solid #eee;
-            border-radius: 1rem;
-            padding: 1.5rem;
-            text-align: center;
-            transition: all 0.3s;
-        }
-        
-        .lesson-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--purple);
-            box-shadow: 0 10px 30px rgba(155, 93, 229, 0.2);
-        }
-        
-        .lesson-card .emoji {
-            font-size: 3rem;
-            margin-bottom: 0.75rem;
-        }
-        
-        .lesson-card h3 {
-            color: var(--purple);
-            margin-bottom: 0.5rem;
-        }
-        
-        .lesson-card p {
-            font-size: 0.95rem;
-            color: #666;
-            margin: 0;
-        }
-        
-        /* Blocks Demo */
-        .blocks-demo {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            margin-top: 1rem;
-        }
-        
-        .block-sample {
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            color: white;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-        
-        .block-events { background: #FFAB19; color: #333; }
-        .block-motion { background: #4C97FF; }
-        .block-sensors { background: #40BF4A; }
-        .block-control { background: #FF8C1A; color: #333; }
-        .block-actions { background: #9966FF; }
-        
-        /* Tips */
-        .tip-box {
-            background: linear-gradient(135deg, #FFF9E6, #FFF3CC);
-            border: 2px solid var(--yellow);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            margin-top: 1rem;
-        }
-        
-        .tip-box h4 {
-            color: #B8860B;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        /* Requirements */
-        .requirements {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .req-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem;
-            background: #f8f9ff;
-            border-radius: 1rem;
-        }
-        
-        .req-item .icon {
-            font-size: 2rem;
-        }
-        
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            color: white;
-        }
-        
-        .footer a {
-            color: white;
-        }
-        
-        /* Responsive */
-        @media (max-width: 600px) {
-            .container { padding: 1rem; }
-            h1 { font-size: 2rem; }
-            .section { padding: 1.5rem; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🏙️ סנסי בעיר החכמה - אודות הלומדה</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --purple: #6D5DFB;
+      --pink: #F15BB5;
+      --blue: #00BBF9;
+      --green: #00D4A6;
+      --yellow: #FEE440;
+      --orange: #FF8C42;
+      --dark: #233047;
+      --muted: #64748b;
+      --card: rgba(255,255,255,0.96);
+    }
+    body {
+      font-family: 'Rubik', sans-serif;
+      min-height: 100vh;
+      color: var(--dark);
+      line-height: 1.75;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(254,228,64,0.35), transparent 26%),
+        radial-gradient(circle at 80% 25%, rgba(0,187,249,0.28), transparent 28%),
+        linear-gradient(135deg, #4f46e5 0%, #7c3aed 48%, #f15bb5 100%);
+    }
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+    .hero, .section {
+      background: var(--card);
+      border-radius: 2rem;
+      box-shadow: 0 18px 55px rgba(15,23,42,0.16);
+      border: 1px solid rgba(255,255,255,0.55);
+    }
+    .hero {
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2rem;
+      align-items: center;
+    }
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: #EEF2FF;
+      color: #4f46e5;
+      border-radius: 999px;
+      padding: .45rem .9rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 4.2rem);
+      line-height: 1.05;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle { font-size: 1.22rem; color: #475569; max-width: 700px; }
+    .robot { font-size: clamp(5rem, 14vw, 9rem); filter: drop-shadow(0 18px 24px rgba(0,0,0,.18)); animation: float 3s ease-in-out infinite; }
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+    .actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.5rem; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .45rem;
+      padding: .82rem 1.25rem;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 800;
+      color: white;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 8px 22px rgba(109,93,251,.25);
+    }
+    .btn.secondary { background: white; color: var(--purple); border: 2px solid #E0E7FF; box-shadow: none; }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(109,93,251,.28); }
+    .section { padding: 2rem; margin-bottom: 1.5rem; }
+    .section h2 {
+      font-size: 1.8rem;
+      color: var(--purple);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: .65rem;
+    }
+    .section p, .section li { font-size: 1.08rem; }
+    ul { margin: .7rem 1.5rem 0 0; }
+    li { margin-bottom: .45rem; }
+    .stats, .requirements, .blocks-demo {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-top: 1.2rem;
+    }
+    .stat, .req-item, .block-sample {
+      background: #F8FAFC;
+      border: 2px solid #EEF2FF;
+      border-radius: 1.2rem;
+      padding: 1.1rem;
+    }
+    .stat b { display: block; font-size: 2.2rem; color: var(--purple); line-height: 1; }
+    .lessons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-top: 1.4rem;
+    }
+    .lesson-card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      background: linear-gradient(135deg, #ffffff, #f8fbff);
+      border: 3px solid #EEF2FF;
+      border-radius: 1.25rem;
+      padding: 1.2rem;
+      transition: transform .2s, border-color .2s, box-shadow .2s;
+    }
+    .lesson-card:hover { transform: translateY(-4px); border-color: var(--purple); box-shadow: 0 14px 32px rgba(109,93,251,.16); }
+    .lesson-top { display:flex; align-items:center; justify-content:space-between; gap:.6rem; margin-bottom:.75rem; }
+    .emoji { font-size: 2.5rem; }
+    .lesson-id { color: var(--purple); font-weight: 900; background:#EEF2FF; padding:.25rem .6rem; border-radius:999px; }
+    .lesson-card h3 { color: #1e293b; margin-bottom:.35rem; }
+    .zone { color: var(--green); font-weight: 800; margin-bottom:.4rem; }
+    .story { color: var(--muted); font-size: .98rem; }
+    .tag-row { display:flex; flex-wrap:wrap; gap:.45rem; margin-top:.75rem; }
+    .tag { font-size:.85rem; background:#F1F5F9; color:#475569; border-radius:999px; padding:.25rem .55rem; font-weight:700; }
+    .unit-title { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #E2E8F0; }
+    .unit-title:first-of-type { margin-top: 0; padding-top: 0; border-top: 0; }
+    .block-sample { color:white; font-weight:800; text-align:center; }
+    .block-events { background:#FFAB19; color:#273043; }
+    .block-motion { background:#4C97FF; }
+    .block-sensors { background:#40BF4A; }
+    .block-control { background:#FF8C1A; color:#273043; }
+    .block-actions { background:#9966FF; }
+    .tip-box {
+      background: linear-gradient(135deg, #FFF9E6, #FFF3CC);
+      border: 2px solid var(--yellow);
+      border-radius: 1.2rem;
+      padding: 1.25rem;
+      margin-top: 1rem;
+    }
+    .footer { text-align: center; color: white; padding: 2rem; }
+    .footer a { color: white; font-weight: 800; }
+    @media (max-width: 760px) {
+      .container { padding: 1rem; }
+      .hero { grid-template-columns: 1fr; text-align:center; padding:1.5rem; }
+      .actions { justify-content:center; }
+      .section { padding:1.35rem; }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <div class="logo">🤖</div>
-            <h1>סנסי הרובוט</h1>
-            <p class="subtitle">לומדה אינטראקטיבית ללימוד חושים ורובוטיקה לילדים</p>
-            <a href="index.html" class="back-btn">🎮 חזרה ללומדה</a>
-        </div>
-        
-        <!-- What is this -->
-        <div class="section">
-            <h2><span class="icon">🎯</span> מה זה סנסי הרובוט?</h2>
-            <p>
-                <strong>סנסי הרובוט</strong> היא לומדה חינוכית אינטראקטיבית שמלמדת ילדים על חמשת החושים 
-                דרך עולם הרובוטיקה. הילדים לומדים איך החושים שלנו עובדים, ואיך רובוטים 
-                משתמשים בחיישנים כדי "לחוש" את העולם סביבם.
-            </p>
-            <p>
-                הלומדה משלבת <strong>תכנות ויזואלי בסגנון Scratch</strong> עם סימולציה של רובוט וירטואלי.
-                הילדים גוררים בלוקים כדי לתכנת את סנסי, ורואים איך הוא מגיב לסביבה שלו!
-            </p>
-        </div>
-        
-        <!-- Target Audience -->
-        <div class="section">
-            <h2><span class="icon">👧</span> למי מתאימה הלומדה?</h2>
-            <ul>
-                <li><strong>גילאים:</strong> 8-12 (מותאם במיוחד לכיתות ג'-ו')</li>
-                <li><strong>ידע קודם:</strong> לא נדרש! מתאים למתחילים לגמרי</li>
-                <li><strong>שימושים:</strong> שיעורי מדעים, חוגי רובוטיקה, למידה עצמאית בבית</li>
-            </ul>
-            
-            <div class="tip-box">
-                <h4>💡 טיפ למורים והורים</h4>
-                <p>כל שיעור כולל מצגת מובנית עם סרטונים בעברית! לחצו על כפתור "📽️ מצגת" בראש המסך.</p>
-            </div>
-        </div>
-        
-        <!-- Lessons -->
-        <div class="section">
-            <h2><span class="icon">📚</span> השיעורים</h2>
-            <p>הלומדה כוללת 5 שיעורים מובנים, כל אחד מתמקד בחוש אחר:</p>
-            
-            <div class="lessons-grid">
-                <div class="lesson-card">
-                    <div class="emoji">👁️</div>
-                    <h3>שיעור 1: ראייה</h3>
-                    <p>איך העיניים שלנו עובדות? נלמד על אור וחיישן אור ברובוט</p>
-                </div>
-                <div class="lesson-card">
-                    <div class="emoji">👂</div>
-                    <h3>שיעור 2: שמיעה</h3>
-                    <p>איך האוזניים קולטות צלילים? נכיר מיקרופונים וחיישני קול</p>
-                </div>
-                <div class="lesson-card">
-                    <div class="emoji">✋</div>
-                    <h3>שיעור 3: מישוש</h3>
-                    <p>איך אנחנו מרגישים מגע? נלמד על חיישני לחץ ומרחק</p>
-                </div>
-                <div class="lesson-card">
-                    <div class="emoji">👃</div>
-                    <h3>שיעור 4: ריח</h3>
-                    <p>איך האף שלנו מזהה ריחות? נכיר חיישני גז ועשן</p>
-                </div>
-                <div class="lesson-card">
-                    <div class="emoji">⭐</div>
-                    <h3>שיעור 5: פרויקט</h3>
-                    <p>משלבים הכל ביחד! בונים רובוט חכם שמשתמש בכל החיישנים</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- How to Use -->
-        <div class="section">
-            <h2><span class="icon">🎮</span> איך משתמשים?</h2>
-            
-            <h3 style="margin: 1.5rem 0 1rem; color: var(--purple);">1. בחירת שיעור</h3>
-            <p>לחצו על אחד מהעיגולים בראש המסך (👁️ 👂 ✋ 👃 ⭐) כדי לבחור שיעור.</p>
-            
-            <h3 style="margin: 1.5rem 0 1rem; color: var(--purple);">2. צפייה במצגת</h3>
-            <p>לחצו על "📽️ מצגת" כדי לראות הסבר עם סרטונים על הנושא.</p>
-            
-            <h3 style="margin: 1.5rem 0 1rem; color: var(--purple);">3. תכנות סנסי</h3>
-            <p>גררו בלוקים מהתפריט לאזור התכנות כדי ליצור תוכנית לרובוט.</p>
-            
-            <h3 style="margin: 1.5rem 0 1rem; color: var(--purple);">4. הפעלה ובדיקה</h3>
-            <p>לחצו "▶️ הפעל!" כדי להריץ את התוכנית. שנו את הסביבה (אור, צליל, קיר, עשן) וראו איך סנסי מגיב!</p>
-        </div>
-        
-        <!-- Blocks -->
-        <div class="section">
-            <h2><span class="icon">🧩</span> סוגי הבלוקים</h2>
-            <p>הלומדה כוללת 5 קטגוריות של בלוקים:</p>
-            
-            <div class="blocks-demo">
-                <span class="block-sample block-events">🚩 התחלה</span>
-                <span class="block-sample block-motion">🚗 תנועה</span>
-                <span class="block-sample block-sensors">👁️ חושים</span>
-                <span class="block-sample block-control">🔁 בקרה</span>
-                <span class="block-sample block-actions">💬 דיבור</span>
-            </div>
-            
-            <ul style="margin-top: 1.5rem;">
-                <li><strong style="color: #FFAB19;">התחלה:</strong> בלוק ההתחלה - כל תוכנית מתחילה ממנו</li>
-                <li><strong style="color: #4C97FF;">תנועה:</strong> להזיז את סנסי קדימה, אחורה, לסובב ולעצור</li>
-                <li><strong style="color: #40BF4A;">חושים:</strong> לבדוק אור, צליל, מכשול או עשן</li>
-                <li><strong style="color: #FF8C1A;">בקרה:</strong> לולאות (חזור), תנאים (אם), והמתנה</li>
-                <li><strong style="color: #9966FF;">דיבור:</strong> לגרום לסנסי לומר משהו</li>
-            </ul>
-        </div>
-        
-        <!-- Environment Controls -->
-        <div class="section">
-            <h2><span class="icon">🌍</span> שליטה בסביבה</h2>
-            <p>מתחת לסנסי יש כפתורים לשינוי הסביבה:</p>
-            <ul>
-                <li><strong>💡 אור:</strong> מדליק/מכבה אור בסביבה</li>
-                <li><strong>🔊 צליל:</strong> משמיע צליל שסנסי יכול לשמוע</li>
-                <li><strong>🧱 קיר:</strong> מציב מכשול שסנסי יכול לחוש</li>
-                <li><strong>💨 עשן:</strong> יוצר עשן שסנסי יכול להריח</li>
-                <li><strong>🔄 איפוס:</strong> מחזיר את סנסי למקום ההתחלה</li>
-            </ul>
-        </div>
-        
-        <!-- Technical Requirements -->
-        <div class="section">
-            <h2><span class="icon">💻</span> דרישות טכניות</h2>
-            
-            <div class="requirements">
-                <div class="req-item">
-                    <span class="icon">🌐</span>
-                    <div>
-                        <strong>דפדפן מודרני</strong>
-                        <br><small>Chrome, Firefox, Safari, Edge</small>
-                    </div>
-                </div>
-                <div class="req-item">
-                    <span class="icon">📱</span>
-                    <div>
-                        <strong>מחשב או טאבלט</strong>
-                        <br><small>מסך מגע נתמך</small>
-                    </div>
-                </div>
-                <div class="req-item">
-                    <span class="icon">🔗</span>
-                    <div>
-                        <strong>חיבור אינטרנט</strong>
-                        <br><small>לטעינת הספריות והסרטונים</small>
-                    </div>
-                </div>
-                <div class="req-item">
-                    <span class="icon">🆓</span>
-                    <div>
-                        <strong>חינם לגמרי!</strong>
-                        <br><small>ללא הרשמה או תשלום</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Pedagogy -->
-        <div class="section">
-            <h2><span class="icon">🎓</span> גישה פדגוגית</h2>
-            <p>הלומדה מבוססת על עקרונות של:</p>
-            <ul>
-                <li><strong>למידה מבוססת משחק:</strong> הילדים לומדים דרך ניסוי וטעייה בסביבה בטוחה</li>
-                <li><strong>חשיבה חישובית:</strong> פיתוח יכולות פתרון בעיות ולוגיקה</li>
-                <li><strong>למידה ספירלית:</strong> כל שיעור בונה על הקודם ומוסיף מורכבות</li>
-                <li><strong>קשר לעולם האמיתי:</strong> חיבור בין החושים האנושיים לטכנולוגיה</li>
-            </ul>
-            
-            <div class="tip-box">
-                <h4>📋 למורים</h4>
-                <p>לחצו על "מדריך למורה" בעמוד הראשי לקבלת תוכניות שיעור מפורטות של 90 דקות לכל נושא, 
-                כולל פעילויות, דיונים ושאלות להערכה.</p>
-            </div>
-        </div>
-        
-        <!-- Credits -->
-        <div class="section">
-            <h2><span class="icon">🙏</span> קרדיטים</h2>
-            <ul>
-                <li><strong>פיתוח:</strong> נבנה עם ❤️ עבור ילדי ישראל</li>
-                <li><strong>תכנות ויזואלי:</strong> מבוסס על <a href="https://developers.google.com/blockly" target="_blank">Google Blockly</a></li>
-                <li><strong>סרטונים:</strong> הילימוד, ynet, רותמאמא, בליפי בעברית ועוד</li>
-            </ul>
-        </div>
-        
-        <!-- Footer -->
-        <div class="footer">
-            <p>🤖 סנסי הרובוט - לומדה חינוכית לילדים</p>
-            <p><a href="index.html">חזרה ללומדה</a> | <a href="teachers.html">מדריך למורים</a></p>
-        </div>
-    </div>
+  <div class="container">
+    <header class="hero">
+      <div>
+        <div class="kicker">🏙️ מסלול 15 שיעורים חדש</div>
+        <h1>סנסי בעיר החכמה</h1>
+        <p class="subtitle">
+          לומדה אינטראקטיבית ללימוד רובוטיקה, חיישנים וחשיבה חישובית דרך בניית עיר חכמה.
+          בכל שיעור סנסי פותר בעיה עירונית אמיתית — פנס רחוב, רעש בשכונה, רכב שנמנע ממכשול,
+          תחנת כיבוי, השקיה, מחזור ועוד.
+        </p>
+        <nav class="actions" aria-label="קישורים מרכזיים">
+          <a class="btn" href="smart-city.html">🏙️ חזרה למסלול 15 השיעורים</a>
+          <a class="btn secondary" href="index.html?lesson=1">🚀 התחילו בשיעור 1</a>
+          <a class="btn secondary" href="teachers.html">📚 מדריך למורה</a>
+        </nav>
+      </div>
+      <div class="robot" aria-hidden="true">🤖🏙️</div>
+    </header>
+
+    <section class="section">
+      <h2><span>🎯</span> מה זה?</h2>
+      <p>
+        <strong>סנסי בעיר החכמה</strong> הוא קורס מעשי לילדים שבו לומדים לתכנת רובוט וירטואלי בעזרת
+        בלוקים בסגנון Scratch/Blockly. במקום ללמוד “חיישנים” בצורה תאורטית, הילדים פוגשים בעיות
+        מהחיים בעיר — ומפתחים פתרון קטן בכל פעם.
+      </p>
+      <p>
+        כל שיעור בנוי כיחידת הוראה מלאה של כ־60 דקות: סיפור פתיחה, הדגמה, בנייה מודרכת,
+        תרגילי תכנות, בדיקות, אתגר וסיכום. המטרה היא שמורה יוכל לפתוח שיעור ולהעביר אותו בכיתה.
+      </p>
+      <div class="stats">
+        <div class="stat"><b>15</b> שיעורים מובנים</div>
+        <div class="stat"><b>60</b> דקות לשיעור</div>
+        <div class="stat"><b>3</b> יחידות למידה</div>
+        <div class="stat"><b>8+</b> סוגי חיישנים ומערכות</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2><span>👧</span> למי זה מתאים?</h2>
+      <ul>
+        <li><strong>גילאים:</strong> בעיקר כיתות ג׳–ו׳, עם התאמות קלות גם לצעירים/בוגרים יותר.</li>
+        <li><strong>ידע קודם:</strong> לא נדרש. הילדים מתחילים מבלוקים פשוטים ומתקדמים בהדרגה.</li>
+        <li><strong>מסגרת:</strong> שיעורי מדעים וטכנולוגיה, חוגי רובוטיקה, מרכזי מצוינות ולמידה עצמאית מודרכת.</li>
+        <li><strong>מיקוד:</strong> חיישנים, תנאים, לולאות, בדיקות, פתרון בעיות וקשר לעולם אמיתי.</li>
+      </ul>
+      <div class="tip-box">
+        <strong>💡 למורים:</strong> המסלול החדש נבנה להיות “מוכן לשיעור”: בכל מצגת יש מה לומר, מה להדגים,
+        מה התלמידים עושים, שאלות בדיקה ופתרונות לתרגילים.
+      </div>
+    </section>
+
+    <section class="section">
+      <h2><span>📚</span> 15 השיעורים</h2>
+      <p>המסלול מחולק לשלוש יחידות: יסודות, מערכות סביבתיות, ואז מערכות מורכבות ופרויקט.</p>
+
+      <h3 class="unit-title">יחידה 1 — חיישנים בסיסיים והחלטות</h3>
+      <div class="lessons-grid" id="unit-1"></div>
+
+      <h3 class="unit-title">יחידה 2 — סביבה חכמה ופעולות חוזרות</h3>
+      <div class="lessons-grid" id="unit-2"></div>
+
+      <h3 class="unit-title">יחידה 3 — מערכות מורכבות ופרויקט</h3>
+      <div class="lessons-grid" id="unit-3"></div>
+    </section>
+
+    <section class="section">
+      <h2><span>🎮</span> איך משתמשים?</h2>
+      <ul>
+        <li><strong>1. נכנסים למסלול:</strong> פותחים את <a href="smart-city.html">עמוד 15 השיעורים</a>.</li>
+        <li><strong>2. בוחרים שיעור:</strong> כל כרטיס פותח סימולציה, בלוקים ומשימות לאותו נושא.</li>
+        <li><strong>3. פותחים מצגת:</strong> בכל שיעור יש מצגת מובנית להנחיית המורה.</li>
+        <li><strong>4. מתכנתים ובודקים:</strong> גוררים בלוקים, מריצים, משנים את הסביבה ובודקים אם הפתרון עובד.</li>
+        <li><strong>5. מסכמים:</strong> מחברים בין חיישן → תנאי/לולאה → פעולה בעיר.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2><span>🧩</span> סוגי הבלוקים</h2>
+      <p>הילדים עובדים עם בלוקים פשוטים שמייצגים רעיונות מרכזיים בתכנות ורובוטיקה:</p>
+      <div class="blocks-demo">
+        <div class="block-sample block-events">🚩 התחלה</div>
+        <div class="block-sample block-motion">🚗 תנועה</div>
+        <div class="block-sample block-sensors">👁️ חיישנים</div>
+        <div class="block-sample block-control">🔁 בקרה</div>
+        <div class="block-sample block-actions">💬 פעולות ודיבור</div>
+      </div>
+      <ul>
+        <li><strong>חיישנים:</strong> אור, קול/רעש, מכשול, עשן, מים, קו, צבע ועוד.</li>
+        <li><strong>בקרה:</strong> אם/אז, לולאות, בדיקות חוזרות והמתנה.</li>
+        <li><strong>פעולות:</strong> הדלקת פנס, התרעה, תנועה, עצירה, הודעות ופעולות עירוניות נוספות.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2><span>🎓</span> הגישה הפדגוגית</h2>
+      <ul>
+        <li><strong>למידה דרך בעיה:</strong> כל שיעור מתחיל מצורך אמיתי בעיר.</li>
+        <li><strong>חשיבה חישובית:</strong> פירוק בעיה לכלל ברור: אם קורה X — הרובוט עושה Y.</li>
+        <li><strong>ניסוי וטעייה בטוחים:</strong> הילדים מריצים, בודקים, מתקנים ומבינים למה.</li>
+        <li><strong>ספירלה לימודית:</strong> בכל שיעור חוזרים על רעיון קודם ומוסיפים רכיב חדש.</li>
+        <li><strong>שפה פשוטה:</strong> מושגים טכנולוגיים מוסברים דרך סיפורים ופעולות שילדים מכירים.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2><span>💻</span> דרישות טכניות</h2>
+      <div class="requirements">
+        <div class="req-item">🌐 דפדפן מודרני<br><small>Chrome, Edge, Firefox, Safari</small></div>
+        <div class="req-item">💻 מחשב או טאבלט<br><small>מומלץ מסך גדול לעבודה עם בלוקים</small></div>
+        <div class="req-item">🔗 חיבור אינטרנט<br><small>לטעינת הספריות והמצגות</small></div>
+        <div class="req-item">🆓 ללא התקנה<br><small>פותחים בדפדפן ומתחילים</small></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2><span>🙏</span> קרדיטים</h2>
+      <ul>
+        <li><strong>פיתוח:</strong> נבנה עם ❤️ עבור ילדי ישראל.</li>
+        <li><strong>תכנות ויזואלי:</strong> מבוסס על <a href="https://developers.google.com/blockly" target="_blank" rel="noopener">Google Blockly</a>.</li>
+        <li><strong>רעיון לימודי:</strong> רובוטיקה, חיישנים וחשיבה חישובית דרך עולם של עיר חכמה.</li>
+      </ul>
+    </section>
+
+    <footer class="footer">
+      <p>🏙️ סנסי בעיר החכמה — 15 שיעורי רובוטיקה לילדים</p>
+      <p><a href="smart-city.html">חזרה למסלול</a> | <a href="teachers.html">מדריך למורים</a> | <a href="index.html?lesson=1">שיעור 1</a></p>
+    </footer>
+  </div>
+
+  <script src="js/lessons-data.js?v=20260709-about-15"></script>
+  <script>
+    function unitForLesson(id) {
+      if (id <= 5) return 1;
+      if (id <= 10) return 2;
+      return 3;
+    }
+
+    function lessonCard(lesson) {
+      return `
+        <a class="lesson-card" href="index.html?lesson=${lesson.id}" aria-label="פתח שיעור ${lesson.id}: ${lesson.title}">
+          <div class="lesson-top">
+            <span class="emoji">${lesson.emoji}</span>
+            <span class="lesson-id">שיעור ${lesson.id}</span>
+          </div>
+          <h3>${lesson.title}</h3>
+          <div class="zone">${lesson.cityZone || ''}</div>
+          <p class="story">${lesson.story || ''}</p>
+          <div class="tag-row">
+            <span class="tag">חיישן: ${lesson.sensorFocus || 'מערכת חכמה'}</span>
+            <span class="tag">${lesson.codingConcept || 'תכנות בלוקים'}</span>
+          </div>
+        </a>
+      `;
+    }
+
+    if (window.SENSI_LESSONS) {
+      for (const lesson of window.SENSI_LESSONS) {
+        const target = document.getElementById(`unit-${unitForLesson(lesson.id)}`);
+        if (target) target.insertAdjacentHTML('beforeend', lessonCard(lesson));
+      }
+    }
+  </script>
 </body>
 </html>
