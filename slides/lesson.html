@@ -44,7 +44,7 @@
     <a class="back" id="backToLesson" href="../smart-city.html">🏙️ לעיר</a>
   </nav>
 
-  <script src="../js/lessons-data.js?v=20260709-programming-answers"></script>
+  <script src="../js/lessons-data.js?v=20260709-chronological-exercises"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const lesson = window.getSensiLesson(params.get('id'));
@@ -53,19 +53,19 @@
     document.title = `${lesson.emoji} שיעור ${lesson.id}: ${lesson.title}`;
     document.getElementById('backToLesson').href = `../index.html?lesson=${lesson.id}`;
 
-    const slides = [
-      { html: `<div class="emoji">${lesson.emoji}</div><div class="kicker">שיעור ${lesson.id} • ${lesson.cityZone}</div><h1>${lesson.title}</h1><p>${lesson.story}</p>` },
-      { html: `<h2>🎯 מה נלמד היום?</h2><ul>${lesson.learningGoals.map(goal => `<li>${goal}</li>`).join('')}</ul>` },
-      { html: `<h2>🤖 החיישן של היום</h2><p>היום סנסי משתמש ב<strong>חיישן ${lesson.sensorFocus}</strong>.</p><p>החיישן עוזר לרובוט להבין מה קורה סביבו — ואז לבחור פעולה.</p>` },
-      { html: `<h2>🧩 רעיון תכנותי</h2><p><strong>${lesson.codingConcept}</strong></p><p>במקום לתת לרובוט הוראה אחת קבועה, אנחנו מלמדים אותו לבדוק מצב ולקבל החלטה.</p>` },
-      { html: `<h2>🧱 בלוקים שנשתמש בהם</h2><div class="cards">${lesson.blocks.map(block => `<div class="card">${block}</div>`).join('')}</div>` },
-      { html: `<h2>✅ המשימה שלכם</h2><ul>${lesson.studentTasks.map(task => `<li>${task}</li>`).join('')}</ul>` },
-      ...(lesson.instructorQuickTasks ? [{ html: `<h2>🧑‍🏫 צ׳ק ליסט למדריך</h2><ul>${lesson.instructorQuickTasks.map(task => `<li>${task}</li>`).join('')}</ul>` }] : []),
-      ...(lesson.programmingExercises ? lesson.programmingExercises.flatMap((exercise, index) => [
-        { html: `<div class="kicker">תרגול תכנות ${index + 1}</div><h2>${exercise.title}</h2><p>${exercise.studentPrompt}</p><div class="teacher-box"><h3>מה לבקש מהתלמידים</h3><ul>${exercise.testSteps.map(step => `<li>${step}</li>`).join('')}</ul></div>` },
-        { html: `<div class="kicker">פתרון למדריך — תרגול ${index + 1}</div><h2>${exercise.answerTitle}</h2><div class="code-blocks">${exercise.answerBlocks.map(block => `<div class="code-block">${block}</div>`).join('')}</div><p><strong>תוצאה מצופה:</strong> ${exercise.expectedResult}</p><p><strong>טעות נפוצה:</strong> ${exercise.commonMistake}</p>` }
-      ]) : []),
-      ...(lesson.sixtyMinuteFlow ? lesson.sixtyMinuteFlow.map(step => ({ html: `
+    function exerciseSlidesForStep(step) {
+      const exercises = (lesson.programmingExercises || []).filter((exercise) => exercise.afterFlowMinutes === step.minutes);
+      return exercises.flatMap((exercise, index) => {
+        const exerciseNumber = (lesson.programmingExercises || []).indexOf(exercise) + 1;
+        return [
+          { html: `<span class="time-badge">${step.minutes}</span><div class="kicker">תרגול תכנות ${exerciseNumber}</div><h2>${exercise.title}</h2><p>${exercise.studentPrompt}</p><div class="teacher-box"><h3>מה לבקש מהתלמידים עכשיו</h3><ul>${exercise.testSteps.map(testStep => `<li>${testStep}</li>`).join('')}</ul></div>` },
+          { html: `<span class="time-badge">${step.minutes}</span><div class="kicker">פתרון למדריך — תרגול ${exerciseNumber}</div><h2>${exercise.answerTitle}</h2><div class="code-blocks">${exercise.answerBlocks.map(block => `<div class="code-block">${block}</div>`).join('')}</div><p><strong>תוצאה מצופה:</strong> ${exercise.expectedResult}</p><p><strong>טעות נפוצה:</strong> ${exercise.commonMistake}</p>` }
+        ];
+      });
+    }
+
+    const flowSlides = (lesson.sixtyMinuteFlow || []).flatMap((step) => [
+      { html: `
         <span class="time-badge">${step.minutes}</span>
         <h2>${step.title}</h2>
         ${step.teacherSays ? `<div class="teacher-box"><h3>מה להגיד</h3><p>${step.teacherSays}</p></div>` : ''}
@@ -74,10 +74,20 @@
           <div class="teacher-box"><h3>מה התלמידים עושים</h3><ul>${(step.studentTasks || step.tasks || []).map(task => `<li>${task}</li>`).join('')}</ul></div>
         </div>
         ${step.checkQuestion ? `<p><strong>שאלת בדיקה:</strong> ${step.checkQuestion}</p>` : ''}
-      ` })) : []),
-      { html: `<h2>💬 שאלת חשיבה</h2><p>${lesson.teacherNotes.discussionQuestions[0] || 'איפה עוד בעיר אפשר להשתמש ברעיון הזה?'}</p>` },
+      ` },
+      ...exerciseSlidesForStep(step)
+    ]);
 
-      { html: `<h2>🚀 עוברים לבנייה</h2><p>פתחו את הסימולטור, בנו את הבלוקים, בדקו, שפרו — ואז הסבירו לחבר איך סנסי חושב.</p>` }
+    const slides = [
+      { html: `<div class="emoji">${lesson.emoji}</div><div class="kicker">שיעור ${lesson.id} • ${lesson.cityZone}</div><h1>${lesson.title}</h1><p>${lesson.story}</p>` },
+      { html: `<h2>🎯 מה נלמד היום?</h2><ul>${lesson.learningGoals.map(goal => `<li>${goal}</li>`).join('')}</ul>` },
+      { html: `<h2>🤖 החיישן של היום</h2><p>היום סנסי משתמש ב<strong>חיישן ${lesson.sensorFocus}</strong>.</p><p>החיישן עוזר לרובוט להבין מה קורה סביבו — ואז לבחור פעולה.</p>` },
+      { html: `<h2>🧩 רעיון תכנותי</h2><p><strong>${lesson.codingConcept}</strong></p><p>במקום לתת לרובוט הוראה אחת קבועה, אנחנו מלמדים אותו לבדוק מצב ולקבל החלטה.</p>` },
+      { html: `<h2>🧱 בלוקים שנשתמש בהם</h2><div class="cards">${lesson.blocks.map(block => `<div class="card">${block}</div>`).join('')}</div>` },
+      { html: `<h2>✅ המשימה שלכם</h2><ul>${lesson.studentTasks.map(task => `<li>${task}</li>`).join('')}</ul>` },
+      ...(lesson.instructorQuickTasks ? [{ html: `<h2>🧑🏫 צ׳ק ליסט למדריך</h2><ul>${lesson.instructorQuickTasks.map(task => `<li>${task}</li>`).join('')}</ul>` }] : []),
+      ...flowSlides,
+      { html: `<h2>💬 שאלת סיכום</h2><p>${lesson.teacherNotes.discussionQuestions[0] || 'איפה עוד בעיר אפשר להשתמש ברעיון הזה?'}</p><p><strong>משפט סיכום:</strong> חיישן → תנאי → פעולה.</p>` }
     ];
 
     document.getElementById('deck').innerHTML = slides.map((slide, index) => `<section class="slide ${index === 0 ? 'active' : ''}">${slide.html}</section>`).join('');
