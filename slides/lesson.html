@@ -17,8 +17,12 @@
     .kicker { color:var(--purple); font-weight:900; margin-bottom:12px; }
     h1 { font-size:clamp(2.4rem,6vw,5rem); margin:0 0 18px; }
     h2 { font-size:clamp(2rem,5vw,4rem); margin:0 0 24px; }
-    p, li { font-size:clamp(1.25rem,2.4vw,2rem); line-height:1.65; }
+    p, li { font-size:clamp(1.15rem,2.1vw,1.75rem); line-height:1.55; }
     ul { margin:0; padding-right:1.5em; }
+    .time-badge { display:inline-flex; background:var(--yellow); color:#5f4300; border-radius:999px; padding:8px 18px; font-weight:900; margin-bottom:16px; font-size:1.4rem; }
+    .teacher-box { background:#f7f9fc; border-right:8px solid var(--purple); border-radius:18px; padding:18px; margin:14px 0; }
+    .teacher-box h3 { margin:0 0 8px; color:var(--purple); font-size:1.35rem; }
+    .two-cols { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
     .emoji { font-size:6rem; margin-bottom:14px; }
     .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:20px; }
     .card { background:#f7f9fc; border-radius:22px; padding:22px; font-size:1.3rem; font-weight:800; }
@@ -53,7 +57,17 @@
       { html: `<h2>🧩 רעיון תכנותי</h2><p><strong>${lesson.codingConcept}</strong></p><p>במקום לתת לרובוט הוראה אחת קבועה, אנחנו מלמדים אותו לבדוק מצב ולקבל החלטה.</p>` },
       { html: `<h2>🧱 בלוקים שנשתמש בהם</h2><div class="cards">${lesson.blocks.map(block => `<div class="card">${block}</div>`).join('')}</div>` },
       { html: `<h2>✅ המשימה שלכם</h2><ul>${lesson.studentTasks.map(task => `<li>${task}</li>`).join('')}</ul>` },
-      ...(lesson.sixtyMinuteFlow ? [{ html: `<h2>⏱️ מהלך שיעור 60 דקות</h2><ul>${lesson.sixtyMinuteFlow.map(step => `<li><strong>${step.minutes} — ${step.title}:</strong> ${step.tasks.join(' · ')}</li>`).join('')}</ul>` }] : []),
+      ...(lesson.instructorQuickTasks ? [{ html: `<h2>🧑‍🏫 צ׳ק ליסט למדריך</h2><ul>${lesson.instructorQuickTasks.map(task => `<li>${task}</li>`).join('')}</ul>` }] : []),
+      ...(lesson.sixtyMinuteFlow ? lesson.sixtyMinuteFlow.map(step => ({ html: `
+        <span class="time-badge">${step.minutes}</span>
+        <h2>${step.title}</h2>
+        ${step.teacherSays ? `<div class="teacher-box"><h3>מה להגיד</h3><p>${step.teacherSays}</p></div>` : ''}
+        <div class="two-cols">
+          <div class="teacher-box"><h3>מה המדריך עושה</h3><ul>${(step.teacherDoes || step.tasks || []).map(task => `<li>${task}</li>`).join('')}</ul></div>
+          <div class="teacher-box"><h3>מה התלמידים עושים</h3><ul>${(step.studentTasks || step.tasks || []).map(task => `<li>${task}</li>`).join('')}</ul></div>
+        </div>
+        ${step.checkQuestion ? `<p><strong>שאלת בדיקה:</strong> ${step.checkQuestion}</p>` : ''}
+      ` })) : []),
       { html: `<h2>💬 שאלת חשיבה</h2><p>${lesson.teacherNotes.discussionQuestions[0] || 'איפה עוד בעיר אפשר להשתמש ברעיון הזה?'}</p>` },
 
       { html: `<h2>🚀 עוברים לבנייה</h2><p>פתחו את הסימולטור, בנו את הבלוקים, בדקו, שפרו — ואז הסבירו לחבר איך סנסי חושב.</p>` }

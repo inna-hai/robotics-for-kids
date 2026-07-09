@@ -1630,9 +1630,16 @@
             if (lessonFlowBox && lessonFlowList) {
                 if (cityLesson?.sixtyMinuteFlow?.length) {
                     lessonFlowBox.style.display = 'block';
-                    lessonFlowList.innerHTML = cityLesson.sixtyMinuteFlow.map(step =>
-                        `<li><strong>${step.minutes} — ${step.title}:</strong> ${step.tasks[0]}</li>`
-                    ).join('');
+                    lessonFlowList.innerHTML = cityLesson.sixtyMinuteFlow.map(step => `
+                        <li style="margin-bottom: .75rem;">
+                            <strong>${step.minutes} — ${step.title}</strong>
+                            <div style="font-size: .86rem; color: #555; margin-top: .25rem;">
+                                ${step.teacherSays ? `<div><strong>להגיד:</strong> ${step.teacherSays}</div>` : ''}
+                                <div><strong>לעשות:</strong> ${(step.teacherDoes || step.tasks || []).join(' · ')}</div>
+                                <div><strong>תלמידים:</strong> ${(step.studentTasks || step.tasks || []).join(' · ')}</div>
+                            </div>
+                        </li>
+                    `).join('');
                 } else {
                     lessonFlowBox.style.display = 'none';
                     lessonFlowList.innerHTML = '';
