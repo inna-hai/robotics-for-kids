@@ -1043,15 +1043,51 @@
             
             // Robot shadow
             ctx.beginPath();
-            ctx.ellipse(0, 40, 35, 10, 0, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(0,0,0,0.2)';
+            ctx.ellipse(0, currentLesson === 3 ? 34 : 40, currentLesson === 3 ? 48 : 35, 10, 0, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(0,0,0,0.28)';
             ctx.fill();
             
-            // Robot / lesson-specific avatar
-            ctx.font = currentLesson === 3 ? '66px Arial' : '60px Arial';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(currentLesson === 3 ? '🚗' : '🤖', 0, 0);
+            if (currentLesson === 3) {
+                // High-contrast car body for road lesson
+                ctx.fillStyle = 'rgba(255,255,255,0.96)';
+                ctx.strokeStyle = '#111827';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.roundRect(-48, -26, 96, 48, 16);
+                ctx.fill();
+                ctx.stroke();
+                
+                ctx.fillStyle = '#0984e3';
+                ctx.beginPath();
+                ctx.roundRect(-34, -18, 68, 32, 12);
+                ctx.fill();
+                
+                ctx.fillStyle = '#dff9ff';
+                ctx.fillRect(-22, -14, 18, 14);
+                ctx.fillRect(8, -14, 18, 14);
+                
+                ctx.fillStyle = '#111827';
+                ctx.beginPath();
+                ctx.arc(-28, 24, 10, 0, Math.PI * 2);
+                ctx.arc(28, 24, 10, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.fillStyle = '#fdcb6e';
+                ctx.beginPath();
+                ctx.arc(45, -2, 5, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.font = '18px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('🤖', 0, 0);
+            } else {
+                // Robot body
+                ctx.font = '60px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('🤖', 0, 0);
+            }
             
             ctx.restore();
             
