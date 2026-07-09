@@ -44,7 +44,7 @@
     <a class="back" id="backToLesson" href="../smart-city.html">🏙️ לעיר</a>
   </nav>
 
-  <script src="../js/lessons-data.js?v=20260709-sound-levels-clean"></script>
+  <script src="../js/lessons-data.js?v=20260709-sound-levels-reviewed"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const lesson = window.getSensiLesson(params.get('id'));
@@ -81,7 +81,7 @@
     const slides = [
       { html: `<div class="emoji">${lesson.emoji}</div><div class="kicker">שיעור ${lesson.id} • ${lesson.cityZone}</div><h1>${lesson.title}</h1><p>${lesson.story}</p>` },
       { html: `<h2>🎯 מה נלמד היום?</h2><ul>${lesson.learningGoals.map(goal => `<li>${goal}</li>`).join('')}</ul>` },
-      { html: `<h2>🤖 החיישן של היום</h2><p>היום סנסי משתמש ב<strong>חיישן ${lesson.sensorFocus}</strong>.</p><p>החיישן עוזר לרובוט להבין מה קורה סביבו — ואז לבחור פעולה.</p>` },
+      { html: `<h2>🤖 החיישן של היום</h2><p>היום סנסי משתמש ב<strong>חיישן ${lesson.sensorFocus}</strong>.</p><p>${lesson.sensorExplanation || 'החיישן עוזר לרובוט להבין מה קורה סביבו — ואז לבחור פעולה.'}</p>` },
       { html: `<h2>🧩 רעיון תכנותי</h2><p><strong>${lesson.codingConcept}</strong></p><p>במקום לתת לרובוט הוראה אחת קבועה, אנחנו מלמדים אותו לבדוק מצב ולקבל החלטה.</p>` },
       { html: `<h2>🧱 בלוקים שנשתמש בהם</h2><div class="cards">${lesson.blocks.map(block => `<div class="card">${block}</div>`).join('')}</div>` },
       { html: `<h2>✅ מה נבנה עד סוף השיעור?</h2><ul>${lesson.successCriteria.map(item => `<li>${item}</li>`).join('')}</ul>` },
