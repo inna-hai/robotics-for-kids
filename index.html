@@ -806,7 +806,7 @@
         let currentLesson = 1;
         let workspace = null;
         let completedTasks = [];
-        let robot = { x: 150, y: 180, angle: 0, speaking: '' };
+        let robot = { x: 150, y: 180, angle: 0, speaking: '', streetLightOn: false };
         let environment = { light: false, sound: false, obstacle: false, smoke: false };
         let isRunning = false;
         let drawerOpen = false;
@@ -858,6 +858,18 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
             // Sky background
+            if (currentLesson === 1 && !environment.light) {
+                const nightGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                nightGradient.addColorStop(0, '#1b1b4f');
+                nightGradient.addColorStop(1, '#34495e');
+                ctx.fillStyle = nightGradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.font = '18px Arial';
+                for (let i = 0; i < 18; i++) {
+                    ctx.fillText('✨', (i * 73) % Math.max(canvas.width, 1), 24 + (i * 41) % Math.max(canvas.height - 80, 1));
+                }
+            }
+            
             if (environment.light) {
                 ctx.fillStyle = 'rgba(255, 220, 100, 0.3)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -878,6 +890,36 @@
                     ctx.fillStyle = '#666';
                     ctx.fillText('גרור אותי!', objects.sun.x, objects.sun.y + 45);
                 }
+            }
+            
+            // Smart street light for lesson 1
+            if (currentLesson === 1) {
+                const lampX = canvas.width - 120;
+                const lampY = 95;
+                ctx.strokeStyle = '#2d3436';
+                ctx.lineWidth = 8;
+                ctx.beginPath();
+                ctx.moveTo(lampX, canvas.height - 30);
+                ctx.lineTo(lampX, lampY);
+                ctx.lineTo(lampX - 48, lampY);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(lampX - 58, lampY + 6, 18, 0, Math.PI * 2);
+                ctx.fillStyle = robot.streetLightOn ? '#ffd166' : '#636e72';
+                ctx.fill();
+                if (robot.streetLightOn) {
+                    const glow = ctx.createRadialGradient(lampX - 58, lampY + 10, 8, lampX - 58, lampY + 115, 150);
+                    glow.addColorStop(0, 'rgba(255, 209, 102, 0.75)');
+                    glow.addColorStop(1, 'rgba(255, 209, 102, 0)');
+                    ctx.fillStyle = glow;
+                    ctx.beginPath();
+                    ctx.arc(lampX - 58, lampY + 115, 150, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.font = 'bold 14px Rubik';
+                ctx.fillStyle = robot.streetLightOn ? '#f39c12' : '#dfe6e9';
+                ctx.textAlign = 'center';
+                ctx.fillText(robot.streetLightOn ? 'הפנס דולק' : 'הפנס כבוי', lampX - 58, lampY + 45);
             }
             
             // Draggable Smoke
@@ -1129,6 +1171,7 @@
                         colour: '#9966FF',
                         contents: [
                             { kind: 'block', type: 'action_say' },
+                            { kind: 'block', type: 'action_street_light' },
                             { kind: 'block', type: 'action_sound' }
                         ]
                     }
@@ -1296,6 +1339,17 @@
                 }
             };
             
+            Blockly.Blocks['action_street_light'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('💡 פנס רחוב')
+                        .appendField(new Blockly.FieldDropdown([['הדלק', 'ON'], ['כבה', 'OFF']]), 'STATE');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+            
             Blockly.Blocks['action_sound'] = {
                 init: function() {
                     this.appendDummyInput()
@@ -1383,6 +1437,13 @@
                     robot.speaking = '';
                     break;
                     
+                case 'action_street_light':
+                    robot.streetLightOn = block.getFieldValue('STATE') === 'ON';
+                    robot.speaking = robot.streetLightOn ? 'הדלקתי פנס!' : 'כיביתי פנס!';
+                    await sleep(900);
+                    robot.speaking = '';
+                    break;
+                    
                 case 'action_sound':
                     playBeep(block.getFieldValue('SND'));
                     await sleep(500);
@@ -1465,6 +1526,7 @@
             environment = { light: false, sound: false, obstacle: false, smoke: false };
             document.querySelectorAll('.env-btn').forEach(b => b.classList.remove('active'));
             robot.speaking = '';
+            robot.streetLightOn = false;
             resetPositions();
             updateSensors();
         }
@@ -1575,7 +1637,7 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : legacyTitles[num-1];
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = num <= 5 ? 'slides/lesson' + num + '.html' : 'slides/lesson.html?id=' + num;
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num;
             updateTasks(num);
         }
         
