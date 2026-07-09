@@ -100,10 +100,12 @@
     .emoji { font-size:6rem; margin-bottom:14px; }
     .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:20px; }
     .card { background:#f7f9fc; border-radius:22px; padding:22px; font-size:1.3rem; font-weight:800; }
-    .nav { position:fixed; inset:auto 24px 24px 24px; display:flex; justify-content:space-between; align-items:center; color:white; font-weight:900; }
-    button, .back { border:0; border-radius:999px; background:white; color:var(--purple); padding:12px 18px; font-weight:900; text-decoration:none; cursor:pointer; }
-    .counter { background:rgba(0,0,0,.22); padding:10px 16px; border-radius:999px; }
-    @media (max-width:700px){ body{overflow:auto}.deck{height:auto;min-height:100vh}.slide{padding:26px;min-height:calc(100vh - 110px)}.cards{grid-template-columns:1fr}.nav{position:sticky;bottom:0;padding:10px 0}.emoji{font-size:4rem} }
+    .nav { position:fixed; inset:auto 24px 24px 24px; display:grid; grid-template-columns:auto 1fr auto; gap:14px; align-items:center; color:white; font-weight:900; pointer-events:none; }
+    .nav > * { pointer-events:auto; }
+    .nav-actions { display:flex; gap:10px; align-items:center; justify-content:flex-end; }
+    button, .back { border:0; border-radius:999px; background:white; color:var(--purple); padding:12px 18px; font-weight:900; text-decoration:none; cursor:pointer; box-shadow:0 8px 28px rgba(0,0,0,.12); }
+    .counter { background:rgba(0,0,0,.22); padding:10px 16px; border-radius:999px; justify-self:center; }
+    @media (max-width:700px){ body{overflow:auto}.deck{height:auto;min-height:100vh}.slide{padding:26px;min-height:calc(100vh - 110px)}.cards{grid-template-columns:1fr}.nav{position:sticky;bottom:0;padding:10px 0;grid-template-columns:auto auto;justify-content:space-between}.counter{display:none}.nav-actions{gap:8px}.emoji{font-size:4rem} }
   </style>
 </head>
 <body>
@@ -111,8 +113,10 @@
   <nav class="nav">
     <button onclick="prevSlide()">→ הקודם</button>
     <span class="counter" id="counter"></span>
-    <button onclick="nextSlide()">הבא ←</button>
-    <a class="back" id="backToLesson" href="../smart-city.html">🏙️ לעיר</a>
+    <div class="nav-actions">
+      <button onclick="nextSlide()">הבא ←</button>
+      <a class="back" id="backToLesson" href="../smart-city.html">🏙️ לעיר</a>
+    </div>
   </nav>
 
   <script src="../js/lessons-data.js?v=20260709-solution-blocks"></script>
