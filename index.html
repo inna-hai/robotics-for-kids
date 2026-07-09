@@ -805,7 +805,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260709-lesson3-road"></script>
+    <script src="js/lessons-data.js?v=20260709-stop-fix"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1526,6 +1526,9 @@
                     break;
                     
                 case 'stop':
+                    isRunning = false;
+                    robot.speaking = currentLesson === 3 ? 'עצרתי!' : '';
+                    await sleep(300);
                     break;
                     
                 case 'control_if':
