@@ -805,7 +805,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260709-lesson3-ready"></script>
+    <script src="js/lessons-data.js?v=20260709-lesson3-road"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -842,12 +842,12 @@
         function resetPositions() {
             // Reset robot to center
             robot.x = canvas.width / 2;
-            robot.y = canvas.height / 2;
+            robot.y = currentLesson === 3 ? canvas.height * 0.58 : canvas.height / 2;
             robot.angle = 0;
             
             // Reset objects to default positions
-            objects.wall.x = canvas.width - 80;
-            objects.wall.y = canvas.height / 2;
+            objects.wall.x = currentLesson === 3 ? canvas.width * 0.72 : canvas.width - 80;
+            objects.wall.y = currentLesson === 3 ? canvas.height * 0.58 : canvas.height / 2;
             objects.sound.x = 60;
             objects.sound.y = canvas.height - 60;
             objects.smoke.x = canvas.width / 2;
@@ -861,6 +861,39 @@
         // ===== DRAW ROBOT =====
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Road scene for lesson 3
+            if (currentLesson === 3) {
+                const sky = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                sky.addColorStop(0, '#bdefff');
+                sky.addColorStop(1, '#eaf8ff');
+                ctx.fillStyle = sky;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Grass
+                ctx.fillStyle = '#55efc4';
+                ctx.fillRect(0, canvas.height * 0.72, canvas.width, canvas.height * 0.28);
+                
+                // Road
+                const roadTop = canvas.height * 0.42;
+                const roadHeight = canvas.height * 0.34;
+                ctx.fillStyle = '#4b5563';
+                ctx.fillRect(0, roadTop, canvas.width, roadHeight);
+                ctx.strokeStyle = '#f9fafb';
+                ctx.lineWidth = 4;
+                ctx.setLineDash([28, 22]);
+                ctx.beginPath();
+                ctx.moveTo(0, roadTop + roadHeight / 2);
+                ctx.lineTo(canvas.width, roadTop + roadHeight / 2);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // Road labels
+                ctx.font = 'bold 16px Rubik';
+                ctx.fillStyle = '#1f2937';
+                ctx.textAlign = 'right';
+                ctx.fillText('כביש אימונים — גררו את המחסום קרוב/רחוק מהרכב', canvas.width - 18, 28);
+            }
             
             // Sky background
             if (currentLesson === 1 && !environment.light) {
@@ -954,18 +987,28 @@
             
             // Draggable Obstacle/Wall
             if (environment.obstacle) {
-                ctx.fillStyle = '#8B4513';
-                ctx.fillRect(objects.wall.x - 30, objects.wall.y - 40, objects.wall.width, objects.wall.height);
-                ctx.font = '50px Arial';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText('🧱', objects.wall.x, objects.wall.y);
+                if (currentLesson === 3) {
+                    ctx.font = '56px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('🚧', objects.wall.x, objects.wall.y);
+                    ctx.font = 'bold 14px Rubik';
+                    ctx.fillStyle = canSenseTouch() ? '#d63031' : '#2d3436';
+                    ctx.fillText(canSenseTouch() ? 'מכשול קרוב!' : 'מכשול רחוק', objects.wall.x, objects.wall.y + 48);
+                } else {
+                    ctx.fillStyle = '#8B4513';
+                    ctx.fillRect(objects.wall.x - 30, objects.wall.y - 40, objects.wall.width, objects.wall.height);
+                    ctx.font = '50px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('🧱', objects.wall.x, objects.wall.y);
+                }
                 
                 // Drag hint
                 if (!isRunning) {
                     ctx.font = '12px Rubik';
                     ctx.fillStyle = '#666';
-                    ctx.fillText('גרור אותי!', objects.wall.x, objects.wall.y + 55);
+                    ctx.fillText('גררו קרוב/רחוק!', objects.wall.x, objects.wall.y + 65);
                 }
             }
             
@@ -1004,11 +1047,11 @@
             ctx.fillStyle = 'rgba(0,0,0,0.2)';
             ctx.fill();
             
-            // Robot body
-            ctx.font = '60px Arial';
+            // Robot / lesson-specific avatar
+            ctx.font = currentLesson === 3 ? '66px Arial' : '60px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText('🤖', 0, 0);
+            ctx.fillText(currentLesson === 3 ? '🚗' : '🤖', 0, 0);
             
             ctx.restore();
             
@@ -1017,7 +1060,7 @@
                 ctx.font = '12px Rubik';
                 ctx.fillStyle = '#666';
                 ctx.textAlign = 'center';
-                ctx.fillText('גרור אותי!', robot.x, robot.y + 55);
+                ctx.fillText(currentLesson === 3 ? 'גררו את הרכב!' : 'גרור אותי!', robot.x, robot.y + 55);
             }
             
             // Speech bubble
@@ -1681,6 +1724,7 @@
                 : legacyTitles[num-1];
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
             document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num;
+            resetPositions();
             updateTasks(num);
         }
         
