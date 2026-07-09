@@ -44,7 +44,7 @@
     <a class="back" id="backToLesson" href="../smart-city.html">🏙️ לעיר</a>
   </nav>
 
-  <script src="../js/lessons-data.js?v=20260709-energy-saving"></script>
+  <script src="../js/lessons-data.js?v=20260709-deduped"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const lesson = window.getSensiLesson(params.get('id'));
@@ -84,7 +84,7 @@
       { html: `<h2>🤖 החיישן של היום</h2><p>היום סנסי משתמש ב<strong>חיישן ${lesson.sensorFocus}</strong>.</p><p>החיישן עוזר לרובוט להבין מה קורה סביבו — ואז לבחור פעולה.</p>` },
       { html: `<h2>🧩 רעיון תכנותי</h2><p><strong>${lesson.codingConcept}</strong></p><p>במקום לתת לרובוט הוראה אחת קבועה, אנחנו מלמדים אותו לבדוק מצב ולקבל החלטה.</p>` },
       { html: `<h2>🧱 בלוקים שנשתמש בהם</h2><div class="cards">${lesson.blocks.map(block => `<div class="card">${block}</div>`).join('')}</div>` },
-      { html: `<h2>✅ המשימה שלכם</h2><ul>${lesson.studentTasks.map(task => `<li>${task}</li>`).join('')}</ul>` },
+      { html: `<h2>✅ מה נבנה עד סוף השיעור?</h2><ul>${lesson.successCriteria.map(item => `<li>${item}</li>`).join('')}</ul>` },
       ...(lesson.instructorQuickTasks ? [{ html: `<h2>🧑🏫 צ׳ק ליסט למדריך</h2><ul>${lesson.instructorQuickTasks.map(task => `<li>${task}</li>`).join('')}</ul>` }] : []),
       ...flowSlides,
       { html: `<h2>💬 שאלת סיכום</h2><p>${lesson.teacherNotes.discussionQuestions[0] || 'איפה עוד בעיר אפשר להשתמש ברעיון הזה?'}</p><p><strong>משפט סיכום:</strong> חיישן → תנאי → פעולה.</p>` }
