@@ -53,16 +53,21 @@
     </section>
   </main>
 
-  <script src="js/minecraft-lessons.js?v=20260710-minecraft-steve-steve"></script>
+  <script src="js/minecraft-lessons.js?v=20260710-minecraft-steps"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const lesson = window.getMinecraftLesson(params.get('lesson'));
     let workspace;
-    const state = { score: 0, day: true, weather: 'sun', playerOnDiamond: true };
+    const state = { score: 0, day: true, weather: 'sun', playerOnDiamond: true, steveX: 260, steveY: 82 };
 
     const blockDefs = [
       { type:'event_start', message0:'כאשר לוחצים ▶️', nextStatement:null, colour:40, hat:'cap' },
       { type:'say', message0:'אמור %1', args0:[{type:'field_input', name:'TEXT', text:'תכנתתי קסם!'}], previousStatement:null, nextStatement:null, colour:290 },
+      { type:'move_up', message0:'עלה למעלה', previousStatement:null, nextStatement:null, colour:210 },
+      { type:'move_down', message0:'רד למטה', previousStatement:null, nextStatement:null, colour:210 },
+      { type:'move_right', message0:'זוז ימינה', previousStatement:null, nextStatement:null, colour:210 },
+      { type:'move_left', message0:'זוז שמאלה', previousStatement:null, nextStatement:null, colour:210 },
+      { type:'place_block', message0:'הנח בלוק בצבע %1', args0:[{type:'field_dropdown', name:'COLOR', options:[['ירוק','grass'],['עץ','wood'],['זהב','gold'],['יהלום','diamond'],['אדום','red'],['סגול','purple']]}], previousStatement:null, nextStatement:null, colour:120 },
       { type:'build_tower', message0:'בנה מגדל קטן', previousStatement:null, nextStatement:null, colour:120 },
       { type:'rain_blocks', message0:'גשם של בלוקים צבעוניים', previousStatement:null, nextStatement:null, colour:180 },
       { type:'magic_trail', message0:'צור שביל קסמים', previousStatement:null, nextStatement:null, colour:140 },
@@ -87,13 +92,13 @@
     function toolboxXml(){
       const allowed = new Set(['event_start', ...lesson.blocks]);
       const labels = {
-        event_start:'התחלה', say:'דיבור', build_tower:'בנייה', rain_blocks:'בלוקים', magic_trail:'שביל', teleport:'טלפורט', spawn_pet:'חיה', set_day:'יום', set_night:'לילה', weather_sun:'שמש', weather_rain:'גשם', weather_snow:'שלג', if_on_diamond:'אם/אז', open_door:'דלת', give_treasure:'אוצר', start_collect_game:'משחק', build_maze:'מבוך', show_hint:'רמז', spawn_funny_mob:'מוב'
+        event_start:'התחלה', say:'דיבור', move_up:'תנועה', move_down:'תנועה', move_right:'תנועה', move_left:'תנועה', place_block:'בנייה ידנית', build_tower:'בנייה', rain_blocks:'בלוקים', magic_trail:'שביל', teleport:'טלפורט', spawn_pet:'חיה', set_day:'יום', set_night:'לילה', weather_sun:'שמש', weather_rain:'גשם', weather_snow:'שלג', if_on_diamond:'אם/אז', open_door:'דלת', give_treasure:'אוצר', start_collect_game:'משחק', build_maze:'מבוך', show_hint:'רמז', spawn_funny_mob:'מוב'
       };
       return `<xml>${[...allowed].map(type => `<block type="${type}"></block>`).join('')}</xml>`;
     }
     function starterXml(){
       const first = lesson.blocks.find(b => b !== 'event_start') || 'say';
-      if (lesson.id === 1) return `<xml><block type="event_start" x="40" y="40"><next><block type="say"><next><block type="build_tower"><next><block type="magic_trail"></block></next></block></next></block></next></block></xml>`;
+      if (lesson.id === 1) return `<xml><block type="event_start" x="40" y="40"><next><block type="say"><field name="TEXT">אני בונה כמו מתכנת!</field><next><block type="place_block"><field name="COLOR">wood</field><next><block type="move_up"><next><block type="place_block"><field name="COLOR">gold</field><next><block type="move_up"><next><block type="place_block"><field name="COLOR">diamond</field></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>`;
       const second = lesson.blocks.includes('say') && first !== 'say' ? '<next><block type="say"></block></next>' : '';
       if (first === 'if_on_diamond') return `<xml><block type="event_start" x="40" y="40"><next><block type="if_on_diamond"><statement name="DO"><block type="open_door"></block></statement></block></next></block></xml>`;
       return `<xml><block type="event_start" x="40" y="40"><next><block type="${first}">${second}</block></next></block></xml>`;
@@ -115,13 +120,13 @@
     }
 
     function resetWorld(){
-      state.score = 0; state.day = true; state.weather = 'sun'; state.playerOnDiamond = true;
+      state.score = 0; state.day = true; state.weather = 'sun'; state.playerOnDiamond = true; state.steveX = 260; state.steveY = 82;
       const world = document.getElementById('world');
       world.className = 'world';
       [...world.querySelectorAll('.block,.pet,.mob,.treasure,.apple,.hint')].forEach(el => el.remove());
       document.getElementById('door').classList.remove('open');
-      const player = document.getElementById('player'); player.style.right='54%'; player.style.bottom='82px';
-      const bubble = document.getElementById('bubble'); bubble.classList.remove('show'); bubble.textContent=''; bubble.style.right='calc(54% - 30px)';
+      setStevePosition();
+      const bubble = document.getElementById('bubble'); bubble.classList.remove('show'); bubble.textContent=''; positionBubble();
       addDiamondMarker(); updateStatus();
     }
     function updateStatus(){
@@ -132,11 +137,15 @@
     function addBlock(cls, x, y){ const el=document.createElement('div'); el.className=`block ${cls}`; el.style.left=x+'px'; el.style.bottom=y+'px'; document.getElementById('world').appendChild(el); return el; }
     function addEmoji(cls, icon, x, y){ const el=document.createElement('div'); el.className=cls; el.textContent=icon; el.style.left=x+'px'; el.style.bottom=y+'px'; document.getElementById('world').appendChild(el); return el; }
     function addDiamondMarker(){ addEmoji('hint','💠', 220, 88); }
-    function say(text){ const bubble=document.getElementById('bubble'); bubble.textContent=text || 'תכנתתי קסם!'; bubble.classList.add('show'); }
+    function positionBubble(){ const bubble=document.getElementById('bubble'); bubble.style.left=Math.max(12, state.steveX - 72)+'px'; bubble.style.right='auto'; bubble.style.bottom=(state.steveY + 92)+'px'; }
+    function setStevePosition(){ const player=document.getElementById('player'); player.style.left=state.steveX+'px'; player.style.right='auto'; player.style.bottom=state.steveY+'px'; positionBubble(); }
+    function moveSteve(dx, dy){ state.steveX=Math.max(24, Math.min(470, state.steveX + dx)); state.steveY=Math.max(82, Math.min(250, state.steveY + dy)); setStevePosition(); }
+    function placeBlock(color){ addBlock(color || 'grass', state.steveX + 7, Math.max(40, state.steveY - 42)); }
+    function say(text){ const bubble=document.getElementById('bubble'); bubble.textContent=text || 'תכנתתי קסם!'; positionBubble(); bubble.classList.add('show'); }
     function buildTower(){ for(let i=0;i<5;i++) addBlock(i%2?'wood':'grass', 100, 82 + i*42); }
     function rainBlocks(){ for(let i=0;i<10;i++) addBlock(['red','purple','gold','diamond'][i%4], 35+i*48, 230 + (i%3)*28); }
-    function magicTrail(){ const player=document.getElementById('player'); player.style.right='28%'; document.getElementById('bubble').style.right='calc(28% - 30px)'; for(let i=0;i<6;i++) addBlock('grass', 255+i*38, 40); }
-    function teleport(){ const player=document.getElementById('player'); player.style.right='16%'; player.style.bottom='140px'; document.getElementById('bubble').style.right='calc(16% - 30px)'; addEmoji('hint','✨', 360, 130); }
+    function magicTrail(){ state.steveX = 330; state.steveY = 82; setStevePosition(); for(let i=0;i<6;i++) addBlock('grass', 255+i*38, 40); }
+    function teleport(){ state.steveX = 430; state.steveY = 140; setStevePosition(); addEmoji('hint','✨', 360, 130); }
     function spawnPet(name){ addEmoji('pet','🐺', 330, 86); say(`${name || 'פיקסל'} הצטרף להרפתקה!`); }
     function setDay(day){ state.day=day; document.getElementById('world').classList.toggle('night', !day); updateStatus(); }
     function setWeather(weather){ state.weather=weather; const world=document.getElementById('world'); world.classList.remove('rain','snow'); if(weather==='rain'||weather==='snow') world.classList.add(weather); updateStatus(); }
@@ -161,6 +170,11 @@
     async function runBlock(block){
       switch(block.type){
         case 'say': say(block.getFieldValue('TEXT')); break;
+        case 'move_up': moveSteve(0, 42); break;
+        case 'move_down': moveSteve(0, -42); break;
+        case 'move_right': moveSteve(45, 0); break;
+        case 'move_left': moveSteve(-45, 0); break;
+        case 'place_block': placeBlock(block.getFieldValue('COLOR')); break;
         case 'build_tower': buildTower(); break;
         case 'rain_blocks': rainBlocks(); break;
         case 'magic_trail': magicTrail(); break;
