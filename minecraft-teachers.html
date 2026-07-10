@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📚 מדריך למורה — מיינקראפט קידס</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}body{margin:0;font-family:Rubik,Arial,sans-serif;direction:rtl;color:#173018;background:linear-gradient(135deg,#7ddf64,#5ec1ff 52%,#b58cff);min-height:100vh}.shell{width:min(1100px,calc(100% - 28px));margin:0 auto;padding:24px 0 48px}.hero,.lesson,.guide{background:rgba(255,255,255,.94);border-radius:26px;padding:24px;box-shadow:0 16px 40px rgba(23,48,24,.14);margin-bottom:18px}.kicker{font-weight:900;color:#2f8f2f}h1{font-size:clamp(2rem,5vw,4rem);margin:.35rem 0}h2{margin:0 0 12px;color:#166534}.hero p,.guide p,.lesson p{line-height:1.75;font-size:1.05rem}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:12px 18px;text-decoration:none;font-weight:900;background:#2f8f2f;color:white}.btn.secondary{background:white;color:#166534;border:2px solid rgba(47,143,47,.22)}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.mini{background:#f8fafc;border-radius:18px;padding:16px}.mini b{display:block;color:#166534;margin-bottom:6px}.lesson-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.emoji{font-size:2.2rem}.id{background:#f0fdf4;color:#166534;border-radius:999px;padding:6px 10px;font-weight:900;white-space:nowrap}.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}.flow div{background:#f0fdf4;border-radius:14px;padding:10px;text-align:center;font-weight:800;font-size:.9rem}.blocks{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.block{background:#eef2ff;color:#3730a3;border-radius:999px;padding:5px 9px;font-size:.8rem;font-weight:900}@media(max-width:800px){.grid,.flow{grid-template-columns:1fr}.lesson-head{flex-direction:column}.actions .btn{width:100%}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div class="kicker">מדריך למורה • גיל 7–9 • Blockly</div>
+      <h1>📚 מיינקראפט קידס: מתכנתים קסמים</h1>
+      <p>מסלול המשך פשוט למסלול הרובוטיקה: הילדים כבר מכירים רעיון של פעולה בעקבות תנאי. כאן הם מתכנתים עולם משחקי — הודעה, בנייה, טלפורט, תנאי, פרס ומיני־משחק.</p>
+      <div class="actions"><a class="btn" href="minecraft-play.html?lesson=1">▶️ לפתוח את האפליקציה</a><a class="btn secondary" href="minecraft.html">⛏️ כל השיעורים</a><a class="btn secondary" href="smart-city.html">🏙️ עיר חכמה</a></div>
+    </section>
+
+    <section class="guide grid">
+      <div class="mini"><b>מבנה מומלץ ל־60 דקות</b>5 דק׳ סיפור • 10 דק׳ הדגמת מדריך • 20 דק׳ בנייה יחד • 15 דק׳ שדרוג אישי • 10 דק׳ הצגות.</div>
+      <div class="mini"><b>שפת למידה</b>לא “קוד מסובך”, אלא: כשאני לוחץ ▶️ → הקסם קורה. אחר כך מוסיפים רצף, תנאי, ניקוד ושילוב.</div>
+      <div class="mini"><b>מה לבדוק בכיתה</b>האם הילד יכול להסביר במשפט: “הבלוק הזה גורם ל־___ לקרות”. זה חשוב יותר מהשלמת כל אתגר.</div>
+      <div class="mini"><b>שדרוג למתקדמים</b>לבקש לשלב 2–3 קסמים באותה תוכנית, להוסיף הודעה, או להמציא סיפור למשימה.</div>
+    </section>
+
+    <section id="lessons"></section>
+  </main>
+  <script src="js/minecraft-lessons.js?v=20260710-minecraft"></script>
+  <script>
+    const blockNames = {event_start:'התחלה',say:'אמירה',build_tower:'מגדל',rain_blocks:'גשם בלוקים',magic_trail:'שביל',teleport:'טלפורט',spawn_pet:'חיית מחמד',set_day:'יום',set_night:'לילה',weather_sun:'שמש',weather_rain:'גשם',weather_snow:'שלג',if_on_diamond:'אם עומדים על היהלום',open_door:'דלת',give_treasure:'אוצר',start_collect_game:'איסוף',build_maze:'מבוך',show_hint:'רמז',spawn_funny_mob:'מפלצת מצחיקה'};
+    document.getElementById('lessons').innerHTML = window.MINECRAFT_KIDS_LESSONS.map(l => `
+      <article class="lesson">
+        <div class="lesson-head"><div><div class="emoji">${l.emoji}</div><h2>שיעור ${l.id}: ${l.title}</h2></div><div class="id">${l.concept}</div></div>
+        <p><b>סיפור:</b> ${l.story}</p>
+        <p><b>מטרה:</b> ${l.goal}</p>
+        <div class="flow"><div>סיפור</div><div>הדגמה</div><div>בונים יחד</div><div>שדרוג</div><div>מציגים</div></div>
+        <div class="blocks">${l.blocks.map(b => `<span class="block">${blockNames[b] || b}</span>`).join('')}</div>
+        <p><b>אתגר:</b> ${l.challenge}<br><b>הצלחה:</b> ${l.success}</p>
+        <div class="actions"><a class="btn" href="minecraft-play.html?lesson=${l.id}">פתח שיעור ${l.id}</a></div>
+      </article>`).join('');
+  </script>
+</body>
+</html>

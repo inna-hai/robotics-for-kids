@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⛏️ מיינקראפט קידס — Blockly</title>
+  <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+  <script src="https://unpkg.com/blockly/msg/he.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box} :root{--grass:#55b947;--dirt:#8b5a2b;--stone:#8d99ae;--sky:#83d8ff;--dark:#173018;--green:#2f8f2f;--gold:#ffd166;--blue:#2a85c7} body{margin:0;height:100vh;overflow:hidden;font-family:Rubik,Arial,sans-serif;direction:rtl;background:linear-gradient(135deg,#7ddf64,#5ec1ff 55%,#b58cff);color:var(--dark);display:flex;flex-direction:column}.topbar{background:white;box-shadow:0 4px 20px rgba(0,0,0,.12);padding:.55rem .85rem;display:grid;grid-template-columns:minmax(190px,auto) minmax(0,1fr) auto;gap:.65rem;align-items:center;z-index:5}.brand{display:flex;align-items:center;gap:.45rem;font-weight:900;font-size:1.08rem;white-space:nowrap}.tabs{display:flex;gap:.25rem;overflow-x:auto;justify-content:center;padding:.1rem}.tab{border:2px solid #e5e7eb;background:white;border-radius:999px;min-width:42px;height:40px;display:inline-flex;align-items:center;justify-content:center;gap:.08rem;text-decoration:none;font-weight:900;flex:0 0 auto}.tab.active{background:linear-gradient(135deg,#35b24a,#2a85c7);color:white;border-color:#35b24a;box-shadow:0 6px 16px rgba(47,143,47,.28)}.actions{display:flex;gap:.45rem}.btn{border:0;border-radius:999px;padding:.65rem 1rem;font-family:inherit;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.35rem}.run{background:#00d084;color:#073b1a}.reset{background:#ff6b6b;color:white}.link{background:#eef8ec;color:#166534}.main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(360px,44%) minmax(0,1fr);gap:1rem;padding:1rem}.world-panel,.code-panel{background:rgba(255,255,255,.95);border-radius:28px;box-shadow:0 16px 42px rgba(23,48,24,.14);min-height:0;overflow:hidden;display:flex;flex-direction:column}.lesson-info{padding:1rem 1.1rem;border-bottom:1px solid #e5e7eb}.lesson-info h1{font-size:1.55rem;margin:.2rem 0}.lesson-info p{margin:.35rem 0;line-height:1.55}.chips{display:flex;gap:.45rem;flex-wrap:wrap;margin-top:.55rem}.chip{background:#f0fdf4;color:#166534;border-radius:999px;padding:.32rem .65rem;font-weight:900;font-size:.82rem}.world-wrap{padding:1rem;display:grid;grid-template-columns:1fr;gap:.8rem;min-height:0;flex:1}.status{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem}.status div{background:#f8fafc;border-radius:16px;padding:.7rem;text-align:center;font-weight:900}.status b{display:block;color:var(--green);font-size:1.25rem}.world{position:relative;min-height:330px;flex:1;border:8px solid #5c3b20;border-radius:18px;overflow:hidden;background:linear-gradient(#83d8ff 0 58%,#55b947 58% 100%);box-shadow:inset 0 -42px #8b5a2b}.world.night{background:linear-gradient(#172554 0 58%,#31572c 58% 100%)}.world.rain::after,.world.snow::after{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(120deg,rgba(255,255,255,.55) 2px,transparent 3px);background-size:18px 24px;opacity:.7}.world.snow::after{background-image:radial-gradient(circle,white 2px,transparent 3px);background-size:26px 26px}.player{position:absolute;width:44px;height:62px;right:54%;bottom:82px;transition:.45s;z-index:4}.head{height:24px;background:#f2c99b;border:3px solid #5c3b20;border-bottom:0}.body{height:38px;background:#2a85c7;border:3px solid #5c3b20}.bubble{position:absolute;right:calc(54% - 30px);bottom:158px;background:white;border:3px solid #173018;border-radius:18px;padding:.7rem 1rem;font-weight:900;max-width:260px;display:none;z-index:8;box-shadow:0 8px 20px rgba(0,0,0,.15)}.bubble.show{display:block}.block{position:absolute;width:42px;height:42px;border:3px solid rgba(0,0,0,.18);box-shadow:inset 0 5px rgba(255,255,255,.22)}.grass{background:#55b947}.wood{background:#9b6a3b}.gold{background:#ffd166}.diamond{background:#67e8f9}.red{background:#ef4444}.purple{background:#a855f7}.door{position:absolute;width:52px;height:88px;left:54px;bottom:82px;background:#8b5a2b;border:5px solid #5c3b20;border-radius:8px 8px 0 0;z-index:3}.door.open{transform:rotateY(65deg);background:#c084fc}.pet,.mob,.treasure,.apple,.hint{position:absolute;font-size:2.2rem;z-index:5;text-shadow:0 4px 8px rgba(0,0,0,.16)}.hint-card{background:#fff7ed;border-right:7px solid #fb923c;border-radius:16px;padding:.8rem 1rem;line-height:1.5;font-weight:800}.code-head{padding:1rem 1.1rem;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;gap:.8rem;align-items:center}.code-head h2{margin:0;font-size:1.25rem}.blockly-area{flex:1;min-height:0}#blocklyDiv{height:100%;width:100%}.toolbox-note{font-size:.9rem;color:#475569}.mobile-warning{display:none;background:#fff7ed;padding:.8rem 1rem;border-bottom:1px solid #fed7aa;font-weight:800}@media(max-width:900px){body{height:auto;min-height:100vh;overflow:auto;overflow-x:hidden}.topbar{grid-template-columns:1fr}.tabs{justify-content:flex-start;padding-bottom:.25rem}.tab{min-width:44px}.actions{justify-content:stretch}.actions .btn,.actions a{flex:1}.main{display:flex;flex-direction:column;padding:.75rem}.code-panel{order:1;min-height:560px}.world-panel{order:2}.world{min-height:300px}.world-panel,.code-panel{border-radius:20px}.mobile-warning{display:block}.brand{white-space:normal}.status{grid-template-columns:1fr 1fr 1fr}}@media(max-width:520px){.main{padding:.55rem}.status{grid-template-columns:repeat(3,1fr);gap:.35rem}.status div{padding:.5rem .25rem;font-size:.78rem}.status b{font-size:1rem}.lesson-info{padding:.85rem}.lesson-info h1{font-size:1.22rem}.lesson-info p{font-size:.95rem}.chips{gap:.32rem}.chip{font-size:.72rem;padding:.28rem .5rem}.btn{padding:.55rem .75rem;font-size:.9rem}.world{min-height:235px;border-width:6px}.code-panel{min-height:520px}.world-wrap{padding:.75rem;gap:.55rem}.player{transform:scale(.85);transform-origin:bottom center}.door{transform:scale(.86);transform-origin:bottom left}.door.open{transform:scale(.86) rotateY(65deg)}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">⛏️ מיינקראפט קידס</div>
+    <nav class="tabs" id="tabs"></nav>
+    <div class="actions">
+      <button class="btn run" onclick="runProgram()">▶️ הרצה</button>
+      <button class="btn reset" onclick="resetWorld()">↺ איפוס</button>
+      <a class="btn link" href="minecraft.html">כל השיעורים</a>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="world-panel">
+      <div class="lesson-info">
+        <div class="chip" id="lessonConcept"></div>
+        <h1 id="lessonTitle"></h1>
+        <p id="lessonStory"></p>
+        <div class="chips"><span class="chip" id="lessonGoal"></span><span class="chip" id="lessonChallenge"></span></div>
+      </div>
+      <div class="world-wrap">
+        <div class="status">
+          <div><b id="score">0</b>נקודות</div>
+          <div><b id="timeLabel">יום</b>זמן</div>
+          <div><b id="weatherLabel">שמש</b>מזג אוויר</div>
+        </div>
+        <div class="world" id="world">
+          <div class="door" id="door"></div>
+          <div class="bubble" id="bubble">שלום!</div>
+          <div class="player" id="player"><div class="head"></div><div class="body"></div></div>
+        </div>
+        <div class="hint-card"><b>משימה:</b> <span id="successText"></span></div>
+      </div>
+    </section>
+
+    <section class="code-panel">
+      <div class="mobile-warning">בטאבלט/נייד מומלץ לסובב לרוחב. הבלוקים עדיין עובדים גם לאורך.</div>
+      <div class="code-head"><h2>🧩 אזור הבלוקים</h2><div class="toolbox-note">חברו בלוקים מתחת ל־“כאשר לוחצים ▶️”</div></div>
+      <div class="blockly-area"><div id="blocklyDiv"></div></div>
+    </section>
+  </main>
+
+  <script src="js/minecraft-lessons.js?v=20260710-minecraft"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const lesson = window.getMinecraftLesson(params.get('lesson'));
+    let workspace;
+    const state = { score: 0, day: true, weather: 'sun', playerOnDiamond: true };
+
+    const blockDefs = [
+      { type:'event_start', message0:'כאשר לוחצים ▶️', nextStatement:null, colour:40, hat:'cap' },
+      { type:'say', message0:'אמור %1', args0:[{type:'field_input', name:'TEXT', text:'תכנתתי קסם!'}], previousStatement:null, nextStatement:null, colour:290 },
+      { type:'build_tower', message0:'בנה מגדל קטן', previousStatement:null, nextStatement:null, colour:120 },
+      { type:'rain_blocks', message0:'גשם של בלוקים צבעוניים', previousStatement:null, nextStatement:null, colour:180 },
+      { type:'magic_trail', message0:'צור שביל קסמים', previousStatement:null, nextStatement:null, colour:140 },
+      { type:'teleport', message0:'טלפורט למקום חדש', previousStatement:null, nextStatement:null, colour:210 },
+      { type:'spawn_pet', message0:'זמן חיית מחמד בשם %1', args0:[{type:'field_input', name:'NAME', text:'פיקסל'}], previousStatement:null, nextStatement:null, colour:75 },
+      { type:'set_day', message0:'עשה יום ☀️', previousStatement:null, nextStatement:null, colour:55 },
+      { type:'set_night', message0:'עשה לילה 🌙', previousStatement:null, nextStatement:null, colour:240 },
+      { type:'weather_sun', message0:'מזג אוויר שמש', previousStatement:null, nextStatement:null, colour:55 },
+      { type:'weather_rain', message0:'מזג אוויר גשם', previousStatement:null, nextStatement:null, colour:210 },
+      { type:'weather_snow', message0:'מזג אוויר שלג', previousStatement:null, nextStatement:null, colour:195 },
+      { type:'if_on_diamond', message0:'אם עומדים על היהלום %1 אז %2', args0:[{type:'input_dummy'},{type:'input_statement', name:'DO'}], previousStatement:null, nextStatement:null, colour:20 },
+      { type:'open_door', message0:'פתח דלת סודית', previousStatement:null, nextStatement:null, colour:30 },
+      { type:'give_treasure', message0:'תן אוצר 💎', previousStatement:null, nextStatement:null, colour:45 },
+      { type:'start_collect_game', message0:'התחל משחק איסוף 5 תפוחים', previousStatement:null, nextStatement:null, colour:0 },
+      { type:'build_maze', message0:'בנה מבוך קטן', previousStatement:null, nextStatement:null, colour:25 },
+      { type:'show_hint', message0:'הצג רמז %1', args0:[{type:'field_input', name:'TEXT', text:'חפשו את היהלום'}], previousStatement:null, nextStatement:null, colour:300 },
+      { type:'spawn_funny_mob', message0:'זמן מפלצת מצחיקה בשם %1', args0:[{type:'field_input', name:'NAME', text:'מר קובייה'}], previousStatement:null, nextStatement:null, colour:15 }
+    ];
+    Blockly.defineBlocksWithJsonArray(blockDefs);
+
+    function esc(value){ return String(value||'').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+    function toolboxXml(){
+      const allowed = new Set(['event_start', ...lesson.blocks]);
+      const labels = {
+        event_start:'התחלה', say:'דיבור', build_tower:'בנייה', rain_blocks:'בלוקים', magic_trail:'שביל', teleport:'טלפורט', spawn_pet:'חיה', set_day:'יום', set_night:'לילה', weather_sun:'שמש', weather_rain:'גשם', weather_snow:'שלג', if_on_diamond:'אם/אז', open_door:'דלת', give_treasure:'אוצר', start_collect_game:'משחק', build_maze:'מבוך', show_hint:'רמז', spawn_funny_mob:'מוב'
+      };
+      return `<xml>${[...allowed].map(type => `<block type="${type}"></block>`).join('')}</xml>`;
+    }
+    function starterXml(){
+      const first = lesson.blocks.find(b => b !== 'event_start') || 'say';
+      const second = lesson.blocks.includes('say') && first !== 'say' ? '<next><block type="say"></block></next>' : '';
+      if (first === 'if_on_diamond') return `<xml><block type="event_start" x="40" y="40"><next><block type="if_on_diamond"><statement name="DO"><block type="open_door"></block></statement></block></next></block></xml>`;
+      return `<xml><block type="event_start" x="40" y="40"><next><block type="${first}">${second}</block></next></block></xml>`;
+    }
+
+    function init(){
+      document.title = `${lesson.emoji} שיעור ${lesson.id}: ${lesson.title}`;
+      document.getElementById('lessonTitle').textContent = `${lesson.emoji} שיעור ${lesson.id}: ${lesson.title}`;
+      document.getElementById('lessonStory').textContent = lesson.story;
+      document.getElementById('lessonConcept').textContent = lesson.concept;
+      document.getElementById('lessonGoal').textContent = `מטרה: ${lesson.goal}`;
+      document.getElementById('lessonChallenge').textContent = `שדרוג: ${lesson.challenge}`;
+      document.getElementById('successText').textContent = lesson.success;
+      document.getElementById('tabs').innerHTML = window.MINECRAFT_KIDS_LESSONS.map(l => `<a class="tab ${l.id===lesson.id?'active':''}" href="minecraft-play.html?lesson=${l.id}" title="${esc(l.title)}"><span>${l.emoji}</span><small>${l.id}</small></a>`).join('');
+      workspace = Blockly.inject('blocklyDiv', { toolbox: toolboxXml(), rtl: true, trashcan: true, scrollbars: true, zoom: { controls: true, wheel: true, startScale: .9, maxScale: 1.4, minScale: .55 } });
+      Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(starterXml()), workspace);
+      resetWorld();
+    }
+
+    function resetWorld(){
+      state.score = 0; state.day = true; state.weather = 'sun'; state.playerOnDiamond = true;
+      const world = document.getElementById('world');
+      world.className = 'world';
+      [...world.querySelectorAll('.block,.pet,.mob,.treasure,.apple,.hint')].forEach(el => el.remove());
+      document.getElementById('door').classList.remove('open');
+      const player = document.getElementById('player'); player.style.right='54%'; player.style.bottom='82px';
+      const bubble = document.getElementById('bubble'); bubble.classList.remove('show'); bubble.textContent=''; bubble.style.right='calc(54% - 30px)';
+      addDiamondMarker(); updateStatus();
+    }
+    function updateStatus(){
+      document.getElementById('score').textContent = state.score;
+      document.getElementById('timeLabel').textContent = state.day ? 'יום' : 'לילה';
+      document.getElementById('weatherLabel').textContent = state.weather === 'rain' ? 'גשם' : state.weather === 'snow' ? 'שלג' : 'שמש';
+    }
+    function addBlock(cls, x, y){ const el=document.createElement('div'); el.className=`block ${cls}`; el.style.left=x+'px'; el.style.bottom=y+'px'; document.getElementById('world').appendChild(el); return el; }
+    function addEmoji(cls, icon, x, y){ const el=document.createElement('div'); el.className=cls; el.textContent=icon; el.style.left=x+'px'; el.style.bottom=y+'px'; document.getElementById('world').appendChild(el); return el; }
+    function addDiamondMarker(){ addEmoji('hint','💠', 220, 88); }
+    function say(text){ const bubble=document.getElementById('bubble'); bubble.textContent=text || 'תכנתתי קסם!'; bubble.classList.add('show'); }
+    function buildTower(){ for(let i=0;i<5;i++) addBlock(i%2?'wood':'grass', 100, 82 + i*42); }
+    function rainBlocks(){ for(let i=0;i<10;i++) addBlock(['red','purple','gold','diamond'][i%4], 35+i*48, 230 + (i%3)*28); }
+    function magicTrail(){ const player=document.getElementById('player'); player.style.right='28%'; document.getElementById('bubble').style.right='calc(28% - 30px)'; for(let i=0;i<6;i++) addBlock('grass', 255+i*38, 40); }
+    function teleport(){ const player=document.getElementById('player'); player.style.right='16%'; player.style.bottom='140px'; document.getElementById('bubble').style.right='calc(16% - 30px)'; addEmoji('hint','✨', 360, 130); }
+    function spawnPet(name){ addEmoji('pet','🐺', 330, 86); say(`${name || 'פיקסל'} הצטרף להרפתקה!`); }
+    function setDay(day){ state.day=day; document.getElementById('world').classList.toggle('night', !day); updateStatus(); }
+    function setWeather(weather){ state.weather=weather; const world=document.getElementById('world'); world.classList.remove('rain','snow'); if(weather==='rain'||weather==='snow') world.classList.add(weather); updateStatus(); }
+    function openDoor(){ document.getElementById('door').classList.add('open'); }
+    function giveTreasure(){ addEmoji('treasure','🎁', 72, 172); state.score += 10; updateStatus(); }
+    function startCollectGame(){ for(let i=0;i<5;i++) addEmoji('apple','🍎', 70+i*70, 90+(i%2)*55); state.score = 5; updateStatus(); say('אספתם 5 תפוחים! ניצחון!'); }
+    function buildMaze(){ for(let i=0;i<6;i++){ addBlock('wood', 70+i*44, 82); if(i%2===0) addBlock('wood', 70+i*44, 124); } addBlock('gold', 340, 82); }
+    function showHint(text){ addEmoji('hint','🧭', 250, 175); say(text || 'חפשו את היהלום'); }
+    function spawnFunnyMob(name){ addEmoji('mob','🐌', 280, 86); say(`${name || 'מר קובייה'} אומר: בלופ בלופ!`); }
+
+    async function runProgram(){
+      resetWorld();
+      const starts = workspace.getTopBlocks(true).filter(b => b.type === 'event_start');
+      if (!starts.length) { say('חסר בלוק התחלה ▶️'); return; }
+      for (const start of starts) await runChain(start.getNextBlock());
+    }
+    function wait(ms){ return new Promise(resolve => setTimeout(resolve, ms)); }
+    async function runChain(block){
+      let current = block;
+      while(current){ await runBlock(current); await wait(450); current = current.getNextBlock(); }
+    }
+    async function runBlock(block){
+      switch(block.type){
+        case 'say': say(block.getFieldValue('TEXT')); break;
+        case 'build_tower': buildTower(); break;
+        case 'rain_blocks': rainBlocks(); break;
+        case 'magic_trail': magicTrail(); break;
+        case 'teleport': teleport(); break;
+        case 'spawn_pet': spawnPet(block.getFieldValue('NAME')); break;
+        case 'set_day': setDay(true); break;
+        case 'set_night': setDay(false); break;
+        case 'weather_sun': setWeather('sun'); break;
+        case 'weather_rain': setWeather('rain'); break;
+        case 'weather_snow': setWeather('snow'); break;
+        case 'if_on_diamond': if(state.playerOnDiamond) await runChain(block.getInputTargetBlock('DO')); break;
+        case 'open_door': openDoor(); break;
+        case 'give_treasure': giveTreasure(); break;
+        case 'start_collect_game': startCollectGame(); break;
+        case 'build_maze': buildMaze(); break;
+        case 'show_hint': showHint(block.getFieldValue('TEXT')); break;
+        case 'spawn_funny_mob': spawnFunnyMob(block.getFieldValue('NAME')); break;
+      }
+    }
+    window.addEventListener('load', init);
+  </script>
+</body>
+</html>
