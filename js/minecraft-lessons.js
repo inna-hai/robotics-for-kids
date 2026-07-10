@@ -182,6 +182,102 @@
     }
   ];
 
+  const blockLabels = {
+    event_start: 'כאשר לוחצים ▶️',
+    say: 'אמור הודעה',
+    build_tower: 'בנה מגדל קטן',
+    rain_blocks: 'גשם של בלוקים צבעוניים',
+    magic_trail: 'צור שביל קסמים',
+    teleport: 'טלפורט למקום חדש',
+    spawn_pet: 'זמן חיית מחמד',
+    set_day: 'עשה יום',
+    set_night: 'עשה לילה',
+    weather_sun: 'מזג אוויר שמש',
+    weather_rain: 'מזג אוויר גשם',
+    weather_snow: 'מזג אוויר שלג',
+    if_on_diamond: 'אם עומדים על היהלום',
+    open_door: 'פתח דלת סודית',
+    give_treasure: 'תן אוצר',
+    start_collect_game: 'התחל משחק איסוף 5 תפוחים',
+    build_maze: 'בנה מבוך קטן',
+    show_hint: 'הצג רמז',
+    spawn_funny_mob: 'זמן מפלצת מצחיקה'
+  };
+
+  const practicalPlans = {
+    1: ['ברכת שלום', 'שתי הודעות ברצף', 'הודעה עם שם הילד', 'בדיקת סדר הפקודות', 'מיני־סיפור בשלוש הודעות'],
+    2: ['מגדל ראשון', 'מגדל ואז הודעה', 'שני ניסויי הרצה', 'שם למגדל', 'אתגר: אתר בנייה קטן'],
+    3: ['גשם בלוקים ראשון', 'הודעת פתיחה ואז גשם', 'גשם ואז הודעת סיום', 'בדיקת מה השתנה בעולם', 'אתגר: מסיבת צבעים'],
+    4: ['שביל ראשון', 'שביל ואז הודעה', 'שביל וטלפורט', 'בדיקת לפני/אחרי איפוס', 'אתגר: דרך סודית'],
+    5: ['טלפורט ראשון', 'הודעה לפני מעבר', 'הודעה אחרי מעבר', 'טלפורט עם אפקט נוסף', 'אתגר: שער קסום'],
+    6: ['זימון חיה', 'שם לחיית המחמד', 'הצגת החיה בהודעה', 'חיה ואז טלפורט', 'אתגר: סיפור חברות'],
+    7: ['עושים יום', 'עושים לילה', 'לילה עם אזהרה', 'יום אחרי לילה', 'אתגר: סצנת הרפתקה'],
+    8: ['שמש', 'גשם', 'שלג', 'מזג אוויר עם הודעה', 'אתגר: תחזית מזג אוויר'],
+    9: ['פותחים דלת עם תנאי', 'הודעה בתוך התנאי', 'דלת ואז הודעה', 'בדיקה: מה קורה בלי תנאי?', 'אתגר: כניסה סודית'],
+    10: ['אוצר עם תנאי', 'הודעה לפני האוצר', 'דלת ואוצר', 'בדיקת ניקוד', 'אתגר: אי אוצר קטן'],
+    11: ['משחק איסוף ראשון', 'הודעת התחלה', 'הודעת ניצחון', 'בדיקת ניקוד', 'אתגר: משחק עם סיפור'],
+    12: ['מבוך ראשון', 'רמז ראשון', 'מבוך עם רמז', 'רמז ברור יותר', 'אתגר: מבוך לחבר'],
+    13: ['מפלצת מצחיקה', 'שם למפלצת', 'מפלצת עם משפט', 'מפלצת וחיית מחמד', 'אתגר: דמות עם אופי'],
+    14: ['בחירת רעיון למשחק', 'בניית התחלה', 'הוספת מטרה', 'הוספת פרס', 'אתגר: משחק שאפשר להסביר'],
+    15: ['בחירת פרויקט', 'תיקון באג אחד', 'הוספת שדרוג', 'הכנת משפט הצגה', 'הרצה מול חבר']
+  };
+
+  function labelsFor(blocks) {
+    return blocks.map((block) => blockLabels[block] || block);
+  }
+
+  function exerciseBlocks(lesson, index) {
+    const useful = lesson.blocks.filter((block) => block !== 'event_start');
+    const primary = useful[0] || 'say';
+    const secondary = useful[1] || 'say';
+    if (primary === 'if_on_diamond') {
+      const action = useful.includes('give_treasure') ? 'give_treasure' : useful.includes('open_door') ? 'open_door' : 'say';
+      return [blockLabels.event_start, blockLabels.if_on_diamond, `בתוך התנאי: ${blockLabels[action]}`, index >= 2 ? 'בתוך התנאי: אמור הודעה' : null].filter(Boolean);
+    }
+    if (index === 0) return [blockLabels.event_start, blockLabels[primary]];
+    if (index === 1) return [blockLabels.event_start, blockLabels.say, blockLabels[primary]];
+    if (index === 2) return [blockLabels.event_start, blockLabels[primary], blockLabels[secondary]];
+    if (index === 3) return [blockLabels.event_start, blockLabels[primary], blockLabels.say, 'לחצו איפוס והריצו שוב לבדיקה'];
+    return [blockLabels.event_start, blockLabels[primary], blockLabels[secondary], blockLabels.say, 'שדרוג אישי: הוסיפו עוד בלוק לבחירתכם'];
+  }
+
+  function buildExercises(lesson) {
+    const titles = practicalPlans[lesson.id];
+    return titles.map((title, index) => ({
+      number: index + 1,
+      title: `תרגיל ${index + 1} — ${title}`,
+      minutes: index === 0 ? '20–30' : index === 1 ? '30–38' : index === 2 ? '38–46' : index === 3 ? '46–53' : '53–60',
+      studentPrompt: index === 0
+        ? `בנו את הפתרון הבסיסי של השיעור: ${lesson.goal}`
+        : index === 1
+          ? 'שפרו את התוכנית בעזרת הודעה שמסבירה לשחקן מה קורה.'
+          : index === 2
+            ? 'חברו שתי פעולות ברצף ובדקו שהסדר שלהן נכון.'
+            : index === 3
+              ? 'הריצו, לחצו איפוס, והריצו שוב. מצאו דבר אחד שאפשר לתקן או לשפר.'
+              : `אתגר אישי: ${lesson.challenge}`,
+      answerBlocks: exerciseBlocks(lesson, index),
+      expectedResult: index === 4 ? lesson.success + ' בנוסף יש שדרוג אישי של הילד.' : lesson.success,
+      testSteps: ['לחבר את הבלוקים מתחת ל־“כאשר לוחצים ▶️”', 'ללחוץ הרצה', 'להסתכל מה השתנה בעולם', 'להסביר בקול: איזה בלוק גרם לשינוי?'],
+      commonMistake: index < 2
+        ? 'הילדים שמים בלוק לבד בלי לחבר אותו לבלוק ההתחלה. להזכיר: בלוקים עובדים רק כשהם מחוברים לרצף.'
+        : 'הילדים מוסיפים הרבה בלוקים בלי לבדוק ביניהם. לעצור אותם להרצה קצרה אחרי כל שינוי.'
+    }));
+  }
+
+  for (const lesson of lessons) {
+    lesson.durationMinutes = 60;
+    lesson.lessonFlow = [
+      { minutes: '0–5', title: 'סיפור פתיחה', teacher: `מספרים את הסיפור: ${lesson.story}`, students: 'מנחשים איזה קסם נרצה לתכנת היום.' },
+      { minutes: '5–12', title: 'הדגמת מדריך', teacher: `מראים את הבלוקים: ${labelsFor(lesson.blocks).join(' ← ')}.`, students: 'מזהים מה כל בלוק עושה בעולם.' },
+      { minutes: '12–20', title: 'בנייה מודרכת', teacher: 'בונים יחד פתרון ראשון לאט, בלוק אחרי בלוק.', students: 'גוררים את אותם הבלוקים ומריצים פעם אחת.' },
+      { minutes: '20–46', title: 'תרגילי תכנות מעשיים', teacher: 'עוברים בין הילדים, מתקנים חיבורי בלוקים ושואלים “מה יקרה עכשיו?”.', students: 'מבצעים לפחות שלושה תרגילים עם הרצה אחרי כל שינוי.' },
+      { minutes: '46–55', title: 'שדרוג אישי', teacher: 'נותנים בחירה: הודעה, עוד פעולה, סדר אחר או סיפור קצר.', students: 'מוסיפים שדרוג קטן משלהם.' },
+      { minutes: '55–60', title: 'הצגה וסיכום', teacher: 'שני ילדים מציגים ומסבירים את רצף הבלוקים.', students: 'משלימים משפט: “כשלחצתי הרצה, הקוד עשה...”' }
+    ];
+    lesson.programmingExercises = buildExercises(lesson);
+  }
+
   window.MINECRAFT_KIDS_LESSONS = lessons;
   window.getMinecraftLesson = function (id) {
     const numericId = Number(id) || 1;

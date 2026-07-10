@@ -29,16 +29,16 @@
       <div class="stat"><b>15</b>שיעורים</div>
       <div class="stat"><b>7–9</b>גיל יעד</div>
       <div class="stat"><b>Blockly</b>בלוקים בעברית</div>
-      <div class="stat"><b>60 דק׳</b>מבנה שיעור</div>
+      <div class="stat"><b>5+</b>תרגילי תכנות בכל שיעור</div>
     </section>
 
     <section class="note">
-      <b>הרעיון הפדגוגי:</b> לא ללמד “מיינקראפט” אלא לתכנת התנהגויות פשוטות בתוך עולם משחקי: הודעה, בנייה, טלפורט, תנאי, ניקוד, פרס, ומיני־משחק קטן.
+      <b>הרעיון הפדגוגי:</b> לא ללמד “מיינקראפט” אלא לתכנת התנהגויות פשוטות בתוך עולם משחקי. כל שיעור בנוי ל־60 דקות לפחות וכולל 5 תרגילי תכנות מעשיים: בסיס, שיפור, שילוב, בדיקה ושדרוג אישי.
     </section>
 
     <section class="cards" id="cards"></section>
   </main>
-  <script src="js/minecraft-lessons.js?v=20260710-minecraft"></script>
+  <script src="js/minecraft-lessons.js?v=20260710-minecraft-exercises"></script>
   <script>
     document.getElementById('cards').innerHTML = window.MINECRAFT_KIDS_LESSONS.map((lesson) => `
       <a class="card" href="minecraft-play.html?lesson=${lesson.id}">
@@ -46,7 +46,7 @@
         <h3>${lesson.title}</h3>
         <div class="zone">${lesson.zone}</div>
         <div class="story">${lesson.story}</div>
-        <div class="tags"><span class="tag">${lesson.concept}</span><span class="tag">${lesson.blocks.length} בלוקים</span></div>
+        <div class="tags"><span class="tag">${lesson.concept}</span><span class="tag">60 דק׳</span><span class="tag">${lesson.programmingExercises.length} תרגילים</span></div>
         <div class="start">להתחיל לתכנת ←</div>
       </a>`).join('');
   </script>
