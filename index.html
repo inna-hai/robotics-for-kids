@@ -726,6 +726,14 @@
                     <span class="icon">👃</span>
                     <span id="smellText">נקי</span>
                 </div>
+                <div class="sensor-chip" id="sensorTemp">
+                    <span class="icon">🌡️</span>
+                    <span id="tempText">נעים</span>
+                </div>
+                <div class="sensor-chip" id="sensorColor">
+                    <span class="icon">🎨</span>
+                    <span id="colorText">אין חפץ</span>
+                </div>
             </div>
             
             <div class="env-buttons">
@@ -744,6 +752,14 @@
                 <button class="env-btn" onclick="toggleEnv('smoke')" id="envSmoke">
                     <span class="icon">💨</span>
                     עשן
+                </button>
+                <button class="env-btn" onclick="toggleEnv('temperatureHot')" id="envTemperatureHot">
+                    <span class="icon">🌡️</span>
+                    חום
+                </button>
+                <button class="env-btn" onclick="cycleRecycleColor()" id="envRecycleColor">
+                    <span class="icon">♻️</span>
+                    חפץ למחזור
                 </button>
                 <button class="env-btn" onclick="resetEnv()">
                     <span class="icon">🔄</span>
@@ -810,14 +826,14 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260709-stop-names"></script>
+    <script src="js/lessons-data.js?v=20260710-lessons-7-15"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
         let workspace = null;
         let completedTasks = [];
-        let robot = { x: 150, y: 180, angle: 0, speaking: '', streetLightOn: false, vehicleStopped: false };
-        let environment = { light: false, sound: false, obstacle: false, smoke: false };
+        let robot = { x: 150, y: 180, angle: 0, speaking: '', streetLightOn: false, vehicleStopped: false, fanOn: false, sortedBin: '' };
+        let environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE' };
         let isRunning = false;
         let drawerOpen = false;
         
@@ -826,7 +842,9 @@
             wall: { x: 400, y: 200, width: 60, height: 80, emoji: '🧱' },
             sound: { x: 50, y: 200, radius: 30, emoji: '🔊' },
             smoke: { x: 100, y: 60, radius: 40, emoji: '💨' },
-            sun: { x: 80, y: 60, radius: 40, emoji: '☀️' }
+            sun: { x: 80, y: 60, radius: 40, emoji: '☀️' },
+            thermometer: { x: 115, y: 120, radius: 34, emoji: '🌡️' },
+            recycleItem: { x: 135, y: 170, radius: 34, emoji: '🥤' }
         };
         
         // Dragging state
@@ -847,7 +865,7 @@
         function resetPositions() {
             // Reset robot to center
             robot.x = canvas.width / 2;
-            robot.y = currentLesson === 3 ? canvas.height * 0.58 : currentLesson === 4 ? canvas.height * 0.62 : canvas.height / 2;
+            robot.y = currentLesson === 3 ? canvas.height * 0.58 : currentLesson === 4 ? canvas.height * 0.62 : currentLesson === 5 ? canvas.height * 0.64 : currentLesson === 6 ? canvas.height * 0.62 : canvas.height / 2;
             robot.angle = 0;
             robot.vehicleStopped = false;
             
@@ -860,6 +878,100 @@
             objects.smoke.y = currentLesson === 4 ? canvas.height * 0.43 : 60;
             objects.sun.x = 80;
             objects.sun.y = 60;
+            objects.thermometer.x = 110;
+            objects.thermometer.y = canvas.height * 0.34;
+            objects.recycleItem.x = canvas.width * 0.24;
+            objects.recycleItem.y = canvas.height * 0.54;
+        }
+
+        function drawAdvancedLessonScene() {
+            const lesson = window.getSensiLesson ? window.getSensiLesson(currentLesson) : null;
+            if (!lesson || currentLesson < 7) return;
+
+            const scenes = {
+                7: { bg: ['#eff6ff', '#e0f2fe'], place: 'מסלול תחבורה', icon: '🛣️', objects: ['קו שחור', 'פנייה', 'יעד'], action: 'עקבו אחרי הקו בלולאה' },
+                8: { bg: ['#fef9c3', '#e0f2fe'], place: 'מעבר חציה', icon: '🚦', objects: ['הולך רגל', 'רמזור', 'מכוניות'], action: 'עצרו תנועה לפני מעבר' },
+                9: { bg: ['#f8fafc', '#dbeafe'], place: 'כיתה חכמה', icon: '🏫', objects: ['תלמידים', 'אור', 'מזגן'], action: 'הפעילו רק כשצריך' },
+                10: { bg: ['#ecfccb', '#bbf7d0'], place: 'גינה חכמה', icon: '🌱', objects: ['אדמה', 'טפטפות', 'צמחים'], action: 'השקו רק כשהאדמה יבשה' },
+                11: { bg: ['#e0e7ff', '#f1f5f9'], place: 'בית חכם', icon: '🏠', objects: ['דלת', 'תנועה', 'אזעקה'], action: 'התריעו רק כשהמערכת דרוכה' },
+                12: { bg: ['#fef3c7', '#e0f2fe'], place: 'משלוח בעיר', icon: '📦', objects: ['חנות', 'מכשול', 'בית יעד'], action: 'תכננו מסלול בטוח' },
+                13: { bg: ['#1e1b4b', '#312e81'], place: 'פארק בלילה', icon: '🌙', objects: ['פנס', 'רעש', 'תנועה'], action: 'סיירו בלולאה והגיבו לאירועים' },
+                14: { bg: ['#fee2e2', '#ffedd5'], place: 'אזור חילוץ', icon: '🛟', objects: ['עשן', 'חום', 'מכשול'], action: 'בחרו פעולה בטוחה קודם' },
+                15: { bg: ['#dbeafe', '#f0f9ff'], place: 'העיר שלי', icon: '🏙️', objects: ['בעיה', 'חיישנים', 'פתרון'], action: 'תכננו מערכת חכמה משלכם' }
+            };
+            const scene = scenes[currentLesson];
+            if (!scene) return;
+
+            const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            bg.addColorStop(0, scene.bg[0]);
+            bg.addColorStop(1, scene.bg[1]);
+            ctx.fillStyle = bg;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // City floor / route
+            ctx.fillStyle = currentLesson === 13 ? 'rgba(15,23,42,.55)' : 'rgba(255,255,255,.55)';
+            ctx.beginPath();
+            ctx.roundRect(canvas.width * 0.08, canvas.height * 0.50, canvas.width * 0.84, canvas.height * 0.18, 24);
+            ctx.fill();
+
+            if (currentLesson === 7) {
+                ctx.strokeStyle = '#111827';
+                ctx.lineWidth = 12;
+                ctx.setLineDash([]);
+                ctx.beginPath();
+                ctx.moveTo(canvas.width * 0.14, canvas.height * 0.58);
+                ctx.bezierCurveTo(canvas.width * 0.32, canvas.height * 0.36, canvas.width * 0.55, canvas.height * 0.78, canvas.width * 0.84, canvas.height * 0.52);
+                ctx.stroke();
+            }
+
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = 'bold 16px Rubik';
+            ctx.fillStyle = currentLesson === 13 ? '#eef2ff' : '#0f172a';
+            ctx.fillText(`${scene.icon} ${scene.place} — ${lesson.title}`, canvas.width / 2, 28);
+
+            // Mission board
+            const boardX = canvas.width * 0.56;
+            const boardY = canvas.height * 0.12;
+            const boardW = canvas.width * 0.36;
+            const boardH = 135;
+            ctx.fillStyle = 'rgba(255,255,255,.92)';
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.roundRect(boardX, boardY, boardW, boardH, 18);
+            ctx.fill();
+            ctx.stroke();
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#0f172a';
+            ctx.font = 'bold 15px Rubik';
+            ctx.fillText('משימת תכנות', boardX + boardW - 18, boardY + 26);
+            ctx.font = '13px Rubik';
+            ctx.fillText(`חיישן: ${lesson.sensorFocus}`, boardX + boardW - 18, boardY + 56);
+            ctx.fillText(`רעיון: ${lesson.codingConcept}`, boardX + boardW - 18, boardY + 82);
+            ctx.fillText(scene.action, boardX + boardW - 18, boardY + 108);
+
+            // Scenario objects
+            const emojis = {
+                7: ['⬛', '↪️', '🏁'], 8: ['🚶', '🚦', '🚗'], 9: ['🧑‍🎓', '💡', '❄️'], 10: ['🌱', '💧', '🌿'],
+                11: ['🚪', '🏃', '🚨'], 12: ['🏪', '🚧', '🏠'], 13: ['🔦', '🔊', '👣'], 14: ['💨', '🔥', '🧱'], 15: ['❓', '👁️', '✅']
+            }[currentLesson];
+            const xs = [canvas.width * 0.22, canvas.width * 0.42, canvas.width * 0.62];
+            const y = canvas.height * 0.58;
+            scene.objects.forEach((label, i) => {
+                ctx.fillStyle = 'rgba(255,255,255,.9)';
+                ctx.strokeStyle = '#94a3b8';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.roundRect(xs[i] - 52, y - 52, 104, 104, 18);
+                ctx.fill();
+                ctx.stroke();
+                ctx.font = '34px Arial';
+                ctx.fillText(emojis[i], xs[i], y - 10);
+                ctx.font = 'bold 12px Rubik';
+                ctx.fillStyle = '#334155';
+                ctx.fillText(label, xs[i], y + 34);
+            });
         }
         
         window.addEventListener('resize', resizeCanvas);
@@ -1028,6 +1140,147 @@
                 ctx.fillStyle = canSenseSmoke() ? '#dc2626' : '#475569';
                 ctx.textAlign = 'center';
                 ctx.fillText(canSenseSmoke() ? 'קריאת חירום: עשן קרוב!' : 'גררו עשן קרוב לכבאית', canvas.width / 2, 28);
+            }
+
+            // Greenhouse scene for lesson 5
+            if (currentLesson === 5) {
+                const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                bg.addColorStop(0, environment.temperatureHot ? '#ffe8cc' : '#dff9fb');
+                bg.addColorStop(1, '#d8f7d0');
+                ctx.fillStyle = bg;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                const houseX = canvas.width * 0.12;
+                const houseY = canvas.height * 0.18;
+                const houseW = canvas.width * 0.76;
+                const houseH = canvas.height * 0.52;
+
+                ctx.fillStyle = 'rgba(255,255,255,0.55)';
+                ctx.strokeStyle = '#00b894';
+                ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.moveTo(houseX, houseY + houseH);
+                ctx.lineTo(houseX, houseY + 70);
+                ctx.lineTo(houseX + houseW / 2, houseY);
+                ctx.lineTo(houseX + houseW, houseY + 70);
+                ctx.lineTo(houseX + houseW, houseY + houseH);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.strokeStyle = 'rgba(0,184,148,.45)';
+                ctx.lineWidth = 2;
+                for (let i = 1; i < 5; i++) {
+                    const x = houseX + (houseW / 5) * i;
+                    ctx.beginPath();
+                    ctx.moveTo(x, houseY + 70);
+                    ctx.lineTo(x, houseY + houseH);
+                    ctx.stroke();
+                }
+
+                // Plants
+                ctx.font = '42px Arial';
+                ctx.textAlign = 'center';
+                ['🌱', '🌿', '🪴', '🌱'].forEach((plant, i) => {
+                    ctx.fillText(plant, houseX + 80 + i * (houseW - 160) / 3, houseY + houseH - 30);
+                });
+
+                // Temperature panel
+                const temp = environment.temperatureHot ? 32 : 24;
+                ctx.fillStyle = 'rgba(255,255,255,.92)';
+                ctx.strokeStyle = environment.temperatureHot ? '#e17055' : '#00b894';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.roundRect(objects.thermometer.x - 54, objects.thermometer.y - 42, 108, 84, 16);
+                ctx.fill();
+                ctx.stroke();
+                ctx.font = '30px Arial';
+                ctx.fillText('🌡️', objects.thermometer.x, objects.thermometer.y - 12);
+                ctx.font = 'bold 18px Rubik';
+                ctx.fillStyle = environment.temperatureHot ? '#d63031' : '#00b894';
+                ctx.fillText(`${temp}°`, objects.thermometer.x, objects.thermometer.y + 20);
+
+                // Fan
+                const fanX = houseX + houseW - 88;
+                const fanY = houseY + 98;
+                ctx.fillStyle = '#e2e8f0';
+                ctx.strokeStyle = '#475569';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(fanX, fanY, 34, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                ctx.font = robot.fanOn ? '40px Arial' : '34px Arial';
+                ctx.fillText(robot.fanOn && Date.now() % 500 < 250 ? '🌀' : '🪭', fanX, fanY + 2);
+                ctx.font = 'bold 14px Rubik';
+                ctx.fillStyle = robot.fanOn ? '#0984e3' : '#64748b';
+                ctx.fillText(robot.fanOn ? 'המאוורר פועל' : 'המאוורר כבוי', fanX, fanY + 52);
+
+                ctx.font = 'bold 14px Rubik';
+                ctx.fillStyle = environment.temperatureHot ? '#d63031' : '#047857';
+                ctx.fillText(environment.temperatureHot ? 'חם מדי בחממה — צריך לקרר!' : 'הטמפרטורה נעימה לצמחים', canvas.width / 2, 28);
+            }
+
+            // Recycling center scene for lesson 6
+            if (currentLesson === 6) {
+                const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                bg.addColorStop(0, '#e0f2fe');
+                bg.addColorStop(1, '#dcfce7');
+                ctx.fillStyle = bg;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                ctx.font = 'bold 16px Rubik';
+                ctx.fillStyle = '#166534';
+                ctx.textAlign = 'center';
+                ctx.fillText('מרכז מחזור — בחרו חפץ ובנו מיון לפי צבע', canvas.width / 2, 28);
+
+                const bins = [
+                    { key: 'BLUE', label: 'נייר', color: '#3b82f6', x: canvas.width * 0.60 },
+                    { key: 'GREEN', label: 'בקבוק', color: '#22c55e', x: canvas.width * 0.74 },
+                    { key: 'YELLOW', label: 'פלסטיק', color: '#eab308', x: canvas.width * 0.88 }
+                ];
+                for (const bin of bins) {
+                    const y = canvas.height * 0.55;
+                    ctx.fillStyle = bin.color;
+                    ctx.strokeStyle = robot.sortedBin === bin.key ? '#111827' : 'rgba(15,23,42,.25)';
+                    ctx.lineWidth = robot.sortedBin === bin.key ? 5 : 2;
+                    ctx.beginPath();
+                    ctx.roundRect(bin.x - 42, y - 58, 84, 116, 12);
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.fillStyle = '#fff';
+                    ctx.font = 'bold 15px Rubik';
+                    ctx.fillText(bin.label, bin.x, y + 76);
+                    if (robot.sortedBin === bin.key) {
+                        ctx.font = '26px Arial';
+                        ctx.fillText('✅', bin.x, y - 82);
+                    }
+                }
+
+                if (environment.recycleColor !== 'NONE') {
+                    const itemColors = { BLUE: '#3b82f6', GREEN: '#22c55e', YELLOW: '#eab308' };
+                    const itemLabels = { BLUE: 'כחול', GREEN: 'ירוק', YELLOW: 'צהוב' };
+                    ctx.fillStyle = itemColors[environment.recycleColor] || '#94a3b8';
+                    ctx.strokeStyle = '#0f172a';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.roundRect(objects.recycleItem.x - 40, objects.recycleItem.y - 30, 80, 60, 14);
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.font = '28px Arial';
+                    ctx.fillText('📦', objects.recycleItem.x, objects.recycleItem.y - 2);
+                    ctx.font = 'bold 13px Rubik';
+                    ctx.fillStyle = '#0f172a';
+                    ctx.fillText(itemLabels[environment.recycleColor], objects.recycleItem.x, objects.recycleItem.y + 48);
+                } else {
+                    ctx.font = '18px Rubik';
+                    ctx.fillStyle = '#475569';
+                    ctx.fillText('לחצו “חפץ למחזור” כדי לבחור צבע', canvas.width * 0.25, canvas.height * 0.55);
+                }
+            }
+
+            if (currentLesson >= 7) {
+                drawAdvancedLessonScene();
             }
             
             // Draggable Smoke
@@ -1410,7 +1663,9 @@
                             { kind: 'block', type: 'sensor_light' },
                             { kind: 'block', type: 'sensor_sound' },
                             { kind: 'block', type: 'sensor_touch' },
-                            { kind: 'block', type: 'sensor_smell' }
+                            { kind: 'block', type: 'sensor_smell' },
+                            { kind: 'block', type: 'sensor_temperature' },
+                            { kind: 'block', type: 'sensor_color' }
                         ]
                     },
                     {
@@ -1431,7 +1686,9 @@
                         contents: [
                             { kind: 'block', type: 'action_say' },
                             { kind: 'block', type: 'action_street_light' },
-                            { kind: 'block', type: 'action_sound' }
+                            { kind: 'block', type: 'action_sound' },
+                            { kind: 'block', type: 'action_fan' },
+                            { kind: 'block', type: 'action_recycle_bin' }
                         ]
                     }
                 ]
@@ -1562,6 +1819,26 @@
                     this.setColour('#40BF4A');
                 }
             };
+
+            Blockly.Blocks['sensor_temperature'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('🌡️ טמפרטורה =')
+                        .appendField(new Blockly.FieldDropdown([['חם מדי 🔥', 'HOT'], ['נעים 🌿', 'OK']]), 'VAL');
+                    this.setOutput(true, 'Boolean');
+                    this.setColour('#40BF4A');
+                }
+            };
+
+            Blockly.Blocks['sensor_color'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('🎨 צבע החפץ =')
+                        .appendField(new Blockly.FieldDropdown([['כחול 🔵', 'BLUE'], ['ירוק 🟢', 'GREEN'], ['צהוב 🟡', 'YELLOW']]), 'VAL');
+                    this.setOutput(true, 'Boolean');
+                    this.setColour('#40BF4A');
+                }
+            };
             
             // Control
             Blockly.Blocks['control_if'] = {
@@ -1632,6 +1909,28 @@
                     this.appendDummyInput()
                         .appendField('🔔 השמע')
                         .appendField(new Blockly.FieldDropdown([['ביפ 🎵', 'BEEP'], ['אזעקה 🚨', 'ALARM']]), 'SND');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+
+            Blockly.Blocks['action_fan'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('🪭 מאוורר')
+                        .appendField(new Blockly.FieldDropdown([['הפעל', 'ON'], ['כבה', 'OFF']]), 'STATE');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+
+            Blockly.Blocks['action_recycle_bin'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('♻️ העבר לפח')
+                        .appendField(new Blockly.FieldDropdown([['נייר כחול', 'BLUE'], ['בקבוק ירוק', 'GREEN'], ['פלסטיק צהוב', 'YELLOW']]), 'BIN');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
                     this.setColour('#9966FF');
@@ -1743,6 +2042,20 @@
                     playBeep(block.getFieldValue('SND'));
                     await sleep(500);
                     break;
+
+                case 'action_fan':
+                    robot.fanOn = block.getFieldValue('STATE') === 'ON';
+                    robot.speaking = robot.fanOn ? 'מקרר את החממה!' : 'המאוורר כבוי';
+                    await sleep(900);
+                    robot.speaking = '';
+                    break;
+
+                case 'action_recycle_bin':
+                    robot.sortedBin = block.getFieldValue('BIN');
+                    robot.speaking = robot.sortedBin === environment.recycleColor ? 'מיון נכון!' : 'אופס, בדקו צבע!';
+                    await sleep(1200);
+                    robot.speaking = '';
+                    break;
             }
             
             await runBlock(block.getNextBlock());
@@ -1782,6 +2095,14 @@
             // Smoke can be smelled within 150 pixels
             return environment.smoke && distanceToObject(objects.smoke) < 150;
         }
+
+        function getTemperatureLevel() {
+            return environment.temperatureHot ? 'HOT' : 'OK';
+        }
+
+        function getRecycleColor() {
+            return environment.recycleColor || 'NONE';
+        }
         
         function evalCondition(block) {
             if (!block) return false;
@@ -1800,6 +2121,10 @@
                     return val === 'YES' ? canSenseTouch() : !canSenseTouch();
                 case 'sensor_smell':
                     return val === 'YES' ? canSenseSmoke() : !canSenseSmoke();
+                case 'sensor_temperature':
+                    return getTemperatureLevel() === val;
+                case 'sensor_color':
+                    return getRecycleColor() === val;
             }
             return false;
         }
@@ -1829,12 +2154,27 @@
         }
         
         function resetEnv() {
-            environment = { light: false, sound: false, obstacle: false, smoke: false };
+            environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE' };
             document.querySelectorAll('.env-btn').forEach(b => b.classList.remove('active'));
             robot.speaking = '';
             robot.streetLightOn = false;
             robot.vehicleStopped = false;
+            robot.fanOn = false;
+            robot.sortedBin = '';
+            const recycleBtnIcon = document.querySelector('#envRecycleColor .icon');
+            if (recycleBtnIcon) recycleBtnIcon.textContent = '♻️';
             resetPositions();
+            updateSensors();
+        }
+
+        function cycleRecycleColor() {
+            const sequence = ['NONE', 'BLUE', 'GREEN', 'YELLOW'];
+            const next = sequence[(sequence.indexOf(environment.recycleColor) + 1) % sequence.length];
+            environment.recycleColor = next;
+            robot.sortedBin = '';
+            const btn = document.getElementById('envRecycleColor');
+            btn.classList.toggle('active', next !== 'NONE');
+            btn.querySelector('.icon').textContent = next === 'BLUE' ? '🔵' : next === 'GREEN' ? '🟢' : next === 'YELLOW' ? '🟡' : '♻️';
             updateSensors();
         }
         
@@ -1845,16 +2185,23 @@
             const sensesSound = soundLevel !== 'QUIET';
             const sensesTouch = canSenseTouch();
             const sensesSmoke = canSenseSmoke();
+            const tempLevel = getTemperatureLevel();
+            const recycleColor = getRecycleColor();
+            const recycleColorText = recycleColor === 'BLUE' ? 'כחול' : recycleColor === 'GREEN' ? 'ירוק' : recycleColor === 'YELLOW' ? 'צהוב' : 'אין חפץ';
             
             document.getElementById('lightText').textContent = sensesLight ? 'בהיר!' : 'חשוך';
             document.getElementById('soundText').textContent = soundLevel === 'LOUD' ? 'חזק מדי!' : soundLevel === 'SOFT' ? 'חלש' : 'שקט';
             document.getElementById('touchText').textContent = sensesTouch ? 'קיר!' : 'פנוי';
             document.getElementById('smellText').textContent = sensesSmoke ? 'עשן!' : 'נקי';
+            document.getElementById('tempText').textContent = tempLevel === 'HOT' ? 'חם מדי!' : 'נעים';
+            document.getElementById('colorText').textContent = recycleColorText;
             
             document.getElementById('sensorLight').classList.toggle('active', sensesLight);
             document.getElementById('sensorSound').classList.toggle('active', sensesSound);
             document.getElementById('sensorTouch').classList.toggle('active', sensesTouch);
             document.getElementById('sensorSmell').classList.toggle('active', sensesSmoke);
+            document.getElementById('sensorTemp').classList.toggle('active', tempLevel === 'HOT');
+            document.getElementById('sensorColor').classList.toggle('active', recycleColor !== 'NONE');
         }
         
         // Update sensors periodically (for dragging feedback)
