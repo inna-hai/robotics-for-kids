@@ -6,11 +6,11 @@
       title: 'הפקודה הראשונה שלי',
       zone: 'נקודת ההתחלה',
       concept: 'אירוע → פעולה',
-      story: 'סטיב נכנס לעולם חדש. נלמד את העולם להגיד שלום כשמתחילים.',
-      goal: 'ליצור תוכנית שמתחילה בלחיצה ואומרת הודעה.',
-      blocks: ['event_start', 'say'],
-      challenge: 'שנו את ההודעה למשהו אישי שלכם.',
-      success: 'כשמריצים, מופיעה בועת דיבור עם הודעה.'
+      story: 'סטיב נכנס לעולם חדש. נלמד אותו לעשות כמה קסמים ראשונים: לדבר, לבנות, להשאיר שביל ולקפוץ למקום אחר.',
+      goal: 'ליצור תוכנית שמתחילה בלחיצה ומפעילה כמה פקודות פשוטות בעולם.',
+      blocks: ['event_start', 'say', 'build_tower', 'magic_trail', 'teleport'],
+      challenge: 'בנו רצף קסמים משלכם: הודעה, פעולה בעולם, ואז עוד הפתעה.',
+      success: 'כשמריצים, סטיב מדבר ולפחות פעולה אחת משנה את העולם.'
     },
     {
       id: 2,
@@ -205,7 +205,7 @@
   };
 
   const practicalPlans = {
-    1: ['ברכת שלום', 'שתי הודעות ברצף', 'הודעה עם שם הילד', 'בדיקת סדר הפקודות', 'מיני־סיפור בשלוש הודעות'],
+    1: ['ברכת שלום', 'שלום ואז מגדל', 'מגדל ושביל קסמים', 'בדיקת סדר הפקודות', 'מיני־סיפור עם טלפורט'], 
     2: ['מגדל ראשון', 'מגדל ואז הודעה', 'שני ניסויי הרצה', 'שם למגדל', 'אתגר: אתר בנייה קטן'],
     3: ['גשם בלוקים ראשון', 'הודעת פתיחה ואז גשם', 'גשם ואז הודעת סיום', 'בדיקת מה השתנה בעולם', 'אתגר: מסיבת צבעים'],
     4: ['שביל ראשון', 'שביל ואז הודעה', 'שביל וטלפורט', 'בדיקת לפני/אחרי איפוס', 'אתגר: דרך סודית'],
@@ -235,8 +235,8 @@
       return [blockLabels.event_start, blockLabels.if_on_diamond, `בתוך התנאי: ${blockLabels[action]}`, index >= 2 ? 'בתוך התנאי: אמור הודעה' : null].filter(Boolean);
     }
     if (index === 0) return [blockLabels.event_start, blockLabels[primary]];
-    if (index === 1) return [blockLabels.event_start, blockLabels.say, blockLabels[primary]];
-    if (index === 2) return [blockLabels.event_start, blockLabels[primary], blockLabels[secondary]];
+    if (index === 1) return [blockLabels.event_start, blockLabels[primary], blockLabels[secondary]];
+    if (index === 2) return [blockLabels.event_start, blockLabels[primary], blockLabels[secondary], blockLabels[useful[2] || 'say']];
     if (index === 3) return [blockLabels.event_start, blockLabels[primary], blockLabels.say, 'לחצו איפוס והריצו שוב לבדיקה'];
     return [blockLabels.event_start, blockLabels[primary], blockLabels[secondary], blockLabels.say, 'שדרוג אישי: הוסיפו עוד בלוק לבחירתכם'];
   }
