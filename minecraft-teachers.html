@@ -15,7 +15,7 @@
       <div class="kicker">מדריך למורה • גיל 7–9 • Blockly</div>
       <h1>📚 מיינקראפט קידס: מתכנתים קסמים</h1>
       <p>מסלול המשך פשוט למסלול הרובוטיקה: הילדים כבר מכירים רעיון של פעולה בעקבות תנאי. כאן הם מתכנתים עולם משחקי — הודעה, בנייה, טלפורט, תנאי, פרס ומיני־משחק.</p>
-      <div class="actions"><a class="btn" href="minecraft-play.html?lesson=1">▶️ לפתוח שיעור 1</a><a class="btn secondary" href="minecraft.html">⛏️ כל שיעורי מיינקראפט</a><a class="btn secondary" href="minecraft.html#cards">📋 רשימת השיעורים</a></div>
+      <div class="actions"><a class="btn" href="minecraft-play.html?lesson=1">▶️ לפתוח שיעור 1</a><a class="btn secondary" href="minecraft-slides.html?lesson=1">📽️ מצגת שיעור 1</a><a class="btn secondary" href="minecraft.html">⛏️ כל שיעורי מיינקראפט</a></div>
     </section>
 
     <section class="guide grid">
@@ -27,7 +27,7 @@
 
     <section id="lessons"></section>
   </main>
-  <script src="js/minecraft-lessons.js?v=20260710-minecraft-steps"></script>
+  <script src="js/minecraft-lessons.js?v=20260710-minecraft-full15"></script>
   <script>
     const blockNames = {event_start:'התחלה',say:'אמירה',move_up:'עלה למעלה',move_down:'רד למטה',move_right:'זוז ימינה',move_left:'זוז שמאלה',place_block:'הנח בלוק בצבע',build_tower:'מגדל',rain_blocks:'גשם בלוקים',magic_trail:'שביל',teleport:'טלפורט',spawn_pet:'חיית מחמד',set_day:'יום',set_night:'לילה',weather_sun:'שמש',weather_rain:'גשם',weather_snow:'שלג',if_on_diamond:'אם עומדים על היהלום',open_door:'דלת',give_treasure:'אוצר',start_collect_game:'איסוף',build_maze:'מבוך',show_hint:'רמז',spawn_funny_mob:'מפלצת מצחיקה'};
     document.getElementById('lessons').innerHTML = window.MINECRAFT_KIDS_LESSONS.map(l => `
@@ -40,7 +40,7 @@
         <p><b>אתגר:</b> ${l.challenge}<br><b>הצלחה:</b> ${l.success}</p>
         <h3>🧪 תרגילי תכנות מעשיים</h3>
         <div class="exercise-grid">${(l.programmingExercises || []).map(ex => `<div class="exercise"><small>${ex.minutes}</small><h4>${ex.title}</h4><p>${ex.studentPrompt}</p><div class="solution"><b>פתרון בלוקים:</b><br>${(ex.answerBlocks || []).join(' ← ')}</div></div>`).join('')}</div>
-        <div class="actions"><a class="btn" href="minecraft-play.html?lesson=${l.id}">פתח שיעור ${l.id}</a></div>
+        <div class="actions"><a class="btn" href="minecraft-play.html?lesson=${l.id}">פתח שיעור ${l.id}</a><a class="btn secondary" href="minecraft-slides.html?lesson=${l.id}">מצגת שיעור ${l.id}</a></div>
       </article>`).join('');
   </script>
 </body>

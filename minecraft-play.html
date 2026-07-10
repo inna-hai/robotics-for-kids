@@ -18,6 +18,7 @@
     <div class="actions">
       <button class="btn run" onclick="runProgram()">▶️ הרצה</button>
       <button class="btn reset" onclick="resetWorld()">↺ איפוס</button>
+      <a class="btn link" id="slidesLink" href="minecraft-slides.html">מצגת</a>
       <a class="btn link" href="minecraft.html">כל השיעורים</a>
     </div>
   </header>
@@ -53,7 +54,7 @@
     </section>
   </main>
 
-  <script src="js/minecraft-lessons.js?v=20260710-minecraft-steps"></script>
+  <script src="js/minecraft-lessons.js?v=20260710-minecraft-full15"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const lesson = window.getMinecraftLesson(params.get('lesson'));
@@ -113,6 +114,7 @@
       document.getElementById('lessonChallenge').textContent = `שדרוג: ${lesson.challenge}`;
       document.getElementById('successText').textContent = lesson.success;
       document.getElementById('exerciseList').innerHTML = (lesson.programmingExercises || []).map((exercise) => `<div class="exercise-item"><small>${exercise.minutes}</small><b>${esc(exercise.title)}</b><span>${esc(exercise.studentPrompt)}</span></div>`).join('');
+      document.getElementById('slidesLink').href = `minecraft-slides.html?lesson=${lesson.id}`;
       document.getElementById('tabs').innerHTML = window.MINECRAFT_KIDS_LESSONS.map(l => `<a class="tab ${l.id===lesson.id?'active':''}" href="minecraft-play.html?lesson=${l.id}" title="${esc(l.title)}"><span>${l.emoji}</span><small>${l.id}</small></a>`).join('');
       workspace = Blockly.inject('blocklyDiv', { toolbox: toolboxXml(), rtl: true, trashcan: true, scrollbars: true, zoom: { controls: true, wheel: true, startScale: .9, maxScale: 1.4, minScale: .55 } });
       Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(starterXml()), workspace);

@@ -19,6 +19,7 @@
         <div class="actions">
           <a class="btn" href="minecraft-play.html?lesson=1">▶️ להתחיל שיעור 1</a>
           <a class="btn secondary" href="minecraft-teachers.html">📚 מדריך למורה</a>
+          <a class="btn secondary" href="minecraft-slides.html?lesson=1">📽️ מצגת לדוגמה</a>
           <a class="btn secondary" href="smart-city.html">🏙️ חזרה לעיר החכמה</a>
         </div>
       </div>
@@ -38,7 +39,7 @@
 
     <section class="cards" id="cards"></section>
   </main>
-  <script src="js/minecraft-lessons.js?v=20260710-minecraft-steps"></script>
+  <script src="js/minecraft-lessons.js?v=20260710-minecraft-full15"></script>
   <script>
     document.getElementById('cards').innerHTML = window.MINECRAFT_KIDS_LESSONS.map((lesson) => `
       <a class="card" href="minecraft-play.html?lesson=${lesson.id}">
@@ -48,6 +49,7 @@
         <div class="story">${lesson.story}</div>
         <div class="tags"><span class="tag">${lesson.concept}</span><span class="tag">60 דק׳</span><span class="tag">${lesson.programmingExercises.length} תרגילים</span></div>
         <div class="start">להתחיל לתכנת ←</div>
+        <div class="tags"><span class="tag">📽️ <object><a href="minecraft-slides.html?lesson=${lesson.id}" onclick="event.stopPropagation()">מצגת</a></object></span></div>
       </a>`).join('');
   </script>
 </body>
