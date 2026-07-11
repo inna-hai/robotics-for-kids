@@ -7,6 +7,7 @@ const crypto = require('crypto');
 const ROOT = __dirname;
 const PORT = Number(process.env.PORT || process.argv[2] || 3032);
 const DATA_DIR = path.join(ROOT, 'data');
+const ATTACHMENTS_DIR = path.join(DATA_DIR, 'feedback-attachments');
 const FEEDBACK_FILE = path.join(DATA_DIR, 'feedback.jsonl');
 
 const MIME = {
@@ -51,10 +52,31 @@ function cleanText(value, max = 2000) {
   return String(value || '').replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
 }
 
+function saveImageAttachment(feedbackId, attachment) {
+  if (!attachment || !attachment.dataUrl) return null;
+  const match = String(attachment.dataUrl).match(/^data:(image\/(png|jpeg|jpg|webp|gif));base64,([A-Za-z0-9+/=]+)$/);
+  if (!match) throw new Error('invalid_attachment');
+  const mime = match[1];
+  const subtype = match[2] === 'jpeg' ? 'jpg' : match[2];
+  const buffer = Buffer.from(match[3], 'base64');
+  if (!buffer.length || buffer.length > 5 * 1024 * 1024) throw new Error('attachment_too_large');
+  fs.mkdirSync(ATTACHMENTS_DIR, { recursive: true });
+  const safeName = cleanText(attachment.name, 80).replace(/[^\w.א-ת-]+/g, '_') || `image.${subtype}`;
+  const filename = `${feedbackId}-${Date.now()}.${subtype}`;
+  const fullPath = path.join(ATTACHMENTS_DIR, filename);
+  fs.writeFileSync(fullPath, buffer);
+  return {
+    path: path.relative(ROOT, fullPath),
+    name: safeName,
+    mime,
+    size: buffer.length,
+  };
+}
+
 async function handleFeedback(req, res) {
   if (req.method !== 'POST') return send(res, 405, JSON.stringify({ error: 'Method not allowed' }));
   try {
-    const raw = await readBody(req);
+    const raw = await readBody(req, 7 * 1024 * 1024);
     const body = JSON.parse(raw || '{}');
     const kind = body.kind === 'feature' ? 'feature' : 'bug';
     const message = cleanText(body.message, 3000);
@@ -67,13 +89,16 @@ async function handleFeedback(req, res) {
     }
 
     fs.mkdirSync(DATA_DIR, { recursive: true });
+    const id = crypto.randomUUID();
+    const attachment = saveImageAttachment(id, body.attachment);
     const item = {
-      id: crypto.randomUUID(),
+      id,
       kind,
       message,
       page,
       lesson,
       contact,
+      attachment,
       userAgent: cleanText(req.headers['user-agent'], 500),
       ip: cleanText(req.headers['x-forwarded-for'] || req.socket.remoteAddress, 120),
       createdAt: new Date().toISOString(),
@@ -82,8 +107,9 @@ async function handleFeedback(req, res) {
     fs.appendFileSync(FEEDBACK_FILE, JSON.stringify(item) + '\n', 'utf8');
     return send(res, 201, JSON.stringify({ ok: true, id: item.id }));
   } catch (error) {
-    const status = error.message === 'payload_too_large' ? 413 : 400;
-    return send(res, status, JSON.stringify({ error: 'לא הצלחנו לשמור את הדיווח.' }));
+    const status = error.message === 'payload_too_large' || error.message === 'attachment_too_large' ? 413 : 400;
+    const message = status === 413 ? 'התמונה גדולה מדי. אפשר לצרף תמונה עד 5MB.' : 'לא הצלחנו לשמור את הדיווח.';
+    return send(res, status, JSON.stringify({ error: message }));
   }
 }
 
