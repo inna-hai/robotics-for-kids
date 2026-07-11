@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ניהול דיווחים — Robotics15</title>
+  <style>
+    :root { color-scheme: light; --ink:#172033; --muted:#667085; --line:#e4e7ec; --bg:#f8fafc; --card:#fff; --blue:#2563eb; --green:#15803d; --amber:#b45309; --red:#b42318; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); }
+    header { position: sticky; top:0; z-index:2; background:rgba(255,255,255,.92); backdrop-filter: blur(10px); border-bottom:1px solid var(--line); }
+    .wrap { max-width: 1180px; margin:0 auto; padding:20px; }
+    h1 { margin:0 0 4px; font-size:26px; }
+    .sub { color:var(--muted); margin:0; }
+    .bar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:16px; }
+    input, select, button, textarea { font: inherit; border:1px solid var(--line); border-radius:12px; padding:10px 12px; background:#fff; }
+    input[type=password], input[type=search] { min-width:260px; }
+    button { cursor:pointer; font-weight:700; }
+    button.primary { background:var(--blue); color:white; border-color:var(--blue); }
+    button.ghost { background:#fff; }
+    .stats { display:grid; grid-template-columns: repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin:18px 0; }
+    .stat { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px; box-shadow:0 4px 16px rgba(15,23,42,.04); }
+    .stat b { display:block; font-size:24px; }
+    .grid { display:grid; gap:14px; }
+    .item { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px; box-shadow:0 4px 16px rgba(15,23,42,.04); }
+    .top { display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+    .badges { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    .badge { border-radius:999px; padding:5px 9px; font-size:13px; font-weight:700; background:#eef2ff; color:#3730a3; }
+    .bug { background:#fee2e2; color:var(--red); }
+    .feature { background:#dcfce7; color:var(--green); }
+    .open { background:#fff7ed; color:var(--amber); }
+    .in_progress { background:#dbeafe; color:#1d4ed8; }
+    .done { background:#dcfce7; color:var(--green); }
+    .wont_fix { background:#f1f5f9; color:#475569; }
+    .msg { white-space:pre-wrap; line-height:1.55; margin:14px 0; font-size:16px; }
+    .meta { color:var(--muted); font-size:13px; display:grid; gap:4px; }
+    .actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .empty, .error { text-align:center; padding:40px; color:var(--muted); background:white; border:1px dashed var(--line); border-radius:18px; }
+    .error { color:var(--red); }
+    a { color:var(--blue); }
+    @media (max-width: 640px) { .wrap { padding:14px; } input[type=password], input[type=search] { min-width:100%; width:100%; } .bar > * { flex:1; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>ניהול דיווחים — Robotics15</h1>
+      <p class="sub">באגים, רעיונות וצילומי מסך שנשלחו מתוך מערכת הקורס.</p>
+      <div class="bar">
+        <input id="token" type="password" placeholder="טוקן אדמין" autocomplete="current-password" />
+        <button class="primary" id="saveToken">כניסה / רענון</button>
+        <input id="search" type="search" placeholder="חיפוש בטקסט / שיעור / עמוד" />
+        <select id="statusFilter" aria-label="סינון לפי סטטוס">
+          <option value="">כל הסטטוסים</option>
+          <option value="open">פתוח</option>
+          <option value="in_progress">בטיפול</option>
+          <option value="done">טופל</option>
+          <option value="wont_fix">לא יטופל</option>
+        </select>
+        <select id="kindFilter" aria-label="סינון לפי סוג">
+          <option value="">כל הסוגים</option>
+          <option value="bug">באג</option>
+          <option value="feature">רעיון</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="stats" id="stats"></section>
+    <section class="grid" id="list"><div class="empty">הכניסו טוקן אדמין ולחצו כניסה.</div></section>
+  </main>
+
+<script>
+const labels = {
+  bug: 'באג', feature: 'רעיון', open: 'פתוח', in_progress: 'בטיפול', done: 'טופל', wont_fix: 'לא יטופל'
+};
+const tokenInput = document.getElementById('token');
+const list = document.getElementById('list');
+const statsEl = document.getElementById('stats');
+const search = document.getElementById('search');
+const statusFilter = document.getElementById('statusFilter');
+const kindFilter = document.getElementById('kindFilter');
+let items = [];
+
+tokenInput.value = localStorage.getItem('robotics15FeedbackToken') || new URLSearchParams(location.search).get('token') || '';
+
+document.getElementById('saveToken').addEventListener('click', () => {
+  localStorage.setItem('robotics15FeedbackToken', tokenInput.value.trim());
+  load();
+});
+[search, statusFilter, kindFilter].forEach(el => el.addEventListener('input', render));
+if (tokenInput.value) load();
+
+function authHeaders() { return { Authorization: `Bearer ${tokenInput.value.trim()}` }; }
+function escapeHtml(str) { return String(str || '').replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch])); }
+function fmtDate(str) { try { return new Date(str).toLocaleString('he-IL'); } catch { return str || ''; } }
+
+async function load() {
+  list.innerHTML = '<div class="empty">טוען דיווחים…</div>';
+  try {
+    const res = await fetch('/api/admin/feedback', { headers: authHeaders() });
+    if (!res.ok) throw new Error(res.status === 401 ? 'טוקן שגוי או חסר.' : 'שגיאה בטעינת הדיווחים.');
+    const data = await res.json();
+    items = data.items || [];
+    renderStats(data.stats || {});
+    render();
+  } catch (err) {
+    statsEl.innerHTML = '';
+    list.innerHTML = `<div class="error">${escapeHtml(err.message)}</div>`;
+  }
+}
+
+function renderStats(stats) {
+  statsEl.innerHTML = `
+    <div class="stat"><span>סה״כ</span><b>${stats.total || 0}</b></div>
+    <div class="stat"><span>פתוחים</span><b>${(stats.byStatus || {}).open || 0}</b></div>
+    <div class="stat"><span>בטיפול</span><b>${(stats.byStatus || {}).in_progress || 0}</b></div>
+    <div class="stat"><span>טופלו</span><b>${(stats.byStatus || {}).done || 0}</b></div>`;
+}
+
+function filteredItems() {
+  const q = search.value.trim().toLowerCase();
+  return items.filter(item => {
+    if (statusFilter.value && (item.status || 'open') !== statusFilter.value) return false;
+    if (kindFilter.value && (item.kind || 'bug') !== kindFilter.value) return false;
+    if (!q) return true;
+    return [item.message, item.page, item.lesson, item.contact, item.id].some(v => String(v || '').toLowerCase().includes(q));
+  });
+}
+
+function render() {
+  const rows = filteredItems();
+  if (!rows.length) {
+    list.innerHTML = '<div class="empty">אין דיווחים תואמים.</div>';
+    return;
+  }
+  list.innerHTML = rows.map(item => {
+    const status = item.status || 'open';
+    const attachment = item.attachment ? `<a target="_blank" rel="noopener" href="/api/admin/feedback/${item.id}/attachment?token=${encodeURIComponent(tokenInput.value.trim())}">פתיחת צילום מסך</a>` : 'אין תמונה';
+    return `<article class="item">
+      <div class="top">
+        <div class="badges">
+          <span class="badge ${item.kind || 'bug'}">${labels[item.kind] || item.kind || 'באג'}</span>
+          <span class="badge ${status}">${labels[status] || status}</span>
+          ${item.lesson ? `<span class="badge">שיעור: ${escapeHtml(item.lesson)}</span>` : ''}
+        </div>
+        <small>${fmtDate(item.createdAt)}</small>
+      </div>
+      <div class="msg">${escapeHtml(item.message)}</div>
+      <div class="meta">
+        <div><b>עמוד:</b> ${escapeHtml(item.page || '—')}</div>
+        <div><b>פרטי קשר:</b> ${escapeHtml(item.contact || '—')}</div>
+        <div><b>תמונה:</b> ${attachment}</div>
+        <div><b>ID:</b> ${escapeHtml(item.id)}</div>
+      </div>
+      <div class="actions">
+        ${['open','in_progress','done','wont_fix'].map(s => `<button class="ghost" onclick="setStatus('${item.id}','${s}')">${labels[s]}</button>`).join('')}
+      </div>
+    </article>`;
+  }).join('');
+}
+
+async function setStatus(id, status) {
+  const res = await fetch(`/api/admin/feedback/${id}`, {
+    method: 'PATCH', headers: { ...authHeaders(), 'Content-Type': 'application/json' }, body: JSON.stringify({ status })
+  });
+  if (!res.ok) return alert('לא הצלחתי לעדכן סטטוס');
+  const data = await res.json();
+  items = items.map(item => item.id === id ? data.item : item);
+  render();
+}
+window.setStatus = setStatus;
+</script>
+</body>
+</html>
