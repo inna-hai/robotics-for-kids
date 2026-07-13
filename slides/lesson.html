@@ -100,9 +100,23 @@
     .emoji { font-size:6rem; margin-bottom:14px; }
     .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:20px; }
     .card { background:#f7f9fc; border-radius:22px; padding:22px; font-size:1.3rem; font-weight:800; }
-    .nav { position:fixed; inset:auto 24px 24px 24px; display:grid; grid-template-columns:auto 1fr auto; gap:14px; align-items:center; color:white; font-weight:900; pointer-events:none; }
-    .nav > * { pointer-events:auto; }
-    .nav-actions { display:flex; gap:10px; align-items:center; justify-content:flex-end; }
+.nav {
+  position: fixed;
+  inset: auto 24px 76px 24px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 14px;
+  align-items: center;
+  color: white;
+  font-weight: 900;
+  pointer-events: none;
+  z-index: 100;
+}
+    /* .nav { position:fixed; inset:auto 24px 24px 24px; display:grid; grid-template-columns:auto 1fr auto; gap:14px; align-items:center; color:white; font-weight:900; pointer-events:none; } */
+  .nav > * { pointer-events: auto; }
+    /* .nav > * { pointer-events:auto; } */
+   .nav-actions { display: flex; gap: 10px; align-items: center; justify-content: flex-end;}
+    /* .nav-actions { display:flex; gap:10px; align-items:center; justify-content:flex-end; } */
     button, .back { border:0; border-radius:999px; background:white; color:var(--purple); padding:12px 18px; font-weight:900; text-decoration:none; cursor:pointer; box-shadow:0 8px 28px rgba(0,0,0,.12); }
     .counter { background:rgba(0,0,0,.22); padding:10px 16px; border-radius:999px; justify-self:center; }
     @media (max-width:700px){
@@ -273,6 +287,6 @@
     });
     render();
   </script>
-  <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
+  <script src="../js/feedback-widget.js?v=20260711-feedback"></script>
 </body>
 </html>
