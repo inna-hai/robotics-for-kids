@@ -54,10 +54,12 @@
 
   function commandsForLesson(lesson) {
     const turtle = [
+      ['step = 70', 'משתנה צעד'],
+      ['forward(step)', 'קדימה לפי משתנה'],
       ['color("green")', 'צבע ירוק'],
       ['color("yellow")', 'צבע צהוב'],
       ['color("blue")', 'צבע כחול'],
-      ['forward(1)', 'קדימה'],
+      ['forward(80)', 'קדימה 80'],
       ['right(90)', 'ימינה 90°'],
       ['left(90)', 'שמאלה 90°'],
       ['penup()', 'להרים עט'],
