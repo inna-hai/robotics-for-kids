@@ -35,6 +35,8 @@
     .msg { white-space:pre-wrap; line-height:1.55; margin:14px 0; font-size:16px; }
     .meta { color:var(--muted); font-size:13px; display:grid; gap:4px; }
     .actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .assignee-box { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:12px; padding-top:12px; border-top:1px solid var(--line); }
+    .assignee-box input { min-width:160px; }
     .empty, .error { text-align:center; padding:40px; color:var(--muted); background:white; border:1px dashed var(--line); border-radius:18px; }
     .error { color:var(--red); }
     a { color:var(--blue); }
@@ -62,6 +64,7 @@
           <option value="bug">באג</option>
           <option value="feature">רעיון</option>
         </select>
+        <input id="assigneeFilter" type="search" placeholder="סינון לפי מטפלת" />
       </div>
     </div>
   </header>
@@ -81,6 +84,7 @@ const statsEl = document.getElementById('stats');
 const search = document.getElementById('search');
 const statusFilter = document.getElementById('statusFilter');
 const kindFilter = document.getElementById('kindFilter');
+const assigneeFilter = document.getElementById('assigneeFilter');
 let items = [];
 
 tokenInput.value = localStorage.getItem('robotics15FeedbackToken') || new URLSearchParams(location.search).get('token') || '';
@@ -89,7 +93,7 @@ document.getElementById('saveToken').addEventListener('click', () => {
   localStorage.setItem('robotics15FeedbackToken', tokenInput.value.trim());
   load();
 });
-[search, statusFilter, kindFilter].forEach(el => el.addEventListener('input', render));
+[search, statusFilter, kindFilter, assigneeFilter].forEach(el => el.addEventListener('input', render));
 if (tokenInput.value) load();
 
 function authHeaders() { return { Authorization: `Bearer ${tokenInput.value.trim()}` }; }
@@ -116,7 +120,8 @@ function renderStats(stats) {
     <div class="stat"><span>סה״כ</span><b>${stats.total || 0}</b></div>
     <div class="stat"><span>פתוחים</span><b>${(stats.byStatus || {}).open || 0}</b></div>
     <div class="stat"><span>בטיפול</span><b>${(stats.byStatus || {}).in_progress || 0}</b></div>
-    <div class="stat"><span>טופלו</span><b>${(stats.byStatus || {}).done || 0}</b></div>`;
+    <div class="stat"><span>טופלו</span><b>${(stats.byStatus || {}).done || 0}</b></div>
+    <div class="stat"><span>משויכים</span><b>${Object.entries(stats.byAssignee || {}).filter(([name]) => name !== 'לא משויך').reduce((sum, [, count]) => sum + count, 0)}</b></div>`;
 }
 
 function filteredItems() {
@@ -124,8 +129,10 @@ function filteredItems() {
   return items.filter(item => {
     if (statusFilter.value && (item.status || 'open') !== statusFilter.value) return false;
     if (kindFilter.value && (item.kind || 'bug') !== kindFilter.value) return false;
+    const assigneeQ = assigneeFilter.value.trim().toLowerCase();
+    if (assigneeQ && !String(item.assignee || '').toLowerCase().includes(assigneeQ)) return false;
     if (!q) return true;
-    return [item.message, item.page, item.lesson, item.contact, item.id].some(v => String(v || '').toLowerCase().includes(q));
+    return [item.message, item.page, item.lesson, item.contact, item.assignee, item.id].some(v => String(v || '').toLowerCase().includes(q));
   });
 }
 
@@ -144,6 +151,7 @@ function render() {
           <span class="badge ${item.kind || 'bug'}">${labels[item.kind] || item.kind || 'באג'}</span>
           <span class="badge ${status}">${labels[status] || status}</span>
           ${item.lesson ? `<span class="badge">שיעור: ${escapeHtml(item.lesson)}</span>` : ''}
+          ${item.assignee ? `<span class="badge in_progress">מטפלת: ${escapeHtml(item.assignee)}</span>` : `<span class="badge">לא משויך</span>`}
         </div>
         <small>${fmtDate(item.createdAt)}</small>
       </div>
@@ -151,26 +159,42 @@ function render() {
       <div class="meta">
         <div><b>עמוד:</b> ${escapeHtml(item.page || '—')}</div>
         <div><b>פרטי קשר:</b> ${escapeHtml(item.contact || '—')}</div>
+        <div><b>מטפלת:</b> ${escapeHtml(item.assignee || '—')}</div>
         <div><b>תמונה:</b> ${attachment}</div>
         <div><b>ID:</b> ${escapeHtml(item.id)}</div>
       </div>
       <div class="actions">
         ${['open','in_progress','done','wont_fix'].map(s => `<button class="ghost" onclick="setStatus('${item.id}','${s}')">${labels[s]}</button>`).join('')}
       </div>
+      <div class="assignee-box">
+        <b>מטפלת:</b>
+        <input id="assignee-${item.id}" value="${escapeHtml(item.assignee || '')}" placeholder="שם המטפלת" />
+        <button class="ghost" onclick="setAssignee('${item.id}', document.getElementById('assignee-${item.id}').value)">שמור שם</button>
+        <button class="ghost" onclick="setAssignee('${item.id}', 'חווה')">חווה</button>
+        <button class="ghost" onclick="setAssignee('${item.id}', 'מרים')">מרים</button>
+        <button class="ghost" onclick="setAssignee('${item.id}', '')">נקה</button>
+      </div>
     </article>`;
   }).join('');
 }
 
-async function setStatus(id, status) {
+async function patchItem(id, body, errorMessage) {
   const res = await fetch(`/api/admin/feedback/${id}`, {
-    method: 'PATCH', headers: { ...authHeaders(), 'Content-Type': 'application/json' }, body: JSON.stringify({ status })
+    method: 'PATCH', headers: { ...authHeaders(), 'Content-Type': 'application/json' }, body: JSON.stringify(body)
   });
-  if (!res.ok) return alert('לא הצלחתי לעדכן סטטוס');
+  if (!res.ok) return alert(errorMessage);
   const data = await res.json();
   items = items.map(item => item.id === id ? data.item : item);
   render();
 }
+async function setStatus(id, status) {
+  return patchItem(id, { status }, 'לא הצלחתי לעדכן סטטוס');
+}
+async function setAssignee(id, assignee) {
+  return patchItem(id, { assignee }, 'לא הצלחתי לשמור מטפלת');
+}
 window.setStatus = setStatus;
+window.setAssignee = setAssignee;
 </script>
 </body>
 </html>
