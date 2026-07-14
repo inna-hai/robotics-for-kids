@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+
         :root {
             --pink: #FF6B9D;
             --purple: #9B5DE5;
@@ -21,7 +21,7 @@
             --light: #F8F9FF;
             --dark: #2D3047;
         }
-        
+
         body {
             font-family: 'Rubik', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
@@ -30,7 +30,7 @@
             display: flex;
             flex-direction: column;
         }
-        
+
         /* ===== HEADER ===== */
         .header {
             background: var(--white);
@@ -45,24 +45,24 @@
             flex-shrink: 0;
             min-width: 0;
         }
-        
+
         .logo {
             display: flex;
             align-items: center;
             gap: 0.45rem;
             min-width: 0;
         }
-        
+
         .logo-robot {
             font-size: 2rem;
             animation: bounce 2s infinite;
         }
-        
+
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
         }
-        
+
         .logo-text {
             font-size: 1.2rem;
             font-weight: 800;
@@ -71,7 +71,7 @@
             -webkit-text-fill-color: transparent;
             white-space: nowrap;
         }
-        
+
         .about-link, .city-link {
             font-size: 1.25rem;
             text-decoration: none;
@@ -80,12 +80,12 @@
             transition: all 0.3s;
             flex-shrink: 0;
         }
-        
+
         .about-link:hover, .city-link:hover {
             opacity: 1;
             transform: scale(1.2);
         }
-        
+
         /* Lesson Buttons */
         .lesson-tabs {
             display: flex;
@@ -97,7 +97,7 @@
             padding: 0.15rem 0.25rem;
             scrollbar-width: thin;
         }
-        
+
         .lesson-tab {
             min-width: 42px;
             height: 42px;
@@ -121,19 +121,19 @@
             color: #4b5563;
             line-height: 1;
         }
-        
+
         .lesson-tab:hover {
             transform: scale(1.15);
             border-color: var(--purple);
         }
-        
+
         .lesson-tab.active {
             background: linear-gradient(135deg, var(--purple), var(--pink));
             border-color: var(--purple);
             transform: scale(1.1);
             box-shadow: 0 4px 15px rgba(155, 93, 229, 0.4);
         }
-        
+
         /* Play Buttons */
         .play-buttons {
             display: flex;
@@ -142,7 +142,7 @@
             flex-wrap: nowrap;
             min-width: max-content;
         }
-        
+
         .btn-play {
             padding: 0.6rem 0.95rem;
             border: none;
@@ -156,28 +156,28 @@
             transition: all 0.3s;
             font-family: inherit;
         }
-        
+
         .btn-run {
             background: linear-gradient(135deg, var(--green), #00D9B5);
             color: var(--dark);
             box-shadow: 0 4px 15px rgba(0, 245, 212, 0.4);
         }
-        
+
         .btn-run:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(0, 245, 212, 0.5);
         }
-        
+
         .btn-stop {
             background: linear-gradient(135deg, var(--pink), #FF4777);
             color: white;
             box-shadow: 0 4px 15px rgba(255, 107, 157, 0.4);
         }
-        
+
         .btn-stop:hover {
             transform: translateY(-3px);
         }
-        
+
         /* ===== MAIN LAYOUT ===== */
         .main-container {
             display: grid;
@@ -187,7 +187,7 @@
             gap: 1rem;
             padding: 1rem;
         }
-        
+
         /* ===== LEFT SIDE - ROBOT ===== */
         .robot-section {
             background: var(--white);
@@ -199,7 +199,7 @@
             min-width: 0;
             min-height: 0;
         }
-        
+
         .robot-title {
             text-align: center;
             font-size: 1.5rem;
@@ -207,11 +207,11 @@
             color: var(--dark);
             margin-bottom: 1rem;
         }
-        
+
         .robot-title span {
             color: var(--purple);
         }
-        
+
         .presentation-link {
             display: inline-flex;
             align-items: center;
@@ -226,12 +226,12 @@
             transition: all 0.3s;
             box-shadow: 0 4px 15px rgba(155, 93, 229, 0.3);
         }
-        
+
         .presentation-link:hover {
             transform: scale(1.05);
             box-shadow: 0 6px 20px rgba(155, 93, 229, 0.5);
         }
-        
+
         /* Robot Canvas */
         .robot-stage {
             flex: 1;
@@ -241,12 +241,12 @@
             overflow: hidden;
             min-height: 300px;
         }
-        
+
         .robot-stage canvas {
             width: 100%;
             height: 100%;
         }
-        
+
         /* Ground */
         .ground {
             position: absolute;
@@ -257,7 +257,7 @@
             background: linear-gradient(180deg, #7BC96F 0%, #5DAE50 100%);
             border-radius: 0 0 1.5rem 1.5rem;
         }
-        
+
         .ground::before {
             content: '';
             position: absolute;
@@ -267,7 +267,7 @@
             height: 15px;
             background: linear-gradient(180deg, #8FD982 0%, transparent 100%);
         }
-        
+
         /* Sensor Display */
         .sensors-bar {
             display: flex;
@@ -276,7 +276,7 @@
             margin-top: 1rem;
             flex-wrap: wrap;
         }
-        
+
         .sensor-chip {
             display: flex;
             align-items: center;
@@ -289,17 +289,17 @@
             border: 3px solid #eee;
             transition: all 0.3s;
         }
-        
+
         .sensor-chip.active {
             background: linear-gradient(135deg, var(--yellow), #FFD93D);
             border-color: var(--yellow);
             transform: scale(1.05);
         }
-        
+
         .sensor-chip .icon {
             font-size: 1.25rem;
         }
-        
+
         /* Environment Buttons */
         .env-buttons {
             display: flex;
@@ -308,7 +308,7 @@
             margin-top: 1rem;
             flex-wrap: wrap;
         }
-        
+
         .env-btn {
             width: 70px;
             height: 70px;
@@ -327,16 +327,16 @@
             color: var(--dark);
             font-family: inherit;
         }
-        
+
         .env-btn .icon {
             font-size: 1.75rem;
         }
-        
+
         .env-btn:hover {
             transform: scale(1.1);
             border-color: var(--purple);
         }
-        
+
         .env-btn.active {
             background: linear-gradient(135deg, var(--yellow), #FFD93D);
             border-color: var(--orange);
@@ -378,7 +378,7 @@
             border-color: var(--purple);
             box-shadow: 0 6px 18px rgba(107, 91, 149, 0.18);
         }
-        
+
         /* ===== RIGHT SIDE - BLOCKS ===== */
         .blocks-section {
             background: var(--white);
@@ -390,7 +390,7 @@
             min-width: 0;
             min-height: 0;
         }
-        
+
         .blocks-header {
             background: linear-gradient(135deg, var(--purple), var(--pink));
             color: white;
@@ -401,14 +401,14 @@
             align-items: center;
             gap: 0.5rem;
         }
-        
+
         #blocklyDiv {
             flex: 1;
             min-height: 0;
             min-width: 0;
             direction: ltr;
         }
-        
+
         /* ===== WELCOME MODAL ===== */
         .modal {
             display: none;
@@ -423,11 +423,11 @@
             align-items: center;
             padding: 1rem;
         }
-        
+
         .modal.active {
             display: flex;
         }
-        
+
         .modal-content {
             background: var(--white);
             border-radius: 2rem;
@@ -437,44 +437,44 @@
             text-align: center;
             animation: popIn 0.4s ease;
         }
-        
+
         @keyframes popIn {
             from { transform: scale(0.8); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
-        
+
         .modal-robot {
             font-size: 6rem;
             margin-bottom: 1rem;
             animation: wave 1s infinite;
         }
-        
+
         @keyframes wave {
             0%, 100% { transform: rotate(0deg); }
             25% { transform: rotate(15deg); }
             75% { transform: rotate(-15deg); }
         }
-        
+
         .modal-title {
             font-size: 2rem;
             font-weight: 800;
             color: var(--dark);
             margin-bottom: 0.5rem;
         }
-        
+
         .modal-subtitle {
             font-size: 1.1rem;
             color: #666;
             margin-bottom: 1.5rem;
         }
-        
+
         .lesson-cards {
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
             margin-bottom: 1.5rem;
         }
-        
+
         .lesson-card {
             display: flex;
             align-items: center;
@@ -487,13 +487,13 @@
             border: 3px solid transparent;
             text-align: right;
         }
-        
+
         .lesson-card:hover {
             border-color: var(--purple);
             transform: translateX(-5px);
             background: white;
         }
-        
+
         .lesson-card .num {
             width: 50px;
             height: 50px;
@@ -505,22 +505,22 @@
             font-size: 1.5rem;
             flex-shrink: 0;
         }
-        
+
         .lesson-card .info {
             flex: 1;
         }
-        
+
         .lesson-card h3 {
             font-size: 1rem;
             color: var(--dark);
             margin-bottom: 0.25rem;
         }
-        
+
         .lesson-card p {
             font-size: 0.85rem;
             color: #888;
         }
-        
+
         .btn-start {
             width: 100%;
             padding: 1.25rem;
@@ -534,12 +534,12 @@
             transition: all 0.3s;
             font-family: inherit;
         }
-        
+
         .btn-start:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 30px rgba(0, 245, 212, 0.4);
         }
-        
+
         /* ===== LESSON PANEL (Side) ===== */
         .lesson-drawer {
             position: fixed;
@@ -555,11 +555,11 @@
             overflow-y: auto;
             padding: 1.5rem;
         }
-        
+
         .lesson-drawer.open {
             transform: translateX(0);
         }
-        
+
         .drawer-toggle {
             position: fixed;
             top: 50%;
@@ -579,15 +579,15 @@
             justify-content: center;
             transition: all 0.3s;
         }
-        
+
         .drawer-toggle:hover {
             width: 50px;
         }
-        
+
         .drawer-toggle.open {
             right: 320px;
         }
-        
+
         .lesson-drawer h2 {
             font-size: 1.25rem;
             color: var(--dark);
@@ -596,11 +596,11 @@
             align-items: center;
             gap: 0.5rem;
         }
-        
+
         .task-list {
             list-style: none;
         }
-        
+
         .task-item {
             display: flex;
             align-items: center;
@@ -613,16 +613,16 @@
             transition: all 0.2s;
             border: 3px solid transparent;
         }
-        
+
         .task-item:hover {
             border-color: var(--purple);
         }
-        
+
         .task-item.done {
             background: linear-gradient(135deg, #D4EDDA, #C3E6CB);
             border-color: var(--green);
         }
-        
+
         .task-checkbox {
             width: 30px;
             height: 30px;
@@ -634,25 +634,25 @@
             font-size: 1rem;
             flex-shrink: 0;
         }
-        
+
         .task-item.done .task-checkbox {
             background: var(--green);
             border-color: var(--green);
             color: white;
         }
-        
+
         .task-text {
             font-size: 0.95rem;
             color: var(--dark);
         }
-        
+
         .tip-box {
             background: linear-gradient(135deg, #FFF3CD, #FFEAA7);
             border-radius: 1rem;
             padding: 1rem;
             margin-top: 1rem;
         }
-        
+
         .tip-box h4 {
             font-size: 1rem;
             margin-bottom: 0.5rem;
@@ -660,34 +660,34 @@
             align-items: center;
             gap: 0.5rem;
         }
-        
+
         .tip-box p {
             font-size: 0.9rem;
             color: #666;
         }
-        
+
         /* ===== SUCCESS MODAL ===== */
         .success-modal .modal-content {
             background: linear-gradient(135deg, #D4EDDA, #C3E6CB);
         }
-        
+
         .success-icon {
             font-size: 5rem;
             margin-bottom: 1rem;
             animation: tada 1s ease;
         }
-        
+
         @keyframes tada {
             0%, 100% { transform: scale(1) rotate(0); }
             10%, 30%, 50%, 70%, 90% { transform: scale(1.1) rotate(-3deg); }
             20%, 40%, 60%, 80% { transform: scale(1.1) rotate(3deg); }
         }
-        
+
         .stars {
             font-size: 3rem;
             margin: 1rem 0;
         }
-        
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1100px) {
             .header {
@@ -704,7 +704,7 @@
                 grid-template-columns: 1fr;
                 min-height: 900px;
             }
-            
+
             .blocks-section {
                 min-height: 420px;
             }
@@ -720,9 +720,9 @@
             <a href="smart-city.html" class="city-link" title="מפת 15 השיעורים">🏙️</a>
             <a href="about.html?v=20260709-smart-city-about" class="about-link" title="אודות מסלול 15 השיעורים">ℹ️</a>
         </div>
-        
+
         <div class="lesson-tabs" id="lessonTabs" aria-label="בחירת שיעור במסלול 15 השיעורים"></div>
-        
+
         <div class="play-buttons">
             <a href="slides/lesson1.html" target="_blank" class="presentation-link" id="presentationLink">📽️ מצגת</a>
             <button class="btn-play btn-run" onclick="runCode()">
@@ -733,18 +733,18 @@
             </button>
         </div>
     </header>
-    
+
     <!-- Main Content -->
     <div class="main-container">
         <!-- Left: Robot -->
         <div class="robot-section">
             <h2 class="robot-title">👁️ שיעור 1: <span>הרובוט רואה!</span></h2>
-            
+
             <div class="robot-stage">
                 <canvas id="robotCanvas"></canvas>
                 <div class="ground"></div>
             </div>
-            
+
             <div class="sensors-bar">
                 <div class="sensor-chip" id="sensorLight">
                     <span class="icon">👁️</span>
@@ -783,7 +783,7 @@
                     <span id="pedestrianText">אין הולך רגל</span>
                 </div>
             </div>
-            
+
             <div class="env-buttons">
                 <button class="env-btn" onclick="toggleEnv('light')" id="envLight">
                     <span class="icon">💡</span>
@@ -825,7 +825,7 @@
                 </button>
             </div>
         </div>
-        
+
         <!-- Right: Blocks -->
         <div class="blocks-section">
             <div class="blocks-header">
@@ -834,45 +834,45 @@
             <div id="blocklyDiv"></div>
         </div>
     </div>
-    
+
     <!-- Lesson Drawer Toggle -->
     <button class="drawer-toggle" id="drawerToggle" onclick="toggleDrawer()">📋</button>
-    
+
     <!-- Lesson Drawer -->
     <div class="lesson-drawer" id="lessonDrawer">
         <h2>📝 המשימות שלי</h2>
         <p id="lessonStory" style="line-height: 1.6; color: #555; margin-bottom: 1rem;"></p>
-        
+
         <ul class="task-list" id="taskList">
             <!-- Tasks will be populated by JavaScript -->
         </ul>
-        
+
         <div class="tip-box" id="lessonFlowBox" style="display:none; background: linear-gradient(135deg, #E8F4FF, #DFF7FF);">
             <h4>⏱️ מהלך שיעור 60 דקות</h4>
             <ul id="lessonFlowList" style="padding-right: 1.1rem; line-height: 1.7;"></ul>
         </div>
-        
+
         <div class="tip-box" id="tipBox">
             <h4>💡 טיפ!</h4>
             <p id="tipText">לחצו על 💡 בכפתורי הסביבה כדי להדליק אור ולראות מה סנסי עושה!</p>
         </div>
     </div>
-    
+
     <!-- Welcome Modal -->
     <div class="modal active" id="welcomeModal">
         <div class="modal-content">
             <div class="modal-robot">🤖🏙️</div>
             <h2 class="modal-title">ברוכים הבאים לסנסי בעיר החכמה!</h2>
             <p class="modal-subtitle">בחרו תחנה בעיר — בכל שיעור פותרים בעיה אמיתית עם חיישנים ותכנות.</p>
-            
+
             <div class="lesson-cards" id="welcomeLessons">
                 <!-- Smart city lessons will be populated by JavaScript -->
             </div>
-            
+
             <button class="btn-start" onclick="startLesson(1)">🚀 התחילו בשיעור 1</button>
         </div>
     </div>
-    
+
     <!-- Success Modal -->
     <div class="modal" id="successModal">
         <div class="modal-content">
@@ -894,7 +894,7 @@
         let environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false };
         let isRunning = false;
         let drawerOpen = false;
-        
+
         // Draggable objects positions
         let objects = {
             wall: { x: 400, y: 200, width: 60, height: 80, emoji: '🧱' },
@@ -906,7 +906,7 @@
             cars: { x: 360, y: 180, radius: 40, emoji: '🚗' },
             pedestrian: { x: 130, y: 180, radius: 40, emoji: '🚶' }
         };
-        
+
         // Dragging state
         let dragging = null;
         let dragOffset = { x: 0, y: 0 };
@@ -914,21 +914,21 @@
         // ===== CANVAS SETUP =====
         const canvas = document.getElementById('robotCanvas');
         const ctx = canvas.getContext('2d');
-        
+
         function resizeCanvas() {
             const container = canvas.parentElement;
             canvas.width = container.clientWidth;
             canvas.height = container.clientHeight - 60; // Account for ground
             resetPositions();
         }
-        
+
         function resetPositions() {
             // Reset robot to center
             robot.x = canvas.width / 2;
             robot.y = currentLesson === 3 ? canvas.height * 0.58 : currentLesson === 4 ? canvas.height * 0.62 : currentLesson === 5 ? canvas.height * 0.64 : currentLesson === 6 ? canvas.height * 0.62 : canvas.height / 2;
             robot.angle = 0;
             robot.vehicleStopped = false;
-            
+
             // Reset objects to default positions
             objects.wall.x = currentLesson === 3 ? canvas.width * 0.72 : canvas.width - 80;
             objects.wall.y = currentLesson === 3 ? canvas.height * 0.58 : canvas.height / 2;
@@ -1125,13 +1125,13 @@
                 ctx.fillText(label, xs[i], y + 34);
             });
         }
-        
+
         window.addEventListener('resize', resizeCanvas);
-        
+
         // ===== DRAW ROBOT =====
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
+
             // Road scene for lesson 3
             if (currentLesson === 3) {
                 const sky = ctx.createLinearGradient(0, 0, 0, canvas.height);
@@ -1139,11 +1139,11 @@
                 sky.addColorStop(1, '#eaf8ff');
                 ctx.fillStyle = sky;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
-                
+
                 // Grass
                 ctx.fillStyle = '#55efc4';
                 ctx.fillRect(0, canvas.height * 0.72, canvas.width, canvas.height * 0.28);
-                
+
                 // Road
                 const roadTop = canvas.height * 0.42;
                 const roadHeight = canvas.height * 0.34;
@@ -1157,14 +1157,14 @@
                 ctx.lineTo(canvas.width, roadTop + roadHeight / 2);
                 ctx.stroke();
                 ctx.setLineDash([]);
-                
+
                 // Road labels
                 ctx.font = 'bold 16px Rubik';
                 ctx.fillStyle = '#1f2937';
                 ctx.textAlign = 'right';
                 ctx.fillText('כביש אימונים — גררו את המחסום קרוב/רחוק מהרכב', canvas.width - 18, 28);
             }
-            
+
             // Sky background
             if (currentLesson === 1 && !environment.light) {
                 const nightGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
@@ -1177,11 +1177,11 @@
                     ctx.fillText('✨', (i * 73) % Math.max(canvas.width, 1), 24 + (i * 41) % Math.max(canvas.height - 80, 1));
                 }
             }
-            
+
             if (environment.light) {
                 ctx.fillStyle = 'rgba(255, 220, 100, 0.3)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
-                
+
                 // Draggable Sun
                 ctx.beginPath();
                 ctx.arc(objects.sun.x, objects.sun.y, 40, 0, Math.PI * 2);
@@ -1191,7 +1191,7 @@
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('☀️', objects.sun.x, objects.sun.y);
-                
+
                 // Drag hint
                 if (!isRunning) {
                     ctx.font = '12px Rubik';
@@ -1199,7 +1199,7 @@
                     ctx.fillText('גרור אותי!', objects.sun.x, objects.sun.y + 45);
                 }
             }
-            
+
             // Smart street light for lesson 1
             if (currentLesson === 1) {
                 const lampX = canvas.width - 120;
@@ -1229,7 +1229,7 @@
                 ctx.textAlign = 'center';
                 ctx.fillText(robot.streetLightOn ? 'הפנס דולק' : 'הפנס כבוי', lampX - 58, lampY + 45);
             }
-            
+
             // Fire station scene for lesson 4
             if (currentLesson === 4) {
                 const stationX = canvas.width * 0.08;
@@ -1434,7 +1434,7 @@
             if (currentLesson >= 7) {
                 drawAdvancedLessonScene();
             }
-            
+
             // Draggable Smoke
             if (environment.smoke) {
                 if (currentLesson === 4) {
@@ -1457,7 +1457,7 @@
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('💨', objects.smoke.x, objects.smoke.y);
-                
+
                 // Animated smoke puffs around main smoke
                 ctx.font = '30px Arial';
                 for (let i = 0; i < 3; i++) {
@@ -1467,7 +1467,7 @@
                     ctx.fillText('💨', objects.smoke.x + Math.cos(angle) * dist, objects.smoke.y + Math.sin(angle) * dist);
                 }
                 ctx.globalAlpha = 1;
-                
+
                 // Drag hint
                 if (!isRunning) {
                     ctx.font = '12px Rubik';
@@ -1475,7 +1475,7 @@
                     ctx.fillText(currentLesson === 4 ? 'גררו עשן לכבאית!' : 'גרור אותי!', objects.smoke.x, objects.smoke.y + (currentLesson === 4 ? 95 : 45));
                 }
             }
-            
+
             // Draggable Obstacle/Wall
             if (environment.obstacle) {
                 if (currentLesson === 3) {
@@ -1494,7 +1494,7 @@
                     ctx.textBaseline = 'middle';
                     ctx.fillText('🧱', objects.wall.x, objects.wall.y);
                 }
-                
+
                 // Drag hint
                 if (!isRunning) {
                     ctx.font = '12px Rubik';
@@ -1502,14 +1502,14 @@
                     ctx.fillText('גררו קרוב/רחוק!', objects.wall.x, objects.wall.y + 65);
                 }
             }
-            
+
             // Draggable Sound source
             if (environment.sound) {
                 ctx.font = '45px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('🔊', objects.sound.x, objects.sound.y);
-                
+
                 // Animated waves
                 ctx.strokeStyle = 'rgba(100, 100, 255, 0.5)';
                 ctx.lineWidth = 3;
@@ -1518,7 +1518,7 @@
                     ctx.arc(objects.sound.x, objects.sound.y, 25 + i * 15 + Math.sin(Date.now()/200) * 5, -0.5, 0.5);
                     ctx.stroke();
                 }
-                
+
                 // Drag hint
                 if (!isRunning) {
                     ctx.font = '12px Rubik';
@@ -1526,18 +1526,18 @@
                     ctx.fillText('גרור אותי!', objects.sound.x, objects.sound.y + 50);
                 }
             }
-            
+
             // Robot (also draggable)
             ctx.save();
             ctx.translate(robot.x, robot.y);
             ctx.rotate(robot.angle * Math.PI / 180);
-            
+
             // Robot shadow
             ctx.beginPath();
             ctx.ellipse(0, (currentLesson === 3 || currentLesson === 4) ? 34 : 40, (currentLesson === 3 || currentLesson === 4) ? 54 : 35, 10, 0, 0, Math.PI * 2);
             ctx.fillStyle = 'rgba(0,0,0,0.28)';
             ctx.fill();
-            
+
             if (currentLesson === 3) {
                 // High-contrast car body for road lesson.
                 // Front faces +X (right), which is also Blockly "move forward" at angle 0.
@@ -1553,12 +1553,12 @@
                 ctx.closePath();
                 ctx.fill();
                 ctx.stroke();
-                
+
                 ctx.fillStyle = '#0984e3';
                 ctx.beginPath();
                 ctx.roundRect(-38, -18, 62, 32, 12);
                 ctx.fill();
-                
+
                 // Windows: rear window on the left, front windshield angled to the right.
                 ctx.fillStyle = '#dff9ff';
                 ctx.fillRect(-27, -14, 18, 14);
@@ -1569,13 +1569,13 @@
                 ctx.lineTo(0, 0);
                 ctx.closePath();
                 ctx.fill();
-                
+
                 ctx.fillStyle = '#111827';
                 ctx.beginPath();
                 ctx.arc(-30, 24, 10, 0, Math.PI * 2);
                 ctx.arc(30, 24, 10, 0, Math.PI * 2);
                 ctx.fill();
-                
+
                 // Headlight and direction arrow on the right/front.
                 ctx.fillStyle = '#fdcb6e';
                 ctx.beginPath();
@@ -1586,7 +1586,7 @@
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('→', 12, 7);
-                
+
                 ctx.font = '18px Arial';
                 ctx.fillText('🤖', -11, 1);
             } else if (currentLesson === 4) {
@@ -1659,7 +1659,7 @@
                 ctx.textBaseline = 'middle';
                 ctx.fillText('🤖', 0, 0);
             }
-            
+
             ctx.restore();
 
             if (currentLesson === 7) {
@@ -1685,7 +1685,7 @@
                 ctx.lineWidth = 2;
                 ctx.stroke();
             }
-            
+
             // Drag hint for robot
             if (!isRunning) {
                 ctx.font = '12px Rubik';
@@ -1693,13 +1693,13 @@
                 ctx.textAlign = 'center';
                 ctx.fillText(currentLesson === 3 ? 'גררו את הרכב!' : currentLesson === 4 ? 'גררו את הכבאית!' : 'גרור אותי!', robot.x, robot.y + 58);
             }
-            
+
             // Speech bubble
             if (robot.speaking) {
                 const bubbleX = robot.x;
                 const bubbleY = robot.y - (currentLesson === 4 ? 78 : 60);
                 const bubbleWidth = Math.max(130, Math.min(260, robot.speaking.length * 10 + 34));
-                
+
                 ctx.fillStyle = 'white';
                 ctx.strokeStyle = '#333';
                 ctx.lineWidth = 2;
@@ -1707,16 +1707,16 @@
                 ctx.roundRect(bubbleX - bubbleWidth / 2, bubbleY - 22, bubbleWidth, 44, 15);
                 ctx.fill();
                 ctx.stroke();
-                
+
                 ctx.fillStyle = '#333';
                 ctx.font = 'bold 15px Rubik';
                 ctx.textAlign = 'center';
                 ctx.fillText(robot.speaking, bubbleX, bubbleY);
             }
-            
+
             requestAnimationFrame(draw);
         }
-        
+
         // ===== DRAGGING =====
         function getMousePos(e) {
             const rect = canvas.getBoundingClientRect();
@@ -1727,24 +1727,24 @@
                 y: clientY - rect.top
             };
         }
-        
+
         function hitTest(pos, obj, radius = 40) {
             const dx = pos.x - obj.x;
             const dy = pos.y - obj.y;
             return Math.sqrt(dx * dx + dy * dy) < radius;
         }
-        
+
         function hitTestVehicle(pos) {
             // Vehicle lessons use wider drawn bodies than the robot emoji.
             if (currentLesson !== 3 && currentLesson !== 4) return false;
             return pos.x >= robot.x - 70 && pos.x <= robot.x + 75 &&
                 pos.y >= robot.y - 48 && pos.y <= robot.y + 48;
         }
-        
+
         function onDragStart(e) {
             if (isRunning) return;
             const pos = getMousePos(e);
-            
+
             // Check what was clicked (robot/car first, then objects)
             if (hitTestVehicle(pos) || hitTest(pos, robot, 40)) {
                 dragging = 'robot';
@@ -1762,20 +1762,20 @@
                 dragging = 'sun';
                 dragOffset = { x: pos.x - objects.sun.x, y: pos.y - objects.sun.y };
             }
-            
+
             if (dragging) {
                 canvas.style.cursor = 'grabbing';
             }
         }
-        
+
         function onDragMove(e) {
             if (!dragging) return;
             e.preventDefault();
             const pos = getMousePos(e);
-            
+
             const newX = Math.max(30, Math.min(canvas.width - 30, pos.x - dragOffset.x));
             const newY = Math.max(30, Math.min(canvas.height - 30, pos.y - dragOffset.y));
-            
+
             if (dragging === 'robot') {
                 robot.x = newX;
                 robot.y = newY;
@@ -1784,30 +1784,30 @@
                 objects[dragging].y = newY;
             }
         }
-        
+
         function onDragEnd() {
             dragging = null;
             canvas.style.cursor = 'grab';
         }
-        
+
         // Mouse events
         canvas.addEventListener('mousedown', onDragStart);
         canvas.addEventListener('mousemove', onDragMove);
         canvas.addEventListener('mouseup', onDragEnd);
         canvas.addEventListener('mouseleave', onDragEnd);
-        
+
         // Touch events
         canvas.addEventListener('touchstart', onDragStart);
         canvas.addEventListener('touchmove', onDragMove);
         canvas.addEventListener('touchend', onDragEnd);
-        
+
         // Set initial cursor
         canvas.style.cursor = 'grab';
-        
+
         // ===== BLOCKLY =====
         function initBlockly() {
             defineBlocks();
-            
+
             const toolbox = {
                 kind: 'categoryToolbox',
                 contents: [
@@ -1910,7 +1910,7 @@
                     this.setColour('#FFAB19');
                 }
             };
-            
+
             // Movement
             Blockly.Blocks['move_forward'] = {
                 init: function() {
@@ -1920,7 +1920,7 @@
                     this.setColour('#4C97FF');
                 }
             };
-            
+
             Blockly.Blocks['move_backward'] = {
                 init: function() {
                     this.appendDummyInput().appendField('⬇️ זוז אחורה');
@@ -1929,7 +1929,7 @@
                     this.setColour('#4C97FF');
                 }
             };
-            
+
             Blockly.Blocks['turn_right_small'] = {
                 init: function() {
                     this.appendDummyInput().appendField('↩️ סובב מעט ימינה');
@@ -1938,7 +1938,7 @@
                     this.setColour('#4C97FF');
                 }
             };
-            
+
             Blockly.Blocks['turn_left_small'] = {
                 init: function() {
                     this.appendDummyInput().appendField('↪️ סובב מעט שמאלה');
@@ -1947,7 +1947,7 @@
                     this.setColour('#4C97FF');
                 }
             };
-            
+
             Blockly.Blocks['turn_right'] = {
                 init: function() {
                     this.appendDummyInput().appendField('↩️ סובב ימינה 90°');
@@ -1956,7 +1956,7 @@
                     this.setColour('#4C97FF');
                 }
             };
-            
+
             Blockly.Blocks['turn_left'] = {
                 init: function() {
                     this.appendDummyInput().appendField('↪️ סובב שמאלה 90°');
@@ -1965,7 +1965,7 @@
                     this.setColour('#4C97FF');
                 }
             };
-            
+
             Blockly.Blocks['stop_vehicle'] = {
                 init: function() {
                     this.appendDummyInput().appendField('🛑 עצור רכב');
@@ -2013,7 +2013,7 @@
 
             // Backward compatibility for old saved workspaces that used the generic stop block.
             Blockly.Blocks['stop'] = Blockly.Blocks['stop_vehicle'];
-            
+
             // Sensors
             Blockly.Blocks['sensor_light'] = {
                 init: function() {
@@ -2024,7 +2024,7 @@
                     this.setColour('#40BF4A');
                 }
             };
-            
+
             Blockly.Blocks['sensor_sound'] = {
                 init: function() {
                     this.appendDummyInput()
@@ -2040,7 +2040,7 @@
                     this.setColour('#40BF4A');
                 }
             };
-            
+
             Blockly.Blocks['sensor_touch'] = {
                 init: function() {
                     this.appendDummyInput()
@@ -2050,7 +2050,7 @@
                     this.setColour('#40BF4A');
                 }
             };
-            
+
             Blockly.Blocks['sensor_smell'] = {
                 init: function() {
                     this.appendDummyInput()
@@ -2120,7 +2120,7 @@
                     this.setColour('#40BF4A');
                 }
             };
-            
+
             // Control
             Blockly.Blocks['control_if'] = {
                 init: function() {
@@ -2131,7 +2131,7 @@
                     this.setColour('#FF8C1A');
                 }
             };
-            
+
             Blockly.Blocks['control_forever'] = {
                 init: function() {
                     this.appendDummyInput().appendField('🔁 לנצח');
@@ -2140,7 +2140,7 @@
                     this.setColour('#FF8C1A');
                 }
             };
-            
+
             Blockly.Blocks['control_wait'] = {
                 init: function() {
                     this.appendDummyInput()
@@ -2161,7 +2161,7 @@
                     this.setColour('#FF8C1A');
                 }
             };
-            
+
             // Actions
             Blockly.Blocks['action_say'] = {
                 init: function() {
@@ -2173,7 +2173,7 @@
                     this.setColour('#9966FF');
                 }
             };
-            
+
             Blockly.Blocks['action_street_light'] = {
                 init: function() {
                     this.appendDummyInput()
@@ -2184,7 +2184,7 @@
                     this.setColour('#9966FF');
                 }
             };
-            
+
             Blockly.Blocks['action_traffic_light'] = {
                 init: function() {
                     this.appendDummyInput()
@@ -2229,7 +2229,7 @@
                 }
             };
         }
-        
+
         // ===== CODE EXECUTION =====
         async function runCode() {
             if (isRunning) return;
@@ -2237,7 +2237,7 @@
             robot.vehicleStopped = false;
             robot.trafficCarsStopped = false;
             robot.pedestrianStopped = false;
-            
+
             const blocks = workspace.getTopBlocks(true);
             for (const block of blocks) {
                 if (block.type === 'event_start') {
@@ -2246,16 +2246,16 @@
             }
             isRunning = false;
         }
-        
+
         function stopCode() {
             isRunning = false;
             robot.vehicleStopped = true;
             robot.speaking = '';
         }
-        
+
         async function runBlock(block) {
             if (!block || !isRunning) return;
-            
+
             switch (block.type) {
                 case 'move_forward':
                     if (robot.vehicleStopped) {
@@ -2268,7 +2268,7 @@
                     robot.y = Math.max(40, Math.min(canvas.height - 40, robot.y));
                     await sleep(400);
                     break;
-                    
+
                 case 'move_backward':
                     robot.vehicleStopped = false;
                     robot.x -= Math.cos(robot.angle * Math.PI / 180) * 30;
@@ -2277,27 +2277,27 @@
                     robot.y = Math.max(40, Math.min(canvas.height - 40, robot.y));
                     await sleep(400);
                     break;
-                    
+
                 case 'turn_right_small':
                     robot.angle += 15;
                     await sleep(180);
                     break;
-                    
+
                 case 'turn_left_small':
                     robot.angle -= 15;
                     await sleep(180);
                     break;
-                    
+
                 case 'turn_right':
                     robot.angle += 90;
                     await sleep(300);
                     break;
-                    
+
                 case 'turn_left':
                     robot.angle -= 90;
                     await sleep(300);
                     break;
-                    
+
                 case 'stop_vehicle':
                 case 'stop':
                     robot.vehicleStopped = true;
@@ -2336,30 +2336,30 @@
                     robot.speaking = 'התוכנית נעצרה';
                     await sleep(500);
                     break;
-                    
+
                 case 'control_if':
                     if (evalCondition(block.getInputTargetBlock('COND'))) {
                         await runBlock(block.getInputTargetBlock('DO'));
                     }
                     break;
-                    
+
                 case 'control_forever':
                     while (isRunning) {
                         await runBlock(block.getInputTargetBlock('DO'));
                         await sleep(100);
                     }
                     return; // Don't continue after forever
-                    
+
                 case 'control_wait':
                     await sleep(block.getFieldValue('SEC') * 1000);
                     break;
-                    
+
                 case 'action_say':
                     robot.speaking = block.getFieldValue('TEXT');
                     await sleep(2000);
                     robot.speaking = '';
                     break;
-                    
+
                 case 'action_street_light':
                     robot.streetLightOn = block.getFieldValue('STATE') === 'ON';
                     robot.speaking = robot.streetLightOn ? 'הדלקתי פנס!' : 'כיביתי פנס!';
@@ -2373,7 +2373,7 @@
                     await sleep(900);
                     robot.speaking = '';
                     break;
-                    
+
                 case 'action_sound':
                     playBeep(block.getFieldValue('SND'));
                     await sleep(500);
@@ -2393,23 +2393,23 @@
                     robot.speaking = '';
                     break;
             }
-            
+
             await runBlock(block.getNextBlock());
         }
-        
+
         // Calculate distance between robot and an object
         function distanceToObject(obj) {
             const dx = robot.x - obj.x;
             const dy = robot.y - obj.y;
             return Math.sqrt(dx * dx + dy * dy);
         }
-        
+
         // Check if robot can sense each element (with proximity)
         function canSenseLight() {
             // Light is ambient - always sensed if on
             return environment.light;
         }
-        
+
         function getSoundLevel() {
             if (!environment.sound) return 'QUIET';
             const distance = distanceToObject(objects.sound);
@@ -2417,16 +2417,16 @@
             if (distance < 230) return 'SOFT';
             return 'QUIET';
         }
-        
+
         function canSenseSound() {
             return getSoundLevel() !== 'QUIET';
         }
-        
+
         function canSenseTouch() {
             // Touch requires being close (within 70 pixels)
             return environment.obstacle && distanceToObject(objects.wall) < 70;
         }
-        
+
         function canSenseSmoke() {
             // Smoke can be smelled within 150 pixels
             return environment.smoke && distanceToObject(objects.smoke) < 150;
@@ -2516,11 +2516,11 @@
         function canSenseLineSide(side) {
             return getLineSide() === side;
         }
-        
+
         function evalCondition(block) {
             if (!block) return false;
             const val = block.getFieldValue('VAL');
-            
+
             switch (block.type) {
                 case 'sensor_light':
                     return val === 'BRIGHT' ? canSenseLight() : !canSenseLight();
@@ -2549,7 +2549,7 @@
             }
             return false;
         }
-        
+
         function playBeep(type) {
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
             const osc = ctx.createOscillator();
@@ -2561,11 +2561,11 @@
             gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.3);
             osc.stop(ctx.currentTime + 0.3);
         }
-        
+
         function sleep(ms) {
             return new Promise(r => setTimeout(r, ms));
         }
-        
+
         // ===== ENVIRONMENT =====
         function toggleEnv(type) {
             environment[type] = !environment[type];
@@ -2575,7 +2575,7 @@
                 .classList.toggle('active', environment[type]);
             updateSensors();
         }
-        
+
         function resetEnv() {
             environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false };
             document.querySelectorAll('.env-btn').forEach(b => b.classList.remove('active'));
@@ -2603,7 +2603,7 @@
             btn.querySelector('.icon').textContent = next === 'BLUE' ? '🔵' : next === 'GREEN' ? '🟢' : next === 'YELLOW' ? '🟡' : '♻️';
             updateSensors();
         }
-        
+
         function updateSensors() {
             // Use proximity-based sensing
             const sensesLight = canSenseLight();
@@ -2618,7 +2618,7 @@
             const lineSide = getLineSide();
             const sensesCars = canSenseCars();
             const sensesPedestrian = canSensePedestrian();
-            
+
             document.getElementById('lightText').textContent = sensesLight ? 'בהיר!' : 'חשוך';
             document.getElementById('soundText').textContent = soundLevel === 'LOUD' ? 'חזק מדי!' : soundLevel === 'SOFT' ? 'חלש' : 'שקט';
             document.getElementById('touchText').textContent = sensesTouch ? 'קיר!' : 'פנוי';
@@ -2634,7 +2634,7 @@
             document.getElementById('pedestrianText').textContent = currentLesson === 8
                 ? (sensesPedestrian ? 'יש הולך רגל!' : 'אין הולך רגל')
                 : 'לא בשימוש';
-            
+
             document.getElementById('sensorLight').classList.toggle('active', sensesLight);
             document.getElementById('sensorSound').classList.toggle('active', sensesSound);
             document.getElementById('sensorTouch').classList.toggle('active', sensesTouch);
@@ -2645,10 +2645,10 @@
             document.getElementById('sensorCars').classList.toggle('active', currentLesson === 8 && sensesCars);
             document.getElementById('sensorPedestrian').classList.toggle('active', currentLesson === 8 && sensesPedestrian);
         }
-        
+
         // Update sensors periodically (for dragging feedback)
         setInterval(updateSensors, 100);
-        
+
         // ===== LESSON TASKS =====
         const lessonTasks = {
             1: {
@@ -2697,7 +2697,7 @@
                 tip: 'נסו לשלב כמה שיותר חושים! רובוט חכם משתמש בכל החיישנים שלו יחד 🤖'
             }
         };
-        
+
         function updateTasks(lessonNum) {
             const taskList = document.getElementById('taskList');
             const tipText = document.getElementById('tipText');
@@ -2707,14 +2707,14 @@
             const cityLesson = window.getSensiLesson ? window.getSensiLesson(lessonNum) : null;
             const legacyLesson = lessonTasks[lessonNum];
             const tasks = cityLesson?.studentTasks || legacyLesson?.tasks || [];
-            
+
             taskList.innerHTML = tasks.map((task, i) => `
                 <li class="task-item" onclick="toggleTask(${i + 1})">
                     <div class="task-checkbox">✓</div>
                     <div class="task-text">${task}</div>
                 </li>
             `).join('');
-            
+
             tipText.textContent = cityLesson?.tip || legacyLesson?.tip || 'נסו לשנות את הסביבה ולבדוק איך סנסי מגיב.';
             if (lessonStory) {
                 lessonStory.textContent = cityLesson ? `${cityLesson.emoji} ${cityLesson.story}` : '';
@@ -2738,7 +2738,7 @@
                 }
             }
         }
-        
+
         // ===== LESSONS =====
         function renderLessonTabs() {
             const tabs = document.getElementById('lessonTabs');
@@ -2768,10 +2768,10 @@
 
         function selectLesson(num) {
             currentLesson = num;
-            document.querySelectorAll('.lesson-tab').forEach((t) => 
+            document.querySelectorAll('.lesson-tab').forEach((t) =>
                 t.classList.toggle('active', Number(t.querySelector('.lesson-num')?.textContent) === num));
             document.getElementById('welcomeModal').classList.remove('active');
-            
+
             const cityLesson = window.getSensiLesson ? window.getSensiLesson(num) : null;
             const title = cityLesson
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
@@ -2781,37 +2781,37 @@
             resetPositions();
             updateTasks(num);
         }
-        
+
         function startLesson(num) {
             selectLesson(num);
         }
-        
+
         function toggleDrawer() {
             drawerOpen = !drawerOpen;
             document.getElementById('lessonDrawer').classList.toggle('open', drawerOpen);
             document.getElementById('drawerToggle').classList.toggle('open', drawerOpen);
         }
-        
+
         function toggleTask(num) {
             const items = document.querySelectorAll('.task-item');
             items[num-1].classList.toggle('done');
-            
+
             // Check all done
             if ([...items].every(i => i.classList.contains('done'))) {
                 document.getElementById('successModal').classList.add('active');
             }
         }
-        
+
         function closeSuccess() {
             document.getElementById('successModal').classList.remove('active');
         }
-        
+
         function getInitialLessonFromUrl() {
             const params = new URLSearchParams(window.location.search);
             const requested = Number(params.get('lesson')) || 1;
             return Math.min(Math.max(requested, 1), 15);
         }
-        
+
         // ===== INIT =====
         window.onload = function() {
             resizeCanvas();
