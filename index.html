@@ -734,6 +734,10 @@
                     <span class="icon">🎨</span>
                     <span id="colorText">אין חפץ</span>
                 </div>
+                <div class="sensor-chip" id="sensorLine">
+                    <span class="icon">🛣️</span>
+                    <span id="lineText">לא על הקו</span>
+                </div>
             </div>
             
             <div class="env-buttons">
@@ -919,8 +923,9 @@
                 ctx.lineWidth = 12;
                 ctx.setLineDash([]);
                 ctx.beginPath();
-                ctx.moveTo(canvas.width * 0.14, canvas.height * 0.58);
-                ctx.bezierCurveTo(canvas.width * 0.32, canvas.height * 0.36, canvas.width * 0.55, canvas.height * 0.78, canvas.width * 0.84, canvas.height * 0.52);
+                const line = getLesson7LinePoints();
+                ctx.moveTo(line.start.x, line.start.y);
+                ctx.bezierCurveTo(line.c1.x, line.c1.y, line.c2.x, line.c2.y, line.end.x, line.end.y);
                 ctx.stroke();
             }
 
@@ -1509,6 +1514,30 @@
             }
             
             ctx.restore();
+
+            if (currentLesson === 7) {
+                const sensorPoint = getLineSensorPoint();
+                const rightProbe = getLineProbePoint('RIGHT');
+                const leftProbe = getLineProbePoint('LEFT');
+                const side = getLineSide();
+
+                ctx.beginPath();
+                ctx.arc(rightProbe.x, rightProbe.y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = side === 'RIGHT' ? '#0984e3' : 'rgba(9,132,227,.35)';
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(leftProbe.x, leftProbe.y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = side === 'LEFT' ? '#6c5ce7' : 'rgba(108,92,231,.35)';
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.arc(sensorPoint.x, sensorPoint.y, 6, 0, Math.PI * 2);
+                ctx.fillStyle = canSenseLine() ? '#00b894' : '#d63031';
+                ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
             
             // Drag hint for robot
             if (!isRunning) {
@@ -1650,6 +1679,8 @@
                         contents: [
                             { kind: 'block', type: 'move_forward' },
                             { kind: 'block', type: 'move_backward' },
+                            { kind: 'block', type: 'turn_right_small' },
+                            { kind: 'block', type: 'turn_left_small' },
                             { kind: 'block', type: 'turn_right' },
                             { kind: 'block', type: 'turn_left' },
                             { kind: 'block', type: 'stop_vehicle' }
@@ -1665,7 +1696,9 @@
                             { kind: 'block', type: 'sensor_touch' },
                             { kind: 'block', type: 'sensor_smell' },
                             { kind: 'block', type: 'sensor_temperature' },
-                            { kind: 'block', type: 'sensor_color' }
+                            { kind: 'block', type: 'sensor_color' },
+                            { kind: 'block', type: 'sensor_line' },
+                            { kind: 'block', type: 'sensor_line_side' }
                         ]
                     },
                     {
@@ -1743,9 +1776,27 @@
                 }
             };
             
+            Blockly.Blocks['turn_right_small'] = {
+                init: function() {
+                    this.appendDummyInput().appendField('↩️ סובב מעט ימינה');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#4C97FF');
+                }
+            };
+            
+            Blockly.Blocks['turn_left_small'] = {
+                init: function() {
+                    this.appendDummyInput().appendField('↪️ סובב מעט שמאלה');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#4C97FF');
+                }
+            };
+            
             Blockly.Blocks['turn_right'] = {
                 init: function() {
-                    this.appendDummyInput().appendField('↩️ סובב ימינה');
+                    this.appendDummyInput().appendField('↩️ סובב ימינה 90°');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
                     this.setColour('#4C97FF');
@@ -1754,7 +1805,7 @@
             
             Blockly.Blocks['turn_left'] = {
                 init: function() {
-                    this.appendDummyInput().appendField('↪️ סובב שמאלה');
+                    this.appendDummyInput().appendField('↪️ סובב שמאלה 90°');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
                     this.setColour('#4C97FF');
@@ -1835,6 +1886,26 @@
                     this.appendDummyInput()
                         .appendField('🎨 צבע החפץ =')
                         .appendField(new Blockly.FieldDropdown([['כחול 🔵', 'BLUE'], ['ירוק 🟢', 'GREEN'], ['צהוב 🟡', 'YELLOW']]), 'VAL');
+                    this.setOutput(true, 'Boolean');
+                    this.setColour('#40BF4A');
+                }
+            };
+
+            Blockly.Blocks['sensor_line'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('🛣️ חיישן קו =')
+                        .appendField(new Blockly.FieldDropdown([['על הקו ⬛', 'ON'], ['לא על הקו ⬜', 'OFF']]), 'VAL');
+                    this.setOutput(true, 'Boolean');
+                    this.setColour('#40BF4A');
+                }
+            };
+
+            Blockly.Blocks['sensor_line_side'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('🧭 הקו נמצא בצד')
+                        .appendField(new Blockly.FieldDropdown([['ימין ➡️', 'RIGHT'], ['שמאל ⬅️', 'LEFT']]), 'VAL');
                     this.setOutput(true, 'Boolean');
                     this.setColour('#40BF4A');
                 }
@@ -1984,6 +2055,16 @@
                     await sleep(400);
                     break;
                     
+                case 'turn_right_small':
+                    robot.angle += 15;
+                    await sleep(180);
+                    break;
+                    
+                case 'turn_left_small':
+                    robot.angle -= 15;
+                    await sleep(180);
+                    break;
+                    
                 case 'turn_right':
                     robot.angle += 90;
                     await sleep(300);
@@ -2103,6 +2184,75 @@
         function getRecycleColor() {
             return environment.recycleColor || 'NONE';
         }
+
+        function getLesson7LinePoints() {
+            return {
+                start: { x: canvas.width * 0.12, y: canvas.height * 0.64 },
+                c1: { x: canvas.width * 0.22, y: canvas.height * 0.22 },
+                c2: { x: canvas.width * 0.68, y: canvas.height * 0.88 },
+                end: { x: canvas.width * 0.88, y: canvas.height * 0.40 }
+            };
+        }
+
+        function getLineSensorPoint() {
+            const angle = robot.angle * Math.PI / 180;
+            return {
+                x: robot.x + Math.cos(angle) * 28,
+                y: robot.y + Math.sin(angle) * 28
+            };
+        }
+
+        function getLineProbePoint(side) {
+            const angle = robot.angle * Math.PI / 180;
+            const forward = 28;
+            const sideways = side === 'RIGHT' ? 18 : -18;
+            return {
+                x: robot.x + Math.cos(angle) * forward + Math.cos(angle + Math.PI / 2) * sideways,
+                y: robot.y + Math.sin(angle) * forward + Math.sin(angle + Math.PI / 2) * sideways
+            };
+        }
+
+        function getDistanceToLine(point) {
+            if (currentLesson !== 7 || !canvas.width || !canvas.height) return Infinity;
+
+            const line = getLesson7LinePoints();
+            let minDistance = Infinity;
+
+            for (let i = 0; i <= 120; i++) {
+                const t = i / 120;
+                const mt = 1 - t;
+                const x = mt ** 3 * line.start.x + 3 * mt ** 2 * t * line.c1.x + 3 * mt * t ** 2 * line.c2.x + t ** 3 * line.end.x;
+                const y = mt ** 3 * line.start.y + 3 * mt ** 2 * t * line.c1.y + 3 * mt * t ** 2 * line.c2.y + t ** 3 * line.end.y;
+                const dx = point.x - x;
+                const dy = point.y - y;
+                minDistance = Math.min(minDistance, Math.sqrt(dx * dx + dy * dy));
+            }
+
+            return minDistance;
+        }
+
+        function getLineDistance() {
+            return getDistanceToLine(getLineSensorPoint());
+        }
+
+        function canSenseLine() {
+            return getLineDistance() <= 10;
+        }
+
+        function getLineSide() {
+            if (currentLesson !== 7) return 'NONE';
+
+            const rightDistance = getDistanceToLine(getLineProbePoint('RIGHT'));
+            const leftDistance = getDistanceToLine(getLineProbePoint('LEFT'));
+            const maxSearchDistance = 34;
+
+            if (rightDistance > maxSearchDistance && leftDistance > maxSearchDistance) return 'NONE';
+            return rightDistance <= leftDistance ? 'RIGHT' : 'LEFT';
+        }
+
+        function canSenseLineSide(side) {
+            return getLineSide() === side;
+        }
         
         function evalCondition(block) {
             if (!block) return false;
@@ -2125,6 +2275,10 @@
                     return getTemperatureLevel() === val;
                 case 'sensor_color':
                     return getRecycleColor() === val;
+                case 'sensor_line':
+                    return val === 'ON' ? canSenseLine() : !canSenseLine();
+                case 'sensor_line_side':
+                    return canSenseLineSide(val);
             }
             return false;
         }
@@ -2188,6 +2342,8 @@
             const tempLevel = getTemperatureLevel();
             const recycleColor = getRecycleColor();
             const recycleColorText = recycleColor === 'BLUE' ? 'כחול' : recycleColor === 'GREEN' ? 'ירוק' : recycleColor === 'YELLOW' ? 'צהוב' : 'אין חפץ';
+            const sensesLine = canSenseLine();
+            const lineSide = getLineSide();
             
             document.getElementById('lightText').textContent = sensesLight ? 'בהיר!' : 'חשוך';
             document.getElementById('soundText').textContent = soundLevel === 'LOUD' ? 'חזק מדי!' : soundLevel === 'SOFT' ? 'חלש' : 'שקט';
@@ -2195,6 +2351,9 @@
             document.getElementById('smellText').textContent = sensesSmoke ? 'עשן!' : 'נקי';
             document.getElementById('tempText').textContent = tempLevel === 'HOT' ? 'חם מדי!' : 'נעים';
             document.getElementById('colorText').textContent = recycleColorText;
+            document.getElementById('lineText').textContent = currentLesson === 7
+                ? (sensesLine ? 'על הקו!' : lineSide === 'RIGHT' ? 'הקו מימין' : lineSide === 'LEFT' ? 'הקו משמאל' : 'לא על הקו')
+                : 'לא בשימוש';
             
             document.getElementById('sensorLight').classList.toggle('active', sensesLight);
             document.getElementById('sensorSound').classList.toggle('active', sensesSound);
@@ -2202,6 +2361,7 @@
             document.getElementById('sensorSmell').classList.toggle('active', sensesSmoke);
             document.getElementById('sensorTemp').classList.toggle('active', tempLevel === 'HOT');
             document.getElementById('sensorColor').classList.toggle('active', recycleColor !== 'NONE');
+            document.getElementById('sensorLine').classList.toggle('active', currentLesson === 7 && sensesLine);
         }
         
         // Update sensors periodically (for dragging feedback)
