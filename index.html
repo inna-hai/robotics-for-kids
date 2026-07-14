@@ -1779,7 +1779,8 @@
                             { kind: 'block', type: 'sensor_touch' },
                             { kind: 'block', type: 'sensor_smell' },
                             { kind: 'block', type: 'sensor_temperature' },
-                            { kind: 'block', type: 'sensor_color' }
+                            { kind: 'block', type: 'sensor_color' },
+                            { kind: 'block', type: 'sensor_line' }
                         ]
                     },
                     {
@@ -1949,6 +1950,16 @@
                     this.appendDummyInput()
                         .appendField('🎨 צבע החפץ =')
                         .appendField(new Blockly.FieldDropdown([['כחול 🔵', 'BLUE'], ['ירוק 🟢', 'GREEN'], ['צהוב 🟡', 'YELLOW']]), 'VAL');
+                    this.setOutput(true, 'Boolean');
+                    this.setColour('#40BF4A');
+                }
+            };
+
+            Blockly.Blocks['sensor_line'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('🛣️ חיישן קו =')
+                        .appendField(new Blockly.FieldDropdown([['על הקו ⬛', 'ON'], ['מחוץ לקו ⬜', 'OFF']]), 'VAL');
                     this.setOutput(true, 'Boolean');
                     this.setColour('#40BF4A');
                 }
@@ -2266,6 +2277,8 @@
                     return getTemperatureLevel() === val;
                 case 'sensor_color':
                     return getRecycleColor() === val;
+                case 'sensor_line':
+                    return val === 'ON' ? canSenseLine() : !canSenseLine();
             }
             return false;
         }
