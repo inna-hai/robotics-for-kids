@@ -734,6 +734,10 @@
                     <span class="icon">🎨</span>
                     <span id="colorText">אין חפץ</span>
                 </div>
+                <div class="sensor-chip" id="sensorLine">
+                    <span class="icon">🛣️</span>
+                    <span id="lineText">אין קו</span>
+                </div>
             </div>
             
             <div class="env-buttons">
@@ -2213,6 +2217,33 @@
         function getRecycleColor() {
             return environment.recycleColor || 'NONE';
         }
+
+        function lesson7LinePoint(t) {
+            const roadTop = canvas.height * 0.34;
+            const roadH = canvas.height * 0.40;
+            const start = { x: canvas.width * 0.16, y: roadTop + roadH * 0.66 };
+            const c1 = { x: canvas.width * 0.32, y: roadTop + roadH * 0.20 };
+            const c2 = { x: canvas.width * 0.58, y: roadTop + roadH * 0.84 };
+            const end = { x: canvas.width * 0.84, y: roadTop + roadH * 0.36 };
+            const mt = 1 - t;
+            return {
+                x: mt * mt * mt * start.x + 3 * mt * mt * t * c1.x + 3 * mt * t * t * c2.x + t * t * t * end.x,
+                y: mt * mt * mt * start.y + 3 * mt * mt * t * c1.y + 3 * mt * t * t * c2.y + t * t * t * end.y
+            };
+        }
+
+        function canSenseLine() {
+            if (currentLesson !== 7) return false;
+            const sensor = { x: robot.x, y: robot.y + 30 };
+            let best = Infinity;
+            for (let i = 0; i <= 80; i++) {
+                const point = lesson7LinePoint(i / 80);
+                const dx = sensor.x - point.x;
+                const dy = sensor.y - point.y;
+                best = Math.min(best, Math.sqrt(dx * dx + dy * dy));
+            }
+            return best < 34;
+        }
         
         function evalCondition(block) {
             if (!block) return false;
@@ -2297,6 +2328,7 @@
             const sensesSmoke = canSenseSmoke();
             const tempLevel = getTemperatureLevel();
             const recycleColor = getRecycleColor();
+            const sensesLine = canSenseLine();
             const recycleColorText = recycleColor === 'BLUE' ? 'כחול' : recycleColor === 'GREEN' ? 'ירוק' : recycleColor === 'YELLOW' ? 'צהוב' : 'אין חפץ';
             
             document.getElementById('lightText').textContent = sensesLight ? 'בהיר!' : 'חשוך';
@@ -2305,6 +2337,7 @@
             document.getElementById('smellText').textContent = sensesSmoke ? 'עשן!' : 'נקי';
             document.getElementById('tempText').textContent = tempLevel === 'HOT' ? 'חם מדי!' : 'נעים';
             document.getElementById('colorText').textContent = recycleColorText;
+            document.getElementById('lineText').textContent = currentLesson === 7 ? (sensesLine ? 'על הקו!' : 'מחוץ לקו') : 'אין קו';
             
             document.getElementById('sensorLight').classList.toggle('active', sensesLight);
             document.getElementById('sensorSound').classList.toggle('active', sensesSound);
@@ -2312,6 +2345,7 @@
             document.getElementById('sensorSmell').classList.toggle('active', sensesSmoke);
             document.getElementById('sensorTemp').classList.toggle('active', tempLevel === 'HOT');
             document.getElementById('sensorColor').classList.toggle('active', recycleColor !== 'NONE');
+            document.getElementById('sensorLine').classList.toggle('active', sensesLine);
         }
         
         // Update sensors periodically (for dragging feedback)
