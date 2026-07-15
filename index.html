@@ -503,11 +503,67 @@
             gap: 0.5rem;
         }
 
-        #blocklyDiv {
+        .blockly-workspace-shell {
             flex: 1;
             min-height: 0;
             min-width: 0;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 44px;
+            grid-template-rows: minmax(0, 1fr) 42px;
+            gap: 0.45rem;
+            background: #fff;
+        }
+
+        #blocklyDiv {
+            min-height: 0;
+            min-width: 0;
             direction: ltr;
+        }
+
+        .blockly-scroll-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.25rem;
+        }
+
+        .blockly-scroll-buttons.vertical {
+            flex-direction: column;
+        }
+
+        .blockly-scroll-buttons.horizontal {
+            grid-column: 1 / 2;
+            grid-row: 2 / 3;
+            flex-direction: row;
+            padding-bottom: 0.45rem;
+        }
+
+        .blockly-scroll-corner {
+            grid-column: 2 / 3;
+            grid-row: 2 / 3;
+        }
+
+        .blockly-scroll-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            color: #fff;
+            font-size: 1.05rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.24);
+            transition: transform 0.15s ease, opacity 0.15s ease;
+        }
+
+        .blockly-scroll-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .blockly-scroll-btn:active {
+            transform: scale(0.96);
         }
 
         /* ===== WELCOME MODAL ===== */
@@ -988,7 +1044,18 @@
             <div class="blocks-header">
                 🧩 גררו בלוקים לכאן!
             </div>
-            <div id="blocklyDiv"></div>
+            <div class="blockly-workspace-shell">
+                <div id="blocklyDiv"></div>
+                <div class="blockly-scroll-buttons vertical" aria-label="כפתורי גלילה אנכית בלוח הבלוקים">
+                    <button class="blockly-scroll-btn" type="button" onclick="scrollBlocklyCanvas(0, -240)" aria-label="גלול למעלה">▲</button>
+                    <button class="blockly-scroll-btn" type="button" onclick="scrollBlocklyCanvas(0, 240)" aria-label="גלול למטה">▼</button>
+                </div>
+                <div class="blockly-scroll-buttons horizontal" aria-label="כפתורי גלילה אופקית בלוח הבלוקים">
+                    <button class="blockly-scroll-btn" type="button" onclick="scrollBlocklyCanvas(240, 0)" aria-label="גלול ימינה">▶</button>
+                    <button class="blockly-scroll-btn" type="button" onclick="scrollBlocklyCanvas(-240, 0)" aria-label="גלול שמאלה">◀</button>
+                </div>
+                <div class="blockly-scroll-corner"></div>
+            </div>
         </div>
     </div>
 
@@ -1173,11 +1240,11 @@
             ctx.fillText(`${scene.icon} ${scene.place} — ${lesson.title}`, canvas.width / 2, 28);
 
             // Mission board
-            const compactMission = currentLesson === 8 || currentLesson === 11;
-            const boardX = currentLesson === 8 ? canvas.width - 238 : currentLesson === 11 ? canvas.width - 220 : canvas.width * 0.56;
-            const boardY = currentLesson === 8 ? 48 : currentLesson === 11 ? 40 : canvas.height * 0.12;
-            const boardW = currentLesson === 8 ? 210 : currentLesson === 11 ? 198 : canvas.width * 0.36;
-            const boardH = currentLesson === 8 ? 78 : currentLesson === 11 ? 74 : 135;
+            const compactMission = currentLesson === 7 || currentLesson === 8 || currentLesson === 9 || currentLesson === 11;
+            const boardX = currentLesson === 7 ? 20 : currentLesson === 8 ? canvas.width - 238 : currentLesson === 9 ? canvas.width - 224 : currentLesson === 11 ? canvas.width - 220 : canvas.width * 0.56;
+            const boardY = currentLesson === 7 ? 40 : currentLesson === 8 ? 48 : currentLesson === 9 ? 42 : currentLesson === 11 ? 40 : canvas.height * 0.12;
+            const boardW = currentLesson === 7 ? 190 : currentLesson === 8 ? 210 : currentLesson === 9 ? 196 : currentLesson === 11 ? 198 : canvas.width * 0.36;
+            const boardH = currentLesson === 7 ? 70 : currentLesson === 8 ? 78 : currentLesson === 9 ? 70 : currentLesson === 11 ? 74 : 135;
             ctx.fillStyle = compactMission ? 'rgba(255,255,255,.88)' : 'rgba(255,255,255,.92)';
             ctx.strokeStyle = compactMission ? '#0ea5e9' : '#38bdf8';
             ctx.lineWidth = compactMission ? 2 : 3;
@@ -1189,14 +1256,19 @@
             ctx.fillStyle = '#0f172a';
 
             if (compactMission) {
+                const compactText = currentLesson === 7
+                    ? { titleSize: 11, bodySize: 9, titleY: 15, line1Y: 31, line2Y: 45, line3Y: 59 }
+                    : currentLesson === 9
+                        ? { titleSize: 11, bodySize: 9, titleY: 15, line1Y: 31, line2Y: 45, line3Y: 59 }
+                        : { titleSize: 12, bodySize: 10, titleY: 17, line1Y: 37, line2Y: 53, line3Y: 68 };
 
-                ctx.font = 'bold 12px Rubik';
-                ctx.fillText('🎯 משימה', boardX + boardW - 12, boardY + 17);
-                ctx.font = '10px Rubik';
+                ctx.font = `bold ${compactText.titleSize}px Rubik`;
+                ctx.fillText('🎯 משימה', boardX + boardW - 12, boardY + compactText.titleY);
+                ctx.font = `${compactText.bodySize}px Rubik`;
                 ctx.fillStyle = '#334155';
-                ctx.fillText(`חיישן: ${lesson.sensorFocus}`, boardX + boardW - 12, boardY + 37);
-                ctx.fillText(`רעיון: ${lesson.codingConcept}`, boardX + boardW - 12, boardY + 53);
-                ctx.fillText(scene.action, boardX + boardW - 12, boardY + 68);
+                ctx.fillText(`חיישן: ${lesson.sensorFocus}`, boardX + boardW - 12, boardY + compactText.line1Y);
+                ctx.fillText(`רעיון: ${lesson.codingConcept}`, boardX + boardW - 12, boardY + compactText.line2Y);
+                ctx.fillText(scene.action, boardX + boardW - 12, boardY + compactText.line3Y);
             } else {
                 ctx.font = 'bold 15px Rubik';
                 ctx.fillText('משימת תכנות', boardX + boardW - 14, boardY + 24);
@@ -1219,7 +1291,7 @@
 
                     if (i === 1) {
                         const lightX = xs[i];
-                        const lightY = y - 10;
+                        const lightY = y - 28;
                         ctx.strokeStyle = '#334155';
                         ctx.lineWidth = 4;
                         ctx.beginPath();
@@ -1253,14 +1325,16 @@
 
                     const isStopped = (i === 2 && robot.trafficCarsStopped) || (i === 0 && robot.pedestrianStopped);
                     const t = Date.now() / 1000;
-                    const motion = isStopped ? 0 : Math.sin(t * 2.4) * 24;
+                    const wave = t * 2.4;
+                    const motion = isStopped ? 0 : Math.sin(wave) * 24;
+                    const movingRight = Math.cos(wave) > 0;
                     const objectX = xs[i] + motion;
                     const objectY = y - 8;
 
                     ctx.font = i === 2 ? '48px Arial' : '50px Arial';
                     ctx.save();
                     ctx.translate(objectX, objectY);
-                    if (i === 0 && motion < 0) {
+                    if (i === 0 && movingRight) {
                         ctx.scale(-1, 1);
                     }
                     ctx.fillText(emojis[i], 0, 0);
@@ -1313,6 +1387,20 @@
                     return;
                 }
 
+                if (currentLesson === 9) {
+                    const activeLesson9Objects = [environment.people, environment.light, robot.fanOn];
+                    if (!activeLesson9Objects[i]) return;
+
+                    const lesson9Icons = ['🧑‍🎓🧑‍🏫', '💡', '❄️'];
+                    const lesson9Labels = ['יש תלמידים', 'האור דולק', 'המזגן פועל'];
+                    ctx.font = i === 0 ? '42px Arial' : '40px Arial';
+                    ctx.fillText(lesson9Icons[i], xs[i], y - 46);
+                    ctx.font = 'bold 12px Rubik';
+                    ctx.fillStyle = '#334155';
+                    ctx.fillText(lesson9Labels[i], xs[i], y - 4);
+                    return;
+                }
+
                 ctx.fillStyle = 'rgba(255,255,255,.9)';
                 ctx.strokeStyle = '#94a3b8';
                 ctx.lineWidth = 2;
@@ -1320,18 +1408,6 @@
                 ctx.roundRect(xs[i] - 52, y - 52, 104, 104, 18);
                 ctx.fill();
                 ctx.stroke();
-                const isPresenceCard = currentLesson === 9 && i === 0;
-                if (isPresenceCard) {
-                    if (!environment.people) return;
-
-                    ctx.font = '42px Arial';
-                    ctx.fillText('🧑‍🎓🧑‍🏫', xs[i], y - 46);
-                    ctx.font = 'bold 12px Rubik';
-                    ctx.fillStyle = '#334155';
-                    ctx.fillText('יש תלמידים', xs[i], y - 4);
-                    return;
-                }
-
                 ctx.font = '34px Arial';
                 ctx.fillText(emojis[i], xs[i], y - 10);
                 ctx.font = 'bold 12px Rubik';
@@ -2027,93 +2103,86 @@
         const toolboxLessonOverrides = {
             1: {
                 movement: [],
-                sensors: ['sensor_light'],
-                controls: ['control_if'],
-                actions: ['action_street_light', 'action_say']
+                sensors: ['sensor_light', 'sensor_pedestrian'],
+                controls: ['control_if']
             },
             2: {
                 movement: [],
-                sensors: ['sensor_sound'],
-                controls: ['control_if', 'stop_program'],
-                actions: ['action_say', 'action_sound']
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound'],
+                controls: ['control_if', 'stop_program']
             },
             3: {
                 movement: ['move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
-                sensors: ['sensor_touch'],
-                controls: ['control_if', 'stop_program'],
-                actions: ['action_say']
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch'],
+                controls: ['control_if', 'stop_program']
             },
             4: {
-                movement: [],
-                sensors: ['sensor_smell'],
-                controls: ['control_if', 'stop_program'],
-                actions: ['action_say', 'action_sound']
+                movement: ['move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell'],
+                controls: ['control_if', 'stop_program']
             },
             5: {
-                movement: [],
-                sensors: ['sensor_temperature'],
-                controls: ['control_if'],
-                actions: ['action_say', 'action_fan']
+                movement: ['move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature'],
+                controls: ['control_if', 'stop_program']
             },
             6: {
-                movement: [],
-                sensors: ['sensor_color'],
-                controls: ['control_if'],
-                actions: ['action_say', 'action_recycle_bin']
+                movement: ['move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color'],
+                controls: ['control_if', 'stop_program']
             },
             7: {
-                movement: ['move_forward', 'turn_right_small', 'turn_left_small', 'stop_vehicle'],
-                sensors: ['sensor_line', 'sensor_line_side', 'sensor_goal'],
-                controls: ['control_if', 'control_forever', 'stop_program'],
-                actions: ['action_say']
+                movement: ['move_forward', 'move_backward', 'turn_right_small', 'turn_left_small', 'turn_right', 'turn_left', 'stop_vehicle'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_line_side', 'sensor_goal'],
+                controls: ['control_if', 'control_forever', 'stop_program']
             },
             8: {
-                movement: ['stop_cars', 'start_cars', 'stop_pedestrian', 'start_pedestrian'],
-                sensors: ['sensor_pedestrian', 'sensor_cars'],
-                controls: ['control_if', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_traffic_light']
+                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'stop_cars', 'start_cars', 'stop_pedestrian', 'start_pedestrian'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_cars', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line'],
+                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
+                actions: ['action_say', 'action_street_light', 'action_traffic_light', 'action_sound']
             },
             9: {
-                movement: [],
-                sensors: ['sensor_people', 'sensor_light'],
-                controls: ['control_if', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_street_light', 'action_fan', 'action_class_power']
+                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_people'],
+                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
+                actions: ['action_say', 'action_street_light', 'action_sound', 'action_ac', 'action_water', 'action_recycle_bin', 'action_class_power']
             },
             10: {
-                movement: [],
-                sensors: ['sensor_soil'],
-                controls: ['control_if', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_water']
+                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_people', 'sensor_soil'],
+                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
+                actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_water', 'action_recycle_bin', 'action_class_power']
             },
             11: {
-                movement: [],
-                sensors: ['sensor_armed', 'sensor_motion', 'sensor_door'],
-                controls: ['control_if', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_alarm']
+                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_people', 'sensor_soil', 'sensor_armed', 'sensor_motion', 'sensor_door'],
+                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
+                actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_water', 'action_recycle_bin', 'action_class_power', 'action_alarm']
             },
             12: {
-                movement: ['move_forward', 'turn_right', 'turn_left', 'route_turn', 'stop_vehicle'],
-                sensors: ['sensor_obstacle'],
-                controls: ['control_if', 'stop_program'],
-                actions: ['action_say', 'action_sound']
+                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'route_turn'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_people', 'sensor_soil', 'sensor_armed', 'sensor_motion', 'sensor_door', 'sensor_obstacle'],
+                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
+                actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_water', 'action_recycle_bin', 'action_class_power', 'action_alarm']
             },
             13: {
-                movement: ['move_forward', 'turn_right', 'turn_left', 'stop_vehicle'],
-                sensors: ['sensor_light', 'sensor_motion', 'sensor_sound'],
+                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'route_turn'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_people', 'sensor_soil', 'sensor_armed', 'sensor_motion', 'sensor_door', 'sensor_obstacle'],
                 controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_street_light', 'action_sound', 'action_alarm']
+                actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_water', 'action_recycle_bin', 'action_class_power', 'action_alarm']
             },
             14: {
-                movement: ['move_forward', 'turn_right', 'turn_left', 'route_turn', 'stop_vehicle'],
-                sensors: ['sensor_smell', 'sensor_temperature', 'sensor_obstacle'],
-                controls: ['control_if', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_sound', 'action_alarm', 'action_safe_route']
+                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'route_turn'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_people', 'sensor_soil', 'sensor_armed', 'sensor_motion', 'sensor_door', 'sensor_obstacle'],
+                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
+                actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_water', 'action_recycle_bin', 'action_class_power', 'action_alarm', 'action_safe_route']
             },
             15: {
                 movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'route_turn'],
-                sensors: ['sensor_light', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_goal', 'sensor_cars', 'sensor_pedestrian', 'sensor_people', 'sensor_soil', 'sensor_armed', 'sensor_motion', 'sensor_door', 'sensor_obstacle'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_people', 'sensor_soil', 'sensor_armed', 'sensor_motion', 'sensor_door', 'sensor_obstacle'],
                 controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_street_light', 'action_traffic_light', 'action_sound', 'action_fan', 'action_water', 'action_recycle_bin', 'action_class_power', 'action_alarm', 'action_safe_route']
+                actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_water', 'action_recycle_bin', 'action_class_power', 'action_alarm', 'action_safe_route']
             }
         };
 
@@ -2184,56 +2253,56 @@
                 env: ['envLight']
             },
             2: {
-                sensors: ['sensorSound'],
-                env: ['envSound']
+                sensors: ['sensorLight', 'sensorSound'],
+                env: ['envLight', 'envSound']
             },
             3: {
-                sensors: ['sensorTouch'],
-                env: ['envObstacle']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch'],
+                env: ['envLight', 'envSound', 'envObstacle']
             },
             4: {
-                sensors: ['sensorSmell'],
-                env: ['envSmoke']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke']
             },
             5: {
-                sensors: ['sensorTemp'],
-                env: ['envTemperatureHot']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot']
             },
             6: {
-                sensors: ['sensorColor'],
-                env: ['envRecycleColor']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor']
             },
             7: {
-                sensors: ['sensorLine', 'sensorGoal'],
-                env: []
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor']
             },
             8: {
-                sensors: ['sensorCars', 'sensorPedestrian'],
-                env: ['envCars', 'envPedestrian']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian']
             },
             9: {
-                sensors: ['sensorPeople', 'sensorLight'],
-                env: ['envPeople', 'envLight']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople']
             },
             10: {
-                sensors: ['sensorSoil'],
-                env: ['envSoilDry']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorSoil'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envSoilDry']
             },
             11: {
-                sensors: ['sensorArmed', 'sensorMotion', 'sensorDoor'],
-                env: ['envArmedMode', 'envMotion', 'envDoorOpen']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorMotion', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envMotion', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
             },
             12: {
-                sensors: ['sensorTouch'],
-                env: ['envObstacle']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorMotion', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envMotion', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
             },
             13: {
-                sensors: ['sensorLight', 'sensorMotion', 'sensorSound'],
-                env: ['envLight', 'envMotion', 'envSound']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorMotion', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envMotion', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
             },
             14: {
-                sensors: ['sensorSmell', 'sensorTemp', 'sensorTouch'],
-                env: ['envSmoke', 'envTemperatureHot', 'envObstacle']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorMotion', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envMotion', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
             },
             15: {
                 sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorMotion', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
@@ -2298,6 +2367,7 @@
                 trashcan: true,
                 zoom: {
                     controls: true,
+                    wheel: false,
                     startScale: 1.0,
                     maxScale: 1.5,
                     minScale: 0.7
@@ -2309,6 +2379,32 @@
                     snap: true
                 }
             });
+        }
+
+        function scrollBlocklyCanvas(deltaX, deltaY) {
+            if (!workspace?.getMetrics) return;
+
+            const metrics = workspace.getMetrics();
+            if (!metrics) return;
+
+            const scrollLeft = metrics.scrollLeft ?? metrics.contentLeft ?? 0;
+            const scrollTop = metrics.scrollTop ?? metrics.contentTop ?? 0;
+            const currentX = typeof workspace.scrollX === 'number'
+                ? Math.max(0, -workspace.scrollX - scrollLeft)
+                : Math.max(0, metrics.viewLeft - metrics.contentLeft);
+            const currentY = typeof workspace.scrollY === 'number'
+                ? Math.max(0, -workspace.scrollY - scrollTop)
+                : Math.max(0, metrics.viewTop - metrics.contentTop);
+            const maxX = Math.max(0, (metrics.scrollWidth ?? metrics.contentWidth) - metrics.viewWidth);
+            const maxY = Math.max(0, (metrics.scrollHeight ?? metrics.contentHeight) - metrics.viewHeight);
+            const nextX = Math.min(maxX, Math.max(0, currentX + deltaX));
+            const nextY = Math.min(maxY, Math.max(0, currentY + deltaY));
+
+            if (typeof workspace.scroll === 'function') {
+                workspace.scroll(-(nextX + scrollLeft), -(nextY + scrollTop));
+            } else if (workspace.scrollbar?.set) {
+                workspace.scrollbar.set(nextX, nextY, true);
+            }
         }
 
         function defineBlocks() {
@@ -2734,6 +2830,17 @@
                 }
             };
 
+            Blockly.Blocks['action_ac'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('❄️ מזגן')
+                        .appendField(new Blockly.FieldDropdown([['הפעל', 'ON'], ['כבה', 'OFF']]), 'STATE');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+
             Blockly.Blocks['action_water'] = {
                 init: function() {
                     this.appendDummyInput()
@@ -2955,9 +3062,14 @@
 
                 case 'action_fan':
                     robot.fanOn = block.getFieldValue('STATE') === 'ON';
-                    robot.speaking = currentLesson === 9
-                        ? (robot.fanOn ? 'הפעלתי מזגן' : 'כיביתי מזגן')
-                        : (robot.fanOn ? 'מקרר את החממה!' : 'המאוורר כבוי');
+                    robot.speaking = robot.fanOn ? 'מקרר את החממה!' : 'המאוורר כבוי';
+                    await sleep(900);
+                    robot.speaking = '';
+                    break;
+
+                case 'action_ac':
+                    robot.fanOn = block.getFieldValue('STATE') === 'ON';
+                    robot.speaking = robot.fanOn ? 'הפעלתי מזגן' : 'כיביתי מזגן';
                     await sleep(900);
                     robot.speaking = '';
                     break;
