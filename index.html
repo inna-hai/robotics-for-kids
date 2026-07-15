@@ -332,43 +332,48 @@
         }
 
         /* Environment Buttons */
-        .env-buttons {
-            display: flex;
-            justify-content: flex-start;
-            gap: 0.5rem;
+        .env-scroll-wrap {
             margin-top: 0.7rem;
-            flex-wrap: nowrap;
             overflow-x: auto;
             overflow-y: hidden;
             max-width: 100%;
-            padding: 0.1rem 0.15rem 0.75rem;
+            padding: 0.1rem 0.15rem 1.15rem;
             scroll-padding-inline: 0.15rem;
-            scroll-snap-type: x proximity;
             -webkit-overflow-scrolling: touch;
             scrollbar-color: #8b5cf6 #eef2ff;
             scrollbar-width: thin;
         }
 
-        .env-buttons::-webkit-scrollbar {
+        .env-scroll-wrap::-webkit-scrollbar {
             height: 9px;
         }
 
-        .env-buttons::-webkit-scrollbar-track {
+        .env-scroll-wrap::-webkit-scrollbar-track {
             background: #eef2ff;
             border-radius: 999px;
         }
 
-        .env-buttons::-webkit-scrollbar-thumb {
+        .env-scroll-wrap::-webkit-scrollbar-thumb {
             background: linear-gradient(90deg, var(--purple), var(--pink));
             border-radius: 999px;
             border: 2px solid #eef2ff;
+        }
+
+        .env-buttons {
+            display: flex;
+            justify-content: flex-start;
+            gap: 0.5rem;
+            flex-wrap: nowrap;
+            width: max-content;
+            min-width: 100%;
+            overflow: visible;
+            scroll-snap-type: x proximity;
         }
 
         .env-btn {
             flex: 0 0 82px;
             width: 76px;
             height: 68px;
-            margin-bottom: 1.2rem;
             scroll-snap-align: start;
             border-radius: 1rem;
             border: 4px solid #eee;
@@ -404,7 +409,7 @@
         .env-reset-row {
             display: flex;
             justify-content: center;
-            margin-top: 1rem;
+            margin-top: 0.75rem;
         }
 
         .env-reset-btn {
@@ -858,51 +863,53 @@
                 </div>
             </div>
 
-            <div class="env-buttons">
-                <button class="env-btn" onclick="toggleEnv('light')" id="envLight">
-                    <span class="icon">💡</span>
-                    אור
-                </button>
-                <button class="env-btn" onclick="toggleEnv('sound')" id="envSound">
-                    <span class="icon">🔊</span>
-                    צליל
-                </button>
-                <button class="env-btn" onclick="toggleEnv('obstacle')" id="envObstacle">
-                    <span class="icon">🧱</span>
-                    קיר
-                </button>
-                <button class="env-btn" onclick="toggleEnv('smoke')" id="envSmoke">
-                    <span class="icon">💨</span>
-                    עשן
-                </button>
-                <button class="env-btn" onclick="toggleEnv('temperatureHot')" id="envTemperatureHot">
-                    <span class="icon">🌡️</span>
-                    חום
-                </button>
-                <button class="env-btn" onclick="cycleRecycleColor()" id="envRecycleColor">
-                    <span class="icon">♻️</span>
-                    חפץ למחזור
-                </button>
-                <button class="env-btn" onclick="toggleEnv('cars')" id="envCars">
-                    <span class="icon">🚗</span>
-                    מכוניות
-                </button>
-                <button class="env-btn" onclick="toggleEnv('pedestrian')" id="envPedestrian">
-                    <span class="icon">🚶</span>
-                    הולך רגל
-                </button>
-                <button class="env-btn" onclick="toggleEnv('armedMode')" id="envArmedMode">
-                    <span class="icon">🔐</span>
-                    מערכת דרוכה
-                </button>
-                <button class="env-btn" onclick="toggleEnv('motion')" id="envMotion">
-                    <span class="icon">🏃</span>
-                    תנועה
-                </button>
-                <button class="env-btn" onclick="toggleEnv('doorOpen')" id="envDoorOpen">
-                    <span class="icon">🚪</span>
-                    דלת פתוחה
-                </button>
+            <div class="env-scroll-wrap" aria-label="גללו לרוחב כדי לראות עוד כפתורי סביבה">
+                <div class="env-buttons">
+                    <button class="env-btn" onclick="toggleEnv('light')" id="envLight">
+                        <span class="icon">💡</span>
+                        אור
+                    </button>
+                    <button class="env-btn" onclick="toggleEnv('sound')" id="envSound">
+                        <span class="icon">🔊</span>
+                        צליל
+                    </button>
+                    <button class="env-btn" onclick="toggleEnv('obstacle')" id="envObstacle">
+                        <span class="icon">🧱</span>
+                        קיר
+                    </button>
+                    <button class="env-btn" onclick="toggleEnv('smoke')" id="envSmoke">
+                        <span class="icon">💨</span>
+                        עשן
+                    </button>
+                    <button class="env-btn" onclick="toggleEnv('temperatureHot')" id="envTemperatureHot">
+                        <span class="icon">🌡️</span>
+                        חום
+                    </button>
+                    <button class="env-btn" onclick="cycleRecycleColor()" id="envRecycleColor">
+                        <span class="icon">♻️</span>
+                        חפץ למחזור
+                    </button>
+                    <button class="env-btn" onclick="toggleEnv('cars')" id="envCars">
+                        <span class="icon">🚗</span>
+                        מכוניות
+                    </button>
+                    <button class="env-btn" onclick="toggleEnv('pedestrian')" id="envPedestrian">
+                        <span class="icon">🚶</span>
+                        הולך רגל
+                    </button>
+                    <button class="env-btn" onclick="toggleEnv('armedMode')" id="envArmedMode">
+                        <span class="icon">🔐</span>
+                        מערכת דרוכה
+                    </button>
+                    <button class="env-btn" onclick="toggleEnv('motion')" id="envMotion">
+                        <span class="icon">🏃</span>
+                        תנועה
+                    </button>
+                    <button class="env-btn" onclick="toggleEnv('doorOpen')" id="envDoorOpen">
+                        <span class="icon">🚪</span>
+                        דלת פתוחה
+                    </button>
+                </div>
             </div>
             <div class="env-reset-row">
                 <button class="env-reset-btn" onclick="resetEnv()">
