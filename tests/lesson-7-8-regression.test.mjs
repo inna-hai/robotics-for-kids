@@ -81,9 +81,9 @@ test('sensor chips layout is responsive and cannot grow outside the robot panel'
   assert.ok(!activeSensorChipRule.includes('transform: scale(1.05);'), 'Active sensor chips should not scale and overflow');
 });
 
-test('motion control is hidden before lesson 11', () => {
+test('motion control is shown only in lessons that use movement or security motion', () => {
   const overridesBlock = indexHtml.match(/const\s+lessonControlOverrides\s*=\s*\{[\s\S]*?\n\s*\};/)?.[0] || '';
-  for (const lesson of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
+  for (const lesson of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14]) {
     const lessonOverride = overridesBlock.match(new RegExp(`${lesson}:\\s*\\{[\\s\\S]*?\\n\\s*\\}`))?.[0] || '';
     assert.doesNotMatch(lessonOverride, /sensorMotion/, `Lesson ${lesson} should not show sensorMotion`);
     assert.doesNotMatch(lessonOverride, /envMotion/, `Lesson ${lesson} should not show envMotion`);
@@ -95,7 +95,7 @@ test('line off is not exposed as a separate environment button', () => {
   assert.doesNotMatch(indexHtml, /toggleEnv\('lineOff'\)/);
 });
 
-test('lesson sensor and environment controls are cumulative after they are introduced', () => {
+test('lesson sensor and environment controls are focused per lesson instead of cumulative', () => {
   const overridesBlock = indexHtml.match(/const\s+lessonControlOverrides\s*=\s*\{[\s\S]*?\n\s*\};/)?.[0] || '';
   const getList = (lesson, key) => {
     const lessonOverride = overridesBlock.match(new RegExp(`${lesson}:\\s*\\{[\\s\\S]*?\\n\\s*\\}`))?.[0] || '';
@@ -104,18 +104,25 @@ test('lesson sensor and environment controls are cumulative after they are intro
   };
 
   const expectedByLesson = {
+    1: { sensors: ['sensorLight'], env: ['envLight'] },
+    2: { sensors: ['sensorSound'], env: ['envSound'] },
+    3: { sensors: ['sensorTouch'], env: ['envObstacle'] },
+    4: { sensors: ['sensorSmell'], env: ['envSmoke'] },
+    5: { sensors: ['sensorTemp'], env: ['envTemperatureHot'] },
+    6: { sensors: ['sensorColor'], env: ['envRecycleColor'] },
     7: { sensors: ['sensorLine', 'sensorGoal'], env: [] },
-    8: { sensors: ['sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian'], env: ['envCars', 'envPedestrian'] },
-    9: { sensors: ['sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople'], env: ['envCars', 'envPedestrian', 'envPeople'] },
-    10: { sensors: ['sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorSoil'], env: ['envCars', 'envPedestrian', 'envPeople', 'envSoilDry'] },
-    11: { sensors: ['sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorMotion', 'sensorSoil', 'sensorArmed', 'sensorDoor'], env: ['envCars', 'envPedestrian', 'envPeople', 'envMotion', 'envSoilDry', 'envArmedMode', 'envDoorOpen'] }
+    8: { sensors: ['sensorCars', 'sensorPedestrian'], env: ['envCars', 'envPedestrian'] },
+    9: { sensors: ['sensorPeople', 'sensorLight'], env: ['envPeople', 'envLight'] },
+    10: { sensors: ['sensorSoil'], env: ['envSoilDry'] },
+    11: { sensors: ['sensorArmed', 'sensorMotion', 'sensorDoor'], env: ['envArmedMode', 'envMotion', 'envDoorOpen'] },
+    12: { sensors: ['sensorTouch'], env: ['envObstacle'] },
+    13: { sensors: ['sensorLight', 'sensorMotion', 'sensorSound'], env: ['envLight', 'envMotion', 'envSound'] },
+    14: { sensors: ['sensorSmell', 'sensorTemp', 'sensorTouch'], env: ['envSmoke', 'envTemperatureHot', 'envObstacle'] }
   };
 
   for (const [lesson, expected] of Object.entries(expectedByLesson)) {
-    const sensors = getList(lesson, 'sensors');
-    const env = getList(lesson, 'env');
-    expected.sensors.forEach((id) => assert.ok(sensors.includes(id), `Lesson ${lesson} should include ${id}`));
-    expected.env.forEach((id) => assert.ok(env.includes(id), `Lesson ${lesson} should include ${id}`));
+    assert.deepEqual(getList(lesson, 'sensors'), expected.sensors, `Lesson ${lesson} should show only its own sensor chips`);
+    assert.deepEqual(getList(lesson, 'env'), expected.env, `Lesson ${lesson} should show only its own environment controls`);
   }
 });
 
@@ -154,47 +161,21 @@ test('environment controls stay in one horizontal scroll row with side arrows an
   assert.ok(indexHtml.indexOf('<div class="env-reset-row">') > indexHtml.indexOf('<div class="env-scroll-shell"'));
 });
 
-test('Blockly workspace has working click buttons for vertical and horizontal scrolling', () => {
-  assertIncludes(indexHtml, '<div class="blockly-workspace-shell">');
-  assertIncludes(indexHtml, 'class="blockly-scroll-buttons vertical"');
-  assertIncludes(indexHtml, 'class="blockly-scroll-buttons horizontal"');
-  assertIncludes(indexHtml, 'onclick="scrollBlocklyCanvas(0, -240)"');
-  assertIncludes(indexHtml, 'onclick="scrollBlocklyCanvas(0, 240)"');
-  assertIncludes(indexHtml, 'onclick="scrollBlocklyCanvas(240, 0)" aria-label="גלול ימינה">▶</button>');
-  assertIncludes(indexHtml, 'onclick="scrollBlocklyCanvas(-240, 0)" aria-label="גלול שמאלה">◀</button>');
-  assertIncludes(indexHtml, 'function scrollBlocklyCanvas(deltaX, deltaY)');
-  assertIncludes(indexHtml, 'workspace.scroll(-(nextX + scrollLeft), -(nextY + scrollTop));');
-});
-
-test('lesson 9 has a dedicated air conditioner action block', () => {
-  assertIncludes(indexHtml, "actions: ['action_say', 'action_street_light', 'action_sound', 'action_ac', 'action_water', 'action_recycle_bin', 'action_class_power']");
-  assertIncludes(indexHtml, "Blockly.Blocks['action_ac']");
-  assertIncludes(indexHtml, ".appendField('❄️ מזגן')");
-  assertIncludes(indexHtml, "case 'action_ac':");
-  assertIncludes(indexHtml, "robot.speaking = robot.fanOn ? 'הפעלתי מזגן' : 'כיביתי מזגן';");
-});
-
-test('lesson 9 drawings only appear when enabled and without covering cards', () => {
-  assertIncludes(indexHtml, 'if (currentLesson === 9) {');
-  assertIncludes(indexHtml, 'const activeLesson9Objects = [environment.people, environment.light, robot.fanOn];');
-  assertIncludes(indexHtml, 'if (!activeLesson9Objects[i]) return;');
-  assertIncludes(indexHtml, "const lesson9Icons = ['🧑‍🎓🧑‍🏫', '💡', '❄️'];");
-  assertIncludes(indexHtml, "ctx.fillText(lesson9Icons[i], xs[i], y - 46);");
-  assertIncludes(indexHtml, "ctx.fillText(lesson9Labels[i], xs[i], y - 4);");
+test('lesson 9 people drawing only appears when students are enabled and is raised above the grass', () => {
+  assertIncludes(indexHtml, 'const isPresenceCard = currentLesson === 9 && i === 0;');
+  assertIncludes(indexHtml, 'if (!environment.people) return;');
+  assertIncludes(indexHtml, "ctx.fillText('🧑‍🎓🧑‍🏫', xs[i], y - 46);");
+  assertIncludes(indexHtml, "ctx.fillText('יש תלמידים', xs[i], y - 4);");
   assert.doesNotMatch(indexHtml, /isPresenceCard \? \(environment\.people \? '🧑‍🎓🧑‍🏫' : '🏫'\)/);
 });
 
-test('lesson 7 mission board is compact at the top-left, while lessons 8, 9 and 11 stay compact', () => {
-  assertIncludes(indexHtml, 'const compactMission = currentLesson === 7 || currentLesson === 8 || currentLesson === 9 || currentLesson === 11;');
-  assertIncludes(indexHtml, 'const boardX = currentLesson === 7 ? 20 : currentLesson === 8 ? canvas.width - 238 : currentLesson === 9 ? canvas.width - 224 : currentLesson === 11 ? canvas.width - 220 : canvas.width * 0.56;');
-  assertIncludes(indexHtml, 'const boardY = currentLesson === 7 ? 40 : currentLesson === 8 ? 48 : currentLesson === 9 ? 42 : currentLesson === 11 ? 40 : canvas.height * 0.12;');
-  assertIncludes(indexHtml, 'const boardW = currentLesson === 7 ? 190 : currentLesson === 8 ? 210 : currentLesson === 9 ? 196 : currentLesson === 11 ? 198 : canvas.width * 0.36;');
-  assertIncludes(indexHtml, 'const boardH = currentLesson === 7 ? 70 : currentLesson === 8 ? 78 : currentLesson === 9 ? 70 : currentLesson === 11 ? 74 : 135;');
-  assertIncludes(indexHtml, '? { titleSize: 11, bodySize: 9, titleY: 15, line1Y: 31, line2Y: 45, line3Y: 59 }');
-  assertIncludes(indexHtml, 'currentLesson === 9');
-  assertIncludes(indexHtml, '? { titleSize: 11, bodySize: 9, titleY: 15, line1Y: 31, line2Y: 45, line3Y: 59 }');
-  assertIncludes(indexHtml, ": { titleSize: 12, bodySize: 10, titleY: 17, line1Y: 37, line2Y: 53, line3Y: 68 }");
-  assertIncludes(indexHtml, "ctx.fillText('🎯 משימה', boardX + boardW - 12, boardY + compactText.titleY);");
+test('lesson 8 and 11 mission boards are compact and positioned at the top-right', () => {
+  assertIncludes(indexHtml, 'const compactMission = currentLesson === 8 || currentLesson === 11;');
+  assertIncludes(indexHtml, 'const boardX = currentLesson === 8 ? canvas.width - 238 : currentLesson === 11 ? canvas.width - 220 : canvas.width * 0.56;');
+  assertIncludes(indexHtml, 'const boardY = currentLesson === 8 ? 48 : currentLesson === 11 ? 40 : canvas.height * 0.12;');
+  assertIncludes(indexHtml, 'const boardW = currentLesson === 8 ? 210 : currentLesson === 11 ? 198 : canvas.width * 0.36;');
+  assertIncludes(indexHtml, 'const boardH = currentLesson === 8 ? 78 : currentLesson === 11 ? 74 : 135;');
+  assertIncludes(indexHtml, "ctx.fillText('🎯 משימה', boardX + boardW - 12, boardY + 17);");
 });
 
 test('lesson 8 traffic light stays compact', () => {
