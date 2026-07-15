@@ -332,31 +332,60 @@
         }
 
         /* Environment Buttons */
-        .env-scroll-wrap {
+        .env-scroll-shell {
+            position: relative;
             margin-top: 0.7rem;
+            padding: 0 1.35rem;
+        }
+
+        .env-scroll-wrap {
             overflow-x: auto;
             overflow-y: hidden;
             max-width: 100%;
-            padding: 0.1rem 0.15rem 1.15rem;
+            padding: 0.1rem 0.15rem 0.15rem;
             scroll-padding-inline: 0.15rem;
             -webkit-overflow-scrolling: touch;
-            scrollbar-color: #8b5cf6 #eef2ff;
-            scrollbar-width: thin;
+            scrollbar-width: none;
+            direction: rtl;
         }
 
         .env-scroll-wrap::-webkit-scrollbar {
-            height: 9px;
+            display: none;
         }
 
-        .env-scroll-wrap::-webkit-scrollbar-track {
-            background: #eef2ff;
+        .env-scroll-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 2;
+            width: 30px;
+            height: 52px;
             border-radius: 999px;
+            border: 2px solid rgba(139, 92, 246, 0.22);
+            background: linear-gradient(135deg, rgba(255,255,255,.96), rgba(238,242,255,.96));
+            color: var(--purple);
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12);
+            cursor: pointer;
+            font-size: 1.35rem;
+            font-weight: 900;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: inherit;
         }
 
-        .env-scroll-wrap::-webkit-scrollbar-thumb {
-            background: linear-gradient(90deg, var(--purple), var(--pink));
-            border-radius: 999px;
-            border: 2px solid #eef2ff;
+        .env-scroll-arrow:hover {
+            border-color: var(--purple);
+            background: linear-gradient(135deg, #ffffff, #f5f3ff);
+        }
+
+        .env-scroll-arrow.left {
+            left: 0;
+        }
+
+        .env-scroll-arrow.right {
+            right: 0;
         }
 
         .env-buttons {
@@ -389,6 +418,7 @@
             font-weight: 600;
             color: var(--dark);
             font-family: inherit;
+            direction: rtl;
         }
 
         .env-btn .icon {
@@ -863,53 +893,57 @@
                 </div>
             </div>
 
-            <div class="env-scroll-wrap" aria-label="גללו לרוחב כדי לראות עוד כפתורי סביבה">
-                <div class="env-buttons">
-                    <button class="env-btn" onclick="toggleEnv('light')" id="envLight">
-                        <span class="icon">💡</span>
-                        אור
-                    </button>
-                    <button class="env-btn" onclick="toggleEnv('sound')" id="envSound">
-                        <span class="icon">🔊</span>
-                        צליל
-                    </button>
-                    <button class="env-btn" onclick="toggleEnv('obstacle')" id="envObstacle">
-                        <span class="icon">🧱</span>
-                        קיר
-                    </button>
-                    <button class="env-btn" onclick="toggleEnv('smoke')" id="envSmoke">
-                        <span class="icon">💨</span>
-                        עשן
-                    </button>
-                    <button class="env-btn" onclick="toggleEnv('temperatureHot')" id="envTemperatureHot">
-                        <span class="icon">🌡️</span>
-                        חום
-                    </button>
-                    <button class="env-btn" onclick="cycleRecycleColor()" id="envRecycleColor">
-                        <span class="icon">♻️</span>
-                        חפץ למחזור
-                    </button>
-                    <button class="env-btn" onclick="toggleEnv('cars')" id="envCars">
-                        <span class="icon">🚗</span>
-                        מכוניות
-                    </button>
-                    <button class="env-btn" onclick="toggleEnv('pedestrian')" id="envPedestrian">
-                        <span class="icon">🚶</span>
-                        הולך רגל
-                    </button>
-                    <button class="env-btn" onclick="toggleEnv('armedMode')" id="envArmedMode">
-                        <span class="icon">🔐</span>
-                        מערכת דרוכה
-                    </button>
-                    <button class="env-btn" onclick="toggleEnv('motion')" id="envMotion">
-                        <span class="icon">🏃</span>
-                        תנועה
-                    </button>
-                    <button class="env-btn" onclick="toggleEnv('doorOpen')" id="envDoorOpen">
-                        <span class="icon">🚪</span>
-                        דלת פתוחה
-                    </button>
+            <div class="env-scroll-shell" aria-label="כפתורי סביבה עם חיצים לגלילה לרוחב">
+                <button class="env-scroll-arrow left" type="button" onclick="scrollEnvButtons(1)" aria-label="גללו ימינה">›</button>
+                <div class="env-scroll-wrap" id="envScrollWrap" aria-label="גללו לרוחב כדי לראות עוד כפתורי סביבה">
+                    <div class="env-buttons">
+                        <button class="env-btn" onclick="toggleEnv('light')" id="envLight">
+                            <span class="icon">💡</span>
+                            אור
+                        </button>
+                        <button class="env-btn" onclick="toggleEnv('sound')" id="envSound">
+                            <span class="icon">🔊</span>
+                            צליל
+                        </button>
+                        <button class="env-btn" onclick="toggleEnv('obstacle')" id="envObstacle">
+                            <span class="icon">🧱</span>
+                            קיר
+                        </button>
+                        <button class="env-btn" onclick="toggleEnv('smoke')" id="envSmoke">
+                            <span class="icon">💨</span>
+                            עשן
+                        </button>
+                        <button class="env-btn" onclick="toggleEnv('temperatureHot')" id="envTemperatureHot">
+                            <span class="icon">🌡️</span>
+                            חום
+                        </button>
+                        <button class="env-btn" onclick="cycleRecycleColor()" id="envRecycleColor">
+                            <span class="icon">♻️</span>
+                            חפץ למחזור
+                        </button>
+                        <button class="env-btn" onclick="toggleEnv('cars')" id="envCars">
+                            <span class="icon">🚗</span>
+                            מכוניות
+                        </button>
+                        <button class="env-btn" onclick="toggleEnv('pedestrian')" id="envPedestrian">
+                            <span class="icon">🚶</span>
+                            הולך רגל
+                        </button>
+                        <button class="env-btn" onclick="toggleEnv('armedMode')" id="envArmedMode">
+                            <span class="icon">🔐</span>
+                            מערכת דרוכה
+                        </button>
+                        <button class="env-btn" onclick="toggleEnv('motion')" id="envMotion">
+                            <span class="icon">🏃</span>
+                            תנועה
+                        </button>
+                        <button class="env-btn" onclick="toggleEnv('doorOpen')" id="envDoorOpen">
+                            <span class="icon">🚪</span>
+                            דלת פתוחה
+                        </button>
+                    </div>
                 </div>
+                <button class="env-scroll-arrow right" type="button" onclick="scrollEnvButtons(-1)" aria-label="גללו שמאלה">‹</button>
             </div>
             <div class="env-reset-row">
                 <button class="env-reset-btn" onclick="resetEnv()">
@@ -1107,21 +1141,22 @@
             ctx.fillText(`${scene.icon} ${scene.place} — ${lesson.title}`, canvas.width / 2, 28);
 
             // Mission board
-            const boardX = currentLesson === 8 ? canvas.width - 238 : canvas.width * 0.56;
-            const boardY = currentLesson === 8 ? 48 : canvas.height * 0.12;
-            const boardW = currentLesson === 8 ? 210 : canvas.width * 0.36;
-            const boardH = currentLesson === 8 ? 78 : 135;
-            ctx.fillStyle = currentLesson === 8 ? 'rgba(255,255,255,.88)' : 'rgba(255,255,255,.92)';
-            ctx.strokeStyle = currentLesson === 8 ? '#0ea5e9' : '#38bdf8';
-            ctx.lineWidth = currentLesson === 8 ? 2 : 3;
+            const compactMission = currentLesson === 8 || currentLesson === 11;
+            const boardX = currentLesson === 8 ? canvas.width - 238 : currentLesson === 11 ? canvas.width - 220 : canvas.width * 0.56;
+            const boardY = currentLesson === 8 ? 48 : currentLesson === 11 ? 40 : canvas.height * 0.12;
+            const boardW = currentLesson === 8 ? 210 : currentLesson === 11 ? 198 : canvas.width * 0.36;
+            const boardH = currentLesson === 8 ? 78 : currentLesson === 11 ? 74 : 135;
+            ctx.fillStyle = compactMission ? 'rgba(255,255,255,.88)' : 'rgba(255,255,255,.92)';
+            ctx.strokeStyle = compactMission ? '#0ea5e9' : '#38bdf8';
+            ctx.lineWidth = compactMission ? 2 : 3;
             ctx.beginPath();
-            ctx.roundRect(boardX, boardY, boardW, boardH, currentLesson === 8 ? 14 : 18);
+            ctx.roundRect(boardX, boardY, boardW, boardH, compactMission ? 14 : 18);
             ctx.fill();
             ctx.stroke();
             ctx.textAlign = 'right';
             ctx.fillStyle = '#0f172a';
 
-            if (currentLesson === 8) {
+            if (compactMission) {
                 ctx.font = 'bold 12px Rubik';
                 ctx.fillText('🎯 משימה', boardX + boardW - 12, boardY + 17);
                 ctx.font = '10px Rubik';
@@ -2834,6 +2869,12 @@
             btn.classList.toggle('active', next !== 'NONE');
             btn.querySelector('.icon').textContent = next === 'BLUE' ? '🔵' : next === 'GREEN' ? '🟢' : next === 'YELLOW' ? '🟡' : '♻️';
             updateSensors();
+        }
+
+        function scrollEnvButtons(direction) {
+            const scroller = document.getElementById('envScrollWrap');
+            if (!scroller) return;
+            scroller.scrollBy({ left: direction * -220, behavior: 'smooth' });
         }
 
         function updateSensors() {
