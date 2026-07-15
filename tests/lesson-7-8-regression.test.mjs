@@ -154,6 +154,14 @@ test('environment controls stay in one horizontal scroll row with side arrows an
   assert.ok(indexHtml.indexOf('<div class="env-reset-row">') > indexHtml.indexOf('<div class="env-scroll-shell"'));
 });
 
+test('lesson 9 people drawing only appears when students are enabled and is raised above the grass', () => {
+  assertIncludes(indexHtml, 'const isPresenceCard = currentLesson === 9 && i === 0;');
+  assertIncludes(indexHtml, 'if (!environment.people) return;');
+  assertIncludes(indexHtml, "ctx.fillText('🧑‍🎓🧑‍🏫', xs[i], y - 46);");
+  assertIncludes(indexHtml, "ctx.fillText('יש תלמידים', xs[i], y - 4);");
+  assert.doesNotMatch(indexHtml, /isPresenceCard \? \(environment\.people \? '🧑‍🎓🧑‍🏫' : '🏫'\)/);
+});
+
 test('lesson 8 and 11 mission boards are compact and positioned at the top-right', () => {
   assertIncludes(indexHtml, 'const compactMission = currentLesson === 8 || currentLesson === 11;');
   assertIncludes(indexHtml, 'const boardX = currentLesson === 8 ? canvas.width - 238 : currentLesson === 11 ? canvas.width - 220 : canvas.width * 0.56;');
