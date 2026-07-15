@@ -1321,11 +1321,22 @@
                 ctx.fill();
                 ctx.stroke();
                 const isPresenceCard = currentLesson === 9 && i === 0;
+                if (isPresenceCard) {
+                    if (!environment.people) return;
+
+                    ctx.font = '42px Arial';
+                    ctx.fillText('🧑‍🎓🧑‍🏫', xs[i], y - 46);
+                    ctx.font = 'bold 12px Rubik';
+                    ctx.fillStyle = '#334155';
+                    ctx.fillText('יש תלמידים', xs[i], y - 4);
+                    return;
+                }
+
                 ctx.font = '34px Arial';
-                ctx.fillText(isPresenceCard ? (environment.people ? '🧑‍🎓🧑‍🏫' : '🏫') : emojis[i], xs[i], y - 10);
+                ctx.fillText(emojis[i], xs[i], y - 10);
                 ctx.font = 'bold 12px Rubik';
                 ctx.fillStyle = '#334155';
-                ctx.fillText(isPresenceCard ? (environment.people ? 'יש תלמידים' : 'כיתה ריקה') : label, xs[i], y + 34);
+                ctx.fillText(label, xs[i], y + 34);
             });
         }
 
