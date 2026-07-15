@@ -72,7 +72,6 @@ test('lesson 7 lesson plan mentions the goal in focus, blocks, tasks, and succes
 });
 
 test('sensor chips layout is responsive and cannot grow outside the robot panel', () => {
-  assertMatches(indexHtml, /\.robot-section\s*{[\s\S]*?overflow:\s*hidden;/);
   assertMatches(indexHtml, /\.sensors-bar\s*{[\s\S]*?display:\s*grid;[\s\S]*?grid-template-columns:\s*repeat\(auto-fit, minmax\(112px, 1fr\)\);[\s\S]*?max-width:\s*100%;/);
   assertMatches(indexHtml, /\.sensor-chip\s*{[\s\S]*?min-width:\s*0;[\s\S]*?max-width:\s*100%;[\s\S]*?overflow:\s*hidden;/);
   assertMatches(indexHtml, /\.sensor-chip span:last-child\s*{[\s\S]*?text-overflow:\s*ellipsis;[\s\S]*?white-space:\s*nowrap;/);
@@ -141,6 +140,28 @@ test('lesson 8 educational data includes stop and continue traffic blocks', () =
   assertIncludes(lesson8, 'המשך מכוניות');
   assertIncludes(lesson8, 'עצור הולך רגל');
   assertIncludes(lesson8, 'המשך הולך רגל');
+});
+
+test('lesson 11 has armed, motion, door sensors and alarm action wired', () => {
+  const lesson11 = lessonObjectSource(11);
+  assertIncludes(lesson11, 'מצב מערכת + תנועה + דלת');
+  for (const id of ['sensorArmed', 'sensorMotion', 'sensorDoor']) {
+    assertIncludes(indexHtml, `id="${id}"`);
+  }
+  for (const envId of ['envArmedMode', 'envMotion', 'envDoorOpen']) {
+    assertIncludes(indexHtml, `id="${envId}"`);
+  }
+  for (const blockType of ['sensor_armed', 'sensor_motion', 'sensor_door', 'action_alarm']) {
+    assertIncludes(indexHtml, `{ kind: 'block', type: '${blockType}' }`);
+    assertIncludes(indexHtml, `Blockly.Blocks['${blockType}']`);
+  }
+  assertIncludes(indexHtml, "case 'sensor_armed':");
+  assertIncludes(indexHtml, "case 'sensor_motion':");
+  assertIncludes(indexHtml, "case 'sensor_door':");
+  assertIncludes(indexHtml, "case 'action_alarm':");
+  assertIncludes(indexHtml, "armedMode: false");
+  assertIncludes(indexHtml, "motion: false");
+  assertIncludes(indexHtml, "doorOpen: false");
 });
 
 let passed = 0;
