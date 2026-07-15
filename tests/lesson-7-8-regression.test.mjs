@@ -88,9 +88,12 @@ test('environment controls stay in one horizontal scroll row and reset stays bel
   assertIncludes(envButtonsRule, 'overflow-y: hidden;');
   assertIncludes(envButtonsRule, 'padding: 0.1rem 0.15rem 0.35rem;');
   assertIncludes(envButtonsRule, 'scroll-padding-inline: 0.15rem;');
-  assertIncludes(envButtonsRule, 'scrollbar-width: none;');
+  assertIncludes(envButtonsRule, 'scrollbar-color: #8b5cf6 #eef2ff;');
+  assertIncludes(envButtonsRule, 'scrollbar-width: thin;');
   assertIncludes(indexHtml, '.env-buttons::-webkit-scrollbar');
-  assertIncludes(indexHtml, 'display: none;');
+  assertIncludes(indexHtml, 'height: 9px;');
+  assertIncludes(indexHtml, 'background: linear-gradient(90deg, var(--purple), var(--pink));');
+  assertIncludes(cssRule('.env-reset-row'), 'margin-top: 0.7rem;');
   const envBtnRule = cssRule('.env-btn');
   assertIncludes(envBtnRule, 'margin-bottom: 0.85rem;');
   assert.ok(!cssRule('.env-btn.active').includes('scale'), 'Active environment buttons should not scale into the scrollbar area');
