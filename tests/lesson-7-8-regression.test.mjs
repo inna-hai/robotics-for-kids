@@ -81,25 +81,29 @@ test('sensor chips layout is responsive and cannot grow outside the robot panel'
 });
 
 test('environment controls stay in one horizontal scroll row and reset stays below', () => {
+  const envScrollWrapRule = cssRule('.env-scroll-wrap');
+  assertIncludes(indexHtml, '<div class="env-scroll-wrap" aria-label="גללו לרוחב כדי לראות עוד כפתורי סביבה">');
+  assertIncludes(envScrollWrapRule, 'overflow-x: auto;');
+  assertIncludes(envScrollWrapRule, 'overflow-y: hidden;');
+  assertIncludes(envScrollWrapRule, 'padding: 0.1rem 0.15rem 1.15rem;');
+  assertIncludes(envScrollWrapRule, 'scroll-padding-inline: 0.15rem;');
+  assertIncludes(envScrollWrapRule, 'scrollbar-color: #8b5cf6 #eef2ff;');
+  assertIncludes(envScrollWrapRule, 'scrollbar-width: thin;');
+  assertIncludes(indexHtml, '.env-scroll-wrap::-webkit-scrollbar');
+  assertIncludes(indexHtml, 'height: 9px;');
+  assertIncludes(indexHtml, 'background: linear-gradient(90deg, var(--purple), var(--pink));');
+
   const envButtonsRule = cssRule('.env-buttons');
   assertIncludes(envButtonsRule, 'display: flex;');
   assertIncludes(envButtonsRule, 'flex-wrap: nowrap;');
-  assertIncludes(envButtonsRule, 'overflow-x: auto;');
-  assertIncludes(envButtonsRule, 'overflow-y: hidden;');
-  assertIncludes(envButtonsRule, 'padding: 0.1rem 0.15rem 0.75rem;');
-  assertIncludes(envButtonsRule, 'scroll-padding-inline: 0.15rem;');
-  assertIncludes(envButtonsRule, 'scrollbar-color: #8b5cf6 #eef2ff;');
-  assertIncludes(envButtonsRule, 'scrollbar-width: thin;');
-  assertIncludes(indexHtml, '.env-buttons::-webkit-scrollbar');
-  assertIncludes(indexHtml, 'height: 9px;');
-  assertIncludes(indexHtml, 'background: linear-gradient(90deg, var(--purple), var(--pink));');
-  assertIncludes(cssRule('.env-reset-row'), 'margin-top: 1rem;');
-  const envBtnRule = cssRule('.env-btn');
-  assertIncludes(envBtnRule, 'margin-bottom: 1.2rem;');
+  assertIncludes(envButtonsRule, 'width: max-content;');
+  assertIncludes(envButtonsRule, 'overflow: visible;');
+
+  assertIncludes(cssRule('.env-reset-row'), 'margin-top: 0.75rem;');
   assert.ok(!cssRule('.env-btn.active').includes('scale'), 'Active environment buttons should not scale into the scrollbar area');
   assertIncludes(indexHtml, '<div class="env-reset-row">');
   assertIncludes(indexHtml, 'class="env-reset-btn" onclick="resetEnv()"');
-  assert.ok(indexHtml.indexOf('<div class="env-reset-row">') > indexHtml.indexOf('</div>\n            <div class="env-reset-row">') - 1);
+  assert.ok(indexHtml.indexOf('<div class="env-reset-row">') > indexHtml.indexOf('<div class="env-scroll-wrap"'));
 });
 
 test('lesson 8 mission board is compact and positioned at the top-right', () => {
