@@ -80,7 +80,12 @@ test('sensor chips layout is responsive and cannot grow outside the robot panel'
   assert.ok(!activeSensorChipRule.includes('transform: scale(1.05);'), 'Active sensor chips should not scale and overflow');
 });
 
-test('environment reset button is separated from the sensor/environment button row', () => {
+test('environment controls stay in one horizontal scroll row and reset stays below', () => {
+  const envButtonsRule = cssRule('.env-buttons');
+  assertIncludes(envButtonsRule, 'display: flex;');
+  assertIncludes(envButtonsRule, 'flex-wrap: nowrap;');
+  assertIncludes(envButtonsRule, 'overflow-x: auto;');
+  assertIncludes(envButtonsRule, 'overflow-y: hidden;');
   assertIncludes(indexHtml, '<div class="env-reset-row">');
   assertIncludes(indexHtml, 'class="env-reset-btn" onclick="resetEnv()"');
   assert.ok(indexHtml.indexOf('<div class="env-reset-row">') > indexHtml.indexOf('</div>\n            <div class="env-reset-row">') - 1);
@@ -162,6 +167,12 @@ test('lesson 11 has armed, motion, door sensors and alarm action wired', () => {
   assertIncludes(indexHtml, "armedMode: false");
   assertIncludes(indexHtml, "motion: false");
   assertIncludes(indexHtml, "doorOpen: false");
+});
+
+test('lesson 11 scene only draws active security symbols without covering cards', () => {
+  assertMatches(indexHtml, /if \(currentLesson === 11\) \{[\s\S]*?const activeStates = \[environment\.doorOpen, environment\.motion, robot\.alarmOn\];[\s\S]*?if \(!activeStates\[i\]\) return;[\s\S]*?ctx\.fillText\(emojis\[i\], xs\[i\], y - 12\);[\s\S]*?return;[\s\S]*?\}/);
+  const lesson11Block = indexHtml.match(/if \(currentLesson === 11\) \{[\s\S]*?return;\n\s*\}/)?.[0] || '';
+  assert.ok(!lesson11Block.includes('roundRect'), 'Lesson 11 active symbols should not be drawn inside covering cards');
 });
 
 let passed = 0;
