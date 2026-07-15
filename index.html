@@ -889,6 +889,10 @@
                     <span class="icon">🚶</span>
                     <span id="pedestrianText">אין הולך רגל</span>
                 </div>
+                <div class="sensor-chip" id="sensorPeople">
+                    <span class="icon">🧑‍🎓</span>
+                    <span id="peopleText">כיתה ריקה</span>
+                </div>
 
                 <div class="sensor-chip" id="sensorSoil">
                     <span class="icon">🌱</span>
@@ -946,9 +950,9 @@
                             <span class="icon">🚶</span>
                             הולך רגל
                         </button>
-                        <button class="env-btn" onclick="toggleEnv('lineOff')" id="envLineOff">
-                            <span class="icon">➖</span>
-                            מחוץ לקו
+                        <button class="env-btn" onclick="toggleEnv('people')" id="envPeople">
+                            <span class="icon">🧑‍🎓</span>
+                            תלמידים
                         </button>
                         <button class="env-btn" onclick="toggleEnv('soilDry')" id="envSoilDry">
                             <span class="icon">🌱</span>
@@ -1045,7 +1049,7 @@
         let completedTasks = [];
 
         let robot = { x: 150, y: 180, angle: 0, speaking: '', streetLightOn: false, trafficLightGreen: false, trafficCarsStopped: false, pedestrianStopped: false, vehicleStopped: false, fanOn: false, waterOn: false, alarmOn: false, sortedBin: '' };
-        let environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, lineOff: false, soilDry: false, armedMode: false, motion: false, doorOpen: false };
+        let environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, doorOpen: false };
 
         let isRunning = false;
         let drawerOpen = false;
@@ -1318,10 +1322,10 @@
                 ctx.stroke();
                 const isPresenceCard = currentLesson === 9 && i === 0;
                 ctx.font = '34px Arial';
-                ctx.fillText(isPresenceCard ? (environment.motion ? '🧑‍🎓🧑‍🏫' : '🏫') : emojis[i], xs[i], y - 10);
+                ctx.fillText(isPresenceCard ? (environment.people ? '🧑‍🎓🧑‍🏫' : '🏫') : emojis[i], xs[i], y - 10);
                 ctx.font = 'bold 12px Rubik';
                 ctx.fillStyle = '#334155';
-                ctx.fillText(isPresenceCard ? (environment.motion ? 'יש תלמידים' : 'כיתה ריקה') : label, xs[i], y + 34);
+                ctx.fillText(isPresenceCard ? (environment.people ? 'יש תלמידים' : 'כיתה ריקה') : label, xs[i], y + 34);
             });
         }
 
@@ -2158,70 +2162,70 @@
 
         const lessonControlOverrides = {
             1: {
-                sensors: ['sensorLight', 'sensorMotion'],
-                env: ['envLight', 'envMotion']
+                sensors: ['sensorLight'],
+                env: ['envLight']
             },
             2: {
-                sensors: ['sensorLight', 'sensorMotion', 'sensorSound'],
-                env: ['envLight', 'envMotion', 'envSound']
+                sensors: ['sensorLight', 'sensorSound'],
+                env: ['envLight', 'envSound']
             },
             3: {
-                sensors: ['sensorLight', 'sensorMotion', 'sensorSound', 'sensorTouch'],
-                env: ['envLight', 'envMotion', 'envSound', 'envObstacle']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch'],
+                env: ['envLight', 'envSound', 'envObstacle']
             },
             4: {
-                sensors: ['sensorLight', 'sensorMotion', 'sensorSound', 'sensorTouch', 'sensorSmell'],
-                env: ['envLight', 'envMotion', 'envSound', 'envObstacle', 'envSmoke']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke']
             },
             5: {
-                sensors: ['sensorLight', 'sensorMotion', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp'],
-                env: ['envLight', 'envMotion', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot']
             },
             6: {
-                sensors: ['sensorLight', 'sensorMotion', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor'],
-                env: ['envLight', 'envMotion', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor']
             },
             7: {
-                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine'],
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal'],
                 env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor']
             },
             8: {
-                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorCars', 'sensorPedestrian'],
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian'],
                 env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian']
             },
             9: {
-                sensors: ['sensorLight', 'sensorMotion', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine'],
-                env: ['envLight', 'envMotion', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envLineOff']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople']
             },
             10: {
-                sensors: ['sensorLight', 'sensorMotion', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorSoil'],
-                env: ['envLight', 'envMotion', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envLineOff', 'envSoilDry']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorSoil'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envSoilDry']
             },
             11: {
-                sensors: ['sensorLight', 'sensorMotion', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
-                env: ['envLight', 'envMotion', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envLineOff', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorMotion', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envMotion', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
             },
             12: {
-                sensors: ['sensorLight', 'sensorMotion', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
-                env: ['envLight', 'envMotion', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envLineOff', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorMotion', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envMotion', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
             },
             13: {
-                sensors: ['sensorLight', 'sensorMotion', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
-                env: ['envLight', 'envMotion', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envLineOff', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorMotion', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envMotion', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
             },
             14: {
-                sensors: ['sensorLight', 'sensorMotion', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
-                env: ['envLight', 'envMotion', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envLineOff', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorMotion', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envMotion', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
             },
             15: {
-                sensors: ['sensorLight', 'sensorMotion', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
-                env: ['envLight', 'envMotion', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envLineOff', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorMotion', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envMotion', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
             }
         };
 
         function updateVisibleControls() {
-            const allSensors = ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorCars', 'sensorPedestrian', 'sensorSoil', 'sensorArmed', 'sensorMotion', 'sensorDoor'];
-            const allEnv = ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envLineOff', 'envSoilDry', 'envArmedMode', 'envMotion', 'envDoorOpen'];
+            const allSensors = ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorSoil', 'sensorArmed', 'sensorMotion', 'sensorDoor'];
+            const allEnv = ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envSoilDry', 'envArmedMode', 'envMotion', 'envDoorOpen'];
             const override = lessonControlOverrides[currentLesson];
             allSensors.forEach((id) => {
                 const el = document.getElementById(id);
@@ -2236,9 +2240,6 @@
                 if (currentLesson === 1 || currentLesson === 8) {
                     motionBtn.querySelector('.icon').textContent = '🚶';
                     motionBtn.lastChild.textContent = ' אנשים';
-                } else if (currentLesson === 9) {
-                    motionBtn.querySelector('.icon').textContent = '🧑‍🎓';
-                    motionBtn.lastChild.textContent = ' תלמידים';
                 } else {
                     motionBtn.querySelector('.icon').textContent = '🏃';
                     motionBtn.lastChild.textContent = ' תנועה';
@@ -3111,6 +3112,10 @@
             return Boolean(environment.motion);
         }
 
+        function canSensePeople() {
+            return currentLesson >= 9 && Boolean(environment.people);
+        }
+
         function isDoorOpen() {
             return Boolean(environment.doorOpen);
         }
@@ -3148,7 +3153,7 @@
                 case 'sensor_color':
                     return getRecycleColor() === val;
                 case 'sensor_line':
-                    return val === 'ON' ? (currentLesson === 7 ? canSenseLine() : !environment.lineOff) : (currentLesson === 7 ? !canSenseLine() : Boolean(environment.lineOff));
+                    return val === 'ON' ? canSenseLine() : !canSenseLine();
                 case 'sensor_line_side':
                     return canSenseLineSide(val);
                 case 'sensor_goal':
@@ -3167,7 +3172,7 @@
                     return val === 'YES' ? canSenseMotion() : !canSenseMotion();
 
                 case 'sensor_people':
-                    return val === 'YES' ? canSenseMotion() : !canSenseMotion();
+                    return val === 'YES' ? canSensePeople() : !canSensePeople();
 
                 case 'sensor_door':
                     return val === 'YES' ? isDoorOpen() : !isDoorOpen();
@@ -3226,7 +3231,7 @@
 
         function resetEnv() {
 
-            environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, lineOff: false, soilDry: false, armedMode: false, motion: false, doorOpen: false };
+            environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, doorOpen: false };
 
             document.querySelectorAll('.env-btn').forEach(b => b.classList.remove('active'));
             robot.speaking = '';
@@ -3282,9 +3287,10 @@
             const sensesGoal = canSenseGoal();
             const sensesCars = canSenseCars();
             const sensesPedestrian = canSensePedestrian();
+            const sensesPeople = canSensePeople();
 
             const soilMoisture = getSoilMoisture();
-            const onLine = currentLesson === 7 ? sensesLine : !environment.lineOff;
+            const onLine = sensesLine;
             const armed = isSystemArmed();
             const motion = canSenseMotion();
             const doorOpen = isDoorOpen();
@@ -3308,12 +3314,11 @@
             document.getElementById('pedestrianText').textContent = currentLesson === 8
                 ? (sensesPedestrian ? 'יש הולך רגל!' : 'אין הולך רגל')
                 : 'לא בשימוש';
+            document.getElementById('peopleText').textContent = sensesPeople ? 'יש תלמידים' : 'כיתה ריקה';
 
             document.getElementById('soilText').textContent = soilMoisture === 'DRY' ? 'אדמה יבשה' : 'אדמה רטובה';
             document.getElementById('armedText').textContent = armed ? 'דרוכה' : 'לא דרוכה';
-            document.getElementById('motionText').textContent = currentLesson === 9
-                ? (motion ? 'יש תלמידים' : 'כיתה ריקה')
-                : (motion ? 'יש תנועה' : 'אין תנועה');
+            document.getElementById('motionText').textContent = motion ? 'יש תנועה' : 'אין תנועה';
             document.getElementById('doorText').textContent = doorOpen ? 'דלת פתוחה' : 'דלת סגורה';
 
             document.getElementById('sensorLight').classList.toggle('active', sensesLight);
@@ -3327,6 +3332,7 @@
             document.getElementById('sensorGoal').classList.toggle('active', currentLesson === 7 && sensesGoal);
             document.getElementById('sensorCars').classList.toggle('active', currentLesson === 8 && sensesCars);
             document.getElementById('sensorPedestrian').classList.toggle('active', currentLesson === 8 && sensesPedestrian);
+            document.getElementById('sensorPeople').classList.toggle('active', sensesPeople);
             document.getElementById('sensorSoil').classList.toggle('active', soilMoisture === 'DRY');
             document.getElementById('sensorArmed').classList.toggle('active', armed);
             document.getElementById('sensorMotion').classList.toggle('active', motion);
