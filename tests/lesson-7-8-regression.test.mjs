@@ -48,7 +48,7 @@ test('lesson 7 has a visible goal at the end of the line', () => {
 
 test('lesson 7 goal sensor is wired from Blockly toolbox to condition evaluation and UI chip', () => {
   assertIncludes(indexHtml, 'id="sensorGoal"');
-  assertIncludes(indexHtml, "{ kind: 'block', type: 'sensor_goal' }");
+  assertMatches(indexHtml, /sensors:\s*\[[^\]]*'sensor_goal'[^\]]*\]/);
   assertIncludes(indexHtml, "Blockly.Blocks['sensor_goal']");
   assertIncludes(indexHtml, "appendField('🏁 חיישן יעד =')");
   assertIncludes(indexHtml, "case 'sensor_goal':");
@@ -59,7 +59,8 @@ test('lesson 7 goal sensor is wired from Blockly toolbox to condition evaluation
 
 test('lesson 7 goal sensor uses a dedicated goal check rather than reusing the wall/touch sensor', () => {
   assertMatches(indexHtml, /function\s+canSenseGoal\s*\(\)\s*{[\s\S]*?currentLesson\s*!==\s*7[\s\S]*?getLesson7LinePoints\(\)\.end[\s\S]*?getLineSensorPoint\(\)[\s\S]*?<=\s*34;[\s\S]*?}/);
-  assert.doesNotMatch(indexHtml, /function\s+canSenseGoal\s*\(\)\s*{[\s\S]*?environment\.obstacle[\s\S]*?}/, 'Goal sensor should not depend on the wall/obstacle environment');
+  const goalFunction = indexHtml.match(/function\s+canSenseGoal\s*\(\)\s*{([\s\S]*?)\n\s*}/)?.[1] || '';
+  assert.doesNotMatch(goalFunction, /environment\.obstacle/, 'Goal sensor should not depend on the wall/obstacle environment');
 });
 
 test('lesson 7 lesson plan mentions the goal in focus, blocks, tasks, and success condition', () => {
@@ -86,7 +87,10 @@ test('environment controls stay in one horizontal scroll row with side arrows an
   assertIncludes(indexHtml, '<button class="env-scroll-arrow left" type="button" onclick="scrollEnvButtons(1)"');
   assertIncludes(indexHtml, '<button class="env-scroll-arrow right" type="button" onclick="scrollEnvButtons(-1)"');
   assertIncludes(indexHtml, 'function scrollEnvButtons(direction)');
+  assertIncludes(indexHtml, 'function updateEnvScrollControls()');
   assertIncludes(indexHtml, "document.getElementById('envScrollWrap')");
+  assertIncludes(indexHtml, "shell.classList.toggle('no-scroll', !needsScroll);");
+  assertIncludes(indexHtml, "if (!scroller || shell?.classList.contains('no-scroll')) return;");
   assertIncludes(indexHtml, "scroller.scrollBy({ left: direction * -220, behavior: 'smooth' });");
   assertIncludes(indexHtml, '<div class="env-scroll-wrap" id="envScrollWrap" aria-label="גללו לרוחב כדי לראות עוד כפתורי סביבה">');
   assertIncludes(envScrollWrapRule, 'overflow-x: auto;');
@@ -103,6 +107,8 @@ test('environment controls stay in one horizontal scroll row with side arrows an
   assertIncludes(envButtonsRule, 'overflow: visible;');
 
   assertIncludes(cssRule('.env-scroll-arrow'), 'position: absolute;');
+  assertIncludes(cssRule('.env-scroll-shell.no-scroll'), 'padding-inline: 0;');
+  assertIncludes(cssRule('.env-scroll-shell.no-scroll .env-scroll-arrow'), 'display: none;');
   assertIncludes(cssRule('.env-reset-row'), 'margin-top: 0.75rem;');
   assert.ok(!cssRule('.env-btn.active').includes('scale'), 'Active environment buttons should not scale into the scrollbar area');
   assertIncludes(indexHtml, '<div class="env-reset-row">');
@@ -144,7 +150,7 @@ test('lesson 8 cars and pedestrian only render when enabled, move horizontally, 
 
 test('lesson 8 stop/start blocks for cars and pedestrian are available and update state correctly', () => {
   for (const blockType of ['stop_cars', 'start_cars', 'stop_pedestrian', 'start_pedestrian']) {
-    assertIncludes(indexHtml, `{ kind: 'block', type: '${blockType}' }`);
+    assertMatches(indexHtml, new RegExp(`(movement|actions):\\s*\\[[^\\]]*'${blockType}'[^\\]]*\\]`));
     assertIncludes(indexHtml, `Blockly.Blocks['${blockType}']`);
     assertIncludes(indexHtml, `case '${blockType}':`);
   }
@@ -177,7 +183,7 @@ test('lesson 11 has armed, motion, door sensors and alarm action wired', () => {
     assertIncludes(indexHtml, `id="${envId}"`);
   }
   for (const blockType of ['sensor_armed', 'sensor_motion', 'sensor_door', 'action_alarm']) {
-    assertIncludes(indexHtml, `{ kind: 'block', type: '${blockType}' }`);
+    assertMatches(indexHtml, new RegExp(`(sensors|actions):\\s*\\[[^\\]]*'${blockType}'[^\\]]*\\]`));
     assertIncludes(indexHtml, `Blockly.Blocks['${blockType}']`);
   }
   assertIncludes(indexHtml, "case 'sensor_armed':");
