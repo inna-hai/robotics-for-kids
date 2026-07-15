@@ -80,18 +80,21 @@ test('sensor chips layout is responsive and cannot grow outside the robot panel'
   assert.ok(!activeSensorChipRule.includes('transform: scale(1.05);'), 'Active sensor chips should not scale and overflow');
 });
 
-test('environment controls stay in one horizontal scroll row and reset stays below', () => {
+test('environment controls stay in one horizontal scroll row with side arrows and reset below', () => {
   const envScrollWrapRule = cssRule('.env-scroll-wrap');
-  assertIncludes(indexHtml, '<div class="env-scroll-wrap" aria-label="גללו לרוחב כדי לראות עוד כפתורי סביבה">');
+  assertIncludes(indexHtml, '<div class="env-scroll-shell" aria-label="כפתורי סביבה עם חיצים לגלילה לרוחב">');
+  assertIncludes(indexHtml, '<button class="env-scroll-arrow left" type="button" onclick="scrollEnvButtons(1)"');
+  assertIncludes(indexHtml, '<button class="env-scroll-arrow right" type="button" onclick="scrollEnvButtons(-1)"');
+  assertIncludes(indexHtml, 'function scrollEnvButtons(direction)');
+  assertIncludes(indexHtml, "document.getElementById('envScrollWrap')");
+  assertIncludes(indexHtml, "scroller.scrollBy({ left: direction * -220, behavior: 'smooth' });");
+  assertIncludes(indexHtml, '<div class="env-scroll-wrap" id="envScrollWrap" aria-label="גללו לרוחב כדי לראות עוד כפתורי סביבה">');
   assertIncludes(envScrollWrapRule, 'overflow-x: auto;');
   assertIncludes(envScrollWrapRule, 'overflow-y: hidden;');
-  assertIncludes(envScrollWrapRule, 'padding: 0.1rem 0.15rem 1.15rem;');
-  assertIncludes(envScrollWrapRule, 'scroll-padding-inline: 0.15rem;');
-  assertIncludes(envScrollWrapRule, 'scrollbar-color: #8b5cf6 #eef2ff;');
-  assertIncludes(envScrollWrapRule, 'scrollbar-width: thin;');
+  assertIncludes(envScrollWrapRule, 'scrollbar-width: none;');
+  assertIncludes(envScrollWrapRule, 'direction: rtl;');
   assertIncludes(indexHtml, '.env-scroll-wrap::-webkit-scrollbar');
-  assertIncludes(indexHtml, 'height: 9px;');
-  assertIncludes(indexHtml, 'background: linear-gradient(90deg, var(--purple), var(--pink));');
+  assertIncludes(indexHtml, 'display: none;');
 
   const envButtonsRule = cssRule('.env-buttons');
   assertIncludes(envButtonsRule, 'display: flex;');
@@ -99,18 +102,20 @@ test('environment controls stay in one horizontal scroll row and reset stays bel
   assertIncludes(envButtonsRule, 'width: max-content;');
   assertIncludes(envButtonsRule, 'overflow: visible;');
 
+  assertIncludes(cssRule('.env-scroll-arrow'), 'position: absolute;');
   assertIncludes(cssRule('.env-reset-row'), 'margin-top: 0.75rem;');
   assert.ok(!cssRule('.env-btn.active').includes('scale'), 'Active environment buttons should not scale into the scrollbar area');
   assertIncludes(indexHtml, '<div class="env-reset-row">');
   assertIncludes(indexHtml, 'class="env-reset-btn" onclick="resetEnv()"');
-  assert.ok(indexHtml.indexOf('<div class="env-reset-row">') > indexHtml.indexOf('<div class="env-scroll-wrap"'));
+  assert.ok(indexHtml.indexOf('<div class="env-reset-row">') > indexHtml.indexOf('<div class="env-scroll-shell"'));
 });
 
-test('lesson 8 mission board is compact and positioned at the top-right', () => {
-  assertIncludes(indexHtml, 'const boardX = currentLesson === 8 ? canvas.width - 238 : canvas.width * 0.56;');
-  assertIncludes(indexHtml, 'const boardY = currentLesson === 8 ? 48 : canvas.height * 0.12;');
-  assertIncludes(indexHtml, 'const boardW = currentLesson === 8 ? 210 : canvas.width * 0.36;');
-  assertIncludes(indexHtml, 'const boardH = currentLesson === 8 ? 78 : 135;');
+test('lesson 8 and 11 mission boards are compact and positioned at the top-right', () => {
+  assertIncludes(indexHtml, 'const compactMission = currentLesson === 8 || currentLesson === 11;');
+  assertIncludes(indexHtml, 'const boardX = currentLesson === 8 ? canvas.width - 238 : currentLesson === 11 ? canvas.width - 220 : canvas.width * 0.56;');
+  assertIncludes(indexHtml, 'const boardY = currentLesson === 8 ? 48 : currentLesson === 11 ? 40 : canvas.height * 0.12;');
+  assertIncludes(indexHtml, 'const boardW = currentLesson === 8 ? 210 : currentLesson === 11 ? 198 : canvas.width * 0.36;');
+  assertIncludes(indexHtml, 'const boardH = currentLesson === 8 ? 78 : currentLesson === 11 ? 74 : 135;');
   assertIncludes(indexHtml, "ctx.fillText('🎯 משימה', boardX + boardW - 12, boardY + 17);");
 });
 
