@@ -171,8 +171,10 @@ async function handleAdminFeedback(req, res) {
       acc.total += 1;
       acc.byStatus[item.status || 'open'] = (acc.byStatus[item.status || 'open'] || 0) + 1;
       acc.byKind[item.kind || 'bug'] = (acc.byKind[item.kind || 'bug'] || 0) + 1;
+      const assignee = item.assignee || 'לא משויך';
+      acc.byAssignee[assignee] = (acc.byAssignee[assignee] || 0) + 1;
       return acc;
-    }, { total: 0, byStatus: {}, byKind: {} });
+    }, { total: 0, byStatus: {}, byKind: {}, byAssignee: {} });
     return send(res, 200, JSON.stringify({ ok: true, stats, items }));
   }
 
@@ -193,12 +195,20 @@ async function handleAdminFeedback(req, res) {
   if (req.method === 'PATCH' && id) {
     const raw = await readBody(req, 64 * 1024);
     const body = JSON.parse(raw || '{}');
-    const status = ['open', 'in_progress', 'done', 'wont_fix'].includes(body.status) ? body.status : null;
-    if (!status) return send(res, 400, JSON.stringify({ error: 'Invalid status' }));
+    const hasStatus = Object.prototype.hasOwnProperty.call(body, 'status');
+    const hasAssignee = Object.prototype.hasOwnProperty.call(body, 'assignee');
+    const status = hasStatus && ['open', 'in_progress', 'done', 'wont_fix'].includes(body.status) ? body.status : null;
+    if (hasStatus && !status) return send(res, 400, JSON.stringify({ error: 'Invalid status' }));
+    if (!hasStatus && !hasAssignee) return send(res, 400, JSON.stringify({ error: 'Nothing to update' }));
     const items = readFeedbackItems().sort((a, b) => String(a.createdAt || '').localeCompare(String(b.createdAt || '')));
     const item = items.find(entry => entry.id === id);
     if (!item) return send(res, 404, JSON.stringify({ error: 'Not found' }));
-    item.status = status;
+    if (hasStatus) item.status = status;
+    if (hasAssignee) {
+      const assignee = cleanText(body.assignee, 80);
+      if (assignee) item.assignee = assignee;
+      else delete item.assignee;
+    }
     item.updatedAt = new Date().toISOString();
     writeFeedbackItems(items);
     return send(res, 200, JSON.stringify({ ok: true, item }));
