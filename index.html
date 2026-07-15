@@ -345,11 +345,23 @@
             scroll-padding-inline: 0.15rem;
             scroll-snap-type: x proximity;
             -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
+            scrollbar-color: #8b5cf6 #eef2ff;
+            scrollbar-width: thin;
         }
 
         .env-buttons::-webkit-scrollbar {
-            display: none;
+            height: 9px;
+        }
+
+        .env-buttons::-webkit-scrollbar-track {
+            background: #eef2ff;
+            border-radius: 999px;
+        }
+
+        .env-buttons::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, var(--purple), var(--pink));
+            border-radius: 999px;
+            border: 2px solid #eef2ff;
         }
 
         .env-btn {
@@ -392,7 +404,7 @@
         .env-reset-row {
             display: flex;
             justify-content: center;
-            margin-top: 0.42rem;
+            margin-top: 0.7rem;
         }
 
         .env-reset-btn {
