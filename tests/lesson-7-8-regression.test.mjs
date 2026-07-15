@@ -1,0 +1,162 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const root = join(__dirname, '..');
+const indexHtml = readFileSync(join(root, 'index.html'), 'utf8');
+const lessonsData = readFileSync(join(root, 'js', 'lessons-data.js'), 'utf8');
+
+const tests = [];
+function test(name, fn) {
+  tests.push({ name, fn });
+}
+
+function assertIncludes(source, needle, message = `Missing: ${needle}`) {
+  assert.ok(source.includes(needle), message);
+}
+
+function assertMatches(source, regex, message = `Missing pattern: ${regex}`) {
+  assert.match(source, regex, message);
+}
+
+function lessonObjectSource(id) {
+  const marker = `id: ${id},`;
+  const start = lessonsData.indexOf(marker);
+  assert.notEqual(start, -1, `Lesson ${id} was not found in lessons-data.js`);
+  const next = lessonsData.indexOf(`id: ${id + 1},`, start + marker.length);
+  return lessonsData.slice(start, next === -1 ? undefined : next);
+}
+
+function cssRule(selector) {
+  const start = indexHtml.indexOf(selector);
+  assert.notEqual(start, -1, `CSS selector was not found: ${selector}`);
+  const open = indexHtml.indexOf('{', start);
+  const close = indexHtml.indexOf('}', open);
+  assert.notEqual(open, -1, `CSS rule has no opening brace: ${selector}`);
+  assert.notEqual(close, -1, `CSS rule has no closing brace: ${selector}`);
+  return indexHtml.slice(open + 1, close);
+}
+
+test('lesson 7 has a visible goal at the end of the line', () => {
+  assertIncludes(indexHtml, "ctx.fillText('🏁', line.end.x, line.end.y - 30)");
+  assertIncludes(indexHtml, "ctx.arc(line.end.x, line.end.y, 20, 0, Math.PI * 2)");
+  assertIncludes(indexHtml, "ctx.fillText('יעד', line.end.x, line.end.y + 2)");
+  assertMatches(indexHtml, /const\s+reachedGoal\s*=\s*canSenseGoal\(\)/);
+});
+
+test('lesson 7 goal sensor is wired from Blockly toolbox to condition evaluation and UI chip', () => {
+  assertIncludes(indexHtml, 'id="sensorGoal"');
+  assertIncludes(indexHtml, "{ kind: 'block', type: 'sensor_goal' }");
+  assertIncludes(indexHtml, "Blockly.Blocks['sensor_goal']");
+  assertIncludes(indexHtml, "appendField('🏁 חיישן יעד =')");
+  assertIncludes(indexHtml, "case 'sensor_goal':");
+  assertIncludes(indexHtml, "return val === 'YES' ? canSenseGoal() : !canSenseGoal();");
+  assertIncludes(indexHtml, "document.getElementById('goalText').textContent = currentLesson === 7");
+  assertIncludes(indexHtml, "document.getElementById('sensorGoal').classList.toggle('active', currentLesson === 7 && sensesGoal);");
+});
+
+test('lesson 7 goal sensor uses a dedicated goal check rather than reusing the wall/touch sensor', () => {
+  assertMatches(indexHtml, /function\s+canSenseGoal\s*\(\)\s*{[\s\S]*?currentLesson\s*!==\s*7[\s\S]*?getLesson7LinePoints\(\)\.end[\s\S]*?getLineSensorPoint\(\)[\s\S]*?<=\s*34;[\s\S]*?}/);
+  assert.doesNotMatch(indexHtml, /function\s+canSenseGoal\s*\(\)\s*{[\s\S]*?environment\.obstacle[\s\S]*?}/, 'Goal sensor should not depend on the wall/obstacle environment');
+});
+
+test('lesson 7 lesson plan mentions the goal in focus, blocks, tasks, and success condition', () => {
+  const lesson7 = lessonObjectSource(7);
+  assertIncludes(lesson7, "sensorFocus: 'קו/ניגודיות + יעד'");
+  assertIncludes(lesson7, "codingConcept: 'לולאה חוזרת וזיהוי יעד'");
+  assertIncludes(lesson7, 'חיישן יעד = הגעתי ליעד');
+  assertIncludes(lesson7, "environment: ['line', 'contrast', 'route', 'goal']");
+  assertIncludes(lesson7, 'בדקו עם חיישן יעד אם סנסי הגיע לסוף המסלול');
+});
+
+test('sensor chips layout is responsive and cannot grow outside the robot panel', () => {
+  assertMatches(indexHtml, /\.robot-section\s*{[\s\S]*?overflow:\s*hidden;/);
+  assertMatches(indexHtml, /\.sensors-bar\s*{[\s\S]*?display:\s*grid;[\s\S]*?grid-template-columns:\s*repeat\(auto-fit, minmax\(112px, 1fr\)\);[\s\S]*?max-width:\s*100%;/);
+  assertMatches(indexHtml, /\.sensor-chip\s*{[\s\S]*?min-width:\s*0;[\s\S]*?max-width:\s*100%;[\s\S]*?overflow:\s*hidden;/);
+  assertMatches(indexHtml, /\.sensor-chip span:last-child\s*{[\s\S]*?text-overflow:\s*ellipsis;[\s\S]*?white-space:\s*nowrap;/);
+  const activeSensorChipRule = cssRule('.sensor-chip.active');
+  assertIncludes(activeSensorChipRule, 'transform: translateY(-1px);');
+  assert.ok(!activeSensorChipRule.includes('transform: scale(1.05);'), 'Active sensor chips should not scale and overflow');
+});
+
+test('environment reset button is separated from the sensor/environment button row', () => {
+  assertIncludes(indexHtml, '<div class="env-reset-row">');
+  assertIncludes(indexHtml, 'class="env-reset-btn" onclick="resetEnv()"');
+  assert.ok(indexHtml.indexOf('<div class="env-reset-row">') > indexHtml.indexOf('</div>\n            <div class="env-reset-row">') - 1);
+});
+
+test('lesson 8 mission board is compact and positioned at the top-right', () => {
+  assertIncludes(indexHtml, 'const boardX = currentLesson === 8 ? canvas.width - 238 : canvas.width * 0.56;');
+  assertIncludes(indexHtml, 'const boardY = currentLesson === 8 ? 48 : canvas.height * 0.12;');
+  assertIncludes(indexHtml, 'const boardW = currentLesson === 8 ? 210 : canvas.width * 0.36;');
+  assertIncludes(indexHtml, 'const boardH = currentLesson === 8 ? 78 : 135;');
+  assertIncludes(indexHtml, "ctx.fillText('🎯 משימה', boardX + boardW - 12, boardY + 17);");
+});
+
+test('lesson 8 traffic light stays compact', () => {
+  assertIncludes(indexHtml, 'ctx.roundRect(lightX - 17, lightY - 34, 34, 66, 9);');
+  assertIncludes(indexHtml, 'ctx.arc(lightX, lightY - 17, 9, 0, Math.PI * 2);');
+  assertIncludes(indexHtml, 'ctx.arc(lightX, lightY + 15, 9, 0, Math.PI * 2);');
+  assertIncludes(indexHtml, "ctx.fillText(robot.trafficLightGreen ? 'ירוק' : 'אדום', lightX, y + 48);");
+});
+
+test('lesson 8 removed instruction labels are not present', () => {
+  assert.ok(!indexHtml.includes('לחצו על מכוניות'));
+  assert.ok(!indexHtml.includes('לחצו על הולך רגל'));
+});
+
+test('lesson 8 cars and pedestrian only render when enabled, move horizontally, and stay visible when stopped', () => {
+  assertIncludes(indexHtml, 'const activeLesson8Object = (i === 0 && environment.pedestrian) || (i === 2 && environment.cars);');
+  assertIncludes(indexHtml, 'if (!activeLesson8Object) {');
+  assertIncludes(indexHtml, 'const isStopped = (i === 2 && robot.trafficCarsStopped) || (i === 0 && robot.pedestrianStopped);');
+  assertIncludes(indexHtml, 'const motion = isStopped ? 0 : Math.sin(t * 2.4) * 24;');
+  assertIncludes(indexHtml, 'const objectX = xs[i] + motion;');
+  assertIncludes(indexHtml, 'const objectY = y - 8;');
+  assertIncludes(indexHtml, 'if (i === 0 && motion < 0) {');
+  assertIncludes(indexHtml, 'ctx.scale(-1, 1);');
+});
+
+test('lesson 8 stop/start blocks for cars and pedestrian are available and update state correctly', () => {
+  for (const blockType of ['stop_cars', 'start_cars', 'stop_pedestrian', 'start_pedestrian']) {
+    assertIncludes(indexHtml, `{ kind: 'block', type: '${blockType}' }`);
+    assertIncludes(indexHtml, `Blockly.Blocks['${blockType}']`);
+    assertIncludes(indexHtml, `case '${blockType}':`);
+  }
+  assertMatches(indexHtml, /case 'stop_cars':[\s\S]*?robot\.trafficCarsStopped\s*=\s*true;[\s\S]*?break;/);
+  assertMatches(indexHtml, /case 'start_cars':[\s\S]*?robot\.trafficCarsStopped\s*=\s*false;[\s\S]*?break;/);
+  assertMatches(indexHtml, /case 'stop_pedestrian':[\s\S]*?robot\.pedestrianStopped\s*=\s*true;[\s\S]*?break;/);
+  assertMatches(indexHtml, /case 'start_pedestrian':[\s\S]*?robot\.pedestrianStopped\s*=\s*false;[\s\S]*?break;/);
+});
+
+test('environment toggles and reset clear stopped traffic/pedestrian states', () => {
+  assertMatches(indexHtml, /function\s+toggleEnv\s*\(type\)\s*{[\s\S]*?if \(type === 'cars'\) robot\.trafficCarsStopped = false;[\s\S]*?if \(type === 'pedestrian'\) robot\.pedestrianStopped = false;/);
+  assertMatches(indexHtml, /function\s+resetEnv\s*\(\)\s*{[\s\S]*?robot\.trafficCarsStopped = false;[\s\S]*?robot\.pedestrianStopped = false;[\s\S]*?robot\.vehicleStopped = false;/);
+});
+
+test('lesson 8 educational data includes stop and continue traffic blocks', () => {
+  const lesson8 = lessonObjectSource(8);
+  assertIncludes(lesson8, 'עצור מכוניות');
+  assertIncludes(lesson8, 'המשך מכוניות');
+  assertIncludes(lesson8, 'עצור הולך רגל');
+  assertIncludes(lesson8, 'המשך הולך רגל');
+});
+
+let passed = 0;
+for (const { name, fn } of tests) {
+  try {
+    fn();
+    passed += 1;
+    console.log(`✓ ${name}`);
+  } catch (error) {
+    console.error(`✗ ${name}`);
+    console.error(error.stack || error.message);
+    process.exitCode = 1;
+    break;
+  }
+}
+
+if (!process.exitCode) {
+  console.log(`\n${passed}/${tests.length} regression tests passed.`);
+}
