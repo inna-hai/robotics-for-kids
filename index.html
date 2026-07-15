@@ -545,7 +545,7 @@
             position: fixed;
             top: 75px;
             right: 0;
-            width: 320px;
+            width: min(320px, calc(100vw - 48px));
             height: calc(100vh - 75px);
             background: var(--white);
             box-shadow: -5px 0 30px rgba(0,0,0,0.1);
@@ -573,7 +573,7 @@
             color: white;
             font-size: 1.25rem;
             cursor: pointer;
-            z-index: 51;
+            z-index: 80;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -585,7 +585,9 @@
         }
 
         .drawer-toggle.open {
-            right: 320px;
+            right: min(320px, calc(100vw - 48px));
+            border-radius: 1rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,.22);
         }
 
         .lesson-drawer h2 {
@@ -782,6 +784,22 @@
                     <span class="icon">🚶</span>
                     <span id="pedestrianText">אין הולך רגל</span>
                 </div>
+                <div class="sensor-chip" id="sensorSoil">
+                    <span class="icon">🌱</span>
+                    <span id="soilText">אדמה רטובה</span>
+                </div>
+                <div class="sensor-chip" id="sensorArmed">
+                    <span class="icon">🔐</span>
+                    <span id="armedText">לא דרוכה</span>
+                </div>
+                <div class="sensor-chip" id="sensorMotion">
+                    <span class="icon">🏃</span>
+                    <span id="motionText">אין תנועה</span>
+                </div>
+                <div class="sensor-chip" id="sensorDoor">
+                    <span class="icon">🚪</span>
+                    <span id="doorText">דלת סגורה</span>
+                </div>
             </div>
 
             <div class="env-buttons">
@@ -816,6 +834,26 @@
                 <button class="env-btn" onclick="toggleEnv('pedestrian')" id="envPedestrian">
                     <span class="icon">🚶</span>
                     הולך רגל
+                </button>
+                <button class="env-btn" onclick="toggleEnv('lineOff')" id="envLineOff">
+                    <span class="icon">➖</span>
+                    מחוץ לקו
+                </button>
+                <button class="env-btn" onclick="toggleEnv('soilDry')" id="envSoilDry">
+                    <span class="icon">🌱</span>
+                    אדמה יבשה
+                </button>
+                <button class="env-btn" onclick="toggleEnv('armedMode')" id="envArmedMode">
+                    <span class="icon">🔐</span>
+                    מערכת דרוכה
+                </button>
+                <button class="env-btn" onclick="toggleEnv('motion')" id="envMotion">
+                    <span class="icon">🏃</span>
+                    תנועה
+                </button>
+                <button class="env-btn" onclick="toggleEnv('doorOpen')" id="envDoorOpen">
+                    <span class="icon">🚪</span>
+                    דלת פתוחה
                 </button>
             </div>
             <div class="env-reset-row">
@@ -890,8 +928,8 @@
         let currentLesson = 1;
         let workspace = null;
         let completedTasks = [];
-        let robot = { x: 150, y: 180, angle: 0, speaking: '', streetLightOn: false, trafficLightGreen: false, trafficCarsStopped: false, pedestrianStopped: false, vehicleStopped: false, fanOn: false, sortedBin: '' };
-        let environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false };
+        let robot = { x: 150, y: 180, angle: 0, speaking: '', streetLightOn: false, trafficLightGreen: false, trafficCarsStopped: false, pedestrianStopped: false, vehicleStopped: false, fanOn: false, waterOn: false, alarmOn: false, sortedBin: '' };
+        let environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, lineOff: false, soilDry: false, armedMode: false, motion: false, doorOpen: false };
         let isRunning = false;
         let drawerOpen = false;
 
@@ -953,9 +991,9 @@
             if (!lesson || currentLesson < 7) return;
 
             const scenes = {
-                7: { bg: ['#eff6ff', '#e0f2fe'], place: 'מסלול תחבורה', icon: '🛣️', objects: ['קו שחור', 'פנייה', 'יעד'], action: 'עקבו אחרי הקו בלולאה' },
-                8: { bg: ['#fef9c3', '#e0f2fe'], place: 'מעבר חציה', icon: '🚦', objects: ['הולך רגל', 'רמזור', 'מכוניות'], action: 'עצרו תנועה לפני מעבר' },
-                9: { bg: ['#f8fafc', '#dbeafe'], place: 'כיתה חכמה', icon: '🏫', objects: ['תלמידים', 'אור', 'מזגן'], action: 'הפעילו רק כשצריך' },
+                7: { bg: ['#eff6ff', '#e0f2fe'], place: 'מסלול תחבורה', icon: '🛣️', objects: [], action: 'עקבו אחרי הקו בלולאה' },
+                8: { bg: ['#fef9c3', '#e0f2fe'], place: 'מעבר חציה', icon: '🚦', objects: ['אנשים', 'רמזור', 'מכוניות'], action: 'עצרו תנועה לפני מעבר' },
+                9: { bg: ['#f8fafc', '#dbeafe'], place: 'כיתה חכמה', icon: '🏫', objects: ['תלמידים', 'אור', 'מזגן'], action: 'הפעילו רק כשיש תלמידים וצריך אור/מיזוג' },
                 10: { bg: ['#ecfccb', '#bbf7d0'], place: 'גינה חכמה', icon: '🌱', objects: ['אדמה', 'טפטפות', 'צמחים'], action: 'השקו רק כשהאדמה יבשה' },
                 11: { bg: ['#e0e7ff', '#f1f5f9'], place: 'בית חכם', icon: '🏠', objects: ['דלת', 'תנועה', 'אזעקה'], action: 'התריעו רק כשהמערכת דרוכה' },
                 12: { bg: ['#fef3c7', '#e0f2fe'], place: 'משלוח בעיר', icon: '📦', objects: ['חנות', 'מכשול', 'בית יעד'], action: 'תכננו מסלול בטוח' },
@@ -1009,7 +1047,6 @@
             ctx.stroke();
             ctx.textAlign = 'right';
             ctx.fillStyle = '#0f172a';
-
             if (currentLesson === 8) {
                 ctx.font = 'bold 12px Rubik';
                 ctx.fillText('🎯 משימה', boardX + boardW - 12, boardY + 17);
@@ -1029,11 +1066,11 @@
 
             // Scenario objects
             const emojis = {
-                7: ['⬛', '↪️', '🏁'], 8: ['🚶', '🚦', '🚗'], 9: ['🧑‍🎓', '💡', '❄️'], 10: ['🌱', '💧', '🌿'],
+                7: [], 8: ['🚶', '🚦', '🚗'], 9: ['🧑‍🎓', '💡', '❄️'], 10: ['🌱', '💧', '🌿'],
                 11: ['🚪', '🏃', '🚨'], 12: ['🏪', '🚧', '🏠'], 13: ['🔦', '🔊', '👣'], 14: ['💨', '🔥', '🧱'], 15: ['❓', '👁️', '✅']
             }[currentLesson];
-            const xs = [canvas.width * 0.22, canvas.width * 0.42, canvas.width * 0.62];
-            const y = canvas.height * 0.58;
+            const xs = [canvas.width * 0.20, canvas.width * 0.40, canvas.width * 0.60];
+            const y = Math.max(canvas.height * 0.62, boardY + boardH + 48);
             scene.objects.forEach((label, i) => {
                 if (currentLesson === 8) {
                     const activeLesson8Object = (i === 0 && environment.pedestrian) || (i === 2 && environment.cars);
@@ -1118,11 +1155,12 @@
                 ctx.roundRect(xs[i] - 52, y - 52, 104, 104, 18);
                 ctx.fill();
                 ctx.stroke();
+                const isPresenceCard = currentLesson === 9 && i === 0;
                 ctx.font = '34px Arial';
-                ctx.fillText(emojis[i], xs[i], y - 10);
+                ctx.fillText(isPresenceCard ? (environment.motion ? '🧑‍🎓🧑‍🏫' : '🏫') : emojis[i], xs[i], y - 10);
                 ctx.font = 'bold 12px Rubik';
                 ctx.fillStyle = '#334155';
-                ctx.fillText(label, xs[i], y + 34);
+                ctx.fillText(isPresenceCard ? (environment.motion ? 'יש תלמידים' : 'כיתה ריקה') : label, xs[i], y + 34);
             });
         }
 
@@ -1411,7 +1449,8 @@
 
                 if (environment.recycleColor !== 'NONE') {
                     const itemColors = { BLUE: '#3b82f6', GREEN: '#22c55e', YELLOW: '#eab308' };
-                    const itemLabels = { BLUE: 'כחול', GREEN: 'ירוק', YELLOW: 'צהוב' };
+                    const itemLabels = { BLUE: 'קופסת נייר כחולה', GREEN: 'בקבוק ירוק', YELLOW: 'אריזת פלסטיק צהובה' };
+                    const itemEmojis = { BLUE: '📘', GREEN: '🍾', YELLOW: '🧴' };
                     ctx.fillStyle = itemColors[environment.recycleColor] || '#94a3b8';
                     ctx.strokeStyle = '#0f172a';
                     ctx.lineWidth = 3;
@@ -1420,7 +1459,7 @@
                     ctx.fill();
                     ctx.stroke();
                     ctx.font = '28px Arial';
-                    ctx.fillText('📦', objects.recycleItem.x, objects.recycleItem.y - 2);
+                    ctx.fillText(itemEmojis[environment.recycleColor] || '📦', objects.recycleItem.x, objects.recycleItem.y - 2);
                     ctx.font = 'bold 13px Rubik';
                     ctx.fillStyle = '#0f172a';
                     ctx.fillText(itemLabels[environment.recycleColor], objects.recycleItem.x, objects.recycleItem.y + 48);
@@ -1805,10 +1844,111 @@
         canvas.style.cursor = 'grab';
 
         // ===== BLOCKLY =====
-        function initBlockly() {
-            defineBlocks();
+        const toolboxLessonOverrides = {
+            1: {
+                movement: [],
+                sensors: ['sensor_light', 'sensor_pedestrian'],
+                controls: ['control_if']
+            },
+            2: {
+                movement: [],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound'],
+                controls: ['control_if', 'stop_program']
+            },
+            3: {
+                movement: ['move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch'],
+                controls: ['control_if', 'stop_program']
+            },
+            4: {
+                movement: ['move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell'],
+                controls: ['control_if', 'stop_program']
+            },
+            5: {
+                movement: ['move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature'],
+                controls: ['control_if', 'stop_program']
+            },
+            6: {
+                movement: ['move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color'],
+                controls: ['control_if', 'stop_program']
+            },
+            7: {
+                movement: ['move_forward', 'move_backward', 'turn_right_small', 'turn_left_small', 'turn_right', 'turn_left', 'stop_vehicle'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_line_side'],
+                controls: ['control_if', 'control_forever', 'stop_program']
+            },
+            8: {
+                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'stop_cars', 'start_cars', 'stop_pedestrian', 'start_pedestrian'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_cars', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line'],
+                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
+                actions: ['action_say', 'action_street_light', 'action_traffic_light', 'action_sound']
+            },
+            9: {
+                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_people'],
+                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
+                actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_water', 'action_recycle_bin', 'action_class_power']
+            },
+            10: {
+                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_people', 'sensor_soil'],
+                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
+                actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_water', 'action_recycle_bin', 'action_class_power']
+            },
+            11: {
+                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_people', 'sensor_soil', 'sensor_armed', 'sensor_motion', 'sensor_door'],
+                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
+                actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_water', 'action_recycle_bin', 'action_class_power', 'action_alarm']
+            },
+            12: {
+                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'route_turn'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_people', 'sensor_soil', 'sensor_armed', 'sensor_motion', 'sensor_door', 'sensor_obstacle'],
+                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
+                actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_water', 'action_recycle_bin', 'action_class_power', 'action_alarm']
+            },
+            13: {
+                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'route_turn'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_people', 'sensor_soil', 'sensor_armed', 'sensor_motion', 'sensor_door', 'sensor_obstacle'],
+                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
+                actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_water', 'action_recycle_bin', 'action_class_power', 'action_alarm']
+            },
+            14: {
+                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'route_turn'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_people', 'sensor_soil', 'sensor_armed', 'sensor_motion', 'sensor_door', 'sensor_obstacle'],
+                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
+                actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_water', 'action_recycle_bin', 'action_class_power', 'action_alarm', 'action_safe_route']
+            },
+            15: {
+                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'route_turn'],
+                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_people', 'sensor_soil', 'sensor_armed', 'sensor_motion', 'sensor_door', 'sensor_obstacle'],
+                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
+                actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_water', 'action_recycle_bin', 'action_class_power', 'action_alarm', 'action_safe_route']
+            }
+        };
 
-            const toolbox = {
+        function toolboxBlock(type) {
+            return { kind: 'block', type };
+        }
+
+        function toolboxBlocksFor(category) {
+            const override = toolboxLessonOverrides[currentLesson];
+            if (override?.[category]) return override[category].map(toolboxBlock);
+
+            const defaults = {
+                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
+                sensors: ['sensor_light', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_soil', 'sensor_armed', 'sensor_motion', 'sensor_door'],
+                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
+                actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_water', 'action_recycle_bin']
+            };
+            return defaults[category].map(toolboxBlock);
+        }
+
+        function buildToolbox() {
+            return {
                 kind: 'categoryToolbox',
                 contents: [
                     {
@@ -1823,66 +1963,130 @@
                         kind: 'category',
                         name: '🚗 תנועה',
                         colour: '#4C97FF',
-                        contents: [
-                            { kind: 'block', type: 'move_forward' },
-                            { kind: 'block', type: 'move_backward' },
-                            { kind: 'block', type: 'turn_right_small' },
-                            { kind: 'block', type: 'turn_left_small' },
-                            { kind: 'block', type: 'turn_right' },
-                            { kind: 'block', type: 'turn_left' },
-                            { kind: 'block', type: 'stop_vehicle' },
-                            { kind: 'block', type: 'stop_cars' },
-                            { kind: 'block', type: 'start_cars' },
-                            { kind: 'block', type: 'stop_pedestrian' },
-                            { kind: 'block', type: 'start_pedestrian' }
-                        ]
+                        contents: toolboxBlocksFor('movement')
                     },
                     {
                         kind: 'category',
                         name: '👁️ חושים',
                         colour: '#40BF4A',
-                        contents: [
-                            { kind: 'block', type: 'sensor_light' },
-                            { kind: 'block', type: 'sensor_sound' },
-                            { kind: 'block', type: 'sensor_touch' },
-                            { kind: 'block', type: 'sensor_smell' },
-                            { kind: 'block', type: 'sensor_temperature' },
-                            { kind: 'block', type: 'sensor_color' },
-                            { kind: 'block', type: 'sensor_line' },
-                            { kind: 'block', type: 'sensor_line_side' },
-                            { kind: 'block', type: 'sensor_cars' },
-                            { kind: 'block', type: 'sensor_pedestrian' }
-                        ]
+                        contents: toolboxBlocksFor('sensors')
                     },
                     {
                         kind: 'category',
                         name: '🔁 בקרה',
                         colour: '#FF8C1A',
-                        contents: [
-                            { kind: 'block', type: 'control_if' },
-                            { kind: 'block', type: 'control_forever' },
-                            { kind: 'block', type: 'control_wait' },
-                            { kind: 'block', type: 'stop_program' }
-                        ]
+                        contents: toolboxBlocksFor('controls')
                     },
                     {
                         kind: 'category',
-                        name: '💬 דיבור',
+                        name: '💬 דיבור/פעולות',
                         colour: '#9966FF',
-                        contents: [
-                            { kind: 'block', type: 'action_say' },
-                            { kind: 'block', type: 'action_street_light' },
-                            { kind: 'block', type: 'action_traffic_light' },
-                            { kind: 'block', type: 'action_sound' },
-                            { kind: 'block', type: 'action_fan' },
-                            { kind: 'block', type: 'action_recycle_bin' }
-                        ]
+                        contents: toolboxBlocksFor('actions')
                     }
                 ]
             };
+        }
+
+        const lessonControlOverrides = {
+            1: {
+                sensors: ['sensorLight', 'sensorMotion'],
+                env: ['envLight', 'envMotion']
+            },
+            2: {
+                sensors: ['sensorLight', 'sensorMotion', 'sensorSound'],
+                env: ['envLight', 'envMotion', 'envSound']
+            },
+            3: {
+                sensors: ['sensorLight', 'sensorMotion', 'sensorSound', 'sensorTouch'],
+                env: ['envLight', 'envMotion', 'envSound', 'envObstacle']
+            },
+            4: {
+                sensors: ['sensorLight', 'sensorMotion', 'sensorSound', 'sensorTouch', 'sensorSmell'],
+                env: ['envLight', 'envMotion', 'envSound', 'envObstacle', 'envSmoke']
+            },
+            5: {
+                sensors: ['sensorLight', 'sensorMotion', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp'],
+                env: ['envLight', 'envMotion', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot']
+            },
+            6: {
+                sensors: ['sensorLight', 'sensorMotion', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor'],
+                env: ['envLight', 'envMotion', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor']
+            },
+            7: {
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor']
+            },
+            8: {
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorCars', 'sensorPedestrian'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian']
+            },
+            9: {
+                sensors: ['sensorLight', 'sensorMotion', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine'],
+                env: ['envLight', 'envMotion', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envLineOff']
+            },
+            10: {
+                sensors: ['sensorLight', 'sensorMotion', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorSoil'],
+                env: ['envLight', 'envMotion', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envLineOff', 'envSoilDry']
+            },
+            11: {
+                sensors: ['sensorLight', 'sensorMotion', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
+                env: ['envLight', 'envMotion', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envLineOff', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
+            },
+            12: {
+                sensors: ['sensorLight', 'sensorMotion', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
+                env: ['envLight', 'envMotion', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envLineOff', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
+            },
+            13: {
+                sensors: ['sensorLight', 'sensorMotion', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
+                env: ['envLight', 'envMotion', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envLineOff', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
+            },
+            14: {
+                sensors: ['sensorLight', 'sensorMotion', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
+                env: ['envLight', 'envMotion', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envLineOff', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
+            },
+            15: {
+                sensors: ['sensorLight', 'sensorMotion', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
+                env: ['envLight', 'envMotion', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envLineOff', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
+            }
+        };
+
+        function updateVisibleControls() {
+            const allSensors = ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorCars', 'sensorPedestrian', 'sensorSoil', 'sensorArmed', 'sensorMotion', 'sensorDoor'];
+            const allEnv = ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envLineOff', 'envSoilDry', 'envArmedMode', 'envMotion', 'envDoorOpen'];
+            const override = lessonControlOverrides[currentLesson];
+            allSensors.forEach((id) => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = !override || override.sensors.includes(id) ? 'flex' : 'none';
+            });
+            allEnv.forEach((id) => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = !override || override.env.includes(id) ? 'flex' : 'none';
+            });
+            const motionBtn = document.getElementById('envMotion');
+            if (motionBtn) {
+                if (currentLesson === 1 || currentLesson === 8) {
+                    motionBtn.querySelector('.icon').textContent = '🚶';
+                    motionBtn.lastChild.textContent = ' אנשים';
+                } else if (currentLesson === 9) {
+                    motionBtn.querySelector('.icon').textContent = '🧑‍🎓';
+                    motionBtn.lastChild.textContent = ' תלמידים';
+                } else {
+                    motionBtn.querySelector('.icon').textContent = '🏃';
+                    motionBtn.lastChild.textContent = ' תנועה';
+                }
+            }
+            const obstacleBtn = document.getElementById('envObstacle');
+            if (obstacleBtn) {
+                obstacleBtn.querySelector('.icon').textContent = currentLesson === 12 ? '🚧' : '🧱';
+                obstacleBtn.lastChild.textContent = currentLesson === 12 ? ' מכשול' : ' קיר';
+            }
+        }
+
+        function initBlockly() {
+            defineBlocks();
 
             workspace = Blockly.inject('blocklyDiv', {
-                toolbox: toolbox,
+                toolbox: buildToolbox(),
                 rtl: true,
                 scrollbars: true,
                 trashcan: true,
@@ -1960,6 +2164,17 @@
             Blockly.Blocks['turn_left'] = {
                 init: function() {
                     this.appendDummyInput().appendField('↪️ סובב שמאלה 90°');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#4C97FF');
+                }
+            };
+
+            Blockly.Blocks['route_turn'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('🧭 סובב לפי המסלול')
+                        .appendField(new Blockly.FieldDropdown([['ימינה', 'RIGHT'], ['שמאלה', 'LEFT']]), 'DIR');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
                     this.setColour('#4C97FF');
@@ -2051,6 +2266,16 @@
                 }
             };
 
+            Blockly.Blocks['sensor_obstacle'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('🚧 מכשול בדרך?')
+                        .appendField(new Blockly.FieldDropdown([['כן', 'YES'], ['לא', 'NO']]), 'VAL');
+                    this.setOutput(true, 'Boolean');
+                    this.setColour('#40BF4A');
+                }
+            };
+
             Blockly.Blocks['sensor_smell'] = {
                 init: function() {
                     this.appendDummyInput()
@@ -2101,6 +2326,16 @@
                 }
             };
 
+            Blockly.Blocks['sensor_soil'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('🌱 אדמה')
+                        .appendField(new Blockly.FieldDropdown([['יבשה', 'DRY'], ['רטובה', 'WET']]), 'VAL');
+                    this.setOutput(true, 'Boolean');
+                    this.setColour('#40BF4A');
+                }
+            };
+
             Blockly.Blocks['sensor_cars'] = {
                 init: function() {
                     this.appendDummyInput()
@@ -2111,11 +2346,51 @@
                 }
             };
 
+            Blockly.Blocks['sensor_armed'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('🔐 מערכת דרוכה?')
+                        .appendField(new Blockly.FieldDropdown([['כן', 'YES'], ['לא', 'NO']]), 'VAL');
+                    this.setOutput(true, 'Boolean');
+                    this.setColour('#40BF4A');
+                }
+            };
+
+            Blockly.Blocks['sensor_motion'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('🏃 יש תנועה?')
+                        .appendField(new Blockly.FieldDropdown([['כן', 'YES'], ['לא', 'NO']]), 'VAL');
+                    this.setOutput(true, 'Boolean');
+                    this.setColour('#40BF4A');
+                }
+            };
+
+            Blockly.Blocks['sensor_people'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('🧑‍🎓 יש תלמידים?')
+                        .appendField(new Blockly.FieldDropdown([['כן', 'YES'], ['לא', 'NO']]), 'VAL');
+                    this.setOutput(true, 'Boolean');
+                    this.setColour('#40BF4A');
+                }
+            };
+
             Blockly.Blocks['sensor_pedestrian'] = {
                 init: function() {
                     this.appendDummyInput()
                         .appendField('🚶 חיישן הולך רגל =')
                         .appendField(new Blockly.FieldDropdown([['יש הולך רגל', 'YES'], ['אין הולך רגל', 'NO']]), 'VAL');
+                    this.setOutput(true, 'Boolean');
+                    this.setColour('#40BF4A');
+                }
+            };
+
+            Blockly.Blocks['sensor_door'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('🚪 דלת פתוחה?')
+                        .appendField(new Blockly.FieldDropdown([['כן', 'YES'], ['לא', 'NO']]), 'VAL');
                     this.setOutput(true, 'Boolean');
                     this.setColour('#40BF4A');
                 }
@@ -2145,7 +2420,7 @@
                 init: function() {
                     this.appendDummyInput()
                         .appendField('⏱️ חכה')
-                        .appendField(new Blockly.FieldNumber(1, 0.5, 5), 'SEC')
+                        .appendField(new Blockly.FieldNumber(2, 0.5, 10), 'SEC')
                         .appendField('שניות');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
@@ -2196,11 +2471,33 @@
                 }
             };
 
+            Blockly.Blocks['action_class_power'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('💡 חשמל כיתה')
+                        .appendField(new Blockly.FieldDropdown([['הדלק', 'ON'], ['כבה', 'OFF']]), 'STATE');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+
             Blockly.Blocks['action_sound'] = {
                 init: function() {
                     this.appendDummyInput()
                         .appendField('🔔 השמע')
                         .appendField(new Blockly.FieldDropdown([['ביפ 🎵', 'BEEP'], ['אזעקה 🚨', 'ALARM']]), 'SND');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+
+            Blockly.Blocks['action_alarm'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('🚨 אזעקה')
+                        .appendField(new Blockly.FieldDropdown([['הפעל', 'ON'], ['כבה', 'OFF']]), 'STATE');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
                     this.setColour('#9966FF');
@@ -2218,11 +2515,31 @@
                 }
             };
 
+            Blockly.Blocks['action_water'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('💧 מים')
+                        .appendField(new Blockly.FieldDropdown([['הפעל', 'ON'], ['כבה', 'OFF']]), 'STATE');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+
             Blockly.Blocks['action_recycle_bin'] = {
                 init: function() {
                     this.appendDummyInput()
                         .appendField('♻️ העבר לפח')
                         .appendField(new Blockly.FieldDropdown([['נייר כחול', 'BLUE'], ['בקבוק ירוק', 'GREEN'], ['פלסטיק צהוב', 'YELLOW']]), 'BIN');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+
+            Blockly.Blocks['action_safe_route'] = {
+                init: function() {
+                    this.appendDummyInput().appendField('🛟 חפש דרך בטוחה');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
                     this.setColour('#9966FF');
@@ -2298,6 +2615,13 @@
                     await sleep(300);
                     break;
 
+                case 'route_turn':
+                    robot.angle += block.getFieldValue('DIR') === 'RIGHT' ? 90 : -90;
+                    robot.speaking = block.getFieldValue('DIR') === 'RIGHT' ? 'סובב ימינה לפי המסלול' : 'סובב שמאלה לפי המסלול';
+                    await sleep(700);
+                    robot.speaking = '';
+                    break;
+
                 case 'stop_vehicle':
                 case 'stop':
                     robot.vehicleStopped = true;
@@ -2359,13 +2683,14 @@
                     await sleep(2000);
                     robot.speaking = '';
                     break;
-
-                case 'action_street_light':
-                    robot.streetLightOn = block.getFieldValue('STATE') === 'ON';
+                case 'action_street_light': {
+                    const streetLightState = block.getFieldValue('STATE') || 'ON';
+                    robot.streetLightOn = streetLightState === 'ON';
                     robot.speaking = robot.streetLightOn ? 'הדלקתי פנס!' : 'כיביתי פנס!';
                     await sleep(900);
                     robot.speaking = '';
                     break;
+                }
 
                 case 'action_traffic_light':
                     robot.trafficLightGreen = block.getFieldValue('STATE') === 'GREEN';
@@ -2374,14 +2699,45 @@
                     robot.speaking = '';
                     break;
 
-                case 'action_sound':
-                    playBeep(block.getFieldValue('SND'));
-                    await sleep(500);
+                case 'action_class_power': {
+                    const classPowerState = block.getFieldValue('STATE') || 'ON';
+                    robot.streetLightOn = classPowerState === 'ON';
+                    robot.speaking = robot.streetLightOn ? 'הדלקתי חשמל בכיתה' : 'כיביתי חשמל בכיתה';
+                    await sleep(900);
+                    robot.speaking = '';
+                    break;
+                }
+
+                case 'action_sound': {
+                    const soundType = block.getFieldValue('SND');
+                    playBeep(soundType);
+                    robot.speaking = soundType === 'ALARM' ? 'אזעקה הופעלה' : 'ביפ';
+                    await sleep(900);
+                    robot.speaking = '';
+                    break;
+                }
+
+                case 'action_alarm':
+                    robot.alarmOn = block.getFieldValue('STATE') === 'ON';
+                    if (robot.alarmOn) playBeep('ALARM');
+                    robot.speaking = robot.alarmOn ? 'הפעלתי אזעקה' : 'כיביתי אזעקה';
+                    await sleep(900);
+                    robot.speaking = '';
+                    break;
                     break;
 
                 case 'action_fan':
                     robot.fanOn = block.getFieldValue('STATE') === 'ON';
-                    robot.speaking = robot.fanOn ? 'מקרר את החממה!' : 'המאוורר כבוי';
+                    robot.speaking = currentLesson === 9
+                        ? (robot.fanOn ? 'הפעלתי מזגן' : 'כיביתי מזגן')
+                        : (robot.fanOn ? 'מקרר את החממה!' : 'המאוורר כבוי');
+                    await sleep(900);
+                    robot.speaking = '';
+                    break;
+
+                case 'action_water':
+                    robot.waterOn = block.getFieldValue('STATE') === 'ON';
+                    robot.speaking = robot.waterOn ? 'משקה את הגינה!' : 'המים כבויים';
                     await sleep(900);
                     robot.speaking = '';
                     break;
@@ -2390,6 +2746,13 @@
                     robot.sortedBin = block.getFieldValue('BIN');
                     robot.speaking = robot.sortedBin === environment.recycleColor ? 'מיון נכון!' : 'אופס, בדקו צבע!';
                     await sleep(1200);
+                    robot.speaking = '';
+                    break;
+
+                case 'action_safe_route':
+                    robot.speaking = 'מחפש דרך בטוחה';
+                    robot.vehicleStopped = false;
+                    await sleep(900);
                     robot.speaking = '';
                     break;
             }
@@ -2516,6 +2879,21 @@
         function canSenseLineSide(side) {
             return getLineSide() === side;
         }
+        function getSoilMoisture() {
+            return environment.soilDry ? 'DRY' : 'WET';
+        }
+
+        function isSystemArmed() {
+            return Boolean(environment.armedMode);
+        }
+
+        function canSenseMotion() {
+            return Boolean(environment.motion);
+        }
+
+        function isDoorOpen() {
+            return Boolean(environment.doorOpen);
+        }
 
         function evalCondition(block) {
             if (!block) return false;
@@ -2532,6 +2910,8 @@
                 }
                 case 'sensor_touch':
                     return val === 'YES' ? canSenseTouch() : !canSenseTouch();
+                case 'sensor_obstacle':
+                    return val === 'YES' ? Boolean(environment.obstacle) : !environment.obstacle;
                 case 'sensor_smell':
                     return val === 'YES' ? canSenseSmoke() : !canSenseSmoke();
                 case 'sensor_temperature':
@@ -2539,27 +2919,60 @@
                 case 'sensor_color':
                     return getRecycleColor() === val;
                 case 'sensor_line':
-                    return val === 'ON' ? canSenseLine() : !canSenseLine();
+                    return val === 'ON' ? (currentLesson === 7 ? canSenseLine() : !environment.lineOff) : (currentLesson === 7 ? !canSenseLine() : Boolean(environment.lineOff));
                 case 'sensor_line_side':
                     return canSenseLineSide(val);
                 case 'sensor_cars':
                     return val === 'YES' ? canSenseCars() : !canSenseCars();
                 case 'sensor_pedestrian':
                     return val === 'YES' ? canSensePedestrian() : !canSensePedestrian();
+                case 'sensor_soil':
+                    return getSoilMoisture() === val;
+                case 'sensor_armed':
+                    return val === 'YES' ? isSystemArmed() : !isSystemArmed();
+                case 'sensor_motion':
+                    return val === 'YES' ? canSenseMotion() : !canSenseMotion();
+                case 'sensor_people':
+                    return val === 'YES' ? canSenseMotion() : !canSenseMotion();
+                case 'sensor_door':
+                    return val === 'YES' ? isDoorOpen() : !isDoorOpen();
             }
             return false;
         }
 
         function playBeep(type) {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.frequency.value = type === 'ALARM' ? 800 : 500;
-            osc.start();
-            gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.3);
-            osc.stop(ctx.currentTime + 0.3);
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return;
+
+            const ctx = new AudioCtx();
+            if (ctx.state === 'suspended') ctx.resume();
+
+            const playTone = (frequency, startOffset, duration, volume = 0.08) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(frequency, ctx.currentTime + startOffset);
+                gain.gain.setValueAtTime(0.0001, ctx.currentTime + startOffset);
+                gain.gain.linearRampToValueAtTime(volume, ctx.currentTime + startOffset + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + startOffset + duration);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(ctx.currentTime + startOffset);
+                osc.stop(ctx.currentTime + startOffset + duration);
+            };
+
+            if (type === 'ALARM') {
+                // Gentle classroom alert: a soft up-down pattern that feels like an alarm,
+                // but stays short, quiet, and unlike an ambulance siren.
+                playTone(620, 0.00, 0.22, 0.12);
+                playTone(920, 0.20, 0.22, 0.12);
+                playTone(620, 0.48, 0.22, 0.12);
+                playTone(920, 0.68, 0.22, 0.12);
+                playTone(620, 0.96, 0.26, 0.10);
+                return;
+            }
+
+            playTone(520, 0, 0.22, 0.06);
         }
 
         function sleep(ms) {
@@ -2577,7 +2990,7 @@
         }
 
         function resetEnv() {
-            environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false };
+            environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, lineOff: false, soilDry: false, armedMode: false, motion: false, doorOpen: false };
             document.querySelectorAll('.env-btn').forEach(b => b.classList.remove('active'));
             robot.speaking = '';
             robot.streetLightOn = false;
@@ -2586,6 +2999,8 @@
             robot.pedestrianStopped = false;
             robot.vehicleStopped = false;
             robot.fanOn = false;
+            robot.waterOn = false;
+            robot.alarmOn = false;
             robot.sortedBin = '';
             const recycleBtnIcon = document.querySelector('#envRecycleColor .icon');
             if (recycleBtnIcon) recycleBtnIcon.textContent = '♻️';
@@ -2600,7 +3015,7 @@
             robot.sortedBin = '';
             const btn = document.getElementById('envRecycleColor');
             btn.classList.toggle('active', next !== 'NONE');
-            btn.querySelector('.icon').textContent = next === 'BLUE' ? '🔵' : next === 'GREEN' ? '🟢' : next === 'YELLOW' ? '🟡' : '♻️';
+            btn.querySelector('.icon').textContent = next === 'BLUE' ? '📘' : next === 'GREEN' ? '🍾' : next === 'YELLOW' ? '🧴' : '♻️';
             updateSensors();
         }
 
@@ -2618,7 +3033,11 @@
             const lineSide = getLineSide();
             const sensesCars = canSenseCars();
             const sensesPedestrian = canSensePedestrian();
-
+            const soilMoisture = getSoilMoisture();
+            const onLine = currentLesson === 7 ? sensesLine : !environment.lineOff;
+            const armed = isSystemArmed();
+            const motion = canSenseMotion();
+            const doorOpen = isDoorOpen();
             document.getElementById('lightText').textContent = sensesLight ? 'בהיר!' : 'חשוך';
             document.getElementById('soundText').textContent = soundLevel === 'LOUD' ? 'חזק מדי!' : soundLevel === 'SOFT' ? 'חלש' : 'שקט';
             document.getElementById('touchText').textContent = sensesTouch ? 'קיר!' : 'פנוי';
@@ -2627,23 +3046,32 @@
             document.getElementById('colorText').textContent = recycleColorText;
             document.getElementById('lineText').textContent = currentLesson === 7
                 ? (sensesLine ? 'על הקו!' : lineSide === 'RIGHT' ? 'הקו מימין' : lineSide === 'LEFT' ? 'הקו משמאל' : 'לא על הקו')
-                : 'לא בשימוש';
+                : (onLine ? 'על הקו' : 'מחוץ לקו');
             document.getElementById('carsText').textContent = currentLesson === 8
                 ? (sensesCars ? 'יש מכוניות!' : 'אין מכוניות')
                 : 'לא בשימוש';
             document.getElementById('pedestrianText').textContent = currentLesson === 8
                 ? (sensesPedestrian ? 'יש הולך רגל!' : 'אין הולך רגל')
                 : 'לא בשימוש';
-
+            document.getElementById('soilText').textContent = soilMoisture === 'DRY' ? 'אדמה יבשה' : 'אדמה רטובה';
+            document.getElementById('armedText').textContent = armed ? 'דרוכה' : 'לא דרוכה';
+            document.getElementById('motionText').textContent = currentLesson === 9
+                ? (motion ? 'יש תלמידים' : 'כיתה ריקה')
+                : (motion ? 'יש תנועה' : 'אין תנועה');
+            document.getElementById('doorText').textContent = doorOpen ? 'דלת פתוחה' : 'דלת סגורה';
             document.getElementById('sensorLight').classList.toggle('active', sensesLight);
             document.getElementById('sensorSound').classList.toggle('active', sensesSound);
             document.getElementById('sensorTouch').classList.toggle('active', sensesTouch);
             document.getElementById('sensorSmell').classList.toggle('active', sensesSmoke);
             document.getElementById('sensorTemp').classList.toggle('active', tempLevel === 'HOT');
             document.getElementById('sensorColor').classList.toggle('active', recycleColor !== 'NONE');
-            document.getElementById('sensorLine').classList.toggle('active', currentLesson === 7 && sensesLine);
+            document.getElementById('sensorLine').classList.toggle('active', currentLesson === 7 ? sensesLine : onLine);
             document.getElementById('sensorCars').classList.toggle('active', currentLesson === 8 && sensesCars);
             document.getElementById('sensorPedestrian').classList.toggle('active', currentLesson === 8 && sensesPedestrian);
+            document.getElementById('sensorSoil').classList.toggle('active', soilMoisture === 'DRY');
+            document.getElementById('sensorArmed').classList.toggle('active', armed);
+            document.getElementById('sensorMotion').classList.toggle('active', motion);
+            document.getElementById('sensorDoor').classList.toggle('active', doorOpen);
         }
 
         // Update sensors periodically (for dragging feedback)
@@ -2780,6 +3208,8 @@
             document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num;
             resetPositions();
             updateTasks(num);
+            if (workspace) workspace.updateToolbox(buildToolbox());
+            updateVisibleControls();
         }
 
         function startLesson(num) {
