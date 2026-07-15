@@ -233,10 +233,11 @@
 
     function renderSolutionBlocks(answerBlocks) {
       const blocks = answerBlocks || [];
+      const showConnectors = Number(lesson.id) !== 12;
       const html = blocks.map((block, index) => {
         const current = renderVisualBlock(block);
         const next = blocks[index + 1];
-        const connector = next ? `<div class="visual-block connector ${isNestedAnswerLine(next) ? 'nested' : ''}"></div>` : '';
+        const connector = showConnectors && next ? `<div class="visual-block connector ${isNestedAnswerLine(next) ? 'nested' : ''}"></div>` : '';
         return current + connector;
       }).join('');
       return `<div class="blockly-solution"><div class="blockly-caption">כך הפתרון נראה בבלוקים:</div><div class="code-blocks">${html}</div></div>`;
