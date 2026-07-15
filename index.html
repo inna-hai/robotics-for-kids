@@ -198,7 +198,6 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.1);
             min-width: 0;
             min-height: 0;
-            overflow: hidden;
         }
 
         .robot-title {
@@ -818,6 +817,18 @@
                     <span class="icon">🚶</span>
                     <span id="pedestrianText">אין הולך רגל</span>
                 </div>
+                <div class="sensor-chip" id="sensorArmed">
+                    <span class="icon">🔐</span>
+                    <span id="armedText">לא דרוכה</span>
+                </div>
+                <div class="sensor-chip" id="sensorMotion">
+                    <span class="icon">🏃</span>
+                    <span id="motionText">אין תנועה</span>
+                </div>
+                <div class="sensor-chip" id="sensorDoor">
+                    <span class="icon">🚪</span>
+                    <span id="doorText">דלת סגורה</span>
+                </div>
             </div>
 
             <div class="env-buttons">
@@ -852,6 +863,18 @@
                 <button class="env-btn" onclick="toggleEnv('pedestrian')" id="envPedestrian">
                     <span class="icon">🚶</span>
                     הולך רגל
+                </button>
+                <button class="env-btn" onclick="toggleEnv('armedMode')" id="envArmedMode">
+                    <span class="icon">🔐</span>
+                    מערכת דרוכה
+                </button>
+                <button class="env-btn" onclick="toggleEnv('motion')" id="envMotion">
+                    <span class="icon">🏃</span>
+                    תנועה
+                </button>
+                <button class="env-btn" onclick="toggleEnv('doorOpen')" id="envDoorOpen">
+                    <span class="icon">🚪</span>
+                    דלת פתוחה
                 </button>
             </div>
             <div class="env-reset-row">
@@ -926,8 +949,8 @@
         let currentLesson = 1;
         let workspace = null;
         let completedTasks = [];
-        let robot = { x: 150, y: 180, angle: 0, speaking: '', streetLightOn: false, trafficLightGreen: false, trafficCarsStopped: false, pedestrianStopped: false, vehicleStopped: false, fanOn: false, sortedBin: '' };
-        let environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false };
+        let robot = { x: 150, y: 180, angle: 0, speaking: '', streetLightOn: false, trafficLightGreen: false, trafficCarsStopped: false, pedestrianStopped: false, vehicleStopped: false, fanOn: false, alarmOn: false, sortedBin: '' };
+        let environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, armedMode: false, motion: false, doorOpen: false };
         let isRunning = false;
         let drawerOpen = false;
 
@@ -1165,6 +1188,34 @@
                     return;
                 }
 
+                if (currentLesson === 11) {
+                    const activeStates = [environment.doorOpen, environment.motion, robot.alarmOn];
+                    ctx.fillStyle = activeStates[i] ? 'rgba(254, 226, 226, .95)' : 'rgba(255,255,255,.9)';
+                    ctx.strokeStyle = activeStates[i] ? '#dc2626' : '#94a3b8';
+                    ctx.lineWidth = activeStates[i] ? 3 : 2;
+                    ctx.beginPath();
+                    ctx.roundRect(xs[i] - 52, y - 52, 104, 104, 18);
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.font = '34px Arial';
+                    ctx.fillText(emojis[i], xs[i], y - 10);
+                    ctx.font = 'bold 12px Rubik';
+                    ctx.fillStyle = activeStates[i] ? '#dc2626' : '#334155';
+                    const statusLabels = [
+                        environment.doorOpen ? 'דלת פתוחה' : 'דלת סגורה',
+                        environment.motion ? 'יש תנועה' : 'אין תנועה',
+                        robot.alarmOn ? 'אזעקה פועלת' : 'אזעקה כבויה'
+                    ];
+                    ctx.fillText(statusLabels[i], xs[i], y + 34);
+
+                    if (i === 2) {
+                        ctx.font = 'bold 13px Rubik';
+                        ctx.fillStyle = environment.armedMode ? '#7c3aed' : '#64748b';
+                        ctx.fillText(environment.armedMode ? 'המערכת דרוכה' : 'המערכת לא דרוכה', xs[i], y + 56);
+                    }
+                    return;
+                }
+
                 ctx.fillStyle = 'rgba(255,255,255,.9)';
                 ctx.strokeStyle = '#94a3b8';
                 ctx.lineWidth = 2;
@@ -1384,11 +1435,15 @@
                     ctx.stroke();
                 }
 
-                // Plants
+                // Plants - one centered plant in each greenhouse strip
+                const plantStrips = 5;
+                const stripW = houseW / plantStrips;
+                const plantY = houseY + houseH - 30;
                 ctx.font = '42px Arial';
                 ctx.textAlign = 'center';
-                ['🌱', '🌿', '🪴', '🌱'].forEach((plant, i) => {
-                    ctx.fillText(plant, houseX + 80 + i * (houseW - 160) / 3, houseY + houseH - 30);
+                ['🌱', '🌿', '🪴', '🌱', '🌿'].forEach((plant, i) => {
+                    const plantX = houseX + stripW * (i + 0.5);
+                    ctx.fillText(plant, plantX, plantY);
                 });
 
                 // Temperature panel
@@ -1906,7 +1961,10 @@
                             { kind: 'block', type: 'sensor_line_side' },
                             { kind: 'block', type: 'sensor_goal' },
                             { kind: 'block', type: 'sensor_cars' },
-                            { kind: 'block', type: 'sensor_pedestrian' }
+                            { kind: 'block', type: 'sensor_pedestrian' },
+                            { kind: 'block', type: 'sensor_armed' },
+                            { kind: 'block', type: 'sensor_motion' },
+                            { kind: 'block', type: 'sensor_door' }
                         ]
                     },
                     {
@@ -1929,6 +1987,7 @@
                             { kind: 'block', type: 'action_street_light' },
                             { kind: 'block', type: 'action_traffic_light' },
                             { kind: 'block', type: 'action_sound' },
+                            { kind: 'block', type: 'action_alarm' },
                             { kind: 'block', type: 'action_fan' },
                             { kind: 'block', type: 'action_recycle_bin' }
                         ]
@@ -2186,6 +2245,36 @@
                 }
             };
 
+            Blockly.Blocks['sensor_armed'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('🔐 מערכת דרוכה?')
+                        .appendField(new Blockly.FieldDropdown([['כן', 'YES'], ['לא', 'NO']]), 'VAL');
+                    this.setOutput(true, 'Boolean');
+                    this.setColour('#40BF4A');
+                }
+            };
+
+            Blockly.Blocks['sensor_motion'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('🏃 יש תנועה?')
+                        .appendField(new Blockly.FieldDropdown([['כן', 'YES'], ['לא', 'NO']]), 'VAL');
+                    this.setOutput(true, 'Boolean');
+                    this.setColour('#40BF4A');
+                }
+            };
+
+            Blockly.Blocks['sensor_door'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('🚪 דלת פתוחה?')
+                        .appendField(new Blockly.FieldDropdown([['כן', 'YES'], ['לא', 'NO']]), 'VAL');
+                    this.setOutput(true, 'Boolean');
+                    this.setColour('#40BF4A');
+                }
+            };
+
             // Control
             Blockly.Blocks['control_if'] = {
                 init: function() {
@@ -2266,6 +2355,17 @@
                     this.appendDummyInput()
                         .appendField('🔔 השמע')
                         .appendField(new Blockly.FieldDropdown([['ביפ 🎵', 'BEEP'], ['אזעקה 🚨', 'ALARM']]), 'SND');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+
+            Blockly.Blocks['action_alarm'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('🚨 אזעקה')
+                        .appendField(new Blockly.FieldDropdown([['הפעל', 'ON'], ['כבה', 'OFF']]), 'STATE');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
                     this.setColour('#9966FF');
@@ -2444,6 +2544,14 @@
                     await sleep(500);
                     break;
 
+                case 'action_alarm':
+                    robot.alarmOn = block.getFieldValue('STATE') === 'ON';
+                    if (robot.alarmOn) playBeep('ALARM');
+                    robot.speaking = robot.alarmOn ? 'הפעלתי אזעקה' : 'כיביתי אזעקה';
+                    await sleep(900);
+                    robot.speaking = '';
+                    break;
+
                 case 'action_fan':
                     robot.fanOn = block.getFieldValue('STATE') === 'ON';
                     robot.speaking = robot.fanOn ? 'מקרר את החממה!' : 'המאוורר כבוי';
@@ -2511,6 +2619,18 @@
 
         function canSensePedestrian() {
             return currentLesson === 8 && environment.pedestrian;
+        }
+
+        function isSystemArmed() {
+            return currentLesson === 11 && Boolean(environment.armedMode);
+        }
+
+        function canSenseMotion() {
+            return currentLesson === 11 && Boolean(environment.motion);
+        }
+
+        function isDoorOpen() {
+            return currentLesson === 11 && Boolean(environment.doorOpen);
         }
 
         function getLesson7LinePoints() {
@@ -2622,6 +2742,12 @@
                     return val === 'YES' ? canSenseCars() : !canSenseCars();
                 case 'sensor_pedestrian':
                     return val === 'YES' ? canSensePedestrian() : !canSensePedestrian();
+                case 'sensor_armed':
+                    return val === 'YES' ? isSystemArmed() : !isSystemArmed();
+                case 'sensor_motion':
+                    return val === 'YES' ? canSenseMotion() : !canSenseMotion();
+                case 'sensor_door':
+                    return val === 'YES' ? isDoorOpen() : !isDoorOpen();
             }
             return false;
         }
@@ -2653,7 +2779,7 @@
         }
 
         function resetEnv() {
-            environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false };
+            environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, armedMode: false, motion: false, doorOpen: false };
             document.querySelectorAll('.env-btn').forEach(b => b.classList.remove('active'));
             robot.speaking = '';
             robot.streetLightOn = false;
@@ -2662,6 +2788,7 @@
             robot.pedestrianStopped = false;
             robot.vehicleStopped = false;
             robot.fanOn = false;
+            robot.alarmOn = false;
             robot.sortedBin = '';
             const recycleBtnIcon = document.querySelector('#envRecycleColor .icon');
             if (recycleBtnIcon) recycleBtnIcon.textContent = '♻️';
@@ -2695,6 +2822,9 @@
             const sensesGoal = canSenseGoal();
             const sensesCars = canSenseCars();
             const sensesPedestrian = canSensePedestrian();
+            const armed = isSystemArmed();
+            const motion = canSenseMotion();
+            const doorOpen = isDoorOpen();
 
             document.getElementById('lightText').textContent = sensesLight ? 'בהיר!' : 'חשוך';
             document.getElementById('soundText').textContent = soundLevel === 'LOUD' ? 'חזק מדי!' : soundLevel === 'SOFT' ? 'חלש' : 'שקט';
@@ -2714,6 +2844,15 @@
             document.getElementById('pedestrianText').textContent = currentLesson === 8
                 ? (sensesPedestrian ? 'יש הולך רגל!' : 'אין הולך רגל')
                 : 'לא בשימוש';
+            document.getElementById('armedText').textContent = currentLesson === 11
+                ? (armed ? 'דרוכה' : 'לא דרוכה')
+                : 'לא בשימוש';
+            document.getElementById('motionText').textContent = currentLesson === 11
+                ? (motion ? 'יש תנועה' : 'אין תנועה')
+                : 'לא בשימוש';
+            document.getElementById('doorText').textContent = currentLesson === 11
+                ? (doorOpen ? 'דלת פתוחה' : 'דלת סגורה')
+                : 'לא בשימוש';
 
             document.getElementById('sensorLight').classList.toggle('active', sensesLight);
             document.getElementById('sensorSound').classList.toggle('active', sensesSound);
@@ -2725,6 +2864,9 @@
             document.getElementById('sensorGoal').classList.toggle('active', currentLesson === 7 && sensesGoal);
             document.getElementById('sensorCars').classList.toggle('active', currentLesson === 8 && sensesCars);
             document.getElementById('sensorPedestrian').classList.toggle('active', currentLesson === 8 && sensesPedestrian);
+            document.getElementById('sensorArmed').classList.toggle('active', currentLesson === 11 && armed);
+            document.getElementById('sensorMotion').classList.toggle('active', currentLesson === 11 && motion);
+            document.getElementById('sensorDoor').classList.toggle('active', currentLesson === 11 && doorOpen);
         }
 
         // Update sensors periodically (for dragging feedback)
