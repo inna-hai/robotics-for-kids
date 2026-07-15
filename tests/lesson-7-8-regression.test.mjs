@@ -81,6 +81,44 @@ test('sensor chips layout is responsive and cannot grow outside the robot panel'
   assert.ok(!activeSensorChipRule.includes('transform: scale(1.05);'), 'Active sensor chips should not scale and overflow');
 });
 
+test('motion control is hidden before lesson 11', () => {
+  const overridesBlock = indexHtml.match(/const\s+lessonControlOverrides\s*=\s*\{[\s\S]*?\n\s*\};/)?.[0] || '';
+  for (const lesson of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
+    const lessonOverride = overridesBlock.match(new RegExp(`${lesson}:\\s*\\{[\\s\\S]*?\\n\\s*\\}`))?.[0] || '';
+    assert.doesNotMatch(lessonOverride, /sensorMotion/, `Lesson ${lesson} should not show sensorMotion`);
+    assert.doesNotMatch(lessonOverride, /envMotion/, `Lesson ${lesson} should not show envMotion`);
+  }
+});
+
+test('line off is not exposed as a separate environment button', () => {
+  assert.doesNotMatch(indexHtml, /id="envLineOff"/);
+  assert.doesNotMatch(indexHtml, /toggleEnv\('lineOff'\)/);
+});
+
+test('lesson sensor and environment controls are cumulative after they are introduced', () => {
+  const overridesBlock = indexHtml.match(/const\s+lessonControlOverrides\s*=\s*\{[\s\S]*?\n\s*\};/)?.[0] || '';
+  const getList = (lesson, key) => {
+    const lessonOverride = overridesBlock.match(new RegExp(`${lesson}:\\s*\\{[\\s\\S]*?\\n\\s*\\}`))?.[0] || '';
+    const listSource = lessonOverride.match(new RegExp(`${key}:\\s*\\[([^\\]]*)\\]`))?.[1] || '';
+    return [...listSource.matchAll(/'([^']+)'/g)].map((match) => match[1]);
+  };
+
+  const expectedByLesson = {
+    7: { sensors: ['sensorLine', 'sensorGoal'], env: [] },
+    8: { sensors: ['sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian'], env: ['envCars', 'envPedestrian'] },
+    9: { sensors: ['sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople'], env: ['envCars', 'envPedestrian', 'envPeople'] },
+    10: { sensors: ['sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorSoil'], env: ['envCars', 'envPedestrian', 'envPeople', 'envSoilDry'] },
+    11: { sensors: ['sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorMotion', 'sensorSoil', 'sensorArmed', 'sensorDoor'], env: ['envCars', 'envPedestrian', 'envPeople', 'envMotion', 'envSoilDry', 'envArmedMode', 'envDoorOpen'] }
+  };
+
+  for (const [lesson, expected] of Object.entries(expectedByLesson)) {
+    const sensors = getList(lesson, 'sensors');
+    const env = getList(lesson, 'env');
+    expected.sensors.forEach((id) => assert.ok(sensors.includes(id), `Lesson ${lesson} should include ${id}`));
+    expected.env.forEach((id) => assert.ok(env.includes(id), `Lesson ${lesson} should include ${id}`));
+  }
+});
+
 test('environment controls stay in one horizontal scroll row with side arrows and reset below', () => {
   const envScrollWrapRule = cssRule('.env-scroll-wrap');
   assertIncludes(indexHtml, '<div class="env-scroll-shell" aria-label="כפתורי סביבה עם חיצים לגלילה לרוחב">');
