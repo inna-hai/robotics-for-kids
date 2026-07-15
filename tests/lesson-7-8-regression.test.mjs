@@ -154,21 +154,47 @@ test('environment controls stay in one horizontal scroll row with side arrows an
   assert.ok(indexHtml.indexOf('<div class="env-reset-row">') > indexHtml.indexOf('<div class="env-scroll-shell"'));
 });
 
-test('lesson 9 people drawing only appears when students are enabled and is raised above the grass', () => {
-  assertIncludes(indexHtml, 'const isPresenceCard = currentLesson === 9 && i === 0;');
-  assertIncludes(indexHtml, 'if (!environment.people) return;');
-  assertIncludes(indexHtml, "ctx.fillText('🧑‍🎓🧑‍🏫', xs[i], y - 46);");
-  assertIncludes(indexHtml, "ctx.fillText('יש תלמידים', xs[i], y - 4);");
+test('Blockly workspace has working click buttons for vertical and horizontal scrolling', () => {
+  assertIncludes(indexHtml, '<div class="blockly-workspace-shell">');
+  assertIncludes(indexHtml, 'class="blockly-scroll-buttons vertical"');
+  assertIncludes(indexHtml, 'class="blockly-scroll-buttons horizontal"');
+  assertIncludes(indexHtml, 'onclick="scrollBlocklyCanvas(0, -240)"');
+  assertIncludes(indexHtml, 'onclick="scrollBlocklyCanvas(0, 240)"');
+  assertIncludes(indexHtml, 'onclick="scrollBlocklyCanvas(240, 0)" aria-label="גלול ימינה">▶</button>');
+  assertIncludes(indexHtml, 'onclick="scrollBlocklyCanvas(-240, 0)" aria-label="גלול שמאלה">◀</button>');
+  assertIncludes(indexHtml, 'function scrollBlocklyCanvas(deltaX, deltaY)');
+  assertIncludes(indexHtml, 'workspace.scroll(-(nextX + scrollLeft), -(nextY + scrollTop));');
+});
+
+test('lesson 9 has a dedicated air conditioner action block', () => {
+  assertIncludes(indexHtml, "actions: ['action_say', 'action_street_light', 'action_sound', 'action_ac', 'action_water', 'action_recycle_bin', 'action_class_power']");
+  assertIncludes(indexHtml, "Blockly.Blocks['action_ac']");
+  assertIncludes(indexHtml, ".appendField('❄️ מזגן')");
+  assertIncludes(indexHtml, "case 'action_ac':");
+  assertIncludes(indexHtml, "robot.speaking = robot.fanOn ? 'הפעלתי מזגן' : 'כיביתי מזגן';");
+});
+
+test('lesson 9 drawings only appear when enabled and without covering cards', () => {
+  assertIncludes(indexHtml, 'if (currentLesson === 9) {');
+  assertIncludes(indexHtml, 'const activeLesson9Objects = [environment.people, environment.light, robot.fanOn];');
+  assertIncludes(indexHtml, 'if (!activeLesson9Objects[i]) return;');
+  assertIncludes(indexHtml, "const lesson9Icons = ['🧑‍🎓🧑‍🏫', '💡', '❄️'];");
+  assertIncludes(indexHtml, "ctx.fillText(lesson9Icons[i], xs[i], y - 46);");
+  assertIncludes(indexHtml, "ctx.fillText(lesson9Labels[i], xs[i], y - 4);");
   assert.doesNotMatch(indexHtml, /isPresenceCard \? \(environment\.people \? '🧑‍🎓🧑‍🏫' : '🏫'\)/);
 });
 
-test('lesson 8 and 11 mission boards are compact and positioned at the top-right', () => {
-  assertIncludes(indexHtml, 'const compactMission = currentLesson === 8 || currentLesson === 11;');
-  assertIncludes(indexHtml, 'const boardX = currentLesson === 8 ? canvas.width - 238 : currentLesson === 11 ? canvas.width - 220 : canvas.width * 0.56;');
-  assertIncludes(indexHtml, 'const boardY = currentLesson === 8 ? 48 : currentLesson === 11 ? 40 : canvas.height * 0.12;');
-  assertIncludes(indexHtml, 'const boardW = currentLesson === 8 ? 210 : currentLesson === 11 ? 198 : canvas.width * 0.36;');
-  assertIncludes(indexHtml, 'const boardH = currentLesson === 8 ? 78 : currentLesson === 11 ? 74 : 135;');
-  assertIncludes(indexHtml, "ctx.fillText('🎯 משימה', boardX + boardW - 12, boardY + 17);");
+test('lesson 7 mission board is compact at the top-left, while lessons 8, 9 and 11 stay compact', () => {
+  assertIncludes(indexHtml, 'const compactMission = currentLesson === 7 || currentLesson === 8 || currentLesson === 9 || currentLesson === 11;');
+  assertIncludes(indexHtml, 'const boardX = currentLesson === 7 ? 20 : currentLesson === 8 ? canvas.width - 238 : currentLesson === 9 ? canvas.width - 224 : currentLesson === 11 ? canvas.width - 220 : canvas.width * 0.56;');
+  assertIncludes(indexHtml, 'const boardY = currentLesson === 7 ? 40 : currentLesson === 8 ? 48 : currentLesson === 9 ? 42 : currentLesson === 11 ? 40 : canvas.height * 0.12;');
+  assertIncludes(indexHtml, 'const boardW = currentLesson === 7 ? 190 : currentLesson === 8 ? 210 : currentLesson === 9 ? 196 : currentLesson === 11 ? 198 : canvas.width * 0.36;');
+  assertIncludes(indexHtml, 'const boardH = currentLesson === 7 ? 70 : currentLesson === 8 ? 78 : currentLesson === 9 ? 70 : currentLesson === 11 ? 74 : 135;');
+  assertIncludes(indexHtml, '? { titleSize: 11, bodySize: 9, titleY: 15, line1Y: 31, line2Y: 45, line3Y: 59 }');
+  assertIncludes(indexHtml, 'currentLesson === 9');
+  assertIncludes(indexHtml, '? { titleSize: 11, bodySize: 9, titleY: 15, line1Y: 31, line2Y: 45, line3Y: 59 }');
+  assertIncludes(indexHtml, ": { titleSize: 12, bodySize: 10, titleY: 17, line1Y: 37, line2Y: 53, line3Y: 68 }");
+  assertIncludes(indexHtml, "ctx.fillText('🎯 משימה', boardX + boardW - 12, boardY + compactText.titleY);");
 });
 
 test('lesson 8 traffic light stays compact', () => {
