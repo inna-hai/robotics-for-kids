@@ -54,10 +54,12 @@
 
   function commandsForLesson(lesson) {
     const turtle = [
+      ['step = 70', 'משתנה צעד'],
+      ['forward(step)', 'קדימה לפי משתנה'],
       ['color("green")', 'צבע ירוק'],
       ['color("yellow")', 'צבע צהוב'],
       ['color("blue")', 'צבע כחול'],
-      ['forward(1)', 'קדימה'],
+      ['forward(80)', 'קדימה 80'],
       ['right(90)', 'ימינה 90°'],
       ['left(90)', 'שמאלה 90°'],
       ['penup()', 'להרים עט'],
@@ -173,7 +175,7 @@
     ctx.font = '34px serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('🐢', 0, 0);
+    ctx.fillText('🤖', 0, 0);
     ctx.restore();
   }
 
@@ -190,7 +192,7 @@
         if (state.tiles[k]) cell.classList.add(`tile-${state.tiles[k]}`);
         if (state.bridges[k]) cell.classList.add('bridge');
         if (state.items[k] && !state.collected.includes(state.items[k])) cell.classList.add(state.items[k]);
-        if (state.x === x && state.y === y) cell.innerHTML = `<span class="player dir-${state.dir}" aria-label="צב פייתון"><span class="player-body">🐢</span><span class="player-label">Turtle</span></span>`;
+        if (state.x === x && state.y === y) cell.innerHTML = `<span class="player dir-${state.dir}" aria-label="רובוט פייתון"><span class="player-body">🤖</span><span class="player-label">Robot</span></span>`;
         grid.appendChild(cell);
       }
     }
