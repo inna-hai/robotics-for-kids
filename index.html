@@ -1065,7 +1065,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260716-miriam-story-v37"></script>
+    <script src="js/lessons-data.js?v=20260716-miriam-story-v38"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1150,7 +1150,7 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // lesson14-realistic-landmarks-v37
+            // lesson14-realistic-landmarks-v38
             // Everything fixed is drawn as one clean illustrated background.
             // Only rescueBeacon and waterDrone are drawn later as movable overlay objects.
             const sky = ctx.createLinearGradient(0, 0, 0, h);
@@ -1422,6 +1422,20 @@
                     const smokeAgeMs = smokeStartedAt ? Date.now() - smokeStartedAt : 0;
                     const smokeSpread = Math.min(smokeAgeMs / 18000, 1);
                     const smokeTime = Date.now() / 1400;
+                    if (smokeSpread > .06) {
+                        // The whole rescue area gradually feels smoky: grass and scene darken, not just the smoke cloud.
+                        const sceneHaze = Math.min(.30, .05 + smokeSpread * .25);
+                        ctx.save();
+                        ctx.fillStyle = `rgba(71,85,105,${sceneHaze})`;
+                        ctx.fillRect(sceneX, sceneY, sceneW, sceneH);
+                        const groundSmoke = ctx.createLinearGradient(0, sceneY + sceneH * .38, 0, sceneBottom);
+                        groundSmoke.addColorStop(0, `rgba(100,116,139,${sceneHaze * .25})`);
+                        groundSmoke.addColorStop(.55, `rgba(51,65,85,${sceneHaze * .55})`);
+                        groundSmoke.addColorStop(1, `rgba(30,41,59,${sceneHaze * .70})`);
+                        ctx.fillStyle = groundSmoke;
+                        ctx.fillRect(sceneX, sceneY + sceneH * .38, sceneW, sceneH * .62);
+                        ctx.restore();
+                    }
                     if (smokeSpread > .18) {
                         // Area becomes smoky gradually, but from soft drifting smoke patches — not one big circle.
                         const hazePatches = [
@@ -3987,7 +4001,7 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v37';
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v38';
             resetPositions();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
