@@ -217,7 +217,14 @@ test('lesson 7 mission board is compact at the top-left, while lessons 8, 9 and 
 });
 
 test('lesson 8 traffic light stays compact and high enough to show its pole', () => {
+  assertIncludes(indexHtml, 'const crosswalkX = xs[1];');
+  assertIncludes(indexHtml, 'const crosswalkW = 150;');
+  assertIncludes(indexHtml, 'const lightX = crosswalkX + crosswalkW / 2 + 28;');
   assertIncludes(indexHtml, 'const lightY = y - 28;');
+  assertIncludes(indexHtml, 'const poleTopY = lightY + 32;');
+  assertIncludes(indexHtml, 'const poleBottomY = canvas.height - 10;');
+  assertIncludes(indexHtml, 'ctx.lineTo(lightX, poleBottomY);');
+  assertIncludes(indexHtml, 'ctx.roundRect(lightX - 18, poleBottomY - 4, 36, 8, 4);');
   assertIncludes(indexHtml, 'ctx.roundRect(lightX - 17, lightY - 34, 34, 66, 9);');
   assertIncludes(indexHtml, 'ctx.arc(lightX, lightY - 17, 9, 0, Math.PI * 2);');
   assertIncludes(indexHtml, 'ctx.arc(lightX, lightY + 15, 9, 0, Math.PI * 2);');
@@ -231,16 +238,23 @@ test('lesson 8 removed instruction labels are not present', () => {
 
 test('lesson 8 uses a street ground and has a road/sidewalk crosswalk scene', () => {
   assertIncludes(indexHtml, '.ground.street-ground');
+  assertIncludes(indexHtml, '.ground.street-ground::before');
+  assertIncludes(indexHtml, 'background: transparent;');
+  assertIncludes(indexHtml, 'display: none;');
   assertIncludes(indexHtml, "document.querySelector('.ground')?.classList.toggle('street-ground', num === 8);");
   assertIncludes(indexHtml, 'const roadH = 92;');
-  assertIncludes(indexHtml, 'const roadLift = 24;');
-  assertIncludes(indexHtml, 'const roadCenterY = crosswalkY - roadLift;');
-  assertIncludes(indexHtml, 'const roadTop = roadCenterY - roadH / 2;');
-  assertIncludes(indexHtml, 'const roadBottom = roadCenterY + roadH / 2;');
-  assertIncludes(indexHtml, 'const bottomSidewalkH = 24;');
-  assertIncludes(indexHtml, 'const bottomSidewalkBottom = roadBottom + bottomSidewalkH;');
+  assertIncludes(indexHtml, 'const bottomSidewalkH = 14;');
+  assertIncludes(indexHtml, 'const bottomSidewalkTop = canvas.height - bottomSidewalkH;');
+  assertIncludes(indexHtml, 'const roadBottom = bottomSidewalkTop;');
+  assertIncludes(indexHtml, 'const roadTop = roadBottom - roadH;');
+  assertIncludes(indexHtml, 'const roadCenterY = roadTop + roadH / 2;');
+  assertIncludes(indexHtml, 'const crosswalkY = roadCenterY;');
+  assertIncludes(indexHtml, 'const bottomSidewalkEnabled = false;');
+  assertIncludes(indexHtml, 'const bottomSidewalkBottom = canvas.height;');
   assertIncludes(indexHtml, 'ctx.fillStyle = \'#334155\';');
   assertIncludes(indexHtml, 'ctx.fillRect(0, roadTop, canvas.width, roadH);');
+  assertIncludes(indexHtml, 'if (bottomSidewalkEnabled) {');
+  assertIncludes(indexHtml, 'ctx.fillRect(0, bottomSidewalkTop, canvas.width, bottomSidewalkBottom - bottomSidewalkTop);');
   assertIncludes(indexHtml, 'ctx.moveTo(12, laneDividerY);');
   assertIncludes(indexHtml, 'ctx.lineTo(canvas.width - 12, laneDividerY);');
   assertIncludes(indexHtml, 'for (let stripeY = roadTop + 14; stripeY <= roadBottom - 14; stripeY += 16)');
@@ -269,11 +283,11 @@ test('lesson 8 has a crosswalk where cars and pedestrians move or stop in the ri
   assertIncludes(indexHtml, '{ x: rightToLeftX, y: laneBottomY, flip: false }');
   assertIncludes(indexHtml, 'const pedestrianMotion = Math.sin(wave) * 58;');
   assertIncludes(indexHtml, 'const objectX = crosswalkX;');
-  assertIncludes(indexHtml, 'const objectY = isStopped ? roadBottom + 38 : crosswalkY + pedestrianMotion;');
-  assertIncludes(indexHtml, "'המכוניות עצרו לפני מעבר החציה'");
-  assertIncludes(indexHtml, "'שתי מכוניות נוסעות בשני הנתיבים', canvas.width - 16, boardY + boardH + 18");
-  assertIncludes(indexHtml, "'הולך הרגל עומד ליד מעבר החציה'");
-  assertIncludes(indexHtml, "'הולך רגל חוצה במעבר הלוך ושוב'");
+  assertIncludes(indexHtml, 'const objectY = isStopped ? roadBottom + bottomSidewalkH - 2 : crosswalkY + pedestrianMotion;');
+  assert.ok(!indexHtml.includes('המכוניות עצרו לפני מעבר החציה'));
+  assert.ok(!indexHtml.includes('שתי מכוניות נוסעות בשני הנתיבים'));
+  assert.ok(!indexHtml.includes('הולך הרגל עומד ליד מעבר החציה'));
+  assert.ok(!indexHtml.includes('הולך רגל חוצה במעבר הלוך ושוב'));
 });
 
 test('lesson 8 stop/start blocks for cars and pedestrian are available and update state correctly', () => {

@@ -272,11 +272,11 @@
         }
 
         .ground.street-ground {
-            background: linear-gradient(180deg, #d6d3d1 0%, #a8a29e 38%, #475569 39%, #334155 100%);
+            background: transparent;
         }
 
         .ground.street-ground::before {
-            background: linear-gradient(90deg, transparent 0 18%, #f8fafc 18% 30%, transparent 30% 70%, #f8fafc 70% 82%, transparent 82% 100%);
+            display: none;
         }
 
         /* Sensor Display */
@@ -1305,25 +1305,22 @@
 
             if (currentLesson === 8) {
                 const crosswalkX = xs[1];
-                const crosswalkY = y - 8;
                 const crosswalkW = 150;
                 const crosswalkH = 54;
                 const roadH = 92;
-                const roadLift = 24;
-                const roadCenterY = crosswalkY - roadLift;
-                const roadTop = roadCenterY - roadH / 2;
-                const roadBottom = roadCenterY + roadH / 2;
+                const bottomSidewalkH = 14;
+                const bottomSidewalkTop = canvas.height - bottomSidewalkH;
+                const roadBottom = bottomSidewalkTop;
+                const roadTop = roadBottom - roadH;
+                const roadCenterY = roadTop + roadH / 2;
+                const crosswalkY = roadCenterY;
                 const laneH = roadH / 2;
                 const laneDividerY = roadTop + laneH;
-                const topSidewalkTop = Math.max(96, roadTop - 58);
-                const bottomSidewalkH = 24;
-                const bottomSidewalkBottom = roadBottom + bottomSidewalkH;
+                const topSidewalkTop = Math.max(96, roadTop - 52);
+                const bottomSidewalkEnabled = false;
+                const bottomSidewalkBottom = canvas.height;
 
                 ctx.save();
-                ctx.fillStyle = '#d6d3d1';
-                ctx.fillRect(0, topSidewalkTop, canvas.width, roadTop - topSidewalkTop);
-                ctx.fillRect(0, roadBottom, canvas.width, bottomSidewalkBottom - roadBottom);
-
                 ctx.fillStyle = '#334155';
                 ctx.fillRect(0, roadTop, canvas.width, roadH);
                 ctx.strokeStyle = '#f8fafc';
@@ -1354,6 +1351,12 @@
                     ctx.stroke();
                 }
 
+                ctx.fillStyle = '#d6d3d1';
+                ctx.fillRect(0, topSidewalkTop, canvas.width, roadTop - topSidewalkTop);
+                if (bottomSidewalkEnabled) {
+                    ctx.fillRect(0, bottomSidewalkTop, canvas.width, bottomSidewalkBottom - bottomSidewalkTop);
+                }
+
                 ctx.font = 'bold 12px Rubik';
                 ctx.fillStyle = '#334155';
                 ctx.textAlign = 'center';
@@ -1366,14 +1369,24 @@
                     const activeLesson8Object = (i === 0 && environment.pedestrian) || (i === 2 && environment.cars);
 
                     if (i === 1) {
-                        const lightX = xs[i];
+                        const crosswalkX = xs[1];
+                        const crosswalkW = 150;
+                        const lightX = crosswalkX + crosswalkW / 2 + 28;
                         const lightY = y - 28;
-                        ctx.strokeStyle = '#334155';
-                        ctx.lineWidth = 4;
+                        const poleTopY = lightY + 32;
+                        const poleBottomY = canvas.height - 10;
+                        ctx.strokeStyle = '#475569';
+                        ctx.lineWidth = 7;
+                        ctx.lineCap = 'round';
                         ctx.beginPath();
-                        ctx.moveTo(lightX, lightY + 36);
-                        ctx.lineTo(lightX, lightY + 70);
+                        ctx.moveTo(lightX, poleTopY);
+                        ctx.lineTo(lightX, poleBottomY);
                         ctx.stroke();
+                        ctx.lineCap = 'butt';
+                        ctx.fillStyle = '#475569';
+                        ctx.beginPath();
+                        ctx.roundRect(lightX - 18, poleBottomY - 4, 36, 8, 4);
+                        ctx.fill();
                         ctx.fillStyle = '#1f2937';
                         ctx.strokeStyle = '#0f172a';
                         ctx.lineWidth = 2;
@@ -1403,12 +1416,13 @@
                     const t = Date.now() / 1000;
                     const wave = t * 2.1;
                     const crosswalkX = xs[1];
-                    const crosswalkY = y - 8;
                     const roadH = 92;
-                    const roadLift = 24;
-                    const roadCenterY = crosswalkY - roadLift;
-                    const roadTop = roadCenterY - roadH / 2;
-                    const roadBottom = roadCenterY + roadH / 2;
+                    const bottomSidewalkH = 14;
+                    const bottomSidewalkTop = canvas.height - bottomSidewalkH;
+                    const roadBottom = bottomSidewalkTop;
+                    const roadTop = roadBottom - roadH;
+                    const roadCenterY = roadTop + roadH / 2;
+                    const crosswalkY = roadCenterY;
                     const laneH = roadH / 2;
                     const laneDividerY = roadTop + laneH;
 
@@ -1433,17 +1447,13 @@
                             ctx.restore();
                         });
 
-                        ctx.font = 'bold 13px Rubik';
-                        ctx.fillStyle = isStopped ? '#dc2626' : '#15803d';
-                        ctx.textAlign = 'right';
-                        ctx.fillText(isStopped ? 'המכוניות עצרו לפני מעבר החציה' : 'שתי מכוניות נוסעות בשני הנתיבים', canvas.width - 16, boardY + boardH + 18);
                         return;
                     }
 
                     const pedestrianMotion = Math.sin(wave) * 58;
                     const walkingDown = Math.cos(wave) > 0;
                     const objectX = crosswalkX;
-                    const objectY = isStopped ? roadBottom + 38 : crosswalkY + pedestrianMotion;
+                    const objectY = isStopped ? roadBottom + bottomSidewalkH - 2 : crosswalkY + pedestrianMotion;
 
                     ctx.font = '50px Arial';
                     ctx.save();
@@ -1454,17 +1464,12 @@
                     ctx.fillText(emojis[i], 0, 0);
                     ctx.restore();
 
-                    ctx.font = 'bold 13px Rubik';
-                    ctx.fillStyle = isStopped ? '#dc2626' : '#15803d';
-                    ctx.textAlign = 'right';
-                    ctx.fillText(isStopped ? 'הולך הרגל עומד ליד מעבר החציה' : 'הולך רגל חוצה במעבר הלוך ושוב', canvas.width - 16, boardY + boardH + 18);
-
                     if (isStopped) {
                         ctx.strokeStyle = 'rgba(21,128,61,.35)';
                         ctx.lineWidth = 2;
                         ctx.beginPath();
-                        ctx.moveTo(crosswalkX - 34, roadBottom + 18);
-                        ctx.lineTo(crosswalkX + 34, roadBottom + 18);
+                        ctx.moveTo(crosswalkX - 34, roadBottom + bottomSidewalkH - 4);
+                        ctx.lineTo(crosswalkX + 34, roadBottom + bottomSidewalkH - 4);
                         ctx.stroke();
                     }
                     return;
