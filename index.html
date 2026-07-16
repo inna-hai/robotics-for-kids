@@ -1065,7 +1065,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260716-miriam-story-v44"></script>
+    <script src="js/lessons-data.js?v=20260716-miriam-story-v45"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1150,7 +1150,7 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // lesson14-realistic-landmarks-v44
+            // lesson14-realistic-landmarks-v45
             // Everything fixed is drawn as one clean illustrated background.
             // Only rescueBeacon and waterDrone are drawn later as movable overlay objects.
             const sky = ctx.createLinearGradient(0, 0, 0, h);
@@ -1231,8 +1231,8 @@
 
             // Side-view road: very flat sharp parallelogram, like a road seen from the side.
             const roadY = sceneY + sceneH * 0.73;
-            const startX = sceneX + sceneW * 0.15;
-            const endX = sceneX + sceneW * 0.85;
+            const startX = sceneX + sceneW * 0.04;
+            const endX = sceneX + sceneW * 0.96;
             const roadHeight = 26;
             const slant = sceneW * 0.075;
             const roadColor = smokeMix('#64748b', '#334155', lesson14SmokeSpread * .65);
@@ -1417,7 +1417,7 @@
                 ctx.restore();
             };
 
-            const sideGap = Math.min(76, sceneW * 0.085);
+            const sideGap = Math.min(38, sceneW * 0.045);
             const safePlaceX = startX - sideGap;
             const safePlaceY = roadY - 6;
             const stationPlaceX = endX + sideGap;
@@ -4044,7 +4044,7 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v44';
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v45';
             resetPositions();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
