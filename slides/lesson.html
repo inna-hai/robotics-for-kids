@@ -25,11 +25,29 @@
     p, li { font-size:clamp(1.15rem,2.1vw,1.75rem); line-height:1.55; }
     ul { margin:0; padding-right:1.5em; }
     .time-badge { display:inline-flex; background:var(--yellow); color:#5f4300; border-radius:999px; padding:8px 18px; font-weight:900; margin-bottom:16px; font-size:1.4rem; }
-    .teacher-box { background:#f7f9fc; border-right:8px solid var(--purple); border-radius:18px; padding:18px; margin:14px 0; }
+    /* slide-card-size-v2 */
+    .teacher-box {
+      background:#f7f9fc;
+      border-right:8px solid var(--purple);
+      border-radius:24px;
+      padding:30px 28px;
+      margin:18px 0;
+      min-height:150px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
     .teacher-box h3 { margin:0 0 8px; color:var(--purple); font-size:1.35rem; }
     .two-cols { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
     .code-blocks { display:grid; gap:8px; margin-top:14px; direction:rtl; }
-    .blockly-solution { background:#f8fafc; border:3px dashed #dbe4ff; border-radius:22px; padding:18px; margin:14px 0; }
+    .blockly-solution {
+      background:#f8fafc;
+      border:3px dashed #dbe4ff;
+      border-radius:24px;
+      padding:28px 26px;
+      margin:18px 0;
+      min-height:160px;
+    }
     .blockly-caption { color:var(--purple); font-weight:900; margin-bottom:10px; font-size:1.1rem; }
     .visual-block {
       --block-color:#9966ff;
@@ -100,7 +118,18 @@
       opacity:.55;
     }
     .visual-block.connector::before, .visual-block.connector::after { display:none; }
-    .teacher-note { background:#fff7ed; border-right:8px solid #fb923c; border-radius:18px; padding:14px 18px; margin-top:12px; font-size:clamp(1rem,1.6vw,1.25rem); }
+    .teacher-note {
+      background:#fff7ed;
+      border-right:8px solid #fb923c;
+      border-radius:22px;
+      padding:24px 24px;
+      margin-top:16px;
+      min-height:110px;
+      display:flex;
+      align-items:center;
+      font-size:clamp(1rem,1.6vw,1.25rem);
+      line-height:1.55;
+    }
     .exercise-kind { display:inline-flex; align-items:center; gap:8px; background:#eef2ff; color:var(--purple); border-radius:999px; padding:8px 14px; font-weight:900; margin-bottom:12px; }
     .emoji { font-size:6rem; margin-bottom:14px; }
     .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:20px; }
@@ -150,7 +179,7 @@
       .time-badge{font-size:1rem;padding:7px 12px;margin-bottom:10px;}
       .two-cols,.cards{grid-template-columns:1fr;gap:10px;}
       .card{padding:22px 16px;min-height:112px;font-size:1.05rem;border-radius:18px;}
-      .teacher-box,.teacher-note,.blockly-solution{padding:12px 14px;border-radius:16px;margin:10px 0;}
+      .teacher-box,.teacher-note,.blockly-solution{padding:22px 18px;border-radius:18px;margin:12px 0;min-height:112px;}
       .teacher-box h3{font-size:1.05rem;}
       .exercise-kind{font-size:.95rem;padding:7px 11px;line-height:1.25;}
       .emoji{font-size:4rem;margin-bottom:10px;}
@@ -189,7 +218,7 @@
     </div>
   </nav>
 
-  <script src="../js/lessons-data.js?v=20260716-miriam-story-v1"></script>
+  <script src="../js/lessons-data.js?v=20260716-miriam-story-v2"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const lesson = window.getSensiLesson(params.get('id'));
