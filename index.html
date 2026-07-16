@@ -1065,7 +1065,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260716-miriam-story-v21"></script>
+    <script src="js/lessons-data.js?v=20260716-miriam-story-v22"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1148,7 +1148,7 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // lesson14-realistic-landmarks-v21
+            // lesson14-realistic-landmarks-v22
             // Everything fixed is drawn as one clean illustrated background.
             // Only rescueBeacon and waterDrone are drawn later as movable overlay objects.
             const sky = ctx.createLinearGradient(0, 0, 0, h);
@@ -1462,12 +1462,16 @@
                 ctx.fill();
                 ctx.stroke();
                 ctx.shadowColor = 'transparent';
-                ctx.font = '37px Arial';
-                ctx.fillText(item.emoji, 0, -2);
-                ctx.restore();
+                ctx.font = '28px Arial';
+                ctx.fillText(item.emoji, 0, -10);
                 ctx.fillStyle = item.accent;
-                ctx.font = 'bold 11px Rubik';
-                ctx.fillText(item.label, obj.x, obj.y + 46);
+                ctx.font = '900 8.5px Rubik';
+                const labelLines = item.label.includes(' ') ? item.label.split(' ') : [item.label];
+                const labelStartY = labelLines.length > 1 ? 14 : 17;
+                labelLines.forEach((line, lineIndex) => {
+                    ctx.fillText(line, 0, labelStartY + lineIndex * 9);
+                });
+                ctx.restore();
             });
 
             if (!isRunning) {
@@ -3888,7 +3892,7 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v21';
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v22';
             resetPositions();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
