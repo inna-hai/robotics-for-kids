@@ -1065,7 +1065,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260716-miriam-story-v10"></script>
+    <script src="js/lessons-data.js?v=20260716-miriam-story-v11"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1136,10 +1136,10 @@
             objects.cars.y = canvas.height * 0.58;
             objects.pedestrian.x = canvas.width * 0.22;
             objects.pedestrian.y = canvas.height * 0.58;
-            objects.rescueBeacon.x = canvas.width * 0.34;
-            objects.rescueBeacon.y = canvas.height * 0.30;
-            objects.waterDrone.x = canvas.width * 0.76;
-            objects.waterDrone.y = canvas.height * 0.30;
+            objects.rescueBeacon.x = canvas.width * 0.18;
+            objects.rescueBeacon.y = canvas.height * 0.34;
+            objects.waterDrone.x = canvas.width * 0.82;
+            objects.waterDrone.y = canvas.height * 0.34;
         }
 
         function drawLesson14RescueScene(lesson) {
@@ -1148,141 +1148,137 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // Illustrated fixed background — like a clean poster, not loose cards.
-            const sky = ctx.createLinearGradient(0, 0, 0, h);
-            sky.addColorStop(0, '#dbeafe');
-            sky.addColorStop(0.52, '#fef3c7');
-            sky.addColorStop(1, '#dcfce7');
-            ctx.fillStyle = sky;
+            // Clean illustrated rescue board: fixed background + separate draggable props.
+            const bg = ctx.createLinearGradient(0, 0, 0, h);
+            bg.addColorStop(0, '#dbeafe');
+            bg.addColorStop(0.48, '#eff6ff');
+            bg.addColorStop(1, '#dcfce7');
+            ctx.fillStyle = bg;
             ctx.fillRect(0, 0, w, h);
 
-            // Sun and soft clouds
-            ctx.fillStyle = 'rgba(251, 191, 36, .55)';
-            ctx.beginPath();
-            ctx.arc(w * 0.12, h * 0.15, 42, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = 'rgba(255,255,255,.62)';
-            [[0.30,0.16],[0.36,0.13],[0.43,0.16],[0.72,0.14],[0.78,0.12],[0.84,0.15]].forEach(([x,y]) => {
-                ctx.beginPath();
-                ctx.ellipse(w*x, h*y, 46, 18, 0, 0, Math.PI*2);
-                ctx.fill();
-            });
-
-            // Distant hills
-            ctx.fillStyle = '#bbf7d0';
-            ctx.beginPath();
-            ctx.moveTo(0, h * 0.52);
-            ctx.bezierCurveTo(w * 0.18, h * 0.38, w * 0.30, h * 0.52, w * 0.48, h * 0.42);
-            ctx.bezierCurveTo(w * 0.64, h * 0.34, w * 0.80, h * 0.52, w, h * 0.40);
-            ctx.lineTo(w, h);
-            ctx.lineTo(0, h);
-            ctx.closePath();
-            ctx.fill();
-
-            // Main illustrated rescue map panel
-            const mapX = w * 0.06;
-            const mapY = h * 0.18;
-            const mapW = w * 0.88;
-            const mapH = h * 0.68;
-            ctx.fillStyle = 'rgba(255,255,255,.52)';
-            ctx.strokeStyle = 'rgba(15,23,42,.10)';
+            const board = {
+                x: w * 0.055,
+                y: h * 0.10,
+                width: w * 0.89,
+                height: h * 0.78
+            };
+            ctx.fillStyle = 'rgba(255,255,255,.72)';
+            ctx.strokeStyle = 'rgba(14,165,233,.28)';
             ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.roundRect(mapX, mapY, mapW, mapH, 30);
+            ctx.roundRect(board.x, board.y, board.width, board.height, 30);
             ctx.fill();
             ctx.stroke();
 
-            // Title ribbon as part of the illustration
-            ctx.fillStyle = '#0ea5e9';
+            // Title area — compact and predictable.
+            ctx.fillStyle = '#0284c7';
             ctx.beginPath();
-            ctx.roundRect(w * 0.22, h * 0.05, w * 0.56, 42, 18);
+            ctx.roundRect(w * 0.28, h * 0.035, w * 0.44, 38, 18);
             ctx.fill();
-            ctx.fillStyle = '#ffffff';
+            ctx.fillStyle = '#fff';
             ctx.font = 'bold 15px Rubik';
-            ctx.fillText('🛟 זירת חילוץ: מזהים סכנה ובוחרים נתיב בטוח', w / 2, h * 0.05 + 22);
+            ctx.fillText('🛟 זירת חילוץ מסודרת', w / 2, h * 0.035 + 20);
 
-            // Fixed route drawn like a road on the image
-            const stationX = w * 0.18;
-            const stationY = h * 0.68;
-            const safeX = w * 0.82;
-            const safeY = h * 0.66;
+            // Three fixed hazard cards in one aligned row.
+            const hazardsY = board.y + board.height * 0.24;
+            const hazardW = Math.min(132, w * 0.15);
+            const hazardH = 104;
+            const hazardSlots = [
+                { x: w * 0.36, active: environment.temperatureHot, color: '#dc2626', pale: '#fee2e2', emoji: '🔥', title: 'חום', note: 'עוצרים' },
+                { x: w * 0.50, active: environment.smoke, color: '#475569', pale: '#e2e8f0', emoji: '💨', title: 'עשן', note: 'מתריעים' },
+                { x: w * 0.64, active: environment.obstacle, color: '#92400e', pale: '#fef3c7', emoji: '🪨', title: 'חסם', note: 'עוקפים' }
+            ];
+            hazardSlots.forEach((hazard) => {
+                ctx.fillStyle = hazard.active ? hazard.pale : '#f8fafc';
+                ctx.strokeStyle = hazard.active ? hazard.color : '#cbd5e1';
+                ctx.lineWidth = hazard.active ? 3 : 2;
+                ctx.beginPath();
+                ctx.roundRect(hazard.x - hazardW / 2, hazardsY - hazardH / 2, hazardW, hazardH, 20);
+                ctx.fill();
+                ctx.stroke();
+                ctx.globalAlpha = hazard.active ? 1 : .38;
+                ctx.font = '34px Arial';
+                ctx.fillText(hazard.emoji, hazard.x, hazardsY - 18);
+                ctx.globalAlpha = 1;
+                ctx.font = 'bold 13px Rubik';
+                ctx.fillStyle = hazard.active ? hazard.color : '#64748b';
+                ctx.fillText(hazard.title, hazard.x, hazardsY + 18);
+                ctx.font = '11px Rubik';
+                ctx.fillStyle = '#475569';
+                ctx.fillText(hazard.note, hazard.x, hazardsY + 38);
+            });
+
+            // Side draggable zones are indicated in the background, but actual objects are drawn later.
+            const drawDropZone = (x, y, label, color) => {
+                ctx.fillStyle = 'rgba(255,255,255,.50)';
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
+                ctx.setLineDash([8, 7]);
+                ctx.beginPath();
+                ctx.roundRect(x - 58, y - 58, 116, 116, 24);
+                ctx.fill();
+                ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.font = 'bold 11px Rubik';
+                ctx.fillStyle = color;
+                ctx.fillText(label, x, y + 70);
+            };
+            drawDropZone(w * 0.18, h * 0.34, 'מגדל נגרר', '#ef4444');
+            drawDropZone(w * 0.82, h * 0.34, 'רחפן נגרר', '#2563eb');
+
+            // Clear route lane on the lower half.
+            const stationX = w * 0.20;
+            const stationY = board.y + board.height * 0.72;
+            const safeX = w * 0.80;
+            const safeY = stationY;
+            ctx.fillStyle = 'rgba(219,234,254,.78)';
+            ctx.beginPath();
+            ctx.roundRect(w * 0.15, stationY - 66, w * 0.70, 132, 32);
+            ctx.fill();
+
             ctx.strokeStyle = '#94a3b8';
-            ctx.lineWidth = 58;
+            ctx.lineWidth = 44;
             ctx.lineCap = 'round';
             ctx.beginPath();
-            ctx.moveTo(stationX, stationY);
-            ctx.bezierCurveTo(w * 0.32, h * 0.54, w * 0.52, h * 0.77, safeX, safeY);
+            ctx.moveTo(stationX + 38, stationY);
+            ctx.lineTo(safeX - 38, safeY);
             ctx.stroke();
-            ctx.strokeStyle = '#f8fafc';
+            ctx.strokeStyle = '#ffffff';
             ctx.lineWidth = 5;
-            ctx.setLineDash([20, 18]);
+            ctx.setLineDash([18, 15]);
             ctx.stroke();
             ctx.setLineDash([]);
 
-            // Fixed places in the background image
-            const drawBuilding = (x, y, width, height, color, roof, emoji, label) => {
-                ctx.fillStyle = color;
-                ctx.strokeStyle = 'rgba(15,23,42,.25)';
-                ctx.lineWidth = 2;
+            const drawStation = (x, y, emoji, label, color) => {
+                ctx.fillStyle = '#ffffff';
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 3;
                 ctx.beginPath();
-                ctx.roundRect(x - width / 2, y - height / 2, width, height, 14);
+                ctx.roundRect(x - 58, y - 54, 116, 108, 22);
                 ctx.fill();
                 ctx.stroke();
-                ctx.fillStyle = roof;
-                ctx.beginPath();
-                ctx.roundRect(x - width / 2, y - height / 2, width, 24, 12);
-                ctx.fill();
-                ctx.font = '34px Arial';
-                ctx.fillText(emoji, x, y - 2);
-                ctx.font = 'bold 12px Rubik';
-                ctx.fillStyle = '#0f172a';
-                ctx.fillText(label, x, y + height / 2 + 16);
-            };
-            drawBuilding(stationX, stationY - 8, 116, 94, '#eff6ff', '#0284c7', '🚒', 'תחנת חילוץ');
-            drawBuilding(safeX, safeY - 10, 116, 94, '#ecfdf5', '#16a34a', '🏥', 'אזור בטוח');
-
-            // Hazard zones are fixed illustrated areas, toggled by the environment buttons.
-            const drawHazardZone = ({ x, y, w: zw, h: zh, active, color, pale, emoji, title, subtitle }) => {
-                ctx.fillStyle = active ? pale : 'rgba(255,255,255,.58)';
-                ctx.strokeStyle = active ? color : '#cbd5e1';
-                ctx.lineWidth = active ? 4 : 2;
-                ctx.beginPath();
-                ctx.roundRect(x - zw / 2, y - zh / 2, zw, zh, 22);
-                ctx.fill();
-                ctx.stroke();
-                ctx.globalAlpha = active ? 1 : .38;
                 ctx.font = '38px Arial';
-                ctx.fillText(emoji, x, y - 18);
-                ctx.globalAlpha = 1;
-                ctx.font = 'bold 13px Rubik';
-                ctx.fillStyle = active ? color : '#64748b';
-                ctx.fillText(title, x, y + 20);
-                ctx.font = '11px Rubik';
-                ctx.fillStyle = '#475569';
-                ctx.fillText(subtitle, x, y + 40);
+                ctx.fillText(emoji, x, y - 10);
+                ctx.font = 'bold 12px Rubik';
+                ctx.fillStyle = color;
+                ctx.fillText(label, x, y + 34);
             };
-            drawHazardZone({ x: w * 0.32, y: h * 0.39, w: 128, h: 112, active: environment.temperatureHot, color: '#dc2626', pale: '#fee2e2', emoji: '🔥', title: 'חום מסוכן', subtitle: 'לא נכנסים' });
-            drawHazardZone({ x: w * 0.50, y: h * 0.39, w: 128, h: 112, active: environment.smoke, color: '#475569', pale: '#e2e8f0', emoji: '💨', title: 'עשן בזירה', subtitle: 'מפעילים התרעה' });
-            drawHazardZone({ x: w * 0.68, y: h * 0.39, w: 128, h: 112, active: environment.obstacle, color: '#92400e', pale: '#fef3c7', emoji: '🪨', title: 'חסם במסלול', subtitle: 'מחפשים עקיפה' });
+            drawStation(stationX, stationY, '🚒', 'תחנת חילוץ', '#0284c7');
+            drawStation(safeX, safeY, '🏥', 'אזור בטוח', '#16a34a');
 
-            // Mission board is part of the fixed background, placed away from draggable props.
-            const boardX = w * 0.50;
-            const boardY = h * 0.83;
+            // Bottom mission strip — one line, not floating over the scene.
             ctx.fillStyle = 'rgba(255,247,237,.96)';
             ctx.strokeStyle = '#fb923c';
             ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.roundRect(boardX - 210, boardY - 32, 420, 64, 18);
+            ctx.roundRect(w * 0.28, board.y + board.height - 54, w * 0.44, 42, 16);
             ctx.fill();
             ctx.stroke();
             ctx.font = 'bold 12px Rubik';
             ctx.fillStyle = '#9a3412';
-            ctx.fillText('המשימה: בדקו את הסכנות → הפעילו עזרה → תכנתו נתיב בטוח', boardX, boardY - 7);
-            ctx.font = '11px Rubik';
-            ctx.fillStyle = '#475569';
-            ctx.fillText('הרקע הוא זירת החילוץ הקבועה. רק המגדל והרחפן הם אובייקטים שאפשר לגרור.', boardX, boardY + 14);
+            ctx.fillText('בדיקה → התרעה → נתיב בטוח', w / 2, board.y + board.height - 32);
 
-            // Draggable overlay objects — intentionally drawn after the fixed illustration.
+            // Draggable overlay objects — drawn last so they remain interactive and separate.
             const props = [
                 { key: 'rescueBeacon', emoji: '🚨', label: robot.alarmOn ? 'אזעקה פעילה' : 'מגדל קריאה', accent: '#ef4444' },
                 { key: 'waterDrone', emoji: '🚁', label: robot.fanOn ? 'רחפן סורק' : 'רחפן חילוץ', accent: '#2563eb' }
@@ -1299,22 +1295,22 @@
                 ctx.strokeStyle = item.accent;
                 ctx.lineWidth = 3;
                 ctx.beginPath();
-                ctx.arc(0, 0, 36, 0, Math.PI * 2);
+                ctx.arc(0, 0, 35, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.stroke();
                 ctx.shadowColor = 'transparent';
-                ctx.font = '38px Arial';
+                ctx.font = '37px Arial';
                 ctx.fillText(item.emoji, 0, -2);
                 ctx.restore();
                 ctx.fillStyle = item.accent;
                 ctx.font = 'bold 11px Rubik';
-                ctx.fillText(item.label, obj.x, obj.y + 47);
+                ctx.fillText(item.label, obj.x, obj.y + 46);
             });
 
             if (!isRunning) {
                 ctx.fillStyle = '#334155';
                 ctx.font = '11px Rubik';
-                ctx.fillText('גררו את המגדל או הרחפן כדי למקם אותם בזירה', w / 2, h - 20);
+                ctx.fillText('הרקע קבוע ומסודר; גררו רק את המגדל או הרחפן', w / 2, h - 20);
             }
         }
 
@@ -3729,7 +3725,7 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v10';
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v11';
             resetPositions();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
