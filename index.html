@@ -1065,7 +1065,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260716-miriam-story-v41"></script>
+    <script src="js/lessons-data.js?v=20260716-miriam-story-v42"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1150,7 +1150,7 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // lesson14-realistic-landmarks-v41
+            // lesson14-realistic-landmarks-v42
             // Everything fixed is drawn as one clean illustrated background.
             // Only rescueBeacon and waterDrone are drawn later as movable overlay objects.
             const sky = ctx.createLinearGradient(0, 0, 0, h);
@@ -1229,20 +1229,29 @@
             ctx.closePath();
             ctx.fill();
 
-            // Continuous road, integrated into the picture: flatter, thinner, and more horizontal.
-            const roadY = sceneY + sceneH * 0.70;
-            const startX = sceneX + sceneW * 0.18;
-            const endX = sceneX + sceneW * 0.82;
-            ctx.strokeStyle = smokeMix('#64748b', '#334155', lesson14SmokeSpread * .65);
-            ctx.lineWidth = 40;
-            ctx.lineCap = 'round';
+            // Continuous road, integrated into the picture: thin, flat, horizontal road on the ground.
+            const roadY = sceneY + sceneH * 0.72;
+            const startX = sceneX + sceneW * 0.16;
+            const endX = sceneX + sceneW * 0.84;
+            const roadTop = roadY - 17;
+            const roadHeight = 34;
+            const roadLeft = startX;
+            const roadWidth = endX - startX;
+            const roadColor = smokeMix('#64748b', '#334155', lesson14SmokeSpread * .65);
+            const roadEdge = smokeMix('#475569', '#1f2937', lesson14SmokeSpread * .65);
+            ctx.fillStyle = roadColor;
+            ctx.strokeStyle = roadEdge;
+            ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.moveTo(startX, roadY);
-            ctx.bezierCurveTo(sceneX + sceneW * 0.36, roadY - 12, sceneX + sceneW * 0.62, roadY + 10, endX, roadY - 2);
+            ctx.roundRect(roadLeft, roadTop, roadWidth, roadHeight, 17);
+            ctx.fill();
             ctx.stroke();
             ctx.strokeStyle = smokeMix('#f8fafc', '#cbd5e1', lesson14SmokeSpread * .65);
-            ctx.lineWidth = 4;
-            ctx.setLineDash([24, 20]);
+            ctx.lineWidth = 3;
+            ctx.setLineDash([26, 22]);
+            ctx.beginPath();
+            ctx.moveTo(roadLeft + 30, roadY);
+            ctx.lineTo(roadLeft + roadWidth - 30, roadY);
             ctx.stroke();
             ctx.setLineDash([]);
 
@@ -1411,13 +1420,13 @@
             const stationPlaceY = roadY - 6;
             // small painted access paths: safe zone is left of the road; rescue station is right of it.
             ctx.strokeStyle = 'rgba(100,116,139,.34)';
-            ctx.lineWidth = 8;
+            ctx.lineWidth = 5;
             ctx.lineCap = 'round';
             ctx.beginPath();
-            ctx.moveTo(safePlaceX + 40, safePlaceY + 6);
-            ctx.lineTo(startX - 20, roadY);
-            ctx.moveTo(stationPlaceX - 40, stationPlaceY + 6);
-            ctx.lineTo(endX + 20, roadY - 4);
+            ctx.moveTo(safePlaceX + 36, safePlaceY + 5);
+            ctx.lineTo(startX + 8, roadY);
+            ctx.moveTo(stationPlaceX - 36, stationPlaceY + 5);
+            ctx.lineTo(endX - 8, roadY);
             ctx.stroke();
             drawSafeZone(safePlaceX, safePlaceY);
             drawRescueStation(stationPlaceX, stationPlaceY);
@@ -4031,7 +4040,7 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v41';
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v42';
             resetPositions();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
