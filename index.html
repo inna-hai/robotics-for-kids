@@ -1065,7 +1065,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260716-miriam-story-v39"></script>
+    <script src="js/lessons-data.js?v=20260716-miriam-story-v40"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1150,7 +1150,7 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // lesson14-realistic-landmarks-v39
+            // lesson14-realistic-landmarks-v40
             // Everything fixed is drawn as one clean illustrated background.
             // Only rescueBeacon and waterDrone are drawn later as movable overlay objects.
             const sky = ctx.createLinearGradient(0, 0, 0, h);
@@ -1165,6 +1165,16 @@
             const sceneW = w * 0.88;
             const sceneH = h * 0.78;
             const sceneBottom = sceneY + sceneH;
+            const lesson14SmokeSpread = environment.smoke && smokeStartedAt
+                ? Math.min((Date.now() - smokeStartedAt) / 18000, 1)
+                : 0;
+            const smokeMix = (clearColor, smokyColor, amount = lesson14SmokeSpread) => {
+                const parse = (hex) => [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16));
+                const [r1, g1, b1] = parse(clearColor);
+                const [r2, g2, b2] = parse(smokyColor);
+                const mix = (a, b) => Math.round(a + (b - a) * amount);
+                return `rgb(${mix(r1, r2)}, ${mix(g1, g2)}, ${mix(b1, b2)})`;
+            };
 
             // One single illustrated board/background.
             ctx.fillStyle = 'rgba(255,255,255,.62)';
@@ -1181,9 +1191,9 @@
             ctx.roundRect(sceneX, sceneY, sceneW, sceneH, 30);
             ctx.clip();
 
-            ctx.fillStyle = '#dbeafe';
+            ctx.fillStyle = smokeMix('#dbeafe', '#94a3b8', lesson14SmokeSpread * .70);
             ctx.fillRect(sceneX, sceneY, sceneW, sceneH * 0.42);
-            ctx.fillStyle = '#dcfce7';
+            ctx.fillStyle = smokeMix('#dcfce7', '#64748b', lesson14SmokeSpread * .82);
             ctx.fillRect(sceneX, sceneY + sceneH * 0.42, sceneW, sceneH * 0.58);
 
             // Sun and clouds as part of the background image.
@@ -1199,7 +1209,7 @@
             });
 
             // Hills: one smooth picture layer, no floating cards.
-            ctx.fillStyle = '#86efac';
+            ctx.fillStyle = smokeMix('#86efac', '#475569', lesson14SmokeSpread * .88);
             ctx.beginPath();
             ctx.moveTo(sceneX, sceneY + sceneH * 0.47);
             ctx.bezierCurveTo(sceneX + sceneW * 0.18, sceneY + sceneH * 0.31, sceneX + sceneW * 0.35, sceneY + sceneH * 0.49, sceneX + sceneW * 0.52, sceneY + sceneH * 0.37);
@@ -1209,7 +1219,7 @@
             ctx.closePath();
             ctx.fill();
 
-            ctx.fillStyle = '#bbf7d0';
+            ctx.fillStyle = smokeMix('#bbf7d0', '#526170', lesson14SmokeSpread * .88);
             ctx.beginPath();
             ctx.moveTo(sceneX, sceneY + sceneH * 0.56);
             ctx.bezierCurveTo(sceneX + sceneW * 0.25, sceneY + sceneH * 0.42, sceneX + sceneW * 0.42, sceneY + sceneH * 0.60, sceneX + sceneW * 0.60, sceneY + sceneH * 0.48);
@@ -1223,14 +1233,14 @@
             const roadY = sceneY + sceneH * 0.68;
             const startX = sceneX + sceneW * 0.18;
             const endX = sceneX + sceneW * 0.82;
-            ctx.strokeStyle = '#64748b';
+            ctx.strokeStyle = smokeMix('#64748b', '#334155', lesson14SmokeSpread * .65);
             ctx.lineWidth = 58;
             ctx.lineCap = 'round';
             ctx.beginPath();
             ctx.moveTo(startX, roadY);
             ctx.bezierCurveTo(sceneX + sceneW * 0.34, roadY - 46, sceneX + sceneW * 0.62, roadY + 38, endX, roadY - 4);
             ctx.stroke();
-            ctx.strokeStyle = '#f8fafc';
+            ctx.strokeStyle = smokeMix('#f8fafc', '#cbd5e1', lesson14SmokeSpread * .65);
             ctx.lineWidth = 5;
             ctx.setLineDash([22, 18]);
             ctx.stroke();
@@ -4021,7 +4031,7 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v39';
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v40';
             resetPositions();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
