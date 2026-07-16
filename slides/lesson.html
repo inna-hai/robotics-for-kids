@@ -104,7 +104,19 @@
     .exercise-kind { display:inline-flex; align-items:center; gap:8px; background:#eef2ff; color:var(--purple); border-radius:999px; padding:8px 14px; font-weight:900; margin-bottom:12px; }
     .emoji { font-size:6rem; margin-bottom:14px; }
     .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:20px; }
-    .card { background:#f7f9fc; border-radius:22px; padding:22px; font-size:1.3rem; font-weight:800; }
+    .card {
+      background:#f7f9fc;
+      border-radius:24px;
+      padding:30px 24px;
+      min-height:150px;
+      font-size:1.3rem;
+      font-weight:800;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      line-height:1.45;
+    }
 .nav {
   position: fixed;
   inset: auto 24px 76px 24px;
@@ -137,7 +149,7 @@
       ul{padding-right:1.15em;}
       .time-badge{font-size:1rem;padding:7px 12px;margin-bottom:10px;}
       .two-cols,.cards{grid-template-columns:1fr;gap:10px;}
-      .card{padding:14px;font-size:1.05rem;border-radius:16px;}
+      .card{padding:22px 16px;min-height:112px;font-size:1.05rem;border-radius:18px;}
       .teacher-box,.teacher-note,.blockly-solution{padding:12px 14px;border-radius:16px;margin:10px 0;}
       .teacher-box h3{font-size:1.05rem;}
       .exercise-kind{font-size:.95rem;padding:7px 11px;line-height:1.25;}
@@ -177,7 +189,7 @@
     </div>
   </nav>
 
-  <script src="../js/lessons-data.js?v=20260710-lessons-7-15"></script>
+  <script src="../js/lessons-data.js?v=20260716-miriam-story-v1"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const lesson = window.getSensiLesson(params.get('id'));
@@ -268,16 +280,28 @@
       ...exerciseSlidesForStep(step)
     ]);
 
-    const slides = [
+    const introSlides = Number(lesson.id) === 14 ? [
+      { html: `<div class="emoji">🛟</div><div class="kicker">שיעור 14 • זירת חילוץ</div><h1>סיפור חילוץ — הנתיב הבטוח</h1><p>קריאת חירום מגיעה מהמגדל: יש חום מסוכן, עשן וחסם במסלול. סנסי צריך לזהות את הסכנה, להפעיל עזרה, ורק אז לבחור נתיב בטוח.</p>` },
+      { html: `<h2>🎬 עלילת השיעור</h2><div class="cards"><div class="card">🚨 המגדל שולח קריאת חירום</div><div class="card">🔥💨🪨 סנסי בודק סכנות</div><div class="card">🚁🛟 סנסי בוחר נתיב בטוח</div></div>` },
+      { html: `<h2>👁️ החיישנים בסיפור</h2><ul><li><strong>חום מסוכן</strong> — לא נכנסים לאזור חם.</li><li><strong>עשן בזירה</strong> — מפעילים אזעקה ומזהירים.</li><li><strong>חסם במסלול</strong> — בוחרים דרך חלופית.</li></ul>` },
+      { html: `<h2>🧱 הבלוקים המרכזיים</h2><div class="cards"><div class="card">אם חום מסוכן</div><div class="card">אם עשן בזירה</div><div class="card">אם חסם במסלול</div><div class="card">הפעל אזעקה</div><div class="card">הפעל רחפן חילוץ</div><div class="card">בחר נתיב בטוח</div></div>` },
+      { html: `<h2>✅ מה נבנה?</h2><ul><li>רצף חילוץ ברור: קריאה → בדיקת סכנות → פעולה.</li><li>תגובה שונה לכל סכנה.</li><li>בחירת נתיב בטוח לפני תנועה.</li></ul>` }
+    ] : [
       { html: `<div class="emoji">${lesson.emoji}</div><div class="kicker">שיעור ${lesson.id} • ${lesson.cityZone}</div><h1>${lesson.title}</h1><p>${lesson.story}</p>` },
       { html: `<h2>🎯 מה נלמד היום?</h2><ul>${lesson.learningGoals.map(goal => `<li>${goal}</li>`).join('')}</ul>` },
       { html: `<h2>🤖 החיישן של היום</h2><p>היום סנסי משתמש ב<strong>חיישן ${lesson.sensorFocus}</strong>.</p><p>${lesson.sensorExplanation || 'החיישן עוזר לרובוט להבין מה קורה סביבו — ואז לבחור פעולה.'}</p>` },
       { html: `<h2>🧩 רעיון תכנותי</h2><p><strong>${lesson.codingConcept}</strong></p><p>במקום לתת לרובוט הוראה אחת קבועה, אנחנו מלמדים אותו לבדוק מצב ולקבל החלטה.</p>` },
       { html: `<h2>🧱 בלוקים שנשתמש בהם</h2><div class="cards">${lesson.blocks.map(block => `<div class="card">${block}</div>`).join('')}</div>` },
       { html: `<h2>✅ מה נבנה עד סוף השיעור?</h2><ul>${lesson.successCriteria.map(item => `<li>${item}</li>`).join('')}</ul>` },
-      ...(lesson.instructorQuickTasks ? [{ html: `<h2>🧑🏫 צ׳ק ליסט למדריך</h2><ul>${lesson.instructorQuickTasks.map(task => `<li>${task}</li>`).join('')}</ul>` }] : []),
+      ...(lesson.instructorQuickTasks ? [{ html: `<h2>🧑🏫 צ׳ק ליסט למדריך</h2><ul>${lesson.instructorQuickTasks.map(task => `<li>${task}</li>`).join('')}</ul>` }] : [])
+    ];
+
+    const slides = [
+      ...introSlides,
       ...flowSlides,
-      { html: `<h2>💬 שאלת סיכום</h2><p>${lesson.teacherNotes.discussionQuestions[0] || 'איפה עוד בעיר אפשר להשתמש ברעיון הזה?'}</p><p><strong>משפט סיכום:</strong> חיישן → תנאי → פעולה.</p>` }
+      { html: Number(lesson.id) === 14
+        ? `<h2>💬 שאלת סיכום</h2><p>איזו סכנה סנסי צריך לבדוק קודם — חום, עשן או חסם? למה?</p><p><strong>משפט סיכום:</strong> חיישן סכנה → החלטה → פעולה בטוחה.</p>`
+        : `<h2>💬 שאלת סיכום</h2><p>${lesson.teacherNotes.discussionQuestions[0] || 'איפה עוד בעיר אפשר להשתמש ברעיון הזה?'}</p><p><strong>משפט סיכום:</strong> חיישן → תנאי → פעולה.</p>` }
     ];
 
     document.getElementById('deck').innerHTML = slides.map((slide, index) => `<section class="slide ${index === 0 ? 'active' : ''}"><div class="slide-content">${slide.html}</div></section>`).join('');
