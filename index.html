@@ -1065,7 +1065,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260716-miriam-story-v42"></script>
+    <script src="js/lessons-data.js?v=20260716-miriam-story-v44"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1150,7 +1150,7 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // lesson14-realistic-landmarks-v42
+            // lesson14-realistic-landmarks-v44
             // Everything fixed is drawn as one clean illustrated background.
             // Only rescueBeacon and waterDrone are drawn later as movable overlay objects.
             const sky = ctx.createLinearGradient(0, 0, 0, h);
@@ -1229,29 +1229,33 @@
             ctx.closePath();
             ctx.fill();
 
-            // Continuous road, integrated into the picture: thin, flat, horizontal road on the ground.
-            const roadY = sceneY + sceneH * 0.72;
-            const startX = sceneX + sceneW * 0.16;
-            const endX = sceneX + sceneW * 0.84;
-            const roadTop = roadY - 17;
-            const roadHeight = 34;
-            const roadLeft = startX;
-            const roadWidth = endX - startX;
+            // Side-view road: very flat sharp parallelogram, like a road seen from the side.
+            const roadY = sceneY + sceneH * 0.73;
+            const startX = sceneX + sceneW * 0.15;
+            const endX = sceneX + sceneW * 0.85;
+            const roadHeight = 26;
+            const slant = sceneW * 0.075;
             const roadColor = smokeMix('#64748b', '#334155', lesson14SmokeSpread * .65);
             const roadEdge = smokeMix('#475569', '#1f2937', lesson14SmokeSpread * .65);
+            const roadTop = roadY - roadHeight / 2;
+            const roadBottom = roadY + roadHeight / 2;
             ctx.fillStyle = roadColor;
             ctx.strokeStyle = roadEdge;
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 2.5;
             ctx.beginPath();
-            ctx.roundRect(roadLeft, roadTop, roadWidth, roadHeight, 17);
+            ctx.moveTo(startX + slant, roadTop);
+            ctx.lineTo(endX + slant, roadTop);
+            ctx.lineTo(endX, roadBottom);
+            ctx.lineTo(startX, roadBottom);
+            ctx.closePath();
             ctx.fill();
             ctx.stroke();
             ctx.strokeStyle = smokeMix('#f8fafc', '#cbd5e1', lesson14SmokeSpread * .65);
             ctx.lineWidth = 3;
-            ctx.setLineDash([26, 22]);
+            ctx.setLineDash([30, 24]);
             ctx.beginPath();
-            ctx.moveTo(roadLeft + 30, roadY);
-            ctx.lineTo(roadLeft + roadWidth - 30, roadY);
+            ctx.moveTo(startX + slant + 28, roadY - 1);
+            ctx.lineTo(endX - 28, roadY - 1);
             ctx.stroke();
             ctx.setLineDash([]);
 
@@ -1424,9 +1428,9 @@
             ctx.lineCap = 'round';
             ctx.beginPath();
             ctx.moveTo(safePlaceX + 36, safePlaceY + 5);
-            ctx.lineTo(startX + 8, roadY);
+            ctx.lineTo(startX + 18, roadY);
             ctx.moveTo(stationPlaceX - 36, stationPlaceY + 5);
-            ctx.lineTo(endX - 8, roadY);
+            ctx.lineTo(endX - 18, roadY);
             ctx.stroke();
             drawSafeZone(safePlaceX, safePlaceY);
             drawRescueStation(stationPlaceX, stationPlaceY);
@@ -4040,7 +4044,7 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v42';
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v44';
             resetPositions();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
