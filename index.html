@@ -1065,7 +1065,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260716-miriam-story-v30"></script>
+    <script src="js/lessons-data.js?v=20260716-miriam-story-v31"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1149,7 +1149,7 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // lesson14-realistic-landmarks-v30
+            // lesson14-realistic-landmarks-v31
             // Everything fixed is drawn as one clean illustrated background.
             // Only rescueBeacon and waterDrone are drawn later as movable overlay objects.
             const sky = ctx.createLinearGradient(0, 0, 0, h);
@@ -1442,8 +1442,18 @@
                         g.addColorStop(.58, `rgba(71,85,105,${alpha * .68})`);
                         g.addColorStop(1, 'rgba(148,163,184,0)');
                         ctx.fillStyle = g;
+                        // Irregular cloud-like smoke plume instead of a clean circle/ellipse.
+                        const rx = puff.rx * grow;
+                        const ry = puff.ry * grow;
+                        const wobble = Math.sin(smokeTime * 8 + puff.phase * 17) * 0.12;
                         ctx.beginPath();
-                        ctx.ellipse(px, py, puff.rx * grow, puff.ry * grow, -0.12, 0, Math.PI * 2);
+                        ctx.moveTo(px - rx * .95, py + ry * .10);
+                        ctx.bezierCurveTo(px - rx * .88, py - ry * .72, px - rx * .42, py - ry * 1.02, px - rx * .12, py - ry * .78);
+                        ctx.bezierCurveTo(px + rx * .12, py - ry * 1.18, px + rx * .76, py - ry * .84, px + rx * .72, py - ry * .26);
+                        ctx.bezierCurveTo(px + rx * 1.08, py - ry * .08, px + rx * .92, py + ry * .62, px + rx * .42, py + ry * .54);
+                        ctx.bezierCurveTo(px + rx * .18, py + ry * .98, px - rx * .48, py + ry * .82, px - rx * .58, py + ry * .46);
+                        ctx.bezierCurveTo(px - rx * .92, py + ry * .50, px - rx * (1.04 + wobble), py + ry * .28, px - rx * .95, py + ry * .10);
+                        ctx.closePath();
                         ctx.fill();
                     });
                     // darker source near the ground
@@ -3942,7 +3952,7 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v30';
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v31';
             resetPositions();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
