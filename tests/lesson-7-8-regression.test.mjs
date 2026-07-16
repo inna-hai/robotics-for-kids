@@ -39,6 +39,11 @@ function cssRule(selector) {
   return indexHtml.slice(open + 1, close);
 }
 
+test('lesson 7 robot starts with its line sensor on the beginning of the line', () => {
+  assertMatches(indexHtml, /if \(currentLesson === 7\) \{[\s\S]*?const line = getLesson7LinePoints\(\);[\s\S]*?robot\.x = line\.start\.x - 28;[\s\S]*?robot\.y = line\.start\.y;[\s\S]*?\} else \{/);
+  assertIncludes(indexHtml, 'x: robot.x + Math.cos(angle) * 28,');
+});
+
 test('lesson 7 has a visible goal at the end of the line', () => {
   assertIncludes(indexHtml, "ctx.fillText('🏁', line.end.x, line.end.y - 30)");
   assertIncludes(indexHtml, "ctx.arc(line.end.x, line.end.y, 20, 0, Math.PI * 2)");
@@ -152,6 +157,16 @@ test('environment controls stay in one horizontal scroll row with side arrows an
   assertIncludes(indexHtml, '<div class="env-reset-row">');
   assertIncludes(indexHtml, 'class="env-reset-btn" onclick="resetEnv()"');
   assert.ok(indexHtml.indexOf('<div class="env-reset-row">') > indexHtml.indexOf('<div class="env-scroll-shell"'));
+});
+
+test('robot canvas dragging works with scaled canvas coordinates and pointer events', () => {
+  assertIncludes(cssRule('.robot-stage canvas'), 'touch-action: none;');
+  assertIncludes(indexHtml, 'const scaleX = rect.width ? canvas.width / rect.width : 1;');
+  assertIncludes(indexHtml, 'const scaleY = rect.height ? canvas.height / rect.height : 1;');
+  assertIncludes(indexHtml, 'function hitTestRobot(pos)');
+  assertIncludes(indexHtml, 'hitTest(pos, robot, 56)');
+  assertIncludes(indexHtml, 'canvas.addEventListener(\'pointerdown\', onDragStart);');
+  assertIncludes(indexHtml, 'canvas.setPointerCapture?.(e.pointerId);');
 });
 
 test('Blockly workspace has working click buttons for vertical and horizontal scrolling', () => {
