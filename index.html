@@ -271,6 +271,14 @@
             background: linear-gradient(180deg, #8FD982 0%, transparent 100%);
         }
 
+        .ground.street-ground {
+            background: linear-gradient(180deg, #d6d3d1 0%, #a8a29e 38%, #475569 39%, #334155 100%);
+        }
+
+        .ground.street-ground::before {
+            background: linear-gradient(90deg, transparent 0 18%, #f8fafc 18% 30%, transparent 30% 70%, #f8fafc 70% 82%, transparent 82% 100%);
+        }
+
         /* Sensor Display */
         .sensors-bar {
             display: grid;
@@ -1250,8 +1258,8 @@
 
             // Mission board
             const compactMission = currentLesson === 7 || currentLesson === 8 || currentLesson === 9 || currentLesson === 11;
-            const boardX = currentLesson === 7 ? 20 : currentLesson === 8 ? canvas.width - 238 : currentLesson === 9 ? canvas.width - 224 : currentLesson === 11 ? canvas.width - 220 : canvas.width * 0.56;
-            const boardY = currentLesson === 7 ? 40 : currentLesson === 8 ? 48 : currentLesson === 9 ? 42 : currentLesson === 11 ? 40 : canvas.height * 0.12;
+            const boardX = currentLesson === 7 ? 20 : currentLesson === 8 ? canvas.width - 218 : currentLesson === 9 ? canvas.width - 224 : currentLesson === 11 ? canvas.width - 220 : canvas.width * 0.56;
+            const boardY = currentLesson === 7 ? 40 : currentLesson === 8 ? 8 : currentLesson === 9 ? 42 : currentLesson === 11 ? 40 : canvas.height * 0.12;
             const boardW = currentLesson === 7 ? 190 : currentLesson === 8 ? 210 : currentLesson === 9 ? 196 : currentLesson === 11 ? 198 : canvas.width * 0.36;
             const boardH = currentLesson === 7 ? 70 : currentLesson === 8 ? 78 : currentLesson === 9 ? 70 : currentLesson === 11 ? 74 : 135;
             ctx.fillStyle = compactMission ? 'rgba(255,255,255,.88)' : 'rgba(255,255,255,.92)';
@@ -1294,6 +1302,65 @@
             }[currentLesson];
             const xs = [canvas.width * 0.20, canvas.width * 0.40, canvas.width * 0.60];
             const y = Math.max(canvas.height * 0.62, boardY + boardH + 48);
+
+            if (currentLesson === 8) {
+                const crosswalkX = xs[1];
+                const crosswalkY = y - 8;
+                const crosswalkW = 150;
+                const crosswalkH = 54;
+                const roadH = 92;
+                const roadLift = 24;
+                const roadCenterY = crosswalkY - roadLift;
+                const roadTop = roadCenterY - roadH / 2;
+                const roadBottom = roadCenterY + roadH / 2;
+                const laneH = roadH / 2;
+                const laneDividerY = roadTop + laneH;
+                const topSidewalkTop = Math.max(96, roadTop - 58);
+                const bottomSidewalkH = 24;
+                const bottomSidewalkBottom = roadBottom + bottomSidewalkH;
+
+                ctx.save();
+                ctx.fillStyle = '#d6d3d1';
+                ctx.fillRect(0, topSidewalkTop, canvas.width, roadTop - topSidewalkTop);
+                ctx.fillRect(0, roadBottom, canvas.width, bottomSidewalkBottom - roadBottom);
+
+                ctx.fillStyle = '#334155';
+                ctx.fillRect(0, roadTop, canvas.width, roadH);
+                ctx.strokeStyle = '#f8fafc';
+                ctx.lineWidth = 5;
+                ctx.setLineDash([]);
+                ctx.beginPath();
+                ctx.moveTo(0, roadTop);
+                ctx.lineTo(canvas.width, roadTop);
+                ctx.moveTo(0, roadBottom);
+                ctx.lineTo(canvas.width, roadBottom);
+                ctx.stroke();
+                ctx.strokeStyle = 'rgba(248,250,252,.55)';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([14, 14]);
+                ctx.beginPath();
+                ctx.moveTo(12, laneDividerY);
+                ctx.lineTo(canvas.width - 12, laneDividerY);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                ctx.fillStyle = '#ffffff';
+                ctx.strokeStyle = 'rgba(15,23,42,.28)';
+                ctx.lineWidth = 2;
+                for (let stripeY = roadTop + 14; stripeY <= roadBottom - 14; stripeY += 16) {
+                    ctx.beginPath();
+                    ctx.roundRect(crosswalkX - crosswalkW / 2, stripeY - 5, crosswalkW, 10, 4);
+                    ctx.fill();
+                    ctx.stroke();
+                }
+
+                ctx.font = 'bold 12px Rubik';
+                ctx.fillStyle = '#334155';
+                ctx.textAlign = 'center';
+                ctx.fillText('מדרכה', crosswalkX, topSidewalkTop + 24);
+                ctx.restore();
+            }
+
             scene.objects.forEach((label, i) => {
                 if (currentLesson === 8) {
                     const activeLesson8Object = (i === 0 && environment.pedestrian) || (i === 2 && environment.cars);
@@ -1334,16 +1401,54 @@
 
                     const isStopped = (i === 2 && robot.trafficCarsStopped) || (i === 0 && robot.pedestrianStopped);
                     const t = Date.now() / 1000;
-                    const wave = t * 2.4;
-                    const motion = isStopped ? 0 : Math.sin(wave) * 24;
-                    const movingRight = Math.cos(wave) > 0;
-                    const objectX = xs[i] + motion;
-                    const objectY = y - 8;
+                    const wave = t * 2.1;
+                    const crosswalkX = xs[1];
+                    const crosswalkY = y - 8;
+                    const roadH = 92;
+                    const roadLift = 24;
+                    const roadCenterY = crosswalkY - roadLift;
+                    const roadTop = roadCenterY - roadH / 2;
+                    const roadBottom = roadCenterY + roadH / 2;
+                    const laneH = roadH / 2;
+                    const laneDividerY = roadTop + laneH;
 
-                    ctx.font = i === 2 ? '48px Arial' : '50px Arial';
+                    if (i === 2) {
+                        const roadLength = canvas.width + 140;
+                        const carProgress = (t * 92) % roadLength;
+                        const laneTopY = roadTop + laneH / 2;
+                        const laneBottomY = laneDividerY + laneH / 2;
+                        const leftToRightX = isStopped ? crosswalkX - 108 : -70 + carProgress;
+                        const rightToLeftX = isStopped ? crosswalkX + 108 : canvas.width + 70 - carProgress;
+                        const cars = [
+                            { x: leftToRightX, y: laneTopY, flip: true },
+                            { x: rightToLeftX, y: laneBottomY, flip: false }
+                        ];
+
+                        ctx.font = '48px Arial';
+                        cars.forEach((car) => {
+                            ctx.save();
+                            ctx.translate(car.x, car.y);
+                            if (car.flip) ctx.scale(-1, 1);
+                            ctx.fillText('🚗', 0, 0);
+                            ctx.restore();
+                        });
+
+                        ctx.font = 'bold 13px Rubik';
+                        ctx.fillStyle = isStopped ? '#dc2626' : '#15803d';
+                        ctx.textAlign = 'right';
+                        ctx.fillText(isStopped ? 'המכוניות עצרו לפני מעבר החציה' : 'שתי מכוניות נוסעות בשני הנתיבים', canvas.width - 16, boardY + boardH + 18);
+                        return;
+                    }
+
+                    const pedestrianMotion = Math.sin(wave) * 58;
+                    const walkingDown = Math.cos(wave) > 0;
+                    const objectX = crosswalkX;
+                    const objectY = isStopped ? roadBottom + 38 : crosswalkY + pedestrianMotion;
+
+                    ctx.font = '50px Arial';
                     ctx.save();
                     ctx.translate(objectX, objectY);
-                    if (i === 0 && movingRight) {
+                    if (walkingDown) {
                         ctx.scale(-1, 1);
                     }
                     ctx.fillText(emojis[i], 0, 0);
@@ -1351,23 +1456,15 @@
 
                     ctx.font = 'bold 13px Rubik';
                     ctx.fillStyle = isStopped ? '#dc2626' : '#15803d';
-                    ctx.fillText(i === 2 ? (isStopped ? 'המכוניות עצרו' : 'מכונית נוסעת') : (isStopped ? 'הולך הרגל עצר' : 'הולך רגל הולך'), xs[i], y + 38);
+                    ctx.textAlign = 'right';
+                    ctx.fillText(isStopped ? 'הולך הרגל עומד ליד מעבר החציה' : 'הולך רגל חוצה במעבר הלוך ושוב', canvas.width - 16, boardY + boardH + 18);
 
-                    if (i === 2) {
-                        ctx.strokeStyle = 'rgba(51,65,85,.35)';
-                        ctx.lineWidth = 2;
-                        ctx.setLineDash([6, 6]);
-                        ctx.beginPath();
-                        ctx.moveTo(xs[i] - 48, y + 12);
-                        ctx.lineTo(xs[i] + 48, y + 12);
-                        ctx.stroke();
-                        ctx.setLineDash([]);
-                    } else {
+                    if (isStopped) {
                         ctx.strokeStyle = 'rgba(21,128,61,.35)';
                         ctx.lineWidth = 2;
                         ctx.beginPath();
-                        ctx.moveTo(xs[i] - 48, y + 22);
-                        ctx.lineTo(xs[i] + 48, y + 22);
+                        ctx.moveTo(crosswalkX - 34, roadBottom + 18);
+                        ctx.lineTo(crosswalkX + 34, roadBottom + 18);
                         ctx.stroke();
                     }
                     return;
@@ -3630,6 +3727,7 @@
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
             document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num;
+            document.querySelector('.ground')?.classList.toggle('street-ground', num === 8);
             resetPositions();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
