@@ -1065,7 +1065,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260716-miriam-story-v14"></script>
+    <script src="js/lessons-data.js?v=20260716-miriam-story-v15"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1148,7 +1148,7 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // lesson14-flat-background-v14
+            // lesson14-flat-background-v15
             // Everything fixed is drawn as one clean illustrated background.
             // Only rescueBeacon and waterDrone are drawn later as movable overlay objects.
             const sky = ctx.createLinearGradient(0, 0, 0, h);
@@ -1250,20 +1250,22 @@
                 ctx.fillStyle = color;
                 ctx.fillText(label, x, y + 48);
             };
-            const stationPlaceY = roadY - 92;
-            const safePlaceY = roadY + 92;
-            // small painted access paths from the side places to the main road
-            ctx.strokeStyle = 'rgba(100,116,139,.45)';
-            ctx.lineWidth = 16;
+            const stationPlaceX = startX - Math.min(88, sceneW * 0.10);
+            const stationPlaceY = roadY - 6;
+            const safePlaceX = endX + Math.min(88, sceneW * 0.10);
+            const safePlaceY = roadY - 6;
+            // small painted side access paths: places sit left/right of the road, not on it.
+            ctx.strokeStyle = 'rgba(100,116,139,.42)';
+            ctx.lineWidth = 14;
             ctx.lineCap = 'round';
             ctx.beginPath();
-            ctx.moveTo(startX + 26, stationPlaceY + 42);
-            ctx.lineTo(startX + 48, roadY - 22);
-            ctx.moveTo(endX - 26, safePlaceY - 42);
-            ctx.lineTo(endX - 48, roadY + 18);
+            ctx.moveTo(stationPlaceX + 48, stationPlaceY + 8);
+            ctx.lineTo(startX - 8, roadY);
+            ctx.moveTo(safePlaceX - 48, safePlaceY + 8);
+            ctx.lineTo(endX + 8, roadY - 4);
             ctx.stroke();
-            drawPaintedPlace(startX, stationPlaceY, '🚒', 'תחנת חילוץ', '#0284c7');
-            drawPaintedPlace(endX, safePlaceY, '🏥', 'אזור בטוח', '#16a34a');
+            drawPaintedPlace(stationPlaceX, stationPlaceY, '🚒', 'תחנת חילוץ', '#0284c7');
+            drawPaintedPlace(safePlaceX, safePlaceY, '🏥', 'אזור בטוח', '#16a34a');
 
             // Hazards are natural details in the illustration: no boxes, no panels.
             const hazardY = sceneY + sceneH * 0.42;
@@ -3743,7 +3745,7 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v14';
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v15';
             resetPositions();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
