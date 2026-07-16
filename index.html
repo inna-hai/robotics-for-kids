@@ -1065,7 +1065,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260716-miriam-story-v32"></script>
+    <script src="js/lessons-data.js?v=20260716-miriam-story-v33"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1074,6 +1074,7 @@
 
         let robot = { x: 150, y: 180, angle: 0, speaking: '', streetLightOn: false, trafficLightGreen: false, trafficCarsStopped: false, pedestrianStopped: false, vehicleStopped: false, fanOn: false, waterOn: false, alarmOn: false, sortedBin: '' };
         let environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, doorOpen: false };
+        let smokeStartedAt = null;
 
         let isRunning = false;
         let drawerOpen = false;
@@ -1149,7 +1150,7 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // lesson14-realistic-landmarks-v32
+            // lesson14-realistic-landmarks-v33
             // Everything fixed is drawn as one clean illustrated background.
             // Only rescueBeacon and waterDrone are drawn later as movable overlay objects.
             const sky = ctx.createLinearGradient(0, 0, 0, h);
@@ -1418,7 +1419,21 @@
                     // More realistic active smoke: layered soft plumes, no cartoon smoke emoji.
                     const baseX = x;
                     const baseY = hazardY + 18;
+                    const smokeAgeMs = smokeStartedAt ? Date.now() - smokeStartedAt : 0;
+                    const smokeSpread = Math.min(smokeAgeMs / 18000, 1);
                     const smokeTime = Date.now() / 1400;
+                    if (smokeSpread > .08) {
+                        // As smoke stays on, it slowly fills more of the rescue scene.
+                        const hazeAlpha = .08 + smokeSpread * .24;
+                        const haze = ctx.createRadialGradient(baseX, baseY - 28, 20, baseX, baseY - 28, sceneW * (.16 + smokeSpread * .44));
+                        haze.addColorStop(0, `rgba(71,85,105,${hazeAlpha})`);
+                        haze.addColorStop(.55, `rgba(100,116,139,${hazeAlpha * .62})`);
+                        haze.addColorStop(1, 'rgba(148,163,184,0)');
+                        ctx.fillStyle = haze;
+                        ctx.beginPath();
+                        ctx.ellipse(baseX, baseY - 24, sceneW * (.14 + smokeSpread * .38), sceneH * (.09 + smokeSpread * .26), 0, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
                     const plumes = [
                         { dx: -18, rx: 22, ry: 15, a: .34, phase: 0.00, sway: 10 },
                         { dx: 8, rx: 30, ry: 21, a: .44, phase: 0.18, sway: 13 },
@@ -1429,13 +1444,13 @@
                     ];
                     plumes.forEach((puff) => {
                         const life = (smokeTime + puff.phase) % 1;
-                        const rise = life * 86;
-                        const grow = 0.42 + life * 0.92;
+                        const rise = life * (86 + smokeSpread * 78);
+                        const grow = 0.42 + life * 0.92 + smokeSpread * .55;
                         const fade = Math.sin(life * Math.PI);
-                        const driftX = Math.sin(smokeTime * Math.PI * 2 + puff.phase * 9) * puff.sway * life;
+                        const driftX = Math.sin(smokeTime * Math.PI * 2 + puff.phase * 9) * (puff.sway + smokeSpread * 28) * life;
                         const px = baseX + puff.dx + driftX;
-                        const py = baseY + 22 - rise;
-                        const alpha = puff.a * fade;
+                        const py = baseY + 22 - rise - smokeSpread * 12;
+                        const alpha = Math.min(.62, puff.a * fade * (1 + smokeSpread * .55));
                         const radius = Math.max(puff.rx, puff.ry) * grow;
                         const g = ctx.createRadialGradient(px - 8, py - 8, 3, px, py, radius);
                         g.addColorStop(0, `rgba(51,65,85,${alpha})`);
@@ -3691,6 +3706,7 @@
         // ===== ENVIRONMENT =====
         function toggleEnv(type) {
             environment[type] = !environment[type];
+            if (type === 'smoke') smokeStartedAt = environment.smoke ? Date.now() : null;
             if (type === 'cars') robot.trafficCarsStopped = false;
             if (type === 'pedestrian') robot.pedestrianStopped = false;
             document.getElementById('env' + type.charAt(0).toUpperCase() + type.slice(1))
@@ -3701,6 +3717,7 @@
         function resetEnv() {
 
             environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, doorOpen: false };
+            smokeStartedAt = null;
 
             document.querySelectorAll('.env-btn').forEach(b => b.classList.remove('active'));
             robot.speaking = '';
@@ -3952,7 +3969,7 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v32';
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v33';
             resetPositions();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
