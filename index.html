@@ -1065,7 +1065,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260716-miriam-story-v38"></script>
+    <script src="js/lessons-data.js?v=20260716-miriam-story-v39"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1150,7 +1150,7 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // lesson14-realistic-landmarks-v38
+            // lesson14-realistic-landmarks-v39
             // Everything fixed is drawn as one clean illustrated background.
             // Only rescueBeacon and waterDrone are drawn later as movable overlay objects.
             const sky = ctx.createLinearGradient(0, 0, 0, h);
@@ -1423,17 +1423,37 @@
                     const smokeSpread = Math.min(smokeAgeMs / 18000, 1);
                     const smokeTime = Date.now() / 1400;
                     if (smokeSpread > .06) {
-                        // The whole rescue area gradually feels smoky: grass and scene darken, not just the smoke cloud.
-                        const sceneHaze = Math.min(.30, .05 + smokeSpread * .25);
+                        // The rescue area darkens like drifting fog: soft, uneven and gradual — not a precise shape.
+                        const sceneHaze = Math.min(.34, .04 + smokeSpread * .30);
                         ctx.save();
-                        ctx.fillStyle = `rgba(71,85,105,${sceneHaze})`;
-                        ctx.fillRect(sceneX, sceneY, sceneW, sceneH);
-                        const groundSmoke = ctx.createLinearGradient(0, sceneY + sceneH * .38, 0, sceneBottom);
-                        groundSmoke.addColorStop(0, `rgba(100,116,139,${sceneHaze * .25})`);
-                        groundSmoke.addColorStop(.55, `rgba(51,65,85,${sceneHaze * .55})`);
-                        groundSmoke.addColorStop(1, `rgba(30,41,59,${sceneHaze * .70})`);
-                        ctx.fillStyle = groundSmoke;
-                        ctx.fillRect(sceneX, sceneY + sceneH * .38, sceneW, sceneH * .62);
+                        ctx.beginPath();
+                        ctx.roundRect(sceneX, sceneY, sceneW, sceneH, 30);
+                        ctx.clip();
+                        const fogLayers = [
+                            { x: .48, y: .44, rx: .40, ry: .22, a: .52, phase: .2 },
+                            { x: .32, y: .68, rx: .38, ry: .20, a: .44, phase: 1.4 },
+                            { x: .70, y: .65, rx: .42, ry: .22, a: .46, phase: 2.6 },
+                            { x: .55, y: .83, rx: .55, ry: .18, a: .36, phase: 3.8 },
+                            { x: .20, y: .50, rx: .28, ry: .18, a: .30, phase: 4.7 }
+                        ];
+                        fogLayers.forEach((fog) => {
+                            const reveal = Math.min(1, Math.max(0, (smokeSpread - .06) / .86));
+                            const driftX = Math.sin(smokeTime * Math.PI * 2 + fog.phase) * sceneW * .025 * reveal;
+                            const driftY = Math.cos(smokeTime * Math.PI * 1.4 + fog.phase) * sceneH * .018 * reveal;
+                            const cx = sceneX + sceneW * fog.x + driftX;
+                            const cy = sceneY + sceneH * fog.y + driftY;
+                            const rx = sceneW * fog.rx * (.35 + reveal * .75);
+                            const ry = sceneH * fog.ry * (.35 + reveal * .75);
+                            const alpha = sceneHaze * fog.a * reveal;
+                            const mist = ctx.createRadialGradient(cx, cy, 8, cx, cy, Math.max(rx, ry));
+                            mist.addColorStop(0, `rgba(51,65,85,${alpha})`);
+                            mist.addColorStop(.58, `rgba(71,85,105,${alpha * .72})`);
+                            mist.addColorStop(1, 'rgba(148,163,184,0)');
+                            ctx.fillStyle = mist;
+                            ctx.beginPath();
+                            ctx.ellipse(cx, cy, rx, ry, -0.08, 0, Math.PI * 2);
+                            ctx.fill();
+                        });
                         ctx.restore();
                     }
                     if (smokeSpread > .18) {
@@ -4001,7 +4021,7 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v38';
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v39';
             resetPositions();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
