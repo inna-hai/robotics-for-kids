@@ -1065,7 +1065,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260716-miriam-story-v27"></script>
+    <script src="js/lessons-data.js?v=20260716-miriam-story-v28"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1112,7 +1112,7 @@
             if (currentLesson === 14) {
                 // Start the draggable robot in the middle of the rescue scene.
                 robot.x = canvas.width * 0.50;
-                robot.y = canvas.height * 0.62;
+                robot.y = canvas.height * 0.52;
             } else {
                 robot.x = canvas.width / 2;
                 robot.y = currentLesson === 3 ? canvas.height * 0.58 : currentLesson === 4 ? canvas.height * 0.62 : currentLesson === 5 ? canvas.height * 0.64 : currentLesson === 6 ? canvas.height * 0.62 : canvas.height / 2;
@@ -1149,7 +1149,7 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // lesson14-realistic-landmarks-v27
+            // lesson14-realistic-landmarks-v28
             // Everything fixed is drawn as one clean illustrated background.
             // Only rescueBeacon and waterDrone are drawn later as movable overlay objects.
             const sky = ctx.createLinearGradient(0, 0, 0, h);
@@ -1418,22 +1418,28 @@
                     // More realistic active smoke: layered soft plumes, no cartoon smoke emoji.
                     const baseX = x;
                     const baseY = hazardY + 18;
+                    const smokeTime = Date.now() / 900;
                     const plumes = [
-                        { dx: -30, dy: 10, rx: 26, ry: 18, a: .34 },
-                        { dx: -16, dy: -6, rx: 34, ry: 24, a: .44 },
-                        { dx: 8, dy: -24, rx: 42, ry: 30, a: .52 },
-                        { dx: 34, dy: -10, rx: 32, ry: 24, a: .40 },
-                        { dx: 18, dy: 16, rx: 46, ry: 20, a: .28 },
-                        { dx: -4, dy: -44, rx: 30, ry: 22, a: .26 }
+                        { dx: -30, dy: 10, rx: 26, ry: 18, a: .34, speed: .9, phase: 0.2 },
+                        { dx: -16, dy: -6, rx: 34, ry: 24, a: .44, speed: 1.1, phase: 1.4 },
+                        { dx: 8, dy: -24, rx: 42, ry: 30, a: .52, speed: .8, phase: 2.1 },
+                        { dx: 34, dy: -10, rx: 32, ry: 24, a: .40, speed: 1.0, phase: 3.2 },
+                        { dx: 18, dy: 16, rx: 46, ry: 20, a: .28, speed: .7, phase: 4.0 },
+                        { dx: -4, dy: -44, rx: 30, ry: 22, a: .26, speed: 1.2, phase: 5.1 }
                     ];
                     plumes.forEach((puff) => {
-                        const g = ctx.createRadialGradient(baseX + puff.dx - 8, baseY + puff.dy - 8, 4, baseX + puff.dx, baseY + puff.dy, Math.max(puff.rx, puff.ry));
+                        const driftX = Math.sin(smokeTime * puff.speed + puff.phase) * 7;
+                        const driftY = Math.cos(smokeTime * (puff.speed * .8) + puff.phase) * 4;
+                        const grow = 1 + Math.sin(smokeTime * .9 + puff.phase) * .06;
+                        const px = baseX + puff.dx + driftX;
+                        const py = baseY + puff.dy + driftY;
+                        const g = ctx.createRadialGradient(px - 8, py - 8, 4, px, py, Math.max(puff.rx, puff.ry) * grow);
                         g.addColorStop(0, `rgba(51,65,85,${puff.a})`);
                         g.addColorStop(.55, `rgba(71,85,105,${puff.a * .72})`);
                         g.addColorStop(1, 'rgba(148,163,184,0)');
                         ctx.fillStyle = g;
                         ctx.beginPath();
-                        ctx.ellipse(baseX + puff.dx, baseY + puff.dy, puff.rx, puff.ry, -0.18, 0, Math.PI * 2);
+                        ctx.ellipse(px, py, puff.rx * grow, puff.ry * grow, -0.18, 0, Math.PI * 2);
                         ctx.fill();
                     });
                     // darker source near the ground
@@ -3932,7 +3938,7 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v27';
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v28';
             resetPositions();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
