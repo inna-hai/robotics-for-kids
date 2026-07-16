@@ -1065,7 +1065,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260716-miriam-story-v12"></script>
+    <script src="js/lessons-data.js?v=20260716-miriam-story-v13"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1148,7 +1148,7 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // lesson14-flat-background-v12
+            // lesson14-flat-background-v13
             // Everything fixed is drawn as one clean illustrated background.
             // Only rescueBeacon and waterDrone are drawn later as movable overlay objects.
             const sky = ctx.createLinearGradient(0, 0, 0, h);
@@ -1234,38 +1234,31 @@
             ctx.stroke();
             ctx.setLineDash([]);
 
-            // Buildings are painted into the scene, not floating components.
-            const drawPaintedBuilding = (x, y, width, height, color, roof, emoji, label) => {
-                ctx.fillStyle = color;
-                ctx.strokeStyle = 'rgba(15,23,42,.20)';
-                ctx.lineWidth = 2;
+            // Places are painted into the scene with no square/card around them.
+            const drawPaintedPlace = (x, y, emoji, label, color) => {
+                ctx.fillStyle = 'rgba(15,23,42,.12)';
                 ctx.beginPath();
-                ctx.roundRect(x - width / 2, y - height / 2, width, height, 14);
+                ctx.ellipse(x, y + 28, 54, 12, 0, 0, Math.PI * 2);
                 ctx.fill();
-                ctx.stroke();
-                ctx.fillStyle = roof;
-                ctx.beginPath();
-                ctx.roundRect(x - width / 2, y - height / 2, width, 24, 12);
-                ctx.fill();
-                ctx.font = '34px Arial';
+                ctx.font = '44px Arial';
                 ctx.fillText(emoji, x, y - 4);
-                ctx.font = 'bold 12px Rubik';
-                ctx.fillStyle = '#0f172a';
-                ctx.fillText(label, x, y + height / 2 + 16);
+                ctx.font = 'bold 13px Rubik';
+                ctx.fillStyle = color;
+                ctx.fillText(label, x, y + 42);
             };
-            drawPaintedBuilding(startX, roadY - 12, 108, 88, '#eff6ff', '#0284c7', '🚒', 'תחנת חילוץ');
-            drawPaintedBuilding(endX, roadY - 12, 108, 88, '#ecfdf5', '#16a34a', '🏥', 'אזור בטוח');
+            drawPaintedPlace(startX, roadY - 14, '🚒', 'תחנת חילוץ', '#0284c7');
+            drawPaintedPlace(endX, roadY - 14, '🏥', 'אזור בטוח', '#16a34a');
 
-            // Hazards are natural details in the illustration, not separate boxes.
+            // Hazards are natural details in the illustration: no boxes, no panels.
             const hazardY = sceneY + sceneH * 0.42;
             const drawPaintedHazard = (x, active, emoji, label, color) => {
-                ctx.globalAlpha = active ? 1 : .32;
-                ctx.fillStyle = active ? 'rgba(255,255,255,.58)' : 'rgba(255,255,255,.30)';
+                ctx.globalAlpha = active ? 1 : .28;
+                ctx.fillStyle = active ? 'rgba(15,23,42,.10)' : 'rgba(15,23,42,.06)';
                 ctx.beginPath();
-                ctx.ellipse(x, hazardY + 12, 58, 32, 0, 0, Math.PI * 2);
+                ctx.ellipse(x, hazardY + 35, 42, 9, 0, 0, Math.PI * 2);
                 ctx.fill();
-                ctx.font = '42px Arial';
-                ctx.fillText(emoji, x, hazardY - 4);
+                ctx.font = '46px Arial';
+                ctx.fillText(emoji, x, hazardY - 2);
                 ctx.globalAlpha = active ? 1 : .42;
                 ctx.font = 'bold 12px Rubik';
                 ctx.fillStyle = color;
@@ -3734,7 +3727,7 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v12';
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v13';
             resetPositions();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
