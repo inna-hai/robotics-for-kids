@@ -1065,7 +1065,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260716-miriam-story-v47"></script>
+    <script src="js/lessons-data.js?v=20260716-miriam-story-v48"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1150,7 +1150,7 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // lesson14-realistic-landmarks-v47
+            // lesson14-realistic-landmarks-v48
             // Everything fixed is drawn as one clean illustrated background.
             // Only rescueBeacon and waterDrone are drawn later as movable overlay objects.
             const sky = ctx.createLinearGradient(0, 0, 0, h);
@@ -1418,10 +1418,10 @@
             };
 
             const safePlaceX = sceneX + sceneW * 0.08;
-            const safePlaceY = roadY - 52;
+            const safePlaceY = roadY - 4;
             const stationPlaceX = sceneX + sceneW * 0.92;
-            const stationPlaceY = roadY - 52;
-            // Landmarks sit at the far sides inside the picture; the road stays visible across the full width.
+            const stationPlaceY = roadY - 4;
+            // Landmarks sit on the road at the far edges and cover the road there.
             drawSafeZone(safePlaceX, safePlaceY);
             drawRescueStation(stationPlaceX, stationPlaceY);
 
@@ -4034,7 +4034,7 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v47';
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v48';
             resetPositions();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
