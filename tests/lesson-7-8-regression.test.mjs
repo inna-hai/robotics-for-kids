@@ -207,14 +207,45 @@ test('lesson 9 story adds the approved classroom noise challenge without window-
   assertNotIncludes(lesson9, 'חלון');
 });
 
-test('lesson 9 drawings only appear when enabled and without covering cards', () => {
+test('lesson 9 uses a cute classroom background image with empty chairs and overlays people, lamp, and AC by sensor state', () => {
+  assertIncludes(indexHtml, "lesson9ClassroomBg.src = 'assets/lesson9-classroom-background.png?v=20260716-students-on-chairs-2';");
   assertIncludes(indexHtml, 'if (currentLesson === 9) {');
-  assertIncludes(indexHtml, 'const activeLesson9Objects = [environment.people, environment.light, robot.fanOn];');
-  assertIncludes(indexHtml, 'if (!activeLesson9Objects[i]) return;');
-  assertIncludes(indexHtml, "const lesson9Icons = ['🧑‍🎓🧑‍🏫', '💡', '❄️'];");
-  assertIncludes(indexHtml, "ctx.fillText(lesson9Icons[i], xs[i], y - 46);");
-  assertIncludes(indexHtml, "ctx.fillText(lesson9Labels[i], xs[i], y - 4);");
+  assertIncludes(indexHtml, '// Cute classroom background image: empty chairs by default, no grass/sky/CSS classroom drawing.');
+  assertIncludes(indexHtml, '.ground.classroom-ground');
+  assertIncludes(indexHtml, 'ground?.classList.toggle(\'classroom-ground\', num === 9);');
+  assertIncludes(indexHtml, "canvas.height = container.clientHeight - (currentLesson === 9 ? 0 : 60); // Account for ground except classroom");
+  assertIncludes(indexHtml, '// Use source-cropping instead of stretching, so the classroom stays sharp and not smeared.');
+  assertIncludes(indexHtml, 'ctx.drawImage(lesson9ClassroomBg, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);');
+  assertIncludes(indexHtml, '// Keep the original classroom image, but cover only the built-in ceiling lamp with a ceiling-shaped patch.');
+  assertIncludes(indexHtml, 'const builtInLampMask = ctx.createLinearGradient');
+  assertIncludes(indexHtml, '// Hanging ceiling lamp appears when the light is on.');
+  assertIncludes(indexHtml, 'const lightIsOn = robot.streetLightOn || environment.light;');
+  assertIncludes(indexHtml, 'ctx.lineTo(lampX, cordBottomY);');
+  assertIncludes(indexHtml, 'ctx.roundRect(lampX - 28, ceilingY - 4, 56, 14, 7);');
+  assertIncludes(indexHtml, 'ctx.arc(lampX, shadeY + 30, 16, 0, Math.PI * 2);');
+  assertIncludes(indexHtml, '// Air-conditioner status overlay.');
+  assertIncludes(indexHtml, 'const acIsOn = robot.fanOn;');
+  assertIncludes(indexHtml, "ctx.fillText('מזגן פועל', acX, acY + 142);");
+  assertIncludes(indexHtml, '// People appear only when the students sensor is active: teacher + students sitting on chairs.');
+  assertIncludes(indexHtml, 'if (environment.people) {');
+  assertIncludes(indexHtml, "ctx.fillText('👩‍🏫', canvas.width * 0.22, canvas.height * 0.43);");
+  assertIncludes(indexHtml, 'const students = [');
+  assertIncludes(indexHtml, '// Lesson 9 keeps the left draggable speaker as the only visible noise speaker.');
+});
+
+test('lesson 9 classroom owns the scene and skips generic status cards', () => {
+  assertIncludes(indexHtml, "if (currentLesson === 9) {\n                    return;\n                }");
   assert.doesNotMatch(indexHtml, /isPresenceCard \? \(environment\.people \? '🧑‍🎓🧑‍🏫' : '🏫'\)/);
+});
+
+test('lesson 9 classroom noise is sensed as loud without touching the robot and only left speaker is shown', () => {
+  assertIncludes(indexHtml, '// Lesson 9 classroom noise is ambient: pressing the noise sensor means the classroom is loud,');
+  assertIncludes(indexHtml, "if (currentLesson === 9) return 'LOUD';");
+  assertIncludes(indexHtml, "if (!environment.sound) return 'QUIET';");
+  assertIncludes(indexHtml, '// Draggable Sound source');
+  assertIncludes(indexHtml, 'if (environment.sound) {');
+  assertIncludes(indexHtml, '// Lesson 9 keeps the left draggable speaker as the only visible noise speaker.');
+  assertNotIncludes(indexHtml, "ctx.fillText('רעש בכיתה', canvas.width * 0.88, canvas.height * 0.57);");
 });
 
 test('lesson 7 mission board is compact at the top-left, while lessons 8, 9 and 11 stay compact', () => {
@@ -255,7 +286,7 @@ test('lesson 8 uses a street ground and has a road/sidewalk crosswalk scene', ()
   assertIncludes(indexHtml, '.ground.street-ground::before');
   assertIncludes(indexHtml, 'background: transparent;');
   assertIncludes(indexHtml, 'display: none;');
-  assertIncludes(indexHtml, "document.querySelector('.ground')?.classList.toggle('street-ground', num === 8);");
+  assertIncludes(indexHtml, "ground?.classList.toggle('street-ground', num === 8);");
   assertIncludes(indexHtml, 'const roadH = 92;');
   assertIncludes(indexHtml, 'const bottomSidewalkH = 14;');
   assertIncludes(indexHtml, 'const bottomSidewalkTop = canvas.height - bottomSidewalkH;');
