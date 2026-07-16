@@ -1065,7 +1065,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260716-miriam-story-v45"></script>
+    <script src="js/lessons-data.js?v=20260716-miriam-story-v46"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1150,7 +1150,7 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // lesson14-realistic-landmarks-v45
+            // lesson14-realistic-landmarks-v46
             // Everything fixed is drawn as one clean illustrated background.
             // Only rescueBeacon and waterDrone are drawn later as movable overlay objects.
             const sky = ctx.createLinearGradient(0, 0, 0, h);
@@ -1417,21 +1417,11 @@
                 ctx.restore();
             };
 
-            const sideGap = Math.min(38, sceneW * 0.045);
-            const safePlaceX = startX - sideGap;
-            const safePlaceY = roadY - 6;
-            const stationPlaceX = endX + sideGap;
-            const stationPlaceY = roadY - 6;
-            // small painted access paths: safe zone is left of the road; rescue station is right of it.
-            ctx.strokeStyle = 'rgba(100,116,139,.34)';
-            ctx.lineWidth = 5;
-            ctx.lineCap = 'round';
-            ctx.beginPath();
-            ctx.moveTo(safePlaceX + 36, safePlaceY + 5);
-            ctx.lineTo(startX + 18, roadY);
-            ctx.moveTo(stationPlaceX - 36, stationPlaceY + 5);
-            ctx.lineTo(endX - 18, roadY);
-            ctx.stroke();
+            const safePlaceX = sceneX + sceneW * 0.14;
+            const safePlaceY = roadY - 4;
+            const stationPlaceX = sceneX + sceneW * 0.86;
+            const stationPlaceY = roadY - 4;
+            // Landmarks sit inside the picture on top of the road and cover it in their area.
             drawSafeZone(safePlaceX, safePlaceY);
             drawRescueStation(stationPlaceX, stationPlaceY);
 
@@ -4044,7 +4034,7 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v45';
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v46';
             resetPositions();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
