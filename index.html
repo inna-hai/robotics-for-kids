@@ -279,6 +279,10 @@
             display: none;
         }
 
+        .ground.classroom-ground {
+            display: none;
+        }
+
         /* Sensor Display */
         .sensors-bar {
             display: grid;
@@ -1152,10 +1156,16 @@
         const canvas = document.getElementById('robotCanvas');
         const ctx = canvas.getContext('2d');
 
+        const lesson9ClassroomBg = new Image();
+        lesson9ClassroomBg.src = 'assets/lesson9-classroom-background.png?v=20260716-students-on-chairs-2';
+        lesson9ClassroomBg.onload = () => {
+            if (currentLesson === 9) draw();
+        };
+
         function resizeCanvas() {
             const container = canvas.parentElement;
             canvas.width = container.clientWidth;
-            canvas.height = container.clientHeight - 60; // Account for ground
+            canvas.height = container.clientHeight - (currentLesson === 9 ? 0 : 60); // Account for ground except classroom
             resetPositions();
         }
 
@@ -1216,10 +1226,176 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             // City floor / route
-            ctx.fillStyle = currentLesson === 13 ? 'rgba(15,23,42,.55)' : 'rgba(255,255,255,.55)';
-            ctx.beginPath();
-            ctx.roundRect(canvas.width * 0.08, canvas.height * 0.50, canvas.width * 0.84, canvas.height * 0.18, 24);
-            ctx.fill();
+            if (currentLesson !== 9) {
+                ctx.fillStyle = currentLesson === 13 ? 'rgba(15,23,42,.55)' : 'rgba(255,255,255,.55)';
+                ctx.beginPath();
+                ctx.roundRect(canvas.width * 0.08, canvas.height * 0.50, canvas.width * 0.84, canvas.height * 0.18, 24);
+                ctx.fill();
+            }
+
+            if (currentLesson === 9) {
+                ctx.save();
+                const lightIsOn = robot.streetLightOn || environment.light;
+                const acIsOn = robot.fanOn;
+
+                // Cute classroom background image: empty chairs by default, no grass/sky/CSS classroom drawing.
+                if (lesson9ClassroomBg.complete && lesson9ClassroomBg.naturalWidth > 0) {
+                    // Use source-cropping instead of stretching, so the classroom stays sharp and not smeared.
+                    const srcRatio = lesson9ClassroomBg.naturalWidth / lesson9ClassroomBg.naturalHeight;
+                    const canvasRatio = canvas.width / canvas.height;
+                    let sx = 0;
+                    let sy = 0;
+                    let sw = lesson9ClassroomBg.naturalWidth;
+                    let sh = lesson9ClassroomBg.naturalHeight;
+                    if (srcRatio > canvasRatio) {
+                        sw = sh * canvasRatio;
+                        sx = (lesson9ClassroomBg.naturalWidth - sw) / 2;
+                    } else if (srcRatio < canvasRatio) {
+                        sh = sw / canvasRatio;
+                        sy = (lesson9ClassroomBg.naturalHeight - sh) / 2;
+                    }
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    ctx.drawImage(lesson9ClassroomBg, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+                    // Keep the original classroom image, but cover only the built-in ceiling lamp with a ceiling-shaped patch.
+                    const builtInLampMask = ctx.createLinearGradient(0, canvas.height * 0.02, 0, canvas.height * 0.12);
+                    builtInLampMask.addColorStop(0, '#f6d99d');
+                    builtInLampMask.addColorStop(1, '#efc076');
+                    ctx.fillStyle = builtInLampMask;
+                    ctx.beginPath();
+                    ctx.moveTo(canvas.width * 0.413, canvas.height * 0.018);
+                    ctx.lineTo(canvas.width * 0.586, canvas.height * 0.018);
+                    ctx.lineTo(canvas.width * 0.579, canvas.height * 0.091);
+                    ctx.lineTo(canvas.width * 0.421, canvas.height * 0.091);
+                    ctx.closePath();
+                    ctx.fill();
+                } else {
+                    const fallback = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                    fallback.addColorStop(0, '#fef3c7');
+                    fallback.addColorStop(1, '#fbbf24');
+                    ctx.fillStyle = fallback;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                }
+
+                // Hanging ceiling lamp appears when the light is on.
+                if (lightIsOn) {
+                    const lampX = canvas.width * 0.52;
+                    const ceilingY = Math.max(8, canvas.height * 0.015);
+                    const cordBottomY = canvas.height * 0.16;
+                    const shadeY = cordBottomY + 18;
+
+                    const glow = ctx.createRadialGradient(lampX, shadeY + 18, 18, lampX, shadeY + canvas.height * 0.20, canvas.width * 0.36);
+                    glow.addColorStop(0, 'rgba(250,204,21,.55)');
+                    glow.addColorStop(1, 'rgba(250,204,21,0)');
+                    ctx.fillStyle = glow;
+                    ctx.beginPath();
+                    ctx.ellipse(lampX, shadeY + canvas.height * 0.20, canvas.width * 0.36, canvas.height * 0.25, 0, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Cord from ceiling.
+                    ctx.strokeStyle = '#475569';
+                    ctx.lineWidth = 5;
+                    ctx.beginPath();
+                    ctx.moveTo(lampX, ceilingY);
+                    ctx.lineTo(lampX, cordBottomY);
+                    ctx.stroke();
+
+                    // Ceiling cap.
+                    ctx.fillStyle = '#64748b';
+                    ctx.beginPath();
+                    ctx.roundRect(lampX - 28, ceilingY - 4, 56, 14, 7);
+                    ctx.fill();
+
+                    // Lamp shade.
+                    ctx.fillStyle = '#facc15';
+                    ctx.strokeStyle = '#92400e';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.moveTo(lampX - 48, shadeY + 28);
+                    ctx.lineTo(lampX - 28, shadeY - 12);
+                    ctx.quadraticCurveTo(lampX, shadeY - 24, lampX + 28, shadeY - 12);
+                    ctx.lineTo(lampX + 48, shadeY + 28);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+
+                    // Bright bulb under the shade.
+                    ctx.fillStyle = '#fff7ad';
+                    ctx.strokeStyle = '#f59e0b';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(lampX, shadeY + 30, 16, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                }
+
+                // Air-conditioner status overlay.
+                if (acIsOn) {
+                    const acX = canvas.width * 0.82;
+                    const acY = canvas.height * 0.22;
+                    ctx.font = '34px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('❄️', acX, acY);
+                    ctx.strokeStyle = 'rgba(14,165,233,.9)';
+                    ctx.lineWidth = 5;
+                    for (let i = 0; i < 4; i += 1) {
+                        ctx.beginPath();
+                        ctx.moveTo(acX - 70 + i * 34, acY + 22);
+                        ctx.quadraticCurveTo(acX - 92 + i * 34, acY + 66, acX - 48 + i * 34, acY + 110);
+                        ctx.stroke();
+                    }
+                    ctx.fillStyle = '#0369a1';
+                    ctx.font = 'bold 16px Rubik';
+                    ctx.fillText('מזגן פועל', acX, acY + 142);
+                }
+
+                // People appear only when the students sensor is active: teacher + students sitting on chairs.
+                if (environment.people) {
+                    ctx.textAlign = 'center';
+                    ctx.font = `${Math.max(48, canvas.width * 0.06)}px Arial`;
+                    ctx.fillText('👩‍🏫', canvas.width * 0.22, canvas.height * 0.43);
+                    ctx.font = 'bold 16px Rubik';
+                    ctx.fillStyle = '#1e293b';
+                    ctx.fillText('המורה', canvas.width * 0.22, canvas.height * 0.48);
+
+                    const drawBackStudent = (xRatio, yRatio, shirt, hair) => {
+                        const x = canvas.width * xRatio;
+                        const y = canvas.height * yRatio;
+                        const scale = Math.max(0.72, Math.min(canvas.width / 900, 1.2));
+                        ctx.save();
+                        ctx.translate(x, y);
+                        ctx.scale(scale, scale);
+                        // Back-facing student placed on an empty chair.
+                        ctx.fillStyle = hair;
+                        ctx.beginPath();
+                        ctx.arc(0, -38, 18, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = '#fbbf24';
+                        ctx.beginPath();
+                        ctx.arc(0, -35, 13, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = shirt;
+                        ctx.beginPath();
+                        ctx.roundRect(-24, -18, 48, 54, 14);
+                        ctx.fill();
+                        ctx.fillStyle = 'rgba(15,23,42,.18)';
+                        ctx.fillRect(-18, 30, 36, 8);
+                        ctx.restore();
+                    };
+                    const students = [
+                        [0.07, 0.80, '#60a5fa', '#7c2d12'],
+                        [0.16, 0.64, '#f472b6', '#1f2937'],
+                        [0.50, 0.69, '#34d399', '#92400e'],
+                        [0.50, 0.88, '#a78bfa', '#111827'],
+                        [0.79, 0.64, '#fb923c', '#78350f'],
+                        [0.89, 0.80, '#22d3ee', '#1e293b']
+                    ];
+                    students.forEach(([x, y, shirt, hair]) => drawBackStudent(x, y, shirt, hair));
+                }
+
+                // Lesson 9 keeps the left draggable speaker as the only visible noise speaker.
+                ctx.restore();
+            }
 
             if (currentLesson === 7) {
                 ctx.strokeStyle = '#111827';
@@ -1364,6 +1540,8 @@
                 ctx.restore();
             }
 
+
+
             scene.objects.forEach((label, i) => {
                 if (currentLesson === 8) {
                     const activeLesson8Object = (i === 0 && environment.pedestrian) || (i === 2 && environment.cars);
@@ -1499,16 +1677,6 @@
                 }
 
                 if (currentLesson === 9) {
-                    const activeLesson9Objects = [environment.people, environment.light, robot.fanOn];
-                    if (!activeLesson9Objects[i]) return;
-
-                    const lesson9Icons = ['🧑‍🎓🧑‍🏫', '💡', '❄️'];
-                    const lesson9Labels = ['יש תלמידים', 'האור דולק', 'המזגן פועל'];
-                    ctx.font = i === 0 ? '42px Arial' : '40px Arial';
-                    ctx.fillText(lesson9Icons[i], xs[i], y - 46);
-                    ctx.font = 'bold 12px Rubik';
-                    ctx.fillStyle = '#334155';
-                    ctx.fillText(lesson9Labels[i], xs[i], y - 4);
                     return;
                 }
 
@@ -3244,6 +3412,9 @@
 
         function getSoundLevel() {
             if (!environment.sound) return 'QUIET';
+            // Lesson 9 classroom noise is ambient: pressing the noise sensor means the classroom is loud,
+            // even if the sound icon is not touching the robot.
+            if (currentLesson === 9) return 'LOUD';
             const distance = distanceToObject(objects.sound);
             if (distance < 90) return 'LOUD';
             if (distance < 230) return 'SOFT';
@@ -3732,8 +3903,10 @@
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
             document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num;
-            document.querySelector('.ground')?.classList.toggle('street-ground', num === 8);
-            resetPositions();
+            const ground = document.querySelector('.ground');
+            ground?.classList.toggle('street-ground', num === 8);
+            ground?.classList.toggle('classroom-ground', num === 9);
+            resizeCanvas();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
             updateVisibleControls();
