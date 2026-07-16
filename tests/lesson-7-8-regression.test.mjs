@@ -307,12 +307,25 @@ test('environment toggles and reset clear stopped traffic/pedestrian states', ()
   assertMatches(indexHtml, /function\s+resetEnv\s*\(\)\s*{[\s\S]*?robot\.trafficCarsStopped = false;[\s\S]*?robot\.pedestrianStopped = false;[\s\S]*?robot\.vehicleStopped = false;/);
 });
 
-test('lesson 8 educational data includes stop and continue traffic blocks', () => {
+test('lesson 8 educational data includes stop/continue traffic blocks and cyclic light practice', () => {
   const lesson8 = lessonObjectSource(8);
+  assertIncludes(lesson8, "codingConcept: 'לולאה, תנאים ותזמון רמזור'");
+  assertIncludes(lesson8, 'חזור תמיד');
+  assertIncludes(lesson8, 'חכה 2 שניות');
+  assertIncludes(lesson8, 'רמזור אדום');
   assertIncludes(lesson8, 'עצור מכוניות');
   assertIncludes(lesson8, 'המשך מכוניות');
   assertIncludes(lesson8, 'עצור הולך רגל');
   assertIncludes(lesson8, 'המשך הולך רגל');
+  assertIncludes(lesson8, 'החליפו רמזור כל 2–3 שניות');
+  assertIncludes(lessonsData, 'תרגיל 4 — רמזור מחזורי בלולאה לנצח');
+  assertIncludes(lessonsData, 'אם יש גם מכוניות וגם הולך רגל, הרמזור מתחלף כל 2–3 שניות');
+  assertIncludes(lessonsData, 'רמזור ירוק להולך רגל');
+  assertIncludes(lessonsData, 'רמזור אדום להולך רגל');
+  assertMatches(lessonsData, /'רמזור אדום להולך רגל', 'עצור הולך רגל', 'המשך מכוניות'/);
+  assertIncludes(lessonsData, 'רמזור הולכי רגל מחזורי');
+  assert.ok(!lessonsData.includes('ירוק למכוניות'));
+  assert.ok(!lessonsData.includes('הרמזור חוזר למכוניות'));
 });
 
 test('lesson 11 has armed, motion, door sensors and alarm action wired', () => {
