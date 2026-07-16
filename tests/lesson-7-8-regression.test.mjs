@@ -193,6 +193,20 @@ test('lesson 9 has a dedicated air conditioner action block', () => {
   assertIncludes(indexHtml, "robot.speaking = robot.fanOn ? 'הפעלתי מזגן' : 'כיביתי מזגן';");
 });
 
+test('lesson 9 story adds the approved classroom noise challenge without window-light option', () => {
+  const lesson9 = lessonObjectSource(9);
+  assertIncludes(lesson9, "sensorFocus: 'נוכחות + אור + רעש'");
+  assertIncludes(lesson9, 'אם הכיתה רועשת מדי');
+  assertIncludes(lesson9, 'כל עוד עדיין רועש, האור נשאר כבוי');
+  assertIncludes(lesson9, "environment: ['presence', 'light', 'sound']");
+  assertIncludes(lessonsData, 'תרגיל 5 — אתגר שקט בכיתה');
+  assertIncludes(lessonsData, 'אם עוצמת רעש = חזק מדי');
+  assertIncludes(lessonsData, 'אם עוצמת רעש = שקט');
+  assertIncludes(lessonsData, 'מדליקים את האור מיד אחרי הכיבוי בלי לבדוק שנהיה שקט');
+  assertNotIncludes(lesson9, 'אור מהחלון');
+  assertNotIncludes(lesson9, 'חלון');
+});
+
 test('lesson 9 drawings only appear when enabled and without covering cards', () => {
   assertIncludes(indexHtml, 'if (currentLesson === 9) {');
   assertIncludes(indexHtml, 'const activeLesson9Objects = [environment.people, environment.light, robot.fanOn];');
