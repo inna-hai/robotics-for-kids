@@ -1065,7 +1065,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260716-miriam-story-v46"></script>
+    <script src="js/lessons-data.js?v=20260716-miriam-story-v47"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1150,7 +1150,7 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // lesson14-realistic-landmarks-v46
+            // lesson14-realistic-landmarks-v47
             // Everything fixed is drawn as one clean illustrated background.
             // Only rescueBeacon and waterDrone are drawn later as movable overlay objects.
             const sky = ctx.createLinearGradient(0, 0, 0, h);
@@ -1231,8 +1231,8 @@
 
             // Side-view road: very flat sharp parallelogram, like a road seen from the side.
             const roadY = sceneY + sceneH * 0.73;
-            const startX = sceneX + sceneW * 0.04;
-            const endX = sceneX + sceneW * 0.96;
+            const startX = sceneX;
+            const endX = sceneX + sceneW;
             const roadHeight = 26;
             const slant = sceneW * 0.075;
             const roadColor = smokeMix('#64748b', '#334155', lesson14SmokeSpread * .65);
@@ -1417,11 +1417,11 @@
                 ctx.restore();
             };
 
-            const safePlaceX = sceneX + sceneW * 0.14;
-            const safePlaceY = roadY - 4;
-            const stationPlaceX = sceneX + sceneW * 0.86;
-            const stationPlaceY = roadY - 4;
-            // Landmarks sit inside the picture on top of the road and cover it in their area.
+            const safePlaceX = sceneX + sceneW * 0.08;
+            const safePlaceY = roadY - 52;
+            const stationPlaceX = sceneX + sceneW * 0.92;
+            const stationPlaceY = roadY - 52;
+            // Landmarks sit at the far sides inside the picture; the road stays visible across the full width.
             drawSafeZone(safePlaceX, safePlaceY);
             drawRescueStation(stationPlaceX, stationPlaceY);
 
@@ -4034,7 +4034,7 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v46';
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v47';
             resetPositions();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
