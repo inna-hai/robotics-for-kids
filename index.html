@@ -1065,7 +1065,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260716-miriam-story-v29"></script>
+    <script src="js/lessons-data.js?v=20260716-miriam-story-v30"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1149,7 +1149,7 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // lesson14-realistic-landmarks-v29
+            // lesson14-realistic-landmarks-v30
             // Everything fixed is drawn as one clean illustrated background.
             // Only rescueBeacon and waterDrone are drawn later as movable overlay objects.
             const sky = ctx.createLinearGradient(0, 0, 0, h);
@@ -1418,28 +1418,32 @@
                     // More realistic active smoke: layered soft plumes, no cartoon smoke emoji.
                     const baseX = x;
                     const baseY = hazardY + 18;
-                    const smokeTime = Date.now() / 900;
+                    const smokeTime = Date.now() / 1400;
                     const plumes = [
-                        { dx: -30, dy: 10, rx: 26, ry: 18, a: .34, speed: .9, phase: 0.2 },
-                        { dx: -16, dy: -6, rx: 34, ry: 24, a: .44, speed: 1.1, phase: 1.4 },
-                        { dx: 8, dy: -24, rx: 42, ry: 30, a: .52, speed: .8, phase: 2.1 },
-                        { dx: 34, dy: -10, rx: 32, ry: 24, a: .40, speed: 1.0, phase: 3.2 },
-                        { dx: 18, dy: 16, rx: 46, ry: 20, a: .28, speed: .7, phase: 4.0 },
-                        { dx: -4, dy: -44, rx: 30, ry: 22, a: .26, speed: 1.2, phase: 5.1 }
+                        { dx: -18, rx: 22, ry: 15, a: .34, phase: 0.00, sway: 10 },
+                        { dx: 8, rx: 30, ry: 21, a: .44, phase: 0.18, sway: 13 },
+                        { dx: -8, rx: 38, ry: 27, a: .42, phase: 0.36, sway: 16 },
+                        { dx: 20, rx: 44, ry: 31, a: .32, phase: 0.54, sway: 18 },
+                        { dx: -24, rx: 50, ry: 35, a: .24, phase: 0.72, sway: 20 },
+                        { dx: 4, rx: 56, ry: 39, a: .18, phase: 0.90, sway: 22 }
                     ];
                     plumes.forEach((puff) => {
-                        const driftX = Math.sin(smokeTime * puff.speed + puff.phase) * 7;
-                        const driftY = Math.cos(smokeTime * (puff.speed * .8) + puff.phase) * 4;
-                        const grow = 1 + Math.sin(smokeTime * .9 + puff.phase) * .06;
+                        const life = (smokeTime + puff.phase) % 1;
+                        const rise = life * 86;
+                        const grow = 0.42 + life * 0.92;
+                        const fade = Math.sin(life * Math.PI);
+                        const driftX = Math.sin(smokeTime * Math.PI * 2 + puff.phase * 9) * puff.sway * life;
                         const px = baseX + puff.dx + driftX;
-                        const py = baseY + puff.dy + driftY;
-                        const g = ctx.createRadialGradient(px - 8, py - 8, 4, px, py, Math.max(puff.rx, puff.ry) * grow);
-                        g.addColorStop(0, `rgba(51,65,85,${puff.a})`);
-                        g.addColorStop(.55, `rgba(71,85,105,${puff.a * .72})`);
+                        const py = baseY + 22 - rise;
+                        const alpha = puff.a * fade;
+                        const radius = Math.max(puff.rx, puff.ry) * grow;
+                        const g = ctx.createRadialGradient(px - 8, py - 8, 3, px, py, radius);
+                        g.addColorStop(0, `rgba(51,65,85,${alpha})`);
+                        g.addColorStop(.58, `rgba(71,85,105,${alpha * .68})`);
                         g.addColorStop(1, 'rgba(148,163,184,0)');
                         ctx.fillStyle = g;
                         ctx.beginPath();
-                        ctx.ellipse(px, py, puff.rx * grow, puff.ry * grow, -0.18, 0, Math.PI * 2);
+                        ctx.ellipse(px, py, puff.rx * grow, puff.ry * grow, -0.12, 0, Math.PI * 2);
                         ctx.fill();
                     });
                     // darker source near the ground
@@ -3938,7 +3942,7 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v29';
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v30';
             resetPositions();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
