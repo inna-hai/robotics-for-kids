@@ -19,13 +19,13 @@
     .slide-content::-webkit-scrollbar-track { background:rgba(108,92,231,.08); border-radius:999px; }
     .slide-content::-webkit-scrollbar-thumb { background:rgba(108,92,231,.38); border-radius:999px; border:2px solid rgba(255,255,255,.9); }
     .slide-content::-webkit-scrollbar-thumb:hover { background:rgba(108,92,231,.58); }
-    /* slide-main-text-box-v5 */
+    /* slide-main-text-box-v6 */
     .slide-content > p {
       background:#f7f9fc;
       border-right:8px solid var(--purple);
       border-radius:28px;
-      padding:64px 58px;
-      min-height:calc(100vh - 430px);
+      padding:76px 64px;
+      min-height:62vh;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -44,23 +44,25 @@
       background:#f7f9fc;
       border-right:8px solid var(--purple);
       border-radius:24px;
-      padding:42px 36px;
-      margin:22px 0;
-      min-height:220px;
+      padding:58px 46px;
+      margin:24px 0;
+      min-height:430px;
       display:flex;
       flex-direction:column;
       justify-content:center;
     }
     .teacher-box h3 { margin:0 0 8px; color:var(--purple); font-size:1.35rem; }
-    .two-cols { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+    /* slide-panel-size-v6 */
+    .two-cols { display:grid; grid-template-columns:1fr 1fr; gap:22px; align-items:stretch; }
+    .two-cols .teacher-box { min-height:360px; }
     .code-blocks { display:grid; gap:8px; margin-top:14px; direction:rtl; }
     .blockly-solution {
       background:#f8fafc;
       border:3px dashed #dbe4ff;
       border-radius:24px;
-      padding:42px 36px;
-      margin:22px 0;
-      min-height:220px;
+      padding:58px 46px;
+      margin:24px 0;
+      min-height:430px;
     }
     .blockly-caption { color:var(--purple); font-weight:900; margin-bottom:10px; font-size:1.1rem; }
     .visual-block {
@@ -136,9 +138,9 @@
       background:#fff7ed;
       border-right:8px solid #fb923c;
       border-radius:22px;
-      padding:34px 30px;
-      margin-top:20px;
-      min-height:160px;
+      padding:48px 40px;
+      margin-top:24px;
+      min-height:300px;
       display:flex;
       align-items:center;
       font-size:clamp(1rem,1.6vw,1.25rem);
@@ -150,8 +152,8 @@
     .card {
       background:#f7f9fc;
       border-radius:24px;
-      padding:42px 34px;
-      min-height:210px;
+      padding:56px 44px;
+      min-height:360px;
       font-size:1.3rem;
       font-weight:800;
       display:flex;
@@ -192,9 +194,9 @@
       ul{padding-right:1.15em;}
       .time-badge{font-size:1rem;padding:7px 12px;margin-bottom:10px;}
       .two-cols,.cards{grid-template-columns:1fr;gap:10px;}
-      .card{padding:30px 22px;min-height:160px;font-size:1.05rem;border-radius:18px;}
-      .slide-content > p{padding:42px 28px;min-height:55vh;border-radius:20px;margin:14px 0;}
-      .teacher-box,.teacher-note,.blockly-solution{padding:30px 24px;border-radius:20px;margin:14px 0;min-height:170px;}
+      .card{padding:40px 28px;min-height:260px;font-size:1.05rem;border-radius:18px;}
+      .slide-content > p{padding:48px 32px;min-height:62vh;border-radius:20px;margin:14px 0;}
+      .teacher-box,.teacher-note,.blockly-solution{padding:42px 30px;border-radius:22px;margin:16px 0;min-height:320px;}
       .teacher-box h3{font-size:1.05rem;}
       .exercise-kind{font-size:.95rem;padding:7px 11px;line-height:1.25;}
       .emoji{font-size:4rem;margin-bottom:10px;}
@@ -233,7 +235,7 @@
     </div>
   </nav>
 
-  <script src="../js/lessons-data.js?v=20260716-miriam-story-v5"></script>
+  <script src="../js/lessons-data.js?v=20260716-miriam-story-v6"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const lesson = window.getSensiLesson(params.get('id'));
