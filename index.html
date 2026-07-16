@@ -20,6 +20,7 @@
             --white: #FFFFFF;
             --light: #F8F9FF;
             --dark: #2D3047;
+            --header-safe-height: 118px;
         }
 
         body {
@@ -36,17 +37,22 @@
             background: var(--white);
             padding: 0.55rem 0.9rem;
             display: grid;
-            grid-template-columns: minmax(170px, auto) minmax(0, 1fr) auto;
+            grid-template-columns: minmax(170px, auto) auto;
+            grid-template-areas:
+                "logo actions"
+                "lessons lessons";
             align-items: center;
             gap: 0.65rem;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            position: relative;
-            z-index: 100;
+            position: sticky;
+            top: 0;
+            z-index: 1200;
             flex-shrink: 0;
             min-width: 0;
         }
 
         .logo {
+            grid-area: logo;
             display: flex;
             align-items: center;
             gap: 0.45rem;
@@ -88,14 +94,25 @@
 
         /* Lesson Buttons */
         .lesson-tabs {
+            grid-area: lessons;
             display: flex;
             gap: 0.28rem;
+            width: 100%;
+            max-width: 100%;
             min-width: 0;
             overflow-x: auto;
             overflow-y: hidden;
-            justify-content: center;
-            padding: 0.15rem 0.25rem;
+            justify-content: flex-start;
+            padding: 0.2rem 0.25rem 0.35rem;
             scrollbar-width: thin;
+            -webkit-overflow-scrolling: touch;
+            scroll-padding-inline: 0.5rem;
+        }
+
+        .lesson-tabs::before,
+        .lesson-tabs::after {
+            content: '';
+            flex: 0 0 0.15rem;
         }
 
         .lesson-tab {
@@ -136,6 +153,7 @@
 
         /* Play Buttons */
         .play-buttons {
+            grid-area: actions;
             display: flex;
             gap: 0.45rem;
             justify-content: flex-end;
@@ -514,12 +532,12 @@
         .modal {
             display: none;
             position: fixed;
-            top: 0;
+            top: var(--header-safe-height);
             left: 0;
             width: 100%;
-            height: 100%;
+            height: calc(100% - var(--header-safe-height));
             background: rgba(0, 0, 0, 0.6);
-            z-index: 1000;
+            z-index: 900;
             justify-content: center;
             align-items: center;
             padding: 1rem;
@@ -793,10 +811,16 @@
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1100px) {
+            :root { --header-safe-height: 172px; }
             .header {
                 grid-template-columns: 1fr;
-                justify-items: center;
+                grid-template-areas:
+                    "logo"
+                    "lessons"
+                    "actions";
+                justify-items: stretch;
             }
+            .logo { justify-content: center; }
             .play-buttons { justify-content: center; min-width: 0; }
             .lesson-tabs { max-width: 100%; justify-content: flex-start; }
         }
@@ -1041,7 +1065,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260710-lessons-7-15"></script>
+    <script src="js/lessons-data.js?v=20260716-miriam-story-v1"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1063,7 +1087,9 @@
             thermometer: { x: 115, y: 120, radius: 34, emoji: '🌡️' },
             recycleItem: { x: 135, y: 170, radius: 34, emoji: '🥤' },
             cars: { x: 360, y: 180, radius: 40, emoji: '🚗' },
-            pedestrian: { x: 130, y: 180, radius: 40, emoji: '🚶' }
+            pedestrian: { x: 130, y: 180, radius: 40, emoji: '🚶' },
+            rescueBeacon: { x: 340, y: 160, radius: 34, emoji: '🚨' },
+            waterDrone: { x: 430, y: 190, radius: 38, emoji: '🚁' }
         };
 
         // Dragging state
@@ -1083,18 +1109,23 @@
 
         function resetPositions() {
             // Reset robot to center
-            robot.x = canvas.width / 2;
-            robot.y = currentLesson === 3 ? canvas.height * 0.58 : currentLesson === 4 ? canvas.height * 0.62 : currentLesson === 5 ? canvas.height * 0.64 : currentLesson === 6 ? canvas.height * 0.62 : canvas.height / 2;
+            if (currentLesson === 14) {
+                robot.x = canvas.width * 0.22;
+                robot.y = canvas.height * 0.68;
+            } else {
+                robot.x = canvas.width / 2;
+                robot.y = currentLesson === 3 ? canvas.height * 0.58 : currentLesson === 4 ? canvas.height * 0.62 : currentLesson === 5 ? canvas.height * 0.64 : currentLesson === 6 ? canvas.height * 0.62 : canvas.height / 2;
+            }
             robot.angle = 0;
             robot.vehicleStopped = false;
 
             // Reset objects to default positions
-            objects.wall.x = currentLesson === 3 ? canvas.width * 0.72 : canvas.width - 80;
-            objects.wall.y = currentLesson === 3 ? canvas.height * 0.58 : canvas.height / 2;
+            objects.wall.x = currentLesson === 3 ? canvas.width * 0.72 : currentLesson === 14 ? canvas.width * 0.66 : canvas.width - 80;
+            objects.wall.y = currentLesson === 3 ? canvas.height * 0.58 : currentLesson === 14 ? canvas.height * 0.42 : canvas.height / 2;
             objects.sound.x = 60;
             objects.sound.y = canvas.height - 60;
-            objects.smoke.x = currentLesson === 4 ? canvas.width * 0.72 : canvas.width / 2;
-            objects.smoke.y = currentLesson === 4 ? canvas.height * 0.43 : 60;
+            objects.smoke.x = currentLesson === 4 ? canvas.width * 0.72 : currentLesson === 14 ? canvas.width * 0.50 : canvas.width / 2;
+            objects.smoke.y = currentLesson === 4 ? canvas.height * 0.43 : currentLesson === 14 ? canvas.height * 0.42 : 60;
             objects.sun.x = 80;
             objects.sun.y = 60;
             objects.thermometer.x = 110;
@@ -1105,6 +1136,134 @@
             objects.cars.y = canvas.height * 0.58;
             objects.pedestrian.x = canvas.width * 0.22;
             objects.pedestrian.y = canvas.height * 0.58;
+            objects.rescueBeacon.x = canvas.width * 0.34;
+            objects.rescueBeacon.y = canvas.height * 0.30;
+            objects.waterDrone.x = canvas.width * 0.76;
+            objects.waterDrone.y = canvas.height * 0.30;
+        }
+
+        function drawLesson14RescueScene(lesson) {
+            const w = canvas.width;
+            const h = canvas.height;
+            const bg = ctx.createLinearGradient(0, 0, 0, h);
+            bg.addColorStop(0, '#e0f2fe');
+            bg.addColorStop(1, '#f8fafc');
+            ctx.fillStyle = bg;
+            ctx.fillRect(0, 0, w, h);
+
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            ctx.fillStyle = 'rgba(255,255,255,.9)';
+            ctx.strokeStyle = 'rgba(14,165,233,.35)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(w * 0.08, 12, w * 0.84, 38, 18);
+            ctx.fill();
+            ctx.stroke();
+            ctx.font = 'bold 15px Rubik';
+            ctx.fillStyle = '#0f172a';
+            ctx.fillText('🛟 סיפור חילוץ: לזהות סכנה → להפעיל עזרה → לבחור נתיב בטוח', w / 2, 32);
+
+            const startX = w * 0.20, startY = h * 0.68;
+            const endX = w * 0.80, endY = h * 0.68;
+            ctx.strokeStyle = '#bae6fd';
+            ctx.lineWidth = 54;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.bezierCurveTo(w * 0.38, h * 0.52, w * 0.62, h * 0.82, endX, endY);
+            ctx.stroke();
+            ctx.strokeStyle = 'rgba(255,255,255,.9)';
+            ctx.lineWidth = 5;
+            ctx.setLineDash([18, 16]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            const drawPlace = (x, y, emoji, label, color) => {
+                ctx.fillStyle = 'rgba(255,255,255,.96)';
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.roundRect(x - 54, y - 50, 108, 100, 18);
+                ctx.fill();
+                ctx.stroke();
+                ctx.font = '36px Arial';
+                ctx.fillText(emoji, x, y - 12);
+                ctx.font = 'bold 12px Rubik';
+                ctx.fillStyle = color;
+                ctx.fillText(label, x, y + 32);
+            };
+            drawPlace(startX, startY, '🚒', 'תחנת חילוץ', '#0284c7');
+            drawPlace(endX, endY, '🏥', 'אזור בטוח', '#16a34a');
+
+            const cardX = w * 0.50, cardY = h * 0.18;
+            ctx.fillStyle = 'rgba(255,247,237,.95)';
+            ctx.strokeStyle = '#fb923c';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(cardX - 155, cardY - 42, 310, 84, 18);
+            ctx.fill();
+            ctx.stroke();
+            ctx.font = 'bold 13px Rubik';
+            ctx.fillStyle = '#9a3412';
+            ctx.fillText('הקריאה מהמגדל: הדרך מסוכנת', cardX, cardY - 16);
+            ctx.font = '12px Rubik';
+            ctx.fillStyle = '#334155';
+            ctx.fillText('בדקו חום, עשן וחסם — ואז בחרו נתיב בטוח', cardX, cardY + 10);
+            ctx.fillText('הבלוקים מספרים את רצף החילוץ', cardX, cardY + 30);
+
+            const hazardSlots = [
+                { active: environment.temperatureHot, emoji: '🔥', label: 'חום מסוכן', x: w * 0.34, y: h * 0.42, color: '#dc2626' },
+                { active: environment.smoke, emoji: '💨', label: 'עשן בזירה', x: w * 0.50, y: h * 0.42, color: '#64748b' },
+                { active: environment.obstacle, emoji: '🪨', label: 'חסם במסלול', x: w * 0.66, y: h * 0.42, color: '#92400e' }
+            ];
+            hazardSlots.forEach((hazard) => {
+                ctx.fillStyle = hazard.active ? 'rgba(255,255,255,.96)' : 'rgba(255,255,255,.44)';
+                ctx.strokeStyle = hazard.active ? hazard.color : '#cbd5e1';
+                ctx.lineWidth = hazard.active ? 3 : 1;
+                ctx.beginPath();
+                ctx.arc(hazard.x, hazard.y, 34, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                ctx.globalAlpha = hazard.active ? 1 : .34;
+                ctx.font = '32px Arial';
+                ctx.fillText(hazard.emoji, hazard.x, hazard.y - 3);
+                ctx.globalAlpha = 1;
+                ctx.font = 'bold 11px Rubik';
+                ctx.fillStyle = hazard.active ? hazard.color : '#94a3b8';
+                ctx.fillText(hazard.label, hazard.x, hazard.y + 46);
+            });
+
+            const props = [
+                { key: 'rescueBeacon', emoji: '🚨', label: robot.alarmOn ? 'אזעקה פעילה' : 'מגדל קריאה' },
+                { key: 'waterDrone', emoji: '🚁', label: robot.fanOn ? 'רחפן סורק' : 'רחפן חילוץ' }
+            ];
+            props.forEach((item) => {
+                const obj = objects[item.key];
+                ctx.save();
+                ctx.translate(obj.x, obj.y);
+                if (item.key === 'waterDrone' && robot.fanOn) ctx.translate(0, Math.sin(Date.now() / 160) * 5);
+                ctx.fillStyle = 'rgba(255,255,255,.96)';
+                ctx.strokeStyle = '#cbd5e1';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(0, 0, 32, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                ctx.font = '34px Arial';
+                ctx.fillText(item.emoji, 0, -1);
+                ctx.restore();
+                ctx.fillStyle = '#334155';
+                ctx.font = 'bold 11px Rubik';
+                ctx.fillText(item.label, obj.x, obj.y + 42);
+            });
+
+            if (!isRunning) {
+                ctx.fillStyle = '#64748b';
+                ctx.font = '11px Rubik';
+                ctx.fillText('אפשר לגרור את המגדל והרחפן — שאר הזירה נשארת מסודרת וברורה', w / 2, h - 22);
+            }
         }
 
         function drawAdvancedLessonScene() {
@@ -1124,6 +1283,10 @@
             };
             const scene = scenes[currentLesson];
             if (!scene) return;
+            if (currentLesson === 14) {
+                drawLesson14RescueScene(lesson);
+                return;
+            }
 
             const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
             bg.addColorStop(0, scene.bg[0]);
@@ -1655,7 +1818,7 @@
             }
 
             // Draggable Smoke
-            if (environment.smoke) {
+            if (environment.smoke && currentLesson !== 14) {
                 if (currentLesson === 4) {
                     ctx.fillStyle = '#fef3c7';
                     ctx.strokeStyle = '#fb923c';
@@ -1696,7 +1859,7 @@
             }
 
             // Draggable Obstacle/Wall
-            if (environment.obstacle) {
+            if (environment.obstacle && currentLesson !== 14) {
                 if (currentLesson === 3) {
                     ctx.font = '56px Arial';
                     ctx.textAlign = 'center';
@@ -1980,6 +2143,13 @@
             } else if (environment.light && hitTest(pos, objects.sun, 50)) {
                 dragging = 'sun';
                 dragOffset = { x: pos.x - objects.sun.x, y: pos.y - objects.sun.y };
+            } else if (currentLesson === 14) {
+                const rescueDragTargets = ['rescueBeacon', 'waterDrone'];
+                const target = rescueDragTargets.find((key) => hitTest(pos, objects[key], objects[key].radius || 40));
+                if (target) {
+                    dragging = target;
+                    dragOffset = { x: pos.x - objects[target].x, y: pos.y - objects[target].y };
+                }
             }
 
             if (dragging) {
@@ -2105,9 +2275,9 @@
             },
             14: {
                 movement: ['move_forward', 'turn_right', 'turn_left', 'route_turn', 'stop_vehicle'],
-                sensors: ['sensor_smell', 'sensor_temperature', 'sensor_obstacle'],
+                sensors: ['sensor_temperature', 'sensor_smell', 'sensor_obstacle'],
                 controls: ['control_if', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_sound', 'action_alarm', 'action_safe_route']
+                actions: ['action_say', 'action_alarm', 'action_fan', 'action_safe_route']
             },
             15: {
                 movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'route_turn'],
@@ -2265,9 +2435,13 @@
             }
             const obstacleBtn = document.getElementById('envObstacle');
             if (obstacleBtn) {
-                obstacleBtn.querySelector('.icon').textContent = currentLesson === 12 ? '🚧' : '🧱';
-                obstacleBtn.lastChild.textContent = currentLesson === 12 ? ' מכשול' : ' קיר';
+                obstacleBtn.querySelector('.icon').textContent = currentLesson === 12 ? '🚧' : currentLesson === 14 ? '🪨' : '🧱';
+                obstacleBtn.lastChild.textContent = currentLesson === 12 ? ' מכשול' : currentLesson === 14 ? ' חסם במסלול' : ' קיר';
             }
+            const smokeBtn = document.getElementById('envSmoke');
+            if (smokeBtn) smokeBtn.lastChild.textContent = currentLesson === 14 ? ' עשן בזירה' : ' עשן';
+            const tempBtn = document.getElementById('envTemperatureHot');
+            if (tempBtn) tempBtn.lastChild.textContent = currentLesson === 14 ? ' חום מסוכן' : ' חם';
             updateEnvScrollControls();
         }
 
@@ -2475,8 +2649,8 @@
             Blockly.Blocks['sensor_obstacle'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField('🚧 מכשול בדרך?')
-                        .appendField(new Blockly.FieldDropdown([['כן', 'YES'], ['לא', 'NO']]), 'VAL');
+                        .appendField(currentLesson === 14 ? '🪨 חסם במסלול?' : '🚧 מכשול בדרך?')
+                        .appendField(new Blockly.FieldDropdown(currentLesson === 14 ? [['כן, צריך נתיב בטוח', 'YES'], ['לא, המסלול פתוח', 'NO']] : [['כן', 'YES'], ['לא', 'NO']]), 'VAL');
                     this.setOutput(true, 'Boolean');
                     this.setColour('#40BF4A');
                 }
@@ -2485,8 +2659,8 @@
             Blockly.Blocks['sensor_smell'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField('👃 מריח עשן?')
-                        .appendField(new Blockly.FieldDropdown([['כן 💨', 'YES'], ['לא ✅', 'NO']]), 'VAL');
+                        .appendField(currentLesson === 14 ? '💨 עשן בזירת החילוץ?' : '👃 מריח עשן?')
+                        .appendField(new Blockly.FieldDropdown(currentLesson === 14 ? [['כן, יש עשן', 'YES'], ['לא, האוויר נקי', 'NO']] : [['כן 💨', 'YES'], ['לא ✅', 'NO']]), 'VAL');
                     this.setOutput(true, 'Boolean');
                     this.setColour('#40BF4A');
                 }
@@ -2495,8 +2669,8 @@
             Blockly.Blocks['sensor_temperature'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField('🌡️ טמפרטורה =')
-                        .appendField(new Blockly.FieldDropdown([['חם מדי 🔥', 'HOT'], ['נעים 🌿', 'OK']]), 'VAL');
+                        .appendField(currentLesson === 14 ? '🔥 חום בזירת החילוץ =' : '🌡️ טמפרטורה =')
+                        .appendField(new Blockly.FieldDropdown(currentLesson === 14 ? [['מסוכן מדי 🔥', 'HOT'], ['בטוח להמשך ✅', 'OK']] : [['חם מדי 🔥', 'HOT'], ['נעים 🌿', 'OK']]), 'VAL');
                     this.setOutput(true, 'Boolean');
                     this.setColour('#40BF4A');
                 }
@@ -2726,8 +2900,8 @@
             Blockly.Blocks['action_fan'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField('🪭 מאוורר')
-                        .appendField(new Blockly.FieldDropdown([['הפעל', 'ON'], ['כבה', 'OFF']]), 'STATE');
+                        .appendField(currentLesson === 14 ? '🚁 רחפן חילוץ' : '🪭 מאוורר')
+                        .appendField(new Blockly.FieldDropdown(currentLesson === 14 ? [['הפעל לסריקה', 'ON'], ['החזר לתחנה', 'OFF']] : [['הפעל', 'ON'], ['כבה', 'OFF']]), 'STATE');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
                     this.setColour('#9966FF');
@@ -2758,7 +2932,7 @@
 
             Blockly.Blocks['action_safe_route'] = {
                 init: function() {
-                    this.appendDummyInput().appendField('🛟 חפש דרך בטוחה');
+                    this.appendDummyInput().appendField(currentLesson === 14 ? '🛟 בחר נתיב בטוח' : '🛟 חפש דרך בטוחה');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
                     this.setColour('#9966FF');
@@ -2955,9 +3129,11 @@
 
                 case 'action_fan':
                     robot.fanOn = block.getFieldValue('STATE') === 'ON';
-                    robot.speaking = currentLesson === 9
-                        ? (robot.fanOn ? 'הפעלתי מזגן' : 'כיביתי מזגן')
-                        : (robot.fanOn ? 'מקרר את החממה!' : 'המאוורר כבוי');
+                    robot.speaking = currentLesson === 14
+                        ? (robot.fanOn ? 'הרחפן סורק נתיב בטוח' : 'הרחפן חזר לתחנה')
+                        : currentLesson === 9
+                            ? (robot.fanOn ? 'הפעלתי מזגן' : 'כיביתי מזגן')
+                            : (robot.fanOn ? 'מקרר את החממה!' : 'המאוורר כבוי');
                     await sleep(900);
                     robot.speaking = '';
                     break;
@@ -2977,7 +3153,7 @@
                     break;
 
                 case 'action_safe_route':
-                    robot.speaking = 'מחפש דרך בטוחה';
+                    robot.speaking = currentLesson === 14 ? 'בחרתי נתיב בטוח' : 'מחפש דרך בטוחה';
                     robot.vehicleStopped = false;
                     await sleep(900);
                     robot.speaking = '';
@@ -3455,7 +3631,12 @@
         function renderLessonTabs() {
             const tabs = document.getElementById('lessonTabs');
             if (!tabs) return;
-            const lessons = window.SENSI_LESSONS || [];
+            const fallbackLessons = Array.from({ length: 15 }, (_, index) => ({
+                id: index + 1,
+                emoji: '🏙️',
+                title: `שיעור ${index + 1}`
+            }));
+            const lessons = (window.SENSI_LESSONS && window.SENSI_LESSONS.length) ? window.SENSI_LESSONS : fallbackLessons;
             tabs.innerHTML = lessons.map(lesson => `
                 <button class="lesson-tab" onclick="selectLesson(${lesson.id})" title="שיעור ${lesson.id}: ${lesson.title}">
                     <span>${lesson.emoji}</span><span class="lesson-num">${lesson.id}</span>
@@ -3480,8 +3661,15 @@
 
         function selectLesson(num) {
             currentLesson = num;
-            document.querySelectorAll('.lesson-tab').forEach((t) =>
-                t.classList.toggle('active', Number(t.querySelector('.lesson-num')?.textContent) === num));
+            let activeTab = null;
+            document.querySelectorAll('.lesson-tab').forEach((t) => {
+                const isActive = Number(t.querySelector('.lesson-num')?.textContent) === num;
+                t.classList.toggle('active', isActive);
+                if (isActive) activeTab = t;
+            });
+            if (activeTab) {
+                requestAnimationFrame(() => activeTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }));
+            }
             document.getElementById('welcomeModal').classList.remove('active');
 
             const cityLesson = window.getSensiLesson ? window.getSensiLesson(num) : null;
@@ -3489,7 +3677,7 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num;
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v1';
             resetPositions();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
@@ -3528,13 +3716,27 @@
 
         // ===== INIT =====
         window.onload = function() {
-            resizeCanvas();
-            initBlockly();
+            const initialLesson = getInitialLessonFromUrl();
+
+            // Render navigation before Blockly. Blockly loads from an external CDN;
+            // if it is blocked or slow, the lesson menu must still be visible.
             renderLessonTabs();
             renderWelcomeLessons();
+            resizeCanvas();
+            selectLesson(initialLesson);
             draw();
             updateSensors();
-            selectLesson(getInitialLessonFromUrl());
+
+            try {
+                if (window.Blockly) {
+                    initBlockly();
+                    if (workspace) workspace.updateToolbox(buildToolbox());
+                } else {
+                    console.warn('Blockly did not load; lesson navigation remains available.');
+                }
+            } catch (error) {
+                console.error('Blockly init failed; lesson navigation remains available.', error);
+            }
         };
     </script>
   <script src="js/feedback-widget.js?v=20260711-feedback"></script>
