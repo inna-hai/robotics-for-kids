@@ -1065,7 +1065,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260716-miriam-story-v15"></script>
+    <script src="js/lessons-data.js?v=20260716-miriam-story-v16"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1148,7 +1148,7 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // lesson14-flat-background-v15
+            // lesson14-flat-background-v16
             // Everything fixed is drawn as one clean illustrated background.
             // Only rescueBeacon and waterDrone are drawn later as movable overlay objects.
             const sky = ctx.createLinearGradient(0, 0, 0, h);
@@ -1236,19 +1236,28 @@
 
             // Places are painted beside the road so they stay clear and not blurred by the road.
             const drawPaintedPlace = (x, y, emoji, label, color) => {
-                ctx.fillStyle = 'rgba(255,255,255,.42)';
+                // Clear, high-contrast painted landmark: still part of the background image.
+                ctx.fillStyle = 'rgba(255,255,255,.82)';
                 ctx.beginPath();
-                ctx.ellipse(x, y + 30, 62, 16, 0, 0, Math.PI * 2);
+                ctx.ellipse(x, y + 22, 74, 42, 0, 0, Math.PI * 2);
                 ctx.fill();
-                ctx.fillStyle = 'rgba(15,23,42,.14)';
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 3;
                 ctx.beginPath();
-                ctx.ellipse(x, y + 34, 46, 9, 0, 0, Math.PI * 2);
+                ctx.ellipse(x, y + 22, 74, 42, 0, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.fillStyle = 'rgba(15,23,42,.20)';
+                ctx.beginPath();
+                ctx.ellipse(x, y + 48, 54, 10, 0, 0, Math.PI * 2);
                 ctx.fill();
-                ctx.font = '46px Arial';
-                ctx.fillText(emoji, x, y - 2);
-                ctx.font = 'bold 13px Rubik';
+                ctx.font = '58px Arial';
+                ctx.fillText(emoji, x, y - 4);
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = 'rgba(255,255,255,.92)';
+                ctx.font = '900 15px Rubik';
+                ctx.strokeText(label, x, y + 58);
                 ctx.fillStyle = color;
-                ctx.fillText(label, x, y + 48);
+                ctx.fillText(label, x, y + 58);
             };
             const stationPlaceX = startX - Math.min(88, sceneW * 0.10);
             const stationPlaceY = roadY - 6;
@@ -3745,7 +3754,7 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v15';
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v16';
             resetPositions();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
