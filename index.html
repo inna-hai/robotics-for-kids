@@ -1065,7 +1065,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260716-miriam-story-v26"></script>
+    <script src="js/lessons-data.js?v=20260716-miriam-story-v27"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1149,7 +1149,7 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // lesson14-realistic-landmarks-v26
+            // lesson14-realistic-landmarks-v27
             // Everything fixed is drawn as one clean illustrated background.
             // Only rescueBeacon and waterDrone are drawn later as movable overlay objects.
             const sky = ctx.createLinearGradient(0, 0, 0, h);
@@ -1415,31 +1415,42 @@
             const hazardY = sceneY + sceneH * 0.42;
             const drawPaintedHazard = (x, active, emoji, label, color) => {
                 if (label === 'עשן' && active) {
-                    // Active smoke should feel present and readable, not faded.
-                    const smokePuffs = [
-                        { dx: -28, dy: -6, rx: 30, ry: 20, a: .72 },
-                        { dx: 0, dy: -18, rx: 38, ry: 25, a: .82 },
-                        { dx: 30, dy: -5, rx: 32, ry: 21, a: .70 },
-                        { dx: -8, dy: 10, rx: 44, ry: 18, a: .62 }
+                    // More realistic active smoke: layered soft plumes, no cartoon smoke emoji.
+                    const baseX = x;
+                    const baseY = hazardY + 18;
+                    const plumes = [
+                        { dx: -30, dy: 10, rx: 26, ry: 18, a: .34 },
+                        { dx: -16, dy: -6, rx: 34, ry: 24, a: .44 },
+                        { dx: 8, dy: -24, rx: 42, ry: 30, a: .52 },
+                        { dx: 34, dy: -10, rx: 32, ry: 24, a: .40 },
+                        { dx: 18, dy: 16, rx: 46, ry: 20, a: .28 },
+                        { dx: -4, dy: -44, rx: 30, ry: 22, a: .26 }
                     ];
-                    smokePuffs.forEach((puff) => {
-                        ctx.fillStyle = `rgba(71,85,105,${puff.a})`;
+                    plumes.forEach((puff) => {
+                        const g = ctx.createRadialGradient(baseX + puff.dx - 8, baseY + puff.dy - 8, 4, baseX + puff.dx, baseY + puff.dy, Math.max(puff.rx, puff.ry));
+                        g.addColorStop(0, `rgba(51,65,85,${puff.a})`);
+                        g.addColorStop(.55, `rgba(71,85,105,${puff.a * .72})`);
+                        g.addColorStop(1, 'rgba(148,163,184,0)');
+                        ctx.fillStyle = g;
                         ctx.beginPath();
-                        ctx.ellipse(x + puff.dx, hazardY + puff.dy, puff.rx, puff.ry, 0, 0, Math.PI * 2);
+                        ctx.ellipse(baseX + puff.dx, baseY + puff.dy, puff.rx, puff.ry, -0.18, 0, Math.PI * 2);
                         ctx.fill();
                     });
-                    ctx.fillStyle = 'rgba(30,41,59,.20)';
+                    // darker source near the ground
+                    const source = ctx.createLinearGradient(x - 42, hazardY + 28, x + 42, hazardY + 48);
+                    source.addColorStop(0, 'rgba(30,41,59,.08)');
+                    source.addColorStop(.5, 'rgba(30,41,59,.38)');
+                    source.addColorStop(1, 'rgba(30,41,59,.08)');
+                    ctx.fillStyle = source;
                     ctx.beginPath();
-                    ctx.ellipse(x, hazardY + 35, 52, 10, 0, 0, Math.PI * 2);
+                    ctx.ellipse(x, hazardY + 38, 46, 9, 0, 0, Math.PI * 2);
                     ctx.fill();
-                    ctx.font = '54px Arial';
-                    ctx.fillText(emoji, x, hazardY - 4);
                     ctx.font = '900 13px Rubik';
                     ctx.lineWidth = 4;
-                    ctx.strokeStyle = 'rgba(255,255,255,.88)';
-                    ctx.strokeText(label, x, hazardY + 44);
+                    ctx.strokeStyle = 'rgba(255,255,255,.90)';
+                    ctx.strokeText(label, x, hazardY + 54);
                     ctx.fillStyle = '#334155';
-                    ctx.fillText(label, x, hazardY + 44);
+                    ctx.fillText(label, x, hazardY + 54);
                     return;
                 }
                 ctx.globalAlpha = active ? 1 : .28;
@@ -3921,7 +3932,7 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v26';
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v27';
             resetPositions();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
