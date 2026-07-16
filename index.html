@@ -1065,7 +1065,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260716-miriam-story-v17"></script>
+    <script src="js/lessons-data.js?v=20260716-miriam-story-v18"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1148,7 +1148,7 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // lesson14-flat-background-v17
+            // lesson14-flat-background-v18
             // Everything fixed is drawn as one clean illustrated background.
             // Only rescueBeacon and waterDrone are drawn later as movable overlay objects.
             const sky = ctx.createLinearGradient(0, 0, 0, h);
@@ -1236,89 +1236,110 @@
 
             // Places are painted beside the road so they stay clear and not blurred by the road.
             const drawRescueStation = (x, y) => {
-                // Painted rescue station: a real small building in the background image, no circle/card.
+                // Standalone rescue station in the landscape: no surrounding frame/shape.
                 ctx.fillStyle = 'rgba(15,23,42,.16)';
                 ctx.beginPath();
-                ctx.ellipse(x, y + 50, 72, 12, 0, 0, Math.PI * 2);
+                ctx.ellipse(x, y + 50, 70, 11, 0, 0, Math.PI * 2);
                 ctx.fill();
-                ctx.fillStyle = '#eff6ff';
-                ctx.strokeStyle = '#0284c7';
-                ctx.lineWidth = 3;
+
+                // small rescue building
+                ctx.fillStyle = '#e0f2fe';
+                ctx.strokeStyle = '#0369a1';
+                ctx.lineWidth = 2.5;
                 ctx.beginPath();
-                ctx.roundRect(x - 56, y - 28, 112, 72, 10);
-                ctx.fill();
-                ctx.stroke();
-                ctx.fillStyle = '#0284c7';
-                ctx.beginPath();
-                ctx.moveTo(x - 66, y - 28);
-                ctx.lineTo(x, y - 72);
-                ctx.lineTo(x + 66, y - 28);
+                ctx.moveTo(x - 46, y - 20);
+                ctx.lineTo(x, y - 58);
+                ctx.lineTo(x + 46, y - 20);
                 ctx.closePath();
                 ctx.fill();
-                ctx.strokeStyle = '#0369a1';
                 ctx.stroke();
-                ctx.fillStyle = '#ffffff';
-                ctx.font = 'bold 30px Arial';
-                ctx.fillText('+', x, y - 46);
+                ctx.fillStyle = '#f8fafc';
+                ctx.fillRect(x - 38, y - 20, 76, 54);
+                ctx.strokeRect(x - 38, y - 20, 76, 54);
+                ctx.fillStyle = '#0284c7';
+                ctx.fillRect(x - 10, y + 2, 20, 32);
                 ctx.fillStyle = '#bae6fd';
-                for (let i = -1; i <= 1; i++) {
-                    ctx.fillRect(x + i * 28 - 8, y - 6, 16, 18);
-                }
-                ctx.fillStyle = '#075985';
-                ctx.fillRect(x - 12, y + 14, 24, 30);
-                ctx.font = '30px Arial';
-                ctx.fillText('🚒', x + 78, y + 32);
+                ctx.fillRect(x - 30, y - 8, 16, 15);
+                ctx.fillRect(x + 14, y - 8, 16, 15);
+                ctx.fillStyle = '#ef4444';
+                ctx.font = 'bold 26px Arial';
+                ctx.fillText('+', x, y - 34);
+
+                // rescue truck next to station
+                ctx.fillStyle = '#ef4444';
+                ctx.fillRect(x + 44, y + 10, 52, 24);
+                ctx.fillStyle = '#fee2e2';
+                ctx.fillRect(x + 52, y + 14, 16, 10);
+                ctx.fillStyle = '#111827';
+                ctx.beginPath(); ctx.arc(x + 56, y + 36, 7, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(x + 84, y + 36, 7, 0, Math.PI * 2); ctx.fill();
+
                 ctx.lineWidth = 4;
                 ctx.strokeStyle = 'rgba(255,255,255,.95)';
                 ctx.font = '900 15px Rubik';
-                ctx.strokeText('תחנת חילוץ', x, y + 70);
-                ctx.fillStyle = '#0284c7';
-                ctx.fillText('תחנת חילוץ', x, y + 70);
+                ctx.strokeText('תחנת חילוץ', x, y + 68);
+                ctx.fillStyle = '#0369a1';
+                ctx.fillText('תחנת חילוץ', x, y + 68);
             };
 
             const drawSafeZone = (x, y) => {
-                // Painted safe zone: a visible protected area in the background image, no circle/card.
+                // Standalone safe area: open safe place in the landscape, no frame/box.
                 ctx.fillStyle = 'rgba(15,23,42,.14)';
                 ctx.beginPath();
-                ctx.ellipse(x, y + 52, 78, 13, 0, 0, Math.PI * 2);
+                ctx.ellipse(x, y + 50, 78, 12, 0, 0, Math.PI * 2);
                 ctx.fill();
-                ctx.fillStyle = 'rgba(187,247,208,.88)';
-                ctx.strokeStyle = '#16a34a';
-                ctx.lineWidth = 4;
+
+                // open green grass patch
+                ctx.fillStyle = '#86efac';
                 ctx.beginPath();
-                ctx.roundRect(x - 68, y - 36, 136, 86, 18);
+                ctx.ellipse(x, y + 24, 68, 34, 0, 0, Math.PI * 2);
                 ctx.fill();
-                ctx.stroke();
-                // fence / protected border
-                ctx.strokeStyle = '#15803d';
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.moveTo(x - 58, y + 30);
-                ctx.lineTo(x + 58, y + 30);
-                ctx.stroke();
-                for (let i = -2; i <= 2; i++) {
-                    ctx.fillStyle = '#15803d';
-                    ctx.fillRect(x + i * 26 - 3, y + 12, 6, 24);
+                ctx.fillStyle = '#22c55e';
+                for (let i = -3; i <= 3; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(x + i * 18, y + 42);
+                    ctx.lineTo(x + i * 18 + 5, y + 26);
+                    ctx.lineTo(x + i * 18 + 10, y + 42);
+                    ctx.fill();
                 }
-                ctx.fillStyle = '#ffffff';
+
+                // clear safety sign standing on its own
+                ctx.strokeStyle = '#15803d';
+                ctx.lineWidth = 5;
                 ctx.beginPath();
-                ctx.arc(x, y - 6, 26, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.strokeStyle = '#16a34a';
-                ctx.lineWidth = 3;
+                ctx.moveTo(x, y + 38);
+                ctx.lineTo(x, y - 34);
                 ctx.stroke();
                 ctx.fillStyle = '#16a34a';
-                ctx.font = 'bold 30px Arial';
-                ctx.fillText('✓', x, y - 4);
-                ctx.font = '30px Arial';
-                ctx.fillText('🏥', x + 84, y + 22);
+                ctx.beginPath();
+                ctx.moveTo(x, y - 62);
+                ctx.lineTo(x + 46, y - 28);
+                ctx.lineTo(x, y + 6);
+                ctx.lineTo(x - 46, y - 28);
+                ctx.closePath();
+                ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 34px Arial';
+                ctx.fillText('✓', x, y - 26);
+
+                // people / first-aid hint standing in safe zone
+                ctx.font = '28px Arial';
+                ctx.fillText('🧍', x - 38, y + 16);
+                ctx.fillText('🧍', x + 38, y + 16);
+                ctx.font = '26px Arial';
+                ctx.fillText('🏥', x + 70, y + 20);
+
                 ctx.lineWidth = 4;
                 ctx.strokeStyle = 'rgba(255,255,255,.95)';
                 ctx.font = '900 15px Rubik';
                 ctx.strokeText('אזור בטוח', x, y + 72);
-                ctx.fillStyle = '#16a34a';
+                ctx.fillStyle = '#15803d';
                 ctx.fillText('אזור בטוח', x, y + 72);
             };
+
             const stationPlaceX = startX - Math.min(88, sceneW * 0.10);
             const stationPlaceY = roadY - 6;
             const safePlaceX = endX + Math.min(88, sceneW * 0.10);
@@ -3814,7 +3835,7 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v17';
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v18';
             resetPositions();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
