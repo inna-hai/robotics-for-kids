@@ -104,7 +104,7 @@ test('line off is not exposed as a separate environment button', () => {
   assert.doesNotMatch(indexHtml, /toggleEnv\('lineOff'\)/);
 });
 
-test('lesson sensor and environment controls are cumulative after they are introduced', () => {
+test('lesson sensor and environment controls are specific to each lesson, not cumulative', () => {
   const overridesBlock = indexHtml.match(/const\s+lessonControlOverrides\s*=\s*\{[\s\S]*?\n\s*\};/)?.[0] || '';
   const getList = (lesson, key) => {
     const lessonOverride = overridesBlock.match(new RegExp(`${lesson}:\\s*\\{[\\s\\S]*?\\n\\s*\\}`))?.[0] || '';
@@ -113,18 +113,25 @@ test('lesson sensor and environment controls are cumulative after they are intro
   };
 
   const expectedByLesson = {
+    1: { sensors: ['sensorLight'], env: ['envLight'] },
+    2: { sensors: ['sensorSound'], env: ['envSound'] },
+    3: { sensors: ['sensorTouch'], env: ['envObstacle'] },
+    4: { sensors: ['sensorSmell'], env: ['envSmoke'] },
+    5: { sensors: ['sensorTemp'], env: ['envTemperatureHot'] },
+    6: { sensors: ['sensorColor'], env: ['envRecycleColor'] },
     7: { sensors: ['sensorLine', 'sensorGoal'], env: [] },
-    8: { sensors: ['sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian'], env: ['envCars', 'envPedestrian'] },
-    9: { sensors: ['sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople'], env: ['envCars', 'envPedestrian', 'envPeople'] },
-    10: { sensors: ['sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorSoil'], env: ['envCars', 'envPedestrian', 'envPeople', 'envSoilDry'] },
-    11: { sensors: ['sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorMotion', 'sensorSoil', 'sensorArmed', 'sensorDoor'], env: ['envCars', 'envPedestrian', 'envPeople', 'envMotion', 'envSoilDry', 'envArmedMode', 'envDoorOpen'] }
+    8: { sensors: ['sensorCars', 'sensorPedestrian'], env: ['envCars', 'envPedestrian'] },
+    9: { sensors: ['sensorPeople', 'sensorLight', 'sensorSound'], env: ['envPeople', 'envLight', 'envSound'] },
+    10: { sensors: ['sensorSoil'], env: ['envSoilDry'] },
+    11: { sensors: ['sensorArmed', 'sensorMotion', 'sensorDoor'], env: ['envArmedMode', 'envMotion', 'envDoorOpen'] },
+    12: { sensors: ['sensorTouch', 'sensorGoal'], env: ['envObstacle'] },
+    13: { sensors: ['sensorLight', 'sensorMotion', 'sensorSound'], env: ['envLight', 'envMotion', 'envSound'] },
+    14: { sensors: ['sensorSmell', 'sensorTemp', 'sensorTouch'], env: ['envSmoke', 'envTemperatureHot', 'envObstacle'] }
   };
 
   for (const [lesson, expected] of Object.entries(expectedByLesson)) {
-    const sensors = getList(lesson, 'sensors');
-    const env = getList(lesson, 'env');
-    expected.sensors.forEach((id) => assert.ok(sensors.includes(id), `Lesson ${lesson} should include ${id}`));
-    expected.env.forEach((id) => assert.ok(env.includes(id), `Lesson ${lesson} should include ${id}`));
+    assert.deepEqual(getList(lesson, 'sensors'), expected.sensors, `Lesson ${lesson} should show only its related sensor chips`);
+    assert.deepEqual(getList(lesson, 'env'), expected.env, `Lesson ${lesson} should show only its related environment controls`);
   }
 });
 
@@ -185,8 +192,8 @@ test('Blockly workspace has working click buttons for vertical and horizontal sc
   assertIncludes(indexHtml, 'workspace.scroll(-(nextX + scrollLeft), -(nextY + scrollTop));');
 });
 
-test('lesson 9 has a dedicated air conditioner action block', () => {
-  assertIncludes(indexHtml, "actions: ['action_say', 'action_street_light', 'action_sound', 'action_ac', 'action_water', 'action_recycle_bin', 'action_class_power']");
+test('lesson 9 has only classroom-related action blocks including the dedicated air conditioner block', () => {
+  assertIncludes(indexHtml, "actions: ['action_class_power', 'action_ac', 'action_say']");
   assertIncludes(indexHtml, "Blockly.Blocks['action_ac']");
   assertIncludes(indexHtml, ".appendField('❄️ מזגן')");
   assertIncludes(indexHtml, "case 'action_ac':");
