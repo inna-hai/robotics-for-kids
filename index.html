@@ -245,6 +245,9 @@
         .robot-stage canvas {
             width: 100%;
             height: 100%;
+            touch-action: none;
+            user-select: none;
+            cursor: grab;
         }
 
         /* Ground */
@@ -1149,9 +1152,15 @@
         }
 
         function resetPositions() {
-            // Reset robot to center
-            robot.x = canvas.width / 2;
-            robot.y = currentLesson === 3 ? canvas.height * 0.58 : currentLesson === 4 ? canvas.height * 0.62 : currentLesson === 5 ? canvas.height * 0.64 : currentLesson === 6 ? canvas.height * 0.62 : canvas.height / 2;
+            // Reset robot to the lesson's starting point
+            if (currentLesson === 7) {
+                const line = getLesson7LinePoints();
+                robot.x = line.start.x - 28;
+                robot.y = line.start.y;
+            } else {
+                robot.x = canvas.width / 2;
+                robot.y = currentLesson === 3 ? canvas.height * 0.58 : currentLesson === 4 ? canvas.height * 0.62 : currentLesson === 5 ? canvas.height * 0.64 : currentLesson === 6 ? canvas.height * 0.62 : canvas.height / 2;
+            }
             robot.angle = 0;
             robot.vehicleStopped = false;
 
@@ -2015,11 +2024,14 @@
         // ===== DRAGGING =====
         function getMousePos(e) {
             const rect = canvas.getBoundingClientRect();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            const touch = e.touches?.[0] || e.changedTouches?.[0];
+            const clientX = touch ? touch.clientX : e.clientX;
+            const clientY = touch ? touch.clientY : e.clientY;
+            const scaleX = rect.width ? canvas.width / rect.width : 1;
+            const scaleY = rect.height ? canvas.height / rect.height : 1;
             return {
-                x: clientX - rect.left,
-                y: clientY - rect.top
+                x: (clientX - rect.left) * scaleX,
+                y: (clientY - rect.top) * scaleY
             };
         }
 
@@ -2036,12 +2048,16 @@
                 pos.y >= robot.y - 48 && pos.y <= robot.y + 48;
         }
 
+        function hitTestRobot(pos) {
+            return hitTestVehicle(pos) || hitTest(pos, robot, 56);
+        }
+
         function onDragStart(e) {
             if (isRunning) return;
             const pos = getMousePos(e);
 
             // Check what was clicked (robot/car first, then objects)
-            if (hitTestVehicle(pos) || hitTest(pos, robot, 40)) {
+            if (hitTestRobot(pos)) {
                 dragging = 'robot';
                 dragOffset = { x: pos.x - robot.x, y: pos.y - robot.y };
             } else if (environment.obstacle && hitTest(pos, objects.wall, 50)) {
@@ -2059,7 +2075,9 @@
             }
 
             if (dragging) {
+                e.preventDefault();
                 canvas.style.cursor = 'grabbing';
+                canvas.setPointerCapture?.(e.pointerId);
             }
         }
 
@@ -2080,21 +2098,31 @@
             }
         }
 
-        function onDragEnd() {
+        function onDragEnd(e) {
+            if (e?.pointerId !== undefined) canvas.releasePointerCapture?.(e.pointerId);
             dragging = null;
             canvas.style.cursor = 'grab';
         }
 
-        // Mouse events
-        canvas.addEventListener('mousedown', onDragStart);
-        canvas.addEventListener('mousemove', onDragMove);
-        canvas.addEventListener('mouseup', onDragEnd);
-        canvas.addEventListener('mouseleave', onDragEnd);
+        if (window.PointerEvent) {
+            canvas.addEventListener('pointerdown', onDragStart);
+            canvas.addEventListener('pointermove', onDragMove);
+            canvas.addEventListener('pointerup', onDragEnd);
+            canvas.addEventListener('pointercancel', onDragEnd);
+            canvas.addEventListener('lostpointercapture', onDragEnd);
+        } else {
+            // Mouse events
+            canvas.addEventListener('mousedown', onDragStart);
+            canvas.addEventListener('mousemove', onDragMove);
+            window.addEventListener('mouseup', onDragEnd);
+            canvas.addEventListener('mouseleave', onDragEnd);
 
-        // Touch events
-        canvas.addEventListener('touchstart', onDragStart);
-        canvas.addEventListener('touchmove', onDragMove);
-        canvas.addEventListener('touchend', onDragEnd);
+            // Touch events
+            canvas.addEventListener('touchstart', onDragStart, { passive: false });
+            canvas.addEventListener('touchmove', onDragMove, { passive: false });
+            canvas.addEventListener('touchend', onDragEnd);
+            canvas.addEventListener('touchcancel', onDragEnd);
+        }
 
         // Set initial cursor
         canvas.style.cursor = 'grab';
