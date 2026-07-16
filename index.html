@@ -1065,7 +1065,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260716-miriam-story-v20"></script>
+    <script src="js/lessons-data.js?v=20260716-miriam-story-v21"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1148,7 +1148,7 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // lesson14-realistic-landmarks-v20
+            // lesson14-realistic-landmarks-v21
             // Everything fixed is drawn as one clean illustrated background.
             // Only rescueBeacon and waterDrone are drawn later as movable overlay objects.
             const sky = ctx.createLinearGradient(0, 0, 0, h);
@@ -1239,7 +1239,7 @@
                 // More realistic rescue station: no emoji, no frame — a scene landmark.
                 ctx.save();
                 ctx.translate(x, y);
-                ctx.scale(0.84, 0.84);
+                ctx.scale(0.74, 0.74);
                 x = 0;
                 y = 0;
                 ctx.fillStyle = 'rgba(15,23,42,.18)';
@@ -1320,7 +1320,7 @@
                 // More realistic safe area: emergency assembly point, no emoji and no surrounding frame.
                 ctx.save();
                 ctx.translate(x, y);
-                ctx.scale(0.84, 0.84);
+                ctx.scale(0.74, 0.74);
                 x = 0;
                 y = 0;
                 ctx.fillStyle = 'rgba(15,23,42,.16)';
@@ -1392,22 +1392,23 @@
                 ctx.restore();
             };
 
-            const stationPlaceX = startX - Math.min(54, sceneW * 0.06);
-            const stationPlaceY = roadY - 6;
-            const safePlaceX = endX + Math.min(54, sceneW * 0.06);
+            const sideGap = Math.min(76, sceneW * 0.085);
+            const safePlaceX = startX - sideGap;
             const safePlaceY = roadY - 6;
-            // small painted side access paths: places sit left/right of the road, not on it.
-            ctx.strokeStyle = 'rgba(100,116,139,.42)';
-            ctx.lineWidth = 14;
+            const stationPlaceX = endX + sideGap;
+            const stationPlaceY = roadY - 6;
+            // small painted access paths: safe zone is left of the road; rescue station is right of it.
+            ctx.strokeStyle = 'rgba(100,116,139,.34)';
+            ctx.lineWidth = 10;
             ctx.lineCap = 'round';
             ctx.beginPath();
-            ctx.moveTo(stationPlaceX + 48, stationPlaceY + 8);
-            ctx.lineTo(startX - 8, roadY);
-            ctx.moveTo(safePlaceX - 48, safePlaceY + 8);
-            ctx.lineTo(endX + 8, roadY - 4);
+            ctx.moveTo(safePlaceX + 40, safePlaceY + 6);
+            ctx.lineTo(startX - 20, roadY);
+            ctx.moveTo(stationPlaceX - 40, stationPlaceY + 6);
+            ctx.lineTo(endX + 20, roadY - 4);
             ctx.stroke();
-            drawRescueStation(stationPlaceX, stationPlaceY);
             drawSafeZone(safePlaceX, safePlaceY);
+            drawRescueStation(stationPlaceX, stationPlaceY);
 
             // Hazards are natural details in the illustration: no boxes, no panels.
             const hazardY = sceneY + sceneH * 0.42;
@@ -3887,7 +3888,7 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v20';
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v21';
             resetPositions();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
