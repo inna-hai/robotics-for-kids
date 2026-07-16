@@ -10,11 +10,12 @@
   <style>
     :root { --purple:#6c5ce7; --blue:#00b4d8; --green:#00b894; --yellow:#fdcb6e; --dark:#2d3436; }
     * { box-sizing: border-box; }
-    body { margin:0; font-family:'Rubik',Arial,sans-serif; direction:rtl; background:linear-gradient(135deg,#6c5ce7,#00b4d8); color:var(--dark); min-height:100vh; overflow:auto; }
-    .deck { width:100%; min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:30px 30px 130px; }
-    .slide { display:none; width:min(1050px,100%); max-height:calc(100vh - 160px); background:rgba(255,255,255,.96); border-radius:32px; padding:42px; box-shadow:0 25px 70px rgba(0,0,0,.24); position:relative; overflow:hidden; }
+    body { margin:0; font-family:'Rubik',Arial,sans-serif; direction:rtl; background:linear-gradient(135deg,#6c5ce7,#00b4d8); color:var(--dark); min-height:100vh; overflow:hidden; }
+    /* slide-white-page-v7 */
+    .deck { width:100%; min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:14px 14px 92px; }
+    .slide { display:none; width:calc(100vw - 28px); max-width:none; min-height:calc(100vh - 120px); max-height:calc(100vh - 120px); background:rgba(255,255,255,.98); border-radius:34px; padding:48px 56px; box-shadow:0 25px 70px rgba(0,0,0,.24); position:relative; overflow:hidden; }
     .slide.active { display:flex; flex-direction:column; justify-content:flex-start; }
-    .slide-content { width:100%; max-height:calc(100vh - 244px); overflow-y:auto; padding-left:10px; scrollbar-gutter:stable; }
+    .slide-content { width:100%; min-height:calc(100vh - 226px); max-height:calc(100vh - 226px); overflow-y:auto; padding-left:10px; scrollbar-gutter:stable; display:flex; flex-direction:column; }
     .slide-content::-webkit-scrollbar { width:10px; }
     .slide-content::-webkit-scrollbar-track { background:rgba(108,92,231,.08); border-radius:999px; }
     .slide-content::-webkit-scrollbar-thumb { background:rgba(108,92,231,.38); border-radius:999px; border:2px solid rgba(255,255,255,.9); }
@@ -24,8 +25,9 @@
       background:#f7f9fc;
       border-right:8px solid var(--purple);
       border-radius:28px;
-      padding:76px 64px;
-      min-height:62vh;
+      padding:70px 64px;
+      min-height:calc(100vh - 420px);
+      flex:1;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -183,10 +185,10 @@
     .counter { background:rgba(0,0,0,.22); padding:10px 16px; border-radius:999px; justify-self:center; }
     @media (max-width:700px){
       body{overflow:auto;overscroll-behavior:contain;background:linear-gradient(160deg,#6c5ce7,#00b4d8);}
-      .deck{width:100%;height:auto;min-height:100svh;padding:14px 10px 92px;align-items:flex-start;}
-      .slide{width:100%;min-height:calc(100svh - 112px);padding:22px 16px;border-radius:22px;box-shadow:0 16px 45px rgba(0,0,0,.22);overflow:hidden;}
+      .deck{width:100%;height:auto;min-height:100svh;padding:8px 8px 82px;align-items:flex-start;}
+      .slide{width:calc(100vw - 16px);min-height:calc(100svh - 96px);max-height:none;padding:20px 16px;border-radius:22px;box-shadow:0 16px 45px rgba(0,0,0,.22);overflow:hidden;}
       .slide.active{justify-content:flex-start;}
-      .slide-content{max-height:none;overflow:visible;padding-left:0;scrollbar-gutter:auto;}
+      .slide-content{min-height:calc(100svh - 156px);max-height:none;overflow:visible;padding-left:0;scrollbar-gutter:auto;display:flex;flex-direction:column;}
       .kicker{font-size:.95rem;margin-bottom:8px;}
       h1{font-size:clamp(2rem,12vw,3.1rem);line-height:1.05;margin-bottom:12px;}
       h2{font-size:clamp(1.65rem,9vw,2.45rem);line-height:1.12;margin-bottom:16px;}
@@ -195,7 +197,7 @@
       .time-badge{font-size:1rem;padding:7px 12px;margin-bottom:10px;}
       .two-cols,.cards{grid-template-columns:1fr;gap:10px;}
       .card{padding:40px 28px;min-height:260px;font-size:1.05rem;border-radius:18px;}
-      .slide-content > p{padding:48px 32px;min-height:62vh;border-radius:20px;margin:14px 0;}
+      .slide-content > p{padding:44px 30px;min-height:65vh;border-radius:20px;margin:14px 0;}
       .teacher-box,.teacher-note,.blockly-solution{padding:42px 30px;border-radius:22px;margin:16px 0;min-height:320px;}
       .teacher-box h3{font-size:1.05rem;}
       .exercise-kind{font-size:.95rem;padding:7px 11px;line-height:1.25;}
@@ -235,7 +237,7 @@
     </div>
   </nav>
 
-  <script src="../js/lessons-data.js?v=20260716-miriam-story-v6"></script>
+  <script src="../js/lessons-data.js?v=20260716-miriam-story-v7"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const lesson = window.getSensiLesson(params.get('id'));
