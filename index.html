@@ -2401,86 +2401,93 @@
         const toolboxLessonOverrides = {
             1: {
                 movement: [],
-                sensors: ['sensor_light', 'sensor_pedestrian'],
-                controls: ['control_if']
+                sensors: ['sensor_light'],
+                controls: ['control_if'],
+                actions: ['action_street_light', 'action_say']
             },
             2: {
                 movement: [],
-                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound'],
-                controls: ['control_if', 'stop_program']
+                sensors: ['sensor_sound'],
+                controls: ['control_if', 'stop_program'],
+                actions: ['action_say', 'action_sound']
             },
             3: {
                 movement: ['move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
-                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch'],
-                controls: ['control_if', 'stop_program']
+                sensors: ['sensor_touch'],
+                controls: ['control_if', 'stop_program'],
+                actions: ['action_say']
             },
             4: {
-                movement: ['move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
-                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell'],
-                controls: ['control_if', 'stop_program']
+                movement: [],
+                sensors: ['sensor_smell'],
+                controls: ['control_if', 'stop_program'],
+                actions: ['action_say', 'action_sound']
             },
             5: {
-                movement: ['move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
-                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature'],
-                controls: ['control_if', 'stop_program']
+                movement: [],
+                sensors: ['sensor_temperature'],
+                controls: ['control_if'],
+                actions: ['action_say', 'action_fan']
             },
             6: {
-                movement: ['move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
-                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color'],
-                controls: ['control_if', 'stop_program']
+                movement: [],
+                sensors: ['sensor_color'],
+                controls: ['control_if'],
+                actions: ['action_recycle_bin', 'action_say']
             },
             7: {
                 movement: ['move_forward', 'move_backward', 'turn_right_small', 'turn_left_small', 'turn_right', 'turn_left', 'stop_vehicle'],
-                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_line_side', 'sensor_goal'],
-                controls: ['control_if', 'control_forever', 'stop_program']
+                sensors: ['sensor_line', 'sensor_line_side', 'sensor_goal'],
+                controls: ['control_if', 'control_forever', 'stop_program'],
+                actions: ['action_say']
             },
             8: {
-                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'stop_cars', 'start_cars', 'stop_pedestrian', 'start_pedestrian'],
-                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_cars', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line'],
+                movement: ['stop_cars', 'start_cars', 'stop_pedestrian', 'start_pedestrian'],
+                sensors: ['sensor_pedestrian', 'sensor_cars'],
                 controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_street_light', 'action_traffic_light', 'action_sound']
+                actions: ['action_traffic_light', 'action_say']
             },
             9: {
-                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
-                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_people'],
-                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_street_light', 'action_sound', 'action_ac', 'action_water', 'action_recycle_bin', 'action_class_power']
+                movement: [],
+                sensors: ['sensor_people', 'sensor_light', 'sensor_sound'],
+                controls: ['control_if', 'control_forever', 'stop_program'],
+                actions: ['action_class_power', 'action_ac', 'action_say']
             },
             10: {
-                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
-                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_people', 'sensor_soil'],
-                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_water', 'action_recycle_bin', 'action_class_power']
+                movement: [],
+                sensors: ['sensor_soil'],
+                controls: ['control_if', 'control_wait', 'stop_program'],
+                actions: ['action_water', 'action_say']
             },
             11: {
-                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
-                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_people', 'sensor_soil', 'sensor_armed', 'sensor_motion', 'sensor_door'],
-                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_water', 'action_recycle_bin', 'action_class_power', 'action_alarm']
+                movement: [],
+                sensors: ['sensor_armed', 'sensor_motion', 'sensor_door'],
+                controls: ['control_if', 'control_forever', 'stop_program'],
+                actions: ['action_alarm', 'action_say']
             },
             12: {
                 movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'route_turn'],
-                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_people', 'sensor_soil', 'sensor_armed', 'sensor_motion', 'sensor_door', 'sensor_obstacle'],
+                sensors: ['sensor_obstacle', 'sensor_goal'],
                 controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_water', 'action_recycle_bin', 'action_class_power', 'action_alarm']
+                actions: ['action_say']
             },
             13: {
-                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'route_turn'],
-                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_people', 'sensor_soil', 'sensor_armed', 'sensor_motion', 'sensor_door', 'sensor_obstacle'],
-                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_water', 'action_recycle_bin', 'action_class_power', 'action_alarm']
+                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
+                sensors: ['sensor_light', 'sensor_motion', 'sensor_sound'],
+                controls: ['control_if', 'control_forever', 'stop_program'],
+                actions: ['action_street_light', 'action_sound', 'action_say']
             },
             14: {
                 movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'route_turn'],
-                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_people', 'sensor_soil', 'sensor_armed', 'sensor_motion', 'sensor_door', 'sensor_obstacle'],
+                sensors: ['sensor_smell', 'sensor_temperature', 'sensor_obstacle'],
                 controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_water', 'action_recycle_bin', 'action_class_power', 'action_alarm', 'action_safe_route']
+                actions: ['action_safe_route', 'action_alarm', 'action_say']
             },
             15: {
                 movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'route_turn'],
-                sensors: ['sensor_light', 'sensor_pedestrian', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_people', 'sensor_soil', 'sensor_armed', 'sensor_motion', 'sensor_door', 'sensor_obstacle'],
+                sensors: ['sensor_light', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_line_side', 'sensor_goal', 'sensor_people', 'sensor_soil', 'sensor_armed', 'sensor_motion', 'sensor_door', 'sensor_obstacle'],
                 controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_water', 'action_recycle_bin', 'action_class_power', 'action_alarm', 'action_safe_route']
+                actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_ac', 'action_water', 'action_recycle_bin', 'action_class_power', 'action_alarm', 'action_safe_route']
             }
         };
 
@@ -2551,60 +2558,60 @@
                 env: ['envLight']
             },
             2: {
-                sensors: ['sensorLight', 'sensorSound'],
-                env: ['envLight', 'envSound']
+                sensors: ['sensorSound'],
+                env: ['envSound']
             },
             3: {
-                sensors: ['sensorLight', 'sensorSound', 'sensorTouch'],
-                env: ['envLight', 'envSound', 'envObstacle']
+                sensors: ['sensorTouch'],
+                env: ['envObstacle']
             },
             4: {
-                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell'],
-                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke']
+                sensors: ['sensorSmell'],
+                env: ['envSmoke']
             },
             5: {
-                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp'],
-                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot']
+                sensors: ['sensorTemp'],
+                env: ['envTemperatureHot']
             },
             6: {
-                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor'],
-                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor']
+                sensors: ['sensorColor'],
+                env: ['envRecycleColor']
             },
             7: {
-                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal'],
-                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor']
+                sensors: ['sensorLine', 'sensorGoal'],
+                env: []
             },
             8: {
-                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian'],
-                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian']
+                sensors: ['sensorCars', 'sensorPedestrian'],
+                env: ['envCars', 'envPedestrian']
             },
             9: {
-                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople'],
-                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople']
+                sensors: ['sensorPeople', 'sensorLight', 'sensorSound'],
+                env: ['envPeople', 'envLight', 'envSound']
             },
             10: {
-                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorSoil'],
-                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envSoilDry']
+                sensors: ['sensorSoil'],
+                env: ['envSoilDry']
             },
             11: {
-                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorMotion', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
-                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envMotion', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
+                sensors: ['sensorArmed', 'sensorMotion', 'sensorDoor'],
+                env: ['envArmedMode', 'envMotion', 'envDoorOpen']
             },
             12: {
-                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorMotion', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
-                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envMotion', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
+                sensors: ['sensorTouch', 'sensorGoal'],
+                env: ['envObstacle']
             },
             13: {
-                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorMotion', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
-                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envMotion', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
+                sensors: ['sensorLight', 'sensorMotion', 'sensorSound'],
+                env: ['envLight', 'envMotion', 'envSound']
             },
             14: {
-                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorMotion', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
-                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envMotion', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
+                sensors: ['sensorSmell', 'sensorTemp', 'sensorTouch'],
+                env: ['envSmoke', 'envTemperatureHot', 'envObstacle']
             },
             15: {
-                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorMotion', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
-                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envMotion', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorPeople', 'sensorSoil', 'sensorArmed', 'sensorMotion', 'sensorDoor'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envPeople', 'envSoilDry', 'envArmedMode', 'envMotion', 'envDoorOpen']
             }
         };
 
