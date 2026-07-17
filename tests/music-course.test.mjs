@@ -29,6 +29,8 @@ test('music lesson is linked as lesson 2 instead of another navigation-board res
   assertIncludes(smartCityHtml, 'שיעור 2: מכונת המוזיקה');
   assertIncludes(spaceHtml, 'href="music.html"');
   assertIncludes(spaceHtml, 'שיעור 2: מכונת המוזיקה');
+  assertIncludes(musicHtml, 'href="ocean.html"');
+  assertIncludes(musicHtml, 'בונוס: אוקיינוס');
   assertIncludes(musicHtml, 'זה לא עוד שיעור ניווט על לוח');
 });
 
