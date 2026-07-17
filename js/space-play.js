@@ -59,25 +59,6 @@ function resetRobot() {
   renderGrid();
 }
 
-function showCourseCertificate() {
-  if (lesson.id !== lessons.length) return;
-  const existing = document.getElementById('course-certificate');
-  if (existing) existing.remove();
-  const certificate = document.createElement('div');
-  certificate.id = 'course-certificate';
-  certificate.className = 'certificate-card';
-  certificate.innerHTML = `
-    <div class="certificate-badge">🏆 תעודת סיום</div>
-    <h2>כל הכבוד! סיימתם את שיעור החלל</h2>
-    <p>סיסי השלימה את כל ${lessons.length} המשימות. אפשר לחזור לעמוד המשימות או להמשיך לשיעור הבא.</p>
-    <div class="certificate-actions">
-      <a class="btn" href="space.html">🪐 לעמוד שיעור החלל</a>
-      <a class="btn secondary" href="music.html">🎵 לשיעור הבא</a>
-    </div>
-  `;
-  document.querySelector('.side-card').appendChild(certificate);
-}
-
 function step(cmd) {
   const [dx, dy] = moves[cmd];
   const next = { x: robot.x + dx, y: robot.y + dy };
@@ -107,7 +88,7 @@ async function runProgram() {
   if (same(robot, lesson.goal)) {
     const bonus = collected.size ? ` וגם אספה ${collected.size} כוכבים!` : '!';
     setResult(`יש! סיסי הגיעה ליעד${bonus}`, true);
-    showCourseCertificate();
+    window.SisiCourseCertificate?.show({ lessons, lesson });
   } else {
     setResult('כמעט! סיסי לא הגיעה ליעד. הוסיפו או שנו פקודות ונסו שוב.');
   }
@@ -135,7 +116,7 @@ function init() {
     program = [];
     renderProgram();
     resetRobot();
-    document.getElementById('course-certificate')?.remove();
+    window.SisiCourseCertificate?.clear();
     setResult('המשימה אופסה. אפשר לבנות מסלול מחדש.');
   });
   document.getElementById('demo').addEventListener('click', () => { program = [...lesson.commands]; renderProgram(); resetRobot(); setResult('פתרון לדוגמה נטען. עכשיו לחצו הרצה.'); });

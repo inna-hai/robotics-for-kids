@@ -71,6 +71,7 @@ function checkRecipe() {
   const wrongIndex = recipe.findIndex((id, index) => id !== lesson.correctOrder[index]);
   if (wrongIndex === -1) {
     setResult(`טעים! האלגוריתם הצליח: ${lesson.goal} 🎉`, true);
+    window.SisiCourseCertificate?.show({ lessons, lesson });
   } else {
     setResult(`כמעט. שלב ${wrongIndex + 1} לא במקום. בדקו מה צריך לקרות לפניו.`);
   }

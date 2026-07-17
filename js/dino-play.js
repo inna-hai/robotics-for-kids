@@ -57,6 +57,7 @@ function checkClassification() {
   }
   if (selectedZone === lesson.dino.answer) {
     setResult(`נכון! ${lesson.dino.name} שייך/ת לאזור: ${zones[selectedZone].title} 🎉`, true);
+    window.SisiCourseCertificate?.show({ lessons, lesson });
     renderNextStep(true);
   } else {
     setResult(`כמעט. בדקו שוב את המאפיינים: ${lesson.dino.facts.join(' | ')}`);

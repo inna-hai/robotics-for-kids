@@ -42,6 +42,7 @@ function checkRoute() {
   }
   if (selectedRoute === lesson.route) {
     setResult(`נכון! ${lesson.result} ✉️`, true);
+    window.SisiCourseCertificate?.show({ lessons, lesson });
     renderNextStep(true);
   } else {
     setResult('כמעט. היעד לא מתאים לרמזים שעל ההודעה. קראו שוב את התוכן וחפשו מילים חשובות.');

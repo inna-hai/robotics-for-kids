@@ -12,6 +12,7 @@ const smartCityHtml = readFileSync(join(root, 'smart-city.html'), 'utf8');
 const spaceCss = readFileSync(join(root, 'css', 'space.css'), 'utf8');
 const lessonsSource = readFileSync(join(root, 'js', 'space-lessons.js'), 'utf8');
 const playSource = readFileSync(join(root, 'js', 'space-play.js'), 'utf8');
+const certificateSource = readFileSync(join(root, 'js', 'course-certificate.js'), 'utf8');
 
 const sandbox = { window: {} };
 vm.runInNewContext(lessonsSource, sandbox, { filename: 'space-lessons.js' });
@@ -96,10 +97,11 @@ test('interactive play page exposes simple controls, run/reset flow, and lesson 
   assertIncludes(playHtml, 'id="clear"');
   assertIncludes(playHtml, 'איפוס / ניקוי');
   assertIncludes(playHtml, 'id="demo"');
+  assertIncludes(playHtml, 'js/course-certificate.js');
   assertIncludes(playHtml, 'js/space-play.js');
   assertIncludes(playSource, 'function runProgram()');
-  assertIncludes(playSource, 'function showCourseCertificate()');
-  assertIncludes(playSource, 'תעודת סיום');
+  assertIncludes(playSource, 'SisiCourseCertificate?.show');
+  assertIncludes(certificateSource, 'תעודת סיום');
   assertIncludes(playSource, 'פתרון לדוגמה נטען');
   assertIncludes(playSource, 'lessons.map((item)');
 });

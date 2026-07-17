@@ -50,6 +50,7 @@ function checkAction() {
   }
   if (selectedAction === lesson.answer) {
     setResult(`נכון! ${actions[selectedAction].label}. ${lesson.result} 🌼`, true);
+    window.SisiCourseCertificate?.show({ lessons, lesson });
     renderNextStep(true);
   } else {
     setResult('כמעט. הפעולה לא מתאימה לשלב הנוכחי של הצמח. קראו שוב מה מצב הגינה.');

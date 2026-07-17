@@ -64,6 +64,7 @@ function checkPattern() {
   const sameNotes = sameLength && build.every((note, index) => note === lesson.target[index]);
   if (sameNotes) {
     setResult('מעולה! סיסי ניגנה את הדפוס בדיוק לפי הסדר 🎶', true);
+    window.SisiCourseCertificate?.show({ lessons, lesson });
     return;
   }
   const firstWrong = build.findIndex((note, index) => note !== lesson.target[index]);

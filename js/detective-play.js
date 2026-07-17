@@ -60,6 +60,7 @@ function checkCase() {
   if (clue.good && rule.good) {
     renderSuspects(true);
     setResult(`פתרתם! ${lesson.answer}`, true);
+    window.SisiCourseCertificate?.show({ lessons, lesson });
     return;
   }
   if (!clue.good && rule.good) {

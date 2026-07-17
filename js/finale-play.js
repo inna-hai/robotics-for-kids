@@ -55,7 +55,7 @@ function checkProgram() {
   const conditionOk = selectedCondition === mission.condition;
   const actionsOk = selectedActions.every((id, index) => id === mission.correctActions[index]) && !selectedActions.includes(mission.distractor);
   const explanationOk = selectedExplanation === mission.explanation;
-  if (conditionOk && actionsOk && explanationOk) { setResult('מצוין! בניתם תכנית עיר חכמה שעובדת 🎉', true); renderNextStep(true); }
+  if (conditionOk && actionsOk && explanationOk) { setResult('מצוין! בניתם תכנית עיר חכמה שעובדת 🎉', true); window.SisiCourseCertificate?.show({ lessons, lesson }); renderNextStep(true); }
   else if (!conditionOk) setResult('התנאי לא מתאים למשימה. חפשו את שני הרמזים שמתארים את הבעיה בעיר.');
   else if (!actionsOk) setResult('יש בעיה ברצף הפעולות או פעולה מיותרת. בדקו מה מקדם את המטרה ומה לא.');
   else setResult('התכנית טובה. עכשיו בחרו הסבר נכון שמראה שהבנתם למה היא עובדת.');

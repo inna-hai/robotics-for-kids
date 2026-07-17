@@ -97,6 +97,7 @@ function checkArtwork() {
   }
   if (missing.length === 0 && extra.length === 0) {
     setResult('בול! הציור שלכם תואם לתמונה של סיסי 🎨', true);
+    window.SisiCourseCertificate?.show({ lessons, lesson });
     renderNextStep(true);
     return;
   }

@@ -42,7 +42,7 @@ function checkEscape() {
   const selectedSet = new Set(selected);
   const keysOk = lesson.required.every((id) => selectedSet.has(id)) && selected.length === required.size;
   const reasonOk = selectedReason === lesson.successReason;
-  if (keysOk && reasonOk) { setResult(`נכון! ${lesson.result} 🔓`, true); renderNextStep(true); }
+  if (keysOk && reasonOk) { setResult(`נכון! ${lesson.result} 🔓`, true); window.SisiCourseCertificate?.show({ lessons, lesson }); renderNextStep(true); }
   else if (!keysOk) setResult('כמעט. בתנאי “וגם” שני הרמזים חייבים להתאים בדיוק למה שכתוב על הדלת.');
   else setResult(lesson.feedbackWrongReason || 'הרמזים נכונים. עכשיו בחרו נימוק שמסביר למה תנאי “וגם” עובד.');
 }

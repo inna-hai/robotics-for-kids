@@ -60,6 +60,7 @@ function checkAutomation() {
   const actionOk = selectedAction === lesson.action;
   if (sensorOk && actionOk) {
     setResult(`מצוין! ${lesson.condition} — אז ${actions[selectedAction].label}. ${lesson.result} 🎉`, true);
+    window.SisiCourseCertificate?.show({ lessons, lesson });
     renderNextStep(true);
     return;
   }

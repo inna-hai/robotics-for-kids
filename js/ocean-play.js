@@ -88,6 +88,7 @@ async function runProgram() {
   if (same(robot, lesson.goal)) {
     const bonus = collected.size ? ` וגם אספה ${collected.size} כוכבים!` : '!';
     setResult(`יש! סיסי הגיעה ליעד${bonus}`, true);
+    window.SisiCourseCertificate?.show({ lessons, lesson });
   } else {
     setResult('כמעט! סיסי לא הגיעה ליעד. הוסיפו או שנו פקודות ונסו שוב.');
   }

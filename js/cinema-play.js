@@ -50,7 +50,7 @@ function checkMovie() {
   const orderOk = selectedOrder.every((id, index) => id === lesson.correctOrder[index]);
   const noDistractor = !selectedOrder.includes(lesson.distractor);
   const reasonOk = selectedReason && selectedReason !== lesson.commands[lesson.distractor].reason;
-  if (orderOk && noDistractor && reasonOk) { setResult('מעולה! בניתם אלגוריתם רובוטי שמגיע למטרה 🎬🤖', true); renderNextStep(true); }
+  if (orderOk && noDistractor && reasonOk) { setResult('מעולה! בניתם אלגוריתם רובוטי שמגיע למטרה 🎬🤖', true); window.SisiCourseCertificate?.show({ lessons, lesson }); renderNextStep(true); }
   else if (!noDistractor) setResult('יש פקודה מיותרת באלגוריתם. חפשו פקודה שלא מקדמת את המטרה.');
   else if (!orderOk) setResult('הפקודות טובות, אבל הסדר לא נכון. חשבו מה חייב לקרות קודם.');
   else setResult('הסדר נכון — עכשיו בחרו נימוק שמסביר למה האלגוריתם עובד.');

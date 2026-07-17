@@ -71,6 +71,7 @@ function runCommand() {
   const settingOk = selectedSetting === lesson.setting;
   if (controlOk && settingOk) {
     setResult(`מצוין! ${lesson.commandText}. ${lesson.result} 🎉`, true);
+    window.SisiCourseCertificate?.show({ lessons, lesson });
     renderNextStep(true);
     return;
   }

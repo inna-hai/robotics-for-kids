@@ -84,6 +84,7 @@ function runLoop() {
   renderFactoryLine();
   if (actionOk && countOk) {
     setResult(`מעולה! ${lesson.loopText}. ${lesson.result} 🎉`, true);
+    window.SisiCourseCertificate?.show({ lessons, lesson });
     renderNextStep(true);
     return;
   }
