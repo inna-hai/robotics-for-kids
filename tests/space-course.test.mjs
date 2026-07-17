@@ -64,29 +64,36 @@ test('all mission coordinates fit inside the simple 6 by 5 board', () => {
     assert.ok(inside(lesson.goal), `Lesson ${lesson.id} goal is outside the board`);
     for (const obstacle of lesson.obstacles) assert.ok(inside(obstacle), `Lesson ${lesson.id} obstacle is outside the board`);
     for (const star of lesson.stars) assert.ok(inside(star), `Lesson ${lesson.id} star is outside the board`);
+    for (const item of lesson.requiredItems || []) assert.ok(inside(item.position), `Lesson ${lesson.id} required item is outside the board`);
   }
 });
 
-test('demo solutions reach each goal without hitting obstacles or leaving the board', () => {
+test('demo solutions reach each goal, collect required items, and avoid obstacles', () => {
   const deltas = { up: [0, -1], down: [0, 1], right: [1, 0], left: [-1, 0] };
   for (const lesson of lessons) {
     const obstacles = new Set(lesson.obstacles.map((point) => `${point.x},${point.y}`));
+    const required = new Set((lesson.requiredItems || []).map((item) => `${item.position.x},${item.position.y}`));
+    const collectedRequired = new Set();
     const pos = { ...lesson.start };
     for (const cmd of lesson.commands) {
       const [dx, dy] = deltas[cmd];
       pos.x += dx;
       pos.y += dy;
+      const posKey = `${pos.x},${pos.y}`;
       assert.ok(pos.x >= 1 && pos.x <= 6 && pos.y >= 1 && pos.y <= 5, `Lesson ${lesson.id} demo leaves the board`);
-      assert.ok(!obstacles.has(`${pos.x},${pos.y}`), `Lesson ${lesson.id} demo hits an obstacle at ${pos.x},${pos.y}`);
+      assert.ok(!obstacles.has(posKey), `Lesson ${lesson.id} demo hits an obstacle at ${pos.x},${pos.y}`);
+      if (required.has(posKey)) collectedRequired.add(posKey);
     }
     assert.equal(pos.x, lesson.goal.x, `Lesson ${lesson.id} demo should reach the goal x`);
     assert.equal(pos.y, lesson.goal.y, `Lesson ${lesson.id} demo should reach the goal y`);
+    assert.deepEqual(collectedRequired, required, `Lesson ${lesson.id} demo should collect all required items`);
   }
 });
 
 test('interactive play page exposes simple controls, run/reset flow, and lesson navigation', () => {
   assertIncludes(playHtml, 'שיעור חלל • סיסי בחלל • משימת תכנות קצרה');
   assertIncludes(playHtml, 'שיעור חלל אינטראקטיבי');
+  assertIncludes(playHtml, 'aria-label="מקרא סימנים של משחק החלל"');
   assertIncludes(playHtml, 'aria-label="לוח משחק של שיעור חלל"');
   assertIncludes(playHtml, 'data-cmd="up"');
   assertIncludes(playHtml, 'data-cmd="down"');
@@ -99,11 +106,13 @@ test('interactive play page exposes simple controls, run/reset flow, and lesson 
   assertIncludes(playHtml, 'id="demo"');
   assertIncludes(playHtml, 'js/course-certificate.js');
   assertIncludes(playHtml, 'js/space-play.js');
+  assertIncludes(playSource, 'function renderGuide()');
   assertIncludes(playSource, 'function runProgram()');
   assertIncludes(playSource, 'SisiCourseCertificate?.show');
   assertIncludes(certificateSource, 'תעודת סיום');
   assertIncludes(playSource, 'פתרון לדוגמה נטען');
   assertIncludes(playSource, 'lessons.map((item)');
+  assertIncludes(playSource, 'requiredItems');
 });
 
 test('game board uses left-to-right grid direction so right and left buttons move visually correctly', () => {
@@ -113,6 +122,8 @@ test('game board uses left-to-right grid direction so right and left buttons mov
 });
 
 test('responsive styling keeps the course usable on phones', () => {
+  assertIncludes(spaceCss, '.space-guide');
+  assertIncludes(spaceCss, '.cell.required-item');
   assertIncludes(spaceCss, '@media(max-width:620px)');
   assertMatches(spaceCss, /\.cards,\.stats\{grid-template-columns:1fr\}/);
   assertIncludes(spaceCss, '.actions .btn,.side-actions .btn{width:100%}');

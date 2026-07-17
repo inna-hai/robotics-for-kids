@@ -8,11 +8,36 @@ const lesson = lessons.find((item) => item.id === lessonId) || lessons[0];
 let program = [];
 let robot = { ...lesson.start };
 let collected = new Set();
+let collectedItems = new Set();
 
 function key(pos) { return `${pos.x},${pos.y}`; }
 function same(a, b) { return a.x === b.x && a.y === b.y; }
 function isObstacle(pos) { return lesson.obstacles.some((item) => same(item, pos)); }
 function inside(pos) { return pos.x >= 1 && pos.x <= 6 && pos.y >= 1 && pos.y <= 5; }
+function requiredItems() { return lesson.requiredItems || []; }
+function requiredAt(pos) { return requiredItems().find((item) => same(item.position, pos)); }
+function hasAllRequiredItems() { return requiredItems().every((item) => collectedItems.has(item.id)); }
+function requiredItemsText() { return requiredItems().map((item) => `${item.icon} ${item.label}`).join(', '); }
+
+function obstacleIcon() {
+  if (lesson.id === 4) return '🔥';
+  if (lesson.id === 6) return '☄️';
+  return '🪨';
+}
+
+function goalIcon() { return lesson.id === 5 ? '👽' : '🏁'; }
+
+function renderGuide() {
+  const required = requiredItems();
+  const extra = required.length ? required.map((item) => `<span class="guide-chip"><b>${item.icon}</b> ${item.label} — חובה לפני הסיום</span>`).join('') : '';
+  document.getElementById('space-guide').innerHTML = `
+    <span class="guide-chip"><b>🤖</b> סיסי</span>
+    <span class="guide-chip"><b>${obstacleIcon()}</b> מכשול אדום — אסור להיתקע</span>
+    <span class="guide-chip"><b>${goalIcon()}</b> יעד ירוק — לשם מגיעים בסוף</span>
+    <span class="guide-chip"><b>⭐</b> כוכב בונוס — לא חובה, מוסיף אתגר</span>
+    ${extra}
+  `;
+}
 
 function renderGrid() {
   const grid = document.getElementById('grid');
@@ -22,14 +47,20 @@ function renderGrid() {
       const pos = { x, y };
       const cell = document.createElement('div');
       cell.className = 'cell';
+      const item = requiredAt(pos);
       if (lesson.stars.some((star) => same(star, pos)) && !collected.has(key(pos))) cell.classList.add('star');
+      if (item && !collectedItems.has(item.id)) {
+        cell.classList.add('required-item');
+        cell.textContent = item.icon;
+        cell.title = item.label;
+      }
       if (isObstacle(pos)) {
         cell.classList.add('obstacle');
-        cell.textContent = lesson.id === 4 ? '🔥' : lesson.id === 6 ? '☄️' : '🪨';
+        cell.textContent = obstacleIcon();
       }
       if (same(lesson.goal, pos)) {
         cell.classList.add('goal');
-        cell.textContent = lesson.id === 5 ? '👽' : '🏁';
+        cell.textContent = goalIcon();
       }
       if (same(robot, pos)) {
         cell.classList.add('robot');
@@ -56,6 +87,7 @@ function setResult(text, success = false) {
 function resetRobot() {
   robot = { ...lesson.start };
   collected = new Set();
+  collectedItems = new Set();
   renderGrid();
 }
 
@@ -66,8 +98,10 @@ function step(cmd) {
   if (isObstacle(next)) return { ok: false, reason: 'אופס, יש מכשול בדרך. נסו מסלול אחר.' };
   robot = next;
   if (lesson.stars.some((star) => same(star, robot))) collected.add(key(robot));
+  const item = requiredAt(robot);
+  if (item) collectedItems.add(item.id);
   renderGrid();
-  return { ok: true };
+  return { ok: true, message: item?.collectedMessage };
 }
 
 async function runProgram() {
@@ -84,6 +118,11 @@ async function runProgram() {
       setResult(outcome.reason);
       return;
     }
+    if (outcome.message) setResult(outcome.message, true);
+  }
+  if (same(robot, lesson.goal) && !hasAllRequiredItems()) {
+    setResult(`כמעט! לפני שמסיימים צריך לאסוף: ${requiredItemsText()}.`);
+    return;
   }
   if (same(robot, lesson.goal)) {
     const bonus = collected.size ? ` וגם אספה ${collected.size} כוכבים!` : '!';
@@ -101,6 +140,7 @@ function init() {
   document.getElementById('lesson-emoji').textContent = lesson.emoji;
   document.getElementById('mission').textContent = lesson.mission;
   document.getElementById('fact').innerHTML = `<b>עובדת חלל:</b> ${lesson.spaceFact}`;
+  renderGuide();
 
   document.querySelectorAll('[data-cmd]').forEach((button) => {
     button.addEventListener('click', () => {
