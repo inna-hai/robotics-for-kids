@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎵 שיעור 2: סיסי ומכונת המוזיקה - דפוסים וחזרות לכיתות ב׳</title>
+  <meta name="description" content="שיעור שני לכיתות ב׳: סיסי ומכונת המוזיקה מלמדת דפוסים, רצף פקודות וחזרות דרך צלילים וצבעים." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/music.css?v=20260717-music-1">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <div class="kicker">שיעור 2 • מוזיקה ודפוסים • כיתות ב׳ • 75 דקות</div>
+        <h1>🎵 סיסי ומכונת המוזיקה</h1>
+        <p>
+          זה לא עוד שיעור ניווט על לוח. הפעם סיסי בונה מקצבים, מזהה דפוסים,
+          חוזרת על רצפים ומתקנת טעויות — דרך צלילים, צבעים ומשחק מוזיקלי שמתאים לילדים בני 7.
+        </p>
+        <div class="actions">
+          <a class="btn" href="music-play.html?lesson=1">▶️ להתחיל משימה 1</a>
+          <a class="btn secondary" href="#missions">🎶 לראות משימות</a>
+          <a class="btn secondary" href="space.html">🚀 שיעור 1: חלל</a>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">🤖🎧</div>
+    </section>
+
+    <section class="stats" aria-label="נתוני שיעור המוזיקה">
+      <div class="stat"><b>שיעור 2</b>מכניקה חדשה</div>
+      <div class="stat"><b>75</b>דקות</div>
+      <div class="stat"><b>דפוסים</b>רעיון מרכזי</div>
+      <div class="stat"><b>לולאות</b>חזרות פשוטות</div>
+    </section>
+
+    <section class="intro" aria-label="על שיעור המוזיקה">
+      <div class="panel">
+        <h2>מה חדש בשיעור הזה?</h2>
+        <p>
+          במקום להזיז דמות ימינה ושמאלה, הילדים בונים רצף של צלילים וצבעים.
+          הם מקשיבים לדפוס, משחזרים אותו, מגלים חזרות, ואז משפרים או יוצרים סוף משלהם.
+        </p>
+      </div>
+      <div class="panel">
+        <h3>מה לומדים בלי להרגיש?</h3>
+        <ul>
+          <li>רצף פקודות בצורה חדשה: רצף צלילים</li>
+          <li>דפוסים ותבניות</li>
+          <li>חזרה/לולאה בצורה אינטואיטיבית</li>
+          <li>דיבוג: למצוא צליל לא נכון ולתקן</li>
+          <li>שיעור מומלץ: משימות 1–4 במשך 75 דקות</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="missions">
+      <h2>משימות שיעור המוזיקה</h2>
+      <div class="cards" id="cards"></div>
+    </section>
+  </main>
+
+  <script src="js/music-lessons.js?v=20260717-music-1"></script>
+  <script>
+    document.getElementById('cards').innerHTML = window.MUSIC_LESSONS.map((lesson) => `
+      <a class="card" href="music-play.html?lesson=${lesson.id}" aria-label="פתח משימה ${lesson.id}: ${lesson.title}">
+        <div class="top"><span class="emoji">${lesson.emoji}</span><span class="id">משימה ${lesson.id}</span></div>
+        <h3>${lesson.title}</h3>
+        <div class="unit">${lesson.unit}</div>
+        <div class="story">${lesson.mission}</div>
+        <div class="tags"><span class="tag">${lesson.concept}</span><span class="tag">מוזיקה</span></div>
+        <div class="start">להתחיל משימה ←</div>
+      </a>
+    `).join('');
+  </script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>

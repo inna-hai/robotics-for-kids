@@ -22,9 +22,9 @@ function test(name, fn) { tests.push({ name, fn }); }
 function assertIncludes(source, needle, message = `Missing: ${needle}`) { assert.ok(source.includes(needle), message); }
 function assertMatches(source, regex, message = `Missing pattern: ${regex}`) { assert.match(source, regex, message); }
 
-test('ocean course is a separate entry point and does not replace the smart-city course', () => {
-  assertIncludes(smartCityHtml, 'href="ocean.html"');
-  assertIncludes(smartCityHtml, 'שיעור 2: סיסי באוקיינוס');
+test('ocean course remains a separate optional entry point and does not replace the active lesson 2', () => {
+  assertIncludes(smartCityHtml, 'href="music.html"');
+  assertIncludes(smartCityHtml, 'שיעור 2: מכונת המוזיקה');
   assertIncludes(smartCityHtml, 'href="index.html?lesson=1"');
   assertIncludes(smartCityHtml, 'סנסי בעיר החכמה');
   assertIncludes(oceanHtml, 'href="space.html"');
