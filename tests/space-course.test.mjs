@@ -96,6 +96,12 @@ test('interactive play page exposes simple controls, run/reset flow, and lesson 
   assertIncludes(playSource, 'lessons.map((item)');
 });
 
+test('game board uses left-to-right grid direction so right and left buttons move visually correctly', () => {
+  assertMatches(spaceCss, /\.grid\{[^}]*direction:ltr/);
+  assertIncludes(playSource, "right: [1, 0]");
+  assertIncludes(playSource, "left: [-1, 0]");
+});
+
 test('responsive styling keeps the course usable on phones', () => {
   assertIncludes(spaceCss, '@media(max-width:620px)');
   assertMatches(spaceCss, /\.cards,\.stats\{grid-template-columns:1fr\}/);
