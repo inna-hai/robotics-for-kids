@@ -16,7 +16,10 @@ function stepText(id) {
 
 function renderBank() {
   const used = new Set(recipe);
-  document.getElementById('step-bank').innerHTML = lesson.steps.map((step) => `
+  const displaySteps = (lesson.displayOrder || lesson.steps.map((step) => step.id))
+    .map((id) => lesson.steps.find((step) => step.id === id))
+    .filter(Boolean);
+  document.getElementById('step-bank').innerHTML = displaySteps.map((step) => `
     <button class="step-btn" type="button" data-step="${step.id}" ${used.has(step.id) ? 'disabled' : ''}>${step.text}</button>
   `).join('');
   document.querySelectorAll('[data-step]').forEach((button) => {

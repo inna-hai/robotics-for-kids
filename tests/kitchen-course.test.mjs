@@ -14,6 +14,7 @@ const detectiveHtml = readFileSync(join(root, 'detective.html'), 'utf8');
 const kitchenCss = readFileSync(join(root, 'css', 'kitchen.css'), 'utf8');
 const lessonsSource = readFileSync(join(root, 'js', 'kitchen-lessons.js'), 'utf8');
 const playSource = readFileSync(join(root, 'js', 'kitchen-play.js'), 'utf8');
+const lessonPlan = readFileSync(join(root, 'KITCHEN_75_MIN_LESSON_PLAN.md'), 'utf8');
 
 const sandbox = { window: {} };
 vm.runInNewContext(lessonsSource, sandbox, { filename: 'kitchen-lessons.js' });
@@ -42,12 +43,15 @@ test('landing page frames a new recipe/algorithm mechanic for grade B', () => {
   assertIncludes(kitchenHtml, 'css/kitchen.css');
 });
 
-test('kitchen lesson data has six recipes with valid unique ordered steps', () => {
+test('kitchen lesson data has six recipes with valid unique ordered steps and shuffled display order', () => {
   assert.equal(lessons.length, 6);
   for (const lesson of lessons) {
+    const stepIds = lesson.steps.map((step) => step.id);
     assert.ok(lesson.steps.length >= 4, `Recipe ${lesson.id} needs at least 4 steps`);
-    assert.equal(new Set(lesson.steps.map((step) => step.id)).size, lesson.steps.length, `Recipe ${lesson.id} step IDs must be unique`);
-    assert.deepEqual(new Set(lesson.correctOrder), new Set(lesson.steps.map((step) => step.id)), `Recipe ${lesson.id} order must use all steps`);
+    assert.equal(new Set(stepIds).size, lesson.steps.length, `Recipe ${lesson.id} step IDs must be unique`);
+    assert.deepEqual(new Set(lesson.correctOrder), new Set(stepIds), `Recipe ${lesson.id} order must use all steps`);
+    assert.deepEqual(new Set(lesson.displayOrder), new Set(stepIds), `Recipe ${lesson.id} display order must use all steps`);
+    assert.notDeepEqual(lesson.displayOrder, lesson.correctOrder, `Recipe ${lesson.id} display order should not be pre-sorted`);
     assert.ok(lesson.cookingNote.length >= 20, `Recipe ${lesson.id} needs a learning note`);
   }
 });
@@ -65,10 +69,18 @@ test('kitchen play page exposes recipe ordering controls rather than previous me
 
 test('kitchen engine checks exact step order and gives debugging feedback', () => {
   assertIncludes(playSource, 'function checkRecipe()');
+  assertIncludes(playSource, 'lesson.displayOrder || lesson.steps.map');
   assertIncludes(playSource, 'lesson.correctOrder.length');
   assertIncludes(playSource, 'recipe.findIndex((id, index) => id !== lesson.correctOrder[index])');
   assertIncludes(playSource, 'שלב');
   assertIncludes(playSource, 'recipe = [...lesson.correctOrder]');
+});
+
+test('kitchen 75-minute plan is realistic and does not require all recipes for the whole class', () => {
+  assertIncludes(lessonPlan, '## מבנה מומלץ — 75 דקות');
+  assertIncludes(lessonPlan, 'מתכונים 1–4');
+  assertIncludes(lessonPlan, 'לא להספיק את כל 6 המתכונים עם כל הכיתה');
+  assertIncludes(lessonPlan, 'מתכונים 5–6 הם הרחבה');
 });
 
 test('kitchen css includes dedicated recipe layout and responsive behavior', () => {

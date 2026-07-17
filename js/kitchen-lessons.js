@@ -14,7 +14,8 @@ window.KITCHEN_LESSONS = [
       { id: 'shape', text: 'יוצרים צורת כוכב' },
       { id: 'bake', text: 'אופים בתנור' }
     ],
-    correctOrder: ['mix', 'egg', 'shape', 'bake']
+    correctOrder: ['mix', 'egg', 'shape', 'bake'],
+    displayOrder: ['shape', 'mix', 'bake', 'egg']
   },
   {
     id: 2,
@@ -31,7 +32,8 @@ window.KITCHEN_LESSONS = [
       { id: 'blend', text: 'מפעילים בלנדר' },
       { id: 'ice', text: 'מוסיפים קרח בסוף' }
     ],
-    correctOrder: ['banana', 'berries', 'blend', 'ice']
+    correctOrder: ['banana', 'berries', 'blend', 'ice'],
+    displayOrder: ['ice', 'banana', 'blend', 'berries']
   },
   {
     id: 3,
@@ -49,7 +51,8 @@ window.KITCHEN_LESSONS = [
       { id: 'stir2', text: 'מערבבים פעם שנייה' },
       { id: 'serve', text: 'מגישים בקערה' }
     ],
-    correctOrder: ['water', 'veggies', 'stir1', 'stir2', 'serve']
+    correctOrder: ['water', 'veggies', 'stir1', 'stir2', 'serve'],
+    displayOrder: ['serve', 'stir1', 'water', 'veggies', 'stir2']
   },
   {
     id: 4,
@@ -67,7 +70,8 @@ window.KITCHEN_LESSONS = [
       { id: 'topping', text: 'מוסיפים תוספת' },
       { id: 'oven', text: 'מכניסים לתנור' }
     ],
-    correctOrder: ['dough', 'sauce', 'cheese', 'topping', 'oven']
+    correctOrder: ['dough', 'sauce', 'cheese', 'topping', 'oven'],
+    displayOrder: ['cheese', 'oven', 'dough', 'topping', 'sauce']
   },
   {
     id: 5,
@@ -85,7 +89,8 @@ window.KITCHEN_LESSONS = [
       { id: 'cool', text: 'מחכים שיתקרר' },
       { id: 'decorate', text: 'מקשטים בסוכריות' }
     ],
-    correctOrder: ['cup', 'batter', 'bake', 'cool', 'decorate']
+    correctOrder: ['cup', 'batter', 'bake', 'cool', 'decorate'],
+    displayOrder: ['decorate', 'cup', 'cool', 'batter', 'bake']
   },
   {
     id: 6,
@@ -103,6 +108,7 @@ window.KITCHEN_LESSONS = [
       { id: 'taste', text: 'בודקים טעם' },
       { id: 'serve', text: 'מגישים לשולחן' }
     ],
-    correctOrder: ['choose', 'collect', 'cook', 'taste', 'serve']
+    correctOrder: ['choose', 'collect', 'cook', 'taste', 'serve'],
+    displayOrder: ['serve', 'collect', 'choose', 'taste', 'cook']
   }
 ];
