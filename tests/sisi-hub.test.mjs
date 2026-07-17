@@ -20,12 +20,13 @@ const parkHtml = readFileSync(join(root, 'park.html'), 'utf8');
 const mailHtml = readFileSync(join(root, 'mail.html'), 'utf8');
 const cinemaHtml = readFileSync(join(root, 'cinema.html'), 'utf8');
 const escapeHtml = readFileSync(join(root, 'escape.html'), 'utf8');
+const finaleHtml = readFileSync(join(root, 'finale.html'), 'utf8');
 
 const tests = [];
 function test(name, fn) { tests.push({ name, fn }); }
 function assertIncludes(source, needle, message = `Missing: ${needle}`) { assert.ok(source.includes(needle), message); }
 
-test('Sisi hub lists all fourteen lessons in the recommended order', () => {
+test('Sisi hub lists all fifteen lessons in the recommended order', () => {
   assertIncludes(hubHtml, 'סיסי — שיעורי תכנות לילדים');
   const expected = [
     ['שיעור 1', 'space.html', 'סיסי בחלל'],
@@ -41,7 +42,8 @@ test('Sisi hub lists all fourteen lessons in the recommended order', () => {
     ['שיעור 11', 'park.html', 'סיסי בלונה פארק'],
     ['שיעור 12', 'mail.html', 'סיסי בדואר הקסום'],
     ['שיעור 13', 'cinema.html', 'סיסי באולפן הסרטים'],
-    ['שיעור 14', 'escape.html', 'סיסי בחדר הבריחה']
+    ['שיעור 14', 'escape.html', 'סיסי בחדר הבריחה'],
+    ['שיעור 15', 'finale.html', 'סיסי מצילה את העיר החכמה']
   ];
   let lastIndex = -1;
   for (const [number, href, title] of expected) {
@@ -55,7 +57,7 @@ test('Sisi hub lists all fourteen lessons in the recommended order', () => {
 });
 
 test('main and lesson landing pages link back to the Sisi hub', () => {
-  for (const [name, html] of Object.entries({ smartCityHtml, spaceHtml, musicHtml, oceanHtml, detectiveHtml, dinoHtml, artHtml, weatherHtml, factoryHtml, gardenHtml, parkHtml, mailHtml, cinemaHtml, escapeHtml })) {
+  for (const [name, html] of Object.entries({ smartCityHtml, spaceHtml, musicHtml, oceanHtml, detectiveHtml, dinoHtml, artHtml, weatherHtml, factoryHtml, gardenHtml, parkHtml, mailHtml, cinemaHtml, escapeHtml, finaleHtml })) {
     assertIncludes(html, 'href="sisi.html"', `${name} should link to sisi.html`);
     assertIncludes(html, 'כל שיעורי סיסי', `${name} should label the hub link clearly`);
   }
@@ -65,7 +67,7 @@ test('hub frames the series for grade B age 7 and 75-minute lessons', () => {
   assertIncludes(hubHtml, 'כיתות ב׳');
   assertIncludes(hubHtml, 'גיל 7');
   assertIncludes(hubHtml, '75</b>דק׳ לשיעור');
-  assertIncludes(hubHtml, '14</b>מכניקות שונות');
+  assertIncludes(hubHtml, '15</b>מכניקות שונות');
 });
 
 let passed = 0;

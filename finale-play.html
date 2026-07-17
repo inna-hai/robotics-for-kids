@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">🏙️ סיסי מצילה את העיר החכמה</title>
+  <meta name="description" content="משחק שיעור 15: בונים תכנית עיר חכמה עם תנאי, פעולות ונימוק." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/finale.css?v=20260717-finale-1">
+</head>
+<body>
+  <main class="shell">
+    <header class="play-header">
+      <div><div class="kicker" id="page-subtitle">שיעור 15 • משימת שיא</div><h1>🏙️ סיסי מצילה את העיר החכמה</h1></div>
+      <nav class="lesson-nav" id="lesson-nav" aria-label="מעבר בין משימות שיא"></nav>
+    </header>
+
+    <section class="mission-card">
+      <div class="big-emoji" id="mission-emoji" aria-hidden="true">🏙️</div>
+      <div><h2 id="mission-heading">משימת שיא</h2><p id="goal"></p><div class="learning-note" id="learning-note"></div></div>
+    </section>
+
+    <section class="finale-layout">
+      <div class="choice-panel"><h2>1. מה התנאי בעיר?</h2><p>בחרו את מצב העיר שמפעיל את התכנית.</p><div class="choice-grid" id="condition-options"></div></div>
+      <div class="choice-panel"><h2>2. אילו פעולות ובאיזה סדר?</h2><p>בחרו 3 פעולות. אחת מהאפשרויות מיותרת ולא מתאימה למשימה.</p><div class="choice-grid" id="action-options"></div></div>
+    </section>
+
+    <section class="program-panel">
+      <h2>התכנית החכמה שבניתי</h2>
+      <div id="program-preview"></div>
+      <h2>למה התכנית עובדת?</h2>
+      <div class="choice-grid" id="explanation-options"></div>
+      <div class="controls"><button class="btn" id="check" type="button">✅ לבדוק תכנית</button><button class="btn secondary" id="hint" type="button">💡 רמז</button><button class="btn secondary" id="clear" type="button">🔄 לנקות</button><a class="btn secondary" href="finale.html">🏙️ עמוד השיעור</a></div>
+      <div class="result" id="result" aria-live="polite"></div><div class="next-step" id="next-step"></div>
+    </section>
+  </main>
+  <script src="js/finale-lessons.js?v=20260717-finale-1"></script>
+  <script src="js/finale-play.js?v=20260717-finale-1"></script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🏙️ שיעור 15: סיסי מצילה את העיר החכמה - שיעור שיא</title>
+  <meta name="description" content="שיעור שיא לכיתות ב׳: סיסי מצילה את העיר החכמה ומשלבת אלגוריתם, תנאים, וגם, דיבוג ונימוק." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/finale.css?v=20260717-finale-1">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero"><div>
+      <div class="kicker">שיעור 15 • שיעור שיא • עיר חכמה • 76 דקות</div>
+      <h1>🏙️🤖 סיסי מצילה את העיר החכמה</h1>
+      <p>זה שיעור הסיום: סיסי מקבלת משימות הצלה בעיר, והילדים בונים תכנית חכמה שמשלבת תנאי, רצף פעולות, דיבוג ונימוק. זה מרגיש כמו משחק, אבל מסכם הרבה תכנות.</p>
+      <div class="actions">
+        <a class="btn" href="finale-play.html?lesson=1">▶️ להתחיל משימת שיא</a>
+        <a class="btn secondary" href="#missions">🏙️ לראות משימות</a>
+        <a class="btn secondary" href="finale-lab.html">🏗️ מעבדת עיר חכמה</a>
+        <a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a>
+        <a class="btn secondary" href="escape.html">🔐 שיעור 14: חדר בריחה</a>
+      </div>
+    </div><div class="hero-art" aria-hidden="true">🌆🚨</div></section>
+
+    <section class="stats" aria-label="נתוני שיעור השיא">
+      <div class="stat"><b>שיעור 15</b>שיא הקורס</div>
+      <div class="stat"><b>76</b>דקות</div>
+      <div class="stat"><b>שילוב</b>תנאי + רצף</div>
+      <div class="stat"><b>דיבוג</b>פעולה מיותרת</div>
+    </section>
+
+    <section class="intro">
+      <div class="panel"><h2>למה זה שיעור שיא?</h2><p>הילדים לא לומדים מושג בודד. הם משלבים: אם מצב קורה בעיר, אז בונים רצף פעולות מתאים ומסבירים למה הוא עובד.</p></div>
+      <div class="panel"><h3>מה חוזר מהקורס?</h3><ul><li>אלגוריתם ורצף פקודות</li><li>תנאי וגם</li><li>בחירת פעולה לפי מצב</li><li>דיבוג פעולה מיותרת</li><li>נימוק והסבר</li></ul></div>
+    </section>
+
+    <section class="intro" id="capstone-activities">
+      <div class="panel"><h2>אתגר צוותי — 12 דקות</h2><p>כל צוות מקבל בעיית עיר חדשה ומציע תנאי + שלוש פעולות. שאר הכיתה בודקת אם יש פעולה מיותרת.</p></div>
+      <div class="panel"><h2>הצגת פתרון — 10 דקות</h2><p>כל זוג מציג: מה הבעיה, מה התנאי, מה שלושת הצעדים, ומה בדקנו בסוף.</p></div>
+    </section>
+
+    <section id="missions"><h2>משימות ההצלה בעיר החכמה</h2><div class="cards" id="cards"></div></section>
+  </main>
+  <script src="js/finale-lessons.js?v=20260717-finale-1"></script>
+  <script>
+    document.getElementById('cards').innerHTML = window.FINALE_MISSIONS.map((mission) => `
+      <a class="card" href="finale-play.html?lesson=${mission.id}" aria-label="פתח משימת שיא ${mission.id}: ${mission.title}">
+        <div class="top"><span class="emoji">${mission.emoji}</span><span class="id">משימה ${mission.id}</span></div>
+        <h3>${mission.title}</h3><div class="unit">${mission.district}</div><div class="story">${mission.goal}</div>
+        <div class="tags"><span class="tag">${window.FINALE_CONDITIONS[mission.condition].label}</span><span class="tag">שיעור שיא</span></div><div class="start">לבנות תכנית ←</div>
+      </a>`).join('');
+  </script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>
