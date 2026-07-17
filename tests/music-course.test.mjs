@@ -44,8 +44,8 @@ test('landing page frames a new music/pattern mechanic for grade B', () => {
   assertIncludes(musicHtml, 'css/music.css');
 });
 
-test('music lesson data has six pattern challenges with valid notes', () => {
-  assert.equal(lessons.length, 6);
+test('music lesson data has twelve pattern challenges with valid notes', () => {
+  assert.equal(lessons.length, 12);
   const noteKeys = Object.keys(notes);
   assert.deepEqual(noteKeys.sort(), ['blue', 'green', 'purple', 'red', 'yellow']);
   assert.ok(lessons.find((lesson) => lesson.id === 6).target.length >= 8, 'Lesson 6 should be a harder debugging challenge');

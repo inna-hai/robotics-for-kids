@@ -38,14 +38,14 @@ test('landing page frames a new sensor automation mechanic for grade B', () => {
   assertIncludes(weatherHtml, 'שיעור 8 • חיישנים ואוטומציה • כיתות ב׳ • 75 דקות');
   assertIncludes(weatherHtml, 'קלט→פלט');
   assertIncludes(weatherHtml, 'אם-אז');
-  assertIncludes(weatherHtml, 'תחנות 1–4 לכל הכיתה, 5–6 להרחבה');
+  assertIncludes(weatherHtml, 'תחנות 1–4 לכל הכיתה, 5–12 להרחבה ותרגול');
   assertIncludes(weatherHtml, 'href="weather-play.html?lesson=1"');
   assertIncludes(weatherHtml, 'js/weather-lessons.js');
   assertIncludes(weatherHtml, 'css/weather.css');
 });
 
-test('weather data has six scenarios with valid sensor-action answers', () => {
-  assert.equal(lessons.length, 6);
+test('weather data has twelve scenarios with valid sensor-action answers', () => {
+  assert.equal(lessons.length, 12);
   const sensorKeys = Object.keys(sensors);
   const actionKeys = Object.keys(actions);
   const usedSensors = new Set();

@@ -39,14 +39,14 @@ test('landing page frames a 76-minute experiential programming lesson', () => {
   assertIncludes(escapeHtml, 'אם שני תנאים נכונים');
   assertIncludes(escapeHtml, 'אתגר “אחד נכון לא מספיק”');
   assertIncludes(escapeHtml, 'משחק בוני חדרים בזוגות');
-  assertIncludes(escapeHtml, 'שישה חדרים, שש בדיקות שונות');
+  assertIncludes(escapeHtml, 'שנים־עשר חדרים, שנים־עשר אתגרי תנאים');
   assertIncludes(escapeHtml, 'נימוקים שונים לפי סוג החדר');
   assertIncludes(escapeHtml, 'href="escape-play.html?lesson=1"');
   assertIncludes(escapeHtml, 'href="escape-lab.html"');
 });
 
-test('escape data has six AND-condition tasks with two required keys and distractors', () => {
-  assert.equal(lessons.length, 6);
+test('escape data has twelve AND-condition tasks with two required keys and distractors', () => {
+  assert.equal(lessons.length, 12);
   const keyIds = Object.keys(keys);
   for (const lesson of lessons) {
     assert.equal(lesson.required.length, 2, `Lesson ${lesson.id} needs two required conditions`);

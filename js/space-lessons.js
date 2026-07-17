@@ -122,3 +122,66 @@ window.SPACE_LESSONS = [
     commands: ['up', 'up', 'up', 'right', 'right', 'right', 'right']
   }
 ];
+
+window.SPACE_LESSONS.push(
+  {
+    id: 9,
+    title: 'מעבר בין אסטרואידים',
+    unit: 'מסלול בטוח',
+    emoji: '🪨',
+    place: 'חגורת אסטרואידים',
+    mission: 'סיסי מתכננת נתיב בין אבני חלל בלי לפגוע באף אחת.',
+    concept: 'תכנון סביב מכשולים',
+    spaceFact: 'אסטרואידים הם גושי סלע שמקיפים את השמש במסלולים שונים.',
+    goal: { x: 6, y: 4 },
+    start: { x: 1, y: 1 },
+    obstacles: [{ x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 3 }, { x: 5, y: 3 }],
+    stars: [{ x: 2, y: 1 }, { x: 4, y: 2 }, { x: 6, y: 3 }],
+    commands: ['right', 'right', 'right', 'right', 'right', 'down', 'down', 'down']
+  },
+  {
+    id: 10,
+    title: 'תיקון אנטנה',
+    unit: 'תקשורת חלל',
+    emoji: '📡',
+    place: 'לווין תקשורת',
+    mission: 'סיסי מגיעה לאנטנה כדי להחזיר קשר עם כדור הארץ.',
+    concept: 'פקודה בסוף מסלול',
+    spaceFact: 'לוויינים עוזרים לנו בתקשורת, ניווט וחיזוי מזג אוויר.',
+    goal: { x: 6, y: 1 },
+    start: { x: 1, y: 4 },
+    obstacles: [{ x: 2, y: 3 }, { x: 3, y: 3 }, { x: 4, y: 2 }, { x: 5, y: 2 }],
+    stars: [{ x: 1, y: 3 }, { x: 3, y: 4 }, { x: 5, y: 1 }],
+    commands: ['up', 'up', 'up', 'right', 'right', 'right', 'right', 'right']
+  },
+  {
+    id: 11,
+    title: 'כוכב שביט נוצץ',
+    unit: 'מעקב אחרי תנועה',
+    emoji: '🌠',
+    place: 'מסלול שביט',
+    mission: 'סיסי עוקבת אחרי זנב של שביט ומגיעה לנקודת צילום בטוחה.',
+    concept: 'בדיקת נתיב לפני הרצה',
+    spaceFact: 'כוכב שביט עשוי קרח ואבק, וכשהוא מתקרב לשמש נוצר לו זנב בהיר.',
+    goal: { x: 5, y: 5 },
+    start: { x: 1, y: 2 },
+    obstacles: [{ x: 2, y: 1 }, { x: 3, y: 3 }, { x: 4, y: 3 }, { x: 6, y: 4 }],
+    stars: [{ x: 2, y: 2 }, { x: 4, y: 4 }, { x: 5, y: 5 }],
+    commands: ['down', 'down', 'down', 'right', 'right', 'right', 'right']
+  },
+  {
+    id: 12,
+    title: 'חזרה הביתה לכדור הארץ',
+    unit: 'אתגר סיום',
+    emoji: '🌍',
+    place: 'מסלול חזרה',
+    mission: 'סיסי מסיימת את שיעור החלל וחוזרת לנחיתה בטוחה בכדור הארץ.',
+    concept: 'אלגוריתם מסלול מלא',
+    spaceFact: 'כדור הארץ הוא הבית שלנו, ולכן משימות חלל מסתיימות תמיד בתכנון חזרה בטוח.',
+    goal: { x: 6, y: 5 },
+    start: { x: 1, y: 1 },
+    obstacles: [{ x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 4 }, { x: 5, y: 4 }],
+    stars: [{ x: 2, y: 1 }, { x: 4, y: 3 }, { x: 6, y: 4 }],
+    commands: ['right', 'right', 'right', 'right', 'right', 'down', 'down', 'down', 'down']
+  }
+);

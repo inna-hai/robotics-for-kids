@@ -38,14 +38,14 @@ test('landing page frames a new pixel-coordinate mechanic for grade B', () => {
   assertIncludes(artHtml, 'שיעור 7 • פיקסלים וקואורדינטות • כיתות ב׳ • 75 דקות');
   assertIncludes(artHtml, 'שורה ועמודה');
   assertIncludes(artHtml, 'דיבוג');
-  assertIncludes(artHtml, 'ציורים 1–4 לכל הכיתה, 5–6 להרחבה');
+  assertIncludes(artHtml, 'ציורים 1–4 לכל הכיתה, 5–12 להרחבה ותרגול');
   assertIncludes(artHtml, 'href="art-play.html?lesson=1"');
   assertIncludes(artHtml, 'js/art-lessons.js');
   assertIncludes(artHtml, 'css/art.css');
 });
 
-test('art data has six pixel challenges with valid coordinates and distractors', () => {
-  assert.equal(lessons.length, 6);
+test('art data has twelve pixel challenges with valid coordinates and distractors', () => {
+  assert.equal(lessons.length, 12);
   const colorKeys = Object.keys(colors);
   for (const lesson of lessons) {
     assert.ok([4, 5].includes(lesson.size), `Lesson ${lesson.id} should use a young-kid-sized grid`);

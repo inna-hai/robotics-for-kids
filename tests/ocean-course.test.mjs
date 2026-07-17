@@ -45,8 +45,8 @@ test('landing page is clearly lesson 3 ocean for grade B / age 7 and frames a 75
   assertIncludes(oceanHtml, 'css/ocean.css');
 });
 
-test('ocean course has eight lightweight missions with child-friendly ocean facts', () => {
-  assert.equal(lessons.length, 8);
+test('ocean course has twelve lightweight missions with child-friendly ocean facts', () => {
+  assert.equal(lessons.length, 12);
   for (const lesson of lessons) {
     assert.equal(typeof lesson.id, 'number');
     assert.ok(lesson.title.length >= 4, `Lesson ${lesson.id} needs a title`);
@@ -55,7 +55,7 @@ test('ocean course has eight lightweight missions with child-friendly ocean fact
     assert.ok(lesson.commands.length >= 3, `Lesson ${lesson.id} needs a demo command path`);
     assert.ok(lesson.commands.every((cmd) => ['up', 'down', 'right', 'left'].includes(cmd)), `Lesson ${lesson.id} has unsupported command`);
   }
-  assert.deepEqual(Array.from(lessons, (lesson) => lesson.id), [1, 2, 3, 4, 5, 6, 7, 8]);
+  assert.deepEqual(Array.from(lessons, (lesson) => lesson.id), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
 });
 
 test('all mission coordinates fit inside the simple 6 by 5 board', () => {

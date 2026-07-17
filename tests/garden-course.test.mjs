@@ -37,17 +37,18 @@ test('landing page frames an interesting but gentle sequence mechanic for grade 
   assertIncludes(gardenHtml, 'שיעור 10 • רצף ושלבי גדילה • כיתות ב׳ • 75 דקות');
   assertIncludes(gardenHtml, 'בלי קפיצה חדה');
   assertIncludes(gardenHtml, 'רצף');
-  assertIncludes(gardenHtml, 'שלבים 1–4 לכל הכיתה, 5–6 להרחבה');
+  assertIncludes(gardenHtml, 'שלבים 1–4 לכל הכיתה, 5–12 להרחבה ותרגול');
   assertIncludes(gardenHtml, 'href="garden-play.html?lesson=1"');
   assertIncludes(gardenHtml, 'js/garden-lessons.js');
   assertIncludes(gardenHtml, 'css/garden.css');
 });
 
-test('garden data has six growth stages with valid one-action answers', () => {
-  assert.equal(lessons.length, 6);
+test('garden data has twelve growth stages with valid one-action answers', () => {
+  assert.equal(lessons.length, 12);
   const actionKeys = Object.keys(actions);
-  const expected = ['soil', 'seed', 'water', 'sun', 'support', 'harvest'];
-  assert.deepEqual(Array.from(lessons, (lesson) => lesson.answer), expected);
+  const expectedCycle = ['soil', 'seed', 'water', 'sun', 'support', 'harvest'];
+  assert.deepEqual(Array.from(lessons.slice(0, 6), (lesson) => lesson.answer), expectedCycle);
+  assert.deepEqual(Array.from(lessons.slice(6), (lesson) => lesson.answer), expectedCycle);
   for (const lesson of lessons) {
     assert.ok(actionKeys.includes(lesson.answer), `Lesson ${lesson.id} answer must be valid`);
     assert.ok(lesson.plantStage.length >= 20, `Lesson ${lesson.id} needs plant stage`);

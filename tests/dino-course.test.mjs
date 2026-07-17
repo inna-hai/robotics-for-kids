@@ -47,8 +47,8 @@ test('landing page frames a new classification/data mechanic for grade B', () =>
   assertIncludes(dinoHtml, 'css/dino.css');
 });
 
-test('dino data has six classification tasks with valid zone answers', () => {
-  assert.equal(lessons.length, 6);
+test('dino data has twelve classification tasks with valid zone answers', () => {
+  assert.equal(lessons.length, 12);
   const zoneKeys = Object.keys(zones);
   for (const lesson of lessons) {
     assert.ok(zoneKeys.includes(lesson.dino.answer), `Lesson ${lesson.id} answer must be a known zone`);

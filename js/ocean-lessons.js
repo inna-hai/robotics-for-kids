@@ -120,3 +120,66 @@ window.OCEAN_LESSONS = [
     commands: ['up', 'up', 'up', 'right', 'right', 'right', 'right']
   }
 ];
+
+window.OCEAN_LESSONS.push(
+  {
+    id: 9,
+    title: 'מערת הפנינים',
+    unit: 'מסלול בתוך מערה',
+    emoji: '🦪',
+    place: 'מערה כחולה',
+    mission: 'סיסי נכנסת למערה ומגיעה לצדפה נוצצת בלי לגעת בסלעים.',
+    concept: 'תכנון סביב מכשולים',
+    oceanFact: 'פנינים נוצרות בתוך צדפות מסוימות בשכבות עדינות ומבריקות.',
+    goal: { x: 6, y: 4 },
+    start: { x: 1, y: 1 },
+    obstacles: [{ x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 3 }, { x: 5, y: 3 }],
+    collectibles: [{ x: 2, y: 1 }, { x: 4, y: 2 }, { x: 6, y: 3 }],
+    commands: ['right', 'right', 'right', 'right', 'right', 'down', 'down', 'down']
+  },
+  {
+    id: 10,
+    title: 'להקת דגים',
+    unit: 'שומרים על קצב',
+    emoji: '🐟',
+    place: 'מסלול להקה',
+    mission: 'סיסי שוחה ליד להקת דגים ושומרת על מסלול שקט וברור.',
+    concept: 'רצף יציב',
+    oceanFact: 'דגים רבים שוחים בלהקות כדי להגן אחד על השני ולמצוא דרך יחד.',
+    goal: { x: 6, y: 1 },
+    start: { x: 1, y: 4 },
+    obstacles: [{ x: 2, y: 3 }, { x: 3, y: 3 }, { x: 4, y: 2 }, { x: 5, y: 2 }],
+    collectibles: [{ x: 1, y: 3 }, { x: 3, y: 4 }, { x: 5, y: 1 }],
+    commands: ['up', 'up', 'up', 'right', 'right', 'right', 'right', 'right']
+  },
+  {
+    id: 11,
+    title: 'שונית לילה',
+    unit: 'ניווט זהיר',
+    emoji: '🌙',
+    place: 'שונית בלילה',
+    mission: 'סיסי מאירה בעדינות את הדרך ומגיעה לנקודת תצפית לילית.',
+    concept: 'בדיקה לפני פעולה',
+    oceanFact: 'בלילה חלק מבעלי החיים בים פעילים יותר, ולכן צריך להתבונן בזהירות.',
+    goal: { x: 5, y: 5 },
+    start: { x: 1, y: 2 },
+    obstacles: [{ x: 2, y: 1 }, { x: 3, y: 3 }, { x: 4, y: 3 }, { x: 6, y: 4 }],
+    collectibles: [{ x: 2, y: 2 }, { x: 4, y: 4 }, { x: 5, y: 5 }],
+    commands: ['down', 'down', 'down', 'right', 'right', 'right', 'right']
+  },
+  {
+    id: 12,
+    title: 'חזרה לנמל',
+    unit: 'אתגר סיום',
+    emoji: '⚓',
+    place: 'נמל קטן',
+    mission: 'סיסי מסיימת את המסע וחוזרת לנמל במסלול בטוח ונקי.',
+    concept: 'אלגוריתם מסלול מלא',
+    oceanFact: 'נמל הוא מקום שבו כלי שיט עוצרים, מתקנים ציוד ומתכוננים למסע הבא.',
+    goal: { x: 6, y: 5 },
+    start: { x: 1, y: 1 },
+    obstacles: [{ x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 4 }, { x: 5, y: 4 }],
+    collectibles: [{ x: 2, y: 1 }, { x: 4, y: 3 }, { x: 6, y: 4 }],
+    commands: ['right', 'right', 'right', 'right', 'right', 'down', 'down', 'down', 'down']
+  }
+);

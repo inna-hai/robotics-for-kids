@@ -126,3 +126,132 @@ window.DETECTIVE_LESSONS = [
     suspects: ['תנועה', 'מוזיקה', 'עציץ']
   }
 ];
+
+window.DETECTIVE_LESSONS.push(
+  {
+    id: 7,
+    title: 'מי הפעיל את המאוורר?',
+    emoji: '🌀',
+    unit: 'חיישן טמפרטורה',
+    mission: 'המאוורר נדלק לבד. סיסי בודקת איזה רמז מסביר את הפעולה.',
+    concept: 'אם חם — אז מפעילים מאוורר',
+    learningNote: 'תנאי עוזר למערכת להגיב רק כשהמצב באמת מתאים.',
+    clues: [
+      { id: 'hot', text: 'מד הטמפרטורה מראה שחם בכיתה', good: true },
+      { id: 'dark', text: 'החדר חשוך', good: false },
+      { id: 'quiet', text: 'המסדרון שקט', good: false }
+    ],
+    rules: [
+      { id: 'fan-hot', text: 'אם חם — הפעל מאוורר', good: true },
+      { id: 'fan-dark', text: 'אם חשוך — הפעל מאוורר', good: false },
+      { id: 'fan-quiet', text: 'אם שקט — הפעל מאוורר', good: false }
+    ],
+    answer: 'חיישן החום הפעיל את המאוורר.',
+    suspects: ['חום', 'חושך', 'שקט']
+  },
+  {
+    id: 8,
+    title: 'תעלומת השער הירוק',
+    emoji: '🟢',
+    unit: 'בדיקת צבע',
+    mission: 'שער ירוק נפתח רק לכרטיס מתאים. סיסי צריכה לבחור רמז וכלל.',
+    concept: 'אם צבע מתאים — פותחים',
+    learningNote: 'מחשב לא מסתפק ב“בערך”. הוא בודק אם הערך שווה בדיוק למה שביקשנו.',
+    clues: [
+      { id: 'green-ticket', text: 'על הכרטיס מופיע עיגול ירוק', good: true },
+      { id: 'yellow-star', text: 'על הרצפה יש כוכב צהוב', good: false },
+      { id: 'blue-note', text: 'יש פתק כחול על הקיר', good: false }
+    ],
+    rules: [
+      { id: 'open-green', text: 'אם הכרטיס ירוק — פתח שער', good: true },
+      { id: 'open-yellow', text: 'אם יש כוכב צהוב — פתח שער', good: false },
+      { id: 'open-blue', text: 'אם יש פתק כחול — פתח שער', good: false }
+    ],
+    answer: 'הכרטיס הירוק פתח את השער.',
+    suspects: ['כרטיס ירוק', 'כוכב צהוב', 'פתק כחול']
+  },
+  {
+    id: 9,
+    title: 'הרובוט שנעצר',
+    emoji: '🛑',
+    unit: 'תנאי עצירה',
+    mission: 'הרובוט עצר לפני קיר. סיסי בודקת איזה תנאי שמר עליו.',
+    concept: 'אם יש קיר — עצור',
+    learningNote: 'תנאי עצירה מונע מהרובוט להמשיך כשזה לא בטוח.',
+    clues: [
+      { id: 'wall', text: 'חיישן המרחק זיהה קיר קרוב', good: true },
+      { id: 'music', text: 'נשמע צליל פעמון', good: false },
+      { id: 'flower', text: 'יש פרח ליד הרובוט', good: false }
+    ],
+    rules: [
+      { id: 'stop-wall', text: 'אם יש קיר קרוב — עצור', good: true },
+      { id: 'stop-music', text: 'אם יש פעמון — עצור', good: false },
+      { id: 'stop-flower', text: 'אם יש פרח — עצור', good: false }
+    ],
+    answer: 'חיישן המרחק עצר את הרובוט בזמן.',
+    suspects: ['קיר', 'פעמון', 'פרח']
+  },
+  {
+    id: 10,
+    title: 'מי שלח הודעה?',
+    emoji: '💬',
+    unit: 'זיהוי אירוע',
+    mission: 'המסך הציג הודעת “ברוכים הבאים”. סיסי מחפשת מה הפעיל אותה.',
+    concept: 'אירוע גורם לפעולה',
+    learningNote: 'אירוע הוא משהו שקורה במערכת ויכול להפעיל קוד.',
+    clues: [
+      { id: 'button', text: 'מישהו לחץ על כפתור הכניסה', good: true },
+      { id: 'paper', text: 'נפל דף מהשולחן', good: false },
+      { id: 'rain', text: 'ירד גשם בחוץ', good: false }
+    ],
+    rules: [
+      { id: 'message-button', text: 'אם נלחץ כפתור כניסה — הצג הודעה', good: true },
+      { id: 'message-paper', text: 'אם נפל דף — הצג הודעה', good: false },
+      { id: 'message-rain', text: 'אם יורד גשם — הצג הודעה', good: false }
+    ],
+    answer: 'לחיצה על כפתור הכניסה שלחה את ההודעה.',
+    suspects: ['כפתור', 'דף', 'גשם']
+  },
+  {
+    id: 11,
+    title: 'הקוד הכפול',
+    emoji: '🔐',
+    unit: 'שני רמזים',
+    mission: 'כספת קטנה נפתחת רק כשגם הצבע וגם המספר מתאימים.',
+    concept: 'וגם: שני תנאים',
+    learningNote: 'לפעמים תנאי אחד לא מספיק. “וגם” אומר ששני הדברים צריכים להיות נכונים יחד.',
+    clues: [
+      { id: 'red-two', text: 'הקוד הוא אדום ומספר 2', good: true },
+      { id: 'red-five', text: 'יש אדום ומספר 5', good: false },
+      { id: 'blue-two', text: 'יש כחול ומספר 2', good: false }
+    ],
+    rules: [
+      { id: 'safe-red-two', text: 'אם צבע אדום וגם מספר 2 — פתח כספת', good: true },
+      { id: 'safe-red', text: 'אם יש אדום בלבד — פתח כספת', good: false },
+      { id: 'safe-two', text: 'אם יש מספר 2 בלבד — פתח כספת', good: false }
+    ],
+    answer: 'רק אדום ומספר 2 יחד פתחו את הכספת.',
+    suspects: ['אדום+2', 'אדום+5', 'כחול+2']
+  },
+  {
+    id: 12,
+    title: 'תעלומת הסיום של סיסי',
+    emoji: '🏁',
+    unit: 'אתגר סיום',
+    mission: 'סיסי משלבת רמז, תנאי ופעולה כדי לפתור תעלומה אחרונה.',
+    concept: 'חקירה אלגוריתמית מלאה',
+    learningNote: 'פתרון טוב מתחיל ברמז נכון, ממשיך בכלל נכון, ומסתיים במסקנה ברורה.',
+    clues: [
+      { id: 'badge-scan', text: 'תג הכניסה נסרק בשער הראשי', good: true },
+      { id: 'window-open', text: 'חלון בכיתה פתוח', good: false },
+      { id: 'chair-moved', text: 'כיסא זז מעט', good: false }
+    ],
+    rules: [
+      { id: 'scan-enter', text: 'אם תג נסרק — רשום כניסה', good: true },
+      { id: 'window-enter', text: 'אם חלון פתוח — רשום כניסה', good: false },
+      { id: 'chair-enter', text: 'אם כיסא זז — רשום כניסה', good: false }
+    ],
+    answer: 'סריקת התג רשמה את הכניסה במערכת.',
+    suspects: ['תג נסרק', 'חלון', 'כיסא']
+  }
+);

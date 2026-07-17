@@ -37,7 +37,7 @@ test('mail course is linked as lesson 12 in the Sisi series', () => {
 test('landing page frames a gentle routing mechanic and includes creator lab', () => {
   assertIncludes(mailHtml, 'שיעור 12 • ניתוב לפי רמזים • כיתות ב׳ • 75 דקות');
   assertIncludes(mailHtml, 'בלי להקפיץ את הרמה');
-  assertIncludes(mailHtml, 'דואר 1–4 לכל הכיתה, אתגר דואר מבלבל, 5–6 + מעבדה להרחבה');
+  assertIncludes(mailHtml, 'דואר 1–4 לכל הכיתה, אתגר דואר מבלבל, 5–12 + מעבדה להרחבה');
   assertIncludes(mailHtml, 'id="deep-activities"');
   assertIncludes(mailHtml, 'משחק שליחים בזוגות');
   assertIncludes(mailHtml, 'href="mail-play.html?lesson=1"');
@@ -46,11 +46,12 @@ test('landing page frames a gentle routing mechanic and includes creator lab', (
   assertIncludes(mailHtml, 'css/mail.css');
 });
 
-test('mail data has six routing tasks with valid route answers', () => {
-  assert.equal(lessons.length, 6);
+test('mail data has twelve routing tasks with valid route answers', () => {
+  assert.equal(lessons.length, 12);
   const routeKeys = Object.keys(routes);
-  const expected = ['library', 'garden', 'music', 'lab', 'kitchen', 'park'];
-  assert.deepEqual(Array.from(lessons, (lesson) => lesson.route), expected);
+  const expectedCycle = ['library', 'garden', 'music', 'lab', 'kitchen', 'park'];
+  assert.deepEqual(Array.from(lessons.slice(0, 6), (lesson) => lesson.route), expectedCycle);
+  assert.deepEqual(Array.from(lessons.slice(6), (lesson) => lesson.route), expectedCycle);
   for (const lesson of lessons) {
     assert.ok(routeKeys.includes(lesson.route), `Lesson ${lesson.id} route must be valid`);
     assert.ok(lesson.clue.includes('+'), `Lesson ${lesson.id} should include two clues`);

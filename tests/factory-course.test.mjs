@@ -38,14 +38,14 @@ test('landing page frames a new explicit loop mechanic for grade B', () => {
   assertIncludes(factoryHtml, 'שיעור 9 • לולאות וחזרות • כיתות ב׳ • 75 דקות');
   assertIncludes(factoryHtml, 'חזור X');
   assertIncludes(factoryHtml, 'לולאות');
-  assertIncludes(factoryHtml, 'משימות 1–4 לכל הכיתה, 5–6 להרחבה');
+  assertIncludes(factoryHtml, 'משימות 1–4 לכל הכיתה, 5–12 להרחבה ותרגול');
   assertIncludes(factoryHtml, 'href="factory-play.html?lesson=1"');
   assertIncludes(factoryHtml, 'js/factory-lessons.js');
   assertIncludes(factoryHtml, 'css/factory.css');
 });
 
-test('factory data has six loop tasks with valid action and count answers', () => {
-  assert.equal(lessons.length, 6);
+test('factory data has twelve loop tasks with valid action and count answers', () => {
+  assert.equal(lessons.length, 12);
   const actionKeys = Object.keys(actions);
   for (const lesson of lessons) {
     assert.ok(actionKeys.includes(lesson.action), `Lesson ${lesson.id} action must be valid`);

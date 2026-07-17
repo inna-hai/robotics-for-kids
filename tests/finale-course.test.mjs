@@ -44,8 +44,8 @@ test('landing page frames a 76-minute capstone integrating programming ideas', (
   assertIncludes(finaleHtml, 'href="finale-lab.html"');
 });
 
-test('finale data has six missions combining condition, ordered actions, and distractor', () => {
-  assert.equal(missions.length, 6);
+test('finale data has twelve missions combining condition, ordered actions, and distractor', () => {
+  assert.equal(missions.length, 12);
   const conditionKeys = Object.keys(conditions);
   const actionKeys = Object.keys(actions);
   for (const mission of missions) {

@@ -40,8 +40,8 @@ test('landing page frames a new if-then detective mechanic for grade B', () => {
   assertIncludes(detectiveHtml, 'css/detective.css');
 });
 
-test('detective lesson data has six cases with exactly one good clue and one good rule', () => {
-  assert.equal(lessons.length, 6);
+test('detective lesson data has twelve cases with exactly one good clue and one good rule', () => {
+  assert.equal(lessons.length, 12);
   for (const lesson of lessons) {
     assert.equal(typeof lesson.id, 'number');
     assert.ok(lesson.title.length >= 4, `Case ${lesson.id} needs a title`);

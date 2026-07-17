@@ -38,14 +38,14 @@ test('landing page frames a gentle command-with-setting mechanic for grade B', (
   assertIncludes(parkHtml, 'שיעור 11 • פקודה עם הגדרה • כיתות ב׳ • 75 דקות');
   assertIncludes(parkHtml, 'פקודה + ערך');
   assertIncludes(parkHtml, 'בחירה אינטואיטיבית');
-  assertIncludes(parkHtml, 'מתקנים 1–4 לכל הכיתה, 5–6 להרחבה');
+  assertIncludes(parkHtml, 'מתקנים 1–4 לכל הכיתה, 5–12 להרחבה ותרגול');
   assertIncludes(parkHtml, 'href="park-play.html?lesson=1"');
   assertIncludes(parkHtml, 'js/park-lessons.js');
   assertIncludes(parkHtml, 'css/park.css');
 });
 
-test('park data has six ride scenarios with valid control and setting answers', () => {
-  assert.equal(lessons.length, 6);
+test('park data has twelve ride scenarios with valid control and setting answers', () => {
+  assert.equal(lessons.length, 12);
   const controlKeys = Object.keys(controls);
   const settingKeys = Object.keys(settings);
   for (const lesson of lessons) {

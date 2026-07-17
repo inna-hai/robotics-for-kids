@@ -43,8 +43,8 @@ test('landing page frames a programming-oriented robot algorithm lesson', () => 
   assertIncludes(cinemaHtml, 'href="cinema-lab.html"');
 });
 
-test('cinema data has six robot algorithm tasks with three correct commands plus distractor', () => {
-  assert.equal(lessons.length, 6);
+test('cinema data has twelve robot algorithm tasks with three correct commands plus distractor', () => {
+  assert.equal(lessons.length, 12);
   for (const lesson of lessons) {
     assert.equal(lesson.correctOrder.length, 3, `Lesson ${lesson.id} should have three ordered commands`);
     assert.equal(Object.keys(lesson.commands).length, 4, `Lesson ${lesson.id} should expose four command choices`);

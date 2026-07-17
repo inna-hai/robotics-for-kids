@@ -93,3 +93,12 @@ window.PARK_LESSONS = [
     learningNote: 'בשיעור הזה הילדים מתרגלים פקודה עם פרמטר: מה מפעילים, ובאיזו הגדרה.'
   }
 ];
+
+window.PARK_LESSONS.push(
+  { id: 7, emoji: '🎡', title: 'גלגל ענק רגוע', unit: 'פרמטר מהירות', concept: 'מהירות נמוכה', story: 'אורחים חדשים רוצים להתחיל במתקן רגוע.', control: 'wheel', setting: 'low', commandText: 'הפעל גלגל ענק לאט', result: 'הגלגל מסתובב לאט ונעים.', learningNote: 'פרמטר משנה איך הפקודה מתבצעת, למשל לאט, בינוני או מהר.' },
+  { id: 8, emoji: '🚂', title: 'רכבת שמחה', unit: 'הגדרת מהירות', concept: 'מהירות בינונית', story: 'הרכבת צריכה להיות שמחה אבל בטוחה.', control: 'train', setting: 'medium', commandText: 'הפעל רכבת במהירות בינונית', result: 'הרכבת נוסעת בקצב מתאים.', learningNote: 'אותה פקודה יכולה לעבוד עם הגדרות שונות.' },
+  { id: 9, emoji: '✨', title: 'אורות מופע', unit: 'עוצמת פלט', concept: 'עוצמה גבוהה', story: 'מתחיל מופע ערב וצריך אורות חזקים.', control: 'lights', setting: 'high', commandText: 'הפעל אורות בעוצמה גבוהה', result: 'הבמה מוארת ומוכנה למופע.', learningNote: 'פלט יכול להיות אור, צליל או תנועה, והילדים בוחרים את העוצמה המתאימה.' },
+  { id: 10, emoji: '🎵', title: 'מוזיקה שקטה', unit: 'התאמה לקהל', concept: 'עוצמה נמוכה', story: 'בפינת המנוחה צריך מוזיקה נעימה ושקטה.', control: 'music', setting: 'low', commandText: 'הפעל מוזיקה חלשה', result: 'המוזיקה נעימה ולא מפריעה.', learningNote: 'מערכת חכמה מתאימה את הפלט למקום ולקהל כדי לא להפריע.' },
+  { id: 11, emoji: '🫧', title: 'בועות חגיגה', unit: 'אפקטים', concept: 'עוצמה בינונית', story: 'יש חגיגה קטנה וצריך בועות, אבל לא יותר מדי.', control: 'bubbles', setting: 'medium', commandText: 'הפעל בועות בעוצמה בינונית', result: 'בועות צבעוניות ממלאות את האזור.', learningNote: 'בחירה נכונה היא גם מה להפעיל וגם כמה.' },
+  { id: 12, emoji: '🏁', title: 'לונה פארק סיום', unit: 'אתגר סיום', concept: 'פקודה עם פרמטר', story: 'סיסי מסיימת יום בלונה פארק ובוחרת מתקן והגדרה מדויקת.', control: 'carousel', setting: 'medium', commandText: 'הפעל קרוסלה במהירות בינונית', result: 'הקרוסלה פועלת בקצב מושלם לסיום.', learningNote: 'בשיעור סיום משלבים פקודה, פרמטר ותוצאה.' }
+);
