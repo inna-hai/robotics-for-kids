@@ -8,6 +8,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
 const dinoHtml = readFileSync(join(root, 'dino.html'), 'utf8');
 const playHtml = readFileSync(join(root, 'dino-play.html'), 'utf8');
+const labHtml = readFileSync(join(root, 'dino-lab.html'), 'utf8');
+const labSource = readFileSync(join(root, 'js', 'dino-lab.js'), 'utf8');
 const hubHtml = readFileSync(join(root, 'sisi.html'), 'utf8');
 const smartCityHtml = readFileSync(join(root, 'smart-city.html'), 'utf8');
 const kitchenHtml = readFileSync(join(root, 'kitchen.html'), 'utf8');
@@ -38,6 +40,8 @@ test('landing page frames a new classification/data mechanic for grade B', () =>
   assertIncludes(dinoHtml, 'שיעור 6 • דינוזאורים ודאטה • כיתות ב׳ • 75 דקות');
   assertIncludes(dinoHtml, 'מיון לפי מאפיינים');
   assertIncludes(dinoHtml, 'דאטה');
+  assertIncludes(dinoHtml, 'מעבדת יצירת דינוזאור');
+  assertIncludes(dinoHtml, 'משימות 1–4 + מעבדת יצירה במשך 76 דקות');
   assertIncludes(dinoHtml, 'href="dino-play.html?lesson=1"');
   assertIncludes(dinoHtml, 'js/dino-lessons.js');
   assertIncludes(dinoHtml, 'css/dino.css');
@@ -69,12 +73,28 @@ test('dino engine checks selected zone against data answer and provides hints', 
   assertIncludes(playSource, 'answerZone.hint');
 });
 
-test('dino css and plan support a 75-minute visual classification lesson', () => {
+test('dino lab adds a creative classification activity for a full 76-minute lesson', () => {
+  assertIncludes(labHtml, 'מעבדת הדינוזאורים של סיסי');
+  assertIncludes(labHtml, 'פעילות יצירה');
+  assertIncludes(labHtml, '15–20 דקות');
+  assertIncludes(labHtml, 'data-trait="food"');
+  assertIncludes(labHtml, 'data-trait="movement"');
+  assertIncludes(labHtml, 'data-trait="size"');
+  assertIncludes(labHtml, 'data-trait="state"');
+  assertIncludes(labSource, 'function classifyDino()');
+  assertIncludes(labSource, "selected.state === 'egg'");
+  assertIncludes(labSource, "selected.movement === 'flies'");
+});
+
+test('dino css and plan support a 76-minute visual classification lesson', () => {
   assertIncludes(dinoCss, '.dino-stage');
   assertIncludes(dinoCss, '.dino-visual');
   assertIncludes(dinoCss, '.zone-btn');
+  assertIncludes(dinoCss, '.dino-lab');
+  assertIncludes(dinoCss, '.created-dino');
   assertMatches(dinoCss, /@media\(max-width:820px\)\{\.dino-layout\{grid-template-columns:1fr\}/);
-  assertIncludes(plan, 'שיעור 75 דקות: משימות 1–4');
+  assertIncludes(plan, 'שיעור 76 דקות: משימות 1–4 + מעבדת יצירת דינוזאור');
+  assertIncludes(plan, 'לא לדחוס את כל 6 משימות המיון לכל הכיתה');
 });
 
 let passed = 0;
