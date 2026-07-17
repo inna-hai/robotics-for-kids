@@ -33,45 +33,50 @@ test('cinema course is linked as lesson 13 in the Sisi series', () => {
   assertIncludes(hubHtml, 'סיסי באולפן הסרטים');
 });
 
-test('landing page frames a full 75-minute sequence lesson', () => {
-  assertIncludes(cinemaHtml, 'שיעור 13 • סדר סצנות וסיבה-תוצאה • כיתות ב׳ • 75 דקות');
-  assertIncludes(cinemaHtml, 'לא קופץ חזק ברמה');
-  assertIncludes(cinemaHtml, 'אתגר “מה חסר באמצע?”');
-  assertIncludes(cinemaHtml, 'משחק במאי בזוגות');
+test('landing page frames a programming-oriented robot algorithm lesson', () => {
+  assertIncludes(cinemaHtml, 'שיעור 13 • אלגוריתמים מצולמים • כיתות ב׳ • 75 דקות');
+  assertIncludes(cinemaHtml, 'רצף פקודות');
+  assertIncludes(cinemaHtml, 'פקודה מיותרת');
+  assertIncludes(cinemaHtml, 'זה לא רק סיפור');
+  assertIncludes(cinemaHtml, 'אתגר “איזו פקודה מיותרת?”');
   assertIncludes(cinemaHtml, 'href="cinema-play.html?lesson=1"');
   assertIncludes(cinemaHtml, 'href="cinema-lab.html"');
 });
 
-test('cinema data has six three-scene ordering tasks', () => {
+test('cinema data has six robot algorithm tasks with three correct commands plus distractor', () => {
   assert.equal(lessons.length, 6);
   for (const lesson of lessons) {
-    assert.equal(lesson.correctOrder.length, 3, `Lesson ${lesson.id} should have three ordered scenes`);
-    assert.equal(Object.keys(lesson.scenes).length, 3, `Lesson ${lesson.id} should expose exactly three scenes`);
-    for (const id of lesson.correctOrder) assert.ok(lesson.scenes[id], `Missing scene ${id}`);
-    assert.ok(lesson.learningNote.length >= 30, `Lesson ${lesson.id} needs learning note`);
+    assert.equal(lesson.correctOrder.length, 3, `Lesson ${lesson.id} should have three ordered commands`);
+    assert.equal(Object.keys(lesson.commands).length, 4, `Lesson ${lesson.id} should expose four command choices`);
+    assert.ok(lesson.distractor, `Lesson ${lesson.id} needs distractor command`);
+    assert.ok(lesson.commands[lesson.distractor], `Lesson ${lesson.id} distractor must exist`);
+    for (const id of lesson.correctOrder) assert.ok(lesson.commands[id], `Missing command ${id}`);
+    assert.ok(lesson.goal.includes('המטרה'), `Lesson ${lesson.id} needs explicit goal`);
   }
 });
 
-test('cinema play page exposes scene bank, timeline, and lab flow', () => {
+test('cinema play page builds command algorithm, removes distractor, and asks for reason', () => {
   assertIncludes(playHtml, 'id="scene-bank"');
   assertIncludes(playHtml, 'id="timeline"');
-  assertIncludes(playHtml, 'js/cinema-play.js');
+  assertIncludes(playHtml, 'id="goal"');
+  assertIncludes(playHtml, 'id="reason-options"');
   assertIncludes(playSource, 'selectedOrder.every');
+  assertIncludes(playSource, 'lesson.distractor');
+  assertIncludes(playSource, 'פקודה מיותרת');
+  assertIncludes(playSource, 'selectedReason');
   assertIncludes(playSource, "href: 'cinema-lab.html'");
-  assert.ok(!playHtml.includes('route-options'), 'Cinema lesson should not use mail routing');
-  assert.ok(!playHtml.includes('count-options'), 'Cinema lesson should not use loop counts');
 });
 
-test('cinema lab and plan ensure the lesson holds 75 minutes', () => {
+test('cinema lab and plan ensure a full 75-minute programming lesson', () => {
   assertIncludes(labHtml, 'פעילות יצירה • 15–20 דקות');
-  assertIncludes(labHtml, 'שם הסרט');
-  assertIncludes(labHtml, 'התחלה');
-  assertIncludes(labHtml, 'אמצע');
+  assertIncludes(labHtml, 'מטרת הרובוט');
+  assertIncludes(labHtml, 'פקודה מיותרת');
   assertIncludes(labHtml, 'בדיקת חברים');
   assertIncludes(cinemaCss, '.timeline-slot');
-  assertIncludes(cinemaCss, '.scene-card');
+  assertIncludes(cinemaCss, '.reason-card');
+  assertIncludes(cinemaCss, '.goal-chip');
   assertIncludes(plan, 'בדיקת 75 דקות');
-  assertIncludes(plan, 'מעבדת סרטים');
+  assertIncludes(plan, 'מקדם ישירות לכיוון תכנות');
 });
 
 let passed = 0;

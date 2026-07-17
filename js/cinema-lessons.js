@@ -2,91 +2,109 @@ window.CINEMA_LESSONS = [
   {
     id: 1,
     emoji: '🎈',
-    title: 'הבלון שנעלם',
-    unit: 'סיפור בשלושה שלבים',
-    concept: 'התחלה-אמצע-סוף',
-    story: 'סיסי מצלמת סרט קצר על בלון שנעלם וחוזר לילדה.',
-    correctOrder: ['girlBalloon', 'windTakes', 'robotReturns'],
-    scenes: {
-      girlBalloon: { icon: '👧🎈', text: 'ילדה מחזיקה בלון אדום.' },
-      windTakes: { icon: '💨🎈', text: 'רוח חזקה מעיפה את הבלון.' },
-      robotReturns: { icon: '🤖🎈', text: 'סיסי הרובוט מחזירה את הבלון.' }
+    title: 'הרובוט מחזיר בלון',
+    unit: 'אלגוריתם בשלושה צעדים',
+    concept: 'רצף פקודות',
+    story: 'סיסי מביימת רובוט שעוזר לילדה להחזיר בלון. צריך לבחור את שלוש פקודות הרובוט הנכונות ולסדר אותן.',
+    goal: 'המטרה: הרובוט מחזיר את הבלון לילדה.',
+    correctOrder: ['goBalloon', 'grabBalloon', 'giveGirl'],
+    distractor: 'dance',
+    commands: {
+      goBalloon: { icon: '🤖➡️🎈', text: 'לך אל הבלון', reason: 'קודם הרובוט צריך להגיע לחפץ.' },
+      grabBalloon: { icon: '🤖🤏🎈', text: 'תפוס את הבלון', reason: 'אחרי שמגיעים, אפשר לתפוס.' },
+      giveGirl: { icon: '🤖🎈👧', text: 'תן את הבלון לילדה', reason: 'בסוף מחזירים את החפץ למי שצריך.' },
+      dance: { icon: '🤖💃', text: 'רקוד במקום', reason: 'זו פקודה מצחיקה אבל לא מקדמת את המטרה.' }
     },
-    learningNote: 'סיפור כמו אלגוריתם: אם הסדר מתבלבל, קשה להבין מה קרה קודם ומה קרה אחר כך.'
+    learningNote: 'אלגוריתם הוא רצף פקודות שמוביל למטרה. פקודה מיותרת יכולה להפריע גם אם היא נחמדה.'
   },
   {
     id: 2,
     emoji: '🍪',
-    title: 'עוגייה לפני מסיבה',
-    unit: 'סיבה ותוצאה',
-    concept: 'מה קורה קודם?',
-    story: 'צריך לערוך סרטון על הכנת עוגיות למסיבה.',
-    correctOrder: ['mix', 'bake', 'party'],
-    scenes: {
-      mix: { icon: '🥣', text: 'מערבבים בצק בקערה.' },
-      bake: { icon: '🔥🍪', text: 'אופים את העוגיות בתנור.' },
-      party: { icon: '🎉🍪', text: 'מחלקים עוגיות במסיבה.' }
+    title: 'הרובוט מגיש עוגיות',
+    unit: 'סדר פעולה',
+    concept: 'לפני-אחרי',
+    story: 'באולפן מצלמים רובוט שמגיש עוגיות למסיבה. איזה רצף פקודות יביא את העוגיות לשולחן?',
+    goal: 'המטרה: עוגיות מגיעות לשולחן המסיבה.',
+    correctOrder: ['takeTray', 'walkTable', 'putCookies'],
+    distractor: 'turnLight',
+    commands: {
+      takeTray: { icon: '🤖🧺🍪', text: 'קח מגש עוגיות', reason: 'אי אפשר להביא עוגיות בלי לקחת אותן קודם.' },
+      walkTable: { icon: '🤖➡️🪑', text: 'לך אל שולחן המסיבה', reason: 'אחרי שלוקחים, צריך להגיע ליעד.' },
+      putCookies: { icon: '🤖🍪⬇️', text: 'הנח את העוגיות על השולחן', reason: 'בסוף מניחים במקום הנכון.' },
+      turnLight: { icon: '💡', text: 'כבה והדלק אור', reason: 'זה לא קשור להגשת העוגיות.' }
     },
-    learningNote: 'סיבה ותוצאה עוזרות לנו לבחור סדר: קודם מכינים, אחר כך אופים, ורק בסוף מחלקים.'
+    learningNote: 'בתכנות, סדר הפקודות משנה: אם נניח לפני שהגענו לשולחן, המשימה תיכשל.'
   },
   {
     id: 3,
     emoji: '🐢',
-    title: 'הצב והגשר',
-    unit: 'אירועים ברצף',
-    concept: 'רצף הגיוני',
-    story: 'סיסי עורכת סרט טבע קטן על צב שמגיע לצד השני של הנחל.',
-    correctOrder: ['turtleStart', 'bridge', 'turtleFinish'],
-    scenes: {
-      turtleStart: { icon: '🐢🌿', text: 'הצב עומד ליד הנחל.' },
-      bridge: { icon: '🌉', text: 'סיסי מוצאת גשר קטן.' },
-      turtleFinish: { icon: '🐢🌸', text: 'הצב מגיע לפרחים בצד השני.' }
+    title: 'הרובוט עוזר לצב',
+    unit: 'פתרון בעיה',
+    concept: 'מטרה וצעדים',
+    story: 'צב קטן צריך להגיע לפרחים בצד השני. סיסי מביימת רובוט שבונה לו מעבר בטוח.',
+    goal: 'המטרה: הצב עובר לצד השני בבטחה.',
+    correctOrder: ['scanWater', 'placeBridge', 'guideTurtle'],
+    distractor: 'paintBridge',
+    commands: {
+      scanWater: { icon: '🤖👀🌊', text: 'בדוק איפה הנחל', reason: 'קודם מזהים את הבעיה.' },
+      placeBridge: { icon: '🤖🌉', text: 'הנח גשר קטן', reason: 'אחרי שמבינים איפה הבעיה, יוצרים מעבר.' },
+      guideTurtle: { icon: '🤖🐢➡️', text: 'כוון את הצב לגשר', reason: 'בסוף משתמשים בפתרון כדי להגיע למטרה.' },
+      paintBridge: { icon: '🎨🌉', text: 'צבע את הגשר בסגול', reason: 'זה יפה, אבל לא נחוץ כדי שהצב יעבור.' }
     },
-    learningNote: 'רצף טוב עוזר לנו לפתור בעיה בשלבים קטנים וברורים.'
+    learningNote: 'אלגוריתם טוב מתחיל בזיהוי מצב, ממשיך בפעולה, ומסתיים בבדיקה שהמטרה הושגה.'
   },
   {
     id: 4,
     emoji: '🚀',
-    title: 'שיגור חללית צעצוע',
-    unit: 'תכנון פעולה',
-    concept: 'לפני-אחרי',
-    story: 'סרטון על חללית צעצוע שממריאה מהחדר לירח דמיוני.',
-    correctOrder: ['buildRocket', 'countdown', 'moon'],
-    scenes: {
-      buildRocket: { icon: '🧱🚀', text: 'בונים חללית צעצוע מקוביות.' },
-      countdown: { icon: '3️⃣2️⃣1️⃣', text: 'סופרים לאחור לפני השיגור.' },
-      moon: { icon: '🌙🚀', text: 'החללית נוחתת על ירח דמיוני.' }
+    title: 'הרובוט משגר חללית צעצוע',
+    unit: 'תכנון לפני ביצוע',
+    concept: 'בדיקה לפני פעולה',
+    story: 'חללית צעצוע צריכה שיגור בטוח. סיסי מביימת רובוט שמכין, בודק ומשגר.',
+    goal: 'המטרה: החללית משוגרת רק אחרי הכנה.',
+    correctOrder: ['buildRocket', 'checkReady', 'launchRocket'],
+    distractor: 'sleep',
+    commands: {
+      buildRocket: { icon: '🤖🧱🚀', text: 'בנה את החללית', reason: 'קודם יוצרים את מה שרוצים לשגר.' },
+      checkReady: { icon: '🤖✅', text: 'בדוק שהחללית מוכנה', reason: 'לפני פעולה חשובה עושים בדיקה.' },
+      launchRocket: { icon: '🤖🚀🌙', text: 'שגר את החללית', reason: 'רק אחרי הכנה ובדיקה אפשר לשגר.' },
+      sleep: { icon: '🤖😴', text: 'לך לישון', reason: 'זו פקודה שלא עוזרת לשיגור.' }
     },
-    learningNote: 'גם במשחק וגם בסרט יש פעולות שצריכות לקרות לפני פעולות אחרות.'
+    learningNote: 'בדיקה לפני פעולה היא רעיון תכנותי חשוב: לא מריצים שלב מסוכן לפני שהכול מוכן.'
   },
   {
     id: 5,
     emoji: '🐱',
-    title: 'החתול והקופסה',
-    unit: 'תיקון סדר',
-    concept: 'דיבוג סיפור',
-    story: 'הסצנות התבלבלו! צריך לסדר סרטון מצחיק על חתול וקופסה.',
-    correctOrder: ['boxArrives', 'catJumps', 'catSleeps'],
-    scenes: {
-      boxArrives: { icon: '📦', text: 'קופסה חדשה מגיעה הביתה.' },
-      catJumps: { icon: '🐱📦', text: 'החתול קופץ לתוך הקופסה.' },
-      catSleeps: { icon: '😴🐱', text: 'החתול נרדם בתוך הקופסה.' }
+    title: 'הרובוט מסדר קופסה לחתול',
+    unit: 'דיבוג סדר',
+    concept: 'פקודה מיותרת',
+    story: 'החתול רוצה לישון בקופסה. הרובוט צריך להכין לו מקום, אבל אחת הפקודות מיותרת.',
+    goal: 'המטרה: לחתול יש קופסה נקייה ונוחה.',
+    correctOrder: ['openBox', 'putBlanket', 'inviteCat'],
+    distractor: 'closeBox',
+    commands: {
+      openBox: { icon: '🤖📦⬆️', text: 'פתח את הקופסה', reason: 'אי אפשר להכניס שמיכה אם הקופסה סגורה.' },
+      putBlanket: { icon: '🤖🧺📦', text: 'שים שמיכה בקופסה', reason: 'השמיכה הופכת את הקופסה לנוחה.' },
+      inviteCat: { icon: '🤖🐱📦', text: 'קרא לחתול להיכנס', reason: 'בסוף מזמינים את החתול למקום המוכן.' },
+      closeBox: { icon: '📦🔒', text: 'סגור את הקופסה', reason: 'אם סוגרים לפני שהחתול נכנס, המטרה נכשלת.' }
     },
-    learningNote: 'דיבוג הוא לא רק בקוד. גם בסיפור אפשר למצוא טעות בסדר ולתקן.'
+    learningNote: 'דיבוג הוא למצוא פקודה שמפריעה למטרה ולהוציא אותה מהאלגוריתם.'
   },
   {
     id: 6,
     emoji: '🌈',
-    title: 'קשת אחרי הגשם',
+    title: 'הרובוט מצלם קשת',
     unit: 'אתגר מסכם',
-    concept: 'רצף עם סימן טבעי',
-    story: 'סיסי עורכת סרט קצר על גשם, שמש וקשת צבעונית.',
-    correctOrder: ['rain', 'sun', 'rainbow'],
-    scenes: {
-      rain: { icon: '🌧️', text: 'גשם יורד על הגינה.' },
-      sun: { icon: '☀️', text: 'השמש יוצאת אחרי הגשם.' },
-      rainbow: { icon: '🌈', text: 'קשת מופיעה בשמיים.' }
+    concept: 'אלגוריתם צילום',
+    story: 'סיסי רוצה שרובוט צילום יתפוס תמונה של קשת אחרי הגשם.',
+    goal: 'המטרה: לצלם קשת בזמן הנכון.',
+    correctOrder: ['waitRainStop', 'lookSky', 'takePhoto'],
+    distractor: 'photoFloor',
+    commands: {
+      waitRainStop: { icon: '🤖⏳🌧️', text: 'חכה שהגשם ייחלש', reason: 'קודם מחכים לרגע מתאים.' },
+      lookSky: { icon: '🤖👀🌈', text: 'חפש קשת בשמיים', reason: 'לפני צילום צריך למצוא את האובייקט.' },
+      takePhoto: { icon: '🤖📸🌈', text: 'צלם את הקשת', reason: 'בסוף מבצעים את פעולת הצילום.' },
+      photoFloor: { icon: '📸🟫', text: 'צלם את הרצפה', reason: 'זה לא מתאים למטרה של צילום קשת.' }
     },
-    learningNote: 'כשמבינים את ההיגיון של העולם, קל יותר לסדר אירועים נכון.'
+    learningNote: 'אלגוריתם טוב ממוקד במטרה: כל פקודה צריכה לקדם אותנו אל התוצאה הרצויה.'
   }
 ];
