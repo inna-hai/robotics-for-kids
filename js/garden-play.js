@@ -75,7 +75,7 @@ function nextTarget() {
   const currentIndex = lessons.findIndex((item) => item.id === lesson.id);
   const nextLesson = lessons[currentIndex + 1];
   if (nextLesson) return { href: `garden-play.html?lesson=${nextLesson.id}`, label: `➡️ המשך לשלב ${nextLesson.id}` };
-  return { href: 'sisi.html', label: '🤖 חזרה לכל שיעורי סיסי' };
+  return { href: 'garden-lab.html', label: '🌱 המשך למעבדת הגינה' };
 }
 
 function renderNextStep(show = false) {

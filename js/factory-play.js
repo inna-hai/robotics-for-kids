@@ -120,7 +120,7 @@ function nextTarget() {
   const currentIndex = lessons.findIndex((item) => item.id === lesson.id);
   const nextLesson = lessons[currentIndex + 1];
   if (nextLesson) return { href: `factory-play.html?lesson=${nextLesson.id}`, label: `➡️ המשך למשימה ${nextLesson.id}` };
-  return { href: 'sisi.html', label: '🤖 חזרה לכל שיעורי סיסי' };
+  return { href: 'factory-lab.html', label: '🏭 המשך למעבדת הלולאות' };
 }
 
 function renderNextStep(show = false) {

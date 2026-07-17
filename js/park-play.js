@@ -105,7 +105,7 @@ function nextTarget() {
   const currentIndex = lessons.findIndex((item) => item.id === lesson.id);
   const nextLesson = lessons[currentIndex + 1];
   if (nextLesson) return { href: `park-play.html?lesson=${nextLesson.id}`, label: `➡️ המשך למתקן ${nextLesson.id}` };
-  return { href: 'sisi.html', label: '🤖 חזרה לכל שיעורי סיסי' };
+  return { href: 'park-lab.html', label: '🎡 המשך למעבדת המתקנים' };
 }
 
 function renderNextStep(show = false) {
