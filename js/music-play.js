@@ -4,6 +4,7 @@ const lessons = window.MUSIC_LESSONS || [];
 const notes = window.MUSIC_NOTES || {};
 const lesson = lessons.find((item) => item.id === lessonId) || lessons[0];
 let build = [];
+let selectedThinking = null;
 
 function noteChip(noteKey, extraClass = '') {
   const note = notes[noteKey];
@@ -19,6 +20,25 @@ function renderBuild() {
   document.getElementById('build').innerHTML = build.length
     ? build.map((note) => noteChip(note)).join('')
     : '<span class="small">עדיין אין צלילים. לחצו על צבעים כדי לבנות דפוס.</span>';
+}
+
+function renderThinkingTask() {
+  const task = lesson.thinkingTask;
+  document.getElementById('thinking-question').textContent = task.question;
+  document.getElementById('thinking-options').innerHTML = task.options.map((option) => `
+    <button type="button" class="thinking-option ${selectedThinking === option.id ? 'active' : ''}" data-thinking="${option.id}">${option.text}</button>
+  `).join('');
+  document.querySelectorAll('[data-thinking]').forEach((button) => {
+    button.addEventListener('click', () => {
+      selectedThinking = button.dataset.thinking;
+      renderThinkingTask();
+      setResult('');
+    });
+  });
+}
+
+function thinkingAnswerOk() {
+  return lesson.thinkingTask.options.some((option) => option.id === selectedThinking && option.good);
 }
 
 function setResult(text, success = false) {
@@ -62,8 +82,16 @@ function checkPattern() {
   }
   const sameLength = build.length === lesson.target.length;
   const sameNotes = sameLength && build.every((note, index) => note === lesson.target[index]);
+  if (sameNotes && !selectedThinking) {
+    setResult('הדפוס נכון. עכשיו בחרו תשובה באתגר החשיבה — מה החוק או הרעיון שמסתתר במוזיקה?');
+    return;
+  }
+  if (sameNotes && !thinkingAnswerOk()) {
+    setResult('הדפוס נכון, אבל תשובת החשיבה עדיין לא מדויקת. נסו לזהות את החוק של הדפוס.');
+    return;
+  }
   if (sameNotes) {
-    setResult('מעולה! סיסי ניגנה את הדפוס בדיוק לפי הסדר 🎶', true);
+    setResult(`${lesson.thinkingTask.success} 🎶`, true);
     window.SisiCourseCertificate?.show({ lessons, lesson });
     return;
   }
@@ -99,8 +127,8 @@ function init() {
   document.getElementById('play').addEventListener('click', () => playSequence(build));
   document.getElementById('check').addEventListener('click', checkPattern);
   document.getElementById('undo').addEventListener('click', () => { build.pop(); renderBuild(); setResult(''); });
-  document.getElementById('clear').addEventListener('click', () => { build = []; renderBuild(); setResult(''); });
-  document.getElementById('demo').addEventListener('click', () => { build = [...lesson.target]; renderBuild(); setResult('הדפוס נטען. עכשיו אפשר להשמיע או לבדוק.'); });
+  document.getElementById('clear').addEventListener('click', () => { build = []; selectedThinking = null; renderBuild(); renderThinkingTask(); setResult(''); });
+  document.getElementById('demo').addEventListener('click', () => { build = [...lesson.target]; renderBuild(); setResult('הדפוס נטען. עכשיו פתרו גם את אתגר החשיבה.'); });
 
   document.getElementById('lesson-nav').innerHTML = lessons.map((item) => `
     <a class="${item.id === lesson.id ? 'active' : ''}" href="music-play.html?lesson=${item.id}">${item.id}</a>
@@ -108,6 +136,7 @@ function init() {
 
   renderTarget();
   renderBuild();
+  renderThinkingTask();
 }
 
 init();

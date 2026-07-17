@@ -56,6 +56,10 @@ test('music lesson data has six pattern challenges with valid notes', () => {
     assert.ok(lesson.teacherFact.length >= 20, `Lesson ${lesson.id} needs a learning note`);
     assert.ok(lesson.target.length >= 3, `Lesson ${lesson.id} needs a target pattern`);
     assert.ok(lesson.target.every((note) => noteKeys.includes(note)), `Lesson ${lesson.id} has unsupported notes`);
+    assert.ok(lesson.thinkingTask.question.length >= 10, `Lesson ${lesson.id} needs a thinking question`);
+    assert.equal(lesson.thinkingTask.options.length, 3, `Lesson ${lesson.id} needs three thinking options`);
+    assert.equal(lesson.thinkingTask.options.filter((option) => option.good).length, 1, `Lesson ${lesson.id} needs one correct thinking option`);
+    assert.ok(lesson.thinkingTask.success.length >= 20, `Lesson ${lesson.id} needs success feedback`);
   }
 });
 
@@ -63,6 +67,8 @@ test('music play page exposes pattern-building controls instead of grid movement
   assertIncludes(playHtml, 'notes-bank');
   assertIncludes(playHtml, 'pattern-target');
   assertIncludes(playHtml, 'pattern-build');
+  assertIncludes(playHtml, 'thinking-box');
+  assertIncludes(playHtml, 'thinking-options');
   assertIncludes(playHtml, 'id="play"');
   assertIncludes(playHtml, 'id="check"');
   assertIncludes(playHtml, 'id="demo"');
@@ -75,6 +81,9 @@ test('music engine checks order, supports demo pattern, and can play tones', () 
   assertIncludes(playSource, 'function checkPattern()');
   assertIncludes(playSource, 'build.every((note, index) => note === lesson.target[index])');
   assertIncludes(playSource, 'function playTone(noteKey)');
+  assertIncludes(playSource, 'function renderThinkingTask()');
+  assertIncludes(playSource, 'function thinkingAnswerOk()');
+  assertIncludes(playSource, 'אתגר החשיבה');
   assertIncludes(playSource, 'debug-hint');
   assertIncludes(playSource, 'window.AudioContext || window.webkitAudioContext');
   assertIncludes(playSource, 'build = [...lesson.target]');
@@ -87,7 +96,9 @@ test('music css includes dedicated stage, note buttons, and mobile layout', () =
   assertIncludes(musicCss, '.pattern-target');
   assertIncludes(musicCss, '.pattern-build');
   assertIncludes(musicCss, '.note-chip.playing');
-  assertMatches(musicCss, /@media\(max-width:620px\)\{\.note\{width:calc\(50% - 5px\)\}\}/);
+  assertIncludes(musicCss, '.thinking-box');
+  assertIncludes(musicCss, '.thinking-option.active');
+  assertMatches(musicCss, /@media\(max-width:620px\)\{\.note\{width:calc\(50% - 5px\)\}\.thinking-options\{grid-template-columns:1fr\}\}/);
 });
 
 let passed = 0;
