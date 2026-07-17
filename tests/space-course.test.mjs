@@ -30,10 +30,12 @@ test('space course is a separate entry point and does not replace the smart-city
   assertIncludes(spaceHtml, 'href="smart-city.html"');
 });
 
-test('landing page is clearly targeted at grade B / age 7 and starts at mission 1', () => {
+test('landing page is clearly targeted at grade B / age 7 and frames a 75 minute first lesson', () => {
   assertIncludes(spaceHtml, 'סיסי בחלל');
   assertIncludes(spaceHtml, 'כיתות ב׳');
   assertIncludes(spaceHtml, 'ילדים בני 7');
+  assertIncludes(spaceHtml, '75</b>דק׳ לשיעור ראשון');
+  assertIncludes(spaceHtml, 'שיעור ראשון מומלץ: משימות 1–4 במשך 75 דקות');
   assertIncludes(spaceHtml, 'href="space-play.html?lesson=1"');
   assertIncludes(spaceHtml, 'js/space-lessons.js');
   assertIncludes(spaceHtml, 'css/space.css');
