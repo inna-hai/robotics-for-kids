@@ -12,7 +12,7 @@ window.SPACE_LESSONS = [
     start: { x: 1, y: 4 },
     obstacles: [{ x: 3, y: 4 }, { x: 3, y: 3 }, { x: 4, y: 3 }],
     stars: [{ x: 2, y: 4 }, { x: 4, y: 2 }],
-    commands: ['right', 'right', 'up', 'up', 'right', 'right', 'up']
+    commands: ['up', 'up', 'up', 'right', 'right', 'right', 'right']
   },
   {
     id: 2,
@@ -27,7 +27,7 @@ window.SPACE_LESSONS = [
     start: { x: 1, y: 2 },
     obstacles: [{ x: 2, y: 1 }, { x: 3, y: 2 }, { x: 5, y: 2 }],
     stars: [{ x: 2, y: 2 }, { x: 4, y: 3 }, { x: 6, y: 2 }],
-    commands: ['right', 'down', 'right', 'right', 'right', 'right']
+    commands: ['down', 'right', 'right', 'right', 'right', 'right']
   },
   {
     id: 3,
@@ -42,7 +42,7 @@ window.SPACE_LESSONS = [
     start: { x: 1, y: 5 },
     obstacles: [{ x: 2, y: 5 }, { x: 2, y: 4 }, { x: 4, y: 3 }, { x: 5, y: 2 }],
     stars: [{ x: 1, y: 4 }, { x: 3, y: 3 }, { x: 5, y: 1 }],
-    commands: ['up', 'up', 'right', 'right', 'up', 'right', 'right', 'right']
+    commands: ['up', 'up', 'up', 'up', 'right', 'right', 'right', 'right', 'right']
   },
   {
     id: 4,
@@ -57,7 +57,7 @@ window.SPACE_LESSONS = [
     start: { x: 1, y: 1 },
     obstacles: [{ x: 4, y: 1 }, { x: 4, y: 2 }, { x: 4, y: 3 }, { x: 6, y: 4 }],
     stars: [{ x: 2, y: 1 }, { x: 3, y: 4 }, { x: 5, y: 4 }],
-    commands: ['right', 'right', 'down', 'down', 'down', 'right', 'down']
+    commands: ['down', 'down', 'down', 'down', 'right', 'right', 'right', 'right']
   },
   {
     id: 5,
@@ -72,7 +72,7 @@ window.SPACE_LESSONS = [
     start: { x: 1, y: 3 },
     obstacles: [{ x: 3, y: 2 }, { x: 3, y: 3 }, { x: 5, y: 5 }],
     stars: [{ x: 2, y: 3 }, { x: 4, y: 4 }, { x: 6, y: 5 }],
-    commands: ['right', 'right', 'down', 'right', 'right', 'right']
+    commands: ['down', 'right', 'right', 'right', 'right', 'right']
   },
   {
     id: 6,
@@ -87,7 +87,7 @@ window.SPACE_LESSONS = [
     start: { x: 1, y: 5 },
     obstacles: [{ x: 2, y: 4 }, { x: 3, y: 4 }, { x: 4, y: 4 }, { x: 5, y: 3 }],
     stars: [{ x: 1, y: 4 }, { x: 3, y: 2 }, { x: 5, y: 2 }],
-    commands: ['up', 'up', 'right', 'right', 'right', 'right', 'right']
+    commands: ['up', 'up', 'up', 'right', 'right', 'right', 'right', 'right']
   },
   {
     id: 7,
@@ -102,7 +102,7 @@ window.SPACE_LESSONS = [
     start: { x: 1, y: 1 },
     obstacles: [{ x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 4 }, { x: 5, y: 4 }],
     stars: [{ x: 2, y: 1 }, { x: 3, y: 3 }, { x: 5, y: 5 }],
-    commands: ['right', 'right', 'down', 'down', 'right', 'right', 'down', 'down', 'right']
+    commands: ['down', 'down', 'down', 'down', 'right', 'right', 'right', 'right', 'right']
   },
   {
     id: 8,
