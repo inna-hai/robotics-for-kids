@@ -22,7 +22,7 @@ function renderGrid() {
       const pos = { x, y };
       const cell = document.createElement('div');
       cell.className = 'cell';
-      if (lesson.stars.some((star) => same(star, pos)) && !collected.has(key(pos))) cell.classList.add('star');
+      if (lesson.collectibles.some((star) => same(star, pos)) && !collected.has(key(pos))) cell.classList.add('collectible');
       if (isObstacle(pos)) {
         cell.classList.add('obstacle');
         cell.textContent = lesson.id === 4 ? '🦀' : lesson.id === 6 ? '🦈' : '🪨';
@@ -62,10 +62,10 @@ function resetRobot() {
 function step(cmd) {
   const [dx, dy] = moves[cmd];
   const next = { x: robot.x + dx, y: robot.y + dy };
-  if (!inside(next)) return { ok: false, reason: 'סיסי כמעט יצאה מהחלל של המשחק. צריך להישאר בתוך הלוח 🙂' };
+  if (!inside(next)) return { ok: false, reason: 'סיסי כמעט יצאה מלוח האוקיינוס. צריך להישאר בתוך הלוח 🙂' };
   if (isObstacle(next)) return { ok: false, reason: 'אופס, יש מכשול בדרך. נסו מסלול אחר.' };
   robot = next;
-  if (lesson.stars.some((star) => same(star, robot))) collected.add(key(robot));
+  if (lesson.collectibles.some((star) => same(star, robot))) collected.add(key(robot));
   renderGrid();
   return { ok: true };
 }
@@ -86,7 +86,7 @@ async function runProgram() {
     }
   }
   if (same(robot, lesson.goal)) {
-    const bonus = collected.size ? ` וגם אספה ${collected.size} כוכבים!` : '!';
+    const bonus = collected.size ? ` וגם אספה ${collected.size} פנינים!` : '!';
     setResult(`יש! סיסי הגיעה ליעד${bonus}`, true);
     window.SisiCourseCertificate?.show({ lessons, lesson });
   } else {
@@ -100,7 +100,7 @@ function init() {
   document.getElementById('lesson-heading').textContent = `משימה ${lesson.id}: ${lesson.title}`;
   document.getElementById('lesson-emoji').textContent = lesson.emoji;
   document.getElementById('mission').textContent = lesson.mission;
-  document.getElementById('fact').innerHTML = `<b>עובדת ים:</b> ${lesson.spaceFact}`;
+  document.getElementById('fact').innerHTML = `<b>עובדת ים:</b> ${lesson.oceanFact}`;
 
   document.querySelectorAll('[data-cmd]').forEach((button) => {
     button.addEventListener('click', () => {
@@ -116,7 +116,7 @@ function init() {
   document.getElementById('demo').addEventListener('click', () => { program = [...lesson.commands]; renderProgram(); resetRobot(); setResult('פתרון לדוגמה נטען. עכשיו לחצו הרצה.'); });
 
   document.getElementById('lesson-nav').innerHTML = lessons.map((item) => `
-    <a class="${item.id === lesson.id ? 'active' : ''}" href="space-play.html?lesson=${item.id}">${item.id}</a>
+    <a class="${item.id === lesson.id ? 'active' : ''}" href="ocean-play.html?lesson=${item.id}">${item.id}</a>
   `).join('');
 
   renderGrid();

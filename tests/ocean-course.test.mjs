@@ -35,7 +35,7 @@ test('ocean course is linked as lesson 3 and does not replace the active lesson 
 test('landing page is clearly lesson 3 ocean for grade B / age 7 and frames a 75 minute lesson', () => {
   assertIncludes(oceanHtml, 'שיעור 3: סיסי במעמקים');
   assertIncludes(oceanHtml, 'שיעור 3 • אוקיינוס • כיתות ב׳ • 75 דקות');
-  assertIncludes(oceanHtml, 'אחרי שסיסי ביקרה בחלל, היא צוללת לאוקיינוס');
+  assertIncludes(oceanHtml, 'סיסי צוללת לאוקיינוס');
   assertIncludes(oceanHtml, 'מה עושים בשיעור האוקיינוס?');
   assertIncludes(oceanHtml, 'משימות שיעור האוקיינוס');
   assertIncludes(oceanHtml, '75</b>דק׳ לשיעור');
@@ -51,7 +51,7 @@ test('ocean course has eight lightweight missions with child-friendly ocean fact
     assert.equal(typeof lesson.id, 'number');
     assert.ok(lesson.title.length >= 4, `Lesson ${lesson.id} needs a title`);
     assert.ok(lesson.mission.length >= 20, `Lesson ${lesson.id} needs a mission story`);
-    assert.ok(lesson.spaceFact.length >= 20, `Lesson ${lesson.id} needs an ocean fact`);
+    assert.ok(lesson.oceanFact.length >= 20, `Lesson ${lesson.id} needs an ocean fact`);
     assert.ok(lesson.commands.length >= 3, `Lesson ${lesson.id} needs a demo command path`);
     assert.ok(lesson.commands.every((cmd) => ['up', 'down', 'right', 'left'].includes(cmd)), `Lesson ${lesson.id} has unsupported command`);
   }
@@ -64,7 +64,7 @@ test('all mission coordinates fit inside the simple 6 by 5 board', () => {
     assert.ok(inside(lesson.start), `Lesson ${lesson.id} start is outside the board`);
     assert.ok(inside(lesson.goal), `Lesson ${lesson.id} goal is outside the board`);
     for (const obstacle of lesson.obstacles) assert.ok(inside(obstacle), `Lesson ${lesson.id} obstacle is outside the board`);
-    for (const star of lesson.stars) assert.ok(inside(star), `Lesson ${lesson.id} star is outside the board`);
+    for (const collectible of lesson.collectibles) assert.ok(inside(collectible), `Lesson ${lesson.id} collectible is outside the board`);
   }
 });
 
@@ -97,10 +97,16 @@ test('interactive play page exposes simple controls, run/reset flow, and lesson 
   assertIncludes(playHtml, 'id="undo"');
   assertIncludes(playHtml, 'id="clear"');
   assertIncludes(playHtml, 'id="demo"');
+  assertIncludes(playHtml, 'פנינים');
   assertIncludes(playHtml, 'js/ocean-play.js');
   assertIncludes(playSource, 'function runProgram()');
   assertIncludes(playSource, 'פתרון לדוגמה נטען');
+  assertIncludes(playSource, 'ocean-play.html?lesson=');
+  assertIncludes(playSource, 'lesson.oceanFact');
+  assertIncludes(playSource, 'lesson.collectibles');
   assertIncludes(playSource, 'lessons.map((item)');
+  assert.ok(!playSource.includes('space-play.html'), 'Ocean lesson navigation must not link to space missions');
+  assert.ok(!playSource.includes('יצאה מהחלל'), 'Ocean lesson should not show space wording');
 });
 
 test('game board uses left-to-right grid direction so right and left buttons move visually correctly', () => {
@@ -110,6 +116,7 @@ test('game board uses left-to-right grid direction so right and left buttons mov
 });
 
 test('responsive styling keeps the course usable on phones', () => {
+  assertIncludes(oceanCss, '.cell.collectible:before');
   assertIncludes(oceanCss, '@media(max-width:620px)');
   assertMatches(oceanCss, /\.cards,\.stats\{grid-template-columns:1fr\}/);
   assertIncludes(oceanCss, '.actions .btn,.side-actions .btn{width:100%}');

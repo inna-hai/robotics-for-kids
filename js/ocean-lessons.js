@@ -7,11 +7,11 @@ window.OCEAN_LESSONS = [
     place: 'שונית אלמוגים',
     mission: 'סיסי הצוללת צריכה להגיע לצדפה הירוקה בלי להיתקע בסלעי ים.',
     concept: 'רצף פקודות',
-    spaceFact: 'שונית אלמוגים היא כמו עיר קטנה מתחת למים, עם הרבה בעלי חיים שמסתתרים בה.',
+    oceanFact: 'שונית אלמוגים היא כמו עיר קטנה מתחת למים, עם הרבה בעלי חיים שמסתתרים בה.',
     goal: { x: 5, y: 1 },
     start: { x: 1, y: 4 },
     obstacles: [{ x: 3, y: 4 }, { x: 3, y: 3 }, { x: 4, y: 3 }],
-    stars: [{ x: 2, y: 4 }, { x: 4, y: 2 }],
+    collectibles: [{ x: 2, y: 4 }, { x: 4, y: 2 }],
     commands: ['up', 'up', 'up', 'right', 'right', 'right', 'right']
   },
   {
@@ -22,11 +22,11 @@ window.OCEAN_LESSONS = [
     place: 'קרקעית הים',
     mission: 'סיסי מחפשת מטבע עתיק ומנווטת בין אבנים קטנות בקרקעית.',
     concept: 'פקודות קצרות ומדויקות',
-    spaceFact: 'בקרקעית הים יש חול, אבנים, צדפים ולפעמים גם שרידים של ספינות ישנות.',
+    oceanFact: 'בקרקעית הים יש חול, אבנים, צדפים ולפעמים גם שרידים של ספינות ישנות.',
     goal: { x: 6, y: 3 },
     start: { x: 1, y: 2 },
     obstacles: [{ x: 2, y: 1 }, { x: 3, y: 2 }, { x: 5, y: 2 }],
-    stars: [{ x: 2, y: 2 }, { x: 4, y: 3 }, { x: 6, y: 2 }],
+    collectibles: [{ x: 2, y: 2 }, { x: 4, y: 3 }, { x: 6, y: 2 }],
     commands: ['down', 'right', 'right', 'right', 'right', 'right']
   },
   {
@@ -37,11 +37,11 @@ window.OCEAN_LESSONS = [
     place: 'יער אצות',
     mission: 'סיסי עוברת בין אצות גבוהות ומנסה לא לגעת בהן.',
     concept: 'תכנון מסלול',
-    spaceFact: 'אצות הן צמחים פשוטים שחיים במים, וחלקן נותנות מחסה לדגים קטנים.',
+    oceanFact: 'אצות הן צמחים פשוטים שחיים במים, וחלקן נותנות מחסה לדגים קטנים.',
     goal: { x: 6, y: 1 },
     start: { x: 1, y: 5 },
     obstacles: [{ x: 2, y: 5 }, { x: 2, y: 4 }, { x: 4, y: 3 }, { x: 5, y: 2 }],
-    stars: [{ x: 1, y: 4 }, { x: 3, y: 3 }, { x: 5, y: 1 }],
+    collectibles: [{ x: 1, y: 4 }, { x: 3, y: 3 }, { x: 5, y: 1 }],
     commands: ['up', 'up', 'up', 'up', 'right', 'right', 'right', 'right', 'right']
   },
   {
@@ -52,11 +52,11 @@ window.OCEAN_LESSONS = [
     place: 'מערת סרטנים',
     mission: 'סיסי עוברת ליד סרטן חמוד, אבל צריכה לשמור מרחק ולעקוף אותו.',
     concept: 'אם יש מכשול — משנים כיוון',
-    spaceFact: 'סרטנים הולכים הרבה פעמים הצידה, ויש להם שריון קשה שמגן עליהם.',
+    oceanFact: 'סרטנים הולכים הרבה פעמים הצידה, ויש להם שריון קשה שמגן עליהם.',
     goal: { x: 5, y: 5 },
     start: { x: 1, y: 1 },
     obstacles: [{ x: 4, y: 1 }, { x: 4, y: 2 }, { x: 4, y: 3 }, { x: 6, y: 4 }],
-    stars: [{ x: 2, y: 1 }, { x: 3, y: 4 }, { x: 5, y: 4 }],
+    collectibles: [{ x: 2, y: 1 }, { x: 3, y: 4 }, { x: 5, y: 4 }],
     commands: ['down', 'down', 'down', 'down', 'right', 'right', 'right', 'right']
   },
   {
@@ -67,11 +67,11 @@ window.OCEAN_LESSONS = [
     place: 'מסלול הצבים',
     mission: 'סיסי עוזרת לצב ים קטן למצוא את הדרך הבטוחה הביתה.',
     concept: 'פעולה בסוף מסלול',
-    spaceFact: 'צבי ים חוזרים לעיתים לחופים שבהם בקעו כדי להטיל ביצים כשהם גדלים.',
+    oceanFact: 'צבי ים חוזרים לעיתים לחופים שבהם בקעו כדי להטיל ביצים כשהם גדלים.',
     goal: { x: 6, y: 4 },
     start: { x: 1, y: 3 },
     obstacles: [{ x: 3, y: 2 }, { x: 3, y: 3 }, { x: 5, y: 5 }],
-    stars: [{ x: 2, y: 3 }, { x: 4, y: 4 }, { x: 6, y: 5 }],
+    collectibles: [{ x: 2, y: 3 }, { x: 4, y: 4 }, { x: 6, y: 5 }],
     commands: ['down', 'right', 'right', 'right', 'right', 'right']
   },
   {
@@ -82,11 +82,11 @@ window.OCEAN_LESSONS = [
     place: 'מפרץ הכרישים',
     mission: 'סיסי בוחרת מסלול בטוח ושקט ליד כריש ישן.',
     concept: 'מכשולים ובחירת נתיב',
-    spaceFact: 'כרישים מריחים טוב מאוד במים, ולכן הם מוצאים אוכל גם ממרחק.',
+    oceanFact: 'כרישים מריחים טוב מאוד במים, ולכן הם מוצאים אוכל גם ממרחק.',
     goal: { x: 6, y: 2 },
     start: { x: 1, y: 5 },
     obstacles: [{ x: 2, y: 4 }, { x: 3, y: 4 }, { x: 4, y: 4 }, { x: 5, y: 3 }],
-    stars: [{ x: 1, y: 4 }, { x: 3, y: 2 }, { x: 5, y: 2 }],
+    collectibles: [{ x: 1, y: 4 }, { x: 3, y: 2 }, { x: 5, y: 2 }],
     commands: ['up', 'up', 'up', 'right', 'right', 'right', 'right', 'right']
   },
   {
@@ -97,11 +97,11 @@ window.OCEAN_LESSONS = [
     place: 'חוף נקי',
     mission: 'סיסי אוספת פסולת קטנה מהמים ומגיעה לנקודת המיחזור.',
     concept: 'משימה עם איסוף',
-    spaceFact: 'פלסטיק בים מסוכן לבעלי חיים, לכן חשוב לאסוף אשפה ולא להשאיר אותה בחוף.',
+    oceanFact: 'פלסטיק בים מסוכן לבעלי חיים, לכן חשוב לאסוף אשפה ולא להשאיר אותה בחוף.',
     goal: { x: 6, y: 5 },
     start: { x: 1, y: 1 },
     obstacles: [{ x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 4 }, { x: 5, y: 4 }],
-    stars: [{ x: 2, y: 1 }, { x: 3, y: 3 }, { x: 5, y: 5 }],
+    collectibles: [{ x: 2, y: 1 }, { x: 3, y: 3 }, { x: 5, y: 5 }],
     commands: ['down', 'down', 'down', 'down', 'right', 'right', 'right', 'right', 'right']
   },
   {
@@ -112,11 +112,11 @@ window.OCEAN_LESSONS = [
     place: 'מפרץ הדולפינים',
     mission: 'סיסי עוקבת אחרי דולפין שמראה לה דרך קצרה וחכמה.',
     concept: 'בדיקה ושיפור מסלול',
-    spaceFact: 'דולפינים מתקשרים בקולות ויכולים לזהות דברים במים בעזרת הדים.',
+    oceanFact: 'דולפינים מתקשרים בקולות ויכולים לזהות דברים במים בעזרת הדים.',
     goal: { x: 5, y: 2 },
     start: { x: 1, y: 5 },
     obstacles: [{ x: 2, y: 5 }, { x: 2, y: 3 }, { x: 4, y: 3 }, { x: 5, y: 4 }],
-    stars: [{ x: 1, y: 4 }, { x: 3, y: 2 }, { x: 5, y: 3 }],
+    collectibles: [{ x: 1, y: 4 }, { x: 3, y: 2 }, { x: 5, y: 3 }],
     commands: ['up', 'up', 'up', 'right', 'right', 'right', 'right']
   }
 ];
