@@ -30,10 +30,12 @@ test('space course is a separate entry point and does not replace the smart-city
   assertIncludes(spaceHtml, 'href="smart-city.html"');
 });
 
-test('landing page is clearly targeted at grade B / age 7 and frames a 75 minute first lesson', () => {
-  assertIncludes(spaceHtml, 'סיסי בחלל');
-  assertIncludes(spaceHtml, 'כיתות ב׳');
-  assertIncludes(spaceHtml, 'ילדים בני 7');
+test('landing page is clearly a space lesson for grade B / age 7 and frames a 75 minute first lesson', () => {
+  assertIncludes(spaceHtml, 'שיעור חלל: סיסי בחלל');
+  assertIncludes(spaceHtml, 'שיעור חלל • כיתות ב׳ • 75 דקות');
+  assertIncludes(spaceHtml, 'שיעור חלל קליל וצבעוני לילדים בני 7');
+  assertIncludes(spaceHtml, 'מה עושים בשיעור החלל?');
+  assertIncludes(spaceHtml, 'משימות שיעור החלל');
   assertIncludes(spaceHtml, '75</b>דק׳ לשיעור ראשון');
   assertIncludes(spaceHtml, 'שיעור ראשון מומלץ: משימות 1–4 במשך 75 דקות');
   assertIncludes(spaceHtml, 'href="space-play.html?lesson=1"');
@@ -82,6 +84,9 @@ test('demo solutions reach each goal without hitting obstacles or leaving the bo
 });
 
 test('interactive play page exposes simple controls, run/reset flow, and lesson navigation', () => {
+  assertIncludes(playHtml, 'שיעור חלל • סיסי בחלל • משימת תכנות קצרה');
+  assertIncludes(playHtml, 'שיעור חלל אינטראקטיבי');
+  assertIncludes(playHtml, 'aria-label="לוח משחק של שיעור חלל"');
   assertIncludes(playHtml, 'data-cmd="up"');
   assertIncludes(playHtml, 'data-cmd="down"');
   assertIncludes(playHtml, 'data-cmd="right"');
