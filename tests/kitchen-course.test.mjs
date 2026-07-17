@@ -38,6 +38,8 @@ test('landing page frames a new recipe/algorithm mechanic for grade B', () => {
   assertIncludes(kitchenHtml, 'סיסי במטבח הקסמים');
   assertIncludes(kitchenHtml, 'אלגוריתם');
   assertIncludes(kitchenHtml, 'סדר פעולות');
+  assertIncludes(kitchenHtml, 'כרטיסי שלבים מצוירים');
+  assertIncludes(kitchenHtml, 'כרטיסים ויזואליים');
   assertIncludes(kitchenHtml, 'href="kitchen-play.html?lesson=1"');
   assertIncludes(kitchenHtml, 'js/kitchen-lessons.js');
   assertIncludes(kitchenHtml, 'css/kitchen.css');
@@ -52,6 +54,7 @@ test('kitchen lesson data has six recipes with valid unique ordered steps and sh
     assert.deepEqual(new Set(lesson.correctOrder), new Set(stepIds), `Recipe ${lesson.id} order must use all steps`);
     assert.deepEqual(new Set(lesson.displayOrder), new Set(stepIds), `Recipe ${lesson.id} display order must use all steps`);
     assert.notDeepEqual(lesson.displayOrder, lesson.correctOrder, `Recipe ${lesson.id} display order should not be pre-sorted`);
+    assert.ok(lesson.steps.every((step) => step.emoji && step.emoji.length >= 1), `Recipe ${lesson.id} steps should have visual emojis`);
     assert.ok(lesson.cookingNote.length >= 20, `Recipe ${lesson.id} needs a learning note`);
   }
 });
@@ -69,6 +72,9 @@ test('kitchen play page exposes recipe ordering controls rather than previous me
 
 test('kitchen engine checks exact step order and gives debugging feedback', () => {
   assertIncludes(playSource, 'function checkRecipe()');
+  assertIncludes(playSource, 'function stepCard(step');
+  assertIncludes(playSource, 'step-emoji');
+  assertIncludes(playSource, 'step-number');
   assertIncludes(playSource, 'lesson.displayOrder || lesson.steps.map');
   assertIncludes(playSource, 'lesson.correctOrder.length');
   assertIncludes(playSource, 'recipe.findIndex((id, index) => id !== lesson.correctOrder[index])');
@@ -88,6 +94,9 @@ test('kitchen css includes dedicated recipe layout and responsive behavior', () 
   assertIncludes(kitchenCss, '.recipe-layout');
   assertIncludes(kitchenCss, '.step-bank');
   assertIncludes(kitchenCss, '.recipe-steps');
+  assertIncludes(kitchenCss, '.visual-step');
+  assertIncludes(kitchenCss, '.step-emoji');
+  assertIncludes(kitchenCss, '.step-number');
   assertIncludes(kitchenCss, '.step-chip');
   assertMatches(kitchenCss, /@media\(max-width:760px\)\{\.recipe-layout\{grid-template-columns:1fr\}\}/);
 });

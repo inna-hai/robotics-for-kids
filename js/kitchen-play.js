@@ -10,8 +10,18 @@ function setResult(text, success = false) {
   result.style.color = success ? '#15803d' : '#be123c';
 }
 
+function stepData(id) {
+  return lesson.steps.find((step) => step.id === id) || { id, emoji: '❓', text: id };
+}
+
 function stepText(id) {
-  return lesson.steps.find((step) => step.id === id)?.text || id;
+  return stepData(id).text;
+}
+
+function stepCard(step, options = {}) {
+  const number = options.number ? `<span class="step-number">${options.number}</span>` : '';
+  const remove = options.removeIndex !== undefined ? `<button type="button" aria-label="הסר שלב" data-remove="${options.removeIndex}">✕</button>` : '';
+  return `<div class="visual-step">${number}<span class="step-emoji">${step.emoji || '🍳'}</span><span class="step-text">${step.text}</span>${remove}</div>`;
 }
 
 function renderBank() {
@@ -20,7 +30,7 @@ function renderBank() {
     .map((id) => lesson.steps.find((step) => step.id === id))
     .filter(Boolean);
   document.getElementById('step-bank').innerHTML = displaySteps.map((step) => `
-    <button class="step-btn" type="button" data-step="${step.id}" ${used.has(step.id) ? 'disabled' : ''}>${step.text}</button>
+    <button class="step-btn" type="button" data-step="${step.id}" ${used.has(step.id) ? 'disabled' : ''}>${stepCard(step)}</button>
   `).join('');
   document.querySelectorAll('[data-step]').forEach((button) => {
     button.addEventListener('click', () => {
@@ -33,8 +43,8 @@ function renderBank() {
 
 function renderRecipe() {
   document.getElementById('recipe-steps').innerHTML = recipe.length
-    ? recipe.map((id, index) => `<div class="step-chip"><span>${index + 1}. ${stepText(id)}</span><button type="button" data-remove="${index}">✕</button></div>`).join('')
-    : '<span class="small">עדיין אין שלבים. בחרו שלב מהצד השני.</span>';
+    ? recipe.map((id, index) => stepCard(stepData(id), { number: index + 1, removeIndex: index })).join('')
+    : '<span class="small">עדיין אין שלבים. בחרו כרטיס מצויר מהצד השני.</span>';
   document.querySelectorAll('[data-remove]').forEach((button) => {
     button.addEventListener('click', () => {
       recipe.splice(Number(button.dataset.remove), 1);
