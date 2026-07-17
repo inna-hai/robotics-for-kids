@@ -21,7 +21,7 @@ function assertIncludes(haystack, needle) {
 
 const data = loadLessons();
 
-test('GameLab exposes a 15 lesson grade C game development path with 90 minute lessons', () => {
+test('PlayCode Lab exposes a 15 lesson grade C game development path with 90 minute lessons', () => {
   assert.equal(data.GAMELAB_LESSONS.length, 15);
   assert.equal(JSON.stringify(data.GAMELAB_LESSONS.map(l => l.id)), JSON.stringify(Array.from({ length: 15 }, (_, i) => i + 1)));
   assert.ok(data.GAMELAB_LESSONS.every(l => l.durationMinutes === 90));
@@ -31,7 +31,7 @@ test('GameLab exposes a 15 lesson grade C game development path with 90 minute l
   assertIncludes(data.GAMELAB_LESSONS[14].title, 'Game Demo Day');
 });
 
-test('GameLab includes character creation, game development concepts, and AI director challenges', () => {
+test('PlayCode Lab includes character creation, game development concepts, and AI director challenges', () => {
   const concepts = data.GAMELAB_LESSONS.map(l => `${l.title} ${l.concept} ${l.story} ${l.mission}`).join('\n');
   for (const expected of ['דמות', 'ניקוד', 'חיים', 'אויב', 'Level Design', 'מפתח', 'טיימר', 'QA', 'Playtesting']) {
     assertIncludes(concepts, expected);
@@ -43,9 +43,9 @@ test('GameLab includes character creation, game development concepts, and AI dir
   assert.ok(data.GAMELAB_LESSONS.every(l => l.exercises.some(ex => ex.title.includes('במאי המשחק'))));
 });
 
-test('GameLab hub links to the interactive learning page and presents the innovation clearly', () => {
-  assertIncludes(hubHtml, 'סטודיו משחקים צעיר');
-  assertIncludes(hubHtml, 'Game Studio Junior');
+test('PlayCode Lab hub links to the interactive learning page and presents the innovation clearly', () => {
+  assertIncludes(hubHtml, 'PlayCode Lab');
+  assertIncludes(hubHtml, 'PlayCode Lab');
   assertIncludes(hubHtml, 'gamelab-play.html?lesson=1');
   assertIncludes(hubHtml, 'gamelab-slides.html?lesson=1');
   assertIncludes(hubHtml, 'במאי משחק חכם');
@@ -53,7 +53,7 @@ test('GameLab hub links to the interactive learning page and presents the innova
   assertIncludes(hubHtml, 'פיתוח משחקים');
 });
 
-test('GameLab play page exposes Blockly, character editor, and direct lesson navigation', () => {
+test('PlayCode Lab play page exposes Blockly, character editor, and direct lesson navigation', () => {
   assertIncludes(playHtml, 'Blockly');
   assertIncludes(playHtml, 'heroName');
   assertIncludes(playHtml, 'heroColor');
@@ -66,7 +66,7 @@ test('GameLab play page exposes Blockly, character editor, and direct lesson nav
   assertIncludes(playHtml, 'gamelab-slides.html?lesson=');
 });
 
-test('GameLab instructor slides are generated per lesson with 90 minute flow and exercise solutions', () => {
+test('PlayCode Lab instructor slides are generated per lesson with 90 minute flow and exercise solutions', () => {
   assertIncludes(slidesHtml, 'מצגת מדריך');
   assertIncludes(slidesHtml, 'lesson.durationMinutes');
   assertIncludes(slidesHtml, 'מהלך שיעור 90 דקות');
