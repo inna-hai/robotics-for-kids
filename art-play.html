@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">🎨 סיסי בסטודיו הפיקסלים</title>
+  <meta name="description" content="משחק שיעור 7: בוחרים הוראות צבע לפי שורה ועמודה ובונים ציור פיקסלים." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/art.css?v=20260717-art-1">
+</head>
+<body>
+  <main class="shell">
+    <header class="play-header">
+      <div>
+        <div class="kicker" id="page-subtitle">שיעור 7 • פיקסלים וקואורדינטות</div>
+        <h1>🎨 סיסי בסטודיו הפיקסלים</h1>
+      </div>
+      <nav class="lesson-nav" id="lesson-nav" aria-label="מעבר בין ציורי פיקסלים"></nav>
+    </header>
+
+    <section class="mission-card">
+      <div class="big-emoji" id="lesson-emoji" aria-hidden="true">🎨</div>
+      <div><h2 id="lesson-heading">ציור פיקסלים</h2><p id="mission"></p><div class="learning-note" id="learning-note"></div></div>
+    </section>
+
+    <section class="boards-two" aria-label="לוחות פיקסלים">
+      <div class="board-panel"><h2>ציור המטרה של סיסי</h2><div class="pixel-board" id="target-board" role="img" aria-label="ציור מטרה מפיקסלים"></div></div>
+      <div class="board-panel"><h2>הציור שלי</h2><div class="pixel-board" id="my-board" role="img" aria-label="הציור שנבנה מהוראות"></div></div>
+    </section>
+
+    <section class="art-layout">
+      <div class="commands-panel">
+        <h2>בחרו הוראות ציור</h2>
+        <p>כל כרטיס הוא הוראה אחת: צבע + שורה + עמודה. בחרו רק את ההוראות שמתאימות לציור המטרה.</p>
+        <div class="command-grid" id="commands"></div>
+      </div>
+      <div class="commands-panel">
+        <h2>רשימת ההוראות שבחרתי</h2>
+        <ol class="selected-list" id="selected-list"></ol>
+        <div class="controls">
+          <button class="btn" id="check" type="button">✅ לבדוק ציור</button>
+          <button class="btn secondary" id="hint" type="button">💡 רמז</button>
+          <button class="btn secondary" id="clear" type="button">🧽 לנקות</button>
+          <a class="btn secondary" href="art.html">🎨 עמוד השיעור</a>
+        </div>
+        <div class="result" id="result" aria-live="polite"></div>
+        <div class="next-step" id="next-step"></div>
+      </div>
+    </section>
+  </main>
+  <script src="js/art-lessons.js?v=20260717-art-1"></script>
+  <script src="js/art-play.js?v=20260717-art-1"></script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>
