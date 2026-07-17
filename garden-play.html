@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">🌱 סיסי בגינת הקסמים</title>
+  <meta name="description" content="משחק שיעור 10: בוחרים פעולה מתאימה לפי שלב הגדילה של הצמח." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/garden.css?v=20260717-garden-1">
+</head>
+<body>
+  <main class="shell">
+    <header class="play-header">
+      <div><div class="kicker" id="page-subtitle">שיעור 10 • רצף ושלבי גדילה</div><h1>🌱 סיסי בגינת הקסמים</h1></div>
+      <nav class="lesson-nav" id="lesson-nav" aria-label="מעבר בין שלבי הגינה"></nav>
+    </header>
+
+    <section class="stage-card">
+      <div class="big-emoji" id="lesson-emoji" aria-hidden="true">🌱</div>
+      <div><h2 id="lesson-heading">שלב בגינה</h2><p id="story"></p><span class="stage-chip" id="stage"></span><div class="learning-note" id="learning-note"></div></div>
+    </section>
+
+    <section class="garden-layout">
+      <div class="action-panel">
+        <h2>איזו פעולה מתאימה עכשיו?</h2>
+        <p>הסתכלו על שלב הצמח ובחרו פעולה אחת שמתאימה בדיוק למצב.</p>
+        <div class="action-grid" id="action-options"></div>
+      </div>
+      <div class="choice-panel">
+        <h2>הבחירה שלי</h2>
+        <div class="choice-preview" id="choice-preview" aria-live="polite"></div>
+        <h2>מחזור הגדילה</h2>
+        <div class="growth-path" id="growth-path" aria-label="שלבי גדילת הצמח"></div>
+        <div class="controls">
+          <button class="btn" id="check" type="button">✅ לבדוק פעולה</button>
+          <button class="btn secondary" id="hint" type="button">💡 רמז</button>
+          <button class="btn secondary" id="clear" type="button">🔄 להתחיל מחדש</button>
+          <a class="btn secondary" href="garden.html">🌱 עמוד השיעור</a>
+        </div>
+        <div class="result" id="result" aria-live="polite"></div>
+        <div class="next-step" id="next-step"></div>
+      </div>
+    </section>
+  </main>
+  <script src="js/garden-lessons.js?v=20260717-garden-1"></script>
+  <script src="js/garden-play.js?v=20260717-garden-1"></script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>

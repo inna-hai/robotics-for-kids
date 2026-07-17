@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌱 שיעור 10: סיסי בגינת הקסמים - רצף ושלבי גדילה לכיתות ב׳</title>
+  <meta name="description" content="שיעור 10 לכיתות ב׳: סיסי בגינת הקסמים מלמדת רצף, שלבי גדילה ובחירת פעולה מתאימה בלי לקפוץ חזק ברמה." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/garden.css?v=20260717-garden-1">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero"><div>
+      <div class="kicker">שיעור 10 • רצף ושלבי גדילה • כיתות ב׳ • 75 דקות</div>
+      <h1>🌱 סיסי בגינת הקסמים</h1>
+      <p>שיעור רגוע ומעניין: סיסי מטפלת בצמח לפי השלב שלו. הילדים בוחרים פעולה מתאימה — להכין אדמה, לשתול, להשקות, לתת שמש — ומבינים רצף ושלבי חיים בלי עומס חדש מדי.</p>
+      <div class="actions">
+        <a class="btn" href="garden-play.html?lesson=1">▶️ להתחיל שלב 1</a>
+        <a class="btn secondary" href="#missions">🌿 לראות שלבים</a>
+        <a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a>
+        <a class="btn secondary" href="factory.html">🏭 שיעור 9: לולאות</a>
+      </div>
+    </div><div class="hero-art" aria-hidden="true">🤖🌱</div></section>
+
+    <section class="stats" aria-label="נתוני שיעור הגינה">
+      <div class="stat"><b>שיעור 10</b>גינת קסמים</div>
+      <div class="stat"><b>75</b>דקות</div>
+      <div class="stat"><b>רצף</b>רעיון מרכזי</div>
+      <div class="stat"><b>קל</b>בלי קפיצה חדה</div>
+    </section>
+
+    <section class="intro">
+      <div class="panel"><h2>למה זה מתאים עכשיו?</h2><p>אחרי לולאות, לא קופצים לרמה קשה. חוזרים לרעיון מוכר — לבחור פעולה לפי מצב — אבל בתוך סיפור חדש של צמח שגדל בשלבים.</p></div>
+      <div class="panel"><h3>מה לומדים בלי להרגיש?</h3><ul><li>רצף פעולות לאורך זמן</li><li>בחירת פעולה לפי שלב</li><li>מחזור חיים פשוט</li><li>תנאי קל: אם הצמח בשלב X — עושים Y</li><li>שיעור מומלץ: שלבים 1–4 לכל הכיתה, 5–6 להרחבה</li></ul></div>
+    </section>
+
+    <section id="missions"><h2>שלבי גינת הקסמים</h2><div class="cards" id="cards"></div></section>
+  </main>
+  <script src="js/garden-lessons.js?v=20260717-garden-1"></script>
+  <script>
+    document.getElementById('cards').innerHTML = window.GARDEN_LESSONS.map((lesson) => `
+      <a class="card" href="garden-play.html?lesson=${lesson.id}" aria-label="פתח שלב ${lesson.id}: ${lesson.title}">
+        <div class="top"><span class="emoji">${lesson.emoji}</span><span class="id">שלב ${lesson.id}</span></div>
+        <h3>${lesson.title}</h3><div class="unit">${lesson.unit}</div><div class="story">${lesson.story}</div>
+        <div class="tags"><span class="tag">${lesson.concept}</span><span class="tag">גינה</span></div><div class="start">לטפל בצמח ←</div>
+      </a>`).join('');
+  </script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>
