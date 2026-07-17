@@ -102,7 +102,7 @@ test('interactive play page exposes simple controls, run/reset flow, and lesson 
   assertIncludes(playHtml, 'id="run"');
   assertIncludes(playHtml, 'id="undo"');
   assertIncludes(playHtml, 'id="clear"');
-  assertIncludes(playHtml, 'איפוס / ניקוי');
+  assertIncludes(playHtml, '🔄 איפוס');
   assertIncludes(playHtml, 'id="demo"');
   assertIncludes(playHtml, 'js/course-certificate.js');
   assertIncludes(playHtml, 'js/space-play.js');
