@@ -45,8 +45,8 @@ test('landing page frames a new recipe/algorithm mechanic for grade B', () => {
   assertIncludes(kitchenHtml, 'css/kitchen.css');
 });
 
-test('kitchen lesson data has six recipes with valid unique ordered steps and shuffled display order', () => {
-  assert.equal(lessons.length, 6);
+test('kitchen lesson data has twelve recipes with valid unique ordered steps and shuffled display order', () => {
+  assert.equal(lessons.length, 12);
   for (const lesson of lessons) {
     const stepIds = lesson.steps.map((step) => step.id);
     assert.ok(lesson.steps.length >= 4, `Recipe ${lesson.id} needs at least 4 steps`);
@@ -85,8 +85,8 @@ test('kitchen engine checks exact step order and gives debugging feedback', () =
 test('kitchen 75-minute plan is realistic and does not require all recipes for the whole class', () => {
   assertIncludes(lessonPlan, '## מבנה מומלץ — 75 דקות');
   assertIncludes(lessonPlan, 'מתכונים 1–4');
-  assertIncludes(lessonPlan, 'לא להספיק את כל 6 המתכונים עם כל הכיתה');
-  assertIncludes(lessonPlan, 'מתכונים 5–6 הם הרחבה');
+  assertIncludes(lessonPlan, 'לא להספיק את כל 12 המתכונים עם כל הכיתה');
+  assertIncludes(lessonPlan, 'מתכונים 5–12 הם הרחבה');
 });
 
 test('kitchen css includes dedicated recipe layout and responsive behavior', () => {
