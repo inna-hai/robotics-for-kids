@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🕵️‍♀️ משחקים עם סיסי הבלשית</title>
+  <meta name="description" content="משחק בלשות אינטראקטיבי לכיתות ב׳: בוחרים רמז וכלל אם-אז ולומדים תנאים בתכנות." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/detective.css?v=20260717-detective-1">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <div class="kicker">שיעור 4 • בלשות ותנאים • אם… אז…</div>
+        <h1 id="page-title">🕵️‍♀️ טוען תיק...</h1>
+        <p id="page-subtitle">בחרו רמז, בחרו כלל, ובדקו אם סיסי פתרה את התעלומה.</p>
+        <div class="actions">
+          <a class="btn secondary" href="detective.html">🔎 כל תיקי החקירה</a>
+          <a class="btn secondary" href="ocean.html">🌊 שיעור 3: אוקיינוס</a>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">🤖🕵️‍♀️</div>
+    </section>
+
+    <section class="detective-stage">
+      <div class="lesson-title">
+        <div>
+          <h2 id="lesson-heading"></h2>
+          <div class="mission" id="mission"></div>
+        </div>
+        <div class="emoji" id="lesson-emoji"></div>
+      </div>
+
+      <div class="teacher-note" id="learning-note"></div>
+      <div class="answer-card"><b>חשודים / אפשרויות:</b><div class="suspects" id="suspects"></div></div>
+
+      <div class="case-board">
+        <section class="clues">
+          <h3>1. בחרו רמז</h3>
+          <div class="clue-list" id="clues"></div>
+        </section>
+        <section class="rules">
+          <h3>2. בחרו כלל אם-אז</h3>
+          <div id="rules"></div>
+        </section>
+      </div>
+
+      <div class="music-controls">
+        <button class="btn" id="check">✅ בדיקת פתרון</button>
+        <button class="btn secondary" id="hint">💡 רמז קטן</button>
+        <button class="btn secondary" id="clear">🧹 ניקוי</button>
+      </div>
+
+      <p class="result" id="result" aria-live="polite"></p>
+      <h3>מעבר תיק</h3>
+      <div class="detective-nav" id="lesson-nav"></div>
+    </section>
+  </main>
+
+  <script src="js/detective-lessons.js?v=20260717-detective-1"></script>
+  <script src="js/detective-play.js?v=20260717-detective-1"></script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>
