@@ -13,12 +13,13 @@ const oceanHtml = readFileSync(join(root, 'ocean.html'), 'utf8');
 const detectiveHtml = readFileSync(join(root, 'detective.html'), 'utf8');
 const dinoHtml = readFileSync(join(root, 'dino.html'), 'utf8');
 const artHtml = readFileSync(join(root, 'art.html'), 'utf8');
+const weatherHtml = readFileSync(join(root, 'weather.html'), 'utf8');
 
 const tests = [];
 function test(name, fn) { tests.push({ name, fn }); }
 function assertIncludes(source, needle, message = `Missing: ${needle}`) { assert.ok(source.includes(needle), message); }
 
-test('Sisi hub lists all seven lessons in the recommended order', () => {
+test('Sisi hub lists all eight lessons in the recommended order', () => {
   assertIncludes(hubHtml, 'סיסי — שיעורי תכנות לילדים');
   const expected = [
     ['שיעור 1', 'space.html', 'סיסי בחלל'],
@@ -27,7 +28,8 @@ test('Sisi hub lists all seven lessons in the recommended order', () => {
     ['שיעור 4', 'detective.html', 'סיסי הבלשית'],
     ['שיעור 5', 'kitchen.html', 'סיסי במטבח הקסמים'],
     ['שיעור 6', 'dino.html', 'סיסי בפארק הדינוזאורים'],
-    ['שיעור 7', 'art.html', 'סיסי בסטודיו הפיקסלים']
+    ['שיעור 7', 'art.html', 'סיסי בסטודיו הפיקסלים'],
+    ['שיעור 8', 'weather.html', 'סיסי ותחנת מזג האוויר']
   ];
   let lastIndex = -1;
   for (const [number, href, title] of expected) {
@@ -41,7 +43,7 @@ test('Sisi hub lists all seven lessons in the recommended order', () => {
 });
 
 test('main and lesson landing pages link back to the Sisi hub', () => {
-  for (const [name, html] of Object.entries({ smartCityHtml, spaceHtml, musicHtml, oceanHtml, detectiveHtml, dinoHtml, artHtml })) {
+  for (const [name, html] of Object.entries({ smartCityHtml, spaceHtml, musicHtml, oceanHtml, detectiveHtml, dinoHtml, artHtml, weatherHtml })) {
     assertIncludes(html, 'href="sisi.html"', `${name} should link to sisi.html`);
     assertIncludes(html, 'כל שיעורי סיסי', `${name} should label the hub link clearly`);
   }
@@ -51,7 +53,7 @@ test('hub frames the series for grade B age 7 and 75-minute lessons', () => {
   assertIncludes(hubHtml, 'כיתות ב׳');
   assertIncludes(hubHtml, 'גיל 7');
   assertIncludes(hubHtml, '75</b>דק׳ לשיעור');
-  assertIncludes(hubHtml, '7</b>מכניקות שונות');
+  assertIncludes(hubHtml, '8</b>מכניקות שונות');
 });
 
 let passed = 0;
