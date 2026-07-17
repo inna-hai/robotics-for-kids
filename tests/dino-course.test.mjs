@@ -77,13 +77,20 @@ test('dino lab adds a creative classification activity for a full 76-minute less
   assertIncludes(labHtml, 'מעבדת הדינוזאורים של סיסי');
   assertIncludes(labHtml, 'פעילות יצירה');
   assertIncludes(labHtml, '15–20 דקות');
+  assertIncludes(labHtml, 'data-trait="species"');
+  assertIncludes(labHtml, 'איזה מין דינוזאור');
   assertIncludes(labHtml, 'data-trait="food"');
   assertIncludes(labHtml, 'data-trait="movement"');
   assertIncludes(labHtml, 'data-trait="size"');
   assertIncludes(labHtml, 'data-trait="state"');
   assertIncludes(labSource, 'function classifyDino()');
+  assertIncludes(labSource, "{ id: 'trex'");
+  assertIncludes(labSource, "{ id: 'brachio'");
+  assertIncludes(labSource, "{ id: 'ptero'");
+  assertIncludes(labSource, 'speciesName()');
   assertIncludes(labSource, "selected.state === 'egg'");
   assertIncludes(labSource, "selected.movement === 'flies'");
+  assertIncludes(labSource, "selected.species === 'trex'");
 });
 
 test('dino css and plan support a 76-minute visual classification lesson', () => {
@@ -92,6 +99,10 @@ test('dino css and plan support a 76-minute visual classification lesson', () =>
   assertIncludes(dinoCss, '.zone-btn');
   assertIncludes(dinoCss, '.dino-lab');
   assertIncludes(dinoCss, '.created-dino');
+  assertIncludes(dinoCss, '.dino-image');
+  assertIncludes(dinoCss, '.species-trex');
+  assertIncludes(dinoCss, '.species-brachio');
+  assertIncludes(dinoCss, '.species-ptero');
   assertMatches(dinoCss, /@media\(max-width:820px\)\{\.dino-layout\{grid-template-columns:1fr\}/);
   assertIncludes(plan, 'שיעור 76 דקות: משימות 1–4 + מעבדת יצירת דינוזאור');
   assertIncludes(plan, 'לא לדחוס את כל 6 משימות המיון לכל הכיתה');

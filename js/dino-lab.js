@@ -1,4 +1,11 @@
 const traits = {
+  species: [
+    { id: 'trex', label: '🦖 טי־רקס', icon: '🦖', name: 'טי־רקס' },
+    { id: 'brachio', label: '🦕 ברכיוזאורוס', icon: '🦕', name: 'ברכיוזאורוס' },
+    { id: 'ptero', label: '🪽 פטרודקטיל', icon: '🪽', name: 'פטרודקטיל' },
+    { id: 'trice', label: '🛡️ טריצרטופס', icon: '🛡️', name: 'טריצרטופס' },
+    { id: 'eggling', label: '🥚 ביצת דינוזאור', icon: '🥚', name: 'ביצת דינוזאור' }
+  ],
   food: [
     { id: 'plants', label: '🌿 עלים וצמחים' },
     { id: 'meat', label: '🍖 בשר' },
@@ -29,26 +36,31 @@ const zones = {
   herbivore: '🌿 אזור אוכלי הצמחים'
 };
 
-let selected = { food: null, movement: null, size: null, state: null };
+let selected = { species: null, food: null, movement: null, size: null, state: null };
+
+function traitData(type, id) {
+  return traits[type].find((item) => item.id === id);
+}
 
 function traitLabel(type, id) {
-  return traits[type].find((item) => item.id === id)?.label || 'לא נבחר';
+  return traitData(type, id)?.label || 'לא נבחר';
 }
 
 function classifyDino() {
-  if (selected.state === 'egg' || selected.state === 'baby') return 'nursery';
-  if (selected.movement === 'flies') return 'flying';
-  if (selected.size === 'giant') return 'giant';
-  if (selected.food === 'meat') return 'carnivore';
+  if (selected.state === 'egg' || selected.state === 'baby' || selected.species === 'eggling') return 'nursery';
+  if (selected.movement === 'flies' || selected.species === 'ptero') return 'flying';
+  if (selected.size === 'giant' || selected.species === 'brachio') return 'giant';
+  if (selected.food === 'meat' || selected.species === 'trex') return 'carnivore';
   return 'herbivore';
 }
 
 function dinoIcon() {
   if (selected.state === 'egg') return '🥚';
-  if (selected.movement === 'flies') return '🪽';
-  if (selected.food === 'meat') return '🦖';
-  if (selected.size === 'giant') return '🦕';
-  return '🦕';
+  return traitData('species', selected.species)?.icon || '🦕';
+}
+
+function speciesName() {
+  return traitData('species', selected.species)?.name || 'בחרו מין דינוזאור';
 }
 
 function renderOptions() {
@@ -67,9 +79,13 @@ function renderOptions() {
 }
 
 function renderCard() {
-  document.getElementById('created-dino').textContent = dinoIcon();
+  const visual = document.getElementById('created-dino');
+  visual.className = `created-dino species-${selected.species || 'unknown'} state-${selected.state || 'none'} size-${selected.size || 'none'}`;
+  document.getElementById('dino-image').textContent = dinoIcon();
+  document.getElementById('dino-species-name').textContent = speciesName();
   document.getElementById('dino-card').innerHTML = `
     <b>מאפיינים:</b><br>
+    מין: ${traitLabel('species', selected.species)}<br>
     אוכל: ${traitLabel('food', selected.food)}<br>
     תנועה: ${traitLabel('movement', selected.movement)}<br>
     גודל: ${traitLabel('size', selected.size)}<br>
@@ -96,7 +112,7 @@ function randomize() {
 }
 
 function reset() {
-  selected = { food: null, movement: null, size: null, state: null };
+  selected = { species: null, food: null, movement: null, size: null, state: null };
   document.getElementById('lab-result').textContent = '';
   renderAll();
 }
@@ -104,12 +120,12 @@ function reset() {
 function classify() {
   const result = document.getElementById('lab-result');
   if (!hasAllTraits()) {
-    result.textContent = 'צריך לבחור מאפיין בכל קבוצה לפני המיון.';
+    result.textContent = 'צריך לבחור מין דינוזאור ומאפיין בכל קבוצה לפני המיון.';
     result.style.color = '#b45309';
     return;
   }
   const zone = classifyDino();
-  result.textContent = `סיסי ממיינת את הדינוזאור אל: ${zones[zone]}`;
+  result.textContent = `סיסי ממיינת את ${speciesName()} אל: ${zones[zone]}`;
   result.style.color = '#15803d';
 }
 

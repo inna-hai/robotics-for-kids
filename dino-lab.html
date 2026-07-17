@@ -9,20 +9,21 @@
   <link rel="stylesheet" href="css/dino.css?v=20260717-dino-lab-1">
 </head>
 <body><main class="shell">
-  <section class="hero"><div><div class="kicker">שיעור 6 • פעילות יצירה • 15–20 דקות</div><h1>🧬 מעבדת הדינוזאורים של סיסי</h1><p>בחלק היצירתי של השיעור הילדים בונים דינוזאור משלהם: בוחרים מה הוא אוכל, איך הוא זז, כמה הוא גדול ומה המצב שלו — ואז סיסי ממיינת אותו לאזור מתאים בפארק.</p><div class="actions"><a class="btn" href="#lab">🧪 להתחיל ליצור</a><a class="btn secondary" href="dino.html">🦕 חזרה לשיעור 6</a><a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a></div></div><div class="hero-art" aria-hidden="true">🤖🧬</div></section>
+  <section class="hero"><div><div class="kicker">שיעור 6 • פעילות יצירה • 15–20 דקות</div><h1>🧬 מעבדת הדינוזאורים של סיסי</h1><p>בחלק היצירתי של השיעור הילדים בונים דינוזאור משלהם: בוחרים מין דינוזאור, מה הוא אוכל, איך הוא זז, כמה הוא גדול ומה המצב שלו — והתמונה משתנה לפי הבחירות.</p><div class="actions"><a class="btn" href="#lab">🧪 להתחיל ליצור</a><a class="btn secondary" href="dino.html">🦕 חזרה לשיעור 6</a><a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a></div></div><div class="hero-art" aria-hidden="true">🤖🧬</div></section>
 
   <section class="dino-lab" id="lab">
     <div class="lesson-title"><div><h2>צרו דינוזאור חדש לפארק</h2><div class="mission">בחרו מאפיינים. אחר כך לחצו “מיינו את הדינוזאור” וראו לאיזה אזור הוא מתאים.</div></div><div class="emoji">🦕</div></div>
     <div class="lab-grid">
       <section class="lab-panel" aria-label="בחירת מאפיינים">
-        <div class="trait-group"><h3>1. מה הוא אוכל?</h3><div class="trait-options" data-trait="food"></div></div>
-        <div class="trait-group"><h3>2. איך הוא זז?</h3><div class="trait-options" data-trait="movement"></div></div>
-        <div class="trait-group"><h3>3. מה הגודל שלו?</h3><div class="trait-options" data-trait="size"></div></div>
-        <div class="trait-group"><h3>4. מה המצב שלו?</h3><div class="trait-options" data-trait="state"></div></div>
+        <div class="trait-group"><h3>1. איזה מין דינוזאור?</h3><div class="trait-options" data-trait="species"></div></div>
+        <div class="trait-group"><h3>2. מה הוא אוכל?</h3><div class="trait-options" data-trait="food"></div></div>
+        <div class="trait-group"><h3>3. איך הוא זז?</h3><div class="trait-options" data-trait="movement"></div></div>
+        <div class="trait-group"><h3>4. מה הגודל שלו?</h3><div class="trait-options" data-trait="size"></div></div>
+        <div class="trait-group"><h3>5. מה המצב שלו?</h3><div class="trait-options" data-trait="state"></div></div>
         <div class="music-controls"><button class="btn" id="classify">✅ מיינו את הדינוזאור</button><button class="btn secondary" id="randomize">🎲 דינוזאור מפתיע</button><button class="btn secondary" id="reset">🧹 איפוס</button></div>
       </section>
       <section class="lab-panel" aria-label="כרטיס הדינוזאור שנוצר">
-        <h3>כרטיס הדינוזאור שלי</h3><div class="created-dino" id="created-dino">🦕</div><div class="lab-card" id="dino-card"></div><p class="lab-result" id="lab-result" aria-live="polite"></p>
+        <h3>כרטיס הדינוזאור שלי</h3><div class="created-dino species-unknown" id="created-dino"><span class="dino-image" id="dino-image">🦕</span><span class="dino-species-name" id="dino-species-name">בחרו מין דינוזאור</span></div><div class="lab-card" id="dino-card"></div><p class="lab-result" id="lab-result" aria-live="polite"></p>
       </section>
     </div>
     <section class="class-challenge"><h2>אתגר כיתה</h2><p>אחרי שכל זוג יוצר דינוזאור, מציגים כרטיס אחד על המסך והכיתה מצביעה לאיזה אזור הוא שייך. זה מוסיף דיון, נימוק ושיתוף — בדיוק מה שמחזיק את סוף השיעור.</p><div class="challenge-list"><div class="challenge-item">🗣️ הסבירו איזה מאפיין הכריע</div><div class="challenge-item">✏️ תנו שם לדינוזאור</div><div class="challenge-item">🏞️ המציאו אזור חדש בפארק</div></div></section>
