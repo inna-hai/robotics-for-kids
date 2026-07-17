@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🦕 משחקים עם סיסי בפארק הדינוזאורים</title>
+  <meta name="description" content="משחק מיון דינוזאורים לכיתות ב׳: קוראים מאפיינים ובוחרים אזור מתאים." />
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/dino.css?v=20260717-dino-1">
+</head>
+<body><main class="shell">
+  <section class="hero"><div><div class="kicker">שיעור 6 • דינוזאורים ודאטה • מיון לפי מאפיינים</div><h1 id="page-title">🦕 טוען דינוזאור...</h1><p id="page-subtitle">קראו את הכרטיס, הסתכלו על המאפיינים, ובחרו את האזור המתאים.</p><div class="actions"><a class="btn secondary" href="dino.html">🦖 כל משימות הדינוזאורים</a><a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a></div></div><div class="hero-art" aria-hidden="true">🤖🏞️</div></section>
+
+  <section class="dino-stage">
+    <div class="lesson-title"><div><h2 id="lesson-heading"></h2><div class="mission" id="mission"></div></div><div class="emoji" id="lesson-emoji"></div></div>
+    <div class="classification-note" id="learning-note"></div>
+    <div class="dino-layout">
+      <section class="dino-card"><h3>כרטיס הדינוזאור</h3><div class="dino-visual" id="dino-visual"></div><h2 id="dino-name"></h2><div class="facts" id="facts"></div></section>
+      <section class="zones-panel"><h3>בחרו אזור בפארק</h3><div class="zones" id="zones"></div></section>
+    </div>
+    <div class="music-controls"><button class="btn" id="check">✅ בדיקת מיון</button><button class="btn secondary" id="hint">💡 רמז</button><button class="btn secondary" id="clear">🧹 ניקוי</button></div>
+    <p class="result" id="result" aria-live="polite"></p><h3>מעבר משימה</h3><div class="dino-nav" id="lesson-nav"></div>
+  </section>
+</main>
+<script src="js/dino-lessons.js?v=20260717-dino-1"></script><script src="js/dino-play.js?v=20260717-dino-1"></script><script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body></html>

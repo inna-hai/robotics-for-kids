@@ -16,14 +16,15 @@ const tests = [];
 function test(name, fn) { tests.push({ name, fn }); }
 function assertIncludes(source, needle, message = `Missing: ${needle}`) { assert.ok(source.includes(needle), message); }
 
-test('Sisi hub lists all five lessons in the recommended order', () => {
+test('Sisi hub lists all six lessons in the recommended order', () => {
   assertIncludes(hubHtml, 'סיסי — שיעורי תכנות לילדים');
   const expected = [
     ['שיעור 1', 'space.html', 'סיסי בחלל'],
     ['שיעור 2', 'music.html', 'מכונת המוזיקה'],
     ['שיעור 3', 'ocean.html', 'סיסי באוקיינוס'],
     ['שיעור 4', 'detective.html', 'סיסי הבלשית'],
-    ['שיעור 5', 'kitchen.html', 'סיסי במטבח הקסמים']
+    ['שיעור 5', 'kitchen.html', 'סיסי במטבח הקסמים'],
+    ['שיעור 6', 'dino.html', 'סיסי בפארק הדינוזאורים']
   ];
   let lastIndex = -1;
   for (const [number, href, title] of expected) {
@@ -47,7 +48,7 @@ test('hub frames the series for grade B age 7 and 75-minute lessons', () => {
   assertIncludes(hubHtml, 'כיתות ב׳');
   assertIncludes(hubHtml, 'גיל 7');
   assertIncludes(hubHtml, '75</b>דק׳ לשיעור');
-  assertIncludes(hubHtml, '5</b>מכניקות שונות');
+  assertIncludes(hubHtml, '6</b>מכניקות שונות');
 });
 
 let passed = 0;

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🦕 שיעור 6: סיסי בפארק הדינוזאורים - מיון ודאטה לכיתות ב׳</title>
+  <meta name="description" content="שיעור 6 לכיתות ב׳: סיסי בפארק הדינוזאורים מלמדת מיון, מאפיינים ודאטה דרך כרטיסי דינוזאורים." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/dino.css?v=20260717-dino-1">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero"><div>
+      <div class="kicker">שיעור 6 • דינוזאורים ודאטה • כיתות ב׳ • 75 דקות</div>
+      <h1>🦕 סיסי בפארק הדינוזאורים</h1>
+      <p>סיסי מנהלת פארק דינוזאורים וצריכה למיין כל דינוזאור לאזור המתאים לפי תכונות: מה הוא אוכל, איך הוא זז, כמה הוא גדול ומה המצב שלו.</p>
+      <div class="actions">
+        <a class="btn" href="dino-play.html?lesson=1">▶️ להתחיל מיון 1</a>
+        <a class="btn secondary" href="#missions">🦖 לראות משימות</a>
+        <a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a>
+        <a class="btn secondary" href="kitchen.html">🧁 שיעור 5: מטבח</a>
+      </div>
+    </div><div class="hero-art" aria-hidden="true">🤖🦕</div></section>
+
+    <section class="stats" aria-label="נתוני שיעור הדינוזאורים">
+      <div class="stat"><b>שיעור 6</b>דינוזאורים</div>
+      <div class="stat"><b>75</b>דקות</div>
+      <div class="stat"><b>מיון</b>רעיון מרכזי</div>
+      <div class="stat"><b>דאטה</b>מאפיינים</div>
+    </section>
+
+    <section class="intro"><div class="panel"><h2>מה חדש בשיעור הזה?</h2><p>הילדים לא מסדרים שלבים ולא בוחרים רמזים — הם מסתכלים על נתונים וממיינים. זה בסיס חשוב לחשיבה חישובית: לראות מאפיינים ולהחליט לפי כלל.</p></div><div class="panel"><h3>מה לומדים בלי להרגיש?</h3><ul><li>מיון לפי מאפיינים</li><li>קריאת נתונים מכרטיס</li><li>בחירת כלל מתאים</li><li>הבנה שאותו פריט יכול להכיל כמה תכונות</li><li>שיעור מומלץ: משימות 1–4 במשך 75 דקות</li></ul></div></section>
+
+    <section id="missions"><h2>משימות פארק הדינוזאורים</h2><div class="cards" id="cards"></div></section>
+  </main>
+  <script src="js/dino-lessons.js?v=20260717-dino-1"></script>
+  <script>
+    document.getElementById('cards').innerHTML = window.DINO_LESSONS.map((lesson) => `
+      <a class="card" href="dino-play.html?lesson=${lesson.id}" aria-label="פתח משימה ${lesson.id}: ${lesson.title}">
+        <div class="top"><span class="emoji">${lesson.emoji}</span><span class="id">משימה ${lesson.id}</span></div>
+        <h3>${lesson.title}</h3><div class="unit">${lesson.unit}</div><div class="story">${lesson.mission}</div>
+        <div class="tags"><span class="tag">${lesson.concept}</span><span class="tag">דינוזאורים</span></div><div class="start">להתחיל מיון ←</div>
+      </a>`).join('');
+  </script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>
