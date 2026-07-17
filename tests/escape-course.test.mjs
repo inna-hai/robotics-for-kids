@@ -36,9 +36,11 @@ test('escape course is linked as lesson 14 in the Sisi series', () => {
 
 test('landing page frames a 76-minute experiential programming lesson', () => {
   assertIncludes(escapeHtml, 'שיעור 14 • תנאי וגם • כיתות ב׳ • 76 דקות');
-  assertIncludes(escapeHtml, 'אם שני תנאים מתקיימים יחד');
+  assertIncludes(escapeHtml, 'אם שני תנאים נכונים');
   assertIncludes(escapeHtml, 'אתגר “אחד נכון לא מספיק”');
   assertIncludes(escapeHtml, 'משחק בוני חדרים בזוגות');
+  assertIncludes(escapeHtml, 'שישה חדרים, שש בדיקות שונות');
+  assertIncludes(escapeHtml, 'נימוקים שונים לפי סוג החדר');
   assertIncludes(escapeHtml, 'href="escape-play.html?lesson=1"');
   assertIncludes(escapeHtml, 'href="escape-lab.html"');
 });
@@ -52,7 +54,12 @@ test('escape data has six AND-condition tasks with two required keys and distrac
     for (const id of [...lesson.required, ...lesson.distractors]) assert.ok(keyIds.includes(id), `Unknown key ${id}`);
     assertIncludes(lesson.conditionText, 'וגם');
     assert.ok(lesson.learningNote.length >= 35, `Lesson ${lesson.id} needs learning note`);
+    assert.ok(lesson.successReason, `Lesson ${lesson.id} needs a unique success reason`);
+    assert.equal(lesson.reasonOptions.length, 3, `Lesson ${lesson.id} needs three reason options`);
+    assert.ok(lesson.reasonOptions.includes(lesson.successReason), `Lesson ${lesson.id} reason options must include success reason`);
+    assert.ok(lesson.feedbackWrongReason.length >= 20, `Lesson ${lesson.id} needs wrong-reason feedback`);
   }
+  assert.equal(new Set(lessons.map((lesson) => lesson.successReason)).size, lessons.length, 'Each room should use a different correct explanation');
 });
 
 test('escape play page checks two selected keys and reason for AND', () => {
@@ -60,7 +67,9 @@ test('escape play page checks two selected keys and reason for AND', () => {
   assertIncludes(playHtml, 'id="condition-preview"');
   assertIncludes(playHtml, 'id="reason-options"');
   assertIncludes(playSource, 'selected.length !== 2');
-  assertIncludes(playSource, 'כי שני התנאים מתקיימים יחד');
+  assertIncludes(playSource, 'lesson.reasonOptions');
+  assertIncludes(playSource, 'selectedReason === lesson.successReason');
+  assertIncludes(playSource, 'lesson.feedbackWrongReason');
   assertIncludes(playSource, "href: 'escape-lab.html'");
   assert.ok(!playHtml.includes('scene-bank'), 'Escape lesson should not use cinema scene bank');
 });
@@ -74,6 +83,7 @@ test('escape lab, css, and plan support 76 minutes', () => {
   assertIncludes(escapeCss, '.key-card');
   assertIncludes(plan, 'שיעור 76 דקות');
   assertIncludes(plan, 'מתקדם בתכנות בצורה חווייתית');
+  assertIncludes(plan, 'גיוון בין החדרים');
 });
 
 let passed = 0;

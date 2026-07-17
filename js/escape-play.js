@@ -31,11 +31,7 @@ function renderCondition() {
   document.getElementById('condition-preview').innerHTML = `<span>${lesson.conditionText}</span><b>הבחירה שלי:</b><span>${chosen}</span>`;
 }
 function renderReasons() {
-  const options = [
-    'כי שני התנאים מתקיימים יחד',
-    'כי רק תנאי אחד מספיק',
-    'כי הפקודה הכי יפה מנצחת'
-  ];
+  const options = lesson.reasonOptions || [lesson.successReason, 'כי רק תנאי אחד מספיק', 'כי הפקודה הכי יפה מנצחת'];
   document.getElementById('reason-options').innerHTML = options.map((reason) => `<button type="button" class="reason-card ${selectedReason === reason ? 'active' : ''}" data-reason="${reason}">${reason}</button>`).join('');
   document.querySelectorAll('[data-reason]').forEach((button) => button.addEventListener('click', () => { selectedReason = button.dataset.reason; renderReasons(); setResult(''); }));
 }
@@ -45,10 +41,10 @@ function checkEscape() {
   const required = new Set(lesson.required);
   const selectedSet = new Set(selected);
   const keysOk = lesson.required.every((id) => selectedSet.has(id)) && selected.length === required.size;
-  const reasonOk = selectedReason === 'כי שני התנאים מתקיימים יחד';
+  const reasonOk = selectedReason === lesson.successReason;
   if (keysOk && reasonOk) { setResult(`נכון! ${lesson.result} 🔓`, true); renderNextStep(true); }
   else if (!keysOk) setResult('כמעט. בתנאי “וגם” שני הרמזים חייבים להתאים בדיוק למה שכתוב על הדלת.');
-  else setResult('הרמזים נכונים. עכשיו בחרו נימוק שמסביר למה תנאי “וגם” עובד.');
+  else setResult(lesson.feedbackWrongReason || 'הרמזים נכונים. עכשיו בחרו נימוק שמסביר למה תנאי “וגם” עובד.');
 }
 function showHint() {
   const [a,b] = lesson.required.map((id) => `${keys[id].icon} ${keys[id].label}`);

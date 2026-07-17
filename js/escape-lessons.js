@@ -23,6 +23,9 @@ window.ESCAPE_LESSONS = [
     required: ['shapeCircle', 'colorBlue'],
     distractors: ['shapeStar', 'colorRed'],
     result: 'העיגול הכחול הפעיל את שני התנאים, והדלת נפתחה.',
+    successReason: 'כי גם הצורה וגם הצבע מתאימים לדלת',
+    reasonOptions: ['כי גם הצורה וגם הצבע מתאימים לדלת', 'כי מספיק שהצבע יפה', 'כי עיגול תמיד פותח כל דלת'],
+    feedbackWrongReason: 'שימו לב: בדלת הזו צריך גם צורה נכונה וגם צבע נכון.',
     learningNote: 'בתנאי עם וגם, שני הדברים חייבים להיות נכונים. אם רק אחד נכון — הדלת נשארת סגורה.'
   },
   {
@@ -36,6 +39,9 @@ window.ESCAPE_LESSONS = [
     required: ['shapeStar', 'colorGreen'],
     distractors: ['shapeCircle', 'colorBlue'],
     result: 'הכוכב הירוק התאים בדיוק, והתיבה נפתחה.',
+    successReason: 'כי הכוכב נכון והצבע הירוק נכון באותו זמן',
+    reasonOptions: ['כי הכוכב נכון והצבע הירוק נכון באותו זמן', 'כי בחרנו שני רמזים כלשהם', 'כי ירוק תמיד אומר כן'],
+    feedbackWrongReason: 'כאן לא מספיק לבחור שני רמזים — הם חייבים להיות בדיוק הכוכב והירוק.',
     learningNote: 'המחשב בודק כל חלק בתנאי. כוכב נכון בלי ירוק — לא מספיק.'
   },
   {
@@ -49,6 +55,9 @@ window.ESCAPE_LESSONS = [
     required: ['soundBell', 'colorRed'],
     distractors: ['soundDrum', 'colorGreen'],
     result: 'הצלצול והאור האדום הגיעו יחד, והשער נפתח.',
+    successReason: 'כי החיישן שמע צלצול וגם ראה אור אדום',
+    reasonOptions: ['כי החיישן שמע צלצול וגם ראה אור אדום', 'כי תוף וצלצול הם שניהם צלילים', 'כי אור אדום מספיק בלי צליל'],
+    feedbackWrongReason: 'השער הזה משלב שני סוגי קלט: צליל וגם צבע.',
     learningNote: 'אפשר לחבר תנאים מסוגים שונים: צליל אחד וצבע אחד. שניהם יחד יוצרים החלטה.'
   },
   {
@@ -62,6 +71,9 @@ window.ESCAPE_LESSONS = [
     required: ['shapeTriangle', 'numberThree'],
     distractors: ['shapeCircle', 'numberTwo'],
     result: 'המשולש והמספר 3 התאימו, והמנעול השתחרר.',
+    successReason: 'כי עברנו שתי בדיקות: צורה נכונה ומספר נכון',
+    reasonOptions: ['כי עברנו שתי בדיקות: צורה נכונה ומספר נכון', 'כי מספר גדול יותר תמיד טוב יותר', 'כי כל משולש פותח כל מנעול'],
+    feedbackWrongReason: 'המנעול דורש שתי בדיקות קטנות — אחת לצורה ואחת למספר.',
     learningNote: 'תנאי מורכב לא חייב להיות קשה: פשוט בודקים שתי שאלות קטנות.'
   },
   {
@@ -75,6 +87,9 @@ window.ESCAPE_LESSONS = [
     required: ['soundDrum', 'colorGreen'],
     distractors: ['soundBell', 'colorRed'],
     result: 'התוף והירוק עבדו יחד, והקיר הסודי נפתח.',
+    successReason: 'כי תיקנו את החלק החסר: גם תוף וגם ירוק',
+    reasonOptions: ['כי תיקנו את החלק החסר: גם תוף וגם ירוק', 'כי צלצול דומה לתוף ולכן זה מספיק', 'כי אדום וירוק הם שניהם צבעים'],
+    feedbackWrongReason: 'זה חדר דיבוג: צריך לזהות בדיוק איזה חלק חסר בתנאי.',
     learningNote: 'דיבוג בתנאי וגם: אם המערכת לא נפתחת, בודקים איזה חלק מהתנאי חסר.'
   },
   {
@@ -88,6 +103,9 @@ window.ESCAPE_LESSONS = [
     required: ['shapeStar', 'numberTwo'],
     distractors: ['shapeTriangle', 'numberThree'],
     result: 'הכוכב והמספר 2 פתחו את החדר האחרון. סיסי הצליחה לצאת!',
+    successReason: 'כי בנינו כלל מלא: אם כוכב וגם 2 אז פתח',
+    reasonOptions: ['כי בנינו כלל מלא: אם כוכב וגם 2 אז פתח', 'כי החדר האחרון נפתח מכל שני רמזים', 'כי משולש ומספר 3 קרובים מספיק'],
+    feedbackWrongReason: 'בחדר האחרון צריך להסביר את הכלל המלא: אם שני התנאים נכונים — הפעולה מתבצעת.',
     learningNote: 'הילדים כבר בונים תנאי תכנותי אמיתי: אם שני תנאים מתקיימים יחד — הפעולה מתבצעת.'
   }
 ];
