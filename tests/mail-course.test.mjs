@@ -37,7 +37,9 @@ test('mail course is linked as lesson 12 in the Sisi series', () => {
 test('landing page frames a gentle routing mechanic and includes creator lab', () => {
   assertIncludes(mailHtml, 'שיעור 12 • ניתוב לפי רמזים • כיתות ב׳ • 75 דקות');
   assertIncludes(mailHtml, 'בלי להקפיץ את הרמה');
-  assertIncludes(mailHtml, 'דואר 1–4 לכל הכיתה, 5–6 + מעבדה להרחבה');
+  assertIncludes(mailHtml, 'דואר 1–4 לכל הכיתה, אתגר דואר מבלבל, 5–6 + מעבדה להרחבה');
+  assertIncludes(mailHtml, 'id="deep-activities"');
+  assertIncludes(mailHtml, 'משחק שליחים בזוגות');
   assertIncludes(mailHtml, 'href="mail-play.html?lesson=1"');
   assertIncludes(mailHtml, 'href="mail-lab.html"');
   assertIncludes(mailHtml, 'js/mail-lessons.js');
@@ -79,11 +81,15 @@ test('mail lab, css and plan support a full 75-minute lesson', () => {
   assertIncludes(labHtml, 'הודעה');
   assertIncludes(labHtml, 'רמז 1');
   assertIncludes(labHtml, 'יעד');
+  assertIncludes(labHtml, 'משחק בדיקת חברים');
+  assertIncludes(labHtml, 'אתגר רמז שלישי');
   assertIncludes(mailCss, '.route-card');
   assertIncludes(mailCss, '.route-preview');
   assertIncludes(mailCss, '.mailbox-row');
   assertIncludes(plan, 'mail-lab.html');
   assertIncludes(plan, 'מספיק חומר ל־75 דקות');
+  assertIncludes(plan, 'אתגר דואר מבלבל');
+  assertIncludes(plan, 'בדיקת 75 דקות');
 });
 
 let passed = 0;
