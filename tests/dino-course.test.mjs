@@ -61,6 +61,7 @@ test('dino play page exposes classification controls rather than previous mechan
   assertIncludes(playHtml, 'id="facts"');
   assertIncludes(playHtml, 'id="zones"');
   assertIncludes(playHtml, 'id="check"');
+  assertIncludes(playHtml, 'id="next-step"');
   assertIncludes(playHtml, 'js/dino-play.js');
   assert.ok(!playHtml.includes('recipe-steps'), 'Dino lesson should not use recipe ordering');
   assert.ok(!playHtml.includes('notes-bank'), 'Dino lesson should not use music notes');
@@ -69,6 +70,11 @@ test('dino play page exposes classification controls rather than previous mechan
 test('dino engine checks selected zone against data answer and provides hints', () => {
   assertIncludes(playSource, 'function checkClassification()');
   assertIncludes(playSource, 'selectedZone === lesson.dino.answer');
+  assertIncludes(playSource, 'renderNextStep(true)');
+  assertIncludes(playSource, 'function nextTarget()');
+  assertIncludes(playSource, "href: 'dino-lab.html'");
+  assertIncludes(playSource, 'המשך למשימה');
+  assertIncludes(playSource, 'המשך למעבדת יצירת דינוזאור');
   assertIncludes(playSource, 'function showHint()');
   assertIncludes(playSource, 'answerZone.hint');
 });
@@ -104,7 +110,7 @@ test('dino css and plan support a 76-minute visual classification lesson', () =>
   assertIncludes(dinoCss, '.species-brachio');
   assertIncludes(dinoCss, '.species-ptero');
   assertMatches(dinoCss, /@media\(max-width:820px\)\{\.dino-layout\{grid-template-columns:1fr\}/);
-  assertIncludes(plan, 'שיעור 76 דקות: משימות 1–4 + מעבדת יצירת דינוזאור');
+  assertIncludes(plan, 'שיעור 76 דקות: רצף משימות מיון + מעבר מובנה למעבדת יצירת דינוזאור');
   assertIncludes(plan, 'לא לדחוס את כל 6 משימות המיון לכל הכיתה');
 });
 
