@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🏭 שיעור 9: סיסי במפעל הצעצועים - לולאות וחזרות לכיתות ב׳</title>
+  <meta name="description" content="שיעור 9 לכיתות ב׳: סיסי במפעל הצעצועים מלמדת לולאות, חזרות ומספר חזרות דרך פעולות חוזרות במפעל." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/factory.css?v=20260717-factory-1">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero"><div>
+      <div class="kicker">שיעור 9 • לולאות וחזרות • כיתות ב׳ • 75 דקות</div>
+      <h1>🏭 סיסי במפעל הצעצועים</h1>
+      <p>במפעל של סיסי יש פעולות שחוזרות שוב ושוב: להוסיף גלגלים, להדביק כוכבים, לארוז קופסאות. הילדים בונים פקודת “חזור X פעמים” ומגלים למה לולאה מקצרת קוד.</p>
+      <div class="actions">
+        <a class="btn" href="factory-play.html?lesson=1">▶️ להתחיל משימה 1</a>
+        <a class="btn secondary" href="#missions">🧸 לראות משימות</a>
+        <a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a>
+        <a class="btn secondary" href="weather.html">⛅ שיעור 8: חיישנים</a>
+      </div>
+    </div><div class="hero-art" aria-hidden="true">🤖🏭</div></section>
+
+    <section class="stats" aria-label="נתוני שיעור המפעל">
+      <div class="stat"><b>שיעור 9</b>מפעל צעצועים</div>
+      <div class="stat"><b>75</b>דקות</div>
+      <div class="stat"><b>חזור X</b>רעיון מרכזי</div>
+      <div class="stat"><b>לולאות</b>קוד קצר</div>
+    </section>
+
+    <section class="intro">
+      <div class="panel"><h2>מה חדש בשיעור הזה?</h2><p>במקום לבחור כל פעולה שוב ושוב, הילדים בוחרים פעולה אחת ומספר חזרות. זו הפעם הראשונה בסדרת סיסי שבה לולאה מופיעה במפורש כפקודת “חזור”.</p></div>
+      <div class="panel"><h3>מה לומדים בלי להרגיש?</h3><ul><li>לולאה = פעולה שחוזרת</li><li>מספר חזרות מדויק</li><li>קיצור הוראות חוזרות</li><li>דיבוג של מעט מדי / יותר מדי חזרות</li><li>שיעור מומלץ: משימות 1–4 לכל הכיתה, 5–6 להרחבה</li></ul></div>
+    </section>
+
+    <section id="missions"><h2>משימות מפעל הצעצועים</h2><div class="cards" id="cards"></div></section>
+  </main>
+  <script src="js/factory-lessons.js?v=20260717-factory-1"></script>
+  <script>
+    document.getElementById('cards').innerHTML = window.FACTORY_LESSONS.map((lesson) => `
+      <a class="card" href="factory-play.html?lesson=${lesson.id}" aria-label="פתח משימת מפעל ${lesson.id}: ${lesson.title}">
+        <div class="top"><span class="emoji">${lesson.emoji}</span><span class="id">משימה ${lesson.id}</span></div>
+        <h3>${lesson.title}</h3><div class="unit">${lesson.unit}</div><div class="story">${lesson.story}</div>
+        <div class="tags"><span class="tag">${lesson.concept}</span><span class="tag">לולאות</span></div><div class="start">להפעיל לולאה ←</div>
+      </a>`).join('');
+  </script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>
