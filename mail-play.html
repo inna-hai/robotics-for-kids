@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">✉️ סיסי בדואר הקסום</title>
+  <meta name="description" content="משחק שיעור 12: קוראים רמזים ושולחים הודעה ליעד המתאים." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/mail.css?v=20260717-mail-1">
+</head>
+<body>
+  <main class="shell">
+    <header class="play-header">
+      <div><div class="kicker" id="page-subtitle">שיעור 12 • ניתוב לפי רמזים</div><h1>✉️ סיסי בדואר הקסום</h1></div>
+      <nav class="lesson-nav" id="lesson-nav" aria-label="מעבר בין הודעות הדואר"></nav>
+    </header>
+
+    <section class="message-card">
+      <div class="big-emoji" id="lesson-emoji" aria-hidden="true">✉️</div>
+      <div><h2 id="lesson-heading">הודעת דואר</h2><p id="message"></p><span class="clue-chip" id="clue-chip"></span><div class="learning-note" id="learning-note"></div></div>
+    </section>
+
+    <section class="mail-layout">
+      <div class="route-panel">
+        <h2>לאיזו תיבה שולחים?</h2>
+        <p>קראו את ההודעה ובחרו יעד לפי הרמזים.</p>
+        <div class="route-grid" id="route-options"></div>
+      </div>
+      <div class="preview-panel">
+        <h2>הניתוב שלי</h2>
+        <div class="route-preview" id="route-preview" aria-live="polite"></div>
+        <div class="mailbox-row" aria-label="תיבות דואר"><div class="mailbox">📚</div><div class="mailbox">🌱</div><div class="mailbox">🎵</div><div class="mailbox">🤖</div><div class="mailbox">🧁</div><div class="mailbox">🎡</div></div>
+        <div class="controls">
+          <button class="btn" id="check" type="button">📬 לשלוח</button>
+          <button class="btn secondary" id="hint" type="button">💡 רמז</button>
+          <button class="btn secondary" id="clear" type="button">🔄 להתחיל מחדש</button>
+          <a class="btn secondary" href="mail.html">✉️ עמוד השיעור</a>
+        </div>
+        <div class="result" id="result" aria-live="polite"></div>
+        <div class="next-step" id="next-step"></div>
+      </div>
+    </section>
+  </main>
+  <script src="js/mail-lessons.js?v=20260717-mail-1"></script>
+  <script src="js/mail-play.js?v=20260717-mail-1"></script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>

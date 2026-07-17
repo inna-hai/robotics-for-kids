@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✉️ מעבדת דואר - סיסי בדואר הקסום</title>
+  <meta name="description" content="פעילות יצירה מסכמת לשיעור 12: הילדים ממציאים הודעה, רמזים ויעד מתאים." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/mail.css?v=20260717-mail-lab-1">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero"><div>
+      <div class="kicker">שיעור 12 • פעילות יצירה • 15–20 דקות</div>
+      <h1>✉️ מעבדת הדואר של סיסי</h1>
+      <p>הילדים יוצרים הודעה חדשה, מוסיפים שני רמזים, ובוחרים יעד מתאים. כך השיעור מחזיק 75 דקות גם אם מסיימים את הניתוב מהר.</p>
+      <div class="actions"><a class="btn" href="mail-play.html?lesson=1">↩️ חזרה לדואר</a><a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a></div>
+    </div><div class="hero-art" aria-hidden="true">📬✨</div></section>
+
+    <section class="intro">
+      <div class="panel"><h2>משימת יצירה</h2><ol><li>המציאו הודעה קצרה.</li><li>כתבו שני רמזים שיעזרו להבין לאן לשלוח.</li><li>בחרו יעד מתאים.</li><li>תנו לחבר/ה לנחש את היעד לפי הרמזים.</li></ol></div>
+      <div class="panel"><h2>כרטיס הדואר שלי</h2><div class="route-grid">
+        <label>הודעה <input id="message-input" placeholder="למשל: מצאתי תווים לשיר חדש" /></label>
+        <label>רמז 1 <input id="clue-one" placeholder="למשל: תווים" /></label>
+        <label>רמז 2 <input id="clue-two" placeholder="למשל: שיר" /></label>
+        <label>יעד <input id="target" placeholder="למשל: חדר המוזיקה" /></label>
+      </div><button class="btn" id="build" type="button">📬 ליצור הודעה</button></div>
+    </section>
+
+    <section class="preview-panel">
+      <h2>ההודעה שיצרתי</h2>
+      <div class="route-preview" id="mail-output"><span>כתבו הודעה ורמזים</span></div>
+      <div class="learning-note"><b>שאלת שיתוף:</b> האם הרמזים מספיק ברורים? האם מישהו יכול לטעות ולשלוח ליעד אחר?</div>
+    </section>
+  </main>
+  <script>
+    document.getElementById('build').addEventListener('click', () => {
+      const message = document.getElementById('message-input').value || 'הודעה חדשה';
+      const clueOne = document.getElementById('clue-one').value || 'רמז 1';
+      const clueTwo = document.getElementById('clue-two').value || 'רמז 2';
+      const target = document.getElementById('target').value || 'יעד';
+      document.getElementById('mail-output').innerHTML = `<span>${message}</span><b>רמזים:</b><span>${clueOne} + ${clueTwo}</span><b>שליחה אל:</b><span>${target}</span>`;
+    });
+  </script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>
