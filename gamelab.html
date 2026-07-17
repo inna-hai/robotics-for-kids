@@ -19,6 +19,7 @@
         <p>לומדה שנתית משלימה לסנסי: הילדים לא רק מזיזים דמות — הם עובדים כמו צוות פיתוח משחקים קטן. יוצרים דמויות, בונים חוקים, מוסיפים ניקוד, חיים, אויבים, שלבים וטיימר, ומקבלים אתגרי שיפור מ“במאי המשחק החכם”.</p>
         <div class="actions">
           <a class="btn" href="gamelab-play.html?lesson=1">▶️ להתחיל שיעור 1</a>
+          <a class="btn secondary" href="gamelab-slides.html?lesson=1">📽️ מצגת מדריך לשיעור 1</a>
           <a class="btn secondary" href="smart-city.html">🏙️ חזרה לסנסי בעיר החכמה</a>
           <a class="btn secondary" href="holon-scope.html">🔭 חולון סקופ</a>
         </div>
@@ -28,7 +29,7 @@
 
     <section class="stats">
       <div class="stat"><b>15</b>שיעורים</div>
-      <div class="stat"><b>60</b>דק׳ לשיעור</div>
+      <div class="stat"><b>90</b>דק׳ לשיעור</div>
       <div class="stat"><b>Blockly</b>בלי הקלדת קוד</div>
       <div class="stat"><b>AI</b>במאי משחק חכם</div>
     </section>
@@ -51,6 +52,7 @@
         <div class="story">${lesson.story}</div>
         <div class="tags"><span class="tag">${lesson.durationMinutes} דק׳</span><span class="tag">Blockly</span><span class="tag">Game Design</span></div>
         <div class="start">להתחיל לפתח ←</div>
+        <div class="tags"><span class="tag">📽️ <object><a href="gamelab-slides.html?lesson=${lesson.id}" onclick="event.stopPropagation()">מצגת מדריך</a></object></span></div>
       </a>`).join('');
   </script>
   <script src="/js/feedback-widget.js?v=20260711-feedback"></script>

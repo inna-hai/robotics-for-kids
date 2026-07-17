@@ -64,10 +64,14 @@
   };
 
   function makeExercises(lesson) {
+    const main = blockLabels[(blocksByLesson[lesson.id]||[])[1]] || 'צור פעולה ראשונה';
     return [
-      { title:'משימת בסיס', prompt: lesson.mission, blocks: ['כאשר לוחצים התחלה', blockLabels[(blocksByLesson[lesson.id]||[])[1]] || 'צור פעולה ראשונה'] },
-      { title:'שדרוג משחקי', prompt: 'הוסיפו תגובה שהשחקן רואה מיד: הודעה, ניקוד, צבע, חיים או מעבר.', blocks: ['כאשר קורה אירוע', 'בדוק תנאי', 'בצע תגובה'] },
-      { title:'אתגר במאי המשחק החכם', prompt: lesson.aiChallenge, blocks: ['בחרו אתגר AI', 'תכננו שינוי', 'הריצו ובדקו'] }
+      { minutes:'20–32', title:'משימה 1 — אבטיפוס ראשון', prompt: lesson.mission, blocks: ['כאשר לוחצים התחלה', main] },
+      { minutes:'32–45', title:'משימה 2 — חוק משחק', prompt: 'הוסיפו חוק שהופך את הפעולה למשחק: מטרה, סיכון, פרס או מגבלה.', blocks: ['כאשר קורה אירוע', 'בדוק תנאי', 'בצע תגובה'] },
+      { minutes:'45–58', title:'משימה 3 — דמות ואופי', prompt: 'שפרו את הדמות: שם, צבע, כוח מיוחד או משפט שמסביר מי היא במשחק.', blocks: ['צור דמות', 'אמור משפט', 'הפעל כוח מיוחד'] },
+      { minutes:'58–70', title:'משימה 4 — אתגר במאי המשחק החכם', prompt: lesson.aiChallenge, blocks: ['בחרו אתגר AI', 'תכננו שינוי', 'הריצו ובדקו'] },
+      { minutes:'70–82', title:'משימה 5 — בדיקת משחק ושיפור', prompt: 'תנו לחבר לשחק, מצאו דבר אחד מבלבל או קל/קשה מדי, ושפרו גרסה.', blocks: ['בקש בדיקה מחבר', 'תקן באג', 'אזן קושי'] },
+      { minutes:'82–90', title:'משימה 6 — הצגת גרסה', prompt: 'הציגו במשפט: שם המשחק, מי הדמות, מה המטרה, ואיזה קוד הכי חשוב.', blocks: ['הצג שם משחק', 'הצג יוצר/ת', 'אמור משפט'] }
     ];
   }
 
@@ -80,10 +84,19 @@
       story: row[2],
       mission: row[3],
       outcome: row[4],
-      durationMinutes: 60,
+      durationMinutes: 90,
       blocks: blocksByLesson[id] || ['event_start','say'],
       aiChallenge: aiChallenges[(id - 1) % aiChallenges.length],
-      directorTip: directorFeedback[(id - 1) % directorFeedback.length]
+      directorTip: directorFeedback[(id - 1) % directorFeedback.length],
+      lessonFlow: [
+        { minutes:'0–8', title:'פתיחת סטודיו', teacher:'מציגים את מטרת המשחק של היום ואת המושג המקצועי.', students:'מנחשים מה חייב להיות במשחק כדי שיהיה כיף.' },
+        { minutes:'8–18', title:'דמו והשראה', teacher:'מדגימים משחק קצר ומפרקים אותו לדמות, מטרה, חוק ומשוב.', students:'מסמנים איפה הדמות, איפה הסיכון ואיפה הפרס.' },
+        { minutes:'18–32', title:'בנייה מודרכת', teacher:'בונים אבטיפוס ראשון ב־Blockly, צעד אחרי צעד.', students:'בונים יחד ומריצים בדיקה ראשונה.' },
+        { minutes:'32–58', title:'משימות פיתוח', teacher:'עוברים בין התלמידים ומוודאים שיש חוק משחק שעובד.', students:'מבצעים משימות 2–3 ומריצים אחרי כל שינוי.' },
+        { minutes:'58–70', title:'AI Game Director', teacher:'פותחים אתגר במאי חכם ומדגימים איך בוחרים רעיון ולא מעתיקים אוטומטית.', students:'בוחרים אתגר אחד ומיישמים אותו בבלוקים.' },
+        { minutes:'70–82', title:'Playtesting ושיפור', teacher:'מחלקים זוגות לבדיקה הדדית ומכוונים למשוב קצר ומעשי.', students:'משחקים אצל חבר, נותנים משוב ומשפרים גרסה.' },
+        { minutes:'82–90', title:'דמו קצר', teacher:'בוחרים 2–3 תלמידים להצגה ומסכמים את מושג התכנות.', students:'מציגים מה הדמות עושה ואיזה קוד הכי חשוב.' }
+      ]
     };
     lesson.exercises = makeExercises(lesson);
     return lesson;

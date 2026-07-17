@@ -18,6 +18,7 @@
     <div class="actions">
       <button class="btn run" onclick="runProgram()">▶️ הרצה</button>
       <button class="btn reset" onclick="resetGame()">↺ איפוס</button>
+      <a class="btn link" id="slidesLink" href="gamelab-slides.html">מצגת</a>
       <a class="btn link" href="gamelab.html">כל השיעורים</a>
     </div>
   </header>
@@ -31,7 +32,7 @@
         <div class="chips"><span class="chip" id="mission"></span><span class="chip" id="outcome"></span></div>
       </div>
       <div class="stage-wrap">
-        <div class="status"><div><b id="score">0</b>ניקוד</div><div><b id="lives">3</b>חיים</div><div><b id="timer">60</b>זמן</div><div><b id="level">1</b>שלב</div></div>
+        <div class="status"><div><b id="score">0</b>ניקוד</div><div><b id="lives">3</b>חיים</div><div><b id="timer">90</b>זמן</div><div><b id="level">1</b>שלב</div></div>
         <div class="stage" id="stage">
           <div class="bubble" id="bubble">שלום!</div>
           <div class="hero" id="hero"><div class="head"></div><div class="body"></div></div>
@@ -61,10 +62,10 @@
     const lesson = window.getGameLabLesson(params.get('lesson'));
     const labels = window.GAMELAB_BLOCK_LABELS;
     let workspace;
-    let state = { score:0, lives:3, timer:60, level:1, x:52, y:64, hasKey:false, enemyDir:1 };
+    let state = { score:0, lives:3, timer:90, level:1, x:52, y:64, hasKey:false, enemyDir:1 };
     const defs = [
       ['event_start','כאשר לוחצים התחלה',40],['event_key','כאשר לוחצים מקש %1',40,'field_dropdown','KEY',[['חץ ימינה','right'],['חץ שמאלה','left'],['חץ למעלה','up'],['רווח','space']]],
-      ['create_hero','צור דמות',290],['say','אמור %1',290,'field_input','TEXT','המשחק מתחיל!'],['set_goal','קבע מטרה: אספו כוכבים',65],['move_hero','הזז דמות %1',210,'field_dropdown','DIR',[['ימינה','right'],['שמאלה','left'],['למעלה','up'],['למטה','down']]],['keep_inside','שמור בתוך המסך',210],['spawn_star','צור כוכב',55],['if_touching_star','אם הדמות נוגעת בכוכב אז %1 %2',20,'statement'],['hide_star','הסתר כוכב',55],['change_score','הוסף 1 לניקוד',45],['spawn_obstacle','צור מכשול',10],['if_touching_obstacle','אם נוגעים במכשול אז %1 %2',20,'statement'],['reset_hero','החזר דמות להתחלה',210],['set_lives','קבע 3 חיים',0],['change_lives','הורד חיים אחד',0],['game_over','הפסד / סיום משחק',0],['spawn_enemy','צור אויב',15],['forever','חזור לעד %1 %2',120,'statement'],['move_enemy','הזז אויב',15],['bounce_enemy','החלף כיוון בקצה',15],['place_wall','הצב קיר',120],['place_gate','הצב שער',120],['show_hint','הצג רמז %1',300,'field_input','TEXT','חפשו מפתח'],['spawn_key','צור מפתח',45],['if_touching_key','אם נוגעים במפתח אז %1 %2',20,'statement'],['set_has_key','סמן שיש מפתח',45],['if_has_key_at_gate','אם יש מפתח ונוגעים בשער אז %1 %2',20,'statement'],['win_game','ניצחון',65],['activate_power','הפעל כוח מיוחד',260],['speed_boost','מהירות כפולה',260],['shield','מגן זמני',260],['start_timer','הפעל טיימר 60',180],['if_time_up','אם הזמן נגמר אז %1 %2',20,'statement'],['if_win_level','אם ניצחנו שלב אז %1 %2',20,'statement'],['next_level','עבור לשלב הבא',180],['show_start_screen','הצג מסך פתיחה',290],['show_win_screen','הצג מסך ניצחון',65],['show_lose_screen','הצג מסך הפסד',0],['ask_tester','בקש בדיקה מחבר',200],['fix_bug','תקן באג',200],['balance_game','אזן קושי',200],['show_title','הצג שם משחק',290],['show_credits','הצג יוצר/ת',290]
+      ['create_hero','צור דמות',290],['say','אמור %1',290,'field_input','TEXT','המשחק מתחיל!'],['set_goal','קבע מטרה: אספו כוכבים',65],['move_hero','הזז דמות %1',210,'field_dropdown','DIR',[['ימינה','right'],['שמאלה','left'],['למעלה','up'],['למטה','down']]],['keep_inside','שמור בתוך המסך',210],['spawn_star','צור כוכב',55],['if_touching_star','אם הדמות נוגעת בכוכב אז %1 %2',20,'statement'],['hide_star','הסתר כוכב',55],['change_score','הוסף 1 לניקוד',45],['spawn_obstacle','צור מכשול',10],['if_touching_obstacle','אם נוגעים במכשול אז %1 %2',20,'statement'],['reset_hero','החזר דמות להתחלה',210],['set_lives','קבע 3 חיים',0],['change_lives','הורד חיים אחד',0],['game_over','הפסד / סיום משחק',0],['spawn_enemy','צור אויב',15],['forever','חזור לעד %1 %2',120,'statement'],['move_enemy','הזז אויב',15],['bounce_enemy','החלף כיוון בקצה',15],['place_wall','הצב קיר',120],['place_gate','הצב שער',120],['show_hint','הצג רמז %1',300,'field_input','TEXT','חפשו מפתח'],['spawn_key','צור מפתח',45],['if_touching_key','אם נוגעים במפתח אז %1 %2',20,'statement'],['set_has_key','סמן שיש מפתח',45],['if_has_key_at_gate','אם יש מפתח ונוגעים בשער אז %1 %2',20,'statement'],['win_game','ניצחון',65],['activate_power','הפעל כוח מיוחד',260],['speed_boost','מהירות כפולה',260],['shield','מגן זמני',260],['start_timer','הפעל טיימר 90',180],['if_time_up','אם הזמן נגמר אז %1 %2',20,'statement'],['if_win_level','אם ניצחנו שלב אז %1 %2',20,'statement'],['next_level','עבור לשלב הבא',180],['show_start_screen','הצג מסך פתיחה',290],['show_win_screen','הצג מסך ניצחון',65],['show_lose_screen','הצג מסך הפסד',0],['ask_tester','בקש בדיקה מחבר',200],['fix_bug','תקן באג',200],['balance_game','אזן קושי',200],['show_title','הצג שם משחק',290],['show_credits','הצג יוצר/ת',290]
     ];
     const jsonBlocks = defs.map(d => {
       if(d[3] === 'statement') return {type:d[0],message0:d[1],args0:[{type:'input_dummy'},{type:'input_statement',name:'DO'}],previousStatement:null,nextStatement:null,colour:d[2]};
@@ -82,6 +83,7 @@
       document.getElementById('outcome').textContent = `תוצר: ${lesson.outcome}`;
       document.getElementById('directorTip').textContent = lesson.directorTip;
       document.getElementById('aiChallenge').textContent = lesson.aiChallenge;
+      document.getElementById('slidesLink').href = `gamelab-slides.html?lesson=${lesson.id}`;
       document.getElementById('tabs').innerHTML = window.GAMELAB_LESSONS.map(l => `<a class="tab ${l.id===lesson.id?'active':''}" href="gamelab-play.html?lesson=${l.id}">${l.id}</a>`).join('');
       document.getElementById('exercises').innerHTML = '<h3>🧪 משימות פיתוח</h3>' + lesson.exercises.map((ex,i)=>`<div class="exercise"><b>${i+1}. ${ex.title}</b>${ex.prompt}<br><small>בלוקים: ${ex.blocks.join(' ← ')}</small></div>`).join('');
       workspace = Blockly.inject('blocklyDiv',{rtl:true,trashcan:true,scrollbars:true,toolbox:toolboxXml()});
@@ -93,7 +95,7 @@
     function updateHero(){ const color=document.getElementById('heroColor').value; document.getElementById('hero').style.setProperty('--heroColor', color); showBubble(`אני ${document.getElementById('heroName').value}!`); }
     function render(){ document.getElementById('score').textContent=state.score; document.getElementById('lives').textContent=state.lives; document.getElementById('timer').textContent=state.timer; document.getElementById('level').textContent=state.level; const hero=document.getElementById('hero'); hero.style.right=state.x+'%'; hero.style.bottom=state.y+'px'; }
     function showBubble(text){ const b=document.getElementById('bubble'); b.textContent=text; b.classList.add('show'); clearTimeout(window.__bubble); window.__bubble=setTimeout(()=>b.classList.remove('show'),2200); }
-    function resetGame(){ state={score:0,lives:3,timer:60,level:1,x:52,y:64,hasKey:false,enemyDir:1}; ['star','enemy','obstacle','key','gate'].forEach(id=>document.getElementById(id).style.display='block'); render(); showBubble('איפוס. מוכנים לפיתוח!'); }
+    function resetGame(){ state={score:0,lives:3,timer:90,level:1,x:52,y:64,hasKey:false,enemyDir:1}; ['star','enemy','obstacle','key','gate'].forEach(id=>document.getElementById(id).style.display='block'); render(); showBubble('איפוס. מוכנים לפיתוח!'); }
     function newAiChallenge(){ const list=window.GAMELAB_AI_CHALLENGES; document.getElementById('aiChallenge').textContent = list[Math.floor(Math.random()*list.length)]; }
     function runProgram(){
       const types = workspace.getAllBlocks(false).map(b=>b.type);
