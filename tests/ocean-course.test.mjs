@@ -22,19 +22,19 @@ function test(name, fn) { tests.push({ name, fn }); }
 function assertIncludes(source, needle, message = `Missing: ${needle}`) { assert.ok(source.includes(needle), message); }
 function assertMatches(source, regex, message = `Missing pattern: ${regex}`) { assert.match(source, regex, message); }
 
-test('ocean course remains a separate bonus entry point and does not replace the active lesson 2', () => {
+test('ocean course is linked as lesson 3 and does not replace the active lesson 2', () => {
   assertIncludes(smartCityHtml, 'href="music.html"');
   assertIncludes(smartCityHtml, 'שיעור 2: מכונת המוזיקה');
   assertIncludes(smartCityHtml, 'href="ocean.html"');
-  assertIncludes(smartCityHtml, 'בונוס: סיסי באוקיינוס');
+  assertIncludes(smartCityHtml, 'שיעור 3: סיסי באוקיינוס');
   assertIncludes(smartCityHtml, 'href="index.html?lesson=1"');
   assertIncludes(smartCityHtml, 'סנסי בעיר החכמה');
   assertIncludes(oceanHtml, 'href="space.html"');
 });
 
-test('landing page is clearly a bonus ocean lesson for grade B / age 7 and frames a 75 minute lesson', () => {
-  assertIncludes(oceanHtml, 'בונוס: סיסי במעמקים');
-  assertIncludes(oceanHtml, 'שיעור בונוס • אוקיינוס • כיתות ב׳ • 75 דקות');
+test('landing page is clearly lesson 3 ocean for grade B / age 7 and frames a 75 minute lesson', () => {
+  assertIncludes(oceanHtml, 'שיעור 3: סיסי במעמקים');
+  assertIncludes(oceanHtml, 'שיעור 3 • אוקיינוס • כיתות ב׳ • 75 דקות');
   assertIncludes(oceanHtml, 'אחרי שסיסי ביקרה בחלל, היא צוללת לאוקיינוס');
   assertIncludes(oceanHtml, 'מה עושים בשיעור האוקיינוס?');
   assertIncludes(oceanHtml, 'משימות שיעור האוקיינוס');
@@ -86,7 +86,7 @@ test('demo solutions reach each goal without hitting obstacles or leaving the bo
 });
 
 test('interactive play page exposes simple controls, run/reset flow, and lesson navigation', () => {
-  assertIncludes(playHtml, 'שיעור בונוס אוקיינוס • סיסי במעמקים • משימת תכנות קצרה');
+  assertIncludes(playHtml, 'שיעור 3 אוקיינוס • סיסי במעמקים • משימת תכנות קצרה');
   assertIncludes(playHtml, 'שיעור אוקיינוס אינטראקטיבי');
   assertIncludes(playHtml, 'aria-label="לוח משחק של שיעור אוקיינוס"');
   assertIncludes(playHtml, 'data-cmd="up"');
