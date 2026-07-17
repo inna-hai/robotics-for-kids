@@ -64,6 +64,7 @@ test('detective play page exposes clue/rule selection rather than navigation or 
 });
 
 test('detective engine checks both clue and if-then rule and gives targeted feedback', () => {
+  assertIncludes(playSource, 'function rotateOptions(items, offset)');
   assertIncludes(playSource, 'function checkCase()');
   assertIncludes(playSource, 'clue.good && rule.good');
   assertIncludes(playSource, 'הכלל טוב, אבל הרמז');

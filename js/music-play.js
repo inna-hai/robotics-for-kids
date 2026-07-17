@@ -11,7 +11,8 @@ function noteChip(noteKey, extraClass = '') {
 }
 
 function renderTarget() {
-  document.getElementById('target').innerHTML = lesson.target.map((note) => noteChip(note)).join('');
+  const prefix = lesson.id === 6 ? '<div class="debug-hint">אתגר דיבוג: העתיקו משמאל לימין, ואז בדקו לפי מספר הצליל אם משהו לא מתאים.</div>' : '';
+  document.getElementById('target').innerHTML = prefix + lesson.target.map((note) => noteChip(note)).join('');
 }
 
 function renderBuild() {

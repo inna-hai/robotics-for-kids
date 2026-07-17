@@ -48,6 +48,7 @@ test('music lesson data has six pattern challenges with valid notes', () => {
   assert.equal(lessons.length, 6);
   const noteKeys = Object.keys(notes);
   assert.deepEqual(noteKeys.sort(), ['blue', 'green', 'purple', 'red', 'yellow']);
+  assert.ok(lessons.find((lesson) => lesson.id === 6).target.length >= 8, 'Lesson 6 should be a harder debugging challenge');
   for (const lesson of lessons) {
     assert.equal(typeof lesson.id, 'number');
     assert.ok(lesson.title.length >= 4, `Lesson ${lesson.id} needs a title`);
@@ -74,6 +75,7 @@ test('music engine checks order, supports demo pattern, and can play tones', () 
   assertIncludes(playSource, 'function checkPattern()');
   assertIncludes(playSource, 'build.every((note, index) => note === lesson.target[index])');
   assertIncludes(playSource, 'function playTone(noteKey)');
+  assertIncludes(playSource, 'debug-hint');
   assertIncludes(playSource, 'window.AudioContext || window.webkitAudioContext');
   assertIncludes(playSource, 'build = [...lesson.target]');
   assertIncludes(playSource, 'הצליל מספר');

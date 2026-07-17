@@ -30,10 +30,10 @@ test('space course is a separate entry point and does not replace the smart-city
   assertIncludes(spaceHtml, 'href="smart-city.html"');
 });
 
-test('landing page is clearly a space lesson for grade B / age 7 and frames a 75 minute first lesson', () => {
+test('landing page is clearly a space lesson for grade B and frames a 75 minute first lesson', () => {
   assertIncludes(spaceHtml, 'שיעור חלל: סיסי בחלל');
   assertIncludes(spaceHtml, 'שיעור חלל • כיתות ב׳ • 75 דקות');
-  assertIncludes(spaceHtml, 'שיעור חלל קליל וצבעוני לילדים בני 7');
+  assertIncludes(spaceHtml, 'שיעור חלל קליל וצבעוני לכיתות ב׳');
   assertIncludes(spaceHtml, 'מה עושים בשיעור החלל?');
   assertIncludes(spaceHtml, 'משימות שיעור החלל');
   assertIncludes(spaceHtml, '75</b>דק׳ לשיעור ראשון');
@@ -94,9 +94,12 @@ test('interactive play page exposes simple controls, run/reset flow, and lesson 
   assertIncludes(playHtml, 'id="run"');
   assertIncludes(playHtml, 'id="undo"');
   assertIncludes(playHtml, 'id="clear"');
+  assertIncludes(playHtml, 'איפוס / ניקוי');
   assertIncludes(playHtml, 'id="demo"');
   assertIncludes(playHtml, 'js/space-play.js');
   assertIncludes(playSource, 'function runProgram()');
+  assertIncludes(playSource, 'function showCourseCertificate()');
+  assertIncludes(playSource, 'תעודת סיום');
   assertIncludes(playSource, 'פתרון לדוגמה נטען');
   assertIncludes(playSource, 'lessons.map((item)');
 });

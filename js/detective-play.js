@@ -11,8 +11,14 @@ function setResult(text, success = false) {
   result.style.color = success ? '#15803d' : '#b45309';
 }
 
+function rotateOptions(items, offset) {
+  const amount = offset % items.length;
+  return [...items.slice(amount), ...items.slice(0, amount)];
+}
+
 function renderClues() {
-  document.getElementById('clues').innerHTML = lesson.clues.map((clue) => `
+  const clues = rotateOptions(lesson.clues, lesson.id - 1);
+  document.getElementById('clues').innerHTML = clues.map((clue) => `
     <button type="button" class="clue ${selectedClue === clue.id ? 'active' : ''}" data-clue="${clue.id}">${clue.text}</button>
   `).join('');
   document.querySelectorAll('[data-clue]').forEach((button) => {
@@ -25,7 +31,8 @@ function renderClues() {
 }
 
 function renderRules() {
-  document.getElementById('rules').innerHTML = lesson.rules.map((rule) => `
+  const rules = rotateOptions(lesson.rules, lesson.id);
+  document.getElementById('rules').innerHTML = rules.map((rule) => `
     <button type="button" class="rule ${selectedRule === rule.id ? 'active' : ''}" data-rule="${rule.id}">${rule.text}</button>
   `).join('');
   document.querySelectorAll('[data-rule]').forEach((button) => {
