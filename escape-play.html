@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">🔐 סיסי בחדר הבריחה</title>
+  <meta name="description" content="משחק שיעור 14: בוחרים שני רמזים ונימוק כדי לפתוח דלת בתנאי וגם." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/escape.css?v=20260717-escape-1">
+</head>
+<body>
+  <main class="shell">
+    <header class="play-header">
+      <div><div class="kicker" id="page-subtitle">שיעור 14 • תנאי וגם</div><h1>🔐 סיסי בחדר הבריחה</h1></div>
+      <nav class="lesson-nav" id="lesson-nav" aria-label="מעבר בין חדרים"></nav>
+    </header>
+
+    <section class="room-card">
+      <div class="big-emoji" id="lesson-emoji" aria-hidden="true">🔐</div>
+      <div><h2 id="lesson-heading">חדר בריחה</h2><p id="story"></p><span class="condition-chip" id="condition-chip"></span><div class="learning-note" id="learning-note"></div></div>
+    </section>
+
+    <section class="escape-layout">
+      <div class="key-panel"><h2>בחרו שני רמזים</h2><p>בתנאי “וגם” חייבים לבחור בדיוק שני רמזים שמתאימים לדלת.</p><div class="key-grid" id="key-options"></div></div>
+      <div class="condition-panel"><h2>התנאי שבניתי</h2><div class="condition-preview" id="condition-preview"></div><h2>למה זה עובד?</h2><div class="key-grid" id="reason-options"></div><div class="controls"><button class="btn" id="check" type="button">🔓 לבדוק דלת</button><button class="btn secondary" id="hint" type="button">💡 רמז</button><button class="btn secondary" id="clear" type="button">🔄 לנקות</button><a class="btn secondary" href="escape.html">🔐 עמוד השיעור</a></div><div class="result" id="result" aria-live="polite"></div><div class="next-step" id="next-step"></div></div>
+    </section>
+  </main>
+  <script src="js/escape-lessons.js?v=20260717-escape-1"></script>
+  <script src="js/escape-play.js?v=20260717-escape-1"></script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>
