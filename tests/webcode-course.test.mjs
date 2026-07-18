@@ -153,6 +153,9 @@ assert.ok(play.includes('webBuilderToolbox'), 'play page exposes a Blockly toolb
 assert.ok(play.includes('web_card_shape') && play.includes('web_hover'), 'play page defines design studio blocks for lesson 2');
 assert.ok(play.includes('hasButton') && play.includes('cssParts'), 'generated CSS only includes styles for blocks students added');
 assert.ok(play.includes('סטודיו עיצוב'), 'play page toolbox includes design studio category');
+assert.ok(play.includes('סטודיו פעולה'), 'play page toolbox includes action studio category for lesson 3');
+assert.ok(play.includes('web_action_message') && play.includes('web_action_emoji') && play.includes('web_action_background') && play.includes('web_action_magic'), 'play page defines action studio blocks for lesson 3');
+assert.ok(play.includes('classList.toggle("magic")') && play.includes('document.body.style.background'), 'lesson 3 action blocks generate real JavaScript actions');
 assert.ok(play.includes('generateCodeFromBlockly'), 'play page generates HTML/CSS/JS from connected Blockly blocks');
 assert.ok(play.includes('highlightGeneratedCodeForBlock'), 'selecting a Blockly block highlights its generated code');
 assert.ok(play.includes('codeTargetForBlock'), 'play page maps block types to generated code snippets');

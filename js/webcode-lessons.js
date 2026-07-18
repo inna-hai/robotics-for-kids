@@ -665,6 +665,51 @@
     if (lesson.id <= 12) lesson.mode = 'Blockly-first bridge';
   });
 
+
+  Object.assign(lessons[2], {
+    title: 'כפתורים שמפעילים קסמים — Blockly פעולה אמיתי',
+    concept: 'Blockly אמיתי → JavaScript: לחיצה · function · שינוי במסך',
+    story: 'אחרי שבנינו עמוד ועיצבנו אותו, שיעור 3 הופך את העמוד לחי: הילדים גוררים בלוקי פעולה, לוחצים על כפתור, ורואים איך JavaScript משנה טקסט, אימוג׳י, רקע ומצב קסם.',
+    mission: 'לבנות עמוד אינטראקטיבי בעזרת בלוקי פעולה אמיתיים: כפתור, הודעה, שינוי סמל, שינוי רקע ו־toggle של מצב קסם.',
+    outcome: 'עמוד שמגיב ללחיצה, עם הצצה ברורה ל־onclick, function, textContent, style ו־classList.toggle',
+    mode: 'Real Blockly action studio',
+    realBlocklyBuilder: true,
+    lessonFlow: [
+      { minutes: '0–8', title: 'פתיחה: העמוד מתחיל להגיב', teacher: 'מזכירים: HTML בונה, CSS מעצב. היום JavaScript גורם לעמוד לעשות משהו כשנלחץ.', students: 'לוחצים על הכפתור בתצוגה ומזהים מה השתנה.' },
+      { minutes: '8–18', title: 'כפתור ופונקציה', teacher: 'מצביעים על בלוק כפתור ועל ההצצה לקוד: onclick מפעיל function showMessage.', students: 'מסמנים את הקשר בין הכפתור לבין הפונקציה.' },
+      { minutes: '18–32', title: 'בלוק הודעה בלחיצה', teacher: 'גוררים בלוק “בלחיצה שנה הודעה” מסטודיו פעולה.', students: 'משנים הודעה, מריצים ולוחצים על הכפתור.' },
+      { minutes: '32–46', title: 'בלוק שינוי סמל', teacher: 'מוסיפים בלוק שמחליף אימוג׳י בלחיצה ומראים textContent.', students: 'בוחרים סמל חדש ובודקים שינוי בתצוגה.' },
+      { minutes: '46–60', title: 'בלוק שינוי רקע', teacher: 'מוסיפים בלוק שמשנה document.body.style.background.', students: 'בודקים איך פעולה יכולה לשנות עיצוב בזמן אמת.' },
+      { minutes: '60–74', title: 'מצב קסם כמתג', teacher: 'מוסיפים בלוק classList.toggle ומסבירים: לחיצה אחת מדליקה, לחיצה שנייה מכבה.', students: 'לוחצים כמה פעמים ומזהים מצב דולק/כבוי.' },
+      { minutes: '74–84', title: 'הצצה לקוד שנוצר', teacher: 'בוחרים כל בלוק ורואים את השורה המודגשת ב־HTML/CSS/JS.', students: 'מסבירים: הבלוק שלי יצר את השורה הזאת.' },
+      { minutes: '84–90', title: 'תערוכת קסמים', teacher: 'מבקשים מכל תלמיד לשתף קישור ציבורי ולהציג פעולה אחת.', students: 'מציגים עמוד ואומרים מה משתנה בלחיצה.' }
+    ],
+    exercises: [
+      { id: 1, minutes: '8–16', title: 'תרגול 1 — מוצאים את הכפתור', prompt: 'בחרו את בלוק הכפתור וראו איזה HTML מסומן בקוד.', hint: 'חפשו onclick="showMessage()".', check: { htmlIncludes: ['onclick="showMessage()"'], jsIncludes: ['function showMessage'] } },
+      { id: 2, minutes: '16–26', title: 'תרגול 2 — הודעה בלחיצה', prompt: 'גררו בלוק “בלחיצה שנה הודעה”, כתבו הודעה משלכם, הריצו ולחצו על הכפתור.', hint: 'הבלוק משנה את message.textContent.', check: { jsIncludes: ['message.textContent'] } },
+      { id: 3, minutes: '26–36', title: 'תרגול 3 — שינוי סמל', prompt: 'גררו בלוק “בלחיצה שנה סמל” ובחרו אימוג׳י חדש.', hint: 'צריך להיות בעמוד בלוק סמל כדי שיהיה מה לשנות.', check: { htmlIncludes: ['id="heroEmoji"'], jsIncludes: ['heroEmoji.textContent'] } },
+      { id: 4, minutes: '36–48', title: 'תרגול 4 — שינוי רקע', prompt: 'גררו בלוק “בלחיצה שנה רקע” ובדקו שהרקע משתנה אחרי לחיצה.', hint: 'חפשו document.body.style.background.', check: { jsIncludes: ['document.body.style.background'] } },
+      { id: 5, minutes: '48–60', title: 'תרגול 5 — מצב קסם', prompt: 'גררו בלוק “בלחיצה החלף מצב קסם”, הריצו ולחצו כמה פעמים.', hint: 'toggle מדליק ומכבה class.', check: { cssIncludes: ['.page-card.magic'], jsIncludes: ['classList.toggle("magic")'] } },
+      { id: 6, minutes: '60–70', title: 'תרגול 6 — מסמנים קוד מבלוק', prompt: 'בחרו בלוק פעולה וראו באיזה טאב הקוד מסומן: HTML, CSS או JS.', hint: 'בלוקי פעולה אמורים להוביל בעיקר ל־JavaScript.', check: { jsIncludes: ['function showMessage', 'textContent'] } },
+      { id: 7, minutes: '70–80', title: 'תרגול 7 — שרשרת פעולה', prompt: 'הסבירו במילים: בלוק → כפתור → function → שינוי במסך.', hint: 'השתמשו במילים onclick ו־function.', check: { htmlIncludes: ['button'], jsIncludes: ['function', 'textContent'] } },
+      { id: 8, minutes: '80–88', title: 'תרגול 8 — משתפים קסם', prompt: 'פתחו הצצה לקוד, בחרו בלוק אחד, ואז העתיקו קישור ציבורי לתוצר.', hint: 'הקישור הציבורי מציג את העמוד שהרכבתם.', check: { htmlIncludes: ['page-card'], cssIncludes: ['.page-card'], jsIncludes: ['showMessage'] } }
+    ],
+    vocabulary: [
+      ['event', 'משהו שקורה בעמוד, למשל לחיצה'],
+      ['onclick', 'הוראה ב־HTML: כשיש לחיצה, הפעל פונקציה'],
+      ['function', 'קבוצת פעולות עם שם שאפשר להפעיל'],
+      ['textContent', 'שינוי הטקסט שבתוך אלמנט'],
+      ['style', 'שינוי עיצוב דרך JavaScript בזמן אמת'],
+      ['classList.toggle', 'להדליק או לכבות class בלחיצה']
+    ],
+    aiHelper: [
+      'הציעו שלושה רעיונות מצחיקים לעמוד שמשתנה בלחיצה.',
+      'הסבירו לילד מה הקשר בין onclick לבין function showMessage.',
+      'עזרו לתלמיד להבין למה צריך id כדי לשנות אימוג׳י או הודעה.',
+      'תנו רעיון לשדרוג שמשנה גם טקסט, גם סמל וגם רקע בלחיצה.'
+    ]
+  });
+
   Object.assign(lessons[1], {
     title: 'סטודיו עיצוב — מעצבים עמוד עם Blockly',
     concept: 'Blockly אמיתי → CSS: צבעים · צורה · צל · Hover',

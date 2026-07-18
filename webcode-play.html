@@ -95,6 +95,10 @@
       if(type === 'web_title_color') return { tab:'css', snippets:['h1 { color:'], label:'צבע הכותרת ב־CSS' };
       if(type === 'web_button_style') return { tab:'css', snippets:['button {', 'border-radius:'], label:'עיצוב הכפתור ב־CSS' };
       if(type === 'web_hover') return { tab:'css', snippets:['button:hover'], label:'אפקט Hover ב־CSS' };
+      if(type === 'web_action_message') return { tab:'js', snippets:['message.textContent'], label:'הודעה בלחיצה ב־JavaScript' };
+      if(type === 'web_action_emoji') return { tab:'js', snippets:['heroEmoji.textContent'], label:'שינוי אימוג׳י ב־JavaScript' };
+      if(type === 'web_action_background') return { tab:'js', snippets:['document.body.style.background'], label:'שינוי רקע בלחיצה' };
+      if(type === 'web_action_magic') return { tab:'js', snippets:['classList.toggle("magic")'], label:'מצב קסם ב־JavaScript' };
       return null;
     }
     function selectSnippetInEditor(tab, snippets){
@@ -149,22 +153,29 @@
         { type:'web_shadow', message0:'צל כרטיס %1', args0:[{type:'field_dropdown', name:'SHADOW', options:[['עדין','soft'],['דרמטי','dramatic'],['בלי צל','none'],['זוהר','glow']]}], previousStatement:null, nextStatement:null, colour:285 },
         { type:'web_title_color', message0:'צבע כותרת %1', args0:[{type:'field_dropdown', name:'COLOR', options:[['כחול','blue'],['סגול','purple'],['ירוק','green'],['כתום','orange'],['ורוד','pink']]}], previousStatement:null, nextStatement:null, colour:285 },
         { type:'web_button_style', message0:'סגנון כפתור %1', args0:[{type:'field_dropdown', name:'STYLE', options:[['גלולה','pill'],['קובייה','box'],['ניאון','neon'],['עדין','quiet']]}], previousStatement:null, nextStatement:null, colour:285 },
-        { type:'web_hover', message0:'אפקט מעבר עכבר %1', args0:[{type:'field_dropdown', name:'EFFECT', options:[['גדל קצת','grow'],['קופץ','jump'],['מחליף צבע','color'],['בלי אפקט','none']]}], previousStatement:null, nextStatement:null, colour:285 }
+        { type:'web_hover', message0:'אפקט מעבר עכבר %1', args0:[{type:'field_dropdown', name:'EFFECT', options:[['גדל קצת','grow'],['קופץ','jump'],['מחליף צבע','color'],['בלי אפקט','none']]}], previousStatement:null, nextStatement:null, colour:285 },
+        { type:'web_action_message', message0:'בלחיצה שנה הודעה %1', args0:[{type:'field_input', name:'TEXT', text:'הכפתור הפעיל קסם 🎉'}], previousStatement:null, nextStatement:null, colour:120 },
+        { type:'web_action_emoji', message0:'בלחיצה שנה סמל ל־ %1', args0:[{type:'field_dropdown', name:'EMOJI', options:[['🤖 רובוט','🤖'],['🚀 רקטה','🚀'],['✨ קסם','✨'],['🎮 משחק','🎮'],['😄 חיוך','😄']]}], previousStatement:null, nextStatement:null, colour:120 },
+        { type:'web_action_background', message0:'בלחיצה שנה רקע %1', args0:[{type:'field_dropdown', name:'BG', options:[['כחול לילה','night'],['סוכריה ורודה','pink'],['יער ירוק','forest'],['שמש כתומה','sun']]}], previousStatement:null, nextStatement:null, colour:120 },
+        { type:'web_action_magic', message0:'בלחיצה החלף מצב קסם', previousStatement:null, nextStatement:null, colour:120 }
       ]);
       window.__webBuilderBlocksDefined = true;
     }
     function webBuilderToolbox(){
       const designStudio = lesson.id === 2 ? '<category name="סטודיו עיצוב" colour="285"><block type="web_card_shape"></block><block type="web_shadow"></block><block type="web_title_color"></block><block type="web_button_style"></block><block type="web_hover"></block></category>' : '';
+      const actionStudio = lesson.id === 3 ? '<category name="סטודיו פעולה" colour="120"><block type="web_action_message"></block><block type="web_action_emoji"></block><block type="web_action_background"></block><block type="web_action_magic"></block></category>' : '';
       return `<xml xmlns="https://developers.google.com/blockly/xml">
       <category name="מבנה עמוד" colour="210"><block type="page_start"></block><block type="web_title"></block><block type="web_paragraph"></block><block type="web_emoji"></block></category>
       <category name="עיצוב" colour="260"><block type="web_theme"></block><block type="web_columns"></block></category>
       ${designStudio}
+      ${actionStudio}
       <category name="פעולה" colour="120"><block type="web_button"></block></category>
       <category name="סיום" colour="15"><block type="web_footer"></block></category>
     </xml>`;
     }
     function webBuilderStarterXml(){
       if(lesson.id === 2) return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="page_start" x="40" y="40"><next><block type="web_theme"><field name="THEME">space</field><next><block type="web_title"><field name="TEXT">כרטיס העיצוב שלי</field><next><block type="web_paragraph"><field name="TEXT">בשיעור הזה אני מעצב/ת את אותו עמוד בעזרת CSS</field></block></next></block></next></block></xml>`;
+      if(lesson.id === 3) return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="page_start" x="40" y="40"><next><block type="web_theme"><field name="THEME">arcade</field><next><block type="web_title"><field name="TEXT">עמוד הקסמים שלי</field><next><block type="web_paragraph"><field name="TEXT">לחיצה על כפתור יכולה לשנות את העמוד</field><next><block type="web_emoji"><field name="EMOJI">✨</field><next><block type="web_button"><field name="LABEL">הפעילו קסם</field><field name="MESSAGE">הכפתור הופעל!</field></block></next></block></next></block></next></block></next></block></xml>`;
       return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="page_start" x="40" y="40"><next><block type="web_theme"><field name="THEME">sky</field><next><block type="web_title"><field name="TEXT">העמוד הראשון שלי</field><next><block type="web_paragraph"><field name="TEXT">גררתי בלוקים והרכבתי עמוד בעצמי</field><next><block type="web_emoji"><field name="EMOJI">🚀</field><next><block type="web_button"><field name="LABEL">לחצו עליי</field><field name="MESSAGE">איזה כיף! בניתי עמוד מבלוקים 🎉</field></block></next></block></next></block></next></block></next></block></xml>`;
     }
     function alignBlocklyStarterBlocksRight(){
@@ -207,13 +218,14 @@
     function generateCodeFromBlockly(){
       const blocks = collectPageBlocks();
       let theme = 'sky', buttonMessage = 'הכפתור עובד 🎉', cardShape = 'round', shadow = 'soft', titleColor = null, buttonStyle = 'pill', hoverEffect = 'none';
+      let actionEmoji = null, actionBackground = null, magicToggle = false;
       let hasEmoji = false, hasButton = false, hasColumns = false, hasFooter = false;
       const html = [];
       blocks.forEach(block => {
         if(block.type === 'web_theme') theme = block.getFieldValue('THEME') || theme;
         if(block.type === 'web_title') html.push(`<h1>${esc(block.getFieldValue('TEXT'))}</h1>`);
         if(block.type === 'web_paragraph') html.push(`<p>${esc(block.getFieldValue('TEXT'))}</p>`);
-        if(block.type === 'web_emoji'){ hasEmoji = true; html.push(`<div class="hero-emoji">${esc(block.getFieldValue('EMOJI'))}</div>`); }
+        if(block.type === 'web_emoji'){ hasEmoji = true; html.push(`<div id="heroEmoji" class="hero-emoji">${esc(block.getFieldValue('EMOJI'))}</div>`); }
         if(block.type === 'web_button'){ hasButton = true; buttonMessage = block.getFieldValue('MESSAGE') || buttonMessage; html.push(`<button onclick="showMessage()">${esc(block.getFieldValue('LABEL'))}</button><p id="message">כאן תופיע הודעה מהכפתור...</p>`); }
         if(block.type === 'web_columns'){ hasColumns = true; html.push(`<section class="columns"><div>${esc(block.getFieldValue('A'))}</div><div>${esc(block.getFieldValue('B'))}</div></section>`); }
         if(block.type === 'web_footer'){ hasFooter = true; html.push(`<footer>${esc(block.getFieldValue('TEXT'))}</footer>`); }
@@ -222,6 +234,10 @@
         if(block.type === 'web_title_color') titleColor = block.getFieldValue('COLOR') || titleColor;
         if(block.type === 'web_button_style') buttonStyle = block.getFieldValue('STYLE') || buttonStyle;
         if(block.type === 'web_hover') hoverEffect = block.getFieldValue('EFFECT') || hoverEffect;
+        if(block.type === 'web_action_message') buttonMessage = block.getFieldValue('TEXT') || buttonMessage;
+        if(block.type === 'web_action_emoji') actionEmoji = block.getFieldValue('EMOJI') || actionEmoji;
+        if(block.type === 'web_action_background') actionBackground = block.getFieldValue('BG') || actionBackground;
+        if(block.type === 'web_action_magic') magicToggle = true;
       });
       const palettes = { sky:['#dbeafe','#2563eb','#eff6ff'], space:['#ede9fe','#7c3aed','#faf5ff'], arcade:['#dcfce7','#16a34a','#f0fdf4'], sunset:['#ffedd5','#f97316','#fff7ed'] };
       const [bg,accent,soft] = palettes[theme] || palettes.sky;
@@ -263,6 +279,11 @@ button:hover {
   box-shadow: ${shadowByStyle[shadow] || shadowByStyle.soft};
 }`,
 `h1 { color: ${titleColor ? titleColors[titleColor] : accent}; }`];
+      if(magicToggle) cssParts.push(`.page-card.magic {
+  transform: rotate(-1deg) scale(1.03);
+  background: #fef3c7;
+  border: 4px solid ${accent};
+}`);
       if(hasEmoji) cssParts.push(`.hero-emoji {
   font-size: 76px;
   margin: 18px 0;
@@ -300,7 +321,15 @@ button:hover {
   border-radius: 18px;
   padding: 12px;
 }`);
-      $('cssCode').value = cssParts.filter(Boolean).join('\n\n');      $('jsCode').value = `function showMessage() {\n  document.getElementById("message").textContent = "${String(buttonMessage).replaceAll('"','\\"')}";\n}`;
+      $('cssCode').value = cssParts.filter(Boolean).join('\n\n');
+      const bgMap = { night:'#172554', pink:'#fce7f3', forest:'#dcfce7', sun:'#ffedd5' };
+      const jsLines = ['function showMessage() {'];
+      if(hasButton) jsLines.push(`  const message = document.getElementById("message");`, `  message.textContent = "${String(buttonMessage).replaceAll('"','\\"')}";`);
+      if(actionEmoji && hasEmoji) jsLines.push(`  const heroEmoji = document.getElementById("heroEmoji");`, `  heroEmoji.textContent = "${String(actionEmoji).replaceAll('"','\\"')}";`);
+      if(actionBackground) jsLines.push(`  document.body.style.background = "${bgMap[actionBackground] || '#dbeafe'}";`);
+      if(magicToggle) jsLines.push(`  document.querySelector(".page-card").classList.toggle("magic");`);
+      jsLines.push('}');
+      $('jsCode').value = jsLines.join('\n');
       runCode();
       $('feedback').className='feedback good';
       $('feedback').textContent='Blockly יצר עמוד חי. גררו עוד בלוק או פתחו הצצה לקוד כדי לראות מה נוצר.';
