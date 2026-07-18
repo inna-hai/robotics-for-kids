@@ -309,6 +309,36 @@
     ]
   }));
 
+  const makeGuidedProductExercises = (lesson, mode = 'product') => {
+    const [k1, k2] = lesson.keywords || ['app','output'];
+    const isAi = mode === 'ai';
+    const productWord = isAi ? 'הכלי החכם' : 'המוצר';
+    return [
+      [`פותחים את ${productWord}`, `הריצו את ${lesson.title} וודאו שהתוצר נותן תגובה ברורה במסך.`, `חפשו את הכפתור ואת השורה שמעדכנת output.`, { jsIncludes: ['output'] }],
+      ['שינוי אישי ראשון', `שנו טקסט, נתון או אפשרות אחת כדי שה${productWord} ירגיש שלכם.`, `אל תשנו הכול — שינוי קטן מספיק כדי להבין.`, { jsIncludes: [k1] }],
+      ['מוצאים את חוק המוצר', `לחצו על כרטיס הקוד הראשון והסבירו מה ${k1} עושה במילים שלכם.`, `אם אפשר להסביר לחבר/ה — באמת הבנתם.`, { jsIncludes: [k1] }],
+      ['מוצאים את הפעולה השנייה', `מצאו איפה ${k2} מופיע ושנו ערך אחד שקשור אליו.`, `כרטיס הקוד השני מוביל לשם.`, { jsIncludes: [k2] }],
+      [isAi ? 'תגובה חכמה יותר' : 'שדרוג פיצ׳ר', isAi ? 'הוסיפו עוד כלל תשובה או עוד אפשרות שהכלי מזהה.' : 'הוסיפו עוד אפשרות/נתון/כפתור שהמשתמש יכול לנסות.', `עובדים לפי הדוגמה שכבר קיימת, לא מתחילים מאפס.`, { jsIncludes: [k1] }],
+      ['שיפור UX', `שנו הודעה, צבע או מצב ריק כדי שהמשתמש יבין מה לעשות.`, `מוצר טוב מסביר למשתמש בלי שהמדריכה צריכה לעזור.`, { jsIncludes: ['document.getElementById'] }],
+      ['באג מכוון', `שברו בכוונה שם משתנה או מרכאה, הריצו, ואז תקנו.`, `דיבאג הוא חלק מהעבודה של בוני Web אמיתיים.`, { jsIncludes: [k1] }],
+      ['Demo קצר', `הציגו ב־30 שניות: מי המשתמש, מה הבעיה, ומה הקוד החשוב ביותר.`, `אל תקריאו את כל הקוד — ספרו את הסיפור של המוצר.`, { jsIncludes: [k1] }]
+    ].map(([title, prompt, hint, check], i) => ({
+      id: i + 1,
+      title: `תרגול ${i + 1} — ${title}`,
+      minutes: i < 2 ? '8 דקות' : i < 6 ? '10 דקות' : '7 דקות',
+      prompt,
+      hint,
+      check
+    }));
+  };
+
+  for (let i = 10; i <= 19; i += 1) {
+    lessons[i].exercises = makeGuidedProductExercises(lessons[i], 'product');
+  }
+  for (let i = 20; i <= 29; i += 1) {
+    lessons[i].exercises = makeGuidedProductExercises(lessons[i], 'ai');
+  }
+
   window.APPFORGE_LESSONS = lessons;
   window.getWebMakersLesson = function (id) { const n = Number(id || 1); return lessons.find(l => l.id === n) || lessons[0]; };
 })();

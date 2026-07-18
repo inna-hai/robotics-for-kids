@@ -45,6 +45,11 @@ assert.ok(lessons[19].title.includes('Dashboard Project'), 'lesson 20 closes das
 assert.ok(lessons[19].codeCards.some(card => card.label.includes('חוק המוצר')), 'lesson 20 has logic/product code cards');
 assert.ok(lessons[23].title.includes('Safety Shield'), 'lesson 24 covers AI safety in a kid-friendly way');
 assert.ok(lessons[23].codeCards.some(card => card.label.includes('החלק החכם')), 'AI lessons have guided smart-part cards');
+for (const lesson of [lessons[10], lessons[15], lessons[19], lessons[20], lessons[23], lessons[29]]) {
+  assert.ok(lesson.exercises.some(ex => ex.title.includes('באג')), `lesson ${lesson.id} has debug practice`);
+  assert.ok(lesson.exercises.some(ex => ex.title.includes('Demo')), `lesson ${lesson.id} has demo practice`);
+  assert.ok(lesson.exercises.some(ex => ex.title.includes('חוק') || ex.title.includes('פעולה')), `lesson ${lesson.id} has code-understanding practice`);
+}
 
 const slides = read('appforge-slides.html');
 assert.ok(slides.includes('מהלך שיעור 90 דקות') && slides.includes('רצף ה׳–ו׳'), 'slides are dynamic guide');
