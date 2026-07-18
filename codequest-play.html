@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeQuest: מסע הפייתון</title>
+  <meta name="description" content="CodeQuest: לומדת פייתון ויזואלית לילדים בגילאי 10–13 — כותבים קוד ורואים דמות פועלת בעולם הרפתקאות." />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/codequest.css?v=slides-exercises-1" />
+</head>
+<body class="play-page">
+  <div class="app">
+    <header class="top">
+      <div class="brand">
+        <div class="logo">🐍</div>
+        <div>
+          CodeQuest: מסע הפייתון
+          <small>מסלול פייתון חדש · שיעורים 1–2 פתוחים · גילאי 10–13</small>
+        </div>
+      </div>
+      <div>
+        <a class="btn secondary" id="slidesLink" href="codequest-slides.html?lesson=1">📽️ מצגת</a> <a class="btn secondary" href="codequest.html?v=lesson-pages-2">כל השיעורים</a>
+      </div>
+    </header>
+
+    <main class="main">
+      <aside class="panel sidebar">
+        <div class="side-head">
+          <h2>מסלול CodeQuest</h2>
+          <p>מסלול נפרד מ־סנסי ומיינקראפט. כרגע מתחילים מחדש: שיעורים 1–2 עובדים, ואת ההמשך נבנה צעד־צעד.</p>
+        </div>
+        <div id="lessonList" class="lessons"></div>
+      </aside>
+
+      <section class="panel workspace">
+        <div class="lesson-info">
+          <h1 id="lessonTitle"></h1>
+          <div class="meta">
+            <span id="unitTag" class="tag"></span>
+            <span id="conceptTag" class="tag"></span>
+            <span class="tag">Python-style · ללא התקנות</span>
+          </div>
+          <p id="story" class="story"></p>
+        </div>
+
+        <div class="lesson-actions-top">
+          <div id="feedback" class="feedback">מוכן</div>
+          <div class="lesson-buttons">
+            <button class="btn secondary" onclick="CodeQuest.resetLesson()">↺ איפוס</button>
+            <button class="btn secondary" onclick="CodeQuest.showHint()">💡 רמז</button>
+            <button class="btn run-primary" onclick="CodeQuest.runCode()">▶ הרצה</button>
+          </div>
+        </div>
+
+        <div class="editor-grid lesson-workbench">
+          <aside class="command-bank">
+            <div class="command-bank-title">🧰 מחסן פקודות</div>
+            <div class="command-bank-subtitle">לחצו או גררו לתוך הקוד</div>
+            <div id="commandBank" class="command-list"></div>
+          </aside>
+
+          <div class="panel code-card code-editor-card">
+            <div class="card-title">הקוד שלי</div>
+            <textarea id="code" spellcheck="false"></textarea>
+          </div>
+
+          <div class="panel code-card visual-card">
+            <div class="card-title">הציור / העולם</div>
+            <div class="world-head compact-world-head">
+              <div id="challenge" class="challenge"></div>
+            </div>
+            <div id="goals" class="goals"></div>
+            <div id="grid" class="grid" aria-label="CodeQuest world grid"></div>
+            <canvas id="turtleCanvas" class="turtle-canvas" width="640" height="420" aria-label="Robot drawing canvas"></canvas>
+          </div>
+        </div>
+
+        <div class="bottom-grid">
+          <div class="panel code-card output-card">
+            <div class="card-title">פלט ויומן הרצה</div>
+            <div id="output" class="output"></div>
+          </div>
+
+          <div class="support-column">
+            <div id="hint" class="hint"></div>
+            <div class="exercises-box">
+              <h3>🧪 תרגילים לשיעור</h3>
+              <ol id="exerciseList"></ol>
+            </div>
+            <details class="teacher inline-teacher">
+              <summary>מבנה 90 דקות למדריך</summary>
+              <ol id="teacherFlow"></ol>
+            </details>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="roadmapModal" class="modal" onclick="if(event.target.id==='roadmapModal') CodeQuest.closeRoadmap()">
+    <div class="modal-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+        <h2>תוכנית CodeQuest המלאה</h2>
+        <button class="btn secondary" onclick="CodeQuest.closeRoadmap()">סגירה</button>
+      </div>
+      <div id="roadmap" class="roadmap"></div>
+    </div>
+  </div>
+
+  <script src="js/codequest-lessons.js?v=slides-exercises-1"></script>
+  <script src="js/codequest-engine.js?v=slides-exercises-1"></script>
+  <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
+</body>
+</html>

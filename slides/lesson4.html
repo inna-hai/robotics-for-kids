@@ -55,6 +55,134 @@
         .smoke-animation { position: relative; font-size: 5rem; }
         .smoke-animation::after { content: '💨'; position: absolute; animation: rise 2s infinite; }
         @keyframes rise { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-50px); } }
+
+
+        /* Mobile presentation mode */
+        @media (max-width: 700px) {
+            body {
+                overflow: auto;
+                overscroll-behavior: contain;
+            }
+
+            .slides-container {
+                height: auto;
+                min-height: 100svh;
+                overflow: visible;
+            }
+
+            .slide {
+                position: relative;
+                width: 100%;
+                min-height: 100svh;
+                height: auto;
+                padding: 2rem 1.1rem 7.5rem;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            h1 { font-size: clamp(2.1rem, 12vw, 3.2rem); }
+            h2 { font-size: clamp(1.8rem, 9vw, 2.6rem); }
+            h3 { font-size: clamp(1.3rem, 6vw, 1.8rem); }
+            p, ul, li { font-size: clamp(1.05rem, 5vw, 1.35rem); line-height: 1.5; }
+            .subtitle { font-size: clamp(1.25rem, 6vw, 1.65rem); }
+            .emoji-big { font-size: clamp(4rem, 22vw, 6rem); margin-bottom: .75rem; }
+            .emoji-row { font-size: clamp(2.5rem, 14vw, 4rem); margin: 1rem 0; }
+
+            ul { width: 100%; max-width: 100%; }
+            li { margin: .7rem 0; padding-right: 1.5rem; }
+
+            .comparison,
+            .sense-grid,
+            .robot-parts,
+            .activity-steps,
+            .quiz-options,
+            .features-grid,
+            .project-steps,
+            .sensor-demo,
+            .project-card {
+                display: grid !important;
+                grid-template-columns: 1fr !important;
+                gap: 1rem !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+            .comparison-item,
+            .sense-card,
+            .part-card,
+            .step-card,
+            .quiz-option,
+            .feature-card,
+            .project-step,
+            .sensor-item,
+            .project-card {
+                max-width: 100% !important;
+                padding: 1.1rem !important;
+            }
+
+            .video-container {
+                width: 100%;
+                max-width: 100%;
+                border-radius: .9rem;
+            }
+
+            .slide-image {
+                max-width: 100%;
+                max-height: 38svh;
+            }
+
+            .code-block,
+            pre,
+            code {
+                max-width: 100%;
+                overflow-x: auto;
+                white-space: pre-wrap;
+                word-break: break-word;
+                font-size: .95rem;
+            }
+
+            .nav-bar {
+                position: fixed;
+                left: .75rem;
+                right: .75rem;
+                bottom: max(.75rem, env(safe-area-inset-bottom));
+                transform: none;
+                width: auto;
+                justify-content: center;
+                gap: .55rem;
+                padding: .65rem .8rem;
+                border-radius: 999px;
+                backdrop-filter: blur(12px);
+            }
+
+            .nav-btn {
+                width: 46px;
+                height: 46px;
+                min-width: 46px;
+                font-size: 1.15rem;
+            }
+
+            .slide-counter {
+                font-size: .95rem;
+                padding: 0 .45rem;
+                white-space: nowrap;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .slide { padding: 1.5rem .85rem 7rem; }
+            .nav-bar { gap: .4rem; padding: .55rem .65rem; }
+            .nav-btn { width: 42px; height: 42px; min-width: 42px; }
+            .slide-counter { font-size: .85rem; padding: 0 .25rem; }
+        }
+
+        @media (max-height: 520px) and (orientation: landscape) {
+            .slide { padding: 1.25rem 1rem 5.5rem; justify-content: flex-start; }
+            .emoji-big { font-size: 3.5rem; }
+            .nav-bar { padding: .45rem .75rem; }
+            .nav-btn { width: 40px; height: 40px; }
+        }
+
     </style>
 </head>
 <body>
@@ -323,5 +451,6 @@
             else document.exitFullscreen();
         }
     </script>
+  <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
 </body>
 </html>

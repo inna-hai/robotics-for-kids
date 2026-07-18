@@ -1,961 +1,236 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📚 מערכי שיעור למדריכים - סנסי הרובוט</title>
-    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        :root {
-            --primary: #6366f1;
-            --secondary: #10b981;
-            --accent: #f59e0b;
-            --pink: #ec4899;
-            --dark: #1e293b;
-            --light: #f8fafc;
-            --border: #e2e8f0;
-        }
-        
-        body {
-            font-family: 'Rubik', sans-serif;
-            background: var(--light);
-            color: var(--dark);
-            line-height: 1.7;
-        }
-        
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, var(--primary), var(--pink));
-            color: white;
-            padding: 3rem 2rem;
-            text-align: center;
-        }
-        
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-        
-        /* Navigation */
-        .nav {
-            background: white;
-            padding: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .nav-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .nav a {
-            padding: 0.75rem 1.5rem;
-            background: var(--light);
-            border-radius: 50px;
-            text-decoration: none;
-            color: var(--dark);
-            font-weight: 500;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .nav a:hover {
-            background: var(--primary);
-            color: white;
-        }
-        
-        /* Container */
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        /* Overview Section */
-        .overview {
-            background: white;
-            border-radius: 1.5rem;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        }
-        
-        .overview h2 {
-            font-size: 1.75rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-        
-        .stat {
-            background: var(--light);
-            padding: 1.25rem;
-            border-radius: 1rem;
-            text-align: center;
-        }
-        
-        .stat-num {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-        
-        .stat-label {
-            font-size: 0.9rem;
-            color: #666;
-        }
-        
-        /* Lesson Card */
-        .lesson {
-            background: white;
-            border-radius: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            overflow: hidden;
-        }
-        
-        .lesson-header {
-            padding: 1.5rem 2rem;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .lesson-1 .lesson-header { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
-        .lesson-2 .lesson-header { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
-        .lesson-3 .lesson-header { background: linear-gradient(135deg, #ec4899, #f472b6); }
-        .lesson-4 .lesson-header { background: linear-gradient(135deg, #10b981, #34d399); }
-        .lesson-5 .lesson-header { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
-        
-        .lesson-icon {
-            font-size: 3rem;
-        }
-        
-        .lesson-title {
-            flex: 1;
-        }
-        
-        .lesson-title h2 {
-            font-size: 1.5rem;
-            margin-bottom: 0.25rem;
-        }
-        
-        .lesson-title p {
-            opacity: 0.9;
-            font-size: 0.95rem;
-        }
-        
-        .lesson-body {
-            padding: 2rem;
-        }
-        
-        /* Section */
-        .section {
-            margin-bottom: 2rem;
-        }
-        
-        .section:last-child {
-            margin-bottom: 0;
-        }
-        
-        .section h3 {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .section ul {
-            margin-right: 1.5rem;
-        }
-        
-        .section li {
-            margin-bottom: 0.5rem;
-        }
-        
-        /* Timeline */
-        .timeline {
-            background: var(--light);
-            border-radius: 1rem;
-            padding: 1.5rem;
-        }
-        
-        .time-block {
-            display: flex;
-            gap: 1rem;
-            padding: 1rem 0;
-            border-bottom: 1px dashed var(--border);
-        }
-        
-        .time-block:last-child {
-            border-bottom: none;
-        }
-        
-        .time-duration {
-            min-width: 80px;
-            font-weight: 700;
-            color: var(--primary);
-        }
-        
-        .time-content h4 {
-            font-size: 1rem;
-            margin-bottom: 0.25rem;
-        }
-        
-        .time-content p {
-            font-size: 0.9rem;
-            color: #666;
-        }
-        
-        /* Tips Box */
-        .tips-box {
-            background: linear-gradient(135deg, #fef3c7, #fde68a);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            margin-top: 1rem;
-        }
-        
-        .tips-box h4 {
-            font-size: 1rem;
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .tips-box ul {
-            margin-right: 1.25rem;
-        }
-        
-        .tips-box li {
-            margin-bottom: 0.5rem;
-            font-size: 0.95rem;
-        }
-        
-        /* Goals Box */
-        .goals-box {
-            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-            border-radius: 1rem;
-            padding: 1.5rem;
-        }
-        
-        .goals-box h4 {
-            font-size: 1rem;
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        /* Questions Box */
-        .questions-box {
-            background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
-            border-radius: 1rem;
-            padding: 1.5rem;
-        }
-        
-        .questions-box h4 {
-            font-size: 1rem;
-            margin-bottom: 0.75rem;
-        }
-        
-        /* Challenge Box */
-        .challenge-box {
-            background: linear-gradient(135deg, #fce7f3, #fbcfe8);
-            border-radius: 1rem;
-            padding: 1.5rem;
-        }
-        
-        .challenge-box h4 {
-            font-size: 1rem;
-            margin-bottom: 0.75rem;
-        }
-        
-        /* Code Example */
-        .code-example {
-            background: var(--dark);
-            color: #e2e8f0;
-            border-radius: 1rem;
-            padding: 1.5rem;
-            font-family: monospace;
-            direction: ltr;
-            text-align: left;
-            margin: 1rem 0;
-        }
-        
-        .code-example .block {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            margin: 0.25rem;
-            font-size: 0.9rem;
-        }
-        
-        .block-event { background: #FFAB19; color: black; }
-        .block-control { background: #FF8C1A; color: black; }
-        .block-sensor { background: #40BF4A; color: white; }
-        .block-move { background: #4C97FF; color: white; }
-        .block-action { background: #9966FF; color: white; }
-        
-        /* Print Styles */
-        @media print {
-            .nav { display: none; }
-            .lesson { break-inside: avoid; }
-        }
-        
-        /* Button */
-        .btn-print {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1rem 2rem;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: inherit;
-        }
-        
-        .btn-print:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-        }
-        
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            color: #666;
-            font-size: 0.9rem;
-        }
-        
-        .footer a {
-            color: var(--primary);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📚 מדריך למורה - סנסי בעיר החכמה</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #6d5dfc;
+      --secondary: #20c997;
+      --accent: #ffb703;
+      --dark: #172033;
+      --muted: #64748b;
+      --bg: #eef6ff;
+      --card: rgba(255,255,255,.92);
+      --border: #dbe7ff;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Rubik', sans-serif;
+      background: linear-gradient(180deg, #dcebff 0%, #f7fbff 42%, #eef6ff 100%);
+      color: var(--dark);
+      line-height: 1.75;
+    }
+    .hero {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 42px 18px 22px;
+      text-align: center;
+    }
+    .kicker { color: var(--primary); font-weight: 800; margin-bottom: 8px; }
+    h1 { font-size: clamp(2rem, 5vw, 4rem); line-height: 1.1; margin-bottom: 16px; }
+    .hero p { max-width: 820px; margin: 0 auto; font-size: 1.15rem; color: #334155; }
+    .hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 24px; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px 20px; border-radius: 999px; text-decoration: none;
+      font-weight: 800; border: 2px solid transparent; cursor: pointer;
+      font-family: inherit; font-size: 1rem;
+    }
+    .btn.primary { background: var(--primary); color: white; box-shadow: 0 10px 24px rgba(109,93,252,.22); }
+    .btn.secondary { background: white; color: var(--primary); border-color: var(--border); }
+    .stats {
+      max-width: 980px; margin: 22px auto 0; display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; padding: 0 18px;
+    }
+    .stat { background: var(--card); border: 1px solid var(--border); border-radius: 22px; padding: 18px; text-align: center; box-shadow: 0 8px 22px rgba(31,41,55,.05); }
+    .stat strong { display: block; font-size: 2rem; color: var(--primary); line-height: 1; }
+    .stat span { font-weight: 700; color: #334155; }
+    .nav {
+      position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,.88);
+      backdrop-filter: blur(12px); border-block: 1px solid var(--border); padding: 10px 12px;
+    }
+    .nav-inner { max-width: 1160px; margin: 0 auto; display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+    .nav a { flex: 0 0 auto; background: #f8fbff; border: 1px solid var(--border); color: #334155; border-radius: 999px; padding: 8px 12px; text-decoration: none; font-weight: 700; font-size: .92rem; }
+    .container { max-width: 1120px; margin: 0 auto; padding: 28px 18px 54px; }
+    .overview, .lesson {
+      background: var(--card); border: 1px solid var(--border); border-radius: 28px;
+      box-shadow: 0 14px 36px rgba(31,41,55,.08); margin-bottom: 22px; overflow: hidden;
+    }
+    .overview { padding: 26px; }
+    h2 { font-size: 1.75rem; margin-bottom: 14px; }
+    h3 { font-size: 1.18rem; margin: 20px 0 10px; }
+    ul, ol { padding-right: 24px; }
+    li { margin-bottom: 6px; }
+    .lesson-header {
+      padding: 20px 24px; color: white;
+      background: linear-gradient(135deg, var(--primary), #8b5cf6);
+      display: flex; gap: 14px; align-items: center;
+    }
+    .lesson:nth-of-type(3n+1) .lesson-header { background: linear-gradient(135deg, #6d5dfc, #00b4d8); }
+    .lesson:nth-of-type(3n+2) .lesson-header { background: linear-gradient(135deg, #20c997, #0ea5e9); }
+    .lesson:nth-of-type(3n) .lesson-header { background: linear-gradient(135deg, #f97316, #ec4899); }
+    .lesson-icon { font-size: 2.4rem; }
+    .lesson-title h2 { margin: 0; font-size: 1.45rem; }
+    .lesson-title p { opacity: .94; font-weight: 600; }
+    .lesson-body { padding: 24px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
+    .box { background: #f8fbff; border: 1px solid var(--border); border-radius: 20px; padding: 18px; }
+    .box.green { background: #ecfdf5; border-color: #bbf7d0; }
+    .box.yellow { background: #fffbeb; border-color: #fde68a; }
+    .box.purple { background: #f5f3ff; border-color: #ddd6fe; }
+    .timeline { display: grid; gap: 12px; }
+    .step { display: grid; grid-template-columns: 82px 1fr; gap: 14px; padding: 14px; border-radius: 18px; background: #f8fbff; border: 1px solid var(--border); }
+    .time { color: var(--primary); font-weight: 900; }
+    .step h4, .exercise h4 { margin-bottom: 6px; }
+    .exercise { border: 1px solid var(--border); border-radius: 18px; background: #fff; padding: 16px; margin-bottom: 12px; }
+    .exercise .phase { display: inline-block; color: white; background: var(--primary); border-radius: 999px; padding: 2px 10px; font-size: .82rem; font-weight: 800; margin-bottom: 8px; }
+    .blocks { display: flex; flex-wrap: wrap; gap: 7px; margin: 10px 0; }
+    .block { background: #ede9fe; color: #4c1d95; border: 1px solid #ddd6fe; padding: 7px 10px; border-radius: 12px; font-weight: 700; font-size: .9rem; }
+    .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .footer { text-align: center; color: var(--muted); padding: 34px 16px; }
+    @media (max-width: 760px) {
+      .stats { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .grid { grid-template-columns: 1fr; }
+      .step { grid-template-columns: 1fr; }
+      .lesson-header { align-items: flex-start; }
+    }
+    @media print {
+      .nav, .hero-actions, .links, .btn { display: none !important; }
+      body { background: white; }
+      .lesson, .overview { box-shadow: none; break-inside: avoid; }
+    }
+  </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <h1>📚 מערכי שיעור למדריכים</h1>
-        <p>סנסי הרובוט - לומדים על חמשת החושים דרך רובוטיקה</p>
-    </header>
-    
-    <!-- Navigation -->
-    <nav class="nav">
-        <div class="nav-inner">
-            <a href="#overview">📋 סקירה</a>
-            <a href="#lesson1">👁️ שיעור 1</a>
-            <a href="#lesson2">👂 שיעור 2</a>
-            <a href="#lesson3">✋ שיעור 3</a>
-            <a href="#lesson4">👃 שיעור 4</a>
-            <a href="#lesson5">⭐ שיעור 5</a>
-            <a href="index.html" target="_blank">🤖 לאפליקציה</a>
-        </div>
-    </nav>
-    
-    <div class="container">
-        <!-- Overview -->
-        <section class="overview" id="overview">
-            <h2>📋 סקירת הקורס</h2>
-            
-            <p>קורס זה מלמד ילדים בני 8-9 על חמשת החושים דרך עולם הרובוטיקה. הילדים ילמדו שלרובוטים יש "חושים" בדמות חיישנים, ויתכנתו רובוט וירטואלי בסביבה ויזואלית דמוית Scratch.</p>
-            
-            <div class="stats">
-                <div class="stat">
-                    <div class="stat-num">5</div>
-                    <div class="stat-label">שיעורים</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-num">90</div>
-                    <div class="stat-label">דקות לשיעור</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-num">8-9</div>
-                    <div class="stat-label">גיל מומלץ</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-num">∞</div>
-                    <div class="stat-label">כיף!</div>
-                </div>
-            </div>
-            
-            <h3>🎯 מטרות הקורס</h3>
-            <ul>
-                <li>הכרת חמשת החושים האנושיים</li>
-                <li>הבנת הקשר בין חושים לחיישנים ברובוטים</li>
-                <li>פיתוח חשיבה לוגית ואלגוריתמית</li>
-                <li>למידת יסודות התכנות בסביבה ויזואלית</li>
-                <li>עבודה בצוות ופתרון בעיות</li>
-            </ul>
-            
-            <h3 style="margin-top: 1.5rem;">🛠️ דרישות טכניות</h3>
-            <ul>
-                <li>מחשב/טאבלט עם דפדפן מודרני</li>
-                <li>חיבור לאינטרנט</li>
-                <li>מקרן (מומלץ להדגמות)</li>
-            </ul>
-            
-            <div style="margin-top: 1.5rem; text-align: center;">
-                <button class="btn-print" onclick="window.print()">🖨️ הדפס מערכי שיעור</button>
-            </div>
-        </section>
-        
-        <!-- Lesson 1 -->
-        <section class="lesson lesson-1" id="lesson1">
-            <div class="lesson-header">
-                <span class="lesson-icon">👁️</span>
-                <div class="lesson-title">
-                    <h2>שיעור 1: ראייה - הרובוט רואה!</h2>
-                    <p>חיישן אור | 90 דקות</p>
-                </div>
-            </div>
-            
-            <div class="lesson-body">
-                <div class="section">
-                    <div class="goals-box">
-                        <h4>🎯 מטרות השיעור</h4>
-                        <ul>
-                            <li>הכרת חוש הראייה האנושי</li>
-                            <li>הבנה מהו חיישן אור ואיך הוא עובד</li>
-                            <li>תכנות תנאי פשוט (אם... אז...)</li>
-                            <li>שימוש בבלוקים: התחלה, תנועה, חיישן אור, תנאי</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="section">
-                    <h3>⏱️ לוח זמנים</h3>
-                    <div class="timeline">
-                        <div class="time-block">
-                            <div class="time-duration">10 דק'</div>
-                            <div class="time-content">
-                                <h4>🎬 פתיחה - היכרות</h4>
-                                <p>הצגת "סנסי הרובוט", שאלה: "איך אתם חושבים שרובוטים רואים?"</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">15 דק'</div>
-                            <div class="time-content">
-                                <h4>📖 לימוד - העין והחיישן</h4>
-                                <p>הסבר על העין האנושית vs חיישן אור. פעילות: עצמו עיניים - מה אתם מרגישים?</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">15 דק'</div>
-                            <div class="time-content">
-                                <h4>👀 הדגמה - הכרת הסביבה</h4>
-                                <p>הקרנה והדגמת הממשק. הסבר על הבלוקים והסימולציה.</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">30 דק'</div>
-                            <div class="time-content">
-                                <h4>💻 תרגול מעשי</h4>
-                                <p>הילדים מתכנתים: רובוט שזז קדימה כשיש אור.</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">15 דק'</div>
-                            <div class="time-content">
-                                <h4>🏆 אתגר</h4>
-                                <p>רובוט שזז כשבהיר ונעצר כשחשוך (משתמש בלולאה).</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">5 דק'</div>
-                            <div class="time-content">
-                                <h4>📝 סיכום</h4>
-                                <p>מה למדנו? טיזר לשיעור הבא: "בשיעור הבא הרובוט ישמע!"</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="section">
-                    <h3>🧩 דוגמת קוד - משימה בסיסית</h3>
-                    <div class="code-example">
-                        <span class="block block-event">🚩 כאשר לוחצים ▶️</span><br>
-                        <span class="block block-control">אם</span>
-                        <span class="block block-sensor">👁️ חיישן אור = בהיר</span><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="block block-move">⬆️ זוז קדימה</span>
-                    </div>
-                    
-                    <h3 style="margin-top: 1rem;">🧩 דוגמת קוד - אתגר</h3>
-                    <div class="code-example">
-                        <span class="block block-event">🚩 כאשר לוחצים ▶️</span><br>
-                        <span class="block block-control">🔁 לנצח</span><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="block block-control">אם</span>
-                        <span class="block block-sensor">👁️ חיישן אור = בהיר</span><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="block block-move">⬆️ זוז קדימה</span>
-                    </div>
-                </div>
-                
-                <div class="section">
-                    <div class="questions-box">
-                        <h4>❓ שאלות לדיון</h4>
-                        <ul>
-                            <li>למה לרובוטים יש "עיניים"?</li>
-                            <li>מה ההבדל בין עין אנושית לחיישן אור?</li>
-                            <li>איפה בחיים משתמשים בחיישני אור? (מנורת לילה, פנסי רחוב)</li>
-                            <li>מה יקרה לרובוט בלי חיישן אור?</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="tips-box">
-                    <h4>💡 טיפים למדריך</h4>
-                    <ul>
-                        <li>תנו לילדים להתנסות עם כפתור האור לפני שמתכנתים</li>
-                        <li>עודדו ניסוי וטעייה - אין "טעויות", רק למידה!</li>
-                        <li>הדגימו תחילה על המקרן לפני עבודה עצמאית</li>
-                        <li>חברו לחיים: "כמו שאתם הולכים לכיוון האור בחדר חשוך"</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Lesson 2 -->
-        <section class="lesson lesson-2" id="lesson2">
-            <div class="lesson-header">
-                <span class="lesson-icon">👂</span>
-                <div class="lesson-title">
-                    <h2>שיעור 2: שמיעה - הרובוט שומע!</h2>
-                    <p>מיקרופון | 90 דקות</p>
-                </div>
-            </div>
-            
-            <div class="lesson-body">
-                <div class="section">
-                    <div class="goals-box">
-                        <h4>🎯 מטרות השיעור</h4>
-                        <ul>
-                            <li>הכרת חוש השמיעה האנושי</li>
-                            <li>הבנה מהו מיקרופון ואיך הוא עובד</li>
-                            <li>תכנות תגובה לאירוע קולי</li>
-                            <li>חיזוק מושג התנאי מהשיעור הקודם</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="section">
-                    <h3>⏱️ לוח זמנים</h3>
-                    <div class="timeline">
-                        <div class="time-block">
-                            <div class="time-duration">10 דק'</div>
-                            <div class="time-content">
-                                <h4>🎬 פתיחה - חזרה והיכרות</h4>
-                                <p>מה למדנו בשיעור הקודם? משחק: עצמו עיניים והקשיבו - מה אתם שומעים?</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">15 דק'</div>
-                            <div class="time-content">
-                                <h4>📖 לימוד - האוזן והמיקרופון</h4>
-                                <p>הסבר על האוזן האנושית vs מיקרופון. דוגמאות: אלקסה, סירי, רובוטים אמיתיים.</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">15 דק'</div>
-                            <div class="time-content">
-                                <h4>👀 הדגמה</h4>
-                                <p>הדגמת בלוק חיישן הצליל. הפעלת כפתור הצליל בסביבה.</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">30 דק'</div>
-                            <div class="time-content">
-                                <h4>💻 תרגול מעשי</h4>
-                                <p>רובוט שמסתובב כששומע צליל.</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">15 דק'</div>
-                            <div class="time-content">
-                                <h4>🏆 אתגר</h4>
-                                <p>"פסלים מוזיקליים" - רובוט שזז כל הזמן ונעצר כששומע צליל!</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">5 דק'</div>
-                            <div class="time-content">
-                                <h4>📝 סיכום</h4>
-                                <p>השוואה: ראייה vs שמיעה. טיזר: "בשיעור הבא הרובוט ירגיש!"</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="section">
-                    <h3>🧩 דוגמת קוד - אתגר</h3>
-                    <div class="code-example">
-                        <span class="block block-event">🚩 כאשר לוחצים ▶️</span><br>
-                        <span class="block block-control">🔁 לנצח</span><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="block block-control">אם</span>
-                        <span class="block block-sensor">👂 שומע צליל? = לא</span><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="block block-move">⬆️ זוז קדימה</span><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="block block-control">אם</span>
-                        <span class="block block-sensor">👂 שומע צליל? = כן</span><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="block block-move">🛑 עצור</span>
-                    </div>
-                </div>
-                
-                <div class="section">
-                    <div class="questions-box">
-                        <h4>❓ שאלות לדיון</h4>
-                        <ul>
-                            <li>למה רובוטים צריכים "לשמוע"?</li>
-                            <li>מה ההבדל בין אוזן למיקרופון?</li>
-                            <li>איפה יש מיקרופונים בבית שלכם?</li>
-                            <li>האם רובוט יכול לשמוע צליל שאנחנו לא שומעים?</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="tips-box">
-                    <h4>💡 טיפים למדריך</h4>
-                    <ul>
-                        <li>אפשר לעשות פעילות "שקט-רועש" - הילדים מוחאים כפיים והרובוט מגיב</li>
-                        <li>דברו על רובוטים אמיתיים שמגיבים לקול (שואבים רובוטיים, עוזרים קוליים)</li>
-                        <li>שלבו את חיישן האור מהשיעור הקודם ליצירת רובוט "חכם יותר"</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Lesson 3 -->
-        <section class="lesson lesson-3" id="lesson3">
-            <div class="lesson-header">
-                <span class="lesson-icon">✋</span>
-                <div class="lesson-title">
-                    <h2>שיעור 3: מישוש - הרובוט מרגיש!</h2>
-                    <p>חיישן מגע | 90 דקות</p>
-                </div>
-            </div>
-            
-            <div class="lesson-body">
-                <div class="section">
-                    <div class="goals-box">
-                        <h4>🎯 מטרות השיעור</h4>
-                        <ul>
-                            <li>הכרת חוש המישוש האנושי</li>
-                            <li>הבנת חיישני מגע ולחץ</li>
-                            <li>תכנות רובוט שנמנע ממכשולים</li>
-                            <li>שילוב מספר תנאים בתוכנית</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="section">
-                    <h3>⏱️ לוח זמנים</h3>
-                    <div class="timeline">
-                        <div class="time-block">
-                            <div class="time-duration">10 דק'</div>
-                            <div class="time-content">
-                                <h4>🎬 פתיחה - חוויה חושית</h4>
-                                <p>פעילות: הילדים עוצמים עיניים וממששים חפצים שונים. מה הם מרגישים?</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">15 דק'</div>
-                            <div class="time-content">
-                                <h4>📖 לימוד - העור והחיישן</h4>
-                                <p>העור = החיישן הגדול בגוף! חיישני לחץ ומגע ברובוטים.</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">15 דק'</div>
-                            <div class="time-content">
-                                <h4>👀 הדגמה</h4>
-                                <p>הדגמת כפתור המכשול. הסבר על חיישן המגע.</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">30 דק'</div>
-                            <div class="time-content">
-                                <h4>💻 תרגול מעשי</h4>
-                                <p>רובוט שזז ונעצר כשנתקל במכשול.</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">15 דק'</div>
-                            <div class="time-content">
-                                <h4>🏆 אתגר</h4>
-                                <p>רובוט שנמנע ממכשולים - כשנתקל, חוזר אחורה ומסתובב!</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">5 דק'</div>
-                            <div class="time-content">
-                                <h4>📝 סיכום</h4>
-                                <p>למה חשוב לרובוט להרגיש? דוגמאות מהחיים.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="section">
-                    <h3>🧩 דוגמת קוד - אתגר</h3>
-                    <div class="code-example">
-                        <span class="block block-event">🚩 כאשר לוחצים ▶️</span><br>
-                        <span class="block block-control">🔁 לנצח</span><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="block block-move">⬆️ זוז קדימה</span><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="block block-control">אם</span>
-                        <span class="block block-sensor">✋ נוגע בקיר? = כן</span><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="block block-move">⬇️ זוז אחורה</span><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="block block-move">↩️ סובב ימינה</span>
-                    </div>
-                </div>
-                
-                <div class="section">
-                    <div class="challenge-box">
-                        <h4>🎯 אתגר מתקדם</h4>
-                        <p>שלבו את חיישן האור עם חיישן המגע: רובוט שזז רק כשיש אור, ונמנע ממכשולים!</p>
-                    </div>
-                </div>
-                
-                <div class="tips-box">
-                    <h4>💡 טיפים למדריך</h4>
-                    <ul>
-                        <li>הביאו לכיתה חפצים עם מרקמים שונים לפעילות הפתיחה</li>
-                        <li>דברו על שואבים רובוטיים שנמנעים מרהיטים</li>
-                        <li>אפשר לעשות "מסלול מכשולים" וירטואלי עם כמה מכשולים</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Lesson 4 -->
-        <section class="lesson lesson-4" id="lesson4">
-            <div class="lesson-header">
-                <span class="lesson-icon">👃</span>
-                <div class="lesson-title">
-                    <h2>שיעור 4: ריח - הרובוט מריח!</h2>
-                    <p>חיישן גז | 90 דקות</p>
-                </div>
-            </div>
-            
-            <div class="lesson-body">
-                <div class="section">
-                    <div class="goals-box">
-                        <h4>🎯 מטרות השיעור</h4>
-                        <ul>
-                            <li>הכרת חוש הריח האנושי</li>
-                            <li>הבנת חיישני גז ותפקידם בבטיחות</li>
-                            <li>תכנות רובוט שמתריע על סכנה</li>
-                            <li>שימוש בבלוקי דיבור והשמעת צליל</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="section">
-                    <h3>⏱️ לוח זמנים</h3>
-                    <div class="timeline">
-                        <div class="time-block">
-                            <div class="time-duration">10 דק'</div>
-                            <div class="time-content">
-                                <h4>🎬 פתיחה - ריחות</h4>
-                                <p>דיון: מה אתם אוהבים להריח? מה לא? למה יש ריחות "רעים"?</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">15 דק'</div>
-                            <div class="time-content">
-                                <h4>📖 לימוד - האף וחיישן הגז</h4>
-                                <p>חיישני גז מצילים חיים! גלאי עשן, גלאי גז. למה זה חשוב?</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">15 דק'</div>
-                            <div class="time-content">
-                                <h4>👀 הדגמה</h4>
-                                <p>הדגמת כפתור העשן. הכרת בלוקי הדיבור והצליל.</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">30 דק'</div>
-                            <div class="time-content">
-                                <h4>💻 תרגול מעשי</h4>
-                                <p>רובוט שמזהה עשן ומתריע "סכנה!"</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">15 דק'</div>
-                            <div class="time-content">
-                                <h4>🏆 אתגר</h4>
-                                <p>רובוט כבאי - מזהה עשן, מתריע, ונוסע לכיוון המקור!</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">5 דק'</div>
-                            <div class="time-content">
-                                <h4>📝 סיכום</h4>
-                                <p>איך רובוטים שומרים עלינו? הכנה לפרויקט המסכם.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="section">
-                    <h3>🧩 דוגמת קוד - אתגר</h3>
-                    <div class="code-example">
-                        <span class="block block-event">🚩 כאשר לוחצים ▶️</span><br>
-                        <span class="block block-control">🔁 לנצח</span><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="block block-control">אם</span>
-                        <span class="block block-sensor">👃 מריח עשן? = כן</span><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="block block-action">💬 אמור "סכנה! עשן!"</span><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="block block-action">🔔 השמע אזעקה</span><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="block block-move">⬆️ זוז קדימה</span>
-                    </div>
-                </div>
-                
-                <div class="tips-box">
-                    <h4>💡 טיפים למדריך</h4>
-                    <ul>
-                        <li>דברו על בטיחות בבית - גלאי עשן, גלאי גז</li>
-                        <li>ספרו על רובוטים אמיתיים שמשמשים לחיפוש והצלה</li>
-                        <li>זו הזדמנות לדבר על בטיחות באש ותכנית מילוט</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Lesson 5 -->
-        <section class="lesson lesson-5" id="lesson5">
-            <div class="lesson-header">
-                <span class="lesson-icon">⭐</span>
-                <div class="lesson-title">
-                    <h2>שיעור 5: פרויקט מסכם - רובוט עם כל החושים!</h2>
-                    <p>שילוב והצגה | 90 דקות</p>
-                </div>
-            </div>
-            
-            <div class="lesson-body">
-                <div class="section">
-                    <div class="goals-box">
-                        <h4>🎯 מטרות השיעור</h4>
-                        <ul>
-                            <li>שילוב כל החושים שנלמדו</li>
-                            <li>תכנון ובניית פרויקט עצמאי</li>
-                            <li>הצגה לכיתה ומתן/קבלת פידבק</li>
-                            <li>חגיגת ההישגים!</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="section">
-                    <h3>⏱️ לוח זמנים</h3>
-                    <div class="timeline">
-                        <div class="time-block">
-                            <div class="time-duration">10 דק'</div>
-                            <div class="time-content">
-                                <h4>🎬 פתיחה - חזרה</h4>
-                                <p>סיכום: אילו חושים למדנו? מה כל חיישן עושה?</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">15 דק'</div>
-                            <div class="time-content">
-                                <h4>📋 תכנון</h4>
-                                <p>הילדים בוחרים סוג רובוט ומתכננים: אילו חושים? מה הוא יעשה?</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">35 דק'</div>
-                            <div class="time-content">
-                                <h4>💻 בנייה</h4>
-                                <p>עבודה עצמאית/זוגית על הפרויקט. המדריך מסייע.</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">25 דק'</div>
-                            <div class="time-content">
-                                <h4>🎤 הצגות</h4>
-                                <p>כל ילד/זוג מציג את הרובוט שלו לכיתה (2-3 דקות לכל אחד).</p>
-                            </div>
-                        </div>
-                        <div class="time-block">
-                            <div class="time-duration">5 דק'</div>
-                            <div class="time-content">
-                                <h4>🎉 סיום וחגיגה</h4>
-                                <p>מחיאות כפיים, תעודות, סיכום הקורס!</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="section">
-                    <h3>🤖 רעיונות לפרויקטים</h3>
-                    <ul>
-                        <li><strong>🏠 רובוט שומר בית</strong> - מזהה אור (יום/לילה), נמנע ממכשולים, מתריע על עשן</li>
-                        <li><strong>🚗 רובוט נוסע חכם</strong> - נוסע רק באור, נמנע ממכשולים, נעצר כששומע צליל</li>
-                        <li><strong>🤝 רובוט חבר</strong> - מגיב לצליל, אומר "שלום", זז לכיוון האור</li>
-                        <li><strong>🚒 רובוט כבאי</strong> - מזהה עשן, מתריע, נוסע להציל</li>
-                    </ul>
-                </div>
-                
-                <div class="section">
-                    <div class="questions-box">
-                        <h4>🎤 שאלות להצגה</h4>
-                        <ul>
-                            <li>איזה רובוט בניתם?</li>
-                            <li>באילו חושים הוא משתמש?</li>
-                            <li>למה בחרתם דווקא את החושים האלה?</li>
-                            <li>מה היה הכי קשה? הכי כיף?</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="tips-box">
-                    <h4>💡 טיפים למדריך</h4>
-                    <ul>
-                        <li>עודדו יצירתיות - אין תשובה "נכונה" אחת!</li>
-                        <li>עזרו לילדים שמתקשים אבל תנו להם להוביל</li>
-                        <li>הכינו "תעודות" או מדבקות לסיום הקורס</li>
-                        <li>צלמו את ההצגות (באישור הורים) לזיכרון</li>
-                        <li>סיימו בחיוב - כולם הצליחו!</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Footer -->
-        <footer class="footer">
-            <p>📚 מערכי שיעור למדריכים | סנסי הרובוט<br>
-            <a href="index.html">← חזרה לאפליקציה</a></p>
-        </footer>
+  <header class="hero">
+    <div class="kicker">קורס חדש בפיתוח • 15 תחנות בעיר</div>
+    <h1>מדריך למורה: לומדים לתכנת רובוטים בעיר החכמה</h1>
+    <p>מדריך למדריכים עבור הלומדה החדשה של סנסי: 15 שיעורים של 60–90 דקות, עם סיפור עירוני, מטרות, מהלך שיעור, תרגילי תכנות, פתרונות בלוקים, בדיקות וטיפים להוראה.</p>
+    <div class="hero-actions">
+      <a class="btn primary" href="index.html?lesson=1">🚀 לפתיחת הלומדה</a>
+      <a class="btn secondary" href="smart-city.html">🏙️ מפת התוכנית</a>
+      <button class="btn secondary" onclick="window.print()">🖨️ הדפסה / PDF</button>
     </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><strong>15</strong><span>שיעורים</span></div>
+    <div class="stat"><strong>60–90</strong><span>דקות לשיעור</span></div>
+    <div class="stat"><strong>5+</strong><span>תרגילים לכל שיעור</span></div>
+    <div class="stat"><strong>8+</strong><span>סוגי חיישנים</span></div>
+  </div>
+
+  <nav class="nav"><div class="nav-inner" id="navLinks"><a href="#overview">📋 סקירה</a></div></nav>
+
+  <main class="container">
+    <section class="overview" id="overview">
+      <h2>📋 איך משתמשים במדריך</h2>
+      <div class="grid">
+        <div class="box green">
+          <h3>מה יש בכל שיעור?</h3>
+          <ul>
+            <li>סיפור עירוני שמסביר למה מתכנתים.</li>
+            <li>מטרות למידה פשוטות לילדים בגיל 8–9.</li>
+            <li>מהלך שיעור מלא לפי זמנים.</li>
+            <li>תרגילי תכנות עם פתרונות למדריך.</li>
+            <li>בדיקות, טעויות נפוצות ואתגרי הרחבה.</li>
+          </ul>
+        </div>
+        <div class="box yellow">
+          <h3>עקרון ההוראה</h3>
+          <ul>
+            <li>מתחילים מבעיה אמיתית בעיר.</li>
+            <li>מזהים חיישן/קלט.</li>
+            <li>כותבים כלל: אם ___ אז ___.</li>
+            <li>בונים בבלוקים.</li>
+            <li>בודקים לפחות שני מצבים.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <div id="lessonsRoot"></div>
+  </main>
+
+  <footer class="footer">
+    <p>📚 מדריך למורה — סנסי בעיר החכמה<br><a href="index.html">חזרה ללומדה</a> · <a href="smart-city.html">מפת התוכנית</a></p>
+  </footer>
+
+  <script src="js/lessons-data.js?v=20260710-lessons-7-15"></script>
+  <script>
+    const lessons = window.SENSI_LESSONS || [];
+    const navLinks = document.getElementById('navLinks');
+    const root = document.getElementById('lessonsRoot');
+
+    const list = (items = []) => `<ul>${items.map(item => `<li>${item}</li>`).join('')}</ul>`;
+
+    function renderFlow(flow = []) {
+      return `<div class="timeline">${flow.map(step => `
+        <div class="step">
+          <div class="time">${step.minutes || ''}</div>
+          <div>
+            <h4>${step.title || ''}</h4>
+            ${step.teacherSays ? `<p><strong>מה אומרים:</strong> ${step.teacherSays}</p>` : ''}
+            ${step.teacherDoes ? `<p><strong>מה המדריך עושה:</strong></p>${list(step.teacherDoes)}` : ''}
+            ${step.studentTasks ? `<p><strong>מה הילדים עושים:</strong></p>${list(step.studentTasks)}` : ''}
+            ${step.tasks ? list(step.tasks) : ''}
+            ${step.checkQuestion ? `<p><strong>שאלת בדיקה:</strong> ${step.checkQuestion}</p>` : ''}
+          </div>
+        </div>`).join('')}</div>`;
+    }
+
+    function renderExercises(exercises = []) {
+      return exercises.map((ex, index) => `
+        <div class="exercise">
+          <span class="phase">${ex.afterFlowMinutes || ''}</span>
+          <h4>${ex.title || `תרגיל ${index + 1}`}</h4>
+          <p><strong>לתלמידים:</strong> ${ex.studentPrompt || ''}</p>
+          ${ex.answerBlocks ? `<div class="blocks">${ex.answerBlocks.map(block => `<span class="block">${block}</span>`).join('')}</div>` : ''}
+          ${ex.expectedResult ? `<p><strong>תוצאה מצופה:</strong> ${ex.expectedResult}</p>` : ''}
+          ${ex.testSteps ? `<p><strong>בדיקות:</strong></p>${list(ex.testSteps)}` : ''}
+          ${ex.commonMistake ? `<p><strong>טעות נפוצה:</strong> ${ex.commonMistake}</p>` : ''}
+        </div>`).join('');
+    }
+
+    lessons.forEach(lesson => {
+      navLinks.insertAdjacentHTML('beforeend', `<a href="#lesson${lesson.id}">${lesson.emoji} ${lesson.id}</a>`);
+      root.insertAdjacentHTML('beforeend', `
+        <section class="lesson" id="lesson${lesson.id}">
+          <div class="lesson-header">
+            <div class="lesson-icon">${lesson.emoji}</div>
+            <div class="lesson-title">
+              <h2>שיעור ${lesson.id}: ${lesson.title}</h2>
+              <p>${lesson.cityZone} · ${lesson.sensorFocus} · ${lesson.codingConcept}</p>
+            </div>
+          </div>
+          <div class="lesson-body">
+            <div class="grid">
+              <div class="box green"><h3>🎯 מטרות למידה</h3>${list(lesson.learningGoals)}</div>
+              <div class="box purple"><h3>🧱 בלוקים ורעיונות</h3><div class="blocks">${lesson.blocks.map(block => `<span class="block">${block}</span>`).join('')}</div><p><strong>טיפ:</strong> ${lesson.tip || ''}</p></div>
+            </div>
+            <h3>📖 סיפור השיעור</h3>
+            <p>${lesson.story}</p>
+            <h3>✅ צ׳ק־ליסט מהיר למדריך</h3>
+            ${list(lesson.instructorQuickTasks || [])}
+            <h3>⏱️ מהלך שיעור 60–90 דקות</h3>
+            ${renderFlow(lesson.sixtyMinuteFlow || [])}
+            <h3>🧩 תרגילי תכנות ופתרונות</h3>
+            ${renderExercises(lesson.programmingExercises || [])}
+            <h3>🏁 קריטריוני הצלחה</h3>
+            ${list(lesson.successCriteria || [])}
+            <h3>❓ שאלות לדיון</h3>
+            ${list((lesson.teacherNotes && lesson.teacherNotes.discussionQuestions) || [])}
+            <div class="links">
+              <a class="btn primary" href="index.html?lesson=${lesson.id}">פתח שיעור בלומדה</a>
+              <a class="btn secondary" href="slides/lesson.html?id=${lesson.id}">מצגת שיעור ${lesson.id}</a>
+            </div>
+          </div>
+        </section>`);
+    });
+  </script>
+  <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
 </body>
 </html>
