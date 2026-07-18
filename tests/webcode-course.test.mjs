@@ -85,6 +85,10 @@ assert.ok(play.includes('textarea id="jsCode"'), 'play page has JS editor');
 assert.ok(play.includes('iframe id="preview"'), 'play page has live preview');
 assert.ok(play.includes('checkExercise()'), 'play page has exercise checking');
 assert.ok(play.includes('completedTitle'), 'check button keeps success feedback visible after running preview');
+assert.ok(play.includes('webcode-error'), 'play page catches preview JavaScript errors');
+assert.ok(play.includes('debugHint'), 'play page gives student-friendly syntax/debug hints');
+assert.ok(play.includes('validateJavaScriptSyntax'), 'play page validates JavaScript syntax before preview injection');
+assert.ok(play.includes('שגיאת סינטקס ב־JavaScript'), 'play page shows Hebrew syntax error feedback');
 
 const slides = read('webcode-slides.html');
 assert.ok(slides.includes('מהלך שיעור 90 דקות'), 'slides include 90-minute flow');
