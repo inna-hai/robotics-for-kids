@@ -75,7 +75,7 @@
       renderBridgeBlocks(); selectExercise(1); runCode(); renderProgress();
     }
     function showTab(name, btn){ document.querySelectorAll('.editor').forEach(e=>e.classList.remove('active')); document.querySelectorAll('.editor-tabs button').forEach(b=>b.classList.remove('active')); $(`tab-${name}`).classList.add('active'); btn.classList.add('active'); }
-    function toggleLessonPanel(){ const panel=$('lessonPanel'); const button=panel.querySelector('.lesson-toggle'); const collapsed=panel.classList.toggle('collapsed'); document.querySelector('.main').classList.toggle('lesson-collapsed', collapsed); button.setAttribute('aria-expanded', String(!collapsed)); $('lessonToggleIcon').textContent = collapsed ? '⌄' : '⌃'; if(window.Blockly && blocklyWorkspace) setTimeout(() => Blockly.svgResize(blocklyWorkspace), 120); }
+    function toggleLessonPanel(){ const panel=$('lessonPanel'); const button=panel.querySelector('.lesson-toggle'); const collapsed=panel.classList.toggle('collapsed'); document.querySelector('.main').classList.toggle('lesson-collapsed', collapsed); button.setAttribute('aria-expanded', String(!collapsed)); $('lessonToggleIcon').textContent = collapsed ? '⌄' : '⌃'; if(window.Blockly && blocklyWorkspace) setTimeout(() => { Blockly.svgResize(blocklyWorkspace); alignBlocklyStarterBlocksRight(); }, 120); }
     function showGeneratedCode(){ $('codePeek').open = true; $('codePeek').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('feedback').className='feedback good'; $('feedback').textContent='זה הקוד שנוצר מהבלוקים שלך: HTML למבנה, CSS לעיצוב, JavaScript לפעולה.'; }
 
     let blocklyWorkspace = null;
@@ -100,7 +100,20 @@
       <category name="פעולה" colour="120"><block type="web_button"></block></category>
       <category name="סיום" colour="15"><block type="web_footer"></block></category>
     </xml>`; }
-    function webBuilderStarterXml(){ return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="page_start" x="310" y="40"><next><block type="web_theme"><field name="THEME">sky</field><next><block type="web_title"><field name="TEXT">העמוד הראשון שלי</field><next><block type="web_paragraph"><field name="TEXT">גררתי בלוקים והרכבתי עמוד בעצמי</field><next><block type="web_emoji"><field name="EMOJI">🚀</field><next><block type="web_button"><field name="LABEL">לחצו עליי</field><field name="MESSAGE">איזה כיף! בניתי עמוד מבלוקים 🎉</field></block></next></block></next></block></next></block></next></block></xml>`; }
+    function webBuilderStarterXml(){ return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="page_start" x="40" y="40"><next><block type="web_theme"><field name="THEME">sky</field><next><block type="web_title"><field name="TEXT">העמוד הראשון שלי</field><next><block type="web_paragraph"><field name="TEXT">גררתי בלוקים והרכבתי עמוד בעצמי</field><next><block type="web_emoji"><field name="EMOJI">🚀</field><next><block type="web_button"><field name="LABEL">לחצו עליי</field><field name="MESSAGE">איזה כיף! בניתי עמוד מבלוקים 🎉</field></block></next></block></next></block></next></block></next></block></xml>`; }
+    function alignBlocklyStarterBlocksRight(){
+      if(!blocklyWorkspace || !window.Blockly) return;
+      const topBlock = blocklyWorkspace.getTopBlocks(false).find(block => block.type === 'page_start');
+      const blockRoot = topBlock && topBlock.getSvgRoot && topBlock.getSvgRoot();
+      const area = $('blocklyDiv');
+      if(!topBlock || !blockRoot || !area) return;
+      const blockRect = blockRoot.getBoundingClientRect();
+      const areaRect = area.getBoundingClientRect();
+      const scale = blocklyWorkspace.scale || 1;
+      const desiredGap = 8;
+      const visualDelta = areaRect.right - blockRect.right - desiredGap;
+      if(Math.abs(visualDelta) > 4) topBlock.moveBy(visualDelta / scale, 0);
+    }
     function renderRealBlocklyBuilder(){
       if(!window.Blockly){ $('blocksIntro').innerHTML = '⚠️ Blockly לא נטען<small>אם אין אינטרנט רגעי, אפשר עדיין להשתמש בכפתורי הגיבוי למטה.</small>'; return; }
       $('realBlockly').classList.add('active');
@@ -109,6 +122,8 @@
       if(blocklyWorkspace) return;
       blocklyWorkspace = Blockly.inject('blocklyDiv',{rtl:true,trashcan:true,scrollbars:true,toolbox:webBuilderToolbox(),zoom:{controls:true,wheel:true,startScale:.85,maxScale:1.35,minScale:.45}});
       Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(webBuilderStarterXml()), blocklyWorkspace);
+      setTimeout(alignBlocklyStarterBlocksRight, 80);
+      setTimeout(alignBlocklyStarterBlocksRight, 300);
       blocklyWorkspace.addChangeListener(event => { if(!blocklyReady || event.isUiEvent) return; generateCodeFromBlockly(); });
       blocklyReady = true;
       generateCodeFromBlockly();
@@ -178,7 +193,7 @@
     function validateJavaScriptSyntax(code){ try { new Function(code); return null; } catch (error) { return error; } }
     function runCode(){ const syntaxError = validateJavaScriptSyntax($('jsCode').value); if(syntaxError){ $('feedback').className='feedback bad'; $('feedback').textContent = `שגיאת סינטקס ב־JavaScript: ${syntaxError.message}. רמז: ${debugHint(syntaxError.message)}`; const safeHtml = `<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><style>${$('cssCode').value}</style></head><body>${$('htmlCode').value}</body></html>`; $('preview').srcdoc = safeHtml; return; } const errorBridge = `<script>window.onerror=function(message,source,line,column){parent.postMessage({type:'webcode-error',message:String(message),line:line,column:column},'*');};<\/script>`; const src = `<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><style>${$('cssCode').value}</style></head><body>${$('htmlCode').value}${errorBridge}<script>${safeScript($('jsCode').value)}<\/script></body></html>`; $('preview').srcdoc = src; $('feedback').className='feedback good'; $('feedback').textContent='הרצה בוצעה. בדקו בתצוגה אם זה נראה ועובד כמו שרציתם.'; }
     window.addEventListener('message', event => { if(!event.data || event.data.type !== 'webcode-error') return; $('feedback').className='feedback bad'; $('feedback').textContent = `שגיאת קוד קטנה: ${event.data.message}. רמז: ${debugHint(event.data.message)}`; });
-    function resetCode(){ if(!confirm('לאפס לקוד ההתחלתי של השיעור?')) return; if(lesson.realBlocklyBuilder && blocklyWorkspace && window.Blockly){ blocklyReady = false; blocklyWorkspace.clear(); Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(webBuilderStarterXml()), blocklyWorkspace); blocklyReady = true; generateCodeFromBlockly(); } else { $('htmlCode').value=lesson.starter.html; $('cssCode').value=lesson.starter.css; $('jsCode').value=lesson.starter.js; runCode(); } done.clear(); renderProgress(); selectExercise(1); }
+    function resetCode(){ if(!confirm('לאפס לקוד ההתחלתי של השיעור?')) return; if(lesson.realBlocklyBuilder && blocklyWorkspace && window.Blockly){ blocklyReady = false; blocklyWorkspace.clear(); Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(webBuilderStarterXml()), blocklyWorkspace); setTimeout(alignBlocklyStarterBlocksRight, 80); setTimeout(alignBlocklyStarterBlocksRight, 300); blocklyReady = true; generateCodeFromBlockly(); } else { $('htmlCode').value=lesson.starter.html; $('cssCode').value=lesson.starter.css; $('jsCode').value=lesson.starter.js; runCode(); } done.clear(); renderProgress(); selectExercise(1); }
     function includesAll(text, list){ return (list||[]).every(x => text.includes(x)); }
     function checkExercise(){ const ex=lesson.exercises.find(e=>e.id===activeExercise); const c=ex.check||{}; const ok = includesAll($('htmlCode').value,c.htmlIncludes) && includesAll($('cssCode').value,c.cssIncludes) && includesAll($('jsCode').value,c.jsIncludes); runCode(); if(ok){ done.add(ex.id); $(`ex-${ex.id}`).classList.add('done'); const completedTitle = ex.title; if(activeExercise < lesson.exercises.length) selectExercise(activeExercise+1); $('feedback').className='feedback good'; $('feedback').textContent=`מעולה ✅ ${completedTitle} הושלם. אפשר להמשיך לתרגול הבא או לשדרג.`; } else { $('feedback').className='feedback bad'; $('feedback').textContent=`כמעט. רמז: ${ex.hint}`; } renderProgress(); }
     function renderProgress(){ $('progress').textContent = `${done.size}/${lesson.exercises.length} הושלמו`; }
