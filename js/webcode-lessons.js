@@ -183,6 +183,52 @@
         ['placeholder', 'טקסט עזרה שמופיע בתוך שדה ריק'],
         ['שרשור', 'חיבור חלקי טקסט בעזרת +']
       ]
+    },
+    {
+      id: 5,
+      title: 'חידון כן או לא',
+      concept: 'תנאים: if / else ומשוב לתשובה',
+      durationMinutes: 90,
+      story: 'בונים חידון קטן בדפדפן: המשתמש עונה, הקוד בודק אם התשובה נכונה, ומחזיר משוב מתאים.',
+      mission: 'לבנות חידון אינטראקטיבי עם שאלה, שדה תשובה, בדיקת if/else ומשוב נכון/כמעט.',
+      outcome: 'חידון קצר שעובד עם תנאי, קלט מהמשתמש ומשוב צבעוני',
+      starter: {
+        html: '<main class="quiz">\n  <h1>חידון WebCode</h1>\n  <p class="question">איזו שפה מעצבת את העמוד?</p>\n  <input id="answerInput" placeholder="כתבו תשובה">\n  <button onclick="checkAnswer()">בדקו תשובה</button>\n  <p id="feedback">כאן יופיע משוב...</p>\n</main>',
+        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #f0fdf4, #eff6ff);\n}\n\n.quiz {\n  background: white;\n  width: 390px;\n  margin: 45px auto;\n  padding: 28px;\n  border-radius: 28px;\n  box-shadow: 0 16px 35px #bbf7d0;\n}\n\n.question {\n  font-size: 22px;\n  font-weight: bold;\n}\n\ninput {\n  width: 100%;\n  padding: 12px;\n  border: 2px solid #cbd5e1;\n  border-radius: 14px;\n  text-align: center;\n}\n\nbutton {\n  margin-top: 14px;\n  background: #16a34a;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 20px;\n  font-weight: bold;\n}\n\n.correct { color: #15803d; font-weight: bold; }\n.wrong { color: #b91c1c; font-weight: bold; }',
+        js: 'function checkAnswer() {\n  const answer = document.getElementById("answerInput").value;\n  const feedback = document.getElementById("feedback");\n\n  if (answer === "CSS") {\n    feedback.textContent = "נכון מאוד! CSS מעצב את העמוד 🎨";\n    feedback.className = "correct";\n  } else {\n    feedback.textContent = "כמעט! נסו לחשוב איזו שפה אחראית לצבעים.";\n    feedback.className = "wrong";\n  }\n}'
+      },
+      lessonFlow: [
+        { minutes: '0–8', title: 'פתיחה: מחשב שמחליט', teacher: 'מציגים חידון קצר ושואלים איך המחשב יודע אם התשובה נכונה.', students: 'מנחשים שיש בדיקה: אם התשובה שווה לתשובה הנכונה.' },
+        { minutes: '8–18', title: 'if / else בלי פחד', teacher: 'מסבירים: אם התנאי נכון — עושים פעולה אחת; אחרת — פעולה אחרת.', students: 'מסמנים בקוד את if, את else ואת שתי הודעות המשוב.' },
+        { minutes: '18–30', title: 'הרצה מודרכת', teacher: 'מריצים עם CSS ואז עם תשובה שגויה. מראים את ההבדל בצבע ובטקסט.', students: 'בודקים תשובות שונות ומזהים מתי נכנסים ל־if ומתי ל־else.' },
+        { minutes: '30–55', title: 'תרגולי חידון', teacher: 'מוודאים שהתלמידים משנים גם שאלה וגם תשובה נכונה, לא רק טקסט.', students: 'מבצעים תרגולים 1–5 ומריצים אחרי כל שינוי.' },
+        { minutes: '55–67', title: 'משוב טוב', teacher: 'מדברים על משוב שעוזר ללמוד: לא רק “טעית”, אלא רמז.', students: 'כותבים הודעת שגיאה עם רמז.' },
+        { minutes: '67–80', title: 'דיבאג תנאי', teacher: 'מדגימים טעות נפוצה: תשובה נכונה שונה באותיות גדולות/קטנות.', students: 'מתקנים תנאי שלא מזהה תשובה.' },
+        { minutes: '80–90', title: 'חידון חברים', teacher: 'מחלקים זוגות: כל תלמיד מנסה את החידון של חבר.', students: 'בודקים חידון, נותנים רמז לשיפור ומציגים שאלה אחת.' }
+      ],
+      exercises: [
+        { id: 1, minutes: '18–24', title: 'תרגול 1 — מריצים את החידון', prompt: 'כתבו CSS ובדקו שמופיעה הודעת הצלחה. אחר כך כתבו תשובה שגויה.', hint: 'התשובה הנכונה כרגע היא CSS בדיוק באותיות גדולות.', check: { jsIncludes: ['if', 'else'] } },
+        { id: 2, minutes: '24–31', title: 'תרגול 2 — שאלה חדשה', prompt: 'שנו את שאלת החידון לשאלה משלכם.', hint: 'חפשו את p עם class="question".', check: { htmlIncludes: ['class="question"'] } },
+        { id: 3, minutes: '31–39', title: 'תרגול 3 — תשובה נכונה חדשה', prompt: 'שנו את התנאי כך שהתשובה הנכונה תתאים לשאלה החדשה.', hint: 'חפשו answer === "CSS".', check: { jsIncludes: ['answer ==='] } },
+        { id: 4, minutes: '39–47', title: 'תרגול 4 — הודעת הצלחה', prompt: 'כתבו הודעת הצלחה שמתאימה לשאלה שלכם.', hint: 'הודעת ההצלחה נמצאת בתוך ה־if.', check: { jsIncludes: ['correct'] } },
+        { id: 5, minutes: '47–56', title: 'תרגול 5 — רמז בתשובה שגויה', prompt: 'שנו את הודעת ה־else כך שתיתן רמז אמיתי.', hint: 'משוב טוב עוזר, לא מעליב.', check: { jsIncludes: ['wrong', 'else'] } },
+        { id: 6, minutes: '56–65', title: 'תרגול 6 — צבעי משוב', prompt: 'שנו את צבעי correct ו־wrong ב־CSS.', hint: 'חפשו .correct ו־.wrong.', check: { cssIncludes: ['.correct', '.wrong'] } },
+        { id: 7, minutes: '65–75', title: 'תרגול 7 — תקן את הבאג', prompt: 'שנו לרגע answerInput ל־answerinput וראו שהבדיקה נשברת. תקנו התאמה בין HTML ל־JS.', hint: 'id באנגלית חייב להיות זהה בדיוק.', check: { htmlIncludes: ['id="answerInput"'], jsIncludes: ['getElementById("answerInput")'] } },
+        { id: 8, minutes: '75–84', title: 'תרגול 8 — חידון בנושא אישי', prompt: 'הפכו את החידון לשאלה על משחק, ספורט, מוזיקה, חלל או חיות.', hint: 'שנו כותרת, שאלה, תשובה נכונה ושני סוגי משוב.', check: { htmlIncludes: ['input', 'button'], jsIncludes: ['if', 'else'] } }
+      ],
+      aiHelper: [
+        'הציעו 5 שאלות חידון פשוטות לכיתה ד׳ בנושא מחשבים.',
+        'הסבירו בשפה פשוטה מה עושה if ומה עושה else.',
+        'עזרו למצוא למה תשובה נכונה לא מזוהה בגלל אותיות גדולות/קטנות.',
+        'הציעו הודעת שגיאה שנותנת רמז ולא מגלה מיד את התשובה.'
+      ],
+      vocabulary: [
+        ['if', 'אם התנאי נכון — בצעו פעולה'],
+        ['else', 'אחרת — בצעו פעולה אחרת'],
+        ['===', 'בדיקה אם שני דברים שווים בדיוק'],
+        ['משוב', 'הודעה שעוזרת למשתמש להבין מה קרה'],
+        ['className', 'שינוי שם class כדי להחליף עיצוב']
+      ]
     }
   ];
 
