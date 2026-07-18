@@ -12,7 +12,17 @@ vm.runInContext(dataCode, sandbox);
 
 const lessons = sandbox.window.WEBCODE_LESSONS;
 assert.equal(Array.isArray(lessons), true, 'lessons array exists');
-assert.ok(lessons.length >= 12, 'first twelve WebCode lessons exist');
+assert.equal(lessons.length, 30, 'WebCode course includes thirty lessons');
+assert.deepEqual(Array.from(lessons, l => l.id), Array.from({ length: 30 }, (_, i) => i + 1), 'lesson ids are sequential 1-30');
+lessons.forEach(lessonItem => {
+  assert.equal(lessonItem.durationMinutes, 90, `lesson ${lessonItem.id} is framed as 90 minutes`);
+  assert.ok(lessonItem.starter?.html?.includes('<main'), `lesson ${lessonItem.id} has starter HTML`);
+  assert.ok(lessonItem.starter?.css?.includes('background'), `lesson ${lessonItem.id} has starter CSS`);
+  assert.ok(lessonItem.starter?.js?.includes('function'), `lesson ${lessonItem.id} has starter JavaScript`);
+  assert.ok(lessonItem.lessonFlow.length >= 7, `lesson ${lessonItem.id} has a full guide flow`);
+  assert.ok(lessonItem.exercises.length >= 8, `lesson ${lessonItem.id} has at least eight exercises`);
+  assert.ok(lessonItem.vocabulary.length >= 4, `lesson ${lessonItem.id} has vocabulary`);
+});
 
 const lesson = lessons[0];
 assert.equal(lesson.durationMinutes, 90, 'lesson is framed as 90 minutes');
@@ -123,11 +133,33 @@ assert.ok(lesson12.starter.js.includes('const target = 5'), 'lesson 12 has proje
 assert.ok(lesson12.exercises.length >= 8, 'lesson 12 includes many exercises');
 assert.ok(lesson12.vocabulary.some(v => v[0] === 'project'), 'lesson 12 vocabulary includes project');
 
+const lesson13 = lessons[12];
+assert.ok(lesson13.title.includes('הקוד שנוצר'), 'lesson 13 starts the generated-code lab phase');
+assert.ok(lesson13.progressionStage.includes('עריכת קוד'), 'lesson 13 is marked as code-edit progression');
+assert.ok(lesson13.bridgeBlocks.length >= 3, 'lesson 13 has code-edit cards');
+
+const lesson19 = lessons[18];
+assert.ok(lesson19.title.includes('כרטיסי HTML'), 'lesson 19 starts real code cards');
+assert.ok(lesson19.mode.includes('Real code cards'), 'lesson 19 uses real code card mode');
+assert.ok(lesson19.bridgeBlocks.some(block => block.label.includes('כרטיס HTML אמיתי')), 'lesson 19 exposes real HTML code cards');
+
+const lesson24 = lessons[23];
+assert.ok(lesson24.concept.includes('score') && lesson24.concept.includes('target'), 'lesson 24 edits real game rules');
+assert.ok(lesson24.bridgeBlocks.some(block => block.label.includes('כרטיס JS אמיתי')), 'lesson 24 has real JS cards');
+
+const lesson25 = lessons[24];
+assert.ok(lesson25.progressionStage.includes('כתיבה מודרכת'), 'lesson 25 starts guided coding');
+assert.ok(!lesson25.bridgeBlocks?.length, 'guided coding phase reduces code-card scaffolding');
+
+const lesson30 = lessons[29];
+assert.ok(lesson30.title.includes('פרויקט סיום'), 'lesson 30 is the final project');
+assert.ok(lesson30.concept.includes('HTML + CSS + JS'), 'lesson 30 combines HTML CSS and JS');
+
 const hub = read('webcode.html');
 assert.ok(hub.includes('WebCode Lab'), 'hub page exists');
 assert.ok(hub.includes('webcode-play.html?lesson=1'), 'hub links to lesson 1');
 assert.ok(hub.includes('webcode-slides.html?lesson=1'), 'hub links to guide slides');
-assert.ok(hub.includes('גשר מ־Blockly לקוד') || hub.includes('Blockly'), 'hub explains Blockly-to-code direction');
+assert.ok(hub.includes('כרטיסי קוד אמיתי') && hub.includes('25–30'), 'hub explains gradual move to real coding');
 
 const play = read('webcode-play.html');
 assert.ok(play.includes('textarea id="htmlCode"'), 'play page has HTML editor');

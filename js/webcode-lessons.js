@@ -801,6 +801,4317 @@
     ]
   });
 
+
+  const webCodeAdvancedLessons = [
+  {
+    "id": 13,
+    "title": "מעבדת הקוד שנוצר",
+    "concept": "בלוק → שורת קוד מודגשת",
+    "durationMinutes": 90,
+    "story": "שיעור 13 נמצא בשלב בלוקים שמובילים לעריכת קוד: הילדים מתחילים מתוצר עובד, ואז מתקדמים עוד צעד מהבלוקים אל קוד אמיתי דרך משימה כיפית ומוגנת.",
+    "mission": "לבחור בלוק, לראות את שורת הקוד שלו, ולשנות ערך קטן בביטחון",
+    "outcome": "תוצר עובד שמחזק את המעבר ההדרגתי: בלוק → שורת קוד מודגשת.",
+    "starter": {
+      "html": "<main class=\"code-lab\">\n  <h1>מעבדת הקוד שנוצר</h1>\n  <p class=\"intro\">לבחור בלוק, לראות את שורת הקוד שלו, ולשנות ערך קטן בביטחון</p>\n  <button onclick=\"runProject()\">הריצו בדיקה</button>\n  <p id=\"output\">כאן תופיע התוצאה...</p>\n</main>",
+      "css": "body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #eff6ff, #fff7ed);\n}\n\n.code-lab {\n  background: white;\n  width: min(520px, 92vw);\n  margin: 42px auto;\n  padding: 30px;\n  border-radius: 28px;\n  box-shadow: 0 18px 42px #bfdbfe;\n}\n\n.intro { color: #475569; line-height: 1.6; }\n\nbutton {\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 22px;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n#output {\n  margin-top: 18px;\n  background: #f8fafc;\n  border-radius: 18px;\n  padding: 16px;\n  font-weight: bold;\n}",
+      "js": "function runProject() {\n  document.getElementById(\"output\").textContent = \"מצאתי את השורה שהבלוק יצר ✅\";\n}"
+    },
+    "lessonFlow": [
+      {
+        "minutes": "0–8",
+        "title": "פתיחה: מעבדת הקוד שנוצר",
+        "teacher": "פותחים בתוצאה עובדת ומבקשים מהילדים לתאר מה קרה לפני שמדברים על תחביר.",
+        "students": "מריצים, לוחצים, משנים ערך קטן ורואים תוצאה מיידית."
+      },
+      {
+        "minutes": "8–20",
+        "title": "מפרקים את הקסם",
+        "teacher": "מצביעים על החלקים החשובים בלבד ומחברים בין פעולה במסך לבין שורת קוד אחת.",
+        "students": "מסמנים מה שייך ל־HTML, מה ל־CSS ומה ל־JavaScript."
+      },
+      {
+        "minutes": "20–36",
+        "title": "בנייה מודרכת של התוצר",
+        "teacher": "מדגימים צעד־צעד עם כרטיס/בלוק/שורת קוד אחת בכל פעם.",
+        "students": "מבצעים יחד ומריצים אחרי כל שינוי קטן."
+      },
+      {
+        "minutes": "36–52",
+        "title": "הצצה לקוד האמיתי",
+        "teacher": "נותנים שם מקצועי למושג, אבל לא מקריאים את כל הקוד.",
+        "students": "מוצאים בקוד את המילה או השורה שמפעילה את הרעיון."
+      },
+      {
+        "minutes": "52–68",
+        "title": "תרגול עצמאי הדרגתי",
+        "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
+        "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
+      },
+      {
+        "minutes": "68–80",
+        "title": "דיבאג ידידותי",
+        "teacher": "מדגימים באג נפוץ אחד ומתקנים בקול רם בלי להפחיד.",
+        "students": "בודקים גרשיים, סוגריים, id ושמות פונקציות."
+      },
+      {
+        "minutes": "80–90",
+        "title": "שיתוף ורפלקציה",
+        "teacher": "מסיימים בהצגה קצרה ורפלקציה על מה הילד עשה לבד.",
+        "students": "משתפים קישור או מציגים למסך ומסבירים שורת קוד אחת."
+      }
+    ],
+    "exercises": [
+      {
+        "id": 1,
+        "minutes": "0–8",
+        "title": "תרגול 1 — מריצים קודם",
+        "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
+        "hint": "קודם תוצאה, אחר כך קוד.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "textContent",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "minutes": "10–18",
+        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
+        "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "textContent",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "minutes": "20–28",
+        "title": "תרגול 3 — שינוי בטוח",
+        "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
+        "hint": "שמרו על גרשיים וסוגריים.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "textContent",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "minutes": "30–38",
+        "title": "תרגול 4 — כרטיס קוד",
+        "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
+        "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "textContent",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "minutes": "40–48",
+        "title": "תרגול 5 — השלמת חור",
+        "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
+        "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "textContent",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "minutes": "50–58",
+        "title": "תרגול 6 — דיבאג קטן",
+        "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
+        "hint": "בדקו שהשמות זהים בדיוק.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "textContent",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "minutes": "60–68",
+        "title": "תרגול 7 — שדרוג אישי",
+        "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
+        "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "textContent",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "minutes": "70–78",
+        "title": "תרגול 8 — הצגה",
+        "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
+        "hint": "השתמשו במילים של השיעור.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "textContent",
+            "output"
+          ]
+        }
+      }
+    ],
+    "aiHelper": [
+      "הציעו רעיונות יצירתיים לתוצר בשיעור 13.",
+      "הסבירו לילד/ה את המושג המרכזי בשפה פשוטה.",
+      "עזרו למצוא באג נפוץ בלי לכתוב את כל הפתרון במקום התלמיד.",
+      "הציעו שדרוג קטן שלא מקפיץ את רמת הקושי."
+    ],
+    "vocabulary": [
+      [
+        "mapping",
+        "קישור בין בלוק לבין שורת קוד"
+      ],
+      [
+        "snippet",
+        "קטע קוד קצר"
+      ],
+      [
+        "highlight",
+        "סימון של השורה החשובה"
+      ],
+      [
+        "edit",
+        "שינוי קטן ובטוח"
+      ]
+    ],
+    "mode": "Blockly + code edit",
+    "progressionStage": "בלוקים שמובילים לעריכת קוד"
+  },
+  {
+    "id": 14,
+    "title": "HTML אמיתי בזהירות",
+    "concept": "תגיות HTML ו־attributes",
+    "durationMinutes": 90,
+    "story": "שיעור 14 נמצא בשלב בלוקים שמובילים לעריכת קוד: הילדים מתחילים מתוצר עובד, ואז מתקדמים עוד צעד מהבלוקים אל קוד אמיתי דרך משימה כיפית ומוגנת.",
+    "mission": "לשנות תגיות קיימות כמו h1, p, button ו־img בלי לשבור מבנה",
+    "outcome": "תוצר עובד שמחזק את המעבר ההדרגתי: תגיות HTML ו־attributes.",
+    "starter": {
+      "html": "<main class=\"code-lab\">\n  <h1>HTML אמיתי בזהירות</h1>\n  <p class=\"intro\">לשנות תגיות קיימות כמו h1, p, button ו־img בלי לשבור מבנה</p>\n  <button onclick=\"runProject()\">הריצו בדיקה</button>\n  <p id=\"output\">כאן תופיע התוצאה...</p>\n</main>",
+      "css": "body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #eff6ff, #fff7ed);\n}\n\n.code-lab {\n  background: white;\n  width: min(520px, 92vw);\n  margin: 42px auto;\n  padding: 30px;\n  border-radius: 28px;\n  box-shadow: 0 18px 42px #bfdbfe;\n}\n\n.intro { color: #475569; line-height: 1.6; }\n\nbutton {\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 22px;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n#output {\n  margin-top: 18px;\n  background: #f8fafc;\n  border-radius: 18px;\n  padding: 16px;\n  font-weight: bold;\n}",
+      "js": "function runProject() {\n  document.getElementById(\"output\").textContent = \"HTML הוא השלד של העמוד 🧱\";\n}"
+    },
+    "lessonFlow": [
+      {
+        "minutes": "0–8",
+        "title": "פתיחה: HTML אמיתי בזהירות",
+        "teacher": "פותחים בתוצאה עובדת ומבקשים מהילדים לתאר מה קרה לפני שמדברים על תחביר.",
+        "students": "מריצים, לוחצים, משנים ערך קטן ורואים תוצאה מיידית."
+      },
+      {
+        "minutes": "8–20",
+        "title": "מפרקים את הקסם",
+        "teacher": "מצביעים על החלקים החשובים בלבד ומחברים בין פעולה במסך לבין שורת קוד אחת.",
+        "students": "מסמנים מה שייך ל־HTML, מה ל־CSS ומה ל־JavaScript."
+      },
+      {
+        "minutes": "20–36",
+        "title": "בנייה מודרכת של התוצר",
+        "teacher": "מדגימים צעד־צעד עם כרטיס/בלוק/שורת קוד אחת בכל פעם.",
+        "students": "מבצעים יחד ומריצים אחרי כל שינוי קטן."
+      },
+      {
+        "minutes": "36–52",
+        "title": "הצצה לקוד האמיתי",
+        "teacher": "נותנים שם מקצועי למושג, אבל לא מקריאים את כל הקוד.",
+        "students": "מוצאים בקוד את המילה או השורה שמפעילה את הרעיון."
+      },
+      {
+        "minutes": "52–68",
+        "title": "תרגול עצמאי הדרגתי",
+        "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
+        "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
+      },
+      {
+        "minutes": "68–80",
+        "title": "דיבאג ידידותי",
+        "teacher": "מדגימים באג נפוץ אחד ומתקנים בקול רם בלי להפחיד.",
+        "students": "בודקים גרשיים, סוגריים, id ושמות פונקציות."
+      },
+      {
+        "minutes": "80–90",
+        "title": "שיתוף ורפלקציה",
+        "teacher": "מסיימים בהצגה קצרה ורפלקציה על מה הילד עשה לבד.",
+        "students": "משתפים קישור או מציגים למסך ומסבירים שורת קוד אחת."
+      }
+    ],
+    "exercises": [
+      {
+        "id": 1,
+        "minutes": "0–8",
+        "title": "תרגול 1 — מריצים קודם",
+        "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
+        "hint": "קודם תוצאה, אחר כך קוד.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "minutes": "10–18",
+        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
+        "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "minutes": "20–28",
+        "title": "תרגול 3 — שינוי בטוח",
+        "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
+        "hint": "שמרו על גרשיים וסוגריים.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "minutes": "30–38",
+        "title": "תרגול 4 — כרטיס קוד",
+        "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
+        "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "minutes": "40–48",
+        "title": "תרגול 5 — השלמת חור",
+        "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
+        "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "minutes": "50–58",
+        "title": "תרגול 6 — דיבאג קטן",
+        "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
+        "hint": "בדקו שהשמות זהים בדיוק.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "minutes": "60–68",
+        "title": "תרגול 7 — שדרוג אישי",
+        "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
+        "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "minutes": "70–78",
+        "title": "תרגול 8 — הצגה",
+        "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
+        "hint": "השתמשו במילים של השיעור.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "textContent"
+          ]
+        }
+      }
+    ],
+    "aiHelper": [
+      "הציעו רעיונות יצירתיים לתוצר בשיעור 14.",
+      "הסבירו לילד/ה את המושג המרכזי בשפה פשוטה.",
+      "עזרו למצוא באג נפוץ בלי לכתוב את כל הפתרון במקום התלמיד.",
+      "הציעו שדרוג קטן שלא מקפיץ את רמת הקושי."
+    ],
+    "vocabulary": [
+      [
+        "tag",
+        "תגית HTML"
+      ],
+      [
+        "attribute",
+        "מאפיין בתוך תגית"
+      ],
+      [
+        "nesting",
+        "תגית בתוך תגית"
+      ],
+      [
+        "content",
+        "התוכן בין תגיות"
+      ]
+    ],
+    "mode": "HTML safe edit",
+    "progressionStage": "בלוקים שמובילים לעריכת קוד"
+  },
+  {
+    "id": 15,
+    "title": "CSS אמיתי בזהירות",
+    "concept": "selector · property · value",
+    "durationMinutes": 90,
+    "story": "שיעור 15 נמצא בשלב בלוקים שמובילים לעריכת קוד: הילדים מתחילים מתוצר עובד, ואז מתקדמים עוד צעד מהבלוקים אל קוד אמיתי דרך משימה כיפית ומוגנת.",
+    "mission": "לעצב עמוד דרך שינוי ערכי CSS אמיתיים: צבע, ריווח, פינות ו־hover",
+    "outcome": "תוצר עובד שמחזק את המעבר ההדרגתי: selector · property · value.",
+    "starter": {
+      "html": "<main class=\"code-lab\">\n  <h1>CSS אמיתי בזהירות</h1>\n  <p class=\"intro\">לעצב עמוד דרך שינוי ערכי CSS אמיתיים: צבע, ריווח, פינות ו־hover</p>\n  <button onclick=\"runProject()\">הריצו בדיקה</button>\n  <p id=\"output\">כאן תופיע התוצאה...</p>\n</main>",
+      "css": "body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #eff6ff, #fff7ed);\n}\n\n.code-lab {\n  background: white;\n  width: min(520px, 92vw);\n  margin: 42px auto;\n  padding: 30px;\n  border-radius: 28px;\n  box-shadow: 0 18px 42px #bfdbfe;\n}\n\n.intro { color: #475569; line-height: 1.6; }\n\nbutton {\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 22px;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n#output {\n  margin-top: 18px;\n  background: #f8fafc;\n  border-radius: 18px;\n  padding: 16px;\n  font-weight: bold;\n}",
+      "js": "function runProject() {\n  document.getElementById(\"output\").textContent = \"שינוי CSS קטן משנה את כל התחושה 🎨\";\n}"
+    },
+    "lessonFlow": [
+      {
+        "minutes": "0–8",
+        "title": "פתיחה: CSS אמיתי בזהירות",
+        "teacher": "פותחים בתוצאה עובדת ומבקשים מהילדים לתאר מה קרה לפני שמדברים על תחביר.",
+        "students": "מריצים, לוחצים, משנים ערך קטן ורואים תוצאה מיידית."
+      },
+      {
+        "minutes": "8–20",
+        "title": "מפרקים את הקסם",
+        "teacher": "מצביעים על החלקים החשובים בלבד ומחברים בין פעולה במסך לבין שורת קוד אחת.",
+        "students": "מסמנים מה שייך ל־HTML, מה ל־CSS ומה ל־JavaScript."
+      },
+      {
+        "minutes": "20–36",
+        "title": "בנייה מודרכת של התוצר",
+        "teacher": "מדגימים צעד־צעד עם כרטיס/בלוק/שורת קוד אחת בכל פעם.",
+        "students": "מבצעים יחד ומריצים אחרי כל שינוי קטן."
+      },
+      {
+        "minutes": "36–52",
+        "title": "הצצה לקוד האמיתי",
+        "teacher": "נותנים שם מקצועי למושג, אבל לא מקריאים את כל הקוד.",
+        "students": "מוצאים בקוד את המילה או השורה שמפעילה את הרעיון."
+      },
+      {
+        "minutes": "52–68",
+        "title": "תרגול עצמאי הדרגתי",
+        "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
+        "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
+      },
+      {
+        "minutes": "68–80",
+        "title": "דיבאג ידידותי",
+        "teacher": "מדגימים באג נפוץ אחד ומתקנים בקול רם בלי להפחיד.",
+        "students": "בודקים גרשיים, סוגריים, id ושמות פונקציות."
+      },
+      {
+        "minutes": "80–90",
+        "title": "שיתוף ורפלקציה",
+        "teacher": "מסיימים בהצגה קצרה ורפלקציה על מה הילד עשה לבד.",
+        "students": "משתפים קישור או מציגים למסך ומסבירים שורת קוד אחת."
+      }
+    ],
+    "exercises": [
+      {
+        "id": 1,
+        "minutes": "0–8",
+        "title": "תרגול 1 — מריצים קודם",
+        "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
+        "hint": "קודם תוצאה, אחר כך קוד.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "style"
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "minutes": "10–18",
+        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
+        "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "style"
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "minutes": "20–28",
+        "title": "תרגול 3 — שינוי בטוח",
+        "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
+        "hint": "שמרו על גרשיים וסוגריים.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "style"
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "minutes": "30–38",
+        "title": "תרגול 4 — כרטיס קוד",
+        "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
+        "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "style"
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "minutes": "40–48",
+        "title": "תרגול 5 — השלמת חור",
+        "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
+        "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "style"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "minutes": "50–58",
+        "title": "תרגול 6 — דיבאג קטן",
+        "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
+        "hint": "בדקו שהשמות זהים בדיוק.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "style"
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "minutes": "60–68",
+        "title": "תרגול 7 — שדרוג אישי",
+        "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
+        "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "style"
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "minutes": "70–78",
+        "title": "תרגול 8 — הצגה",
+        "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
+        "hint": "השתמשו במילים של השיעור.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "style"
+          ]
+        }
+      }
+    ],
+    "aiHelper": [
+      "הציעו רעיונות יצירתיים לתוצר בשיעור 15.",
+      "הסבירו לילד/ה את המושג המרכזי בשפה פשוטה.",
+      "עזרו למצוא באג נפוץ בלי לכתוב את כל הפתרון במקום התלמיד.",
+      "הציעו שדרוג קטן שלא מקפיץ את רמת הקושי."
+    ],
+    "vocabulary": [
+      [
+        "selector",
+        "למי העיצוב פונה"
+      ],
+      [
+        "property",
+        "מה משנים"
+      ],
+      [
+        "value",
+        "הערך החדש"
+      ],
+      [
+        "px",
+        "יחידת גודל"
+      ]
+    ],
+    "mode": "CSS safe edit",
+    "progressionStage": "בלוקים שמובילים לעריכת קוד"
+  },
+  {
+    "id": 16,
+    "title": "JavaScript אמיתי בזהירות",
+    "concept": "function · string · DOM",
+    "durationMinutes": 90,
+    "story": "שיעור 16 נמצא בשלב בלוקים שמובילים לעריכת קוד: הילדים מתחילים מתוצר עובד, ואז מתקדמים עוד צעד מהבלוקים אל קוד אמיתי דרך משימה כיפית ומוגנת.",
+    "mission": "לשנות טקסטים בתוך פונקציה אמיתית ולהבין מה בטוח לערוך",
+    "outcome": "תוצר עובד שמחזק את המעבר ההדרגתי: function · string · DOM.",
+    "starter": {
+      "html": "<main class=\"code-lab\">\n  <h1>JavaScript אמיתי בזהירות</h1>\n  <p class=\"intro\">לשנות טקסטים בתוך פונקציה אמיתית ולהבין מה בטוח לערוך</p>\n  <button onclick=\"runProject()\">הריצו בדיקה</button>\n  <p id=\"output\">כאן תופיע התוצאה...</p>\n</main>",
+      "css": "body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #eff6ff, #fff7ed);\n}\n\n.code-lab {\n  background: white;\n  width: min(520px, 92vw);\n  margin: 42px auto;\n  padding: 30px;\n  border-radius: 28px;\n  box-shadow: 0 18px 42px #bfdbfe;\n}\n\n.intro { color: #475569; line-height: 1.6; }\n\nbutton {\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 22px;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n#output {\n  margin-top: 18px;\n  background: #f8fafc;\n  border-radius: 18px;\n  padding: 16px;\n  font-weight: bold;\n}",
+      "js": "function runProject() {\n  const message = \"כתבתי בתוך פונקציה אמיתית\";\n  document.getElementById(\"output\").textContent = message;\n}"
+    },
+    "lessonFlow": [
+      {
+        "minutes": "0–8",
+        "title": "פתיחה: JavaScript אמיתי בזהירות",
+        "teacher": "פותחים בתוצאה עובדת ומבקשים מהילדים לתאר מה קרה לפני שמדברים על תחביר.",
+        "students": "מריצים, לוחצים, משנים ערך קטן ורואים תוצאה מיידית."
+      },
+      {
+        "minutes": "8–20",
+        "title": "מפרקים את הקסם",
+        "teacher": "מצביעים על החלקים החשובים בלבד ומחברים בין פעולה במסך לבין שורת קוד אחת.",
+        "students": "מסמנים מה שייך ל־HTML, מה ל־CSS ומה ל־JavaScript."
+      },
+      {
+        "minutes": "20–36",
+        "title": "בנייה מודרכת של התוצר",
+        "teacher": "מדגימים צעד־צעד עם כרטיס/בלוק/שורת קוד אחת בכל פעם.",
+        "students": "מבצעים יחד ומריצים אחרי כל שינוי קטן."
+      },
+      {
+        "minutes": "36–52",
+        "title": "הצצה לקוד האמיתי",
+        "teacher": "נותנים שם מקצועי למושג, אבל לא מקריאים את כל הקוד.",
+        "students": "מוצאים בקוד את המילה או השורה שמפעילה את הרעיון."
+      },
+      {
+        "minutes": "52–68",
+        "title": "תרגול עצמאי הדרגתי",
+        "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
+        "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
+      },
+      {
+        "minutes": "68–80",
+        "title": "דיבאג ידידותי",
+        "teacher": "מדגימים באג נפוץ אחד ומתקנים בקול רם בלי להפחיד.",
+        "students": "בודקים גרשיים, סוגריים, id ושמות פונקציות."
+      },
+      {
+        "minutes": "80–90",
+        "title": "שיתוף ורפלקציה",
+        "teacher": "מסיימים בהצגה קצרה ורפלקציה על מה הילד עשה לבד.",
+        "students": "משתפים קישור או מציגים למסך ומסבירים שורת קוד אחת."
+      }
+    ],
+    "exercises": [
+      {
+        "id": 1,
+        "minutes": "0–8",
+        "title": "תרגול 1 — מריצים קודם",
+        "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
+        "hint": "קודם תוצאה, אחר כך קוד.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "minutes": "10–18",
+        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
+        "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "minutes": "20–28",
+        "title": "תרגול 3 — שינוי בטוח",
+        "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
+        "hint": "שמרו על גרשיים וסוגריים.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "minutes": "30–38",
+        "title": "תרגול 4 — כרטיס קוד",
+        "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
+        "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "minutes": "40–48",
+        "title": "תרגול 5 — השלמת חור",
+        "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
+        "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "minutes": "50–58",
+        "title": "תרגול 6 — דיבאג קטן",
+        "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
+        "hint": "בדקו שהשמות זהים בדיוק.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "minutes": "60–68",
+        "title": "תרגול 7 — שדרוג אישי",
+        "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
+        "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "minutes": "70–78",
+        "title": "תרגול 8 — הצגה",
+        "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
+        "hint": "השתמשו במילים של השיעור.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const",
+            "textContent"
+          ]
+        }
+      }
+    ],
+    "aiHelper": [
+      "הציעו רעיונות יצירתיים לתוצר בשיעור 16.",
+      "הסבירו לילד/ה את המושג המרכזי בשפה פשוטה.",
+      "עזרו למצוא באג נפוץ בלי לכתוב את כל הפתרון במקום התלמיד.",
+      "הציעו שדרוג קטן שלא מקפיץ את רמת הקושי."
+    ],
+    "vocabulary": [
+      [
+        "string",
+        "טקסט בתוך מרכאות"
+      ],
+      [
+        "function body",
+        "מה שקורה בתוך הפונקציה"
+      ],
+      [
+        "DOM",
+        "העמוד ש־JS משנה"
+      ],
+      [
+        "const",
+        "שם ששומר ערך"
+      ]
+    ],
+    "mode": "JavaScript safe edit",
+    "progressionStage": "בלוקים שמובילים לעריכת קוד"
+  },
+  {
+    "id": 17,
+    "title": "מספרים שמשנים משחק",
+    "concept": "constants · speed · target",
+    "durationMinutes": 90,
+    "story": "שיעור 17 נמצא בשלב בלוקים שמובילים לעריכת קוד: הילדים מתחילים מתוצר עובד, ואז מתקדמים עוד צעד מהבלוקים אל קוד אמיתי דרך משימה כיפית ומוגנת.",
+    "mission": "לשנות קושי של משחק דרך מספרים אמיתיים בקוד",
+    "outcome": "תוצר עובד שמחזק את המעבר ההדרגתי: constants · speed · target.",
+    "starter": {
+      "html": "<main class=\"code-lab\">\n  <h1>מספרים שמשנים משחק</h1>\n  <p class=\"intro\">לשנות קושי של משחק דרך מספרים אמיתיים בקוד</p>\n  <button onclick=\"runProject()\">הריצו בדיקה</button>\n  <p id=\"output\">כאן תופיע התוצאה...</p>\n</main>",
+      "css": "body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #eff6ff, #fff7ed);\n}\n\n.code-lab {\n  background: white;\n  width: min(520px, 92vw);\n  margin: 42px auto;\n  padding: 30px;\n  border-radius: 28px;\n  box-shadow: 0 18px 42px #bfdbfe;\n}\n\n.intro { color: #475569; line-height: 1.6; }\n\nbutton {\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 22px;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n#output {\n  margin-top: 18px;\n  background: #f8fafc;\n  border-radius: 18px;\n  padding: 16px;\n  font-weight: bold;\n}",
+      "js": "function runProject() {\n  const target = 7;\n  document.getElementById(\"output\").textContent = \"היעד החדש הוא \" + target;\n}"
+    },
+    "lessonFlow": [
+      {
+        "minutes": "0–8",
+        "title": "פתיחה: מספרים שמשנים משחק",
+        "teacher": "פותחים בתוצאה עובדת ומבקשים מהילדים לתאר מה קרה לפני שמדברים על תחביר.",
+        "students": "מריצים, לוחצים, משנים ערך קטן ורואים תוצאה מיידית."
+      },
+      {
+        "minutes": "8–20",
+        "title": "מפרקים את הקסם",
+        "teacher": "מצביעים על החלקים החשובים בלבד ומחברים בין פעולה במסך לבין שורת קוד אחת.",
+        "students": "מסמנים מה שייך ל־HTML, מה ל־CSS ומה ל־JavaScript."
+      },
+      {
+        "minutes": "20–36",
+        "title": "בנייה מודרכת של התוצר",
+        "teacher": "מדגימים צעד־צעד עם כרטיס/בלוק/שורת קוד אחת בכל פעם.",
+        "students": "מבצעים יחד ומריצים אחרי כל שינוי קטן."
+      },
+      {
+        "minutes": "36–52",
+        "title": "הצצה לקוד האמיתי",
+        "teacher": "נותנים שם מקצועי למושג, אבל לא מקריאים את כל הקוד.",
+        "students": "מוצאים בקוד את המילה או השורה שמפעילה את הרעיון."
+      },
+      {
+        "minutes": "52–68",
+        "title": "תרגול עצמאי הדרגתי",
+        "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
+        "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
+      },
+      {
+        "minutes": "68–80",
+        "title": "דיבאג ידידותי",
+        "teacher": "מדגימים באג נפוץ אחד ומתקנים בקול רם בלי להפחיד.",
+        "students": "בודקים גרשיים, סוגריים, id ושמות פונקציות."
+      },
+      {
+        "minutes": "80–90",
+        "title": "שיתוף ורפלקציה",
+        "teacher": "מסיימים בהצגה קצרה ורפלקציה על מה הילד עשה לבד.",
+        "students": "משתפים קישור או מציגים למסך ומסבירים שורת קוד אחת."
+      }
+    ],
+    "exercises": [
+      {
+        "id": 1,
+        "minutes": "0–8",
+        "title": "תרגול 1 — מריצים קודם",
+        "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
+        "hint": "קודם תוצאה, אחר כך קוד.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const target",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "minutes": "10–18",
+        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
+        "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const target",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "minutes": "20–28",
+        "title": "תרגול 3 — שינוי בטוח",
+        "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
+        "hint": "שמרו על גרשיים וסוגריים.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const target",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "minutes": "30–38",
+        "title": "תרגול 4 — כרטיס קוד",
+        "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
+        "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const target",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "minutes": "40–48",
+        "title": "תרגול 5 — השלמת חור",
+        "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
+        "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const target",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "minutes": "50–58",
+        "title": "תרגול 6 — דיבאג קטן",
+        "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
+        "hint": "בדקו שהשמות זהים בדיוק.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const target",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "minutes": "60–68",
+        "title": "תרגול 7 — שדרוג אישי",
+        "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
+        "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const target",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "minutes": "70–78",
+        "title": "תרגול 8 — הצגה",
+        "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
+        "hint": "השתמשו במילים של השיעור.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const target",
+            "output"
+          ]
+        }
+      }
+    ],
+    "aiHelper": [
+      "הציעו רעיונות יצירתיים לתוצר בשיעור 17.",
+      "הסבירו לילד/ה את המושג המרכזי בשפה פשוטה.",
+      "עזרו למצוא באג נפוץ בלי לכתוב את כל הפתרון במקום התלמיד.",
+      "הציעו שדרוג קטן שלא מקפיץ את רמת הקושי."
+    ],
+    "vocabulary": [
+      [
+        "constant",
+        "ערך שמגדיר חוק"
+      ],
+      [
+        "target",
+        "יעד המשחק"
+      ],
+      [
+        "speed",
+        "מהירות"
+      ],
+      [
+        "balance",
+        "איזון קושי"
+      ]
+    ],
+    "mode": "Number tuning",
+    "progressionStage": "בלוקים שמובילים לעריכת קוד"
+  },
+  {
+    "id": 18,
+    "title": "חדר בריחה של באגים",
+    "concept": "syntax · id · quotes",
+    "durationMinutes": 90,
+    "story": "שיעור 18 נמצא בשלב בלוקים שמובילים לעריכת קוד: הילדים מתחילים מתוצר עובד, ואז מתקדמים עוד צעד מהבלוקים אל קוד אמיתי דרך משימה כיפית ומוגנת.",
+    "mission": "לתקן באגים קטנים בקוד אמיתי בלי פחד: מרכאות, סוגריים ו־id",
+    "outcome": "תוצר עובד שמחזק את המעבר ההדרגתי: syntax · id · quotes.",
+    "starter": {
+      "html": "<main class=\"code-lab\">\n  <h1>חדר בריחה של באגים</h1>\n  <p class=\"intro\">לתקן באגים קטנים בקוד אמיתי בלי פחד: מרכאות, סוגריים ו־id</p>\n  <button onclick=\"runProject()\">הריצו בדיקה</button>\n  <p id=\"output\">כאן תופיע התוצאה...</p>\n</main>",
+      "css": "body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #eff6ff, #fff7ed);\n}\n\n.code-lab {\n  background: white;\n  width: min(520px, 92vw);\n  margin: 42px auto;\n  padding: 30px;\n  border-radius: 28px;\n  box-shadow: 0 18px 42px #bfdbfe;\n}\n\n.intro { color: #475569; line-height: 1.6; }\n\nbutton {\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 22px;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n#output {\n  margin-top: 18px;\n  background: #f8fafc;\n  border-radius: 18px;\n  padding: 16px;\n  font-weight: bold;\n}",
+      "js": "function runProject() {\n  document.getElementById(\"output\").textContent = \"הבאג תוקן — הדלת נפתחה 🔓\";\n}"
+    },
+    "lessonFlow": [
+      {
+        "minutes": "0–8",
+        "title": "פתיחה: חדר בריחה של באגים",
+        "teacher": "פותחים בתוצאה עובדת ומבקשים מהילדים לתאר מה קרה לפני שמדברים על תחביר.",
+        "students": "מריצים, לוחצים, משנים ערך קטן ורואים תוצאה מיידית."
+      },
+      {
+        "minutes": "8–20",
+        "title": "מפרקים את הקסם",
+        "teacher": "מצביעים על החלקים החשובים בלבד ומחברים בין פעולה במסך לבין שורת קוד אחת.",
+        "students": "מסמנים מה שייך ל־HTML, מה ל־CSS ומה ל־JavaScript."
+      },
+      {
+        "minutes": "20–36",
+        "title": "בנייה מודרכת של התוצר",
+        "teacher": "מדגימים צעד־צעד עם כרטיס/בלוק/שורת קוד אחת בכל פעם.",
+        "students": "מבצעים יחד ומריצים אחרי כל שינוי קטן."
+      },
+      {
+        "minutes": "36–52",
+        "title": "הצצה לקוד האמיתי",
+        "teacher": "נותנים שם מקצועי למושג, אבל לא מקריאים את כל הקוד.",
+        "students": "מוצאים בקוד את המילה או השורה שמפעילה את הרעיון."
+      },
+      {
+        "minutes": "52–68",
+        "title": "תרגול עצמאי הדרגתי",
+        "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
+        "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
+      },
+      {
+        "minutes": "68–80",
+        "title": "דיבאג ידידותי",
+        "teacher": "מדגימים באג נפוץ אחד ומתקנים בקול רם בלי להפחיד.",
+        "students": "בודקים גרשיים, סוגריים, id ושמות פונקציות."
+      },
+      {
+        "minutes": "80–90",
+        "title": "שיתוף ורפלקציה",
+        "teacher": "מסיימים בהצגה קצרה ורפלקציה על מה הילד עשה לבד.",
+        "students": "משתפים קישור או מציגים למסך ומסבירים שורת קוד אחת."
+      }
+    ],
+    "exercises": [
+      {
+        "id": 1,
+        "minutes": "0–8",
+        "title": "תרגול 1 — מריצים קודם",
+        "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
+        "hint": "קודם תוצאה, אחר כך קוד.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "getElementById",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "minutes": "10–18",
+        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
+        "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "getElementById",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "minutes": "20–28",
+        "title": "תרגול 3 — שינוי בטוח",
+        "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
+        "hint": "שמרו על גרשיים וסוגריים.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "getElementById",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "minutes": "30–38",
+        "title": "תרגול 4 — כרטיס קוד",
+        "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
+        "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "getElementById",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "minutes": "40–48",
+        "title": "תרגול 5 — השלמת חור",
+        "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
+        "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "getElementById",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "minutes": "50–58",
+        "title": "תרגול 6 — דיבאג קטן",
+        "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
+        "hint": "בדקו שהשמות זהים בדיוק.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "getElementById",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "minutes": "60–68",
+        "title": "תרגול 7 — שדרוג אישי",
+        "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
+        "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "getElementById",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "minutes": "70–78",
+        "title": "תרגול 8 — הצגה",
+        "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
+        "hint": "השתמשו במילים של השיעור.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "getElementById",
+            "textContent"
+          ]
+        }
+      }
+    ],
+    "aiHelper": [
+      "הציעו רעיונות יצירתיים לתוצר בשיעור 18.",
+      "הסבירו לילד/ה את המושג המרכזי בשפה פשוטה.",
+      "עזרו למצוא באג נפוץ בלי לכתוב את כל הפתרון במקום התלמיד.",
+      "הציעו שדרוג קטן שלא מקפיץ את רמת הקושי."
+    ],
+    "vocabulary": [
+      [
+        "syntax",
+        "חוקי הכתיבה של הקוד"
+      ],
+      [
+        "quotes",
+        "מרכאות"
+      ],
+      [
+        "parentheses",
+        "סוגריים"
+      ],
+      [
+        "error",
+        "שגיאה שמכוונת אותנו"
+      ]
+    ],
+    "mode": "Debug lab",
+    "progressionStage": "בלוקים שמובילים לעריכת קוד"
+  },
+  {
+    "id": 19,
+    "title": "כרטיסי HTML אמיתי",
+    "concept": "drag real HTML cards",
+    "durationMinutes": 90,
+    "story": "שיעור 19 נמצא בשלב כרטיסי קוד אמיתי: הילדים מתחילים מתוצר עובד, ואז מתקדמים עוד צעד מהבלוקים אל קוד אמיתי דרך משימה כיפית ומוגנת.",
+    "mission": "לבנות עמוד מכרטיסי קוד אמיתי: section, h1, p, button",
+    "outcome": "תוצר עובד שמחזק את המעבר ההדרגתי: drag real HTML cards.",
+    "starter": {
+      "html": "<main class=\"code-lab\">\n  <h1>כרטיסי HTML אמיתי</h1>\n  <p class=\"intro\">לבנות עמוד מכרטיסי קוד אמיתי: section, h1, p, button</p>\n  <button onclick=\"runProject()\">הריצו בדיקה</button>\n  <p id=\"output\">כאן תופיע התוצאה...</p>\n</main>",
+      "css": "body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #eff6ff, #fff7ed);\n}\n\n.code-lab {\n  background: white;\n  width: min(520px, 92vw);\n  margin: 42px auto;\n  padding: 30px;\n  border-radius: 28px;\n  box-shadow: 0 18px 42px #bfdbfe;\n}\n\n.intro { color: #475569; line-height: 1.6; }\n\nbutton {\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 22px;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n#output {\n  margin-top: 18px;\n  background: #f8fafc;\n  border-radius: 18px;\n  padding: 16px;\n  font-weight: bold;\n}",
+      "js": "function runProject() {\n  document.getElementById(\"output\").textContent = \"גררתי כרטיס HTML אמיתי\";\n}"
+    },
+    "lessonFlow": [
+      {
+        "minutes": "0–8",
+        "title": "פתיחה: כרטיסי HTML אמיתי",
+        "teacher": "פותחים בתוצאה עובדת ומבקשים מהילדים לתאר מה קרה לפני שמדברים על תחביר.",
+        "students": "מריצים, לוחצים, משנים ערך קטן ורואים תוצאה מיידית."
+      },
+      {
+        "minutes": "8–20",
+        "title": "מפרקים את הקסם",
+        "teacher": "מצביעים על החלקים החשובים בלבד ומחברים בין פעולה במסך לבין שורת קוד אחת.",
+        "students": "מסמנים מה שייך ל־HTML, מה ל־CSS ומה ל־JavaScript."
+      },
+      {
+        "minutes": "20–36",
+        "title": "בנייה מודרכת של התוצר",
+        "teacher": "מדגימים צעד־צעד עם כרטיס/בלוק/שורת קוד אחת בכל פעם.",
+        "students": "מבצעים יחד ומריצים אחרי כל שינוי קטן."
+      },
+      {
+        "minutes": "36–52",
+        "title": "הצצה לקוד האמיתי",
+        "teacher": "נותנים שם מקצועי למושג, אבל לא מקריאים את כל הקוד.",
+        "students": "מוצאים בקוד את המילה או השורה שמפעילה את הרעיון."
+      },
+      {
+        "minutes": "52–68",
+        "title": "תרגול עצמאי הדרגתי",
+        "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
+        "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
+      },
+      {
+        "minutes": "68–80",
+        "title": "דיבאג ידידותי",
+        "teacher": "מדגימים באג נפוץ אחד ומתקנים בקול רם בלי להפחיד.",
+        "students": "בודקים גרשיים, סוגריים, id ושמות פונקציות."
+      },
+      {
+        "minutes": "80–90",
+        "title": "שיתוף ורפלקציה",
+        "teacher": "מסיימים בהצגה קצרה ורפלקציה על מה הילד עשה לבד.",
+        "students": "משתפים קישור או מציגים למסך ומסבירים שורת קוד אחת."
+      }
+    ],
+    "exercises": [
+      {
+        "id": 1,
+        "minutes": "0–8",
+        "title": "תרגול 1 — מריצים קודם",
+        "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
+        "hint": "קודם תוצאה, אחר כך קוד.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "button"
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "minutes": "10–18",
+        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
+        "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "button"
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "minutes": "20–28",
+        "title": "תרגול 3 — שינוי בטוח",
+        "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
+        "hint": "שמרו על גרשיים וסוגריים.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "button"
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "minutes": "30–38",
+        "title": "תרגול 4 — כרטיס קוד",
+        "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
+        "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "button"
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "minutes": "40–48",
+        "title": "תרגול 5 — השלמת חור",
+        "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
+        "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "button"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "minutes": "50–58",
+        "title": "תרגול 6 — דיבאג קטן",
+        "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
+        "hint": "בדקו שהשמות זהים בדיוק.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "button"
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "minutes": "60–68",
+        "title": "תרגול 7 — שדרוג אישי",
+        "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
+        "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "button"
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "minutes": "70–78",
+        "title": "תרגול 8 — הצגה",
+        "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
+        "hint": "השתמשו במילים של השיעור.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "button"
+          ]
+        }
+      }
+    ],
+    "aiHelper": [
+      "הציעו רעיונות יצירתיים לתוצר בשיעור 19.",
+      "הסבירו לילד/ה את המושג המרכזי בשפה פשוטה.",
+      "עזרו למצוא באג נפוץ בלי לכתוב את כל הפתרון במקום התלמיד.",
+      "הציעו שדרוג קטן שלא מקפיץ את רמת הקושי."
+    ],
+    "vocabulary": [
+      [
+        "code card",
+        "כרטיס שמכיל קוד אמיתי"
+      ],
+      [
+        "section",
+        "אזור בעמוד"
+      ],
+      [
+        "button",
+        "כפתור אמיתי"
+      ],
+      [
+        "order",
+        "סדר השורות"
+      ]
+    ],
+    "mode": "Real code cards",
+    "progressionStage": "כרטיסי קוד אמיתי"
+  },
+  {
+    "id": 20,
+    "title": "כרטיסי CSS אמיתי",
+    "concept": "drag real CSS cards",
+    "durationMinutes": 90,
+    "story": "שיעור 20 נמצא בשלב כרטיסי קוד אמיתי: הילדים מתחילים מתוצר עובד, ואז מתקדמים עוד צעד מהבלוקים אל קוד אמיתי דרך משימה כיפית ומוגנת.",
+    "mission": "לעצב עמוד מכרטיסי CSS אמיתיים ולסדר selectors",
+    "outcome": "תוצר עובד שמחזק את המעבר ההדרגתי: drag real CSS cards.",
+    "starter": {
+      "html": "<main class=\"code-lab\">\n  <h1>כרטיסי CSS אמיתי</h1>\n  <p class=\"intro\">לעצב עמוד מכרטיסי CSS אמיתיים ולסדר selectors</p>\n  <button onclick=\"runProject()\">הריצו בדיקה</button>\n  <p id=\"output\">כאן תופיע התוצאה...</p>\n</main>",
+      "css": "body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #eff6ff, #fff7ed);\n}\n\n.code-lab {\n  background: white;\n  width: min(520px, 92vw);\n  margin: 42px auto;\n  padding: 30px;\n  border-radius: 28px;\n  box-shadow: 0 18px 42px #bfdbfe;\n}\n\n.intro { color: #475569; line-height: 1.6; }\n\nbutton {\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 22px;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n#output {\n  margin-top: 18px;\n  background: #f8fafc;\n  border-radius: 18px;\n  padding: 16px;\n  font-weight: bold;\n}",
+      "js": "function runProject() {\n  document.getElementById(\"output\").textContent = \"כרטיס CSS שינה את העיצוב\";\n}"
+    },
+    "lessonFlow": [
+      {
+        "minutes": "0–8",
+        "title": "פתיחה: כרטיסי CSS אמיתי",
+        "teacher": "פותחים בתוצאה עובדת ומבקשים מהילדים לתאר מה קרה לפני שמדברים על תחביר.",
+        "students": "מריצים, לוחצים, משנים ערך קטן ורואים תוצאה מיידית."
+      },
+      {
+        "minutes": "8–20",
+        "title": "מפרקים את הקסם",
+        "teacher": "מצביעים על החלקים החשובים בלבד ומחברים בין פעולה במסך לבין שורת קוד אחת.",
+        "students": "מסמנים מה שייך ל־HTML, מה ל־CSS ומה ל־JavaScript."
+      },
+      {
+        "minutes": "20–36",
+        "title": "בנייה מודרכת של התוצר",
+        "teacher": "מדגימים צעד־צעד עם כרטיס/בלוק/שורת קוד אחת בכל פעם.",
+        "students": "מבצעים יחד ומריצים אחרי כל שינוי קטן."
+      },
+      {
+        "minutes": "36–52",
+        "title": "הצצה לקוד האמיתי",
+        "teacher": "נותנים שם מקצועי למושג, אבל לא מקריאים את כל הקוד.",
+        "students": "מוצאים בקוד את המילה או השורה שמפעילה את הרעיון."
+      },
+      {
+        "minutes": "52–68",
+        "title": "תרגול עצמאי הדרגתי",
+        "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
+        "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
+      },
+      {
+        "minutes": "68–80",
+        "title": "דיבאג ידידותי",
+        "teacher": "מדגימים באג נפוץ אחד ומתקנים בקול רם בלי להפחיד.",
+        "students": "בודקים גרשיים, סוגריים, id ושמות פונקציות."
+      },
+      {
+        "minutes": "80–90",
+        "title": "שיתוף ורפלקציה",
+        "teacher": "מסיימים בהצגה קצרה ורפלקציה על מה הילד עשה לבד.",
+        "students": "משתפים קישור או מציגים למסך ומסבירים שורת קוד אחת."
+      }
+    ],
+    "exercises": [
+      {
+        "id": 1,
+        "minutes": "0–8",
+        "title": "תרגול 1 — מריצים קודם",
+        "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
+        "hint": "קודם תוצאה, אחר כך קוד.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "minutes": "10–18",
+        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
+        "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "minutes": "20–28",
+        "title": "תרגול 3 — שינוי בטוח",
+        "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
+        "hint": "שמרו על גרשיים וסוגריים.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "minutes": "30–38",
+        "title": "תרגול 4 — כרטיס קוד",
+        "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
+        "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "minutes": "40–48",
+        "title": "תרגול 5 — השלמת חור",
+        "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
+        "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "minutes": "50–58",
+        "title": "תרגול 6 — דיבאג קטן",
+        "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
+        "hint": "בדקו שהשמות זהים בדיוק.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "minutes": "60–68",
+        "title": "תרגול 7 — שדרוג אישי",
+        "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
+        "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "minutes": "70–78",
+        "title": "תרגול 8 — הצגה",
+        "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
+        "hint": "השתמשו במילים של השיעור.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "output"
+          ]
+        }
+      }
+    ],
+    "aiHelper": [
+      "הציעו רעיונות יצירתיים לתוצר בשיעור 20.",
+      "הסבירו לילד/ה את המושג המרכזי בשפה פשוטה.",
+      "עזרו למצוא באג נפוץ בלי לכתוב את כל הפתרון במקום התלמיד.",
+      "הציעו שדרוג קטן שלא מקפיץ את רמת הקושי."
+    ],
+    "vocabulary": [
+      [
+        "declaration",
+        "הוראת עיצוב"
+      ],
+      [
+        "block",
+        "קבוצת הוראות CSS"
+      ],
+      [
+        "hover",
+        "מצב מעבר עכבר"
+      ],
+      [
+        "cascade",
+        "סדר השפעה"
+      ]
+    ],
+    "mode": "Real code cards",
+    "progressionStage": "כרטיסי קוד אמיתי"
+  },
+  {
+    "id": 21,
+    "title": "כרטיסי JavaScript אמיתי",
+    "concept": "drag real JS cards",
+    "durationMinutes": 90,
+    "story": "שיעור 21 נמצא בשלב כרטיסי קוד אמיתי: הילדים מתחילים מתוצר עובד, ואז מתקדמים עוד צעד מהבלוקים אל קוד אמיתי דרך משימה כיפית ומוגנת.",
+    "mission": "לסדר שורות JavaScript אמיתיות בתוך function עובד",
+    "outcome": "תוצר עובד שמחזק את המעבר ההדרגתי: drag real JS cards.",
+    "starter": {
+      "html": "<main class=\"code-lab\">\n  <h1>כרטיסי JavaScript אמיתי</h1>\n  <p class=\"intro\">לסדר שורות JavaScript אמיתיות בתוך function עובד</p>\n  <button onclick=\"runProject()\">הריצו בדיקה</button>\n  <p id=\"output\">כאן תופיע התוצאה...</p>\n</main>",
+      "css": "body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #eff6ff, #fff7ed);\n}\n\n.code-lab {\n  background: white;\n  width: min(520px, 92vw);\n  margin: 42px auto;\n  padding: 30px;\n  border-radius: 28px;\n  box-shadow: 0 18px 42px #bfdbfe;\n}\n\n.intro { color: #475569; line-height: 1.6; }\n\nbutton {\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 22px;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n#output {\n  margin-top: 18px;\n  background: #f8fafc;\n  border-radius: 18px;\n  padding: 16px;\n  font-weight: bold;\n}",
+      "js": "function runProject() {\n  let mood = \"שמחים\";\n  document.getElementById(\"output\").textContent = \"מצב: \" + mood;\n}"
+    },
+    "lessonFlow": [
+      {
+        "minutes": "0–8",
+        "title": "פתיחה: כרטיסי JavaScript אמיתי",
+        "teacher": "פותחים בתוצאה עובדת ומבקשים מהילדים לתאר מה קרה לפני שמדברים על תחביר.",
+        "students": "מריצים, לוחצים, משנים ערך קטן ורואים תוצאה מיידית."
+      },
+      {
+        "minutes": "8–20",
+        "title": "מפרקים את הקסם",
+        "teacher": "מצביעים על החלקים החשובים בלבד ומחברים בין פעולה במסך לבין שורת קוד אחת.",
+        "students": "מסמנים מה שייך ל־HTML, מה ל־CSS ומה ל־JavaScript."
+      },
+      {
+        "minutes": "20–36",
+        "title": "בנייה מודרכת של התוצר",
+        "teacher": "מדגימים צעד־צעד עם כרטיס/בלוק/שורת קוד אחת בכל פעם.",
+        "students": "מבצעים יחד ומריצים אחרי כל שינוי קטן."
+      },
+      {
+        "minutes": "36–52",
+        "title": "הצצה לקוד האמיתי",
+        "teacher": "נותנים שם מקצועי למושג, אבל לא מקריאים את כל הקוד.",
+        "students": "מוצאים בקוד את המילה או השורה שמפעילה את הרעיון."
+      },
+      {
+        "minutes": "52–68",
+        "title": "תרגול עצמאי הדרגתי",
+        "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
+        "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
+      },
+      {
+        "minutes": "68–80",
+        "title": "דיבאג ידידותי",
+        "teacher": "מדגימים באג נפוץ אחד ומתקנים בקול רם בלי להפחיד.",
+        "students": "בודקים גרשיים, סוגריים, id ושמות פונקציות."
+      },
+      {
+        "minutes": "80–90",
+        "title": "שיתוף ורפלקציה",
+        "teacher": "מסיימים בהצגה קצרה ורפלקציה על מה הילד עשה לבד.",
+        "students": "משתפים קישור או מציגים למסך ומסבירים שורת קוד אחת."
+      }
+    ],
+    "exercises": [
+      {
+        "id": 1,
+        "minutes": "0–8",
+        "title": "תרגול 1 — מריצים קודם",
+        "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
+        "hint": "קודם תוצאה, אחר כך קוד.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "let mood",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "minutes": "10–18",
+        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
+        "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "let mood",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "minutes": "20–28",
+        "title": "תרגול 3 — שינוי בטוח",
+        "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
+        "hint": "שמרו על גרשיים וסוגריים.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "let mood",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "minutes": "30–38",
+        "title": "תרגול 4 — כרטיס קוד",
+        "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
+        "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "let mood",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "minutes": "40–48",
+        "title": "תרגול 5 — השלמת חור",
+        "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
+        "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "let mood",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "minutes": "50–58",
+        "title": "תרגול 6 — דיבאג קטן",
+        "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
+        "hint": "בדקו שהשמות זהים בדיוק.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "let mood",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "minutes": "60–68",
+        "title": "תרגול 7 — שדרוג אישי",
+        "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
+        "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "let mood",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "minutes": "70–78",
+        "title": "תרגול 8 — הצגה",
+        "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
+        "hint": "השתמשו במילים של השיעור.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "let mood",
+            "textContent"
+          ]
+        }
+      }
+    ],
+    "aiHelper": [
+      "הציעו רעיונות יצירתיים לתוצר בשיעור 21.",
+      "הסבירו לילד/ה את המושג המרכזי בשפה פשוטה.",
+      "עזרו למצוא באג נפוץ בלי לכתוב את כל הפתרון במקום התלמיד.",
+      "הציעו שדרוג קטן שלא מקפיץ את רמת הקושי."
+    ],
+    "vocabulary": [
+      [
+        "statement",
+        "שורת פעולה"
+      ],
+      [
+        "assignment",
+        "השמה לערך"
+      ],
+      [
+        "function",
+        "פקודה עם שם"
+      ],
+      [
+        "sequence",
+        "סדר פעולות"
+      ]
+    ],
+    "mode": "Real code cards",
+    "progressionStage": "כרטיסי קוד אמיתי"
+  },
+  {
+    "id": 22,
+    "title": "מסדרים קוד בסדר נכון",
+    "concept": "sequence · initialization",
+    "durationMinutes": 90,
+    "story": "שיעור 22 נמצא בשלב כרטיסי קוד אמיתי: הילדים מתחילים מתוצר עובד, ואז מתקדמים עוד צעד מהבלוקים אל קוד אמיתי דרך משימה כיפית ומוגנת.",
+    "mission": "להבין שסדר השורות משנה: קודם יוצרים ערך, אחר כך משתמשים בו",
+    "outcome": "תוצר עובד שמחזק את המעבר ההדרגתי: sequence · initialization.",
+    "starter": {
+      "html": "<main class=\"code-lab\">\n  <h1>מסדרים קוד בסדר נכון</h1>\n  <p class=\"intro\">להבין שסדר השורות משנה: קודם יוצרים ערך, אחר כך משתמשים בו</p>\n  <button onclick=\"runProject()\">הריצו בדיקה</button>\n  <p id=\"output\">כאן תופיע התוצאה...</p>\n</main>",
+      "css": "body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #eff6ff, #fff7ed);\n}\n\n.code-lab {\n  background: white;\n  width: min(520px, 92vw);\n  margin: 42px auto;\n  padding: 30px;\n  border-radius: 28px;\n  box-shadow: 0 18px 42px #bfdbfe;\n}\n\n.intro { color: #475569; line-height: 1.6; }\n\nbutton {\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 22px;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n#output {\n  margin-top: 18px;\n  background: #f8fafc;\n  border-radius: 18px;\n  padding: 16px;\n  font-weight: bold;\n}",
+      "js": "function runProject() {\n  const first = \"קודם\";\n  const second = \"אחר כך\";\n  document.getElementById(\"output\").textContent = first + \" \" + second;\n}"
+    },
+    "lessonFlow": [
+      {
+        "minutes": "0–8",
+        "title": "פתיחה: מסדרים קוד בסדר נכון",
+        "teacher": "פותחים בתוצאה עובדת ומבקשים מהילדים לתאר מה קרה לפני שמדברים על תחביר.",
+        "students": "מריצים, לוחצים, משנים ערך קטן ורואים תוצאה מיידית."
+      },
+      {
+        "minutes": "8–20",
+        "title": "מפרקים את הקסם",
+        "teacher": "מצביעים על החלקים החשובים בלבד ומחברים בין פעולה במסך לבין שורת קוד אחת.",
+        "students": "מסמנים מה שייך ל־HTML, מה ל־CSS ומה ל־JavaScript."
+      },
+      {
+        "minutes": "20–36",
+        "title": "בנייה מודרכת של התוצר",
+        "teacher": "מדגימים צעד־צעד עם כרטיס/בלוק/שורת קוד אחת בכל פעם.",
+        "students": "מבצעים יחד ומריצים אחרי כל שינוי קטן."
+      },
+      {
+        "minutes": "36–52",
+        "title": "הצצה לקוד האמיתי",
+        "teacher": "נותנים שם מקצועי למושג, אבל לא מקריאים את כל הקוד.",
+        "students": "מוצאים בקוד את המילה או השורה שמפעילה את הרעיון."
+      },
+      {
+        "minutes": "52–68",
+        "title": "תרגול עצמאי הדרגתי",
+        "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
+        "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
+      },
+      {
+        "minutes": "68–80",
+        "title": "דיבאג ידידותי",
+        "teacher": "מדגימים באג נפוץ אחד ומתקנים בקול רם בלי להפחיד.",
+        "students": "בודקים גרשיים, סוגריים, id ושמות פונקציות."
+      },
+      {
+        "minutes": "80–90",
+        "title": "שיתוף ורפלקציה",
+        "teacher": "מסיימים בהצגה קצרה ורפלקציה על מה הילד עשה לבד.",
+        "students": "משתפים קישור או מציגים למסך ומסבירים שורת קוד אחת."
+      }
+    ],
+    "exercises": [
+      {
+        "id": 1,
+        "minutes": "0–8",
+        "title": "תרגול 1 — מריצים קודם",
+        "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
+        "hint": "קודם תוצאה, אחר כך קוד.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const first",
+            "second"
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "minutes": "10–18",
+        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
+        "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const first",
+            "second"
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "minutes": "20–28",
+        "title": "תרגול 3 — שינוי בטוח",
+        "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
+        "hint": "שמרו על גרשיים וסוגריים.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const first",
+            "second"
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "minutes": "30–38",
+        "title": "תרגול 4 — כרטיס קוד",
+        "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
+        "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const first",
+            "second"
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "minutes": "40–48",
+        "title": "תרגול 5 — השלמת חור",
+        "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
+        "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const first",
+            "second"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "minutes": "50–58",
+        "title": "תרגול 6 — דיבאג קטן",
+        "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
+        "hint": "בדקו שהשמות זהים בדיוק.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const first",
+            "second"
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "minutes": "60–68",
+        "title": "תרגול 7 — שדרוג אישי",
+        "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
+        "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const first",
+            "second"
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "minutes": "70–78",
+        "title": "תרגול 8 — הצגה",
+        "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
+        "hint": "השתמשו במילים של השיעור.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "const first",
+            "second"
+          ]
+        }
+      }
+    ],
+    "aiHelper": [
+      "הציעו רעיונות יצירתיים לתוצר בשיעור 22.",
+      "הסבירו לילד/ה את המושג המרכזי בשפה פשוטה.",
+      "עזרו למצוא באג נפוץ בלי לכתוב את כל הפתרון במקום התלמיד.",
+      "הציעו שדרוג קטן שלא מקפיץ את רמת הקושי."
+    ],
+    "vocabulary": [
+      [
+        "sequence",
+        "רצף פעולות"
+      ],
+      [
+        "before",
+        "לפני"
+      ],
+      [
+        "after",
+        "אחרי"
+      ],
+      [
+        "initialize",
+        "להכין ערך לפני שימוש"
+      ]
+    ],
+    "mode": "Code ordering",
+    "progressionStage": "כרטיסי קוד אמיתי"
+  },
+  {
+    "id": 23,
+    "title": "משלימים חורים בקוד",
+    "concept": "fill blanks in code",
+    "durationMinutes": 90,
+    "story": "שיעור 23 נמצא בשלב כרטיסי קוד אמיתי: הילדים מתחילים מתוצר עובד, ואז מתקדמים עוד צעד מהבלוקים אל קוד אמיתי דרך משימה כיפית ומוגנת.",
+    "mission": "להשלים חורים קטנים בקוד: id, טקסט, מספר ואופרטור",
+    "outcome": "תוצר עובד שמחזק את המעבר ההדרגתי: fill blanks in code.",
+    "starter": {
+      "html": "<main class=\"code-lab\">\n  <h1>משלימים חורים בקוד</h1>\n  <p class=\"intro\">להשלים חורים קטנים בקוד: id, טקסט, מספר ואופרטור</p>\n  <button onclick=\"runProject()\">הריצו בדיקה</button>\n  <p id=\"output\">כאן תופיע התוצאה...</p>\n</main>",
+      "css": "body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #eff6ff, #fff7ed);\n}\n\n.code-lab {\n  background: white;\n  width: min(520px, 92vw);\n  margin: 42px auto;\n  padding: 30px;\n  border-radius: 28px;\n  box-shadow: 0 18px 42px #bfdbfe;\n}\n\n.intro { color: #475569; line-height: 1.6; }\n\nbutton {\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 22px;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n#output {\n  margin-top: 18px;\n  background: #f8fafc;\n  border-radius: 18px;\n  padding: 16px;\n  font-weight: bold;\n}",
+      "js": "function runProject() {\n  const missingWord = \"הושלם\";\n  document.getElementById(\"output\").textContent = \"הקוד \" + missingWord;\n}"
+    },
+    "lessonFlow": [
+      {
+        "minutes": "0–8",
+        "title": "פתיחה: משלימים חורים בקוד",
+        "teacher": "פותחים בתוצאה עובדת ומבקשים מהילדים לתאר מה קרה לפני שמדברים על תחביר.",
+        "students": "מריצים, לוחצים, משנים ערך קטן ורואים תוצאה מיידית."
+      },
+      {
+        "minutes": "8–20",
+        "title": "מפרקים את הקסם",
+        "teacher": "מצביעים על החלקים החשובים בלבד ומחברים בין פעולה במסך לבין שורת קוד אחת.",
+        "students": "מסמנים מה שייך ל־HTML, מה ל־CSS ומה ל־JavaScript."
+      },
+      {
+        "minutes": "20–36",
+        "title": "בנייה מודרכת של התוצר",
+        "teacher": "מדגימים צעד־צעד עם כרטיס/בלוק/שורת קוד אחת בכל פעם.",
+        "students": "מבצעים יחד ומריצים אחרי כל שינוי קטן."
+      },
+      {
+        "minutes": "36–52",
+        "title": "הצצה לקוד האמיתי",
+        "teacher": "נותנים שם מקצועי למושג, אבל לא מקריאים את כל הקוד.",
+        "students": "מוצאים בקוד את המילה או השורה שמפעילה את הרעיון."
+      },
+      {
+        "minutes": "52–68",
+        "title": "תרגול עצמאי הדרגתי",
+        "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
+        "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
+      },
+      {
+        "minutes": "68–80",
+        "title": "דיבאג ידידותי",
+        "teacher": "מדגימים באג נפוץ אחד ומתקנים בקול רם בלי להפחיד.",
+        "students": "בודקים גרשיים, סוגריים, id ושמות פונקציות."
+      },
+      {
+        "minutes": "80–90",
+        "title": "שיתוף ורפלקציה",
+        "teacher": "מסיימים בהצגה קצרה ורפלקציה על מה הילד עשה לבד.",
+        "students": "משתפים קישור או מציגים למסך ומסבירים שורת קוד אחת."
+      }
+    ],
+    "exercises": [
+      {
+        "id": 1,
+        "minutes": "0–8",
+        "title": "תרגול 1 — מריצים קודם",
+        "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
+        "hint": "קודם תוצאה, אחר כך קוד.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "missingWord",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "minutes": "10–18",
+        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
+        "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "missingWord",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "minutes": "20–28",
+        "title": "תרגול 3 — שינוי בטוח",
+        "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
+        "hint": "שמרו על גרשיים וסוגריים.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "missingWord",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "minutes": "30–38",
+        "title": "תרגול 4 — כרטיס קוד",
+        "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
+        "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "missingWord",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "minutes": "40–48",
+        "title": "תרגול 5 — השלמת חור",
+        "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
+        "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "missingWord",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "minutes": "50–58",
+        "title": "תרגול 6 — דיבאג קטן",
+        "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
+        "hint": "בדקו שהשמות זהים בדיוק.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "missingWord",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "minutes": "60–68",
+        "title": "תרגול 7 — שדרוג אישי",
+        "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
+        "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "missingWord",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "minutes": "70–78",
+        "title": "תרגול 8 — הצגה",
+        "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
+        "hint": "השתמשו במילים של השיעור.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "missingWord",
+            "output"
+          ]
+        }
+      }
+    ],
+    "aiHelper": [
+      "הציעו רעיונות יצירתיים לתוצר בשיעור 23.",
+      "הסבירו לילד/ה את המושג המרכזי בשפה פשוטה.",
+      "עזרו למצוא באג נפוץ בלי לכתוב את כל הפתרון במקום התלמיד.",
+      "הציעו שדרוג קטן שלא מקפיץ את רמת הקושי."
+    ],
+    "vocabulary": [
+      [
+        "blank",
+        "חור להשלמה"
+      ],
+      [
+        "operator",
+        "סימן פעולה"
+      ],
+      [
+        "id",
+        "שם אלמנט"
+      ],
+      [
+        "placeholder",
+        "מקום זמני בקוד"
+      ]
+    ],
+    "mode": "Fill in code",
+    "progressionStage": "כרטיסי קוד אמיתי"
+  },
+  {
+    "id": 24,
+    "title": "משנים חוקי משחק בקוד אמיתי",
+    "concept": "if · score · target",
+    "durationMinutes": 90,
+    "story": "שיעור 24 נמצא בשלב כרטיסי קוד אמיתי: הילדים מתחילים מתוצר עובד, ואז מתקדמים עוד צעד מהבלוקים אל קוד אמיתי דרך משימה כיפית ומוגנת.",
+    "mission": "לערוך תנאי, יעד וניקוד בקוד אמיתי כדי לשנות חוקי משחק",
+    "outcome": "תוצר עובד שמחזק את המעבר ההדרגתי: if · score · target.",
+    "starter": {
+      "html": "<main class=\"code-lab\">\n  <h1>משנים חוקי משחק בקוד אמיתי</h1>\n  <p class=\"intro\">לערוך תנאי, יעד וניקוד בקוד אמיתי כדי לשנות חוקי משחק</p>\n  <button onclick=\"runProject()\">הריצו בדיקה</button>\n  <p id=\"output\">כאן תופיע התוצאה...</p>\n</main>",
+      "css": "body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #eff6ff, #fff7ed);\n}\n\n.code-lab {\n  background: white;\n  width: min(520px, 92vw);\n  margin: 42px auto;\n  padding: 30px;\n  border-radius: 28px;\n  box-shadow: 0 18px 42px #bfdbfe;\n}\n\n.intro { color: #475569; line-height: 1.6; }\n\nbutton {\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 22px;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n#output {\n  margin-top: 18px;\n  background: #f8fafc;\n  border-radius: 18px;\n  padding: 16px;\n  font-weight: bold;\n}",
+      "js": "function runProject() {\n  const score = 8;\n  const target = 5;\n  document.getElementById(\"output\").textContent = score >= target ? \"ניצחון\" : \"עוד ניסיון\";\n}"
+    },
+    "lessonFlow": [
+      {
+        "minutes": "0–8",
+        "title": "פתיחה: משנים חוקי משחק בקוד אמיתי",
+        "teacher": "פותחים בתוצאה עובדת ומבקשים מהילדים לתאר מה קרה לפני שמדברים על תחביר.",
+        "students": "מריצים, לוחצים, משנים ערך קטן ורואים תוצאה מיידית."
+      },
+      {
+        "minutes": "8–20",
+        "title": "מפרקים את הקסם",
+        "teacher": "מצביעים על החלקים החשובים בלבד ומחברים בין פעולה במסך לבין שורת קוד אחת.",
+        "students": "מסמנים מה שייך ל־HTML, מה ל־CSS ומה ל־JavaScript."
+      },
+      {
+        "minutes": "20–36",
+        "title": "בנייה מודרכת של התוצר",
+        "teacher": "מדגימים צעד־צעד עם כרטיס/בלוק/שורת קוד אחת בכל פעם.",
+        "students": "מבצעים יחד ומריצים אחרי כל שינוי קטן."
+      },
+      {
+        "minutes": "36–52",
+        "title": "הצצה לקוד האמיתי",
+        "teacher": "נותנים שם מקצועי למושג, אבל לא מקריאים את כל הקוד.",
+        "students": "מוצאים בקוד את המילה או השורה שמפעילה את הרעיון."
+      },
+      {
+        "minutes": "52–68",
+        "title": "תרגול עצמאי הדרגתי",
+        "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
+        "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
+      },
+      {
+        "minutes": "68–80",
+        "title": "דיבאג ידידותי",
+        "teacher": "מדגימים באג נפוץ אחד ומתקנים בקול רם בלי להפחיד.",
+        "students": "בודקים גרשיים, סוגריים, id ושמות פונקציות."
+      },
+      {
+        "minutes": "80–90",
+        "title": "שיתוף ורפלקציה",
+        "teacher": "מסיימים בהצגה קצרה ורפלקציה על מה הילד עשה לבד.",
+        "students": "משתפים קישור או מציגים למסך ומסבירים שורת קוד אחת."
+      }
+    ],
+    "exercises": [
+      {
+        "id": 1,
+        "minutes": "0–8",
+        "title": "תרגול 1 — מריצים קודם",
+        "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
+        "hint": "קודם תוצאה, אחר כך קוד.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "score",
+            "target"
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "minutes": "10–18",
+        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
+        "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "score",
+            "target"
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "minutes": "20–28",
+        "title": "תרגול 3 — שינוי בטוח",
+        "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
+        "hint": "שמרו על גרשיים וסוגריים.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "score",
+            "target"
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "minutes": "30–38",
+        "title": "תרגול 4 — כרטיס קוד",
+        "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
+        "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "score",
+            "target"
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "minutes": "40–48",
+        "title": "תרגול 5 — השלמת חור",
+        "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
+        "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "score",
+            "target"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "minutes": "50–58",
+        "title": "תרגול 6 — דיבאג קטן",
+        "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
+        "hint": "בדקו שהשמות זהים בדיוק.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "score",
+            "target"
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "minutes": "60–68",
+        "title": "תרגול 7 — שדרוג אישי",
+        "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
+        "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "score",
+            "target"
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "minutes": "70–78",
+        "title": "תרגול 8 — הצגה",
+        "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
+        "hint": "השתמשו במילים של השיעור.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "score",
+            "target"
+          ]
+        }
+      }
+    ],
+    "aiHelper": [
+      "הציעו רעיונות יצירתיים לתוצר בשיעור 24.",
+      "הסבירו לילד/ה את המושג המרכזי בשפה פשוטה.",
+      "עזרו למצוא באג נפוץ בלי לכתוב את כל הפתרון במקום התלמיד.",
+      "הציעו שדרוג קטן שלא מקפיץ את רמת הקושי."
+    ],
+    "vocabulary": [
+      [
+        "condition",
+        "תנאי"
+      ],
+      [
+        "score",
+        "ניקוד"
+      ],
+      [
+        "target",
+        "יעד"
+      ],
+      [
+        ">=",
+        "גדול או שווה"
+      ]
+    ],
+    "mode": "Game rule coding",
+    "progressionStage": "כרטיסי קוד אמיתי"
+  },
+  {
+    "id": 25,
+    "title": "כותבים HTML ראשון לבד",
+    "concept": "write HTML",
+    "durationMinutes": 90,
+    "story": "שיעור 25 נמצא בשלב כתיבה מודרכת: הילדים מתחילים מתוצר עובד, ואז מתקדמים עוד צעד מהבלוקים אל קוד אמיתי דרך משימה כיפית ומוגנת.",
+    "mission": "לכתוב שלד HTML קטן לבד בעזרת snippets ורמזים בלבד",
+    "outcome": "תוצר עובד שמחזק את המעבר ההדרגתי: write HTML.",
+    "starter": {
+      "html": "<main class=\"code-lab\">\n  <h1>כותבים HTML ראשון לבד</h1>\n  <p class=\"intro\">לכתוב שלד HTML קטן לבד בעזרת snippets ורמזים בלבד</p>\n  <button onclick=\"runProject()\">הריצו בדיקה</button>\n  <p id=\"output\">כאן תופיע התוצאה...</p>\n</main>",
+      "css": "body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #eff6ff, #fff7ed);\n}\n\n.code-lab {\n  background: white;\n  width: min(520px, 92vw);\n  margin: 42px auto;\n  padding: 30px;\n  border-radius: 28px;\n  box-shadow: 0 18px 42px #bfdbfe;\n}\n\n.intro { color: #475569; line-height: 1.6; }\n\nbutton {\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 22px;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n#output {\n  margin-top: 18px;\n  background: #f8fafc;\n  border-radius: 18px;\n  padding: 16px;\n  font-weight: bold;\n}",
+      "js": "function runProject() {\n  document.getElementById(\"output\").textContent = \"כתבתי HTML ראשון לבד\";\n}"
+    },
+    "lessonFlow": [
+      {
+        "minutes": "0–8",
+        "title": "פתיחה: כותבים HTML ראשון לבד",
+        "teacher": "פותחים בתוצאה עובדת ומבקשים מהילדים לתאר מה קרה לפני שמדברים על תחביר.",
+        "students": "מריצים, לוחצים, משנים ערך קטן ורואים תוצאה מיידית."
+      },
+      {
+        "minutes": "8–20",
+        "title": "מפרקים את הקסם",
+        "teacher": "מצביעים על החלקים החשובים בלבד ומחברים בין פעולה במסך לבין שורת קוד אחת.",
+        "students": "מסמנים מה שייך ל־HTML, מה ל־CSS ומה ל־JavaScript."
+      },
+      {
+        "minutes": "20–36",
+        "title": "בנייה מודרכת של התוצר",
+        "teacher": "מדגימים צעד־צעד עם כרטיס/בלוק/שורת קוד אחת בכל פעם.",
+        "students": "מבצעים יחד ומריצים אחרי כל שינוי קטן."
+      },
+      {
+        "minutes": "36–52",
+        "title": "הצצה לקוד האמיתי",
+        "teacher": "נותנים שם מקצועי למושג, אבל לא מקריאים את כל הקוד.",
+        "students": "מוצאים בקוד את המילה או השורה שמפעילה את הרעיון."
+      },
+      {
+        "minutes": "52–68",
+        "title": "תרגול עצמאי הדרגתי",
+        "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
+        "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
+      },
+      {
+        "minutes": "68–80",
+        "title": "דיבאג ידידותי",
+        "teacher": "מדגימים באג נפוץ אחד ומתקנים בקול רם בלי להפחיד.",
+        "students": "בודקים גרשיים, סוגריים, id ושמות פונקציות."
+      },
+      {
+        "minutes": "80–90",
+        "title": "שיתוף ורפלקציה",
+        "teacher": "מסיימים בהצגה קצרה ורפלקציה על מה הילד עשה לבד.",
+        "students": "משתפים קישור או מציגים למסך ומסבירים שורת קוד אחת."
+      }
+    ],
+    "exercises": [
+      {
+        "id": 1,
+        "minutes": "0–8",
+        "title": "תרגול 1 — מריצים קודם",
+        "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
+        "hint": "קודם תוצאה, אחר כך קוד.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "minutes": "10–18",
+        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
+        "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "minutes": "20–28",
+        "title": "תרגול 3 — שינוי בטוח",
+        "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
+        "hint": "שמרו על גרשיים וסוגריים.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "minutes": "30–38",
+        "title": "תרגול 4 — כרטיס קוד",
+        "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
+        "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "minutes": "40–48",
+        "title": "תרגול 5 — השלמת חור",
+        "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
+        "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "minutes": "50–58",
+        "title": "תרגול 6 — דיבאג קטן",
+        "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
+        "hint": "בדקו שהשמות זהים בדיוק.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "minutes": "60–68",
+        "title": "תרגול 7 — שדרוג אישי",
+        "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
+        "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "minutes": "70–78",
+        "title": "תרגול 8 — הצגה",
+        "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
+        "hint": "השתמשו במילים של השיעור.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "HTML",
+            "output"
+          ]
+        }
+      }
+    ],
+    "aiHelper": [
+      "הציעו רעיונות יצירתיים לתוצר בשיעור 25.",
+      "הסבירו לילד/ה את המושג המרכזי בשפה פשוטה.",
+      "עזרו למצוא באג נפוץ בלי לכתוב את כל הפתרון במקום התלמיד.",
+      "הציעו שדרוג קטן שלא מקפיץ את רמת הקושי."
+    ],
+    "vocabulary": [
+      [
+        "doctype",
+        "הצהרת HTML"
+      ],
+      [
+        "main",
+        "אזור מרכזי"
+      ],
+      [
+        "heading",
+        "כותרת"
+      ],
+      [
+        "paragraph",
+        "פסקה"
+      ]
+    ],
+    "mode": "Guided coding",
+    "progressionStage": "כתיבה מודרכת"
+  },
+  {
+    "id": 26,
+    "title": "כותבים CSS ראשון לבד",
+    "concept": "write CSS",
+    "durationMinutes": 90,
+    "story": "שיעור 26 נמצא בשלב כתיבה מודרכת: הילדים מתחילים מתוצר עובד, ואז מתקדמים עוד צעד מהבלוקים אל קוד אמיתי דרך משימה כיפית ומוגנת.",
+    "mission": "לעצב עמוד קיים בכתיבת CSS אמיתית: צבעים, ריווח, גבול ו־hover",
+    "outcome": "תוצר עובד שמחזק את המעבר ההדרגתי: write CSS.",
+    "starter": {
+      "html": "<main class=\"code-lab\">\n  <h1>כותבים CSS ראשון לבד</h1>\n  <p class=\"intro\">לעצב עמוד קיים בכתיבת CSS אמיתית: צבעים, ריווח, גבול ו־hover</p>\n  <button onclick=\"runProject()\">הריצו בדיקה</button>\n  <p id=\"output\">כאן תופיע התוצאה...</p>\n</main>",
+      "css": "body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #eff6ff, #fff7ed);\n}\n\n.code-lab {\n  background: white;\n  width: min(520px, 92vw);\n  margin: 42px auto;\n  padding: 30px;\n  border-radius: 28px;\n  box-shadow: 0 18px 42px #bfdbfe;\n}\n\n.intro { color: #475569; line-height: 1.6; }\n\nbutton {\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 22px;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n#output {\n  margin-top: 18px;\n  background: #f8fafc;\n  border-radius: 18px;\n  padding: 16px;\n  font-weight: bold;\n}",
+      "js": "function runProject() {\n  document.getElementById(\"output\").textContent = \"ה־CSS שלי עובד\";\n}"
+    },
+    "lessonFlow": [
+      {
+        "minutes": "0–8",
+        "title": "פתיחה: כותבים CSS ראשון לבד",
+        "teacher": "פותחים בתוצאה עובדת ומבקשים מהילדים לתאר מה קרה לפני שמדברים על תחביר.",
+        "students": "מריצים, לוחצים, משנים ערך קטן ורואים תוצאה מיידית."
+      },
+      {
+        "minutes": "8–20",
+        "title": "מפרקים את הקסם",
+        "teacher": "מצביעים על החלקים החשובים בלבד ומחברים בין פעולה במסך לבין שורת קוד אחת.",
+        "students": "מסמנים מה שייך ל־HTML, מה ל־CSS ומה ל־JavaScript."
+      },
+      {
+        "minutes": "20–36",
+        "title": "בנייה מודרכת של התוצר",
+        "teacher": "מדגימים צעד־צעד עם כרטיס/בלוק/שורת קוד אחת בכל פעם.",
+        "students": "מבצעים יחד ומריצים אחרי כל שינוי קטן."
+      },
+      {
+        "minutes": "36–52",
+        "title": "הצצה לקוד האמיתי",
+        "teacher": "נותנים שם מקצועי למושג, אבל לא מקריאים את כל הקוד.",
+        "students": "מוצאים בקוד את המילה או השורה שמפעילה את הרעיון."
+      },
+      {
+        "minutes": "52–68",
+        "title": "תרגול עצמאי הדרגתי",
+        "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
+        "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
+      },
+      {
+        "minutes": "68–80",
+        "title": "דיבאג ידידותי",
+        "teacher": "מדגימים באג נפוץ אחד ומתקנים בקול רם בלי להפחיד.",
+        "students": "בודקים גרשיים, סוגריים, id ושמות פונקציות."
+      },
+      {
+        "minutes": "80–90",
+        "title": "שיתוף ורפלקציה",
+        "teacher": "מסיימים בהצגה קצרה ורפלקציה על מה הילד עשה לבד.",
+        "students": "משתפים קישור או מציגים למסך ומסבירים שורת קוד אחת."
+      }
+    ],
+    "exercises": [
+      {
+        "id": 1,
+        "minutes": "0–8",
+        "title": "תרגול 1 — מריצים קודם",
+        "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
+        "hint": "קודם תוצאה, אחר כך קוד.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "minutes": "10–18",
+        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
+        "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "minutes": "20–28",
+        "title": "תרגול 3 — שינוי בטוח",
+        "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
+        "hint": "שמרו על גרשיים וסוגריים.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "minutes": "30–38",
+        "title": "תרגול 4 — כרטיס קוד",
+        "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
+        "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "minutes": "40–48",
+        "title": "תרגול 5 — השלמת חור",
+        "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
+        "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "minutes": "50–58",
+        "title": "תרגול 6 — דיבאג קטן",
+        "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
+        "hint": "בדקו שהשמות זהים בדיוק.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "minutes": "60–68",
+        "title": "תרגול 7 — שדרוג אישי",
+        "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
+        "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "minutes": "70–78",
+        "title": "תרגול 8 — הצגה",
+        "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
+        "hint": "השתמשו במילים של השיעור.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "CSS",
+            "output"
+          ]
+        }
+      }
+    ],
+    "aiHelper": [
+      "הציעו רעיונות יצירתיים לתוצר בשיעור 26.",
+      "הסבירו לילד/ה את המושג המרכזי בשפה פשוטה.",
+      "עזרו למצוא באג נפוץ בלי לכתוב את כל הפתרון במקום התלמיד.",
+      "הציעו שדרוג קטן שלא מקפיץ את רמת הקושי."
+    ],
+    "vocabulary": [
+      [
+        "rule",
+        "חוק CSS"
+      ],
+      [
+        "margin",
+        "רווח חיצוני"
+      ],
+      [
+        "padding",
+        "רווח פנימי"
+      ],
+      [
+        "border",
+        "מסגרת"
+      ]
+    ],
+    "mode": "Guided coding",
+    "progressionStage": "כתיבה מודרכת"
+  },
+  {
+    "id": 27,
+    "title": "כותבים function ראשון לבד",
+    "concept": "write function",
+    "durationMinutes": 90,
+    "story": "שיעור 27 נמצא בשלב כתיבה מודרכת: הילדים מתחילים מתוצר עובד, ואז מתקדמים עוד צעד מהבלוקים אל קוד אמיתי דרך משימה כיפית ומוגנת.",
+    "mission": "לכתוב פונקציה פשוטה שמופעלת מכפתור ומשנה את המסך",
+    "outcome": "תוצר עובד שמחזק את המעבר ההדרגתי: write function.",
+    "starter": {
+      "html": "<main class=\"code-lab\">\n  <h1>כותבים function ראשון לבד</h1>\n  <p class=\"intro\">לכתוב פונקציה פשוטה שמופעלת מכפתור ומשנה את המסך</p>\n  <button onclick=\"runProject()\">הריצו בדיקה</button>\n  <p id=\"output\">כאן תופיע התוצאה...</p>\n</main>",
+      "css": "body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #eff6ff, #fff7ed);\n}\n\n.code-lab {\n  background: white;\n  width: min(520px, 92vw);\n  margin: 42px auto;\n  padding: 30px;\n  border-radius: 28px;\n  box-shadow: 0 18px 42px #bfdbfe;\n}\n\n.intro { color: #475569; line-height: 1.6; }\n\nbutton {\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 22px;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n#output {\n  margin-top: 18px;\n  background: #f8fafc;\n  border-radius: 18px;\n  padding: 16px;\n  font-weight: bold;\n}",
+      "js": "function runProject() {\n  document.getElementById(\"output\").textContent = \"הפונקציה הראשונה שלי רצה\";\n}"
+    },
+    "lessonFlow": [
+      {
+        "minutes": "0–8",
+        "title": "פתיחה: כותבים function ראשון לבד",
+        "teacher": "פותחים בתוצאה עובדת ומבקשים מהילדים לתאר מה קרה לפני שמדברים על תחביר.",
+        "students": "מריצים, לוחצים, משנים ערך קטן ורואים תוצאה מיידית."
+      },
+      {
+        "minutes": "8–20",
+        "title": "מפרקים את הקסם",
+        "teacher": "מצביעים על החלקים החשובים בלבד ומחברים בין פעולה במסך לבין שורת קוד אחת.",
+        "students": "מסמנים מה שייך ל־HTML, מה ל־CSS ומה ל־JavaScript."
+      },
+      {
+        "minutes": "20–36",
+        "title": "בנייה מודרכת של התוצר",
+        "teacher": "מדגימים צעד־צעד עם כרטיס/בלוק/שורת קוד אחת בכל פעם.",
+        "students": "מבצעים יחד ומריצים אחרי כל שינוי קטן."
+      },
+      {
+        "minutes": "36–52",
+        "title": "הצצה לקוד האמיתי",
+        "teacher": "נותנים שם מקצועי למושג, אבל לא מקריאים את כל הקוד.",
+        "students": "מוצאים בקוד את המילה או השורה שמפעילה את הרעיון."
+      },
+      {
+        "minutes": "52–68",
+        "title": "תרגול עצמאי הדרגתי",
+        "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
+        "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
+      },
+      {
+        "minutes": "68–80",
+        "title": "דיבאג ידידותי",
+        "teacher": "מדגימים באג נפוץ אחד ומתקנים בקול רם בלי להפחיד.",
+        "students": "בודקים גרשיים, סוגריים, id ושמות פונקציות."
+      },
+      {
+        "minutes": "80–90",
+        "title": "שיתוף ורפלקציה",
+        "teacher": "מסיימים בהצגה קצרה ורפלקציה על מה הילד עשה לבד.",
+        "students": "משתפים קישור או מציגים למסך ומסבירים שורת קוד אחת."
+      }
+    ],
+    "exercises": [
+      {
+        "id": 1,
+        "minutes": "0–8",
+        "title": "תרגול 1 — מריצים קודם",
+        "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
+        "hint": "קודם תוצאה, אחר כך קוד.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "function runProject",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "minutes": "10–18",
+        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
+        "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "function runProject",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "minutes": "20–28",
+        "title": "תרגול 3 — שינוי בטוח",
+        "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
+        "hint": "שמרו על גרשיים וסוגריים.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "function runProject",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "minutes": "30–38",
+        "title": "תרגול 4 — כרטיס קוד",
+        "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
+        "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "function runProject",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "minutes": "40–48",
+        "title": "תרגול 5 — השלמת חור",
+        "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
+        "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "function runProject",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "minutes": "50–58",
+        "title": "תרגול 6 — דיבאג קטן",
+        "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
+        "hint": "בדקו שהשמות זהים בדיוק.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "function runProject",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "minutes": "60–68",
+        "title": "תרגול 7 — שדרוג אישי",
+        "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
+        "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "function runProject",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "minutes": "70–78",
+        "title": "תרגול 8 — הצגה",
+        "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
+        "hint": "השתמשו במילים של השיעור.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "function runProject",
+            "textContent"
+          ]
+        }
+      }
+    ],
+    "aiHelper": [
+      "הציעו רעיונות יצירתיים לתוצר בשיעור 27.",
+      "הסבירו לילד/ה את המושג המרכזי בשפה פשוטה.",
+      "עזרו למצוא באג נפוץ בלי לכתוב את כל הפתרון במקום התלמיד.",
+      "הציעו שדרוג קטן שלא מקפיץ את רמת הקושי."
+    ],
+    "vocabulary": [
+      [
+        "function name",
+        "שם הפונקציה"
+      ],
+      [
+        "call",
+        "קריאה לפונקציה"
+      ],
+      [
+        "body",
+        "גוף הפונקציה"
+      ],
+      [
+        "return",
+        "החזרת ערך"
+      ]
+    ],
+    "mode": "Guided coding",
+    "progressionStage": "כתיבה מודרכת"
+  },
+  {
+    "id": 28,
+    "title": "בונים חידון בקוד",
+    "concept": "input · if/else",
+    "durationMinutes": 90,
+    "story": "שיעור 28 נמצא בשלב כתיבה מודרכת: הילדים מתחילים מתוצר עובד, ואז מתקדמים עוד צעד מהבלוקים אל קוד אמיתי דרך משימה כיפית ומוגנת.",
+    "mission": "לכתוב חידון קטן עם input, תנאי ומשוב בלי Blockly",
+    "outcome": "תוצר עובד שמחזק את המעבר ההדרגתי: input · if/else.",
+    "starter": {
+      "html": "<main class=\"code-lab\">\n  <h1>בונים חידון בקוד</h1>\n  <p class=\"intro\">לכתוב חידון קטן עם input, תנאי ומשוב בלי Blockly</p>\n  <button onclick=\"runProject()\">הריצו בדיקה</button>\n  <p id=\"output\">כאן תופיע התוצאה...</p>\n</main>",
+      "css": "body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #eff6ff, #fff7ed);\n}\n\n.code-lab {\n  background: white;\n  width: min(520px, 92vw);\n  margin: 42px auto;\n  padding: 30px;\n  border-radius: 28px;\n  box-shadow: 0 18px 42px #bfdbfe;\n}\n\n.intro { color: #475569; line-height: 1.6; }\n\nbutton {\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 22px;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n#output {\n  margin-top: 18px;\n  background: #f8fafc;\n  border-radius: 18px;\n  padding: 16px;\n  font-weight: bold;\n}",
+      "js": "function runProject() {\n  const answer = \"CSS\";\n  if (answer === \"CSS\") {\n    document.getElementById(\"output\").textContent = \"נכון!\";\n  } else {\n    document.getElementById(\"output\").textContent = \"נסו שוב\";\n  }\n}"
+    },
+    "lessonFlow": [
+      {
+        "minutes": "0–8",
+        "title": "פתיחה: בונים חידון בקוד",
+        "teacher": "פותחים בתוצאה עובדת ומבקשים מהילדים לתאר מה קרה לפני שמדברים על תחביר.",
+        "students": "מריצים, לוחצים, משנים ערך קטן ורואים תוצאה מיידית."
+      },
+      {
+        "minutes": "8–20",
+        "title": "מפרקים את הקסם",
+        "teacher": "מצביעים על החלקים החשובים בלבד ומחברים בין פעולה במסך לבין שורת קוד אחת.",
+        "students": "מסמנים מה שייך ל־HTML, מה ל־CSS ומה ל־JavaScript."
+      },
+      {
+        "minutes": "20–36",
+        "title": "בנייה מודרכת של התוצר",
+        "teacher": "מדגימים צעד־צעד עם כרטיס/בלוק/שורת קוד אחת בכל פעם.",
+        "students": "מבצעים יחד ומריצים אחרי כל שינוי קטן."
+      },
+      {
+        "minutes": "36–52",
+        "title": "הצצה לקוד האמיתי",
+        "teacher": "נותנים שם מקצועי למושג, אבל לא מקריאים את כל הקוד.",
+        "students": "מוצאים בקוד את המילה או השורה שמפעילה את הרעיון."
+      },
+      {
+        "minutes": "52–68",
+        "title": "תרגול עצמאי הדרגתי",
+        "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
+        "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
+      },
+      {
+        "minutes": "68–80",
+        "title": "דיבאג ידידותי",
+        "teacher": "מדגימים באג נפוץ אחד ומתקנים בקול רם בלי להפחיד.",
+        "students": "בודקים גרשיים, סוגריים, id ושמות פונקציות."
+      },
+      {
+        "minutes": "80–90",
+        "title": "שיתוף ורפלקציה",
+        "teacher": "מסיימים בהצגה קצרה ורפלקציה על מה הילד עשה לבד.",
+        "students": "משתפים קישור או מציגים למסך ומסבירים שורת קוד אחת."
+      }
+    ],
+    "exercises": [
+      {
+        "id": 1,
+        "minutes": "0–8",
+        "title": "תרגול 1 — מריצים קודם",
+        "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
+        "hint": "קודם תוצאה, אחר כך קוד.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "if",
+            "else"
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "minutes": "10–18",
+        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
+        "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "if",
+            "else"
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "minutes": "20–28",
+        "title": "תרגול 3 — שינוי בטוח",
+        "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
+        "hint": "שמרו על גרשיים וסוגריים.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "if",
+            "else"
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "minutes": "30–38",
+        "title": "תרגול 4 — כרטיס קוד",
+        "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
+        "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "if",
+            "else"
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "minutes": "40–48",
+        "title": "תרגול 5 — השלמת חור",
+        "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
+        "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "if",
+            "else"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "minutes": "50–58",
+        "title": "תרגול 6 — דיבאג קטן",
+        "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
+        "hint": "בדקו שהשמות זהים בדיוק.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "if",
+            "else"
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "minutes": "60–68",
+        "title": "תרגול 7 — שדרוג אישי",
+        "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
+        "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "if",
+            "else"
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "minutes": "70–78",
+        "title": "תרגול 8 — הצגה",
+        "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
+        "hint": "השתמשו במילים של השיעור.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "if",
+            "else"
+          ]
+        }
+      }
+    ],
+    "aiHelper": [
+      "הציעו רעיונות יצירתיים לתוצר בשיעור 28.",
+      "הסבירו לילד/ה את המושג המרכזי בשפה פשוטה.",
+      "עזרו למצוא באג נפוץ בלי לכתוב את כל הפתרון במקום התלמיד.",
+      "הציעו שדרוג קטן שלא מקפיץ את רמת הקושי."
+    ],
+    "vocabulary": [
+      [
+        "input",
+        "קלט מהמשתמש"
+      ],
+      [
+        "comparison",
+        "השוואה"
+      ],
+      [
+        "if/else",
+        "אם/אחרת"
+      ],
+      [
+        "feedback",
+        "משוב"
+      ]
+    ],
+    "mode": "Guided coding",
+    "progressionStage": "כתיבה מודרכת"
+  },
+  {
+    "id": 29,
+    "title": "מתכננים פרויקט אישי",
+    "concept": "spec · screens · actions",
+    "durationMinutes": 90,
+    "story": "שיעור 29 נמצא בשלב כתיבה מודרכת: הילדים מתחילים מתוצר עובד, ואז מתקדמים עוד צעד מהבלוקים אל קוד אמיתי דרך משימה כיפית ומוגנת.",
+    "mission": "לבחור פרויקט, לתכנן מסכים, פעולות ונתונים לפני כתיבה",
+    "outcome": "תוצר עובד שמחזק את המעבר ההדרגתי: spec · screens · actions.",
+    "starter": {
+      "html": "<main class=\"code-lab\">\n  <h1>מתכננים פרויקט אישי</h1>\n  <p class=\"intro\">לבחור פרויקט, לתכנן מסכים, פעולות ונתונים לפני כתיבה</p>\n  <button onclick=\"runProject()\">הריצו בדיקה</button>\n  <p id=\"output\">כאן תופיע התוצאה...</p>\n</main>",
+      "css": "body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #eff6ff, #fff7ed);\n}\n\n.code-lab {\n  background: white;\n  width: min(520px, 92vw);\n  margin: 42px auto;\n  padding: 30px;\n  border-radius: 28px;\n  box-shadow: 0 18px 42px #bfdbfe;\n}\n\n.intro { color: #475569; line-height: 1.6; }\n\nbutton {\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 22px;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n#output {\n  margin-top: 18px;\n  background: #f8fafc;\n  border-radius: 18px;\n  padding: 16px;\n  font-weight: bold;\n}",
+      "js": "function runProject() {\n  const projectName = \"הפרויקט שלי\";\n  document.getElementById(\"output\").textContent = \"מתכננים: \" + projectName;\n}"
+    },
+    "lessonFlow": [
+      {
+        "minutes": "0–8",
+        "title": "פתיחה: מתכננים פרויקט אישי",
+        "teacher": "פותחים בתוצאה עובדת ומבקשים מהילדים לתאר מה קרה לפני שמדברים על תחביר.",
+        "students": "מריצים, לוחצים, משנים ערך קטן ורואים תוצאה מיידית."
+      },
+      {
+        "minutes": "8–20",
+        "title": "מפרקים את הקסם",
+        "teacher": "מצביעים על החלקים החשובים בלבד ומחברים בין פעולה במסך לבין שורת קוד אחת.",
+        "students": "מסמנים מה שייך ל־HTML, מה ל־CSS ומה ל־JavaScript."
+      },
+      {
+        "minutes": "20–36",
+        "title": "בנייה מודרכת של התוצר",
+        "teacher": "מדגימים צעד־צעד עם כרטיס/בלוק/שורת קוד אחת בכל פעם.",
+        "students": "מבצעים יחד ומריצים אחרי כל שינוי קטן."
+      },
+      {
+        "minutes": "36–52",
+        "title": "הצצה לקוד האמיתי",
+        "teacher": "נותנים שם מקצועי למושג, אבל לא מקריאים את כל הקוד.",
+        "students": "מוצאים בקוד את המילה או השורה שמפעילה את הרעיון."
+      },
+      {
+        "minutes": "52–68",
+        "title": "תרגול עצמאי הדרגתי",
+        "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
+        "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
+      },
+      {
+        "minutes": "68–80",
+        "title": "דיבאג ידידותי",
+        "teacher": "מדגימים באג נפוץ אחד ומתקנים בקול רם בלי להפחיד.",
+        "students": "בודקים גרשיים, סוגריים, id ושמות פונקציות."
+      },
+      {
+        "minutes": "80–90",
+        "title": "שיתוף ורפלקציה",
+        "teacher": "מסיימים בהצגה קצרה ורפלקציה על מה הילד עשה לבד.",
+        "students": "משתפים קישור או מציגים למסך ומסבירים שורת קוד אחת."
+      }
+    ],
+    "exercises": [
+      {
+        "id": 1,
+        "minutes": "0–8",
+        "title": "תרגול 1 — מריצים קודם",
+        "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
+        "hint": "קודם תוצאה, אחר כך קוד.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "projectName",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "minutes": "10–18",
+        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
+        "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "projectName",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "minutes": "20–28",
+        "title": "תרגול 3 — שינוי בטוח",
+        "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
+        "hint": "שמרו על גרשיים וסוגריים.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "projectName",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "minutes": "30–38",
+        "title": "תרגול 4 — כרטיס קוד",
+        "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
+        "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "projectName",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "minutes": "40–48",
+        "title": "תרגול 5 — השלמת חור",
+        "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
+        "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "projectName",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "minutes": "50–58",
+        "title": "תרגול 6 — דיבאג קטן",
+        "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
+        "hint": "בדקו שהשמות זהים בדיוק.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "projectName",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "minutes": "60–68",
+        "title": "תרגול 7 — שדרוג אישי",
+        "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
+        "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "projectName",
+            "output"
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "minutes": "70–78",
+        "title": "תרגול 8 — הצגה",
+        "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
+        "hint": "השתמשו במילים של השיעור.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "projectName",
+            "output"
+          ]
+        }
+      }
+    ],
+    "aiHelper": [
+      "הציעו רעיונות יצירתיים לתוצר בשיעור 29.",
+      "הסבירו לילד/ה את המושג המרכזי בשפה פשוטה.",
+      "עזרו למצוא באג נפוץ בלי לכתוב את כל הפתרון במקום התלמיד.",
+      "הציעו שדרוג קטן שלא מקפיץ את רמת הקושי."
+    ],
+    "vocabulary": [
+      [
+        "spec",
+        "אפיון קצר"
+      ],
+      [
+        "screen",
+        "מסך"
+      ],
+      [
+        "action",
+        "פעולה"
+      ],
+      [
+        "data",
+        "מידע שהפרויקט שומר"
+      ]
+    ],
+    "mode": "Project planning",
+    "progressionStage": "כתיבה מודרכת"
+  },
+  {
+    "id": 30,
+    "title": "פרויקט סיום — Web App קטן",
+    "concept": "HTML + CSS + JS",
+    "durationMinutes": 90,
+    "story": "שיעור 30 נמצא בשלב כתיבה מודרכת: הילדים מתחילים מתוצר עובד, ואז מתקדמים עוד צעד מהבלוקים אל קוד אמיתי דרך משימה כיפית ומוגנת.",
+    "mission": "לבנות פרויקט סיום אישי: משחק, חידון, מחולל או עמוד אינטראקטיבי",
+    "outcome": "תוצר עובד שמחזק את המעבר ההדרגתי: HTML + CSS + JS.",
+    "starter": {
+      "html": "<main class=\"code-lab\">\n  <h1>פרויקט סיום — Web App קטן</h1>\n  <p class=\"intro\">לבנות פרויקט סיום אישי: משחק, חידון, מחולל או עמוד אינטראקטיבי</p>\n  <button onclick=\"runProject()\">הריצו בדיקה</button>\n  <p id=\"output\">כאן תופיע התוצאה...</p>\n</main>",
+      "css": "body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #eff6ff, #fff7ed);\n}\n\n.code-lab {\n  background: white;\n  width: min(520px, 92vw);\n  margin: 42px auto;\n  padding: 30px;\n  border-radius: 28px;\n  box-shadow: 0 18px 42px #bfdbfe;\n}\n\n.intro { color: #475569; line-height: 1.6; }\n\nbutton {\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 22px;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n#output {\n  margin-top: 18px;\n  background: #f8fafc;\n  border-radius: 18px;\n  padding: 16px;\n  font-weight: bold;\n}",
+      "js": "function runProject() {\n  document.getElementById(\"output\").textContent = \"פרויקט הסיום שלי עובד 🎉\";\n}"
+    },
+    "lessonFlow": [
+      {
+        "minutes": "0–8",
+        "title": "פתיחה: פרויקט סיום — Web App קטן",
+        "teacher": "פותחים בתוצאה עובדת ומבקשים מהילדים לתאר מה קרה לפני שמדברים על תחביר.",
+        "students": "מריצים, לוחצים, משנים ערך קטן ורואים תוצאה מיידית."
+      },
+      {
+        "minutes": "8–20",
+        "title": "מפרקים את הקסם",
+        "teacher": "מצביעים על החלקים החשובים בלבד ומחברים בין פעולה במסך לבין שורת קוד אחת.",
+        "students": "מסמנים מה שייך ל־HTML, מה ל־CSS ומה ל־JavaScript."
+      },
+      {
+        "minutes": "20–36",
+        "title": "בנייה מודרכת של התוצר",
+        "teacher": "מדגימים צעד־צעד עם כרטיס/בלוק/שורת קוד אחת בכל פעם.",
+        "students": "מבצעים יחד ומריצים אחרי כל שינוי קטן."
+      },
+      {
+        "minutes": "36–52",
+        "title": "הצצה לקוד האמיתי",
+        "teacher": "נותנים שם מקצועי למושג, אבל לא מקריאים את כל הקוד.",
+        "students": "מוצאים בקוד את המילה או השורה שמפעילה את הרעיון."
+      },
+      {
+        "minutes": "52–68",
+        "title": "תרגול עצמאי הדרגתי",
+        "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
+        "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
+      },
+      {
+        "minutes": "68–80",
+        "title": "דיבאג ידידותי",
+        "teacher": "מדגימים באג נפוץ אחד ומתקנים בקול רם בלי להפחיד.",
+        "students": "בודקים גרשיים, סוגריים, id ושמות פונקציות."
+      },
+      {
+        "minutes": "80–90",
+        "title": "שיתוף ורפלקציה",
+        "teacher": "מסיימים בהצגה קצרה ורפלקציה על מה הילד עשה לבד.",
+        "students": "משתפים קישור או מציגים למסך ומסבירים שורת קוד אחת."
+      }
+    ],
+    "exercises": [
+      {
+        "id": 1,
+        "minutes": "0–8",
+        "title": "תרגול 1 — מריצים קודם",
+        "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
+        "hint": "קודם תוצאה, אחר כך קוד.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "output",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "minutes": "10–18",
+        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
+        "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "output",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "minutes": "20–28",
+        "title": "תרגול 3 — שינוי בטוח",
+        "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
+        "hint": "שמרו על גרשיים וסוגריים.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "output",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "minutes": "30–38",
+        "title": "תרגול 4 — כרטיס קוד",
+        "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
+        "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "output",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "minutes": "40–48",
+        "title": "תרגול 5 — השלמת חור",
+        "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
+        "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "output",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "minutes": "50–58",
+        "title": "תרגול 6 — דיבאג קטן",
+        "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
+        "hint": "בדקו שהשמות זהים בדיוק.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "output",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "minutes": "60–68",
+        "title": "תרגול 7 — שדרוג אישי",
+        "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
+        "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "output",
+            "textContent"
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "minutes": "70–78",
+        "title": "תרגול 8 — הצגה",
+        "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
+        "hint": "השתמשו במילים של השיעור.",
+        "check": {
+          "htmlIncludes": [
+            "<main"
+          ],
+          "cssIncludes": [
+            "background"
+          ],
+          "jsIncludes": [
+            "output",
+            "textContent"
+          ]
+        }
+      }
+    ],
+    "aiHelper": [
+      "הציעו רעיונות יצירתיים לתוצר בשיעור 30.",
+      "הסבירו לילד/ה את המושג המרכזי בשפה פשוטה.",
+      "עזרו למצוא באג נפוץ בלי לכתוב את כל הפתרון במקום התלמיד.",
+      "הציעו שדרוג קטן שלא מקפיץ את רמת הקושי."
+    ],
+    "vocabulary": [
+      [
+        "project",
+        "פרויקט שלם"
+      ],
+      [
+        "iteration",
+        "שיפור הדרגתי"
+      ],
+      [
+        "publish",
+        "שיתוף תוצר"
+      ],
+      [
+        "reflection",
+        "מה למדתי ומה כתבתי לבד"
+      ]
+    ],
+    "mode": "Final project",
+    "progressionStage": "כתיבה מודרכת"
+  }
+];
+  webCodeAdvancedLessons.forEach(advancedLesson => lessons.push(advancedLesson));
+
+  const advancedBridgeBlocksByLesson = {};
+  webCodeAdvancedLessons.forEach(lesson => {
+    if (lesson.id >= 13 && lesson.id <= 18) {
+      advancedBridgeBlocksByLesson[lesson.id] = [
+        { label: '✏️ עריכת טקסט בטוחה', target: 'js', find: 'כאן תופיע התוצאה...', replace: 'כאן תופיע תוצאה משודרגת...', hint: 'משנים רק טקסט בתוך מרכאות, לא את הסימנים.' },
+        { label: '🔎 מצא output', target: 'js', find: 'document.getElementById("output")', replace: 'document.getElementById("output")', hint: 'כרטיס זיהוי: זו השורה שמוצאת את אזור התוצאה.' },
+        { label: '🎨 צבע רקע קטן', target: 'css', find: 'background: linear-gradient(135deg, #eff6ff, #fff7ed);', replace: 'background: linear-gradient(135deg, #fdf2f8, #ecfeff);', hint: 'עריכת CSS בטוחה: מחליפים רק ערכי צבע.' }
+      ];
+    }
+    if (lesson.id >= 19 && lesson.id <= 24) {
+      advancedBridgeBlocksByLesson[lesson.id] = [
+        { label: '🧩 כרטיס HTML אמיתי: כותרת', target: 'html', find: `<h1>${lesson.title}</h1>`, replace: `<h1>${lesson.title}</h1>`, hint: 'זה כבר קוד HTML אמיתי בתוך כרטיס גרירה/הפעלה.' },
+        { label: '🧩 כרטיס CSS אמיתי: עיצוב כפתור', target: 'css', find: 'border-radius: 999px;', replace: 'border-radius: 16px;', hint: 'כרטיס CSS אמיתי שמשנה ערך בקוד.' },
+        { label: '🧩 כרטיס JS אמיתי: שורת תוצאה', target: 'js', find: 'document.getElementById("output").textContent', replace: 'document.getElementById("output").textContent', hint: 'שורת JavaScript אמיתית שמעדכנת את המסך.' },
+        { label: '🧩 כרטיס סדר קוד', target: 'js', find: 'function runProject() {', replace: 'function runProject() {', hint: 'כרטיס שמדגיש שסדר השורות בתוך function חשוב.' }
+      ];
+    }
+  });
+  lessons.forEach(lesson => {
+    if (advancedBridgeBlocksByLesson[lesson.id]) lesson.bridgeBlocks = advancedBridgeBlocksByLesson[lesson.id];
+  });
+
   window.WEBCODE_LESSONS = lessons;
   window.getWebCodeLesson = function (id) {
     const numeric = Number(id) || 1;
