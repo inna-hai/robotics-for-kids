@@ -33,6 +33,8 @@ assert.doesNotMatch(html, /turtle\.heading \+ 180/);
 assert.match(html, /startEmptyLesson/);
 assert.match(html, /initialLessonFromUrl/);
 assert.match(html, /searchParams\.set\('lesson'/);
+assert.doesNotMatch(html, /href="codequest\.html"/, 'new turtle course must not link students back to old CodeQuest course');
+assert.match(html, /כל השיעורים/);
 assert.match(html, /פייתון מצייר/);
 assert.doesNotMatch(html, /MVP חדש לכיתה/);
 assert.doesNotMatch(html, /setLesson\(1\); loadDemo\(\);/, 'opening a lesson must not auto-load the solution');
