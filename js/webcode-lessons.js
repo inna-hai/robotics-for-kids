@@ -413,6 +413,52 @@
         ['מכשול', 'משהו במשחק שמוריד חיים או מקשה'],
         ['איזון קושי', 'להחליט כמה חיים או מכשולים מתאימים']
       ]
+    },
+    {
+      id: 10,
+      title: 'כוח מיוחד לדמות — בלוקי יכולת',
+      concept: 'בלוקי יכולת → JavaScript: power · cooldown · מצב זמני',
+      durationMinutes: 90,
+      story: 'אחרי שלמדנו ניקוד, זמן, חיים ופסילה — מוסיפים לדמות כוח מיוחד: מגן, בוסט ניקוד או מצב מהיר. בונים קודם בבלוקי יכולת ורק אחר כך מציצים לקוד.',
+      mission: 'לבנות משחק קטן שבו לדמות יש כוח מיוחד שאפשר להפעיל בלחיצה, עם משוב ברור ומגבלה פשוטה.',
+      outcome: 'משחק עם כוח מיוחד שנבנה מבלוקים, עם הצצה ל־powerReady, classList ומשוב זמני',
+      starter: {
+        html: '<main class="power-game">\n  <h1>כוח מיוחד לדמות</h1>\n  <p>ניקוד: <span id="scoreText">0</span> | כוח: <span id="powerText">מוכן</span></p>\n  <button onclick="collectPoint()">⭐ נקודה</button>\n  <button onclick="activatePower()">🛡️ הפעל כוח</button>\n  <button onclick="resetGame()">איפוס</button>\n  <p id="message">אספו נקודות ושמרו את הכוח לרגע חשוב.</p>\n</main>',
+        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #eef2ff, #fdf2f8);\n}\n\n.power-game {\n  background: white;\n  width: 430px;\n  margin: 45px auto;\n  padding: 30px;\n  border-radius: 30px;\n  box-shadow: 0 16px 35px #ddd6fe;\n}\n\n#scoreText, #powerText {\n  display: inline-block;\n  background: #ede9fe;\n  border-radius: 999px;\n  padding: 6px 12px;\n  font-weight: bold;\n}\n\nbutton {\n  margin: 8px;\n  padding: 14px 18px;\n  border: 0;\n  border-radius: 999px;\n  background: #7c3aed;\n  color: white;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n.power-on {\n  background: #dcfce7;\n  border: 3px solid #22c55e;\n}',
+        js: 'let score = 0;\nlet powerReady = true;\n\nfunction collectPoint() {\n  score = score + 1;\n  document.getElementById("scoreText").textContent = score;\n}\n\nfunction activatePower() {\n  if (powerReady) {\n    powerReady = false;\n    score = score + 3;\n    document.getElementById("scoreText").textContent = score;\n    document.getElementById("powerText").textContent = "הופעל";\n    document.getElementById("message").textContent = "כוח מיוחד! קיבלת בוסט של 3 נקודות 🛡️";\n    document.querySelector(".power-game").classList.add("power-on");\n  } else {\n    document.getElementById("message").textContent = "הכוח כבר הופעל. אפשר להשתמש בו פעם אחת.";\n  }\n}\n\nfunction resetGame() {\n  score = 0;\n  powerReady = true;\n  document.getElementById("scoreText").textContent = score;\n  document.getElementById("powerText").textContent = "מוכן";\n  document.getElementById("message").textContent = "אספו נקודות ושמרו את הכוח לרגע חשוב.";\n  document.querySelector(".power-game").classList.remove("power-on");\n}'
+      },
+      lessonFlow: [
+        { minutes: '0–8', title: 'פתיחה: כוח מיוחד במשחקים', teacher: 'שואלים אילו כוחות מיוחדים ילדים מכירים ממשחקים ומה הופך אותם למעניינים.', students: 'מציעים מגן, מהירות, בונוס נקודות או כוח חד־פעמי.' },
+        { minutes: '8–18', title: 'בלוק יכולת ראשון', teacher: 'מפעילים בלוק “כוח מוכן” ומראים את powerReady כמצב כן/לא.', students: 'רואים שיש כוח שאפשר להפעיל פעם אחת.' },
+        { minutes: '18–34', title: 'בנייה מודרכת בבלוקי יכולת', teacher: 'מפעילים בלוקים: בוסט נקודות, הודעת כוח, צבע כוח, שימוש חד־פעמי.', students: 'מריצים, מפעילים כוח, ובודקים שאי אפשר להפעיל שוב.' },
+        { minutes: '34–50', title: 'מציצים לקוד מצב', teacher: 'לא כותבים מצב חופשי. רק מזהים powerReady, if, true/false ו־classList.', students: 'מחברים בין בלוק כוח לבין שינוי ניקוד/עיצוב.' },
+        { minutes: '50–66', title: 'תרגול עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לשנות סוג כוח ומשוב דרך בלוקים.', students: 'מבצעים תרגולים 1–5.' },
+        { minutes: '66–78', title: 'איזון כוח', teacher: 'מדברים על כוח חזק מדי: למה כדאי להגביל שימוש.', students: 'משווים בוסט 3 מול בוסט 5 ומחליטים מה הוגן.' },
+        { minutes: '78–90', title: 'הצגת כוח', teacher: 'זוגות משחקים ומסבירים את כלל הכוח.', students: 'מסבירים: “הכוח עובד רק אם powerReady נכון”.' }
+      ],
+      exercises: [
+        { id: 1, minutes: '18–24', title: 'תרגול 1 — בלוק כוח מוכן', prompt: 'מצאו את בלוק הכוח ובדקו שהכוח מתחיל במצב מוכן.', hint: 'המצב נשמר ב־powerReady.', check: { jsIncludes: ['let powerReady = true'], htmlIncludes: ['id="powerText"'] } },
+        { id: 2, minutes: '24–31', title: 'תרגול 2 — בלוק הפעל כוח', prompt: 'לחצו על הפעל כוח ובדקו שהניקוד עולה.', hint: 'הכוח מוסיף נקודות בתוך activatePower.', check: { jsIncludes: ['function activatePower', 'score = score + 3'] } },
+        { id: 3, minutes: '31–39', title: 'תרגול 3 — בלוק חד־פעמי', prompt: 'נסו להפעיל כוח פעמיים ובדקו שהפעם השנייה לא מוסיפה ניקוד.', hint: 'if (powerReady) קובע אם מותר להפעיל.', check: { jsIncludes: ['if (powerReady)', 'powerReady = false'] } },
+        { id: 4, minutes: '39–47', title: 'תרגול 4 — בלוק בוסט 5', prompt: 'הפעילו בלוק שמחליף את הבוסט ל־5 נקודות.', hint: 'זה חזק יותר — בדקו אם זה מאוזן.', check: { jsIncludes: ['score = score + 5'] } },
+        { id: 5, minutes: '47–56', title: 'תרגול 5 — בלוק הודעת כוח', prompt: 'הפעילו בלוק שמשנה את הודעת הכוח המיוחד.', hint: 'ההודעה נמצאת בתוך activatePower.', check: { jsIncludes: ['כוח על הופעל'] } },
+        { id: 6, minutes: '56–65', title: 'תרגול 6 — בלוק צבע כוח', prompt: 'הפעילו בלוק שמשנה את צבע מצב הכוח.', hint: 'הבלוק משנה את .power-on ב־CSS.', check: { cssIncludes: ['#bbf7d0'] } },
+        { id: 7, minutes: '65–75', title: 'תרגול 7 — דיבאג powerText', prompt: 'אם מצב הכוח לא מוצג, בדקו התאמה של id="powerText".', hint: 'ה־id חייב להיות זהה ב־HTML וב־JS.', check: { htmlIncludes: ['id="powerText"'], jsIncludes: ['getElementById("powerText")'] } },
+        { id: 8, minutes: '75–84', title: 'תרגול 8 — איזון כוח', prompt: 'תנו לחבר לשחק והחליטו אם כוח של 3 או 5 נקודות הוגן יותר.', hint: 'כוח טוב עוזר, אבל לא מנצח את המשחק לבד.', check: { jsIncludes: ['powerReady', 'resetGame'], htmlIncludes: ['button'] } }
+      ],
+      aiHelper: [
+        'הציעו 5 כוחות מיוחדים פשוטים למשחק ילדים.',
+        'הסבירו לילד מה זה מצב true/false בעזרת כוח מוכן או לא מוכן.',
+        'עזרו למצוא למה הכוח מופעל יותר מפעם אחת.',
+        'הציעו איך לאזן כוח מיוחד כדי שלא יהיה חזק מדי.'
+      ],
+      vocabulary: [
+        ['powerReady', 'האם הכוח מוכן להפעלה'],
+        ['true / false', 'כן או לא בקוד'],
+        ['יכולת מיוחדת', 'פעולה חזקה שהשחקן יכול להפעיל'],
+        ['חד־פעמי', 'משהו שאפשר להשתמש בו פעם אחת'],
+        ['איזון כוח', 'לוודא שהכוח עוזר אבל לא קל מדי']
+      ]
     }
   ];
 
@@ -482,6 +528,16 @@
     ],
 
 
+    10: [
+      { label: '🟢 כוח מוכן', target: 'js', find: 'let powerReady = true;', replace: 'let powerReady = true;', hint: 'בלוק מצב: הכוח מתחיל מוכן.' },
+      { label: '🛡️ הפעל כוח', target: 'js', find: 'score = score + 3;', replace: 'score = score + 3;', hint: 'בלוק יכולת: הכוח מוסיף בוסט ניקוד.' },
+      { label: '🔒 שימוש חד־פעמי', target: 'js', find: 'powerReady = false;', replace: 'powerReady = false;', hint: 'בלוק מגבלה: אחרי שימוש הכוח כבר לא מוכן.' },
+      { label: '🚀 בוסט 5', target: 'js', find: 'score = score + 3;', replace: 'score = score + 5;', hint: 'בלוק איזון: כוח חזק יותר.' },
+      { label: '💬 הודעת כוח', target: 'js', find: 'כוח מיוחד! קיבלת בוסט של 3 נקודות 🛡️', replace: 'כוח על הופעל! קיבלת בונוס גדול ⚡', hint: 'בלוק משוב: משנה הודעה לשחקן.' },
+      { label: '🟩 צבע כוח', target: 'css', find: 'background: #dcfce7;', replace: 'background: #bbf7d0;', hint: 'בלוק עיצוב: משנה את צבע מצב הכוח.' }
+    ],
+
+
     4: [
       { label: '📝 שדה שם', target: 'html', find: 'placeholder="כתבו שם"', replace: 'placeholder="מה השם שלך?"', hint: 'בלוק קלט: משנה הוראה בתוך input.' },
       { label: '🎯 שדה תחביב', target: 'html', find: 'placeholder="כתבו תחביב"', replace: 'placeholder="מה התחביב שלך?"', hint: 'בלוק קלט שני: עוד מידע מהמשתמש.' },
@@ -492,7 +548,7 @@
 
   lessons.forEach(lesson => {
     lesson.bridgeBlocks = bridgeBlocksByLesson[lesson.id] || [];
-    if (lesson.id <= 9) lesson.mode = 'Blockly-first bridge';
+    if (lesson.id <= 10) lesson.mode = 'Blockly-first bridge';
   });
 
   window.WEBCODE_LESSONS = lessons;
