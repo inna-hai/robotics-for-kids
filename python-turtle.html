@@ -7114,6 +7114,46 @@
             ]
       }
 ];
+    const blockJson = [
+      {type:'py_forward',message0:'זוז קדימה %1 צעדים',args0:[{type:'field_number',name:'STEPS',value:100,min:1,max:500}],previousStatement:null,nextStatement:null,colour:145,tooltip:'מקביל ל־forward בפייתון turtle'},
+      {type:'py_right',message0:'פנה ימינה %1 מעלות',args0:[{type:'field_number',name:'ANGLE',value:90,min:0,max:360}],previousStatement:null,nextStatement:null,colour:145},
+      {type:'py_left',message0:'פנה שמאלה %1 מעלות',args0:[{type:'field_number',name:'ANGLE',value:90,min:0,max:360}],previousStatement:null,nextStatement:null,colour:145},
+      {type:'py_color',message0:'בחר צבע עט %1',args0:[{type:'field_colour',name:'COLOR',colour:'#2563eb'}],previousStatement:null,nextStatement:null,colour:28},
+      {type:'py_width',message0:'עובי עט %1',args0:[{type:'field_number',name:'WIDTH',value:4,min:1,max:30}],previousStatement:null,nextStatement:null,colour:28},
+      {type:'py_penup',message0:'הרם עט',previousStatement:null,nextStatement:null,colour:28},
+      {type:'py_pendown',message0:'הורד עט',previousStatement:null,nextStatement:null,colour:28},
+      {type:'py_repeat',message0:'חזור %1 פעמים %2 %3',args0:[{type:'field_number',name:'TIMES',value:4,min:1,max:50},{type:'input_dummy'},{type:'input_statement',name:'DO'}],previousStatement:null,nextStatement:null,colour:270},
+      {type:'py_set_length',message0:'קבע length = %1',args0:[{type:'field_number',name:'VALUE',value:100,min:1,max:500}],previousStatement:null,nextStatement:null,colour:200,tooltip:'משתנה שומר מספר בשם, כדי להשתמש בו שוב בקוד'},
+      {type:'py_forward_length',message0:'זוז קדימה length צעדים',previousStatement:null,nextStatement:null,colour:200,tooltip:'משתמשים בערך ששמור במשתנה length'},
+      {type:'py_grow_length',message0:'הגדל length ב־ %1',args0:[{type:'field_number',name:'ADD',value:20,min:-200,max:200}],previousStatement:null,nextStatement:null,colour:200,tooltip:'משנים את ערך המשתנה תוך כדי הציור'},
+      {type:'py_comment',message0:'הערה בקוד: %1',args0:[{type:'field_input',name:'TEXT',text:'מציירים צורה'}],previousStatement:null,nextStatement:null,colour:210}
+    ];
+
+    function earlyEscape(text){
+      return String(text ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    }
+    function initialLessonId(){
+      const params = new URLSearchParams(location.search);
+      const id = Number(params.get('lesson') || params.get('l') || 1);
+      return TURTLE_LESSONS.some(lesson => lesson.id === id) ? id : 1;
+    }
+    function renderInitialLessonSidebar(){
+      const id = initialLessonId();
+      const l = TURTLE_LESSONS.find(lesson => lesson.id === id) || TURTLE_LESSONS[0];
+      const title = document.getElementById('lessonSideTitle');
+      const intro = document.getElementById('lessonSideIntro');
+      const note = document.getElementById('lessonSideNote');
+      const list = document.getElementById('lessonList');
+      if(title) title.textContent = `${l.id}. ${l.title}`;
+      if(intro) intro.textContent = l.goal;
+      if(list) list.innerHTML = TURTLE_LESSONS.map(lesson => `<a class="lesson ${lesson.id === l.id ? 'active' : ''}" href="python-turtle.html?lesson=${lesson.id}" data-id="${lesson.id}"><b>${lesson.id}. ${earlyEscape(lesson.title)}</b><span>${lesson.id === l.id ? 'נוכחי' : 'פתח'}</span></a>`).join('');
+      if(note) {
+        const tasks = (l.exercises || []).slice(0, 6).map(ex => `<li>${earlyEscape(ex.prompt)}</li>`).join('');
+        note.innerHTML = `<b>בשיעור הזה:</b><br>מושג מרכזי: ${earlyEscape(l.concept)}<br>תוצר: ${earlyEscape(l.product || 'ציור עובד')}<br><br><b>משימות לתלמיד:</b>${tasks ? `<ol class="side-task-list">${tasks}</ol>` : '<br>המשימות יופיעו לאחר בחירת שיעור.'}<small>לא מציגים לילדים את כל הסילבוס בבת אחת — מוצגות כאן רק משימות השיעור הנבחר.</small>`;
+      }
+    }
+    renderInitialLessonSidebar();
+
     Blockly.defineBlocksWithJsonArray(blockJson);
     Blockly.setLocale(Blockly.Msg);
 
