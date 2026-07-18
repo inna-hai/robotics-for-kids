@@ -9,7 +9,7 @@
   <script src="https://unpkg.com/blockly/msg/he.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <style>
-    *{box-sizing:border-box}body{margin:0;font-family:Rubik,Arial,sans-serif;background:linear-gradient(135deg,#e0f2fe,#fdf4ff 48%,#ecfeff);color:#102033;min-height:100vh}.app{display:grid;grid-template-rows:auto 1fr;min-height:100vh}.topbar{display:flex;gap:14px;align-items:center;justify-content:space-between;padding:14px 18px;background:rgba(255,255,255,.88);border-bottom:1px solid rgba(15,23,42,.09);box-shadow:0 8px 24px rgba(15,23,42,.08);position:sticky;top:0;z-index:20}.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.15rem}.brand .bot{font-size:2rem}.nav{display:flex;gap:10px;flex-wrap:wrap}.nav a,.pill{border:0;border-radius:999px;padding:10px 14px;text-decoration:none;font-weight:900;color:#0f172a;background:#fff;box-shadow:0 5px 14px rgba(15,23,42,.08)}.pill.primary{background:linear-gradient(135deg,#22d3ee,#a78bfa);color:#08111f}.layout{display:grid;grid-template-columns:280px minmax(360px,1.05fr) minmax(360px,.95fr);gap:14px;padding:14px;height:calc(100vh - 73px);min-height:700px}.panel{background:rgba(255,255,255,.9);border:1px solid rgba(15,23,42,.1);border-radius:24px;box-shadow:0 16px 40px rgba(15,23,42,.1);overflow:hidden}.lessons{padding:16px;overflow:auto}.lessons h1{font-size:1.45rem;margin:0 0 8px}.lessons p{line-height:1.65;color:#475569;margin:0 0 14px}.lesson{width:100%;text-align:right;border:2px solid #e2e8f0;background:#fff;border-radius:18px;padding:12px;margin:8px 0;cursor:pointer;font-family:inherit}.lesson.active{border-color:#22d3ee;background:#ecfeff}.lesson b{display:block;font-size:1rem}.lesson span{display:block;color:#64748b;font-size:.86rem;margin-top:4px;line-height:1.4}.teacher-note{margin-top:14px;background:#f8fafc;border:1px dashed #94a3b8;border-radius:18px;padding:12px;line-height:1.55;color:#334155;font-size:.92rem}.workspace-wrap{display:grid;grid-template-rows:auto 1fr 230px}.work-head,.canvas-head{padding:12px 16px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;gap:10px}.work-head h2,.canvas-head h2{font-size:1.05rem;margin:0}.hint{font-size:.9rem;color:#64748b;font-weight:700}.blockly-area{min-height:300px;height:100%;direction:ltr}.code-box{border-top:1px solid #e2e8f0;background:#07111f;color:#d7fbe8;display:grid;grid-template-rows:auto 1fr}.code-title{padding:10px 14px;color:#93c5fd;font-weight:900;display:flex;justify-content:space-between;align-items:center}.code-title small{color:#cbd5e1}.code{margin:0;padding:12px 16px;overflow:auto;direction:ltr;text-align:left;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.95rem;line-height:1.55;white-space:pre}.canvas-panel{display:grid;grid-template-rows:auto 1fr auto}.canvas-wrap{position:relative;background:linear-gradient(180deg,#f8fafc,#e0f2fe);display:grid;place-items:center;padding:14px}.canvas-card{position:relative;width:min(100%,620px);aspect-ratio:1.08;background:white;border-radius:22px;border:2px solid #cbd5e1;box-shadow:inset 0 0 0 1px rgba(15,23,42,.04);overflow:hidden}.grid-bg{position:absolute;inset:0;background-image:linear-gradient(#e2e8f0 1px,transparent 1px),linear-gradient(90deg,#e2e8f0 1px,transparent 1px);background-size:32px 32px;opacity:.7}canvas{position:absolute;inset:0;width:100%;height:100%}.turtle{position:absolute;width:42px;height:42px;display:grid;place-items:center;font-size:31px;transform-origin:center;filter:drop-shadow(0 6px 8px rgba(15,23,42,.24));transition:.12s linear}.actions{padding:14px;display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid #e2e8f0}.btn{border:0;border-radius:999px;padding:12px 17px;font-weight:900;font-family:inherit;cursor:pointer;background:#0f172a;color:white}.btn.run{background:linear-gradient(135deg,#16a34a,#22c55e);color:white}.btn.reset{background:#f1f5f9;color:#0f172a}.mission{padding:13px 16px;background:#fff7ed;border-top:1px solid #fed7aa;line-height:1.65;color:#7c2d12}.mission b{color:#9a3412}.ok{color:#15803d;font-weight:900}.roadmap{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.chip{background:#eef2ff;color:#3730a3;border-radius:999px;padding:6px 9px;font-size:.78rem;font-weight:900}@media(max-width:1050px){.layout{grid-template-columns:1fr;height:auto}.panel{min-height:420px}.workspace-wrap{min-height:720px}.canvas-panel{min-height:620px}}@media(max-width:600px){.topbar{align-items:flex-start;flex-direction:column}.layout{padding:8px}.nav a,.pill{width:100%;text-align:center}.canvas-card{aspect-ratio:.95}.code{font-size:.85rem}}
+    *{box-sizing:border-box}body{margin:0;font-family:Rubik,Arial,sans-serif;background:linear-gradient(135deg,#e0f2fe,#fdf4ff 48%,#ecfeff);color:#102033;min-height:100vh}.app{display:grid;grid-template-rows:auto 1fr;min-height:100vh}.topbar{display:flex;gap:14px;align-items:center;justify-content:space-between;padding:14px 18px;background:rgba(255,255,255,.88);border-bottom:1px solid rgba(15,23,42,.09);box-shadow:0 8px 24px rgba(15,23,42,.08);position:sticky;top:0;z-index:20}.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.15rem}.brand .bot{font-size:2rem}.nav{display:flex;gap:10px;flex-wrap:wrap}.nav a,.pill{border:0;border-radius:999px;padding:10px 14px;text-decoration:none;font-weight:900;color:#0f172a;background:#fff;box-shadow:0 5px 14px rgba(15,23,42,.08)}.pill.primary{background:linear-gradient(135deg,#22d3ee,#a78bfa);color:#08111f}.layout{display:grid;grid-template-columns:280px minmax(360px,1.05fr) minmax(360px,.95fr);gap:14px;padding:14px;height:calc(100vh - 73px);min-height:700px}.panel{background:rgba(255,255,255,.9);border:1px solid rgba(15,23,42,.1);border-radius:24px;box-shadow:0 16px 40px rgba(15,23,42,.1);overflow:hidden}.lessons{padding:16px;overflow:auto}.lessons h1{font-size:1.45rem;margin:0 0 8px}.lessons p{line-height:1.65;color:#475569;margin:0 0 14px}.lesson{width:100%;text-align:right;border:2px solid #e2e8f0;background:#fff;border-radius:18px;padding:12px;margin:8px 0;cursor:pointer;font-family:inherit}.lesson.active{border-color:#22d3ee;background:#ecfeff}.lesson b{display:block;font-size:1rem}.lesson span{display:block;color:#64748b;font-size:.86rem;margin-top:4px;line-height:1.4}.teacher-note{margin-top:14px;background:#f8fafc;border:1px dashed #94a3b8;border-radius:18px;padding:12px;line-height:1.55;color:#334155;font-size:.92rem}.workspace-wrap{display:grid;grid-template-rows:auto 1fr 230px}.work-head,.canvas-head{padding:12px 16px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;gap:10px}.work-head h2,.canvas-head h2{font-size:1.05rem;margin:0}.hint{font-size:.9rem;color:#64748b;font-weight:700}.blockly-area{min-height:300px;height:100%;direction:ltr}.code-box{border-top:1px solid #e2e8f0;background:#07111f;color:#d7fbe8;display:grid;grid-template-rows:auto 1fr}.code-title{padding:10px 14px;color:#93c5fd;font-weight:900;display:flex;justify-content:space-between;align-items:center}.code-title small{color:#cbd5e1}.code{margin:0;padding:12px 16px;overflow:auto;direction:ltr;text-align:left;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.95rem;line-height:1.55;white-space:pre}.code-line{display:block;min-height:1.55em;border-radius:8px;padding:0 7px;margin:1px 0;border-right:3px solid transparent}.code-line.active-code-line{background:rgba(34,211,238,.18);border-right-color:#22d3ee;color:#fff7ad;box-shadow:0 0 0 1px rgba(34,211,238,.24) inset}.canvas-panel{display:grid;grid-template-rows:auto 1fr auto}.canvas-wrap{position:relative;background:linear-gradient(180deg,#f8fafc,#e0f2fe);display:grid;place-items:center;padding:14px}.canvas-card{position:relative;width:min(100%,620px);aspect-ratio:1.08;background:white;border-radius:22px;border:2px solid #cbd5e1;box-shadow:inset 0 0 0 1px rgba(15,23,42,.04);overflow:hidden}.grid-bg{position:absolute;inset:0;background-image:linear-gradient(#e2e8f0 1px,transparent 1px),linear-gradient(90deg,#e2e8f0 1px,transparent 1px);background-size:32px 32px;opacity:.7}canvas{position:absolute;inset:0;width:100%;height:100%}.turtle{position:absolute;width:42px;height:42px;display:grid;place-items:center;font-size:31px;transform-origin:center;filter:drop-shadow(0 6px 8px rgba(15,23,42,.24));transition:.12s linear}.actions{padding:14px;display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid #e2e8f0}.btn{border:0;border-radius:999px;padding:12px 17px;font-weight:900;font-family:inherit;cursor:pointer;background:#0f172a;color:white}.btn.run{background:linear-gradient(135deg,#16a34a,#22c55e);color:white}.btn.reset{background:#f1f5f9;color:#0f172a}.mission{padding:13px 16px;background:#fff7ed;border-top:1px solid #fed7aa;line-height:1.65;color:#7c2d12}.mission b{color:#9a3412}.ok{color:#15803d;font-weight:900}.roadmap{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.chip{background:#eef2ff;color:#3730a3;border-radius:999px;padding:6px 9px;font-size:.78rem;font-weight:900}@media(max-width:1050px){.layout{grid-template-columns:1fr;height:auto}.panel{min-height:420px}.workspace-wrap{min-height:720px}.canvas-panel{min-height:620px}}@media(max-width:600px){.topbar{align-items:flex-start;flex-direction:column}.layout{padding:8px}.nav a,.pill{width:100%;text-align:center}.canvas-card{aspect-ratio:.95}.code{font-size:.85rem}}
   </style>
 </head>
 <body>
@@ -123,36 +123,60 @@
       const value = Number(raw);
       return Number.isFinite(value) ? value : fallback;
     }
-    function blockToPython(block, indent=''){
-      if(!block) return '';
+    function escapeHtml(text){
+      return String(text).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    }
+    function blockToPythonLines(block, indent=''){
+      if(!block) return [];
+      const id = block.id;
       const t=block.type;
-      if(t==='py_forward') return `${indent}forward(${numericField(block,'STEPS')})\n`;
-      if(t==='py_right') return `${indent}right(${numericField(block,'ANGLE',90)})\n`;
-      if(t==='py_left') return `${indent}left(${numericField(block,'ANGLE',90)})\n`;
-      if(t==='py_color') return `${indent}color("${block.getFieldValue('COLOR')}")\n`;
-      if(t==='py_width') return `${indent}pensize(${Number(block.getFieldValue('WIDTH'))})\n`;
-      if(t==='py_penup') return `${indent}penup()\n`;
-      if(t==='py_pendown') return `${indent}pendown()\n`;
-      if(t==='py_comment') return `${indent}# ${block.getFieldValue('TEXT')}\n`;
+      if(t==='py_forward') return [{text:`${indent}forward(${numericField(block,'STEPS')})`, id}];
+      if(t==='py_right') return [{text:`${indent}right(${numericField(block,'ANGLE',90)})`, id}];
+      if(t==='py_left') return [{text:`${indent}left(${numericField(block,'ANGLE',90)})`, id}];
+      if(t==='py_color') return [{text:`${indent}color("${block.getFieldValue('COLOR')}")`, id}];
+      if(t==='py_width') return [{text:`${indent}pensize(${Number(block.getFieldValue('WIDTH'))})`, id}];
+      if(t==='py_penup') return [{text:`${indent}penup()`, id}];
+      if(t==='py_pendown') return [{text:`${indent}pendown()`, id}];
+      if(t==='py_comment') return [{text:`${indent}# ${block.getFieldValue('TEXT')}`, id}];
       if(t==='py_repeat'){
         const times=Number(block.getFieldValue('TIMES'));
-        const inner=stackToPython(block.getInputTargetBlock('DO'), indent+'    ') || `${indent}    pass\n`;
-        return `${indent}for i in range(${times}):\n${inner}`;
+        const inner=stackToPythonLines(block.getInputTargetBlock('DO'), indent+'    ');
+        return [
+          {text:`${indent}for i in range(${times}):`, id},
+          ...(inner.length ? inner : [{text:`${indent}    pass`, id}])
+        ];
       }
-      return '';
+      return [];
     }
-    function stackToPython(block, indent=''){
-      let code='';
-      while(block){ code += blockToPython(block, indent); block = block.getNextBlock(); }
-      return code;
+    function stackToPythonLines(block, indent=''){
+      const lines=[];
+      while(block){ lines.push(...blockToPythonLines(block, indent)); block = block.getNextBlock(); }
+      return lines;
+    }
+    function renderCode(lines){
+      codeEl.innerHTML = lines.map(line => {
+        const blockAttr = line.id ? ` data-block-id="${escapeHtml(line.id)}"` : '';
+        return `<span class="code-line"${blockAttr}>${escapeHtml(line.text) || ' '}</span>`;
+      }).join('');
+      highlightSelectedCode();
     }
     function generatePython(){
       const top = workspace.getTopBlocks(true).filter(b=>!b.outputConnection);
-      let code = 'from turtle import *\n\n';
-      code += top.map(b=>stackToPython(b)).join('\n').trim() || '# גררו בלוקים לכאן כדי ליצור קוד';
-      code += '\n\ndone()';
-      codeEl.textContent = code;
-      return code;
+      const body = top.flatMap(b=>stackToPythonLines(b));
+      const lines = [{text:'from turtle import *', id:null},{text:'', id:null}];
+      lines.push(...(body.length ? body : [{text:'# גררו בלוקים לכאן כדי ליצור קוד', id:null}]));
+      lines.push({text:'', id:null},{text:'done()', id:null});
+      renderCode(lines);
+      return lines.map(line=>line.text).join('\n');
+    }
+    function highlightSelectedCode(){
+      const selected = Blockly.getSelected ? Blockly.getSelected() : null;
+      const selectedId = selected?.id;
+      codeEl.querySelectorAll('.active-code-line').forEach(el=>el.classList.remove('active-code-line'));
+      if(!selectedId) return;
+      const activeLines = codeEl.querySelectorAll(`[data-block-id="${CSS.escape(selectedId)}"]`);
+      activeLines.forEach(el=>el.classList.add('active-code-line'));
+      activeLines[0]?.scrollIntoView({block:'nearest', behavior:'smooth'});
     }
     function actionsFrom(block, out=[], depth=0){
       if(depth>1000 || !block) return out;
@@ -211,7 +235,7 @@
       currentLesson=id;
       const l=TURTLE_LESSONS.find(x=>x.id===id);
       document.querySelectorAll('.lesson').forEach(el=>el.classList.toggle('active',Number(el.dataset.id)===id));
-      missionEl.innerHTML=`<b>משימה ${l.id}: ${l.title}</b><br>${l.goal}<br><small>מושג: ${l.concept}</small>`;
+      missionEl.innerHTML=`<b>משימה ${l.id}: ${l.title}</b><br>${l.goal}<br><small>מושג: ${l.concept}</small><br><small>טיפ: נסו לבד. כפתור “דוגמה” מציג פתרון רק אם נתקעתם.</small>`;
     }
     function loadDemo(){
       const xmls={
@@ -225,14 +249,24 @@
       Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(xmls[currentLesson] || xmls[1]), workspace);
       generatePython(); resetDrawing(true);
     }
+    function startEmptyLesson(id){
+      setLesson(id);
+      workspace.clear();
+      generatePython();
+      resetDrawing(true);
+      statusEl.textContent='משימה חדשה — בנו פתרון משלכם';
+    }
     document.getElementById('lessonList').innerHTML=TURTLE_LESSONS.map(l=>`<button class="lesson" data-id="${l.id}"><b>${l.id}. ${l.title}</b><span>${l.concept} · ${l.goal}</span></button>`).join('');
-    document.getElementById('lessonList').addEventListener('click',e=>{const b=e.target.closest('.lesson'); if(b){setLesson(Number(b.dataset.id)); loadDemo();}});
+    document.getElementById('lessonList').addEventListener('click',e=>{const b=e.target.closest('.lesson'); if(b){startEmptyLesson(Number(b.dataset.id));}});
     document.getElementById('runBtn').addEventListener('click',run);
     document.getElementById('resetBtn').addEventListener('click',()=>resetDrawing(true));
     document.getElementById('demoBtn').addEventListener('click',loadDemo);
-    workspace.addChangeListener(()=>generatePython());
+    workspace.addChangeListener((event)=>{
+      if(event.type === Blockly.Events.SELECTED){ highlightSelectedCode(); return; }
+      generatePython();
+    });
     window.addEventListener('resize',updateTurtle);
-    setLesson(1); loadDemo();
+    startEmptyLesson(1);
   </script>
   <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
 </body>
