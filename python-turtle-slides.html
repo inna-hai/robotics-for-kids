@@ -1,119 +1,31 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🐢 פייתון מצייר — מצגות מדריך</title>
-  <meta name="description" content="מצגות מדריך לשיעורי פייתון מצייר: Blockly, Python וקנבס turtle לילדים." />
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <style>
-    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Rubik,Arial,sans-serif;background:linear-gradient(135deg,#0f172a,#1e3a8a 45%,#0f766e);color:#f8fafc}.top{position:sticky;top:0;z-index:10;background:rgba(15,23,42,.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.12);padding:12px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-weight:900;font-size:1.15rem}.nav{display:flex;gap:8px;flex-wrap:wrap}.nav a{color:#0f172a;background:#e0f2fe;border-radius:999px;padding:8px 12px;text-decoration:none;font-weight:900}.shell{width:min(1180px,calc(100% - 26px));margin:0 auto;padding:22px 0 50px}.hero{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:28px;padding:26px;box-shadow:0 24px 70px rgba(0,0,0,.22)}h1{font-size:clamp(2rem,5vw,4.5rem);margin:0 0 10px}.hero p{font-size:1.12rem;line-height:1.8;color:#dbeafe;margin:0}.toc{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:18px 0}.toc a{background:#fff;color:#0f172a;border-radius:18px;padding:12px;text-align:center;text-decoration:none;font-weight:900;box-shadow:0 12px 26px rgba(0,0,0,.18)}.lesson{margin-top:28px}.lesson-title{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:12px}.lesson-title h2{margin:0;font-size:2rem}.lesson-title a{color:#a7f3d0;font-weight:900}.slides{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.slide{min-height:280px;background:#f8fafc;color:#0f172a;border-radius:24px;padding:22px;box-shadow:0 18px 42px rgba(0,0,0,.24);border:3px solid transparent}.slide.demo{border-color:#22d3ee}.slide.practice{border-color:#a78bfa}.slide.teacher{border-color:#fbbf24}.slide h3{font-size:1.45rem;margin:0 0 10px}.slide ul,.slide ol{margin:0;padding-right:22px;line-height:1.75}.tag{display:inline-flex;border-radius:999px;background:#dbeafe;color:#1e40af;padding:6px 10px;font-weight:900;font-size:.82rem;margin-bottom:10px}.code{direction:ltr;text-align:left;background:#07111f;color:#d7fbe8;border-radius:16px;padding:14px;font-family:ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;line-height:1.55;margin-top:10px}.note{background:#fff7ed;border:2px dashed #fb923c;color:#7c2d12;border-radius:18px;padding:12px;line-height:1.65;margin-top:10px}.print{margin-top:22px;background:#ecfeff;color:#164e63;border-radius:22px;padding:18px;line-height:1.7;font-weight:800}@media(max-width:900px){.toc,.slides{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}}@media print{body{background:white;color:#111}.top,.toc,.hero p,.lesson-title a{display:none}.shell{width:100%;padding:0}.hero,.slide{box-shadow:none;border:1px solid #ddd;break-inside:avoid}.slides{grid-template-columns:1fr}.lesson{break-before:page}}
-  </style>
-</head>
-<body>
-  <header class="top">
-    <div class="brand">🐢 פייתון מצייר — מצגות מדריך</div>
-    <nav class="nav">
-      <a href="python-turtle.html">ללומדה</a>
-      <a href="python-turtle.html?lesson=1">שיעור 1</a>
-      <a href="python-turtle.html?lesson=2">שיעור 2</a>
-      <a href="#lesson-6">משתנים</a>
-    </nav>
-  </header>
-
-  <main class="shell">
-    <section class="hero">
-      <h1>מצגות מדריך לשיעורי Python Turtle</h1>
-      <p>כל שיעור בנוי להדרכה בכיתה: פתיחה קצרה, הדגמה חיה בלומדה, תרגול עצמאי, בדיקה, טעויות נפוצות ואתגר המשך. המצגות מיועדות למדריך — לא מחליפות את הלומדה של הילדים.</p>
-    </section>
-
-    <nav class="toc" aria-label="מצגות נפרדות">
-      <a href="python-turtle-lesson-1-slides.html">מצגת 1<br><small>פקודות</small></a>
-      <a href="python-turtle-lesson-2-slides.html">מצגת 2<br><small>ריבוע</small></a>
-      <a href="python-turtle-lesson-3-slides.html">מצגת 3<br><small>צבע</small></a>
-      <a href="python-turtle-lesson-4-slides.html">מצגת 4<br><small>עט</small></a>
-      <a href="python-turtle-lesson-5-slides.html">מצגת 5<br><small>כוכב</small></a>
-      <a href="python-turtle-lesson-6-slides.html">מצגת 6<br><small>משתנים</small></a>
-    </nav>
-
-    <section class="print">כל שיעור הוא עכשיו עמוד מצגת נפרד של 90 דקות. האינדקס הישן נשאר כעמוד ריכוז, אבל ההדרכה בפועל צריכה להיפתח מהמצגת הנפרדת של אותו שיעור.</section>
-
-    
-
-    <section class="lesson" id="lesson-1">
-      <div class="lesson-title"><h2>שיעור 1 — פקודות ראשונות</h2><a href="python-turtle.html?lesson=1">פתח בלומדה</a></div>
-      <div class="slides">
-        <article class="slide"><span class="tag">מטרות</span><h3>מה הילדים מבינים בסוף?</h3><ul><li>מחשב מבצע פקודות לפי סדר.</li><li>הצב הוא “רובוט עם עט”.</li><li><b>forward</b> מזיז קדימה, <b>right</b>/<b>left</b> מסובבים.</li><li>קוד Python למטה הוא התרגום של הבלוקים.</li></ul></article>
-        <article class="slide demo"><span class="tag">הדגמה</span><h3>מה להראות בכיתה</h3><ol><li>גררו “זוז קדימה 100”.</li><li>בחרו את הבלוק והראו שהשורה <code>forward(100)</code> מודגשת.</li><li>הוסיפו “פנה ימינה 90”.</li><li>הריצו פעם אחת, ואז שוב — שיראו איפוס והרצה מחדש.</li></ol><div class="code">forward(100)
-right(90)
-forward(80)</div></article>
-        <article class="slide practice"><span class="tag">תרגול</span><h3>משימת ילדים</h3><ul><li>ציירו קו ופנייה.</li><li>שנו את המספר 100 ל־150.</li><li>נסו שמאלה במקום ימינה.</li><li>הסבירו לחבר: איזו שורה בקוד נוצרה מכל בלוק?</li></ul></article>
-        <article class="slide teacher"><span class="tag">מדריך</span><h3>טעויות נפוצות</h3><ul><li>ילדים מצפים ש”ימינה” יזיז ימינה — להסביר שזה רק מסובב.</li><li>שוכחים ללחוץ “הרץ ציור”.</li><li>לא מבינים שהסדר חשוב — החליפו סדר בלוקים כהדגמה.</li></ul><div class="note">שאלה טובה: “מה יקרה אם נסובב לפני שנזוז?”</div></article>
-      </div>
-    </section>
-
-    <section class="lesson" id="lesson-2">
-      <div class="lesson-title"><h2>שיעור 2 — מציירים ריבוע</h2><a href="python-turtle.html?lesson=2">פתח בלומדה</a></div>
-      <div class="slides">
-        <article class="slide"><span class="tag">מטרות</span><h3>לולאה במקום חזרה ידנית</h3><ul><li>ריבוע בנוי מ־4 צדדים.</li><li>כל צד: קדימה ואז סיבוב 90°.</li><li>לולאת <code>for</code> אומרת “חזור כמה פעמים”.</li></ul></article>
-        <article class="slide demo"><span class="tag">הדגמה</span><h3>בונים ריבוע בלי לגלות הכל</h3><ol><li>שאלו: כמה פעמים צריך לחזור?</li><li>גררו “חזור 4 פעמים”.</li><li>הכניסו פנימה קדימה 100 וימינה 90.</li><li>הראו את ההזחה בקוד — מה שבתוך הלולאה נכנס פנימה.</li></ol><div class="code">for i in range(4):
-    forward(100)
-    right(90)</div></article>
-        <article class="slide practice"><span class="tag">תרגול</span><h3>משימות</h3><ul><li>ציירו ריבוע בגודל 100.</li><li>שנו לגודל 60.</li><li>נסו 3 חזרות ו־120 מעלות — מה יצא?</li><li>נסו 6 חזרות ו־60 מעלות.</li></ul></article>
-        <article class="slide teacher"><span class="tag">מדריך</span><h3>בדיקת הבנה</h3><ul><li>מה קורה אם הסיבוב מחוץ ללולאה?</li><li>למה צריך 90 מעלות בריבוע?</li><li>מה ההבדל בין 4 בלוקים ידניים ללולאה?</li></ul><div class="note">לא לפתוח עם המילה “for” לפני שהילדים מבינים “חזור”.</div></article>
-      </div>
-    </section>
-
-    <section class="lesson" id="lesson-3">
-      <div class="lesson-title"><h2>שיעור 3 — צבע ועובי</h2><a href="python-turtle.html?lesson=3">פתח בלומדה</a></div>
-      <div class="slides">
-        <article class="slide"><span class="tag">מטרות</span><h3>פרמטרים משנים התנהגות</h3><ul><li>פקודה יכולה לקבל ערך.</li><li><code>color("red")</code> משנה צבע.</li><li><code>pensize(7)</code> משנה עובי קו.</li><li>עיצוב הוא חלק מהתכנות.</li></ul></article>
-        <article class="slide demo"><span class="tag">הדגמה</span><h3>אותו ציור — עיצוב אחר</h3><ol><li>ציירו ריבוע פשוט.</li><li>הוסיפו צבע לפני הלולאה.</li><li>הוסיפו עובי עט.</li><li>שאלו: למה שמנו את הצבע לפני הציור?</li></ol><div class="code">color("#e11d48")
-pensize(7)
-for i in range(4):
-    forward(100)
-    right(90)</div></article>
-        <article class="slide practice"><span class="tag">תרגול</span><h3>משימות</h3><ul><li>בחרו צבע אישי.</li><li>ציירו צורה עם קו עבה.</li><li>החליפו צבע באמצע — מה משתנה?</li><li>הכינו “לוגו” קטן משלכם.</li></ul></article>
-        <article class="slide teacher"><span class="tag">מדריך</span><h3>טעויות נפוצות</h3><ul><li>שמים צבע אחרי הציור ואז “לא קורה כלום”.</li><li>עובי גדול מדי מסתיר את הצורה.</li><li>לא מבחינים בין מספרים למחרוזת צבע.</li></ul></article>
-      </div>
-    </section>
-
-    <section class="lesson" id="lesson-4">
-      <div class="lesson-title"><h2>שיעור 4 — עט למעלה / למטה</h2><a href="python-turtle.html?lesson=4">פתח בלומדה</a></div>
-      <div class="slides">
-        <article class="slide"><span class="tag">מטרות</span><h3>מצב פנימי של הרובוט</h3><ul><li>לצב יש מצב: עט מצייר או לא מצייר.</li><li><code>penup()</code> מזיז בלי קו.</li><li><code>pendown()</code> מחזיר ציור.</li><li>אפשר לצייר כמה צורות נפרדות.</li></ul></article>
-        <article class="slide demo"><span class="tag">הדגמה</span><h3>שתי צורות בלי קו מחבר</h3><ol><li>ציירו ריבוע קטן.</li><li>הרימו עט.</li><li>זוזו קדימה.</li><li>הורידו עט וציירו משולש.</li></ol><div class="code">penup()
-forward(130)
-pendown()</div></article>
-        <article class="slide practice"><span class="tag">תרגול</span><h3>משימות</h3><ul><li>ציירו שתי צורות נפרדות.</li><li>נסו להזיז את הצב למקום חדש בלי להשאיר קו.</li><li>הוסיפו צבע אחר לצורה השנייה.</li></ul></article>
-        <article class="slide teacher"><span class="tag">מדריך</span><h3>בדיקת הבנה</h3><ul><li>מה יקרה אם נשכח <code>pendown()</code>?</li><li>האם <code>penup()</code> מוחק ציור קודם?</li><li>מה ההבדל בין תנועה לציור?</li></ul></article>
-      </div>
-    </section>
-
-    <section class="lesson" id="lesson-5">
-      <div class="lesson-title"><h2>שיעור 5 — אתגר כוכב</h2><a href="python-turtle.html?lesson=5">פתח בלומדה</a></div>
-      <div class="slides">
-        <article class="slide"><span class="tag">מטרות</span><h3>דפוסים וזוויות מיוחדות</h3><ul><li>לא כל צורה משתמשת ב־90 מעלות.</li><li>כוכב נוצר מחזרה על אותו דפוס.</li><li>טעות בזווית יוצרת ציור מעניין — זה חלק מהחקירה.</li></ul></article>
-        <article class="slide demo"><span class="tag">הדגמה</span><h3>חוק הכוכב</h3><ol><li>שאלו כמה קודקודים יש לכוכב.</li><li>גררו לולאה של 5.</li><li>קדימה 130, ימינה 144.</li><li>שנו ל־120 כדי להראות איך הדפוס נשבר.</li></ol><div class="code">for i in range(5):
-    forward(130)
-    right(144)</div></article>
-        <article class="slide practice"><span class="tag">תרגול</span><h3>משימות</h3><ul><li>ציירו כוכב בצבע אישי.</li><li>שנו את אורך הצלע.</li><li>נסו זוויות אחרות וכתבו מה יצא.</li><li>הוסיפו עובי עט.</li></ul></article>
-        <article class="slide teacher"><span class="tag">מדריך</span><h3>מסר פדגוגי</h3><div class="note">כאן חשוב לעודד ניסוי. לא כל תוצאה “לא נכונה” היא כישלון — לפעמים זו תבנית חדשה.</div><ul><li>לתת לילדים להציג צורה מוזרה שמצאו.</li><li>לחבר בין מתמטיקה לאמנות.</li></ul></article>
-      </div>
-    </section>
-
-    <section class="lesson" id="lesson-6">
-      <div class="lesson-title"><h2>שיעור 6 — משתנה: אורך</h2><a href="python-turtle.html?lesson=6">פתח בלומדה</a></div>
-      <div class="slides">
-        <article class="slide"><span class="tag">מטרות</span><h3>למה צריך משתנה?</h3><ul><li>משתנה הוא שם ששומר ערך.</li><li><code>length = 70</code> שומר מספר בשם length.</li><li>אפשר להשתמש בשם במקום להקליד מספר שוב ושוב.</li><li>שינוי במקום אחד משפיע על כל הציור.</li></ul></article>
-        <article class="slide demo"><span class="tag">הדגמה</span><h3>אותו ריבוע, אורך משתנה</h3><ol><li>קבעו <code>length = 70</code>.</li><li>בתוך לולאה השתמשו ב־<code>forward(length)</code>.</li><li>שנו את length ל־120.</li><li>הראו שכל הריבוע גדל בלי לשנות את פקודת התנועה.</li></ol><div class="code">length = 70
-for i in range(4):
-    forward(length)
-    right(90)</div></article>
-        <article class="slide practice"><span class="tag">תרגול</span><h3>משימות</h3><ul><li>ציירו ריבוע עם length.</li><li>שנו רק את הערך הראשון.</li><li>הוסיפו “הגדל length ב־30”.</li><li>ציירו ריבוע קטן ואז ריבוע גדול.</li></ul></article>
-        <article class="slide teacher"><span class="tag">מדריך</span><h3>טעויות נפוצות</h3><ul><li>ילדים חושבים ש־length הוא פקודה — להסביר שזה שם.</li><li>משתמשים ב־forward רגיל במקום forward(length).</li><li>מגדילים length לפני שקבעו אותו.</li></ul><div class="note">משפט עוגן: “משתנה הוא קופסה עם שם. בתוך הקופסה יש מספר.”</div></article>
-      </div>
-    </section>
-  </main>
-</body>
-</html>
+<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>מצגות מדריך לשיעורי Python Turtle</title><link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet"><style>*{box-sizing:border-box}body{margin:0;font-family:Rubik,Arial,sans-serif;background:#eef2ff;color:#172033;padding:28px}h1{font-size:2.4rem;margin:0 0 10px}p{font-size:1.1rem;line-height:1.7}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:22px}a{display:block;background:white;border-radius:18px;padding:16px;text-decoration:none;color:#0f172a;font-weight:900;box-shadow:0 10px 26px rgba(15,23,42,.1);border:1px solid #dbeafe}small{color:#475569;font-weight:700}.print{margin-top:24px;background:#fff7ed;border-right:7px solid #fb923c;border-radius:18px;padding:16px}@media print{body{background:white}a{box-shadow:none}}</style></head><body><h1>מצגות מדריך לשיעורי Python Turtle</h1><p>אינדקס מדריך למסלול מלא של 30 שיעורים. כל שיעור נפתח כמצגת נפרדת של 90 דקות, עם הרבה תרגולים ותוצר ברור.</p><div class="grid">      <a href="python-turtle-lesson-1-slides.html">מצגת 1<br><small>רובוט מצייר ראשון</small></a>
+      <a href="python-turtle-lesson-2-slides.html">מצגת 2<br><small>מסלולים ופניות</small></a>
+      <a href="python-turtle-lesson-3-slides.html">מצגת 3<br><small>צורות עם לולאות</small></a>
+      <a href="python-turtle-lesson-4-slides.html">מצגת 4<br><small>מעבדת צבעים</small></a>
+      <a href="python-turtle-lesson-5-slides.html">מצגת 5<br><small>עט למעלה / עט למטה</small></a>
+      <a href="python-turtle-lesson-6-slides.html">מצגת 6<br><small>משתנה length</small></a>
+      <a href="python-turtle-lesson-7-slides.html">מצגת 7<br><small>דפוסים חוזרים</small></a>
+      <a href="python-turtle-lesson-8-slides.html">מצגת 8<br><small>ספירלה ראשונה</small></a>
+      <a href="python-turtle-lesson-9-slides.html">מצגת 9<br><small>ציור סימטרי</small></a>
+      <a href="python-turtle-lesson-10-slides.html">מצגת 10<br><small>דיבאג ציורים</small></a>
+      <a href="python-turtle-lesson-11-slides.html">מצגת 11<br><small>מפה קטנה</small></a>
+      <a href="python-turtle-lesson-12-slides.html">מצגת 12<br><small>בית מרובעים ומשולשים</small></a>
+      <a href="python-turtle-lesson-13-slides.html">מצגת 13<br><small>אותיות מקווים</small></a>
+      <a href="python-turtle-lesson-14-slides.html">מצגת 14<br><small>כוכבים וזוויות מיוחדות</small></a>
+      <a href="python-turtle-lesson-15-slides.html">מצגת 15<br><small>פרויקט אמצע: סמל אישי</small></a>
+      <a href="python-turtle-lesson-16-slides.html">מצגת 16<br><small>קואורדינטות בלי לקרוא לזה קשה</small></a>
+      <a href="python-turtle-lesson-17-slides.html">מצגת 17<br><small>קנה מידה</small></a>
+      <a href="python-turtle-lesson-18-slides.html">מצגת 18<br><small>לולאות בתוך רעיון</small></a>
+      <a href="python-turtle-lesson-19-slides.html">מצגת 19<br><small>ציור לפי הוראות חבר</small></a>
+      <a href="python-turtle-lesson-20-slides.html">מצגת 20<br><small>דפוס עיר חכמה</small></a>
+      <a href="python-turtle-lesson-21-slides.html">מצגת 21<br><small>אנימציה מחשבתית</small></a>
+      <a href="python-turtle-lesson-22-slides.html">מצגת 22<br><small>מיני משחק מסלול</small></a>
+      <a href="python-turtle-lesson-23-slides.html">מצגת 23<br><small>ציור עם שכבות</small></a>
+      <a href="python-turtle-lesson-24-slides.html">מצגת 24<br><small>קוד נקי</small></a>
+      <a href="python-turtle-lesson-25-slides.html">מצגת 25<br><small>אתגר חופשי מודרך</small></a>
+      <a href="python-turtle-lesson-26-slides.html">מצגת 26<br><small>פרויקט: רובוט בעיר</small></a>
+      <a href="python-turtle-lesson-27-slides.html">מצגת 27<br><small>פרויקט: פוסטר גיאומטרי</small></a>
+      <a href="python-turtle-lesson-28-slides.html">מצגת 28<br><small>שיפור ובדיקות</small></a>
+      <a href="python-turtle-lesson-29-slides.html">מצגת 29<br><small>חזרה לקראת סיום</small></a>
+      <a href="python-turtle-lesson-30-slides.html">מצגת 30<br><small>אתגר מסכם</small></a>
+</div><section class="print">כל שיעור הוא עמוד מצגת נפרד של 90 דקות. כרגע יש 30 שיעורים מלאים במסלול. האינדקס הישן נשאר כעמוד ריכוז, אבל ההדרכה בפועל צריכה להיפתח מהמצגת הנפרדת של אותו שיעור. <a href="python-turtle.html?lesson=1">פתח בלומדה</a></section></body></html>

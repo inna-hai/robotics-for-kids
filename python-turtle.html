@@ -9,7 +9,7 @@
   <script src="https://unpkg.com/blockly/msg/he.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <style>
-    *{box-sizing:border-box}body{margin:0;font-family:Rubik,Arial,sans-serif;background:linear-gradient(135deg,#e0f2fe,#fdf4ff 48%,#ecfeff);color:#102033;min-height:100vh}.app{display:grid;grid-template-rows:auto 1fr;min-height:100vh}.topbar{display:grid;grid-template-columns:minmax(260px,1fr) auto;gap:14px;align-items:center;padding:12px 18px;background:rgba(255,255,255,.92);border-bottom:1px solid rgba(15,23,42,.09);box-shadow:0 8px 24px rgba(15,23,42,.08);position:sticky;top:0;z-index:20}.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.2rem;min-width:0}.brand .bot{font-size:2rem}.brand-text{display:flex;flex-direction:column;gap:2px}.brand-text small{font-size:.78rem;color:#64748b;font-weight:800}.nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-start}.nav a{border:1px solid #e2e8f0;border-radius:999px;padding:9px 13px;text-decoration:none;font-weight:900;color:#0f172a;background:#fff;box-shadow:0 5px 14px rgba(15,23,42,.07);white-space:nowrap}.nav a.primary{background:linear-gradient(135deg,#22d3ee,#a78bfa);border-color:transparent;color:#08111f}.layout{display:grid;grid-template-columns:280px minmax(360px,1.05fr) minmax(360px,.95fr);gap:14px;padding:14px;height:calc(100vh - 73px);min-height:700px}.panel{background:rgba(255,255,255,.9);border:1px solid rgba(15,23,42,.1);border-radius:24px;box-shadow:0 16px 40px rgba(15,23,42,.1);overflow:hidden}.lessons{padding:16px;overflow:auto}.lessons h1{font-size:1.45rem;margin:0 0 8px}.lessons p{line-height:1.65;color:#475569;margin:0 0 14px}.lesson{width:100%;text-align:right;border:2px solid #e2e8f0;background:#fff;border-radius:16px;padding:11px 12px;margin:7px 0;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between;gap:10px}.lesson.active{border-color:#22d3ee;background:#ecfeff}.lesson b{display:block;font-size:1rem}.lesson span{display:block;color:#64748b;font-size:.82rem;line-height:1.35;white-space:nowrap}.teacher-note{margin-top:14px;background:#f8fafc;border:1px dashed #94a3b8;border-radius:18px;padding:12px;line-height:1.55;color:#334155;font-size:.92rem}.workspace-wrap{display:grid;grid-template-rows:auto 1fr 230px}.work-head,.canvas-head{padding:12px 16px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;gap:10px}.work-head h2,.canvas-head h2{font-size:1.05rem;margin:0}.hint{font-size:.9rem;color:#64748b;font-weight:700}.blockly-area{min-height:300px;height:100%;direction:ltr}.code-box{border-top:1px solid #e2e8f0;background:#07111f;color:#d7fbe8;display:grid;grid-template-rows:auto 1fr}.code-title{padding:10px 14px;color:#93c5fd;font-weight:900;display:flex;justify-content:space-between;align-items:center}.code-title small{color:#cbd5e1}.code{margin:0;padding:12px 16px;overflow:auto;direction:ltr;text-align:left;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.95rem;line-height:1.55;white-space:pre}.code-line{display:block;min-height:1.55em;border-radius:8px;padding:0 7px;margin:1px 0;border-right:3px solid transparent}.code-line.active-code-line{background:rgba(34,211,238,.18);border-right-color:#22d3ee;color:#fff7ad;box-shadow:0 0 0 1px rgba(34,211,238,.24) inset}.canvas-panel{display:grid;grid-template-rows:auto 1fr auto}.canvas-wrap{position:relative;background:linear-gradient(180deg,#f8fafc,#e0f2fe);display:grid;place-items:center;padding:14px}.canvas-card{position:relative;width:min(100%,620px);aspect-ratio:1.08;background:white;border-radius:22px;border:2px solid #cbd5e1;box-shadow:inset 0 0 0 1px rgba(15,23,42,.04);overflow:hidden}.grid-bg{position:absolute;inset:0;background-image:linear-gradient(#e2e8f0 1px,transparent 1px),linear-gradient(90deg,#e2e8f0 1px,transparent 1px);background-size:32px 32px;opacity:.7}canvas{position:absolute;inset:0;width:100%;height:100%}.turtle{position:absolute;width:46px;height:46px;display:grid;place-items:center;transform-origin:center;filter:drop-shadow(0 6px 8px rgba(15,23,42,.24));transition:.12s linear}.turtle svg{width:46px;height:46px;display:block}.actions{padding:14px;display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid #e2e8f0}.btn{border:0;border-radius:999px;padding:12px 17px;font-weight:900;font-family:inherit;cursor:pointer;background:#0f172a;color:white}.btn.run{background:linear-gradient(135deg,#16a34a,#22c55e);color:white}.btn.reset{background:#f1f5f9;color:#0f172a}.mission{padding:13px 16px;background:#fff7ed;border-top:1px solid #fed7aa;line-height:1.65;color:#7c2d12}.mission b{color:#9a3412}.student-steps{margin:10px 0 0;padding:0;display:grid;gap:7px;list-style:none}.student-steps li{background:#fff;border:1px solid #fed7aa;border-radius:13px;padding:8px 10px;color:#431407}.student-steps li::before{content:'✓ ';font-weight:900;color:#ea580c}.ok{color:#15803d;font-weight:900}.roadmap{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.chip{background:#eef2ff;color:#3730a3;border-radius:999px;padding:6px 9px;font-size:.78rem;font-weight:900}@media(max-width:1050px){.layout{grid-template-columns:1fr;height:auto}.panel{min-height:420px}.workspace-wrap{min-height:720px}.canvas-panel{min-height:620px}}@media(max-width:600px){.topbar{grid-template-columns:1fr;align-items:flex-start}.layout{padding:8px}.nav{width:100%}.nav a{flex:1;text-align:center}.canvas-card{aspect-ratio:.95}.code{font-size:.85rem}}
+    *{box-sizing:border-box}body{margin:0;font-family:Rubik,Arial,sans-serif;background:linear-gradient(135deg,#e0f2fe,#fdf4ff 48%,#ecfeff);color:#102033;min-height:100vh}.app{display:grid;grid-template-rows:auto 1fr;min-height:100vh}.topbar{display:grid;grid-template-columns:minmax(260px,1fr) auto;gap:14px;align-items:center;padding:12px 18px;background:rgba(255,255,255,.92);border-bottom:1px solid rgba(15,23,42,.09);box-shadow:0 8px 24px rgba(15,23,42,.08);position:sticky;top:0;z-index:20}.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.2rem;min-width:0}.brand .bot{font-size:2rem}.brand-text{display:flex;flex-direction:column;gap:2px}.brand-text small{font-size:.78rem;color:#64748b;font-weight:800}.nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-start}.nav a{border:1px solid #e2e8f0;border-radius:999px;padding:9px 13px;text-decoration:none;font-weight:900;color:#0f172a;background:#fff;box-shadow:0 5px 14px rgba(15,23,42,.07);white-space:nowrap}.nav a.primary{background:linear-gradient(135deg,#22d3ee,#a78bfa);border-color:transparent;color:#08111f}.layout{display:grid;grid-template-columns:250px minmax(360px,1.05fr) minmax(360px,.95fr);gap:14px;padding:14px;height:calc(100vh - 73px);min-height:700px}.panel{background:rgba(255,255,255,.9);border:1px solid rgba(15,23,42,.1);border-radius:24px;box-shadow:0 16px 40px rgba(15,23,42,.1);overflow:hidden}.lessons{padding:16px;overflow:auto}.lessons h1{font-size:1.45rem;margin:0 0 8px}.lessons p{line-height:1.65;color:#475569;margin:0 0 14px}.lesson{width:100%;text-align:right;border:2px solid #e2e8f0;background:#fff;border-radius:16px;padding:11px 12px;margin:7px 0;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between;gap:10px}.lesson.active{border-color:#22d3ee;background:#ecfeff}.lesson b{display:block;font-size:1rem}.lesson span{display:block;color:#64748b;font-size:.82rem;line-height:1.35;white-space:nowrap}.teacher-note{margin-top:14px;background:#f8fafc;border:1px dashed #94a3b8;border-radius:18px;padding:12px;line-height:1.55;color:#334155;font-size:.92rem}.workspace-wrap{display:grid;grid-template-rows:auto 1fr 230px}.work-head,.canvas-head{padding:12px 16px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;gap:10px}.work-head h2,.canvas-head h2{font-size:1.05rem;margin:0}.hint{font-size:.9rem;color:#64748b;font-weight:700}.blockly-area{min-height:300px;height:100%;direction:ltr}.code-box{border-top:1px solid #e2e8f0;background:#07111f;color:#d7fbe8;display:grid;grid-template-rows:auto 1fr}.code-title{padding:10px 14px;color:#93c5fd;font-weight:900;display:flex;justify-content:space-between;align-items:center}.code-title small{color:#cbd5e1}.code{margin:0;padding:12px 16px;overflow:auto;direction:ltr;text-align:left;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.95rem;line-height:1.55;white-space:pre}.code-line{display:block;min-height:1.55em;border-radius:8px;padding:0 7px;margin:1px 0;border-right:3px solid transparent}.code-line.active-code-line{background:rgba(34,211,238,.18);border-right-color:#22d3ee;color:#fff7ad;box-shadow:0 0 0 1px rgba(34,211,238,.24) inset}.canvas-panel{display:grid;grid-template-rows:auto 1fr auto}.canvas-wrap{position:relative;background:linear-gradient(180deg,#f8fafc,#e0f2fe);display:grid;place-items:center;padding:14px}.canvas-card{position:relative;width:min(100%,620px);aspect-ratio:1.08;background:white;border-radius:22px;border:2px solid #cbd5e1;box-shadow:inset 0 0 0 1px rgba(15,23,42,.04);overflow:hidden}.grid-bg{position:absolute;inset:0;background-image:linear-gradient(#e2e8f0 1px,transparent 1px),linear-gradient(90deg,#e2e8f0 1px,transparent 1px);background-size:32px 32px;opacity:.7}canvas{position:absolute;inset:0;width:100%;height:100%}.turtle{position:absolute;width:46px;height:46px;display:grid;place-items:center;transform-origin:center;filter:drop-shadow(0 6px 8px rgba(15,23,42,.24));transition:.12s linear}.turtle svg{width:46px;height:46px;display:block}.actions{padding:14px;display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid #e2e8f0}.btn{border:0;border-radius:999px;padding:12px 17px;font-weight:900;font-family:inherit;cursor:pointer;background:#0f172a;color:white}.btn.run{background:linear-gradient(135deg,#16a34a,#22c55e);color:white}.btn.reset{background:#f1f5f9;color:#0f172a}.mission{padding:13px 16px;background:#fff7ed;border-top:1px solid #fed7aa;line-height:1.65;color:#7c2d12}.mission b{color:#9a3412}.student-steps{margin:10px 0 0;padding:0;display:grid;gap:7px;list-style:none}.student-steps li{background:#fff;border:1px solid #fed7aa;border-radius:13px;padding:8px 10px;color:#431407}.student-steps li::before{content:'✓ ';font-weight:900;color:#ea580c}.ok{color:#15803d;font-weight:900}.roadmap{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.chip{background:#eef2ff;color:#3730a3;border-radius:999px;padding:6px 9px;font-size:.78rem;font-weight:900}@media(max-width:1050px){.layout{grid-template-columns:1fr;height:auto}.panel{min-height:420px}.workspace-wrap{min-height:720px}.canvas-panel{min-height:620px}}@media(max-width:600px){.topbar{grid-template-columns:1fr;align-items:flex-start}.layout{padding:8px}.nav{width:100%}.nav a{flex:1;text-align:center}.canvas-card{aspect-ratio:.95}.code{font-size:.85rem}}
   </style>
 </head>
 <body>
@@ -101,233 +101,1292 @@
   <script>
     const TURTLE_LESSONS = [
       {
-            id: 1,
-            title: "פקודות ראשונות",
-            goal: "בונים רצף פקודות ראשון: קדימה, סיבוב ועוד קדימה.",
-            concept: "רצף פקודות",
-            blocks: [
+            "id": 1,
+            "title": "רובוט מצייר ראשון",
+            "goal": "בונים ציור ראשון ומבינים איך בלוק הופך לשורת Python.",
+            "concept": "פקודה",
+            "product": "מסלול קצר עם שתי פניות",
+            "blocks": [
                   "forward",
-                  "right"
-            ],
-            practice: [
-                  "פתיחה: הריצו קנבס ריק וראו איפה הצב מתחיל.",
-                  "גררו “זוז קדימה 100” והריצו.",
-                  "שנו ל־50 ואז ל־150 והשוו את המרחק.",
-                  "הוסיפו “פנה ימינה 90” והריצו — שימו לב שהצב רק מסתובב.",
-                  "הוסיפו עוד “זוז קדימה 80” כדי ליצור פנייה.",
-                  "החליפו ימינה בשמאלה וראו איך המסלול משתנה.",
-                  "לחצו על כל בלוק ובדקו איזו שורה נדלקת בקוד Python.",
-                  "אתגר אישי: ציירו מסלול בצורת מדרגה עם 5 פקודות.",
-                  "דיבאג: החליפו את סדר הבלוקים ונסו להסביר למה הציור השתנה.",
-                  "סיכום: כתבו במחברת מה עושה forward ומה עושה right."
-            ],
-            timing: [
-                  "0–10 פתיחה: מה זה רובוט מצייר ומה זה פקודה",
-                  "10–20 הדגמת מדריך: קדימה, סיבוב, קדימה",
-                  "20–35 תרגול מודרך 1–4",
-                  "35–55 תרגול עצמאי 5–8",
-                  "55–70 אתגר מסלול מדרגות",
-                  "70–82 שיתוף ודיבאג בכיתה",
-                  "82–90 סיכום מילולי קצר"
-            ],
-            teacherTips: [
-                  "לא לדבר על תחביר לפני שהילדים ראו תנועה.",
-                  "להדגיש שסיבוב לא מזיז את הצב — הוא משנה כיוון.",
-                  "לבקש מילדים לנבא לפני הרצה."
-            ]
-      },
-      {
-            id: 2,
-            title: "מציירים ריבוע",
-            goal: "משתמשים בלולאה כדי לצייר ריבוע בלי לחזור ידנית על אותם בלוקים.",
-            concept: "לולאות וזוויות",
-            blocks: [
+                  "right",
                   "repeat",
-                  "forward",
-                  "right"
-            ],
-            practice: [
-                  "גררו “חזור 4 פעמים”.",
-                  "הכניסו לתוך הלולאה “זוז קדימה 100”.",
-                  "מתחתיו, עדיין בתוך הלולאה, הוסיפו “פנה ימינה 90”.",
-                  "הריצו ובדקו אם התקבל ריבוע סגור.",
-                  "לחצו על בלוק הלולאה וראו את שורת for בקוד.",
-                  "לחצו על הבלוקים שבתוך הלולאה וראו את ההזחה בקוד.",
-                  "שנו את 100 ל־60 ואז ל־140 — מה משתנה ומה לא?",
-                  "אתגר משולש: 3 חזרות ו־120 מעלות.",
-                  "אתגר משושה: 6 חזרות ו־60 מעלות.",
-                  "דיבאג: הוציאו את “פנה ימינה” מחוץ ללולאה ונסו להסביר למה הריבוע נשבר.",
-                  "משימת יצירה: בחרו צורה אחת והוסיפו לה צבע/עובי."
-            ],
-            timing: [
-                  "0–10 חזרה על קדימה/סיבוב",
-                  "10–20 למה לא נרצה לגרור 8 בלוקים ידנית",
-                  "20–35 הדגמת לולאה וריבוע",
-                  "35–55 תרגול ריבוע + שינוי גודל",
-                  "55–70 משולש ומשושה",
-                  "70–82 דיבאג: בלוק מחוץ ללולאה",
-                  "82–90 סיכום: מה חוזר בלולאה"
-            ],
-            teacherTips: [
-                  "להשתמש במילה “חזור” לפני המילה for.",
-                  "להראות שהזחה בקוד אומרת “בתוך הלולאה”.",
-                  "לשאול: כמה מעלות צריך אחרי כל צד?"
-            ]
-      },
-      {
-            id: 3,
-            title: "צבע ועובי",
-            goal: "מוסיפים עיצוב לציור: צבע עט, עובי קו ושינוי צבע באמצע.",
-            concept: "פרמטרים ועיצוב",
-            blocks: [
                   "color",
-                  "width",
-                  "repeat"
-            ],
-            practice: [
-                  "בחרו צבע עט לפני הציור.",
-                  "קבעו עובי עט 6.",
-                  "ציירו ריבוע צבעוני עם לולאה.",
-                  "שנו עובי ל־2 ואז ל־12 והשוו.",
-                  "החליפו צבע לפני צורה שנייה.",
-                  "ציירו שני ריבועים בצבעים שונים.",
-                  "בדקו בקוד איפה מופיע color ואיפה pensize.",
-                  "אתגר: צרו “לוגו” אישי משלוש צורות.",
-                  "דיבאג: שימו color אחרי הציור — למה הציור הראשון לא השתנה?",
-                  "סיכום: מה ההבדל בין פקודת תנועה לפקודת עיצוב?"
-            ],
-            timing: [
-                  "0–10 פתיחה: אותו ציור יכול להיראות אחרת",
-                  "10–22 הדגמת color/pensize",
-                  "22–42 תרגול צורה צבעונית",
-                  "42–62 שתי צורות בשני צבעים",
-                  "62–78 פרויקט לוגו אישי",
-                  "78–90 גלריה קצרה וסיכום"
-            ],
-            teacherTips: [
-                  "להדגיש שפקודות עיצוב משפיעות מכאן והלאה.",
-                  "לא להעמיס צבעים — קודם צבע אחד, אחר כך שינוי באמצע."
-            ]
-      },
-      {
-            id: 4,
-            title: "עט למעלה / למטה",
-            goal: "לומדים להזיז את הצב בלי לצייר כדי ליצור כמה צורות נפרדות.",
-            concept: "מצב פנימי",
-            blocks: [
                   "pen"
             ],
-            practice: [
-                  "ציירו ריבוע קטן.",
-                  "גררו “הרם עט”.",
-                  "זוזו קדימה 130 בלי לצייר.",
-                  "גררו “הורד עט”.",
-                  "ציירו משולש במקום החדש.",
-                  "בדקו שאין קו מחבר בין הצורות.",
-                  "שנו צבע לפני הצורה השנייה.",
-                  "אתגר: צרו שלושה איים נפרדים של ציור.",
-                  "דיבאג: שכחו בכוונה “הורד עט” — מה קרה?",
-                  "סיכום: מהו מצב של עט?"
+            "practice": [
+                  "גררו קדימה 100 והריצו.",
+                  "הוסיפו פנייה ימינה 90 ועוד קדימה.",
+                  "שנו את 100 ל־50 ואז ל־150 והשוו.",
+                  "לחצו על בלוק קדימה וראו איזו שורת קוד נדלקת.",
+                  "כתבו במחברת: forward מזיז את הצב קדימה.",
+                  "בנו מסלול עם 4 פקודות לפחות.",
+                  "נסו פנייה שמאלה במקום ימינה.",
+                  "תקנו ציור שיצא מחוץ למסך.",
+                  "הוסיפו צבע אחד לבחירתכם.",
+                  "הציגו לחבר מה כל שורה עושה.",
+                  "אתגר: צרו אות ראשונה של השם שלכם מקווים ישרים."
             ],
-            timing: [
-                  "0–10 פתיחה: איך עוברים מקום בלי להשאיר סימן",
-                  "10–25 הדגמת penup/pendown",
-                  "25–45 תרגול שתי צורות",
-                  "45–65 שלושה איים",
-                  "65–78 דיבאג עט מורם",
-                  "78–90 שיתוף וסיכום"
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
             ],
-            teacherTips: [
-                  "להסביר ש־penup לא מוחק — הוא רק מרים את העט.",
-                  "לשאול בכל שלב: האם הצב מצייר עכשיו או רק זז?"
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
             ]
       },
       {
-            id: 5,
-            title: "אתגר כוכב",
-            goal: "חוקרים דפוסים וזוויות מיוחדות באמצעות כוכב וצורות ניסוי.",
-            concept: "דפוסים וחקר זוויות",
-            blocks: [
+            "id": 2,
+            "title": "מסלולים ופניות",
+            "goal": "בונים מסלול מדויק בעזרת רצף פקודות ופניות ימינה/שמאלה.",
+            "concept": "רצף וסדר פעולות",
+            "product": "מסלול מדרגות",
+            "blocks": [
+                  "forward",
+                  "right",
                   "repeat",
-                  "angles"
+                  "color",
+                  "pen"
             ],
-            practice: [
-                  "גררו “חזור 5 פעמים”.",
-                  "בתוך הלולאה שימו “זוז קדימה 130”.",
-                  "הוסיפו “פנה ימינה 144”.",
-                  "הריצו ובדקו אם יצא כוכב.",
-                  "שנו אורך ל־80 ואז ל־160.",
-                  "נסו זוויות 100, 120, 150 ותנו שם לצורה שיצאה.",
-                  "הוסיפו צבע ועובי.",
-                  "אתגר: כוכב כפול — ציירו כוכב קטן ואז גדול.",
-                  "דיבאג: שנו את מספר החזרות ל־4 — למה זה כבר לא כוכב?",
-                  "סיכום: מה למדנו מניסוי ולא מהעתקה?"
+            "practice": [
+                  "בנו מדרגה: קדימה, ימינה, קדימה, שמאלה.",
+                  "חזרו על המדרגה 3 פעמים ידנית.",
+                  "שנו רק פנייה אחת ובדקו איפה המסלול נשבר.",
+                  "סמנו על דף את כיוון הראש לפני כל פקודה.",
+                  "החליפו ימינה ושמאלה והשוו תוצאה.",
+                  "בנו מסלול שמסתיים קרוב לנקודת ההתחלה.",
+                  "הוסיפו צבע למסלול הראשי.",
+                  "בצעו דיבאג לזווית לא נכונה.",
+                  "הסבירו למה סדר הפקודות חשוב.",
+                  "אתגר: מסלול רובוט שמגיע ל״בית״ בלי לעבור קו דמיוני."
             ],
-            timing: [
-                  "0–10 פתיחה: צורות לא רגילות",
-                  "10–25 הדגמת כוכב",
-                  "25–45 תרגול כוכב בסיסי",
-                  "45–65 מעבדת זוויות",
-                  "65–80 כוכב אישי מעוצב",
-                  "80–90 תערוכה קצרה"
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
             ],
-            teacherTips: [
-                  "זה שיעור חקר — לא כל תוצאה חייבת להיות “נכונה”.",
-                  "לעודד ילדים לתעד זווית ותוצאה."
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
             ]
       },
       {
-            id: 6,
-            title: "משתנה: אורך",
-            goal: "משתמשים במשתנה length כדי לשלוט בגודל הציור ממקום אחד.",
-            concept: "משתנים",
-            blocks: [
-                  "set_length",
-                  "forward_length",
-                  "repeat"
+            "id": 3,
+            "title": "צורות עם לולאות",
+            "goal": "מציירים משולש, ריבוע ומשושה בעזרת repeat וזוויות.",
+            "concept": "לולאה",
+            "product": "גלריית צורות",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen"
             ],
-            practice: [
+            "practice": [
+                  "גררו repeat ובנו ריבוע: 4 חזרות ו־90 מעלות.",
+                  "שנו ל־3 חזרות ו־120 מעלות כדי לקבל משולש.",
+                  "שנו ל־6 חזרות ו־60 מעלות כדי לקבל משושה.",
+                  "השוו בין מספר חזרות לזווית.",
+                  "צרו טבלה: צורה / חזרות / זווית.",
+                  "הדגישו את שורת for בקוד.",
+                  "שנו אורך צלע ובדקו שהצורה נשארת אותה צורה.",
+                  "בנו שתי צורות אחת אחרי השנייה.",
+                  "צבעו כל צורה בצבע אחר.",
+                  "אתגר: מצאו זווית למחומש."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 4,
+            "title": "מעבדת צבעים",
+            "goal": "משנים צבע ועובי עט כדי ליצור ציור ברור ומעוצב.",
+            "concept": "פרמטרים",
+            "product": "לוגו צבעוני",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen"
+            ],
+            "practice": [
+                  "בחרו צבע עט לפני הציור.",
+                  "ציירו ריבוע בעובי 3.",
+                  "שנו לעובי 8 והשוו.",
+                  "החליפו צבע באמצע הציור.",
+                  "צרו שני קווים באורכים שונים וצבעים שונים.",
+                  "בדקו איך color מופיע בקוד Python.",
+                  "הוסיפו הערת תכנון בעל פה: למה בחרתם צבעים.",
+                  "תקנו ציור שבו הצבע מופיע מאוחר מדי.",
+                  "צרו מסגרת צבעונית.",
+                  "אתגר: לוגו קטן עם 3 צבעים."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 5,
+            "title": "עט למעלה / עט למטה",
+            "goal": "יוצרים כמה צורות נפרדות בלי קו מחבר ביניהן.",
+            "concept": "מצב עט",
+            "product": "שתי צורות נפרדות",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen"
+            ],
+            "practice": [
+                  "ציירו ריבוע קטן.",
+                  "הרימו עט עם penup.",
+                  "זוזו קדימה בלי לצייר.",
+                  "הורידו עט עם pendown וציירו משולש.",
+                  "בדקו בקוד איפה penup ו־pendown מופיעים.",
+                  "נסו לשכוח pendown וגלו מה קורה.",
+                  "תקנו קו מחבר לא רצוי.",
+                  "בנו שלוש צורות מופרדות.",
+                  "הוסיפו צבע שונה לכל צורה.",
+                  "אתגר: ציור של עיר קטנה עם בתים נפרדים."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 6,
+            "title": "משתנה length",
+            "goal": "שומרים אורך במשתנה ומשנים ציור שלם ממקום אחד.",
+            "concept": "משתנה",
+            "product": "שתי צורות שנשלטות מאורך אחד",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
                   "קבעו length = 70.",
-                  "צרו לולאה של 4 חזרות.",
-                  "בתוך הלולאה השתמשו ב־“זוז קדימה length”.",
-                  "הוסיפו “פנה ימינה 90”.",
-                  "הריצו וראו ריבוע.",
-                  "שנו רק את length ל־120 והריצו שוב.",
-                  "הוסיפו “הגדל length ב־30” אחרי הריבוע הראשון.",
-                  "ציירו ריבוע שני שמשתמש באותו length החדש.",
-                  "אתגר: צרו מדרגות שבהן length גדל בכל צעד.",
-                  "דיבאג: השתמשו ב־forward רגיל במקום forward(length) — מה ההבדל?",
-                  "סיכום: למה משתנה חוסך עבודה?"
+                  "השתמשו ב־forward(length).",
+                  "ציירו ריבוע שמשתמש רק במשתנה.",
+                  "שנו את length ל־120 והריצו שוב.",
+                  "הסבירו למה זה יותר נוח מלשנות 4 מספרים.",
+                  "הגדילו את length באמצע הציור.",
+                  "בנו ריבוע קטן ואחריו ריבוע גדול.",
+                  "בדקו את שורת length = בקוד.",
+                  "צרו וריאציה עם צבע אחר.",
+                  "אתגר: מדרגות שהולכות וגדלות."
             ],
-            timing: [
-                  "0–10 פתיחה: קופסה עם שם",
-                  "10–25 הדגמת length",
-                  "25–45 ריבוע עם משתנה",
-                  "45–60 שינוי ערך אחד משפיע על הכל",
-                  "60–78 הגדלת length וציור שני",
-                  "78–90 סיכום ודיבאג"
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
             ],
-            teacherTips: [
-                  "משפט עוגן: משתנה הוא קופסה עם שם.",
-                  "לא להציג הרבה שמות משתנים בשיעור הראשון — רק length."
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 7,
+            "title": "דפוסים חוזרים",
+            "goal": "משתמשים בלולאה כדי ליצור דגם שחוזר כמה פעמים.",
+            "concept": "דפוס",
+            "product": "גדר/מסילה חוזרת",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "בנו יחידה אחת של דפוס: קדימה ופנייה.",
+                  "עטפו אותה ב־repeat 5.",
+                  "שנו מספר חזרות ל־8.",
+                  "בדקו מה קורה כשהזווית קטנה יותר.",
+                  "צרו דפוס קצר ודפוס ארוך.",
+                  "צבעו את הדפוס.",
+                  "מצאו פקודה מיותרת והסירו אותה.",
+                  "הסבירו מהי ״יחידת חזרה״.",
+                  "בנו דגם שמתאים למסגרת מחברת.",
+                  "אתגר: גדר צבעונית לעיר חכמה."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 8,
+            "title": "ספירלה ראשונה",
+            "goal": "יוצרים ציור שגדל בהדרגה בעזרת משתנה משתנה.",
+            "concept": "עדכון משתנה",
+            "product": "ספירלה מרובעת",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "קבעו length = 30.",
+                  "צרו לולאה של 8 חזרות.",
+                  "בכל חזרה: קדימה length, פנייה 90, הגדלת length.",
+                  "שנו את הגדילה מ־10 ל־20.",
+                  "בדקו איך הספירלה גדלה.",
+                  "נסו זווית 60 במקום 90.",
+                  "החזירו לערך שעובד טוב.",
+                  "צבעו את הספירלה.",
+                  "הסבירו מה משתנה בכל סיבוב.",
+                  "אתגר: ספירלה שנראית כמו שביל."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 9,
+            "title": "ציור סימטרי",
+            "goal": "מבינים איך חזרה וזווית יוצרות סימטריה.",
+            "concept": "סימטריה",
+            "product": "פרח גיאומטרי",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "ציירו משולש קטן.",
+                  "חזרו עליו כמה פעמים עם פנייה ביניהם.",
+                  "שנו מספר חזרות וראו כמה עלים נוצרים.",
+                  "נסו צבע אחיד ואז צבע אחר.",
+                  "סמנו נקודת מרכז בדמיון.",
+                  "בדקו אם הציור מאוזן.",
+                  "תקנו זווית שגורמת לציור לברוח.",
+                  "השוו בין 6 חזרות ל־12 חזרות.",
+                  "הסבירו מה גורם לסימטריה.",
+                  "אתגר: סמל מנדלה פשוט."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 10,
+            "title": "דיבאג ציורים",
+            "goal": "לומדים למצוא ולתקן טעות בקוד ציור.",
+            "concept": "דיבאג",
+            "product": "ציור מתוקן + הסבר",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "בנו ריבוע עם טעות בכוונה.",
+                  "זהו אם הטעות באורך, בזווית או בסדר.",
+                  "תקנו רק מספר אחד.",
+                  "תקנו רק סדר של בלוקים.",
+                  "הסבירו לחבר מה הייתה התקלה.",
+                  "הריצו אחרי כל שינוי קטן.",
+                  "בדקו שורת קוד מול בלוק.",
+                  "צרו ״לפני ואחרי״.",
+                  "כתבו כלל דיבאג אחד.",
+                  "אתגר: מדריך תיקון לצורה שבורה."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 11,
+            "title": "מפה קטנה",
+            "goal": "מציירים מפה עם רחובות, פניות ונקודות עצירה.",
+            "concept": "תכנון אלגוריתם",
+            "product": "מפת רובוט",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "תכננו מפה על דף לפני בלוקים.",
+                  "ציירו רחוב אופקי.",
+                  "הוסיפו פנייה ורחוב אנכי.",
+                  "השתמשו ב־penup למעבר ללא ציור.",
+                  "הוסיפו נקודת עצירה בצבע אחר.",
+                  "בדקו שהמפה נכנסת למסך.",
+                  "שנו קנה מידה של כל הרחובות.",
+                  "תנו לחבר לעקוב אחרי המסלול.",
+                  "תקנו מסלול שלא מגיע ליעד.",
+                  "אתגר: מפת שכונה עם 4 רחובות."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 12,
+            "title": "בית מרובעים ומשולשים",
+            "goal": "מרכיבים ציור מוכר מצורות פשוטות.",
+            "concept": "פירוק בעיה",
+            "product": "בית מצויר",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "ציירו ריבוע כקירות הבית.",
+                  "עברו למיקום הגג בלי קו מיותר.",
+                  "ציירו משולש כגג.",
+                  "הוסיפו דלת ממלבן קטן.",
+                  "הוסיפו חלון בצבע אחר.",
+                  "בדקו איפה צריך penup.",
+                  "שנו גודל הבית עם length.",
+                  "בנו בית שני קטן יותר.",
+                  "הסבירו איך פירקתם את הבעיה.",
+                  "אתגר: רחוב עם שני בתים."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 13,
+            "title": "אותיות מקווים",
+            "goal": "מציירים אותיות עבריות/לטיניות בעזרת קווים ופניות.",
+            "concept": "ייצוג חזותי",
+            "product": "אות או מילה קצרה",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "בחרו אות פשוטה.",
+                  "פרקו אותה לקווים ישרים.",
+                  "בנו את הקו הראשון.",
+                  "השתמשו ב־penup למעבר בין חלקי האות.",
+                  "הוסיפו קו שני ושלישי.",
+                  "בדקו אם האות קריאה.",
+                  "שנו עובי עט.",
+                  "נסו אות נוספת.",
+                  "כתבו את השם בקיצור של 2 אותיות.",
+                  "אתגר: שלט קטן לעיר."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 14,
+            "title": "כוכבים וזוויות מיוחדות",
+            "goal": "משתמשים בזוויות לא שגרתיות ליצירת כוכבים.",
+            "concept": "זווית חיצונית",
+            "product": "כוכב מעוצב",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "בנו כוכב עם 5 חזרות ו־144 מעלות.",
+                  "שנו אורך צלע.",
+                  "נסו 135 מעלות וראו מה קורה.",
+                  "החזירו לזווית שעובדת.",
+                  "הוסיפו צבע ועובי.",
+                  "הסבירו למה הזווית לא 90.",
+                  "צרו כוכב קטן וכוכב גדול.",
+                  "מקמו כוכב בלי קו מחבר.",
+                  "בדקו את שורת for.",
+                  "אתגר: שמיים עם 3 כוכבים."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 15,
+            "title": "פרויקט אמצע: סמל אישי",
+            "goal": "משלבים פקודות, לולאות, צבעים ומשתנה לתוצר אישי.",
+            "concept": "שילוב",
+            "product": "סמל אישי",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "בחרו רעיון לסמל.",
+                  "כתבו רשימת צורות שצריך.",
+                  "בנו צורה ראשונה בלולאה.",
+                  "הוסיפו צבע אישי.",
+                  "השתמשו ב־length לפחות פעם אחת.",
+                  "השתמשו ב־penup למיקום.",
+                  "צרו גרסה ראשונה תוך 20 דקות.",
+                  "שפרו פרט אחד.",
+                  "הציגו והסבירו שתי שורות קוד.",
+                  "אתגר: הוסיפו חתימה קטנה."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 16,
+            "title": "קואורדינטות בלי לקרוא לזה קשה",
+            "goal": "ממקמים צורות במרחב בעזרת תכנון תנועה יחסי.",
+            "concept": "מיקום יחסי",
+            "product": "ארבעה סמלים בפינות",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "ציירו צורה במרכז.",
+                  "עברו ימינה בלי לצייר.",
+                  "ציירו צורה שנייה.",
+                  "חזרו למרכז בערך.",
+                  "עברו למעלה/למטה בעזרת פניות.",
+                  "מקמו 4 צורות באזורים שונים.",
+                  "בדקו שאין קווי מעבר.",
+                  "שנו מרחק מעבר.",
+                  "הסבירו מהו מיקום יחסי.",
+                  "אתגר: לוח משחק 2×2."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 17,
+            "title": "קנה מידה",
+            "goal": "משנים ציור שלם לקטן/גדול תוך שמירה על הצורה.",
+            "concept": "סקייל",
+            "product": "אותו ציור בשני גדלים",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "בנו צורה באורך 60.",
+                  "בנו אותה צורה באורך 120.",
+                  "השוו מה השתנה ומה לא.",
+                  "השתמשו במשתנה length.",
+                  "שנו רק את המשתנה.",
+                  "נסו עובי עט שמתאים לגודל.",
+                  "מקמו גרסה קטנה ליד גדולה.",
+                  "הסבירו מה נשמר.",
+                  "תקנו ציור שגדול מדי למסך.",
+                  "אתגר: לוגו בשלושה גדלים."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 18,
+            "title": "לולאות בתוך רעיון",
+            "goal": "בונים ציור מורכב מכמה לולאות נפרדות.",
+            "concept": "מודולריות ראשונית",
+            "product": "רכבת/שרשרת צורות",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "ציירו ריבוע בלולאה.",
+                  "עברו מקום בלי לצייר.",
+                  "ציירו משולש בלולאה.",
+                  "עברו שוב וציירו משושה.",
+                  "שנו צבע לכל לולאה.",
+                  "בדקו שכל לולאה עושה דבר אחד.",
+                  "תנו שם מילולי לכל חלק.",
+                  "תקנו לולאה עם מספר חזרות שגוי.",
+                  "חברו הכל לתמונה אחת.",
+                  "אתגר: רכבת מקרונות חוזרים."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 19,
+            "title": "ציור לפי הוראות חבר",
+            "goal": "כותבים הוראות מדויקות שאחרים יכולים לבצע.",
+            "concept": "דיוק הוראות",
+            "product": "ציור משוחזר",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "ילד א׳ מתכנן ציור קטן.",
+                  "כותבים 6–10 הוראות מילוליות.",
+                  "ילד ב׳ בונה בלוקים לפי ההוראות.",
+                  "משווים לתכנון המקורי.",
+                  "מתקנים הוראה לא מדויקת.",
+                  "בודקים שורת קוד מול הוראה.",
+                  "מחליפים תפקידים.",
+                  "משפרים שמות/מספרים.",
+                  "מסכמים איזו הוראה הייתה חסרה.",
+                  "אתגר: הוראות בלי להראות תמונה."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 20,
+            "title": "דפוס עיר חכמה",
+            "goal": "יוצרים דגם שחוזר: כביש, עמודים, חלונות או בניינים.",
+            "concept": "דפוס שימושי",
+            "product": "רחוב חכם",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "בחרו אלמנט חוזר בעיר.",
+                  "בנו אלמנט אחד.",
+                  "חזרו עליו עם repeat או ידנית.",
+                  "השתמשו ב־penup למרווחים.",
+                  "הוסיפו צבעים לעיר.",
+                  "שנו גודל בין אלמנטים.",
+                  "בדקו שהרחוב לא יוצא מהמסך.",
+                  "הוסיפו סימון מיוחד לרמזור/חיישן.",
+                  "הסבירו מה חוזר ומה משתנה.",
+                  "אתגר: רחוב עם 5 חלונות זהים."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 21,
+            "title": "אנימציה מחשבתית",
+            "goal": "מנבאים מה יקרה לפני הרצה ומפתחים חשיבה אלגוריתמית.",
+            "concept": "ניבוי",
+            "product": "כרטיסי ניבוי + ציור",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "בנו 4 בלוקים בלי להריץ.",
+                  "נחשו איפה הצב יסיים.",
+                  "הריצו והשוו.",
+                  "תקנו את הניבוי.",
+                  "הוסיפו לולאה ונחשו שוב.",
+                  "סמנו כיוון ראש אחרי כל פנייה.",
+                  "עבדו בזוגות: אחד מנבא אחד מריץ.",
+                  "כתבו כלל לניבוי פניות.",
+                  "צרו ציור מפתיע.",
+                  "אתגר: לגרום לחבר לטעות בניבוי ואז להסביר."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 22,
+            "title": "מיני משחק מסלול",
+            "goal": "בונים מסלול שהצב צריך לעבור כמו משחק.",
+            "concept": "חוקים ומגבלות",
+            "product": "מבוך קווים",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "שרטטו גבולות מסלול.",
+                  "בנו מסלול התחלה עד יעד.",
+                  "אסור לצאת מגבולות דמיוניים.",
+                  "השתמשו בצבע ליעד.",
+                  "הוסיפו פנייה חדה אחת.",
+                  "בדקו אם חבר מצליח לעקוב.",
+                  "שפרו קושי בלי להעמיס.",
+                  "כתבו כלל משחק אחד.",
+                  "תקנו קטע לא ברור.",
+                  "אתגר: מבוך עם שני יעדים."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 23,
+            "title": "ציור עם שכבות",
+            "goal": "בונים רקע, אובייקטים ופרטים בסדר נכון.",
+            "concept": "שכבות וסדר",
+            "product": "סצנה עם רקע ופרטים",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "ציירו רקע פשוט ראשון.",
+                  "עברו לצייר אובייקט מרכזי.",
+                  "הוסיפו פרט קטן מעליו.",
+                  "בדקו למה סדר הציור חשוב.",
+                  "שנו סדר וראו מה מסתיר מה.",
+                  "השתמשו בצבעים שונים לשכבות.",
+                  "הפרידו עם penup.",
+                  "צרו סצנת יום/לילה.",
+                  "הסבירו איזו שכבה באה קודם.",
+                  "אתגר: פארק קטן עם שמש ושביל."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 24,
+            "title": "קוד נקי",
+            "goal": "מסדרים בלוקים כך שיהיה קל לקרוא ולתקן.",
+            "concept": "קריאות",
+            "product": "ציור מסודר + הסבר",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "מצאו קוד בלוקים מבולגן.",
+                  "סדרו לפי שלבים.",
+                  "הפרידו בין צבע, צורה ומעבר.",
+                  "הסירו בלוק מיותר.",
+                  "שנו מספרים לשיטה עקבית.",
+                  "השתמשו במשתנה לאורכים חוזרים.",
+                  "בדקו שהציור לא השתנה.",
+                  "תנו כותרת מילולית לכל חלק.",
+                  "הסבירו למה קוד נקי עוזר.",
+                  "אתגר: לשפר ציור של חבר בלי לשנות רעיון."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 25,
+            "title": "אתגר חופשי מודרך",
+            "goal": "בוחרים פרויקט אישי תחת מגבלות ברורות.",
+            "concept": "תכנון פרויקט",
+            "product": "סקיצה עובדת",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "בחרו נושא: עיר, סמל, חיה או משחק.",
+                  "כתבו 3 דרישות חובה.",
+                  "השתמשו בלולאה אחת לפחות.",
+                  "השתמשו בצבע ועובי.",
+                  "השתמשו ב־penup/pendown.",
+                  "השתמשו במשתנה אם מתאים.",
+                  "בנו גרסה ראשונה.",
+                  "קבלו משוב מחבר.",
+                  "שפרו דבר אחד לפי המשוב.",
+                  "אתגר: להוסיף פרט שמספר סיפור."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 26,
+            "title": "פרויקט: רובוט בעיר",
+            "goal": "מציירים מסלול רובוט בתוך עיר חכמה.",
+            "concept": "יישום",
+            "product": "מפת רובוט בעיר",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "ציירו כביש ראשי.",
+                  "הוסיפו בית/תחנה.",
+                  "צרו מסלול רובוט מנקודה לנקודה.",
+                  "סמנו יעד בצבע.",
+                  "השתמשו ב־penup למעבר בין אובייקטים.",
+                  "הוסיפו מכשול שהרובוט עוקף.",
+                  "בדקו שהמסלול ברור.",
+                  "הסבירו את האלגוריתם של הרובוט.",
+                  "שפרו אסתטיקה.",
+                  "אתגר: שני רובוטים בשני צבעים."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 27,
+            "title": "פרויקט: פוסטר גיאומטרי",
+            "goal": "יוצרים פוסטר מצורות, צבעים ודפוסים.",
+            "concept": "קומפוזיציה",
+            "product": "פוסטר צבעוני",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "בחרו 2–3 צורות בסיס.",
+                  "מקמו אותן באזורים שונים.",
+                  "חזרו על צורה אחת כדפוס.",
+                  "השתמשו בשלושה צבעים.",
+                  "שנו עובי לפי חשיבות.",
+                  "בדקו איזון על המסך.",
+                  "הוסיפו כותרת כאותיות קו אם אפשר.",
+                  "שפרו מרווחים.",
+                  "הציגו החלטת עיצוב אחת.",
+                  "אתגר: פוסטר לאירוע כיתתי."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 28,
+            "title": "שיפור ובדיקות",
+            "goal": "בודקים פרויקט אישי עם רשימת QA פשוטה.",
+            "concept": "בדיקות",
+            "product": "פרויקט מתוקן",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "הריצו מהתחלה ונקו ציור.",
+                  "בדקו שאין קווים לא רצויים.",
+                  "בדקו שהציור נכנס למסך.",
+                  "בדקו שכל צבע מופיע בזמן הנכון.",
+                  "בדקו שכל לולאה נסגרת.",
+                  "תנו לחבר להריץ ולהעיר.",
+                  "תקנו באג אחד לפחות.",
+                  "שפרו שם/הסבר לפרויקט.",
+                  "צלמו או שמרו תיאור תוצר.",
+                  "אתגר: ליצור גרסת “לפני ואחרי”."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 29,
+            "title": "חזרה לקראת סיום",
+            "goal": "מסכמים את כל הכלים דרך אתגר רב־שלבי.",
+            "concept": "אינטגרציה",
+            "product": "ציור שמשלב הכול",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "שלבו forward ופניות.",
+                  "שלבו repeat.",
+                  "שלבו צבע ועובי.",
+                  "שלבו penup/pendown.",
+                  "שלבו length אם מתאים.",
+                  "בנו לפחות שתי צורות.",
+                  "הוסיפו דפוס חוזר.",
+                  "בצעו דיבאג עצמי.",
+                  "כתבו הסבר בן 3 משפטים.",
+                  "אתגר: חבר צריך לזהות את הכלים מתוך הציור."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+            ]
+      },
+      {
+            "id": 30,
+            "title": "אתגר מסכם",
+            "goal": "בונים פרויקט אישי מלא ומציגים אותו כמו מפתחים צעירים.",
+            "concept": "פרויקט סיום",
+            "product": "פרויקט גמר קצר",
+            "blocks": [
+                  "forward",
+                  "right",
+                  "repeat",
+                  "color",
+                  "pen",
+                  "length"
+            ],
+            "practice": [
+                  "בחרו רעיון שאפשר להשלים בזמן.",
+                  "תכננו על דף 5 דקות.",
+                  "בנו גרסה ראשונה בלי דוגמה.",
+                  "השתמשו לפחות ב־8 בלוקים.",
+                  "השתמשו בלולאה אחת לפחות.",
+                  "השתמשו בצבע/עובי/עט.",
+                  "בדקו ותקנו.",
+                  "הכינו הסבר: מה רציתי, מה עבד, מה תיקנתי.",
+                  "הציגו לכיתה או לזוג.",
+                  "אתגר: הוסיפו שיפור אחרון אחרי המשוב."
+            ],
+            "timing": [
+                  "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
+                  "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
+                  "18–35 תרגול מודרך ראשון",
+                  "35–55 עבודה עצמאית על משימת הליבה",
+                  "55–70 אתגר הרחבה או דיבאג",
+                  "70–82 שיתוף בזוגות ושיפור לפי משוב",
+                  "82–90 סיכום, רפלקציה ושמירת תוצר"
+            ],
+            "teacherTips": [
+                  "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
+                  "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
+                  "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
+                  "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
+                  "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
             ]
       }
 ];
-
-    const blockJson = [
-      {type:'py_forward',message0:'זוז קדימה %1 צעדים',args0:[{type:'field_number',name:'STEPS',value:100,min:1,max:500}],previousStatement:null,nextStatement:null,colour:145,tooltip:'מקביל ל־forward בפייתון turtle'},
-      {type:'py_right',message0:'פנה ימינה %1 מעלות',args0:[{type:'field_number',name:'ANGLE',value:90,min:0,max:360}],previousStatement:null,nextStatement:null,colour:145},
-      {type:'py_left',message0:'פנה שמאלה %1 מעלות',args0:[{type:'field_number',name:'ANGLE',value:90,min:0,max:360}],previousStatement:null,nextStatement:null,colour:145},
-      {type:'py_color',message0:'בחר צבע עט %1',args0:[{type:'field_colour',name:'COLOR',colour:'#2563eb'}],previousStatement:null,nextStatement:null,colour:28},
-      {type:'py_width',message0:'עובי עט %1',args0:[{type:'field_number',name:'WIDTH',value:4,min:1,max:30}],previousStatement:null,nextStatement:null,colour:28},
-      {type:'py_penup',message0:'הרם עט',previousStatement:null,nextStatement:null,colour:28},
-      {type:'py_pendown',message0:'הורד עט',previousStatement:null,nextStatement:null,colour:28},
-      {type:'py_repeat',message0:'חזור %1 פעמים %2 %3',args0:[{type:'field_number',name:'TIMES',value:4,min:1,max:50},{type:'input_dummy'},{type:'input_statement',name:'DO'}],previousStatement:null,nextStatement:null,colour:270},
-      {type:'py_set_length',message0:'קבע length = %1',args0:[{type:'field_number',name:'VALUE',value:100,min:1,max:500}],previousStatement:null,nextStatement:null,colour:200,tooltip:'משתנה שומר מספר בשם, כדי להשתמש בו שוב בקוד'},
-      {type:'py_forward_length',message0:'זוז קדימה length צעדים',previousStatement:null,nextStatement:null,colour:200,tooltip:'משתמשים בערך ששמור במשתנה length'},
-      {type:'py_grow_length',message0:'הגדל length ב־ %1',args0:[{type:'field_number',name:'ADD',value:20,min:-200,max:200}],previousStatement:null,nextStatement:null,colour:200,tooltip:'משנים את ערך המשתנה תוך כדי הציור'},
-      {type:'py_comment',message0:'הערה בקוד: %1',args0:[{type:'field_input',name:'TEXT',text:'מציירים צורה'}],previousStatement:null,nextStatement:null,colour:210}
-    ];
     Blockly.defineBlocksWithJsonArray(blockJson);
     Blockly.setLocale(Blockly.Msg);
 
@@ -480,14 +1539,38 @@
       missionEl.innerHTML=`<b>משימה ${l.id}: ${l.title}</b><br>${escapeHtml(l.goal)}<br><small>מושג: ${escapeHtml(l.concept)}</small>${practice ? `<ul class="student-steps">${practice}</ul>` : ''}<small>טיפ: נסו לבד. כפתור “דוגמה” מציג פתרון רק אם נתקעתם.</small>`;
     }
     function loadDemo(){
-      const xmls={
-        1:`<xml><block type="py_forward" x="40" y="40"><field name="STEPS">120</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">80</field></block></next></block></next></block></xml>`,
-        2:`<xml><block type="py_repeat" x="40" y="40"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">100</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement></block></xml>`,
-        3:`<xml><block type="py_color" x="40" y="40"><field name="COLOR">#e11d48</field><next><block type="py_width"><field name="WIDTH">7</field><next><block type="py_repeat"><field name="TIMES">6</field><statement name="DO"><block type="py_forward"><field name="STEPS">85</field><next><block type="py_right"><field name="ANGLE">60</field></block></next></block></statement></block></next></block></next></block></xml>`,
-        4:`<xml><block type="py_repeat" x="40" y="40"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">70</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_penup"><next><block type="py_forward"><field name="STEPS">130</field><next><block type="py_pendown"><next><block type="py_color"><field name="COLOR">#16a34a</field><next><block type="py_repeat"><field name="TIMES">3</field><statement name="DO"><block type="py_forward"><field name="STEPS">90</field><next><block type="py_right"><field name="ANGLE">120</field></block></next></block></statement></block></next></block></next></block></next></block></next></block></xml>`,
-        5:`<xml><block type="py_color" x="40" y="40"><field name="COLOR">#7c3aed</field><next><block type="py_repeat"><field name="TIMES">5</field><statement name="DO"><block type="py_forward"><field name="STEPS">140</field><next><block type="py_right"><field name="ANGLE">144</field></block></next></block></statement></block></next></block></xml>`,
-        6:`<xml><block type="py_set_length" x="40" y="40"><field name="VALUE">70</field><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward_length"><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_grow_length"><field name="ADD">30</field><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward_length"><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement></block></next></block></next></block></next></block></xml>`
-      };
+      const xmls=        {
+        1: "<xml><block type=\"py_color\" x=\"40\" y=\"40\"><field name=\"COLOR\">#2563eb</field><next><block type=\"py_repeat\"><field name=\"TIMES\">4</field><statement name=\"DO\"><block type=\"py_forward\"><field name=\"STEPS\">100</field><next><block type=\"py_right\"><field name=\"ANGLE\">90</field></block></next></block></statement></block></next></block></xml>",
+        2: "<xml><block type=\"py_color\" x=\"40\" y=\"40\"><field name=\"COLOR\">#2563eb</field><next><block type=\"py_repeat\"><field name=\"TIMES\">4</field><statement name=\"DO\"><block type=\"py_forward\"><field name=\"STEPS\">100</field><next><block type=\"py_right\"><field name=\"ANGLE\">90</field></block></next></block></statement></block></next></block></xml>",
+        3: "<xml><block type=\"py_color\" x=\"40\" y=\"40\"><field name=\"COLOR\">#7c3aed</field><next><block type=\"py_repeat\"><field name=\"TIMES\">5</field><statement name=\"DO\"><block type=\"py_forward\"><field name=\"STEPS\">110</field><next><block type=\"py_right\"><field name=\"ANGLE\">144</field></block></next></block></statement></block></next></block></xml>",
+        4: "<xml><block type=\"py_color\" x=\"40\" y=\"40\"><field name=\"COLOR\">#2563eb</field><next><block type=\"py_repeat\"><field name=\"TIMES\">4</field><statement name=\"DO\"><block type=\"py_forward\"><field name=\"STEPS\">100</field><next><block type=\"py_right\"><field name=\"ANGLE\">90</field></block></next></block></statement></block></next></block></xml>",
+        5: "<xml><block type=\"py_repeat\" x=\"40\" y=\"40\"><field name=\"TIMES\">4</field><statement name=\"DO\"><block type=\"py_forward\"><field name=\"STEPS\">70</field><next><block type=\"py_right\"><field name=\"ANGLE\">90</field></block></next></block></statement><next><block type=\"py_penup\"><next><block type=\"py_forward\"><field name=\"STEPS\">140</field><next><block type=\"py_pendown\"><next><block type=\"py_repeat\"><field name=\"TIMES\">3</field><statement name=\"DO\"><block type=\"py_forward\"><field name=\"STEPS\">90</field><next><block type=\"py_right\"><field name=\"ANGLE\">120</field></block></next></block></statement></block></next></block></next></block></next></block></next></block></xml>",
+        6: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">70</field><next><block type=\"py_repeat\"><field name=\"TIMES\">4</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field></block></next></block></statement></block></next></block></xml>",
+        7: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">70</field><next><block type=\"py_repeat\"><field name=\"TIMES\">4</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field></block></next></block></statement></block></next></block></xml>",
+        8: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
+        9: "<xml><block type=\"py_color\" x=\"40\" y=\"40\"><field name=\"COLOR\">#7c3aed</field><next><block type=\"py_repeat\"><field name=\"TIMES\">5</field><statement name=\"DO\"><block type=\"py_forward\"><field name=\"STEPS\">110</field><next><block type=\"py_right\"><field name=\"ANGLE\">144</field></block></next></block></statement></block></next></block></xml>",
+        10: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
+        11: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
+        12: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
+        13: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
+        14: "<xml><block type=\"py_color\" x=\"40\" y=\"40\"><field name=\"COLOR\">#7c3aed</field><next><block type=\"py_repeat\"><field name=\"TIMES\">5</field><statement name=\"DO\"><block type=\"py_forward\"><field name=\"STEPS\">110</field><next><block type=\"py_right\"><field name=\"ANGLE\">144</field></block></next></block></statement></block></next></block></xml>",
+        15: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
+        16: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
+        17: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
+        18: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
+        19: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
+        20: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
+        21: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
+        22: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
+        23: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
+        24: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
+        25: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
+        26: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
+        27: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
+        28: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
+        29: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
+        30: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>"
+};
       workspace.clear();
       Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(xmls[currentLesson] || xmls[1]), workspace);
       generatePython(); resetDrawing(true);
