@@ -110,7 +110,7 @@
     </xml>`;
     }
     function webBuilderStarterXml(){
-      if(lesson.id === 2) return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="page_start" x="40" y="40"><next><block type="web_theme"><field name="THEME">space</field><next><block type="web_title"><field name="TEXT">כרטיס העיצוב שלי</field><next><block type="web_paragraph"><field name="TEXT">אותו עמוד יכול להרגיש אחרת לגמרי בזכות CSS</field><next><block type="web_emoji"><field name="EMOJI">🎮</field><next><block type="web_card_shape"><field name="SHAPE">round</field><next><block type="web_shadow"><field name="SHADOW">glow</field><next><block type="web_title_color"><field name="COLOR">purple</field><next><block type="web_button_style"><field name="STYLE">neon</field><next><block type="web_hover"><field name="EFFECT">grow</field><next><block type="web_button"><field name="LABEL">בדקו עיצוב</field><field name="MESSAGE">העיצוב שלי עובד ✨</field></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>`;
+      if(lesson.id === 2) return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="page_start" x="40" y="40"><next><block type="web_theme"><field name="THEME">space</field><next><block type="web_title"><field name="TEXT">כרטיס העיצוב שלי</field><next><block type="web_paragraph"><field name="TEXT">בשיעור הזה אני מעצב/ת את אותו עמוד בעזרת CSS</field></block></next></block></next></block></xml>`;
       return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="page_start" x="40" y="40"><next><block type="web_theme"><field name="THEME">sky</field><next><block type="web_title"><field name="TEXT">העמוד הראשון שלי</field><next><block type="web_paragraph"><field name="TEXT">גררתי בלוקים והרכבתי עמוד בעצמי</field><next><block type="web_emoji"><field name="EMOJI">🚀</field><next><block type="web_button"><field name="LABEL">לחצו עליי</field><field name="MESSAGE">איזה כיף! בניתי עמוד מבלוקים 🎉</field></block></next></block></next></block></next></block></next></block></xml>`;
     }
     function alignBlocklyStarterBlocksRight(){
@@ -152,16 +152,17 @@
     }
     function generateCodeFromBlockly(){
       const blocks = collectPageBlocks();
-      let theme = 'sky', buttonMessage = 'הכפתור עובד 🎉', cardShape = 'round', shadow = 'soft', titleColor = null, buttonStyle = 'pill', hoverEffect = 'grow';
+      let theme = 'sky', buttonMessage = 'הכפתור עובד 🎉', cardShape = 'round', shadow = 'soft', titleColor = null, buttonStyle = 'pill', hoverEffect = 'none';
+      let hasEmoji = false, hasButton = false, hasColumns = false, hasFooter = false;
       const html = [];
       blocks.forEach(block => {
         if(block.type === 'web_theme') theme = block.getFieldValue('THEME') || theme;
         if(block.type === 'web_title') html.push(`<h1>${esc(block.getFieldValue('TEXT'))}</h1>`);
         if(block.type === 'web_paragraph') html.push(`<p>${esc(block.getFieldValue('TEXT'))}</p>`);
-        if(block.type === 'web_emoji') html.push(`<div class="hero-emoji">${esc(block.getFieldValue('EMOJI'))}</div>`);
-        if(block.type === 'web_button'){ buttonMessage = block.getFieldValue('MESSAGE') || buttonMessage; html.push(`<button onclick="showMessage()">${esc(block.getFieldValue('LABEL'))}</button><p id="message">כאן תופיע הודעה מהכפתור...</p>`); }
-        if(block.type === 'web_columns') html.push(`<section class="columns"><div>${esc(block.getFieldValue('A'))}</div><div>${esc(block.getFieldValue('B'))}</div></section>`);
-        if(block.type === 'web_footer') html.push(`<footer>${esc(block.getFieldValue('TEXT'))}</footer>`);
+        if(block.type === 'web_emoji'){ hasEmoji = true; html.push(`<div class="hero-emoji">${esc(block.getFieldValue('EMOJI'))}</div>`); }
+        if(block.type === 'web_button'){ hasButton = true; buttonMessage = block.getFieldValue('MESSAGE') || buttonMessage; html.push(`<button onclick="showMessage()">${esc(block.getFieldValue('LABEL'))}</button><p id="message">כאן תופיע הודעה מהכפתור...</p>`); }
+        if(block.type === 'web_columns'){ hasColumns = true; html.push(`<section class="columns"><div>${esc(block.getFieldValue('A'))}</div><div>${esc(block.getFieldValue('B'))}</div></section>`); }
+        if(block.type === 'web_footer'){ hasFooter = true; html.push(`<footer>${esc(block.getFieldValue('TEXT'))}</footer>`); }
         if(block.type === 'web_card_shape') cardShape = block.getFieldValue('SHAPE') || cardShape;
         if(block.type === 'web_shadow') shadow = block.getFieldValue('SHADOW') || shadow;
         if(block.type === 'web_title_color') titleColor = block.getFieldValue('COLOR') || titleColor;
@@ -193,8 +194,59 @@ button:hover {
   transform: scale(1.07);
 }`;
       $('htmlCode').value = `<main class="page-card">\n  ${html.join('\n  ')}\n</main>`;
-      $('cssCode').value = `body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: ${bg};\n}\n\n.page-card {\n  background: white;\n  width: ${widthByShape[cardShape] || 'min(430px, 92vw)'};\n  margin: 42px auto;\n  padding: 30px;\n  border-radius: ${radiusByShape[cardShape] || '30px'};\n  box-shadow: ${shadowByStyle[shadow] || shadowByStyle.soft};\n}\n\nh1 { color: ${titleColor ? titleColors[titleColor] : accent}; }\n\n.hero-emoji {\n  font-size: 76px;\n  margin: 18px 0;\n}\n\nbutton {\n  background: ${buttonBackground};\n  color: ${buttonColor};\n  border: 0;\n  border-radius: ${buttonRadius};\n  padding: 13px 22px;\n  font-weight: bold;\n  cursor: pointer;\n  box-shadow: ${buttonShadow};\n  transition: .18s ease;\n}${hoverCss}\n\n.columns {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 12px;\n  margin: 18px 0;\n}\n\n.columns div, #message, footer {\n  background: ${soft};\n  border-radius: 18px;\n  padding: 12px;\n}`;
-      $('jsCode').value = `function showMessage() {\n  document.getElementById("message").textContent = "${String(buttonMessage).replaceAll('"','\\"')}";\n}`;
+      const cssParts = [`body {
+  font-family: Arial, sans-serif;
+  direction: rtl;
+  text-align: center;
+  background: ${bg};
+}`,
+`.page-card {
+  background: white;
+  width: ${widthByShape[cardShape] || 'min(430px, 92vw)'};
+  margin: 42px auto;
+  padding: 30px;
+  border-radius: ${radiusByShape[cardShape] || '30px'};
+  box-shadow: ${shadowByStyle[shadow] || shadowByStyle.soft};
+}`,
+`h1 { color: ${titleColor ? titleColors[titleColor] : accent}; }`];
+      if(hasEmoji) cssParts.push(`.hero-emoji {
+  font-size: 76px;
+  margin: 18px 0;
+}`);
+      if(hasButton) cssParts.push(`button {
+  background: ${buttonBackground};
+  color: ${buttonColor};
+  border: 0;
+  border-radius: ${buttonRadius};
+  padding: 13px 22px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: ${buttonShadow};
+  transition: .18s ease;
+}${hoverCss}`);
+      if(hasColumns) cssParts.push(`.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.columns div {
+  background: ${soft};
+  border-radius: 18px;
+  padding: 12px;
+}`);
+      if(hasButton) cssParts.push(`#message {
+  background: ${soft};
+  border-radius: 18px;
+  padding: 12px;
+}`);
+      if(hasFooter) cssParts.push(`footer {
+  background: ${soft};
+  border-radius: 18px;
+  padding: 12px;
+}`);
+      $('cssCode').value = cssParts.filter(Boolean).join('\n\n');      $('jsCode').value = `function showMessage() {\n  document.getElementById("message").textContent = "${String(buttonMessage).replaceAll('"','\\"')}";\n}`;
       runCode();
       $('feedback').className='feedback good';
       $('feedback').textContent='Blockly יצר עמוד חי. גררו עוד בלוק או פתחו הצצה לקוד כדי לראות מה נוצר.';

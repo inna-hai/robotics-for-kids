@@ -35,6 +35,7 @@ assert.ok(lesson2.title.includes('סטודיו עיצוב'), 'lesson 2 focuses o
 assert.equal(lesson2.mode, 'Real Blockly design studio', 'lesson 2 uses real Blockly design studio mode');
 assert.equal(lesson2.realBlocklyBuilder, true, 'lesson 2 enables real Blockly workspace');
 assert.ok(lesson2.exercises.some(ex => ex.title.includes('Hover')), 'lesson 2 includes hover design exercise');
+assert.ok(lesson2.exercises[0].title.includes('מתחילים פשוט'), 'lesson 2 starts simple before adding design blocks');
 assert.ok(lesson2.exercises.length >= 8, 'lesson 2 includes many exercises');
 assert.ok(lesson2.vocabulary.some(v => v[0] === 'hover'), 'lesson 2 vocabulary includes hover');
 
@@ -150,6 +151,7 @@ assert.ok(play.includes('Blockly.inject'), 'play page injects a real Blockly wor
 assert.ok(play.includes('defineWebBuilderBlocks'), 'play page defines draggable Web builder blocks');
 assert.ok(play.includes('webBuilderToolbox'), 'play page exposes a Blockly toolbox');
 assert.ok(play.includes('web_card_shape') && play.includes('web_hover'), 'play page defines design studio blocks for lesson 2');
+assert.ok(play.includes('hasButton') && play.includes('cssParts'), 'generated CSS only includes styles for blocks students added');
 assert.ok(play.includes('סטודיו עיצוב'), 'play page toolbox includes design studio category');
 assert.ok(play.includes('generateCodeFromBlockly'), 'play page generates HTML/CSS/JS from connected Blockly blocks');
 assert.ok(play.includes('shareProject'), 'play page can create a share link for the student project');

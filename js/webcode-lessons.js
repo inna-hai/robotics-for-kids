@@ -684,9 +684,9 @@
       { minutes: '82–90', title: 'גלריית עיצובים ושיתוף', teacher: 'מבקשים מכל תלמיד להעתיק קישור ציבורי ולשתף תוצר אחד.', students: 'מציגים בחירה עיצובית אחת ומסבירים למה בחרו אותה.' }
     ],
     exercises: [
-      { id: 1, minutes: '8–16', title: 'תרגול 1 — בוחרים פלטת עיצוב', prompt: 'גררו/שנו בלוק “עיצוב עמוד” ובחרו פלטה שמתאימה לנושא שלכם.', hint: 'הפלטה משנה צבעי background וכפתורים ב־CSS.', check: { cssIncludes: ['background:'] } },
-      { id: 2, minutes: '16–25', title: 'תרגול 2 — צורת כרטיס', prompt: 'חברו בלוק “צורת כרטיס” ובחרו עגול, חד, רחב או בועת קומיקס.', hint: 'חפשו אחר כך בקוד את border-radius.', check: { cssIncludes: ['border-radius'] } },
-      { id: 3, minutes: '25–34', title: 'תרגול 3 — מוסיפים צל', prompt: 'חברו בלוק “צל כרטיס” ובחרו צל עדין, דרמטי, זוהר או בלי צל.', hint: 'צל ב־CSS נקרא box-shadow.', check: { cssIncludes: ['box-shadow'] } },
+      { id: 1, minutes: '8–16', title: 'תרגול 1 — מתחילים פשוט', prompt: 'העמוד מתחיל רק עם עיצוב בסיסי, כותרת ופסקה. שנו את פלטת העיצוב ובדקו מה השתנה.', hint: 'בהתחלה אין הרבה בלוקים — זה בכוונה. נבנה את העיצוב בשלבים.', check: { cssIncludes: ['background:'] } },
+      { id: 2, minutes: '16–25', title: 'תרגול 2 — מוסיפים בלוק ראשון', prompt: 'עכשיו גררו בעצמכם בלוק “צורת כרטיס” וחברו אותו לשרשרת.', hint: 'זה הבלוק הראשון שהתלמיד מוסיף לבד ל־starter הפשוט.', check: { cssIncludes: ['border-radius'] } },
+      { id: 3, minutes: '25–34', title: 'תרגול 3 — מוסיפים עומק', prompt: 'גררו בלוק “צל כרטיס”, חברו אותו אחרי צורת הכרטיס, ובחרו צל.', hint: 'צל ב־CSS נקרא box-shadow.', check: { cssIncludes: ['box-shadow'] } },
       { id: 4, minutes: '34–43', title: 'תרגול 4 — צבע כותרת', prompt: 'חברו בלוק “צבע כותרת” ובחרו צבע שמתאים לפלטה.', hint: 'הכותרת היא h1.', check: { cssIncludes: ['h1 { color:'] } },
       { id: 5, minutes: '43–52', title: 'תרגול 5 — סגנון כפתור', prompt: 'חברו בלוק “סגנון כפתור” ובחרו גלולה, קובייה, ניאון או עדין.', hint: 'הכפתור משתנה דרך background, border-radius ו־box-shadow.', check: { cssIncludes: ['button {', 'border-radius'] } },
       { id: 6, minutes: '52–62', title: 'תרגול 6 — אפקט Hover', prompt: 'חברו בלוק “אפקט מעבר עכבר” ובדקו מה קורה כשעוברים על הכפתור.', hint: 'Hover הוא עיצוב שקורה רק כשעוברים עם העכבר.', check: { cssIncludes: ['button:hover'] } },
