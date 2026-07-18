@@ -9,7 +9,7 @@
   };
 
   const makeStarter = ({ title, subtitle, body, cssExtra = '', js }) => ({
-    html: `<main class="app-card">\n  <div class="badge">AppForge</div>\n  <h1>${title}</h1>\n  <p class="intro">${subtitle}</p>\n  ${body}\n</main>`,
+    html: `<main class="app-card">\n  <div class="badge">WebMakers</div>\n  <h1>${title}</h1>\n  <p class="intro">${subtitle}</p>\n  ${body}\n</main>`,
     css: `body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #0f172a, #1d4ed8 55%, #7c3aed);\n  color: #0f172a;\n}\n\n.app-card {\n  background: white;\n  width: min(680px, 94vw);\n  margin: 34px auto;\n  padding: 28px;\n  border-radius: 30px;\n  box-shadow: 0 24px 70px rgba(15, 23, 42, .35);\n}\n\n.badge {\n  display: inline-block;\n  background: #ede9fe;\n  color: #6d28d9;\n  border-radius: 999px;\n  padding: 7px 14px;\n  font-weight: bold;\n}\n\n.intro { color: #475569; line-height: 1.6; }\nbutton { border: 0; border-radius: 999px; padding: 12px 20px; background: #2563eb; color: white; font-weight: bold; cursor: pointer; margin: 6px; }\ninput, select, textarea { width: min(420px, 100%); padding: 12px; border: 2px solid #cbd5e1; border-radius: 14px; margin: 6px; font-family: inherit; }\n.output, #output { background: #f8fafc; border-radius: 18px; padding: 16px; margin-top: 16px; min-height: 54px; text-align: right; }\n.item { background: #eff6ff; border-radius: 14px; padding: 10px; margin: 8px 0; }\n${cssExtra}`,
     js
   });
@@ -123,6 +123,110 @@
     keywords: ['ideas', 'renderIdeas']
   });
 
+  const productOverrides = [
+    {
+      index: 5,
+      title: 'Gadget Store — חנות גאדג׳טים חכמה',
+      story: 'הילדים מקבלים חנות קטנה של גאדג׳טים לכיתה: רובוט, רחפן, מנורת גיימינג ועוד. הם רואים שמוצר אמיתי מתחיל מדאטה שמצויר למסך.',
+      mission: 'לבנות קטלוג מוצרים חי מתוך array ולהבין ש־map הופך דאטה לכרטיסים במסך.',
+      body: '<button onclick="renderProducts()">🛒 פתיחת החנות</button>\n  <section id="output" class="output"></section>',
+      js: 'const products = [\n  { name: "רובוט שולחני", price: 79, emoji: "🤖" },\n  { name: "רחפן מיני", price: 120, emoji: "🚁" },\n  { name: "מנורת גיימינג", price: 45, emoji: "💡" }\n];\n\nfunction renderProducts() {\n  document.getElementById("output").innerHTML = products.map(product => `<div class="item">${product.emoji} ${product.name} — ${product.price}₪</div>`).join("");\n}\n\nrenderProducts();',
+      concept: 'array of objects + map', keywords: ['products','map'], hook: 'חנות גאדג׳טים מופיעה מכמה שורות דאטה'
+    },
+    {
+      index: 6,
+      title: 'Filter Lab — מסנן בחירות חכם',
+      story: 'בונים מסנן כמו באתר אמיתי: בוחרים קטגוריה, ורק הפריטים המתאימים נשארים על המסך.',
+      mission: 'להבין filter דרך מוצר שימושי: סינון משחקים/גאדג׳טים לפי קטגוריה.',
+      body: '<select id="categoryInput"><option value="all">הכול</option><option value="game">משחקים</option><option value="robot">רובוטים</option></select>\n  <button onclick="filterItems()">🔎 סינון</button>\n  <section id="output" class="output"></section>',
+      js: 'const items = [\n  { name: "משחק חלל", category: "game" },\n  { name: "רובוט עוזר", category: "robot" },\n  { name: "משחק חידות", category: "game" }\n];\n\nfunction filterItems() {\n  const category = document.getElementById("categoryInput").value;\n  const results = category === "all" ? items : items.filter(item => item.category === category);\n  document.getElementById("output").innerHTML = results.map(item => `<div class="item">${item.name}</div>`).join("");\n}\n\nfilterItems();',
+      concept: 'filter + category', keywords: ['filter','category'], hook: 'לוחצים והמסך מציג רק מה שבחרנו'
+    },
+    {
+      index: 7,
+      title: 'Search Station — תחנת חיפוש מהירה',
+      story: 'האפליקציה מרגישה כמו מנוע חיפוש קטן: מקלידים מילה ומקבלים תוצאות מתוך רשימה.',
+      mission: 'לבנות חיפוש ידידותי עם includes ולהבין איך אפליקציות מוצאות מידע.',
+      body: '<input id="searchInput" placeholder="חפשו רובוט / משחק / AI">\n  <button onclick="searchItems()">🔍 חיפוש</button>\n  <section id="output" class="output"></section>',
+      js: 'const ideas = ["רובוט מנקה שולחן", "משחק חלל", "עוזר AI לשיעורים", "אפליקציית ציור"];\n\nfunction searchItems() {\n  const search = document.getElementById("searchInput").value;\n  const results = ideas.filter(idea => idea.includes(search));\n  document.getElementById("output").innerHTML = results.map(idea => `<div class="item">🔍 ${idea}</div>`).join("") || "לא נמצאו תוצאות";\n}\n\nsearchItems();',
+      concept: 'search + includes', keywords: ['includes','search'], hook: 'כותבים מילה והאפליקציה מוצאת תוצאות'
+    },
+    {
+      index: 8,
+      title: 'Save Magic — אפליקציה שזוכרת',
+      story: 'הילדים מגלים רגע קסם: מוסיפים משימה, מרעננים, והיא נשארת. זה מרגיש כמו אפליקציה אמיתית.',
+      mission: 'להכיר localStorage בצורה פשוטה: שמירה בדפדפן בלי שרת.',
+      body: '<input id="noteInput" placeholder="משהו שהאפליקציה צריכה לזכור">\n  <button onclick="saveNote()">💾 שמירה</button>\n  <button onclick="loadNote()">📂 טעינה</button>\n  <section id="output" class="output"></section>',
+      js: 'function saveNote() {\n  const note = document.getElementById("noteInput").value;\n  localStorage.setItem("webmakers-note", note);\n  document.getElementById("output").textContent = "נשמר! עכשיו אפשר לרענן ולטעון.";\n}\n\nfunction loadNote() {\n  const note = localStorage.getItem("webmakers-note") || "אין עדיין זיכרון שמור";\n  document.getElementById("output").textContent = note;\n}\n\nloadNote();',
+      concept: 'localStorage + getItem/setItem', keywords: ['localStorage','setItem'], hook: 'מרעננים והאפליקציה עדיין זוכרת'
+    },
+    {
+      index: 9,
+      title: 'Class Dashboard — דשבורד כיתה',
+      story: 'בונים דשבורד שמסכם נתונים של הכיתה: כמה רעיונות, כמה נקודות ומה ממוצע ההתקדמות.',
+      mission: 'להבין חישובי דאטה פשוטים דרך כרטיסי מדדים צבעוניים.',
+      body: '<button onclick="renderDashboard()">📊 הצגת דשבורד</button>\n  <section id="output" class="output"></section>',
+      js: 'const teams = [\n  { name: "צוות רובוטים", points: 8 },\n  { name: "צוות חלל", points: 12 },\n  { name: "צוות AI", points: 10 }\n];\n\nfunction renderDashboard() {\n  const total = teams.reduce((sum, team) => sum + team.points, 0);\n  const average = Math.round(total / teams.length);\n  document.getElementById("output").innerHTML = `<div class="item">👥 צוותים: ${teams.length}</div><div class="item">⭐ סך נקודות: ${total}</div><div class="item">📈 ממוצע: ${average}</div>`;\n}\n\nrenderDashboard();',
+      concept: 'reduce + metrics', keywords: ['reduce','teams'], hook: 'מספרים הופכים לדשבורד כמו במוצר אמיתי'
+    }
+  ];
+
+  productOverrides.forEach(item => Object.assign(lessons[item.index], {
+    title: item.title,
+    concept: item.concept,
+    story: item.story,
+    mission: item.mission,
+    starter: makeStarter({ title: item.title, subtitle: item.mission, body: item.body, js: item.js }),
+    lessonFlow: wowFlow(item.hook, 'בונים פיצ׳ר דאטה קטן', `מושג מרכזי: ${item.concept}`, 'יוצרים גרסת דאטה אישית'),
+    exercises: wowExercises(item.keywords, `הריצו את ${item.title}, שנו נתון אחד ובדקו איך המסך השתנה.`),
+    keywords: item.keywords,
+    vocabulary: [['data','מידע שהאפליקציה מציגה או מחשבת'],['array','רשימת נתונים'],[item.keywords[0],'מילת מפתח מרכזית בשיעור'],[item.keywords[1],'פעולה/רעיון מרכזי בקוד']]
+  }));
+
+  const middleOverrides = [
+    [10,'Quiz Arena — חידון עם ניקוד','חידון כיתתי שמחזיר משוב, מוסיף נקודות ומרגיש כמו משחק קצר.','לבנות חידון עם score, if ומשוב ברור למשתמש.','<input id="answerInput" placeholder="איזו שפה מעצבת?">\n  <button onclick="checkAnswer()">בדיקת תשובה</button>\n  <section id="output" class="output">ניקוד: 0</section>','let score = 0;\nfunction checkAnswer() {\n  const answer = document.getElementById("answerInput").value;\n  if (answer === "CSS") score = score + 1;\n  document.getElementById("output").textContent = answer === "CSS" ? "נכון! ניקוד: " + score : "כמעט — נסו שוב";\n}','score','if','תשובה נכונה מקפיצה ניקוד כמו משחק'],
+    [11,'Recommender — ממליץ משחקים','האפליקציה ממליצה משחק לפי מצב רוח: רגוע, אקשן או חשיבה.','לבנות מנוע המלצות קטן עם כללי if פשוטים.','<select id="moodInput"><option>רגוע</option><option>אקשן</option><option>חשיבה</option></select>\n  <button onclick="recommendGame()">🎮 המלצה</button>\n  <section id="output" class="output"></section>','function recommendGame() {\n  const mood = document.getElementById("moodInput").value;\n  let recommendation = "משחק בנייה";\n  if (mood === "אקשן") recommendation = "משחק חלל מהיר";\n  if (mood === "חשיבה") recommendation = "חידת רובוטים";\n  document.getElementById("output").textContent = "ההמלצה שלך: " + recommendation;\n}','recommendation','mood','בוחרים מצב רוח ומקבלים המלצה אישית'],
+    [12,'Rank It — דירוג רעיונות','מדרגים רעיונות לפי ניקוד ומציגים את הטובים ביותר למעלה.','להכיר sort דרך דירוג דברים שילדים המציאו.','<button onclick="rankIdeas()">🏆 דירוג רעיונות</button>\n  <section id="output" class="output"></section>','const ideas = [\n  { name: "רובוט כיתה", rating: 8 },\n  { name: "משחק חלל", rating: 10 },\n  { name: "עוזר AI", rating: 9 }\n];\nfunction rankIdeas() {\n  ideas.sort((a, b) => b.rating - a.rating);\n  document.getElementById("output").innerHTML = ideas.map(idea => `<div class="item">${idea.rating}⭐ ${idea.name}</div>`).join("");\n}','sort','rating','לחיצה אחת מסדרת רעיונות כמו טבלת ליגה'],
+    [13,'Mini Cart — עגלת בחירה','מוסיפים מוצרים לעגלה ורואים סכום מתעדכן.','לבנות cart state וחישוב total פשוט.','<button onclick="addToCart(\'רובוט\', 50)">🤖 רובוט</button>\n  <button onclick="addToCart(\'רחפן\', 80)">🚁 רחפן</button>\n  <section id="output" class="output"></section>','const cart = [];\nfunction addToCart(name, price) {\n  cart.push({ name, price });\n  const total = cart.reduce((sum, item) => sum + item.price, 0);\n  document.getElementById("output").innerHTML = cart.map(item => `<div class="item">${item.name} — ${item.price}₪</div>`).join("") + `<b>סה״כ: ${total}₪</b>`;\n}','cart','total','כפתורים מוסיפים מוצרים והסכום משתנה'],
+    [14,'Finder Pro — מאתר מוצרים','מחברים חיפוש וסינון לכלי אחד שמרגיש כמו אתר אמיתי.','לבנות Product Finder עם search + filter + render.','<input id="searchInput" placeholder="חיפוש">\n  <button onclick="findProducts()">🔎 מציאה</button>\n  <section id="output" class="output"></section>','const products = ["רובוט לימודי", "משחק חלל", "ערכת AI", "רחפן צילום"];\nfunction findProducts() {\n  const search = document.getElementById("searchInput").value;\n  const results = products.filter(product => product.includes(search));\n  document.getElementById("output").innerHTML = results.map(product => `<div class="item">${product}</div>`).join("");\n}','products','filter','חיפוש וסינון עובדים יחד כמו אתר אמיתי'],
+    [15,'Mock API — שרת מדומה','האפליקציה מקבלת נתונים כאילו משרת, בלי להסתבך בשרת אמיתי.','להכיר רעיון של API דרך Promise/mock data ידידותי.','<button onclick="loadData()">🌐 טעינת נתונים</button>\n  <section id="output" class="output"></section>','function mockApi() {\n  return Promise.resolve(["נתון מהשרת", "משתמשים פעילים: 24", "סטטוס: תקין"]);\n}\nfunction loadData() {\n  mockApi().then(data => {\n    document.getElementById("output").innerHTML = data.map(row => `<div class="item">🌐 ${row}</div>`).join("");\n  });\n}','mockApi','Promise','לוחצים וטוענים נתונים כאילו מהאינטרנט'],
+    [16,'Weather Station — תחזית מדומה','בוחרים עיר ומקבלים תחזית מתוך דאטה מדומה.','להבין async data דרך אפליקציה מוכרת: מזג אוויר.','<select id="cityInput"><option>חולון</option><option>תל אביב</option><option>ירושלים</option></select>\n  <button onclick="showWeather()">☀️ תחזית</button>\n  <section id="output" class="output"></section>','const weather = { "חולון": "שמשי 28°", "תל אביב": "לח 27°", "ירושלים": "נעים 24°" };\nfunction showWeather() {\n  const city = document.getElementById("cityInput").value;\n  document.getElementById("output").textContent = city + ": " + weather[city];\n}','weather','city','בוחרים עיר והדאטה משתנה'],
+    [17,'Metrics Dashboard — כרטיסי מדדים','כמו מנהלי מוצר: רואים כמה משתמשים, כמה משימות וכמה הצלחה.','לבנות dashboard עם כרטיסי metrics.','<button onclick="renderMetrics()">📊 מדדים</button>\n  <section id="output" class="output"></section>','const metrics = { users: 32, tasks: 87, success: "91%" };\nfunction renderMetrics() {\n  document.getElementById("output").innerHTML = `<div class="item">👥 משתמשים: ${metrics.users}</div><div class="item">✅ משימות: ${metrics.tasks}</div><div class="item">📈 הצלחה: ${metrics.success}</div>`;\n}','metrics','dashboard','נתונים הופכים לכרטיסי מנהלים'],
+    [18,'Bar Chart Lab — גרף בלי ספרייה','יוצרים גרף עמודות פשוט עם HTML ו־CSS בלבד.','להבין visual data דרך עמודות אחוזים.','<button onclick="renderChart()">📊 ציור גרף</button>\n  <section id="output" class="output"></section>','const scores = [40, 75, 55, 90];\nfunction renderChart() {\n  document.getElementById("output").innerHTML = scores.map(score => `<div class="item"><div style="background:#7c3aed;color:white;width:${score}%;padding:8px;border-radius:10px">${score}%</div></div>`).join("");\n}','scores','width','מספרים הופכים לגרף צבעוני'],
+    [19,'Dashboard Project — מרכז שליטה','מיני־פרויקט שמחבר API מדומה, מדדים וגרף.','לבנות דשבורד קטן לעיר/כיתה/משחק ולהציג Demo.','<button onclick="renderDashboard()">🚀 פתיחת מרכז שליטה</button>\n  <section id="output" class="output"></section>','const dashboard = { title: "מרכז השליטה הכיתתי", active: 18, progress: 82 };\nfunction renderDashboard() {\n  document.getElementById("output").innerHTML = `<h2>${dashboard.title}</h2><div class="item">פעילים: ${dashboard.active}</div><div class="item">התקדמות: ${dashboard.progress}%</div>`;\n}','dashboard','renderDashboard','דשבורד שלם נפתח בלחיצה']
+  ];
+
+  middleOverrides.forEach(([index,title,story,mission,body,js,k1,k2,hook]) => Object.assign(lessons[index], {
+    title, story, mission, concept: `${k1} + ${k2}`,
+    starter: makeStarter({ title, subtitle: mission, body, js }),
+    lessonFlow: wowFlow(hook, 'בונים את הפיצ׳ר המרכזי', `מושג מרכזי: ${k1} / ${k2}`, 'יוצרים גרסת מוצר משלכם'),
+    exercises: wowExercises([k1,k2], `הריצו את ${title}, שנו נתון אחד ובדקו את התוצאה.`),
+    keywords: [k1,k2],
+    vocabulary: [['product','מוצר קטן שאפשר להציג'],['logic','חוקי פעולה של האפליקציה'],[k1,'מילת מפתח מרכזית'],[k2,'רעיון נוסף בקוד']]
+  }));
+
+  const finalOverrides = [
+    [20,'Prompt Lab — בונה פרומפטים','כלי שעוזר לבנות פרומפט טוב לפי מטרה, קהל וסגנון.','להבין ש־AI טוב מתחיל בהוראה ברורה ומובנית.','<input id="goalInput" placeholder="מה המטרה?">\n  <select id="toneInput"><option>חברי</option><option>רשמי</option><option>קצר</option></select>\n  <button onclick="buildPrompt()">🤖 בניית פרומפט</button>\n  <section id="output" class="output"></section>','function buildPrompt() {\n  const goal = document.getElementById("goalInput").value || "להסביר רעיון";\n  const tone = document.getElementById("toneInput").value;\n  const prompt = `כתוב/כתבי בצורה ${tone}: ${goal}. הוסף דוגמה שמתאימה לילדים.`;\n  document.getElementById("output").textContent = prompt;\n}','prompt','tone','ממלאים שדות ונוצר פרומפט מקצועי'],
+    [21,'Intent Sorter — מסווג הודעות','כלי שמחליט אם הודעה היא שאלה, בקשה או מחמאה לפי מילים.','להבין classification בלי מודל אמיתי: כללים פשוטים שמסווגים טקסט.','<textarea id="messageInput" placeholder="כתבו הודעה"></textarea>\n  <button onclick="classifyMessage()">🧠 סיווג</button>\n  <section id="output" class="output"></section>','function classifyMessage() {\n  const message = document.getElementById("messageInput").value;\n  let intent = "הודעה כללית";\n  if (message.includes("?")) intent = "שאלה";\n  if (message.includes("תודה")) intent = "מחמאה/תודה";\n  if (message.includes("תעשה")) intent = "בקשה";\n  document.getElementById("output").textContent = "כוונה מזוהה: " + intent;\n}','classify','intent','כותבים הודעה והאפליקציה מנחשת כוונה'],
+    [22,'Tone Changer — משנה סגנון','הופכים טקסט לקצר, חברי או רשמי בלחיצה.','להבין מוצר AI מדומה דרך שינוי טון של טקסט.','<textarea id="textInput" placeholder="כתבו משפט"></textarea>\n  <select id="toneInput"><option>קצר</option><option>חברי</option><option>רשמי</option></select>\n  <button onclick="rewriteText()">✍️ שינוי סגנון</button>\n  <section id="output" class="output"></section>','function rewriteText() {\n  const text = document.getElementById("textInput").value || "אני צריך עזרה בפרויקט";\n  const tone = document.getElementById("toneInput").value;\n  const prefix = tone === "רשמי" ? "שלום, " : tone === "חברי" ? "היי! " : "בקצרה: ";\n  document.getElementById("output").textContent = prefix + text;\n}','rewrite','tone','משפט אחד מקבל כמה סגנונות'],
+    [23,'Safety Shield — שומר בטיחות','בודקים קלט לפני שמחזירים תשובה, כמו מוצר אחראי.','להבין guardrails דרך חסימת מילים/בקשות לא מתאימות בצורה פשוטה.','<input id="requestInput" placeholder="מה לבקש מהעוזר?">\n  <button onclick="checkRequest()">🛡️ בדיקה</button>\n  <section id="output" class="output"></section>','const blockedWords = ["סיסמה", "לפגוע", "פרטי אשראי"];\nfunction checkRequest() {\n  const request = document.getElementById("requestInput").value;\n  const blocked = blockedWords.some(word => request.includes(word));\n  document.getElementById("output").textContent = blocked ? "נעצר לבדיקה: צריך לשמור על בטיחות" : "הבקשה נראית תקינה ✅";\n}','blockedWords','some','האפליקציה יודעת לעצור בקשה מסוכנת'],
+    [24,'AI Helper Mini — עוזר כיתתי','מחברים פרומפט, סיווג ובטיחות לעוזר AI מדומה אחד.','לבנות מוצר AI קטן עם UI, כללים ותגובה חכמה.','<input id="questionInput" placeholder="שאלו את העוזר הכיתתי">\n  <button onclick="answerQuestion()">🤖 תשובה</button>\n  <section id="output" class="output"></section>','function answerQuestion() {\n  const question = document.getElementById("questionInput").value;\n  const answer = question.includes("קוד") ? "נסו להריץ ואז לקרוא את הודעת השגיאה." : "פרקו את הבעיה לצעד קטן אחד.";\n  document.getElementById("output").textContent = answer;\n}','assistant','question','שאלה מקבלת תשובה בסגנון עוזר כיתתי'],
+    [25,'Product Blueprint — מתכננים מוצר','לפני קוד: מגדירים משתמש, בעיה, פתרון ומסכים.','ללמוד חשיבה מוצרית דרך user story ותכנון MVP.','<input id="userInput" placeholder="מי המשתמש?">\n  <input id="problemInput" placeholder="איזו בעיה פותרים?">\n  <button onclick="buildSpec()">📋 יצירת אפיון</button>\n  <section id="output" class="output"></section>','function buildSpec() {\n  const user = document.getElementById("userInput").value || "תלמיד/ה";\n  const problem = document.getElementById("problemInput").value || "צריך לארגן רעיונות";\n  document.getElementById("output").innerHTML = `<div class="item">משתמש: ${user}</div><div class="item">בעיה: ${problem}</div><div class="item">MVP: גרסה קטנה שעובדת</div>`;\n}','userStory','mvp','רעיון הופך לאפיון מוצר קצר'],
+    [26,'MVP Builder — גרסה ראשונה עובדת','בונים גרסה קטנה של מוצר, לא את כל החלום.','להבין MVP: פיצ׳ר אחד שעובד מקצה לקצה.','<button onclick="launchMvp()">🚀 השקת MVP</button>\n  <section id="output" class="output"></section>','const features = ["קלט משתמש", "כפתור פעולה", "תוצאה במסך"];\nfunction launchMvp() {\n  document.getElementById("output").innerHTML = `<h2>MVP מוכן</h2>` + features.map(feature => `<div class="item">✅ ${feature}</div>`).join("");\n}','features','mvp','לוחצים ורואים מה חייב להיות בגרסה ראשונה'],
+    [27,'QA Lab — בודקים כמו מפתחים','כותבים בדיקות ידניות ומסמנים באגים לפני Demo.','להכיר test cases ודיבאג כמקצוע, לא ככישלון.','<button onclick="runTests()">🧪 הרצת בדיקות</button>\n  <section id="output" class="output"></section>','const testCases = ["הכפתור עובד", "שדה ריק לא שובר", "התוצאה ברורה"];\nfunction runTests() {\n  document.getElementById("output").innerHTML = testCases.map(test => `<div class="item">🧪 ${test}: עבר</div>`).join("");\n}','testCases','bug','בדיקות הופכות את המוצר לאמין יותר'],
+    [28,'UX Polish — משפרים חוויה','משפרים מיקרו־קופי, מצב ריק וצבעים כדי שמוצר ירגיש טוב.','להבין UX דרך שדרוגים קטנים שמרגישים גדולים.','<button onclick="polishUx()">✨ שיפור UX</button>\n  <section id="output" class="output">אין נתונים.</section>','function polishUx() {\n  document.getElementById("output").innerHTML = `<h2>אין עדיין רעיונות</h2><p>התחילו בהוספת רעיון ראשון — זה לוקח 10 שניות.</p>`;\n  document.getElementById("output").style.background = "#fef3c7";\n}','ux','emptyState','מצב ריק הופך להזמנה לפעולה'],
+    [29,'Demo Day — פרויקט סיום','מציגים מוצר Web קטן שעובד: בעיה, פתרון, דאטה וקוד חשוב.','לסיים עם פרויקט אישי/צוותי שאפשר להציג בגאווה.','<button onclick="showDemo()">🎤 הצגת Demo</button>\n  <section id="output" class="output"></section>','const project = { name: "המוצר שלי", problem: "עוזר לארגן רעיונות", tech: "HTML + CSS + JavaScript" };\nfunction showDemo() {\n  document.getElementById("output").innerHTML = `<h2>${project.name}</h2><div class="item">בעיה: ${project.problem}</div><div class="item">טכנולוגיה: ${project.tech}</div><div class="item">הדמו עובד 🎉</div>`;\n}','project','demo','לחיצה אחת מציגה פרויקט גמר']
+  ];
+
+  finalOverrides.forEach(([index,title,story,mission,body,js,k1,k2,hook]) => Object.assign(lessons[index], {
+    title, story, mission, concept: `${k1} + ${k2}`,
+    starter: makeStarter({ title, subtitle: mission, body, js }),
+    lessonFlow: wowFlow(hook, 'בונים כלי מוצר קטן', `מושג מרכזי: ${k1} / ${k2}`, 'משדרגים לפרויקט אישי'),
+    exercises: wowExercises([k1,k2], `הריצו את ${title}, שנו קלט אחד והציגו מה השתנה.`),
+    keywords: [k1,k2],
+    vocabulary: [['AI tool','כלי חכם שעוזר למשתמש'],['product thinking','חשיבה על משתמש ובעיה'],[k1,'מילת מפתח מרכזית'],[k2,'רעיון נוסף בקוד']]
+  }));
+
   window.APPFORGE_LESSONS = lessons;
-  window.getAppForgeLesson = function (id) { const n = Number(id || 1); return lessons.find(l => l.id === n) || lessons[0]; };
+  window.getWebMakersLesson = function (id) { const n = Number(id || 1); return lessons.find(l => l.id === n) || lessons[0]; };
 })();

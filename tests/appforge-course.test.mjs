@@ -8,7 +8,7 @@ vm.createContext(sandbox);
 vm.runInContext(read('js/appforge-lessons.js'), sandbox);
 const lessons = sandbox.window.APPFORGE_LESSONS;
 assert.equal(Array.isArray(lessons), true, 'lessons exists');
-assert.equal(lessons.length, 30, 'AppForge has 30 lessons');
+assert.equal(lessons.length, 30, 'WebMakers has 30 lessons');
 assert.deepEqual(Array.from(lessons, l => l.id), Array.from({ length: 30 }, (_, i) => i + 1), 'ids are sequential');
 for (const lesson of lessons) {
   assert.equal(lesson.durationMinutes, 90, `lesson ${lesson.id} is 90 minutes`);
@@ -26,17 +26,22 @@ assert.ok(lessons[1].title.includes('Avatar Studio') && lessons[1].starter.js.in
 assert.ok(lessons[2].title.includes('Screens') && lessons[2].starter.js.includes('showScreen'), 'lesson 3 is a screen navigation app');
 assert.ok(lessons[3].title.includes('Smart Form') && lessons[3].starter.js.includes('validateForm'), 'lesson 4 is a smart validation form');
 assert.ok(lessons[4].title.includes('Class Ideas') && lessons[4].starter.js.includes('pickIdea'), 'lesson 5 is a playful class ideas mini project');
-assert.ok(lessons[8].concept.includes('localStorage'), 'lesson 9 covers localStorage');
-assert.ok(lessons[15].concept.includes('fetch'), 'lesson 16 covers API mock/fetch');
-assert.ok(lessons[20].title.includes('Prompt'), 'lesson 21 starts AI product tools');
-assert.ok(lessons[29].title.includes('Demo Day'), 'lesson 30 is final demo');
+assert.ok(lessons[8].title.includes('Save Magic') && lessons[8].concept.includes('localStorage'), 'lesson 9 covers localStorage as save magic');
+assert.ok(lessons[15].title.includes('Mock API') && lessons[15].starter.js.includes('Promise'), 'lesson 16 covers API mock through a friendly product');
+assert.ok(lessons[20].title.includes('Prompt Lab'), 'lesson 21 starts AI product tools');
+assert.ok(lessons[29].title.includes('Demo Day') && lessons[29].starter.js.includes('project'), 'lesson 30 is final demo');
 const hub = read('appforge.html');
-assert.ok(hub.includes('AppForge Lab') && hub.includes('Web Apps') && hub.includes('AI'), 'hub describes AppForge');
+assert.ok(hub.includes('WebMakers Lab') && hub.includes('Web Apps') && hub.includes('AI'), 'hub describes WebMakers');
 const play = read('appforge-play.html');
 assert.ok(play.includes('textarea id="htmlCode"') && play.includes('iframe id="preview"'), 'play page has editor and preview');
-assert.ok(play.includes('appforgePreviewWidth'), 'play page has resizable preview');
+assert.ok(play.includes('webmakersPreviewWidth'), 'play page has resizable preview');
+assert.ok(lessons[9].title.includes('Class Dashboard'), 'lesson 10 is a dashboard product');
+assert.ok(lessons[10].title.includes('Quiz Arena'), 'lesson 11 starts logic with a game-like quiz');
+assert.ok(lessons[19].title.includes('Dashboard Project'), 'lesson 20 closes dashboard unit with a project');
+assert.ok(lessons[23].title.includes('Safety Shield'), 'lesson 24 covers AI safety in a kid-friendly way');
+
 const slides = read('appforge-slides.html');
 assert.ok(slides.includes('מהלך שיעור 90 דקות') && slides.includes('רצף ה׳–ו׳'), 'slides are dynamic guide');
 const program = read('holon-scope-program.html');
-assert.ok(program.includes('AppForge Lab') && program.includes('appforge.html'), 'Holon program links AppForge');
+assert.ok(program.includes('WebMakers Lab') && program.includes('appforge.html'), 'Holon program links WebMakers');
 console.log('appforge-course tests passed');
