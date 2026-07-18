@@ -229,6 +229,52 @@
         ['משוב', 'הודעה שעוזרת למשתמש להבין מה קרה'],
         ['className', 'שינוי שם class כדי להחליף עיצוב']
       ]
+    },
+    {
+      id: 6,
+      title: 'ניקוד ומשתנים',
+      concept: 'Variable: זוכרים מספר ומשנים אותו',
+      durationMinutes: 90,
+      story: 'אחרי שלמדנו לבדוק תשובות, מוסיפים זיכרון קטן למשחק: משתנה ניקוד שעולה בכל תשובה נכונה ומוצג על המסך.',
+      mission: 'לבנות חידון ניקוד שבו כל תשובה נכונה מוסיפה נקודה, והתוצאה מתעדכנת מיד.',
+      outcome: 'משחק חידון קצר עם משתנה score, עדכון ניקוד ומשוב לשחקן',
+      starter: {
+        html: '<main class="score-game">\n  <h1>משחק הניקוד שלי</h1>\n  <p>ניקוד: <span id="scoreText">0</span></p>\n  <p class="question">מה מוסיף עיצוב לעמוד?</p>\n  <input id="answerInput" placeholder="כתבו תשובה">\n  <button onclick="checkAnswer()">בדקו</button>\n  <button onclick="resetScore()">איפוס ניקוד</button>\n  <p id="feedback">ענו כדי לקבל נקודות.</p>\n</main>',
+        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #fef3c7, #dbeafe);\n}\n\n.score-game {\n  background: white;\n  width: 390px;\n  margin: 45px auto;\n  padding: 28px;\n  border-radius: 28px;\n  box-shadow: 0 16px 35px #fde68a;\n}\n\n#scoreText {\n  display: inline-block;\n  background: #facc15;\n  border-radius: 999px;\n  padding: 6px 14px;\n  font-weight: bold;\n}\n\ninput {\n  width: 100%;\n  padding: 12px;\n  border: 2px solid #cbd5e1;\n  border-radius: 14px;\n  text-align: center;\n}\n\nbutton {\n  margin: 8px 4px;\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 18px;\n  font-weight: bold;\n}\n\n.success { color: #15803d; font-weight: bold; }\n.try-again { color: #b45309; font-weight: bold; }',
+        js: 'let score = 0;\n\nfunction checkAnswer() {\n  const answer = document.getElementById("answerInput").value;\n  const feedback = document.getElementById("feedback");\n\n  if (answer === "CSS") {\n    score = score + 1;\n    document.getElementById("scoreText").textContent = score;\n    feedback.textContent = "נכון! קיבלת נקודה ⭐";\n    feedback.className = "success";\n  } else {\n    feedback.textContent = "כמעט. נסו שוב בלי לאבד נקודות.";\n    feedback.className = "try-again";\n  }\n}\n\nfunction resetScore() {\n  score = 0;\n  document.getElementById("scoreText").textContent = score;\n  document.getElementById("feedback").textContent = "הניקוד אופס.";\n}'
+      },
+      lessonFlow: [
+        { minutes: '0–8', title: 'פתיחה: משחק שזוכר', teacher: 'שואלים איך משחק יודע כמה נקודות יש לנו גם אחרי כמה לחיצות.', students: 'מעלים רעיון של “זיכרון” או מספר שנשמר.' },
+        { minutes: '8–18', title: 'מה זה משתנה?', teacher: 'מסבירים ש־score הוא קופסה עם מספר, ואפשר להגדיל אותה.', students: 'מוצאים בקוד את let score = 0 ואת score = score + 1.' },
+        { minutes: '18–30', title: 'הרצה מודרכת', teacher: 'מריצים, עונים נכון פעמיים, עונים לא נכון, ומאפסים.', students: 'בודקים שהניקוד עולה רק בתשובה נכונה.' },
+        { minutes: '30–55', title: 'תרגולי ניקוד', teacher: 'מדגישים: המשתנה משתנה בקוד, וה־span מציג אותו בעמוד.', students: 'מבצעים תרגולים 1–5.' },
+        { minutes: '55–67', title: 'שדרוג חוקי ניקוד', teacher: 'מדגימים שינוי: תשובה נכונה מוסיפה 2 נקודות או תשובה שגויה מורידה נקודה.', students: 'בוחרים חוק ניקוד אחד ומשנים.' },
+        { minutes: '67–80', title: 'דיבאג משתנה', teacher: 'יוצרים טעות בשם scoreText או score ומראים איך מתקנים.', students: 'מתקנים באג הצגת ניקוד.' },
+        { minutes: '80–90', title: 'בדיקת משחק', teacher: 'מבקשים מזוגות לבדוק אם אפשר “לרמות” את המשחק.', students: 'מנסים, מדווחים ומשפרים חוק אחד.' }
+      ],
+      exercises: [
+        { id: 1, minutes: '18–24', title: 'תרגול 1 — בודקים ניקוד', prompt: 'ענו CSS כמה פעמים ובדקו שהניקוד עולה.', hint: 'כל תשובה נכונה מפעילה score = score + 1.', check: { jsIncludes: ['let score = 0', 'score = score + 1'] } },
+        { id: 2, minutes: '24–31', title: 'תרגול 2 — שאלה חדשה', prompt: 'שנו את שאלת החידון אבל השאירו ניקוד עובד.', hint: 'שנו את הטקסט עם class="question".', check: { htmlIncludes: ['class="question"'] } },
+        { id: 3, minutes: '31–39', title: 'תרגול 3 — תשובה חדשה', prompt: 'שנו את התשובה הנכונה בתנאי.', hint: 'חפשו answer === "CSS".', check: { jsIncludes: ['answer ==='] } },
+        { id: 4, minutes: '39–47', title: 'תרגול 4 — שתי נקודות', prompt: 'שנו את המשחק כך שתשובה נכונה תוסיף 2 נקודות.', hint: 'במקום score + 1 אפשר לכתוב score + 2.', check: { jsIncludes: ['score = score +'] } },
+        { id: 5, minutes: '47–56', title: 'תרגול 5 — עיצוב ניקוד', prompt: 'שנו את העיצוב של #scoreText כדי שהניקוד יהיה בולט יותר.', hint: 'חפשו #scoreText ב־CSS.', check: { cssIncludes: ['#scoreText'] } },
+        { id: 6, minutes: '56–65', title: 'תרגול 6 — איפוס ברור', prompt: 'שנו את הודעת האיפוס למשפט משלכם.', hint: 'חפשו function resetScore.', check: { jsIncludes: ['function resetScore', 'score = 0'] } },
+        { id: 7, minutes: '65–75', title: 'תרגול 7 — תקן את הבאג', prompt: 'שנו לרגע scoreText ל־scoreTex וראו שהמספר לא מתעדכן. תקנו.', hint: 'ה־id ב־HTML חייב להתאים למה ש־JS מחפש.', check: { htmlIncludes: ['id="scoreText"'], jsIncludes: ['getElementById("scoreText")'] } },
+        { id: 8, minutes: '75–84', title: 'תרגול 8 — משחק ניקוד אישי', prompt: 'הפכו את המשחק לחידון בנושא שלכם עם ניקוד, משוב ואיפוס.', hint: 'שנו כותרת, שאלה, תשובה, הודעות ועיצוב.', check: { htmlIncludes: ['scoreText', 'button'], jsIncludes: ['score', 'if', 'else'] } }
+      ],
+      aiHelper: [
+        'הסבירו לילד בכיתה ד׳ מה זה משתנה בעזרת דוגמה של קופת נקודות.',
+        'תנו רעיונות לחוקי ניקוד פשוטים למשחק חידון.',
+        'עזרו למצוא למה הניקוד לא מתעדכן על המסך למרות שהמשתנה משתנה.',
+        'הציעו שדרוג שמוסיף תגמול מיוחד כשמגיעים ל־5 נקודות.'
+      ],
+      vocabulary: [
+        ['variable', 'משתנה: מקום ששומר ערך כמו מספר'],
+        ['let', 'יוצרים משתנה שאפשר לשנות אחר כך'],
+        ['score', 'ניקוד המשחק'],
+        ['span', 'חלק קטן בתוך טקסט שאפשר לעדכן'],
+        ['reset', 'איפוס ערך להתחלה']
+      ]
     }
   ];
 
