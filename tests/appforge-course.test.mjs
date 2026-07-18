@@ -1,0 +1,37 @@
+import { readFileSync } from 'node:fs';
+import { strict as assert } from 'node:assert';
+import vm from 'node:vm';
+const root = new URL('../', import.meta.url);
+const read = path => readFileSync(new URL(path, root), 'utf8');
+const sandbox = { window: {} };
+vm.createContext(sandbox);
+vm.runInContext(read('js/appforge-lessons.js'), sandbox);
+const lessons = sandbox.window.APPFORGE_LESSONS;
+assert.equal(Array.isArray(lessons), true, 'lessons exists');
+assert.equal(lessons.length, 30, 'AppForge has 30 lessons');
+assert.deepEqual(Array.from(lessons, l => l.id), Array.from({ length: 30 }, (_, i) => i + 1), 'ids are sequential');
+for (const lesson of lessons) {
+  assert.equal(lesson.durationMinutes, 90, `lesson ${lesson.id} is 90 minutes`);
+  assert.ok(lesson.unit && lesson.title && lesson.concept && lesson.story, `lesson ${lesson.id} has metadata`);
+  assert.ok(lesson.starter.html.includes('<main'), `lesson ${lesson.id} has HTML starter`);
+  assert.ok(lesson.starter.css.includes('background'), `lesson ${lesson.id} has CSS starter`);
+  assert.ok(lesson.starter.js.includes('function'), `lesson ${lesson.id} has JS starter`);
+  assert.ok(lesson.lessonFlow.length >= 7, `lesson ${lesson.id} has flow`);
+  assert.ok(lesson.exercises.length >= 8, `lesson ${lesson.id} has exercises`);
+  assert.ok(lesson.vocabulary.length >= 4, `lesson ${lesson.id} has vocab`);
+}
+assert.ok(lessons[0].starter.js.includes('tasks') && lessons[0].starter.js.includes('addTask'), 'lesson 1 is a real task app');
+assert.ok(lessons[8].concept.includes('localStorage'), 'lesson 9 covers localStorage');
+assert.ok(lessons[15].concept.includes('fetch'), 'lesson 16 covers API mock/fetch');
+assert.ok(lessons[20].title.includes('Prompt'), 'lesson 21 starts AI product tools');
+assert.ok(lessons[29].title.includes('Demo Day'), 'lesson 30 is final demo');
+const hub = read('appforge.html');
+assert.ok(hub.includes('AppForge Lab') && hub.includes('Web Apps') && hub.includes('AI'), 'hub describes AppForge');
+const play = read('appforge-play.html');
+assert.ok(play.includes('textarea id="htmlCode"') && play.includes('iframe id="preview"'), 'play page has editor and preview');
+assert.ok(play.includes('appforgePreviewWidth'), 'play page has resizable preview');
+const slides = read('appforge-slides.html');
+assert.ok(slides.includes('מהלך שיעור 90 דקות') && slides.includes('רצף ה׳–ו׳'), 'slides are dynamic guide');
+const program = read('holon-scope-program.html');
+assert.ok(program.includes('AppForge Lab') && program.includes('appforge.html'), 'Holon program links AppForge');
+console.log('appforge-course tests passed');
