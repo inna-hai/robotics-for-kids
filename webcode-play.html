@@ -20,7 +20,7 @@
   <main class="main">
     <section class="panel lesson-panel" id="lessonPanel">
       <button class="lesson-toggle" onclick="toggleLessonPanel()" aria-expanded="true" aria-controls="lessonCollapsible">
-        <span>📘 הסבר ותרגולים</span><span class="lesson-toggle-icon" id="lessonToggleIcon">−</span>
+        <span>📘 הסבר ותרגולים</span><span class="lesson-toggle-icon" id="lessonToggleIcon" aria-hidden="true">⌃</span>
       </button>
       <div class="lesson-collapsible" id="lessonCollapsible">
         <div class="info"><span class="chip" id="concept"></span><h1 id="title"></h1><p id="story"></p><p><b>משימה:</b> <span id="mission"></span></p><div class="helper"><b>כלל זהב:</b> בוחרים בלוק → מריצים → רואים מה השתנה. הקוד הוא הצצה, לא נקודת ההתחלה.</div></div>
@@ -75,7 +75,7 @@
       renderBridgeBlocks(); selectExercise(1); runCode(); renderProgress();
     }
     function showTab(name, btn){ document.querySelectorAll('.editor').forEach(e=>e.classList.remove('active')); document.querySelectorAll('.editor-tabs button').forEach(b=>b.classList.remove('active')); $(`tab-${name}`).classList.add('active'); btn.classList.add('active'); }
-    function toggleLessonPanel(){ const panel=$('lessonPanel'); const button=panel.querySelector('.lesson-toggle'); const collapsed=panel.classList.toggle('collapsed'); document.querySelector('.main').classList.toggle('lesson-collapsed', collapsed); button.setAttribute('aria-expanded', String(!collapsed)); $('lessonToggleIcon').textContent = collapsed ? '+' : '−'; if(window.Blockly && blocklyWorkspace) setTimeout(() => Blockly.svgResize(blocklyWorkspace), 120); }
+    function toggleLessonPanel(){ const panel=$('lessonPanel'); const button=panel.querySelector('.lesson-toggle'); const collapsed=panel.classList.toggle('collapsed'); document.querySelector('.main').classList.toggle('lesson-collapsed', collapsed); button.setAttribute('aria-expanded', String(!collapsed)); $('lessonToggleIcon').textContent = collapsed ? '⌄' : '⌃'; if(window.Blockly && blocklyWorkspace) setTimeout(() => Blockly.svgResize(blocklyWorkspace), 120); }
     function showGeneratedCode(){ $('codePeek').open = true; $('codePeek').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('feedback').className='feedback good'; $('feedback').textContent='זה הקוד שנוצר מהבלוקים שלך: HTML למבנה, CSS לעיצוב, JavaScript לפעולה.'; }
 
     let blocklyWorkspace = null;
