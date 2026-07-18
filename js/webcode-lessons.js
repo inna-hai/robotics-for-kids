@@ -505,6 +505,52 @@
         ['UX', 'חוויית משתמש — שיהיה ברור ונעים לשחק'],
         ['reset', 'לחזור להתחלה']
       ]
+    },
+    {
+      id: 12,
+      title: 'מיני־פרויקט ראשון — בלוקי בניית משחק',
+      concept: 'פרויקט: מחברים מסכים · ניקוד · זמן · חיים · ניצחון',
+      durationMinutes: 90,
+      story: 'במקום ללמוד מושג חדש מאפס, מחברים את כל הבלוקים מהשיעורים הקודמים למיני־פרויקט ראשון: משחק כוכבים קצר עם מסך פתיחה, ניקוד, זמן, חיים וניצחון.',
+      mission: 'לבנות מיני־משחק אישי בעזרת בלוקי פרויקט ולבחור לפחות שני שדרוגים.',
+      outcome: 'מיני־משחק Web ראשון שמחבר כמה מערכות יחד, עם הצצה לקוד מאורגן לפי חלקים',
+      starter: {
+        html: '<main class="project-game">\n  <h1>משחק הכוכבים שלי</h1>\n  <p>ניקוד: <span id="scoreText">0</span> | חיים: <span id="livesText">3</span> | זמן: <span id="timeText">20</span></p>\n  <button onclick="startGame()">▶️ התחלה</button>\n  <button onclick="collectStar()">⭐ כוכב</button>\n  <button onclick="hitObstacle()">🌋 מכשול</button>\n  <button onclick="resetGame()">🔁 איפוס</button>\n  <p id="message">לחצו התחלה ובנו את חוקי המשחק שלכם.</p>\n</main>',
+        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #e0f2fe, #fef3c7);\n}\n\n.project-game {\n  background: white;\n  width: 460px;\n  margin: 45px auto;\n  padding: 30px;\n  border-radius: 30px;\n  box-shadow: 0 16px 35px #bae6fd;\n}\n\nspan {\n  display: inline-block;\n  min-width: 36px;\n  background: #fef9c3;\n  border-radius: 999px;\n  padding: 5px 10px;\n  font-weight: bold;\n}\n\nbutton {\n  margin: 7px;\n  padding: 13px 18px;\n  border: 0;\n  border-radius: 999px;\n  background: #0284c7;\n  color: white;\n  font-weight: bold;\n}\n\n.win { background: #dcfce7; border: 3px solid #22c55e; }\n.lose { background: #fee2e2; border: 3px solid #ef4444; }',
+        js: 'let score = 0;\nlet lives = 3;\nlet timeLeft = 20;\nconst target = 5;\n\nfunction startGame() {\n  score = 0;\n  lives = 3;\n  timeLeft = 20;\n  updateScreen();\n  document.getElementById("message").textContent = "המשחק התחיל! אספו 5 כוכבים.";\n}\n\nfunction collectStar() {\n  score = score + 1;\n  updateScreen();\n  if (score >= target) {\n    document.getElementById("message").textContent = "ניצחת! בנית מיני־משחק 🎉";\n    document.querySelector(".project-game").classList.add("win");\n  }\n}\n\nfunction hitObstacle() {\n  lives = lives - 1;\n  updateScreen();\n  if (lives <= 0) {\n    document.getElementById("message").textContent = "נגמרו החיים. נסו שוב.";\n    document.querySelector(".project-game").classList.add("lose");\n  }\n}\n\nfunction updateScreen() {\n  document.getElementById("scoreText").textContent = score;\n  document.getElementById("livesText").textContent = lives;\n  document.getElementById("timeText").textContent = timeLeft;\n}\n\nfunction resetGame() {\n  score = 0;\n  lives = 3;\n  timeLeft = 20;\n  document.querySelector(".project-game").classList.remove("win", "lose");\n  document.getElementById("message").textContent = "לחצו התחלה ובנו את חוקי המשחק שלכם.";\n  updateScreen();\n}'
+      },
+      lessonFlow: [
+        { minutes: '0–8', title: 'פתיחה: פרויקט ראשון', teacher: 'מסבירים שהיום לא לומדים פקודה חדשה — מחברים חלקים מוכרים למשחק אחד.', students: 'מזהים במשחק ניקוד, חיים, זמן, מטרה וכפתורים.' },
+        { minutes: '8–18', title: 'מפת פרויקט', teacher: 'מציירים על הלוח: מסך + ניקוד + חיים + זמן + ניצחון.', students: 'מסמנים איזה בלוק אחראי לכל חלק.' },
+        { minutes: '18–34', title: 'בנייה מודרכת בבלוקי פרויקט', teacher: 'מפעילים בלוקים: שם משחק, יעד, חיים, הודעת ניצחון.', students: 'מריצים ובודקים שהמשחק עדיין עובד אחרי כל בלוק.' },
+        { minutes: '34–50', title: 'מציצים לקוד מאורגן', teacher: 'מראים שהקוד מחולק לפונקציות: startGame, collectStar, hitObstacle, updateScreen.', students: 'מחברים כל פונקציה לכפתור/חוק במשחק.' },
+        { minutes: '50–70', title: 'עבודה עצמאית', teacher: 'כל תלמיד בוחר שני שדרוגים מתוך בלוקי הפרויקט.', students: 'משנים שם, יעד, חיים, הודעות או צבעי ניצחון/הפסד.' },
+        { minutes: '70–82', title: 'בדיקת חברים', teacher: 'מחליפים מחשבים/עמדות ובודקים אם המשחק ברור.', students: 'נותנים משוב אחד ומשפרים דבר אחד.' },
+        { minutes: '82–90', title: 'דמו קצר', teacher: 'מבקשים 2–3 הצגות קצרות.', students: 'מציגים: שם המשחק, המטרה, והשדרוג שבחרו.' }
+      ],
+      exercises: [
+        { id: 1, minutes: '18–24', title: 'תרגול 1 — בלוק שם משחק', prompt: 'הפעילו בלוק שמשנה את שם המשחק.', hint: 'השם נמצא בתוך h1.', check: { htmlIncludes: ['משחק הכוכבים המשודרג'] } },
+        { id: 2, minutes: '24–31', title: 'תרגול 2 — בלוק יעד', prompt: 'הפעילו בלוק שמגדיר יעד של 7 כוכבים.', hint: 'היעד נשמר ב־target.', check: { jsIncludes: ['const target = 7'] } },
+        { id: 3, minutes: '31–39', title: 'תרגול 3 — בלוק 5 חיים', prompt: 'הפעילו בלוק שנותן 5 חיים בתחילת המשחק.', hint: 'שימו לב שגם startGame מאפס חיים.', check: { jsIncludes: ['let lives = 5', 'lives = 5'] } },
+        { id: 4, minutes: '39–47', title: 'תרגול 4 — בלוק זמן 30', prompt: 'הפעילו בלוק שמשנה את הזמן ל־30.', hint: 'timeLeft צריך להשתנות גם בהתחלה וגם באיפוס.', check: { jsIncludes: ['let timeLeft = 30', 'timeLeft = 30'] } },
+        { id: 5, minutes: '47–56', title: 'תרגול 5 — בלוק הודעת ניצחון', prompt: 'הפעילו בלוק הודעת ניצחון אישית.', hint: 'ההודעה נמצאת אחרי score >= target.', check: { jsIncludes: ['ניצחון מושלם'] } },
+        { id: 6, minutes: '56–65', title: 'תרגול 6 — בלוק צבעי פרויקט', prompt: 'הפעילו בלוק שמשנה את צבע הניצחון.', hint: 'הבלוק משנה את .win ב־CSS.', check: { cssIncludes: ['#bbf7d0'] } },
+        { id: 7, minutes: '65–75', title: 'תרגול 7 — בדיקת פונקציות', prompt: 'מצאו בקוד את ארבע הפונקציות המרכזיות של המשחק.', hint: 'חפשו function startGame / collectStar / hitObstacle / updateScreen.', check: { jsIncludes: ['function startGame', 'function collectStar', 'function hitObstacle', 'function updateScreen'] } },
+        { id: 8, minutes: '75–84', title: 'תרגול 8 — הצגת פרויקט', prompt: 'תנו לחבר לשחק והסבירו איזה שני בלוקים שדרגו את המשחק.', hint: 'הסבירו במילים, לא בקוד.', check: { htmlIncludes: ['button'], jsIncludes: ['resetGame'], cssIncludes: ['.win', '.lose'] } }
+      ],
+      aiHelper: [
+        'הציעו שם למשחק כוכבים של תלמיד בכיתה ד׳.',
+        'הציעו שני שדרוגים פשוטים למשחק בלי להוסיף קוד מורכב.',
+        'עזרו לתלמיד להסביר מה עושה כל פונקציה במשחק.',
+        'הציעו משוב חברי למשחק: דבר אחד טוב ודבר אחד לשיפור.'
+      ],
+      vocabulary: [
+        ['project', 'תוצר שמחבר כמה חלקים יחד'],
+        ['updateScreen', 'פונקציה שמעדכנת את כל המספרים במסך'],
+        ['שדרוג', 'שינוי קטן שהופך את המשחק לאישי יותר'],
+        ['playtest', 'בדיקת משחק על ידי חבר'],
+        ['דמו', 'הצגה קצרה של מה שבניתי']
+      ]
     }
   ];
 
@@ -594,6 +640,18 @@
     ],
 
 
+    12: [
+      { label: '🎮 שם משחק', target: 'html', find: 'משחק הכוכבים שלי', replace: 'משחק הכוכבים המשודרג', hint: 'בלוק פרויקט: נותן שם אישי למשחק.' },
+      { label: '🏁 יעד 7', target: 'js', find: 'const target = 5;', replace: 'const target = 7;', hint: 'בלוק יעד: משנה כמה כוכבים צריך לניצחון.' },
+      { label: '💚 5 חיים', target: 'js', find: 'let lives = 3;', replace: 'let lives = 5;', hint: 'בלוק איזון: נותן יותר חיים.' },
+      { label: '💚 איפוס ל־5 חיים', target: 'js', find: 'lives = 3;', replace: 'lives = 5;', hint: 'בלוק איפוס: גם בהתחלה חדשה חוזרים ל־5 חיים.' },
+      { label: '⏱️ זמן 30', target: 'js', find: 'let timeLeft = 20;', replace: 'let timeLeft = 30;', hint: 'בלוק זמן: מגדיל את הזמן.' },
+      { label: '⏱️ איפוס ל־30', target: 'js', find: 'timeLeft = 20;', replace: 'timeLeft = 30;', hint: 'בלוק איפוס זמן: משחק חדש מתחיל עם 30 שניות.' },
+      { label: '🏆 הודעת ניצחון', target: 'js', find: 'ניצחת! בנית מיני־משחק 🎉', replace: 'ניצחון מושלם! המשחק שלך עובד 🎉', hint: 'בלוק משוב: מסך/הודעת ניצחון אישית.' },
+      { label: '🟢 צבע ניצחון', target: 'css', find: '#dcfce7', replace: '#bbf7d0', hint: 'בלוק עיצוב: משנה צבע ניצחון.' }
+    ],
+
+
     4: [
       { label: '📝 שדה שם', target: 'html', find: 'placeholder="כתבו שם"', replace: 'placeholder="מה השם שלך?"', hint: 'בלוק קלט: משנה הוראה בתוך input.' },
       { label: '🎯 שדה תחביב', target: 'html', find: 'placeholder="כתבו תחביב"', replace: 'placeholder="מה התחביב שלך?"', hint: 'בלוק קלט שני: עוד מידע מהמשתמש.' },
@@ -604,7 +662,7 @@
 
   lessons.forEach(lesson => {
     lesson.bridgeBlocks = bridgeBlocksByLesson[lesson.id] || [];
-    if (lesson.id <= 11) lesson.mode = 'Blockly-first bridge';
+    if (lesson.id <= 12) lesson.mode = 'Blockly-first bridge';
   });
 
   window.WEBCODE_LESSONS = lessons;
