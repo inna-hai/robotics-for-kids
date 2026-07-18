@@ -140,41 +140,43 @@
     },
     {
       id: 4,
-      title: 'העמוד שמקשיב לי — בלוקי קלט',
+      title: 'העמוד שמקשיב לי — מחולל ברכות מצחיקות',
       concept: 'בלוקי קלט → JavaScript: input · value · הודעה אישית',
       durationMinutes: 90,
-      story: 'הילדים בונים מחולל אישי דרך בלוקי קלט: שדה שם, שדה תחביב, כפתור ותוצאה. אחר כך הם רואים איך JavaScript קורא value מהשדות.' ,
-      mission: 'לבנות מחולל ברכה בעזרת בלוקי קלט, ואז לזהות את הקשר בין input, id ו־value.' ,
-      outcome: 'מחולל ברכה שנבנה מבלוקי קלט, עם הצצה ל־input, id, value ושרשור טקסט',
+      story: 'השיעור נפתח כמו קסם אישי: מקלידים שם ותחביב מצחיק, לוחצים על כפתור, והאתר עונה משפט אישי. רק אחרי שהילדים צוחקים מהתוצאה מסבירים איך JavaScript קורא value מתוך input.' ,
+      mission: 'לבנות מחולל אישי וכיפי: המשתמש כותב שם ותחביב/כוח־על, לוחץ על כפתור, והעמוד מחזיר ברכה מצחיקה שמבוססת על מה שהוקלד.' ,
+      outcome: 'מחולל אישי שמרגיש כמו מיני־אפליקציה: input, id, value, שרשור טקסט ותוצאה שמתאימה למשתמש',
       starter: {
-        html: '<main class="generator">\n  <h1>מחולל הברכות שלי</h1>\n  <label>שם:\n    <input id="nameInput" placeholder="כתבו שם">\n  </label>\n  <label>תחביב:\n    <input id="hobbyInput" placeholder="כתבו תחביב">\n  </label>\n  <button onclick="makeGreeting()">צרו ברכה</button>\n  <p id="result">כאן תופיע הברכה...</p>\n</main>',
-        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #ecfeff, #fdf2f8);\n}\n\n.generator {\n  background: white;\n  width: 390px;\n  margin: 45px auto;\n  padding: 28px;\n  border-radius: 28px;\n  box-shadow: 0 16px 35px #bae6fd;\n}\n\nlabel {\n  display: block;\n  margin: 14px;\n  font-weight: bold;\n}\n\ninput {\n  display: block;\n  width: 100%;\n  margin-top: 6px;\n  padding: 12px;\n  border: 2px solid #cbd5e1;\n  border-radius: 14px;\n  text-align: center;\n}\n\nbutton {\n  background: #7c3aed;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 20px;\n  font-weight: bold;\n}\n\n#result {\n  background: #f8fafc;\n  border-radius: 18px;\n  padding: 14px;\n}',
-        js: 'function makeGreeting() {\n  const name = document.getElementById("nameInput").value;\n  const hobby = document.getElementById("hobbyInput").value;\n  document.getElementById("result").textContent = name + ", איזה כיף שאת/ה אוהב/ת " + hobby + "!";\n}'
+        html: '<main class="generator">\n  <div class="badge">✨ מחולל אישי</div>\n  <h1>מחולל הברכות המצחיקות שלי</h1>\n  <p class="intro">כתבו שם ותחביב, והאתר ימציא לכם ברכה אישית.</p>\n  <label>שם גיבור/ה:\n    <input id="nameInput" placeholder="כתבו שם">\n  </label>\n  <label>תחביב או כוח־על:\n    <input id="hobbyInput" placeholder="כתבו תחביב">\n  </label>\n  <button onclick="makeGreeting()">צרו ברכה מצחיקה</button>\n  <p id="result">כאן תופיע הברכה האישית...</p>\n</main>',
+        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #ecfeff, #fdf2f8 55%, #fef3c7);\n}\n\n.generator {\n  background: white;\n  width: min(430px, 92vw);\n  margin: 38px auto;\n  padding: 28px;\n  border-radius: 32px;\n  box-shadow: 0 18px 42px #bae6fd;\n}\n\n.badge {\n  display: inline-block;\n  background: #ede9fe;\n  color: #6d28d9;\n  border-radius: 999px;\n  padding: 7px 14px;\n  font-weight: bold;\n}\n\n.intro {\n  color: #475569;\n}\n\nlabel {\n  display: block;\n  margin: 14px;\n  font-weight: bold;\n}\n\ninput {\n  display: block;\n  width: 100%;\n  margin-top: 6px;\n  padding: 12px;\n  border: 2px solid #cbd5e1;\n  border-radius: 14px;\n  text-align: center;\n  font-size: 16px;\n}\n\nbutton {\n  background: #7c3aed;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 13px 22px;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n#result {\n  background: #fff7ed;\n  border: 2px dashed #fb923c;\n  border-radius: 20px;\n  padding: 16px;\n  min-height: 56px;\n  font-weight: bold;\n}',
+        js: 'function makeGreeting() {\n  const name = document.getElementById("nameInput").value;\n  const hobby = document.getElementById("hobbyInput").value;\n  document.getElementById("result").textContent = name + ", לפי המעבדה הסודית שלנו יש לך כוח־על ב" + hobby + " 🚀";\n}'
       },
       lessonFlow: [
-        { minutes: '0–8', title: 'פתיחה: אתר שמקשיב', teacher: 'מציגים מחולל ברכה ושואלים איך האתר יודע את השם שהקלדנו.', students: 'מזהים שדה כתיבה, כפתור ותוצאה אישית.' },
-        { minutes: '8–18', title: 'בלוק קלט ראשון', teacher: 'לוחצים על בלוק “שדה שם” ומראים שהוא משנה input ב־HTML.', students: 'רואים ששדה כתיבה הוא חלק מהמבנה של העמוד.' },
-        { minutes: '18–34', title: 'בנייה מודרכת בבלוקי קלט', teacher: 'מפעילים בלוקים: שדה שם, שדה תחביב, קרא קלט, צור משפט אישי.', students: 'מריצים, מקלידים שם ותחביב, ולוחצים על הכפתור.' },
-        { minutes: '34–50', title: 'מציצים לקוד שקורא קלט', teacher: 'לא כותבים getElementById לבד. רק מזהים id ב־HTML ו־value ב־JS.', students: 'מחברים בין id="nameInput" לבין getElementById("nameInput").value.' },
-        { minutes: '50–66', title: 'תרגול עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לשנות שאלות ומשפט תוצאה דרך בלוקים ושינויים בטוחים.', students: 'מבצעים תרגולים 1–5.' },
-        { minutes: '66–78', title: 'דיבאג קלט עדין', teacher: 'מדגימים id לא תואם ומחזירים לרמז: השמות חייבים להיות זהים.', students: 'בודקים התאמה בין input לבין JavaScript.' },
-        { minutes: '78–90', title: 'תערוכת מחוללים', teacher: 'כל תלמיד נותן לחבר למלא את המחולל ומסביר איזה שדה נקרא בקוד.', students: 'מציגים מחולל ואומרים: “הקוד קרא את ___ מתוך השדה”.' }
+        { minutes: '0–4', title: 'וואו אישי: האתר עונה לי', teacher: 'פותחים בהרצה חיה: מקלידים שם מצחיק ותחביב/כוח־על, לוחצים, ונותנים לכיתה לצחוק מהמשפט שנוצר.', students: 'רואים שהאתר השתמש במה שהוקלד ולא בתשובה קבועה.' },
+        { minutes: '4–12', title: 'זוגות ממציאים קלטים', teacher: 'מבקשים מכל זוג לנסות שם ותחביב אחרים לפני שמדברים על קוד.', students: 'מקלידים, לוחצים ומשווים איזה משפט יצא הכי מצחיק.' },
+        { minutes: '12–22', title: 'מה האתר קרא?', teacher: 'מצביעים על שני השדות ושואלים: מאיפה הקוד לקח את השם? מאיפה את התחביב?', students: 'מסמנים שדה שם, שדה תחביב ותוצאה.' },
+        { minutes: '22–36', title: 'בלוקי קלט בטוחים', teacher: 'מפעילים בלוקים: שדה שם, שדה תחביב, קרא קלט, צור משפט אישי.', students: 'משנים את ההוראות בשדות ואת נוסח המשפט בלי לשבור id.' },
+        { minutes: '36–52', title: 'מציצים לקוד שקורא קלט', teacher: 'לא כותבים getElementById לבד. רק מזהים id ב־HTML ו־value ב־JS.', students: 'מחברים בין id="nameInput" לבין getElementById("nameInput").value.' },
+        { minutes: '52–68', title: 'מחוללים לפי נושא', teacher: 'נותנים נושאים: מחולל כוח־על, מחולל שם רובוט, מחולל ברכת יומולדת, מחולל משימת חלל.', students: 'בוחרים נושא ומשנים טקסטים בטוחים.' },
+        { minutes: '68–80', title: 'דיבאג קלט עדין', teacher: 'מדגימים id לא תואם ומחזירים לרמז: השמות חייבים להיות זהים.', students: 'בודקים התאמה בין input לבין JavaScript.' },
+        { minutes: '80–90', title: 'תערוכת מחוללים מצחיקים', teacher: 'כל תלמיד נותן לחבר למלא את המחולל ומסביר איזה שדה נקרא בקוד.', students: 'מציגים מחולל ואומרים: “הקוד קרא את ___ מתוך השדה”.' }
       ],
       exercises: [
-        { id: 1, minutes: '18–24', title: 'תרגול 1 — בלוק שדה שם', prompt: 'הפעילו בלוק “שדה שם” ובדקו שה־placeholder השתנה לשאלה ברורה.', hint: 'הבלוק משנה input ב־HTML.', check: { htmlIncludes: ['מה השם שלך?'] } },
-        { id: 2, minutes: '24–31', title: 'תרגול 2 — בלוק שדה תחביב', prompt: 'הפעילו בלוק “שדה תחביב” ובדקו שהשדה השני שואל על תחביב.', hint: 'חפשו hobbyInput ו־placeholder.', check: { htmlIncludes: ['מה התחביב שלך?'] } },
-        { id: 3, minutes: '31–39', title: 'תרגול 3 — בלוק קרא קלט', prompt: 'מצאו בקוד JavaScript את השורה שקוראת את השם מהשדה.', hint: 'חפשו value. לא צריך לכתוב את זה לבד.', check: { jsIncludes: ['getElementById("nameInput").value'] } },
-        { id: 4, minutes: '39–48', title: 'תרגול 4 — בלוק משפט אישי', prompt: 'הפעילו בלוק שמשנה את המשפט שהמחולל יוצר.', hint: 'הבלוק משנה חלק מה־textContent.', check: { jsIncludes: ['נהדר! שמעתי שאת/ה אוהב/ת'] } },
-        { id: 5, minutes: '48–57', title: 'תרגול 5 — בדיקה עם שם אמיתי', prompt: 'הריצו, כתבו שם ותחביב, ובדקו שהתוצאה משתמשת במה שהקלדתם.', hint: 'הקוד קורא value מתוך שני שדות.', check: { jsIncludes: ['const name', 'const hobby', 'value'] } },
-        { id: 6, minutes: '57–66', title: 'תרגול 6 — שינוי טקסט בטוח', prompt: 'שנו רק את הכותרת או את טקסט הכפתור, בלי לשנות id.', hint: 'אל תשנו nameInput או hobbyInput בתרגול הזה.', check: { htmlIncludes: ['id="nameInput"', 'id="hobbyInput"'] } },
-        { id: 7, minutes: '66–76', title: 'תרגול 7 — דיבאג id', prompt: 'אם המחולל לא עובד, בדקו שה־id ב־HTML זהה למה שה־JS מחפש.', hint: 'nameInput חייב להיות כתוב אותו דבר בשני המקומות.', check: { htmlIncludes: ['id="nameInput"'], jsIncludes: ['getElementById("nameInput")'] } },
-        { id: 8, minutes: '76–84', title: 'תרגול 8 — הצגת מחולל', prompt: 'תנו לחבר/ה למלא את המחולל והסבירו איזה שדה הקוד קרא.', hint: 'השתמשו במילים: input, id, value.', check: { htmlIncludes: ['input', 'button'], jsIncludes: ['value', 'textContent'] } }
+        { id: 1, minutes: '0–6', title: 'תרגול 1 — בדיקת קסם אישי', prompt: 'הריצו, כתבו שם ותחביב מצחיק, לחצו על הכפתור ובדקו שהמשפט משתמש במה שהקלדתם.', hint: 'אם כתבתם “נועה” ו“רובוטים”, שני הדברים צריכים להופיע בתוצאה.', check: { jsIncludes: ['const name', 'const hobby', 'value'] } },
+        { id: 2, minutes: '6–14', title: 'תרגול 2 — מי המציא את המשפט הכי מצחיק?', prompt: 'נסו שלושה זוגות של שם+תחביב ובחרו את התוצאה הכי מצחיקה.', hint: 'זה עדיין אותו קוד — רק ה־value שהמשתמש מקליד משתנה.', check: { htmlIncludes: ['id="nameInput"', 'id="hobbyInput"'], jsIncludes: ['textContent'] } },
+        { id: 3, minutes: '14–24', title: 'תרגול 3 — בלוק שדה שם', prompt: 'הפעילו בלוק “שדה שם” ובדקו שה־placeholder השתנה לשאלה ברורה.', hint: 'הבלוק משנה input ב־HTML.', check: { htmlIncludes: ['מה השם שלך?'] } },
+        { id: 4, minutes: '24–34', title: 'תרגול 4 — בלוק שדה תחביב', prompt: 'הפעילו בלוק “שדה תחביב” ובדקו שהשדה השני שואל על תחביב.', hint: 'חפשו hobbyInput ו־placeholder.', check: { htmlIncludes: ['מה התחביב שלך?'] } },
+        { id: 5, minutes: '34–44', title: 'תרגול 5 — מוצאים את value', prompt: 'מצאו בקוד JavaScript את השורה שקוראת את השם מהשדה.', hint: 'חפשו value. לא צריך לכתוב את זה לבד.', check: { jsIncludes: ['getElementById("nameInput").value'] } },
+        { id: 6, minutes: '44–58', title: 'תרגול 6 — משפט אישי יותר', prompt: 'הפעילו בלוק שמשנה את המשפט שהמחולל יוצר, ואז בדקו עם שם אמיתי.', hint: 'הבלוק משנה חלק מה־textContent.', check: { jsIncludes: ['נהדר! שמעתי שאת/ה אוהב/ת'] } },
+        { id: 7, minutes: '58–72', title: 'תרגול 7 — שינוי טקסט בטוח', prompt: 'שנו כותרת, טקסט כפתור או משפט פתיחה — אבל אל תשנו id.', hint: 'אל תשנו nameInput או hobbyInput בתרגול הזה.', check: { htmlIncludes: ['id="nameInput"', 'id="hobbyInput"'] } },
+        { id: 8, minutes: '72–84', title: 'תרגול 8 — תערוכת מחוללים', prompt: 'תנו לחבר/ה למלא את המחולל והסבירו איזה שדה הקוד קרא.', hint: 'השתמשו במילים: input, id, value.', check: { htmlIncludes: ['input', 'button'], jsIncludes: ['value', 'textContent'] } }
       ],
       aiHelper: [
-        'הציעו 5 רעיונות למחוללים פשוטים שמתאימים לכיתה ד׳.',
+        'הציעו 5 רעיונות למחוללים מצחיקים שמתאימים לכיתה ד׳.',
+        'תנו 10 משפטי תוצאה שמשתמשים בשם ובתחביב בלי להעליב אף אחד.',
         'הסבירו לילד מה ההבדל בין id של input לבין value שלו.',
         'עזרו למצוא למה getElementById לא מוצא את השדה.',
-        'הציעו משפט תוצאה מצחיק שמשתמש בשם ובתחביב.'
+        'הציעו מחולל בנושא חלל / רובוטים / חיות / ספורט / יומולדת.'
       ],
       vocabulary: [
         ['input', 'שדה שבו המשתמש מקליד משהו'],

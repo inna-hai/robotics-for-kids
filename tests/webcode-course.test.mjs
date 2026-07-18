@@ -50,9 +50,13 @@ assert.ok(lesson3.vocabulary.some(v => v[0] === 'onclick'), 'lesson 3 vocabulary
 const lesson4 = lessons[3];
 assert.equal(lesson4.durationMinutes, 90, 'lesson 4 is framed as 90 minutes');
 assert.ok(lesson4.title.includes('מקשיב'), 'lesson 4 focuses on user input');
+assert.ok(lesson4.title.includes('מצחיקות'), 'lesson 4 is framed as a fun personal generator');
+assert.ok(lesson4.lessonFlow[0].title.includes('וואו אישי'), 'lesson 4 starts with a personal wow moment');
 assert.ok(lesson4.starter.html.includes('id="nameInput"'), 'lesson 4 has name input');
+assert.ok(lesson4.starter.html.includes('מחולל הברכות המצחיקות'), 'lesson 4 starter is playful');
 assert.ok(lesson4.starter.js.includes('.value'), 'lesson 4 reads input value');
 assert.ok(lesson4.exercises.length >= 8, 'lesson 4 includes many exercises');
+assert.ok(lesson4.exercises[0].title.includes('קסם אישי'), 'lesson 4 first exercise asks students to try the generator immediately');
 assert.ok(lesson4.vocabulary.some(v => v[0] === 'input'), 'lesson 4 vocabulary includes input');
 
 const lesson5 = lessons[4];
