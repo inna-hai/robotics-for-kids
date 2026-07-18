@@ -12,7 +12,7 @@ vm.runInContext(dataCode, sandbox);
 
 const lessons = sandbox.window.WEBCODE_LESSONS;
 assert.equal(Array.isArray(lessons), true, 'lessons array exists');
-assert.ok(lessons.length >= 10, 'first ten WebCode lessons exist');
+assert.ok(lessons.length >= 11, 'first eleven WebCode lessons exist');
 
 const lesson = lessons[0];
 assert.equal(lesson.durationMinutes, 90, 'lesson is framed as 90 minutes');
@@ -98,6 +98,14 @@ assert.ok(lesson10.starter.js.includes('let powerReady = true'), 'lesson 10 init
 assert.ok(lesson10.starter.js.includes('if (powerReady)'), 'lesson 10 checks power availability');
 assert.ok(lesson10.exercises.length >= 8, 'lesson 10 includes many exercises');
 assert.ok(lesson10.vocabulary.some(v => v[0] === 'powerReady'), 'lesson 10 vocabulary includes powerReady');
+
+const lesson11 = lessons[10];
+assert.equal(lesson11.durationMinutes, 90, 'lesson 11 is framed as 90 minutes');
+assert.ok(lesson11.title.includes('מסך פתיחה'), 'lesson 11 focuses on screens');
+assert.ok(lesson11.starter.js.includes('function showScreen'), 'lesson 11 includes screen switching');
+assert.ok(lesson11.starter.html.includes('id="startScreen"'), 'lesson 11 has start screen');
+assert.ok(lesson11.exercises.length >= 8, 'lesson 11 includes many exercises');
+assert.ok(lesson11.vocabulary.some(v => v[0] === 'screen'), 'lesson 11 vocabulary includes screen');
 
 const hub = read('webcode.html');
 assert.ok(hub.includes('WebCode Lab'), 'hub page exists');

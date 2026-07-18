@@ -459,6 +459,52 @@
         ['חד־פעמי', 'משהו שאפשר להשתמש בו פעם אחת'],
         ['איזון כוח', 'לוודא שהכוח עוזר אבל לא קל מדי']
       ]
+    },
+    {
+      id: 11,
+      title: 'מסך פתיחה וניצחון — בלוקי מסך',
+      concept: 'בלוקי מסך → JavaScript: screen · start · win · lose',
+      durationMinutes: 90,
+      story: 'משחק מרגיש מקצועי יותר כשיש לו מסך פתיחה, הוראות, מסך ניצחון ומסך הפסד. הילדים בונים את חוויית המשחק בעזרת בלוקי מסך ורק אחר כך מציצים לקוד שמחליף מצב.',
+      mission: 'לבנות משחק קטן עם מסך פתיחה, מצב משחק, מסך ניצחון ומסך הפסד בעזרת בלוקי מסך.',
+      outcome: 'משחק עם מסכי פתיחה/משחק/ניצחון/הפסד שנבנה מבלוקים, עם הצצה ל־currentScreen ו־classList',
+      starter: {
+        html: '<main class="screen-game">\n  <section id="startScreen" class="screen active">\n    <h1>משחק המסכים שלי</h1>\n    <p>אספו 3 נקודות כדי לנצח.</p>\n    <button onclick="startGame()">התחילו</button>\n  </section>\n  <section id="playScreen" class="screen">\n    <h2>המשחק התחיל</h2>\n    <p>ניקוד: <span id="scoreText">0</span></p>\n    <button onclick="addPoint()">⭐ נקודה</button>\n    <button onclick="loseGame()">🌋 הפסד</button>\n  </section>\n  <section id="winScreen" class="screen">\n    <h2>ניצחון!</h2>\n    <p>הגעתם ליעד 🎉</p>\n    <button onclick="resetGame()">שחקו שוב</button>\n  </section>\n  <section id="loseScreen" class="screen">\n    <h2>הפסד קטן</h2>\n    <p>לא נורא, מנסים שוב.</p>\n    <button onclick="resetGame()">נסו שוב</button>\n  </section>\n</main>',
+        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #dbeafe, #f5d0fe);\n}\n\n.screen-game {\n  background: white;\n  width: 430px;\n  margin: 45px auto;\n  padding: 28px;\n  border-radius: 30px;\n  box-shadow: 0 16px 35px #c4b5fd;\n}\n\n.screen {\n  display: none;\n  min-height: 230px;\n}\n\n.screen.active {\n  display: block;\n}\n\nbutton {\n  margin: 8px;\n  padding: 14px 20px;\n  border: 0;\n  border-radius: 999px;\n  background: #4f46e5;\n  color: white;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n.win-style { background: #dcfce7; }\n.lose-style { background: #fee2e2; }',
+        js: 'let score = 0;\nconst target = 3;\n\nfunction showScreen(screenId) {\n  document.querySelectorAll(".screen").forEach(screen => {\n    screen.classList.remove("active");\n  });\n  document.getElementById(screenId).classList.add("active");\n}\n\nfunction startGame() {\n  score = 0;\n  document.getElementById("scoreText").textContent = score;\n  showScreen("playScreen");\n}\n\nfunction addPoint() {\n  score = score + 1;\n  document.getElementById("scoreText").textContent = score;\n\n  if (score >= target) {\n    showScreen("winScreen");\n  }\n}\n\nfunction loseGame() {\n  showScreen("loseScreen");\n}\n\nfunction resetGame() {\n  score = 0;\n  showScreen("startScreen");\n}'
+      },
+      lessonFlow: [
+        { minutes: '0–8', title: 'פתיחה: משחק עם מסכים', teacher: 'מציגים משחק בלי מסך פתיחה ואז עם מסכים, ושואלים מה מרגיש מקצועי יותר.', students: 'מזהים פתיחה, הוראות, משחק, ניצחון והפסד.' },
+        { minutes: '8–18', title: 'בלוק מסך ראשון', teacher: 'מפעילים בלוק “מסך פתיחה” ומראים ש־section אחד פעיל.', students: 'רואים שרק מסך אחד מוצג בכל פעם.' },
+        { minutes: '18–34', title: 'בנייה מודרכת בבלוקי מסך', teacher: 'מפעילים בלוקים: התחל משחק, מסך ניצחון, מסך הפסד, שחק שוב.', students: 'מריצים ועוברים בין המסכים בעזרת כפתורים.' },
+        { minutes: '34–50', title: 'מציצים לקוד החלפת מסך', teacher: 'לא כותבים לולאות חופשיות. רק מזהים showScreen, active ו־classList.', students: 'מחברים בין בלוק מסך לבין class active.' },
+        { minutes: '50–66', title: 'תרגול עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לשנות טקסטי מסך ויעד נקודות דרך בלוקים.', students: 'מבצעים תרגולים 1–5.' },
+        { minutes: '66–78', title: 'דיבאג מסכים', teacher: 'מדגימים id לא תואם למסך או class active חסר.', students: 'בודקים שהשמות startScreen/playScreen תואמים.' },
+        { minutes: '78–90', title: 'בדיקת חוויית משתמש', teacher: 'זוגות משחקים ומוודאים שהוראות הפתיחה ברורות.', students: 'משפרים טקסט במסך פתיחה או ניצחון.' }
+      ],
+      exercises: [
+        { id: 1, minutes: '18–24', title: 'תרגול 1 — בלוק מסך פתיחה', prompt: 'מצאו את מסך הפתיחה ובדקו שהוא המסך הפעיל הראשון.', hint: 'המסך הפעיל מקבל class active.', check: { htmlIncludes: ['id="startScreen"', 'class="screen active"'] } },
+        { id: 2, minutes: '24–31', title: 'תרגול 2 — בלוק התחלת משחק', prompt: 'לחצו התחילו ובדקו שעוברים למסך המשחק.', hint: 'startGame מפעיל showScreen("playScreen").', check: { jsIncludes: ['function startGame', 'showScreen("playScreen")'] } },
+        { id: 3, minutes: '31–39', title: 'תרגול 3 — בלוק יעד 3', prompt: 'מצאו את היעד לניצחון: 3 נקודות.', hint: 'היעד נשמר ב־target.', check: { jsIncludes: ['const target = 3'] } },
+        { id: 4, minutes: '39–47', title: 'תרגול 4 — בלוק מסך ניצחון', prompt: 'אספו נקודות עד שהמשחק עובר למסך ניצחון.', hint: 'המעבר קורה כאשר score >= target.', check: { htmlIncludes: ['id="winScreen"'], jsIncludes: ['showScreen("winScreen")'] } },
+        { id: 5, minutes: '47–56', title: 'תרגול 5 — בלוק מסך הפסד', prompt: 'לחצו על כפתור הפסד ובדקו שעוברים למסך הפסד.', hint: 'loseGame מפעיל showScreen("loseScreen").', check: { htmlIncludes: ['id="loseScreen"'], jsIncludes: ['showScreen("loseScreen")'] } },
+        { id: 6, minutes: '56–65', title: 'תרגול 6 — בלוק שחק שוב', prompt: 'בדקו שכפתור שחקו שוב מחזיר למסך הפתיחה.', hint: 'resetGame מחזיר ל־startScreen.', check: { jsIncludes: ['function resetGame', 'showScreen("startScreen")'] } },
+        { id: 7, minutes: '65–75', title: 'תרגול 7 — דיבאג id מסך', prompt: 'אם מעבר מסך לא עובד, בדקו שה־id במסך זהה לשם ב־showScreen.', hint: 'playScreen חייב להיות כתוב אותו דבר בשני המקומות.', check: { htmlIncludes: ['id="playScreen"'], jsIncludes: ['showScreen("playScreen")'] } },
+        { id: 8, minutes: '75–84', title: 'תרגול 8 — שיפור חוויית משתמש', prompt: 'שנו טקסט במסך הפתיחה כך שיהיה ברור לשחקן מה המטרה.', hint: 'שינוי בטוח: טקסט בתוך p או h1.', check: { htmlIncludes: ['startScreen', 'button'], jsIncludes: ['showScreen'] } }
+      ],
+      aiHelper: [
+        'הציעו טקסט קצר למסך פתיחה של משחק ילדים.',
+        'הסבירו לילד מה זה “מסך פעיל” בעזרת דוגמה של כרטיסיות.',
+        'עזרו למצוא למה כפתור התחלה לא מעביר למסך המשחק.',
+        'הציעו הודעת ניצחון מעודדת וברורה.'
+      ],
+      vocabulary: [
+        ['screen', 'מסך או מצב במשחק'],
+        ['active', 'המסך שמוצג עכשיו'],
+        ['showScreen', 'פונקציה שמחליפה מסך'],
+        ['UX', 'חוויית משתמש — שיהיה ברור ונעים לשחק'],
+        ['reset', 'לחזור להתחלה']
+      ]
     }
   ];
 
@@ -538,6 +584,16 @@
     ],
 
 
+    11: [
+      { label: '🎬 מסך פתיחה', target: 'html', find: '<p>אספו 3 נקודות כדי לנצח.</p>', replace: '<p>המטרה: להגיע ל־3 נקודות ולפתוח מסך ניצחון.</p>', hint: 'בלוק מסך: משפר הוראות פתיחה.' },
+      { label: '▶️ התחל משחק', target: 'js', find: 'showScreen("playScreen");', replace: 'showScreen("playScreen");', hint: 'בלוק מעבר: עובר ממסך פתיחה למסך משחק.' },
+      { label: '🏆 יעד 3', target: 'js', find: 'const target = 3;', replace: 'const target = 3;', hint: 'בלוק מטרה: כמה נקודות צריך לניצחון.' },
+      { label: '🎉 מסך ניצחון', target: 'js', find: 'showScreen("winScreen");', replace: 'showScreen("winScreen");', hint: 'בלוק מסך: מציג ניצחון כשהיעד הושג.' },
+      { label: '🌋 מסך הפסד', target: 'js', find: 'showScreen("loseScreen");', replace: 'showScreen("loseScreen");', hint: 'בלוק מסך: מציג הפסד כאשר נלחץ כפתור הפסד.' },
+      { label: '🔁 שחק שוב', target: 'js', find: 'showScreen("startScreen");', replace: 'showScreen("startScreen");', hint: 'בלוק איפוס: חוזר למסך הפתיחה.' }
+    ],
+
+
     4: [
       { label: '📝 שדה שם', target: 'html', find: 'placeholder="כתבו שם"', replace: 'placeholder="מה השם שלך?"', hint: 'בלוק קלט: משנה הוראה בתוך input.' },
       { label: '🎯 שדה תחביב', target: 'html', find: 'placeholder="כתבו תחביב"', replace: 'placeholder="מה התחביב שלך?"', hint: 'בלוק קלט שני: עוד מידע מהמשתמש.' },
@@ -548,7 +604,7 @@
 
   lessons.forEach(lesson => {
     lesson.bridgeBlocks = bridgeBlocksByLesson[lesson.id] || [];
-    if (lesson.id <= 10) lesson.mode = 'Blockly-first bridge';
+    if (lesson.id <= 11) lesson.mode = 'Blockly-first bridge';
   });
 
   window.WEBCODE_LESSONS = lessons;
