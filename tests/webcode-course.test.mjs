@@ -12,7 +12,7 @@ vm.runInContext(dataCode, sandbox);
 
 const lessons = sandbox.window.WEBCODE_LESSONS;
 assert.equal(Array.isArray(lessons), true, 'lessons array exists');
-assert.equal(lessons.length, 1, 'lesson 1 exists');
+assert.ok(lessons.length >= 2, 'lesson 1 and lesson 2 exist');
 
 const lesson = lessons[0];
 assert.equal(lesson.durationMinutes, 90, 'lesson is framed as 90 minutes');
@@ -25,6 +25,13 @@ assert.ok(lesson.lessonFlow.length >= 7, 'lesson includes full 90-minute guide f
 assert.ok(lesson.vocabulary.some(v => v[0] === 'HTML'), 'vocabulary includes HTML');
 assert.ok(lesson.vocabulary.some(v => v[0] === 'CSS'), 'vocabulary includes CSS');
 assert.ok(lesson.vocabulary.some(v => v[0] === 'JavaScript'), 'vocabulary includes JavaScript');
+
+const lesson2 = lessons[1];
+assert.equal(lesson2.durationMinutes, 90, 'lesson 2 is framed as 90 minutes');
+assert.ok(lesson2.title.includes('מעצבים'), 'lesson 2 focuses on design');
+assert.ok(lesson2.starter.css.includes('button:hover'), 'lesson 2 includes hover styling');
+assert.ok(lesson2.exercises.length >= 8, 'lesson 2 includes many exercises');
+assert.ok(lesson2.vocabulary.some(v => v[0] === 'hover'), 'lesson 2 vocabulary includes hover');
 
 const hub = read('webcode.html');
 assert.ok(hub.includes('WebCode Lab'), 'hub page exists');

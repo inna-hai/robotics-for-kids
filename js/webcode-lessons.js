@@ -45,6 +45,52 @@
         ['id', 'שם מיוחד לאלמנט כדי ש־JavaScript ימצא אותו'],
         ['דיבאג', 'לבדוק מה נשבר ולתקן צעד־צעד']
       ]
+    },
+    {
+      id: 2,
+      title: 'מעצבים כרטיס כמו מקצוענים',
+      concept: 'CSS: צבעים · ריווח · גבולות · Hover',
+      durationMinutes: 90,
+      story: 'אחרי שבנינו כרטיס ראשון, הופכים אותו לעמוד שנראה כמו מוצר אמיתי: צבעים, טיפוגרפיה, כפתורים, כרטיסים ואפקט קטן כשהעכבר עובר.',
+      mission: 'לעצב כרטיס אישי מקצועי עם תמונת אימוג׳י, רשימת פרטים, כפתור בולט ואפקט hover.',
+      outcome: 'כרטיס אישי מעוצב עם CSS ברור, מבנה מסודר ואינטראקציית hover',
+      starter: {
+        html: '<main class="profile-card">\n  <div class="avatar">🚀</div>\n  <h1>דניאל המפתח</h1>\n  <p class="tagline">אני בונה דברים קטנים שעובדים בדפדפן.</p>\n  <ul>\n    <li>תחביב: משחקים</li>\n    <li>כוח מיוחד: רעיונות</li>\n    <li>יעד: לבנות אתר משלי</li>\n  </ul>\n  <button onclick="changeMood()">שנו מצב רוח</button>\n  <p id="mood">מצב רוח: מוכן לקוד</p>\n</main>',
+        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #dbeafe, #fff7ed);\n}\n\n.profile-card {\n  background: white;\n  width: 360px;\n  margin: 45px auto;\n  padding: 28px;\n  border-radius: 28px;\n  box-shadow: 0 16px 35px #bfdbfe;\n}\n\n.avatar {\n  font-size: 56px;\n}\n\n.tagline {\n  color: #475569;\n}\n\nul {\n  text-align: right;\n  line-height: 1.8;\n}\n\nbutton {\n  background: #f97316;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 20px;\n  font-weight: bold;\n}\n\nbutton:hover {\n  background: #2563eb;\n}',
+        js: 'function changeMood() {\n  document.getElementById("mood").textContent = "מצב רוח: העיצוב עובד ✨";\n}'
+      },
+      lessonFlow: [
+        { minutes: '0–8', title: 'פתיחת סטודיו עיצוב', teacher: 'מציגים שני כרטיסים: אחד פשוט ואחד מעוצב. שואלים מה גורם לשני להיראות מקצועי.', students: 'מזהים צבעים, ריווח, גבולות, גודל טקסט וכפתור.' },
+        { minutes: '8–18', title: 'CSS כערכת עיצוב', teacher: 'מסבירים selector, property ו-value דרך דוגמאות קצרות בלבד.', students: 'מצביעים על .profile-card, background, padding ו-border-radius.' },
+        { minutes: '18–30', title: 'הרצה ושינוי ראשון', teacher: 'מריצים את הקוד ומשנים יחד צבע אחד, ריווח אחד ואימוג׳י אחד.', students: 'משנים אימוג׳י וצבע רקע ורואים תוצאה.' },
+        { minutes: '30–55', title: 'תרגולי עיצוב', teacher: 'מדגישים: שינוי קטן ואז הרצה. לא לשנות הכל בבת אחת.', students: 'מבצעים תרגולים 1–5.' },
+        { minutes: '55–67', title: 'Hover ואינטראקציה עדינה', teacher: 'מדגימים מה קורה כשעוברים עם העכבר על כפתור ולמה זה משפר חוויה.', students: 'משנים צבע hover ובודקים.' },
+        { minutes: '67–80', title: 'דיבאג CSS', teacher: 'מדגימים נקודה חסרה בשם class או סוגר מסולסל חסר.', students: 'מתקנים באג CSS מוכן.' },
+        { minutes: '80–90', title: 'גלריית כרטיסים', teacher: 'עושים סבב קצר: כל תלמיד מציג החלטת עיצוב אחת.', students: 'מסבירים: בחרתי צבע/ריווח/כפתור כי…' }
+      ],
+      exercises: [
+        { id: 1, minutes: '18–24', title: 'תרגול 1 — מחליפים דמות', prompt: 'שנו את האימוג׳י בכרטיס לדמות שמייצגת אתכם.', hint: 'חפשו את div עם class="avatar".', check: { htmlIncludes: ['class="avatar"'] } },
+        { id: 2, minutes: '24–31', title: 'תרגול 2 — צבע רקע', prompt: 'שנו את צבעי הרקע של העמוד לגרדיאנט אחר.', hint: 'ב־body חפשו background: linear-gradient.', check: { cssIncludes: ['linear-gradient'] } },
+        { id: 3, minutes: '31–38', title: 'תרגול 3 — כרטיס נעים לקריאה', prompt: 'שנו width, padding או margin כדי שהכרטיס יהיה נוח יותר.', hint: 'חפשו את .profile-card.', check: { cssIncludes: ['.profile-card', 'padding'] } },
+        { id: 4, minutes: '38–46', title: 'תרגול 4 — רשימת פרטים', prompt: 'שנו את שלושת פריטי הרשימה לפרטים שלכם.', hint: 'כל פריט ברשימה נמצא בתוך <li>.', check: { htmlIncludes: ['<li>'] } },
+        { id: 5, minutes: '46–55', title: 'תרגול 5 — כפתור מותג', prompt: 'עצבו את הכפתור: צבע, ריווח, עיגול או גודל טקסט.', hint: 'חפשו button באזור CSS.', check: { cssIncludes: ['button', 'border-radius'] } },
+        { id: 6, minutes: '55–63', title: 'תרגול 6 — Hover', prompt: 'שנו את הצבע של הכפתור במעבר עכבר.', hint: 'חפשו button:hover.', check: { cssIncludes: ['button:hover'] } },
+        { id: 7, minutes: '63–72', title: 'תרגול 7 — תקן את הבאג', prompt: 'שנו לרגע .profile-card ל־profile-card בלי נקודה וראו שהעיצוב נשבר. תקנו בחזרה.', hint: 'class ב־CSS מתחיל בנקודה.', check: { cssIncludes: ['.profile-card'] } },
+        { id: 8, minutes: '72–82', title: 'תרגול 8 — שדרוג אישי', prompt: 'הוסיפו class חדש או צבע נוסף לכותרת, לרשימה או להודעת מצב הרוח.', hint: 'אפשר להוסיף CSS ל־h1, ul או #mood.', check: { cssIncludes: ['h1'] } }
+      ],
+      aiHelper: [
+        'הציעו שלוש פלטות צבעים לכרטיס של תלמיד/ה שאוהב/ת ספורט, חלל או מוזיקה.',
+        'הסבירו לילד בכיתה ד׳ מה ההבדל בין class לבין id.',
+        'עזרו למצוא למה CSS לא עובד כאשר שכחתי נקודה לפני שם class.',
+        'הציעו שדרוג עיצוב קטן לכרטיס בלי להוסיף JavaScript חדש.'
+      ],
+      vocabulary: [
+        ['selector', 'למי העיצוב פונה: body, button או .profile-card'],
+        ['property', 'מה משנים: צבע, גודל, ריווח או גבול'],
+        ['value', 'הערך החדש: blue, 28px, white'],
+        ['class', 'שם לקבוצה או חלק בעמוד כדי לעצב אותו'],
+        ['hover', 'מה קורה כשעוברים עם העכבר מעל אלמנט']
+      ]
     }
   ];
 
