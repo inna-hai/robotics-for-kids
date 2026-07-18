@@ -126,6 +126,8 @@ const play = read('webcode-play.html');
 assert.ok(play.includes('textarea id="htmlCode"'), 'play page has HTML editor');
 assert.ok(play.includes('textarea id="cssCode"'), 'play page has CSS editor');
 assert.ok(play.includes('textarea id="jsCode"'), 'play page has JS editor');
+assert.ok(play.includes('לראות קוד שנוצר'), 'play page has explicit generated-code button');
+assert.ok(play.includes('showGeneratedCode'), 'play page can open generated code panel for students');
 assert.ok(play.includes('iframe id="preview"'), 'play page has live preview');
 assert.ok(play.includes('checkExercise()'), 'play page has exercise checking');
 assert.ok(play.includes('completedTitle'), 'check button keeps success feedback visible after running preview');

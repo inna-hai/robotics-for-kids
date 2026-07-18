@@ -15,7 +15,7 @@
   <header class="topbar">
     <div class="brand">💻 WebCode Lab</div>
     <div class="lesson-title" id="topTitle"></div>
-    <div class="actions"><button class="btn run" onclick="runCode()">▶️ הרצה</button><button class="btn check" onclick="checkExercise()">✅ בדיקה</button><button class="btn reset" onclick="resetCode()">↺ איפוס</button><button class="btn share" onclick="shareProject()">📤 שליחה לחברים</button><a class="btn link" id="slidesLink" href="webcode-slides.html">מצגת</a><a class="btn link" href="webcode.html">כל השיעורים</a></div>
+    <div class="actions"><button class="btn run" onclick="runCode()">▶️ הרצה</button><button class="btn check" onclick="checkExercise()">✅ בדיקה</button><button class="btn reset" onclick="resetCode()">↺ איפוס</button><button class="btn share" onclick="shareProject()">📤 שליחה לחברים</button><button class="btn link" onclick="showGeneratedCode()">👀 לראות קוד שנוצר</button><a class="btn link" id="slidesLink" href="webcode-slides.html">מצגת</a><a class="btn link" href="webcode.html">כל השיעורים</a></div>
   </header>
   <main class="main">
     <section class="panel">
@@ -70,6 +70,7 @@
       renderBridgeBlocks(); selectExercise(1); runCode(); renderProgress();
     }
     function showTab(name, btn){ document.querySelectorAll('.editor').forEach(e=>e.classList.remove('active')); document.querySelectorAll('.editor-tabs button').forEach(b=>b.classList.remove('active')); $(`tab-${name}`).classList.add('active'); btn.classList.add('active'); }
+    function showGeneratedCode(){ $('codePeek').open = true; $('codePeek').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('feedback').className='feedback good'; $('feedback').textContent='זה הקוד שנוצר מהבלוקים שלך: HTML למבנה, CSS לעיצוב, JavaScript לפעולה.'; }
 
     let blocklyWorkspace = null;
     let blocklyReady = false;
