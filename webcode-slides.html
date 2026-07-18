@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מצגת מדריך — WebCode Lab</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}body{margin:0;font-family:Rubik,Arial,sans-serif;direction:rtl;color:#0f172a;background:linear-gradient(135deg,#08111f,#1e3a8a 56%,#7c2d12);min-height:100vh;overflow:hidden}.deck{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;padding:30px}.slide{display:none;width:min(1120px,100%);min-height:min(690px,calc(100vh - 120px));background:rgba(255,255,255,.97);border-radius:34px;padding:42px;box-shadow:0 28px 80px rgba(0,0,0,.32);position:relative;overflow:auto}.slide.active{display:flex;flex-direction:column;justify-content:center}.kicker{font-weight:900;color:#ea580c;margin-bottom:10px}.emoji{font-size:5rem;margin-bottom:12px}h1{font-size:clamp(2.4rem,6vw,4.7rem);line-height:1.05;margin:0 0 16px}h2{font-size:clamp(2rem,5vw,3.55rem);line-height:1.1;margin:0 0 20px}p,li{font-size:clamp(1.08rem,1.8vw,1.44rem);line-height:1.58}.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.card{background:#f8fafc;border-radius:18px;padding:16px;border-right:7px solid #fb923c}.card b{display:block;color:#1d4ed8;margin-bottom:6px}.code{direction:ltr;text-align:left;background:#07111f;color:#e5f3ff;border-radius:18px;padding:16px;font:700 1rem/1.55 ui-monospace,Consolas,monospace;white-space:pre-wrap;max-height:340px;overflow:auto}.note{background:#fff7ed;border-right:7px solid #fb923c;border-radius:18px;padding:14px;margin-top:12px}.nav{position:fixed;inset:auto 24px 24px 24px;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;color:white;font-weight:900;pointer-events:none}.nav>*{pointer-events:auto}.nav-actions{display:flex;gap:10px}button,.back{border:0;border-radius:999px;background:white;color:#9a3412;padding:12px 18px;font-weight:900;text-decoration:none;cursor:pointer;box-shadow:0 8px 28px rgba(0,0,0,.12)}.counter{background:rgba(0,0,0,.25);padding:10px 16px;border-radius:999px;justify-self:center}@media(max-width:760px){body{overflow:auto}.deck{height:auto;min-height:100svh;padding:12px 10px 88px}.slide{min-height:calc(100svh - 105px);padding:22px 16px;border-radius:22px}.slide.active{justify-content:flex-start}.cards{grid-template-columns:1fr}.emoji{font-size:3.5rem}h1{font-size:2.1rem}h2{font-size:1.7rem}p,li{font-size:1.02rem}.nav{position:fixed;inset:auto 10px 10px 10px;display:flex;justify-content:space-between;background:rgba(8,17,31,.62);backdrop-filter:blur(12px);border-radius:999px;padding:8px}.counter{display:none}button,.back{padding:9px 10px;font-size:.84rem}.nav-actions{gap:5px}}
+  </style>
+</head>
+<body>
+  <main class="deck" id="deck"></main>
+  <nav class="nav"><button onclick="prevSlide()">→ הקודם</button><span class="counter" id="counter"></span><div class="nav-actions"><button onclick="nextSlide()">הבא ←</button><a class="back" id="playLink" href="webcode-play.html">💻 לתרגול</a><a class="back" href="webcode.html">למסלול</a></div></nav>
+  <script src="js/webcode-lessons.js?v=20260718-lesson1"></script>
+  <script>
+    const params = new URLSearchParams(location.search); const lesson = window.getWebCodeLesson(params.get('lesson')); let current=0;
+    const esc = v => String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    document.title = `מצגת מדריך — שיעור ${lesson.id}: ${lesson.title}`; document.getElementById('playLink').href = `webcode-play.html?lesson=${lesson.id}`;
+    const flowSlides = lesson.lessonFlow.map(step => ({html:`<div class="kicker">מהלך שיעור 90 דקות</div><h2>${esc(step.minutes)} — ${esc(step.title)}</h2><div class="cards"><div class="card"><b>מה המדריך עושה</b>${esc(step.teacher)}</div><div class="card"><b>מה הילדים עושים</b>${esc(step.students)}</div></div>`}));
+    const exerciseSlides = lesson.exercises.map(ex => ({html:`<div class="kicker">${esc(ex.minutes)} · תרגול</div><h2>${esc(ex.title)}</h2><p>${esc(ex.prompt)}</p><div class="note"><b>רמז לתלמידים:</b> ${esc(ex.hint)}</div>`}));
+    const vocab = lesson.vocabulary.map(v=>`<div class="card"><b>${esc(v[0])}</b>${esc(v[1])}</div>`).join('');
+    const slides = [
+      {html:`<div class="emoji">💻</div><div class="kicker">WebCode Lab • שיעור ${lesson.id} • ${lesson.durationMinutes} דקות</div><h1>${esc(lesson.title)}</h1><p>${esc(lesson.story)}</p>`},
+      {html:`<h2>🎯 מטרת השיעור</h2><p>${esc(lesson.mission)}</p><div class="cards"><div class="card"><b>מושג מרכזי</b>${esc(lesson.concept)}</div><div class="card"><b>תוצר בסוף שיעור</b>${esc(lesson.outcome)}</div></div>`},
+      {html:`<h2>🧠 מילון קצר למדריך</h2><div class="cards">${vocab}</div>`},
+      {html:`<h2>👀 דוגמת קוד התחלתית</h2><div class="code">${esc(lesson.starter.html)}</div><div class="note">לא מקריאים את כל הקוד. מצביעים על h1, button ו־id="message" בלבד.</div>`},
+      ...flowSlides,
+      {html:`<h2>🧪 רצף תרגולים לשיעור</h2><ul>${lesson.exercises.map(ex=>`<li><b>${esc(ex.minutes)}:</b> ${esc(ex.title)} — ${esc(ex.prompt)}</li>`).join('')}</ul>`},
+      ...exerciseSlides,
+      {html:`<h2>🤖 שימוש נכון ב־AI</h2><p>ה־AI הוא עוזר רעיונות ודיבאג, לא מי שכותב במקום הילד.</p><div class="cards">${lesson.aiHelper.map(t=>`<div class="card"><b>פרומפט אפשרי</b>${esc(t)}</div>`).join('')}</div>`},
+      {html:`<h2>🏁 סיכום ורפלקציה</h2><p>כל תלמיד משלים משפט: “היום שיניתי ב־HTML ___, עיצבתי ב־CSS ___, וגרמתי ל־JavaScript ___.”</p><div class="note">אם נשאר זמן: מבקשים מתלמיד אחד להציג באג שתיקן. זה מחזק דיבאג בלי בושה.</div>`}
+    ];
+    document.getElementById('deck').innerHTML = slides.map((s,i)=>`<section class="slide ${i===0?'active':''}">${s.html}</section>`).join('');
+    function render(){ document.querySelectorAll('.slide').forEach((s,i)=>s.classList.toggle('active',i===current)); document.getElementById('counter').textContent = `${current+1} / ${slides.length}`; }
+    function nextSlide(){ current=Math.min(current+1,slides.length-1); render(); } function prevSlide(){ current=Math.max(current-1,0); render(); }
+    document.addEventListener('keydown', e=>{ if(e.key==='ArrowLeft'||e.key===' ') nextSlide(); if(e.key==='ArrowRight') prevSlide(); }); render();
+  </script>
+  <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
+</body>
+</html>

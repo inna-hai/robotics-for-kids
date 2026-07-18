@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebCode Lab — שיעור</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}:root{--ink:#0f172a;--blue:#2563eb;--orange:#f97316;--green:#22c55e;--red:#ef4444}body{margin:0;height:100vh;overflow:hidden;font-family:Rubik,Arial,sans-serif;direction:rtl;background:linear-gradient(135deg,#0f172a,#1e3a8a 55%,#7c2d12);color:var(--ink);display:flex;flex-direction:column}.topbar{background:rgba(255,255,255,.97);box-shadow:0 5px 22px rgba(0,0,0,.18);padding:.65rem .9rem;display:grid;grid-template-columns:auto 1fr auto;gap:.75rem;align-items:center;z-index:5}.brand{font-weight:900;font-size:1.08rem;white-space:nowrap}.lesson-title{text-align:center;font-weight:900;color:#1e3a8a}.actions{display:flex;gap:.45rem;flex-wrap:wrap}.btn{border:0;border-radius:999px;padding:.62rem .95rem;font-family:inherit;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.32rem}.run{background:#00e096;color:#052e16}.check{background:#facc15;color:#422006}.reset{background:#fb7185;color:white}.link{background:#eef2ff;color:#3730a3}.main{flex:1;min-height:0;display:grid;grid-template-columns:360px minmax(0,1fr) 420px;gap:1rem;padding:1rem}.panel{background:rgba(255,255,255,.96);border-radius:26px;box-shadow:0 18px 48px rgba(0,0,0,.2);min-height:0;overflow:hidden;display:flex;flex-direction:column}.info{padding:1rem;border-bottom:1px solid #e5e7eb}.info h1{font-size:1.35rem;margin:.2rem 0}.info p{margin:.25rem 0;line-height:1.55}.chip{display:inline-flex;background:#fff7ed;color:#9a3412;border-radius:999px;padding:.32rem .65rem;font-weight:900;font-size:.78rem;margin:.12rem}.exercise-list{overflow:auto;padding:1rem;display:grid;gap:.65rem}.exercise{background:#f8fafc;border:2px solid #e5e7eb;border-radius:18px;padding:.75rem;line-height:1.45;cursor:pointer}.exercise.active{border-color:#f97316;background:#fff7ed}.exercise.done{border-color:#22c55e;background:#f0fdf4}.exercise b{display:block;color:#1e3a8a}.hint{font-size:.88rem;color:#64748b;margin-top:.35rem}.editor-tabs{display:flex;background:#0f172a;padding:.45rem;gap:.4rem}.editor-tabs button{flex:1;border:0;border-radius:12px;padding:.6rem;font-weight:900;cursor:pointer;background:#334155;color:white}.editor-tabs button.active{background:#fb923c;color:#111827}.editor{flex:1;min-height:0;display:none}.editor.active{display:block}textarea{width:100%;height:100%;resize:none;border:0;outline:0;padding:1rem;font:600 15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;direction:ltr;text-align:left;background:#07111f;color:#e5f3ff}.preview-head{padding:.8rem 1rem;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;gap:.5rem;align-items:center;font-weight:900}.preview-wrap{flex:1;min-height:0;background:white}iframe{width:100%;height:100%;border:0;background:white}.feedback{padding:.8rem 1rem;border-top:1px solid #e5e7eb;font-weight:900;line-height:1.45}.feedback.good{color:#15803d}.feedback.bad{color:#b91c1c}.helper{background:linear-gradient(135deg,#eff6ff,#fff7ed);border-radius:18px;padding:.8rem;margin-top:.7rem;line-height:1.5}.helper b{color:#1d4ed8}@media(max-width:1100px){body{height:auto;min-height:100vh;overflow:auto}.topbar{grid-template-columns:1fr}.lesson-title{text-align:right}.main{display:flex;flex-direction:column;padding:.75rem}.panel{min-height:360px}.panel.editor-panel{min-height:520px}.panel.preview-panel{min-height:420px}.actions .btn{flex:1}}@media(max-width:560px){.main{padding:.55rem}.topbar{padding:.55rem}.btn{font-size:.86rem;padding:.55rem .7rem}.panel{border-radius:20px}textarea{font-size:13px}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">💻 WebCode Lab</div>
+    <div class="lesson-title" id="topTitle"></div>
+    <div class="actions"><button class="btn run" onclick="runCode()">▶️ הרצה</button><button class="btn check" onclick="checkExercise()">✅ בדיקה</button><button class="btn reset" onclick="resetCode()">↺ איפוס</button><a class="btn link" id="slidesLink" href="webcode-slides.html">מצגת</a><a class="btn link" href="webcode.html">כל השיעורים</a></div>
+  </header>
+  <main class="main">
+    <section class="panel">
+      <div class="info"><span class="chip" id="concept"></span><h1 id="title"></h1><p id="story"></p><p><b>משימה:</b> <span id="mission"></span></p><div class="helper"><b>כלל זהב:</b> משנים דבר קטן → מריצים → בודקים מה קרה.</div></div>
+      <div class="exercise-list" id="exercises"></div>
+    </section>
+    <section class="panel editor-panel">
+      <div class="editor-tabs"><button class="active" onclick="showTab('html', this)">HTML</button><button onclick="showTab('css', this)">CSS</button><button onclick="showTab('js', this)">JavaScript</button></div>
+      <div class="editor active" id="tab-html"><textarea id="htmlCode" spellcheck="false"></textarea></div>
+      <div class="editor" id="tab-css"><textarea id="cssCode" spellcheck="false"></textarea></div>
+      <div class="editor" id="tab-js"><textarea id="jsCode" spellcheck="false"></textarea></div>
+    </section>
+    <section class="panel preview-panel">
+      <div class="preview-head"><span>👀 תצוגה חיה</span><span class="chip" id="progress">0/0 הושלמו</span></div>
+      <div class="preview-wrap"><iframe id="preview" title="תצוגת התוצר"></iframe></div>
+      <div class="feedback" id="feedback">בחרו תרגול, שנו קוד ולחצו הרצה.</div>
+    </section>
+  </main>
+  <script src="js/webcode-lessons.js?v=20260718-lesson1"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const lesson = window.getWebCodeLesson(params.get('lesson'));
+    let activeExercise = 1;
+    const done = new Set();
+    const $ = id => document.getElementById(id);
+    function esc(v){return String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+    function init(){
+      document.title = `WebCode Lab — שיעור ${lesson.id}: ${lesson.title}`;
+      $('topTitle').textContent = `שיעור ${lesson.id}: ${lesson.title}`;
+      $('title').textContent = lesson.title;
+      $('story').textContent = lesson.story;
+      $('concept').textContent = lesson.concept;
+      $('mission').textContent = lesson.mission;
+      $('slidesLink').href = `webcode-slides.html?lesson=${lesson.id}`;
+      $('htmlCode').value = lesson.starter.html; $('cssCode').value = lesson.starter.css; $('jsCode').value = lesson.starter.js;
+      $('exercises').innerHTML = lesson.exercises.map(ex => `<article class="exercise" id="ex-${ex.id}" onclick="selectExercise(${ex.id})"><b>${esc(ex.title)}</b><span>${esc(ex.minutes)}</span><p>${esc(ex.prompt)}</p><div class="hint">💡 ${esc(ex.hint)}</div></article>`).join('');
+      selectExercise(1); runCode(); renderProgress();
+    }
+    function showTab(name, btn){ document.querySelectorAll('.editor').forEach(e=>e.classList.remove('active')); document.querySelectorAll('.editor-tabs button').forEach(b=>b.classList.remove('active')); $(`tab-${name}`).classList.add('active'); btn.classList.add('active'); }
+    function selectExercise(id){ activeExercise = id; document.querySelectorAll('.exercise').forEach(e=>e.classList.remove('active')); $(`ex-${id}`).classList.add('active'); const ex=lesson.exercises.find(e=>e.id===id); $('feedback').className='feedback'; $('feedback').textContent = `עכשיו עובדים על: ${ex.title}`; }
+    function runCode(){ const src = `<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><style>${$('cssCode').value}</style></head><body>${$('htmlCode').value}<script>${$('jsCode').value}<\/script></body></html>`; $('preview').srcdoc = src; $('feedback').className='feedback good'; $('feedback').textContent='הרצה בוצעה. בדקו בתצוגה אם זה נראה ועובד כמו שרציתם.'; }
+    function resetCode(){ if(!confirm('לאפס לקוד ההתחלתי של השיעור?')) return; $('htmlCode').value=lesson.starter.html; $('cssCode').value=lesson.starter.css; $('jsCode').value=lesson.starter.js; done.clear(); renderProgress(); runCode(); selectExercise(1); }
+    function includesAll(text, list){ return (list||[]).every(x => text.includes(x)); }
+    function checkExercise(){ const ex=lesson.exercises.find(e=>e.id===activeExercise); const c=ex.check||{}; const ok = includesAll($('htmlCode').value,c.htmlIncludes) && includesAll($('cssCode').value,c.cssIncludes) && includesAll($('jsCode').value,c.jsIncludes); if(ok){ done.add(ex.id); $(`ex-${ex.id}`).classList.add('done'); $('feedback').className='feedback good'; $('feedback').textContent='מעולה ✅ התרגול נראה תקין. אפשר להמשיך לתרגול הבא או לשדרג.'; if(activeExercise < lesson.exercises.length) selectExercise(activeExercise+1); } else { $('feedback').className='feedback bad'; $('feedback').textContent=`כמעט. רמז: ${ex.hint}`; } renderProgress(); runCode(); }
+    function renderProgress(){ $('progress').textContent = `${done.size}/${lesson.exercises.length} הושלמו`; }
+    init();
+  </script>
+  <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
+</body>
+</html>
