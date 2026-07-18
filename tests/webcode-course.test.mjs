@@ -138,8 +138,16 @@ assert.ok(play.includes('Blockly.inject'), 'play page injects a real Blockly wor
 assert.ok(play.includes('defineWebBuilderBlocks'), 'play page defines draggable Web builder blocks');
 assert.ok(play.includes('webBuilderToolbox'), 'play page exposes a Blockly toolbox');
 assert.ok(play.includes('generateCodeFromBlockly'), 'play page generates HTML/CSS/JS from connected Blockly blocks');
+assert.ok(play.includes('shareProject'), 'play page can create a share link for the student project');
+assert.ok(play.includes('webcode-share.html'), 'play page shares to a clean viewer page');
 assert.ok(play.includes('renderBridgeBlocks'), 'play page keeps bridge blocks fallback for later lessons');
 assert.ok(play.includes('applyBridgeBlock'), 'play page can apply bridge blocks into code');
+
+const shared = read('webcode-share.html');
+assert.ok(shared.includes('עמוד משותף'), 'shared project viewer page exists');
+assert.ok(shared.includes('decodeSharePayload'), 'shared project viewer decodes link payload');
+assert.ok(shared.includes('sandbox="allow-scripts"'), 'shared project viewer isolates student code in sandboxed iframe');
+assert.ok(shared.includes('לבנות עמוד משלי'), 'shared project viewer invites friends to build their own page');
 
 const slides = read('webcode-slides.html');
 assert.ok(slides.includes('מהלך שיעור 90 דקות'), 'slides include 90-minute flow');

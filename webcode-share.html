@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>עמוד משותף — WebCode Lab</title>
+  <meta name="description" content="תוצר WebCode Lab שתלמיד/ה בנה/בנתה בבלוקים ושיתף/ה עם חברים." />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Rubik,Arial,sans-serif;direction:rtl;background:linear-gradient(135deg,#0f172a,#1e3a8a 58%,#0e7490);color:#0f172a;display:flex;flex-direction:column}.topbar{background:rgba(255,255,255,.96);padding:.8rem 1rem;box-shadow:0 6px 24px rgba(0,0,0,.18);display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}.brand{font-weight:900;color:#1e3a8a}.actions{display:flex;gap:.55rem;flex-wrap:wrap}.btn{border:0;border-radius:999px;padding:.65rem 1rem;font-family:inherit;font-weight:900;cursor:pointer;text-decoration:none;background:#eef2ff;color:#3730a3}.btn.primary{background:#38bdf8;color:#082f49}.wrap{width:min(1100px,calc(100% - 24px));margin:18px auto;display:grid;gap:14px;flex:1}.card{background:rgba(255,255,255,.96);border-radius:26px;padding:1rem;box-shadow:0 16px 46px rgba(0,0,0,.2)}.notice{line-height:1.6;color:#475569;font-weight:800}iframe{width:100%;height:72vh;border:0;border-radius:22px;background:white;box-shadow:0 16px 42px rgba(0,0,0,.2)}.error{background:#fee2e2;color:#991b1b;border-radius:20px;padding:1rem;font-weight:900;line-height:1.6}@media(max-width:700px){iframe{height:68vh}.topbar{align-items:flex-start}.actions .btn{flex:1;text-align:center}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div><div class="brand">💻 WebCode Lab — עמוד שחבר/ה בנה/בנתה</div><div class="notice" id="subtitle">טוען תוצר...</div></div>
+    <div class="actions"><button class="btn primary" onclick="shareAgain()">📤 שתפו הלאה</button><a class="btn" href="webcode-play.html?lesson=1&v=real-blockly">לבנות עמוד משלי</a></div>
+  </header>
+  <main class="wrap">
+    <section class="card" id="viewerCard"><iframe id="viewer" title="עמוד תלמיד משותף" sandbox="allow-scripts"></iframe></section>
+  </main>
+  <script>
+    const $ = id => document.getElementById(id);
+    function decodeSharePayload(value){
+      const normalized = value.replaceAll('-','+').replaceAll('_','/');
+      const padded = normalized + '='.repeat((4 - normalized.length % 4) % 4);
+      const binary = atob(padded);
+      const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
+      return JSON.parse(new TextDecoder().decode(bytes));
+    }
+    function safeScript(code){ return String(code || '').replaceAll('<' + '/script>', '<\\/script>'); }
+    function renderSharedProject(){
+      try {
+        const raw = new URLSearchParams(location.hash.slice(1)).get('project');
+        if(!raw) throw new Error('missing project');
+        const project = decodeSharePayload(raw);
+        document.title = 'עמוד משותף — ' + (project.title || 'WebCode Lab');
+        $('subtitle').textContent = 'זה עמוד שנבנה בבלוקים ונשלח לצפייה.';
+        $('viewer').srcdoc = `<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><style>${project.css || ''}</style></head><body>${project.html || ''}<script>${safeScript(project.js || '')}<\/script></body></html>`;
+      } catch (error) {
+        $('viewerCard').innerHTML = '<div class="error">לא הצלחתי לפתוח את העמוד המשותף. יכול להיות שהקישור נחתך בדרך. בקשו מהתלמיד/ה לשלוח שוב את הקישור המלא.</div>';
+        $('subtitle').textContent = 'הקישור לא תקין או חסר.';
+      }
+    }
+    async function shareAgain(){
+      const url = location.href;
+      try {
+        if(navigator.share){ await navigator.share({ title:'עמוד WebCode Lab', url }); return; }
+        await navigator.clipboard.writeText(url);
+        $('subtitle').textContent = 'הקישור הועתק ואפשר לשלוח אותו הלאה ✅';
+      } catch (error) {
+        prompt('העתיקו את הקישור:', url);
+      }
+    }
+    renderSharedProject();
+  </script>
+</body>
+</html>
