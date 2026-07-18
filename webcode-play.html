@@ -158,21 +158,14 @@
         createdAt: new Date().toISOString()
       };
       const shareUrl = `${location.origin}${location.pathname.replace(/webcode-play\.html$/, 'webcode-share.html')}#project=${encodeSharePayload(payload)}`;
-      const text = `העמוד שבניתי ב-WebCode Lab: ${shareUrl}`;
       try {
-        if (navigator.share) {
-          await navigator.share({ title: 'העמוד שלי ב-WebCode Lab', text, url: shareUrl });
-          $('feedback').className='feedback good';
-          $('feedback').textContent='פתחתי שיתוף. אפשר לשלוח את הקישור לחברים ✅';
-          return;
-        }
-        await navigator.clipboard.writeText(text);
+        await navigator.clipboard.writeText(shareUrl);
         $('feedback').className='feedback good';
-        $('feedback').textContent='הקישור הועתק! עכשיו אפשר לשלוח אותו לחברים בוואטסאפ/מייל/צ׳אט ✅';
+        $('feedback').textContent='הקישור הציבורי הועתק ✅ עכשיו אפשר לשלוח אותו לחברים.';
       } catch (error) {
-        prompt('העתיקו ושלחו לחברים:', shareUrl);
+        prompt('העתיקו את הקישור הציבורי ושלחו לחברים:', shareUrl);
         $('feedback').className='feedback good';
-        $('feedback').textContent='יצרתי קישור שיתוף לעמוד. אפשר להעתיק ולשלוח.';
+        $('feedback').textContent='יצרתי קישור ציבורי לעמוד. אפשר להעתיק ולשלוח לחברים.';
       }
     }
     function validateJavaScriptSyntax(code){ try { new Function(code); return null; } catch (error) { return error; } }

@@ -139,6 +139,9 @@ assert.ok(play.includes('defineWebBuilderBlocks'), 'play page defines draggable 
 assert.ok(play.includes('webBuilderToolbox'), 'play page exposes a Blockly toolbox');
 assert.ok(play.includes('generateCodeFromBlockly'), 'play page generates HTML/CSS/JS from connected Blockly blocks');
 assert.ok(play.includes('shareProject'), 'play page can create a share link for the student project');
+assert.ok(play.includes('navigator.clipboard.writeText(shareUrl)'), 'share button copies only the public link');
+assert.ok(play.includes('הקישור הציבורי הועתק'), 'share button confirms the public link was copied');
+assert.ok(!play.includes('navigator.share'), 'share button does not open native share UI');
 assert.ok(play.includes('webcode-share.html'), 'play page shares to a clean viewer page');
 assert.ok(play.includes('renderBridgeBlocks'), 'play page keeps bridge blocks fallback for later lessons');
 assert.ok(play.includes('applyBridgeBlock'), 'play page can apply bridge blocks into code');
