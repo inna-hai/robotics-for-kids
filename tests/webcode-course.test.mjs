@@ -132,6 +132,8 @@ assert.ok(play.includes('iframe id="preview"'), 'play page has live preview');
 assert.ok(play.includes('lessonPanel'), 'play page wraps lesson text in a collapsible panel');
 assert.ok(play.includes('toggleLessonPanel'), 'play page can collapse and expand lesson instructions');
 assert.ok(play.includes('aria-expanded'), 'collapsible lesson panel is accessible');
+assert.ok(play.includes('lesson-collapsed'), 'collapsing instructions reallocates space to Blockly and preview sections');
+assert.ok(play.includes('Blockly.svgResize'), 'collapsing instructions resizes Blockly after layout change');
 assert.ok(play.includes('checkExercise()'), 'play page has exercise checking');
 assert.ok(play.includes('completedTitle'), 'check button keeps success feedback visible after running preview');
 assert.ok(play.includes('webcode-error'), 'play page catches preview JavaScript errors');
