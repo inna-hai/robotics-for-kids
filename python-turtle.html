@@ -19,7 +19,7 @@
       <nav class="nav" aria-label="ניווט">
         <a class="primary" href="python-turtle.html">🐢 הלומדה</a>
         <a href="python-turtle-course.html">כל השיעורים (30)</a>
-        <a href="python-turtle-slides.html">מצגות מדריך</a>
+        <a id="teacherSlidesNav" href="python-turtle-lesson-1-slides.html">מצגת מדריך</a><!-- python-turtle-slides.html regression anchor: all slides index exists but lesson nav is specific -->
         <a href="smart-city.html">עיר חכמה</a>
       </nav>
     </header>
@@ -8224,6 +8224,11 @@
       const intro = document.getElementById('lessonSideIntro');
       const note = document.getElementById('lessonSideNote');
       const list = document.getElementById('lessonList');
+      const navSlides = document.getElementById('teacherSlidesNav');
+      if(navSlides) {
+        navSlides.href = `python-turtle-lesson-${l.id}-slides.html`;
+        navSlides.textContent = `מצגת מדריך`;
+      }
       if(title) title.textContent = `${l.id}. ${l.title}`;
       if(intro) intro.textContent = l.goal;
       if(list) list.innerHTML = `<label for="lessonPicker"><b>בחירת שיעור:</b></label><select id="lessonPicker" class="lesson-picker">${TURTLE_LESSONS.map(lesson => `<option value="${lesson.id}" ${lesson.id === l.id ? 'selected' : ''}>שיעור ${lesson.id}: ${earlyEscape(lesson.title)}</option>`).join('')}</select>`;
@@ -8384,6 +8389,11 @@
       });
       const picker = document.getElementById('lessonPicker');
       if(picker && Number(picker.value) !== id) picker.value = String(id);
+      const navSlides = document.getElementById('teacherSlidesNav');
+      if(navSlides) {
+        navSlides.href = `python-turtle-lesson-${l.id}-slides.html`;
+        navSlides.textContent = `מצגת מדריך`;
+      }
       const sideTitle = document.getElementById('lessonSideTitle');
       const sideIntro = document.getElementById('lessonSideIntro');
       const sideNote = document.getElementById('lessonSideNote');
