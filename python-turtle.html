@@ -90,6 +90,11 @@
     <category name="לולאות" colour="#8b5cf6">
       <block type="py_repeat"><field name="TIMES">4</field></block>
     </category>
+    <category name="משתנים" colour="#0ea5e9">
+      <block type="py_set_length"><field name="VALUE">100</field></block>
+      <block type="py_forward_length"></block>
+      <block type="py_grow_length"><field name="ADD">20</field></block>
+    </category>
     <category name="הסבר" colour="#64748b">
       <block type="py_comment"><field name="TEXT">מציירים ריבוע</field></block>
     </category>
@@ -101,7 +106,8 @@
       {id:2,title:'מציירים ריבוע',goal:'השתמשו בלולאה שחוזרת 4 פעמים: קדימה 100, ימינה 90.',concept:'לולאות וזוויות',blocks:['repeat','forward','right']},
       {id:3,title:'צבע ועובי',goal:'שנו צבע ועובי עט, ואז ציירו צורה משלכם.',concept:'פרמטרים',blocks:['color','width','repeat']},
       {id:4,title:'עט למעלה / למטה',goal:'ציירו שתי צורות נפרדות בלי קו מחבר ביניהן.',concept:'מצב פנימי',blocks:['pen']},
-      {id:5,title:'אתגר כוכב',goal:'נסו לחזור 5 פעמים: קדימה 130, ימינה 144.',concept:'דפוסים',blocks:['repeat','angles']}
+      {id:5,title:'אתגר כוכב',goal:'נסו לחזור 5 פעמים: קדימה 130, ימינה 144.',concept:'דפוסים',blocks:['repeat','angles']},
+      {id:6,title:'משתנה: אורך',goal:'קבעו משתנה בשם length, ואז השתמשו בו במקום מספר. נסו לשנות רק את הערך הראשון ולראות שכל הציור משתנה.',concept:'משתנים',blocks:['set_length','forward_length','repeat']}
     ];
 
     const blockJson = [
@@ -113,6 +119,9 @@
       {type:'py_penup',message0:'הרם עט',previousStatement:null,nextStatement:null,colour:28},
       {type:'py_pendown',message0:'הורד עט',previousStatement:null,nextStatement:null,colour:28},
       {type:'py_repeat',message0:'חזור %1 פעמים %2 %3',args0:[{type:'field_number',name:'TIMES',value:4,min:1,max:50},{type:'input_dummy'},{type:'input_statement',name:'DO'}],previousStatement:null,nextStatement:null,colour:270},
+      {type:'py_set_length',message0:'קבע length = %1',args0:[{type:'field_number',name:'VALUE',value:100,min:1,max:500}],previousStatement:null,nextStatement:null,colour:200,tooltip:'משתנה שומר מספר בשם, כדי להשתמש בו שוב בקוד'},
+      {type:'py_forward_length',message0:'זוז קדימה length צעדים',previousStatement:null,nextStatement:null,colour:200,tooltip:'משתמשים בערך ששמור במשתנה length'},
+      {type:'py_grow_length',message0:'הגדל length ב־ %1',args0:[{type:'field_number',name:'ADD',value:20,min:-200,max:200}],previousStatement:null,nextStatement:null,colour:200,tooltip:'משנים את ערך המשתנה תוך כדי הציור'},
       {type:'py_comment',message0:'הערה בקוד: %1',args0:[{type:'field_input',name:'TEXT',text:'מציירים צורה'}],previousStatement:null,nextStatement:null,colour:210}
     ];
     Blockly.defineBlocksWithJsonArray(blockJson);
@@ -147,6 +156,9 @@
       if(t==='py_width') return [{text:`${indent}pensize(${Number(block.getFieldValue('WIDTH'))})`, id}];
       if(t==='py_penup') return [{text:`${indent}penup()`, id}];
       if(t==='py_pendown') return [{text:`${indent}pendown()`, id}];
+      if(t==='py_set_length') return [{text:`${indent}length = ${numericField(block,'VALUE',100)}`, id}];
+      if(t==='py_forward_length') return [{text:`${indent}forward(length)`, id}];
+      if(t==='py_grow_length') return [{text:`${indent}length = length + ${numericField(block,'ADD',20)}`, id}];
       if(t==='py_comment') return [{text:`${indent}# ${block.getFieldValue('TEXT')}`, id}];
       if(t==='py_repeat'){
         const times=Number(block.getFieldValue('TIMES'));
@@ -199,6 +211,9 @@
         if(t==='py_width') out.push({cmd:'width',v:Number(block.getFieldValue('WIDTH'))});
         if(t==='py_penup') out.push({cmd:'pen',v:false});
         if(t==='py_pendown') out.push({cmd:'pen',v:true});
+        if(t==='py_set_length') out.push({cmd:'setVar',name:'length',v:numericField(block,'VALUE',100)});
+        if(t==='py_forward_length') out.push({cmd:'forwardVar',name:'length'});
+        if(t==='py_grow_length') out.push({cmd:'growVar',name:'length',v:numericField(block,'ADD',20)});
         if(t==='py_repeat'){
           const times=Math.min(50,Number(block.getFieldValue('TIMES')));
           for(let i=0;i<times;i++) actionsFrom(block.getInputTargetBlock('DO'), out, depth+1);
@@ -228,10 +243,14 @@
       statusEl.textContent='מאפסים את הציור...';
       await sleep(450);
       statusEl.textContent=`מריץ ${actions.length} פקודות...`;
+      const vars = {length:100};
       for(const a of actions){
-        if(a.cmd==='forward'){
+        if(a.cmd==='setVar') vars[a.name] = a.v;
+        else if(a.cmd==='growVar') vars[a.name] = (vars[a.name] ?? 0) + a.v;
+        else if(a.cmd==='forward' || a.cmd==='forwardVar'){
+          const steps = a.cmd==='forwardVar' ? (vars[a.name] ?? 100) : a.v;
           const rad=turtle.heading*Math.PI/180;
-          const nx=turtle.x+Math.cos(rad)*a.v, ny=turtle.y+Math.sin(rad)*a.v;
+          const nx=turtle.x+Math.cos(rad)*steps, ny=turtle.y+Math.sin(rad)*steps;
           if(turtle.pen){ctx.strokeStyle=turtle.color;ctx.lineWidth=turtle.width;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(turtle.x,turtle.y);ctx.lineTo(nx,ny);ctx.stroke();}
           turtle.x=nx;turtle.y=ny;
         } else if(a.cmd==='right') turtle.heading += a.v;
@@ -256,7 +275,8 @@
         2:`<xml><block type="py_repeat" x="40" y="40"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">100</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement></block></xml>`,
         3:`<xml><block type="py_color" x="40" y="40"><field name="COLOR">#e11d48</field><next><block type="py_width"><field name="WIDTH">7</field><next><block type="py_repeat"><field name="TIMES">6</field><statement name="DO"><block type="py_forward"><field name="STEPS">85</field><next><block type="py_right"><field name="ANGLE">60</field></block></next></block></statement></block></next></block></next></block></xml>`,
         4:`<xml><block type="py_repeat" x="40" y="40"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">70</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_penup"><next><block type="py_forward"><field name="STEPS">130</field><next><block type="py_pendown"><next><block type="py_color"><field name="COLOR">#16a34a</field><next><block type="py_repeat"><field name="TIMES">3</field><statement name="DO"><block type="py_forward"><field name="STEPS">90</field><next><block type="py_right"><field name="ANGLE">120</field></block></next></block></statement></block></next></block></next></block></next></block></next></block></xml>`,
-        5:`<xml><block type="py_color" x="40" y="40"><field name="COLOR">#7c3aed</field><next><block type="py_repeat"><field name="TIMES">5</field><statement name="DO"><block type="py_forward"><field name="STEPS">140</field><next><block type="py_right"><field name="ANGLE">144</field></block></next></block></statement></block></next></block></xml>`
+        5:`<xml><block type="py_color" x="40" y="40"><field name="COLOR">#7c3aed</field><next><block type="py_repeat"><field name="TIMES">5</field><statement name="DO"><block type="py_forward"><field name="STEPS">140</field><next><block type="py_right"><field name="ANGLE">144</field></block></next></block></statement></block></next></block></xml>`,
+        6:`<xml><block type="py_set_length" x="40" y="40"><field name="VALUE">70</field><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward_length"><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_grow_length"><field name="ADD">30</field><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward_length"><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement></block></next></block></next></block></next></block></xml>`
       };
       workspace.clear();
       Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(xmls[currentLesson] || xmls[1]), workspace);
