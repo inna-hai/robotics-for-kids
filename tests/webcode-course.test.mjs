@@ -137,7 +137,9 @@ assert.ok(play.includes('toggleLessonPanel'), 'play page can collapse and expand
 assert.ok(play.includes('aria-expanded'), 'collapsible lesson panel is accessible');
 assert.ok(play.includes('lessonToggleIcon') && play.includes('⌃') && play.includes('⌄'), 'collapse toggle uses standard chevron icons instead of plus/minus');
 assert.ok(play.includes('lesson-collapsed'), 'collapsing instructions reallocates space to Blockly and preview sections');
-assert.ok(play.includes('Blockly.svgResize'), 'collapsing instructions resizes Blockly after layout change');
+assert.ok(play.includes('previewResize') && play.includes('--preview-width'), 'preview panel has a draggable width resizer');
+assert.ok(play.includes('webcodePreviewWidth') && play.includes('pointermove'), 'preview width drag persists and handles pointer movement');
+assert.ok(play.includes('Blockly.svgResize'), 'layout changes resize Blockly after layout change');
 assert.ok(play.includes('alignBlocklyStarterBlocksRight'), 'starter Blockly program is aligned to the right side of the workspace');
 assert.ok(play.includes('safeRightEdge') && play.includes('blocklyToolboxCategoryGroup'), 'starter blocks align to free workspace edge without overlapping toolbox');
 assert.ok(play.includes('checkExercise()'), 'play page has exercise checking');
