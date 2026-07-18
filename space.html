@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🚀 שיעור חלל: סיסי בחלל - לומדת תכנות קלה לכיתות ב׳</title>
+  <meta name="description" content="שיעור חלל לכיתות ב׳: סיסי בחלל היא לומדה משחקית וקלה לתלמידי כיתה ב׳. לומדים פקודות, מסלולים וקצת עובדות חלל דרך משימות קצרות." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/space.css?v=20260717-space-lesson-label">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <div class="kicker">שיעור חלל • כיתות ב׳ • 75 דקות • תכנות בלי עומס</div>
+        <h1>🚀 שיעור חלל: סיסי בחלל</h1>
+        <p>
+          שיעור חלל קליל וצבעוני לכיתות ב׳: בכל משימה סיסי הרובוטית טסה לכוכב אחר,
+          מתכננת מסלול פשוט, אוספת כוכבים, מתחמקת ממכשולים — ועל הדרך לומדת עובדת חלל קטנה.
+        </p>
+        <div class="actions">
+          <a class="btn" href="space-play.html?lesson=1">▶️ להתחיל במשימה 1</a>
+          <a class="btn secondary" href="#missions">🪐 לראות את המשימות</a>
+          <a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a>
+          <a class="btn secondary" href="music.html">🎵 שיעור 2: מכונת המוזיקה</a>
+          <a class="btn secondary" href="ocean.html">🌊 שיעור 3: אוקיינוס</a>
+          <a class="btn secondary" href="smart-city.html">🏙️ לעיר החכמה</a>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">🤖🌙</div>
+    </section>
+
+    <section class="stats" aria-label="נתוני הלומדה">
+      <div class="stat"><b>שיעור חלל</b>נושא מרכזי</div>
+      <div class="stat"><b>12</b>משימות פתוחות</div>
+      <div class="stat"><b>ב׳</b>כיתת יעד</div>
+      <div class="stat"><b>75</b>דק׳ לשיעור ראשון</div>
+      <div class="stat"><b>חלל</b>עובדה בכל שיעור</div>
+    </section>
+
+    <section class="intro" aria-label="על הלומדה">
+      <div class="panel">
+        <h2>מה עושים בשיעור החלל?</h2>
+        <p>
+          בשיעור החלל הילדים נותנים לסיסי פקודות כמו “קדימה”, “למעלה”, “ימינה” ו“שמאלה”,
+          ואז מריצים את המסלול ורואים אם היא הגיעה ליעד. אין עומס של מושגים — רק משחק,
+          ניסוי, תיקון, וחיוך כשהרובוטית מצליחה.
+        </p>
+      </div>
+      <div class="panel">
+        <h3>מה לומדים בלי להרגיש?</h3>
+        <ul>
+          <li>רצף פקודות ותכנון מסלול</li>
+          <li>זיהוי מכשולים ותיקון טעויות</li>
+          <li>חשיבה אלגוריתמית בסיסית</li>
+          <li>עובדות קטנות על הירח, מאדים, שבתאי והשמש</li>
+          <li>שיעור ראשון מומלץ: משימות 1–4 במשך 75 דקות</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="missions">
+      <h2>משימות שיעור החלל</h2>
+      <div class="cards" id="cards"></div>
+    </section>
+  </main>
+
+  <script src="js/space-lessons.js?v=20260717-space-1"></script>
+  <script>
+    document.getElementById('cards').innerHTML = window.SPACE_LESSONS.map((lesson) => `
+      <a class="card" href="space-play.html?lesson=${lesson.id}" aria-label="פתח משימה ${lesson.id}: ${lesson.title}">
+        <div class="top"><span class="emoji">${lesson.emoji}</span><span class="id">משימה ${lesson.id}</span></div>
+        <h3>${lesson.title}</h3>
+        <div class="unit">${lesson.unit}</div>
+        <div class="story">${lesson.mission}</div>
+        <div class="tags"><span class="tag">${lesson.concept}</span><span class="tag">${lesson.place}</span></div>
+        <div class="start">להתחיל משימה ←</div>
+      </a>
+    `).join('');
+  </script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>

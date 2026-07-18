@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧁 שיעור 5: סיסי במטבח הקסמים - אלגוריתמים לכיתות ב׳</title>
+  <meta name="description" content="שיעור 5 לכיתות ב׳: סיסי במטבח הקסמים מלמדת אלגוריתמים, סדר פעולות ודיבוג דרך מתכונים משחקיים." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/kitchen.css?v=20260717-kitchen-1">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <div class="kicker">שיעור 5 • מטבח ואלגוריתמים • כיתות ב׳ • 75 דקות</div>
+        <h1>🧁 סיסי במטבח הקסמים</h1>
+        <p>
+          סיסי נכנסת למטבח קסום שבו כל מתכון הוא אלגוריתם. הילדים מסדרים כרטיסי שלבים מצוירים,
+          בודקים מה קורה כששלב לא במקום, ולומדים שסדר פעולות ברור יוצר תוצאה טובה.
+        </p>
+        <div class="actions">
+          <a class="btn" href="kitchen-play.html?lesson=1">▶️ להתחיל מתכון 1</a>
+          <a class="btn secondary" href="#missions">🍪 לראות מתכונים</a>
+          <a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a>
+          <a class="btn secondary" href="dino.html">🦕 שיעור 6: דינוזאורים</a>
+          <a class="btn secondary" href="detective.html">🕵️‍♀️ שיעור 4: בלשות</a>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">🤖🧁</div>
+    </section>
+
+    <section class="stats" aria-label="נתוני שיעור המטבח">
+      <div class="stat"><b>שיעור 5</b>מטבח</div>
+      <div class="stat"><b>75</b>דקות</div>
+      <div class="stat"><b>אלגוריתם</b>רעיון מרכזי</div>
+      <div class="stat"><b>12</b>מתכונים</div>
+    </section>
+
+    <section class="intro" aria-label="על שיעור המטבח">
+      <div class="panel">
+        <h2>מה חדש בשיעור הזה?</h2>
+        <p>
+          במקום לבחור רמזים או לזוז במסלול, הילדים בונים מתכון מכרטיסים ויזואליים. הם לומדים שאלגוריתם
+          הוא פשוט סדר פעולות ברור: קודם זה, אחר כך זה, ורק בסוף מגישים.
+        </p>
+      </div>
+      <div class="panel">
+        <h3>מה לומדים בלי להרגיש?</h3>
+        <ul>
+          <li>אלגוריתם כסדר פעולות</li>
+          <li>שלבים שתלויים זה בזה</li>
+          <li>חזרות קטנות בתוך מתכון</li>
+          <li>דיבוג: למצוא שלב לא במקום</li>
+          <li>שיעור מומלץ: מתכונים 1–4 במשך 75 דקות</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="missions">
+      <h2>המתכונים של סיסי</h2>
+      <div class="cards" id="cards"></div>
+    </section>
+  </main>
+
+  <script src="js/kitchen-lessons.js?v=20260717-kitchen-1"></script>
+  <script>
+    document.getElementById('cards').innerHTML = window.KITCHEN_LESSONS.map((lesson) => `
+      <a class="card" href="kitchen-play.html?lesson=${lesson.id}" aria-label="פתח מתכון ${lesson.id}: ${lesson.title}">
+        <div class="top"><span class="emoji">${lesson.emoji}</span><span class="id">מתכון ${lesson.id}</span></div>
+        <h3>${lesson.title}</h3>
+        <div class="unit">${lesson.unit}</div>
+        <div class="story">${lesson.mission}</div>
+        <div class="tags"><span class="tag">${lesson.concept}</span><span class="tag">מטבח</span></div>
+        <div class="start">להתחיל מתכון ←</div>
+      </a>
+    `).join('');
+  </script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>

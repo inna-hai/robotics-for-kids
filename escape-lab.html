@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔐 מעבדת חדר בריחה - סיסי</title>
+  <meta name="description" content="פעילות יצירה לשיעור 14: הילדים בונים דלת עם שני תנאים ומפתח מבלבל." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/escape.css?v=20260717-escape-lab-1">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero"><div><div class="kicker">שיעור 14 • פעילות יצירה • 15–20 דקות</div><h1>🔐 מעבדת חדר הבריחה של סיסי</h1><p>הילדים בונים דלת משלהם: שני תנאים שחייבים להתקיים יחד, ועוד רמז מבלבל. אחר כך חברים מנסים לפתוח ולדבג.</p><div class="actions"><a class="btn" href="escape-play.html?lesson=1">↩️ חזרה לחדרים</a><a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a></div></div><div class="hero-art" aria-hidden="true">🧩🔐</div></section>
+    <section class="intro"><div class="panel"><h2>משימת יצירה</h2><ol><li>בחרו שם לדלת.</li><li>כתבו תנאי ראשון.</li><li>כתבו תנאי שני.</li><li>הוסיפו רמז מבלבל שלא פותח.</li></ol></div><div class="panel"><h2>כרטיס הדלת שלי</h2><label>שם הדלת <input id="door" placeholder="למשל: דלת הכוכב הכחול" /></label><label>תנאי 1 <input id="first" placeholder="למשל: כוכב" /></label><label>תנאי 2 <input id="second" placeholder="למשל: כחול" /></label><label>רמז מבלבל <input id="extra" placeholder="למשל: עיגול" /></label><button class="btn" id="build" type="button">🔐 ליצור דלת</button></div></section>
+    <section class="condition-panel"><h2>התנאי שיצרתי</h2><div class="condition-preview" id="door-output"><span>כתבו תנאים</span></div><div class="learning-note"><b>בדיקת חברים:</b> החליפו כרטיס עם זוג אחר. האם הם מזהים ששני התנאים חייבים להתקיים יחד?</div></section>
+  </main>
+  <script>
+    document.getElementById('build').addEventListener('click', () => {
+      const door = document.getElementById('door').value || 'הדלת שלי';
+      const first = document.getElementById('first').value || 'תנאי 1';
+      const second = document.getElementById('second').value || 'תנאי 2';
+      const extra = document.getElementById('extra').value || 'רמז מבלבל';
+      document.getElementById('door-output').innerHTML = `<span>${door}</span><b>נפתחת אם</b><span>${first}</span><b>וגם</b><span>${second}</span><b>לא מספיק:</b><span>${extra}</span>`;
+    });
+  </script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>

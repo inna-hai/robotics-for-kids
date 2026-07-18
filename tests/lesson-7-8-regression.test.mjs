@@ -17,6 +17,10 @@ function assertIncludes(source, needle, message = `Missing: ${needle}`) {
   assert.ok(source.includes(needle), message);
 }
 
+function assertNotIncludes(source, needle, message = `Unexpected: ${needle}`) {
+  assert.ok(!source.includes(needle), message);
+}
+
 function assertMatches(source, regex, message = `Missing pattern: ${regex}`) {
   assert.match(source, regex, message);
 }
@@ -38,6 +42,11 @@ function cssRule(selector) {
   assert.notEqual(close, -1, `CSS rule has no closing brace: ${selector}`);
   return indexHtml.slice(open + 1, close);
 }
+
+test('lesson 7 robot starts with its line sensor on the beginning of the line', () => {
+  assertMatches(indexHtml, /if \(currentLesson === 7\) \{[\s\S]*?const line = getLesson7LinePoints\(\);[\s\S]*?robot\.x = line\.start\.x - 28;[\s\S]*?robot\.y = line\.start\.y;[\s\S]*?\} else \{/);
+  assertIncludes(indexHtml, 'x: robot.x + Math.cos(angle) * 28,');
+});
 
 test('lesson 7 has a visible goal at the end of the line', () => {
   assertIncludes(indexHtml, "ctx.fillText('🏁', line.end.x, line.end.y - 30)");
@@ -81,9 +90,9 @@ test('sensor chips layout is responsive and cannot grow outside the robot panel'
   assert.ok(!activeSensorChipRule.includes('transform: scale(1.05);'), 'Active sensor chips should not scale and overflow');
 });
 
-test('motion control is shown only in lessons that use movement or security motion', () => {
+test('motion control is hidden before lesson 11', () => {
   const overridesBlock = indexHtml.match(/const\s+lessonControlOverrides\s*=\s*\{[\s\S]*?\n\s*\};/)?.[0] || '';
-  for (const lesson of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14]) {
+  for (const lesson of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
     const lessonOverride = overridesBlock.match(new RegExp(`${lesson}:\\s*\\{[\\s\\S]*?\\n\\s*\\}`))?.[0] || '';
     assert.doesNotMatch(lessonOverride, /sensorMotion/, `Lesson ${lesson} should not show sensorMotion`);
     assert.doesNotMatch(lessonOverride, /envMotion/, `Lesson ${lesson} should not show envMotion`);
@@ -95,7 +104,7 @@ test('line off is not exposed as a separate environment button', () => {
   assert.doesNotMatch(indexHtml, /toggleEnv\('lineOff'\)/);
 });
 
-test('lesson sensor and environment controls are focused per lesson instead of cumulative', () => {
+test('lesson sensor and environment controls are specific to each lesson, not cumulative', () => {
   const overridesBlock = indexHtml.match(/const\s+lessonControlOverrides\s*=\s*\{[\s\S]*?\n\s*\};/)?.[0] || '';
   const getList = (lesson, key) => {
     const lessonOverride = overridesBlock.match(new RegExp(`${lesson}:\\s*\\{[\\s\\S]*?\\n\\s*\\}`))?.[0] || '';
@@ -112,17 +121,17 @@ test('lesson sensor and environment controls are focused per lesson instead of c
     6: { sensors: ['sensorColor'], env: ['envRecycleColor'] },
     7: { sensors: ['sensorLine', 'sensorGoal'], env: [] },
     8: { sensors: ['sensorCars', 'sensorPedestrian'], env: ['envCars', 'envPedestrian'] },
-    9: { sensors: ['sensorPeople', 'sensorLight'], env: ['envPeople', 'envLight'] },
+    9: { sensors: ['sensorPeople', 'sensorSound'], env: ['envPeople', 'envSound'] },
     10: { sensors: ['sensorSoil'], env: ['envSoilDry'] },
     11: { sensors: ['sensorArmed', 'sensorMotion', 'sensorDoor'], env: ['envArmedMode', 'envMotion', 'envDoorOpen'] },
-    12: { sensors: ['sensorTouch'], env: ['envObstacle'] },
+    12: { sensors: ['sensorTouch', 'sensorGoal'], env: ['envObstacle'] },
     13: { sensors: ['sensorLight', 'sensorMotion', 'sensorSound'], env: ['envLight', 'envMotion', 'envSound'] },
     14: { sensors: ['sensorSmell', 'sensorTemp', 'sensorTouch'], env: ['envSmoke', 'envTemperatureHot', 'envObstacle'] }
   };
 
   for (const [lesson, expected] of Object.entries(expectedByLesson)) {
-    assert.deepEqual(getList(lesson, 'sensors'), expected.sensors, `Lesson ${lesson} should show only its own sensor chips`);
-    assert.deepEqual(getList(lesson, 'env'), expected.env, `Lesson ${lesson} should show only its own environment controls`);
+    assert.deepEqual(getList(lesson, 'sensors'), expected.sensors, `Lesson ${lesson} should show only its related sensor chips`);
+    assert.deepEqual(getList(lesson, 'env'), expected.env, `Lesson ${lesson} should show only its related environment controls`);
   }
 });
 
@@ -161,24 +170,114 @@ test('environment controls stay in one horizontal scroll row with side arrows an
   assert.ok(indexHtml.indexOf('<div class="env-reset-row">') > indexHtml.indexOf('<div class="env-scroll-shell"'));
 });
 
-test('lesson 9 people drawing only appears when students are enabled and is raised above the grass', () => {
-  assertIncludes(indexHtml, 'const isPresenceCard = currentLesson === 9 && i === 0;');
-  assertIncludes(indexHtml, 'if (!environment.people) return;');
-  assertIncludes(indexHtml, "ctx.fillText('🧑‍🎓🧑‍🏫', xs[i], y - 46);");
-  assertIncludes(indexHtml, "ctx.fillText('יש תלמידים', xs[i], y - 4);");
+test('robot canvas dragging works with scaled canvas coordinates and pointer events', () => {
+  assertIncludes(cssRule('.robot-stage canvas'), 'touch-action: none;');
+  assertIncludes(indexHtml, 'const scaleX = rect.width ? canvas.width / rect.width : 1;');
+  assertIncludes(indexHtml, 'const scaleY = rect.height ? canvas.height / rect.height : 1;');
+  assertIncludes(indexHtml, 'function hitTestRobot(pos)');
+  assertIncludes(indexHtml, 'hitTest(pos, robot, 56)');
+  assertIncludes(indexHtml, 'canvas.addEventListener(\'pointerdown\', onDragStart);');
+  assertIncludes(indexHtml, 'canvas.setPointerCapture?.(e.pointerId);');
+});
+
+test('Blockly workspace has working click buttons for vertical and horizontal scrolling', () => {
+  assertIncludes(indexHtml, '<div class="blockly-workspace-shell">');
+  assertIncludes(indexHtml, 'class="blockly-scroll-buttons vertical"');
+  assertIncludes(indexHtml, 'class="blockly-scroll-buttons horizontal"');
+  assertIncludes(indexHtml, 'onclick="scrollBlocklyCanvas(0, -240)"');
+  assertIncludes(indexHtml, 'onclick="scrollBlocklyCanvas(0, 240)"');
+  assertIncludes(indexHtml, 'onclick="scrollBlocklyCanvas(240, 0)" aria-label="גלול ימינה">▶</button>');
+  assertIncludes(indexHtml, 'onclick="scrollBlocklyCanvas(-240, 0)" aria-label="גלול שמאלה">◀</button>');
+  assertIncludes(indexHtml, 'function scrollBlocklyCanvas(deltaX, deltaY)');
+  assertIncludes(indexHtml, 'workspace.scroll(-(nextX + scrollLeft), -(nextY + scrollTop));');
+});
+
+test('lesson 9 has only classroom-related action blocks including the dedicated air conditioner block', () => {
+  assertIncludes(indexHtml, "actions: ['action_class_power', 'action_ac', 'action_say']");
+  assertIncludes(indexHtml, "Blockly.Blocks['action_ac']");
+  assertIncludes(indexHtml, ".appendField('❄️ מזגן')");
+  assertIncludes(indexHtml, "case 'action_ac':");
+  assertIncludes(indexHtml, "robot.speaking = robot.fanOn ? 'הפעלתי מזגן' : 'כיביתי מזגן';");
+});
+
+test('lesson 9 story uses only presence and noise sensors without classroom light sensor', () => {
+  const lesson9 = lessonObjectSource(9);
+  assertIncludes(lesson9, "sensorFocus: 'נוכחות + רעש'");
+  assertIncludes(lesson9, 'אם הכיתה רועשת מדי');
+  assertIncludes(lesson9, 'כל עוד עדיין רועש, האור נשאר כבוי');
+  assertIncludes(lesson9, "environment: ['presence', 'sound']");
+  assertIncludes(lessonsData, 'תרגיל 5 — אתגר שקט בכיתה');
+  assertIncludes(lessonsData, 'אם עוצמת רעש = חזק מדי');
+  assertIncludes(lessonsData, 'אם עוצמת רעש = שקט');
+  assertIncludes(lessonsData, 'מדליקים את האור מיד אחרי הכיבוי בלי לבדוק שנהיה שקט');
+  assertNotIncludes(lesson9, 'אור מהחלון');
+  assertNotIncludes(lesson9, 'חלון');
+  assertNotIncludes(lesson9, 'אם יש אנשים וגם חשוך');
+});
+
+test('lesson 9 uses a cute classroom background image with empty chairs and overlays people, lamp, and AC by sensor state', () => {
+  assertIncludes(indexHtml, "lesson9ClassroomBg.src = 'assets/lesson9-classroom-background.png?v=20260716-students-on-chairs-2';");
+  assertIncludes(indexHtml, 'if (currentLesson === 9) {');
+  assertIncludes(indexHtml, '// Cute classroom background image: empty chairs by default, no grass/sky/CSS classroom drawing.');
+  assertIncludes(indexHtml, '.ground.classroom-ground');
+  assertIncludes(indexHtml, 'ground?.classList.toggle(\'classroom-ground\', num === 9);');
+  assertIncludes(indexHtml, "canvas.height = container.clientHeight - (currentLesson === 9 ? 0 : 60); // Account for ground except classroom");
+  assertIncludes(indexHtml, '// Use source-cropping instead of stretching, so the classroom stays sharp and not smeared.');
+  assertIncludes(indexHtml, 'ctx.drawImage(lesson9ClassroomBg, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);');
+  assertIncludes(indexHtml, '// Keep the original classroom image, but cover only the built-in ceiling lamp with a ceiling-shaped patch.');
+  assertIncludes(indexHtml, 'const builtInLampMask = ctx.createLinearGradient');
+  assertIncludes(indexHtml, '// Hanging ceiling lamp appears when the light is on.');
+  assertIncludes(indexHtml, 'const lightIsOn = robot.streetLightOn || environment.light;');
+  assertIncludes(indexHtml, 'ctx.lineTo(lampX, cordBottomY);');
+  assertIncludes(indexHtml, 'ctx.roundRect(lampX - 28, ceilingY - 4, 56, 14, 7);');
+  assertIncludes(indexHtml, 'ctx.arc(lampX, shadeY + 30, 16, 0, Math.PI * 2);');
+  assertIncludes(indexHtml, '// Air-conditioner status overlay.');
+  assertIncludes(indexHtml, 'const acIsOn = robot.fanOn;');
+  assertIncludes(indexHtml, "ctx.fillText('מזגן פועל', acX, acY + 142);");
+  assertIncludes(indexHtml, '// People appear only when the students sensor is active: teacher + students sitting on chairs.');
+  assertIncludes(indexHtml, 'if (environment.people) {');
+  assertIncludes(indexHtml, "ctx.fillText('👩‍🏫', canvas.width * 0.22, canvas.height * 0.43);");
+  assertIncludes(indexHtml, 'const students = [');
+  assertIncludes(indexHtml, '// Lesson 9 keeps the left draggable speaker as the only visible noise speaker.');
+});
+
+test('lesson 9 classroom owns the scene and skips generic status cards', () => {
+  assertIncludes(indexHtml, "if (currentLesson === 9) {\n                    return;\n                }");
   assert.doesNotMatch(indexHtml, /isPresenceCard \? \(environment\.people \? '🧑‍🎓🧑‍🏫' : '🏫'\)/);
 });
 
-test('lesson 8 and 11 mission boards are compact and positioned at the top-right', () => {
-  assertIncludes(indexHtml, 'const compactMission = currentLesson === 8 || currentLesson === 11;');
-  assertIncludes(indexHtml, 'const boardX = currentLesson === 8 ? canvas.width - 238 : currentLesson === 11 ? canvas.width - 220 : canvas.width * 0.56;');
-  assertIncludes(indexHtml, 'const boardY = currentLesson === 8 ? 48 : currentLesson === 11 ? 40 : canvas.height * 0.12;');
-  assertIncludes(indexHtml, 'const boardW = currentLesson === 8 ? 210 : currentLesson === 11 ? 198 : canvas.width * 0.36;');
-  assertIncludes(indexHtml, 'const boardH = currentLesson === 8 ? 78 : currentLesson === 11 ? 74 : 135;');
-  assertIncludes(indexHtml, "ctx.fillText('🎯 משימה', boardX + boardW - 12, boardY + 17);");
+test('lesson 9 classroom noise is sensed as loud without touching the robot and only left speaker is shown', () => {
+  assertIncludes(indexHtml, '// Lesson 9 classroom noise is ambient: pressing the noise sensor means the classroom is loud,');
+  assertIncludes(indexHtml, "if (currentLesson === 9) return 'LOUD';");
+  assertIncludes(indexHtml, "if (!environment.sound) return 'QUIET';");
+  assertIncludes(indexHtml, '// Draggable Sound source');
+  assertIncludes(indexHtml, 'if (environment.sound) {');
+  assertIncludes(indexHtml, '// Lesson 9 keeps the left draggable speaker as the only visible noise speaker.');
+  assertNotIncludes(indexHtml, "ctx.fillText('רעש בכיתה', canvas.width * 0.88, canvas.height * 0.57);");
 });
 
-test('lesson 8 traffic light stays compact', () => {
+test('lesson 7 mission board is compact at the top-left, while lessons 8, 9 and 11 stay compact', () => {
+  assertIncludes(indexHtml, 'const compactMission = currentLesson === 7 || currentLesson === 8 || currentLesson === 9 || currentLesson === 11;');
+  assertIncludes(indexHtml, 'const boardX = currentLesson === 7 ? 20 : currentLesson === 8 ? canvas.width - 218 : currentLesson === 9 ? canvas.width - 224 : currentLesson === 11 ? canvas.width - 220 : canvas.width * 0.56;');
+  assertIncludes(indexHtml, 'const boardY = currentLesson === 7 ? 40 : currentLesson === 8 ? 8 : currentLesson === 9 ? 42 : currentLesson === 11 ? 40 : canvas.height * 0.12;');
+  assertIncludes(indexHtml, 'const boardW = currentLesson === 7 ? 190 : currentLesson === 8 ? 210 : currentLesson === 9 ? 196 : currentLesson === 11 ? 198 : canvas.width * 0.36;');
+  assertIncludes(indexHtml, 'const boardH = currentLesson === 7 ? 70 : currentLesson === 8 ? 78 : currentLesson === 9 ? 70 : currentLesson === 11 ? 74 : 135;');
+  assertIncludes(indexHtml, '? { titleSize: 11, bodySize: 9, titleY: 15, line1Y: 31, line2Y: 45, line3Y: 59 }');
+  assertIncludes(indexHtml, 'currentLesson === 9');
+  assertIncludes(indexHtml, '? { titleSize: 11, bodySize: 9, titleY: 15, line1Y: 31, line2Y: 45, line3Y: 59 }');
+  assertIncludes(indexHtml, ": { titleSize: 12, bodySize: 10, titleY: 17, line1Y: 37, line2Y: 53, line3Y: 68 }");
+  assertIncludes(indexHtml, "ctx.fillText('🎯 משימה', boardX + boardW - 12, boardY + compactText.titleY);");
+});
+
+test('lesson 8 traffic light stays compact and high enough to show its pole', () => {
+  assertIncludes(indexHtml, 'const crosswalkX = xs[1];');
+  assertIncludes(indexHtml, 'const crosswalkW = 150;');
+  assertIncludes(indexHtml, 'const lightX = crosswalkX + crosswalkW / 2 + 28;');
+  assertIncludes(indexHtml, 'const lightY = y - 28;');
+  assertIncludes(indexHtml, 'const poleTopY = lightY + 32;');
+  assertIncludes(indexHtml, 'const poleBottomY = canvas.height - 10;');
+  assertIncludes(indexHtml, 'ctx.lineTo(lightX, poleBottomY);');
+  assertIncludes(indexHtml, 'ctx.roundRect(lightX - 18, poleBottomY - 4, 36, 8, 4);');
   assertIncludes(indexHtml, 'ctx.roundRect(lightX - 17, lightY - 34, 34, 66, 9);');
   assertIncludes(indexHtml, 'ctx.arc(lightX, lightY - 17, 9, 0, Math.PI * 2);');
   assertIncludes(indexHtml, 'ctx.arc(lightX, lightY + 15, 9, 0, Math.PI * 2);');
@@ -190,15 +289,58 @@ test('lesson 8 removed instruction labels are not present', () => {
   assert.ok(!indexHtml.includes('לחצו על הולך רגל'));
 });
 
-test('lesson 8 cars and pedestrian only render when enabled, move horizontally, and stay visible when stopped', () => {
+test('lesson 8 uses a street ground and has a road/sidewalk crosswalk scene', () => {
+  assertIncludes(indexHtml, '.ground.street-ground');
+  assertIncludes(indexHtml, '.ground.street-ground::before');
+  assertIncludes(indexHtml, 'background: transparent;');
+  assertIncludes(indexHtml, 'display: none;');
+  assertIncludes(indexHtml, "ground?.classList.toggle('street-ground', num === 8);");
+  assertIncludes(indexHtml, 'const roadH = 92;');
+  assertIncludes(indexHtml, 'const bottomSidewalkH = 14;');
+  assertIncludes(indexHtml, 'const bottomSidewalkTop = canvas.height - bottomSidewalkH;');
+  assertIncludes(indexHtml, 'const roadBottom = bottomSidewalkTop;');
+  assertIncludes(indexHtml, 'const roadTop = roadBottom - roadH;');
+  assertIncludes(indexHtml, 'const roadCenterY = roadTop + roadH / 2;');
+  assertIncludes(indexHtml, 'const crosswalkY = roadCenterY;');
+  assertIncludes(indexHtml, 'const bottomSidewalkEnabled = false;');
+  assertIncludes(indexHtml, 'const bottomSidewalkBottom = canvas.height;');
+  assertIncludes(indexHtml, 'ctx.fillStyle = \'#334155\';');
+  assertIncludes(indexHtml, 'ctx.fillRect(0, roadTop, canvas.width, roadH);');
+  assertIncludes(indexHtml, 'if (bottomSidewalkEnabled) {');
+  assertIncludes(indexHtml, 'ctx.fillRect(0, bottomSidewalkTop, canvas.width, bottomSidewalkBottom - bottomSidewalkTop);');
+  assertIncludes(indexHtml, 'ctx.moveTo(12, laneDividerY);');
+  assertIncludes(indexHtml, 'ctx.lineTo(canvas.width - 12, laneDividerY);');
+  assertIncludes(indexHtml, 'for (let stripeY = roadTop + 14; stripeY <= roadBottom - 14; stripeY += 16)');
+  assertIncludes(indexHtml, 'ctx.roundRect(crosswalkX - crosswalkW / 2, stripeY - 5, crosswalkW, 10, 4);');
+  assertIncludes(indexHtml, "ctx.fillText('מדרכה', crosswalkX, topSidewalkTop + 24);");
+  assertNotIncludes(indexHtml, "ctx.fillText('מדרכה', crosswalkX, roadBottom + 18);");
+});
+
+test('lesson 8 has a crosswalk where cars and pedestrians move or stop in the right places', () => {
   assertIncludes(indexHtml, 'const activeLesson8Object = (i === 0 && environment.pedestrian) || (i === 2 && environment.cars);');
-  assertIncludes(indexHtml, 'if (!activeLesson8Object) {');
+  assertIncludes(indexHtml, 'if (currentLesson === 8) {');
+  assertNotIncludes(indexHtml, "ctx.fillText('מעבר חציה', crosswalkX, roadBottom + 18);");
+  assertIncludes(indexHtml, 'const crosswalkW = 150;');
+  assertIncludes(indexHtml, 'const crosswalkH = 54;');
   assertIncludes(indexHtml, 'const isStopped = (i === 2 && robot.trafficCarsStopped) || (i === 0 && robot.pedestrianStopped);');
-  assertIncludes(indexHtml, 'const motion = isStopped ? 0 : Math.sin(t * 2.4) * 24;');
-  assertIncludes(indexHtml, 'const objectX = xs[i] + motion;');
-  assertIncludes(indexHtml, 'const objectY = y - 8;');
-  assertIncludes(indexHtml, 'if (i === 0 && motion < 0) {');
-  assertIncludes(indexHtml, 'ctx.scale(-1, 1);');
+  assertIncludes(indexHtml, 'const wave = t * 2.1;');
+  assertIncludes(indexHtml, 'const roadLength = canvas.width + 140;');
+  assertIncludes(indexHtml, 'const carProgress = (t * 92) % roadLength;');
+  assertIncludes(indexHtml, 'const laneH = roadH / 2;');
+  assertIncludes(indexHtml, 'const laneDividerY = roadTop + laneH;');
+  assertIncludes(indexHtml, 'const laneTopY = roadTop + laneH / 2;');
+  assertIncludes(indexHtml, 'const laneBottomY = laneDividerY + laneH / 2;');
+  assertIncludes(indexHtml, 'const leftToRightX = isStopped ? crosswalkX - 108 : -70 + carProgress;');
+  assertIncludes(indexHtml, 'const rightToLeftX = isStopped ? crosswalkX + 108 : canvas.width + 70 - carProgress;');
+  assertIncludes(indexHtml, '{ x: leftToRightX, y: laneTopY, flip: true }');
+  assertIncludes(indexHtml, '{ x: rightToLeftX, y: laneBottomY, flip: false }');
+  assertIncludes(indexHtml, 'const pedestrianMotion = Math.sin(wave) * 58;');
+  assertIncludes(indexHtml, 'const objectX = crosswalkX;');
+  assertIncludes(indexHtml, 'const objectY = isStopped ? roadBottom + bottomSidewalkH - 2 : crosswalkY + pedestrianMotion;');
+  assert.ok(!indexHtml.includes('המכוניות עצרו לפני מעבר החציה'));
+  assert.ok(!indexHtml.includes('שתי מכוניות נוסעות בשני הנתיבים'));
+  assert.ok(!indexHtml.includes('הולך הרגל עומד ליד מעבר החציה'));
+  assert.ok(!indexHtml.includes('הולך רגל חוצה במעבר הלוך ושוב'));
 });
 
 test('lesson 8 stop/start blocks for cars and pedestrian are available and update state correctly', () => {
@@ -218,12 +360,25 @@ test('environment toggles and reset clear stopped traffic/pedestrian states', ()
   assertMatches(indexHtml, /function\s+resetEnv\s*\(\)\s*{[\s\S]*?robot\.trafficCarsStopped = false;[\s\S]*?robot\.pedestrianStopped = false;[\s\S]*?robot\.vehicleStopped = false;/);
 });
 
-test('lesson 8 educational data includes stop and continue traffic blocks', () => {
+test('lesson 8 educational data includes stop/continue traffic blocks and cyclic light practice', () => {
   const lesson8 = lessonObjectSource(8);
+  assertIncludes(lesson8, "codingConcept: 'לולאה, תנאים ותזמון רמזור'");
+  assertIncludes(lesson8, 'חזור תמיד');
+  assertIncludes(lesson8, 'חכה 2 שניות');
+  assertIncludes(lesson8, 'רמזור אדום');
   assertIncludes(lesson8, 'עצור מכוניות');
   assertIncludes(lesson8, 'המשך מכוניות');
   assertIncludes(lesson8, 'עצור הולך רגל');
   assertIncludes(lesson8, 'המשך הולך רגל');
+  assertIncludes(lesson8, 'החליפו רמזור כל 2–3 שניות');
+  assertIncludes(lessonsData, 'תרגיל 4 — רמזור מחזורי בלולאה לנצח');
+  assertIncludes(lessonsData, 'אם יש גם מכוניות וגם הולך רגל, הרמזור מתחלף כל 2–3 שניות');
+  assertIncludes(lessonsData, 'רמזור ירוק להולך רגל');
+  assertIncludes(lessonsData, 'רמזור אדום להולך רגל');
+  assertMatches(lessonsData, /'רמזור אדום להולך רגל', 'עצור הולך רגל', 'המשך מכוניות'/);
+  assertIncludes(lessonsData, 'רמזור הולכי רגל מחזורי');
+  assert.ok(!lessonsData.includes('ירוק למכוניות'));
+  assert.ok(!lessonsData.includes('הרמזור חוזר למכוניות'));
 });
 
 test('lesson 11 has armed, motion, door sensors and alarm action wired', () => {

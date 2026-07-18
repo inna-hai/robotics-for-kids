@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🕵️‍♀️ שיעור 4: סיסי הבלשית - תנאים ורמזים לכיתות ב׳</title>
+  <meta name="description" content="שיעור 4 לכיתות ב׳: סיסי הבלשית מלמדת תנאים פשוטים, אם-אז, רמזים ודיבוג דרך חקירות קצרות." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/detective.css?v=20260717-detective-1">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <div class="kicker">שיעור 4 • בלשות ותנאים • כיתות ב׳ • 75 דקות</div>
+        <h1>🕵️‍♀️ סיסי הבלשית</h1>
+        <p>
+          אחרי מסלולים, דפוסים ואוקיינוס — סיסי הופכת לבלשית. הילדים בודקים רמזים,
+          בוחרים כלל “אם… אז…”, ומגלים איך תנאים עובדים בתכנות דרך תעלומות קצרות ומצחיקות.
+        </p>
+        <div class="actions">
+          <a class="btn" href="detective-play.html?lesson=1">▶️ להתחיל תיק 1</a>
+          <a class="btn secondary" href="#missions">🔎 לראות תיקים</a>
+          <a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a>
+          <a class="btn secondary" href="kitchen.html">🧁 שיעור 5: מטבח</a>
+          <a class="btn secondary" href="ocean.html">🌊 שיעור 3: אוקיינוס</a>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">🤖🔎</div>
+    </section>
+
+    <section class="stats" aria-label="נתוני שיעור הבלשות">
+      <div class="stat"><b>שיעור 4</b>בלשות</div>
+      <div class="stat"><b>75</b>דקות</div>
+      <div class="stat"><b>אם-אז</b>רעיון מרכזי</div>
+      <div class="stat"><b>12</b>תעלומות</div>
+    </section>
+
+    <section class="intro" aria-label="על שיעור הבלשות">
+      <div class="panel">
+        <h2>מה חדש בשיעור הזה?</h2>
+        <p>
+          הילדים כבר יודעים לתת פקודות ולזהות דפוסים. עכשיו הם לומדים לבחור פעולה לפי מצב:
+          אם יש רמז מסוים — אז מסיקים מסקנה. זו כניסה מאוד טבעית לתנאים בתכנות.
+        </p>
+      </div>
+      <div class="panel">
+        <h3>מה לומדים בלי להרגיש?</h3>
+        <ul>
+          <li>תנאי פשוט: אם… אז…</li>
+          <li>בחירת רמז רלוונטי מתוך כמה אפשרויות</li>
+          <li>קשר בין חיישן/מידע לבין פעולה</li>
+          <li>דיבוג: למצוא כלל לא מתאים ולתקן</li>
+          <li>שיעור מומלץ: תיקים 1–4 במשך 75 דקות</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="missions">
+      <h2>תיקי החקירה של סיסי</h2>
+      <div class="cards" id="cards"></div>
+    </section>
+  </main>
+
+  <script src="js/detective-lessons.js?v=20260717-detective-1"></script>
+  <script>
+    document.getElementById('cards').innerHTML = window.DETECTIVE_LESSONS.map((lesson) => `
+      <a class="card" href="detective-play.html?lesson=${lesson.id}" aria-label="פתח תיק ${lesson.id}: ${lesson.title}">
+        <div class="top"><span class="emoji">${lesson.emoji}</span><span class="id">תיק ${lesson.id}</span></div>
+        <h3>${lesson.title}</h3>
+        <div class="unit">${lesson.unit}</div>
+        <div class="story">${lesson.mission}</div>
+        <div class="tags"><span class="tag">${lesson.concept}</span><span class="tag">בלשות</span></div>
+        <div class="start">להתחיל תיק ←</div>
+      </a>
+    `).join('');
+  </script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>

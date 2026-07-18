@@ -20,7 +20,6 @@
             --white: #FFFFFF;
             --light: #F8F9FF;
             --dark: #2D3047;
-            --header-safe-height: 118px;
         }
 
         body {
@@ -37,22 +36,17 @@
             background: var(--white);
             padding: 0.55rem 0.9rem;
             display: grid;
-            grid-template-columns: minmax(170px, auto) auto;
-            grid-template-areas:
-                "logo actions"
-                "lessons lessons";
+            grid-template-columns: minmax(170px, auto) minmax(0, 1fr) auto;
             align-items: center;
             gap: 0.65rem;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1200;
+            position: relative;
+            z-index: 100;
             flex-shrink: 0;
             min-width: 0;
         }
 
         .logo {
-            grid-area: logo;
             display: flex;
             align-items: center;
             gap: 0.45rem;
@@ -94,25 +88,14 @@
 
         /* Lesson Buttons */
         .lesson-tabs {
-            grid-area: lessons;
             display: flex;
             gap: 0.28rem;
-            width: 100%;
-            max-width: 100%;
             min-width: 0;
             overflow-x: auto;
             overflow-y: hidden;
-            justify-content: flex-start;
-            padding: 0.2rem 0.25rem 0.35rem;
+            justify-content: center;
+            padding: 0.15rem 0.25rem;
             scrollbar-width: thin;
-            -webkit-overflow-scrolling: touch;
-            scroll-padding-inline: 0.5rem;
-        }
-
-        .lesson-tabs::before,
-        .lesson-tabs::after {
-            content: '';
-            flex: 0 0 0.15rem;
         }
 
         .lesson-tab {
@@ -153,7 +136,6 @@
 
         /* Play Buttons */
         .play-buttons {
-            grid-area: actions;
             display: flex;
             gap: 0.45rem;
             justify-content: flex-end;
@@ -263,6 +245,9 @@
         .robot-stage canvas {
             width: 100%;
             height: 100%;
+            touch-action: none;
+            user-select: none;
+            cursor: grab;
         }
 
         /* Ground */
@@ -284,6 +269,18 @@
             right: 0;
             height: 15px;
             background: linear-gradient(180deg, #8FD982 0%, transparent 100%);
+        }
+
+        .ground.street-ground {
+            background: transparent;
+        }
+
+        .ground.street-ground::before {
+            display: none;
+        }
+
+        .ground.classroom-ground {
+            display: none;
         }
 
         /* Sensor Display */
@@ -521,23 +518,79 @@
             gap: 0.5rem;
         }
 
-        #blocklyDiv {
+        .blockly-workspace-shell {
             flex: 1;
             min-height: 0;
             min-width: 0;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 44px;
+            grid-template-rows: minmax(0, 1fr) 42px;
+            gap: 0.45rem;
+            background: #fff;
+        }
+
+        #blocklyDiv {
+            min-height: 0;
+            min-width: 0;
             direction: ltr;
+        }
+
+        .blockly-scroll-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.25rem;
+        }
+
+        .blockly-scroll-buttons.vertical {
+            flex-direction: column;
+        }
+
+        .blockly-scroll-buttons.horizontal {
+            grid-column: 1 / 2;
+            grid-row: 2 / 3;
+            flex-direction: row;
+            padding-bottom: 0.45rem;
+        }
+
+        .blockly-scroll-corner {
+            grid-column: 2 / 3;
+            grid-row: 2 / 3;
+        }
+
+        .blockly-scroll-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            color: #fff;
+            font-size: 1.05rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.24);
+            transition: transform 0.15s ease, opacity 0.15s ease;
+        }
+
+        .blockly-scroll-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .blockly-scroll-btn:active {
+            transform: scale(0.96);
         }
 
         /* ===== WELCOME MODAL ===== */
         .modal {
             display: none;
             position: fixed;
-            top: var(--header-safe-height);
+            top: 0;
             left: 0;
             width: 100%;
-            height: calc(100% - var(--header-safe-height));
+            height: 100%;
             background: rgba(0, 0, 0, 0.6);
-            z-index: 900;
+            z-index: 1000;
             justify-content: center;
             align-items: center;
             padding: 1rem;
@@ -811,16 +864,10 @@
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1100px) {
-            :root { --header-safe-height: 172px; }
             .header {
                 grid-template-columns: 1fr;
-                grid-template-areas:
-                    "logo"
-                    "lessons"
-                    "actions";
-                justify-items: stretch;
+                justify-items: center;
             }
-            .logo { justify-content: center; }
             .play-buttons { justify-content: center; min-width: 0; }
             .lesson-tabs { max-width: 100%; justify-content: flex-start; }
         }
@@ -1012,7 +1059,18 @@
             <div class="blocks-header">
                 🧩 גררו בלוקים לכאן!
             </div>
-            <div id="blocklyDiv"></div>
+            <div class="blockly-workspace-shell">
+                <div id="blocklyDiv"></div>
+                <div class="blockly-scroll-buttons vertical" aria-label="כפתורי גלילה אנכית בלוח הבלוקים">
+                    <button class="blockly-scroll-btn" type="button" onclick="scrollBlocklyCanvas(0, -240)" aria-label="גלול למעלה">▲</button>
+                    <button class="blockly-scroll-btn" type="button" onclick="scrollBlocklyCanvas(0, 240)" aria-label="גלול למטה">▼</button>
+                </div>
+                <div class="blockly-scroll-buttons horizontal" aria-label="כפתורי גלילה אופקית בלוח הבלוקים">
+                    <button class="blockly-scroll-btn" type="button" onclick="scrollBlocklyCanvas(240, 0)" aria-label="גלול ימינה">▶</button>
+                    <button class="blockly-scroll-btn" type="button" onclick="scrollBlocklyCanvas(-240, 0)" aria-label="גלול שמאלה">◀</button>
+                </div>
+                <div class="blockly-scroll-corner"></div>
+            </div>
         </div>
     </div>
 
@@ -1065,7 +1123,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260716-miriam-story-v49"></script>
+    <script src="js/lessons-data.js?v=20260710-lessons-7-15"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1101,19 +1159,29 @@
         const canvas = document.getElementById('robotCanvas');
         const ctx = canvas.getContext('2d');
 
+        const lesson9ClassroomBg = new Image();
+        lesson9ClassroomBg.src = 'assets/lesson9-classroom-background.png?v=20260716-students-on-chairs-2';
+        lesson9ClassroomBg.onload = () => {
+            if (currentLesson === 9) draw();
+        };
+
         function resizeCanvas() {
             const container = canvas.parentElement;
             canvas.width = container.clientWidth;
-            canvas.height = container.clientHeight - 60; // Account for ground
+            canvas.height = container.clientHeight - (currentLesson === 9 ? 0 : 60); // Account for ground except classroom
             resetPositions();
         }
 
         function resetPositions() {
-            // Reset robot to center
+            // Reset robot to the lesson's starting point
             if (currentLesson === 14) {
                 // Start the draggable robot in the middle of the rescue scene.
                 robot.x = canvas.width * 0.50;
                 robot.y = canvas.height * 0.53;
+            } else if (currentLesson === 7) {
+                const line = getLesson7LinePoints();
+                robot.x = line.start.x - 28;
+                robot.y = line.start.y;
             } else {
                 robot.x = canvas.width / 2;
                 robot.y = currentLesson === 3 ? canvas.height * 0.58 : currentLesson === 4 ? canvas.height * 0.62 : currentLesson === 5 ? canvas.height * 0.64 : currentLesson === 6 ? canvas.height * 0.62 : canvas.height / 2;
@@ -1628,7 +1696,7 @@
             const scenes = {
                 7: { bg: ['#eff6ff', '#e0f2fe'], place: 'מסלול תחבורה', icon: '🛣️', objects: [], action: 'עקבו אחרי הקו בלולאה' },
                 8: { bg: ['#fef9c3', '#e0f2fe'], place: 'מעבר חציה', icon: '🚦', objects: ['אנשים', 'רמזור', 'מכוניות'], action: 'עצרו תנועה לפני מעבר' },
-                9: { bg: ['#f8fafc', '#dbeafe'], place: 'כיתה חכמה', icon: '🏫', objects: ['תלמידים', 'אור', 'מזגן'], action: 'הפעילו רק כשיש תלמידים וצריך אור/מיזוג' },
+                9: { bg: ['#f8fafc', '#dbeafe'], place: 'כיתה חכמה', icon: '🏫', objects: ['תלמידים', 'אור', 'מזגן', 'רעש'], action: 'חסכו חשמל ועזרו למורה להחזיר שקט לכיתה' },
                 10: { bg: ['#ecfccb', '#bbf7d0'], place: 'גינה חכמה', icon: '🌱', objects: ['אדמה', 'טפטפות', 'צמחים'], action: 'השקו רק כשהאדמה יבשה' },
                 11: { bg: ['#e0e7ff', '#f1f5f9'], place: 'בית חכם', icon: '🏠', objects: ['דלת', 'תנועה', 'אזעקה'], action: 'התריעו רק כשהמערכת דרוכה' },
                 12: { bg: ['#fef3c7', '#e0f2fe'], place: 'משלוח בעיר', icon: '📦', objects: ['חנות', 'מכשול', 'בית יעד'], action: 'תכננו מסלול בטוח' },
@@ -1650,10 +1718,176 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             // City floor / route
-            ctx.fillStyle = currentLesson === 13 ? 'rgba(15,23,42,.55)' : 'rgba(255,255,255,.55)';
-            ctx.beginPath();
-            ctx.roundRect(canvas.width * 0.08, canvas.height * 0.50, canvas.width * 0.84, canvas.height * 0.18, 24);
-            ctx.fill();
+            if (currentLesson !== 9) {
+                ctx.fillStyle = currentLesson === 13 ? 'rgba(15,23,42,.55)' : 'rgba(255,255,255,.55)';
+                ctx.beginPath();
+                ctx.roundRect(canvas.width * 0.08, canvas.height * 0.50, canvas.width * 0.84, canvas.height * 0.18, 24);
+                ctx.fill();
+            }
+
+            if (currentLesson === 9) {
+                ctx.save();
+                const lightIsOn = robot.streetLightOn || environment.light;
+                const acIsOn = robot.fanOn;
+
+                // Cute classroom background image: empty chairs by default, no grass/sky/CSS classroom drawing.
+                if (lesson9ClassroomBg.complete && lesson9ClassroomBg.naturalWidth > 0) {
+                    // Use source-cropping instead of stretching, so the classroom stays sharp and not smeared.
+                    const srcRatio = lesson9ClassroomBg.naturalWidth / lesson9ClassroomBg.naturalHeight;
+                    const canvasRatio = canvas.width / canvas.height;
+                    let sx = 0;
+                    let sy = 0;
+                    let sw = lesson9ClassroomBg.naturalWidth;
+                    let sh = lesson9ClassroomBg.naturalHeight;
+                    if (srcRatio > canvasRatio) {
+                        sw = sh * canvasRatio;
+                        sx = (lesson9ClassroomBg.naturalWidth - sw) / 2;
+                    } else if (srcRatio < canvasRatio) {
+                        sh = sw / canvasRatio;
+                        sy = (lesson9ClassroomBg.naturalHeight - sh) / 2;
+                    }
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    ctx.drawImage(lesson9ClassroomBg, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+                    // Keep the original classroom image, but cover only the built-in ceiling lamp with a ceiling-shaped patch.
+                    const builtInLampMask = ctx.createLinearGradient(0, canvas.height * 0.02, 0, canvas.height * 0.12);
+                    builtInLampMask.addColorStop(0, '#f6d99d');
+                    builtInLampMask.addColorStop(1, '#efc076');
+                    ctx.fillStyle = builtInLampMask;
+                    ctx.beginPath();
+                    ctx.moveTo(canvas.width * 0.413, canvas.height * 0.018);
+                    ctx.lineTo(canvas.width * 0.586, canvas.height * 0.018);
+                    ctx.lineTo(canvas.width * 0.579, canvas.height * 0.091);
+                    ctx.lineTo(canvas.width * 0.421, canvas.height * 0.091);
+                    ctx.closePath();
+                    ctx.fill();
+                } else {
+                    const fallback = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                    fallback.addColorStop(0, '#fef3c7');
+                    fallback.addColorStop(1, '#fbbf24');
+                    ctx.fillStyle = fallback;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                }
+
+                // Hanging ceiling lamp appears when the light is on.
+                if (lightIsOn) {
+                    const lampX = canvas.width * 0.52;
+                    const ceilingY = Math.max(8, canvas.height * 0.015);
+                    const cordBottomY = canvas.height * 0.16;
+                    const shadeY = cordBottomY + 18;
+
+                    const glow = ctx.createRadialGradient(lampX, shadeY + 18, 18, lampX, shadeY + canvas.height * 0.20, canvas.width * 0.36);
+                    glow.addColorStop(0, 'rgba(250,204,21,.55)');
+                    glow.addColorStop(1, 'rgba(250,204,21,0)');
+                    ctx.fillStyle = glow;
+                    ctx.beginPath();
+                    ctx.ellipse(lampX, shadeY + canvas.height * 0.20, canvas.width * 0.36, canvas.height * 0.25, 0, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Cord from ceiling.
+                    ctx.strokeStyle = '#475569';
+                    ctx.lineWidth = 5;
+                    ctx.beginPath();
+                    ctx.moveTo(lampX, ceilingY);
+                    ctx.lineTo(lampX, cordBottomY);
+                    ctx.stroke();
+
+                    // Ceiling cap.
+                    ctx.fillStyle = '#64748b';
+                    ctx.beginPath();
+                    ctx.roundRect(lampX - 28, ceilingY - 4, 56, 14, 7);
+                    ctx.fill();
+
+                    // Lamp shade.
+                    ctx.fillStyle = '#facc15';
+                    ctx.strokeStyle = '#92400e';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.moveTo(lampX - 48, shadeY + 28);
+                    ctx.lineTo(lampX - 28, shadeY - 12);
+                    ctx.quadraticCurveTo(lampX, shadeY - 24, lampX + 28, shadeY - 12);
+                    ctx.lineTo(lampX + 48, shadeY + 28);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+
+                    // Bright bulb under the shade.
+                    ctx.fillStyle = '#fff7ad';
+                    ctx.strokeStyle = '#f59e0b';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(lampX, shadeY + 30, 16, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                }
+
+                // Air-conditioner status overlay.
+                if (acIsOn) {
+                    const acX = canvas.width * 0.82;
+                    const acY = canvas.height * 0.22;
+                    ctx.font = '34px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('❄️', acX, acY);
+                    ctx.strokeStyle = 'rgba(14,165,233,.9)';
+                    ctx.lineWidth = 5;
+                    for (let i = 0; i < 4; i += 1) {
+                        ctx.beginPath();
+                        ctx.moveTo(acX - 70 + i * 34, acY + 22);
+                        ctx.quadraticCurveTo(acX - 92 + i * 34, acY + 66, acX - 48 + i * 34, acY + 110);
+                        ctx.stroke();
+                    }
+                    ctx.fillStyle = '#0369a1';
+                    ctx.font = 'bold 16px Rubik';
+                    ctx.fillText('מזגן פועל', acX, acY + 142);
+                }
+
+                // People appear only when the students sensor is active: teacher + students sitting on chairs.
+                if (environment.people) {
+                    ctx.textAlign = 'center';
+                    ctx.font = `${Math.max(48, canvas.width * 0.06)}px Arial`;
+                    ctx.fillText('👩‍🏫', canvas.width * 0.22, canvas.height * 0.43);
+                    ctx.font = 'bold 16px Rubik';
+                    ctx.fillStyle = '#1e293b';
+                    ctx.fillText('המורה', canvas.width * 0.22, canvas.height * 0.48);
+
+                    const drawBackStudent = (xRatio, yRatio, shirt, hair) => {
+                        const x = canvas.width * xRatio;
+                        const y = canvas.height * yRatio;
+                        const scale = Math.max(0.72, Math.min(canvas.width / 900, 1.2));
+                        ctx.save();
+                        ctx.translate(x, y);
+                        ctx.scale(scale, scale);
+                        // Back-facing student placed on an empty chair.
+                        ctx.fillStyle = hair;
+                        ctx.beginPath();
+                        ctx.arc(0, -38, 18, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = '#fbbf24';
+                        ctx.beginPath();
+                        ctx.arc(0, -35, 13, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = shirt;
+                        ctx.beginPath();
+                        ctx.roundRect(-24, -18, 48, 54, 14);
+                        ctx.fill();
+                        ctx.fillStyle = 'rgba(15,23,42,.18)';
+                        ctx.fillRect(-18, 30, 36, 8);
+                        ctx.restore();
+                    };
+                    const students = [
+                        [0.07, 0.80, '#60a5fa', '#7c2d12'],
+                        [0.16, 0.64, '#f472b6', '#1f2937'],
+                        [0.50, 0.69, '#34d399', '#92400e'],
+                        [0.50, 0.88, '#a78bfa', '#111827'],
+                        [0.79, 0.64, '#fb923c', '#78350f'],
+                        [0.89, 0.80, '#22d3ee', '#1e293b']
+                    ];
+                    students.forEach(([x, y, shirt, hair]) => drawBackStudent(x, y, shirt, hair));
+                }
+
+                // Lesson 9 keeps the left draggable speaker as the only visible noise speaker.
+                ctx.restore();
+            }
 
             if (currentLesson === 7) {
                 ctx.strokeStyle = '#111827';
@@ -1691,11 +1925,11 @@
             ctx.fillText(`${scene.icon} ${scene.place} — ${lesson.title}`, canvas.width / 2, 28);
 
             // Mission board
-            const compactMission = currentLesson === 8 || currentLesson === 11;
-            const boardX = currentLesson === 8 ? canvas.width - 238 : currentLesson === 11 ? canvas.width - 220 : canvas.width * 0.56;
-            const boardY = currentLesson === 8 ? 48 : currentLesson === 11 ? 40 : canvas.height * 0.12;
-            const boardW = currentLesson === 8 ? 210 : currentLesson === 11 ? 198 : canvas.width * 0.36;
-            const boardH = currentLesson === 8 ? 78 : currentLesson === 11 ? 74 : 135;
+            const compactMission = currentLesson === 7 || currentLesson === 8 || currentLesson === 9 || currentLesson === 11;
+            const boardX = currentLesson === 7 ? 20 : currentLesson === 8 ? canvas.width - 218 : currentLesson === 9 ? canvas.width - 224 : currentLesson === 11 ? canvas.width - 220 : canvas.width * 0.56;
+            const boardY = currentLesson === 7 ? 40 : currentLesson === 8 ? 8 : currentLesson === 9 ? 42 : currentLesson === 11 ? 40 : canvas.height * 0.12;
+            const boardW = currentLesson === 7 ? 190 : currentLesson === 8 ? 210 : currentLesson === 9 ? 196 : currentLesson === 11 ? 198 : canvas.width * 0.36;
+            const boardH = currentLesson === 7 ? 70 : currentLesson === 8 ? 78 : currentLesson === 9 ? 70 : currentLesson === 11 ? 74 : 135;
             ctx.fillStyle = compactMission ? 'rgba(255,255,255,.88)' : 'rgba(255,255,255,.92)';
             ctx.strokeStyle = compactMission ? '#0ea5e9' : '#38bdf8';
             ctx.lineWidth = compactMission ? 2 : 3;
@@ -1707,14 +1941,19 @@
             ctx.fillStyle = '#0f172a';
 
             if (compactMission) {
+                const compactText = currentLesson === 7
+                    ? { titleSize: 11, bodySize: 9, titleY: 15, line1Y: 31, line2Y: 45, line3Y: 59 }
+                    : currentLesson === 9
+                        ? { titleSize: 11, bodySize: 9, titleY: 15, line1Y: 31, line2Y: 45, line3Y: 59 }
+                        : { titleSize: 12, bodySize: 10, titleY: 17, line1Y: 37, line2Y: 53, line3Y: 68 };
 
-                ctx.font = 'bold 12px Rubik';
-                ctx.fillText('🎯 משימה', boardX + boardW - 12, boardY + 17);
-                ctx.font = '10px Rubik';
+                ctx.font = `bold ${compactText.titleSize}px Rubik`;
+                ctx.fillText('🎯 משימה', boardX + boardW - 12, boardY + compactText.titleY);
+                ctx.font = `${compactText.bodySize}px Rubik`;
                 ctx.fillStyle = '#334155';
-                ctx.fillText(`חיישן: ${lesson.sensorFocus}`, boardX + boardW - 12, boardY + 37);
-                ctx.fillText(`רעיון: ${lesson.codingConcept}`, boardX + boardW - 12, boardY + 53);
-                ctx.fillText(scene.action, boardX + boardW - 12, boardY + 68);
+                ctx.fillText(`חיישן: ${lesson.sensorFocus}`, boardX + boardW - 12, boardY + compactText.line1Y);
+                ctx.fillText(`רעיון: ${lesson.codingConcept}`, boardX + boardW - 12, boardY + compactText.line2Y);
+                ctx.fillText(scene.action, boardX + boardW - 12, boardY + compactText.line3Y);
             } else {
                 ctx.font = 'bold 15px Rubik';
                 ctx.fillText('משימת תכנות', boardX + boardW - 14, boardY + 24);
@@ -1731,19 +1970,93 @@
             }[currentLesson];
             const xs = [canvas.width * 0.20, canvas.width * 0.40, canvas.width * 0.60];
             const y = Math.max(canvas.height * 0.62, boardY + boardH + 48);
+
+            if (currentLesson === 8) {
+                const crosswalkX = xs[1];
+                const crosswalkW = 150;
+                const crosswalkH = 54;
+                const roadH = 92;
+                const bottomSidewalkH = 14;
+                const bottomSidewalkTop = canvas.height - bottomSidewalkH;
+                const roadBottom = bottomSidewalkTop;
+                const roadTop = roadBottom - roadH;
+                const roadCenterY = roadTop + roadH / 2;
+                const crosswalkY = roadCenterY;
+                const laneH = roadH / 2;
+                const laneDividerY = roadTop + laneH;
+                const topSidewalkTop = Math.max(96, roadTop - 52);
+                const bottomSidewalkEnabled = false;
+                const bottomSidewalkBottom = canvas.height;
+
+                ctx.save();
+                ctx.fillStyle = '#334155';
+                ctx.fillRect(0, roadTop, canvas.width, roadH);
+                ctx.strokeStyle = '#f8fafc';
+                ctx.lineWidth = 5;
+                ctx.setLineDash([]);
+                ctx.beginPath();
+                ctx.moveTo(0, roadTop);
+                ctx.lineTo(canvas.width, roadTop);
+                ctx.moveTo(0, roadBottom);
+                ctx.lineTo(canvas.width, roadBottom);
+                ctx.stroke();
+                ctx.strokeStyle = 'rgba(248,250,252,.55)';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([14, 14]);
+                ctx.beginPath();
+                ctx.moveTo(12, laneDividerY);
+                ctx.lineTo(canvas.width - 12, laneDividerY);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                ctx.fillStyle = '#ffffff';
+                ctx.strokeStyle = 'rgba(15,23,42,.28)';
+                ctx.lineWidth = 2;
+                for (let stripeY = roadTop + 14; stripeY <= roadBottom - 14; stripeY += 16) {
+                    ctx.beginPath();
+                    ctx.roundRect(crosswalkX - crosswalkW / 2, stripeY - 5, crosswalkW, 10, 4);
+                    ctx.fill();
+                    ctx.stroke();
+                }
+
+                ctx.fillStyle = '#d6d3d1';
+                ctx.fillRect(0, topSidewalkTop, canvas.width, roadTop - topSidewalkTop);
+                if (bottomSidewalkEnabled) {
+                    ctx.fillRect(0, bottomSidewalkTop, canvas.width, bottomSidewalkBottom - bottomSidewalkTop);
+                }
+
+                ctx.font = 'bold 12px Rubik';
+                ctx.fillStyle = '#334155';
+                ctx.textAlign = 'center';
+                ctx.fillText('מדרכה', crosswalkX, topSidewalkTop + 24);
+                ctx.restore();
+            }
+
+
+
             scene.objects.forEach((label, i) => {
                 if (currentLesson === 8) {
                     const activeLesson8Object = (i === 0 && environment.pedestrian) || (i === 2 && environment.cars);
 
                     if (i === 1) {
-                        const lightX = xs[i];
-                        const lightY = y - 10;
-                        ctx.strokeStyle = '#334155';
-                        ctx.lineWidth = 4;
+                        const crosswalkX = xs[1];
+                        const crosswalkW = 150;
+                        const lightX = crosswalkX + crosswalkW / 2 + 28;
+                        const lightY = y - 28;
+                        const poleTopY = lightY + 32;
+                        const poleBottomY = canvas.height - 10;
+                        ctx.strokeStyle = '#475569';
+                        ctx.lineWidth = 7;
+                        ctx.lineCap = 'round';
                         ctx.beginPath();
-                        ctx.moveTo(lightX, lightY + 36);
-                        ctx.lineTo(lightX, lightY + 70);
+                        ctx.moveTo(lightX, poleTopY);
+                        ctx.lineTo(lightX, poleBottomY);
                         ctx.stroke();
+                        ctx.lineCap = 'butt';
+                        ctx.fillStyle = '#475569';
+                        ctx.beginPath();
+                        ctx.roundRect(lightX - 18, poleBottomY - 4, 36, 8, 4);
+                        ctx.fill();
                         ctx.fillStyle = '#1f2937';
                         ctx.strokeStyle = '#0f172a';
                         ctx.lineWidth = 2;
@@ -1771,38 +2084,62 @@
 
                     const isStopped = (i === 2 && robot.trafficCarsStopped) || (i === 0 && robot.pedestrianStopped);
                     const t = Date.now() / 1000;
-                    const motion = isStopped ? 0 : Math.sin(t * 2.4) * 24;
-                    const objectX = xs[i] + motion;
-                    const objectY = y - 8;
+                    const wave = t * 2.1;
+                    const crosswalkX = xs[1];
+                    const roadH = 92;
+                    const bottomSidewalkH = 14;
+                    const bottomSidewalkTop = canvas.height - bottomSidewalkH;
+                    const roadBottom = bottomSidewalkTop;
+                    const roadTop = roadBottom - roadH;
+                    const roadCenterY = roadTop + roadH / 2;
+                    const crosswalkY = roadCenterY;
+                    const laneH = roadH / 2;
+                    const laneDividerY = roadTop + laneH;
 
-                    ctx.font = i === 2 ? '48px Arial' : '50px Arial';
+                    if (i === 2) {
+                        const roadLength = canvas.width + 140;
+                        const carProgress = (t * 92) % roadLength;
+                        const laneTopY = roadTop + laneH / 2;
+                        const laneBottomY = laneDividerY + laneH / 2;
+                        const leftToRightX = isStopped ? crosswalkX - 108 : -70 + carProgress;
+                        const rightToLeftX = isStopped ? crosswalkX + 108 : canvas.width + 70 - carProgress;
+                        const cars = [
+                            { x: leftToRightX, y: laneTopY, flip: true },
+                            { x: rightToLeftX, y: laneBottomY, flip: false }
+                        ];
+
+                        ctx.font = '48px Arial';
+                        cars.forEach((car) => {
+                            ctx.save();
+                            ctx.translate(car.x, car.y);
+                            if (car.flip) ctx.scale(-1, 1);
+                            ctx.fillText('🚗', 0, 0);
+                            ctx.restore();
+                        });
+
+                        return;
+                    }
+
+                    const pedestrianMotion = Math.sin(wave) * 58;
+                    const walkingDown = Math.cos(wave) > 0;
+                    const objectX = crosswalkX;
+                    const objectY = isStopped ? roadBottom + bottomSidewalkH - 2 : crosswalkY + pedestrianMotion;
+
+                    ctx.font = '50px Arial';
                     ctx.save();
                     ctx.translate(objectX, objectY);
-                    if (i === 0 && motion < 0) {
+                    if (walkingDown) {
                         ctx.scale(-1, 1);
                     }
                     ctx.fillText(emojis[i], 0, 0);
                     ctx.restore();
 
-                    ctx.font = 'bold 13px Rubik';
-                    ctx.fillStyle = isStopped ? '#dc2626' : '#15803d';
-                    ctx.fillText(i === 2 ? (isStopped ? 'המכוניות עצרו' : 'מכונית נוסעת') : (isStopped ? 'הולך הרגל עצר' : 'הולך רגל הולך'), xs[i], y + 38);
-
-                    if (i === 2) {
-                        ctx.strokeStyle = 'rgba(51,65,85,.35)';
-                        ctx.lineWidth = 2;
-                        ctx.setLineDash([6, 6]);
-                        ctx.beginPath();
-                        ctx.moveTo(xs[i] - 48, y + 12);
-                        ctx.lineTo(xs[i] + 48, y + 12);
-                        ctx.stroke();
-                        ctx.setLineDash([]);
-                    } else {
+                    if (isStopped) {
                         ctx.strokeStyle = 'rgba(21,128,61,.35)';
                         ctx.lineWidth = 2;
                         ctx.beginPath();
-                        ctx.moveTo(xs[i] - 48, y + 22);
-                        ctx.lineTo(xs[i] + 48, y + 22);
+                        ctx.moveTo(crosswalkX - 34, roadBottom + bottomSidewalkH - 4);
+                        ctx.lineTo(crosswalkX + 34, roadBottom + bottomSidewalkH - 4);
                         ctx.stroke();
                     }
                     return;
@@ -1831,6 +2168,10 @@
                     return;
                 }
 
+                if (currentLesson === 9) {
+                    return;
+                }
+
                 ctx.fillStyle = 'rgba(255,255,255,.9)';
                 ctx.strokeStyle = '#94a3b8';
                 ctx.lineWidth = 2;
@@ -1838,18 +2179,6 @@
                 ctx.roundRect(xs[i] - 52, y - 52, 104, 104, 18);
                 ctx.fill();
                 ctx.stroke();
-                const isPresenceCard = currentLesson === 9 && i === 0;
-                if (isPresenceCard) {
-                    if (!environment.people) return;
-
-                    ctx.font = '42px Arial';
-                    ctx.fillText('🧑‍🎓🧑‍🏫', xs[i], y - 46);
-                    ctx.font = 'bold 12px Rubik';
-                    ctx.fillStyle = '#334155';
-                    ctx.fillText('יש תלמידים', xs[i], y - 4);
-                    return;
-                }
-
                 ctx.font = '34px Arial';
                 ctx.fillText(emojis[i], xs[i], y - 10);
                 ctx.font = 'bold 12px Rubik';
@@ -2173,7 +2502,7 @@
             }
 
             // Draggable Smoke
-            if (environment.smoke && currentLesson !== 14) {
+            if (environment.smoke) {
                 if (currentLesson === 4) {
                     ctx.fillStyle = '#fef3c7';
                     ctx.strokeStyle = '#fb923c';
@@ -2214,7 +2543,7 @@
             }
 
             // Draggable Obstacle/Wall
-            if (environment.obstacle && currentLesson !== 14) {
+            if (environment.obstacle) {
                 if (currentLesson === 3) {
                     ctx.font = '56px Arial';
                     ctx.textAlign = 'center';
@@ -2457,11 +2786,14 @@
         // ===== DRAGGING =====
         function getMousePos(e) {
             const rect = canvas.getBoundingClientRect();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            const touch = e.touches?.[0] || e.changedTouches?.[0];
+            const clientX = touch ? touch.clientX : e.clientX;
+            const clientY = touch ? touch.clientY : e.clientY;
+            const scaleX = rect.width ? canvas.width / rect.width : 1;
+            const scaleY = rect.height ? canvas.height / rect.height : 1;
             return {
-                x: clientX - rect.left,
-                y: clientY - rect.top
+                x: (clientX - rect.left) * scaleX,
+                y: (clientY - rect.top) * scaleY
             };
         }
 
@@ -2478,12 +2810,16 @@
                 pos.y >= robot.y - 48 && pos.y <= robot.y + 48;
         }
 
+        function hitTestRobot(pos) {
+            return hitTestVehicle(pos) || hitTest(pos, robot, 56);
+        }
+
         function onDragStart(e) {
             if (isRunning) return;
             const pos = getMousePos(e);
 
             // Check what was clicked (robot/car first, then objects)
-            if (hitTestVehicle(pos) || hitTest(pos, robot, 40)) {
+            if (hitTestRobot(pos)) {
                 dragging = 'robot';
                 dragOffset = { x: pos.x - robot.x, y: pos.y - robot.y };
             } else if (environment.obstacle && hitTest(pos, objects.wall, 50)) {
@@ -2500,15 +2836,19 @@
                 dragOffset = { x: pos.x - objects.sun.x, y: pos.y - objects.sun.y };
             } else if (currentLesson === 14) {
                 const rescueDragTargets = ['rescueBeacon', 'waterDrone'];
-                const target = rescueDragTargets.find((key) => hitTest(pos, objects[key], objects[key].radius || 40));
-                if (target) {
-                    dragging = target;
-                    dragOffset = { x: pos.x - objects[target].x, y: pos.y - objects[target].y };
+                for (const key of rescueDragTargets) {
+                    if (hitTest(pos, objects[key], 45)) {
+                        dragging = key;
+                        dragOffset = { x: pos.x - objects[key].x, y: pos.y - objects[key].y };
+                        break;
+                    }
                 }
             }
 
             if (dragging) {
+                e.preventDefault();
                 canvas.style.cursor = 'grabbing';
+                canvas.setPointerCapture?.(e.pointerId);
             }
         }
 
@@ -2529,21 +2869,31 @@
             }
         }
 
-        function onDragEnd() {
+        function onDragEnd(e) {
+            if (e?.pointerId !== undefined) canvas.releasePointerCapture?.(e.pointerId);
             dragging = null;
             canvas.style.cursor = 'grab';
         }
 
-        // Mouse events
-        canvas.addEventListener('mousedown', onDragStart);
-        canvas.addEventListener('mousemove', onDragMove);
-        canvas.addEventListener('mouseup', onDragEnd);
-        canvas.addEventListener('mouseleave', onDragEnd);
+        if (window.PointerEvent) {
+            canvas.addEventListener('pointerdown', onDragStart);
+            canvas.addEventListener('pointermove', onDragMove);
+            canvas.addEventListener('pointerup', onDragEnd);
+            canvas.addEventListener('pointercancel', onDragEnd);
+            canvas.addEventListener('lostpointercapture', onDragEnd);
+        } else {
+            // Mouse events
+            canvas.addEventListener('mousedown', onDragStart);
+            canvas.addEventListener('mousemove', onDragMove);
+            window.addEventListener('mouseup', onDragEnd);
+            canvas.addEventListener('mouseleave', onDragEnd);
 
-        // Touch events
-        canvas.addEventListener('touchstart', onDragStart);
-        canvas.addEventListener('touchmove', onDragMove);
-        canvas.addEventListener('touchend', onDragEnd);
+            // Touch events
+            canvas.addEventListener('touchstart', onDragStart, { passive: false });
+            canvas.addEventListener('touchmove', onDragMove, { passive: false });
+            canvas.addEventListener('touchend', onDragEnd);
+            canvas.addEventListener('touchcancel', onDragEnd);
+        }
 
         // Set initial cursor
         canvas.style.cursor = 'grab';
@@ -2584,10 +2934,10 @@
                 movement: [],
                 sensors: ['sensor_color'],
                 controls: ['control_if'],
-                actions: ['action_say', 'action_recycle_bin']
+                actions: ['action_recycle_bin', 'action_say']
             },
             7: {
-                movement: ['move_forward', 'turn_right_small', 'turn_left_small', 'stop_vehicle'],
+                movement: ['move_forward', 'move_backward', 'turn_right_small', 'turn_left_small', 'turn_right', 'turn_left', 'stop_vehicle'],
                 sensors: ['sensor_line', 'sensor_line_side', 'sensor_goal'],
                 controls: ['control_if', 'control_forever', 'stop_program'],
                 actions: ['action_say']
@@ -2595,50 +2945,50 @@
             8: {
                 movement: ['stop_cars', 'start_cars', 'stop_pedestrian', 'start_pedestrian'],
                 sensors: ['sensor_pedestrian', 'sensor_cars'],
-                controls: ['control_if', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_traffic_light']
+                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
+                actions: ['action_traffic_light', 'action_say']
             },
             9: {
                 movement: [],
-                sensors: ['sensor_people', 'sensor_light'],
-                controls: ['control_if', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_street_light', 'action_fan', 'action_class_power']
+                sensors: ['sensor_people', 'sensor_sound'],
+                controls: ['control_if', 'control_forever', 'stop_program'],
+                actions: ['action_class_power', 'action_ac', 'action_say']
             },
             10: {
                 movement: [],
                 sensors: ['sensor_soil'],
                 controls: ['control_if', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_water']
+                actions: ['action_water', 'action_say']
             },
             11: {
                 movement: [],
                 sensors: ['sensor_armed', 'sensor_motion', 'sensor_door'],
-                controls: ['control_if', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_alarm']
+                controls: ['control_if', 'control_forever', 'stop_program'],
+                actions: ['action_alarm', 'action_say']
             },
             12: {
-                movement: ['move_forward', 'turn_right', 'turn_left', 'route_turn', 'stop_vehicle'],
-                sensors: ['sensor_obstacle'],
-                controls: ['control_if', 'stop_program'],
-                actions: ['action_say', 'action_sound']
+                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'route_turn'],
+                sensors: ['sensor_obstacle', 'sensor_goal'],
+                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
+                actions: ['action_say']
             },
             13: {
-                movement: ['move_forward', 'turn_right', 'turn_left', 'stop_vehicle'],
+                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
                 sensors: ['sensor_light', 'sensor_motion', 'sensor_sound'],
-                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_street_light', 'action_sound', 'action_alarm']
+                controls: ['control_if', 'control_forever', 'stop_program'],
+                actions: ['action_street_light', 'action_sound', 'action_say']
             },
             14: {
-                movement: ['move_forward', 'turn_right', 'turn_left', 'route_turn', 'stop_vehicle'],
-                sensors: ['sensor_temperature', 'sensor_smell', 'sensor_obstacle'],
-                controls: ['control_if', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_alarm', 'action_fan', 'action_safe_route']
+                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'route_turn'],
+                sensors: ['sensor_smell', 'sensor_temperature', 'sensor_obstacle'],
+                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
+                actions: ['action_safe_route', 'action_alarm', 'action_say']
             },
             15: {
                 movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'route_turn'],
-                sensors: ['sensor_light', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_goal', 'sensor_cars', 'sensor_pedestrian', 'sensor_people', 'sensor_soil', 'sensor_armed', 'sensor_motion', 'sensor_door', 'sensor_obstacle'],
+                sensors: ['sensor_light', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_line_side', 'sensor_goal', 'sensor_people', 'sensor_soil', 'sensor_armed', 'sensor_motion', 'sensor_door', 'sensor_obstacle'],
                 controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_street_light', 'action_traffic_light', 'action_sound', 'action_fan', 'action_water', 'action_recycle_bin', 'action_class_power', 'action_alarm', 'action_safe_route']
+                actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_ac', 'action_water', 'action_recycle_bin', 'action_class_power', 'action_alarm', 'action_safe_route']
             }
         };
 
@@ -2737,8 +3087,8 @@
                 env: ['envCars', 'envPedestrian']
             },
             9: {
-                sensors: ['sensorPeople', 'sensorLight'],
-                env: ['envPeople', 'envLight']
+                sensors: ['sensorPeople', 'sensorSound'],
+                env: ['envPeople', 'envSound']
             },
             10: {
                 sensors: ['sensorSoil'],
@@ -2749,7 +3099,7 @@
                 env: ['envArmedMode', 'envMotion', 'envDoorOpen']
             },
             12: {
-                sensors: ['sensorTouch'],
+                sensors: ['sensorTouch', 'sensorGoal'],
                 env: ['envObstacle']
             },
             13: {
@@ -2761,8 +3111,8 @@
                 env: ['envSmoke', 'envTemperatureHot', 'envObstacle']
             },
             15: {
-                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorMotion', 'sensorSoil', 'sensorArmed', 'sensorDoor'],
-                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envMotion', 'envSoilDry', 'envArmedMode', 'envDoorOpen']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorPeople', 'sensorSoil', 'sensorArmed', 'sensorMotion', 'sensorDoor'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envPeople', 'envSoilDry', 'envArmedMode', 'envMotion', 'envDoorOpen']
             }
         };
 
@@ -2790,13 +3140,9 @@
             }
             const obstacleBtn = document.getElementById('envObstacle');
             if (obstacleBtn) {
-                obstacleBtn.querySelector('.icon').textContent = currentLesson === 12 ? '🚧' : currentLesson === 14 ? '🪨' : '🧱';
-                obstacleBtn.lastChild.textContent = currentLesson === 12 ? ' מכשול' : currentLesson === 14 ? ' חסם במסלול' : ' קיר';
+                obstacleBtn.querySelector('.icon').textContent = currentLesson === 12 ? '🚧' : '🧱';
+                obstacleBtn.lastChild.textContent = currentLesson === 12 ? ' מכשול' : ' קיר';
             }
-            const smokeBtn = document.getElementById('envSmoke');
-            if (smokeBtn) smokeBtn.lastChild.textContent = currentLesson === 14 ? ' עשן בזירה' : ' עשן';
-            const tempBtn = document.getElementById('envTemperatureHot');
-            if (tempBtn) tempBtn.lastChild.textContent = currentLesson === 14 ? ' חום מסוכן' : ' חם';
             updateEnvScrollControls();
         }
 
@@ -2827,6 +3173,7 @@
                 trashcan: true,
                 zoom: {
                     controls: true,
+                    wheel: false,
                     startScale: 1.0,
                     maxScale: 1.5,
                     minScale: 0.7
@@ -2838,6 +3185,32 @@
                     snap: true
                 }
             });
+        }
+
+        function scrollBlocklyCanvas(deltaX, deltaY) {
+            if (!workspace?.getMetrics) return;
+
+            const metrics = workspace.getMetrics();
+            if (!metrics) return;
+
+            const scrollLeft = metrics.scrollLeft ?? metrics.contentLeft ?? 0;
+            const scrollTop = metrics.scrollTop ?? metrics.contentTop ?? 0;
+            const currentX = typeof workspace.scrollX === 'number'
+                ? Math.max(0, -workspace.scrollX - scrollLeft)
+                : Math.max(0, metrics.viewLeft - metrics.contentLeft);
+            const currentY = typeof workspace.scrollY === 'number'
+                ? Math.max(0, -workspace.scrollY - scrollTop)
+                : Math.max(0, metrics.viewTop - metrics.contentTop);
+            const maxX = Math.max(0, (metrics.scrollWidth ?? metrics.contentWidth) - metrics.viewWidth);
+            const maxY = Math.max(0, (metrics.scrollHeight ?? metrics.contentHeight) - metrics.viewHeight);
+            const nextX = Math.min(maxX, Math.max(0, currentX + deltaX));
+            const nextY = Math.min(maxY, Math.max(0, currentY + deltaY));
+
+            if (typeof workspace.scroll === 'function') {
+                workspace.scroll(-(nextX + scrollLeft), -(nextY + scrollTop));
+            } else if (workspace.scrollbar?.set) {
+                workspace.scrollbar.set(nextX, nextY, true);
+            }
         }
 
         function defineBlocks() {
@@ -3004,8 +3377,8 @@
             Blockly.Blocks['sensor_obstacle'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField(currentLesson === 14 ? '🪨 חסם במסלול?' : '🚧 מכשול בדרך?')
-                        .appendField(new Blockly.FieldDropdown(currentLesson === 14 ? [['כן, צריך נתיב בטוח', 'YES'], ['לא, המסלול פתוח', 'NO']] : [['כן', 'YES'], ['לא', 'NO']]), 'VAL');
+                        .appendField('🚧 מכשול בדרך?')
+                        .appendField(new Blockly.FieldDropdown([['כן', 'YES'], ['לא', 'NO']]), 'VAL');
                     this.setOutput(true, 'Boolean');
                     this.setColour('#40BF4A');
                 }
@@ -3014,8 +3387,8 @@
             Blockly.Blocks['sensor_smell'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField(currentLesson === 14 ? '💨 עשן בזירת החילוץ?' : '👃 מריח עשן?')
-                        .appendField(new Blockly.FieldDropdown(currentLesson === 14 ? [['כן, יש עשן', 'YES'], ['לא, האוויר נקי', 'NO']] : [['כן 💨', 'YES'], ['לא ✅', 'NO']]), 'VAL');
+                        .appendField('👃 מריח עשן?')
+                        .appendField(new Blockly.FieldDropdown([['כן 💨', 'YES'], ['לא ✅', 'NO']]), 'VAL');
                     this.setOutput(true, 'Boolean');
                     this.setColour('#40BF4A');
                 }
@@ -3024,8 +3397,8 @@
             Blockly.Blocks['sensor_temperature'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField(currentLesson === 14 ? '🔥 חום בזירת החילוץ =' : '🌡️ טמפרטורה =')
-                        .appendField(new Blockly.FieldDropdown(currentLesson === 14 ? [['מסוכן מדי 🔥', 'HOT'], ['בטוח להמשך ✅', 'OK']] : [['חם מדי 🔥', 'HOT'], ['נעים 🌿', 'OK']]), 'VAL');
+                        .appendField('🌡️ טמפרטורה =')
+                        .appendField(new Blockly.FieldDropdown([['חם מדי 🔥', 'HOT'], ['נעים 🌿', 'OK']]), 'VAL');
                     this.setOutput(true, 'Boolean');
                     this.setColour('#40BF4A');
                 }
@@ -3255,8 +3628,19 @@
             Blockly.Blocks['action_fan'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField(currentLesson === 14 ? '🚁 רחפן חילוץ' : '🪭 מאוורר')
-                        .appendField(new Blockly.FieldDropdown(currentLesson === 14 ? [['הפעל לסריקה', 'ON'], ['החזר לתחנה', 'OFF']] : [['הפעל', 'ON'], ['כבה', 'OFF']]), 'STATE');
+                        .appendField('🪭 מאוורר')
+                        .appendField(new Blockly.FieldDropdown([['הפעל', 'ON'], ['כבה', 'OFF']]), 'STATE');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+
+            Blockly.Blocks['action_ac'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('❄️ מזגן')
+                        .appendField(new Blockly.FieldDropdown([['הפעל', 'ON'], ['כבה', 'OFF']]), 'STATE');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
                     this.setColour('#9966FF');
@@ -3287,7 +3671,7 @@
 
             Blockly.Blocks['action_safe_route'] = {
                 init: function() {
-                    this.appendDummyInput().appendField(currentLesson === 14 ? '🛟 בחר נתיב בטוח' : '🛟 חפש דרך בטוחה');
+                    this.appendDummyInput().appendField('🛟 חפש דרך בטוחה');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
                     this.setColour('#9966FF');
@@ -3484,11 +3868,14 @@
 
                 case 'action_fan':
                     robot.fanOn = block.getFieldValue('STATE') === 'ON';
-                    robot.speaking = currentLesson === 14
-                        ? (robot.fanOn ? 'הרחפן סורק נתיב בטוח' : 'הרחפן חזר לתחנה')
-                        : currentLesson === 9
-                            ? (robot.fanOn ? 'הפעלתי מזגן' : 'כיביתי מזגן')
-                            : (robot.fanOn ? 'מקרר את החממה!' : 'המאוורר כבוי');
+                    robot.speaking = robot.fanOn ? 'מקרר את החממה!' : 'המאוורר כבוי';
+                    await sleep(900);
+                    robot.speaking = '';
+                    break;
+
+                case 'action_ac':
+                    robot.fanOn = block.getFieldValue('STATE') === 'ON';
+                    robot.speaking = robot.fanOn ? 'הפעלתי מזגן' : 'כיביתי מזגן';
                     await sleep(900);
                     robot.speaking = '';
                     break;
@@ -3508,7 +3895,7 @@
                     break;
 
                 case 'action_safe_route':
-                    robot.speaking = currentLesson === 14 ? 'בחרתי נתיב בטוח' : 'מחפש דרך בטוחה';
+                    robot.speaking = 'מחפש דרך בטוחה';
                     robot.vehicleStopped = false;
                     await sleep(900);
                     robot.speaking = '';
@@ -3533,6 +3920,9 @@
 
         function getSoundLevel() {
             if (!environment.sound) return 'QUIET';
+            // Lesson 9 classroom noise is ambient: pressing the noise sensor means the classroom is loud,
+            // even if the sound icon is not touching the robot.
+            if (currentLesson === 9) return 'LOUD';
             const distance = distanceToObject(objects.sound);
             if (distance < 90) return 'LOUD';
             if (distance < 230) return 'SOFT';
@@ -3677,7 +4067,7 @@
             const dy = sensorPoint.y - goal.y;
             return Math.sqrt(dx * dx + dy * dy) <= 34;
         }
-        
+
         function evalCondition(block) {
             if (!block) return false;
             const val = block.getFieldValue('VAL');
@@ -3782,7 +4172,6 @@
         function resetEnv() {
 
             environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, doorOpen: false };
-            smokeStartedAt = null;
 
             document.querySelectorAll('.env-btn').forEach(b => b.classList.remove('active'));
             robot.speaking = '';
@@ -3797,6 +4186,7 @@
 
             robot.alarmOn = false;
             robot.sortedBin = '';
+            smokeStartedAt = null;
             const recycleBtnIcon = document.querySelector('#envRecycleColor .icon');
             if (recycleBtnIcon) recycleBtnIcon.textContent = '♻️';
             resetPositions();
@@ -3988,12 +4378,7 @@
         function renderLessonTabs() {
             const tabs = document.getElementById('lessonTabs');
             if (!tabs) return;
-            const fallbackLessons = Array.from({ length: 15 }, (_, index) => ({
-                id: index + 1,
-                emoji: '🏙️',
-                title: `שיעור ${index + 1}`
-            }));
-            const lessons = (window.SENSI_LESSONS && window.SENSI_LESSONS.length) ? window.SENSI_LESSONS : fallbackLessons;
+            const lessons = window.SENSI_LESSONS || [];
             tabs.innerHTML = lessons.map(lesson => `
                 <button class="lesson-tab" onclick="selectLesson(${lesson.id})" title="שיעור ${lesson.id}: ${lesson.title}">
                     <span>${lesson.emoji}</span><span class="lesson-num">${lesson.id}</span>
@@ -4018,15 +4403,8 @@
 
         function selectLesson(num) {
             currentLesson = num;
-            let activeTab = null;
-            document.querySelectorAll('.lesson-tab').forEach((t) => {
-                const isActive = Number(t.querySelector('.lesson-num')?.textContent) === num;
-                t.classList.toggle('active', isActive);
-                if (isActive) activeTab = t;
-            });
-            if (activeTab) {
-                requestAnimationFrame(() => activeTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }));
-            }
+            document.querySelectorAll('.lesson-tab').forEach((t) =>
+                t.classList.toggle('active', Number(t.querySelector('.lesson-num')?.textContent) === num));
             document.getElementById('welcomeModal').classList.remove('active');
 
             const cityLesson = window.getSensiLesson ? window.getSensiLesson(num) : null;
@@ -4034,8 +4412,11 @@
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260716-miriam-story-v49';
-            resetPositions();
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num;
+            const ground = document.querySelector('.ground');
+            ground?.classList.toggle('street-ground', num === 8);
+            ground?.classList.toggle('classroom-ground', num === 9);
+            resizeCanvas();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
             updateVisibleControls();
@@ -4073,27 +4454,13 @@
 
         // ===== INIT =====
         window.onload = function() {
-            const initialLesson = getInitialLessonFromUrl();
-
-            // Render navigation before Blockly. Blockly loads from an external CDN;
-            // if it is blocked or slow, the lesson menu must still be visible.
+            resizeCanvas();
+            initBlockly();
             renderLessonTabs();
             renderWelcomeLessons();
-            resizeCanvas();
-            selectLesson(initialLesson);
             draw();
             updateSensors();
-
-            try {
-                if (window.Blockly) {
-                    initBlockly();
-                    if (workspace) workspace.updateToolbox(buildToolbox());
-                } else {
-                    console.warn('Blockly did not load; lesson navigation remains available.');
-                }
-            } catch (error) {
-                console.error('Blockly init failed; lesson navigation remains available.', error);
-            }
+            selectLesson(getInitialLessonFromUrl());
         };
     </script>
   <script src="js/feedback-widget.js?v=20260711-feedback"></script>

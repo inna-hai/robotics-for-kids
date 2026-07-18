@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔐 שיעור 14: סיסי בחדר הבריחה - תנאי וגם לכיתות ב׳</title>
+  <meta name="description" content="שיעור 14 לכיתות ב׳: סיסי בחדר הבריחה מלמדת תנאי וגם, בדיקת שני רמזים ודיבוג תנאים בצורה חווייתית." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/escape.css?v=20260717-escape-1">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero"><div>
+      <div class="kicker">שיעור 14 • תנאי וגם • כיתות ב׳ • 76 דקות</div>
+      <h1>🔐 סיסי בחדר הבריחה</h1>
+      <p>סיסי נכנסת לחדר בריחה תכנותי. כל חדר בודק “וגם” בצורה אחרת: פעם צורה וצבע, פעם צליל וצבע, פעם מספר וצורה, ופעם דיבוג של תנאי חסר. זה תכנות אמיתי — אבל דרך משחק ולא דרך תרגיל יבש.</p>
+      <div class="actions">
+        <a class="btn" href="escape-play.html?lesson=1">▶️ להתחיל חדר 1</a>
+        <a class="btn secondary" href="#missions">🔑 לראות חדרים</a>
+        <a class="btn secondary" href="escape-lab.html">🔐 מעבדת חדר בריחה</a>
+        <a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a>
+        <a class="btn secondary" href="cinema.html">🎬 שיעור 13: אולפן סרטים</a>
+        <a class="btn secondary" href="finale.html">🏙️ שיעור 15: שיא העיר</a>
+      </div>
+    </div><div class="hero-art" aria-hidden="true">🤖🔐</div></section>
+
+    <section class="stats" aria-label="נתוני שיעור חדר הבריחה">
+      <div class="stat"><b>שיעור 14</b>חדר בריחה</div>
+      <div class="stat"><b>76</b>דקות</div>
+      <div class="stat"><b>וגם</b>שני תנאים</div>
+      <div class="stat"><b>דיבוג</b>מה חסר?</div>
+    </section>
+
+    <section class="intro">
+      <div class="panel"><h2>איך זה מקדם תכנות?</h2><p>הילדים לומדים רעיון תכנותי ברור: פעולה מתבצעת רק אם שני תנאים נכונים. זה הבסיס ל־AND, אבל בשפה של חדר בריחה.</p></div>
+      <div class="panel"><h3>מה לומדים בלי להרגיש?</h3><ul><li>תנאי עם וגם</li><li>בדיקת שני רמזים</li><li>דיבוג: איזה תנאי חסר?</li><li>נימוקים שונים לפי סוג החדר</li><li>מעבדת יצירה שמחזיקה שיעור מלא</li></ul></div>
+    </section>
+
+    <section class="intro">
+      <div class="panel"><h2>שנים־עשר חדרים, שנים־עשר אתגרי תנאים</h2><p>כדי שזה לא ירגיש כמו אותו תרגיל, כל חדר דורש הסבר אחר: צורה+צבע, צליל+צבע, מספר+צבע, דיבוג של תנאי חסר, וכלל מלא בחדר הסיום.</p></div>
+      <div class="panel"><h2>מה משתנה מחדר לחדר?</h2><ul><li>סוגי הרמזים</li><li>הטעות המבלבלת</li><li>הנימוק הנכון</li><li>שאלת הדיבוג</li></ul></div>
+    </section>
+
+    <section class="intro" id="class-activities">
+      <div class="panel"><h2>אתגר “אחד נכון לא מספיק” — 10 דקות</h2><p>המורה מציגה מצב שבו רק תנאי אחד נכון. הילדים מסבירים למה הדלת לא נפתחת ומה חסר.</p></div>
+      <div class="panel"><h2>משחק בוני חדרים בזוגות — 12 דקות</h2><p>זוג אחד ממציא דלת עם שני תנאים. זוג אחר צריך לבחור רמזים ולנמק למה זה נפתח.</p></div>
+    </section>
+
+    <section id="missions"><h2>חדרי הבריחה של סיסי</h2><div class="cards" id="cards"></div></section>
+  </main>
+  <script src="js/escape-lessons.js?v=20260717-escape-1"></script>
+  <script>
+    document.getElementById('cards').innerHTML = window.ESCAPE_LESSONS.map((lesson) => `
+      <a class="card" href="escape-play.html?lesson=${lesson.id}" aria-label="פתח חדר ${lesson.id}: ${lesson.title}">
+        <div class="top"><span class="emoji">${lesson.emoji}</span><span class="id">חדר ${lesson.id}</span></div>
+        <h3>${lesson.title}</h3><div class="unit">${lesson.unit}</div><div class="story">${lesson.story}</div>
+        <div class="tags"><span class="tag">${lesson.concept}</span><span class="tag">תנאי וגם</span></div><div class="start">לפתוח חדר ←</div>
+      </a>`).join('');
+  </script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>

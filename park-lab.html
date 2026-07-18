@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎡 מעבדת מתקנים - סיסי בלונה פארק</title>
+  <meta name="description" content="פעילות יצירה מסכמת לשיעור 11: הילדים מתכננים מתקן ובוחרים לו הגדרה מתאימה." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/park.css?v=20260717-park-lab-1">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero"><div>
+      <div class="kicker">שיעור 11 • פעילות יצירה • 15–20 דקות</div>
+      <h1>🎡 מעבדת המתקנים של סיסי</h1>
+      <p>הילדים מתכננים מתקן חדש ללונה פארק ובוחרים לו הגדרות שונות. זה הופך את רעיון “פקודה + ערך” לפעילות יצירה שמחזיקה זמן ומעודדת שיחה.</p>
+      <div class="actions"><a class="btn" href="park-play.html?lesson=1">↩️ חזרה למתקנים</a><a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a></div>
+    </div><div class="hero-art" aria-hidden="true">🎠🎛️</div></section>
+
+    <section class="intro">
+      <div class="panel"><h2>משימת יצירה</h2><ol><li>המציאו מתקן חדש.</li><li>בחרו מתי הוא צריך לעבוד לאט.</li><li>בחרו מתי הוא צריך לעבוד מהר או חזק.</li><li>הציגו פקודה אחת עם הגדרה.</li></ol></div>
+      <div class="panel"><h2>כרטיס המתקן שלי</h2><div class="option-grid">
+        <label>שם המתקן <input id="ride" placeholder="למשל: מגלשת עננים" /></label>
+        <label>מצב רגוע <input id="calm" placeholder="למשל: ילדים קטנים עולים" /></label>
+        <label>מצב חגיגי <input id="party" placeholder="למשל: מסיבת סיום" /></label>
+      </div><button class="btn" id="build" type="button">🎛️ לבנות פקודות</button></div>
+    </section>
+
+    <section class="command-panel">
+      <h2>פקודות המתקן שהמצאתי</h2>
+      <div class="command-preview" id="commands-output"><span>בחרו מתקן ומצבים</span></div>
+      <div class="learning-note"><b>שאלת שיתוף:</b> למה לא תמיד כדאי להפעיל מתקן בעוצמה הכי גבוהה?</div>
+    </section>
+  </main>
+  <script>
+    document.getElementById('build').addEventListener('click', () => {
+      const ride = document.getElementById('ride').value || 'המתקן שלי';
+      const calm = document.getElementById('calm').value || 'מצב רגוע';
+      const party = document.getElementById('party').value || 'מצב חגיגי';
+      document.getElementById('commands-output').innerHTML = `<span>${ride}</span><b>אם</b><span>${calm}</span><b>אז</b><span>הפעל לאט 🐢</span><b>אם</b><span>${party}</span><b>אז</b><span>הפעל חזק ⚡</span>`;
+    });
+  </script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>

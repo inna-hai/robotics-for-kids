@@ -1,0 +1,58 @@
+import { readFileSync } from 'node:fs';
+import { strict as assert } from 'node:assert';
+import vm from 'node:vm';
+const root = new URL('../', import.meta.url);
+const read = path => readFileSync(new URL(path, root), 'utf8');
+const sandbox = { window: {} };
+vm.createContext(sandbox);
+vm.runInContext(read('js/appforge-lessons.js'), sandbox);
+const lessons = sandbox.window.APPFORGE_LESSONS;
+assert.equal(Array.isArray(lessons), true, 'lessons exists');
+assert.equal(lessons.length, 30, 'WebMakers has 30 lessons');
+assert.deepEqual(Array.from(lessons, l => l.id), Array.from({ length: 30 }, (_, i) => i + 1), 'ids are sequential');
+for (const lesson of lessons) {
+  assert.equal(lesson.durationMinutes, 90, `lesson ${lesson.id} is 90 minutes`);
+  assert.ok(lesson.unit && lesson.title && lesson.concept && lesson.story, `lesson ${lesson.id} has metadata`);
+  assert.ok(lesson.starter.html.includes('<main'), `lesson ${lesson.id} has HTML starter`);
+  assert.ok(lesson.starter.css.includes('background'), `lesson ${lesson.id} has CSS starter`);
+  assert.ok(lesson.starter.js.includes('function'), `lesson ${lesson.id} has JS starter`);
+  assert.ok(lesson.lessonFlow.length >= 7, `lesson ${lesson.id} has flow`);
+  assert.ok(lesson.exercises.length >= 8, `lesson ${lesson.id} has exercises`);
+  assert.ok(lesson.vocabulary.length >= 4, `lesson ${lesson.id} has vocab`);
+}
+assert.ok(lessons[0].title.includes('Mission Board'), 'lesson 1 is framed as a wow mission board');
+assert.ok(lessons[0].starter.js.includes('tasks') && lessons[0].starter.js.includes('addSurprise'), 'lesson 1 is a playful task app');
+assert.ok(lessons[1].title.includes('Avatar Studio') && lessons[1].starter.js.includes('renderProfile'), 'lesson 2 is a dynamic avatar studio');
+assert.ok(lessons[2].title.includes('Screens') && lessons[2].starter.js.includes('showScreen'), 'lesson 3 is a screen navigation app');
+assert.ok(lessons[3].title.includes('Smart Form') && lessons[3].starter.js.includes('validateForm'), 'lesson 4 is a smart validation form');
+assert.ok(lessons[4].title.includes('Class Ideas') && lessons[4].starter.js.includes('pickIdea'), 'lesson 5 is a playful class ideas mini project');
+assert.ok(lessons[5].codeCards.length >= 4 && lessons[5].codeCards[0].label.includes('דאטה'), 'lesson 6 has guided data code cards');
+assert.ok(lessons[8].title.includes('Save Magic') && lessons[8].concept.includes('localStorage'), 'lesson 9 covers localStorage as save magic');
+assert.ok(lessons[15].title.includes('Mock API') && lessons[15].starter.js.includes('Promise'), 'lesson 16 covers API mock through a friendly product');
+assert.ok(lessons[20].title.includes('Prompt Lab'), 'lesson 21 starts AI product tools');
+assert.ok(lessons[29].title.includes('Demo Day') && lessons[29].starter.js.includes('project'), 'lesson 30 is final demo');
+const hub = read('appforge.html');
+assert.ok(hub.includes('WebMakers Lab') && hub.includes('Web Apps') && hub.includes('AI'), 'hub describes WebMakers');
+assert.ok(hub.includes('כרטיסי קוד') && hub.includes('תצוגה חיה'), 'hub explains scaffolding for children');
+const play = read('appforge-play.html');
+assert.ok(play.includes('textarea id="htmlCode"') && play.includes('iframe id="preview"'), 'play page has editor and preview');
+assert.ok(play.includes('כרטיסי קוד') && play.includes('renderCodeCards') && play.includes('focusSnippet'), 'play page provides guided code cards');
+assert.ok(play.includes('איך עובדים בשיעור') && play.includes('Demo'), 'play page includes kid-friendly workflow guidance');
+assert.ok(play.includes('webmakersPreviewWidth'), 'play page has resizable preview');
+assert.ok(lessons[9].title.includes('Class Dashboard'), 'lesson 10 is a dashboard product');
+assert.ok(lessons[10].title.includes('Quiz Arena'), 'lesson 11 starts logic with a game-like quiz');
+assert.ok(lessons[19].title.includes('Dashboard Project'), 'lesson 20 closes dashboard unit with a project');
+assert.ok(lessons[19].codeCards.some(card => card.label.includes('חוק המוצר')), 'lesson 20 has logic/product code cards');
+assert.ok(lessons[23].title.includes('Safety Shield'), 'lesson 24 covers AI safety in a kid-friendly way');
+assert.ok(lessons[23].codeCards.some(card => card.label.includes('החלק החכם')), 'AI lessons have guided smart-part cards');
+for (const lesson of [lessons[10], lessons[15], lessons[19], lessons[20], lessons[23], lessons[29]]) {
+  assert.ok(lesson.exercises.some(ex => ex.title.includes('באג')), `lesson ${lesson.id} has debug practice`);
+  assert.ok(lesson.exercises.some(ex => ex.title.includes('Demo')), `lesson ${lesson.id} has demo practice`);
+  assert.ok(lesson.exercises.some(ex => ex.title.includes('חוק') || ex.title.includes('פעולה')), `lesson ${lesson.id} has code-understanding practice`);
+}
+
+const slides = read('appforge-slides.html');
+assert.ok(slides.includes('מהלך שיעור 90 דקות') && slides.includes('רצף ה׳–ו׳'), 'slides are dynamic guide');
+const program = read('holon-scope-program.html');
+assert.ok(program.includes('WebMakers Lab') && program.includes('appforge.html'), 'Holon program links WebMakers');
+console.log('appforge-course tests passed');

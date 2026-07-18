@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✉️ שיעור 12: סיסי בדואר הקסום - ניתוב לפי רמזים לכיתות ב׳</title>
+  <meta name="description" content="שיעור 12 לכיתות ב׳: סיסי בדואר הקסום מלמדת ניתוב, קטגוריות והתאמת הודעה ליעד בצורה קלה ומעניינת." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/mail.css?v=20260717-mail-1">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero"><div>
+      <div class="kicker">שיעור 12 • ניתוב לפי רמזים • כיתות ב׳ • 75 דקות</div>
+      <h1>✉️ סיסי בדואר הקסום</h1>
+      <p>סיסי מקבלת מכתבים וחבילות עם רמזים. הילדים קוראים את התוכן ובוחרים לאיזו תיבה לשלוח כל הודעה. זה מלמד קטגוריות וניתוב בלי להקפיץ את הרמה.</p>
+      <div class="actions">
+        <a class="btn" href="mail-play.html?lesson=1">▶️ להתחיל דואר 1</a>
+        <a class="btn secondary" href="#missions">📬 לראות הודעות</a>
+        <a class="btn secondary" href="mail-lab.html">✉️ מעבדת דואר</a>
+        <a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a>
+        <a class="btn secondary" href="park.html">🎡 שיעור 11: לונה פארק</a>
+        <a class="btn secondary" href="cinema.html">🎬 שיעור 13: אולפן סרטים</a>
+      </div>
+    </div><div class="hero-art" aria-hidden="true">🤖✉️</div></section>
+
+    <section class="stats" aria-label="נתוני שיעור הדואר">
+      <div class="stat"><b>שיעור 12</b>דואר קסום</div>
+      <div class="stat"><b>75</b>דקות</div>
+      <div class="stat"><b>ניתוב</b>רעיון מרכזי</div>
+      <div class="stat"><b>קל</b>קטגוריות ורמזים</div>
+    </section>
+
+    <section class="intro">
+      <div class="panel"><h2>למה זה מתאים עכשיו?</h2><p>אחרי פקודות עם הגדרות, זה שיעור רגוע יותר: קוראים מידע, מזהים רמזים ושולחים ליעד נכון. זו חשיבה חישובית שימושית בלי מבנה קוד חדש.</p></div>
+      <div class="panel"><h3>מה לומדים בלי להרגיש?</h3><ul><li>ניתוב הודעות לפי תוכן</li><li>זיהוי רמזים ומילות מפתח</li><li>קטגוריות פשוטות</li><li>בחירה לפי הקשר</li><li>שיעור מומלץ: דואר 1–4 לכל הכיתה, אתגר דואר מבלבל, 5–12 + מעבדה להרחבה</li></ul></div>
+    </section>
+
+
+    <section class="intro" id="deep-activities">
+      <div class="panel"><h2>אתגר דואר מבלבל — 10 דקות</h2><p>אחרי דואר 1–4, המורה מקריאה הודעה עם שני רמזים אפשריים. הילדים צריכים להסביר בקול איזה רמז חזק יותר ולמה. זה מוסיף דיון ולא רק לחיצה על תשובה.</p><ul><li>דוגמה: “מצאתי מתכון לעוגיות בצורת כוכבים” — מטבח או מוזיקה?</li><li>המטרה: לנמק לפי מילת מפתח חזקה.</li></ul></div>
+      <div class="panel"><h2>משחק שליחים בזוגות — 10 דקות</h2><p>ילד אחד ממציא הודעה קצרה, ילד שני מנתב אותה. אחר כך מתחלפים. אם יש ויכוח — מוסיפים רמז שלישי שמכריע.</p><ul><li>מחזק קריאה, שפה והסבר.</li><li>נותן מספיק זמן גם לכיתה זריזה.</li></ul></div>
+    </section>
+
+    <section id="missions"><h2>הודעות הדואר של סיסי</h2><div class="cards" id="cards"></div></section>
+  </main>
+  <script src="js/mail-lessons.js?v=20260717-mail-1"></script>
+  <script>
+    document.getElementById('cards').innerHTML = window.MAIL_LESSONS.map((lesson) => `
+      <a class="card" href="mail-play.html?lesson=${lesson.id}" aria-label="פתח דואר ${lesson.id}: ${lesson.title}">
+        <div class="top"><span class="emoji">${lesson.emoji}</span><span class="id">דואר ${lesson.id}</span></div>
+        <h3>${lesson.title}</h3><div class="unit">${lesson.unit}</div><div class="story">${lesson.message}</div>
+        <div class="tags"><span class="tag">${lesson.concept}</span><span class="tag">ניתוב</span></div><div class="start">לנתב הודעה ←</div>
+      </a>`).join('');
+  </script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>

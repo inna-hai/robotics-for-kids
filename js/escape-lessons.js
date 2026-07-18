@@ -1,0 +1,120 @@
+window.ESCAPE_KEYS = {
+  shapeCircle: { label: 'עיגול', icon: '⭕', group: 'shape' },
+  shapeStar: { label: 'כוכב', icon: '⭐', group: 'shape' },
+  shapeTriangle: { label: 'משולש', icon: '🔺', group: 'shape' },
+  colorBlue: { label: 'כחול', icon: '🔵', group: 'color' },
+  colorGreen: { label: 'ירוק', icon: '🟢', group: 'color' },
+  colorRed: { label: 'אדום', icon: '🔴', group: 'color' },
+  soundBell: { label: 'צלצול', icon: '🔔', group: 'sound' },
+  soundDrum: { label: 'תוף', icon: '🥁', group: 'sound' },
+  numberTwo: { label: 'מספר 2', icon: '2️⃣', group: 'number' },
+  numberThree: { label: 'מספר 3', icon: '3️⃣', group: 'number' }
+};
+
+window.ESCAPE_LESSONS = [
+  {
+    id: 1,
+    emoji: '🔐',
+    title: 'הדלת עם העיגול הכחול',
+    unit: 'תנאי וגם ראשון',
+    concept: 'וגם',
+    story: 'סיסי עומדת מול דלת קסומה. על הדלת כתוב: נפתחת רק אם הסמל הוא עיגול וגם הצבע כחול.',
+    conditionText: 'אם סמל = עיגול וגם צבע = כחול → פתח דלת',
+    required: ['shapeCircle', 'colorBlue'],
+    distractors: ['shapeStar', 'colorRed'],
+    result: 'העיגול הכחול הפעיל את שני התנאים, והדלת נפתחה.',
+    successReason: 'כי גם הצורה וגם הצבע מתאימים לדלת',
+    reasonOptions: ['כי גם הצורה וגם הצבע מתאימים לדלת', 'כי מספיק שהצבע יפה', 'כי עיגול תמיד פותח כל דלת'],
+    feedbackWrongReason: 'שימו לב: בדלת הזו צריך גם צורה נכונה וגם צבע נכון.',
+    learningNote: 'בתנאי עם וגם, שני הדברים חייבים להיות נכונים. אם רק אחד נכון — הדלת נשארת סגורה.'
+  },
+  {
+    id: 2,
+    emoji: '⭐',
+    title: 'תיבת הכוכב הירוק',
+    unit: 'שני תנאים',
+    concept: 'בדיקת שני רמזים',
+    story: 'תיבה קטנה מחכה לקוד. כתוב עליה: פתחו רק עם כוכב וגם ירוק.',
+    conditionText: 'אם סמל = כוכב וגם צבע = ירוק → פתח תיבה',
+    required: ['shapeStar', 'colorGreen'],
+    distractors: ['shapeCircle', 'colorBlue'],
+    result: 'הכוכב הירוק התאים בדיוק, והתיבה נפתחה.',
+    successReason: 'כי הכוכב נכון והצבע הירוק נכון באותו זמן',
+    reasonOptions: ['כי הכוכב נכון והצבע הירוק נכון באותו זמן', 'כי בחרנו שני רמזים כלשהם', 'כי ירוק תמיד אומר כן'],
+    feedbackWrongReason: 'כאן לא מספיק לבחור שני רמזים — הם חייבים להיות בדיוק הכוכב והירוק.',
+    learningNote: 'המחשב בודק כל חלק בתנאי. כוכב נכון בלי ירוק — לא מספיק.'
+  },
+  {
+    id: 3,
+    emoji: '🔔',
+    title: 'שער הצלצול האדום',
+    unit: 'חיישן + צבע',
+    concept: 'שילוב רמזים',
+    story: 'שער באולפן שומע צלילים ורואה צבעים. הוא נפתח רק כשיש צלצול וגם אור אדום.',
+    conditionText: 'אם צליל = צלצול וגם צבע = אדום → פתח שער',
+    required: ['soundBell', 'colorRed'],
+    distractors: ['soundDrum', 'colorGreen'],
+    result: 'הצלצול והאור האדום הגיעו יחד, והשער נפתח.',
+    successReason: 'כי החיישן שמע צלצול וגם ראה אור אדום',
+    reasonOptions: ['כי החיישן שמע צלצול וגם ראה אור אדום', 'כי תוף וצלצול הם שניהם צלילים', 'כי אור אדום מספיק בלי צליל'],
+    feedbackWrongReason: 'השער הזה משלב שני סוגי קלט: צליל וגם צבע.',
+    learningNote: 'אפשר לחבר תנאים מסוגים שונים: צליל אחד וצבע אחד. שניהם יחד יוצרים החלטה.'
+  },
+  {
+    id: 4,
+    emoji: '🔺',
+    title: 'מנעול המשולש מספר 3',
+    unit: 'צורה + מספר',
+    concept: 'תנאי מורכב קל',
+    story: 'המנעול הבא דורש צורה ומספר: משולש וגם מספר 3.',
+    conditionText: 'אם צורה = משולש וגם מספר = 3 → פתח מנעול',
+    required: ['shapeTriangle', 'numberThree'],
+    distractors: ['shapeCircle', 'numberTwo'],
+    result: 'המשולש והמספר 3 התאימו, והמנעול השתחרר.',
+    successReason: 'כי עברנו שתי בדיקות: צורה נכונה ומספר נכון',
+    reasonOptions: ['כי עברנו שתי בדיקות: צורה נכונה ומספר נכון', 'כי מספר גדול יותר תמיד טוב יותר', 'כי כל משולש פותח כל מנעול'],
+    feedbackWrongReason: 'המנעול דורש שתי בדיקות קטנות — אחת לצורה ואחת למספר.',
+    learningNote: 'תנאי מורכב לא חייב להיות קשה: פשוט בודקים שתי שאלות קטנות.'
+  },
+  {
+    id: 5,
+    emoji: '🥁',
+    title: 'קיר התוף הירוק',
+    unit: 'דיבוג תנאי',
+    concept: 'אחד נכון לא מספיק',
+    story: 'הקיר מגיב רק אם שומעים תוף וגם האור ירוק. סיסי צריכה לבחור שני רמזים מדויקים.',
+    conditionText: 'אם צליל = תוף וגם צבע = ירוק → פתח קיר סודי',
+    required: ['soundDrum', 'colorGreen'],
+    distractors: ['soundBell', 'colorRed'],
+    result: 'התוף והירוק עבדו יחד, והקיר הסודי נפתח.',
+    successReason: 'כי תיקנו את החלק החסר: גם תוף וגם ירוק',
+    reasonOptions: ['כי תיקנו את החלק החסר: גם תוף וגם ירוק', 'כי צלצול דומה לתוף ולכן זה מספיק', 'כי אדום וירוק הם שניהם צבעים'],
+    feedbackWrongReason: 'זה חדר דיבוג: צריך לזהות בדיוק איזה חלק חסר בתנאי.',
+    learningNote: 'דיבוג בתנאי וגם: אם המערכת לא נפתחת, בודקים איזה חלק מהתנאי חסר.'
+  },
+  {
+    id: 6,
+    emoji: '🧩',
+    title: 'החידה האחרונה של סיסי',
+    unit: 'אתגר מסכם',
+    concept: 'וגם + נימוק',
+    story: 'בחדר האחרון צריך לבחור קוד שמכיל כוכב וגם מספר 2. יש הרבה רמזים מבלבלים מסביב.',
+    conditionText: 'אם סמל = כוכב וגם מספר = 2 → פתח חדר אחרון',
+    required: ['shapeStar', 'numberTwo'],
+    distractors: ['shapeTriangle', 'numberThree'],
+    result: 'הכוכב והמספר 2 פתחו את החדר האחרון. סיסי הצליחה לצאת!',
+    successReason: 'כי בנינו כלל מלא: אם כוכב וגם 2 אז פתח',
+    reasonOptions: ['כי בנינו כלל מלא: אם כוכב וגם 2 אז פתח', 'כי החדר האחרון נפתח מכל שני רמזים', 'כי משולש ומספר 3 קרובים מספיק'],
+    feedbackWrongReason: 'בחדר האחרון צריך להסביר את הכלל המלא: אם שני התנאים נכונים — הפעולה מתבצעת.',
+    learningNote: 'הילדים כבר בונים תנאי תכנותי אמיתי: אם שני תנאים מתקיימים יחד — הפעולה מתבצעת.'
+  }
+];
+
+window.ESCAPE_LESSONS.push(
+  { id: 7, emoji: '🔵', title: 'החדר עם הכחול והצלצול', unit: 'וגם מתקדם', concept: 'שני תנאים שונים', story: 'הדלת נפתחת רק אם הצבע כחול וגם נשמע צלצול.', conditionText: 'אם צבע = כחול וגם צליל = צלצול → פתח', required: ['colorBlue','soundBell'], distractors: ['colorRed','soundDrum'], result: 'הכחול והצלצול פתחו את הדלת.', successReason: 'כי בחרנו גם צבע כחול וגם צלצול', reasonOptions: ['כי בחרנו גם צבע כחול וגם צלצול','כי כל צבע פותח','כי תוף תמיד מספיק'], feedbackWrongReason: 'צריך שני תנאים יחד: כחול וגם צלצול.', learningNote: 'וגם מחייב ששני התנאים יהיו נכונים יחד לפני שהמערכת מבצעת פעולה.' },
+  { id: 8, emoji: '🟢', title: 'החדר הירוק עם מספר 3', unit: 'צבע ומספר', concept: 'וגם', story: 'חדר ירוק מבקש צבע ירוק וגם מספר 3.', conditionText: 'אם צבע = ירוק וגם מספר = 3 → פתח', required: ['colorGreen','numberThree'], distractors: ['colorBlue','numberTwo'], result: 'ירוק ומספר 3 התאימו לכלל.', successReason: 'כי הצבע והמספר מתאימים יחד', reasonOptions: ['כי הצבע והמספר מתאימים יחד','כי ירוק לבד מספיק','כי מספר 2 קרוב מספיק'], feedbackWrongReason: 'בדקו גם צבע וגם מספר.', learningNote: 'תנאי מלא בודק כמה מאפיינים, ולכן הילדים צריכים לקרוא את כל הרמזים.' },
+  { id: 9, emoji: '🥁', title: 'החדר של התוף האדום', unit: 'צליל וצבע', concept: 'תנאי כפול', story: 'הדלת רוצה צבע אדום וגם צליל תוף.', conditionText: 'אם צבע = אדום וגם צליל = תוף → פתח', required: ['colorRed','soundDrum'], distractors: ['colorGreen','soundBell'], result: 'האדום והתוף הפעילו את המנגנון.', successReason: 'כי שני הרמזים נכונים יחד', reasonOptions: ['כי שני הרמזים נכונים יחד','כי כל צליל פותח','כי ירוק דומה לאדום'], feedbackWrongReason: 'צריך התאמה מדויקת של צבע וצליל.', learningNote: 'דיבוג תנאי מתחיל מהשוואה מדויקת בין מה שהדלת ביקשה לבין מה שבחרנו.' },
+  { id: 10, emoji: '⭐', title: 'כוכב וצלצול', unit: 'סמל וצליל', concept: 'וגם עם סמל', story: 'סיסי צריכה כוכב וגם צלצול כדי לפתוח שער נוצץ.', conditionText: 'אם סמל = כוכב וגם צליל = צלצול → פתח', required: ['shapeStar','soundBell'], distractors: ['shapeTriangle','soundDrum'], result: 'כוכב וצלצול פתחו שער נוצץ.', successReason: 'כי הסמל והצליל שניהם מתאימים', reasonOptions: ['כי הסמל והצליל שניהם מתאימים','כי משולש קרוב לכוכב','כי תוף הוא תמיד נכון'], feedbackWrongReason: 'חפשו את הסמל ואת הצליל הנכונים.', learningNote: 'אפשר לחבר סוגי מידע שונים באותו תנאי, כמו סמל וצליל באותה בדיקה.' },
+  { id: 11, emoji: '🔺', title: 'משולש כחול', unit: 'דיוק', concept: 'תנאי מדויק', story: 'החדר מבקש משולש כחול, לא כוכב ולא אדום.', conditionText: 'אם סמל = משולש וגם צבע = כחול → פתח', required: ['shapeTriangle','colorBlue'], distractors: ['shapeStar','colorRed'], result: 'המשולש הכחול פתח את החדר.', successReason: 'כי בחרנו בדיוק משולש וכחול', reasonOptions: ['כי בחרנו בדיוק משולש וכחול','כי כל משולש פותח','כי אדום בולט יותר'], feedbackWrongReason: 'דיוק חשוב: גם צורה וגם צבע.', learningNote: 'תנאי מדויק מונע פתיחה בטעות ומלמד למה חשוב לבדוק כל חלק של הכלל.' },
+  { id: 12, emoji: '🏁', title: 'שער הבריחה הסופי', unit: 'אתגר סיום', concept: 'תנאי וגם מלא', story: 'השער האחרון דורש עיגול ירוק וגם הסבר נכון.', conditionText: 'אם סמל = עיגול וגם צבע = ירוק → שער סיום', required: ['shapeCircle','colorGreen'], distractors: ['shapeTriangle','colorRed'], result: 'העיגול הירוק פתח את שער הסיום.', successReason: 'כי שני התנאים של שער הסיום התקיימו', reasonOptions: ['כי שני התנאים של שער הסיום התקיימו','כי בחרנו שני קלפים כלשהם','כי אדום תמיד מסיים משחק'], feedbackWrongReason: 'בשער הסיום חייבים להסביר ששני התנאים התקיימו.', learningNote: 'אתגר סיום מחבר בחירה נכונה עם נימוק תכנותי ברור על שני תנאים יחד.' }
+);

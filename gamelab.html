@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎮 PlayCode Lab — פיתוח משחקים עם Blockly</title>
+  <meta name="description" content="לומדת פיתוח משחקים לכיתה ג׳: Blockly, יצירת דמויות, ניקוד, שלבים, אויבים, טיימר ובמאי משחק חכם." />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}body{margin:0;font-family:Rubik,Arial,sans-serif;direction:rtl;color:#f8fbff;background:radial-gradient(circle at 15% 10%,rgba(34,211,238,.25),transparent 28%),radial-gradient(circle at 85% 5%,rgba(236,72,153,.26),transparent 30%),linear-gradient(135deg,#08111f,#182554 54%,#2e1065);min-height:100vh}a{color:inherit}.shell{width:min(1180px,calc(100% - 28px));margin:0 auto;padding:24px 0 48px}.hero{display:grid;grid-template-columns:1fr auto;gap:28px;align-items:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:34px;padding:32px;box-shadow:0 26px 80px rgba(0,0,0,.28);backdrop-filter:blur(14px)}.kicker{display:inline-flex;gap:8px;align-items:center;font-weight:900;color:#67e8f9;background:rgba(255,255,255,.1);border-radius:999px;padding:8px 13px;margin-bottom:12px}h1{font-size:clamp(2.2rem,5.2vw,5rem);line-height:1.04;margin:0 0 14px}.hero p{font-size:1.18rem;line-height:1.85;color:#dbeafe;max-width:820px;margin:0}.hero-art{font-size:clamp(5rem,14vw,10rem);filter:drop-shadow(0 16px 20px rgba(0,0,0,.28))}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:13px 20px;text-decoration:none;font-weight:900;background:linear-gradient(135deg,#67e8f9,#f0abfc);color:#08111f;box-shadow:0 12px 28px rgba(103,232,249,.22)}.btn.secondary{background:rgba(255,255,255,.1);color:#f8fbff;border:1px solid rgba(255,255,255,.16);box-shadow:none}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:18px 0}.stat{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:17px;text-align:center;font-weight:900}.stat b{display:block;color:#67e8f9;font-size:1.6rem}.note{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:26px;padding:22px;margin-top:24px;line-height:1.8;color:#e2e8f0}.note b{color:#f0abfc}.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:24px}.card{background:rgba(255,255,255,.96);color:#0f172a;border-radius:25px;padding:18px;min-height:272px;text-decoration:none;display:flex;flex-direction:column;gap:10px;box-shadow:0 16px 38px rgba(0,0,0,.2);border:3px solid transparent;transition:.18s}.card:hover{transform:translateY(-6px);border-color:#67e8f9}.top{display:flex;align-items:center;justify-content:space-between}.emoji{font-size:2.2rem}.id{background:#eef2ff;color:#4f46e5;font-weight:900;border-radius:999px;padding:6px 10px}.card h3{margin:2px 0 0;font-size:1.12rem}.concept{color:#be185d;font-weight:900;font-size:.9rem}.story{line-height:1.5;font-size:.94rem;flex:1;color:#334155}.tags{display:flex;flex-wrap:wrap;gap:6px}.tag{background:#f0f9ff;color:#075985;border-radius:999px;padding:5px 9px;font-size:.76rem;font-weight:900}.start{margin-top:auto;color:#4f46e5;font-weight:900}.section-title{margin:34px 0 4px;font-size:1.7rem}@media(max-width:1000px){.hero{grid-template-columns:1fr}.hero-art{text-align:center}.cards{grid-template-columns:repeat(3,1fr)}}@media(max-width:720px){.shell{width:min(100% - 20px,1180px);padding-top:12px}.hero{padding:20px}.stats,.cards{grid-template-columns:1fr}.card{min-height:auto}.actions .btn{width:100%}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <div class="kicker">כיתה ג׳ · Blockly · פיתוח משחקים · AI Game Director</div>
+        <h1>🎮 PlayCode Lab</h1>
+        <p>לומדה שנתית משלימה לסנסי: הילדים לא רק מזיזים דמות — הם עובדים כמו צוות פיתוח משחקים קטן. יוצרים דמויות, בונים חוקים, מוסיפים ניקוד, חיים, אויבים, שלבים וטיימר, ומקבלים אתגרי שיפור מ“במאי המשחק החכם”.</p>
+        <div class="actions">
+          <a class="btn" href="gamelab-play.html?lesson=1">▶️ להתחיל שיעור 1</a>
+          <a class="btn secondary" href="gamelab-slides.html?lesson=1">📽️ מצגת מדריך לשיעור 1</a>
+          <a class="btn secondary" href="smart-city.html">🏙️ חזרה לסנסי בעיר החכמה</a>
+          <a class="btn secondary" href="holon-scope-program.html">🔭 חולון סקופ</a>
+        </div>
+      </div>
+      <div class="hero-art">🕹️✨</div>
+    </section>
+
+    <section class="stats">
+      <div class="stat"><b>15</b>שיעורים</div>
+      <div class="stat"><b>90</b>דק׳ לשיעור</div>
+      <div class="stat"><b>Blockly</b>בלי הקלדת קוד</div>
+      <div class="stat"><b>AI</b>במאי משחק חכם</div>
+    </section>
+
+    <section class="note">
+      <b>מה חדשני כאן?</b> הילדים משתמשים ב־AI לא כדי “שיעשה במקומם”, אלא כבמאי משחק: הוא מציע אתגרים, שיפורים ומשוב. הילד בוחר, מתכנן ומיישם ב־Blockly. כך הלומדה מרגישה כמו סטודיו משחקים אמיתי — לא כמו שיעור בלוקים רגיל.
+    </section>
+
+    <h2 class="section-title">מסלול 15 שיעורים — קושי עולה בהדרגה</h2>
+    <section class="cards" id="cards" aria-label="שיעורי סטודיו משחקים"></section>
+  </main>
+  <script src="js/gamelab-lessons.js?v=20260717-1"></script>
+  <script>
+    const icons = ['🎭','🕹️','⭐','🏆','🌋','❤️','👾','🗺️','🗝️','⚡','⏱️','🚪','🎬','🧪','🎤'];
+    document.getElementById('cards').innerHTML = window.GAMELAB_LESSONS.map((lesson, index) => `
+      <a class="card" href="gamelab-play.html?lesson=${lesson.id}">
+        <div class="top"><span class="emoji">${icons[index]}</span><span class="id">שיעור ${lesson.id}</span></div>
+        <h3>${lesson.title}</h3>
+        <div class="concept">${lesson.concept}</div>
+        <div class="story">${lesson.story}</div>
+        <div class="tags"><span class="tag">${lesson.durationMinutes} דק׳</span><span class="tag">Blockly</span><span class="tag">Game Design</span></div>
+        <div class="start">להתחיל לפתח ←</div>
+        <div class="tags"><span class="tag">📽️ <object><a href="gamelab-slides.html?lesson=${lesson.id}" onclick="event.stopPropagation()">מצגת מדריך</a></object></span></div>
+      </a>`).join('');
+  </script>
+  <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
+</body>
+</html>

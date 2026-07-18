@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⛅ שיעור 8: סיסי ותחנת מזג האוויר - חיישנים ואוטומציה לכיתות ב׳</title>
+  <meta name="description" content="שיעור 8 לכיתות ב׳: סיסי ותחנת מזג האוויר מלמדת חיישנים, קלט-פלט, אם-אז ואוטומציה דרך מצבי מזג אוויר." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/weather.css?v=20260717-weather-1">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero"><div>
+      <div class="kicker">שיעור 8 • חיישנים ואוטומציה • כיתות ב׳ • 75 דקות</div>
+      <h1>⛅ סיסי ותחנת מזג האוויר</h1>
+      <p>סיסי בונה תחנה חכמה לבית הספר: בכל מצב בוחרים חיישן שמזהה מה קרה ופעולה שמתאימה. הילדים מרכיבים כלל פשוט של אם-אז ומריצים את התחנה.</p>
+      <div class="actions">
+        <a class="btn" href="weather-play.html?lesson=1">▶️ להתחיל תחנה 1</a>
+        <a class="btn secondary" href="#missions">🌦️ לראות תחנות</a>
+        <a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a>
+        <a class="btn secondary" href="art.html">🎨 שיעור 7: פיקסלים</a>
+        <a class="btn secondary" href="factory.html">🏭 שיעור 9: לולאות</a>
+      </div>
+    </div><div class="hero-art" aria-hidden="true">🤖⛅</div></section>
+
+    <section class="stats" aria-label="נתוני שיעור מזג האוויר">
+      <div class="stat"><b>שיעור 8</b>תחנת מזג אוויר</div>
+      <div class="stat"><b>75</b>דקות</div>
+      <div class="stat"><b>קלט→פלט</b>רעיון מרכזי</div>
+      <div class="stat"><b>אם-אז</b>אוטומציה</div>
+    </section>
+
+    <section class="intro">
+      <div class="panel"><h2>מה חדש בשיעור הזה?</h2><p>זו כבר חשיבה של רובוטיקה/בית חכם: חיישן קולט משהו מהעולם, והמערכת בוחרת פעולה. הילדים לא רק מזהים תנאי — הם מחברים קלט לפלט.</p></div>
+      <div class="panel"><h3>מה לומדים בלי להרגיש?</h3><ul><li>חיישן = קלט מהעולם</li><li>פעולה = פלט של המערכת</li><li>כללי אם-אז לאוטומציה</li><li>בחירת תגובה בטוחה ומתאימה</li><li>שיעור מומלץ: תחנות 1–4 לכל הכיתה, 5–12 להרחבה ותרגול</li></ul></div>
+    </section>
+
+    <section id="missions"><h2>תחנות מזג האוויר של סיסי</h2><div class="cards" id="cards"></div></section>
+  </main>
+  <script src="js/weather-lessons.js?v=20260717-weather-1"></script>
+  <script>
+    document.getElementById('cards').innerHTML = window.WEATHER_LESSONS.map((lesson) => `
+      <a class="card" href="weather-play.html?lesson=${lesson.id}" aria-label="פתח תחנה ${lesson.id}: ${lesson.title}">
+        <div class="top"><span class="emoji">${lesson.emoji}</span><span class="id">תחנה ${lesson.id}</span></div>
+        <h3>${lesson.title}</h3><div class="unit">${lesson.unit}</div><div class="story">${lesson.scene}</div>
+        <div class="tags"><span class="tag">${lesson.concept}</span><span class="tag">חיישנים</span></div><div class="start">להפעיל תחנה ←</div>
+      </a>`).join('');
+  </script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>
