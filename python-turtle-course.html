@@ -3,28 +3,69 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>כל השיעורים (30) — פייתון מצייר</title>
-  <meta name="description" content="סילבוס מלא של 30 שיעורי פייתון Turtle לילדים, עם קישורים ללומדה ולמצגות המדריך." />
+  <title>מעבדת פייתון יצירתית | קורס 30 שיעורים לילדים</title>
+  <meta name="description" content="קורס פייתון יצירתי לילדים בגילאי 10–11: ציור בקוד, דפוסים, מיני־משחקים, אנימציה, סיפור ופרויקט אישי — עם לומדה ומצגות מדריך." />
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <style>
-    *{box-sizing:border-box}body{margin:0;font-family:Rubik,Arial,sans-serif;background:linear-gradient(135deg,#e0f2fe,#fdf4ff 48%,#ecfeff);color:#102033;min-height:100vh}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:16px 24px;background:rgba(255,255,255,.92);border-bottom:1px solid rgba(15,23,42,.09);box-shadow:0 8px 24px rgba(15,23,42,.08);position:sticky;top:0;z-index:10}.brand{font-size:1.25rem;font-weight:900}.nav{display:flex;gap:8px;flex-wrap:wrap}.nav a{border:1px solid #e2e8f0;border-radius:999px;padding:9px 13px;text-decoration:none;font-weight:900;color:#0f172a;background:#fff}.nav a.primary{background:linear-gradient(135deg,#22d3ee,#a78bfa);border-color:transparent}.hero{max-width:1180px;margin:0 auto;padding:34px 18px 14px}.hero h1{font-size:clamp(2rem,4vw,3.4rem);margin:0 0 10px}.hero p{font-size:1.12rem;line-height:1.7;color:#475569;max-width:850px}.summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.summary span{background:white;border:1px solid #dbeafe;border-radius:999px;padding:9px 13px;font-weight:900;color:#1e3a8a}.grid{max-width:1180px;margin:0 auto;padding:16px 18px 44px;display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:14px}.lesson-card{display:grid;grid-template-columns:54px 1fr;gap:12px;background:rgba(255,255,255,.94);border:1px solid rgba(15,23,42,.1);border-radius:22px;padding:14px;box-shadow:0 14px 34px rgba(15,23,42,.09)}.num{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,#22d3ee,#7c3aed);color:white;font-size:1.25rem;font-weight:900}.card-body h2{font-size:1.12rem;margin:3px 0 7px}.card-body p{margin:0 0 8px;color:#475569;line-height:1.55}.goal{color:#0f172a!important;font-weight:700}.chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 12px}.chips span{font-size:.78rem;background:#eef2ff;color:#3730a3;border-radius:999px;padding:5px 8px;font-weight:800}.links{display:flex;gap:8px;flex-wrap:wrap}.links a{display:inline-flex;align-items:center;text-decoration:none;border-radius:999px;padding:9px 12px;background:#f1f5f9;color:#0f172a;font-weight:900}.links a.primary{background:#0f172a;color:white}@media(max-width:640px){.topbar{padding:12px}.grid{grid-template-columns:1fr}.lesson-card{grid-template-columns:1fr}.num{width:42px;height:42px}.hero{padding-top:24px}}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Rubik,Arial,sans-serif;background:linear-gradient(135deg,#e0f2fe,#fff7ed 45%,#fdf4ff);color:#102033;min-height:100vh;line-height:1.65}a{color:inherit}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:16px 24px;background:rgba(255,255,255,.92);border-bottom:1px solid rgba(15,23,42,.09);box-shadow:0 8px 24px rgba(15,23,42,.08);position:sticky;top:0;z-index:10;backdrop-filter:blur(12px)}.brand{font-size:1.25rem;font-weight:900}.nav{display:flex;gap:8px;flex-wrap:wrap}.nav a{border:1px solid #e2e8f0;border-radius:999px;padding:9px 13px;text-decoration:none;font-weight:900;color:#0f172a;background:#fff}.nav a.primary{background:linear-gradient(135deg,#22d3ee,#a78bfa);border-color:transparent}.hero{max-width:1180px;margin:0 auto;padding:42px 18px 24px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr);gap:28px;align-items:center}.kicker{display:inline-flex;gap:8px;align-items:center;background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe;border-radius:999px;padding:8px 13px;font-weight:900;margin-bottom:14px}.hero h1{font-size:clamp(2.35rem,5vw,4.8rem);line-height:1.04;margin:0 0 14px;letter-spacing:-.03em}.hero p{font-size:clamp(1.08rem,2vw,1.28rem);line-height:1.75;color:#475569;max-width:850px;margin:0}.hero strong{color:#0f172a}.summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.summary span{background:white;border:1px solid #dbeafe;border-radius:999px;padding:9px 13px;font-weight:900;color:#1e3a8a;box-shadow:0 8px 20px rgba(15,23,42,.06)}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border-radius:999px;padding:12px 18px;font-weight:900;background:#0f172a;color:white;box-shadow:0 12px 28px rgba(15,23,42,.16)}.btn.alt{background:white;color:#0f172a;border:1px solid #e2e8f0}.showcase{background:rgba(255,255,255,.93);border:1px solid rgba(15,23,42,.1);border-radius:32px;padding:24px;box-shadow:0 24px 60px rgba(15,23,42,.13)}.showcase h2{font-size:1.45rem;margin:0 0 12px}.showcase ul{margin:0;padding:0;list-style:none;display:grid;gap:10px}.showcase li{background:linear-gradient(135deg,#f8fafc,#eef2ff);border:1px solid #e2e8f0;border-radius:18px;padding:12px 14px;font-weight:800;color:#334155}.section{max-width:1180px;margin:0 auto;padding:22px 18px}.section h2{font-size:clamp(1.75rem,3.2vw,2.8rem);line-height:1.12;margin:0 0 10px}.section .lead{font-size:1.08rem;color:#526070;max-width:880px;margin:0 0 20px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.info-card{background:rgba(255,255,255,.94);border:1px solid rgba(15,23,42,.1);border-radius:24px;padding:19px;box-shadow:0 14px 34px rgba(15,23,42,.08)}.info-card .icon{font-size:2rem;margin-bottom:8px}.info-card h3{margin:0 0 7px;font-size:1.2rem}.info-card p{margin:0;color:#526070}.journey{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}.unit{background:#0f172a;color:white;border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:15px;min-height:132px}.unit b{display:block;color:#67e8f9;margin-bottom:6px}.unit span{display:block;color:#e0f2fe;font-weight:800;line-height:1.45}.unit small{display:block;color:#cbd5e1;margin-top:8px}.syllabus-head{display:flex;align-items:end;justify-content:space-between;gap:14px;flex-wrap:wrap}.grid{max-width:1180px;margin:0 auto;padding:16px 18px 44px;display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:14px}.lesson-card{display:grid;grid-template-columns:54px 1fr;gap:12px;background:rgba(255,255,255,.94);border:1px solid rgba(15,23,42,.1);border-radius:22px;padding:14px;box-shadow:0 14px 34px rgba(15,23,42,.09)}.num{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,#22d3ee,#7c3aed);color:white;font-size:1.25rem;font-weight:900}.card-body h2{font-size:1.12rem;margin:3px 0 7px}.card-body p{margin:0 0 8px;color:#475569;line-height:1.55}.goal{color:#0f172a!important;font-weight:700}.chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 12px}.chips span{font-size:.78rem;background:#eef2ff;color:#3730a3;border-radius:999px;padding:5px 8px;font-weight:800}.links{display:flex;gap:8px;flex-wrap:wrap}.links a{display:inline-flex;align-items:center;text-decoration:none;border-radius:999px;padding:9px 12px;background:#f1f5f9;color:#0f172a;font-weight:900}.links a.primary{background:#0f172a;color:white}.final-cta{max-width:1180px;margin:0 auto 50px;padding:0 18px}.final-cta .box{background:linear-gradient(135deg,#2563eb,#7c3aed);color:white;border-radius:32px;padding:28px;text-align:center}.final-cta h2{margin:0 0 8px;font-size:clamp(1.8rem,3vw,2.8rem)}.final-cta p{margin:0 auto 18px;color:#eef2ff;max-width:760px}@media(max-width:980px){.hero,.cards{grid-template-columns:1fr}.journey{grid-template-columns:repeat(2,1fr)}}@media(max-width:640px){.topbar{padding:12px}.grid{grid-template-columns:1fr}.lesson-card{grid-template-columns:1fr}.num{width:42px;height:42px}.hero{padding-top:24px}.journey{grid-template-columns:1fr}.hero-actions .btn{width:100%}}
   </style>
 </head>
 <body>
   <header class="topbar">
-    <div class="brand">🐢 פייתון מצייר — קורס 30 שיעורים</div>
+    <div class="brand">🐍 מעבדת פייתון יצירתית</div>
     <nav class="nav" aria-label="ניווט">
+      <a class="primary" href="python-turtle-course.html">הקורס</a>
+      <a href="#syllabus">30 השיעורים</a>
       <a href="python-turtle.html">הלומדה</a>
-      <a class="primary" href="python-turtle-course.html">כל השיעורים (30)</a>
-      <a href="python-turtle-slides.html">כל מצגות המדריך</a>
-      <a href="smart-city.html">עיר חכמה</a>
+      <a href="python-turtle-slides.html">מצגות מדריך</a>
     </nav>
   </header>
   <main>
     <section class="hero">
-      <h1>כל 30 שיעורי פייתון Turtle במקום אחד</h1>
-      <p>זה דף הסילבוס המלא: לכל שיעור יש מטרת למידה, מושג מרכזי, תוצר, קישור למסך התלמיד וקישור למצגת המדריך. בתוך הלומדה עצמה התלמידים עדיין רואים רק את השיעור הנבחר כדי לא להציף אותם.</p>
-      <div class="summary"><span>30 שיעורים</span><span>90 דקות לכל שיעור</span><span>בלוקים → קוד Python</span><span>מצגת מדריך לכל שיעור</span></div>
+      <div>
+        <div class="kicker">לכיתות ה׳–ו׳ · גילאי 10–11 · 30 שיעורים</div>
+        <h1>מעבדת פייתון יצירתית — קוד אמיתי שילדים רואים, מזיזים ומשפרים</h1>
+        <p>הילדים נכנסים בהדרגה לעולם של <strong>Python אמיתי</strong> דרך משימות קצרות, תוצרים ויזואליים, דפוסים, מיני־משחקים, אנימציה וסיפור — עד פרויקט אישי שהם יכולים להציג בגאווה.</p>
+        <div class="summary"><span>30 שיעורים מובנים</span><span>90 דקות לשיעור</span><span>בלוקים → קוד Python</span><span>תוצר בכל מפגש</span></div>
+        <div class="hero-actions"><a class="btn" href="python-turtle.html">פתיחת הלומדה</a><a class="btn alt" href="#syllabus">צפייה בכל השיעורים</a></div>
+      </div>
+      <aside class="showcase">
+        <h2>מה הילדים מרוויחים?</h2>
+        <ul>
+          <li>ביטחון בקוד אמיתי בלי להציף אותם בתחביר יבש</li>
+          <li>הבנה של פקודות, לולאות, משתנים, פונקציות ודיבאג</li>
+          <li>חוויה יצירתית: ציור בקוד, משחקונים, אנימציה וסיפור</li>
+          <li>פרויקט סיום אישי להצגה בכיתה</li>
+        </ul>
+      </aside>
+    </section>
+
+    <section class="section" aria-label="למה הקורס עובד">
+      <h2>קודם חוויה, ואז מושג</h2>
+      <p class="lead">בכל שיעור הילדים בונים משהו שרואים מיד על המסך. אחרי שיש סקרנות ותוצר — נותנים שם למושג התכנותי: פקודה, סדר פעולות, לולאה, משתנה, פונקציה או תיקון באגים.</p>
+      <div class="cards">
+        <article class="info-card"><div class="icon">🎨</div><h3>יצירה בקוד</h3><p>הקוד לא נשאר מופשט. הוא הופך לצורה, צבע, תנועה, מסלול, משחק או סיפור.</p></article>
+        <article class="info-card"><div class="icon">🧠</div><h3>חשיבה תכנותית</h3><p>הילדים מתרגלים לפרק בעיה, לבדוק, לשפר ולהסביר מה הקוד עושה.</p></article>
+        <article class="info-card"><div class="icon">🚀</div><h3>תחושת התקדמות</h3><p>המסלול בנוי כמו סולם: מתחילים בשליטה בסיסית ומסיימים בפרויקט אישי.</p></article>
+      </div>
+    </section>
+
+    <section class="section" aria-label="מבנה הקורס">
+      <h2>המסע הלימודי</h2>
+      <p class="lead">הקורס מחולק ל־6 יחידות קצרות וברורות, כך שכל כמה שיעורים הילדים מרגישים שהם נכנסים לעולם חדש — ולא חוזרים על אותו תרגיל.</p>
+      <div class="journey">
+        <article class="unit"><b>1–5</b><span>צעדים ראשונים בקוד</span><small>פקודות, סדר פעולות, צבעים ושליטה במסך</small></article>
+        <article class="unit"><b>6–10</b><span>סטודיו אומנות ודפוסים</span><small>משתנים, לולאות, זוויות ודיבאג</small></article>
+        <article class="unit"><b>11–15</b><span>עולם מצויר בקוד</span><small>מפות, סמלים, פארקים ותכנון ויזואלי</small></article>
+        <article class="unit"><b>16–20</b><span>משחקונים ואתגרי רובוט</span><small>מבוכים, מרוצים, ניקוד ואתגרי דיוק</small></article>
+        <article class="unit"><b>21–25</b><span>אנימציה וסיפור</span><small>סצנות, דמויות, תנועה וקומיקס קטן</small></article>
+        <article class="unit"><b>26–30</b><span>מעבר לקוד אמיתי</span><small>קריאת Python, שדרוגים ופרויקט סיום</small></article>
+      </div>
+    </section>
+
+    <section class="section syllabus-head" id="syllabus">
+      <div><h2>כל 30 השיעורים</h2><p class="lead">לכל שיעור יש מטרה, מושג מרכזי, תוצר, מסך תלמיד ומצגת מדריך.</p></div>
+      <a class="btn alt" href="python-turtle-slides.html">מצגות המדריך</a>
     </section>
     <section class="grid" aria-label="רשימת שיעורי הקורס">
         <article class="lesson-card">
@@ -33,7 +74,7 @@
             <h2>הצב הרובוט יוצא למסלול</h2>
             <p class="goal">להזיז את הצב קדימה, לסובב אותו, ולבנות מסלול קטן שמרגיש כמו שליטה ראשונה ברובוט.</p>
             <p><b>יחידה:</b> יחידה 1 — הצב מתעורר: צעדים ראשונים בקוד<br><b>מושג:</b> פקודה · <b>תוצר:</b> מסלול רובוט קצר</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=1">פתחו שיעור 1</a>
               <a href="python-turtle-lesson-1-slides.html">מצגת מדריך</a>
@@ -46,7 +87,7 @@
             <h2>מדרגות הקוד</h2>
             <p class="goal">לבנות מסלול מדרגות בעזרת קדימה, ימינה ושמאלה, ולהבין למה סדר הפקודות משנה.</p>
             <p><b>יחידה:</b> יחידה 1 — הצב מתעורר: צעדים ראשונים בקוד<br><b>מושג:</b> סדר פעולות · <b>תוצר:</b> מסלול מדרגות</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=2">פתחו שיעור 2</a>
               <a href="python-turtle-lesson-2-slides.html">מצגת מדריך</a>
@@ -59,7 +100,7 @@
             <h2>מפעל הצורות</h2>
             <p class="goal">ליצור משולש, ריבוע ומשושה בעזרת repeat וזוויות פשוטות.</p>
             <p><b>יחידה:</b> יחידה 1 — הצב מתעורר: צעדים ראשונים בקוד<br><b>מושג:</b> לולאה · <b>תוצר:</b> גלריית צורות</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=3">פתחו שיעור 3</a>
               <a href="python-turtle-lesson-3-slides.html">מצגת מדריך</a>
@@ -72,7 +113,7 @@
             <h2>סטודיו צבעים ועובי קו</h2>
             <p class="goal">לשנות צבע, עובי עט, ולהפוך מסלול פשוט לציור אישי.</p>
             <p><b>יחידה:</b> יחידה 1 — הצב מתעורר: צעדים ראשונים בקוד<br><b>מושג:</b> עט וצבע · <b>תוצר:</b> ציור צבעוני ראשון</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=4">פתחו שיעור 4</a>
               <a href="python-turtle-lesson-4-slides.html">מצגת מדריך</a>
@@ -85,7 +126,7 @@
             <h2>טלפורט בלי קו</h2>
             <p class="goal">להשתמש בהרם עט והורד עט כדי לצייר שני חלקים נפרדים באותו דף.</p>
             <p><b>יחידה:</b> יחידה 1 — הצב מתעורר: צעדים ראשונים בקוד<br><b>מושג:</b> הרמת עט · <b>תוצר:</b> שני ציורים נפרדים</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=5">פתחו שיעור 5</a>
               <a href="python-turtle-lesson-5-slides.html">מצגת מדריך</a>
@@ -98,7 +139,7 @@
             <h2>סרגל הקסם length</h2>
             <p class="goal">להשתמש במשתנה length כדי לשלוט בגודל של צורה שלמה.</p>
             <p><b>יחידה:</b> יחידה 2 — סטודיו אומנות ודפוסים<br><b>מושג:</b> משתנה · <b>תוצר:</b> צורה שמשנה גודל</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=6">פתחו שיעור 6</a>
               <a href="python-turtle-lesson-6-slides.html">מצגת מדריך</a>
@@ -111,7 +152,7 @@
             <h2>גדר צבעונית לעיר</h2>
             <p class="goal">לבנות דפוס קצר שחוזר כמה פעמים ולהפוך אותו לגדר או מסילה.</p>
             <p><b>יחידה:</b> יחידה 2 — סטודיו אומנות ודפוסים<br><b>מושג:</b> דפוס חוזר · <b>תוצר:</b> גדר/מסילה חוזרת</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=7">פתחו שיעור 7</a>
               <a href="python-turtle-lesson-7-slides.html">מצגת מדריך</a>
@@ -124,7 +165,7 @@
             <h2>ספירלת החלל</h2>
             <p class="goal">להגדיל את length תוך כדי לולאה וליצור ספירלה מגניבה.</p>
             <p><b>יחידה:</b> יחידה 2 — סטודיו אומנות ודפוסים<br><b>מושג:</b> משתנה משתנה · <b>תוצר:</b> ספירלה</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=8">פתחו שיעור 8</a>
               <a href="python-turtle-lesson-8-slides.html">מצגת מדריך</a>
@@ -137,7 +178,7 @@
             <h2>כוכב במהירות האור</h2>
             <p class="goal">לגלות איך זווית יוצרת כוכב ולשחק עם מספרי פנייה.</p>
             <p><b>יחידה:</b> יחידה 2 — סטודיו אומנות ודפוסים<br><b>מושג:</b> זוויות · <b>תוצר:</b> כוכב</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=9">פתחו שיעור 9</a>
               <a href="python-turtle-lesson-9-slides.html">מצגת מדריך</a>
@@ -150,7 +191,7 @@
             <h2>חדר בריחה של באגים</h2>
             <p class="goal">למצוא באגים קטנים בציור ולתקן בלי למחוק הכל.</p>
             <p><b>יחידה:</b> יחידה 2 — סטודיו אומנות ודפוסים<br><b>מושג:</b> דיבאג · <b>תוצר:</b> ציור מתוקן</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=10">פתחו שיעור 10</a>
               <a href="python-turtle-lesson-10-slides.html">מצגת מדריך</a>
@@ -162,8 +203,8 @@
           <div class="card-body">
             <h2>מפת שכונה קטנה</h2>
             <p class="goal">לתכנן מפה על דף ואז לבנות אותה בקוד עם קווים ופניות.</p>
-            <p><b>יחידה:</b> יחידה 3 — עיר חכמה מצוירת<br><b>מושג:</b> תכנון מסלול · <b>תוצר:</b> מפה פשוטה</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <p><b>יחידה:</b> יחידה 3 — עולם מצויר בקוד<br><b>מושג:</b> תכנון מסלול · <b>תוצר:</b> מפה פשוטה</p>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=11">פתחו שיעור 11</a>
               <a href="python-turtle-lesson-11-slides.html">מצגת מדריך</a>
@@ -175,8 +216,8 @@
           <div class="card-body">
             <h2>רמזור וצומת</h2>
             <p class="goal">לצייר צומת פשוט ולהוסיף רמזור צבעוני בעזרת פקודות עט.</p>
-            <p><b>יחידה:</b> יחידה 3 — עיר חכמה מצוירת<br><b>מושג:</b> צבעים כמסר · <b>תוצר:</b> צומת עם רמזור</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <p><b>יחידה:</b> יחידה 3 — עולם מצויר בקוד<br><b>מושג:</b> צבעים כמסר · <b>תוצר:</b> צומת עם רמזור</p>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=12">פתחו שיעור 12</a>
               <a href="python-turtle-lesson-12-slides.html">מצגת מדריך</a>
@@ -188,8 +229,8 @@
           <div class="card-body">
             <h2>שכונת בתים</h2>
             <p class="goal">לבנות בית פשוט ואז לשכפל רעיון של בית לאורך רחוב.</p>
-            <p><b>יחידה:</b> יחידה 3 — עיר חכמה מצוירת<br><b>מושג:</b> תבנית חוזרת · <b>תוצר:</b> רחוב בתים</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <p><b>יחידה:</b> יחידה 3 — עולם מצויר בקוד<br><b>מושג:</b> תבנית חוזרת · <b>תוצר:</b> רחוב בתים</p>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=13">פתחו שיעור 13</a>
               <a href="python-turtle-lesson-13-slides.html">מצגת מדריך</a>
@@ -201,8 +242,8 @@
           <div class="card-body">
             <h2>פארק הרובוטים</h2>
             <p class="goal">לחבר כמה צורות ודפוסים לתמונה אחת של פארק.</p>
-            <p><b>יחידה:</b> יחידה 3 — עיר חכמה מצוירת<br><b>מושג:</b> קומפוזיציה · <b>תוצר:</b> פארק מצויר</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <p><b>יחידה:</b> יחידה 3 — עולם מצויר בקוד<br><b>מושג:</b> קומפוזיציה · <b>תוצר:</b> פארק מצויר</p>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=14">פתחו שיעור 14</a>
               <a href="python-turtle-lesson-14-slides.html">מצגת מדריך</a>
@@ -214,8 +255,8 @@
           <div class="card-body">
             <h2>סמל אישי לעיר</h2>
             <p class="goal">לתכנן ולבנות סמל אישי שמשלב צורה, צבע, דפוס ומשתנה.</p>
-            <p><b>יחידה:</b> יחידה 3 — עיר חכמה מצוירת<br><b>מושג:</b> מיני־פרויקט · <b>תוצר:</b> סמל אישי</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <p><b>יחידה:</b> יחידה 3 — עולם מצויר בקוד<br><b>מושג:</b> מיני־פרויקט · <b>תוצר:</b> סמל אישי</p>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=15">פתחו שיעור 15</a>
               <a href="python-turtle-lesson-15-slides.html">מצגת מדריך</a>
@@ -228,7 +269,7 @@
             <h2>מבוך: הצב מחפש בית</h2>
             <p class="goal">לבנות מסלול שמוביל את הצב מנקודת התחלה לבית בלי לסטות.</p>
             <p><b>יחידה:</b> יחידה 4 — משחקונים ואתגרי רובוט<br><b>מושג:</b> מסלול ואתגר · <b>תוצר:</b> מבוך פשוט</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=16">פתחו שיעור 16</a>
               <a href="python-turtle-lesson-16-slides.html">מצגת מדריך</a>
@@ -241,7 +282,7 @@
             <h2>אוצר הכוכבים</h2>
             <p class="goal">לתכנן מסלול שמגיע ליעד ומוסיף סימון או כוכב בסוף.</p>
             <p><b>יחידה:</b> יחידה 4 — משחקונים ואתגרי רובוט<br><b>מושג:</b> יעד ומשימה · <b>תוצר:</b> מסלול לאוצר</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=17">פתחו שיעור 17</a>
               <a href="python-turtle-lesson-17-slides.html">מצגת מדריך</a>
@@ -254,7 +295,7 @@
             <h2>מרוץ קווים</h2>
             <p class="goal">לבנות מסלול מרוץ בעזרת קווים, פניות וסימוני התחלה/סיום.</p>
             <p><b>יחידה:</b> יחידה 4 — משחקונים ואתגרי רובוט<br><b>מושג:</b> דיוק ומהירות · <b>תוצר:</b> מסלול מרוץ</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=18">פתחו שיעור 18</a>
               <a href="python-turtle-lesson-18-slides.html">מצגת מדריך</a>
@@ -267,7 +308,7 @@
             <h2>קוד סודי בציור</h2>
             <p class="goal">לבנות ציור שבו צבעים או צורות מייצגים מסר פשוט.</p>
             <p><b>יחידה:</b> יחידה 4 — משחקונים ואתגרי רובוט<br><b>מושג:</b> סימנים וקוד · <b>תוצר:</b> ציור עם מסר סודי</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=19">פתחו שיעור 19</a>
               <a href="python-turtle-lesson-19-slides.html">מצגת מדריך</a>
@@ -280,7 +321,7 @@
             <h2>אתגר העיר: כביש, בית, פארק</h2>
             <p class="goal">לבנות מיני־עיר בקוד עם כמה חלקים נפרדים.</p>
             <p><b>יחידה:</b> יחידה 4 — משחקונים ואתגרי רובוט<br><b>מושג:</b> שילוב מערכות · <b>תוצר:</b> מיני־עיר</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=20">פתחו שיעור 20</a>
               <a href="python-turtle-lesson-20-slides.html">מצגת מדריך</a>
@@ -293,7 +334,7 @@
             <h2>שמש זורחת בקוד</h2>
             <p class="goal">לבנות סצנה שמרגישה כמו רגע בסיפור, לא רק צורה.</p>
             <p><b>יחידה:</b> יחידה 5 — אנימציה וסיפור בתנועה<br><b>מושג:</b> סיפור חזותי · <b>תוצר:</b> סצנת זריחה</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=21">פתחו שיעור 21</a>
               <a href="python-turtle-lesson-21-slides.html">מצגת מדריך</a>
@@ -306,7 +347,7 @@
             <h2>מכונית נוסעת בעיר</h2>
             <p class="goal">לצייר מכונית פשוטה על כביש עם סימני תנועה.</p>
             <p><b>יחידה:</b> יחידה 5 — אנימציה וסיפור בתנועה<br><b>מושג:</b> תנועה מדומיינת · <b>תוצר:</b> מכונית וכביש</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=22">פתחו שיעור 22</a>
               <a href="python-turtle-lesson-22-slides.html">מצגת מדריך</a>
@@ -319,7 +360,7 @@
             <h2>סיפור בשלושה פריימים</h2>
             <p class="goal">ליצור שלושה אזורים או פריימים שמספרים סיפור קצר.</p>
             <p><b>יחידה:</b> יחידה 5 — אנימציה וסיפור בתנועה<br><b>מושג:</b> רצף · <b>תוצר:</b> קומיקס קוד קצר</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=23">פתחו שיעור 23</a>
               <a href="python-turtle-lesson-23-slides.html">מצגת מדריך</a>
@@ -332,7 +373,7 @@
             <h2>פוסטר אירוע</h2>
             <p class="goal">לעצב פוסטר לאירוע דמיוני בעזרת צורות, מסגרות וצבעים.</p>
             <p><b>יחידה:</b> יחידה 5 — אנימציה וסיפור בתנועה<br><b>מושג:</b> עיצוב בקוד · <b>תוצר:</b> פוסטר</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=24">פתחו שיעור 24</a>
               <a href="python-turtle-lesson-24-slides.html">מצגת מדריך</a>
@@ -345,7 +386,7 @@
             <h2>אתגר חופשי מודרך</h2>
             <p class="goal">לבחור רעיון אישי ולבנות אותו בשלבים עם רשימת דרישות קטנה.</p>
             <p><b>יחידה:</b> יחידה 5 — אנימציה וסיפור בתנועה<br><b>מושג:</b> בחירה · <b>תוצר:</b> יצירה אישית</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=25">פתחו שיעור 25</a>
               <a href="python-turtle-lesson-25-slides.html">מצגת מדריך</a>
@@ -358,7 +399,7 @@
             <h2>כרטיסי Python אמיתי</h2>
             <p class="goal">להרכיב ציור מכרטיסי Python קצרים ולשנות ערכים בביטחון.</p>
             <p><b>יחידה:</b> יחידה 6 — מעבר לקוד אמיתי<br><b>מושג:</b> snippet · <b>תוצר:</b> קוד מורכב מכרטיסים</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=26">פתחו שיעור 26</a>
               <a href="python-turtle-lesson-26-slides.html">מצגת מדריך</a>
@@ -371,7 +412,7 @@
             <h2>פונקציה קטנה, כוח גדול</h2>
             <p class="goal">להבין פונקציה כרעיון: תבנית פעולה שאפשר להפעיל כמה פעמים.</p>
             <p><b>יחידה:</b> יחידה 6 — מעבר לקוד אמיתי<br><b>מושג:</b> פונקציה · <b>תוצר:</b> תבנית חוזרת</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=27">פתחו שיעור 27</a>
               <a href="python-turtle-lesson-27-slides.html">מצגת מדריך</a>
@@ -384,7 +425,7 @@
             <h2>מעבדת שיפורים</h2>
             <p class="goal">לקחת יצירה קיימת ולשפר אותה לפי רשימת בדיקות.</p>
             <p><b>יחידה:</b> יחידה 6 — מעבר לקוד אמיתי<br><b>מושג:</b> בדיקות ושיפור · <b>תוצר:</b> גרסה משופרת</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=28">פתחו שיעור 28</a>
               <a href="python-turtle-lesson-28-slides.html">מצגת מדריך</a>
@@ -397,7 +438,7 @@
             <h2>תכנון פרויקט גמר</h2>
             <p class="goal">לתכנן פרויקט סיום אישי עם סקיצה, רשימת פקודות ויעדי הצלחה.</p>
             <p><b>יחידה:</b> יחידה 6 — מעבר לקוד אמיתי<br><b>מושג:</b> תכנון · <b>תוצר:</b> תוכנית פרויקט</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=29">פתחו שיעור 29</a>
               <a href="python-turtle-lesson-29-slides.html">מצגת מדריך</a>
@@ -410,7 +451,7 @@
             <h2>פסטיבל פרויקטים</h2>
             <p class="goal">לבנות ולהציג פרויקט אישי שמחבר כמה רעיונות מהקורס.</p>
             <p><b>יחידה:</b> יחידה 6 — מעבר לקוד אמיתי<br><b>מושג:</b> פרויקט סיום · <b>תוצר:</b> פרויקט גמר קצר</p>
-            <div class="chips"><span>קליל וחווייתי לגיל 10–11</span><span>forward</span><span>right</span><span>repeat</span><span>color</span></div>
+            <div class="chips"><span>גיל 10–11</span><span>קוד אמיתי</span><span>תוצר בשיעור</span></div>
             <div class="links">
               <a class="primary" href="python-turtle.html?lesson=30">פתחו שיעור 30</a>
               <a href="python-turtle-lesson-30-slides.html">מצגת מדריך</a>
@@ -418,6 +459,7 @@
           </div>
         </article>
     </section>
+    <section class="final-cta"><div class="box"><h2>בסוף הקורס יש לילדים משהו להראות</h2><p>לא רק “למדנו פייתון”, אלא יצירות, משחקונים, אנימציות ופרויקט אישי שמחבר חשיבה, יצירתיות וקוד אמיתי.</p><a class="btn" href="python-turtle.html">להיכנס ללומדה</a></div></section>
   </main>
   <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
 </body>
