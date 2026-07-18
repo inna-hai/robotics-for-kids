@@ -324,6 +324,40 @@
     }
   ];
 
+
+  const bridgeBlocksByLesson = {
+    1: [
+      { label: '🧱 צור כרטיס אישי', target: 'html', find: '<h1>שלום, אני נועה</h1>', replace: '<h1>שלום, אני מפתח/ת צעיר/ה</h1>', hint: 'בלוק מבנה: משנה את הכותרת הראשית ב־HTML.' },
+      { label: '✏️ הוסף משפט אישי', target: 'html', find: '<p>אני אוהבת רובוטים, משחקים וקוד.</p>', replace: '<p>אני אוהב/ת ליצור דברים בדפדפן.</p>', hint: 'בלוק תוכן: משנה פסקה בתוך הכרטיס.' },
+      { label: '🎨 שנה צבע רקע', target: 'css', find: 'background: #e0f2fe;', replace: 'background: #fef3c7;', hint: 'בלוק עיצוב: משנה CSS בלי לכתוב סינטקס לבד.' },
+      { label: '🔘 צור כפתור פעולה', target: 'html', find: '<button onclick="sayHello()">לחצו עליי</button>', replace: '<button onclick="sayHello()">גלו הודעה</button>', hint: 'בלוק אינטראקציה: הכפתור עדיין קורא לאותה פונקציה.' },
+      { label: '✨ הצג הודעה בלחיצה', target: 'js', find: 'איזה כיף! הכפתור עובד 🎉', replace: 'ברוכים הבאים לאתר הראשון שלי ✨', hint: 'בלוק JavaScript: משנה רק את ההודעה שמופיעה.' }
+    ],
+    2: [
+      { label: '🚀 בחר דמות', target: 'html', find: '<div class="avatar">🚀</div>', replace: '<div class="avatar">🎮</div>', hint: 'בלוק תוכן ויזואלי: מחליף את הדמות בכרטיס.' },
+      { label: '🌈 פלטת צבעים', target: 'css', find: 'background: linear-gradient(135deg, #dbeafe, #fff7ed);', replace: 'background: linear-gradient(135deg, #fdf2f8, #dcfce7);', hint: 'בלוק עיצוב: מחליף צבעי רקע מוכנים.' },
+      { label: '🪄 כפתור משתנה', target: 'css', find: 'background: #2563eb;', replace: 'background: #7c3aed;', hint: 'בלוק עיצוב כפתור: משנה צבע בלי לגעת בשאר הקוד.' },
+      { label: '👆 אפקט מעבר', target: 'css', find: 'background: #2563eb;\n}', replace: 'background: #2563eb;\n}\n\nbutton:hover {\n  transform: scale(1.06);\n}', hint: 'בלוק hover: מוסיף תגובה כשעוברים על הכפתור.' }
+    ],
+    3: [
+      { label: '😄 מצב שמח', target: 'js', find: 'העמוד שמח!', replace: 'מצב שמח הופעל 😄', hint: 'בלוק תגובה: משנה הודעה של פונקציה.' },
+      { label: '🤖 מצב רובוט', target: 'js', find: 'מצב רובוט הופעל.', replace: 'הרובוט התחיל לעבוד 🤖', hint: 'בלוק פונקציה: פעולה שקורית בלחיצה.' },
+      { label: '🎨 מצב קסם', target: 'css', find: 'border: 4px solid #fb923c;', replace: 'border: 4px solid #7c3aed;', hint: 'בלוק עיצוב מצב: משנה את class magic.' },
+      { label: '🔁 הדלק/כבה עיצוב', target: 'js', find: 'classList.toggle("magic")', replace: 'classList.toggle("magic")', hint: 'בלוק toggle: אותו קוד, אבל עכשיו מבינים שהוא מדליק ומכבה class.' }
+    ],
+    4: [
+      { label: '📝 שדה שם', target: 'html', find: 'placeholder="כתבו שם"', replace: 'placeholder="מה השם שלך?"', hint: 'בלוק קלט: משנה הוראה בתוך input.' },
+      { label: '🎯 שדה תחביב', target: 'html', find: 'placeholder="כתבו תחביב"', replace: 'placeholder="מה התחביב שלך?"', hint: 'בלוק קלט שני: עוד מידע מהמשתמש.' },
+      { label: '📥 קרא קלט', target: 'js', find: 'const name = document.getElementById("nameInput").value;', replace: 'const name = document.getElementById("nameInput").value;', hint: 'בלוק JavaScript: קורא את מה שהמשתמש כתב.' },
+      { label: '💬 צור משפט אישי', target: 'js', find: 'איזה כיף שאת/ה אוהב/ת', replace: 'נהדר! שמעתי שאת/ה אוהב/ת', hint: 'בלוק תוצאה: מחבר את הקלט למשפט אישי.' }
+    ]
+  };
+
+  lessons.forEach(lesson => {
+    lesson.bridgeBlocks = bridgeBlocksByLesson[lesson.id] || [];
+    if (lesson.id <= 4) lesson.mode = 'Blockly-first bridge';
+  });
+
   window.WEBCODE_LESSONS = lessons;
   window.getWebCodeLesson = function (id) {
     const numeric = Number(id) || 1;

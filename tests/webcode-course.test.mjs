@@ -25,6 +25,8 @@ assert.ok(lesson.lessonFlow.length >= 7, 'lesson includes full 90-minute guide f
 assert.ok(lesson.vocabulary.some(v => v[0] === 'HTML'), 'vocabulary includes HTML');
 assert.ok(lesson.vocabulary.some(v => v[0] === 'CSS'), 'vocabulary includes CSS');
 assert.ok(lesson.vocabulary.some(v => v[0] === 'JavaScript'), 'vocabulary includes JavaScript');
+assert.equal(lesson.mode, 'Blockly-first bridge', 'early lesson uses Blockly-first bridge mode');
+assert.ok(lesson.bridgeBlocks.length >= 5, 'lesson 1 has Web block bridge actions');
 
 const lesson2 = lessons[1];
 assert.equal(lesson2.durationMinutes, 90, 'lesson 2 is framed as 90 minutes');
@@ -77,6 +79,7 @@ const hub = read('webcode.html');
 assert.ok(hub.includes('WebCode Lab'), 'hub page exists');
 assert.ok(hub.includes('webcode-play.html?lesson=1'), 'hub links to lesson 1');
 assert.ok(hub.includes('webcode-slides.html?lesson=1'), 'hub links to guide slides');
+assert.ok(hub.includes('גשר מ־Blockly לקוד'), 'hub explains Blockly-to-code bridge for first lessons');
 
 const play = read('webcode-play.html');
 assert.ok(play.includes('textarea id="htmlCode"'), 'play page has HTML editor');
@@ -89,6 +92,8 @@ assert.ok(play.includes('webcode-error'), 'play page catches preview JavaScript 
 assert.ok(play.includes('debugHint'), 'play page gives student-friendly syntax/debug hints');
 assert.ok(play.includes('validateJavaScriptSyntax'), 'play page validates JavaScript syntax before preview injection');
 assert.ok(play.includes('שגיאת סינטקס ב־JavaScript'), 'play page shows Hebrew syntax error feedback');
+assert.ok(play.includes('renderBridgeBlocks'), 'play page renders Blockly-first bridge blocks');
+assert.ok(play.includes('applyBridgeBlock'), 'play page can apply bridge blocks into code');
 
 const slides = read('webcode-slides.html');
 assert.ok(slides.includes('מהלך שיעור 90 דקות'), 'slides include 90-minute flow');
