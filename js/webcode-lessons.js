@@ -275,6 +275,52 @@
         ['span', 'חלק קטן בתוך טקסט שאפשר לעדכן'],
         ['reset', 'איפוס ערך להתחלה']
       ]
+    },
+    {
+      id: 7,
+      title: 'משחק קליקים ראשון',
+      concept: 'משחקיות: קליק · ניקוד · יעד ניצחון',
+      durationMinutes: 90,
+      story: 'מחברים את כל מה שלמדנו — כפתור, משתנה, תנאי ומשוב — למשחק קליקים קטן שבו צריך להגיע ליעד נקודות.',
+      mission: 'לבנות משחק שבו כל קליק מוסיף נקודה, וב־10 נקודות מופיעה הודעת ניצחון.',
+      outcome: 'משחק קליקים עובד עם score, יעד ניצחון, איפוס ושדרוג קושי',
+      starter: {
+        html: '<main class="click-game">\n  <h1>משחק הקליקים שלי</h1>\n  <p>ניקוד: <span id="scoreText">0</span></p>\n  <button id="clickButton" onclick="addPoint()">🎯 לחצו לנקודה</button>\n  <button onclick="resetGame()">איפוס</button>\n  <p id="message">המטרה: להגיע ל־10 נקודות.</p>\n</main>',
+        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #fdf2f8, #e0f2fe);\n}\n\n.click-game {\n  background: white;\n  width: 390px;\n  margin: 45px auto;\n  padding: 30px;\n  border-radius: 30px;\n  box-shadow: 0 16px 35px #fbcfe8;\n}\n\n#scoreText {\n  font-size: 34px;\n  font-weight: bold;\n  color: #7c3aed;\n}\n\nbutton {\n  margin: 8px;\n  padding: 14px 22px;\n  border: 0;\n  border-radius: 999px;\n  background: #ec4899;\n  color: white;\n  font-weight: bold;\n  cursor: pointer;\n}\n\nbutton:hover {\n  transform: scale(1.05);\n}\n\n.win {\n  background: #dcfce7;\n  border: 3px solid #22c55e;\n}',
+        js: 'let score = 0;\nconst target = 10;\n\nfunction addPoint() {\n  score = score + 1;\n  document.getElementById("scoreText").textContent = score;\n\n  if (score >= target) {\n    document.getElementById("message").textContent = "ניצחת! הגעת ליעד 🎉";\n    document.querySelector(".click-game").classList.add("win");\n  } else {\n    document.getElementById("message").textContent = "עוד קצת! צריך להגיע ל־" + target;\n  }\n}\n\nfunction resetGame() {\n  score = 0;\n  document.getElementById("scoreText").textContent = score;\n  document.getElementById("message").textContent = "המטרה: להגיע ל־10 נקודות.";\n  document.querySelector(".click-game").classList.remove("win");\n}'
+      },
+      lessonFlow: [
+        { minutes: '0–8', title: 'פתיחה: מה הופך קליק למשחק?', teacher: 'מציגים כפתור שמעלה ניקוד ושואלים מה חסר כדי שזה יהיה משחק.', students: 'מציעים מטרה, ניקוד, ניצחון, איפוס ושיפור קושי.' },
+        { minutes: '8–18', title: 'חלקי המשחק', teacher: 'מפרקים את המשחק: score, target, addPoint, if score >= target.', students: 'מסמנים בקוד את המשתנה, היעד והתנאי.' },
+        { minutes: '18–30', title: 'הרצה מודרכת', teacher: 'מריצים ולוחצים עד ניצחון. מדגימים איפוס.', students: 'בודקים שהניקוד עולה ושב־10 נקודות מופיע ניצחון.' },
+        { minutes: '30–55', title: 'תרגולי משחק', teacher: 'מוודאים שכל שינוי נבדק בהרצה ולא רק נכתב.', students: 'מבצעים תרגולים 1–5.' },
+        { minutes: '55–67', title: 'איזון קושי', teacher: 'מדברים על קושי: יעד נמוך מדי קל, יעד גבוה מדי משעמם.', students: 'משנים יעד ומחליטים למה.' },
+        { minutes: '67–80', title: 'דיבאג משחק', teacher: 'מדגימים באג: scoreText לא תואם או target לא מספר.', students: 'מתקנים באג ומסבירים מה נשבר.' },
+        { minutes: '80–90', title: 'בדיקת שחקנים', teacher: 'זוגות משחקים אחד אצל השני ונותנים משוב קצר.', students: 'משפרים דבר אחד: טקסט, צבע, יעד או כפתור.' }
+      ],
+      exercises: [
+        { id: 1, minutes: '18–24', title: 'תרגול 1 — משחקים עד ניצחון', prompt: 'לחצו על הכפתור עד שהמשחק מציג ניצחון.', hint: 'היעד כרגע הוא 10 נקודות.', check: { jsIncludes: ['let score = 0', 'const target = 10'] } },
+        { id: 2, minutes: '24–31', title: 'תרגול 2 — שם משחק חדש', prompt: 'שנו את הכותרת ואת טקסט הכפתור למשחק משלכם.', hint: 'הכותרת ב־h1 והכפתור ב־button עם id="clickButton".', check: { htmlIncludes: ['id="clickButton"'] } },
+        { id: 3, minutes: '31–39', title: 'תרגול 3 — יעד אחר', prompt: 'שנו את target ל־5 או 15 ובדקו איך זה משנה את הקושי.', hint: 'חפשו const target = 10.', check: { jsIncludes: ['const target'] } },
+        { id: 4, minutes: '39–47', title: 'תרגול 4 — נקודות כפולות', prompt: 'שנו כך שכל קליק יוסיף 2 נקודות.', hint: 'חפשו score = score + 1.', check: { jsIncludes: ['score = score +'] } },
+        { id: 5, minutes: '47–56', title: 'תרגול 5 — הודעת ניצחון', prompt: 'כתבו הודעת ניצחון שמתאימה למשחק שלכם.', hint: 'ההודעה נמצאת בתוך ה־if.', check: { jsIncludes: ['score >= target', 'ניצחת'] } },
+        { id: 6, minutes: '56–65', title: 'תרגול 6 — עיצוב מצב ניצחון', prompt: 'שנו את העיצוב של class win.', hint: 'חפשו .win ב־CSS.', check: { cssIncludes: ['.win'] } },
+        { id: 7, minutes: '65–75', title: 'תרגול 7 — תקן את הבאג', prompt: 'שנו לרגע scoreText ל־scoreTex וראו שהניקוד לא מוצג. תקנו.', hint: 'ה־id חייב להיות זהה ב־HTML וב־JavaScript.', check: { htmlIncludes: ['id="scoreText"'], jsIncludes: ['getElementById("scoreText")'] } },
+        { id: 8, minutes: '75–84', title: 'תרגול 8 — גרסת משחק אישית', prompt: 'הפכו את המשחק למשחק קליקים בנושא משלכם: חלל, חיות, ספורט, ממתקים או רובוטים.', hint: 'שנו כותרת, כפתור, צבעים, הודעות ויעד.', check: { htmlIncludes: ['button'], cssIncludes: ['button:hover'], jsIncludes: ['resetGame'] } }
+      ],
+      aiHelper: [
+        'הציעו 5 נושאים למשחק קליקים פשוט לכיתה ד׳.',
+        'הסבירו למה צריך גם score וגם target במשחק.',
+        'עזרו למצוא למה הודעת הניצחון לא מופיעה למרות שהניקוד עולה.',
+        'הציעו דרך לאזן משחק קליקים כך שלא יהיה קל מדי ולא משעמם.'
+      ],
+      vocabulary: [
+        ['target', 'יעד הנקודות שצריך להגיע אליו כדי לנצח'],
+        ['>=', 'גדול או שווה — בדיקה אם הגענו ליעד'],
+        ['addPoint', 'פונקציה שמוסיפה נקודה בכל קליק'],
+        ['resetGame', 'פונקציה שמחזירה את המשחק להתחלה'],
+        ['איזון קושי', 'להחליט כמה קל או קשה לנצח במשחק']
+      ]
     }
   ];
 
