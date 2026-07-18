@@ -12,19 +12,31 @@
 <body>
   <main class="deck" id="deck"></main>
   <nav class="nav"><button onclick="prevSlide()">→ הקודם</button><span class="counter" id="counter"></span><div class="nav-actions"><button onclick="nextSlide()">הבא ←</button><a class="back" id="playLink" href="webcode-play.html">💻 לתרגול</a><a class="back" href="webcode.html">למסלול</a></div></nav>
-  <script src="js/webcode-lessons.js?v=20260718-lesson2-design"></script>
+  <script src="js/webcode-lessons.js?v=20260718-lesson3-wow"></script>
   <script>
     const params = new URLSearchParams(location.search); const lesson = window.getWebCodeLesson(params.get('lesson')); let current=0;
     const esc = v => String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     document.title = `מצגת מדריך — שיעור ${lesson.id}: ${lesson.title}`; document.getElementById('playLink').href = `webcode-play.html?lesson=${lesson.id}`;
+    const firstThreeOverview = lesson.id <= 3 ? {html:`<h2>🧭 איפה השיעור יושב ברצף 1–3?</h2><div class="cards"><div class="card"><b>שיעור 1 — בונים</b>Blockly מרכיב HTML: כותרת, פסקה, סמל, כפתור ותצוגה חיה.</div><div class="card"><b>שיעור 2 — מעצבים</b>אותו רעיון מקבל CSS: צבעים, צורה, צל, כפתור ו־hover.</div><div class="card"><b>שיעור 3 — מפעילים</b>העמוד מגיב ללחיצה: הודעה, אימוג׳י, רקע ומצב קסם.</div><div class="card"><b>כלל למדריכה</b>קודם תוצאה שילדים רואים, אחר כך שם מקצועי וקוד מאחורי הקלעים.</div></div>`} : null;
+    const wowSlide = lesson.id === 3 ? {html:`<h2>⚡ פתיחה מומלצת: וואו תוך 2 דקות</h2><ol><li>פותחים את סביבת התרגול ולוחצים “הרצה”.</li><li>לוחצים על “הפעילו קסם” בתצוגה החיה.</li><li>שואלים: מה השתנה? הודעה? רקע? תחושה?</li><li>רק אחרי שהם ראו קסם — מראים ש־onclick קרא ל־function.</li></ol><div class="note"><b>חשוב:</b> לא לפתוח בהסבר תחביר. בגיל 10 קודם חוויה, אחר כך מילים כמו event/function.</div>`} : null;
     const flowSlides = lesson.lessonFlow.map(step => ({html:`<div class="kicker">מהלך שיעור 90 דקות</div><h2>${esc(step.minutes)} — ${esc(step.title)}</h2><div class="cards"><div class="card"><b>מה המדריך עושה</b>${esc(step.teacher)}</div><div class="card"><b>מה הילדים עושים</b>${esc(step.students)}</div></div>`}));
     const exerciseSlides = lesson.exercises.map(ex => ({html:`<div class="kicker">${esc(ex.minutes)} · תרגול</div><h2>${esc(ex.title)}</h2><p>${esc(ex.prompt)}</p><div class="note"><b>רמז לתלמידים:</b> ${esc(ex.hint)}</div>`}));
     const vocab = lesson.vocabulary.map(v=>`<div class="card"><b>${esc(v[0])}</b>${esc(v[1])}</div>`).join('');
+    const codeNote = lesson.realBlocklyBuilder ? 'בשיעורים 1–3 לא מתחילים מהקוד. פותחים Blockly ותצוגה חיה; הקוד הוא הצצה אחרי שהבלוק עובד.' : 'לא מקריאים את כל הקוד. מצביעים רק על השורות החשובות לתרגול.';
+    const guideCode = lesson.id === 1
+      ? '<main class="page-card">\n  <h1>העמוד הראשון שלי</h1>\n  <p>גררתי בלוקים והרכבתי עמוד בעצמי</p>\n  <button onclick="showMessage()">לחצו עליי</button>\n</main>'
+      : lesson.id === 2
+        ? 'body { background: #ede9fe; }\n.page-card { border-radius: 30px; box-shadow: 0 18px 38px #7c3aed55; }\nbutton:hover { transform: translateY(-6px); }'
+        : lesson.id === 3
+          ? '<button onclick="showMessage()">הפעילו קסם</button>\n\nfunction showMessage() {\n  message.textContent = "הכפתור הפעיל קסם 🎉";\n  document.body.style.background = "#fce7f3";\n}'
+          : lesson.starter.html;
     const slides = [
       {html:`<div class="emoji">💻</div><div class="kicker">WebCode Lab • שיעור ${lesson.id} • ${lesson.durationMinutes} דקות</div><h1>${esc(lesson.title)}</h1><p>${esc(lesson.story)}</p>`},
       {html:`<h2>🎯 מטרת השיעור</h2><p>${esc(lesson.mission)}</p><div class="cards"><div class="card"><b>מושג מרכזי</b>${esc(lesson.concept)}</div><div class="card"><b>תוצר בסוף שיעור</b>${esc(lesson.outcome)}</div></div>`},
+      ...(firstThreeOverview ? [firstThreeOverview] : []),
+      ...(wowSlide ? [wowSlide] : []),
       {html:`<h2>🧠 מילון קצר למדריך</h2><div class="cards">${vocab}</div>`},
-      {html:`<h2>👀 דוגמת קוד התחלתית</h2><div class="code">${esc(lesson.starter.html)}</div><div class="note">לא מקריאים את כל הקוד. מצביעים על h1, button ו־id="message" בלבד.</div>`},
+      {html:`<h2>👀 הצצה לקוד מאחורי הבלוקים</h2><div class="code">${esc(guideCode)}</div><div class="note">${codeNote}</div>`},
       ...flowSlides,
       {html:`<h2>🧪 רצף תרגולים לשיעור</h2><ul>${lesson.exercises.map(ex=>`<li><b>${esc(ex.minutes)}:</b> ${esc(ex.title)} — ${esc(ex.prompt)}</li>`).join('')}</ul>`},
       ...exerciseSlides,
