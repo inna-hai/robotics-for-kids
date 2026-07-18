@@ -60,6 +60,7 @@ assert.ok(play.includes('textarea id="cssCode"'), 'play page has CSS editor');
 assert.ok(play.includes('textarea id="jsCode"'), 'play page has JS editor');
 assert.ok(play.includes('iframe id="preview"'), 'play page has live preview');
 assert.ok(play.includes('checkExercise()'), 'play page has exercise checking');
+assert.ok(play.includes('completedTitle'), 'check button keeps success feedback visible after running preview');
 
 const slides = read('webcode-slides.html');
 assert.ok(slides.includes('מהלך שיעור 90 דקות'), 'slides include 90-minute flow');
