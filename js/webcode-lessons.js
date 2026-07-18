@@ -278,35 +278,35 @@
     },
     {
       id: 7,
-      title: 'משחק קליקים ראשון',
-      concept: 'משחקיות: קליק · ניקוד · יעד ניצחון',
+      title: 'משחק קליקים ראשון — בלוקי משחק',
+      concept: 'בלוקי משחק → קליק · ניקוד · יעד ניצחון',
       durationMinutes: 90,
-      story: 'מחברים את כל מה שלמדנו — כפתור, משתנה, תנאי ומשוב — למשחק קליקים קטן שבו צריך להגיע ליעד נקודות.',
-      mission: 'לבנות משחק שבו כל קליק מוסיף נקודה, וב־10 נקודות מופיעה הודעת ניצחון.',
-      outcome: 'משחק קליקים עובד עם score, יעד ניצחון, איפוס ושדרוג קושי',
+      story: 'מחברים את כל מה שלמדנו דרך בלוקי משחק: כפתור קליק, ניקוד, יעד ניצחון, איפוס ומשוב. רק אחר כך מציצים לקוד שמפעיל את המשחק.' ,
+      mission: 'לבנות משחק קליקים בעזרת בלוקי משחק, ואז לזהות את הקשר בין קליק, score ו־target.' ,
+      outcome: 'משחק קליקים שנבנה מבלוקי משחק, עם הצצה לקוד של ניקוד, יעד וניצחון',
       starter: {
         html: '<main class="click-game">\n  <h1>משחק הקליקים שלי</h1>\n  <p>ניקוד: <span id="scoreText">0</span></p>\n  <button id="clickButton" onclick="addPoint()">🎯 לחצו לנקודה</button>\n  <button onclick="resetGame()">איפוס</button>\n  <p id="message">המטרה: להגיע ל־10 נקודות.</p>\n</main>',
         css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #fdf2f8, #e0f2fe);\n}\n\n.click-game {\n  background: white;\n  width: 390px;\n  margin: 45px auto;\n  padding: 30px;\n  border-radius: 30px;\n  box-shadow: 0 16px 35px #fbcfe8;\n}\n\n#scoreText {\n  font-size: 34px;\n  font-weight: bold;\n  color: #7c3aed;\n}\n\nbutton {\n  margin: 8px;\n  padding: 14px 22px;\n  border: 0;\n  border-radius: 999px;\n  background: #ec4899;\n  color: white;\n  font-weight: bold;\n  cursor: pointer;\n}\n\nbutton:hover {\n  transform: scale(1.05);\n}\n\n.win {\n  background: #dcfce7;\n  border: 3px solid #22c55e;\n}',
         js: 'let score = 0;\nconst target = 10;\n\nfunction addPoint() {\n  score = score + 1;\n  document.getElementById("scoreText").textContent = score;\n\n  if (score >= target) {\n    document.getElementById("message").textContent = "ניצחת! הגעת ליעד 🎉";\n    document.querySelector(".click-game").classList.add("win");\n  } else {\n    document.getElementById("message").textContent = "עוד קצת! צריך להגיע ל־" + target;\n  }\n}\n\nfunction resetGame() {\n  score = 0;\n  document.getElementById("scoreText").textContent = score;\n  document.getElementById("message").textContent = "המטרה: להגיע ל־10 נקודות.";\n  document.querySelector(".click-game").classList.remove("win");\n}'
       },
       lessonFlow: [
-        { minutes: '0–8', title: 'פתיחה: מה הופך קליק למשחק?', teacher: 'מציגים כפתור שמעלה ניקוד ושואלים מה חסר כדי שזה יהיה משחק.', students: 'מציעים מטרה, ניקוד, ניצחון, איפוס ושיפור קושי.' },
-        { minutes: '8–18', title: 'חלקי המשחק', teacher: 'מפרקים את המשחק: score, target, addPoint, if score >= target.', students: 'מסמנים בקוד את המשתנה, היעד והתנאי.' },
-        { minutes: '18–30', title: 'הרצה מודרכת', teacher: 'מריצים ולוחצים עד ניצחון. מדגימים איפוס.', students: 'בודקים שהניקוד עולה ושב־10 נקודות מופיע ניצחון.' },
-        { minutes: '30–55', title: 'תרגולי משחק', teacher: 'מוודאים שכל שינוי נבדק בהרצה ולא רק נכתב.', students: 'מבצעים תרגולים 1–5.' },
-        { minutes: '55–67', title: 'איזון קושי', teacher: 'מדברים על קושי: יעד נמוך מדי קל, יעד גבוה מדי משעמם.', students: 'משנים יעד ומחליטים למה.' },
-        { minutes: '67–80', title: 'דיבאג משחק', teacher: 'מדגימים באג: scoreText לא תואם או target לא מספר.', students: 'מתקנים באג ומסבירים מה נשבר.' },
-        { minutes: '80–90', title: 'בדיקת שחקנים', teacher: 'זוגות משחקים אחד אצל השני ונותנים משוב קצר.', students: 'משפרים דבר אחד: טקסט, צבע, יעד או כפתור.' }
+        { minutes: '0–8', title: 'פתיחה: בלוקים שהופכים לעולם משחק', teacher: 'מציגים כפתור שמעלה ניקוד ושואלים אילו בלוקים צריך כדי להפוך אותו למשחק.', students: 'מציעים בלוקים: קליק, ניקוד, יעד, ניצחון, איפוס.' },
+        { minutes: '8–18', title: 'בלוק משחק ראשון', teacher: 'מפעילים בלוק “כפתור קליק” ומראים שהכפתור קורא לפעולה addPoint.', students: 'לוחצים על הכפתור ורואים שהניקוד עולה.' },
+        { minutes: '18–34', title: 'בנייה מודרכת בבלוקי משחק', teacher: 'מפעילים בלוקים: יעד ניצחון, נקודות כפולות, הודעת ניצחון, איפוס.', students: 'מריצים אחרי כל בלוק ובודקים מה השתנה במשחק.' },
+        { minutes: '34–50', title: 'מציצים לקוד המשחק', teacher: 'לא כותבים משחק חופשי. רק מזהים score, target, addPoint ו־resetGame.', students: 'מחברים בין בלוק המשחק לבין הקוד שהוא שינה.' },
+        { minutes: '50–66', title: 'תרגול עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לשנות קושי ומשוב דרך בלוקים מוכנים.', students: 'מבצעים תרגולים 1–5.' },
+        { minutes: '66–78', title: 'איזון ודיבאג', teacher: 'מדגימים יעד קל מדי/קשה מדי ו־id שלא מציג ניקוד.', students: 'מתקנים/מאזנים בלי לכתוב פונקציות חדשות.' },
+        { minutes: '78–90', title: 'בדיקת שחקנים', teacher: 'זוגות משחקים, נותנים משוב על קושי, ומציגים בלוק אחד ששינה את המשחק.', students: 'מסבירים: “הבלוק הזה שינה את ___ במשחק”.' }
       ],
       exercises: [
-        { id: 1, minutes: '18–24', title: 'תרגול 1 — משחקים עד ניצחון', prompt: 'לחצו על הכפתור עד שהמשחק מציג ניצחון.', hint: 'היעד כרגע הוא 10 נקודות.', check: { jsIncludes: ['let score = 0', 'const target = 10'] } },
-        { id: 2, minutes: '24–31', title: 'תרגול 2 — שם משחק חדש', prompt: 'שנו את הכותרת ואת טקסט הכפתור למשחק משלכם.', hint: 'הכותרת ב־h1 והכפתור ב־button עם id="clickButton".', check: { htmlIncludes: ['id="clickButton"'] } },
-        { id: 3, minutes: '31–39', title: 'תרגול 3 — יעד אחר', prompt: 'שנו את target ל־5 או 15 ובדקו איך זה משנה את הקושי.', hint: 'חפשו const target = 10.', check: { jsIncludes: ['const target'] } },
-        { id: 4, minutes: '39–47', title: 'תרגול 4 — נקודות כפולות', prompt: 'שנו כך שכל קליק יוסיף 2 נקודות.', hint: 'חפשו score = score + 1.', check: { jsIncludes: ['score = score +'] } },
-        { id: 5, minutes: '47–56', title: 'תרגול 5 — הודעת ניצחון', prompt: 'כתבו הודעת ניצחון שמתאימה למשחק שלכם.', hint: 'ההודעה נמצאת בתוך ה־if.', check: { jsIncludes: ['score >= target', 'ניצחת'] } },
-        { id: 6, minutes: '56–65', title: 'תרגול 6 — עיצוב מצב ניצחון', prompt: 'שנו את העיצוב של class win.', hint: 'חפשו .win ב־CSS.', check: { cssIncludes: ['.win'] } },
-        { id: 7, minutes: '65–75', title: 'תרגול 7 — תקן את הבאג', prompt: 'שנו לרגע scoreText ל־scoreTex וראו שהניקוד לא מוצג. תקנו.', hint: 'ה־id חייב להיות זהה ב־HTML וב־JavaScript.', check: { htmlIncludes: ['id="scoreText"'], jsIncludes: ['getElementById("scoreText")'] } },
-        { id: 8, minutes: '75–84', title: 'תרגול 8 — גרסת משחק אישית', prompt: 'הפכו את המשחק למשחק קליקים בנושא משלכם: חלל, חיות, ספורט, ממתקים או רובוטים.', hint: 'שנו כותרת, כפתור, צבעים, הודעות ויעד.', check: { htmlIncludes: ['button'], cssIncludes: ['button:hover'], jsIncludes: ['resetGame'] } }
+        { id: 1, minutes: '18–24', title: 'תרגול 1 — בלוק כפתור קליק', prompt: 'מצאו את כפתור הקליק, הריצו, ולחצו כדי לראות ניקוד עולה.', hint: 'הכפתור מפעיל addPoint.', check: { htmlIncludes: ['id="clickButton"'], jsIncludes: ['function addPoint'] } },
+        { id: 2, minutes: '24–31', title: 'תרגול 2 — בלוק יעד ניצחון', prompt: 'הפעילו בלוק שמגדיר יעד ניצחון ל־10 נקודות.', hint: 'היעד נשמר בשם target.', check: { jsIncludes: ['const target = 10'] } },
+        { id: 3, minutes: '31–39', title: 'תרגול 3 — בלוק יעד קל', prompt: 'הפעילו בלוק שמחליף את היעד ל־5 כדי לבדוק משחק קצר יותר.', hint: 'שינוי target משנה את הקושי.', check: { jsIncludes: ['const target = 5'] } },
+        { id: 4, minutes: '39–47', title: 'תרגול 4 — בלוק נקודות כפולות', prompt: 'הפעילו בלוק שכל קליק יוסיף 2 נקודות.', hint: 'הבלוק משנה את score = score + ...', check: { jsIncludes: ['score = score + 2'] } },
+        { id: 5, minutes: '47–56', title: 'תרגול 5 — בלוק הודעת ניצחון', prompt: 'הפעילו בלוק שמשנה את הודעת הניצחון.', hint: 'ההודעה נמצאת בתוך התנאי score >= target.', check: { jsIncludes: ['אליפות! ניצחת במשחק הקליקים'] } },
+        { id: 6, minutes: '56–65', title: 'תרגול 6 — בלוק צבע ניצחון', prompt: 'הפעילו בלוק שמשנה את צבע מצב הניצחון.', hint: 'הבלוק משנה את .win ב־CSS.', check: { cssIncludes: ['#bbf7d0'] } },
+        { id: 7, minutes: '65–75', title: 'תרגול 7 — דיבאג ניקוד', prompt: 'אם הניקוד לא מוצג, בדקו התאמה של scoreText.', hint: 'scoreText חייב להיות זהה ב־HTML וב־JS.', check: { htmlIncludes: ['id="scoreText"'], jsIncludes: ['getElementById("scoreText")'] } },
+        { id: 8, minutes: '75–84', title: 'תרגול 8 — בדיקת קושי', prompt: 'תנו לחבר לשחק ובדקו אם היעד קל מדי או קשה מדי.', hint: 'אפשר לבחור יעד 5 או 10 לפי הכיתה.', check: { htmlIncludes: ['button'], jsIncludes: ['target', 'resetGame'] } }
       ],
       aiHelper: [
         'הציעו 5 נושאים למשחק קליקים פשוט לכיתה ד׳.',
@@ -360,6 +360,16 @@
       { label: '🎉 הודעת ניקוד כפול', target: 'js', find: 'נכון! קיבלת נקודה ⭐', replace: 'נכון! קיבלת 2 נקודות ⭐⭐', hint: 'בלוק משוב: מסביר לשחקן כמה נקודות קיבל.' }
     ],
 
+    7: [
+      { label: '🎯 כפתור קליק', target: 'html', find: '🎯 לחצו לנקודה', replace: '🎯 קליק לנקודה', hint: 'בלוק משחק: מגדיר את כפתור הפעולה הראשי.' },
+      { label: '🏁 יעד 10', target: 'js', find: 'const target = 10;', replace: 'const target = 10;', hint: 'בלוק יעד: כמה נקודות צריך כדי לנצח.' },
+      { label: '⚡ יעד קל 5', target: 'js', find: 'const target = 10;', replace: 'const target = 5;', hint: 'בלוק איזון: מקצר את המשחק לכיתה שצריכה הצלחה מהירה.' },
+      { label: '✌️ נקודות כפולות', target: 'js', find: 'score = score + 1;', replace: 'score = score + 2;', hint: 'בלוק ניקוד: כל קליק שווה שתי נקודות.' },
+      { label: '🎉 הודעת ניצחון', target: 'js', find: 'ניצחת! הגעת ליעד 🎉', replace: 'אליפות! ניצחת במשחק הקליקים 🎉', hint: 'בלוק משוב: משנה את הודעת הסיום.' },
+      { label: '🟢 צבע ניצחון', target: 'css', find: 'background: #dcfce7;', replace: 'background: #bbf7d0;', hint: 'בלוק עיצוב: משנה את מצב הניצחון.' }
+    ],
+
+
     4: [
       { label: '📝 שדה שם', target: 'html', find: 'placeholder="כתבו שם"', replace: 'placeholder="מה השם שלך?"', hint: 'בלוק קלט: משנה הוראה בתוך input.' },
       { label: '🎯 שדה תחביב', target: 'html', find: 'placeholder="כתבו תחביב"', replace: 'placeholder="מה התחביב שלך?"', hint: 'בלוק קלט שני: עוד מידע מהמשתמש.' },
@@ -370,7 +380,7 @@
 
   lessons.forEach(lesson => {
     lesson.bridgeBlocks = bridgeBlocksByLesson[lesson.id] || [];
-    if (lesson.id <= 6) lesson.mode = 'Blockly-first bridge';
+    if (lesson.id <= 7) lesson.mode = 'Blockly-first bridge';
   });
 
   window.WEBCODE_LESSONS = lessons;
