@@ -94,35 +94,35 @@
     },
     {
       id: 3,
-      title: 'כפתורים שמפעילים קסמים',
-      concept: 'JavaScript Events: לחיצה → פעולה → שינוי במסך',
+      title: 'כפתורים שמפעילים קסמים — בלוקי פעולה',
+      concept: 'בלוקי פעולה → JavaScript: לחיצה · פונקציה · שינוי במסך',
       durationMinutes: 90,
-      story: 'הכרטיס כבר נראה טוב. עכשיו הופכים אותו לחי באמת: כפתורים שמשנים טקסט, צבע, אימוג׳י ומצב בעמוד.',
-      mission: 'לבנות עמוד עם כמה כפתורים שכל אחד מפעיל פעולה אחרת במסך.',
-      outcome: 'עמוד אינטראקטיבי עם שלושה כפתורים, פונקציות JavaScript ושינוי תוכן בזמן אמת',
+      story: 'אחרי שהכרנו בלוקי מבנה ועיצוב, עוברים לבלוקי פעולה: לוחצים על כפתור, והעמוד משנה אימוג׳י, טקסט או צבע.' ,
+      mission: 'לבנות עמוד מצבים בעזרת בלוקי פעולה, ואז לזהות את הקשר בין onclick לבין function.' ,
+      outcome: 'עמוד אינטראקטיבי שנבנה מבלוקי פעולה, עם הצצה ל־onclick, function ו־textContent',
       starter: {
         html: '<main class="app">\n  <h1>מעבדת הכפתורים שלי</h1>\n  <div id="emoji" class="emoji">🙂</div>\n  <p id="status">בחרו פעולה והעמוד ישתנה.</p>\n  <button onclick="makeHappy()">שמח</button>\n  <button onclick="makeRobot()">רובוט</button>\n  <button onclick="changeColor()">צבע חדש</button>\n</main>',
         css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: #f8fafc;\n}\n\n.app {\n  background: white;\n  width: 380px;\n  margin: 45px auto;\n  padding: 28px;\n  border-radius: 28px;\n  box-shadow: 0 16px 35px #cbd5e1;\n}\n\n.emoji {\n  font-size: 72px;\n  margin: 18px;\n}\n\nbutton {\n  margin: 6px;\n  padding: 12px 18px;\n  border: 0;\n  border-radius: 999px;\n  background: #2563eb;\n  color: white;\n  font-weight: bold;\n}\n\n.magic {\n  background: #fff7ed;\n  border: 4px solid #fb923c;\n}',
         js: 'function makeHappy() {\n  document.getElementById("emoji").textContent = "😄";\n  document.getElementById("status").textContent = "העמוד שמח!";\n}\n\nfunction makeRobot() {\n  document.getElementById("emoji").textContent = "🤖";\n  document.getElementById("status").textContent = "מצב רובוט הופעל.";\n}\n\nfunction changeColor() {\n  document.querySelector(".app").classList.toggle("magic");\n}'
       },
       lessonFlow: [
-        { minutes: '0–8', title: 'מה זו אינטראקציה?', teacher: 'מציגים עמוד עם כפתור ושואלים: מה המשתמש עושה ומה המחשב עושה בתגובה?', students: 'מתארים לחיצה, שינוי טקסט, שינוי צבע ומשוב.' },
-        { minutes: '8–18', title: 'אירוע ופעולה', teacher: 'מסבירים: onclick קורא לפונקציה; פונקציה היא רשימת פעולות עם שם.', students: 'מוצאים בקוד את onclick ואת function עם אותו שם.' },
-        { minutes: '18–30', title: 'הרצה מודרכת', teacher: 'מריצים ולוחצים על כל כפתור. משנים יחד אימוג׳י אחד והודעה אחת.', students: 'בודקים שכל כפתור מפעיל שינוי אחר.' },
-        { minutes: '30–55', title: 'תרגולי JavaScript', teacher: 'מזכירים: שם הפונקציה ב־HTML חייב להיות זהה לשם ב־JS.', students: 'מבצעים תרגולים 1–5 ומריצים אחרי כל שינוי.' },
-        { minutes: '55–67', title: 'classList וקסם עיצובי', teacher: 'מדגימים toggle: פעם מוסיף עיצוב ופעם מסיר.', students: 'משנים את class magic ובודקים את הכפתור.' },
-        { minutes: '67–80', title: 'דיבאג אירועים', teacher: 'יוצרים טעות בשם פונקציה ומראים איך מוצאים חוסר התאמה.', students: 'מתקנים onclick שלא מוצא פונקציה.' },
-        { minutes: '80–90', title: 'מיני הצגה', teacher: 'מבקשים מכל ילד להראות כפתור אחד ולהסביר את השרשרת.', students: 'מסבירים: לחיצה → פונקציה → שינוי במסך.' }
+        { minutes: '0–8', title: 'פתיחה: בלוק שמפעיל פעולה', teacher: 'מזכירים: עד עכשיו בלוקים בנו ועיצבו. היום בלוק יגרום לעמוד להגיב ללחיצה.', students: 'מזהים פעולה של משתמש: לחיצה על כפתור.' },
+        { minutes: '8–18', title: 'הדגמת בלוק מצב', teacher: 'לוחצים על בלוק “מצב שמח” ומראים שהוא משנה טקסט בתוך פונקציה.', students: 'לוחצים, מריצים, ורואים שהכפתור משנה הודעה במסך.' },
+        { minutes: '18–34', title: 'בנייה מודרכת בבלוקי פעולה', teacher: 'מפעילים בלוקים: מצב שמח, מצב רובוט, מצב קסם.', students: 'בודקים כל כפתור ומסבירים מה השתנה: אימוג׳י, טקסט או צבע.' },
+        { minutes: '34–50', title: 'מציצים לקוד פעולה', teacher: 'לא כותבים פונקציות חדשות. רק מזהים onclick ב־HTML ו־function ב־JS עם אותו שם.', students: 'מחברים בין שם הכפתור לשם הפונקציה.' },
+        { minutes: '50–66', title: 'תרגול עצמאי עם בלוקים', teacher: 'נותנים לתלמידים להפעיל בלוקי פעולה ולשנות טקסטים בטוחים.', students: 'מבצעים תרגולים 1–5 בלי להמציא סינטקס חדש.' },
+        { minutes: '66–78', title: 'Toggle כמתג', teacher: 'מדגימים את בלוק “הדלק/כבה עיצוב” כמתג שמוסיף ומסיר class.', students: 'לוחצים כמה פעמים ומבינים שיש מצב דולק/כבוי.' },
+        { minutes: '78–90', title: 'הצגת שרשרת פעולה', teacher: 'מבקשים מכל תלמיד להסביר שרשרת אחת: בלוק → כפתור → פונקציה → שינוי במסך.', students: 'מציגים מצב אחד שבנו ומסבירים אותו במילים.' }
       ],
       exercises: [
-        { id: 1, minutes: '18–24', title: 'תרגול 1 — הודעה חדשה', prompt: 'שנו את הטקסט שמופיע אחרי לחיצה על כפתור “שמח”.', hint: 'חפשו את הפונקציה makeHappy ואת textContent.', check: { jsIncludes: ['function makeHappy', 'textContent'] } },
-        { id: 2, minutes: '24–31', title: 'תרגול 2 — אימוג׳י משלכם', prompt: 'שנו את האימוג׳י של אחד הכפתורים לאימוג׳י אחר.', hint: 'האימוג׳י נמצא בתוך מרכאות ב־JavaScript.', check: { jsIncludes: ['emoji'] } },
-        { id: 3, minutes: '31–39', title: 'תרגול 3 — כפתור רביעי', prompt: 'הוסיפו כפתור חדש ב־HTML שקורא לפונקציה חדשה.', hint: 'צריך גם <button onclick="..."> וגם function באותו שם.', check: { htmlIncludes: ['onclick'], jsIncludes: ['function'] } },
-        { id: 4, minutes: '39–48', title: 'תרגול 4 — פונקציה חדשה', prompt: 'כתבו פונקציה חדשה שמשנה גם אימוג׳י וגם הודעה.', hint: 'אפשר להעתיק מבנה של makeRobot ולשנות שם ותוכן.', check: { jsIncludes: ['getElementById("status")', 'getElementById("emoji")'] } },
-        { id: 5, minutes: '48–57', title: 'תרגול 5 — עיצוב קסם', prompt: 'שנו את העיצוב של class magic: צבע רקע, גבול או עובי.', hint: 'חפשו .magic באזור CSS.', check: { cssIncludes: ['.magic'] } },
-        { id: 6, minutes: '57–66', title: 'תרגול 6 — Toggle', prompt: 'בדקו שכפתור “צבע חדש” מפעיל ומכבה את העיצוב בכל לחיצה.', hint: 'classList.toggle מוסיף/מסיר class.', check: { jsIncludes: ['classList.toggle("magic")'] } },
-        { id: 7, minutes: '66–76', title: 'תרגול 7 — תקן את הבאג', prompt: 'שנו לרגע onclick="makeRobot()" ל־onclick="makeRobott()". ראו שנשבר ותקנו.', hint: 'שם הפונקציה חייב להיות זהה בדיוק.', check: { htmlIncludes: ['makeRobot()'], jsIncludes: ['function makeRobot'] } },
-        { id: 8, minutes: '76–84', title: 'תרגול 8 — אפליקציית מצבים', prompt: 'הפכו את העמוד לאפליקציית מצבים: שמח, רובוט, חלל או ספורט.', hint: 'שנו טקסטים, אימוג׳ים ושמות כפתורים.', check: { htmlIncludes: ['button'], jsIncludes: ['function'] } }
+        { id: 1, minutes: '18–24', title: 'תרגול 1 — בלוק מצב שמח', prompt: 'הפעילו את בלוק “מצב שמח”, הריצו, ולחצו על הכפתור.', hint: 'הבלוק משנה טקסט בתוך function makeHappy.', check: { jsIncludes: ['מצב שמח הופעל'] } },
+        { id: 2, minutes: '24–31', title: 'תרגול 2 — בלוק מצב רובוט', prompt: 'הפעילו את בלוק “מצב רובוט” ובדקו שההודעה השתנתה.', hint: 'חפשו את function makeRobot.', check: { jsIncludes: ['הרובוט התחיל לעבוד'] } },
+        { id: 3, minutes: '31–39', title: 'תרגול 3 — בלוק מצב קסם', prompt: 'הפעילו בלוק שמשנה את העיצוב של מצב הקסם.', hint: 'הבלוק משנה CSS בתוך .magic.', check: { cssIncludes: ['border: 4px solid #7c3aed'] } },
+        { id: 4, minutes: '39–48', title: 'תרגול 4 — מצאו את onclick', prompt: 'עברו ל־HTML ומצאו איפה הכפתור קורא לפונקציה.', hint: 'חפשו onclick="makeHappy()" או onclick="makeRobot()".', check: { htmlIncludes: ['onclick="makeHappy()"', 'onclick="makeRobot()"'] } },
+        { id: 5, minutes: '48–57', title: 'תרגול 5 — מצאו את function', prompt: 'עברו ל־JavaScript ומצאו function עם אותו שם כמו הכפתור.', hint: 'שם ב־onclick ושם ב־function חייבים להיות זהים.', check: { jsIncludes: ['function makeHappy', 'function makeRobot'] } },
+        { id: 6, minutes: '57–66', title: 'תרגול 6 — בלוק Toggle', prompt: 'הפעילו את בלוק הדלק/כבה עיצוב ובדקו את classList.toggle.', hint: 'זה מתג: לחיצה אחת מדליקה, לחיצה נוספת מכבה.', check: { jsIncludes: ['classList.toggle("magic")'] } },
+        { id: 7, minutes: '66–76', title: 'תרגול 7 — דיבאג שם פעולה', prompt: 'אם כפתור לא עובד, בדקו שהשם ב־onclick זהה לשם ה־function.', hint: 'לא מוסיפים פונקציה חדשה בשיעור הזה — רק מתקנים שמות.', check: { htmlIncludes: ['makeRobot()'], jsIncludes: ['function makeRobot'] } },
+        { id: 8, minutes: '76–84', title: 'תרגול 8 — הצגת מצב', prompt: 'בחרו כפתור אחד והסבירו: איזה בלוק שינה אותו ומה קורה בלחיצה.', hint: 'השתמשו במילים: בלוק, כפתור, פונקציה, שינוי במסך.', check: { htmlIncludes: ['button'], jsIncludes: ['function', 'textContent'] } }
       ],
       aiHelper: [
         'הסבירו לילד בכיתה ד׳ מה הקשר בין onclick לבין function.',
