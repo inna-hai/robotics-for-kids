@@ -15,10 +15,14 @@ assert.doesNotMatch(html, /type:'field_angle'/, 'angle widget is avoided because
 assert.match(html, /numericField\(block,'ANGLE',90\)/);
 assert.match(html, /type:'py_repeat'/);
 assert.match(html, /student-steps/);
-assert.match(html, /גררו בלוק “חזור 4 פעמים”/);
-assert.match(html, /אתגר: שנו ל־3 חזרות ו־120 מעלות/);
-assert.match(html, /בחרו צבע עט לפני שמתחילים לצייר/);
+assert.match(html, /פתיחה: הריצו קנבס ריק/);
+assert.match(html, /גררו “חזור 4 פעמים”/);
+assert.match(html, /אתגר משולש: 3 חזרות ו־120 מעלות/);
+assert.match(html, /אתגר משושה: 6 חזרות ו־60 מעלות/);
+assert.match(html, /בחרו צבע עט לפני הציור/);
 assert.match(html, /קבעו length = 70/);
+assert.match(html, /0–10/);
+assert.match(html, /82–90/);
 assert.match(html, /type:'py_set_length'/);
 assert.match(html, /type:'py_forward_length'/);
 assert.match(html, /type:'py_grow_length'/);

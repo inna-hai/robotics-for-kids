@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>מצגת מדריך — פייתון מצייר שיעור 2</title><link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet"><style>*{box-sizing:border-box}body{margin:0;font-family:Rubik,Arial,sans-serif;background:linear-gradient(135deg,#0f172a,#1e3a8a 55%,#0f766e);color:#0f172a;overflow:hidden}.deck{width:100vw;height:100vh;display:grid;place-items:center;padding:28px}.slide{display:none;width:min(1120px,100%);min-height:min(690px,calc(100vh - 116px));background:rgba(255,255,255,.97);border-radius:34px;padding:42px;box-shadow:0 28px 80px rgba(0,0,0,.34);overflow:auto}.slide.active{display:flex;flex-direction:column;justify-content:center}.kicker{font-weight:900;color:#0f766e;margin-bottom:10px}.emoji{font-size:5rem}h1{font-size:clamp(2.2rem,6vw,4.5rem);margin:0 0 14px;line-height:1.05}h2{font-size:clamp(1.9rem,5vw,3.4rem);margin:0 0 18px}p,li{font-size:clamp(1.05rem,1.8vw,1.42rem);line-height:1.6}.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.card{background:#f8fafc;border-right:7px solid #22c55e;border-radius:18px;padding:16px}.note{background:#fff7ed;border-right:7px solid #fb923c;border-radius:18px;padding:14px;margin-top:12px}.code{direction:ltr;text-align:left;background:#07111f;color:#d7fbe8;border-radius:18px;padding:16px;font:700 1.05rem/1.55 ui-monospace,Consolas,monospace;white-space:pre-wrap}.nav{position:fixed;inset:auto 24px 24px 24px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;color:white;font-weight:900;pointer-events:none}.nav>*{pointer-events:auto}button,.back{border:0;border-radius:999px;background:white;color:#0f766e;padding:12px 18px;font-weight:900;text-decoration:none;cursor:pointer}.counter{justify-self:center;background:rgba(0,0,0,.28);padding:10px 16px;border-radius:999px}@media(max-width:760px){body{overflow:auto}.deck{height:auto;min-height:100svh;padding:12px 10px 88px}.slide{min-height:calc(100svh - 105px);padding:22px 16px;border-radius:22px}.slide.active{justify-content:flex-start}.cards{grid-template-columns:1fr}.nav{inset:auto 10px 10px 10px;display:flex;justify-content:space-between;background:rgba(8,17,31,.65);border-radius:999px;padding:8px}.counter{display:none}button,.back{padding:9px 10px;font-size:.84rem}}@media print{body{background:white;overflow:auto}.nav{display:none}.deck{display:block;height:auto}.slide{display:block;box-shadow:none;border:1px solid #ddd;break-after:page}}</style></head><body><main class="deck" id="deck">
+<section class="slide active"><div class="emoji">🐢</div><div class="kicker">פייתון מצייר • שיעור 2 • 90 דקות</div><h1>מציירים ריבוע</h1><p>משתמשים בלולאה כדי לצייר ריבוע בלי לחזור ידנית על אותם בלוקים.</p></section>
+<section class="slide"><h2>🎯 מטרות השיעור</h2><div class="cards"><div class="card"><b>מושג מרכזי</b><p>לולאות וזוויות</p></div><div class="card"><b>תוצר</b><p>התלמיד בונה ציור עובד, מריץ אותו, משנה אותו, ומסביר איזה בלוק יצר איזו שורת Python.</p></div></div></section>
+<section class="slide"><h2>⏱️ מבנה 90 דקות</h2><ol><li>0–10 חזרה על קדימה/סיבוב</li>
+<li>10–20 למה לא נרצה לגרור 8 בלוקים ידנית</li>
+<li>20–35 הדגמת לולאה וריבוע</li>
+<li>35–55 תרגול ריבוע + שינוי גודל</li>
+<li>55–70 משולש ומשושה</li>
+<li>70–82 דיבאג: בלוק מחוץ ללולאה</li>
+<li>82–90 סיכום: מה חוזר בלולאה</li></ol></section>
+<section class="slide"><h2>🧪 הרבה תרגולים לשיעור</h2><ol><li><b>תרגול 1:</b> גררו “חזור 4 פעמים”.</li>
+<li><b>תרגול 2:</b> הכניסו לתוך הלולאה “זוז קדימה 100”.</li>
+<li><b>תרגול 3:</b> מתחתיו, עדיין בתוך הלולאה, הוסיפו “פנה ימינה 90”.</li>
+<li><b>תרגול 4:</b> הריצו ובדקו אם התקבל ריבוע סגור.</li>
+<li><b>תרגול 5:</b> לחצו על בלוק הלולאה וראו את שורת for בקוד.</li>
+<li><b>תרגול 6:</b> לחצו על הבלוקים שבתוך הלולאה וראו את ההזחה בקוד.</li>
+<li><b>תרגול 7:</b> שנו את 100 ל־60 ואז ל־140 — מה משתנה ומה לא?</li>
+<li><b>תרגול 8:</b> אתגר משולש: 3 חזרות ו־120 מעלות.</li>
+<li><b>תרגול 9:</b> אתגר משושה: 6 חזרות ו־60 מעלות.</li>
+<li><b>תרגול 10:</b> דיבאג: הוציאו את “פנה ימינה” מחוץ ללולאה ונסו להסביר למה הריבוע נשבר.</li>
+<li><b>תרגול 11:</b> משימת יצירה: בחרו צורה אחת והוסיפו לה צבע/עובי.</li></ol></section>
+<section class="slide"><h2>👩‍🏫 דגשי מדריך</h2><ul><li>להשתמש במילה “חזור” לפני המילה for.</li>
+<li>להראות שהזחה בקוד אומרת “בתוך הלולאה”.</li>
+<li>לשאול: כמה מעלות צריך אחרי כל צד?</li></ul><div class="note">לא נותנים פתרון מלא בהתחלה. מציגים דוגמה חלקית, שואלים “מה יקרה?”, ואז נותנים לילדים לבנות.</div></section>
+<section class="slide"><h2>💻 קוד עוגן למדריך</h2><div class="code">from turtle import *
+
+# התלמידים בונים את הקוד דרך בלוקים
+# בכל שיעור מדגישים רק את השורות של המושג החדש
+
+done()</div></section>
+<section class="slide"><h2>🏁 סיום שיעור</h2><p>כל ילד משלים: “היום למדתי ש־___ עושה ___, ושיניתי את הציור שלי על ידי ___.”</p><p><a href="python-turtle.html?lesson=2">פתח את שיעור 2 בלומדה</a></p></section>
+</main><nav class="nav"><button onclick="prevSlide()">→ הקודם</button><span class="counter" id="counter"></span><div><button onclick="nextSlide()">הבא ←</button> <a class="back" href="python-turtle.html?lesson=2">ללומדה</a> <a class="back" href="python-turtle-slides.html">אינדקס</a></div></nav><script>let current=0;const slides=[...document.querySelectorAll('.slide')];function render(){slides.forEach((s,i)=>s.classList.toggle('active',i===current));document.getElementById('counter').textContent=(current+1)+' / '+slides.length}function nextSlide(){current=Math.min(current+1,slides.length-1);render()}function prevSlide(){current=Math.max(current-1,0);render()}document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key===' ')nextSlide();if(e.key==='ArrowRight')prevSlide()});render()</script></body></html>
