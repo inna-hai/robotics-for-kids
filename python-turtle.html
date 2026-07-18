@@ -26,13 +26,10 @@
 
     <main class="layout">
       <aside class="panel lessons">
-        <h1>מתחילים מפייתון בלי פחד</h1>
-        <p>בחרו שיעור. בצד הזה מופיע רק ניווט קצר; ההסבר והתרגולים מופיעים למטה רק עבור השיעור שנבחר.</p>
+        <h1 id="lessonSideTitle">בחרו שיעור</h1>
+        <p id="lessonSideIntro">בחרו שיעור מהרשימה. כאן יוצג תקציר קצר של השיעור הנבחר בלבד.</p>
         <div id="lessonList"></div>
-        <div class="teacher-note">
-          <b>שימו לב:</b><br>
-          לא מציגים לילדים את כל הסילבוס בבת אחת. כל שיעור נפתח בפני עצמו, עם המשימות והתרגולים שלו.
-        </div>
+        <div class="teacher-note" id="lessonSideNote"></div>
       </aside>
 
       <section class="panel workspace-wrap">
@@ -1535,6 +1532,12 @@
         const label = el.querySelector('span');
         if(label) label.textContent = isActive ? 'נוכחי' : 'פתח';
       });
+      const sideTitle = document.getElementById('lessonSideTitle');
+      const sideIntro = document.getElementById('lessonSideIntro');
+      const sideNote = document.getElementById('lessonSideNote');
+      if(sideTitle) sideTitle.textContent = `${l.id}. ${l.title}`;
+      if(sideIntro) sideIntro.textContent = l.goal;
+      if(sideNote) sideNote.innerHTML = `<b>בשיעור הזה:</b><br>מושג מרכזי: ${escapeHtml(l.concept)}<br>תוצר: ${escapeHtml(l.product || 'ציור עובד')}<br><br><b>שימו לב:</b> לא מציגים לילדים את כל הסילבוס בבת אחת. התרגולים וההסבר המלא מופיעים רק עבור השיעור שנבחר.`;
       const practice = (l.practice || []).map(step=>`<li>${escapeHtml(step)}</li>`).join('');
       const timing = (l.timing || []).map(step=>`<li>${escapeHtml(step)}</li>`).join('');
       const lessonUrl = `python-turtle.html?lesson=${l.id}`;
