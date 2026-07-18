@@ -44,6 +44,9 @@ assert.match(html, /initialLessonFromUrl/);
 assert.match(html, /searchParams\.set\('lesson'/);
 assert.doesNotMatch(html, /href="codequest\.html"/, 'new turtle course must not link students back to old CodeQuest course');
 assert.match(html, /כל השיעורים/);
+assert.match(html, /לא מציגים לילדים את כל הסילבוס בבת אחת/);
+assert.match(html, /פתח'\}<\/span>/);
+assert.doesNotMatch(html, /\$\{l\.concept\} · \$\{l\.goal\}/, 'lesson sidebar should be compact navigation, not the whole syllabus');
 assert.match(html, /פייתון מצייר/);
 assert.doesNotMatch(html, /MVP חדש לכיתה/);
 assert.doesNotMatch(html, /setLesson\(1\); loadDemo\(\);/, 'opening a lesson must not auto-load the solution');
@@ -51,8 +54,6 @@ assert.match(html, /מאפסים את הציור/);
 assert.match(html, /await sleep\(450\)/);
 assert.match(html, /הרובוט המצייר/);
 assert.match(html, /משתנים/);
-assert.match(html, /תנאים/);
-assert.match(html, /פונקציות/);
 assert.match(codequest, /python-turtle\.html/);
 assert.match(research, /Blockly \+ Python Turtle/);
 
