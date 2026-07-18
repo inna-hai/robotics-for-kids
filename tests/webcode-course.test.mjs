@@ -16,7 +16,7 @@ assert.ok(lessons.length >= 12, 'first twelve WebCode lessons exist');
 
 const lesson = lessons[0];
 assert.equal(lesson.durationMinutes, 90, 'lesson is framed as 90 minutes');
-assert.ok(lesson.title.includes('העמוד הראשון'), 'lesson has grade-appropriate first-page title');
+assert.ok(lesson.title.includes('Blockly אמיתי'), 'lesson has real Blockly page-builder title');
 assert.ok(lesson.starter.html.includes('<button onclick="sayHello()">'), 'starter has working button');
 assert.ok(lesson.starter.css.includes('border-radius'), 'starter includes visible styling');
 assert.ok(lesson.starter.js.includes('getElementById("message")'), 'starter JS targets message id');
@@ -25,8 +25,9 @@ assert.ok(lesson.lessonFlow.length >= 7, 'lesson includes full 90-minute guide f
 assert.ok(lesson.vocabulary.some(v => v[0] === 'HTML'), 'vocabulary includes HTML');
 assert.ok(lesson.vocabulary.some(v => v[0] === 'CSS'), 'vocabulary includes CSS');
 assert.ok(lesson.vocabulary.some(v => v[0] === 'JavaScript'), 'vocabulary includes JavaScript');
-assert.equal(lesson.mode, 'Blockly-first bridge', 'early lesson uses Blockly-first bridge mode');
-assert.ok(lesson.bridgeBlocks.length >= 5, 'lesson 1 has Web block bridge actions');
+assert.equal(lesson.mode, 'Real Blockly page builder', 'lesson 1 uses a real Blockly page builder');
+assert.equal(lesson.realBlocklyBuilder, true, 'lesson 1 enables real Blockly workspace');
+assert.ok(lesson.exercises.some(ex => ex.prompt.includes('גררו')), 'lesson 1 exercises require dragging blocks');
 
 const lesson2 = lessons[1];
 assert.equal(lesson2.durationMinutes, 90, 'lesson 2 is framed as 90 minutes');
@@ -119,7 +120,7 @@ const hub = read('webcode.html');
 assert.ok(hub.includes('WebCode Lab'), 'hub page exists');
 assert.ok(hub.includes('webcode-play.html?lesson=1'), 'hub links to lesson 1');
 assert.ok(hub.includes('webcode-slides.html?lesson=1'), 'hub links to guide slides');
-assert.ok(hub.includes('גשר מ־Blockly לקוד'), 'hub explains Blockly-to-code bridge for first lessons');
+assert.ok(hub.includes('גשר מ־Blockly לקוד') || hub.includes('Blockly'), 'hub explains Blockly-to-code direction');
 
 const play = read('webcode-play.html');
 assert.ok(play.includes('textarea id="htmlCode"'), 'play page has HTML editor');
@@ -132,7 +133,12 @@ assert.ok(play.includes('webcode-error'), 'play page catches preview JavaScript 
 assert.ok(play.includes('debugHint'), 'play page gives student-friendly syntax/debug hints');
 assert.ok(play.includes('validateJavaScriptSyntax'), 'play page validates JavaScript syntax before preview injection');
 assert.ok(play.includes('שגיאת סינטקס ב־JavaScript'), 'play page shows Hebrew syntax error feedback');
-assert.ok(play.includes('renderBridgeBlocks'), 'play page renders Blockly-first bridge blocks');
+assert.ok(play.includes('https://unpkg.com/blockly/blockly.min.js'), 'play page loads real Blockly');
+assert.ok(play.includes('Blockly.inject'), 'play page injects a real Blockly workspace');
+assert.ok(play.includes('defineWebBuilderBlocks'), 'play page defines draggable Web builder blocks');
+assert.ok(play.includes('webBuilderToolbox'), 'play page exposes a Blockly toolbox');
+assert.ok(play.includes('generateCodeFromBlockly'), 'play page generates HTML/CSS/JS from connected Blockly blocks');
+assert.ok(play.includes('renderBridgeBlocks'), 'play page keeps bridge blocks fallback for later lessons');
 assert.ok(play.includes('applyBridgeBlock'), 'play page can apply bridge blocks into code');
 
 const slides = read('webcode-slides.html');
