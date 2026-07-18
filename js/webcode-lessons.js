@@ -321,6 +321,52 @@
         ['resetGame', 'פונקציה שמחזירה את המשחק להתחלה'],
         ['איזון קושי', 'להחליט כמה קל או קשה לנצח במשחק']
       ]
+    },
+    {
+      id: 8,
+      title: 'משחק קליקים עם טיימר — בלוקי זמן',
+      concept: 'בלוקי זמן → JavaScript: timeLeft · setInterval · סיום משחק',
+      durationMinutes: 90,
+      story: 'מוסיפים למשחק הקליקים שעון שסופר לאחור. הילדים בונים קודם עם בלוקי זמן: התחל טיימר, הורד שנייה, הצג זמן, סיים משחק.',
+      mission: 'לבנות משחק קליקים עם טיימר קצר, ניקוד וסיום כשהזמן נגמר.',
+      outcome: 'משחק קליקים עם זמן מוגבל שנבנה מבלוקי זמן, עם הצצה ל־timeLeft ו־setInterval',
+      starter: {
+        html: '<main class="timer-game">\n  <h1>אתגר הקליקים בזמן</h1>\n  <p>ניקוד: <span id="scoreText">0</span></p>\n  <p>זמן: <span id="timeText">15</span></p>\n  <button id="startButton" onclick="startGame()">התחילו משחק</button>\n  <button id="clickButton" onclick="addPoint()">🎯 קליק לנקודה</button>\n  <p id="message">לחצו התחלה ואז אספו נקודות!</p>\n</main>',
+        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #ecfeff, #fef9c3);\n}\n\n.timer-game {\n  background: white;\n  width: 400px;\n  margin: 45px auto;\n  padding: 30px;\n  border-radius: 30px;\n  box-shadow: 0 16px 35px #bae6fd;\n}\n\n#scoreText, #timeText {\n  display: inline-block;\n  min-width: 45px;\n  background: #dbeafe;\n  border-radius: 999px;\n  padding: 6px 14px;\n  font-weight: bold;\n}\n\nbutton {\n  margin: 8px;\n  padding: 14px 20px;\n  border: 0;\n  border-radius: 999px;\n  background: #0891b2;\n  color: white;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n.finished {\n  background: #fee2e2;\n  border: 3px solid #ef4444;\n}',
+        js: 'let score = 0;\nlet timeLeft = 15;\nlet timerId = null;\n\nfunction startGame() {\n  score = 0;\n  timeLeft = 15;\n  document.getElementById("scoreText").textContent = score;\n  document.getElementById("timeText").textContent = timeLeft;\n  document.getElementById("message").textContent = "המשחק התחיל!";\n\n  timerId = setInterval(tick, 1000);\n}\n\nfunction tick() {\n  timeLeft = timeLeft - 1;\n  document.getElementById("timeText").textContent = timeLeft;\n\n  if (timeLeft <= 0) {\n    clearInterval(timerId);\n    document.getElementById("message").textContent = "הזמן נגמר! הניקוד שלך: " + score;\n    document.querySelector(".timer-game").classList.add("finished");\n  }\n}\n\nfunction addPoint() {\n  if (timeLeft > 0) {\n    score = score + 1;\n    document.getElementById("scoreText").textContent = score;\n  }\n}'
+      },
+      lessonFlow: [
+        { minutes: '0–8', title: 'פתיחה: משחק נגד השעון', teacher: 'מציגים משחק קליקים עם זמן ושואלים מה משתנה כשיש שעון.', students: 'מזהים לחץ זמן, התחלה, ספירה לאחור וסיום.' },
+        { minutes: '8–18', title: 'בלוק זמן ראשון', teacher: 'מפעילים בלוק “התחל טיימר” ומראים timeLeft כמד זמן.', students: 'רואים שהזמן מתחיל מ־15.' },
+        { minutes: '18–34', title: 'בנייה מודרכת בבלוקי זמן', teacher: 'מפעילים בלוקים: הצג זמן, הורד שנייה, סיום כשהזמן נגמר.', students: 'מריצים, מתחילים משחק, ורואים את הזמן יורד.' },
+        { minutes: '34–50', title: 'מציצים לקוד הזמן', teacher: 'לא כותבים setInterval חופשי. רק מזהים timeLeft, tick ו־clearInterval.', students: 'מחברים בין בלוק הזמן לבין הספירה במסך.' },
+        { minutes: '50–66', title: 'תרגול עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לשנות זמן התחלה ומשוב סיום דרך בלוקים.', students: 'מבצעים תרגולים 1–5.' },
+        { minutes: '66–78', title: 'דיבאג זמן', teacher: 'מדגימים מה קורה אם timeText לא תואם או אם הטיימר מהיר מדי.', students: 'בודקים התאמה בין timeText לבין JavaScript.' },
+        { minutes: '78–90', title: 'בדיקת שחקנים', teacher: 'זוגות משחקים ובודקים אם 15 שניות זה קל/קשה.', students: 'מציעים איזון זמן: 10, 15 או 20 שניות.' }
+      ],
+      exercises: [
+        { id: 1, minutes: '18–24', title: 'תרגול 1 — בלוק התחלת זמן', prompt: 'מצאו את בלוק הזמן ובדקו שהמשחק מתחיל מ־15 שניות.', hint: 'הזמן נשמר ב־timeLeft.', check: { jsIncludes: ['let timeLeft = 15'] } },
+        { id: 2, minutes: '24–31', title: 'תרגול 2 — בלוק הצג זמן', prompt: 'בדקו שהזמן מופיע במסך בתוך timeText.', hint: 'timeText הוא המקום שבו הדפדפן מציג את הזמן.', check: { htmlIncludes: ['id="timeText"'], jsIncludes: ['getElementById("timeText")'] } },
+        { id: 3, minutes: '31–39', title: 'תרגול 3 — בלוק ספירה לאחור', prompt: 'מצאו את הקוד שמוריד שנייה בכל פעם.', hint: 'חפשו timeLeft = timeLeft - 1.', check: { jsIncludes: ['timeLeft = timeLeft - 1'] } },
+        { id: 4, minutes: '39–47', title: 'תרגול 4 — בלוק זמן קצר', prompt: 'הפעילו בלוק שמשנה את הזמן ל־10 שניות.', hint: 'שינוי timeLeft משנה את קושי המשחק.', check: { jsIncludes: ['timeLeft = 10'] } },
+        { id: 5, minutes: '47–56', title: 'תרגול 5 — בלוק הודעת סיום', prompt: 'הפעילו בלוק שמשנה את הודעת הסיום.', hint: 'ההודעה מופיעה כאשר timeLeft <= 0.', check: { jsIncludes: ['נגמר הזמן! הצלחת לצבור'] } },
+        { id: 6, minutes: '56–65', title: 'תרגול 6 — בלוק צבע סיום', prompt: 'הפעילו בלוק שמשנה את צבע מצב הסיום.', hint: 'הבלוק משנה את .finished ב־CSS.', check: { cssIncludes: ['#fecaca'] } },
+        { id: 7, minutes: '65–75', title: 'תרגול 7 — דיבאג timeText', prompt: 'אם הזמן לא מוצג, בדקו התאמה של id="timeText".', hint: 'ה־id חייב להיות זהה ב־HTML וב־JS.', check: { htmlIncludes: ['id="timeText"'], jsIncludes: ['getElementById("timeText")'] } },
+        { id: 8, minutes: '75–84', title: 'תרגול 8 — איזון זמן', prompt: 'תנו לחבר לשחק והחליטו אם המשחק צריך 10, 15 או 20 שניות.', hint: 'משחק טוב לא קל מדי ולא מתסכל מדי.', check: { jsIncludes: ['setInterval', 'clearInterval'], htmlIncludes: ['startButton'] } }
+      ],
+      aiHelper: [
+        'הסבירו לילד בכיתה ד׳ מה זה טיימר בעזרת דוגמה של שעון חול.',
+        'הציעו זמן מתאים למשחק קליקים קצר לילדים: 10, 15 או 20 שניות — ולמה.',
+        'עזרו למצוא למה הזמן לא מתעדכן על המסך.',
+        'הציעו הודעת סיום מעודדת למשחק עם טיימר.'
+      ],
+      vocabulary: [
+        ['timeLeft', 'כמה זמן נשאר במשחק'],
+        ['setInterval', 'להפעיל פעולה שוב ושוב לפי זמן'],
+        ['tick', 'פעימת זמן אחת — בכל פעם יורדת שנייה'],
+        ['clearInterval', 'לעצור את הטיימר'],
+        ['איזון זמן', 'להחליט כמה זמן מתאים למשחק']
+      ]
     }
   ];
 
@@ -370,6 +416,16 @@
     ],
 
 
+    8: [
+      { label: '⏱️ התחל טיימר', target: 'js', find: 'let timeLeft = 15;', replace: 'let timeLeft = 15;', hint: 'בלוק זמן: יוצר זמן התחלתי למשחק.' },
+      { label: '📺 הצג זמן', target: 'js', find: 'document.getElementById("timeText").textContent = timeLeft;', replace: 'document.getElementById("timeText").textContent = timeLeft;', hint: 'בלוק תצוגה: מראה את הזמן במסך.' },
+      { label: '⬇️ הורד שנייה', target: 'js', find: 'timeLeft = timeLeft - 1;', replace: 'timeLeft = timeLeft - 1;', hint: 'בלוק ספירה: בכל פעימה יורדת שנייה.' },
+      { label: '⚡ זמן קצר 10', target: 'js', find: 'timeLeft = 15;', replace: 'timeLeft = 10;', hint: 'בלוק איזון: מקצר את המשחק ל־10 שניות.' },
+      { label: '🏁 הודעת סיום', target: 'js', find: 'הזמן נגמר! הניקוד שלך: ', replace: 'נגמר הזמן! הצלחת לצבור ', hint: 'בלוק משוב: משנה הודעת סוף משחק.' },
+      { label: '🔴 צבע סיום', target: 'css', find: 'background: #fee2e2;', replace: 'background: #fecaca;', hint: 'בלוק עיצוב: משנה צבע במצב סיום.' }
+    ],
+
+
     4: [
       { label: '📝 שדה שם', target: 'html', find: 'placeholder="כתבו שם"', replace: 'placeholder="מה השם שלך?"', hint: 'בלוק קלט: משנה הוראה בתוך input.' },
       { label: '🎯 שדה תחביב', target: 'html', find: 'placeholder="כתבו תחביב"', replace: 'placeholder="מה התחביב שלך?"', hint: 'בלוק קלט שני: עוד מידע מהמשתמש.' },
@@ -380,7 +436,7 @@
 
   lessons.forEach(lesson => {
     lesson.bridgeBlocks = bridgeBlocksByLesson[lesson.id] || [];
-    if (lesson.id <= 7) lesson.mode = 'Blockly-first bridge';
+    if (lesson.id <= 8) lesson.mode = 'Blockly-first bridge';
   });
 
   window.WEBCODE_LESSONS = lessons;
