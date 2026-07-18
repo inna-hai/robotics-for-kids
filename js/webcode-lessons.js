@@ -137,6 +137,52 @@
         ['textContent', 'שינוי הטקסט שבתוך אלמנט'],
         ['classList.toggle', 'להדליק או לכבות עיצוב של class']
       ]
+    },
+    {
+      id: 4,
+      title: 'העמוד שמקשיב לי',
+      concept: 'Input: קלט מהמשתמש ותשובה אישית',
+      durationMinutes: 90,
+      story: 'הילדים בונים עמוד ששואל שאלה, קורא מה המשתמש כתב, ומחזיר תשובה אישית על המסך.',
+      mission: 'לבנות מחולל ברכה פשוט: המשתמש כותב שם ותחביב, והעמוד יוצר לו הודעה אישית.',
+      outcome: 'טופס קטן עם input, כפתור, קריאת value והודעה אישית',
+      starter: {
+        html: '<main class="generator">\n  <h1>מחולל הברכות שלי</h1>\n  <label>שם:\n    <input id="nameInput" placeholder="כתבו שם">\n  </label>\n  <label>תחביב:\n    <input id="hobbyInput" placeholder="כתבו תחביב">\n  </label>\n  <button onclick="makeGreeting()">צרו ברכה</button>\n  <p id="result">כאן תופיע הברכה...</p>\n</main>',
+        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #ecfeff, #fdf2f8);\n}\n\n.generator {\n  background: white;\n  width: 390px;\n  margin: 45px auto;\n  padding: 28px;\n  border-radius: 28px;\n  box-shadow: 0 16px 35px #bae6fd;\n}\n\nlabel {\n  display: block;\n  margin: 14px;\n  font-weight: bold;\n}\n\ninput {\n  display: block;\n  width: 100%;\n  margin-top: 6px;\n  padding: 12px;\n  border: 2px solid #cbd5e1;\n  border-radius: 14px;\n  text-align: center;\n}\n\nbutton {\n  background: #7c3aed;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 20px;\n  font-weight: bold;\n}\n\n#result {\n  background: #f8fafc;\n  border-radius: 18px;\n  padding: 14px;\n}',
+        js: 'function makeGreeting() {\n  const name = document.getElementById("nameInput").value;\n  const hobby = document.getElementById("hobbyInput").value;\n  document.getElementById("result").textContent = name + ", איזה כיף שאת/ה אוהב/ת " + hobby + "!";\n}'
+      },
+      lessonFlow: [
+        { minutes: '0–8', title: 'פתיחה: אתר ששואל ועונה', teacher: 'מציגים טופס קצר ושואלים מה הופך אתר לאישי יותר.', students: 'מזהים שדה כתיבה, כפתור ותוצאה אישית.' },
+        { minutes: '8–18', title: 'מה זה קלט?', teacher: 'מסבירים input ו־value: מה שהמשתמש כתב הופך למידע שהקוד יכול לקרוא.', students: 'מוצאים בקוד את input ואת id של כל שדה.' },
+        { minutes: '18–30', title: 'הרצה מודרכת', teacher: 'מריצים, כותבים שם ותחביב, ולוחצים על הכפתור.', students: 'בודקים שהברכה משתנה לפי מה שהקלידו.' },
+        { minutes: '30–55', title: 'תרגולי טופס', teacher: 'מדגישים התאמה בין id ב־HTML לבין getElementById ב־JS.', students: 'מבצעים תרגולים 1–5.' },
+        { minutes: '55–67', title: 'מחברים משפטים', teacher: 'מסבירים שרשור טקסט עם + בצורה פשוטה ומוגבלת.', students: 'משנים את המשפט שנוצר ומוסיפים אימוג׳י.' },
+        { minutes: '67–80', title: 'דיבאג קלט', teacher: 'יוצרים טעות id ומראים למה התוצאה לא מופיעה.', students: 'מתקנים id לא תואם.' },
+        { minutes: '80–90', title: 'תערוכת מחוללים', teacher: 'סבב קצר: כל תלמיד נותן לחבר למלא את הטופס.', students: 'מציגים מחולל אישי ומשפט שנוצר.' }
+      ],
+      exercises: [
+        { id: 1, minutes: '18–24', title: 'תרגול 1 — בודקים את המחולל', prompt: 'כתבו שם ותחביב בתצוגה ולחצו על הכפתור.', hint: 'אם לא קורה כלום, לחצו קודם הרצה.', check: { htmlIncludes: ['id="nameInput"'], jsIncludes: ['makeGreeting'] } },
+        { id: 2, minutes: '24–31', title: 'תרגול 2 — משנים שאלה', prompt: 'שנו את השדה “תחביב” לשאלה אחרת, למשל “מאכל אהוב”.', hint: 'שנו גם את הטקסט ב־label וגם את placeholder.', check: { htmlIncludes: ['placeholder'] } },
+        { id: 3, minutes: '31–39', title: 'תרגול 3 — משפט אישי', prompt: 'שנו את המשפט שנוצר ב־JavaScript למשפט משלכם.', hint: 'חפשו את השורה עם textContent.', check: { jsIncludes: ['textContent', '+'] } },
+        { id: 4, minutes: '39–48', title: 'תרגול 4 — צבע לטופס', prompt: 'שנו את צבע הכפתור והרקע של התוצאה.', hint: 'חפשו button ואת #result ב־CSS.', check: { cssIncludes: ['button', '#result'] } },
+        { id: 5, minutes: '48–56', title: 'תרגול 5 — שדה שלישי', prompt: 'הוסיפו input נוסף, למשל “צבע אהוב”, וקראו לו ב־JavaScript.', hint: 'צריך id חדש ושורת getElementById חדשה.', check: { htmlIncludes: ['input'], jsIncludes: ['getElementById'] } },
+        { id: 6, minutes: '56–65', title: 'תרגול 6 — מוסיפים אימוג׳י', prompt: 'הוסיפו אימוג׳י לתוצאה שנוצרת.', hint: 'אפשר להוסיף אימוג׳י בתוך המרכאות ב־JavaScript.', check: { jsIncludes: ['textContent'] } },
+        { id: 7, minutes: '65–75', title: 'תרגול 7 — תקן את הבאג', prompt: 'שנו לרגע nameInput ל־nameinput וראו שהקוד נשבר. תקנו את האותיות כך שיתאימו בדיוק.', hint: 'JavaScript רגיש לאותיות גדולות/קטנות באנגלית.', check: { htmlIncludes: ['id="nameInput"'], jsIncludes: ['getElementById("nameInput")'] } },
+        { id: 8, minutes: '75–84', title: 'תרגול 8 — מחולל חדש', prompt: 'הפכו את הברכה למחולל אחר: שם גיבור, שם משחק, רעיון למסיבה או סיסמת על.', hint: 'אפשר לשנות כותרת, labels ואת משפט התוצאה.', check: { htmlIncludes: ['<h1'], jsIncludes: ['value'] } }
+      ],
+      aiHelper: [
+        'הציעו 5 רעיונות למחוללים פשוטים שמתאימים לכיתה ד׳.',
+        'הסבירו לילד מה ההבדל בין id של input לבין value שלו.',
+        'עזרו למצוא למה getElementById לא מוצא את השדה.',
+        'הציעו משפט תוצאה מצחיק שמשתמש בשם ובתחביב.'
+      ],
+      vocabulary: [
+        ['input', 'שדה שבו המשתמש מקליד משהו'],
+        ['value', 'מה שכתוב כרגע בתוך השדה'],
+        ['const', 'שם קטן שבו שומרים מידע שהקוד קרא'],
+        ['placeholder', 'טקסט עזרה שמופיע בתוך שדה ריק'],
+        ['שרשור', 'חיבור חלקי טקסט בעזרת +']
+      ]
     }
   ];
 

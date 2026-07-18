@@ -12,7 +12,7 @@ vm.runInContext(dataCode, sandbox);
 
 const lessons = sandbox.window.WEBCODE_LESSONS;
 assert.equal(Array.isArray(lessons), true, 'lessons array exists');
-assert.ok(lessons.length >= 3, 'first three WebCode lessons exist');
+assert.ok(lessons.length >= 4, 'first four WebCode lessons exist');
 
 const lesson = lessons[0];
 assert.equal(lesson.durationMinutes, 90, 'lesson is framed as 90 minutes');
@@ -40,6 +40,14 @@ assert.ok(lesson3.starter.html.includes('onclick="makeHappy()"'), 'lesson 3 has 
 assert.ok(lesson3.starter.js.includes('classList.toggle("magic")'), 'lesson 3 includes classList toggle');
 assert.ok(lesson3.exercises.length >= 8, 'lesson 3 includes many exercises');
 assert.ok(lesson3.vocabulary.some(v => v[0] === 'onclick'), 'lesson 3 vocabulary includes onclick');
+
+const lesson4 = lessons[3];
+assert.equal(lesson4.durationMinutes, 90, 'lesson 4 is framed as 90 minutes');
+assert.ok(lesson4.title.includes('מקשיב'), 'lesson 4 focuses on user input');
+assert.ok(lesson4.starter.html.includes('id="nameInput"'), 'lesson 4 has name input');
+assert.ok(lesson4.starter.js.includes('.value'), 'lesson 4 reads input value');
+assert.ok(lesson4.exercises.length >= 8, 'lesson 4 includes many exercises');
+assert.ok(lesson4.vocabulary.some(v => v[0] === 'input'), 'lesson 4 vocabulary includes input');
 
 const hub = read('webcode.html');
 assert.ok(hub.includes('WebCode Lab'), 'hub page exists');
