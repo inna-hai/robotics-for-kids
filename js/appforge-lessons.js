@@ -51,6 +51,78 @@
 
   lessons.forEach(lesson => { lesson.durationMinutes = 90; lesson.lessonFlow = flow(lesson.title, 'בנייה מודרכת של פיצ׳ר', `מושג מרכזי: ${lesson.concept}`, 'יצירת גרסה אישית', 'בדיקות ודיבאג', 'Demo קצר'); lesson.exercises = exercises(lesson.keywords || ['output']); lesson.aiHelper = ['הציעו שיפור מוצר קטן שמתאים לגיל ה׳–ו׳.','נסחו user story קצר לאפליקציה הזאת.','עזרו לתלמיד למצוא באג בלי לפתור במקומו.','הציעו איך להציג את הפרויקט בדקה אחת.']; });
 
+  const wowFlow = (hook, build, concept, create) => [
+    { minutes: '0–4', title: `וואו ראשון: ${hook}`, teacher: 'בלי הרצאת תחביר: מריצים דמו עובד, נותנים לילדים ללחוץ/להקליד, ומבקשים מהם לצעוק מה השתנה.', students: 'משחקים עם המוצר ורואים תוצאה מיידית.' },
+    { minutes: '4–12', title: 'משנים משהו אישי', teacher: 'מבקשים לשנות שם, צבע, קטגוריה או רעיון מצחיק — רק ערך קטן אחד.', students: 'יוצרים גרסה שמרגישה שלהם.' },
+    { minutes: '12–24', title: 'מה המוצר עושה?', teacher: 'מדברים במונחי מוצר: משתמש, בעיה, פעולה ותוצאה.', students: 'מסמנים קלט, כפתור, דאטה ותוצאה במסך.' },
+    { minutes: '24–40', title: build, teacher: 'בונים פיצ׳ר אחד יחד, שורה אחת בכל פעם, עם הרצה אחרי כל שינוי.', students: 'מעתיקים/משנים תבנית קצרה ומריצים.' },
+    { minutes: '40–56', title: concept, teacher: 'נותנים שם מקצועי רק אחרי שזה עובד: array/state/render/validation.', students: 'מוצאים את המילה בקוד ומסבירים אותה בשפה שלהם.' },
+    { minutes: '56–74', title: create, teacher: 'נותנים משימה פתוחה עם גבולות: לפחות 3 פריטים, לפחות שינוי עיצוב אחד, לפחות בדיקה אחת.', students: 'בונים שדרוג אישי או זוגי.' },
+    { minutes: '74–84', title: 'באג של מפתחים אמיתיים', teacher: 'שוברים בכוונה id/מרכאות/פסיק ומראים איך מתקנים בלי פאניקה.', students: 'מתקנים באג קטן ומריצים מחדש.' },
+    { minutes: '84–90', title: 'Demo קצר', teacher: 'כל זוג מציג ב־30 שניות: מה בנינו, למי זה עוזר, ואיזו שורת קוד חשובה.', students: 'מציגים מוצר, לא רק קוד.' }
+  ];
+
+  const wowExercises = (keywords, firstPrompt) => [
+    ['בדיקת וואו', firstPrompt, 'קודם משחקים עם המוצר. לא מסבירים עדיין את כל הקוד.'],
+    ['שינוי אישי', 'שנו שם, צבע, טקסט או פריט אחד כך שהאפליקציה תרגיש שלכם.', 'שנו ערך קטן בתוך מרכאות או מספר.'],
+    ['מוצאים את הדאטה', 'מצאו בקוד איפה נשמר המידע של האפליקציה.', 'חפשו const, array [] או object {}.'],
+    ['מוצאים את הפעולה', 'מצאו איזו function רצה כשיש לחיצה.', 'חפשו onclick או שם function.'],
+    ['מוסיפים פריט', 'הוסיפו עוד משימה/תפקיד/מסך/רעיון לרשימה.', 'שמרו על פסיקים ומרכאות.'],
+    ['עיצוב מוצר', 'שנו פרט עיצוב אחד כדי שהאפליקציה תרגיש יותר מקצועית.', 'CSS משנה תחושה: צבע, רווח, פינות, צל.'],
+    ['דיבאג קטן', 'תקנו באג של שם לא תואם או ערך ריק.', 'בדקו שה־id ב־HTML זהה למה שה־JS מחפש.'],
+    ['Demo למשתמש', 'תנו לחבר/ה להשתמש באפליקציה והסבירו מה היא פותרת.', 'הציגו בעיה → פתרון → שורת קוד אחת.']
+  ].map((ex, i) => ({ id: i + 1, minutes: `${i * 10}–${i * 10 + 8}`, title: `תרגול ${i + 1} — ${ex[0]}`, prompt: ex[1], hint: ex[2], check: { htmlIncludes: ['<main'], cssIncludes: ['background'], jsIncludes: keywords } }));
+
+  Object.assign(lessons[0], {
+    title: 'Mission Board — אפליקציית משימות סודית',
+    story: 'פותחים כמו חדר בקרה: כל ילד מוסיף משימה סודית ללוח, והאפליקציה מיד הופכת אותה לכרטיס משימה. רק אחרי הוואו מגלים שזו רשימה בקוד.',
+    mission: 'לבנות Mission Board חי: קלט, כפתור, רשימת משימות, render ותוצאה מיידית שמרגישה כמו מוצר אמיתי.',
+    starter: makeStarter({ title: 'Mission Board סודי', subtitle: 'כתבו משימה סודית לצוות — והיא תופיע כלוח מבצעים.', body: '<input id="taskInput" placeholder="למשל: לבנות רובוט שומר">\n  <button onclick="addTask()">🚀 הוספת משימה</button>\n  <button onclick="addSurprise()">🎲 משימת הפתעה</button>\n  <section id="taskList" class="output">אין משימות עדיין. הצוות מחכה...</section>', cssExtra: '\n.item { background: linear-gradient(135deg, #eff6ff, #f5f3ff); border-right: 6px solid #7c3aed; font-weight: bold; }', js: 'const tasks = ["להמציא שם לצוות", "לבנות אב־טיפוס ב־10 דקות"];\n\nfunction addTask() {\n  const text = document.getElementById("taskInput").value;\n  if (!text) return;\n  tasks.push(text);\n  renderTasks();\n}\n\nfunction addSurprise() {\n  tasks.push("משימת הפתעה: להוסיף כפתור מגניב ⚡");\n  renderTasks();\n}\n\nfunction renderTasks() {\n  document.getElementById("taskList").innerHTML = tasks.map((task, index) => `<div class="item">${index + 1}. ✅ ${task}</div>`).join("");\n}\n\nrenderTasks();' }),
+    lessonFlow: wowFlow('מוסיפים משימה והיא הופכת לכרטיס בלוח', 'בונים כפתור שמוסיף משימה לרשימה', 'array + push + render', 'Mission Board אישי או זוגי'),
+    exercises: wowExercises(['tasks', 'renderTasks'], 'הריצו, הוסיפו משימה סודית, ואז לחצו על “משימת הפתעה”. מה השתנה בלוח?'),
+    keywords: ['tasks', 'renderTasks']
+  });
+
+  Object.assign(lessons[1], {
+    title: 'Avatar Studio — פרופיל גיבור/ת טכנולוגיה',
+    story: 'הילדים בונים כרטיס גיבור/ת טכנולוגיה: שם, תפקיד, סמל וכוח מיוחד. כל שינוי בטופס מצייר מחדש את הכרטיס.',
+    mission: 'לבנות סטודיו פרופיל דינמי שמראה state אמיתי: הנתונים משתנים והמסך מצויר מחדש.',
+    starter: makeStarter({ title: 'Avatar Studio', subtitle: 'צרו גיבור/ת טכנולוגיה לכיתה.', body: '<input id="nameInput" placeholder="שם גיבור/ה">\n  <select id="roleInput"><option>מפתח/ת משחקים</option><option>מעצב/ת רובוטים</option><option>חוקר/ת AI</option></select>\n  <select id="emojiInput"><option>🤖</option><option>🚀</option><option>🧠</option><option>🐉</option></select>\n  <button onclick="updateProfile()">✨ יצירת פרופיל</button>\n  <section id="output" class="output"></section>', cssExtra: '\n.hero-profile { text-align: center; background: #f5f3ff; border-radius: 24px; padding: 18px; }\n.hero-profile .avatar { font-size: 4rem; }', js: 'const profile = { name: "נועה", role: "חוקר/ת AI", emoji: "🧠" };\n\nfunction updateProfile() {\n  profile.name = document.getElementById("nameInput").value || "גיבור/ה מסתורי/ת";\n  profile.role = document.getElementById("roleInput").value;\n  profile.emoji = document.getElementById("emojiInput").value;\n  renderProfile();\n}\n\nfunction renderProfile() {\n  document.getElementById("output").innerHTML = `<div class="hero-profile"><div class="avatar">${profile.emoji}</div><h2>${profile.name}</h2><p>${profile.role}</p><b>כוח מיוחד: לפתור באגים במהירות</b></div>`;\n}\n\nrenderProfile();' }),
+    lessonFlow: wowFlow('יוצרים אוואטר והוא מופיע ככרטיס מקצועי', 'מעדכנים state מתוך טופס', 'object + state + render', 'סטודיו אוואטרים לכיתה'),
+    exercises: wowExercises(['profile', 'renderProfile'], 'הריצו, בחרו אימוג׳י ותפקיד, וצרו כרטיס גיבור/ת טכנולוגיה.'),
+    keywords: ['profile', 'renderProfile']
+  });
+
+  Object.assign(lessons[2], {
+    title: 'App Screens — אפליקציה עם מסכים',
+    story: 'במקום עמוד אחד, הילדים יוצרים אפליקציה שמחליפה מסכים: בית, משימות וסטטוס. זה כבר מרגיש כמו מוצר אמיתי.',
+    mission: 'לבנות ניווט בין מסכים ולהבין שמסך הוא state חזותי שהקוד מציג או מסתיר.',
+    starter: makeStarter({ title: 'Control Center', subtitle: 'עברו בין מסכים כמו באפליקציה אמיתית.', body: '<button onclick="showScreen(\'home\')">🏠 בית</button>\n  <button onclick="showScreen(\'missions\')">🚀 משימות</button>\n  <button onclick="showScreen(\'status\')">📊 סטטוס</button>\n  <section id="output" class="output"></section>', js: 'const screens = {\n  home: "ברוכים הבאים למרכז הבקרה",\n  missions: "משימות פעילות: בניית אב־טיפוס, בדיקת באגים",\n  status: "סטטוס צוות: 87% מוכנים לדמו"\n};\n\nfunction showScreen(name) {\n  document.getElementById("output").textContent = screens[name];\n}\n\nshowScreen("home");' }),
+    lessonFlow: wowFlow('לוחצים והאפליקציה מחליפה מסכים', 'מוסיפים מסך חדש לאובייקט screens', 'object + key + showScreen', 'אפליקציית שלושה מסכים'),
+    exercises: wowExercises(['screens', 'showScreen'], 'הריצו ועברו בין בית, משימות וסטטוס. איזה מסך הכי מרגיש כמו אפליקציה?'),
+    keywords: ['screens', 'showScreen']
+  });
+
+  Object.assign(lessons[3], {
+    title: 'Smart Form — טופס שלא נותן לטעות',
+    story: 'הטופס מתנהג כמו מוצר אמיתי: אם לא כתבו שם, הוא לא ממשיך; אם מילאו נכון, הוא נותן אישור יפה.',
+    mission: 'לבנות טופס עם validation ידידותי: בדיקה לפני פעולה, הודעת שגיאה והודעת הצלחה.',
+    starter: makeStarter({ title: 'טופס הרשמה לצוות חלל', subtitle: 'האפליקציה בודקת שהפרטים מספיקים לפני אישור.', body: '<input id="nameInput" placeholder="שם">\n  <select id="teamInput"><option value="">בחרו צוות</option><option>צוות רובוטים</option><option>צוות חלל</option><option>צוות AI</option></select>\n  <button onclick="validateForm()">בדיקת הרשמה</button>\n  <section id="output" class="output"></section>', cssExtra: '\n.error { color: #b91c1c; background: #fee2e2; }\n.success { color: #15803d; background: #dcfce7; }', js: 'function validateForm() {\n  const name = document.getElementById("nameInput").value;\n  const team = document.getElementById("teamInput").value;\n  const output = document.getElementById("output");\n\n  if (!name || !team) {\n    output.className = "output error";\n    output.textContent = "חסרים פרטים — מוצר טוב עוזר למשתמש לתקן.";\n    return;\n  }\n\n  output.className = "output success";\n  output.textContent = name + " שובצת/שובצת ל" + team + " ✅";\n}' }),
+    lessonFlow: wowFlow('הטופס מזהה טעות ומחזיר הודעה חכמה', 'בונים תנאי if שמגן על המשתמש', 'validation + if + return', 'טופס הרשמה חכם'),
+    exercises: wowExercises(['validateForm', 'if'], 'הריצו בלי למלא פרטים, ואז מלאו נכון. מה ההבדל בהודעה?'),
+    keywords: ['validateForm', 'if']
+  });
+
+  Object.assign(lessons[4], {
+    title: 'Class Ideas — מיני־פרויקט רעיונות כיתתי',
+    story: 'השיעור החמישי מחבר הכול: הכיתה מציעה רעיונות, האפליקציה מציגה אותם ככרטיסים, ואפשר להציג Demo אמיתי.',
+    mission: 'לבנות מיני־מוצר כיתתי שמקבל רעיונות, שומר אותם ברשימה ומציג אותם יפה.',
+    starter: makeStarter({ title: 'בנק הרעיונות של הכיתה', subtitle: 'הוסיפו רעיון לאפליקציה/משחק/כלי AI שהייתם רוצים לבנות.', body: '<input id="ideaInput" placeholder="רעיון מגניב">\n  <button onclick="addIdea()">💡 הוספת רעיון</button>\n  <button onclick="pickIdea()">🎯 בחירת רעיון לדמו</button>\n  <section id="output" class="output"></section>', js: 'const ideas = ["אפליקציית שיעורי בית חכמה", "משחק ניקוד לכיתה", "עוזר AI לניסוח הודעות"];\n\nfunction addIdea() {\n  const idea = document.getElementById("ideaInput").value;\n  if (idea) ideas.push(idea);\n  renderIdeas();\n}\n\nfunction pickIdea() {\n  const idea = ideas[Math.floor(Math.random() * ideas.length)];\n  document.getElementById("output").innerHTML = `<h2>רעיון הדמו: ${idea}</h2>` + ideas.map(item => `<div class="item">💡 ${item}</div>`).join("");\n}\n\nfunction renderIdeas() {\n  document.getElementById("output").innerHTML = ideas.map(item => `<div class="item">💡 ${item}</div>`).join("");\n}\n\nrenderIdeas();' }),
+    lessonFlow: wowFlow('מוסיפים רעיון והאפליקציה בוחרת רעיון לדמו', 'מחברים input + array + render + random', 'mini product + MVP', 'בנק רעיונות כיתתי'),
+    exercises: wowExercises(['ideas', 'renderIdeas'], 'הריצו, הוסיפו רעיון משלכם, ואז לחצו על בחירת רעיון לדמו.'),
+    keywords: ['ideas', 'renderIdeas']
+  });
+
   window.APPFORGE_LESSONS = lessons;
   window.getAppForgeLesson = function (id) { const n = Number(id || 1); return lessons.find(l => l.id === n) || lessons[0]; };
 })();

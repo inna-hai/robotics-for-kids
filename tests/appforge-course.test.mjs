@@ -20,7 +20,12 @@ for (const lesson of lessons) {
   assert.ok(lesson.exercises.length >= 8, `lesson ${lesson.id} has exercises`);
   assert.ok(lesson.vocabulary.length >= 4, `lesson ${lesson.id} has vocab`);
 }
-assert.ok(lessons[0].starter.js.includes('tasks') && lessons[0].starter.js.includes('addTask'), 'lesson 1 is a real task app');
+assert.ok(lessons[0].title.includes('Mission Board'), 'lesson 1 is framed as a wow mission board');
+assert.ok(lessons[0].starter.js.includes('tasks') && lessons[0].starter.js.includes('addSurprise'), 'lesson 1 is a playful task app');
+assert.ok(lessons[1].title.includes('Avatar Studio') && lessons[1].starter.js.includes('renderProfile'), 'lesson 2 is a dynamic avatar studio');
+assert.ok(lessons[2].title.includes('Screens') && lessons[2].starter.js.includes('showScreen'), 'lesson 3 is a screen navigation app');
+assert.ok(lessons[3].title.includes('Smart Form') && lessons[3].starter.js.includes('validateForm'), 'lesson 4 is a smart validation form');
+assert.ok(lessons[4].title.includes('Class Ideas') && lessons[4].starter.js.includes('pickIdea'), 'lesson 5 is a playful class ideas mini project');
 assert.ok(lessons[8].concept.includes('localStorage'), 'lesson 9 covers localStorage');
 assert.ok(lessons[15].concept.includes('fetch'), 'lesson 16 covers API mock/fetch');
 assert.ok(lessons[20].title.includes('Prompt'), 'lesson 21 starts AI product tools');
