@@ -74,9 +74,63 @@
       $('exercises').innerHTML = lesson.exercises.map(ex => `<article class="exercise" id="ex-${ex.id}" onclick="selectExercise(${ex.id})"><b>${esc(ex.title)}</b><span>${esc(ex.minutes)}</span><p>${esc(ex.prompt)}</p><div class="hint">💡 ${esc(ex.hint)}</div></article>`).join('');
       renderBridgeBlocks(); selectExercise(1); runCode(); renderProgress();
     }
-    function showTab(name, btn){ document.querySelectorAll('.editor').forEach(e=>e.classList.remove('active')); document.querySelectorAll('.editor-tabs button').forEach(b=>b.classList.remove('active')); $(`tab-${name}`).classList.add('active'); btn.classList.add('active'); }
+    function activateCodeTab(name){ document.querySelectorAll('.editor').forEach(e=>e.classList.remove('active')); document.querySelectorAll('.editor-tabs button').forEach(b=>b.classList.remove('active')); $(`tab-${name}`).classList.add('active'); const buttons=[...document.querySelectorAll('.editor-tabs button')]; const index={html:0,css:1,js:2}[name]||0; buttons[index]?.classList.add('active'); }
+    function showTab(name, btn){ activateCodeTab(name); if(btn){ document.querySelectorAll('.editor-tabs button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); } }
     function toggleLessonPanel(){ const panel=$('lessonPanel'); const button=panel.querySelector('.lesson-toggle'); const collapsed=panel.classList.toggle('collapsed'); document.querySelector('.main').classList.toggle('lesson-collapsed', collapsed); button.setAttribute('aria-expanded', String(!collapsed)); $('lessonToggleIcon').textContent = collapsed ? '⌄' : '⌃'; if(window.Blockly && blocklyWorkspace) setTimeout(() => { Blockly.svgResize(blocklyWorkspace); alignBlocklyStarterBlocksRight(); }, 120); }
     function showGeneratedCode(){ $('codePeek').open = true; $('codePeek').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('feedback').className='feedback good'; $('feedback').textContent='זה הקוד שנוצר מהבלוקים שלך: HTML למבנה, CSS לעיצוב, JavaScript לפעולה.'; }
+
+    function codeTargetForBlock(block){
+      if(!block) return null;
+      const type = block.type;
+      if(type === 'page_start') return { tab:'html', snippets:['<main class="page-card">', '</main>'], label:'מעטפת העמוד' };
+      if(type === 'web_theme') return { tab:'css', snippets:['background:', 'body {'], label:'רקע ופלטת צבעים' };
+      if(type === 'web_title') return { tab:'html', snippets:[`<h1>${esc(block.getFieldValue('TEXT'))}</h1>`, '<h1>'], label:'כותרת HTML' };
+      if(type === 'web_paragraph') return { tab:'html', snippets:[`<p>${esc(block.getFieldValue('TEXT'))}</p>`, '<p>'], label:'פסקה HTML' };
+      if(type === 'web_emoji') return { tab:'html', snippets:['class="hero-emoji"', 'hero-emoji'], label:'סמל בעמוד' };
+      if(type === 'web_button') return { tab:'html', snippets:['onclick="showMessage()"', '<button'], label:'כפתור HTML שמפעיל JavaScript' };
+      if(type === 'web_columns') return { tab:'html', snippets:['class="columns"', '<section'], label:'קוביות מידע' };
+      if(type === 'web_footer') return { tab:'html', snippets:['<footer>'], label:'חתימת העמוד' };
+      if(type === 'web_card_shape') return { tab:'css', snippets:['border-radius:'], label:'צורת הכרטיס ב־CSS' };
+      if(type === 'web_shadow') return { tab:'css', snippets:['box-shadow:'], label:'צל הכרטיס ב־CSS' };
+      if(type === 'web_title_color') return { tab:'css', snippets:['h1 { color:'], label:'צבע הכותרת ב־CSS' };
+      if(type === 'web_button_style') return { tab:'css', snippets:['button {', 'border-radius:'], label:'עיצוב הכפתור ב־CSS' };
+      if(type === 'web_hover') return { tab:'css', snippets:['button:hover'], label:'אפקט Hover ב־CSS' };
+      return null;
+    }
+    function selectSnippetInEditor(tab, snippets){
+      activateCodeTab(tab);
+      const editor = $(`${tab}Code`);
+      if(!editor) return false;
+      const text = editor.value;
+      let start = -1, snippet = '';
+      for(const candidate of snippets){
+        if(!candidate) continue;
+        const index = text.indexOf(candidate);
+        if(index >= 0){ start = index; snippet = candidate; break; }
+      }
+      if(start < 0) return false;
+      const lineStart = text.lastIndexOf('\n', start) + 1;
+      let end = text.indexOf('\n', start + snippet.length);
+      if(end < 0) end = text.length;
+      editor.focus({ preventScroll: true });
+      editor.setSelectionRange(lineStart, end);
+      const before = text.slice(0, lineStart).split('\n').length - 1;
+      editor.scrollTop = Math.max(0, before * 23 - 70);
+      return true;
+    }
+    function highlightGeneratedCodeForBlock(blockId){
+      if(!blocklyWorkspace || !blockId) return;
+      const block = blocklyWorkspace.getBlockById(blockId);
+      const target = codeTargetForBlock(block);
+      if(!target) return;
+      generateCodeFromBlockly();
+      $('codePeek').open = true;
+      const highlighted = selectSnippetInEditor(target.tab, target.snippets);
+      if(highlighted){
+        $('feedback').className='feedback good';
+        $('feedback').textContent=`בחרת בלוק — סימנתי בקוד את: ${target.label}.`;
+      }
+    }
 
     let blocklyWorkspace = null;
     let blocklyReady = false;
@@ -138,7 +192,7 @@
       Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(webBuilderStarterXml()), blocklyWorkspace);
       setTimeout(alignBlocklyStarterBlocksRight, 80);
       setTimeout(alignBlocklyStarterBlocksRight, 300);
-      blocklyWorkspace.addChangeListener(event => { if(!blocklyReady || event.isUiEvent) return; generateCodeFromBlockly(); });
+      blocklyWorkspace.addChangeListener(event => { if(!blocklyReady) return; if(event.type === Blockly.Events.SELECTED && event.newElementId){ highlightGeneratedCodeForBlock(event.newElementId); return; } if(event.isUiEvent) return; generateCodeFromBlockly(); });
       blocklyReady = true;
       generateCodeFromBlockly();
     }

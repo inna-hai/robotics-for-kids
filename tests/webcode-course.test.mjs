@@ -154,6 +154,9 @@ assert.ok(play.includes('web_card_shape') && play.includes('web_hover'), 'play p
 assert.ok(play.includes('hasButton') && play.includes('cssParts'), 'generated CSS only includes styles for blocks students added');
 assert.ok(play.includes('סטודיו עיצוב'), 'play page toolbox includes design studio category');
 assert.ok(play.includes('generateCodeFromBlockly'), 'play page generates HTML/CSS/JS from connected Blockly blocks');
+assert.ok(play.includes('highlightGeneratedCodeForBlock'), 'selecting a Blockly block highlights its generated code');
+assert.ok(play.includes('codeTargetForBlock'), 'play page maps block types to generated code snippets');
+assert.ok(play.includes('setSelectionRange'), 'generated code highlight selects the relevant text in the editor');
 assert.ok(play.includes('shareProject'), 'play page can create a share link for the student project');
 assert.ok(play.includes('navigator.clipboard.writeText(shareUrl)'), 'share button copies only the public link');
 assert.ok(play.includes('הקישור הציבורי הועתק'), 'share button confirms the public link was copied');
