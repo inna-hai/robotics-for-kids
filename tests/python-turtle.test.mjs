@@ -5,7 +5,8 @@ const html = readFileSync(new URL('../python-turtle.html', import.meta.url), 'ut
 const codequest = readFileSync(new URL('../codequest.html', import.meta.url), 'utf8');
 const research = readFileSync(new URL('../PYTHON_TURTLE_RESEARCH.md', import.meta.url), 'utf8');
 
-assert.match(html, /Blockly → Python/);
+assert.match(html, /פייתון מצייר/);
+assert.match(html, /גוררים בלוקים ורואים קוד Python/);
 assert.match(html, /https:\/\/unpkg\.com\/blockly\/blockly\.min\.js/);
 assert.match(html, /const TURTLE_LESSONS = \[/);
 assert.match(html, /type:'py_forward'/);
@@ -30,6 +31,10 @@ assert.match(html, /circle cx="51" cy="32"/, 'custom turtle head points right at
 assert.match(html, /rotate\(\$\{turtle\.heading\}deg\)/, 'SVG turtle already faces right, so no visual offset is needed');
 assert.doesNotMatch(html, /turtle\.heading \+ 180/);
 assert.match(html, /startEmptyLesson/);
+assert.match(html, /initialLessonFromUrl/);
+assert.match(html, /searchParams\.set\('lesson'/);
+assert.match(html, /פייתון מצייר/);
+assert.doesNotMatch(html, /MVP חדש לכיתה/);
 assert.doesNotMatch(html, /setLesson\(1\); loadDemo\(\);/, 'opening a lesson must not auto-load the solution');
 assert.match(html, /מאפסים את הציור/);
 assert.match(html, /await sleep\(450\)/);
