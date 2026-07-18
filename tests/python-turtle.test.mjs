@@ -19,6 +19,7 @@ assert.match(html, /קוד Python שנוצר/);
 assert.match(html, /active-code-line/);
 assert.match(html, /data-block-id/);
 assert.match(html, /highlightSelectedCode/);
+assert.match(html, /rotate\(\$\{turtle\.heading \+ 180\}deg\)/, 'turtle emoji faces opposite by default, so visual heading is flipped');
 assert.match(html, /startEmptyLesson/);
 assert.doesNotMatch(html, /setLesson\(1\); loadDemo\(\);/, 'opening a lesson must not auto-load the solution');
 assert.match(html, /הרובוט המצייר/);

@@ -208,7 +208,7 @@
       const scaleX=card.clientWidth/canvas.width, scaleY=card.clientHeight/canvas.height;
       turtleEl.style.right = `${card.clientWidth - turtle.x*scaleX - 21}px`;
       turtleEl.style.top = `${turtle.y*scaleY - 21}px`;
-      turtleEl.style.transform = `rotate(${turtle.heading}deg)`;
+      turtleEl.style.transform = `rotate(${turtle.heading + 180}deg)`;
     }
     async function run(){
       resetDrawing(true);
