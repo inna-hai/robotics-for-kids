@@ -12,7 +12,7 @@
 <body>
   <main class="deck" id="deck"></main>
   <nav class="nav"><button onclick="prevSlide()">→ הקודם</button><span class="counter" id="counter"></span><div class="nav-actions"><button onclick="nextSlide()">הבא ←</button><a class="back" id="playLink" href="webcode-play.html">💻 לתרגול</a><a class="back" href="webcode.html">למסלול</a></div></nav>
-  <script src="js/webcode-lessons.js?v=20260718-lesson1"></script>
+  <script src="js/webcode-lessons.js?v=20260718-lesson2-design"></script>
   <script>
     const params = new URLSearchParams(location.search); const lesson = window.getWebCodeLesson(params.get('lesson')); let current=0;
     const esc = v => String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

@@ -18,7 +18,7 @@
         <h1>💻 WebCode Lab</h1>
         <p>לומדה לכיתה ד׳ שמתחילה מ־Blockly אמיתי: הילדים גוררים ומחברים בלוקים שבונים עמוד Web חי, ורק אחר כך מציצים לקוד שנוצר מאחור — בלי לזרוק אותם לעורך חופשי מוקדם מדי.</p>
         <div class="actions">
-          <a class="btn" href="webcode-play.html?lesson=1&v=real-blockly">▶️ להתחיל שיעור 1</a>
+          <a class="btn" href="webcode-play.html?lesson=1&v=lesson2-design">▶️ להתחיל שיעור 1</a>
           <a class="btn secondary" href="webcode-slides.html?lesson=1">📽️ מצגת מדריך לשיעור 1</a>
           <a class="btn secondary" href="holon-scope-grade4.html">🔭 עמוד חולון כיתה ד׳</a>
         </div>
@@ -33,12 +33,12 @@
       <div class="stat"><b>Live</b>תצוגה חיה</div>
     </section>
 
-    <section class="note"><b>העיקרון:</b> שיעור 1 הוא Blockly אמיתי לגמרי: גוררים בלוקים, מחברים שרשרת, ובונים עמוד. בהמשך נשמר הגשר לקוד: הילדים רואים HTML/CSS/JS שנוצר, אבל הקוד הוא הצצה — לא נקודת ההתחלה.</section>
+    <section class="note"><b>העיקרון:</b> שיעורים 1–2 הם Blockly אמיתי לגמרי: בשיעור 1 גוררים בלוקים שבונים עמוד, ובשיעור 2 גוררים בלוקי Design Studio שמעצבים אותו. הילדים רואים HTML/CSS/JS שנוצר, אבל הקוד הוא הצצה — לא נקודת ההתחלה.</section>
 
     <h2 class="section-title">שיעורים זמינים</h2>
     <section class="cards" id="cards"></section>
   </main>
-  <script src="js/webcode-lessons.js?v=20260718-real-blockly"></script>
+  <script src="js/webcode-lessons.js?v=20260718-lesson2-design"></script>
   <script>
     document.getElementById('cards').innerHTML = window.WEBCODE_LESSONS.map(lesson => `
       <a class="card" href="webcode-play.html?lesson=${lesson.id}">

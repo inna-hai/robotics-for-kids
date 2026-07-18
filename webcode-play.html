@@ -54,7 +54,7 @@
       <div class="feedback" id="feedback">בחרו תרגול, שנו קוד ולחצו הרצה.</div>
     </section>
   </main>
-  <script src="js/webcode-lessons.js?v=20260718-lesson1"></script>
+  <script src="js/webcode-lessons.js?v=20260718-lesson2-design"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const lesson = window.getWebCodeLesson(params.get('lesson'));
@@ -90,17 +90,29 @@
         { type:'web_emoji', message0:'סמל גדול %1', args0:[{type:'field_dropdown', name:'EMOJI', options:[['🚀 רקטה','🚀'],['🤖 רובוט','🤖'],['🎮 משחק','🎮'],['🌈 קשת','🌈'],['🧠 מוח','🧠']]}], previousStatement:null, nextStatement:null, colour:45 },
         { type:'web_button', message0:'כפתור %1 מציג הודעה %2', args0:[{type:'field_input', name:'LABEL', text:'לחצו להפתעה'},{type:'field_input', name:'MESSAGE', text:'הכפתור שלי עובד 🎉'}], previousStatement:null, nextStatement:null, colour:120 },
         { type:'web_columns', message0:'שתי קוביות מידע %1 וגם %2', args0:[{type:'field_input', name:'A', text:'רעיון ראשון'},{type:'field_input', name:'B', text:'רעיון שני'}], previousStatement:null, nextStatement:null, colour:300 },
-        { type:'web_footer', message0:'חתימה %1', args0:[{type:'field_input', name:'TEXT', text:'נבנה על ידי תלמיד/ה בכיתה ד׳'}], previousStatement:null, nextStatement:null, colour:15 }
+        { type:'web_footer', message0:'חתימה %1', args0:[{type:'field_input', name:'TEXT', text:'נבנה על ידי תלמיד/ה בכיתה ד׳'}], previousStatement:null, nextStatement:null, colour:15 },
+        { type:'web_card_shape', message0:'צורת כרטיס %1', args0:[{type:'field_dropdown', name:'SHAPE', options:[['עגול ורך','round'],['מרובע חד','sharp'],['כרטיס ענק','wide'],['בועה קומיקס','bubble']]}], previousStatement:null, nextStatement:null, colour:285 },
+        { type:'web_shadow', message0:'צל כרטיס %1', args0:[{type:'field_dropdown', name:'SHADOW', options:[['עדין','soft'],['דרמטי','dramatic'],['בלי צל','none'],['זוהר','glow']]}], previousStatement:null, nextStatement:null, colour:285 },
+        { type:'web_title_color', message0:'צבע כותרת %1', args0:[{type:'field_dropdown', name:'COLOR', options:[['כחול','blue'],['סגול','purple'],['ירוק','green'],['כתום','orange'],['ורוד','pink']]}], previousStatement:null, nextStatement:null, colour:285 },
+        { type:'web_button_style', message0:'סגנון כפתור %1', args0:[{type:'field_dropdown', name:'STYLE', options:[['גלולה','pill'],['קובייה','box'],['ניאון','neon'],['עדין','quiet']]}], previousStatement:null, nextStatement:null, colour:285 },
+        { type:'web_hover', message0:'אפקט מעבר עכבר %1', args0:[{type:'field_dropdown', name:'EFFECT', options:[['גדל קצת','grow'],['קופץ','jump'],['מחליף צבע','color'],['בלי אפקט','none']]}], previousStatement:null, nextStatement:null, colour:285 }
       ]);
       window.__webBuilderBlocksDefined = true;
     }
-    function webBuilderToolbox(){ return `<xml xmlns="https://developers.google.com/blockly/xml">
+    function webBuilderToolbox(){
+      const designStudio = lesson.id === 2 ? '<category name="סטודיו עיצוב" colour="285"><block type="web_card_shape"></block><block type="web_shadow"></block><block type="web_title_color"></block><block type="web_button_style"></block><block type="web_hover"></block></category>' : '';
+      return `<xml xmlns="https://developers.google.com/blockly/xml">
       <category name="מבנה עמוד" colour="210"><block type="page_start"></block><block type="web_title"></block><block type="web_paragraph"></block><block type="web_emoji"></block></category>
       <category name="עיצוב" colour="260"><block type="web_theme"></block><block type="web_columns"></block></category>
+      ${designStudio}
       <category name="פעולה" colour="120"><block type="web_button"></block></category>
       <category name="סיום" colour="15"><block type="web_footer"></block></category>
-    </xml>`; }
-    function webBuilderStarterXml(){ return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="page_start" x="40" y="40"><next><block type="web_theme"><field name="THEME">sky</field><next><block type="web_title"><field name="TEXT">העמוד הראשון שלי</field><next><block type="web_paragraph"><field name="TEXT">גררתי בלוקים והרכבתי עמוד בעצמי</field><next><block type="web_emoji"><field name="EMOJI">🚀</field><next><block type="web_button"><field name="LABEL">לחצו עליי</field><field name="MESSAGE">איזה כיף! בניתי עמוד מבלוקים 🎉</field></block></next></block></next></block></next></block></next></block></xml>`; }
+    </xml>`;
+    }
+    function webBuilderStarterXml(){
+      if(lesson.id === 2) return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="page_start" x="40" y="40"><next><block type="web_theme"><field name="THEME">space</field><next><block type="web_title"><field name="TEXT">כרטיס העיצוב שלי</field><next><block type="web_paragraph"><field name="TEXT">אותו עמוד יכול להרגיש אחרת לגמרי בזכות CSS</field><next><block type="web_emoji"><field name="EMOJI">🎮</field><next><block type="web_card_shape"><field name="SHAPE">round</field><next><block type="web_shadow"><field name="SHADOW">glow</field><next><block type="web_title_color"><field name="COLOR">purple</field><next><block type="web_button_style"><field name="STYLE">neon</field><next><block type="web_hover"><field name="EFFECT">grow</field><next><block type="web_button"><field name="LABEL">בדקו עיצוב</field><field name="MESSAGE">העיצוב שלי עובד ✨</field></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>`;
+      return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="page_start" x="40" y="40"><next><block type="web_theme"><field name="THEME">sky</field><next><block type="web_title"><field name="TEXT">העמוד הראשון שלי</field><next><block type="web_paragraph"><field name="TEXT">גררתי בלוקים והרכבתי עמוד בעצמי</field><next><block type="web_emoji"><field name="EMOJI">🚀</field><next><block type="web_button"><field name="LABEL">לחצו עליי</field><field name="MESSAGE">איזה כיף! בניתי עמוד מבלוקים 🎉</field></block></next></block></next></block></next></block></next></block></xml>`;
+    }
     function alignBlocklyStarterBlocksRight(){
       if(!blocklyWorkspace || !window.Blockly) return;
       const topBlock = blocklyWorkspace.getTopBlocks(false).find(block => block.type === 'page_start');
@@ -140,7 +152,7 @@
     }
     function generateCodeFromBlockly(){
       const blocks = collectPageBlocks();
-      let theme = 'sky', buttonMessage = 'הכפתור עובד 🎉';
+      let theme = 'sky', buttonMessage = 'הכפתור עובד 🎉', cardShape = 'round', shadow = 'soft', titleColor = null, buttonStyle = 'pill', hoverEffect = 'grow';
       const html = [];
       blocks.forEach(block => {
         if(block.type === 'web_theme') theme = block.getFieldValue('THEME') || theme;
@@ -150,11 +162,38 @@
         if(block.type === 'web_button'){ buttonMessage = block.getFieldValue('MESSAGE') || buttonMessage; html.push(`<button onclick="showMessage()">${esc(block.getFieldValue('LABEL'))}</button><p id="message">כאן תופיע הודעה מהכפתור...</p>`); }
         if(block.type === 'web_columns') html.push(`<section class="columns"><div>${esc(block.getFieldValue('A'))}</div><div>${esc(block.getFieldValue('B'))}</div></section>`);
         if(block.type === 'web_footer') html.push(`<footer>${esc(block.getFieldValue('TEXT'))}</footer>`);
+        if(block.type === 'web_card_shape') cardShape = block.getFieldValue('SHAPE') || cardShape;
+        if(block.type === 'web_shadow') shadow = block.getFieldValue('SHADOW') || shadow;
+        if(block.type === 'web_title_color') titleColor = block.getFieldValue('COLOR') || titleColor;
+        if(block.type === 'web_button_style') buttonStyle = block.getFieldValue('STYLE') || buttonStyle;
+        if(block.type === 'web_hover') hoverEffect = block.getFieldValue('EFFECT') || hoverEffect;
       });
       const palettes = { sky:['#dbeafe','#2563eb','#eff6ff'], space:['#ede9fe','#7c3aed','#faf5ff'], arcade:['#dcfce7','#16a34a','#f0fdf4'], sunset:['#ffedd5','#f97316','#fff7ed'] };
       const [bg,accent,soft] = palettes[theme] || palettes.sky;
+      const titleColors = { blue:'#2563eb', purple:'#7c3aed', green:'#16a34a', orange:'#f97316', pink:'#db2777' };
+      const radiusByShape = { round:'30px', sharp:'8px', wide:'24px', bubble:'46px' };
+      const widthByShape = { wide:'min(560px, 94vw)' };
+      const shadowByStyle = { soft:`0 18px 38px ${accent}55`, dramatic:'0 26px 60px rgba(15, 23, 42, .32)', none:'none', glow:`0 0 34px ${accent}88` };
+      const buttonRadius = { pill:'999px', box:'12px', neon:'999px', quiet:'18px' }[buttonStyle] || '999px';
+      const buttonShadow = buttonStyle === 'neon' ? `0 0 18px ${accent}aa` : 'none';
+      const buttonBackground = buttonStyle === 'quiet' ? soft : accent;
+      const buttonColor = buttonStyle === 'quiet' ? accent : 'white';
+      const hoverCss = hoverEffect === 'none' ? '' : hoverEffect === 'color' ? `
+
+button:hover {
+  background: #0f172a;
+  transform: translateY(-2px);
+}` : hoverEffect === 'jump' ? `
+
+button:hover {
+  transform: translateY(-6px);
+}` : `
+
+button:hover {
+  transform: scale(1.07);
+}`;
       $('htmlCode').value = `<main class="page-card">\n  ${html.join('\n  ')}\n</main>`;
-      $('cssCode').value = `body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: ${bg};\n}\n\n.page-card {\n  background: white;\n  width: min(430px, 92vw);\n  margin: 42px auto;\n  padding: 30px;\n  border-radius: 30px;\n  box-shadow: 0 18px 38px ${accent}55;\n}\n\nh1 { color: ${accent}; }\n\n.hero-emoji {\n  font-size: 76px;\n  margin: 18px 0;\n}\n\nbutton {\n  background: ${accent};\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 13px 22px;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n.columns {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 12px;\n  margin: 18px 0;\n}\n\n.columns div, #message, footer {\n  background: ${soft};\n  border-radius: 18px;\n  padding: 12px;\n}`;
+      $('cssCode').value = `body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: ${bg};\n}\n\n.page-card {\n  background: white;\n  width: ${widthByShape[cardShape] || 'min(430px, 92vw)'};\n  margin: 42px auto;\n  padding: 30px;\n  border-radius: ${radiusByShape[cardShape] || '30px'};\n  box-shadow: ${shadowByStyle[shadow] || shadowByStyle.soft};\n}\n\nh1 { color: ${titleColor ? titleColors[titleColor] : accent}; }\n\n.hero-emoji {\n  font-size: 76px;\n  margin: 18px 0;\n}\n\nbutton {\n  background: ${buttonBackground};\n  color: ${buttonColor};\n  border: 0;\n  border-radius: ${buttonRadius};\n  padding: 13px 22px;\n  font-weight: bold;\n  cursor: pointer;\n  box-shadow: ${buttonShadow};\n  transition: .18s ease;\n}${hoverCss}\n\n.columns {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 12px;\n  margin: 18px 0;\n}\n\n.columns div, #message, footer {\n  background: ${soft};\n  border-radius: 18px;\n  padding: 12px;\n}`;
       $('jsCode').value = `function showMessage() {\n  document.getElementById("message").textContent = "${String(buttonMessage).replaceAll('"','\\"')}";\n}`;
       runCode();
       $('feedback').className='feedback good';
