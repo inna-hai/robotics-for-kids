@@ -25,6 +25,8 @@ assert.match(html, /rotate\(\$\{turtle\.heading\}deg\)/, 'SVG turtle already fac
 assert.doesNotMatch(html, /turtle\.heading \+ 180/);
 assert.match(html, /startEmptyLesson/);
 assert.doesNotMatch(html, /setLesson\(1\); loadDemo\(\);/, 'opening a lesson must not auto-load the solution');
+assert.match(html, /מאפסים את הציור/);
+assert.match(html, /await sleep\(450\)/);
 assert.match(html, /הרובוט המצייר/);
 assert.match(html, /משתנים/);
 assert.match(html, /תנאים/);

@@ -220,10 +220,13 @@
       turtleEl.style.top = `${turtle.y*scaleY - 21}px`;
       turtleEl.style.transform = `rotate(${turtle.heading}deg)`;
     }
+    async function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
     async function run(){
       resetDrawing(true);
       const actions=getActions();
       if(!actions.length){statusEl.textContent='גררו בלוקים קודם 🙂';return;}
+      statusEl.textContent='מאפסים את הציור...';
+      await sleep(450);
       statusEl.textContent=`מריץ ${actions.length} פקודות...`;
       for(const a of actions){
         if(a.cmd==='forward'){
@@ -237,7 +240,7 @@
         else if(a.cmd==='width') turtle.width = a.v;
         else if(a.cmd==='pen') turtle.pen = a.v;
         updateTurtle();
-        await new Promise(r=>setTimeout(r,120));
+        await sleep(120);
       }
       statusEl.innerHTML='<span class="ok">הציור מוכן!</span>';
     }
