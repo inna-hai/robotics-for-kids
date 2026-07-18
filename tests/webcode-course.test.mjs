@@ -136,6 +136,7 @@ assert.ok(play.includes('lessonToggleIcon') && play.includes('⌃') && play.incl
 assert.ok(play.includes('lesson-collapsed'), 'collapsing instructions reallocates space to Blockly and preview sections');
 assert.ok(play.includes('Blockly.svgResize'), 'collapsing instructions resizes Blockly after layout change');
 assert.ok(play.includes('alignBlocklyStarterBlocksRight'), 'starter Blockly program is aligned to the right side of the workspace');
+assert.ok(play.includes('safeRightEdge') && play.includes('blocklyToolboxCategoryGroup'), 'starter blocks align to free workspace edge without overlapping toolbox');
 assert.ok(play.includes('checkExercise()'), 'play page has exercise checking');
 assert.ok(play.includes('completedTitle'), 'check button keeps success feedback visible after running preview');
 assert.ok(play.includes('webcode-error'), 'play page catches preview JavaScript errors');

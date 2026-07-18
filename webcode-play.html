@@ -109,9 +109,11 @@
       if(!topBlock || !blockRoot || !area) return;
       const blockRect = blockRoot.getBoundingClientRect();
       const areaRect = area.getBoundingClientRect();
+      const toolboxRect = (document.querySelector('.blocklyToolboxDiv') || document.querySelector('.blocklyToolboxCategoryGroup'))?.getBoundingClientRect();
       const scale = blocklyWorkspace.scale || 1;
-      const desiredGap = 8;
-      const visualDelta = areaRect.right - blockRect.right - desiredGap;
+      const safeRightEdge = toolboxRect && toolboxRect.width > 20 ? toolboxRect.left : areaRect.right;
+      const desiredGap = 22;
+      const visualDelta = safeRightEdge - blockRect.right - desiredGap;
       if(Math.abs(visualDelta) > 4) topBlock.moveBy(visualDelta / scale, 0);
     }
     function renderRealBlocklyBuilder(){
