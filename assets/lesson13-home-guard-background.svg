@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-label="בית פרטי בלילה מוקף גדר עם שער">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#06112f"/>
+      <stop offset="0.55" stop-color="#172554"/>
+      <stop offset="1" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="yard" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#14532d"/>
+      <stop offset="1" stop-color="#052e16"/>
+    </linearGradient>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="18" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#020617" flood-opacity="0.55"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="760" fill="url(#sky)"/>
+  <circle cx="160" cy="105" r="44" fill="#fef3c7" filter="url(#softGlow)"/>
+  <circle cx="180" cy="95" r="44" fill="#06112f" opacity="0.95"/>
+
+  <g fill="#f8fafc" opacity="0.85">
+    <circle cx="330" cy="80" r="2.4"/><circle cx="510" cy="118" r="2"/><circle cx="780" cy="72" r="2.2"/>
+    <circle cx="1010" cy="142" r="2"/><circle cx="910" cy="58" r="1.8"/><circle cx="650" cy="48" r="1.7"/>
+    <circle cx="106" cy="230" r="1.9"/><circle cx="1130" cy="92" r="2.1"/><circle cx="430" cy="205" r="1.7"/>
+  </g>
+
+  <rect x="0" y="520" width="1200" height="240" fill="url(#yard)"/>
+  <path d="M0 620 C210 570 330 670 520 610 C720 548 875 656 1200 590 L1200 760 L0 760 Z" fill="#064e3b" opacity="0.75"/>
+
+  <path d="M540 492 C530 565 510 642 482 760 L725 760 C696 642 672 565 660 492 Z" fill="#475569" opacity="0.85"/>
+  <path d="M565 492 C562 555 550 625 536 760" stroke="#94a3b8" stroke-width="4" opacity="0.35"/>
+  <path d="M635 492 C638 555 653 625 668 760" stroke="#94a3b8" stroke-width="4" opacity="0.35"/>
+
+  <g filter="url(#shadow)">
+    <rect x="380" y="285" width="440" height="220" rx="18" fill="#1e293b" stroke="#cbd5e1" stroke-width="5"/>
+    <path d="M340 305 L600 130 L860 305 Z" fill="#7f1d1d" stroke="#fecaca" stroke-width="5"/>
+    <rect x="555" y="392" width="90" height="113" rx="8" fill="#334155" stroke="#cbd5e1" stroke-width="4"/>
+    <circle cx="628" cy="448" r="5" fill="#facc15"/>
+    <rect x="425" y="340" width="86" height="64" rx="8" fill="#fde68a" stroke="#fbbf24" stroke-width="4" opacity="0.92"/>
+    <rect x="690" y="340" width="86" height="64" rx="8" fill="#fde68a" stroke="#fbbf24" stroke-width="4" opacity="0.92"/>
+    <line x1="468" y1="340" x2="468" y2="404" stroke="#92400e" stroke-width="3" opacity="0.45"/>
+    <line x1="425" y1="372" x2="511" y2="372" stroke="#92400e" stroke-width="3" opacity="0.45"/>
+    <line x1="733" y1="340" x2="733" y2="404" stroke="#92400e" stroke-width="3" opacity="0.45"/>
+    <line x1="690" y1="372" x2="776" y2="372" stroke="#92400e" stroke-width="3" opacity="0.45"/>
+    <text x="600" y="548" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#e2e8f0">בית לשמירה</text>
+  </g>
+
+  <g stroke="#92400e" stroke-width="11" stroke-linecap="round">
+    <line x1="120" y1="570" x2="1080" y2="570"/>
+    <line x1="120" y1="642" x2="1080" y2="642"/>
+    <line x1="120" y1="540" x2="120" y2="680"/>
+    <line x1="210" y1="540" x2="210" y2="680"/>
+    <line x1="300" y1="540" x2="300" y2="680"/>
+    <line x1="390" y1="540" x2="390" y2="680"/>
+    <line x1="810" y1="540" x2="810" y2="680"/>
+    <line x1="900" y1="540" x2="900" y2="680"/>
+    <line x1="990" y1="540" x2="990" y2="680"/>
+    <line x1="1080" y1="540" x2="1080" y2="680"/>
+  </g>
+
+  <g id="gate">
+    <rect x="485" y="538" width="230" height="158" rx="16" fill="none" stroke="#a16207" stroke-width="10"/>
+    <line x1="600" y1="538" x2="600" y2="696" stroke="#a16207" stroke-width="8"/>
+    <circle cx="586" cy="618" r="7" fill="#fde68a"/>
+    <circle cx="614" cy="618" r="7" fill="#fde68a"/>
+    <text x="600" y="725" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#fde68a">שער</text>
+  </g>
+
+  <g opacity="0.9">
+    <circle cx="955" cy="430" r="72" fill="#fef08a" opacity="0.16"/>
+    <rect x="948" y="350" width="14" height="130" rx="7" fill="#64748b"/>
+    <circle cx="955" cy="335" r="18" fill="#fde68a"/>
+  </g>
+</svg>
