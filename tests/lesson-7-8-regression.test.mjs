@@ -63,11 +63,11 @@ test('lesson 7 goal sensor is wired from Blockly toolbox to condition evaluation
   assertIncludes(indexHtml, "case 'sensor_goal':");
   assertIncludes(indexHtml, "return val === 'YES' ? canSenseGoal() : !canSenseGoal();");
   assertIncludes(indexHtml, "document.getElementById('goalText').textContent = currentLesson === 7");
-  assertIncludes(indexHtml, "document.getElementById('sensorGoal').classList.toggle('active', currentLesson === 7 && sensesGoal);");
+  assertIncludes(indexHtml, "document.getElementById('sensorGoal').classList.toggle('active', (currentLesson === 7 || currentLesson === 12) && sensesGoal);");
 });
 
 test('lesson 7 goal sensor uses a dedicated goal check rather than reusing the wall/touch sensor', () => {
-  assertMatches(indexHtml, /function\s+canSenseGoal\s*\(\)\s*{[\s\S]*?currentLesson\s*!==\s*7[\s\S]*?getLesson7LinePoints\(\)\.end[\s\S]*?getLineSensorPoint\(\)[\s\S]*?<=\s*34;[\s\S]*?}/);
+  assertMatches(indexHtml, /function\s+canSenseGoal\s*\(\)\s*{[\s\S]*?currentLesson\s*===\s*12[\s\S]*?getLesson12HomeTarget\(\)[\s\S]*?<=\s*90;[\s\S]*?currentLesson\s*!==\s*7[\s\S]*?getLesson7LinePoints\(\)\.end[\s\S]*?getLineSensorPoint\(\)[\s\S]*?<=\s*34;[\s\S]*?}/);
   const goalFunction = indexHtml.match(/function\s+canSenseGoal\s*\(\)\s*{([\s\S]*?)\n\s*}/)?.[1] || '';
   assert.doesNotMatch(goalFunction, /environment\.obstacle/, 'Goal sensor should not depend on the wall/obstacle environment');
 });
@@ -124,7 +124,7 @@ test('lesson sensor and environment controls are specific to each lesson, not cu
     9: { sensors: ['sensorPeople', 'sensorSound'], env: ['envPeople', 'envSound'] },
     10: { sensors: ['sensorSoil'], env: ['envSoilDry'] },
     11: { sensors: ['sensorArmed', 'sensorMotion', 'sensorDoor'], env: ['envArmedMode', 'envMotion', 'envDoorOpen'] },
-    12: { sensors: ['sensorTouch', 'sensorGoal'], env: ['envObstacle'] },
+    12: { sensors: ['sensorTouch', 'sensorDeliveryPackage', 'sensorGoal'], env: ['envObstacle', 'envDeliveryPackage'] },
     13: { sensors: ['sensorLight', 'sensorMotion', 'sensorSound'], env: ['envLight', 'envMotion', 'envSound'] },
     14: { sensors: ['sensorSmell', 'sensorTemp', 'sensorTouch'], env: ['envSmoke', 'envTemperatureHot', 'envObstacle'] }
   };
@@ -221,7 +221,7 @@ test('lesson 9 uses a cute classroom background image with empty chairs and over
   assertIncludes(indexHtml, '// Cute classroom background image: empty chairs by default, no grass/sky/CSS classroom drawing.');
   assertIncludes(indexHtml, '.ground.classroom-ground');
   assertIncludes(indexHtml, 'ground?.classList.toggle(\'classroom-ground\', num === 9);');
-  assertIncludes(indexHtml, "canvas.height = container.clientHeight - (currentLesson === 9 ? 0 : 60); // Account for ground except classroom");
+  assertIncludes(indexHtml, "canvas.height = container.clientHeight - (currentLesson === 9 || currentLesson === 12 ? 0 : 60); // Account for ground except full-background scenes");
   assertIncludes(indexHtml, '// Use source-cropping instead of stretching, so the classroom stays sharp and not smeared.');
   assertIncludes(indexHtml, 'ctx.drawImage(lesson9ClassroomBg, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);');
   assertIncludes(indexHtml, '// Keep the original classroom image, but cover only the built-in ceiling lamp with a ceiling-shaped patch.');
@@ -256,15 +256,17 @@ test('lesson 9 classroom noise is sensed as loud without touching the robot and 
   assertNotIncludes(indexHtml, "ctx.fillText('רעש בכיתה', canvas.width * 0.88, canvas.height * 0.57);");
 });
 
-test('lesson 7 mission board is compact at the top-left, while lessons 8, 9 and 11 stay compact', () => {
-  assertIncludes(indexHtml, 'const compactMission = currentLesson === 7 || currentLesson === 8 || currentLesson === 9 || currentLesson === 11;');
-  assertIncludes(indexHtml, 'const boardX = currentLesson === 7 ? 20 : currentLesson === 8 ? canvas.width - 218 : currentLesson === 9 ? canvas.width - 224 : currentLesson === 11 ? canvas.width - 220 : canvas.width * 0.56;');
-  assertIncludes(indexHtml, 'const boardY = currentLesson === 7 ? 40 : currentLesson === 8 ? 8 : currentLesson === 9 ? 42 : currentLesson === 11 ? 40 : canvas.height * 0.12;');
-  assertIncludes(indexHtml, 'const boardW = currentLesson === 7 ? 190 : currentLesson === 8 ? 210 : currentLesson === 9 ? 196 : currentLesson === 11 ? 198 : canvas.width * 0.36;');
-  assertIncludes(indexHtml, 'const boardH = currentLesson === 7 ? 70 : currentLesson === 8 ? 78 : currentLesson === 9 ? 70 : currentLesson === 11 ? 74 : 135;');
+test('lesson 7 mission board is compact at the top-left, while lessons 8, 9, 11 and 12 stay compact', () => {
+  assertIncludes(indexHtml, 'const compactMission = currentLesson === 7 || currentLesson === 8 || currentLesson === 9 || currentLesson === 11 || currentLesson === 12;');
+  assertIncludes(indexHtml, 'currentLesson === 12 ? (canvas.width - Math.min(250, canvas.width * 0.44)) / 2');
+  assertIncludes(indexHtml, 'currentLesson === 12 ? 44');
+  assertIncludes(indexHtml, 'currentLesson === 12 ? Math.min(250, canvas.width * 0.44)');
+  assertIncludes(indexHtml, 'currentLesson === 12 ? 62');
   assertIncludes(indexHtml, '? { titleSize: 11, bodySize: 9, titleY: 15, line1Y: 31, line2Y: 45, line3Y: 59 }');
   assertIncludes(indexHtml, 'currentLesson === 9');
   assertIncludes(indexHtml, '? { titleSize: 11, bodySize: 9, titleY: 15, line1Y: 31, line2Y: 45, line3Y: 59 }');
+  assertIncludes(indexHtml, 'currentLesson === 12');
+  assertIncludes(indexHtml, '? { titleSize: 10, bodySize: 8, titleY: 12, line1Y: 25, line2Y: 38, line3Y: 51 }');
   assertIncludes(indexHtml, ": { titleSize: 12, bodySize: 10, titleY: 17, line1Y: 37, line2Y: 53, line3Y: 68 }");
   assertIncludes(indexHtml, "ctx.fillText('🎯 משימה', boardX + boardW - 12, boardY + compactText.titleY);");
 });
