@@ -104,6 +104,13 @@ test('line off is not exposed as a separate environment button', () => {
   assert.doesNotMatch(indexHtml, /toggleEnv\('lineOff'\)/);
 });
 
+test('lesson 12 obstacle block detects only a real fence collision, not just a fence on the board', () => {
+  assertMatches(indexHtml, /case 'sensor_obstacle': \{[\s\S]*?const obstacleDetected = currentLesson === 12 \? canSenseTouch\(\) : Boolean\(environment\.obstacle\);[\s\S]*?return val === 'YES' \? obstacleDetected : !obstacleDetected;[\s\S]*?\}/);
+  assertMatches(indexHtml, /if \(currentLesson === 12\) \{[\s\S]*?return Boolean\(robot\.hitLesson12Fence\);[\s\S]*?\}/);
+  assertIncludes(indexHtml, 'robot.hitLesson12Fence = true;');
+  assert.doesNotMatch(indexHtml, /while \(isRunning && wouldHitLesson12Fence/, 'A movement block should report the collision and return control to the loop/next condition.');
+});
+
 test('lesson sensor and environment controls are specific to each lesson, not cumulative', () => {
   const overridesBlock = indexHtml.match(/const\s+lessonControlOverrides\s*=\s*\{[\s\S]*?\n\s*\};/)?.[0] || '';
   const getList = (lesson, key) => {
@@ -409,6 +416,21 @@ test('lesson 11 scene only draws active security symbols without covering cards'
   assertMatches(indexHtml, /if \(currentLesson === 11\) \{[\s\S]*?const activeStates = \[environment\.doorOpen, environment\.motion, robot\.alarmOn\];[\s\S]*?if \(!activeStates\[i\]\) return;[\s\S]*?ctx\.fillText\(emojis\[i\], xs\[i\], y - 12\);[\s\S]*?return;[\s\S]*?\}/);
   const lesson11Block = indexHtml.match(/if \(currentLesson === 11\) \{[\s\S]*?return;\n\s*\}/)?.[0] || '';
   assert.ok(!lesson11Block.includes('roundRect'), 'Lesson 11 active symbols should not be drawn inside covering cards');
+});
+
+
+
+test('lesson 12 slide count includes all 60-minute exercises', () => {
+  const lesson12 = lessonObjectSource(12);
+  for (const minutes of ["12–25", "25–35", "35–50", "50–55"]) {
+    assertIncludes(lesson12, `minutes: '${minutes}'`);
+    assertIncludes(lessonsData, `afterFlowMinutes: '${minutes}'`);
+  }
+  assertIncludes(lessonsData, 'תרגיל 1 — קל: משלוח מלא בלי גדר');
+  assertIncludes(lessonsData, 'תרגיל 2 — שדרוג: מזהים גדר ועוקפים');
+  assertIncludes(lessonsData, 'תרגיל 3 — בדיקת שתי ריצות: בלי גדר ועם גדר');
+  assertIncludes(lessonsData, 'תרגיל 4 — משפרים את העקיפה');
+  assertIncludes(lessonsData, 'תרגיל 5 — שדרוג אישי קצר');
 });
 
 let passed = 0;

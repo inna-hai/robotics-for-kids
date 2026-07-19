@@ -1139,7 +1139,7 @@
         let workspace = null;
         let completedTasks = [];
 
-        let robot = { x: 150, y: 180, angle: 0, speaking: '', streetLightOn: false, trafficLightGreen: false, trafficCarsStopped: false, pedestrianStopped: false, vehicleStopped: false, fanOn: false, waterOn: false, alarmOn: false, sortedBin: '' };
+        let robot = { x: 150, y: 180, angle: 0, speaking: '', streetLightOn: false, trafficLightGreen: false, trafficCarsStopped: false, pedestrianStopped: false, vehicleStopped: false, fanOn: false, waterOn: false, alarmOn: false, sortedBin: '', hitLesson12Fence: false };
         let environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, doorOpen: false, deliveryPackage: false, deliveryDropped: false };
         let smokeStartedAt = null;
 
@@ -1207,6 +1207,7 @@
             }
             robot.angle = 0;
             robot.vehicleStopped = false;
+            robot.hitLesson12Fence = false;
 
             // Reset objects to default positions
             objects.wall.x = currentLesson === 3 ? canvas.width * 0.72 : currentLesson === 14 ? canvas.width * 0.66 : canvas.width - 80;
@@ -2960,8 +2961,14 @@
             const newY = Math.max(30, Math.min(canvas.height - 30, pos.y - dragOffset.y));
 
             if (dragging === 'robot') {
+                if (wouldHitLesson12Fence(newX, newY)) {
+                    robot.hitLesson12Fence = true;
+                    robot.speaking = 'נתקעתי בגדר!';
+                    return;
+                }
                 robot.x = newX;
                 robot.y = newY;
+                robot.hitLesson12Fence = false;
             } else if (objects[dragging]) {
                 objects[dragging].x = newX;
                 objects[dragging].y = newY;
@@ -3838,8 +3845,20 @@
                         await sleep(250);
                         break;
                     }
-                    robot.x += Math.cos(robot.angle * Math.PI / 180) * 30;
-                    robot.y += Math.sin(robot.angle * Math.PI / 180) * 30;
+                    {
+                        let nextX = robot.x + Math.cos(robot.angle * Math.PI / 180) * 30;
+                        let nextY = robot.y + Math.sin(robot.angle * Math.PI / 180) * 30;
+                        if (wouldHitLesson12Fence(nextX, nextY)) {
+                            robot.hitLesson12Fence = true;
+                            robot.speaking = 'נתקעתי בגדר!';
+                            await sleep(700);
+                            break;
+                        }
+                        robot.hitLesson12Fence = false;
+                        robot.speaking = '';
+                        robot.x = nextX;
+                        robot.y = nextY;
+                    }
                     robot.x = Math.max(40, Math.min(canvas.width - 40, robot.x));
                     robot.y = Math.max(40, Math.min(canvas.height - 40, robot.y));
                     await sleep(400);
@@ -3847,8 +3866,20 @@
 
                 case 'move_backward':
                     robot.vehicleStopped = false;
-                    robot.x -= Math.cos(robot.angle * Math.PI / 180) * 30;
-                    robot.y -= Math.sin(robot.angle * Math.PI / 180) * 30;
+                    {
+                        let nextX = robot.x - Math.cos(robot.angle * Math.PI / 180) * 30;
+                        let nextY = robot.y - Math.sin(robot.angle * Math.PI / 180) * 30;
+                        if (wouldHitLesson12Fence(nextX, nextY)) {
+                            robot.hitLesson12Fence = true;
+                            robot.speaking = 'נתקעתי בגדר!';
+                            await sleep(700);
+                            break;
+                        }
+                        robot.hitLesson12Fence = false;
+                        robot.speaking = '';
+                        robot.x = nextX;
+                        robot.y = nextY;
+                    }
                     robot.x = Math.max(40, Math.min(canvas.width - 40, robot.x));
                     robot.y = Math.max(40, Math.min(canvas.height - 40, robot.y));
                     await sleep(400);
@@ -4063,6 +4094,13 @@
             return Math.sqrt(dx * dx + dy * dy);
         }
 
+        function wouldHitLesson12Fence(nextX, nextY) {
+            if (currentLesson !== 12 || !environment.obstacle) return false;
+            const dx = nextX - objects.wall.x;
+            const dy = nextY - objects.wall.y;
+            return Math.sqrt(dx * dx + dy * dy) < 64;
+        }
+
         // Check if robot can sense each element (with proximity)
         function canSenseLight() {
             // Light is ambient - always sensed if on
@@ -4085,8 +4123,12 @@
         }
 
         function canSenseTouch() {
+            if (!environment.obstacle) return false;
+            if (currentLesson === 12) {
+                return Boolean(robot.hitLesson12Fence);
+            }
             // Touch requires being close (within 70 pixels)
-            return environment.obstacle && distanceToObject(objects.wall) < 70;
+            return distanceToObject(objects.wall) < 70;
         }
 
         function canSenseSmoke() {
@@ -4253,8 +4295,10 @@
                 }
                 case 'sensor_touch':
                     return val === 'YES' ? canSenseTouch() : !canSenseTouch();
-                case 'sensor_obstacle':
-                    return val === 'YES' ? Boolean(environment.obstacle) : !environment.obstacle;
+                case 'sensor_obstacle': {
+                    const obstacleDetected = currentLesson === 12 ? canSenseTouch() : Boolean(environment.obstacle);
+                    return val === 'YES' ? obstacleDetected : !obstacleDetected;
+                }
                 case 'sensor_smell':
                     return val === 'YES' ? canSenseSmoke() : !canSenseSmoke();
                 case 'sensor_temperature':
