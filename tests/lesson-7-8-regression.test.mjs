@@ -59,11 +59,11 @@ test('lesson 7 goal sensor is wired from Blockly toolbox to condition evaluation
   assertIncludes(indexHtml, 'id="sensorGoal"');
   assertMatches(indexHtml, /sensors:\s*\[[^\]]*'sensor_goal'[^\]]*\]/);
   assertIncludes(indexHtml, "Blockly.Blocks['sensor_goal']");
-  assertIncludes(indexHtml, "appendField('🏁 חיישן יעד =')");
+  assertIncludes(indexHtml, "currentLesson === 13 ? '🏁 סוף גדר =' : '🏁 חיישן יעד ='");
   assertIncludes(indexHtml, "case 'sensor_goal':");
   assertIncludes(indexHtml, "return val === 'YES' ? canSenseGoal() : !canSenseGoal();");
   assertIncludes(indexHtml, "document.getElementById('goalText').textContent = currentLesson === 7");
-  assertIncludes(indexHtml, "document.getElementById('sensorGoal').classList.toggle('active', (currentLesson === 7 || currentLesson === 12) && sensesGoal);");
+  assertIncludes(indexHtml, "document.getElementById('sensorGoal').classList.toggle('active', (currentLesson === 7 || currentLesson === 12 || currentLesson === 13) && sensesGoal);");
 });
 
 test('lesson 7 goal sensor uses a dedicated goal check rather than reusing the wall/touch sensor', () => {
@@ -132,7 +132,7 @@ test('lesson sensor and environment controls are specific to each lesson, not cu
     10: { sensors: ['sensorSoil'], env: ['envSoilDry'] },
     11: { sensors: ['sensorArmed', 'sensorMotion', 'sensorDoor'], env: ['envArmedMode', 'envMotion', 'envDoorOpen'] },
     12: { sensors: ['sensorTouch', 'sensorDeliveryPackage', 'sensorGoal'], env: ['envObstacle', 'envDeliveryPackage'] },
-    13: { sensors: ['sensorLight', 'sensorMotion', 'sensorSound'], env: ['envLight', 'envMotion', 'envSound'] },
+    13: { sensors: ['sensorLight', 'sensorBurglar', 'sensorHomeowner', 'sensorMotion', 'sensorSound', 'sensorGoal'], env: ['envLight', 'envBurglar', 'envHomeowner', 'envSound'] },
     14: { sensors: ['sensorSmell', 'sensorTemp', 'sensorTouch'], env: ['envSmoke', 'envTemperatureHot', 'envObstacle'] }
   };
 
@@ -228,7 +228,7 @@ test('lesson 9 uses a cute classroom background image with empty chairs and over
   assertIncludes(indexHtml, '// Cute classroom background image: empty chairs by default, no grass/sky/CSS classroom drawing.');
   assertIncludes(indexHtml, '.ground.classroom-ground');
   assertIncludes(indexHtml, 'ground?.classList.toggle(\'classroom-ground\', num === 9);');
-  assertIncludes(indexHtml, "canvas.height = container.clientHeight - (currentLesson === 9 || currentLesson === 12 ? 0 : 60); // Account for ground except full-background scenes");
+  assertIncludes(indexHtml, "canvas.height = container.clientHeight - (currentLesson === 9 || currentLesson === 12 || currentLesson === 13 ? 0 : 60); // Account for ground except full-background scenes");
   assertIncludes(indexHtml, '// Use source-cropping instead of stretching, so the classroom stays sharp and not smeared.');
   assertIncludes(indexHtml, 'ctx.drawImage(lesson9ClassroomBg, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);');
   assertIncludes(indexHtml, '// Keep the original classroom image, but cover only the built-in ceiling lamp with a ceiling-shaped patch.');
@@ -263,8 +263,8 @@ test('lesson 9 classroom noise is sensed as loud without touching the robot and 
   assertNotIncludes(indexHtml, "ctx.fillText('רעש בכיתה', canvas.width * 0.88, canvas.height * 0.57);");
 });
 
-test('lesson 7 mission board is compact at the top-left, while lessons 8, 9, 11 and 12 stay compact', () => {
-  assertIncludes(indexHtml, 'const compactMission = currentLesson === 7 || currentLesson === 8 || currentLesson === 9 || currentLesson === 11 || currentLesson === 12;');
+test('lesson 7 mission board is compact at the top-left, while lessons 8, 9, 11, 12 and 13 stay compact', () => {
+  assertIncludes(indexHtml, 'const compactMission = currentLesson === 7 || currentLesson === 8 || currentLesson === 9 || currentLesson === 11 || currentLesson === 12 || currentLesson === 13;');
   assertIncludes(indexHtml, 'currentLesson === 12 ? (canvas.width - Math.min(250, canvas.width * 0.44)) / 2');
   assertIncludes(indexHtml, 'currentLesson === 12 ? 44');
   assertIncludes(indexHtml, 'currentLesson === 12 ? Math.min(250, canvas.width * 0.44)');
@@ -274,8 +274,72 @@ test('lesson 7 mission board is compact at the top-left, while lessons 8, 9, 11 
   assertIncludes(indexHtml, '? { titleSize: 11, bodySize: 9, titleY: 15, line1Y: 31, line2Y: 45, line3Y: 59 }');
   assertIncludes(indexHtml, 'currentLesson === 12');
   assertIncludes(indexHtml, '? { titleSize: 10, bodySize: 8, titleY: 12, line1Y: 25, line2Y: 38, line3Y: 51 }');
+  assertIncludes(indexHtml, 'currentLesson === 13');
+  assertIncludes(indexHtml, '? { titleSize: 11, bodySize: 9, titleY: 15, line1Y: 32, line2Y: 48, line3Y: 66 }');
   assertIncludes(indexHtml, ": { titleSize: 12, bodySize: 10, titleY: 17, line1Y: 37, line2Y: 53, line3Y: 68 }");
   assertIncludes(indexHtml, "ctx.fillText('🎯 משימה', boardX + boardW - 12, boardY + compactText.titleY);");
+});
+
+test('lesson 13 is a night home guard that treats homeowner motion as safe only in the advanced exercise', () => {
+  const lesson13 = lessonObjectSource(13);
+  assertIncludes(lesson13, "title: 'שומר בית חכם בלילה — שקט חשוד'");
+  assertIncludes(lesson13, "cityZone: 'בית בלילה'");
+  assertIncludes(lesson13, "sensorFocus: 'גנב + בעל הבית + תנועה + רעש'");
+  assertIncludes(lessonsData, 'תרגיל 1 — סיור ובדיקת גנב');
+  assertIncludes(lessonsData, 'גם בתרגיל 1 צריך לבדוק אם יש גנב ולפעול בהתאם');
+  assertIncludes(lessonsData, 'תרגיל 2 — תנועה לא תמיד חשודה: בעל הבית מול גנב');
+  assertIncludes(lesson13, 'בתרגיל השני מוסיפים את הרעיון שתנועה לא תמיד חשודה');
+  assertIncludes(lesson13, 'גנב שקט');
+  assertIncludes(indexHtml, "13: { bg: ['#0f172a', '#312e81'], place: 'בית בלילה', icon: '🌙'");
+  assertIncludes(indexHtml, "objects: ['בית פרטי', 'גנב', 'משטרה']");
+  assertIncludes(indexHtml, 'lesson13-home-guard-background.svg');
+  assertIncludes(indexHtml, "Blockly.Blocks['sensor_burglar']");
+  assertIncludes(indexHtml, "movement: ['move_forward', 'move_backward', 'turn_around', 'turn_right', 'turn_left', 'stop_vehicle']");
+  assertIncludes(indexHtml, "Blockly.Blocks['turn_around']");
+  assertIncludes(indexHtml, "case 'turn_around':");
+  assertIncludes(indexHtml, 'robot.angle += 180;');
+  assertIncludes(indexHtml, "sensors: ['sensor_light', 'sensor_burglar', 'sensor_homeowner', 'sensor_motion', 'sensor_sound', 'sensor_goal']");
+  assertIncludes(indexHtml, "sensors: ['sensorLight', 'sensorBurglar', 'sensorHomeowner', 'sensorMotion', 'sensorSound', 'sensorGoal']");
+  assertIncludes(indexHtml, "Blockly.Blocks['sensor_homeowner']");
+  assertIncludes(indexHtml, "toggleEnv('homeowner')");
+  assertIncludes(indexHtml, 'environment.sound = environment.homeowner;');
+  assertIncludes(indexHtml, "phase = elapsed < 2200 ? 'approach' : elapsed < 5200 ? 'yard' : elapsed < 7800 ? 'door' : 'gone';");
+  assertIncludes(indexHtml, 'door: [canvas.width * 0.50, canvas.height * 0.58]');
+  assertIncludes(indexHtml, "if (person.phase === 'gone')");
+  assertIncludes(indexHtml, 'environment.homeowner = false;');
+  assertIncludes(indexHtml, 'environment.motion = false;');
+  assertIncludes(indexHtml, 'environment.sound = false;');
+  assertIncludes(indexHtml, 'let burglarEscapedAt = null;');
+  assertIncludes(indexHtml, "if (!burglarCaughtAt && !burglarEscapedAt) burglarEscapedAt = Date.now();");
+  assertIncludes(indexHtml, "אוי לא, הגנב ברח...");
+  assertIncludes(indexHtml, 'drawLesson13HomeownerCharacter(sadHomeowner');
+  assertIncludes(indexHtml, 'Start Sensi in the middle of the fence patrol line, facing the right fence end.');
+  assertIncludes(indexHtml, 'robot.x = canvas.width * 0.50;');
+  assertIncludes(indexHtml, 'robot.y = canvas.height * 0.78;');
+  assertIncludes(indexHtml, 'function getLesson13FenceEndTargets');
+  assertIncludes(indexHtml, 'סוף הגדר!');
+  assertIncludes(indexHtml, 'getLesson13FenceEndTargets().some');
+  assertIncludes(indexHtml, 'Natural patrol markers: small fence lamps/posts');
+  assertIncludes(indexHtml, "toggleEnv('burglar')");
+  assertIncludes(indexHtml, 'function getLesson13BurglarScene');
+  assertIncludes(indexHtml, 'function canSenseBurglarNearby');
+  assertIncludes(indexHtml, 'if (currentLesson === 13) return canSenseBurglarNearby() || canSenseHomeowner();');
+  assertIncludes(indexHtml, 'Math.hypot(robot.x - burglar.x, robot.y - burglar.y) <= 75');
+  assertIncludes(indexHtml, "actions: ['action_street_light', 'action_alarm', 'action_sound', 'action_say']");
+  assertIncludes(indexHtml, 'function catchLesson13BurglarIfAlarm');
+  assertIncludes(indexHtml, 'burglarCaughtAt = Date.now();');
+  assertIncludes(indexHtml, "if (soundType === 'ALARM')");
+  assertIncludes(indexHtml, 'robot.alarmOn = true;');
+  assertIncludes(indexHtml, 'catchLesson13BurglarIfAlarm();');
+  assertIncludes(indexHtml, 'if (active && robot.alarmOn && !burglarCaughtAt)');
+  assertIncludes(indexHtml, 'const caught = active && Boolean(burglarCaughtAt);');
+  assertIncludes(indexHtml, 'אזעקה! המשטרה הגיעה והגנב נתפס!');
+  assertNotIncludes(indexHtml, "ctx.fillText(person.phase === 'inside' ? '🏠'");
+  assertIncludes(indexHtml, 'currentLesson === 13 && environment.burglar && burglarCaughtAt');
+  assertIncludes(indexHtml, 'המשטרה הגיעה — הגנב נעצר');
+  assertIncludes(indexHtml, "פירצה בגדר");
+  assertIncludes(indexHtml, "המשטרה הגיעה — הגנב נעצר");
+  assertNotIncludes(indexHtml, "המשטרה הגיעה — הגנב נתפס");
 });
 
 test('lesson 8 traffic light stays compact and high enough to show its pole', () => {
