@@ -233,7 +233,7 @@
   <script src="../js/lessons-data.js?v=20260719-lesson13-full-deck-burglar-ex1"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
-    const lesson = window.getSensiLesson(params.get('id'));
+    const lesson = window.getSensiLesson(params.get('id') || params.get('lesson'));
     let current = 0;
 
     document.title = `${lesson.emoji} שיעור ${lesson.id}: ${lesson.title}`;
