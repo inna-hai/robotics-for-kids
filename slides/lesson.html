@@ -10,30 +10,30 @@
   <style>
     :root { --purple:#6c5ce7; --blue:#00b4d8; --green:#00b894; --yellow:#fdcb6e; --dark:#2d3436; }
     * { box-sizing: border-box; }
-    body { margin:0; font-family:'Rubik',Arial,sans-serif; direction:rtl; background:linear-gradient(135deg,#6c5ce7,#00b4d8); color:var(--dark); min-height:100vh; overflow:hidden; }
+
+    body { margin:0; font-family:'Rubik',Arial,sans-serif; direction:rtl; background:linear-gradient(135deg,#6c5ce7,#00b4d8); color:var(--dark); min-height:100vh; overflow:auto; }
     /* slide-balanced-frame-v9 */
-    .deck { width:100%; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px 24px 92px; }
-    .slide { display:none; width:min(1180px, calc(100vw - 48px)); max-width:none; min-height:calc(100vh - 116px); max-height:calc(100vh - 116px); background:rgba(255,255,255,.98); border-radius:34px; padding:50px 58px; box-shadow:0 25px 70px rgba(0,0,0,.24); position:relative; overflow:hidden; }
+    .deck { width:100%; min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:24px 24px 92px; }
+    .slide { display:none; width:min(1180px, calc(100vw - 48px)); max-width:none; min-height:calc(100vh - 116px); background:rgba(255,255,255,.98); border-radius:34px; padding:50px 58px; box-shadow:0 25px 70px rgba(0,0,0,.24); position:relative; overflow:visible; }
     .slide.active { display:flex; flex-direction:column; justify-content:flex-start; }
-    .slide-content { width:100%; min-height:calc(100vh - 222px); max-height:calc(100vh - 222px); overflow-y:auto; padding-left:10px; scrollbar-gutter:stable; display:flex; flex-direction:column; }
+    .slide-content { width:100%; min-height:calc(100vh - 222px); overflow:visible; padding-left:10px; display:flex; flex-direction:column; }
+
     .slide-content::-webkit-scrollbar { width:10px; }
     .slide-content::-webkit-scrollbar-track { background:rgba(108,92,231,.08); border-radius:999px; }
     .slide-content::-webkit-scrollbar-thumb { background:rgba(108,92,231,.38); border-radius:999px; border:2px solid rgba(255,255,255,.9); }
     .slide-content::-webkit-scrollbar-thumb:hover { background:rgba(108,92,231,.58); }
-    /* slide-main-text-box-v6 */
+
+    /* slide-main-text-box-v7 - compact text cards */
     .slide-content > p {
       background:#f7f9fc;
       border-right:8px solid var(--purple);
-      border-radius:28px;
-      padding:78px 68px;
-      min-height:calc(100vh - 398px);
-      flex:1;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      box-shadow:0 16px 36px rgba(108,92,231,.16);
-      margin:24px 0 0;
+      border-radius:22px;
+      padding:24px 28px;
+      display:block;
+      text-align:right;
+      box-shadow:0 10px 24px rgba(108,92,231,.12);
+      margin:14px 0 0;
+
     }
     .kicker { color:var(--purple); font-weight:900; margin-bottom:12px; }
     h1 { font-size:clamp(2.4rem,6vw,5rem); margin:0 0 18px; }
@@ -46,32 +46,37 @@
       background:#f7f9fc;
       border-right:8px solid var(--purple);
       border-radius:24px;
-      padding:44px 42px;
-      margin:24px 0;
-      min-height:360px;
-      max-height:calc(100vh - 300px);
-      overflow-y:auto;
+
+      padding:16px 18px;
+      margin:10px 0;
+      min-height:0;
       display:flex;
       flex-direction:column;
-      justify-content:center;
+      justify-content:flex-start;
     }
     .teacher-box h3 { margin:0 0 8px; color:var(--purple); font-size:1.35rem; }
+    .teacher-box.no-scroll { overflow:visible; max-height:none; }
     /* slide-panel-size-v6 */
     .two-cols { display:grid; grid-template-columns:1fr 1fr; gap:22px; align-items:stretch; }
-    .two-cols .teacher-box { min-height:360px; }
+    .two-cols .teacher-box { min-height:0; }
     /* slide-block-overlap-fix-v23 */
-    .code-blocks { display:grid; gap:16px; margin-top:18px; direction:rtl; align-content:start; }
+    .code-blocks { display:grid; gap:8px; margin-top:10px; direction:rtl; align-content:start; }
+
     .blockly-solution {
       background:#f8fafc;
       border:3px dashed #dbe4ff;
       border-radius:24px;
-      padding:44px 42px;
-      margin:24px 0;
-      min-height:360px;
+
+      padding:24px 26px;
+      margin:14px 0;
+      min-height:0;
+
       max-height:calc(100vh - 300px);
       overflow-y:auto;
     }
     .blockly-caption { color:var(--purple); font-weight:900; margin-bottom:10px; font-size:1.1rem; }
+    .solution-title { font-size:clamp(1.55rem,3.1vw,2.6rem); margin-bottom:10px; }
+    .compact-note { font-size:clamp(.92rem,1.25vw,1.08rem); line-height:1.35; padding:12px 16px; margin:8px 0 0; }
     .visual-block {
       --block-color:#9966ff;
       position:relative;
@@ -82,20 +87,22 @@
       background:var(--block-color);
       border:3px solid rgba(0,0,0,.18);
       border-radius:14px 14px 14px 14px;
-      padding:12px 20px 12px 18px;
-      font-size:clamp(.95rem,1.45vw,1.18rem);
+
+      padding:8px 14px 8px 12px;
+      font-size:clamp(.82rem,1.15vw,1rem);
       font-weight:900;
-      box-shadow:0 5px 0 rgba(0,0,0,.16), inset 0 2px 0 rgba(255,255,255,.18);
-      margin:0 0 2px auto;
+      box-shadow:0 3px 0 rgba(0,0,0,.16), inset 0 2px 0 rgba(255,255,255,.18);
+      margin:0 0 1px auto;
+
       text-shadow:0 1px 1px rgba(0,0,0,.18);
     }
     .visual-block::before {
       content:'';
       position:absolute;
-      top:-8px;
-      right:28px;
-      width:34px;
-      height:12px;
+      top:-5px;
+      right:24px;
+      width:26px;
+      height:8px;
       border-radius:0 0 8px 8px;
       background:rgba(255,255,255,.34);
     }
@@ -109,14 +116,14 @@
     .visual-block.stop { --block-color:#ff8c1a; color:#263238; text-shadow:none; }
     .visual-block.street-light { --block-color:#f59e0b; color:#263238; text-shadow:none; }
     .visual-block.say { --block-color:#9966ff; }
-    .visual-block.nested { margin-right:54px; }
-    .visual-block.if-block { min-width:420px; padding-bottom:16px; }
+    .visual-block.nested { margin-right:34px; }
+    .visual-block.if-block { min-width:340px; padding-bottom:10px; }
     .visual-block.if-block .condition-pill {
       display:inline-block;
       background:#40bf4a;
       color:white;
       border-radius:999px;
-      padding:4px 12px;
+      padding:2px 9px;
       margin:0 6px;
       border:2px solid rgba(0,0,0,.18);
     }
@@ -134,11 +141,13 @@
       background:#fff7ed;
       border-right:8px solid #fb923c;
       border-radius:22px;
-      padding:48px 40px;
-      margin-top:24px;
-      min-height:300px;
+
+      padding:22px 24px;
+      margin-top:14px;
+      min-height:0;
       display:flex;
-      align-items:center;
+      align-items:flex-start;
+
       font-size:clamp(1rem,1.6vw,1.25rem);
       line-height:1.55;
     }
@@ -148,8 +157,10 @@
     .card {
       background:#f7f9fc;
       border-radius:24px;
-      padding:56px 44px;
-      min-height:360px;
+
+      padding:24px 26px;
+      min-height:150px;
+
       font-size:1.3rem;
       font-weight:800;
       display:flex;
@@ -192,8 +203,11 @@
       .time-badge{font-size:1rem;padding:7px 12px;margin-bottom:10px;}
       .two-cols,.cards{grid-template-columns:1fr;gap:10px;}
       .card{padding:40px 28px;min-height:260px;font-size:1.05rem;border-radius:18px;}
-      .slide-content > p{padding:44px 30px;min-height:65vh;border-radius:20px;margin:14px 0;}
-      .teacher-box,.teacher-note,.blockly-solution{padding:30px 22px;border-radius:22px;margin:16px 0;min-height:260px;max-height:70svh;overflow-y:auto;}
+
+      .slide-content > p{padding:20px 18px;border-radius:18px;margin:10px 0;text-align:right;}
+      .teacher-box,.teacher-note{padding:24px 18px;border-radius:22px;margin:14px 0;min-height:0;max-height:none;overflow:visible;}
+      .blockly-solution{padding:24px 18px;border-radius:22px;margin:14px 0;min-height:0;max-height:70svh;overflow-y:auto;}
+
       .teacher-box h3{font-size:1.05rem;}
       .exercise-kind{font-size:.95rem;padding:7px 11px;line-height:1.25;}
       .emoji{font-size:4rem;margin-bottom:10px;}
@@ -232,10 +246,12 @@
     </div>
   </nav>
 
-  <script src="../js/lessons-data.js?v=20260716-miriam-story-v49"></script>
+
+  <script src="../js/lessons-data.js?v=20260719-lesson13-full-deck-burglar-ex1"></script>
+
   <script>
     const params = new URLSearchParams(window.location.search);
-    const lesson = window.getSensiLesson(params.get('id'));
+    const lesson = window.getSensiLesson(params.get('id') || params.get('lesson'));
     let current = 0;
 
     document.title = `${lesson.emoji} שיעור ${lesson.id}: ${lesson.title}`;
@@ -303,8 +319,8 @@
       return exercises.flatMap((exercise) => {
         const exerciseNumber = (lesson.programmingExercises || []).indexOf(exercise) + 1;
         return [
-          { html: `<span class="time-badge">${step.minutes}</span><div class="exercise-kind">🧩 תרגול תכנות ${exerciseNumber} — עכשיו בכיתה</div><h2>${exercise.title}</h2><p>${exercise.studentPrompt}</p><div class="teacher-box"><h3>מה לבקש מהתלמידים עכשיו</h3><ul>${(exercise.testSteps || []).map(testStep => `<li>${testStep}</li>`).join('')}</ul></div><div class="teacher-note"><strong>למדריך:</strong> השקף הזה מגיע מיד אחרי חלק “${step.title}”, כדי שהתרגול יופיע בדיוק בזמן הנכון ברצף השיעור.</div>` },
-          { html: `<span class="time-badge">${step.minutes}</span><div class="exercise-kind">✅ פתרון למדריך — תרגול ${exerciseNumber}</div><h2>${exercise.answerTitle}</h2>${renderSolutionBlocks(exercise.answerBlocks)}<p><strong>תוצאה מצופה:</strong> ${exercise.expectedResult}</p><p><strong>טעות נפוצה:</strong> ${exercise.commonMistake}</p>` }
+          { html: `<span class="time-badge">${step.minutes}</span><div class="exercise-kind">🧩 תרגול תכנות ${exerciseNumber} — עכשיו בכיתה</div><h2>${exercise.title}</h2><p>${exercise.studentPrompt}</p><div class="teacher-box no-scroll"><h3>מה לבקש מהתלמידים עכשיו</h3><ul>${(exercise.testSteps || []).map(testStep => `<li>${testStep}</li>`).join('')}</ul></div><div class="teacher-note"><strong>למדריך:</strong> השקף הזה מגיע מיד אחרי חלק “${step.title}”, כדי שהתרגול יופיע בדיוק בזמן הנכון ברצף השיעור.</div>` },
+          { html: `<span class="time-badge">${step.minutes}</span><div class="exercise-kind">✅ פתרון למדריך — תרגול ${exerciseNumber}</div><h2 class="solution-title">${exercise.answerTitle}</h2>${renderSolutionBlocks(exercise.answerBlocks)}<p class="compact-note"><strong>תוצאה מצופה:</strong> ${exercise.expectedResult}</p><p class="compact-note"><strong>טעות נפוצה:</strong> ${exercise.commonMistake}</p>` }
         ];
       });
     }
@@ -313,10 +329,10 @@
       { html: `
         <span class="time-badge">${step.minutes}</span>
         <h2>${step.title}</h2>
-        ${step.teacherSays ? `<div class="teacher-box"><h3>מה להגיד</h3><p>${step.teacherSays}</p></div>` : ''}
+        ${step.teacherSays ? `<div class="teacher-box no-scroll"><h3>מה להגיד</h3><p>${step.teacherSays}</p></div>` : ''}
         <div class="two-cols">
-          <div class="teacher-box"><h3>מה המדריך עושה</h3><ul>${(step.teacherDoes || step.tasks || []).map(task => `<li>${task}</li>`).join('')}</ul></div>
-          <div class="teacher-box"><h3>מה התלמידים עושים</h3><ul>${(step.studentTasks || step.tasks || []).map(task => `<li>${task}</li>`).join('')}</ul></div>
+          <div class="teacher-box no-scroll"><h3>מה המדריך עושה</h3><ul>${(step.teacherDoes || step.tasks || []).map(task => `<li>${task}</li>`).join('')}</ul></div>
+          <div class="teacher-box no-scroll"><h3>מה התלמידים עושים</h3><ul>${(step.studentTasks || step.tasks || []).map(task => `<li>${task}</li>`).join('')}</ul></div>
         </div>
         ${step.checkQuestion ? `<p><strong>שאלת בדיקה:</strong> ${step.checkQuestion}</p>` : ''}
       ` },

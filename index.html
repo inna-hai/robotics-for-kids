@@ -279,7 +279,9 @@
             display: none;
         }
 
-        .ground.classroom-ground {
+        .ground.classroom-ground,
+        .ground.delivery-ground,
+        .ground.home-guard-ground {
             display: none;
         }
 
@@ -978,9 +980,21 @@
                     <span class="icon">🏃</span>
                     <span id="motionText">אין תנועה</span>
                 </div>
+                <div class="sensor-chip" id="sensorBurglar">
+                    <span class="icon">🕵️</span>
+                    <span id="burglarText">אין גנב</span>
+                </div>
+                <div class="sensor-chip" id="sensorHomeowner">
+                    <span class="icon">👨‍🦱</span>
+                    <span id="homeownerText">אין בעל בית</span>
+                </div>
                 <div class="sensor-chip" id="sensorDoor">
                     <span class="icon">🚪</span>
                     <span id="doorText">דלת סגורה</span>
+                </div>
+                <div class="sensor-chip" id="sensorDeliveryPackage">
+                    <span class="icon">📦</span>
+                    <span id="deliveryPackageText">אין משלוח</span>
                 </div>
             </div>
 
@@ -1037,9 +1051,21 @@
                             <span class="icon">🏃</span>
                             תנועה
                         </button>
+                        <button class="env-btn" onclick="toggleEnv('burglar')" id="envBurglar">
+                            <span class="icon">🕵️</span>
+                            גנב
+                        </button>
+                        <button class="env-btn" onclick="toggleEnv('homeowner')" id="envHomeowner">
+                            <span class="icon">👨‍🦱</span>
+                            בעל הבית
+                        </button>
                         <button class="env-btn" onclick="toggleEnv('doorOpen')" id="envDoorOpen">
                             <span class="icon">🚪</span>
                             דלת פתוחה
+                        </button>
+                        <button class="env-btn" onclick="toggleEnv('deliveryPackage')" id="envDeliveryPackage">
+                            <span class="icon">📦</span>
+                            להביא משלוח
                         </button>
                     </div>
                 </div>
@@ -1123,16 +1149,23 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260710-lessons-7-15"></script>
+    <script src="js/lessons-data.js?v=20260719-lesson13-burglar-v2"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
         let workspace = null;
         let completedTasks = [];
 
-        let robot = { x: 150, y: 180, angle: 0, speaking: '', streetLightOn: false, trafficLightGreen: false, trafficCarsStopped: false, pedestrianStopped: false, vehicleStopped: false, fanOn: false, waterOn: false, alarmOn: false, sortedBin: '' };
-        let environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, doorOpen: false };
+
+        let robot = { x: 150, y: 180, angle: 0, speaking: '', streetLightOn: false, trafficLightGreen: false, trafficCarsStopped: false, pedestrianStopped: false, vehicleStopped: false, fanOn: false, waterOn: false, alarmOn: false, sortedBin: '', hitLesson12Fence: false };
+        let environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, burglar: false, homeowner: false, doorOpen: false, deliveryPackage: false, deliveryDropped: false };
         let smokeStartedAt = null;
+        let burglarStartedAt = null;
+        let burglarCaughtAt = null;
+        let burglarEscapedAt = null;
+        let burglarRoute = 'left';
+        let homeownerStartedAt = null;
+
 
         let isRunning = false;
         let drawerOpen = false;
@@ -1165,10 +1198,22 @@
             if (currentLesson === 9) draw();
         };
 
+        const lesson12DeliveryBg = new Image();
+        lesson12DeliveryBg.src = 'assets/lesson12-grocery-home-background.png?v=20260719-grocery-home-winding-path-1';
+        lesson12DeliveryBg.onload = () => {
+            if (currentLesson === 12) draw();
+        };
+
+        const lesson13HomeGuardBg = new Image();
+        lesson13HomeGuardBg.src = 'assets/lesson13-home-guard-background.svg?v=20260719-fence-gate-1';
+        lesson13HomeGuardBg.onload = () => {
+            if (currentLesson === 13) draw();
+        };
+
         function resizeCanvas() {
             const container = canvas.parentElement;
             canvas.width = container.clientWidth;
-            canvas.height = container.clientHeight - (currentLesson === 9 ? 0 : 60); // Account for ground except classroom
+            canvas.height = container.clientHeight - (currentLesson === 9 || currentLesson === 12 || currentLesson === 13 ? 0 : 60); // Account for ground except full-background scenes
             resetPositions();
         }
 
@@ -1182,18 +1227,29 @@
                 const line = getLesson7LinePoints();
                 robot.x = line.start.x - 28;
                 robot.y = line.start.y;
+            } else if (currentLesson === 12) {
+                // Start Sensi at the beginning of the delivery route, beside the grocery store.
+                robot.x = canvas.width * 0.19;
+                robot.y = canvas.height * 0.52;
+            } else if (currentLesson === 13) {
+                // Start Sensi in the middle of the fence patrol line, facing the right fence end.
+                robot.x = canvas.width * 0.50;
+                robot.y = canvas.height * 0.78;
             } else {
                 robot.x = canvas.width / 2;
                 robot.y = currentLesson === 3 ? canvas.height * 0.58 : currentLesson === 4 ? canvas.height * 0.62 : currentLesson === 5 ? canvas.height * 0.64 : currentLesson === 6 ? canvas.height * 0.62 : canvas.height / 2;
             }
             robot.angle = 0;
             robot.vehicleStopped = false;
+            robot.hitLesson12Fence = false;
 
             // Reset objects to default positions
             objects.wall.x = currentLesson === 3 ? canvas.width * 0.72 : currentLesson === 14 ? canvas.width * 0.66 : canvas.width - 80;
             objects.wall.y = currentLesson === 3 ? canvas.height * 0.58 : currentLesson === 14 ? canvas.height * 0.42 : canvas.height / 2;
-            objects.sound.x = 60;
-            objects.sound.y = canvas.height - 60;
+
+            objects.sound.x = currentLesson === 13 ? canvas.width * 0.82 : 60;
+            objects.sound.y = currentLesson === 13 ? canvas.height * 0.58 : canvas.height - 60;
+
             objects.smoke.x = currentLesson === 4 ? canvas.width * 0.72 : currentLesson === 14 ? canvas.width * 0.50 : canvas.width / 2;
             objects.smoke.y = currentLesson === 4 ? canvas.height * 0.43 : currentLesson === 14 ? canvas.height * 0.42 : 60;
             objects.sun.x = 80;
@@ -1700,7 +1756,7 @@
                 10: { bg: ['#ecfccb', '#bbf7d0'], place: 'גינה חכמה', icon: '🌱', objects: ['אדמה', 'טפטפות', 'צמחים'], action: 'השקו רק כשהאדמה יבשה' },
                 11: { bg: ['#e0e7ff', '#f1f5f9'], place: 'בית חכם', icon: '🏠', objects: ['דלת', 'תנועה', 'אזעקה'], action: 'התריעו רק כשהמערכת דרוכה' },
                 12: { bg: ['#fef3c7', '#e0f2fe'], place: 'משלוח בעיר', icon: '📦', objects: ['חנות', 'מכשול', 'בית יעד'], action: 'תכננו מסלול בטוח' },
-                13: { bg: ['#1e1b4b', '#312e81'], place: 'פארק בלילה', icon: '🌙', objects: ['פנס', 'רעש', 'תנועה'], action: 'סיירו בלולאה והגיבו לאירועים' },
+                13: { bg: ['#0f172a', '#312e81'], place: 'בית בלילה', icon: '🌙', objects: ['בית פרטי', 'גנב', 'משטרה'], action: 'זהו גנב ותפסו אותו באזעקה' },
                 14: { bg: ['#fee2e2', '#ffedd5'], place: 'אזור חילוץ', icon: '🛟', objects: ['עשן', 'חום', 'מכשול'], action: 'בחרו פעולה בטוחה קודם' },
                 15: { bg: ['#dbeafe', '#f0f9ff'], place: 'העיר שלי', icon: '🏙️', objects: ['בעיה', 'חיישנים', 'פתרון'], action: 'תכננו מערכת חכמה משלכם' }
             };
@@ -1717,8 +1773,38 @@
             ctx.fillStyle = bg;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+            if (currentLesson === 12 && lesson12DeliveryBg.complete && lesson12DeliveryBg.naturalWidth > 0) {
+                const srcRatio = lesson12DeliveryBg.naturalWidth / lesson12DeliveryBg.naturalHeight;
+                const canvasRatio = canvas.width / canvas.height;
+                let sx = 0;
+                let sy = 0;
+                let sw = lesson12DeliveryBg.naturalWidth;
+                let sh = lesson12DeliveryBg.naturalHeight;
+                if (srcRatio > canvasRatio) {
+                    sw = sh * canvasRatio;
+                    sx = (lesson12DeliveryBg.naturalWidth - sw) / 2;
+                } else if (srcRatio < canvasRatio) {
+                    sh = sw / canvasRatio;
+                    sy = (lesson12DeliveryBg.naturalHeight - sh) / 2;
+                }
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(lesson12DeliveryBg, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+            }
+
+            if (currentLesson === 13 && lesson13HomeGuardBg.complete && lesson13HomeGuardBg.naturalWidth > 0) {
+                const srcRatio = lesson13HomeGuardBg.naturalWidth / lesson13HomeGuardBg.naturalHeight;
+                const canvasRatio = canvas.width / canvas.height;
+                let sx = 0, sy = 0, sw = lesson13HomeGuardBg.naturalWidth, sh = lesson13HomeGuardBg.naturalHeight;
+                if (srcRatio > canvasRatio) { sw = sh * canvasRatio; sx = (lesson13HomeGuardBg.naturalWidth - sw) / 2; }
+                else if (srcRatio < canvasRatio) { sh = sw / canvasRatio; sy = (lesson13HomeGuardBg.naturalHeight - sh) / 2; }
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(lesson13HomeGuardBg, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+            }
+
             // City floor / route
-            if (currentLesson !== 9) {
+            if (currentLesson !== 9 && currentLesson !== 12 && currentLesson !== 13) {
                 ctx.fillStyle = currentLesson === 13 ? 'rgba(15,23,42,.55)' : 'rgba(255,255,255,.55)';
                 ctx.beginPath();
                 ctx.roundRect(canvas.width * 0.08, canvas.height * 0.50, canvas.width * 0.84, canvas.height * 0.18, 24);
@@ -1925,11 +2011,11 @@
             ctx.fillText(`${scene.icon} ${scene.place} — ${lesson.title}`, canvas.width / 2, 28);
 
             // Mission board
-            const compactMission = currentLesson === 7 || currentLesson === 8 || currentLesson === 9 || currentLesson === 11;
-            const boardX = currentLesson === 7 ? 20 : currentLesson === 8 ? canvas.width - 218 : currentLesson === 9 ? canvas.width - 224 : currentLesson === 11 ? canvas.width - 220 : canvas.width * 0.56;
-            const boardY = currentLesson === 7 ? 40 : currentLesson === 8 ? 8 : currentLesson === 9 ? 42 : currentLesson === 11 ? 40 : canvas.height * 0.12;
-            const boardW = currentLesson === 7 ? 190 : currentLesson === 8 ? 210 : currentLesson === 9 ? 196 : currentLesson === 11 ? 198 : canvas.width * 0.36;
-            const boardH = currentLesson === 7 ? 70 : currentLesson === 8 ? 78 : currentLesson === 9 ? 70 : currentLesson === 11 ? 74 : 135;
+            const compactMission = currentLesson === 7 || currentLesson === 8 || currentLesson === 9 || currentLesson === 11 || currentLesson === 12 || currentLesson === 13;
+            const boardX = currentLesson === 7 ? 20 : currentLesson === 8 ? canvas.width - 218 : currentLesson === 9 ? canvas.width - 224 : currentLesson === 11 ? canvas.width - 220 : currentLesson === 12 ? (canvas.width - Math.min(250, canvas.width * 0.44)) / 2 : currentLesson === 13 ? canvas.width - 240 : canvas.width * 0.56;
+            const boardY = currentLesson === 7 ? 40 : currentLesson === 8 ? 8 : currentLesson === 9 ? 42 : currentLesson === 11 ? 40 : currentLesson === 12 ? 44 : currentLesson === 13 ? 48 : canvas.height * 0.12;
+            const boardW = currentLesson === 7 ? 190 : currentLesson === 8 ? 210 : currentLesson === 9 ? 196 : currentLesson === 11 ? 198 : currentLesson === 12 ? Math.min(250, canvas.width * 0.44) : currentLesson === 13 ? 220 : canvas.width * 0.36;
+            const boardH = currentLesson === 7 ? 70 : currentLesson === 8 ? 78 : currentLesson === 9 ? 70 : currentLesson === 11 ? 74 : currentLesson === 12 ? 62 : currentLesson === 13 ? 82 : 135;
             ctx.fillStyle = compactMission ? 'rgba(255,255,255,.88)' : 'rgba(255,255,255,.92)';
             ctx.strokeStyle = compactMission ? '#0ea5e9' : '#38bdf8';
             ctx.lineWidth = compactMission ? 2 : 3;
@@ -1945,7 +2031,11 @@
                     ? { titleSize: 11, bodySize: 9, titleY: 15, line1Y: 31, line2Y: 45, line3Y: 59 }
                     : currentLesson === 9
                         ? { titleSize: 11, bodySize: 9, titleY: 15, line1Y: 31, line2Y: 45, line3Y: 59 }
-                        : { titleSize: 12, bodySize: 10, titleY: 17, line1Y: 37, line2Y: 53, line3Y: 68 };
+                        : currentLesson === 12
+                            ? { titleSize: 10, bodySize: 8, titleY: 12, line1Y: 25, line2Y: 38, line3Y: 51 }
+                            : currentLesson === 13
+                                ? { titleSize: 11, bodySize: 9, titleY: 15, line1Y: 32, line2Y: 48, line3Y: 66 }
+                                : { titleSize: 12, bodySize: 10, titleY: 17, line1Y: 37, line2Y: 53, line3Y: 68 };
 
                 ctx.font = `bold ${compactText.titleSize}px Rubik`;
                 ctx.fillText('🎯 משימה', boardX + boardW - 12, boardY + compactText.titleY);
@@ -1966,7 +2056,7 @@
             // Scenario objects
             const emojis = {
                 7: [], 8: ['🚶', '🚦', '🚗'], 9: ['🧑‍🎓', '💡', '❄️'], 10: ['🌱', '💧', '🌿'],
-                11: ['🚪', '🏃', '🚨'], 12: ['🏪', '🚧', '🏠'], 13: ['🔦', '🔊', '👣'], 14: ['💨', '🔥', '🧱'], 15: ['❓', '👁️', '✅']
+                11: ['🚪', '🏃', '🚨'], 12: ['🏪', '🚧', '🏠'], 13: ['🏠', '👣', '🚨'], 14: ['💨', '🔥', '🧱'], 15: ['❓', '👁️', '✅']
             }[currentLesson];
             const xs = [canvas.width * 0.20, canvas.width * 0.40, canvas.width * 0.60];
             const y = Math.max(canvas.height * 0.62, boardY + boardH + 48);
@@ -2035,6 +2125,12 @@
 
 
             scene.objects.forEach((label, i) => {
+                if (currentLesson === 12) {
+                    // The grocery, house and wide route are part of the background image.
+                    // The draggable obstacle is drawn separately when enabled.
+                    return;
+                }
+
                 if (currentLesson === 8) {
                     const activeLesson8Object = (i === 0 && environment.pedestrian) || (i === 2 && environment.cars);
 
@@ -2168,6 +2264,71 @@
                     return;
                 }
 
+                if (currentLesson === 13) {
+                    if (i === 0) return;
+
+                    const active = Boolean(environment.burglar);
+                    if (active && robot.alarmOn && !burglarCaughtAt) {
+                        burglarCaughtAt = Date.now();
+                        environment.motion = false;
+                    }
+                    const elapsed = active && burglarStartedAt ? (Date.now() - burglarStartedAt) : 0;
+                    const caught = active && Boolean(burglarCaughtAt);
+                    const phase = caught ? 'caught' : elapsed < 2200 ? 'approach' : elapsed < 4200 ? 'breakFence' : elapsed < 7000 ? 'yard' : elapsed < 9800 ? 'inside' : elapsed < 12800 ? 'escape' : 'gone';
+                    if (phase === 'gone') {
+                        environment.burglar = false;
+                        environment.motion = false;
+                        burglarStartedAt = null;
+                        if (!burglarCaughtAt && !burglarEscapedAt) burglarEscapedAt = Date.now();
+                        const btn = document.getElementById('envBurglar');
+                        btn?.classList.remove('active');
+                        return;
+                    }
+
+                    if (i === 1 && active) {
+                        const { route, x: bx, y: by } = getLesson13BurglarScene(phase);
+                        ctx.save();
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        if (phase === 'breakFence' || phase === 'yard' || phase === 'inside' || phase === 'escape' || phase === 'caught') {
+                            const [fx, fy] = route.breach;
+                            ctx.strokeStyle = '#ef4444';
+                            ctx.lineWidth = 7;
+                            ctx.beginPath();
+                            ctx.moveTo(fx - 24, fy - 30);
+                            ctx.lineTo(fx + 24, fy + 30);
+                            ctx.moveTo(fx + 24, fy - 30);
+                            ctx.lineTo(fx - 24, fy + 30);
+                            ctx.stroke();
+                            ctx.font = 'bold 13px Rubik';
+                            ctx.fillStyle = '#fecaca';
+                            const breachText = burglarRoute === 'gate' ? 'פירצה בשער' : `פירצה בגדר ${route.label}`;
+                            ctx.fillText(breachText, fx, fy + 58);
+                        }
+                        ctx.font = '50px Arial';
+                        ctx.fillText(phase === 'inside' ? '🪟' : '🥷', bx, by);
+                        if (phase === 'escape') ctx.fillText('💰', bx + 34, by + 2);
+                        ctx.font = 'bold 14px Rubik';
+                        ctx.fillStyle = caught ? '#bbf7d0' : '#fef08a';
+                        const labels = { approach: 'הגנב מתקרב', breakFence: 'הגנב פורץ את הגדר', yard: 'הגנב נכנס לחצר', inside: 'הגנב חודר מהחלון', escape: 'הגנב בורח עם שק', caught: 'הגנב נתפס!' };
+                        ctx.fillText(labels[phase], bx, by + 48);
+                        ctx.restore();
+                        return;
+                    }
+
+                    if (i === 2 && caught) {
+                        ctx.save();
+                        ctx.textAlign = 'center';
+                        ctx.font = '54px Arial';
+                        ctx.fillText('🚓👮', canvas.width * 0.64, canvas.height * 0.70);
+                        ctx.font = 'bold 15px Rubik';
+                        ctx.fillStyle = '#bfdbfe';
+                        ctx.restore();
+                        return;
+                    }
+                    return;
+                }
+
                 if (currentLesson === 9) {
                     return;
                 }
@@ -2185,12 +2346,146 @@
                 ctx.fillStyle = '#334155';
                 ctx.fillText(label, xs[i], y + 34);
             });
+
+            if (currentLesson === 13) {
+                getLesson13FenceEndTargets().forEach((fenceEnd) => {
+                    ctx.save();
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    // Natural patrol markers: small fence lamps/posts, not a big floating label.
+                    ctx.fillStyle = '#7c2d12';
+                    ctx.fillRect(fenceEnd.x - 5, fenceEnd.y - 24, 10, 48);
+                    ctx.fillStyle = '#fef3c7';
+                    ctx.beginPath();
+                    ctx.arc(fenceEnd.x, fenceEnd.y - 32, 10, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#facc15';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    ctx.fillStyle = 'rgba(250, 204, 21, 0.16)';
+                    ctx.beginPath();
+                    ctx.arc(fenceEnd.x, fenceEnd.y - 32, 28, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                });
+            }
+
+            function drawLesson13HomeownerCharacter(person, label, sad = false) {
+                ctx.save();
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                // Friendly homeowner character: face, hair, shirt, pants and a small bag.
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.28)';
+                ctx.beginPath();
+                ctx.ellipse(person.x, person.y + 38, 24, 7, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#f6c08d';
+                ctx.beginPath();
+                ctx.arc(person.x, person.y - 28, 13, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#3f2f24';
+                ctx.beginPath();
+                ctx.arc(person.x, person.y - 36, 14, Math.PI, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = sad ? '#64748b' : '#2563eb';
+                ctx.beginPath();
+                ctx.roundRect(person.x - 13, person.y - 12, 26, 32, 8);
+                ctx.fill();
+                ctx.strokeStyle = '#f6c08d';
+                ctx.lineWidth = 5;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(person.x - 12, person.y - 3);
+                ctx.lineTo(person.x - 28, person.y + 10);
+                ctx.moveTo(person.x + 12, person.y - 3);
+                ctx.lineTo(person.x + 26, person.y + 8);
+                ctx.stroke();
+                ctx.fillStyle = '#7c2d12';
+                ctx.beginPath();
+                ctx.roundRect(person.x - 40, person.y + 7, 16, 18, 4);
+                ctx.fill();
+                ctx.strokeStyle = '#1e293b';
+                ctx.lineWidth = 6;
+                ctx.beginPath();
+                ctx.moveTo(person.x - 7, person.y + 19);
+                ctx.lineTo(person.x - 16, person.y + 38);
+                ctx.moveTo(person.x + 7, person.y + 19);
+                ctx.lineTo(person.x + 17, person.y + 38);
+                ctx.stroke();
+                ctx.fillStyle = '#111827';
+                ctx.beginPath();
+                ctx.arc(person.x - 5, person.y - 29, 1.6, 0, Math.PI * 2);
+                ctx.arc(person.x + 5, person.y - 29, 1.6, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#7c2d12';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                if (sad) ctx.arc(person.x, person.y - 20, 5, Math.PI + 0.1, Math.PI * 2 - 0.1);
+                else ctx.arc(person.x, person.y - 25, 5, 0.1, Math.PI - 0.1);
+                ctx.stroke();
+                if (sad) {
+                    ctx.fillStyle = '#60a5fa';
+                    ctx.beginPath();
+                    ctx.ellipse(person.x + 9, person.y - 21, 2, 4, 0.2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.font = 'bold 14px Rubik';
+                ctx.fillStyle = sad ? '#fecaca' : '#bbf7d0';
+                ctx.fillText(label, person.x, person.y + 58);
+                ctx.restore();
+            }
+
+            if (currentLesson === 13 && environment.homeowner) {
+                const person = getLesson13HomeownerScene();
+                if (person.phase === 'gone') {
+                    environment.homeowner = false;
+                    environment.motion = false;
+                    environment.sound = false;
+                    homeownerStartedAt = null;
+                    document.getElementById('envHomeowner')?.classList.remove('active');
+                } else {
+                    const labels = { approach: 'בעל הבית חוזר', yard: 'בעל הבית בחצר', door: 'בעל הבית נכנס לבית' };
+                    drawLesson13HomeownerCharacter(person, labels[person.phase]);
+                }
+            }
+
+            if (currentLesson === 13 && burglarEscapedAt && Date.now() - burglarEscapedAt < 6500) {
+                const elapsed = Date.now() - burglarEscapedAt;
+                const sadHomeowner = {
+                    x: canvas.width * (0.50 - Math.min(elapsed / 6500, 1) * 0.10),
+                    y: canvas.height * 0.58
+                };
+                drawLesson13HomeownerCharacter(sadHomeowner, 'אוי לא, הגנב ברח...', true);
+            }
+
+            if (currentLesson === 13 && environment.burglar && burglarCaughtAt) {
+                const policeX = canvas.width * 0.64;
+                const policeY = canvas.height * 0.70;
+                ctx.save();
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.font = '58px Arial';
+                ctx.fillText('🚓👮', policeX, policeY);
+                ctx.font = 'bold 16px Rubik';
+                ctx.fillStyle = '#bfdbfe';
+                ctx.fillText('המשטרה הגיעה — הגנב נעצר', policeX, policeY + 48);
+                ctx.restore();
+            }
         }
 
         window.addEventListener('resize', resizeCanvas);
 
         // ===== DRAW ROBOT =====
+        function catchLesson13BurglarIfAlarm() {
+            if (currentLesson === 13 && environment.burglar && robot.alarmOn && !burglarCaughtAt) {
+                burglarCaughtAt = Date.now();
+                environment.motion = false;
+                robot.speaking = 'אזעקה! המשטרה הגיעה והגנב נתפס!';
+            }
+        }
+
         function draw() {
+            catchLesson13BurglarIfAlarm();
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             // Road scene for lesson 3
@@ -2552,6 +2847,43 @@
                     ctx.font = 'bold 14px Rubik';
                     ctx.fillStyle = canSenseTouch() ? '#d63031' : '#2d3436';
                     ctx.fillText(canSenseTouch() ? 'מכשול קרוב!' : 'מכשול רחוק', objects.wall.x, objects.wall.y + 48);
+                } else if (currentLesson === 12) {
+                    ctx.save();
+                    ctx.translate(objects.wall.x, objects.wall.y);
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    // Lesson 12 uses a painted wooden fence obstacle, matching the background style.
+                    ctx.fillStyle = 'rgba(120,53,15,.20)';
+                    ctx.beginPath();
+                    ctx.ellipse(0, 25, 48, 8, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#7c2d12';
+                    ctx.fillStyle = '#b45309';
+                    ctx.lineWidth = 2.5;
+                    for (let i = -2; i <= 2; i += 1) {
+                        const x = i * 18;
+                        ctx.beginPath();
+                        ctx.moveTo(x - 6, -25);
+                        ctx.lineTo(x, -36);
+                        ctx.lineTo(x + 6, -25);
+                        ctx.lineTo(x + 6, 26);
+                        ctx.lineTo(x - 6, 26);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.stroke();
+                    }
+                    ctx.fillStyle = '#92400e';
+                    ctx.strokeStyle = '#78350f';
+                    [-12, 10].forEach((yBar) => {
+                        ctx.beginPath();
+                        ctx.roundRect(-46, yBar, 92, 10, 5);
+                        ctx.fill();
+                        ctx.stroke();
+                    });
+                    ctx.font = 'bold 14px Rubik';
+                    ctx.fillStyle = canSenseTouch() ? '#b91c1c' : '#7c2d12';
+                    ctx.fillText(canSenseTouch() ? 'גדר קרובה!' : 'גדר בדרך', 0, 58);
+                    ctx.restore();
                 } else {
                     ctx.fillStyle = '#8B4513';
                     ctx.fillRect(objects.wall.x - 30, objects.wall.y - 40, objects.wall.width, objects.wall.height);
@@ -2565,7 +2897,7 @@
                 if (!isRunning) {
                     ctx.font = '12px Rubik';
                     ctx.fillStyle = '#666';
-                    ctx.fillText('גררו קרוב/רחוק!', objects.wall.x, objects.wall.y + 65);
+                    ctx.fillText(currentLesson === 12 ? 'גררו את הגדר!' : 'גררו קרוב/רחוק!', objects.wall.x, objects.wall.y + 65);
                 }
             }
 
@@ -2591,6 +2923,22 @@
                     ctx.fillStyle = '#666';
                     ctx.fillText('גרור אותי!', objects.sound.x, objects.sound.y + 50);
                 }
+            }
+
+            // Lesson 12 delivery package follows the robot, then can be placed on the floor by the house door.
+            if (currentLesson === 12 && (environment.deliveryPackage || environment.deliveryDropped)) {
+                ctx.save();
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                const home = getLesson12HomeTarget();
+                const packageX = environment.deliveryDropped ? home.x : robot.x - 34;
+                const packageY = environment.deliveryDropped ? home.y : robot.y - 18;
+                ctx.font = '30px Arial';
+                ctx.fillText('📦', packageX, packageY);
+                ctx.font = 'bold 11px Rubik';
+                ctx.fillStyle = environment.deliveryDropped ? '#15803d' : canSenseGoal() ? '#15803d' : '#92400e';
+                ctx.fillText(environment.deliveryDropped ? 'המשלוח בפתח הבית' : canSenseGoal() ? 'המשלוח הגיע לבית!' : 'משלוח בדרך', packageX, packageY - 30);
+                ctx.restore();
             }
 
             // Robot (also draggable)
@@ -2861,8 +3209,14 @@
             const newY = Math.max(30, Math.min(canvas.height - 30, pos.y - dragOffset.y));
 
             if (dragging === 'robot') {
+                if (wouldHitLesson12Fence(newX, newY)) {
+                    robot.hitLesson12Fence = true;
+                    robot.speaking = 'נתקעתי בגדר!';
+                    return;
+                }
                 robot.x = newX;
                 robot.y = newY;
+                robot.hitLesson12Fence = false;
             } else if (objects[dragging]) {
                 objects[dragging].x = newX;
                 objects[dragging].y = newY;
@@ -2968,15 +3322,15 @@
             },
             12: {
                 movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'route_turn'],
-                sensors: ['sensor_obstacle', 'sensor_goal'],
+                sensors: ['sensor_obstacle', 'sensor_delivery_package', 'sensor_goal'],
                 controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
-                actions: ['action_say']
+                actions: ['action_delivery_package', 'action_drop_delivery', 'action_say']
             },
             13: {
-                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
-                sensors: ['sensor_light', 'sensor_motion', 'sensor_sound'],
+                movement: ['move_forward', 'move_backward', 'turn_around', 'turn_right', 'turn_left', 'stop_vehicle'],
+                sensors: ['sensor_light', 'sensor_burglar', 'sensor_homeowner', 'sensor_motion', 'sensor_sound', 'sensor_goal'],
                 controls: ['control_if', 'control_forever', 'stop_program'],
-                actions: ['action_street_light', 'action_sound', 'action_say']
+                actions: ['action_street_light', 'action_alarm', 'action_sound', 'action_say']
             },
             14: {
                 movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'route_turn'],
@@ -3099,12 +3453,12 @@
                 env: ['envArmedMode', 'envMotion', 'envDoorOpen']
             },
             12: {
-                sensors: ['sensorTouch', 'sensorGoal'],
-                env: ['envObstacle']
+                sensors: ['sensorTouch', 'sensorDeliveryPackage', 'sensorGoal'],
+                env: ['envObstacle', 'envDeliveryPackage']
             },
             13: {
-                sensors: ['sensorLight', 'sensorMotion', 'sensorSound'],
-                env: ['envLight', 'envMotion', 'envSound']
+                sensors: ['sensorLight', 'sensorBurglar', 'sensorHomeowner', 'sensorMotion', 'sensorSound', 'sensorGoal'],
+                env: ['envLight', 'envBurglar', 'envHomeowner', 'envSound']
             },
             14: {
                 sensors: ['sensorSmell', 'sensorTemp', 'sensorTouch'],
@@ -3117,8 +3471,8 @@
         };
 
         function updateVisibleControls() {
-            const allSensors = ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorSoil', 'sensorArmed', 'sensorMotion', 'sensorDoor'];
-            const allEnv = ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envSoilDry', 'envArmedMode', 'envMotion', 'envDoorOpen'];
+            const allSensors = ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorSoil', 'sensorArmed', 'sensorMotion', 'sensorBurglar', 'sensorHomeowner', 'sensorDoor', 'sensorDeliveryPackage'];
+            const allEnv = ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envSoilDry', 'envArmedMode', 'envMotion', 'envBurglar', 'envHomeowner', 'envDoorOpen', 'envDeliveryPackage'];
             const override = lessonControlOverrides[currentLesson];
             allSensors.forEach((id) => {
                 const el = document.getElementById(id);
@@ -3272,6 +3626,15 @@
             Blockly.Blocks['turn_left'] = {
                 init: function() {
                     this.appendDummyInput().appendField('↪️ סובב שמאלה 90°');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#4C97FF');
+                }
+            };
+
+            Blockly.Blocks['turn_around'] = {
+                init: function() {
+                    this.appendDummyInput().appendField('🔄 הסתובב 180°');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
                     this.setColour('#4C97FF');
@@ -3438,8 +3801,18 @@
             Blockly.Blocks['sensor_goal'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField('🏁 חיישן יעד =')
-                        .appendField(new Blockly.FieldDropdown([['הגעתי ליעד', 'YES'], ['לא הגעתי', 'NO']]), 'VAL');
+                        .appendField(currentLesson === 13 ? '🏁 סוף גדר =' : '🏁 חיישן יעד =')
+                        .appendField(new Blockly.FieldDropdown(currentLesson === 13 ? [['הגעתי לסוף הגדר', 'YES'], ['לא הגעתי', 'NO']] : [['הגעתי ליעד', 'YES'], ['לא הגעתי', 'NO']]), 'VAL');
+                    this.setOutput(true, 'Boolean');
+                    this.setColour('#40BF4A');
+                }
+            };
+
+            Blockly.Blocks['sensor_delivery_package'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('📦 יש משלוח על הרובוט?')
+                        .appendField(new Blockly.FieldDropdown([['כן', 'YES'], ['לא', 'NO']]), 'VAL');
                     this.setOutput(true, 'Boolean');
                     this.setColour('#40BF4A');
                 }
@@ -3480,6 +3853,26 @@
                     this.appendDummyInput()
                         .appendField('🏃 יש תנועה?')
                         .appendField(new Blockly.FieldDropdown([['כן', 'YES'], ['לא', 'NO']]), 'VAL');
+                    this.setOutput(true, 'Boolean');
+                    this.setColour('#40BF4A');
+                }
+            };
+
+            Blockly.Blocks['sensor_burglar'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('🕵️ חיישן גנב =')
+                        .appendField(new Blockly.FieldDropdown([['זוהה גנב', 'YES'], ['אין גנב', 'NO']]), 'VAL');
+                    this.setOutput(true, 'Boolean');
+                    this.setColour('#40BF4A');
+                }
+            };
+
+            Blockly.Blocks['sensor_homeowner'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('👨‍🦱 חיישן בעל הבית =')
+                        .appendField(new Blockly.FieldDropdown([['זוהה', 'YES'], ['לא זוהה', 'NO']]), 'VAL');
                     this.setOutput(true, 'Boolean');
                     this.setColour('#40BF4A');
                 }
@@ -3677,6 +4070,24 @@
                     this.setColour('#9966FF');
                 }
             };
+
+            Blockly.Blocks['action_delivery_package'] = {
+                init: function() {
+                    this.appendDummyInput().appendField('📦 הבא משלוח לרובוט');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+
+            Blockly.Blocks['action_drop_delivery'] = {
+                init: function() {
+                    this.appendDummyInput().appendField('📦 הנח משלוח בפתח הבית');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
         }
 
         // ===== CODE EXECUTION =====
@@ -3711,8 +4122,20 @@
                         await sleep(250);
                         break;
                     }
-                    robot.x += Math.cos(robot.angle * Math.PI / 180) * 30;
-                    robot.y += Math.sin(robot.angle * Math.PI / 180) * 30;
+                    {
+                        let nextX = robot.x + Math.cos(robot.angle * Math.PI / 180) * 30;
+                        let nextY = robot.y + Math.sin(robot.angle * Math.PI / 180) * 30;
+                        if (wouldHitLesson12Fence(nextX, nextY)) {
+                            robot.hitLesson12Fence = true;
+                            robot.speaking = 'נתקעתי בגדר!';
+                            await sleep(700);
+                            break;
+                        }
+                        robot.hitLesson12Fence = false;
+                        robot.speaking = '';
+                        robot.x = nextX;
+                        robot.y = nextY;
+                    }
                     robot.x = Math.max(40, Math.min(canvas.width - 40, robot.x));
                     robot.y = Math.max(40, Math.min(canvas.height - 40, robot.y));
                     await sleep(400);
@@ -3720,8 +4143,20 @@
 
                 case 'move_backward':
                     robot.vehicleStopped = false;
-                    robot.x -= Math.cos(robot.angle * Math.PI / 180) * 30;
-                    robot.y -= Math.sin(robot.angle * Math.PI / 180) * 30;
+                    {
+                        let nextX = robot.x - Math.cos(robot.angle * Math.PI / 180) * 30;
+                        let nextY = robot.y - Math.sin(robot.angle * Math.PI / 180) * 30;
+                        if (wouldHitLesson12Fence(nextX, nextY)) {
+                            robot.hitLesson12Fence = true;
+                            robot.speaking = 'נתקעתי בגדר!';
+                            await sleep(700);
+                            break;
+                        }
+                        robot.hitLesson12Fence = false;
+                        robot.speaking = '';
+                        robot.x = nextX;
+                        robot.y = nextY;
+                    }
                     robot.x = Math.max(40, Math.min(canvas.width - 40, robot.x));
                     robot.y = Math.max(40, Math.min(canvas.height - 40, robot.y));
                     await sleep(400);
@@ -3745,6 +4180,13 @@
                 case 'turn_left':
                     robot.angle -= 90;
                     await sleep(300);
+                    break;
+
+                case 'turn_around':
+                    robot.angle += 180;
+                    robot.speaking = 'הסתובבתי — חוזר לסיור';
+                    await sleep(500);
+                    robot.speaking = '';
                     break;
 
                 case 'route_turn':
@@ -3843,27 +4285,27 @@
                 case 'action_sound': {
                     const soundType = block.getFieldValue('SND');
                     playBeep(soundType);
-                    robot.speaking = soundType === 'ALARM' ? 'אזעקה הופעלה' : 'ביפ';
+                    if (soundType === 'ALARM') {
+                        robot.alarmOn = true;
+                        catchLesson13BurglarIfAlarm();
+                    }
+                    robot.speaking = soundType === 'ALARM'
+                        ? (currentLesson === 13 && environment.burglar ? 'אזעקה! המשטרה הגיעה והגנב נתפס!' : 'אזעקה הופעלה')
+                        : 'ביפ';
                     await sleep(900);
-                    robot.speaking = '';
+                    if (!(currentLesson === 13 && burglarCaughtAt)) robot.speaking = '';
                     break;
                 }
 
                 case 'action_alarm':
                     robot.alarmOn = block.getFieldValue('STATE') === 'ON';
-                    if (robot.alarmOn) playBeep('ALARM');
-                    robot.speaking = robot.alarmOn ? 'הפעלתי אזעקה' : 'כיביתי אזעקה';
+                    if (robot.alarmOn) {
+                        playBeep('ALARM');
+                        catchLesson13BurglarIfAlarm();
+                    }
+                    robot.speaking = robot.alarmOn ? (currentLesson === 13 && environment.burglar ? 'אזעקה! המשטרה הגיעה והגנב נתפס!' : 'הפעלתי אזעקה') : 'כיביתי אזעקה';
                     await sleep(900);
-                    robot.speaking = '';
-                    break;
-                    break;
-
-                case 'action_alarm':
-                    robot.alarmOn = block.getFieldValue('STATE') === 'ON';
-                    if (robot.alarmOn) playBeep('ALARM');
-                    robot.speaking = robot.alarmOn ? 'הפעלתי אזעקה' : 'כיביתי אזעקה';
-                    await sleep(900);
-                    robot.speaking = '';
+                    if (!(currentLesson === 13 && burglarCaughtAt)) robot.speaking = '';
                     break;
 
                 case 'action_fan':
@@ -3900,6 +4342,30 @@
                     await sleep(900);
                     robot.speaking = '';
                     break;
+
+                case 'action_delivery_package':
+                    environment.deliveryPackage = true;
+                    environment.deliveryDropped = false;
+                    document.getElementById('envDeliveryPackage')?.classList.add('active');
+                    robot.speaking = 'לקחתי משלוח מהמכולת';
+                    await sleep(900);
+                    robot.speaking = '';
+                    break;
+
+                case 'action_drop_delivery':
+                    if (currentLesson === 12 && environment.deliveryPackage && canSenseGoal()) {
+                        environment.deliveryPackage = false;
+                        environment.deliveryDropped = true;
+                        document.getElementById('envDeliveryPackage')?.classList.remove('active');
+                        robot.speaking = 'הנחתי את המשלוח בפתח הבית';
+                    } else if (currentLesson === 12 && !environment.deliveryPackage) {
+                        robot.speaking = 'אין לי משלוח להוריד';
+                    } else {
+                        robot.speaking = 'צריך להגיע לבית קודם';
+                    }
+                    await sleep(1200);
+                    robot.speaking = '';
+                    break;
             }
 
             await runBlock(block.getNextBlock());
@@ -3910,6 +4376,13 @@
             const dx = robot.x - obj.x;
             const dy = robot.y - obj.y;
             return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        function wouldHitLesson12Fence(nextX, nextY) {
+            if (currentLesson !== 12 || !environment.obstacle) return false;
+            const dx = nextX - objects.wall.x;
+            const dy = nextY - objects.wall.y;
+            return Math.sqrt(dx * dx + dy * dy) < 64;
         }
 
         // Check if robot can sense each element (with proximity)
@@ -3934,8 +4407,12 @@
         }
 
         function canSenseTouch() {
+            if (!environment.obstacle) return false;
+            if (currentLesson === 12) {
+                return Boolean(robot.hitLesson12Fence);
+            }
             // Touch requires being close (within 70 pixels)
-            return environment.obstacle && distanceToObject(objects.wall) < 70;
+            return distanceToObject(objects.wall) < 70;
         }
 
         function canSenseSmoke() {
@@ -4048,7 +4525,93 @@
         }
 
         function canSenseMotion() {
+            if (currentLesson === 13) return canSenseBurglarNearby() || canSenseHomeowner();
             return Boolean(environment.motion);
+        }
+
+        function getLesson13BurglarScene(phase = 'approach') {
+            const routes = {
+                left: {
+                    label: 'משמאל',
+                    breach: [canvas.width * 0.315, canvas.height * 0.76],
+                    points: {
+                        approach: [canvas.width * 0.08, canvas.height * 0.78],
+                        breakFence: [canvas.width * 0.30, canvas.height * 0.76],
+                        yard: [canvas.width * 0.44, canvas.height * 0.62],
+                        inside: [canvas.width * 0.40, canvas.height * 0.46],
+                        escape: [canvas.width * 0.24, canvas.height * 0.76],
+                        caught: [canvas.width * 0.48, canvas.height * 0.66]
+                    }
+                },
+                right: {
+                    label: 'מימין',
+                    breach: [canvas.width * 0.85, canvas.height * 0.76],
+                    points: {
+                        approach: [canvas.width * 0.96, canvas.height * 0.78],
+                        breakFence: [canvas.width * 0.85, canvas.height * 0.76],
+                        yard: [canvas.width * 0.69, canvas.height * 0.62],
+                        inside: [canvas.width * 0.61, canvas.height * 0.46],
+                        escape: [canvas.width * 0.88, canvas.height * 0.76],
+                        caught: [canvas.width * 0.66, canvas.height * 0.66]
+                    }
+                },
+                gate: {
+                    label: 'בשער',
+                    breach: [canvas.width * 0.50, canvas.height * 0.84],
+                    points: {
+                        approach: [canvas.width * 0.50, canvas.height * 0.98],
+                        breakFence: [canvas.width * 0.50, canvas.height * 0.84],
+                        yard: [canvas.width * 0.50, canvas.height * 0.64],
+                        inside: [canvas.width * 0.50, canvas.height * 0.44],
+                        escape: [canvas.width * 0.50, canvas.height * 0.90],
+                        caught: [canvas.width * 0.56, canvas.height * 0.67]
+                    }
+                }
+            };
+            const route = routes[burglarRoute] || routes.left;
+            const [x, y] = route.points[phase] || route.points.approach;
+            return { route, x, y };
+        }
+
+        function getLesson13BurglarPhase() {
+            if (!(currentLesson === 13 && environment.burglar && burglarStartedAt)) return 'gone';
+            const elapsed = Date.now() - burglarStartedAt;
+            if (robot.alarmOn && !burglarCaughtAt) {
+                burglarCaughtAt = Date.now();
+                environment.motion = false;
+            }
+            if (burglarCaughtAt) return 'caught';
+            return elapsed < 2200 ? 'approach' : elapsed < 4200 ? 'breakFence' : elapsed < 7000 ? 'yard' : elapsed < 9800 ? 'inside' : elapsed < 12800 ? 'escape' : 'gone';
+        }
+
+        function canSenseBurglarNearby() {
+            if (!(currentLesson === 13 && environment.burglar) || burglarCaughtAt) return false;
+            const phase = getLesson13BurglarPhase();
+            if (phase === 'gone' || phase === 'inside' || phase === 'caught') return false;
+            const burglar = getLesson13BurglarScene(phase);
+            return Math.hypot(robot.x - burglar.x, robot.y - burglar.y) <= 75;
+        }
+
+        function canSenseBurglar() {
+            return canSenseBurglarNearby();
+        }
+
+
+        function getLesson13HomeownerScene() {
+            const elapsed = environment.homeowner && homeownerStartedAt ? Date.now() - homeownerStartedAt : 0;
+            const phase = elapsed < 2200 ? 'approach' : elapsed < 5200 ? 'yard' : elapsed < 7800 ? 'door' : 'gone';
+            const points = {
+                approach: [canvas.width * 0.10, canvas.height * 0.82],
+                yard: [canvas.width * 0.34, canvas.height * 0.67],
+                door: [canvas.width * 0.50, canvas.height * 0.58],
+                gone: [canvas.width * 0.50, canvas.height * 0.58]
+            };
+            const [x, y] = points[phase] || points.approach;
+            return { phase, x, y };
+        }
+
+        function canSenseHomeowner() {
+            return currentLesson === 13 && Boolean(environment.homeowner);
         }
 
         function canSensePeople() {
@@ -4059,7 +4622,40 @@
             return Boolean(environment.doorOpen);
         }
 
+        function getLesson12HomeTarget() {
+            // Door/front entrance of the lesson 12 house in the background image.
+            return { x: canvas.width * 0.78, y: canvas.height * 0.41 };
+        }
+
+        function hasDeliveryPackage() {
+            return currentLesson === 12 && Boolean(environment.deliveryPackage);
+        }
+
+        function isDeliveryDropped() {
+            return currentLesson === 12 && Boolean(environment.deliveryDropped);
+        }
+
+        function getLesson13FenceEndTargets() {
+            return [
+                { x: canvas.width * 0.14, y: canvas.height * 0.78 },
+                { x: canvas.width * 0.86, y: canvas.height * 0.78 }
+            ];
+        }
+
         function canSenseGoal() {
+            if (currentLesson === 12) {
+                const home = getLesson12HomeTarget();
+                const dx = robot.x - home.x;
+                const dy = robot.y - home.y;
+                return Math.sqrt(dx * dx + dy * dy) <= 90;
+            }
+            if (currentLesson === 13) {
+                return getLesson13FenceEndTargets().some((fenceEnd) => {
+                    const dx = robot.x - fenceEnd.x;
+                    const dy = robot.y - fenceEnd.y;
+                    return Math.sqrt(dx * dx + dy * dy) <= 80;
+                });
+            }
             if (currentLesson !== 7) return false;
             const goal = getLesson7LinePoints().end;
             const sensorPoint = getLineSensorPoint();
@@ -4083,8 +4679,10 @@
                 }
                 case 'sensor_touch':
                     return val === 'YES' ? canSenseTouch() : !canSenseTouch();
-                case 'sensor_obstacle':
-                    return val === 'YES' ? Boolean(environment.obstacle) : !environment.obstacle;
+                case 'sensor_obstacle': {
+                    const obstacleDetected = currentLesson === 12 ? canSenseTouch() : Boolean(environment.obstacle);
+                    return val === 'YES' ? obstacleDetected : !obstacleDetected;
+                }
                 case 'sensor_smell':
                     return val === 'YES' ? canSenseSmoke() : !canSenseSmoke();
                 case 'sensor_temperature':
@@ -4097,6 +4695,8 @@
                     return canSenseLineSide(val);
                 case 'sensor_goal':
                     return val === 'YES' ? canSenseGoal() : !canSenseGoal();
+                case 'sensor_delivery_package':
+                    return val === 'YES' ? hasDeliveryPackage() : !hasDeliveryPackage();
                 case 'sensor_cars':
                     return val === 'YES' ? canSenseCars() : !canSenseCars();
                 case 'sensor_pedestrian':
@@ -4109,6 +4709,10 @@
                     return val === 'YES' ? isSystemArmed() : !isSystemArmed();
                 case 'sensor_motion':
                     return val === 'YES' ? canSenseMotion() : !canSenseMotion();
+                case 'sensor_burglar':
+                    return val === 'YES' ? canSenseBurglar() : !canSenseBurglar();
+                case 'sensor_homeowner':
+                    return val === 'YES' ? canSenseHomeowner() : !canSenseHomeowner();
 
                 case 'sensor_people':
                     return val === 'YES' ? canSensePeople() : !canSensePeople();
@@ -4162,6 +4766,32 @@
         function toggleEnv(type) {
             environment[type] = !environment[type];
             if (type === 'smoke') smokeStartedAt = environment.smoke ? Date.now() : null;
+
+            if (type === 'deliveryPackage') environment.deliveryDropped = false;
+            if (type === 'burglar') {
+                burglarStartedAt = environment.burglar ? Date.now() : null;
+                burglarCaughtAt = null;
+                burglarEscapedAt = null;
+                if (environment.burglar) {
+                    const routes = ['left', 'right', 'gate'];
+                    burglarRoute = routes[Math.floor(Math.random() * routes.length)];
+                }
+                environment.motion = false;
+                if (environment.burglar) environment.sound = false;
+            }
+            if (type === 'homeowner') {
+                homeownerStartedAt = environment.homeowner ? Date.now() : null;
+                environment.motion = environment.homeowner;
+                environment.sound = environment.homeowner;
+                if (environment.homeowner) {
+                    environment.burglar = false;
+                    burglarStartedAt = null;
+                    burglarCaughtAt = null;
+                    burglarEscapedAt = null;
+                    document.getElementById('envBurglar')?.classList.remove('active');
+                }
+            }
+
             if (type === 'cars') robot.trafficCarsStopped = false;
             if (type === 'pedestrian') robot.pedestrianStopped = false;
             document.getElementById('env' + type.charAt(0).toUpperCase() + type.slice(1))
@@ -4171,7 +4801,7 @@
 
         function resetEnv() {
 
-            environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, doorOpen: false };
+            environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, burglar: false, homeowner: false, doorOpen: false, deliveryPackage: false, deliveryDropped: false };
 
             document.querySelectorAll('.env-btn').forEach(b => b.classList.remove('active'));
             robot.speaking = '';
@@ -4187,6 +4817,13 @@
             robot.alarmOn = false;
             robot.sortedBin = '';
             smokeStartedAt = null;
+
+            burglarStartedAt = null;
+            burglarCaughtAt = null;
+            burglarEscapedAt = null;
+            burglarRoute = 'left';
+            homeownerStartedAt = null;
+
             const recycleBtnIcon = document.querySelector('#envRecycleColor .icon');
             if (recycleBtnIcon) recycleBtnIcon.textContent = '♻️';
             resetPositions();
@@ -4229,12 +4866,16 @@
             const sensesCars = canSenseCars();
             const sensesPedestrian = canSensePedestrian();
             const sensesPeople = canSensePeople();
+            const hasPackage = hasDeliveryPackage();
+            const packageDropped = isDeliveryDropped();
 
             const soilMoisture = getSoilMoisture();
             const onLine = sensesLine;
             const armed = isSystemArmed();
             const motion = canSenseMotion();
             const doorOpen = isDoorOpen();
+            const burglar = canSenseBurglar();
+            const homeowner = canSenseHomeowner();
 
             document.getElementById('lightText').textContent = sensesLight ? 'בהיר!' : 'חשוך';
             document.getElementById('soundText').textContent = soundLevel === 'LOUD' ? 'חזק מדי!' : soundLevel === 'SOFT' ? 'חלש' : 'שקט';
@@ -4247,7 +4888,11 @@
                 : (onLine ? 'על הקו' : 'מחוץ לקו');
             document.getElementById('goalText').textContent = currentLesson === 7
                 ? (sensesGoal ? 'הגעתי ליעד!' : 'לא ביעד')
-                : 'לא בשימוש';
+                : currentLesson === 12
+                    ? (sensesGoal ? 'הבית הוא היעד!' : 'יעד: הבית')
+                    : currentLesson === 13
+                        ? (sensesGoal ? 'סוף הגדר!' : 'סיור לגדר')
+                        : 'לא בשימוש';
 
             document.getElementById('carsText').textContent = currentLesson === 8
                 ? (sensesCars ? 'יש מכוניות!' : 'אין מכוניות')
@@ -4260,7 +4905,10 @@
             document.getElementById('soilText').textContent = soilMoisture === 'DRY' ? 'אדמה יבשה' : 'אדמה רטובה';
             document.getElementById('armedText').textContent = armed ? 'דרוכה' : 'לא דרוכה';
             document.getElementById('motionText').textContent = motion ? 'יש תנועה' : 'אין תנועה';
+            document.getElementById('burglarText').textContent = burglar ? 'גנב זוהה!' : 'אין גנב';
+            document.getElementById('homeownerText').textContent = homeowner ? 'בעל הבית הגיע' : 'אין בעל בית';
             document.getElementById('doorText').textContent = doorOpen ? 'דלת פתוחה' : 'דלת סגורה';
+            document.getElementById('deliveryPackageText').textContent = hasPackage ? 'יש משלוח' : packageDropped ? 'הונח בבית' : 'אין משלוח';
 
             document.getElementById('sensorLight').classList.toggle('active', sensesLight);
             document.getElementById('sensorSound').classList.toggle('active', sensesSound);
@@ -4270,14 +4918,17 @@
             document.getElementById('sensorColor').classList.toggle('active', recycleColor !== 'NONE');
 
             document.getElementById('sensorLine').classList.toggle('active', currentLesson === 7 ? sensesLine : onLine);
-            document.getElementById('sensorGoal').classList.toggle('active', currentLesson === 7 && sensesGoal);
+            document.getElementById('sensorGoal').classList.toggle('active', (currentLesson === 7 || currentLesson === 12 || currentLesson === 13) && sensesGoal);
             document.getElementById('sensorCars').classList.toggle('active', currentLesson === 8 && sensesCars);
             document.getElementById('sensorPedestrian').classList.toggle('active', currentLesson === 8 && sensesPedestrian);
             document.getElementById('sensorPeople').classList.toggle('active', sensesPeople);
             document.getElementById('sensorSoil').classList.toggle('active', soilMoisture === 'DRY');
             document.getElementById('sensorArmed').classList.toggle('active', armed);
             document.getElementById('sensorMotion').classList.toggle('active', motion);
+            document.getElementById('sensorBurglar').classList.toggle('active', burglar);
+            document.getElementById('sensorHomeowner').classList.toggle('active', homeowner);
             document.getElementById('sensorDoor').classList.toggle('active', doorOpen);
+            document.getElementById('sensorDeliveryPackage').classList.toggle('active', hasPackage || packageDropped);
 
         }
 
@@ -4416,6 +5067,8 @@
             const ground = document.querySelector('.ground');
             ground?.classList.toggle('street-ground', num === 8);
             ground?.classList.toggle('classroom-ground', num === 9);
+            ground?.classList.toggle('delivery-ground', num === 12);
+            ground?.classList.toggle('home-guard-ground', num === 13);
             resizeCanvas();
             updateTasks(num);
             if (workspace) workspace.updateToolbox(buildToolbox());
@@ -4453,15 +5106,33 @@
         }
 
         // ===== INIT =====
-        window.onload = function() {
-            resizeCanvas();
-            initBlockly();
+        let appInitialized = false;
+        function initializeApp() {
+            if (appInitialized) return;
+            appInitialized = true;
             renderLessonTabs();
             renderWelcomeLessons();
+            setTimeout(() => {
+                const list = document.getElementById('welcomeLessons');
+                if (list && !list.querySelector('.lesson-card')) renderWelcomeLessons();
+            }, 250);
+            resizeCanvas();
+            try {
+                initBlockly();
+            } catch (error) {
+                console.error('Blockly failed to initialize, keeping lesson list visible:', error);
+            }
             draw();
             updateSensors();
             selectLesson(getInitialLessonFromUrl());
-        };
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeApp, { once: true });
+        } else {
+            initializeApp();
+        }
+        window.addEventListener('load', initializeApp, { once: true });
     </script>
   <script src="js/feedback-widget.js?v=20260711-feedback"></script>
 </body>
