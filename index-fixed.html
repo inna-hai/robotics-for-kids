@@ -1285,6 +1285,8 @@
         let burglarRoute = 'left';
         let homeownerStartedAt = null;
         let lesson15SelectedZone = null;
+        let lesson15MuseumInside = false;
+        let lesson15SchoolInside = false;
 
 
         let isRunning = false;
@@ -1377,12 +1379,81 @@
             ctx.drawImage(image, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
         }
 
+        function drawLesson9ClassroomBackground() {
+            if (lesson9ClassroomBg.complete && lesson9ClassroomBg.naturalWidth > 0) {
+                drawImageCover(lesson9ClassroomBg);
+                const builtInLampMask = ctx.createLinearGradient(0, canvas.height * 0.02, 0, canvas.height * 0.12);
+                builtInLampMask.addColorStop(0, '#f6d99d');
+                builtInLampMask.addColorStop(1, '#efc076');
+                ctx.fillStyle = builtInLampMask;
+                ctx.beginPath();
+                ctx.moveTo(canvas.width * 0.413, canvas.height * 0.018);
+                ctx.lineTo(canvas.width * 0.586, canvas.height * 0.018);
+                ctx.lineTo(canvas.width * 0.579, canvas.height * 0.091);
+                ctx.lineTo(canvas.width * 0.421, canvas.height * 0.091);
+                ctx.closePath();
+                ctx.fill();
+            } else {
+                const fallback = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                fallback.addColorStop(0, '#fef3c7');
+                fallback.addColorStop(1, '#fbbf24');
+                ctx.fillStyle = fallback;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function drawLesson9ClassroomPeople() {
+            ctx.save();
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = `${Math.max(48, canvas.width * 0.06)}px Arial`;
+            ctx.fillText('👩‍🏫', canvas.width * 0.22, canvas.height * 0.43);
+            ctx.font = 'bold 16px Rubik';
+            ctx.fillStyle = '#1e293b';
+            ctx.fillText('המורה', canvas.width * 0.22, canvas.height * 0.48);
+
+            const drawBackStudent = (xRatio, yRatio, shirt, hair) => {
+                const x = canvas.width * xRatio;
+                const y = canvas.height * yRatio;
+                const scale = Math.max(0.72, Math.min(canvas.width / 900, 1.2));
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.scale(scale, scale);
+                // Back-facing student placed on an empty chair.
+                ctx.fillStyle = hair;
+                ctx.beginPath();
+                ctx.arc(0, -38, 18, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#fbbf24';
+                ctx.beginPath();
+                ctx.arc(0, -35, 13, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = shirt;
+                ctx.beginPath();
+                ctx.roundRect(-24, -18, 48, 54, 14);
+                ctx.fill();
+                ctx.fillStyle = 'rgba(15,23,42,.18)';
+                ctx.fillRect(-18, 30, 36, 8);
+                ctx.restore();
+            };
+            const students = [
+                [0.07, 0.80, '#60a5fa', '#7c2d12'],
+                [0.16, 0.64, '#f472b6', '#1f2937'],
+                [0.50, 0.69, '#34d399', '#92400e'],
+                [0.50, 0.88, '#a78bfa', '#111827'],
+                [0.79, 0.64, '#fb923c', '#78350f'],
+                [0.89, 0.80, '#22d3ee', '#1e293b']
+            ];
+            students.forEach(([x, y, shirt, hair]) => drawBackStudent(x, y, shirt, hair));
+            ctx.restore();
+        }
+
         const lesson15Zones = [
             { id: 'museum', label: 'מוזיאון', icon: '🏛️', x: .22, y: .25, w: .22, h: .22, color: '#818cf8', problem: 'שמירה על מוצגים' },
             { id: 'school', label: 'בית ספר', icon: '🏫', x: .55, y: .18, w: .24, h: .22, color: '#38bdf8', problem: 'כיתה חכמה וחיסכון' },
-            { id: 'garden', label: 'חממה / גינה', icon: '🌱', x: .66, y: .49, w: .22, h: .24, color: '#22c55e', problem: 'השקיה חכמה' },
+            { id: 'garden', label: 'חממה / גינה', icon: '🌱', x: .12, y: .57, w: .23, h: .22, color: '#22c55e', problem: 'השקיה חכמה' },
             { id: 'crosswalk', label: 'כביש ומעבר חציה', icon: '🚦', x: .36, y: .43, w: .25, h: .24, color: '#f59e0b', problem: 'בטיחות בדרך' },
-            { id: 'grocery', label: 'מכולת', icon: '🏪', x: .12, y: .57, w: .23, h: .22, color: '#fb7185', problem: 'משלוח בטוח' },
+            { id: 'grocery', label: 'מכולת', icon: '🏪', x: .66, y: .49, w: .22, h: .24, color: '#fb7185', problem: 'משלוח בטוח' },
             { id: 'homes', label: 'בתים', icon: '🏘️', x: .50, y: .70, w: .28, h: .20, color: '#a855f7', problem: 'בית חכם / שמירה' }
         ];
 
@@ -1427,28 +1498,35 @@
                 return;
             }
 
-            const selectedBg = lesson15ZoneBackgrounds[selected.id];
-            if (selectedBg?.complete && selectedBg.naturalWidth > 0) {
-                drawImageCover(selectedBg);
+            if (selected.id === 'museum' && lesson15MuseumInside) {
+                drawLesson11MuseumScene({});
+            } else if (selected.id === 'school' && lesson15SchoolInside) {
+                drawLesson9ClassroomBackground();
+                drawLesson15ZoneActors(selected);
             } else {
-                const gradients = {
-                    museum: ['#e0e7ff', '#f8fafc'], school: ['#dbeafe', '#fef3c7'], garden: ['#dcfce7', '#bbf7d0'],
-                    crosswalk: ['#fef9c3', '#e0f2fe'], grocery: ['#fff7ed', '#dbeafe'], homes: ['#ede9fe', '#fef3c7']
-                }[selected.id] || ['#dbeafe', '#f0f9ff'];
-                const bg2 = ctx.createLinearGradient(0, 0, 0, h);
-                bg2.addColorStop(0, gradients[0]);
-                bg2.addColorStop(1, gradients[1]);
-                ctx.fillStyle = bg2;
+                const selectedBg = lesson15ZoneBackgrounds[selected.id];
+                if (selectedBg?.complete && selectedBg.naturalWidth > 0) {
+                    drawImageCover(selectedBg);
+                } else {
+                    const gradients = {
+                        museum: ['#e0e7ff', '#f8fafc'], school: ['#dbeafe', '#fef3c7'], garden: ['#dcfce7', '#bbf7d0'],
+                        crosswalk: ['#fef9c3', '#e0f2fe'], grocery: ['#fff7ed', '#dbeafe'], homes: ['#ede9fe', '#fef3c7']
+                    }[selected.id] || ['#dbeafe', '#f0f9ff'];
+                    const bg2 = ctx.createLinearGradient(0, 0, 0, h);
+                    bg2.addColorStop(0, gradients[0]);
+                    bg2.addColorStop(1, gradients[1]);
+                    ctx.fillStyle = bg2;
+                    ctx.fillRect(0, 0, w, h);
+                }
+
+                const dim = ctx.createLinearGradient(0, 0, 0, h);
+                dim.addColorStop(0, 'rgba(255,255,255,.10)');
+                dim.addColorStop(1, 'rgba(15,23,42,.12)');
+                ctx.fillStyle = dim;
                 ctx.fillRect(0, 0, w, h);
+
+                drawLesson15ZoneActors(selected);
             }
-
-            const dim = ctx.createLinearGradient(0, 0, 0, h);
-            dim.addColorStop(0, 'rgba(255,255,255,.10)');
-            dim.addColorStop(1, 'rgba(15,23,42,.12)');
-            ctx.fillStyle = dim;
-            ctx.fillRect(0, 0, w, h);
-
-            drawLesson15ZoneActors(selected);
 
             ctx.textAlign = 'right';
             ctx.textBaseline = 'middle';
@@ -1487,6 +1565,8 @@
             if (currentIndex < 0) return false;
             const nextIndex = (currentIndex + direction + lesson15Zones.length) % lesson15Zones.length;
             lesson15SelectedZone = lesson15Zones[nextIndex].id;
+            lesson15MuseumInside = false;
+            lesson15SchoolInside = false;
             const nextZone = lesson15Zones[nextIndex];
             robot.x = direction > 0 ? canvas.width * 0.22 : canvas.width * 0.78;
             robot.y = canvas.height * 0.78;
@@ -1617,10 +1697,14 @@
 
             if (selected.id === 'school') {
                 if (environment.people) {
-                    [['🧑‍🎓', .38, .70], ['👧', .49, .72], ['👦', .60, .70]].forEach(([emoji, x, y]) => {
-                        ctx.font = '34px Arial';
-                        ctx.fillText(emoji, w * x, h * y);
-                    });
+                    if (lesson15SchoolInside) {
+                        drawLesson9ClassroomPeople();
+                    } else {
+                        [['🧑‍🎓', .38, .70], ['👧', .49, .72], ['👦', .60, .70]].forEach(([emoji, x, y]) => {
+                            ctx.font = '34px Arial';
+                            ctx.fillText(emoji, w * x, h * y);
+                        });
+                    }
                 }
                 if (environment.light || robot.streetLightOn) {
                     ctx.fillStyle = 'rgba(250,204,21,.28)';
@@ -3440,46 +3524,7 @@
 
                 // People appear only when the students sensor is active: teacher + students sitting on chairs.
                 if (environment.people) {
-                    ctx.textAlign = 'center';
-                    ctx.font = `${Math.max(48, canvas.width * 0.06)}px Arial`;
-                    ctx.fillText('👩‍🏫', canvas.width * 0.22, canvas.height * 0.43);
-                    ctx.font = 'bold 16px Rubik';
-                    ctx.fillStyle = '#1e293b';
-                    ctx.fillText('המורה', canvas.width * 0.22, canvas.height * 0.48);
-
-                    const drawBackStudent = (xRatio, yRatio, shirt, hair) => {
-                        const x = canvas.width * xRatio;
-                        const y = canvas.height * yRatio;
-                        const scale = Math.max(0.72, Math.min(canvas.width / 900, 1.2));
-                        ctx.save();
-                        ctx.translate(x, y);
-                        ctx.scale(scale, scale);
-                        // Back-facing student placed on an empty chair.
-                        ctx.fillStyle = hair;
-                        ctx.beginPath();
-                        ctx.arc(0, -38, 18, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.fillStyle = '#fbbf24';
-                        ctx.beginPath();
-                        ctx.arc(0, -35, 13, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.fillStyle = shirt;
-                        ctx.beginPath();
-                        ctx.roundRect(-24, -18, 48, 54, 14);
-                        ctx.fill();
-                        ctx.fillStyle = 'rgba(15,23,42,.18)';
-                        ctx.fillRect(-18, 30, 36, 8);
-                        ctx.restore();
-                    };
-                    const students = [
-                        [0.07, 0.80, '#60a5fa', '#7c2d12'],
-                        [0.16, 0.64, '#f472b6', '#1f2937'],
-                        [0.50, 0.69, '#34d399', '#92400e'],
-                        [0.50, 0.88, '#a78bfa', '#111827'],
-                        [0.79, 0.64, '#fb923c', '#78350f'],
-                        [0.89, 0.80, '#22d3ee', '#1e293b']
-                    ];
-                    students.forEach(([x, y, shirt, hair]) => drawBackStudent(x, y, shirt, hair));
+                    drawLesson9ClassroomPeople();
                 }
 
                 // Lesson 9 keeps the left draggable speaker as the only visible noise speaker.
@@ -4720,6 +4765,8 @@
             if (currentLesson === 15) {
                 if (lesson15SelectedZone && pos.x >= 18 && pos.x <= 128 && pos.y >= 46 && pos.y <= 78) {
                     lesson15SelectedZone = null;
+                    lesson15MuseumInside = false;
+                    lesson15SchoolInside = false;
                     e.preventDefault();
                     draw();
                     return;
@@ -4729,9 +4776,9 @@
                     const zones = [
                         { id: 'museum', x: .22, y: .25, w: .22, h: .22 },
                         { id: 'school', x: .55, y: .18, w: .24, h: .22 },
-                        { id: 'garden', x: .66, y: .49, w: .22, h: .24 },
+                        { id: 'garden', x: .12, y: .57, w: .23, h: .22 },
                         { id: 'crosswalk', x: .36, y: .43, w: .25, h: .24 },
-                        { id: 'grocery', x: .12, y: .57, w: .23, h: .22 },
+                        { id: 'grocery', x: .66, y: .49, w: .22, h: .24 },
                         { id: 'homes', x: .50, y: .70, w: .28, h: .20 }
                     ];
                     const selected = zones.find(zone =>
@@ -4742,6 +4789,8 @@
                     );
                     if (selected) {
                         lesson15SelectedZone = selected.id;
+                        lesson15MuseumInside = false;
+                        lesson15SchoolInside = false;
                         e.preventDefault();
                         draw();
                         return;
@@ -4925,7 +4974,7 @@
                 movement: ['move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'move_forward', 'turn_right_small', 'turn_left_small', 'stop_cars', 'start_cars', 'stop_pedestrian', 'start_pedestrian', 'route_turn', 'turn_around', 'lesson15_zone_next', 'lesson15_zone_prev'],
                 sensors: ['sensor_light', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_line_side', 'sensor_goal', 'sensor_pedestrian', 'sensor_cars', 'sensor_people', 'sensor_soil', 'sensor_water_status', 'sensor_armed', 'sensor_safe_touch', 'sensor_door', 'sensor_obstacle', 'sensor_delivery_package', 'sensor_burglar', 'sensor_homeowner', 'sensor_motion'],
                 controls: ['control_if', 'stop_program', 'control_forever', 'control_wait'],
-                actions: ['action_street_light', 'action_say', 'action_sound', 'action_fan', 'action_recycle_bin', 'action_traffic_light', 'action_class_power', 'action_ac', 'action_water', 'action_security_mode', 'action_alarm', 'action_delivery_package', 'action_drop_delivery', 'action_safe_route']
+                actions: ['action_street_light', 'action_say', 'action_sound', 'action_fan', 'action_recycle_bin', 'action_traffic_light', 'action_class_power', 'action_ac', 'action_water', 'action_security_mode', 'action_alarm', 'action_enter_museum', 'action_exit_museum', 'action_enter_classroom', 'action_exit_classroom', 'action_delivery_package', 'action_drop_delivery', 'action_safe_route']
             }
         };
 
@@ -5748,6 +5797,42 @@
                 }
             };
 
+            Blockly.Blocks['action_enter_museum'] = {
+                init: function() {
+                    this.appendDummyInput().appendField('🏛️ הכנס למוזיאון');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+
+            Blockly.Blocks['action_exit_museum'] = {
+                init: function() {
+                    this.appendDummyInput().appendField('🚪 צא מהמוזיאון');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+
+            Blockly.Blocks['action_enter_classroom'] = {
+                init: function() {
+                    this.appendDummyInput().appendField('🏫 היכנס לכיתה');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+
+            Blockly.Blocks['action_exit_classroom'] = {
+                init: function() {
+                    this.appendDummyInput().appendField('🚪 צא מהכיתה');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+
             Blockly.Blocks['action_fan'] = {
                 init: function() {
                     this.appendDummyInput()
@@ -6067,6 +6152,54 @@
                     robot.speaking = robot.alarmOn ? (currentLesson === 13 && environment.burglar ? 'אזעקה! המשטרה הגיעה והגנב נתפס!' : 'הפעלתי אזעקה') : 'כיביתי אזעקה';
                     await sleep(900);
                     if (!(currentLesson === 13 && burglarCaughtAt)) robot.speaking = '';
+                    break;
+
+                case 'action_enter_museum':
+                    if (isLesson15Zone('museum')) {
+                        lesson15MuseumInside = true;
+                        robot.speaking = 'נכנסנו למוזיאון';
+                        draw();
+                    } else {
+                        robot.speaking = 'צריך לבחור קודם את אזור המוזיאון';
+                    }
+                    await sleep(900);
+                    robot.speaking = '';
+                    break;
+
+                case 'action_exit_museum':
+                    if (isLesson15Zone('museum')) {
+                        lesson15MuseumInside = false;
+                        robot.speaking = 'יצאנו מהמוזיאון';
+                        draw();
+                    } else {
+                        robot.speaking = 'אנחנו לא באזור המוזיאון';
+                    }
+                    await sleep(900);
+                    robot.speaking = '';
+                    break;
+
+                case 'action_enter_classroom':
+                    if (isLesson15Zone('school')) {
+                        lesson15SchoolInside = true;
+                        robot.speaking = 'נכנסנו לכיתה';
+                        draw();
+                    } else {
+                        robot.speaking = 'צריך לבחור קודם את אזור בית הספר';
+                    }
+                    await sleep(900);
+                    robot.speaking = '';
+                    break;
+
+                case 'action_exit_classroom':
+                    if (isLesson15Zone('school')) {
+                        lesson15SchoolInside = false;
+                        robot.speaking = 'יצאנו מהכיתה';
+                        draw();
+                    } else {
+                        robot.speaking = 'אנחנו לא באזור בית הספר';
+                    }
+                    await sleep(900);
+                    robot.speaking = '';
                     break;
 
                 case 'action_fan':
@@ -6737,7 +6870,8 @@
                 ? (sensesPedestrian ? 'יש הולך רגל!' : 'אין הולך רגל')
                 : 'לא בשימוש';
             const museumVisitorCount = environment.visitorCount || 0;
-            document.getElementById('peopleText').textContent = currentLesson === 11
+            const museumPeopleMode = currentLesson === 11 || isLesson15Zone('museum');
+            document.getElementById('peopleText').textContent = museumPeopleMode
                 ? (museumVisitorCount === 0 ? 'אין מבקרים' : museumVisitorCount > 5 ? 'הרבה מבקרים' : 'קצת מבקרים')
                 : (sensesPeople ? 'יש תלמידים' : 'כיתה ריקה');
 
@@ -6763,7 +6897,7 @@
             document.getElementById('sensorGoal').classList.toggle('active', (currentLesson === 7 || currentLesson === 12 || currentLesson === 13) && sensesGoal);
             document.getElementById('sensorCars').classList.toggle('active', currentLesson === 8 && sensesCars);
             document.getElementById('sensorPedestrian').classList.toggle('active', currentLesson === 8 && sensesPedestrian);
-            document.getElementById('sensorPeople').classList.toggle('active', currentLesson === 11 ? (environment.visitorCount || 0) > 5 : sensesPeople);
+            document.getElementById('sensorPeople').classList.toggle('active', museumPeopleMode ? (environment.visitorCount || 0) > 5 : sensesPeople);
             document.getElementById('sensorSoil').classList.toggle('active', soilMoisture === 'DRY');
             document.getElementById('sensorArmed').classList.toggle('active', armed);
             document.getElementById('sensorMotion').classList.toggle('active', motion);
@@ -6777,13 +6911,18 @@
             const lesson11LightBtn = document.getElementById('envLight');
             if (lesson11LightBtn && currentLesson === 11) lesson11LightBtn.lastChild.textContent = environment.light ? ' אור דלוק' : ' חשוך';
             const lesson11PeopleBtn = document.getElementById('envPeople');
-            if (lesson11PeopleBtn && currentLesson === 11) {
-                lesson11PeopleBtn.lastChild.textContent = ` הוסף מבקר (${environment.visitorCount || 0})`;
-                lesson11PeopleBtn.classList.toggle('active', (environment.visitorCount || 0) > 0);
+            if (lesson11PeopleBtn) {
+                if (museumPeopleMode) {
+                    lesson11PeopleBtn.lastChild.textContent = ` הוסף מבקר (${environment.visitorCount || 0})`;
+                    lesson11PeopleBtn.classList.toggle('active', (environment.visitorCount || 0) > 0);
+                } else {
+                    lesson11PeopleBtn.lastChild.textContent = ' תלמידים';
+                    lesson11PeopleBtn.classList.toggle('active', Boolean(environment.people));
+                }
             }
             const lesson11RemoveVisitorBtn = document.getElementById('envRemoveVisitor');
-            if (lesson11RemoveVisitorBtn && currentLesson === 11) {
-                lesson11RemoveVisitorBtn.classList.toggle('active', (environment.visitorCount || 0) > 0);
+            if (lesson11RemoveVisitorBtn) {
+                lesson11RemoveVisitorBtn.classList.toggle('active', museumPeopleMode && (environment.visitorCount || 0) > 0);
             }
 
         }
@@ -6923,7 +7062,11 @@
             const previousLesson = currentLesson;
             if (workspace && previousLesson !== num) saveWorkspaceForLesson(previousLesson);
             currentLesson = num;
-            if (num !== 15) lesson15SelectedZone = null;
+            if (num !== 15) {
+                lesson15SelectedZone = null;
+                lesson15MuseumInside = false;
+                lesson15SchoolInside = false;
+            }
             document.querySelectorAll('.lesson-tab').forEach((t) =>
                 t.classList.toggle('active', Number(t.querySelector('.lesson-num')?.textContent) === num));
             document.getElementById('welcomeModal').classList.remove('active');
