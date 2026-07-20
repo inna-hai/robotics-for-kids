@@ -43,6 +43,18 @@ function cssRule(selector) {
   return indexHtml.slice(open + 1, close);
 }
 
+test('lesson 1 stays focused on light sensor street-light logic', () => {
+  const lesson1 = lessonObjectSource(1);
+  assertIncludes(lesson1, "title: 'פנס רחוב חכם'");
+  assertIncludes(lesson1, "sensorFocus: 'אור'");
+  assertIncludes(lesson1, 'אם חיישן אור = חשוך');
+  assertIncludes(lesson1, 'פנס רחוב הדלק');
+  assertIncludes(lesson1, 'הפנס נדלק בלילה ונשאר כבוי ביום');
+  assertIncludes(lesson1, 'חיישן אור → אם חשוך → הדלק פנס');
+  assertIncludes(lesson1, 'בדקו חיישן אור במצב חשוך');
+  assertNotIncludes(lesson1, 'אם מערכת שמירה דרוכה', 'Lesson 1 must not use lesson 11 security-arming wording');
+});
+
 test('lesson 7 robot starts with its line sensor on the beginning of the line', () => {
   assertMatches(indexHtml, /if \(currentLesson === 7\) \{[\s\S]*?const line = getLesson7LinePoints\(\);[\s\S]*?robot\.x = line\.start\.x - 28;[\s\S]*?robot\.y = line\.start\.y;[\s\S]*?\} else \{/);
   assertIncludes(indexHtml, 'x: robot.x + Math.cos(angle) * 28,');
