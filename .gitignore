@@ -2,4 +2,5 @@ data/
 # Local Drive exports / raw source materials
 ../drive-catalog/pygame-source-content/
 ../drive-catalog/pygame-source-content/**
-../drive-catalog/*.partial.json
+../drive-catalog/*.partial.json../drive-catalog/roblox-source-content/
+../drive-catalog/roblox-source-content/**
