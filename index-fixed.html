@@ -1277,7 +1277,7 @@
 
         let robot = { x: 150, y: 180, angle: 0, speaking: '', streetLightOn: false, trafficLightGreen: false, trafficLightYellow: false, trafficCarsStopped: false, pedestrianStopped: false, vehicleStopped: false, fanOn: false, waterOn: false, alarmOn: false, sortedBin: '', hitLesson12Fence: false };
         let gardenRecoveryStartedAt = null;
-        let environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, safeTouch: false, visitorCount: 0, burglar: false, homeowner: false, doorOpen: false, deliveryPackage: false, deliveryDropped: false };
+        let environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, safeTouch: false, visitorCount: 0, burglar: false, homeowner: false, doorOpen: false, deliveryPackage: false, deliveryDropped: false, deliveryDropTarget: null };
         let smokeStartedAt = null;
         let burglarStartedAt = null;
         let burglarCaughtAt = null;
@@ -1567,6 +1567,8 @@
             lesson15SelectedZone = lesson15Zones[nextIndex].id;
             lesson15MuseumInside = false;
             lesson15SchoolInside = false;
+            environment.deliveryDropped = false;
+            environment.deliveryDropTarget = null;
             const nextZone = lesson15Zones[nextIndex];
             robot.x = direction > 0 ? canvas.width * 0.22 : canvas.width * 0.78;
             robot.y = canvas.height * 0.78;
@@ -1579,8 +1581,58 @@
             return currentLesson === 15 && zoneIds.includes(lesson15SelectedZone);
         }
 
+        function getLesson15DeliveryTargets() {
+            const w = canvas.width;
+            const h = canvas.height;
+            const targetsByZone = {
+                museum: [{ id: 'museum-door', x: w * 0.50, y: h * 0.64, label: 'פתח המוזיאון' }],
+                school: [{ id: 'school-door', x: w * 0.50, y: h * 0.66, label: 'כניסה לבית הספר' }],
+                garden: [{ id: 'greenhouse-door', x: w * 0.50, y: h * 0.67, label: 'פתח החממה' }],
+                grocery: [{ id: 'grocery-door', x: w * 0.49, y: h * 0.66, label: 'פתח המכולת' }],
+                homes: [
+                    { id: 'home-left', x: w * 0.25, y: h * 0.63, label: 'פתח בית 1' },
+                    { id: 'home-center', x: w * 0.50, y: h * 0.63, label: 'פתח בית 2' },
+                    { id: 'home-right', x: w * 0.75, y: h * 0.63, label: 'פתח בית 3' }
+                ]
+            };
+            return targetsByZone[lesson15SelectedZone] || [];
+        }
+
         function getLesson15HomeTarget() {
-            return { x: canvas.width * 0.78, y: canvas.height * 0.62 };
+            return getLesson15DeliveryTargets()[0] || { x: canvas.width * 0.78, y: canvas.height * 0.62, id: 'home' };
+        }
+
+        function getLesson15CurrentDropTarget() {
+            const targets = getLesson15DeliveryTargets();
+            if (!targets.length) return null;
+            return targets.find(target => target.id === environment.deliveryDropTarget) || targets[0];
+        }
+
+        function isLesson15DeliveryZone() {
+            return currentLesson === 15 && getLesson15DeliveryTargets().length > 0;
+        }
+
+        function drawLesson15DeliveryTargets() {
+            const targets = getLesson15DeliveryTargets();
+            targets.forEach((target) => {
+                const isClose = Math.hypot(robot.x - target.x, robot.y - target.y) <= 100;
+                ctx.save();
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = isClose ? 'rgba(34,197,94,.88)' : 'rgba(255,255,255,.90)';
+                ctx.strokeStyle = isClose ? '#15803d' : '#0f172a';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(target.x, target.y, 24, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                ctx.font = '22px Arial';
+                ctx.fillText('🚪', target.x, target.y - 1);
+                ctx.font = 'bold 11px Rubik';
+                ctx.fillStyle = isClose ? '#14532d' : '#1e293b';
+                ctx.fillText(target.label, target.x, target.y + 34);
+                ctx.restore();
+            });
         }
 
         function drawLesson15ZoneActors(selected) {
@@ -1676,23 +1728,8 @@
                 }
             }
 
-            if (selected.id === 'grocery' || selected.id === 'homes') {
-                const home = getLesson15HomeTarget();
-                ctx.font = '42px Arial';
-                ctx.fillText('🏠', home.x, home.y);
-                ctx.font = 'bold 12px Rubik';
-                ctx.fillStyle = '#1e293b';
-                ctx.fillText('פתח בית', home.x, home.y + 35);
-                if (environment.deliveryDropped) {
-                    ctx.font = '34px Arial';
-                    ctx.fillText('📦', home.x - 28, home.y + 20);
-                    ctx.fillStyle = '#15803d';
-                    ctx.font = 'bold 12px Rubik';
-                    ctx.fillText('המשלוח הונח בפתח', home.x, home.y + 62);
-                } else if (environment.deliveryPackage) {
-                    ctx.font = '30px Arial';
-                    ctx.fillText('📦', robot.x - 34, robot.y - 26);
-                }
+            if (isLesson15DeliveryZone()) {
+                drawLesson15DeliveryTargets();
             }
 
             if (selected.id === 'school') {
@@ -4508,12 +4545,12 @@
                 }
             }
 
-            // Lesson 12 / lesson 15 delivery package follows the robot, then can be placed by the house door.
-            if ((currentLesson === 12 || isLesson15Zone('grocery', 'homes')) && (environment.deliveryPackage || environment.deliveryDropped)) {
+            // Lesson 12 / lesson 15 delivery package follows the robot, then can be placed by a door target.
+            if ((currentLesson === 12 || isLesson15DeliveryZone()) && (environment.deliveryPackage || environment.deliveryDropped)) {
                 ctx.save();
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                const home = currentLesson === 12 ? getLesson12HomeTarget() : getLesson15HomeTarget();
+                const home = currentLesson === 12 ? getLesson12HomeTarget() : getLesson15CurrentDropTarget();
                 const packageX = environment.deliveryDropped ? home.x : robot.x - 34;
                 const packageY = environment.deliveryDropped ? home.y : robot.y - 18;
                 ctx.font = '30px Arial';
@@ -4767,6 +4804,8 @@
                     lesson15SelectedZone = null;
                     lesson15MuseumInside = false;
                     lesson15SchoolInside = false;
+                    environment.deliveryDropped = false;
+                    environment.deliveryDropTarget = null;
                     e.preventDefault();
                     draw();
                     return;
@@ -4791,6 +4830,8 @@
                         lesson15SelectedZone = selected.id;
                         lesson15MuseumInside = false;
                         lesson15SchoolInside = false;
+                        environment.deliveryDropped = false;
+                        environment.deliveryDropTarget = null;
                         e.preventDefault();
                         draw();
                         return;
@@ -6253,6 +6294,7 @@
                 case 'action_delivery_package':
                     environment.deliveryPackage = true;
                     environment.deliveryDropped = false;
+                    environment.deliveryDropTarget = null;
                     document.getElementById('envDeliveryPackage')?.classList.add('active');
                     robot.speaking = 'לקחתי משלוח מהמכולת';
                     await sleep(900);
@@ -6260,15 +6302,21 @@
                     break;
 
                 case 'action_drop_delivery':
-                    if ((currentLesson === 12 || isLesson15Zone('grocery', 'homes')) && environment.deliveryPackage && canSenseGoal()) {
+                    if ((currentLesson === 12 || isLesson15DeliveryZone()) && environment.deliveryPackage && canSenseGoal()) {
+                        if (isLesson15DeliveryZone()) {
+                            const target = getLesson15DeliveryTargets().find((door) => Math.hypot(robot.x - door.x, robot.y - door.y) <= 100);
+                            environment.deliveryDropTarget = target?.id || null;
+                        }
                         environment.deliveryPackage = false;
                         environment.deliveryDropped = true;
                         document.getElementById('envDeliveryPackage')?.classList.remove('active');
                         robot.speaking = 'הנחתי את המשלוח בפתח הבית';
-                    } else if ((currentLesson === 12 || isLesson15Zone('grocery', 'homes')) && !environment.deliveryPackage) {
+                    } else if ((currentLesson === 12 || isLesson15DeliveryZone()) && !environment.deliveryPackage) {
                         robot.speaking = 'אין לי משלוח להוריד';
+                    } else if (isLesson15Zone('crosswalk')) {
+                        robot.speaking = 'באזור הכביש אין פתח בית למשלוח';
                     } else {
-                        robot.speaking = 'צריך להגיע לבית קודם';
+                        robot.speaking = 'צריך להגיע לפתח הבית קודם';
                     }
                     await sleep(1200);
                     robot.speaking = '';
@@ -6553,11 +6601,11 @@
         }
 
         function hasDeliveryPackage() {
-            return (currentLesson === 12 || isLesson15Zone('grocery', 'homes')) && Boolean(environment.deliveryPackage);
+            return (currentLesson === 12 || isLesson15DeliveryZone()) && Boolean(environment.deliveryPackage);
         }
 
         function isDeliveryDropped() {
-            return (currentLesson === 12 || isLesson15Zone('grocery', 'homes')) && Boolean(environment.deliveryDropped);
+            return (currentLesson === 12 || isLesson15DeliveryZone()) && Boolean(environment.deliveryDropped);
         }
 
         function getLesson13FenceEndTargets() {
@@ -6581,11 +6629,12 @@
                     return Math.sqrt(dx * dx + dy * dy) <= 80;
                 });
             }
-            if (isLesson15Zone('grocery', 'homes')) {
-                const home = getLesson15HomeTarget();
-                const dx = robot.x - home.x;
-                const dy = robot.y - home.y;
-                return Math.sqrt(dx * dx + dy * dy) <= 100;
+            if (isLesson15DeliveryZone()) {
+                return getLesson15DeliveryTargets().some((door) => {
+                    const dx = robot.x - door.x;
+                    const dy = robot.y - door.y;
+                    return Math.sqrt(dx * dx + dy * dy) <= 100;
+                });
             }
             if (currentLesson !== 7) return false;
             const goal = getLesson7LinePoints().end;
@@ -6725,7 +6774,10 @@
             }
             if (type === 'smoke') smokeStartedAt = environment.smoke ? Date.now() : null;
 
-            if (type === 'deliveryPackage') environment.deliveryDropped = false;
+            if (type === 'deliveryPackage') {
+                environment.deliveryDropped = false;
+                environment.deliveryDropTarget = null;
+            }
             if (type === 'burglar') {
                 burglarStartedAt = environment.burglar ? Date.now() : null;
                 burglarCaughtAt = null;
@@ -6760,7 +6812,7 @@
 
         function resetEnv() {
 
-            environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, safeTouch: false, visitorCount: 0, burglar: false, homeowner: false, doorOpen: false, deliveryPackage: false, deliveryDropped: false };
+            environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, safeTouch: false, visitorCount: 0, burglar: false, homeowner: false, doorOpen: false, deliveryPackage: false, deliveryDropped: false, deliveryDropTarget: null };
             smokeStartedAt = null;
             gardenRecoveryStartedAt = null;
 
@@ -7066,6 +7118,8 @@
                 lesson15SelectedZone = null;
                 lesson15MuseumInside = false;
                 lesson15SchoolInside = false;
+                environment.deliveryDropped = false;
+                environment.deliveryDropTarget = null;
             }
             document.querySelectorAll('.lesson-tab').forEach((t) =>
                 t.classList.toggle('active', Number(t.querySelector('.lesson-num')?.textContent) === num));
