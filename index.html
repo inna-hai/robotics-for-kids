@@ -2,6 +2,9 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🏙️ סנסי בעיר החכמה - 15 שיעורי רובוטיקה</title>
     <script src="https://unpkg.com/blockly/blockly.min.js"></script>
@@ -178,6 +181,16 @@
             transform: translateY(-3px);
         }
 
+        .btn-reset-blocks {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #78350f;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.22);
+        }
+
+        .btn-reset-blocks:hover {
+            transform: translateY(-3px);
+        }
+
         /* ===== MAIN LAYOUT ===== */
         .main-container {
             display: grid;
@@ -259,6 +272,14 @@
             height: 60px;
             background: linear-gradient(180deg, #7BC96F 0%, #5DAE50 100%);
             border-radius: 0 0 1.5rem 1.5rem;
+        }
+
+        .robot-stage.museum-stage .ground {
+            display: none;
+        }
+
+        .robot-stage.museum-stage .ground::before {
+            display: none;
         }
 
         .ground::before {
@@ -907,6 +928,9 @@
             <button class="btn-play btn-stop" onclick="stopCode()">
                 <span>⏹️</span> עצור
             </button>
+            <button class="btn-play btn-reset-blocks" onclick="resetBlocks()" title="מוחק את הבלוקים השמורים של השיעור הנוכחי">
+                <span>🧹</span> איפוס בלוקים
+            </button>
         </div>
     </header>
 
@@ -971,7 +995,6 @@
                     <span class="icon">🌱</span>
                     <span id="soilText">אדמה רטובה</span>
                 </div>
-
                 <div class="sensor-chip" id="sensorArmed">
                     <span class="icon">🔐</span>
                     <span id="armedText">לא דרוכה</span>
@@ -979,6 +1002,10 @@
                 <div class="sensor-chip" id="sensorMotion">
                     <span class="icon">🏃</span>
                     <span id="motionText">אין תנועה</span>
+                </div>
+                <div class="sensor-chip" id="sensorSafeTouch">
+                    <span class="icon">✋</span>
+                    <span id="safeTouchText">אין נגיעה</span>
                 </div>
                 <div class="sensor-chip" id="sensorBurglar">
                     <span class="icon">🕵️</span>
@@ -1035,9 +1062,13 @@
                             <span class="icon">🚶</span>
                             הולך רגל
                         </button>
-                        <button class="env-btn" onclick="toggleEnv('people')" id="envPeople">
+                        <button class="env-btn" onclick="handlePeopleEnv()" id="envPeople">
                             <span class="icon">🧑‍🎓</span>
                             תלמידים
+                        </button>
+                        <button class="env-btn" onclick="removeMuseumVisitor()" id="envRemoveVisitor">
+                            <span class="icon">➖</span>
+                            הורד מבקר
                         </button>
                         <button class="env-btn" onclick="toggleEnv('soilDry')" id="envSoilDry">
                             <span class="icon">🌱</span>
@@ -1050,6 +1081,10 @@
                         <button class="env-btn" onclick="toggleEnv('motion')" id="envMotion">
                             <span class="icon">🏃</span>
                             תנועה
+                        </button>
+                        <button class="env-btn" onclick="toggleEnv('safeTouch')" id="envSafeTouch">
+                            <span class="icon">✋</span>
+                            נגיעה בכספת
                         </button>
                         <button class="env-btn" onclick="toggleEnv('burglar')" id="envBurglar">
                             <span class="icon">🕵️</span>
@@ -1149,16 +1184,19 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260719-lesson13-burglar-v2"></script>
+    <script src="js/lessons-data.js?v=20260720-lesson11-13-merge-v1"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
         let workspace = null;
+        let isRestoringWorkspace = false;
+        let workspaceSaveTimer = null;
         let completedTasks = [];
 
 
         let robot = { x: 150, y: 180, angle: 0, speaking: '', streetLightOn: false, trafficLightGreen: false, trafficCarsStopped: false, pedestrianStopped: false, vehicleStopped: false, fanOn: false, waterOn: false, alarmOn: false, sortedBin: '', hitLesson12Fence: false };
-        let environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, burglar: false, homeowner: false, doorOpen: false, deliveryPackage: false, deliveryDropped: false };
+        let gardenRecoveryStartedAt = null;
+        let environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, safeTouch: false, visitorCount: 0, burglar: false, homeowner: false, doorOpen: false, deliveryPackage: false, deliveryDropped: false };
         let smokeStartedAt = null;
         let burglarStartedAt = null;
         let burglarCaughtAt = null;
@@ -1213,7 +1251,7 @@
         function resizeCanvas() {
             const container = canvas.parentElement;
             canvas.width = container.clientWidth;
-            canvas.height = container.clientHeight - (currentLesson === 9 || currentLesson === 12 || currentLesson === 13 ? 0 : 60); // Account for ground except full-background scenes
+            canvas.height = container.clientHeight - ([9, 11, 12, 13].includes(currentLesson) ? 0 : 60); // Account for ground except full-background scenes; Lesson 11 has no separate ground strip
             resetPositions();
         }
 
@@ -1227,6 +1265,10 @@
                 const line = getLesson7LinePoints();
                 robot.x = line.start.x - 28;
                 robot.y = line.start.y;
+            } else if (currentLesson === 11) {
+                // Start Sensi beside the vault, leaving the left wall for exhibits.
+                robot.x = canvas.width * 0.48;
+                robot.y = canvas.height * 0.48;
             } else if (currentLesson === 12) {
                 // Start Sensi at the beginning of the delivery route, beside the grocery store.
                 robot.x = canvas.width * 0.19;
@@ -1274,7 +1316,7 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // lesson14-realistic-landmarks-v49
+            // lesson14-realistic-landmarks-v50
             // Everything fixed is drawn as one clean illustrated background.
             // Only rescueBeacon and waterDrone are drawn later as movable overlay objects.
             const sky = ctx.createLinearGradient(0, 0, 0, h);
@@ -1745,6 +1787,1006 @@
             }
         }
 
+        function drawLesson11MuseumScene(lesson) {
+            const w = canvas.width;
+            const h = canvas.height;
+            const t = Date.now() / 1000;
+            const museumLightsOn = environment.light;
+            const armed = isSystemArmed();
+            const motion = environment.motion;
+            const doorOpen = environment.doorOpen;
+            const safeTouch = environment.safeTouch;
+            const alarm = robot.alarmOn;
+
+            // Clear luxury museum scene: one readable vault, one side door, subtle security hints.
+            const wall = ctx.createLinearGradient(0, 0, 0, h);
+            if (museumLightsOn) {
+                // Soft museum lighting: brighter, but still elegant and dim enough for a museum hall.
+                wall.addColorStop(0, '#1e293b');
+                wall.addColorStop(0.42, '#3f3f46');
+                wall.addColorStop(1, '#57534e');
+            } else {
+                wall.addColorStop(0, '#0b1020');
+                wall.addColorStop(0.42, '#18181b');
+                wall.addColorStop(1, '#3f3f46');
+            }
+            ctx.fillStyle = wall;
+            ctx.fillRect(0, 0, w, h);
+
+            ctx.save();
+            ctx.direction = 'rtl';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            // Quiet luxury background: gold frame and marble floor, without visual clutter.
+            const frameX = w * 0.035;
+            const frameY = h * 0.075;
+            const frameW = w * 0.93;
+            const frameH = h - frameY - 8;
+            const gold = ctx.createLinearGradient(frameX, frameY, frameX + frameW, frameY + frameH);
+            gold.addColorStop(0, '#7c2d12');
+            gold.addColorStop(0.26, '#facc15');
+            gold.addColorStop(0.56, '#a16207');
+            gold.addColorStop(0.82, '#fde68a');
+            gold.addColorStop(1, '#78350f');
+            // Large outer gold frame reaches almost to the bottom, but has no bottom line.
+            ctx.strokeStyle = gold;
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(frameX, frameY + frameH);
+            ctx.lineTo(frameX, frameY + 28);
+            ctx.quadraticCurveTo(frameX, frameY, frameX + 28, frameY);
+            ctx.lineTo(frameX + frameW - 28, frameY);
+            ctx.quadraticCurveTo(frameX + frameW, frameY, frameX + frameW, frameY + 28);
+            ctx.lineTo(frameX + frameW, frameY + frameH);
+            ctx.stroke();
+
+            ctx.fillStyle = museumLightsOn ? 'rgba(255,255,255,.94)' : 'rgba(250,250,250,.88)';
+            ctx.font = 'bold 16px Rubik';
+            ctx.fillText('אולם הכספת — מוזיאון העיר', w / 2, frameY + 34);
+
+            if (museumLightsOn) {
+                ctx.save();
+                ctx.globalAlpha = 0.20;
+                const roomGlow = ctx.createRadialGradient(w / 2, frameY + 52, 20, w / 2, frameY + 52, frameW * 0.62);
+                roomGlow.addColorStop(0, '#fde68a');
+                roomGlow.addColorStop(0.48, 'rgba(253,230,138,.34)');
+                roomGlow.addColorStop(1, 'rgba(253,230,138,0)');
+                ctx.fillStyle = roomGlow;
+                ctx.fillRect(frameX + 8, frameY + 8, frameW - 16, frameH - 16);
+                ctx.globalAlpha = 0.72;
+                [w * 0.38, w * 0.50, w * 0.62].forEach((lx) => {
+                    ctx.fillStyle = '#fef3c7';
+                    ctx.beginPath();
+                    ctx.ellipse(lx, frameY + 12, 28, 7, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    const beam = ctx.createLinearGradient(lx, frameY + 16, lx, h * 0.68);
+                    beam.addColorStop(0, 'rgba(254,243,199,.26)');
+                    beam.addColorStop(1, 'rgba(254,243,199,0)');
+                    ctx.fillStyle = beam;
+                    ctx.beginPath();
+                    ctx.moveTo(lx - 20, frameY + 18);
+                    ctx.lineTo(lx + 20, frameY + 18);
+                    ctx.lineTo(lx + 70, h * 0.68 + 8);
+                    ctx.lineTo(lx - 70, h * 0.68 + 8);
+                    ctx.closePath();
+                    ctx.fill();
+                });
+                ctx.restore();
+            }
+
+            // Historical street-view exhibits in gold frames, quiet background details.
+            const drawMapExhibit = (x, y, scale, flipped = false) => {
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.scale(scale * (flipped ? -1 : 1), scale);
+                const frameGrad = ctx.createLinearGradient(-54, -38, 54, 38);
+                frameGrad.addColorStop(0, '#78350f');
+                frameGrad.addColorStop(0.35, '#facc15');
+                frameGrad.addColorStop(0.72, '#a16207');
+                frameGrad.addColorStop(1, '#fde68a');
+                ctx.fillStyle = frameGrad;
+                ctx.beginPath();
+                ctx.roundRect(-58, -42, 116, 84, 8);
+                ctx.fill();
+                ctx.fillStyle = '#fef3c7';
+                ctx.strokeStyle = 'rgba(120,53,15,.55)';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.roundRect(-49, -33, 98, 66, 4);
+                ctx.fill();
+                ctx.stroke();
+
+                // Realistic tiny city landscapes: one street view, one bridge/river view.
+                const miniSky = ctx.createLinearGradient(0, -31, 0, 2);
+                miniSky.addColorStop(0, 'rgba(147,197,253,.58)');
+                miniSky.addColorStop(1, 'rgba(254,243,199,.62)');
+                ctx.fillStyle = miniSky;
+                ctx.fillRect(-47, -31, 94, 33);
+
+                if (!flipped) {
+                    const miniGround = ctx.createLinearGradient(0, 0, 0, 31);
+                    miniGround.addColorStop(0, 'rgba(120,113,108,.35)');
+                    miniGround.addColorStop(1, 'rgba(68,64,60,.48)');
+                    ctx.fillStyle = miniGround;
+                    ctx.fillRect(-47, 0, 94, 31);
+                    const buildings = [
+                        [-43, -17, 13, 18, '#b45309'], [-28, -25, 15, 26, '#92400e'], [-10, -15, 16, 16, '#a16207'], [9, -23, 15, 24, '#78350f'], [28, -14, 13, 15, '#b45309']
+                    ];
+                    buildings.forEach(([bx, by, bw, bh, color]) => {
+                        ctx.fillStyle = color;
+                        ctx.globalAlpha = 0.52;
+                        ctx.fillRect(bx, by, bw, bh);
+                        ctx.beginPath();
+                        ctx.moveTo(bx - 2, by);
+                        ctx.lineTo(bx + bw / 2, by - 7);
+                        ctx.lineTo(bx + bw + 2, by);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.globalAlpha = 0.76;
+                        ctx.fillStyle = 'rgba(254,243,199,.75)';
+                        for (let wx = bx + 3; wx < bx + bw - 2; wx += 6) ctx.fillRect(wx, by + 6, 2.5, 3.5);
+                        ctx.globalAlpha = 1;
+                    });
+                    const roadGrad = ctx.createLinearGradient(0, 3, 0, 30);
+                    roadGrad.addColorStop(0, 'rgba(87,83,78,.46)');
+                    roadGrad.addColorStop(1, 'rgba(41,37,36,.68)');
+                    ctx.fillStyle = roadGrad;
+                    ctx.beginPath();
+                    ctx.moveTo(-10, 2);
+                    ctx.lineTo(10, 2);
+                    ctx.lineTo(39, 30);
+                    ctx.lineTo(-39, 30);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.strokeStyle = 'rgba(254,243,199,.65)';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(0, 5);
+                    ctx.lineTo(0, 28);
+                    ctx.stroke();
+                } else {
+                    ctx.fillStyle = 'rgba(14,116,144,.34)';
+                    ctx.fillRect(-47, 2, 94, 29);
+                    ctx.strokeStyle = 'rgba(254,243,199,.55)';
+                    ctx.lineWidth = 1.1;
+                    for (let i = 0; i < 4; i++) {
+                        ctx.beginPath();
+                        ctx.moveTo(-42, 9 + i * 6);
+                        ctx.quadraticCurveTo(-12, 6 + i * 6, 43, 10 + i * 6);
+                        ctx.stroke();
+                    }
+                    ctx.strokeStyle = 'rgba(120,53,15,.62)';
+                    ctx.lineWidth = 2.2;
+                    ctx.beginPath();
+                    ctx.moveTo(-42, 3);
+                    ctx.quadraticCurveTo(0, -15, 42, 3);
+                    ctx.stroke();
+                    ctx.lineWidth = 1.2;
+                    [-26, -9, 9, 26].forEach((px) => {
+                        ctx.beginPath();
+                        ctx.moveTo(px, -4);
+                        ctx.lineTo(px, 11);
+                        ctx.stroke();
+                    });
+                    const skyline = [[-39,-12,10,12],[-25,-21,12,21],[-8,-15,13,15],[10,-24,12,24],[28,-13,10,13]];
+                    skyline.forEach(([bx, by, bw, bh]) => {
+                        ctx.fillStyle = 'rgba(146,64,14,.44)';
+                        ctx.fillRect(bx, by, bw, bh);
+                        ctx.fillStyle = 'rgba(254,243,199,.62)';
+                        ctx.fillRect(bx + 3, by + 5, 2.2, 3.2);
+                    });
+                }
+
+                // Small street lamps for realistic scale.
+                ctx.strokeStyle = 'rgba(68,64,60,.72)';
+                ctx.lineWidth = 1.2;
+                [-31, 31].forEach((lx) => {
+                    ctx.beginPath();
+                    ctx.moveTo(lx, 2);
+                    ctx.lineTo(lx, -10);
+                    ctx.stroke();
+                    ctx.fillStyle = 'rgba(254,240,138,.75)';
+                    ctx.beginPath();
+                    ctx.arc(lx, -12, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                ctx.restore();
+            };
+            drawMapExhibit(frameX + 92, frameY + 82, 0.72, false);
+            drawMapExhibit(frameX + 192, frameY + 82, 0.72, true);
+
+            const floorY = h * 0.68;
+            // Museum floor has no hard horizontal edge at all — only a soft dark rug/shadow.
+            ctx.save();
+            const floorGlow = ctx.createRadialGradient(w / 2, h * 0.82, 20, w / 2, h * 0.82, w * 0.58);
+            // Dark gray museum floor, visible as floor but still subtle and atmospheric.
+            floorGlow.addColorStop(0, museumLightsOn ? 'rgba(161,161,170,.48)' : 'rgba(113,113,122,.38)');
+            floorGlow.addColorStop(0.62, museumLightsOn ? 'rgba(82,82,91,.34)' : 'rgba(63,63,70,.30)');
+            floorGlow.addColorStop(1, 'rgba(24,24,27,0)');
+            ctx.fillStyle = floorGlow;
+            ctx.beginPath();
+            ctx.ellipse(w / 2, h * 0.84, w * 0.56, h * 0.22, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+            // No green stripe and no straight floor boundary in the museum scene.
+
+            // Main subject is moved right, away from Sensi's starting position.
+            const safeX = w * 0.73;
+            const safeY = h * 0.30;
+            const vaultW = Math.min(230, w * 0.33);
+            const vaultH = h * 0.37;
+            const vaultX = safeX - vaultW / 2;
+            const vaultY = safeY;
+
+            // No background box behind the vault; the safe stands directly in the museum hall.
+
+            // Soft floor contact shadow only — no extra box or plinth around the vault.
+            ctx.save();
+            const baseY = vaultY + vaultH + 4;
+            const vaultShadow = ctx.createRadialGradient(safeX, baseY, 10, safeX, baseY, vaultW * 0.62);
+            vaultShadow.addColorStop(0, 'rgba(0,0,0,.38)');
+            vaultShadow.addColorStop(0.64, 'rgba(0,0,0,.18)');
+            vaultShadow.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = vaultShadow;
+            ctx.beginPath();
+            ctx.ellipse(safeX, baseY, vaultW * 0.52, 15, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            // Box-like vault: clear rectangular gold frame and flat metal door.
+            const goldFrame = ctx.createLinearGradient(vaultX, vaultY, vaultX + vaultW, vaultY + vaultH);
+            goldFrame.addColorStop(0, '#78350f');
+            goldFrame.addColorStop(0.22, '#fef08a');
+            goldFrame.addColorStop(0.48, '#d97706');
+            goldFrame.addColorStop(0.76, '#fde68a');
+            goldFrame.addColorStop(1, '#92400e');
+            ctx.fillStyle = goldFrame;
+            ctx.beginPath();
+            ctx.roundRect(vaultX, vaultY, vaultW, vaultH, 6);
+            ctx.fill();
+
+            const metal = ctx.createLinearGradient(vaultX + 10, vaultY + 10, vaultX + vaultW - 10, vaultY + vaultH - 10);
+            metal.addColorStop(0, '#111827');
+            metal.addColorStop(0.22, '#52525b');
+            metal.addColorStop(0.52, '#27272a');
+            metal.addColorStop(0.82, '#71717a');
+            metal.addColorStop(1, '#09090b');
+            ctx.fillStyle = metal;
+            ctx.strokeStyle = 'rgba(254,243,199,.72)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(vaultX + 10, vaultY + 10, vaultW - 20, vaultH - 20, 3);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#18181b';
+            ctx.strokeStyle = 'rgba(212,212,216,.45)';
+            ctx.lineWidth = 1.5;
+            [vaultX + vaultW * 0.22, vaultX + vaultW * 0.78].forEach((footX) => {
+                ctx.beginPath();
+                ctx.roundRect(footX - 14, vaultY + vaultH - 2, 28, 10, 3);
+                ctx.fill();
+                ctx.stroke();
+            });
+
+            // Big smoked glass window: trophy is visible when looking closely.
+            const glassX = vaultX + vaultW * 0.18;
+            const glassY = vaultY + vaultH * 0.18;
+            const glassW = vaultW * 0.54;
+            const glassH = vaultH * 0.58;
+            const glass = ctx.createLinearGradient(glassX, glassY, glassX + glassW, glassY + glassH);
+            glass.addColorStop(0, 'rgba(147,197,253,.46)');
+            glass.addColorStop(0.30, 'rgba(15,23,42,.88)');
+            glass.addColorStop(0.72, 'rgba(30,41,59,.80)');
+            glass.addColorStop(1, 'rgba(226,232,240,.25)');
+            ctx.fillStyle = glass;
+            ctx.strokeStyle = 'rgba(226,232,240,.78)';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.roundRect(glassX, glassY, glassW, glassH, 9);
+            ctx.fill();
+            ctx.stroke();
+
+            // Luxurious realistic trophy inside the safe — intentionally small compared to the vault.
+            const cupX = glassX + glassW * 0.50;
+            const cupY = glassY + glassH * 0.62;
+            const trophyScale = 0.58;
+            ctx.save();
+            ctx.globalAlpha = motion || doorOpen || safeTouch ? 0.78 : 0.66;
+
+            const trophyGlow = ctx.createRadialGradient(cupX, cupY - 14, 3, cupX, cupY - 14, 28);
+            trophyGlow.addColorStop(0, 'rgba(254,240,138,.50)');
+            trophyGlow.addColorStop(0.52, 'rgba(250,204,21,.18)');
+            trophyGlow.addColorStop(1, 'rgba(250,204,21,0)');
+            ctx.fillStyle = trophyGlow;
+            ctx.beginPath();
+            ctx.arc(cupX, cupY - 14, 28, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.translate(cupX, cupY);
+            ctx.scale(trophyScale, trophyScale);
+            const trophyGold = ctx.createLinearGradient(-30, -44, 30, 30);
+            trophyGold.addColorStop(0, '#fff7ad');
+            trophyGold.addColorStop(0.18, '#fef08a');
+            trophyGold.addColorStop(0.40, '#facc15');
+            trophyGold.addColorStop(0.62, '#d97706');
+            trophyGold.addColorStop(0.82, '#fde68a');
+            trophyGold.addColorStop(1, '#92400e');
+            ctx.fillStyle = trophyGold;
+            ctx.strokeStyle = '#78350f';
+            ctx.lineWidth = 1.8;
+
+            ctx.save();
+            ctx.shadowColor = 'rgba(250,204,21,.45)';
+            ctx.shadowBlur = 8;
+            ctx.beginPath();
+            ctx.moveTo(-26, -42);
+            ctx.bezierCurveTo(-24, -21, -15, -5, -6, 1);
+            ctx.quadraticCurveTo(0, 5, 6, 1);
+            ctx.bezierCurveTo(15, -5, 24, -21, 26, -42);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
+            const rimGold = ctx.createLinearGradient(-27, -47, 27, -38);
+            rimGold.addColorStop(0, '#b45309');
+            rimGold.addColorStop(0.24, '#fff7ad');
+            rimGold.addColorStop(0.52, '#facc15');
+            rimGold.addColorStop(0.78, '#fde68a');
+            rimGold.addColorStop(1, '#92400e');
+            ctx.fillStyle = rimGold;
+            ctx.beginPath();
+            ctx.ellipse(0, -42, 28, 6.5, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.strokeStyle = '#facc15';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(-25, -35);
+            ctx.bezierCurveTo(-45, -34, -45, -11, -23, -15);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(25, -35);
+            ctx.bezierCurveTo(45, -34, 45, -11, 23, -15);
+            ctx.stroke();
+            ctx.strokeStyle = '#78350f';
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.moveTo(-25, -35);
+            ctx.bezierCurveTo(-45, -34, -45, -11, -23, -15);
+            ctx.moveTo(25, -35);
+            ctx.bezierCurveTo(45, -34, 45, -11, 23, -15);
+            ctx.stroke();
+
+            ctx.fillStyle = trophyGold;
+            ctx.strokeStyle = '#78350f';
+            ctx.lineWidth = 1.7;
+            ctx.beginPath();
+            ctx.moveTo(-6, 1);
+            ctx.lineTo(6, 1);
+            ctx.lineTo(4, 18);
+            ctx.lineTo(-4, 18);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.ellipse(0, 20, 17, 5.5, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.roundRect(-27, 23, 54, 10, 5);
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+
+            ctx.save();
+            ctx.globalAlpha = 0.75;
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+            ctx.moveTo(-9, -39);
+            ctx.bezierCurveTo(-15, -27, -10, -14, -2, -7);
+            ctx.stroke();
+            ctx.globalAlpha = 0.55;
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.ellipse(10, -34, 4, 1.8, -0.45, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            ctx.save();
+            ctx.globalAlpha = 0.55;
+            ctx.strokeStyle = '#fff7ad';
+            ctx.lineWidth = 1.3;
+            [[-26, -37], [23, -40], [28, 3], [-21, 8]].forEach(([dx, dy], i) => {
+                const twinkle = 2.0 + Math.max(0, Math.sin(t * 2.8 + i)) * 1.3;
+                ctx.beginPath();
+                ctx.moveTo(dx - twinkle, dy);
+                ctx.lineTo(dx + twinkle, dy);
+                ctx.moveTo(dx, dy - twinkle);
+                ctx.lineTo(dx, dy + twinkle);
+                ctx.stroke();
+            });
+            ctx.restore();
+            ctx.restore();
+
+            // Dark glass shading: the cup is findable, but not obvious at first glance.
+            ctx.save();
+            ctx.globalAlpha = 0.28;
+            ctx.fillStyle = '#020617';
+            ctx.fillRect(glassX + glassW * 0.62, glassY + 8, glassW * 0.22, glassH - 16);
+            // Very subtle corner shine only — no strong diagonal reflection.
+            ctx.globalAlpha = 0.16;
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.ellipse(glassX + glassW * 0.22, glassY + glassH * 0.20, glassW * 0.18, 4, -0.25, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            // Bolts and lock make it read as a safe.
+            ctx.fillStyle = '#d4d4d8';
+            ctx.strokeStyle = '#52525b';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < 5; i++) {
+                for (const bx of [glassX - 17, glassX + glassW + 17]) {
+                    const by = glassY + 18 + i * (glassH - 36) / 4;
+                    ctx.beginPath();
+                    ctx.arc(bx, by, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                }
+            }
+            // Simple lock dial on the vault door — clear, not decorative clutter.
+            const wheelX = vaultX + vaultW * 0.84;
+            const wheelY = vaultY + vaultH * 0.48;
+            const dialGrad = ctx.createRadialGradient(wheelX - 5, wheelY - 5, 3, wheelX, wheelY, 22);
+            dialGrad.addColorStop(0, '#fff7ad');
+            dialGrad.addColorStop(0.45, '#facc15');
+            dialGrad.addColorStop(1, '#92400e');
+            ctx.fillStyle = dialGrad;
+            ctx.strokeStyle = '#78350f';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(wheelX, wheelY, 20, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.strokeStyle = '#451a03';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(wheelX - 11, wheelY);
+            ctx.lineTo(wheelX + 11, wheelY);
+            ctx.moveTo(wheelX, wheelY - 11);
+            ctx.lineTo(wheelX, wheelY + 11);
+            ctx.stroke();
+            ctx.fillStyle = '#451a03';
+            ctx.beginPath();
+            ctx.arc(wheelX, wheelY, 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            // No extra label under the safe; the vault should read clearly without an unexplained square.
+
+            // Safe-touch event: a clear hand marker appears on the vault when someone touches it.
+            if (safeTouch) {
+                ctx.save();
+                ctx.globalAlpha = armed ? 0.95 : 0.65;
+                ctx.font = '34px Arial';
+                ctx.fillText('✋', vaultX + vaultW * 0.72, vaultY + vaultH * 0.72);
+                ctx.strokeStyle = '#ef4444';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(vaultX + vaultW * 0.72, vaultY + vaultH * 0.72, 24, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            // Side door sits at the far right corner of the gold frame.
+            const doorW = 54;
+            const doorH = 126;
+            const doorX = frameX + frameW - doorW - 8;
+            const doorY = frameY + 176;
+            ctx.fillStyle = doorOpen ? '#7c2d12' : '#18181b';
+            ctx.strokeStyle = doorOpen ? '#f59e0b' : '#a1a1aa';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.roundRect(doorX, doorY, doorW, doorH, 8);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = doorOpen ? 'rgba(251,191,36,.24)' : 'rgba(255,255,255,.06)';
+            ctx.fillRect(doorX + 7, doorY + 12, doorW - 14, doorH - 24);
+            ctx.fillStyle = '#fde68a';
+            ctx.beginPath();
+            ctx.arc(doorX + 13, doorY + 66, 3.5, 0, Math.PI * 2);
+            ctx.fill();
+            if (doorOpen) {
+                ctx.save();
+                ctx.globalAlpha = 0.22;
+                ctx.fillStyle = '#fbbf24';
+                ctx.beginPath();
+                ctx.moveTo(doorX, doorY + 10);
+                ctx.lineTo(doorX - 58, floorY + 36);
+                ctx.lineTo(doorX + 12, floorY + 46);
+                ctx.lineTo(doorX + doorW, doorY + 26);
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            }
+
+            // Security laser line is clear and thin.
+            if (armed) {
+                ctx.save();
+                ctx.globalAlpha = motion ? 0.54 : 0.25;
+                ctx.strokeStyle = motion ? '#ef4444' : '#f87171';
+                ctx.lineWidth = motion ? 3 : 2;
+                ctx.setLineDash([12, 10]);
+                const laserY = glassY + glassH * 0.44 + Math.sin(t * 2) * 7;
+                ctx.beginPath();
+                ctx.moveTo(frameX + 70, laserY);
+                ctx.lineTo(frameX + frameW - 88, laserY + 4);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.restore();
+            }
+
+            // Museum visitors: each click on “הוסף מבקר” adds a visible person in the hall.
+            // More than 5 visitors turns on the “too many visitors” sensor for students to use.
+            const visitorCount = environment.visitorCount || 0;
+            if (visitorCount > 0) {
+                ctx.save();
+                const maxShownVisitors = Math.min(visitorCount, 9);
+                const visitors = [
+                    { shirt: '#1d4ed8', skin: '#fde68a', hair: '#3f2a1d', hat: null, height: 1.00, pose: -1, facing: -1 },
+                    { shirt: '#be123c', skin: '#f8d4a6', hair: '#111827', hat: '#facc15', height: 0.92, pose: 1, facing: 1 },
+                    { shirt: '#047857', skin: '#d6a477', hair: '#7c2d12', hat: null, height: 1.08, pose: 1, facing: 0 },
+                    { shirt: '#7c3aed', skin: '#f1c27d', hair: '#1f2937', hat: '#e0f2fe', height: 0.98, pose: -1, facing: -1 },
+                    { shirt: '#b45309', skin: '#fed7aa', hair: '#92400e', hat: null, height: 1.12, pose: 1, facing: 1 },
+                    { shirt: '#0f766e', skin: '#e7b98b', hair: '#0f172a', hat: '#fef3c7', height: 0.94, pose: -1, facing: 0 },
+                    { shirt: '#9333ea', skin: '#f5c99b', hair: '#451a03', hat: null, height: 1.04, pose: 1, facing: -1 },
+                    { shirt: '#c2410c', skin: '#d8a06a', hair: '#18181b', hat: '#bae6fd', height: 0.90, pose: -1, facing: 1 },
+                    { shirt: '#2563eb', skin: '#fee2b3', hair: '#78350f', hat: null, height: 1.06, pose: 1, facing: 0 }
+                ];
+                const visitorSpots = [
+                    // Visitors enter from different sides; new visitors push the group toward the vault.
+                    [frameX + 56, floorY - 6], [frameX + frameW - 68, floorY - 8], [w * 0.43, floorY - 6],
+                    [frameX + 116, floorY - 7], [w * 0.56, floorY - 5], [safeX - vaultW * 0.34, floorY - 7],
+                    [safeX - vaultW * 0.18, floorY - 6], [safeX + vaultW * 0.02, floorY - 5], [safeX + vaultW * 0.18, floorY - 6]
+                ];
+                const crowdShift = Math.min(38, Math.max(0, visitorCount - 5) * 9);
+                for (let i = 0; i < maxShownVisitors; i++) {
+                    const style = visitors[i % visitors.length];
+                    const spot = visitorSpots[i];
+                    const pushDirection = spot[0] < safeX ? 1 : -0.4;
+                    const vx = spot[0] + crowdShift * pushDirection;
+                    const vy = spot[1];
+                    const personScale = style.height * 0.76;
+                    ctx.save();
+                    ctx.translate(vx, vy);
+                    ctx.scale(personScale, personScale);
+                    ctx.globalAlpha = 0.96;
+                    ctx.fillStyle = 'rgba(15,23,42,.22)';
+                    ctx.beginPath();
+                    ctx.ellipse(0, 42, 16, 5, 0, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.strokeStyle = '#1f2937';
+                    ctx.lineWidth = 2.3;
+                    ctx.beginPath();
+                    ctx.moveTo(-5, 27);
+                    ctx.lineTo(-11, 41);
+                    ctx.moveTo(6, 27);
+                    ctx.lineTo(13, 40);
+                    ctx.stroke();
+
+                    // Visitors face different directions so they feel like real museum guests.
+                    const faceShift = style.facing * 4;
+                    const bodyLean = style.facing * 0.10;
+                    ctx.save();
+                    ctx.transform(1, 0, bodyLean, 1, 0, 0);
+                    ctx.fillStyle = style.shirt;
+                    ctx.strokeStyle = 'rgba(255,255,255,.46)';
+                    ctx.lineWidth = 1.2;
+                    ctx.beginPath();
+                    ctx.roundRect(-13, 5, 26, 26, 9);
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.restore();
+                    ctx.strokeStyle = '#1f2937';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(-13, 13);
+                    ctx.lineTo(-22 + style.facing * 3, 22 + style.pose * 2);
+                    ctx.moveTo(13, 13);
+                    ctx.lineTo(22 + style.facing * 3, 20 - style.pose * 2);
+                    ctx.stroke();
+
+                    ctx.fillStyle = style.skin;
+                    ctx.strokeStyle = '#78350f';
+                    ctx.lineWidth = 1.1;
+                    ctx.beginPath();
+                    ctx.ellipse(faceShift * 0.35, -4, style.facing === 0 ? 10 : 8.5, 10, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.fillStyle = style.hair;
+                    ctx.beginPath();
+                    ctx.arc(faceShift * 0.35, -9, 9.5, Math.PI, Math.PI * 2);
+                    ctx.fill();
+                    if (style.facing !== 0) {
+                        ctx.fillStyle = style.hair;
+                        ctx.fillRect(style.facing > 0 ? -4 : -9, -11, 7, 13);
+                    }
+                    if (style.hat) {
+                        ctx.fillStyle = style.hat;
+                        ctx.beginPath();
+                        ctx.roundRect(-10 + faceShift * 0.25, -17, 20, 6, 3);
+                        ctx.fill();
+                        ctx.fillRect(-14 + faceShift * 0.25, -12, 28, 3);
+                    }
+                    // Faces are intentionally clean at this small size — no odd dots or marks.
+                    ctx.restore();
+                }
+                ctx.restore();
+            }
+
+            // Suspicious figure stays left of the vault and away from Sensi.
+            if (motion) {
+                const sx = safeX - vaultW * 0.74 + Math.sin(t * 1.4) * 8;
+                const sy = floorY + 50;
+                ctx.save();
+                ctx.globalAlpha = armed ? 0.68 : 0.40;
+                ctx.fillStyle = '#09090b';
+                ctx.beginPath();
+                ctx.ellipse(sx, sy + 38, 21, 42, -0.12, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(sx, sy - 1, 13, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 0.22;
+                ctx.beginPath();
+                ctx.ellipse(sx + 17, sy + 82, 48, 11, 0.10, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            // Alarm above the side door: no black box when inactive, only a small red light/glow when active.
+            const alarmX = doorX + doorW / 2;
+            const alarmY = doorY - 30;
+            if (alarm) {
+                ctx.save();
+                ctx.globalAlpha = 0.20 + Math.sin(t * 8) * 0.08;
+                ctx.fillStyle = '#ef4444';
+                ctx.beginPath();
+                ctx.arc(alarmX, alarmY, 34, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 0.95;
+                ctx.fillStyle = '#dc2626';
+                ctx.strokeStyle = '#fecaca';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(alarmX, alarmY, 10, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            ctx.restore();
+        }
+
+        function drawLesson10GardenScene(lesson) {
+            const w = canvas.width;
+            const h = canvas.height;
+            const t = Date.now() / 1000;
+            const dry = environment.soilDry;
+            const hot = environment.temperatureHot;
+            const watering = robot.waterOn;
+            const recoveryMs = gardenRecoveryStartedAt ? Date.now() - gardenRecoveryStartedAt : null;
+            const recoveryDurationMs = hot ? 10000 : 5000;
+            const dryStartProgress = hot ? 0 : 0.28;
+            const recoveryProgress = gardenRecoveryStartedAt
+                ? Math.min(1, Math.max(dryStartProgress, dryStartProgress + (1 - dryStartProgress) * (recoveryMs / recoveryDurationMs)))
+                : (dry ? dryStartProgress : 1);
+            const healthy = recoveryProgress >= 0.98;
+            const wilted = recoveryProgress <= 0.02;
+
+            const sky = ctx.createLinearGradient(0, 0, 0, h);
+            sky.addColorStop(0, hot ? '#fde68a' : '#bfdbfe');
+            sky.addColorStop(0.48, hot ? '#fed7aa' : '#dcfce7');
+            sky.addColorStop(1, dry ? '#fef3c7' : '#bbf7d0');
+            ctx.fillStyle = sky;
+            ctx.fillRect(0, 0, w, h);
+
+            // Soft clouds / heat glow
+            ctx.save();
+            ctx.globalAlpha = hot ? 0.75 : 0.55;
+            ctx.fillStyle = hot ? '#fb923c' : '#ffffff';
+            ctx.beginPath();
+            ctx.arc(w * 0.14, h * 0.16, hot ? 42 : 30, 0, Math.PI * 2);
+            ctx.arc(w * 0.19, h * 0.15, hot ? 34 : 25, 0, Math.PI * 2);
+            ctx.arc(w * 0.23, h * 0.17, hot ? 28 : 22, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            // Title ribbon
+            ctx.save();
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = 'rgba(255,255,255,.88)';
+            ctx.strokeStyle = '#22c55e';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(w * 0.18, 12, w * 0.64, 42, 18);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = '#14532d';
+            ctx.font = 'bold 16px Rubik';
+            ctx.fillText(`🌿 ${lesson.title}`, w / 2, 33);
+            ctx.restore();
+
+            // Garden soil bed
+            const bedX = w * 0.08;
+            const bedY = h * 0.50;
+            const bedW = w * 0.84;
+            const bedH = h * 0.28;
+            const soil = ctx.createLinearGradient(0, bedY, 0, bedY + bedH);
+            soil.addColorStop(0, dry ? '#92400e' : '#78350f');
+            soil.addColorStop(1, dry ? '#b45309' : '#365314');
+            ctx.fillStyle = soil;
+            ctx.strokeStyle = dry ? '#f97316' : '#22c55e';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.roundRect(bedX, bedY, bedW, bedH, 30);
+            ctx.fill();
+            ctx.stroke();
+
+            // Rows and cracks
+            ctx.strokeStyle = dry ? 'rgba(254,215,170,.72)' : 'rgba(187,247,208,.45)';
+            ctx.lineWidth = 3;
+            for (let row = 0; row < 4; row++) {
+                const yy = bedY + 34 + row * (bedH - 64) / 3;
+                ctx.beginPath();
+                ctx.moveTo(bedX + 28, yy);
+                ctx.bezierCurveTo(w * 0.30, yy - 10, w * 0.58, yy + 10, bedX + bedW - 28, yy);
+                ctx.stroke();
+            }
+            if (dry) {
+                ctx.strokeStyle = 'rgba(120,53,15,.75)';
+                ctx.lineWidth = 2;
+                for (let i = 0; i < 9; i++) {
+                    const cx = bedX + 70 + i * (bedW - 140) / 8;
+                    const cy = bedY + 42 + (i % 3) * 42;
+                    ctx.beginPath();
+                    ctx.moveTo(cx - 12, cy);
+                    ctx.lineTo(cx, cy + 12);
+                    ctx.lineTo(cx + 14, cy + 4);
+                    ctx.stroke();
+                }
+            }
+
+            // Plants
+            const plantXs = [0.18, 0.30, 0.43, 0.56, 0.69, 0.81].map(p => w * p);
+            const mix = (from, to, amount) => from + (to - from) * amount;
+            plantXs.forEach((x, i) => {
+                const baseY = bedY + bedH - 36 - (i % 2) * 18;
+                const plantProgress = Math.min(1, Math.max(0, recoveryProgress - i * 0.025));
+                const bloomProgress = plantProgress * plantProgress * (3 - 2 * plantProgress);
+                const sway = Math.sin(t * 1.8 + i) * (1 + bloomProgress * 2);
+                const hotWiltAmount = hot ? 1 : 0;
+                const wiltStemEndX = mix(-18, -34, hotWiltAmount);
+                const wiltStemEndY = mix(-54, -48, hotWiltAmount);
+                const wiltStemCtrlX = mix(-10, -22, hotWiltAmount);
+                const wiltStemCtrlY = mix(-30, -26, hotWiltAmount);
+                const stemEndX = mix(wiltStemEndX, 0, bloomProgress);
+                const stemEndY = mix(wiltStemEndY, -62, bloomProgress);
+                const stemCtrlX = mix(wiltStemCtrlX, 4, bloomProgress);
+                const stemCtrlY = mix(wiltStemCtrlY, -34, bloomProgress);
+                ctx.save();
+                ctx.translate(x + sway, baseY);
+                ctx.strokeStyle = bloomProgress > .55 ? '#15803d' : '#854d0e';
+                ctx.lineWidth = mix(4, 5, bloomProgress);
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                // Pleasant days recover in five seconds; hot days start more wilted and recover in ten seconds.
+                ctx.quadraticCurveTo(stemCtrlX, stemCtrlY, stemEndX, stemEndY);
+                ctx.stroke();
+
+                ctx.fillStyle = bloomProgress > .55 ? '#22c55e' : '#8a7f63';
+                for (const dir of [-1, 1]) {
+                    const leafX = mix(dir * 11 - 12, dir * 14, bloomProgress);
+                    const leafY = mix(-27, -34, bloomProgress);
+                    const leafRx = mix(14, 18, bloomProgress);
+                    const leafRy = mix(5, 9, bloomProgress);
+                    const leafRot = mix(dir * 1.05, dir * 0.5, bloomProgress);
+                    ctx.beginPath();
+                    ctx.ellipse(leafX, leafY, leafRx, leafRy, leafRot, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // One flower morphs from wilted to blooming — no separate second flower.
+                const wiltHeadX = mix(-22, -40, hotWiltAmount);
+                const wiltHeadY = mix(-54, -46, hotWiltAmount);
+                const headX = mix(wiltHeadX, 0, bloomProgress);
+                const headY = mix(wiltHeadY, -68, bloomProgress);
+                const connectorCtrlX = mix(mix(-18, -36, hotWiltAmount), -4, bloomProgress);
+                const connectorCtrlY = mix(mix(-56, -50, hotWiltAmount), -64, bloomProgress);
+                ctx.strokeStyle = bloomProgress > .55 ? '#15803d' : '#854d0e';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(stemEndX, stemEndY);
+                ctx.quadraticCurveTo(connectorCtrlX, connectorCtrlY, headX, headY);
+                ctx.stroke();
+
+                const brown = hot ? { r: 146, g: 64, b: 14 } : { r: 205, g: 120, b: 34 };
+                const pink = { r: 244, g: 114, b: 182 };
+                const petalColor = `rgb(${Math.round(mix(brown.r, pink.r, bloomProgress))}, ${Math.round(mix(brown.g, pink.g, bloomProgress))}, ${Math.round(mix(brown.b, pink.b, bloomProgress))})`;
+                const centerBrown = { r: 113, g: 63, b: 18 };
+                const centerYellow = { r: 250, g: 204, b: 21 };
+                const centerColor = `rgb(${Math.round(mix(centerBrown.r, centerYellow.r, bloomProgress))}, ${Math.round(mix(centerBrown.g, centerYellow.g, bloomProgress))}, ${Math.round(mix(centerBrown.b, centerYellow.b, bloomProgress))})`;
+
+                ctx.fillStyle = petalColor;
+                const petalCount = 6;
+                const open = mix(3.5, 8, bloomProgress);
+                const petalRx = mix(4, 6, bloomProgress);
+                const petalRy = mix(9, 4, bloomProgress);
+                const droop = mix(Math.PI / 2, 0, bloomProgress);
+                for (let petal = 0; petal < petalCount; petal++) {
+                    const healthyAngle = (Math.PI * 2 * petal) / petalCount;
+                    const wiltAngle = -Math.PI / 2 + (petal - (petalCount - 1) / 2) * 0.24;
+                    const angle = mix(wiltAngle, healthyAngle, bloomProgress);
+                    const px = headX + Math.cos(angle) * open;
+                    const py = headY + Math.sin(angle) * open + Math.sin(droop) * 5;
+                    ctx.beginPath();
+                    ctx.ellipse(px, py, petalRx, petalRy, angle, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.fillStyle = centerColor;
+                ctx.beginPath();
+                ctx.arc(headX, headY, mix(3, 5, bloomProgress), 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            });
+
+            // Drip irrigation pipe and animated drops
+            const pipeY = bedY + 20;
+            ctx.strokeStyle = '#0f766e';
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.moveTo(bedX + 42, pipeY);
+            ctx.lineTo(bedX + bedW - 42, pipeY);
+            ctx.stroke();
+            ctx.fillStyle = watering ? '#0ea5e9' : '#64748b';
+            plantXs.forEach((x, i) => {
+                ctx.beginPath();
+                ctx.arc(x, pipeY, 5, 0, Math.PI * 2);
+                ctx.fill();
+                if (watering) {
+                    ctx.font = '20px Arial';
+                    ctx.fillText('💧', x, pipeY + 26 + Math.sin(t * 5 + i) * 5);
+                }
+            });
+
+            // Integrated garden sign — part of the illustration, not a floating UI card.
+            const signX = w * 0.705;
+            const signY = h * 0.32;
+            const signW = w * 0.235;
+            const signH = 98;
+            ctx.save();
+            ctx.strokeStyle = '#7c2d12';
+            ctx.lineWidth = 7;
+            ctx.beginPath();
+            ctx.moveTo(signX + signW * 0.22, signY + signH - 6);
+            ctx.lineTo(signX + signW * 0.22, signY + signH + 44);
+            ctx.moveTo(signX + signW * 0.78, signY + signH - 6);
+            ctx.lineTo(signX + signW * 0.78, signY + signH + 44);
+            ctx.stroke();
+
+            const wood = ctx.createLinearGradient(signX, signY, signX, signY + signH);
+            wood.addColorStop(0, '#fde68a');
+            wood.addColorStop(0.52, '#fbbf24');
+            wood.addColorStop(1, '#d97706');
+            ctx.fillStyle = wood;
+            ctx.strokeStyle = '#92400e';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.roundRect(signX, signY, signW, signH, 16);
+            ctx.fill();
+            ctx.stroke();
+
+            // Wooden plank rows: each text line sits cleanly on its own plank.
+            const plankRows = [
+                { top: signY + 9, bottom: signY + 31 },
+                { top: signY + 34, bottom: signY + 53 },
+                { top: signY + 56, bottom: signY + 75 },
+                { top: signY + 78, bottom: signY + 94 }
+            ];
+            ctx.strokeStyle = 'rgba(146,64,14,.42)';
+            ctx.lineWidth = 1.5;
+            plankRows.forEach((row) => {
+                ctx.beginPath();
+                ctx.moveTo(signX + 9, row.bottom);
+                ctx.lineTo(signX + signW - 9, row.bottom);
+                ctx.stroke();
+            });
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('🌿', signX + 15, signY + 20);
+            ctx.fillText('💧', signX + 16, signY + signH - 12);
+
+            // Keep all sign text anchored to the right/start of each RTL row.
+            ctx.direction = 'rtl';
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            const signTextX = signX + signW - 12;
+            const signMaxTextW = signW - 30;
+            const signRows = [
+                { text: 'הגנן החכם', y: signY + 20, font: 'bold 11px Rubik', color: '#3f2504' },
+                { text: `אדמה: ${dry ? 'יבשה' : 'רטובה'}`, y: signY + 44, font: '9.5px Rubik', color: '#3f2504' },
+                { text: `יום: ${hot ? 'חם' : 'נעים'}`, y: signY + 65, font: '9.5px Rubik', color: '#3f2504' },
+                { text: dry ? 'השקה קצרה' : 'חוסכים מים', y: signY + 85, font: 'bold 9.5px Rubik', color: dry ? '#7f1d1d' : '#14532d' }
+            ];
+            signRows.forEach((row) => {
+                ctx.font = row.font;
+                ctx.fillStyle = row.color;
+                ctx.fillText(row.text, signTextX, row.y, signMaxTextW);
+            });
+            ctx.direction = 'inherit';
+            ctx.restore();
+
+            // Compact garden water-status gauge: dry / OK / too much water.
+            const meterX = w * 0.075;
+            const meterY = h * 0.36;
+            const meterW = w * 0.26;
+            const waterState = !dry && watering
+                ? { label: 'עודף מים', value: 0.98, color: '#2563eb', glow: 'rgba(37,99,235,.70)', icon: '🌊' }
+                : dry && !watering
+                    ? { label: 'יבש', value: 0.18, color: '#f97316', glow: 'rgba(249,115,22,.62)', icon: '🏜️' }
+                    : watering
+                        ? { label: 'מתמלא', value: 0.68, color: '#14b8a6', glow: 'rgba(20,184,166,.72)', icon: '💧' }
+                        : { label: 'תקין', value: 0.52, color: '#22c55e', glow: 'rgba(34,197,94,.62)', icon: '✅' };
+            ctx.save();
+            ctx.fillStyle = 'rgba(240,253,250,.78)';
+            ctx.strokeStyle = waterState.color;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.ellipse(meterX + meterW * 0.54, meterY + 27, meterW * 0.62, 38, -0.04, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.textAlign = 'right';
+            ctx.shadowColor = waterState.glow;
+            ctx.shadowBlur = 12;
+            ctx.fillStyle = '#064e3b';
+            ctx.font = '900 11px Rubik';
+            ctx.fillText('💧 מצב המים', meterX + meterW, meterY + 10);
+            ctx.fillStyle = waterState.color;
+            ctx.font = '900 12px Rubik';
+            ctx.fillText(`${waterState.icon} ${waterState.label}`, meterX + meterW, meterY + 47);
+            ctx.shadowBlur = 0;
+            ctx.strokeStyle = 'rgba(6,78,59,.34)';
+            ctx.lineWidth = 5;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(meterX, meterY + 24);
+            ctx.lineTo(meterX + meterW, meterY + 24);
+            ctx.stroke();
+            ctx.shadowColor = waterState.glow;
+            ctx.shadowBlur = 9;
+            ctx.strokeStyle = waterState.color;
+            ctx.lineWidth = 10;
+            ctx.beginPath();
+            ctx.moveTo(meterX, meterY + 24);
+            ctx.lineTo(meterX + meterW * waterState.value, meterY + 24);
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+            ctx.lineCap = 'butt';
+            ctx.font = '10px Rubik';
+            ctx.fillStyle = '#064e3b';
+            ctx.textAlign = 'center';
+            ctx.fillText('יבש', meterX + 10, meterY + 39);
+            ctx.fillText('תקין', meterX + meterW * 0.52, meterY + 39);
+            ctx.fillText('עודף', meterX + meterW - 10, meterY + 39);
+            ctx.restore();
+        }
+
         function drawAdvancedLessonScene() {
             const lesson = window.getSensiLesson ? window.getSensiLesson(currentLesson) : null;
             if (!lesson || currentLesson < 7) return;
@@ -1754,7 +2796,7 @@
                 8: { bg: ['#fef9c3', '#e0f2fe'], place: 'מעבר חציה', icon: '🚦', objects: ['אנשים', 'רמזור', 'מכוניות'], action: 'עצרו תנועה לפני מעבר' },
                 9: { bg: ['#f8fafc', '#dbeafe'], place: 'כיתה חכמה', icon: '🏫', objects: ['תלמידים', 'אור', 'מזגן', 'רעש'], action: 'חסכו חשמל ועזרו למורה להחזיר שקט לכיתה' },
                 10: { bg: ['#ecfccb', '#bbf7d0'], place: 'גינה חכמה', icon: '🌱', objects: ['אדמה', 'טפטפות', 'צמחים'], action: 'השקו רק כשהאדמה יבשה' },
-                11: { bg: ['#e0e7ff', '#f1f5f9'], place: 'בית חכם', icon: '🏠', objects: ['דלת', 'תנועה', 'אזעקה'], action: 'התריעו רק כשהמערכת דרוכה' },
+                11: { bg: ['#e0e7ff', '#f8fafc'], place: 'מוזיאון חכם', icon: '🏛️', objects: ['גביע', 'דלת', 'אזעקה'], action: 'פתרו את תעלומת משמרת הלילה' },
                 12: { bg: ['#fef3c7', '#e0f2fe'], place: 'משלוח בעיר', icon: '📦', objects: ['חנות', 'מכשול', 'בית יעד'], action: 'תכננו מסלול בטוח' },
                 13: { bg: ['#0f172a', '#312e81'], place: 'בית בלילה', icon: '🌙', objects: ['בית פרטי', 'גנב', 'משטרה'], action: 'זהו גנב ותפסו אותו באזעקה' },
                 14: { bg: ['#fee2e2', '#ffedd5'], place: 'אזור חילוץ', icon: '🛟', objects: ['עשן', 'חום', 'מכשול'], action: 'בחרו פעולה בטוחה קודם' },
@@ -1764,6 +2806,14 @@
             if (!scene) return;
             if (currentLesson === 14) {
                 drawLesson14RescueScene(lesson);
+                return;
+            }
+            if (currentLesson === 10) {
+                drawLesson10GardenScene(lesson);
+                return;
+            }
+            if (currentLesson === 11) {
+                drawLesson11MuseumScene(lesson);
                 return;
             }
 
@@ -2056,7 +3106,7 @@
             // Scenario objects
             const emojis = {
                 7: [], 8: ['🚶', '🚦', '🚗'], 9: ['🧑‍🎓', '💡', '❄️'], 10: ['🌱', '💧', '🌿'],
-                11: ['🚪', '🏃', '🚨'], 12: ['🏪', '🚧', '🏠'], 13: ['🏠', '👣', '🚨'], 14: ['💨', '🔥', '🧱'], 15: ['❓', '👁️', '✅']
+                11: ['🏆', '🚪', '🚨'], 12: ['🏪', '🚧', '🏠'], 13: ['🏠', '👣', '🚨'], 14: ['💨', '🔥', '🧱'], 15: ['❓', '👁️', '✅']
             }[currentLesson];
             const xs = [canvas.width * 0.20, canvas.width * 0.40, canvas.width * 0.60];
             const y = Math.max(canvas.height * 0.62, boardY + boardH + 48);
@@ -2242,7 +3292,7 @@
                 }
 
                 if (currentLesson === 11) {
-                    const activeStates = [environment.doorOpen, environment.motion, robot.alarmOn];
+                    const activeStates = [environment.motion, environment.doorOpen, robot.alarmOn];
                     if (!activeStates[i]) return;
 
                     ctx.font = '46px Arial';
@@ -2250,8 +3300,8 @@
                     ctx.font = 'bold 12px Rubik';
                     ctx.fillStyle = '#dc2626';
                     const statusLabels = [
-                        'דלת פתוחה',
-                        'יש תנועה',
+                        'תנועה ליד הגביע',
+                        'דלת צדדית פתוחה',
                         'אזעקה פועלת'
                     ];
                     ctx.fillText(statusLabels[i], xs[i], y + 32);
@@ -3072,6 +4122,19 @@
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('🤖', 0, 0);
+
+                if (currentLesson === 10) {
+                    // Clarify Sensi's garden role directly on the robot, without an extra frame.
+                    const labelText = 'בודק חיישנים';
+                    ctx.font = 'bold 9px Rubik';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = 'rgba(255,255,255,.82)';
+                    ctx.strokeText(labelText, 0, 39);
+                    ctx.fillStyle = '#052e16';
+                    ctx.fillText(labelText, 0, 39);
+                }
             }
 
             ctx.restore();
@@ -3310,15 +4373,15 @@
             },
             10: {
                 movement: [],
-                sensors: ['sensor_soil'],
+                sensors: ['sensor_soil', 'sensor_temperature', 'sensor_water_status'],
                 controls: ['control_if', 'control_wait', 'stop_program'],
                 actions: ['action_water', 'action_say']
             },
             11: {
                 movement: [],
-                sensors: ['sensor_armed', 'sensor_motion', 'sensor_door'],
-                controls: ['control_if', 'control_forever', 'stop_program'],
-                actions: ['action_alarm', 'action_say']
+                sensors: ['sensor_armed', 'sensor_light', 'sensor_people', 'sensor_safe_touch', 'sensor_door'],
+                controls: ['control_if', 'control_wait', 'stop_program'],
+                actions: ['action_say', 'action_security_mode', 'action_alarm']
             },
             12: {
                 movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'route_turn'],
@@ -3340,9 +4403,9 @@
             },
             15: {
                 movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'route_turn'],
-                sensors: ['sensor_light', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_line_side', 'sensor_goal', 'sensor_people', 'sensor_soil', 'sensor_armed', 'sensor_motion', 'sensor_door', 'sensor_obstacle'],
+                sensors: ['sensor_light', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_line_side', 'sensor_goal', 'sensor_cars', 'sensor_pedestrian', 'sensor_people', 'sensor_soil', 'sensor_water_status', 'sensor_armed', 'sensor_motion', 'sensor_safe_touch', 'sensor_door', 'sensor_obstacle'],
                 controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_ac', 'action_water', 'action_recycle_bin', 'action_class_power', 'action_alarm', 'action_safe_route']
+                actions: ['action_say', 'action_street_light', 'action_traffic_light', 'action_sound', 'action_fan', 'action_ac', 'action_water', 'action_recycle_bin', 'action_class_power', 'action_security_mode', 'action_alarm', 'action_safe_route']
             }
         };
 
@@ -3356,11 +4419,23 @@
 
             const defaults = {
                 movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
-                sensors: ['sensor_light', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_soil', 'sensor_armed', 'sensor_motion', 'sensor_door'],
+                sensors: ['sensor_light', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_soil', 'sensor_water_status', 'sensor_armed', 'sensor_motion', 'sensor_safe_touch', 'sensor_door'],
                 controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
                 actions: ['action_say', 'action_street_light', 'action_sound', 'action_fan', 'action_water', 'action_recycle_bin']
             };
             return defaults[category].map(toolboxBlock);
+        }
+
+        function buildSafeToolbox() {
+            return {
+                kind: 'categoryToolbox',
+                contents: [
+                    { kind: 'category', name: '🚩 התחלה', colour: '#FFAB19', contents: [{ kind: 'block', type: 'event_start' }] },
+                    { kind: 'category', name: '👁️ חושים', colour: '#40BF4A', contents: ['sensor_soil', 'sensor_temperature'].map(toolboxBlock) },
+                    { kind: 'category', name: '🔁 בקרה', colour: '#FF8C1A', contents: ['control_if', 'control_wait', 'stop_program'].map(toolboxBlock) },
+                    { kind: 'category', name: '💬 דיבור/פעולות', colour: '#9966FF', contents: ['action_say', 'action_water'].map(toolboxBlock) }
+                ]
+            };
         }
 
         function buildToolbox() {
@@ -3445,12 +4520,12 @@
                 env: ['envPeople', 'envSound']
             },
             10: {
-                sensors: ['sensorSoil'],
-                env: ['envSoilDry']
+                sensors: ['sensorSoil', 'sensorTemp'],
+                env: ['envSoilDry', 'envTemperatureHot']
             },
             11: {
-                sensors: ['sensorArmed', 'sensorMotion', 'sensorDoor'],
-                env: ['envArmedMode', 'envMotion', 'envDoorOpen']
+                sensors: ['sensorLight', 'sensorPeople', 'sensorArmed', 'sensorSafeTouch', 'sensorDoor'],
+                env: ['envLight', 'envPeople', 'envRemoveVisitor', 'envArmedMode', 'envSafeTouch', 'envDoorOpen']
             },
             12: {
                 sensors: ['sensorTouch', 'sensorDeliveryPackage', 'sensorGoal'],
@@ -3471,8 +4546,8 @@
         };
 
         function updateVisibleControls() {
-            const allSensors = ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorSoil', 'sensorArmed', 'sensorMotion', 'sensorBurglar', 'sensorHomeowner', 'sensorDoor', 'sensorDeliveryPackage'];
-            const allEnv = ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envSoilDry', 'envArmedMode', 'envMotion', 'envBurglar', 'envHomeowner', 'envDoorOpen', 'envDeliveryPackage'];
+            const allSensors = ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorSoil', 'sensorArmed', 'sensorMotion', 'sensorSafeTouch', 'sensorBurglar', 'sensorHomeowner', 'sensorDoor', 'sensorDeliveryPackage'];
+            const allEnv = ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envRemoveVisitor', 'envSoilDry', 'envArmedMode', 'envMotion', 'envSafeTouch', 'envBurglar', 'envHomeowner', 'envDoorOpen', 'envDeliveryPackage'];
             const override = lessonControlOverrides[currentLesson];
             allSensors.forEach((id) => {
                 const el = document.getElementById(id);
@@ -3487,16 +4562,38 @@
                 if (currentLesson === 1 || currentLesson === 8) {
                     motionBtn.querySelector('.icon').textContent = '🚶';
                     motionBtn.lastChild.textContent = ' אנשים';
+                } else if (currentLesson === 11) {
+                    motionBtn.querySelector('.icon').textContent = '👤';
+                    motionBtn.lastChild.textContent = ' תנועה ליד הכספת';
                 } else {
                     motionBtn.querySelector('.icon').textContent = '🏃';
                     motionBtn.lastChild.textContent = ' תנועה';
                 }
             }
+            const armedBtn = document.getElementById('envArmedMode');
+            if (armedBtn) {
+                armedBtn.querySelector('.icon').textContent = '🔐';
+                armedBtn.lastChild.textContent = currentLesson === 11 ? ' דריכה ידנית' : ' מערכת דרוכה';
+            }
+            const lightBtn = document.getElementById('envLight');
+            if (lightBtn) lightBtn.lastChild.textContent = currentLesson === 11 ? (environment.light ? ' אור דלוק' : ' חשוך') : ' אור';
+            const peopleBtn = document.getElementById('envPeople');
+            if (peopleBtn) peopleBtn.lastChild.textContent = currentLesson === 11 ? ' הוסף מבקר' : ' תלמידים';
+            const removeVisitorBtn = document.getElementById('envRemoveVisitor');
+            if (removeVisitorBtn) removeVisitorBtn.lastChild.textContent = ' הורד מבקר';
+            const safeTouchBtn = document.getElementById('envSafeTouch');
+            if (safeTouchBtn) safeTouchBtn.lastChild.textContent = ' נגיעה בכספת';
+            const doorBtn = document.getElementById('envDoorOpen');
+            if (doorBtn) doorBtn.lastChild.textContent = currentLesson === 11 ? ' דלת צדדית פתוחה' : ' דלת פתוחה';
             const obstacleBtn = document.getElementById('envObstacle');
             if (obstacleBtn) {
                 obstacleBtn.querySelector('.icon').textContent = currentLesson === 12 ? '🚧' : '🧱';
                 obstacleBtn.lastChild.textContent = currentLesson === 12 ? ' מכשול' : ' קיר';
             }
+            const smokeBtn = document.getElementById('envSmoke');
+            if (smokeBtn) smokeBtn.lastChild.textContent = currentLesson === 14 ? ' עשן בזירה' : ' עשן';
+            const tempBtn = document.getElementById('envTemperatureHot');
+            if (tempBtn) tempBtn.lastChild.textContent = currentLesson === 14 ? ' חום מסוכן' : currentLesson === 10 ? ' יום חם' : ' חם';
             updateEnvScrollControls();
         }
 
@@ -3520,7 +4617,7 @@
         function initBlockly() {
             defineBlocks();
 
-            workspace = Blockly.inject('blocklyDiv', {
+            const injectOptions = {
                 toolbox: buildToolbox(),
                 rtl: true,
                 scrollbars: true,
@@ -3538,7 +4635,71 @@
                     colour: '#E0E0FF',
                     snap: true
                 }
+            };
+
+            try {
+                workspace = Blockly.inject('blocklyDiv', injectOptions);
+            } catch (error) {
+                console.error('Blockly toolbox failed to load, retrying with safe toolbox', error);
+                workspace = Blockly.inject('blocklyDiv', { ...injectOptions, toolbox: buildSafeToolbox() });
+            }
+            restoreWorkspaceForLesson(currentLesson);
+            workspace.addChangeListener((event) => {
+                if (isRestoringWorkspace || event.isUiEvent) return;
+                scheduleWorkspaceSave();
             });
+            window.addEventListener('beforeunload', () => saveWorkspaceForLesson(currentLesson));
+            window.addEventListener('pagehide', () => saveWorkspaceForLesson(currentLesson));
+        }
+
+        function workspaceStorageKey(lessonNum = currentLesson) {
+            return `sensi-blocks-lesson-${lessonNum}`;
+        }
+
+        function scheduleWorkspaceSave() {
+            clearTimeout(workspaceSaveTimer);
+            workspaceSaveTimer = setTimeout(() => saveWorkspaceForLesson(currentLesson), 60);
+        }
+
+        function saveWorkspaceForLesson(lessonNum = currentLesson) {
+            if (!workspace || !window.Blockly?.Xml) return;
+            try {
+                const xml = Blockly.Xml.workspaceToDom(workspace);
+                const xmlText = new XMLSerializer().serializeToString(xml);
+                localStorage.setItem(workspaceStorageKey(lessonNum), xmlText);
+            } catch (error) {
+                console.warn('Could not save Blockly workspace', error);
+            }
+        }
+
+        function restoreWorkspaceForLesson(lessonNum = currentLesson) {
+            if (!workspace || !window.Blockly?.Xml) return;
+            const savedXml = localStorage.getItem(workspaceStorageKey(lessonNum));
+            isRestoringWorkspace = true;
+            try {
+                workspace.clear();
+                if (savedXml) {
+                    const xml = new DOMParser().parseFromString(savedXml, 'text/xml').documentElement;
+                    Blockly.Xml.domToWorkspace(xml, workspace);
+                }
+            } catch (error) {
+                console.warn('Could not restore saved Blockly workspace', error);
+            } finally {
+                isRestoringWorkspace = false;
+            }
+        }
+
+        function resetBlocks() {
+            if (!workspace) return;
+            const ok = confirm('למחוק את כל הבלוקים בשיעור הזה ולהתחיל מחדש?');
+            if (!ok) return;
+            isRestoringWorkspace = true;
+            try {
+                workspace.clear();
+                localStorage.removeItem(workspaceStorageKey(currentLesson));
+            } finally {
+                isRestoringWorkspace = false;
+            }
         }
 
         function scrollBlocklyCanvas(deltaX, deltaY) {
@@ -3580,7 +4741,7 @@
             // Movement
             Blockly.Blocks['move_forward'] = {
                 init: function() {
-                    this.appendDummyInput().appendField('⬆️ זוז קדימה');
+                    this.appendDummyInput().appendField(currentLesson === 14 ? '⬆️ התקדם בזהירות' : '⬆️ זוז קדימה');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
                     this.setColour('#4C97FF');
@@ -3644,7 +4805,7 @@
             Blockly.Blocks['route_turn'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField('🧭 סובב לפי המסלול')
+                        .appendField(currentLesson === 14 ? '🧭 עקוף לפי נתיב בטוח' : '🧭 סובב לפי המסלול')
                         .appendField(new Blockly.FieldDropdown([['ימינה', 'RIGHT'], ['שמאלה', 'LEFT']]), 'DIR');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
@@ -3760,8 +4921,8 @@
             Blockly.Blocks['sensor_temperature'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField('🌡️ טמפרטורה =')
-                        .appendField(new Blockly.FieldDropdown([['חם מדי 🔥', 'HOT'], ['נעים 🌿', 'OK']]), 'VAL');
+                        .appendField(currentLesson === 14 ? '🔥 חום בזירת החילוץ =' : currentLesson === 10 ? '☀️ יום חם בגינה =' : '🌡️ טמפרטורה =')
+                        .appendField(new Blockly.FieldDropdown(currentLesson === 14 ? [['מסוכן מדי 🔥', 'HOT'], ['בטוח להמשך ✅', 'OK']] : currentLesson === 10 ? [['יום חם ☀️', 'HOT'], ['יום נעים 🌿', 'OK']] : [['חם מדי 🔥', 'HOT'], ['נעים 🌿', 'OK']]), 'VAL');
                     this.setOutput(true, 'Boolean');
                     this.setColour('#40BF4A');
                 }
@@ -3821,8 +4982,18 @@
             Blockly.Blocks['sensor_soil'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField('🌱 אדמה')
-                        .appendField(new Blockly.FieldDropdown([['יבשה', 'DRY'], ['רטובה', 'WET']]), 'VAL');
+                        .appendField(currentLesson === 10 ? '🌱 חיישן אדמה =' : '🌱 אדמה')
+                        .appendField(new Blockly.FieldDropdown(currentLesson === 10 ? [['יבשה וצמאה', 'DRY'], ['רטובה מספיק', 'WET']] : [['יבשה', 'DRY'], ['רטובה', 'WET']]), 'VAL');
+                    this.setOutput(true, 'Boolean');
+                    this.setColour('#40BF4A');
+                }
+            };
+
+            Blockly.Blocks['sensor_water_status'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('💧 מצב המים =')
+                        .appendField(new Blockly.FieldDropdown([['יבש', 'DRY'], ['תקין', 'OK'], ['עודף מים', 'EXCESS']]), 'VAL');
                     this.setOutput(true, 'Boolean');
                     this.setColour('#40BF4A');
                 }
@@ -3841,7 +5012,7 @@
             Blockly.Blocks['sensor_armed'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField('🔐 מערכת דרוכה?')
+                        .appendField(currentLesson === 11 ? '🔐 מצב שמירה דרוך?' : '🔐 מערכת דרוכה?')
                         .appendField(new Blockly.FieldDropdown([['כן', 'YES'], ['לא', 'NO']]), 'VAL');
                     this.setOutput(true, 'Boolean');
                     this.setColour('#40BF4A');
@@ -3851,7 +5022,17 @@
             Blockly.Blocks['sensor_motion'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField('🏃 יש תנועה?')
+                        .appendField(currentLesson === 11 ? '👤 תנועה ליד הכספת?' : '🏃 יש תנועה?')
+                        .appendField(new Blockly.FieldDropdown([['כן', 'YES'], ['לא', 'NO']]), 'VAL');
+                    this.setOutput(true, 'Boolean');
+                    this.setColour('#40BF4A');
+                }
+            };
+
+            Blockly.Blocks['sensor_safe_touch'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('✋ נגיעה בכספת?')
                         .appendField(new Blockly.FieldDropdown([['כן', 'YES'], ['לא', 'NO']]), 'VAL');
                     this.setOutput(true, 'Boolean');
                     this.setColour('#40BF4A');
@@ -3881,7 +5062,7 @@
             Blockly.Blocks['sensor_people'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField('🧑‍🎓 יש תלמידים?')
+                        .appendField(currentLesson === 11 ? '👥 יותר מדי מבקרים?' : '🧑‍🎓 יש תלמידים?')
                         .appendField(new Blockly.FieldDropdown([['כן', 'YES'], ['לא', 'NO']]), 'VAL');
                     this.setOutput(true, 'Boolean');
                     this.setColour('#40BF4A');
@@ -3903,7 +5084,7 @@
             Blockly.Blocks['sensor_door'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField('🚪 דלת פתוחה?')
+                        .appendField(currentLesson === 11 ? '🚪 דלת צדדית פתוחה?' : '🚪 דלת פתוחה?')
                         .appendField(new Blockly.FieldDropdown([['כן', 'YES'], ['לא', 'NO']]), 'VAL');
                     this.setOutput(true, 'Boolean');
                     this.setColour('#40BF4A');
@@ -3956,7 +5137,7 @@
                 init: function() {
                     this.appendDummyInput()
                         .appendField('💬 אמור')
-                        .appendField(new Blockly.FieldTextInput('שלום!'), 'TEXT');
+                        .appendField(new Blockly.FieldTextInput(currentLesson === 14 ? 'יוצא לחילוץ' : currentLesson === 11 ? 'בודק את האולם' : 'שלום!'), 'TEXT');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
                     this.setColour('#9966FF');
@@ -4007,10 +5188,21 @@
                 }
             };
 
+            Blockly.Blocks['action_security_mode'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('🔐 שמירה')
+                        .appendField(new Blockly.FieldDropdown([['דרוך', 'ARM'], ['כבה', 'DISARM']]), 'STATE');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+
             Blockly.Blocks['action_alarm'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField('🚨 אזעקה')
+                        .appendField(currentLesson === 11 ? '🚨 אזעקת מוזיאון' : '🚨 אזעקה')
                         .appendField(new Blockly.FieldDropdown([['הפעל', 'ON'], ['כבה', 'OFF']]), 'STATE');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
@@ -4043,8 +5235,8 @@
             Blockly.Blocks['action_water'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField('💧 מים')
-                        .appendField(new Blockly.FieldDropdown([['הפעל', 'ON'], ['כבה', 'OFF']]), 'STATE');
+                        .appendField(currentLesson === 10 ? '💧 טפטפות' : '💧 מים')
+                        .appendField(new Blockly.FieldDropdown(currentLesson === 10 ? [['פתח להשקיה', 'ON'], ['סגור לחיסכון', 'OFF']] : [['הפעל', 'ON'], ['כבה', 'OFF']]), 'STATE');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
                     this.setColour('#9966FF');
@@ -4191,7 +5383,9 @@
 
                 case 'route_turn':
                     robot.angle += block.getFieldValue('DIR') === 'RIGHT' ? 90 : -90;
-                    robot.speaking = block.getFieldValue('DIR') === 'RIGHT' ? 'סובב ימינה לפי המסלול' : 'סובב שמאלה לפי המסלול';
+                    robot.speaking = currentLesson === 14
+                        ? (block.getFieldValue('DIR') === 'RIGHT' ? 'עוקף ימינה בנתיב בטוח' : 'עוקף שמאלה בנתיב בטוח')
+                        : (block.getFieldValue('DIR') === 'RIGHT' ? 'סובב ימינה לפי המסלול' : 'סובב שמאלה לפי המסלול');
                     await sleep(700);
                     robot.speaking = '';
                     break;
@@ -4297,6 +5491,15 @@
                     break;
                 }
 
+                case 'action_security_mode':
+                    environment.armedMode = block.getFieldValue('STATE') === 'ARM';
+                    document.getElementById('envArmedMode')?.classList.toggle('active', environment.armedMode);
+                    robot.speaking = environment.armedMode ? 'שמירה דרוכה' : 'שמירה כבויה';
+                    updateSensors();
+                    await sleep(900);
+                    robot.speaking = '';
+                    break;
+
                 case 'action_alarm':
                     robot.alarmOn = block.getFieldValue('STATE') === 'ON';
                     if (robot.alarmOn) {
@@ -4322,12 +5525,25 @@
                     robot.speaking = '';
                     break;
 
-                case 'action_water':
-                    robot.waterOn = block.getFieldValue('STATE') === 'ON';
-                    robot.speaking = robot.waterOn ? 'משקה את הגינה!' : 'המים כבויים';
+                case 'action_water': {
+                    const nextWaterOn = block.getFieldValue('STATE') === 'ON';
+                    const wasWatering = robot.waterOn;
+                    robot.waterOn = nextWaterOn;
+                    if (currentLesson === 10 && nextWaterOn && !wasWatering) {
+                        gardenRecoveryStartedAt = Date.now();
+                    }
+                    if (currentLesson === 10 && wasWatering && !nextWaterOn) {
+                        environment.soilDry = false;
+                        document.getElementById('envSoilDry')?.classList.remove('active');
+                    }
+                    robot.speaking = currentLesson === 10
+                        ? (robot.waterOn ? 'פותח טפטפות להשקיה' : 'האדמה רטובה, סוגר טפטפות')
+                        : (robot.waterOn ? 'משקה את הגינה!' : 'המים כבויים');
+                    updateSensors();
                     await sleep(900);
                     robot.speaking = '';
                     break;
+                }
 
                 case 'action_recycle_bin':
                     robot.sortedBin = block.getFieldValue('BIN');
@@ -4387,7 +5603,7 @@
 
         // Check if robot can sense each element (with proximity)
         function canSenseLight() {
-            // Light is ambient - always sensed if on
+            // Light is ambient: on/bright when the museum lights are on.
             return environment.light;
         }
 
@@ -4437,11 +5653,16 @@
         }
 
         function isSystemArmed() {
-            return currentLesson === 11 && Boolean(environment.armedMode);
+            // Lesson 11 does not auto-arm from sensors; students build arming rules with blocks.
+            return Boolean(environment.armedMode);
         }
 
         function canSenseMotion() {
             return currentLesson === 11 && Boolean(environment.motion);
+        }
+
+        function isSafeTouched() {
+            return currentLesson === 11 && Boolean(environment.safeTouch);
         }
 
         function isDoorOpen() {
@@ -4520,7 +5741,14 @@
             return environment.soilDry ? 'DRY' : 'WET';
         }
 
+        function getGardenWaterStatus() {
+            if (!environment.soilDry && robot.waterOn) return 'EXCESS';
+            if (environment.soilDry && !robot.waterOn) return 'DRY';
+            return 'OK';
+        }
+
         function isSystemArmed() {
+            // Lesson 11 does not auto-arm from sensors; students build arming rules with blocks.
             return Boolean(environment.armedMode);
         }
 
@@ -4615,7 +5843,12 @@
         }
 
         function canSensePeople() {
+            if (currentLesson === 11) return (environment.visitorCount || 0) > 5;
             return currentLesson >= 9 && Boolean(environment.people);
+        }
+
+        function isSafeTouched() {
+            return Boolean(environment.safeTouch);
         }
 
         function isDoorOpen() {
@@ -4704,11 +5937,15 @@
 
                 case 'sensor_soil':
                     return getSoilMoisture() === val;
+                case 'sensor_water_status':
+                    return getGardenWaterStatus() === val;
 
                 case 'sensor_armed':
                     return val === 'YES' ? isSystemArmed() : !isSystemArmed();
                 case 'sensor_motion':
                     return val === 'YES' ? canSenseMotion() : !canSenseMotion();
+                case 'sensor_safe_touch':
+                    return val === 'YES' ? isSafeTouched() : !isSafeTouched();
                 case 'sensor_burglar':
                     return val === 'YES' ? canSenseBurglar() : !canSenseBurglar();
                 case 'sensor_homeowner':
@@ -4763,8 +6000,31 @@
         }
 
         // ===== ENVIRONMENT =====
+        function handlePeopleEnv() {
+            if (currentLesson === 11) {
+                environment.visitorCount = Math.min(9, (environment.visitorCount || 0) + 1);
+                environment.people = environment.visitorCount > 5;
+                const btn = document.getElementById('envPeople');
+                if (btn) btn.classList.toggle('active', environment.visitorCount > 0);
+                updateSensors();
+                return;
+            }
+            toggleEnv('people');
+        }
+
+        function removeMuseumVisitor() {
+            if (currentLesson !== 11) return;
+            environment.visitorCount = Math.max(0, (environment.visitorCount || 0) - 1);
+            environment.people = environment.visitorCount > 5;
+            updateSensors();
+        }
+
         function toggleEnv(type) {
             environment[type] = !environment[type];
+            if (type === 'soilDry') {
+                gardenRecoveryStartedAt = environment.soilDry ? null : gardenRecoveryStartedAt;
+                if (environment.soilDry) robot.waterOn = false;
+            }
             if (type === 'smoke') smokeStartedAt = environment.smoke ? Date.now() : null;
 
             if (type === 'deliveryPackage') environment.deliveryDropped = false;
@@ -4794,6 +6054,7 @@
 
             if (type === 'cars') robot.trafficCarsStopped = false;
             if (type === 'pedestrian') robot.pedestrianStopped = false;
+            // In lesson 11, automatic arming triggers should not turn on the manual-arm button.
             document.getElementById('env' + type.charAt(0).toUpperCase() + type.slice(1))
                 .classList.toggle('active', environment[type]);
             updateSensors();
@@ -4801,7 +6062,9 @@
 
         function resetEnv() {
 
-            environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, burglar: false, homeowner: false, doorOpen: false, deliveryPackage: false, deliveryDropped: false };
+            environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, safeTouch: false, visitorCount: 0, burglar: false, homeowner: false, doorOpen: false, deliveryPackage: false, deliveryDropped: false };
+            smokeStartedAt = null;
+            gardenRecoveryStartedAt = null;
 
             document.querySelectorAll('.env-btn').forEach(b => b.classList.remove('active'));
             robot.speaking = '';
@@ -4813,6 +6076,7 @@
             robot.fanOn = false;
 
             robot.waterOn = false;
+            gardenRecoveryStartedAt = null;
 
             robot.alarmOn = false;
             robot.sortedBin = '';
@@ -4873,15 +6137,21 @@
             const onLine = sensesLine;
             const armed = isSystemArmed();
             const motion = canSenseMotion();
+            const safeTouch = isSafeTouched();
             const doorOpen = isDoorOpen();
             const burglar = canSenseBurglar();
             const homeowner = canSenseHomeowner();
+            const waterStatus = getGardenWaterStatus();
 
-            document.getElementById('lightText').textContent = sensesLight ? 'בהיר!' : 'חשוך';
+            document.getElementById('lightText').textContent = currentLesson === 11
+                ? (sensesLight ? 'אור דלוק' : 'חשוך — דריכה אוטומטית')
+                : (sensesLight ? 'בהיר!' : 'חשוך');
             document.getElementById('soundText').textContent = soundLevel === 'LOUD' ? 'חזק מדי!' : soundLevel === 'SOFT' ? 'חלש' : 'שקט';
             document.getElementById('touchText').textContent = sensesTouch ? 'קיר!' : 'פנוי';
             document.getElementById('smellText').textContent = sensesSmoke ? 'עשן!' : 'נקי';
-            document.getElementById('tempText').textContent = tempLevel === 'HOT' ? 'חם מדי!' : 'נעים';
+            document.getElementById('tempText').textContent = currentLesson === 10
+                ? (tempLevel === 'HOT' ? 'יום חם' : 'יום נעים')
+                : (tempLevel === 'HOT' ? 'חם מדי!' : 'נעים');
             document.getElementById('colorText').textContent = recycleColorText;
             document.getElementById('lineText').textContent = currentLesson === 7
                 ? (sensesLine ? 'על הקו!' : lineSide === 'RIGHT' ? 'הקו מימין' : lineSide === 'LEFT' ? 'הקו משמאל' : 'לא על הקו')
@@ -4900,17 +6170,23 @@
             document.getElementById('pedestrianText').textContent = currentLesson === 8
                 ? (sensesPedestrian ? 'יש הולך רגל!' : 'אין הולך רגל')
                 : 'לא בשימוש';
-            document.getElementById('peopleText').textContent = sensesPeople ? 'יש תלמידים' : 'כיתה ריקה';
+            const museumVisitorCount = environment.visitorCount || 0;
+            document.getElementById('peopleText').textContent = currentLesson === 11
+                ? (museumVisitorCount === 0 ? 'אין מבקרים' : museumVisitorCount > 5 ? 'הרבה מבקרים' : 'קצת מבקרים')
+                : (sensesPeople ? 'יש תלמידים' : 'כיתה ריקה');
 
             document.getElementById('soilText').textContent = soilMoisture === 'DRY' ? 'אדמה יבשה' : 'אדמה רטובה';
-            document.getElementById('armedText').textContent = armed ? 'דרוכה' : 'לא דרוכה';
-            document.getElementById('motionText').textContent = motion ? 'יש תנועה' : 'אין תנועה';
+            document.getElementById('armedText').textContent = currentLesson === 11
+                ? (armed ? 'שמירה דרוכה' : 'שמירה כבויה')
+                : (armed ? 'דרוכה' : 'לא דרוכה');
+            document.getElementById('motionText').textContent = currentLesson === 11 ? (motion ? 'תנועה ליד הכספת' : 'אין תנועה באולם') : (motion ? 'יש תנועה' : 'אין תנועה');
+            document.getElementById('safeTouchText').textContent = safeTouch ? 'נגיעה בכספת!' : 'אין נגיעה בכספת';
             document.getElementById('burglarText').textContent = burglar ? 'גנב זוהה!' : 'אין גנב';
             document.getElementById('homeownerText').textContent = homeowner ? 'בעל הבית הגיע' : 'אין בעל בית';
-            document.getElementById('doorText').textContent = doorOpen ? 'דלת פתוחה' : 'דלת סגורה';
+            document.getElementById('doorText').textContent = currentLesson === 11 ? (doorOpen ? 'דלת צדדית פתוחה' : 'דלת צדדית סגורה') : (doorOpen ? 'דלת פתוחה' : 'דלת סגורה');
             document.getElementById('deliveryPackageText').textContent = hasPackage ? 'יש משלוח' : packageDropped ? 'הונח בבית' : 'אין משלוח';
 
-            document.getElementById('sensorLight').classList.toggle('active', sensesLight);
+            document.getElementById('sensorLight').classList.toggle('active', currentLesson === 11 ? !sensesLight : sensesLight);
             document.getElementById('sensorSound').classList.toggle('active', sensesSound);
             document.getElementById('sensorTouch').classList.toggle('active', sensesTouch);
             document.getElementById('sensorSmell').classList.toggle('active', sensesSmoke);
@@ -4921,14 +6197,28 @@
             document.getElementById('sensorGoal').classList.toggle('active', (currentLesson === 7 || currentLesson === 12 || currentLesson === 13) && sensesGoal);
             document.getElementById('sensorCars').classList.toggle('active', currentLesson === 8 && sensesCars);
             document.getElementById('sensorPedestrian').classList.toggle('active', currentLesson === 8 && sensesPedestrian);
-            document.getElementById('sensorPeople').classList.toggle('active', sensesPeople);
+            document.getElementById('sensorPeople').classList.toggle('active', currentLesson === 11 ? (environment.visitorCount || 0) > 5 : sensesPeople);
             document.getElementById('sensorSoil').classList.toggle('active', soilMoisture === 'DRY');
             document.getElementById('sensorArmed').classList.toggle('active', armed);
             document.getElementById('sensorMotion').classList.toggle('active', motion);
+            document.getElementById('sensorSafeTouch').classList.toggle('active', safeTouch);
             document.getElementById('sensorBurglar').classList.toggle('active', burglar);
             document.getElementById('sensorHomeowner').classList.toggle('active', homeowner);
             document.getElementById('sensorDoor').classList.toggle('active', doorOpen);
             document.getElementById('sensorDeliveryPackage').classList.toggle('active', hasPackage || packageDropped);
+            const lesson11ArmedBtn = document.getElementById('envArmedMode');
+            if (lesson11ArmedBtn && currentLesson === 11) lesson11ArmedBtn.classList.toggle('active', Boolean(environment.armedMode));
+            const lesson11LightBtn = document.getElementById('envLight');
+            if (lesson11LightBtn && currentLesson === 11) lesson11LightBtn.lastChild.textContent = environment.light ? ' אור דלוק' : ' חשוך';
+            const lesson11PeopleBtn = document.getElementById('envPeople');
+            if (lesson11PeopleBtn && currentLesson === 11) {
+                lesson11PeopleBtn.lastChild.textContent = ` הוסף מבקר (${environment.visitorCount || 0})`;
+                lesson11PeopleBtn.classList.toggle('active', (environment.visitorCount || 0) > 0);
+            }
+            const lesson11RemoveVisitorBtn = document.getElementById('envRemoveVisitor');
+            if (lesson11RemoveVisitorBtn && currentLesson === 11) {
+                lesson11RemoveVisitorBtn.classList.toggle('active', (environment.visitorCount || 0) > 0);
+            }
 
         }
 
@@ -5053,17 +6343,21 @@
         }
 
         function selectLesson(num) {
+            const previousLesson = currentLesson;
+            if (workspace && previousLesson !== num) saveWorkspaceForLesson(previousLesson);
             currentLesson = num;
             document.querySelectorAll('.lesson-tab').forEach((t) =>
                 t.classList.toggle('active', Number(t.querySelector('.lesson-num')?.textContent) === num));
             document.getElementById('welcomeModal').classList.remove('active');
+            document.querySelector('.robot-stage')?.classList.toggle('museum-stage', num === 11);
+            resizeCanvas();
 
             const cityLesson = window.getSensiLesson ? window.getSensiLesson(num) : null;
             const title = cityLesson
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
             document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
-            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num;
+            document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260720-lesson11-13-merge-v1';
             const ground = document.querySelector('.ground');
             ground?.classList.toggle('street-ground', num === 8);
             ground?.classList.toggle('classroom-ground', num === 9);
@@ -5071,7 +6365,10 @@
             ground?.classList.toggle('home-guard-ground', num === 13);
             resizeCanvas();
             updateTasks(num);
-            if (workspace) workspace.updateToolbox(buildToolbox());
+            if (workspace) {
+                workspace.updateToolbox(buildToolbox());
+                if (previousLesson !== num) restoreWorkspaceForLesson(num);
+            }
             updateVisibleControls();
         }
 
@@ -5110,6 +6407,9 @@
         function initializeApp() {
             if (appInitialized) return;
             appInitialized = true;
+            const initialLesson = getInitialLessonFromUrl();
+
+            // Render navigation immediately; do not wait for images/CDN/widgets.
             renderLessonTabs();
             renderWelcomeLessons();
             setTimeout(() => {
@@ -5117,15 +6417,25 @@
                 if (list && !list.querySelector('.lesson-card')) renderWelcomeLessons();
             }, 250);
             resizeCanvas();
-            try {
-                initBlockly();
-            } catch (error) {
-                console.error('Blockly failed to initialize, keeping lesson list visible:', error);
-            }
+            selectLesson(initialLesson);
             draw();
             updateSensors();
-            selectLesson(getInitialLessonFromUrl());
+
+            // Blockly can be slow/blocked. Initialize it after the UI is already usable.
+            setTimeout(() => {
+                try {
+                    if (window.Blockly) {
+                        initBlockly();
+                        if (workspace) workspace.updateToolbox(buildToolbox());
+                    } else {
+                        console.warn('Blockly did not load; lesson navigation remains available.');
+                    }
+                } catch (error) {
+                    console.error('Blockly init failed; lesson navigation remains available.', error);
+                }
+            }, 0);
         }
+
 
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initializeApp, { once: true });
@@ -5134,6 +6444,6 @@
         }
         window.addEventListener('load', initializeApp, { once: true });
     </script>
-  <script src="js/feedback-widget.js?v=20260711-feedback"></script>
+  <script src="js/feedback-widget.js?v=20260719-feedback-slides-v5"></script>
 </body>
 </html>
