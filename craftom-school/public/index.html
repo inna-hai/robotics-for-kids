@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Craftom School</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main class="shell center">
+    <section class="panel hero">
+      <div class="brand">Craftom School</div>
+      <h1>מערכת לומדה לקורס Craftom</h1>
+      <p>כניסה לקורס 15 המפגשים של כיתה ד׳: מורה מנהל שיעורים ותלמיד נכנס למשימת היום.</p>
+      <div class="actions">
+        <a class="btn" href="/login.html">כניסה</a>
+        <a class="btn ghost" href="/register.html">הרשמה</a>
+      </div>
+    </section>
+  </main>
+<script>
+fetch('/api/me').then(r=>r.ok?r.json():null).then(d=>{ if(d&&d.ok) location.replace(d.home_url); }).catch(()=>{});
+</script>
+</body>
+</html>

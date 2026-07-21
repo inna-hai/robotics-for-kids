@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>דף מורה | Craftom School</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="brand">Craftom School</div>
+      <div class="muted" id="teacher-name">טוען...</div>
+    </div>
+    <button class="btn ghost" onclick="logout()">יציאה</button>
+  </header>
+  <main class="shell dashboard">
+    <section class="panel home-main">
+      <div class="eyebrow">ניהול קורס</div>
+      <h1>Craftom — בונים את עומר העתידית</h1>
+      <p class="muted">דף הבית למורה: כיתות, שיעורים, משימות שהוגשו ומשוב לתלמידים.</p>
+      <div class="stats" id="stats"></div>
+      <div class="actions">
+        <button class="btn" onclick="createClass()">צור כיתה</button>
+        <button class="btn ghost" onclick="navigateTo('/lesson-editor.html')">עורך שיעורים</button>
+        <button class="btn ghost" onclick="navigateTo('/template.html')">תבנית שיעור</button>
+        <button class="btn ghost" onclick="navigateTo('/reports.html')">דוח התקדמות</button>
+        <button class="btn ghost" onclick="showTeacherPanel('classes')">פתח שיעור לכיתה</button>
+      </div>
+    </section>
+
+    <aside class="panel side-panel">
+      <h2>מה לעשות עכשיו</h2>
+      <div class="task-list" id="next-actions"></div>
+    </aside>
+
+    <section class="panel wide-panel teacher-tabs">
+      <button class="tab-btn active" data-tab="classes" onclick="showTeacherPanel('classes')">כיתות וצוותים</button>
+      <button class="tab-btn" data-tab="lessons" onclick="showTeacherPanel('lessons')">שיעורים</button>
+      <button class="tab-btn" data-tab="tasks" onclick="showTeacherPanel('tasks')">משימות</button>
+      <button class="tab-btn" data-tab="observations" onclick="showTeacherPanel('observations')">תצפיות</button>
+      <button class="tab-btn" data-tab="reports" onclick="navigateTo('/reports.html')">דוחות</button>
+      <button class="tab-btn hidden" id="users-tab" data-tab="users" onclick="showTeacherPanel('users')">ניהול</button>
+    </section>
+
+    <section class="panel wide-panel hidden teacher-panel-section" data-teacher-panel="users" id="pending-teachers-panel">
+      <h2>מורים ממתינים לאישור</h2>
+      <p class="muted">מורה חדש לא יכול להיכנס למערכת עד שאדמין מאשר אותו.</p>
+      <div class="task-list" id="pending-teachers"></div>
+    </section>
+
+    <section class="panel wide-panel teacher-panel-section" data-teacher-panel="classes">
+      <div class="section-head">
+        <div>
+          <h2>הכיתות שלי</h2>
+          <p class="muted">מורה יכול לנהל כמה כיתות. כל תלמיד מצטרף לכיתה אחת בלבד דרך קוד הרשמה.</p>
+        </div>
+      </div>
+      <div id="classes" class="class-grid"></div>
+    </section>
+
+    <section class="panel wide-panel teacher-panel-section" data-teacher-panel="classes">
+      <h2>ניהול צוותים</h2>
+      <p class="muted">לכל צוות יש קוד הצטרפות. תלמיד יכול להיות בצוות אחד בלבד.</p>
+      <div id="teams" class="class-grid"></div>
+    </section>
+
+    <section class="panel wide-panel hidden teacher-panel-section" data-teacher-panel="lessons">
+      <h2>מפת 15 המפגשים</h2>
+      <div class="teacher-lessons" id="lessons"></div>
+    </section>
+
+    <section class="panel wide-panel hidden teacher-panel-section" data-teacher-panel="tasks">
+      <h2>משימות שהוגשו</h2>
+      <p class="muted">כאן יוצגו הגשות תלמידים שממתינות למשוב.</p>
+      <div class="task-list" id="submissions"></div>
+    </section>
+
+    <section class="panel wide-panel hidden teacher-panel-section" data-teacher-panel="tasks">
+      <h2>מעקב משימות כיתה</h2>
+      <p class="muted">מי הגיש, מי עוד לא הגיש, ומי צריך תיקון.</p>
+      <div class="task-list" id="task-overview"></div>
+    </section>
+
+    <section class="panel wide-panel hidden teacher-panel-section" data-teacher-panel="observations">
+      <h2>תצפיות מורה</h2>
+      <p class="muted">סימון קצר של שיתוף פעולה והתנהלות בזמן השיעור.</p>
+      <div class="observation-form">
+        <label>תלמיד/ה
+          <select id="observation-student"></select>
+        </label>
+        <label>שיעור
+          <select id="observation-lesson"></select>
+        </label>
+        <div>
+          <label>מדדים</label>
+          <div class="checkbox-grid" id="observation-metrics"></div>
+        </div>
+        <label>הערת מורה
+          <textarea id="observation-note" placeholder="משפט קצר על מה ראית בשיעור"></textarea>
+        </label>
+        <button class="btn" onclick="saveObservation()">שמור תצפית</button>
+      </div>
+      <h3>תצפיות אחרונות</h3>
+      <div class="task-list" id="observations"></div>
+    </section>
+  </main>
+<script src="/main.js"></script>
+<script>
+let HOME = null;
+
+function showTeacherPanel(panel){
+  document.querySelectorAll('.teacher-panel-section').forEach(section => {
+    section.classList.toggle('hidden', section.dataset.teacherPanel !== panel);
+  });
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === panel);
+  });
+}
+
+function stat(label, value){
+  return `<div class="stat"><b>${esc(value)}</b><span>${esc(label)}</span></div>`;
+}
+
+function classCard(c){
+  const openLesson = Number(c.open_lesson || 1);
+  return `<div class="class-card">
+    <b>${esc(c.name)}</b>
+    <span>${esc(c.student_count)} תלמידים</span>
+    <span>שיעור פתוח: מפגש ${openLesson}</span>
+    <span>קוד הרשמה לתלמידים</span>
+    <code>${esc(c.code)}</code>
+    <div class="actions compact">
+      <button class="btn ghost" onclick="setClassLesson(${c.id}, ${Math.max(1, openLesson - 1)})">נעל אחורה</button>
+      <button class="btn ghost" onclick="setClassLesson(${c.id}, ${Math.min(15, openLesson + 1)})">פתח הבא</button>
+    </div>
+    <button class="btn ghost" onclick="createTeam(${c.id})">צור צוות</button>
+  </div>`;
+}
+
+function teamCard(t){
+  return `<div class="class-card">
+    <b>${esc(t.name)}</b>
+    <span>${esc(t.class_name)} · ${esc(t.member_count)} חברים</span>
+    <span>קוד הצטרפות לצוות</span>
+    <code>${esc(t.code)}</code>
+  </div>`;
+}
+
+function lessonRow(lesson){
+  return `<div class="teacher-lesson">
+    <b>${lesson.number}</b>
+    <span>${esc(lesson.title)}</span>
+    <small>${esc(lesson.concept)}</small>
+    <div class="actions compact">
+      <button class="btn ghost" onclick="navigateTo('/lesson.html?lesson=${lesson.number}')">תצוגה</button>
+      <button class="btn ghost" onclick="navigateTo('/lesson-editor.html?lesson=${lesson.number}')">עריכה</button>
+    </div>
+  </div>`;
+}
+
+function pendingTeacherRow(item){
+  return `<div class="task-row">
+    <div>
+      <b>${esc(item.name)}</b>
+      <span>${esc(item.email)}</span>
+    </div>
+    <div class="actions compact">
+      <button class="btn" onclick="setTeacherStatus(${item.id}, 'active')">אשר</button>
+      <button class="btn ghost" onclick="setTeacherStatus(${item.id}, 'rejected')">דחה</button>
+    </div>
+  </div>`;
+}
+
+async function setTeacherStatus(id, status){
+  const r = await post(`/api/admin/teachers/${id}/status`, { status });
+  if(!r.ok) return toast(r.error || 'לא ניתן לעדכן מורה כרגע', true);
+  toast(status === 'active' ? 'המורה אושר בהצלחה' : 'בקשת המורה נדחתה');
+  loadHome();
+}
+
+function submissionRow(item){
+  return `<article class="submission-card">
+    <div class="task-card-head">
+      <div>
+        <b>${esc(item.student_name)} · ${esc(item.task_title)}</b>
+        <span>שיעור ${esc(item.lesson_number)} · ${esc(item.task_type)} · ${esc(item.lesson_title)}${item.team_name ? ' · צוות: ' + esc(item.team_name) : ''}</span>
+      </div>
+      ${statusBadge(item.status)}
+    </div>
+    <p class="submitted-reflection">${esc(item.reflection || 'אין עדיין טקסט רפלקציה.')}</p>
+    ${item.feedback ? `<p class="teacher-feedback">${esc(item.feedback)}</p>` : ''}
+    <label>משוב מורה
+      <textarea id="feedback-${item.id}" placeholder="כתבו נקודה קצרה. המערכת תנסח אותה כמשוב מעודד ולא כציון.">${esc(item.feedback || '')}</textarea>
+    </label>
+    <div class="actions compact">
+      <button class="btn" onclick="sendFeedback(${item.id}, 'completed')">סמן הושלם</button>
+      <button class="btn ghost" onclick="sendFeedback(${item.id}, 'needs_fix')">צריך תיקון</button>
+    </div>
+  </article>`;
+}
+
+function taskOverviewRow(item){
+  const scope = item.scope === 'team' ? 'צוותי' : 'אישי';
+  return `<div class="task-row">
+    <div>
+      <b>${esc(item.student_name)} · ${esc(item.task_title)}</b>
+      <span>שיעור ${esc(item.lesson_number)} · ${esc(item.task_type)} · ${scope}${item.team_name ? ' · צוות: ' + esc(item.team_name) : ''}</span>
+      ${item.feedback ? `<span>משוב: ${esc(item.feedback)}</span>` : ''}
+    </div>
+    ${statusBadge(item.status)}
+  </div>`;
+}
+
+function observationRow(item){
+  return `<div class="task-row">
+    <div>
+      <b>${esc(item.student_name)} · שיעור ${esc(item.lesson_number)}</b>
+      <span>${esc(item.labels.join(' · ') || 'הערת מורה')}</span>
+      ${item.note ? `<span>${esc(item.note)}</span>` : ''}
+    </div>
+    ${statusBadge('feedback')}
+  </div>`;
+}
+
+function renderObservationForm(){
+  document.getElementById('observation-student').innerHTML = HOME.students.length
+    ? HOME.students.map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join('')
+    : '<option value="">אין תלמידים</option>';
+  document.getElementById('observation-lesson').innerHTML = HOME.course.lessons.map(l => `<option value="${l.number}">מפגש ${l.number}: ${esc(l.title)}</option>`).join('');
+  document.getElementById('observation-metrics').innerHTML = HOME.observation_metrics.map(metric => `<label class="check-card"><input type="checkbox" value="${esc(metric.id)}"><span>${esc(metric.label)}</span></label>`).join('');
+  document.getElementById('observations').innerHTML = HOME.observations.length ? HOME.observations.map(observationRow).join('') : `<div class="task-row"><div><b>אין עדיין תצפיות</b><span>תצפיות שתשמרו יופיעו כאן ובדוחות.</span></div>${statusBadge('empty')}</div>`;
+}
+
+async function saveObservation(){
+  const studentId = Number(document.getElementById('observation-student').value);
+  const lessonNumber = Number(document.getElementById('observation-lesson').value);
+  const metrics = [...document.querySelectorAll('#observation-metrics input:checked')].map(input => input.value);
+  const note = document.getElementById('observation-note').value;
+  const r = await post('/api/teacher/observations', { student_id: studentId, lesson_number: lessonNumber, metrics, note });
+  if(!r.ok) return toast(r.error || 'לא ניתן לשמור תצפית כרגע', true);
+  document.getElementById('observation-note').value = '';
+  document.querySelectorAll('#observation-metrics input:checked').forEach(input => { input.checked = false; });
+  toast('התצפית נשמרה ותופיע בדוח ההתקדמות');
+  loadHome();
+}
+
+async function sendFeedback(id, status){
+  const textarea = document.getElementById(`feedback-${id}`);
+  const feedback = textarea ? textarea.value : '';
+  const r = await post(`/api/teacher/submissions/${id}/feedback`, { status, feedback });
+  if(!r.ok) return toast(r.error || 'לא ניתן לשמור משוב כרגע', true);
+  toast('המשוב נשמר ונשלח לתלמיד');
+  loadHome();
+}
+
+async function createClass(){
+  const name = prompt('שם כיתה:', 'כיתה ד׳ 1');
+  if(!name) return;
+  const r = await post('/api/classes', { name });
+  if(!r.ok) return toast(r.error || 'שגיאה ביצירת כיתה', true);
+  toast('הכיתה נוצרה. קוד הרשמה מוכן בכרטיס הכיתה.');
+  loadHome();
+}
+
+async function setClassLesson(classId, openLesson){
+  const r = await post(`/api/classes/${classId}/open-lesson`, { open_lesson: openLesson });
+  if(!r.ok) return toast(r.error || 'לא ניתן לעדכן שיעור פתוח לכיתה', true);
+  toast(`השיעור הפתוח לכיתה עודכן למפגש ${openLesson}`);
+  loadHome();
+}
+
+async function createTeam(classId){
+  const name = prompt('שם צוות:', 'צוות 1');
+  if(!name) return;
+  const r = await post('/api/teams', { name, class_id: classId });
+  if(!r.ok) return toast(r.error || 'שגיאה ביצירת צוות', true);
+  toast('הצוות נוצר. קוד הצטרפות מוכן בכרטיס הצוות.');
+  loadHome();
+}
+
+async function loadHome(){
+  const me = await guard(['admin','teacher']);
+  if(!me) return;
+  document.getElementById('teacher-name').textContent = `${me.user.name || me.user.email} · ${me.user.role === 'admin' ? 'מנהל' : 'מורה'}`;
+  const data = await fetch('/api/teacher/home').then(r=>r.json());
+  if(!data.ok) return;
+  HOME = data.dashboard;
+  document.getElementById('stats').innerHTML =
+    stat('כיתות', HOME.stats.classes) +
+    stat('תלמידים', HOME.stats.students) +
+    stat('מפגשים', HOME.stats.lessons) +
+    stat('מורים ממתינים', HOME.stats.pending_teachers);
+  document.getElementById('next-actions').innerHTML = HOME.next_actions.map((x,i)=>`<div class="task-row"><div><b>${i+1}. ${esc(x)}</b></div>${statusBadge('open')}</div>`).join('');
+  document.querySelectorAll('.empty-status').forEach(el => { el.innerHTML = statusBadge('empty'); });
+  const pendingPanel = document.getElementById('pending-teachers-panel');
+  document.getElementById('users-tab').classList.toggle('hidden', me.user.role !== 'admin');
+  if(me.user.role !== 'admin' && !pendingPanel.classList.contains('hidden')) showTeacherPanel('classes');
+  document.getElementById('pending-teachers').innerHTML = HOME.pending_teachers.length ? HOME.pending_teachers.map(pendingTeacherRow).join('') : `<div class="task-row"><div><b>אין מורים שממתינים לאישור</b><span>בקשות חדשות יופיעו כאן.</span></div>${statusBadge('empty')}</div>`;
+  document.getElementById('submissions').innerHTML = HOME.submissions.length ? HOME.submissions.map(submissionRow).join('') : `<div class="task-row"><div><b>אין עדיין הגשות</b><span>כאשר תלמיד יגיש משימה, היא תופיע כאן למשוב.</span></div>${statusBadge('empty')}</div>`;
+  document.getElementById('task-overview').innerHTML = HOME.task_overview.length ? HOME.task_overview.map(taskOverviewRow).join('') : `<div class="task-row"><div><b>אין עדיין תלמידים למעקב</b><span>אחרי שתלמידים יצטרפו לכיתה, המשימות שלהם יופיעו כאן.</span></div>${statusBadge('empty')}</div>`;
+  document.getElementById('classes').innerHTML = HOME.classes.length ? HOME.classes.map(classCard).join('') : '<p class="muted">אין עדיין כיתות.</p>';
+  document.getElementById('teams').innerHTML = HOME.teams.length ? HOME.teams.map(teamCard).join('') : `<div class="task-row"><div><b>אין עדיין צוותים</b><span>אפשר ליצור צוות מתוך כרטיס כיתה.</span></div>${statusBadge('empty')}</div>`;
+  document.getElementById('lessons').innerHTML = HOME.course.lessons.map(lessonRow).join('');
+  renderObservationForm();
+}
+loadHome();
+</script>
+</body>
+</html>

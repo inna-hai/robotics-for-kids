@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>הרשמה | Craftom School</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main class="shell center">
+    <form class="panel auth wide" onsubmit="return register(event)">
+      <div class="brand">Craftom School</div>
+      <h1>הרשמה</h1>
+      <label>שם מלא</label>
+      <input id="name" autocomplete="name" required>
+      <label>אימייל</label>
+      <input id="email" type="email" autocomplete="username" required>
+      <label>סטטוס</label>
+      <div class="role-grid">
+        <label class="role-card"><input type="radio" name="account_type" value="teacher" checked onchange="syncRole()"><b>מורה / מדריך</b><span>ניהול כיתה, שיעורים ודוחות. דורש אישור מנהל.</span></label>
+        <label class="role-card"><input type="radio" name="account_type" value="student" onchange="syncRole()"><b>תלמיד/ה</b><span>כניסה למשימת היום ורפלקציה.</span></label>
+      </div>
+      <div id="studentFields" class="hidden">
+        <label>קוד כיתה מהמורה</label>
+        <input id="class_code" placeholder="לדוגמה: CLASS-4A-CRAFTOM">
+        <p class="small">את הקוד מקבלים מהמורה לפני ההרשמה. אחרי ההרשמה התלמיד/ה משויך/ת לכיתה אחת בלבד.</p>
+      </div>
+      <label>סיסמה</label>
+      <input id="password" type="password" autocomplete="new-password" minlength="6" required>
+      <button class="btn full" id="btn">הרשמה</button>
+      <div class="msg" id="msg"></div>
+      <p class="small">כבר יש חשבון? <a href="/login.html">כניסה</a></p>
+    </form>
+  </main>
+<script src="/main.js"></script>
+<script>
+function role(){ return document.querySelector('input[name="account_type"]:checked').value; }
+function syncRole(){
+  const isStudent = role() === 'student';
+  studentFields.classList.toggle('hidden', !isStudent);
+  class_code.required = isStudent;
+}
+async function register(e){
+  e.preventDefault();
+  setMsg('');
+  btn.disabled = true;
+  btn.textContent = 'שומר...';
+  const r = await post('/api/register', {
+    name: name.value,
+    email: email.value,
+    password: password.value,
+    account_type: role(),
+    class_code: class_code.value
+  });
+  btn.disabled = false;
+  btn.textContent = 'הרשמה';
+  if(!r.ok) return setMsg(r.error || 'הרשמה נכשלה', true);
+  if(r.role === 'student') {
+    setMsg('החשבון נוצר. אפשר להתחבר כתלמיד/ה.');
+  } else {
+    setMsg('בקשת המורה נוצרה וממתינה לאישור מנהל.');
+  }
+}
+syncRole();
+</script>
+</body>
+</html>
