@@ -2,576 +2,194 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>פלטפורמת לומדות טכנולוגיה</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; }
-
-    :root {
-      --ink: #172033;
-      --muted: #5f6b7a;
-      --line: rgba(23, 32, 51, 0.12);
-      --paper: rgba(255, 255, 255, 0.88);
-      --white: #ffffff;
-      --blue: #2563eb;
-      --cyan: #06b6d4;
-      --purple: #7c3aed;
-      --pink: #db2777;
-      --green: #059669;
-      --orange: #ea580c;
-      --shadow: 0 24px 70px rgba(22, 31, 54, 0.16);
-      --radius: 28px;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: 'Rubik', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      color: var(--ink);
-      background:
-        radial-gradient(circle at 12% 10%, rgba(6, 182, 212, 0.22), transparent 30%),
-        radial-gradient(circle at 85% 5%, rgba(124, 58, 237, 0.20), transparent 34%),
-        radial-gradient(circle at 50% 90%, rgba(37, 99, 235, 0.12), transparent 35%),
-        linear-gradient(135deg, #eef6ff 0%, #f8f7ff 46%, #fff7ed 100%);
-    }
-
-    a { color: inherit; }
-
-    .page {
-      width: min(1180px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: 34px 0 42px;
-    }
-
-    .hero {
-      display: grid;
-      grid-template-columns: minmax(0, 1.18fr) minmax(290px, 0.82fr);
-      gap: 22px;
-      align-items: stretch;
-      margin-bottom: 22px;
-    }
-
-    .hero-card,
-    .quick-panel,
-    .course-card,
-    .section-card {
-      background: var(--paper);
-      border: 1px solid rgba(255, 255, 255, 0.76);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
-    }
-
-    .hero-card {
-      border-radius: var(--radius);
-      padding: clamp(28px, 5vw, 56px);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-card::after {
-      content: '';
-      position: absolute;
-      width: 280px;
-      height: 280px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, rgba(37, 99, 235, 0.22), rgba(219, 39, 119, 0.16));
-      left: -110px;
-      bottom: -135px;
-      pointer-events: none;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      color: #1d4ed8;
-      background: rgba(37, 99, 235, 0.10);
-      border: 1px solid rgba(37, 99, 235, 0.16);
-      border-radius: 999px;
-      padding: 8px 13px;
-      font-size: 0.94rem;
-      font-weight: 700;
-      margin-bottom: 18px;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(2.15rem, 6vw, 4.8rem);
-      line-height: 1.02;
-      letter-spacing: -0.05em;
-    }
-
-    .gradient-text {
-      background: linear-gradient(120deg, var(--blue), var(--purple), var(--pink));
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-
-    .lead {
-      margin: 22px 0 0;
-      max-width: 760px;
-      color: var(--muted);
-      font-size: clamp(1.05rem, 2vw, 1.28rem);
-      line-height: 1.75;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 28px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-height: 46px;
-      padding: 0 18px;
-      border-radius: 999px;
-      text-decoration: none;
-      font-weight: 800;
-      border: 1px solid transparent;
-      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
-    }
-
-    .btn:hover { transform: translateY(-2px); }
-    .btn.primary { color: #fff; background: linear-gradient(135deg, var(--blue), var(--purple)); box-shadow: 0 14px 30px rgba(37, 99, 235, 0.25); }
-    .btn.secondary { background: rgba(255,255,255,0.72); border-color: var(--line); color: var(--ink); }
-
-    .quick-panel {
-      border-radius: var(--radius);
-      padding: 26px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 100%;
-    }
-
-    .quick-panel h2,
-    .section-card h2 {
-      margin: 0 0 14px;
-      font-size: 1.35rem;
-    }
-
-    .quick-links {
-      display: grid;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .quick-links a {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      padding: 14px 15px;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.64);
-      border: 1px solid var(--line);
-      text-decoration: none;
-      font-weight: 700;
-    }
-
-    .quick-links span { color: var(--muted); font-weight: 500; font-size: .92rem; }
-
-    .section-title {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 14px;
-      margin: 28px 4px 16px;
-    }
-
-    .section-title h2 { margin: 0; font-size: clamp(1.55rem, 3vw, 2.15rem); }
-    .section-title p { margin: 0; color: var(--muted); line-height: 1.6; }
-
-    .courses-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .course-card {
-      border-radius: 24px;
-      padding: 22px;
-      min-height: 255px;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .course-card::before {
-      content: '';
-      position: absolute;
-      inset: 0 0 auto;
-      height: 5px;
-      background: var(--accent, linear-gradient(90deg, var(--blue), var(--cyan)));
-    }
-
-    .course-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: flex-start;
-      margin-bottom: 18px;
-    }
-
-    .icon {
-      width: 54px;
-      height: 54px;
-      display: grid;
-      place-items: center;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.75);
-      border: 1px solid var(--line);
-      font-size: 1.75rem;
-    }
-
-    .tag {
-      border-radius: 999px;
-      padding: 7px 10px;
-      font-size: .78rem;
-      font-weight: 800;
-      color: #1f2937;
-      background: #eef2ff;
-      border: 1px solid rgba(31,41,55,.08);
-      white-space: nowrap;
-    }
-
-    .course-card h3 { margin: 0; font-size: 1.35rem; }
-    .course-card p { margin: 10px 0 18px; color: var(--muted); line-height: 1.62; }
-
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: auto;
-      margin-bottom: 16px;
-    }
-
-    .meta span {
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.64);
-      border: 1px solid var(--line);
-      color: #334155;
-      font-size: .86rem;
-      font-weight: 600;
-    }
-
-    .card-actions { display: flex; flex-wrap: wrap; gap: 9px; }
-    .card-actions .btn { min-height: 40px; padding: 0 14px; font-size: .94rem; }
-
-    .section-card {
-      margin-top: 18px;
-      border-radius: 24px;
-      padding: 22px;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 14px;
-      align-items: center;
-    }
-
-    .section-card p { color: var(--muted); line-height: 1.65; margin: 0; }
-
-    footer {
-      margin-top: 24px;
-      color: var(--muted);
-      text-align: center;
-      font-size: .94rem;
-    }
-
-    @media (max-width: 920px) {
-      .hero { grid-template-columns: 1fr; }
-      .courses-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .section-card { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 640px) {
-      .page { width: min(100% - 22px, 1180px); padding-top: 18px; }
-      .hero-card, .quick-panel, .course-card, .section-card { border-radius: 20px; }
-      .courses-grid { grid-template-columns: 1fr; }
-      .section-title { display: block; }
-      .hero-actions, .card-actions { flex-direction: column; }
-      .btn { width: 100%; }
-    }
+    :root{--ink:#102033;--muted:#526070;--blue:#2563eb;--cyan:#06b6d4;--green:#22c55e;--purple:#7c3aed;--pink:#ec4899;--orange:#f97316;--card:#ffffff;--line:#e6edf7}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Rubik,Arial,sans-serif;direction:rtl;color:var(--ink);background:linear-gradient(135deg,#eef7ff,#fff7ed 42%,#f7f0ff);line-height:1.65}a{color:inherit}.shell{width:min(1220px,calc(100% - 30px));margin:0 auto}.hero{position:relative;overflow:hidden;color:white;background:radial-gradient(circle at 12% 12%,rgba(34,211,238,.38),transparent 27%),radial-gradient(circle at 80% 0,rgba(236,72,153,.28),transparent 31%),linear-gradient(135deg,#0f172a,#1d4ed8 54%,#4c1d95);padding:28px 0 54px}.hero:after{content:"";position:absolute;inset:auto -8% -28% -8%;height:230px;background:rgba(255,255,255,.12);filter:blur(55px);transform:rotate(-3deg)}.top{position:relative;z-index:2;display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:34px}.brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:1.35rem}.mark{width:56px;height:56px;border-radius:20px;background:linear-gradient(135deg,#67e8f9,#bef264);display:grid;place-items:center;color:#0f172a;font-size:1.85rem;box-shadow:0 16px 42px rgba(103,232,249,.25)}.nav{display:flex;gap:8px;flex-wrap:wrap}.nav a{padding:9px 14px;border-radius:999px;text-decoration:none;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);font-weight:900;backdrop-filter:blur(8px)}.hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);gap:28px;align-items:center}.kicker{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-weight:900;margin-bottom:14px}.hero h1{font-size:clamp(2.45rem,6vw,5.25rem);line-height:1.03;margin:0 0 16px;letter-spacing:-.04em}.gradient{background:linear-gradient(90deg,#67e8f9,#bef264,#fef08a);-webkit-background-clip:text;color:transparent}.hero p{font-size:clamp(1.08rem,2vw,1.32rem);color:#eaf6ff;margin:0;max-width:880px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:13px 20px;text-decoration:none;font-weight:900;background:#fff;color:#0f172a;box-shadow:0 12px 30px rgba(0,0,0,.18);border:0}.btn.alt{background:rgba(255,255,255,.12);color:white;border:1px solid rgba(255,255,255,.22);box-shadow:none}.btn.ghost{background:#f8fafc;color:#1e293b;border:1px solid #e2e8f0;box-shadow:none}.hero-visual{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:36px;padding:12px;box-shadow:0 28px 80px rgba(0,0,0,.28);backdrop-filter:blur(10px)}.hero-visual img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:28px}.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}.stat{display:block;text-decoration:none;color:inherit;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.15);border-radius:22px;padding:16px;text-align:center;font-weight:900;backdrop-filter:blur(8px)}.stat b{display:block;font-size:1.9rem;line-height:1;color:#bef264}.section{padding:58px 0}.section-head{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:22px}.section h2{font-size:clamp(1.9rem,4vw,3.15rem);line-height:1.1;margin:0 0 10px;letter-spacing:-.03em}.lead{font-size:1.15rem;color:var(--muted);max-width:920px;margin:0}.quick-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.quick{position:relative;overflow:hidden;background:white;border:1px solid var(--line);border-radius:24px;padding:18px;text-decoration:none;box-shadow:0 15px 42px rgba(15,23,42,.07);min-height:128px}.quick:before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,var(--a),transparent 62%);opacity:.16}.quick b,.quick span{position:relative;z-index:1;display:block}.quick b{font-size:1.1rem;margin-top:8px}.quick span{color:var(--muted);font-weight:800}.quick .emoji{font-size:2.15rem}.tracks{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.track{background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:30px;padding:24px;box-shadow:0 18px 45px rgba(15,23,42,.08)}.track-icon{width:62px;height:62px;border-radius:22px;display:grid;place-items:center;font-size:2rem;background:linear-gradient(135deg,var(--a),var(--b));color:white;margin-bottom:12px}.track h3{font-size:1.35rem;margin:0 0 8px}.track p{margin:0;color:var(--muted)}.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}.chip{background:#f1f5f9;border-radius:999px;padding:7px 10px;font-weight:900;font-size:.82rem;color:#334155}.catalog{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.course-card{position:relative;overflow:hidden;background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:30px;box-shadow:0 18px 45px rgba(15,23,42,.08);display:flex;flex-direction:column;min-height:380px}.visual{height:138px;background:radial-gradient(circle at 20% 20%,rgba(255,255,255,.85),transparent 22%),linear-gradient(135deg,var(--a),var(--b));display:flex;align-items:center;justify-content:space-between;padding:20px;color:white}.visual .big{font-size:4.4rem;filter:drop-shadow(0 14px 22px rgba(0,0,0,.22))}.visual .mini{display:grid;gap:7px}.dot{width:44px;height:44px;border-radius:16px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);display:grid;place-items:center;font-size:1.35rem;backdrop-filter:blur(8px)}.course-body{padding:21px;display:flex;flex-direction:column;gap:11px;flex:1}.course-top{display:flex;justify-content:space-between;align-items:center;gap:10px}.tag{display:inline-flex;align-items:center;border-radius:999px;padding:6px 10px;background:#eef2ff;color:#3730a3;font-weight:900;font-size:.8rem}.course-card h3{font-size:1.38rem;margin:0;line-height:1.2}.course-card p{margin:0;color:var(--muted)}.meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:auto}.meta span{background:#f8fafc;border:1px solid #e2e8f0;border-radius:999px;padding:6px 9px;font-weight:900;font-size:.78rem;color:#475569}.card-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:4px}.card-actions .btn{padding:10px 14px;font-size:.92rem;box-shadow:none;background:#0f172a;color:white}.card-actions .btn.secondary{background:#f8fafc;color:#0f172a;border:1px solid #e2e8f0}.roadmap{background:#0f172a;color:white;border-radius:36px;padding:30px;overflow:hidden;position:relative}.roadmap:before{content:"";position:absolute;inset:-20% 55% auto -10%;height:260px;background:rgba(34,211,238,.2);filter:blur(45px)}.roadmap .lead{color:#dbeafe}.rows{display:grid;gap:10px;margin-top:22px;position:relative}.row{display:grid;grid-template-columns:120px 1fr 1fr;gap:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:15px}.row b{color:#a7f3d0}.cta{padding:0 0 72px}.cta-box{background:linear-gradient(135deg,#2563eb,#7c3aed);color:white;border-radius:36px;padding:34px;text-align:center;box-shadow:0 22px 60px rgba(37,99,235,.24)}.cta-box p{color:#eef4ff;margin:0 auto 22px;max-width:760px}.footer{text-align:center;color:#64748b;padding:28px 0 42px;font-weight:800}@media(max-width:1000px){.hero-grid,.tracks,.catalog{grid-template-columns:1fr 1fr}.quick-strip{grid-template-columns:repeat(2,1fr)}.hero-stats{grid-template-columns:repeat(2,1fr)}.section-head{display:block}.row{grid-template-columns:1fr}.nav{display:none}}@media(max-width:650px){.hero-grid,.tracks,.catalog,.quick-strip{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}.hero{padding-top:22px}.section{padding:42px 0}.course-card{min-height:0}.actions .btn,.card-actions .btn{width:100%}.hero-visual,.track,.course-card,.roadmap,.cta-box{border-radius:23px}.visual{height:122px}.hero-stats{grid-template-columns:1fr 1fr}}
   </style>
 </head>
 <body>
-  <main class="page">
-    <section class="hero" aria-labelledby="main-title">
-      <div class="hero-card">
-        <div class="eyebrow">⚡ מרכז הלומדות</div>
-        <h1 id="main-title">לומדים טכנולוגיה<br><span class="gradient-text">בצורה חכמה ומעשית</span></h1>
-        <p class="lead">
-          מקום אחד לכל מסלולי הלימוד: רובוטיקה, תכנות, משחקים, Python, Roblox ועוד. העיצוב נקי ומזמין — מספיק צבעוני לתלמידים, מספיק מסודר למדריכים ולהורים.
-        </p>
-        <div class="hero-actions">
-          <a class="btn primary" href="sensi-city.html?lesson=1">התחילו מסנסי בעיר החכמה</a>
-          <a class="btn secondary" href="smart-city.html">צפו במפת התוכנית</a>
+  <header class="hero">
+    <div class="shell">
+      <div class="top">
+        <div class="brand"><span class="mark">🌟</span><span>hai.tech Learning Studio · מרכז הלומדות</span></div>
+        <nav class="nav"><a href="#paths">מסלולים</a><a href="#catalog">כל הלומדות</a><a href="#roadmap">רצף גילאים</a></nav>
+      </div>
+      <div class="hero-grid">
+        <div>
+          <div class="kicker">רובוטיקה · סיסי · Python · Web · Roblox · משחקים</div>
+          <h1>פלטפורמת לומדות טכנולוגיה<br><span class="gradient">שילדים באמת רוצים לפתוח</span></h1>
+          <p>מרכז אחד לכל הלומדות שהכנו: מסלולי קוד צבעוניים, משימות חכמות, משחקים, רובוטים, אתרי Web ופרויקטים. כל כרטיס מוביל ללומדה מוכנה עם תרגול, סיפור, ואתגר שמתאים לגיל.</p>
+          <div class="actions"><a class="btn" href="#catalog">בחרו לומדה</a><a class="btn alt" href="sensi-city.html?lesson=1">התחילו מסנסי בעיר החכמה</a><a class="btn alt" href="sisi.html">סדרת סיסי</a></div>
+          <div class="hero-stats"><a class="stat" href="sisi.html"><b>15</b>שיעורי סיסי</a><a class="stat" href="sensi-city.html?lesson=1"><b>15</b>רובוטיקה</a><a class="stat" href="python-turtle.html"><b>30</b>Python Turtle</a><a class="stat" href="pygame.html"><b>28</b>Pygame</a></div>
+        </div>
+        <aside class="hero-visual"><img src="assets/robotics-home-hero.png" alt="ילדים לומדים תכנות, רובוטיקה ופיתוח משחקים בפלטפורמת hai.tech"></aside>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="shell">
+        <div class="section-head"><div><h2>כניסה מהירה למסלולים המרכזיים</h2><p class="lead">כמו בעמודי חולון — לא רק רשימת קישורים, אלא שער ברור לפי עולם תוכן.</p></div></div>
+        <div class="quick-strip">
+          <a class="quick" style="--a:#2563eb" href="sensi-city.html?lesson=1"><span class="emoji">🤖</span><b>סנסי בעיר החכמה</b><span>רובוטיקה וחיישנים</span></a>
+          <a class="quick" style="--a:#ec4899" href="sisi.html"><span class="emoji">🌈</span><b>סדרת סיסי</b><span>15 שיעורים לכיתות ב׳</span></a>
+          <a class="quick" style="--a:#7c3aed" href="python-turtle.html"><span class="emoji">🐢</span><b>Python Turtle</b><span>ציור וקוד אמיתי</span></a>
+          <a class="quick" style="--a:#16a34a" href="roblox.html"><span class="emoji">🧱</span><b>Roblox Studio</b><span>עולמות ומשחקים</span></a>
+          <a class="quick" style="--a:#06b6d4" href="appforge.html"><span class="emoji">🛠️</span><b>WebMakers Lab</b><span>אתרים ואפליקציות</span></a>
         </div>
       </div>
+    </section>
 
-      <aside class="quick-panel" aria-label="קישורים מהירים">
-        <div>
-          <h2>קישורים מהירים</h2>
-          <p class="lead" style="font-size:1rem;margin:0;color:var(--muted);">כניסה ישירה ללומדות המרכזיות ולחומרי ההדרכה.</p>
-          <div class="quick-links">
-            <a href="teachers.html">מדריך למורים <span>סנסי 15</span></a>
-            <a href="slides/index.html">מצגות שיעור <span>רובוטיקה 15</span></a>
-            <a href="sensi-classic.html?lesson=1">סנסי קלאסי <span>5 שיעורים</span></a>
-            <a href="sensi-classic-slides/index.html">מצגות קלאסיות <span>חושים</span></a>
-            <a href="sisi.html">סדרת סיסי <span>15 שיעורים</span></a>
-            <a href="weather.html">סיסי מזג אוויר <span>חיישנים</span></a>
-            <a href="codequest.html">CodeQuest <span>Python</span></a>
-            <a href="gamelab.html">PlayCode Lab <span>Blockly</span></a>
-            <a href="appforge.html">WebMakers Lab <span>Web</span></a>
-            <a href="pygame-slides.html">מצגות Pygame <span>מדריכים</span></a>
-            <a href="roblox-slides.html">מצגות Roblox <span>מדריכים</span></a>
+    <section class="section" id="paths">
+      <div class="shell">
+        <div class="section-head"><div><h2>שלושה עולמות למידה</h2><p class="lead">העמוד מסודר לפי משפחות תוכן: צעירים, רובוטיקה, וקוד מתקדם. כך קל למדריך, להורה או לתלמיד למצוא את המסלול הנכון.</p></div></div>
+        <div class="tracks">
+          <article class="track" style="--a:#ec4899;--b:#8b5cf6"><div class="track-icon">🌈</div><h3>צעירים — חשיבה מחשובית דרך משחק</h3><p>סדרת סיסי מובילה ילדים דרך רצף, תנאים, חיישנים, דפוסים, ניתוב ופתרון בעיות — בלי להפוך את זה לשיעור יבש.</p><div class="chips"><span class="chip">כיתות ב׳</span><span class="chip">משימות קצרות</span><span class="chip">סיפור ואתגר</span></div></article>
+          <article class="track" style="--a:#2563eb;--b:#06b6d4"><div class="track-icon">🤖</div><h3>רובוטיקה — סנסי וחיישנים</h3><p>מסלול חיישנים וסימולטור רובוט בעיר חכמה, כולל גרסה קלאסית של 5 שיעורים וגרסת 15 שיעורים מתקדמת.</p><div class="chips"><span class="chip">Blockly</span><span class="chip">חיישנים</span><span class="chip">עיר חכמה</span></div></article>
+          <article class="track" style="--a:#0f172a;--b:#7c3aed"><div class="track-icon">💻</div><h3>קוד ויצירה — Python, Web ומשחקים</h3><p>מסלולים לתלמידים שמוכנים לעלות רמה: Python Turtle, Pygame, Roblox, WebCode, CodeQuest ו־WebMakers.</p><div class="chips"><span class="chip">Python</span><span class="chip">Web</span><span class="chip">משחקים</span></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="catalog">
+      <div class="shell">
+        <div class="section-head"><div><h2>כל הלומדות שהכנו</h2><p class="lead">כרטיסי כניסה לכל המסלולים הפעילים — עם הסבר קצר, גיל/נושא וקישור ישיר לתרגול.</p></div></div>
+        <div class="catalog">
+          <article class="course-card" style="--a:#2563eb;--b:#06b6d4">
+            <div class="visual"><div class="big">🤖</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">רובוטיקה</span></div><h3>סנסי בעיר החכמה</h3><p>לומדת Blockly וסימולטור רובוט עם 15 שיעורים, חיישנים, סביבה משתנה ומשימות עיר חכמה.</p><div class="meta"><span>15 שיעורים</span><span>Blockly</span><span>סימולטור</span></div><div class="card-actions"><a class="btn" href="sensi-city.html?lesson=1">פתחו לומדה</a><a class="btn secondary" href="smart-city.html">מפת מסלול</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#f97316;--b:#facc15">
+            <div class="visual"><div class="big">🤖</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">רובוטיקה קלאסית</span></div><h3>סנסי קלאסי</h3><p>הגרסה המקורית של סנסי: 5 שיעורי חושים עם Blockly, סימולטור רובוט ומצגות נפרדות.</p><div class="meta"><span>5 שיעורים</span><span>חיישנים</span><span>Blockly</span></div><div class="card-actions"><a class="btn" href="sensi-classic.html?lesson=1">פתחו לומדה</a><a class="btn secondary" href="sensi-classic-slides/index.html">מצגות</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#7c3aed;--b:#db2777">
+            <div class="visual"><div class="big">🎮</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">Python</span></div><h3>Pygame</h3><p>מסלול בניית משחקים ב־Python עם תרגול חזותי, קוד בסגנון Pygame ומערכי שיעור למדריכים.</p><div class="meta"><span>28 שיעורים</span><span>משחקים</span><span>Python</span></div><div class="card-actions"><a class="btn" href="pygame.html">פתחו לומדה</a><a class="btn secondary" href="pygame-course.html">דף קורס</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#0f766e;--b:#22c55e">
+            <div class="visual"><div class="big">🧱</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">Roblox</span></div><h3>Roblox Studio</h3><p>כניסה לעולם Roblox Studio: בניית עולמות, תכנות משחקים ותרגול הדרגתי למתחילים.</p><div class="meta"><span>Lua</span><span>Studio</span><span>יצירה</span></div><div class="card-actions"><a class="btn" href="roblox.html">פתחו לומדה</a><a class="btn secondary" href="roblox-course.html">דף קורס</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#ea580c;--b:#facc15">
+            <div class="visual"><div class="big">🐢</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">Python</span></div><h3>Python Turtle</h3><p>מסלול ציור ותכנות עם Python Turtle — מעבר נעים לקוד אמיתי דרך צורות, צבעים ודפוסים.</p><div class="meta"><span>30 שיעורים</span><span>ציור בקוד</span><span>Python</span></div><div class="card-actions"><a class="btn" href="python-turtle.html">פתחו לומדה</a><a class="btn secondary" href="python-turtle-course.html">דף קורס</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#4338ca;--b:#2563eb">
+            <div class="visual"><div class="big">🚀</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">סיסי</span></div><h3>סיסי בחלל</h3><p>שיעור משימות עם ניווט, חשיבה אלגוריתמית ואתגרי חלל לתלמידים צעירים.</p><div class="meta"><span>כיתות ב׳</span><span>75 דקות</span><span>משחקיות</span></div><div class="card-actions"><a class="btn" href="space.html">פתחו מסלול</a><a class="btn secondary" href="space-play.html?lesson=1">משחק</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#0891b2;--b:#0ea5e9">
+            <div class="visual"><div class="big">🌊</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">סיסי</span></div><h3>סיסי באוקיינוס</h3><p>מסלול אוקיינוס עם משימות ניווט, איסוף וחשיבה לוגית בסביבה ידידותית.</p><div class="meta"><span>כיתות ב׳</span><span>75 דקות</span><span>חשיבה</span></div><div class="card-actions"><a class="btn" href="ocean.html">פתחו מסלול</a><a class="btn secondary" href="ocean-play.html?lesson=1">משחק</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#111827;--b:#4f46e5">
+            <div class="visual"><div class="big">💻</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">Web</span></div><h3>Web Code</h3><p>תרגול HTML/CSS/JS ובניית דפי Web, עם כניסה לעבודה יצירתית בקוד.</p><div class="meta"><span>HTML</span><span>CSS</span><span>JavaScript</span></div><div class="card-actions"><a class="btn" href="webcode.html">פתחו לומדה</a><a class="btn secondary" href="webcode-play.html">תרגול</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#16a34a;--b:#84cc16">
+            <div class="visual"><div class="big">⛏️</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">יצירה</span></div><h3>Minecraft</h3><p>מסלול יצירתי סביב Minecraft, תכנון משימות וחשיבה מערכתית בסביבה מוכרת לתלמידים.</p><div class="meta"><span>תכנון</span><span>משימות</span><span>יצירה</span></div><div class="card-actions"><a class="btn" href="minecraft.html">פתחו לומדה</a><a class="btn secondary" href="minecraft-teachers.html">מורים</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#ec4899;--b:#8b5cf6">
+            <div class="visual"><div class="big">🌈</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">סיסי</span></div><h3>סדרת סיסי לכיתות ב׳</h3><p>מרכז סדרת 15 שיעורי סיסי: חשיבה אלגוריתמית, רצפים, תנאים, חיישנים ומשימות משחקיות.</p><div class="meta"><span>15 שיעורים</span><span>כיתות ב׳</span><span>סדרה מלאה</span></div><div class="card-actions"><a class="btn" href="sisi.html">פתחו מרכז</a><a class="btn secondary" href="finale.html">שיעור שיא</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#9333ea;--b:#f472b6">
+            <div class="visual"><div class="big">🎵</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">סיסי</span></div><h3>סיסי ומכונת המוזיקה</h3><p>לומדה על דפוסים, חזרות וסדר פעולות דרך יצירת מוזיקה ומשימות קצרות.</p><div class="meta"><span>שיעור 2</span><span>דפוסים</span><span>חזרות</span></div><div class="card-actions"><a class="btn" href="music.html">פתחו מסלול</a><a class="btn secondary" href="music-play.html?lesson=1">משחק</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#7c2d12;--b:#f59e0b">
+            <div class="visual"><div class="big">🕵️</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">סיסי</span></div><h3>סיסי הבלשית</h3><p>חקירת רמזים ותנאים פשוטים: אם קורה משהו — בוחרים פעולה מתאימה.</p><div class="meta"><span>שיעור 4</span><span>תנאים</span><span>רמזים</span></div><div class="card-actions"><a class="btn" href="detective.html">פתחו מסלול</a><a class="btn secondary" href="detective-play.html?lesson=1">משחק</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#db2777;--b:#fb7185">
+            <div class="visual"><div class="big">🧁</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">סיסי</span></div><h3>סיסי במטבח הקסמים</h3><p>בניית אלגוריתמים צעד־אחר־צעד דרך מתכונים, סדר פעולות ומשימות הכנה.</p><div class="meta"><span>שיעור 5</span><span>אלגוריתמים</span><span>רצף</span></div><div class="card-actions"><a class="btn" href="kitchen.html">פתחו מסלול</a><a class="btn secondary" href="kitchen-play.html?lesson=1">משחק</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#16a34a;--b:#65a30d">
+            <div class="visual"><div class="big">🦕</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">סיסי</span></div><h3>סיסי בפארק הדינוזאורים</h3><p>מיון, קבוצות ודאטה בסיסי דרך עולם דינוזאורים צבעוני וידידותי.</p><div class="meta"><span>שיעור 6</span><span>מיון</span><span>דאטה</span></div><div class="card-actions"><a class="btn" href="dino.html">פתחו מסלול</a><a class="btn secondary" href="dino-play.html?lesson=1">משחק</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#be123c;--b:#f97316">
+            <div class="visual"><div class="big">🎨</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">סיסי</span></div><h3>סיסי בסטודיו הפיקסלים</h3><p>קואורדינטות, ציור וחשיבה מרחבית דרך יצירת תמונות ומשימות פיקסלים.</p><div class="meta"><span>שיעור 7</span><span>קואורדינטות</span><span>ציור</span></div><div class="card-actions"><a class="btn" href="art.html">פתחו מסלול</a><a class="btn secondary" href="art-play.html?lesson=1">משחק</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#0284c7;--b:#38bdf8">
+            <div class="visual"><div class="big">⛅</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">סיסי</span></div><h3>סיסי ותחנת מזג האוויר</h3><p>חיישנים ואוטומציה: קריאת מצב מהסביבה ובחירת פעולה חכמה בהתאם.</p><div class="meta"><span>שיעור 8</span><span>חיישנים</span><span>אוטומציה</span></div><div class="card-actions"><a class="btn" href="weather.html">פתחו מסלול</a><a class="btn secondary" href="weather-play.html?lesson=1">משחק</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#ca8a04;--b:#facc15">
+            <div class="visual"><div class="big">🏭</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">סיסי</span></div><h3>סיסי במפעל הצעצועים</h3><p>לולאות וחזרות דרך פס ייצור צעצועים, בדיקות ותיקון תהליכים.</p><div class="meta"><span>שיעור 9</span><span>לולאות</span><span>ייצור</span></div><div class="card-actions"><a class="btn" href="factory.html">פתחו מסלול</a><a class="btn secondary" href="factory-play.html?lesson=1">משחק</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#15803d;--b:#22c55e">
+            <div class="visual"><div class="big">🌱</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">סיסי</span></div><h3>סיסי בגינת הקסמים</h3><p>רצף, שלבי גדילה והבנת תהליך דרך משימות גינה אינטראקטיביות.</p><div class="meta"><span>שיעור 10</span><span>רצף</span><span>תהליך</span></div><div class="card-actions"><a class="btn" href="garden.html">פתחו מסלול</a><a class="btn secondary" href="garden-play.html?lesson=1">משחק</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#dc2626;--b:#f59e0b">
+            <div class="visual"><div class="big">🎡</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">סיסי</span></div><h3>סיסי בלונה פארק</h3><p>פקודות עם הגדרות: אותה פעולה, אבל עם פרמטרים שמשנים את ההתנהגות.</p><div class="meta"><span>שיעור 11</span><span>פרמטרים</span><span>פקודות</span></div><div class="card-actions"><a class="btn" href="park.html">פתחו מסלול</a><a class="btn secondary" href="park-play.html?lesson=1">משחק</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#2563eb;--b:#a855f7">
+            <div class="visual"><div class="big">✉️</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">סיסי</span></div><h3>סיסי בדואר הקסום</h3><p>ניתוב לפי רמזים, התאמות והחלטות — לאן כל הודעה צריכה להגיע.</p><div class="meta"><span>שיעור 12</span><span>ניתוב</span><span>רמזים</span></div><div class="card-actions"><a class="btn" href="mail.html">פתחו מסלול</a><a class="btn secondary" href="mail-play.html?lesson=1">משחק</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#111827;--b:#64748b">
+            <div class="visual"><div class="big">🎬</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">סיסי</span></div><h3>סיסי מביימת רובוטים</h3><p>אלגוריתמים מצולמים: תכנון סצנות, סדר פעולות והצגת פתרון בצורה חזותית.</p><div class="meta"><span>שיעור 13</span><span>בימוי</span><span>אלגוריתם</span></div><div class="card-actions"><a class="btn" href="cinema.html">פתחו מסלול</a><a class="btn secondary" href="cinema-play.html?lesson=1">משחק</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#7f1d1d;--b:#dc2626">
+            <div class="visual"><div class="big">🔐</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">סיסי</span></div><h3>סיסי בחדר הבריחה</h3><p>תנאי וגם: פתרון חידות שבהן צריך לבדוק יותר מתנאי אחד לפני פעולה.</p><div class="meta"><span>שיעור 14</span><span>תנאים</span><span>וגם</span></div><div class="card-actions"><a class="btn" href="escape.html">פתחו מסלול</a><a class="btn secondary" href="escape-play.html?lesson=1">משחק</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#0f172a;--b:#2563eb">
+            <div class="visual"><div class="big">🏙️</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">סיסי</span></div><h3>סיסי מצילה את העיר החכמה</h3><p>שיעור שיא שמחבר את כל המיומנויות: רצף, תנאים, חיישנים וקבלת החלטות.</p><div class="meta"><span>שיעור 15</span><span>פרויקט</span><span>סיכום</span></div><div class="card-actions"><a class="btn" href="finale.html">פתחו מסלול</a><a class="btn secondary" href="finale-play.html?lesson=1">משחק</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#312e81;--b:#7c3aed">
+            <div class="visual"><div class="big">🐍</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">Python</span></div><h3>CodeQuest</h3><p>מסע פייתון משחקי שמוביל תלמידים דרך אתגרי קוד, משימות ופתרון בעיות.</p><div class="meta"><span>Python</span><span>אתגרים</span><span>קוד</span></div><div class="card-actions"><a class="btn" href="codequest.html">פתחו לומדה</a><a class="btn secondary" href="codequest-play.html">תרגול</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#c026d3;--b:#f97316">
+            <div class="visual"><div class="big">🎮</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">Blockly</span></div><h3>PlayCode Lab</h3><p>פיתוח משחקים עם Blockly: חשיבה משחקית, אירועים, כללים ואינטראקציות.</p><div class="meta"><span>GameLab</span><span>Blockly</span><span>משחקים</span></div><div class="card-actions"><a class="btn" href="gamelab.html">פתחו לומדה</a><a class="btn secondary" href="gamelab-play.html">תרגול</a></div></div>
+          </article>
+          <article class="course-card" style="--a:#06b6d4;--b:#8b5cf6">
+            <div class="visual"><div class="big">🛠️</div><div class="mini"><span class="dot">⌘</span><span class="dot">▶</span></div></div>
+            <div class="course-body"><div class="course-top"><span class="tag">Web</span></div><h3>WebMakers Lab</h3><p>בניית אתרי Web לכיתות ה׳–ו׳: HTML, CSS, פרויקטים ומסלול יצירה.</p><div class="meta"><span>HTML/CSS</span><span>כיתות ה׳–ו׳</span><span>פרויקט</span></div><div class="card-actions"><a class="btn" href="appforge.html">פתחו לומדה</a><a class="btn secondary" href="appforge-play.html">תרגול</a></div></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="roadmap">
+      <div class="shell">
+        <div class="roadmap">
+          <h2>רצף התקדמות — ממשחק לקוד אמיתי</h2>
+          <p class="lead">הילדים מתחילים במשימות וסיפורים, ממשיכים לרובוטיקה וחיישנים, ומשם עוברים לפייתון, Web ומשחקים. זו לא ערימה של דפים — זו מערכת למידה מתפתחת.</p>
+          <div class="rows">
+            <div class="row"><b>כיתות ב׳</b><div>סיסי: רצף, תנאים, חיישנים, דפוסים ופתרון בעיות</div><div>תוצר: פתרונות משחקיים קצרים ושיעור שיא</div></div>
+            <div class="row"><b>ג׳–ד׳</b><div>סנסי, WebCode ו־PlayCode Lab</div><div>תוצר: רובוט חכם, משחק או דף Web</div></div>
+            <div class="row"><b>ה׳–ו׳</b><div>Python Turtle, CodeQuest, WebMakers ו־Roblox</div><div>תוצר: פרויקט אישי בקוד אמיתי</div></div>
           </div>
         </div>
-      </aside>
+      </div>
     </section>
 
-    <section aria-labelledby="courses-title">
-      <div class="section-title">
-        <div>
-          <h2 id="courses-title">בחרו לומדה</h2>
-          <p>כרטיסי כניסה לכל המסלולים הפעילים שהכנו — רובוטיקה, סיסי, Python, Web, Roblox ומשחקים.</p>
+    <section class="cta">
+      <div class="shell">
+        <div class="cta-box">
+          <h2>עמוד ראשי שמרגיש כמו מוצר</h2>
+          <p>כל לומדה מקבלת מקום, הקטלוג ברור, והחוויה נראית מספיק יפה כדי לשלוח להורים, צוותים ובתי ספר.</p>
+          <div class="actions" style="justify-content:center"><a class="btn" href="sensi-city.html?lesson=1">סנסי 15</a><a class="btn" href="sisi.html">סדרת סיסי</a><a class="btn" href="python-turtle.html">Python Turtle</a><a class="btn" href="appforge.html">WebMakers</a></div>
         </div>
       </div>
-
-      <div class="courses-grid">
-        <article class="course-card" style="--accent: linear-gradient(90deg, #2563eb, #06b6d4);">
-          <div class="course-top"><div class="icon">🤖</div><span class="tag">רובוטיקה</span></div>
-          <h3>סנסי בעיר החכמה</h3>
-          <p>לומדת Blockly וסימולטור רובוט עם 15 שיעורים, חיישנים, סביבה משתנה ומשימות עיר חכמה.</p>
-          <div class="meta"><span>15 שיעורים</span><span>Blockly</span><span>סימולטור</span></div>
-          <div class="card-actions"><a class="btn primary" href="sensi-city.html?lesson=1">פתחו לומדה</a><a class="btn secondary" href="smart-city.html">מפת מסלול</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #f97316, #facc15);">
-          <div class="course-top"><div class="icon">🤖</div><span class="tag">רובוטיקה קלאסית</span></div>
-          <h3>סנסי קלאסי</h3>
-          <p>הגרסה המקורית של סנסי: 5 שיעורי חושים עם Blockly, סימולטור רובוט ומצגות נפרדות.</p>
-          <div class="meta"><span>5 שיעורים</span><span>חיישנים</span><span>Blockly</span></div>
-          <div class="card-actions"><a class="btn primary" href="sensi-classic.html?lesson=1">פתחו לומדה</a><a class="btn secondary" href="sensi-classic-slides/index.html">מצגות</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #7c3aed, #db2777);">
-          <div class="course-top"><div class="icon">🎮</div><span class="tag">Python</span></div>
-          <h3>Pygame</h3>
-          <p>מסלול בניית משחקים ב־Python עם תרגול חזותי, קוד בסגנון Pygame ומערכי שיעור למדריכים.</p>
-          <div class="meta"><span>28 שיעורים</span><span>משחקים</span><span>Python</span></div>
-          <div class="card-actions"><a class="btn primary" href="pygame.html">פתחו לומדה</a><a class="btn secondary" href="pygame-course.html">דף קורס</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #0f766e, #22c55e);">
-          <div class="course-top"><div class="icon">🧱</div><span class="tag">Roblox</span></div>
-          <h3>Roblox Studio</h3>
-          <p>כניסה לעולם Roblox Studio: בניית עולמות, תכנות משחקים ותרגול הדרגתי למתחילים.</p>
-          <div class="meta"><span>Lua</span><span>Studio</span><span>יצירה</span></div>
-          <div class="card-actions"><a class="btn primary" href="roblox.html">פתחו לומדה</a><a class="btn secondary" href="roblox-course.html">דף קורס</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #ea580c, #facc15);">
-          <div class="course-top"><div class="icon">🐢</div><span class="tag">Python</span></div>
-          <h3>Python Turtle</h3>
-          <p>מסלול ציור ותכנות בסיסי עם Python Turtle — מתאים לבניית יסודות תכנות בצורה ויזואלית.</p>
-          <div class="meta"><span>ציור בקוד</span><span>יסודות</span><span>Python</span></div>
-          <div class="card-actions"><a class="btn primary" href="python-turtle.html">פתחו לומדה</a><a class="btn secondary" href="python-turtle-course.html">דף קורס</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #4338ca, #2563eb);">
-          <div class="course-top"><div class="icon">🚀</div><span class="tag">משימות</span></div>
-          <h3>סיסי בחלל</h3>
-          <p>שיעור משימות קליל עם ניווט, חשיבה אלגוריתמית ואתגרי חלל לתלמידים צעירים.</p>
-          <div class="meta"><span>כיתות ב׳</span><span>75 דקות</span><span>משחקיות</span></div>
-          <div class="card-actions"><a class="btn primary" href="space.html">פתחו מסלול</a><a class="btn secondary" href="space-play.html?lesson=1">משחק</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #0891b2, #0ea5e9);">
-          <div class="course-top"><div class="icon">🌊</div><span class="tag">משימות</span></div>
-          <h3>סיסי באוקיינוס</h3>
-          <p>מסלול אוקיינוס עם משימות ניווט, איסוף וחשיבה לוגית בסביבה ידידותית.</p>
-          <div class="meta"><span>כיתות ב׳</span><span>75 דקות</span><span>חשיבה</span></div>
-          <div class="card-actions"><a class="btn primary" href="ocean.html">פתחו מסלול</a><a class="btn secondary" href="ocean-play.html?lesson=1">משחק</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #111827, #4f46e5);">
-          <div class="course-top"><div class="icon">💻</div><span class="tag">Web</span></div>
-          <h3>Web Code</h3>
-          <p>תרגול HTML/CSS/JS ובניית דפי Web, עם כניסה לעבודה יצירתית בקוד.</p>
-          <div class="meta"><span>HTML</span><span>CSS</span><span>JavaScript</span></div>
-          <div class="card-actions"><a class="btn primary" href="webcode.html">פתחו לומדה</a><a class="btn secondary" href="webcode-play.html">תרגול</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #16a34a, #84cc16);">
-          <div class="course-top"><div class="icon">⛏️</div><span class="tag">יצירה</span></div>
-          <h3>Minecraft</h3>
-          <p>מסלול יצירתי סביב Minecraft, תכנון משימות וחשיבה מערכתית בסביבה מוכרת לתלמידים.</p>
-          <div class="meta"><span>תכנון</span><span>משימות</span><span>יצירה</span></div>
-          <div class="card-actions"><a class="btn primary" href="minecraft.html">פתחו לומדה</a><a class="btn secondary" href="minecraft-teachers.html">מורים</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #ec4899, #8b5cf6);">
-          <div class="course-top"><div class="icon">🤖</div><span class="tag">סיסי</span></div>
-          <h3>סדרת סיסי לכיתות ב׳</h3>
-          <p>מרכז סדרת 15 שיעורי סיסי: חשיבה אלגוריתמית, רצפים, תנאים, חיישנים ומשימות משחקיות.</p>
-          <div class="meta"><span>15 שיעורים</span><span>כיתות ב׳</span><span>סדרה מלאה</span></div>
-          <div class="card-actions"><a class="btn primary" href="sisi.html">פתחו מרכז</a><a class="btn secondary" href="finale.html">שיעור שיא</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #9333ea, #f472b6);">
-          <div class="course-top"><div class="icon">🎵</div><span class="tag">סיסי</span></div>
-          <h3>סיסי ומכונת המוזיקה</h3>
-          <p>לומדה על דפוסים, חזרות וסדר פעולות דרך יצירת מוזיקה ומשימות קצרות.</p>
-          <div class="meta"><span>שיעור 2</span><span>דפוסים</span><span>חזרות</span></div>
-          <div class="card-actions"><a class="btn primary" href="music.html">פתחו מסלול</a><a class="btn secondary" href="music-play.html?lesson=1">משחק</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #7c2d12, #f59e0b);">
-          <div class="course-top"><div class="icon">🕵️</div><span class="tag">סיסי</span></div>
-          <h3>סיסי הבלשית</h3>
-          <p>חקירת רמזים ותנאים פשוטים: אם קורה משהו — בוחרים פעולה מתאימה.</p>
-          <div class="meta"><span>שיעור 4</span><span>תנאים</span><span>רמזים</span></div>
-          <div class="card-actions"><a class="btn primary" href="detective.html">פתחו מסלול</a><a class="btn secondary" href="detective-play.html?lesson=1">משחק</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #db2777, #fb7185);">
-          <div class="course-top"><div class="icon">🧁</div><span class="tag">סיסי</span></div>
-          <h3>סיסי במטבח הקסמים</h3>
-          <p>בניית אלגוריתמים צעד־אחר־צעד דרך מתכונים, סדר פעולות ומשימות הכנה.</p>
-          <div class="meta"><span>שיעור 5</span><span>אלגוריתמים</span><span>רצף</span></div>
-          <div class="card-actions"><a class="btn primary" href="kitchen.html">פתחו מסלול</a><a class="btn secondary" href="kitchen-play.html?lesson=1">משחק</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #16a34a, #65a30d);">
-          <div class="course-top"><div class="icon">🦕</div><span class="tag">סיסי</span></div>
-          <h3>סיסי בפארק הדינוזאורים</h3>
-          <p>מיון, קבוצות ודאטה בסיסי דרך עולם דינוזאורים צבעוני וידידותי.</p>
-          <div class="meta"><span>שיעור 6</span><span>מיון</span><span>דאטה</span></div>
-          <div class="card-actions"><a class="btn primary" href="dino.html">פתחו מסלול</a><a class="btn secondary" href="dino-play.html?lesson=1">משחק</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #be123c, #f97316);">
-          <div class="course-top"><div class="icon">🎨</div><span class="tag">סיסי</span></div>
-          <h3>סיסי בסטודיו הפיקסלים</h3>
-          <p>קואורדינטות, ציור וחשיבה מרחבית דרך יצירת תמונות ומשימות פיקסלים.</p>
-          <div class="meta"><span>שיעור 7</span><span>קואורדינטות</span><span>ציור</span></div>
-          <div class="card-actions"><a class="btn primary" href="art.html">פתחו מסלול</a><a class="btn secondary" href="art-play.html?lesson=1">משחק</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #0284c7, #38bdf8);">
-          <div class="course-top"><div class="icon">⛅</div><span class="tag">סיסי</span></div>
-          <h3>סיסי ותחנת מזג האוויר</h3>
-          <p>חיישנים ואוטומציה: קריאת מצב מהסביבה ובחירת פעולה חכמה בהתאם.</p>
-          <div class="meta"><span>שיעור 8</span><span>חיישנים</span><span>אוטומציה</span></div>
-          <div class="card-actions"><a class="btn primary" href="weather.html">פתחו מסלול</a><a class="btn secondary" href="weather-play.html?lesson=1">משחק</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #ca8a04, #facc15);">
-          <div class="course-top"><div class="icon">🏭</div><span class="tag">סיסי</span></div>
-          <h3>סיסי במפעל הצעצועים</h3>
-          <p>לולאות וחזרות דרך פס ייצור צעצועים, בדיקות ותיקון תהליכים.</p>
-          <div class="meta"><span>שיעור 9</span><span>לולאות</span><span>ייצור</span></div>
-          <div class="card-actions"><a class="btn primary" href="factory.html">פתחו מסלול</a><a class="btn secondary" href="factory-play.html?lesson=1">משחק</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #15803d, #22c55e);">
-          <div class="course-top"><div class="icon">🌱</div><span class="tag">סיסי</span></div>
-          <h3>סיסי בגינת הקסמים</h3>
-          <p>רצף, שלבי גדילה והבנת תהליך דרך משימות גינה אינטראקטיביות.</p>
-          <div class="meta"><span>שיעור 10</span><span>רצף</span><span>תהליך</span></div>
-          <div class="card-actions"><a class="btn primary" href="garden.html">פתחו מסלול</a><a class="btn secondary" href="garden-play.html?lesson=1">משחק</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #dc2626, #f59e0b);">
-          <div class="course-top"><div class="icon">🎡</div><span class="tag">סיסי</span></div>
-          <h3>סיסי בלונה פארק</h3>
-          <p>פקודות עם הגדרות: אותה פעולה, אבל עם פרמטרים שמשנים את ההתנהגות.</p>
-          <div class="meta"><span>שיעור 11</span><span>פרמטרים</span><span>פקודות</span></div>
-          <div class="card-actions"><a class="btn primary" href="park.html">פתחו מסלול</a><a class="btn secondary" href="park-play.html?lesson=1">משחק</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #2563eb, #a855f7);">
-          <div class="course-top"><div class="icon">✉️</div><span class="tag">סיסי</span></div>
-          <h3>סיסי בדואר הקסום</h3>
-          <p>ניתוב לפי רמזים, התאמות והחלטות — לאן כל הודעה צריכה להגיע.</p>
-          <div class="meta"><span>שיעור 12</span><span>ניתוב</span><span>רמזים</span></div>
-          <div class="card-actions"><a class="btn primary" href="mail.html">פתחו מסלול</a><a class="btn secondary" href="mail-play.html?lesson=1">משחק</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #111827, #64748b);">
-          <div class="course-top"><div class="icon">🎬</div><span class="tag">סיסי</span></div>
-          <h3>סיסי מביימת רובוטים</h3>
-          <p>אלגוריתמים מצולמים: תכנון סצנות, סדר פעולות והצגת פתרון בצורה חזותית.</p>
-          <div class="meta"><span>שיעור 13</span><span>בימוי</span><span>אלגוריתם</span></div>
-          <div class="card-actions"><a class="btn primary" href="cinema.html">פתחו מסלול</a><a class="btn secondary" href="cinema-play.html?lesson=1">משחק</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #7f1d1d, #dc2626);">
-          <div class="course-top"><div class="icon">🔐</div><span class="tag">סיסי</span></div>
-          <h3>סיסי בחדר הבריחה</h3>
-          <p>תנאי וגם: פתרון חידות שבהן צריך לבדוק יותר מתנאי אחד לפני פעולה.</p>
-          <div class="meta"><span>שיעור 14</span><span>תנאים</span><span>וגם</span></div>
-          <div class="card-actions"><a class="btn primary" href="escape.html">פתחו מסלול</a><a class="btn secondary" href="escape-play.html?lesson=1">משחק</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #0f172a, #2563eb);">
-          <div class="course-top"><div class="icon">🏙️</div><span class="tag">סיסי</span></div>
-          <h3>סיסי מצילה את העיר החכמה</h3>
-          <p>שיעור שיא שמחבר את כל המיומנויות: רצף, תנאים, חיישנים וקבלת החלטות.</p>
-          <div class="meta"><span>שיעור 15</span><span>פרויקט</span><span>סיכום</span></div>
-          <div class="card-actions"><a class="btn primary" href="finale.html">פתחו מסלול</a><a class="btn secondary" href="finale-play.html?lesson=1">משחק</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #312e81, #7c3aed);">
-          <div class="course-top"><div class="icon">🐍</div><span class="tag">Python</span></div>
-          <h3>CodeQuest</h3>
-          <p>מסע פייתון משחקי שמוביל תלמידים דרך אתגרי קוד, משימות ופתרון בעיות.</p>
-          <div class="meta"><span>Python</span><span>אתגרים</span><span>קוד</span></div>
-          <div class="card-actions"><a class="btn primary" href="codequest.html">פתחו לומדה</a><a class="btn secondary" href="codequest-play.html">תרגול</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #c026d3, #f97316);">
-          <div class="course-top"><div class="icon">🎮</div><span class="tag">Blockly</span></div>
-          <h3>PlayCode Lab</h3>
-          <p>פיתוח משחקים עם Blockly: חשיבה משחקית, אירועים, כללים ואינטראקציות.</p>
-          <div class="meta"><span>GameLab</span><span>Blockly</span><span>משחקים</span></div>
-          <div class="card-actions"><a class="btn primary" href="gamelab.html">פתחו לומדה</a><a class="btn secondary" href="gamelab-play.html">תרגול</a></div>
-        </article>
-
-        <article class="course-card" style="--accent: linear-gradient(90deg, #06b6d4, #8b5cf6);">
-          <div class="course-top"><div class="icon">🛠️</div><span class="tag">Web</span></div>
-          <h3>WebMakers Lab</h3>
-          <p>בניית אתרי Web לכיתות ה׳–ו׳: HTML, CSS, פרויקטים קטנים ומסלול יצירה.</p>
-          <div class="meta"><span>HTML/CSS</span><span>כיתות ה׳–ו׳</span><span>פרויקט</span></div>
-          <div class="card-actions"><a class="btn primary" href="appforge.html">פתחו לומדה</a><a class="btn secondary" href="appforge-play.html">תרגול</a></div>
-        </article>
-      </div>
     </section>
-
-    <section class="section-card" aria-label="הערה למדריכים">
-      <div>
-        <h2>מבנה שמוכן להתרחבות</h2>
-        <p>הדף הראשי משמש כשער פלטפורמה. סנסי 15 נשאר במסלול העיר החכמה, וגרסת סנסי הקלאסית של 5 שיעורים נשמרה כעמוד נפרד עם מצגות משלה.</p>
-      </div>
-      <a class="btn secondary" href="about.html">על התוכנית</a>
-    </section>
-
-    <footer>פלטפורמת לומדות טכנולוגיה · דף ראשי</footer>
   </main>
+  <footer class="footer">פלטפורמת לומדות טכנולוגיה · hai.tech</footer>
 </body>
 </html>
