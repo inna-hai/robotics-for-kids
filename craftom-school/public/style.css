@@ -18,9 +18,12 @@
   --shadow-strong: rgba(36, 48, 66, .22);
 }
 * { box-sizing: border-box; }
+html { max-width: 100%; overflow-x: hidden; }
 body {
   margin: 0;
   min-height: 100vh;
+  max-width: 100%;
+  overflow-x: hidden;
   color: var(--ink);
   font-family: Rubik, Arial, "Noto Sans Hebrew", sans-serif;
   background:
@@ -34,12 +37,13 @@ body {
 body.page-ready { opacity: 1; transform: translateY(0); }
 body.page-leaving { opacity: 0; transform: translateY(-8px); }
 a { color: #7443c8; font-weight: 800; }
-.shell { width: min(1120px, calc(100% - 28px)); margin: 0 auto; padding: 28px 0; }
+.shell { width: min(1120px, calc(100vw - 28px)); margin: 0 auto; padding: 28px 0; }
 .center { min-height: calc(100vh - 56px); display: grid; place-items: center; }
 .shell.center { padding: 14px 0; }
 .dashboard { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(280px, .6fr); gap: 18px; align-items: start; }
 .lesson-layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(300px, .85fr); gap: 18px; align-items: start; }
 .panel {
+  max-width: 100%;
   background: var(--panel);
   border: 1px solid rgba(255,255,255,.78);
   border-radius: 20px;
@@ -71,6 +75,7 @@ a { color: #7443c8; font-weight: 800; }
 }
 h1 { margin: 8px 0 12px; font-size: clamp(26px, 5vw, 44px); line-height: 1.08; }
 h2 { margin: 0 0 10px; font-size: 24px; }
+h1, h2, h3, b, span, p, label { overflow-wrap: anywhere; }
 p { line-height: 1.55; }
 .muted, .small { color: var(--muted); }
 .small { font-size: 13px; }

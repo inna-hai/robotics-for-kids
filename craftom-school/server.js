@@ -862,8 +862,8 @@ async function api(req, res) {
         created_at: Date.now(),
       };
       state.users.push(user);
-      writeState(state);
-      return json(res, 200, { ok: true, role: 'student', status: 'active', home_url: '/student.html' });
+      setSession(res, state, user);
+      return json(res, 200, { ok: true, role: 'student', status: 'active', user: publicUser(user), home_url: '/student.html' });
     }
 
     const user = {
@@ -877,7 +877,7 @@ async function api(req, res) {
     };
     state.users.push(user);
     writeState(state);
-    return json(res, 200, { ok: true, role: 'teacher', status: 'pending' });
+    return json(res, 200, { ok: true, role: 'teacher', status: 'pending', message: 'בקשת המורה נשלחה וממתינה לאישור מנהל.' });
   }
 
   if (req.method === 'POST' && req.url === '/api/login') {

@@ -68,7 +68,8 @@ async function main() {
     class_code: newClass.data.class.code,
   });
   assert.equal(registerStudent.status, 200, 'student should register with class code');
-  const newStudentCookie = await login(newStudentEmail, 'demo123');
+  assert(registerStudent.cookie, 'student registration should create a session cookie');
+  const newStudentCookie = registerStudent.cookie;
   const newStudentHome = await request('GET', '/api/student/home', null, newStudentCookie);
   assert.equal(newStudentHome.status, 200, 'new student home should load');
   assert.equal(newStudentHome.data.dashboard.class.code, newClass.data.class.code, 'new student should join created class');
