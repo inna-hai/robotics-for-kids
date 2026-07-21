@@ -27,7 +27,7 @@ test('ocean course is linked as lesson 3 and does not replace the active lesson 
   assertIncludes(smartCityHtml, 'שיעור 2: מכונת המוזיקה');
   assertIncludes(smartCityHtml, 'href="ocean.html"');
   assertIncludes(smartCityHtml, 'שיעור 3: סיסי באוקיינוס');
-  assertIncludes(smartCityHtml, 'href="index.html?lesson=1"');
+  assertIncludes(smartCityHtml, 'href="sensi-city.html?lesson=1"');
   assertIncludes(smartCityHtml, 'סנסי בעיר החכמה');
   assertIncludes(oceanHtml, 'href="space.html"');
 });
