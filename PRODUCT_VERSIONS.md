@@ -36,9 +36,38 @@ Recommended bump rules:
 
 ## Current Published Versions
 
-### Smart City 15 Lessons — v0.6.2 — Published
+### Smart City 15 Lessons — v0.6.3 — Published
 
 - **Status:** Published
+- **Branch:** `feature/structured-15-lessons`
+- **Commit:** `cfa0ae4`
+- **Tag:** `robotics15-v0.6.3`
+- **Live:** https://robotics15.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Synced `main` into the shared structured 15-lessons branch after PR #12 was merged to `main`.
+- Brought Miriam's Minecraft Kids refinements into `robotics15`: lesson data, play page, slides, teacher page, and landing page updates.
+- Keeps the Holon-style homepage redesign and Sensi 15 structure from `robotics15-v0.6.2`.
+
+Verification:
+
+- Full Node test suite passed: all `tests/*.mjs`.
+- `git diff --check` clean.
+
+Rollback:
+
+```bash
+git checkout feature/structured-15-lessons
+git reset --hard 7cec3e6
+# or use the previous product tag: robotics15-v0.6.2
+```
+
+### Smart City 15 Lessons — v0.6.2 — Superseded
+
+- **Status:** Superseded by `robotics15-v0.6.3`
 - **Branch:** `feature/structured-15-lessons`
 - **Commit:** `65b5423`
 - **Tag:** `robotics15-v0.6.2`
@@ -129,9 +158,39 @@ git reset --hard 4625d0b
 # or use the previous product tag: robotics15-v0.5.0
 ```
 
-### Robotics stable — v0.2.3 — Published
+### Robotics stable — v0.2.4 — Published
 
 - **Status:** Published
+- **Branch:** `main`
+- **Commit:** `b1e62a4`
+- **Tag:** `robotics-v0.2.4`
+- **Live:** https://robotics.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Merged PR #12 by Miriam: Minecraft Kids builder lesson refinements.
+- Updated Minecraft lesson data and play experience, including lesson 3/pixel-gallery related refinements.
+- Updated Minecraft slides, teacher page, and landing page copy touched by the PR.
+
+Verification:
+
+- Merge into current `main` was clean.
+- Full Node test suite passed: all `tests/*.mjs`.
+- `git diff --check HEAD~1..HEAD` clean.
+
+Rollback:
+
+```bash
+git checkout main
+git reset --hard 06a1f20
+# or use the previous product tag: robotics-v0.2.3
+```
+
+### Robotics stable — v0.2.3 — Superseded
+
+- **Status:** Superseded by `robotics-v0.2.4`
 - **Branch:** `main`
 - **Commit:** `e400c9f`
 - **Tag:** `robotics-v0.2.3`
