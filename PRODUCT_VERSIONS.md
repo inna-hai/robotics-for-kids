@@ -36,9 +36,39 @@ Recommended bump rules:
 
 ## Current Published Versions
 
-### Robotics stable — v0.2.3 — Published
+### Robotics stable — v0.2.4 — Published
 
 - **Status:** Published
+- **Branch:** `main`
+- **Commit:** `b1e62a4`
+- **Tag:** `robotics-v0.2.4`
+- **Live:** https://robotics.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Merged PR #12 by Miriam: Minecraft Kids builder lesson refinements.
+- Updated Minecraft lesson data and play experience, including lesson 3/pixel-gallery related refinements.
+- Updated Minecraft slides, teacher page, and landing page copy touched by the PR.
+
+Verification:
+
+- Merge into current `main` was clean.
+- Full Node test suite passed: all `tests/*.mjs`.
+- `git diff --check HEAD~1..HEAD` clean.
+
+Rollback:
+
+```bash
+git checkout main
+git reset --hard 06a1f20
+# or use the previous product tag: robotics-v0.2.3
+```
+
+### Robotics stable — v0.2.3 — Superseded
+
+- **Status:** Superseded by `robotics-v0.2.4`
 - **Branch:** `main`
 - **Commit:** `e400c9f`
 - **Tag:** `robotics-v0.2.3`
