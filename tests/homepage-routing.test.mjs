@@ -50,6 +50,8 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertIncludes(homepageHtml, 'href="codequest.html"');
   assertIncludes(homepageHtml, 'href="gamelab.html"');
   assertIncludes(homepageHtml, 'href="appforge.html"');
+  assertIncludes(homepageHtml, 'href="craftom-school/preview/index.html"');
+  assertIncludes(homepageHtml, 'href="craftom-school/README.md"');
 });
 
 test('Sensi 15 remains on sensi-city and classic 5-lesson Sensi is restored separately', () => {
