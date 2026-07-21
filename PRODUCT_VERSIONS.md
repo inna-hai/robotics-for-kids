@@ -36,6 +36,39 @@ Recommended bump rules:
 
 ## Current Published Versions
 
+### Smart City 15 Lessons — v0.6.0 — Published
+
+- **Status:** Published
+- **Branch:** `feature/structured-15-lessons`
+- **Commit:** `19dc6bd`
+- **Tag:** `robotics15-v0.6.0`
+- **Live:** https://robotics15.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Merged `origin/main` into the shared structured 15-lessons branch.
+- Resolved the root-page conflict intentionally: `index.html` is now the platform homepage from `main`.
+- Preserved the latest structured-branch Sensi 15 app, including Chava lesson 15 improvements, as `sensi-city.html`.
+- Brought in the stable platform additions from `main`: Pygame, Roblox, platform home links, and Sensi classic 5 lessons.
+- Added a homepage link inside the structured Sensi 15 app.
+
+Verification:
+
+- Full Node test suite passed: all `tests/*.mjs`.
+- `tests/homepage-routing.test.mjs` passed.
+- `tests/lesson-7-8-regression.test.mjs` passed.
+- `git diff --check` clean.
+
+Rollback:
+
+```bash
+git checkout feature/structured-15-lessons
+git reset --hard 4625d0b
+# or use the previous product tag: robotics15-v0.5.0
+```
+
 ### Robotics stable — v0.2.1 — Published
 
 - **Status:** Published
@@ -100,9 +133,9 @@ git reset --hard 1e76b9d
 # or use previous product tag: robotics-v0.1.0
 ```
 
-### Smart City 15 Lessons — v0.5.0 — Published
+### Smart City 15 Lessons — v0.5.0 — Superseded
 
-- **Status:** Published
+- **Status:** Superseded by `robotics15-v0.6.0`
 - **Branch:** `feature/structured-15-lessons`
 - **Commit:** `4625d0b`
 - **Tag:** `robotics15-v0.5.0`
