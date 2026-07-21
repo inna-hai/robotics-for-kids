@@ -37,6 +37,40 @@ Recommended bump rules:
 ## Current Published Versions
 
 
+
+### Robotics stable — v0.2.0 — Published
+
+- **Status:** Published
+- **Branch:** `main`
+- **Commit:** `8e2c9c0`
+- **Tag:** `robotics-v0.2.0`
+- **Live:** https://robotics.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Merged PR #10 by Or / ashtamker: learning platform homepage.
+- Public root `index.html` is now a platform gateway for the learning modules.
+- Original Sensi Blockly app moved to `sensi-city.html`.
+- Added Pygame and Roblox learning modules, slides/content, assets, and tests.
+- Added platform-home links across primary learning pages.
+- Fixed release checks after merge: WebMakers link in `holon-scope-program.html`; cleaned EOF whitespace warnings.
+
+Verification:
+
+- Full Node test suite passed: all `tests/*.mjs`.
+- `git diff --check` clean for release diff.
+- Local link scan on primary pages found 0 missing local links.
+
+Rollback:
+
+```bash
+git checkout main
+git reset --hard 1e76b9d
+# or use previous product tag: robotics-v0.1.0
+```
+
 ### Smart City 15 Lessons — v0.5.0 — Published
 
 - **Status:** Published
@@ -62,9 +96,9 @@ git reset --hard 9ebb5af
 # or use the previous tag: robotics15-v0.4.0
 ```
 
-### Robotics stable — v0.1.0 — Published
+### Robotics stable — v0.1.0 — Superseded
 
-- **Status:** Published
+- **Status:** Superseded by `robotics-v0.2.0`
 - **Branch:** `main`
 - **Commit:** `55ab2d4`
 - **Live:** https://robotics.hai.tech
@@ -140,10 +174,10 @@ Approval checklist:
 
 ### Robotics stable — v0.2.0-rc1 — PR #10 learning platform homepage
 
-- **Status:** Review / Needs product decision
+- **Status:** Merged / Published as `robotics-v0.2.0`
 - **PR:** https://github.com/inna-hai/robotics-for-kids/pull/10
 - **Branch:** `feature/learning-platform-work` → `main`
-- **Latest checked head:** `f094685`
+- **Latest checked head:** `f094685`; merged into `main` as merge commit `9c8e50f`, release fixes commit `8e2c9c0`.
 - **Product area:** Robotics stable homepage / learning platform
 
 Expected product change:
