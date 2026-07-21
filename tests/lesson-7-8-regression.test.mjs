@@ -837,4 +837,3 @@ for (const { name, fn } of tests) {
 if (!process.exitCode) {
   console.log(`\n${passed}/${tests.length} regression tests passed.`);
 }
-
