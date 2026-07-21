@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎬 מצגות - סנסי הרובוט</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Rubik', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+        
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        header p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+        }
+        
+        .lessons-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .lesson-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            text-decoration: none;
+            color: #1e293b;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .lesson-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        
+        .lesson-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            flex-shrink: 0;
+        }
+        
+        .lesson-1 .lesson-icon { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
+        .lesson-2 .lesson-icon { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
+        .lesson-3 .lesson-icon { background: linear-gradient(135deg, #ec4899, #f472b6); }
+        .lesson-4 .lesson-icon { background: linear-gradient(135deg, #10b981, #34d399); }
+        .lesson-5 .lesson-icon { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+        
+        .lesson-info {
+            flex: 1;
+        }
+        
+        .lesson-info h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .lesson-info p {
+            color: #64748b;
+            font-size: 1rem;
+        }
+        
+        .lesson-meta {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+        
+        .lesson-arrow {
+            font-size: 2rem;
+            color: #cbd5e1;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 1rem 2rem;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .back-link:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: rgba(255,255,255,0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎬 מצגות שיעורים</h1>
+            <p>לחצו על שיעור כדי לפתוח את המצגת</p>
+        </header>
+        
+        <div class="lessons-grid">
+            <a href="lesson1.html" class="lesson-card lesson-1">
+                <div class="lesson-icon">👁️</div>
+                <div class="lesson-info">
+                    <h2>שיעור 1: ראייה</h2>
+                    <p>הרובוט רואה! - חיישן אור</p>
+                    <div class="lesson-meta">
+                        <span>📊 18 שקפים</span>
+                        <span>🎬 2 סרטונים</span>
+                    </div>
+                </div>
+                <span class="lesson-arrow">→</span>
+            </a>
+            
+            <a href="lesson2.html" class="lesson-card lesson-2">
+                <div class="lesson-icon">👂</div>
+                <div class="lesson-info">
+                    <h2>שיעור 2: שמיעה</h2>
+                    <p>הרובוט שומע! - מיקרופון</p>
+                    <div class="lesson-meta">
+                        <span>📊 19 שקפים</span>
+                        <span>🎬 2 סרטונים</span>
+                    </div>
+                </div>
+                <span class="lesson-arrow">→</span>
+            </a>
+            
+            <a href="lesson3.html" class="lesson-card lesson-3">
+                <div class="lesson-icon">✋</div>
+                <div class="lesson-info">
+                    <h2>שיעור 3: מישוש</h2>
+                    <p>הרובוט מרגיש! - חיישן מגע</p>
+                    <div class="lesson-meta">
+                        <span>📊 18 שקפים</span>
+                        <span>🎬 2 סרטונים</span>
+                    </div>
+                </div>
+                <span class="lesson-arrow">→</span>
+            </a>
+            
+            <a href="lesson4.html" class="lesson-card lesson-4">
+                <div class="lesson-icon">👃</div>
+                <div class="lesson-info">
+                    <h2>שיעור 4: ריח</h2>
+                    <p>הרובוט מריח! - חיישן גז</p>
+                    <div class="lesson-meta">
+                        <span>📊 19 שקפים</span>
+                        <span>🎬 2 סרטונים</span>
+                    </div>
+                </div>
+                <span class="lesson-arrow">→</span>
+            </a>
+            
+            <a href="lesson5.html" class="lesson-card lesson-5">
+                <div class="lesson-icon">⭐</div>
+                <div class="lesson-info">
+                    <h2>שיעור 5: פרויקט מסכם</h2>
+                    <p>רובוט עם כל החושים!</p>
+                    <div class="lesson-meta">
+                        <span>📊 16 שקפים</span>
+                        <span>🎬 1 סרטון</span>
+                    </div>
+                </div>
+                <span class="lesson-arrow">→</span>
+            </a>
+        </div>
+        
+        <div style="text-align: center;">
+            <a href="../sensi-classic.html" class="back-link">🤖 חזרה לאפליקציה</a>
+            <a href="../sensi-classic-teachers.html" class="back-link">📚 מערכי שיעור למדריכים</a>
+        </div>
+        
+        <footer>
+            <p>💡 טיפ: במצגת, לחצו על מקש רווח או חץ ימינה להתקדם</p>
+        </footer>
+    </div>
+</body>
+</html>
