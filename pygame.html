@@ -15,6 +15,7 @@
     @media(max-width:48rem){.topbar{grid-template-columns:1fr;grid-template-rows:auto auto;block-size:auto}.nav{flex-wrap:wrap}.layout{grid-template-columns:1fr;grid-template-areas:'lessons' 'workspace' 'game'}.lessons{max-block-size:none}.workspace{min-block-size:44rem}.game-panel{min-block-size:42rem}.meta{grid-template-columns:1fr}.nav a{flex:1;text-align:center}.stage{inline-size:min(34rem,90vw)}}
     @media(max-width:34rem){:root{--pad:.5rem;--gap:.38rem;--code:9rem}.brand small{white-space:normal}.workspace{min-block-size:38rem}.game-panel{min-block-size:36rem}.actions .btn{flex:1}.screen-label{display:none}}
   </style>
+  <link rel="stylesheet" href="css/platform-home-link.css">
 </head>
 <body>
   <div class="app">
@@ -187,5 +188,7 @@
     function init(){defineBlocks();workspace=Blockly.inject('blocklyDiv',{toolbox:document.getElementById('toolbox'),rtl:true,trashcan:true,scrollbars:true});workspace.addChangeListener(()=>{updateCode();drawScene(simulateBlocks(false));});renderLessons();const initial=Number(new URL(location.href).searchParams.get('lesson'))||1;setLesson(Math.min(Math.max(initial,1),PYGAME_LESSONS.length));updateCode();}
     document.getElementById('runBtn').onclick=()=>drawScene(simulateBlocks(true));document.getElementById('resetBtn').onclick=()=>{workspace?.clear();updateCode();drawScene(simulateBlocks(false));};document.getElementById('demoBtn').onclick=loadDemo;window.addEventListener('load',init);
   </script>
+
+  <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי">🏠 לעמוד הראשי</a>
 </body>
 </html>

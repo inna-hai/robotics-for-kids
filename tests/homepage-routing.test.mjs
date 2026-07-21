@@ -64,6 +64,30 @@ test('homepage local html links point to existing files', () => {
   }
 });
 
+test('primary learning pages expose a visible homepage back link', () => {
+  const rootLearningPages = [
+    'roblox.html', 'roblox-course.html', 'roblox-slides.html',
+    'pygame.html', 'pygame-course.html', 'pygame-slides.html',
+    'python-turtle.html', 'python-turtle-course.html',
+    'space.html', 'space-play.html',
+    'ocean.html', 'ocean-play.html',
+    'webcode.html', 'webcode-play.html',
+    'minecraft.html', 'minecraft-teachers.html',
+    'codequest.html', 'appforge.html',
+    'smart-city.html', 'teachers.html',
+  ];
+
+  for (const file of rootLearningPages) {
+    const source = readFileSync(join(root, file), 'utf8');
+    assertIncludes(source, 'class="platform-home-link"', `${file} should include the shared homepage link`);
+    assertIncludes(source, 'href="index.html"', `${file} should link back to the platform homepage`);
+    assertIncludes(source, 'לעמוד הראשי', `${file} should expose clear Hebrew home text`);
+  }
+
+  assertIncludes(slidesIndexHtml, 'class="platform-home-link"', 'slides/index.html should include the shared homepage link');
+  assertIncludes(slidesIndexHtml, 'href="../index.html"', 'slides/index.html should link back to the platform homepage');
+});
+
 let failed = 0;
 for (const { name, fn } of tests) {
   try {
