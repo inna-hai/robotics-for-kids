@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>סיכום עבודה יומי - Craftom School</title>
+  <style>
+    body { margin: 0; font-family: Arial, "Noto Sans Hebrew", sans-serif; color: #1d2430; background: #f6f2e9; }
+    main { max-width: 920px; margin: 0 auto; padding: 32px 18px; }
+    section { background: #fffaf0; border: 3px solid #2b3038; padding: 20px; margin: 0 0 16px; }
+    h1 { margin: 0 0 10px; font-size: 34px; }
+    h2 { margin: 0 0 10px; font-size: 23px; }
+    p, li { line-height: 1.6; }
+    ul { margin-top: 8px; }
+    .meta { color: #5a6575; font-weight: 700; }
+    .tag { display: inline-block; border: 2px solid #b7d8a6; background: #ecf8e7; color: #2f651f; padding: 3px 8px; font-weight: 700; margin: 2px; }
+    .warn { border-color: #eba48d; background: #ffede5; color: #9b2f16; }
+    code { direction: ltr; display: inline-block; background: #eef4ff; padding: 2px 6px; }
+  </style>
+</head>
+<body>
+  <main>
+    <section>
+      <h1>סיכום עבודה יומי - Craftom School</h1>
+      <p class="meta">20 ביולי 2026 | גרסת MVP ראשונה ללומדה לכיתה ד'</p>
+      <p>היום הוקמה תשתית מערכת לומדה עבור קורס Craftom: כניסה למערכת, תלמידים, מורים, כיתות, צוותים, שיעורים, משימות, משוב, תצפיות ודוחות.</p>
+    </section>
+
+    <section>
+      <h2>מה נבנה היום</h2>
+      <ul>
+        <li>פרויקט חדש ונפרד בשם <code>craftom-school</code>.</li>
+        <li>הרשמה והתחברות עם תפקידים: תלמיד, מורה ואדמין.</li>
+        <li>תלמיד נרשם רק עם קוד כיתה תקין, ומשויך לכיתה אחת.</li>
+        <li>מורה נרשם כחשבון ממתין לאישור, ואדמין יכול לאשר או לדחות.</li>
+        <li>דף בית לתלמיד עם שיעור נוכחי, מפת שיעורים, משימות, צוות ומשוב.</li>
+        <li>דף מורה עם לשוניות: כיתות וצוותים, שיעורים, משימות, תצפיות, דוחות וניהול.</li>
+        <li>מודל קורס של 15 שיעורים עם נעילה: אפשר לחזור אחורה, אי אפשר לדלג קדימה.</li>
+        <li>פתיחת שיעור ברמת כיתה: המורה קובע איזה שיעור פתוח לכיתה.</li>
+        <li>דף שיעור עם מקום לחומר למידה, משימות, רפלקציה והגשה.</li>
+        <li>משימות אישיות וצוותיות, כולל סטטוסים: לביצוע, הוגש, צריך תיקון, הושלם ומשוב.</li>
+        <li>ניהול צוותים: יצירת צוות, קוד הצטרפות, הצטרפות תלמיד, והגשה צוותית משותפת.</li>
+        <li>משוב מורה מנוסח בצורה מעודדת ולא כציון במבחן.</li>
+        <li>תצפיות מורה למדדי שיתוף פעולה: עזר לאחרים, ביקש עזרה, שיתף פעולה, חזר למשימה, הוביל, השתתף, נמנע.</li>
+        <li>דוח התקדמות לתלמיד ולמורה.</li>
+        <li>דוח צוותים עם חברי צוות, הגשות צוותיות, משוב צוותי ורפלקציות.</li>
+        <li>שיפורי UX: הודעות הצלחה/שגיאה במקום חלונות קופצים, וחלוקה נקייה יותר של מסך המורה.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>מצב המערכת כרגע</h2>
+      <p>
+        <span class="tag">MVP עובד</span>
+        <span class="tag">קוד בגיט</span>
+        <span class="tag">ברנץ' פיתוח</span>
+        <span class="tag">בדיקות בסיסיות עברו</span>
+      </p>
+      <p>ריפוזיטורי: <code>https://github.com/ameidar/craftom-school</code></p>
+      <p>ברנץ': <code>feature/initial-lomda-mvp</code></p>
+      <p>קומיט אחרון: <code>f0fabe7 feat: add class lesson control and team reports</code></p>
+    </section>
+
+    <section>
+      <h2>מה נשאר לסדר הלילה</h2>
+      <ul>
+        <li>בדיקת זרימה ידנית מלאה מול הדפדפן: אדמין, מורה, תלמיד, כיתה, צוות, משימה, משוב, תצפית ודוח.</li>
+        <li>שיפור קטן של טקסטים וכותרות כדי שהמערכת תהיה ברורה יותר בהדגמה.</li>
+        <li>להכין נתוני דמו נקיים: כיתה לדוגמה, צוות לדוגמה, תלמיד לדוגמה ומשימה לדוגמה.</li>
+        <li>למלא לפחות את שיעור 1 בתוכן ראשוני אמיתי אם רוצים להדגים לומדה ולא רק מערכת.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>מה נשאר בהמשך</h2>
+      <ul>
+        <li>תוכן מלא לשיעורים 1-15.</li>
+        <li>החלטה על פורמט חומרי השיעור: דפי HTML, מצגות, הקלטות, רובי הבוט או שילוב.</li>
+        <li>מסך ניהול כיתה מפורט יותר עם פילטרים לפי שיעור, צוות וסטטוס.</li>
+        <li>שיפור דוחות עם ייצוא PDF/HTML לבית ספר או הורים.</li>
+        <li>הרשאות ואבטחה ברמת פרודקשן.</li>
+        <li>מעבר משמירת JSON מקומית למסד נתונים אמיתי.</li>
+        <li>חיבור עתידי ל-Craftom/Minecraft בפועל.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>פקודות הרצה מקומית</h2>
+      <p>ב-VS Code Terminal:</p>
+      <p><code>git clone https://github.com/ameidar/craftom-school.git</code></p>
+      <p><code>cd craftom-school</code></p>
+      <p><code>git checkout feature/initial-lomda-mvp</code></p>
+      <p><code>npm start</code></p>
+      <p>ואז לפתוח: <code>http://127.0.0.1:3081</code></p>
+    </section>
+  </main>
+</body>
+</html>

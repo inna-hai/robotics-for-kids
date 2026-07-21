@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>הרשמה | Craftom School</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main class="shell center">
+    <form class="panel auth wide register-card" onsubmit="return register(event)">
+      <div class="brand">Craftom School</div>
+      <h1>פותחים משתמש חדש</h1>
+      <p class="muted">תלמידים צריכים קוד כיתה מהמורה. מורים נרשמים וממתינים לאישור מנהל.</p>
+      <div class="demo-logins register-presets" aria-label="מילוי מהיר להרשמה">
+        <button type="button" class="demo-login student" onclick="fillStudentDemo()">
+          <b>תלמיד דמו חדש</b><span>כולל קוד כיתה</span>
+        </button>
+        <button type="button" class="demo-login teacher" onclick="fillTeacherDemo()">
+          <b>מורה חדש/ה</b><span>ממתין לאישור</span>
+        </button>
+      </div>
+      <label>שם מלא</label>
+      <input id="name" autocomplete="name" required>
+      <label>אימייל</label>
+      <input id="email" type="email" autocomplete="username" required>
+      <label>סטטוס</label>
+      <div class="role-grid">
+        <label class="role-card"><input type="radio" name="account_type" value="teacher" checked onchange="syncRole()"><b>מורה / מדריך</b><span>ניהול כיתה, שיעורים ודוחות. דורש אישור מנהל.</span></label>
+        <label class="role-card"><input type="radio" name="account_type" value="student" onchange="syncRole()"><b>תלמיד/ה</b><span>כניסה למשימת היום ורפלקציה.</span></label>
+      </div>
+      <div id="studentFields" class="hidden">
+        <label>קוד כיתה מהמורה</label>
+        <input id="class_code" placeholder="לדוגמה: CLASS-DEMO4">
+        <p class="small">קוד דמו לבדיקה: <code>CLASS-DEMO4</code>. אחרי ההרשמה התלמיד/ה ייכנס/תיכנס ישירות לדף הבית.</p>
+      </div>
+      <label>סיסמה</label>
+      <input id="password" type="password" autocomplete="new-password" minlength="6" required>
+      <button class="btn full" id="btn">הרשמה</button>
+      <div class="msg" id="msg"></div>
+      <div class="actions compact hidden" id="after-actions">
+        <button type="button" class="btn" id="go-home-btn">כניסה למערכת</button>
+        <button type="button" class="btn ghost" onclick="navigateTo('/login.html')">חזרה לכניסה</button>
+      </div>
+      <p class="small">כבר יש חשבון? <a href="/login.html">כניסה</a></p>
+    </form>
+  </main>
+<script src="/main.js"></script>
+<script>
+function role(){ return document.querySelector('input[name="account_type"]:checked').value; }
+function setRole(value){
+  document.querySelector(`input[name="account_type"][value="${value}"]`).checked = true;
+  syncRole();
+}
+function syncRole(){
+  const isStudent = role() === 'student';
+  studentFields.classList.toggle('hidden', !isStudent);
+  class_code.required = isStudent;
+}
+function uniqueMail(prefix){
+  return `${prefix}.${Date.now()}@craftom.local`;
+}
+function fillStudentDemo(){
+  setRole('student');
+  name.value = 'תלמיד דמו חדש';
+  email.value = uniqueMail('student.new');
+  password.value = 'demo123';
+  class_code.value = 'CLASS-DEMO4';
+  setMsg('פרטי תלמיד דמו מולאו. לחיצה על הרשמה תכניס אותך מיד למערכת.');
+}
+function fillTeacherDemo(){
+  setRole('teacher');
+  name.value = 'מורה חדשה';
+  email.value = uniqueMail('teacher.new');
+  password.value = 'demo123';
+  class_code.value = '';
+  setMsg('פרטי מורה מולאו. אחרי ההרשמה צריך אישור אדמין.');
+}
+async function register(e){
+  e.preventDefault();
+  setMsg('');
+  const afterActions = document.getElementById('after-actions');
+  const goHomeBtn = document.getElementById('go-home-btn');
+  afterActions.classList.add('hidden');
+  btn.disabled = true;
+  btn.textContent = 'שומר...';
+  const r = await post('/api/register', {
+    name: name.value,
+    email: email.value,
+    password: password.value,
+    account_type: role(),
+    class_code: class_code.value
+  });
+  btn.disabled = false;
+  btn.textContent = 'הרשמה';
+  if(!r.ok) return setMsg(r.error || 'הרשמה נכשלה', true);
+  if(r.role === 'student') {
+    setMsg('החשבון נוצר ונכנסת כתלמיד/ה. אפשר להתחיל.');
+    afterActions.classList.remove('hidden');
+    goHomeBtn.textContent = 'כניסה למערכת';
+    goHomeBtn.onclick = () => navigateTo(r.home_url || '/student.html');
+  } else {
+    setMsg(r.message || 'בקשת המורה נוצרה וממתינה לאישור מנהל.');
+    afterActions.classList.remove('hidden');
+    goHomeBtn.textContent = 'חזרה לכניסה';
+    goHomeBtn.onclick = () => navigateTo('/login.html');
+  }
+}
+syncRole();
+</script>
+</body>
+</html>
