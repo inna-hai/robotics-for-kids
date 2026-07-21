@@ -36,6 +36,32 @@ Recommended bump rules:
 
 ## Current Published Versions
 
+
+### Smart City 15 Lessons — v0.5.0 — Published
+
+- **Status:** Published
+- **Branch:** `feature/structured-15-lessons`
+- **Commit:** `4625d0b`
+- **Tag:** `robotics15-v0.5.0`
+- **Live:** https://robotics15.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Merged PR #9 by Chava: lesson 15 improvements.
+- Added richer lesson 15 city zones and interactions: greenhouse, rescue/emergency, security patrol, grocery/homes delivery flow and supporting visual assets.
+- Added/updated regression coverage for lesson 15.
+- Verification after merge: `node tests/lesson-7-8-regression.test.mjs` passed `44/44`; live URL verified with lesson 15 new strings/assets.
+
+Rollback:
+
+```bash
+git checkout feature/structured-15-lessons
+git reset --hard 9ebb5af
+# or use the previous tag: robotics15-v0.4.0
+```
+
 ### Robotics stable — v0.1.0 — Published
 
 - **Status:** Published
@@ -59,9 +85,9 @@ git reset --hard 55ab2d4
 # redeploy/restart according to the current hosting setup
 ```
 
-### Smart City 15 Lessons — v0.4.0 — Published / Active review base
+### Smart City 15 Lessons — v0.4.0 — Superseded
 
-- **Status:** Published / Active review base
+- **Status:** Superseded by `robotics15-v0.5.0`
 - **Branch:** `feature/structured-15-lessons`
 - **Commit:** `9ebb5af`
 - **Live:** https://robotics15.hai.tech
@@ -86,10 +112,10 @@ git reset --hard 9ebb5af
 
 ### Smart City 15 Lessons — v0.5.0-rc1 — PR #9 Chava lesson 15 improvements
 
-- **Status:** Review
+- **Status:** Merged / Published as `robotics15-v0.5.0`
 - **PR:** https://github.com/inna-hai/robotics-for-kids/pull/9
 - **Branch:** `chava/bug-fixes` → `feature/structured-15-lessons`
-- **Latest checked head:** `e294301` as of 2026-07-21 fetch; previous deep review was on `c5a9194`.
+- **Latest checked head:** `e294301`; merged into `feature/structured-15-lessons` as merge commit `4625d0b`.
 - **Product area:** Smart City 15 Lessons
 
 Expected product change:
