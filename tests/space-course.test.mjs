@@ -26,7 +26,7 @@ function assertMatches(source, regex, message = `Missing pattern: ${regex}`) { a
 test('space course is a separate entry point and does not replace the smart-city course', () => {
   assertIncludes(smartCityHtml, 'href="space.html"');
   assertIncludes(smartCityHtml, 'שיעור 1: סיסי בחלל');
-  assertIncludes(smartCityHtml, 'href="index.html?lesson=1"');
+  assertIncludes(smartCityHtml, 'href="sensi-city.html?lesson=1"');
   assertIncludes(smartCityHtml, 'סנסי בעיר החכמה');
   assertIncludes(spaceHtml, 'href="smart-city.html"');
 });

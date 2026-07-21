@@ -28,7 +28,7 @@ https://robotics15.hai.tech
 ### סביבת תלמידים
 
 ```text
-https://robotics15.hai.tech/index.html?lesson=1
+https://robotics15.hai.tech/sensi-city.html?lesson=1
 ```
 
 להחליף את מספר השיעור מ־`1` עד `15`.
@@ -36,7 +36,7 @@ https://robotics15.hai.tech/index.html?lesson=1
 לדוגמה:
 
 ```text
-https://robotics15.hai.tech/index.html?lesson=5
+https://robotics15.hai.tech/sensi-city.html?lesson=5
 ```
 
 ### מצגות מדריך
