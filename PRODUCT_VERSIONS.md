@@ -36,9 +36,39 @@ Recommended bump rules:
 
 ## Current Published Versions
 
-### Robotics stable — v0.2.2 — Published
+### Robotics stable — v0.2.3 — Published
 
 - **Status:** Published
+- **Branch:** `main`
+- **Commit:** `e400c9f`
+- **Tag:** `robotics-v0.2.3`
+- **Live:** https://robotics.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Redesigned the platform homepage in the style direction of the Holon pages: premium hero, navigation, track sections, roadmap, CTA, and polished catalog cards.
+- Added a generated EdTech hero image at `assets/robotics-home-hero.png`.
+- Kept all existing homepage course links while making the page feel like a product catalog rather than a plain card list.
+
+Verification:
+
+- Full Node test suite passed: all `tests/*.mjs`.
+- `git diff --check` clean.
+- Homepage routing test still verifies the expanded course links.
+
+Rollback:
+
+```bash
+git checkout main
+git reset --hard 795f5ea
+# or use the previous product tag: robotics-v0.2.2
+```
+
+### Robotics stable — v0.2.2 — Superseded
+
+- **Status:** Superseded by `robotics-v0.2.3`
 - **Branch:** `main`
 - **Commit:** `235dbfd`
 - **Tag:** `robotics-v0.2.2`
