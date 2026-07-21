@@ -66,7 +66,7 @@
     </section>
   </main>
 
-  <script src="js/minecraft-lessons.js?v=20260721-l6-pet-move-no-heart"></script>
+  <script src="js/minecraft-lessons.js?v=20260721-l6-open-pet-path"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const lesson = window.getMinecraftLesson(params.get('lesson'));
@@ -115,6 +115,8 @@
       { type:'spawn_pet', message0:'זמן חיית מחמד בשם %1', args0:[{type:'field_input', name:'NAME', text:'פיקסל'}], previousStatement:null, nextStatement:null, colour:75 },
       { type:'move_pet_right', message0:'הזז את חיית המחמד ימינה', previousStatement:null, nextStatement:null, colour:75 },
       { type:'move_pet_left', message0:'הזז את חיית המחמד שמאלה', previousStatement:null, nextStatement:null, colour:75 },
+      { type:'move_pet_up', message0:'הזז את חיית המחמד למעלה', previousStatement:null, nextStatement:null, colour:75 },
+      { type:'move_pet_down', message0:'הזז את חיית המחמד למטה', previousStatement:null, nextStatement:null, colour:75 },
       { type:'set_day', message0:'עשה יום ☀️', previousStatement:null, nextStatement:null, colour:55 },
       { type:'set_night', message0:'עשה לילה 🌙', previousStatement:null, nextStatement:null, colour:240 },
       { type:'weather_sun', message0:'מזג אוויר שמש', previousStatement:null, nextStatement:null, colour:55 },
@@ -134,7 +136,7 @@
     function toolboxXml(){
       const allowed = new Set(['event_start', ...lesson.blocks]);
       const labels = {
-        event_start:'התחלה', say:'דיבור', move_up:'תנועה — גובה עלייה', move_down:'תנועה — גובה ירידה', move_to_ground:'תנועה — רד לקרקע', move_right:'תנועה', move_left:'תנועה', place_block:'בנייה ידנית', place_path:'שביל נמוך', place_half_block:'חצי בלוק', reset_blocks:'מחיקת בנין בתמונה', wait_seconds:'המתנה לפי שניות', build_tower:'בנייה', rain_blocks:'בלוקים', magic_trail:'שביל', teleport:'טלפורט', spawn_pet:'חיה', move_pet_right:'חיה — תנועה', move_pet_left:'חיה — תנועה', set_day:'יום', set_night:'לילה', weather_sun:'שמש', weather_rain:'גשם', weather_snow:'שלג', if_on_diamond:'אם/אז', open_door:'דלת', give_treasure:'אוצר', start_collect_game:'משחק', build_maze:'מבוך', show_hint:'רמז', spawn_funny_mob:'מוב'
+        event_start:'התחלה', say:'דיבור', move_up:'תנועה — גובה עלייה', move_down:'תנועה — גובה ירידה', move_to_ground:'תנועה — רד לקרקע', move_right:'תנועה', move_left:'תנועה', place_block:'בנייה ידנית', place_path:'שביל נמוך', place_half_block:'חצי בלוק', reset_blocks:'מחיקת בנין בתמונה', wait_seconds:'המתנה לפי שניות', build_tower:'בנייה', rain_blocks:'בלוקים', magic_trail:'שביל', teleport:'טלפורט', spawn_pet:'חיה', move_pet_right:'חיה — תנועה', move_pet_left:'חיה — תנועה', move_pet_up:'חיה — תנועה', move_pet_down:'חיה — תנועה', set_day:'יום', set_night:'לילה', weather_sun:'שמש', weather_rain:'גשם', weather_snow:'שלג', if_on_diamond:'אם/אז', open_door:'דלת', give_treasure:'אוצר', start_collect_game:'משחק', build_maze:'מבוך', show_hint:'רמז', spawn_funny_mob:'מוב'
       };
       return `<xml>${[...allowed].map(type => `<block type="${type}"></block>`).join('')}</xml>`;
     }
@@ -259,11 +261,13 @@
     function magicTrail(){ state.steveX = 330; state.steveY = GROUND_Y; setStevePosition(); for(let i=0;i<6;i++) addBlock('grass', 255+i*38, 42, 'path-slab'); }
     function teleport(){ state.steveX = 430; state.steveY = 140; setStevePosition(); addEmoji('hint','✨', 360, 130); }
     function spawnPet(name){ const petName = name || 'פיקסל'; document.querySelectorAll('#world .pet').forEach(el => el.remove()); state.petX = Math.min(470, state.steveX + 70); state.petY = Math.max(74, state.steveY + 4); addEmoji('pet','🐶', state.petX, state.petY); say(`${petName} שמח/ה להצטרף לדוד!`); }
-    function movePet(dx){
+    function movePet(dx, dy = 0){
       const pet = document.querySelector('#world .pet');
       if (!pet) { say('קודם זמנו את פיקסל 🐶'); return; }
       state.petX = Math.max(24, Math.min(500, (state.petX ?? parseInt(pet.style.left, 10) ?? 0) + dx));
+      state.petY = Math.max(74, Math.min(250, (state.petY ?? parseInt(pet.style.bottom, 10) ?? 74) + dy));
       pet.style.left = state.petX + 'px';
+      pet.style.bottom = state.petY + 'px';
     }
     function setDay(day){ state.day=day; document.getElementById('world').classList.toggle('night', !day); updateStatus(); }
     function setWeather(weather){ state.weather=weather; const world=document.getElementById('world'); world.classList.remove('rain','snow'); if(weather==='rain'||weather==='snow') world.classList.add(weather); updateStatus(); }
@@ -317,6 +321,8 @@
         case 'spawn_pet': spawnPet(block.getFieldValue('NAME')); break;
         case 'move_pet_right': movePet(45); break;
         case 'move_pet_left': movePet(-45); break;
+        case 'move_pet_up': movePet(0, 42); break;
+        case 'move_pet_down': movePet(0, -42); break;
         case 'set_day': setDay(true); break;
         case 'set_night': setDay(false); break;
         case 'weather_sun': setWeather('sun'); break;
