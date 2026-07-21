@@ -12,6 +12,10 @@ const teachersHtml = readFileSync(join(root, 'teachers.html'), 'utf8');
 const aboutHtml = readFileSync(join(root, 'about.html'), 'utf8');
 const slidesIndexHtml = readFileSync(join(root, 'slides', 'index.html'), 'utf8');
 const slidesLessonHtml = readFileSync(join(root, 'slides', 'lesson.html'), 'utf8');
+const sensiClassicHtml = readFileSync(join(root, 'sensi-classic.html'), 'utf8');
+const sensiClassicAboutHtml = readFileSync(join(root, 'sensi-classic-about.html'), 'utf8');
+const sensiClassicTeachersHtml = readFileSync(join(root, 'sensi-classic-teachers.html'), 'utf8');
+const sensiClassicSlidesIndexHtml = readFileSync(join(root, 'sensi-classic-slides', 'index.html'), 'utf8');
 
 const tests = [];
 function test(name, fn) { tests.push({ name, fn }); }
@@ -22,6 +26,8 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertIncludes(homepageHtml, '<title>פלטפורמת לומדות טכנולוגיה</title>');
   assertIncludes(homepageHtml, 'מרכז הלומדות');
   assertIncludes(homepageHtml, 'href="sensi-city.html?lesson=1"');
+  assertIncludes(homepageHtml, 'href="sensi-classic.html?lesson=1"');
+  assertIncludes(homepageHtml, 'href="sensi-classic-slides/index.html"');
   assertIncludes(homepageHtml, 'href="pygame.html"');
   assertIncludes(homepageHtml, 'href="roblox.html"');
   assertIncludes(homepageHtml, 'href="python-turtle.html"');
@@ -29,12 +35,20 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertIncludes(homepageHtml, 'href="ocean.html"');
 });
 
-test('original Sensi Blockly application moved to sensi-city.html', () => {
+test('Sensi 15 remains on sensi-city and classic 5-lesson Sensi is restored separately', () => {
   assertIncludes(sensiCityHtml, '<title>🏙️ סנסי בעיר החכמה - 15 שיעורי רובוטיקה</title>');
   assertIncludes(sensiCityHtml, 'Blockly.Blocks');
   assertIncludes(sensiCityHtml, 'currentLesson');
   assertIncludes(sensiCityHtml, 'href="index.html" class="home-link"');
   assertIncludes(sensiCityHtml, '🏠 ראשי');
+
+  assertIncludes(sensiClassicHtml, '<title>🤖 סנסי קלאסי - 5 שיעורי חושים</title>');
+  assertIncludes(sensiClassicHtml, 'קלאסי 5 שיעורים');
+  assertIncludes(sensiClassicHtml, 'onclick="selectLesson(5)"');
+  assertNotIncludes(sensiClassicHtml, 'onclick="selectLesson(6)"');
+  assertIncludes(sensiClassicHtml, 'href="sensi-classic-slides/lesson1.html"');
+  assertIncludes(sensiClassicHtml, "'sensi-classic-slides/lesson' + num + '.html'");
+  assertIncludes(sensiClassicHtml, 'href="index.html"');
 });
 
 test('internal Sensi course links no longer point lessons at index.html', () => {
@@ -53,6 +67,15 @@ test('internal Sensi course links no longer point lessons at index.html', () => 
   assertIncludes(aboutHtml, 'href="sensi-city.html?lesson=1"');
   assertIncludes(slidesIndexHtml, 'href="../sensi-city.html"');
   assertIncludes(slidesLessonHtml, '../sensi-city.html?lesson=${lesson.id}');
+});
+
+test('classic Sensi support pages are isolated from the 15-lesson course', () => {
+  assertIncludes(sensiClassicAboutHtml, 'href="sensi-classic.html');
+  assertIncludes(sensiClassicTeachersHtml, 'href="sensi-classic.html');
+  assertIncludes(sensiClassicSlidesIndexHtml, 'href="../sensi-classic.html');
+  assertNotIncludes(sensiClassicAboutHtml, 'href="index.html?lesson=');
+  assertNotIncludes(sensiClassicTeachersHtml, 'href="index.html?lesson=');
+  assertNotIncludes(sensiClassicSlidesIndexHtml, '../index.html?lesson=');
 });
 
 test('homepage local html links point to existing files', () => {
