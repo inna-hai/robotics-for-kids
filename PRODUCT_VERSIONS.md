@@ -36,9 +36,39 @@ Recommended bump rules:
 
 ## Current Published Versions
 
-### Smart City 15 Lessons — v0.7.0 — Published
+### Smart City 15 Lessons — v0.7.1 — Published
 
 - **Status:** Published
+- **Branch:** `feature/structured-15-lessons`
+- **Commit:** `7e2ace1`
+- **Tag:** `robotics15-v0.7.1`
+- **Live:** https://robotics15.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Added Craftom School to the `robotics15` platform homepage.
+- Added a quick-link card, learning-track explanation, catalog card, roadmap row, and CTA link for Craftom.
+- Links point to the static Craftom preview/README for now, because the full API-backed app requires a Node server and later shared login infrastructure.
+
+Verification:
+
+- Homepage routing test passed and verifies the Craftom links.
+- Full Node test suite passed: all `tests/*.mjs`.
+- `git diff --check` clean.
+
+Rollback:
+
+```bash
+git checkout feature/structured-15-lessons
+git reset --hard 7b9e343
+# or use the previous product tag: robotics15-v0.7.0
+```
+
+### Smart City 15 Lessons — v0.7.0 — Superseded
+
+- **Status:** Superseded by `robotics15-v0.7.1`
 - **Branch:** `feature/structured-15-lessons`
 - **Commit:** `f5f3b6c`
 - **Tag:** `robotics15-v0.7.0`
