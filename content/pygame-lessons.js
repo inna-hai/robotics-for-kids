@@ -61,5 +61,3 @@ const SOURCE_ENRICHMENT = {
       27: {source:'משחק נחש את המספר: מספר אקראי 1–100, מערך guesses לניחושים, משוב גבוה/נמוך ומספר ניסיונות.', examples:['random_number = random.randint(1, 100)','guesses.append(guess)','elif guess < random_number:'], tasks:['הגרילו מספר סודי.','שמרו כל ניחוש במערך.','הציגו גבוה מדי/נמוך מדי/נכון.','הגבילו מספר ניסיונות.']},
       28: {source:'משחק ניחוש מילים עם Pygame: רשימת מילים, random.choice, guessed_letters והזנת אות אחת בכל פעם.', examples:['word_list = ["apple", "banana", "orange"]','word_to_guess = random.choice(word_list)','guessed_letters = []'], tasks:['צרו רשימת מילים.','בחרו מילה אקראית.','שמרו אותיות שנוחשו.','הציגו קווים תחתונים לאותיות שלא נחשפו.']}
     };
-
-
