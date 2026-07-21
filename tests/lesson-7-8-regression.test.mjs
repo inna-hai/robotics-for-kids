@@ -78,7 +78,7 @@ test('lesson 7 goal sensor is wired from Blockly toolbox to condition evaluation
   assertIncludes(indexHtml, "case 'sensor_goal':");
   assertIncludes(indexHtml, "return val === 'YES' ? canSenseGoal() : !canSenseGoal();");
   assertIncludes(indexHtml, "document.getElementById('goalText').textContent = currentLesson === 7");
-  assertIncludes(indexHtml, "document.getElementById('sensorGoal').classList.toggle('active', (currentLesson === 7 || currentLesson === 12 || currentLesson === 13) && sensesGoal);");
+  assertIncludes(indexHtml, "document.getElementById('sensorGoal').classList.toggle('active', (currentLesson === 7 || currentLesson === 12 || currentLesson === 13 || currentLesson === 15) && sensesGoal);");
 });
 
 test('lesson 7 goal sensor uses a dedicated goal check rather than reusing the wall/touch sensor', () => {
@@ -702,6 +702,68 @@ test('lesson 14 exposes all rescue-story blocks used by the lesson exercises', (
   assertIncludes(indexHtml, "currentLesson === 14 ? 'יוצא לחילוץ' : currentLesson === 11 ? 'בודק את האולם' : 'שלום!'");
 });
 
+
+
+test('lesson 15 greenhouse enter and exit blocks switch to lesson 10 garden background', () => {
+  assertIncludes(indexHtml, 'let lesson15GardenInside = false;');
+  assertIncludes(indexHtml, "Blockly.Blocks['action_enter_greenhouse']");
+  assertIncludes(indexHtml, "Blockly.Blocks['action_exit_greenhouse']");
+  assertIncludes(indexHtml, "this.appendDummyInput().appendField('🏡 היכנס לחממה')");
+  assertIncludes(indexHtml, "this.appendDummyInput().appendField('🚪 צא מהחממה')");
+  assertIncludes(indexHtml, "'action_enter_greenhouse', 'action_exit_greenhouse'");
+  assertIncludes(indexHtml, "selected.id === 'garden' && lesson15GardenInside");
+  assertIncludes(indexHtml, "drawLesson10GardenScene({ title: 'החממה החכמה', preserveAspect: false, plantScale: 1.16, greenhouseInterior: true });");
+  assertIncludes(indexHtml, "{ id: 'garden', label: 'חממה / גינה', icon: '🌱', x: .12, y: .45");
+  assertIncludes(indexHtml, 'const selected = lesson15Zones.find(zone => {');
+  assertIncludes(indexHtml, 'const bw = Math.max(116, zone.w * canvas.width * .68) + 28;');
+  assertIncludes(indexHtml, 'const bh = 38 + 22;');
+  assertIncludes(indexHtml, 'if (greenhouseInterior) {');
+  assertIncludes(indexHtml, 'const preserveAspect = lesson.preserveAspect && !lesson.greenhouseInterior;');
+  assertIncludes(indexHtml, 'const greenhouseInterior = lesson.greenhouseInterior;');
+  assertIncludes(indexHtml, "lesson15GreenhouseInteriorBg.src = 'assets/lesson15-greenhouse-interior.png?v=20260721-greenhouse-interior-1';");
+  assertIncludes(indexHtml, 'drawImageCover(lesson15GreenhouseInteriorBg);');
+  assertIncludes(indexHtml, "const zoneInfoY = selected.id === 'garden' && lesson15GardenInside ? 12 : 86;");
+  assertIncludes(indexHtml, 'zoneInfoY + 20');
+  assertIncludes(indexHtml, 'const tempPanelX = w * 0.36;');
+  assertIncludes(indexHtml, 'const tempPanelY = 74;');
+  assertIncludes(indexHtml, "ctx.fillText(hot ? '🌡️ חם מדי בחממה' : '🌿 הטמפרטורה נעימה'");
+  assertIncludes(indexHtml, "ctx.fillText(hot ? '32°' : '24°'");
+  assertIncludes(indexHtml, 'const meterY = greenhouseInterior ? h * 0.80 : h * 0.36;');
+  assertIncludes(indexHtml, "ctx.fillText('☀️', w * 0.14, h * 0.18);");
+  assertIncludes(indexHtml, 'const visiblePlantProgress = greenhouseInterior && hot && !watering ? Math.min(recoveryProgress, 0.52) : recoveryProgress;');
+  assertIncludes(indexHtml, 'const shouldRecoverPlants = environment.soilDry || environment.temperatureHot;');
+  assertIncludes(indexHtml, 'gardenRecoveryStartProgress = greenhouseHotWilted && !environment.soilDry ? 0.52');
+  assertIncludes(indexHtml, 'visiblePlantProgress - i * 0.025');
+  assertIncludes(indexHtml, 'const targetRatio = 1.68;');
+  assertIncludes(indexHtml, 'const plantScale = lesson.plantScale || 1;');
+  assertIncludes(indexHtml, 'ctx.scale(plantScale, plantScale);');
+  assertIncludes(indexHtml, "case 'action_enter_greenhouse':");
+  assertIncludes(indexHtml, "case 'action_exit_greenhouse':");
+});
+
+
+test('lesson 15 garden delivery target is at the greenhouse door', () => {
+  assertIncludes(indexHtml, "garden: [{ id: 'greenhouse-door', x: w * 0.17, y: h * 0.71, label: 'פתח החממה' }]");
+});
+
+
+test('lesson 15 homes delivery targets include all house doors', () => {
+  assertIncludes(indexHtml, "{ id: 'home-left', x: w * 0.15, y: h * 0.68, label: 'פתח בית 1' }");
+  assertIncludes(indexHtml, "{ id: 'home-center', x: w * 0.59, y: h * 0.74, label: 'פתח בית 2' }");
+  assertIncludes(indexHtml, "{ id: 'home-right', x: w * 0.78, y: h * 0.76, label: 'פתח בית 3' }");
+  assertIncludes(indexHtml, "{ id: 'home-last', x: w * 0.91, y: h * 0.76, label: 'פתח בית 4' }");
+});
+
+
+test('lesson 15 delivery package stays with robot across zones and drops only at close targets', () => {
+  assertIncludes(indexHtml, "if (!environment.deliveryPackage) {");
+  assertIncludes(indexHtml, "if ((currentLesson === 12 || currentLesson === 15) && (environment.deliveryPackage || environment.deliveryDropped))");
+  assertIncludes(indexHtml, "return (currentLesson === 12 || currentLesson === 15) && Boolean(environment.deliveryPackage);");
+  assertIncludes(indexHtml, "return (currentLesson === 12 || currentLesson === 15) && Boolean(environment.deliveryDropped);");
+  assertIncludes(indexHtml, "if ((currentLesson === 12 || currentLesson === 15) && environment.deliveryPackage && canSenseGoal())");
+  assertIncludes(indexHtml, "Math.hypot(robot.x - door.x, robot.y - door.y) <= 60");
+  assertIncludes(indexHtml, "return Math.sqrt(dx * dx + dy * dy) <= 60;");
+});
 
 
 test('lesson 12 slide count includes all 60-minute exercises', () => {

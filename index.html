@@ -1277,6 +1277,7 @@
 
         let robot = { x: 150, y: 180, angle: 0, speaking: '', streetLightOn: false, trafficLightGreen: false, trafficLightYellow: false, trafficCarsStopped: false, pedestrianStopped: false, vehicleStopped: false, fanOn: false, waterOn: false, alarmOn: false, sortedBin: '', hitLesson12Fence: false };
         let gardenRecoveryStartedAt = null;
+        let gardenRecoveryStartProgress = 0;
         let environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, safeTouch: false, visitorCount: 0, burglar: false, homeowner: false, doorOpen: false, deliveryPackage: false, deliveryDropped: false, deliveryDropTarget: null };
         let smokeStartedAt = null;
         let burglarStartedAt = null;
@@ -1287,6 +1288,7 @@
         let lesson15SelectedZone = null;
         let lesson15MuseumInside = false;
         let lesson15SchoolInside = false;
+        let lesson15GardenInside = false;
 
 
 
@@ -1343,6 +1345,12 @@
         lesson15SmartCityMapBg.src = 'assets/lesson15-smart-city-map.png?v=20260720-smart-city-map-1';
         lesson15SmartCityMapBg.onload = () => {
             if (currentLesson === 15) draw();
+        };
+
+        const lesson15GreenhouseInteriorBg = new Image();
+        lesson15GreenhouseInteriorBg.src = 'assets/lesson15-greenhouse-interior.png?v=20260721-greenhouse-interior-1';
+        lesson15GreenhouseInteriorBg.onload = () => {
+            if (isLesson15Zone('garden') && lesson15GardenInside) draw();
         };
 
         function createLesson15ZoneImage(fileName) {
@@ -1452,7 +1460,7 @@
         const lesson15Zones = [
             { id: 'museum', label: 'מוזיאון', icon: '🏛️', x: .22, y: .25, w: .22, h: .22, color: '#818cf8', problem: 'שמירה על מוצגים' },
             { id: 'school', label: 'בית ספר', icon: '🏫', x: .55, y: .18, w: .24, h: .22, color: '#38bdf8', problem: 'כיתה חכמה וחיסכון' },
-            { id: 'garden', label: 'חממה / גינה', icon: '🌱', x: .12, y: .57, w: .23, h: .22, color: '#22c55e', problem: 'השקיה חכמה' },
+            { id: 'garden', label: 'חממה / גינה', icon: '🌱', x: .12, y: .45, w: .23, h: .22, color: '#22c55e', problem: 'השקיה חכמה' },
             { id: 'crosswalk', label: 'כביש ומעבר חציה', icon: '🚦', x: .36, y: .43, w: .25, h: .24, color: '#f59e0b', problem: 'בטיחות בדרך' },
             { id: 'grocery', label: 'מכולת', icon: '🏪', x: .66, y: .49, w: .22, h: .24, color: '#fb7185', problem: 'משלוח בטוח' },
             { id: 'homes', label: 'בתים', icon: '🏘️', x: .50, y: .70, w: .28, h: .20, color: '#a855f7', problem: 'בית חכם / שמירה' }
@@ -1504,6 +1512,8 @@
             } else if (selected.id === 'school' && lesson15SchoolInside) {
                 drawLesson9ClassroomBackground();
                 drawLesson15ZoneActors(selected);
+            } else if (selected.id === 'garden' && lesson15GardenInside) {
+                drawLesson10GardenScene({ title: 'החממה החכמה', preserveAspect: false, plantScale: 1.16, greenhouseInterior: true });
             } else {
                 const selectedBg = lesson15ZoneBackgrounds[selected.id];
                 if (selectedBg?.complete && selectedBg.naturalWidth > 0) {
@@ -1537,17 +1547,18 @@
             ctx.beginPath();
             const zoneInfoW = 196;
             const zoneInfoX = w - zoneInfoW - 18;
-            ctx.roundRect(zoneInfoX, 86, zoneInfoW, 74, 16);
+            const zoneInfoY = selected.id === 'garden' && lesson15GardenInside ? 12 : 86;
+            ctx.roundRect(zoneInfoX, zoneInfoY, zoneInfoW, 74, 16);
             ctx.fill();
             ctx.stroke();
             ctx.font = 'bold 14px Rubik';
             ctx.fillStyle = '#0f172a';
-            ctx.fillText(`${selected.icon} ${selected.label}`, zoneInfoX + zoneInfoW - 14, 106);
+            ctx.fillText(`${selected.icon} ${selected.label}`, zoneInfoX + zoneInfoW - 14, zoneInfoY + 20);
             ctx.font = '11px Rubik';
             ctx.fillStyle = '#475569';
-            ctx.fillText(selected.problem, zoneInfoX + zoneInfoW - 14, 126);
+            ctx.fillText(selected.problem, zoneInfoX + zoneInfoW - 14, zoneInfoY + 40);
             ctx.fillStyle = '#334155';
-            ctx.fillText('קדימה/אחורה: מעבר אזור', zoneInfoX + zoneInfoW - 14, 146);
+            ctx.fillText('קדימה/אחורה: מעבר אזור', zoneInfoX + zoneInfoW - 14, zoneInfoY + 60);
 
             ctx.textAlign = 'center';
             ctx.fillStyle = 'rgba(15,23,42,.78)';
@@ -1568,8 +1579,11 @@
             lesson15SelectedZone = lesson15Zones[nextIndex].id;
             lesson15MuseumInside = false;
             lesson15SchoolInside = false;
-            environment.deliveryDropped = false;
-            environment.deliveryDropTarget = null;
+            lesson15GardenInside = false;
+            if (!environment.deliveryPackage) {
+                environment.deliveryDropped = false;
+                environment.deliveryDropTarget = null;
+            }
             const nextZone = lesson15Zones[nextIndex];
             robot.x = direction > 0 ? canvas.width * 0.22 : canvas.width * 0.78;
             robot.y = canvas.height * 0.78;
@@ -1588,12 +1602,13 @@
             const targetsByZone = {
                 museum: [{ id: 'museum-door', x: w * 0.50, y: h * 0.64, label: 'פתח המוזיאון' }],
                 school: [{ id: 'school-door', x: w * 0.50, y: h * 0.66, label: 'כניסה לבית הספר' }],
-                garden: [{ id: 'greenhouse-door', x: w * 0.50, y: h * 0.67, label: 'פתח החממה' }],
+                garden: [{ id: 'greenhouse-door', x: w * 0.17, y: h * 0.71, label: 'פתח החממה' }],
                 grocery: [{ id: 'grocery-door', x: w * 0.49, y: h * 0.66, label: 'פתח המכולת' }],
                 homes: [
-                    { id: 'home-left', x: w * 0.25, y: h * 0.63, label: 'פתח בית 1' },
-                    { id: 'home-center', x: w * 0.50, y: h * 0.63, label: 'פתח בית 2' },
-                    { id: 'home-right', x: w * 0.75, y: h * 0.63, label: 'פתח בית 3' }
+                    { id: 'home-left', x: w * 0.15, y: h * 0.68, label: 'פתח בית 1' },
+                    { id: 'home-center', x: w * 0.59, y: h * 0.74, label: 'פתח בית 2' },
+                    { id: 'home-right', x: w * 0.78, y: h * 0.76, label: 'פתח בית 3' },
+                    { id: 'home-last', x: w * 0.91, y: h * 0.76, label: 'פתח בית 4' }
                 ]
             };
             return targetsByZone[lesson15SelectedZone] || [];
@@ -1616,7 +1631,7 @@
         function drawLesson15DeliveryTargets() {
             const targets = getLesson15DeliveryTargets();
             targets.forEach((target) => {
-                const isClose = Math.hypot(robot.x - target.x, robot.y - target.y) <= 100;
+                const isClose = Math.hypot(robot.x - target.x, robot.y - target.y) <= 60;
                 ctx.save();
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
@@ -3054,18 +3069,46 @@
         }
 
         function drawLesson10GardenScene(lesson) {
+            lesson = lesson || {};
             const w = canvas.width;
             const h = canvas.height;
             const t = Date.now() / 1000;
+            const preserveAspect = lesson.preserveAspect && !lesson.greenhouseInterior;
+            const greenhouseInterior = lesson.greenhouseInterior;
+            let restorePreservedAspect = false;
+            if (preserveAspect) {
+                const targetRatio = 1.68;
+                const currentRatio = w / h;
+                if (currentRatio > targetRatio) {
+                    const drawW = h * targetRatio;
+                    const insetX = (w - drawW) / 2;
+                    const edge = ctx.createLinearGradient(0, 0, 0, h);
+                    edge.addColorStop(0, environment.temperatureHot ? '#fde68a' : '#bfdbfe');
+                    edge.addColorStop(0.48, environment.temperatureHot ? '#fed7aa' : '#dcfce7');
+                    edge.addColorStop(1, environment.soilDry ? '#fef3c7' : '#bbf7d0');
+                    ctx.fillStyle = edge;
+                    ctx.fillRect(0, 0, w, h);
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.rect(insetX, 0, drawW, h);
+                    ctx.clip();
+                    ctx.translate(insetX, 0);
+                    ctx.scale(drawW / w, 1);
+                    restorePreservedAspect = true;
+                }
+            }
             const dry = environment.soilDry;
             const hot = environment.temperatureHot;
             const watering = robot.waterOn;
+            const plantScale = lesson.plantScale || 1;
             const recoveryMs = gardenRecoveryStartedAt ? Date.now() - gardenRecoveryStartedAt : null;
             const recoveryDurationMs = hot ? 10000 : 5000;
             const dryStartProgress = hot ? 0 : 0.28;
+            const recoveryStartProgress = gardenRecoveryStartedAt ? gardenRecoveryStartProgress : dryStartProgress;
             const recoveryProgress = gardenRecoveryStartedAt
-                ? Math.min(1, Math.max(dryStartProgress, dryStartProgress + (1 - dryStartProgress) * (recoveryMs / recoveryDurationMs)))
+                ? Math.min(1, Math.max(recoveryStartProgress, recoveryStartProgress + (1 - recoveryStartProgress) * (recoveryMs / recoveryDurationMs)))
                 : (dry ? dryStartProgress : 1);
+            const visiblePlantProgress = greenhouseInterior && hot && !watering ? Math.min(recoveryProgress, 0.52) : recoveryProgress;
             const healthy = recoveryProgress >= 0.98;
             const wilted = recoveryProgress <= 0.02;
 
@@ -3076,32 +3119,95 @@
             ctx.fillStyle = sky;
             ctx.fillRect(0, 0, w, h);
 
-            // Soft clouds / heat glow
-            ctx.save();
-            ctx.globalAlpha = hot ? 0.75 : 0.55;
-            ctx.fillStyle = hot ? '#fb923c' : '#ffffff';
-            ctx.beginPath();
-            ctx.arc(w * 0.14, h * 0.16, hot ? 42 : 30, 0, Math.PI * 2);
-            ctx.arc(w * 0.19, h * 0.15, hot ? 34 : 25, 0, Math.PI * 2);
-            ctx.arc(w * 0.23, h * 0.17, hot ? 28 : 22, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
+            if (greenhouseInterior) {
+                if (lesson15GreenhouseInteriorBg.complete && lesson15GreenhouseInteriorBg.naturalWidth > 0) {
+                    drawImageCover(lesson15GreenhouseInteriorBg);
+                } else {
+                    const glassFallback = ctx.createLinearGradient(0, 0, 0, h);
+                    glassFallback.addColorStop(0, hot ? '#fff7bf' : '#dff7ff');
+                    glassFallback.addColorStop(0.50, '#e8fff4');
+                    glassFallback.addColorStop(1, dry ? '#fef3c7' : '#d9f99d');
+                    ctx.fillStyle = glassFallback;
+                    ctx.fillRect(0, 0, w, h);
+                }
 
-            // Title ribbon
-            ctx.save();
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillStyle = 'rgba(255,255,255,.88)';
-            ctx.strokeStyle = '#22c55e';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.roundRect(w * 0.18, 12, w * 0.64, 42, 18);
-            ctx.fill();
-            ctx.stroke();
-            ctx.fillStyle = '#14532d';
-            ctx.font = 'bold 16px Rubik';
-            ctx.fillText(`🌿 ${lesson.title}`, w / 2, 33);
-            ctx.restore();
+                if (hot) {
+                    ctx.save();
+                    const heat = ctx.createLinearGradient(0, 0, 0, h);
+                    heat.addColorStop(0, 'rgba(251,146,60,.36)');
+                    heat.addColorStop(0.55, 'rgba(253,186,116,.20)');
+                    heat.addColorStop(1, 'rgba(248,113,113,.12)');
+                    ctx.fillStyle = heat;
+                    ctx.fillRect(0, 0, w, h);
+                    ctx.globalAlpha = 0.88;
+                    ctx.font = `${Math.max(34, w * 0.055)}px Arial`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText('☀️', w * 0.14, h * 0.18);
+                    ctx.fillText('🔥', w * 0.86, h * 0.24);
+                    ctx.globalAlpha = 1;
+                    ctx.strokeStyle = 'rgba(249,115,22,.48)';
+                    ctx.lineWidth = 3;
+                    for (let i = 0; i < 4; i++) {
+                        const yy = h * (0.28 + i * 0.08);
+                        ctx.beginPath();
+                        ctx.moveTo(w * 0.22, yy);
+                        ctx.bezierCurveTo(w * 0.36, yy - 12, w * 0.50, yy + 12, w * 0.64, yy);
+                        ctx.bezierCurveTo(w * 0.72, yy - 8, w * 0.78, yy + 8, w * 0.84, yy);
+                        ctx.stroke();
+                    }
+                    ctx.restore();
+                }
+            } else {
+                // Soft clouds / heat glow
+                ctx.save();
+                ctx.globalAlpha = hot ? 0.75 : 0.55;
+                ctx.fillStyle = hot ? '#fb923c' : '#ffffff';
+                ctx.beginPath();
+                ctx.arc(w * 0.14, h * 0.16, hot ? 42 : 30, 0, Math.PI * 2);
+                ctx.arc(w * 0.19, h * 0.15, hot ? 34 : 25, 0, Math.PI * 2);
+                ctx.arc(w * 0.23, h * 0.17, hot ? 28 : 22, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            if (greenhouseInterior) {
+                ctx.save();
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = 'rgba(255,255,255,.92)';
+                ctx.strokeStyle = hot ? '#f97316' : '#22c55e';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                const tempPanelW = w * 0.28;
+                const tempPanelH = 52;
+                const tempPanelX = w * 0.36;
+                const tempPanelY = 74;
+                ctx.roundRect(tempPanelX, tempPanelY, tempPanelW, tempPanelH, 18);
+                ctx.fill();
+                ctx.stroke();
+                ctx.font = 'bold 14px Rubik';
+                ctx.fillStyle = hot ? '#c2410c' : '#047857';
+                ctx.fillText(hot ? '🌡️ חם מדי בחממה' : '🌿 הטמפרטורה נעימה', tempPanelX + tempPanelW / 2, tempPanelY + 18);
+                ctx.font = 'bold 16px Rubik';
+                ctx.fillText(hot ? '32°' : '24°', tempPanelX + tempPanelW / 2, tempPanelY + 37);
+                ctx.restore();
+            } else {
+                // Title ribbon
+                ctx.save();
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = 'rgba(255,255,255,.88)';
+                ctx.strokeStyle = '#22c55e';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.roundRect(w * 0.18, 12, w * 0.64, 42, 18);
+                ctx.fill();
+                ctx.stroke();
+                ctx.fillStyle = '#14532d';
+                ctx.font = 'bold 16px Rubik';
+                ctx.fillText(`🌿 ${lesson.title}`, w / 2, 33);
+                ctx.restore();
+            }
 
             // Garden soil bed
             const bedX = w * 0.08;
@@ -3148,7 +3254,7 @@
             const mix = (from, to, amount) => from + (to - from) * amount;
             plantXs.forEach((x, i) => {
                 const baseY = bedY + bedH - 36 - (i % 2) * 18;
-                const plantProgress = Math.min(1, Math.max(0, recoveryProgress - i * 0.025));
+                const plantProgress = Math.min(1, Math.max(0, visiblePlantProgress - i * 0.025));
                 const bloomProgress = plantProgress * plantProgress * (3 - 2 * plantProgress);
                 const sway = Math.sin(t * 1.8 + i) * (1 + bloomProgress * 2);
                 const hotWiltAmount = hot ? 1 : 0;
@@ -3162,6 +3268,7 @@
                 const stemCtrlY = mix(wiltStemCtrlY, -34, bloomProgress);
                 ctx.save();
                 ctx.translate(x + sway, baseY);
+                ctx.scale(plantScale, plantScale);
                 ctx.strokeStyle = bloomProgress > .55 ? '#15803d' : '#854d0e';
                 ctx.lineWidth = mix(4, 5, bloomProgress);
                 ctx.beginPath();
@@ -3313,8 +3420,8 @@
             ctx.restore();
 
             // Compact garden water-status gauge: dry / OK / too much water.
-            const meterX = w * 0.075;
-            const meterY = h * 0.36;
+            const meterX = greenhouseInterior ? w * 0.055 : w * 0.075;
+            const meterY = greenhouseInterior ? h * 0.80 : h * 0.36;
             const meterW = w * 0.26;
             const waterState = !dry && watering
                 ? { label: 'עודף מים', value: 0.98, color: '#2563eb', glow: 'rgba(37,99,235,.70)', icon: '🌊' }
@@ -3365,6 +3472,7 @@
             ctx.fillText('תקין', meterX + meterW * 0.52, meterY + 39);
             ctx.fillText('עודף', meterX + meterW - 10, meterY + 39);
             ctx.restore();
+            if (restorePreservedAspect) ctx.restore();
         }
 
         function drawAdvancedLessonScene() {
@@ -4547,19 +4655,22 @@
             }
 
             // Lesson 12 / lesson 15 delivery package follows the robot, then can be placed by a door target.
-            if ((currentLesson === 12 || isLesson15DeliveryZone()) && (environment.deliveryPackage || environment.deliveryDropped)) {
+            if ((currentLesson === 12 || currentLesson === 15) && (environment.deliveryPackage || environment.deliveryDropped)) {
+                const home = currentLesson === 12 ? getLesson12HomeTarget() : getLesson15CurrentDropTarget();
+                const shouldDrawPackage = environment.deliveryPackage || Boolean(home);
+                if (shouldDrawPackage) {
                 ctx.save();
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                const home = currentLesson === 12 ? getLesson12HomeTarget() : getLesson15CurrentDropTarget();
-                const packageX = environment.deliveryDropped ? home.x : robot.x - 34;
-                const packageY = environment.deliveryDropped ? home.y : robot.y - 18;
+                const packageX = environment.deliveryDropped && home ? home.x : robot.x - 34;
+                const packageY = environment.deliveryDropped && home ? home.y : robot.y - 18;
                 ctx.font = '30px Arial';
                 ctx.fillText('📦', packageX, packageY);
                 ctx.font = 'bold 11px Rubik';
                 ctx.fillStyle = environment.deliveryDropped ? '#15803d' : canSenseGoal() ? '#15803d' : '#92400e';
                 ctx.fillText(environment.deliveryDropped ? 'המשלוח בפתח הבית' : canSenseGoal() ? 'המשלוח הגיע לבית!' : 'משלוח בדרך', packageX, packageY - 30);
                 ctx.restore();
+                }
             }
 
             // Robot (also draggable)
@@ -4805,34 +4916,36 @@
                     lesson15SelectedZone = null;
                     lesson15MuseumInside = false;
                     lesson15SchoolInside = false;
-                    environment.deliveryDropped = false;
-                    environment.deliveryDropTarget = null;
+                    lesson15GardenInside = false;
+                    if (!environment.deliveryPackage) {
+                        environment.deliveryDropped = false;
+                        environment.deliveryDropTarget = null;
+                    }
                     e.preventDefault();
                     draw();
                     return;
                 }
 
                 if (!lesson15SelectedZone) {
-                    const zones = [
-                        { id: 'museum', x: .22, y: .25, w: .22, h: .22 },
-                        { id: 'school', x: .55, y: .18, w: .24, h: .22 },
-                        { id: 'garden', x: .12, y: .57, w: .23, h: .22 },
-                        { id: 'crosswalk', x: .36, y: .43, w: .25, h: .24 },
-                        { id: 'grocery', x: .66, y: .49, w: .22, h: .24 },
-                        { id: 'homes', x: .50, y: .70, w: .28, h: .20 }
-                    ];
-                    const selected = zones.find(zone =>
-                        pos.x >= (zone.x - zone.w / 2) * canvas.width &&
-                        pos.x <= (zone.x + zone.w / 2) * canvas.width &&
-                        pos.y >= (zone.y - zone.h / 2) * canvas.height &&
-                        pos.y <= (zone.y + zone.h / 2) * canvas.height
-                    );
+                    const selected = lesson15Zones.find(zone => {
+                        const x = zone.x * canvas.width;
+                        const y = zone.y * canvas.height;
+                        const bw = Math.max(116, zone.w * canvas.width * .68) + 28;
+                        const bh = 38 + 22;
+                        return pos.x >= x - bw / 2 &&
+                            pos.x <= x + bw / 2 &&
+                            pos.y >= y - bh / 2 &&
+                            pos.y <= y + bh / 2;
+                    });
                     if (selected) {
                         lesson15SelectedZone = selected.id;
                         lesson15MuseumInside = false;
                         lesson15SchoolInside = false;
-                        environment.deliveryDropped = false;
-                        environment.deliveryDropTarget = null;
+                        lesson15GardenInside = false;
+                        if (!environment.deliveryPackage) {
+                            environment.deliveryDropped = false;
+                            environment.deliveryDropTarget = null;
+                        }
                         e.preventDefault();
                         draw();
                         return;
@@ -5016,7 +5129,7 @@
                 movement: ['move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'move_forward', 'turn_right_small', 'turn_left_small', 'stop_cars', 'start_cars', 'stop_pedestrian', 'start_pedestrian', 'route_turn', 'turn_around', 'lesson15_zone_next', 'lesson15_zone_prev'],
                 sensors: ['sensor_light', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_line_side', 'sensor_goal', 'sensor_pedestrian', 'sensor_cars', 'sensor_people', 'sensor_soil', 'sensor_water_status', 'sensor_armed', 'sensor_safe_touch', 'sensor_door', 'sensor_obstacle', 'sensor_delivery_package', 'sensor_burglar', 'sensor_homeowner', 'sensor_motion'],
                 controls: ['control_if', 'stop_program', 'control_forever', 'control_wait'],
-                actions: ['action_street_light', 'action_say', 'action_sound', 'action_fan', 'action_recycle_bin', 'action_traffic_light', 'action_class_power', 'action_ac', 'action_water', 'action_security_mode', 'action_alarm', 'action_enter_museum', 'action_exit_museum', 'action_enter_classroom', 'action_exit_classroom', 'action_delivery_package', 'action_drop_delivery', 'action_safe_route']
+                actions: ['action_street_light', 'action_say', 'action_sound', 'action_fan', 'action_recycle_bin', 'action_traffic_light', 'action_class_power', 'action_ac', 'action_water', 'action_security_mode', 'action_alarm', 'action_enter_museum', 'action_exit_museum', 'action_enter_classroom', 'action_exit_classroom', 'action_enter_greenhouse', 'action_exit_greenhouse', 'action_delivery_package', 'action_drop_delivery', 'action_safe_route']
             }
         };
 
@@ -5875,6 +5988,24 @@
                 }
             };
 
+            Blockly.Blocks['action_enter_greenhouse'] = {
+                init: function() {
+                    this.appendDummyInput().appendField('🏡 היכנס לחממה');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+
+            Blockly.Blocks['action_exit_greenhouse'] = {
+                init: function() {
+                    this.appendDummyInput().appendField('🚪 צא מהחממה');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+
             Blockly.Blocks['action_fan'] = {
                 init: function() {
                     this.appendDummyInput()
@@ -6244,6 +6375,30 @@
                     robot.speaking = '';
                     break;
 
+                case 'action_enter_greenhouse':
+                    if (isLesson15Zone('garden')) {
+                        lesson15GardenInside = true;
+                        robot.speaking = 'נכנסנו לחממה';
+                        draw();
+                    } else {
+                        robot.speaking = 'צריך לבחור קודם את אזור חממה/גינה';
+                    }
+                    await sleep(900);
+                    robot.speaking = '';
+                    break;
+
+                case 'action_exit_greenhouse':
+                    if (isLesson15Zone('garden')) {
+                        lesson15GardenInside = false;
+                        robot.speaking = 'יצאנו מהחממה';
+                        draw();
+                    } else {
+                        robot.speaking = 'אנחנו לא באזור החממה';
+                    }
+                    await sleep(900);
+                    robot.speaking = '';
+                    break;
+
                 case 'action_fan':
                     robot.fanOn = block.getFieldValue('STATE') === 'ON';
                     robot.speaking = robot.fanOn ? 'מקרר את החממה!' : 'המאוורר כבוי';
@@ -6263,7 +6418,12 @@
                     const wasWatering = robot.waterOn;
                     robot.waterOn = nextWaterOn;
                     if ((currentLesson === 10 || isLesson15Zone('garden')) && nextWaterOn && !wasWatering) {
-                        gardenRecoveryStartedAt = Date.now();
+                        const greenhouseHotWilted = isLesson15Zone('garden') && lesson15GardenInside && environment.temperatureHot;
+                        const shouldRecoverPlants = environment.soilDry || environment.temperatureHot;
+                        if (shouldRecoverPlants) {
+                            gardenRecoveryStartProgress = greenhouseHotWilted && !environment.soilDry ? 0.52 : (environment.temperatureHot ? 0 : 0.28);
+                            gardenRecoveryStartedAt = Date.now();
+                        }
                     }
                     if ((currentLesson === 10 || isLesson15Zone('garden')) && wasWatering && !nextWaterOn) {
                         environment.soilDry = false;
@@ -6303,16 +6463,16 @@
                     break;
 
                 case 'action_drop_delivery':
-                    if ((currentLesson === 12 || isLesson15DeliveryZone()) && environment.deliveryPackage && canSenseGoal()) {
+                    if ((currentLesson === 12 || currentLesson === 15) && environment.deliveryPackage && canSenseGoal()) {
                         if (isLesson15DeliveryZone()) {
-                            const target = getLesson15DeliveryTargets().find((door) => Math.hypot(robot.x - door.x, robot.y - door.y) <= 100);
+                            const target = getLesson15DeliveryTargets().find((door) => Math.hypot(robot.x - door.x, robot.y - door.y) <= 60);
                             environment.deliveryDropTarget = target?.id || null;
                         }
                         environment.deliveryPackage = false;
                         environment.deliveryDropped = true;
                         document.getElementById('envDeliveryPackage')?.classList.remove('active');
                         robot.speaking = 'הנחתי את המשלוח בפתח הבית';
-                    } else if ((currentLesson === 12 || isLesson15DeliveryZone()) && !environment.deliveryPackage) {
+                    } else if ((currentLesson === 12 || currentLesson === 15) && !environment.deliveryPackage) {
                         robot.speaking = 'אין לי משלוח להוריד';
                     } else if (isLesson15Zone('crosswalk')) {
                         robot.speaking = 'באזור הכביש אין פתח בית למשלוח';
@@ -6602,11 +6762,11 @@
         }
 
         function hasDeliveryPackage() {
-            return (currentLesson === 12 || isLesson15DeliveryZone()) && Boolean(environment.deliveryPackage);
+            return (currentLesson === 12 || currentLesson === 15) && Boolean(environment.deliveryPackage);
         }
 
         function isDeliveryDropped() {
-            return (currentLesson === 12 || isLesson15DeliveryZone()) && Boolean(environment.deliveryDropped);
+            return (currentLesson === 12 || currentLesson === 15) && Boolean(environment.deliveryDropped);
         }
 
         function getLesson13FenceEndTargets() {
@@ -6634,7 +6794,7 @@
                 return getLesson15DeliveryTargets().some((door) => {
                     const dx = robot.x - door.x;
                     const dy = robot.y - door.y;
-                    return Math.sqrt(dx * dx + dy * dy) <= 100;
+                    return Math.sqrt(dx * dx + dy * dy) <= 60;
                 });
             }
             if (currentLesson !== 7) return false;
@@ -6771,6 +6931,7 @@
             environment[type] = !environment[type];
             if (type === 'soilDry') {
                 gardenRecoveryStartedAt = environment.soilDry ? null : gardenRecoveryStartedAt;
+                if (environment.soilDry) gardenRecoveryStartProgress = 0;
                 if (environment.soilDry) robot.waterOn = false;
             }
             if (type === 'smoke') smokeStartedAt = environment.smoke ? Date.now() : null;
@@ -6816,6 +6977,7 @@
             environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, safeTouch: false, visitorCount: 0, burglar: false, homeowner: false, doorOpen: false, deliveryPackage: false, deliveryDropped: false, deliveryDropTarget: null };
             smokeStartedAt = null;
             gardenRecoveryStartedAt = null;
+            gardenRecoveryStartProgress = 0;
 
             document.querySelectorAll('.env-btn').forEach(b => b.classList.remove('active'));
             robot.speaking = '';
@@ -6947,7 +7109,7 @@
             document.getElementById('sensorColor').classList.toggle('active', recycleColor !== 'NONE');
 
             document.getElementById('sensorLine').classList.toggle('active', currentLesson === 7 ? sensesLine : onLine);
-            document.getElementById('sensorGoal').classList.toggle('active', (currentLesson === 7 || currentLesson === 12 || currentLesson === 13) && sensesGoal);
+            document.getElementById('sensorGoal').classList.toggle('active', (currentLesson === 7 || currentLesson === 12 || currentLesson === 13 || currentLesson === 15) && sensesGoal);
             document.getElementById('sensorCars').classList.toggle('active', currentLesson === 8 && sensesCars);
             document.getElementById('sensorPedestrian').classList.toggle('active', currentLesson === 8 && sensesPedestrian);
             document.getElementById('sensorPeople').classList.toggle('active', museumPeopleMode ? (environment.visitorCount || 0) > 5 : sensesPeople);
@@ -7119,6 +7281,7 @@
                 lesson15SelectedZone = null;
                 lesson15MuseumInside = false;
                 lesson15SchoolInside = false;
+                lesson15GardenInside = false;
                 environment.deliveryDropped = false;
                 environment.deliveryDropTarget = null;
             }
