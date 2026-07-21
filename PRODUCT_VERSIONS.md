@@ -36,9 +36,39 @@ Recommended bump rules:
 
 ## Current Published Versions
 
-### Smart City 15 Lessons — v0.6.1 — Published
+### Smart City 15 Lessons — v0.6.2 — Published
 
 - **Status:** Published
+- **Branch:** `feature/structured-15-lessons`
+- **Commit:** `65b5423`
+- **Tag:** `robotics15-v0.6.2`
+- **Live:** https://robotics15.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Merged the redesigned platform homepage from `main` into the shared structured 15-lessons branch.
+- `robotics15` now uses the polished Holon-style homepage: premium hero, generated EdTech image, quick path cards, learning tracks, full catalog, roadmap, and CTA.
+- Keeps `sensi-city.html` as the 15-lesson Sensi course and `sensi-classic.html` as the 5-lesson classic course.
+
+Verification:
+
+- Full Node test suite passed: all `tests/*.mjs`.
+- `git diff --check` clean.
+- Homepage routing test verifies the expanded course links.
+
+Rollback:
+
+```bash
+git checkout feature/structured-15-lessons
+git reset --hard 116bb3a
+# or use the previous product tag: robotics15-v0.6.1
+```
+
+### Smart City 15 Lessons — v0.6.1 — Superseded
+
+- **Status:** Superseded by `robotics15-v0.6.2`
 - **Branch:** `feature/structured-15-lessons`
 - **Commit:** `3a5899b`
 - **Tag:** `robotics15-v0.6.1`
@@ -99,9 +129,39 @@ git reset --hard 4625d0b
 # or use the previous product tag: robotics15-v0.5.0
 ```
 
-### Robotics stable — v0.2.2 — Published
+### Robotics stable — v0.2.3 — Published
 
 - **Status:** Published
+- **Branch:** `main`
+- **Commit:** `e400c9f`
+- **Tag:** `robotics-v0.2.3`
+- **Live:** https://robotics.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Redesigned the platform homepage in the style direction of the Holon pages: premium hero, navigation, track sections, roadmap, CTA, and polished catalog cards.
+- Added a generated EdTech hero image at `assets/robotics-home-hero.png`.
+- Kept all existing homepage course links while making the page feel like a product catalog rather than a plain card list.
+
+Verification:
+
+- Full Node test suite passed: all `tests/*.mjs`.
+- `git diff --check` clean.
+- Homepage routing test still verifies the expanded course links.
+
+Rollback:
+
+```bash
+git checkout main
+git reset --hard 795f5ea
+# or use the previous product tag: robotics-v0.2.2
+```
+
+### Robotics stable — v0.2.2 — Superseded
+
+- **Status:** Superseded by `robotics-v0.2.3`
 - **Branch:** `main`
 - **Commit:** `235dbfd`
 - **Tag:** `robotics-v0.2.2`
