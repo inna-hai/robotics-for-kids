@@ -36,9 +36,41 @@ Recommended bump rules:
 
 ## Current Published Versions
 
-### Smart City 15 Lessons — v0.6.3 — Published
+### Smart City 15 Lessons — v0.7.0 — Published
 
 - **Status:** Published
+- **Branch:** `feature/structured-15-lessons`
+- **Commit:** `f5f3b6c`
+- **Tag:** `robotics15-v0.7.0`
+- **Live:** https://robotics15.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Merged PR #13 by Ami (`ameidar`): Craftom School lomda MVP.
+- Added standalone `craftom-school/` app with Node server, student/teacher/admin flows, classes, teams, lesson editor, reports, observations, demo seed, and smoke test.
+- Added 15-meeting Craftom course model and documentation/recommendation pages.
+- Note: this is an MVP foundation and is not yet connected to Minecraft/Craftom production systems.
+
+Verification:
+
+- Merge into `feature/structured-15-lessons` was clean.
+- `git diff --check HEAD~1..HEAD` clean.
+- Craftom checks passed: `npm run check`, `npm run seed:demo`, and `npm run test:smoke` against a local server.
+- Full Node test suite passed: all `tests/*.mjs`.
+
+Rollback:
+
+```bash
+git checkout feature/structured-15-lessons
+git reset --hard ea0000d
+# or use the previous product tag: robotics15-v0.6.3
+```
+
+### Smart City 15 Lessons — v0.6.3 — Superseded
+
+- **Status:** Superseded by `robotics15-v0.7.0`
 - **Branch:** `feature/structured-15-lessons`
 - **Commit:** `cfa0ae4`
 - **Tag:** `robotics15-v0.6.3`
