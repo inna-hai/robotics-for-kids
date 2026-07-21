@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎨 שיעור 7: סיסי בסטודיו הפיקסלים - קואורדינטות וציור לכיתות ב׳</title>
+  <meta name="description" content="שיעור 7 לכיתות ב׳: סיסי בסטודיו הפיקסלים מלמדת קואורדינטות, פיקסלים, דיוק ודיבוג דרך ציור צבעוני." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/art.css?v=20260717-art-1">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero"><div>
+      <div class="kicker">שיעור 7 • פיקסלים וקואורדינטות • כיתות ב׳ • 75 דקות</div>
+      <h1>🎨 סיסי בסטודיו הפיקסלים</h1>
+      <p>הפעם סיסי לא זזה על לוח ולא ממיינת כרטיסים — היא מציירת. הילדים בוחרים הוראות צבע לפי שורה ועמודה, משווים לציור מטרה, ומתקנים באגים קטנים עד שהתמונה מדויקת.</p>
+      <div class="actions">
+        <a class="btn" href="art-play.html?lesson=1">▶️ להתחיל ציור 1</a>
+        <a class="btn secondary" href="#missions">🖼️ לראות אתגרים</a>
+        <a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a>
+        <a class="btn secondary" href="dino.html">🦕 שיעור 6: דינוזאורים</a>
+        <a class="btn secondary" href="weather.html">⛅ שיעור 8: חיישנים</a>
+      </div>
+    </div><div class="hero-art" aria-hidden="true">🤖🎨</div></section>
+
+    <section class="stats" aria-label="נתוני שיעור הפיקסלים">
+      <div class="stat"><b>שיעור 7</b>פיקסלים</div>
+      <div class="stat"><b>75</b>דקות</div>
+      <div class="stat"><b>שורה+עמודה</b>רעיון מרכזי</div>
+      <div class="stat"><b>דיבוג</b>השוואה ותיקון</div>
+    </section>
+
+    <section class="intro">
+      <div class="panel"><h2>מה חדש בשיעור הזה?</h2><p>זו מכניקה ויזואלית לגמרי: הילדים לא מקלידים קוד, אלא בונים ציור מתוך הוראות מדויקות. הם לומדים שפיקסל הוא יחידת ציור קטנה ושמיקום מדויק משנה את כל התוצאה.</p></div>
+      <div class="panel"><h3>מה לומדים בלי להרגיש?</h3><ul><li>קואורדינטות פשוטות: שורה ועמודה</li><li>פיקסלים וספרייטים של משחקים</li><li>השוואה בין תוצאה למטרה</li><li>דיבוג: חסר / מיותר / צבע לא נכון</li><li>שיעור מומלץ: ציורים 1–4 לכל הכיתה, 5–12 להרחבה ותרגול</li></ul></div>
+    </section>
+
+    <section id="missions"><h2>אתגרי סטודיו הפיקסלים</h2><div class="cards" id="cards"></div></section>
+  </main>
+  <script src="js/art-lessons.js?v=20260717-art-1"></script>
+  <script>
+    document.getElementById('cards').innerHTML = window.ART_LESSONS.map((lesson) => `
+      <a class="card" href="art-play.html?lesson=${lesson.id}" aria-label="פתח ציור ${lesson.id}: ${lesson.title}">
+        <div class="top"><span class="emoji">${lesson.emoji}</span><span class="id">ציור ${lesson.id}</span></div>
+        <h3>${lesson.title}</h3><div class="unit">${lesson.unit}</div><div class="story">${lesson.mission}</div>
+        <div class="tags"><span class="tag">${lesson.concept}</span><span class="tag">פיקסלים</span></div><div class="start">להתחיל לצייר ←</div>
+      </a>`).join('');
+  </script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>

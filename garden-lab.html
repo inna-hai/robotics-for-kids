@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌱 מעבדת גינה - סיסי בגינת הקסמים</title>
+  <meta name="description" content="פעילות יצירה מסכמת לשיעור 10: הילדים ממציאים צמח ושלבי טיפול לפי מצב." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/garden.css?v=20260717-garden-lab-1">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero"><div>
+      <div class="kicker">שיעור 10 • פעילות יצירה • 15–20 דקות</div>
+      <h1>🌱 מעבדת הגינה של סיסי</h1>
+      <p>כדי שהשיעור יחזיק 75 דקות, הילדים יוצרים צמח דמיוני ומגדירים שלושה כללי טיפול פשוטים: אם הצמח במצב מסוים — איזו פעולה עושים?</p>
+      <div class="actions"><a class="btn" href="garden-play.html?lesson=1">↩️ חזרה לשלבים</a><a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a></div>
+    </div><div class="hero-art" aria-hidden="true">🌻🤖</div></section>
+
+    <section class="intro">
+      <div class="panel"><h2>משימת יצירה</h2><ol><li>המציאו שם לצמח.</li><li>בחרו שלושה מצבים של הצמח.</li><li>בחרו פעולה מתאימה לכל מצב.</li><li>שתפו: למה הפעולה מתאימה למצב?</li></ol></div>
+      <div class="panel"><h2>כרטיס הצמח שלי</h2><div class="option-grid">
+        <label>שם הצמח <input id="plant" placeholder="למשל: פרח קשת" /></label>
+        <label>מצב 1 <input class="state" placeholder="למשל: האדמה יבשה" /></label>
+        <label>פעולה 1 <input class="action" placeholder="למשל: להשקות" /></label>
+        <label>מצב 2 <input class="state" placeholder="למשל: הצמח בצל" /></label>
+        <label>פעולה 2 <input class="action" placeholder="למשל: לתת שמש" /></label>
+      </div><button class="btn" id="build" type="button">🌼 ליצור כללים</button></div>
+    </section>
+
+    <section class="choice-panel">
+      <h2>כללי הטיפול שהמצאתי</h2>
+      <div class="choice-preview" id="rules-output"><span>בחרו צמח ומצבים</span></div>
+      <div class="learning-note"><b>שאלת שיתוף:</b> האם יש פעולה שמתאימה לשני מצבים? האם יש מצב שדורש פעולה אחרת לגמרי?</div>
+    </section>
+  </main>
+  <script>
+    document.getElementById('build').addEventListener('click', () => {
+      const plant = document.getElementById('plant').value || 'הצמח שלי';
+      const states = [...document.querySelectorAll('.state')].map((input) => input.value || 'מצב');
+      const actions = [...document.querySelectorAll('.action')].map((input) => input.value || 'פעולה');
+      document.getElementById('rules-output').innerHTML = `<span>${plant}</span><b>אם</b><span>${states[0]}</span><b>אז</b><span>${actions[0]}</span><b>אם</b><span>${states[1]}</span><b>אז</b><span>${actions[1]}</span>`;
+    });
+  </script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>

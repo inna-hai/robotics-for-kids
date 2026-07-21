@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎬 שיעור 13: סיסי מביימת רובוטים - אלגוריתמים מצולמים לכיתות ב׳</title>
+  <meta name="description" content="שיעור 13 לכיתות ב׳: סיסי מביימת רובוטים מלמדת רצף פקודות, אלגוריתם ודיבוג דרך אולפן סרטים רובוטי." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/cinema.css?v=20260717-cinema-1">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero"><div>
+      <div class="kicker">שיעור 13 • אלגוריתמים מצולמים • כיתות ב׳ • 75 דקות</div>
+      <h1>🎬🤖 סיסי מביימת רובוטים</h1>
+      <p>סיסי מצלמת רובוטים שמבצעים משימות. הילדים בוחרים 3 פקודות מתוך 4, מסדרים אותן לאלגוריתם, מוציאים פקודה מיותרת ומסבירים למה הסדר עובד. זה ויזואלי, תכנותי ולא קופץ חזק ברמה.</p>
+      <div class="actions">
+        <a class="btn" href="cinema-play.html?lesson=1">▶️ להתחיל סרט 1</a>
+        <a class="btn secondary" href="#missions">🎞️ לראות סרטים</a>
+        <a class="btn secondary" href="cinema-lab.html">🎬 מעבדת סרטים</a>
+        <a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a>
+        <a class="btn secondary" href="mail.html">✉️ שיעור 12: דואר קסום</a>
+        <a class="btn secondary" href="escape.html">🔐 שיעור 14: חדר בריחה</a>
+      </div>
+    </div><div class="hero-art" aria-hidden="true">🤖🎬</div></section>
+
+    <section class="stats" aria-label="נתוני שיעור הסרטים">
+      <div class="stat"><b>שיעור 13</b>אולפן סרטים</div>
+      <div class="stat"><b>75</b>דקות</div>
+      <div class="stat"><b>אלגוריתם</b>רצף פקודות</div>
+      <div class="stat"><b>דיבוג</b>פקודה מיותרת</div>
+    </section>
+
+    <section class="intro">
+      <div class="panel"><h2>למה זה מחזיק 75 דקות?</h2><p>יש משחק בניית אלגוריתם, פקודה מיותרת שצריך לזהות, בחירת נימוק, מעבדת בימוי רובוטים ובדיקת חברים. זה לא רק סיפור — זה רצף פקודות.</p></div>
+      <div class="panel"><h3>מה לומדים בלי להרגיש?</h3><ul><li>רצף פקודות</li><li>אלגוריתם שמוביל למטרה</li><li>פקודה מיותרת</li><li>דיבוג של סדר שגוי</li><li>שיעור מומלץ: משימות 1–4 לכל הכיתה, 5–12 + מעבדה להרחבה</li></ul></div>
+    </section>
+
+    <section class="intro" id="class-activities">
+      <div class="panel"><h2>אתגר “איזו פקודה מיותרת?” — 10 דקות</h2><p>המורה נותנת מטרה וארבע פקודות, והילדים מסבירים איזו פקודה לא מקדמת את המטרה ולמה.</p></div>
+      <div class="panel"><h2>משחק במאי-מתכנת בזוגות — 10 דקות</h2><p>ילד אחד ממציא משימת רובוט עם 3 פקודות ופקודה מיותרת, ילד שני מסדר ומדבג. אחר כך מחליפים תפקידים.</p></div>
+    </section>
+
+    <section id="missions"><h2>משימות הבימוי הרובוטי של סיסי</h2><div class="cards" id="cards"></div></section>
+  </main>
+  <script src="js/cinema-lessons.js?v=20260717-cinema-1"></script>
+  <script>
+    document.getElementById('cards').innerHTML = window.CINEMA_LESSONS.map((lesson) => `
+      <a class="card" href="cinema-play.html?lesson=${lesson.id}" aria-label="פתח משימה ${lesson.id}: ${lesson.title}">
+        <div class="top"><span class="emoji">${lesson.emoji}</span><span class="id">משימה ${lesson.id}</span></div>
+        <h3>${lesson.title}</h3><div class="unit">${lesson.unit}</div><div class="story">${lesson.story}</div>
+        <div class="tags"><span class="tag">${lesson.concept}</span><span class="tag">רצף</span></div><div class="start">לבנות אלגוריתם ←</div>
+      </a>`).join('');
+  </script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>

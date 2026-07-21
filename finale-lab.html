@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🏗️ מעבדת עיר חכמה - שיעור שיא סיסי</title>
+  <meta name="description" content="פעילות יצירה לשיעור 15: הילדים מתכננים בעיית עיר חכמה ותכנית פתרון." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/finale.css?v=20260717-finale-lab-1">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero"><div><div class="kicker">שיעור 15 • פרויקט סיום • 20 דקות</div><h1>🏗️ מעבדת העיר החכמה של סיסי</h1><p>הילדים מתכננים בעיית עיר משלהם ובונים תכנית: תנאי, שלוש פעולות, פעולה מיותרת ובדיקת הצלחה.</p><div class="actions"><a class="btn" href="finale-play.html?lesson=1">↩️ חזרה למשימות</a><a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a></div></div><div class="hero-art" aria-hidden="true">🏙️🧠</div></section>
+    <section class="intro"><div class="panel"><h2>משימת פרויקט</h2><ol><li>בחרו בעיה בעיר.</li><li>כתבו תנאי שמפעיל את הפתרון.</li><li>כתבו 3 פעולות לפי סדר.</li><li>הוסיפו פעולה מיותרת ובדקו שחבר מזהה אותה.</li></ol></div><div class="panel"><h2>כרטיס העיר שלי</h2><label>בעיה בעיר <input id="problem" placeholder="למשל: מעבר חציה חשוך" /></label><label>תנאי <input id="condition" placeholder="אם חשוך וגם יש הולכי רגל" /></label><label>פעולה 1 <input id="a1" placeholder="בדוק מצב" /></label><label>פעולה 2 <input id="a2" placeholder="הדלק אור" /></label><label>פעולה 3 <input id="a3" placeholder="שלח הודעה" /></label><label>פעולה מיותרת <input id="extra" placeholder="למשל: חגוג" /></label><button class="btn" id="build" type="button">🏙️ ליצור תכנית</button></div></section>
+    <section class="program-panel"><h2>תכנית העיר שלי</h2><div id="city-output"><div class="condition-line"><span>כתבו תכנית</span></div></div><div class="learning-note"><b>בדיקת חברים:</b> זוג אחר בודק האם התנאי ברור, האם הסדר נכון, והאם הפעולה המיותרת באמת לא מקדמת את המטרה.</div></section>
+  </main>
+  <script>
+    document.getElementById('build').addEventListener('click', () => {
+      const problem = document.getElementById('problem').value || 'בעיה בעיר';
+      const condition = document.getElementById('condition').value || 'תנאי';
+      const actions = ['a1','a2','a3'].map((id, i) => document.getElementById(id).value || `פעולה ${i+1}`);
+      const extra = document.getElementById('extra').value || 'פעולה מיותרת';
+      document.getElementById('city-output').innerHTML = `<div class="condition-line"><b>${problem}</b><span>אם ${condition}</span><b>אז</b></div><div class="program-grid"><div class="program-step"><b>1</b><span>🔎</span><p>${actions[0]}</p></div><div class="program-step"><b>2</b><span>🤖</span><p>${actions[1]}</p></div><div class="program-step"><b>3</b><span>✅</span><p>${actions[2]}</p></div><div class="program-step"><b>מיותר</b><span>🧩</span><p>${extra}</p></div></div>`;
+    });
+  </script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>

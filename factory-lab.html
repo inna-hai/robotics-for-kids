@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🏭 מעבדת לולאות - סיסי במפעל הצעצועים</title>
+  <meta name="description" content="פעילות יצירה מסכמת לשיעור 9: הילדים ממציאים צעצוע, פעולה חוזרת ומספר חזרות." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/factory.css?v=20260717-factory-lab-1">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero"><div>
+      <div class="kicker">שיעור 9 • פעילות יצירה • 15–20 דקות</div>
+      <h1>🏭 מעבדת הלולאות של סיסי</h1>
+      <p>אחרי שהילדים תרגלו לולאות מוכנות, הם ממציאים צעצוע משלהם ובונים עבורו פקודת “חזור X פעמים”. זו פעילות שממלאת את סוף השיעור ומעמיקה הבנה בלי להעלות רמה בחדות.</p>
+      <div class="actions"><a class="btn" href="factory-play.html?lesson=1">↩️ חזרה למשימות</a><a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a></div>
+    </div><div class="hero-art" aria-hidden="true">🧸🔁</div></section>
+
+    <section class="intro">
+      <div class="panel"><h2>שלבי הפעילות</h2><ol><li>בחרו צעצוע חדש.</li><li>בחרו פעולה שחוזרת.</li><li>בחרו כמה פעמים לחזור.</li><li>הציגו לחבר/ה את הלולאה בקול.</li></ol></div>
+      <div class="panel"><h2>כרטיס היצירה שלי</h2><div class="option-grid">
+        <label>שם הצעצוע <input id="toy" placeholder="למשל: רובוט מנצנץ" /></label>
+        <label>פעולה חוזרת <input id="action" placeholder="למשל: להדביק כוכב" /></label>
+        <label>כמה פעמים? <input id="count" type="number" min="1" max="10" value="4" /></label>
+      </div><button class="btn" id="build" type="button">✨ לבנות לולאה</button></div>
+    </section>
+
+    <section class="loop-panel">
+      <h2>הלולאה שהמצאתי</h2>
+      <div class="loop-preview" id="loop-output"><span>חזור</span><span class="loop-count">?</span><span>פעמים</span><span>בחרו צעצוע ופעולה</span></div>
+      <div class="learning-note"><b>שאלת שיתוף:</b> מה יקרה אם נחזור פעם אחת פחות? ומה יקרה אם נחזור יותר מדי?</div>
+    </section>
+  </main>
+  <script>
+    document.getElementById('build').addEventListener('click', () => {
+      const toy = document.getElementById('toy').value || 'הצעצוע שלי';
+      const action = document.getElementById('action').value || 'פעולה חוזרת';
+      const count = document.getElementById('count').value || '?';
+      document.getElementById('loop-output').innerHTML = `<span>בשביל ${toy}</span><span>חזור</span><span class="loop-count">${count}</span><span>פעמים</span><span>${action}</span>`;
+    });
+  </script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>

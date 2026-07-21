@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎬 מעבדת בימוי רובוטים - סיסי באולפן הסרטים</title>
+  <meta name="description" content="פעילות יצירה מסכמת לשיעור 13: הילדים יוצרים אלגוריתם רובוטי מצולם עם פקודות ופקודה מיותרת." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/cinema.css?v=20260717-cinema-lab-1">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero"><div><div class="kicker">שיעור 13 • פעילות יצירה • 15–20 דקות</div><h1>🎬 מעבדת הבימוי הרובוטי של סיסי</h1><p>הילדים יוצרים משימת רובוט משל עצמם: מטרה, 3 פקודות נכונות ופקודה אחת מיותרת. אחר כך חבר/ה מסדרים ומדבגים.</p><div class="actions"><a class="btn" href="cinema-play.html?lesson=1">↩️ חזרה לסרטים</a><a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a></div></div><div class="hero-art" aria-hidden="true">🎞️✨</div></section>
+    <section class="intro"><div class="panel"><h2>משימת יצירה</h2><ol><li>בחרו מטרה לרובוט.</li><li>כתבו 3 פקודות שמובילות למטרה.</li><li>הוסיפו פקודה מיותרת אחת.</li><li>תנו לחבר/ה לסדר ולדבג.</li></ol></div><div class="panel"><h2>כרטיס האלגוריתם שלי</h2><label>מטרת הרובוט <input id="movie" placeholder="למשל: להביא עפיפון לילדה" /></label><label>פקודה 1 <input id="start" placeholder="למשל: לך אל העפיפון" /></label><label>פקודה 2 <input id="middle" placeholder="למשל: תפוס את העפיפון" /></label><label>פקודה 3 <input id="end" placeholder="למשל: תן לילדה" /></label><label>פקודה מיותרת <input id="extra" placeholder="למשל: רקוד במקום" /></label><button class="btn" id="build" type="button">🤖 ליצור אלגוריתם</button></div></section>
+    <section class="timeline-panel"><h2>האלגוריתם שיצרתי</h2><div class="timeline" id="movie-output"><div class="timeline-slot"><b>פקודה 1</b><span>❔</span><p>כתבו אלגוריתם</p></div><div class="timeline-slot"><b>פקודה 2</b><span>❔</span><p>כתבו אלגוריתם</p></div><div class="timeline-slot"><b>פקודה 3</b><span>❔</span><p>כתבו אלגוריתם</p></div></div><div class="learning-note"><b>בדיקת חברים:</b> החליפו כרטיס עם זוג אחר. האם הם מזהים את הפקודה המיותרת ומסדרים את 3 הפקודות הנכונות?</div></section>
+  </main>
+  <script>
+    document.getElementById('build').addEventListener('click', () => {
+      const movie = document.getElementById('movie').value || 'הסרט שלי';
+      const start = document.getElementById('start').value || 'התחלה';
+      const middle = document.getElementById('middle').value || 'אמצע';
+      const end = document.getElementById('end').value || 'פקודה 3';
+      const extra = document.getElementById('extra').value || 'פקודה מיותרת';
+      document.getElementById('movie-output').innerHTML = `<div class="timeline-slot"><b>${movie}: פקודה 1</b><span>🤖</span><p>${start}</p></div><div class="timeline-slot"><b>פקודה 2</b><span>➡️</span><p>${middle}</p></div><div class="timeline-slot"><b>פקודה 3</b><span>✅</span><p>${end}</p></div><div class="timeline-slot"><b>פקודה מיותרת</b><span>🧩</span><p>${extra}</p></div>`;
+    });
+  </script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>

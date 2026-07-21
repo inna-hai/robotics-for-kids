@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">⛅ סיסי ותחנת מזג האוויר</title>
+  <meta name="description" content="משחק שיעור 8: בוחרים חיישן ופעולה כדי לבנות אוטומציה חכמה למזג אוויר." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/weather.css?v=20260717-weather-1">
+</head>
+<body>
+  <main class="shell">
+    <header class="play-header">
+      <div><div class="kicker" id="page-subtitle">שיעור 8 • חיישנים ופעולות</div><h1>⛅ סיסי ותחנת מזג האוויר</h1></div>
+      <nav class="lesson-nav" id="lesson-nav" aria-label="מעבר בין תחנות מזג אוויר"></nav>
+    </header>
+
+    <section class="station-card">
+      <div class="big-emoji" id="lesson-emoji" aria-hidden="true">⛅</div>
+      <div><h2 id="lesson-heading">תחנת מזג אוויר</h2><p id="scene"></p><span class="condition-chip" id="condition-chip"></span><div class="learning-note" id="learning-note"></div></div>
+    </section>
+
+    <section class="automation-layout">
+      <div class="option-panel">
+        <h2>1. איזה חיישן צריך?</h2>
+        <p>בחרו את החיישן שמזהה את הבעיה בסיפור.</p>
+        <div class="option-grid" id="sensor-options"></div>
+      </div>
+      <div class="option-panel">
+        <h2>2. איזו פעולה מתאימה?</h2>
+        <p>בחרו פעולה שתפתור את הבעיה בלי להפריע.</p>
+        <div class="option-grid" id="action-options"></div>
+      </div>
+    </section>
+
+    <section class="rule-panel">
+      <h2>הכלל שבניתי</h2>
+      <div class="rule-preview" id="rule-preview" aria-live="polite"></div>
+      <div class="controls">
+        <button class="btn" id="check" type="button">▶️ להריץ תחנה</button>
+        <button class="btn secondary" id="hint" type="button">💡 רמז</button>
+        <button class="btn secondary" id="clear" type="button">🔄 להתחיל מחדש</button>
+        <a class="btn secondary" href="weather.html">⛅ עמוד השיעור</a>
+      </div>
+      <div class="result" id="result" aria-live="polite"></div>
+      <div class="next-step" id="next-step"></div>
+    </section>
+  </main>
+  <script src="js/weather-lessons.js?v=20260717-weather-1"></script>
+  <script src="js/course-certificate.js?v=20260717-cert-1"></script>
+  <script src="js/weather-play.js?v=20260717-weather-1"></script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>

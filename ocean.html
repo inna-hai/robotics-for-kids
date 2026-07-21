@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌊 שיעור 3: סיסי במעמקים - שיעור אוקיינוס לכיתות ב׳</title>
+  <meta name="description" content="שיעור אוקיינוס לכיתות ב׳: סיסי במעמקים היא לומדה משחקית לתלמידי כיתה ב׳. לומדים פקודות, מסלולים, שמירה על הים ועובדות ים קצרות." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/ocean.css?v=20260717-ocean-1">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <div class="kicker">שיעור 3 • אוקיינוס • כיתות ב׳ • 75 דקות</div>
+        <h1>🌊 שיעור 3: סיסי במעמקים</h1>
+        <p>
+          סיסי צוללת לאוקיינוס: בכל משימה היא מנווטת בין שוניות,
+          אצות, צדפים, פנינים וחיות ים — ועל הדרך לומדת לתכנן מסלול, לתקן טעויות ולשמור על הסביבה הימית.
+        </p>
+        <div class="actions">
+          <a class="btn" href="ocean-play.html?lesson=1">▶️ להתחיל במשימה 1</a>
+          <a class="btn secondary" href="#missions">🐠 לראות את המשימות</a>
+          <a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a>
+          <a class="btn secondary" href="detective.html">🕵️‍♀️ שיעור 4: בלשות</a>
+          <a class="btn secondary" href="space.html">🚀 שיעור החלל</a>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">🤖🐠</div>
+    </section>
+
+    <section class="stats" aria-label="נתוני שיעור האוקיינוס">
+      <div class="stat"><b>שיעור 3</b>אוקיינוס</div>
+      <div class="stat"><b>12</b>משימות פתוחות</div>
+      <div class="stat"><b>ב׳</b>כיתת יעד</div>
+      <div class="stat"><b>75</b>דק׳ לשיעור</div>
+      <div class="stat"><b>ים</b>עובדה בכל משימה</div>
+    </section>
+
+    <section class="intro" aria-label="על שיעור האוקיינוס">
+      <div class="panel">
+        <h2>מה עושים בשיעור האוקיינוס?</h2>
+        <p>
+          הילדים נותנים לסיסי פקודות תנועה פשוטות, בודקים אם היא הגיעה ליעד,
+          ומשפרים את המסלול כשהיא נתקעת. השיעור מוסיף נושא חדש — עולם הים —
+          בלי להעמיס מושגים חדשים מדי.
+        </p>
+      </div>
+      <div class="panel">
+        <h3>מה לומדים בלי להרגיש?</h3>
+        <ul>
+          <li>חזרה על רצף פקודות ותכנון מסלול</li>
+          <li>עקיפת מכשולים ושיפור פתרון</li>
+          <li>איסוף יעדים בדרך</li>
+          <li>עובדות קטנות על שוניות, צבי ים, כרישים ודולפינים</li>
+          <li>שיעור מומלץ: משימות 1–4 במשך 75 דקות</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="missions">
+      <h2>משימות שיעור האוקיינוס</h2>
+      <div class="cards" id="cards"></div>
+    </section>
+  </main>
+
+  <script src="js/ocean-lessons.js?v=20260717-ocean-1"></script>
+  <script>
+    document.getElementById('cards').innerHTML = window.OCEAN_LESSONS.map((lesson) => `
+      <a class="card" href="ocean-play.html?lesson=${lesson.id}" aria-label="פתח משימה ${lesson.id}: ${lesson.title}">
+        <div class="top"><span class="emoji">${lesson.emoji}</span><span class="id">משימה ${lesson.id}</span></div>
+        <h3>${lesson.title}</h3>
+        <div class="unit">${lesson.unit}</div>
+        <div class="story">${lesson.mission}</div>
+        <div class="tags"><span class="tag">${lesson.concept}</span><span class="tag">${lesson.place}</span></div>
+        <div class="start">להתחיל משימה ←</div>
+      </a>
+    `).join('');
+  </script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>

@@ -10,16 +10,19 @@
   <style>
     :root { --purple:#6c5ce7; --blue:#00b4d8; --green:#00b894; --yellow:#fdcb6e; --dark:#2d3436; }
     * { box-sizing: border-box; }
+
     body { margin:0; font-family:'Rubik',Arial,sans-serif; direction:rtl; background:linear-gradient(135deg,#6c5ce7,#00b4d8); color:var(--dark); min-height:100vh; overflow:auto; }
     /* slide-balanced-frame-v9 */
     .deck { width:100%; min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:24px 24px 92px; }
     .slide { display:none; width:min(1180px, calc(100vw - 48px)); max-width:none; min-height:calc(100vh - 116px); background:rgba(255,255,255,.98); border-radius:34px; padding:50px 58px; box-shadow:0 25px 70px rgba(0,0,0,.24); position:relative; overflow:visible; }
     .slide.active { display:flex; flex-direction:column; justify-content:flex-start; }
     .slide-content { width:100%; min-height:calc(100vh - 222px); overflow:visible; padding-left:10px; display:flex; flex-direction:column; }
+
     .slide-content::-webkit-scrollbar { width:10px; }
     .slide-content::-webkit-scrollbar-track { background:rgba(108,92,231,.08); border-radius:999px; }
     .slide-content::-webkit-scrollbar-thumb { background:rgba(108,92,231,.38); border-radius:999px; border:2px solid rgba(255,255,255,.9); }
     .slide-content::-webkit-scrollbar-thumb:hover { background:rgba(108,92,231,.58); }
+
     /* slide-main-text-box-v7 - compact text cards */
     .slide-content > p {
       background:#f7f9fc;
@@ -30,6 +33,7 @@
       text-align:right;
       box-shadow:0 10px 24px rgba(108,92,231,.12);
       margin:14px 0 0;
+
     }
     .kicker { color:var(--purple); font-weight:900; margin-bottom:12px; }
     h1 { font-size:clamp(2.4rem,6vw,5rem); margin:0 0 18px; }
@@ -42,6 +46,7 @@
       background:#f7f9fc;
       border-right:8px solid var(--purple);
       border-radius:24px;
+
       padding:16px 18px;
       margin:10px 0;
       min-height:0;
@@ -53,18 +58,25 @@
     .teacher-box.no-scroll { overflow:visible; max-height:none; }
     /* slide-panel-size-v6 */
     .two-cols { display:grid; grid-template-columns:1fr 1fr; gap:22px; align-items:stretch; }
+
     .two-cols .teacher-box { min-height:0; }
     /* slide-block-overlap-fix-v23 */
     .code-blocks { display:grid; gap:8px; margin-top:10px; direction:rtl; align-content:start; }
+
+
     .blockly-solution {
       background:#f8fafc;
       border:3px dashed #dbe4ff;
       border-radius:24px;
+
+
       padding:24px 26px;
       margin:14px 0;
       min-height:0;
+
       max-height:calc(100vh - 300px);
       overflow-y:auto;
+
     }
     .blockly-caption { color:var(--purple); font-weight:900; margin-bottom:10px; font-size:1.1rem; }
     .solution-title { font-size:clamp(1.55rem,3.1vw,2.6rem); margin-bottom:10px; }
@@ -79,11 +91,13 @@
       background:var(--block-color);
       border:3px solid rgba(0,0,0,.18);
       border-radius:14px 14px 14px 14px;
+
       padding:8px 14px 8px 12px;
       font-size:clamp(.82rem,1.15vw,1rem);
       font-weight:900;
       box-shadow:0 3px 0 rgba(0,0,0,.16), inset 0 2px 0 rgba(255,255,255,.18);
       margin:0 0 1px auto;
+
       text-shadow:0 1px 1px rgba(0,0,0,.18);
     }
     .visual-block::before {
@@ -131,11 +145,13 @@
       background:#fff7ed;
       border-right:8px solid #fb923c;
       border-radius:22px;
+
       padding:22px 24px;
       margin-top:14px;
       min-height:0;
       display:flex;
       align-items:flex-start;
+
       font-size:clamp(1rem,1.6vw,1.25rem);
       line-height:1.55;
     }
@@ -145,8 +161,10 @@
     .card {
       background:#f7f9fc;
       border-radius:24px;
+
       padding:24px 26px;
       min-height:150px;
+
       font-size:1.3rem;
       font-weight:800;
       display:flex;
@@ -189,9 +207,13 @@
       .time-badge{font-size:1rem;padding:7px 12px;margin-bottom:10px;}
       .two-cols,.cards{grid-template-columns:1fr;gap:10px;}
       .card{padding:40px 28px;min-height:260px;font-size:1.05rem;border-radius:18px;}
+
+
       .slide-content > p{padding:20px 18px;border-radius:18px;margin:10px 0;text-align:right;}
       .teacher-box,.teacher-note{padding:24px 18px;border-radius:22px;margin:14px 0;min-height:0;max-height:none;overflow:visible;}
       .blockly-solution{padding:24px 18px;border-radius:22px;margin:14px 0;min-height:0;max-height:70svh;overflow-y:auto;}
+
+
       .teacher-box h3{font-size:1.05rem;}
       .exercise-kind{font-size:.95rem;padding:7px 11px;line-height:1.25;}
       .emoji{font-size:4rem;margin-bottom:10px;}
@@ -210,16 +232,21 @@
       button,.back{padding:9px 10px;font-size:.84rem;}
       .nav-actions{gap:4px;}
     }
+    body.presentation-page .rfw-button { bottom: 92px !important; }
+    @media (max-width:640px){
+      body.presentation-page .rfw-button { bottom: 86px !important; }
+    }
     @media (max-height:520px) and (orientation:landscape){
       .deck{padding-bottom:74px;}
       .slide{min-height:calc(100svh - 90px);}
       .emoji{font-size:3rem;}
       .nav{padding:5px 8px;}
       button,.back{padding:7px 10px;}
+      body.presentation-page .rfw-button { bottom: 74px !important; }
     }
   </style>
 </head>
-<body>
+<body class="presentation-page">
   <main class="deck" id="deck"></main>
   <nav class="nav">
     <button onclick="prevSlide()">→ הקודם</button>
@@ -230,7 +257,9 @@
     </div>
   </nav>
 
-  <script src="../js/lessons-data.js?v=20260719-lesson13-full-deck-burglar-ex1"></script>
+
+  <script src="../js/lessons-data.js?v=20260720-lesson11-13-merge-v1"></script>
+
   <script>
     const params = new URLSearchParams(window.location.search);
     const lesson = window.getSensiLesson(params.get('id') || params.get('lesson'));
@@ -253,6 +282,7 @@
         .replace(/^מתחת להודעה, עדיין בתוך ה[”"]?אם[”"]?:\s*/,'')
         .replace(/^מתחת ל“עצור רכב”, עדיין בתוך ה[”"]?אם[”"]?:\s*/,'')
         .replace(/^עדיין בתוך ה[”"]?אם[”"]?:\s*/,'')
+        .replace(/^בתוך ההשקיה:\s*/,'')
         .trim();
     }
 
@@ -260,8 +290,9 @@
       const label = normalizeBlockLabel(text);
       if (/כאשר|לוחצים/.test(label)) return 'event';
       if (/^אם/.test(label)) return 'control if-block';
-      if (/חיישן|מריח|נוגע|עוצמת|רעש|אור/.test(label) && !/^אם/.test(label)) return 'sensor';
+      if (/חיישן|מריח|נוגע|עוצמת|רעש|אור|אדמה|יום חם|יום נעים|מצב המים/.test(label) && !/^אם/.test(label)) return 'sensor';
       if (/זוז|סובב|רכב|אחורה|קדימה/.test(label)) return 'motion';
+      if (/חזור תמיד|חכה/.test(label)) return 'control';
       if (/עצור תוכנית/.test(label)) return 'stop';
       if (/עצור רכב|עצור$/.test(label)) return 'motion';
       if (/השמע|אזעקה|ביפ/.test(label)) return 'sound';
@@ -274,18 +305,34 @@
       return /^בתוך|^מתחת|^עדיין/.test(String(text || '').trim());
     }
 
+    function expandAnswerBlocks(answerBlocks) {
+      return (answerBlocks || []).flatMap((block) => {
+        const text = String(block || '');
+        if (!text.includes('→')) return [block];
+        const parts = text.split('→').map(part => part.trim()).filter(Boolean);
+        const rawCondition = parts.shift() || '';
+        const conditionPrefix = rawCondition.match(/^\s*(בתוך[^:]+:\s*)/)?.[1] || '';
+        let condition = rawCondition.replace(/^\s*בתוך[^:]+:\s*/, '').trim();
+        if (!/^אם\s+/.test(condition) && /[=?:]|יש|אין|חיישן|מצב|יום|לילה|חשוך|בהיר|חם|נעים|דרוכה|תנועה|עשן|קיר|קו|צבע/.test(condition)) {
+          condition = `אם ${condition.replace(/:$/, '')}`;
+        }
+        const actions = parts.flatMap(part => part.split('+')).map(action => action.trim()).filter(Boolean);
+        return [conditionPrefix + condition, ...actions.map(action => `${conditionPrefix || 'בתוך ה”אם”: '}${action}`)];
+      });
+    }
+
     function renderVisualBlock(text) {
       const label = normalizeBlockLabel(text);
-      const cls = blockClass(text);
+      const cls = `${blockClass(text)}${isNestedAnswerLine(text) ? ' nested' : ''}`;
       if (/^אם\s+/.test(label)) {
         const condition = label.replace(/^אם\s+/, '').trim();
         return `<div class="visual-block ${cls}">אם <span class="condition-pill">${escapeHtml(condition)}</span> אז</div>`;
       }
-      return `<div class="visual-block ${cls}${isNestedAnswerLine(text) ? ' nested' : ''}">${escapeHtml(label)}</div>`;
+      return `<div class="visual-block ${cls}">${escapeHtml(label)}</div>`;
     }
 
     function renderSolutionBlocks(answerBlocks) {
-      const blocks = answerBlocks || [];
+      const blocks = expandAnswerBlocks(answerBlocks);
       const showConnectors = Number(lesson.id) !== 12;
       const html = blocks.map((block, index) => {
         const current = renderVisualBlock(block);
@@ -321,11 +368,23 @@
       ...exerciseSlidesForStep(step)
     ]);
 
-    const introSlides = Number(lesson.id) === 14 ? [
+    const introSlides = Number(lesson.id) === 10 ? [
+      { html: `<div class="emoji">🌿</div><div class="kicker">שיעור 10 • גינת טפטפות עירונית</div><h1>הצלת הגינה מצמא</h1><p>הגינה עלולה להיות צמאה, אבל לא תמיד צריך להשקות. סנסי בודק אדמה וחום, קורא מד חיסכון במים, משקה רק כשהאדמה יבשה, ובוחר 5 או 10 שניות לפי מזג האוויר.</p>` },
+      { html: `<h2>🎬 עלילת השיעור</h2><div class="cards"><div class="card">🥀 הצמחים שולחים קריאת מצוקה</div><div class="card">🌱☀️ סנסי בודק אדמה וחום</div><div class="card">💧 הטפטפות נפתחות רק כשצריך</div></div>` },
+      { html: `<h2>👁️ החיישנים בגינה</h2><ul><li><strong>חיישן אדמה</strong> — האם האדמה יבשה וצמאה וצריך להשקות?</li><li><strong>חיישן חום</strong> — תרחיש שאפשר להפעיל/לכבות: אם כבר צריך להשקות, האם משקים 5 שניות ביום נעים או 10 שניות ביום חם?</li><li><strong>מד מצב מים</strong> — לא כפתור נפרד: המד משתנה לפי האדמה והטפטפות, ואפשר לקרוא אותו בבלוק תנאי: יבש, תקין או עודף מים.</li></ul>` },
+      { html: `<h2>🧱 הבלוקים המרכזיים</h2><div class="cards"><div class="card">אם אדמה יבשה וצמאה</div><div class="card">אם יום חם בגינה</div><div class="card">אם מצב המים = יבש</div><div class="card">אם מצב המים = תקין</div><div class="card">אם מצב המים = עודף מים</div><div class="card">אמור הודעת גנן</div><div class="card">פתח טפטפות</div><div class="card">חכה 5 שניות</div><div class="card">חכה 10 שניות</div><div class="card">סגור טפטפות לחיסכון</div></div>` },
+      { html: `<h2>✅ מה נבנה?</h2><ul><li>מערכת גינה שקוראת מד חיסכון במים.</li><li>השקיה חכמה רק כשהאדמה יבשה — 5 שניות ביום נעים או 10 שניות ביום חם, ואז סוגרים כדי לא לבזבז מים.</li><li>תגובה שונה למצבי יבש / תקין / עודף מים.</li></ul>` }
+    ] : Number(lesson.id) === 11 ? [
+      { html: `<div class="emoji">🏛️</div><div class="kicker">שיעור 11 • מוזיאון חכם</div><h1>משמרת לילה במוזיאון החכם</h1><p>המוזיאון נסגר, גביע נדיר נשאר באולם המרכזי, וסנסי מקבל משמרת שמירה. המשימה: לא להבהיל במצב רגוע — אבל לזהות רמז חשוד כשהשמירה דרוכה.</p>` },
+      { html: `<h2>🎬 פתיחת התעלומה</h2><div class="cards"><div class="card">🏆 הגביע הנדיר נשאר באולם</div><div class="card">🌙 חשוך / 👥 יותר מדי מבקרים / 🚪 דלת פתוחה — תנאים שהתלמידים בודקים</div><div class="card">✋ נגיעה בכספת או 🚪 דלת צדדית פתוחה הם רמזים חשודים</div></div>` },
+      { html: `<h2>👁️ החיישנים של השומר</h2><ul><li><strong>מצב שמירה</strong> — האם התלמידים דרכו אותה בעזרת בלוק פעולה?</li><li><strong>יותר מדי מבקרים</strong> — האם יש עומס ליד המוצג?<br><strong>נגיעה בכספת</strong> — האם מישהו נוגע בכספת?</li><li><strong>דלת צדדית</strong> — האם הדלת הצדדית נפתחה?</li></ul>` },
+      { html: `<h2>🧱 הבלוקים המרכזיים</h2><div class="cards"><div class="card">אם 👁️ חיישן אור = חשוך</div><div class="card">אם 👥 יותר מדי מבקרים</div><div class="card">אם 🚪 דלת צדדית פתוחה</div><div class="card">🔐 שמירה — דרוך</div><div class="card">אם 🔐 מערכת שמירה דרוכה</div><div class="card">אם 👥 יותר מדי מבקרים</div><div class="card">אם ✋ נגיעה בכספת</div><div class="card">אם 🚪 דלת צדדית פתוחה</div><div class="card">אמור הודעת שמירה</div><div class="card">חכה 5 שניות</div><div class="card">🚨 אזעקת מוזיאון — הפעל</div></div>` },
+      { html: `<h2>✅ מה נבנה?</h2><ul><li>שומר מוזיאון שלא מפעיל אזעקות שווא.</li><li>תנאי מקונן: קודם דריכה ידנית/אוטומטית, ורק בתוכה בדיקת תנועה או דלת.</li><li>תרחיש עלילתי: רמז חשוד → הודעה → המתנה קצרה → אזעקה.</li></ul>` }
+    ] : Number(lesson.id) === 14 ? [
       { html: `<div class="emoji">🛟</div><div class="kicker">שיעור 14 • זירת חילוץ</div><h1>סיפור חילוץ — הנתיב הבטוח</h1><p>קריאת חירום מגיעה מהמגדל: יש חום מסוכן, עשן וחסם במסלול. סנסי צריך לזהות את הסכנה, להפעיל עזרה, ורק אז לבחור נתיב בטוח.</p>` },
       { html: `<h2>🎬 עלילת השיעור</h2><div class="cards"><div class="card">🚨 המגדל שולח קריאת חירום</div><div class="card">🔥💨🪨 סנסי בודק סכנות</div><div class="card">🚁🛟 סנסי בוחר נתיב בטוח</div></div>` },
       { html: `<h2>👁️ החיישנים בסיפור</h2><ul><li><strong>חום מסוכן</strong> — לא נכנסים לאזור חם.</li><li><strong>עשן בזירה</strong> — מפעילים אזעקה ומזהירים.</li><li><strong>חסם במסלול</strong> — בוחרים דרך חלופית.</li></ul>` },
-      { html: `<h2>🧱 הבלוקים המרכזיים</h2><div class="cards"><div class="card">אם חום מסוכן</div><div class="card">אם עשן בזירה</div><div class="card">אם חסם במסלול</div><div class="card">הפעל אזעקה</div><div class="card">הפעל רחפן חילוץ</div><div class="card">בחר נתיב בטוח</div></div>` },
+      { html: `<h2>🧱 הבלוקים המרכזיים</h2><div class="cards"><div class="card">אם חום מסוכן</div><div class="card">אם עשן בזירה</div><div class="card">אם חסם במסלול</div><div class="card">אמור הודעת חילוץ</div><div class="card">הפעל אזעקה</div><div class="card">הפעל רחפן חילוץ</div><div class="card">בחר נתיב בטוח</div><div class="card">עקוף לפי נתיב בטוח</div><div class="card">התקדם בזהירות</div></div>` },
       { html: `<h2>✅ מה נבנה?</h2><ul><li>רצף חילוץ ברור: קריאה → בדיקת סכנות → פעולה.</li><li>תגובה שונה לכל סכנה.</li><li>בחירת נתיב בטוח לפני תנועה.</li></ul>` }
     ] : [
       { html: `<div class="emoji">${lesson.emoji}</div><div class="kicker">שיעור ${lesson.id} • ${lesson.cityZone}</div><h1>${lesson.title}</h1><p>${lesson.story}</p>` },
@@ -342,7 +401,11 @@
       ...flowSlides,
       { html: Number(lesson.id) === 14
         ? `<h2>💬 שאלת סיכום</h2><p>איזו סכנה סנסי צריך לבדוק קודם — חום, עשן או חסם? למה?</p><p><strong>משפט סיכום:</strong> חיישן סכנה → החלטה → פעולה בטוחה.</p>`
-        : `<h2>💬 שאלת סיכום</h2><p>${lesson.teacherNotes.discussionQuestions[0] || 'איפה עוד בעיר אפשר להשתמש ברעיון הזה?'}</p><p><strong>משפט סיכום:</strong> חיישן → תנאי → פעולה.</p>` }
+        : Number(lesson.id) === 10
+          ? `<h2>💬 שאלת סיכום</h2><p>${lesson.teacherNotes.discussionQuestions[0] || 'איפה עוד בעיר אפשר להשתמש ברעיון הזה?'}</p><p><strong>משפט סיכום:</strong> אדמה קובעת אם משקים · חום קובע כמה זמן · טפטפות נסגרות לחיסכון</p>`
+          : Number(lesson.id) === 11
+            ? `<h2>💬 שאלת סיכום</h2><p>למה לא מפעילים אזעקה על כל תנועה?</p><p><strong>משפט סיכום:</strong> חיישן → תנאי → פעולה.</p>`
+            : `<h2>💬 שאלת סיכום</h2><p>${lesson.teacherNotes.discussionQuestions[0] || 'איפה עוד בעיר אפשר להשתמש ברעיון הזה?'}</p><p><strong>משפט סיכום:</strong> חיישן → תנאי → פעולה.</p>` }
     ];
 
     document.getElementById('deck').innerHTML = slides.map((slide, index) => `<section class="slide ${index === 0 ? 'active' : ''}"><div class="slide-content">${slide.html}</div></section>`).join('');
@@ -359,6 +422,6 @@
     });
     render();
   </script>
-  <script src="../js/feedback-widget.js?v=20260711-feedback"></script>
+  <script src="../js/feedback-widget.js?v=20260719-feedback-slides-v5"></script>
 </body>
 </html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">🎬 סיסי מביימת רובוטים</title>
+  <meta name="description" content="משחק שיעור 13: בוחרים ומסדרים פקודות רובוט לאלגוריתם מצולם." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/cinema.css?v=20260717-cinema-1">
+</head>
+<body>
+  <main class="shell">
+    <header class="play-header">
+      <div><div class="kicker" id="page-subtitle">שיעור 13 • אלגוריתם רובוטי</div><h1>🎬 סיסי מביימת רובוטים</h1></div>
+      <nav class="lesson-nav" id="lesson-nav" aria-label="מעבר בין סרטים"></nav>
+    </header>
+
+    <section class="movie-card">
+      <div class="big-emoji" id="lesson-emoji" aria-hidden="true">🎬</div>
+      <div><h2 id="lesson-heading">סרט קצר</h2><p id="story"></p><span class="goal-chip" id="goal"></span><div class="learning-note" id="learning-note"></div></div>
+    </section>
+
+    <section class="cinema-layout">
+      <div class="scene-panel"><h2>בנק פקודות הרובוט</h2><p>בחרו 3 פקודות מתוך 4. אחת הפקודות מיותרת ולא מקדמת את המטרה.</p><div class="scene-grid" id="scene-bank"></div></div>
+      <div class="timeline-panel"><h2>האלגוריתם המצולם שלי</h2><div class="timeline" id="timeline"></div><h2>למה האלגוריתם עובד?</h2><div class="scene-grid" id="reason-options"></div><div class="controls"><button class="btn" id="check" type="button">✅ לבדוק אלגוריתם</button><button class="btn secondary" id="hint" type="button">💡 רמז</button><button class="btn secondary" id="clear" type="button">🔄 לנקות</button><a class="btn secondary" href="cinema.html">🎬 עמוד השיעור</a></div><div class="result" id="result" aria-live="polite"></div><div class="next-step" id="next-step"></div></div>
+    </section>
+  </main>
+  <script src="js/cinema-lessons.js?v=20260717-cinema-1"></script>
+  <script src="js/course-certificate.js?v=20260717-cert-1"></script>
+  <script src="js/cinema-play.js?v=20260717-cinema-1"></script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>

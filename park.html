@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎡 שיעור 11: סיסי בלונה פארק - פקודות עם הגדרות לכיתות ב׳</title>
+  <meta name="description" content="שיעור 11 לכיתות ב׳: סיסי בלונה פארק מלמדת פקודה עם הגדרה/פרמטר דרך מתקנים, מהירות ועוצמה." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/park.css?v=20260717-park-1">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero"><div>
+      <div class="kicker">שיעור 11 • פקודה עם הגדרה • כיתות ב׳ • 75 דקות</div>
+      <h1>🎡 סיסי בלונה פארק</h1>
+      <p>סיסי מפעילה לונה פארק קטן. בכל משימה הילדים בוחרים מתקן וגם הגדרה מתאימה — לאט, בינוני או חזק. כך לומדים שפקודה יכולה לקבל “ערך” בלי להסתבך.</p>
+      <div class="actions">
+        <a class="btn" href="park-play.html?lesson=1">▶️ להתחיל מתקן 1</a>
+        <a class="btn secondary" href="#missions">🎠 לראות מתקנים</a>
+        <a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a>
+        <a class="btn secondary" href="garden.html">🌱 שיעור 10: גינת קסמים</a>
+        <a class="btn secondary" href="mail.html">✉️ שיעור 12: דואר קסום</a>
+        <a class="btn secondary" href="park-lab.html">🎡 מעבדת מתקנים</a>
+      </div>
+    </div><div class="hero-art" aria-hidden="true">🤖🎡</div></section>
+
+    <section class="stats" aria-label="נתוני שיעור הלונה פארק">
+      <div class="stat"><b>שיעור 11</b>לונה פארק</div>
+      <div class="stat"><b>75</b>דקות</div>
+      <div class="stat"><b>פקודה + ערך</b>רעיון מרכזי</div>
+      <div class="stat"><b>קל</b>בחירה אינטואיטיבית</div>
+    </section>
+
+    <section class="intro">
+      <div class="panel"><h2>מה חדש בשיעור הזה?</h2><p>הילדים כבר בחרו פעולה בעבר. כאן הם לומדים שאותה פעולה יכולה להגיע עם הגדרה: מהירות נמוכה, בינונית או גבוהה. זה בסיס עדין לרעיון של פרמטר.</p></div>
+      <div class="panel"><h3>מה לומדים בלי להרגיש?</h3><ul><li>פקודה יכולה לקבל הגדרה</li><li>מהירות / עוצמה / כמות</li><li>בחירת ערך לפי צורך</li><li>דיבוג של מתקן נכון אבל הגדרה לא נכונה</li><li>שיעור מומלץ: מתקנים 1–4 לכל הכיתה, 5–12 להרחבה ותרגול</li></ul></div>
+    </section>
+
+    <section id="missions"><h2>מתקני הלונה פארק של סיסי</h2><div class="cards" id="cards"></div></section>
+  </main>
+  <script src="js/park-lessons.js?v=20260717-park-1"></script>
+  <script>
+    document.getElementById('cards').innerHTML = window.PARK_LESSONS.map((lesson) => `
+      <a class="card" href="park-play.html?lesson=${lesson.id}" aria-label="פתח מתקן ${lesson.id}: ${lesson.title}">
+        <div class="top"><span class="emoji">${lesson.emoji}</span><span class="id">מתקן ${lesson.id}</span></div>
+        <h3>${lesson.title}</h3><div class="unit">${lesson.unit}</div><div class="story">${lesson.story}</div>
+        <div class="tags"><span class="tag">${lesson.concept}</span><span class="tag">הגדרות</span></div><div class="start">להגדיר מתקן ←</div>
+      </a>`).join('');
+  </script>
+  <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
+</body>
+</html>

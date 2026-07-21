@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎮 PlayCode Lab — תרגול</title>
+  <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+  <script src="https://unpkg.com/blockly/msg/he.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}:root{--ink:#0f172a;--cyan:#22d3ee;--pink:#f472b6;--purple:#8b5cf6;--green:#22c55e;--gold:#facc15}body{margin:0;height:100vh;overflow:hidden;font-family:Rubik,Arial,sans-serif;direction:rtl;background:linear-gradient(135deg,#111827,#312e81 52%,#701a75);color:var(--ink);display:flex;flex-direction:column}.topbar{background:rgba(255,255,255,.96);box-shadow:0 5px 22px rgba(0,0,0,.18);padding:.6rem .85rem;display:grid;grid-template-columns:minmax(210px,auto) minmax(0,1fr) auto;gap:.65rem;align-items:center;z-index:5}.brand{font-weight:900;font-size:1.08rem;white-space:nowrap}.tabs{display:flex;gap:.25rem;overflow-x:auto;justify-content:center}.tab{border:2px solid #e5e7eb;background:white;border-radius:999px;min-width:40px;height:38px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-weight:900;flex:0 0 auto}.tab.active{background:linear-gradient(135deg,var(--cyan),var(--pink));color:#111827;border-color:var(--cyan)}.actions{display:flex;gap:.45rem}.btn{border:0;border-radius:999px;padding:.62rem .95rem;font-family:inherit;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.32rem}.run{background:#00e096;color:#052e16}.reset{background:#fb7185;color:white}.link{background:#eef2ff;color:#3730a3}.main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(380px,45%) minmax(0,1fr);gap:1rem;padding:1rem}.panel{background:rgba(255,255,255,.96);border-radius:28px;box-shadow:0 18px 48px rgba(0,0,0,.2);min-height:0;overflow:hidden;display:flex;flex-direction:column}.lesson-info{padding:1rem 1.1rem;border-bottom:1px solid #e5e7eb}.lesson-info h1{font-size:1.45rem;margin:.15rem 0}.lesson-info p{margin:.3rem 0;line-height:1.55}.chips{display:flex;gap:.42rem;flex-wrap:wrap;margin-top:.5rem}.chip{background:#f0f9ff;color:#075985;border-radius:999px;padding:.3rem .62rem;font-weight:900;font-size:.8rem}.stage-wrap{padding:1rem;display:grid;gap:.8rem;min-height:0;flex:1}.status{display:grid;grid-template-columns:repeat(4,1fr);gap:.45rem}.status div{background:#f8fafc;border-radius:15px;padding:.62rem;text-align:center;font-weight:900;font-size:.85rem}.status b{display:block;color:#7c3aed;font-size:1.1rem}.stage{position:relative;min-height:255px;flex:1;border:6px solid #1e293b;border-radius:20px;overflow:hidden;background:linear-gradient(#7dd3fc 0 58%,#86efac 58% 100%);box-shadow:inset 0 -38px #a16207}.hero{position:absolute;right:52%;bottom:64px;width:58px;height:72px;z-index:4;transition:.28s;filter:drop-shadow(0 6px 0 rgba(0,0,0,.18))}.hero .head{width:38px;height:38px;border-radius:16px 16px 12px 12px;background:var(--heroColor,#f472b6);margin:auto;border:4px solid #111827;position:relative}.hero .head:before,.hero .head:after{content:'';position:absolute;top:13px;width:6px;height:6px;background:#111827;border-radius:50%}.hero .head:before{right:8px}.hero .head:after{left:8px}.hero .body{width:48px;height:34px;border-radius:14px;background:#38bdf8;border:4px solid #111827;margin:-2px auto 0}.item,.enemy,.obstacle,.gate,.key{position:absolute;font-size:2.1rem;z-index:3}.star{right:22%;bottom:145px}.enemy{left:28%;bottom:70px}.obstacle{right:32%;bottom:62px}.gate{left:8%;bottom:62px}.key{left:48%;bottom:142px}.bubble{position:absolute;right:calc(52% - 80px);bottom:145px;background:white;border:3px solid #111827;border-radius:17px;padding:.55rem .85rem;font-weight:900;max-width:250px;display:none;z-index:8}.bubble.show{display:block}.creator{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}.creator label{display:grid;gap:.25rem;font-weight:900;font-size:.86rem}.creator input,.creator select{border:2px solid #e5e7eb;border-radius:14px;padding:.58rem;font-family:inherit;font-weight:800}.director{background:linear-gradient(135deg,#fdf2f8,#eff6ff);border:1px solid #e9d5ff;border-radius:18px;padding:.85rem;line-height:1.55}.director b{color:#7e22ce}.exercise-list{background:#f8fafc;border-radius:18px;padding:.85rem;max-height:170px;overflow:auto;border:1px solid #e5e7eb}.exercise{background:white;border-radius:14px;padding:.65rem .75rem;margin-bottom:.5rem;border-right:5px solid var(--purple);line-height:1.45}.exercise b{display:block}.code-head{padding:1rem 1.1rem;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;gap:.8rem;align-items:center}.code-head h2{margin:0;font-size:1.18rem}.blockly-area{flex:1;min-height:0}#blocklyDiv{height:100%;width:100%}.mobile-warning{display:none;background:#fff7ed;padding:.8rem 1rem;border-bottom:1px solid #fed7aa;font-weight:800}@media(max-width:920px){body{height:auto;min-height:100vh;overflow:auto}.topbar{grid-template-columns:1fr}.tabs{justify-content:flex-start}.actions{justify-content:stretch}.actions .btn,.actions a{flex:1}.main{display:flex;flex-direction:column;padding:.75rem}.panel.code{min-height:560px;order:1}.panel.world{order:2}.mobile-warning{display:block}.status{grid-template-columns:repeat(2,1fr)}.creator{grid-template-columns:1fr}.stage{min-height:240px}}@media(max-width:520px){.main{padding:.55rem}.lesson-info h1{font-size:1.22rem}.btn{font-size:.88rem;padding:.55rem .7rem}.stage{min-height:220px}.panel{border-radius:20px}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">🎮 PlayCode Lab</div>
+    <nav class="tabs" id="tabs"></nav>
+    <div class="actions">
+      <button class="btn run" onclick="runProgram()">▶️ הרצה</button>
+      <button class="btn reset" onclick="resetGame()">↺ איפוס</button>
+      <a class="btn link" id="slidesLink" href="gamelab-slides.html">מצגת</a>
+      <a class="btn link" href="gamelab.html">כל השיעורים</a>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="panel world">
+      <div class="lesson-info">
+        <div class="chip" id="concept"></div>
+        <h1 id="title"></h1>
+        <p id="story"></p>
+        <div class="chips"><span class="chip" id="mission"></span><span class="chip" id="outcome"></span></div>
+      </div>
+      <div class="stage-wrap">
+        <div class="status"><div><b id="score">0</b>ניקוד</div><div><b id="lives">3</b>חיים</div><div><b id="timer">90</b>זמן</div><div><b id="level">1</b>שלב</div></div>
+        <div class="stage" id="stage">
+          <div class="bubble" id="bubble">שלום!</div>
+          <div class="hero" id="hero"><div class="head"></div><div class="body"></div></div>
+          <div class="item star" id="star">⭐</div><div class="enemy" id="enemy">👾</div><div class="obstacle" id="obstacle">🌋</div><div class="key" id="key">🗝️</div><div class="gate" id="gate">🚪</div>
+        </div>
+        <div class="creator">
+          <label>שם הדמות <input id="heroName" value="נובה" oninput="updateHero()"></label>
+          <label>צבע דמות <select id="heroColor" onchange="updateHero()"><option value="#f472b6">ורוד</option><option value="#38bdf8">כחול</option><option value="#22c55e">ירוק</option><option value="#facc15">צהוב</option><option value="#a78bfa">סגול</option></select></label>
+          <label>כוח מיוחד <select id="heroPower"><option>מהירות</option><option>מגן</option><option>קפיצה</option><option>בלתי־נראות קצרה</option></select></label>
+          <label>שם המשחק <input id="gameName" value="מסע הכוכבים"></label>
+        </div>
+        <div class="director"><b>🤖 במאי המשחק החכם:</b> <span id="directorTip"></span><br><button class="btn link" onclick="newAiChallenge()">✨ תן לי אתגר חדש</button> <span id="aiChallenge"></span></div>
+        <div class="exercise-list" id="exercises"></div>
+      </div>
+    </section>
+
+    <section class="panel code">
+      <div class="mobile-warning">בטאבלט/נייד מומלץ לסובב לרוחב. הבלוקים עובדים גם לאורך.</div>
+      <div class="code-head"><h2>🧩 אזור Blockly</h2><div>חברו בלוקים מתחת להתחלה והריצו</div></div>
+      <div class="blockly-area"><div id="blocklyDiv"></div></div>
+    </section>
+  </main>
+
+  <script src="js/gamelab-lessons.js?v=20260717-1"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const lesson = window.getGameLabLesson(params.get('lesson'));
+    const labels = window.GAMELAB_BLOCK_LABELS;
+    let workspace;
+    let state = { score:0, lives:3, timer:90, level:1, x:52, y:64, hasKey:false, enemyDir:1 };
+    const defs = [
+      ['event_start','כאשר לוחצים התחלה',40],['event_key','כאשר לוחצים מקש %1',40,'field_dropdown','KEY',[['חץ ימינה','right'],['חץ שמאלה','left'],['חץ למעלה','up'],['רווח','space']]],
+      ['create_hero','צור דמות',290],['say','אמור %1',290,'field_input','TEXT','המשחק מתחיל!'],['set_goal','קבע מטרה: אספו כוכבים',65],['move_hero','הזז דמות %1',210,'field_dropdown','DIR',[['ימינה','right'],['שמאלה','left'],['למעלה','up'],['למטה','down']]],['keep_inside','שמור בתוך המסך',210],['spawn_star','צור כוכב',55],['if_touching_star','אם הדמות נוגעת בכוכב אז %1 %2',20,'statement'],['hide_star','הסתר כוכב',55],['change_score','הוסף 1 לניקוד',45],['spawn_obstacle','צור מכשול',10],['if_touching_obstacle','אם נוגעים במכשול אז %1 %2',20,'statement'],['reset_hero','החזר דמות להתחלה',210],['set_lives','קבע 3 חיים',0],['change_lives','הורד חיים אחד',0],['game_over','הפסד / סיום משחק',0],['spawn_enemy','צור אויב',15],['forever','חזור לעד %1 %2',120,'statement'],['move_enemy','הזז אויב',15],['bounce_enemy','החלף כיוון בקצה',15],['place_wall','הצב קיר',120],['place_gate','הצב שער',120],['show_hint','הצג רמז %1',300,'field_input','TEXT','חפשו מפתח'],['spawn_key','צור מפתח',45],['if_touching_key','אם נוגעים במפתח אז %1 %2',20,'statement'],['set_has_key','סמן שיש מפתח',45],['if_has_key_at_gate','אם יש מפתח ונוגעים בשער אז %1 %2',20,'statement'],['win_game','ניצחון',65],['activate_power','הפעל כוח מיוחד',260],['speed_boost','מהירות כפולה',260],['shield','מגן זמני',260],['start_timer','הפעל טיימר 90',180],['if_time_up','אם הזמן נגמר אז %1 %2',20,'statement'],['if_win_level','אם ניצחנו שלב אז %1 %2',20,'statement'],['next_level','עבור לשלב הבא',180],['show_start_screen','הצג מסך פתיחה',290],['show_win_screen','הצג מסך ניצחון',65],['show_lose_screen','הצג מסך הפסד',0],['ask_tester','בקש בדיקה מחבר',200],['fix_bug','תקן באג',200],['balance_game','אזן קושי',200],['show_title','הצג שם משחק',290],['show_credits','הצג יוצר/ת',290]
+    ];
+    const jsonBlocks = defs.map(d => {
+      if(d[3] === 'statement') return {type:d[0],message0:d[1],args0:[{type:'input_dummy'},{type:'input_statement',name:'DO'}],previousStatement:null,nextStatement:null,colour:d[2]};
+      if(d[3] === 'field_dropdown') return {type:d[0],message0:d[1],args0:[{type:'field_dropdown',name:d[4],options:d[5]}],previousStatement:null,nextStatement:null,colour:d[2]};
+      if(d[3] === 'field_input') return {type:d[0],message0:d[1],args0:[{type:'field_input',name:d[4],text:d[5]}],previousStatement:null,nextStatement:null,colour:d[2]};
+      return {type:d[0],message0:d[1],previousStatement:null,nextStatement:null,colour:d[2],hat:d[0]==='event_start'?'cap':undefined};
+    });
+    Blockly.defineBlocksWithJsonArray(jsonBlocks);
+    function init(){
+      document.title = `🎮 שיעור ${lesson.id}: ${lesson.title}`;
+      document.getElementById('title').textContent = `שיעור ${lesson.id}: ${lesson.title}`;
+      document.getElementById('story').textContent = lesson.story;
+      document.getElementById('concept').textContent = lesson.concept;
+      document.getElementById('mission').textContent = `משימה: ${lesson.mission}`;
+      document.getElementById('outcome').textContent = `תוצר: ${lesson.outcome}`;
+      document.getElementById('directorTip').textContent = lesson.directorTip;
+      document.getElementById('aiChallenge').textContent = lesson.aiChallenge;
+      document.getElementById('slidesLink').href = `gamelab-slides.html?lesson=${lesson.id}`;
+      document.getElementById('tabs').innerHTML = window.GAMELAB_LESSONS.map(l => `<a class="tab ${l.id===lesson.id?'active':''}" href="gamelab-play.html?lesson=${l.id}">${l.id}</a>`).join('');
+      document.getElementById('exercises').innerHTML = '<h3>🧪 משימות פיתוח</h3>' + lesson.exercises.map((ex,i)=>`<div class="exercise"><b>${i+1}. ${ex.title}</b>${ex.prompt}<br><small>בלוקים: ${ex.blocks.join(' ← ')}</small></div>`).join('');
+      workspace = Blockly.inject('blocklyDiv',{rtl:true,trashcan:true,scrollbars:true,toolbox:toolboxXml()});
+      Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(starterXml()), workspace);
+      updateHero(); resetGame();
+    }
+    function toolboxXml(){ const allowed = new Set(['event_start', ...lesson.blocks]); return `<xml>${[...allowed].map(type=>`<block type="${type}"></block>`).join('')}</xml>`; }
+    function starterXml(){ const first=(lesson.blocks||[]).find(b=>b!=='event_start')||'say'; return `<xml><block type="event_start" x="35" y="35"><next><block type="${first}"></block></next></block></xml>`; }
+    function updateHero(){ const color=document.getElementById('heroColor').value; document.getElementById('hero').style.setProperty('--heroColor', color); showBubble(`אני ${document.getElementById('heroName').value}!`); }
+    function render(){ document.getElementById('score').textContent=state.score; document.getElementById('lives').textContent=state.lives; document.getElementById('timer').textContent=state.timer; document.getElementById('level').textContent=state.level; const hero=document.getElementById('hero'); hero.style.right=state.x+'%'; hero.style.bottom=state.y+'px'; }
+    function showBubble(text){ const b=document.getElementById('bubble'); b.textContent=text; b.classList.add('show'); clearTimeout(window.__bubble); window.__bubble=setTimeout(()=>b.classList.remove('show'),2200); }
+    function resetGame(){ state={score:0,lives:3,timer:90,level:1,x:52,y:64,hasKey:false,enemyDir:1}; ['star','enemy','obstacle','key','gate'].forEach(id=>document.getElementById(id).style.display='block'); render(); showBubble('איפוס. מוכנים לפיתוח!'); }
+    function newAiChallenge(){ const list=window.GAMELAB_AI_CHALLENGES; document.getElementById('aiChallenge').textContent = list[Math.floor(Math.random()*list.length)]; }
+    function runProgram(){
+      const types = workspace.getAllBlocks(false).map(b=>b.type);
+      if(types.includes('create_hero')) showBubble(`${document.getElementById('heroName').value} נכנסת למשחק!`);
+      if(types.includes('show_title')) showBubble(document.getElementById('gameName').value);
+      if(types.includes('move_hero')) state.x = Math.max(12, state.x-8);
+      if(types.includes('spawn_star')) document.getElementById('star').style.display='block';
+      if(types.includes('if_touching_star') || types.includes('change_score')) { state.score += 1; document.getElementById('star').style.display='none'; showBubble('+1 נקודה!'); }
+      if(types.includes('spawn_obstacle')) document.getElementById('obstacle').style.display='block';
+      if(types.includes('if_touching_obstacle') || types.includes('change_lives')) { state.lives=Math.max(0,state.lives-1); showBubble('איבדת חיים — בדקו את חוק המשחק'); }
+      if(types.includes('spawn_enemy') || types.includes('move_enemy')) document.getElementById('enemy').style.transform='translateX(-40px)';
+      if(types.includes('spawn_key') || types.includes('set_has_key')) { state.hasKey=true; document.getElementById('key').style.display='none'; showBubble('יש מפתח!'); }
+      if(types.includes('if_has_key_at_gate') || types.includes('win_game')) { state.score += 3; showBubble('ניצחון!'); }
+      if(types.includes('activate_power') || types.includes('speed_boost') || types.includes('shield')) showBubble(`כוח ${document.getElementById('heroPower').value} הופעל!`);
+      if(types.includes('start_timer')) state.timer=45;
+      if(types.includes('next_level')) state.level += 1;
+      if(types.includes('game_over') && state.lives===0) showBubble('המשחק נגמר — נסו לשפר');
+      render();
+      document.getElementById('directorTip').textContent = window.GAMELAB_DIRECTOR_FEEDBACK[Math.floor(Math.random()*window.GAMELAB_DIRECTOR_FEEDBACK.length)];
+    }
+    init();
+  </script>
+  <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
+</body>
+</html>
