@@ -1332,7 +1332,7 @@
         const lesson13HomeGuardBg = new Image();
         lesson13HomeGuardBg.src = 'assets/lesson13-home-guard-background.svg?v=20260719-fence-gate-1';
         lesson13HomeGuardBg.onload = () => {
-            if (currentLesson === 13) draw();
+            if (isLesson13HomeGuardContext()) draw();
         };
 
         const lesson15FriendlyCityBg = new Image();
@@ -1460,6 +1460,8 @@
         const lesson15Zones = [
             { id: 'museum', label: 'מוזיאון', icon: '🏛️', x: .22, y: .25, w: .22, h: .22, color: '#818cf8', problem: 'שמירה על מוצגים' },
             { id: 'school', label: 'בית ספר', icon: '🏫', x: .55, y: .18, w: .24, h: .22, color: '#38bdf8', problem: 'כיתה חכמה וחיסכון' },
+            { id: 'rescue', label: 'חילוץ / חירום', icon: '🛟', x: .84, y: .36, w: .24, h: .22, color: '#ef4444', problem: 'רובוט חילוץ בעיר' },
+            { id: 'security', label: 'סיור אבטחה', icon: '🌙', x: .84, y: .62, w: .24, h: .22, color: '#334155', problem: 'סיור אבטחה סביב בית' },
             { id: 'garden', label: 'חממה / גינה', icon: '🌱', x: .12, y: .45, w: .23, h: .22, color: '#22c55e', problem: 'השקיה חכמה' },
             { id: 'crosswalk', label: 'כביש ומעבר חציה', icon: '🚦', x: .36, y: .43, w: .25, h: .24, color: '#f59e0b', problem: 'בטיחות בדרך' },
             { id: 'grocery', label: 'מכולת', icon: '🏪', x: .66, y: .49, w: .22, h: .24, color: '#fb7185', problem: 'משלוח בטוח' },
@@ -1514,6 +1516,10 @@
                 drawLesson15ZoneActors(selected);
             } else if (selected.id === 'garden' && lesson15GardenInside) {
                 drawLesson10GardenScene({ title: 'החממה החכמה', preserveAspect: false, plantScale: 1.16, greenhouseInterior: true });
+            } else if (selected.id === 'rescue') {
+                drawLesson14RescueScene({ title: 'אזור חילוץ / חירום' });
+            } else if (selected.id === 'security') {
+                drawLesson13SecurityScene();
             } else {
                 const selectedBg = lesson15ZoneBackgrounds[selected.id];
                 if (selectedBg?.complete && selectedBg.naturalWidth > 0) {
@@ -1521,7 +1527,7 @@
                 } else {
                     const gradients = {
                         museum: ['#e0e7ff', '#f8fafc'], school: ['#dbeafe', '#fef3c7'], garden: ['#dcfce7', '#bbf7d0'],
-                        crosswalk: ['#fef9c3', '#e0f2fe'], grocery: ['#fff7ed', '#dbeafe'], homes: ['#ede9fe', '#fef3c7']
+                        crosswalk: ['#fef9c3', '#e0f2fe'], grocery: ['#fff7ed', '#dbeafe'], homes: ['#ede9fe', '#fef3c7'], security: ['#0f172a', '#312e81']
                     }[selected.id] || ['#dbeafe', '#f0f9ff'];
                     const bg2 = ctx.createLinearGradient(0, 0, 0, h);
                     bg2.addColorStop(0, gradients[0]);
@@ -1547,7 +1553,7 @@
             ctx.beginPath();
             const zoneInfoW = 196;
             const zoneInfoX = w - zoneInfoW - 18;
-            const zoneInfoY = selected.id === 'garden' && lesson15GardenInside ? 12 : 86;
+            const zoneInfoY = (selected.id === 'garden' && lesson15GardenInside) || selected.id === 'rescue' || selected.id === 'security' ? 12 : 86;
             ctx.roundRect(zoneInfoX, zoneInfoY, zoneInfoW, 74, 16);
             ctx.fill();
             ctx.stroke();
@@ -1560,13 +1566,29 @@
             ctx.fillStyle = '#334155';
             ctx.fillText('קדימה/אחורה: מעבר אזור', zoneInfoX + zoneInfoW - 14, zoneInfoY + 60);
 
+            drawLesson15BackToMapButton(selected);
+            ctx.restore();
+        }
+
+        function drawLesson15BackToMapButton(selected = lesson15Zones.find(zone => zone.id === lesson15SelectedZone)) {
+            if (currentLesson !== 15 || !selected) return;
+            ctx.save();
             ctx.textAlign = 'center';
-            ctx.fillStyle = 'rgba(15,23,42,.78)';
+            ctx.textBaseline = 'middle';
+            const backButtonDarkScene = selected.id === 'security';
+            ctx.shadowColor = backButtonDarkScene ? 'rgba(56,189,248,.55)' : 'rgba(15,23,42,.25)';
+            ctx.shadowBlur = backButtonDarkScene ? 14 : 8;
+            ctx.shadowOffsetY = 2;
+            ctx.fillStyle = backButtonDarkScene ? '#ffffff' : 'rgba(15,23,42,.82)';
+            ctx.strokeStyle = backButtonDarkScene ? '#38bdf8' : 'rgba(255,255,255,.45)';
+            ctx.lineWidth = backButtonDarkScene ? 3 : 1.5;
             ctx.beginPath();
             ctx.roundRect(18, 46, 110, 32, 999);
             ctx.fill();
+            ctx.stroke();
+            ctx.shadowColor = 'transparent';
             ctx.font = 'bold 13px Rubik';
-            ctx.fillStyle = '#ffffff';
+            ctx.fillStyle = backButtonDarkScene ? '#0f172a' : '#ffffff';
             ctx.fillText('↩ חזרה למפה', 73, 63);
             ctx.restore();
         }
@@ -1585,8 +1607,14 @@
                 environment.deliveryDropTarget = null;
             }
             const nextZone = lesson15Zones[nextIndex];
-            robot.x = direction > 0 ? canvas.width * 0.22 : canvas.width * 0.78;
-            robot.y = canvas.height * 0.78;
+            if (nextZone.id === 'rescue') {
+                resetRescueScenePositions();
+            } else if (nextZone.id === 'security') {
+                resetHomeGuardScenePositions();
+            } else {
+                robot.x = direction > 0 ? canvas.width * 0.22 : canvas.width * 0.78;
+                robot.y = canvas.height * 0.78;
+            }
             robot.speaking = `נסענו אל ${nextZone.label}`;
             draw();
             return true;
@@ -1594,6 +1622,53 @@
 
         function isLesson15Zone(...zoneIds) {
             return currentLesson === 15 && zoneIds.includes(lesson15SelectedZone);
+        }
+
+        function isLesson14RescueContext() {
+            return currentLesson === 14 || isLesson15Zone('rescue');
+        }
+
+        function isLesson13HomeGuardContext() {
+            return currentLesson === 13 || isLesson15Zone('security');
+        }
+
+        function resetHomeGuardScenePositions() {
+            robot.x = canvas.width * 0.50;
+            robot.y = canvas.height * 0.78;
+            objects.sound.x = canvas.width * 0.82;
+            objects.sound.y = canvas.height * 0.58;
+        }
+
+        function drawLesson13SecurityScene() {
+            const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            bg.addColorStop(0, '#0f172a');
+            bg.addColorStop(1, '#312e81');
+            ctx.fillStyle = bg;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (lesson13HomeGuardBg.complete && lesson13HomeGuardBg.naturalWidth > 0) {
+                const srcRatio = lesson13HomeGuardBg.naturalWidth / lesson13HomeGuardBg.naturalHeight;
+                const canvasRatio = canvas.width / canvas.height;
+                let sx = 0, sy = 0, sw = lesson13HomeGuardBg.naturalWidth, sh = lesson13HomeGuardBg.naturalHeight;
+                if (srcRatio > canvasRatio) { sw = sh * canvasRatio; sx = (lesson13HomeGuardBg.naturalWidth - sw) / 2; }
+                else if (srcRatio < canvasRatio) { sh = sw / canvasRatio; sy = (lesson13HomeGuardBg.naturalHeight - sh) / 2; }
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(lesson13HomeGuardBg, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function resetRescueScenePositions() {
+            robot.x = canvas.width * 0.50;
+            robot.y = canvas.height * 0.53;
+            objects.wall.x = canvas.width * 0.66;
+            objects.wall.y = canvas.height * 0.42;
+            objects.smoke.x = canvas.width * 0.50;
+            objects.smoke.y = canvas.height * 0.42;
+            objects.rescueBeacon.x = canvas.width * 0.18;
+            objects.rescueBeacon.y = canvas.height * 0.34;
+            objects.waterDrone.x = canvas.width * 0.82;
+            objects.waterDrone.y = canvas.height * 0.34;
         }
 
         function getLesson15DeliveryTargets() {
@@ -1852,10 +1927,9 @@
 
         function resetPositions() {
             // Reset robot to the lesson's starting point
-            if (currentLesson === 14) {
+            if (isLesson14RescueContext()) {
                 // Start the draggable robot in the middle of the rescue scene.
-                robot.x = canvas.width * 0.50;
-                robot.y = canvas.height * 0.53;
+                resetRescueScenePositions();
             } else if (currentLesson === 7) {
                 const line = getLesson7LinePoints();
                 robot.x = line.start.x - 28;
@@ -1868,10 +1942,9 @@
                 // Start Sensi at the beginning of the delivery route, beside the grocery store.
                 robot.x = canvas.width * 0.19;
                 robot.y = canvas.height * 0.52;
-            } else if (currentLesson === 13) {
+            } else if (isLesson13HomeGuardContext()) {
                 // Start Sensi in the middle of the fence patrol line, facing the right fence end.
-                robot.x = canvas.width * 0.50;
-                robot.y = canvas.height * 0.78;
+                resetHomeGuardScenePositions();
             } else {
                 robot.x = canvas.width / 2;
                 robot.y = currentLesson === 3 ? canvas.height * 0.58 : currentLesson === 4 ? canvas.height * 0.62 : currentLesson === 5 ? canvas.height * 0.64 : currentLesson === 6 ? canvas.height * 0.62 : canvas.height / 2;
@@ -1881,14 +1954,14 @@
             robot.hitLesson12Fence = false;
 
             // Reset objects to default positions
-            objects.wall.x = currentLesson === 3 ? canvas.width * 0.72 : currentLesson === 14 ? canvas.width * 0.66 : canvas.width - 80;
-            objects.wall.y = currentLesson === 3 ? canvas.height * 0.58 : currentLesson === 14 ? canvas.height * 0.42 : canvas.height / 2;
+            objects.wall.x = currentLesson === 3 ? canvas.width * 0.72 : isLesson14RescueContext() ? canvas.width * 0.66 : canvas.width - 80;
+            objects.wall.y = currentLesson === 3 ? canvas.height * 0.58 : isLesson14RescueContext() ? canvas.height * 0.42 : canvas.height / 2;
 
-            objects.sound.x = currentLesson === 13 ? canvas.width * 0.82 : 60;
-            objects.sound.y = currentLesson === 13 ? canvas.height * 0.58 : canvas.height - 60;
+            objects.sound.x = isLesson13HomeGuardContext() ? canvas.width * 0.82 : 60;
+            objects.sound.y = isLesson13HomeGuardContext() ? canvas.height * 0.58 : canvas.height - 60;
 
-            objects.smoke.x = currentLesson === 4 ? canvas.width * 0.72 : currentLesson === 14 ? canvas.width * 0.50 : canvas.width / 2;
-            objects.smoke.y = currentLesson === 4 ? canvas.height * 0.43 : currentLesson === 14 ? canvas.height * 0.42 : 60;
+            objects.smoke.x = currentLesson === 4 ? canvas.width * 0.72 : isLesson14RescueContext() ? canvas.width * 0.50 : canvas.width / 2;
+            objects.smoke.y = currentLesson === 4 ? canvas.height * 0.43 : isLesson14RescueContext() ? canvas.height * 0.42 : 60;
             objects.sun.x = 80;
             objects.sun.y = 60;
             objects.thermometer.x = 110;
@@ -3532,7 +3605,7 @@
                 ctx.drawImage(lesson12DeliveryBg, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
             }
 
-            if (currentLesson === 13 && lesson13HomeGuardBg.complete && lesson13HomeGuardBg.naturalWidth > 0) {
+            if (isLesson13HomeGuardContext() && lesson13HomeGuardBg.complete && lesson13HomeGuardBg.naturalWidth > 0) {
                 const srcRatio = lesson13HomeGuardBg.naturalWidth / lesson13HomeGuardBg.naturalHeight;
                 const canvasRatio = canvas.width / canvas.height;
                 let sx = 0, sy = 0, sw = lesson13HomeGuardBg.naturalWidth, sh = lesson13HomeGuardBg.naturalHeight;
@@ -3545,8 +3618,8 @@
 
 
             // City floor / route
-            if (currentLesson !== 9 && currentLesson !== 12 && currentLesson !== 13 && currentLesson !== 15) {
-                ctx.fillStyle = currentLesson === 13 ? 'rgba(15,23,42,.55)' : 'rgba(255,255,255,.55)';
+            if (currentLesson !== 9 && currentLesson !== 12 && !isLesson13HomeGuardContext() && currentLesson !== 15) {
+                ctx.fillStyle = isLesson13HomeGuardContext() ? 'rgba(15,23,42,.55)' : 'rgba(255,255,255,.55)';
                 ctx.beginPath();
                 ctx.roundRect(canvas.width * 0.08, canvas.height * 0.50, canvas.width * 0.84, canvas.height * 0.18, 24);
                 ctx.fill();
@@ -3709,7 +3782,7 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.font = 'bold 16px Rubik';
-            ctx.fillStyle = currentLesson === 13 ? '#eef2ff' : '#0f172a';
+            ctx.fillStyle = isLesson13HomeGuardContext() ? '#eef2ff' : '#0f172a';
             ctx.fillText(`${scene.icon} ${scene.place} — ${lesson.title}`, canvas.width / 2, 28);
 
             // Mission board
@@ -3832,8 +3905,9 @@
 
 
             scene.objects.forEach((label, i) => {
-                if (currentLesson === 15) {
-                    // Lesson 15 has a custom friendly project scene; skip the generic middle cards.
+                if (currentLesson === 15 && !isLesson13HomeGuardContext()) {
+                    // Lesson 15 has a custom friendly project scene; skip the generic middle cards,
+                    // except the security patrol zone which intentionally reuses Lesson 13 actors.
                     return;
                 }
 
@@ -3980,7 +4054,7 @@
                     return;
                 }
 
-                if (currentLesson === 13) {
+                if (isLesson13HomeGuardContext()) {
                     if (i === 0) return;
 
                     const active = Boolean(environment.burglar);
@@ -4063,7 +4137,7 @@
                 ctx.fillText(label, xs[i], y + 34);
             });
 
-            if (currentLesson === 13) {
+            if (isLesson13HomeGuardContext()) {
                 getLesson13FenceEndTargets().forEach((fenceEnd) => {
                     ctx.save();
                     ctx.textAlign = 'center';
@@ -4151,7 +4225,7 @@
                 ctx.restore();
             }
 
-            if (currentLesson === 13 && environment.homeowner) {
+            if (isLesson13HomeGuardContext() && environment.homeowner) {
                 const person = getLesson13HomeownerScene();
                 if (person.phase === 'gone') {
                     environment.homeowner = false;
@@ -4165,7 +4239,7 @@
                 }
             }
 
-            if (currentLesson === 13 && burglarEscapedAt && Date.now() - burglarEscapedAt < 6500) {
+            if (isLesson13HomeGuardContext() && burglarEscapedAt && Date.now() - burglarEscapedAt < 6500) {
                 const elapsed = Date.now() - burglarEscapedAt;
                 const sadHomeowner = {
                     x: canvas.width * (0.50 - Math.min(elapsed / 6500, 1) * 0.10),
@@ -4174,7 +4248,7 @@
                 drawLesson13HomeownerCharacter(sadHomeowner, 'אוי לא, הגנב ברח...', true);
             }
 
-            if (currentLesson === 13 && environment.burglar && burglarCaughtAt) {
+            if (isLesson13HomeGuardContext() && environment.burglar && burglarCaughtAt) {
                 const policeX = canvas.width * 0.64;
                 const policeY = canvas.height * 0.70;
                 ctx.save();
@@ -4193,7 +4267,7 @@
 
         // ===== DRAW ROBOT =====
         function catchLesson13BurglarIfAlarm() {
-            if (currentLesson === 13 && environment.burglar && robot.alarmOn && !burglarCaughtAt) {
+            if (isLesson13HomeGuardContext() && environment.burglar && robot.alarmOn && !burglarCaughtAt) {
                 burglarCaughtAt = Date.now();
                 environment.motion = false;
                 robot.speaking = 'אזעקה! המשטרה הגיעה והגנב נתפס!';
@@ -4873,6 +4947,10 @@
                 ctx.fillText(robot.speaking, bubbleX, bubbleY);
             }
 
+            if (currentLesson === 15 && lesson15SelectedZone) {
+                drawLesson15BackToMapButton();
+            }
+
             requestAnimationFrame(draw);
         }
 
@@ -4942,6 +5020,8 @@
                         lesson15MuseumInside = false;
                         lesson15SchoolInside = false;
                         lesson15GardenInside = false;
+                        if (selected.id === 'rescue') resetRescueScenePositions();
+                        if (selected.id === 'security') resetHomeGuardScenePositions();
                         if (!environment.deliveryPackage) {
                             environment.deliveryDropped = false;
                             environment.deliveryDropTarget = null;
@@ -4969,7 +5049,7 @@
             } else if (environment.light && hitTest(pos, objects.sun, 50)) {
                 dragging = 'sun';
                 dragOffset = { x: pos.x - objects.sun.x, y: pos.y - objects.sun.y };
-            } else if (currentLesson === 14) {
+            } else if (isLesson14RescueContext()) {
                 const rescueDragTargets = ['rescueBeacon', 'waterDrone'];
                 for (const key of rescueDragTargets) {
                     if (hitTest(pos, objects[key], 45)) {
@@ -5315,9 +5395,9 @@
                 obstacleBtn.lastChild.textContent = currentLesson === 12 ? ' מכשול' : ' קיר';
             }
             const smokeBtn = document.getElementById('envSmoke');
-            if (smokeBtn) smokeBtn.lastChild.textContent = currentLesson === 14 ? ' עשן בזירה' : ' עשן';
+            if (smokeBtn) smokeBtn.lastChild.textContent = isLesson14RescueContext() ? ' עשן בזירה' : ' עשן';
             const tempBtn = document.getElementById('envTemperatureHot');
-            if (tempBtn) tempBtn.lastChild.textContent = currentLesson === 14 ? ' חום מסוכן' : currentLesson === 10 ? ' יום חם' : ' חם';
+            if (tempBtn) tempBtn.lastChild.textContent = isLesson14RescueContext() ? ' חום מסוכן' : currentLesson === 10 ? ' יום חם' : ' חם';
             updateEnvScrollControls();
         }
 
@@ -5465,7 +5545,7 @@
             // Movement
             Blockly.Blocks['move_forward'] = {
                 init: function() {
-                    this.appendDummyInput().appendField(currentLesson === 14 ? '⬆️ התקדם בזהירות' : '⬆️ זוז קדימה');
+                    this.appendDummyInput().appendField(isLesson14RescueContext() ? '⬆️ התקדם בזהירות' : '⬆️ זוז קדימה');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
                     this.setColour('#4C97FF');
@@ -5547,7 +5627,7 @@
             Blockly.Blocks['route_turn'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField(currentLesson === 14 ? '🧭 עקוף לפי נתיב בטוח' : '🧭 סובב לפי המסלול')
+                        .appendField(isLesson14RescueContext() ? '🧭 עקוף לפי נתיב בטוח' : '🧭 סובב לפי המסלול')
                         .appendField(new Blockly.FieldDropdown([['ימינה', 'RIGHT'], ['שמאלה', 'LEFT']]), 'DIR');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
@@ -5663,8 +5743,8 @@
             Blockly.Blocks['sensor_temperature'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField(currentLesson === 14 ? '🔥 חום בזירת החילוץ =' : currentLesson === 10 ? '☀️ יום חם בגינה =' : '🌡️ טמפרטורה =')
-                        .appendField(new Blockly.FieldDropdown(currentLesson === 14 ? [['מסוכן מדי 🔥', 'HOT'], ['בטוח להמשך ✅', 'OK']] : currentLesson === 10 ? [['יום חם ☀️', 'HOT'], ['יום נעים 🌿', 'OK']] : [['חם מדי 🔥', 'HOT'], ['נעים 🌿', 'OK']]), 'VAL');
+                        .appendField(isLesson14RescueContext() ? '🔥 חום בזירת החילוץ =' : currentLesson === 10 ? '☀️ יום חם בגינה =' : '🌡️ טמפרטורה =')
+                        .appendField(new Blockly.FieldDropdown(isLesson14RescueContext() ? [['מסוכן מדי 🔥', 'HOT'], ['בטוח להמשך ✅', 'OK']] : currentLesson === 10 ? [['יום חם ☀️', 'HOT'], ['יום נעים 🌿', 'OK']] : [['חם מדי 🔥', 'HOT'], ['נעים 🌿', 'OK']]), 'VAL');
                     this.setOutput(true, 'Boolean');
                     this.setColour('#40BF4A');
                 }
@@ -5704,8 +5784,8 @@
             Blockly.Blocks['sensor_goal'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField(currentLesson === 13 ? '🏁 סוף גדר =' : '🏁 חיישן יעד =')
-                        .appendField(new Blockly.FieldDropdown(currentLesson === 13 ? [['הגעתי לסוף הגדר', 'YES'], ['לא הגעתי', 'NO']] : [['הגעתי ליעד', 'YES'], ['לא הגעתי', 'NO']]), 'VAL');
+                        .appendField(isLesson13HomeGuardContext() ? '🏁 סוף גדר =' : '🏁 חיישן יעד =')
+                        .appendField(new Blockly.FieldDropdown(isLesson13HomeGuardContext() ? [['הגעתי לסוף הגדר', 'YES'], ['לא הגעתי', 'NO']] : [['הגעתי ליעד', 'YES'], ['לא הגעתי', 'NO']]), 'VAL');
                     this.setOutput(true, 'Boolean');
                     this.setColour('#40BF4A');
                 }
@@ -5879,7 +5959,7 @@
                 init: function() {
                     this.appendDummyInput()
                         .appendField('💬 אמור')
-                        .appendField(new Blockly.FieldTextInput(currentLesson === 14 ? 'יוצא לחילוץ' : currentLesson === 11 ? 'בודק את האולם' : 'שלום!'), 'TEXT');
+                        .appendField(new Blockly.FieldTextInput(isLesson14RescueContext() ? 'יוצא לחילוץ' : currentLesson === 11 ? 'בודק את האולם' : 'שלום!'), 'TEXT');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
                     this.setColour('#9966FF');
@@ -6189,7 +6269,7 @@
 
                 case 'route_turn':
                     robot.angle += block.getFieldValue('DIR') === 'RIGHT' ? 90 : -90;
-                    robot.speaking = currentLesson === 14
+                    robot.speaking = isLesson14RescueContext()
                         ? (block.getFieldValue('DIR') === 'RIGHT' ? 'עוקף ימינה בנתיב בטוח' : 'עוקף שמאלה בנתיב בטוח')
                         : (block.getFieldValue('DIR') === 'RIGHT' ? 'סובב ימינה לפי המסלול' : 'סובב שמאלה לפי המסלול');
                     await sleep(700);
@@ -6300,10 +6380,10 @@
                         catchLesson13BurglarIfAlarm();
                     }
                     robot.speaking = soundType === 'ALARM'
-                        ? (currentLesson === 13 && environment.burglar ? 'אזעקה! המשטרה הגיעה והגנב נתפס!' : 'אזעקה הופעלה')
+                        ? (isLesson13HomeGuardContext() && environment.burglar ? 'אזעקה! המשטרה הגיעה והגנב נתפס!' : 'אזעקה הופעלה')
                         : 'ביפ';
                     await sleep(900);
-                    if (!(currentLesson === 13 && burglarCaughtAt)) robot.speaking = '';
+                    if (!(isLesson13HomeGuardContext() && burglarCaughtAt)) robot.speaking = '';
                     break;
                 }
 
@@ -6322,9 +6402,9 @@
                         playBeep('ALARM');
                         catchLesson13BurglarIfAlarm();
                     }
-                    robot.speaking = robot.alarmOn ? (currentLesson === 13 && environment.burglar ? 'אזעקה! המשטרה הגיעה והגנב נתפס!' : 'הפעלתי אזעקה') : 'כיביתי אזעקה';
+                    robot.speaking = robot.alarmOn ? (isLesson13HomeGuardContext() && environment.burglar ? 'אזעקה! המשטרה הגיעה והגנב נתפס!' : 'הפעלתי אזעקה') : 'כיביתי אזעקה';
                     await sleep(900);
-                    if (!(currentLesson === 13 && burglarCaughtAt)) robot.speaking = '';
+                    if (!(isLesson13HomeGuardContext() && burglarCaughtAt)) robot.speaking = '';
                     break;
 
                 case 'action_enter_museum':
@@ -6653,7 +6733,7 @@
         }
 
         function canSenseMotion() {
-            if (currentLesson === 13) return canSenseBurglarNearby() || canSenseHomeowner();
+            if (isLesson13HomeGuardContext()) return canSenseBurglarNearby() || canSenseHomeowner();
             return Boolean(environment.motion);
         }
 
@@ -6702,7 +6782,7 @@
         }
 
         function getLesson13BurglarPhase() {
-            if (!(currentLesson === 13 && environment.burglar && burglarStartedAt)) return 'gone';
+            if (!(isLesson13HomeGuardContext() && environment.burglar && burglarStartedAt)) return 'gone';
             const elapsed = Date.now() - burglarStartedAt;
             if (robot.alarmOn && !burglarCaughtAt) {
                 burglarCaughtAt = Date.now();
@@ -6713,7 +6793,7 @@
         }
 
         function canSenseBurglarNearby() {
-            if (!(currentLesson === 13 && environment.burglar) || burglarCaughtAt) return false;
+            if (!(isLesson13HomeGuardContext() && environment.burglar) || burglarCaughtAt) return false;
             const phase = getLesson13BurglarPhase();
             if (phase === 'gone' || phase === 'inside' || phase === 'caught') return false;
             const burglar = getLesson13BurglarScene(phase);
@@ -6739,7 +6819,7 @@
         }
 
         function canSenseHomeowner() {
-            return currentLesson === 13 && Boolean(environment.homeowner);
+            return isLesson13HomeGuardContext() && Boolean(environment.homeowner);
         }
 
         function canSensePeople() {
@@ -6783,7 +6863,7 @@
                 const dy = robot.y - home.y;
                 return Math.sqrt(dx * dx + dy * dy) <= 90;
             }
-            if (currentLesson === 13) {
+            if (isLesson13HomeGuardContext()) {
                 return getLesson13FenceEndTargets().some((fenceEnd) => {
                     const dx = robot.x - fenceEnd.x;
                     const dy = robot.y - fenceEnd.y;
@@ -7074,7 +7154,7 @@
                 ? (sensesGoal ? 'הגעתי ליעד!' : 'לא ביעד')
                 : currentLesson === 12
                     ? (sensesGoal ? 'הבית הוא היעד!' : 'יעד: הבית')
-                    : currentLesson === 13
+                    : isLesson13HomeGuardContext()
                         ? (sensesGoal ? 'סוף הגדר!' : 'סיור לגדר')
                         : 'לא בשימוש';
 
@@ -7109,7 +7189,7 @@
             document.getElementById('sensorColor').classList.toggle('active', recycleColor !== 'NONE');
 
             document.getElementById('sensorLine').classList.toggle('active', currentLesson === 7 ? sensesLine : onLine);
-            document.getElementById('sensorGoal').classList.toggle('active', (currentLesson === 7 || currentLesson === 12 || currentLesson === 13 || currentLesson === 15) && sensesGoal);
+            document.getElementById('sensorGoal').classList.toggle('active', (currentLesson === 7 || currentLesson === 12 || isLesson13HomeGuardContext() || currentLesson === 15) && sensesGoal);
             document.getElementById('sensorCars').classList.toggle('active', currentLesson === 8 && sensesCars);
             document.getElementById('sensorPedestrian').classList.toggle('active', currentLesson === 8 && sensesPedestrian);
             document.getElementById('sensorPeople').classList.toggle('active', museumPeopleMode ? (environment.visitorCount || 0) > 5 : sensesPeople);

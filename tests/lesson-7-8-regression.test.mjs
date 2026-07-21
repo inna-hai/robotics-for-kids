@@ -74,11 +74,11 @@ test('lesson 7 goal sensor is wired from Blockly toolbox to condition evaluation
   assertIncludes(indexHtml, 'id="sensorGoal"');
   assertMatches(indexHtml, /sensors:\s*\[[^\]]*'sensor_goal'[^\]]*\]/);
   assertIncludes(indexHtml, "Blockly.Blocks['sensor_goal']");
-  assertIncludes(indexHtml, "currentLesson === 13 ? '🏁 סוף גדר =' : '🏁 חיישן יעד ='");
+  assertIncludes(indexHtml, "isLesson13HomeGuardContext() ? '🏁 סוף גדר =' : '🏁 חיישן יעד ='");
   assertIncludes(indexHtml, "case 'sensor_goal':");
   assertIncludes(indexHtml, "return val === 'YES' ? canSenseGoal() : !canSenseGoal();");
   assertIncludes(indexHtml, "document.getElementById('goalText').textContent = currentLesson === 7");
-  assertIncludes(indexHtml, "document.getElementById('sensorGoal').classList.toggle('active', (currentLesson === 7 || currentLesson === 12 || currentLesson === 13 || currentLesson === 15) && sensesGoal);");
+  assertIncludes(indexHtml, "document.getElementById('sensorGoal').classList.toggle('active', (currentLesson === 7 || currentLesson === 12 || isLesson13HomeGuardContext() || currentLesson === 15) && sensesGoal);");
 });
 
 test('lesson 7 goal sensor uses a dedicated goal check rather than reusing the wall/touch sensor', () => {
@@ -338,7 +338,7 @@ test('lesson 13 is a night home guard that treats homeowner motion as safe only 
   assertIncludes(indexHtml, "toggleEnv('burglar')");
   assertIncludes(indexHtml, 'function getLesson13BurglarScene');
   assertIncludes(indexHtml, 'function canSenseBurglarNearby');
-  assertIncludes(indexHtml, 'if (currentLesson === 13) return canSenseBurglarNearby() || canSenseHomeowner();');
+  assertIncludes(indexHtml, 'if (isLesson13HomeGuardContext()) return canSenseBurglarNearby() || canSenseHomeowner();');
   assertIncludes(indexHtml, 'Math.hypot(robot.x - burglar.x, robot.y - burglar.y) <= 75');
   assertIncludes(indexHtml, "actions: ['action_street_light', 'action_alarm', 'action_sound', 'action_say']");
   assertIncludes(indexHtml, 'function catchLesson13BurglarIfAlarm');
@@ -350,7 +350,7 @@ test('lesson 13 is a night home guard that treats homeowner motion as safe only 
   assertIncludes(indexHtml, 'const caught = active && Boolean(burglarCaughtAt);');
   assertIncludes(indexHtml, 'אזעקה! המשטרה הגיעה והגנב נתפס!');
   assertNotIncludes(indexHtml, "ctx.fillText(person.phase === 'inside' ? '🏠'");
-  assertIncludes(indexHtml, 'currentLesson === 13 && environment.burglar && burglarCaughtAt');
+  assertIncludes(indexHtml, 'isLesson13HomeGuardContext() && environment.burglar && burglarCaughtAt');
   assertIncludes(indexHtml, 'המשטרה הגיעה — הגנב נעצר');
   assertIncludes(indexHtml, "פירצה בגדר");
   assertIncludes(indexHtml, "המשטרה הגיעה — הגנב נעצר");
@@ -697,9 +697,9 @@ test('lesson 14 exposes all rescue-story blocks used by the lesson exercises', (
     assertMatches(indexHtml, new RegExp(`(movement|sensors|actions):\\s*\\[[^\\]]*'${blockType}'[^\\]]*\\]`));
     assertIncludes(indexHtml, `Blockly.Blocks['${blockType}']`);
   }
-  assertIncludes(indexHtml, "currentLesson === 14 ? '⬆️ התקדם בזהירות' : '⬆️ זוז קדימה'");
-  assertIncludes(indexHtml, "currentLesson === 14 ? '🧭 עקוף לפי נתיב בטוח' : '🧭 סובב לפי המסלול'");
-  assertIncludes(indexHtml, "currentLesson === 14 ? 'יוצא לחילוץ' : currentLesson === 11 ? 'בודק את האולם' : 'שלום!'");
+  assertIncludes(indexHtml, "isLesson14RescueContext() ? '⬆️ התקדם בזהירות' : '⬆️ זוז קדימה'");
+  assertIncludes(indexHtml, "isLesson14RescueContext() ? '🧭 עקוף לפי נתיב בטוח' : '🧭 סובב לפי המסלול'");
+  assertIncludes(indexHtml, "isLesson14RescueContext() ? 'יוצא לחילוץ' : currentLesson === 11 ? 'בודק את האולם' : 'שלום!'");
 });
 
 
@@ -722,7 +722,7 @@ test('lesson 15 greenhouse enter and exit blocks switch to lesson 10 garden back
   assertIncludes(indexHtml, 'const greenhouseInterior = lesson.greenhouseInterior;');
   assertIncludes(indexHtml, "lesson15GreenhouseInteriorBg.src = 'assets/lesson15-greenhouse-interior.png?v=20260721-greenhouse-interior-1';");
   assertIncludes(indexHtml, 'drawImageCover(lesson15GreenhouseInteriorBg);');
-  assertIncludes(indexHtml, "const zoneInfoY = selected.id === 'garden' && lesson15GardenInside ? 12 : 86;");
+  assertIncludes(indexHtml, "const zoneInfoY = (selected.id === 'garden' && lesson15GardenInside) || selected.id === 'rescue' || selected.id === 'security' ? 12 : 86;");
   assertIncludes(indexHtml, 'zoneInfoY + 20');
   assertIncludes(indexHtml, 'const tempPanelX = w * 0.36;');
   assertIncludes(indexHtml, 'const tempPanelY = 74;');
@@ -739,6 +739,28 @@ test('lesson 15 greenhouse enter and exit blocks switch to lesson 10 garden back
   assertIncludes(indexHtml, 'ctx.scale(plantScale, plantScale);');
   assertIncludes(indexHtml, "case 'action_enter_greenhouse':");
   assertIncludes(indexHtml, "case 'action_exit_greenhouse':");
+});
+
+
+test('lesson 15 presentation examples match available map zones', () => {
+  const lesson15 = lessonObjectSource(15);
+  assertIncludes(lesson15, 'בעיה: אזור חילוץ מסוכן');
+  assertNotIncludes(lesson15, 'בעיה: מרכז מחזור מתבלבל');
+});
+
+
+test('lesson 15 rescue zone reuses lesson 14 rescue scene and sensors', () => {
+  assertIncludes(indexHtml, "{ id: 'rescue', label: 'חילוץ / חירום', icon: '🛟', x: .84, y: .36");
+  assertIncludes(indexHtml, "selected.id === 'rescue'");
+  assertIncludes(indexHtml, "drawLesson14RescueScene({ title: 'אזור חילוץ / חירום' });");
+  assertIncludes(indexHtml, 'function isLesson14RescueContext()');
+  assertIncludes(indexHtml, "return currentLesson === 14 || isLesson15Zone('rescue');");
+  assertIncludes(indexHtml, 'function resetRescueScenePositions()');
+  assertIncludes(indexHtml, "if (selected.id === 'rescue') resetRescueScenePositions();");
+  assertIncludes(indexHtml, "const zoneInfoY = (selected.id === 'garden' && lesson15GardenInside) || selected.id === 'rescue' || selected.id === 'security' ? 12 : 86;");
+  assertIncludes(indexHtml, "isLesson14RescueContext() ? ' עשן בזירה' : ' עשן'");
+  assertIncludes(indexHtml, "isLesson14RescueContext() ? ' חום מסוכן'");
+  assertIncludes(indexHtml, "robot.speaking = isLesson14RescueContext()");
 });
 
 
@@ -779,6 +801,25 @@ test('lesson 12 slide count includes all 60-minute exercises', () => {
   assertIncludes(lessonsData, 'תרגיל 5 — שדרוג אישי קצר');
 });
 
+test('lesson 15 security patrol zone reuses lesson 13 home guard scene and sensors', () => {
+  assertIncludes(indexHtml, "{ id: 'security', label: 'סיור אבטחה', icon: '🌙'");
+  assertIncludes(indexHtml, "problem: 'סיור אבטחה סביב בית'");
+  assertIncludes(indexHtml, "selected.id === 'security'");
+  assertIncludes(indexHtml, 'function isLesson13HomeGuardContext()');
+  assertIncludes(indexHtml, "return currentLesson === 13 || isLesson15Zone('security');");
+  assertIncludes(indexHtml, 'function resetHomeGuardScenePositions()');
+  assertIncludes(indexHtml, 'function drawLesson13SecurityScene()');
+  assertIncludes(indexHtml, 'drawLesson13SecurityScene();');
+  assertIncludes(indexHtml, 'if (currentLesson === 15 && !isLesson13HomeGuardContext())');
+  assertIncludes(indexHtml, 'function drawLesson15BackToMapButton');
+  assertIncludes(indexHtml, "const backButtonDarkScene = selected.id === 'security';");
+  assertIncludes(indexHtml, "ctx.fillStyle = backButtonDarkScene ? '#ffffff' : 'rgba(15,23,42,.82)';");
+  assertIncludes(indexHtml, 'drawLesson15BackToMapButton();');
+  assertIncludes(indexHtml, 'isLesson13HomeGuardContext() && lesson13HomeGuardBg.complete');
+  assertIncludes(indexHtml, 'if (isLesson13HomeGuardContext()) return canSenseBurglarNearby() || canSenseHomeowner();');
+  assertIncludes(indexHtml, 'return isLesson13HomeGuardContext() && Boolean(environment.homeowner);');
+});
+
 let passed = 0;
 for (const { name, fn } of tests) {
   try {
@@ -796,3 +837,4 @@ for (const { name, fn } of tests) {
 if (!process.exitCode) {
   console.log(`\n${passed}/${tests.length} regression tests passed.`);
 }
+
