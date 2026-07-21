@@ -16,7 +16,7 @@
     <span class="counter" id="counter"></span>
     <div class="nav-actions"><button onclick="nextSlide()">הבא ←</button><a class="back" id="playLink" href="minecraft-play.html">🧩 לתרגול</a><a class="back" href="minecraft.html">⛏️ למסלול</a></div>
   </nav>
-  <script src="js/minecraft-lessons.js?v=20260710-minecraft-clear-task"></script>
+  <script src="js/minecraft-lessons.js?v=20260721-wait-seconds-choice"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const lesson = window.getMinecraftLesson(params.get('lesson'));
@@ -37,9 +37,9 @@
       { html:`<h2>⏱️ מהלך שיעור 60 דקות</h2><div class="flow">${(lesson.lessonFlow||[]).map(step=>`<div class="card"><b>${step.minutes} — ${esc(step.title)}</b>${esc(step.teacher)}<br><em>${esc(step.students)}</em></div>`).join('')}</div>` },
       { html:`<h2>🧪 רצף התרגולים</h2><ul>${(lesson.programmingExercises||[]).map(ex=>`<li><b>${ex.minutes}:</b> ${esc(ex.title)}</li>`).join('')}</ul>` },
       ...exerciseSlides,
-      { html:`<h2>🏁 סיכום והצגה</h2><p><b>התלמידים צריכים להצליח להגיד:</b></p><p>“כשלחצתי הרצה, סטיב עשה פעולה קטנה, ואז עוד פעולה, ובגלל הסדר יצאה התוצאה.”</p><div class="note">${esc(lesson.success)}</div>` }
+      { html:`<h2>🏁 סיכום והצגה</h2><p><b>התלמידים צריכים להצליח להגיד:</b></p><p>“כשלחצתי הרצה, דוד עשה פעולה קטנה, ואז עוד פעולה, ובגלל הסדר יצאה התוצאה.”</p><div class="note">${esc(lesson.success)}</div>` }
     ];
-    function blockLabel(type){ const labels={event_start:'התחלה',say:'דיבור',move_up:'תנועה',move_down:'תנועה',move_right:'תנועה',move_left:'תנועה',place_block:'בנייה ידנית',build_tower:'בנייה מהירה',rain_blocks:'אפקט צבעוני',magic_trail:'שביל',teleport:'מיקום',spawn_pet:'חיה',set_day:'זמן',set_night:'זמן',weather_sun:'מזג אוויר',weather_rain:'מזג אוויר',weather_snow:'מזג אוויר',if_on_diamond:'תנאי',open_door:'פעולה',give_treasure:'פרס',start_collect_game:'משחק',build_maze:'מבוך',show_hint:'רמז',spawn_funny_mob:'דמות'}; return labels[type]||type; }
+    function blockLabel(type){ const labels={event_start:'התחלה',say:'דיבור',move_up:'תנועה — גובה עלייה',move_down:'תנועה — גובה ירידה',move_to_ground:'תנועה — רד לקרקע',move_right:'תנועה',move_left:'תנועה',place_block:'בנייה ידנית — צבע',place_path:'שביל נמוך — אריחים',place_half_block:'חצי בלוק — ביניים',reset_blocks:'מחיקת הבניין בעולם',wait_seconds:'המתנה לפי מספר שניות',build_tower:'בנייה מהירה',rain_blocks:'אפקט צבעוני',magic_trail:'שביל',teleport:'מיקום',spawn_pet:'חיה',set_day:'זמן',set_night:'זמן',weather_sun:'מזג אוויר',weather_rain:'מזג אוויר',weather_snow:'מזג אוויר',if_on_diamond:'תנאי',open_door:'פעולה',give_treasure:'פרס',start_collect_game:'משחק',build_maze:'מבוך',show_hint:'רמז',spawn_funny_mob:'דמות'}; return labels[type]||type; }
     document.getElementById('deck').innerHTML = slides.map((s,i)=>`<section class="slide ${i===0?'active':''}">${s.html}</section>`).join('');
     function render(){ document.querySelectorAll('.slide').forEach((s,i)=>s.classList.toggle('active',i===current)); document.getElementById('counter').textContent = `${current+1} / ${slides.length}`; }
     function nextSlide(){ current=Math.min(current+1,slides.length-1); render(); }
