@@ -36,11 +36,40 @@ Recommended bump rules:
 
 ## Current Published Versions
 
-
-
-### Robotics stable — v0.2.0 — Published
+### Robotics stable — v0.2.1 — Published
 
 - **Status:** Published
+- **Branch:** `main`
+- **Commit:** `c8a7a61`
+- **Tag:** `robotics-v0.2.1`
+- **Live:** https://robotics.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Restored the original 5-lesson Sensi course as a separate classic product page: `sensi-classic.html`.
+- Added isolated classic support pages: `sensi-classic-about.html`, `sensi-classic-teachers.html`, and `sensi-classic-slides/`.
+- Added homepage quick links and course card for “סנסי קלאסי” while keeping `sensi-city.html` as the 15-lesson smart-city Sensi course.
+- Added routing tests to ensure classic 5-lesson Sensi remains separate from Sensi 15.
+
+Verification:
+
+- Full Node test suite passed: all `tests/*.mjs`.
+- `git diff --check` clean.
+- Local link scan on the classic Sensi pages found 0 missing local links.
+
+Rollback:
+
+```bash
+git checkout main
+git reset --hard 8945516
+# or use the previous product tag: robotics-v0.2.0
+```
+
+### Robotics stable — v0.2.0 — Superseded
+
+- **Status:** Superseded by `robotics-v0.2.1`
 - **Branch:** `main`
 - **Commit:** `8e2c9c0`
 - **Tag:** `robotics-v0.2.0`
