@@ -33,6 +33,8 @@ test('original Sensi Blockly application moved to sensi-city.html', () => {
   assertIncludes(sensiCityHtml, '<title>🏙️ סנסי בעיר החכמה - 15 שיעורי רובוטיקה</title>');
   assertIncludes(sensiCityHtml, 'Blockly.Blocks');
   assertIncludes(sensiCityHtml, 'currentLesson');
+  assertIncludes(sensiCityHtml, 'href="index.html" class="home-link"');
+  assertIncludes(sensiCityHtml, '🏠 ראשי');
 });
 
 test('internal Sensi course links no longer point lessons at index.html', () => {

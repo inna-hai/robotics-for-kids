@@ -75,6 +75,23 @@
             white-space: nowrap;
         }
 
+        .home-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.38rem 0.65rem;
+            border-radius: 999px;
+            color: var(--dark);
+            background: rgba(155, 93, 229, 0.10);
+            border: 1px solid rgba(155, 93, 229, 0.18);
+            font-size: 0.88rem;
+            font-weight: 800;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
         .about-link, .city-link {
             font-size: 1.25rem;
             text-decoration: none;
@@ -82,6 +99,11 @@
             opacity: 0.7;
             transition: all 0.3s;
             flex-shrink: 0;
+        }
+
+        .home-link:hover {
+            background: rgba(155, 93, 229, 0.18);
+            transform: translateY(-1px);
         }
 
         .about-link:hover, .city-link:hover {
@@ -914,6 +936,7 @@
         <div class="logo">
             <span class="logo-robot">🤖</span>
             <span class="logo-text">סנסי בעיר החכמה</span>
+            <a href="index.html" class="home-link" title="חזרה לעמוד הראשי">🏠 ראשי</a>
             <a href="smart-city.html" class="city-link" title="מפת 15 השיעורים">🏙️</a>
             <a href="about.html?v=20260709-smart-city-about" class="about-link" title="אודות מסלול 15 השיעורים">ℹ️</a>
         </div>
