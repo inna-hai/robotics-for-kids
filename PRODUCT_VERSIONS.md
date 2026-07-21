@@ -36,9 +36,40 @@ Recommended bump rules:
 
 ## Current Published Versions
 
-### Robotics stable — v0.2.1 — Published
+### Robotics stable — v0.2.2 — Published
 
 - **Status:** Published
+- **Branch:** `main`
+- **Commit:** `235dbfd`
+- **Tag:** `robotics-v0.2.2`
+- **Live:** https://robotics.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Expanded the platform homepage catalog so the prepared learning modules are visible as individual cards.
+- Added homepage cards for the full Sisi series and individual Sisi lessons beyond Space/Ocean: music, detective, kitchen, dino, art, weather, factory, garden, park, mail, cinema, escape, and finale.
+- Added explicit homepage cards for CodeQuest, PlayCode Lab/GameLab, and WebMakers Lab/AppForge.
+- Expanded quick links for Sisi, CodeQuest, PlayCode Lab, and WebMakers Lab.
+
+Verification:
+
+- Full Node test suite passed: all `tests/*.mjs`.
+- `git diff --check` clean.
+- Homepage routing test now verifies the expanded course links.
+
+Rollback:
+
+```bash
+git checkout main
+git reset --hard 44a1fe1
+# or use the previous product tag: robotics-v0.2.1
+```
+
+### Robotics stable — v0.2.1 — Superseded
+
+- **Status:** Superseded by `robotics-v0.2.2`
 - **Branch:** `main`
 - **Commit:** `c8a7a61`
 - **Tag:** `robotics-v0.2.1`
