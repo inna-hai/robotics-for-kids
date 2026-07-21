@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Craftom School Preview</title>
+  <style>
+    :root{--ink:#1d2430;--muted:#5a6575;--panel:#fffaf0;--line:#2b3038;--green:#3f8b2e;--green-dark:#2f651f;--gold:#f1b744}
+    *{box-sizing:border-box} body{margin:0;min-height:100vh;color:var(--ink);font-family:Arial,"Noto Sans Hebrew",sans-serif;background:linear-gradient(rgba(255,255,255,.76),rgba(255,255,255,.76)),repeating-linear-gradient(90deg,#86b957 0 30px,#6aa544 30px 60px)}
+    .shell{width:min(1120px,calc(100% - 28px));margin:0 auto;padding:22px 0 44px}.top{display:flex;justify-content:space-between;gap:14px;align-items:center;margin-bottom:18px}.brand{font-weight:900;color:var(--green-dark);letter-spacing:.04em}.muted{color:var(--muted)}.tabs{display:flex;gap:8px;flex-wrap:wrap}.btn{border:3px solid var(--line);background:var(--green);color:#fff;padding:10px 16px;font-weight:900;cursor:pointer;box-shadow:inset -3px -3px 0 var(--green-dark),inset 3px 3px 0 rgba(255,255,255,.28)}.btn.ghost{background:#e8dfcf;color:var(--ink);box-shadow:inset -3px -3px 0 #c9beaa,inset 3px 3px 0 #fff}.panel{background:var(--panel);border:4px solid var(--line);box-shadow:8px 8px 0 rgba(0,0,0,.22);padding:22px;margin-bottom:18px}.grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(280px,.6fr);gap:18px}.wide{grid-column:1/-1}h1{font-size:clamp(28px,5vw,46px);line-height:1.08;margin:8px 0 12px}h2{margin:0 0 10px}.eyebrow{display:inline-block;background:var(--gold);border:3px solid var(--line);padding:4px 10px;font-weight:900}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.progress{height:18px;border:3px solid var(--line);background:#fff;margin-top:8px}.progress span{display:block;height:100%;width:13%;background:var(--green)}.lesson-map{display:grid;grid-template-columns:repeat(15,minmax(68px,1fr));gap:8px}.lesson{min-height:94px;border:3px solid var(--line);background:#fff;padding:8px;display:grid;grid-template-rows:auto auto 1fr;gap:4px;text-align:center}.lesson b{font-size:20px}.lesson small{font-size:12px;line-height:1.25}.lesson.open{background:#ecf8e7}.lesson.done{background:#fff6d9}.lesson.lock{background:#e5e1d9;color:#777;opacity:.78}.row{display:flex;justify-content:space-between;gap:12px;align-items:center;border:3px solid #c5baa7;background:#fff;padding:13px;margin-top:10px}.row b,.row span{display:block}.row span{color:var(--muted);margin-top:3px}.row em{font-style:normal;font-weight:900;color:var(--green-dark);background:#ecf8e7;border:2px solid #b7d8a6;padding:4px 8px;white-space:nowrap}.stats{display:grid;grid-template-columns:repeat(4,minmax(100px,1fr));gap:10px}.stat{background:#fff;border:3px solid #c5baa7;padding:12px}.stat b{display:block;font-size:30px;color:var(--green-dark);line-height:1}.class-grid,.teacher-lessons{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}.card{border:3px solid #c5baa7;background:#fff;padding:14px;display:grid;gap:6px}code{direction:ltr;display:inline-block;background:#eef4ff;padding:2px 6px;border-radius:4px}.hide{display:none}@media(max-width:700px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}.lesson-map{grid-template-columns:repeat(3,1fr)}.stats{grid-template-columns:repeat(2,1fr)}.row{align-items:flex-start;flex-direction:column}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="top">
+      <div><div class="brand">Craftom School</div><div class="muted">תצוגת UI חיצונית — לא שרת הלוגין המלא</div></div>
+      <div class="tabs"><button class="btn" onclick="show('student')">תלמיד</button><button class="btn ghost" onclick="show('teacher')">מורה</button></div>
+    </div>
+
+    <section id="student" class="grid">
+      <div class="panel">
+        <div class="eyebrow">השיעור הנוכחי</div>
+        <h1>מפגש 3: לולאות — בונים מהר וחכם</h1>
+        <p class="muted">לולאות · בניית כיכר עם תבניות חוזרות</p>
+        <div class="actions"><button class="btn">המשך לשיעור</button><button class="btn ghost">חזרה לשיעור קודם</button></div>
+        <div class="muted" style="margin-top:22px;font-weight:900">2 מתוך 15 שיעורים הושלמו</div><div class="progress"><span></span></div>
+      </div>
+      <aside class="panel"><h2>הודעה מהמורה</h2><p class="row">היום מתרגלים חזרתיות. מי שנתקע מבקש רמז ולא פתרון מלא.</p><h2>הצוות שלי</h2><p class="muted">מתכנן · בונה · מתכנת · מתעד</p></aside>
+      <div class="panel wide"><h2>בחירת שיעור</h2><p class="muted">אפשר לחזור אחורה, אי אפשר לדלג קדימה.</p><div class="lesson-map" id="lessons"></div></div>
+      <div class="panel"><h2>משימות לביצוע</h2><div class="row"><div><b>בניית כיכר עם תבנית חוזרת</b><span>משימת Craftom · שיעור 3</span></div><em>לביצוע</em></div><div class="row"><div><b>רפלקציה קצרה</b><span>מה עבד? איפה נתקענו?</span></div><em>לביצוע</em></div></div>
+      <div class="panel"><h2>משוב על משימות</h2><div class="row"><div><b>אלגוריתם בנייה ראשון</b><span>הצלחת ליצור רצף ברור. נסה להוסיף שלט שמסביר את השלבים.</span></div><em>משוב</em></div></div>
+    </section>
+
+    <section id="teacher" class="grid hide">
+      <div class="panel"><div class="eyebrow">ניהול קורס</div><h1>Craftom — בונים את עומר העתידית</h1><p class="muted">כיתות, שיעורים, משימות שהוגשו ומשוב לתלמידים.</p><div class="stats"><div class="stat"><b>2</b><span>כיתות</span></div><div class="stat"><b>31</b><span>תלמידים</span></div><div class="stat"><b>15</b><span>מפגשים</span></div><div class="stat"><b>4</b><span>הגשות</span></div></div><div class="actions"><button class="btn">צור כיתה</button><button class="btn ghost">פתח שיעור לכיתה</button></div></div>
+      <aside class="panel"><h2>מה לעשות עכשיו</h2><div class="row"><div><b>1. לפתוח את שיעור 3</b></div><em>פתוח</em></div><div class="row"><div><b>2. לבדוק הגשות</b></div><em>פתוח</em></div></aside>
+      <div class="panel wide"><h2>הכיתות שלי</h2><div class="class-grid"><div class="card"><b>כיתה ד׳ 1</b><span>16 תלמידים</span><code>CLASS-A12F09</code></div><div class="card"><b>כיתה ד׳ 2</b><span>15 תלמידים</span><code>CLASS-B44C31</code></div></div></div>
+      <div class="panel wide"><h2>מפת 15 המפגשים</h2><div class="teacher-lessons" id="teacherLessons"></div></div>
+      <div class="panel"><h2>משימות שהוגשו</h2><div class="row"><div><b>רפלקציה — שיעור 2</b><span>3 תלמידים ממתינים למשוב.</span></div><em>לבדיקה</em></div></div>
+      <div class="panel"><h2>משימות שעוד יש לבצע</h2><div class="row"><div><b>משימת לולאות</b><span>תיפתח עם שיעור 3.</span></div><em>ממתין</em></div></div>
+    </section>
+  </main>
+<script>
+const names=['כניסה לעולם Craftom','אלגוריתם בנייה ראשון','לולאות','תנאים','חיישנים ואירועים','הגשר לכפר','שיתוף משאבים','מבוך מיקוד','הבנאי העיוור','רובי עוזר','בטיחות וכללים','ניקוד וזמן','פרויקט: תכנון','פרויקט: בנייה','הצגת תוצרים'];
+document.getElementById('lessons').innerHTML=names.map((n,i)=>`<div class="lesson ${i<2?'done':i===2?'open':'lock'}"><b>${i+1}</b><span>${i<2?'✓':i===2?'▶':'🔒'}</span><small>${n}</small></div>`).join('');
+document.getElementById('teacherLessons').innerHTML=names.map((n,i)=>`<div class="card"><b>${i+1}. ${n}</b><span>${i<5?'יחידת בסיס':i<12?'שיתוף פעולה ודוחות':'פרויקט גמר'}</span></div>`).join('');
+function show(id){document.getElementById('student').classList.toggle('hide',id!=='student');document.getElementById('teacher').classList.toggle('hide',id!=='teacher')}
+</script>
+</body>
+</html>

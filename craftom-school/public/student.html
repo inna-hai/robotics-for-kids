@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>דף הבית | Craftom School</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="brand">Craftom School</div>
+      <div class="muted" id="student-name">טוען...</div>
+    </div>
+    <button class="btn ghost" onclick="logout()">יציאה</button>
+  </header>
+  <main class="shell dashboard">
+    <section class="panel home-main">
+      <div class="eyebrow">השיעור הנוכחי</div>
+      <h1 id="current-title">טוען...</h1>
+      <p class="muted" id="current-desc"></p>
+      <div class="actions">
+        <button class="btn" id="continue-btn">המשך לשיעור</button>
+        <button class="btn ghost" id="review-btn">חזרה לשיעור קודם</button>
+        <button class="btn ghost" onclick="navigateTo('/reports.html')">דוח התקדמות</button>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label" id="progress-label"></div>
+        <div class="progress-bar"><span id="progress-fill"></span></div>
+      </div>
+    </section>
+
+    <aside class="panel side-panel">
+      <h2>הודעה מהמורה</h2>
+      <p id="teacher-message" class="note"></p>
+      <h2>הצוות שלי</h2>
+      <div id="team-box"></div>
+    </aside>
+
+    <section class="panel wide-panel">
+      <div class="section-head">
+        <div>
+          <h2>בחירת שיעור</h2>
+          <p class="muted">אפשר לחזור לשיעורים קודמים. אי אפשר לדלג לשיעורים נעולים.</p>
+        </div>
+      </div>
+      <div class="lesson-map" id="lesson-map"></div>
+    </section>
+
+    <section class="panel">
+      <h2>משימות לביצוע</h2>
+      <div class="task-list" id="tasks"></div>
+    </section>
+
+    <section class="panel">
+      <h2>משוב על משימות</h2>
+      <div class="task-list" id="feedback"></div>
+    </section>
+  </main>
+<script src="/main.js"></script>
+<script>
+let DASH = null;
+
+function statusText(status){
+  return status === 'completed' ? 'הושלם' : status === 'open' ? 'פתוח' : 'נעול';
+}
+
+function lessonButton(lesson){
+  const disabled = lesson.status === 'locked' ? 'disabled' : '';
+  const icon = lesson.status === 'completed' ? '✓' : lesson.status === 'open' ? '▶' : '🔒';
+  return `<button class="lesson-tile ${lesson.status}" ${disabled} onclick="openLesson(${lesson.number})">
+    <b>${lesson.number}</b>
+    <span>${icon}</span>
+    <small>${esc(lesson.title)}</small>
+  </button>`;
+}
+
+function taskRow(task){
+  return `<div class="task-row">
+    <div><b>${esc(task.title)}</b><span>${esc(task.type)} · שיעור ${esc(task.lesson_number)}</span></div>
+    ${statusBadge(task.status || 'to_do')}
+  </div>`;
+}
+
+function feedbackRow(item){
+  return `<div class="task-row">
+    <div><b>${esc(item.title)}</b><span>${esc(item.message)}</span></div>
+    ${statusBadge(item.status || 'feedback')}
+  </div>`;
+}
+
+function renderTeamBox(){
+  if(DASH.team){
+    document.getElementById('team-box').innerHTML = `<div class="note"><b>${esc(DASH.team.name)}</b><br><span class="muted">קוד צוות: ${esc(DASH.team.code)}</span></div>`;
+    return;
+  }
+  document.getElementById('team-box').innerHTML = `<div class="note">
+    <p class="muted">אם המורה חילק אתכם לצוות, הזינו כאן קוד צוות.</p>
+    <input id="team-code" placeholder="לדוגמה: TEAM-ABC123">
+    <button class="btn full" onclick="joinTeam()">הצטרפות לצוות</button>
+  </div>`;
+}
+
+async function joinTeam(){
+  const input = document.getElementById('team-code');
+  const r = await post('/api/student/team/join', { team_code: input ? input.value : '' });
+  if(!r.ok) return toast(r.error || 'לא ניתן להצטרף לצוות כרגע', true);
+  toast('הצטרפת לצוות בהצלחה');
+  loadHome();
+}
+
+function openLesson(number){
+  const lesson = DASH.lessons.find(l => l.number === number);
+  if(!lesson || lesson.status === 'locked') return;
+  navigateTo(`/lesson.html?lesson=${number}`);
+}
+
+async function loadHome(){
+  const me = await guard(['student']);
+  if(!me) return;
+  document.getElementById('student-name').textContent = `${me.user.name || me.user.email} · תלמיד/ה`;
+  const data = await fetch('/api/student/home').then(r=>r.json());
+  if(!data.ok) return;
+  DASH = data.dashboard;
+  const current = DASH.current_lesson;
+  document.getElementById('current-title').textContent = `מפגש ${current.number}: ${current.title}`;
+  document.getElementById('current-desc').textContent = `${current.concept} · ${current.product}`;
+  document.getElementById('teacher-message').textContent = DASH.teacher_message;
+  renderTeamBox();
+  document.getElementById('lesson-map').innerHTML = DASH.lessons.map(lessonButton).join('');
+  document.getElementById('tasks').innerHTML = DASH.tasks.length ? DASH.tasks.map(taskRow).join('') : '<p class="muted">אין משימות פתוחות.</p>';
+  document.getElementById('feedback').innerHTML = DASH.feedback.length ? DASH.feedback.map(feedbackRow).join('') : '<p class="muted">עדיין אין משוב ממורה.</p>';
+  document.getElementById('progress-label').textContent = `${DASH.progress.completed_count} מתוך ${DASH.progress.total_lessons} שיעורים הושלמו`;
+  document.getElementById('progress-fill').style.width = `${Math.round((DASH.progress.completed_count / DASH.progress.total_lessons) * 100)}%`;
+  document.getElementById('continue-btn').onclick = () => openLesson(current.number);
+  document.getElementById('review-btn').onclick = () => {
+    const previous = DASH.lessons.filter(l => l.status === 'completed').pop();
+    if(previous) openLesson(previous.number);
+    else toast('עדיין אין שיעור קודם לחזור אליו.', true);
+  };
+}
+loadHome();
+</script>
+</body>
+</html>

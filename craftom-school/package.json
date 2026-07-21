@@ -1,0 +1,13 @@
+{
+  "name": "craftom-school",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Craftom school learning system MVP",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js && node --check scripts/seed-demo.js && node --check scripts/smoke-test.js",
+    "seed:demo": "node scripts/seed-demo.js",
+    "test:smoke": "node scripts/smoke-test.js"
+  }
+}

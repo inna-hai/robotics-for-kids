@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>כניסה | Craftom School</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main class="shell center">
+    <form class="panel auth" onsubmit="return login(event)">
+      <div class="brand">Craftom School</div>
+      <h1>כניסה</h1>
+      <label>אימייל</label>
+      <input id="email" type="email" autocomplete="username" required>
+      <label>סיסמה</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <button class="btn full" id="btn">כניסה</button>
+      <div class="msg" id="msg"></div>
+      <p class="small">אין חשבון? <a href="/register.html">הרשמה</a></p>
+    </form>
+  </main>
+<script src="/main.js"></script>
+<script>
+async function login(e){
+  e.preventDefault();
+  setMsg('');
+  btn.disabled = true;
+  btn.textContent = 'מתחבר...';
+  const r = await post('/api/login', { email: email.value, password: password.value });
+  btn.disabled = false;
+  btn.textContent = 'כניסה';
+  if(!r.ok) return setMsg(r.error || 'כניסה נכשלה', true);
+  location.href = r.home_url;
+}
+</script>
+</body>
+</html>

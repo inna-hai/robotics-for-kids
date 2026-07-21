@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>שיעור | Craftom School</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="brand">Craftom School</div>
+      <div class="muted" id="user-label">טוען...</div>
+    </div>
+    <div class="actions compact">
+      <a class="btn ghost" id="home-link" href="/">דף הבית</a>
+      <button class="btn ghost" onclick="logout()">יציאה</button>
+    </div>
+  </header>
+
+  <main class="shell lesson-layout">
+    <section class="panel lesson-hero">
+      <div class="eyebrow" id="lesson-number">שיעור</div>
+      <h1 id="lesson-title">טוען...</h1>
+      <p class="muted" id="lesson-objective"></p>
+      <div class="lesson-meta">
+        <span id="lesson-concept"></span>
+        <span id="lesson-product"></span>
+        <span id="lesson-status"></span>
+      </div>
+    </section>
+
+    <section class="panel" id="student-panel">
+      <h2>לתלמידים</h2>
+      <p id="student-intro" class="note"></p>
+      <h3>חומר השיעור</h3>
+      <div class="content-blocks" id="content-blocks"></div>
+      <h3>שלבי עבודה</h3>
+      <ol class="lesson-list" id="student-steps"></ol>
+      <h3>מה מגישים בסוף</h3>
+      <ul class="lesson-list" id="deliverables"></ul>
+      <button class="btn" id="complete-btn">סיימתי את השיעור</button>
+    </section>
+
+    <aside class="panel" id="tasks-panel">
+      <h2>משימות השיעור</h2>
+      <div class="lesson-tasks" id="lesson-tasks"></div>
+    </aside>
+
+    <section class="panel wide-panel" id="teacher-panel">
+      <h2>למורה</h2>
+      <div class="teacher-grid">
+        <div>
+          <h3>מהלך הנחיה</h3>
+          <ol class="lesson-list" id="teacher-plan"></ol>
+        </div>
+        <div>
+          <h3>מה כדאי לתצפת</h3>
+          <ul class="lesson-list" id="observation-focus"></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel wide-panel lesson-nav">
+      <button class="btn ghost" id="prev-lesson">שיעור קודם</button>
+      <button class="btn" id="home-lesson">חזרה לדף הבית</button>
+      <button class="btn ghost" id="next-lesson">שיעור הבא</button>
+    </section>
+  </main>
+
+<script src="/main.js"></script>
+<script>
+const params = new URLSearchParams(location.search);
+const lessonNumber = Number(params.get('lesson') || params.get('number') || 1);
+let VIEW = null;
+
+function renderList(id, rows, ordered){
+  document.getElementById(id).innerHTML = (rows || []).map(row => `<li>${esc(row)}</li>`).join('');
+}
+
+function renderContentBlocks(blocks){
+  return (blocks || []).map(block => `<div class="content-block">
+    <b>${esc(block.title)}</b>
+    <span>${esc(block.format)}</span>
+    <p>${esc(block.description)}</p>
+  </div>`).join('');
+}
+
+function renderTask(task){
+  const questions = (task.reflection_questions || []).map(q => `<li>${esc(q)}</li>`).join('');
+  const submittedText = task.submission && task.submission.reflection ? `<p class="submitted-reflection">${esc(task.submission.reflection)}</p>` : '';
+  const feedback = task.submission && task.submission.feedback ? `<p class="teacher-feedback">${esc(task.submission.feedback)}</p>` : '';
+  const scope = task.scope === 'team' ? 'משימה צוותית' : 'משימה אישית';
+  const studentForm = VIEW.mode === 'student' ? `<div class="task-submit">
+    <label>רפלקציה / תשובת הגשה
+      <textarea id="reflection-${esc(task.id)}" placeholder="כתבו כאן בקצרה מה עשיתם ומה למדתם">${esc(task.submission ? task.submission.reflection : '')}</textarea>
+    </label>
+    <button class="btn" onclick="submitTask('${esc(task.id)}')">${task.status === 'needs_fix' ? 'שלחתי תיקון' : 'הגשתי משימה'}</button>
+  </div>` : '';
+  return `<article class="task-card">
+    <div class="task-card-head">
+      <div><b>${esc(task.title)}</b><span>${esc(task.type)} · ${scope}</span></div>
+      ${statusBadge(task.status || 'to_do')}
+    </div>
+    <p>${esc(task.description || '')}</p>
+    <h4>רפלקציה על המשימה</h4>
+    <ul class="lesson-list">${questions}</ul>
+    ${submittedText}
+    ${feedback}
+    ${studentForm}
+  </article>`;
+}
+
+async function submitTask(taskId){
+  const textarea = document.getElementById(`reflection-${taskId}`);
+  const reflection = textarea ? textarea.value : '';
+  const r = await post(`/api/student/tasks/${encodeURIComponent(taskId)}/submit`, { reflection });
+  if(!r.ok) return toast(r.error || 'לא ניתן להגיש את המשימה כרגע', true);
+  toast('המשימה הוגשה למורה');
+  loadLesson();
+}
+
+async function completeLesson(){
+  if(!VIEW || VIEW.mode !== 'student') return;
+  const r = await post(`/api/student/lessons/${VIEW.lesson.number}/complete`, {});
+  if(!r.ok) return toast(r.error || 'לא ניתן לסמן את השיעור כרגע', true);
+  toast('השיעור סומן כהושלם. השיעור הבא נפתח.');
+  navigateTo('/student.html');
+}
+
+function goLesson(number){
+  if(number < 1 || number > 15) return;
+  navigateTo(`/lesson.html?lesson=${number}`);
+}
+
+async function loadLesson(){
+  const me = await fetch('/api/me').then(r => r.ok ? r.json() : null).catch(() => null);
+  if(!me || !me.ok){ location.replace('/login.html?next=' + encodeURIComponent(location.pathname + location.search)); return; }
+  document.getElementById('user-label').textContent = `${me.user.name || me.user.email} · ${me.user.role === 'student' ? 'תלמיד/ה' : me.user.role === 'admin' ? 'מנהל' : 'מורה'}`;
+  document.getElementById('home-link').href = me.home_url || '/';
+
+  const data = await fetch(`/api/lessons/${lessonNumber}`).then(r => r.json());
+  if(!data.ok){
+    if(data.dashboard && data.dashboard.locked){
+      toast('השיעור עדיין נעול. אפשר לחזור לשיעורים שכבר נפתחו.', true);
+      navigateTo('/student.html');
+      return;
+    }
+    toast(data.error || 'שיעור לא נמצא', true);
+    navigateTo(me.home_url || '/');
+    return;
+  }
+  VIEW = data.dashboard;
+  const l = VIEW.lesson;
+  document.getElementById('lesson-number').textContent = `מפגש ${l.number}`;
+  document.getElementById('lesson-title').textContent = l.title;
+  document.getElementById('lesson-objective').textContent = l.objective;
+  document.getElementById('lesson-concept').textContent = `מושג: ${l.concept}`;
+  document.getElementById('lesson-product').textContent = `תוצר: ${l.product}`;
+  document.getElementById('lesson-status').textContent = VIEW.mode === 'student' ? `סטטוס: ${VIEW.status === 'completed' ? 'הושלם' : 'פתוח'}` : 'תצוגת מורה';
+  document.getElementById('student-intro').textContent = l.student_intro;
+  document.getElementById('content-blocks').innerHTML = renderContentBlocks(l.content_blocks);
+  renderList('student-steps', l.steps);
+  renderList('deliverables', l.deliverables);
+  document.getElementById('lesson-tasks').innerHTML = (l.tasks || []).map(renderTask).join('');
+  renderList('teacher-plan', l.teacher_plan);
+  renderList('observation-focus', l.observation_focus);
+
+  const studentOnly = VIEW.mode === 'student';
+  document.getElementById('complete-btn').style.display = studentOnly ? '' : 'none';
+  document.getElementById('teacher-panel').style.display = VIEW.mode === 'teacher' ? '' : 'none';
+  document.getElementById('complete-btn').onclick = completeLesson;
+  document.getElementById('home-lesson').onclick = () => navigateTo(me.home_url || '/');
+  document.getElementById('prev-lesson').disabled = l.number <= 1;
+  document.getElementById('prev-lesson').onclick = () => goLesson(l.number - 1);
+  const nextBtn = document.getElementById('next-lesson');
+  nextBtn.disabled = l.number >= 15 || (VIEW.mode === 'student' && VIEW.status !== 'completed');
+  nextBtn.title = nextBtn.disabled && VIEW.mode === 'student' ? 'השיעור הבא ייפתח אחרי סימון השיעור כהושלם' : '';
+  nextBtn.onclick = () => goLesson(l.number + 1);
+}
+loadLesson();
+</script>
+</body>
+</html>
