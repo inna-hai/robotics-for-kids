@@ -4,7 +4,10 @@ async function post(url, body) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body || {})
   });
-  return res.json().catch(() => ({ ok: res.ok }));
+  const data = await res.json().catch(() => ({ ok: res.ok }));
+  if (!res.ok && data.ok !== false) data.ok = false;
+  if (!res.ok && !data.error) data.error = 'הפעולה לא הצליחה. נסו שוב בעוד רגע.';
+  return data;
 }
 
 function setMsg(message, error) {

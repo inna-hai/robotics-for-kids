@@ -19,6 +19,7 @@
       <div class="eyebrow">השיעור הנוכחי</div>
       <h1 id="current-title">טוען...</h1>
       <p class="muted" id="current-desc"></p>
+      <div class="kid-quest" id="kid-quest"></div>
       <div class="actions">
         <button class="btn" id="continue-btn">המשך לשיעור</button>
         <button class="btn ghost" id="review-btn">חזרה לשיעור קודם</button>
@@ -31,6 +32,8 @@
     </section>
 
     <aside class="panel side-panel">
+      <h2>הצעד הבא שלי</h2>
+      <div class="task-list" id="next-steps"></div>
       <h2>הודעה מהמורה</h2>
       <p id="teacher-message" class="note"></p>
       <h2>הצוות שלי</h2>
@@ -89,6 +92,24 @@ function feedbackRow(item){
   </div>`;
 }
 
+function nextStepRow(title, detail, status){
+  return `<div class="task-row quest-row">
+    <div><b>${esc(title)}</b><span>${esc(detail)}</span></div>
+    ${statusBadge(status || 'open')}
+  </div>`;
+}
+
+function renderNextSteps(){
+  const pending = DASH.tasks.filter(task => !['submitted','completed'].includes(task.status));
+  const needsFix = DASH.tasks.filter(task => task.status === 'needs_fix');
+  const steps = [];
+  if(!DASH.team) steps.push(nextStepRow('להצטרף לצוות', 'הזינו קוד צוות מהמורה כדי לפתוח משימות צוותיות.', 'open'));
+  if(needsFix.length) steps.push(nextStepRow('לתקן משימה', `${needsFix[0].title} מחכה לתיקון קצר.`, 'needs_fix'));
+  if(pending.length) steps.push(nextStepRow('להגיש משימה', `${pending[0].title} היא המשימה הבאה שכדאי לפתוח.`, 'to_do'));
+  steps.push(nextStepRow('לסמן סוף שיעור', 'אחרי שבדקתם והגשתם, סמנו שסיימתם כדי להתקדם.', 'submitted'));
+  document.getElementById('next-steps').innerHTML = steps.slice(0, 3).join('');
+}
+
 function renderTeamBox(){
   if(DASH.team){
     document.getElementById('team-box').innerHTML = `<div class="note"><b>${esc(DASH.team.name)}</b><br><span class="muted">קוד צוות: ${esc(DASH.team.code)}</span></div>`;
@@ -125,7 +146,9 @@ async function loadHome(){
   const current = DASH.current_lesson;
   document.getElementById('current-title').textContent = `מפגש ${current.number}: ${current.title}`;
   document.getElementById('current-desc').textContent = `${current.concept} · ${current.product}`;
+  document.getElementById('kid-quest').innerHTML = `<span>משימה היום</span><b>${esc(current.product)}</b>`;
   document.getElementById('teacher-message').textContent = DASH.teacher_message;
+  renderNextSteps();
   renderTeamBox();
   document.getElementById('lesson-map').innerHTML = DASH.lessons.map(lessonButton).join('');
   document.getElementById('tasks').innerHTML = DASH.tasks.length ? DASH.tasks.map(taskRow).join('') : '<p class="muted">אין משימות פתוחות.</p>';

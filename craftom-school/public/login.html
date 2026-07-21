@@ -8,9 +8,21 @@
 </head>
 <body>
   <main class="shell center">
-    <form class="panel auth" onsubmit="return login(event)">
+    <form class="panel auth login-card" onsubmit="return login(event)">
       <div class="brand">Craftom School</div>
-      <h1>כניסה</h1>
+      <h1>נכנסים לעיר הלמידה</h1>
+      <p class="muted">בחרו משתמש דמו או הכניסו פרטים ידנית.</p>
+      <div class="demo-logins" aria-label="משתמשי דמו">
+        <button type="button" class="demo-login teacher" onclick="fillDemo('teacher.demo@craftom.local','demo123')">
+          <b>מורה</b><span>כיתות, צוותים ומשוב</span>
+        </button>
+        <button type="button" class="demo-login student" onclick="fillDemo('student1.demo@craftom.local','demo123')">
+          <b>תלמיד/ה</b><span>שיעורים ומשימות</span>
+        </button>
+        <button type="button" class="demo-login admin" onclick="fillDemo('admin@craftom.local','admin123')">
+          <b>אדמין</b><span>אישור מורים וניהול</span>
+        </button>
+      </div>
       <label>אימייל</label>
       <input id="email" type="email" autocomplete="username" required>
       <label>סיסמה</label>
@@ -22,6 +34,12 @@
   </main>
 <script src="/main.js"></script>
 <script>
+function fillDemo(mail, pass){
+  email.value = mail;
+  password.value = pass;
+  setMsg('פרטי הדמו מולאו. אפשר ללחוץ כניסה.');
+  password.focus();
+}
 async function login(e){
   e.preventDefault();
   setMsg('');

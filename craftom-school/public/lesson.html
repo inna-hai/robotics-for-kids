@@ -79,10 +79,12 @@ function renderList(id, rows, ordered){
 }
 
 function renderContentBlocks(blocks){
-  return (blocks || []).map(block => `<div class="content-block">
-    <b>${esc(block.title)}</b>
+  const icons = { text: 'קריאה', video: 'וידאו', audio: 'האזנה', link: 'קישור', html: 'HTML', robi: 'רובי', craftom: 'Craftom', file: 'קובץ', lesson_content: 'תוכן' };
+  return (blocks || []).map(block => `<div class="content-block content-${esc(block.type || 'text')}">
+    <b><span class="block-chip">${esc(icons[block.type] || 'תוכן')}</span>${esc(block.title)}</b>
     <span>${esc(block.format)}</span>
     <p>${esc(block.description)}</p>
+    ${block.url ? `<a class="btn ghost mini" href="${esc(block.url)}" target="_blank" rel="noopener">פתיחת קישור</a>` : ''}
   </div>`).join('');
 }
 

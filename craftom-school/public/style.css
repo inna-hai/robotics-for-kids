@@ -1,20 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-  --ink: #2d3047;
-  --muted: #5f6478;
+  --ink: #243042;
+  --muted: #617086;
   --panel: #ffffff;
-  --line: #e7e8f3;
-  --green: #00d9b5;
-  --green-dark: #0e8173;
-  --pink: #ff6b9d;
-  --purple: #9b5de5;
-  --blue: #00bbf9;
-  --yellow: #fee440;
-  --gold: #ffd93d;
-  --light: #f8f9ff;
-  --shadow: rgba(45, 48, 71, .16);
-  --shadow-strong: rgba(45, 48, 71, .24);
+  --line: #dce8f5;
+  --green: #2dd4bf;
+  --green-dark: #08796f;
+  --coral: #ff7a70;
+  --purple: #7c5cff;
+  --blue: #35b7ff;
+  --sky: #e8f7ff;
+  --yellow: #ffe56d;
+  --gold: #ffc857;
+  --light: #f7fbff;
+  --shadow: rgba(36, 48, 66, .12);
+  --shadow-strong: rgba(36, 48, 66, .22);
 }
 * { box-sizing: border-box; }
 body {
@@ -23,9 +24,8 @@ body {
   color: var(--ink);
   font-family: Rubik, Arial, "Noto Sans Hebrew", sans-serif;
   background:
-    radial-gradient(circle at 12% 14%, rgba(0, 245, 212, .24), transparent 30%),
-    radial-gradient(circle at 88% 22%, rgba(254, 228, 64, .22), transparent 28%),
-    linear-gradient(135deg, #667eea 0%, #764ba2 48%, #f093fb 100%);
+    linear-gradient(120deg, rgba(255,255,255,.64) 0 25%, transparent 25% 100%),
+    linear-gradient(135deg, #8bdcff 0%, #bff7dc 42%, #ffe58a 72%, #ffb0a8 100%);
   background-attachment: fixed;
   opacity: 0;
   transform: translateY(8px);
@@ -42,7 +42,7 @@ a { color: #7443c8; font-weight: 800; }
 .panel {
   background: var(--panel);
   border: 1px solid rgba(255,255,255,.78);
-  border-radius: 24px;
+  border-radius: 20px;
   box-shadow: 0 14px 40px var(--shadow);
   padding: 24px;
   margin-bottom: 18px;
@@ -58,14 +58,15 @@ a { color: #7443c8; font-weight: 800; }
   align-items: center;
   gap: 8px;
   font-weight: 900;
-  color: var(--purple);
-  background: linear-gradient(135deg, var(--purple), var(--pink));
+  color: var(--green-dark);
+  background: linear-gradient(135deg, var(--green-dark), var(--purple));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 .brand::before {
-  content: "🤖";
+  content: "◆";
   -webkit-text-fill-color: initial;
+  color: var(--coral);
   font-size: 1.45em;
 }
 h1 { margin: 8px 0 12px; font-size: clamp(26px, 5vw, 44px); line-height: 1.08; }
@@ -77,7 +78,7 @@ label { display: block; font-weight: 900; margin: 14px 0 6px; }
 input, textarea, select {
   width: 100%;
   border: 2px solid #e4e7f5;
-  border-radius: 16px;
+  border-radius: 14px;
   background: #fff;
   padding: 12px;
   font: inherit;
@@ -96,8 +97,8 @@ input:focus, textarea:focus, select:focus {
   justify-content: center;
   align-items: center;
   border: 0;
-  border-radius: 999px;
-  background: linear-gradient(135deg, var(--green), #00d9b5);
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--green), #72f0d6);
   color: var(--ink);
   padding: 12px 18px;
   font-weight: 900;
@@ -112,6 +113,11 @@ input:focus, textarea:focus, select:focus {
   color: var(--ink);
   box-shadow: 0 6px 16px rgba(45, 48, 71, .12);
   border: 2px solid #eceefa;
+}
+.btn.mini {
+  padding: 8px 10px;
+  margin-top: 10px;
+  font-size: 14px;
 }
 .btn.ghost:hover { box-shadow: 0 10px 24px rgba(155, 93, 229, .16); }
 .btn:disabled { opacity: .45; cursor: default; filter: grayscale(.2); }
@@ -128,7 +134,7 @@ input:focus, textarea:focus, select:focus {
   z-index: 20;
   max-width: min(420px, calc(100% - 36px));
   border: 0;
-  border-radius: 18px;
+  border-radius: 16px;
   background: #ecfffb;
   color: var(--green-dark);
   box-shadow: 0 10px 30px var(--shadow-strong);
@@ -145,7 +151,7 @@ input:focus, textarea:focus, select:focus {
 .role-card {
   display: block;
   border: 2px solid #e5e7f3;
-  border-radius: 18px;
+  border-radius: 16px;
   background: var(--light);
   padding: 12px;
   cursor: pointer;
@@ -168,7 +174,7 @@ input:focus, textarea:focus, select:focus {
   justify-content: space-between;
   align-items: center;
   background: rgba(255,255,255,.94);
-  border-radius: 999px;
+  border-radius: 18px;
   box-shadow: 0 8px 28px rgba(45,48,71,.14);
   backdrop-filter: blur(12px);
 }
@@ -180,7 +186,7 @@ input:focus, textarea:focus, select:focus {
 .lesson-tile {
   min-height: 94px;
   border: 2px solid #e4e7f5;
-  border-radius: 18px;
+  border-radius: 16px;
   background: #fff;
   color: var(--ink);
   padding: 8px;
@@ -208,10 +214,14 @@ input:focus, textarea:focus, select:focus {
   gap: 14px;
   align-items: center;
   border: 2px solid #e4e7f5;
-  border-radius: 18px;
+  border-radius: 16px;
   background: #fff;
   padding: 13px;
   box-shadow: 0 5px 14px rgba(45,48,71,.07);
+}
+.task-row.quest-row,
+.task-row.attention-row {
+  background: linear-gradient(135deg, #ffffff, var(--sky));
 }
 .task-row b, .task-row span { display: block; }
 .task-row span { color: var(--muted); margin-top: 3px; }
@@ -236,6 +246,66 @@ input:focus, textarea:focus, select:focus {
 .status-empty { color: #6b6256; background: #eee8de; border-color: #c5baa7; }
 .status-build, .status-code { color: #4c3f21; background: #fff3c4; border-color: #d9b95c; }
 .note { border: 2px solid #e4e7f5; border-radius: 18px; background: #fff; padding: 13px; }
+.login-card {
+  width: min(520px, 100%);
+}
+.demo-logins {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 16px 0 8px;
+}
+.demo-login {
+  border: 2px solid #dce8f5;
+  border-radius: 16px;
+  background: #fff;
+  color: var(--ink);
+  padding: 12px 10px;
+  text-align: right;
+  font: inherit;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(36,48,66,.08);
+}
+.demo-login b,
+.demo-login span {
+  display: block;
+}
+.demo-login b {
+  font-size: 18px;
+}
+.demo-login span {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 4px;
+}
+.demo-login.teacher { background: linear-gradient(135deg, #ffffff, #e8f7ff); }
+.demo-login.student { background: linear-gradient(135deg, #ffffff, #eafff7); }
+.demo-login.admin { background: linear-gradient(135deg, #ffffff, #fff4dc); }
+.kid-quest {
+  display: grid;
+  gap: 5px;
+  width: min(520px, 100%);
+  margin: 16px 0 2px;
+  border: 2px solid #c9ebdf;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ecfffb, #fff9dc);
+  padding: 14px;
+}
+.kid-quest span {
+  color: var(--green-dark);
+  font-weight: 900;
+}
+.kid-quest b {
+  font-size: 22px;
+}
+.demo-note {
+  display: grid;
+  gap: 8px;
+  border: 2px solid #dce8f5;
+  border-radius: 16px;
+  background: #fff;
+  padding: 12px;
+}
 .teacher-tabs {
   display: flex;
   gap: 8px;
@@ -325,7 +395,7 @@ h3 { margin: 18px 0 8px; }
 .task-card,
 .submission-card {
   border: 2px solid #e4e7f5;
-  border-radius: 18px;
+  border-radius: 16px;
   background: #fff;
   padding: 14px;
   box-shadow: 0 8px 18px rgba(45,48,71,.08);
@@ -334,6 +404,25 @@ h3 { margin: 18px 0 8px; }
 .content-block span {
   display: block;
 }
+.content-block b {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.block-chip {
+  display: inline-flex !important;
+  align-items: center;
+  border-radius: 999px;
+  background: #e8f7ff;
+  color: #116389 !important;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+.content-craftom { background: linear-gradient(135deg, #ffffff, #eafff7); }
+.content-robi { background: linear-gradient(135deg, #ffffff, #f0ebff); }
+.content-video,
+.content-audio { background: linear-gradient(135deg, #ffffff, #fff4dc); }
 .content-block span {
   color: var(--muted);
   margin-top: 4px;
@@ -414,7 +503,7 @@ h3 { margin: 18px 0 8px; }
   display: grid;
   gap: 6px;
   border: 2px solid #e4e7f5;
-  border-radius: 18px;
+  border-radius: 16px;
   background: #fff;
   padding: 14px;
 }
@@ -511,7 +600,7 @@ h3 { margin: 18px 0 8px; }
 }
 .editor-card {
   border: 2px solid #e4e7f5;
-  border-radius: 18px;
+  border-radius: 16px;
   background: #fff;
   padding: 14px;
 }
@@ -537,7 +626,7 @@ h3 { margin: 18px 0 8px; }
   gap: 8px;
   margin: 0;
   border: 2px solid #e4e7f5;
-  border-radius: 16px;
+  border-radius: 14px;
   background: var(--light);
   padding: 9px;
   cursor: pointer;
@@ -553,7 +642,7 @@ h3 { margin: 18px 0 8px; }
   display: grid;
   gap: 5px;
   border: 2px solid #e4e7f5;
-  border-radius: 18px;
+  border-radius: 16px;
   background: #fff;
   padding: 14px;
 }
@@ -564,8 +653,8 @@ code { direction: ltr; display: inline-block; background: #eef4ff; padding: 3px 
 .steps div { display: flex; gap: 10px; align-items: center; border: 2px solid #e4e7f5; border-radius: 18px; background: #fff; padding: 12px; }
 .steps b { display: grid; place-items: center; width: 32px; height: 32px; flex: none; background: linear-gradient(135deg, var(--purple), var(--pink)); color: #fff; border-radius: 50%; }
 @media (max-width: 620px) {
-  .role-grid { grid-template-columns: 1fr; }
-  .topbar { align-items: flex-start; gap: 10px; }
+  .role-grid, .demo-logins { grid-template-columns: 1fr; }
+  .topbar { align-items: flex-start; gap: 10px; border-radius: 18px; }
   .dashboard { grid-template-columns: 1fr; }
   .lesson-layout { grid-template-columns: 1fr; }
   .wide-panel { grid-column: auto; }

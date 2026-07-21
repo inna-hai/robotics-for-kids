@@ -586,6 +586,16 @@ function teacherHome(user, state) {
         created_at: t.created_at,
       }))
     : [];
+  const pendingSubmissions = submissions.filter(s => s.status === 'submitted');
+  const needsFix = teacherTaskOverview(state, visibleStudents).filter(row => row.status === 'needs_fix');
+  const nextActions = [];
+  if (!classes.length) nextActions.push('ליצור כיתה ראשונה ולקבל קוד הרשמה');
+  if (user.role === 'admin' && pendingTeachers.length) nextActions.push('לאשר מורים שממתינים לכניסה');
+  if (pendingSubmissions.length) nextActions.push(`לתת משוב ל-${pendingSubmissions.length} הגשות שממתינות`);
+  if (needsFix.length) nextActions.push(`לעקוב אחרי ${needsFix.length} משימות שמסומנות לתיקון`);
+  if (!teams.length && classes.length) nextActions.push('ליצור צוותים כדי לפתוח משימות צוותיות');
+  nextActions.push('לפתוח את השיעור הבא לכיתה כשהמורה מוכנה');
+
   return {
     course,
     classes,
@@ -602,11 +612,7 @@ function teacherHome(user, state) {
       lessons: course.total_lessons,
       pending_teachers: pendingTeachers.length,
     },
-    next_actions: [
-      'ליצור כיתה ולקבל קוד הרשמה לתלמידים',
-      'לפתוח את שיעור 1 לתלמידים',
-      'להגדיר משימות להגשה ומשוב',
-    ],
+    next_actions: nextActions.slice(0, 5),
   };
 }
 

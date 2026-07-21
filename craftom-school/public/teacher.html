@@ -32,6 +32,14 @@
     <aside class="panel side-panel">
       <h2>מה לעשות עכשיו</h2>
       <div class="task-list" id="next-actions"></div>
+      <h2>דורש תשומת לב</h2>
+      <div class="task-list" id="attention-list"></div>
+      <h2>פרטי דמו</h2>
+      <div class="demo-note">
+        <code>CLASS-DEMO4</code>
+        <code>TEAM-BOLT</code>
+        <span>סיסמת דמו למורה/תלמידים: <b>demo123</b></span>
+      </div>
     </aside>
 
     <section class="panel wide-panel teacher-tabs">
@@ -212,6 +220,25 @@ function taskOverviewRow(item){
   </div>`;
 }
 
+function attentionRow(title, detail, status){
+  return `<div class="task-row attention-row">
+    <div><b>${esc(title)}</b><span>${esc(detail)}</span></div>
+    ${statusBadge(status)}
+  </div>`;
+}
+
+function renderAttention(){
+  const needsFix = HOME.task_overview.filter(row => row.status === 'needs_fix');
+  const submitted = HOME.submissions.filter(row => row.status === 'submitted');
+  const pendingTeachers = HOME.pending_teachers || [];
+  const rows = [];
+  if(pendingTeachers.length) rows.push(attentionRow('מורה ממתין לאישור', `${pendingTeachers[0].name} מחכה לאישור כניסה.`, 'needs_fix'));
+  if(submitted.length) rows.push(attentionRow('הגשות למשוב', `${submitted.length} הגשות מחכות למילה טובה או תיקון.`, 'submitted'));
+  if(needsFix.length) rows.push(attentionRow('משימות לתיקון', `${needsFix.length} משימות מסומנות כצריכות תיקון.`, 'needs_fix'));
+  if(!rows.length) rows.push(attentionRow('הכול רגוע', 'אין כרגע משהו דחוף לטיפול.', 'completed'));
+  document.getElementById('attention-list').innerHTML = rows.slice(0, 3).join('');
+}
+
 function observationRow(item){
   return `<div class="task-row">
     <div>
@@ -292,6 +319,7 @@ async function loadHome(){
     stat('מפגשים', HOME.stats.lessons) +
     stat('מורים ממתינים', HOME.stats.pending_teachers);
   document.getElementById('next-actions').innerHTML = HOME.next_actions.map((x,i)=>`<div class="task-row"><div><b>${i+1}. ${esc(x)}</b></div>${statusBadge('open')}</div>`).join('');
+  renderAttention();
   document.querySelectorAll('.empty-status').forEach(el => { el.innerHTML = statusBadge('empty'); });
   const pendingPanel = document.getElementById('pending-teachers-panel');
   document.getElementById('users-tab').classList.toggle('hidden', me.user.role !== 'admin');
