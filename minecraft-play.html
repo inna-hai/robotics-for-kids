@@ -8,7 +8,7 @@
   <script src="https://unpkg.com/blockly/msg/he.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <style>
-    *{box-sizing:border-box} :root{--grass:#55b947;--dirt:#8b5a2b;--stone:#8d99ae;--sky:#83d8ff;--dark:#173018;--green:#2f8f2f;--gold:#ffd166;--blue:#2a85c7} body{margin:0;height:100vh;overflow:hidden;font-family:Rubik,Arial,sans-serif;direction:rtl;background:linear-gradient(135deg,#7ddf64,#5ec1ff 55%,#b58cff);color:var(--dark);display:flex;flex-direction:column}.topbar{background:white;box-shadow:0 4px 20px rgba(0,0,0,.12);padding:.55rem .85rem;display:grid;grid-template-columns:minmax(190px,auto) minmax(0,1fr) auto;gap:.65rem;align-items:center;z-index:5}.brand{display:flex;align-items:center;gap:.45rem;font-weight:900;font-size:1.08rem;white-space:nowrap}.tabs{display:flex;gap:.25rem;overflow-x:auto;justify-content:center;padding:.1rem}.tab{border:2px solid #e5e7eb;background:white;border-radius:999px;min-width:42px;height:40px;display:inline-flex;align-items:center;justify-content:center;gap:.08rem;text-decoration:none;font-weight:900;flex:0 0 auto}.tab.active{background:linear-gradient(135deg,#35b24a,#2a85c7);color:white;border-color:#35b24a;box-shadow:0 6px 16px rgba(47,143,47,.28)}.actions{display:flex;gap:.45rem}.btn{border:0;border-radius:999px;padding:.65rem 1rem;font-family:inherit;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.35rem}.run{background:#00d084;color:#073b1a}.reset{background:#ff6b6b;color:white}.link{background:#eef8ec;color:#166534}.main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(360px,44%) minmax(0,1fr);gap:1rem;padding:1rem}.world-panel,.code-panel{background:rgba(255,255,255,.95);border-radius:28px;box-shadow:0 16px 42px rgba(23,48,24,.14);min-height:0;overflow:hidden;display:flex;flex-direction:column}.lesson-info{padding:1rem 1.1rem;border-bottom:1px solid #e5e7eb}.lesson-info h1{font-size:1.55rem;margin:.2rem 0}.lesson-info p{margin:.35rem 0;line-height:1.55}.chips{display:flex;gap:.45rem;flex-wrap:wrap;margin-top:.55rem}.chip{background:#f0fdf4;color:#166534;border-radius:999px;padding:.32rem .65rem;font-weight:900;font-size:.82rem}.world-wrap{padding:1rem;display:grid;grid-template-columns:1fr;gap:.8rem;min-height:0;flex:1}.status{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem}.status div{background:#f8fafc;border-radius:16px;padding:.7rem;text-align:center;font-weight:900}.status b{display:block;color:var(--green);font-size:1.25rem}.world{position:relative;min-height:330px;flex:1;border:8px solid #5c3b20;border-radius:18px;overflow:hidden;background:linear-gradient(#83d8ff 0 58%,#55b947 58% 100%);box-shadow:inset 0 -42px #8b5a2b}.world.night{background:linear-gradient(#172554 0 58%,#31572c 58% 100%)}.world.rain::after,.world.snow::after{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(120deg,rgba(255,255,255,.55) 2px,transparent 3px);background-size:18px 24px;opacity:.7}.world.snow::after{background-image:radial-gradient(circle,white 2px,transparent 3px);background-size:26px 26px}.player{position:absolute;width:54px;height:92px;right:54%;bottom:82px;transition:.45s;z-index:4;image-rendering:pixelated;filter:drop-shadow(0 5px 0 rgba(0,0,0,.18))}.steve-head{position:absolute;top:0;left:9px;width:36px;height:36px;background:#c68642;border:4px solid #3b2416}.steve-hair{position:absolute;top:0;left:0;right:0;height:10px;background:#3b2416}.steve-hair::before{content:'';position:absolute;right:4px;top:8px;width:8px;height:8px;background:#3b2416}.steve-eye{position:absolute;top:17px;width:6px;height:6px;background:#2b5fa8}.steve-eye.left{left:8px}.steve-eye.right{right:8px}.steve-nose{position:absolute;top:22px;left:15px;width:6px;height:5px;background:#a86a37}.steve-shirt{position:absolute;top:36px;left:7px;width:40px;height:30px;background:#00a7a7;border:4px solid #07575b}.steve-arm{position:absolute;top:40px;width:9px;height:32px;background:#c68642;border:3px solid #3b2416}.steve-arm.left{left:0}.steve-arm.right{right:0}.steve-leg{position:absolute;top:66px;width:18px;height:26px;background:#3446a8;border:3px solid #172554}.steve-leg.left{left:9px}.steve-leg.right{right:9px}.bubble{position:absolute;right:calc(54% - 30px);bottom:158px;background:white;border:3px solid #173018;border-radius:18px;padding:.7rem 1rem;font-weight:900;max-width:260px;display:none;z-index:8;box-shadow:0 8px 20px rgba(0,0,0,.15)}.bubble.show{display:block}.block{position:absolute;width:42px;height:42px;border:3px solid rgba(0,0,0,.18);box-shadow:inset 0 5px rgba(255,255,255,.22)}.grass{background:#55b947}.wood{background:#9b6a3b}.gold{background:#ffd166}.diamond{background:#67e8f9}.red{background:#ef4444}.purple{background:#a855f7}.door{position:absolute;width:52px;height:88px;left:54px;bottom:82px;background:#8b5a2b;border:5px solid #5c3b20;border-radius:8px 8px 0 0;z-index:3}.door.open{transform:rotateY(65deg);background:#c084fc}.pet,.mob,.treasure,.apple,.hint{position:absolute;font-size:2.2rem;z-index:5;text-shadow:0 4px 8px rgba(0,0,0,.16)}.hint-card{background:#fff7ed;border-right:7px solid #fb923c;border-radius:16px;padding:.8rem 1rem;line-height:1.5;font-weight:800}.exercise-list{background:#f8fafc;border-radius:18px;padding:.85rem;max-height:190px;overflow:auto;border:1px solid #e5e7eb}.exercise-list h3{margin:0 0 .55rem;font-size:1rem;color:#166534}.exercise-item{background:white;border-radius:14px;padding:.65rem .75rem;margin-bottom:.55rem;border-right:5px solid #35b24a;line-height:1.45}.exercise-item b{display:block;color:#173018}.exercise-item small{color:#64748b;font-weight:800}.code-head{padding:1rem 1.1rem;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;gap:.8rem;align-items:center}.code-head h2{margin:0;font-size:1.25rem}.blockly-area{flex:1;min-height:0}#blocklyDiv{height:100%;width:100%}.toolbox-note{font-size:.9rem;color:#475569}.mobile-warning{display:none;background:#fff7ed;padding:.8rem 1rem;border-bottom:1px solid #fed7aa;font-weight:800}@media(max-width:900px){body{height:auto;min-height:100vh;overflow:auto;overflow-x:hidden}.topbar{grid-template-columns:1fr}.tabs{justify-content:flex-start;padding-bottom:.25rem}.tab{min-width:44px}.actions{justify-content:stretch}.actions .btn,.actions a{flex:1}.main{display:flex;flex-direction:column;padding:.75rem}.code-panel{order:1;min-height:560px}.world-panel{order:2}.world{min-height:300px}.world-panel,.code-panel{border-radius:20px}.mobile-warning{display:block}.brand{white-space:normal}.status{grid-template-columns:1fr 1fr 1fr}}@media(max-width:520px){.main{padding:.55rem}.status{grid-template-columns:repeat(3,1fr);gap:.35rem}.status div{padding:.5rem .25rem;font-size:.78rem}.status b{font-size:1rem}.lesson-info{padding:.85rem}.lesson-info h1{font-size:1.22rem}.lesson-info p{font-size:.95rem}.chips{gap:.32rem}.chip{font-size:.72rem;padding:.28rem .5rem}.btn{padding:.55rem .75rem;font-size:.9rem}.world{min-height:235px;border-width:6px}.code-panel{min-height:520px}.world-wrap{padding:.75rem;gap:.55rem}.player{transform:scale(.85);transform-origin:bottom center}.door{transform:scale(.86);transform-origin:bottom left}.door.open{transform:scale(.86) rotateY(65deg)}}
+    *{box-sizing:border-box} :root{--grass:#55b947;--dirt:#8b5a2b;--stone:#8d99ae;--sky:#83d8ff;--dark:#173018;--green:#2f8f2f;--gold:#ffd166;--blue:#2a85c7} body{margin:0;height:100vh;overflow:hidden;font-family:Rubik,Arial,sans-serif;direction:rtl;background:linear-gradient(135deg,#7ddf64,#5ec1ff 55%,#b58cff);color:var(--dark);display:flex;flex-direction:column}.topbar{background:white;box-shadow:0 4px 20px rgba(0,0,0,.12);padding:.55rem .85rem;display:grid;grid-template-columns:minmax(190px,auto) minmax(0,1fr) auto;gap:.65rem;align-items:center;z-index:5}.brand{display:flex;align-items:center;gap:.45rem;font-weight:900;font-size:1.08rem;white-space:nowrap}.tabs{display:flex;gap:.25rem;overflow-x:auto;justify-content:center;padding:.1rem}.tab{border:2px solid #e5e7eb;background:white;border-radius:999px;min-width:42px;height:40px;display:inline-flex;align-items:center;justify-content:center;gap:.08rem;text-decoration:none;font-weight:900;flex:0 0 auto}.tab.active{background:linear-gradient(135deg,#35b24a,#2a85c7);color:white;border-color:#35b24a;box-shadow:0 6px 16px rgba(47,143,47,.28)}.actions{display:flex;gap:.45rem}.btn{border:0;border-radius:999px;padding:.65rem 1rem;font-family:inherit;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.35rem}.run{background:#00d084;color:#073b1a}.reset{background:#ff6b6b;color:white}.link{background:#eef8ec;color:#166534}.main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(360px,44%) minmax(0,1fr);gap:1rem;padding:1rem}.world-panel,.code-panel{background:rgba(255,255,255,.95);border-radius:28px;box-shadow:0 16px 42px rgba(23,48,24,.14);min-height:0;overflow:hidden;display:flex;flex-direction:column}.lesson-info{padding:1rem 1.1rem;border-bottom:1px solid #e5e7eb}.lesson-info h1{font-size:1.55rem;margin:.2rem 0}.lesson-info p{margin:.35rem 0;line-height:1.55}.chips{display:flex;gap:.45rem;flex-wrap:wrap;margin-top:.55rem}.chip{background:#f0fdf4;color:#166534;border-radius:999px;padding:.32rem .65rem;font-weight:900;font-size:.82rem}.world-wrap{padding:1rem;display:grid;grid-template-columns:1fr;gap:.8rem;min-height:0;flex:1}.status{display:none}.status div{background:#f8fafc;border-radius:16px;padding:.7rem;text-align:center;font-weight:900}.status b{display:block;color:var(--green);font-size:1.25rem}.world{position:relative;min-height:330px;flex:1;border:8px solid #5c3b20;border-radius:18px;overflow:hidden;background:linear-gradient(#83d8ff 0 58%,#55b947 58% 100%);box-shadow:inset 0 -42px #8b5a2b}.world.night{background:linear-gradient(#172554 0 58%,#31572c 58% 100%)}.world.rain::after,.world.snow::after{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(120deg,rgba(255,255,255,.55) 2px,transparent 3px);background-size:18px 24px;opacity:.7}.world.snow::after{background-image:radial-gradient(circle,white 2px,transparent 3px);background-size:26px 26px}.player{position:absolute;width:54px;height:92px;right:54%;bottom:82px;transition:.45s;z-index:4;image-rendering:pixelated;filter:drop-shadow(0 5px 0 rgba(0,0,0,.18))}.steve-head{position:absolute;top:0;left:9px;width:36px;height:36px;background:#c68642;border:4px solid #3b2416}.steve-hair{position:absolute;top:0;left:0;right:0;height:10px;background:#3b2416}.steve-hair::before{content:'';position:absolute;right:4px;top:8px;width:8px;height:8px;background:#3b2416}.steve-eye{position:absolute;top:17px;width:6px;height:6px;background:#2b5fa8}.steve-eye.left{left:8px}.steve-eye.right{right:8px}.steve-nose{position:absolute;top:22px;left:15px;width:6px;height:5px;background:#a86a37}.steve-shirt{position:absolute;top:36px;left:7px;width:40px;height:30px;background:#00a7a7;border:4px solid #07575b}.steve-arm{position:absolute;top:40px;width:9px;height:32px;background:#c68642;border:3px solid #3b2416}.steve-arm.left{left:0}.steve-arm.right{right:0}.steve-leg{position:absolute;top:66px;width:18px;height:26px;background:#3446a8;border:3px solid #172554}.steve-leg.left{left:9px}.steve-leg.right{right:9px}.bubble{position:absolute;right:calc(54% - 30px);bottom:158px;background:white;border:3px solid #173018;border-radius:18px;padding:.7rem 1rem;font-weight:900;max-width:260px;display:none;z-index:8;box-shadow:0 8px 20px rgba(0,0,0,.15)}.bubble.show{display:block}.block{position:absolute;width:42px;height:42px;border:3px solid rgba(0,0,0,.18);box-shadow:inset 0 5px rgba(255,255,255,.22);z-index:5}.block.path-slab{width:46px;height:14px;border-width:3px;border-radius:6px 6px 4px 4px;box-shadow:inset 0 4px rgba(255,255,255,.24),0 4px 0 rgba(0,0,0,.12);z-index:5}.block.half-slab{width:44px;height:24px;border-width:3px;border-radius:5px 5px 4px 4px;box-shadow:inset 0 5px rgba(255,255,255,.24),0 5px 0 rgba(0,0,0,.12);z-index:5}.grass{background:#55b947}.wood{background:#9b6a3b}.gold{background:#ffd166}.diamond{background:#67e8f9}.red{background:#ef4444}.purple{background:#a855f7}.door{position:absolute;width:52px;height:88px;left:54px;bottom:82px;background:#8b5a2b;border:5px solid #5c3b20;border-radius:8px 8px 0 0;z-index:3}.door.open{transform:rotateY(65deg);background:#c084fc}.pet,.mob,.treasure,.apple,.hint{position:absolute;font-size:2.2rem;z-index:5;text-shadow:0 4px 8px rgba(0,0,0,.16)}.hint-card{background:#fff7ed;border-right:7px solid #fb923c;border-radius:16px;padding:.8rem 1rem;line-height:1.5;font-weight:800}.exercise-list{background:#f8fafc;border-radius:18px;padding:.85rem;max-height:190px;overflow:auto;border:1px solid #e5e7eb}.exercise-list h3{margin:0 0 .55rem;font-size:1rem;color:#166534}.exercise-item{background:white;border-radius:14px;padding:.65rem .75rem;margin-bottom:.55rem;border-right:5px solid #35b24a;line-height:1.45}.exercise-item b{display:block;color:#173018}.exercise-item small{color:#64748b;font-weight:800}.code-head{padding:1rem 1.1rem;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;gap:.8rem;align-items:center}.code-head h2{margin:0;font-size:1.25rem}.blockly-area{flex:1;min-height:0}#blocklyDiv{height:100%;width:100%}.toolbox-note{font-size:.9rem;color:#475569}.lesson-one-only,.lesson-two-only,.lesson-three-only{display:none}.world.lesson-one .lesson-one-only,.world.lesson-two .lesson-two-only,.world.lesson-three .lesson-three-only{display:block}.build-model{position:absolute;right:16px;top:14px;background:rgba(255,255,255,.94);border:4px solid #7c4a21;border-radius:18px;padding:.5rem .6rem;z-index:3;box-shadow:0 10px 20px rgba(0,0,0,.16);width:156px;text-align:center}.build-model-title{font-weight:900;color:#7c2d12;margin-bottom:.25rem}.model-level{font-size:.72rem;font-weight:900;color:#166534;margin-bottom:.2rem}.model-shape{display:grid;grid-template-columns:repeat(4,24px);grid-template-rows:repeat(3,24px);justify-content:center;gap:0;margin:.18rem auto}.model-cell{width:24px;height:24px;border:3px solid rgba(0,0,0,.24);box-shadow:inset 0 4px rgba(255,255,255,.24)}.model-cell.empty{border:0;box-shadow:none;background:transparent}.model-note{margin-top:.28rem;font-size:.68rem;font-weight:900;color:#334155;line-height:1.18}.model-pager{display:flex;align-items:center;justify-content:center;gap:.25rem;margin-top:.35rem}.model-pager button{border:0;border-radius:999px;background:#e0f2fe;color:#075985;font-family:inherit;font-weight:900;cursor:pointer;padding:.24rem .5rem;min-width:28px}.model-pager button.active{background:#35b24a;color:white}.model-counter{font-size:.72rem;font-weight:900;color:#475569}.world.lesson-three .build-model{width:230px}.world.lesson-three .model-shape{grid-template-columns:repeat(7,20px);grid-template-rows:repeat(5,20px)}.world.lesson-three .model-cell{width:20px;height:20px;border-width:2px}.target-sign{position:absolute;left:190px;bottom:182px;background:#fff7ed;border:4px solid #7c4a21;border-radius:16px;padding:.55rem .75rem;font-weight:900;text-align:center;z-index:2;box-shadow:0 10px 18px rgba(0,0,0,.16)}.target-sign::after{content:'';position:absolute;width:10px;height:38px;background:#7c4a21;left:50%;transform:translateX(-50%);bottom:-40px}.player-name{display:none;position:absolute;left:50%;transform:translateX(-50%);top:45px;color:white;font-weight:900;font-size:.62rem;line-height:1;text-shadow:0 1px 0 #07575b,0 -1px 0 #07575b,1px 0 0 #07575b,-1px 0 0 #07575b;z-index:6;pointer-events:none}.player-name{display:block}.player{width:62px;height:100px;filter:drop-shadow(0 7px 4px rgba(0,0,0,.2))}.steve-head{left:8px;width:46px;height:44px;border-radius:4px;background:#f4b17c;border:4px solid #5b321c;box-shadow:inset 0 4px rgba(255,255,255,.18)}.steve-hair{height:14px;background:#4a2a18;border-radius:0}.steve-hair::before{right:4px;top:10px;width:11px;height:8px;border-radius:0;background:#4a2a18;box-shadow:-18px 0 0 #4a2a18}.steve-head::after{content:'';position:absolute;left:15px;top:29px;width:14px;height:7px;border-bottom:3px solid #7a3f2a;border-radius:0 0 10px 10px}.steve-eye{top:19px;width:7px;height:7px;border-radius:2px;background:#1f4f8f;box-shadow:inset 2px 1px 0 rgba(255,255,255,.65)}.steve-eye.left{left:10px}.steve-eye.right{right:10px}.steve-nose{top:24px;left:19px;width:6px;height:5px;border-radius:1px;background:#d18b5a}.steve-shirt{top:44px;left:8px;width:46px;height:33px;border-radius:3px;background:linear-gradient(180deg,#35d0a0,#0891b2);border:4px solid #07575b;box-shadow:inset 0 5px rgba(255,255,255,.16)}.steve-arm{top:47px;width:12px;height:32px;border-radius:2px;background:#f4b17c;border:3px solid #5b321c;z-index:1}.steve-arm.left{left:0}.steve-arm.right{right:0}.steve-leg{top:75px;width:20px;height:25px;border-radius:0 0 3px 3px;background:#2563eb;border:3px solid #172554}.steve-leg.left{left:10px}.steve-leg.right{right:10px}.player-name{top:56px;font-size:.58rem;text-shadow:0 1px 0 #04706f,0 -1px 0 #04706f,1px 0 0 #04706f,-1px 0 0 #04706f}.world.lesson-one .target-sign{position:absolute;left:190px;bottom:182px;background:#fff7ed;border:4px solid #7c4a21;border-radius:16px;padding:.55rem .75rem;font-weight:900;text-align:center;z-index:2;box-shadow:0 10px 18px rgba(0,0,0,.16)}.world.lesson-two .door,.world.lesson-three .door{display:none}.target-sign::after{content:'';position:absolute;width:10px;height:38px;background:#7c4a21;left:50%;transform:translateX(-50%);bottom:-40px}.player-name{display:block}.world.lesson-one .player{width:62px;height:100px;filter:drop-shadow(0 7px 4px rgba(0,0,0,.2))}.world.lesson-one .steve-head{left:8px;width:46px;height:44px;border-radius:4px;background:#f4b17c;border:4px solid #5b321c;box-shadow:inset 0 4px rgba(255,255,255,.18)}.world.lesson-one .steve-hair{height:14px;background:#4a2a18;border-radius:0}.world.lesson-one .steve-hair::before{right:4px;top:10px;width:11px;height:8px;border-radius:0;background:#4a2a18;box-shadow:-18px 0 0 #4a2a18}.world.lesson-one .steve-head::after{content:'';position:absolute;left:15px;top:29px;width:14px;height:7px;border-bottom:3px solid #7a3f2a;border-radius:0 0 10px 10px}.world.lesson-one .steve-eye{top:19px;width:7px;height:7px;border-radius:2px;background:#1f4f8f;box-shadow:inset 2px 1px 0 rgba(255,255,255,.65)}.world.lesson-one .steve-nose{top:24px;left:19px;width:6px;height:5px;border-radius:1px;background:#d18b5a}.world.lesson-one .steve-shirt{top:44px;left:8px;width:46px;height:33px;border-radius:3px;background:linear-gradient(180deg,#35d0a0,#0891b2);border:4px solid #07575b;box-shadow:inset 0 5px rgba(255,255,255,.16)}.world.lesson-one .steve-arm{top:47px;width:12px;height:32px;border-radius:2px;background:#f4b17c;border:3px solid #5b321c;z-index:1}.world.lesson-one .steve-arm.left{left:0}.world.lesson-one .steve-arm.right{right:0}.world.lesson-one .steve-leg{top:75px;width:20px;height:25px;border-radius:0 0 3px 3px;background:#2563eb;border:3px solid #172554}.world.lesson-one .steve-leg.left{left:10px}.world.lesson-one .steve-leg.right{right:10px}.world.lesson-one .player-name{top:56px;font-size:.58rem;text-shadow:0 1px 0 #04706f,0 -1px 0 #04706f,1px 0 0 #04706f,-1px 0 0 #04706f}.mobile-warning{display:none;background:#fff7ed;padding:.8rem 1rem;border-bottom:1px solid #fed7aa;font-weight:800}@media(max-width:900px){body{height:auto;min-height:100vh;overflow:auto;overflow-x:hidden}.topbar{grid-template-columns:1fr}.tabs{justify-content:flex-start;padding-bottom:.25rem}.tab{min-width:44px}.actions{justify-content:stretch}.actions .btn,.actions a{flex:1}.main{display:flex;flex-direction:column;padding:.75rem}.code-panel{order:1;min-height:560px}.world-panel{order:2}.world{min-height:300px}.world-panel,.code-panel{border-radius:20px}.mobile-warning{display:block}.brand{white-space:normal}.status{grid-template-columns:1fr 1fr 1fr}}@media(max-width:520px){.main{padding:.55rem}.status{grid-template-columns:repeat(3,1fr);gap:.35rem}.status div{padding:.5rem .25rem;font-size:.78rem}.status b{font-size:1rem}.lesson-info{padding:.85rem}.lesson-info h1{font-size:1.22rem}.lesson-info p{font-size:.95rem}.chips{gap:.32rem}.chip{font-size:.72rem;padding:.28rem .5rem}.btn{padding:.55rem .75rem;font-size:.9rem}.world{min-height:235px;border-width:6px}.code-panel{min-height:520px}.world-wrap{padding:.75rem;gap:.55rem}.player{transform:scale(.85);transform-origin:bottom center}.door{transform:scale(.86);transform-origin:bottom left}.door.open{transform:scale(.86) rotateY(65deg)}}
   </style>
 </head>
 <body>
@@ -33,14 +33,37 @@
       </div>
       <div class="world-wrap">
         <div class="status">
-          <div><b id="score">0</b>נקודות</div>
-          <div><b id="timeLabel">יום</b>זמן</div>
-          <div><b id="weatherLabel">שמש</b>מזג אוויר</div>
+          <div><b id="score">0</b><span id="scoreCaption">נקודות</span></div>
+          <div><b id="timeLabel">יום</b><span id="timeCaption">זמן</span></div>
+          <div><b id="weatherLabel">שמש</b><span id="weatherCaption">מזג אוויר</span></div>
         </div>
         <div class="world" id="world">
           <div class="door" id="door"></div>
+<div class="target-sign lesson-one-only">עזרו לי<br>לבנות מגדל</div>
+          <div class="build-model lesson-two-only" aria-label="דגם לבנייה">
+            <div class="build-model-title">דגם לבנייה</div>
+            <div class="model-level" id="modelLevel">ספסל קטן</div>
+            <div class="model-shape" id="modelShape" aria-hidden="true"></div>
+            <div class="model-note" id="modelNote">דגם קל: שני בלוקים מחוברים</div>
+            <div class="model-pager" aria-label="בחירת דגם">
+              <button type="button" class="model-choice active" data-model="0" aria-label="דגם 1">1</button>
+              <button type="button" class="model-choice" data-model="1" aria-label="דגם 2">2</button>
+              <button type="button" class="model-choice" data-model="2" aria-label="דגם 3">3</button>
+            </div>
+          </div>
+          <div class="build-model lesson-three-only" aria-label="ציור לבנייה">
+            <div class="build-model-title">ציור לבנייה</div>
+            <div class="model-level" id="pixelLevel">פרחים עם גבעולים</div>
+            <div class="model-shape" id="pixelShape" aria-hidden="true"></div>
+            <div class="model-note" id="pixelNote">דגם 1: גבעול, עלים ופרח</div>
+            <div class="model-pager" aria-label="בחירת ציור">
+              <button type="button" class="pixel-choice active" data-pixel="0" aria-label="ציור 1">1</button>
+              <button type="button" class="pixel-choice" data-pixel="1" aria-label="ציור 2">2</button>
+              <button type="button" class="pixel-choice" data-pixel="2" aria-label="ציור 3">3</button>
+            </div>
+          </div>
           <div class="bubble" id="bubble">שלום!</div>
-          <div class="player" id="player" aria-label="סטיב ממיינקראפט"><div class="steve-head"><div class="steve-hair"></div><div class="steve-eye left"></div><div class="steve-eye right"></div><div class="steve-nose"></div></div><div class="steve-shirt"></div><div class="steve-arm left"></div><div class="steve-arm right"></div><div class="steve-leg left"></div><div class="steve-leg right"></div></div>
+          <div class="player" id="player" aria-label="דוד בעולם מיינקראפט"><div class="player-name">דוד</div><div class="steve-head"><div class="steve-hair"></div><div class="steve-eye left"></div><div class="steve-eye right"></div><div class="steve-nose"></div></div><div class="steve-shirt"></div><div class="steve-arm left"></div><div class="steve-arm right"></div><div class="steve-leg left"></div><div class="steve-leg right"></div></div>
         </div>
         <div class="hint-card"><b>משימה:</b> <span id="successText"></span></div>
         <div class="exercise-list"><h3>🧪 תרגילי תכנות לשיעור של 60 דקות</h3><div id="exerciseList"></div></div>
@@ -54,21 +77,42 @@
     </section>
   </main>
 
-  <script src="js/minecraft-lessons.js?v=20260710-minecraft-clear-task"></script>
+  <script src="js/minecraft-lessons.js?v=20260721-lesson3-pr-update"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const lesson = window.getMinecraftLesson(params.get('lesson'));
     let workspace;
-    const state = { score: 0, day: true, weather: 'sun', playerOnDiamond: true, steveX: 260, steveY: 82 };
+    const GROUND_Y = 42;
+    const BLOCK_BASE_Y = lesson.id === 1 ? 0 : 40;
+    const PATH_TILE_HEIGHT = 14;
+    const HALF_BLOCK_HEIGHT = 24;
+    const state = { score: 0, day: true, weather: 'sun', playerOnDiamond: true, steveX: 260, steveY: GROUND_Y, lessonOneBlocks: 0, lastMove: null, sayTimer: null };
+    let modelIndex = 0;
+    let pixelIndex = 0;
+    const lessonTwoModels = [
+      { level:'ספסל קטן', note:'דגם קל: שני בלוקים מחוברים', cells:['empty','empty','empty','empty','empty','empty','empty','empty','wood','wood','empty','empty'] },
+      { level:'שער כניסה', note:'שני עמודים וקורה עליונה', cells:['gold','gold','gold','empty','wood','empty','wood','empty','wood','empty','wood','empty'] },
+      { level:'מדרגות למגדל', note:'דגם אתגר: מדרגה קטנה למעלה', cells:['empty','empty','diamond','empty','empty','gold','gold','empty','wood','wood','grass','empty'] }
+    ];
+    const lessonThreeModels = [
+      { level:'פרחים עם גבעולים', note:'דגם 1: שני פרחים, לכל אחד גבעול קצר', cells:['empty','red','empty','empty','empty','red','empty','red','gold','red','empty','red','gold','red','empty','red','empty','empty','empty','red','empty','empty','grass','empty','empty','empty','grass','empty','empty','grass','empty','empty','empty','grass','empty'] },
+      { level:'בית קטן', note:'דגם 2: גג אדום, קירות ודלת', cells:['empty','empty','red','red','red','empty','empty','empty','red','red','red','red','red','empty','empty','wood','wood','gold','wood','wood','empty','empty','wood','wood','gold','wood','wood','empty','empty','wood','wood','wood','wood','wood','empty'] },
+      { level:'לב פיקסלים', note:'דגם אתגר: לב ברור בגריד 7×5', cells:['empty','red','red','empty','red','red','empty','red','red','red','red','red','red','red','empty','red','red','red','red','red','empty','empty','empty','red','red','red','empty','empty','empty','empty','empty','red','empty','empty','empty'] }
+    ];
 
     const blockDefs = [
       { type:'event_start', message0:'כאשר לוחצים ▶️', nextStatement:null, colour:40, hat:'cap' },
       { type:'say', message0:'אמור %1', args0:[{type:'field_input', name:'TEXT', text:'תכנתתי קסם!'}], previousStatement:null, nextStatement:null, colour:290 },
-      { type:'move_up', message0:'עלה למעלה', previousStatement:null, nextStatement:null, colour:210 },
-      { type:'move_down', message0:'רד למטה', previousStatement:null, nextStatement:null, colour:210 },
+      { type:'move_up', message0:'עלה למעלה בגובה %1', args0:[{type:'field_dropdown', name:'HEIGHT', options:[['בלוק מלא','full'],['חצי בלוק','half'],['אריח שביל','path']]}], previousStatement:null, nextStatement:null, colour:210 },
+      { type:'move_down', message0:'רד למטה בגובה %1', args0:[{type:'field_dropdown', name:'HEIGHT', options:[['בלוק מלא','full'],['חצי בלוק','half'],['אריח שביל','path']]}], previousStatement:null, nextStatement:null, colour:210 },
+      { type:'move_to_ground', message0:'רד לקרקע', previousStatement:null, nextStatement:null, colour:210 },
       { type:'move_right', message0:'זוז ימינה', previousStatement:null, nextStatement:null, colour:210 },
       { type:'move_left', message0:'זוז שמאלה', previousStatement:null, nextStatement:null, colour:210 },
       { type:'place_block', message0:'הנח בלוק בצבע %1', args0:[{type:'field_dropdown', name:'COLOR', options:[['ירוק','grass'],['עץ','wood'],['זהב','gold'],['יהלום','diamond'],['אדום','red'],['סגול','purple']]}], previousStatement:null, nextStatement:null, colour:120 },
+      { type:'place_path', message0:'הנח אריח שביל %1', args0:[{type:'field_dropdown', name:'COLOR', options:[['ירוק','grass'],['עץ','wood'],['זהב','gold'],['יהלום','diamond']]}], previousStatement:null, nextStatement:null, colour:100 },
+      { type:'place_half_block', message0:'הנח חצי בלוק %1', args0:[{type:'field_dropdown', name:'COLOR', options:[['ירוק','grass'],['עץ','wood'],['זהב','gold'],['יהלום','diamond'],['אדום','red'],['סגול','purple']]}], previousStatement:null, nextStatement:null, colour:110 },
+      { type:'reset_blocks', message0:'מחק בנין', previousStatement:null, nextStatement:null, colour:5 },
+      { type:'wait_seconds', message0:'חכה %1 שניות', args0:[{type:'field_number', name:'SECONDS', value:2, min:1, max:10, precision:1}], previousStatement:null, nextStatement:null, colour:60 },
       { type:'build_tower', message0:'בנה מגדל קטן', previousStatement:null, nextStatement:null, colour:120 },
       { type:'rain_blocks', message0:'גשם של בלוקים צבעוניים', previousStatement:null, nextStatement:null, colour:180 },
       { type:'magic_trail', message0:'צור שביל קסמים', previousStatement:null, nextStatement:null, colour:140 },
@@ -93,13 +137,13 @@
     function toolboxXml(){
       const allowed = new Set(['event_start', ...lesson.blocks]);
       const labels = {
-        event_start:'התחלה', say:'דיבור', move_up:'תנועה', move_down:'תנועה', move_right:'תנועה', move_left:'תנועה', place_block:'בנייה ידנית', build_tower:'בנייה', rain_blocks:'בלוקים', magic_trail:'שביל', teleport:'טלפורט', spawn_pet:'חיה', set_day:'יום', set_night:'לילה', weather_sun:'שמש', weather_rain:'גשם', weather_snow:'שלג', if_on_diamond:'אם/אז', open_door:'דלת', give_treasure:'אוצר', start_collect_game:'משחק', build_maze:'מבוך', show_hint:'רמז', spawn_funny_mob:'מוב'
+        event_start:'התחלה', say:'דיבור', move_up:'תנועה — גובה עלייה', move_down:'תנועה — גובה ירידה', move_to_ground:'תנועה — רד לקרקע', move_right:'תנועה', move_left:'תנועה', place_block:'בנייה ידנית', place_path:'שביל נמוך', place_half_block:'חצי בלוק', reset_blocks:'מחיקת בנין בתמונה', wait_seconds:'המתנה לפי שניות', build_tower:'בנייה', rain_blocks:'בלוקים', magic_trail:'שביל', teleport:'טלפורט', spawn_pet:'חיה', set_day:'יום', set_night:'לילה', weather_sun:'שמש', weather_rain:'גשם', weather_snow:'שלג', if_on_diamond:'אם/אז', open_door:'דלת', give_treasure:'אוצר', start_collect_game:'משחק', build_maze:'מבוך', show_hint:'רמז', spawn_funny_mob:'מוב'
       };
       return `<xml>${[...allowed].map(type => `<block type="${type}"></block>`).join('')}</xml>`;
     }
     function starterXml(){
       const first = lesson.blocks.find(b => b !== 'event_start') || 'say';
-      if (lesson.id === 1) return `<xml><block type="event_start" x="40" y="40"><next><block type="say"><field name="TEXT">אני בונה כמו מתכנת!</field><next><block type="place_block"><field name="COLOR">wood</field><next><block type="move_up"><next><block type="place_block"><field name="COLOR">gold</field><next><block type="move_up"><next><block type="place_block"><field name="COLOR">diamond</field></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>`;
+      if (lesson.id === 1) return `<xml><block type="event_start" x="40" y="40"><next><block type="say"><field name="TEXT">אני דוד, ואני בונה מגדל!</field><next><block type="place_block"><field name="COLOR">wood</field><next><block type="move_up"><next><block type="place_block"><field name="COLOR">gold</field><next><block type="move_up"><next><block type="place_block"><field name="COLOR">diamond</field></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>`;
       const second = lesson.blocks.includes('say') && first !== 'say' ? '<next><block type="say"></block></next>' : '';
       if (first === 'if_on_diamond') return `<xml><block type="event_start" x="40" y="40"><next><block type="if_on_diamond"><statement name="DO"><block type="open_door"></block></statement></block></next></block></xml>`;
       return `<xml><block type="event_start" x="40" y="40"><next><block type="${first}">${second}</block></next></block></xml>`;
@@ -113,40 +157,121 @@
       document.getElementById('lessonGoal').textContent = `מטרה: ${lesson.goal}`;
       document.getElementById('lessonChallenge').textContent = `שדרוג: ${lesson.challenge}`;
       document.getElementById('successText').textContent = lesson.success;
+      document.getElementById('player').setAttribute('aria-label', 'דוד בעולם מיינקראפט');
       document.getElementById('exerciseList').innerHTML = (lesson.programmingExercises || []).map((exercise) => `<div class="exercise-item"><small>${exercise.minutes}</small><b>${esc(exercise.title)}</b><span>${esc(exercise.studentPrompt)}</span></div>`).join('');
       document.getElementById('slidesLink').href = `minecraft-slides.html?lesson=${lesson.id}`;
+      setupModelPager();
       document.getElementById('tabs').innerHTML = window.MINECRAFT_KIDS_LESSONS.map(l => `<a class="tab ${l.id===lesson.id?'active':''}" href="minecraft-play.html?lesson=${l.id}" title="${esc(l.title)}"><span>${l.emoji}</span><small>${l.id}</small></a>`).join('');
       workspace = Blockly.inject('blocklyDiv', { toolbox: toolboxXml(), rtl: true, trashcan: true, scrollbars: true, zoom: { controls: true, wheel: true, startScale: .9, maxScale: 1.4, minScale: .55 } });
-      Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(starterXml()), workspace);
+      loadSavedWorkspace();
+      workspace.addChangeListener(saveWorkspaceOnChange);
       resetWorld();
     }
 
+    function setupModelPager(){
+      if (lesson.id === 2) {
+        document.querySelectorAll('.model-choice').forEach((button) => {
+          button.onclick = () => { modelIndex = Number(button.dataset.model || 0); renderBuildModel(); };
+        });
+        renderBuildModel();
+      }
+      if (lesson.id === 3) {
+        document.querySelectorAll('.pixel-choice').forEach((button) => {
+          button.onclick = () => { pixelIndex = Number(button.dataset.pixel || 0); renderPixelModel(); };
+        });
+        renderPixelModel();
+      }
+    }
+    function renderBuildModel(){
+      const model = lessonTwoModels[modelIndex];
+      const shape = document.getElementById('modelShape');
+      if (!model || !shape) return;
+      document.getElementById('modelLevel').textContent = model.level;
+      document.getElementById('modelNote').textContent = model.note;
+      document.querySelectorAll('.model-choice').forEach((button) => button.classList.toggle('active', Number(button.dataset.model || 0) === modelIndex));
+      shape.innerHTML = model.cells.map(cls => `<span class="model-cell ${cls}"></span>`).join('');
+    }
+    function renderPixelModel(){
+      const model = lessonThreeModels[pixelIndex];
+      const shape = document.getElementById('pixelShape');
+      if (!model || !shape) return;
+      document.getElementById('pixelLevel').textContent = model.level;
+      document.getElementById('pixelNote').textContent = model.note;
+      document.querySelectorAll('.pixel-choice').forEach((button) => button.classList.toggle('active', Number(button.dataset.pixel || 0) === pixelIndex));
+      shape.innerHTML = model.cells.map(cls => `<span class="model-cell ${cls}"></span>`).join('');
+    }
+
+    function workspaceStorageKey(){ return `minecraftKidsWorkspace:v1:lesson:${lesson.id}`; }
+    function loadSavedWorkspace(){
+      const savedXml = localStorage.getItem(workspaceStorageKey());
+      const xmlText = savedXml || starterXml();
+      try {
+        const xmlDom = Blockly.utils.xml.textToDom(xmlText);
+        Blockly.Xml.domToWorkspace(xmlDom, workspace);
+      } catch (error) {
+        localStorage.removeItem(workspaceStorageKey());
+        Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(starterXml()), workspace);
+      }
+    }
+    function saveWorkspaceOnChange(event){
+      if (event && event.isUiEvent) return;
+      const xml = Blockly.Xml.workspaceToDom(workspace);
+      localStorage.setItem(workspaceStorageKey(), Blockly.Xml.domToText(xml));
+    }
+
     function resetWorld(){
-      state.score = 0; state.day = true; state.weather = 'sun'; state.playerOnDiamond = true; state.steveX = 260; state.steveY = 82;
+      state.score = 0; state.day = true; state.weather = 'sun'; state.playerOnDiamond = true; state.steveX = 260; state.steveY = GROUND_Y; state.lessonOneBlocks = 0; state.lastMove = null;
       const world = document.getElementById('world');
-      world.className = 'world';
+      world.className = `world ${lesson.id === 1 ? 'lesson-one' : lesson.id === 2 ? 'lesson-two' : lesson.id === 3 ? 'lesson-three' : ''}`.trim();
       [...world.querySelectorAll('.block,.pet,.mob,.treasure,.apple,.hint')].forEach(el => el.remove());
       document.getElementById('door').classList.remove('open');
       setStevePosition();
+      if (state.sayTimer) { clearTimeout(state.sayTimer); state.sayTimer = null; }
       const bubble = document.getElementById('bubble'); bubble.classList.remove('show'); bubble.textContent=''; positionBubble();
       addDiamondMarker(); updateStatus();
     }
     function updateStatus(){
+      const scoreCaption = document.getElementById('scoreCaption');
+      const timeCaption = document.getElementById('timeCaption');
+      const weatherCaption = document.getElementById('weatherCaption');
+      if (lesson.id === 1) {
+        const towerBlocks = Math.min(state.lessonOneBlocks, 3);
+        const heightLevel = Math.max(1, Math.round((state.steveY - GROUND_Y) / 42) + 1);
+        document.getElementById('score').textContent = `${towerBlocks}/3`;
+        document.getElementById('timeLabel').textContent = `קומה ${heightLevel}`;
+        document.getElementById('weatherLabel').textContent = towerBlocks >= 3 ? 'מוכן!' : 'בונים';
+        scoreCaption.textContent = 'בלוקים במגדל';
+        timeCaption.textContent = 'מיקום דוד';
+        weatherCaption.textContent = 'מצב משימה';
+        return;
+      }
       document.getElementById('score').textContent = state.score;
       document.getElementById('timeLabel').textContent = state.day ? 'יום' : 'לילה';
       document.getElementById('weatherLabel').textContent = state.weather === 'rain' ? 'גשם' : state.weather === 'snow' ? 'שלג' : 'שמש';
+      scoreCaption.textContent = 'נקודות';
+      timeCaption.textContent = 'זמן';
+      weatherCaption.textContent = 'מזג אוויר';
     }
-    function addBlock(cls, x, y){ const el=document.createElement('div'); el.className=`block ${cls}`; el.style.left=x+'px'; el.style.bottom=y+'px'; document.getElementById('world').appendChild(el); return el; }
+    function addBlock(cls, x, y, extraClass=''){ const el=document.createElement('div'); el.className=`block ${cls}${extraClass ? ' '+extraClass : ''}`; el.style.left=x+'px'; el.style.bottom=y+'px'; document.getElementById('world').appendChild(el); return el; }
     function addEmoji(cls, icon, x, y){ const el=document.createElement('div'); el.className=cls; el.textContent=icon; el.style.left=x+'px'; el.style.bottom=y+'px'; document.getElementById('world').appendChild(el); return el; }
-    function addDiamondMarker(){ addEmoji('hint','💠', 220, 88); }
-    function positionBubble(){ const bubble=document.getElementById('bubble'); bubble.style.left=Math.max(12, state.steveX - 72)+'px'; bubble.style.right='auto'; bubble.style.bottom=(state.steveY + 92)+'px'; }
+    function addDiamondMarker(){ if (lesson.id === 2 || lesson.id === 3) return; addEmoji('hint','💠', 220, 88); }
+    function positionBubble(){ const bubble=document.getElementById('bubble'); const world=document.getElementById('world'); const maxBottom=Math.max(125, (world?.clientHeight || 330) - 105); bubble.style.left=Math.max(12, state.steveX - 72)+'px'; bubble.style.right='auto'; bubble.style.bottom=Math.min(state.steveY + 92, maxBottom)+'px'; }
     function setStevePosition(){ const player=document.getElementById('player'); player.style.left=state.steveX+'px'; player.style.right='auto'; player.style.bottom=state.steveY+'px'; positionBubble(); }
-    function moveSteve(dx, dy){ state.steveX=Math.max(24, Math.min(470, state.steveX + dx)); state.steveY=Math.max(82, Math.min(250, state.steveY + dy)); setStevePosition(); }
-    function placeBlock(color){ addBlock(color || 'grass', state.steveX + 7, Math.max(40, state.steveY - 42)); }
-    function say(text){ const bubble=document.getElementById('bubble'); bubble.textContent=text || 'תכנתתי קסם!'; positionBubble(); bubble.classList.add('show'); }
+    function moveSteve(dx, dy){ state.steveX=Math.max(24, Math.min(470, state.steveX + dx)); state.steveY=Math.max(GROUND_Y, Math.min(250, state.steveY + dy)); state.lastMove = dx > 0 ? 'right' : dx < 0 ? 'left' : dy > 0 ? 'up' : dy < 0 ? 'down' : null; setStevePosition(); updateStatus(); }
+    function placeBlock(color){ const blockY = state.steveY; addBlock(color || 'grass', state.steveX + 10, blockY); if (lesson.id === 1) state.lessonOneBlocks += 1; state.lastMove = null; updateStatus(); }
+    function placePath(color){ const blockY = state.steveY; addBlock(color || 'grass', state.steveX + 8, blockY, 'path-slab'); state.lastMove = null; updateStatus(); }
+    function placeHalfBlock(color){ const blockY = state.steveY; addBlock(color || 'grass', state.steveX + 9, blockY, 'half-slab'); state.lastMove = null; updateStatus(); }
+    function say(text){
+      const bubble=document.getElementById('bubble');
+      if (state.sayTimer) clearTimeout(state.sayTimer);
+      bubble.textContent=text || 'תכנתתי קסם!';
+      positionBubble();
+      bubble.classList.add('show');
+      state.sayTimer = setTimeout(() => { bubble.classList.remove('show'); bubble.textContent=''; state.sayTimer = null; }, 1000);
+    }
     function buildTower(){ for(let i=0;i<5;i++) addBlock(i%2?'wood':'grass', 100, 82 + i*42); }
     function rainBlocks(){ for(let i=0;i<10;i++) addBlock(['red','purple','gold','diamond'][i%4], 35+i*48, 230 + (i%3)*28); }
-    function magicTrail(){ state.steveX = 330; state.steveY = 82; setStevePosition(); for(let i=0;i<6;i++) addBlock('grass', 255+i*38, 40); }
+    function magicTrail(){ state.steveX = 330; state.steveY = GROUND_Y; setStevePosition(); for(let i=0;i<6;i++) addBlock('grass', 255+i*38, 42, 'path-slab'); }
     function teleport(){ state.steveX = 430; state.steveY = 140; setStevePosition(); addEmoji('hint','✨', 360, 130); }
     function spawnPet(name){ addEmoji('pet','🐺', 330, 86); say(`${name || 'פיקסל'} הצטרף להרפתקה!`); }
     function setDay(day){ state.day=day; document.getElementById('world').classList.toggle('night', !day); updateStatus(); }
@@ -157,12 +282,24 @@
     function buildMaze(){ for(let i=0;i<6;i++){ addBlock('wood', 70+i*44, 82); if(i%2===0) addBlock('wood', 70+i*44, 124); } addBlock('gold', 340, 82); }
     function showHint(text){ addEmoji('hint','🧭', 250, 175); say(text || 'חפשו את היהלום'); }
     function spawnFunnyMob(name){ addEmoji('mob','🐌', 280, 86); say(`${name || 'מר קובייה'} אומר: בלופ בלופ!`); }
+    function resetBlocks(){
+      document.querySelectorAll('#world .block').forEach(el => el.remove());
+      state.steveX = 260; state.steveY = GROUND_Y; state.lessonOneBlocks = 0; state.lastMove = null;
+      setStevePosition(); positionBubble(); updateStatus();
+    }
 
     async function runProgram(){
       resetWorld();
       const starts = workspace.getTopBlocks(true).filter(b => b.type === 'event_start');
       if (!starts.length) { say('חסר בלוק התחלה ▶️'); return; }
       for (const start of starts) await runChain(start.getNextBlock());
+      if (lesson.id === 1) celebrateLessonOneIfReady();
+    }
+    function celebrateLessonOneIfReady(){
+      const builtBlocks = document.querySelectorAll('#world .block').length;
+      if (state.lessonOneBlocks >= 3) {
+        updateStatus();
+      }
     }
     function wait(ms){ return new Promise(resolve => setTimeout(resolve, ms)); }
     async function runChain(block){
@@ -172,11 +309,16 @@
     async function runBlock(block){
       switch(block.type){
         case 'say': say(block.getFieldValue('TEXT')); break;
-        case 'move_up': moveSteve(0, 42); break;
-        case 'move_down': moveSteve(0, -42); break;
+        case 'move_up': { const h = block.getFieldValue('HEIGHT') || 'full'; const step = h === 'path' ? PATH_TILE_HEIGHT : h === 'half' ? HALF_BLOCK_HEIGHT : 42; moveSteve(0, step); break; }
+        case 'move_down': { const h = block.getFieldValue('HEIGHT') || 'full'; const step = h === 'path' ? PATH_TILE_HEIGHT : h === 'half' ? HALF_BLOCK_HEIGHT : 42; moveSteve(0, -step); break; }
+        case 'move_to_ground': moveSteve(0, GROUND_Y - state.steveY); break;
         case 'move_right': moveSteve(45, 0); break;
         case 'move_left': moveSteve(-45, 0); break;
         case 'place_block': placeBlock(block.getFieldValue('COLOR')); break;
+        case 'place_path': placePath(block.getFieldValue('COLOR')); break;
+        case 'place_half_block': placeHalfBlock(block.getFieldValue('COLOR')); break;
+        case 'reset_blocks': resetBlocks(); break;
+        case 'wait_seconds': { const seconds = Number(block.getFieldValue('SECONDS')) || 2; await wait(Math.max(1, Math.min(10, seconds)) * 1000); break; }
         case 'build_tower': buildTower(); break;
         case 'rain_blocks': rainBlocks(); break;
         case 'magic_trail': magicTrail(); break;
