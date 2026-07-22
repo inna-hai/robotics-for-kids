@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Money Smart Lab - לומדה אינטראקטיבית</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/platform-home-link.css">
+  <link rel="stylesheet" href="css/money-smart.css">
+</head>
+<body class="lab-page">
+  <a class="platform-home-link" href="index.html"><span class="platform-home-icon">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
+  <header class="lab-topbar">
+    <a class="mini-brand" href="money-smart-course.html"><span>₪</span><b>Money Smart Lab</b></a>
+    <nav class="top-links" aria-label="קישורי עזר">
+      <a href="money-smart-slides.html">מצגות מדריך</a>
+      <a href="money-smart-course.html">דף הקורס</a>
+    </nav>
+  </header>
+
+  <main class="lab-layout">
+    <aside class="lesson-sidebar" aria-label="ניווט מפגשים">
+      <div class="progress-card">
+        <p>התקדמות בקורס</p>
+        <div class="progress"><span id="overallProgress"></span></div>
+        <b id="progressLabel">0 מתוך 5 מפגשים</b>
+      </div>
+      <nav id="lessonNav" class="lesson-nav"></nav>
+    </aside>
+
+    <section class="workbench">
+      <div id="teacherPanel" class="teacher-panel">
+        <div><b>כלי הנחיה למפגש</b><span id="teacherFocus">בחרו מפגש כדי לראות נקודות עצירה ודיון.</span></div>
+        <div class="teacher-actions">
+          <a id="currentLessonSlides" href="money-smart-lesson-1-slides.html" target="_blank" rel="noopener">פתח מצגת מפגש 1</a>
+          <a href="money-smart-slides.html" target="_blank" rel="noopener">כל המצגות</a>
+          <button type="button" id="resetProgressBtn">איפוס התקדמות מקומית</button>
+        </div>
+      </div>
+
+      <article class="lesson-stage">
+        <div class="stage-head">
+          <p class="eyebrow dark" id="lessonKicker"></p>
+          <h1 id="lessonTitle"></h1>
+          <p id="lessonQuestion" class="lesson-question"></p>
+          <div id="conceptChips" class="concept-chips"></div>
+        </div>
+
+        <div class="tabs" id="stepTabs" role="tablist"></div>
+        <div id="stepContent" class="step-content"></div>
+      </article>
+    </section>
+
+    <aside class="plan-panel">
+      <h2>Money Smart Plan</h2>
+      <p><b>מה זה?</b> יומן החלטות אישי לדמות שבחרתם. הוא לא משנה את תקציב 600 במסך הפתיחה; הוא שומר את הנימוקים, המדדים והתובנות שנאספים לאורך הקורס.</p>
+      <p class="plan-hint">תקציב 600 הוא תרגול פתיחה זהה לכולם. במסכי “משימת דמות” עובדים עם הדמות והמטרה שלה, ואת הסיכום שומרים כאן.</p>
+      <label>בחרו דמות עבודה
+        <select id="characterSelect"></select>
+      </label>
+      <div id="characterCard" class="character-card"></div>
+      <div class="smart-meters" id="smartMeters"></div>
+      <label>סיכום אישי למפגש
+        <textarea id="planNote" rows="5" placeholder="מה למדתי? איזו החלטה הייתי בודק/ת אחרת?"></textarea>
+      </label>
+      <button type="button" class="btn primary wide" id="savePlanBtn">שמירת עדכון לתוכנית</button>
+      <div id="savedNotes" class="saved-notes"></div>
+    </aside>
+  </main>
+
+  <script src="js/money-smart-lab.js"></script>
+</body>
+</html>
