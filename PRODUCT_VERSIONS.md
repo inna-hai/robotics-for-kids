@@ -36,9 +36,97 @@ Recommended bump rules:
 
 ## Current Published Versions
 
-### Smart City 15 Lessons — v0.7.1 — Published
+### Smart City 15 Lessons — v0.7.4 — Published
 
 - **Status:** Published
+- **Branch:** `feature/structured-15-lessons`
+- **Commit:** `1189648`
+- **Tag:** `robotics15-v0.7.4`
+- **Live:** https://robotics15.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Consolidated the Sisi homepage catalog: the 15 individual Sisi lesson cards were removed from the platform homepage.
+- Kept Sisi as one clear series card for grade B, placed high in the catalog after the Sensi cards.
+- Updated catalog copy so each series appears once, while individual lesson pages remain reachable through the Sisi hub.
+
+Verification:
+
+- Live verified with cache-busted URL: https://robotics15.hai.tech/?v=robotics15-v0.7.4
+- Full Node test suite passed: all `tests/*.mjs`.
+- Homepage routing test updated to match the product decision that Sisi is one catalog series, not 15 separate homepage cards.
+
+Rollback:
+
+```bash
+git checkout feature/structured-15-lessons
+git reset --hard f017576
+# or use the previous product tag: robotics15-v0.7.3
+```
+
+### Smart City 15 Lessons — v0.7.3 — Superseded
+
+- **Status:** Superseded by `robotics15-v0.7.4`
+- **Branch:** `feature/structured-15-lessons`
+- **Commit:** `f017576`
+- **Tag:** `robotics15-v0.7.3`
+- **Live:** https://robotics15.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Polished the platform homepage layout and copy after visual review.
+- Fixed the “שלושה עולמות” mismatch to four aligned learning worlds.
+- Changed the tracks grid to four columns on desktop and two on tablet.
+- Reduced hero/section spacing, clarified CTA wording, clarified lesson-count stats, and removed internal Holon copy.
+
+Verification:
+
+- Live verified with cache-busted URL: https://robotics15.hai.tech/?v=robotics15-v0.7.3
+- Full Node test suite passed: all `tests/*.mjs`.
+
+Rollback:
+
+```bash
+git checkout feature/structured-15-lessons
+git reset --hard 3d4f3ea
+# or use the previous product tag: robotics15-v0.7.2
+```
+
+### Smart City 15 Lessons — v0.7.2 — Superseded
+
+- **Status:** Superseded by `robotics15-v0.7.3`
+- **Branch:** `feature/structured-15-lessons`
+- **Commit:** `3d4f3ea`
+- **Tag:** `robotics15-v0.7.2`
+- **Live:** https://robotics15.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Differentiated homepage course card visuals so the catalog feels less repetitive and easier to scan.
+- Kept the broader v0.7 platform structure and Craftom visibility intact.
+
+Verification:
+
+- Full Node test suite passed: all `tests/*.mjs`.
+- Homepage routing checks passed.
+
+Rollback:
+
+```bash
+git checkout feature/structured-15-lessons
+git reset --hard 7e2ace1
+# or use the previous product tag: robotics15-v0.7.1
+```
+
+### Smart City 15 Lessons — v0.7.1 — Superseded
+
+- **Status:** Superseded by `robotics15-v0.7.2`
 - **Branch:** `feature/structured-15-lessons`
 - **Commit:** `7e2ace1`
 - **Tag:** `robotics15-v0.7.1`
