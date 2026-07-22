@@ -308,9 +308,39 @@ git reset --hard 4625d0b
 # or use the previous product tag: robotics15-v0.5.0
 ```
 
-### Robotics stable — v0.2.4 — Published
+### Robotics stable — v0.8.0 — Published
 
 - **Status:** Published
+- **Branch:** `main`
+- **Commit:** `cbf67be`
+- **Tag:** `robotics-v0.8.0`
+- **Live:** https://robotics.hai.tech
+- **Date recorded:** 2026-07-22
+- **Approved by:** Inna
+
+Product changes:
+
+- Merged the active `robotics15` platform work into stable `main` as a pre-final stable release.
+- Brings the 15-lesson Sensi smart-city course, Sisi series hub/catalog consolidation, Python Turtle, Pygame, Roblox, CodeQuest, GameLab, AppForge, Craftom preview links, and the polished platform homepage into `main`.
+- Keeps versioning pre-1.0 because Inna confirmed this is not the final product version yet.
+
+Verification:
+
+- Merge from `feature/structured-15-lessons` into `main` completed cleanly.
+- `git diff --check` passed.
+- Full Node test suite passed on `main`: all `tests/*.mjs`.
+
+Rollback:
+
+```bash
+git checkout main
+git reset --hard 744bf61
+# or use the previous product tag: robotics-v0.2.4
+```
+
+### Robotics stable — v0.2.4 — Superseded
+
+- **Status:** Superseded by `robotics-v0.8.0`
 - **Branch:** `main`
 - **Commit:** `b1e62a4`
 - **Tag:** `robotics-v0.2.4`
