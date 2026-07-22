@@ -8,6 +8,7 @@
   <style>
     *{box-sizing:border-box}body{margin:0;font-family:Rubik,Arial,sans-serif;direction:rtl;color:#173018;background:linear-gradient(135deg,#7ddf64,#5ec1ff 52%,#b58cff);min-height:100vh}.shell{width:min(1100px,calc(100% - 28px));margin:0 auto;padding:24px 0 48px}.hero,.lesson,.guide{background:rgba(255,255,255,.94);border-radius:26px;padding:24px;box-shadow:0 16px 40px rgba(23,48,24,.14);margin-bottom:18px}.kicker{font-weight:900;color:#2f8f2f}h1{font-size:clamp(2rem,5vw,4rem);margin:.35rem 0}h2{margin:0 0 12px;color:#166534}.hero p,.guide p,.lesson p{line-height:1.75;font-size:1.05rem}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:12px 18px;text-decoration:none;font-weight:900;background:#2f8f2f;color:white}.btn.secondary{background:white;color:#166534;border:2px solid rgba(47,143,47,.22)}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.mini{background:#f8fafc;border-radius:18px;padding:16px}.mini b{display:block;color:#166534;margin-bottom:6px}.lesson-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.emoji{font-size:2.2rem}.id{background:#f0fdf4;color:#166534;border-radius:999px;padding:6px 10px;font-weight:900;white-space:nowrap}.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.flow div{background:#f0fdf4;border-radius:14px;padding:10px;font-weight:800;font-size:.9rem;line-height:1.45}.flow b{display:block;color:#166534}.blocks{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.block{background:#eef2ff;color:#3730a3;border-radius:999px;padding:5px 9px;font-size:.8rem;font-weight:900}.exercise-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}.exercise{background:#fff;border:1px solid #e5e7eb;border-right:6px solid #35b24a;border-radius:16px;padding:12px;line-height:1.55}.exercise h4{margin:.2rem 0;color:#166534}.exercise small{font-weight:900;color:#64748b}.solution{margin-top:8px;background:#f8fafc;border-radius:12px;padding:8px;font-size:.88rem}.solution b{color:#3730a3}@media(max-width:800px){.grid,.flow,.exercise-grid{grid-template-columns:1fr}.lesson-head{flex-direction:column}.actions .btn{width:100%}}
   </style>
+  <link rel="stylesheet" href="css/platform-home-link.css">
 </head>
 <body>
   <main class="shell">
@@ -27,7 +28,7 @@
 
     <section id="lessons"></section>
   </main>
-  <script src="js/minecraft-lessons.js?v=20260721-wait-seconds-choice"></script>
+  <script src="js/minecraft-lessons.js?v=20260721-lesson3-pr-update"></script>
   <script>
     const blockNames = {event_start:'התחלה',say:'אמירה',move_up:'עלה למעלה בגובה',move_down:'רד למטה בגובה',move_to_ground:'רד לקרקע',move_right:'זוז ימינה',move_left:'זוז שמאלה',place_block:'הנח בלוק בצבע',place_path:'הנח אריח שביל',place_half_block:'הנח חצי בלוק',reset_blocks:'מחק בנין',wait_seconds:'חכה __ שניות',build_tower:'מגדל',rain_blocks:'גשם בלוקים',magic_trail:'שביל',teleport:'טלפורט',spawn_pet:'חיית מחמד',set_day:'יום',set_night:'לילה',weather_sun:'שמש',weather_rain:'גשם',weather_snow:'שלג',if_on_diamond:'אם עומדים על היהלום',open_door:'דלת',give_treasure:'אוצר',start_collect_game:'איסוף',build_maze:'מבוך',show_hint:'רמז',spawn_funny_mob:'מפלצת מצחיקה'};
     document.getElementById('lessons').innerHTML = window.MINECRAFT_KIDS_LESSONS.map(l => `
@@ -44,5 +45,7 @@
       </article>`).join('');
   </script>
   <script src="/js/feedback-widget.js?v=20260719-feedback-slides-v5"></script>
+
+  <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
 </body>
 </html>

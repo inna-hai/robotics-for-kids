@@ -104,6 +104,7 @@
       .lesson, .overview { box-shadow: none; break-inside: avoid; }
     }
   </style>
+  <link rel="stylesheet" href="css/platform-home-link.css">
 </head>
 <body>
   <header class="hero">
@@ -111,7 +112,7 @@
     <h1>מדריך למורה: לומדים לתכנת רובוטים בעיר החכמה</h1>
     <p>מדריך למדריכים עבור הלומדה החדשה של סנסי: 15 שיעורים של 60–90 דקות, עם סיפור עירוני, מטרות, מהלך שיעור, תרגילי תכנות, פתרונות בלוקים, בדיקות וטיפים להוראה.</p>
     <div class="hero-actions">
-      <a class="btn primary" href="index.html?lesson=1">🚀 לפתיחת הלומדה</a>
+      <a class="btn primary" href="sensi-city.html?lesson=1">🚀 לפתיחת הלומדה</a>
       <a class="btn secondary" href="smart-city.html">🏙️ מפת התוכנית</a>
       <button class="btn secondary" onclick="window.print()">🖨️ הדפסה / PDF</button>
     </div>
@@ -156,7 +157,7 @@
   </main>
 
   <footer class="footer">
-    <p>📚 מדריך למורה — סנסי בעיר החכמה<br><a href="index.html">חזרה ללומדה</a> · <a href="smart-city.html">מפת התוכנית</a></p>
+    <p>📚 מדריך למורה — סנסי בעיר החכמה<br><a href="sensi-city.html">חזרה ללומדה</a> · <a href="smart-city.html">מפת התוכנית</a></p>
   </footer>
 
   <script src="js/lessons-data.js?v=20260719-lesson11-museum-v2"></script>
@@ -224,7 +225,7 @@
             <h3>❓ שאלות לדיון</h3>
             ${list((lesson.teacherNotes && lesson.teacherNotes.discussionQuestions) || [])}
             <div class="links">
-              <a class="btn primary" href="index.html?lesson=${lesson.id}">פתח שיעור בלומדה</a>
+              <a class="btn primary" href="sensi-city.html?lesson=${lesson.id}">פתח שיעור בלומדה</a>
               <a class="btn secondary" href="slides/lesson.html?id=${lesson.id}">מצגת שיעור ${lesson.id}</a>
             </div>
           </div>
@@ -232,5 +233,7 @@
     });
   </script>
   <script src="/js/feedback-widget.js?v=20260719-feedback-slides-v5"></script>
+
+  <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
 </body>
 </html>
