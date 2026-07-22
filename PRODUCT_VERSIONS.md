@@ -36,6 +36,278 @@ Recommended bump rules:
 
 ## Current Published Versions
 
+### Smart City 15 Lessons — v0.7.4 — Published
+
+- **Status:** Published
+- **Branch:** `feature/structured-15-lessons`
+- **Commit:** `1189648`
+- **Tag:** `robotics15-v0.7.4`
+- **Live:** https://robotics15.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Consolidated the Sisi homepage catalog: the 15 individual Sisi lesson cards were removed from the platform homepage.
+- Kept Sisi as one clear series card for grade B, placed high in the catalog after the Sensi cards.
+- Updated catalog copy so each series appears once, while individual lesson pages remain reachable through the Sisi hub.
+
+Verification:
+
+- Live verified with cache-busted URL: https://robotics15.hai.tech/?v=robotics15-v0.7.4
+- Full Node test suite passed: all `tests/*.mjs`.
+- Homepage routing test updated to match the product decision that Sisi is one catalog series, not 15 separate homepage cards.
+
+Rollback:
+
+```bash
+git checkout feature/structured-15-lessons
+git reset --hard f017576
+# or use the previous product tag: robotics15-v0.7.3
+```
+
+### Smart City 15 Lessons — v0.7.3 — Superseded
+
+- **Status:** Superseded by `robotics15-v0.7.4`
+- **Branch:** `feature/structured-15-lessons`
+- **Commit:** `f017576`
+- **Tag:** `robotics15-v0.7.3`
+- **Live:** https://robotics15.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Polished the platform homepage layout and copy after visual review.
+- Fixed the “שלושה עולמות” mismatch to four aligned learning worlds.
+- Changed the tracks grid to four columns on desktop and two on tablet.
+- Reduced hero/section spacing, clarified CTA wording, clarified lesson-count stats, and removed internal Holon copy.
+
+Verification:
+
+- Live verified with cache-busted URL: https://robotics15.hai.tech/?v=robotics15-v0.7.3
+- Full Node test suite passed: all `tests/*.mjs`.
+
+Rollback:
+
+```bash
+git checkout feature/structured-15-lessons
+git reset --hard 3d4f3ea
+# or use the previous product tag: robotics15-v0.7.2
+```
+
+### Smart City 15 Lessons — v0.7.2 — Superseded
+
+- **Status:** Superseded by `robotics15-v0.7.3`
+- **Branch:** `feature/structured-15-lessons`
+- **Commit:** `3d4f3ea`
+- **Tag:** `robotics15-v0.7.2`
+- **Live:** https://robotics15.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Differentiated homepage course card visuals so the catalog feels less repetitive and easier to scan.
+- Kept the broader v0.7 platform structure and Craftom visibility intact.
+
+Verification:
+
+- Full Node test suite passed: all `tests/*.mjs`.
+- Homepage routing checks passed.
+
+Rollback:
+
+```bash
+git checkout feature/structured-15-lessons
+git reset --hard 7e2ace1
+# or use the previous product tag: robotics15-v0.7.1
+```
+
+### Smart City 15 Lessons — v0.7.1 — Superseded
+
+- **Status:** Superseded by `robotics15-v0.7.2`
+- **Branch:** `feature/structured-15-lessons`
+- **Commit:** `7e2ace1`
+- **Tag:** `robotics15-v0.7.1`
+- **Live:** https://robotics15.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Added Craftom School to the `robotics15` platform homepage.
+- Added a quick-link card, learning-track explanation, catalog card, roadmap row, and CTA link for Craftom.
+- Links point to the static Craftom preview/README for now, because the full API-backed app requires a Node server and later shared login infrastructure.
+
+Verification:
+
+- Homepage routing test passed and verifies the Craftom links.
+- Full Node test suite passed: all `tests/*.mjs`.
+- `git diff --check` clean.
+
+Rollback:
+
+```bash
+git checkout feature/structured-15-lessons
+git reset --hard 7b9e343
+# or use the previous product tag: robotics15-v0.7.0
+```
+
+### Smart City 15 Lessons — v0.7.0 — Superseded
+
+- **Status:** Superseded by `robotics15-v0.7.1`
+- **Branch:** `feature/structured-15-lessons`
+- **Commit:** `f5f3b6c`
+- **Tag:** `robotics15-v0.7.0`
+- **Live:** https://robotics15.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Merged PR #13 by Ami (`ameidar`): Craftom School lomda MVP.
+- Added standalone `craftom-school/` app with Node server, student/teacher/admin flows, classes, teams, lesson editor, reports, observations, demo seed, and smoke test.
+- Added 15-meeting Craftom course model and documentation/recommendation pages.
+- Note: this is an MVP foundation and is not yet connected to Minecraft/Craftom production systems.
+
+Verification:
+
+- Merge into `feature/structured-15-lessons` was clean.
+- `git diff --check HEAD~1..HEAD` clean.
+- Craftom checks passed: `npm run check`, `npm run seed:demo`, and `npm run test:smoke` against a local server.
+- Full Node test suite passed: all `tests/*.mjs`.
+
+Rollback:
+
+```bash
+git checkout feature/structured-15-lessons
+git reset --hard ea0000d
+# or use the previous product tag: robotics15-v0.6.3
+```
+
+### Smart City 15 Lessons — v0.6.3 — Superseded
+
+- **Status:** Superseded by `robotics15-v0.7.0`
+- **Branch:** `feature/structured-15-lessons`
+- **Commit:** `cfa0ae4`
+- **Tag:** `robotics15-v0.6.3`
+- **Live:** https://robotics15.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Synced `main` into the shared structured 15-lessons branch after PR #12 was merged to `main`.
+- Brought Miriam's Minecraft Kids refinements into `robotics15`: lesson data, play page, slides, teacher page, and landing page updates.
+- Keeps the Holon-style homepage redesign and Sensi 15 structure from `robotics15-v0.6.2`.
+
+Verification:
+
+- Full Node test suite passed: all `tests/*.mjs`.
+- `git diff --check` clean.
+
+Rollback:
+
+```bash
+git checkout feature/structured-15-lessons
+git reset --hard 7cec3e6
+# or use the previous product tag: robotics15-v0.6.2
+```
+
+### Smart City 15 Lessons — v0.6.2 — Superseded
+
+- **Status:** Superseded by `robotics15-v0.6.3`
+- **Branch:** `feature/structured-15-lessons`
+- **Commit:** `65b5423`
+- **Tag:** `robotics15-v0.6.2`
+- **Live:** https://robotics15.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Merged the redesigned platform homepage from `main` into the shared structured 15-lessons branch.
+- `robotics15` now uses the polished Holon-style homepage: premium hero, generated EdTech image, quick path cards, learning tracks, full catalog, roadmap, and CTA.
+- Keeps `sensi-city.html` as the 15-lesson Sensi course and `sensi-classic.html` as the 5-lesson classic course.
+
+Verification:
+
+- Full Node test suite passed: all `tests/*.mjs`.
+- `git diff --check` clean.
+- Homepage routing test verifies the expanded course links.
+
+Rollback:
+
+```bash
+git checkout feature/structured-15-lessons
+git reset --hard 116bb3a
+# or use the previous product tag: robotics15-v0.6.1
+```
+
+### Smart City 15 Lessons — v0.6.1 — Superseded
+
+- **Status:** Superseded by `robotics15-v0.6.2`
+- **Branch:** `feature/structured-15-lessons`
+- **Commit:** `3a5899b`
+- **Tag:** `robotics15-v0.6.1`
+- **Live:** https://robotics15.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Merged the expanded homepage course catalog from `main` into the shared structured 15-lessons branch.
+- The `robotics15` homepage now exposes the prepared modules as individual cards: the full Sisi series, individual Sisi lessons, CodeQuest, PlayCode Lab/GameLab, and WebMakers Lab/AppForge.
+- Keeps `sensi-city.html` as the 15-lesson Sensi course and `sensi-classic.html` as the 5-lesson classic course.
+
+Verification:
+
+- Full Node test suite passed: all `tests/*.mjs`.
+- `git diff --check` clean.
+- Homepage routing test verifies the expanded course links.
+
+Rollback:
+
+```bash
+git checkout feature/structured-15-lessons
+git reset --hard caedab8
+# or use the previous product tag: robotics15-v0.6.0
+```
+
+### Smart City 15 Lessons — v0.6.0 — Superseded
+
+- **Status:** Superseded by `robotics15-v0.6.1`
+- **Branch:** `feature/structured-15-lessons`
+- **Commit:** `19dc6bd`
+- **Tag:** `robotics15-v0.6.0`
+- **Live:** https://robotics15.hai.tech
+- **Date recorded:** 2026-07-21
+- **Approved by:** Inna
+
+Product changes:
+
+- Merged `origin/main` into the shared structured 15-lessons branch.
+- Resolved the root-page conflict intentionally: `index.html` is now the platform homepage from `main`.
+- Preserved the latest structured-branch Sensi 15 app, including Chava lesson 15 improvements, as `sensi-city.html`.
+- Brought in the stable platform additions from `main`: Pygame, Roblox, platform home links, and Sensi classic 5 lessons.
+- Added a homepage link inside the structured Sensi 15 app.
+
+Verification:
+
+- Full Node test suite passed: all `tests/*.mjs`.
+- `tests/homepage-routing.test.mjs` passed.
+- `tests/lesson-7-8-regression.test.mjs` passed.
+- `git diff --check` clean.
+
+Rollback:
+
+```bash
+git checkout feature/structured-15-lessons
+git reset --hard 4625d0b
+# or use the previous product tag: robotics15-v0.5.0
+```
+
 ### Robotics stable — v0.2.4 — Published
 
 - **Status:** Published
@@ -191,9 +463,9 @@ git reset --hard 1e76b9d
 # or use previous product tag: robotics-v0.1.0
 ```
 
-### Smart City 15 Lessons — v0.5.0 — Published
+### Smart City 15 Lessons — v0.5.0 — Superseded
 
-- **Status:** Published
+- **Status:** Superseded by `robotics15-v0.6.0`
 - **Branch:** `feature/structured-15-lessons`
 - **Commit:** `4625d0b`
 - **Tag:** `robotics15-v0.5.0`

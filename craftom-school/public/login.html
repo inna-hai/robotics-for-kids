@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>כניסה | Craftom School</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main class="shell center">
+    <form class="panel auth login-card" onsubmit="return login(event)">
+      <div class="brand">Craftom School</div>
+      <h1>נכנסים לעיר הלמידה</h1>
+      <p class="muted">בחרו משתמש דמו או הכניסו פרטים ידנית.</p>
+      <div class="demo-logins" aria-label="משתמשי דמו">
+        <button type="button" class="demo-login teacher" onclick="fillDemo('teacher.demo@craftom.local','demo123')">
+          <b>מורה</b><span>כיתות, צוותים ומשוב</span>
+        </button>
+        <button type="button" class="demo-login student" onclick="fillDemo('student1.demo@craftom.local','demo123')">
+          <b>תלמיד/ה</b><span>שיעורים ומשימות</span>
+        </button>
+        <button type="button" class="demo-login admin" onclick="fillDemo('admin@craftom.local','admin123')">
+          <b>אדמין</b><span>אישור מורים וניהול</span>
+        </button>
+      </div>
+      <label>אימייל</label>
+      <input id="email" type="email" autocomplete="username" required>
+      <label>סיסמה</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <button class="btn full" id="btn">כניסה</button>
+      <div class="msg" id="msg"></div>
+      <p class="small">אין חשבון? <a href="/register.html">הרשמה</a></p>
+    </form>
+  </main>
+<script src="/main.js"></script>
+<script>
+function fillDemo(mail, pass){
+  email.value = mail;
+  password.value = pass;
+  setMsg('פרטי הדמו מולאו. אפשר ללחוץ כניסה.');
+  password.focus();
+}
+async function login(e){
+  e.preventDefault();
+  setMsg('');
+  btn.disabled = true;
+  btn.textContent = 'מתחבר...';
+  const r = await post('/api/login', { email: email.value, password: password.value });
+  btn.disabled = false;
+  btn.textContent = 'כניסה';
+  if(!r.ok) return setMsg(r.error || 'כניסה נכשלה', true);
+  location.href = r.home_url;
+}
+</script>
+</body>
+</html>

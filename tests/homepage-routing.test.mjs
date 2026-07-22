@@ -31,25 +31,14 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertIncludes(homepageHtml, 'href="pygame.html"');
   assertIncludes(homepageHtml, 'href="roblox.html"');
   assertIncludes(homepageHtml, 'href="python-turtle.html"');
-  assertIncludes(homepageHtml, 'href="space.html"');
-  assertIncludes(homepageHtml, 'href="ocean.html"');
   assertIncludes(homepageHtml, 'href="sisi.html"');
-  assertIncludes(homepageHtml, 'href="music.html"');
-  assertIncludes(homepageHtml, 'href="detective.html"');
-  assertIncludes(homepageHtml, 'href="kitchen.html"');
-  assertIncludes(homepageHtml, 'href="dino.html"');
-  assertIncludes(homepageHtml, 'href="art.html"');
-  assertIncludes(homepageHtml, 'href="weather.html"');
-  assertIncludes(homepageHtml, 'href="factory.html"');
-  assertIncludes(homepageHtml, 'href="garden.html"');
-  assertIncludes(homepageHtml, 'href="park.html"');
-  assertIncludes(homepageHtml, 'href="mail.html"');
-  assertIncludes(homepageHtml, 'href="cinema.html"');
-  assertIncludes(homepageHtml, 'href="escape.html"');
+  assertIncludes(homepageHtml, 'סדרת סיסי לכיתות ב׳');
   assertIncludes(homepageHtml, 'href="finale.html"');
   assertIncludes(homepageHtml, 'href="codequest.html"');
   assertIncludes(homepageHtml, 'href="gamelab.html"');
   assertIncludes(homepageHtml, 'href="appforge.html"');
+  assertIncludes(homepageHtml, 'href="craftom-school/preview/index.html"');
+  assertIncludes(homepageHtml, 'href="craftom-school/README.md"');
 });
 
 test('Sensi 15 remains on sensi-city and classic 5-lesson Sensi is restored separately', () => {

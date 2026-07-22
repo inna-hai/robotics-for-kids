@@ -75,24 +75,7 @@
             white-space: nowrap;
         }
 
-        .home-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-            padding: 0.38rem 0.65rem;
-            border-radius: 999px;
-            color: var(--dark);
-            background: rgba(155, 93, 229, 0.10);
-            border: 1px solid rgba(155, 93, 229, 0.18);
-            font-size: 0.88rem;
-            font-weight: 800;
-            text-decoration: none;
-            white-space: nowrap;
-            transition: all 0.3s;
-            flex-shrink: 0;
-        }
-
-        .about-link, .city-link {
+        .home-link, .about-link, .city-link {
             font-size: 1.25rem;
             text-decoration: none;
             margin-right: 0.25rem;
@@ -101,12 +84,7 @@
             flex-shrink: 0;
         }
 
-        .home-link:hover {
-            background: rgba(155, 93, 229, 0.18);
-            transform: translateY(-1px);
-        }
-
-        .about-link:hover, .city-link:hover {
+        .home-link:hover, .about-link:hover, .city-link:hover {
             opacity: 1;
             transform: scale(1.2);
         }
@@ -118,9 +96,11 @@
             min-width: 0;
             overflow-x: auto;
             overflow-y: hidden;
-            justify-content: center;
+            justify-content: flex-start;
             padding: 0.15rem 0.25rem;
             scrollbar-width: thin;
+            scroll-padding-inline-start: 0.25rem;
+            -webkit-overflow-scrolling: touch;
         }
 
         .lesson-tab {
@@ -296,11 +276,13 @@
             border-radius: 0 0 1.5rem 1.5rem;
         }
 
-        .robot-stage.museum-stage .ground {
+        .robot-stage.museum-stage .ground,
+        .robot-stage.full-background-stage .ground {
             display: none;
         }
 
-        .robot-stage.museum-stage .ground::before {
+        .robot-stage.museum-stage .ground::before,
+        .robot-stage.full-background-stage .ground::before {
             display: none;
         }
 
@@ -375,6 +357,24 @@
             font-size: 1.05rem;
         }
 
+        .robot-section.open-project-mode .sensors-bar {
+            grid-template-columns: repeat(auto-fit, minmax(78px, 1fr));
+            gap: 0.22rem;
+            margin-top: 0.42rem;
+        }
+
+        .robot-section.open-project-mode .sensor-chip {
+            min-height: 30px;
+            padding: 0.25rem 0.32rem;
+            border-width: 1.5px;
+            font-size: 0.68rem;
+            gap: 0.18rem;
+        }
+
+        .robot-section.open-project-mode .sensor-chip .icon {
+            font-size: 0.88rem;
+        }
+
         @media (max-width: 900px) {
             .sensors-bar {
                 grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
@@ -388,6 +388,10 @@
 
             .sensor-chip .icon {
                 font-size: 0.95rem;
+            }
+
+            .robot-section.open-project-mode .sensors-bar {
+                grid-template-columns: repeat(auto-fit, minmax(68px, 1fr));
             }
         }
 
@@ -538,6 +542,61 @@
             transform: translateY(-1px);
             border-color: var(--purple);
             box-shadow: 0 6px 18px rgba(107, 91, 149, 0.18);
+        }
+
+        .robot-section.open-project-mode .env-scroll-shell {
+            margin-top: 0.45rem;
+            padding: 0;
+        }
+
+        .robot-section.open-project-mode .env-scroll-arrow {
+            display: none;
+        }
+
+        .robot-section.open-project-mode .env-scroll-wrap {
+            overflow: visible;
+            padding: 0;
+            direction: rtl;
+        }
+
+        .robot-section.open-project-mode .env-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(62px, 1fr));
+            width: 100%;
+            min-width: 0;
+            gap: 0.28rem;
+            scroll-snap-type: none;
+        }
+
+        .robot-section.open-project-mode .env-btn {
+            flex: initial;
+            width: 100%;
+            height: 48px;
+            min-width: 0;
+            border-width: 2px;
+            border-radius: 0.75rem;
+            padding: 0.2rem 0.16rem;
+            gap: 0.08rem;
+            font-size: 0.62rem;
+            line-height: 1.05;
+        }
+
+        .robot-section.open-project-mode .env-btn .icon {
+            font-size: 1.05rem;
+        }
+
+        .robot-section.open-project-mode .env-reset-row {
+            margin-top: 0.42rem;
+            justify-content: stretch;
+        }
+
+        .robot-section.open-project-mode .env-reset-btn {
+            width: 100%;
+            min-width: 0;
+            height: 32px;
+            padding: 0 0.65rem;
+            font-size: 0.76rem;
+            box-shadow: none;
         }
 
         /* ===== RIGHT SIDE - BLOCKS ===== */
@@ -1217,15 +1276,21 @@
         let completedTasks = [];
 
 
-        let robot = { x: 150, y: 180, angle: 0, speaking: '', streetLightOn: false, trafficLightGreen: false, trafficCarsStopped: false, pedestrianStopped: false, vehicleStopped: false, fanOn: false, waterOn: false, alarmOn: false, sortedBin: '', hitLesson12Fence: false };
+        let robot = { x: 150, y: 180, angle: 0, speaking: '', streetLightOn: false, trafficLightGreen: false, trafficLightYellow: false, trafficCarsStopped: false, pedestrianStopped: false, vehicleStopped: false, fanOn: false, waterOn: false, alarmOn: false, sortedBin: '', hitLesson12Fence: false };
         let gardenRecoveryStartedAt = null;
-        let environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, safeTouch: false, visitorCount: 0, burglar: false, homeowner: false, doorOpen: false, deliveryPackage: false, deliveryDropped: false };
+        let gardenRecoveryStartProgress = 0;
+        let environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, safeTouch: false, visitorCount: 0, burglar: false, homeowner: false, doorOpen: false, deliveryPackage: false, deliveryDropped: false, deliveryDropTarget: null };
         let smokeStartedAt = null;
         let burglarStartedAt = null;
         let burglarCaughtAt = null;
         let burglarEscapedAt = null;
         let burglarRoute = 'left';
         let homeownerStartedAt = null;
+        let lesson15SelectedZone = null;
+        let lesson15MuseumInside = false;
+        let lesson15SchoolInside = false;
+        let lesson15GardenInside = false;
+
 
 
         let isRunning = false;
@@ -1268,22 +1333,604 @@
         const lesson13HomeGuardBg = new Image();
         lesson13HomeGuardBg.src = 'assets/lesson13-home-guard-background.svg?v=20260719-fence-gate-1';
         lesson13HomeGuardBg.onload = () => {
-            if (currentLesson === 13) draw();
+            if (isLesson13HomeGuardContext()) draw();
         };
+
+        const lesson15FriendlyCityBg = new Image();
+        lesson15FriendlyCityBg.src = 'assets/lesson15-friendly-city-background.png?v=20260720-friendly-city-1';
+        lesson15FriendlyCityBg.onload = () => {
+            if (currentLesson === 15) draw();
+        };
+
+        const lesson15SmartCityMapBg = new Image();
+        lesson15SmartCityMapBg.src = 'assets/lesson15-smart-city-map.png?v=20260720-smart-city-map-1';
+        lesson15SmartCityMapBg.onload = () => {
+            if (currentLesson === 15) draw();
+        };
+
+        const lesson15GreenhouseInteriorBg = new Image();
+        lesson15GreenhouseInteriorBg.src = 'assets/lesson15-greenhouse-interior.png?v=20260721-greenhouse-interior-1';
+        lesson15GreenhouseInteriorBg.onload = () => {
+            if (isLesson15Zone('garden') && lesson15GardenInside) draw();
+        };
+
+        function createLesson15ZoneImage(fileName) {
+            const image = new Image();
+            image.src = `assets/${fileName}?v=20260720-zone-bg-1`;
+            image.onload = () => {
+                if (currentLesson === 15) draw();
+            };
+            return image;
+        }
+
+        const lesson15ZoneBackgrounds = {
+            museum: createLesson15ZoneImage('lesson15-zone-museum.png'),
+            school: createLesson15ZoneImage('lesson15-zone-school.png'),
+            garden: createLesson15ZoneImage('lesson15-zone-garden.png'),
+            crosswalk: createLesson15ZoneImage('lesson15-zone-crosswalk.png'),
+            grocery: createLesson15ZoneImage('lesson15-zone-grocery.png'),
+            homes: createLesson15ZoneImage('lesson15-zone-homes.png')
+        };
+
+        const lesson15CarOverlay = new Image();
+        lesson15CarOverlay.src = 'assets/lesson15-car-overlay.svg?v=20260720-car-overlay-1';
+        lesson15CarOverlay.onload = () => {
+            if (isLesson15Zone('crosswalk')) draw();
+        };
+
+        function drawImageCover(image) {
+            const srcRatio = image.naturalWidth / image.naturalHeight;
+            const canvasRatio = canvas.width / canvas.height;
+            let sx = 0, sy = 0, sw = image.naturalWidth, sh = image.naturalHeight;
+            if (srcRatio > canvasRatio) { sw = sh * canvasRatio; sx = (image.naturalWidth - sw) / 2; }
+            else if (srcRatio < canvasRatio) { sh = sw / canvasRatio; sy = (image.naturalHeight - sh) / 2; }
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(image, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+        }
+
+        function drawLesson9ClassroomBackground() {
+            if (lesson9ClassroomBg.complete && lesson9ClassroomBg.naturalWidth > 0) {
+                drawImageCover(lesson9ClassroomBg);
+                const builtInLampMask = ctx.createLinearGradient(0, canvas.height * 0.02, 0, canvas.height * 0.12);
+                builtInLampMask.addColorStop(0, '#f6d99d');
+                builtInLampMask.addColorStop(1, '#efc076');
+                ctx.fillStyle = builtInLampMask;
+                ctx.beginPath();
+                ctx.moveTo(canvas.width * 0.413, canvas.height * 0.018);
+                ctx.lineTo(canvas.width * 0.586, canvas.height * 0.018);
+                ctx.lineTo(canvas.width * 0.579, canvas.height * 0.091);
+                ctx.lineTo(canvas.width * 0.421, canvas.height * 0.091);
+                ctx.closePath();
+                ctx.fill();
+            } else {
+                const fallback = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                fallback.addColorStop(0, '#fef3c7');
+                fallback.addColorStop(1, '#fbbf24');
+                ctx.fillStyle = fallback;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function drawLesson9ClassroomPeople() {
+            ctx.save();
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = `${Math.max(48, canvas.width * 0.06)}px Arial`;
+            ctx.fillText('👩‍🏫', canvas.width * 0.22, canvas.height * 0.43);
+            ctx.font = 'bold 16px Rubik';
+            ctx.fillStyle = '#1e293b';
+            ctx.fillText('המורה', canvas.width * 0.22, canvas.height * 0.48);
+
+            const drawBackStudent = (xRatio, yRatio, shirt, hair) => {
+                const x = canvas.width * xRatio;
+                const y = canvas.height * yRatio;
+                const scale = Math.max(0.72, Math.min(canvas.width / 900, 1.2));
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.scale(scale, scale);
+                // Back-facing student placed on an empty chair.
+                ctx.fillStyle = hair;
+                ctx.beginPath();
+                ctx.arc(0, -38, 18, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#fbbf24';
+                ctx.beginPath();
+                ctx.arc(0, -35, 13, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = shirt;
+                ctx.beginPath();
+                ctx.roundRect(-24, -18, 48, 54, 14);
+                ctx.fill();
+                ctx.fillStyle = 'rgba(15,23,42,.18)';
+                ctx.fillRect(-18, 30, 36, 8);
+                ctx.restore();
+            };
+            const students = [
+                [0.07, 0.80, '#60a5fa', '#7c2d12'],
+                [0.16, 0.64, '#f472b6', '#1f2937'],
+                [0.50, 0.69, '#34d399', '#92400e'],
+                [0.50, 0.88, '#a78bfa', '#111827'],
+                [0.79, 0.64, '#fb923c', '#78350f'],
+                [0.89, 0.80, '#22d3ee', '#1e293b']
+            ];
+            students.forEach(([x, y, shirt, hair]) => drawBackStudent(x, y, shirt, hair));
+            ctx.restore();
+        }
+
+        const lesson15Zones = [
+            { id: 'museum', label: 'מוזיאון', icon: '🏛️', x: .22, y: .25, w: .22, h: .22, color: '#818cf8', problem: 'שמירה על מוצגים' },
+            { id: 'school', label: 'בית ספר', icon: '🏫', x: .55, y: .18, w: .24, h: .22, color: '#38bdf8', problem: 'כיתה חכמה וחיסכון' },
+            { id: 'rescue', label: 'חילוץ / חירום', icon: '🛟', x: .84, y: .36, w: .24, h: .22, color: '#ef4444', problem: 'רובוט חילוץ בעיר' },
+            { id: 'security', label: 'סיור אבטחה', icon: '🌙', x: .84, y: .62, w: .24, h: .22, color: '#334155', problem: 'סיור אבטחה סביב בית' },
+            { id: 'garden', label: 'חממה / גינה', icon: '🌱', x: .12, y: .45, w: .23, h: .22, color: '#22c55e', problem: 'השקיה חכמה' },
+            { id: 'crosswalk', label: 'כביש ומעבר חציה', icon: '🚦', x: .36, y: .43, w: .25, h: .24, color: '#f59e0b', problem: 'בטיחות בדרך' },
+            { id: 'grocery', label: 'מכולת', icon: '🏪', x: .66, y: .49, w: .22, h: .24, color: '#fb7185', problem: 'משלוח בטוח' },
+            { id: 'homes', label: 'בתים', icon: '🏘️', x: .50, y: .70, w: .28, h: .20, color: '#a855f7', problem: 'בית חכם / שמירה' }
+        ];
+
+        function drawLesson15ProjectScene() {
+            ctx.save();
+            const w = canvas.width;
+            const h = canvas.height;
+            const selected = lesson15Zones.find(zone => zone.id === lesson15SelectedZone);
+
+            if (!selected) {
+                if (lesson15SmartCityMapBg.complete && lesson15SmartCityMapBg.naturalWidth > 0) drawImageCover(lesson15SmartCityMapBg);
+                else if (lesson15FriendlyCityBg.complete && lesson15FriendlyCityBg.naturalWidth > 0) drawImageCover(lesson15FriendlyCityBg);
+
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                lesson15Zones.forEach(zone => {
+                    const x = zone.x * w;
+                    const y = zone.y * h;
+                    const bw = Math.max(116, zone.w * w * .68);
+                    const bh = 38;
+                    ctx.fillStyle = `${zone.color}dd`;
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.roundRect(x - bw / 2, y - bh / 2, bw, bh, 999);
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.font = 'bold 13px Rubik';
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillText(`${zone.icon} ${zone.label}`, x, y + 1);
+                });
+
+                ctx.fillStyle = 'rgba(15,23,42,.72)';
+                ctx.beginPath();
+                ctx.roundRect(w * .04, h * .84, Math.min(330, w * .48), 42, 14);
+                ctx.fill();
+                ctx.font = 'bold 13px Rubik';
+                ctx.fillStyle = '#ffffff';
+                ctx.textAlign = 'right';
+                ctx.fillText('בחרו אזור במפה כדי לפתוח רקע לפרויקט', w * .04 + Math.min(310, w * .44), h * .84 + 22);
+                ctx.restore();
+                return;
+            }
+
+            if (selected.id === 'museum' && lesson15MuseumInside) {
+                drawLesson11MuseumScene({});
+            } else if (selected.id === 'school' && lesson15SchoolInside) {
+                drawLesson9ClassroomBackground();
+                drawLesson15ZoneActors(selected);
+            } else if (selected.id === 'garden' && lesson15GardenInside) {
+                drawLesson10GardenScene({ title: 'החממה החכמה', preserveAspect: false, plantScale: 1.16, greenhouseInterior: true });
+            } else if (selected.id === 'rescue') {
+                drawLesson14RescueScene({ title: 'אזור חילוץ / חירום' });
+            } else if (selected.id === 'security') {
+                drawLesson13SecurityScene();
+            } else {
+                const selectedBg = lesson15ZoneBackgrounds[selected.id];
+                if (selectedBg?.complete && selectedBg.naturalWidth > 0) {
+                    drawImageCover(selectedBg);
+                } else {
+                    const gradients = {
+                        museum: ['#e0e7ff', '#f8fafc'], school: ['#dbeafe', '#fef3c7'], garden: ['#dcfce7', '#bbf7d0'],
+                        crosswalk: ['#fef9c3', '#e0f2fe'], grocery: ['#fff7ed', '#dbeafe'], homes: ['#ede9fe', '#fef3c7'], security: ['#0f172a', '#312e81']
+                    }[selected.id] || ['#dbeafe', '#f0f9ff'];
+                    const bg2 = ctx.createLinearGradient(0, 0, 0, h);
+                    bg2.addColorStop(0, gradients[0]);
+                    bg2.addColorStop(1, gradients[1]);
+                    ctx.fillStyle = bg2;
+                    ctx.fillRect(0, 0, w, h);
+                }
+
+                const dim = ctx.createLinearGradient(0, 0, 0, h);
+                dim.addColorStop(0, 'rgba(255,255,255,.10)');
+                dim.addColorStop(1, 'rgba(15,23,42,.12)');
+                ctx.fillStyle = dim;
+                ctx.fillRect(0, 0, w, h);
+
+                drawLesson15ZoneActors(selected);
+            }
+
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = 'rgba(255,255,255,.86)';
+            ctx.strokeStyle = 'rgba(15,23,42,.12)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            const zoneInfoW = 196;
+            const zoneInfoX = w - zoneInfoW - 18;
+            const zoneInfoY = (selected.id === 'garden' && lesson15GardenInside) || selected.id === 'rescue' || selected.id === 'security' ? 12 : 86;
+            ctx.roundRect(zoneInfoX, zoneInfoY, zoneInfoW, 74, 16);
+            ctx.fill();
+            ctx.stroke();
+            ctx.font = 'bold 14px Rubik';
+            ctx.fillStyle = '#0f172a';
+            ctx.fillText(`${selected.icon} ${selected.label}`, zoneInfoX + zoneInfoW - 14, zoneInfoY + 20);
+            ctx.font = '11px Rubik';
+            ctx.fillStyle = '#475569';
+            ctx.fillText(selected.problem, zoneInfoX + zoneInfoW - 14, zoneInfoY + 40);
+            ctx.fillStyle = '#334155';
+            ctx.fillText('קדימה/אחורה: מעבר אזור', zoneInfoX + zoneInfoW - 14, zoneInfoY + 60);
+
+            drawLesson15BackToMapButton(selected);
+            ctx.restore();
+        }
+
+        function drawLesson15BackToMapButton(selected = lesson15Zones.find(zone => zone.id === lesson15SelectedZone)) {
+            if (currentLesson !== 15 || !selected) return;
+            ctx.save();
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            const backButtonDarkScene = selected.id === 'security';
+            ctx.shadowColor = backButtonDarkScene ? 'rgba(56,189,248,.55)' : 'rgba(15,23,42,.25)';
+            ctx.shadowBlur = backButtonDarkScene ? 14 : 8;
+            ctx.shadowOffsetY = 2;
+            ctx.fillStyle = backButtonDarkScene ? '#ffffff' : 'rgba(15,23,42,.82)';
+            ctx.strokeStyle = backButtonDarkScene ? '#38bdf8' : 'rgba(255,255,255,.45)';
+            ctx.lineWidth = backButtonDarkScene ? 3 : 1.5;
+            ctx.beginPath();
+            ctx.roundRect(18, 46, 110, 32, 999);
+            ctx.fill();
+            ctx.stroke();
+            ctx.shadowColor = 'transparent';
+            ctx.font = 'bold 13px Rubik';
+            ctx.fillStyle = backButtonDarkScene ? '#0f172a' : '#ffffff';
+            ctx.fillText('↩ חזרה למפה', 73, 63);
+            ctx.restore();
+        }
+
+        function moveLesson15Zone(direction) {
+            if (currentLesson !== 15 || !lesson15SelectedZone) return false;
+            const currentIndex = lesson15Zones.findIndex(zone => zone.id === lesson15SelectedZone);
+            if (currentIndex < 0) return false;
+            const nextIndex = (currentIndex + direction + lesson15Zones.length) % lesson15Zones.length;
+            lesson15SelectedZone = lesson15Zones[nextIndex].id;
+            lesson15MuseumInside = false;
+            lesson15SchoolInside = false;
+            lesson15GardenInside = false;
+            if (!environment.deliveryPackage) {
+                environment.deliveryDropped = false;
+                environment.deliveryDropTarget = null;
+            }
+            const nextZone = lesson15Zones[nextIndex];
+            if (nextZone.id === 'rescue') {
+                resetRescueScenePositions();
+            } else if (nextZone.id === 'security') {
+                resetHomeGuardScenePositions();
+            } else {
+                robot.x = direction > 0 ? canvas.width * 0.22 : canvas.width * 0.78;
+                robot.y = canvas.height * 0.78;
+            }
+            robot.speaking = `נסענו אל ${nextZone.label}`;
+            draw();
+            return true;
+        }
+
+        function isLesson15Zone(...zoneIds) {
+            return currentLesson === 15 && zoneIds.includes(lesson15SelectedZone);
+        }
+
+        function isLesson14RescueContext() {
+            return currentLesson === 14 || isLesson15Zone('rescue');
+        }
+
+        function isLesson13HomeGuardContext() {
+            return currentLesson === 13 || isLesson15Zone('security');
+        }
+
+        function resetHomeGuardScenePositions() {
+            robot.x = canvas.width * 0.50;
+            robot.y = canvas.height * 0.78;
+            objects.sound.x = canvas.width * 0.82;
+            objects.sound.y = canvas.height * 0.58;
+        }
+
+        function drawLesson13SecurityScene() {
+            const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            bg.addColorStop(0, '#0f172a');
+            bg.addColorStop(1, '#312e81');
+            ctx.fillStyle = bg;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (lesson13HomeGuardBg.complete && lesson13HomeGuardBg.naturalWidth > 0) {
+                const srcRatio = lesson13HomeGuardBg.naturalWidth / lesson13HomeGuardBg.naturalHeight;
+                const canvasRatio = canvas.width / canvas.height;
+                let sx = 0, sy = 0, sw = lesson13HomeGuardBg.naturalWidth, sh = lesson13HomeGuardBg.naturalHeight;
+                if (srcRatio > canvasRatio) { sw = sh * canvasRatio; sx = (lesson13HomeGuardBg.naturalWidth - sw) / 2; }
+                else if (srcRatio < canvasRatio) { sh = sw / canvasRatio; sy = (lesson13HomeGuardBg.naturalHeight - sh) / 2; }
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(lesson13HomeGuardBg, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function resetRescueScenePositions() {
+            robot.x = canvas.width * 0.50;
+            robot.y = canvas.height * 0.53;
+            objects.wall.x = canvas.width * 0.66;
+            objects.wall.y = canvas.height * 0.42;
+            objects.smoke.x = canvas.width * 0.50;
+            objects.smoke.y = canvas.height * 0.42;
+            objects.rescueBeacon.x = canvas.width * 0.18;
+            objects.rescueBeacon.y = canvas.height * 0.34;
+            objects.waterDrone.x = canvas.width * 0.82;
+            objects.waterDrone.y = canvas.height * 0.34;
+        }
+
+        function getLesson15DeliveryTargets() {
+            const w = canvas.width;
+            const h = canvas.height;
+            const targetsByZone = {
+                museum: [{ id: 'museum-door', x: w * 0.50, y: h * 0.64, label: 'פתח המוזיאון' }],
+                school: [{ id: 'school-door', x: w * 0.50, y: h * 0.66, label: 'כניסה לבית הספר' }],
+                garden: [{ id: 'greenhouse-door', x: w * 0.17, y: h * 0.71, label: 'פתח החממה' }],
+                grocery: [{ id: 'grocery-door', x: w * 0.49, y: h * 0.66, label: 'פתח המכולת' }],
+                homes: [
+                    { id: 'home-left', x: w * 0.15, y: h * 0.68, label: 'פתח בית 1' },
+                    { id: 'home-center', x: w * 0.59, y: h * 0.74, label: 'פתח בית 2' },
+                    { id: 'home-right', x: w * 0.78, y: h * 0.76, label: 'פתח בית 3' },
+                    { id: 'home-last', x: w * 0.91, y: h * 0.76, label: 'פתח בית 4' }
+                ]
+            };
+            return targetsByZone[lesson15SelectedZone] || [];
+        }
+
+        function getLesson15HomeTarget() {
+            return getLesson15DeliveryTargets()[0] || { x: canvas.width * 0.78, y: canvas.height * 0.62, id: 'home' };
+        }
+
+        function getLesson15CurrentDropTarget() {
+            const targets = getLesson15DeliveryTargets();
+            if (!targets.length) return null;
+            return targets.find(target => target.id === environment.deliveryDropTarget) || targets[0];
+        }
+
+        function isLesson15DeliveryZone() {
+            return currentLesson === 15 && getLesson15DeliveryTargets().length > 0;
+        }
+
+        function drawLesson15DeliveryTargets() {
+            const targets = getLesson15DeliveryTargets();
+            targets.forEach((target) => {
+                const isClose = Math.hypot(robot.x - target.x, robot.y - target.y) <= 60;
+                ctx.save();
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = isClose ? 'rgba(34,197,94,.88)' : 'rgba(255,255,255,.90)';
+                ctx.strokeStyle = isClose ? '#15803d' : '#0f172a';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(target.x, target.y, 24, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                ctx.font = '22px Arial';
+                ctx.fillText('🚪', target.x, target.y - 1);
+                ctx.font = 'bold 11px Rubik';
+                ctx.fillStyle = isClose ? '#14532d' : '#1e293b';
+                ctx.fillText(target.label, target.x, target.y + 34);
+                ctx.restore();
+            });
+        }
+
+        function drawLesson15ZoneActors(selected) {
+            const w = canvas.width;
+            const h = canvas.height;
+            const t = Date.now() / 1000;
+            ctx.save();
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            if (selected.id === 'crosswalk') {
+                const lightX = w * .23;
+                const lightY = h * .47;
+                ctx.fillStyle = '#334155';
+                ctx.fillRect(lightX - 4, lightY + 38, 8, h * .24);
+                ctx.fillStyle = '#1f2937';
+                ctx.strokeStyle = '#0f172a';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.roundRect(lightX - 18, lightY - 44, 36, 84, 10);
+                ctx.fill();
+                ctx.stroke();
+                [[lightY - 27, (!robot.trafficLightGreen && !robot.trafficLightYellow) ? '#ef4444' : '#7f1d1d'], [lightY, robot.trafficLightYellow ? '#f59e0b' : '#78350f'], [lightY + 27, (robot.trafficLightGreen && !robot.trafficLightYellow) ? '#22c55e' : '#14532d']].forEach(([cy, color]) => {
+                    ctx.beginPath();
+                    ctx.arc(lightX, cy, 9, 0, Math.PI * 2);
+                    ctx.fillStyle = color;
+                    ctx.fill();
+                });
+
+                if (environment.pedestrian) {
+                    const crosswalkStart = { x: w * .34, y: h * .61 };
+                    const crosswalkEnd = { x: w * .19, y: h * .78 };
+                    const walkCycle = (t * .62) % 2;
+                    const walkingBack = !robot.pedestrianStopped && walkCycle >= 1;
+                    const walkProgress = robot.pedestrianStopped ? .02 : (walkingBack ? 2 - walkCycle : walkCycle);
+                    const px = crosswalkStart.x + (crosswalkEnd.x - crosswalkStart.x) * walkProgress;
+                    const py = crosswalkStart.y + (crosswalkEnd.y - crosswalkStart.y) * walkProgress;
+                    ctx.save();
+                    ctx.translate(px, py);
+                    if (walkingBack) ctx.scale(-1, 1);
+                    ctx.font = '56px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('🚶', 0, 0);
+                    ctx.restore();
+                }
+
+                if (environment.cars) {
+                    const roadPath = [
+                        { x: w * -.20, y: h * .535 },
+                        { x: w * .03, y: h * .575 },
+                        { x: w * .20, y: h * .635 },
+                        { x: w * .38, y: h * .705 },
+                        { x: w * .56, y: h * .785 },
+                        { x: w * .70, y: h * .900 },
+                        { x: w * 1.06, y: h * 1.120 }
+                    ];
+                    const pointOnRoad = (progress) => {
+                        const normalizedProgress = progress % 1;
+                        const segmentCount = roadPath.length - 1;
+                        const raw = normalizedProgress * segmentCount;
+                        const index = Math.min(Math.floor(raw), segmentCount - 1);
+                        const local = raw - index;
+                        const a = roadPath[index];
+                        const b = roadPath[index + 1];
+                        const angleFromIndex = Math.min(index, segmentCount - 2);
+                        const angleA = roadPath[angleFromIndex];
+                        const angleB = roadPath[angleFromIndex + 1];
+                        return {
+                            x: a.x + (b.x - a.x) * local,
+                            y: a.y + (b.y - a.y) * local,
+                            angle: Math.atan2(angleB.y - angleA.y, angleB.x - angleA.x),
+                            scale: .86 + normalizedProgress * .34
+                        };
+                    };
+                    const routeCars = robot.trafficCarsStopped
+                        ? [.30, .70].map(progress => pointOnRoad(progress))
+                        : [((t * .075) % 1), ((t * .075 + .38) % 1)].map(progress => pointOnRoad(progress));
+                    routeCars.forEach((car) => {
+                        ctx.save();
+                        ctx.translate(car.x, car.y);
+                        ctx.rotate(car.angle);
+                        const carW = Math.min(118, w * .15) * car.scale;
+                        const carH = carW * .53;
+                        if (lesson15CarOverlay.complete && lesson15CarOverlay.naturalWidth > 0) {
+                            ctx.drawImage(lesson15CarOverlay, -carW / 2, -carH / 2, carW, carH);
+                        } else {
+                            ctx.font = '48px Arial';
+                            ctx.fillText('🚗', 0, 0);
+                        }
+                        ctx.restore();
+                    });
+                }
+            }
+
+            if (isLesson15DeliveryZone()) {
+                drawLesson15DeliveryTargets();
+            }
+
+            if (selected.id === 'school') {
+                if (environment.people) {
+                    if (lesson15SchoolInside) {
+                        drawLesson9ClassroomPeople();
+                    } else {
+                        [['🧑‍🎓', .38, .70], ['👧', .49, .72], ['👦', .60, .70]].forEach(([emoji, x, y]) => {
+                            ctx.font = '34px Arial';
+                            ctx.fillText(emoji, w * x, h * y);
+                        });
+                    }
+                }
+                if (environment.light || robot.streetLightOn) {
+                    ctx.fillStyle = 'rgba(250,204,21,.28)';
+                    ctx.beginPath();
+                    ctx.arc(w * .50, h * .36, w * .24, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.font = '32px Arial';
+                    ctx.fillText('💡', w * .50, h * .26);
+                }
+                if (environment.sound) {
+                    ctx.font = '30px Arial';
+                    ctx.fillText('🔊', w * .30, h * .58);
+                }
+                if (robot.fanOn) {
+                    ctx.font = '34px Arial';
+                    ctx.fillText('❄️', w * .70, h * .36);
+                }
+            }
+
+            if (selected.id === 'museum') {
+                if (environment.light) {
+                    ctx.fillStyle = 'rgba(253,230,138,.22)';
+                    ctx.fillRect(0, 0, w, h);
+                }
+                const visitors = Math.min(environment.visitorCount || (environment.people ? 4 : 0), 9);
+                for (let i = 0; i < visitors; i++) {
+                    ctx.font = '30px Arial';
+                    ctx.fillText(i % 2 ? '🧑' : '👩', w * (.30 + (i % 5) * .08), h * (.70 + Math.floor(i / 5) * .08));
+                }
+                if (environment.doorOpen) {
+                    ctx.font = '40px Arial';
+                    ctx.fillText('🚪', w * .78, h * .52);
+                }
+                if (environment.safeTouch) {
+                    ctx.font = '34px Arial';
+                    ctx.fillText('✋', w * .62, h * .50);
+                }
+                if (environment.motion) {
+                    ctx.font = '40px Arial';
+                    ctx.fillText('🏃', w * .43, h * .66);
+                }
+                if (robot.alarmOn) {
+                    ctx.fillStyle = 'rgba(239,68,68,.25)';
+                    ctx.beginPath();
+                    ctx.arc(w * .70, h * .30, 44, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.font = '34px Arial';
+                    ctx.fillText('🚨', w * .70, h * .30);
+                }
+            }
+
+            if (selected.id === 'garden') {
+                if (environment.temperatureHot) {
+                    ctx.fillStyle = 'rgba(251,146,60,.22)';
+                    ctx.fillRect(0, 0, w, h);
+                    ctx.font = '34px Arial';
+                    ctx.fillText('☀️', w * .18, h * .22);
+                }
+                if (environment.soilDry) {
+                    ctx.fillStyle = 'rgba(146,64,14,.55)';
+                    ctx.beginPath();
+                    ctx.roundRect(w * .26, h * .70, w * .48, 36, 16);
+                    ctx.fill();
+                    ctx.fillStyle = '#fff7ed';
+                    ctx.font = 'bold 13px Rubik';
+                    ctx.fillText('האדמה יבשה', w * .50, h * .70 + 19);
+                }
+                if (robot.waterOn) {
+                    ctx.strokeStyle = '#38bdf8';
+                    ctx.lineWidth = 3;
+                    for (let i = 0; i < 8; i++) {
+                        ctx.beginPath();
+                        ctx.moveTo(robot.x - 28 + i * 8, robot.y - 18);
+                        ctx.lineTo(w * (.28 + i * .06), h * .72);
+                        ctx.stroke();
+                    }
+                    ctx.font = '28px Arial';
+                    ctx.fillText('💧', w * .50, h * .66);
+                }
+            }
+
+            ctx.restore();
+        }
+
 
         function resizeCanvas() {
             const container = canvas.parentElement;
             canvas.width = container.clientWidth;
-            canvas.height = container.clientHeight - ([9, 11, 12, 13].includes(currentLesson) ? 0 : 60); // Account for ground except full-background scenes; Lesson 11 has no separate ground strip
+            canvas.height = container.clientHeight - ([9, 11, 12, 13, 15].includes(currentLesson) ? 0 : 60); // Account for ground except full-background scenes; Lesson 11 has no separate ground strip
             resetPositions();
         }
 
         function resetPositions() {
             // Reset robot to the lesson's starting point
-            if (currentLesson === 14) {
+            if (isLesson14RescueContext()) {
                 // Start the draggable robot in the middle of the rescue scene.
-                robot.x = canvas.width * 0.50;
-                robot.y = canvas.height * 0.53;
+                resetRescueScenePositions();
             } else if (currentLesson === 7) {
                 const line = getLesson7LinePoints();
                 robot.x = line.start.x - 28;
@@ -1296,10 +1943,9 @@
                 // Start Sensi at the beginning of the delivery route, beside the grocery store.
                 robot.x = canvas.width * 0.19;
                 robot.y = canvas.height * 0.52;
-            } else if (currentLesson === 13) {
+            } else if (isLesson13HomeGuardContext()) {
                 // Start Sensi in the middle of the fence patrol line, facing the right fence end.
-                robot.x = canvas.width * 0.50;
-                robot.y = canvas.height * 0.78;
+                resetHomeGuardScenePositions();
             } else {
                 robot.x = canvas.width / 2;
                 robot.y = currentLesson === 3 ? canvas.height * 0.58 : currentLesson === 4 ? canvas.height * 0.62 : currentLesson === 5 ? canvas.height * 0.64 : currentLesson === 6 ? canvas.height * 0.62 : canvas.height / 2;
@@ -1309,14 +1955,14 @@
             robot.hitLesson12Fence = false;
 
             // Reset objects to default positions
-            objects.wall.x = currentLesson === 3 ? canvas.width * 0.72 : currentLesson === 14 ? canvas.width * 0.66 : canvas.width - 80;
-            objects.wall.y = currentLesson === 3 ? canvas.height * 0.58 : currentLesson === 14 ? canvas.height * 0.42 : canvas.height / 2;
+            objects.wall.x = currentLesson === 3 ? canvas.width * 0.72 : isLesson14RescueContext() ? canvas.width * 0.66 : canvas.width - 80;
+            objects.wall.y = currentLesson === 3 ? canvas.height * 0.58 : isLesson14RescueContext() ? canvas.height * 0.42 : canvas.height / 2;
 
-            objects.sound.x = currentLesson === 13 ? canvas.width * 0.82 : 60;
-            objects.sound.y = currentLesson === 13 ? canvas.height * 0.58 : canvas.height - 60;
+            objects.sound.x = isLesson13HomeGuardContext() ? canvas.width * 0.82 : 60;
+            objects.sound.y = isLesson13HomeGuardContext() ? canvas.height * 0.58 : canvas.height - 60;
 
-            objects.smoke.x = currentLesson === 4 ? canvas.width * 0.72 : currentLesson === 14 ? canvas.width * 0.50 : canvas.width / 2;
-            objects.smoke.y = currentLesson === 4 ? canvas.height * 0.43 : currentLesson === 14 ? canvas.height * 0.42 : 60;
+            objects.smoke.x = currentLesson === 4 ? canvas.width * 0.72 : isLesson14RescueContext() ? canvas.width * 0.50 : canvas.width / 2;
+            objects.smoke.y = currentLesson === 4 ? canvas.height * 0.43 : isLesson14RescueContext() ? canvas.height * 0.42 : 60;
             objects.sun.x = 80;
             objects.sun.y = 60;
             objects.thermometer.x = 110;
@@ -2497,18 +3143,46 @@
         }
 
         function drawLesson10GardenScene(lesson) {
+            lesson = lesson || {};
             const w = canvas.width;
             const h = canvas.height;
             const t = Date.now() / 1000;
+            const preserveAspect = lesson.preserveAspect && !lesson.greenhouseInterior;
+            const greenhouseInterior = lesson.greenhouseInterior;
+            let restorePreservedAspect = false;
+            if (preserveAspect) {
+                const targetRatio = 1.68;
+                const currentRatio = w / h;
+                if (currentRatio > targetRatio) {
+                    const drawW = h * targetRatio;
+                    const insetX = (w - drawW) / 2;
+                    const edge = ctx.createLinearGradient(0, 0, 0, h);
+                    edge.addColorStop(0, environment.temperatureHot ? '#fde68a' : '#bfdbfe');
+                    edge.addColorStop(0.48, environment.temperatureHot ? '#fed7aa' : '#dcfce7');
+                    edge.addColorStop(1, environment.soilDry ? '#fef3c7' : '#bbf7d0');
+                    ctx.fillStyle = edge;
+                    ctx.fillRect(0, 0, w, h);
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.rect(insetX, 0, drawW, h);
+                    ctx.clip();
+                    ctx.translate(insetX, 0);
+                    ctx.scale(drawW / w, 1);
+                    restorePreservedAspect = true;
+                }
+            }
             const dry = environment.soilDry;
             const hot = environment.temperatureHot;
             const watering = robot.waterOn;
+            const plantScale = lesson.plantScale || 1;
             const recoveryMs = gardenRecoveryStartedAt ? Date.now() - gardenRecoveryStartedAt : null;
             const recoveryDurationMs = hot ? 10000 : 5000;
             const dryStartProgress = hot ? 0 : 0.28;
+            const recoveryStartProgress = gardenRecoveryStartedAt ? gardenRecoveryStartProgress : dryStartProgress;
             const recoveryProgress = gardenRecoveryStartedAt
-                ? Math.min(1, Math.max(dryStartProgress, dryStartProgress + (1 - dryStartProgress) * (recoveryMs / recoveryDurationMs)))
+                ? Math.min(1, Math.max(recoveryStartProgress, recoveryStartProgress + (1 - recoveryStartProgress) * (recoveryMs / recoveryDurationMs)))
                 : (dry ? dryStartProgress : 1);
+            const visiblePlantProgress = greenhouseInterior && hot && !watering ? Math.min(recoveryProgress, 0.52) : recoveryProgress;
             const healthy = recoveryProgress >= 0.98;
             const wilted = recoveryProgress <= 0.02;
 
@@ -2519,32 +3193,95 @@
             ctx.fillStyle = sky;
             ctx.fillRect(0, 0, w, h);
 
-            // Soft clouds / heat glow
-            ctx.save();
-            ctx.globalAlpha = hot ? 0.75 : 0.55;
-            ctx.fillStyle = hot ? '#fb923c' : '#ffffff';
-            ctx.beginPath();
-            ctx.arc(w * 0.14, h * 0.16, hot ? 42 : 30, 0, Math.PI * 2);
-            ctx.arc(w * 0.19, h * 0.15, hot ? 34 : 25, 0, Math.PI * 2);
-            ctx.arc(w * 0.23, h * 0.17, hot ? 28 : 22, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
+            if (greenhouseInterior) {
+                if (lesson15GreenhouseInteriorBg.complete && lesson15GreenhouseInteriorBg.naturalWidth > 0) {
+                    drawImageCover(lesson15GreenhouseInteriorBg);
+                } else {
+                    const glassFallback = ctx.createLinearGradient(0, 0, 0, h);
+                    glassFallback.addColorStop(0, hot ? '#fff7bf' : '#dff7ff');
+                    glassFallback.addColorStop(0.50, '#e8fff4');
+                    glassFallback.addColorStop(1, dry ? '#fef3c7' : '#d9f99d');
+                    ctx.fillStyle = glassFallback;
+                    ctx.fillRect(0, 0, w, h);
+                }
 
-            // Title ribbon
-            ctx.save();
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillStyle = 'rgba(255,255,255,.88)';
-            ctx.strokeStyle = '#22c55e';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.roundRect(w * 0.18, 12, w * 0.64, 42, 18);
-            ctx.fill();
-            ctx.stroke();
-            ctx.fillStyle = '#14532d';
-            ctx.font = 'bold 16px Rubik';
-            ctx.fillText(`🌿 ${lesson.title}`, w / 2, 33);
-            ctx.restore();
+                if (hot) {
+                    ctx.save();
+                    const heat = ctx.createLinearGradient(0, 0, 0, h);
+                    heat.addColorStop(0, 'rgba(251,146,60,.36)');
+                    heat.addColorStop(0.55, 'rgba(253,186,116,.20)');
+                    heat.addColorStop(1, 'rgba(248,113,113,.12)');
+                    ctx.fillStyle = heat;
+                    ctx.fillRect(0, 0, w, h);
+                    ctx.globalAlpha = 0.88;
+                    ctx.font = `${Math.max(34, w * 0.055)}px Arial`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText('☀️', w * 0.14, h * 0.18);
+                    ctx.fillText('🔥', w * 0.86, h * 0.24);
+                    ctx.globalAlpha = 1;
+                    ctx.strokeStyle = 'rgba(249,115,22,.48)';
+                    ctx.lineWidth = 3;
+                    for (let i = 0; i < 4; i++) {
+                        const yy = h * (0.28 + i * 0.08);
+                        ctx.beginPath();
+                        ctx.moveTo(w * 0.22, yy);
+                        ctx.bezierCurveTo(w * 0.36, yy - 12, w * 0.50, yy + 12, w * 0.64, yy);
+                        ctx.bezierCurveTo(w * 0.72, yy - 8, w * 0.78, yy + 8, w * 0.84, yy);
+                        ctx.stroke();
+                    }
+                    ctx.restore();
+                }
+            } else {
+                // Soft clouds / heat glow
+                ctx.save();
+                ctx.globalAlpha = hot ? 0.75 : 0.55;
+                ctx.fillStyle = hot ? '#fb923c' : '#ffffff';
+                ctx.beginPath();
+                ctx.arc(w * 0.14, h * 0.16, hot ? 42 : 30, 0, Math.PI * 2);
+                ctx.arc(w * 0.19, h * 0.15, hot ? 34 : 25, 0, Math.PI * 2);
+                ctx.arc(w * 0.23, h * 0.17, hot ? 28 : 22, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            if (greenhouseInterior) {
+                ctx.save();
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = 'rgba(255,255,255,.92)';
+                ctx.strokeStyle = hot ? '#f97316' : '#22c55e';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                const tempPanelW = w * 0.28;
+                const tempPanelH = 52;
+                const tempPanelX = w * 0.36;
+                const tempPanelY = 74;
+                ctx.roundRect(tempPanelX, tempPanelY, tempPanelW, tempPanelH, 18);
+                ctx.fill();
+                ctx.stroke();
+                ctx.font = 'bold 14px Rubik';
+                ctx.fillStyle = hot ? '#c2410c' : '#047857';
+                ctx.fillText(hot ? '🌡️ חם מדי בחממה' : '🌿 הטמפרטורה נעימה', tempPanelX + tempPanelW / 2, tempPanelY + 18);
+                ctx.font = 'bold 16px Rubik';
+                ctx.fillText(hot ? '32°' : '24°', tempPanelX + tempPanelW / 2, tempPanelY + 37);
+                ctx.restore();
+            } else {
+                // Title ribbon
+                ctx.save();
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = 'rgba(255,255,255,.88)';
+                ctx.strokeStyle = '#22c55e';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.roundRect(w * 0.18, 12, w * 0.64, 42, 18);
+                ctx.fill();
+                ctx.stroke();
+                ctx.fillStyle = '#14532d';
+                ctx.font = 'bold 16px Rubik';
+                ctx.fillText(`🌿 ${lesson.title}`, w / 2, 33);
+                ctx.restore();
+            }
 
             // Garden soil bed
             const bedX = w * 0.08;
@@ -2591,7 +3328,7 @@
             const mix = (from, to, amount) => from + (to - from) * amount;
             plantXs.forEach((x, i) => {
                 const baseY = bedY + bedH - 36 - (i % 2) * 18;
-                const plantProgress = Math.min(1, Math.max(0, recoveryProgress - i * 0.025));
+                const plantProgress = Math.min(1, Math.max(0, visiblePlantProgress - i * 0.025));
                 const bloomProgress = plantProgress * plantProgress * (3 - 2 * plantProgress);
                 const sway = Math.sin(t * 1.8 + i) * (1 + bloomProgress * 2);
                 const hotWiltAmount = hot ? 1 : 0;
@@ -2605,6 +3342,7 @@
                 const stemCtrlY = mix(wiltStemCtrlY, -34, bloomProgress);
                 ctx.save();
                 ctx.translate(x + sway, baseY);
+                ctx.scale(plantScale, plantScale);
                 ctx.strokeStyle = bloomProgress > .55 ? '#15803d' : '#854d0e';
                 ctx.lineWidth = mix(4, 5, bloomProgress);
                 ctx.beginPath();
@@ -2756,8 +3494,8 @@
             ctx.restore();
 
             // Compact garden water-status gauge: dry / OK / too much water.
-            const meterX = w * 0.075;
-            const meterY = h * 0.36;
+            const meterX = greenhouseInterior ? w * 0.055 : w * 0.075;
+            const meterY = greenhouseInterior ? h * 0.80 : h * 0.36;
             const meterW = w * 0.26;
             const waterState = !dry && watering
                 ? { label: 'עודף מים', value: 0.98, color: '#2563eb', glow: 'rgba(37,99,235,.70)', icon: '🌊' }
@@ -2808,6 +3546,7 @@
             ctx.fillText('תקין', meterX + meterW * 0.52, meterY + 39);
             ctx.fillText('עודף', meterX + meterW - 10, meterY + 39);
             ctx.restore();
+            if (restorePreservedAspect) ctx.restore();
         }
 
         function drawAdvancedLessonScene() {
@@ -2846,6 +3585,8 @@
             ctx.fillStyle = bg;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+            if (currentLesson === 15) drawLesson15ProjectScene();
+
             if (currentLesson === 12 && lesson12DeliveryBg.complete && lesson12DeliveryBg.naturalWidth > 0) {
                 const srcRatio = lesson12DeliveryBg.naturalWidth / lesson12DeliveryBg.naturalHeight;
                 const canvasRatio = canvas.width / canvas.height;
@@ -2865,7 +3606,7 @@
                 ctx.drawImage(lesson12DeliveryBg, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
             }
 
-            if (currentLesson === 13 && lesson13HomeGuardBg.complete && lesson13HomeGuardBg.naturalWidth > 0) {
+            if (isLesson13HomeGuardContext() && lesson13HomeGuardBg.complete && lesson13HomeGuardBg.naturalWidth > 0) {
                 const srcRatio = lesson13HomeGuardBg.naturalWidth / lesson13HomeGuardBg.naturalHeight;
                 const canvasRatio = canvas.width / canvas.height;
                 let sx = 0, sy = 0, sw = lesson13HomeGuardBg.naturalWidth, sh = lesson13HomeGuardBg.naturalHeight;
@@ -2876,9 +3617,10 @@
                 ctx.drawImage(lesson13HomeGuardBg, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
             }
 
+
             // City floor / route
-            if (currentLesson !== 9 && currentLesson !== 12 && currentLesson !== 13) {
-                ctx.fillStyle = currentLesson === 13 ? 'rgba(15,23,42,.55)' : 'rgba(255,255,255,.55)';
+            if (currentLesson !== 9 && currentLesson !== 12 && !isLesson13HomeGuardContext() && currentLesson !== 15) {
+                ctx.fillStyle = isLesson13HomeGuardContext() ? 'rgba(15,23,42,.55)' : 'rgba(255,255,255,.55)';
                 ctx.beginPath();
                 ctx.roundRect(canvas.width * 0.08, canvas.height * 0.50, canvas.width * 0.84, canvas.height * 0.18, 24);
                 ctx.fill();
@@ -3002,46 +3744,7 @@
 
                 // People appear only when the students sensor is active: teacher + students sitting on chairs.
                 if (environment.people) {
-                    ctx.textAlign = 'center';
-                    ctx.font = `${Math.max(48, canvas.width * 0.06)}px Arial`;
-                    ctx.fillText('👩‍🏫', canvas.width * 0.22, canvas.height * 0.43);
-                    ctx.font = 'bold 16px Rubik';
-                    ctx.fillStyle = '#1e293b';
-                    ctx.fillText('המורה', canvas.width * 0.22, canvas.height * 0.48);
-
-                    const drawBackStudent = (xRatio, yRatio, shirt, hair) => {
-                        const x = canvas.width * xRatio;
-                        const y = canvas.height * yRatio;
-                        const scale = Math.max(0.72, Math.min(canvas.width / 900, 1.2));
-                        ctx.save();
-                        ctx.translate(x, y);
-                        ctx.scale(scale, scale);
-                        // Back-facing student placed on an empty chair.
-                        ctx.fillStyle = hair;
-                        ctx.beginPath();
-                        ctx.arc(0, -38, 18, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.fillStyle = '#fbbf24';
-                        ctx.beginPath();
-                        ctx.arc(0, -35, 13, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.fillStyle = shirt;
-                        ctx.beginPath();
-                        ctx.roundRect(-24, -18, 48, 54, 14);
-                        ctx.fill();
-                        ctx.fillStyle = 'rgba(15,23,42,.18)';
-                        ctx.fillRect(-18, 30, 36, 8);
-                        ctx.restore();
-                    };
-                    const students = [
-                        [0.07, 0.80, '#60a5fa', '#7c2d12'],
-                        [0.16, 0.64, '#f472b6', '#1f2937'],
-                        [0.50, 0.69, '#34d399', '#92400e'],
-                        [0.50, 0.88, '#a78bfa', '#111827'],
-                        [0.79, 0.64, '#fb923c', '#78350f'],
-                        [0.89, 0.80, '#22d3ee', '#1e293b']
-                    ];
-                    students.forEach(([x, y, shirt, hair]) => drawBackStudent(x, y, shirt, hair));
+                    drawLesson9ClassroomPeople();
                 }
 
                 // Lesson 9 keeps the left draggable speaker as the only visible noise speaker.
@@ -3080,56 +3783,61 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.font = 'bold 16px Rubik';
-            ctx.fillStyle = currentLesson === 13 ? '#eef2ff' : '#0f172a';
+            ctx.fillStyle = isLesson13HomeGuardContext() ? '#eef2ff' : '#0f172a';
             ctx.fillText(`${scene.icon} ${scene.place} — ${lesson.title}`, canvas.width / 2, 28);
 
             // Mission board
-            const compactMission = currentLesson === 7 || currentLesson === 8 || currentLesson === 9 || currentLesson === 11 || currentLesson === 12 || currentLesson === 13;
-            const boardX = currentLesson === 7 ? 20 : currentLesson === 8 ? canvas.width - 218 : currentLesson === 9 ? canvas.width - 224 : currentLesson === 11 ? canvas.width - 220 : currentLesson === 12 ? (canvas.width - Math.min(250, canvas.width * 0.44)) / 2 : currentLesson === 13 ? canvas.width - 240 : canvas.width * 0.56;
-            const boardY = currentLesson === 7 ? 40 : currentLesson === 8 ? 8 : currentLesson === 9 ? 42 : currentLesson === 11 ? 40 : currentLesson === 12 ? 44 : currentLesson === 13 ? 48 : canvas.height * 0.12;
-            const boardW = currentLesson === 7 ? 190 : currentLesson === 8 ? 210 : currentLesson === 9 ? 196 : currentLesson === 11 ? 198 : currentLesson === 12 ? Math.min(250, canvas.width * 0.44) : currentLesson === 13 ? 220 : canvas.width * 0.36;
-            const boardH = currentLesson === 7 ? 70 : currentLesson === 8 ? 78 : currentLesson === 9 ? 70 : currentLesson === 11 ? 74 : currentLesson === 12 ? 62 : currentLesson === 13 ? 82 : 135;
-            ctx.fillStyle = compactMission ? 'rgba(255,255,255,.88)' : 'rgba(255,255,255,.92)';
-            ctx.strokeStyle = compactMission ? '#0ea5e9' : '#38bdf8';
-            ctx.lineWidth = compactMission ? 2 : 3;
-            ctx.beginPath();
-            ctx.roundRect(boardX, boardY, boardW, boardH, compactMission ? 14 : 18);
-            ctx.fill();
-            ctx.stroke();
-            ctx.textAlign = 'right';
-            ctx.fillStyle = '#0f172a';
+            const compactMission = currentLesson === 7 || currentLesson === 8 || currentLesson === 9 || currentLesson === 11 || currentLesson === 12 || currentLesson === 13 || currentLesson === 15;
+            const boardX = currentLesson === 7 ? 20 : currentLesson === 8 ? canvas.width - 218 : currentLesson === 9 ? canvas.width - 224 : currentLesson === 11 ? canvas.width - 220 : currentLesson === 12 ? (canvas.width - Math.min(250, canvas.width * 0.44)) / 2 : currentLesson === 13 ? canvas.width - 240 : currentLesson === 15 ? canvas.width - 226 : canvas.width * 0.56;
+            const boardY = currentLesson === 7 ? 40 : currentLesson === 8 ? 8 : currentLesson === 9 ? 42 : currentLesson === 11 ? 40 : currentLesson === 12 ? 44 : currentLesson === 13 ? 48 : currentLesson === 15 ? 44 : canvas.height * 0.12;
+            const boardW = currentLesson === 7 ? 190 : currentLesson === 8 ? 210 : currentLesson === 9 ? 196 : currentLesson === 11 ? 198 : currentLesson === 12 ? Math.min(250, canvas.width * 0.44) : currentLesson === 13 ? 220 : currentLesson === 15 ? 206 : canvas.width * 0.36;
+            const boardH = currentLesson === 7 ? 70 : currentLesson === 8 ? 78 : currentLesson === 9 ? 70 : currentLesson === 11 ? 74 : currentLesson === 12 ? 62 : currentLesson === 13 ? 82 : currentLesson === 15 ? 66 : 135;
+            const showMissionBoard = !(currentLesson === 15 && lesson15SelectedZone);
+            if (showMissionBoard) {
+                ctx.fillStyle = compactMission ? 'rgba(255,255,255,.88)' : 'rgba(255,255,255,.92)';
+                ctx.strokeStyle = compactMission ? '#0ea5e9' : '#38bdf8';
+                ctx.lineWidth = compactMission ? 2 : 3;
+                ctx.beginPath();
+                ctx.roundRect(boardX, boardY, boardW, boardH, compactMission ? 14 : 18);
+                ctx.fill();
+                ctx.stroke();
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#0f172a';
 
-            if (compactMission) {
-                const compactText = currentLesson === 7
-                    ? { titleSize: 11, bodySize: 9, titleY: 15, line1Y: 31, line2Y: 45, line3Y: 59 }
-                    : currentLesson === 9
+                if (compactMission) {
+                    const compactText = currentLesson === 7
                         ? { titleSize: 11, bodySize: 9, titleY: 15, line1Y: 31, line2Y: 45, line3Y: 59 }
-                        : currentLesson === 12
-                            ? { titleSize: 10, bodySize: 8, titleY: 12, line1Y: 25, line2Y: 38, line3Y: 51 }
-                            : currentLesson === 13
-                                ? { titleSize: 11, bodySize: 9, titleY: 15, line1Y: 32, line2Y: 48, line3Y: 66 }
-                                : { titleSize: 12, bodySize: 10, titleY: 17, line1Y: 37, line2Y: 53, line3Y: 68 };
+                        : currentLesson === 9
+                            ? { titleSize: 11, bodySize: 9, titleY: 15, line1Y: 31, line2Y: 45, line3Y: 59 }
+                            : currentLesson === 12
+                                ? { titleSize: 10, bodySize: 8, titleY: 12, line1Y: 25, line2Y: 38, line3Y: 51 }
+                                : currentLesson === 13
+                                    ? { titleSize: 11, bodySize: 9, titleY: 15, line1Y: 32, line2Y: 48, line3Y: 66 }
+                                    : currentLesson === 15
+                                        ? { titleSize: 11, bodySize: 8, titleY: 14, line1Y: 29, line2Y: 43, line3Y: 57 }
+                                        : { titleSize: 12, bodySize: 10, titleY: 17, line1Y: 37, line2Y: 53, line3Y: 68 };
 
-                ctx.font = `bold ${compactText.titleSize}px Rubik`;
-                ctx.fillText('🎯 משימה', boardX + boardW - 12, boardY + compactText.titleY);
-                ctx.font = `${compactText.bodySize}px Rubik`;
-                ctx.fillStyle = '#334155';
-                ctx.fillText(`חיישן: ${lesson.sensorFocus}`, boardX + boardW - 12, boardY + compactText.line1Y);
-                ctx.fillText(`רעיון: ${lesson.codingConcept}`, boardX + boardW - 12, boardY + compactText.line2Y);
-                ctx.fillText(scene.action, boardX + boardW - 12, boardY + compactText.line3Y);
-            } else {
-                ctx.font = 'bold 15px Rubik';
-                ctx.fillText('משימת תכנות', boardX + boardW - 14, boardY + 24);
-                ctx.font = '13px Rubik';
-                ctx.fillText(`חיישן: ${lesson.sensorFocus}`, boardX + boardW - 14, boardY + 50);
-                ctx.fillText(`רעיון: ${lesson.codingConcept}`, boardX + boardW - 14, boardY + 73);
-                ctx.fillText(scene.action, boardX + boardW - 14, boardY + 96);
+                    ctx.font = `bold ${compactText.titleSize}px Rubik`;
+                    ctx.fillText('🎯 משימה', boardX + boardW - 12, boardY + compactText.titleY);
+                    ctx.font = `${compactText.bodySize}px Rubik`;
+                    ctx.fillStyle = '#334155';
+                    ctx.fillText(`חיישן: ${lesson.sensorFocus}`, boardX + boardW - 12, boardY + compactText.line1Y);
+                    ctx.fillText(`רעיון: ${lesson.codingConcept}`, boardX + boardW - 12, boardY + compactText.line2Y);
+                    ctx.fillText(scene.action, boardX + boardW - 12, boardY + compactText.line3Y);
+                } else {
+                    ctx.font = 'bold 15px Rubik';
+                    ctx.fillText('משימת תכנות', boardX + boardW - 14, boardY + 24);
+                    ctx.font = '13px Rubik';
+                    ctx.fillText(`חיישן: ${lesson.sensorFocus}`, boardX + boardW - 14, boardY + 50);
+                    ctx.fillText(`רעיון: ${lesson.codingConcept}`, boardX + boardW - 14, boardY + 73);
+                    ctx.fillText(scene.action, boardX + boardW - 14, boardY + 96);
+                }
             }
 
             // Scenario objects
             const emojis = {
                 7: [], 8: ['🚶', '🚦', '🚗'], 9: ['🧑‍🎓', '💡', '❄️'], 10: ['🌱', '💧', '🌿'],
-                11: ['🏆', '🚪', '🚨'], 12: ['🏪', '🚧', '🏠'], 13: ['🏠', '👣', '🚨'], 14: ['💨', '🔥', '🧱'], 15: ['❓', '👁️', '✅']
+                11: ['🏆', '🚪', '🚨'], 12: ['🏪', '🚧', '🏠'], 13: ['🏠', '👣', '🚨'], 14: ['💨', '🔥', '🧱'], 15: []
             }[currentLesson];
             const xs = [canvas.width * 0.20, canvas.width * 0.40, canvas.width * 0.60];
             const y = Math.max(canvas.height * 0.62, boardY + boardH + 48);
@@ -3198,6 +3906,12 @@
 
 
             scene.objects.forEach((label, i) => {
+                if (currentLesson === 15 && !isLesson13HomeGuardContext()) {
+                    // Lesson 15 has a custom friendly project scene; skip the generic middle cards,
+                    // except the security patrol zone which intentionally reuses Lesson 13 actors.
+                    return;
+                }
+
                 if (currentLesson === 12) {
                     // The grocery, house and wide route are part of the background image.
                     // The draggable obstacle is drawn separately when enabled.
@@ -3230,20 +3944,24 @@
                         ctx.strokeStyle = '#0f172a';
                         ctx.lineWidth = 2;
                         ctx.beginPath();
-                        ctx.roundRect(lightX - 17, lightY - 34, 34, 66, 9);
+                        ctx.roundRect(lightX - 17, lightY - 39, 34, 78, 9);
                         ctx.fill();
                         ctx.stroke();
                         ctx.beginPath();
-                        ctx.arc(lightX, lightY - 17, 9, 0, Math.PI * 2);
-                        ctx.fillStyle = robot.trafficLightGreen ? '#7f1d1d' : '#ef4444';
+                        ctx.arc(lightX, lightY - 24, 8, 0, Math.PI * 2);
+                        ctx.fillStyle = (!robot.trafficLightGreen && !robot.trafficLightYellow) ? '#ef4444' : '#7f1d1d';
                         ctx.fill();
                         ctx.beginPath();
-                        ctx.arc(lightX, lightY + 15, 9, 0, Math.PI * 2);
-                        ctx.fillStyle = robot.trafficLightGreen ? '#22c55e' : '#14532d';
+                        ctx.arc(lightX, lightY, 8, 0, Math.PI * 2);
+                        ctx.fillStyle = robot.trafficLightYellow ? '#f59e0b' : '#78350f';
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.arc(lightX, lightY + 24, 8, 0, Math.PI * 2);
+                        ctx.fillStyle = (robot.trafficLightGreen && !robot.trafficLightYellow) ? '#22c55e' : '#14532d';
                         ctx.fill();
                         ctx.font = 'bold 12px Rubik';
-                        ctx.fillStyle = robot.trafficLightGreen ? '#15803d' : '#dc2626';
-                        ctx.fillText(robot.trafficLightGreen ? 'ירוק' : 'אדום', lightX, y + 48);
+                        ctx.fillStyle = robot.trafficLightYellow ? '#d97706' : robot.trafficLightGreen ? '#15803d' : '#dc2626';
+                        ctx.fillText(robot.trafficLightYellow ? 'כתום' : robot.trafficLightGreen ? 'ירוק' : 'אדום', lightX, y + 48);
                         return;
                     }
 
@@ -3337,7 +4055,7 @@
                     return;
                 }
 
-                if (currentLesson === 13) {
+                if (isLesson13HomeGuardContext()) {
                     if (i === 0) return;
 
                     const active = Boolean(environment.burglar);
@@ -3420,7 +4138,7 @@
                 ctx.fillText(label, xs[i], y + 34);
             });
 
-            if (currentLesson === 13) {
+            if (isLesson13HomeGuardContext()) {
                 getLesson13FenceEndTargets().forEach((fenceEnd) => {
                     ctx.save();
                     ctx.textAlign = 'center';
@@ -3508,7 +4226,7 @@
                 ctx.restore();
             }
 
-            if (currentLesson === 13 && environment.homeowner) {
+            if (isLesson13HomeGuardContext() && environment.homeowner) {
                 const person = getLesson13HomeownerScene();
                 if (person.phase === 'gone') {
                     environment.homeowner = false;
@@ -3522,7 +4240,7 @@
                 }
             }
 
-            if (currentLesson === 13 && burglarEscapedAt && Date.now() - burglarEscapedAt < 6500) {
+            if (isLesson13HomeGuardContext() && burglarEscapedAt && Date.now() - burglarEscapedAt < 6500) {
                 const elapsed = Date.now() - burglarEscapedAt;
                 const sadHomeowner = {
                     x: canvas.width * (0.50 - Math.min(elapsed / 6500, 1) * 0.10),
@@ -3531,7 +4249,7 @@
                 drawLesson13HomeownerCharacter(sadHomeowner, 'אוי לא, הגנב ברח...', true);
             }
 
-            if (currentLesson === 13 && environment.burglar && burglarCaughtAt) {
+            if (isLesson13HomeGuardContext() && environment.burglar && burglarCaughtAt) {
                 const policeX = canvas.width * 0.64;
                 const policeY = canvas.height * 0.70;
                 ctx.save();
@@ -3550,7 +4268,7 @@
 
         // ===== DRAW ROBOT =====
         function catchLesson13BurglarIfAlarm() {
-            if (currentLesson === 13 && environment.burglar && robot.alarmOn && !burglarCaughtAt) {
+            if (isLesson13HomeGuardContext() && environment.burglar && robot.alarmOn && !burglarCaughtAt) {
                 burglarCaughtAt = Date.now();
                 environment.motion = false;
                 robot.speaking = 'אזעקה! המשטרה הגיעה והגנב נתפס!';
@@ -3601,10 +4319,23 @@
                 nightGradient.addColorStop(1, '#34495e');
                 ctx.fillStyle = nightGradient;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.save();
                 ctx.font = '18px Arial';
-                for (let i = 0; i < 18; i++) {
-                    ctx.fillText('✨', (i * 73) % Math.max(canvas.width, 1), 24 + (i * 41) % Math.max(canvas.height - 80, 1));
-                }
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                const stars = [
+                    [0.06, 0.18, 15], [0.13, 0.46, 19], [0.19, 0.27, 13], [0.27, 0.63, 16], [0.34, 0.13, 18],
+                    [0.41, 0.39, 14], [0.48, 0.74, 20], [0.55, 0.21, 15], [0.63, 0.55, 17], [0.70, 0.10, 13],
+                    [0.76, 0.34, 20], [0.83, 0.70, 14], [0.90, 0.24, 16], [0.96, 0.52, 19], [0.22, 0.82, 12],
+                    [0.38, 0.88, 15], [0.60, 0.83, 13], [0.72, 0.77, 18], [0.87, 0.90, 12], [0.11, 0.08, 12]
+                ];
+                stars.forEach(([x, y, size], index) => {
+                    ctx.font = `${size}px Arial`;
+                    ctx.globalAlpha = index % 4 === 0 ? 0.82 : 1;
+                    ctx.fillText(index % 5 === 0 ? '✦' : '✨', x * canvas.width, 18 + y * Math.max(canvas.height - 58, 1));
+                });
+                ctx.globalAlpha = 1;
+                ctx.restore();
             }
 
             if (environment.light) {
@@ -3998,20 +4729,23 @@
                 }
             }
 
-            // Lesson 12 delivery package follows the robot, then can be placed on the floor by the house door.
-            if (currentLesson === 12 && (environment.deliveryPackage || environment.deliveryDropped)) {
+            // Lesson 12 / lesson 15 delivery package follows the robot, then can be placed by a door target.
+            if ((currentLesson === 12 || currentLesson === 15) && (environment.deliveryPackage || environment.deliveryDropped)) {
+                const home = currentLesson === 12 ? getLesson12HomeTarget() : getLesson15CurrentDropTarget();
+                const shouldDrawPackage = environment.deliveryPackage || Boolean(home);
+                if (shouldDrawPackage) {
                 ctx.save();
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                const home = getLesson12HomeTarget();
-                const packageX = environment.deliveryDropped ? home.x : robot.x - 34;
-                const packageY = environment.deliveryDropped ? home.y : robot.y - 18;
+                const packageX = environment.deliveryDropped && home ? home.x : robot.x - 34;
+                const packageY = environment.deliveryDropped && home ? home.y : robot.y - 18;
                 ctx.font = '30px Arial';
                 ctx.fillText('📦', packageX, packageY);
                 ctx.font = 'bold 11px Rubik';
                 ctx.fillStyle = environment.deliveryDropped ? '#15803d' : canSenseGoal() ? '#15803d' : '#92400e';
                 ctx.fillText(environment.deliveryDropped ? 'המשלוח בפתח הבית' : canSenseGoal() ? 'המשלוח הגיע לבית!' : 'משלוח בדרך', packageX, packageY - 30);
                 ctx.restore();
+                }
             }
 
             // Robot (also draggable)
@@ -4214,6 +4948,10 @@
                 ctx.fillText(robot.speaking, bubbleX, bubbleY);
             }
 
+            if (currentLesson === 15 && lesson15SelectedZone) {
+                drawLesson15BackToMapButton();
+            }
+
             requestAnimationFrame(draw);
         }
 
@@ -4252,6 +4990,50 @@
             if (isRunning) return;
             const pos = getMousePos(e);
 
+            if (currentLesson === 15) {
+                if (lesson15SelectedZone && pos.x >= 18 && pos.x <= 128 && pos.y >= 46 && pos.y <= 78) {
+                    lesson15SelectedZone = null;
+                    lesson15MuseumInside = false;
+                    lesson15SchoolInside = false;
+                    lesson15GardenInside = false;
+                    if (!environment.deliveryPackage) {
+                        environment.deliveryDropped = false;
+                        environment.deliveryDropTarget = null;
+                    }
+                    e.preventDefault();
+                    draw();
+                    return;
+                }
+
+                if (!lesson15SelectedZone) {
+                    const selected = lesson15Zones.find(zone => {
+                        const x = zone.x * canvas.width;
+                        const y = zone.y * canvas.height;
+                        const bw = Math.max(116, zone.w * canvas.width * .68) + 28;
+                        const bh = 38 + 22;
+                        return pos.x >= x - bw / 2 &&
+                            pos.x <= x + bw / 2 &&
+                            pos.y >= y - bh / 2 &&
+                            pos.y <= y + bh / 2;
+                    });
+                    if (selected) {
+                        lesson15SelectedZone = selected.id;
+                        lesson15MuseumInside = false;
+                        lesson15SchoolInside = false;
+                        lesson15GardenInside = false;
+                        if (selected.id === 'rescue') resetRescueScenePositions();
+                        if (selected.id === 'security') resetHomeGuardScenePositions();
+                        if (!environment.deliveryPackage) {
+                            environment.deliveryDropped = false;
+                            environment.deliveryDropTarget = null;
+                        }
+                        e.preventDefault();
+                        draw();
+                        return;
+                    }
+                }
+            }
+
             // Check what was clicked (robot/car first, then objects)
             if (hitTestRobot(pos)) {
                 dragging = 'robot';
@@ -4268,7 +5050,7 @@
             } else if (environment.light && hitTest(pos, objects.sun, 50)) {
                 dragging = 'sun';
                 dragOffset = { x: pos.x - objects.sun.x, y: pos.y - objects.sun.y };
-            } else if (currentLesson === 14) {
+            } else if (isLesson14RescueContext()) {
                 const rescueDragTargets = ['rescueBeacon', 'waterDrone'];
                 for (const key of rescueDragTargets) {
                     if (hitTest(pos, objects[key], 45)) {
@@ -4425,10 +5207,10 @@
                 actions: ['action_safe_route', 'action_alarm', 'action_say']
             },
             15: {
-                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'route_turn'],
-                sensors: ['sensor_light', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_line_side', 'sensor_goal', 'sensor_cars', 'sensor_pedestrian', 'sensor_people', 'sensor_soil', 'sensor_water_status', 'sensor_armed', 'sensor_motion', 'sensor_safe_touch', 'sensor_door', 'sensor_obstacle'],
-                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
-                actions: ['action_say', 'action_street_light', 'action_traffic_light', 'action_sound', 'action_fan', 'action_ac', 'action_water', 'action_recycle_bin', 'action_class_power', 'action_security_mode', 'action_alarm', 'action_safe_route']
+                movement: ['move_backward', 'turn_right', 'turn_left', 'stop_vehicle', 'move_forward', 'turn_right_small', 'turn_left_small', 'stop_cars', 'start_cars', 'stop_pedestrian', 'start_pedestrian', 'route_turn', 'turn_around', 'lesson15_zone_next', 'lesson15_zone_prev'],
+                sensors: ['sensor_light', 'sensor_sound', 'sensor_touch', 'sensor_smell', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_line_side', 'sensor_goal', 'sensor_pedestrian', 'sensor_cars', 'sensor_people', 'sensor_soil', 'sensor_water_status', 'sensor_armed', 'sensor_safe_touch', 'sensor_door', 'sensor_obstacle', 'sensor_delivery_package', 'sensor_burglar', 'sensor_homeowner', 'sensor_motion'],
+                controls: ['control_if', 'stop_program', 'control_forever', 'control_wait'],
+                actions: ['action_street_light', 'action_say', 'action_sound', 'action_fan', 'action_recycle_bin', 'action_traffic_light', 'action_class_power', 'action_ac', 'action_water', 'action_security_mode', 'action_alarm', 'action_enter_museum', 'action_exit_museum', 'action_enter_classroom', 'action_exit_classroom', 'action_enter_greenhouse', 'action_exit_greenhouse', 'action_delivery_package', 'action_drop_delivery', 'action_safe_route']
             }
         };
 
@@ -4563,8 +5345,8 @@
                 env: ['envSmoke', 'envTemperatureHot', 'envObstacle']
             },
             15: {
-                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorPeople', 'sensorSoil', 'sensorArmed', 'sensorMotion', 'sensorDoor'],
-                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envPeople', 'envSoilDry', 'envArmedMode', 'envMotion', 'envDoorOpen']
+                sensors: ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorSoil', 'sensorArmed', 'sensorMotion', 'sensorSafeTouch', 'sensorBurglar', 'sensorHomeowner', 'sensorDoor', 'sensorDeliveryPackage'],
+                env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envRemoveVisitor', 'envSoilDry', 'envArmedMode', 'envMotion', 'envSafeTouch', 'envBurglar', 'envHomeowner', 'envDoorOpen', 'envDeliveryPackage']
             }
         };
 
@@ -4614,9 +5396,9 @@
                 obstacleBtn.lastChild.textContent = currentLesson === 12 ? ' מכשול' : ' קיר';
             }
             const smokeBtn = document.getElementById('envSmoke');
-            if (smokeBtn) smokeBtn.lastChild.textContent = currentLesson === 14 ? ' עשן בזירה' : ' עשן';
+            if (smokeBtn) smokeBtn.lastChild.textContent = isLesson14RescueContext() ? ' עשן בזירה' : ' עשן';
             const tempBtn = document.getElementById('envTemperatureHot');
-            if (tempBtn) tempBtn.lastChild.textContent = currentLesson === 14 ? ' חום מסוכן' : currentLesson === 10 ? ' יום חם' : ' חם';
+            if (tempBtn) tempBtn.lastChild.textContent = isLesson14RescueContext() ? ' חום מסוכן' : currentLesson === 10 ? ' יום חם' : ' חם';
             updateEnvScrollControls();
         }
 
@@ -4764,7 +5546,7 @@
             // Movement
             Blockly.Blocks['move_forward'] = {
                 init: function() {
-                    this.appendDummyInput().appendField(currentLesson === 14 ? '⬆️ התקדם בזהירות' : '⬆️ זוז קדימה');
+                    this.appendDummyInput().appendField(isLesson14RescueContext() ? '⬆️ התקדם בזהירות' : '⬆️ זוז קדימה');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
                     this.setColour('#4C97FF');
@@ -4774,6 +5556,24 @@
             Blockly.Blocks['move_backward'] = {
                 init: function() {
                     this.appendDummyInput().appendField('⬇️ זוז אחורה');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#4C97FF');
+                }
+            };
+
+            Blockly.Blocks['lesson15_zone_next'] = {
+                init: function() {
+                    this.appendDummyInput().appendField('🏙️ סע קדימה לאזור הבא');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#4C97FF');
+                }
+            };
+
+            Blockly.Blocks['lesson15_zone_prev'] = {
+                init: function() {
+                    this.appendDummyInput().appendField('🏙️ סע אחורה לאזור הקודם');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
                     this.setColour('#4C97FF');
@@ -4828,7 +5628,7 @@
             Blockly.Blocks['route_turn'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField(currentLesson === 14 ? '🧭 עקוף לפי נתיב בטוח' : '🧭 סובב לפי המסלול')
+                        .appendField(isLesson14RescueContext() ? '🧭 עקוף לפי נתיב בטוח' : '🧭 סובב לפי המסלול')
                         .appendField(new Blockly.FieldDropdown([['ימינה', 'RIGHT'], ['שמאלה', 'LEFT']]), 'DIR');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
@@ -4944,8 +5744,8 @@
             Blockly.Blocks['sensor_temperature'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField(currentLesson === 14 ? '🔥 חום בזירת החילוץ =' : currentLesson === 10 ? '☀️ יום חם בגינה =' : '🌡️ טמפרטורה =')
-                        .appendField(new Blockly.FieldDropdown(currentLesson === 14 ? [['מסוכן מדי 🔥', 'HOT'], ['בטוח להמשך ✅', 'OK']] : currentLesson === 10 ? [['יום חם ☀️', 'HOT'], ['יום נעים 🌿', 'OK']] : [['חם מדי 🔥', 'HOT'], ['נעים 🌿', 'OK']]), 'VAL');
+                        .appendField(isLesson14RescueContext() ? '🔥 חום בזירת החילוץ =' : currentLesson === 10 ? '☀️ יום חם בגינה =' : '🌡️ טמפרטורה =')
+                        .appendField(new Blockly.FieldDropdown(isLesson14RescueContext() ? [['מסוכן מדי 🔥', 'HOT'], ['בטוח להמשך ✅', 'OK']] : currentLesson === 10 ? [['יום חם ☀️', 'HOT'], ['יום נעים 🌿', 'OK']] : [['חם מדי 🔥', 'HOT'], ['נעים 🌿', 'OK']]), 'VAL');
                     this.setOutput(true, 'Boolean');
                     this.setColour('#40BF4A');
                 }
@@ -4985,8 +5785,8 @@
             Blockly.Blocks['sensor_goal'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField(currentLesson === 13 ? '🏁 סוף גדר =' : '🏁 חיישן יעד =')
-                        .appendField(new Blockly.FieldDropdown(currentLesson === 13 ? [['הגעתי לסוף הגדר', 'YES'], ['לא הגעתי', 'NO']] : [['הגעתי ליעד', 'YES'], ['לא הגעתי', 'NO']]), 'VAL');
+                        .appendField(isLesson13HomeGuardContext() ? '🏁 סוף גדר =' : '🏁 חיישן יעד =')
+                        .appendField(new Blockly.FieldDropdown(isLesson13HomeGuardContext() ? [['הגעתי לסוף הגדר', 'YES'], ['לא הגעתי', 'NO']] : [['הגעתי ליעד', 'YES'], ['לא הגעתי', 'NO']]), 'VAL');
                     this.setOutput(true, 'Boolean');
                     this.setColour('#40BF4A');
                 }
@@ -5160,7 +5960,7 @@
                 init: function() {
                     this.appendDummyInput()
                         .appendField('💬 אמור')
-                        .appendField(new Blockly.FieldTextInput(currentLesson === 14 ? 'יוצא לחילוץ' : currentLesson === 11 ? 'בודק את האולם' : 'שלום!'), 'TEXT');
+                        .appendField(new Blockly.FieldTextInput(isLesson14RescueContext() ? 'יוצא לחילוץ' : currentLesson === 11 ? 'בודק את האולם' : 'שלום!'), 'TEXT');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
                     this.setColour('#9966FF');
@@ -5227,6 +6027,60 @@
                     this.appendDummyInput()
                         .appendField(currentLesson === 11 ? '🚨 אזעקת מוזיאון' : '🚨 אזעקה')
                         .appendField(new Blockly.FieldDropdown([['הפעל', 'ON'], ['כבה', 'OFF']]), 'STATE');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+
+            Blockly.Blocks['action_enter_museum'] = {
+                init: function() {
+                    this.appendDummyInput().appendField('🏛️ הכנס למוזיאון');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+
+            Blockly.Blocks['action_exit_museum'] = {
+                init: function() {
+                    this.appendDummyInput().appendField('🚪 צא מהמוזיאון');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+
+            Blockly.Blocks['action_enter_classroom'] = {
+                init: function() {
+                    this.appendDummyInput().appendField('🏫 היכנס לכיתה');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+
+            Blockly.Blocks['action_exit_classroom'] = {
+                init: function() {
+                    this.appendDummyInput().appendField('🚪 צא מהכיתה');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+
+            Blockly.Blocks['action_enter_greenhouse'] = {
+                init: function() {
+                    this.appendDummyInput().appendField('🏡 היכנס לחממה');
+                    this.setPreviousStatement(true);
+                    this.setNextStatement(true);
+                    this.setColour('#9966FF');
+                }
+            };
+
+            Blockly.Blocks['action_exit_greenhouse'] = {
+                init: function() {
+                    this.appendDummyInput().appendField('🚪 צא מהחממה');
                     this.setPreviousStatement(true);
                     this.setNextStatement(true);
                     this.setColour('#9966FF');
@@ -5377,6 +6231,16 @@
                     await sleep(400);
                     break;
 
+                case 'lesson15_zone_next':
+                    moveLesson15Zone(1);
+                    await sleep(550);
+                    break;
+
+                case 'lesson15_zone_prev':
+                    moveLesson15Zone(-1);
+                    await sleep(550);
+                    break;
+
                 case 'turn_right_small':
                     robot.angle += 15;
                     await sleep(180);
@@ -5406,7 +6270,7 @@
 
                 case 'route_turn':
                     robot.angle += block.getFieldValue('DIR') === 'RIGHT' ? 90 : -90;
-                    robot.speaking = currentLesson === 14
+                    robot.speaking = isLesson14RescueContext()
                         ? (block.getFieldValue('DIR') === 'RIGHT' ? 'עוקף ימינה בנתיב בטוח' : 'עוקף שמאלה בנתיב בטוח')
                         : (block.getFieldValue('DIR') === 'RIGHT' ? 'סובב ימינה לפי המסלול' : 'סובב שמאלה לפי המסלול');
                     await sleep(700);
@@ -5483,12 +6347,22 @@
                     break;
                 }
 
-                case 'action_traffic_light':
-                    robot.trafficLightGreen = block.getFieldValue('STATE') === 'GREEN';
+                case 'action_traffic_light': {
+                    const nextTrafficGreen = block.getFieldValue('STATE') === 'GREEN';
+                    if (robot.trafficLightGreen !== nextTrafficGreen || robot.trafficLightYellow) {
+                        robot.trafficLightYellow = true;
+                        robot.speaking = 'הרמזור כתום...';
+                        draw();
+                        await sleep(500);
+                    }
+                    robot.trafficLightYellow = false;
+                    robot.trafficLightGreen = nextTrafficGreen;
                     robot.speaking = robot.trafficLightGreen ? 'הרמזור ירוק!' : 'הרמזור אדום!';
+                    draw();
                     await sleep(900);
                     robot.speaking = '';
                     break;
+                }
 
                 case 'action_class_power': {
                     const classPowerState = block.getFieldValue('STATE') || 'ON';
@@ -5507,10 +6381,10 @@
                         catchLesson13BurglarIfAlarm();
                     }
                     robot.speaking = soundType === 'ALARM'
-                        ? (currentLesson === 13 && environment.burglar ? 'אזעקה! המשטרה הגיעה והגנב נתפס!' : 'אזעקה הופעלה')
+                        ? (isLesson13HomeGuardContext() && environment.burglar ? 'אזעקה! המשטרה הגיעה והגנב נתפס!' : 'אזעקה הופעלה')
                         : 'ביפ';
                     await sleep(900);
-                    if (!(currentLesson === 13 && burglarCaughtAt)) robot.speaking = '';
+                    if (!(isLesson13HomeGuardContext() && burglarCaughtAt)) robot.speaking = '';
                     break;
                 }
 
@@ -5529,9 +6403,81 @@
                         playBeep('ALARM');
                         catchLesson13BurglarIfAlarm();
                     }
-                    robot.speaking = robot.alarmOn ? (currentLesson === 13 && environment.burglar ? 'אזעקה! המשטרה הגיעה והגנב נתפס!' : 'הפעלתי אזעקה') : 'כיביתי אזעקה';
+                    robot.speaking = robot.alarmOn ? (isLesson13HomeGuardContext() && environment.burglar ? 'אזעקה! המשטרה הגיעה והגנב נתפס!' : 'הפעלתי אזעקה') : 'כיביתי אזעקה';
                     await sleep(900);
-                    if (!(currentLesson === 13 && burglarCaughtAt)) robot.speaking = '';
+                    if (!(isLesson13HomeGuardContext() && burglarCaughtAt)) robot.speaking = '';
+                    break;
+
+                case 'action_enter_museum':
+                    if (isLesson15Zone('museum')) {
+                        lesson15MuseumInside = true;
+                        robot.speaking = 'נכנסנו למוזיאון';
+                        draw();
+                    } else {
+                        robot.speaking = 'צריך לבחור קודם את אזור המוזיאון';
+                    }
+                    await sleep(900);
+                    robot.speaking = '';
+                    break;
+
+                case 'action_exit_museum':
+                    if (isLesson15Zone('museum')) {
+                        lesson15MuseumInside = false;
+                        robot.speaking = 'יצאנו מהמוזיאון';
+                        draw();
+                    } else {
+                        robot.speaking = 'אנחנו לא באזור המוזיאון';
+                    }
+                    await sleep(900);
+                    robot.speaking = '';
+                    break;
+
+                case 'action_enter_classroom':
+                    if (isLesson15Zone('school')) {
+                        lesson15SchoolInside = true;
+                        robot.speaking = 'נכנסנו לכיתה';
+                        draw();
+                    } else {
+                        robot.speaking = 'צריך לבחור קודם את אזור בית הספר';
+                    }
+                    await sleep(900);
+                    robot.speaking = '';
+                    break;
+
+                case 'action_exit_classroom':
+                    if (isLesson15Zone('school')) {
+                        lesson15SchoolInside = false;
+                        robot.speaking = 'יצאנו מהכיתה';
+                        draw();
+                    } else {
+                        robot.speaking = 'אנחנו לא באזור בית הספר';
+                    }
+                    await sleep(900);
+                    robot.speaking = '';
+                    break;
+
+                case 'action_enter_greenhouse':
+                    if (isLesson15Zone('garden')) {
+                        lesson15GardenInside = true;
+                        robot.speaking = 'נכנסנו לחממה';
+                        draw();
+                    } else {
+                        robot.speaking = 'צריך לבחור קודם את אזור חממה/גינה';
+                    }
+                    await sleep(900);
+                    robot.speaking = '';
+                    break;
+
+                case 'action_exit_greenhouse':
+                    if (isLesson15Zone('garden')) {
+                        lesson15GardenInside = false;
+                        robot.speaking = 'יצאנו מהחממה';
+                        draw();
+                    } else {
+                        robot.speaking = 'אנחנו לא באזור החממה';
+                    }
+                    await sleep(900);
+                    robot.speaking = '';
                     break;
 
                 case 'action_fan':
@@ -5552,14 +6498,19 @@
                     const nextWaterOn = block.getFieldValue('STATE') === 'ON';
                     const wasWatering = robot.waterOn;
                     robot.waterOn = nextWaterOn;
-                    if (currentLesson === 10 && nextWaterOn && !wasWatering) {
-                        gardenRecoveryStartedAt = Date.now();
+                    if ((currentLesson === 10 || isLesson15Zone('garden')) && nextWaterOn && !wasWatering) {
+                        const greenhouseHotWilted = isLesson15Zone('garden') && lesson15GardenInside && environment.temperatureHot;
+                        const shouldRecoverPlants = environment.soilDry || environment.temperatureHot;
+                        if (shouldRecoverPlants) {
+                            gardenRecoveryStartProgress = greenhouseHotWilted && !environment.soilDry ? 0.52 : (environment.temperatureHot ? 0 : 0.28);
+                            gardenRecoveryStartedAt = Date.now();
+                        }
                     }
-                    if (currentLesson === 10 && wasWatering && !nextWaterOn) {
+                    if ((currentLesson === 10 || isLesson15Zone('garden')) && wasWatering && !nextWaterOn) {
                         environment.soilDry = false;
                         document.getElementById('envSoilDry')?.classList.remove('active');
                     }
-                    robot.speaking = currentLesson === 10
+                    robot.speaking = (currentLesson === 10 || isLesson15Zone('garden'))
                         ? (robot.waterOn ? 'פותח טפטפות להשקיה' : 'האדמה רטובה, סוגר טפטפות')
                         : (robot.waterOn ? 'משקה את הגינה!' : 'המים כבויים');
                     updateSensors();
@@ -5585,6 +6536,7 @@
                 case 'action_delivery_package':
                     environment.deliveryPackage = true;
                     environment.deliveryDropped = false;
+                    environment.deliveryDropTarget = null;
                     document.getElementById('envDeliveryPackage')?.classList.add('active');
                     robot.speaking = 'לקחתי משלוח מהמכולת';
                     await sleep(900);
@@ -5592,15 +6544,21 @@
                     break;
 
                 case 'action_drop_delivery':
-                    if (currentLesson === 12 && environment.deliveryPackage && canSenseGoal()) {
+                    if ((currentLesson === 12 || currentLesson === 15) && environment.deliveryPackage && canSenseGoal()) {
+                        if (isLesson15DeliveryZone()) {
+                            const target = getLesson15DeliveryTargets().find((door) => Math.hypot(robot.x - door.x, robot.y - door.y) <= 60);
+                            environment.deliveryDropTarget = target?.id || null;
+                        }
                         environment.deliveryPackage = false;
                         environment.deliveryDropped = true;
                         document.getElementById('envDeliveryPackage')?.classList.remove('active');
                         robot.speaking = 'הנחתי את המשלוח בפתח הבית';
-                    } else if (currentLesson === 12 && !environment.deliveryPackage) {
+                    } else if ((currentLesson === 12 || currentLesson === 15) && !environment.deliveryPackage) {
                         robot.speaking = 'אין לי משלוח להוריד';
+                    } else if (isLesson15Zone('crosswalk')) {
+                        robot.speaking = 'באזור הכביש אין פתח בית למשלוח';
                     } else {
-                        robot.speaking = 'צריך להגיע לבית קודם';
+                        robot.speaking = 'צריך להגיע לפתח הבית קודם';
                     }
                     await sleep(1200);
                     robot.speaking = '';
@@ -5634,7 +6592,7 @@
             if (!environment.sound) return 'QUIET';
             // Lesson 9 classroom noise is ambient: pressing the noise sensor means the classroom is loud,
             // even if the sound icon is not touching the robot.
-            if (currentLesson === 9) return 'LOUD';
+            if (currentLesson === 9 || isLesson15Zone('school')) return 'LOUD';
             const distance = distanceToObject(objects.sound);
             if (distance < 90) return 'LOUD';
             if (distance < 230) return 'SOFT';
@@ -5668,11 +6626,11 @@
         }
 
         function canSenseCars() {
-            return currentLesson === 8 && environment.cars;
+            return (currentLesson === 8 || isLesson15Zone('crosswalk')) && environment.cars;
         }
 
         function canSensePedestrian() {
-            return currentLesson === 8 && environment.pedestrian;
+            return (currentLesson === 8 || isLesson15Zone('crosswalk')) && environment.pedestrian;
         }
 
         function isSystemArmed() {
@@ -5776,7 +6734,7 @@
         }
 
         function canSenseMotion() {
-            if (currentLesson === 13) return canSenseBurglarNearby() || canSenseHomeowner();
+            if (isLesson13HomeGuardContext()) return canSenseBurglarNearby() || canSenseHomeowner();
             return Boolean(environment.motion);
         }
 
@@ -5825,7 +6783,7 @@
         }
 
         function getLesson13BurglarPhase() {
-            if (!(currentLesson === 13 && environment.burglar && burglarStartedAt)) return 'gone';
+            if (!(isLesson13HomeGuardContext() && environment.burglar && burglarStartedAt)) return 'gone';
             const elapsed = Date.now() - burglarStartedAt;
             if (robot.alarmOn && !burglarCaughtAt) {
                 burglarCaughtAt = Date.now();
@@ -5836,7 +6794,7 @@
         }
 
         function canSenseBurglarNearby() {
-            if (!(currentLesson === 13 && environment.burglar) || burglarCaughtAt) return false;
+            if (!(isLesson13HomeGuardContext() && environment.burglar) || burglarCaughtAt) return false;
             const phase = getLesson13BurglarPhase();
             if (phase === 'gone' || phase === 'inside' || phase === 'caught') return false;
             const burglar = getLesson13BurglarScene(phase);
@@ -5862,11 +6820,12 @@
         }
 
         function canSenseHomeowner() {
-            return currentLesson === 13 && Boolean(environment.homeowner);
+            return isLesson13HomeGuardContext() && Boolean(environment.homeowner);
         }
 
         function canSensePeople() {
-            if (currentLesson === 11) return (environment.visitorCount || 0) > 5;
+            if (currentLesson === 11 || isLesson15Zone('museum')) return (environment.visitorCount || 0) > 5;
+            if (isLesson15Zone('school')) return Boolean(environment.people);
             return currentLesson >= 9 && Boolean(environment.people);
         }
 
@@ -5884,11 +6843,11 @@
         }
 
         function hasDeliveryPackage() {
-            return currentLesson === 12 && Boolean(environment.deliveryPackage);
+            return (currentLesson === 12 || currentLesson === 15) && Boolean(environment.deliveryPackage);
         }
 
         function isDeliveryDropped() {
-            return currentLesson === 12 && Boolean(environment.deliveryDropped);
+            return (currentLesson === 12 || currentLesson === 15) && Boolean(environment.deliveryDropped);
         }
 
         function getLesson13FenceEndTargets() {
@@ -5905,11 +6864,18 @@
                 const dy = robot.y - home.y;
                 return Math.sqrt(dx * dx + dy * dy) <= 90;
             }
-            if (currentLesson === 13) {
+            if (isLesson13HomeGuardContext()) {
                 return getLesson13FenceEndTargets().some((fenceEnd) => {
                     const dx = robot.x - fenceEnd.x;
                     const dy = robot.y - fenceEnd.y;
                     return Math.sqrt(dx * dx + dy * dy) <= 80;
+                });
+            }
+            if (isLesson15DeliveryZone()) {
+                return getLesson15DeliveryTargets().some((door) => {
+                    const dx = robot.x - door.x;
+                    const dy = robot.y - door.y;
+                    return Math.sqrt(dx * dx + dy * dy) <= 60;
                 });
             }
             if (currentLesson !== 7) return false;
@@ -6024,7 +6990,7 @@
 
         // ===== ENVIRONMENT =====
         function handlePeopleEnv() {
-            if (currentLesson === 11) {
+            if (currentLesson === 11 || isLesson15Zone('museum')) {
                 environment.visitorCount = Math.min(9, (environment.visitorCount || 0) + 1);
                 environment.people = environment.visitorCount > 5;
                 const btn = document.getElementById('envPeople');
@@ -6036,7 +7002,7 @@
         }
 
         function removeMuseumVisitor() {
-            if (currentLesson !== 11) return;
+            if (!(currentLesson === 11 || isLesson15Zone('museum'))) return;
             environment.visitorCount = Math.max(0, (environment.visitorCount || 0) - 1);
             environment.people = environment.visitorCount > 5;
             updateSensors();
@@ -6046,11 +7012,15 @@
             environment[type] = !environment[type];
             if (type === 'soilDry') {
                 gardenRecoveryStartedAt = environment.soilDry ? null : gardenRecoveryStartedAt;
+                if (environment.soilDry) gardenRecoveryStartProgress = 0;
                 if (environment.soilDry) robot.waterOn = false;
             }
             if (type === 'smoke') smokeStartedAt = environment.smoke ? Date.now() : null;
 
-            if (type === 'deliveryPackage') environment.deliveryDropped = false;
+            if (type === 'deliveryPackage') {
+                environment.deliveryDropped = false;
+                environment.deliveryDropTarget = null;
+            }
             if (type === 'burglar') {
                 burglarStartedAt = environment.burglar ? Date.now() : null;
                 burglarCaughtAt = null;
@@ -6085,14 +7055,16 @@
 
         function resetEnv() {
 
-            environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, safeTouch: false, visitorCount: 0, burglar: false, homeowner: false, doorOpen: false, deliveryPackage: false, deliveryDropped: false };
+            environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, safeTouch: false, visitorCount: 0, burglar: false, homeowner: false, doorOpen: false, deliveryPackage: false, deliveryDropped: false, deliveryDropTarget: null };
             smokeStartedAt = null;
             gardenRecoveryStartedAt = null;
+            gardenRecoveryStartProgress = 0;
 
             document.querySelectorAll('.env-btn').forEach(b => b.classList.remove('active'));
             robot.speaking = '';
             robot.streetLightOn = false;
             robot.trafficLightGreen = false;
+            robot.trafficLightYellow = false;
             robot.trafficCarsStopped = false;
             robot.pedestrianStopped = false;
             robot.vehicleStopped = false;
@@ -6183,7 +7155,7 @@
                 ? (sensesGoal ? 'הגעתי ליעד!' : 'לא ביעד')
                 : currentLesson === 12
                     ? (sensesGoal ? 'הבית הוא היעד!' : 'יעד: הבית')
-                    : currentLesson === 13
+                    : isLesson13HomeGuardContext()
                         ? (sensesGoal ? 'סוף הגדר!' : 'סיור לגדר')
                         : 'לא בשימוש';
 
@@ -6194,7 +7166,8 @@
                 ? (sensesPedestrian ? 'יש הולך רגל!' : 'אין הולך רגל')
                 : 'לא בשימוש';
             const museumVisitorCount = environment.visitorCount || 0;
-            document.getElementById('peopleText').textContent = currentLesson === 11
+            const museumPeopleMode = currentLesson === 11 || isLesson15Zone('museum');
+            document.getElementById('peopleText').textContent = museumPeopleMode
                 ? (museumVisitorCount === 0 ? 'אין מבקרים' : museumVisitorCount > 5 ? 'הרבה מבקרים' : 'קצת מבקרים')
                 : (sensesPeople ? 'יש תלמידים' : 'כיתה ריקה');
 
@@ -6217,10 +7190,10 @@
             document.getElementById('sensorColor').classList.toggle('active', recycleColor !== 'NONE');
 
             document.getElementById('sensorLine').classList.toggle('active', currentLesson === 7 ? sensesLine : onLine);
-            document.getElementById('sensorGoal').classList.toggle('active', (currentLesson === 7 || currentLesson === 12 || currentLesson === 13) && sensesGoal);
+            document.getElementById('sensorGoal').classList.toggle('active', (currentLesson === 7 || currentLesson === 12 || isLesson13HomeGuardContext() || currentLesson === 15) && sensesGoal);
             document.getElementById('sensorCars').classList.toggle('active', currentLesson === 8 && sensesCars);
             document.getElementById('sensorPedestrian').classList.toggle('active', currentLesson === 8 && sensesPedestrian);
-            document.getElementById('sensorPeople').classList.toggle('active', currentLesson === 11 ? (environment.visitorCount || 0) > 5 : sensesPeople);
+            document.getElementById('sensorPeople').classList.toggle('active', museumPeopleMode ? (environment.visitorCount || 0) > 5 : sensesPeople);
             document.getElementById('sensorSoil').classList.toggle('active', soilMoisture === 'DRY');
             document.getElementById('sensorArmed').classList.toggle('active', armed);
             document.getElementById('sensorMotion').classList.toggle('active', motion);
@@ -6234,13 +7207,18 @@
             const lesson11LightBtn = document.getElementById('envLight');
             if (lesson11LightBtn && currentLesson === 11) lesson11LightBtn.lastChild.textContent = environment.light ? ' אור דלוק' : ' חשוך';
             const lesson11PeopleBtn = document.getElementById('envPeople');
-            if (lesson11PeopleBtn && currentLesson === 11) {
-                lesson11PeopleBtn.lastChild.textContent = ` הוסף מבקר (${environment.visitorCount || 0})`;
-                lesson11PeopleBtn.classList.toggle('active', (environment.visitorCount || 0) > 0);
+            if (lesson11PeopleBtn) {
+                if (museumPeopleMode) {
+                    lesson11PeopleBtn.lastChild.textContent = ` הוסף מבקר (${environment.visitorCount || 0})`;
+                    lesson11PeopleBtn.classList.toggle('active', (environment.visitorCount || 0) > 0);
+                } else {
+                    lesson11PeopleBtn.lastChild.textContent = ' תלמידים';
+                    lesson11PeopleBtn.classList.toggle('active', Boolean(environment.people));
+                }
             }
             const lesson11RemoveVisitorBtn = document.getElementById('envRemoveVisitor');
-            if (lesson11RemoveVisitorBtn && currentLesson === 11) {
-                lesson11RemoveVisitorBtn.classList.toggle('active', (environment.visitorCount || 0) > 0);
+            if (lesson11RemoveVisitorBtn) {
+                lesson11RemoveVisitorBtn.classList.toggle('active', museumPeopleMode && (environment.visitorCount || 0) > 0);
             }
 
         }
@@ -6348,6 +7326,17 @@
                     <span>${lesson.emoji}</span><span class="lesson-num">${lesson.id}</span>
                 </button>
             `).join('');
+            resetLessonTabsScroll();
+        }
+
+        function resetLessonTabsScroll() {
+            const tabs = document.getElementById('lessonTabs');
+            const firstTab = tabs?.querySelector('.lesson-tab');
+            if (!tabs || !firstTab) return;
+            requestAnimationFrame(() => {
+                tabs.scrollLeft = 0;
+                firstTab.scrollIntoView({ block: 'nearest', inline: 'start' });
+            });
         }
 
         function renderWelcomeLessons() {
@@ -6369,10 +7358,20 @@
             const previousLesson = currentLesson;
             if (workspace && previousLesson !== num) saveWorkspaceForLesson(previousLesson);
             currentLesson = num;
+            if (num !== 15) {
+                lesson15SelectedZone = null;
+                lesson15MuseumInside = false;
+                lesson15SchoolInside = false;
+                lesson15GardenInside = false;
+                environment.deliveryDropped = false;
+                environment.deliveryDropTarget = null;
+            }
             document.querySelectorAll('.lesson-tab').forEach((t) =>
                 t.classList.toggle('active', Number(t.querySelector('.lesson-num')?.textContent) === num));
             document.getElementById('welcomeModal').classList.remove('active');
             document.querySelector('.robot-stage')?.classList.toggle('museum-stage', num === 11);
+            document.querySelector('.robot-stage')?.classList.toggle('full-background-stage', [9, 11, 12, 13, 15].includes(num));
+            document.querySelector('.robot-section')?.classList.toggle('open-project-mode', num === 15);
             resizeCanvas();
 
             const cityLesson = window.getSensiLesson ? window.getSensiLesson(num) : null;
