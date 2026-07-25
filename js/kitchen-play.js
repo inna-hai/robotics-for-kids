@@ -70,8 +70,10 @@ function checkRecipe() {
   }
   const wrongIndex = recipe.findIndex((id, index) => id !== lesson.correctOrder[index]);
   if (wrongIndex === -1) {
-    setResult(`טעים! האלגוריתם הצליח: ${lesson.goal} 🎉`, true);
+    const message = `טעים! האלגוריתם הצליח: ${lesson.goal} 🎉`;
+    setResult(message, true);
     window.SisiCourseCertificate?.show({ lessons, lesson });
+    window.SisiSuccessDialog?.show({ message, lessons, lesson, onRepeat: () => window.location.reload() });
   } else {
     setResult(`כמעט. שלב ${wrongIndex + 1} לא במקום. בדקו מה צריך לקרות לפניו.`);
   }

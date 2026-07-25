@@ -32,6 +32,7 @@ function renderNextStep(show = false) {
     ? 'סיימתם את משימות המיון — עכשיו עוברים לחלק היצירתי של השיעור.'
     : 'יפה! ממשיכים ברצף השיעור למשימת המיון הבאה.';
   box.innerHTML = `<div class="next-step-note">${note}</div><a class="btn" href="${target.href}">${target.label}</a>`;
+  window.SisiSuccessDialog?.show({ message: box.querySelector('.next-step-note')?.textContent || 'כל הכבוד! אפשר להמשיך קדימה או לחזור על השיעור הזה.', lessons, lesson, nextHref: target.href, nextLabel: target.label, onRepeat: () => window.location.reload() });
 }
 
 function renderZones() {

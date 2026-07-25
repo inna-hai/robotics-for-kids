@@ -74,6 +74,7 @@ function renderNextStep(show = false) {
   if (!show) { box.innerHTML = ''; return; }
   const target = nextTarget();
   box.innerHTML = `<div class="next-step-note">האלגוריתם צולם ועבד! ממשיכים למשימה הבאה.</div><a class="btn" href="${target.href}">${target.label}</a>`;
+  window.SisiSuccessDialog?.show({ message: box.querySelector('.next-step-note')?.textContent || 'כל הכבוד! אפשר להמשיך קדימה או לחזור על השיעור הזה.', lessons, lesson, nextHref: target.href, nextLabel: target.label, onRepeat: () => window.location.reload() });
 }
 function init() {
   document.getElementById('page-title').textContent = `${lesson.emoji} ${lesson.title}`;

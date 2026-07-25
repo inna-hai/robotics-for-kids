@@ -30,6 +30,14 @@ test('certificate next buttons follow the Sisi lesson sequence, not optional lab
   assertIncludes(certificateSource, "'/escape-play.html': { title: 'חדר הבריחה', home: 'escape.html', homeLabel: '🔐 לעמוד חדר הבריחה', next: 'finale.html'");
 });
 
+test('shared success dialog offers continue and repeat actions', () => {
+  assertIncludes(certificateSource, 'window.SisiSuccessDialog');
+  assertIncludes(certificateSource, "setAttribute('role', 'dialog')");
+  assertIncludes(certificateSource, 'לשיעור/משימה הבאה');
+  assertIncludes(certificateSource, 'לחזור על השיעור הזה');
+  assertIncludes(certificateSource, 'onRepeat');
+});
+
 test('all Sisi course play pages load the certificate helper before their play engine', () => {
   for (const course of courses) {
     const html = readFileSync(join(root, `${course}-play.html`), 'utf8');

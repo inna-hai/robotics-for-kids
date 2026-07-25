@@ -115,6 +115,14 @@ test('interactive play page exposes simple controls, run/reset flow, and lesson 
   assertIncludes(playSource, 'requiredItems');
 });
 
+test('space success opens a decision dialog and repeat resets the current lesson', () => {
+  assertIncludes(playSource, 'SisiSuccessDialog?.show');
+  assertIncludes(playSource, 'function repeatCurrentLesson');
+  assertIncludes(playSource, 'program = []');
+  assertIncludes(playSource, 'השיעור אופס');
+  assertIncludes(playHtml, 'js/space-play.js?v=20260725-success-dialog');
+});
+
 test('game board uses left-to-right grid direction so right and left buttons move visually correctly', () => {
   assertMatches(spaceCss, /\.grid\{[^}]*direction:ltr/);
   assertIncludes(playSource, "right: [1, 0]");

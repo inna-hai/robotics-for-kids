@@ -59,8 +59,10 @@ function checkCase() {
   const rule = lesson.rules.find((item) => item.id === selectedRule);
   if (clue.good && rule.good) {
     renderSuspects(true);
-    setResult(`פתרתם! ${lesson.answer}`, true);
+    const message = `פתרתם! ${lesson.answer}`;
+    setResult(message, true);
     window.SisiCourseCertificate?.show({ lessons, lesson });
+    window.SisiSuccessDialog?.show({ message, lessons, lesson, onRepeat: () => window.location.reload() });
     return;
   }
   if (!clue.good && rule.good) {

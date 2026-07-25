@@ -91,8 +91,10 @@ function checkPattern() {
     return;
   }
   if (sameNotes) {
-    setResult(`${lesson.thinkingTask.success} 🎶`, true);
+    const message = `${lesson.thinkingTask.success} 🎶`;
+    setResult(message, true);
     window.SisiCourseCertificate?.show({ lessons, lesson });
+    window.SisiSuccessDialog?.show({ message, lessons, lesson, onRepeat: () => window.location.reload() });
     return;
   }
   const firstWrong = build.findIndex((note, index) => note !== lesson.target[index]);
