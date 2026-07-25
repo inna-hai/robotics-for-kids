@@ -83,9 +83,12 @@ test('main and lesson landing pages link back to the Sisi hub', () => {
   }
 });
 
-test('Sisi lesson pages do not link to the separate Sensi/smart-city course', () => {
+test('Sisi lesson pages stay inside the Sisi flow', () => {
   for (const file of sisiLessonFiles) {
     const html = readFileSync(join(root, file), 'utf8');
+    assertNotIncludes(html, 'href="index.html"', `${file} should not send children to the general homepage`);
+    assertNotIncludes(html, 'לעמוד הראשי', `${file} should say Sisi page, not generic main page`);
+    assertNotIncludes(html, 'חזרה לעמוד הראשי', `${file} should not use a generic main-page label`);
     assertNotIncludes(html, 'href="smart-city.html"', `${file} should not link from Sisi to smart-city`);
     assertNotIncludes(html, 'href="sensi-city.html', `${file} should not link from Sisi to Sensi 15`);
     assertNotIncludes(html, 'href="sensi-classic.html', `${file} should not link from Sisi to Sensi classic`);
