@@ -19,6 +19,11 @@ test('shared certificate helper defines a reusable completion certificate', () =
   assertIncludes(certificateSource, 'כל שיעורי סיסי');
 });
 
+test('certificate helper ignores empty override values so text never becomes undefined', () => {
+  assertIncludes(certificateSource, 'compactInfo');
+  assertIncludes(certificateSource, "value !== undefined && value !== null && value !== ''");
+});
+
 test('all Sisi course play pages load the certificate helper before their play engine', () => {
   for (const course of courses) {
     const html = readFileSync(join(root, `${course}-play.html`), 'utf8');

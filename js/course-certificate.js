@@ -32,9 +32,13 @@
     document.head.appendChild(style);
   }
 
+  function compactInfo(override = {}) {
+    return Object.fromEntries(Object.entries(override).filter(([, value]) => value !== undefined && value !== null && value !== ''));
+  }
+
   function courseInfo(override = {}) {
     const path = window.location.pathname.replace(/.*\//, '/');
-    return { ...(courses[path] || { title: 'השיעור', home: 'sisi.html', homeLabel: '🤖 לכל שיעורי סיסי' }), ...override };
+    return { ...(courses[path] || { title: 'השיעור', home: 'sisi.html', homeLabel: '🤖 לכל שיעורי סיסי' }), ...compactInfo(override) };
   }
 
   function isLast(lessons, lesson) {
