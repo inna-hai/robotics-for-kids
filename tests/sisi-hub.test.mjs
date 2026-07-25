@@ -41,6 +41,8 @@ const sisiLessonFiles = [
   'finale.html', 'finale-play.html', 'finale-lab.html',
 ];
 
+const playFiles = sisiLessonFiles.filter((file) => file.endsWith('-play.html'));
+
 const tests = [];
 function test(name, fn) { tests.push({ name, fn }); }
 function assertIncludes(source, needle, message = `Missing: ${needle}`) { assert.ok(source.includes(needle), message); }
@@ -92,6 +94,15 @@ test('Sisi lesson pages stay inside the Sisi flow', () => {
     assertNotIncludes(html, 'href="smart-city.html"', `${file} should not link from Sisi to smart-city`);
     assertNotIncludes(html, 'href="sensi-city.html', `${file} should not link from Sisi to Sensi 15`);
     assertNotIncludes(html, 'href="sensi-classic.html', `${file} should not link from Sisi to Sensi classic`);
+  }
+});
+
+test('Sisi play pages expose only child-flow navigation, not labs or generic lesson pages', () => {
+  for (const file of playFiles) {
+    const html = readFileSync(join(root, file), 'utf8');
+    assertNotIncludes(html, '-lab.html', `${file} should not send children to lab pages from the main play flow`);
+    assertNotIncludes(html, 'עמוד השיעור', `${file} should use Sisi/next navigation instead of a generic lesson-page link`);
+    assertIncludes(html, 'לעמוד סיסי', `${file} should include a clear Sisi hub link`);
   }
 });
 

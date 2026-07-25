@@ -114,7 +114,7 @@ test('ocean success opens a decision dialog and repeat resets the current lesson
   assertIncludes(playSource, 'function repeatCurrentLesson');
   assertIncludes(playSource, 'program = []');
   assertIncludes(playSource, 'השיעור אופס');
-  assertIncludes(playHtml, 'js/ocean-play.js?v=20260725-success-dialog');
+  assertIncludes(playHtml, 'js/ocean-play.js?v=20260725-child-ux');
 });
 
 test('game board uses left-to-right grid direction so right and left buttons move visually correctly', () => {

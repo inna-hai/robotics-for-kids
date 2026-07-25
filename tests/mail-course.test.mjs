@@ -59,12 +59,12 @@ test('mail data has twelve routing tasks with valid route answers', () => {
   }
 });
 
-test('mail play page exposes route selection and final flow to lab', () => {
+test('mail play page exposes route selection and final flow to next lesson', () => {
   assertIncludes(playHtml, 'id="route-options"');
   assertIncludes(playHtml, 'id="route-preview"');
   assertIncludes(playHtml, 'id="clue-chip"');
   assertIncludes(playHtml, 'js/mail-play.js');
-  assertIncludes(playSource, "href: 'mail-lab.html'");
+  assertIncludes(playSource, "href: 'cinema.html'");
   assert.ok(!playHtml.includes('count-options'), 'Mail lesson should not use loop counts');
   assert.ok(!playHtml.includes('setting-options'), 'Mail lesson should not use parameter settings');
 });

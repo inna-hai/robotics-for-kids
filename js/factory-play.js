@@ -121,7 +121,7 @@ function nextTarget() {
   const currentIndex = lessons.findIndex((item) => item.id === lesson.id);
   const nextLesson = lessons[currentIndex + 1];
   if (nextLesson) return { href: `factory-play.html?lesson=${nextLesson.id}`, label: `➡️ המשך למשימה ${nextLesson.id}` };
-  return { href: 'factory-lab.html', label: '🏭 המשך למעבדת הלולאות' };
+  return { href: 'garden.html', label: '🌱 לשיעור הבא' };
 }
 
 function renderNextStep(show = false) {
@@ -130,7 +130,7 @@ function renderNextStep(show = false) {
   if (!show) { box.innerHTML = ''; return; }
   const target = nextTarget();
   box.innerHTML = `<div class="next-step-note">הלולאה עבדה! ממשיכים למשימת המפעל הבאה.</div><a class="btn" href="${target.href}">${target.label}</a>`;
-  window.SisiSuccessDialog?.show({ message: box.querySelector('.next-step-note')?.textContent || 'כל הכבוד! אפשר להמשיך קדימה או לחזור על השיעור הזה.', lessons, lesson, nextHref: target.href, nextLabel: target.label, onRepeat: () => window.location.reload() });
+  window.SisiSuccessDialog?.show({ message: box.querySelector('.next-step-note')?.textContent || 'כל הכבוד! אפשר להמשיך קדימה או לנסות שוב.', lessons, lesson, nextHref: target.href, nextLabel: target.label, onRepeat: () => window.location.reload() });
 }
 
 function init() {

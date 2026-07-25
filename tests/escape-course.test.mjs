@@ -70,7 +70,7 @@ test('escape play page checks two selected keys and reason for AND', () => {
   assertIncludes(playSource, 'lesson.reasonOptions');
   assertIncludes(playSource, 'selectedReason === lesson.successReason');
   assertIncludes(playSource, 'lesson.feedbackWrongReason');
-  assertIncludes(playSource, "href: 'escape-lab.html'");
+  assertIncludes(playSource, "href: 'finale.html'");
   assert.ok(!playHtml.includes('scene-bank'), 'Escape lesson should not use cinema scene bank');
 });
 

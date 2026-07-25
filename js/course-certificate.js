@@ -58,11 +58,10 @@
     card.innerHTML = `
       <div class="sisi-certificate-badge">🏆 תעודת סיום</div>
       <h2>כל הכבוד! סיימתם את ${info.title}</h2>
-      <p>סיסי השלימה יחד איתכם את כל ${count} המשימות. אפשר לחזור לעמוד השיעור, לעבור לשיעור הבא, או לעבור לכל שיעורי סיסי.</p>
+      <p>סיסי השלימה יחד איתכם את כל ${count} המשימות. אפשר להמשיך לשיעור הבא או לחזור לעמוד סיסי.</p>
       <div class="sisi-certificate-actions">
-        <a class="btn" href="${info.home}">${info.homeLabel}</a>
-        ${info.next ? `<a class="btn secondary" href="${info.next}">${info.nextLabel || '➡️ המשך'}</a>` : ''}
-        <a class="btn secondary" href="sisi.html">🤖 כל שיעורי סיסי</a>
+        ${info.next ? `<a class="btn" href="${info.next}">${info.nextLabel || '➡️ לשיעור הבא'}</a>` : ''}
+        <a class="btn secondary" href="sisi.html">🤖 לעמוד סיסי</a>
       </div>
     `;
     const result = document.getElementById('result');
@@ -102,8 +101,9 @@
     injectDialogStyle();
     document.getElementById('sisi-success-dialog')?.remove();
     const info = courseInfo();
-    const href = nextHref || nextMissionHref(lessons, lesson) || info.next || 'sisi.html';
-    const label = nextLabel || (nextMissionHref(lessons, lesson) ? '➡️ לשיעור/משימה הבאה' : (info.nextLabel || '➡️ לשיעור הבא'));
+    const missionHref = nextMissionHref(lessons, lesson);
+    const href = nextHref || missionHref || info.next || 'sisi.html';
+    const label = nextLabel || (missionHref ? '➡️ למשימה הבאה' : (info.next ? '➡️ לשיעור הבא' : '🤖 לעמוד סיסי'));
     const card = document.createElement('div');
     card.id = 'sisi-success-dialog';
     card.className = 'sisi-success-backdrop';
@@ -116,7 +116,7 @@
         <p>${message || 'כל הכבוד! אפשר להמשיך קדימה או לנסות שוב מהתחלה.'}</p>
         <div class="sisi-success-actions">
           <a class="btn" href="${href}">${label}</a>
-          <button class="btn repeat" type="button" data-repeat>${repeatLabel || '🔁 לחזור על השיעור הזה'}</button>
+          <button class="btn repeat" type="button" data-repeat>${repeatLabel || '🔁 לנסות שוב'}</button>
         </div>
       </div>
     `;

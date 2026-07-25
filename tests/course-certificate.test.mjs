@@ -16,7 +16,7 @@ test('shared certificate helper defines a reusable completion certificate', () =
   assertIncludes(certificateSource, 'window.SisiCourseCertificate');
   assertIncludes(certificateSource, 'תעודת סיום');
   assertIncludes(certificateSource, 'סיימתם את');
-  assertIncludes(certificateSource, 'כל שיעורי סיסי');
+  assertIncludes(certificateSource, 'לעמוד סיסי');
 });
 
 test('certificate helper ignores empty override values so text never becomes undefined', () => {
@@ -33,8 +33,8 @@ test('certificate next buttons follow the Sisi lesson sequence, not optional lab
 test('shared success dialog offers continue and repeat actions', () => {
   assertIncludes(certificateSource, 'window.SisiSuccessDialog');
   assertIncludes(certificateSource, "setAttribute('role', 'dialog')");
-  assertIncludes(certificateSource, 'לשיעור/משימה הבאה');
-  assertIncludes(certificateSource, 'לחזור על השיעור הזה');
+  assertIncludes(certificateSource, 'למשימה הבאה');
+  assertIncludes(certificateSource, 'לנסות שוב');
   assertIncludes(certificateSource, 'onRepeat');
 });
 

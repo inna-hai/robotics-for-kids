@@ -102,7 +102,7 @@ test('interactive play page exposes simple controls, run/reset flow, and lesson 
   assertIncludes(playHtml, 'id="run"');
   assertIncludes(playHtml, 'id="undo"');
   assertIncludes(playHtml, 'id="clear"');
-  assertIncludes(playHtml, '🔄 איפוס');
+  assertIncludes(playHtml, '🔁 לנסות שוב');
   assertIncludes(playHtml, 'id="demo"');
   assertIncludes(playHtml, 'js/course-certificate.js');
   assertIncludes(playHtml, 'js/space-play.js');
@@ -120,7 +120,7 @@ test('space success opens a decision dialog and repeat resets the current lesson
   assertIncludes(playSource, 'function repeatCurrentLesson');
   assertIncludes(playSource, 'program = []');
   assertIncludes(playSource, 'השיעור אופס');
-  assertIncludes(playHtml, 'js/space-play.js?v=20260725-success-dialog');
+  assertIncludes(playHtml, 'js/space-play.js?v=20260725-child-ux');
 });
 
 test('game board uses left-to-right grid direction so right and left buttons move visually correctly', () => {

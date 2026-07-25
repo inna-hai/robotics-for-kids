@@ -65,7 +65,7 @@ test('finale play page requires condition, ordered actions, and explanation', ()
   assertIncludes(playSource, 'selectedCondition === mission.condition');
   assertIncludes(playSource, 'selectedActions.every');
   assertIncludes(playSource, 'selectedExplanation === mission.explanation');
-  assertIncludes(playSource, "href: 'finale-lab.html'");
+  assertIncludes(playSource, "href: 'sisi.html'");
 });
 
 test('finale lab, css, and plan support a 76-minute capstone project', () => {
