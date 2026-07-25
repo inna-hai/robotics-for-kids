@@ -28,7 +28,7 @@ test('space course is a separate entry point and does not replace the smart-city
   assertIncludes(smartCityHtml, 'שיעור 1: סיסי בחלל');
   assertIncludes(smartCityHtml, 'href="sensi-city.html?lesson=1"');
   assertIncludes(smartCityHtml, 'סנסי בעיר החכמה');
-  assertIncludes(spaceHtml, 'href="smart-city.html"');
+  assertIncludes(spaceHtml, 'href="sisi.html"');
 });
 
 test('landing page is clearly a space lesson for grade B and frames a 75 minute first lesson', () => {

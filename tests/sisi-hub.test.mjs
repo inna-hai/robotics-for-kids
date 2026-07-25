@@ -22,9 +22,29 @@ const cinemaHtml = readFileSync(join(root, 'cinema.html'), 'utf8');
 const escapeHtml = readFileSync(join(root, 'escape.html'), 'utf8');
 const finaleHtml = readFileSync(join(root, 'finale.html'), 'utf8');
 
+const sisiLessonFiles = [
+  'sisi.html',
+  'space.html', 'space-play.html',
+  'music.html', 'music-play.html',
+  'ocean.html', 'ocean-play.html',
+  'detective.html', 'detective-play.html',
+  'kitchen.html', 'kitchen-play.html',
+  'dino.html', 'dino-play.html', 'dino-lab.html',
+  'art.html', 'art-play.html',
+  'weather.html', 'weather-play.html',
+  'factory.html', 'factory-play.html', 'factory-lab.html',
+  'garden.html', 'garden-play.html', 'garden-lab.html',
+  'park.html', 'park-play.html', 'park-lab.html',
+  'mail.html', 'mail-play.html', 'mail-lab.html',
+  'cinema.html', 'cinema-play.html', 'cinema-lab.html',
+  'escape.html', 'escape-play.html', 'escape-lab.html',
+  'finale.html', 'finale-play.html', 'finale-lab.html',
+];
+
 const tests = [];
 function test(name, fn) { tests.push({ name, fn }); }
 function assertIncludes(source, needle, message = `Missing: ${needle}`) { assert.ok(source.includes(needle), message); }
+function assertNotIncludes(source, needle, message = `Unexpected: ${needle}`) { assert.ok(!source.includes(needle), message); }
 
 test('Sisi hub lists all fifteen lessons in the recommended order', () => {
   assertIncludes(hubHtml, 'סיסי — שיעורי תכנות לילדים');
@@ -60,6 +80,15 @@ test('main and lesson landing pages link back to the Sisi hub', () => {
   for (const [name, html] of Object.entries({ smartCityHtml, spaceHtml, musicHtml, oceanHtml, detectiveHtml, dinoHtml, artHtml, weatherHtml, factoryHtml, gardenHtml, parkHtml, mailHtml, cinemaHtml, escapeHtml, finaleHtml })) {
     assertIncludes(html, 'href="sisi.html"', `${name} should link to sisi.html`);
     assertIncludes(html, 'כל שיעורי סיסי', `${name} should label the hub link clearly`);
+  }
+});
+
+test('Sisi lesson pages do not link to the separate Sensi/smart-city course', () => {
+  for (const file of sisiLessonFiles) {
+    const html = readFileSync(join(root, file), 'utf8');
+    assertNotIncludes(html, 'href="smart-city.html"', `${file} should not link from Sisi to smart-city`);
+    assertNotIncludes(html, 'href="sensi-city.html', `${file} should not link from Sisi to Sensi 15`);
+    assertNotIncludes(html, 'href="sensi-classic.html', `${file} should not link from Sisi to Sensi classic`);
   }
 });
 
