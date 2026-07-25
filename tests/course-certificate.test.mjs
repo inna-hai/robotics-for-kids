@@ -24,6 +24,12 @@ test('certificate helper ignores empty override values so text never becomes und
   assertIncludes(certificateSource, "value !== undefined && value !== null && value !== ''");
 });
 
+test('certificate next buttons follow the Sisi lesson sequence, not optional labs', () => {
+  assertIncludes(certificateSource, "'/dino-play.html': { title: 'פארק הדינוזאורים', home: 'dino.html', homeLabel: '🦕 לעמוד הדינוזאורים', next: 'art.html'");
+  assertIncludes(certificateSource, "'/factory-play.html': { title: 'מפעל הלולאות', home: 'factory.html', homeLabel: '🏭 לעמוד המפעל', next: 'garden.html'");
+  assertIncludes(certificateSource, "'/escape-play.html': { title: 'חדר הבריחה', home: 'escape.html', homeLabel: '🔐 לעמוד חדר הבריחה', next: 'finale.html'");
+});
+
 test('all Sisi course play pages load the certificate helper before their play engine', () => {
   for (const course of courses) {
     const html = readFileSync(join(root, `${course}-play.html`), 'utf8');
