@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chess Quest - הלומדה האינטראקטיבית</title>
+  <link rel="stylesheet" href="css/chess-quest.css?v=20260727-product-1">
+</head>
+<body class="play-body">
+  <div class="play-shell">
+    <div class="cq-top">
+      <a class="cq-brand" href="chess-quest.html"><span class="cq-mark">♛</span><span>Chess Quest</span></a>
+      <nav class="cq-nav"><a href="index.html">לעמוד הראשי</a><a href="chess-quest.html">דף הקורס</a><a href="#board">הלוח</a></nav>
+    </div>
+
+    <main class="play-layout">
+      <aside class="panel">
+        <div class="story-card">
+          <div class="avatar" id="coachAvatar">♕</div>
+          <div><h2 id="lessonTitle">טוען שיעור...</h2><p id="lessonStory"></p></div>
+        </div>
+        <div class="lesson-select" id="lessonSelect" aria-label="בחירת שיעור"></div>
+        <div class="mission-list" id="missionList"></div>
+        <div class="progress-card">
+          <h3>התקדמות בממלכה</h3>
+          <div class="progress-bar"><i id="progressBar"></i></div>
+          <p id="progressText"></p>
+        </div>
+      </aside>
+
+      <section class="panel board-wrap" id="board">
+        <h2 id="taskTitle">משימה</h2>
+        <p id="taskText"></p>
+        <div class="board-frame"><div class="chess-board" id="chessBoard" role="grid" aria-label="לוח שחמט אינטראקטיבי"></div></div>
+        <div class="play-actions">
+          <button class="cq-btn" id="hintBtn" type="button">💡 רמז</button>
+          <button class="cq-btn secondary" id="resetBtn" type="button">🔁 איפוס משימה</button>
+          <button class="cq-btn secondary" id="nextBtn" type="button">➡️ המשימה הבאה</button>
+        </div>
+        <div class="feedback" id="feedback" aria-live="polite">בחרו כלי או משבצת לפי ההוראה.</div>
+      </section>
+
+      <aside class="panel">
+        <h2>כלי המלוכה</h2>
+        <p>בחלק מהמשימות בוחרים כלי כדי לראות איך הוא חושב וזז.</p>
+        <div class="inventory" id="pieceInventory"></div>
+        <div class="tip-list" id="thinkingTips"></div>
+        <div class="badge-grid" id="badgeGrid"></div>
+      </aside>
+    </main>
+  </div>
+
+  <div class="certificate" id="certificate">
+    <div class="certificate-card">
+      <div class="medal">🏆</div>
+      <h2>תעודת שחמטאי צעיר</h2>
+      <p>סיימת את מסע Chess Quest, למדת להגן על המלך, לזהות איומים ולחשוב מהלך קדימה.</p>
+      <div class="cq-actions" style="justify-content:center"><a class="cq-btn dark" href="chess-quest.html">לדף הקורס</a><button class="cq-btn" type="button" id="closeCertificate">חזרה ללומדה</button></div>
+    </div>
+  </div>
+
+  <script src="js/chess-quest.js?v=20260727-product-1"></script>
+</body>
+</html>
