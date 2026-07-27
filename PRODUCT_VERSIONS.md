@@ -308,9 +308,42 @@ git reset --hard 4625d0b
 # or use the previous product tag: robotics15-v0.5.0
 ```
 
-### Robotics stable — v0.8.6 — Published
+### Robotics stable — v0.8.7 — Published
 
 - **Status:** Published
+- **Branch:** `main`
+- **Commit:** `35552a1`
+- **Tag:** `robotics-v0.8.7`
+- **Live:** https://robotics.hai.tech
+- **Date recorded:** 2026-07-27
+- **Approved by:** Inna
+
+Product changes:
+
+- Replaced the temporary `summer-account.html` experience with proper product account screens.
+- Added separate pages: `register.html` for registration, `login.html` for returning users, and `account.html` for the learner account hub.
+- Kept `summer-account.html` as a legacy redirect to `account.html` so old links do not break.
+- Removed internal/project-management text from the account flow and replaced it with normal marketing/product copy.
+- Updated subscription and lock-screen links to route to the new registration/login pages.
+
+Verification:
+
+- `npm run check` passed.
+- `npm test` passed: all `tests/*.mjs`.
+- Live verified: `/account.html`, `/register.html`, `/login.html`, legacy `/summer-account.html`, `/css/account.css`, and `/space.html` return 200.
+- Live register/me/login API flow passed with a temporary test user; test user was removed afterward.
+
+Rollback:
+
+```bash
+git checkout main
+git reset --hard ba6e132
+# or use the previous product tag: robotics-v0.8.6
+```
+
+### Robotics stable — v0.8.6 — Superseded
+
+- **Status:** Superseded by `robotics-v0.8.7`
 - **Branch:** `main`
 - **Commit:** `82c998f`
 - **Tag:** `robotics-v0.8.6`
