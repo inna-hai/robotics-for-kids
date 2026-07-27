@@ -10,6 +10,8 @@ const DATA_DIR = path.join(ROOT, 'data');
 const ATTACHMENTS_DIR = path.join(DATA_DIR, 'feedback-attachments');
 const FEEDBACK_FILE = path.join(DATA_DIR, 'feedback.jsonl');
 const ADMIN_TOKEN_FILE = path.join(DATA_DIR, 'admin-token.txt');
+const SUMMER_USERS_FILE = path.join(DATA_DIR, 'summer-users.json');
+const SUMMER_AUTH_SECRET_FILE = path.join(DATA_DIR, 'summer-auth-secret.txt');
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -57,6 +59,143 @@ function requireAdmin(req, res) {
   if (isAuthorized(req)) return true;
   send(res, 401, JSON.stringify({ error: 'Unauthorized' }));
   return false;
+}
+
+function ensureSummerAuthSecret() {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+  if (!fs.existsSync(SUMMER_AUTH_SECRET_FILE)) {
+    fs.writeFileSync(SUMMER_AUTH_SECRET_FILE, crypto.randomBytes(32).toString('hex') + '\n', { mode: 0o600 });
+  }
+  return fs.readFileSync(SUMMER_AUTH_SECRET_FILE, 'utf8').trim();
+}
+
+function base64url(input) {
+  return Buffer.from(input).toString('base64url');
+}
+
+function signSummerToken(payload) {
+  const encoded = base64url(JSON.stringify(payload));
+  const signature = crypto.createHmac('sha256', ensureSummerAuthSecret()).update(encoded).digest('base64url');
+  return `${encoded}.${signature}`;
+}
+
+function verifySummerToken(token) {
+  const [encoded, signature] = String(token || '').split('.');
+  if (!encoded || !signature) return null;
+  const expected = crypto.createHmac('sha256', ensureSummerAuthSecret()).update(encoded).digest('base64url');
+  const providedBuffer = Buffer.from(signature);
+  const expectedBuffer = Buffer.from(expected);
+  if (providedBuffer.length !== expectedBuffer.length || !crypto.timingSafeEqual(providedBuffer, expectedBuffer)) return null;
+  try {
+    const payload = JSON.parse(Buffer.from(encoded, 'base64url').toString('utf8'));
+    if (!payload || !payload.id || !payload.exp || Date.now() > payload.exp) return null;
+    return payload;
+  } catch {
+    return null;
+  }
+}
+
+function readSummerUsers() {
+  if (!fs.existsSync(SUMMER_USERS_FILE)) return [];
+  try {
+    const parsed = JSON.parse(fs.readFileSync(SUMMER_USERS_FILE, 'utf8'));
+    return Array.isArray(parsed.users) ? parsed.users : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeSummerUsers(users) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+  fs.writeFileSync(SUMMER_USERS_FILE, JSON.stringify({ users }, null, 2) + '\n', { mode: 0o600 });
+}
+
+function cleanEmail(value) {
+  return String(value || '').trim().toLowerCase().slice(0, 180);
+}
+
+function hashPassword(password, salt) {
+  return crypto.createHash('sha256').update(`${salt}:${password}`).digest('hex');
+}
+
+function publicSummerUser(user) {
+  return {
+    id: user.id,
+    parentName: user.parentName,
+    studentName: user.studentName,
+    email: user.email,
+    phone: user.phone || '',
+    subscriptionStatus: user.subscriptionStatus || 'trial',
+    access: user.access || ['sensi-city-lesson-1'],
+    createdAt: user.createdAt,
+  };
+}
+
+async function handleSummerAuth(req, res) {
+  const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  const action = url.pathname.split('/').filter(Boolean)[2];
+
+  if (req.method === 'GET' && action === 'me') {
+    const header = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '').trim();
+    const token = header || url.searchParams.get('token');
+    const payload = verifySummerToken(token);
+    if (!payload) return send(res, 401, JSON.stringify({ error: 'צריך להתחבר מחדש.' }));
+    const user = readSummerUsers().find(item => item.id === payload.id);
+    if (!user) return send(res, 401, JSON.stringify({ error: 'המשתמש לא נמצא.' }));
+    return send(res, 200, JSON.stringify({ ok: true, user: publicSummerUser(user) }));
+  }
+
+  if (req.method !== 'POST') return send(res, 405, JSON.stringify({ error: 'Method not allowed' }));
+
+  try {
+    const body = JSON.parse(await readBody(req, 64 * 1024) || '{}');
+    const users = readSummerUsers();
+
+    if (action === 'register') {
+      const parentName = cleanText(body.parentName, 80);
+      const studentName = cleanText(body.studentName, 80);
+      const phone = cleanText(body.phone, 40);
+      const email = cleanEmail(body.email);
+      const password = String(body.password || '');
+      if (parentName.length < 2 || studentName.length < 2) return send(res, 400, JSON.stringify({ error: 'נא למלא שם הורה ושם ילד/ה.' }));
+      if (!/^\S+@\S+\.\S+$/.test(email)) return send(res, 400, JSON.stringify({ error: 'כתובת המייל לא תקינה.' }));
+      if (password.length < 6) return send(res, 400, JSON.stringify({ error: 'הסיסמה צריכה להכיל לפחות 6 תווים.' }));
+      if (users.some(user => user.email === email)) return send(res, 409, JSON.stringify({ error: 'כבר יש חשבון עם המייל הזה. אפשר להתחבר.' }));
+
+      const salt = crypto.randomBytes(16).toString('hex');
+      const user = {
+        id: crypto.randomUUID(),
+        parentName,
+        studentName,
+        phone,
+        email,
+        passwordSalt: salt,
+        passwordHash: hashPassword(password, salt),
+        subscriptionStatus: 'trial',
+        access: ['sensi-city-lesson-1'],
+        createdAt: new Date().toISOString(),
+      };
+      users.push(user);
+      writeSummerUsers(users);
+      const token = signSummerToken({ id: user.id, exp: Date.now() + 1000 * 60 * 60 * 24 * 30 });
+      return send(res, 201, JSON.stringify({ ok: true, token, user: publicSummerUser(user) }));
+    }
+
+    if (action === 'login') {
+      const email = cleanEmail(body.email);
+      const password = String(body.password || '');
+      const user = users.find(item => item.email === email);
+      if (!user || hashPassword(password, user.passwordSalt) !== user.passwordHash) {
+        return send(res, 401, JSON.stringify({ error: 'מייל או סיסמה לא נכונים.' }));
+      }
+      const token = signSummerToken({ id: user.id, exp: Date.now() + 1000 * 60 * 60 * 24 * 30 });
+      return send(res, 200, JSON.stringify({ ok: true, token, user: publicSummerUser(user) }));
+    }
+
+    return send(res, 404, JSON.stringify({ error: 'Not found' }));
+  } catch {
+    return send(res, 400, JSON.stringify({ error: 'לא הצלחנו לטפל בבקשה.' }));
+  }
 }
 
 function readBody(req, maxBytes = 64 * 1024) {
@@ -240,6 +379,7 @@ function serveStatic(req, res) {
 const server = http.createServer((req, res) => {
   if (req.url.startsWith('/api/admin/feedback')) return handleAdminFeedback(req, res);
   if (req.url.startsWith('/api/feedback')) return handleFeedback(req, res);
+  if (req.url.startsWith('/api/summer/')) return handleSummerAuth(req, res);
   return serveStatic(req, res);
 });
 

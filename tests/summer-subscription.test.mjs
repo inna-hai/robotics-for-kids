@@ -7,8 +7,11 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
 const homepageHtml = readFileSync(join(root, 'index.html'), 'utf8');
 const subscriptionHtml = readFileSync(join(root, 'summer-subscription.html'), 'utf8');
+const accountHtml = readFileSync(join(root, 'summer-account.html'), 'utf8');
 const configJs = readFileSync(join(root, 'js', 'summer-subscription-config.js'), 'utf8');
 const behaviorJs = readFileSync(join(root, 'js', 'summer-subscription.js'), 'utf8');
+const accountJs = readFileSync(join(root, 'js', 'summer-account.js'), 'utf8');
+const serverJs = readFileSync(join(root, 'server.js'), 'utf8');
 
 const tests = [];
 function test(name, fn) { tests.push({ name, fn }); }
@@ -24,12 +27,36 @@ test('homepage promotes the summer subscription without removing the free first 
 test('summer subscription page has clear offer, cancellation copy, and Morning placeholder', () => {
   assertIncludes(subscriptionHtml, '<title>מנוי לומדות קיץ לילדים | hai.tech</title>');
   assertIncludes(subscriptionHtml, '49 ₪');
-  assertIncludes(subscriptionHtml, 'הצטרפות במורנינג');
-  assertIncludes(subscriptionHtml, 'data-payment-placeholder="morning-recurring-payment-link"');
+  assertIncludes(subscriptionHtml, 'href="summer-account.html"');
+  assertIncludes(subscriptionHtml, 'הרשמה / כניסה');
+  assertIncludes(subscriptionHtml, 'לינק התשלום של Morning עדיין חסר');
   assertIncludes(subscriptionHtml, 'אפשר לבטל בכל עת בהודעת WhatsApp או מייל אלינו');
   assertIncludes(subscriptionHtml, 'sensi-city.html?lesson=1');
   assertIncludes(subscriptionHtml, 'js/summer-subscription-config.js');
   assertIncludes(subscriptionHtml, 'js/summer-subscription.js');
+});
+
+test('summer account page provides registration, login, and learner dashboard entry', () => {
+  assertIncludes(accountHtml, '<title>כניסה והרשמה למנוי קיץ | hai.tech</title>');
+  assertIncludes(accountHtml, 'id="register-form"');
+  assertIncludes(accountHtml, 'id="login-form"');
+  assertIncludes(accountHtml, 'שם הורה');
+  assertIncludes(accountHtml, 'שם הילד/ה');
+  assertIncludes(accountHtml, 'כניסה ללומדה');
+  assertIncludes(accountHtml, 'sensi-city.html?lesson=1');
+  assertIncludes(accountHtml, 'חסר עדיין חיבור Morning + webhook');
+  assertIncludes(accountHtml, 'js/summer-account.js');
+});
+
+test('summer auth client and server expose account endpoints', () => {
+  assertIncludes(accountJs, '/api/summer/register');
+  assertIncludes(accountJs, '/api/summer/login');
+  assertIncludes(accountJs, '/api/summer/me');
+  assertIncludes(accountJs, 'haiTechSummerToken');
+  assertIncludes(serverJs, 'SUMMER_USERS_FILE');
+  assertIncludes(serverJs, 'handleSummerAuth');
+  assertIncludes(serverJs, "req.url.startsWith('/api/summer/')");
+  assertIncludes(serverJs, "subscriptionStatus: 'trial'");
 });
 
 test('payment config is deliberately empty until Morning link is provided', () => {
@@ -40,9 +67,8 @@ test('payment config is deliberately empty until Morning link is provided', () =
 });
 
 test('subscription page local html/script links point to existing files', () => {
-  const refs = [
-    ...subscriptionHtml.matchAll(/(?:href|src)="([^"]+)"/g),
-  ].map((match) => match[1]);
+  const refs = [subscriptionHtml, accountHtml]
+    .flatMap(html => [...html.matchAll(/(?:href|src)="([^"]+)"/g)].map((match) => match[1]));
 
   for (const ref of refs) {
     if (/^(https?:|#)/.test(ref)) continue;
