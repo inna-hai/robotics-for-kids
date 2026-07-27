@@ -308,9 +308,42 @@ git reset --hard 4625d0b
 # or use the previous product tag: robotics15-v0.5.0
 ```
 
-### Robotics stable — v0.8.0 — Published
+### Robotics stable — v0.8.1 — Published
 
 - **Status:** Published
+- **Branch:** `main`
+- **Commit:** `b574e51`
+- **Tag:** `robotics-v0.8.1`
+- **Live:** https://robotics.hai.tech
+- **Date recorded:** 2026-07-27
+- **Approved by:** Inna
+
+Product changes:
+
+- Merged PR #15 / `feature/financial-literacy-teens` into stable `main`.
+- Added **Money Smart Lab**: a financial-literacy learning module for teens with course overview, interactive lab, five instructor slide decks, RTL styling, and automated tests.
+- Updated platform/homepage routing so Money Smart appears as a primary learning module.
+- PR also included course-flow refinements across existing play pages, certificate behavior, Sisi hub tests, and Minecraft Kids content/play improvements.
+- Cleaned trailing whitespace in the generated Money Smart slide decks before merge.
+
+Verification:
+
+- Stashed unrelated local Chess Quest work before merging.
+- Merge into current `main` completed cleanly with no conflicts.
+- `git diff --check HEAD~1..HEAD` passed after whitespace cleanup.
+- Full Node test suite passed on `main`: all `tests/*.mjs`.
+
+Rollback:
+
+```bash
+git checkout main
+git reset --hard f07419b
+# or use the previous product tag: robotics-v0.8.0
+```
+
+### Robotics stable — v0.8.0 — Superseded
+
+- **Status:** Superseded by `robotics-v0.8.1`
 - **Branch:** `main`
 - **Commit:** `cbf67be`
 - **Tag:** `robotics-v0.8.0`
