@@ -64,7 +64,7 @@ test('Money Smart concept chips are interactive explanatory controls', () => {
 });
 
 test('Money Smart lab lessons are expanded to the seven required stages', () => {
-  for (const stage of [
+  const expectedStages = [
     'פתיחת מעבדה',
     'מה הייתם עושים?',
     'לומדים דרך גילוי',
@@ -72,9 +72,13 @@ test('Money Smart lab lessons are expanded to the seven required stages', () => 
     'עצירת מדריך',
     'משימת דמות',
     'סיכום ועדכון תוכנית'
-  ]) {
-    const count = (js.match(new RegExp(stage, 'g')) || []).length;
-    assert.equal(count, 5, `${stage} should appear once per each of five meetings`);
+  ];
+  for (let id = 1; id <= 5; id += 1) {
+    const start = js.indexOf(`{ id:${id},`);
+    const end = id < 5 ? js.indexOf(`{ id:${id + 1},`, start) : js.indexOf('];', start);
+    const block = js.slice(start, end);
+    const names = [...block.matchAll(/name:'([^']+)'/g)].map(match => match[1]);
+    assert.deepEqual(names, expectedStages, `lesson ${id} should follow the seven-stage flow`);
   }
 });
 
@@ -100,6 +104,33 @@ test('Money Smart lesson 1 is upgraded to a product-level budget flow', () => {
   includes(css, 'decision-score');
   includes(css, 'event-card');
   includes(css, 'character-budget-head');
+});
+
+
+
+test('Money Smart lesson 2 is upgraded to a product-level smart buying flow', () => {
+  for (const phrase of [
+    'lesson2AdLab',
+    'lesson2PressureChoice',
+    'lesson2Discovery',
+    'lesson2Sort',
+    'lesson2TeacherStop',
+    'lesson2CharacterDecision',
+    'lesson2Summary',
+    'lesson2Tricks',
+    'lesson2SortItems',
+    'lesson2CharacterOffers',
+    'מסך קנייה מדומה',
+    'עצור–בדוק–בחר',
+    'עלות כוללת משוערת',
+    'כרטיס קנייה חכמה',
+    'נשמר ל־Money Smart Plan'
+  ]) includes(js, phrase);
+  includes(css, 'ad-detective');
+  includes(css, 'shop-screen');
+  includes(css, 'pressure-meter');
+  includes(css, 'sort-zones');
+  includes(css, 'character-shopping-head');
 });
 
 test('Money Smart content includes five required meetings and interactions', () => {
@@ -133,7 +164,7 @@ test('Money Smart slides hub links to five separate instructor decks', () => {
 });
 
 test('Each Money Smart lesson has its own RTL slide deck with the requested outline', () => {
-  const expectedCounts = [11, 12, 13, 16, 15];
+  const expectedCounts = [11, 14, 13, 16, 15];
   const expectedTitles = [
     'כסף הוא בחירה',
     'איך גורמים לנו לקנות?',
