@@ -117,8 +117,9 @@ function blackIcon(type){ return ({king:'♚',queen:'♛',rook:'♜',bishop:'♝
 function render(){
   const lesson = currentLesson(); const task = currentTask(); selectedSquare = null; selectedPiece = state.selectedPiece || lesson.piece;
   $('coachAvatar').textContent = PIECES[lesson.piece]?.icon || '♕';
+  if ($('lessonKicker')) $('lessonKicker').textContent = `שיעור ${lesson.id} מתוך 15 · משימה ${state.task + 1} מתוך ${lesson.tasks.length}`;
   $('lessonTitle').textContent = `${lesson.id}. ${lesson.title}`;
-  $('lessonStory').textContent = lesson.story;
+  if ($('lessonStory')) $('lessonStory').textContent = lesson.story;
   $('taskTitle').textContent = task.title;
   $('taskText').textContent = task.text;
   renderLessonSelect(); renderMissions(); renderBoard(); renderInventory(); renderTips(); renderBadges(); updateProgress();
@@ -193,4 +194,12 @@ $('hintBtn').addEventListener('click', showHint);
 $('resetBtn').addEventListener('click', resetTask);
 $('nextBtn').addEventListener('click', nextTask);
 $('closeCertificate').addEventListener('click', () => $('certificate').classList.remove('show'));
+$('openMapBtn')?.addEventListener('click', () => {
+  $('lessonDrawer')?.classList.add('open');
+  $('lessonDrawer')?.setAttribute('aria-hidden', 'false');
+});
+document.querySelectorAll('[data-close-drawer]').forEach((el) => el.addEventListener('click', () => {
+  $('lessonDrawer')?.classList.remove('open');
+  $('lessonDrawer')?.setAttribute('aria-hidden', 'true');
+}));
 render();

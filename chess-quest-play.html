@@ -4,51 +4,57 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chess Quest - הלומדה האינטראקטיבית</title>
-  <link rel="stylesheet" href="css/chess-quest.css?v=20260727-product-3">
+  <link rel="stylesheet" href="css/chess-quest.css?v=20260727-product-4">
 </head>
-<body class="play-body">
-  <div class="play-shell">
-    <div class="cq-top">
-      <a class="cq-brand" href="chess-quest.html"><span class="cq-mark">♛</span><span>Chess Quest</span></a>
-      <nav class="cq-nav"><a href="index.html">לעמוד הראשי</a><a href="chess-quest.html">דף הקורס</a><a href="#board">הלוח</a></nav>
-    </div>
+<body class="play-body chess-app-body">
+  <div class="chess-app-shell">
+    <header class="chess-app-top">
+      <a class="chess-app-brand" href="chess-quest.html"><span>♛</span><b>Chess Quest</b></a>
+      <button class="chess-quiet-button" id="openMapBtn" type="button">שיעורים</button>
+    </header>
 
-    <main class="play-layout">
-      <aside class="panel">
-        <div class="story-card">
-          <div class="avatar" id="coachAvatar">♕</div>
-          <div><h2 id="lessonTitle">טוען שיעור...</h2><p id="lessonStory"></p></div>
+    <main class="chess-app">
+      <section class="lesson-card">
+        <div class="lesson-card-icon" id="coachAvatar">♕</div>
+        <div class="lesson-card-copy">
+          <div class="lesson-kicker" id="lessonKicker">שיעור 1 מתוך 15</div>
+          <h1 id="lessonTitle">טוען שיעור...</h1>
+          <p id="taskText">בחרו משימה והתחילו לשחק.</p>
         </div>
-        <div class="lesson-select" id="lessonSelect" aria-label="בחירת שיעור"></div>
-        <div class="mission-list" id="missionList"></div>
-        <div class="progress-card">
-          <h3>התקדמות בממלכה</h3>
-          <div class="progress-bar"><i id="progressBar"></i></div>
-          <p id="progressText"></p>
-        </div>
-      </aside>
+      </section>
 
-      <section class="panel board-wrap" id="board">
-        <h2 id="taskTitle">משימה</h2>
-        <p id="taskText"></p>
+      <section class="board-card" id="board">
+        <div class="task-pill" id="taskTitle">משימה</div>
         <div class="board-frame"><div class="chess-board" id="chessBoard" role="grid" aria-label="לוח שחמט אינטראקטיבי"></div></div>
-        <div class="play-actions">
-          <button class="cq-btn" id="hintBtn" type="button">💡 רמז</button>
-          <button class="cq-btn secondary" id="resetBtn" type="button">🔁 איפוס משימה</button>
-          <button class="cq-btn secondary" id="nextBtn" type="button">➡️ המשימה הבאה</button>
-        </div>
         <div class="feedback" id="feedback" aria-live="polite">בחרו כלי או משבצת לפי ההוראה.</div>
       </section>
 
-      <aside class="panel">
-        <h2>כלי המלוכה</h2>
-        <p>בחלק מהמשימות בוחרים כלי כדי לראות איך הוא חושב וזז.</p>
-        <div class="inventory" id="pieceInventory"></div>
-        <div class="tip-list" id="thinkingTips"></div>
-        <div class="badge-grid" id="badgeGrid"></div>
-      </aside>
+      <section class="action-card">
+        <div class="play-actions">
+          <button class="cq-btn" id="hintBtn" type="button">רמז</button>
+          <button class="cq-btn secondary" id="resetBtn" type="button">איפוס</button>
+          <button class="cq-btn secondary" id="nextBtn" type="button">הבא</button>
+        </div>
+        <div class="piece-dock" id="pieceInventory" aria-label="בחירת כלי"></div>
+      </section>
     </main>
   </div>
+
+  <aside class="lesson-drawer" id="lessonDrawer" aria-hidden="true">
+    <div class="drawer-backdrop" data-close-drawer></div>
+    <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="בחירת שיעור">
+      <div class="drawer-head"><b>בחרו שיעור</b><button type="button" data-close-drawer>סגירה</button></div>
+      <div class="lesson-select compact" id="lessonSelect" aria-label="בחירת שיעור"></div>
+      <div class="mission-list" id="missionList"></div>
+      <div class="progress-card">
+        <h3>התקדמות</h3>
+        <div class="progress-bar"><i id="progressBar"></i></div>
+        <p id="progressText"></p>
+      </div>
+      <div class="tip-list" id="thinkingTips"></div>
+      <div class="badge-grid" id="badgeGrid"></div>
+    </div>
+  </aside>
 
   <div class="certificate" id="certificate">
     <div class="certificate-card">
@@ -59,6 +65,6 @@
     </div>
   </div>
 
-  <script src="js/chess-quest.js?v=20260727-product-1"></script>
+  <script src="js/chess-quest.js?v=20260727-product-2"></script>
 </body>
 </html>
