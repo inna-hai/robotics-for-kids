@@ -37,6 +37,16 @@ function send(res, status, body, type = 'application/json; charset=utf-8') {
   res.end(body);
 }
 
+function sendWithHeaders(res, status, body, type = 'application/json; charset=utf-8', extraHeaders = {}) {
+  res.writeHead(status, {
+    'Content-Type': type,
+    'Cache-Control': status >= 400 ? 'no-store' : 'no-store',
+    'X-Content-Type-Options': 'nosniff',
+    ...extraHeaders,
+  });
+  res.end(body);
+}
+
 function ensureAdminToken() {
   const configured = cleanText(process.env.FEEDBACK_ADMIN_TOKEN, 200);
   if (configured) return configured;
@@ -200,6 +210,43 @@ function getUserBySessionToken(db, token) {
   return row || null;
 }
 
+function parseCookies(req) {
+  return String(req.headers.cookie || '')
+    .split(';')
+    .map(part => part.trim())
+    .filter(Boolean)
+    .reduce((cookies, part) => {
+      const index = part.indexOf('=');
+      if (index === -1) return cookies;
+      const key = decodeURIComponent(part.slice(0, index));
+      const value = decodeURIComponent(part.slice(index + 1));
+      cookies[key] = value;
+      return cookies;
+    }, {});
+}
+
+function getSummerTokenFromRequest(req) {
+  const header = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '').trim();
+  if (header) return header;
+  const cookies = parseCookies(req);
+  return cookies.haiTechSummerToken || '';
+}
+
+function getSummerUserFromRequest(req) {
+  const token = getSummerTokenFromRequest(req);
+  if (!token) return null;
+  return withSummerDb(db => getUserBySessionToken(db, token));
+}
+
+function sessionCookie(token) {
+  const maxAge = Math.floor(SESSION_TTL_MS / 1000);
+  return `haiTechSummerToken=${encodeURIComponent(token)}; Path=/; Max-Age=${maxAge}; HttpOnly; SameSite=Lax`;
+}
+
+function clearSessionCookie() {
+  return 'haiTechSummerToken=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax';
+}
+
 function publicSummerUser(user) {
   let access = ['sensi-city-lesson-1'];
   try {
@@ -223,8 +270,7 @@ async function handleSummerAuth(req, res) {
   const action = url.pathname.split('/').filter(Boolean)[2];
 
   if (req.method === 'GET' && action === 'me') {
-    const header = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '').trim();
-    const token = header || url.searchParams.get('token');
+    const token = getSummerTokenFromRequest(req) || url.searchParams.get('token');
     const user = withSummerDb(db => getUserBySessionToken(db, token));
     if (!user) return send(res, 401, JSON.stringify({ error: 'צריך להתחבר מחדש.' }));
     return send(res, 200, JSON.stringify({ ok: true, user: publicSummerUser(user) }));
@@ -234,6 +280,16 @@ async function handleSummerAuth(req, res) {
 
   try {
     const body = JSON.parse(await readBody(req, 64 * 1024) || '{}');
+
+    if (action === 'logout') {
+      const token = getSummerTokenFromRequest(req);
+      if (token) {
+        withSummerDb(db => db.prepare('UPDATE summer_sessions SET revoked_at = ? WHERE token_hash = ?').run(new Date().toISOString(), tokenHash(token)));
+      }
+      return sendWithHeaders(res, 200, JSON.stringify({ ok: true }), 'application/json; charset=utf-8', {
+        'Set-Cookie': clearSessionCookie(),
+      });
+    }
 
     if (action === 'register') {
       const parentName = cleanText(body.parentName, 80);
@@ -277,7 +333,9 @@ async function handleSummerAuth(req, res) {
       });
 
       if (result.conflict) return send(res, 409, JSON.stringify({ error: 'כבר יש חשבון עם המייל הזה. אפשר להתחבר.' }));
-      return send(res, 201, JSON.stringify({ ok: true, token: result.token, user: publicSummerUser(result.user) }));
+      return sendWithHeaders(res, 201, JSON.stringify({ ok: true, token: result.token, user: publicSummerUser(result.user) }), 'application/json; charset=utf-8', {
+        'Set-Cookie': sessionCookie(result.token),
+      });
     }
 
     if (action === 'login') {
@@ -289,7 +347,9 @@ async function handleSummerAuth(req, res) {
         return { user, token: createSummerSession(db, user.id) };
       });
       if (!result) return send(res, 401, JSON.stringify({ error: 'מייל או סיסמה לא נכונים.' }));
-      return send(res, 200, JSON.stringify({ ok: true, token: result.token, user: publicSummerUser(result.user) }));
+      return sendWithHeaders(res, 200, JSON.stringify({ ok: true, token: result.token, user: publicSummerUser(result.user) }), 'application/json; charset=utf-8', {
+        'Set-Cookie': sessionCookie(result.token),
+      });
     }
 
     return send(res, 404, JSON.stringify({ error: 'Not found' }));
@@ -457,6 +517,66 @@ async function handleAdminFeedback(req, res) {
   return send(res, 405, JSON.stringify({ error: 'Method not allowed' }));
 }
 
+
+const PUBLIC_HTML_PATHS = new Set([
+  '/index.html',
+  '/summer-subscription.html',
+  '/summer-account.html',
+  '/about.html',
+]);
+
+function isFreeTrialHtml(pathname, url) {
+  if (pathname !== '/sensi-city.html') return false;
+  const lesson = url.searchParams.get('lesson') || '1';
+  return lesson === '1';
+}
+
+function isPaidUser(user) {
+  return user && user.subscription_status === 'active';
+}
+
+function lockedPage(pathname, user) {
+  const loggedIn = Boolean(user);
+  const title = loggedIn ? 'התוכן הזה נעול למנויים' : 'צריך להתחבר כדי להמשיך';
+  const subtitle = loggedIn
+    ? 'החשבון שלך כרגע במצב התנסות. אחרי הפעלת מנוי התכנים המלאים ייפתחו כאן אוטומטית.'
+    : 'שיעור ראשון פתוח להתנסות. שאר הלומדות נפתחות רק אחרי הרשמה והפעלת מנוי.';
+  const safePath = cleanText(pathname, 120);
+  return `<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title} | hai.tech</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:Rubik,Arial,sans-serif;direction:rtl;color:#102033;background:radial-gradient(circle at 15% 10%,#dbeafe,transparent 28%),radial-gradient(circle at 85% 8%,#fef3c7,transparent 28%),linear-gradient(135deg,#f8fafc,#eef2ff)}.card{width:min(620px,calc(100% - 28px));background:rgba(255,255,255,.96);border:1px solid #e6edf7;border-radius:34px;padding:34px;box-shadow:0 28px 90px rgba(15,23,42,.16);text-align:center}.lock{width:96px;height:96px;margin:0 auto 18px;border-radius:32px;display:grid;place-items:center;font-size:3rem;background:linear-gradient(135deg,#2563eb,#7c3aed);box-shadow:0 18px 44px rgba(37,99,235,.28)}h1{font-size:clamp(2rem,5vw,3.2rem);line-height:1.05;margin:0 0 12px;letter-spacing:-.04em}p{margin:0;color:#526070;font-size:1.12rem}.path{margin:18px auto 0;padding:10px 14px;border-radius:999px;background:#f1f5f9;color:#64748b;display:inline-block;font-weight:800;direction:ltr}.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:26px}.btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:14px 22px;text-decoration:none;font-weight:900}.primary{background:#0f172a;color:#fff}.alt{background:#fff;color:#0f172a;border:1px solid #dbe3ef}.note{margin-top:18px;border:1px solid #bbf7d0;background:#f0fdf4;color:#166534;border-radius:18px;padding:12px 14px;font-weight:800}@media(max-width:560px){.card{padding:26px 20px}.actions .btn{width:100%}}
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="lock">🔒</div>
+    <h1>${title}</h1>
+    <p>${subtitle}</p>
+    <div class="path">${safePath}</div>
+    <div class="actions">
+      <a class="btn primary" href="summer-account.html">הרשמה / כניסה</a>
+      <a class="btn alt" href="summer-subscription.html#join">פרטי המנוי</a>
+      <a class="btn alt" href="sensi-city.html?lesson=1">שיעור 1 חינם</a>
+    </div>
+    <div class="note">כדי לפתוח את כל הלומדות צריך מנוי פעיל.</div>
+  </main>
+</body>
+</html>`;
+}
+
+function requiresPaidAccess(pathname, ext, url) {
+  if (ext !== '.html') return false;
+  if (PUBLIC_HTML_PATHS.has(pathname)) return false;
+  if (isFreeTrialHtml(pathname, url)) return false;
+  return true;
+}
+
 function serveStatic(req, res) {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   let pathname = decodeURIComponent(url.pathname);
@@ -464,10 +584,17 @@ function serveStatic(req, res) {
   const filePath = path.normalize(path.join(ROOT, pathname));
   if (!filePath.startsWith(ROOT + path.sep)) return send(res, 403, 'Forbidden', 'text/plain; charset=utf-8');
   if (filePath === DATA_DIR || filePath.startsWith(DATA_DIR + path.sep)) return send(res, 403, 'Forbidden', 'text/plain; charset=utf-8');
+  const ext = path.extname(filePath).toLowerCase();
+
+  if (requiresPaidAccess(pathname, ext, url)) {
+    const user = getSummerUserFromRequest(req);
+    if (!isPaidUser(user)) {
+      return send(res, 402, lockedPage(pathname, user), 'text/html; charset=utf-8');
+    }
+  }
 
   fs.stat(filePath, (err, stat) => {
     if (err || !stat.isFile()) return send(res, 404, 'Not found', 'text/plain; charset=utf-8');
-    const ext = path.extname(filePath).toLowerCase();
     res.writeHead(200, {
       'Content-Type': MIME[ext] || 'application/octet-stream',
       'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=300',

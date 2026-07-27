@@ -4,6 +4,7 @@
     register: '/api/summer/register',
     login: '/api/summer/login',
     me: '/api/summer/me',
+    logout: '/api/summer/logout',
   };
   const forms = {
     register: document.getElementById('register-form'),
@@ -92,10 +93,12 @@
   const logout = document.getElementById('logout-button');
   if (logout) {
     logout.addEventListener('click', () => {
-      clearToken();
-      dashboard.classList.remove('active');
-      authPanel.style.display = '';
-      setMessage('התנתקת.', 'ok');
+      api(API_PATHS.logout, {}).catch(() => {}).finally(() => {
+        clearToken();
+        dashboard.classList.remove('active');
+        authPanel.style.display = '';
+        setMessage('התנתקת.', 'ok');
+      });
     });
   }
 
