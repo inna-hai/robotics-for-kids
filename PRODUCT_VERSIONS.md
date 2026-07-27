@@ -308,9 +308,42 @@ git reset --hard 4625d0b
 # or use the previous product tag: robotics15-v0.5.0
 ```
 
-### Robotics stable — v0.8.3 — Published
+### Robotics stable — v0.8.4 — Published
 
 - **Status:** Published
+- **Branch:** `main`
+- **Commit:** `3e58b0c`
+- **Tag:** `robotics-v0.8.4`
+- **Live:** https://robotics.hai.tech
+- **Date recorded:** 2026-07-27
+- **Approved by:** Inna
+
+Product changes:
+
+- Replaced the temporary JSON account storage with a real SQLite database: `data/summer-subscriptions.sqlite`.
+- Added database-backed tables for `summer_users`, `summer_sessions`, and `summer_subscription_events`.
+- Summer login now uses server-side session records with hashed tokens and expiry instead of only stateless local tokens.
+- Kept a JSON-to-SQLite migration path so existing trial accounts can be migrated safely if present.
+- Added `package.json`, `package-lock.json`, and `better-sqlite3` dependency for reproducible server setup.
+
+Verification:
+
+- `npm run check` passed.
+- `npm test` passed: all `tests/*.mjs`.
+- Local register/login/me integration test verified SQLite user + session rows.
+- Live `https://robotics.hai.tech/api/summer/register` verified SQLite persistence and session creation; temporary test user was removed afterward.
+
+Rollback:
+
+```bash
+git checkout main
+git reset --hard 81b78d7
+# or use the previous product tag: robotics-v0.8.3
+```
+
+### Robotics stable — v0.8.3 — Superseded
+
+- **Status:** Superseded by `robotics-v0.8.4`
 - **Branch:** `main`
 - **Commit:** `8a37465`
 - **Tag:** `robotics-v0.8.3`
