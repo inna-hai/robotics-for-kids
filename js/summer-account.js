@@ -76,7 +76,6 @@
       if (!input) return;
       const show = input.type === 'password';
       input.type = show ? 'text' : 'password';
-      button.textContent = show ? '🙈' : '👁️';
       button.setAttribute('aria-label', show ? 'הסתרת סיסמה' : 'הצגת סיסמה');
       button.setAttribute('aria-pressed', show ? 'true' : 'false');
     });
