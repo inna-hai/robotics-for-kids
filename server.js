@@ -522,6 +522,9 @@ const PUBLIC_HTML_PATHS = new Set([
   '/index.html',
   '/summer-subscription.html',
   '/summer-account.html',
+  '/account.html',
+  '/register.html',
+  '/login.html',
   '/about.html',
 ]);
 
@@ -564,7 +567,8 @@ function lockedPage(pathname, user) {
     <p>${subtitle}</p>
     <div class="path">${safePath}</div>
     <div class="actions">
-      <a class="btn primary" href="summer-account.html">הרשמה / כניסה</a>
+      <a class="btn primary" href="register.html">הרשמה</a>
+      <a class="btn alt" href="login.html">כניסה</a>
       <a class="btn alt" href="summer-subscription.html#join">פרטי המנוי</a>
       <a class="btn alt" href="space.html">סיסי שיעור 1 חינם</a>
     </div>

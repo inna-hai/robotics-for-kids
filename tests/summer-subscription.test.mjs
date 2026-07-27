@@ -7,7 +7,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
 const homepageHtml = readFileSync(join(root, 'index.html'), 'utf8');
 const subscriptionHtml = readFileSync(join(root, 'summer-subscription.html'), 'utf8');
-const accountHtml = readFileSync(join(root, 'summer-account.html'), 'utf8');
+const registerHtml = readFileSync(join(root, 'register.html'), 'utf8');
+const loginHtml = readFileSync(join(root, 'login.html'), 'utf8');
+const accountHtml = readFileSync(join(root, 'account.html'), 'utf8');
+const legacyAccountHtml = readFileSync(join(root, 'summer-account.html'), 'utf8');
 const configJs = readFileSync(join(root, 'js', 'summer-subscription-config.js'), 'utf8');
 const behaviorJs = readFileSync(join(root, 'js', 'summer-subscription.js'), 'utf8');
 const accountJs = readFileSync(join(root, 'js', 'summer-account.js'), 'utf8');
@@ -16,8 +19,9 @@ const serverJs = readFileSync(join(root, 'server.js'), 'utf8');
 const tests = [];
 function test(name, fn) { tests.push({ name, fn }); }
 function assertIncludes(source, needle, message = `Missing: ${needle}`) { assert.ok(source.includes(needle), message); }
+function assertNotIncludes(source, needle, message = `Unexpected: ${needle}`) { assert.ok(!source.includes(needle), message); }
 
-test('homepage promotes the summer subscription without removing the free first lesson', () => {
+test('homepage promotes the subscription and shows the one free Sisi lesson', () => {
   assertIncludes(homepageHtml, 'href="summer-subscription.html"');
   assertIncludes(homepageHtml, 'מנוי קיץ לילדים');
   assertIncludes(homepageHtml, 'סיסי שיעור 1 חינם');
@@ -25,32 +29,45 @@ test('homepage promotes the summer subscription without removing the free first 
   assertIncludes(homepageHtml, 'פתוח: שיעור 1 · השאר נעול');
 });
 
-test('summer subscription page has clear offer, cancellation copy, and Morning placeholder', () => {
+test('subscription page routes to real registration and keeps marketing copy clean', () => {
   assertIncludes(subscriptionHtml, '<title>מנוי לומדות קיץ לילדים | hai.tech</title>');
   assertIncludes(subscriptionHtml, '49 ₪');
-  assertIncludes(subscriptionHtml, 'href="summer-account.html"');
-  assertIncludes(subscriptionHtml, 'הרשמה / כניסה');
-  assertIncludes(subscriptionHtml, 'לינק התשלום של Morning עדיין חסר');
+  assertIncludes(subscriptionHtml, 'href="register.html"');
+  assertIncludes(subscriptionHtml, 'הרשמה');
+  assertIncludes(subscriptionHtml, 'מתחילים עם שיעור סיסי ראשון בחינם');
   assertIncludes(subscriptionHtml, 'אפשר לבטל בכל עת בהודעת WhatsApp או מייל אלינו');
   assertIncludes(subscriptionHtml, 'space.html');
-  assertIncludes(subscriptionHtml, 'js/summer-subscription-config.js');
-  assertIncludes(subscriptionHtml, 'js/summer-subscription.js');
+  assertNotIncludes(subscriptionHtml, 'summer-account.html');
+  assertNotIncludes(subscriptionHtml, 'webhook');
 });
 
-test('summer account page provides registration, login, and learner dashboard entry', () => {
-  assertIncludes(accountHtml, '<title>כניסה והרשמה למנוי קיץ | hai.tech</title>');
-  assertIncludes(accountHtml, 'id="register-form"');
-  assertIncludes(accountHtml, 'id="login-form"');
-  assertIncludes(accountHtml, 'שם הורה');
-  assertIncludes(accountHtml, 'שם הילד/ה');
-  assertIncludes(accountHtml, 'כניסה לשיעור');
-  assertIncludes(accountHtml, 'space.html');
-  assertIncludes(accountHtml, 'סדרת סיסי · שיעור 1');
-  assertIncludes(accountHtml, 'חסר עדיין חיבור Morning + webhook');
-  assertIncludes(accountHtml, 'js/summer-account.js');
+test('registration, login, and account pages are separate product screens', () => {
+  assertIncludes(registerHtml, '<title>הרשמה ללומדות hai.tech</title>');
+  assertIncludes(registerHtml, 'id="register-form"');
+  assertNotIncludes(registerHtml, 'id="login-form"');
+  assertIncludes(registerHtml, 'פותחים לילד/ה עולם');
+  assertIncludes(registerHtml, 'login.html');
+
+  assertIncludes(loginHtml, '<title>כניסה ללומדות hai.tech</title>');
+  assertIncludes(loginHtml, 'id="login-form"');
+  assertNotIncludes(loginHtml, 'id="register-form"');
+  assertIncludes(loginHtml, 'ברוכים השבים');
+  assertIncludes(loginHtml, 'register.html');
+
+  assertIncludes(accountHtml, '<title>האזור שלי | hai.tech</title>');
+  assertIncludes(accountHtml, 'הרשמה חדשה');
+  assertIncludes(accountHtml, 'כניסה לחשבון קיים');
+  assertIncludes(accountHtml, 'סיסי · שיעור 1');
+  assertNotIncludes(accountHtml, 'Morning');
+  assertNotIncludes(accountHtml, 'webhook');
 });
 
-test('summer auth client and server expose account endpoints', () => {
+test('legacy summer account URL redirects to the product account page', () => {
+  assertIncludes(legacyAccountHtml, 'url=account.html');
+  assertIncludes(legacyAccountHtml, "location.replace('account.html')");
+});
+
+test('summer auth client and server expose account endpoints and protected pages', () => {
   assertIncludes(accountJs, '/api/summer/register');
   assertIncludes(accountJs, '/api/summer/login');
   assertIncludes(accountJs, '/api/summer/me');
@@ -62,14 +79,14 @@ test('summer auth client and server expose account endpoints', () => {
   assertIncludes(serverJs, 'summer_sessions');
   assertIncludes(serverJs, 'summer_subscription_events');
   assertIncludes(serverJs, 'PUBLIC_HTML_PATHS');
+  assertIncludes(serverJs, "'/account.html'");
+  assertIncludes(serverJs, "'/register.html'");
+  assertIncludes(serverJs, "'/login.html'");
   assertIncludes(serverJs, 'requiresPaidAccess');
   assertIncludes(serverJs, 'lockedPage');
   assertIncludes(serverJs, 'כדי לפתוח את כל הלומדות צריך מנוי פעיל');
   assertIncludes(serverJs, "pathname === '/space.html'");
   assertIncludes(serverJs, "pathname === '/space-play.html'");
-  assertIncludes(serverJs, 'handleSummerAuth');
-  assertIncludes(serverJs, "req.url.startsWith('/api/summer/')");
-  assertIncludes(serverJs, "subscription_status: 'trial'");
 });
 
 test('payment config is deliberately empty until Morning link is provided', () => {
@@ -79,15 +96,15 @@ test('payment config is deliberately empty until Morning link is provided', () =
   assertIncludes(behaviorJs, 'js-payment-link');
 });
 
-test('subscription page local html/script links point to existing files', () => {
-  const refs = [subscriptionHtml, accountHtml]
+test('local html/script links point to existing files', () => {
+  const refs = [subscriptionHtml, registerHtml, loginHtml, accountHtml]
     .flatMap(html => [...html.matchAll(/(?:href|src)="([^"]+)"/g)].map((match) => match[1]));
 
   for (const ref of refs) {
     if (/^(https?:|#)/.test(ref)) continue;
     const clean = ref.replace(/^\.\//, '').split('?')[0].split('#')[0];
-    if (!clean || !/\.(html|js)$/.test(clean)) continue;
-    assert.ok(existsSync(join(root, clean)), `Missing subscription target: ${ref}`);
+    if (!clean || !/\.(html|js|css)$/.test(clean)) continue;
+    assert.ok(existsSync(join(root, clean)), `Missing target: ${ref}`);
   }
 });
 
