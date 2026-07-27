@@ -526,9 +526,13 @@ const PUBLIC_HTML_PATHS = new Set([
 ]);
 
 function isFreeTrialHtml(pathname, url) {
-  if (pathname !== '/sensi-city.html') return false;
-  const lesson = url.searchParams.get('lesson') || '1';
-  return lesson === '1';
+  if (pathname === '/sisi.html') return true;
+  if (pathname === '/space.html') return true;
+  if (pathname === '/space-play.html') {
+    const lesson = url.searchParams.get('lesson') || '1';
+    return lesson === '1';
+  }
+  return false;
 }
 
 function isPaidUser(user) {
@@ -562,7 +566,7 @@ function lockedPage(pathname, user) {
     <div class="actions">
       <a class="btn primary" href="summer-account.html">הרשמה / כניסה</a>
       <a class="btn alt" href="summer-subscription.html#join">פרטי המנוי</a>
-      <a class="btn alt" href="sensi-city.html?lesson=1">שיעור 1 חינם</a>
+      <a class="btn alt" href="space.html">סיסי שיעור 1 חינם</a>
     </div>
     <div class="note">כדי לפתוח את כל הלומדות צריך מנוי פעיל.</div>
   </main>

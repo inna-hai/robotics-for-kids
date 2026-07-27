@@ -20,8 +20,9 @@ function assertIncludes(source, needle, message = `Missing: ${needle}`) { assert
 test('homepage promotes the summer subscription without removing the free first lesson', () => {
   assertIncludes(homepageHtml, 'href="summer-subscription.html"');
   assertIncludes(homepageHtml, 'מנוי קיץ לילדים');
-  assertIncludes(homepageHtml, 'שיעור ראשון חינם');
-  assertIncludes(homepageHtml, 'href="sensi-city.html?lesson=1"');
+  assertIncludes(homepageHtml, 'סיסי שיעור 1 חינם');
+  assertIncludes(homepageHtml, 'href="space.html"');
+  assertIncludes(homepageHtml, 'פתוח: שיעור 1 · השאר נעול');
 });
 
 test('summer subscription page has clear offer, cancellation copy, and Morning placeholder', () => {
@@ -31,7 +32,7 @@ test('summer subscription page has clear offer, cancellation copy, and Morning p
   assertIncludes(subscriptionHtml, 'הרשמה / כניסה');
   assertIncludes(subscriptionHtml, 'לינק התשלום של Morning עדיין חסר');
   assertIncludes(subscriptionHtml, 'אפשר לבטל בכל עת בהודעת WhatsApp או מייל אלינו');
-  assertIncludes(subscriptionHtml, 'sensi-city.html?lesson=1');
+  assertIncludes(subscriptionHtml, 'space.html');
   assertIncludes(subscriptionHtml, 'js/summer-subscription-config.js');
   assertIncludes(subscriptionHtml, 'js/summer-subscription.js');
 });
@@ -42,8 +43,9 @@ test('summer account page provides registration, login, and learner dashboard en
   assertIncludes(accountHtml, 'id="login-form"');
   assertIncludes(accountHtml, 'שם הורה');
   assertIncludes(accountHtml, 'שם הילד/ה');
-  assertIncludes(accountHtml, 'כניסה ללומדה');
-  assertIncludes(accountHtml, 'sensi-city.html?lesson=1');
+  assertIncludes(accountHtml, 'כניסה לשיעור');
+  assertIncludes(accountHtml, 'space.html');
+  assertIncludes(accountHtml, 'סדרת סיסי · שיעור 1');
   assertIncludes(accountHtml, 'חסר עדיין חיבור Morning + webhook');
   assertIncludes(accountHtml, 'js/summer-account.js');
 });
@@ -63,6 +65,8 @@ test('summer auth client and server expose account endpoints', () => {
   assertIncludes(serverJs, 'requiresPaidAccess');
   assertIncludes(serverJs, 'lockedPage');
   assertIncludes(serverJs, 'כדי לפתוח את כל הלומדות צריך מנוי פעיל');
+  assertIncludes(serverJs, "pathname === '/space.html'");
+  assertIncludes(serverJs, "pathname === '/space-play.html'");
   assertIncludes(serverJs, 'handleSummerAuth');
   assertIncludes(serverJs, "req.url.startsWith('/api/summer/')");
   assertIncludes(serverJs, "subscription_status: 'trial'");
