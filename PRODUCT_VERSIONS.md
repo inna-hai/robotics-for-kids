@@ -308,9 +308,40 @@ git reset --hard 4625d0b
 # or use the previous product tag: robotics15-v0.5.0
 ```
 
-### Robotics stable — v0.8.5 — Published
+### Robotics stable — v0.8.6 — Published
 
 - **Status:** Published
+- **Branch:** `main`
+- **Commit:** `82c998f`
+- **Tag:** `robotics-v0.8.6`
+- **Live:** https://robotics.hai.tech
+- **Date recorded:** 2026-07-27
+- **Approved by:** Inna
+
+Product changes:
+
+- Changed the free trial from Sensi City lesson 1 to **Sisi lesson 1: Space**.
+- Public without payment: homepage, summer subscription page, summer account/login page, about page, Sisi hub, `space.html`, and `space-play.html?lesson=1`.
+- Locked without active subscription: Sisi lessons 2–15, Sensi City, Python, WebCode, Minecraft, Money Smart, slides/labs, and other direct HTML learning URLs.
+- Updated homepage, subscription page, account dashboard, and Sisi hub badges so users can see immediately what is open and what is locked.
+
+Verification:
+
+- `npm run check` passed.
+- `npm test` passed: all `tests/*.mjs`.
+- Live verified: `/`, `/sisi.html`, `/space.html`, and `/space-play.html?lesson=1` return 200; `/music.html`, `/music-play.html?lesson=1`, `/sensi-city.html?lesson=1`, and `/python-turtle.html` return 402 lock page.
+
+Rollback:
+
+```bash
+git checkout main
+git reset --hard 49692ba
+# or use the previous product tag: robotics-v0.8.5
+```
+
+### Robotics stable — v0.8.5 — Superseded
+
+- **Status:** Superseded by `robotics-v0.8.6`
 - **Branch:** `main`
 - **Commit:** `7ac452a`
 - **Tag:** `robotics-v0.8.5`
