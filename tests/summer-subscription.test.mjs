@@ -53,10 +53,14 @@ test('summer auth client and server expose account endpoints', () => {
   assertIncludes(accountJs, '/api/summer/login');
   assertIncludes(accountJs, '/api/summer/me');
   assertIncludes(accountJs, 'haiTechSummerToken');
-  assertIncludes(serverJs, 'SUMMER_USERS_FILE');
+  assertIncludes(serverJs, 'better-sqlite3');
+  assertIncludes(serverJs, 'SUMMER_DB_FILE');
+  assertIncludes(serverJs, 'summer_users');
+  assertIncludes(serverJs, 'summer_sessions');
+  assertIncludes(serverJs, 'summer_subscription_events');
   assertIncludes(serverJs, 'handleSummerAuth');
   assertIncludes(serverJs, "req.url.startsWith('/api/summer/')");
-  assertIncludes(serverJs, "subscriptionStatus: 'trial'");
+  assertIncludes(serverJs, "subscription_status: 'trial'");
 });
 
 test('payment config is deliberately empty until Morning link is provided', () => {
