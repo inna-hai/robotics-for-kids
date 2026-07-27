@@ -17,13 +17,13 @@ const lessons = [
     { name:'סיכום ועדכון תוכנית', type:'lesson1Summary', title:'עדכון Money Smart Plan', prompt:'בדקו את הסיכום שנוצר מהפעילות, הוסיפו משפט אישי ושמרו לתוכנית.' }
   ]},
   { id:2, title:'איך גורמים לנו לקנות?', question:'האם אני בוחר לקנות, או שמישהו עיצב את המצב כדי שאקנה?', concepts:['צורך','רצון','FOMO','עלות כוללת','חידוש אוטומטי','דפוס מניפולטיבי'], teacher:['איזה טריק שיווקי עובד עליכם הכי מהר?','מתי מבצע באמת עוזר?','איך נראה כלל המתנה סביר?'], steps:[
-    { name:'פתיחת מעבדה', type:'ad', title:'המבצע מסתיים בעוד 7 דקות', text:'רק היום: 50% הנחה. נותרו שני פריטים. משלוח חינם בקנייה מעל 200 ש״ח. בחרו איך להגיב לפני שמנתחים את הטריקים.' },
-    { name:'מה הייתם עושים?', type:'choice', title:'לקנות, לבדוק או להמתין?', text:'הפרסומת מרגישה דחופה, אבל לא ברור אם המחיר באמת טוב.', options:['לקנות מיד','לחפש מחיר במקום אחר','לשמור ולבדוק מחר','לוותר כי לא תכננתי לקנות'], feedback:'עצירה קצרה מחזירה לנו שליטה. לחץ זמן, מחסור ומשלוח חינם יכולים להשפיע בלי שנשים לב.' },
-    { name:'לומדים דרך גילוי', type:'cards', title:'למה קשה לעצור?', text:'קנייה דיגיטלית בנויה לפעמים כך שנרגיש פחות את התשלום ויותר את התגמול המיידי.', cards:['המוח אוהב תגמול מיידי','משפיענים יוצרים תחושת קרבה','מטבע וירטואלי מסתיר מחיר בשקלים','מנוי קטן מצטבר לאורך שנה'] },
-    { name:'מתנסים', type:'sort', title:'צורך, רצון חשוב או רצון רגעי?', items:['נעליים כשהישנות נהרסו','סקין במהדורה מוגבלת','מתנה לחבר קרוב','מחשב ללימודים','משלוח אוכל אחרי יום ארוך','מחשב חזק יותר בעיקר לגיימינג'] },
-    { name:'עצירת מדריך', type:'cards', title:'דיון: האם מבצע באמת חוסך?', text:'הדגישו שאין מטרה להציג כל קנייה כרעה. השאלה היא האם הבחירה מודעת ומתאימה.', cards:['האם חסכתי אם לא תכננתי לקנות?','מה ההבדל בין רצון חשוב לרצון רגעי?','איך משפיען יוצר אמון?','מה כלל המתנה סביר?'] },
-    { name:'משימת דמות', type:'shoppingCalc', title:'המחיר האמיתי', text:'חשבו מטבע משחק, מנוי ומשלוח. לאחר מכן הפעילו את כלי עצור–בדוק–בחר עבור הדמות שבחרתם.' },
-    { name:'סיכום ועדכון תוכנית', type:'exit', title:'כרטיס קנייה חכמה', prompt:'נסחו כלל אישי אחד לגבי זמן המתנה, השוואת מחירים, עלויות נסתרות, מנויים או רכישות בתוך משחקים.' }
+    { name:'פתיחת מעבדה', type:'lesson2AdLab', title:'מסך קנייה שמנסה לדחוף אותנו', text:'פתחו מסך קנייה מדומה, סמנו את הטריקים שמנסים לגרום להחלטה מהירה, וראו איך כל רכיב משפיע על שיקול הדעת.' },
+    { name:'מה הייתם עושים?', type:'lesson2PressureChoice', title:'לקנות, לבדוק או להמתין?', text:'הפרסומת מרגישה דחופה, אבל לא ברור אם המחיר באמת טוב. בחרו פעולה ותראו מה היא מחזקת או מחלישה.' },
+    { name:'לומדים דרך גילוי', type:'lesson2Discovery', title:'למה קשה לעצור?', text:'קנייה דיגיטלית בנויה לפעמים כך שנרגיש פחות את התשלום ויותר את התגמול המיידי. גלו את המנגנונים מאחורי ההחלטה.' },
+    { name:'מתנסים', type:'lesson2Sort', title:'צורך, רצון חשוב או רצון רגעי?', text:'גררו או לחצו כדי לסווג מצבי קנייה. אין תמיד תשובה אחת — הנימוק וההקשר חשובים.' },
+    { name:'עצירת מדריך', type:'lesson2TeacherStop', title:'דיון: האם מבצע באמת חוסך?', text:'נקודת עצירה כיתתית: לא כל קנייה היא בעיה, ולא כל מבצע הוא חיסכון. מתרגלים שאלות בדיקה בלי שיפוט אישי.' },
+    { name:'משימת דמות', type:'lesson2CharacterDecision', title:'המחיר האמיתי לדמות', text:'בחרו דמות, חשבו עלות כוללת של מוצר/מנוי/משלוח, הפעילו עצור–בדוק–בחר, ושמרו החלטה מנומקת.' },
+    { name:'סיכום ועדכון תוכנית', type:'lesson2Summary', title:'כרטיס קנייה חכמה', prompt:'נסחו כלל אישי לגבי זמן המתנה, השוואת מחירים, עלויות נסתרות, מנויים או רכישות בתוך משחקים.' }
   ]},
   { id:3, title:'כסף עכשיו מול כסף בעתיד', question:'מה המחיר של שימוש בכסף לפני שיש לי אותו, ומה הרווח האפשרי מדחיית השימוש בו?', concepts:['ריבית','קרן','ריבית דריבית','אשראי','תשלומים','יכולת החזר'], teacher:['מה ההבדל בין “אני יכול לשלם החודש” לבין “אני יכול להתחייב לשנה”?','מתי תשלומים יכולים להיות הגיוניים?'], steps:[
     { name:'פתיחת מעבדה', type:'choice', title:'100 ש״ח היום או 110 ש״ח בעוד שנה?', text:'בחרו לפני ההסבר. אחר כך שאלו את עצמכם: מה יכול להשתנות במהלך השנה?', options:['100 עכשיו','110 בעוד שנה','תלוי במטרה','צריך עוד מידע'], feedback:'זו דילמת ערך הזמן: כסף עכשיו מאפשר שימוש מיידי, כסף בעתיד עשוי לפצות על המתנה ואי־ודאות.' },
@@ -93,6 +93,7 @@ const state = JSON.parse(localStorage.getItem('moneySmartState') || '{}');
 state.lesson ??= 1; state.step ??= 0; state.character ??= 'maya'; state.completed ??= []; state.notes ??= [];
 state.meters ??= { 'תכנון':2, 'בדיקה':2, 'גמישות':2, 'סיכון':2, 'נימוק':2 };
 state.lesson1 ??= { openingBudget:null, eventChoice:null, characterPlan:null };
+state.lesson2 ??= { foundTricks:[], pressureChoice:null, sort:{}, characterDecision:null };
 const $ = (id) => document.getElementById(id);
 function save(){ localStorage.setItem('moneySmartState', JSON.stringify(state)); }
 function lesson(){ return lessons.find(l => l.id === state.lesson); }
@@ -107,23 +108,22 @@ function init(){
   $('savePlanBtn').onclick = saveNote;
   render();
 }
-function render(){ renderNav(); renderLesson(); renderCharacter(); renderMeters(); renderNotes(); renderProgress(); }
-function renderNav(){
-  $('lessonNav').innerHTML = lessons.map(l => `<button type="button" class="${l.id===state.lesson?'active':''}" data-lesson="${l.id}"><b>מפגש ${l.id}: ${l.title}</b><span>${l.question}</span></button>`).join('');
-  document.querySelectorAll('[data-lesson]').forEach(btn => btn.onclick = () => { state.lesson = Number(btn.dataset.lesson); state.step = 0; save(); render(); });
-}
+function render(){ renderLesson(); renderCharacter(); renderMeters(); renderNotes(); renderProgress(); }
 function renderLesson(){
   const l = lesson();
+  document.body.classList.toggle('lesson-one-mode', l.id === 1);
   $('lessonKicker').textContent = `מפגש ${l.id} מתוך 5 · 90 דקות`;
   $('lessonTitle').textContent = l.title;
   $('lessonQuestion').textContent = l.question;
+  const currentLessonLabel = $('currentLessonLabel');
+  if (currentLessonLabel) currentLessonLabel.textContent = `מפגש ${l.id}: ${l.title}`;
   $('conceptChips').innerHTML = l.concepts.map(c => `<button type="button" data-concept="${c}">${c}</button>`).join('') + '<div id="conceptDefinition" class="concept-definition">לחצו על מושג כדי לראות הסבר קצר ודוגמה לתפקיד שלו בפעילות.</div>';
   document.querySelectorAll('[data-concept]').forEach(btn => btn.onclick = () => {
     document.querySelectorAll('[data-concept]').forEach(x => x.classList.remove('active'));
     btn.classList.add('active');
     $('conceptDefinition').textContent = conceptInfo[btn.dataset.concept] || 'מושג מרכזי לשיעור הזה.';
   });
-  $('stepTabs').innerHTML = l.steps.map((s,i)=>`<button type="button" class="${i===state.step?'active':''}" data-step="${i}">${i+1}. ${s.name}</button>`).join('');
+  $('stepTabs').innerHTML = l.steps.map((s,i)=>`<button type="button" class="${i===state.step?'active':''}" data-step="${i}"><span class="step-number">${i+1}</span><b>${s.name}</b><small>${s.title}</small></button>`).join('');
   document.querySelectorAll('[data-step]').forEach(btn => btn.onclick = () => { state.step = Number(btn.dataset.step); save(); renderLesson(); });
   renderStep(l.steps[state.step]); renderTeacher();
 }
@@ -138,8 +138,10 @@ function renderTeacher(){
 }
 function renderProgress(){
   const count = new Set(state.completed).size;
-  $('overallProgress').style.width = `${count/5*100}%`;
-  $('progressLabel').textContent = `${count} מתוך 5 מפגשים`;
+  const overall = $('overallProgress');
+  const label = $('progressLabel');
+  if (overall) overall.style.width = `${count/5*100}%`;
+  if (label) label.textContent = `${count} מתוך 5 מפגשים`;
 }
 function renderCharacter(){
   const c = character();
@@ -166,6 +168,13 @@ function renderStep(step){
     lesson1TeacherStop: lesson1TeacherStopStep,
     lesson1CharacterBudget: lesson1CharacterBudgetStep,
     lesson1Summary: lesson1SummaryStep,
+    lesson2AdLab: lesson2AdLabStep,
+    lesson2PressureChoice: lesson2PressureChoiceStep,
+    lesson2Discovery: lesson2DiscoveryStep,
+    lesson2Sort: lesson2SortStep,
+    lesson2TeacherStop: lesson2TeacherStopStep,
+    lesson2CharacterDecision: lesson2CharacterDecisionStep,
+    lesson2Summary: lesson2SummaryStep,
     budget: budgetStep,
     choice: choiceStep,
     cards: cardsStep,
@@ -182,9 +191,24 @@ function renderStep(step){
     scamChat: scamChatStep,
     finalChallenge: finalChallengeStep
   }[step.type](step);
-  $('stepContent').innerHTML = html;
+  $('stepContent').innerHTML = html + lessonStepFooter();
   bindStep(step);
 }
+
+function lessonStepFooter(){
+  const l = lesson();
+  const currentIndex = state.step;
+  const hasNextStep = currentIndex < l.steps.length - 1;
+  if (hasNextStep) {
+    return `<div class="lesson-next-cta"><button type="button" class="btn primary" id="nextStepBtn">לתרגול הבא</button><span>ההתקדמות נשארת בתוך מפגש ${l.id}</span></div>`;
+  }
+  const nextLesson = lessons.find(item => item.id === l.id + 1);
+  if (nextLesson) {
+    return `<div class="lesson-next-cta final"><button type="button" class="btn primary" id="nextLessonBtn">שיעור הבא: ${nextLesson.title}</button><span>מופיע רק אחרי שסיימתם את כל תרגולי השיעור.</span></div>`;
+  }
+  return `<div class="lesson-next-cta final"><a class="btn primary" href="money-smart-course.html">סיום הקורס</a><span>חוזרים לדף הקורס.</span></div>`;
+}
+
 function wrap(step, inner){ return `<section class="activity-card"><h2>${step.title}</h2><p>${step.text || ''}</p>${inner}</section>`; }
 
 const lesson1Categories = [
@@ -234,7 +258,20 @@ function scoreHtml(score){
 }
 function lesson1BudgetStep(step){
   const budget = lesson1OpeningBudget();
-  return wrap(step, `<div class="product-note"><b>מה עושים כאן?</b> הזיזו סכומים עד שהתקציב מסתכם ב־600 ש״ח. אחר כך בדקו אם יש גם חיסכון למטרה וגם כרית ביטחון.</div><div id="budgetSliders">${lesson1Categories.map(c=>`<div class="slider-row"><b>${c.label}</b><input type="range" min="0" max="300" step="10" value="${budget[c.key]}" data-l1-budget="${c.key}"><span></span></div>`).join('')}</div><div id="budgetTotal" class="budget-total"></div><div id="l1BudgetInsight" class="lesson1-insight"></div><button class="btn primary" id="budgetFeedback">שמירת תקציב פתיחה</button><div id="feedback" class="feedback" hidden></div>`);
+  const icons = { fun:'🎟️', food:'🍕', shopping:'🛍️', gaming:'🎮', gifts:'🎁', saving:'🎯', buffer:'🛟' };
+  return wrap(step, `<div class="product-note"><b>מה עושים כאן?</b> מחלקים 600 ש״ח בצורה ויזואלית: אפשר לגרור/ללחוץ על מטבעות מהארנק לקטגוריות, או לכוון בעדינות עם הסליידרים. המטרה היא לראות בחירה, ויתור וכרית ביטחון — לא לענות על שאלון.</div>
+  <div class="visual-budget-lab">
+    <div class="wallet-tray" aria-label="ארנק מטבעות">
+      <b>ארנק התלמידים</b>
+      <span id="walletRemaining">600 ₪ לחלוקה</span>
+      <div class="coin-palette">
+        <button type="button" class="coin" draggable="true" data-coin="10">10</button>
+        <button type="button" class="coin" draggable="true" data-coin="50">50</button>
+      </div>
+      <small>גררו מטבע לקטגוריה, או לחצו מטבע ואז קטגוריה.</small>
+    </div>
+    <div class="budget-buckets">${lesson1Categories.map(c=>`<article class="budget-bucket" data-budget-bucket="${c.key}"><button type="button" class="bucket-add" aria-label="הוספת מטבע ל${c.label}"><span class="bucket-icon">${icons[c.key]||'₪'}</span><span class="bucket-copy"><b>${c.label}</b><small>לחיצה/גרירה מוסיפה כסף</small></span><em data-bucket-value="${c.key}">${money(budget[c.key])}</em></button><div class="bucket-fill"><i data-bucket-fill="${c.key}"></i></div><input type="range" min="0" max="300" step="10" value="${budget[c.key]}" data-l1-budget="${c.key}"></article>`).join('')}</div>
+  </div><div id="budgetTotal" class="budget-total"></div><div id="l1BudgetInsight" class="lesson1-insight"></div><button class="btn primary" id="budgetFeedback">שמירת תקציב פתיחה</button><div id="feedback" class="feedback" hidden></div>`);
 }
 function lesson1EventStep(step){
   const event = lesson1Events[1];
@@ -263,6 +300,62 @@ function lesson1SummaryStep(step){
   return wrap(step, `<div class="summary-box"><h3>סיכום שנוצר מהפעילות</h3><p>${summary}</p><p><b>בדיקת מסגרת:</b> ${total === adjustable ? 'התקציב מסתכם בדיוק בסכום הזמין.' : `חולקו ${money(total)} מתוך ${money(adjustable)}.`}</p></div><textarea id="exitText" rows="4" placeholder="הוסיפו משפט אישי: מה למדתי על בחירה, ויתור או כרית ביטחון?"></textarea><button class="btn primary" id="saveLesson1Summary">שמירה ל־Money Smart Plan</button><div id="feedback" class="feedback" hidden></div>`);
 }
 
+
+const lesson2Tricks = [
+  { key:'timer', label:'טיימר לחץ', icon:'⏱️', text:'לחץ זמן מקטין בדיקה וגורם להרגיש שחייבים לפעול עכשיו.' },
+  { key:'scarcity', label:'נשארו רק 2', icon:'🔥', text:'מחסור מדומה יוצר FOMO: פחד להחמיץ גם כשלא תכננו לקנות.' },
+  { key:'shipping', label:'משלוח חינם מעל 200', icon:'📦', text:'משלוח חינם יכול לדחוף להוסיף מוצר שלא באמת צריך.' },
+  { key:'defaultSub', label:'חידוש אוטומטי מסומן', icon:'🔁', text:'תיבה מסומנת מראש יכולה להפוך רכישה חד־פעמית למנוי מתמשך.' },
+  { key:'influencer', label:'המלצת משפיען', icon:'📣', text:'אמון באדם אינו מחליף בדיקה: האם זה ממומן? האם המוצר מתאים לי?' }
+];
+const lesson2SortItems = [
+  { id:'shoes', text:'נעליים כשהישנות נהרסו', best:'need', hint:'בהקשר הזה זה כנראה צורך: יש בעיה אמיתית שצריך לפתור.' },
+  { id:'skin', text:'סקין במהדורה מוגבלת', best:'impulse', hint:'המילה “מוגבלת” מפעילה FOMO. זה יכול להיות רצון, אבל כדאי להמתין ולבדוק.' },
+  { id:'gift', text:'מתנה לחבר קרוב', best:'important', hint:'רצון חשוב יכול להתאים לערכים ולקשרים, כל עוד הוא במסגרת התקציב.' },
+  { id:'schoolComputer', text:'מחשב ללימודים', best:'need', hint:'אם הוא נדרש ללימודים זו מטרה חשובה; עדיין בודקים מחיר וחלופות.' },
+  { id:'foodDelivery', text:'משלוח אוכל אחרי יום ארוך', best:'important', hint:'לפעמים זה רצון סביר, אבל אם זה חוזר הרבה — העלות הכוללת מצטברת.' },
+  { id:'gamingUpgrade', text:'שדרוג בעיקר לגיימינג', best:'impulse', hint:'יכול להיות רצון לגיטימי, אבל לא דחוף. בודקים אם הוא דוחה מטרה אחרת.' }
+];
+const lesson2CharacterOffers = {
+  maya:{ product:'בגד ממותג במבצע', price:139, shipping:29, subscription:0, coins:0, wait:'24 שעות', pressure:'משפיענית אומרת שזה “חובה לקיץ”', goalImpact:'דוחה חיסכון לטלפון בכשבועיים' },
+  ido:{ product:'חבילת מטבעות למשחק', price:40, shipping:0, subscription:25, coins:750, wait:'48 שעות', pressure:'סקין מוגבל עד סוף היום', goalImpact:'מקטין כסף פנוי לרישיון וליציאות' },
+  noa:{ product:'ציוד למחנה במבצע', price:180, shipping:0, subscription:0, coins:0, wait:'בדיקת מחיר נוספת', pressure:'נשארו רק שניים במלאי', goalImpact:'יכול להתאים למטרה, אם המחיר אמיתי' },
+  adam:{ product:'משחק חדש בהשקה', price:260, shipping:0, subscription:0, coins:0, wait:'שבוע', pressure:'כל החברים כבר קנו', goalImpact:'דוחה את המחשב בכחודש' },
+  lior:{ product:'קורס אונליין עם חודש ראשון חינם', price:0, shipping:0, subscription:69, coins:0, wait:'קריאת תנאי ביטול', pressure:'ההרשמה נסגרת היום', goalImpact:'עלות שנתית גבוהה אם שוכחים לבטל' }
+};
+function lesson2AdLabStep(step){
+  return wrap(step, `<div class="product-note"><b>מה עושים כאן?</b> לחצו על אזורים במסך הקנייה ונסו לחשוף לפחות 3 טריקים. המטרה אינה “לא לקנות”, אלא לזהות מתי המסך דוחף אותנו להחליט מהר מדי.</div><div class="ad-detective"><div class="shop-screen"><div class="shop-top"><span>🔥 נותרו 2 בלבד</span><b>UrbanPack</b></div><div class="shop-product"><div class="product-visual">🎧</div><div><h3>אוזניות Pro Teen</h3><p>במקום 260 ₪ — היום רק 130 ₪</p></div></div><button type="button" class="shop-hotspot timer" data-trick="timer">06:59 לסיום</button><button type="button" class="shop-hotspot scarcity" data-trick="scarcity">רק 2 במלאי</button><button type="button" class="shop-hotspot shipping" data-trick="shipping">משלוח חינם מעל 200 ₪</button><label class="shop-hotspot default-sub"><input type="checkbox" checked data-trick="defaultSub"> להפעיל חידוש אוטומטי לאחר 30 יום</label><button type="button" class="shop-hotspot influencer" data-trick="influencer">⭐ מומלץ על ידי נועה_סטייל</button></div><div class="trick-board"><h3>טריקים שמצאתם</h3><div id="foundTricks" class="trick-list"></div><div id="feedback" class="feedback" hidden></div></div></div>`);
+}
+function lesson2PressureChoiceStep(step){
+  const options = [
+    ['buy','לקנות מיד','מהיר ומרגש, אבל כמעט בלי בדיקה.'],
+    ['compare','להשוות מחיר','מחזק בדיקה ומוריד לחץ.'],
+    ['wait','לשמור ולבדוק מחר','כלל המתנה עוזר לבדוק אם הרצון נשאר.'],
+    ['skip','לוותר כי לא תכננתי לקנות','בחירה טובה אם הקנייה לא קשורה למטרה.']
+  ];
+  return wrap(step, `<div class="pressure-lab"><div class="pressure-meter"><b>מד לחץ קנייה</b><div><span id="pressureBar"></span></div><em id="pressureLabel">לחץ גבוה</em></div><div class="choice-grid">${options.map(([key,label,desc])=>`<button class="choice" data-pressure-choice="${key}"><b>${label}</b><span>${desc}</span></button>`).join('')}</div><div id="feedback" class="feedback" hidden></div></div>`);
+}
+function lesson2DiscoveryStep(step){
+  return wrap(step, `<div class="discovery-grid lesson2-discovery">${lesson2Tricks.map(t=>`<article><span>${t.icon}</span><h3>${t.label}</h3><p>${t.text}</p></article>`).join('')}</div><div class="summary-box"><h3>מודל עצור–בדוק–בחר</h3><p><b>עצור:</b> מזהים לחץ. <b>בדוק:</b> מחיר אמיתי, חלופה, צורך, מנוי ותנאים. <b>בחר:</b> מחליטים לפי מטרה ולא לפי דחיפה רגעית.</p></div>`);
+}
+function lesson2SortStep(step){
+  return wrap(step, `<div class="sort-lab"><div class="sort-items">${lesson2SortItems.map(item=>`<button type="button" class="sort-token" data-sort-item="${item.id}">${item.text}</button>`).join('')}</div><div class="sort-zones"><button type="button" data-sort-zone="need">צורך</button><button type="button" data-sort-zone="important">רצון חשוב</button><button type="button" data-sort-zone="impulse">רצון רגעי / FOMO</button></div><div id="sortResult" class="summary-box"><h3>בחרו כרטיס ואז קטגוריה</h3><p>אפשר גם ללחוץ על כרטיס ואז על קטגוריה. המשוב יסביר למה ההקשר חשוב.</p></div><div id="feedback" class="feedback" hidden></div></div>`);
+}
+function lesson2TeacherStopStep(step){
+  return wrap(step, `<div class="teacher-stop"><h3>נקודת מדריך — דיון בלי שיפוט</h3><ul><li>האם “50% הנחה” חוסך כסף אם לא תכננתי לקנות?</li><li>מתי רצון הוא רצון חשוב ולא בזבוז?</li><li>מה כלל המתנה סביר לבני נוער: שעה, יום או שבוע?</li><li>איך מדברים על קניות בלי לבייש תלמידים או לחשוף מצב משפחתי?</li></ul><p><b>דגש הנחיה:</b> לא מחנכים נגד קניות. מחנכים בעד בחירה מודעת, בדיקה ונימוק.</p></div>`);
+}
+function lesson2CharacterDecisionStep(step){
+  const c = character(); const offer = lesson2CharacterOffers[c.id] || lesson2CharacterOffers.maya;
+  const yearly = offer.subscription ? offer.subscription * 12 : 0;
+  const total = offer.price + offer.shipping + yearly;
+  return wrap(step, `<div class="character-shopping-head"><div><h3>${c.name} מול הצעת קנייה</h3><p><b>מוצר:</b> ${offer.product}</p><p><b>לחץ:</b> ${offer.pressure}</p><p><b>השפעה על מטרה:</b> ${offer.goalImpact}</p></div><div class="price-stack"><span>מחיר כפתור</span><b>${money(offer.price)}</b><small>עלות כוללת משוערת: ${money(total)}</small></div></div><div class="calculator lesson2-calc"><label>מחיר מוצר<input id="l2Price" type="number" value="${offer.price}"></label><label>משלוח / תוספות<input id="l2Shipping" type="number" value="${offer.shipping}"></label><label>מנוי חודשי<input id="l2Subscription" type="number" value="${offer.subscription}"></label><label>חודשים לבדיקה<input id="l2Months" type="number" value="12"></label><div id="l2CalcResult" class="result-box"></div></div><div class="checklist"><label><input type="checkbox" data-buy-check="price"> בדקתי מחיר במקום נוסף</label><label><input type="checkbox" data-buy-check="wait"> קבעתי זמן המתנה: ${offer.wait}</label><label><input type="checkbox" data-buy-check="goal"> בדקתי מה זה עושה למטרה של הדמות</label><label><input type="checkbox" data-buy-check="subscription"> בדקתי מנוי/חידוש אוטומטי/תנאי ביטול</label></div><label class="reason-label">החלטה מנומקת<textarea id="l2Reason" rows="4" placeholder="האם לקנות, להמתין, לחפש חלופה או לוותר? למה?"></textarea></label><button class="btn primary" id="saveLesson2Decision">שמירת החלטת דמות</button><div id="feedback" class="feedback" hidden></div>`);
+}
+function lesson2SummaryStep(step){
+  const d = state.lesson2.characterDecision; const c = d?.character ? (characters.find(item => item.id === d.character) || character()) : character();
+  const summary = d ? `מפגש 2 — ${c.name}: ${d.action}. עלות כוללת משוערת ${money(d.total)}. בדיקות שסומנו: ${d.checked.join(', ') || 'לא סומנו בדיקות'}. נימוק: ${d.reason || 'לא צוין'}.` : 'עוד לא נשמרה החלטת קנייה לדמות. חזרו למשימת הדמות ושמרו החלטה.';
+  return wrap(step, `<div class="summary-box"><h3>סיכום שנוצר מהפעילות</h3><p>${summary}</p><p><b>כלל קנייה חכמה:</b> לפני קנייה שמרגישה דחופה — עוצרים, בודקים עלות כוללת, בודקים חלופה, ורק אז בוחרים.</p></div><textarea id="lesson2ExitText" rows="4" placeholder="הוסיפו כלל אישי: מה אני בודק/ת לפני קנייה דיגיטלית או מבצע?"></textarea><button class="btn primary" id="saveLesson2Summary">שמירה ל־Money Smart Plan</button><div id="feedback" class="feedback" hidden></div>`);
+}
+
 function budgetStep(step){ const cats=['בילויים','אוכל בחוץ','קניות','גיימינג ואפליקציות','מתנות','חיסכון']; return wrap(step, `<div id="budgetSliders">${cats.map((c,i)=>`<div class="slider-row"><b>${c}</b><input type="range" min="0" max="300" step="10" value="${i===5?100:80}" data-budget><span></span></div>`).join('')}</div><div id="budgetTotal" class="budget-total"></div><button class="btn primary" id="budgetFeedback">קבלו משוב</button><div id="feedback" class="feedback" hidden></div>`); }
 function choiceStep(step){ return wrap(step, `<div class="choice-grid">${step.options.map(o=>`<button class="choice" data-choice>${o}</button>`).join('')}</div><div id="feedback" class="feedback" hidden></div>`); }
 function cardsStep(step){ return wrap(step, `<div class="choice-grid">${step.cards.map(c=>`<button class="choice" data-card>${c}</button>`).join('')}</div><div id="feedback" class="feedback" hidden>בחרו כרטיס כדי לקבל ניסוח מתאים.</div>`); }
@@ -283,24 +376,139 @@ function bindStep(step){
   if(step.type==='lesson1Event') bindLesson1Event();
   if(step.type==='lesson1CharacterBudget') bindLesson1CharacterBudget();
   if(step.type==='lesson1Summary') bindLesson1Summary();
+  if(step.type==='lesson2AdLab') bindLesson2AdLab();
+  if(step.type==='lesson2PressureChoice') bindLesson2PressureChoice();
+  if(step.type==='lesson2Sort') bindLesson2Sort();
+  if(step.type==='lesson2CharacterDecision') bindLesson2CharacterDecision();
+  if(step.type==='lesson2Summary') bindLesson2Summary();
   if(step.type==='budget') bindBudget();
   document.querySelectorAll('[data-choice]').forEach(b=> b.onclick=()=> { mark(b); showFeedback(step.feedback || 'בחירה טובה נמדדת לפי התאמה למטרה, בדיקה וגמישות — לא לפי תגובה מהירה.'); addMeters({'בדיקה':1}); });
   document.querySelectorAll('[data-card]').forEach(b=> b.onclick=()=> { mark(b); showFeedback(`שאלה טובה: ${b.textContent}. עכשיו נסו לקשור אותה למטרה של ${character().name}.`); addMeters({'נימוק':1}); });
   document.querySelectorAll('[data-sort]').forEach(b=> b.onclick=()=> { mark(b); showFeedback('הסיווג תלוי בהקשר. כתבו נימוק: האם זו מטרה, צורך, פיתוי, ספקולציה או סיכון?'); addMeters({'נימוק':1,'בדיקה':1}); });
   document.querySelectorAll('[data-smart]').forEach(b=> b.onclick=()=> { mark(b); const val=b.dataset.smart; const msg={balanced:'השארתם גמישות והתקדמות למטרה. זו החלטה מאוזנת.',check:'בדיקה והשוואה משפרות את איכות ההחלטה גם אם בסוף בוחרים לקנות.',goal:'התקדמות למטרה חשובה, אבל כדאי להשאיר מקום להפתעות.',spend:'אפשר ליהנות מכסף, אך כאן חסרים בדיקה ומרווח ביטחון.'}[val]; showFeedback(msg); addMeters(val==='spend'?{'נימוק':1}:{'תכנון':1,'בדיקה':1,'גמישות':1}); });
   document.querySelectorAll('[data-scam]').forEach(b=> b.onclick=()=> { mark(b); const good=b.dataset.scam==='good'; showFeedback(good?'אימות דרך ערוץ אחר הוא צעד חכם. לא מסתמכים רק על הודעה דחופה.':'זו פעולה מסוכנת: לחץ זמן והחלפת מספר הם סימני אזהרה. צריך לאמת בערוץ מוכר.'); addMeters(good?{'סיכון':1,'בדיקה':1}:{'סיכון':1}); });
+  const nextStepBtn = $('nextStepBtn');
+  if (nextStepBtn) nextStepBtn.onclick = () => { state.step = Math.min(lesson().steps.length - 1, state.step + 1); save(); renderLesson(); };
+  const nextLessonBtn = $('nextLessonBtn');
+  if (nextLessonBtn) nextLessonBtn.onclick = () => { state.lesson = Math.min(lessons.length, state.lesson + 1); state.step = 0; save(); render(); };
   if(step.type==='shoppingCalc') bindShoppingCalc(); if(step.type==='interestCalc') bindInterestCalc(); if(step.type==='installments') bindInstallments(); if(step.type==='riskGraph') bindRiskGraph();
   const exitSave=$('exitSave'); if(exitSave) exitSave.onclick=()=>{ $('planNote').value=$('exitText').value; saveNote(); };
 }
 function mark(btn){ btn.parentElement.querySelectorAll('.choice').forEach(x=>x.classList.remove('selected')); btn.classList.add('selected'); }
 function showFeedback(text){ const f=$('feedback'); if(f){ f.hidden=false; f.textContent=text; } }
 
+
+function bindLesson2AdLab(){
+  const found = new Set(state.lesson2.foundTricks || []);
+  const renderFound = () => {
+    const box = $('foundTricks');
+    box.innerHTML = lesson2Tricks.map(t => `<button type="button" class="trick-chip ${found.has(t.key)?'found':''}" data-review-trick="${t.key}">${t.icon} ${t.label}</button>`).join('');
+    document.querySelectorAll('[data-review-trick]').forEach(btn => btn.onclick = () => {
+      const trick = lesson2Tricks.find(t => t.key === btn.dataset.reviewTrick);
+      showFeedback(trick?.text || 'טריק שיווקי שכדאי לבדוק.');
+    });
+  };
+  document.querySelectorAll('[data-trick]').forEach(btn => btn.onclick = () => {
+    const key = btn.dataset.trick;
+    found.add(key);
+    state.lesson2.foundTricks = [...found];
+    save(); renderFound();
+    const trick = lesson2Tricks.find(t => t.key === key);
+    showFeedback(`${trick.icon} ${trick.label}: ${trick.text}`);
+    if (found.size >= 3) addMeters({'בדיקה':1,'נימוק':1});
+  });
+  renderFound();
+}
+function bindLesson2PressureChoice(){
+  const pressure = { buy:95, compare:45, wait:25, skip:20 };
+  const messages = {
+    buy:'קנייה מיידית משאירה את הלחץ גבוה. לפעמים זה בסדר, אבל כאן חסרה בדיקה.',
+    compare:'השוואת מחיר מורידה לחץ ומחזירה שליטה. עכשיו יש נתון נוסף לפני החלטה.',
+    wait:'המתנה קצרה היא כלי חזק נגד FOMO. אם הרצון נשאר מחר — אפשר לבדוק שוב.',
+    skip:'ויתור הוא החלטה לגיטימית כשקנייה לא הייתה בתוכנית ולא מקדמת מטרה.'
+  };
+  document.querySelectorAll('[data-pressure-choice]').forEach(btn => btn.onclick = () => {
+    mark(btn);
+    const key = btn.dataset.pressureChoice;
+    state.lesson2.pressureChoice = key; save();
+    $('pressureBar').style.width = `${pressure[key]}%`;
+    $('pressureLabel').textContent = pressure[key] > 70 ? 'לחץ גבוה' : pressure[key] > 35 ? 'לחץ בינוני' : 'לחץ נמוך';
+    showFeedback(messages[key]);
+    addMeters(key === 'buy' ? {'נימוק':1} : {'בדיקה':1,'גמישות':1});
+  });
+}
+function bindLesson2Sort(){
+  let selected = null;
+  const sortState = state.lesson2.sort || {};
+  const paint = () => document.querySelectorAll('[data-sort-item]').forEach(btn => {
+    const zone = sortState[btn.dataset.sortItem];
+    btn.classList.toggle('selected', btn.dataset.sortItem === selected);
+    btn.dataset.placed = zone || '';
+  });
+  document.querySelectorAll('[data-sort-item]').forEach(btn => btn.onclick = () => { selected = btn.dataset.sortItem; paint(); });
+  document.querySelectorAll('[data-sort-zone]').forEach(zone => zone.onclick = () => {
+    if (!selected) { showFeedback('קודם בוחרים כרטיס קנייה, ואז קטגוריה.'); return; }
+    sortState[selected] = zone.dataset.sortZone;
+    state.lesson2.sort = sortState; save();
+    const item = lesson2SortItems.find(i => i.id === selected);
+    const good = item.best === zone.dataset.sortZone;
+    $('sortResult').innerHTML = `<h3>${good ? 'סיווג טוב' : 'אפשר להתווכח — וזה בסדר'}</h3><p>${item.hint}</p><p><b>העיקר:</b> לא רק התווית חשובה, אלא האם יש נימוק והאם הקנייה מתאימה למטרה ולתקציב.</p>`;
+    showFeedback(good ? 'הסיווג מתאים להקשר הנתון.' : 'בדקו את ההקשר: האם זה באמת דחוף, חשוב, או רק מופעל מלחץ?');
+    addMeters({'נימוק':1,'בדיקה': good ? 1 : 0});
+    selected = null; paint();
+  });
+  paint();
+}
+function bindLesson2CharacterDecision(){
+  const update = () => {
+    const price=+$('l2Price').value, shipping=+$('l2Shipping').value, sub=+$('l2Subscription').value, months=+$('l2Months').value;
+    const total = price + shipping + sub * months;
+    $('l2CalcResult').textContent = `עלות כוללת משוערת: ${money(total)} · מתוכה מנויים/חידושים: ${money(sub * months)} · בדקו האם זה מתאים למטרה של ${character().name}.`;
+    return total;
+  };
+  document.querySelectorAll('.lesson2-calc input').forEach(input => input.oninput = update);
+  update();
+  $('saveLesson2Decision').onclick = () => {
+    const checked = [...document.querySelectorAll('[data-buy-check]:checked')].map(x => x.parentElement.textContent.trim());
+    const reason = $('l2Reason').value.trim();
+    const total = update();
+    let action = reason || 'החלטה ללא ניסוח מלא';
+    state.lesson2.characterDecision = { character:character().id, total, checked, reason, action };
+    save();
+    const enough = checked.length >= 3 && reason.length >= 8;
+    showFeedback(enough ? 'החלטה נשמרה: יש בדיקות ונימוק. עברו לסיכום ועדכון תוכנית.' : 'נשמר, אבל כדי שזה יהיה שלם כדאי לסמן לפחות 3 בדיקות ולכתוב נימוק ברור.');
+    addMeters(enough ? {'בדיקה':1,'נימוק':1,'תכנון':1} : {'נימוק':1});
+  };
+}
+function bindLesson2Summary(){
+  const btn = $('saveLesson2Summary');
+  if (!btn) return;
+  btn.onclick = () => {
+    const d = state.lesson2.characterDecision; const c = d?.character ? (characters.find(item => item.id === d.character) || character()) : character(); const extra = $('lesson2ExitText').value.trim();
+    const text = d ? `מפגש 2 — ${c.name}: החלטת קנייה מודעת. עלות כוללת ${money(d.total)}. בדיקות: ${d.checked.join(', ') || 'לא סומנו'}. נימוק: ${d.reason || 'לא צוין'}. כלל אישי: ${extra || 'לעצור–לבדוק–לבחור לפני קנייה דחופה.'}` : `מפגש 2 — כלל אישי: ${extra || 'לעצור–לבדוק–לבחור לפני קנייה דחופה.'}`;
+    state.notes.unshift({ lesson:2, character:c.name, text, date:new Date().toLocaleString('he-IL') });
+    if(!state.completed.includes(2)) state.completed.push(2);
+    save(); renderNotes(); renderProgress(); showFeedback('נשמר ל־Money Smart Plan. שיעור 2 מוכן למעבר לשיעור הבא.'); addMeters({'בדיקה':1,'נימוק':1});
+  };
+}
+
 function bindLesson1Budget(){
   const budget = lesson1OpeningBudget();
   const inputs = [...document.querySelectorAll('[data-l1-budget]')];
+  let selectedCoin = 50;
   const update = () => {
     let sum = 0;
-    inputs.forEach(input => { budget[input.dataset.l1Budget] = Number(input.value); sum += Number(input.value); input.nextElementSibling.textContent = money(input.value); });
+    inputs.forEach(input => {
+      const key = input.dataset.l1Budget;
+      budget[key] = Number(input.value);
+      sum += Number(input.value);
+      const value = document.querySelector(`[data-bucket-value="${key}"]`);
+      if (value) value.textContent = money(input.value);
+    });
+    const remaining = Math.max(0, 600 - sum);
+    const wallet = $('walletRemaining');
+    if (wallet) wallet.textContent = sum <= 600 ? `${money(remaining)} נשארו לחלוקה` : `${money(sum - 600)} מעל התקציב`;
+    document.querySelectorAll('[data-budget-bucket]').forEach(bucket => bucket.classList.toggle('full-budget', sum >= 600));
     const saving = budget.saving || 0, buffer = budget.buffer || 0;
     const total = $('budgetTotal');
     total.classList.toggle('over', sum !== 600);
@@ -309,7 +517,27 @@ function bindLesson1Budget(){
     $('l1BudgetInsight').innerHTML = `<h3>מה התקציב הזה אומר?</h3><p>חיסכון למטרה: <b>${money(saving)}</b> · כרית ביטחון: <b>${money(buffer)}</b>. אם תגיע הוצאה בלתי צפויה של 90 ₪, ${buffer >= 90 ? 'יש לה כיסוי מלא בלי לשבור את התקציב.' : 'תצטרכו להזיז כסף מקטגוריה אחרת.'}</p>${scoreHtml(score)}`;
     save();
   };
+  const addCoinTo = (key, amount = selectedCoin) => {
+    const sum = sumValues(budget);
+    if (sum >= 600) return;
+    const input = document.querySelector(`[data-l1-budget="${key}"]`);
+    if (!input) return;
+    const allowed = Math.min(Number(amount), 600 - sum, Number(input.max) - Number(input.value));
+    input.value = Number(input.value) + Math.max(0, allowed);
+    update();
+  };
   inputs.forEach(input => input.oninput = update);
+  document.querySelectorAll('[data-coin]').forEach(coin => {
+    coin.onclick = () => { selectedCoin = Number(coin.dataset.coin); document.querySelectorAll('[data-coin]').forEach(c => c.classList.toggle('selected', c === coin)); };
+    coin.ondragstart = (event) => event.dataTransfer.setData('text/plain', coin.dataset.coin);
+  });
+  document.querySelectorAll('[data-budget-bucket]').forEach(bucket => {
+    bucket.ondragover = (event) => { event.preventDefault(); bucket.classList.add('drag-over'); };
+    bucket.ondragleave = () => bucket.classList.remove('drag-over');
+    bucket.ondrop = (event) => { event.preventDefault(); bucket.classList.remove('drag-over'); addCoinTo(bucket.dataset.budgetBucket, Number(event.dataTransfer.getData('text/plain') || selectedCoin)); };
+    bucket.querySelector('.bucket-add').onclick = () => addCoinTo(bucket.dataset.budgetBucket);
+  });
+  document.querySelector('[data-coin="50"]')?.classList.add('selected');
   update();
   $('budgetFeedback').onclick = () => {
     const sum = sumValues(budget);
