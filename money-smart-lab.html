@@ -19,13 +19,12 @@
   </header>
 
   <main class="lab-layout">
-    <aside class="lesson-sidebar" aria-label="ניווט מפגשים">
-      <div class="progress-card">
-        <p>התקדמות בקורס</p>
-        <div class="progress"><span id="overallProgress"></span></div>
-        <b id="progressLabel">0 מתוך 5 מפגשים</b>
+    <aside class="lesson-sidebar exercise-sidebar" aria-label="תרגולי השיעור הנוכחי">
+      <div class="progress-card exercise-card">
+        <p>תרגולי השיעור</p>
+        <b id="currentLessonLabel">מפגש 1</b>
       </div>
-      <nav id="lessonNav" class="lesson-nav"></nav>
+      <nav id="stepTabs" class="tabs exercise-tabs" role="tablist"></nav>
     </aside>
 
     <section class="workbench">
@@ -46,7 +45,6 @@
           <div id="conceptChips" class="concept-chips"></div>
         </div>
 
-        <div class="tabs" id="stepTabs" role="tablist"></div>
         <div id="stepContent" class="step-content"></div>
       </article>
     </section>
