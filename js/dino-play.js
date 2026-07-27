@@ -17,7 +17,7 @@ function nextTarget() {
   if (nextLesson) {
     return { href: `dino-play.html?lesson=${nextLesson.id}`, label: `➡️ המשך למשימה ${nextLesson.id}` };
   }
-  return { href: 'dino-lab.html', label: '🧬 המשך למעבדת יצירת דינוזאור' };
+  return { href: 'art.html', label: '🎨 לשיעור הבא' };
 }
 
 function renderNextStep(show = false) {
@@ -28,10 +28,11 @@ function renderNextStep(show = false) {
     return;
   }
   const target = nextTarget();
-  const note = target.href === 'dino-lab.html'
-    ? 'סיימתם את משימות המיון — עכשיו עוברים לחלק היצירתי של השיעור.'
+  const note = target.href === 'art.html'
+    ? 'מעולה! סיימתם את השיעור. ממשיכים לשיעור הבא.'
     : 'יפה! ממשיכים ברצף השיעור למשימת המיון הבאה.';
   box.innerHTML = `<div class="next-step-note">${note}</div><a class="btn" href="${target.href}">${target.label}</a>`;
+  window.SisiSuccessDialog?.show({ message: box.querySelector('.next-step-note')?.textContent || 'כל הכבוד! אפשר להמשיך קדימה או לנסות שוב.', lessons, lesson, nextHref: target.href, nextLabel: target.label, onRepeat: () => window.location.reload() });
 }
 
 function renderZones() {
