@@ -308,9 +308,42 @@ git reset --hard 4625d0b
 # or use the previous product tag: robotics15-v0.5.0
 ```
 
-### Robotics stable — v0.8.2 — Published
+### Robotics stable — v0.8.3 — Published
 
 - **Status:** Published
+- **Branch:** `main`
+- **Commit:** `8a37465`
+- **Tag:** `robotics-v0.8.3`
+- **Live:** https://robotics.hai.tech
+- **Date recorded:** 2026-07-27
+- **Approved by:** Inna
+
+Product changes:
+
+- Added a real summer account flow instead of leaving the subscription as only a landing page.
+- Added `summer-account.html` with registration, login, learner dashboard, and direct entry to the free Sensi City lesson.
+- Added server API endpoints for summer accounts: `/api/summer/register`, `/api/summer/login`, and `/api/summer/me`.
+- Kept the Morning payment/webhook explicitly marked as missing before full paid-subscription launch.
+- Switched live stable service from static Python serving to the project Node server on port 3006 so the auth API works in production.
+
+Verification:
+
+- `node --check server.js`, `node --check js/summer-account.js`, and `node --check js/summer-subscription.js` passed.
+- Full Node test suite passed: all `tests/*.mjs`, including updated summer subscription/account tests.
+- Live verified: `https://robotics.hai.tech/summer-account.html`, `summer-subscription.html`, and `sensi-city.html?lesson=1` return 200.
+- Live API verified with a temporary test account: register → `/api/summer/me`; test user was removed afterward.
+
+Rollback:
+
+```bash
+git checkout main
+git reset --hard 4635b62
+# or use the previous product tag: robotics-v0.8.2
+```
+
+### Robotics stable — v0.8.2 — Superseded
+
+- **Status:** Superseded by `robotics-v0.8.3`
 - **Branch:** `main`
 - **Commit:** `40f678b`
 - **Tag:** `robotics-v0.8.2`
