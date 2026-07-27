@@ -23,13 +23,13 @@ test('Chess Quest product pages exist and are linked from homepage', () => {
   assertIncludes(indexHtml, 'Chess Quest');
 });
 
-test('Chess Quest course page presents a visual low-text product gateway', () => {
-  assertIncludes(courseHtml, '<title>Chess Quest - ממלכת השחמט</title>');
-  assertIncludes(courseHtml, 'ממלכת');
-  assertIncludes(courseHtml, 'להתחיל לשחק');
-  assertIncludes(courseHtml, 'בחרו שער');
-  assertIncludes(courseHtml, 'מעט מילים. הרבה משחק.');
-  assertIncludes(courseHtml, 'chess-quest-play.html?lesson=15');
+test('Chess Quest course page presents a calm low-noise product gateway', () => {
+  assertIncludes(courseHtml, '<title>Chess Quest - שחמט לילדים</title>');
+  assertIncludes(courseHtml, 'לומדים שחמט');
+  assertIncludes(courseHtml, 'דרך משחק');
+  assertIncludes(courseHtml, 'לוח אינטראקטיבי');
+  assertIncludes(courseHtml, 'מסלול קצר וברור');
+  assertIncludes(courseHtml, 'chess-quest-play.html?lesson=9');
 });
 
 test('Chess Quest interactive lab exposes board, coach, inventory, progress and certificate', () => {
