@@ -28,7 +28,7 @@ test('space course is a separate entry point and does not replace the smart-city
   assertIncludes(smartCityHtml, 'שיעור 1: סיסי בחלל');
   assertIncludes(smartCityHtml, 'href="sensi-city.html?lesson=1"');
   assertIncludes(smartCityHtml, 'סנסי בעיר החכמה');
-  assertIncludes(spaceHtml, 'href="smart-city.html"');
+  assertIncludes(spaceHtml, 'href="sisi.html"');
 });
 
 test('landing page is clearly a space lesson for grade B and frames a 75 minute first lesson', () => {
@@ -102,7 +102,7 @@ test('interactive play page exposes simple controls, run/reset flow, and lesson 
   assertIncludes(playHtml, 'id="run"');
   assertIncludes(playHtml, 'id="undo"');
   assertIncludes(playHtml, 'id="clear"');
-  assertIncludes(playHtml, '🔄 איפוס');
+  assertIncludes(playHtml, '🔁 לנסות שוב');
   assertIncludes(playHtml, 'id="demo"');
   assertIncludes(playHtml, 'js/course-certificate.js');
   assertIncludes(playHtml, 'js/space-play.js');
@@ -113,6 +113,14 @@ test('interactive play page exposes simple controls, run/reset flow, and lesson 
   assertIncludes(playSource, 'פתרון לדוגמה נטען');
   assertIncludes(playSource, 'lessons.map((item)');
   assertIncludes(playSource, 'requiredItems');
+});
+
+test('space success opens a decision dialog and repeat resets the current lesson', () => {
+  assertIncludes(playSource, 'SisiSuccessDialog?.show');
+  assertIncludes(playSource, 'function repeatCurrentLesson');
+  assertIncludes(playSource, 'program = []');
+  assertIncludes(playSource, 'השיעור אופס');
+  assertIncludes(playHtml, 'js/space-play.js?v=20260725-child-ux');
 });
 
 test('game board uses left-to-right grid direction so right and left buttons move visually correctly', () => {
