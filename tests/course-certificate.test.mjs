@@ -16,7 +16,26 @@ test('shared certificate helper defines a reusable completion certificate', () =
   assertIncludes(certificateSource, 'window.SisiCourseCertificate');
   assertIncludes(certificateSource, 'תעודת סיום');
   assertIncludes(certificateSource, 'סיימתם את');
-  assertIncludes(certificateSource, 'כל שיעורי סיסי');
+  assertIncludes(certificateSource, 'לעמוד סיסי');
+});
+
+test('certificate helper ignores empty override values so text never becomes undefined', () => {
+  assertIncludes(certificateSource, 'compactInfo');
+  assertIncludes(certificateSource, "value !== undefined && value !== null && value !== ''");
+});
+
+test('certificate next buttons follow the Sisi lesson sequence, not optional labs', () => {
+  assertIncludes(certificateSource, "'/dino-play.html': { title: 'פארק הדינוזאורים', home: 'dino.html', homeLabel: '🦕 לעמוד הדינוזאורים', next: 'art.html'");
+  assertIncludes(certificateSource, "'/factory-play.html': { title: 'מפעל הלולאות', home: 'factory.html', homeLabel: '🏭 לעמוד המפעל', next: 'garden.html'");
+  assertIncludes(certificateSource, "'/escape-play.html': { title: 'חדר הבריחה', home: 'escape.html', homeLabel: '🔐 לעמוד חדר הבריחה', next: 'finale.html'");
+});
+
+test('shared success dialog offers continue and repeat actions', () => {
+  assertIncludes(certificateSource, 'window.SisiSuccessDialog');
+  assertIncludes(certificateSource, "setAttribute('role', 'dialog')");
+  assertIncludes(certificateSource, 'למשימה הבאה');
+  assertIncludes(certificateSource, 'לנסות שוב');
+  assertIncludes(certificateSource, 'onRepeat');
 });
 
 test('all Sisi course play pages load the certificate helper before their play engine', () => {

@@ -109,6 +109,14 @@ test('interactive play page exposes simple controls, run/reset flow, and lesson 
   assert.ok(!playSource.includes('יצאה מהחלל'), 'Ocean lesson should not show space wording');
 });
 
+test('ocean success opens a decision dialog and repeat resets the current lesson', () => {
+  assertIncludes(playSource, 'SisiSuccessDialog?.show');
+  assertIncludes(playSource, 'function repeatCurrentLesson');
+  assertIncludes(playSource, 'program = []');
+  assertIncludes(playSource, 'השיעור אופס');
+  assertIncludes(playHtml, 'js/ocean-play.js?v=20260725-child-ux');
+});
+
 test('game board uses left-to-right grid direction so right and left buttons move visually correctly', () => {
   assertMatches(oceanCss, /\.grid\{[^}]*direction:ltr/);
   assertIncludes(playSource, "right: [1, 0]");

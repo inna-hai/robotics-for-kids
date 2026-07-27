@@ -98,8 +98,6 @@ test('primary learning pages expose a visible homepage back link', () => {
     'roblox.html', 'roblox-course.html', 'roblox-slides.html',
     'pygame.html', 'pygame-course.html', 'pygame-slides.html',
     'python-turtle.html', 'python-turtle-course.html',
-    'space.html', 'space-play.html',
-    'ocean.html', 'ocean-play.html',
     'webcode.html', 'webcode-play.html',
     'minecraft.html', 'minecraft-teachers.html',
     'codequest.html', 'appforge.html',

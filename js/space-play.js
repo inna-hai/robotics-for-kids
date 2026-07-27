@@ -84,6 +84,14 @@ function setResult(text, success = false) {
   result.style.color = success ? '#15803d' : '#b45309';
 }
 
+function repeatCurrentLesson() {
+  program = [];
+  renderProgram();
+  resetRobot();
+  window.SisiCourseCertificate?.clear();
+  setResult('השיעור אופס. בונים מסלול חדש מהתחלה.');
+}
+
 function resetRobot() {
   robot = { ...lesson.start };
   collected = new Set();
@@ -126,8 +134,10 @@ async function runProgram() {
   }
   if (same(robot, lesson.goal)) {
     const bonus = collected.size ? ` וגם אספה ${collected.size} כוכבים!` : '!';
-    setResult(`יש! סיסי הגיעה ליעד${bonus}`, true);
+    const message = `יש! סיסי הגיעה ליעד${bonus}`;
+    setResult(message, true);
     window.SisiCourseCertificate?.show({ lessons, lesson });
+    window.SisiSuccessDialog?.show({ message, lessons, lesson, onRepeat: repeatCurrentLesson });
   } else {
     setResult('כמעט! סיסי לא הגיעה ליעד. הוסיפו או שנו פקודות ונסו שוב.');
   }
@@ -146,20 +156,18 @@ function init() {
     button.addEventListener('click', () => {
       program.push(button.dataset.cmd);
       renderProgram();
+      window.SisiSuccessDialog?.clear();
       setResult('');
     });
   });
 
   document.getElementById('run').addEventListener('click', runProgram);
-  document.getElementById('undo').addEventListener('click', () => { program.pop(); renderProgram(); setResult(''); });
+  document.getElementById('undo').addEventListener('click', () => { program.pop(); renderProgram(); window.SisiSuccessDialog?.clear(); setResult(''); });
   document.getElementById('clear').addEventListener('click', () => {
-    program = [];
-    renderProgram();
-    resetRobot();
-    window.SisiCourseCertificate?.clear();
-    setResult('המשימה אופסה. אפשר לבנות מסלול מחדש.');
+    window.SisiSuccessDialog?.clear();
+    repeatCurrentLesson();
   });
-  document.getElementById('demo').addEventListener('click', () => { program = [...lesson.commands]; renderProgram(); resetRobot(); setResult('פתרון לדוגמה נטען. עכשיו לחצו הרצה.'); });
+  document.getElementById('demo').addEventListener('click', () => { program = [...lesson.commands]; renderProgram(); resetRobot(); window.SisiSuccessDialog?.clear(); setResult('פתרון לדוגמה נטען. עכשיו לחצו הרצה.'); });
 
   document.getElementById('lesson-nav').innerHTML = lessons.map((item) => `
     <a class="${item.id === lesson.id ? 'active' : ''}" href="space-play.html?lesson=${item.id}">${item.id}</a>

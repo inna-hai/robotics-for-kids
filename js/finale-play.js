@@ -55,7 +55,7 @@ function checkProgram() {
   const conditionOk = selectedCondition === mission.condition;
   const actionsOk = selectedActions.every((id, index) => id === mission.correctActions[index]) && !selectedActions.includes(mission.distractor);
   const explanationOk = selectedExplanation === mission.explanation;
-  if (conditionOk && actionsOk && explanationOk) { setResult('מצוין! בניתם תכנית עיר חכמה שעובדת 🎉', true); window.SisiCourseCertificate?.show({ lessons, lesson }); renderNextStep(true); }
+  if (conditionOk && actionsOk && explanationOk) { setResult('מצוין! בניתם תכנית עיר חכמה שעובדת 🎉', true); window.SisiCourseCertificate?.show({ lessons: missions, lesson: mission }); renderNextStep(true); }
   else if (!conditionOk) setResult('התנאי לא מתאים למשימה. חפשו את שני הרמזים שמתארים את הבעיה בעיר.');
   else if (!actionsOk) setResult('יש בעיה ברצף הפעולות או פעולה מיותרת. בדקו מה מקדם את המטרה ומה לא.');
   else setResult('התכנית טובה. עכשיו בחרו הסבר נכון שמראה שהבנתם למה היא עובדת.');
@@ -70,7 +70,7 @@ function nextTarget() {
   const currentIndex = missions.findIndex((item) => item.id === mission.id);
   const next = missions[currentIndex + 1];
   if (next) return { href: `finale-play.html?lesson=${next.id}`, label: `➡️ המשך למשימת שיא ${next.id}` };
-  return { href: 'finale-lab.html', label: '🏙️ המשך למעבדת העיר החכמה' };
+  return { href: 'sisi.html', label: '🤖 לעמוד סיסי' };
 }
 function renderNextStep(show = false) {
   const box = document.getElementById('next-step');
@@ -78,6 +78,7 @@ function renderNextStep(show = false) {
   if (!show) { box.innerHTML = ''; return; }
   const target = nextTarget();
   box.innerHTML = `<div class="next-step-note">המשימה בעיר הצליחה! ממשיכים לאתגר הבא.</div><a class="btn" href="${target.href}">${target.label}</a>`;
+  window.SisiSuccessDialog?.show({ message: box.querySelector('.next-step-note')?.textContent || 'כל הכבוד! אפשר להמשיך קדימה או לנסות שוב.', lessons: missions, lesson: mission, nextHref: target.href, nextLabel: target.label, onRepeat: () => window.location.reload() });
 }
 function init() {
   document.getElementById('page-title').textContent = `${mission.emoji} ${mission.title}`;
