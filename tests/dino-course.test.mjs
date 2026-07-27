@@ -40,7 +40,7 @@ test('landing page frames a new classification/data mechanic for grade B', () =>
   assertIncludes(dinoHtml, 'שיעור 6 • דינוזאורים ודאטה • כיתות ב׳ • 75 דקות');
   assertIncludes(dinoHtml, 'מיון לפי מאפיינים');
   assertIncludes(dinoHtml, 'דאטה');
-  assertIncludes(dinoHtml, 'מעבדת יצירת דינוזאור');
+  assertIncludes(dinoHtml, 'מעבדת יצירה');
   assertIncludes(dinoHtml, 'משימות 1–4 + מעבדת יצירה במשך 76 דקות');
   assertIncludes(dinoHtml, 'href="dino-play.html?lesson=1"');
   assertIncludes(dinoHtml, 'js/dino-lessons.js');
@@ -72,9 +72,9 @@ test('dino engine checks selected zone against data answer and provides hints', 
   assertIncludes(playSource, 'selectedZone === lesson.dino.answer');
   assertIncludes(playSource, 'renderNextStep(true)');
   assertIncludes(playSource, 'function nextTarget()');
-  assertIncludes(playSource, "href: 'dino-lab.html'");
+  assertIncludes(playSource, "href: 'art.html'");
   assertIncludes(playSource, 'המשך למשימה');
-  assertIncludes(playSource, 'המשך למעבדת יצירת דינוזאור');
+  assertIncludes(playSource, 'לשיעור הבא');
   assertIncludes(playSource, 'function showHint()');
   assertIncludes(playSource, 'answerZone.hint');
 });
