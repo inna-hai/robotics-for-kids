@@ -46,7 +46,8 @@ test('registration, login, and account pages are separate product screens', () =
   assertIncludes(registerHtml, 'id="register-form"');
   assertNotIncludes(registerHtml, 'id="login-form"');
   assertIncludes(registerHtml, 'כדי להתחיל ללמוד צריך להירשם');
-  assertIncludes(registerHtml, 'להירשם ולהתחיל את המסע');
+  assertIncludes(registerHtml, 'להירשם ולהתחיל ללמוד');
+  assertIncludes(registerHtml, 'השיעור הראשון בסדרת סיסי');
   assertIncludes(registerHtml, 'login.html');
 
   assertIncludes(loginHtml, '<title>כניסה ללומדות hai.tech</title>');
@@ -56,7 +57,7 @@ test('registration, login, and account pages are separate product screens', () =
   assertIncludes(loginHtml, 'register.html');
 
   assertIncludes(accountHtml, '<title>האזור שלי | hai.tech</title>');
-  assertIncludes(accountHtml, 'נרשמים כדי להתחיל את המסע');
+  assertIncludes(accountHtml, 'נרשמים כדי להתחיל ללמוד');
   assertIncludes(accountHtml, 'הרשמה חדשה');
   assertIncludes(accountHtml, 'כניסה לחשבון קיים');
   assertIncludes(accountHtml, 'סיסי · שיעור 1');
