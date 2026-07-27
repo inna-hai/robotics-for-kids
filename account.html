@@ -35,6 +35,16 @@
       <h2>האזור שלי</h2>
       <p class="hint" id="welcome-text"></p>
       <span class="status" id="subscription-status">התנסות</span>
+      <div class="children-box" id="children-box" hidden>
+        <h3>הילדים שלי</h3>
+        <p class="hint">כל ילד/ה מקבל/ת קוד כניסה ו-PIN, כדי להיכנס לבד בלי שההורה יצטרך להתחבר בכל פעם.</p>
+        <div class="children-list" id="children-list"></div>
+        <form class="add-child-form" id="add-child-form">
+          <div class="field"><label for="new-child-name">שם ילד/ה נוסף/ת</label><input id="new-child-name" name="name" required></div>
+          <div class="field"><label for="new-child-pin">PIN לילד/ה</label><input id="new-child-pin" name="pin" inputmode="numeric" pattern="[0-9]{4,6}" minlength="4" maxlength="6" placeholder="למשל 1234" required></div>
+          <button class="btn green" type="submit">להוסיף ילד/ה</button>
+        </form>
+      </div>
       <div class="progress-summary" id="progress-summary">התקדמות: עדיין אין משימות שהושלמו.</div>
       <div class="course-list">
         <article class="course"><div><h3>סיסי · שיעור 1: חלל</h3><p>השיעור הראשון זמין עכשיו. המשך הסדרה נפתח למנויים.</p></div><a class="btn green" href="space.html">כניסה לשיעור</a></article>

@@ -3,13 +3,16 @@
   const API_PATHS = {
     register: '/api/summer/register',
     login: '/api/summer/login',
+    'child-login': '/api/summer/child-login',
     me: '/api/summer/me',
     logout: '/api/summer/logout',
+    children: '/api/summer/children',
     progress: '/api/progress?courseId=sisi&lessonId=space',
   };
   const forms = {
     register: document.getElementById('register-form'),
     login: document.getElementById('login-form'),
+    'child-login': document.getElementById('child-login-form'),
   };
   const message = document.getElementById('auth-message');
   const dashboard = document.getElementById('dashboard-panel');
@@ -47,14 +50,39 @@
     }
   }
 
-  function renderUser(user) {
+  function renderChildren(children = []) {
+    const box = document.getElementById('children-box');
+    const list = document.getElementById('children-list');
+    if (!box || !list) return;
+    box.hidden = false;
+    list.innerHTML = children.length ? children.map((child) => `
+      <article class="child-card">
+        <strong>${escapeHtml(child.name)}</strong>
+        <span>קוד ילד: <b dir="ltr">${escapeHtml(child.accessCode)}</b></span>
+        <small>הילד/ה נכנס/ת דרך login.html עם הקוד הזה וה-PIN שבחרת.</small>
+      </article>
+    `).join('') : '<p class="hint">עדיין לא נוספו ילדים.</p>';
+  }
+
+  function escapeHtml(value) {
+    return String(value || '').replace(/[&<>"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char]));
+  }
+
+  function renderUser(user, options = {}) {
     if (!user) return;
-    authPanel.style.display = 'none';
-    dashboard.classList.add('active');
-    welcome.textContent = `שלום ${user.parentName}, החשבון של ${user.studentName} מוכן.`;
+    if (authPanel) authPanel.style.display = 'none';
+    if (dashboard) dashboard.classList.add('active');
+    const child = options.child;
+    const isChild = options.mode === 'child';
+    if (welcome) welcome.textContent = isChild && child
+      ? `שלום ${child.name}, אפשר להתחיל ללמוד.`
+      : `שלום ${user.parentName}, החשבון של ${user.studentName} מוכן.`;
     const active = user.subscriptionStatus === 'active';
-    statusBadge.textContent = active ? 'מנוי פעיל' : 'התנסות פתוחה';
-    statusBadge.classList.toggle('active', active);
+    if (statusBadge) {
+      statusBadge.textContent = active ? 'מנוי פעיל' : 'התנסות פתוחה';
+      statusBadge.classList.toggle('active', active);
+    }
+    if (!isChild) renderChildren(options.children || []);
     loadProgressSummary();
   }
 
@@ -110,7 +138,7 @@
         const data = await api(API_PATHS[action], payload);
         saveToken(data.token);
         setMessage(action === 'register' ? 'החשבון נוצר. אפשר להתחיל ללמוד.' : 'נכנסת בהצלחה.', 'ok');
-        renderUser(data.user);
+        renderUser(data.user, data);
       } catch (error) {
         setMessage(error.message, 'error');
       } finally {
@@ -125,15 +153,36 @@
       api(API_PATHS.logout, {}).catch(() => {}).finally(() => {
         clearToken();
         dashboard.classList.remove('active');
-        authPanel.style.display = '';
+        if (authPanel) authPanel.style.display = '';
         setMessage('התנתקת.', 'ok');
       });
     });
   }
 
+  const addChildForm = document.getElementById('add-child-form');
+  if (addChildForm) {
+    addChildForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const submit = addChildForm.querySelector('button[type="submit"]');
+      submit.disabled = true;
+      setMessage('מוסיף ילד/ה...', '');
+      try {
+        const payload = Object.fromEntries(new FormData(addChildForm).entries());
+        const data = await api(API_PATHS.children, payload);
+        renderChildren(data.children || []);
+        addChildForm.reset();
+        setMessage(`נוסף ילד/ה. קוד כניסה: ${data.child.accessCode}`, 'ok');
+      } catch (error) {
+        setMessage(error.message, 'error');
+      } finally {
+        submit.disabled = false;
+      }
+    });
+  }
+
   if (getToken()) {
     api(API_PATHS.me)
-      .then(data => renderUser(data.user))
+      .then(data => renderUser(data.user, data))
       .catch(() => clearToken());
   }
 })();

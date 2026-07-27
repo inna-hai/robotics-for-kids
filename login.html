@@ -28,11 +28,18 @@
 
     <section class="panel" id="auth-panel">
       <h2>כניסה לחשבון</h2>
-      <p class="hint">הכניסו את המייל והסיסמה שבחרתם בהרשמה.</p>
+      <p class="hint">הורה נכנס עם מייל וסיסמה. ילד/ה יכולים להיכנס לבד עם קוד ילד ו-PIN שקיבלו מההורה.</p>
       <form id="login-form" data-auth-form="login">
         <div class="field"><label for="login-email">מייל</label><input id="login-email" name="email" type="email" autocomplete="email" required></div>
         <div class="field"><label for="login-password">סיסמה</label><div class="password-wrap"><input id="login-password" name="password" type="password" autocomplete="current-password" required><button class="password-toggle" type="button" data-toggle-password="login-password" aria-label="הצגת סיסמה"><span class="eye-icon" aria-hidden="true"></span></button></div></div>
-        <button class="btn primary" type="submit">כניסה לאזור שלי</button>
+        <button class="btn primary" type="submit">כניסת הורה</button>
+      </form>
+      <hr class="soft-divider">
+      <form id="child-login-form" data-auth-form="child-login">
+        <h3>כניסת ילד/ה</h3>
+        <div class="field"><label for="child-access-code">קוד ילד</label><input id="child-access-code" name="accessCode" autocomplete="username" inputmode="text" required></div>
+        <div class="field"><label for="child-pin">PIN</label><div class="password-wrap"><input id="child-pin" name="pin" type="password" autocomplete="current-password" inputmode="numeric" pattern="[0-9]{4,6}" required><button class="password-toggle" type="button" data-toggle-password="child-pin" aria-label="הצגת PIN"><span class="eye-icon" aria-hidden="true"></span></button></div></div>
+        <button class="btn green" type="submit">כניסה לילדים</button>
       </form>
       <p class="switch-line">עוד אין חשבון? <a href="register.html">הרשמה קצרה</a></p>
       <div class="message" id="auth-message" aria-live="polite"></div>

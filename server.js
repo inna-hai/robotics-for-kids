@@ -103,6 +103,28 @@ function openSummerDb() {
       revoked_at TEXT
     );
 
+    CREATE TABLE IF NOT EXISTS summer_children (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL REFERENCES summer_users(id) ON DELETE CASCADE,
+      name TEXT NOT NULL,
+      access_code TEXT NOT NULL UNIQUE,
+      pin_salt TEXT NOT NULL,
+      pin_hash TEXT NOT NULL,
+      access_json TEXT NOT NULL DEFAULT '["sensi-city-lesson-1"]',
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS summer_child_sessions (
+      id TEXT PRIMARY KEY,
+      child_id TEXT NOT NULL REFERENCES summer_children(id) ON DELETE CASCADE,
+      token_hash TEXT NOT NULL UNIQUE,
+      created_at TEXT NOT NULL,
+      expires_at TEXT NOT NULL,
+      last_seen_at TEXT,
+      revoked_at TEXT
+    );
+
     CREATE TABLE IF NOT EXISTS summer_subscription_events (
       id TEXT PRIMARY KEY,
       user_id TEXT REFERENCES summer_users(id) ON DELETE SET NULL,
@@ -127,23 +149,62 @@ function openSummerDb() {
       started_at TEXT NOT NULL,
       completed_at TEXT,
       updated_at TEXT NOT NULL,
-      UNIQUE(user_id, course_id, lesson_id, activity_id)
+      UNIQUE(child_id, course_id, lesson_id, activity_id)
     );
 
     CREATE INDEX IF NOT EXISTS idx_summer_users_email ON summer_users(email);
     CREATE INDEX IF NOT EXISTS idx_summer_sessions_token_hash ON summer_sessions(token_hash);
     CREATE INDEX IF NOT EXISTS idx_summer_sessions_user_id ON summer_sessions(user_id);
+    CREATE INDEX IF NOT EXISTS idx_summer_children_user_id ON summer_children(user_id);
+    CREATE INDEX IF NOT EXISTS idx_summer_children_access_code ON summer_children(access_code);
+    CREATE INDEX IF NOT EXISTS idx_summer_child_sessions_token_hash ON summer_child_sessions(token_hash);
     CREATE INDEX IF NOT EXISTS idx_student_progress_user ON student_progress(user_id);
     CREATE INDEX IF NOT EXISTS idx_student_progress_scope ON student_progress(user_id, course_id, lesson_id);
   `);
+  try { db.prepare('ALTER TABLE student_progress ADD COLUMN child_id TEXT REFERENCES summer_children(id) ON DELETE CASCADE').run(); } catch {}
+  migrateStudentProgressUniqueConstraint(db);
+  db.prepare('CREATE INDEX IF NOT EXISTS idx_student_progress_child ON student_progress(child_id)').run();
   try { fs.chmodSync(SUMMER_DB_FILE, 0o600); } catch {}
   return db;
+}
+
+function migrateStudentProgressUniqueConstraint(db) {
+  const table = db.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'student_progress'").get();
+  if (!table || !String(table.sql || '').includes('UNIQUE(user_id, course_id, lesson_id, activity_id)')) return;
+  db.exec(`
+    ALTER TABLE student_progress RENAME TO student_progress_legacy_unique;
+    CREATE TABLE student_progress (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL REFERENCES summer_users(id) ON DELETE CASCADE,
+      child_id TEXT REFERENCES summer_children(id) ON DELETE CASCADE,
+      course_id TEXT NOT NULL,
+      lesson_id TEXT NOT NULL,
+      activity_id TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'started' CHECK (status IN ('started', 'completed')),
+      score INTEGER DEFAULT 0,
+      attempts INTEGER NOT NULL DEFAULT 0,
+      metadata_json TEXT NOT NULL DEFAULT '{}',
+      started_at TEXT NOT NULL,
+      completed_at TEXT,
+      updated_at TEXT NOT NULL,
+      UNIQUE(child_id, course_id, lesson_id, activity_id)
+    );
+    INSERT OR IGNORE INTO student_progress (
+      id, user_id, child_id, course_id, lesson_id, activity_id, status, score, attempts,
+      metadata_json, started_at, completed_at, updated_at
+    )
+    SELECT id, user_id, child_id, course_id, lesson_id, activity_id, status, score, attempts,
+      metadata_json, started_at, completed_at, updated_at
+    FROM student_progress_legacy_unique;
+    DROP TABLE student_progress_legacy_unique;
+  `);
 }
 
 function withSummerDb(callback) {
   const db = openSummerDb();
   try {
     migrateSummerUsersJson(db);
+    migrateDefaultChildren(db);
     return callback(db);
   } finally {
     db.close();
@@ -193,6 +254,55 @@ function cleanEmail(value) {
   return String(value || '').trim().toLowerCase().slice(0, 180);
 }
 
+function cleanAccessCode(value) {
+  return String(value || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 24);
+}
+
+function generateChildAccessCode(db) {
+  for (let i = 0; i < 20; i += 1) {
+    const code = `HT${crypto.randomBytes(4).toString('hex').toUpperCase()}`;
+    if (!db.prepare('SELECT id FROM summer_children WHERE access_code = ?').get(code)) return code;
+  }
+  return `HT${Date.now().toString(36).toUpperCase()}`;
+}
+
+function createChildRecord(db, userId, name, pin, accessJson) {
+  const now = new Date().toISOString();
+  const salt = crypto.randomBytes(16).toString('hex');
+  const child = {
+    id: crypto.randomUUID(),
+    user_id: userId,
+    name: cleanText(name, 80) || 'ילד/ה',
+    access_code: generateChildAccessCode(db),
+    pin_salt: salt,
+    pin_hash: hashPassword(String(pin || ''), salt),
+    access_json: accessJson || JSON.stringify(['sensi-city-lesson-1']),
+    created_at: now,
+    updated_at: now,
+  };
+  db.prepare(`
+    INSERT INTO summer_children (id, user_id, name, access_code, pin_salt, pin_hash, access_json, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(child.id, child.user_id, child.name, child.access_code, child.pin_salt, child.pin_hash, child.access_json, child.created_at, child.updated_at);
+  return child;
+}
+
+function migrateDefaultChildren(db) {
+  const users = db.prepare(`
+    SELECT u.* FROM summer_users u
+    LEFT JOIN summer_children c ON c.user_id = u.id
+    WHERE c.id IS NULL
+  `).all();
+  if (!users.length) return;
+  const tx = db.transaction((items) => {
+    for (const user of items) {
+      const child = createChildRecord(db, user.id, user.student_name || 'ילד/ה', crypto.randomInt(1000, 10000).toString(), user.access_json);
+      db.prepare('UPDATE student_progress SET child_id = ? WHERE user_id = ? AND child_id IS NULL').run(child.id, user.id);
+    }
+  });
+  tx(users);
+}
+
 function hashPassword(password, salt) {
   return crypto.createHash('sha256').update(`${salt}:${password}`).digest('hex');
 }
@@ -212,6 +322,17 @@ function createSummerSession(db, userId) {
   return token;
 }
 
+function createChildSession(db, childId) {
+  const token = crypto.randomBytes(32).toString('base64url');
+  const now = new Date();
+  const expiresAt = new Date(now.getTime() + SESSION_TTL_MS).toISOString();
+  db.prepare(`
+    INSERT INTO summer_child_sessions (id, child_id, token_hash, created_at, expires_at)
+    VALUES (?, ?, ?, ?, ?)
+  `).run(crypto.randomUUID(), childId, tokenHash(token), now.toISOString(), expiresAt);
+  return token;
+}
+
 function getUserBySessionToken(db, token) {
   if (!token) return null;
   const row = db.prepare(`
@@ -226,6 +347,52 @@ function getUserBySessionToken(db, token) {
     db.prepare('UPDATE summer_sessions SET last_seen_at = ? WHERE token_hash = ?').run(new Date().toISOString(), tokenHash(token));
   }
   return row || null;
+}
+
+function getChildSessionByToken(db, token) {
+  if (!token) return null;
+  const row = db.prepare(`
+    SELECT c.*, u.id AS parent_id, u.parent_name, u.email, u.phone, u.subscription_status
+    FROM summer_child_sessions s
+    JOIN summer_children c ON c.id = s.child_id
+    JOIN summer_users u ON u.id = c.user_id
+    WHERE s.token_hash = ?
+      AND s.revoked_at IS NULL
+      AND s.expires_at > ?
+  `).get(tokenHash(token), new Date().toISOString());
+  if (row) {
+    db.prepare('UPDATE summer_child_sessions SET last_seen_at = ? WHERE token_hash = ?').run(new Date().toISOString(), tokenHash(token));
+  }
+  return row || null;
+}
+
+function getSessionProfileByToken(db, token) {
+  const user = getUserBySessionToken(db, token);
+  if (user) return { kind: 'parent', user, child: getDefaultChild(db, user.id) };
+  const child = getChildSessionByToken(db, token);
+  if (!child) return null;
+  return {
+    kind: 'child',
+    user: {
+      id: child.parent_id,
+      parent_name: child.parent_name,
+      student_name: child.name,
+      email: child.email,
+      phone: child.phone,
+      subscription_status: child.subscription_status,
+      access_json: child.access_json,
+      created_at: child.created_at,
+    },
+    child,
+  };
+}
+
+function getDefaultChild(db, userId) {
+  return db.prepare('SELECT * FROM summer_children WHERE user_id = ? ORDER BY created_at LIMIT 1').get(userId) || null;
+}
+
+function listChildrenForUser(db, userId) {
+  return db.prepare('SELECT * FROM summer_children WHERE user_id = ? ORDER BY created_at').all(userId);
 }
 
 function parseCookies(req) {
@@ -253,7 +420,16 @@ function getSummerTokenFromRequest(req) {
 function getSummerUserFromRequest(req) {
   const token = getSummerTokenFromRequest(req);
   if (!token) return null;
-  return withSummerDb(db => getUserBySessionToken(db, token));
+  return withSummerDb(db => {
+    const profile = getSessionProfileByToken(db, token);
+    return profile ? profile.user : null;
+  });
+}
+
+function getSummerProfileFromRequest(req) {
+  const token = getSummerTokenFromRequest(req);
+  if (!token) return null;
+  return withSummerDb(db => getSessionProfileByToken(db, token));
 }
 
 function sessionCookie(token) {
@@ -283,6 +459,23 @@ function publicSummerUser(user) {
   };
 }
 
+function publicChild(child) {
+  if (!child) return null;
+  let access = ['sensi-city-lesson-1'];
+  try {
+    const parsed = JSON.parse(child.access_json || '[]');
+    if (Array.isArray(parsed) && parsed.length) access = parsed;
+  } catch {}
+  return {
+    id: child.id,
+    name: child.name,
+    accessCode: child.access_code,
+    access,
+    createdAt: child.created_at,
+    updatedAt: child.updated_at,
+  };
+}
+
 
 function progressRowToPublic(row) {
   let metadata = {};
@@ -302,8 +495,10 @@ function progressRowToPublic(row) {
 }
 
 async function handleStudentProgress(req, res) {
-  const user = getSummerUserFromRequest(req);
-  if (!user) return send(res, 401, JSON.stringify({ error: 'צריך להתחבר כדי לשמור התקדמות.' }));
+  const profile = getSummerProfileFromRequest(req);
+  const user = profile && profile.user;
+  const child = profile && profile.child;
+  if (!user || !child) return send(res, 401, JSON.stringify({ error: 'צריך להתחבר כדי לשמור התקדמות.' }));
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
 
   if (req.method === 'GET') {
@@ -313,22 +508,22 @@ async function handleStudentProgress(req, res) {
       if (courseId && lessonId) {
         return db.prepare(`
           SELECT * FROM student_progress
-          WHERE user_id = ? AND course_id = ? AND lesson_id = ?
+          WHERE child_id = ? AND course_id = ? AND lesson_id = ?
           ORDER BY activity_id
-        `).all(user.id, courseId, lessonId);
+        `).all(child.id, courseId, lessonId);
       }
       if (courseId) {
         return db.prepare(`
           SELECT * FROM student_progress
-          WHERE user_id = ? AND course_id = ?
+          WHERE child_id = ? AND course_id = ?
           ORDER BY lesson_id, activity_id
-        `).all(user.id, courseId);
+        `).all(child.id, courseId);
       }
       return db.prepare(`
         SELECT * FROM student_progress
-        WHERE user_id = ?
+        WHERE child_id = ?
         ORDER BY course_id, lesson_id, activity_id
-      `).all(user.id);
+      `).all(child.id);
     });
     return send(res, 200, JSON.stringify({ ok: true, progress: rows.map(progressRowToPublic) }));
   }
@@ -349,8 +544,8 @@ async function handleStudentProgress(req, res) {
     const row = withSummerDb(db => {
       const existing = db.prepare(`
         SELECT * FROM student_progress
-        WHERE user_id = ? AND course_id = ? AND lesson_id = ? AND activity_id = ?
-      `).get(user.id, courseId, lessonId, activityId);
+        WHERE child_id = ? AND course_id = ? AND lesson_id = ? AND activity_id = ?
+      `).get(child.id, courseId, lessonId, activityId);
       if (existing) {
         const completedAt = status === 'completed' ? (existing.completed_at || now) : existing.completed_at;
         db.prepare(`
@@ -363,10 +558,10 @@ async function handleStudentProgress(req, res) {
       const id = crypto.randomUUID();
       db.prepare(`
         INSERT INTO student_progress (
-          id, user_id, course_id, lesson_id, activity_id, status, score, attempts,
+          id, user_id, child_id, course_id, lesson_id, activity_id, status, score, attempts,
           metadata_json, started_at, completed_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `).run(id, user.id, courseId, lessonId, activityId, status, score, 1, JSON.stringify(metadata), now, status === 'completed' ? now : null, now);
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `).run(id, user.id, child.id, courseId, lessonId, activityId, status, score, 1, JSON.stringify(metadata), now, status === 'completed' ? now : null, now);
       return db.prepare('SELECT * FROM student_progress WHERE id = ?').get(id);
     });
 
@@ -383,9 +578,27 @@ async function handleSummerAuth(req, res) {
 
   if (req.method === 'GET' && action === 'me') {
     const token = getSummerTokenFromRequest(req) || url.searchParams.get('token');
-    const user = withSummerDb(db => getUserBySessionToken(db, token));
-    if (!user) return send(res, 401, JSON.stringify({ error: 'צריך להתחבר מחדש.' }));
-    return send(res, 200, JSON.stringify({ ok: true, user: publicSummerUser(user) }));
+    const profile = withSummerDb(db => getSessionProfileByToken(db, token));
+    if (!profile) return send(res, 401, JSON.stringify({ error: 'צריך להתחבר מחדש.' }));
+    const children = profile.kind === 'parent' ? withSummerDb(db => listChildrenForUser(db, profile.user.id).map(publicChild)) : [];
+    return send(res, 200, JSON.stringify({
+      ok: true,
+      mode: profile.kind,
+      user: publicSummerUser(profile.user),
+      child: publicChild(profile.child),
+      children,
+    }));
+  }
+
+  if (req.method === 'GET' && action === 'children') {
+    const token = getSummerTokenFromRequest(req) || url.searchParams.get('token');
+    const result = withSummerDb(db => {
+      const user = getUserBySessionToken(db, token);
+      if (!user) return null;
+      return { user, children: listChildrenForUser(db, user.id).map(publicChild) };
+    });
+    if (!result) return send(res, 401, JSON.stringify({ error: 'רק הורה מחובר יכול לנהל ילדים.' }));
+    return send(res, 200, JSON.stringify({ ok: true, children: result.children }));
   }
 
   if (req.method !== 'POST') return send(res, 405, JSON.stringify({ error: 'Method not allowed' }));
@@ -396,7 +609,12 @@ async function handleSummerAuth(req, res) {
     if (action === 'logout') {
       const token = getSummerTokenFromRequest(req);
       if (token) {
-        withSummerDb(db => db.prepare('UPDATE summer_sessions SET revoked_at = ? WHERE token_hash = ?').run(new Date().toISOString(), tokenHash(token)));
+        withSummerDb(db => {
+          const now = new Date().toISOString();
+          const hash = tokenHash(token);
+          db.prepare('UPDATE summer_sessions SET revoked_at = ? WHERE token_hash = ?').run(now, hash);
+          db.prepare('UPDATE summer_child_sessions SET revoked_at = ? WHERE token_hash = ?').run(now, hash);
+        });
       }
       return sendWithHeaders(res, 200, JSON.stringify({ ok: true }), 'application/json; charset=utf-8', {
         'Set-Cookie': clearSessionCookie(),
@@ -443,6 +661,7 @@ async function handleSummerAuth(req, res) {
           user.id, user.parent_name, user.student_name, user.phone, user.email, user.password_salt,
           user.password_hash, user.subscription_status, user.access_json, user.created_at, user.updated_at
         );
+        createChildRecord(db, user.id, studentName, crypto.randomInt(1000, 10000).toString(), user.access_json);
         return { user, token: createSummerSession(db, user.id) };
       });
 
@@ -462,6 +681,43 @@ async function handleSummerAuth(req, res) {
       });
       if (!result) return send(res, 401, JSON.stringify({ error: 'מייל או סיסמה לא נכונים.' }));
       return sendWithHeaders(res, 200, JSON.stringify({ ok: true, token: result.token, user: publicSummerUser(result.user) }), 'application/json; charset=utf-8', {
+        'Set-Cookie': sessionCookie(result.token),
+      });
+    }
+
+    if (action === 'children') {
+      const token = getSummerTokenFromRequest(req);
+      const childName = cleanText(body.name || body.studentName, 80);
+      const pin = String(body.pin || '').trim();
+      if (childName.length < 2) return send(res, 400, JSON.stringify({ error: 'נא למלא שם ילד/ה.' }));
+      if (!/^\d{4,6}$/.test(pin)) return send(res, 400, JSON.stringify({ error: 'ה-PIN צריך להיות 4–6 ספרות.' }));
+      const result = withSummerDb(db => {
+        const user = getUserBySessionToken(db, token);
+        if (!user) return null;
+        const child = createChildRecord(db, user.id, childName, pin, user.access_json);
+        return { child, children: listChildrenForUser(db, user.id).map(publicChild) };
+      });
+      if (!result) return send(res, 401, JSON.stringify({ error: 'רק הורה מחובר יכול להוסיף ילדים.' }));
+      return send(res, 201, JSON.stringify({ ok: true, child: publicChild(result.child), children: result.children }));
+    }
+
+    if (action === 'child-login') {
+      const accessCode = cleanAccessCode(body.accessCode || body.code);
+      const pin = String(body.pin || '').trim();
+      const result = withSummerDb(db => {
+        const child = db.prepare('SELECT * FROM summer_children WHERE access_code = ?').get(accessCode);
+        if (!child || hashPassword(pin, child.pin_salt) !== child.pin_hash) return null;
+        const user = db.prepare('SELECT * FROM summer_users WHERE id = ?').get(child.user_id);
+        return { user, child, token: createChildSession(db, child.id) };
+      });
+      if (!result) return send(res, 401, JSON.stringify({ error: 'קוד ילד או PIN לא נכונים.' }));
+      return sendWithHeaders(res, 200, JSON.stringify({
+        ok: true,
+        mode: 'child',
+        token: result.token,
+        user: publicSummerUser(result.user),
+        child: publicChild(result.child),
+      }), 'application/json; charset=utf-8', {
         'Set-Cookie': sessionCookie(result.token),
       });
     }
