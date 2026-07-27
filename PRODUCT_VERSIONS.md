@@ -308,9 +308,40 @@ git reset --hard 4625d0b
 # or use the previous product tag: robotics15-v0.5.0
 ```
 
-### Robotics stable — v0.8.1 — Published
+### Robotics stable — v0.8.2 — Published
 
 - **Status:** Published
+- **Branch:** `main`
+- **Commit:** `7f685be`
+- **Tag:** `robotics-v0.8.2`
+- **Live:** https://robotics.hai.tech
+- **Date recorded:** 2026-07-27
+- **Approved by:** Inna
+
+Product changes:
+
+- Added a summer subscription landing page: `summer-subscription.html`.
+- Added homepage CTA for a summer learning subscription funnel: free first lesson, then monthly Morning recurring-payment subscription.
+- Added explicit cancellation copy: subscribers can cancel any time by WhatsApp/email before the next charge.
+- Added a payment-link config placeholder (`js/summer-subscription-config.js`) so the Morning recurring-payment link can be inserted safely when ready.
+
+Verification:
+
+- `git diff --check` clean.
+- Full Node test suite passed: all `tests/*.mjs`, including `tests/summer-subscription.test.mjs`.
+- Payment link is intentionally empty until Morning provides the recurring payment URL.
+
+Rollback:
+
+```bash
+git checkout main
+git reset --hard 85183ef
+# or use the previous product tag: robotics-v0.8.1
+```
+
+### Robotics stable — v0.8.1 — Superseded
+
+- **Status:** Superseded by `robotics-v0.8.2`
 - **Branch:** `main`
 - **Commit:** `b574e51`
 - **Tag:** `robotics-v0.8.1`
