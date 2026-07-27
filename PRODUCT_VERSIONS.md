@@ -312,7 +312,7 @@ git reset --hard 4625d0b
 
 - **Status:** Published
 - **Branch:** `main`
-- **Commit:** `7f685be`
+- **Commit:** `40f678b`
 - **Tag:** `robotics-v0.8.2`
 - **Live:** https://robotics.hai.tech
 - **Date recorded:** 2026-07-27
