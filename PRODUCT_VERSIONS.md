@@ -36,6 +36,36 @@ Recommended bump rules:
 
 ## Current Published Versions
 
+### Smart City 15 Lessons — v0.7.5 — Review
+
+- **Status:** Review
+- **Branch:** `feature/structured-15-lessons`
+- **Commit:** `76e4e10`
+- **Tag:** `robotics15-v0.7.5-rc1`
+- **Live:** Not deployed as a published version; merged to the shared development branch for review.
+- **Date recorded:** 2026-07-27
+- **Approved by:** Pending review
+
+Product changes:
+
+- Merged current stable `main` into the shared development branch after Robotics stable `v0.8.1`.
+- Brings PR #15 / Money Smart Lab into `feature/structured-15-lessons`, including course overview, interactive lab, five instructor slide decks, RTL styling, and tests.
+- Keeps existing Sisi / Smart City 15 lesson work on the development branch while syncing recent stable platform improvements.
+
+Verification:
+
+- Merge from `main` into `feature/structured-15-lessons` completed cleanly with no conflicts.
+- `git diff --check HEAD~1..HEAD` passed.
+- Full Node test suite passed on the merged branch: all `tests/*.mjs`.
+
+Rollback:
+
+```bash
+git checkout feature/structured-15-lessons
+git reset --hard 85d7782
+# previous remote state before this sync
+```
+
 ### Smart City 15 Lessons — v0.7.4 — Published
 
 - **Status:** Published
