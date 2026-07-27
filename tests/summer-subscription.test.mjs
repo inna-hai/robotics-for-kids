@@ -44,6 +44,8 @@ test('subscription page routes to real registration and keeps marketing copy cle
 test('registration, login, and account pages are separate product screens', () => {
   assertIncludes(registerHtml, '<title>הרשמה ללומדות hai.tech</title>');
   assertIncludes(registerHtml, 'id="register-form"');
+  assertIncludes(registerHtml, 'name="confirmPassword"');
+  assertIncludes(registerHtml, 'אימות סיסמה');
   assertNotIncludes(registerHtml, 'id="login-form"');
   assertIncludes(registerHtml, 'כדי להתחיל ללמוד צריך להירשם');
   assertIncludes(registerHtml, 'להירשם ולהתחיל ללמוד');
@@ -72,6 +74,8 @@ test('legacy summer account URL redirects to the product account page', () => {
 
 test('summer auth client and server expose account endpoints and protected pages', () => {
   assertIncludes(accountJs, '/api/summer/register');
+  assertIncludes(accountJs, 'payload.password !== payload.confirmPassword');
+  assertIncludes(accountJs, 'הסיסמאות לא תואמות');
   assertIncludes(accountJs, '/api/summer/login');
   assertIncludes(accountJs, '/api/summer/me');
   assertIncludes(accountJs, '/api/summer/logout');

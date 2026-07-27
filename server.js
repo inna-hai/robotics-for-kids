@@ -297,9 +297,11 @@ async function handleSummerAuth(req, res) {
       const phone = cleanText(body.phone, 40);
       const email = cleanEmail(body.email);
       const password = String(body.password || '');
+      const confirmPassword = String(body.confirmPassword || '');
       if (parentName.length < 2 || studentName.length < 2) return send(res, 400, JSON.stringify({ error: 'נא למלא שם הורה ושם ילד/ה.' }));
       if (!/^\S+@\S+\.\S+$/.test(email)) return send(res, 400, JSON.stringify({ error: 'כתובת המייל לא תקינה.' }));
       if (password.length < 6) return send(res, 400, JSON.stringify({ error: 'הסיסמה צריכה להכיל לפחות 6 תווים.' }));
+      if (confirmPassword && password !== confirmPassword) return send(res, 400, JSON.stringify({ error: 'הסיסמאות לא תואמות. נא להקליד שוב.' }));
 
       const result = withSummerDb(db => {
         if (db.prepare('SELECT id FROM summer_users WHERE email = ?').get(email)) {

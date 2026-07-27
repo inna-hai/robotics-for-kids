@@ -78,6 +78,9 @@
       setMessage('בודק...', '');
       try {
         const payload = Object.fromEntries(new FormData(form).entries());
+        if (action === 'register' && payload.password !== payload.confirmPassword) {
+          throw new Error('הסיסמאות לא תואמות. נא להקליד שוב.');
+        }
         const data = await api(API_PATHS[action], payload);
         saveToken(data.token);
         setMessage(action === 'register' ? 'החשבון נוצר. אפשר להתחיל ללמוד.' : 'נכנסת בהצלחה.', 'ok');
