@@ -110,6 +110,7 @@ function openSummerDb() {
       access_code TEXT NOT NULL UNIQUE,
       pin_salt TEXT NOT NULL,
       pin_hash TEXT NOT NULL,
+      subscription_status TEXT NOT NULL DEFAULT 'trial' CHECK (subscription_status IN ('trial', 'active', 'past_due', 'cancelled')),
       access_json TEXT NOT NULL DEFAULT '["sensi-city-lesson-1"]',
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
@@ -162,6 +163,7 @@ function openSummerDb() {
     CREATE INDEX IF NOT EXISTS idx_student_progress_scope ON student_progress(user_id, course_id, lesson_id);
   `);
   try { db.prepare('ALTER TABLE student_progress ADD COLUMN child_id TEXT REFERENCES summer_children(id) ON DELETE CASCADE').run(); } catch {}
+  try { db.prepare("ALTER TABLE summer_children ADD COLUMN subscription_status TEXT NOT NULL DEFAULT 'trial' CHECK (subscription_status IN ('trial', 'active', 'past_due', 'cancelled'))").run(); } catch {}
   migrateStudentProgressUniqueConstraint(db);
   db.prepare('CREATE INDEX IF NOT EXISTS idx_student_progress_child ON student_progress(child_id)').run();
   try { fs.chmodSync(SUMMER_DB_FILE, 0o600); } catch {}
@@ -266,9 +268,10 @@ function generateChildAccessCode(db) {
   return `HT${Date.now().toString(36).toUpperCase()}`;
 }
 
-function createChildRecord(db, userId, name, pin, accessJson) {
+function createChildRecord(db, userId, name, pin, accessJson, subscriptionStatus = 'trial') {
   const now = new Date().toISOString();
   const salt = crypto.randomBytes(16).toString('hex');
+  const safeStatus = ['trial', 'active', 'past_due', 'cancelled'].includes(subscriptionStatus) ? subscriptionStatus : 'trial';
   const child = {
     id: crypto.randomUUID(),
     user_id: userId,
@@ -276,14 +279,15 @@ function createChildRecord(db, userId, name, pin, accessJson) {
     access_code: generateChildAccessCode(db),
     pin_salt: salt,
     pin_hash: hashPassword(String(pin || ''), salt),
+    subscription_status: safeStatus,
     access_json: accessJson || JSON.stringify(['sensi-city-lesson-1']),
     created_at: now,
     updated_at: now,
   };
   db.prepare(`
-    INSERT INTO summer_children (id, user_id, name, access_code, pin_salt, pin_hash, access_json, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `).run(child.id, child.user_id, child.name, child.access_code, child.pin_salt, child.pin_hash, child.access_json, child.created_at, child.updated_at);
+    INSERT INTO summer_children (id, user_id, name, access_code, pin_salt, pin_hash, subscription_status, access_json, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(child.id, child.user_id, child.name, child.access_code, child.pin_salt, child.pin_hash, child.subscription_status, child.access_json, child.created_at, child.updated_at);
   return child;
 }
 
@@ -296,7 +300,7 @@ function migrateDefaultChildren(db) {
   if (!users.length) return;
   const tx = db.transaction((items) => {
     for (const user of items) {
-      const child = createChildRecord(db, user.id, user.student_name || 'ילד/ה', crypto.randomInt(1000, 10000).toString(), user.access_json);
+      const child = createChildRecord(db, user.id, user.student_name || 'ילד/ה', crypto.randomInt(1000, 10000).toString(), user.access_json, user.subscription_status);
       db.prepare('UPDATE student_progress SET child_id = ? WHERE user_id = ? AND child_id IS NULL').run(child.id, user.id);
     }
   });
@@ -352,7 +356,7 @@ function getUserBySessionToken(db, token) {
 function getChildSessionByToken(db, token) {
   if (!token) return null;
   const row = db.prepare(`
-    SELECT c.*, u.id AS parent_id, u.parent_name, u.email, u.phone, u.subscription_status
+    SELECT c.*, u.id AS parent_id, u.parent_name, u.email, u.phone, u.subscription_status AS parent_subscription_status
     FROM summer_child_sessions s
     JOIN summer_children c ON c.id = s.child_id
     JOIN summer_users u ON u.id = c.user_id
@@ -373,16 +377,16 @@ function getSessionProfileByToken(db, token) {
   if (!child) return null;
   return {
     kind: 'child',
-    user: {
-      id: child.parent_id,
-      parent_name: child.parent_name,
-      student_name: child.name,
-      email: child.email,
-      phone: child.phone,
-      subscription_status: child.subscription_status,
-      access_json: child.access_json,
-      created_at: child.created_at,
-    },
+      user: {
+        id: child.parent_id,
+        parent_name: child.parent_name,
+        student_name: child.name,
+        email: child.email,
+        phone: child.phone,
+        subscription_status: child.subscription_status || 'trial',
+        access_json: child.access_json,
+        created_at: child.created_at,
+      },
     child,
   };
 }
@@ -459,6 +463,12 @@ function publicSummerUser(user) {
   };
 }
 
+function publicUserForProfile(profile) {
+  const user = publicSummerUser(profile.user);
+  if (profile.child) user.subscriptionStatus = profile.child.subscription_status || 'trial';
+  return user;
+}
+
 function publicChild(child) {
   if (!child) return null;
   let access = ['sensi-city-lesson-1'];
@@ -470,6 +480,7 @@ function publicChild(child) {
     id: child.id,
     name: child.name,
     accessCode: child.access_code,
+    subscriptionStatus: child.subscription_status || 'trial',
     access,
     createdAt: child.created_at,
     updatedAt: child.updated_at,
@@ -584,7 +595,7 @@ async function handleSummerAuth(req, res) {
     return send(res, 200, JSON.stringify({
       ok: true,
       mode: profile.kind,
-      user: publicSummerUser(profile.user),
+      user: publicUserForProfile(profile),
       child: publicChild(profile.child),
       children,
     }));
@@ -661,12 +672,12 @@ async function handleSummerAuth(req, res) {
           user.id, user.parent_name, user.student_name, user.phone, user.email, user.password_salt,
           user.password_hash, user.subscription_status, user.access_json, user.created_at, user.updated_at
         );
-        createChildRecord(db, user.id, studentName, crypto.randomInt(1000, 10000).toString(), user.access_json);
-        return { user, token: createSummerSession(db, user.id) };
+        const child = createChildRecord(db, user.id, studentName, crypto.randomInt(1000, 10000).toString(), user.access_json, 'trial');
+        return { user, child, children: listChildrenForUser(db, user.id).map(publicChild), token: createSummerSession(db, user.id) };
       });
 
       if (result.conflict) return send(res, 409, JSON.stringify({ error: 'כבר יש חשבון עם המייל הזה. אפשר להתחבר.' }));
-      return sendWithHeaders(res, 201, JSON.stringify({ ok: true, token: result.token, user: publicSummerUser(result.user) }), 'application/json; charset=utf-8', {
+      return sendWithHeaders(res, 201, JSON.stringify({ ok: true, mode: 'parent', token: result.token, user: publicUserForProfile({ user: result.user, child: result.child }), child: publicChild(result.child), children: result.children }), 'application/json; charset=utf-8', {
         'Set-Cookie': sessionCookie(result.token),
       });
     }
@@ -677,10 +688,11 @@ async function handleSummerAuth(req, res) {
       const result = withSummerDb(db => {
         const user = db.prepare('SELECT * FROM summer_users WHERE email = ?').get(email);
         if (!user || hashPassword(password, user.password_salt) !== user.password_hash) return null;
-        return { user, token: createSummerSession(db, user.id) };
+        const child = getDefaultChild(db, user.id);
+        return { user, child, children: listChildrenForUser(db, user.id).map(publicChild), token: createSummerSession(db, user.id) };
       });
       if (!result) return send(res, 401, JSON.stringify({ error: 'מייל או סיסמה לא נכונים.' }));
-      return sendWithHeaders(res, 200, JSON.stringify({ ok: true, token: result.token, user: publicSummerUser(result.user) }), 'application/json; charset=utf-8', {
+      return sendWithHeaders(res, 200, JSON.stringify({ ok: true, mode: 'parent', token: result.token, user: publicUserForProfile({ user: result.user, child: result.child }), child: publicChild(result.child), children: result.children }), 'application/json; charset=utf-8', {
         'Set-Cookie': sessionCookie(result.token),
       });
     }
@@ -715,7 +727,7 @@ async function handleSummerAuth(req, res) {
         ok: true,
         mode: 'child',
         token: result.token,
-        user: publicSummerUser(result.user),
+        user: publicUserForProfile({ user: result.user, child: result.child }),
         child: publicChild(result.child),
       }), 'application/json; charset=utf-8', {
         'Set-Cookie': sessionCookie(result.token),
@@ -908,16 +920,16 @@ function isFreeTrialHtml(pathname, url) {
   return false;
 }
 
-function isPaidUser(user) {
-  return user && user.subscription_status === 'active';
+function isPaidProfile(profile) {
+  return profile && profile.child && profile.child.subscription_status === 'active';
 }
 
 function lockedPage(pathname, user) {
   const loggedIn = Boolean(user);
   const title = loggedIn ? 'התוכן הזה נעול למנויים' : 'צריך להתחבר כדי להמשיך';
   const subtitle = loggedIn
-    ? 'החשבון שלך כרגע במצב התנסות. אחרי הפעלת מנוי התכנים המלאים ייפתחו כאן אוטומטית.'
-    : 'שיעור ראשון פתוח להתנסות. שאר הלומדות נפתחות רק אחרי הרשמה והפעלת מנוי.';
+    ? 'השיעורים הנעולים נפתחים לפי ילד/ה. לילד/ה שבחרת עדיין אין מנוי פעיל, ולכן רק שיעור ההתנסות פתוח כרגע.'
+    : 'שיעור ראשון פתוח להתנסות. שאר הלומדות נפתחות רק אחרי הרשמה והפעלת מנוי לילד/ה.';
   const safePath = cleanText(pathname, 120);
   return `<!DOCTYPE html>
 <html lang="he" dir="rtl">
@@ -942,7 +954,7 @@ function lockedPage(pathname, user) {
       <a class="btn alt" href="summer-subscription.html#join">פרטי המנוי</a>
       <a class="btn alt" href="space.html">סיסי שיעור 1 חינם</a>
     </div>
-    <div class="note">כדי לפתוח את כל הלומדות צריך מנוי פעיל.</div>
+    <div class="note">כדי לפתוח את כל הלומדות צריך מנוי פעיל לילד/ה הספציפי/ת.</div>
   </main>
 </body>
 </html>`;
@@ -965,9 +977,9 @@ function serveStatic(req, res) {
   const ext = path.extname(filePath).toLowerCase();
 
   if (requiresPaidAccess(pathname, ext, url)) {
-    const user = getSummerUserFromRequest(req);
-    if (!isPaidUser(user)) {
-      return send(res, 402, lockedPage(pathname, user), 'text/html; charset=utf-8');
+    const profile = getSummerProfileFromRequest(req);
+    if (!isPaidProfile(profile)) {
+      return send(res, 402, lockedPage(pathname, profile && profile.user), 'text/html; charset=utf-8');
     }
   }
 

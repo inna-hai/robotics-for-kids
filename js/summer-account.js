@@ -59,6 +59,7 @@
       <article class="child-card">
         <strong>${escapeHtml(child.name)}</strong>
         <span>קוד ילד: <b dir="ltr">${escapeHtml(child.accessCode)}</b></span>
+        <em class="child-status ${child.subscriptionStatus === 'active' ? 'active' : ''}">${child.subscriptionStatus === 'active' ? 'מנוי פעיל לילד/ה' : 'התנסות — שיעורים נעולים דורשים מנוי נפרד'}</em>
         <small>הילד/ה נכנס/ת דרך login.html עם הקוד הזה וה-PIN שבחרת.</small>
       </article>
     `).join('') : '<p class="hint">עדיין לא נוספו ילדים.</p>';
