@@ -5,6 +5,7 @@
     login: '/api/summer/login',
     me: '/api/summer/me',
     logout: '/api/summer/logout',
+    progress: '/api/progress?courseId=sisi&lessonId=space',
   };
   const forms = {
     register: document.getElementById('register-form'),
@@ -34,6 +35,18 @@
     localStorage.removeItem(TOKEN_KEY);
   }
 
+  async function loadProgressSummary() {
+    const summary = document.getElementById('progress-summary');
+    if (!summary) return;
+    try {
+      const data = await api(API_PATHS.progress);
+      const completed = (data.progress || []).filter((item) => item.status === 'completed').length;
+      summary.textContent = completed ? `התקדמות: הושלמו ${completed} משימות בשיעור הראשון.` : 'התקדמות: עדיין אין משימות שהושלמו.';
+    } catch {
+      summary.textContent = 'התקדמות: תופיע כאן אחרי התחברות והשלמת משימות.';
+    }
+  }
+
   function renderUser(user) {
     if (!user) return;
     authPanel.style.display = 'none';
@@ -42,6 +55,7 @@
     const active = user.subscriptionStatus === 'active';
     statusBadge.textContent = active ? 'מנוי פעיל' : 'התנסות פתוחה';
     statusBadge.classList.toggle('active', active);
+    loadProgressSummary();
   }
 
   async function api(path, payload) {

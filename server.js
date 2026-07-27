@@ -114,9 +114,27 @@ function openSummerDb() {
       created_at TEXT NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS student_progress (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL REFERENCES summer_users(id) ON DELETE CASCADE,
+      course_id TEXT NOT NULL,
+      lesson_id TEXT NOT NULL,
+      activity_id TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'started' CHECK (status IN ('started', 'completed')),
+      score INTEGER DEFAULT 0,
+      attempts INTEGER NOT NULL DEFAULT 0,
+      metadata_json TEXT NOT NULL DEFAULT '{}',
+      started_at TEXT NOT NULL,
+      completed_at TEXT,
+      updated_at TEXT NOT NULL,
+      UNIQUE(user_id, course_id, lesson_id, activity_id)
+    );
+
     CREATE INDEX IF NOT EXISTS idx_summer_users_email ON summer_users(email);
     CREATE INDEX IF NOT EXISTS idx_summer_sessions_token_hash ON summer_sessions(token_hash);
     CREATE INDEX IF NOT EXISTS idx_summer_sessions_user_id ON summer_sessions(user_id);
+    CREATE INDEX IF NOT EXISTS idx_student_progress_user ON student_progress(user_id);
+    CREATE INDEX IF NOT EXISTS idx_student_progress_scope ON student_progress(user_id, course_id, lesson_id);
   `);
   try { fs.chmodSync(SUMMER_DB_FILE, 0o600); } catch {}
   return db;
@@ -263,6 +281,100 @@ function publicSummerUser(user) {
     access,
     createdAt: user.created_at || user.createdAt,
   };
+}
+
+
+function progressRowToPublic(row) {
+  let metadata = {};
+  try { metadata = JSON.parse(row.metadata_json || '{}'); } catch {}
+  return {
+    courseId: row.course_id,
+    lessonId: row.lesson_id,
+    activityId: row.activity_id,
+    status: row.status,
+    score: row.score || 0,
+    attempts: row.attempts || 0,
+    metadata,
+    startedAt: row.started_at,
+    completedAt: row.completed_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+async function handleStudentProgress(req, res) {
+  const user = getSummerUserFromRequest(req);
+  if (!user) return send(res, 401, JSON.stringify({ error: 'צריך להתחבר כדי לשמור התקדמות.' }));
+  const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+
+  if (req.method === 'GET') {
+    const courseId = cleanText(url.searchParams.get('courseId'), 80);
+    const lessonId = cleanText(url.searchParams.get('lessonId'), 80);
+    const rows = withSummerDb(db => {
+      if (courseId && lessonId) {
+        return db.prepare(`
+          SELECT * FROM student_progress
+          WHERE user_id = ? AND course_id = ? AND lesson_id = ?
+          ORDER BY activity_id
+        `).all(user.id, courseId, lessonId);
+      }
+      if (courseId) {
+        return db.prepare(`
+          SELECT * FROM student_progress
+          WHERE user_id = ? AND course_id = ?
+          ORDER BY lesson_id, activity_id
+        `).all(user.id, courseId);
+      }
+      return db.prepare(`
+        SELECT * FROM student_progress
+        WHERE user_id = ?
+        ORDER BY course_id, lesson_id, activity_id
+      `).all(user.id);
+    });
+    return send(res, 200, JSON.stringify({ ok: true, progress: rows.map(progressRowToPublic) }));
+  }
+
+  if (req.method !== 'POST') return send(res, 405, JSON.stringify({ error: 'Method not allowed' }));
+
+  try {
+    const body = JSON.parse(await readBody(req, 64 * 1024) || '{}');
+    const courseId = cleanText(body.courseId, 80);
+    const lessonId = cleanText(body.lessonId, 80);
+    const activityId = cleanText(body.activityId, 80);
+    const status = body.status === 'completed' ? 'completed' : 'started';
+    const score = Math.max(0, Math.min(100, Number(body.score || 0)));
+    const metadata = body.metadata && typeof body.metadata === 'object' ? body.metadata : {};
+    if (!courseId || !lessonId || !activityId) return send(res, 400, JSON.stringify({ error: 'חסרים פרטי התקדמות.' }));
+    const now = new Date().toISOString();
+
+    const row = withSummerDb(db => {
+      const existing = db.prepare(`
+        SELECT * FROM student_progress
+        WHERE user_id = ? AND course_id = ? AND lesson_id = ? AND activity_id = ?
+      `).get(user.id, courseId, lessonId, activityId);
+      if (existing) {
+        const completedAt = status === 'completed' ? (existing.completed_at || now) : existing.completed_at;
+        db.prepare(`
+          UPDATE student_progress
+          SET status = ?, score = MAX(score, ?), attempts = attempts + 1, metadata_json = ?, completed_at = ?, updated_at = ?
+          WHERE id = ?
+        `).run(status, score, JSON.stringify(metadata), completedAt, now, existing.id);
+        return db.prepare('SELECT * FROM student_progress WHERE id = ?').get(existing.id);
+      }
+      const id = crypto.randomUUID();
+      db.prepare(`
+        INSERT INTO student_progress (
+          id, user_id, course_id, lesson_id, activity_id, status, score, attempts,
+          metadata_json, started_at, completed_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `).run(id, user.id, courseId, lessonId, activityId, status, score, 1, JSON.stringify(metadata), now, status === 'completed' ? now : null, now);
+      return db.prepare('SELECT * FROM student_progress WHERE id = ?').get(id);
+    });
+
+    return send(res, 200, JSON.stringify({ ok: true, progress: progressRowToPublic(row) }));
+  } catch (error) {
+    console.error('student_progress_error', error);
+    return send(res, 400, JSON.stringify({ error: 'לא הצלחנו לשמור התקדמות.' }));
+  }
 }
 
 async function handleSummerAuth(req, res) {
@@ -618,6 +730,7 @@ const server = http.createServer((req, res) => {
   if (req.url.startsWith('/api/admin/feedback')) return handleAdminFeedback(req, res);
   if (req.url.startsWith('/api/feedback')) return handleFeedback(req, res);
   if (req.url.startsWith('/api/summer/')) return handleSummerAuth(req, res);
+  if (req.url.startsWith('/api/progress')) return handleStudentProgress(req, res);
   return serveStatic(req, res);
 });
 

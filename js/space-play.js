@@ -9,6 +9,7 @@ let program = [];
 let robot = { ...lesson.start };
 let collected = new Set();
 let collectedItems = new Set();
+let completedActivities = new Set();
 
 function key(pos) { return `${pos.x},${pos.y}`; }
 function same(a, b) { return a.x === b.x && a.y === b.y; }
@@ -18,6 +19,52 @@ function requiredItems() { return lesson.requiredItems || []; }
 function requiredAt(pos) { return requiredItems().find((item) => same(item.position, pos)); }
 function hasAllRequiredItems() { return requiredItems().every((item) => collectedItems.has(item.id)); }
 function requiredItemsText() { return requiredItems().map((item) => `${item.icon} ${item.label}`).join(', '); }
+function activityId(item = lesson) { return `mission-${item.id}`; }
+function completedCount() { return completedActivities.size; }
+async function loadStudentProgress() {
+  if (!window.StudentProgress) return;
+  try {
+    const data = await window.StudentProgress.list({ courseId: 'sisi', lessonId: 'space' });
+    completedActivities = new Set((data.progress || []).filter((item) => item.status === 'completed').map((item) => item.activityId));
+    renderLessonNav();
+  } catch {
+    // Not logged in yet or offline. The lesson still works; progress simply won't sync.
+  }
+}
+async function saveStudentProgress(status, metadata = {}) {
+  if (!window.StudentProgress) return;
+  try {
+    const data = await window.StudentProgress.save({
+      courseId: 'sisi',
+      lessonId: 'space',
+      activityId: activityId(),
+      status,
+      score: status === 'completed' ? 100 : 0,
+      metadata: {
+        missionId: lesson.id,
+        title: lesson.title,
+        commandCount: program.length,
+        collectedStars: collected.size,
+        ...metadata,
+      },
+    });
+    if (data.progress?.status === 'completed') {
+      completedActivities.add(data.progress.activityId);
+      renderLessonNav();
+    }
+  } catch {
+    setResult('הצלחת! ההתקדמות תישמר אחרי התחברות לחשבון.', true);
+  }
+}
+function renderLessonNav() {
+  const nav = document.getElementById('lesson-nav');
+  if (!nav) return;
+  nav.innerHTML = lessons.map((item) => {
+    const done = completedActivities.has(activityId(item));
+    return `<a class="${item.id === lesson.id ? 'active' : ''} ${done ? 'done' : ''}" href="space-play.html?lesson=${item.id}" title="${done ? 'הושלם' : 'משימה'} ${item.id}">${item.id}${done ? ' ✓' : ''}</a>`;
+  }).join('');
+}
+
 
 function obstacleIcon() {
   if (lesson.id === 4) return '🔥';
@@ -113,6 +160,7 @@ function step(cmd) {
 }
 
 async function runProgram() {
+  saveStudentProgress('started');
   resetRobot();
   setResult('סיסי יוצאת לדרך...');
   if (!program.length) {
@@ -136,6 +184,7 @@ async function runProgram() {
     const bonus = collected.size ? ` וגם אספה ${collected.size} כוכבים!` : '!';
     const message = `יש! סיסי הגיעה ליעד${bonus}`;
     setResult(message, true);
+    saveStudentProgress('completed');
     window.SisiCourseCertificate?.show({ lessons, lesson });
     window.SisiSuccessDialog?.show({ message, lessons, lesson, onRepeat: repeatCurrentLesson });
   } else {
@@ -169,9 +218,8 @@ function init() {
   });
   document.getElementById('demo').addEventListener('click', () => { program = [...lesson.commands]; renderProgram(); resetRobot(); window.SisiSuccessDialog?.clear(); setResult('פתרון לדוגמה נטען. עכשיו לחצו הרצה.'); });
 
-  document.getElementById('lesson-nav').innerHTML = lessons.map((item) => `
-    <a class="${item.id === lesson.id ? 'active' : ''}" href="space-play.html?lesson=${item.id}">${item.id}</a>
-  `).join('');
+  renderLessonNav();
+  loadStudentProgress();
 
   renderGrid();
   renderProgram();
