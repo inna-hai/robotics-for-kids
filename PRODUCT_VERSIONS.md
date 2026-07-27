@@ -308,9 +308,43 @@ git reset --hard 4625d0b
 # or use the previous product tag: robotics15-v0.5.0
 ```
 
-### Robotics stable — v0.8.4 — Published
+### Robotics stable — v0.8.5 — Published
 
 - **Status:** Published
+- **Branch:** `main`
+- **Commit:** `7ac452a`
+- **Tag:** `robotics-v0.8.5`
+- **Live:** https://robotics.hai.tech
+- **Date recorded:** 2026-07-27
+- **Approved by:** Inna
+
+Product changes:
+
+- Added server-side paid access lock for summer learning content.
+- Public without payment: homepage, summer subscription page, summer account/login page, about page, and free Sensi City lesson 1.
+- Locked without active subscription: Sensi lessons 2+, Python, WebCode, Minecraft, Money Smart, Sisi lessons, slides, labs, and other direct HTML learning URLs.
+- Added a polished Hebrew lock screen with CTAs to registration, subscription details, and free lesson 1.
+- Registration/login now also set an HTTP-only session cookie so protected HTML routes can be authorized by the server.
+- Added logout cookie/session revocation.
+
+Verification:
+
+- `npm run check` passed.
+- `npm test` passed: all `tests/*.mjs`.
+- Local paywall integration verified: public pages 200, trial user locked with 402, active user opens paid content with 200.
+- Live verified: `sensi-city.html?lesson=1` 200; `sensi-city.html?lesson=2`, `python-turtle-course.html`, and `webcode-play.html` return 402 lock page; trial user locked; temporary active user opened paid content and was removed afterward.
+
+Rollback:
+
+```bash
+git checkout main
+git reset --hard 59f7006
+# or use the previous product tag: robotics-v0.8.4
+```
+
+### Robotics stable — v0.8.4 — Superseded
+
+- **Status:** Superseded by `robotics-v0.8.5`
 - **Branch:** `main`
 - **Commit:** `3e58b0c`
 - **Tag:** `robotics-v0.8.4`
