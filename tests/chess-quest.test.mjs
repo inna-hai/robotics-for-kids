@@ -23,12 +23,12 @@ test('Chess Quest product pages exist and are linked from homepage', () => {
   assertIncludes(indexHtml, 'Chess Quest');
 });
 
-test('Chess Quest course page presents a polished 15 lesson product', () => {
-  assertIncludes(courseHtml, '<title>Chess Quest - ממלכת השחמט לילדים</title>');
-  assertIncludes(courseHtml, 'קורס שחמט אינטראקטיבי');
-  assertIncludes(courseHtml, 'מפת מסע של 15 שיעורים');
-  assertIncludes(courseHtml, 'סיסי הופכת למאמנת שחמט');
-  assertIncludes(courseHtml, 'בנוי כמוצר להדרכה אמיתית');
+test('Chess Quest course page presents a visual low-text product gateway', () => {
+  assertIncludes(courseHtml, '<title>Chess Quest - ממלכת השחמט</title>');
+  assertIncludes(courseHtml, 'ממלכת');
+  assertIncludes(courseHtml, 'להתחיל לשחק');
+  assertIncludes(courseHtml, 'בחרו שער');
+  assertIncludes(courseHtml, 'מעט מילים. הרבה משחק.');
   assertIncludes(courseHtml, 'chess-quest-play.html?lesson=15');
 });
 
