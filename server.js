@@ -575,6 +575,7 @@ async function handleStudentProgress(req, res) {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
 
   if (req.method === 'GET') {
+    if (profile.kind !== 'child') return send(res, 200, JSON.stringify({ ok: true, progress: [], preview: true }));
     const courseId = cleanText(url.searchParams.get('courseId'), 80);
     const lessonId = cleanText(url.searchParams.get('lessonId'), 80);
     const rows = withSummerDb(db => {
@@ -610,8 +611,17 @@ async function handleStudentProgress(req, res) {
     const activityId = cleanText(body.activityId, 80);
     const status = body.status === 'completed' ? 'completed' : 'started';
     const score = Math.max(0, Math.min(100, Number(body.score || 0)));
-    const metadata = body.metadata && typeof body.metadata === 'object' ? body.metadata : {};
+    if (profile.kind !== 'child') {
+      return send(res, 200, JSON.stringify({
+        ok: true,
+        saved: false,
+        preview: true,
+        message: 'תצוגת הורה בלבד — התקדמות נשמרת רק בכניסת ילד/ה.',
+        progress: { courseId, lessonId, activityId, status, score },
+      }));
+    }
     if (!courseId || !lessonId || !activityId) return send(res, 400, JSON.stringify({ error: 'חסרים פרטי התקדמות.' }));
+    const metadata = body.metadata && typeof body.metadata === 'object' ? body.metadata : {};
     const now = new Date().toISOString();
 
     const row = withSummerDb(db => {

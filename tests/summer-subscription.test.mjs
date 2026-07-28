@@ -86,6 +86,8 @@ test('summer auth client and server expose account endpoints and protected pages
   assertIncludes(accountJs, "!location.pathname.endsWith('/account.html')");
   assertIncludes(accountHtml, 'מה הילדים עשו?');
   assertIncludes(serverJs, "action === 'dashboard'");
+  assertIncludes(serverJs, "profile.kind !== 'child'");
+  assertIncludes(serverJs, 'תצוגת הורה בלבד');
   assertIncludes(accountJs, 'haiTechSummerToken');
   assertIncludes(serverJs, 'better-sqlite3');
   assertIncludes(serverJs, 'SUMMER_DB_FILE');
