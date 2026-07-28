@@ -1121,6 +1121,44 @@ function injectUserBadge(html) {
   return injectHeadAssets(html).replace('</body>', '  <script src="/js/user-badge.js?v=20260728-hide-guest-badge"></script>\n</body>');
 }
 
+function proxyEnglishBuddy(req, res) {
+  const originalUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  let targetPath = originalUrl.pathname.replace(/^\/english-buddy\/?/, '/');
+  if (!targetPath || targetPath === '/') targetPath = '/';
+  const targetQuery = originalUrl.search || '';
+  const proxyReq = http.request({
+    hostname: '127.0.0.1',
+    port: 3037,
+    method: req.method,
+    path: targetPath + targetQuery,
+    headers: { ...req.headers, host: '127.0.0.1:3037' },
+  }, (proxyRes) => {
+    const contentType = String(proxyRes.headers['content-type'] || '');
+    if (contentType.includes('text/html')) {
+      const chunks = [];
+      proxyRes.on('data', chunk => chunks.push(chunk));
+      proxyRes.on('end', () => {
+        let html = Buffer.concat(chunks).toString('utf8');
+        html = html.replaceAll("fetch('/api/tts'", "fetch('/english-buddy/api/tts'")
+                   .replaceAll("fetch('/api/stt'", "fetch('/english-buddy/api/stt'")
+                   .replaceAll('href="/api/', 'href="/english-buddy/api/')
+                   .replaceAll('src="/api/', 'src="/english-buddy/api/');
+        res.writeHead(proxyRes.statusCode || 200, {
+          ...proxyRes.headers,
+          'content-length': Buffer.byteLength(html),
+          'cache-control': 'no-cache',
+        });
+        res.end(html);
+      });
+      return;
+    }
+    res.writeHead(proxyRes.statusCode || 200, proxyRes.headers);
+    proxyRes.pipe(res);
+  });
+  proxyReq.on('error', () => send(res, 502, 'English Buddy is not available right now', 'text/plain; charset=utf-8'));
+  req.pipe(proxyReq);
+}
+
 function serveStatic(req, res) {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   let pathname = decodeURIComponent(url.pathname);
@@ -1162,6 +1200,7 @@ function serveStatic(req, res) {
 }
 
 const server = http.createServer((req, res) => {
+  if (req.url.startsWith('/english-buddy')) return proxyEnglishBuddy(req, res);
   if (req.url.startsWith('/api/admin/feedback')) return handleAdminFeedback(req, res);
   if (req.url.startsWith('/api/feedback')) return handleFeedback(req, res);
   if (req.url.startsWith('/api/summer/')) return handleSummerAuth(req, res);
