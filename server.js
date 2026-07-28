@@ -1085,7 +1085,7 @@ function lockedPage(pathname, user, options = {}) {
     <p>${subtitle}</p>
     <div class="locked-label">${trialOnly ? 'התנסות חינמית אחרי הרשמה' : 'השיעור הזה נפתח אחרי הפעלת מנוי לילד/ה'}</div>
     <div class="actions">
-      ${trialOnly ? '' : '<a class="btn purchase" href="summer-subscription.html#join">רכישת מנוי</a>'}
+      ${trialOnly ? '' : '<a class="btn purchase" href="https://mrng.to/fZiL2SITRp">הפעלת מנוי</a>'}
       <a class="btn primary" href="register.html">הרשמה</a>
       <a class="btn alt" href="login.html">כניסה</a>
     </div>
