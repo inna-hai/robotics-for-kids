@@ -38,7 +38,8 @@ test('subscription page routes to real registration and keeps marketing copy cle
   assertIncludes(subscriptionHtml, '49 ₪');
   assertIncludes(subscriptionHtml, 'href="register.html"');
   assertIncludes(subscriptionHtml, 'הרשמה');
-  assertIncludes(subscriptionHtml, 'להתחיל עכשיו');
+  assertIncludes(subscriptionHtml, 'להירשם ולהתחיל בחינם');
+  assertIncludes(subscriptionHtml, 'הפעלת מנוי ב־Morning');
   assertIncludes(subscriptionHtml, 'מה עושים עכשיו?');
   assertIncludes(subscriptionHtml, 'נרשמים כהורה ומוסיפים ילד/ה');
   assertIncludes(subscriptionHtml, 'גישה מלאה לסיסי, סנסי, Python, Web, משחקים ו־Minecraft');
@@ -130,8 +131,10 @@ test('summer auth client and server expose account endpoints and protected pages
   assertIncludes(serverJs, "pathname === '/space-play.html'");
 });
 
-test('payment config is deliberately empty until Morning link is provided', () => {
-  assertIncludes(configJs, "paymentUrl: ''");
+test('payment config uses the Morning subscription link', () => {
+  assertIncludes(configJs, "paymentUrl: 'https://mrng.to/fZiL2SITRp'");
+  assertIncludes(subscriptionHtml, 'href="https://mrng.to/fZiL2SITRp"');
+  assertIncludes(subscriptionHtml, 'js-payment-link');
   assertIncludes(configJs, 'Morning recurring payment link');
   assertIncludes(behaviorJs, 'HAI_TECH_SUMMER_SUBSCRIPTION');
   assertIncludes(behaviorJs, 'js-payment-link');

@@ -31,7 +31,7 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertIncludes(homepageHtml, 'href="sisi.html"');
   assertIncludes(homepageHtml, 'סדרת סיסי לכיתות ב׳ ומעלה');
   assertIncludes(homepageHtml, 'אפשר להתחיל בחינם · המשך הסדרה למנויים');
-  assertIncludes(homepageHtml, 'href="summer-subscription.html#join"');
+  assertIncludes(homepageHtml, 'href="https://mrng.to/fZiL2SITRp"');
   assertNotIncludes(homepageHtml, 'href="sensi-city.html"');
   assertNotIncludes(homepageHtml, 'href="sensi-classic.html?lesson=1"');
   assertNotIncludes(homepageHtml, 'href="sensi-classic-slides/index.html"');
