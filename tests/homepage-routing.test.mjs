@@ -31,16 +31,25 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertIncludes(homepageHtml, 'href="sensi-classic.html?lesson=1"');
   assertIncludes(homepageHtml, 'href="sensi-classic-slides/index.html"');
   assertIncludes(homepageHtml, 'href="pygame.html"');
-  assertIncludes(homepageHtml, 'href="roblox.html"');
   assertIncludes(homepageHtml, 'href="python-turtle.html"');
   assertIncludes(homepageHtml, 'href="sisi.html"');
   assertIncludes(homepageHtml, 'סדרת סיסי לכיתות ב׳ ומעלה');
   assertIncludes(homepageHtml, 'אפשר להתחיל בחינם · המשך הסדרה למנויים');
-  assertIncludes(homepageHtml, 'href="codequest.html"');
   assertIncludes(homepageHtml, 'href="gamelab.html"');
   assertIncludes(homepageHtml, 'href="appforge.html"');
-  assertIncludes(homepageHtml, 'href="craftom-school/preview/index.html"');
-  assertIncludes(homepageHtml, 'href="craftom-school/README.md"');
+  assertIncludes(homepageHtml, 'CodeQuest');
+  assertIncludes(homepageHtml, 'Roblox Studio');
+  assertIncludes(homepageHtml, 'Money Smart Lab');
+  assertIncludes(homepageHtml, 'Craftom School');
+  assertNotIncludes(homepageHtml, 'href="codequest.html"');
+  assertNotIncludes(homepageHtml, 'href="codequest-play.html"');
+  assertNotIncludes(homepageHtml, 'href="roblox.html"');
+  assertNotIncludes(homepageHtml, 'href="roblox-course.html"');
+  assertNotIncludes(homepageHtml, 'href="money-smart-lab.html"');
+  assertNotIncludes(homepageHtml, 'href="money-smart-course.html"');
+  assertNotIncludes(homepageHtml, 'href="money-smart-slides.html"');
+  assertNotIncludes(homepageHtml, 'href="craftom-school/preview/index.html"');
+  assertNotIncludes(homepageHtml, 'href="craftom-school/README.md"');
 });
 
 test('Sensi 15 remains on sensi-city and classic 5-lesson Sensi is restored separately', () => {
