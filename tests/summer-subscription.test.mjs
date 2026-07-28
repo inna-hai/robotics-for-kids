@@ -29,7 +29,8 @@ test('homepage promotes the subscription and shows the free Sisi experience', ()
   assertIncludes(homepageHtml, 'נסו את סיסי בחינם');
   assertIncludes(homepageHtml, 'סיסי היא קורס משחקי חשיבה ותכנות לילדים צעירים');
   assertIncludes(homepageHtml, 'href="space.html"');
-  assertIncludes(homepageHtml, 'התחלה חינמית · המשך במנוי');
+  assertIncludes(homepageHtml, 'מפת הלמידה');
+  assertIncludes(homepageHtml, 'מתחילים כאן בחינם → אחר כך ממשיכים לסדרת סיסי');
 });
 
 test('subscription page routes to real registration and keeps marketing copy clean', () => {
