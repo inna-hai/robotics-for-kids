@@ -10,6 +10,7 @@ const subscriptionHtml = readFileSync(join(root, 'summer-subscription.html'), 'u
 const registerHtml = readFileSync(join(root, 'register.html'), 'utf8');
 const loginHtml = readFileSync(join(root, 'login.html'), 'utf8');
 const accountHtml = readFileSync(join(root, 'account.html'), 'utf8');
+const thankyouHtml = readFileSync(join(root, 'thankyou.html'), 'utf8');
 const legacyAccountHtml = readFileSync(join(root, 'summer-account.html'), 'utf8');
 const configJs = readFileSync(join(root, 'js', 'summer-subscription-config.js'), 'utf8');
 const behaviorJs = readFileSync(join(root, 'js', 'summer-subscription.js'), 'utf8');
@@ -122,6 +123,8 @@ test('summer auth client and server expose account endpoints and protected pages
   assertIncludes(serverJs, "'/account.html'");
   assertIncludes(serverJs, "'/register.html'");
   assertIncludes(serverJs, "'/login.html'");
+  assertIncludes(serverJs, "'/thankyou.html'");
+  assertIncludes(serverJs, "pathname === '/thankyou'");
   assertIncludes(serverJs, 'requiresPaidAccess');
   assertIncludes(serverJs, 'isFreeTrialLearningHtml');
   assertIncludes(serverJs, 'lockedPage');
@@ -131,13 +134,19 @@ test('summer auth client and server expose account endpoints and protected pages
   assertIncludes(serverJs, "pathname === '/space-play.html'");
 });
 
-test('payment config uses the Morning subscription link', () => {
+test('payment config uses the Morning subscription link and thank-you activation', () => {
   assertIncludes(configJs, "paymentUrl: 'https://mrng.to/fZiL2SITRp'");
   assertIncludes(subscriptionHtml, 'href="https://mrng.to/fZiL2SITRp"');
   assertIncludes(subscriptionHtml, 'js-payment-link');
   assertIncludes(configJs, 'Morning recurring payment link');
   assertIncludes(behaviorJs, 'HAI_TECH_SUMMER_SUBSCRIPTION');
   assertIncludes(behaviorJs, 'js-payment-link');
+  assertIncludes(thankyouHtml, '<title>תודה! המנוי הופעל | hai.tech</title>');
+  assertIncludes(thankyouHtml, '/api/summer/activate-subscription');
+  assertIncludes(thankyouHtml, 'המנוי הופעל בהצלחה');
+  assertIncludes(serverJs, "action === 'activate-subscription'");
+  assertIncludes(serverJs, "subscription_status = ?");
+  assertIncludes(serverJs, "'thankyou_return'");
 });
 
 test('local html/script links point to existing files', () => {

@@ -795,6 +795,40 @@ async function handleSummerAuth(req, res) {
       });
     }
 
+    if (action === 'activate-subscription') {
+      const token = getSummerTokenFromRequest(req);
+      const result = withSummerDb(db => {
+        const profile = getSessionProfileByToken(db, token);
+        if (!profile || !profile.child) return null;
+        const now = new Date().toISOString();
+        db.prepare('UPDATE summer_children SET subscription_status = ?, updated_at = ? WHERE id = ?')
+          .run('active', now, profile.child.id);
+        db.prepare('UPDATE summer_users SET subscription_status = ?, updated_at = ? WHERE id = ?')
+          .run('active', now, profile.user.id);
+        db.prepare(`
+          INSERT INTO summer_subscription_events (id, user_id, provider, provider_event_id, event_type, status, raw_json, created_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `).run(
+          crypto.randomUUID(),
+          profile.user.id,
+          'morning',
+          null,
+          'thankyou_return',
+          'active',
+          JSON.stringify({ childId: profile.child.id, source: 'thankyou', note: 'Activated after Morning thank-you return' }),
+          now
+        );
+        const child = db.prepare('SELECT * FROM summer_children WHERE id = ?').get(profile.child.id);
+        return { user: db.prepare('SELECT * FROM summer_users WHERE id = ?').get(profile.user.id), child };
+      });
+      if (!result) return send(res, 401, JSON.stringify({ error: 'כדי להפעיל את המנוי צריך להתחבר לחשבון שבו נרשמתם.' }));
+      return send(res, 200, JSON.stringify({
+        ok: true,
+        user: publicUserForProfile(result),
+        child: publicChild(result.child),
+      }));
+    }
+
     if (action === 'children') {
       const token = getSummerTokenFromRequest(req);
       const childName = cleanText(body.name || body.studentName, 80);
@@ -1005,6 +1039,7 @@ const PUBLIC_HTML_PATHS = new Set([
   '/account.html',
   '/register.html',
   '/login.html',
+  '/thankyou.html',
   '/about.html',
 ]);
 
@@ -1085,6 +1120,7 @@ function serveStatic(req, res) {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   let pathname = decodeURIComponent(url.pathname);
   if (pathname === '/') pathname = '/index.html';
+  if (pathname === '/thankyou') pathname = '/thankyou.html';
   const filePath = path.normalize(path.join(ROOT, pathname));
   if (!filePath.startsWith(ROOT + path.sep)) return send(res, 403, 'Forbidden', 'text/plain; charset=utf-8');
   if (filePath === DATA_DIR || filePath.startsWith(DATA_DIR + path.sep)) return send(res, 403, 'Forbidden', 'text/plain; charset=utf-8');
