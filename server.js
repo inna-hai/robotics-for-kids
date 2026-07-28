@@ -1069,7 +1069,7 @@ function injectHeadAssets(html) {
   if (!html.includes('</head>')) return html;
   let output = html;
   if (!output.includes('rel="icon"')) {
-    output = output.replace('</head>', '  <link rel="icon" type="image/svg+xml" href="/favicon.svg">\n  <link rel="shortcut icon" href="/favicon.svg">\n</head>');
+    output = output.replace('</head>', '  <link rel="icon" type="image/svg+xml" href="/favicon.svg">\n  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">\n  <link rel="shortcut icon" href="/favicon.ico">\n</head>');
   }
   return output;
 }

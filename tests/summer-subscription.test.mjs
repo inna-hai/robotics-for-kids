@@ -100,7 +100,11 @@ test('summer auth client and server expose account endpoints and protected pages
   assertIncludes(serverJs, 'injectUserBadge');
   assertIncludes(serverJs, 'injectHeadAssets');
   assertIncludes(serverJs, '/favicon.svg');
+  assertIncludes(serverJs, '/favicon.ico');
+  assertIncludes(serverJs, '/favicon-32.png');
   assertIncludes(serverJs, '/js/user-badge.js');
+  assert.ok(existsSync(join(root, 'favicon.ico')), 'Missing favicon.ico');
+  assert.ok(existsSync(join(root, 'favicon-32.png')), 'Missing favicon-32.png');
   assertIncludes(faviconSvg, '<svg');
   assertIncludes(faviconSvg, 'hai.tech robotics favicon');
   assertIncludes(serverJs, 'better-sqlite3');
