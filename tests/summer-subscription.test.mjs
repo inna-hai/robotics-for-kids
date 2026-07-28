@@ -23,13 +23,13 @@ function test(name, fn) { tests.push({ name, fn }); }
 function assertIncludes(source, needle, message = `Missing: ${needle}`) { assert.ok(source.includes(needle), message); }
 function assertNotIncludes(source, needle, message = `Unexpected: ${needle}`) { assert.ok(!source.includes(needle), message); }
 
-test('homepage promotes the subscription and shows the one free Sisi lesson', () => {
+test('homepage promotes the subscription and shows the free Sisi experience', () => {
   assertIncludes(homepageHtml, 'href="summer-subscription.html"');
   assertIncludes(homepageHtml, 'מנוי קיץ לילדים');
   assertIncludes(homepageHtml, 'נסו את סיסי בחינם');
   assertIncludes(homepageHtml, 'סיסי היא קורס משחקי חשיבה ותכנות לילדים צעירים');
   assertIncludes(homepageHtml, 'href="space.html"');
-  assertIncludes(homepageHtml, 'פתוח: שיעור 1 · השאר נעול');
+  assertIncludes(homepageHtml, 'התחלה חינמית · המשך במנוי');
 });
 
 test('subscription page routes to real registration and keeps marketing copy clean', () => {
@@ -55,7 +55,7 @@ test('registration, login, and account pages are separate product screens', () =
   assertNotIncludes(registerHtml, 'id="login-form"');
   assertIncludes(registerHtml, 'כדי להתחיל ללמוד צריך להירשם');
   assertIncludes(registerHtml, 'להירשם ולהתחיל ללמוד');
-  assertIncludes(registerHtml, 'השיעור הראשון בסדרת סיסי');
+  assertIncludes(registerHtml, 'מתחיל התנסות חינמית בסדרת סיסי');
   assertIncludes(registerHtml, 'login.html');
 
   assertIncludes(loginHtml, '<title>כניסה ללומדות hai.tech</title>');
@@ -70,7 +70,7 @@ test('registration, login, and account pages are separate product screens', () =
   assertIncludes(accountHtml, 'נרשמים כדי להתחיל ללמוד');
   assertIncludes(accountHtml, 'הרשמה חדשה');
   assertIncludes(accountHtml, 'כניסה לחשבון קיים');
-  assertIncludes(accountHtml, 'סיסי · שיעור 1');
+  assertIncludes(accountHtml, 'סיסי · התנסות בחינם');
   assertNotIncludes(accountHtml, 'Morning');
   assertNotIncludes(accountHtml, 'webhook');
 });

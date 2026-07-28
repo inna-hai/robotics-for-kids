@@ -26,7 +26,7 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertIncludes(homepageHtml, '<title>פלטפורמת לומדות טכנולוגיה</title>');
   assertIncludes(homepageHtml, 'מרכז הלומדות');
   assertIncludes(homepageHtml, 'href="space.html"');
-  assertIncludes(homepageHtml, 'סיסי שיעור 1 חינם');
+  assertIncludes(homepageHtml, 'התנסות חינמית');
   assertIncludes(homepageHtml, 'href="sensi-city.html"');
   assertIncludes(homepageHtml, 'href="sensi-classic.html?lesson=1"');
   assertIncludes(homepageHtml, 'href="sensi-classic-slides/index.html"');
@@ -34,8 +34,8 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertIncludes(homepageHtml, 'href="roblox.html"');
   assertIncludes(homepageHtml, 'href="python-turtle.html"');
   assertIncludes(homepageHtml, 'href="sisi.html"');
-  assertIncludes(homepageHtml, 'סדרת סיסי לכיתות ב׳');
-  assertIncludes(homepageHtml, 'פתוח עכשיו: שיעור 1 · שאר הסדרה למנויים');
+  assertIncludes(homepageHtml, 'סדרת סיסי לכיתות ב׳ ומעלה');
+  assertIncludes(homepageHtml, 'אפשר להתחיל בחינם · המשך הסדרה למנויים');
   assertIncludes(homepageHtml, 'href="codequest.html"');
   assertIncludes(homepageHtml, 'href="gamelab.html"');
   assertIncludes(homepageHtml, 'href="appforge.html"');
