@@ -26,7 +26,7 @@ function assertNotIncludes(source, needle, message = `Unexpected: ${needle}`) { 
 test('homepage promotes the subscription and shows the one free Sisi lesson', () => {
   assertIncludes(homepageHtml, 'href="summer-subscription.html"');
   assertIncludes(homepageHtml, 'מנוי קיץ לילדים');
-  assertIncludes(homepageHtml, 'נסו את סיסי בחינם');
+  assertIncludes(homepageHtml, 'פתחו שיעור ניסיון חינם לילד/ה');
   assertIncludes(homepageHtml, 'סיסי היא סדרת משחקי חשיבה לילדים');
   assertIncludes(homepageHtml, 'href="space.html"');
   assertIncludes(homepageHtml, 'פתוח: שיעור 1 · השאר נעול');
@@ -37,9 +37,10 @@ test('subscription page routes to real registration and keeps marketing copy cle
   assertIncludes(subscriptionHtml, '49 ₪');
   assertIncludes(subscriptionHtml, 'href="register.html"');
   assertIncludes(subscriptionHtml, 'הרשמה');
-  assertIncludes(subscriptionHtml, 'מתחילים עם סיסי בחינם');
-  assertIncludes(subscriptionHtml, 'נסו את סיסי בחינם');
+  assertIncludes(subscriptionHtml, 'מתחילים עם שיעור ניסיון חינם');
+  assertIncludes(subscriptionHtml, 'פתחו שיעור ניסיון חינם לילד/ה');
   assertNotIncludes(subscriptionHtml, 'נסו את סיסי שיעור 1 בחינם');
+  assertNotIncludes(subscriptionHtml, 'נסו את סיסי בחינם');
   assertIncludes(subscriptionHtml, 'אפשר לבטל בכל עת בהודעת WhatsApp או מייל אלינו');
   assertIncludes(subscriptionHtml, 'space.html');
   assertNotIncludes(subscriptionHtml, 'summer-account.html');
