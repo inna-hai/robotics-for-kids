@@ -7,6 +7,7 @@
     me: '/api/summer/me',
     logout: '/api/summer/logout',
     children: '/api/summer/children',
+    dashboard: '/api/summer/dashboard',
     progress: '/api/progress?courseId=sisi&lessonId=space',
   };
   const forms = {
@@ -38,16 +39,92 @@
     localStorage.removeItem(TOKEN_KEY);
   }
 
+  const COURSE_LABELS = {
+    sisi: 'סיסי',
+    space: 'חלל',
+    webcode: 'WebCode',
+    minecraft: 'Minecraft Kids',
+    pygame: 'Pygame',
+    roblox: 'Roblox',
+    sensi: 'סנסי',
+  };
+
+  function labelFor(value) {
+    return COURSE_LABELS[value] || String(value || '').replace(/[-_]/g, ' ') || 'לא ידוע';
+  }
+
+  function formatDate(value) {
+    if (!value) return 'עדיין אין פעילות';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return 'עדיין אין פעילות';
+    return date.toLocaleString('he-IL', { dateStyle: 'short', timeStyle: 'short' });
+  }
+
   async function loadProgressSummary() {
+    const panel = document.getElementById('parent-progress');
     const summary = document.getElementById('progress-summary');
-    if (!summary) return;
+    const list = document.getElementById('parent-progress-list');
+    if (!summary || !list) return;
+    if (panel) panel.hidden = false;
+    list.innerHTML = '<p class="hint">טוען התקדמות…</p>';
     try {
-      const data = await api(API_PATHS.progress);
-      const completed = (data.progress || []).filter((item) => item.status === 'completed').length;
-      summary.textContent = completed ? `התקדמות: הושלמו ${completed} משימות בשיעור הראשון.` : 'התקדמות: עדיין אין משימות שהושלמו.';
+      const data = await api(API_PATHS.dashboard);
+      const children = data.dashboard?.children || [];
+      const totals = children.reduce((acc, item) => {
+        acc.completed += item.summary?.completedActivities || 0;
+        acc.total += item.summary?.totalActivities || 0;
+        if ((item.summary?.lastActivityAt || '') > acc.last) acc.last = item.summary.lastActivityAt;
+        return acc;
+      }, { completed: 0, total: 0, last: '' });
+      summary.textContent = totals.total
+        ? `סה״כ: ${totals.completed}/${totals.total} משימות הושלמו · פעילות אחרונה: ${formatDate(totals.last)}`
+        : 'עדיין אין פעילות לימודית שמורה. ברגע שילד/ה ישלים/תשלים משימה — זה יופיע כאן.';
+      list.innerHTML = children.length ? children.map(renderChildProgress).join('') : '<p class="hint">עדיין לא נוספו ילדים.</p>';
     } catch {
       summary.textContent = 'התקדמות: תופיע כאן אחרי התחברות והשלמת משימות.';
+      list.innerHTML = '';
     }
+  }
+
+  function renderChildProgress(item) {
+    const child = item.child || {};
+    const s = item.summary || {};
+    const courses = item.courses || [];
+    const courseHtml = courses.length ? courses.map((course) => `
+      <details class="progress-course">
+        <summary>
+          <span>${escapeHtml(labelFor(course.courseId))}</span>
+          <b>${course.completedActivities}/${course.totalActivities} · ${course.completionPercent || 0}%</b>
+        </summary>
+        <div class="lesson-list">
+          ${(course.lessons || []).map((lesson) => `
+            <div class="lesson-row">
+              <span>${escapeHtml(labelFor(lesson.lessonId))}</span>
+              <small>${lesson.completedActivities}/${lesson.totalActivities} הושלמו · ${lesson.attempts || 0} ניסיונות · ציון מיטבי ${lesson.bestScore || 0}</small>
+            </div>
+          `).join('')}
+        </div>
+      </details>
+    `).join('') : '<p class="hint">עדיין אין משימות שמורות לילד/ה הזה/ו.</p>';
+
+    return `
+      <article class="progress-child-card">
+        <div class="progress-child-top">
+          <div>
+            <h4>${escapeHtml(child.name || 'ילד/ה')}</h4>
+            <span class="child-status ${child.subscriptionStatus === 'active' ? 'active' : ''}">${child.subscriptionStatus === 'active' ? 'מנוי פעיל' : 'התנסות'}</span>
+          </div>
+          <div class="progress-ring" style="--p:${s.completionPercent || 0}" aria-label="${s.completionPercent || 0}% הושלם">${s.completionPercent || 0}%</div>
+        </div>
+        <div class="progress-stats">
+          <span><b>${s.completedActivities || 0}</b> הושלמו</span>
+          <span><b>${s.startedActivities || 0}</b> התחילו</span>
+          <span><b>${s.averageScore || 0}</b> ציון ממוצע</span>
+          <span><b>${formatDate(s.lastActivityAt)}</b> פעילות אחרונה</span>
+        </div>
+        ${courseHtml}
+      </article>
+    `;
   }
 
   function renderChildren(children = []) {
@@ -83,8 +160,13 @@
       statusBadge.textContent = active ? 'מנוי פעיל' : 'התנסות פתוחה';
       statusBadge.classList.toggle('active', active);
     }
-    if (!isChild) renderChildren(options.children || []);
-    loadProgressSummary();
+    if (!isChild) {
+      renderChildren(options.children || []);
+      loadProgressSummary();
+    } else {
+      const progressPanel = document.getElementById('parent-progress');
+      if (progressPanel) progressPanel.hidden = true;
+    }
   }
 
   async function api(path, payload) {
@@ -160,6 +242,9 @@
     });
   }
 
+  const refreshProgress = document.getElementById('refresh-progress');
+  if (refreshProgress) refreshProgress.addEventListener('click', loadProgressSummary);
+
   const addChildForm = document.getElementById('add-child-form');
   if (addChildForm) {
     addChildForm.addEventListener('submit', async (event) => {
@@ -171,6 +256,7 @@
         const payload = Object.fromEntries(new FormData(addChildForm).entries());
         const data = await api(API_PATHS.children, payload);
         renderChildren(data.children || []);
+        loadProgressSummary();
         addChildForm.reset();
         setMessage(`נוסף ילד/ה. קוד כניסה: ${data.child.accessCode}`, 'ok');
       } catch (error) {

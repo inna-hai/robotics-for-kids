@@ -505,6 +505,68 @@ function progressRowToPublic(row) {
   };
 }
 
+function summarizeChildProgress(child, rows) {
+  const publicRows = rows.map(progressRowToPublic);
+  const completed = publicRows.filter((row) => row.status === 'completed');
+  const lastActivityAt = publicRows.reduce((latest, row) => {
+    const value = row.updatedAt || row.completedAt || row.startedAt || '';
+    return value && value > latest ? value : latest;
+  }, '');
+  const coursesById = new Map();
+
+  for (const row of publicRows) {
+    if (!coursesById.has(row.courseId)) {
+      coursesById.set(row.courseId, { courseId: row.courseId, totalActivities: 0, completedActivities: 0, lessons: new Map(), lastActivityAt: '' });
+    }
+    const course = coursesById.get(row.courseId);
+    course.totalActivities += 1;
+    if (row.status === 'completed') course.completedActivities += 1;
+    const activityAt = row.updatedAt || row.completedAt || row.startedAt || '';
+    if (activityAt && activityAt > course.lastActivityAt) course.lastActivityAt = activityAt;
+
+    if (!course.lessons.has(row.lessonId)) {
+      course.lessons.set(row.lessonId, { lessonId: row.lessonId, totalActivities: 0, completedActivities: 0, startedActivities: 0, bestScore: 0, attempts: 0, lastActivityAt: '' });
+    }
+    const lesson = course.lessons.get(row.lessonId);
+    lesson.totalActivities += 1;
+    if (row.status === 'completed') lesson.completedActivities += 1;
+    else lesson.startedActivities += 1;
+    lesson.bestScore = Math.max(lesson.bestScore, row.score || 0);
+    lesson.attempts += row.attempts || 0;
+    if (activityAt && activityAt > lesson.lastActivityAt) lesson.lastActivityAt = activityAt;
+  }
+
+  const totalActivities = publicRows.length;
+  const completedActivities = completed.length;
+  const averageScore = completed.length
+    ? Math.round(completed.reduce((sum, row) => sum + (row.score || 0), 0) / completed.length)
+    : 0;
+
+  return {
+    child: publicChild(child),
+    summary: {
+      totalActivities,
+      completedActivities,
+      startedActivities: totalActivities - completedActivities,
+      completionPercent: totalActivities ? Math.round((completedActivities / totalActivities) * 100) : 0,
+      averageScore,
+      lastActivityAt,
+    },
+    courses: Array.from(coursesById.values()).map((course) => ({
+      courseId: course.courseId,
+      totalActivities: course.totalActivities,
+      completedActivities: course.completedActivities,
+      completionPercent: course.totalActivities ? Math.round((course.completedActivities / course.totalActivities) * 100) : 0,
+      lastActivityAt: course.lastActivityAt,
+      lessons: Array.from(course.lessons.values()).sort((a, b) => a.lessonId.localeCompare(b.lessonId)),
+    })).sort((a, b) => (b.lastActivityAt || '').localeCompare(a.lastActivityAt || '')),
+    recent: publicRows
+      .slice()
+      .sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''))
+      .slice(0, 6),
+  };
+}
+
 async function handleStudentProgress(req, res) {
   const profile = getSummerProfileFromRequest(req);
   const user = profile && profile.user;
@@ -610,6 +672,32 @@ async function handleSummerAuth(req, res) {
     });
     if (!result) return send(res, 401, JSON.stringify({ error: 'רק הורה מחובר יכול לנהל ילדים.' }));
     return send(res, 200, JSON.stringify({ ok: true, children: result.children }));
+  }
+
+  if (req.method === 'GET' && action === 'dashboard') {
+    const token = getSummerTokenFromRequest(req) || url.searchParams.get('token');
+    const result = withSummerDb(db => {
+      const user = getUserBySessionToken(db, token);
+      if (!user) return null;
+      const children = listChildrenForUser(db, user.id);
+      const rows = db.prepare(`
+        SELECT * FROM student_progress
+        WHERE user_id = ?
+        ORDER BY updated_at DESC
+      `).all(user.id);
+      const rowsByChild = new Map();
+      for (const row of rows) {
+        const key = row.child_id || '';
+        if (!rowsByChild.has(key)) rowsByChild.set(key, []);
+        rowsByChild.get(key).push(row);
+      }
+      return {
+        user: publicSummerUser(user),
+        children: children.map((child) => summarizeChildProgress(child, rowsByChild.get(child.id) || [])),
+      };
+    });
+    if (!result) return send(res, 401, JSON.stringify({ error: 'רק הורה מחובר יכול לראות התקדמות ילדים.' }));
+    return send(res, 200, JSON.stringify({ ok: true, dashboard: result }));
   }
 
   if (req.method !== 'POST') return send(res, 405, JSON.stringify({ error: 'Method not allowed' }));

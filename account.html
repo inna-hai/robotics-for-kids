@@ -45,7 +45,17 @@
           <button class="btn green" type="submit">להוסיף ילד/ה</button>
         </form>
       </div>
-      <div class="progress-summary" id="progress-summary">התקדמות: עדיין אין משימות שהושלמו.</div>
+      <section class="parent-progress" id="parent-progress" hidden>
+        <div class="section-heading">
+          <div>
+            <h3>מה הילדים עשו?</h3>
+            <p class="hint">סיכום חי לפי ילד/ה: משימות שהושלמו, קורסים, פעילות אחרונה וציונים.</p>
+          </div>
+          <button class="btn light small" id="refresh-progress" type="button">רענון</button>
+        </div>
+        <div class="progress-summary" id="progress-summary">התקדמות: עדיין אין משימות שהושלמו.</div>
+        <div class="parent-progress-list" id="parent-progress-list"></div>
+      </section>
       <div class="course-list">
         <article class="course"><div><h3>סיסי · שיעור 1: חלל</h3><p>השיעור הראשון זמין עכשיו. המשך הסדרה נפתח למנויים.</p></div><a class="btn green" href="space.html">כניסה לשיעור</a></article>
         <article class="course"><div><h3>כל המסלול במקום אחד</h3><p>כשיהיה מנוי פעיל, כאן יופיעו כל השיעורים הפתוחים.</p></div><a class="btn light" href="sisi.html">מרכז סיסי</a></article>
