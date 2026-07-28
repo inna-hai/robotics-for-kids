@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>הרשמה ללומדות hai.tech</title>
-  <meta name="description" content="פותחים כרטיס למידה לילד או לילדה, מתחילים 3 שיעורים בחינם ושומרים איפה עצרתם.">
+  <meta name="description" content="פותחים חשבון למידה לילדים, מתחילים 3 שיעורים בחינם ושומרים את ההתקדמות.">
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/account.css">
 </head>
@@ -17,13 +17,13 @@
   <main class="shell account-grid">
     <section class="hero-card">
       <span class="eyebrow">יאללה, יוצאים לדרך 🚀</span>
-      <h1>פותחים כרטיס שומר־מקום לילד/ה</h1>
-      <p>כמה צעדים קצרים וזהו: הילד/ה מקבל/ת כניסה משלו/ה, מתחיל/ה 3 שיעורים בחינם, והמערכת זוכרת בדיוק איפה עצרנו. בפעם הבאה פשוט חוזרים וממשיכים מהמשימה האחרונה.</p>
+      <h1>פותחים חשבון למידה לילדים</h1>
+      <p>כמה צעדים קצרים וזהו: מתחילים 3 שיעורים בחינם, והמערכת שומרת את ההתקדמות. בפעם הבאה חוזרים בדיוק למשימה שבה עצרתם.</p>
     </section>
 
     <section class="panel" id="auth-panel">
       <h2>פותחים חשבון בכמה קליקים</h2>
-      <p class="hint">ממלאים פרטי הורה וילד/ה ראשון/ה, בוחרים סיסמה, ומתחילים. אחר כך אפשר להוסיף עוד ילדים מהאזור האישי.</p>
+      <p class="hint">ממלאים פרטי הורה ופרטי ילד ראשון, בוחרים סיסמה, ומתחילים. אחר כך אפשר להוסיף עוד ילדים מהאזור האישי.</p>
       <form id="register-form" data-auth-form="register">
         <div class="field"><label for="register-parent">שם הורה</label><input id="register-parent" name="parentName" autocomplete="name" required></div>
         <div class="field"><label for="register-student">שם הילד/ה</label><input id="register-student" name="studentName" required></div>
@@ -31,7 +31,7 @@
         <div class="field"><label for="register-email">מייל</label><input id="register-email" name="email" type="email" autocomplete="email" required></div>
         <div class="field"><label for="register-password">סיסמה</label><div class="password-wrap"><input id="register-password" name="password" type="password" autocomplete="new-password" minlength="6" required><button class="password-toggle" type="button" data-toggle-password="register-password" aria-label="הצגת סיסמה"><span class="eye-icon" aria-hidden="true"></span></button></div></div>
         <div class="field"><label for="register-password-confirm">אימות סיסמה</label><div class="password-wrap"><input id="register-password-confirm" name="confirmPassword" type="password" autocomplete="new-password" minlength="6" required><button class="password-toggle" type="button" data-toggle-password="register-password-confirm" aria-label="הצגת סיסמה"><span class="eye-icon" aria-hidden="true"></span></button></div></div>
-        <button class="btn primary" type="submit">יאללה, לשמור מקום ולהתחיל</button>
+        <button class="btn primary" type="submit">יאללה, להתחיל ללמוד</button>
       </form>
       <p class="switch-line">כבר רשומים? <a href="login.html">כניסה לחשבון</a></p>
       <div class="message" id="auth-message" aria-live="polite"></div>
