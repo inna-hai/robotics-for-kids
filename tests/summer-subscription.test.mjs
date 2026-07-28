@@ -56,6 +56,8 @@ test('registration, login, and account pages are separate product screens', () =
   assertIncludes(loginHtml, 'id="login-form"');
   assertNotIncludes(loginHtml, 'id="register-form"');
   assertIncludes(loginHtml, 'ברוכים השבים');
+  assertIncludes(loginHtml, 'account.html');
+  assertIncludes(loginHtml, 'מעבר לאזור שלי');
   assertIncludes(loginHtml, 'register.html');
 
   assertIncludes(accountHtml, '<title>האזור שלי | hai.tech</title>');
@@ -81,6 +83,7 @@ test('summer auth client and server expose account endpoints and protected pages
   assertIncludes(accountJs, '/api/summer/logout');
   assertIncludes(accountJs, '/api/summer/dashboard');
   assertIncludes(accountJs, "location.href = 'account.html'");
+  assertIncludes(accountJs, "!location.pathname.endsWith('/account.html')");
   assertIncludes(accountHtml, 'מה הילדים עשו?');
   assertIncludes(serverJs, "action === 'dashboard'");
   assertIncludes(accountJs, 'haiTechSummerToken');

@@ -273,7 +273,13 @@
 
   if (getToken()) {
     api(API_PATHS.me)
-      .then(data => renderUser(data.user, data))
+      .then(data => {
+        if (!location.pathname.endsWith('/account.html')) {
+          location.href = 'account.html';
+          return;
+        }
+        renderUser(data.user, data);
+      })
       .catch(() => clearToken());
   }
 })();
