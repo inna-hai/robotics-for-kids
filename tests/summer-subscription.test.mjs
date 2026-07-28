@@ -29,7 +29,8 @@ test('homepage promotes the subscription and routes free Sisi through registrati
   assertIncludes(homepageHtml, 'מנוי קיץ לילדים');
   assertIncludes(homepageHtml, 'נסו 3 שיעורי חשיבה ותכנות בחינם');
   assertIncludes(homepageHtml, 'חשיבה ותכנות לילדים עם סיסי הוא קורס משחקי לילדים צעירים');
-  assertIncludes(homepageHtml, 'href="register.html"');
+  assertIncludes(homepageHtml, 'href="sisi.html"');
+  assertNotIncludes(homepageHtml, 'href="register.html">נסו 3 שיעורי חשיבה ותכנות בחינם');
   assertNotIncludes(homepageHtml, 'href="space.html"');
   assertNotIncludes(homepageHtml, 'מפת הלמידה');
 });

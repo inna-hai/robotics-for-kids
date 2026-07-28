@@ -25,7 +25,8 @@ function assertNotIncludes(source, needle, message = `Unexpected: ${needle}`) { 
 test('homepage is now a platform gateway and links to primary learning modules', () => {
   assertIncludes(homepageHtml, '<title>פלטפורמת לומדות טכנולוגיה</title>');
   assertIncludes(homepageHtml, 'מרכז הלומדות');
-  assertIncludes(homepageHtml, 'href="register.html"');
+  assertIncludes(homepageHtml, '<a class="btn alt" href="sisi.html">נסו 3 שיעורי חשיבה ותכנות בחינם</a>');
+  assertNotIncludes(homepageHtml, 'href="register.html">נסו 3 שיעורי חשיבה ותכנות בחינם');
   assertIncludes(homepageHtml, 'התנסות חינמית');
   assertNotIncludes(homepageHtml, 'href="space.html"');
   assertIncludes(homepageHtml, 'href="sisi.html"');
@@ -34,7 +35,7 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertIncludes(homepageHtml, '3 שיעורים בחינם · המשך הסדרה למנויים');
   assertIncludes(homepageHtml, 'href="https://mrng.to/fZiL2SITRp"');
   assertIncludes(homepageHtml, 'class="actions cta-actions"');
-  assertIncludes(homepageHtml, '<a class="btn cta-free" href="register.html">נסו 3 שיעורי חשיבה ותכנות בחינם</a><a class="btn" href="summer-subscription.html">עמוד מנוי קיץ</a>');
+  assertIncludes(homepageHtml, '<a class="btn cta-free" href="sisi.html">נסו 3 שיעורי חשיבה ותכנות בחינם</a><a class="btn" href="summer-subscription.html">עמוד מנוי קיץ</a>');
   assertNotIncludes(homepageHtml, 'style="justify-content:center"><a class="btn" href="summer-subscription.html">עמוד מנוי קיץ</a><a class="btn cta-free"');
   assertNotIncludes(homepageHtml, 'href="sensi-city.html"');
   assertNotIncludes(homepageHtml, 'href="sensi-classic.html?lesson=1"');
