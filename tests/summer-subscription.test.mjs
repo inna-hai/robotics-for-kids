@@ -38,7 +38,7 @@ test('subscription page routes to real registration and keeps marketing copy cle
   assertIncludes(subscriptionHtml, '49 ₪');
   assertIncludes(subscriptionHtml, 'href="register.html"');
   assertIncludes(subscriptionHtml, 'הרשמה');
-  assertIncludes(subscriptionHtml, 'להירשם ולהתחיל בחינם');
+  assertIncludes(subscriptionHtml, 'להתחיל עכשיו');
   assertIncludes(subscriptionHtml, 'מה עושים עכשיו?');
   assertIncludes(subscriptionHtml, 'נרשמים כהורה ומוסיפים ילד/ה');
   assertIncludes(subscriptionHtml, 'גישה מלאה לסיסי, סנסי, Python, Web, משחקים ו־Minecraft');
