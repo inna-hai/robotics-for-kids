@@ -215,7 +215,7 @@
         }
 
         .debug-panel {
-            display: none;
+            display: flex;
             align-items: center;
             gap: .5rem;
             background: #eff6ff;
@@ -233,6 +233,29 @@
         .debug-panel.active { display: flex; }
         .debug-panel .bug { font-size: 1.15rem; }
         .debug-panel .status { color: #075985; }
+        .check-panel-close {
+            margin-inline-start: auto;
+            width: 26px;
+            height: 26px;
+            border: none;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, .10);
+            color: #334155;
+            font-size: 1rem;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .check-panel-close:hover { background: rgba(15, 23, 42, .18); }
+        .precheck-panel .check-panel-close {
+            float: left;
+            margin: 0 0 .35rem .15rem;
+            margin-inline-start: 0;
+        }
 
         .precheck-panel {
             display: none;
@@ -249,6 +272,7 @@
         }
 
         .precheck-panel.active { display: block; }
+        .precheck-panel.hidden-by-user { display: none !important; }
         .precheck-panel.warning {
             background: #fff7ed;
             border-color: #fed7aa;
@@ -1224,7 +1248,7 @@
             <h2 class="robot-title">👁️ שיעור 1: <span>הרובוט רואה!</span></h2>
 
             <div class="top-exercise-toc" id="topExerciseToc" aria-live="polite">
-                <h3><span>📚 תוכן התרגילים</span><span class="exercise-progress-note">אפשר לחזור לתרגילים שנפתחו · השלימו כדי לפתוח את הבא</span></h3>
+                <h3><span>📚 תוכן התרגילים</span><span class="exercise-progress-note">השלימו את התרגיל כדי לפתוח את התרגיל הבא</span></h3>
                 <div class="exercise-list" id="topExerciseList"></div>
             </div>
 
@@ -1455,16 +1479,11 @@
     </div>
 
     <!-- Welcome Modal -->
-    <div class="modal active" id="welcomeModal">
+    <div class="modal active" id="welcomeModal" aria-live="polite">
         <div class="modal-content">
             <div class="modal-robot">🤖🏙️</div>
             <h2 class="modal-title">ברוכים הבאים לסנסי בעיר החכמה!</h2>
-            <p class="modal-subtitle">בחרו תחנה בעיר — בכל שיעור פותרים בעיה אמיתית עם חיישנים ותכנות.</p>
-
-            <div class="lesson-cards" id="welcomeLessons">
-                <!-- Smart city lessons will be populated by JavaScript -->
-            </div>
-
+            <p class="modal-subtitle">בכל שיעור פותרים בעיה אמיתית בעיר בעזרת חיישנים ותכנות.</p>
             <button class="btn-start" onclick="startLesson(1)">🚀 התחילו בשיעור 1</button>
         </div>
     </div>
@@ -4573,7 +4592,6 @@
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('☀️', objects.sun.x, objects.sun.y);
-
                 // Drag hint
                 if (!isRunning) {
                     ctx.font = '12px Rubik';
@@ -6386,6 +6404,14 @@
         let debugStepCounter = 0;
         let activeExerciseIndex = 0;
 
+        function hidePrecheckPanel() {
+            document.getElementById('precheckPanel')?.classList.add('hidden-by-user');
+        }
+
+        function showPrecheckPanel() {
+            document.getElementById('precheckPanel')?.classList.remove('hidden-by-user');
+        }
+
         function setDebugStatus(message) {
             const panel = document.getElementById('debugPanel');
             const status = document.getElementById('debugStatus');
@@ -6421,15 +6447,16 @@
         function setPrecheckResult(messages) {
             const panel = document.getElementById('precheckPanel');
             if (!panel) return;
+            showPrecheckPanel();
             const hasWarnings = messages.length > 0;
             panel.classList.add('active');
             panel.classList.toggle('warning', hasWarnings);
             if (!hasWarnings) {
-                panel.innerHTML = '✅ התוכנית נראית מוכנה להרצה: יש התחלה, תנאי, חיישן מתאים, ואין בלוקים מנותקים או לולאות ריקות.';
+                panel.innerHTML = '<button class="check-panel-close" type="button" onclick="hidePrecheckPanel()" aria-label="סגור את חלון הבדיקה" title="סגור את חלון הבדיקה">×</button>✅ התוכנית נראית מוכנה להרצה: יש התחלה, תנאי, חיישן מתאים, ואין בלוקים מנותקים או לולאות ריקות.';
                 return;
             }
             const heading = messages.length === 1 ? '⚠️ מצאתי דבר שכדאי לתקן לפני ההרצה:' : '⚠️ מצאתי כמה דברים שכדאי לתקן לפני ההרצה:';
-            panel.innerHTML = `${heading}<ul>${messages.map((msg) => `<li>${msg}</li>`).join('')}</ul>`;
+            panel.innerHTML = `<button class="check-panel-close" type="button" onclick="hidePrecheckPanel()" aria-label="סגור את חלון הבדיקה" title="סגור את חלון הבדיקה">×</button>${heading}<ul>${messages.map((msg) => `<li>${msg}</li>`).join('')}</ul>`;
         }
 
         function expectedSensorsForLesson() {
@@ -6438,6 +6465,8 @@
         }
 
         function checkProgramBeforeRun() {
+            showPrecheckPanel();
+            setDebugStatus('בודק את מבנה התוכנית...');
             if (!workspace) return;
             const allBlocks = workspace.getAllBlocks(false);
             const topBlocks = workspace.getTopBlocks(false);
@@ -6484,7 +6513,7 @@
 
             const exerciseResult = validateActiveExercise();
             if (!exerciseResult.ok) {
-                messages.push(`בתרגיל הנוכחי חסר: ${exerciseResult.missing.map(exerciseMissingLabel).join(' · ')}.`);
+                messages.push(`${uniqueExerciseMissingLabels(exerciseResult.missing).join(' · ')}.`);
             }
 
             setPrecheckResult(messages);
@@ -6957,7 +6986,7 @@
 
         // Check if robot can sense each element (with proximity)
         function canSenseLight() {
-            // Light is ambient: on/bright when the museum lights are on.
+            // Light sensor reads the environment light/day-night state; the street lamp action is separate.
             return environment.light;
         }
 
@@ -7743,8 +7772,9 @@
         }
 
         function testStateRequirementsFromExercise(exercise) {
-            const text = normalizeHebrew([exercise?.title, exercise?.studentPrompt, ...(exercise?.testSteps || []), ...(exercise?.answerBlocks || [])].join(' '));
-            if (currentLesson === 1 && text.includes('יום') && text.includes('לילה')) return ['DARK', 'BRIGHT'];
+            const promptText = normalizeHebrew([exercise?.title, exercise?.studentPrompt].join(' '));
+            const isSameProgramTest = promptText.includes('בדקו את אותה תוכנית') || promptText.includes('בדיקת כמה מצבים');
+            if (currentLesson === 1 && isSameProgramTest && promptText.includes('יום') && promptText.includes('לילה')) return ['DARK', 'BRIGHT'];
             return [];
         }
 
@@ -7809,12 +7839,14 @@
             { type: 'action_water', value: 'OFF', hints: ['טפטפות — סגור', 'טפטפות - סגור', 'סגור לחיסכון'] },
             { type: 'action_traffic_light', value: 'GREEN', hints: ['רמזור ירוק', 'הדלק ירוק', 'ירוק להולכי רגל'] },
             { type: 'action_traffic_light', value: 'RED', hints: ['רמזור אדום', 'אדום להולכי רגל'] },
+            { type: 'action_class_power', value: 'ON', hints: ['חשמל כיתה — הדלק', 'חשמל כיתה - הדלק', 'הדלק אור', 'הדלק חשמל'] },
+            { type: 'action_class_power', value: 'OFF', hints: ['חשמל כיתה — כבה', 'חשמל כיתה - כבה', 'כבה אור', 'כבה חשמל'] },
             { type: 'action_sound', value: 'ALARM', hints: ['השמע אזעקה', 'צליל אזעקה'] },
             { type: 'action_sound', value: 'BEEP', hints: ['השמע ביפ', 'צליל ביפ'] },
             { type: 'action_alarm', value: 'ON', hints: ['אזעקה — הפעל', 'אזעקה - הפעל', 'אזעקת מוזיאון — הפעל', 'הפעל אזעקה'] },
             { type: 'action_alarm', value: 'OFF', hints: ['אזעקה — כבה', 'אזעקה - כבה', 'כבה אזעקה'] },
-            { type: 'action_security_mode', value: 'ON', hints: ['שמירה — דרוך', 'שמירה - דרוך', 'דרוך'] },
-            { type: 'action_security_mode', value: 'OFF', hints: ['שמירה — כבוי', 'שמירה - כבוי', 'כבה שמירה'] },
+            { type: 'action_security_mode', value: 'ARM', hints: ['שמירה — דרוך', 'שמירה - דרוך', 'דרוך'] },
+            { type: 'action_security_mode', value: 'DISARM', hints: ['שמירה — כבוי', 'שמירה - כבוי', 'כבה שמירה'] },
             { type: 'action_recycle_bin', value: 'BLUE', hints: ['פח כחול', 'לפח הכחול'] },
             { type: 'action_recycle_bin', value: 'GREEN', hints: ['פח ירוק', 'לפח הירוק'] },
             { type: 'action_recycle_bin', value: 'YELLOW', hints: ['פח צהוב', 'לפח הצהוב'] },
@@ -7870,9 +7902,93 @@
         function workspaceHasBlockValue(type, value) {
             return connectedProgramBlocks().some(block => {
                 if (block.type !== type) return false;
-                const fieldNames = ['VAL', 'STATE', 'SND', 'COLOR'];
+                const fieldNames = ['VAL', 'STATE', 'SND', 'COLOR', 'BIN'];
                 return fieldNames.some(name => block.getFieldValue?.(name) === value);
             });
+        }
+
+        function statementBlocksFromInput(block, inputName) {
+            const blocks = [];
+            const seen = new Set();
+            function visitStatement(statementBlock) {
+                if (!statementBlock || seen.has(statementBlock.id)) return;
+                seen.add(statementBlock.id);
+                blocks.push(statementBlock);
+                for (const child of statementBlock.getChildren(false)) visitStatement(child);
+                visitStatement(statementBlock.getNextBlock?.());
+            }
+            visitStatement(block?.getInputTargetBlock?.(inputName));
+            return blocks;
+        }
+
+        function blockHasFieldValue(block, value) {
+            if (value == null) return true;
+            const fieldNames = ['VAL', 'STATE', 'SND', 'COLOR', 'BIN'];
+            return fieldNames.some(name => block?.getFieldValue?.(name) === value);
+        }
+
+        function hasIfRuleWithAction(sensorType, sensorValue, actionType, actionValue = null) {
+            return connectedProgramBlocks().some(block => {
+                if (block.type !== 'control_if') return false;
+                const condition = block.getInputTargetBlock?.('COND');
+                if (!condition || condition.type !== sensorType || condition.getFieldValue?.('VAL') !== sensorValue) return false;
+                return statementBlocksFromInput(block, 'DO').some(child =>
+                    child.type === actionType && blockHasFieldValue(child, actionValue)
+                );
+            });
+        }
+
+        const strongExerciseRules = [
+            { lesson: 1, title: 'תרגיל 1', rules: [['sensor_light', 'DARK', 'action_street_light', 'ON', 'rule_dark_light_on']] },
+            { lesson: 1, title: 'תרגיל 2', rules: [['sensor_light', 'DARK', 'action_street_light', 'ON', 'rule_dark_light_on'], ['sensor_light', 'DARK', 'action_say', null, 'rule_dark_say']] },
+            { lesson: 1, title: 'תרגיל 4', rules: [['sensor_light', 'DARK', 'action_street_light', 'ON', 'rule_dark_light_on'], ['sensor_light', 'BRIGHT', 'action_street_light', 'OFF', 'rule_bright_light_off']] },
+            { lesson: 2, title: 'תרגיל 1', rules: [['sensor_sound', 'LOUD', 'action_say', null, 'rule_loud_say']] },
+            { lesson: 2, title: 'תרגיל 4', rules: [['sensor_sound', 'LOUD', 'stop_program', null, 'rule_loud_stop']] },
+            { lesson: 3, title: 'תרגיל 1', rules: [['sensor_touch', 'YES', 'stop_vehicle', null, 'rule_touch_stop_vehicle']] },
+            { lesson: 3, title: 'תרגיל 3', rules: [['sensor_touch', 'YES', 'move_backward', null, 'rule_touch_move_backward']] },
+            { lesson: 3, title: 'תרגיל 4', rules: [['sensor_touch', 'YES', 'move_backward', null, 'rule_touch_move_backward'], ['sensor_touch', 'YES', 'turn_right', null, 'rule_touch_turn']] },
+            { lesson: 4, title: 'תרגיל 1', rules: [['sensor_smell', 'YES', 'action_say', null, 'rule_smoke_say']] },
+            { lesson: 4, title: 'תרגיל 2', rules: [['sensor_smell', 'YES', 'action_sound', 'ALARM', 'rule_smoke_alarm_sound']] },
+            { lesson: 4, title: 'תרגיל 5', rules: [['sensor_smell', 'YES', 'stop_program', null, 'rule_smoke_stop']] },
+            { lesson: 5, title: 'תרגיל 1', rules: [['sensor_temperature', 'HOT', 'action_fan', 'ON', 'rule_hot_fan_on']] },
+            { lesson: 5, title: 'תרגיל 2', rules: [['sensor_temperature', 'HOT', 'action_fan', 'ON', 'rule_hot_fan_on'], ['sensor_temperature', 'HOT', 'action_say', null, 'rule_hot_say']] },
+            { lesson: 5, title: 'תרגיל 4', rules: [['sensor_temperature', 'HOT', 'action_fan', 'ON', 'rule_hot_fan_on'], ['sensor_temperature', 'OK', 'action_fan', 'OFF', 'rule_ok_fan_off']] },
+            { lesson: 6, title: 'תרגיל 1', rules: [['sensor_color', 'BLUE', 'action_recycle_bin', 'BLUE', 'rule_blue_bin_blue']] },
+            { lesson: 6, title: 'תרגיל 2', rules: [['sensor_color', 'BLUE', 'action_recycle_bin', 'BLUE', 'rule_blue_bin_blue'], ['sensor_color', 'GREEN', 'action_recycle_bin', 'GREEN', 'rule_green_bin_green']] },
+            { lesson: 6, title: 'תרגיל 3', rules: [['sensor_color', 'BLUE', 'action_recycle_bin', 'BLUE', 'rule_blue_bin_blue'], ['sensor_color', 'GREEN', 'action_recycle_bin', 'GREEN', 'rule_green_bin_green'], ['sensor_color', 'YELLOW', 'action_recycle_bin', 'YELLOW', 'rule_yellow_bin_yellow']] },
+            { lesson: 7, title: 'תרגיל 1', rules: [['sensor_line', 'ON', 'move_forward', null, 'rule_line_forward']] },
+            { lesson: 7, title: 'תרגיל 2', rules: [['sensor_line_side', 'RIGHT', 'turn_right_small', null, 'rule_line_right_turn'], ['sensor_line_side', 'LEFT', 'turn_left_small', null, 'rule_line_left_turn']] },
+            { lesson: 7, title: 'תרגיל 5', rules: [['sensor_goal', 'YES', 'action_say', null, 'rule_goal_say']] },
+            { lesson: 8, title: 'תרגיל 1', rules: [['sensor_pedestrian', 'YES', 'stop_cars', null, 'rule_pedestrian_stop_cars']] },
+            { lesson: 8, title: 'תרגיל 2', rules: [['sensor_pedestrian', 'YES', 'stop_cars', null, 'rule_pedestrian_stop_cars']] },
+            { lesson: 9, title: 'תרגיל 1', rules: [['sensor_people', 'YES', 'action_class_power', 'ON', 'rule_people_power_on']] },
+            { lesson: 9, title: 'תרגיל 2', rules: [['sensor_people', 'NO', 'action_class_power', 'OFF', 'rule_no_people_power_off']] },
+            { lesson: 9, title: 'תרגיל 5', rules: [['sensor_sound', 'LOUD', 'action_class_power', 'OFF', 'rule_loud_power_off'], ['sensor_sound', 'QUIET', 'action_class_power', 'ON', 'rule_quiet_power_on']] },
+            { lesson: 10, title: 'תרגיל 1', rules: [['sensor_water_status', 'DRY', 'action_say', null, 'rule_dry_water_say']] },
+            { lesson: 10, title: 'תרגיל 2', rules: [['sensor_water_status', 'DRY', 'action_water', 'ON', 'rule_dry_water_on'], ['sensor_water_status', 'DRY', 'action_water', 'OFF', 'rule_dry_water_off']] },
+            { lesson: 10, title: 'תרגיל 4', rules: [['sensor_water_status', 'EXCESS', 'action_water', 'OFF', 'rule_excess_water_off']] },
+            { lesson: 11, title: 'תרגיל 1', rules: [['sensor_light', 'DARK', 'action_security_mode', 'ARM', 'rule_dark_security_arm']] },
+            { lesson: 11, title: 'תרגיל 2', rules: [['sensor_people', 'YES', 'action_security_mode', 'ARM', 'rule_people_security_arm'], ['sensor_door', 'YES', 'action_security_mode', 'ARM', 'rule_door_security_arm']] },
+            { lesson: 11, title: 'תרגיל 3', rules: [['sensor_armed', 'YES', 'action_alarm', 'ON', 'rule_armed_alarm_on']] },
+            { lesson: 12, title: 'תרגיל 1', rules: [['sensor_goal', 'YES', 'action_drop_delivery', null, 'rule_goal_drop_delivery']] },
+            { lesson: 12, title: 'תרגיל 2', rules: [['sensor_obstacle', 'YES', 'move_backward', null, 'rule_obstacle_move_backward']] },
+            { lesson: 13, title: 'תרגיל 1', rules: [['sensor_burglar', 'YES', 'action_alarm', 'ON', 'rule_burglar_alarm_on'], ['sensor_goal', 'YES', 'turn_around', null, 'rule_goal_turn_around']] },
+            { lesson: 13, title: 'תרגיל 2', rules: [['sensor_burglar', 'YES', 'action_alarm', 'ON', 'rule_burglar_alarm_on'], ['sensor_homeowner', 'YES', 'action_say', null, 'rule_homeowner_say']] },
+            { lesson: 14, title: 'תרגיל 1', rules: [['sensor_smell', 'YES', 'action_safe_route', null, 'rule_smoke_safe_route']] },
+            { lesson: 14, title: 'תרגיל 2', rules: [['sensor_temperature', 'HOT', 'action_alarm', 'ON', 'rule_hot_alarm_on']] },
+            { lesson: 14, title: 'תרגיל 3', rules: [['sensor_obstacle', 'YES', 'action_safe_route', null, 'rule_obstacle_safe_route']] }
+        ];
+
+        function validateCustomExerciseRules(exercise) {
+            const title = normalizeHebrew(exercise?.title || '');
+            const matchingRules = strongExerciseRules.filter(entry => entry.lesson === currentLesson && title.includes(normalizeHebrew(entry.title)));
+            const missing = [];
+            for (const entry of matchingRules) {
+                for (const [sensorType, sensorValue, actionType, actionValue, missingKey] of entry.rules) {
+                    if (!hasIfRuleWithAction(sensorType, sensorValue, actionType, actionValue)) missing.push(missingKey);
+                }
+            }
+            return missing;
         }
 
         function validateActiveExercise() {
@@ -7892,6 +8008,7 @@
             for (const state of testStateRequirementsFromExercise(exercise)) {
                 if (!runStates.includes(state)) missing.push(`test_state:${state}`);
             }
+            missing.push(...validateCustomExerciseRules(exercise));
             const hasStart = present.has('event_start');
             const hasDisconnected = (workspace?.getTopBlocks(false) || []).some(block => block.type !== 'event_start');
             if (!hasStart && !missing.includes('event_start')) missing.unshift('event_start');
@@ -7901,12 +8018,13 @@
 
         function exerciseMissingLabel(type) {
             if (type === 'test_state:DARK' || type === 'test_state:BRIGHT') {
-                const states = getExerciseRunStates();
-                if (!states.length) return 'כדי להשלים את התרגיל, הריצו פעם אחת בחושך ופעם אחת באור.';
-                if (type === 'test_state:BRIGHT') return 'מצוין, בדקתם בחושך. עכשיו הדליקו את האור והריצו שוב כדי לבדוק מצב בהיר.';
-                if (type === 'test_state:DARK') return 'מצוין, בדקתם באור. עכשיו כבו את האור והריצו שוב כדי לבדוק מצב חשוך.';
+                return 'כדי להשלים את התרגיל, הריצו פעם אחת בחושך ופעם אחת באור.';
             }
             return exerciseTypeLabel(type);
+        }
+
+        function uniqueExerciseMissingLabels(missing) {
+            return [...new Set((missing || []).map(exerciseMissingLabel))];
         }
 
         function exerciseTypeLabel(type) {
@@ -7923,19 +8041,40 @@
                 'sensor_color:BLUE': 'חיישן צבע עם הערך “כחול”', 'sensor_color:GREEN': 'חיישן צבע עם הערך “ירוק”', 'sensor_color:YELLOW': 'חיישן צבע עם הערך “צהוב”',
                 'sensor_line:ON': 'חיישן קו עם הערך “על הקו”', 'sensor_line:OFF': 'חיישן קו עם הערך “לא על הקו”',
                 'sensor_line_side:RIGHT': 'חיישן צד קו עם הערך “ימין”', 'sensor_line_side:LEFT': 'חיישן צד קו עם הערך “שמאל”',
-                'sensor_water_status:DRY': 'מד מצב מים עם הערך “יבש”', 'sensor_people:NO': 'חיישן אנשים עם הערך “אין”',
+                'sensor_water_status:DRY': 'מד מצב מים עם הערך “יבש”', 'sensor_water_status:OK': 'מד מצב מים עם הערך “תקין”', 'sensor_water_status:EXCESS': 'מד מצב מים עם הערך “עודף מים”',
+                'sensor_touch:YES': 'חיישן קיר/מגע עם הערך “יש קיר”', 'sensor_obstacle:YES': 'חיישן מכשול עם הערך “יש מכשול”',
+                'sensor_smell:YES': 'חיישן עשן עם הערך “יש עשן”', 'sensor_goal:YES': 'חיישן יעד/סוף עם הערך “כן”',
+                'sensor_pedestrian:YES': 'חיישן הולך רגל עם הערך “יש הולך רגל”', 'sensor_cars:YES': 'חיישן מכוניות עם הערך “יש מכוניות”',
+                'sensor_people:YES': 'חיישן אנשים עם הערך “יש/יותר מדי”', 'sensor_people:NO': 'חיישן אנשים עם הערך “אין”',
+                'sensor_soil:DRY': 'חיישן אדמה עם הערך “יבשה”', 'sensor_armed:YES': 'חיישן שמירה עם הערך “דרוכה”',
+                'sensor_safe_touch:YES': 'חיישן כספת עם הערך “נגיעה”', 'sensor_door:YES': 'חיישן דלת עם הערך “פתוחה”',
+                'sensor_burglar:YES': 'חיישן גנב עם הערך “זוהה גנב”', 'sensor_homeowner:YES': 'חיישן בעל הבית עם הערך “זוהה בעל הבית”',
+                'sensor_motion:YES': 'חיישן תנועה עם הערך “יש תנועה”',
                 'action_street_light:ON': 'פנס רחוב עם הפעולה “הדלק”', 'action_street_light:OFF': 'פנס רחוב עם הפעולה “כבה”',
                 'action_fan:ON': 'מאוורר עם הפעולה “הפעל”', 'action_fan:OFF': 'מאוורר עם הפעולה “כבה”',
                 'action_ac:ON': 'מזגן עם הפעולה “הפעל”', 'action_ac:OFF': 'מזגן עם הפעולה “כבה”',
                 'action_water:ON': 'טפטפות עם הפעולה “פתח להשקיה”', 'action_water:OFF': 'טפטפות עם הפעולה “סגור לחיסכון”',
                 'action_traffic_light:GREEN': 'רמזור עם הערך “ירוק”', 'action_traffic_light:RED': 'רמזור עם הערך “אדום”',
+                'action_class_power:ON': 'חשמל כיתה עם הפעולה “הדלק”', 'action_class_power:OFF': 'חשמל כיתה עם הפעולה “כבה”',
                 'action_alarm:ON': 'אזעקה עם הפעולה “הפעל”', 'action_alarm:OFF': 'אזעקה עם הפעולה “כבה”',
                 'action_sound:ALARM': 'צליל עם הערך “אזעקה”', 'action_sound:BEEP': 'צליל עם הערך “ביפ”',
-                'action_security_mode:ON': 'שמירה עם הפעולה “דרוך”', 'action_security_mode:OFF': 'שמירה עם הפעולה “כבוי”',
+                'action_security_mode:ARM': 'שמירה עם הפעולה “דרוך”', 'action_security_mode:DISARM': 'שמירה עם הפעולה “כבוי”',
                 'action_recycle_bin:BLUE': 'מיון לפח כחול', 'action_recycle_bin:GREEN': 'מיון לפח ירוק', 'action_recycle_bin:YELLOW': 'מיון לפח צהוב',
-                'test_state:DARK': 'הרצה אחת כשהעיר חשוכה', 'test_state:BRIGHT': 'הרצה אחת כשהאור דלוק/בהיר'
+                'test_state:DARK': 'הרצה אחת כשהעיר חשוכה', 'test_state:BRIGHT': 'הרצה אחת כשהאור דלוק/בהיר',
+                'rule_dark_light_on': 'הוסיפו כלל: אם חיישן אור = חשוך → פנס רחוב — הדלק',
+                'rule_bright_light_off': 'הוסיפו כלל: אם חיישן אור = בהיר → פנס רחוב — כבה'
             };
-            return valueLabels[type] || labels[type] || type;
+            if (valueLabels[type] || labels[type]) return valueLabels[type] || labels[type];
+            if (String(type).startsWith('rule_')) {
+                const rule = strongExerciseRules.flatMap(entry => entry.rules).find(item => item[4] === type);
+                if (rule) {
+                    const [sensorType, sensorValue, actionType, actionValue] = rule;
+                    const sensorLabel = valueLabels[`${sensorType}:${sensorValue}`] || labels[sensorType] || sensorType;
+                    const actionLabel = actionValue == null ? (labels[actionType] || actionType) : (valueLabels[`${actionType}:${actionValue}`] || labels[actionType] || actionType);
+                    return `ודאו שבתוך התנאי ${sensorLabel} נמצאת הפעולה ${actionLabel}.`;
+                }
+            }
+            return type;
         }
 
         function showExerciseLockMessage(message) {
@@ -7950,7 +8089,7 @@
             const modal = document.getElementById('exerciseModal');
             const body = document.getElementById('exerciseModalBody');
             if (!modal || !body) return;
-            const missingList = listItems(result.missing.map(exerciseMissingLabel));
+            const missingList = listItems(uniqueExerciseMissingLabels(result.missing));
             body.innerHTML = `<h3>🧪 עוד לא פותחים את התרגיל הבא</h3><p>בדקתי את התוכנית מול <strong>${escapeHtml(result.exercise?.title || 'התרגיל הנוכחי')}</strong>.</p><p>כדי להשלים אותו חסר עדיין:</p>${missingList}<p>תקנו את הבלוקים ואז לחצו שוב ▶️.</p>`;
             modal.classList.add('active');
         }
@@ -8107,7 +8246,7 @@
         }
 
         function closeWelcomeModal() {
-            closeWelcomeModal()
+            document.getElementById('welcomeModal')?.classList.remove('active');
         }
 
         function scheduleWelcomeAutoClose() {
@@ -8115,23 +8254,19 @@
             window.sensiWelcomeAutoCloseTimer = window.setTimeout(closeWelcomeModal, 2000);
         }
 
-        function renderWelcomeLessons() {
-            const list = document.getElementById('welcomeLessons');
-            if (!list) return;
-            const lessons = window.SENSI_LESSONS || [];
-            list.innerHTML = lessons.map(lesson => `
-                <div class="lesson-card" onclick="startLesson(${lesson.id})">
-                    <div class="num">${lesson.emoji}</div>
-                    <div class="info">
-                        <h3>שיעור ${lesson.id}: ${lesson.title}</h3>
-                        <p>${lesson.cityZone || ''} · ${lesson.sensorFocus || 'מערכת חכמה'}</p>
-                    </div>
-                </div>
-            `).join('');
+        function lastLessonStorageKey() {
+            return 'sensi-last-open-lesson-v1';
+        }
+
+        function saveLastLesson(num) {
+            if (Number.isFinite(num) && num >= 1 && num <= 15) {
+                localStorage.setItem(lastLessonStorageKey(), String(num));
+            }
         }
 
         function selectLesson(num) {
-            closeWelcomeModal()
+            num = Math.min(Math.max(Number(num) || 1, 1), 15);
+            saveLastLesson(num);
             const previousLesson = currentLesson;
             if (workspace && previousLesson !== num) saveWorkspaceForLesson(previousLesson);
             currentLesson = num;
@@ -8172,7 +8307,7 @@
         }
 
         function startLesson(num) {
-            closeWelcomeModal()
+            closeWelcomeModal();
             try {
                 selectLesson(num);
             } catch (error) {
@@ -8200,9 +8335,13 @@
             document.getElementById('successModal').classList.remove('active');
         }
 
-        function getInitialLessonFromUrl() {
+        function getInitialLesson() {
             const params = new URLSearchParams(window.location.search);
-            const requested = Number(params.get('lesson')) || 1;
+            const requestedFromUrl = Number(params.get('lesson'));
+            const saved = Number(localStorage.getItem(lastLessonStorageKey()));
+            const requested = Number.isFinite(requestedFromUrl) && requestedFromUrl >= 1
+                ? requestedFromUrl
+                : (Number.isFinite(saved) && saved >= 1 ? saved : 1);
             return Math.min(Math.max(requested, 1), 15);
         }
 
@@ -8211,16 +8350,11 @@
         function initializeApp() {
             if (appInitialized) return;
             appInitialized = true;
-            const initialLesson = getInitialLessonFromUrl();
+            const initialLesson = getInitialLesson();
 
             // Render navigation immediately; do not wait for images/CDN/widgets.
             renderLessonTabs();
-            renderWelcomeLessons();
             scheduleWelcomeAutoClose();
-            setTimeout(() => {
-                const list = document.getElementById('welcomeLessons');
-                if (list && !list.querySelector('.lesson-card')) renderWelcomeLessons();
-            }, 250);
             resizeCanvas();
             selectLesson(initialLesson);
             draw();
