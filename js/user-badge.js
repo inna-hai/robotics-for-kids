@@ -6,6 +6,16 @@
     return localStorage.getItem(TOKEN_KEY) || '';
   }
 
+  function isQuietGuestPage() {
+    const path = window.location.pathname.replace(/\/+$/, '') || '/';
+    return ['/', '/index.html', '/summer-subscription.html', '/register.html', '/login.html', '/thankyou.html'].includes(path);
+  }
+
+  function removeBadge() {
+    const badge = document.getElementById(BADGE_ID);
+    if (badge) badge.remove();
+  }
+
   function addStyles() {
     if (document.getElementById('hai-user-badge-style')) return;
     const style = document.createElement('style');
@@ -44,6 +54,10 @@
   async function load() {
     const authToken = token();
     if (!authToken) {
+      if (isQuietGuestPage()) {
+        removeBadge();
+        return;
+      }
       setBadge('guest', 'לא מחובר/ת', 'התקדמות לא תישמר עד כניסה');
       return;
     }
