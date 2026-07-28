@@ -37,7 +37,9 @@ test('subscription page routes to real registration and keeps marketing copy cle
   assertIncludes(subscriptionHtml, '49 ₪');
   assertIncludes(subscriptionHtml, 'href="register.html"');
   assertIncludes(subscriptionHtml, 'הרשמה');
-  assertIncludes(subscriptionHtml, 'מתחילים עם שיעור סיסי ראשון בחינם');
+  assertIncludes(subscriptionHtml, 'מתחילים עם סיסי בחינם');
+  assertIncludes(subscriptionHtml, 'נסו את סיסי בחינם');
+  assertNotIncludes(subscriptionHtml, 'נסו את סיסי שיעור 1 בחינם');
   assertIncludes(subscriptionHtml, 'אפשר לבטל בכל עת בהודעת WhatsApp או מייל אלינו');
   assertIncludes(subscriptionHtml, 'space.html');
   assertNotIncludes(subscriptionHtml, 'summer-account.html');
