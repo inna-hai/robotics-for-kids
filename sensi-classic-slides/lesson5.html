@@ -75,20 +75,20 @@
 <body>
     <div class="progress-bar" id="progress"></div>
     <button class="fullscreen-btn" onclick="toggleFullscreen()">⛶ מסך מלא</button>
-
+    
     <div class="slides-container">
         <div class="slide slide-title active">
             <div class="emoji-big">⭐</div>
             <h1>שיעור 5: פרויקט מסכם!</h1>
             <p class="subtitle">רובוט עם כל החושים! 🤖</p>
         </div>
-
+        
         <div class="slide slide-content">
             <h2>🎉 הגענו לשיעור האחרון!</h2>
             <p>היום נבנה רובוט חכם שמשתמש בכל מה שלמדנו!</p>
             <div class="emoji-row">👁️ 👂 ✋ 👃 = 🤖💪</div>
         </div>
-
+        
         <div class="slide slide-content">
             <h2>🔄 בואו נזכר - מה למדנו?</h2>
             <div class="senses-grid">
@@ -114,7 +114,7 @@
                 </div>
             </div>
         </div>
-
+        
         <div class="slide slide-video">
             <h2>🎬 רובוטים אמיתיים עם חושים!</h2>
             <div class="video-container">
@@ -122,7 +122,7 @@
             </div>
             <p class="video-title">סרטון: רובוטים וחיישנים</p>
         </div>
-
+        
         <div class="slide slide-project">
             <h2>🤖 איזה רובוט תרצו לבנות?</h2>
             <div class="project-grid">
@@ -148,7 +148,7 @@
                 </div>
             </div>
         </div>
-
+        
         <div class="slide slide-activity">
             <h2>📋 כללי הפרויקט</h2>
             <div class="activity-card">
@@ -161,7 +161,7 @@
                 </ul>
             </div>
         </div>
-
+        
         <div class="slide slide-content">
             <h2>⏱️ לוח זמנים</h2>
             <div class="timeline">
@@ -183,7 +183,7 @@
                 </div>
             </div>
         </div>
-
+        
         <div class="slide slide-activity">
             <h2>📝 שלב 1: תכנון</h2>
             <div class="activity-card">
@@ -196,7 +196,7 @@
                 </ul>
             </div>
         </div>
-
+        
         <div class="slide slide-activity">
             <div class="emoji-big">💻</div>
             <h1>שלב 2: בנייה!</h1>
@@ -208,7 +208,7 @@
                 • אל תפחדו לנסות!</p>
             </div>
         </div>
-
+        
         <div class="slide slide-project">
             <h2>📝 דוגמה: רובוט שומר בית</h2>
             <div class="activity-card" style="background: #1e293b; direction: ltr; text-align: left; max-width: 800px;">
@@ -225,7 +225,7 @@
                 </p>
             </div>
         </div>
-
+        
         <div class="slide slide-activity">
             <h2>🎤 שלב 3: הצגות!</h2>
             <div class="activity-card">
@@ -239,7 +239,7 @@
             </div>
             <p style="margin-top: 1rem; font-size: 1.5rem;">2-3 דקות לכל הצגה 🎯</p>
         </div>
-
+        
         <div class="slide slide-activity">
             <h2>🎯 אתגרי סופר-רובוט!</h2>
             <div class="activity-card" style="text-align: right;">
@@ -252,7 +252,7 @@
                 </ul>
             </div>
         </div>
-
+        
         <div class="slide slide-summary">
             <h2>📚 מה למדנו בקורס?</h2>
             <ul>
@@ -264,14 +264,14 @@
                 <li>🧠 חשיבה לוגית!</li>
             </ul>
         </div>
-
+        
         <div class="slide slide-celebration">
             <div class="trophy">🏆</div>
             <h1>כל הכבוד!</h1>
             <p class="subtitle">סיימתם את הקורס!</p>
             <div class="emoji-row">🎉 👏 🌟 🎊 ⭐</div>
         </div>
-
+        
         <div class="slide slide-celebration">
             <h2>🌟 עכשיו אתם יודעים:</h2>
             <ul style="font-size: 2rem;">
@@ -281,14 +281,14 @@
             </ul>
             <div class="emoji-row">🤖 ❤️ 👧👦</div>
         </div>
-
+        
         <div class="slide slide-title">
             <div class="emoji-big">🚀</div>
             <h1>מה הלאה?</h1>
             <p>המשיכו לחקור, לבנות, לתכנת!</p>
             <p style="margin-top: 1rem;">אולי יום אחד תבנו רובוט אמיתי! 🤖</p>
         </div>
-
+        
         <div class="slide slide-celebration">
             <div class="trophy">👏</div>
             <h1>תודה רבה!</h1>
@@ -296,19 +296,19 @@
             <div class="emoji-row">💜 🤖 💜</div>
         </div>
     </div>
-
+    
     <div class="nav-bar">
         <button class="nav-btn" onclick="prevSlide()">▶</button>
         <div class="slide-counter"><span id="currentSlide">1</span> / <span id="totalSlides">16</span></div>
         <button class="nav-btn" onclick="nextSlide()">◀</button>
     </div>
-
+    
     <script>
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
         const totalSlides = slides.length;
         document.getElementById('totalSlides').textContent = totalSlides;
-
+        
         function showSlide(n) {
             slides.forEach(s => s.classList.remove('active'));
             currentSlide = (n + totalSlides) % totalSlides;
@@ -316,19 +316,19 @@
             document.getElementById('currentSlide').textContent = currentSlide + 1;
             document.getElementById('progress').style.width = ((currentSlide + 1) / totalSlides * 100) + '%';
         }
-
+        
         function nextSlide() { showSlide(currentSlide + 1); }
         function prevSlide() { showSlide(currentSlide - 1); }
-
+        
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowLeft' || e.key === ' ') nextSlide();
             if (e.key === 'ArrowRight') prevSlide();
         });
-
+        
         document.querySelector('.slides-container').addEventListener('click', (e) => {
             if (!e.target.closest('.nav-bar') && !e.target.closest('iframe') && !e.target.closest('button')) nextSlide();
         });
-
+        
         function toggleFullscreen() {
             if (!document.fullscreenElement) document.documentElement.requestFullscreen();
             else document.exitFullscreen();

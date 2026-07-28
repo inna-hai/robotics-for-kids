@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
+        
         :root {
             --pink: #FF6B9D;
             --purple: #9B5DE5;
@@ -21,14 +21,14 @@
             --light: #F8F9FF;
             --dark: #2D3047;
         }
-
+        
         body {
             font-family: 'Rubik', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             min-height: 100vh;
             overflow: hidden;
         }
-
+        
         /* ===== HEADER ===== */
         .header {
             background: var(--white);
@@ -40,23 +40,23 @@
             position: relative;
             z-index: 100;
         }
-
+        
         .logo {
             display: flex;
             align-items: center;
             gap: 0.75rem;
         }
-
+        
         .logo-robot {
             font-size: 2.5rem;
             animation: bounce 2s infinite;
         }
-
+        
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
         }
-
+        
         .logo-text {
             font-size: 1.5rem;
             font-weight: 800;
@@ -64,7 +64,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
+        
         .about-link {
             font-size: 1.5rem;
             text-decoration: none;
@@ -72,18 +72,18 @@
             opacity: 0.7;
             transition: all 0.3s;
         }
-
+        
         .about-link:hover {
             opacity: 1;
             transform: scale(1.2);
         }
-
+        
         /* Lesson Buttons */
         .lesson-tabs {
             display: flex;
             gap: 0.5rem;
         }
-
+        
         .lesson-tab {
             width: 55px;
             height: 55px;
@@ -97,25 +97,25 @@
             align-items: center;
             justify-content: center;
         }
-
+        
         .lesson-tab:hover {
             transform: scale(1.15);
             border-color: var(--purple);
         }
-
+        
         .lesson-tab.active {
             background: linear-gradient(135deg, var(--purple), var(--pink));
             border-color: var(--purple);
             transform: scale(1.1);
             box-shadow: 0 4px 15px rgba(155, 93, 229, 0.4);
         }
-
+        
         /* Play Buttons */
         .play-buttons {
             display: flex;
             gap: 0.75rem;
         }
-
+        
         .btn-play {
             padding: 0.75rem 1.5rem;
             border: none;
@@ -129,28 +129,28 @@
             transition: all 0.3s;
             font-family: inherit;
         }
-
+        
         .btn-run {
             background: linear-gradient(135deg, var(--green), #00D9B5);
             color: var(--dark);
             box-shadow: 0 4px 15px rgba(0, 245, 212, 0.4);
         }
-
+        
         .btn-run:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(0, 245, 212, 0.5);
         }
-
+        
         .btn-stop {
             background: linear-gradient(135deg, var(--pink), #FF4777);
             color: white;
             box-shadow: 0 4px 15px rgba(255, 107, 157, 0.4);
         }
-
+        
         .btn-stop:hover {
             transform: translateY(-3px);
         }
-
+        
         /* ===== MAIN LAYOUT ===== */
         .main-container {
             display: grid;
@@ -159,7 +159,7 @@
             gap: 1rem;
             padding: 1rem;
         }
-
+        
         /* ===== LEFT SIDE - ROBOT ===== */
         .robot-section {
             background: var(--white);
@@ -169,7 +169,7 @@
             flex-direction: column;
             box-shadow: 0 10px 40px rgba(0,0,0,0.1);
         }
-
+        
         .robot-title {
             text-align: center;
             font-size: 1.5rem;
@@ -177,11 +177,11 @@
             color: var(--dark);
             margin-bottom: 1rem;
         }
-
+        
         .robot-title span {
             color: var(--purple);
         }
-
+        
         .presentation-link {
             display: inline-flex;
             align-items: center;
@@ -196,12 +196,12 @@
             transition: all 0.3s;
             box-shadow: 0 4px 15px rgba(155, 93, 229, 0.3);
         }
-
+        
         .presentation-link:hover {
             transform: scale(1.05);
             box-shadow: 0 6px 20px rgba(155, 93, 229, 0.5);
         }
-
+        
         /* Robot Canvas */
         .robot-stage {
             flex: 1;
@@ -211,12 +211,12 @@
             overflow: hidden;
             min-height: 300px;
         }
-
+        
         .robot-stage canvas {
             width: 100%;
             height: 100%;
         }
-
+        
         /* Ground */
         .ground {
             position: absolute;
@@ -227,7 +227,7 @@
             background: linear-gradient(180deg, #7BC96F 0%, #5DAE50 100%);
             border-radius: 0 0 1.5rem 1.5rem;
         }
-
+        
         .ground::before {
             content: '';
             position: absolute;
@@ -237,7 +237,7 @@
             height: 15px;
             background: linear-gradient(180deg, #8FD982 0%, transparent 100%);
         }
-
+        
         /* Sensor Display */
         .sensors-bar {
             display: flex;
@@ -246,7 +246,7 @@
             margin-top: 1rem;
             flex-wrap: wrap;
         }
-
+        
         .sensor-chip {
             display: flex;
             align-items: center;
@@ -259,17 +259,17 @@
             border: 3px solid #eee;
             transition: all 0.3s;
         }
-
+        
         .sensor-chip.active {
             background: linear-gradient(135deg, var(--yellow), #FFD93D);
             border-color: var(--yellow);
             transform: scale(1.05);
         }
-
+        
         .sensor-chip .icon {
             font-size: 1.25rem;
         }
-
+        
         /* Environment Buttons */
         .env-buttons {
             display: flex;
@@ -278,7 +278,7 @@
             margin-top: 1rem;
             flex-wrap: wrap;
         }
-
+        
         .env-btn {
             width: 70px;
             height: 70px;
@@ -297,22 +297,22 @@
             color: var(--dark);
             font-family: inherit;
         }
-
+        
         .env-btn .icon {
             font-size: 1.75rem;
         }
-
+        
         .env-btn:hover {
             transform: scale(1.1);
             border-color: var(--purple);
         }
-
+        
         .env-btn.active {
             background: linear-gradient(135deg, var(--yellow), #FFD93D);
             border-color: var(--orange);
             transform: scale(1.05);
         }
-
+        
         /* ===== RIGHT SIDE - BLOCKS ===== */
         .blocks-section {
             background: var(--white);
@@ -322,7 +322,7 @@
             display: flex;
             flex-direction: column;
         }
-
+        
         .blocks-header {
             background: linear-gradient(135deg, var(--purple), var(--pink));
             color: white;
@@ -333,12 +333,12 @@
             align-items: center;
             gap: 0.5rem;
         }
-
+        
         #blocklyDiv {
             flex: 1;
             min-height: 400px;
         }
-
+        
         /* ===== WELCOME MODAL ===== */
         .modal {
             display: none;
@@ -353,11 +353,11 @@
             align-items: center;
             padding: 1rem;
         }
-
+        
         .modal.active {
             display: flex;
         }
-
+        
         .modal-content {
             background: var(--white);
             border-radius: 2rem;
@@ -367,44 +367,44 @@
             text-align: center;
             animation: popIn 0.4s ease;
         }
-
+        
         @keyframes popIn {
             from { transform: scale(0.8); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
-
+        
         .modal-robot {
             font-size: 6rem;
             margin-bottom: 1rem;
             animation: wave 1s infinite;
         }
-
+        
         @keyframes wave {
             0%, 100% { transform: rotate(0deg); }
             25% { transform: rotate(15deg); }
             75% { transform: rotate(-15deg); }
         }
-
+        
         .modal-title {
             font-size: 2rem;
             font-weight: 800;
             color: var(--dark);
             margin-bottom: 0.5rem;
         }
-
+        
         .modal-subtitle {
             font-size: 1.1rem;
             color: #666;
             margin-bottom: 1.5rem;
         }
-
+        
         .lesson-cards {
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
             margin-bottom: 1.5rem;
         }
-
+        
         .lesson-card {
             display: flex;
             align-items: center;
@@ -417,13 +417,13 @@
             border: 3px solid transparent;
             text-align: right;
         }
-
+        
         .lesson-card:hover {
             border-color: var(--purple);
             transform: translateX(-5px);
             background: white;
         }
-
+        
         .lesson-card .num {
             width: 50px;
             height: 50px;
@@ -435,22 +435,22 @@
             font-size: 1.5rem;
             flex-shrink: 0;
         }
-
+        
         .lesson-card .info {
             flex: 1;
         }
-
+        
         .lesson-card h3 {
             font-size: 1rem;
             color: var(--dark);
             margin-bottom: 0.25rem;
         }
-
+        
         .lesson-card p {
             font-size: 0.85rem;
             color: #888;
         }
-
+        
         .btn-start {
             width: 100%;
             padding: 1.25rem;
@@ -464,12 +464,12 @@
             transition: all 0.3s;
             font-family: inherit;
         }
-
+        
         .btn-start:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 30px rgba(0, 245, 212, 0.4);
         }
-
+        
         /* ===== LESSON PANEL (Side) ===== */
         .lesson-drawer {
             position: fixed;
@@ -485,11 +485,11 @@
             overflow-y: auto;
             padding: 1.5rem;
         }
-
+        
         .lesson-drawer.open {
             transform: translateX(0);
         }
-
+        
         .drawer-toggle {
             position: fixed;
             top: 50%;
@@ -509,15 +509,15 @@
             justify-content: center;
             transition: all 0.3s;
         }
-
+        
         .drawer-toggle:hover {
             width: 50px;
         }
-
+        
         .drawer-toggle.open {
             right: 320px;
         }
-
+        
         .lesson-drawer h2 {
             font-size: 1.25rem;
             color: var(--dark);
@@ -526,11 +526,11 @@
             align-items: center;
             gap: 0.5rem;
         }
-
+        
         .task-list {
             list-style: none;
         }
-
+        
         .task-item {
             display: flex;
             align-items: center;
@@ -543,16 +543,16 @@
             transition: all 0.2s;
             border: 3px solid transparent;
         }
-
+        
         .task-item:hover {
             border-color: var(--purple);
         }
-
+        
         .task-item.done {
             background: linear-gradient(135deg, #D4EDDA, #C3E6CB);
             border-color: var(--green);
         }
-
+        
         .task-checkbox {
             width: 30px;
             height: 30px;
@@ -564,25 +564,25 @@
             font-size: 1rem;
             flex-shrink: 0;
         }
-
+        
         .task-item.done .task-checkbox {
             background: var(--green);
             border-color: var(--green);
             color: white;
         }
-
+        
         .task-text {
             font-size: 0.95rem;
             color: var(--dark);
         }
-
+        
         .tip-box {
             background: linear-gradient(135deg, #FFF3CD, #FFEAA7);
             border-radius: 1rem;
             padding: 1rem;
             margin-top: 1rem;
         }
-
+        
         .tip-box h4 {
             font-size: 1rem;
             margin-bottom: 0.5rem;
@@ -590,40 +590,40 @@
             align-items: center;
             gap: 0.5rem;
         }
-
+        
         .tip-box p {
             font-size: 0.9rem;
             color: #666;
         }
-
+        
         /* ===== SUCCESS MODAL ===== */
         .success-modal .modal-content {
             background: linear-gradient(135deg, #D4EDDA, #C3E6CB);
         }
-
+        
         .success-icon {
             font-size: 5rem;
             margin-bottom: 1rem;
             animation: tada 1s ease;
         }
-
+        
         @keyframes tada {
             0%, 100% { transform: scale(1) rotate(0); }
             10%, 30%, 50%, 70%, 90% { transform: scale(1.1) rotate(-3deg); }
             20%, 40%, 60%, 80% { transform: scale(1.1) rotate(3deg); }
         }
-
+        
         .stars {
             font-size: 3rem;
             margin: 1rem 0;
         }
-
+        
         /* ===== RESPONSIVE ===== */
         @media (max-width: 900px) {
             .main-container {
                 grid-template-columns: 1fr;
             }
-
+            
             .blocks-section {
                 min-height: 350px;
             }
@@ -639,7 +639,7 @@
             <a href="index.html" class="about-link" title="חזרה למרכז הלומדות">🏠</a>
             <a href="sensi-classic-about.html" class="about-link" title="אודות הלומדה">ℹ️</a>
         </div>
-
+        
         <div class="lesson-tabs">
             <button class="lesson-tab active" onclick="selectLesson(1)" title="ראייה">👁️</button>
             <button class="lesson-tab" onclick="selectLesson(2)" title="שמיעה">👂</button>
@@ -647,7 +647,7 @@
             <button class="lesson-tab" onclick="selectLesson(4)" title="ריח">👃</button>
             <button class="lesson-tab" onclick="selectLesson(5)" title="פרויקט">⭐</button>
         </div>
-
+        
         <div class="play-buttons">
             <a href="sensi-classic-slides/lesson1.html" target="_blank" class="presentation-link" id="presentationLink">📽️ מצגת</a>
             <button class="btn-play btn-run" onclick="runCode()">
@@ -658,18 +658,18 @@
             </button>
         </div>
     </header>
-
+    
     <!-- Main Content -->
     <div class="main-container">
         <!-- Left: Robot -->
         <div class="robot-section">
             <h2 class="robot-title">👁️ שיעור 1: <span>הרובוט רואה!</span></h2>
-
+            
             <div class="robot-stage">
                 <canvas id="robotCanvas"></canvas>
                 <div class="ground"></div>
             </div>
-
+            
             <div class="sensors-bar">
                 <div class="sensor-chip" id="sensorLight">
                     <span class="icon">👁️</span>
@@ -688,7 +688,7 @@
                     <span id="smellText">נקי</span>
                 </div>
             </div>
-
+            
             <div class="env-buttons">
                 <button class="env-btn" onclick="toggleEnv('light')" id="envLight">
                     <span class="icon">💡</span>
@@ -712,7 +712,7 @@
                 </button>
             </div>
         </div>
-
+        
         <!-- Right: Blocks -->
         <div class="blocks-section">
             <div class="blocks-header">
@@ -721,31 +721,31 @@
             <div id="blocklyDiv"></div>
         </div>
     </div>
-
+    
     <!-- Lesson Drawer Toggle -->
     <button class="drawer-toggle" id="drawerToggle" onclick="toggleDrawer()">📋</button>
-
+    
     <!-- Lesson Drawer -->
     <div class="lesson-drawer" id="lessonDrawer">
         <h2>📝 המשימות שלי</h2>
-
+        
         <ul class="task-list" id="taskList">
             <!-- Tasks will be populated by JavaScript -->
         </ul>
-
+        
         <div class="tip-box" id="tipBox">
             <h4>💡 טיפ!</h4>
             <p id="tipText">לחצו על 💡 בכפתורי הסביבה כדי להדליק אור ולראות מה סנסי עושה!</p>
         </div>
     </div>
-
+    
     <!-- Welcome Modal -->
     <div class="modal active" id="welcomeModal">
         <div class="modal-content">
             <div class="modal-robot">🤖</div>
             <h2 class="modal-title">שלום! אני סנסי!</h2>
             <p class="modal-subtitle">בואו נלמד איך רובוטים "חשים" את העולם!</p>
-
+            
             <div class="lesson-cards">
                 <div class="lesson-card" onclick="startLesson(1)">
                     <div class="num">👁️</div>
@@ -783,11 +783,11 @@
                     </div>
                 </div>
             </div>
-
+            
             <button class="btn-start" onclick="startLesson(1)">🚀 בואו נתחיל!</button>
         </div>
     </div>
-
+    
     <!-- Success Modal -->
     <div class="modal" id="successModal">
         <div class="modal-content">
@@ -808,7 +808,7 @@
         let environment = { light: false, sound: false, obstacle: false, smoke: false };
         let isRunning = false;
         let drawerOpen = false;
-
+        
         // Draggable objects positions
         let objects = {
             wall: { x: 400, y: 200, width: 60, height: 80, emoji: '🧱' },
@@ -816,7 +816,7 @@
             smoke: { x: 100, y: 60, radius: 40, emoji: '💨' },
             sun: { x: 80, y: 60, radius: 40, emoji: '☀️' }
         };
-
+        
         // Dragging state
         let dragging = null;
         let dragOffset = { x: 0, y: 0 };
@@ -824,20 +824,20 @@
         // ===== CANVAS SETUP =====
         const canvas = document.getElementById('robotCanvas');
         const ctx = canvas.getContext('2d');
-
+        
         function resizeCanvas() {
             const container = canvas.parentElement;
             canvas.width = container.clientWidth;
             canvas.height = container.clientHeight - 60; // Account for ground
             resetPositions();
         }
-
+        
         function resetPositions() {
             // Reset robot to center
             robot.x = canvas.width / 2;
             robot.y = canvas.height / 2;
             robot.angle = 0;
-
+            
             // Reset objects to default positions
             objects.wall.x = canvas.width - 80;
             objects.wall.y = canvas.height / 2;
@@ -848,18 +848,18 @@
             objects.sun.x = 80;
             objects.sun.y = 60;
         }
-
+        
         window.addEventListener('resize', resizeCanvas);
-
+        
         // ===== DRAW ROBOT =====
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+            
             // Sky background
             if (environment.light) {
                 ctx.fillStyle = 'rgba(255, 220, 100, 0.3)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
-
+                
                 // Draggable Sun
                 ctx.beginPath();
                 ctx.arc(objects.sun.x, objects.sun.y, 40, 0, Math.PI * 2);
@@ -869,7 +869,7 @@
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('☀️', objects.sun.x, objects.sun.y);
-
+                
                 // Drag hint
                 if (!isRunning) {
                     ctx.font = '12px Rubik';
@@ -877,14 +877,14 @@
                     ctx.fillText('גרור אותי!', objects.sun.x, objects.sun.y + 45);
                 }
             }
-
+            
             // Draggable Smoke
             if (environment.smoke) {
                 ctx.font = '50px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('💨', objects.smoke.x, objects.smoke.y);
-
+                
                 // Animated smoke puffs around main smoke
                 ctx.font = '30px Arial';
                 for (let i = 0; i < 3; i++) {
@@ -894,7 +894,7 @@
                     ctx.fillText('💨', objects.smoke.x + Math.cos(angle) * dist, objects.smoke.y + Math.sin(angle) * dist);
                 }
                 ctx.globalAlpha = 1;
-
+                
                 // Drag hint
                 if (!isRunning) {
                     ctx.font = '12px Rubik';
@@ -902,7 +902,7 @@
                     ctx.fillText('גרור אותי!', objects.smoke.x, objects.smoke.y + 45);
                 }
             }
-
+            
             // Draggable Obstacle/Wall
             if (environment.obstacle) {
                 ctx.fillStyle = '#8B4513';
@@ -911,7 +911,7 @@
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('🧱', objects.wall.x, objects.wall.y);
-
+                
                 // Drag hint
                 if (!isRunning) {
                     ctx.font = '12px Rubik';
@@ -919,14 +919,14 @@
                     ctx.fillText('גרור אותי!', objects.wall.x, objects.wall.y + 55);
                 }
             }
-
+            
             // Draggable Sound source
             if (environment.sound) {
                 ctx.font = '45px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('🔊', objects.sound.x, objects.sound.y);
-
+                
                 // Animated waves
                 ctx.strokeStyle = 'rgba(100, 100, 255, 0.5)';
                 ctx.lineWidth = 3;
@@ -935,7 +935,7 @@
                     ctx.arc(objects.sound.x, objects.sound.y, 25 + i * 15 + Math.sin(Date.now()/200) * 5, -0.5, 0.5);
                     ctx.stroke();
                 }
-
+                
                 // Drag hint
                 if (!isRunning) {
                     ctx.font = '12px Rubik';
@@ -943,26 +943,26 @@
                     ctx.fillText('גרור אותי!', objects.sound.x, objects.sound.y + 50);
                 }
             }
-
+            
             // Robot (also draggable)
             ctx.save();
             ctx.translate(robot.x, robot.y);
             ctx.rotate(robot.angle * Math.PI / 180);
-
+            
             // Robot shadow
             ctx.beginPath();
             ctx.ellipse(0, 40, 35, 10, 0, 0, Math.PI * 2);
             ctx.fillStyle = 'rgba(0,0,0,0.2)';
             ctx.fill();
-
+            
             // Robot body
             ctx.font = '60px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText('🤖', 0, 0);
-
+            
             ctx.restore();
-
+            
             // Drag hint for robot
             if (!isRunning) {
                 ctx.font = '12px Rubik';
@@ -970,12 +970,12 @@
                 ctx.textAlign = 'center';
                 ctx.fillText('גרור אותי!', robot.x, robot.y + 55);
             }
-
+            
             // Speech bubble
             if (robot.speaking) {
                 const bubbleX = robot.x;
                 const bubbleY = robot.y - 60;
-
+                
                 ctx.fillStyle = 'white';
                 ctx.strokeStyle = '#333';
                 ctx.lineWidth = 2;
@@ -983,16 +983,16 @@
                 ctx.roundRect(bubbleX - 60, bubbleY - 20, 120, 40, 15);
                 ctx.fill();
                 ctx.stroke();
-
+                
                 ctx.fillStyle = '#333';
                 ctx.font = 'bold 16px Rubik';
                 ctx.textAlign = 'center';
                 ctx.fillText(robot.speaking, bubbleX, bubbleY);
             }
-
+            
             requestAnimationFrame(draw);
         }
-
+        
         // ===== DRAGGING =====
         function getMousePos(e) {
             const rect = canvas.getBoundingClientRect();
@@ -1003,17 +1003,17 @@
                 y: clientY - rect.top
             };
         }
-
+        
         function hitTest(pos, obj, radius = 40) {
             const dx = pos.x - obj.x;
             const dy = pos.y - obj.y;
             return Math.sqrt(dx * dx + dy * dy) < radius;
         }
-
+        
         function onDragStart(e) {
             if (isRunning) return;
             const pos = getMousePos(e);
-
+            
             // Check what was clicked (robot first, then objects)
             if (hitTest(pos, robot, 40)) {
                 dragging = 'robot';
@@ -1031,20 +1031,20 @@
                 dragging = 'sun';
                 dragOffset = { x: pos.x - objects.sun.x, y: pos.y - objects.sun.y };
             }
-
+            
             if (dragging) {
                 canvas.style.cursor = 'grabbing';
             }
         }
-
+        
         function onDragMove(e) {
             if (!dragging) return;
             e.preventDefault();
             const pos = getMousePos(e);
-
+            
             const newX = Math.max(30, Math.min(canvas.width - 30, pos.x - dragOffset.x));
             const newY = Math.max(30, Math.min(canvas.height - 30, pos.y - dragOffset.y));
-
+            
             if (dragging === 'robot') {
                 robot.x = newX;
                 robot.y = newY;
@@ -1053,30 +1053,30 @@
                 objects[dragging].y = newY;
             }
         }
-
+        
         function onDragEnd() {
             dragging = null;
             canvas.style.cursor = 'grab';
         }
-
+        
         // Mouse events
         canvas.addEventListener('mousedown', onDragStart);
         canvas.addEventListener('mousemove', onDragMove);
         canvas.addEventListener('mouseup', onDragEnd);
         canvas.addEventListener('mouseleave', onDragEnd);
-
+        
         // Touch events
         canvas.addEventListener('touchstart', onDragStart);
         canvas.addEventListener('touchmove', onDragMove);
         canvas.addEventListener('touchend', onDragEnd);
-
+        
         // Set initial cursor
         canvas.style.cursor = 'grab';
-
+        
         // ===== BLOCKLY =====
         function initBlockly() {
             defineBlocks();
-
+            
             const toolbox = {
                 kind: 'categoryToolbox',
                 contents: [
@@ -1162,7 +1162,7 @@
                     this.setColour('#FFAB19');
                 }
             };
-
+            
             // Movement
             Blockly.Blocks['move_forward'] = {
                 init: function() {
@@ -1172,7 +1172,7 @@
                     this.setColour('#4C97FF');
                 }
             };
-
+            
             Blockly.Blocks['move_backward'] = {
                 init: function() {
                     this.appendDummyInput().appendField('⬇️ זוז אחורה');
@@ -1181,7 +1181,7 @@
                     this.setColour('#4C97FF');
                 }
             };
-
+            
             Blockly.Blocks['turn_right'] = {
                 init: function() {
                     this.appendDummyInput().appendField('↩️ סובב ימינה');
@@ -1190,7 +1190,7 @@
                     this.setColour('#4C97FF');
                 }
             };
-
+            
             Blockly.Blocks['turn_left'] = {
                 init: function() {
                     this.appendDummyInput().appendField('↪️ סובב שמאלה');
@@ -1199,7 +1199,7 @@
                     this.setColour('#4C97FF');
                 }
             };
-
+            
             Blockly.Blocks['stop'] = {
                 init: function() {
                     this.appendDummyInput().appendField('🛑 עצור');
@@ -1208,7 +1208,7 @@
                     this.setColour('#4C97FF');
                 }
             };
-
+            
             // Sensors
             Blockly.Blocks['sensor_light'] = {
                 init: function() {
@@ -1219,7 +1219,7 @@
                     this.setColour('#40BF4A');
                 }
             };
-
+            
             Blockly.Blocks['sensor_sound'] = {
                 init: function() {
                     this.appendDummyInput()
@@ -1229,7 +1229,7 @@
                     this.setColour('#40BF4A');
                 }
             };
-
+            
             Blockly.Blocks['sensor_touch'] = {
                 init: function() {
                     this.appendDummyInput()
@@ -1239,7 +1239,7 @@
                     this.setColour('#40BF4A');
                 }
             };
-
+            
             Blockly.Blocks['sensor_smell'] = {
                 init: function() {
                     this.appendDummyInput()
@@ -1249,7 +1249,7 @@
                     this.setColour('#40BF4A');
                 }
             };
-
+            
             // Control
             Blockly.Blocks['control_if'] = {
                 init: function() {
@@ -1260,7 +1260,7 @@
                     this.setColour('#FF8C1A');
                 }
             };
-
+            
             Blockly.Blocks['control_forever'] = {
                 init: function() {
                     this.appendDummyInput().appendField('🔁 לנצח');
@@ -1269,7 +1269,7 @@
                     this.setColour('#FF8C1A');
                 }
             };
-
+            
             Blockly.Blocks['control_wait'] = {
                 init: function() {
                     this.appendDummyInput()
@@ -1281,7 +1281,7 @@
                     this.setColour('#FF8C1A');
                 }
             };
-
+            
             // Actions
             Blockly.Blocks['action_say'] = {
                 init: function() {
@@ -1293,7 +1293,7 @@
                     this.setColour('#9966FF');
                 }
             };
-
+            
             Blockly.Blocks['action_sound'] = {
                 init: function() {
                     this.appendDummyInput()
@@ -1305,12 +1305,12 @@
                 }
             };
         }
-
+        
         // ===== CODE EXECUTION =====
         async function runCode() {
             if (isRunning) return;
             isRunning = true;
-
+            
             const blocks = workspace.getTopBlocks(true);
             for (const block of blocks) {
                 if (block.type === 'event_start') {
@@ -1319,15 +1319,15 @@
             }
             isRunning = false;
         }
-
+        
         function stopCode() {
             isRunning = false;
             robot.speaking = '';
         }
-
+        
         async function runBlock(block) {
             if (!block || !isRunning) return;
-
+            
             switch (block.type) {
                 case 'move_forward':
                     robot.x += Math.cos(robot.angle * Math.PI / 180) * 30;
@@ -1336,7 +1336,7 @@
                     robot.y = Math.max(40, Math.min(canvas.height - 40, robot.y));
                     await sleep(400);
                     break;
-
+                    
                 case 'move_backward':
                     robot.x -= Math.cos(robot.angle * Math.PI / 180) * 30;
                     robot.y -= Math.sin(robot.angle * Math.PI / 180) * 30;
@@ -1344,84 +1344,84 @@
                     robot.y = Math.max(40, Math.min(canvas.height - 40, robot.y));
                     await sleep(400);
                     break;
-
+                    
                 case 'turn_right':
                     robot.angle += 90;
                     await sleep(300);
                     break;
-
+                    
                 case 'turn_left':
                     robot.angle -= 90;
                     await sleep(300);
                     break;
-
+                    
                 case 'stop':
                     break;
-
+                    
                 case 'control_if':
                     if (evalCondition(block.getInputTargetBlock('COND'))) {
                         await runBlock(block.getInputTargetBlock('DO'));
                     }
                     break;
-
+                    
                 case 'control_forever':
                     while (isRunning) {
                         await runBlock(block.getInputTargetBlock('DO'));
                         await sleep(100);
                     }
                     return; // Don't continue after forever
-
+                    
                 case 'control_wait':
                     await sleep(block.getFieldValue('SEC') * 1000);
                     break;
-
+                    
                 case 'action_say':
                     robot.speaking = block.getFieldValue('TEXT');
                     await sleep(2000);
                     robot.speaking = '';
                     break;
-
+                    
                 case 'action_sound':
                     playBeep(block.getFieldValue('SND'));
                     await sleep(500);
                     break;
             }
-
+            
             await runBlock(block.getNextBlock());
         }
-
+        
         // Calculate distance between robot and an object
         function distanceToObject(obj) {
             const dx = robot.x - obj.x;
             const dy = robot.y - obj.y;
             return Math.sqrt(dx * dx + dy * dy);
         }
-
+        
         // Check if robot can sense each element (with proximity)
         function canSenseLight() {
             // Light is ambient - always sensed if on
             return environment.light;
         }
-
+        
         function canSenseSound() {
             // Sound can be heard within 200 pixels
             return environment.sound && distanceToObject(objects.sound) < 200;
         }
-
+        
         function canSenseTouch() {
             // Touch requires being close (within 70 pixels)
             return environment.obstacle && distanceToObject(objects.wall) < 70;
         }
-
+        
         function canSenseSmoke() {
             // Smoke can be smelled within 150 pixels
             return environment.smoke && distanceToObject(objects.smoke) < 150;
         }
-
+        
         function evalCondition(block) {
             if (!block) return false;
             const val = block.getFieldValue('VAL');
-
+            
             switch (block.type) {
                 case 'sensor_light':
                     return val === 'BRIGHT' ? canSenseLight() : !canSenseLight();
@@ -1434,7 +1434,7 @@
             }
             return false;
         }
-
+        
         function playBeep(type) {
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
             const osc = ctx.createOscillator();
@@ -1446,11 +1446,11 @@
             gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.3);
             osc.stop(ctx.currentTime + 0.3);
         }
-
+        
         function sleep(ms) {
             return new Promise(r => setTimeout(r, ms));
         }
-
+        
         // ===== ENVIRONMENT =====
         function toggleEnv(type) {
             environment[type] = !environment[type];
@@ -1458,7 +1458,7 @@
                 .classList.toggle('active', environment[type]);
             updateSensors();
         }
-
+        
         function resetEnv() {
             environment = { light: false, sound: false, obstacle: false, smoke: false };
             document.querySelectorAll('.env-btn').forEach(b => b.classList.remove('active'));
@@ -1466,28 +1466,28 @@
             resetPositions();
             updateSensors();
         }
-
+        
         function updateSensors() {
             // Use proximity-based sensing
             const sensesLight = canSenseLight();
             const sensesSound = canSenseSound();
             const sensesTouch = canSenseTouch();
             const sensesSmoke = canSenseSmoke();
-
+            
             document.getElementById('lightText').textContent = sensesLight ? 'בהיר!' : 'חשוך';
             document.getElementById('soundText').textContent = sensesSound ? 'שומע!' : 'שקט';
             document.getElementById('touchText').textContent = sensesTouch ? 'קיר!' : 'פנוי';
             document.getElementById('smellText').textContent = sensesSmoke ? 'עשן!' : 'נקי';
-
+            
             document.getElementById('sensorLight').classList.toggle('active', sensesLight);
             document.getElementById('sensorSound').classList.toggle('active', sensesSound);
             document.getElementById('sensorTouch').classList.toggle('active', sensesTouch);
             document.getElementById('sensorSmell').classList.toggle('active', sensesSmoke);
         }
-
+        
         // Update sensors periodically (for dragging feedback)
         setInterval(updateSensors, 100);
-
+        
         // ===== LESSON TASKS =====
         const lessonTasks = {
             1: {
@@ -1536,61 +1536,61 @@
                 tip: 'נסו לשלב כמה שיותר חושים! רובוט חכם משתמש בכל החיישנים שלו יחד 🤖'
             }
         };
-
+        
         function updateTasks(lessonNum) {
             const taskList = document.getElementById('taskList');
             const tipText = document.getElementById('tipText');
             const lesson = lessonTasks[lessonNum];
-
+            
             taskList.innerHTML = lesson.tasks.map((task, i) => `
                 <li class="task-item" onclick="toggleTask(${i + 1})">
                     <div class="task-checkbox">✓</div>
                     <div class="task-text">${task}</div>
                 </li>
             `).join('');
-
+            
             tipText.textContent = lesson.tip;
         }
-
+        
         // ===== LESSONS =====
         function selectLesson(num) {
             currentLesson = num;
-            document.querySelectorAll('.lesson-tab').forEach((t, i) =>
+            document.querySelectorAll('.lesson-tab').forEach((t, i) => 
                 t.classList.toggle('active', i + 1 === num));
             document.getElementById('welcomeModal').classList.remove('active');
-
-            const titles = ['👁️ שיעור 1: סנסי רואה!', '👂 שיעור 2: סנסי שומע!',
-                           '✋ שיעור 3: סנסי מרגיש!', '👃 שיעור 4: סנסי מריח!',
+            
+            const titles = ['👁️ שיעור 1: סנסי רואה!', '👂 שיעור 2: סנסי שומע!', 
+                           '✋ שיעור 3: סנסי מרגיש!', '👃 שיעור 4: סנסי מריח!', 
                            '⭐ שיעור 5: פרויקט מסכם!'];
             document.querySelector('.robot-title').innerHTML = titles[num-1].replace(':', ': <span>') + '</span>';
             document.getElementById('presentationLink').href = 'sensi-classic-slides/lesson' + num + '.html';
             updateTasks(num);
         }
-
+        
         function startLesson(num) {
             selectLesson(num);
         }
-
+        
         function toggleDrawer() {
             drawerOpen = !drawerOpen;
             document.getElementById('lessonDrawer').classList.toggle('open', drawerOpen);
             document.getElementById('drawerToggle').classList.toggle('open', drawerOpen);
         }
-
+        
         function toggleTask(num) {
             const items = document.querySelectorAll('.task-item');
             items[num-1].classList.toggle('done');
-
+            
             // Check all done
             if ([...items].every(i => i.classList.contains('done'))) {
                 document.getElementById('successModal').classList.add('active');
             }
         }
-
+        
         function closeSuccess() {
             document.getElementById('successModal').classList.remove('active');
         }
-
+        
         // ===== INIT =====
         window.onload = function() {
             resizeCanvas();

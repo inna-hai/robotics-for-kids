@@ -7,28 +7,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
+        
         :root {
             --primary: #8b5cf6;
             --secondary: #a78bfa;
             --accent: #fbbf24;
             --dark: #1e293b;
         }
-
+        
         body {
             font-family: 'Rubik', sans-serif;
             background: var(--dark);
             color: white;
             overflow: hidden;
         }
-
+        
         .slides-container {
             width: 100vw;
             height: 100vh;
             overflow: hidden;
             position: relative;
         }
-
+        
         .slide {
             width: 100vw;
             height: 100vh;
@@ -43,44 +43,44 @@
             left: 0;
             animation: fadeIn 0.5s ease;
         }
-
+        
         .slide.active { display: flex; }
-
+        
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.95); }
             to { opacity: 1; transform: scale(1); }
         }
-
+        
         .slide-title { background: linear-gradient(135deg, #8b5cf6, #ec4899); }
         .slide-content { background: linear-gradient(135deg, #3b1d5c, #5b2d7c); }
         .slide-video { background: #000; }
         .slide-activity { background: linear-gradient(135deg, #065f46, #047857); }
         .slide-question { background: linear-gradient(135deg, #7c3aed, #a855f7); }
         .slide-summary { background: linear-gradient(135deg, #ea580c, #f97316); }
-
+        
         h1 { font-size: 4rem; margin-bottom: 1rem; text-shadow: 3px 3px 6px rgba(0,0,0,0.3); }
         h2 { font-size: 3rem; margin-bottom: 1.5rem; }
         h3 { font-size: 2rem; margin-bottom: 1rem; color: var(--accent); }
         p { font-size: 1.75rem; line-height: 1.6; max-width: 900px; }
         .subtitle { font-size: 2rem; opacity: 0.9; }
-
+        
         .emoji-big {
             font-size: 8rem;
             margin-bottom: 1rem;
             animation: bounce 2s infinite;
         }
-
+        
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-20px); }
         }
-
+        
         .emoji-row { font-size: 5rem; margin: 2rem 0; }
-
+        
         ul { list-style: none; text-align: right; font-size: 1.75rem; }
         li { margin: 1rem 0; padding-right: 2rem; position: relative; }
         li::before { content: '✨'; position: absolute; right: 0; }
-
+        
         .video-container {
             width: 80%;
             max-width: 900px;
@@ -90,16 +90,16 @@
             overflow: hidden;
             box-shadow: 0 20px 60px rgba(0,0,0,0.5);
         }
-
+        
         .video-container iframe { width: 100%; height: 100%; border: none; }
         .video-title { margin-top: 1.5rem; font-size: 1.5rem; opacity: 0.8; }
-
+        
         .comparison {
             display: flex;
             gap: 3rem;
             margin-top: 2rem;
         }
-
+        
         .comparison-item {
             background: rgba(255,255,255,0.1);
             padding: 2rem;
@@ -107,9 +107,9 @@
             flex: 1;
             max-width: 400px;
         }
-
+        
         .comparison-item .emoji { font-size: 5rem; margin-bottom: 1rem; }
-
+        
         .info-box {
             background: rgba(251, 191, 36, 0.2);
             border: 3px solid var(--accent);
@@ -118,9 +118,9 @@
             margin-top: 2rem;
             max-width: 800px;
         }
-
+        
         .info-box h3 { color: var(--accent); }
-
+        
         .nav-bar {
             position: fixed;
             bottom: 2rem;
@@ -133,7 +133,7 @@
             border-radius: 50px;
             z-index: 100;
         }
-
+        
         .nav-btn {
             width: 60px;
             height: 60px;
@@ -145,9 +145,9 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-
+        
         .nav-btn:hover { background: var(--primary); transform: scale(1.1); }
-
+        
         .slide-counter {
             display: flex;
             align-items: center;
@@ -155,7 +155,7 @@
             font-size: 1.25rem;
             font-weight: 600;
         }
-
+        
         .progress-bar {
             position: fixed;
             top: 0;
@@ -165,7 +165,7 @@
             transition: width 0.3s ease;
             z-index: 100;
         }
-
+        
         .fullscreen-btn {
             position: fixed;
             top: 1.5rem;
@@ -180,7 +180,7 @@
             z-index: 100;
             font-family: inherit;
         }
-
+        
         .activity-card {
             background: rgba(255,255,255,0.15);
             border-radius: 1.5rem;
@@ -188,11 +188,11 @@
             max-width: 700px;
             margin-top: 1.5rem;
         }
-
+        
         .activity-card h3 { color: #86efac; margin-bottom: 1rem; }
         .activity-steps { text-align: right; }
         .activity-steps li::before { content: '👉'; }
-
+        
         /* Sound waves animation */
         .sound-waves {
             display: flex;
@@ -201,7 +201,7 @@
             gap: 0.5rem;
             margin: 2rem 0;
         }
-
+        
         .wave {
             width: 10px;
             height: 60px;
@@ -209,12 +209,12 @@
             border-radius: 5px;
             animation: wave 1s ease-in-out infinite;
         }
-
+        
         .wave:nth-child(2) { animation-delay: 0.1s; height: 80px; }
         .wave:nth-child(3) { animation-delay: 0.2s; height: 100px; }
         .wave:nth-child(4) { animation-delay: 0.3s; height: 80px; }
         .wave:nth-child(5) { animation-delay: 0.4s; height: 60px; }
-
+        
         @keyframes wave {
             0%, 100% { transform: scaleY(0.5); }
             50% { transform: scaleY(1); }
@@ -224,7 +224,7 @@
 <body>
     <div class="progress-bar" id="progress"></div>
     <button class="fullscreen-btn" onclick="toggleFullscreen()">⛶ מסך מלא</button>
-
+    
     <div class="slides-container">
         <!-- Slide 1: Title -->
         <div class="slide slide-title active">
@@ -232,7 +232,7 @@
             <h1>שיעור 2: שמיעה</h1>
             <p class="subtitle">הרובוט שומע! 🤖</p>
         </div>
-
+        
         <!-- Slide 2: Recap -->
         <div class="slide slide-content">
             <h2>🔄 מה למדנו בשיעור הקודם?</h2>
@@ -243,7 +243,7 @@
             </ul>
             <div class="emoji-row">👁️ ✅</div>
         </div>
-
+        
         <!-- Slide 3: Today's Topic -->
         <div class="slide slide-content">
             <h2>🎯 מה נלמד היום?</h2>
@@ -255,7 +255,7 @@
             </ul>
             <div class="emoji-row">👂 ➡️ 🤖</div>
         </div>
-
+        
         <!-- Slide 4: The Ear -->
         <div class="slide slide-content">
             <h2>👂 האוזן שלנו</h2>
@@ -269,19 +269,19 @@
             </div>
             <p>גלי הקול נכנסים לאוזן → המוח מפענח → אנחנו שומעים!</p>
         </div>
-
+        
         <!-- Slide 5: Video - How Ears Work -->
         <div class="slide slide-video">
             <h2>🎬 איך האוזן עובדת?</h2>
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/rJqfW39YGLY"
-                        title="חמשת החושים - חוש השמיעה"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                <iframe src="https://www.youtube.com/embed/rJqfW39YGLY" 
+                        title="חמשת החושים - חוש השמיעה" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                         allowfullscreen></iframe>
             </div>
             <p class="video-title">סרטון: איך אנחנו שומעים</p>
         </div>
-
+        
         <!-- Slide 6: Activity - Listen -->
         <div class="slide slide-activity">
             <h2>🎮 פעילות: הקשיבו!</h2>
@@ -296,7 +296,7 @@
             </div>
             <div class="emoji-row">🤫 👂 🎵</div>
         </div>
-
+        
         <!-- Slide 7: Robot's Ear -->
         <div class="slide slide-content">
             <h2>🤖 והרובוט?</h2>
@@ -304,7 +304,7 @@
             <p>אבל יש לו <strong style="color: var(--accent);">מיקרופון!</strong></p>
             <div class="emoji-row">🤖 + 🎤 = 👂</div>
         </div>
-
+        
         <!-- Slide 8: Microphone -->
         <div class="slide slide-content">
             <h2>🎤 מהו מיקרופון?</h2>
@@ -323,19 +323,19 @@
                 </div>
             </div>
         </div>
-
+        
         <!-- Slide 9: Video - Microphones -->
         <div class="slide slide-video">
             <h2>🎬 איך מיקרופון עובד?</h2>
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/tF0K9F1KK18"
-                        title="חוש השמיעה מזווית קצת אחרת"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                <iframe src="https://www.youtube.com/embed/tF0K9F1KK18" 
+                        title="חוש השמיעה מזווית קצת אחרת" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                         allowfullscreen></iframe>
             </div>
             <p class="video-title">סרטון: איך מיקרופון עובד</p>
         </div>
-
+        
         <!-- Slide 10: Real World Examples -->
         <div class="slide slide-content">
             <h2>🌍 איפה יש מיקרופונים?</h2>
@@ -347,7 +347,7 @@
                 <li>🤖 רובוטים שמבינים דיבור!</li>
             </ul>
         </div>
-
+        
         <!-- Slide 11: Question -->
         <div class="slide slide-question">
             <h2>❓ שאלה לחשיבה</h2>
@@ -358,7 +358,7 @@
                 <p>רובוט שומר... רובוט עוזר... רובוט חבר...</p>
             </div>
         </div>
-
+        
         <!-- Slide 12: Let's Code -->
         <div class="slide slide-activity">
             <h2>💻 בואו נתכנת!</h2>
@@ -372,7 +372,7 @@
             </div>
             <div class="emoji-row">🔊 = 🔄</div>
         </div>
-
+        
         <!-- Slide 13: Code Example -->
         <div class="slide slide-content">
             <h2>📝 הקוד שלנו</h2>
@@ -386,7 +386,7 @@
                 </p>
             </div>
         </div>
-
+        
         <!-- Slide 14: Practice -->
         <div class="slide slide-activity">
             <div class="emoji-big">🚀</div>
@@ -397,7 +397,7 @@
                 <p>לחצו על 🔊 בכפתורי הסביבה כדי להשמיע צליל!</p>
             </div>
         </div>
-
+        
         <!-- Slide 15: Challenge -->
         <div class="slide slide-question">
             <h2>🏆 אתגר!</h2>
@@ -408,7 +408,7 @@
             </p>
             <div class="emoji-row">🏃 🔊 🧊</div>
         </div>
-
+        
         <!-- Slide 16: Super Challenge -->
         <div class="slide slide-question">
             <h2>🌟 אתגר על!</h2>
@@ -419,7 +419,7 @@
             </p>
             <div class="emoji-row">☀️ + 🔊 = 🤖💪</div>
         </div>
-
+        
         <!-- Slide 17: More Challenges -->
         <div class="slide slide-activity">
             <h2>🎯 אתגרים נוספים בלומדה!</h2>
@@ -433,7 +433,7 @@
                 </ul>
             </div>
         </div>
-
+        
         <!-- Slide 18: Summary -->
         <div class="slide slide-summary">
             <h2>📝 מה למדנו היום?</h2>
@@ -444,7 +444,7 @@
                 <li>תכנתנו רובוט שמגיב לצלילים! 🤖</li>
             </ul>
         </div>
-
+        
         <!-- Slide 18: Next Time -->
         <div class="slide slide-title">
             <h2>בשיעור הבא...</h2>
@@ -452,7 +452,7 @@
             <h1>הרובוט מרגיש!</h1>
             <p class="subtitle">נלמד על חוש המישוש וחיישני מגע!</p>
         </div>
-
+        
         <!-- Slide 19: End -->
         <div class="slide slide-title">
             <div class="emoji-big">⭐</div>
@@ -461,7 +461,7 @@
             <div class="emoji-row">🎉 👏 🌟</div>
         </div>
     </div>
-
+    
     <div class="nav-bar">
         <button class="nav-btn" onclick="prevSlide()">▶</button>
         <div class="slide-counter">
@@ -469,14 +469,14 @@
         </div>
         <button class="nav-btn" onclick="nextSlide()">◀</button>
     </div>
-
+    
     <script>
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
         const totalSlides = slides.length;
-
+        
         document.getElementById('totalSlides').textContent = totalSlides;
-
+        
         function showSlide(n) {
             slides.forEach(s => s.classList.remove('active'));
             currentSlide = (n + totalSlides) % totalSlides;
@@ -484,21 +484,21 @@
             document.getElementById('currentSlide').textContent = currentSlide + 1;
             document.getElementById('progress').style.width = ((currentSlide + 1) / totalSlides * 100) + '%';
         }
-
+        
         function nextSlide() { showSlide(currentSlide + 1); }
         function prevSlide() { showSlide(currentSlide - 1); }
-
+        
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowLeft' || e.key === ' ') nextSlide();
             if (e.key === 'ArrowRight') prevSlide();
         });
-
+        
         document.querySelector('.slides-container').addEventListener('click', (e) => {
             if (!e.target.closest('.nav-bar') && !e.target.closest('iframe') && !e.target.closest('button')) {
                 nextSlide();
             }
         });
-
+        
         function toggleFullscreen() {
             if (!document.fullscreenElement) document.documentElement.requestFullscreen();
             else document.exitFullscreen();

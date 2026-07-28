@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
+        
         :root {
             --primary: #6366f1;
             --secondary: #10b981;
@@ -17,14 +17,14 @@
             --light: #f8fafc;
             --border: #e2e8f0;
         }
-
+        
         body {
             font-family: 'Rubik', sans-serif;
             background: var(--light);
             color: var(--dark);
             line-height: 1.7;
         }
-
+        
         /* Header */
         .header {
             background: linear-gradient(135deg, var(--primary), var(--pink));
@@ -32,17 +32,17 @@
             padding: 3rem 2rem;
             text-align: center;
         }
-
+        
         .header h1 {
             font-size: 2.5rem;
             margin-bottom: 0.5rem;
         }
-
+        
         .header p {
             font-size: 1.2rem;
             opacity: 0.9;
         }
-
+        
         /* Navigation */
         .nav {
             background: white;
@@ -52,7 +52,7 @@
             z-index: 100;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-
+        
         .nav-inner {
             max-width: 1200px;
             margin: 0 auto;
@@ -61,7 +61,7 @@
             flex-wrap: wrap;
             justify-content: center;
         }
-
+        
         .nav a {
             padding: 0.75rem 1.5rem;
             background: var(--light);
@@ -74,19 +74,19 @@
             align-items: center;
             gap: 0.5rem;
         }
-
+        
         .nav a:hover {
             background: var(--primary);
             color: white;
         }
-
+        
         /* Container */
         .container {
             max-width: 900px;
             margin: 0 auto;
             padding: 2rem;
         }
-
+        
         /* Overview Section */
         .overview {
             background: white;
@@ -95,7 +95,7 @@
             margin-bottom: 2rem;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         }
-
+        
         .overview h2 {
             font-size: 1.75rem;
             margin-bottom: 1rem;
@@ -103,32 +103,32 @@
             align-items: center;
             gap: 0.5rem;
         }
-
+        
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 1rem;
             margin: 1.5rem 0;
         }
-
+        
         .stat {
             background: var(--light);
             padding: 1.25rem;
             border-radius: 1rem;
             text-align: center;
         }
-
+        
         .stat-num {
             font-size: 2rem;
             font-weight: 700;
             color: var(--primary);
         }
-
+        
         .stat-label {
             font-size: 0.9rem;
             color: #666;
         }
-
+        
         /* Lesson Card */
         .lesson {
             background: white;
@@ -137,7 +137,7 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
             overflow: hidden;
         }
-
+        
         .lesson-header {
             padding: 1.5rem 2rem;
             color: white;
@@ -145,44 +145,44 @@
             align-items: center;
             gap: 1rem;
         }
-
+        
         .lesson-1 .lesson-header { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
         .lesson-2 .lesson-header { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
         .lesson-3 .lesson-header { background: linear-gradient(135deg, #ec4899, #f472b6); }
         .lesson-4 .lesson-header { background: linear-gradient(135deg, #10b981, #34d399); }
         .lesson-5 .lesson-header { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
-
+        
         .lesson-icon {
             font-size: 3rem;
         }
-
+        
         .lesson-title {
             flex: 1;
         }
-
+        
         .lesson-title h2 {
             font-size: 1.5rem;
             margin-bottom: 0.25rem;
         }
-
+        
         .lesson-title p {
             opacity: 0.9;
             font-size: 0.95rem;
         }
-
+        
         .lesson-body {
             padding: 2rem;
         }
-
+        
         /* Section */
         .section {
             margin-bottom: 2rem;
         }
-
+        
         .section:last-child {
             margin-bottom: 0;
         }
-
+        
         .section h3 {
             font-size: 1.2rem;
             margin-bottom: 1rem;
@@ -192,49 +192,49 @@
             align-items: center;
             gap: 0.5rem;
         }
-
+        
         .section ul {
             margin-right: 1.5rem;
         }
-
+        
         .section li {
             margin-bottom: 0.5rem;
         }
-
+        
         /* Timeline */
         .timeline {
             background: var(--light);
             border-radius: 1rem;
             padding: 1.5rem;
         }
-
+        
         .time-block {
             display: flex;
             gap: 1rem;
             padding: 1rem 0;
             border-bottom: 1px dashed var(--border);
         }
-
+        
         .time-block:last-child {
             border-bottom: none;
         }
-
+        
         .time-duration {
             min-width: 80px;
             font-weight: 700;
             color: var(--primary);
         }
-
+        
         .time-content h4 {
             font-size: 1rem;
             margin-bottom: 0.25rem;
         }
-
+        
         .time-content p {
             font-size: 0.9rem;
             color: #666;
         }
-
+        
         /* Tips Box */
         .tips-box {
             background: linear-gradient(135deg, #fef3c7, #fde68a);
@@ -242,7 +242,7 @@
             padding: 1.5rem;
             margin-top: 1rem;
         }
-
+        
         .tips-box h4 {
             font-size: 1rem;
             margin-bottom: 0.75rem;
@@ -250,23 +250,23 @@
             align-items: center;
             gap: 0.5rem;
         }
-
+        
         .tips-box ul {
             margin-right: 1.25rem;
         }
-
+        
         .tips-box li {
             margin-bottom: 0.5rem;
             font-size: 0.95rem;
         }
-
+        
         /* Goals Box */
         .goals-box {
             background: linear-gradient(135deg, #d1fae5, #a7f3d0);
             border-radius: 1rem;
             padding: 1.5rem;
         }
-
+        
         .goals-box h4 {
             font-size: 1rem;
             margin-bottom: 0.75rem;
@@ -274,31 +274,31 @@
             align-items: center;
             gap: 0.5rem;
         }
-
+        
         /* Questions Box */
         .questions-box {
             background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
             border-radius: 1rem;
             padding: 1.5rem;
         }
-
+        
         .questions-box h4 {
             font-size: 1rem;
             margin-bottom: 0.75rem;
         }
-
+        
         /* Challenge Box */
         .challenge-box {
             background: linear-gradient(135deg, #fce7f3, #fbcfe8);
             border-radius: 1rem;
             padding: 1.5rem;
         }
-
+        
         .challenge-box h4 {
             font-size: 1rem;
             margin-bottom: 0.75rem;
         }
-
+        
         /* Code Example */
         .code-example {
             background: var(--dark);
@@ -310,7 +310,7 @@
             text-align: left;
             margin: 1rem 0;
         }
-
+        
         .code-example .block {
             display: inline-block;
             padding: 0.5rem 1rem;
@@ -318,19 +318,19 @@
             margin: 0.25rem;
             font-size: 0.9rem;
         }
-
+        
         .block-event { background: #FFAB19; color: black; }
         .block-control { background: #FF8C1A; color: black; }
         .block-sensor { background: #40BF4A; color: white; }
         .block-move { background: #4C97FF; color: white; }
         .block-action { background: #9966FF; color: white; }
-
+        
         /* Print Styles */
         @media print {
             .nav { display: none; }
             .lesson { break-inside: avoid; }
         }
-
+        
         /* Button */
         .btn-print {
             display: inline-flex;
@@ -347,12 +347,12 @@
             transition: all 0.3s;
             font-family: inherit;
         }
-
+        
         .btn-print:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
         }
-
+        
         /* Footer */
         .footer {
             text-align: center;
@@ -360,7 +360,7 @@
             color: #666;
             font-size: 0.9rem;
         }
-
+        
         .footer a {
             color: var(--primary);
         }
@@ -373,7 +373,7 @@
         <h1>📚 מערכי שיעור למדריכים</h1>
         <p>סנסי הרובוט - לומדים על חמשת החושים דרך רובוטיקה</p>
     </header>
-
+    
     <!-- Navigation -->
     <nav class="nav">
         <div class="nav-inner">
@@ -386,14 +386,14 @@
             <a href="sensi-classic.html" target="_blank">🤖 לאפליקציה</a>
         </div>
     </nav>
-
+    
     <div class="container">
         <!-- Overview -->
         <section class="overview" id="overview">
             <h2>📋 סקירת הקורס</h2>
-
+            
             <p>קורס זה מלמד ילדים בני 8-9 על חמשת החושים דרך עולם הרובוטיקה. הילדים ילמדו שלרובוטים יש "חושים" בדמות חיישנים, ויתכנתו רובוט וירטואלי בסביבה ויזואלית דמוית Scratch.</p>
-
+            
             <div class="stats">
                 <div class="stat">
                     <div class="stat-num">5</div>
@@ -412,7 +412,7 @@
                     <div class="stat-label">כיף!</div>
                 </div>
             </div>
-
+            
             <h3>🎯 מטרות הקורס</h3>
             <ul>
                 <li>הכרת חמשת החושים האנושיים</li>
@@ -421,19 +421,19 @@
                 <li>למידת יסודות התכנות בסביבה ויזואלית</li>
                 <li>עבודה בצוות ופתרון בעיות</li>
             </ul>
-
+            
             <h3 style="margin-top: 1.5rem;">🛠️ דרישות טכניות</h3>
             <ul>
                 <li>מחשב/טאבלט עם דפדפן מודרני</li>
                 <li>חיבור לאינטרנט</li>
                 <li>מקרן (מומלץ להדגמות)</li>
             </ul>
-
+            
             <div style="margin-top: 1.5rem; text-align: center;">
                 <button class="btn-print" onclick="window.print()">🖨️ הדפס מערכי שיעור</button>
             </div>
         </section>
-
+        
         <!-- Lesson 1 -->
         <section class="lesson lesson-1" id="lesson1">
             <div class="lesson-header">
@@ -443,7 +443,7 @@
                     <p>חיישן אור | 90 דקות</p>
                 </div>
             </div>
-
+            
             <div class="lesson-body">
                 <div class="section">
                     <div class="goals-box">
@@ -456,7 +456,7 @@
                         </ul>
                     </div>
                 </div>
-
+                
                 <div class="section">
                     <h3>⏱️ לוח זמנים</h3>
                     <div class="timeline">
@@ -504,7 +504,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="section">
                     <h3>🧩 דוגמת קוד - משימה בסיסית</h3>
                     <div class="code-example">
@@ -513,7 +513,7 @@
                         <span class="block block-sensor">👁️ חיישן אור = בהיר</span><br>
                         &nbsp;&nbsp;&nbsp;&nbsp;<span class="block block-move">⬆️ זוז קדימה</span>
                     </div>
-
+                    
                     <h3 style="margin-top: 1rem;">🧩 דוגמת קוד - אתגר</h3>
                     <div class="code-example">
                         <span class="block block-event">🚩 כאשר לוחצים ▶️</span><br>
@@ -523,7 +523,7 @@
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="block block-move">⬆️ זוז קדימה</span>
                     </div>
                 </div>
-
+                
                 <div class="section">
                     <div class="questions-box">
                         <h4>❓ שאלות לדיון</h4>
@@ -535,7 +535,7 @@
                         </ul>
                     </div>
                 </div>
-
+                
                 <div class="tips-box">
                     <h4>💡 טיפים למדריך</h4>
                     <ul>
@@ -547,7 +547,7 @@
                 </div>
             </div>
         </section>
-
+        
         <!-- Lesson 2 -->
         <section class="lesson lesson-2" id="lesson2">
             <div class="lesson-header">
@@ -557,7 +557,7 @@
                     <p>מיקרופון | 90 דקות</p>
                 </div>
             </div>
-
+            
             <div class="lesson-body">
                 <div class="section">
                     <div class="goals-box">
@@ -570,7 +570,7 @@
                         </ul>
                     </div>
                 </div>
-
+                
                 <div class="section">
                     <h3>⏱️ לוח זמנים</h3>
                     <div class="timeline">
@@ -618,7 +618,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="section">
                     <h3>🧩 דוגמת קוד - אתגר</h3>
                     <div class="code-example">
@@ -632,7 +632,7 @@
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="block block-move">🛑 עצור</span>
                     </div>
                 </div>
-
+                
                 <div class="section">
                     <div class="questions-box">
                         <h4>❓ שאלות לדיון</h4>
@@ -644,7 +644,7 @@
                         </ul>
                     </div>
                 </div>
-
+                
                 <div class="tips-box">
                     <h4>💡 טיפים למדריך</h4>
                     <ul>
@@ -655,7 +655,7 @@
                 </div>
             </div>
         </section>
-
+        
         <!-- Lesson 3 -->
         <section class="lesson lesson-3" id="lesson3">
             <div class="lesson-header">
@@ -665,7 +665,7 @@
                     <p>חיישן מגע | 90 דקות</p>
                 </div>
             </div>
-
+            
             <div class="lesson-body">
                 <div class="section">
                     <div class="goals-box">
@@ -678,7 +678,7 @@
                         </ul>
                     </div>
                 </div>
-
+                
                 <div class="section">
                     <h3>⏱️ לוח זמנים</h3>
                     <div class="timeline">
@@ -726,7 +726,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="section">
                     <h3>🧩 דוגמת קוד - אתגר</h3>
                     <div class="code-example">
@@ -739,14 +739,14 @@
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="block block-move">↩️ סובב ימינה</span>
                     </div>
                 </div>
-
+                
                 <div class="section">
                     <div class="challenge-box">
                         <h4>🎯 אתגר מתקדם</h4>
                         <p>שלבו את חיישן האור עם חיישן המגע: רובוט שזז רק כשיש אור, ונמנע ממכשולים!</p>
                     </div>
                 </div>
-
+                
                 <div class="tips-box">
                     <h4>💡 טיפים למדריך</h4>
                     <ul>
@@ -757,7 +757,7 @@
                 </div>
             </div>
         </section>
-
+        
         <!-- Lesson 4 -->
         <section class="lesson lesson-4" id="lesson4">
             <div class="lesson-header">
@@ -767,7 +767,7 @@
                     <p>חיישן גז | 90 דקות</p>
                 </div>
             </div>
-
+            
             <div class="lesson-body">
                 <div class="section">
                     <div class="goals-box">
@@ -780,7 +780,7 @@
                         </ul>
                     </div>
                 </div>
-
+                
                 <div class="section">
                     <h3>⏱️ לוח זמנים</h3>
                     <div class="timeline">
@@ -828,7 +828,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="section">
                     <h3>🧩 דוגמת קוד - אתגר</h3>
                     <div class="code-example">
@@ -841,7 +841,7 @@
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="block block-move">⬆️ זוז קדימה</span>
                     </div>
                 </div>
-
+                
                 <div class="tips-box">
                     <h4>💡 טיפים למדריך</h4>
                     <ul>
@@ -852,7 +852,7 @@
                 </div>
             </div>
         </section>
-
+        
         <!-- Lesson 5 -->
         <section class="lesson lesson-5" id="lesson5">
             <div class="lesson-header">
@@ -862,7 +862,7 @@
                     <p>שילוב והצגה | 90 דקות</p>
                 </div>
             </div>
-
+            
             <div class="lesson-body">
                 <div class="section">
                     <div class="goals-box">
@@ -875,7 +875,7 @@
                         </ul>
                     </div>
                 </div>
-
+                
                 <div class="section">
                     <h3>⏱️ לוח זמנים</h3>
                     <div class="timeline">
@@ -916,7 +916,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="section">
                     <h3>🤖 רעיונות לפרויקטים</h3>
                     <ul>
@@ -926,7 +926,7 @@
                         <li><strong>🚒 רובוט כבאי</strong> - מזהה עשן, מתריע, נוסע להציל</li>
                     </ul>
                 </div>
-
+                
                 <div class="section">
                     <div class="questions-box">
                         <h4>🎤 שאלות להצגה</h4>
@@ -938,7 +938,7 @@
                         </ul>
                     </div>
                 </div>
-
+                
                 <div class="tips-box">
                     <h4>💡 טיפים למדריך</h4>
                     <ul>
@@ -951,7 +951,7 @@
                 </div>
             </div>
         </section>
-
+        
         <!-- Footer -->
         <footer class="footer">
             <p>📚 מערכי שיעור למדריכים | סנסי הרובוט<br>
