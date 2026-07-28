@@ -15,7 +15,7 @@
     freeLessonLinks.forEach((link) => {
       link.setAttribute('href', 'register.html');
       const badge = link.querySelector('.access-badge');
-      if (badge) badge.textContent = 'חינם אחרי הרשמה';
+      if (badge) badge.textContent = '✅ חינם אחרי הרשמה';
     });
   }
 
@@ -24,7 +24,7 @@
       const target = link.dataset.lessonHref;
       if (target) link.setAttribute('href', target);
       const badge = link.querySelector('.access-badge');
-      if (badge) badge.textContent = 'פתוח בחשבון שלך';
+      if (badge) badge.textContent = '✅ פתוח בחשבון שלך';
     });
   }
 

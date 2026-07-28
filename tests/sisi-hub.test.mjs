@@ -119,12 +119,12 @@ test('free lesson cards require registration for guests before entering lessons'
   assertIncludes(hubHtml, 'data-lesson-href="music.html"');
   assertIncludes(hubHtml, 'data-lesson-href="ocean.html"');
   assertIncludes(hubHtml, 'href="register.html" data-free-lesson data-lesson-href="space.html"');
-  assertIncludes(hubHtml, 'חינם אחרי הרשמה');
+  assertIncludes(hubHtml, '✅ חינם אחרי הרשמה');
   assertIncludes(hubHtml, 'js/sisi-hub.js');
   assertIncludes(sisiHubJs, '/api/summer/me');
   assertIncludes(sisiHubJs, "link.setAttribute('href', 'register.html')");
   assertIncludes(sisiHubJs, "link.setAttribute('href', target)");
-  assertIncludes(sisiHubJs, 'פתוח בחשבון שלך');
+  assertIncludes(sisiHubJs, '✅ פתוח בחשבון שלך');
   assertIncludes(sisiHubJs, 'credentials: \'same-origin\'');
 });
 
