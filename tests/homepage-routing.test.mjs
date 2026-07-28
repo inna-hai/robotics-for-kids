@@ -29,6 +29,7 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertIncludes(homepageHtml, 'התנסות חינמית');
   assertNotIncludes(homepageHtml, 'href="space.html"');
   assertIncludes(homepageHtml, 'href="sisi.html"');
+  assertIncludes(homepageHtml, '<a class="btn" href="sisi.html">התחילו בחינם</a><a class="btn secondary" href="sisi.html">מרכז הקורס</a>');
   assertIncludes(homepageHtml, 'חשיבה ותכנות לילדים עם סיסי');
   assertIncludes(homepageHtml, '3 שיעורים בחינם · המשך הסדרה למנויים');
   assertIncludes(homepageHtml, 'href="https://mrng.to/fZiL2SITRp"');
