@@ -16,6 +16,7 @@ const behaviorJs = readFileSync(join(root, 'js', 'summer-subscription.js'), 'utf
 const accountJs = readFileSync(join(root, 'js', 'summer-account.js'), 'utf8');
 const userBadgeJs = readFileSync(join(root, 'js', 'user-badge.js'), 'utf8');
 const serverJs = readFileSync(join(root, 'server.js'), 'utf8');
+const faviconSvg = readFileSync(join(root, 'favicon.svg'), 'utf8');
 
 const tests = [];
 function test(name, fn) { tests.push({ name, fn }); }
@@ -93,7 +94,11 @@ test('summer auth client and server expose account endpoints and protected pages
   assertIncludes(userBadgeJs, 'התקדמות נשמרת לילד/ה הזה/ו');
   assertIncludes(userBadgeJs, 'תצוגת הורה');
   assertIncludes(serverJs, 'injectUserBadge');
+  assertIncludes(serverJs, 'injectHeadAssets');
+  assertIncludes(serverJs, '/favicon.svg');
   assertIncludes(serverJs, '/js/user-badge.js');
+  assertIncludes(faviconSvg, '<svg');
+  assertIncludes(faviconSvg, 'hai.tech robotics favicon');
   assertIncludes(serverJs, 'better-sqlite3');
   assertIncludes(serverJs, 'SUMMER_DB_FILE');
   assertIncludes(serverJs, 'summer_users');

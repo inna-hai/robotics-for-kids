@@ -1065,9 +1065,18 @@ function requiresPaidAccess(pathname, ext, url) {
   return true;
 }
 
+function injectHeadAssets(html) {
+  if (!html.includes('</head>')) return html;
+  let output = html;
+  if (!output.includes('rel="icon"')) {
+    output = output.replace('</head>', '  <link rel="icon" type="image/svg+xml" href="/favicon.svg">\n  <link rel="shortcut icon" href="/favicon.svg">\n</head>');
+  }
+  return output;
+}
+
 function injectUserBadge(html) {
-  if (!html.includes('</body>') || html.includes('js/user-badge.js')) return html;
-  return html.replace('</body>', '  <script src="/js/user-badge.js?v=20260728-user-badge"></script>\n</body>');
+  if (!html.includes('</body>') || html.includes('js/user-badge.js')) return injectHeadAssets(html);
+  return injectHeadAssets(html).replace('</body>', '  <script src="/js/user-badge.js?v=20260728-user-badge"></script>\n</body>');
 }
 
 function serveStatic(req, res) {
