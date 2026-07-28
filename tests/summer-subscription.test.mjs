@@ -103,6 +103,7 @@ test('summer auth client and server expose account endpoints and protected pages
   assertIncludes(serverJs, "profile.kind !== 'child'");
   assertIncludes(serverJs, 'תצוגת הורה בלבד');
   assertIncludes(accountJs, 'haiTechSummerToken');
+  assertIncludes(userBadgeJs, 'haiTechSummerToken');
   assertIncludes(userBadgeJs, 'התקדמות נשמרת לילד/ה הזה/ו');
   assertIncludes(userBadgeJs, 'תצוגת הורה');
   assertIncludes(serverJs, 'injectUserBadge');

@@ -1,5 +1,5 @@
 (() => {
-  const TOKEN_KEY = 'haiTec…oken';
+  const TOKEN_KEY = 'haiTechSummerToken';
   const BADGE_ID = 'hai-user-badge';
 
   function token() {

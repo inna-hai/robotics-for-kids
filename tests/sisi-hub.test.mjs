@@ -21,6 +21,7 @@ const mailHtml = readFileSync(join(root, 'mail.html'), 'utf8');
 const cinemaHtml = readFileSync(join(root, 'cinema.html'), 'utf8');
 const escapeHtml = readFileSync(join(root, 'escape.html'), 'utf8');
 const finaleHtml = readFileSync(join(root, 'finale.html'), 'utf8');
+const sisiHubJs = readFileSync(join(root, 'js', 'sisi-hub.js'), 'utf8');
 
 const sisiLessonFiles = [
   'sisi.html',
@@ -110,6 +111,15 @@ test('hub frames the series for grade B and up and 75-minute lessons', () => {
   assertIncludes(hubHtml, 'כיתות ב׳ ומעלה');
   assertIncludes(hubHtml, '75</b>דק׳ לשיעור');
   assertIncludes(hubHtml, '15</b>מכניקות שונות');
+});
+
+test('free lesson cards require registration for guests before entering lessons', () => {
+  assertIncludes(hubHtml, 'data-free-lesson');
+  assertIncludes(hubHtml, '✅ חינם אחרי הרשמה');
+  assertIncludes(hubHtml, 'js/sisi-hub.js');
+  assertIncludes(sisiHubJs, '/api/summer/me');
+  assertIncludes(sisiHubJs, "link.setAttribute('href', 'register.html')");
+  assertIncludes(sisiHubJs, 'credentials: \'same-origin\'');
 });
 
 let passed = 0;
