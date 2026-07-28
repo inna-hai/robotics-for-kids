@@ -38,7 +38,9 @@ test('subscription page routes to real registration and keeps marketing copy cle
   assertIncludes(subscriptionHtml, '49 ₪');
   assertIncludes(subscriptionHtml, 'href="register.html"');
   assertIncludes(subscriptionHtml, 'הרשמה');
-  assertIncludes(subscriptionHtml, 'מתחילים עם סיסי בחינם');
+  assertIncludes(subscriptionHtml, 'מתחילים עם סיסי בחינם אחרי הרשמה');
+  assertIncludes(subscriptionHtml, 'גישה מלאה לסיסי, סנסי, Python, Web, משחקים ו־Minecraft');
+  assertIncludes(subscriptionHtml, 'כל לומדה חדשה שתיפתח במהלך הקיץ תיכלל במנוי');
   assertIncludes(subscriptionHtml, 'נסו את סיסי בחינם');
   assertIncludes(subscriptionHtml, 'קורס משחקי חשיבה ותכנות לילדים צעירים');
   assertNotIncludes(subscriptionHtml, 'נסו את סיסי שיעור 1 בחינם');
