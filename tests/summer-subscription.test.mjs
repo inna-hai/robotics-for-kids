@@ -125,6 +125,7 @@ test('summer auth client and server expose account endpoints and protected pages
   assertIncludes(serverJs, "'/register.html'");
   assertIncludes(serverJs, "'/login.html'");
   assertIncludes(serverJs, "'/thankyou.html'");
+  assertIncludes(serverJs, "'/sisi.html'");
   assertIncludes(serverJs, "pathname === '/thankyou'");
   assertIncludes(serverJs, 'requiresPaidAccess');
   assertIncludes(serverJs, 'isFreeTrialLearningHtml');

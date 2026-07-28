@@ -1041,6 +1041,7 @@ const PUBLIC_HTML_PATHS = new Set([
   '/login.html',
   '/thankyou.html',
   '/about.html',
+  '/sisi.html',
 ]);
 
 const FREE_SISI_HTML_PATHS = new Set([
