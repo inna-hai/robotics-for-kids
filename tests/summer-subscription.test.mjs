@@ -27,7 +27,7 @@ function assertNotIncludes(source, needle, message = `Unexpected: ${needle}`) { 
 test('homepage promotes the subscription and routes free Sisi through registration', () => {
   assertIncludes(homepageHtml, 'href="summer-subscription.html"');
   assertIncludes(homepageHtml, 'מנוי קיץ לילדים');
-  assertIncludes(homepageHtml, 'נסו את סיסי בחינם');
+  assertIncludes(homepageHtml, 'נסו 3 שיעורי סיסי בחינם');
   assertIncludes(homepageHtml, 'סיסי היא קורס משחקי חשיבה ותכנות לילדים צעירים');
   assertIncludes(homepageHtml, 'href="register.html"');
   assertNotIncludes(homepageHtml, 'href="space.html"');
@@ -46,7 +46,7 @@ test('subscription page routes to real registration and keeps marketing copy cle
   assertIncludes(subscriptionHtml, 'נרשמים כהורה ומוסיפים ילד/ה');
   assertIncludes(subscriptionHtml, 'גישה מלאה לסיסי, סנסי, Python, Web, משחקים ו־Minecraft');
   assertIncludes(subscriptionHtml, 'כל לומדה חדשה שתיפתח במהלך הקיץ תיכלל במנוי');
-  assertIncludes(subscriptionHtml, 'מתחילים את סיסי בחינם');
+  assertIncludes(subscriptionHtml, 'מתחילים עם 3 שיעורי סיסי בחינם');
   assertIncludes(subscriptionHtml, 'קורס משחקי חשיבה ותכנות לילדים צעירים');
   assertNotIncludes(subscriptionHtml, 'נסו את סיסי שיעור 1 בחינם');
   assertIncludes(subscriptionHtml, 'אפשר לבטל בכל עת בהודעת WhatsApp או מייל אלינו');
@@ -63,7 +63,7 @@ test('registration, login, and account pages are separate product screens', () =
   assertNotIncludes(registerHtml, 'id="login-form"');
   assertIncludes(registerHtml, 'כדי להתחיל ללמוד צריך להירשם');
   assertIncludes(registerHtml, 'להירשם ולהתחיל ללמוד');
-  assertIncludes(registerHtml, 'מתחיל התנסות חינמית בסדרת סיסי');
+  assertIncludes(registerHtml, 'מתחילים 3 שיעורים חינמיים בסדרת סיסי');
   assertIncludes(registerHtml, 'login.html');
 
   assertIncludes(loginHtml, '<title>כניסה ללומדות hai.tech</title>');
@@ -78,7 +78,7 @@ test('registration, login, and account pages are separate product screens', () =
   assertIncludes(accountHtml, 'נרשמים כדי להתחיל ללמוד');
   assertIncludes(accountHtml, 'הרשמה חדשה');
   assertIncludes(accountHtml, 'כניסה לחשבון קיים');
-  assertIncludes(accountHtml, 'סיסי · התנסות בחינם');
+  assertIncludes(accountHtml, 'סיסי · 3 שיעורים בחינם');
   assertNotIncludes(accountHtml, 'Morning');
   assertNotIncludes(accountHtml, 'webhook');
 });
@@ -130,9 +130,13 @@ test('summer auth client and server expose account endpoints and protected pages
   assertIncludes(serverJs, 'isFreeTrialLearningHtml');
   assertIncludes(serverJs, 'lockedPage');
   assertIncludes(serverJs, 'כדי לפתוח את כל הלומדות צריך מנוי פעיל');
-  assertIncludes(serverJs, 'גם ההתנסות החינמית בסיסי מתחילה אחרי הרשמה קצרה');
-  assertIncludes(serverJs, "pathname === '/space.html'");
-  assertIncludes(serverJs, "pathname === '/space-play.html'");
+  assertIncludes(serverJs, 'גם 3 השיעורים החינמיים בסיסי מתחילים אחרי הרשמה קצרה');
+  assertIncludes(serverJs, "'/space.html'");
+  assertIncludes(serverJs, "'/space-play.html'");
+  assertIncludes(serverJs, "'/music.html'");
+  assertIncludes(serverJs, "'/music-play.html'");
+  assertIncludes(serverJs, "'/ocean.html'");
+  assertIncludes(serverJs, "'/ocean-play.html'");
 });
 
 test('subscription page uses a plain payment link and thank-you activation', () => {

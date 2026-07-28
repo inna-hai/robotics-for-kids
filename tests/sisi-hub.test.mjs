@@ -106,9 +106,8 @@ test('Sisi play pages expose only child-flow navigation, not labs or generic les
   }
 });
 
-test('hub frames the series for grade B age 7 and 75-minute lessons', () => {
-  assertIncludes(hubHtml, 'כיתות ב׳');
-  assertIncludes(hubHtml, 'גיל 7');
+test('hub frames the series for grade B and up and 75-minute lessons', () => {
+  assertIncludes(hubHtml, 'כיתות ב׳ ומעלה');
   assertIncludes(hubHtml, '75</b>דק׳ לשיעור');
   assertIncludes(hubHtml, '15</b>מכניקות שונות');
 });
