@@ -14,6 +14,7 @@ const legacyAccountHtml = readFileSync(join(root, 'summer-account.html'), 'utf8'
 const configJs = readFileSync(join(root, 'js', 'summer-subscription-config.js'), 'utf8');
 const behaviorJs = readFileSync(join(root, 'js', 'summer-subscription.js'), 'utf8');
 const accountJs = readFileSync(join(root, 'js', 'summer-account.js'), 'utf8');
+const userBadgeJs = readFileSync(join(root, 'js', 'user-badge.js'), 'utf8');
 const serverJs = readFileSync(join(root, 'server.js'), 'utf8');
 
 const tests = [];
@@ -89,6 +90,10 @@ test('summer auth client and server expose account endpoints and protected pages
   assertIncludes(serverJs, "profile.kind !== 'child'");
   assertIncludes(serverJs, 'תצוגת הורה בלבד');
   assertIncludes(accountJs, 'haiTechSummerToken');
+  assertIncludes(userBadgeJs, 'התקדמות נשמרת לילד/ה הזה/ו');
+  assertIncludes(userBadgeJs, 'תצוגת הורה');
+  assertIncludes(serverJs, 'injectUserBadge');
+  assertIncludes(serverJs, '/js/user-badge.js');
   assertIncludes(serverJs, 'better-sqlite3');
   assertIncludes(serverJs, 'SUMMER_DB_FILE');
   assertIncludes(serverJs, 'summer_users');

@@ -1065,6 +1065,11 @@ function requiresPaidAccess(pathname, ext, url) {
   return true;
 }
 
+function injectUserBadge(html) {
+  if (!html.includes('</body>') || html.includes('js/user-badge.js')) return html;
+  return html.replace('</body>', '  <script src="/js/user-badge.js?v=20260728-user-badge"></script>\n</body>');
+}
+
 function serveStatic(req, res) {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   let pathname = decodeURIComponent(url.pathname);
@@ -1083,9 +1088,16 @@ function serveStatic(req, res) {
 
   fs.stat(filePath, (err, stat) => {
     if (err || !stat.isFile()) return send(res, 404, 'Not found', 'text/plain; charset=utf-8');
+    if (ext === '.html') {
+      fs.readFile(filePath, 'utf8', (readErr, html) => {
+        if (readErr) return send(res, 500, 'Server error', 'text/plain; charset=utf-8');
+        send(res, 200, injectUserBadge(html), 'text/html; charset=utf-8');
+      });
+      return;
+    }
     res.writeHead(200, {
       'Content-Type': MIME[ext] || 'application/octet-stream',
-      'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=300',
+      'Cache-Control': 'public, max-age=300',
       'X-Content-Type-Options': 'nosniff',
     });
     fs.createReadStream(filePath).pipe(res);
