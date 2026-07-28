@@ -266,7 +266,7 @@
     let current = 0;
 
     document.title = `${lesson.emoji} שיעור ${lesson.id}: ${lesson.title}`;
-    document.getElementById('backToLesson').href = `../index.html?lesson=${lesson.id}`;
+    document.getElementById('backToLesson').href = `../sensi-city.html?lesson=${lesson.id}`;
 
     function escapeHtml(value) {
       return String(value || '').replace(/[&<>"']/g, (char) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char]));
