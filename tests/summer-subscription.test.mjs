@@ -26,7 +26,8 @@ function assertNotIncludes(source, needle, message = `Unexpected: ${needle}`) { 
 test('homepage promotes the subscription and shows the one free Sisi lesson', () => {
   assertIncludes(homepageHtml, 'href="summer-subscription.html"');
   assertIncludes(homepageHtml, 'מנוי קיץ לילדים');
-  assertIncludes(homepageHtml, 'סיסי שיעור 1 חינם');
+  assertIncludes(homepageHtml, 'נסו את סיסי בחינם');
+  assertIncludes(homepageHtml, 'סיסי היא סדרת משחקי חשיבה לילדים');
   assertIncludes(homepageHtml, 'href="space.html"');
   assertIncludes(homepageHtml, 'פתוח: שיעור 1 · השאר נעול');
 });
