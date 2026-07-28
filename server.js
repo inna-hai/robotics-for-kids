@@ -1008,8 +1008,7 @@ const PUBLIC_HTML_PATHS = new Set([
   '/about.html',
 ]);
 
-function isFreeTrialHtml(pathname, url) {
-  if (pathname === '/sisi.html') return true;
+function isFreeTrialLearningHtml(pathname, url) {
   if (pathname === '/space.html') return true;
   if (pathname === '/space-play.html') {
     const lesson = url.searchParams.get('lesson') || '1';
@@ -1022,12 +1021,17 @@ function isPaidProfile(profile) {
   return profile && profile.child && profile.child.subscription_status === 'active';
 }
 
-function lockedPage(pathname, user) {
+function lockedPage(pathname, user, options = {}) {
   const loggedIn = Boolean(user);
-  const title = loggedIn ? 'התוכן הזה נעול למנויים' : 'צריך להתחבר כדי להמשיך';
-  const subtitle = loggedIn
-    ? 'השיעורים הנעולים נפתחים לפי ילד/ה. לילד/ה שבחרת עדיין אין מנוי פעיל, ולכן רק שיעור ההתנסות פתוח כרגע.'
-    : 'אפשר להתחיל להתנסות בסיסי בחינם. המשך הסדרה ושאר הלומדות נפתחים אחרי הרשמה והפעלת מנוי לילד/ה.';
+  const trialOnly = options.trialOnly === true;
+  const title = trialOnly
+    ? 'נרשמים לפני שמתחילים ללמוד'
+    : (loggedIn ? 'התוכן הזה נעול למנויים' : 'צריך להתחבר כדי להמשיך');
+  const subtitle = trialOnly
+    ? 'גם ההתנסות החינמית בסיסי מתחילה אחרי הרשמה קצרה, כדי שנוכל לפתוח ילד/ה, לשמור התקדמות ולתת קוד כניסה אישי.'
+    : (loggedIn
+      ? 'השיעורים הנעולים נפתחים לפי ילד/ה. לילד/ה שבחרת עדיין אין מנוי פעיל, ולכן רק שיעור ההתנסות פתוח כרגע.'
+      : 'כדי להתחיל ללמוד צריך להירשם או להתחבר. אחרי הרשמה אפשר להתחיל את סיסי בחינם, והמשך הסדרה נפתח אחרי הפעלת מנוי לילד/ה.');
   return `<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -1044,14 +1048,13 @@ function lockedPage(pathname, user) {
     <div class="lock">🔒</div>
     <h1>${title}</h1>
     <p>${subtitle}</p>
-    <div class="locked-label">השיעור הזה נפתח אחרי הפעלת מנוי לילד/ה</div>
+    <div class="locked-label">${trialOnly ? 'התנסות חינמית אחרי הרשמה' : 'השיעור הזה נפתח אחרי הפעלת מנוי לילד/ה'}</div>
     <div class="actions">
-      <a class="btn purchase" href="summer-subscription.html#join">רכישת מנוי</a>
+      ${trialOnly ? '' : '<a class="btn purchase" href="summer-subscription.html#join">רכישת מנוי</a>'}
       <a class="btn primary" href="register.html">הרשמה</a>
       <a class="btn alt" href="login.html">כניסה</a>
-      <a class="btn alt" href="space.html">נסו את סיסי בחינם</a>
     </div>
-    <div class="note">כדי לפתוח את כל הלומדות צריך מנוי פעיל לילד/ה הספציפי/ת.</div>
+    <div class="note">${trialOnly ? 'ההרשמה פותחת את ההתנסות החינמית ושומרת את ההתקדמות לילד/ה.' : 'כדי לפתוח את כל הלומדות צריך מנוי פעיל לילד/ה הספציפי/ת.'}</div>
   </main>
 </body>
 </html>`;
@@ -1060,7 +1063,7 @@ function lockedPage(pathname, user) {
 function requiresPaidAccess(pathname, ext, url) {
   if (ext !== '.html') return false;
   if (PUBLIC_HTML_PATHS.has(pathname)) return false;
-  if (isFreeTrialHtml(pathname, url)) return false;
+  if (isFreeTrialLearningHtml(pathname, url)) return false;
   return true;
 }
 
@@ -1087,8 +1090,13 @@ function serveStatic(req, res) {
   if (filePath === DATA_DIR || filePath.startsWith(DATA_DIR + path.sep)) return send(res, 403, 'Forbidden', 'text/plain; charset=utf-8');
   const ext = path.extname(filePath).toLowerCase();
 
+  const profile = getSummerProfileFromRequest(req);
+
+  if (ext === '.html' && isFreeTrialLearningHtml(pathname, url) && !profile) {
+    return send(res, 401, lockedPage(pathname, null, { trialOnly: true }), 'text/html; charset=utf-8');
+  }
+
   if (requiresPaidAccess(pathname, ext, url)) {
-    const profile = getSummerProfileFromRequest(req);
     if (!isPaidProfile(profile)) {
       return send(res, 402, lockedPage(pathname, profile && profile.user), 'text/html; charset=utf-8');
     }

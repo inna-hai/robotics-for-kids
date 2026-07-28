@@ -23,14 +23,14 @@ function test(name, fn) { tests.push({ name, fn }); }
 function assertIncludes(source, needle, message = `Missing: ${needle}`) { assert.ok(source.includes(needle), message); }
 function assertNotIncludes(source, needle, message = `Unexpected: ${needle}`) { assert.ok(!source.includes(needle), message); }
 
-test('homepage promotes the subscription and shows the free Sisi experience', () => {
+test('homepage promotes the subscription and routes free Sisi through registration', () => {
   assertIncludes(homepageHtml, 'href="summer-subscription.html"');
   assertIncludes(homepageHtml, 'מנוי קיץ לילדים');
   assertIncludes(homepageHtml, 'נסו את סיסי בחינם');
   assertIncludes(homepageHtml, 'סיסי היא קורס משחקי חשיבה ותכנות לילדים צעירים');
-  assertIncludes(homepageHtml, 'href="space.html"');
-  assertIncludes(homepageHtml, 'מפת הלמידה');
-  assertIncludes(homepageHtml, 'מתחילים כאן בחינם → אחר כך ממשיכים לסדרת סיסי');
+  assertIncludes(homepageHtml, 'href="register.html"');
+  assertNotIncludes(homepageHtml, 'href="space.html"');
+  assertNotIncludes(homepageHtml, 'מפת הלמידה');
 });
 
 test('subscription page routes to real registration and keeps marketing copy clean', () => {
@@ -43,7 +43,7 @@ test('subscription page routes to real registration and keeps marketing copy cle
   assertIncludes(subscriptionHtml, 'קורס משחקי חשיבה ותכנות לילדים צעירים');
   assertNotIncludes(subscriptionHtml, 'נסו את סיסי שיעור 1 בחינם');
   assertIncludes(subscriptionHtml, 'אפשר לבטל בכל עת בהודעת WhatsApp או מייל אלינו');
-  assertIncludes(subscriptionHtml, 'space.html');
+  assertNotIncludes(subscriptionHtml, 'href="space.html"');
   assertNotIncludes(subscriptionHtml, 'summer-account.html');
   assertNotIncludes(subscriptionHtml, 'webhook');
 });
@@ -118,8 +118,10 @@ test('summer auth client and server expose account endpoints and protected pages
   assertIncludes(serverJs, "'/register.html'");
   assertIncludes(serverJs, "'/login.html'");
   assertIncludes(serverJs, 'requiresPaidAccess');
+  assertIncludes(serverJs, 'isFreeTrialLearningHtml');
   assertIncludes(serverJs, 'lockedPage');
   assertIncludes(serverJs, 'כדי לפתוח את כל הלומדות צריך מנוי פעיל');
+  assertIncludes(serverJs, 'גם ההתנסות החינמית בסיסי מתחילה אחרי הרשמה קצרה');
   assertIncludes(serverJs, "pathname === '/space.html'");
   assertIncludes(serverJs, "pathname === '/space-play.html'");
 });

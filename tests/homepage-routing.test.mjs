@@ -25,8 +25,9 @@ function assertNotIncludes(source, needle, message = `Unexpected: ${needle}`) { 
 test('homepage is now a platform gateway and links to primary learning modules', () => {
   assertIncludes(homepageHtml, '<title>פלטפורמת לומדות טכנולוגיה</title>');
   assertIncludes(homepageHtml, 'מרכז הלומדות');
-  assertIncludes(homepageHtml, 'href="space.html"');
+  assertIncludes(homepageHtml, 'href="register.html"');
   assertIncludes(homepageHtml, 'התנסות חינמית');
+  assertNotIncludes(homepageHtml, 'href="space.html"');
   assertIncludes(homepageHtml, 'href="sisi.html"');
   assertIncludes(homepageHtml, 'סדרת סיסי לכיתות ב׳ ומעלה');
   assertIncludes(homepageHtml, 'אפשר להתחיל בחינם · המשך הסדרה למנויים');
