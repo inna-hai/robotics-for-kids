@@ -1118,7 +1118,7 @@ function injectHeadAssets(html) {
 
 function injectUserBadge(html) {
   if (!html.includes('</body>') || html.includes('js/user-badge.js')) return injectHeadAssets(html);
-  return injectHeadAssets(html).replace('</body>', '  <script src="/js/user-badge.js?v=20260728-user-badge"></script>\n</body>');
+  return injectHeadAssets(html).replace('</body>', '  <script src="/js/user-badge.js?v=20260728-hide-guest-badge"></script>\n</body>');
 }
 
 function serveStatic(req, res) {
