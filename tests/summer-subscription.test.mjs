@@ -80,6 +80,7 @@ test('summer auth client and server expose account endpoints and protected pages
   assertIncludes(accountJs, '/api/summer/me');
   assertIncludes(accountJs, '/api/summer/logout');
   assertIncludes(accountJs, '/api/summer/dashboard');
+  assertIncludes(accountJs, "location.href = 'account.html'");
   assertIncludes(accountHtml, 'מה הילדים עשו?');
   assertIncludes(serverJs, "action === 'dashboard'");
   assertIncludes(accountJs, 'haiTechSummerToken');

@@ -220,7 +220,11 @@
         }
         const data = await api(API_PATHS[action], payload);
         saveToken(data.token);
-        setMessage(action === 'register' ? 'החשבון נוצר. אפשר להתחיל ללמוד.' : 'נכנסת בהצלחה.', 'ok');
+        setMessage(action === 'register' ? 'החשבון נוצר. מעבירים אותך לאזור האישי…' : 'נכנסת בהצלחה. מעבירים אותך לאזור האישי…', 'ok');
+        if (!location.pathname.endsWith('/account.html')) {
+          location.href = 'account.html';
+          return;
+        }
         renderUser(data.user, data);
       } catch (error) {
         setMessage(error.message, 'error');
