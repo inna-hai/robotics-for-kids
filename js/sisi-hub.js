@@ -11,22 +11,28 @@
     }
   }
 
-  function routeFreeLessonsToRegistration() {
+  function keepFreeLessonsOnRegistration() {
     freeLessonLinks.forEach((link) => {
-      link.dataset.lessonHref = link.getAttribute('href') || '';
       link.setAttribute('href', 'register.html');
       const badge = link.querySelector('.access-badge');
       if (badge) badge.textContent = '✅ חינם אחרי הרשמה';
     });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', async () => {
-      if (!(await isLoggedIn())) routeFreeLessonsToRegistration();
-    });
-  } else {
-    isLoggedIn().then((loggedIn) => {
-      if (!loggedIn) routeFreeLessonsToRegistration();
+  function routeFreeLessonsToCourse() {
+    freeLessonLinks.forEach((link) => {
+      const target = link.dataset.lessonHref;
+      if (target) link.setAttribute('href', target);
+      const badge = link.querySelector('.access-badge');
+      if (badge) badge.textContent = '✅ פתוח בחשבון שלך';
     });
   }
+
+  async function updateFreeLessonLinks() {
+    if (await isLoggedIn()) routeFreeLessonsToCourse();
+    else keepFreeLessonsOnRegistration();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', updateFreeLessonLinks);
+  else updateFreeLessonLinks();
 })();
