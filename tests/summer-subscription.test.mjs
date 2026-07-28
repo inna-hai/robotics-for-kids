@@ -27,8 +27,8 @@ function assertNotIncludes(source, needle, message = `Unexpected: ${needle}`) { 
 test('homepage promotes the subscription and routes free Sisi through registration', () => {
   assertIncludes(homepageHtml, 'href="summer-subscription.html"');
   assertIncludes(homepageHtml, 'מנוי קיץ לילדים');
-  assertIncludes(homepageHtml, 'נסו 3 שיעורי סיסי בחינם');
-  assertIncludes(homepageHtml, 'סיסי היא קורס משחקי חשיבה ותכנות לילדים צעירים');
+  assertIncludes(homepageHtml, 'נסו 3 שיעורי חשיבה ותכנות בחינם');
+  assertIncludes(homepageHtml, 'חשיבה ותכנות לילדים עם סיסי הוא קורס משחקי לילדים צעירים');
   assertIncludes(homepageHtml, 'href="register.html"');
   assertNotIncludes(homepageHtml, 'href="space.html"');
   assertNotIncludes(homepageHtml, 'מפת הלמידה');
@@ -46,8 +46,8 @@ test('subscription page routes to real registration and keeps marketing copy cle
   assertIncludes(subscriptionHtml, 'נרשמים כהורה ומוסיפים ילד/ה');
   assertIncludes(subscriptionHtml, 'גישה מלאה לסיסי, סנסי, Python, Web, משחקים ו־Minecraft');
   assertIncludes(subscriptionHtml, 'כל לומדה חדשה שתיפתח במהלך הקיץ תיכלל במנוי');
-  assertIncludes(subscriptionHtml, 'מתחילים עם 3 שיעורי סיסי בחינם');
-  assertIncludes(subscriptionHtml, 'קורס משחקי חשיבה ותכנות לילדים צעירים');
+  assertIncludes(subscriptionHtml, 'מתחילים עם 3 שיעורי חשיבה ותכנות בחינם');
+  assertIncludes(subscriptionHtml, 'חשיבה ותכנות לילדים עם סיסי');
   assertNotIncludes(subscriptionHtml, 'נסו את סיסי שיעור 1 בחינם');
   assertIncludes(subscriptionHtml, 'אפשר לבטל בכל עת בהודעת WhatsApp או מייל אלינו');
   assertNotIncludes(subscriptionHtml, 'href="space.html"');
@@ -63,7 +63,7 @@ test('registration, login, and account pages are separate product screens', () =
   assertNotIncludes(registerHtml, 'id="login-form"');
   assertIncludes(registerHtml, 'כדי להתחיל ללמוד צריך להירשם');
   assertIncludes(registerHtml, 'להירשם ולהתחיל ללמוד');
-  assertIncludes(registerHtml, 'מתחילים 3 שיעורים חינמיים בסדרת סיסי');
+  assertIncludes(registerHtml, 'מתחילים 3 שיעורים חינמיים בקורס חשיבה ותכנות לילדים עם סיסי');
   assertIncludes(registerHtml, 'login.html');
 
   assertIncludes(loginHtml, '<title>כניסה ללומדות hai.tech</title>');
@@ -78,7 +78,7 @@ test('registration, login, and account pages are separate product screens', () =
   assertIncludes(accountHtml, 'נרשמים כדי להתחיל ללמוד');
   assertIncludes(accountHtml, 'הרשמה חדשה');
   assertIncludes(accountHtml, 'כניסה לחשבון קיים');
-  assertIncludes(accountHtml, 'סיסי · 3 שיעורים בחינם');
+  assertIncludes(accountHtml, 'חשיבה ותכנות · 3 שיעורים בחינם');
   assertNotIncludes(accountHtml, 'Morning');
   assertNotIncludes(accountHtml, 'webhook');
 });

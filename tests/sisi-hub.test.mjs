@@ -49,7 +49,7 @@ function assertIncludes(source, needle, message = `Missing: ${needle}`) { assert
 function assertNotIncludes(source, needle, message = `Unexpected: ${needle}`) { assert.ok(!source.includes(needle), message); }
 
 test('Sisi hub lists all fifteen lessons in the recommended order', () => {
-  assertIncludes(hubHtml, 'סיסי — שיעורי תכנות לילדים');
+  assertIncludes(hubHtml, 'חשיבה ותכנות לילדים עם סיסי');
   const expected = [
     ['שיעור 1', 'space.html', 'סיסי בחלל'],
     ['שיעור 2', 'music.html', 'מכונת המוזיקה'],
