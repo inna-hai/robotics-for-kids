@@ -1255,7 +1255,7 @@
             <div class="debug-panel" id="debugPanel" aria-live="polite">
                 <span class="bug">🐞</span>
                 <span>בדיקה:</span>
-                <span class="status" id="debugStatus">מוכן להרצה איטית</span>
+                <span class="status" id="debugStatus">ההרצה עדיין לא התחילה.</span>
             </div>
 
             <div class="precheck-panel" id="precheckPanel" aria-live="polite"></div>
@@ -6418,7 +6418,7 @@
             const button = document.getElementById('debugButton');
             if (panel) panel.classList.toggle('active', debugMode || Boolean(message));
             if (button) button.classList.toggle('active', debugMode);
-            if (status) status.textContent = message || 'מוכן להרצה איטית';
+            if (status) status.textContent = message || 'ההרצה עדיין לא התחילה.';
         }
 
         function blockDebugLabel(block) {
