@@ -5,7 +5,7 @@ import { dirname, join } from 'node:path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
-const indexHtml = readFileSync(join(root, 'index.html'), 'utf8');
+const indexHtml = readFileSync(join(root, 'sensi-city.html'), 'utf8');
 const lessonsData = readFileSync(join(root, 'js', 'lessons-data.js'), 'utf8');
 const lessonSlidesHtml = readFileSync(join(root, 'slides', 'lesson.html'), 'utf8');
 const feedbackWidgetJs = readFileSync(join(root, 'js', 'feedback-widget.js'), 'utf8');

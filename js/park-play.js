@@ -106,7 +106,7 @@ function nextTarget() {
   const currentIndex = lessons.findIndex((item) => item.id === lesson.id);
   const nextLesson = lessons[currentIndex + 1];
   if (nextLesson) return { href: `park-play.html?lesson=${nextLesson.id}`, label: `➡️ המשך למתקן ${nextLesson.id}` };
-  return { href: 'park-lab.html', label: '🎡 המשך למעבדת המתקנים' };
+  return { href: 'mail.html', label: '✉️ לשיעור הבא' };
 }
 
 function renderNextStep(show = false) {
@@ -115,6 +115,7 @@ function renderNextStep(show = false) {
   if (!show) { box.innerHTML = ''; return; }
   const target = nextTarget();
   box.innerHTML = `<div class="next-step-note">המתקן הוגדר נכון! ממשיכים למתקן הבא בלונה פארק.</div><a class="btn" href="${target.href}">${target.label}</a>`;
+  window.SisiSuccessDialog?.show({ message: box.querySelector('.next-step-note')?.textContent || 'כל הכבוד! אפשר להמשיך קדימה או לנסות שוב.', lessons, lesson, nextHref: target.href, nextLabel: target.label, onRepeat: () => window.location.reload() });
 }
 
 function init() {

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>תבנית שיעור | Craftom School</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="brand">Craftom School</div>
+      <div class="muted" id="user-label">תבנית שיעור</div>
+    </div>
+    <div class="actions compact">
+      <button class="btn ghost" onclick="navigateTo('/teacher.html')">דף מורה</button>
+      <button class="btn ghost" onclick="logout()">יציאה</button>
+    </div>
+  </header>
+
+  <main class="shell lesson-layout">
+    <section class="panel lesson-hero">
+      <div class="eyebrow">מבנה קבוע</div>
+      <h1>תבנית שיעור Craftom</h1>
+      <p class="muted">זהו שלד עבודה ריק לכל שיעור בלומדה. כאן נגדיר מה חייב להופיע בכל מפגש לפני שמכניסים תוכן.</p>
+    </section>
+
+    <section class="panel">
+      <h2>זהות השיעור</h2>
+      <div class="template-list" id="identity"></div>
+    </section>
+
+    <section class="panel">
+      <h2>לתלמידים</h2>
+      <div class="template-list" id="student"></div>
+    </section>
+
+    <section class="panel">
+      <h2>למורה</h2>
+      <div class="template-list" id="teacher"></div>
+    </section>
+
+    <section class="panel">
+      <h2>סטטוס משימות</h2>
+      <div class="status-grid" id="task-statuses"></div>
+    </section>
+
+    <section class="panel wide-panel">
+      <h2>שדות לדוח סוף שיעור</h2>
+      <div class="template-list columns" id="report-fields"></div>
+    </section>
+  </main>
+
+<script src="/main.js"></script>
+<script>
+function emptyField(label){
+  return `<div class="template-field"><b>${esc(label)}</b><span>ימולא בשלב כתיבת התוכן</span></div>`;
+}
+
+function renderTemplateList(id, rows){
+  document.getElementById(id).innerHTML = rows.map(emptyField).join('');
+}
+
+async function loadTemplate(){
+  const me = await guard(['admin','teacher']);
+  if(!me) return;
+  document.getElementById('user-label').textContent = `${me.user.name || me.user.email} · תבנית שיעור`;
+  const data = await fetch('/api/lesson-template').then(r => r.json());
+  if(!data.ok) return alert(data.error || 'לא ניתן לטעון את תבנית השיעור');
+  const t = data.template;
+  renderTemplateList('identity', t.identity);
+  renderTemplateList('student', t.student);
+  renderTemplateList('teacher', t.teacher);
+  document.getElementById('task-statuses').innerHTML = t.task_statuses.map(status => {
+    const key = Object.keys(TASK_STATUS).find(k => TASK_STATUS[k] === status) || 'to_do';
+    return statusBadge(key);
+  }).join('');
+  renderTemplateList('report-fields', t.report_fields);
+}
+
+loadTemplate();
+</script>
+</body>
+</html>

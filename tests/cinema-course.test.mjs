@@ -64,7 +64,7 @@ test('cinema play page builds command algorithm, removes distractor, and asks fo
   assertIncludes(playSource, 'lesson.distractor');
   assertIncludes(playSource, 'פקודה מיותרת');
   assertIncludes(playSource, 'selectedReason');
-  assertIncludes(playSource, "href: 'cinema-lab.html'");
+  assertIncludes(playSource, "href: 'escape.html'");
 });
 
 test('cinema lab and plan ensure a full 75-minute programming lesson', () => {

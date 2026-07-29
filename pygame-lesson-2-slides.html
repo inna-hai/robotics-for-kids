@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>מצגת מדריך — Pygame שיעור 2</title>
+  <meta name="description" content="מצגת שיעור 2 בקורס Pygame: משתנים, מספרים, מחרוזות, קלט ומיקום דמות במסך." />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}body{margin:0;font-family:Rubik,Arial,sans-serif;background:linear-gradient(135deg,#020617,#0f766e 55%,#22c55e);color:#0f172a;overflow:hidden}.deck{width:100vw;height:100vh;display:grid;place-items:center;padding:clamp(.8rem,2vw,1.75rem)}.slide{display:none;width:min(70rem,100%);min-height:min(42rem,calc(100vh - 7rem));background:rgba(255,255,255,.97);border-radius:clamp(1.2rem,2.8vw,2.1rem);padding:clamp(1.2rem,3vw,2.6rem);box-shadow:0 1.8rem 5rem rgba(0,0,0,.34);overflow:auto}.slide.active{display:flex;flex-direction:column;justify-content:center}.kicker{font-weight:900;color:#0f766e;margin-bottom:.6rem}.emoji{font-size:clamp(3rem,7vw,5.2rem)}h1{font-size:clamp(2.2rem,6vw,4.6rem);margin:0 0 .8rem;line-height:1.05}h2{font-size:clamp(1.7rem,4.5vw,3.1rem);margin:0 0 1rem}p,li{font-size:clamp(1rem,1.6vw,1.28rem);line-height:1.55}.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:.9rem}.card{background:#f8fafc;border-right:.45rem solid #22c55e;border-radius:1.1rem;padding:1rem}.note{background:#ecfeff;border-right:.45rem solid #06b6d4;border-radius:1.1rem;padding:.9rem;margin-top:.8rem}.code{direction:ltr;text-align:left;background:#0f172a;color:#d7fbe8;border-radius:1rem;padding:1rem;white-space:pre-wrap;font-family:ui-monospace,Menlo,Consolas,monospace}.tag{display:inline-flex;background:#dcfce7;color:#14532d;border-radius:999rem;padding:.4rem .7rem;font-weight:900;margin:.2rem}.nav{position:fixed;inset:auto 1.5rem 1.5rem 1.5rem;display:grid;grid-template-columns:auto 1fr auto;gap:.8rem;align-items:center;color:white;font-weight:900;pointer-events:none}.nav>*{pointer-events:auto}button,.back{border:0;border-radius:999rem;background:white;color:#0f766e;padding:.75rem 1.05rem;font-weight:900;text-decoration:none;cursor:pointer}.counter{justify-self:center;background:rgba(0,0,0,.3);padding:.55rem 1rem;border-radius:999rem}@media(max-width:760px){body{overflow:auto}.deck{height:auto;min-height:100svh;padding:.75rem .6rem 5.8rem}.slide{min-height:calc(100svh - 6.5rem);padding:1.2rem;border-radius:1.3rem}.slide.active{justify-content:flex-start}.cards{grid-template-columns:1fr}.nav{inset:auto .6rem .6rem .6rem;display:flex;justify-content:space-between;background:rgba(8,17,31,.65);border-radius:999rem;padding:.45rem}.counter{display:none}button,.back{padding:.55rem .65rem;font-size:.82rem}}@media print{body{background:white;overflow:auto}.nav{display:none}.deck{display:block;height:auto}.slide{display:block;box-shadow:none;border:1px solid #ddd;break-after:page}}
+  </style>
+</head>
+<body>
+<main class="deck">
+  <section class="slide active"><div class="emoji">📦</div><div class="kicker">Pygame • שיעור 2 מתוך 28 • מצגת מדריך</div><h1>משתנים: המגירות של המשחק</h1><p>לומדים לשמור מידע בזיכרון: מספרים, טקסט, קלט מהמשתמש — ואז מחברים את זה למיקום דמות במסך.</p><div><span class="tag">x / y</span><span class="tag">points</span><span class="tag">speed</span><span class="tag">input</span><span class="tag">Rect</span></div></section>
+  <section class="slide"><h2>🎯 מטרות ותוצר</h2><div class="cards"><div class="card"><b>מושג מקור</b><p>משתנים הם “מגירות אחסון” ששומרות נתונים בזיכרון התוכנית.</p></div><div class="card"><b>סוגי מידע</b><p>מספרים שלמים, מספרים עשרוניים, טקסט, תווים וקלט מהמשתמש.</p></div><div class="card"><b>תוצר בלומדה</b><p>דמות player שמופיעה במסך לפי x ו־y.</p></div><div class="card"><b>שאלת מפתח</b><p>אם נשנה את x או y — מה יקרה לדמות?</p></div></div></section>
+  <section class="slide"><h2>📦 מה זה משתנה?</h2><p> מתכנתים שומרים נתונים בזיכרון התוכנית באמצעות משתנים. אפשר לחשוב עליהם כמו מגירות אחסון.</p><div class="cards"><div class="card"><b>שם המשתנה</b><p>שם משמעותי שמסביר מה שמרנו.</p></div><div class="card"><b>ערך</b><p>המידע שנמצא בתוך המשתנה.</p></div><div class="card"><b>שינוי ערך</b><p>אפשר להחליף ערך או לחשב ערך חדש.</p></div><div class="card"><b>שימוש במשחק</b><p>x, y, speed, score, playerName.</p></div></div></section>
+  <section class="slide"><h2>✍️ שמות משתנים — הסכמה</h2><ul><li>משתנים מתחילים באותיות קטנות.</li><li>אם יש יותר ממילה אחת, מחברים עם קו תחתון או אות גדולה.</li><li>כדאי לבחור שמות משמעותיים.</li></ul><pre class="code">my_name = "Dana"
+myName = "Dana"
+points = 18
+speed = 0.3</pre><div class="note">שאלת מדריך: איזה שם טוב יותר — x או player_x? תלוי בהקשר.</div></section>
+  <section class="slide"><h2>🔢 משתנים מספריים</h2><p>משתנים מסוג מספר מאפשרים פעולות חשבוניות.</p><pre class="code">points = 18 + 1
+x = 100 - 50
+y = 20 * 8
+speed = 0.3 / 10</pre><ul><li>חיבור +</li><li>חיסור -</li><li>כפל *</li><li>חילוק /</li></ul></section>
+  <section class="slide"><h2>🔁 שינוי ערך קודם</h2><p>במשחקים ערך משתנה כל הזמן: דמות זזה, ניקוד עולה, מהירות משתנה.</p><pre class="code">points = 5
+points = points + 3
+
+x = x + 5
+x += 5
+
+speed = speed - 0.1</pre><div class="note">חיבור ל־Pygame: כש־x גדל, הדמות זזה ימינה. כש־y גדל, היא זזה למטה.</div></section>
+  <section class="slide"><h2>🧪 תרגול מקור — גילאי משפחה</h2><p> מגדירים גיל לכל בן בית, ואז מחשבים סכום, מכפלה וחילוק.</p><pre class="code">age1 = 18
+age2 = 46
+age3 = 44
+age4 = 3
+
+sumOfAges = age1 + age2 + age3 + age4
+mulOfAges = age1 * age2 * age3 * age4
+div = mulOfAges / sumOfAges</pre><p>מטרת התרגול: להבין שמשתנים יכולים להשתתף בחישובים.</p></section>
+  <section class="slide"><h2>📝 מחרוזות ושרשור</h2><p>מחרוזת היא טקסט בתוך מרכאות. אפשר לחבר מחרוזות עם +.</p><pre class="code">firstName = "James"
+lastName = "Lacey"
+fullName = firstName + " " + lastName
+
+city = "tel aviv"
+print(fullName + " from " + city)</pre><div class="note">שימו לב: טקסט בתוך מרכאות. שם משתנה בלי מרכאות.</div></section>
+  <section class="slide"><h2>⌨️ קלט מהמשתמש</h2><p>כשרוצים לשאול את המשתמש שאלה, משתמשים ב־input ושומרים את התשובה במשתנה.</p><pre class="code">name = input("what is your name? ")
+print("hello " + name)</pre><ul><li>הטקסט בתוך input הוא השאלה.</li><li>התשובה נשמרת בתוך name.</li><li>אפשר להשתמש בשם בהדפסה או במשחק.</li></ul></section>
+  <section class="slide"><h2>🎮 מעבר ל־Pygame: משתנים כמיקום</h2><p>במשחק, גם המיקום של הדמות הוא מידע שנשמר במשתנים.</p><pre class="code">player_x = 300
+player_y = 220
+player = pygame.Rect(player_x, player_y, 42, 42)</pre><div class="cards"><div class="card"><b>x</b><p>גדל ימינה.</p></div><div class="card"><b>y</b><p>גדל למטה.</p></div><div class="card"><b>width / height</b><p>גודל הדמות.</p></div><div class="card"><b>Rect</b><p>מלבן שמייצג דמות או אובייקט.</p></div></div></section>
+  <section class="slide"><h2>🧪 תרגול בלומדה — מזיזים דמות</h2><ol><li>פתחו את שיעור 2 בלומדה.</li><li>מצאו את בלוק player.</li><li>שנו את x והריצו.</li><li>שנו את y והריצו.</li><li>כתבו: מה ההבדל בין שינוי x לשינוי y?</li></ol><div class="note">דגש מדריך: לפני ההרצה לשאול ניבוי — “לאן הדמות תעבור?”</div></section>
+  <section class="slide"><h2>🧪 אתגר — מרכז המסך</h2><p>המסך שלנו הוא 640×480. הדמות היא בערך 42×42.</p><ol><li>נסו למקם את הדמות במרכז.</li><li>בדקו אם היא באמת נראית באמצע.</li><li>שנו קצת את x/y עד שהמיקום מרגיש נכון.</li><li>הסבירו למה לא תמיד המרכז הוא פשוט 320,240.</li></ol></section>
+  <section class="slide"><h2>⏱️ מבנה מומלץ — 90 דקות</h2><ol><li><b>0–10:</b> חזרה: מה עשינו בשיעור 1?</li><li><b>10–25:</b> הסבר משתנים כמגירות אחסון.</li><li><b>25–40:</b> מספרים ופעולות חשבון.</li><li><b>40–52:</b> תרגול גילאי משפחה.</li><li><b>52–65:</b> מחרוזות, שרשור וקלט.</li><li><b>65–80:</b> מעבר ל־Pygame: x/y ו־Rect.</li><li><b>80–90:</b> הצגת מיקום דמות וסיכום.</li></ol></section>
+  <section class="slide"><h2>🛠️ טעויות נפוצות ודיבאג</h2><ul><li>כותבים שם משתנה עם רווח.</li><li>שמים משתנה בתוך מרכאות ואז הוא מודפס כטקסט רגיל.</li><li>מחברים מספר וטקסט בלי str.</li><li>משנים גם x וגם y יחד ואז לא יודעים מה השפיע.</li><li>שוכחים שב־Pygame y גדל כלפי מטה.</li></ul></section>
+  <section class="slide"><h2>✅ סיכום שיעור</h2><p>היום למדנו שמשתנים הם הדרך של המשחק לזכור מידע.</p><ul><li>מספרים וחישובים.</li><li>מחרוזות ושרשור.</li><li>קלט מהמשתמש.</li><li>x/y כמיקום דמות במשחק.</li></ul><p><a href="pygame.html?lesson=2">פתח את שיעור 2 בלומדה</a></p></section>
+</main>
+<nav class="nav"><button onclick="prevSlide()">→ הקודם</button><span class="counter" id="counter"></span><div><button onclick="nextSlide()">הבא ←</button> <a class="back" href="pygame.html?lesson=2">ללומדה</a> <a class="back" href="pygame-slides.html">אינדקס</a></div></nav>
+<script>let current=0;const slides=[...document.querySelectorAll('.slide')];function render(){slides.forEach((s,i)=>s.classList.toggle('active',i===current));document.getElementById('counter').textContent=(current+1)+' / '+slides.length}function nextSlide(){current=Math.min(current+1,slides.length-1);render()}function prevSlide(){current=Math.max(current-1,0);render()}document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key===' ')nextSlide();if(e.key==='ArrowRight')prevSlide()});render()</script>
+</body>
+</html>

@@ -27,7 +27,7 @@ test('ocean course is linked as lesson 3 and does not replace the active lesson 
   assertIncludes(smartCityHtml, 'שיעור 2: מכונת המוזיקה');
   assertIncludes(smartCityHtml, 'href="ocean.html"');
   assertIncludes(smartCityHtml, 'שיעור 3: סיסי באוקיינוס');
-  assertIncludes(smartCityHtml, 'href="index.html?lesson=1"');
+  assertIncludes(smartCityHtml, 'href="sensi-city.html?lesson=1"');
   assertIncludes(smartCityHtml, 'סנסי בעיר החכמה');
   assertIncludes(oceanHtml, 'href="space.html"');
 });
@@ -107,6 +107,14 @@ test('interactive play page exposes simple controls, run/reset flow, and lesson 
   assertIncludes(playSource, 'lessons.map((item)');
   assert.ok(!playSource.includes('space-play.html'), 'Ocean lesson navigation must not link to space missions');
   assert.ok(!playSource.includes('יצאה מהחלל'), 'Ocean lesson should not show space wording');
+});
+
+test('ocean success opens a decision dialog and repeat resets the current lesson', () => {
+  assertIncludes(playSource, 'SisiSuccessDialog?.show');
+  assertIncludes(playSource, 'function repeatCurrentLesson');
+  assertIncludes(playSource, 'program = []');
+  assertIncludes(playSource, 'השיעור אופס');
+  assertIncludes(playHtml, 'js/ocean-play.js?v=20260725-child-ux');
 });
 
 test('game board uses left-to-right grid direction so right and left buttons move visually correctly', () => {

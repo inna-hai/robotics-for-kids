@@ -56,7 +56,7 @@ function nextTarget() {
   const currentIndex = lessons.findIndex((item) => item.id === lesson.id);
   const nextLesson = lessons[currentIndex + 1];
   if (nextLesson) return { href: `escape-play.html?lesson=${nextLesson.id}`, label: `➡️ המשך לחדר ${nextLesson.id}` };
-  return { href: 'escape-lab.html', label: '🔐 המשך למעבדת חדר הבריחה' };
+  return { href: 'finale.html', label: '🏙️ לשיעור הבא' };
 }
 function renderNextStep(show = false) {
   const box = document.getElementById('next-step');
@@ -64,6 +64,7 @@ function renderNextStep(show = false) {
   if (!show) { box.innerHTML = ''; return; }
   const target = nextTarget();
   box.innerHTML = `<div class="next-step-note">הדלת נפתחה! ממשיכים לחדר הבא.</div><a class="btn" href="${target.href}">${target.label}</a>`;
+  window.SisiSuccessDialog?.show({ message: box.querySelector('.next-step-note')?.textContent || 'כל הכבוד! אפשר להמשיך קדימה או לנסות שוב.', lessons, lesson, nextHref: target.href, nextLabel: target.label, onRepeat: () => window.location.reload() });
 }
 function init() {
   document.getElementById('page-title').textContent = `${lesson.emoji} ${lesson.title}`;
