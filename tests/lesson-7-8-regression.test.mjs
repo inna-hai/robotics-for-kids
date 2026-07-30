@@ -114,6 +114,64 @@ test('motion control is hidden before lesson 11', () => {
   }
 });
 
+test('lesson 2 exercise 5 is framed as a summary of the lesson idea', () => {
+  const lesson2 = lessonObjectSource(2);
+  assertIncludes(lesson2, "title: 'תרגיל 5 — סיכום: כלל רעש הוגן לשכונה'");
+  assertIncludes(lesson2, 'זהו תרגיל סיכום וחזרה על רעיון השיעור');
+  assertIncludes(lesson2, 'סנסי מתריע רק כשהרעש חזק מדי, ולא מתריע כשהרעש חלש או שקט');
+  assertIncludes(lesson2, "answerTitle: 'דוגמה אפשרית לסיכום'");
+  assertIncludes(lesson2, 'כלל השיעור: חיישן קול מודד שקט / חלש / חזק מדי');
+  assertIncludes(lesson2, 'אפשר לבנות דוגמה בבלוקים, או להסביר במילים את הכלל ההוגן');
+  assertIncludes(lesson2, 'המטרה היא לחזור על רעיון השיעור ולנסח כלל הוגן');
+  assertNotIncludes(lesson2, 'זמן מנוחה', 'Lesson 2 should not suggest a rest-time condition because no such block exists');
+  assertIncludes(indexHtml, 'js/lessons-data.js?v=20260730-lesson3-two-conditions-v1');
+  assertIncludes(indexHtml, "const lesson2Exercise5ClearCompletion = currentLesson === 2 && titleText.includes('תרגיל 5');");
+  assertIncludes(indexHtml, "if (lesson2Exercise5ClearCompletion && rule.type === 'sensor_sound' && rule.value !== 'LOUD') continue;");
+  assertNotIncludes(indexHtml, "{ lesson: 2, title: 'תרגיל 5', rules: [['sensor_sound', 'LOUD', 'action_say', null, 'rule_loud_say']] }");
+});
+
+test('lesson 2 exercises 2 and 3 require testing both sound states before unlocking next exercise', () => {
+  assertIncludes(indexHtml, "const version = lessonNum === 2 ? 'v5-sound-state-reset' : 'v3';");
+  assertIncludes(indexHtml, "const version = lessonNum === 2 ? 'v3-sound-state-reset' : 'v1';");
+  assertIncludes(indexHtml, "state = `SOUND_${soundLevel}`;");
+  assertIncludes(indexHtml, "if (soundLevel !== 'LOUD' && !states.includes('SOUND_NOT_LOUD')) states.push('SOUND_NOT_LOUD');");
+  assertIncludes(indexHtml, "if (currentLesson === 2 && exerciseIndex === 1) return ['SOUND_LOUD', 'SOUND_NOT_LOUD'];");
+  assertIncludes(indexHtml, "if (currentLesson === 2 && exerciseIndex === 2) return ['SOUND_LOUD', 'SOUND_NOT_LOUD'];");
+  assertIncludes(indexHtml, 'testStateRequirementsFromExercise(exercise, activeExerciseIndex)');
+  assertIncludes(indexHtml, 'validateActiveExercise({ includeRunStateRequirements: false })');
+  assertMatches(indexHtml, /function\s+validateActiveExercise\(options = \{\}\)[\s\S]*?includeRunStateRequirements = true[\s\S]*?if \(includeRunStateRequirements\) \{[\s\S]*?testStateRequirementsFromExercise\(exercise, activeExerciseIndex\)/);
+  assertIncludes(indexHtml, "lesson2Exercise2SameProgramTest ? [] : (exercise?.answerBlocks || [])");
+  assertIncludes(indexHtml, "if (lesson2Exercise2SameProgramTest && rule.type === 'sensor_sound' && rule.value !== 'LOUD') continue;");
+  assertIncludes(indexHtml, 'הריצו פעם אחת ברעש חזק מדי ופעם אחת במצב לא חזק מדי');
+  assertIncludes(indexHtml, 'השלמתם חצי תרגיל בהצלחה! כדי לפתוח את התרגיל הבא, הריצו פעם נוספת במצב של רעש חזק מדי');
+  assertIncludes(indexHtml, 'השלמתם חצי תרגיל בהצלחה! כדי לפתוח את התרגיל הבא, הריצו פעם נוספת במצב של רעש חלש או שקט');
+  assertIncludes(indexHtml, 'function lesson2PartialSoundRunMessage(result)');
+  assertIncludes(indexHtml, 'function clearPrecheckPanel()');
+  assertIncludes(indexHtml, 'clearPrecheckPanel();');
+  assertIncludes(indexHtml, "modal?.classList.remove('active');");
+});
+
+test('lesson 3 teaches two-condition car movement without a loop', () => {
+  const overridesBlock = indexHtml.match(/const\s+toolboxLessonOverrides\s*=\s*\{[\s\S]*?\n\s*\};/)?.[0] || '';
+  const lesson3Override = overridesBlock.match(/3:\s*\{[\s\S]*?\n\s*\}/)?.[0] || '';
+  const lesson3Movement = lesson3Override.match(/movement:\s*\[([^\]]*)\]/)?.[1] || '';
+  const lesson3Controls = lesson3Override.match(/controls:\s*\[([^\]]*)\]/)?.[1] || '';
+  assertIncludes(lesson3Movement, "'move_forward'", 'Lesson 3 needs move_forward so repeated runs can move the car toward the obstacle');
+  assertIncludes(lesson3Movement, "'move_backward'", 'Lesson 3 needs move_backward for the wall response');
+  assertIncludes(lesson3Movement, "'stop_vehicle'", 'Lesson 3 still needs stop_vehicle for obstacle response');
+  assert.ok(!lesson3Controls.includes("'control_forever'"), 'Lesson 3 should stay simple and not introduce a loop');
+  assertIncludes(indexHtml, "{ type: 'sensor_touch', value: 'NO', hints: ['נוגע בקיר? = לא', 'נוגע בקיר = לא', 'אין קיר', 'דרך פנויה'] }");
+  assertIncludes(indexHtml, "{ lesson: 3, title: 'תרגיל 1', rules: [['sensor_touch', 'YES', 'move_backward', null, 'rule_touch_move_backward'], ['sensor_touch', 'YES', 'stop_vehicle', null, 'rule_touch_stop_vehicle'], ['sensor_touch', 'NO', 'move_forward', null, 'rule_clear_forward']] }");
+  const lesson3 = lessonObjectSource(3);
+  assertIncludes(lesson3, 'בנו שני תנאים: אם יש קיר — זוז אחורה ועצור; אם אין קיר — זוז קדימה');
+  assertIncludes(lesson3, 'אם נוגע בקיר? = כן');
+  assertIncludes(lesson3, 'בתוך ה”אם” של יש קיר: זוז אחורה');
+  assertIncludes(lesson3, 'מתחת ל“זוז אחורה”, עדיין בתוך ה”אם”: עצור רכב');
+  assertIncludes(lesson3, 'אם נוגע בקיר? = לא');
+  assertIncludes(lesson3, 'בתוך ה”אם” של אין קיר: זוז קדימה');
+  assertIncludes(indexHtml, 'js/lessons-data.js?v=20260730-lesson3-two-conditions-v1');
+});
+
 test('line off is not exposed as a separate environment button', () => {
   assert.doesNotMatch(indexHtml, /id="envLineOff"/);
   assert.doesNotMatch(indexHtml, /toggleEnv\('lineOff'\)/);
@@ -145,7 +203,7 @@ test('lesson sensor and environment controls are specific to each lesson, not cu
     8: { sensors: ['sensorCars', 'sensorPedestrian'], env: ['envCars', 'envPedestrian'] },
     9: { sensors: ['sensorPeople', 'sensorSound'], env: ['envPeople', 'envSound'] },
     10: { sensors: ['sensorSoil', 'sensorTemp'], env: ['envSoilDry', 'envTemperatureHot'] },
-    11: { sensors: ['sensorLight', 'sensorPeople', 'sensorArmed', 'sensorSafeTouch', 'sensorDoor'], env: ['envLight', 'envPeople', 'envRemoveVisitor', 'envArmedMode', 'envSafeTouch', 'envDoorOpen'] },
+    11: { sensors: ['sensorLight', 'sensorPeople', 'sensorArmed', 'sensorMotion', 'sensorSafeTouch', 'sensorDoor'], env: ['envLight', 'envPeople', 'envRemoveVisitor', 'envArmedMode', 'envSafeTouch', 'envDoorOpen'] },
     12: { sensors: ['sensorTouch', 'sensorDeliveryPackage', 'sensorGoal'], env: ['envObstacle', 'envDeliveryPackage'] },
     13: { sensors: ['sensorLight', 'sensorBurglar', 'sensorHomeowner', 'sensorMotion', 'sensorSound', 'sensorGoal'], env: ['envLight', 'envBurglar', 'envHomeowner', 'envSound'] },
     14: { sensors: ['sensorSmell', 'sensorTemp', 'sensorTouch'], env: ['envSmoke', 'envTemperatureHot', 'envObstacle'] }
@@ -480,7 +538,7 @@ test('lesson 11 has student-built arming rules with visitors, safe touch, door a
   assertIncludes(lessonsData, 'בתוך ה”אם”: 🔐 שמירה — דרוך');
   assertIncludes(lessonsData, 'בלי אף בלוק “שמירה — דרוך”');
   assertIncludes(lessonsData, 'התוכנית עונה לשאלה: מי דורך את השמירה');
-  assertIncludes(indexHtml, "sensors: ['sensor_armed', 'sensor_light', 'sensor_people', 'sensor_safe_touch', 'sensor_door']");
+  assertIncludes(indexHtml, "sensors: ['sensor_armed', 'sensor_light', 'sensor_people', 'sensor_motion', 'sensor_safe_touch', 'sensor_door']");
   assertIncludes(indexHtml, "currentLesson === 11 ? ' דריכה ידנית' : ' מערכת דרוכה'");
   assertIncludes(indexHtml, 'Lesson 11 does not auto-arm from sensors');
   assertIncludes(indexHtml, "Blockly.Blocks['action_security_mode']");
@@ -489,7 +547,8 @@ test('lesson 11 has student-built arming rules with visitors, safe touch, door a
   assertIncludes(indexHtml, 'הוסף מבקר');
   assertIncludes(indexHtml, 'הורד מבקר');
   assertIncludes(indexHtml, 'each click on “הוסף מבקר” adds a visible person in the hall');
-  assertIncludes(indexHtml, 'Visitors enter from different sides; new visitors push the group toward the vault');
+  assertIncludes(indexHtml, 'Visitors spread into empty places around the museum before the vault area gets crowded');
+  assertIncludes(indexHtml, 'MUSEUM_MAX_VISITORS = 16');
   assertIncludes(indexHtml, 'Faces are intentionally clean at this small size');
   assertIncludes(indexHtml, 'Museum floor has no hard horizontal edge at all');
   assertIncludes(indexHtml, 'Dark gray museum floor');
@@ -522,7 +581,7 @@ test('lesson 11 has student-built arming rules with visitors, safe touch, door a
   for (const envId of ['envLight', 'envPeople', 'envRemoveVisitor', 'envArmedMode', 'envSafeTouch', 'envDoorOpen']) {
     assertIncludes(indexHtml, `id="${envId}"`);
   }
-  for (const blockType of ['sensor_armed', 'sensor_light', 'sensor_people', 'sensor_safe_touch', 'sensor_door', 'action_security_mode', 'action_alarm']) {
+  for (const blockType of ['sensor_armed', 'sensor_light', 'sensor_people', 'sensor_motion', 'sensor_safe_touch', 'sensor_door', 'action_security_mode', 'action_alarm']) {
     assertMatches(indexHtml, new RegExp(`(sensors|actions):\\s*\\[[^\\]]*'${blockType}'[^\\]]*\\]`));
     assertIncludes(indexHtml, `Blockly.Blocks['${blockType}']`);
   }
@@ -536,11 +595,18 @@ test('lesson 11 has student-built arming rules with visitors, safe touch, door a
   assertIncludes(indexHtml, "doorOpen: false");
 });
 
-test('lesson 11 no longer exposes motion-near-safe as a lesson block', () => {
+test('lesson 11 exposes motion-near-safe as an alarm trigger block, not an arming trigger', () => {
   const lesson11 = lessonObjectSource(11);
-  assert.doesNotMatch(lesson11, /אם תנועה ליד הכספת/);
-  assert.doesNotMatch(lessonSlidesHtml, /תנועה ליד הכספת/);
-  assertIncludes(lesson11, 'אם נגיעה בכספת');
+  assertIncludes(indexHtml, "sensors: ['sensor_armed', 'sensor_light', 'sensor_people', 'sensor_motion', 'sensor_safe_touch', 'sensor_door']");
+  assertIncludes(indexHtml, "sensors: ['sensorLight', 'sensorPeople', 'sensorArmed', 'sensorMotion', 'sensorSafeTouch', 'sensorDoor']");
+  assertIncludes(indexHtml, "env: ['envLight', 'envPeople', 'envRemoveVisitor', 'envArmedMode', 'envSafeTouch', 'envDoorOpen']");
+  assertIncludes(indexHtml, 'function isMuseumVisitorNearVault()');
+  assertIncludes(indexHtml, 'return currentLesson === 11 && (environment.visitorCount || 0) >= MUSEUM_MOTION_VISITOR_THRESHOLD;');
+  assertIncludes(indexHtml, 'MUSEUM_MOTION_VISITOR_THRESHOLD = 10');
+  assertIncludes(indexHtml, "currentLesson === 11 ? '👤 חיישן תנועה ליד הכספת?' : '🏃 יש תנועה?'");
+  assertIncludes(lessonsData, 'אם 👤 תנועה ליד הכספת');
+  assertIncludes(lessonsData, 'אם ✋ נגיעה בכספת');
+  assertIncludes(lessonsData, 'אם 👥 יותר מדי מבקרים');
 });
 
 test('lesson 11 has a dedicated illustrated museum scene', () => {
