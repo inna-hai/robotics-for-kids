@@ -1583,7 +1583,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260802-lesson3-solutions-v1"></script>
+    <script src="js/lessons-data.js?v=20260802-lesson4-smoke-v4"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -4957,8 +4957,9 @@
                 }
             }
 
-            // Draggable Obstacle/Wall
-            if (environment.obstacle) {
+            // Draggable Obstacle/Wall — only for lessons that actually use obstacles.
+            const showObstacleObject = environment.obstacle && (currentLesson === 3 || currentLesson === 12 || currentLesson === 14 || currentLesson === 15);
+            if (showObstacleObject) {
                 if (currentLesson === 3) {
                     ctx.font = '56px Arial';
                     ctx.textAlign = 'center';
@@ -5354,7 +5355,7 @@
             if (hitTestRobot(pos)) {
                 dragging = 'robot';
                 dragOffset = { x: pos.x - robot.x, y: pos.y - robot.y };
-            } else if (environment.obstacle && hitTest(pos, objects.wall, 50)) {
+            } else if (environment.obstacle && (currentLesson === 3 || currentLesson === 12 || currentLesson === 14 || currentLesson === 15) && hitTest(pos, objects.wall, 50)) {
                 dragging = 'wall';
                 dragOffset = { x: pos.x - objects.wall.x, y: pos.y - objects.wall.y };
             } else if (environment.sound && hitTest(pos, objects.sound, 40)) {
@@ -5457,7 +5458,7 @@
                 actions: ['action_say']
             },
             4: {
-                movement: [],
+                movement: ['move_forward', 'stop_vehicle'],
                 sensors: ['sensor_smell'],
                 controls: ['control_if', 'control_forever', 'stop_program'],
                 actions: ['action_say', 'action_sound']
@@ -6536,12 +6537,8 @@
 
         function showSilentDebugSummary(prefix = 'ההרצה הסתיימה') {
             silentAutoDebug = false;
-            const messages = silentDebugMessages.slice();
             silentDebugMessages = [];
-            const summary = messages.length
-                ? `${prefix} — Debug אוטומטי: ${messages.join(' · ')}`
-                : `${prefix} — Debug אוטומטי לא מצא צעדים להצגה.`;
-            setDebugStatus(summary);
+            setDebugStatus(`${prefix} — Debug אוטומטי הסתיים.`);
         }
 
         function blockDebugLabel(block) {
@@ -7974,6 +7971,14 @@
                 required.delete('sensor_obstacle');
                 required.add('sensor_touch');
             }
+            if (currentLesson === 4 && required.has('action_alarm')) {
+                required.delete('action_alarm');
+                required.add('action_sound');
+            }
+            if (currentLesson === 4 && text.includes('תרגיל 3')) {
+                required.delete('stop_program');
+                required.add('stop_vehicle');
+            }
             return [...required];
         }
 
@@ -8098,7 +8103,8 @@
             { lesson: 3, title: 'תרגיל 4', rules: [['sensor_touch', 'YES', 'move_backward', null, 'rule_touch_move_backward'], ['sensor_touch', 'YES', 'turn_right', null, 'rule_touch_turn']] },
             { lesson: 4, title: 'תרגיל 1', rules: [['sensor_smell', 'YES', 'action_say', null, 'rule_smoke_say']] },
             { lesson: 4, title: 'תרגיל 2', rules: [['sensor_smell', 'YES', 'action_sound', 'ALARM', 'rule_smoke_alarm_sound']] },
-            { lesson: 4, title: 'תרגיל 5', rules: [['sensor_smell', 'YES', 'stop_program', null, 'rule_smoke_stop']] },
+            { lesson: 4, title: 'תרגיל 3', rules: [['sensor_smell', 'YES', 'stop_vehicle', null, 'rule_smoke_stop_vehicle'], ['sensor_smell', 'YES', 'action_sound', 'ALARM', 'rule_smoke_alarm_sound']] },
+            { lesson: 4, title: 'תרגיל 4', rules: [['sensor_smell', 'YES', 'stop_program', null, 'rule_smoke_stop']] },
             { lesson: 5, title: 'תרגיל 1', rules: [['sensor_temperature', 'HOT', 'action_fan', 'ON', 'rule_hot_fan_on']] },
             { lesson: 5, title: 'תרגיל 2', rules: [['sensor_temperature', 'HOT', 'action_fan', 'ON', 'rule_hot_fan_on'], ['sensor_temperature', 'HOT', 'action_say', null, 'rule_hot_say']] },
             { lesson: 5, title: 'תרגיל 4', rules: [['sensor_temperature', 'HOT', 'action_fan', 'ON', 'rule_hot_fan_on'], ['sensor_temperature', 'OK', 'action_fan', 'OFF', 'rule_ok_fan_off']] },
