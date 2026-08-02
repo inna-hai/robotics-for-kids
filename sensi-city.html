@@ -1350,19 +1350,6 @@
 
             <div class="precheck-panel" id="precheckPanel" aria-live="polite"></div>
 
-            <div class="top-exercise-toc" id="topExerciseToc" aria-live="polite">
-                <h3><span>📚 תוכן התרגילים</span><span class="exercise-progress-note">השלימו את התרגיל כדי לפתוח את התרגיל הבא</span></h3>
-                <div class="exercise-list" id="topExerciseList"></div>
-            </div>
-
-            <div class="debug-panel" id="debugPanel" aria-live="polite">
-                <span class="bug">🐞</span>
-                <span>בדיקה:</span>
-                <span class="status" id="debugStatus">ההרצה עדיין לא התחילה.</span>
-            </div>
-
-            <div class="precheck-panel" id="precheckPanel" aria-live="polite"></div>
-
             <div class="robot-stage">
                 <canvas id="robotCanvas"></canvas>
                 <div class="ground"></div>
@@ -4947,8 +4934,12 @@
                 ctx.arc(fanX, fanY, 34, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.stroke();
+                ctx.save();
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
                 ctx.font = robot.fanOn ? '40px Arial' : '34px Arial';
-                ctx.fillText(robot.fanOn && Date.now() % 500 < 250 ? '🌀' : '🪭', fanX, fanY + 2);
+                ctx.fillText(robot.fanOn && Date.now() % 500 < 250 ? '🌀' : '🪭', fanX, fanY);
+                ctx.restore();
                 ctx.font = 'bold 14px Rubik';
                 ctx.fillStyle = robot.fanOn ? '#0984e3' : '#64748b';
                 ctx.fillText(robot.fanOn ? 'המאוורר פועל' : 'המאוורר כבוי', fanX, fanY + 52);
@@ -8384,7 +8375,7 @@
 
             { lesson: 5, title: 'תרגיל 1', rules: [['sensor_temperature', 'HOT', 'action_fan', 'ON', 'rule_hot_fan_on']] },
             { lesson: 5, title: 'תרגיל 2', rules: [['sensor_temperature', 'HOT', 'action_fan', 'ON', 'rule_hot_fan_on'], ['sensor_temperature', 'HOT', 'action_say', null, 'rule_hot_say']] },
-            { lesson: 5, title: 'תרגיל 4', rules: [['sensor_temperature', 'HOT', 'action_fan', 'ON', 'rule_hot_fan_on'], ['sensor_temperature', 'OK', 'action_fan', 'OFF', 'rule_ok_fan_off']] },
+            { lesson: 5, title: 'תרגיל 3', rules: [['sensor_temperature', 'HOT', 'action_fan', 'ON', 'rule_hot_fan_on'], ['sensor_temperature', 'OK', 'action_fan', 'OFF', 'rule_ok_fan_off']] },
             { lesson: 6, title: 'תרגיל 1', rules: [['sensor_color', 'BLUE', 'action_recycle_bin', 'BLUE', 'rule_blue_bin_blue']] },
             { lesson: 6, title: 'תרגיל 2', rules: [['sensor_color', 'BLUE', 'action_recycle_bin', 'BLUE', 'rule_blue_bin_blue'], ['sensor_color', 'GREEN', 'action_recycle_bin', 'GREEN', 'rule_green_bin_green']] },
             { lesson: 6, title: 'תרגיל 3', rules: [['sensor_color', 'BLUE', 'action_recycle_bin', 'BLUE', 'rule_blue_bin_blue'], ['sensor_color', 'GREEN', 'action_recycle_bin', 'GREEN', 'rule_green_bin_green'], ['sensor_color', 'YELLOW', 'action_recycle_bin', 'YELLOW', 'rule_yellow_bin_yellow']] },
