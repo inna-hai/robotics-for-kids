@@ -6518,6 +6518,12 @@
         function setDebugStatus(message) {
             if (silentAutoDebug && isRunning) {
                 if (message) silentDebugMessages.push(message);
+                const panel = document.getElementById('debugPanel');
+                const status = document.getElementById('debugStatus');
+                const button = document.getElementById('debugButton');
+                if (panel) panel.classList.add('active');
+                if (button) button.classList.add('active');
+                if (status) status.textContent = message || 'מריץ Debug אוטומטי...';
                 return;
             }
             const panel = document.getElementById('debugPanel');
@@ -7964,6 +7970,10 @@
             for (const [hint, type] of exerciseBlockHints) {
                 if (text.includes(normalizeHebrew(hint))) required.add(type);
             }
+            if (currentLesson === 3 && required.has('sensor_obstacle')) {
+                required.delete('sensor_obstacle');
+                required.add('sensor_touch');
+            }
             return [...required];
         }
 
@@ -8269,15 +8279,15 @@
             setExerciseProgress(nextIndex);
             if (nextIndex > completedIndex) setActiveExercise(nextIndex, currentLesson);
             renderExerciseToc(currentLesson);
-            if (nextIndex > completedIndex) {
-                const modal = document.getElementById('exerciseModal');
-                const body = document.getElementById('exerciseModalBody');
-                if (modal && body) {
-                    const completedTitle = exercises[completedIndex]?.title || `תרגיל ${completedIndex + 1}`;
-                    const nextTitle = exercises[nextIndex]?.title || `תרגיל ${nextIndex + 1}`;
-                    body.innerHTML = `<h3>✅ ${escapeHtml(completedTitle)} הושלם!</h3><p>כל הכבוד — עכשיו נפתח לכם <strong>${escapeHtml(nextTitle)}</strong>.</p>`;
-                    modal.classList.add('active');
-                }
+            const modal = document.getElementById('exerciseModal');
+            const body = document.getElementById('exerciseModalBody');
+            if (modal && body) {
+                const completedTitle = exercises[completedIndex]?.title || `תרגיל ${completedIndex + 1}`;
+                const nextTitle = exercises[nextIndex]?.title || `תרגיל ${nextIndex + 1}`;
+                body.innerHTML = nextIndex > completedIndex
+                    ? `<h3>✅ ${escapeHtml(completedTitle)} הושלם!</h3><p>כל הכבוד — עכשיו נפתח לכם <strong>${escapeHtml(nextTitle)}</strong>.</p>`
+                    : `<h3>✅ ${escapeHtml(completedTitle)} הושלם!</h3><p>כל הכבוד — ההרצה שוב עמדה בדרישות של התרגיל.</p>`;
+                modal.classList.add('active');
             }
         }
 
