@@ -286,12 +286,17 @@
         /* ===== MAIN LAYOUT ===== */
         .main-container {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            grid-template-columns: minmax(0, 3fr) minmax(320px, 2fr);
             flex: 1;
             min-height: 0;
             gap: 1rem;
             padding: 1rem;
             overflow: auto;
+            transition: grid-template-columns .25s ease;
+        }
+
+        .main-container.stage-expanded {
+            grid-template-columns: minmax(0, 7fr) minmax(260px, 3fr);
         }
 
         /* ===== LEFT SIDE - ROBOT ===== */
@@ -305,18 +310,81 @@
             min-width: 0;
             min-height: 0;
             overflow: auto;
+            overflow: overlay;
+            clip-path: inset(0 round 2rem);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(155, 93, 229, .38) transparent;
+        }
+
+        .robot-section::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .robot-section::-webkit-scrollbar-track {
+            background: transparent;
+            margin: 18px 0;
+        }
+
+        .robot-section::-webkit-scrollbar-thumb {
+            background: rgba(155, 93, 229, .34);
+            border: 2px solid rgba(255,255,255,.9);
+            border-radius: 999px;
+        }
+
+        .robot-section::-webkit-scrollbar-thumb:hover {
+            background: rgba(155, 93, 229, .55);
+        }
+
+        .main-container.stage-expanded .robot-section {
+            scrollbar-color: rgba(155, 93, 229, .30) transparent;
         }
 
         .robot-title {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .5rem;
             text-align: center;
             font-size: 1.3rem;
             font-weight: 700;
             color: var(--dark);
             margin-bottom: .45rem;
+            min-height: 38px;
+            padding: 0 2.6rem;
         }
 
         .robot-title span {
             color: var(--purple);
+        }
+
+        .stage-zoom-toggle {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 38px;
+            height: 38px;
+            border: 0;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #4c1d95;
+            font-size: 1.05rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(76,29,149,.14);
+            transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+        }
+
+        .stage-zoom-toggle:hover {
+            background: #ddd6fe;
+            transform: translateY(-50%) scale(1.06);
+            box-shadow: 0 6px 16px rgba(76,29,149,.22);
+        }
+
+        .stage-zoom-toggle[aria-pressed="true"] {
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            color: #fff;
         }
 
         .presentation-link {
@@ -346,7 +414,12 @@
             border-radius: 1.5rem;
             position: relative;
             overflow: hidden;
-            min-height: clamp(190px, 34vh, 300px);
+            min-height: clamp(250px, 42vh, 420px);
+            transition: min-height .25s ease;
+        }
+
+        .main-container.stage-expanded .robot-stage {
+            min-height: clamp(360px, 62vh, 680px);
         }
 
         .robot-stage canvas {
@@ -1245,7 +1318,10 @@
     <div class="main-container">
         <!-- Left: Robot -->
         <div class="robot-section">
-            <h2 class="robot-title">👁️ שיעור 1: <span>הרובוט רואה!</span></h2>
+            <h2 class="robot-title">
+                <span class="robot-title-text">👁️ שיעור 1: <span>הרובוט רואה!</span></span>
+                <button class="stage-zoom-toggle" id="stageZoomToggle" type="button" onclick="toggleStageZoom()" aria-pressed="false" title="הגדל את מסך ההרצה" aria-label="הגדל את מסך ההרצה">🔍</button>
+            </h2>
 
             <div class="top-exercise-toc" id="topExerciseToc" aria-live="polite">
                 <h3><span>📚 תוכן התרגילים</span><span class="exercise-progress-note">השלימו את התרגיל כדי לפתוח את התרגיל הבא</span></h3>
@@ -8249,6 +8325,20 @@
             document.getElementById('welcomeModal')?.classList.remove('active');
         }
 
+        function toggleStageZoom() {
+            const main = document.querySelector('.main-container');
+            const button = document.getElementById('stageZoomToggle');
+            if (!main || !button) return;
+            const expanded = main.classList.toggle('stage-expanded');
+            button.setAttribute('aria-pressed', expanded ? 'true' : 'false');
+            button.title = expanded ? 'החזר את מסך ההרצה לגודל רגיל' : 'הגדל את מסך ההרצה';
+            button.setAttribute('aria-label', button.title);
+            window.setTimeout(() => {
+                resizeCanvas();
+                if (workspace && window.Blockly) Blockly.svgResize(workspace);
+            }, 280);
+        }
+
         function scheduleWelcomeAutoClose() {
             window.clearTimeout(window.sensiWelcomeAutoCloseTimer);
             window.sensiWelcomeAutoCloseTimer = window.setTimeout(closeWelcomeModal, 2000);
@@ -8289,7 +8379,8 @@
             const title = cityLesson
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
-            document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
+            const titleTarget = document.querySelector('.robot-title-text');
+            if (titleTarget) titleTarget.innerHTML = title.replace(':', ': <span>') + '</span>';
             document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260720-lesson11-13-merge-v1';
             const ground = document.querySelector('.ground');
             ground?.classList.toggle('street-ground', num === 8);
