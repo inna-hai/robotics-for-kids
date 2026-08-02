@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/space.css?v=20260717-sisi-hub-1">
   <style>
-    .series-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:24px}.series-card{background:rgba(255,255,255,.96);color:#0f172a;border-radius:26px;padding:20px;text-decoration:none;box-shadow:0 18px 38px rgba(0,0,0,.22);border:3px solid transparent;display:flex;flex-direction:column;gap:10px;min-height:290px;transition:.18s}.series-card:hover{transform:translateY(-6px);border-color:#facc15}.series-card.open{border-color:#bbf7d0}.series-card.locked{border-color:#fed7aa}.access-badge{display:inline-flex;width:max-content;border-radius:999px;padding:6px 10px;font-weight:900;font-size:.78rem}.access-badge.open{background:#dcfce7;color:#166534;border:1px solid #bbf7d0}.access-badge.locked{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}.series-card.locked:after{content:"🔒";position:absolute;top:14px;left:14px;font-size:1.25rem;background:rgba(255,255,255,.9);border-radius:14px;padding:6px 8px}.series-card{position:relative}.series-card:hover{transform:translateY(-6px);border-color:#facc15}.series-card .icon{font-size:3rem}.series-card h2{margin:0;font-size:1.25rem}.series-card p{line-height:1.6;color:#334155;flex:1}.lesson-number{font-weight:900;color:#7c3aed}.concepts{display:flex;flex-wrap:wrap;gap:6px}.concepts span{background:#f1f5f9;border-radius:999px;padding:6px 9px;font-size:.8rem;font-weight:900}.recommended{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:24px;padding:20px;margin-top:20px;line-height:1.8;color:#eaf2ff}@media(max-width:1000px){.series-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){.series-grid{grid-template-columns:1fr}.series-card{min-height:auto}}
+    .series-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:24px}.series-card{background:rgba(255,255,255,.96);color:#0f172a;border-radius:26px;padding:20px;text-decoration:none;box-shadow:0 18px 38px rgba(0,0,0,.22);border:3px solid transparent;display:flex;flex-direction:column;gap:10px;min-height:290px;transition:.18s}.series-card:hover{transform:translateY(-6px);border-color:#facc15}.series-card.open{border-color:#bbf7d0}.series-card.locked{border-color:#fed7aa}.access-badge{display:inline-flex;width:max-content;border-radius:999px;padding:6px 10px;font-weight:900;font-size:.78rem}.access-badge.open{background:#dcfce7;color:#166534;border:1px solid #bbf7d0}.access-badge.locked{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}.series-card.locked:after{content:"🔒";position:absolute;top:14px;left:14px;font-size:1.25rem;background:rgba(255,255,255,.9);border-radius:14px;padding:6px 8px}.series-card{position:relative}.series-card:hover{transform:translateY(-6px);border-color:#facc15}.series-card .icon{font-size:3rem}.series-card h2{margin:0;font-size:1.25rem}.series-card p{line-height:1.6;color:#334155;flex:1}.lesson-number{font-weight:900;color:#7c3aed}.concepts{display:flex;flex-wrap:wrap;gap:6px}.concepts span{background:#f1f5f9;border-radius:999px;padding:6px 9px;font-size:.8rem;font-weight:900}.course-demo{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);gap:24px;align-items:center;background:linear-gradient(135deg,rgba(255,255,255,.97),rgba(224,242,254,.95));color:#0f172a;border-radius:30px;padding:24px;margin-top:22px;box-shadow:0 24px 55px rgba(15,23,42,.24);border:1px solid rgba(255,255,255,.72)}.course-demo__video{border-radius:24px;overflow:hidden;background:#0f172a;box-shadow:0 18px 42px rgba(15,23,42,.3);border:6px solid rgba(255,255,255,.9)}.course-demo__video video{display:block;width:100%;aspect-ratio:16/9;background:#0f172a}.course-demo__content{line-height:1.75}.course-demo__eyebrow{display:inline-flex;background:#ede9fe;color:#5b21b6;border-radius:999px;padding:6px 12px;font-weight:900;margin-bottom:10px}.course-demo h2{font-size:1.55rem;margin:0 0 10px}.course-demo p{margin:0 0 14px;color:#334155}.course-demo ul{margin:0;padding-right:20px;color:#334155}.course-demo li{margin:4px 0}.recommended{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:24px;padding:20px;margin-top:20px;line-height:1.8;color:#eaf2ff}@media(max-width:1000px){.series-grid{grid-template-columns:repeat(2,1fr)}.course-demo{grid-template-columns:1fr}}@media(max-width:620px){.series-grid{grid-template-columns:1fr}.series-card{min-height:auto}.course-demo{padding:16px;border-radius:24px}.course-demo__video{border-width:4px}.course-demo h2{font-size:1.3rem}}
   </style>
 </head>
 <body>
@@ -29,6 +29,29 @@
         </div>
       </div>
       <div class="hero-art" aria-hidden="true">🌟🤖</div>
+    </section>
+
+
+
+    <section class="course-demo" aria-labelledby="sisi-demo-title">
+      <div class="course-demo__video">
+        <video controls preload="metadata" playsinline aria-label="סרטון הדגמה של קורס סיסי">
+          <source src="assets/videos/sisi-course-demo.mp4" type="video/mp4">
+          הדפדפן שלך לא תומך בניגון וידאו. אפשר לצפות בסרטון דרך הקובץ: assets/videos/sisi-course-demo.mp4
+        </video>
+      </div>
+      <div class="course-demo__content">
+        <span class="course-demo__eyebrow">🎬 הצצה לקורס</span>
+        <h2 id="sisi-demo-title">רואים איך סיסי לומדת דרך משחק</h2>
+        <p>
+          בסרטון קצר רואים איך ילד בונה מסלול, מריץ את סיסי, אוסף כוכבים ומקבל פידבק מידי — בדיוק כמו בלומדה.
+        </p>
+        <ul>
+          <li>תכנון רצף פקודות בצורה ויזואלית.</li>
+          <li>הרצה, בדיקה ותיקון טעויות.</li>
+          <li>למידה משחקית שמתאימה לילדים צעירים.</li>
+        </ul>
+      </div>
     </section>
 
     <section class="stats" aria-label="נתוני הסדרה">
