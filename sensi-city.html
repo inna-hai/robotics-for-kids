@@ -8109,8 +8109,8 @@
         }
 
         function exerciseProgressKey(lessonNum = currentLesson) {
-
-            return `sensi-exercise-progress-v3-lesson-${lessonNum}`;
+            const version = Number(lessonNum) === 6 ? 'v4' : 'v3';
+            return `sensi-exercise-progress-${version}-lesson-${lessonNum}`;
 
         }
 
@@ -8235,6 +8235,9 @@
                 required.add('stop_vehicle');
 
             }
+            if (currentLesson === 8 && text.includes('תרגיל 1')) {
+                required.delete('sensor_cars');
+            }
             return [...required];
         }
 
@@ -8283,7 +8286,8 @@
             { type: 'sensor_line_side', value: 'LEFT', hints: ['הקו נמצא בצד שמאל', 'צד שמאל'] },
             { type: 'sensor_goal', value: 'YES', hints: ['חיישן יעד = הגעתי ליעד', 'הגעתי ליעד', 'סוף גדר'] },
             { type: 'sensor_pedestrian', value: 'YES', hints: ['יש הולך רגל', 'הולך רגל'] },
-            { type: 'sensor_cars', value: 'YES', hints: ['יש מכוניות', 'מכוניות'] },
+            { type: 'sensor_cars', value: 'YES', hints: ['יש מכוניות'] },
+            { type: 'sensor_cars', value: 'NO', hints: ['אין מכוניות'] },
             { type: 'sensor_people', value: 'YES', hints: ['יש תלמידים', 'יותר מדי מבקרים', 'יש אנשים'] },
             { type: 'sensor_people', value: 'NO', hints: ['אין אנשים', 'כיתה ריקה'] },
             { type: 'sensor_soil', value: 'DRY', hints: ['חיישן אדמה = יבשה', 'אדמה = יבשה', 'יבשה וצמאה'] },
@@ -8313,6 +8317,9 @@
 
 
                 requirements.push({ type: rule.type, value: rule.value });
+            }
+            if (currentLesson === 8 && promptText.includes('תרגיל 1')) {
+                return requirements.filter(requirement => requirement.type !== 'sensor_cars');
             }
             return requirements;
         }
@@ -8356,6 +8363,20 @@
             });
         }
 
+        function hasForeverRuleWithAction(sensorType, sensorValue, actionType, actionValue = null) {
+            return connectedProgramBlocks().some(loopBlock => {
+                if (loopBlock.type !== 'control_forever') return false;
+                return statementBlocksFromInput(loopBlock, 'DO').some(block => {
+                    if (block.type !== 'control_if') return false;
+                    const condition = block.getInputTargetBlock?.('COND');
+                    if (!condition || condition.type !== sensorType || condition.getFieldValue?.('VAL') !== sensorValue) return false;
+                    return statementBlocksFromInput(block, 'DO').some(child =>
+                        child.type === actionType && blockHasFieldValue(child, actionValue)
+                    );
+                });
+            });
+        }
+
         const strongExerciseRules = [
             { lesson: 1, title: 'תרגיל 1', rules: [['sensor_light', 'DARK', 'action_street_light', 'ON', 'rule_dark_light_on']] },
             { lesson: 1, title: 'תרגיל 2', rules: [['sensor_light', 'DARK', 'action_street_light', 'ON', 'rule_dark_light_on'], ['sensor_light', 'DARK', 'action_say', null, 'rule_dark_say']] },
@@ -8379,11 +8400,13 @@
             { lesson: 6, title: 'תרגיל 1', rules: [['sensor_color', 'BLUE', 'action_recycle_bin', 'BLUE', 'rule_blue_bin_blue']] },
             { lesson: 6, title: 'תרגיל 2', rules: [['sensor_color', 'BLUE', 'action_recycle_bin', 'BLUE', 'rule_blue_bin_blue'], ['sensor_color', 'GREEN', 'action_recycle_bin', 'GREEN', 'rule_green_bin_green']] },
             { lesson: 6, title: 'תרגיל 3', rules: [['sensor_color', 'BLUE', 'action_recycle_bin', 'BLUE', 'rule_blue_bin_blue'], ['sensor_color', 'GREEN', 'action_recycle_bin', 'GREEN', 'rule_green_bin_green'], ['sensor_color', 'YELLOW', 'action_recycle_bin', 'YELLOW', 'rule_yellow_bin_yellow']] },
+            { lesson: 6, title: 'תרגיל 4', rules: [['sensor_color', 'BLUE', 'action_recycle_bin', 'BLUE', 'rule_blue_bin_blue'], ['sensor_color', 'GREEN', 'action_recycle_bin', 'GREEN', 'rule_green_bin_green'], ['sensor_color', 'YELLOW', 'action_recycle_bin', 'YELLOW', 'rule_yellow_bin_yellow']] },
             { lesson: 7, title: 'תרגיל 1', rules: [['sensor_line', 'ON', 'move_forward', null, 'rule_line_forward']] },
             { lesson: 7, title: 'תרגיל 2', rules: [['sensor_line_side', 'RIGHT', 'turn_right_small', null, 'rule_line_right_turn'], ['sensor_line_side', 'LEFT', 'turn_left_small', null, 'rule_line_left_turn']] },
-            { lesson: 7, title: 'תרגיל 5', rules: [['sensor_goal', 'YES', 'action_say', null, 'rule_goal_say']] },
+            { lesson: 7, title: 'תרגיל 4', rules: [['sensor_goal', 'YES', 'action_say', null, 'rule_goal_say']] },
             { lesson: 8, title: 'תרגיל 1', rules: [['sensor_pedestrian', 'YES', 'stop_cars', null, 'rule_pedestrian_stop_cars']] },
-            { lesson: 8, title: 'תרגיל 2', rules: [['sensor_pedestrian', 'YES', 'stop_cars', null, 'rule_pedestrian_stop_cars']] },
+            { lesson: 8, title: 'תרגיל 2', rules: [['sensor_cars', 'YES', 'stop_cars', null, 'rule_cars_stop_cars'], ['sensor_cars', 'NO', 'action_traffic_light', 'GREEN', 'rule_no_cars_green_light']] },
+            { lesson: 8, title: 'תרגיל 4', rules: [['sensor_cars', 'YES', 'stop_cars', null, 'rule_cars_stop_cars'], ['sensor_cars', 'NO', 'action_traffic_light', 'GREEN', 'rule_no_cars_green_light']] },
             { lesson: 9, title: 'תרגיל 1', rules: [['sensor_people', 'YES', 'action_class_power', 'ON', 'rule_people_power_on']] },
             { lesson: 9, title: 'תרגיל 2', rules: [['sensor_people', 'NO', 'action_class_power', 'OFF', 'rule_no_people_power_off']] },
             { lesson: 9, title: 'תרגיל 5', rules: [['sensor_sound', 'LOUD', 'action_class_power', 'OFF', 'rule_loud_power_off'], ['sensor_sound', 'QUIET', 'action_class_power', 'ON', 'rule_quiet_power_on']] },
@@ -8410,6 +8433,17 @@
                 for (const [sensorType, sensorValue, actionType, actionValue, missingKey] of entry.rules) {
                     if (!hasIfRuleWithAction(sensorType, sensorValue, actionType, actionValue)) missing.push(missingKey);
                 }
+            }
+            if (currentLesson === 6 && title.includes('תרגיל 4')) {
+                const loopRules = [
+                    ['sensor_color', 'BLUE', 'action_recycle_bin', 'BLUE'],
+                    ['sensor_color', 'GREEN', 'action_recycle_bin', 'GREEN'],
+                    ['sensor_color', 'YELLOW', 'action_recycle_bin', 'YELLOW']
+                ];
+                const hasLoopSorting = loopRules.every(([sensorType, sensorValue, actionType, actionValue]) =>
+                    hasForeverRuleWithAction(sensorType, sensorValue, actionType, actionValue)
+                );
+                if (!hasLoopSorting) missing.push('rule_recycle_loop_sorting');
             }
             return missing;
         }
@@ -8507,7 +8541,7 @@
 
                 'sensor_smell:YES': 'חיישן עשן עם הערך “יש עשן”', 'sensor_screen_edge:END': 'חיישן קצה מסך עם הערך “סוף המסך”', 'sensor_screen_edge:START': 'חיישן קצה מסך עם הערך “תחילת המסך”', 'sensor_goal:YES': 'חיישן יעד/סוף עם הערך “כן”',
 
-                'sensor_pedestrian:YES': 'חיישן הולך רגל עם הערך “יש הולך רגל”', 'sensor_cars:YES': 'חיישן מכוניות עם הערך “יש מכוניות”',
+                'sensor_pedestrian:YES': 'חיישן הולך רגל עם הערך “יש הולך רגל”', 'sensor_cars:YES': 'חיישן מכוניות עם הערך “יש מכוניות”', 'sensor_cars:NO': 'חיישן מכוניות עם הערך “אין מכוניות”',
                 'sensor_people:YES': 'חיישן אנשים עם הערך “יש/יותר מדי”', 'sensor_people:NO': 'חיישן אנשים עם הערך “אין”',
                 'sensor_soil:DRY': 'חיישן אדמה עם הערך “יבשה”', 'sensor_armed:YES': 'חיישן שמירה עם הערך “דרוכה”',
                 'sensor_safe_touch:YES': 'חיישן כספת עם הערך “נגיעה”', 'sensor_door:YES': 'חיישן דלת עם הערך “פתוחה”',
