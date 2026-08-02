@@ -26,6 +26,8 @@ const MIME = {
   '.svg': 'image/svg+xml; charset=utf-8',
   '.ico': 'image/x-icon',
   '.txt': 'text/plain; charset=utf-8',
+  '.mp4': 'video/mp4',
+  '.webm': 'video/webm',
 };
 
 function send(res, status, body, type = 'application/json; charset=utf-8') {
