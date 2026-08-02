@@ -1583,7 +1583,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260802-lesson4-smoke-v10"></script>
+    <script src="js/lessons-data.js?v=20260802-lesson4-smoke-v11"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -8224,8 +8224,15 @@
                 }
             }
             if (currentLesson === 4 && trace.lesson === 4 && title.includes('הלוך ושוב')) {
-                if (!trace.reachedEdge) missing.push('run_reached_edge');
-                if (!trace.returnedFromEdge) missing.push('run_returned_from_edge');
+                // If smoke is found early, the truck may stop before reaching the screen edge.
+                // In that case, accept a correct patrol rule by inspecting the code structure.
+                const hasEndEdgeTurnRule = hasIfRuleWithAction('sensor_screen_edge', 'END', 'turn_around');
+                const hasStartEdgeTurnRule = hasIfRuleWithAction('sensor_screen_edge', 'START', 'turn_around');
+                const hasCompletePatrolCode = hasEndEdgeTurnRule && hasStartEdgeTurnRule;
+                if (!hasCompletePatrolCode) {
+                    if (!trace.reachedEdge) missing.push('run_reached_edge');
+                    if (!trace.returnedFromEdge) missing.push('run_returned_from_edge');
+                }
             }
             return missing;
         }
