@@ -8406,6 +8406,7 @@
             { lesson: 7, title: 'תרגיל 4', rules: [['sensor_goal', 'YES', 'action_say', null, 'rule_goal_say']] },
             { lesson: 8, title: 'תרגיל 1', rules: [['sensor_pedestrian', 'YES', 'stop_cars', null, 'rule_pedestrian_stop_cars']] },
             { lesson: 8, title: 'תרגיל 2', rules: [['sensor_cars', 'YES', 'stop_cars', null, 'rule_cars_stop_cars'], ['sensor_cars', 'NO', 'action_traffic_light', 'GREEN', 'rule_no_cars_green_light']] },
+            { lesson: 8, title: 'תרגיל 3', rules: [['sensor_pedestrian', 'YES', 'action_traffic_light', 'GREEN', 'rule_loop_pedestrian_green'], ['sensor_cars', 'YES', 'stop_cars', null, 'rule_loop_cars_stop'], ['sensor_pedestrian', 'YES', 'start_pedestrian', null, 'rule_loop_pedestrian_start'], ['sensor_pedestrian', 'YES', 'action_traffic_light', 'RED', 'rule_loop_pedestrian_red'], ['sensor_pedestrian', 'YES', 'stop_pedestrian', null, 'rule_loop_pedestrian_stop'], ['sensor_cars', 'YES', 'start_cars', null, 'rule_loop_cars_start']] },
             { lesson: 8, title: 'תרגיל 4', rules: [['sensor_cars', 'YES', 'stop_cars', null, 'rule_cars_stop_cars'], ['sensor_cars', 'NO', 'action_traffic_light', 'GREEN', 'rule_no_cars_green_light']] },
             { lesson: 9, title: 'תרגיל 1', rules: [['sensor_people', 'YES', 'action_class_power', 'ON', 'rule_people_power_on']] },
             { lesson: 9, title: 'תרגיל 2', rules: [['sensor_people', 'NO', 'action_class_power', 'OFF', 'rule_no_people_power_off']] },
@@ -8444,6 +8445,20 @@
                     hasForeverRuleWithAction(sensorType, sensorValue, actionType, actionValue)
                 );
                 if (!hasLoopSorting) missing.push('rule_recycle_loop_sorting');
+            }
+            if (currentLesson === 8 && title.includes('תרגיל 3')) {
+                const loopRules = [
+                    ['sensor_pedestrian', 'YES', 'action_traffic_light', 'GREEN'],
+                    ['sensor_cars', 'YES', 'stop_cars', null],
+                    ['sensor_pedestrian', 'YES', 'start_pedestrian', null],
+                    ['sensor_pedestrian', 'YES', 'action_traffic_light', 'RED'],
+                    ['sensor_pedestrian', 'YES', 'stop_pedestrian', null],
+                    ['sensor_cars', 'YES', 'start_cars', null]
+                ];
+                const hasTrafficLoop = loopRules.every(([sensorType, sensorValue, actionType, actionValue]) =>
+                    hasForeverRuleWithAction(sensorType, sensorValue, actionType, actionValue)
+                );
+                if (!hasTrafficLoop) missing.push('rule_traffic_loop_cycle');
             }
             return missing;
         }
@@ -8503,7 +8518,10 @@
             const hasStart = present.has('event_start');
             const hasDisconnected = (workspace?.getTopBlocks(false) || []).some(block => block.type !== 'event_start');
             if (!hasStart && !missing.includes('event_start')) missing.unshift('event_start');
-            if (hasDisconnected) missing.push('connected_program');
+            // Ignore loose/unconnected blocks when the connected program already solves the exercise.
+            // Only mention disconnected blocks if the connected program is still missing required logic;
+            // then the missing code may simply need to be connected to the start block.
+            if (hasDisconnected && missing.length > 0) missing.push('connected_program');
             return { ok: missing.length === 0, missing, exercise };
         }
 
@@ -8517,7 +8535,10 @@
         }
 
         function uniqueExerciseMissingLabels(missing) {
-            return [...new Set((missing || []).map(exerciseMissingLabel))];
+            return [...new Set((missing || [])
+                .map(exerciseMissingLabel)
+                .filter(label => label && !/[a-z]+_[a-z0-9_]+/i.test(label))
+            )];
         }
 
         function exerciseTypeLabel(type) {
@@ -8566,19 +8587,21 @@
                 run_turned: 'הרצה שבה סנסי באמת הסתובב אחרי שזז אחורה',
 
                 'rule_dark_light_on': 'הוסיפו כלל: אם חיישן אור = חשוך → פנס רחוב — הדלק',
-                'rule_bright_light_off': 'הוסיפו כלל: אם חיישן אור = בהיר → פנס רחוב — כבה'
+                'rule_bright_light_off': 'הוסיפו כלל: אם חיישן אור = בהיר → פנס רחוב — כבה',
+                rule_recycle_loop_sorting: 'בתוך לולאת “לנצח”: בדיקת צבע כחול/ירוק/צהוב ומיון כל צבע לפח המתאים',
+                rule_traffic_loop_cycle: 'בתוך לולאת “לנצח”: מחזור רמזור מלא עם ירוק/אדום, עצירת מכוניות, המשך הולך רגל, עצירת הולך רגל והמשך מכוניות'
             };
             if (valueLabels[type] || labels[type]) return valueLabels[type] || labels[type];
             if (String(type).startsWith('rule_')) {
                 const rule = strongExerciseRules.flatMap(entry => entry.rules).find(item => item[4] === type);
                 if (rule) {
                     const [sensorType, sensorValue, actionType, actionValue] = rule;
-                    const sensorLabel = valueLabels[`${sensorType}:${sensorValue}`] || labels[sensorType] || sensorType;
-                    const actionLabel = actionValue == null ? (labels[actionType] || actionType) : (valueLabels[`${actionType}:${actionValue}`] || labels[actionType] || actionType);
+                    const sensorLabel = valueLabels[`${sensorType}:${sensorValue}`] || labels[sensorType] || 'החיישן המתאים';
+                    const actionLabel = actionValue == null ? (labels[actionType] || 'הפעולה המתאימה') : (valueLabels[`${actionType}:${actionValue}`] || labels[actionType] || 'הפעולה המתאימה');
                     return `ודאו שבתוך התנאי ${sensorLabel} נמצאת הפעולה ${actionLabel}.`;
                 }
             }
-            return type;
+            return 'חסר חלק בתוכנית. בדקו את הוראות התרגיל והשלימו את הבלוקים המתאימים.';
         }
 
         function showExerciseLockMessage(message) {
