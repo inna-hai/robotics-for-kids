@@ -1583,7 +1583,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260720-lesson11-13-merge-v1"></script>
+    <script src="js/lessons-data.js?v=20260802-lesson3-solutions-v1"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -5441,37 +5441,37 @@
             1: {
                 movement: [],
                 sensors: ['sensor_light'],
-                controls: ['control_if'],
+                controls: ['control_if', 'control_forever', 'stop_program'],
                 actions: ['action_street_light', 'action_say']
             },
             2: {
                 movement: [],
                 sensors: ['sensor_sound'],
-                controls: ['control_if', 'stop_program'],
+                controls: ['control_if', 'control_forever', 'stop_program'],
                 actions: ['action_say', 'action_sound']
             },
             3: {
-                movement: ['move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
+                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
                 sensors: ['sensor_touch'],
-                controls: ['control_if', 'stop_program'],
+                controls: ['control_if', 'control_forever', 'stop_program'],
                 actions: ['action_say']
             },
             4: {
                 movement: [],
                 sensors: ['sensor_smell'],
-                controls: ['control_if', 'stop_program'],
+                controls: ['control_if', 'control_forever', 'stop_program'],
                 actions: ['action_say', 'action_sound']
             },
             5: {
                 movement: [],
                 sensors: ['sensor_temperature'],
-                controls: ['control_if'],
+                controls: ['control_if', 'control_forever', 'stop_program'],
                 actions: ['action_say', 'action_fan']
             },
             6: {
                 movement: [],
                 sensors: ['sensor_color'],
-                controls: ['control_if'],
+                controls: ['control_if', 'control_forever', 'stop_program'],
                 actions: ['action_recycle_bin', 'action_say']
             },
             7: {
@@ -5495,13 +5495,13 @@
             10: {
                 movement: [],
                 sensors: ['sensor_soil', 'sensor_temperature', 'sensor_water_status'],
-                controls: ['control_if', 'control_wait', 'stop_program'],
+                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
                 actions: ['action_water', 'action_say']
             },
             11: {
                 movement: [],
                 sensors: ['sensor_armed', 'sensor_light', 'sensor_people', 'sensor_safe_touch', 'sensor_door'],
-                controls: ['control_if', 'control_wait', 'stop_program'],
+                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
                 actions: ['action_say', 'action_security_mode', 'action_alarm']
             },
             12: {
@@ -5553,7 +5553,7 @@
                 contents: [
                     { kind: 'category', name: '🚩 התחלה', colour: '#FFAB19', contents: [{ kind: 'block', type: 'event_start' }] },
                     { kind: 'category', name: '👁️ חושים', colour: '#40BF4A', contents: ['sensor_soil', 'sensor_temperature'].map(toolboxBlock) },
-                    { kind: 'category', name: '🔁 בקרה', colour: '#FF8C1A', contents: ['control_if', 'control_wait', 'stop_program'].map(toolboxBlock) },
+                    { kind: 'category', name: '🔁 בקרה', colour: '#FF8C1A', contents: ['control_if', 'control_forever', 'control_wait', 'stop_program'].map(toolboxBlock) },
                     { kind: 'category', name: '💬 דיבור/פעולות', colour: '#9966FF', contents: ['action_say', 'action_water'].map(toolboxBlock) }
                 ]
             };
@@ -6478,7 +6478,34 @@
         // ===== CODE EXECUTION =====
         let debugMode = false;
         let debugStepCounter = 0;
+        let silentAutoDebug = false;
+        let silentDebugMessages = [];
         let activeExerciseIndex = 0;
+        let currentRunTrace = null;
+
+        function createRunTrace() {
+            return {
+                lesson: currentLesson,
+                exerciseIndex: activeExerciseIndex,
+                startX: robot.x,
+                startY: robot.y,
+                startAngle: robot.angle,
+                blockTypes: [],
+                stoppedVehicle: false,
+                movedBackward: false,
+                turned: false
+            };
+        }
+
+        function traceRunBlock(block) {
+            if (!currentRunTrace || !block) return;
+            currentRunTrace.blockTypes.push(block.type);
+        }
+
+        function traceRunEffect(effect) {
+            if (!currentRunTrace) return;
+            currentRunTrace[effect] = true;
+        }
 
         function hidePrecheckPanel() {
             document.getElementById('precheckPanel')?.classList.add('hidden-by-user');
@@ -6489,12 +6516,26 @@
         }
 
         function setDebugStatus(message) {
+            if (silentAutoDebug && isRunning) {
+                if (message) silentDebugMessages.push(message);
+                return;
+            }
             const panel = document.getElementById('debugPanel');
             const status = document.getElementById('debugStatus');
             const button = document.getElementById('debugButton');
             if (panel) panel.classList.toggle('active', debugMode || Boolean(message));
             if (button) button.classList.toggle('active', debugMode);
             if (status) status.textContent = message || 'ההרצה עדיין לא התחילה.';
+        }
+
+        function showSilentDebugSummary(prefix = 'ההרצה הסתיימה') {
+            silentAutoDebug = false;
+            const messages = silentDebugMessages.slice();
+            silentDebugMessages = [];
+            const summary = messages.length
+                ? `${prefix} — Debug אוטומטי: ${messages.join(' · ')}`
+                : `${prefix} — Debug אוטומטי לא מצא צעדים להצגה.`;
+            setDebugStatus(summary);
         }
 
         function blockDebugLabel(block) {
@@ -6508,9 +6549,11 @@
         async function debugBeforeBlock(block) {
             if (!debugMode || !block) return;
             debugStepCounter += 1;
-            try { workspace?.highlightBlock?.(block.id); } catch (error) {}
+            if (!silentAutoDebug) {
+                try { workspace?.highlightBlock?.(block.id); } catch (error) {}
+            }
             setDebugStatus(`צעד ${debugStepCounter}: ${blockDebugLabel(block)}`);
-            await sleep(650);
+            if (!silentAutoDebug) await sleep(650);
         }
 
         function debugAfterRun() {
@@ -6601,6 +6644,8 @@
                 await sleep(120);
             }
             debugMode = true;
+            silentAutoDebug = false;
+            silentDebugMessages = [];
             debugStepCounter = 0;
             setDebugStatus('מריצים לאט: נראה כל צעד בתוכנית.');
             await runCode();
@@ -6608,12 +6653,15 @@
 
         async function runCode() {
             if (isRunning) return;
+            currentRunTrace = createRunTrace();
             const autoDebugRun = !debugMode;
             if (autoDebugRun) {
                 debugMode = true;
+                silentAutoDebug = true;
+                silentDebugMessages = [];
                 debugStepCounter = 0;
-                setDebugStatus('מריצים לאט: נראה כל צעד בתוכנית.');
             }
+            const runStartedInDebugMode = debugMode;
             isRunning = true;
             robot.vehicleStopped = false;
             robot.trafficCarsStopped = false;
@@ -6626,7 +6674,11 @@
                 }
             }
             isRunning = false;
-            if (debugMode) debugAfterRun();
+            if (autoDebugRun) {
+                debugMode = false;
+                showSilentDebugSummary('ההרצה הסתיימה — עכשיו בודקים אם התרגיל הושלם');
+            } else if (runStartedInDebugMode) debugAfterRun();
+            else setDebugStatus('ההרצה הסתיימה — עכשיו בודקים אם התרגיל הושלם.');
             recordExerciseRunState();
             completeActiveExerciseIfReady();
         }
@@ -6634,6 +6686,8 @@
         function stopCode() {
             isRunning = false;
             debugMode = false;
+            silentAutoDebug = false;
+            silentDebugMessages = [];
             robot.vehicleStopped = true;
             robot.speaking = '';
             try { workspace?.highlightBlock?.(null); } catch (error) {}
@@ -6643,6 +6697,7 @@
         async function runBlock(block) {
             if (!block || !isRunning) return;
             await debugBeforeBlock(block);
+            traceRunBlock(block);
 
             switch (block.type) {
                 case 'move_forward':
@@ -6684,6 +6739,7 @@
                         robot.speaking = '';
                         robot.x = nextX;
                         robot.y = nextY;
+                        traceRunEffect('movedBackward');
                     }
                     robot.x = Math.max(40, Math.min(canvas.width - 40, robot.x));
                     robot.y = Math.max(40, Math.min(canvas.height - 40, robot.y));
@@ -6702,26 +6758,31 @@
 
                 case 'turn_right_small':
                     robot.angle += 15;
+                    traceRunEffect('turned');
                     await sleep(180);
                     break;
 
                 case 'turn_left_small':
                     robot.angle -= 15;
+                    traceRunEffect('turned');
                     await sleep(180);
                     break;
 
                 case 'turn_right':
                     robot.angle += 90;
+                    traceRunEffect('turned');
                     await sleep(300);
                     break;
 
                 case 'turn_left':
                     robot.angle -= 90;
+                    traceRunEffect('turned');
                     await sleep(300);
                     break;
 
                 case 'turn_around':
                     robot.angle += 180;
+                    traceRunEffect('turned');
                     robot.speaking = 'הסתובבתי — חוזר לסיור';
                     await sleep(500);
                     robot.speaking = '';
@@ -6729,6 +6790,7 @@
 
                 case 'route_turn':
                     robot.angle += block.getFieldValue('DIR') === 'RIGHT' ? 90 : -90;
+                    traceRunEffect('turned');
                     robot.speaking = isLesson14RescueContext()
                         ? (block.getFieldValue('DIR') === 'RIGHT' ? 'עוקף ימינה בנתיב בטוח' : 'עוקף שמאלה בנתיב בטוח')
                         : (block.getFieldValue('DIR') === 'RIGHT' ? 'סובב ימינה לפי המסלול' : 'סובב שמאלה לפי המסלול');
@@ -6739,6 +6801,7 @@
                 case 'stop_vehicle':
                 case 'stop':
                     robot.vehicleStopped = true;
+                    traceRunEffect('stoppedVehicle');
                     if (currentLesson === 8) robot.trafficCarsStopped = true;
                     robot.speaking = currentLesson === 3 ? 'הרכב עצר!' : 'עצרתי תנועה';
                     await sleep(500);
@@ -6779,7 +6842,7 @@
                     const conditionPassed = evalCondition(block.getInputTargetBlock('COND'));
                     if (debugMode) {
                         setDebugStatus(conditionPassed ? 'התנאי נכון — נכנסים לבלוקים שבתוכו.' : 'התנאי לא נכון — מדלגים על הבלוקים שבתוכו.');
-                        await sleep(650);
+                        if (!silentAutoDebug) await sleep(650);
                     }
                     if (conditionPassed) {
                         await runBlock(block.getInputTargetBlock('DO'));
@@ -6792,12 +6855,12 @@
                     while (isRunning) {
                         if (debugMode) {
                             debugLoopCount += 1;
-                            setDebugStatus(`לולאה חוזרת — סיבוב ${debugLoopCount} מתוך 3 בבדיקה.`);
-                            await sleep(650);
+                            setDebugStatus(silentAutoDebug ? `לולאה חוזרת — סיבוב ${debugLoopCount}.` : `לולאה חוזרת — סיבוב ${debugLoopCount} מתוך 3 בבדיקה.`);
+                            if (!silentAutoDebug) await sleep(650);
                         }
                         await runBlock(block.getInputTargetBlock('DO'));
-                        await sleep(debugMode ? 350 : 100);
-                        if (debugMode && debugLoopCount >= 3) {
+                        await sleep(debugMode && !silentAutoDebug ? 350 : 100);
+                        if (debugMode && !silentAutoDebug && debugLoopCount >= 3) {
                             setDebugStatus('עצירה לימודית: בדיקה מריצה לולאה 3 פעמים כדי שלא ניתקע.');
                             await sleep(900);
                             break;
@@ -8067,6 +8130,24 @@
             return missing;
         }
 
+        function validateRunResultForExercise(exercise) {
+            const title = normalizeHebrew(exercise?.title || '');
+            const trace = currentRunTrace;
+            if (currentLesson !== 3 || !trace || trace.lesson !== 3 || trace.exerciseIndex !== activeExerciseIndex) return [];
+            const missing = [];
+            if (title.includes('תרגיל 1') && !trace.stoppedVehicle) missing.push('run_vehicle_stopped');
+            if (title.includes('התרחקות בטוחה')) {
+                if (!trace.stoppedVehicle) missing.push('run_vehicle_stopped');
+                if (!trace.movedBackward) missing.push('run_moved_backward');
+            }
+            if (title.includes('עקיפה')) {
+                if (!trace.stoppedVehicle) missing.push('run_vehicle_stopped');
+                if (!trace.movedBackward) missing.push('run_moved_backward');
+                if (!trace.turned) missing.push('run_turned');
+            }
+            return missing;
+        }
+
         function validateActiveExercise() {
             const cityLesson = window.getSensiLesson ? window.getSensiLesson(currentLesson) : null;
             const exercise = cityLesson?.programmingExercises?.[activeExerciseIndex];
@@ -8085,6 +8166,7 @@
                 if (!runStates.includes(state)) missing.push(`test_state:${state}`);
             }
             missing.push(...validateCustomExerciseRules(exercise));
+            missing.push(...validateRunResultForExercise(exercise));
             const hasStart = present.has('event_start');
             const hasDisconnected = (workspace?.getTopBlocks(false) || []).some(block => block.type !== 'event_start');
             if (!hasStart && !missing.includes('event_start')) missing.unshift('event_start');
@@ -8137,6 +8219,9 @@
                 'action_security_mode:ARM': 'שמירה עם הפעולה “דרוך”', 'action_security_mode:DISARM': 'שמירה עם הפעולה “כבוי”',
                 'action_recycle_bin:BLUE': 'מיון לפח כחול', 'action_recycle_bin:GREEN': 'מיון לפח ירוק', 'action_recycle_bin:YELLOW': 'מיון לפח צהוב',
                 'test_state:DARK': 'הרצה אחת כשהעיר חשוכה', 'test_state:BRIGHT': 'הרצה אחת כשהאור דלוק/בהיר',
+                run_vehicle_stopped: 'הרצה שבה סנסי באמת עצר לפני הקיר',
+                run_moved_backward: 'הרצה שבה סנסי באמת זז אחורה אחרי העצירה',
+                run_turned: 'הרצה שבה סנסי באמת הסתובב אחרי שזז אחורה',
                 'rule_dark_light_on': 'הוסיפו כלל: אם חיישן אור = חשוך → פנס רחוב — הדלק',
                 'rule_bright_light_off': 'הוסיפו כלל: אם חיישן אור = בהיר → פנס רחוב — כבה'
             };
