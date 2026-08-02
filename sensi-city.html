@@ -1583,7 +1583,7 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260802-lesson4-smoke-v4"></script>
+    <script src="js/lessons-data.js?v=20260802-lesson4-smoke-v10"></script>
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -4764,6 +4764,33 @@
                 ctx.stroke();
                 ctx.setLineDash([]);
 
+                // Patrol edges for exercise 4: make the screen ends visible to children.
+                const edgeTop = canvas.height * 0.56;
+                const edgeBottom = canvas.height * 0.84;
+                ctx.save();
+                ctx.strokeStyle = 'rgba(220, 38, 38, 0.55)';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.86)';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([7, 7]);
+                [40, canvas.width - 40].forEach((edgeX) => {
+                    ctx.beginPath();
+                    ctx.moveTo(edgeX, edgeTop);
+                    ctx.lineTo(edgeX, edgeBottom);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    ctx.beginPath();
+                    ctx.roundRect(edgeX - 38, edgeTop - 28, 76, 24, 12);
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.font = 'bold 12px Rubik';
+                    ctx.fillStyle = '#b91c1c';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('קצה מסך', edgeX, edgeTop - 16);
+                    ctx.setLineDash([7, 7]);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.86)';
+                });
+                ctx.restore();
+
                 ctx.font = 'bold 14px Rubik';
                 ctx.fillStyle = canSenseSmoke() ? '#dc2626' : '#475569';
                 ctx.textAlign = 'center';
@@ -5068,7 +5095,8 @@
             // Robot (also draggable)
             ctx.save();
             ctx.translate(robot.x, robot.y);
-            ctx.rotate(robot.angle * Math.PI / 180);
+            const visualRobotAngle = currentLesson === 4 ? 0 : robot.angle;
+            ctx.rotate(visualRobotAngle * Math.PI / 180);
 
             // Robot shadow
             ctx.beginPath();
@@ -5128,7 +5156,9 @@
                 ctx.font = '18px Arial';
                 ctx.fillText('🤖', -11, 1);
             } else if (currentLesson === 4) {
-                // Sensi inside a fire truck.
+                // Sensi inside a fire truck. Keep the truck upright; flip horizontally when it turns around.
+                const lesson4FacingLeft = Math.cos(robot.angle * Math.PI / 180) < 0;
+                if (lesson4FacingLeft) ctx.scale(-1, 1);
                 const flashOn = Date.now() % 600 < 300;
                 ctx.fillStyle = '#dc2626';
                 ctx.strokeStyle = '#7f1d1d';
@@ -5458,8 +5488,8 @@
                 actions: ['action_say']
             },
             4: {
-                movement: ['move_forward', 'stop_vehicle'],
-                sensors: ['sensor_smell'],
+                movement: ['move_forward', 'turn_around', 'stop_vehicle'],
+                sensors: ['sensor_smell', 'sensor_screen_edge'],
                 controls: ['control_if', 'control_forever', 'stop_program'],
                 actions: ['action_say', 'action_sound']
             },
@@ -6058,6 +6088,16 @@
                 }
             };
 
+            Blockly.Blocks['sensor_screen_edge'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('🧱 הגיע ל')
+                        .appendField(new Blockly.FieldDropdown([['סוף המסך ➡️', 'END'], ['תחילת המסך ⬅️', 'START']]), 'VAL');
+                    this.setOutput(true, 'Boolean');
+                    this.setColour('#40BF4A');
+                }
+            };
+
             Blockly.Blocks['sensor_temperature'] = {
                 init: function() {
                     this.appendDummyInput()
@@ -6494,7 +6534,9 @@
                 blockTypes: [],
                 stoppedVehicle: false,
                 movedBackward: false,
-                turned: false
+                turned: false,
+                reachedEdge: false,
+                returnedFromEdge: false
             };
         }
 
@@ -6722,8 +6764,14 @@
                         robot.x = nextX;
                         robot.y = nextY;
                     }
-                    robot.x = Math.max(40, Math.min(canvas.width - 40, robot.x));
-                    robot.y = Math.max(40, Math.min(canvas.height - 40, robot.y));
+                    const clampedForwardX = Math.max(40, Math.min(canvas.width - 40, robot.x));
+                    const clampedForwardY = Math.max(40, Math.min(canvas.height - 40, robot.y));
+                    if (currentLesson === 4 && (clampedForwardX !== robot.x || clampedForwardY !== robot.y || clampedForwardX <= 40 || clampedForwardX >= canvas.width - 40)) {
+                        traceRunEffect('reachedEdge');
+                        robot.speaking = 'הגעתי לקצה — עכשיו חוזרים אחורה!';
+                    }
+                    robot.x = clampedForwardX;
+                    robot.y = clampedForwardY;
                     await sleep(400);
                     break;
 
@@ -6743,6 +6791,7 @@
                         robot.x = nextX;
                         robot.y = nextY;
                         traceRunEffect('movedBackward');
+                        
                     }
                     robot.x = Math.max(40, Math.min(canvas.width - 40, robot.x));
                     robot.y = Math.max(40, Math.min(canvas.height - 40, robot.y));
@@ -6786,7 +6835,8 @@
                 case 'turn_around':
                     robot.angle += 180;
                     traceRunEffect('turned');
-                    robot.speaking = 'הסתובבתי — חוזר לסיור';
+                    if (currentLesson === 4 && currentRunTrace?.reachedEdge) traceRunEffect('returnedFromEdge');
+                    robot.speaking = currentLesson === 4 ? 'הסתובבתי — ממשיך לסייר!' : 'הסתובבתי — חוזר לסיור';
                     await sleep(500);
                     robot.speaking = '';
                     break;
@@ -7161,6 +7211,12 @@
             return environment.smoke && distanceToObject(objects.smoke) < 150;
         }
 
+        function canSenseScreenEdge(edge) {
+            if (edge === 'START') return robot.x <= 44;
+            if (edge === 'END') return robot.x >= canvas.width - 44;
+            return false;
+        }
+
         function getTemperatureLevel() {
             return environment.temperatureHot ? 'HOT' : 'OK';
         }
@@ -7451,6 +7507,8 @@
                 }
                 case 'sensor_smell':
                     return val === 'YES' ? canSenseSmoke() : !canSenseSmoke();
+                case 'sensor_screen_edge':
+                    return canSenseScreenEdge(val);
                 case 'sensor_temperature':
                     return getTemperatureLevel() === val;
                 case 'sensor_color':
@@ -7928,7 +7986,7 @@
             ['חיישן אור', 'sensor_light'], ['חשוך', 'sensor_light'], ['בהיר', 'sensor_light'],
             ['חיישן קול', 'sensor_sound'], ['עוצמת רעש', 'sensor_sound'], ['רעש', 'sensor_sound'], ['שקט', 'sensor_sound'],
             ['נוגע בקיר', 'sensor_touch'], ['קיר', 'sensor_touch'],
-            ['מכשול', 'sensor_obstacle'], ['עשן', 'sensor_smell'], ['חום', 'sensor_temperature'], ['טמפרטורה', 'sensor_temperature'],
+            ['מכשול', 'sensor_obstacle'], ['עשן', 'sensor_smell'], ['קצה מסך', 'sensor_screen_edge'], ['סוף המסך', 'sensor_screen_edge'], ['תחילת המסך', 'sensor_screen_edge'], ['חום', 'sensor_temperature'], ['טמפרטורה', 'sensor_temperature'],
             ['צבע', 'sensor_color'], ['חיישן קו', 'sensor_line'], ['הקו נמצא', 'sensor_line_side'], ['סוף גדר', 'sensor_goal'], ['יעד', 'sensor_goal'],
             ['הולך רגל', 'sensor_pedestrian'], ['מכוניות', 'sensor_cars'], ['אנשים', 'sensor_people'], ['תלמידים', 'sensor_people'], ['מבקרים', 'sensor_people'],
             ['אדמה', 'sensor_soil'], ['מצב המים', 'sensor_water_status'], ['מערכת שמירה', 'sensor_armed'], ['שמירה דרוכה', 'sensor_armed'],
@@ -8012,6 +8070,8 @@
             { type: 'sensor_touch', value: 'YES', hints: ['נוגע בקיר', 'קיר קרוב'] },
             { type: 'sensor_obstacle', value: 'YES', hints: ['מכשול בדרך', 'יש מכשול', 'מכשול'] },
             { type: 'sensor_smell', value: 'YES', hints: ['מריח עשן', 'יש עשן', 'עשן'] },
+            { type: 'sensor_screen_edge', value: 'END', hints: ['הגיע ל סוף המסך', 'סוף המסך'] },
+            { type: 'sensor_screen_edge', value: 'START', hints: ['הגיע ל תחילת המסך', 'תחילת המסך'] },
             { type: 'sensor_temperature', value: 'HOT', hints: ['טמפרטורה = חם מדי', 'חום = מסוכן', 'חם מדי', 'יום חם'] },
             { type: 'sensor_temperature', value: 'OK', hints: ['טמפרטורה = נעים', 'יום נעים'] },
             { type: 'sensor_color', value: 'BLUE', hints: ['צבע החפץ = כחול', 'חפץ כחול', 'כחול'] },
@@ -8104,7 +8164,7 @@
             { lesson: 4, title: 'תרגיל 1', rules: [['sensor_smell', 'YES', 'action_say', null, 'rule_smoke_say']] },
             { lesson: 4, title: 'תרגיל 2', rules: [['sensor_smell', 'YES', 'action_sound', 'ALARM', 'rule_smoke_alarm_sound']] },
             { lesson: 4, title: 'תרגיל 3', rules: [['sensor_smell', 'YES', 'stop_vehicle', null, 'rule_smoke_stop_vehicle'], ['sensor_smell', 'YES', 'action_sound', 'ALARM', 'rule_smoke_alarm_sound']] },
-            { lesson: 4, title: 'תרגיל 4', rules: [['sensor_smell', 'YES', 'stop_program', null, 'rule_smoke_stop']] },
+            { lesson: 4, title: 'תרגיל 4', rules: [['sensor_smell', 'YES', 'stop_vehicle', null, 'rule_smoke_stop_vehicle'], ['sensor_smell', 'YES', 'action_sound', 'ALARM', 'rule_smoke_alarm_sound'], ['sensor_screen_edge', 'END', 'turn_around', null, 'rule_edge_turn_around'], ['sensor_screen_edge', 'START', 'turn_around', null, 'rule_start_edge_turn_around']] },
             { lesson: 5, title: 'תרגיל 1', rules: [['sensor_temperature', 'HOT', 'action_fan', 'ON', 'rule_hot_fan_on']] },
             { lesson: 5, title: 'תרגיל 2', rules: [['sensor_temperature', 'HOT', 'action_fan', 'ON', 'rule_hot_fan_on'], ['sensor_temperature', 'HOT', 'action_say', null, 'rule_hot_say']] },
             { lesson: 5, title: 'תרגיל 4', rules: [['sensor_temperature', 'HOT', 'action_fan', 'ON', 'rule_hot_fan_on'], ['sensor_temperature', 'OK', 'action_fan', 'OFF', 'rule_ok_fan_off']] },
@@ -8149,17 +8209,23 @@
         function validateRunResultForExercise(exercise) {
             const title = normalizeHebrew(exercise?.title || '');
             const trace = currentRunTrace;
-            if (currentLesson !== 3 || !trace || trace.lesson !== 3 || trace.exerciseIndex !== activeExerciseIndex) return [];
+            if (!trace || trace.exerciseIndex !== activeExerciseIndex) return [];
             const missing = [];
-            if (title.includes('תרגיל 1') && !trace.stoppedVehicle) missing.push('run_vehicle_stopped');
-            if (title.includes('התרחקות בטוחה')) {
-                if (!trace.stoppedVehicle) missing.push('run_vehicle_stopped');
-                if (!trace.movedBackward) missing.push('run_moved_backward');
+            if (currentLesson === 3 && trace.lesson === 3) {
+                if (title.includes('תרגיל 1') && !trace.stoppedVehicle) missing.push('run_vehicle_stopped');
+                if (title.includes('התרחקות בטוחה')) {
+                    if (!trace.stoppedVehicle) missing.push('run_vehicle_stopped');
+                    if (!trace.movedBackward) missing.push('run_moved_backward');
+                }
+                if (title.includes('עקיפה')) {
+                    if (!trace.stoppedVehicle) missing.push('run_vehicle_stopped');
+                    if (!trace.movedBackward) missing.push('run_moved_backward');
+                    if (!trace.turned) missing.push('run_turned');
+                }
             }
-            if (title.includes('עקיפה')) {
-                if (!trace.stoppedVehicle) missing.push('run_vehicle_stopped');
-                if (!trace.movedBackward) missing.push('run_moved_backward');
-                if (!trace.turned) missing.push('run_turned');
+            if (currentLesson === 4 && trace.lesson === 4 && title.includes('הלוך ושוב')) {
+                if (!trace.reachedEdge) missing.push('run_reached_edge');
+                if (!trace.returnedFromEdge) missing.push('run_returned_from_edge');
             }
             return missing;
         }
@@ -8204,7 +8270,7 @@
         function exerciseTypeLabel(type) {
             const labels = {
                 event_start: 'בלוק התחלה', control_if: 'תנאי אם/אז', control_forever: 'לולאה', control_wait: 'חכה', stop_program: 'עצור תוכנית', connected_program: 'חיבור כל הבלוקים להתחלה',
-                sensor_light: 'חיישן אור', sensor_sound: 'חיישן קול/רעש', sensor_touch: 'חיישן קיר/מגע', sensor_obstacle: 'חיישן מכשול', sensor_smell: 'חיישן עשן', sensor_temperature: 'חיישן טמפרטורה', sensor_color: 'חיישן צבע', sensor_line: 'חיישן קו', sensor_line_side: 'חיישן צד הקו', sensor_goal: 'חיישן יעד/סוף', sensor_pedestrian: 'חיישן הולך רגל', sensor_cars: 'חיישן מכוניות', sensor_people: 'חיישן אנשים', sensor_soil: 'חיישן אדמה', sensor_water_status: 'מד מצב מים', sensor_armed: 'חיישן מצב שמירה', sensor_safe_touch: 'חיישן כספת', sensor_door: 'חיישן דלת', sensor_burglar: 'חיישן גנב', sensor_homeowner: 'חיישן בעל הבית', sensor_motion: 'חיישן תנועה',
+                sensor_light: 'חיישן אור', sensor_sound: 'חיישן קול/רעש', sensor_touch: 'חיישן קיר/מגע', sensor_obstacle: 'חיישן מכשול', sensor_smell: 'חיישן עשן', sensor_screen_edge: 'בודק קצה מסך', sensor_temperature: 'חיישן טמפרטורה', sensor_color: 'חיישן צבע', sensor_line: 'חיישן קו', sensor_line_side: 'חיישן צד הקו', sensor_goal: 'חיישן יעד/סוף', sensor_pedestrian: 'חיישן הולך רגל', sensor_cars: 'חיישן מכוניות', sensor_people: 'חיישן אנשים', sensor_soil: 'חיישן אדמה', sensor_water_status: 'מד מצב מים', sensor_armed: 'חיישן מצב שמירה', sensor_safe_touch: 'חיישן כספת', sensor_door: 'חיישן דלת', sensor_burglar: 'חיישן גנב', sensor_homeowner: 'חיישן בעל הבית', sensor_motion: 'חיישן תנועה',
                 move_forward: 'תנועה קדימה', move_backward: 'תנועה אחורה', turn_right: 'סיבוב ימינה', turn_left: 'סיבוב שמאלה', turn_right_small: 'סיבוב קטן ימינה', turn_left_small: 'סיבוב קטן שמאלה', turn_around: 'הסתובב 180°', stop_vehicle: 'עצור רכב', stop_cars: 'עצור מכוניות', start_cars: 'המשך מכוניות', stop_pedestrian: 'עצור הולך רגל', start_pedestrian: 'המשך הולך רגל',
                 action_street_light: 'פעולת פנס', action_traffic_light: 'פעולת רמזור', action_class_power: 'חשמל כיתה', action_sound: 'צליל', action_alarm: 'אזעקה', action_security_mode: 'דריכת שמירה', action_fan: 'מאוורר', action_ac: 'מזגן', action_water: 'טפטפות', action_recycle_bin: 'מיון לפח', action_say: 'אמירה/הודעה', action_safe_route: 'דרך בטוחה', action_delivery_package: 'הבא משלוח', action_drop_delivery: 'הנח משלוח'
             };
@@ -8217,7 +8283,7 @@
                 'sensor_line_side:RIGHT': 'חיישן צד קו עם הערך “ימין”', 'sensor_line_side:LEFT': 'חיישן צד קו עם הערך “שמאל”',
                 'sensor_water_status:DRY': 'מד מצב מים עם הערך “יבש”', 'sensor_water_status:OK': 'מד מצב מים עם הערך “תקין”', 'sensor_water_status:EXCESS': 'מד מצב מים עם הערך “עודף מים”',
                 'sensor_touch:YES': 'חיישן קיר/מגע עם הערך “יש קיר”', 'sensor_obstacle:YES': 'חיישן מכשול עם הערך “יש מכשול”',
-                'sensor_smell:YES': 'חיישן עשן עם הערך “יש עשן”', 'sensor_goal:YES': 'חיישן יעד/סוף עם הערך “כן”',
+                'sensor_smell:YES': 'חיישן עשן עם הערך “יש עשן”', 'sensor_screen_edge:END': 'חיישן קצה מסך עם הערך “סוף המסך”', 'sensor_screen_edge:START': 'חיישן קצה מסך עם הערך “תחילת המסך”', 'sensor_goal:YES': 'חיישן יעד/סוף עם הערך “כן”',
                 'sensor_pedestrian:YES': 'חיישן הולך רגל עם הערך “יש הולך רגל”', 'sensor_cars:YES': 'חיישן מכוניות עם הערך “יש מכוניות”',
                 'sensor_people:YES': 'חיישן אנשים עם הערך “יש/יותר מדי”', 'sensor_people:NO': 'חיישן אנשים עם הערך “אין”',
                 'sensor_soil:DRY': 'חיישן אדמה עם הערך “יבשה”', 'sensor_armed:YES': 'חיישן שמירה עם הערך “דרוכה”',
