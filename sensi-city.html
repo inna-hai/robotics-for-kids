@@ -1227,6 +1227,27 @@
         .exercise-detail-card ul { margin: .35rem 1.15rem .55rem 0; padding: 0; line-height: 1.55; }
         .exercise-detail-card li { margin: .18rem 0; }
         .exercise-detail-card .detail-label { color: #0f172a; font-weight: 900; }
+        .solution-toggle {
+            margin: .6rem 0 .45rem;
+            border: 2px dashed #c4b5fd;
+            border-radius: .8rem;
+            background: #faf5ff;
+            overflow: hidden;
+        }
+        .solution-toggle summary {
+            cursor: pointer;
+            padding: .55rem .7rem;
+            color: #5b21b6;
+            font-weight: 900;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+        }
+        .solution-toggle summary::-webkit-details-marker { display: none; }
+        .solution-toggle summary::before { content: '◀'; font-size: .85rem; transition: transform .18s ease; }
+        .solution-toggle[open] summary::before { transform: rotate(-90deg); }
+        .solution-toggle-content { padding: 0 .9rem .75rem; }
 
         .tip-box {
             background: linear-gradient(135deg, #FFF3CD, #FFEAA7);
@@ -8519,8 +8540,8 @@
             { lesson: 8, title: 'תרגיל 4', rules: [['sensor_cars', 'YES', 'stop_cars', null, 'rule_cars_stop_cars'], ['sensor_cars', 'NO', 'action_traffic_light', 'GREEN', 'rule_no_cars_green_light']] },
             { lesson: 9, title: 'תרגיל 1', rules: [['sensor_people', 'YES', 'action_class_power', 'ON', 'rule_people_power_on'], ['sensor_people', 'YES', 'action_ac', 'ON', 'rule_people_ac_on']] },
             { lesson: 9, title: 'תרגיל 2', rules: [['sensor_people', 'NO', 'action_class_power', 'OFF', 'rule_no_people_power_off'], ['sensor_people', 'NO', 'action_ac', 'OFF', 'rule_no_people_ac_off']] },
-            { lesson: 10, title: 'תרגיל 1', rules: [['sensor_water_status', 'DRY', 'action_say', null, 'rule_dry_water_say']] },
-            { lesson: 10, title: 'תרגיל 2', rules: [['sensor_water_status', 'DRY', 'action_water', 'ON', 'rule_dry_water_on'], ['sensor_water_status', 'DRY', 'action_water', 'OFF', 'rule_dry_water_off']] },
+            { lesson: 10, title: 'תרגיל 1', rules: [] },
+            { lesson: 10, title: 'תרגיל 2', rules: [] },
             { lesson: 10, title: 'תרגיל 4', rules: [['sensor_water_status', 'EXCESS', 'action_water', 'OFF', 'rule_excess_water_off']] },
             { lesson: 11, title: 'תרגיל 1', rules: [['sensor_light', 'DARK', 'action_security_mode', 'ARM', 'rule_dark_security_arm']] },
             { lesson: 11, title: 'תרגיל 2', rules: [['sensor_people', 'YES', 'action_security_mode', 'ARM', 'rule_people_security_arm'], ['sensor_door', 'YES', 'action_security_mode', 'ARM', 'rule_door_security_arm']] },
@@ -8567,6 +8588,19 @@
                     hasForeverRuleWithAction(sensorType, sensorValue, actionType, actionValue)
                 );
                 if (!hasTrafficLoop) missing.push('rule_traffic_loop_cycle');
+            }
+            if (currentLesson === 10 && title.includes('תרגיל 1')) {
+                const hasDryWaterSay = hasIfRuleWithAction('sensor_water_status', 'DRY', 'action_say');
+                const hasDrySoilSay = hasIfRuleWithAction('sensor_soil', 'DRY', 'action_say');
+                if (!hasDryWaterSay && !hasDrySoilSay) missing.push('rule_dry_garden_say_either_sensor');
+            }
+            if (currentLesson === 10 && title.includes('תרגיל 2')) {
+                const hasDryWaterOpen = hasIfRuleWithAction('sensor_water_status', 'DRY', 'action_water', 'ON');
+                const hasDryWaterClose = hasIfRuleWithAction('sensor_water_status', 'DRY', 'action_water', 'OFF');
+                const hasDrySoilOpen = hasIfRuleWithAction('sensor_soil', 'DRY', 'action_water', 'ON');
+                const hasDrySoilClose = hasIfRuleWithAction('sensor_soil', 'DRY', 'action_water', 'OFF');
+                if (!(hasDryWaterOpen || hasDrySoilOpen)) missing.push('rule_dry_garden_water_on_either_sensor');
+                if (!(hasDryWaterClose || hasDrySoilClose)) missing.push('rule_dry_garden_water_off_either_sensor');
             }
             if (currentLesson === 9 && title.includes('תרגיל 3')) {
                 const presenceRulesBeforeLoop = [
@@ -8621,7 +8655,7 @@
             if (!exercise) return { ok: true, missing: [] };
             const present = blockTypesInConnectedProgram();
             const required = blockTypesFromExercise(exercise);
-            const missing = required.filter(type => !present.has(type));
+            let missing = required.filter(type => !present.has(type));
             const valueRequirements = sensorValueRequirementsFromExercise(exercise);
             for (const requirement of valueRequirements) {
                 if (present.has(requirement.type) && !workspaceHasBlockValue(requirement.type, requirement.value)) {
@@ -8634,6 +8668,24 @@
             }
             missing.push(...validateCustomExerciseRules(exercise));
             missing.push(...validateRunResultForExercise(exercise));
+
+            const normalizedTitle = normalizeHebrew(exercise?.title || '');
+            if (currentLesson === 10 && normalizedTitle.includes('תרגיל 1')) {
+                const hasDryWaterSay = hasIfRuleWithAction('sensor_water_status', 'DRY', 'action_say');
+                const hasDrySoilSay = hasIfRuleWithAction('sensor_soil', 'DRY', 'action_say');
+                if (hasDryWaterSay || hasDrySoilSay) {
+                    missing = missing.filter(type => !['sensor_water_status', 'sensor_water_status:DRY', 'sensor_soil', 'sensor_soil:DRY', 'rule_dry_garden_say_either_sensor'].includes(type));
+                }
+            }
+            if (currentLesson === 10 && normalizedTitle.includes('תרגיל 2')) {
+                const hasDryWaterOpen = hasIfRuleWithAction('sensor_water_status', 'DRY', 'action_water', 'ON');
+                const hasDryWaterClose = hasIfRuleWithAction('sensor_water_status', 'DRY', 'action_water', 'OFF');
+                const hasDrySoilOpen = hasIfRuleWithAction('sensor_soil', 'DRY', 'action_water', 'ON');
+                const hasDrySoilClose = hasIfRuleWithAction('sensor_soil', 'DRY', 'action_water', 'OFF');
+                if ((hasDryWaterOpen || hasDrySoilOpen) && (hasDryWaterClose || hasDrySoilClose)) {
+                    missing = missing.filter(type => !['sensor_water_status', 'sensor_water_status:DRY', 'sensor_soil', 'sensor_soil:DRY', 'rule_dry_garden_water_on_either_sensor', 'rule_dry_garden_water_off_either_sensor'].includes(type));
+                }
+            }
 
             const hasStart = present.has('event_start');
             const hasDisconnected = (workspace?.getTopBlocks(false) || []).some(block => block.type !== 'event_start');
@@ -8721,7 +8773,10 @@
                 rule_people_ac_on_before_loop: 'לפני לולאת הרעש הוסיפו לאותו כלל: אם יש תלמידים בכיתה → מזגן — הפעל.',
                 rule_no_people_power_off_before_loop: 'לפני לולאת הרעש הוסיפו כלל חיסכון: אם אין תלמידים בכיתה → כבה אור.',
                 rule_no_people_ac_off_before_loop: 'לפני לולאת הרעש הוסיפו לאותו כלל: אם אין תלמידים בכיתה → מזגן — כבה.',
-                rule_noise_only_power_loop: 'אחרי כללי הנוכחות, לולאת “חזור תמיד” צריכה לבדוק רק רעש: אם הרעש חזק מדי → כבה אור, ואם נהיה שקט → הדלק אור. אל תשימו בתוך אותה לולאה כלל “יש אנשים → הדלק אור”, כי הוא ידליק מחדש לפני שנהיה שקט.'
+                rule_noise_only_power_loop: 'אחרי כללי הנוכחות, לולאת “חזור תמיד” צריכה לבדוק רק רעש: אם הרעש חזק מדי → כבה אור, ואם נהיה שקט → הדלק אור. אל תשימו בתוך אותה לולאה כלל “יש אנשים → הדלק אור”, כי הוא ידליק מחדש לפני שנהיה שקט.',
+                rule_dry_garden_say_either_sensor: 'בתרגיל 1 אפשר לבחור אחד משני חיישנים: אם חיישן אדמה = יבשה וצמאה → אמור הודעת גינה, או אם מצב המים = יבש → אמור הודעת גינה.',
+                rule_dry_garden_water_on_either_sensor: 'בתרגיל 2 אפשר לבחור אחד משני חיישנים: אם חיישן אדמה = יבשה וצמאה או אם מצב המים = יבש → פתח טפטפות להשקיה.',
+                rule_dry_garden_water_off_either_sensor: 'בתרגיל 2 צריך גם לסגור טפטפות לחיסכון בתוך כלל היובש — עם חיישן אדמה יבשה או עם מד מצב מים יבש.'
             };
             if (valueLabels[type] || labels[type]) return valueLabels[type] || labels[type];
             if (String(type).startsWith('rule_')) {
@@ -8834,12 +8889,15 @@
             }
             setActiveExercise(index, currentLesson);
             renderExerciseToc(currentLesson);
+            const answerBlocksHtml = exercise.answerBlocks?.length
+                ? `<details class="solution-toggle"><summary>פתרון / מבנה מומלץ</summary><div class="solution-toggle-content">${listItems(exercise.answerBlocks)}</div></details>`
+                : '';
             body.innerHTML = `
                 <div class="exercise-meta">${escapeHtml(exercise.afterFlowMinutes || exercise.minutes || '')}</div>
                 <h3>${escapeHtml(exercise.title || `תרגיל ${index + 1}`)}</h3>
                 ${exercise.studentPrompt ? `<p><span class="detail-label">מה בונים:</span> ${escapeHtml(exercise.studentPrompt)}</p>` : ''}
                 ${exercise.expectedResult ? `<p><span class="detail-label">תוצאה רצויה:</span> ${escapeHtml(exercise.expectedResult)}</p>` : ''}
-                ${exercise.answerBlocks?.length ? `<p class="detail-label">בלוקים/מבנה מומלץ:</p>${listItems(exercise.answerBlocks)}` : ''}
+                ${answerBlocksHtml}
                 ${exercise.testSteps?.length ? `<p class="detail-label">איך בודקים:</p>${listItems(exercise.testSteps)}` : ''}
                 ${exercise.commonMistake ? `<p><span class="detail-label">טעות נפוצה:</span> ${escapeHtml(exercise.commonMistake)}</p>` : ''}
             `;
