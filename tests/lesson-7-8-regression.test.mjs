@@ -286,10 +286,16 @@ test('lesson 9 story uses only presence and noise sensors without classroom ligh
   assertIncludes(lesson9, 'אם הכיתה רועשת מדי');
   assertIncludes(lesson9, 'כל עוד עדיין רועש, האור נשאר כבוי');
   assertIncludes(lesson9, "environment: ['presence', 'sound']");
-  assertIncludes(lessonsData, 'תרגיל 5 — אתגר שקט בכיתה');
+  assertIncludes(lessonsData, 'תרגיל 3 — שקט בכיתה בלולאה');
   assertIncludes(lessonsData, 'אם עוצמת רעש = חזק מדי');
   assertIncludes(lessonsData, 'אם עוצמת רעש = שקט');
-  assertIncludes(lessonsData, 'מדליקים את האור מיד אחרי הכיבוי בלי לבדוק שנהיה שקט');
+  assertIncludes(lessonsData, 'בכל סיבוב הלולאה האור נדלק שוב לפני שנהיה שקט');
+  assertIncludes(lesson9, 'תרגיל 4 — בדיקה עם החיישנים');
+  assertIncludes(lesson9, 'בלי להוסיף קוד חדש');
+  assertIncludes(lesson9, 'בדקו עם רעש חזק');
+  assertIncludes(lesson9, 'בדקו עם שקט');
+  assertNotIncludes(lesson9, 'תרגיל 4 — הודעת חיסכון');
+  assertNotIncludes(lesson9, 'תרגיל 5 — אתגר שקט בכיתה');
   assertNotIncludes(lesson9, 'אור מהחלון');
   assertNotIncludes(lesson9, 'חלון');
   assertNotIncludes(lesson9, 'אם יש אנשים וגם חשוך');
