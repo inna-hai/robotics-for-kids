@@ -5623,7 +5623,7 @@
             11: {
                 movement: [],
 
-                sensors: ['sensor_armed', 'sensor_light', 'sensor_people', 'sensor_safe_touch', 'sensor_door'],
+                sensors: ['sensor_light', 'sensor_people', 'sensor_safe_touch', 'sensor_door'],
                 controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
 
                 actions: ['action_say', 'action_security_mode', 'action_alarm']
@@ -8225,7 +8225,7 @@
             ['צבע', 'sensor_color'], ['חיישן קו', 'sensor_line'], ['הקו נמצא', 'sensor_line_side'], ['סוף גדר', 'sensor_goal'], ['יעד', 'sensor_goal'],
             ['הולך רגל', 'sensor_pedestrian'], ['מכוניות', 'sensor_cars'], ['אנשים', 'sensor_people'], ['תלמידים', 'sensor_people'], ['מבקרים', 'sensor_people'],
             ['אדמה', 'sensor_soil'], ['מצב המים', 'sensor_water_status'], ['מערכת שמירה', 'sensor_armed'], ['שמירה דרוכה', 'sensor_armed'],
-            ['כספת', 'sensor_safe_touch'], ['דלת', 'sensor_door'], ['גנב', 'sensor_burglar'], ['בעל הבית', 'sensor_homeowner'], ['תנועה', 'sensor_motion'],
+            ['נגיעה בכספת', 'sensor_safe_touch'], ['דלת', 'sensor_door'], ['גנב', 'sensor_burglar'], ['בעל הבית', 'sensor_homeowner'], ['תנועה', 'sensor_motion'],
             ['חזור תמיד', 'control_forever'], ['לולאה', 'control_forever'], ['חכה', 'control_wait'], ['עצור תוכנית', 'stop_program'], ['אם', 'control_if'],
             ['זוז קדימה', 'move_forward'], ['התקדם', 'move_forward'], ['זוז אחורה', 'move_backward'], ['סובב ימינה', 'turn_right'], ['סובב שמאלה', 'turn_left'], ['סובב מעט ימינה', 'turn_right_small'], ['סובב מעט שמאלה', 'turn_left_small'], ['הסתובב 180', 'turn_around'], ['עצור רכב', 'stop_vehicle'],
             ['עצור מכוניות', 'stop_cars'], ['המשך מכוניות', 'start_cars'], ['עצור הולך רגל', 'stop_pedestrian'], ['המשך הולך רגל', 'start_pedestrian'],
@@ -8278,6 +8278,10 @@
             }
             if (currentLesson === 8 && text.includes('תרגיל 1')) {
                 required.delete('sensor_cars');
+            }
+            if (currentLesson === 11) {
+                required.delete('sensor_armed');
+                required.delete('sensor_motion');
             }
             return [...required];
         }
@@ -8362,6 +8366,9 @@
             if (currentLesson === 8 && promptText.includes('תרגיל 1')) {
                 return requirements.filter(requirement => requirement.type !== 'sensor_cars');
             }
+            if (currentLesson === 11) {
+                return requirements.filter(requirement => !['sensor_armed', 'sensor_motion'].includes(requirement.type));
+            }
             return requirements;
         }
 
@@ -8421,6 +8428,37 @@
                 return statementBlocksFromInput(block, 'DO').some(child =>
                     child.type === actionType && blockHasFieldValue(child, actionValue)
                 );
+            });
+        }
+
+        function hasLesson11ArmedSafeTouchAlarmRule({ requireForever = false } = {}) {
+            const armingConditions = [
+                ['sensor_light', 'DARK'],
+                ['sensor_people', 'YES'],
+                ['sensor_door', 'YES']
+            ];
+            return connectedProgramBlocks().some(block => {
+                if (block.type !== 'control_if') return false;
+                if (requireForever && !hasForeverAncestor(block)) return false;
+                const condition = block.getInputTargetBlock?.('COND');
+                const isArmingCondition = armingConditions.some(([sensorType, sensorValue]) =>
+                    condition?.type === sensorType && condition.getFieldValue?.('VAL') === sensorValue
+                );
+                if (!isArmingCondition) return false;
+                const armingBody = statementBlocksFromInput(block, 'DO');
+                const armsSecurity = armingBody.some(child =>
+                    child.type === 'action_security_mode' && blockHasFieldValue(child, 'ARM')
+                );
+                const safeTouchTriggersAlarm = armingBody.some(child => {
+                    if (child.type !== 'control_if') return false;
+                    const safeCondition = child.getInputTargetBlock?.('COND');
+                    return safeCondition?.type === 'sensor_safe_touch'
+                        && safeCondition.getFieldValue?.('VAL') === 'YES'
+                        && statementBlocksFromInput(child, 'DO').some(action =>
+                            action.type === 'action_alarm' && blockHasFieldValue(action, 'ON')
+                        );
+                });
+                return armsSecurity && safeTouchTriggersAlarm;
             });
         }
 
@@ -8545,7 +8583,7 @@
             { lesson: 10, title: 'תרגיל 4', rules: [['sensor_water_status', 'EXCESS', 'action_water', 'OFF', 'rule_excess_water_off']] },
             { lesson: 11, title: 'תרגיל 1', rules: [['sensor_light', 'DARK', 'action_security_mode', 'ARM', 'rule_dark_security_arm']] },
             { lesson: 11, title: 'תרגיל 2', rules: [['sensor_people', 'YES', 'action_security_mode', 'ARM', 'rule_people_security_arm'], ['sensor_door', 'YES', 'action_security_mode', 'ARM', 'rule_door_security_arm']] },
-            { lesson: 11, title: 'תרגיל 3', rules: [['sensor_armed', 'YES', 'action_alarm', 'ON', 'rule_armed_alarm_on']] },
+            { lesson: 11, title: 'תרגיל 3', rules: [] },
             { lesson: 12, title: 'תרגיל 1', rules: [['sensor_goal', 'YES', 'action_drop_delivery', null, 'rule_goal_drop_delivery']] },
             { lesson: 12, title: 'תרגיל 2', rules: [['sensor_obstacle', 'YES', 'move_backward', null, 'rule_obstacle_move_backward']] },
             { lesson: 13, title: 'תרגיל 1', rules: [['sensor_burglar', 'YES', 'action_alarm', 'ON', 'rule_burglar_alarm_on'], ['sensor_goal', 'YES', 'turn_around', null, 'rule_goal_turn_around']] },
@@ -8609,6 +8647,12 @@
                     || hasForeverRuleWithAction('sensor_water_status', 'DRY', 'action_water', 'OFF');
                 const hasExcessLoopClose = hasForeverRuleWithAction('sensor_water_status', 'EXCESS', 'action_water', 'OFF');
                 if (!hasDryLoopOpen || !hasDryLoopClose || !hasExcessLoopClose) missing.push('rule_smart_garden_forever_loop');
+            }
+            if (currentLesson === 11 && (title.includes('תרגיל 3') || title.includes('תרגיל 4'))) {
+                if (!hasLesson11ArmedSafeTouchAlarmRule()) missing.push('rule_security_armed_safe_touch_alarm');
+            }
+            if (currentLesson === 11 && title.includes('תרגיל 5')) {
+                if (!hasLesson11ArmedSafeTouchAlarmRule({ requireForever: true })) missing.push('rule_security_forever_museum_guard');
             }
             if (currentLesson === 9 && title.includes('תרגיל 3')) {
                 const presenceRulesBeforeLoop = [
@@ -8728,7 +8772,7 @@
             const labels = {
                 event_start: 'בלוק התחלה', control_if: 'תנאי אם/אז', control_forever: 'לולאה', control_wait: 'חכה', stop_program: 'עצור תוכנית', connected_program: 'חיבור כל הבלוקים להתחלה',
 
-                sensor_light: 'חיישן אור', sensor_sound: 'חיישן קול/רעש', sensor_touch: 'חיישן קיר/מגע', sensor_obstacle: 'חיישן מכשול', sensor_smell: 'חיישן עשן', sensor_screen_edge: 'בודק קצה מסך', sensor_temperature: 'חיישן טמפרטורה', sensor_color: 'חיישן צבע', sensor_line: 'חיישן קו', sensor_line_side: 'חיישן צד הקו', sensor_goal: 'חיישן יעד/סוף', sensor_pedestrian: 'חיישן הולך רגל', sensor_cars: 'חיישן מכוניות', sensor_people: 'חיישן אנשים', sensor_soil: 'חיישן אדמה', sensor_water_status: 'מד מצב מים', sensor_armed: 'חיישן מצב שמירה', sensor_safe_touch: 'חיישן כספת', sensor_door: 'חיישן דלת', sensor_burglar: 'חיישן גנב', sensor_homeowner: 'חיישן בעל הבית', sensor_motion: 'חיישן תנועה',
+                sensor_light: 'חיישן אור', sensor_sound: 'חיישן קול/רעש', sensor_touch: 'חיישן קיר/מגע', sensor_obstacle: 'חיישן מכשול', sensor_smell: 'חיישן עשן', sensor_screen_edge: 'בודק קצה מסך', sensor_temperature: 'חיישן טמפרטורה', sensor_color: 'חיישן צבע', sensor_line: 'חיישן קו', sensor_line_side: 'חיישן צד הקו', sensor_goal: 'חיישן יעד/סוף', sensor_pedestrian: 'חיישן הולך רגל', sensor_cars: 'חיישן מכוניות', sensor_people: 'חיישן אנשים', sensor_soil: 'חיישן אדמה', sensor_water_status: 'מד מצב מים', sensor_armed: 'מצב שמירה דרוכה', sensor_safe_touch: 'בלוק “נגיעה בכספת?”', sensor_door: 'חיישן דלת', sensor_burglar: 'חיישן גנב', sensor_homeowner: 'חיישן בעל הבית', sensor_motion: 'חיישן תנועה',
 
                 move_forward: 'תנועה קדימה', move_backward: 'תנועה אחורה', turn_right: 'סיבוב ימינה', turn_left: 'סיבוב שמאלה', turn_right_small: 'סיבוב קטן ימינה', turn_left_small: 'סיבוב קטן שמאלה', turn_around: 'הסתובב 180°', stop_vehicle: 'עצור רכב', stop_cars: 'עצור מכוניות', start_cars: 'המשך מכוניות', stop_pedestrian: 'עצור הולך רגל', start_pedestrian: 'המשך הולך רגל',
                 action_street_light: 'פעולת פנס', action_traffic_light: 'פעולת רמזור', action_class_power: 'חשמל כיתה', action_sound: 'צליל', action_alarm: 'אזעקה', action_security_mode: 'דריכת שמירה', action_fan: 'מאוורר', action_ac: 'מזגן', action_water: 'טפטפות', action_recycle_bin: 'מיון לפח', action_say: 'אמירה/הודעה', action_safe_route: 'דרך בטוחה', action_delivery_package: 'הבא משלוח', action_drop_delivery: 'הנח משלוח'
@@ -8747,8 +8791,8 @@
 
                 'sensor_pedestrian:YES': 'חיישן הולך רגל עם הערך “יש הולך רגל”', 'sensor_cars:YES': 'חיישן מכוניות עם הערך “יש מכוניות”', 'sensor_cars:NO': 'חיישן מכוניות עם הערך “אין מכוניות”',
                 'sensor_people:YES': 'חיישן אנשים עם הערך “יש/יותר מדי”', 'sensor_people:NO': 'חיישן אנשים עם הערך “אין”',
-                'sensor_soil:DRY': 'חיישן אדמה עם הערך “יבשה”', 'sensor_armed:YES': 'חיישן שמירה עם הערך “דרוכה”',
-                'sensor_safe_touch:YES': 'חיישן כספת עם הערך “נגיעה”', 'sensor_door:YES': 'חיישן דלת עם הערך “פתוחה”',
+                'sensor_soil:DRY': 'חיישן אדמה עם הערך “יבשה”', 'sensor_armed:YES': 'מצב שמירה דרוכה',
+                'sensor_safe_touch:YES': 'בלוק “נגיעה בכספת?” עם הערך “כן”', 'sensor_door:YES': 'חיישן דלת עם הערך “פתוחה”',
                 'sensor_burglar:YES': 'חיישן גנב עם הערך “זוהה גנב”', 'sensor_homeowner:YES': 'חיישן בעל הבית עם הערך “זוהה בעל הבית”',
 
                 'sensor_motion:YES': 'חיישן תנועה עם הערך “יש תנועה”',
@@ -8785,7 +8829,9 @@
                 rule_dry_garden_say_either_sensor: 'בתרגיל 1 אפשר לבחור אחד משני חיישנים: אם חיישן אדמה = יבשה וצמאה → אמור הודעת גינה, או אם מצב המים = יבש → אמור הודעת גינה.',
                 rule_dry_garden_water_on_either_sensor: 'בתרגיל 2 אפשר לבחור אחד משני חיישנים: אם חיישן אדמה = יבשה וצמאה או אם מצב המים = יבש → פתח טפטפות להשקיה.',
                 rule_dry_garden_water_off_either_sensor: 'בתרגיל 2 צריך גם לסגור טפטפות לחיסכון בתוך כלל היובש — עם חיישן אדמה יבשה או עם מד מצב מים יבש.',
-                rule_smart_garden_forever_loop: 'בתרגיל 5 הנוהל צריך להיות בתוך לולאת “חזור תמיד”: בדיקת יובש שפותחת וסוגרת טפטפות, וגם בדיקת עודף מים שסוגרת טפטפות. כך אפשר לשנות חיישנים בזמן הריצה.'
+                rule_smart_garden_forever_loop: 'בתרגיל 5 הנוהל צריך להיות בתוך לולאת “חזור תמיד”: בדיקת יובש שפותחת וסוגרת טפטפות, וגם בדיקת עודף מים שסוגרת טפטפות. כך אפשר לשנות חיישנים בזמן הריצה.',
+                rule_security_armed_safe_touch_alarm: 'בנו כלל שמחבר בין דריכת שמירה לבין אירוע חשוד: אם חושך / עומס מבקרים / דלת צדדית פתוחה → שמירה — דרוך, ובתוך אותו כלל בדקו אם יש נגיעה בכספת → הפעילו אזעקת מוזיאון. נגיעה בכספת לא דורכת את השמירה — היא מפעילה אזעקה רק אחרי שהשמירה נדרכה.',
+                rule_security_forever_museum_guard: 'בתרגיל 5 עטפו את נוהל השמירה בלולאת “חזור תמיד”: בתוך הלולאה בדקו כלל דריכה, ובתוכו נגיעה בכספת → אזעקת מוזיאון. כך אפשר לשנות חיישנים בזמן הריצה ולראות תגובה.'
             };
             if (valueLabels[type] || labels[type]) return valueLabels[type] || labels[type];
             if (String(type).startsWith('rule_')) {
