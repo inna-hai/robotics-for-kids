@@ -6682,6 +6682,7 @@
                 startX: robot.x,
                 startY: robot.y,
                 startAngle: robot.angle,
+                startSoundState: currentLesson === 9 ? (environment.sound ? 'LOUD' : 'QUIET') : null,
                 blockTypes: [],
                 stoppedVehicle: false,
                 movedBackward: false,
@@ -6768,6 +6769,11 @@
         }
 
 
+        function currentExerciseTitle() {
+            const cityLesson = window.getSensiLesson ? window.getSensiLesson(currentLesson) : null;
+            return cityLesson?.programmingExercises?.[activeExerciseIndex]?.title || '';
+        }
+
         function setPrecheckResult(messages) {
             const panel = document.getElementById('precheckPanel');
             if (!panel) return;
@@ -6776,7 +6782,11 @@
             panel.classList.add('active');
             panel.classList.toggle('warning', hasWarnings);
             if (!hasWarnings) {
-                panel.innerHTML = '<button class="check-panel-close" type="button" onclick="hidePrecheckPanel()" aria-label="סגור את חלון הבדיקה" title="סגור את חלון הבדיקה">×</button>✅ התוכנית נראית מוכנה להרצה: יש התחלה, תנאי, חיישן מתאים, ואין בלוקים מנותקים או לולאות ריקות.';
+                const lesson9NoiseExercise = currentLesson === 9 && normalizeHebrew(currentExerciseTitle()).includes('תרגיל 3');
+                const message = lesson9NoiseExercise
+                    ? '✅ מבנה התוכנית מתאים לתרגיל: לפני הלולאה יש כללי נוכחות שמדליקים/מכבים אור ומזגן, ואחר כך הלולאה בודקת רק רעש — רעש חזק מכבה אור, ושקט מדליק אותו מחדש. עכשיו הריצו פעם ברעש חזק ופעם בשקט כדי לראות שההתנהגות באמת נכונה.'
+                    : '✅ מבנה התוכנית נראה מוכן להרצה: יש התחלה, תנאי, חיישן מתאים, ואין בלוקים מנותקים או לולאות ריקות. כדי לוודא שהתרגיל הושלם באמת — לחצו ▶️ ובדקו את התוצאה בסביבה.';
+                panel.innerHTML = `<button class="check-panel-close" type="button" onclick="hidePrecheckPanel()" aria-label="סגור את חלון הבדיקה" title="סגור את חלון הבדיקה">×</button>${message}`;
                 return;
             }
             const heading = messages.length === 1 ? '⚠️ מצאתי דבר שכדאי לתקן לפני ההרצה:' : '⚠️ מצאתי כמה דברים שכדאי לתקן לפני ההרצה:';
@@ -6836,6 +6846,10 @@
             }
 
 
+            if (hasLesson9PeoplePowerOnInsideNoiseLoop()) {
+                messages.push('בשיעור 9 תרגיל 3 יש בעיה בלולאה: היא מכבה אור כשיש רעש, אבל באותה לולאה גם מדליקה אור כשיש אנשים. כך האור נדלק שוב לפני שנהיה שקט. הוציאו מהלולאה את תנאי “יש אנשים → הדלק אור”, והשאירו בלולאה רק תנאי רעש: רעש חזק → כבה אור, שקט → הדלק אור.');
+            }
+
             const exerciseResult = validateActiveExercise();
 
             if (!exerciseResult.ok) {
@@ -6843,6 +6857,7 @@
             }
 
             setPrecheckResult(messages);
+            setDebugStatus(messages.length > 0 ? 'הבדיקה מצאה משהו שצריך לתקן.' : 'הבדיקה הסתיימה — אפשר להריץ ולבדוק את ההתנהגות בסביבה.');
         }
 
         async function runDebugCode() {
@@ -8150,7 +8165,11 @@
             let states = [];
             try { states = JSON.parse(localStorage.getItem(key) || '[]'); } catch (error) {}
 
-            const state = currentLesson === 1 ? (environment.light ? 'BRIGHT' : 'DARK') : 'RUN';
+            const state = currentLesson === 1
+                ? (environment.light ? 'BRIGHT' : 'DARK')
+                : currentLesson === 9
+                    ? (currentRunTrace?.startSoundState || (environment.sound ? 'LOUD' : 'QUIET'))
+                    : 'RUN';
 
             if (!states.includes(state)) states.push(state);
             localStorage.setItem(key, JSON.stringify(states));
@@ -8166,6 +8185,7 @@
             const promptText = normalizeHebrew([exercise?.title, exercise?.studentPrompt].join(' '));
             const isSameProgramTest = promptText.includes('בדקו את אותה תוכנית') || promptText.includes('בדיקת כמה מצבים');
             if (currentLesson === 1 && isSameProgramTest && promptText.includes('יום') && promptText.includes('לילה')) return ['DARK', 'BRIGHT'];
+            if (currentLesson === 9 && promptText.includes('תרגיל 4') && promptText.includes('רעש') && promptText.includes('שקט')) return ['LOUD', 'QUIET'];
 
             return [];
         }
@@ -8363,6 +8383,26 @@
             });
         }
 
+        function hasForeverAncestor(block) {
+            let parent = block?.getSurroundParent?.();
+            while (parent) {
+                if (parent.type === 'control_forever') return true;
+                parent = parent.getSurroundParent?.();
+            }
+            return false;
+        }
+
+        function hasIfRuleWithActionOutsideForever(sensorType, sensorValue, actionType, actionValue = null) {
+            return connectedProgramBlocks().some(block => {
+                if (block.type !== 'control_if' || hasForeverAncestor(block)) return false;
+                const condition = block.getInputTargetBlock?.('COND');
+                if (!condition || condition.type !== sensorType || condition.getFieldValue?.('VAL') !== sensorValue) return false;
+                return statementBlocksFromInput(block, 'DO').some(child =>
+                    child.type === actionType && blockHasFieldValue(child, actionValue)
+                );
+            });
+        }
+
         function hasForeverRuleWithAction(sensorType, sensorValue, actionType, actionValue = null) {
             return connectedProgramBlocks().some(loopBlock => {
                 if (loopBlock.type !== 'control_forever') return false;
@@ -8373,6 +8413,75 @@
                     return statementBlocksFromInput(block, 'DO').some(child =>
                         child.type === actionType && blockHasFieldValue(child, actionValue)
                     );
+                });
+            });
+        }
+
+        function hasAncestorIfWithCondition(block, sensorType, sensorValue) {
+            let parent = block?.getSurroundParent?.();
+            while (parent) {
+                if (parent.type === 'control_if') {
+                    const condition = parent.getInputTargetBlock?.('COND');
+                    if (condition?.type === sensorType && condition.getFieldValue?.('VAL') === sensorValue) return true;
+                }
+                parent = parent.getSurroundParent?.();
+            }
+            return false;
+        }
+
+        function lesson9LoopHasLoudOff(loopBlock) {
+            return statementBlocksFromInput(loopBlock, 'DO').some(block => {
+                if (block.type !== 'control_if') return false;
+                const condition = block.getInputTargetBlock?.('COND');
+                return condition?.type === 'sensor_sound'
+                    && condition.getFieldValue?.('VAL') === 'LOUD'
+                    && statementBlocksFromInput(block, 'DO').some(child => child.type === 'action_class_power' && blockHasFieldValue(child, 'OFF'));
+            });
+        }
+
+        function lesson9LoopHasQuietOn(loopBlock) {
+            return statementBlocksFromInput(loopBlock, 'DO').some(block => {
+                if (block.type !== 'control_if') return false;
+                const condition = block.getInputTargetBlock?.('COND');
+                return condition?.type === 'sensor_sound'
+                    && condition.getFieldValue?.('VAL') === 'QUIET'
+                    && statementBlocksFromInput(block, 'DO').some(child => child.type === 'action_class_power' && blockHasFieldValue(child, 'ON'));
+            });
+        }
+
+        function hasLesson9PeoplePowerOnInsideNoiseLoop() {
+            if (currentLesson !== 9) return false;
+            return connectedProgramBlocks().some(loopBlock => {
+                if (loopBlock.type !== 'control_forever' || !lesson9LoopHasLoudOff(loopBlock)) return false;
+                return statementBlocksFromInput(loopBlock, 'DO').some(block => {
+                    if (block.type !== 'control_if') return false;
+                    const condition = block.getInputTargetBlock?.('COND');
+                    return condition?.type === 'sensor_people'
+                        && condition.getFieldValue?.('VAL') === 'YES'
+                        && statementBlocksFromInput(block, 'DO').some(child => child.type === 'action_class_power' && blockHasFieldValue(child, 'ON'));
+                });
+            });
+        }
+
+        function hasLesson9NoiseOnlyPowerLoop() {
+            return connectedProgramBlocks().some(loopBlock => {
+                if (loopBlock.type !== 'control_forever') return false;
+                const loopBlocks = statementBlocksFromInput(loopBlock, 'DO');
+                const hasLoudOff = lesson9LoopHasLoudOff(loopBlock);
+                const hasQuietOn = lesson9LoopHasQuietOn(loopBlock);
+                if (!hasLoudOff || !hasQuietOn) return false;
+
+                const hasPeopleConditionInLoop = loopBlocks.some(block =>
+                    block.type === 'control_if' && block.getInputTargetBlock?.('COND')?.type === 'sensor_people'
+                );
+                if (hasPeopleConditionInLoop) return false;
+
+                return loopBlocks.every(block => {
+                    if (block.type !== 'action_class_power') return true;
+                    const state = block.getFieldValue?.('STATE');
+                    if (state === 'ON') return hasAncestorIfWithCondition(block, 'sensor_sound', 'QUIET');
+                    if (state === 'OFF') return hasAncestorIfWithCondition(block, 'sensor_sound', 'LOUD');
+                    return true;
                 });
             });
         }
@@ -8408,9 +8517,8 @@
             { lesson: 8, title: 'תרגיל 2', rules: [['sensor_cars', 'YES', 'stop_cars', null, 'rule_cars_stop_cars'], ['sensor_cars', 'NO', 'action_traffic_light', 'GREEN', 'rule_no_cars_green_light']] },
             { lesson: 8, title: 'תרגיל 3', rules: [['sensor_pedestrian', 'YES', 'action_traffic_light', 'GREEN', 'rule_loop_pedestrian_green'], ['sensor_cars', 'YES', 'stop_cars', null, 'rule_loop_cars_stop'], ['sensor_pedestrian', 'YES', 'start_pedestrian', null, 'rule_loop_pedestrian_start'], ['sensor_pedestrian', 'YES', 'action_traffic_light', 'RED', 'rule_loop_pedestrian_red'], ['sensor_pedestrian', 'YES', 'stop_pedestrian', null, 'rule_loop_pedestrian_stop'], ['sensor_cars', 'YES', 'start_cars', null, 'rule_loop_cars_start']] },
             { lesson: 8, title: 'תרגיל 4', rules: [['sensor_cars', 'YES', 'stop_cars', null, 'rule_cars_stop_cars'], ['sensor_cars', 'NO', 'action_traffic_light', 'GREEN', 'rule_no_cars_green_light']] },
-            { lesson: 9, title: 'תרגיל 1', rules: [['sensor_people', 'YES', 'action_class_power', 'ON', 'rule_people_power_on']] },
-            { lesson: 9, title: 'תרגיל 2', rules: [['sensor_people', 'NO', 'action_class_power', 'OFF', 'rule_no_people_power_off']] },
-            { lesson: 9, title: 'תרגיל 5', rules: [['sensor_sound', 'LOUD', 'action_class_power', 'OFF', 'rule_loud_power_off'], ['sensor_sound', 'QUIET', 'action_class_power', 'ON', 'rule_quiet_power_on']] },
+            { lesson: 9, title: 'תרגיל 1', rules: [['sensor_people', 'YES', 'action_class_power', 'ON', 'rule_people_power_on'], ['sensor_people', 'YES', 'action_ac', 'ON', 'rule_people_ac_on']] },
+            { lesson: 9, title: 'תרגיל 2', rules: [['sensor_people', 'NO', 'action_class_power', 'OFF', 'rule_no_people_power_off'], ['sensor_people', 'NO', 'action_ac', 'OFF', 'rule_no_people_ac_off']] },
             { lesson: 10, title: 'תרגיל 1', rules: [['sensor_water_status', 'DRY', 'action_say', null, 'rule_dry_water_say']] },
             { lesson: 10, title: 'תרגיל 2', rules: [['sensor_water_status', 'DRY', 'action_water', 'ON', 'rule_dry_water_on'], ['sensor_water_status', 'DRY', 'action_water', 'OFF', 'rule_dry_water_off']] },
             { lesson: 10, title: 'תרגיל 4', rules: [['sensor_water_status', 'EXCESS', 'action_water', 'OFF', 'rule_excess_water_off']] },
@@ -8459,6 +8567,18 @@
                     hasForeverRuleWithAction(sensorType, sensorValue, actionType, actionValue)
                 );
                 if (!hasTrafficLoop) missing.push('rule_traffic_loop_cycle');
+            }
+            if (currentLesson === 9 && title.includes('תרגיל 3')) {
+                const presenceRulesBeforeLoop = [
+                    ['sensor_people', 'YES', 'action_class_power', 'ON', 'rule_people_power_on_before_loop'],
+                    ['sensor_people', 'YES', 'action_ac', 'ON', 'rule_people_ac_on_before_loop'],
+                    ['sensor_people', 'NO', 'action_class_power', 'OFF', 'rule_no_people_power_off_before_loop'],
+                    ['sensor_people', 'NO', 'action_ac', 'OFF', 'rule_no_people_ac_off_before_loop']
+                ];
+                for (const [sensorType, sensorValue, actionType, actionValue, missingKey] of presenceRulesBeforeLoop) {
+                    if (!hasIfRuleWithActionOutsideForever(sensorType, sensorValue, actionType, actionValue)) missing.push(missingKey);
+                }
+                if (!hasLesson9NoiseOnlyPowerLoop()) missing.push('rule_noise_only_power_loop');
             }
             return missing;
         }
@@ -8529,6 +8649,9 @@
             if (type === 'test_state:DARK' || type === 'test_state:BRIGHT') {
                 return 'כדי להשלים את התרגיל, הריצו פעם אחת בחושך ופעם אחת באור.';
             }
+            if (type === 'test_state:LOUD' || type === 'test_state:QUIET') {
+                return 'כדי להשלים את תרגיל הבדיקה, הריצו פעם אחת עם רעש חזק ופעם אחת במצב שקט.';
+            }
 
 
             return exerciseTypeLabel(type);
@@ -8580,7 +8703,7 @@
                 'action_sound:ALARM': 'צליל עם הערך “אזעקה”', 'action_sound:BEEP': 'צליל עם הערך “ביפ”',
                 'action_security_mode:ARM': 'שמירה עם הפעולה “דרוך”', 'action_security_mode:DISARM': 'שמירה עם הפעולה “כבוי”',
                 'action_recycle_bin:BLUE': 'מיון לפח כחול', 'action_recycle_bin:GREEN': 'מיון לפח ירוק', 'action_recycle_bin:YELLOW': 'מיון לפח צהוב',
-                'test_state:DARK': 'הרצה אחת כשהעיר חשוכה', 'test_state:BRIGHT': 'הרצה אחת כשהאור דלוק/בהיר',
+                'test_state:DARK': 'הרצה אחת כשהעיר חשוכה', 'test_state:BRIGHT': 'הרצה אחת כשהאור דלוק/בהיר', 'test_state:LOUD': 'הרצה אחת עם רעש חזק', 'test_state:QUIET': 'הרצה אחת במצב שקט',
 
                 run_vehicle_stopped: 'הרצה שבה סנסי באמת עצר לפני הקיר',
                 run_moved_backward: 'הרצה שבה סנסי באמת זז אחורה אחרי העצירה',
@@ -8589,7 +8712,16 @@
                 'rule_dark_light_on': 'הוסיפו כלל: אם חיישן אור = חשוך → פנס רחוב — הדלק',
                 'rule_bright_light_off': 'הוסיפו כלל: אם חיישן אור = בהיר → פנס רחוב — כבה',
                 rule_recycle_loop_sorting: 'בתוך לולאת “לנצח”: בדיקת צבע כחול/ירוק/צהוב ומיון כל צבע לפח המתאים',
-                rule_traffic_loop_cycle: 'בתוך לולאת “לנצח”: מחזור רמזור מלא עם ירוק/אדום, עצירת מכוניות, המשך הולך רגל, עצירת הולך רגל והמשך מכוניות'
+                rule_traffic_loop_cycle: 'בתוך לולאת “לנצח”: מחזור רמזור מלא עם ירוק/אדום, עצירת מכוניות, המשך הולך רגל, עצירת הולך רגל והמשך מכוניות',
+                rule_people_power_on: 'הוסיפו כלל: אם יש אנשים בכיתה → הדלק אור',
+                rule_people_ac_on: 'הוסיפו לאותו כלל: אם יש אנשים בכיתה → מזגן — הפעל',
+                rule_no_people_power_off: 'הוסיפו כלל: אם אין אנשים בכיתה → כבה אור',
+                rule_no_people_ac_off: 'הוסיפו לאותו כלל: אם אין אנשים בכיתה → מזגן — כבה',
+                rule_people_power_on_before_loop: 'לפני לולאת הרעש הוסיפו כלל נוכחות: אם יש תלמידים בכיתה → הדלק אור.',
+                rule_people_ac_on_before_loop: 'לפני לולאת הרעש הוסיפו לאותו כלל: אם יש תלמידים בכיתה → מזגן — הפעל.',
+                rule_no_people_power_off_before_loop: 'לפני לולאת הרעש הוסיפו כלל חיסכון: אם אין תלמידים בכיתה → כבה אור.',
+                rule_no_people_ac_off_before_loop: 'לפני לולאת הרעש הוסיפו לאותו כלל: אם אין תלמידים בכיתה → מזגן — כבה.',
+                rule_noise_only_power_loop: 'אחרי כללי הנוכחות, לולאת “חזור תמיד” צריכה לבדוק רק רעש: אם הרעש חזק מדי → כבה אור, ואם נהיה שקט → הדלק אור. אל תשימו בתוך אותה לולאה כלל “יש אנשים → הדלק אור”, כי הוא ידליק מחדש לפני שנהיה שקט.'
             };
             if (valueLabels[type] || labels[type]) return valueLabels[type] || labels[type];
             if (String(type).startsWith('rule_')) {
@@ -8621,7 +8753,12 @@
 
 
             const missingList = listItems(uniqueExerciseMissingLabels(result.missing));
-            body.innerHTML = `<h3>🧪 עוד לא פותחים את התרגיל הבא</h3><p>בדקתי את התוכנית מול <strong>${escapeHtml(result.exercise?.title || 'התרגיל הנוכחי')}</strong>.</p><p>כדי להשלים אותו חסר עדיין:</p>${missingList}<p>תקנו את הבלוקים ואז לחצו שוב ▶️.</p>`;
+            const missingOnlyRunStates = (result.missing || []).length > 0 && result.missing.every(item => String(item).startsWith('test_state:'));
+            const nextStepText = missingOnlyRunStates
+                ? 'הקוד נראה מתאים — עכשיו שנו את מצב החיישנים לפי ההנחיה והריצו שוב ▶️.'
+                : 'תקנו את הבלוקים ואז לחצו שוב ▶️.';
+            const missingHeading = missingOnlyRunStates ? 'כדי להשלים אותו צריך עוד בדיקה:' : 'כדי להשלים אותו חסר עדיין:';
+            body.innerHTML = `<h3>🧪 עוד לא פותחים את התרגיל הבא</h3><p>בדקתי את התוכנית מול <strong>${escapeHtml(result.exercise?.title || 'התרגיל הנוכחי')}</strong>.</p><p>${missingHeading}</p>${missingList}<p>${nextStepText}</p>`;
             modal.classList.add('active');
         }
 
