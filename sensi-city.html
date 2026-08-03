@@ -8602,6 +8602,14 @@
                 if (!(hasDryWaterOpen || hasDrySoilOpen)) missing.push('rule_dry_garden_water_on_either_sensor');
                 if (!(hasDryWaterClose || hasDrySoilClose)) missing.push('rule_dry_garden_water_off_either_sensor');
             }
+            if (currentLesson === 10 && title.includes('תרגיל 5')) {
+                const hasDryLoopOpen = hasForeverRuleWithAction('sensor_soil', 'DRY', 'action_water', 'ON')
+                    || hasForeverRuleWithAction('sensor_water_status', 'DRY', 'action_water', 'ON');
+                const hasDryLoopClose = hasForeverRuleWithAction('sensor_soil', 'DRY', 'action_water', 'OFF')
+                    || hasForeverRuleWithAction('sensor_water_status', 'DRY', 'action_water', 'OFF');
+                const hasExcessLoopClose = hasForeverRuleWithAction('sensor_water_status', 'EXCESS', 'action_water', 'OFF');
+                if (!hasDryLoopOpen || !hasDryLoopClose || !hasExcessLoopClose) missing.push('rule_smart_garden_forever_loop');
+            }
             if (currentLesson === 9 && title.includes('תרגיל 3')) {
                 const presenceRulesBeforeLoop = [
                     ['sensor_people', 'YES', 'action_class_power', 'ON', 'rule_people_power_on_before_loop'],
@@ -8776,7 +8784,8 @@
                 rule_noise_only_power_loop: 'אחרי כללי הנוכחות, לולאת “חזור תמיד” צריכה לבדוק רק רעש: אם הרעש חזק מדי → כבה אור, ואם נהיה שקט → הדלק אור. אל תשימו בתוך אותה לולאה כלל “יש אנשים → הדלק אור”, כי הוא ידליק מחדש לפני שנהיה שקט.',
                 rule_dry_garden_say_either_sensor: 'בתרגיל 1 אפשר לבחור אחד משני חיישנים: אם חיישן אדמה = יבשה וצמאה → אמור הודעת גינה, או אם מצב המים = יבש → אמור הודעת גינה.',
                 rule_dry_garden_water_on_either_sensor: 'בתרגיל 2 אפשר לבחור אחד משני חיישנים: אם חיישן אדמה = יבשה וצמאה או אם מצב המים = יבש → פתח טפטפות להשקיה.',
-                rule_dry_garden_water_off_either_sensor: 'בתרגיל 2 צריך גם לסגור טפטפות לחיסכון בתוך כלל היובש — עם חיישן אדמה יבשה או עם מד מצב מים יבש.'
+                rule_dry_garden_water_off_either_sensor: 'בתרגיל 2 צריך גם לסגור טפטפות לחיסכון בתוך כלל היובש — עם חיישן אדמה יבשה או עם מד מצב מים יבש.',
+                rule_smart_garden_forever_loop: 'בתרגיל 5 הנוהל צריך להיות בתוך לולאת “חזור תמיד”: בדיקת יובש שפותחת וסוגרת טפטפות, וגם בדיקת עודף מים שסוגרת טפטפות. כך אפשר לשנות חיישנים בזמן הריצה.'
             };
             if (valueLabels[type] || labels[type]) return valueLabels[type] || labels[type];
             if (String(type).startsWith('rule_')) {
