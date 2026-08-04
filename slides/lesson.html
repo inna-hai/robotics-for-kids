@@ -258,7 +258,7 @@
   </nav>
 
 
-  <script src="../js/lessons-data.js?v=20260720-lesson11-13-merge-v1"></script>
+  <script src="../js/lessons-data.js?v=20260802-lesson-env-reset-v1"></script>
 
   <script>
     const params = new URLSearchParams(window.location.search);
@@ -347,8 +347,10 @@
       const exercises = (lesson.programmingExercises || []).filter((exercise) => exercise.afterFlowMinutes === step.minutes);
       return exercises.flatMap((exercise) => {
         const exerciseNumber = (lesson.programmingExercises || []).indexOf(exercise) + 1;
+        const exerciseSlide = { html: `<span class="time-badge">${step.minutes}</span><div class="exercise-kind">🧩 תרגול תכנות ${exerciseNumber} — עכשיו בכיתה</div><h2>${exercise.title}</h2><p>${exercise.studentPrompt}</p><div class="teacher-box no-scroll"><h3>מה לבקש מהתלמידים עכשיו</h3><ul>${(exercise.testSteps || []).map(testStep => `<li>${testStep}</li>`).join('')}</ul></div><div class="teacher-note"><strong>למדריך:</strong> השקף הזה מגיע מיד אחרי חלק “${step.title}”, כדי שהתרגול יופיע בדיוק בזמן הנכון ברצף השיעור.</div>` };
+        if (exercise.hideSolution) return [exerciseSlide];
         return [
-          { html: `<span class="time-badge">${step.minutes}</span><div class="exercise-kind">🧩 תרגול תכנות ${exerciseNumber} — עכשיו בכיתה</div><h2>${exercise.title}</h2><p>${exercise.studentPrompt}</p><div class="teacher-box no-scroll"><h3>מה לבקש מהתלמידים עכשיו</h3><ul>${(exercise.testSteps || []).map(testStep => `<li>${testStep}</li>`).join('')}</ul></div><div class="teacher-note"><strong>למדריך:</strong> השקף הזה מגיע מיד אחרי חלק “${step.title}”, כדי שהתרגול יופיע בדיוק בזמן הנכון ברצף השיעור.</div>` },
+          exerciseSlide,
           { html: `<span class="time-badge">${step.minutes}</span><div class="exercise-kind">✅ פתרון למדריך — תרגול ${exerciseNumber}</div><h2 class="solution-title">${exercise.answerTitle}</h2>${renderSolutionBlocks(exercise.answerBlocks)}<p class="compact-note"><strong>תוצאה מצופה:</strong> ${exercise.expectedResult}</p><p class="compact-note"><strong>טעות נפוצה:</strong> ${exercise.commonMistake}</p>` }
         ];
       });
