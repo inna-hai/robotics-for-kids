@@ -6786,6 +6786,13 @@
         function debugAfterRun() {
             try { workspace?.highlightBlock?.(null); } catch (error) {}
             debugMode = false;
+            if (currentLesson === 14) {
+                const result = validateActiveExercise();
+                if (!result.ok) {
+                    setDebugStatus(`ההרצה הסתיימה. אפשר לראות מה קרה בסביבה, וכדי להשלים את התרגיל עדיין חסר: ${uniqueExerciseMissingLabels(result.missing).join(' · ')}.`);
+                    return;
+                }
+            }
             setDebugStatus('ההרצה הסתיימה — עכשיו בדקו מה השתנה בסביבה.');
         }
 
@@ -6999,7 +7006,7 @@
                         robot.x = nextX;
                         robot.y = nextY;
                         traceRunEffect('movedBackward');
-                        
+
                     }
                     robot.x = Math.max(40, Math.min(canvas.width - 40, robot.x));
                     robot.y = Math.max(40, Math.min(canvas.height - 40, robot.y));
@@ -7381,6 +7388,23 @@
             return Math.sqrt(dx * dx + dy * dy);
         }
 
+        function distanceFromPointToRect(px, py, rect) {
+            const halfW = (rect.width || 0) / 2;
+            const halfH = (rect.height || 0) / 2;
+            const left = rect.x - halfW;
+            const right = rect.x + halfW;
+            const top = rect.y - halfH;
+            const bottom = rect.y + halfH;
+            const dx = Math.max(left - px, 0, px - right);
+            const dy = Math.max(top - py, 0, py - bottom);
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        function isRobotEdgeTouchingObstacle() {
+            const robotTouchRadius = 30;
+            return distanceFromPointToRect(robot.x, robot.y, objects.wall) <= robotTouchRadius;
+        }
+
         function wouldHitLesson12Fence(nextX, nextY) {
             if (currentLesson !== 12 || !environment.obstacle) return false;
             const dx = nextX - objects.wall.x;
@@ -7416,6 +7440,10 @@
             if (!environment.obstacle) return false;
             if (currentLesson === 12) {
                 return Boolean(robot.hitLesson12Fence);
+            }
+            if (currentLesson === 14) {
+                // Rescue obstacle is detected when Sensi's outer edge touches the obstacle's edge.
+                return isRobotEdgeTouchingObstacle();
             }
             // Touch requires being close (within 70 pixels)
             return distanceToObject(objects.wall) < 70;
@@ -7765,7 +7793,7 @@
                 case 'sensor_touch':
                     return val === 'YES' ? canSenseTouch() : !canSenseTouch();
                 case 'sensor_obstacle': {
-                    const obstacleDetected = currentLesson === 12 ? canSenseTouch() : Boolean(environment.obstacle);
+                    const obstacleDetected = (currentLesson === 12 || currentLesson === 14) ? canSenseTouch() : Boolean(environment.obstacle);
                     return val === 'YES' ? obstacleDetected : !obstacleDetected;
                 }
                 case 'sensor_smell':
@@ -8337,6 +8365,18 @@
                 required.delete('action_sound');
                 required.delete('action_alarm');
             }
+            if (currentLesson === 14) {
+                // In the rescue lesson, “השמע אזעקה” and “אזעקה — הפעל” are equivalent alert actions.
+                // Custom checks below validate either option where an alarm is required.
+                // Also ignore generic “תנועה” text: lesson 14 uses movement blocks, not a motion sensor.
+                required.delete('action_sound');
+                required.delete('action_alarm');
+                required.delete('sensor_motion');
+                if (text.includes('תרגיל 4')) {
+                    // Exercise 4 is summary/presentation only: no new-code gate.
+                    return [];
+                }
+            }
             return [...required];
         }
 
@@ -8662,9 +8702,7 @@
             { lesson: 12, title: 'תרגיל 2', rules: [['sensor_obstacle', 'YES', 'move_backward', null, 'rule_obstacle_move_backward']] },
             { lesson: 13, title: 'תרגיל 1', rules: [['sensor_goal', 'YES', 'turn_around', null, 'rule_goal_turn_around']] },
             { lesson: 13, title: 'תרגיל 2', rules: [['sensor_homeowner', 'YES', 'action_say', null, 'rule_homeowner_say']] },
-            { lesson: 14, title: 'תרגיל 1', rules: [['sensor_smell', 'YES', 'action_safe_route', null, 'rule_smoke_safe_route']] },
-            { lesson: 14, title: 'תרגיל 2', rules: [['sensor_temperature', 'HOT', 'action_alarm', 'ON', 'rule_hot_alarm_on']] },
-            { lesson: 14, title: 'תרגיל 3', rules: [['sensor_obstacle', 'YES', 'action_safe_route', null, 'rule_obstacle_safe_route']] }
+            { lesson: 14, title: 'תרגיל 1', rules: [['sensor_smell', 'YES', 'action_safe_route', null, 'rule_smoke_safe_route']] }
         ];
 
         function validateCustomExerciseRules(exercise) {
@@ -8727,6 +8765,21 @@
             }
             if (currentLesson === 11 && title.includes('תרגיל 5')) {
                 if (!hasLesson11ArmedSafeTouchAlarmRule({ requireForever: true })) missing.push('rule_security_forever_museum_guard');
+            }
+            if (currentLesson === 14 && title.includes('תרגיל 3')) {
+                const hasObstacleSay = hasIfRuleWithAction('sensor_obstacle', 'YES', 'action_say');
+                const hasObstacleSafeRoute = hasIfRuleWithAction('sensor_obstacle', 'YES', 'action_safe_route');
+                const hasObstacleTurn = hasIfRuleWithAction('sensor_obstacle', 'YES', 'turn_right')
+                    || hasIfRuleWithAction('sensor_obstacle', 'YES', 'turn_left');
+                const hasObstacleForward = hasIfRuleWithAction('sensor_obstacle', 'YES', 'move_forward');
+                if (!hasObstacleSay) missing.push('rule_obstacle_say_warning');
+                if (!hasObstacleSafeRoute) missing.push('rule_obstacle_safe_route');
+                if (!hasObstacleTurn || !hasObstacleForward) missing.push('rule_obstacle_manual_navigation');
+            }
+            if (currentLesson === 14 && title.includes('תרגיל 2')) {
+                const hasHotAlert = hasIfRuleWithAction('sensor_temperature', 'HOT', 'action_alarm', 'ON')
+                    || hasIfRuleWithAction('sensor_temperature', 'HOT', 'action_sound', 'ALARM');
+                if (!hasHotAlert) missing.push('rule_hot_alarm_on');
             }
             if (currentLesson === 13 && title.includes('תרגיל 1')) {
                 const hasBurglarAlarm = hasIfRuleWithAction('sensor_burglar', 'YES', 'action_alarm', 'ON')
@@ -8929,6 +8982,10 @@
                 rule_security_armed_safe_touch_alarm: 'בנו כלל שמחבר בין דריכת שמירה לבין אירוע חשוד: אם חושך / עומס מבקרים / דלת צדדית פתוחה → שמירה — דרוך, ובתוך אותו כלל בדקו אם יש נגיעה בכספת → הפעילו אזעקת מוזיאון. נגיעה בכספת לא דורכת את השמירה — היא מפעילה אזעקה רק אחרי שהשמירה נדרכה.',
                 rule_security_forever_museum_guard: 'בתרגיל 5 עטפו את נוהל השמירה בלולאת “חזור תמיד”: בתוך הלולאה בדקו כלל דריכה, ובתוכו נגיעה בכספת → אזעקת מוזיאון. כך אפשר לשנות חיישנים בזמן הריצה ולראות תגובה.',
                 rule_delivery_forever_until_delivered: 'בתרגיל 3 צריך לחבר את המסלול עם העקיפה: בתוך “חזור תמיד” צריך להיות טיפול במכשול — זוז אחורה וסובב — וגם תנאי יעד שמניח משלוח ואומר “נמסר בהצלחה” רק כשהרובוט נוגע בבית.',
+                rule_hot_alarm_on: 'כאשר חיישן החום מזהה חום מסוכן, צריך להתריע. אפשר להשתמש באחת משתי האפשרויות: “אזעקה — הפעל” או “השמע אזעקה”.',
+                rule_obstacle_say_warning: 'כאשר יש מכשול במסלול, קודם צריך להודיע עליו בעזרת בלוק “אמור”, למשל “מכשול במסלול”.',
+                rule_obstacle_safe_route: 'כאשר יש מכשול במסלול, הוסיפו בתוך התנאי גם את הבלוק “חפש דרך בטוחה”.',
+                rule_obstacle_manual_navigation: 'אחרי “חפש דרך בטוחה” צריך להוסיף ניווט אמיתי סביב המכשול: סובב ימינה/שמאלה ואז זוז קדימה בזהירות.',
                 rule_burglar_alarm_on: 'כאשר חיישן גנב מזהה גנב, צריך להפעיל אזעקה מיד. אפשר להשתמש באחת משתי האפשרויות: “אזעקה — הפעל” או “השמע אזעקה”.',
                 rule_quiet_motion_alarm_on: 'הוסיפו גם כלל למצב שבו הגנב לא זוהה ישירות: אם יש תנועה, ובתוך זה בדיקת “אין רעש” — אז להפעיל אזעקה. אין רעש לבד לא מספיק; צריך תנועה + אין רעש.'
             };
