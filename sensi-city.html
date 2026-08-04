@@ -7396,6 +7396,9 @@
 
         function getSoundLevel() {
             if (!environment.sound) return 'QUIET';
+            // In lesson 13, the homeowner is a normal noisy movement near the house.
+            // Pressing “בעל הבית” should immediately mark the noise sensor as active.
+            if (isLesson13HomeGuardContext() && environment.homeowner) return 'SOFT';
             // Lesson 9 classroom noise is ambient: pressing the noise sensor means the classroom is loud,
             // even if the sound icon is not touching the robot.
             if (currentLesson === 9 || isLesson15Zone('school')) return 'LOUD';
@@ -8003,7 +8006,9 @@
             document.getElementById('lightText').textContent = currentLesson === 11
                 ? (sensesLight ? 'אור דלוק' : 'חשוך — דריכה אוטומטית')
                 : (sensesLight ? 'בהיר!' : 'חשוך');
-            document.getElementById('soundText').textContent = soundLevel === 'LOUD' ? 'חזק מדי!' : soundLevel === 'SOFT' ? 'חלש' : 'שקט';
+            document.getElementById('soundText').textContent = isLesson13HomeGuardContext()
+                ? (sensesSound ? 'יש רעש' : 'אין רעש')
+                : (soundLevel === 'LOUD' ? 'חזק מדי!' : soundLevel === 'SOFT' ? 'חלש' : 'שקט');
             document.getElementById('touchText').textContent = sensesTouch ? 'קיר!' : 'פנוי';
             document.getElementById('smellText').textContent = sensesSmoke ? 'עשן!' : 'נקי';
             document.getElementById('tempText').textContent = currentLesson === 10
@@ -8326,6 +8331,12 @@
             if (currentLesson === 12) {
                 required.delete('sensor_door');
             }
+            if (currentLesson === 13) {
+                // In the home-guard lesson, both “אזעקה — הפעל” and “השמע אזעקה” are valid alarm actions.
+                // The custom rule below accepts either, so the generic scanner should not force one block.
+                required.delete('action_sound');
+                required.delete('action_alarm');
+            }
             return [...required];
         }
 
@@ -8454,6 +8465,23 @@
                 return statementBlocksFromInput(block, 'DO').some(child =>
                     child.type === actionType && blockHasFieldValue(child, actionValue)
                 );
+            });
+        }
+
+        function hasNestedIfRuleWithAction(outerSensorType, outerSensorValue, innerSensorType, innerSensorValues, actionType, actionValue = null) {
+            const allowedInnerValues = Array.isArray(innerSensorValues) ? innerSensorValues : [innerSensorValues];
+            return connectedProgramBlocks().some(block => {
+                if (block.type !== 'control_if') return false;
+                const outerCondition = block.getInputTargetBlock?.('COND');
+                if (!outerCondition || outerCondition.type !== outerSensorType || outerCondition.getFieldValue?.('VAL') !== outerSensorValue) return false;
+                return statementBlocksFromInput(block, 'DO').some(innerIf => {
+                    if (innerIf.type !== 'control_if') return false;
+                    const innerCondition = innerIf.getInputTargetBlock?.('COND');
+                    if (!innerCondition || innerCondition.type !== innerSensorType || !allowedInnerValues.includes(innerCondition.getFieldValue?.('VAL'))) return false;
+                    return statementBlocksFromInput(innerIf, 'DO').some(action =>
+                        action.type === actionType && blockHasFieldValue(action, actionValue)
+                    );
+                });
             });
         }
 
@@ -8632,8 +8660,8 @@
             { lesson: 11, title: 'תרגיל 3', rules: [] },
             { lesson: 12, title: 'תרגיל 1', rules: [['sensor_goal', 'YES', 'action_drop_delivery', null, 'rule_goal_drop_delivery']] },
             { lesson: 12, title: 'תרגיל 2', rules: [['sensor_obstacle', 'YES', 'move_backward', null, 'rule_obstacle_move_backward']] },
-            { lesson: 13, title: 'תרגיל 1', rules: [['sensor_burglar', 'YES', 'action_alarm', 'ON', 'rule_burglar_alarm_on'], ['sensor_goal', 'YES', 'turn_around', null, 'rule_goal_turn_around']] },
-            { lesson: 13, title: 'תרגיל 2', rules: [['sensor_burglar', 'YES', 'action_alarm', 'ON', 'rule_burglar_alarm_on'], ['sensor_homeowner', 'YES', 'action_say', null, 'rule_homeowner_say']] },
+            { lesson: 13, title: 'תרגיל 1', rules: [['sensor_goal', 'YES', 'turn_around', null, 'rule_goal_turn_around']] },
+            { lesson: 13, title: 'תרגיל 2', rules: [['sensor_homeowner', 'YES', 'action_say', null, 'rule_homeowner_say']] },
             { lesson: 14, title: 'תרגיל 1', rules: [['sensor_smell', 'YES', 'action_safe_route', null, 'rule_smoke_safe_route']] },
             { lesson: 14, title: 'תרגיל 2', rules: [['sensor_temperature', 'HOT', 'action_alarm', 'ON', 'rule_hot_alarm_on']] },
             { lesson: 14, title: 'תרגיל 3', rules: [['sensor_obstacle', 'YES', 'action_safe_route', null, 'rule_obstacle_safe_route']] }
@@ -8699,6 +8727,19 @@
             }
             if (currentLesson === 11 && title.includes('תרגיל 5')) {
                 if (!hasLesson11ArmedSafeTouchAlarmRule({ requireForever: true })) missing.push('rule_security_forever_museum_guard');
+            }
+            if (currentLesson === 13 && title.includes('תרגיל 1')) {
+                const hasBurglarAlarm = hasIfRuleWithAction('sensor_burglar', 'YES', 'action_alarm', 'ON')
+                    || hasIfRuleWithAction('sensor_burglar', 'YES', 'action_sound', 'ALARM');
+                if (!hasBurglarAlarm) missing.push('rule_burglar_alarm_on');
+            }
+            if (currentLesson === 13 && title.includes('תרגיל 2')) {
+                const hasDirectBurglarAlarm = hasIfRuleWithAction('sensor_burglar', 'YES', 'action_alarm', 'ON')
+                    || hasIfRuleWithAction('sensor_burglar', 'YES', 'action_sound', 'ALARM');
+                const hasQuietMotionAlarm = hasNestedIfRuleWithAction('sensor_motion', 'YES', 'sensor_sound', ['QUIET', 'NO'], 'action_alarm', 'ON')
+                    || hasNestedIfRuleWithAction('sensor_motion', 'YES', 'sensor_sound', ['QUIET', 'NO'], 'action_sound', 'ALARM');
+                if (!hasDirectBurglarAlarm) missing.push('rule_burglar_alarm_on');
+                if (!hasQuietMotionAlarm) missing.push('rule_quiet_motion_alarm_on');
             }
             if (currentLesson === 12 && title.includes('תרגיל 3')) {
                 const hasLoopObstacleRecovery = hasForeverRuleWithAction('sensor_obstacle', 'YES', 'move_backward')
@@ -8887,7 +8928,9 @@
                 rule_smart_garden_forever_loop: 'בתרגיל 5 הנוהל צריך להיות בתוך לולאת “חזור תמיד”: בדיקת יובש שפותחת וסוגרת טפטפות, וגם בדיקת עודף מים שסוגרת טפטפות. כך אפשר לשנות חיישנים בזמן הריצה.',
                 rule_security_armed_safe_touch_alarm: 'בנו כלל שמחבר בין דריכת שמירה לבין אירוע חשוד: אם חושך / עומס מבקרים / דלת צדדית פתוחה → שמירה — דרוך, ובתוך אותו כלל בדקו אם יש נגיעה בכספת → הפעילו אזעקת מוזיאון. נגיעה בכספת לא דורכת את השמירה — היא מפעילה אזעקה רק אחרי שהשמירה נדרכה.',
                 rule_security_forever_museum_guard: 'בתרגיל 5 עטפו את נוהל השמירה בלולאת “חזור תמיד”: בתוך הלולאה בדקו כלל דריכה, ובתוכו נגיעה בכספת → אזעקת מוזיאון. כך אפשר לשנות חיישנים בזמן הריצה ולראות תגובה.',
-                rule_delivery_forever_until_delivered: 'בתרגיל 3 צריך לחבר את המסלול עם העקיפה: בתוך “חזור תמיד” צריך להיות טיפול במכשול — זוז אחורה וסובב — וגם תנאי יעד שמניח משלוח ואומר “נמסר בהצלחה” רק כשהרובוט נוגע בבית.'
+                rule_delivery_forever_until_delivered: 'בתרגיל 3 צריך לחבר את המסלול עם העקיפה: בתוך “חזור תמיד” צריך להיות טיפול במכשול — זוז אחורה וסובב — וגם תנאי יעד שמניח משלוח ואומר “נמסר בהצלחה” רק כשהרובוט נוגע בבית.',
+                rule_burglar_alarm_on: 'כאשר חיישן גנב מזהה גנב, צריך להפעיל אזעקה מיד. אפשר להשתמש באחת משתי האפשרויות: “אזעקה — הפעל” או “השמע אזעקה”.',
+                rule_quiet_motion_alarm_on: 'הוסיפו גם כלל למצב שבו הגנב לא זוהה ישירות: אם יש תנועה, ובתוך זה בדיקת “אין רעש” — אז להפעיל אזעקה. אין רעש לבד לא מספיק; צריך תנועה + אין רעש.'
             };
             if (valueLabels[type] || labels[type]) return valueLabels[type] || labels[type];
             if (String(type).startsWith('rule_')) {
