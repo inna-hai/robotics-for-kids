@@ -733,28 +733,34 @@ test('feedback button stays low in lessons but avoids lower navigation in presen
   assert.doesNotMatch(teachersHtml, /teacher-guide-page|body\.teacher-guide-page/);
 });
 
-test('lesson 14 exposes all rescue-story blocks used by the lesson exercises', () => {
+test('lesson 14 exposes only rescue blocks used by the updated four exercises', () => {
   const lesson14 = lessonObjectSource(14);
   for (const blockLabel of [
-    'אם חום מסוכן',
-    'אם עשן בזירה',
-    'אם חסם במסלול',
-    'אמור הודעת חילוץ',
-    'הפעל אזעקה',
-    'הפעל רחפן חילוץ',
-    'בחר נתיב בטוח',
-    'עקוף לפי נתיב בטוח',
-    'התקדם בזהירות'
+    'אם עשן',
+    'אם חם מדי',
+    'אם מכשול',
+    'אמור הודעה',
+    'חפש דרך בטוחה',
+    'אזעקה — הפעל / השמע אזעקה',
+    'סובב ימינה/שמאלה',
+    'התקדם בזהירות',
+    'עצור תוכנית'
   ]) {
     assertIncludes(lesson14, blockLabel);
   }
-  for (const blockType of ['move_forward', 'route_turn', 'sensor_temperature', 'sensor_smell', 'sensor_obstacle', 'action_say', 'action_alarm', 'action_fan', 'action_safe_route']) {
+  for (const removedLabel of ['הפעל רחפן חילוץ', 'בחר נתיב בטוח', 'עקוף לפי נתיב בטוח', 'אם חסם במסלול']) {
+    assertNotIncludes(lesson14, removedLabel);
+  }
+  for (const blockType of ['move_forward', 'turn_right', 'turn_left', 'sensor_temperature', 'sensor_smell', 'sensor_obstacle', 'action_say', 'action_alarm', 'action_safe_route']) {
     assertMatches(indexHtml, new RegExp(`(movement|sensors|actions):\\s*\\[[^\\]]*'${blockType}'[^\\]]*\\]`));
     assertIncludes(indexHtml, `Blockly.Blocks['${blockType}']`);
   }
   assertIncludes(indexHtml, "isLesson14RescueContext() ? '⬆️ התקדם בזהירות' : '⬆️ זוז קדימה'");
-  assertIncludes(indexHtml, "isLesson14RescueContext() ? '🧭 עקוף לפי נתיב בטוח' : '🧭 סובב לפי המסלול'");
   assertIncludes(indexHtml, "isLesson14RescueContext() ? 'יוצא לחילוץ' : currentLesson === 11 ? 'בודק את האולם' : 'שלום!'");
+  assertIncludes(lessonSlidesHtml, '✅ ארבעת התרגילים');
+  assertIncludes(lessonSlidesHtml, 'תרגיל 4:</strong> סיכום נוהל חילוץ במילים — בלי קוד חדש');
+  assertNotIncludes(lessonSlidesHtml, 'הפעל רחפן חילוץ');
+  assertNotIncludes(lessonSlidesHtml, 'בחר נתיב בטוח');
 });
 
 
