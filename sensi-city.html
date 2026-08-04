@@ -7658,8 +7658,51 @@
         }
 
         function getLesson12HomeTarget() {
-            // Door/front entrance of the lesson 12 house in the background image.
-            return { x: canvas.width * 0.78, y: canvas.height * 0.41 };
+            // Center of the lesson 12 destination house, used for labels/package placement.
+            return { x: canvas.width * 0.83, y: canvas.height * 0.25 };
+        }
+
+        function isPointInsidePolygon(x, y, polygon) {
+            let inside = false;
+            for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+                const xi = polygon[i].x;
+                const yi = polygon[i].y;
+                const xj = polygon[j].x;
+                const yj = polygon[j].y;
+                const intersects = ((yi > y) !== (yj > y)) &&
+                    (x < ((xj - xi) * (y - yi)) / (yj - yi || 0.00001) + xi);
+                if (intersects) inside = !inside;
+            }
+            return inside;
+        }
+
+        function isRobotTouchingLesson12House() {
+            // Match the visible house in assets/lesson12-grocery-home-background.png.
+            // The bushes in front/near the house are intentionally outside this polygon,
+            // so “הגעתי ליעד” turns on only when Sensi really touches the house.
+            const w = canvas.width;
+            const h = canvas.height;
+            const housePolygon = [
+                { x: w * 0.87, y: h * 0.09 }, // chimney top-left
+                { x: w * 0.90, y: h * 0.09 }, // chimney top-right
+                { x: w * 0.90, y: h * 0.16 }, // chimney base
+                { x: w * 0.95, y: h * 0.23 }, // right roof edge
+                { x: w * 0.91, y: h * 0.24 }, // right wall top
+                { x: w * 0.91, y: h * 0.40 }, // right wall bottom
+                { x: w * 0.72, y: h * 0.40 }, // left wall bottom
+                { x: w * 0.72, y: h * 0.24 }, // left wall top
+                { x: w * 0.71, y: h * 0.23 }, // left roof edge
+                { x: w * 0.80, y: h * 0.07 }  // roof peak
+            ];
+            const robotTouchRadius = 18;
+            const probePoints = [
+                { x: robot.x, y: robot.y },
+                { x: robot.x - robotTouchRadius, y: robot.y },
+                { x: robot.x + robotTouchRadius, y: robot.y },
+                { x: robot.x, y: robot.y - robotTouchRadius },
+                { x: robot.x, y: robot.y + robotTouchRadius }
+            ];
+            return probePoints.some((point) => isPointInsidePolygon(point.x, point.y, housePolygon));
         }
 
         function hasDeliveryPackage() {
@@ -7679,10 +7722,7 @@
 
         function canSenseGoal() {
             if (currentLesson === 12) {
-                const home = getLesson12HomeTarget();
-                const dx = robot.x - home.x;
-                const dy = robot.y - home.y;
-                return Math.sqrt(dx * dx + dy * dy) <= 90;
+                return isRobotTouchingLesson12House();
             }
             if (isLesson13HomeGuardContext()) {
                 return getLesson13FenceEndTargets().some((fenceEnd) => {
@@ -8109,7 +8149,7 @@
             9: { hook: '🏫 הכיתה משתנה כל רגע — סנסי צריך לחסוך אנרגיה ולשמור על שקט.', steps: ['בדקו כיתה ריקה וכיתה עם תלמידים, ואז הוסיפו מצב רעש.', 'בנו כללים: כשיש אנשים מדליקים/מפעילים, כשאין — מכבים; ברעש חזק מכבים אור לרגע.', 'בדקו שלושה מצבים: ריק, רגיל, רועש — המערכת צריכה לחסוך ולא להפריע.'] },
             10: { hook: '🌿 הגינה צמאה — אבל השקיה חכמה לא מבזבזת מים.', steps: ['הפעילו אדמה יבשה וראו איך מד מצב המים משתנה.', 'בנו תנאי השקיה: רק כשהאדמה/מצב המים יבש פותחים טפטפות, מחכים, וסוגרים.', 'בדקו יבש, תקין ועודף מים — אסור להשקות כשהמצב כבר תקין או עודף.'] },
             11: { hook: '🏛️ במוזיאון יש גביע יקר — סנסי צריך להבדיל בין מבקר רגיל לסכנה.', steps: ['בחרו איך דורכים את השמירה: חושך, דלת צדדית, עומס מבקרים או דריכה ידנית.', 'אחרי שהשמירה דרוכה, בדקו נגיעה בכספת או דלת פתוחה והפעילו הודעה ואזעקה.', 'בדקו גם מצב לא דרוך: אותו אירוע לא צריך להפעיל אזעקת שווא.'] },
-            12: { hook: '📦 משלוח מחכה בפתח הבית — אבל הדרך לא תמיד פנויה.', steps: ['התחילו ממשימה קלה: הביאו משלוח, סעו לבית, בדקו “הגעתי ליעד”, ואז השתמשו בפעולה “הנח משלוח בפתח הבית”. אין צורך בחיישן דלת.', 'אחר כך הוסיפו גדר ובנו תגובה: אם אין מכשול — זוז קדימה; אם יש — זוז אחורה וסובב.', 'בדקו שהחבילה מגיעה לבית ושסנסי לא מנסה לנסוע דרך הגדר.'] },
+            12: { hook: '📦 משלוח מחכה בפתח הבית — אבל הדרך לא תמיד פנויה.', steps: ['תרגיל 1: התחילו ממשימה קלה — הביאו משלוח, סעו לבית, בדקו “הגעתי ליעד”, ואז השתמשו בפעולה “הנח משלוח בפתח הבית”. אין צורך בחיישן דלת.', 'תרגיל 2: עקיפה בלבד — אם יש מכשול: זוז אחורה, סובב ימינה/שמאלה, זוז קדימה לצד הגדר, סובב חזרה לכיוון הבית, ואז המשך ישר. עדיין לא חייבים לבדוק יעד או להניח משלוח.', 'תרגיל 3: מחברים הכול — מסלול + עקיפה מלאה + יעד + הנחת משלוח בתוך “חזור תמיד”. תרגיל 4 הוא בדיקה בלבד: מריצים את אותה מערכת בלי גדר ועם גדר.'] },
             13: { hook: '🏠 לילה בשכונה — סנסי שומר, אבל לא כל תנועה היא גנב.', steps: ['בנו קודם סיור פשוט לאורך הגדר עם לולאה והסתובב 180° בקצה.', 'הוסיפו בדיקות אבטחה: בעל בית הוא מצב רגיל; גנב שקט הוא מצב חשוד.', 'הריצו שלושה מצבים: אין תנועה, בעל בית, גנב — אזעקה רק במצב המתאים.'] },
             14: { hook: '🛟 קריאת חילוץ הגיעה — קודם מזהים סכנה, ורק אז מתקדמים.', steps: ['פתחו את זירת החילוץ והפעילו חום, עשן או חסם במסלול.', 'בנו סדר עדיפויות: לזהות סכנה, להודיע/להפעיל אזעקה או רחפן, ואז לבחור נתיב בטוח.', 'הריצו כמה סכנות שונות וודאו שסנסי לא מתקדם לפני שבחר דרך בטוחה.'] },
             15: { hook: '🏙️ עכשיו אתם מהנדסי העיר — בוחרים בעיה ובונים פתרון משלכם.', steps: ['בחרו בעיה אחת בעיר החכמה שאתם רוצים לפתור.', 'בחרו לפחות 3 חיישנים ו־3 פעולות, וכתבו כלל קצר לכל מצב.', 'בנו, בדקו, ושפרו עד שאפשר להסביר במשפט: “סנסי בדק ___ ואז עשה ___”.'] }
@@ -8660,6 +8700,15 @@
             if (currentLesson === 11 && title.includes('תרגיל 5')) {
                 if (!hasLesson11ArmedSafeTouchAlarmRule({ requireForever: true })) missing.push('rule_security_forever_museum_guard');
             }
+            if (currentLesson === 12 && title.includes('תרגיל 3')) {
+                const hasLoopObstacleRecovery = hasForeverRuleWithAction('sensor_obstacle', 'YES', 'move_backward')
+                    && (hasForeverRuleWithAction('sensor_obstacle', 'YES', 'turn_right')
+                        || hasForeverRuleWithAction('sensor_obstacle', 'YES', 'turn_left')
+                        || hasForeverRuleWithAction('sensor_obstacle', 'YES', 'turn_around'));
+                const hasLoopDeliveryFinish = hasForeverRuleWithAction('sensor_goal', 'YES', 'action_drop_delivery')
+                    && hasForeverRuleWithAction('sensor_goal', 'YES', 'action_say');
+                if (!hasLoopObstacleRecovery || !hasLoopDeliveryFinish) missing.push('rule_delivery_forever_until_delivered');
+            }
             if (currentLesson === 9 && title.includes('תרגיל 3')) {
                 const presenceRulesBeforeLoop = [
                     ['sensor_people', 'YES', 'action_class_power', 'ON', 'rule_people_power_on_before_loop'],
@@ -8837,7 +8886,8 @@
                 rule_dry_garden_water_off_either_sensor: 'בתרגיל 2 צריך גם לסגור טפטפות לחיסכון בתוך כלל היובש — עם חיישן אדמה יבשה או עם מד מצב מים יבש.',
                 rule_smart_garden_forever_loop: 'בתרגיל 5 הנוהל צריך להיות בתוך לולאת “חזור תמיד”: בדיקת יובש שפותחת וסוגרת טפטפות, וגם בדיקת עודף מים שסוגרת טפטפות. כך אפשר לשנות חיישנים בזמן הריצה.',
                 rule_security_armed_safe_touch_alarm: 'בנו כלל שמחבר בין דריכת שמירה לבין אירוע חשוד: אם חושך / עומס מבקרים / דלת צדדית פתוחה → שמירה — דרוך, ובתוך אותו כלל בדקו אם יש נגיעה בכספת → הפעילו אזעקת מוזיאון. נגיעה בכספת לא דורכת את השמירה — היא מפעילה אזעקה רק אחרי שהשמירה נדרכה.',
-                rule_security_forever_museum_guard: 'בתרגיל 5 עטפו את נוהל השמירה בלולאת “חזור תמיד”: בתוך הלולאה בדקו כלל דריכה, ובתוכו נגיעה בכספת → אזעקת מוזיאון. כך אפשר לשנות חיישנים בזמן הריצה ולראות תגובה.'
+                rule_security_forever_museum_guard: 'בתרגיל 5 עטפו את נוהל השמירה בלולאת “חזור תמיד”: בתוך הלולאה בדקו כלל דריכה, ובתוכו נגיעה בכספת → אזעקת מוזיאון. כך אפשר לשנות חיישנים בזמן הריצה ולראות תגובה.',
+                rule_delivery_forever_until_delivered: 'בתרגיל 3 צריך לחבר את המסלול עם העקיפה: בתוך “חזור תמיד” צריך להיות טיפול במכשול — זוז אחורה וסובב — וגם תנאי יעד שמניח משלוח ואומר “נמסר בהצלחה” רק כשהרובוט נוגע בבית.'
             };
             if (valueLabels[type] || labels[type]) return valueLabels[type] || labels[type];
             if (String(type).startsWith('rule_')) {
