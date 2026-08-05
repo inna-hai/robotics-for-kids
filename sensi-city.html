@@ -4191,7 +4191,7 @@
 
             // Mission board
             const compactMission = currentLesson === 7 || currentLesson === 8 || currentLesson === 9 || currentLesson === 11 || currentLesson === 12 || currentLesson === 13 || currentLesson === 15;
-            const boardX = currentLesson === 7 ? 20 : currentLesson === 8 ? canvas.width - 218 : currentLesson === 9 ? canvas.width - 224 : currentLesson === 11 ? canvas.width - 220 : currentLesson === 12 ? (canvas.width - Math.min(250, canvas.width * 0.44)) / 2 : currentLesson === 13 ? canvas.width - 240 : currentLesson === 15 ? 16 : canvas.width * 0.56;
+            const boardX = currentLesson === 7 ? 20 : currentLesson === 8 ? canvas.width - 218 : currentLesson === 9 ? canvas.width - 224 : currentLesson === 11 ? canvas.width - 220 : currentLesson === 12 ? (canvas.width - Math.min(250, canvas.width * 0.44)) / 2 : currentLesson === 13 ? canvas.width - 240 : currentLesson === 15 ? canvas.width - 210 : canvas.width * 0.56;
             const boardY = currentLesson === 7 ? 40 : currentLesson === 8 ? 8 : currentLesson === 9 ? 42 : currentLesson === 11 ? 40 : currentLesson === 12 ? 44 : currentLesson === 13 ? 48 : currentLesson === 15 ? 8 : canvas.height * 0.12;
             const boardW = currentLesson === 7 ? 190 : currentLesson === 8 ? 210 : currentLesson === 9 ? 196 : currentLesson === 11 ? 198 : currentLesson === 12 ? Math.min(250, canvas.width * 0.44) : currentLesson === 13 ? 220 : currentLesson === 15 ? 194 : canvas.width * 0.36;
             const boardH = currentLesson === 7 ? 70 : currentLesson === 8 ? 78 : currentLesson === 9 ? 70 : currentLesson === 11 ? 74 : currentLesson === 12 ? 62 : currentLesson === 13 ? 82 : currentLesson === 15 ? 58 : 135;
