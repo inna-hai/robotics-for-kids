@@ -803,11 +803,11 @@ test('lesson 15 greenhouse enter and exit blocks switch to lesson 10 garden back
 });
 
 
-test('lesson 15 mission board stays high and on the right side of the map', () => {
+test('lesson 15 mission board stays high, right, and tall enough for its text', () => {
   assertIncludes(indexHtml, 'currentLesson === 15 ? canvas.width - 210 : canvas.width * 0.56');
   assertIncludes(indexHtml, 'currentLesson === 15 ? 8 : canvas.height * 0.12');
   assertIncludes(indexHtml, 'currentLesson === 15 ? 194 : canvas.width * 0.36');
-  assertIncludes(indexHtml, 'currentLesson === 15 ? 58 : 135');
+  assertIncludes(indexHtml, 'currentLesson === 15 ? 70 : 135');
   assertNotIncludes(indexHtml, 'currentLesson === 15 ? 16 : canvas.width * 0.56');
   assertNotIncludes(indexHtml, 'currentLesson === 15 ? canvas.width - 226 : canvas.width * 0.56');
 });
@@ -827,6 +827,16 @@ test('lesson 15 presentation stage 4 has no guide solution slide', () => {
   assertIncludes(lesson15, 'hideSolution: true');
   assertNotIncludes(lesson15, "answerTitle: 'מבנה הצגה'");
   assertNotIncludes(lesson15, "'תנאי מסירה אפשרי: רק אם ___ אז מניחים את המשלוח'");
+});
+
+test('lesson 15 includes one short guide example for the open project', () => {
+  const lesson15 = lessonObjectSource(15);
+  assertIncludes(lesson15, "answerTitle: 'דוגמה קצרה למדריך — משלוח עם תנאי מסירה'");
+  assertIncludes(lesson15, 'סע קדימה לאזור הבא ×3');
+  assertIncludes(lesson15, 'אם יש תלמידים בכיתה = כן');
+  assertIncludes(lesson15, 'אם עוצמת רעש = אין צליל / שקט');
+  assertIncludes(lesson15, 'כל הכבוד על השקט וההקשבה! זכיתם בפרס!');
+  assertIncludes(lesson15, 'הדוגמה היא רק רעיון אחד — לא פתרון חובה');
 });
 
 test('lesson 15 stays open but requires two sensor conditions with actions', () => {
