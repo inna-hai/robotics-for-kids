@@ -12,6 +12,7 @@ let collectedItems = new Set();
 let greetedAlien = false;
 let broadcastPulse = false;
 let reachedGoalDuringRun = false;
+const starsStorageKey = 'sisi-space-stars-best-v1';
 
 function key(pos) { return `${pos.x},${pos.y}`; }
 function same(a, b) { return a.x === b.x && a.y === b.y; }
@@ -27,13 +28,57 @@ function carriedItemIcon() {
   return telescope && collectedItems.has(telescope.id) ? telescope.icon : '';
 }
 
+function readStarsProgress() {
+  try {
+    return JSON.parse(localStorage.getItem(starsStorageKey) || '{}');
+  } catch {
+    return {};
+  }
+}
+
+function writeStarsProgress(progress) {
+  try {
+    localStorage.setItem(starsStorageKey, JSON.stringify(progress));
+  } catch {
+    // Progress is optional; the game should continue even if storage is unavailable.
+  }
+}
+
+function totalSavedStars() {
+  return Object.values(readStarsProgress()).reduce((sum, value) => sum + Number(value || 0), 0);
+}
+
+function renderStarsProgress() {
+  const starsProgress = document.getElementById('stars-progress');
+  if (!starsProgress) return;
+  starsProgress.textContent = `⭐ כוכבים שנאספו בשיעור החלל: ${totalSavedStars()}`;
+}
+
+function saveBestStarsForLesson() {
+  const progress = readStarsProgress();
+  const lessonKey = String(lesson.id);
+  const previousBest = Number(progress[lessonKey] || 0);
+  const currentStars = collected.size;
+  if (currentStars > previousBest) {
+    progress[lessonKey] = currentStars;
+    writeStarsProgress(progress);
+    renderStarsProgress();
+    return true;
+  }
+  return false;
+}
+
 function obstacleIcon() {
   if (lesson.id === 4) return '🔥';
   if (lesson.id === 6) return '☄️';
   return '🪨';
 }
 
-function goalIcon() { return lesson.id === 5 ? '👽' : '🏁'; }
+function goalIcon() {
+  if (lesson.id === 5) return '👽';
+  if (lesson.id === 12) return '🌍';
+  return '🏁';
+}
 
 function renderGuide() {
   const required = requiredItems();
@@ -169,9 +214,11 @@ async function runProgram() {
     return;
   }
   if (same(robot, lesson.goal)) {
+    const improvedStars = saveBestStarsForLesson();
     const bonus = collected.size ? ` וגם אספה ${collected.size} כוכבים!` : '!';
     const action = lesson.id === 5 && greetedAlien ? ' ושידרה שלום לחייזר 📡👽' : '';
-    const message = `יש! סיסי הגיעה ליעד${action}${bonus}`;
+    const record = improvedStars && collected.size ? ` שיא חדש במשימה: ${collected.size} כוכבים ⭐` : '';
+    const message = `יש! סיסי הגיעה ליעד${action}${bonus}${record}`;
     setResult(message, true);
     window.SisiCourseCertificate?.show({ lessons, lesson });
     window.SisiSuccessDialog?.show({ message, lessons, lesson, onRepeat: repeatCurrentLesson });
@@ -187,6 +234,8 @@ function init() {
   document.getElementById('lesson-emoji').textContent = lesson.emoji;
   document.getElementById('mission').textContent = lesson.mission;
   document.getElementById('fact').innerHTML = `<b>עובדת חלל:</b> ${lesson.spaceFact}`;
+  document.querySelector('.side-card h2').insertAdjacentHTML('afterend', '<div class="stars-progress" id="stars-progress" aria-live="polite"></div>');
+  renderStarsProgress();
   renderGuide();
 
   if (lesson.id === 5) {

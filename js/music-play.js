@@ -5,6 +5,16 @@ const notes = window.MUSIC_NOTES || {};
 const lesson = lessons.find((item) => item.id === lessonId) || lessons[0];
 let build = [];
 let selectedThinking = null;
+const shuffledThinkingOptions = shuffleOptions(lesson.thinkingTask?.options || []);
+
+function shuffleOptions(options) {
+  const shuffled = [...options];
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+  }
+  return shuffled;
+}
 
 function noteChip(noteKey, extraClass = '') {
   const note = notes[noteKey];
@@ -25,7 +35,7 @@ function renderBuild() {
 function renderThinkingTask() {
   const task = lesson.thinkingTask;
   document.getElementById('thinking-question').textContent = task.question;
-  document.getElementById('thinking-options').innerHTML = task.options.map((option) => `
+  document.getElementById('thinking-options').innerHTML = shuffledThinkingOptions.map((option) => `
     <button type="button" class="thinking-option ${selectedThinking === option.id ? 'active' : ''}" data-thinking="${option.id}">${option.text}</button>
   `).join('');
   document.querySelectorAll('[data-thinking]').forEach((button) => {
@@ -59,10 +69,10 @@ function playTone(noteKey) {
   oscillator.connect(gain);
   gain.connect(context.destination);
   gain.gain.setValueAtTime(0.001, context.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.16, context.currentTime + 0.02);
-  gain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.22);
+  gain.gain.exponentialRampToValueAtTime(0.36, context.currentTime + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.32);
   oscillator.start();
-  oscillator.stop(context.currentTime + 0.24);
+  oscillator.stop(context.currentTime + 0.34);
 }
 
 async function playSequence(sequence) {
@@ -130,7 +140,12 @@ function init() {
   document.getElementById('check').addEventListener('click', checkPattern);
   document.getElementById('undo').addEventListener('click', () => { build.pop(); renderBuild(); setResult(''); });
   document.getElementById('clear').addEventListener('click', () => { build = []; selectedThinking = null; renderBuild(); renderThinkingTask(); setResult(''); });
-  document.getElementById('demo').addEventListener('click', () => { build = [...lesson.target]; renderBuild(); setResult('הדפוס נטען. עכשיו פתרו גם את אתגר החשיבה.'); });
+  document.getElementById('demo').addEventListener('click', () => {
+    build = lesson.target.length ? [lesson.target[0]] : [];
+    renderBuild();
+    if (lesson.target[0]) playTone(lesson.target[0]);
+    setResult('דוגמה קטנה נטענה: הצליל הראשון נוסף. המשיכו את הרצף בעצמכם.');
+  });
 
   document.getElementById('lesson-nav').innerHTML = lessons.map((item) => `
     <a class="${item.id === lesson.id ? 'active' : ''}" href="music-play.html?lesson=${item.id}">${item.id}</a>

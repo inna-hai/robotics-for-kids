@@ -123,6 +123,49 @@ test('space course explains when a route passes the goal instead of reporting a 
   assertIncludes(playSource, 'המסלול המשיך צעד אחד יותר מדי');
 });
 
+test('lesson 9 includes the requested top-right bonus star', () => {
+  const lesson = lessons.find((item) => item.id === 9);
+  assert.ok(lesson.stars.some((star) => star.x === 6 && star.y === 1), 'Lesson 9 should include a requested star at the top-right corner 6,1');
+  assert.equal(lesson.obstacles.some((obstacle) => obstacle.x === 1 && obstacle.y === 5), false, 'Lesson 9 should not keep the bottom-left obstacle');
+});
+
+test('lesson 11 includes the requested bottom-left obstacle', () => {
+  const lesson = lessons.find((item) => item.id === 11);
+  assert.ok(lesson.obstacles.some((obstacle) => obstacle.x === 1 && obstacle.y === 5), 'Lesson 11 should include a requested obstacle at the bottom-left corner 1,5');
+});
+
+test('lesson 12 goal is moved one cell left', () => {
+  const lesson = lessons.find((item) => item.id === 12);
+  assert.equal(lesson.goal.x, 5);
+  assert.equal(lesson.goal.y, 5);
+  assert.equal(lesson.commands.at(-1), 'left', 'Lesson 12 demo should end with a left move into the shifted goal');
+});
+
+test('lesson 12 uses Earth as the goal and includes an extra obstacle', () => {
+  const lesson = lessons.find((item) => item.id === 12);
+  assert.ok(lesson.obstacles.some((obstacle) => obstacle.x === 1 && obstacle.y === 4), 'Lesson 12 should include the extra obstacle at 1,4');
+  assertIncludes(playSource, "if (lesson.id === 12) return '🌍';");
+});
+
+test('lesson 12 ends with an open star-collection challenge', () => {
+  const lesson = lessons.find((item) => item.id === 12);
+  assertIncludes(lesson.mission, 'אתגר פתוח לסיום');
+  assertIncludes(lesson.mission, 'לאסוף כמה שיותר כוכבים');
+});
+
+test('lesson 12 includes the requested bottom-left-adjacent star', () => {
+  const lesson = lessons.find((item) => item.id === 12);
+  assert.ok(lesson.stars.some((star) => star.x === 2 && star.y === 5), 'Lesson 12 should include a star to the right of the bottom-left corner at 2,5');
+});
+
+test('space course shows a total collected stars counter without a max total', () => {
+  assertIncludes(playSource, 'sisi-space-stars-best-v1');
+  assertIncludes(playSource, 'function saveBestStarsForLesson()');
+  assertIncludes(playSource, '⭐ כוכבים שנאספו בשיעור החלל:');
+  assertIncludes(playSource, 'שיא חדש במשימה');
+  assertIncludes(spaceCss, '.stars-progress');
+});
+
 test('interactive play page exposes simple controls, run/reset flow, and lesson navigation', () => {
   assertIncludes(playHtml, 'שיעור חלל • סיסי בחלל • משימת תכנות קצרה');
   assertIncludes(playHtml, 'שיעור חלל אינטראקטיבי');

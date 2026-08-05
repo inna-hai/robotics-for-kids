@@ -63,6 +63,15 @@ test('music lesson data has twelve pattern challenges with valid notes', () => {
   }
 });
 
+test('music lesson 1 uses child-friendly wording for the first thinking challenge', () => {
+  const lesson = lessons.find((item) => item.id === 1);
+  assert.equal(lesson.thinkingTask.question, 'מה קורה ברצף הזה?');
+  assert.equal(lesson.thinkingTask.options[0].text, 'הצלילים שונים אחד מהשני');
+  assert.equal(lesson.thinkingTask.options[2].text, 'יש רק צליל אחד');
+  assert.ok(!lessonsSource.includes('מה קורה בדפוס הזה?'));
+  assert.ok(!lessonsSource.includes('הצלילים עולים אחד־אחד'));
+});
+
 test('music play page exposes pattern-building controls instead of grid movement controls', () => {
   assertIncludes(playHtml, 'notes-bank');
   assertIncludes(playHtml, 'pattern-target');
@@ -77,16 +86,21 @@ test('music play page exposes pattern-building controls instead of grid movement
   assert.ok(!playHtml.includes('data-cmd="left"'), 'Music lesson should not use board navigation buttons');
 });
 
-test('music engine checks order, supports demo pattern, and can play tones', () => {
+test('music engine checks order, supports a first-note demo hint, and can play tones', () => {
   assertIncludes(playSource, 'function checkPattern()');
   assertIncludes(playSource, 'build.every((note, index) => note === lesson.target[index])');
   assertIncludes(playSource, 'function playTone(noteKey)');
   assertIncludes(playSource, 'function renderThinkingTask()');
+  assertIncludes(playSource, 'function shuffleOptions(options)');
+  assertIncludes(playSource, 'const shuffledThinkingOptions = shuffleOptions');
+  assertIncludes(playSource, 'shuffledThinkingOptions.map');
   assertIncludes(playSource, 'function thinkingAnswerOk()');
   assertIncludes(playSource, 'אתגר החשיבה');
   assertIncludes(playSource, 'debug-hint');
   assertIncludes(playSource, 'window.AudioContext || window.webkitAudioContext');
-  assertIncludes(playSource, 'build = [...lesson.target]');
+  assertIncludes(playSource, 'build = lesson.target.length ? [lesson.target[0]] : []');
+  assertIncludes(playSource, 'דוגמה קטנה נטענה');
+  assert.ok(!playSource.includes('build = [...lesson.target]'), 'Demo should not reveal the full answer');
   assertIncludes(playSource, 'הצליל מספר');
 });
 
