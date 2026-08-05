@@ -803,6 +803,15 @@ test('lesson 15 greenhouse enter and exit blocks switch to lesson 10 garden back
 });
 
 
+test('lesson 15 mission board does not cover the rescue zone button on the map', () => {
+  assertIncludes(indexHtml, 'currentLesson === 15 ? 16 : canvas.width * 0.56');
+  assertIncludes(indexHtml, 'currentLesson === 15 ? 8 : canvas.height * 0.12');
+  assertIncludes(indexHtml, 'currentLesson === 15 ? 194 : canvas.width * 0.36');
+  assertIncludes(indexHtml, 'currentLesson === 15 ? 58 : 135');
+  assertNotIncludes(indexHtml, 'currentLesson === 15 ? canvas.width - 226 : canvas.width * 0.56');
+});
+
+
 test('lesson 15 presentation examples match available map zones', () => {
   const lesson15 = lessonObjectSource(15);
   assertIncludes(lesson15, 'שילוב: גינה מתייבשת + חום בחממה');
