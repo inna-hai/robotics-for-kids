@@ -39,7 +39,7 @@
             background: var(--white);
             padding: 0.55rem 0.9rem;
             display: grid;
-            grid-template-columns: minmax(170px, auto) minmax(0, 1fr) auto;
+            grid-template-columns: auto auto minmax(0, 1fr) auto;
             align-items: center;
             gap: 0.65rem;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
@@ -75,7 +75,7 @@
             white-space: nowrap;
         }
 
-        .home-link, .about-link, .city-link {
+        .about-link, .city-link {
             font-size: 1.25rem;
             text-decoration: none;
             margin-right: 0.25rem;
@@ -84,7 +84,7 @@
             flex-shrink: 0;
         }
 
-        .home-link:hover, .about-link:hover, .city-link:hover {
+        .about-link:hover, .city-link:hover {
             opacity: 1;
             transform: scale(1.2);
         }
@@ -286,12 +286,19 @@
         /* ===== MAIN LAYOUT ===== */
         .main-container {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            grid-template-columns: minmax(0, 3fr) minmax(320px, 2fr);
             flex: 1;
             min-height: 0;
             gap: 1rem;
             padding: 1rem;
             overflow: auto;
+
+            transition: grid-template-columns .25s ease;
+        }
+
+        .main-container.stage-expanded {
+            grid-template-columns: minmax(0, 7fr) minmax(260px, 3fr);
+
         }
 
         /* ===== LEFT SIDE - ROBOT ===== */
@@ -305,18 +312,85 @@
             min-width: 0;
             min-height: 0;
             overflow: auto;
+
+            overflow: overlay;
+            clip-path: inset(0 round 2rem);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(155, 93, 229, .38) transparent;
+        }
+
+        .robot-section::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .robot-section::-webkit-scrollbar-track {
+            background: transparent;
+            margin: 18px 0;
+        }
+
+        .robot-section::-webkit-scrollbar-thumb {
+            background: rgba(155, 93, 229, .34);
+            border: 2px solid rgba(255,255,255,.9);
+            border-radius: 999px;
+        }
+
+        .robot-section::-webkit-scrollbar-thumb:hover {
+            background: rgba(155, 93, 229, .55);
+        }
+
+        .main-container.stage-expanded .robot-section {
+            scrollbar-color: rgba(155, 93, 229, .30) transparent;
+
         }
 
         .robot-title {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .5rem;
             text-align: center;
             font-size: 1.3rem;
             font-weight: 700;
             color: var(--dark);
             margin-bottom: .45rem;
+
+            min-height: 38px;
+            padding: 0 2.6rem;
+
         }
 
         .robot-title span {
             color: var(--purple);
+        }
+
+        .stage-zoom-toggle {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 38px;
+            height: 38px;
+            border: 0;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #4c1d95;
+            font-size: 1.05rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(76,29,149,.14);
+            transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+        }
+
+        .stage-zoom-toggle:hover {
+            background: #ddd6fe;
+            transform: translateY(-50%) scale(1.06);
+            box-shadow: 0 6px 16px rgba(76,29,149,.22);
+        }
+
+        .stage-zoom-toggle[aria-pressed="true"] {
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            color: #fff;
         }
 
         .presentation-link {
@@ -346,7 +420,14 @@
             border-radius: 1.5rem;
             position: relative;
             overflow: hidden;
-            min-height: clamp(190px, 34vh, 300px);
+
+            min-height: clamp(250px, 42vh, 420px);
+            transition: min-height .25s ease;
+        }
+
+        .main-container.stage-expanded .robot-stage {
+            min-height: clamp(360px, 62vh, 680px);
+
         }
 
         .robot-stage canvas {
@@ -1146,6 +1227,27 @@
         .exercise-detail-card ul { margin: .35rem 1.15rem .55rem 0; padding: 0; line-height: 1.55; }
         .exercise-detail-card li { margin: .18rem 0; }
         .exercise-detail-card .detail-label { color: #0f172a; font-weight: 900; }
+        .solution-toggle {
+            margin: .6rem 0 .45rem;
+            border: 2px dashed #c4b5fd;
+            border-radius: .8rem;
+            background: #faf5ff;
+            overflow: hidden;
+        }
+        .solution-toggle summary {
+            cursor: pointer;
+            padding: .55rem .7rem;
+            color: #5b21b6;
+            font-weight: 900;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+        }
+        .solution-toggle summary::-webkit-details-marker { display: none; }
+        .solution-toggle summary::before { content: '◀'; font-size: .85rem; transition: transform .18s ease; }
+        .solution-toggle[open] summary::before { transform: rotate(-90deg); }
+        .solution-toggle-content { padding: 0 .9rem .75rem; }
 
         .tip-box {
             background: linear-gradient(135deg, #FFF3CD, #FFEAA7);
@@ -1192,11 +1294,16 @@
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1100px) {
             .header {
-                grid-template-columns: 1fr;
-                justify-items: center;
+                grid-template-columns: auto minmax(120px, auto) minmax(0, 1fr) auto;
+                justify-items: stretch;
+                gap: 0.45rem;
             }
-            .play-buttons { justify-content: center; min-width: 0; }
+            .logo-text { font-size: 1rem; }
+            .logo-robot { font-size: 1.55rem; }
+            .play-buttons { justify-content: flex-end; min-width: max-content; }
             .lesson-tabs { max-width: 100%; justify-content: flex-start; }
+            .btn-play { padding: 0.48rem 0.68rem; font-size: 0.86rem; gap: 0.28rem; }
+            .presentation-link { padding: 0.48rem 0.68rem; font-size: 0.86rem; }
         }
 
         @media (max-width: 900px) {
@@ -1215,10 +1322,10 @@
 <body>
     <!-- Header -->
     <header class="header">
+        <a href="index.html" class="home-link">🏠 ראשי</a>
         <div class="logo">
             <span class="logo-robot">🤖</span>
             <span class="logo-text">סנסי בעיר החכמה</span>
-            <a href="index.html" class="home-link">🏠 ראשי</a>
             <a href="smart-city.html" class="city-link" title="מפת 15 השיעורים">🏙️</a>
             <a href="about.html?v=20260709-smart-city-about" class="about-link" title="אודות מסלול 15 השיעורים">ℹ️</a>
         </div>
@@ -1246,7 +1353,10 @@
     <div class="main-container">
         <!-- Left: Robot -->
         <div class="robot-section">
-            <h2 class="robot-title">👁️ שיעור 1: <span>הרובוט רואה!</span></h2>
+            <h2 class="robot-title">
+                <span class="robot-title-text">👁️ שיעור 1: <span>הרובוט רואה!</span></span>
+                <button class="stage-zoom-toggle" id="stageZoomToggle" type="button" onclick="toggleStageZoom()" aria-pressed="false" title="הגדל את מסך ההרצה" aria-label="הגדל את מסך ההרצה">🔍</button>
+            </h2>
 
             <div class="top-exercise-toc" id="topExerciseToc" aria-live="polite">
                 <h3><span>📚 תוכן התרגילים</span><span class="exercise-progress-note">השלימו את התרגיל כדי לפתוח את התרגיל הבא</span></h3>
@@ -1508,7 +1618,9 @@
         </div>
     </div>
 
-    <script src="js/lessons-data.js?v=20260720-lesson11-13-merge-v1"></script>
+
+    <script src="js/lessons-data.js?v=20260805-lesson15-open-project-v2"></script>
+
     <script>
         // ===== STATE =====
         let currentLesson = 1;
@@ -1522,6 +1634,8 @@
         let gardenRecoveryStartedAt = null;
         let gardenRecoveryStartProgress = 0;
         let environment = { light: false, sound: false, obstacle: false, smoke: false, temperatureHot: false, recycleColor: 'NONE', cars: false, pedestrian: false, people: false, soilDry: false, armedMode: false, motion: false, safeTouch: false, visitorCount: 0, burglar: false, homeowner: false, doorOpen: false, deliveryPackage: false, deliveryDropped: false, deliveryDropTarget: null };
+        const MUSEUM_MAX_VISITORS = 16;
+        const MUSEUM_MOTION_VISITOR_THRESHOLD = 10;
         let smokeStartedAt = null;
         let burglarStartedAt = null;
         let burglarCaughtAt = null;
@@ -1919,7 +2033,7 @@
             const h = canvas.height;
             const targetsByZone = {
                 museum: [{ id: 'museum-door', x: w * 0.50, y: h * 0.64, label: 'פתח המוזיאון' }],
-                school: [{ id: 'school-door', x: w * 0.50, y: h * 0.66, label: 'כניסה לבית הספר' }],
+                school: [{ id: 'school-door', x: w * 0.29, y: h * 0.78, label: 'פתח בית הספר — סוף המדרגות' }],
                 garden: [{ id: 'greenhouse-door', x: w * 0.17, y: h * 0.71, label: 'פתח החממה' }],
                 grocery: [{ id: 'grocery-door', x: w * 0.49, y: h * 0.66, label: 'פתח המכולת' }],
                 homes: [
@@ -2100,7 +2214,7 @@
                     ctx.fillStyle = 'rgba(253,230,138,.22)';
                     ctx.fillRect(0, 0, w, h);
                 }
-                const visitors = Math.min(environment.visitorCount || (environment.people ? 4 : 0), 9);
+                const visitors = Math.min(environment.visitorCount || (environment.people ? 4 : 0), MUSEUM_MAX_VISITORS);
                 for (let i = 0; i < visitors; i++) {
                     ctx.font = '30px Arial';
                     ctx.fillText(i % 2 ? '🧑' : '👩', w * (.30 + (i % 5) * .08), h * (.70 + Math.floor(i / 5) * .08));
@@ -2704,7 +2818,7 @@
             const t = Date.now() / 1000;
             const museumLightsOn = environment.light;
             const armed = isSystemArmed();
-            const motion = environment.motion;
+            const motion = canSenseMotion();
             const doorOpen = environment.doorOpen;
             const safeTouch = environment.safeTouch;
             const alarm = robot.alarmOn;
@@ -3242,11 +3356,12 @@
             }
 
             // Museum visitors: each click on “הוסף מבקר” adds a visible person in the hall.
+            // The hall fills from open spaces across the room; only later do visitors stand close to the vault.
             // More than 5 visitors turns on the “too many visitors” sensor for students to use.
             const visitorCount = environment.visitorCount || 0;
             if (visitorCount > 0) {
                 ctx.save();
-                const maxShownVisitors = Math.min(visitorCount, 9);
+                const maxShownVisitors = Math.min(visitorCount, MUSEUM_MAX_VISITORS);
                 const visitors = [
                     { shirt: '#1d4ed8', skin: '#fde68a', hair: '#3f2a1d', hat: null, height: 1.00, pose: -1, facing: -1 },
                     { shirt: '#be123c', skin: '#f8d4a6', hair: '#111827', hat: '#facc15', height: 0.92, pose: 1, facing: 1 },
@@ -3259,17 +3374,17 @@
                     { shirt: '#2563eb', skin: '#fee2b3', hair: '#78350f', hat: null, height: 1.06, pose: 1, facing: 0 }
                 ];
                 const visitorSpots = [
-                    // Visitors enter from different sides; new visitors push the group toward the vault.
-                    [frameX + 56, floorY - 6], [frameX + frameW - 68, floorY - 8], [w * 0.43, floorY - 6],
-                    [frameX + 116, floorY - 7], [w * 0.56, floorY - 5], [safeX - vaultW * 0.34, floorY - 7],
-                    [safeX - vaultW * 0.18, floorY - 6], [safeX + vaultW * 0.02, floorY - 5], [safeX + vaultW * 0.18, floorY - 6]
+                    // Visitors spread into empty places around the museum before the vault area gets crowded.
+                    [frameX + 58, floorY - 8], [frameX + 130, floorY - 10], [w * 0.36, floorY - 7], [w * 0.48, floorY - 9],
+                    [frameX + 88, floorY + 34], [w * 0.31, floorY + 36], [w * 0.42, floorY + 33], [w * 0.55, floorY + 35],
+                    [frameX + frameW - 70, floorY + 26], [safeX - vaultW * 0.16, floorY - 6], [safeX + vaultW * 0.05, floorY + 34], [safeX + vaultW * 0.22, floorY - 9],
+                    [frameX + 170, floorY + 70], [w * 0.38, floorY + 72], [w * 0.51, floorY + 72], [frameX + frameW - 112, floorY + 68]
                 ];
-                const crowdShift = Math.min(38, Math.max(0, visitorCount - 5) * 9);
+                const overflowShift = Math.max(0, visitorCount - MUSEUM_MAX_VISITORS) * 2;
                 for (let i = 0; i < maxShownVisitors; i++) {
                     const style = visitors[i % visitors.length];
                     const spot = visitorSpots[i];
-                    const pushDirection = spot[0] < safeX ? 1 : -0.4;
-                    const vx = spot[0] + crowdShift * pushDirection;
+                    const vx = spot[0] + (i % 2 ? overflowShift : -overflowShift);
                     const vy = spot[1];
                     const personScale = style.height * 0.76;
                     ctx.save();
@@ -3340,23 +3455,69 @@
                 ctx.restore();
             }
 
-            // Suspicious figure stays left of the vault and away from Sensi.
+            // Motion-near-vault event: the sensor reacts to an actual visitor near the vault.
+            // Use radar rings and a small sensor badge instead of drawing an extra mysterious person.
             if (motion) {
-                const sx = safeX - vaultW * 0.74 + Math.sin(t * 1.4) * 8;
-                const sy = floorY + 50;
+                const targetX = safeX - vaultW * 0.16 + Math.sin(t * 1.8) * 4;
+                const targetY = floorY + 28;
+                const sensorX = vaultX + vaultW * 0.15;
+                const sensorY = vaultY + vaultH * 0.36;
+                const pulse = (Math.sin(t * 5) + 1) / 2;
                 ctx.save();
-                ctx.globalAlpha = armed ? 0.68 : 0.40;
-                ctx.fillStyle = '#09090b';
+
+                // Detection zone around the visitor closest to the vault.
+                const zone = ctx.createRadialGradient(targetX, targetY, 8, targetX, targetY, 74);
+                zone.addColorStop(0, 'rgba(248,113,113,.35)');
+                zone.addColorStop(0.48, 'rgba(239,68,68,.16)');
+                zone.addColorStop(1, 'rgba(239,68,68,0)');
+                ctx.fillStyle = zone;
                 ctx.beginPath();
-                ctx.ellipse(sx, sy + 38, 21, 42, -0.12, 0, Math.PI * 2);
+                ctx.arc(targetX, targetY, 74, 0, Math.PI * 2);
                 ctx.fill();
+
+                // Pulsing radar rings clearly mark "movement detected".
+                ctx.strokeStyle = armed ? '#ef4444' : '#f97316';
+                ctx.lineWidth = 2.6;
+                for (let i = 0; i < 3; i++) {
+                    ctx.globalAlpha = 0.70 - i * 0.18;
+                    ctx.beginPath();
+                    ctx.arc(targetX, targetY, 20 + i * 16 + pulse * 5, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+
+                // Tiny warning sign and label inside the pulsing detection circle.
+                const signX = targetX;
+                const signY = targetY - 8;
+                ctx.globalAlpha = 0.98;
+                ctx.fillStyle = '#facc15';
+                ctx.strokeStyle = '#7f1d1d';
+                ctx.lineWidth = 2;
                 ctx.beginPath();
-                ctx.arc(sx, sy - 1, 13, 0, Math.PI * 2);
+                ctx.moveTo(signX, signY - 16);
+                ctx.lineTo(signX - 18, signY + 15);
+                ctx.lineTo(signX + 18, signY + 15);
+                ctx.closePath();
                 ctx.fill();
-                ctx.globalAlpha = 0.22;
+                ctx.stroke();
+                ctx.fillStyle = '#7f1d1d';
+                ctx.font = '900 17px Arial';
+                ctx.fillText('!', signX, signY + 8);
+
+                // Small in-circle label that does not cover the museum scene.
+                const labelX = targetX;
+                const labelY = targetY + 32;
+                ctx.fillStyle = 'rgba(127,29,29,.90)';
+                ctx.strokeStyle = 'rgba(254,202,202,.82)';
+                ctx.lineWidth = 1.2;
                 ctx.beginPath();
-                ctx.ellipse(sx + 17, sy + 82, 48, 11, 0.10, 0, Math.PI * 2);
+                ctx.roundRect(labelX - 48, labelY - 13, 96, 25, 9);
                 ctx.fill();
+                ctx.stroke();
+                ctx.fillStyle = '#fff7ed';
+                ctx.font = 'bold 9.5px Rubik';
+                ctx.fillText('תנועה ליד הכספת', labelX, labelY - 2);
+                ctx.font = '8.5px Rubik';
+                ctx.fillText('חיישן נדלק', labelX, labelY + 9);
                 ctx.restore();
             }
 
@@ -4030,10 +4191,10 @@
 
             // Mission board
             const compactMission = currentLesson === 7 || currentLesson === 8 || currentLesson === 9 || currentLesson === 11 || currentLesson === 12 || currentLesson === 13 || currentLesson === 15;
-            const boardX = currentLesson === 7 ? 20 : currentLesson === 8 ? canvas.width - 218 : currentLesson === 9 ? canvas.width - 224 : currentLesson === 11 ? canvas.width - 220 : currentLesson === 12 ? (canvas.width - Math.min(250, canvas.width * 0.44)) / 2 : currentLesson === 13 ? canvas.width - 240 : currentLesson === 15 ? canvas.width - 226 : canvas.width * 0.56;
-            const boardY = currentLesson === 7 ? 40 : currentLesson === 8 ? 8 : currentLesson === 9 ? 42 : currentLesson === 11 ? 40 : currentLesson === 12 ? 44 : currentLesson === 13 ? 48 : currentLesson === 15 ? 44 : canvas.height * 0.12;
-            const boardW = currentLesson === 7 ? 190 : currentLesson === 8 ? 210 : currentLesson === 9 ? 196 : currentLesson === 11 ? 198 : currentLesson === 12 ? Math.min(250, canvas.width * 0.44) : currentLesson === 13 ? 220 : currentLesson === 15 ? 206 : canvas.width * 0.36;
-            const boardH = currentLesson === 7 ? 70 : currentLesson === 8 ? 78 : currentLesson === 9 ? 70 : currentLesson === 11 ? 74 : currentLesson === 12 ? 62 : currentLesson === 13 ? 82 : currentLesson === 15 ? 66 : 135;
+            const boardX = currentLesson === 7 ? 20 : currentLesson === 8 ? canvas.width - 218 : currentLesson === 9 ? canvas.width - 224 : currentLesson === 11 ? canvas.width - 220 : currentLesson === 12 ? (canvas.width - Math.min(250, canvas.width * 0.44)) / 2 : currentLesson === 13 ? canvas.width - 240 : currentLesson === 15 ? canvas.width - 210 : canvas.width * 0.56;
+            const boardY = currentLesson === 7 ? 40 : currentLesson === 8 ? 8 : currentLesson === 9 ? 42 : currentLesson === 11 ? 40 : currentLesson === 12 ? 44 : currentLesson === 13 ? 48 : currentLesson === 15 ? 8 : canvas.height * 0.12;
+            const boardW = currentLesson === 7 ? 190 : currentLesson === 8 ? 210 : currentLesson === 9 ? 196 : currentLesson === 11 ? 198 : currentLesson === 12 ? Math.min(250, canvas.width * 0.44) : currentLesson === 13 ? 220 : currentLesson === 15 ? 194 : canvas.width * 0.36;
+            const boardH = currentLesson === 7 ? 70 : currentLesson === 8 ? 78 : currentLesson === 9 ? 70 : currentLesson === 11 ? 74 : currentLesson === 12 ? 62 : currentLesson === 13 ? 82 : currentLesson === 15 ? 70 : 135;
             const showMissionBoard = !(currentLesson === 15 && lesson15SelectedZone);
             if (showMissionBoard) {
                 ctx.fillStyle = compactMission ? 'rgba(255,255,255,.88)' : 'rgba(255,255,255,.92)';
@@ -4517,6 +4678,83 @@
             }
         }
 
+        function splitLongSpeechWord(word, maxLineWidth) {
+            const parts = [];
+            let current = '';
+            for (const char of word) {
+                const next = current + char;
+                if (current && ctx.measureText(next).width > maxLineWidth) {
+                    parts.push(current);
+                    current = char;
+                } else {
+                    current = next;
+                }
+            }
+            if (current) parts.push(current);
+            return parts;
+        }
+
+        function wrapSpeechText(text, maxLineWidth) {
+            const words = String(text).trim().split(/\s+/).filter(Boolean);
+            const lines = [];
+            let currentLine = '';
+            words.forEach(word => {
+                if (ctx.measureText(word).width > maxLineWidth) {
+                    if (currentLine) {
+                        lines.push(currentLine);
+                        currentLine = '';
+                    }
+                    lines.push(...splitLongSpeechWord(word, maxLineWidth));
+                    return;
+                }
+                const nextLine = currentLine ? `${currentLine} ${word}` : word;
+                if (currentLine && ctx.measureText(nextLine).width > maxLineWidth) {
+                    lines.push(currentLine);
+                    currentLine = word;
+                } else {
+                    currentLine = nextLine;
+                }
+            });
+            if (currentLine) lines.push(currentLine);
+            return lines.length ? lines : [''];
+        }
+
+        function drawSpeechBubble(message, centerX, anchorY) {
+            ctx.save();
+            ctx.font = 'bold 15px Rubik';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.direction = 'rtl';
+
+            const horizontalPadding = 18;
+            const verticalPadding = 12;
+            const lineHeight = 20;
+            const maxBubbleWidth = Math.min(360, Math.max(170, canvas.width - 24));
+            const maxLineWidth = maxBubbleWidth - horizontalPadding * 2;
+            const lines = wrapSpeechText(message, maxLineWidth);
+            const widestLine = Math.max(...lines.map(line => ctx.measureText(line).width), 0);
+            const bubbleWidth = Math.min(maxBubbleWidth, Math.max(150, Math.ceil(widestLine + horizontalPadding * 2)));
+            const bubbleHeight = Math.max(44, lines.length * lineHeight + verticalPadding * 2);
+            const bubbleX = Math.max(12 + bubbleWidth / 2, Math.min(canvas.width - 12 - bubbleWidth / 2, centerX));
+            const bubbleY = Math.max(12 + bubbleHeight / 2, anchorY);
+            const top = bubbleY - bubbleHeight / 2;
+
+            ctx.fillStyle = 'white';
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(bubbleX - bubbleWidth / 2, top, bubbleWidth, bubbleHeight, 15);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#333';
+            const firstLineY = top + verticalPadding + lineHeight / 2;
+            lines.forEach((line, index) => {
+                ctx.fillText(line, bubbleX, firstLineY + index * lineHeight);
+            });
+            ctx.restore();
+        }
+
         function draw() {
             catchLesson13BurglarIfAlarm();
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -4689,6 +4927,33 @@
                 ctx.stroke();
                 ctx.setLineDash([]);
 
+                // Patrol edges for exercise 4: make the screen ends visible to children.
+                const edgeTop = canvas.height * 0.56;
+                const edgeBottom = canvas.height * 0.84;
+                ctx.save();
+                ctx.strokeStyle = 'rgba(220, 38, 38, 0.55)';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.86)';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([7, 7]);
+                [40, canvas.width - 40].forEach((edgeX) => {
+                    ctx.beginPath();
+                    ctx.moveTo(edgeX, edgeTop);
+                    ctx.lineTo(edgeX, edgeBottom);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    ctx.beginPath();
+                    ctx.roundRect(edgeX - 38, edgeTop - 28, 76, 24, 12);
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.font = 'bold 12px Rubik';
+                    ctx.fillStyle = '#b91c1c';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('קצה מסך', edgeX, edgeTop - 16);
+                    ctx.setLineDash([7, 7]);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.86)';
+                });
+                ctx.restore();
+
                 ctx.font = 'bold 14px Rubik';
                 ctx.fillStyle = canSenseSmoke() ? '#dc2626' : '#475569';
                 ctx.textAlign = 'center';
@@ -4767,8 +5032,12 @@
                 ctx.arc(fanX, fanY, 34, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.stroke();
+                ctx.save();
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
                 ctx.font = robot.fanOn ? '40px Arial' : '34px Arial';
-                ctx.fillText(robot.fanOn && Date.now() % 500 < 250 ? '🌀' : '🪭', fanX, fanY + 2);
+                ctx.fillText(robot.fanOn && Date.now() % 500 < 250 ? '🌀' : '🪭', fanX, fanY);
+                ctx.restore();
                 ctx.font = 'bold 14px Rubik';
                 ctx.fillStyle = robot.fanOn ? '#0984e3' : '#64748b';
                 ctx.fillText(robot.fanOn ? 'המאוורר פועל' : 'המאוורר כבוי', fanX, fanY + 52);
@@ -4841,8 +5110,9 @@
                 drawAdvancedLessonScene();
             }
 
-            // Draggable Smoke
-            if (environment.smoke) {
+            // Draggable Smoke — only in lessons that use smoke.
+            const showSmokeObject = environment.smoke && (lessonControlOverrides[currentLesson]?.env || []).includes('envSmoke');
+            if (showSmokeObject) {
                 if (currentLesson === 4) {
                     ctx.fillStyle = '#fef3c7';
                     ctx.strokeStyle = '#fb923c';
@@ -4882,8 +5152,9 @@
                 }
             }
 
-            // Draggable Obstacle/Wall
-            if (environment.obstacle) {
+            // Draggable Obstacle/Wall — only for lessons that actually use obstacles.
+            const showObstacleObject = environment.obstacle && (currentLesson === 3 || currentLesson === 12 || currentLesson === 14 || currentLesson === 15);
+            if (showObstacleObject) {
                 if (currentLesson === 3) {
                     ctx.font = '56px Arial';
                     ctx.textAlign = 'center';
@@ -4992,7 +5263,8 @@
             // Robot (also draggable)
             ctx.save();
             ctx.translate(robot.x, robot.y);
-            ctx.rotate(robot.angle * Math.PI / 180);
+            const visualRobotAngle = currentLesson === 4 ? 0 : robot.angle;
+            ctx.rotate(visualRobotAngle * Math.PI / 180);
 
             // Robot shadow
             ctx.beginPath();
@@ -5052,7 +5324,9 @@
                 ctx.font = '18px Arial';
                 ctx.fillText('🤖', -11, 1);
             } else if (currentLesson === 4) {
-                // Sensi inside a fire truck.
+                // Sensi inside a fire truck. Keep the truck upright; flip horizontally when it turns around.
+                const lesson4FacingLeft = Math.cos(robot.angle * Math.PI / 180) < 0;
+                if (lesson4FacingLeft) ctx.scale(-1, 1);
                 const flashOn = Date.now() % 600 < 300;
                 ctx.fillStyle = '#dc2626';
                 ctx.strokeStyle = '#7f1d1d';
@@ -5171,22 +5445,7 @@
 
             // Speech bubble
             if (robot.speaking) {
-                const bubbleX = robot.x;
-                const bubbleY = robot.y - (currentLesson === 4 ? 78 : 60);
-                const bubbleWidth = Math.max(130, Math.min(260, robot.speaking.length * 10 + 34));
-
-                ctx.fillStyle = 'white';
-                ctx.strokeStyle = '#333';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.roundRect(bubbleX - bubbleWidth / 2, bubbleY - 22, bubbleWidth, 44, 15);
-                ctx.fill();
-                ctx.stroke();
-
-                ctx.fillStyle = '#333';
-                ctx.font = 'bold 15px Rubik';
-                ctx.textAlign = 'center';
-                ctx.fillText(robot.speaking, bubbleX, bubbleY);
+                drawSpeechBubble(robot.speaking, robot.x, robot.y - (currentLesson === 4 ? 78 : 60));
             }
 
             if (currentLesson === 15 && lesson15SelectedZone) {
@@ -5279,7 +5538,7 @@
             if (hitTestRobot(pos)) {
                 dragging = 'robot';
                 dragOffset = { x: pos.x - robot.x, y: pos.y - robot.y };
-            } else if (environment.obstacle && hitTest(pos, objects.wall, 50)) {
+            } else if (environment.obstacle && (currentLesson === 3 || currentLesson === 12 || currentLesson === 14 || currentLesson === 15) && hitTest(pos, objects.wall, 50)) {
                 dragging = 'wall';
                 dragOffset = { x: pos.x - objects.wall.x, y: pos.y - objects.wall.y };
             } else if (environment.sound && hitTest(pos, objects.sound, 40)) {
@@ -5366,37 +5625,37 @@
             1: {
                 movement: [],
                 sensors: ['sensor_light'],
-                controls: ['control_if'],
+                controls: ['control_if', 'control_forever', 'stop_program'],
                 actions: ['action_street_light', 'action_say']
             },
             2: {
                 movement: [],
                 sensors: ['sensor_sound'],
-                controls: ['control_if', 'stop_program'],
+                controls: ['control_if', 'control_forever', 'stop_program'],
                 actions: ['action_say', 'action_sound']
             },
             3: {
-                movement: ['move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
+                movement: ['move_forward', 'move_backward', 'turn_right', 'turn_left', 'stop_vehicle'],
                 sensors: ['sensor_touch'],
-                controls: ['control_if', 'stop_program'],
+                controls: ['control_if', 'control_forever', 'stop_program'],
                 actions: ['action_say']
             },
             4: {
-                movement: [],
-                sensors: ['sensor_smell'],
-                controls: ['control_if', 'stop_program'],
+                movement: ['move_forward', 'turn_around', 'stop_vehicle'],
+                sensors: ['sensor_smell', 'sensor_screen_edge'],
+                controls: ['control_if', 'control_forever', 'stop_program'],
                 actions: ['action_say', 'action_sound']
             },
             5: {
                 movement: [],
                 sensors: ['sensor_temperature'],
-                controls: ['control_if'],
+                controls: ['control_if', 'control_forever', 'stop_program'],
                 actions: ['action_say', 'action_fan']
             },
             6: {
                 movement: [],
                 sensors: ['sensor_color'],
-                controls: ['control_if'],
+                controls: ['control_if', 'control_forever', 'stop_program'],
                 actions: ['action_recycle_bin', 'action_say']
             },
             7: {
@@ -5420,13 +5679,15 @@
             10: {
                 movement: [],
                 sensors: ['sensor_soil', 'sensor_temperature', 'sensor_water_status'],
-                controls: ['control_if', 'control_wait', 'stop_program'],
+                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
                 actions: ['action_water', 'action_say']
             },
             11: {
                 movement: [],
-                sensors: ['sensor_armed', 'sensor_light', 'sensor_people', 'sensor_safe_touch', 'sensor_door'],
-                controls: ['control_if', 'control_wait', 'stop_program'],
+
+                sensors: ['sensor_light', 'sensor_people', 'sensor_safe_touch', 'sensor_door'],
+                controls: ['control_if', 'control_forever', 'control_wait', 'stop_program'],
+
                 actions: ['action_say', 'action_security_mode', 'action_alarm']
             },
             12: {
@@ -5478,7 +5739,7 @@
                 contents: [
                     { kind: 'category', name: '🚩 התחלה', colour: '#FFAB19', contents: [{ kind: 'block', type: 'event_start' }] },
                     { kind: 'category', name: '👁️ חושים', colour: '#40BF4A', contents: ['sensor_soil', 'sensor_temperature'].map(toolboxBlock) },
-                    { kind: 'category', name: '🔁 בקרה', colour: '#FF8C1A', contents: ['control_if', 'control_wait', 'stop_program'].map(toolboxBlock) },
+                    { kind: 'category', name: '🔁 בקרה', colour: '#FF8C1A', contents: ['control_if', 'control_forever', 'control_wait', 'stop_program'].map(toolboxBlock) },
                     { kind: 'category', name: '💬 דיבור/פעולות', colour: '#9966FF', contents: ['action_say', 'action_water'].map(toolboxBlock) }
                 ]
             };
@@ -5590,6 +5851,84 @@
                 env: ['envLight', 'envSound', 'envObstacle', 'envSmoke', 'envTemperatureHot', 'envRecycleColor', 'envCars', 'envPedestrian', 'envPeople', 'envRemoveVisitor', 'envSoilDry', 'envArmedMode', 'envMotion', 'envSafeTouch', 'envBurglar', 'envHomeowner', 'envDoorOpen', 'envDeliveryPackage']
             }
         };
+
+        const envButtonStateKeys = {
+            envLight: 'light',
+            envSound: 'sound',
+            envObstacle: 'obstacle',
+            envSmoke: 'smoke',
+            envTemperatureHot: 'temperatureHot',
+            envRecycleColor: 'recycleColor',
+            envCars: 'cars',
+            envPedestrian: 'pedestrian',
+            envPeople: 'people',
+            envSoilDry: 'soilDry',
+            envArmedMode: 'armedMode',
+            envMotion: 'motion',
+            envSafeTouch: 'safeTouch',
+            envBurglar: 'burglar',
+            envHomeowner: 'homeowner',
+            envDoorOpen: 'doorOpen',
+            envDeliveryPackage: 'deliveryPackage'
+        };
+
+        function clearEnvironmentStateForButton(buttonId) {
+            const key = envButtonStateKeys[buttonId];
+            if (!key) return;
+            if (key === 'recycleColor') {
+                environment.recycleColor = 'NONE';
+                const recycleBtnIcon = document.querySelector('#envRecycleColor .icon');
+                if (recycleBtnIcon) recycleBtnIcon.textContent = '♻️';
+                return;
+            }
+            environment[key] = false;
+            if (key === 'smoke') smokeStartedAt = null;
+            if (key === 'soilDry') {
+                gardenRecoveryStartedAt = null;
+                gardenRecoveryStartProgress = 0;
+                robot.waterOn = false;
+            }
+            if (key === 'people') environment.visitorCount = 0;
+            if (key === 'burglar') {
+                burglarStartedAt = null;
+                burglarCaughtAt = null;
+                burglarEscapedAt = null;
+                burglarRoute = 'left';
+            }
+            if (key === 'homeowner') homeownerStartedAt = null;
+            if (key === 'deliveryPackage') {
+                environment.deliveryDropped = false;
+                environment.deliveryDropTarget = null;
+            }
+        }
+
+        function syncEnvironmentButtons() {
+            for (const [buttonId, key] of Object.entries(envButtonStateKeys)) {
+                const button = document.getElementById(buttonId);
+                if (!button) continue;
+                const active = key === 'recycleColor' ? environment.recycleColor !== 'NONE' : Boolean(environment[key]);
+                button.classList.toggle('active', active);
+            }
+            const removeVisitorBtn = document.getElementById('envRemoveVisitor');
+            if (removeVisitorBtn) removeVisitorBtn.classList.toggle('active', (environment.visitorCount || 0) > 0);
+        }
+
+        function sanitizeEnvironmentForLesson(lessonNum = currentLesson) {
+            const allowed = new Set(lessonControlOverrides[lessonNum]?.env || []);
+            for (const buttonId of Object.keys(envButtonStateKeys)) {
+                if (!allowed.has(buttonId)) clearEnvironmentStateForButton(buttonId);
+            }
+            if (!allowed.has('envPeople')) environment.visitorCount = 0;
+            if (!allowed.has('envSmoke')) smokeStartedAt = null;
+            if (!allowed.has('envBurglar')) {
+                burglarStartedAt = null;
+                burglarCaughtAt = null;
+                burglarEscapedAt = null;
+                burglarRoute = 'left';
+            }
+            if (!allowed.has('envHomeowner')) homeownerStartedAt = null;
+            syncEnvironmentButtons();
+        }
 
         function updateVisibleControls() {
             const allSensors = ['sensorLight', 'sensorSound', 'sensorTouch', 'sensorSmell', 'sensorTemp', 'sensorColor', 'sensorLine', 'sensorGoal', 'sensorCars', 'sensorPedestrian', 'sensorPeople', 'sensorSoil', 'sensorArmed', 'sensorMotion', 'sensorSafeTouch', 'sensorBurglar', 'sensorHomeowner', 'sensorDoor', 'sensorDeliveryPackage'];
@@ -5982,6 +6321,16 @@
                 }
             };
 
+            Blockly.Blocks['sensor_screen_edge'] = {
+                init: function() {
+                    this.appendDummyInput()
+                        .appendField('🧱 הגיע ל')
+                        .appendField(new Blockly.FieldDropdown([['סוף המסך ➡️', 'END'], ['תחילת המסך ⬅️', 'START']]), 'VAL');
+                    this.setOutput(true, 'Boolean');
+                    this.setColour('#40BF4A');
+                }
+            };
+
             Blockly.Blocks['sensor_temperature'] = {
                 init: function() {
                     this.appendDummyInput()
@@ -6086,7 +6435,7 @@
             Blockly.Blocks['sensor_motion'] = {
                 init: function() {
                     this.appendDummyInput()
-                        .appendField(currentLesson === 11 ? '👤 תנועה ליד הכספת?' : '🏃 יש תנועה?')
+                        .appendField(currentLesson === 11 ? '👤 חיישן תנועה ליד הכספת?' : '🏃 יש תנועה?')
                         .appendField(new Blockly.FieldDropdown([['כן', 'YES'], ['לא', 'NO']]), 'VAL');
                     this.setOutput(true, 'Boolean');
                     this.setColour('#40BF4A');
@@ -6403,17 +6752,63 @@
         // ===== CODE EXECUTION =====
         let debugMode = false;
         let debugStepCounter = 0;
+
+        let silentAutoDebug = false;
+        let silentDebugMessages = [];
         let activeExerciseIndex = 0;
+        let currentRunTrace = null;
+
+        function createRunTrace() {
+            return {
+                lesson: currentLesson,
+                exerciseIndex: activeExerciseIndex,
+                startX: robot.x,
+                startY: robot.y,
+                startAngle: robot.angle,
+                startSoundState: currentLesson === 9 ? (environment.sound ? 'LOUD' : 'QUIET') : null,
+                blockTypes: [],
+                stoppedVehicle: false,
+                movedBackward: false,
+                turned: false,
+                reachedEdge: false,
+                returnedFromEdge: false
+            };
+        }
+
+        function traceRunBlock(block) {
+            if (!currentRunTrace || !block) return;
+            currentRunTrace.blockTypes.push(block.type);
+        }
+
+        function traceRunEffect(effect) {
+            if (!currentRunTrace) return;
+            currentRunTrace[effect] = true;
+        }
+
 
         function hidePrecheckPanel() {
             document.getElementById('precheckPanel')?.classList.add('hidden-by-user');
         }
+
+
 
         function showPrecheckPanel() {
             document.getElementById('precheckPanel')?.classList.remove('hidden-by-user');
         }
 
         function setDebugStatus(message) {
+
+            if (silentAutoDebug && isRunning) {
+                if (message) silentDebugMessages.push(message);
+                const panel = document.getElementById('debugPanel');
+                const status = document.getElementById('debugStatus');
+                const button = document.getElementById('debugButton');
+                if (panel) panel.classList.add('active');
+                if (button) button.classList.add('active');
+                if (status) status.textContent = message || 'מריץ Debug אוטומטי...';
+                return;
+            }
+
             const panel = document.getElementById('debugPanel');
             const status = document.getElementById('debugStatus');
             const button = document.getElementById('debugButton');
@@ -6421,6 +6816,14 @@
             if (button) button.classList.toggle('active', debugMode);
             if (status) status.textContent = message || 'ההרצה עדיין לא התחילה.';
         }
+
+
+        function showSilentDebugSummary(prefix = 'ההרצה הסתיימה') {
+            silentAutoDebug = false;
+            silentDebugMessages = [];
+            setDebugStatus(`${prefix} — Debug אוטומטי הסתיים.`);
+        }
+
 
         function blockDebugLabel(block) {
             if (!block) return 'סוף התוכנית';
@@ -6433,17 +6836,33 @@
         async function debugBeforeBlock(block) {
             if (!debugMode || !block) return;
             debugStepCounter += 1;
-            try { workspace?.highlightBlock?.(block.id); } catch (error) {}
+
+            if (!silentAutoDebug) {
+                try { workspace?.highlightBlock?.(block.id); } catch (error) {}
+            }
             setDebugStatus(`צעד ${debugStepCounter}: ${blockDebugLabel(block)}`);
-            await sleep(650);
+            if (!silentAutoDebug) await sleep(650);
+
         }
 
         function debugAfterRun() {
             try { workspace?.highlightBlock?.(null); } catch (error) {}
             debugMode = false;
+            if (currentLesson === 14) {
+                const result = validateActiveExercise();
+                if (!result.ok) {
+                    setDebugStatus(`ההרצה הסתיימה. אפשר לראות מה קרה בסביבה, וכדי להשלים את התרגיל עדיין חסר: ${uniqueExerciseMissingLabels(result.missing).join(' · ')}.`);
+                    return;
+                }
+            }
             setDebugStatus('ההרצה הסתיימה — עכשיו בדקו מה השתנה בסביבה.');
         }
 
+
+        function currentExerciseTitle() {
+            const cityLesson = window.getSensiLesson ? window.getSensiLesson(currentLesson) : null;
+            return cityLesson?.programmingExercises?.[activeExerciseIndex]?.title || '';
+        }
 
         function setPrecheckResult(messages) {
             const panel = document.getElementById('precheckPanel');
@@ -6453,7 +6872,11 @@
             panel.classList.add('active');
             panel.classList.toggle('warning', hasWarnings);
             if (!hasWarnings) {
-                panel.innerHTML = '<button class="check-panel-close" type="button" onclick="hidePrecheckPanel()" aria-label="סגור את חלון הבדיקה" title="סגור את חלון הבדיקה">×</button>✅ התוכנית נראית מוכנה להרצה: יש התחלה, תנאי, חיישן מתאים, ואין בלוקים מנותקים או לולאות ריקות.';
+                const lesson9NoiseExercise = currentLesson === 9 && normalizeHebrew(currentExerciseTitle()).includes('תרגיל 3');
+                const message = lesson9NoiseExercise
+                    ? '✅ מבנה התוכנית מתאים לתרגיל: לפני הלולאה יש כללי נוכחות שמדליקים/מכבים אור ומזגן, ואחר כך הלולאה בודקת רק רעש — רעש חזק מכבה אור, ושקט מדליק אותו מחדש. עכשיו הריצו פעם ברעש חזק ופעם בשקט כדי לראות שההתנהגות באמת נכונה.'
+                    : '✅ מבנה התוכנית נראה מוכן להרצה: יש התחלה, תנאי, חיישן מתאים, ואין בלוקים מנותקים או לולאות ריקות. כדי לוודא שהתרגיל הושלם באמת — לחצו ▶️ ובדקו את התוצאה בסביבה.';
+                panel.innerHTML = `<button class="check-panel-close" type="button" onclick="hidePrecheckPanel()" aria-label="סגור את חלון הבדיקה" title="סגור את חלון הבדיקה">×</button>${message}`;
                 return;
             }
             const heading = messages.length === 1 ? '⚠️ מצאתי דבר שכדאי לתקן לפני ההרצה:' : '⚠️ מצאתי כמה דברים שכדאי לתקן לפני ההרצה:';
@@ -6512,12 +6935,19 @@
                 messages.push('יש תנאי בלי חיישן מחובר — חברו חיישן לחלק של “אם”.');
             }
 
+
+            if (hasLesson9PeoplePowerOnInsideNoiseLoop()) {
+                messages.push('בשיעור 9 תרגיל 3 יש בעיה בלולאה: היא מכבה אור כשיש רעש, אבל באותה לולאה גם מדליקה אור כשיש אנשים. כך האור נדלק שוב לפני שנהיה שקט. הוציאו מהלולאה את תנאי “יש אנשים → הדלק אור”, והשאירו בלולאה רק תנאי רעש: רעש חזק → כבה אור, שקט → הדלק אור.');
+            }
+
             const exerciseResult = validateActiveExercise();
+
             if (!exerciseResult.ok) {
                 messages.push(`${uniqueExerciseMissingLabels(exerciseResult.missing).join(' · ')}.`);
             }
 
             setPrecheckResult(messages);
+            setDebugStatus(messages.length > 0 ? 'הבדיקה מצאה משהו שצריך לתקן.' : 'הבדיקה הסתיימה — אפשר להריץ ולבדוק את ההתנהגות בסביבה.');
         }
 
         async function runDebugCode() {
@@ -6526,6 +6956,10 @@
                 await sleep(120);
             }
             debugMode = true;
+
+            silentAutoDebug = false;
+            silentDebugMessages = [];
+
             debugStepCounter = 0;
             setDebugStatus('מריצים לאט: נראה כל צעד בתוכנית.');
             await runCode();
@@ -6533,12 +6967,17 @@
 
         async function runCode() {
             if (isRunning) return;
+
+            currentRunTrace = createRunTrace();
             const autoDebugRun = !debugMode;
             if (autoDebugRun) {
                 debugMode = true;
+                silentAutoDebug = true;
+                silentDebugMessages = [];
                 debugStepCounter = 0;
-                setDebugStatus('מריצים לאט: נראה כל צעד בתוכנית.');
             }
+            const runStartedInDebugMode = debugMode;
+
             isRunning = true;
             robot.vehicleStopped = false;
             robot.trafficCarsStopped = false;
@@ -6551,7 +6990,13 @@
                 }
             }
             isRunning = false;
-            if (debugMode) debugAfterRun();
+
+            if (autoDebugRun) {
+                debugMode = false;
+                showSilentDebugSummary('ההרצה הסתיימה — עכשיו בודקים אם התרגיל הושלם');
+            } else if (runStartedInDebugMode) debugAfterRun();
+            else setDebugStatus('ההרצה הסתיימה — עכשיו בודקים אם התרגיל הושלם.');
+
             recordExerciseRunState();
             completeActiveExerciseIfReady();
         }
@@ -6559,6 +7004,10 @@
         function stopCode() {
             isRunning = false;
             debugMode = false;
+
+            silentAutoDebug = false;
+            silentDebugMessages = [];
+
             robot.vehicleStopped = true;
             robot.speaking = '';
             try { workspace?.highlightBlock?.(null); } catch (error) {}
@@ -6568,6 +7017,9 @@
         async function runBlock(block) {
             if (!block || !isRunning) return;
             await debugBeforeBlock(block);
+
+            traceRunBlock(block);
+
 
             switch (block.type) {
                 case 'move_forward':
@@ -6589,8 +7041,14 @@
                         robot.x = nextX;
                         robot.y = nextY;
                     }
-                    robot.x = Math.max(40, Math.min(canvas.width - 40, robot.x));
-                    robot.y = Math.max(40, Math.min(canvas.height - 40, robot.y));
+                    const clampedForwardX = Math.max(40, Math.min(canvas.width - 40, robot.x));
+                    const clampedForwardY = Math.max(40, Math.min(canvas.height - 40, robot.y));
+                    if (currentLesson === 4 && (clampedForwardX !== robot.x || clampedForwardY !== robot.y || clampedForwardX <= 40 || clampedForwardX >= canvas.width - 40)) {
+                        traceRunEffect('reachedEdge');
+                        robot.speaking = 'הגעתי לקצה — עכשיו חוזרים אחורה!';
+                    }
+                    robot.x = clampedForwardX;
+                    robot.y = clampedForwardY;
                     await sleep(400);
                     break;
 
@@ -6609,6 +7067,8 @@
                         robot.speaking = '';
                         robot.x = nextX;
                         robot.y = nextY;
+                        traceRunEffect('movedBackward');
+
                     }
                     robot.x = Math.max(40, Math.min(canvas.width - 40, robot.x));
                     robot.y = Math.max(40, Math.min(canvas.height - 40, robot.y));
@@ -6627,33 +7087,40 @@
 
                 case 'turn_right_small':
                     robot.angle += 15;
+                    traceRunEffect('turned');
                     await sleep(180);
                     break;
 
                 case 'turn_left_small':
                     robot.angle -= 15;
+                    traceRunEffect('turned');
                     await sleep(180);
                     break;
 
                 case 'turn_right':
                     robot.angle += 90;
+                    traceRunEffect('turned');
                     await sleep(300);
                     break;
 
                 case 'turn_left':
                     robot.angle -= 90;
+                    traceRunEffect('turned');
                     await sleep(300);
                     break;
 
                 case 'turn_around':
                     robot.angle += 180;
-                    robot.speaking = 'הסתובבתי — חוזר לסיור';
+                    traceRunEffect('turned');
+                    if (currentLesson === 4 && currentRunTrace?.reachedEdge) traceRunEffect('returnedFromEdge');
+                    robot.speaking = currentLesson === 4 ? 'הסתובבתי — ממשיך לסייר!' : 'הסתובבתי — חוזר לסיור';
                     await sleep(500);
                     robot.speaking = '';
                     break;
 
                 case 'route_turn':
                     robot.angle += block.getFieldValue('DIR') === 'RIGHT' ? 90 : -90;
+                    traceRunEffect('turned');
                     robot.speaking = isLesson14RescueContext()
                         ? (block.getFieldValue('DIR') === 'RIGHT' ? 'עוקף ימינה בנתיב בטוח' : 'עוקף שמאלה בנתיב בטוח')
                         : (block.getFieldValue('DIR') === 'RIGHT' ? 'סובב ימינה לפי המסלול' : 'סובב שמאלה לפי המסלול');
@@ -6664,6 +7131,7 @@
                 case 'stop_vehicle':
                 case 'stop':
                     robot.vehicleStopped = true;
+                    traceRunEffect('stoppedVehicle');
                     if (currentLesson === 8) robot.trafficCarsStopped = true;
                     robot.speaking = currentLesson === 3 ? 'הרכב עצר!' : 'עצרתי תנועה';
                     await sleep(500);
@@ -6704,7 +7172,9 @@
                     const conditionPassed = evalCondition(block.getInputTargetBlock('COND'));
                     if (debugMode) {
                         setDebugStatus(conditionPassed ? 'התנאי נכון — נכנסים לבלוקים שבתוכו.' : 'התנאי לא נכון — מדלגים על הבלוקים שבתוכו.');
-                        await sleep(650);
+
+                        if (!silentAutoDebug) await sleep(650);
+
                     }
                     if (conditionPassed) {
                         await runBlock(block.getInputTargetBlock('DO'));
@@ -6717,12 +7187,14 @@
                     while (isRunning) {
                         if (debugMode) {
                             debugLoopCount += 1;
-                            setDebugStatus(`לולאה חוזרת — סיבוב ${debugLoopCount} מתוך 3 בבדיקה.`);
-                            await sleep(650);
+
+                            setDebugStatus(silentAutoDebug ? `לולאה חוזרת — סיבוב ${debugLoopCount}.` : `לולאה חוזרת — סיבוב ${debugLoopCount} מתוך 3 בבדיקה.`);
+                            if (!silentAutoDebug) await sleep(650);
                         }
                         await runBlock(block.getInputTargetBlock('DO'));
-                        await sleep(debugMode ? 350 : 100);
-                        if (debugMode && debugLoopCount >= 3) {
+                        await sleep(debugMode && !silentAutoDebug ? 350 : 100);
+                        if (debugMode && !silentAutoDebug && debugLoopCount >= 3) {
+
                             setDebugStatus('עצירה לימודית: בדיקה מריצה לולאה 3 פעמים כדי שלא ניתקע.');
                             await sleep(900);
                             break;
@@ -6978,6 +7450,23 @@
             return Math.sqrt(dx * dx + dy * dy);
         }
 
+        function distanceFromPointToRect(px, py, rect) {
+            const halfW = (rect.width || 0) / 2;
+            const halfH = (rect.height || 0) / 2;
+            const left = rect.x - halfW;
+            const right = rect.x + halfW;
+            const top = rect.y - halfH;
+            const bottom = rect.y + halfH;
+            const dx = Math.max(left - px, 0, px - right);
+            const dy = Math.max(top - py, 0, py - bottom);
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        function isRobotEdgeTouchingObstacle() {
+            const robotTouchRadius = 30;
+            return distanceFromPointToRect(robot.x, robot.y, objects.wall) <= robotTouchRadius;
+        }
+
         function wouldHitLesson12Fence(nextX, nextY) {
             if (currentLesson !== 12 || !environment.obstacle) return false;
             const dx = nextX - objects.wall.x;
@@ -6993,6 +7482,9 @@
 
         function getSoundLevel() {
             if (!environment.sound) return 'QUIET';
+            // In lesson 13, the homeowner is a normal noisy movement near the house.
+            // Pressing “בעל הבית” should immediately mark the noise sensor as active.
+            if (isLesson13HomeGuardContext() && environment.homeowner) return 'SOFT';
             // Lesson 9 classroom noise is ambient: pressing the noise sensor means the classroom is loud,
             // even if the sound icon is not touching the robot.
             if (currentLesson === 9 || isLesson15Zone('school')) return 'LOUD';
@@ -7011,6 +7503,10 @@
             if (currentLesson === 12) {
                 return Boolean(robot.hitLesson12Fence);
             }
+            if (currentLesson === 14) {
+                // Rescue obstacle is detected when Sensi's outer edge touches the obstacle's edge.
+                return isRobotEdgeTouchingObstacle();
+            }
             // Touch requires being close (within 70 pixels)
             return distanceToObject(objects.wall) < 70;
         }
@@ -7018,6 +7514,12 @@
         function canSenseSmoke() {
             // Smoke can be smelled within 150 pixels
             return environment.smoke && distanceToObject(objects.smoke) < 150;
+        }
+
+        function canSenseScreenEdge(edge) {
+            if (edge === 'START') return robot.x <= 44;
+            if (edge === 'END') return robot.x >= canvas.width - 44;
+            return false;
         }
 
         function getTemperatureLevel() {
@@ -7041,8 +7543,15 @@
             return Boolean(environment.armedMode);
         }
 
+        function isMuseumVisitorNearVault() {
+            // In lesson 11, the museum fills up across the hall first.
+            // Only once the crowd reaches the vault-side spots does the motion sensor turn on.
+            return currentLesson === 11 && (environment.visitorCount || 0) >= MUSEUM_MOTION_VISITOR_THRESHOLD;
+        }
+
         function canSenseMotion() {
-            return currentLesson === 11 && Boolean(environment.motion);
+            if (currentLesson === 11) return isMuseumVisitorNearVault();
+            return Boolean(environment.motion);
         }
 
         function isSafeTouched() {
@@ -7137,6 +7646,7 @@
         }
 
         function canSenseMotion() {
+            if (currentLesson === 11) return isMuseumVisitorNearVault();
             if (isLesson13HomeGuardContext()) return canSenseBurglarNearby() || canSenseHomeowner();
             return Boolean(environment.motion);
         }
@@ -7241,8 +7751,51 @@
         }
 
         function getLesson12HomeTarget() {
-            // Door/front entrance of the lesson 12 house in the background image.
-            return { x: canvas.width * 0.78, y: canvas.height * 0.41 };
+            // Center of the lesson 12 destination house, used for labels/package placement.
+            return { x: canvas.width * 0.83, y: canvas.height * 0.25 };
+        }
+
+        function isPointInsidePolygon(x, y, polygon) {
+            let inside = false;
+            for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+                const xi = polygon[i].x;
+                const yi = polygon[i].y;
+                const xj = polygon[j].x;
+                const yj = polygon[j].y;
+                const intersects = ((yi > y) !== (yj > y)) &&
+                    (x < ((xj - xi) * (y - yi)) / (yj - yi || 0.00001) + xi);
+                if (intersects) inside = !inside;
+            }
+            return inside;
+        }
+
+        function isRobotTouchingLesson12House() {
+            // Match the visible house in assets/lesson12-grocery-home-background.png.
+            // The bushes in front/near the house are intentionally outside this polygon,
+            // so “הגעתי ליעד” turns on only when Sensi really touches the house.
+            const w = canvas.width;
+            const h = canvas.height;
+            const housePolygon = [
+                { x: w * 0.87, y: h * 0.09 }, // chimney top-left
+                { x: w * 0.90, y: h * 0.09 }, // chimney top-right
+                { x: w * 0.90, y: h * 0.16 }, // chimney base
+                { x: w * 0.95, y: h * 0.23 }, // right roof edge
+                { x: w * 0.91, y: h * 0.24 }, // right wall top
+                { x: w * 0.91, y: h * 0.40 }, // right wall bottom
+                { x: w * 0.72, y: h * 0.40 }, // left wall bottom
+                { x: w * 0.72, y: h * 0.24 }, // left wall top
+                { x: w * 0.71, y: h * 0.23 }, // left roof edge
+                { x: w * 0.80, y: h * 0.07 }  // roof peak
+            ];
+            const robotTouchRadius = 18;
+            const probePoints = [
+                { x: robot.x, y: robot.y },
+                { x: robot.x - robotTouchRadius, y: robot.y },
+                { x: robot.x + robotTouchRadius, y: robot.y },
+                { x: robot.x, y: robot.y - robotTouchRadius },
+                { x: robot.x, y: robot.y + robotTouchRadius }
+            ];
+            return probePoints.some((point) => isPointInsidePolygon(point.x, point.y, housePolygon));
         }
 
         function hasDeliveryPackage() {
@@ -7262,10 +7815,7 @@
 
         function canSenseGoal() {
             if (currentLesson === 12) {
-                const home = getLesson12HomeTarget();
-                const dx = robot.x - home.x;
-                const dy = robot.y - home.y;
-                return Math.sqrt(dx * dx + dy * dy) <= 90;
+                return isRobotTouchingLesson12House();
             }
             if (isLesson13HomeGuardContext()) {
                 return getLesson13FenceEndTargets().some((fenceEnd) => {
@@ -7305,11 +7855,13 @@
                 case 'sensor_touch':
                     return val === 'YES' ? canSenseTouch() : !canSenseTouch();
                 case 'sensor_obstacle': {
-                    const obstacleDetected = currentLesson === 12 ? canSenseTouch() : Boolean(environment.obstacle);
+                    const obstacleDetected = (currentLesson === 12 || currentLesson === 14) ? canSenseTouch() : Boolean(environment.obstacle);
                     return val === 'YES' ? obstacleDetected : !obstacleDetected;
                 }
                 case 'sensor_smell':
                     return val === 'YES' ? canSenseSmoke() : !canSenseSmoke();
+                case 'sensor_screen_edge':
+                    return canSenseScreenEdge(val);
                 case 'sensor_temperature':
                     return getTemperatureLevel() === val;
                 case 'sensor_color':
@@ -7394,7 +7946,7 @@
         // ===== ENVIRONMENT =====
         function handlePeopleEnv() {
             if (currentLesson === 11 || isLesson15Zone('museum')) {
-                environment.visitorCount = Math.min(9, (environment.visitorCount || 0) + 1);
+                environment.visitorCount = Math.min(MUSEUM_MAX_VISITORS, (environment.visitorCount || 0) + 1);
                 environment.people = environment.visitorCount > 5;
                 const btn = document.getElementById('envPeople');
                 if (btn) btn.classList.toggle('active', environment.visitorCount > 0);
@@ -7544,7 +8096,9 @@
             document.getElementById('lightText').textContent = currentLesson === 11
                 ? (sensesLight ? 'אור דלוק' : 'חשוך — דריכה אוטומטית')
                 : (sensesLight ? 'בהיר!' : 'חשוך');
-            document.getElementById('soundText').textContent = soundLevel === 'LOUD' ? 'חזק מדי!' : soundLevel === 'SOFT' ? 'חלש' : 'שקט';
+            document.getElementById('soundText').textContent = isLesson13HomeGuardContext()
+                ? (sensesSound ? 'יש רעש' : 'אין רעש')
+                : (soundLevel === 'LOUD' ? 'חזק מדי!' : soundLevel === 'SOFT' ? 'חלש' : 'שקט');
             document.getElementById('touchText').textContent = sensesTouch ? 'קיר!' : 'פנוי';
             document.getElementById('smellText').textContent = sensesSmoke ? 'עשן!' : 'נקי';
             document.getElementById('tempText').textContent = currentLesson === 10
@@ -7578,7 +8132,7 @@
             document.getElementById('armedText').textContent = currentLesson === 11
                 ? (armed ? 'שמירה דרוכה' : 'שמירה כבויה')
                 : (armed ? 'דרוכה' : 'לא דרוכה');
-            document.getElementById('motionText').textContent = currentLesson === 11 ? (motion ? 'תנועה ליד הכספת' : 'אין תנועה באולם') : (motion ? 'יש תנועה' : 'אין תנועה');
+            document.getElementById('motionText').textContent = currentLesson === 11 ? (motion ? 'חיישן תנועה: תנועה ליד הכספת' : 'חיישן תנועה: אין תנועה באולם') : (motion ? 'יש תנועה' : 'אין תנועה');
             document.getElementById('safeTouchText').textContent = safeTouch ? 'נגיעה בכספת!' : 'אין נגיעה בכספת';
             document.getElementById('burglarText').textContent = burglar ? 'גנב זוהה!' : 'אין גנב';
             document.getElementById('homeownerText').textContent = homeowner ? 'בעל הבית הגיע' : 'אין בעל בית';
@@ -7690,7 +8244,7 @@
             9: { hook: '🏫 הכיתה משתנה כל רגע — סנסי צריך לחסוך אנרגיה ולשמור על שקט.', steps: ['בדקו כיתה ריקה וכיתה עם תלמידים, ואז הוסיפו מצב רעש.', 'בנו כללים: כשיש אנשים מדליקים/מפעילים, כשאין — מכבים; ברעש חזק מכבים אור לרגע.', 'בדקו שלושה מצבים: ריק, רגיל, רועש — המערכת צריכה לחסוך ולא להפריע.'] },
             10: { hook: '🌿 הגינה צמאה — אבל השקיה חכמה לא מבזבזת מים.', steps: ['הפעילו אדמה יבשה וראו איך מד מצב המים משתנה.', 'בנו תנאי השקיה: רק כשהאדמה/מצב המים יבש פותחים טפטפות, מחכים, וסוגרים.', 'בדקו יבש, תקין ועודף מים — אסור להשקות כשהמצב כבר תקין או עודף.'] },
             11: { hook: '🏛️ במוזיאון יש גביע יקר — סנסי צריך להבדיל בין מבקר רגיל לסכנה.', steps: ['בחרו איך דורכים את השמירה: חושך, דלת צדדית, עומס מבקרים או דריכה ידנית.', 'אחרי שהשמירה דרוכה, בדקו נגיעה בכספת או דלת פתוחה והפעילו הודעה ואזעקה.', 'בדקו גם מצב לא דרוך: אותו אירוע לא צריך להפעיל אזעקת שווא.'] },
-            12: { hook: '📦 משלוח מחכה בפתח — אבל הדרך לא תמיד פנויה.', steps: ['התחילו ממשימה קלה: הביאו משלוח, סעו לבית, והניחו בפתח.', 'אחר כך הוסיפו גדר ובנו תגובה: אם אין מכשול — זוז קדימה; אם יש — זוז אחורה וסובב.', 'בדקו שהחבילה מגיעה לבית ושסנסי לא מנסה לנסוע דרך הגדר.'] },
+            12: { hook: '📦 משלוח מחכה בפתח הבית — אבל הדרך לא תמיד פנויה.', steps: ['תרגיל 1: התחילו ממשימה קלה — הביאו משלוח, סעו לבית, בדקו “הגעתי ליעד”, ואז השתמשו בפעולה “הנח משלוח בפתח הבית”. אין צורך בחיישן דלת.', 'תרגיל 2: עקיפה בלבד — אם יש מכשול: זוז אחורה, סובב ימינה/שמאלה, זוז קדימה לצד הגדר, סובב חזרה לכיוון הבית, ואז המשך ישר. עדיין לא חייבים לבדוק יעד או להניח משלוח.', 'תרגיל 3: מחברים הכול — מסלול + עקיפה מלאה + יעד + הנחת משלוח בתוך “חזור תמיד”. תרגיל 4 הוא בדיקה בלבד: מריצים את אותה מערכת בלי גדר ועם גדר.'] },
             13: { hook: '🏠 לילה בשכונה — סנסי שומר, אבל לא כל תנועה היא גנב.', steps: ['בנו קודם סיור פשוט לאורך הגדר עם לולאה והסתובב 180° בקצה.', 'הוסיפו בדיקות אבטחה: בעל בית הוא מצב רגיל; גנב שקט הוא מצב חשוד.', 'הריצו שלושה מצבים: אין תנועה, בעל בית, גנב — אזעקה רק במצב המתאים.'] },
             14: { hook: '🛟 קריאת חילוץ הגיעה — קודם מזהים סכנה, ורק אז מתקדמים.', steps: ['פתחו את זירת החילוץ והפעילו חום, עשן או חסם במסלול.', 'בנו סדר עדיפויות: לזהות סכנה, להודיע/להפעיל אזעקה או רחפן, ואז לבחור נתיב בטוח.', 'הריצו כמה סכנות שונות וודאו שסנסי לא מתקדם לפני שבחר דרך בטוחה.'] },
             15: { hook: '🏙️ עכשיו אתם מהנדסי העיר — בוחרים בעיה ובונים פתרון משלכם.', steps: ['בחרו בעיה אחת בעיר החכמה שאתם רוצים לפתור.', 'בחרו לפחות 3 חיישנים ו־3 פעולות, וכתבו כלל קצר לכל מצב.', 'בנו, בדקו, ושפרו עד שאפשר להסביר במשפט: “סנסי בדק ___ ואז עשה ___”.'] }
@@ -7726,7 +8280,9 @@
         }
 
         function exerciseProgressKey(lessonNum = currentLesson) {
-            return `sensi-exercise-progress-v3-lesson-${lessonNum}`;
+            const version = Number(lessonNum) === 6 ? 'v4' : 'v3';
+            return `sensi-exercise-progress-${version}-lesson-${lessonNum}`;
+
         }
 
         function getExerciseProgress(lessonNum = currentLesson) {
@@ -7755,14 +8311,22 @@
         }
 
         function exerciseRunKey(lessonNum = currentLesson, exerciseIndex = activeExerciseIndex) {
+
             return `sensi-exercise-run-states-v1-lesson-${lessonNum}-exercise-${exerciseIndex}`;
+
         }
 
         function recordExerciseRunState() {
             const key = exerciseRunKey();
             let states = [];
             try { states = JSON.parse(localStorage.getItem(key) || '[]'); } catch (error) {}
-            const state = currentLesson === 1 ? (environment.light ? 'BRIGHT' : 'DARK') : 'RUN';
+
+            const state = currentLesson === 1
+                ? (environment.light ? 'BRIGHT' : 'DARK')
+                : currentLesson === 9
+                    ? (currentRunTrace?.startSoundState || (environment.sound ? 'LOUD' : 'QUIET'))
+                    : 'RUN';
+
             if (!states.includes(state)) states.push(state);
             localStorage.setItem(key, JSON.stringify(states));
         }
@@ -7772,10 +8336,13 @@
             catch (error) { return []; }
         }
 
+
         function testStateRequirementsFromExercise(exercise) {
             const promptText = normalizeHebrew([exercise?.title, exercise?.studentPrompt].join(' '));
             const isSameProgramTest = promptText.includes('בדקו את אותה תוכנית') || promptText.includes('בדיקת כמה מצבים');
             if (currentLesson === 1 && isSameProgramTest && promptText.includes('יום') && promptText.includes('לילה')) return ['DARK', 'BRIGHT'];
+            if (currentLesson === 9 && promptText.includes('תרגיל 4') && promptText.includes('רעש') && promptText.includes('שקט')) return ['LOUD', 'QUIET'];
+
             return [];
         }
 
@@ -7787,11 +8354,13 @@
             ['חיישן אור', 'sensor_light'], ['חשוך', 'sensor_light'], ['בהיר', 'sensor_light'],
             ['חיישן קול', 'sensor_sound'], ['עוצמת רעש', 'sensor_sound'], ['רעש', 'sensor_sound'], ['שקט', 'sensor_sound'],
             ['נוגע בקיר', 'sensor_touch'], ['קיר', 'sensor_touch'],
-            ['מכשול', 'sensor_obstacle'], ['עשן', 'sensor_smell'], ['חום', 'sensor_temperature'], ['טמפרטורה', 'sensor_temperature'],
+
+            ['מכשול', 'sensor_obstacle'], ['עשן', 'sensor_smell'], ['קצה מסך', 'sensor_screen_edge'], ['סוף המסך', 'sensor_screen_edge'], ['תחילת המסך', 'sensor_screen_edge'], ['חום', 'sensor_temperature'], ['טמפרטורה', 'sensor_temperature'],
+
             ['צבע', 'sensor_color'], ['חיישן קו', 'sensor_line'], ['הקו נמצא', 'sensor_line_side'], ['סוף גדר', 'sensor_goal'], ['יעד', 'sensor_goal'],
             ['הולך רגל', 'sensor_pedestrian'], ['מכוניות', 'sensor_cars'], ['אנשים', 'sensor_people'], ['תלמידים', 'sensor_people'], ['מבקרים', 'sensor_people'],
             ['אדמה', 'sensor_soil'], ['מצב המים', 'sensor_water_status'], ['מערכת שמירה', 'sensor_armed'], ['שמירה דרוכה', 'sensor_armed'],
-            ['כספת', 'sensor_safe_touch'], ['דלת', 'sensor_door'], ['גנב', 'sensor_burglar'], ['בעל הבית', 'sensor_homeowner'], ['תנועה', 'sensor_motion'],
+            ['נגיעה בכספת', 'sensor_safe_touch'], ['דלת', 'sensor_door'], ['גנב', 'sensor_burglar'], ['בעל הבית', 'sensor_homeowner'], ['תנועה', 'sensor_motion'],
             ['חזור תמיד', 'control_forever'], ['לולאה', 'control_forever'], ['חכה', 'control_wait'], ['עצור תוכנית', 'stop_program'], ['אם', 'control_if'],
             ['זוז קדימה', 'move_forward'], ['התקדם', 'move_forward'], ['זוז אחורה', 'move_backward'], ['סובב ימינה', 'turn_right'], ['סובב שמאלה', 'turn_left'], ['סובב מעט ימינה', 'turn_right_small'], ['סובב מעט שמאלה', 'turn_left_small'], ['הסתובב 180', 'turn_around'], ['עצור רכב', 'stop_vehicle'],
             ['עצור מכוניות', 'stop_cars'], ['המשך מכוניות', 'start_cars'], ['עצור הולך רגל', 'stop_pedestrian'], ['המשך הולך רגל', 'start_pedestrian'],
@@ -7819,12 +8388,61 @@
             return new Set(connectedProgramBlocks().map(block => block.type));
         }
 
+
         function blockTypesFromExercise(exercise) {
             const text = normalizeHebrew([exercise?.title, exercise?.studentPrompt, ...(exercise?.answerBlocks || [])].join(' '));
+
             const required = new Set(['event_start']);
             if (/אם|חיישן|מצב|זוהה|יש |אין /.test(text)) required.add('control_if');
             for (const [hint, type] of exerciseBlockHints) {
                 if (text.includes(normalizeHebrew(hint))) required.add(type);
+            }
+
+            if (currentLesson === 3 && required.has('sensor_obstacle')) {
+                required.delete('sensor_obstacle');
+                required.add('sensor_touch');
+            }
+            if (currentLesson === 4 && required.has('action_alarm')) {
+                required.delete('action_alarm');
+                required.add('action_sound');
+            }
+            if (currentLesson === 4 && text.includes('תרגיל 3')) {
+                required.delete('stop_program');
+                required.add('stop_vehicle');
+
+            }
+            if (currentLesson === 8 && text.includes('תרגיל 1')) {
+                required.delete('sensor_cars');
+            }
+            if (currentLesson === 11) {
+                required.delete('sensor_armed');
+                required.delete('sensor_motion');
+            }
+            if (currentLesson === 12) {
+                required.delete('sensor_door');
+            }
+            if (currentLesson === 13) {
+                // In the home-guard lesson, both “אזעקה — הפעל” and “השמע אזעקה” are valid alarm actions.
+                // The custom rule below accepts either, so the generic scanner should not force one block.
+                required.delete('action_sound');
+                required.delete('action_alarm');
+            }
+            if (currentLesson === 14) {
+                // In the rescue lesson, “השמע אזעקה” and “אזעקה — הפעל” are equivalent alert actions.
+                // Custom checks below validate either option where an alarm is required.
+                // Also ignore generic “תנועה” text: lesson 14 uses movement blocks, not a motion sensor.
+                required.delete('action_sound');
+                required.delete('action_alarm');
+                required.delete('sensor_motion');
+                if (text.includes('תרגיל 4')) {
+                    // Exercise 4 is summary/presentation only: no new-code gate.
+                    return [];
+                }
+            }
+            if (currentLesson === 15) {
+                // Lesson 15 is an open final project. Do not infer specific required blocks
+                // from example text; the custom project gate below checks only the soft minimum.
+                return ['event_start'];
             }
             return [...required];
         }
@@ -7857,8 +8475,12 @@
             { type: 'sensor_sound', value: 'SOFT', hints: ['עוצמת רעש = חלש', 'רעש = חלש'] },
             { type: 'sensor_sound', value: 'QUIET', hints: ['עוצמת רעש = שקט', 'רעש = שקט'] },
             { type: 'sensor_touch', value: 'YES', hints: ['נוגע בקיר', 'קיר קרוב'] },
+
             { type: 'sensor_obstacle', value: 'YES', hints: ['מכשול בדרך', 'יש מכשול', 'מכשול'] },
             { type: 'sensor_smell', value: 'YES', hints: ['מריח עשן', 'יש עשן', 'עשן'] },
+            { type: 'sensor_screen_edge', value: 'END', hints: ['הגיע ל סוף המסך', 'סוף המסך'] },
+            { type: 'sensor_screen_edge', value: 'START', hints: ['הגיע ל תחילת המסך', 'תחילת המסך'] },
+
             { type: 'sensor_temperature', value: 'HOT', hints: ['טמפרטורה = חם מדי', 'חום = מסוכן', 'חם מדי', 'יום חם'] },
             { type: 'sensor_temperature', value: 'OK', hints: ['טמפרטורה = נעים', 'יום נעים'] },
             { type: 'sensor_color', value: 'BLUE', hints: ['צבע החפץ = כחול', 'חפץ כחול', 'כחול'] },
@@ -7870,7 +8492,8 @@
             { type: 'sensor_line_side', value: 'LEFT', hints: ['הקו נמצא בצד שמאל', 'צד שמאל'] },
             { type: 'sensor_goal', value: 'YES', hints: ['חיישן יעד = הגעתי ליעד', 'הגעתי ליעד', 'סוף גדר'] },
             { type: 'sensor_pedestrian', value: 'YES', hints: ['יש הולך רגל', 'הולך רגל'] },
-            { type: 'sensor_cars', value: 'YES', hints: ['יש מכוניות', 'מכוניות'] },
+            { type: 'sensor_cars', value: 'YES', hints: ['יש מכוניות'] },
+            { type: 'sensor_cars', value: 'NO', hints: ['אין מכוניות'] },
             { type: 'sensor_people', value: 'YES', hints: ['יש תלמידים', 'יותר מדי מבקרים', 'יש אנשים'] },
             { type: 'sensor_people', value: 'NO', hints: ['אין אנשים', 'כיתה ריקה'] },
             { type: 'sensor_soil', value: 'DRY', hints: ['חיישן אדמה = יבשה', 'אדמה = יבשה', 'יבשה וצמאה'] },
@@ -7885,7 +8508,9 @@
         ];
 
         function sensorValueRequirementsFromExercise(exercise) {
+
             const buildText = normalizeHebrew([exercise?.title, exercise?.studentPrompt, ...(exercise?.answerBlocks || [])].join(' '));
+
             const promptText = normalizeHebrew([exercise?.title, exercise?.studentPrompt].join(' '));
             const requirements = [];
             for (const rule of sensorValueHints) {
@@ -7895,7 +8520,18 @@
                 const isContrastOnly = /לא מתקיים|לא רצות|לא אמור|לא מתריע|לא נעצרות|לא מתחלף|לא צריך/.test(buildText)
                     && !promptText.includes(hintText);
                 if (isContrastOnly) continue;
+
+
                 requirements.push({ type: rule.type, value: rule.value });
+            }
+            if (currentLesson === 8 && promptText.includes('תרגיל 1')) {
+                return requirements.filter(requirement => requirement.type !== 'sensor_cars');
+            }
+            if (currentLesson === 11) {
+                return requirements.filter(requirement => !['sensor_armed', 'sensor_motion'].includes(requirement.type));
+            }
+            if (currentLesson === 12) {
+                return requirements.filter(requirement => requirement.type !== 'sensor_door');
             }
             return requirements;
         }
@@ -7939,54 +8575,363 @@
             });
         }
 
+        function hasNestedIfRuleWithAction(outerSensorType, outerSensorValue, innerSensorType, innerSensorValues, actionType, actionValue = null) {
+            const allowedInnerValues = Array.isArray(innerSensorValues) ? innerSensorValues : [innerSensorValues];
+            return connectedProgramBlocks().some(block => {
+                if (block.type !== 'control_if') return false;
+                const outerCondition = block.getInputTargetBlock?.('COND');
+                if (!outerCondition || outerCondition.type !== outerSensorType || outerCondition.getFieldValue?.('VAL') !== outerSensorValue) return false;
+                return statementBlocksFromInput(block, 'DO').some(innerIf => {
+                    if (innerIf.type !== 'control_if') return false;
+                    const innerCondition = innerIf.getInputTargetBlock?.('COND');
+                    if (!innerCondition || innerCondition.type !== innerSensorType || !allowedInnerValues.includes(innerCondition.getFieldValue?.('VAL'))) return false;
+                    return statementBlocksFromInput(innerIf, 'DO').some(action =>
+                        action.type === actionType && blockHasFieldValue(action, actionValue)
+                    );
+                });
+            });
+        }
+
+        function hasForeverAncestor(block) {
+            let parent = block?.getSurroundParent?.();
+            while (parent) {
+                if (parent.type === 'control_forever') return true;
+                parent = parent.getSurroundParent?.();
+            }
+            return false;
+        }
+
+        function hasIfRuleWithActionOutsideForever(sensorType, sensorValue, actionType, actionValue = null) {
+            return connectedProgramBlocks().some(block => {
+                if (block.type !== 'control_if' || hasForeverAncestor(block)) return false;
+                const condition = block.getInputTargetBlock?.('COND');
+                if (!condition || condition.type !== sensorType || condition.getFieldValue?.('VAL') !== sensorValue) return false;
+                return statementBlocksFromInput(block, 'DO').some(child =>
+                    child.type === actionType && blockHasFieldValue(child, actionValue)
+                );
+            });
+        }
+
+        function hasLesson11ArmedSafeTouchAlarmRule({ requireForever = false } = {}) {
+            const armingConditions = [
+                ['sensor_light', 'DARK'],
+                ['sensor_people', 'YES'],
+                ['sensor_door', 'YES']
+            ];
+            return connectedProgramBlocks().some(block => {
+                if (block.type !== 'control_if') return false;
+                if (requireForever && !hasForeverAncestor(block)) return false;
+                const condition = block.getInputTargetBlock?.('COND');
+                const isArmingCondition = armingConditions.some(([sensorType, sensorValue]) =>
+                    condition?.type === sensorType && condition.getFieldValue?.('VAL') === sensorValue
+                );
+                if (!isArmingCondition) return false;
+                const armingBody = statementBlocksFromInput(block, 'DO');
+                const armsSecurity = armingBody.some(child =>
+                    child.type === 'action_security_mode' && blockHasFieldValue(child, 'ARM')
+                );
+                const safeTouchTriggersAlarm = armingBody.some(child => {
+                    if (child.type !== 'control_if') return false;
+                    const safeCondition = child.getInputTargetBlock?.('COND');
+                    return safeCondition?.type === 'sensor_safe_touch'
+                        && safeCondition.getFieldValue?.('VAL') === 'YES'
+                        && statementBlocksFromInput(child, 'DO').some(action =>
+                            action.type === 'action_alarm' && blockHasFieldValue(action, 'ON')
+                        );
+                });
+                return armsSecurity && safeTouchTriggersAlarm;
+            });
+        }
+
+        function hasForeverRuleWithAction(sensorType, sensorValue, actionType, actionValue = null) {
+            return connectedProgramBlocks().some(loopBlock => {
+                if (loopBlock.type !== 'control_forever') return false;
+                return statementBlocksFromInput(loopBlock, 'DO').some(block => {
+                    if (block.type !== 'control_if') return false;
+                    const condition = block.getInputTargetBlock?.('COND');
+                    if (!condition || condition.type !== sensorType || condition.getFieldValue?.('VAL') !== sensorValue) return false;
+                    return statementBlocksFromInput(block, 'DO').some(child =>
+                        child.type === actionType && blockHasFieldValue(child, actionValue)
+                    );
+                });
+            });
+        }
+
+        function hasAncestorIfWithCondition(block, sensorType, sensorValue) {
+            let parent = block?.getSurroundParent?.();
+            while (parent) {
+                if (parent.type === 'control_if') {
+                    const condition = parent.getInputTargetBlock?.('COND');
+                    if (condition?.type === sensorType && condition.getFieldValue?.('VAL') === sensorValue) return true;
+                }
+                parent = parent.getSurroundParent?.();
+            }
+            return false;
+        }
+
+        function lesson9LoopHasLoudOff(loopBlock) {
+            return statementBlocksFromInput(loopBlock, 'DO').some(block => {
+                if (block.type !== 'control_if') return false;
+                const condition = block.getInputTargetBlock?.('COND');
+                return condition?.type === 'sensor_sound'
+                    && condition.getFieldValue?.('VAL') === 'LOUD'
+                    && statementBlocksFromInput(block, 'DO').some(child => child.type === 'action_class_power' && blockHasFieldValue(child, 'OFF'));
+            });
+        }
+
+        function lesson9LoopHasQuietOn(loopBlock) {
+            return statementBlocksFromInput(loopBlock, 'DO').some(block => {
+                if (block.type !== 'control_if') return false;
+                const condition = block.getInputTargetBlock?.('COND');
+                return condition?.type === 'sensor_sound'
+                    && condition.getFieldValue?.('VAL') === 'QUIET'
+                    && statementBlocksFromInput(block, 'DO').some(child => child.type === 'action_class_power' && blockHasFieldValue(child, 'ON'));
+            });
+        }
+
+        function hasLesson9PeoplePowerOnInsideNoiseLoop() {
+            if (currentLesson !== 9) return false;
+            return connectedProgramBlocks().some(loopBlock => {
+                if (loopBlock.type !== 'control_forever' || !lesson9LoopHasLoudOff(loopBlock)) return false;
+                return statementBlocksFromInput(loopBlock, 'DO').some(block => {
+                    if (block.type !== 'control_if') return false;
+                    const condition = block.getInputTargetBlock?.('COND');
+                    return condition?.type === 'sensor_people'
+                        && condition.getFieldValue?.('VAL') === 'YES'
+                        && statementBlocksFromInput(block, 'DO').some(child => child.type === 'action_class_power' && blockHasFieldValue(child, 'ON'));
+                });
+            });
+        }
+
+        function hasLesson9NoiseOnlyPowerLoop() {
+            return connectedProgramBlocks().some(loopBlock => {
+                if (loopBlock.type !== 'control_forever') return false;
+                const loopBlocks = statementBlocksFromInput(loopBlock, 'DO');
+                const hasLoudOff = lesson9LoopHasLoudOff(loopBlock);
+                const hasQuietOn = lesson9LoopHasQuietOn(loopBlock);
+                if (!hasLoudOff || !hasQuietOn) return false;
+
+                const hasPeopleConditionInLoop = loopBlocks.some(block =>
+                    block.type === 'control_if' && block.getInputTargetBlock?.('COND')?.type === 'sensor_people'
+                );
+                if (hasPeopleConditionInLoop) return false;
+
+                return loopBlocks.every(block => {
+                    if (block.type !== 'action_class_power') return true;
+                    const state = block.getFieldValue?.('STATE');
+                    if (state === 'ON') return hasAncestorIfWithCondition(block, 'sensor_sound', 'QUIET');
+                    if (state === 'OFF') return hasAncestorIfWithCondition(block, 'sensor_sound', 'LOUD');
+                    return true;
+                });
+            });
+        }
+
         const strongExerciseRules = [
             { lesson: 1, title: 'תרגיל 1', rules: [['sensor_light', 'DARK', 'action_street_light', 'ON', 'rule_dark_light_on']] },
             { lesson: 1, title: 'תרגיל 2', rules: [['sensor_light', 'DARK', 'action_street_light', 'ON', 'rule_dark_light_on'], ['sensor_light', 'DARK', 'action_say', null, 'rule_dark_say']] },
             { lesson: 1, title: 'תרגיל 4', rules: [['sensor_light', 'DARK', 'action_street_light', 'ON', 'rule_dark_light_on'], ['sensor_light', 'BRIGHT', 'action_street_light', 'OFF', 'rule_bright_light_off']] },
             { lesson: 2, title: 'תרגיל 1', rules: [['sensor_sound', 'LOUD', 'action_say', null, 'rule_loud_say']] },
             { lesson: 2, title: 'תרגיל 4', rules: [['sensor_sound', 'LOUD', 'stop_program', null, 'rule_loud_stop']] },
+
             { lesson: 3, title: 'תרגיל 1', rules: [['sensor_touch', 'YES', 'stop_vehicle', null, 'rule_touch_stop_vehicle']] },
+
             { lesson: 3, title: 'תרגיל 3', rules: [['sensor_touch', 'YES', 'move_backward', null, 'rule_touch_move_backward']] },
             { lesson: 3, title: 'תרגיל 4', rules: [['sensor_touch', 'YES', 'move_backward', null, 'rule_touch_move_backward'], ['sensor_touch', 'YES', 'turn_right', null, 'rule_touch_turn']] },
             { lesson: 4, title: 'תרגיל 1', rules: [['sensor_smell', 'YES', 'action_say', null, 'rule_smoke_say']] },
             { lesson: 4, title: 'תרגיל 2', rules: [['sensor_smell', 'YES', 'action_sound', 'ALARM', 'rule_smoke_alarm_sound']] },
-            { lesson: 4, title: 'תרגיל 5', rules: [['sensor_smell', 'YES', 'stop_program', null, 'rule_smoke_stop']] },
+
+            { lesson: 4, title: 'תרגיל 3', rules: [['sensor_smell', 'YES', 'stop_vehicle', null, 'rule_smoke_stop_vehicle'], ['sensor_smell', 'YES', 'action_sound', 'ALARM', 'rule_smoke_alarm_sound']] },
+            { lesson: 4, title: 'תרגיל 4', rules: [['sensor_smell', 'YES', 'stop_vehicle', null, 'rule_smoke_stop_vehicle'], ['sensor_smell', 'YES', 'action_sound', 'ALARM', 'rule_smoke_alarm_sound'], ['sensor_screen_edge', 'END', 'turn_around', null, 'rule_edge_turn_around'], ['sensor_screen_edge', 'START', 'turn_around', null, 'rule_start_edge_turn_around']] },
+
             { lesson: 5, title: 'תרגיל 1', rules: [['sensor_temperature', 'HOT', 'action_fan', 'ON', 'rule_hot_fan_on']] },
             { lesson: 5, title: 'תרגיל 2', rules: [['sensor_temperature', 'HOT', 'action_fan', 'ON', 'rule_hot_fan_on'], ['sensor_temperature', 'HOT', 'action_say', null, 'rule_hot_say']] },
-            { lesson: 5, title: 'תרגיל 4', rules: [['sensor_temperature', 'HOT', 'action_fan', 'ON', 'rule_hot_fan_on'], ['sensor_temperature', 'OK', 'action_fan', 'OFF', 'rule_ok_fan_off']] },
+            { lesson: 5, title: 'תרגיל 3', rules: [['sensor_temperature', 'HOT', 'action_fan', 'ON', 'rule_hot_fan_on'], ['sensor_temperature', 'OK', 'action_fan', 'OFF', 'rule_ok_fan_off']] },
             { lesson: 6, title: 'תרגיל 1', rules: [['sensor_color', 'BLUE', 'action_recycle_bin', 'BLUE', 'rule_blue_bin_blue']] },
             { lesson: 6, title: 'תרגיל 2', rules: [['sensor_color', 'BLUE', 'action_recycle_bin', 'BLUE', 'rule_blue_bin_blue'], ['sensor_color', 'GREEN', 'action_recycle_bin', 'GREEN', 'rule_green_bin_green']] },
             { lesson: 6, title: 'תרגיל 3', rules: [['sensor_color', 'BLUE', 'action_recycle_bin', 'BLUE', 'rule_blue_bin_blue'], ['sensor_color', 'GREEN', 'action_recycle_bin', 'GREEN', 'rule_green_bin_green'], ['sensor_color', 'YELLOW', 'action_recycle_bin', 'YELLOW', 'rule_yellow_bin_yellow']] },
+            { lesson: 6, title: 'תרגיל 4', rules: [['sensor_color', 'BLUE', 'action_recycle_bin', 'BLUE', 'rule_blue_bin_blue'], ['sensor_color', 'GREEN', 'action_recycle_bin', 'GREEN', 'rule_green_bin_green'], ['sensor_color', 'YELLOW', 'action_recycle_bin', 'YELLOW', 'rule_yellow_bin_yellow']] },
             { lesson: 7, title: 'תרגיל 1', rules: [['sensor_line', 'ON', 'move_forward', null, 'rule_line_forward']] },
             { lesson: 7, title: 'תרגיל 2', rules: [['sensor_line_side', 'RIGHT', 'turn_right_small', null, 'rule_line_right_turn'], ['sensor_line_side', 'LEFT', 'turn_left_small', null, 'rule_line_left_turn']] },
-            { lesson: 7, title: 'תרגיל 5', rules: [['sensor_goal', 'YES', 'action_say', null, 'rule_goal_say']] },
+            { lesson: 7, title: 'תרגיל 4', rules: [['sensor_goal', 'YES', 'action_say', null, 'rule_goal_say']] },
             { lesson: 8, title: 'תרגיל 1', rules: [['sensor_pedestrian', 'YES', 'stop_cars', null, 'rule_pedestrian_stop_cars']] },
-            { lesson: 8, title: 'תרגיל 2', rules: [['sensor_pedestrian', 'YES', 'stop_cars', null, 'rule_pedestrian_stop_cars']] },
-            { lesson: 9, title: 'תרגיל 1', rules: [['sensor_people', 'YES', 'action_class_power', 'ON', 'rule_people_power_on']] },
-            { lesson: 9, title: 'תרגיל 2', rules: [['sensor_people', 'NO', 'action_class_power', 'OFF', 'rule_no_people_power_off']] },
-            { lesson: 9, title: 'תרגיל 5', rules: [['sensor_sound', 'LOUD', 'action_class_power', 'OFF', 'rule_loud_power_off'], ['sensor_sound', 'QUIET', 'action_class_power', 'ON', 'rule_quiet_power_on']] },
-            { lesson: 10, title: 'תרגיל 1', rules: [['sensor_water_status', 'DRY', 'action_say', null, 'rule_dry_water_say']] },
-            { lesson: 10, title: 'תרגיל 2', rules: [['sensor_water_status', 'DRY', 'action_water', 'ON', 'rule_dry_water_on'], ['sensor_water_status', 'DRY', 'action_water', 'OFF', 'rule_dry_water_off']] },
+            { lesson: 8, title: 'תרגיל 2', rules: [['sensor_cars', 'YES', 'stop_cars', null, 'rule_cars_stop_cars'], ['sensor_cars', 'NO', 'action_traffic_light', 'GREEN', 'rule_no_cars_green_light']] },
+            { lesson: 8, title: 'תרגיל 3', rules: [['sensor_pedestrian', 'YES', 'action_traffic_light', 'GREEN', 'rule_loop_pedestrian_green'], ['sensor_cars', 'YES', 'stop_cars', null, 'rule_loop_cars_stop'], ['sensor_pedestrian', 'YES', 'start_pedestrian', null, 'rule_loop_pedestrian_start'], ['sensor_pedestrian', 'YES', 'action_traffic_light', 'RED', 'rule_loop_pedestrian_red'], ['sensor_pedestrian', 'YES', 'stop_pedestrian', null, 'rule_loop_pedestrian_stop'], ['sensor_cars', 'YES', 'start_cars', null, 'rule_loop_cars_start']] },
+            { lesson: 8, title: 'תרגיל 4', rules: [['sensor_cars', 'YES', 'stop_cars', null, 'rule_cars_stop_cars'], ['sensor_cars', 'NO', 'action_traffic_light', 'GREEN', 'rule_no_cars_green_light']] },
+            { lesson: 9, title: 'תרגיל 1', rules: [['sensor_people', 'YES', 'action_class_power', 'ON', 'rule_people_power_on'], ['sensor_people', 'YES', 'action_ac', 'ON', 'rule_people_ac_on']] },
+            { lesson: 9, title: 'תרגיל 2', rules: [['sensor_people', 'NO', 'action_class_power', 'OFF', 'rule_no_people_power_off'], ['sensor_people', 'NO', 'action_ac', 'OFF', 'rule_no_people_ac_off']] },
+            { lesson: 10, title: 'תרגיל 1', rules: [] },
+            { lesson: 10, title: 'תרגיל 2', rules: [] },
             { lesson: 10, title: 'תרגיל 4', rules: [['sensor_water_status', 'EXCESS', 'action_water', 'OFF', 'rule_excess_water_off']] },
             { lesson: 11, title: 'תרגיל 1', rules: [['sensor_light', 'DARK', 'action_security_mode', 'ARM', 'rule_dark_security_arm']] },
             { lesson: 11, title: 'תרגיל 2', rules: [['sensor_people', 'YES', 'action_security_mode', 'ARM', 'rule_people_security_arm'], ['sensor_door', 'YES', 'action_security_mode', 'ARM', 'rule_door_security_arm']] },
-            { lesson: 11, title: 'תרגיל 3', rules: [['sensor_armed', 'YES', 'action_alarm', 'ON', 'rule_armed_alarm_on']] },
+            { lesson: 11, title: 'תרגיל 3', rules: [] },
             { lesson: 12, title: 'תרגיל 1', rules: [['sensor_goal', 'YES', 'action_drop_delivery', null, 'rule_goal_drop_delivery']] },
             { lesson: 12, title: 'תרגיל 2', rules: [['sensor_obstacle', 'YES', 'move_backward', null, 'rule_obstacle_move_backward']] },
-            { lesson: 13, title: 'תרגיל 1', rules: [['sensor_burglar', 'YES', 'action_alarm', 'ON', 'rule_burglar_alarm_on'], ['sensor_goal', 'YES', 'turn_around', null, 'rule_goal_turn_around']] },
-            { lesson: 13, title: 'תרגיל 2', rules: [['sensor_burglar', 'YES', 'action_alarm', 'ON', 'rule_burglar_alarm_on'], ['sensor_homeowner', 'YES', 'action_say', null, 'rule_homeowner_say']] },
-            { lesson: 14, title: 'תרגיל 1', rules: [['sensor_smell', 'YES', 'action_safe_route', null, 'rule_smoke_safe_route']] },
-            { lesson: 14, title: 'תרגיל 2', rules: [['sensor_temperature', 'HOT', 'action_alarm', 'ON', 'rule_hot_alarm_on']] },
-            { lesson: 14, title: 'תרגיל 3', rules: [['sensor_obstacle', 'YES', 'action_safe_route', null, 'rule_obstacle_safe_route']] }
+            { lesson: 13, title: 'תרגיל 1', rules: [['sensor_goal', 'YES', 'turn_around', null, 'rule_goal_turn_around']] },
+            { lesson: 13, title: 'תרגיל 2', rules: [['sensor_homeowner', 'YES', 'action_say', null, 'rule_homeowner_say']] },
+            { lesson: 14, title: 'תרגיל 1', rules: [['sensor_smell', 'YES', 'action_safe_route', null, 'rule_smoke_safe_route']] }
         ];
+
+        const lesson15SensorBlockTypes = new Set(['sensor_light', 'sensor_sound', 'sensor_touch', 'sensor_obstacle', 'sensor_smell', 'sensor_screen_edge', 'sensor_temperature', 'sensor_color', 'sensor_line', 'sensor_line_side', 'sensor_goal', 'sensor_pedestrian', 'sensor_cars', 'sensor_people', 'sensor_soil', 'sensor_water_status', 'sensor_armed', 'sensor_safe_touch', 'sensor_door', 'sensor_burglar', 'sensor_homeowner', 'sensor_motion']);
+        const lesson15ActionBlockTypes = new Set(['move_forward', 'move_backward', 'turn_right', 'turn_left', 'turn_right_small', 'turn_left_small', 'turn_around', 'stop_vehicle', 'stop_cars', 'start_cars', 'stop_pedestrian', 'start_pedestrian', 'stop_program', 'control_wait', 'action_say', 'action_street_light', 'action_traffic_light', 'action_class_power', 'action_sound', 'action_alarm', 'action_security_mode', 'action_fan', 'action_ac', 'action_water', 'action_recycle_bin', 'action_safe_route', 'action_delivery_package', 'action_drop_delivery']);
+
+        function lesson15ProjectRulesWithActions() {
+            return connectedProgramBlocks().filter(block => {
+                if (block.type !== 'control_if') return false;
+                const condition = block.getInputTargetBlock?.('COND');
+                if (!condition || !lesson15SensorBlockTypes.has(condition.type)) return false;
+                return statementBlocksFromInput(block, 'DO').some(child => lesson15ActionBlockTypes.has(child.type));
+            });
+        }
+
+        function validateLesson15OpenProjectMinimum() {
+            if (lesson15ProjectRulesWithActions().length >= 2) return [];
+            return ['rule_lesson15_two_sensor_conditions_with_actions'];
+        }
 
         function validateCustomExerciseRules(exercise) {
             const title = normalizeHebrew(exercise?.title || '');
             const matchingRules = strongExerciseRules.filter(entry => entry.lesson === currentLesson && title.includes(normalizeHebrew(entry.title)));
             const missing = [];
+            if (currentLesson === 15 && activeExerciseIndex >= 2) {
+                missing.push(...validateLesson15OpenProjectMinimum());
+            }
             for (const entry of matchingRules) {
                 for (const [sensorType, sensorValue, actionType, actionValue, missingKey] of entry.rules) {
                     if (!hasIfRuleWithAction(sensorType, sensorValue, actionType, actionValue)) missing.push(missingKey);
+                }
+            }
+            if (currentLesson === 6 && title.includes('תרגיל 4')) {
+                const loopRules = [
+                    ['sensor_color', 'BLUE', 'action_recycle_bin', 'BLUE'],
+                    ['sensor_color', 'GREEN', 'action_recycle_bin', 'GREEN'],
+                    ['sensor_color', 'YELLOW', 'action_recycle_bin', 'YELLOW']
+                ];
+                const hasLoopSorting = loopRules.every(([sensorType, sensorValue, actionType, actionValue]) =>
+                    hasForeverRuleWithAction(sensorType, sensorValue, actionType, actionValue)
+                );
+                if (!hasLoopSorting) missing.push('rule_recycle_loop_sorting');
+            }
+            if (currentLesson === 8 && title.includes('תרגיל 3')) {
+                const loopRules = [
+                    ['sensor_pedestrian', 'YES', 'action_traffic_light', 'GREEN'],
+                    ['sensor_cars', 'YES', 'stop_cars', null],
+                    ['sensor_pedestrian', 'YES', 'start_pedestrian', null],
+                    ['sensor_pedestrian', 'YES', 'action_traffic_light', 'RED'],
+                    ['sensor_pedestrian', 'YES', 'stop_pedestrian', null],
+                    ['sensor_cars', 'YES', 'start_cars', null]
+                ];
+                const hasTrafficLoop = loopRules.every(([sensorType, sensorValue, actionType, actionValue]) =>
+                    hasForeverRuleWithAction(sensorType, sensorValue, actionType, actionValue)
+                );
+                if (!hasTrafficLoop) missing.push('rule_traffic_loop_cycle');
+            }
+            if (currentLesson === 10 && title.includes('תרגיל 1')) {
+                const hasDryWaterSay = hasIfRuleWithAction('sensor_water_status', 'DRY', 'action_say');
+                const hasDrySoilSay = hasIfRuleWithAction('sensor_soil', 'DRY', 'action_say');
+                if (!hasDryWaterSay && !hasDrySoilSay) missing.push('rule_dry_garden_say_either_sensor');
+            }
+            if (currentLesson === 10 && title.includes('תרגיל 2')) {
+                const hasDryWaterOpen = hasIfRuleWithAction('sensor_water_status', 'DRY', 'action_water', 'ON');
+                const hasDryWaterClose = hasIfRuleWithAction('sensor_water_status', 'DRY', 'action_water', 'OFF');
+                const hasDrySoilOpen = hasIfRuleWithAction('sensor_soil', 'DRY', 'action_water', 'ON');
+                const hasDrySoilClose = hasIfRuleWithAction('sensor_soil', 'DRY', 'action_water', 'OFF');
+                if (!(hasDryWaterOpen || hasDrySoilOpen)) missing.push('rule_dry_garden_water_on_either_sensor');
+                if (!(hasDryWaterClose || hasDrySoilClose)) missing.push('rule_dry_garden_water_off_either_sensor');
+            }
+            if (currentLesson === 10 && title.includes('תרגיל 5')) {
+                const hasDryLoopOpen = hasForeverRuleWithAction('sensor_soil', 'DRY', 'action_water', 'ON')
+                    || hasForeverRuleWithAction('sensor_water_status', 'DRY', 'action_water', 'ON');
+                const hasDryLoopClose = hasForeverRuleWithAction('sensor_soil', 'DRY', 'action_water', 'OFF')
+                    || hasForeverRuleWithAction('sensor_water_status', 'DRY', 'action_water', 'OFF');
+                const hasExcessLoopClose = hasForeverRuleWithAction('sensor_water_status', 'EXCESS', 'action_water', 'OFF');
+                if (!hasDryLoopOpen || !hasDryLoopClose || !hasExcessLoopClose) missing.push('rule_smart_garden_forever_loop');
+            }
+            if (currentLesson === 11 && (title.includes('תרגיל 3') || title.includes('תרגיל 4'))) {
+                if (!hasLesson11ArmedSafeTouchAlarmRule()) missing.push('rule_security_armed_safe_touch_alarm');
+            }
+            if (currentLesson === 11 && title.includes('תרגיל 5')) {
+                if (!hasLesson11ArmedSafeTouchAlarmRule({ requireForever: true })) missing.push('rule_security_forever_museum_guard');
+            }
+            if (currentLesson === 14 && title.includes('תרגיל 3')) {
+                const hasObstacleSay = hasIfRuleWithAction('sensor_obstacle', 'YES', 'action_say');
+                const hasObstacleSafeRoute = hasIfRuleWithAction('sensor_obstacle', 'YES', 'action_safe_route');
+                const hasObstacleTurn = hasIfRuleWithAction('sensor_obstacle', 'YES', 'turn_right')
+                    || hasIfRuleWithAction('sensor_obstacle', 'YES', 'turn_left');
+                const hasObstacleForward = hasIfRuleWithAction('sensor_obstacle', 'YES', 'move_forward');
+                if (!hasObstacleSay) missing.push('rule_obstacle_say_warning');
+                if (!hasObstacleSafeRoute) missing.push('rule_obstacle_safe_route');
+                if (!hasObstacleTurn || !hasObstacleForward) missing.push('rule_obstacle_manual_navigation');
+            }
+            if (currentLesson === 14 && title.includes('תרגיל 2')) {
+                const hasHotAlert = hasIfRuleWithAction('sensor_temperature', 'HOT', 'action_alarm', 'ON')
+                    || hasIfRuleWithAction('sensor_temperature', 'HOT', 'action_sound', 'ALARM');
+                if (!hasHotAlert) missing.push('rule_hot_alarm_on');
+            }
+            if (currentLesson === 13 && title.includes('תרגיל 1')) {
+                const hasBurglarAlarm = hasIfRuleWithAction('sensor_burglar', 'YES', 'action_alarm', 'ON')
+                    || hasIfRuleWithAction('sensor_burglar', 'YES', 'action_sound', 'ALARM');
+                if (!hasBurglarAlarm) missing.push('rule_burglar_alarm_on');
+            }
+            if (currentLesson === 13 && title.includes('תרגיל 2')) {
+                const hasDirectBurglarAlarm = hasIfRuleWithAction('sensor_burglar', 'YES', 'action_alarm', 'ON')
+                    || hasIfRuleWithAction('sensor_burglar', 'YES', 'action_sound', 'ALARM');
+                const hasQuietMotionAlarm = hasNestedIfRuleWithAction('sensor_motion', 'YES', 'sensor_sound', ['QUIET', 'NO'], 'action_alarm', 'ON')
+                    || hasNestedIfRuleWithAction('sensor_motion', 'YES', 'sensor_sound', ['QUIET', 'NO'], 'action_sound', 'ALARM');
+                if (!hasDirectBurglarAlarm) missing.push('rule_burglar_alarm_on');
+                if (!hasQuietMotionAlarm) missing.push('rule_quiet_motion_alarm_on');
+            }
+            if (currentLesson === 12 && title.includes('תרגיל 3')) {
+                const hasLoopObstacleRecovery = hasForeverRuleWithAction('sensor_obstacle', 'YES', 'move_backward')
+                    && (hasForeverRuleWithAction('sensor_obstacle', 'YES', 'turn_right')
+                        || hasForeverRuleWithAction('sensor_obstacle', 'YES', 'turn_left')
+                        || hasForeverRuleWithAction('sensor_obstacle', 'YES', 'turn_around'));
+                const hasLoopDeliveryFinish = hasForeverRuleWithAction('sensor_goal', 'YES', 'action_drop_delivery')
+                    && hasForeverRuleWithAction('sensor_goal', 'YES', 'action_say');
+                if (!hasLoopObstacleRecovery || !hasLoopDeliveryFinish) missing.push('rule_delivery_forever_until_delivered');
+            }
+            if (currentLesson === 9 && title.includes('תרגיל 3')) {
+                const presenceRulesBeforeLoop = [
+                    ['sensor_people', 'YES', 'action_class_power', 'ON', 'rule_people_power_on_before_loop'],
+                    ['sensor_people', 'YES', 'action_ac', 'ON', 'rule_people_ac_on_before_loop'],
+                    ['sensor_people', 'NO', 'action_class_power', 'OFF', 'rule_no_people_power_off_before_loop'],
+                    ['sensor_people', 'NO', 'action_ac', 'OFF', 'rule_no_people_ac_off_before_loop']
+                ];
+                for (const [sensorType, sensorValue, actionType, actionValue, missingKey] of presenceRulesBeforeLoop) {
+                    if (!hasIfRuleWithActionOutsideForever(sensorType, sensorValue, actionType, actionValue)) missing.push(missingKey);
+                }
+                if (!hasLesson9NoiseOnlyPowerLoop()) missing.push('rule_noise_only_power_loop');
+            }
+            return missing;
+        }
+
+
+        function validateRunResultForExercise(exercise) {
+            const title = normalizeHebrew(exercise?.title || '');
+            const trace = currentRunTrace;
+            if (!trace || trace.exerciseIndex !== activeExerciseIndex) return [];
+            const missing = [];
+            if (currentLesson === 3 && trace.lesson === 3) {
+                if (title.includes('תרגיל 1') && !trace.stoppedVehicle) missing.push('run_vehicle_stopped');
+                if (title.includes('התרחקות בטוחה')) {
+                    if (!trace.stoppedVehicle) missing.push('run_vehicle_stopped');
+                    if (!trace.movedBackward) missing.push('run_moved_backward');
+                }
+                if (title.includes('עקיפה')) {
+                    if (!trace.stoppedVehicle) missing.push('run_vehicle_stopped');
+                    if (!trace.movedBackward) missing.push('run_moved_backward');
+                    if (!trace.turned) missing.push('run_turned');
+                }
+            }
+            if (currentLesson === 4 && trace.lesson === 4 && title.includes('הלוך ושוב')) {
+                // If smoke is found early, the truck may stop before reaching the screen edge.
+                // In that case, accept a correct patrol rule by inspecting the code structure.
+                const hasEndEdgeTurnRule = hasIfRuleWithAction('sensor_screen_edge', 'END', 'turn_around');
+                const hasStartEdgeTurnRule = hasIfRuleWithAction('sensor_screen_edge', 'START', 'turn_around');
+                const hasCompletePatrolCode = hasEndEdgeTurnRule && hasStartEdgeTurnRule;
+                if (!hasCompletePatrolCode) {
+                    if (!trace.reachedEdge) missing.push('run_reached_edge');
+                    if (!trace.returnedFromEdge) missing.push('run_returned_from_edge');
                 }
             }
             return missing;
@@ -7996,9 +8941,12 @@
             const cityLesson = window.getSensiLesson ? window.getSensiLesson(currentLesson) : null;
             const exercise = cityLesson?.programmingExercises?.[activeExerciseIndex];
             if (!exercise) return { ok: true, missing: [] };
+            if (currentLesson === 15 && activeExerciseIndex < 2) {
+                return { ok: true, missing: [], exercise };
+            }
             const present = blockTypesInConnectedProgram();
             const required = blockTypesFromExercise(exercise);
-            const missing = required.filter(type => !present.has(type));
+            let missing = required.filter(type => !present.has(type));
             const valueRequirements = sensorValueRequirementsFromExercise(exercise);
             for (const requirement of valueRequirements) {
                 if (present.has(requirement.type) && !workspaceHasBlockValue(requirement.type, requirement.value)) {
@@ -8010,10 +8958,33 @@
                 if (!runStates.includes(state)) missing.push(`test_state:${state}`);
             }
             missing.push(...validateCustomExerciseRules(exercise));
+            missing.push(...validateRunResultForExercise(exercise));
+
+            const normalizedTitle = normalizeHebrew(exercise?.title || '');
+            if (currentLesson === 10 && normalizedTitle.includes('תרגיל 1')) {
+                const hasDryWaterSay = hasIfRuleWithAction('sensor_water_status', 'DRY', 'action_say');
+                const hasDrySoilSay = hasIfRuleWithAction('sensor_soil', 'DRY', 'action_say');
+                if (hasDryWaterSay || hasDrySoilSay) {
+                    missing = missing.filter(type => !['sensor_water_status', 'sensor_water_status:DRY', 'sensor_soil', 'sensor_soil:DRY', 'rule_dry_garden_say_either_sensor'].includes(type));
+                }
+            }
+            if (currentLesson === 10 && normalizedTitle.includes('תרגיל 2')) {
+                const hasDryWaterOpen = hasIfRuleWithAction('sensor_water_status', 'DRY', 'action_water', 'ON');
+                const hasDryWaterClose = hasIfRuleWithAction('sensor_water_status', 'DRY', 'action_water', 'OFF');
+                const hasDrySoilOpen = hasIfRuleWithAction('sensor_soil', 'DRY', 'action_water', 'ON');
+                const hasDrySoilClose = hasIfRuleWithAction('sensor_soil', 'DRY', 'action_water', 'OFF');
+                if ((hasDryWaterOpen || hasDrySoilOpen) && (hasDryWaterClose || hasDrySoilClose)) {
+                    missing = missing.filter(type => !['sensor_water_status', 'sensor_water_status:DRY', 'sensor_soil', 'sensor_soil:DRY', 'rule_dry_garden_water_on_either_sensor', 'rule_dry_garden_water_off_either_sensor'].includes(type));
+                }
+            }
+
             const hasStart = present.has('event_start');
             const hasDisconnected = (workspace?.getTopBlocks(false) || []).some(block => block.type !== 'event_start');
             if (!hasStart && !missing.includes('event_start')) missing.unshift('event_start');
-            if (hasDisconnected) missing.push('connected_program');
+            // Ignore loose/unconnected blocks when the connected program already solves the exercise.
+            // Only mention disconnected blocks if the connected program is still missing required logic;
+            // then the missing code may simply need to be connected to the start block.
+            if (hasDisconnected && missing.length > 0) missing.push('connected_program');
             return { ok: missing.length === 0, missing, exercise };
         }
 
@@ -8021,17 +8992,27 @@
             if (type === 'test_state:DARK' || type === 'test_state:BRIGHT') {
                 return 'כדי להשלים את התרגיל, הריצו פעם אחת בחושך ופעם אחת באור.';
             }
+            if (type === 'test_state:LOUD' || type === 'test_state:QUIET') {
+                return 'כדי להשלים את תרגיל הבדיקה, הריצו פעם אחת עם רעש חזק ופעם אחת במצב שקט.';
+            }
+
+
             return exerciseTypeLabel(type);
         }
 
         function uniqueExerciseMissingLabels(missing) {
-            return [...new Set((missing || []).map(exerciseMissingLabel))];
+            return [...new Set((missing || [])
+                .map(exerciseMissingLabel)
+                .filter(label => label && !/[a-z]+_[a-z0-9_]+/i.test(label))
+            )];
         }
 
         function exerciseTypeLabel(type) {
             const labels = {
                 event_start: 'בלוק התחלה', control_if: 'תנאי אם/אז', control_forever: 'לולאה', control_wait: 'חכה', stop_program: 'עצור תוכנית', connected_program: 'חיבור כל הבלוקים להתחלה',
-                sensor_light: 'חיישן אור', sensor_sound: 'חיישן קול/רעש', sensor_touch: 'חיישן קיר/מגע', sensor_obstacle: 'חיישן מכשול', sensor_smell: 'חיישן עשן', sensor_temperature: 'חיישן טמפרטורה', sensor_color: 'חיישן צבע', sensor_line: 'חיישן קו', sensor_line_side: 'חיישן צד הקו', sensor_goal: 'חיישן יעד/סוף', sensor_pedestrian: 'חיישן הולך רגל', sensor_cars: 'חיישן מכוניות', sensor_people: 'חיישן אנשים', sensor_soil: 'חיישן אדמה', sensor_water_status: 'מד מצב מים', sensor_armed: 'חיישן מצב שמירה', sensor_safe_touch: 'חיישן כספת', sensor_door: 'חיישן דלת', sensor_burglar: 'חיישן גנב', sensor_homeowner: 'חיישן בעל הבית', sensor_motion: 'חיישן תנועה',
+
+                sensor_light: 'חיישן אור', sensor_sound: 'חיישן קול/רעש', sensor_touch: 'חיישן קיר/מגע', sensor_obstacle: 'חיישן מכשול', sensor_smell: 'חיישן עשן', sensor_screen_edge: 'בודק קצה מסך', sensor_temperature: 'חיישן טמפרטורה', sensor_color: 'חיישן צבע', sensor_line: 'חיישן קו', sensor_line_side: 'חיישן צד הקו', sensor_goal: 'חיישן יעד/סוף', sensor_pedestrian: 'חיישן הולך רגל', sensor_cars: 'חיישן מכוניות', sensor_people: 'חיישן אנשים', sensor_soil: 'חיישן אדמה', sensor_water_status: 'מד מצב מים', sensor_armed: 'מצב שמירה דרוכה', sensor_safe_touch: 'בלוק “נגיעה בכספת?”', sensor_door: 'חיישן דלת', sensor_burglar: 'חיישן גנב', sensor_homeowner: 'חיישן בעל הבית', sensor_motion: 'חיישן תנועה',
+
                 move_forward: 'תנועה קדימה', move_backward: 'תנועה אחורה', turn_right: 'סיבוב ימינה', turn_left: 'סיבוב שמאלה', turn_right_small: 'סיבוב קטן ימינה', turn_left_small: 'סיבוב קטן שמאלה', turn_around: 'הסתובב 180°', stop_vehicle: 'עצור רכב', stop_cars: 'עצור מכוניות', start_cars: 'המשך מכוניות', stop_pedestrian: 'עצור הולך רגל', start_pedestrian: 'המשך הולך רגל',
                 action_street_light: 'פעולת פנס', action_traffic_light: 'פעולת רמזור', action_class_power: 'חשמל כיתה', action_sound: 'צליל', action_alarm: 'אזעקה', action_security_mode: 'דריכת שמירה', action_fan: 'מאוורר', action_ac: 'מזגן', action_water: 'טפטפות', action_recycle_bin: 'מיון לפח', action_say: 'אמירה/הודעה', action_safe_route: 'דרך בטוחה', action_delivery_package: 'הבא משלוח', action_drop_delivery: 'הנח משלוח'
             };
@@ -8044,13 +9025,17 @@
                 'sensor_line_side:RIGHT': 'חיישן צד קו עם הערך “ימין”', 'sensor_line_side:LEFT': 'חיישן צד קו עם הערך “שמאל”',
                 'sensor_water_status:DRY': 'מד מצב מים עם הערך “יבש”', 'sensor_water_status:OK': 'מד מצב מים עם הערך “תקין”', 'sensor_water_status:EXCESS': 'מד מצב מים עם הערך “עודף מים”',
                 'sensor_touch:YES': 'חיישן קיר/מגע עם הערך “יש קיר”', 'sensor_obstacle:YES': 'חיישן מכשול עם הערך “יש מכשול”',
-                'sensor_smell:YES': 'חיישן עשן עם הערך “יש עשן”', 'sensor_goal:YES': 'חיישן יעד/סוף עם הערך “כן”',
-                'sensor_pedestrian:YES': 'חיישן הולך רגל עם הערך “יש הולך רגל”', 'sensor_cars:YES': 'חיישן מכוניות עם הערך “יש מכוניות”',
+
+                'sensor_smell:YES': 'חיישן עשן עם הערך “יש עשן”', 'sensor_screen_edge:END': 'חיישן קצה מסך עם הערך “סוף המסך”', 'sensor_screen_edge:START': 'חיישן קצה מסך עם הערך “תחילת המסך”', 'sensor_goal:YES': 'חיישן יעד/סוף עם הערך “כן”',
+
+                'sensor_pedestrian:YES': 'חיישן הולך רגל עם הערך “יש הולך רגל”', 'sensor_cars:YES': 'חיישן מכוניות עם הערך “יש מכוניות”', 'sensor_cars:NO': 'חיישן מכוניות עם הערך “אין מכוניות”',
                 'sensor_people:YES': 'חיישן אנשים עם הערך “יש/יותר מדי”', 'sensor_people:NO': 'חיישן אנשים עם הערך “אין”',
-                'sensor_soil:DRY': 'חיישן אדמה עם הערך “יבשה”', 'sensor_armed:YES': 'חיישן שמירה עם הערך “דרוכה”',
-                'sensor_safe_touch:YES': 'חיישן כספת עם הערך “נגיעה”', 'sensor_door:YES': 'חיישן דלת עם הערך “פתוחה”',
+                'sensor_soil:DRY': 'חיישן אדמה עם הערך “יבשה”', 'sensor_armed:YES': 'מצב שמירה דרוכה',
+                'sensor_safe_touch:YES': 'בלוק “נגיעה בכספת?” עם הערך “כן”', 'sensor_door:YES': 'חיישן דלת עם הערך “פתוחה”',
                 'sensor_burglar:YES': 'חיישן גנב עם הערך “זוהה גנב”', 'sensor_homeowner:YES': 'חיישן בעל הבית עם הערך “זוהה בעל הבית”',
+
                 'sensor_motion:YES': 'חיישן תנועה עם הערך “יש תנועה”',
+
                 'action_street_light:ON': 'פנס רחוב עם הפעולה “הדלק”', 'action_street_light:OFF': 'פנס רחוב עם הפעולה “כבה”',
                 'action_fan:ON': 'מאוורר עם הפעולה “הפעל”', 'action_fan:OFF': 'מאוורר עם הפעולה “כבה”',
                 'action_ac:ON': 'מזגן עם הפעולה “הפעל”', 'action_ac:OFF': 'מזגן עם הפעולה “כבה”',
@@ -8061,21 +9046,51 @@
                 'action_sound:ALARM': 'צליל עם הערך “אזעקה”', 'action_sound:BEEP': 'צליל עם הערך “ביפ”',
                 'action_security_mode:ARM': 'שמירה עם הפעולה “דרוך”', 'action_security_mode:DISARM': 'שמירה עם הפעולה “כבוי”',
                 'action_recycle_bin:BLUE': 'מיון לפח כחול', 'action_recycle_bin:GREEN': 'מיון לפח ירוק', 'action_recycle_bin:YELLOW': 'מיון לפח צהוב',
-                'test_state:DARK': 'הרצה אחת כשהעיר חשוכה', 'test_state:BRIGHT': 'הרצה אחת כשהאור דלוק/בהיר',
+                'test_state:DARK': 'הרצה אחת כשהעיר חשוכה', 'test_state:BRIGHT': 'הרצה אחת כשהאור דלוק/בהיר', 'test_state:LOUD': 'הרצה אחת עם רעש חזק', 'test_state:QUIET': 'הרצה אחת במצב שקט',
+
+                run_vehicle_stopped: 'הרצה שבה סנסי באמת עצר לפני הקיר',
+                run_moved_backward: 'הרצה שבה סנסי באמת זז אחורה אחרי העצירה',
+                run_turned: 'הרצה שבה סנסי באמת הסתובב אחרי שזז אחורה',
+
                 'rule_dark_light_on': 'הוסיפו כלל: אם חיישן אור = חשוך → פנס רחוב — הדלק',
-                'rule_bright_light_off': 'הוסיפו כלל: אם חיישן אור = בהיר → פנס רחוב — כבה'
+                'rule_bright_light_off': 'הוסיפו כלל: אם חיישן אור = בהיר → פנס רחוב — כבה',
+                rule_recycle_loop_sorting: 'בתוך לולאת “לנצח”: בדיקת צבע כחול/ירוק/צהוב ומיון כל צבע לפח המתאים',
+                rule_traffic_loop_cycle: 'בתוך לולאת “לנצח”: מחזור רמזור מלא עם ירוק/אדום, עצירת מכוניות, המשך הולך רגל, עצירת הולך רגל והמשך מכוניות',
+                rule_people_power_on: 'הוסיפו כלל: אם יש אנשים בכיתה → הדלק אור',
+                rule_people_ac_on: 'הוסיפו לאותו כלל: אם יש אנשים בכיתה → מזגן — הפעל',
+                rule_no_people_power_off: 'הוסיפו כלל: אם אין אנשים בכיתה → כבה אור',
+                rule_no_people_ac_off: 'הוסיפו לאותו כלל: אם אין אנשים בכיתה → מזגן — כבה',
+                rule_people_power_on_before_loop: 'לפני לולאת הרעש הוסיפו כלל נוכחות: אם יש תלמידים בכיתה → הדלק אור.',
+                rule_people_ac_on_before_loop: 'לפני לולאת הרעש הוסיפו לאותו כלל: אם יש תלמידים בכיתה → מזגן — הפעל.',
+                rule_no_people_power_off_before_loop: 'לפני לולאת הרעש הוסיפו כלל חיסכון: אם אין תלמידים בכיתה → כבה אור.',
+                rule_no_people_ac_off_before_loop: 'לפני לולאת הרעש הוסיפו לאותו כלל: אם אין תלמידים בכיתה → מזגן — כבה.',
+                rule_noise_only_power_loop: 'אחרי כללי הנוכחות, לולאת “חזור תמיד” צריכה לבדוק רק רעש: אם הרעש חזק מדי → כבה אור, ואם נהיה שקט → הדלק אור. אל תשימו בתוך אותה לולאה כלל “יש אנשים → הדלק אור”, כי הוא ידליק מחדש לפני שנהיה שקט.',
+                rule_dry_garden_say_either_sensor: 'בתרגיל 1 אפשר לבחור אחד משני חיישנים: אם חיישן אדמה = יבשה וצמאה → אמור הודעת גינה, או אם מצב המים = יבש → אמור הודעת גינה.',
+                rule_dry_garden_water_on_either_sensor: 'בתרגיל 2 אפשר לבחור אחד משני חיישנים: אם חיישן אדמה = יבשה וצמאה או אם מצב המים = יבש → פתח טפטפות להשקיה.',
+                rule_dry_garden_water_off_either_sensor: 'בתרגיל 2 צריך גם לסגור טפטפות לחיסכון בתוך כלל היובש — עם חיישן אדמה יבשה או עם מד מצב מים יבש.',
+                rule_smart_garden_forever_loop: 'בתרגיל 5 הנוהל צריך להיות בתוך לולאת “חזור תמיד”: בדיקת יובש שפותחת וסוגרת טפטפות, וגם בדיקת עודף מים שסוגרת טפטפות. כך אפשר לשנות חיישנים בזמן הריצה.',
+                rule_security_armed_safe_touch_alarm: 'בנו כלל שמחבר בין דריכת שמירה לבין אירוע חשוד: אם חושך / עומס מבקרים / דלת צדדית פתוחה → שמירה — דרוך, ובתוך אותו כלל בדקו אם יש נגיעה בכספת → הפעילו אזעקת מוזיאון. נגיעה בכספת לא דורכת את השמירה — היא מפעילה אזעקה רק אחרי שהשמירה נדרכה.',
+                rule_security_forever_museum_guard: 'בתרגיל 5 עטפו את נוהל השמירה בלולאת “חזור תמיד”: בתוך הלולאה בדקו כלל דריכה, ובתוכו נגיעה בכספת → אזעקת מוזיאון. כך אפשר לשנות חיישנים בזמן הריצה ולראות תגובה.',
+                rule_delivery_forever_until_delivered: 'בתרגיל 3 צריך לחבר את המסלול עם העקיפה: בתוך “חזור תמיד” צריך להיות טיפול במכשול — זוז אחורה וסובב — וגם תנאי יעד שמניח משלוח ואומר “נמסר בהצלחה” רק כשהרובוט נוגע בבית.',
+                rule_hot_alarm_on: 'כאשר חיישן החום מזהה חום מסוכן, צריך להתריע. אפשר להשתמש באחת משתי האפשרויות: “אזעקה — הפעל” או “השמע אזעקה”.',
+                rule_obstacle_say_warning: 'כאשר יש מכשול במסלול, קודם צריך להודיע עליו בעזרת בלוק “אמור”, למשל “מכשול במסלול”.',
+                rule_obstacle_safe_route: 'כאשר יש מכשול במסלול, הוסיפו בתוך התנאי גם את הבלוק “חפש דרך בטוחה”.',
+                rule_obstacle_manual_navigation: 'אחרי “חפש דרך בטוחה” צריך להוסיף ניווט אמיתי סביב המכשול: סובב ימינה/שמאלה ואז זוז קדימה בזהירות.',
+                rule_burglar_alarm_on: 'כאשר חיישן גנב מזהה גנב, צריך להפעיל אזעקה מיד. אפשר להשתמש באחת משתי האפשרויות: “אזעקה — הפעל” או “השמע אזעקה”.',
+                rule_quiet_motion_alarm_on: 'הוסיפו גם כלל למצב שבו הגנב לא זוהה ישירות: אם יש תנועה, ובתוך זה בדיקת “אין רעש” — אז להפעיל אזעקה. אין רעש לבד לא מספיק; צריך תנועה + אין רעש.',
+                rule_lesson15_two_sensor_conditions_with_actions: 'בפרויקט הגמר צריך מינימום פתוח: בלוק התחלה, לפחות שני תנאי אם–אז עם חיישן, ולפחות פעולה אחת בתוך כל תנאי.'
             };
             if (valueLabels[type] || labels[type]) return valueLabels[type] || labels[type];
             if (String(type).startsWith('rule_')) {
                 const rule = strongExerciseRules.flatMap(entry => entry.rules).find(item => item[4] === type);
                 if (rule) {
                     const [sensorType, sensorValue, actionType, actionValue] = rule;
-                    const sensorLabel = valueLabels[`${sensorType}:${sensorValue}`] || labels[sensorType] || sensorType;
-                    const actionLabel = actionValue == null ? (labels[actionType] || actionType) : (valueLabels[`${actionType}:${actionValue}`] || labels[actionType] || actionType);
+                    const sensorLabel = valueLabels[`${sensorType}:${sensorValue}`] || labels[sensorType] || 'החיישן המתאים';
+                    const actionLabel = actionValue == null ? (labels[actionType] || 'הפעולה המתאימה') : (valueLabels[`${actionType}:${actionValue}`] || labels[actionType] || 'הפעולה המתאימה');
                     return `ודאו שבתוך התנאי ${sensorLabel} נמצאת הפעולה ${actionLabel}.`;
                 }
             }
-            return type;
+            return 'חסר חלק בתוכנית. בדקו את הוראות התרגיל והשלימו את הבלוקים המתאימים.';
         }
 
         function showExerciseLockMessage(message) {
@@ -8086,13 +9101,44 @@
             modal.classList.add('active');
         }
 
+
+
         function showExerciseValidationMessage(result) {
             const modal = document.getElementById('exerciseModal');
             const body = document.getElementById('exerciseModalBody');
             if (!modal || !body) return;
+
+
             const missingList = listItems(uniqueExerciseMissingLabels(result.missing));
-            body.innerHTML = `<h3>🧪 עוד לא פותחים את התרגיל הבא</h3><p>בדקתי את התוכנית מול <strong>${escapeHtml(result.exercise?.title || 'התרגיל הנוכחי')}</strong>.</p><p>כדי להשלים אותו חסר עדיין:</p>${missingList}<p>תקנו את הבלוקים ואז לחצו שוב ▶️.</p>`;
+            const missingOnlyRunStates = (result.missing || []).length > 0 && result.missing.every(item => String(item).startsWith('test_state:'));
+            const nextStepText = missingOnlyRunStates
+                ? 'הקוד נראה מתאים — עכשיו שנו את מצב החיישנים לפי ההנחיה והריצו שוב ▶️.'
+                : 'תקנו את הבלוקים ואז לחצו שוב ▶️.';
+            const missingHeading = missingOnlyRunStates ? 'כדי להשלים אותו צריך עוד בדיקה:' : 'כדי להשלים אותו חסר עדיין:';
+            body.innerHTML = `<h3>🧪 עוד לא פותחים את התרגיל הבא</h3><p>בדקתי את התוכנית מול <strong>${escapeHtml(result.exercise?.title || 'התרגיל הנוכחי')}</strong>.</p><p>${missingHeading}</p>${missingList}<p>${nextStepText}</p>`;
             modal.classList.add('active');
+        }
+
+        function advanceCompletedExercise(completionVerb = 'הושלם') {
+            const cityLesson = window.getSensiLesson ? window.getSensiLesson(currentLesson) : null;
+            const exercises = cityLesson?.programmingExercises || [];
+            if (!exercises.length) return;
+            const completedIndex = activeExerciseIndex;
+            const nextIndex = Math.min(completedIndex + 1, exercises.length - 1);
+            const completedCount = Math.min(completedIndex + 1, exercises.length);
+            setExerciseProgress(completedCount);
+            if (nextIndex > completedIndex) setActiveExercise(nextIndex, currentLesson);
+            renderExerciseToc(currentLesson);
+            const modal = document.getElementById('exerciseModal');
+            const body = document.getElementById('exerciseModalBody');
+            if (modal && body) {
+                const completedTitle = exercises[completedIndex]?.title || `תרגיל ${completedIndex + 1}`;
+                const nextTitle = exercises[nextIndex]?.title || `תרגיל ${nextIndex + 1}`;
+                body.innerHTML = nextIndex > completedIndex
+                    ? `<h3>✅ ${escapeHtml(completedTitle)} ${completionVerb}!</h3><p>כל הכבוד — עכשיו נפתח לכם <strong>${escapeHtml(nextTitle)}</strong>.</p>`
+                    : `<h3>✅ ${escapeHtml(completedTitle)} ${completionVerb}!</h3><p>כל הכבוד — ההרצה שוב עמדה בדרישות של התרגיל.</p>`;
+                modal.classList.add('active');
+            }
         }
 
         function completeActiveExerciseIfReady() {
@@ -8104,21 +9150,13 @@
                 showExerciseValidationMessage(result);
                 return;
             }
-            const completedIndex = activeExerciseIndex;
-            const nextIndex = Math.min(completedIndex + 1, exercises.length - 1);
-            setExerciseProgress(nextIndex);
-            if (nextIndex > completedIndex) setActiveExercise(nextIndex, currentLesson);
-            renderExerciseToc(currentLesson);
-            if (nextIndex > completedIndex) {
-                const modal = document.getElementById('exerciseModal');
-                const body = document.getElementById('exerciseModalBody');
-                if (modal && body) {
-                    const completedTitle = exercises[completedIndex]?.title || `תרגיל ${completedIndex + 1}`;
-                    const nextTitle = exercises[nextIndex]?.title || `תרגיל ${nextIndex + 1}`;
-                    body.innerHTML = `<h3>✅ ${escapeHtml(completedTitle)} הושלם!</h3><p>כל הכבוד — עכשיו נפתח לכם <strong>${escapeHtml(nextTitle)}</strong>.</p>`;
-                    modal.classList.add('active');
-                }
-            }
+
+            advanceCompletedExercise('הושלם');
+        }
+
+        function completeLesson15PlanningStep() {
+            if (currentLesson !== 15 || activeExerciseIndex > 1) return;
+            advanceCompletedExercise('סומן כבוצע');
         }
 
         function renderExerciseToc(lessonNum) {
@@ -8138,7 +9176,9 @@
             list.innerHTML = exercises.map((exercise, index) => {
                 const unlocked = index <= progress;
                 const done = index < progress;
-                const isActive = index === activeExerciseIndex;
+
+                const isActive = index === activeExerciseIndex && !done;
+
                 const icon = isActive ? '🎯' : unlocked ? '' : '🔒';
                 return `
                     <button class="exercise-button ${unlocked ? 'unlocked' : 'locked'} ${done ? 'done' : ''} ${isActive ? 'active' : ''}" type="button" onclick="selectExercise(${index})">
@@ -8162,14 +9202,21 @@
             }
             setActiveExercise(index, currentLesson);
             renderExerciseToc(currentLesson);
+            const answerBlocksHtml = exercise.answerBlocks?.length
+                ? `<details class="solution-toggle"><summary>פתרון / מבנה מומלץ</summary><div class="solution-toggle-content">${listItems(exercise.answerBlocks)}</div></details>`
+                : '';
+            const planningStepActionHtml = currentLesson === 15 && index < 2
+                ? '<button class="btn btn-primary" type="button" onclick="completeLesson15PlanningStep()">סיימתי את שלב התכנון — פתח את השלב הבא</button>'
+                : '';
             body.innerHTML = `
                 <div class="exercise-meta">${escapeHtml(exercise.afterFlowMinutes || exercise.minutes || '')}</div>
                 <h3>${escapeHtml(exercise.title || `תרגיל ${index + 1}`)}</h3>
                 ${exercise.studentPrompt ? `<p><span class="detail-label">מה בונים:</span> ${escapeHtml(exercise.studentPrompt)}</p>` : ''}
                 ${exercise.expectedResult ? `<p><span class="detail-label">תוצאה רצויה:</span> ${escapeHtml(exercise.expectedResult)}</p>` : ''}
-                ${exercise.answerBlocks?.length ? `<p class="detail-label">בלוקים/מבנה מומלץ:</p>${listItems(exercise.answerBlocks)}` : ''}
+                ${answerBlocksHtml}
                 ${exercise.testSteps?.length ? `<p class="detail-label">איך בודקים:</p>${listItems(exercise.testSteps)}` : ''}
                 ${exercise.commonMistake ? `<p><span class="detail-label">טעות נפוצה:</span> ${escapeHtml(exercise.commonMistake)}</p>` : ''}
+                ${planningStepActionHtml}
             `;
             modal.classList.add('active');
         }
@@ -8250,6 +9297,22 @@
             document.getElementById('welcomeModal')?.classList.remove('active');
         }
 
+
+        function toggleStageZoom() {
+            const main = document.querySelector('.main-container');
+            const button = document.getElementById('stageZoomToggle');
+            if (!main || !button) return;
+            const expanded = main.classList.toggle('stage-expanded');
+            button.setAttribute('aria-pressed', expanded ? 'true' : 'false');
+            button.title = expanded ? 'החזר את מסך ההרצה לגודל רגיל' : 'הגדל את מסך ההרצה';
+            button.setAttribute('aria-label', button.title);
+            window.setTimeout(() => {
+                resizeCanvas();
+                if (workspace && window.Blockly) Blockly.svgResize(workspace);
+            }, 280);
+        }
+
+
         function scheduleWelcomeAutoClose() {
             window.clearTimeout(window.sensiWelcomeAutoCloseTimer);
             window.sensiWelcomeAutoCloseTimer = window.setTimeout(closeWelcomeModal, 2000);
@@ -8271,6 +9334,7 @@
             const previousLesson = currentLesson;
             if (workspace && previousLesson !== num) saveWorkspaceForLesson(previousLesson);
             currentLesson = num;
+            sanitizeEnvironmentForLesson(num);
             if (num !== 15) {
                 lesson15SelectedZone = null;
                 lesson15MuseumInside = false;
@@ -8290,7 +9354,8 @@
             const title = cityLesson
                 ? `${cityLesson.emoji} שיעור ${cityLesson.id}: ${cityLesson.title}`
                 : `🏙️ שיעור ${num}: סנסי בעיר החכמה`;
-            document.querySelector('.robot-title').innerHTML = title.replace(':', ': <span>') + '</span>';
+            const titleTarget = document.querySelector('.robot-title-text');
+            if (titleTarget) titleTarget.innerHTML = title.replace(':', ': <span>') + '</span>';
             document.getElementById('presentationLink').href = 'slides/lesson.html?id=' + num + '&v=20260720-lesson11-13-merge-v1';
             const ground = document.querySelector('.ground');
             ground?.classList.toggle('street-ground', num === 8);
