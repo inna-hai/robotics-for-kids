@@ -805,8 +805,35 @@ test('lesson 15 greenhouse enter and exit blocks switch to lesson 10 garden back
 
 test('lesson 15 presentation examples match available map zones', () => {
   const lesson15 = lessonObjectSource(15);
-  assertIncludes(lesson15, 'בעיה: אזור חילוץ מסוכן');
+  assertIncludes(lesson15, 'שילוב: גינה מתייבשת + חום בחממה');
+  assertIncludes(lesson15, 'שילוב: בית חכם + אבטחה בלילה');
   assertNotIncludes(lesson15, 'בעיה: מרכז מחזור מתבלבל');
+});
+
+
+test('lesson 15 presentation stage 4 has no guide solution slide', () => {
+  const lesson15 = lessonObjectSource(15);
+  assertIncludes(lesson15, "title: 'שלב 4 — מציגים את הפרויקט'");
+  assertIncludes(lesson15, 'hideSolution: true');
+  assertNotIncludes(lesson15, "answerTitle: 'מבנה הצגה'");
+  assertNotIncludes(lesson15, "'תנאי מסירה אפשרי: רק אם ___ אז מניחים את המשלוח'");
+});
+
+test('lesson 15 stays open but requires two sensor conditions with actions', () => {
+  const lesson15 = lessonObjectSource(15);
+  assertIncludes(lesson15, 'לפחות שני תנאי אם–אז עם חיישן');
+  assertIncludes(lesson15, 'לפחות פעולה אחת בתוך כל תנאי');
+  assertIncludes(lesson15, 'מותר לבחור כל חיישן וכל פעולה שמתאימים לרעיון שלכם');
+  assertIncludes(lesson15, 'שתי בעיות/שני אזורים');
+  assertIncludes(lesson15, 'לא פשוט להעתיק פתרון משיעור קודם');
+  assertIncludes(lesson15, 'שלב 1 — ממציאים רעיון לפרויקט');
+  assertIncludes(lesson15, 'שלב 4 — מציגים את הפרויקט');
+  assertNotIncludes(lesson15, 'תרגיל 5 — הצגת פרויקט העיר שלי');
+  assertNotIncludes(lesson15, 'כתבו שלושה כללים');
+  assertIncludes(indexHtml, 'function validateLesson15OpenProjectMinimum()');
+  assertIncludes(indexHtml, 'lesson15ProjectRulesWithActions().length >= 2');
+  assertIncludes(indexHtml, "return ['event_start'];");
+  assertIncludes(indexHtml, 'rule_lesson15_two_sensor_conditions_with_actions');
 });
 
 
@@ -827,6 +854,11 @@ test('lesson 15 rescue zone reuses lesson 14 rescue scene and sensors', () => {
 
 test('lesson 15 garden delivery target is at the greenhouse door', () => {
   assertIncludes(indexHtml, "garden: [{ id: 'greenhouse-door', x: w * 0.17, y: h * 0.71, label: 'פתח החממה' }]");
+});
+
+
+test('lesson 15 school delivery target is at the entrance stairs', () => {
+  assertIncludes(indexHtml, "school: [{ id: 'school-door', x: w * 0.29, y: h * 0.78, label: 'פתח בית הספר — סוף המדרגות' }]");
 });
 
 
@@ -861,6 +893,16 @@ test('lesson 12 slide count includes all 60-minute exercises', () => {
   assertIncludes(lessonsData, 'תרגיל 4 — בדיקת שתי ריצות: בלי גדר ועם גדר');
   assertIncludes(lessonsData, 'תרגיל 5 — בונוס יצירתי קצר');
 });
+
+test('speech bubble wraps long say-block text inside the bubble', () => {
+  assertIncludes(indexHtml, 'function drawSpeechBubble(message, centerX, anchorY)');
+  assertIncludes(indexHtml, 'function wrapSpeechText(text, maxLineWidth)');
+  assertIncludes(indexHtml, 'splitLongSpeechWord(word, maxLineWidth)');
+  assertIncludes(indexHtml, 'ctx.measureText(nextLine).width > maxLineWidth');
+  assertIncludes(indexHtml, 'lines.forEach((line, index) => {');
+  assertIncludes(indexHtml, 'drawSpeechBubble(robot.speaking, robot.x, robot.y - (currentLesson === 4 ? 78 : 60));');
+});
+
 
 test('lesson 15 security patrol zone reuses lesson 13 home guard scene and sensors', () => {
   assertIncludes(indexHtml, "{ id: 'security', label: 'סיור אבטחה', icon: '🌙'");
