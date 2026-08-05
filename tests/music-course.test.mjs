@@ -49,6 +49,41 @@ test('music lesson data has twelve pattern challenges with valid notes', () => {
   const noteKeys = Object.keys(notes);
   assert.deepEqual(noteKeys.sort(), ['blue', 'green', 'purple', 'red', 'yellow']);
   assert.ok(lessons.find((lesson) => lesson.id === 6).target.length >= 8, 'Lesson 6 should be a harder debugging challenge');
+  const debugLesson = lessons.find((lesson) => lesson.id === 6);
+  assertIncludes(debugLesson.title, 'לא מתאים');
+  assertIncludes(debugLesson.mission, 'מתכונת');
+  assert.ok(Array.isArray(debugLesson.displayTarget), 'Lesson 6 should show a buggy sequence to debug');
+  assert.notDeepEqual(debugLesson.displayTarget, debugLesson.target, 'Lesson 6 visible sequence should include one wrong note');
+  const completionLesson = lessons.find((lesson) => lesson.id === 8);
+  assertIncludes(completionLesson.mission, 'המשיכו את הרצף');
+  assert.ok(Array.isArray(completionLesson.displayTarget), 'Lesson 8 should show only the start of the sequence');
+  assert.ok(completionLesson.displayTarget.length < completionLesson.target.length, 'Lesson 8 should require children to continue the sequence');
+  const conditionLesson = lessons.find((lesson) => lesson.id === 9);
+  assertIncludes(conditionLesson.mission, 'שני צלילים נמוכים');
+  assertIncludes(conditionLesson.thinkingTask.options.find((option) => option.good).text, 'שני צלילים נמוכים');
+  const twoBugLesson = lessons.find((lesson) => lesson.id === 10);
+  assertIncludes(twoBugLesson.mission, 'מתכונת של 3 צלילים');
+  assert.ok(!twoBugLesson.mission.includes('שני הצלילים האחרונים'), 'Lesson 10 instructions should not reveal where the mistakes are');
+  assert.ok(Array.isArray(twoBugLesson.displayTarget), 'Lesson 10 should show a buggy sequence to debug');
+  assert.equal(twoBugLesson.target.length, 9, 'Lesson 10 should use a 9-note sequence');
+  assert.equal(twoBugLesson.displayTarget.length, 9, 'Lesson 10 visible sequence should also be 9 notes');
+  assert.deepEqual(twoBugLesson.target.slice(0, 7), twoBugLesson.displayTarget.slice(0, 7), 'Lesson 10 should keep only the last two notes wrong');
+  assert.notEqual(twoBugLesson.displayTarget[7], twoBugLesson.target[7], 'Lesson 10 note 8 should be wrong');
+  assert.notEqual(twoBugLesson.displayTarget[8], twoBugLesson.target[8], 'Lesson 10 note 9 should be wrong');
+  assertIncludes(twoBugLesson.thinkingTask.options.find((option) => option.good).text, 'בדקנו מה לא מתאים');
+  const loopLesson = lessons.find((lesson) => lesson.id === 11);
+  assertIncludes(loopLesson.mission, 'חוזר 3 פעמים');
+  assert.equal(loopLesson.target.length, 7, 'Lesson 11 should expand the loop into seven notes');
+  assert.deepEqual(Array.from(loopLesson.loopInstruction.pattern), ['blue', 'purple'], 'Lesson 11 should show the repeated pair as an instruction');
+  assert.equal(loopLesson.loopInstruction.repeat, 3, 'Lesson 11 should ask for three repeats');
+  assert.deepEqual(Array.from(loopLesson.loopInstruction.ending), ['green'], 'Lesson 11 should show the ending note separately');
+  const concertLesson = lessons.find((lesson) => lesson.id === 12);
+  assertIncludes(concertLesson.mission, 'תוכנית לקונצרט');
+  assert.equal(concertLesson.target.length, 7, 'Lesson 12 should expand the concert plan into seven notes');
+  assert.deepEqual(Array.from(concertLesson.concertInstruction.opening), ['red'], 'Lesson 12 should show an opening note');
+  assert.equal(concertLesson.concertInstruction.repeat, 2, 'Lesson 12 should ask for two repeats');
+  assert.deepEqual(Array.from(concertLesson.concertInstruction.pattern), ['blue', 'yellow'], 'Lesson 12 should show the repeated concert part');
+  assert.deepEqual(Array.from(concertLesson.concertInstruction.ending), ['green', 'purple'], 'Lesson 12 should show the ending notes');
   for (const lesson of lessons) {
     assert.equal(typeof lesson.id, 'number');
     assert.ok(lesson.title.length >= 4, `Lesson ${lesson.id} needs a title`);
@@ -63,13 +98,15 @@ test('music lesson data has twelve pattern challenges with valid notes', () => {
   }
 });
 
-test('music lesson 1 uses child-friendly wording for the first thinking challenge', () => {
+test('music lesson 1 explains notes before asking about rising notes', () => {
   const lesson = lessons.find((item) => item.id === 1);
   assert.equal(lesson.thinkingTask.question, 'מה קורה ברצף הזה?');
-  assert.equal(lesson.thinkingTask.options[0].text, 'הצלילים שונים אחד מהשני');
-  assert.equal(lesson.thinkingTask.options[2].text, 'יש רק צליל אחד');
+  assert.equal(lesson.thinkingTask.options[0].text, 'הצלילים עולים אחד־אחד: דו → רה → מי');
+  assert.equal(lesson.thinkingTask.options[2].text, 'הדפוס חוזר אחורה');
+  assert.ok(lesson.teacherFact.includes('תווים הם סימנים ושמות'), 'Lesson 1 should explain what notes are before using do-re-mi');
+  assert.ok(lesson.teacherFact.includes('עולים מדרגה'), 'Lesson 1 should explain rising notes before asking about them');
+  assert.ok(lesson.teacherFact.includes('כמו בקוד, גם במוזיקה הסדר חשוב'), 'Lesson 1 should keep the approved order wording');
   assert.ok(!lessonsSource.includes('מה קורה בדפוס הזה?'));
-  assert.ok(!lessonsSource.includes('הצלילים עולים אחד־אחד'));
 });
 
 test('music play page exposes pattern-building controls instead of grid movement controls', () => {
@@ -92,6 +129,14 @@ test('music engine checks order, supports a first-note demo hint, and can play t
   assertIncludes(playSource, 'function playTone(noteKey)');
   assertIncludes(playSource, 'function renderThinkingTask()');
   assertIncludes(playSource, 'function shuffleOptions(options)');
+  assertIncludes(playSource, 'function triggerStageLight(noteKey, keepActive = false)');
+  assertIncludes(playSource, 'function playLightShow()');
+  assertIncludes(playSource, 'loopInstruction');
+  assertIncludes(playSource, 'concertInstruction');
+  assertIncludes(playSource, 'חזרו ${loop.repeat} פעמים');
+  assertIncludes(playSource, 'פתיחה:');
+  assertIncludes(playSource, 'מופע האורות:');
+  assertIncludes(playSource, 'lesson.id !== 5');
   assertIncludes(playSource, 'const shuffledThinkingOptions = shuffleOptions');
   assertIncludes(playSource, 'shuffledThinkingOptions.map');
   assertIncludes(playSource, 'function thinkingAnswerOk()');
@@ -112,6 +157,10 @@ test('music css includes dedicated stage, note buttons, and mobile layout', () =
   assertIncludes(musicCss, '.note-chip.playing');
   assertIncludes(musicCss, '.thinking-box');
   assertIncludes(musicCss, '.thinking-option.active');
+  assertIncludes(musicCss, '.stage-light');
+  assertIncludes(musicCss, '.loop-instruction');
+  assertIncludes(musicCss, '.concert-instruction');
+  assertIncludes(musicCss, '.stage-light.active');
   assertMatches(musicCss, /@media\(max-width:620px\)\{\.note\{width:calc\(50% - 5px\)\}\.thinking-options\{grid-template-columns:1fr\}\}/);
 });
 

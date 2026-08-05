@@ -6,14 +6,14 @@ window.MUSIC_LESSONS = [
     unit: 'דפוס ראשון',
     mission: 'סיסי שומעת דפוס קצר וצריכה לבנות אותו מחדש לפי הסדר — ואז להסביר מה השתנה בכל צליל.',
     concept: 'רצף פקודות = רצף צלילים',
-    teacherFact: 'כמו בקוד, גם במוזיקה הסדר חשוב: אם מחליפים מקום של צליל, המנגינה משתנה.',
+    teacherFact: 'תווים הם סימנים ושמות שעוזרים למוזיקאים לדעת איזה צליל לנגן. דו, רה, מי, פה וסול הם שמות של תווים. כשמנגנים דו, רה, מי לפי הסדר, הצלילים נשמעים כאילו הם עולים מדרגה. כשמנגנים תווים לפי סדר, נוצרת מנגינה. כמו בקוד, גם במוזיקה הסדר חשוב: אם מחליפים מקום של צליל, המנגינה משתנה.',
     target: ['red', 'blue', 'yellow'],
     thinkingTask: {
       question: 'מה קורה ברצף הזה?',
       options: [
-        { id: 'up', text: 'הצלילים שונים אחד מהשני', good: true },
+        { id: 'up', text: 'הצלילים עולים אחד־אחד: דו → רה → מי', good: true },
         { id: 'same', text: 'כל הצלילים אותו דבר', good: false },
-        { id: 'back', text: 'יש רק צליל אחד', good: false }
+        { id: 'back', text: 'הדפוס חוזר אחורה', good: false }
       ],
       success: 'נכון — זה דפוס עולה. סיסי לא רק העתיקה, היא זיהתה כיוון.'
     }
@@ -80,37 +80,38 @@ window.MUSIC_LESSONS = [
     title: 'אורות במה',
     emoji: '💡',
     unit: 'צליל ואור',
-    mission: 'כל צליל מדליק אור בצבע אחר. סיסי מסדרת מופע אורות קצר ובודקת איזה פלט יקרה.',
+    mission: 'סיסי מציגה מופע אורות קצר. צריך לזהות איזה רצף צלילים מדליק את האורות באותו סדר.',
     concept: 'קלט ופלט',
     teacherFact: 'ברובוטיקה, פקודה יכולה לגרום לפלט: אור, צליל, תנועה או הודעה.',
     target: ['yellow', 'red', 'green', 'blue'],
     thinkingTask: {
-      question: 'אם כל צליל מדליק אור, מה הפלט של הדפוס?',
+      question: 'איך יודעים איזה צליל לבחור לכל אור?',
       options: [
-        { id: 'output', text: 'מי → דו → פה → רה, באותו סדר של האורות', good: true },
-        { id: 'reverse', text: 'רה → פה → דו → מי, הפוך מהדפוס', good: false },
-        { id: 'one', text: 'רק האור הראשון נדלק', good: false }
+        { id: 'match', text: 'לכל אור יש צליל שמתאים לו', good: true },
+        { id: 'random', text: 'בוחרים צלילים בלי קשר לאור', good: false },
+        { id: 'first', text: 'כל האורות שייכים לצליל הראשון', good: false }
       ],
-      success: 'נכון — הפלט יוצא לפי סדר הקלט, כמו ברובוטיקה.'
+      success: 'נכון — פענחתם את הפלט ובניתם את הקלט שמתאים לו.'
     }
   },
   {
     id: 6,
-    title: 'מצא את הטעות במכונת המוזיקה',
+    title: 'מצאו את הצליל שלא מתאים',
     emoji: '🔎',
     unit: 'דיבוג מתקדם',
-    mission: 'סיסי קיבלה דפוס ארוך יותר עם חזרה באמצע. צריך לבנות אותו, ואז לגלות איפה קל לטעות.',
-    concept: 'דיבוג: למצוא ולתקן ברצף ארוך',
-    teacherFact: 'כשרצף נהיה ארוך, מתכנתים בודקים לפי מקום: צליל ראשון, שני, שלישי — עד שמוצאים את הטעות.',
-    target: ['red', 'blue', 'green', 'red', 'blue', 'green', 'purple', 'yellow'],
+    mission: 'סיסי בנתה רצף צלילים לפי מתכונת. אבל צליל אחד ברצף לא מתאים למתכונת. מצאו את הצליל שלא מתאים, ובנו למטה את הרצף הנכון.',
+    concept: 'דיבוג: למצוא ולתקן טעות אחת',
+    teacherFact: 'בדיבוג מחפשים מקום אחד שבו משהו לא מתאים, ואז מתקנים אותו.',
+    displayTarget: ['red', 'blue', 'green', 'red', 'yellow', 'green', 'red', 'blue', 'green'],
+    target: ['red', 'blue', 'green', 'red', 'blue', 'green', 'red', 'blue', 'green'],
     thinkingTask: {
-      question: 'איזה חלק חוזר לפני הסיום?',
+      question: 'איך מצאתם את הצליל שלא מתאים?',
       options: [
-        { id: 'loop', text: 'דו, רה, פה חוזרים פעמיים — ואז סול, מי', good: true },
-        { id: 'all', text: 'כל שמונת הצלילים הם חזרה אחת זהה', good: false },
-        { id: 'none', text: 'אין בכלל חזרה בדפוס', good: false }
+        { id: 'pattern', text: 'בדקנו איזה צליל לא מתאים למתכונת', good: true },
+        { id: 'first', text: 'בחרנו תמיד את הצליל הראשון', good: false },
+        { id: 'random', text: 'בחרנו צליל בלי לבדוק את הרצף', good: false }
       ],
-      success: 'מעולה — זה כבר דיבוג אמיתי: מזהים את החזרה ואז בודקים את הסיום.'
+      success: 'מעולה — מצאתם את המקום שלא מתאים ותיקנתם את הרצף.'
     }
   }
 ];
@@ -131,7 +132,7 @@ window.MUSIC_LESSONS.push(
     unit: 'דפוס עולה ויורד',
     mission: 'סיסי בונה מדרגה מוזיקלית: עולים ואז יורדים. צריך לזהות את הכיוון בכל חלק.',
     concept: 'דפוס עולה ויורד',
-    teacherFact: 'דפוס יכול לשנות כיוון. מתכנתים מחפשים את החוק לפני שהם ממשיכים.',
+    teacherFact: 'צלילים הם כמו מדרגות: יש צלילים נמוכים ויש צלילים גבוהים. כשעוברים מנמוך לגבוה, המנגינה עולה במדרגות. כשעוברים מגבוה לנמוך, המנגינה יורדת במדרגות. מתכנתים מחפשים את החוק לפני שהם ממשיכים.',
     target: ['red', 'blue', 'yellow', 'blue', 'red'],
     thinkingTask: {
       question: 'איזה חוק מתאים לדפוס?',
@@ -148,9 +149,10 @@ window.MUSIC_LESSONS.push(
     title: 'הצליל החסר',
     emoji: '❓',
     unit: 'השלמת חוק',
-    mission: 'סיסי שומעת דפוס עם חוק ברור וצריכה להשלים את הצליל שמתאים להמשך.',
+    mission: 'סיסי התחילה רצף לפי חוק. המשיכו את הרצף למטה לפי החוק שמצאתם.',
     concept: 'חיזוי לפי דפוס',
     teacherFact: 'כשמבינים חוק, אפשר לנחש נכון מה יבוא אחר כך — כמו אלגוריתם קטן.',
+    displayTarget: ['green', 'blue', 'green', 'blue'],
     target: ['green', 'blue', 'green', 'blue', 'green', 'blue'],
     thinkingTask: {
       question: 'מה החוק שחוזר כאן?',
@@ -174,7 +176,7 @@ window.MUSIC_LESSONS.push(
     thinkingTask: {
       question: 'מתי מופיע סול?',
       options: [
-        { id: 'after-two', text: 'אחרי שני צלילים זהים', good: true },
+        { id: 'after-two', text: 'אחרי שני צלילים נמוכים', good: true },
         { id: 'start', text: 'רק בתחילת הדפוס', good: false },
         { id: 'never-rule', text: 'בלי קשר למה שהיה לפניו', good: false }
       ],
@@ -183,21 +185,22 @@ window.MUSIC_LESSONS.push(
   },
   {
     id: 10,
-    title: 'דיבוג בתוף',
+    title: 'תקנו את סוף המתכונת',
     emoji: '🛠️',
     unit: 'מציאת שגיאה',
-    mission: 'המקצב כמעט נכון, אבל צריך לבדוק מקום־מקום ולזהות את הדפוס המדויק.',
-    concept: 'דיבוג רצף',
-    teacherFact: 'בדיבוג לא מנחשים. משווים צעד מול צעד עד שמוצאים איפה הרצף נשבר.',
-    target: ['yellow', 'green', 'yellow', 'green', 'yellow', 'red'],
+    mission: 'סיסי בנתה רצף לפי מתכונת של 3 צלילים שחוזרת 3 פעמים. משהו ברצף לא מתאים למתכונת. מצאו מה צריך לתקן, ובנו למטה את הרצף הנכון.',
+    concept: 'דיבוג רצף לפי מתכונת',
+    teacherFact: 'בדיבוג לא רק מסתכלים על הצליל האחרון. מחפשים את המתכונת, ואז בודקים איפה הרצף הפסיק להתאים לה.',
+    displayTarget: ['red', 'blue', 'yellow', 'red', 'blue', 'yellow', 'red', 'green', 'purple'],
+    target: ['red', 'blue', 'yellow', 'red', 'blue', 'yellow', 'red', 'blue', 'yellow'],
     thinkingTask: {
-      question: 'מה מיוחד בצליל האחרון?',
+      question: 'איך ידעתם מה צריך לתקן?',
       options: [
-        { id: 'break-end', text: 'הוא שובר את מי-פה בסוף כדי לסגור בדו', good: true },
-        { id: 'continue', text: 'הוא ממשיך מי-פה כרגיל', good: false },
-        { id: 'first', text: 'הוא הצליל הראשון בדפוס', good: false }
+        { id: 'pattern-three', text: 'מצאנו את המתכונת דו-רה-מי ובדקנו מה לא מתאים לה', good: true },
+        { id: 'last-only', text: 'בדקנו רק את הצליל האחרון', good: false },
+        { id: 'guess', text: 'בחרנו שני צלילים בלי לבדוק את המתכונת', good: false }
       ],
-      success: 'נכון — מצאתם את המקום שבו הדפוס משתנה בכוונה.'
+      success: 'נכון — מצאתם את המתכונת ותיקנתם את מה שלא התאים לה.'
     }
   },
   {
@@ -205,18 +208,23 @@ window.MUSIC_LESSONS.push(
     title: 'לולאה בתוך שיר',
     emoji: '🔁',
     unit: 'חזרה מקוננת פשוטה',
-    mission: 'סיסי בונה שיר שבו זוג צלילים חוזר שלוש פעמים ואז מגיע סיום.',
-    concept: 'לולאה + סיום',
-    teacherFact: 'הרבה שירים בנויים מחזרה ואז סיום קטן שמסמן שהקטע נגמר.',
+    mission: 'סיסי כתבה שיר עם חלק שחוזר 3 פעמים ואז צליל סיום. בנו למטה את השיר לפי המבנה.',
+    concept: 'תרגום לולאה לרצף צלילים',
+    teacherFact: 'לולאה עוזרת לבנות רצף ארוך מהוראה קצרה: חוזרים על חלק קטן כמה פעמים, ואז מוסיפים סיום.',
+    loopInstruction: {
+      repeat: 3,
+      pattern: ['blue', 'purple'],
+      ending: ['green']
+    },
     target: ['blue', 'purple', 'blue', 'purple', 'blue', 'purple', 'green'],
     thinkingTask: {
-      question: 'איזו לולאה יש כאן?',
+      question: 'איזו לולאה בניתם?',
       options: [
         { id: 'pair-three', text: 'רה-סול חוזרים שלוש פעמים ואז פה', good: true },
         { id: 'all-green', text: 'פה חוזר שבע פעמים', good: false },
         { id: 'no-loop', text: 'אין בכלל חזרה', good: false }
       ],
-      success: 'מעולה — זיהיתם לולאה ואז פקודת סיום.'
+      success: 'מעולה — תרגמתם הוראת לולאה לרצף צלילים.'
     }
   },
   {
@@ -224,14 +232,20 @@ window.MUSIC_LESSONS.push(
     title: 'קונצרט הסיום של סיסי',
     emoji: '🎼',
     unit: 'אתגר סיום',
-    mission: 'סיסי משלבת פתיחה, לולאה וסיום בקונצרט קצר. צריך לבנות וגם להסביר.',
+    mission: 'סיסי כתבה תוכנית לקונצרט: פתיחה, חלק שחוזר פעמיים, ואז סיום. בנו למטה את רצף הצלילים לפי התוכנית.',
     concept: 'אלגוריתם מוזיקלי מלא',
-    teacherFact: 'אלגוריתם טוב יכול להיות גם מוזיקלי: פתיחה, חזרה, שינוי וסיום.',
+    teacherFact: 'אלגוריתם טוב יכול להיות גם מוזיקלי: מתחילים בפתיחה, חוזרים על חלק קצר, ואז מוסיפים סיום.',
+    concertInstruction: {
+      opening: ['red'],
+      repeat: 2,
+      pattern: ['blue', 'yellow'],
+      ending: ['green', 'purple']
+    },
     target: ['red', 'blue', 'yellow', 'blue', 'yellow', 'green', 'purple'],
     thinkingTask: {
       question: 'מה המבנה של הקונצרט?',
       options: [
-        { id: 'full', text: 'פתיחה בדו, חזרה רה-מי, ואז פה-סול לסיום', good: true },
+        { id: 'full', text: 'פתיחה בדו, חזרה פעמיים על רה-מי, ואז פה-סול לסיום', good: true },
         { id: 'only-loop', text: 'רק אותו צליל חוזר כל הזמן', good: false },
         { id: 'reverse', text: 'הכול מנוגן מהסוף להתחלה', good: false }
       ],
