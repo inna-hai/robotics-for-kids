@@ -52,7 +52,7 @@ test('space course has twelve lightweight missions with child-friendly space fac
     assert.ok(lesson.mission.length >= 20, `Lesson ${lesson.id} needs a mission story`);
     assert.ok(lesson.spaceFact.length >= 20, `Lesson ${lesson.id} needs a space fact`);
     assert.ok(lesson.commands.length >= 3, `Lesson ${lesson.id} needs a demo command path`);
-    assert.ok(lesson.commands.every((cmd) => ['up', 'down', 'right', 'left'].includes(cmd)), `Lesson ${lesson.id} has unsupported command`);
+    assert.ok(lesson.commands.every((cmd) => ['up', 'down', 'right', 'left', 'broadcast'].includes(cmd)), `Lesson ${lesson.id} has unsupported command`);
   }
   assert.deepEqual(Array.from(lessons, (lesson) => lesson.id), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
 });
@@ -74,8 +74,16 @@ test('demo solutions reach each goal, collect required items, and avoid obstacle
     const obstacles = new Set(lesson.obstacles.map((point) => `${point.x},${point.y}`));
     const required = new Set((lesson.requiredItems || []).map((item) => `${item.position.x},${item.position.y}`));
     const collectedRequired = new Set();
+    let greetedAlien = false;
     const pos = { ...lesson.start };
     for (const cmd of lesson.commands) {
+      if (cmd === 'broadcast') {
+        assert.equal(lesson.id, 5, 'Broadcast command should only appear in lesson 5');
+        assert.equal(pos.x, lesson.goal.x, 'Lesson 5 should broadcast only after reaching the alien x');
+        assert.equal(pos.y, lesson.goal.y, 'Lesson 5 should broadcast only after reaching the alien y');
+        greetedAlien = true;
+        continue;
+      }
       const [dx, dy] = deltas[cmd];
       pos.x += dx;
       pos.y += dy;
@@ -86,8 +94,33 @@ test('demo solutions reach each goal, collect required items, and avoid obstacle
     }
     assert.equal(pos.x, lesson.goal.x, `Lesson ${lesson.id} demo should reach the goal x`);
     assert.equal(pos.y, lesson.goal.y, `Lesson ${lesson.id} demo should reach the goal y`);
+    if (lesson.id === 5) assert.equal(greetedAlien, true, 'Lesson 5 demo should broadcast hello to the alien');
     assert.deepEqual(collectedRequired, required, `Lesson ${lesson.id} demo should collect all required items`);
   }
+});
+
+test('lesson 5 adds a broadcast hello action and keeps the alien visible with Sisi', () => {
+  const alienLesson = lessons.find((item) => item.id === 5);
+  assert.ok(alienLesson.commands.includes('broadcast'));
+  assertIncludes(playSource, "broadcast: '📡 שדר שלום'");
+  assertIncludes(playSource, 'data-cmd="broadcast"');
+  assertIncludes(playSource, "'🤖👽'");
+  assertIncludes(playSource, 'greetedAlien');
+});
+
+test('lesson 8 shows the telescope carried with Sisi after pickup', () => {
+  const telescopeLesson = lessons.find((item) => item.id === 8);
+  assert.equal(telescopeLesson.requiredItems?.[0]?.id, 'telescope');
+  assertIncludes(playSource, 'function carriedItemIcon()');
+  assertIncludes(playSource, "lesson.id !== 8");
+  assertIncludes(playSource, "item.id === 'telescope'");
+  assertIncludes(playSource, '`🤖${carriedItemIcon()}`');
+});
+
+test('space course explains when a route passes the goal instead of reporting a fake obstacle', () => {
+  assertIncludes(playSource, 'reachedGoalDuringRun');
+  assertIncludes(playSource, 'סיסי כבר הגיעה ליעד');
+  assertIncludes(playSource, 'המסלול המשיך צעד אחד יותר מדי');
 });
 
 test('interactive play page exposes simple controls, run/reset flow, and lesson navigation', () => {
