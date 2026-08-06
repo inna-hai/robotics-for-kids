@@ -51,13 +51,14 @@ window.OCEAN_LESSONS = [
     unit: 'זהירות בדרך',
     emoji: '🦀',
     place: 'מערת סרטנים',
-    mission: 'סיסי עוברת ליד סרטן חמוד, אבל צריכה לשמור מרחק ולעקוף אותו.',
-    concept: 'אם יש מכשול — משנים כיוון',
+    mission: 'הסרטן שומר על המערה. סיסי צריכה להגיע לצדפה הירוקה, אבל לשמור מרחק: לא לעבור באזור הזהירות שליד הסרטן.',
+    concept: 'שומרים מרחק ממכשול',
     oceanFact: 'סרטנים הולכים הרבה פעמים הצידה, ויש להם שריון קשה שמגן עליהם.',
     goal: { x: 5, y: 5 },
     start: { x: 1, y: 1 },
     obstacles: [{ x: 4, y: 1 }, { x: 4, y: 2 }, { x: 4, y: 3 }, { x: 6, y: 4 }],
-    collectibles: [{ x: 2, y: 1 }, { x: 3, y: 4 }, { x: 5, y: 4 }],
+    dangerZones: [{ x: 3, y: 1 }, { x: 3, y: 2 }, { x: 3, y: 3 }, { x: 5, y: 1 }, { x: 5, y: 2 }, { x: 5, y: 3 }],
+    collectibles: [{ x: 2, y: 1 }, { x: 2, y: 5 }, { x: 1, y: 5 }],
     commands: ['down', 'down', 'down', 'down', 'right', 'right', 'right', 'right']
   },
   {
@@ -66,14 +67,16 @@ window.OCEAN_LESSONS = [
     unit: 'עוזרים לחבר',
     emoji: '🐢',
     place: 'מסלול הצבים',
-    mission: 'סיסי עוזרת לצב ים קטן למצוא את הדרך הבטוחה הביתה.',
-    concept: 'פעולה בסוף מסלול',
+    mission: 'צב ים קטן צריך להגיע הביתה. הגיעו קודם אל הצב 🐢, ואז לוו אותו לבית הירוק בלי להיתקע בסלעים.',
+    concept: 'קודם עוזרים לחבר, ואז מגיעים ליעד',
     oceanFact: 'צבי ים חוזרים לעיתים לחופים שבהם בקעו כדי להטיל ביצים כשהם גדלים.',
     goal: { x: 6, y: 4 },
+    goalIcon: '🏠',
     start: { x: 1, y: 3 },
     obstacles: [{ x: 3, y: 2 }, { x: 3, y: 3 }, { x: 5, y: 5 }],
-    collectibles: [{ x: 2, y: 3 }, { x: 4, y: 4 }, { x: 6, y: 5 }],
-    commands: ['down', 'right', 'right', 'right', 'right', 'right']
+    requiredCollectible: { x: 2, y: 5, icon: '🐢', name: 'הצב', missingMessage: 'כמעט! קודם צריך להגיע אל הצב, ורק אחר כך ללוות אותו הביתה.' },
+    collectibles: [{ x: 2, y: 3 }, { x: 4, y: 4 }, { x: 6, y: 3 }],
+    commands: ['down', 'down', 'right', 'up', 'right', 'right', 'right', 'right']
   },
   {
     id: 6,
@@ -86,8 +89,8 @@ window.OCEAN_LESSONS = [
     oceanFact: 'כרישים מריחים טוב מאוד במים, ולכן הם מוצאים אוכל גם ממרחק.',
     goal: { x: 6, y: 2 },
     start: { x: 1, y: 5 },
-    obstacles: [{ x: 2, y: 4 }, { x: 3, y: 4 }, { x: 4, y: 4 }, { x: 5, y: 3 }],
-    collectibles: [{ x: 1, y: 4 }, { x: 3, y: 2 }, { x: 5, y: 2 }],
+    obstacles: [{ x: 2, y: 4 }, { x: 4, y: 5 }, { x: 4, y: 3 }, { x: 5, y: 1 }],
+    collectibles: [{ x: 1, y: 4 }, { x: 3, y: 1 }, { x: 5, y: 2 }],
     commands: ['up', 'up', 'up', 'right', 'right', 'right', 'right', 'right']
   },
   {
@@ -96,14 +99,20 @@ window.OCEAN_LESSONS = [
     unit: 'שומרים על הים',
     emoji: '♻️',
     place: 'חוף נקי',
-    mission: 'סיסי אוספת פסולת קטנה מהמים ומגיעה לנקודת המיחזור.',
-    concept: 'משימה עם איסוף',
+    mission: 'סיסי צריכה לאסוף שני פריטי פסולת מהמים 🧴🥤, ואז להגיע לנקודת המיחזור כדי שלא יזיקו לבעלי חיים.',
+    concept: 'קודם אוספים, ואז ממחזרים',
     oceanFact: 'פלסטיק בים מסוכן לבעלי חיים, לכן חשוב לאסוף אשפה ולא להשאיר אותה בחוף.',
     goal: { x: 6, y: 5 },
+    goalIcon: '♻️',
     start: { x: 1, y: 1 },
-    obstacles: [{ x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 4 }, { x: 5, y: 4 }],
-    collectibles: [{ x: 2, y: 1 }, { x: 3, y: 3 }, { x: 5, y: 5 }],
-    commands: ['down', 'down', 'down', 'down', 'right', 'right', 'right', 'right', 'right']
+    obstacles: [{ x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 4 }, { x: 5, y: 4 }, { x: 6, y: 1 }],
+    requiredCollectibles: [
+      { x: 3, y: 3, icon: '🧴', name: 'בקבוק הפלסטיק' },
+      { x: 5, y: 5, icon: '🥤', name: 'כוס הפלסטיק' }
+    ],
+    requiredMissingMessage: 'כמעט! קודם צריך לאסוף את שני פריטי הפסולת, ורק אחר כך להגיע לנקודת המיחזור.',
+    collectibles: [{ x: 2, y: 1 }, { x: 1, y: 4 }, { x: 4, y: 5 }],
+    commands: ['down', 'down', 'right', 'right', 'down', 'down', 'right', 'right', 'right']
   },
   {
     id: 8,
@@ -111,12 +120,13 @@ window.OCEAN_LESSONS = [
     unit: 'אתגר סיום',
     emoji: '🐬',
     place: 'מפרץ הדולפינים',
-    mission: 'סיסי עוקבת אחרי דולפין שמראה לה דרך קצרה וחכמה.',
-    concept: 'בדיקה ושיפור מסלול',
+    mission: 'הדולפין מראה לסיסי דרך קצרה וחכמה: בכל רגע הוא מהבהב על משבצת אחרת במסלול הקצר אל הצדפה הירוקה.',
+    concept: 'רמזים למסלול קצר',
     oceanFact: 'דולפינים מתקשרים בקולות ויכולים לזהות דברים במים בעזרת הדים.',
     goal: { x: 5, y: 2 },
     start: { x: 1, y: 5 },
     obstacles: [{ x: 2, y: 5 }, { x: 2, y: 3 }, { x: 4, y: 3 }, { x: 5, y: 4 }],
+    dolphinGuidePath: [{ x: 1, y: 4 }, { x: 1, y: 3 }, { x: 1, y: 2 }, { x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 2 }, { x: 5, y: 2 }],
     collectibles: [{ x: 1, y: 4 }, { x: 3, y: 2 }, { x: 5, y: 3 }],
     commands: ['up', 'up', 'up', 'right', 'right', 'right', 'right']
   }
@@ -129,14 +139,22 @@ window.OCEAN_LESSONS.push(
     unit: 'מסלול בתוך מערה',
     emoji: '🦪',
     place: 'מערה כחולה',
-    mission: 'סיסי נכנסת למערה ומגיעה לצדפה נוצצת בלי לגעת בסלעים.',
-    concept: 'תכנון סביב מכשולים',
+    mission: 'סיסי נכנסת למערת הפנינים. אספו שתי פניני מפתח 💎💎 כדי לפתוח את שער המערה, ואז הגיעו לצדפה הנוצצת.',
+    concept: 'פתיחת שער בעזרת איסוף',
     oceanFact: 'פנינים נוצרות בתוך צדפות מסוימות בשכבות עדינות ומבריקות.',
     goal: { x: 6, y: 4 },
     start: { x: 1, y: 1 },
     obstacles: [{ x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 3 }, { x: 5, y: 3 }],
-    collectibles: [{ x: 2, y: 1 }, { x: 4, y: 2 }, { x: 6, y: 3 }],
-    commands: ['right', 'right', 'right', 'right', 'right', 'down', 'down', 'down']
+    requiredCollectibles: [
+      { x: 4, y: 2, icon: '💎', name: 'פנינת המפתח הראשונה' },
+      { x: 1, y: 3, icon: '💎', name: 'פנינת המפתח השנייה' }
+    ],
+    requiredMissingMessage: 'כמעט! קודם צריך לאסוף את שתי פניני המפתח כדי לפתוח את שער המערה.',
+    caveGate: { x: 6, y: 3 },
+    caveGateMessage: 'השער עדיין סגור! אספו קודם את שתי פניני המפתח 💎💎.',
+    caveGateRequiredMessage: 'כמעט! צריך להיכנס לצדפה דרך שער המערה, אחרי שאוספים את שתי פניני המפתח.',
+    collectibles: [{ x: 2, y: 1 }, { x: 3, y: 5 }, { x: 5, y: 2 }],
+    commands: ['down', 'down', 'up', 'up', 'right', 'right', 'right', 'down', 'up', 'right', 'right', 'down', 'down', 'down']
   },
   {
     id: 10,
@@ -144,13 +162,19 @@ window.OCEAN_LESSONS.push(
     unit: 'שומרים על קצב',
     emoji: '🐟',
     place: 'מסלול להקה',
-    mission: 'סיסי שוחה ליד להקת דגים ושומרת על מסלול שקט וברור.',
-    concept: 'רצף יציב',
+    mission: 'סיסי שוחה ליד להקת דגים בתנועה. הדגים זזים הלוך ושוב 🐟. אם דג נמצא במשבצת — לא נכנסים אליה. כשהדג זז והמשבצת ריקה — אפשר לעבור. אם נתקלים בדג, נסו להריץ שוב כשהדג במשבצת השנייה.',
+    concept: 'שמירה על מרחק מלהקה',
     oceanFact: 'דגים רבים שוחים בלהקות כדי להגן אחד על השני ולמצוא דרך יחד.',
     goal: { x: 6, y: 1 },
     start: { x: 1, y: 4 },
     obstacles: [{ x: 2, y: 3 }, { x: 3, y: 3 }, { x: 4, y: 2 }, { x: 5, y: 2 }],
-    collectibles: [{ x: 1, y: 3 }, { x: 3, y: 4 }, { x: 5, y: 1 }],
+    blockedDecorationMessage: 'כמעט! זו להקת הדגים בתנועה. צריך לעקוף אותה בעדינות ולא להיכנס לתוכה.',
+    collectibles: [{ x: 1, y: 3 }, { x: 3, y: 1 }, { x: 5, y: 1 }],
+    movingDecorations: [
+      { icon: '🐟', blocked: true, positions: [{ x: 2, y: 4 }, { x: 2, y: 5 }], pattern: [0, 1, 1, 1, 0, 0] },
+      { icon: '🐟', blocked: true, positions: [{ x: 4, y: 4 }, { x: 5, y: 4 }], pattern: [0, 0, 1, 1, 1, 0] },
+      { icon: '🐟', blocked: true, positions: [{ x: 1, y: 1 }, { x: 1, y: 2 }], pattern: [0, 0, 0, 1, 1, 1] }
+    ],
     commands: ['up', 'up', 'up', 'right', 'right', 'right', 'right', 'right']
   },
   {
