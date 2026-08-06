@@ -14,6 +14,7 @@ let dolphinGuideTimer = null;
 let movingDecorationTimer = null;
 let movingDecorationTick = 0;
 let passedCaveGate = false;
+const revealedNightCells = new Set();
 const pearlsStorageKey = 'sisi-ocean-pearls-best-v1';
 
 function key(pos) { return `${pos.x},${pos.y}`; }
@@ -40,6 +41,13 @@ function movingDecorationCells() {
 function caveGateOpen() { return !lesson.caveGate || collectedRequired(); }
 function passedRequiredCaveGate() { return !lesson.caveGate || passedCaveGate; }
 function inside(pos) { return pos.x >= 1 && pos.x <= 6 && pos.y >= 1 && pos.y <= 5; }
+function near(a, b) { return Math.abs(a.x - b.x) <= 1 && Math.abs(a.y - b.y) <= 1; }
+function isNightVisible(pos) {
+  return !lesson.nightFog || near(pos, robot) || near(pos, lesson.goal) || revealedNightCells.has(key(pos));
+}
+function revealNightCell(pos) {
+  if (lesson.nightFog) revealedNightCells.add(key(pos));
+}
 function requiredCollectibles() { return [...(lesson.requiredCollectibles || []), ...(lesson.requiredCollectible ? [lesson.requiredCollectible] : [])]; }
 function requiredWaypoints() { return lesson.requiredWaypoints || []; }
 function requiredTargets() { return [...requiredCollectibles(), ...requiredWaypoints()]; }
@@ -138,6 +146,11 @@ function paintCell(cell, pos) {
     cell.classList.add('robot');
     cell.textContent = collectedRequiredIcons() ? `🤖${collectedRequiredIcons()}` : '🤖';
   }
+  if (!isNightVisible(pos)) {
+    cell.className = 'cell fog-hidden';
+    cell.textContent = '';
+    cell.dataset.pos = key(pos);
+  }
 }
 
 function repaintCell(pos) {
@@ -183,6 +196,7 @@ function resetRobot() {
   robot = { ...lesson.start };
   collected = new Set();
   passedCaveGate = false;
+  revealedNightCells.clear();
   renderGrid();
 }
 
@@ -190,7 +204,11 @@ function step(cmd) {
   const [dx, dy] = moves[cmd];
   const next = { x: robot.x + dx, y: robot.y + dy };
   if (!inside(next)) return { ok: false, reason: 'סיסי כמעט יצאה מלוח האוקיינוס. צריך להישאר בתוך הלוח 🙂' };
-  if (isObstacle(next)) return { ok: false, reason: 'אופס, יש מכשול בדרך. נסו מסלול אחר.' };
+  if (isObstacle(next)) {
+    revealNightCell(next);
+    renderGrid();
+    return { ok: false, reason: lesson.nightFog ? 'אופס, סיסי נתקלה בסלע בחושך. עכשיו רואים אותו — נסו מסלול אחר.' : 'אופס, יש מכשול בדרך. נסו מסלול אחר.' };
+  }
   if (isDangerZone(next)) return { ok: false, reason: 'זה קרוב מדי לסרטן. צריך לשמור מרחק ולבחור מסלול אחר.' };
   if (isCaveGate(next) && !caveGateOpen()) return { ok: false, reason: lesson.caveGateMessage || 'השער עדיין סגור. צריך לאסוף קודם את פריטי המפתח.' };
   if (decorationAt(next)?.blocked) return { ok: false, reason: lesson.blockedDecorationMessage || 'כמעט! צריך לבחור מסלול אחר.' };
