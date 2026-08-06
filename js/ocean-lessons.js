@@ -199,7 +199,7 @@ window.OCEAN_LESSONS.push(
     unit: 'אתגר סיום',
     emoji: '⚓',
     place: 'נמל קטן',
-    mission: 'סיסי מסיימת את המסע וחוזרת לנמל. אספו קודם את המפה 🗺️, עברו ליד המצוף 🛟, ואז הגיעו לנמל בבטחה.',
+    mission: 'סיסי מסיימת את המסע וחוזרת לנמל. אספו קודם את המפה 🗺️, אספו את המצוף 🛟, ואז הגיעו לנמל בבטחה.',
     concept: 'תרגיל סיכום עם כמה שלבים',
     oceanFact: 'נמל הוא מקום שבו כלי שיט עוצרים, מתקנים ציוד ומתכוננים למסע הבא.',
     goal: { x: 6, y: 5 },
@@ -208,7 +208,7 @@ window.OCEAN_LESSONS.push(
     obstacles: [{ x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 3 }, { x: 5, y: 3 }, { x: 3, y: 5 }],
     requiredCollectible: { x: 1, y: 5, icon: '🗺️', name: 'המפה' },
     requiredWaypoints: [{ x: 5, y: 1, icon: '🛟', name: 'המצוף' }],
-    requiredMissingMessage: 'כמעט! קודם צריך לאסוף את המפה ולעבור ליד המצוף, ורק אחר כך להגיע לנמל.',
+    requiredMissingMessage: 'כמעט! קודם צריך לאסוף את המפה ואת המצוף, ורק אחר כך להגיע לנמל.',
     collectibles: [{ x: 2, y: 1 }, { x: 4, y: 2 }, { x: 6, y: 4 }],
     commands: ['down', 'down', 'down', 'down', 'up', 'up', 'up', 'up', 'right', 'right', 'right', 'right', 'down', 'right', 'down', 'down', 'down']
   }
