@@ -20,14 +20,15 @@ window.OCEAN_LESSONS = [
     unit: 'מפת אוצר',
     emoji: '🪙',
     place: 'קרקעית הים',
-    mission: 'סיסי מחפשת מטבע עתיק ומנווטת בין אבנים קטנות בקרקעית.',
+    mission: 'סיסי מחפשת מטבע עתיק בקרקעית הים. אספו קודם את המטבע 🪙, ואז הגיעו לצדפה הירוקה בלי להיתקע בסלעים.',
     concept: 'פקודות קצרות ומדויקות',
     oceanFact: 'בקרקעית הים יש חול, אבנים, צדפים ולפעמים גם שרידים של ספינות ישנות.',
     goal: { x: 6, y: 3 },
     start: { x: 1, y: 2 },
     obstacles: [{ x: 2, y: 1 }, { x: 3, y: 2 }, { x: 5, y: 2 }],
-    collectibles: [{ x: 2, y: 2 }, { x: 4, y: 3 }, { x: 6, y: 2 }],
-    commands: ['down', 'right', 'right', 'right', 'right', 'right']
+    requiredCollectible: { x: 4, y: 4, icon: '🪙', name: 'המטבע העתיק' },
+    collectibles: [{ x: 2, y: 2 }, { x: 6, y: 2 }],
+    commands: ['down', 'right', 'right', 'right', 'down', 'right', 'right', 'up']
   },
   {
     id: 3,
@@ -40,7 +41,7 @@ window.OCEAN_LESSONS = [
     oceanFact: 'אצות הן צמחים פשוטים שחיים במים, וחלקן נותנות מחסה לדגים קטנים.',
     goal: { x: 6, y: 1 },
     start: { x: 1, y: 5 },
-    obstacles: [{ x: 2, y: 5 }, { x: 2, y: 4 }, { x: 4, y: 3 }, { x: 5, y: 2 }],
+    obstacles: [{ x: 2, y: 5 }, { x: 2, y: 4 }, { x: 2, y: 2 }, { x: 4, y: 3 }, { x: 5, y: 2 }],
     collectibles: [{ x: 1, y: 4 }, { x: 3, y: 3 }, { x: 5, y: 1 }],
     commands: ['up', 'up', 'up', 'up', 'right', 'right', 'right', 'right', 'right']
   },

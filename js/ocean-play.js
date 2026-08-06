@@ -8,11 +8,53 @@ const lesson = lessons.find((item) => item.id === lessonId) || lessons[0];
 let program = [];
 let robot = { ...lesson.start };
 let collected = new Set();
+const pearlsStorageKey = 'sisi-ocean-pearls-best-v1';
 
 function key(pos) { return `${pos.x},${pos.y}`; }
 function same(a, b) { return a.x === b.x && a.y === b.y; }
 function isObstacle(pos) { return lesson.obstacles.some((item) => same(item, pos)); }
 function inside(pos) { return pos.x >= 1 && pos.x <= 6 && pos.y >= 1 && pos.y <= 5; }
+function allCollectibles() { return [...(lesson.collectibles || []), ...(lesson.requiredCollectible ? [lesson.requiredCollectible] : [])]; }
+function isRequiredCollectible(pos) { return lesson.requiredCollectible && same(lesson.requiredCollectible, pos); }
+function collectedRequired() { return !lesson.requiredCollectible || collected.has(key(lesson.requiredCollectible)); }
+function currentPearlsCount() {
+  return [...collected].filter((item) => item !== (lesson.requiredCollectible ? key(lesson.requiredCollectible) : '')).length;
+}
+function readPearlsProgress() {
+  try {
+    return JSON.parse(localStorage.getItem(pearlsStorageKey) || '{}');
+  } catch {
+    return {};
+  }
+}
+function writePearlsProgress(progress) {
+  try {
+    localStorage.setItem(pearlsStorageKey, JSON.stringify(progress));
+  } catch {
+    // Progress is optional; the game should continue even if storage is unavailable.
+  }
+}
+function totalSavedPearls() {
+  return Object.values(readPearlsProgress()).reduce((sum, value) => sum + Number(value || 0), 0);
+}
+function renderPearlsProgress() {
+  const pearlsProgress = document.getElementById('pearls-progress');
+  if (!pearlsProgress) return;
+  pearlsProgress.textContent = `🫧 פנינים שנאספו בשיעור האוקיינוס: ${totalSavedPearls()}`;
+}
+function saveBestPearlsForLesson() {
+  const progress = readPearlsProgress();
+  const lessonKey = String(lesson.id);
+  const previousBest = Number(progress[lessonKey] || 0);
+  const currentPearls = currentPearlsCount();
+  if (currentPearls > previousBest) {
+    progress[lessonKey] = currentPearls;
+    writePearlsProgress(progress);
+    renderPearlsProgress();
+    return true;
+  }
+  return false;
+}
 
 function renderGrid() {
   const grid = document.getElementById('grid');
@@ -22,7 +64,11 @@ function renderGrid() {
       const pos = { x, y };
       const cell = document.createElement('div');
       cell.className = 'cell';
-      if (lesson.collectibles.some((star) => same(star, pos)) && !collected.has(key(pos))) cell.classList.add('collectible');
+      if (allCollectibles().some((star) => same(star, pos)) && !collected.has(key(pos))) cell.classList.add('collectible');
+      if (isRequiredCollectible(pos) && !collected.has(key(pos))) {
+        cell.classList.add('required-collectible');
+        cell.textContent = lesson.requiredCollectible.icon || '🪙';
+      }
       if (isObstacle(pos)) {
         cell.classList.add('obstacle');
         cell.textContent = lesson.id === 4 ? '🦀' : lesson.id === 6 ? '🦈' : '🪨';
@@ -33,7 +79,7 @@ function renderGrid() {
       }
       if (same(robot, pos)) {
         cell.classList.add('robot');
-        cell.textContent = '🤖';
+        cell.textContent = lesson.requiredCollectible && collected.has(key(lesson.requiredCollectible)) ? '🤖🪙' : '🤖';
       }
       grid.appendChild(cell);
     }
@@ -73,7 +119,7 @@ function step(cmd) {
   if (!inside(next)) return { ok: false, reason: 'סיסי כמעט יצאה מלוח האוקיינוס. צריך להישאר בתוך הלוח 🙂' };
   if (isObstacle(next)) return { ok: false, reason: 'אופס, יש מכשול בדרך. נסו מסלול אחר.' };
   robot = next;
-  if (lesson.collectibles.some((star) => same(star, robot))) collected.add(key(robot));
+  if (allCollectibles().some((star) => same(star, robot))) collected.add(key(robot));
   renderGrid();
   return { ok: true };
 }
@@ -94,8 +140,16 @@ async function runProgram() {
     }
   }
   if (same(robot, lesson.goal)) {
-    const bonus = collected.size ? ` וגם אספה ${collected.size} פנינים!` : '!';
-    const message = `יש! סיסי הגיעה ליעד${bonus}`;
+    if (!collectedRequired()) {
+      setResult(`כמעט! קודם צריך לאסוף את ${lesson.requiredCollectible.name}, ורק אחר כך להגיע לצדפה.`);
+      return;
+    }
+    const pearlCount = currentPearlsCount();
+    const improvedPearls = saveBestPearlsForLesson();
+    const requiredText = lesson.requiredCollectible ? ` עם ${lesson.requiredCollectible.name}` : '';
+    const bonus = pearlCount ? ` וגם אספה ${pearlCount} פנינים!` : '!';
+    const record = improvedPearls && pearlCount ? ` שיא חדש במשימה: ${pearlCount} פנינים 🫧` : '';
+    const message = `יש! סיסי הגיעה ליעד${requiredText}${bonus}${record}`;
     setResult(message, true);
     window.SisiCourseCertificate?.show({ lessons, lesson });
     window.SisiSuccessDialog?.show({ message, lessons, lesson, onRepeat: repeatCurrentLesson });
@@ -111,6 +165,8 @@ function init() {
   document.getElementById('lesson-emoji').textContent = lesson.emoji;
   document.getElementById('mission').textContent = lesson.mission;
   document.getElementById('fact').innerHTML = `<b>עובדת ים:</b> ${lesson.oceanFact}`;
+  document.querySelector('.side-card h2').insertAdjacentHTML('afterend', '<div class="pearls-progress" id="pearls-progress" aria-live="polite"></div>');
+  renderPearlsProgress();
 
   document.querySelectorAll('[data-cmd]').forEach((button) => {
     button.addEventListener('click', () => {
