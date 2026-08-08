@@ -1,7 +1,7 @@
 const lessons = window.LUMI_LESSONS || [];
 const params = new URLSearchParams(window.location.search);
 const lessonId = Number(params.get('lesson') || '1');
-const lesson = lessons.find((item) => item.id === lessonId && item.id <= 3) || lessons[0];
+const lesson = lessons.find((item) => item.id === lessonId) || lessons[0];
 const $ = (id) => document.getElementById(id);
 const storageKey = 'lumi-nature-progress-v1';
 let taskIndex = 0;
@@ -106,10 +106,10 @@ function finish() {
   $('summary-icon').textContent = lesson.sticker;
   $('summary-text').textContent = `אספתם ${stars} נקודות תצפית וקיבלתם ${lesson.stickerName}. לומי מוכנה להמשיך לתחנה הבאה!`;
   $('next-btn').onclick = () => {
-    const next = Math.min(3, lesson.id + 1);
-    window.location.href = `lumi-play.html?lesson=${next}`;
+    if (lesson.id >= lessons.length) window.location.href = 'lumi.html';
+    else window.location.href = `lumi-play.html?lesson=${lesson.id + 1}`;
   };
-  if (lesson.id >= 3) $('next-btn').textContent = 'חזרה למפת המסע';
+  if (lesson.id >= lessons.length) $('next-btn').textContent = 'חזרה למפת המסע';
 }
 function render() {
   ui();

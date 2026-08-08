@@ -17,30 +17,38 @@ test('lumi hub exists and frames a distinct nature notebook course', () => {
   assert.match(html, /לומי חוקרת הטבע/);
   assert.match(html, /מחברת מסע/);
   assert.match(html, /כיתה ב׳ ומעלה/);
+  assert.match(html, /15 תחנות פעילות/);
+  assert.match(html, /12 תרגולים בכל תחנה/);
   assert.match(html, /lumi-play\.html\?lesson=1/);
   assert.doesNotMatch(html, /סיסי בחלל/);
 });
 
-test('lumi course has fifteen stations with first three playable', () => {
+test('lumi course has fifteen fully playable stations', () => {
   const lessons = loadLessons();
   assert.equal(lessons.length, 15);
-  assert.deepEqual(Array.from(lessons.slice(0, 3).map((lesson) => lesson.type)), ['classify', 'pattern', 'condition']);
-  assert.ok(lessons.slice(3).every((lesson) => lesson.type === 'soon'));
   assert.equal(new Set(lessons.map((lesson) => lesson.id)).size, 15);
+  assert.ok(lessons.every((lesson) => ['classify', 'pattern', 'condition'].includes(lesson.type)));
+  assert.ok(lessons.every((lesson) => lesson.tasks.length === 12));
 });
 
-test('first three lumi lessons have three child-friendly tasks and one answer each', () => {
-  const lessons = loadLessons().slice(0, 3);
+test('lumi course covers logic and programming skills', () => {
+  const concepts = loadLessons().map((lesson) => lesson.concept).join(' ');
+  for (const phrase of ['מיון', 'דפוסים', 'אם־אז', 'סדר פעולות', 'דאטה', 'לולאות', 'דיבוג', 'תכנון אלגוריתמי', 'קלט־פלט']) {
+    assert.ok(concepts.includes(phrase), `missing concept ${phrase}`);
+  }
+});
+
+test('all lumi tasks are child-friendly and have one valid answer', () => {
+  const lessons = loadLessons();
   for (const lesson of lessons) {
-    assert.equal(lesson.tasks.length, 3, lesson.title);
     for (const task of lesson.tasks) {
-      assert.ok(task.prompt.length > 10);
-      assert.ok(task.answer);
-      assert.ok(task.options.length >= 3);
+      assert.ok(task.prompt.length > 10, lesson.title);
+      assert.ok(task.answer, lesson.title);
+      assert.ok(task.options.length >= 3, lesson.title);
       if (lesson.type === 'pattern') {
-        assert.ok(task.options.includes(task.answer));
+        assert.ok(task.options.includes(task.answer), lesson.title);
       } else {
-        assert.equal(task.options.filter((option) => option.id === task.answer).length, 1);
+        assert.equal(task.options.filter((option) => option.id === task.answer).length, 1, lesson.title);
       }
     }
   }
@@ -54,8 +62,9 @@ test('lumi play page loads lesson data and standalone play engine', () => {
   assert.match(html, /lumi.html/);
 });
 
-test('lumi play engine stores separate progress and student-progress course id', () => {
+test('lumi play engine supports all fifteen lessons and stores progress separately', () => {
   const js = read('js/lumi-play.js');
+  assert.doesNotMatch(js, /id <= 3/);
   assert.match(js, /lumi-nature-progress-v1/);
   assert.match(js, /courseId: 'lumi-nature'/);
   assert.match(js, /lessonId: String\(lesson\.id\)/);
