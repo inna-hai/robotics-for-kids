@@ -92,13 +92,16 @@ test('lumi play page loads lesson data and standalone play engine', () => {
   assert.match(html, /lumi.html/);
 });
 
-test('lumi play engine supports all fifteen lessons and stores progress separately', () => {
+test('lumi play engine supports all fifteen lessons with draggable block algorithms', () => {
   const js = read('js/lumi-play.js');
   assert.doesNotMatch(js, /id <= 3/);
   assert.match(js, /task\.condition\s*\?/);
   assert.match(js, /רמז:/);
-  assert.match(js, /function shuffled/);
-  assert.equal((js.match(/shuffled\(task\.options\)/g) || []).length, 3);
+  assert.match(js, /function renderBlockAlgorithm/);
+  assert.match(js, /createDragHandlers/);
+  assert.match(js, /draggable="true"/);
+  assert.match(js, /algo-program/);
+  assert.match(js, /בדיקה → החלטה → רישום/);
   assert.match(js, /function renderRoute/);
   assert.match(js, /blockly-panel/);
   assert.match(js, /route-map/);

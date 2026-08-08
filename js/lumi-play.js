@@ -66,47 +66,84 @@ function choose(correct, message) {
   }
   ui();
 }
-function renderClassify(task) {
-  $('host').innerHTML = `<div class="task-card"><div class="task-title">${lesson.icon} ${lesson.title}</div><p class="task-text">${task.prompt}</p><p class="lead">רמז: ${task.hint}</p><div class="options" id="options"></div><div class="result" id="result"></div></div>`;
-  const options = shuffled(task.options);
-  $('options').innerHTML = options.map((option) => `<button class="option" data-id="${option.id}"><span class="emoji">${option.emoji}</span>${option.label}</button>`).join('');
-  document.querySelectorAll('.option').forEach((button) => {
-    button.addEventListener('click', () => {
-      const option = task.options.find((item) => item.id === button.dataset.id);
-      const ok = option.id === task.answer;
-      button.classList.add(ok ? 'good' : 'bad');
-      choose(ok, option.why);
-    });
-  });
+function createDragHandlers(program, renderProgram, makeStep) {
+  return {
+    dragStart(event) { event.dataTransfer.setData('text/plain', event.currentTarget.dataset.step); },
+    allowDrop(event) { event.preventDefault(); event.currentTarget.classList.add('drag-over'); },
+    leaveDrop(event) { event.currentTarget.classList.remove('drag-over'); },
+    drop(event) {
+      event.preventDefault();
+      event.currentTarget.classList.remove('drag-over');
+      const step = event.dataTransfer.getData('text/plain');
+      if (step) { program.push(makeStep(step)); renderProgram(); }
+    }
+  };
 }
-function renderPattern(task) {
-  $('host').innerHTML = `<div class="task-card"><div class="task-title">${lesson.icon} ${lesson.title}</div><p class="task-text">${task.prompt}</p><div class="pattern">${task.sequence.map((item) => `<span>${item}</span>`).join('')}</div><div class="options" id="options"></div><div class="result" id="result"></div></div>`;
-  const options = shuffled(task.options);
-  $('options').innerHTML = options.map((value) => `<button class="option" data-value="${value}"><span class="emoji">${value}</span>זה מתאים</button>`).join('');
-  document.querySelectorAll('.option').forEach((button) => {
-    button.addEventListener('click', () => {
-      const ok = button.dataset.value === task.answer;
-      button.classList.add(ok ? 'good' : 'bad');
-      choose(ok, ok ? `נכון! ${task.why}` : 'כמעט. בואו נסתכל על הדפוס מההתחלה.');
-    });
+function renderBlockAlgorithm(task, mode) {
+  let program = [];
+  const isPattern = mode === 'pattern';
+  const stepType = isPattern ? 'pattern' : 'option';
+  const actionBlocks = isPattern
+    ? [
+      { id: 'observe-pattern', kind: 'action', icon: '👀', label: 'בודקים את הדפוס' },
+      { id: 'repeat-rule', kind: 'action', icon: '🔁', label: 'ממשיכים את החוקיות' },
+      { id: 'write-note', kind: 'action', icon: '📒', label: 'רושמים במחברת' },
+    ]
+    : [
+      { id: 'observe-clues', kind: 'action', icon: '🔎', label: 'בודקים רמזים' },
+      { id: 'if-then', kind: 'action', icon: '➡️', label: 'אם הרמז מתאים אז...' },
+      { id: 'write-note', kind: 'action', icon: '📒', label: 'רושמים במחברת' },
+    ];
+  const answerBlocks = isPattern
+    ? shuffled(task.options).map((value) => ({ id: value, kind: stepType, icon: value, label: `להוסיף ${value}` }))
+    : shuffled(task.options).map((option) => ({ id: option.id, kind: stepType, icon: option.emoji, label: option.label, why: option.why }));
+  const palette = [...actionBlocks, ...answerBlocks];
+  const visual = isPattern
+    ? `<div class="pattern">${task.sequence.map((item) => `<span>${item}</span>`).join('')}</div>`
+    : (task.condition
+      ? `<div class="pattern" dir="rtl"><span>${task.condition}</span><span>⬅️</span><span>?</span></div>`
+      : `<p class="lead">רמז: ${task.hint || 'בנו סדר פעולות קטן שיעזור ללומי להחליט.'}</p>`);
+  $('host').innerHTML = `<div class="task-card blocks-card"><div class="task-title">${lesson.icon} ${lesson.title}</div><p class="task-text">${task.prompt}</p>${visual}<div class="algorithm-layout"><div class="blockly-panel"><b>בלוקים לגרירה</b><div class="block-palette wide" id="algo-palette"></div></div><div class="program-panel"><b>האלגוריתם שלי</b><div class="algo-program drop-zone" id="algo-program"><span class="lead">גררו לכאן בלוקים לפי הסדר</span></div><div class="route-actions"><button class="btn green" id="run-algo">▶️ בדיקה</button><button class="btn yellow" id="clear-algo">🧹 ניקוי</button></div></div></div><div class="result" id="result"></div></div>`;
+  const renderProgram = () => {
+    $('algo-program').innerHTML = program.length
+      ? program.map((step, index) => `<button class="algo-step ${step.kind}" data-index="${index}" title="לחצו להסרה"><span>${step.icon}</span>${step.label}</button>`).join('')
+      : '<span class="lead">גררו לכאן בלוקים לפי הסדר</span>';
+    document.querySelectorAll('.algo-step').forEach((button) => button.addEventListener('click', () => {
+      program.splice(Number(button.dataset.index), 1);
+      renderProgram();
+    }));
+  };
+  const makeStep = (id) => palette.find((block) => block.id === id);
+  const dnd = createDragHandlers(program, renderProgram, makeStep);
+  $('algo-palette').innerHTML = palette.map((block) => `<button class="nav-block algo-block ${block.kind}" draggable="true" data-step="${block.id}"><span>${block.icon}</span>${block.label}</button>`).join('');
+  document.querySelectorAll('.algo-block').forEach((button) => {
+    button.addEventListener('dragstart', dnd.dragStart);
+    button.addEventListener('click', () => { program.push(makeStep(button.dataset.step)); renderProgram(); });
   });
-}
-function renderCondition(task) {
-  const visual = task.condition
-    ? `<div class="pattern" dir="rtl"><span>${task.condition}</span><span>⬅️</span><span>?</span></div>`
-    : `<p class="lead">רמז: ${task.hint || 'בחרו את הפעולה שהכי מתקנת את האלגוריתם.'}</p>`;
-  $('host').innerHTML = `<div class="task-card"><div class="task-title">${lesson.icon} ${lesson.title}</div><p class="task-text">${task.prompt}</p>${visual}<div class="options" id="options"></div><div class="result" id="result"></div></div>`;
-  const options = shuffled(task.options);
-  $('options').innerHTML = options.map((option) => `<button class="option" data-id="${option.id}"><span class="emoji">${option.emoji}</span>${option.label}</button>`).join('');
-  document.querySelectorAll('.option').forEach((button) => {
-    button.addEventListener('click', () => {
-      const option = task.options.find((item) => item.id === button.dataset.id);
-      const ok = option.id === task.answer;
-      button.classList.add(ok ? 'good' : 'bad');
-      choose(ok, option.why);
-    });
+  $('algo-program').addEventListener('dragover', dnd.allowDrop);
+  $('algo-program').addEventListener('dragleave', dnd.leaveDrop);
+  $('algo-program').addEventListener('drop', dnd.drop);
+  $('clear-algo').addEventListener('click', () => { program = []; renderProgram(); setResult('ניקינו. אפשר לבנות אלגוריתם חדש.'); });
+  $('run-algo').addEventListener('click', () => {
+    const actions = program.map((step) => step.id);
+    const hasStart = isPattern ? actions.includes('observe-pattern') : actions.includes('observe-clues') || actions.includes('if-then');
+    const answerIndex = actions.indexOf(task.answer);
+    const hasNoteAfter = actions.indexOf('write-note') > answerIndex;
+    const pickedAnswers = program.filter((step) => step.kind === stepType).map((step) => step.id);
+    const onlyOneAnswer = pickedAnswers.length === 1;
+    if (program.length < 3) return setResult('האלגוריתם קצר מדי. צריך לפחות: בדיקה → החלטה → רישום.');
+    if (!hasStart) return setResult('מה חסר בהתחלה? קודם נותנים ללומי לבדוק את הרמזים או הדפוס.');
+    if (answerIndex === -1) return setResult('כמעט. הבלוק של ההחלטה עוד לא מתאים לסיפור. החליפו אותו ונסו שוב.');
+    if (!onlyOneAnswer) return setResult('בחרתם כמה תשובות. באלגוריתם הזה צריך החלטה אחת ברורה.');
+    if (!hasNoteAfter) return setResult('יפה, אבל בסוף לומי צריכה לרשום במחברת מה גילתה.');
+    const correctBlock = answerBlocks.find((block) => block.id === task.answer);
+    choose(true, isPattern ? `נכון! ${task.why}` : correctBlock?.why || 'נכון! האלגוריתם של לומי עובד.');
   });
+  renderProgram();
 }
+function renderClassify(task) { renderBlockAlgorithm(task, 'classify'); }
+function renderPattern(task) { renderBlockAlgorithm(task, 'pattern'); }
+function renderCondition(task) { renderBlockAlgorithm(task, 'condition'); }
 function renderRoute(task) {
   const directions = [
     { id: 'up', label: 'למעלה', icon: '⬆️', dx: 0, dy: -1 },
@@ -143,6 +180,8 @@ function renderRoute(task) {
       });
     });
   };
+  const makeStep = (id) => directions.find((dir) => dir.id === id)?.id;
+  const dnd = createDragHandlers(program, renderProgram, makeStep);
   const runProgram = () => {
     let pos = { ...task.start };
     const trail = [pos];
@@ -167,12 +206,17 @@ function renderRoute(task) {
       : 'לומי עוד לא הגיעה ליעד. הוסיפו או החליפו בלוקים.');
   };
   $('host').innerHTML = `<div class="task-card route-card"><div class="task-title">${lesson.icon} ${lesson.title}</div><p class="task-text">${task.prompt}</p><p class="lead">${task.goalText}</p><div class="route-layout"><div class="route-map" id="route-map"></div><div class="blockly-panel"><b>בלוקי ניווט</b><div class="block-palette" id="block-palette"></div><b>התוכנית שלי</b><div class="route-program" id="route-program"></div><div class="route-actions"><button class="btn green" id="run-route">▶️ הרצה</button><button class="btn yellow" id="clear-route">🧹 ניקוי</button></div></div></div><div class="result" id="result"></div></div>`;
-  $('block-palette').innerHTML = directions.map((dir) => `<button class="nav-block" data-step="${dir.id}">${dir.icon}<span>${dir.label}</span></button>`).join('');
+  $('block-palette').innerHTML = directions.map((dir) => `<button class="nav-block" draggable="true" data-step="${dir.id}">${dir.icon}<span>${dir.label}</span></button>`).join('');
   document.querySelectorAll('.nav-block').forEach((button) => button.addEventListener('click', () => {
     if (program.length >= 8) return setResult('מסלול ארוך מדי. נסו לבנות תוכנית קצרה וברורה.');
     program.push(button.dataset.step);
     renderProgram();
   }));
+  document.querySelectorAll('.nav-block').forEach((button) => button.addEventListener('dragstart', dnd.dragStart));
+  $('route-program').classList.add('drop-zone');
+  $('route-program').addEventListener('dragover', dnd.allowDrop);
+  $('route-program').addEventListener('dragleave', dnd.leaveDrop);
+  $('route-program').addEventListener('drop', dnd.drop);
   $('run-route').addEventListener('click', runProgram);
   $('clear-route').addEventListener('click', () => { program = []; drawMap(); renderProgram(); setResult('ניקינו את הבלוקים. אפשר לתכנן מחדש.'); });
   drawMap();
