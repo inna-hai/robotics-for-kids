@@ -102,6 +102,9 @@ test('lumi play engine is now a visual arrow-maze course for pre-readers', () =>
   assert.match(js, /draggable="true"/);
   assert.match(js, /גררו חצים לפי הסדר/);
   assert.match(js, /הרצף שלי/);
+  assert.match(js, /לומי יוצאת לדרך/);
+  assert.match(js, /await sleep\(520\)/);
+  assert.match(js, /setRouteBusy/);
   assert.match(js, /task\.targetIcon/);
   assert.match(js, /task\.obstacleIcon/);
   assert.match(css, /visual-maze-card/);
