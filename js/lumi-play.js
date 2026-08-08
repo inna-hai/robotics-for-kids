@@ -165,9 +165,9 @@ function renderRoute(task) {
       const point = { x, y };
       let content = '🌿';
       let cls = 'route-cell';
-      if (obstacles.has(key(point))) { content = '🪨'; cls += ' obstacle'; }
+      if (obstacles.has(key(point))) { content = task.obstacleIcon || '🪨'; cls += ' obstacle'; }
       if (trailSet.has(key(point))) cls += ' trail';
-      if (x === task.goal.x && y === task.goal.y) { content = '🏁'; cls += ' target'; }
+      if (x === task.goal.x && y === task.goal.y) { content = task.targetIcon || '🏁'; cls += ' target'; }
       if (x === position.x && y === position.y) { content = '🧒'; cls += ' hero'; }
       return `<div class="${cls}">${content}</div>`;
     }).join('');
@@ -208,7 +208,7 @@ function renderRoute(task) {
       ? (exact ? 'מעולה! בניתם מסלול בלוקים מדויק ללומי.' : 'יפה! לומי הגיעה ליעד במסלול משלכם.')
       : 'לומי עוד לא הגיעה ליעד. הוסיפו או החליפו בלוקים.');
   };
-  $('host').innerHTML = `<div class="task-card route-card"><div class="task-title">${lesson.icon} ${lesson.title}</div><p class="task-text">${task.prompt}</p><p class="lead">${task.goalText}</p><div class="route-layout"><div class="route-map" id="route-map"></div><div class="blockly-panel"><b>בלוקי ניווט</b><div class="block-palette" id="block-palette"></div><b>התוכנית שלי</b><div class="route-program" id="route-program"></div><div class="route-actions"><button class="btn green" id="run-route">▶️ הרצה</button><button class="btn yellow" id="clear-route">🧹 ניקוי</button></div></div></div><div class="result" id="result"></div></div>`;
+  $('host').innerHTML = `<div class="task-card route-card visual-maze-card"><div class="task-title">${lesson.icon} ${lesson.title}</div><div class="maze-goal">${task.prompt}</div><p class="lead">${task.goalText}</p><div class="route-layout"><div class="route-map" id="route-map"></div><div class="blockly-panel"><b>גררו חצים לפי הסדר</b><div class="block-palette" id="block-palette"></div><b>הרצף שלי</b><div class="route-program" id="route-program"></div><div class="route-actions"><button class="btn green" id="run-route">▶️</button><button class="btn yellow" id="clear-route">🧹</button></div></div></div><div class="result" id="result"></div></div>`;
   $('block-palette').innerHTML = directions.map((dir) => `<button class="nav-block" draggable="true" data-step="${dir.id}">${dir.icon}<span>${dir.label}</span></button>`).join('');
   document.querySelectorAll('.nav-block').forEach((button) => button.addEventListener('click', () => {
     if (program.length >= 8) return setResult('מסלול ארוך מדי. נסו לבנות תוכנית קצרה וברורה.');

@@ -27,7 +27,7 @@ test('lumi course has fifteen fully playable stations', () => {
   const lessons = loadLessons();
   assert.equal(lessons.length, 15);
   assert.equal(new Set(lessons.map((lesson) => lesson.id)).size, 15);
-  assert.ok(lessons.every((lesson) => ['classify', 'pattern', 'condition', 'route'].includes(lesson.type)));
+  assert.ok(lessons.every((lesson) => lesson.type === 'route'));
   assert.ok(lessons.every((lesson) => lesson.tasks.length === 12));
 });
 
@@ -48,15 +48,16 @@ test('bird nest lesson is actually about birds, nests, and ordered steps', () =>
   assert.ok(!text.includes('לומדת טבע ואין קפיצה'), 'generic debug text leaked into nest lesson');
 });
 
-test('each lumi lesson speaks in a child-story nature language, not generic programming text', () => {
-  const genericWords = /אלגוריתם|דיבוג|תכנות|קלט|פלט|דאטה|פעולה|תנאי/g;
-  const storyWords = /לומי|יער|ציפור|קן|פרח|פרפר|נחל|טבע|חיה|גוזל|נמלים|פטר|צב|עץ|שמורה|גשם|שמש|רוח|עלים|זרדים|פרי|שביל|זרע|ינשוף|עטלף|גחלילית|קיפוד|נמלה|מים|טיפה|מעבדה|מחברת|גשר/g;
+test('each lumi lesson is visual and pre-reader friendly', () => {
+  const emoji = /[\u2600-\u27BF\u{1F300}-\u{1FAFF}]/gu;
   for (const lesson of loadLessons()) {
-    const text = [lesson.title, lesson.story, ...lesson.tasks.map((task) => `${task.prompt} ${task.hint || ''}`)].join(' ');
-    const genericCount = (text.match(genericWords) || []).length;
-    const storyCount = (text.match(storyWords) || []).length;
-    assert.ok(storyCount >= 12, `${lesson.title} is not story-rich enough`);
-    assert.ok(storyCount > genericCount * 2, `${lesson.title} is too generic: story=${storyCount}, generic=${genericCount}`);
+    assert.ok(lesson.story.includes('לומי'), `${lesson.title} keeps the teacher/parent story frame`);
+    for (const task of lesson.tasks) {
+      const icons = task.prompt.match(emoji) || [];
+      assert.ok(icons.length >= 2, `${lesson.title} task should be icon-led`);
+      assert.ok(task.prompt.length <= 25, `${lesson.title} prompt is too text-heavy for pre-readers`);
+      assert.ok(task.solution.every((step) => ['up', 'down', 'left', 'right'].includes(step)), lesson.title);
+    }
   }
 });
 
@@ -64,7 +65,7 @@ test('all lumi tasks are child-friendly and have one valid answer', () => {
   const lessons = loadLessons();
   for (const lesson of lessons) {
     for (const task of lesson.tasks) {
-      assert.ok(task.prompt.length > 10, lesson.title);
+      assert.ok(task.prompt.length >= 5, lesson.title);
       if (lesson.type === 'route') {
         assert.ok(task.goalText.length > 10, lesson.title);
         assert.ok(task.start && task.goal, lesson.title);
@@ -92,36 +93,37 @@ test('lumi play page loads lesson data and standalone play engine', () => {
   assert.match(html, /lumi.html/);
 });
 
-test('lumi play engine supports all fifteen lessons with draggable block algorithms', () => {
+test('lumi play engine is now a visual arrow-maze course for pre-readers', () => {
   const js = read('js/lumi-play.js');
+  const css = read('css/lumi.css');
   assert.doesNotMatch(js, /id <= 3/);
-  assert.match(js, /task\.condition\s*\?/);
-  assert.match(js, /רמז:/);
-  assert.match(js, /function renderBlockAlgorithm/);
+  assert.match(js, /function renderRoute/);
   assert.match(js, /createDragHandlers/);
   assert.match(js, /draggable="true"/);
-  assert.match(js, /algo-program/);
-  assert.match(js, /בדיקה → החלטה → רישום/);
-  assert.match(js, /function renderRoute/);
-  assert.match(js, /blockly-panel/);
+  assert.match(js, /גררו חצים לפי הסדר/);
+  assert.match(js, /הרצף שלי/);
+  assert.match(js, /task\.targetIcon/);
+  assert.match(js, /task\.obstacleIcon/);
+  assert.match(css, /visual-maze-card/);
   assert.match(js, /route-map/);
   assert.match(js, /lumi-nature-progress-v1/);
   assert.match(js, /courseId: 'lumi-nature'/);
   assert.match(js, /lessonId: String\(lesson\.id\)/);
 });
 
-test('trail map lesson is an interactive route planning activity', () => {
-  const lesson = loadLessons().find((item) => item.id === 9);
-  assert.equal(lesson.type, 'route');
-  assert.match(lesson.concept, /בלוקים/);
-  assert.equal(lesson.tasks.length, 12);
-  assert.ok(lesson.tasks.every((task) => task.solution.length >= 2));
+test('all lessons are interactive route planning activities', () => {
+  for (const lesson of loadLessons()) {
+    assert.equal(lesson.type, 'route');
+    assert.equal(lesson.tasks.length, 12);
+    assert.ok(lesson.tasks.every((task) => task.solution.length >= 2));
+    assert.ok(lesson.tasks.every((task) => task.targetIcon && task.obstacleIcon));
+  }
 });
 
 test('route planning solutions stay on map, avoid obstacles, and reach the goal', () => {
   const directions = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
-  const lesson = loadLessons().find((item) => item.id === 9);
-  for (const [index, task] of lesson.tasks.entries()) {
+  const routeTasks = loadLessons().flatMap((lesson) => lesson.tasks.map((task) => ({ lesson, task })));
+  for (const [index, { task }] of routeTasks.entries()) {
     const obstacles = new Set(task.obstacles.map((point) => `${point.x},${point.y}`));
     let position = { ...task.start };
     for (const step of task.solution) {
