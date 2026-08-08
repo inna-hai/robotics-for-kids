@@ -166,7 +166,7 @@ function renderRoute(task) {
       let content = '🌿';
       let cls = 'route-cell';
       if (obstacles.has(key(point))) { content = task.obstacleIcon || '🪨'; cls += ' obstacle'; }
-      if (trailSet.has(key(point))) cls += ' trail';
+      if (trailSet.has(key(point))) cls += ' route-trail';
       if (x === task.goal.x && y === task.goal.y) { content = task.targetIcon || '🏁'; cls += ' target'; }
       if (x === position.x && y === position.y) { content = '🧒'; cls += ' hero'; }
       return `<div class="${cls}">${content}</div>`;
