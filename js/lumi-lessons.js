@@ -91,13 +91,37 @@ function sequenceTasks(topic) {
     choice('אם כלל פועל גם כשלא צריך — מה חסר?', 'תנאי מדויק.', 'add-check', debugOptions),
   ];
 }
+function nestTasks() {
+  const nestOptions = [
+    opt('check-place','לבדוק מקום בטוח','🔎','נכון! לפני שבונים קן, קודם בודקים שהמקום בטוח.'),
+    opt('collect-twigs','לאסוף זרדים','🪵','נכון! זרדים הם חומר הבנייה של הקן.'),
+    opt('weave-nest','לסדר את הזרדים לקן','🪺','נכון! אחרי שאוספים, מסדרים את החומרים לקן.'),
+    opt('add-soft','להוסיף עלים רכים','🍃','נכון! שכבה רכה מתאימה לגוזלים.'),
+    opt('remove-danger','להוציא קוץ חד','🧹','נכון! קוץ חד הוא באג בקן וצריך להסיר אותו.'),
+    opt('wait-parent','לחכות לאמא ציפור','🐦','נכון! אם הגוזל רעב, לפעמים צריך לחכות לציפור הבוגרת.'),
+  ];
+  return [
+    choice('לומי עוזרת לציפור לבנות קן. מה הצעד הראשון באלגוריתם?', 'לפני בנייה בודקים איפה בטוח.', 'check-place', nestOptions),
+    choice('המקום בטוח. מה צריך לעשות לפני שמסדרים את הקן?', 'אי אפשר לסדר חומרים לפני שאוספים אותם.', 'collect-twigs', nestOptions),
+    choice('יש זרדים ועלים. מה הפעולה שבונה מהם צורה של קן?', 'עכשיו הופכים חומרים למבנה.', 'weave-nest', nestOptions),
+    choice('הקן קשה מדי לגוזלים. איזו פעולה מתאימה?', 'צריך לשפר את הפלט של האלגוריתם.', 'add-soft', nestOptions),
+    choice('לומי מצאה קוץ חד בתוך הקן. מה הדיבוג?', 'מסירים פעולה/חפץ שמזיק למטרה.', 'remove-danger', nestOptions),
+    choice('האלגוריתם כתוב: לסדר קן → לאסוף זרדים. מה הבאג?', 'הסדר הפוך.', 'collect-twigs', nestOptions),
+    choice('הגוזל מצייץ אבל אין אוכל בקן. מה כדאי לעשות עכשיו?', 'לא כל פעולה היא בנייה; לפעמים צריך לחכות/לקרוא לציפור.', 'wait-parent', nestOptions),
+    choice('אם יש ענף רופף בקן — מה הפעולה הכי הגיונית?', 'מתקנים את המבנה.', 'weave-nest', nestOptions),
+    choice('אם חסרים חומרים לקן — מה הצעד הבא?', 'חסר קלט לבנייה.', 'collect-twigs', nestOptions),
+    choice('אם הקן ליד שביל של חתול — מה צריך לעשות קודם?', 'בטיחות לפני בנייה.', 'check-place', nestOptions),
+    choice('אם יש הרבה עלים רכים להוסיף אחד־אחד — איזה רעיון תכנותי זה מזכיר?', 'פעולה שחוזרת שוב ושוב היא לולאה.', 'add-soft', nestOptions),
+    choice('לומי סיימה: מקום בטוח, זרדים, קן, עלים רכים. מה קיבלנו?', 'זה רצף פעולות שיוצר תוצאה.', 'weave-nest', nestOptions),
+  ];
+}
 
 window.LUMI_LESSONS = [
   { id:1, icon:'🐾', title:'עקבות ביער', concept:'מיון לפי סימנים', story:'לומי מצאה עקבות ליד הנחל. הילדים ממיינים לפי רמזים כמו מתכנתים שמזהים נתונים.', sticker:'🦊', stickerName:'מדבקת שועל', type:'classify', tasks:classifyTasks('עקבות ביער') },
   { id:2, icon:'🌸', title:'גינת הדפוסים', concept:'רצפים ודפוסים', story:'לומי שותלת גינה וחוזה מה יבוא לפי חוקיות חוזרת.', sticker:'🌻', stickerName:'מדבקת חמנייה', type:'pattern', tasks:repeatPatternTasks('🌷','🌼','🌻','בגינה') },
   { id:3, icon:'☁️', title:'תחנת מזג האוויר', concept:'אם־אז', story:'לומי קוראת מזג אוויר ובונה כללי IF-THEN פשוטים.', sticker:'🌈', stickerName:'מדבקת קשת', type:'condition', tasks:conditionTasks('בתחנה') },
   { id:4, icon:'🦋', title:'פרפרים וצבעים', concept:'קטגוריות ותכונות', story:'ממיינים פרפרים לפי צבע, צורה ודוגמה — כמו סינון דאטה.', sticker:'🦋', stickerName:'מדבקת פרפר', type:'classify', tasks:classifyTasks('פרפרים וצבעים','bee','bird','snail') },
-  { id:5, icon:'🪺', title:'קן הציפורים', concept:'סדר פעולות', story:'בונים קן לפי שלבים נכונים ומדבגים סדר שגוי.', sticker:'🐦', stickerName:'מדבקת ציפור', type:'condition', tasks:sequenceTasks('קן הציפורים') },
+  { id:5, icon:'🪺', title:'קן הציפורים', concept:'סדר פעולות', story:'לומי עוזרת לציפור לבנות קן: קודם בודקים מקום, אחר כך אוספים חומרים, מסדרים, מרככים ומדבגים סכנות.', sticker:'🐦', stickerName:'מדבקת ציפור', type:'condition', tasks:nestTasks() },
   { id:6, icon:'🧺', title:'אוסף הזרעים', concept:'דאטה וספירה', story:'לומי אוספת זרעים, מזהה קבוצות ומחליטה מה לעשות עם הנתונים.', sticker:'🌰', stickerName:'מדבקת בלוט', type:'classify', tasks:classifyTasks('אוסף הזרעים') },
   { id:7, icon:'🌙', title:'לילה ביער', concept:'חיפוש לפי רמזים', story:'בלילה רואים מעט מידע, ולכן בודקים רמזים בזהירות.', sticker:'🦉', stickerName:'מדבקת ינשוף', type:'condition', tasks:conditionTasks('בלילה') },
   { id:8, icon:'🐜', title:'שיירת הנמלים', concept:'לולאות', story:'נמלים חוזרות על פעולות. הילדים מזהים מתי צריך לולאה.', sticker:'🐜', stickerName:'מדבקת נמלה', type:'condition', tasks:sequenceTasks('שיירת הנמלים') },
