@@ -27,7 +27,7 @@ test('lumi course has fifteen fully playable stations', () => {
   const lessons = loadLessons();
   assert.equal(lessons.length, 15);
   assert.equal(new Set(lessons.map((lesson) => lesson.id)).size, 15);
-  assert.ok(lessons.every((lesson) => ['classify', 'pattern', 'condition'].includes(lesson.type)));
+  assert.ok(lessons.every((lesson) => ['classify', 'pattern', 'condition', 'route'].includes(lesson.type)));
   assert.ok(lessons.every((lesson) => lesson.tasks.length === 12));
 });
 
@@ -65,6 +65,14 @@ test('all lumi tasks are child-friendly and have one valid answer', () => {
   for (const lesson of lessons) {
     for (const task of lesson.tasks) {
       assert.ok(task.prompt.length > 10, lesson.title);
+      if (lesson.type === 'route') {
+        assert.ok(task.goalText.length > 10, lesson.title);
+        assert.ok(task.start && task.goal, lesson.title);
+        assert.ok(Array.isArray(task.obstacles), lesson.title);
+        assert.ok(Array.isArray(task.solution) && task.solution.length >= 2, lesson.title);
+        assert.ok(task.solution.every((step) => ['up', 'down', 'left', 'right'].includes(step)), lesson.title);
+        continue;
+      }
       assert.ok(task.answer, lesson.title);
       assert.ok(task.options.length >= 3, lesson.title);
       if (lesson.type === 'pattern') {
@@ -91,9 +99,36 @@ test('lumi play engine supports all fifteen lessons and stores progress separate
   assert.match(js, /רמז:/);
   assert.match(js, /function shuffled/);
   assert.equal((js.match(/shuffled\(task\.options\)/g) || []).length, 3);
+  assert.match(js, /function renderRoute/);
+  assert.match(js, /blockly-panel/);
+  assert.match(js, /route-map/);
   assert.match(js, /lumi-nature-progress-v1/);
   assert.match(js, /courseId: 'lumi-nature'/);
   assert.match(js, /lessonId: String\(lesson\.id\)/);
+});
+
+test('trail map lesson is an interactive route planning activity', () => {
+  const lesson = loadLessons().find((item) => item.id === 9);
+  assert.equal(lesson.type, 'route');
+  assert.match(lesson.concept, /בלוקים/);
+  assert.equal(lesson.tasks.length, 12);
+  assert.ok(lesson.tasks.every((task) => task.solution.length >= 2));
+});
+
+test('route planning solutions stay on map, avoid obstacles, and reach the goal', () => {
+  const directions = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+  const lesson = loadLessons().find((item) => item.id === 9);
+  for (const [index, task] of lesson.tasks.entries()) {
+    const obstacles = new Set(task.obstacles.map((point) => `${point.x},${point.y}`));
+    let position = { ...task.start };
+    for (const step of task.solution) {
+      position = { x: position.x + directions[step][0], y: position.y + directions[step][1] };
+      assert.ok(position.x >= 0 && position.x <= 3 && position.y >= 0 && position.y <= 3, `route ${index + 1} leaves map`);
+      assert.ok(!obstacles.has(`${position.x},${position.y}`), `route ${index + 1} hits obstacle`);
+    }
+    assert.equal(position.x, task.goal.x, `route ${index + 1} misses goal x`);
+    assert.equal(position.y, task.goal.y, `route ${index + 1} misses goal y`);
+  }
 });
 
 let passed = 0;

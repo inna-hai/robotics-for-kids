@@ -159,20 +159,21 @@ function antTasks(){return tasksFrom([
  ['אם כל נמלה עושה אותו דבר — איזו מיומנות לוגית?','חזרה מסודרת.','repeat',[O.repeat,O.carry,O.rest,O.follow]],
  ['לומי שואלת: למה השיירה לא מתבלבלת?','יש לה כלל ברור לעקוב אחריו.','follow',[O.follow,O.repeat,O.rest,O.carry]],
 ]);}
-function pathTasks(){return tasksFrom([
- ['לומי עומדת ליד הנחל וצריכה להגיע לעץ. מה צעד מתאים אם הגשר מימין?','קוראים מפה לפני שזזים.','right',[O.right,O.up,O.bridge,O.avoid]],
- ['השביל עולה אל הגבעה. איזה חץ מתאים?','מפה היא רצף כיוונים.','up',[O.up,O.right,O.bridge,O.avoid]],
- ['יש נחל באמצע. מה צריך למצוא?','לא עוברים במים בלי גשר.','bridge',[O.bridge,O.right,O.up,O.avoid]],
- ['יש אבן גדולה על השביל. מה עושים?','מתכננים מסלול עוקף.','avoid',[O.avoid,O.bridge,O.right,O.up]],
- ['אם הצעד הבא נתקע בשיח — מה התיקון?','לא ממשיכים לתוך מכשול.','avoid',[O.avoid,O.right,O.up,O.bridge]],
- ['אם הדרך לגשר היא ימינה ואז למעלה — מה קודם?','הסדר חשוב.','right',[O.right,O.up,O.bridge,O.avoid]],
- ['לומי הגיעה לגשר. מה הפעולה עכשיו?','הגשר הוא תחנה מיוחדת.','bridge',[O.bridge,O.avoid,O.right,O.up]],
- ['אם המפה אומרת ⬆️⬆️➡️, איזו פעולה חוזרת?','שני צעדים למעלה.','up',[O.up,O.right,O.repeat,O.bridge]],
- ['אם יש קיצור דרך אבל מלא קוצים — מה עדיף?','מסלול בטוח עדיף.','avoid',[O.avoid,O.bridge,O.right,O.up]],
- ['מה עושים לפני רצף צעדים ארוך?','בודקים את המפה.','ask',[O.ask,O.right,O.up,O.bridge]],
- ['אם לומי טעתה בפנייה — מה עושים?','חוזרים ומתקנים מסלול.','retry',[O.retry,O.right,O.up,O.avoid]],
- ['בסוף המסלול לומי רושמת מה עבד. מה הפעולה?','שומרים תצפית לפעם הבאה.','note',[O.note,O.bridge,O.avoid,O.right]],
-]);}
+function routeTask(prompt, goalText, start, goal, obstacles, solution) { return { prompt, goalText, start, goal, obstacles, solution }; }
+function pathTasks(){return [
+ routeTask('לומי עומדת בתחילת השביל ורוצה להגיע לעץ. בנו לה מסלול עם בלוקים.', 'הגיעו לעץ בלי לגעת באבן.', {x:0,y:3}, {x:2,y:3}, [{x:1,y:2}], ['right','right']),
+ routeTask('הגשר נמצא למעלה. לומי צריכה לעלות ואז לפנות אל הדגל.', 'תכננו שני צעדים: למעלה ואז ימינה.', {x:0,y:3}, {x:1,y:2}, [{x:2,y:2}], ['up','right']),
+ routeTask('יש שיח באמצע. עזרו ללומי לעקוף אותו בדרך לפרח.', 'לא דורכים על השיח.', {x:0,y:2}, {x:2,y:2}, [{x:1,y:2}], ['up','right','right','down']),
+ routeTask('לומי רוצה להגיע לפטרייה שמעליה. איזה רצף קצר מתאים?', 'עלו שתי משבצות.', {x:1,y:3}, {x:1,y:1}, [{x:2,y:2}], ['up','up']),
+ routeTask('הנחל חוסם את הדרך הישרה. צריך מסלול שמסתובב מסביב.', 'עקפו את המים והגיעו לעלה.', {x:0,y:3}, {x:3,y:2}, [{x:1,y:3},{x:1,y:2},{x:2,y:1}], ['up','up','up','right','right','right','down','down']),
+ routeTask('לומי אוספת כוכב בסוף השביל. בנו רצף ימינה ולמעלה.', 'הכוכב מחכה בפינה.', {x:0,y:3}, {x:3,y:0}, [{x:1,y:1},{x:2,y:2}], ['right','right','right','up','up','up']),
+ routeTask('יש שתי אבנים קטנות. לומי צריכה למצוא דרך נקייה.', 'אל תעברו דרך האבנים.', {x:0,y:1}, {x:3,y:1}, [{x:1,y:1},{x:2,y:0}], ['down','right','right','right','up']),
+ routeTask('הגוזל מחכה בקצה השביל. תכננו מסלול של פניות.', 'להגיע לגוזל בלי קוצים.', {x:0,y:0}, {x:3,y:2}, [{x:1,y:0},{x:1,y:1},{x:2,y:3}], ['down','down','right','right','right']),
+ routeTask('לומי צריכה להגיע לגשר ואז לחצות לצד השני.', 'הדרך הבטוחה עוברת באמצע.', {x:0,y:2}, {x:3,y:2}, [{x:1,y:3},{x:2,y:1}], ['right','right','right']),
+ routeTask('השביל מתפתל כמו נחש קטן. סדרו את הבלוקים בזהירות.', 'לא לצאת מהמפה.', {x:3,y:3}, {x:0,y:0}, [{x:2,y:3},{x:2,y:1},{x:1,y:1}], ['up','up','up','left','left','left']),
+ routeTask('לומי רוצה לבדוק מסלול ארוך יותר לשמורת הפרחים.', 'תכננו לפני שמריצים.', {x:0,y:0}, {x:3,y:3}, [{x:1,y:0},{x:1,y:1},{x:2,y:2}], ['down','down','down','right','right','right']),
+ routeTask('אתגר סיום: עזרו ללומי להגיע למצפן בקצה המפה.', 'זה מסלול עם כמה פניות — כמו אלגוריתם קטן.', {x:0,y:3}, {x:3,y:0}, [{x:0,y:2},{x:1,y:1},{x:2,y:1}], ['right','right','right','up','up','up']),
+];}
 function streamTasks(){return tasksFrom([
  ['האדמה ליד הנחל יבשה. מה עושים?','קלט: יבש. פלט: השקיה.','water',[O.water,O.closeGate,O.shade,O.wait]],
  ['יש יותר מדי מים בשביל. מה עושים לשער?','לא מציפים את השמורה.','closeGate',[O.closeGate,O.openGate,O.water,O.shade]],
@@ -272,7 +273,7 @@ window.LUMI_LESSONS = [
   { id:6, icon:'🧺', title:'אוסף הזרעים', concept:'דאטה וספירה', story:'לומי מוצאת בלוטים, אצטרובלים וזרעי כנף. כל זרע נכנס לקבוצה אחרת במחברת האוספים.', sticker:'🌰', stickerName:'מדבקת בלוט', type:'classify', tasks:seedTasks() },
   { id:7, icon:'🌙', title:'לילה ביער', concept:'חיפוש לפי רמזים', story:'הלילה יורד, ולומי מקשיבה לקולות קטנים: ינשוף, עטלף, גחלילית וקיפוד מופיעים כמו סיפור לפני השינה.', sticker:'🦉', stickerName:'מדבקת ינשוף', type:'condition', tasks:nightTasks() },
   { id:8, icon:'🐜', title:'שיירת הנמלים', concept:'לולאות', story:'שיירת נמלים חרוצה מוצאת פירורים. לומי מגלה שחזרה מסודרת היא בעצם לולאה.', sticker:'🐜', stickerName:'מדבקת נמלה', type:'condition', tasks:antTasks() },
-  { id:9, icon:'🏞️', title:'מפת השביל', concept:'תכנון אלגוריתמי', story:'לומי פורשת מפה קטנה של היער: גשר, נחל, אבנים ושביל. כל בחירה היא צעד במסלול.', sticker:'🧭', stickerName:'מדבקת מצפן', type:'condition', tasks:pathTasks() },
+  { id:9, icon:'🏞️', title:'מפת השביל', concept:'תכנון אלגוריתמי ובלוקים', story:'לומי פורשת מפה קטנה של היער: גשר, נחל, אבנים ושביל. הילדים בונים מסלול מבלוקים, מריצים, ומתקנים כמו מתכנתים צעירים.', sticker:'🧭', stickerName:'מדבקת מצפן', type:'route', tasks:pathTasks() },
   { id:10, icon:'💧', title:'טיפות לנחל', concept:'קלט־פלט', story:'נחל קטן מבקש עזרה. לומי קוראת סימני יובש ורטיבות ובוחרת מתי לפתוח מים ומתי לעצור.', sticker:'💧', stickerName:'מדבקת טיפה', type:'condition', tasks:streamTasks() },
   { id:11, icon:'🍄', title:'יער הפטריות', concept:'תנאי וגם', story:'ביער הפטריות של לומי לא מספיק צבע אחד: לפעמים צריך גם צבע נכון וגם נקודות נכונות.', sticker:'🍄', stickerName:'מדבקת פטרייה', type:'classify', tasks:mushroomTasks() },
   { id:12, icon:'🐢', title:'הצב והקצב', concept:'מהירות וזמן', story:'צב איטי וארנב מהיר יוצאים למסלול. לומי לומדת מתי לחכות, מתי להשוות ומתי לנסות שוב.', sticker:'🐢', stickerName:'מדבקת צב', type:'condition', tasks:turtleTasks() },
