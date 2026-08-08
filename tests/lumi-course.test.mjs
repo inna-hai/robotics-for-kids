@@ -123,6 +123,11 @@ test('all lessons are interactive route planning activities', () => {
   }
 });
 
+test('lumi lessons use varied maze layouts, not one repeated board', () => {
+  const signatures = loadLessons().map((lesson) => lesson.tasks.map((task) => `${task.start.x},${task.start.y}>${task.goal.x},${task.goal.y}:${task.solution.join('')}`).join('|'));
+  assert.ok(new Set(signatures).size >= 6, 'expected several distinct maze layout families');
+});
+
 test('route planning solutions stay on map, avoid obstacles, and reach the goal', () => {
   const directions = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
   const routeTasks = loadLessons().flatMap((lesson) => lesson.tasks.map((task) => ({ lesson, task })));
