@@ -185,25 +185,37 @@ function renderRoute(task) {
   };
   const makeStep = (id) => directions.find((dir) => dir.id === id)?.id;
   const dnd = createDragHandlers(program, renderProgram, makeStep);
-  const runProgram = () => {
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const setRouteBusy = (busy) => {
+    document.querySelectorAll('.nav-block,.route-step,#run-route,#clear-route').forEach((button) => button.disabled = busy);
+  };
+  const runProgram = async () => {
+    if (!program.length) return setResult('קודם הוסיפו חצים לרצף.');
+    setRouteBusy(true);
     let pos = { ...task.start };
     const trail = [pos];
+    drawMap(pos, trail);
+    setResult('לומי יוצאת לדרך...');
+    await sleep(350);
     for (const step of program) {
       const dir = directions.find((d) => d.id === step);
       pos = { x: pos.x + dir.dx, y: pos.y + dir.dy };
       trail.push(pos);
       if (pos.x < 0 || pos.x > 3 || pos.y < 0 || pos.y > 3) {
         drawMap(task.start, []);
+        setRouteBusy(false);
         return setResult('אופס, לומי יצאה מהמפה. מחקו בלוק ונסו שוב.');
       }
+      drawMap(pos, trail);
+      await sleep(520);
       if (obstacles.has(key(pos))) {
-        drawMap(pos, trail);
+        setRouteBusy(false);
         return setResult('בום קטן על אבן! צריך לתכנן עקיפה אחרת.');
       }
     }
-    drawMap(pos, trail);
     const exact = program.join(',') === task.solution.join(',');
     const arrived = pos.x === task.goal.x && pos.y === task.goal.y;
+    setRouteBusy(false);
     choose(arrived, arrived
       ? (exact ? 'מעולה! בניתם מסלול בלוקים מדויק ללומי.' : 'יפה! לומי הגיעה ליעד במסלול משלכם.')
       : 'לומי עוד לא הגיעה ליעד. הוסיפו או החליפו בלוקים.');
