@@ -159,7 +159,7 @@ function antTasks(){return tasksFrom([
  ['אם כל נמלה עושה אותו דבר — איזו מיומנות לוגית?','חזרה מסודרת.','repeat',[O.repeat,O.carry,O.rest,O.follow]],
  ['לומי שואלת: למה השיירה לא מתבלבלת?','יש לה כלל ברור לעקוב אחריו.','follow',[O.follow,O.repeat,O.rest,O.carry]],
 ]);}
-function routeTask(prompt, goalText, start, goal, obstacles, solution) { return { prompt, goalText, start, goal, obstacles, solution }; }
+function routeTask(prompt, goalText, start, goal, obstacles, solution, targetIcon='🏁', obstacleIcon='🪨') { return { prompt, goalText, start, goal, obstacles, solution, targetIcon, obstacleIcon }; }
 function pathTasks(){return [
  routeTask('לומי עומדת בתחילת השביל ורוצה להגיע לעץ. בנו לה מסלול עם בלוקים.', 'הגיעו לעץ בלי לגעת באבן.', {x:0,y:3}, {x:2,y:3}, [{x:1,y:2}], ['right','right']),
  routeTask('הגשר נמצא למעלה. לומי צריכה לעלות ואז לפנות אל הדגל.', 'תכננו שני צעדים: למעלה ואז ימינה.', {x:0,y:3}, {x:1,y:2}, [{x:2,y:2}], ['up','right']),
@@ -173,6 +173,21 @@ function pathTasks(){return [
  routeTask('השביל מתפתל כמו נחש קטן. סדרו את הבלוקים בזהירות.', 'לא לצאת מהמפה.', {x:3,y:3}, {x:0,y:0}, [{x:2,y:3},{x:2,y:1},{x:1,y:1}], ['up','up','up','left','left','left']),
  routeTask('לומי רוצה לבדוק מסלול ארוך יותר לשמורת הפרחים.', 'תכננו לפני שמריצים.', {x:0,y:0}, {x:3,y:3}, [{x:1,y:0},{x:1,y:1},{x:2,y:2}], ['down','down','down','right','right','right']),
  routeTask('אתגר סיום: עזרו ללומי להגיע למצפן בקצה המפה.', 'זה מסלול עם כמה פניות — כמו אלגוריתם קטן.', {x:0,y:3}, {x:3,y:0}, [{x:0,y:2},{x:1,y:1},{x:2,y:1}], ['right','right','right','up','up','up']),
+];}
+
+function visualMazeTasks(targetIcon, worldIcon='🌿', obstacleIcon='🪨') { return [
+ routeTask(`🧒 ➜ ${targetIcon}`, 'בנו רצף חצים קצר והגיעו אל הסימן.', {x:0,y:3}, {x:2,y:3}, [{x:1,y:2}], ['right','right'], targetIcon, obstacleIcon),
+ routeTask(`🧒 ⬆️ ➜ ${targetIcon}`, 'עלו ואז פנו. הרצף הוא אלגוריתם קטן.', {x:0,y:3}, {x:1,y:2}, [{x:2,y:2}], ['up','right'], targetIcon, obstacleIcon),
+ routeTask(`🧒 ${obstacleIcon} ${targetIcon}`, 'עקפו את המחסום בלי לגעת בו.', {x:0,y:2}, {x:2,y:2}, [{x:1,y:2}], ['up','right','right','down'], targetIcon, obstacleIcon),
+ routeTask(`🧒 ⬆️⬆️ ${targetIcon}`, 'שני חצים למעלה. פשוט ורציף.', {x:1,y:3}, {x:1,y:1}, [{x:2,y:2}], ['up','up'], targetIcon, obstacleIcon),
+ routeTask(`🧒 ➜ ${worldIcon} ➜ ${targetIcon}`, 'מצאו דרך מסביב למחסומים.', {x:0,y:3}, {x:3,y:2}, [{x:1,y:3},{x:1,y:2},{x:2,y:1}], ['up','up','up','right','right','right','down','down'], targetIcon, obstacleIcon),
+ routeTask(`🧒 ➡️⬆️ ${targetIcon}`, 'קודם ימינה, אחר כך למעלה.', {x:0,y:3}, {x:3,y:0}, [{x:1,y:1},{x:2,y:2}], ['right','right','right','up','up','up'], targetIcon, obstacleIcon),
+ routeTask(`🧒 ${obstacleIcon}${obstacleIcon} ${targetIcon}`, 'יש שני מחסומים. בנו דרך נקייה.', {x:0,y:1}, {x:3,y:1}, [{x:1,y:1},{x:2,y:0}], ['down','right','right','right','up'], targetIcon, obstacleIcon),
+ routeTask(`🧒 ↴ ${targetIcon}`, 'מסלול עם פנייה אחת גדולה.', {x:0,y:0}, {x:3,y:2}, [{x:1,y:0},{x:1,y:1},{x:2,y:3}], ['down','down','right','right','right'], targetIcon, obstacleIcon),
+ routeTask(`🧒 ➡️➡️➡️ ${targetIcon}`, 'קו ישר הוא גם אלגוריתם.', {x:0,y:2}, {x:3,y:2}, [{x:1,y:3},{x:2,y:1}], ['right','right','right'], targetIcon, obstacleIcon),
+ routeTask(`🧒 🌀 ${targetIcon}`, 'השביל מתפתל. סדרו חצים לפי הדרך.', {x:3,y:3}, {x:0,y:0}, [{x:2,y:3},{x:2,y:1},{x:1,y:1}], ['up','up','up','left','left','left'], targetIcon, obstacleIcon),
+ routeTask(`🧒 ${worldIcon}${worldIcon} ${targetIcon}`, 'תכננו לפני ההרצה.', {x:0,y:0}, {x:3,y:3}, [{x:1,y:0},{x:1,y:1},{x:2,y:2}], ['down','down','down','right','right','right'], targetIcon, obstacleIcon),
+ routeTask(`🧒 ⭐ ${targetIcon}`, 'אתגר סיום: כמה חצים ברצף.', {x:0,y:3}, {x:3,y:0}, [{x:0,y:2},{x:1,y:1},{x:2,y:1}], ['right','right','right','up','up','up'], targetIcon, obstacleIcon),
 ];}
 function streamTasks(){return tasksFrom([
  ['האדמה ליד הנחל יבשה. מה עושים?','קלט: יבש. פלט: השקיה.','water',[O.water,O.closeGate,O.shade,O.wait]],
@@ -260,24 +275,19 @@ function reserveTasks(){return tasksFrom([
 ]);}
 
 window.LUMI_LESSONS = [
-  { id:1, icon:'🐾', title:'עקבות ביער', concept:'מיון לפי סימנים', story:'לומי מצאה עקבות ליד הנחל. כל רמז הוא סימן קטן בסיפור, והילדים עוזרים לה להבין איזו חיה עברה שם.', sticker:'🦊', stickerName:'מדבקת שועל', type:'classify', tasks:tracksTasks() },
-  { id:2, icon:'🌸', title:'גינת הדפוסים', concept:'רצפים ודפוסים', story:'בגינה של לומי הפרחים גדלים לפי חוקיות קסומה. הילדים מנחשים מה יבוא בהמשך כמו קוראי סודות של הטבע.', sticker:'🌻', stickerName:'מדבקת חמנייה', type:'pattern', tasks:patternTasks('של פרחים','🌷','🌼','🌻','בגינה') },
-  { id:3, icon:'☁️', title:'תחנת מזג האוויר', concept:'אם־אז', story:'לומי עומדת בתחנת עננים קטנה. גשם, רוח ושמש הופכים לכללי אם־אז שילדים יכולים להבין.', sticker:'🌈', stickerName:'מדבקת קשת', type:'condition', tasks:tasksFrom([
-    ['ענן אפור מטפטף מעל לומי. מה כדאי לקחת?','אם גשם — אז נשארים יבשים.','umbrella',[opt('umbrella','מטרייה','☂️','נכון! גשם מזמין מטרייה.'),O.shade,O.wait,O.openGate]],
-    ['רוח חזקה מזיזה את העלים. מה המשחק המתאים?','אם רוח — אז עפיפון יכול לעוף.','kite',[opt('kite','עפיפון','🪁','נכון! הרוח עוזרת לעפיפון.'),O.water,O.closeGate,O.note]],
-    ['השמש חזקה על ראש לומי. מה עוזר?','אם שמש חזקה — אז מגינים על הראש.','hat',[opt('hat','כובע','🧢','נכון! כובע שומר מהשמש.'),O.water,O.openGate,O.retry]],
-    ['היער נהיה חשוך. מה מפעילים בבקתה?','אם חושך — אז אור.','lamp',[opt('lamp','מנורה','💡','נכון! חושך מזמין אור.'),O.shade,O.water,O.closeGate]],
-    ]) .concat(streamTasks().slice(4,12)) },
-  { id:4, icon:'🦋', title:'פרפרים וצבעים', concept:'קטגוריות ותכונות', story:'לומי פותחת עמוד צבעוני במחברת וממיינת פרפרים לפי צבע, גודל ודוגמה על הכנפיים.', sticker:'🦋', stickerName:'מדבקת פרפר', type:'classify', tasks:butterflyTasks() },
-  { id:5, icon:'🪺', title:'קן הציפורים', concept:'סדר פעולות', story:'לומי עוזרת לציפור לבנות קן: מקום בטוח, זרדים, עלים רכים, ואז בדיקה שאין סכנות לגוזלים.', sticker:'🐦', stickerName:'מדבקת ציפור', type:'condition', tasks:nestTasks() },
-  { id:6, icon:'🧺', title:'אוסף הזרעים', concept:'דאטה וספירה', story:'לומי מוצאת בלוטים, אצטרובלים וזרעי כנף. כל זרע נכנס לקבוצה אחרת במחברת האוספים.', sticker:'🌰', stickerName:'מדבקת בלוט', type:'classify', tasks:seedTasks() },
-  { id:7, icon:'🌙', title:'לילה ביער', concept:'חיפוש לפי רמזים', story:'הלילה יורד, ולומי מקשיבה לקולות קטנים: ינשוף, עטלף, גחלילית וקיפוד מופיעים כמו סיפור לפני השינה.', sticker:'🦉', stickerName:'מדבקת ינשוף', type:'condition', tasks:nightTasks() },
-  { id:8, icon:'🐜', title:'שיירת הנמלים', concept:'לולאות', story:'שיירת נמלים חרוצה מוצאת פירורים. לומי מגלה שחזרה מסודרת היא בעצם לולאה.', sticker:'🐜', stickerName:'מדבקת נמלה', type:'condition', tasks:antTasks() },
-  { id:9, icon:'🏞️', title:'מפת השביל', concept:'תכנון אלגוריתמי ובלוקים', story:'לומי פורשת מפה קטנה של היער: גשר, נחל, אבנים ושביל. הילדים בונים מסלול מבלוקים, מריצים, ומתקנים כמו מתכנתים צעירים.', sticker:'🧭', stickerName:'מדבקת מצפן', type:'route', tasks:pathTasks() },
-  { id:10, icon:'💧', title:'טיפות לנחל', concept:'קלט־פלט', story:'נחל קטן מבקש עזרה. לומי קוראת סימני יובש ורטיבות ובוחרת מתי לפתוח מים ומתי לעצור.', sticker:'💧', stickerName:'מדבקת טיפה', type:'condition', tasks:streamTasks() },
-  { id:11, icon:'🍄', title:'יער הפטריות', concept:'תנאי וגם', story:'ביער הפטריות של לומי לא מספיק צבע אחד: לפעמים צריך גם צבע נכון וגם נקודות נכונות.', sticker:'🍄', stickerName:'מדבקת פטרייה', type:'classify', tasks:mushroomTasks() },
-  { id:12, icon:'🐢', title:'הצב והקצב', concept:'מהירות וזמן', story:'צב איטי וארנב מהיר יוצאים למסלול. לומי לומדת מתי לחכות, מתי להשוות ומתי לנסות שוב.', sticker:'🐢', stickerName:'מדבקת צב', type:'condition', tasks:turtleTasks() },
-  { id:13, icon:'🌳', title:'עץ ההחלטות', concept:'עץ תנאים', story:'בעץ גדול של לומי כל ענף הוא שאלה. עונים כן או לא עד שמגיעים לעלה תשובה.', sticker:'🌳', stickerName:'מדבקת עץ', type:'condition', tasks:treeTasks() },
-  { id:14, icon:'🧪', title:'מעבדת הטבע', concept:'ניסוי ודיבוג', story:'במעבדה הקטנה ליד העץ לומי משנה דבר אחד בכל פעם, רושמת מה קרה ומתקנת כלל שלא עבד.', sticker:'🔬', stickerName:'מדבקת מעבדה', type:'condition', tasks:labTasks() },
-  { id:15, icon:'🌍', title:'שמורת לומי', concept:'פרויקט סיום', story:'בשמורה של לומי מחברים את כל מה שלמדנו: רמזים, דפוסים, תנאים, מים, מסלול והגנה על חיות וצמחים.', sticker:'🏆', stickerName:'תג חוקרת טבע', type:'condition', tasks:reserveTasks() },
+  { id:1, icon:'🐾', title:'עקבות ביער', concept:'מיון לפי סימנים', story:'לומי מצאה עקבות ליד הנחל. כל רמז הוא סימן קטן בסיפור, והילדים עוזרים לה להבין איזו חיה עברה שם.', sticker:'🦊', stickerName:'מדבקת שועל', type:'route', tasks:visualMazeTasks('🦊','🐾','🪵') },
+  { id:2, icon:'🌸', title:'גינת הדפוסים', concept:'רצפים ודפוסים', story:'בגינה של לומי הפרחים גדלים לפי חוקיות קסומה. הילדים מנחשים מה יבוא בהמשך כמו קוראי סודות של הטבע.', sticker:'🌻', stickerName:'מדבקת חמנייה', type:'route', tasks:visualMazeTasks('🌻','🌷','🌵') },
+  { id:3, icon:'☁️', title:'תחנת מזג האוויר', concept:'אם־אז', story:'לומי עומדת בתחנת עננים קטנה. גשם, רוח ושמש הופכים לכללי אם־אז שילדים יכולים להבין.', sticker:'🌈', stickerName:'מדבקת קשת', type:'route', tasks:visualMazeTasks('☂️','☁️','🌧️') },
+  { id:4, icon:'🦋', title:'פרפרים וצבעים', concept:'קטגוריות ותכונות', story:'לומי פותחת עמוד צבעוני במחברת וממיינת פרפרים לפי צבע, גודל ודוגמה על הכנפיים.', sticker:'🦋', stickerName:'מדבקת פרפר', type:'route', tasks:visualMazeTasks('🦋','🌸','🪨') },
+  { id:5, icon:'🪺', title:'קן הציפורים', concept:'סדר פעולות', story:'לומי עוזרת לציפור לבנות קן: מקום בטוח, זרדים, עלים רכים, ואז בדיקה שאין סכנות לגוזלים.', sticker:'🐦', stickerName:'מדבקת ציפור', type:'route', tasks:visualMazeTasks('🪺','🐦','🌵') },
+  { id:6, icon:'🧺', title:'אוסף הזרעים', concept:'דאטה וספירה', story:'לומי מוצאת בלוטים, אצטרובלים וזרעי כנף. כל זרע נכנס לקבוצה אחרת במחברת האוספים.', sticker:'🌰', stickerName:'מדבקת בלוט', type:'route', tasks:visualMazeTasks('🌰','🌲','🪨') },
+  { id:7, icon:'🌙', title:'לילה ביער', concept:'חיפוש לפי רמזים', story:'הלילה יורד, ולומי מקשיבה לקולות קטנים: ינשוף, עטלף, גחלילית וקיפוד מופיעים כמו סיפור לפני השינה.', sticker:'🦉', stickerName:'מדבקת ינשוף', type:'route', tasks:visualMazeTasks('🦉','🌙','🌲') },
+  { id:8, icon:'🐜', title:'שיירת הנמלים', concept:'לולאות', story:'שיירת נמלים חרוצה מוצאת פירורים. לומי מגלה שחזרה מסודרת היא בעצם לולאה.', sticker:'🐜', stickerName:'מדבקת נמלה', type:'route', tasks:visualMazeTasks('🍞','🐜','🪨') },
+  { id:9, icon:'🏞️', title:'מפת השביל', concept:'תכנון אלגוריתמי ובלוקים', story:'לומי פורשת מפה קטנה של היער: גשר, נחל, אבנים ושביל. הילדים בונים מסלול מבלוקים, מריצים, ומתקנים כמו מתכנתים צעירים.', sticker:'🧭', stickerName:'מדבקת מצפן', type:'route', tasks:visualMazeTasks('🧭','🏞️','🪨') },
+  { id:10, icon:'💧', title:'טיפות לנחל', concept:'קלט־פלט', story:'נחל קטן מבקש עזרה. לומי קוראת סימני יובש ורטיבות ובוחרת מתי לפתוח מים ומתי לעצור.', sticker:'💧', stickerName:'מדבקת טיפה', type:'route', tasks:visualMazeTasks('💧','🌊','🪨') },
+  { id:11, icon:'🍄', title:'יער הפטריות', concept:'תנאי וגם', story:'ביער הפטריות של לומי לא מספיק צבע אחד: לפעמים צריך גם צבע נכון וגם נקודות נכונות.', sticker:'🍄', stickerName:'מדבקת פטרייה', type:'route', tasks:visualMazeTasks('🍄','🌲','🪵') },
+  { id:12, icon:'🐢', title:'הצב והקצב', concept:'מהירות וזמן', story:'צב איטי וארנב מהיר יוצאים למסלול. לומי לומדת מתי לחכות, מתי להשוות ומתי לנסות שוב.', sticker:'🐢', stickerName:'מדבקת צב', type:'route', tasks:visualMazeTasks('🐢','🌿','🪨') },
+  { id:13, icon:'🌳', title:'עץ ההחלטות', concept:'עץ תנאים', story:'בעץ גדול של לומי כל ענף הוא שאלה. עונים כן או לא עד שמגיעים לעלה תשובה.', sticker:'🌳', stickerName:'מדבקת עץ', type:'route', tasks:visualMazeTasks('🌳','🍃','🪨') },
+  { id:14, icon:'🧪', title:'מעבדת הטבע', concept:'ניסוי ודיבוג', story:'במעבדה הקטנה ליד העץ לומי משנה דבר אחד בכל פעם, רושמת מה קרה ומתקנת כלל שלא עבד.', sticker:'🔬', stickerName:'מדבקת מעבדה', type:'route', tasks:visualMazeTasks('🧪','🔬','🧱') },
+  { id:15, icon:'🌍', title:'שמורת לומי', concept:'פרויקט סיום', story:'בשמורה של לומי מחברים את כל מה שלמדנו: רמזים, דפוסים, תנאים, מים, מסלול והגנה על חיות וצמחים.', sticker:'🏆', stickerName:'תג חוקרת טבע', type:'route', tasks:visualMazeTasks('🏆','🌍','🪨') },
 ];
