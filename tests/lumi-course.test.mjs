@@ -48,6 +48,18 @@ test('bird nest lesson is actually about birds, nests, and ordered steps', () =>
   assert.ok(!text.includes('לומדת טבע ואין קפיצה'), 'generic debug text leaked into nest lesson');
 });
 
+test('each lumi lesson speaks in a child-story nature language, not generic programming text', () => {
+  const genericWords = /אלגוריתם|דיבוג|תכנות|קלט|פלט|דאטה|פעולה|תנאי/g;
+  const storyWords = /לומי|יער|ציפור|קן|פרח|פרפר|נחל|טבע|חיה|גוזל|נמלים|פטר|צב|עץ|שמורה|גשם|שמש|רוח|עלים|זרדים|פרי|שביל|זרע|ינשוף|עטלף|גחלילית|קיפוד|נמלה|מים|טיפה|מעבדה|מחברת|גשר/g;
+  for (const lesson of loadLessons()) {
+    const text = [lesson.title, lesson.story, ...lesson.tasks.map((task) => `${task.prompt} ${task.hint || ''}`)].join(' ');
+    const genericCount = (text.match(genericWords) || []).length;
+    const storyCount = (text.match(storyWords) || []).length;
+    assert.ok(storyCount >= 12, `${lesson.title} is not story-rich enough`);
+    assert.ok(storyCount > genericCount * 2, `${lesson.title} is too generic: story=${storyCount}, generic=${genericCount}`);
+  }
+});
+
 test('all lumi tasks are child-friendly and have one valid answer', () => {
   const lessons = loadLessons();
   for (const lesson of lessons) {
