@@ -89,6 +89,8 @@ test('lumi play engine supports all fifteen lessons and stores progress separate
   assert.doesNotMatch(js, /id <= 3/);
   assert.match(js, /task\.condition\s*\?/);
   assert.match(js, /רמז:/);
+  assert.match(js, /function shuffled/);
+  assert.equal((js.match(/shuffled\(task\.options\)/g) || []).length, 3);
   assert.match(js, /lumi-nature-progress-v1/);
   assert.match(js, /courseId: 'lumi-nature'/);
   assert.match(js, /lessonId: String\(lesson\.id\)/);

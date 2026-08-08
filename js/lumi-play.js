@@ -50,6 +50,9 @@ function setResult(text, ok = false) {
   if (el) el.textContent = text;
   if (ok) sparkle();
 }
+function shuffled(items) {
+  return [...items].sort(() => Math.random() - 0.5);
+}
 function choose(correct, message) {
   if (solved.has(taskIndex)) return;
   if (correct) {
@@ -65,7 +68,8 @@ function choose(correct, message) {
 }
 function renderClassify(task) {
   $('host').innerHTML = `<div class="task-card"><div class="task-title">${lesson.icon} ${lesson.title}</div><p class="task-text">${task.prompt}</p><p class="lead">רמז: ${task.hint}</p><div class="options" id="options"></div><div class="result" id="result"></div></div>`;
-  $('options').innerHTML = task.options.map((option) => `<button class="option" data-id="${option.id}"><span class="emoji">${option.emoji}</span>${option.label}</button>`).join('');
+  const options = shuffled(task.options);
+  $('options').innerHTML = options.map((option) => `<button class="option" data-id="${option.id}"><span class="emoji">${option.emoji}</span>${option.label}</button>`).join('');
   document.querySelectorAll('.option').forEach((button) => {
     button.addEventListener('click', () => {
       const option = task.options.find((item) => item.id === button.dataset.id);
@@ -77,7 +81,8 @@ function renderClassify(task) {
 }
 function renderPattern(task) {
   $('host').innerHTML = `<div class="task-card"><div class="task-title">${lesson.icon} ${lesson.title}</div><p class="task-text">${task.prompt}</p><div class="pattern">${task.sequence.map((item) => `<span>${item}</span>`).join('')}</div><div class="options" id="options"></div><div class="result" id="result"></div></div>`;
-  $('options').innerHTML = task.options.map((value) => `<button class="option" data-value="${value}"><span class="emoji">${value}</span>זה מתאים</button>`).join('');
+  const options = shuffled(task.options);
+  $('options').innerHTML = options.map((value) => `<button class="option" data-value="${value}"><span class="emoji">${value}</span>זה מתאים</button>`).join('');
   document.querySelectorAll('.option').forEach((button) => {
     button.addEventListener('click', () => {
       const ok = button.dataset.value === task.answer;
@@ -91,7 +96,8 @@ function renderCondition(task) {
     ? `<div class="pattern" dir="rtl"><span>${task.condition}</span><span>⬅️</span><span>?</span></div>`
     : `<p class="lead">רמז: ${task.hint || 'בחרו את הפעולה שהכי מתקנת את האלגוריתם.'}</p>`;
   $('host').innerHTML = `<div class="task-card"><div class="task-title">${lesson.icon} ${lesson.title}</div><p class="task-text">${task.prompt}</p>${visual}<div class="options" id="options"></div><div class="result" id="result"></div></div>`;
-  $('options').innerHTML = task.options.map((option) => `<button class="option" data-id="${option.id}"><span class="emoji">${option.emoji}</span>${option.label}</button>`).join('');
+  const options = shuffled(task.options);
+  $('options').innerHTML = options.map((option) => `<button class="option" data-id="${option.id}"><span class="emoji">${option.emoji}</span>${option.label}</button>`).join('');
   document.querySelectorAll('.option').forEach((button) => {
     button.addEventListener('click', () => {
       const option = task.options.find((item) => item.id === button.dataset.id);
