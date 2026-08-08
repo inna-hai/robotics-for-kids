@@ -103,11 +103,14 @@ function renderBlockAlgorithm(task, mode) {
     : (task.condition
       ? `<div class="pattern" dir="rtl"><span>${task.condition}</span><span>⬅️</span><span>?</span></div>`
       : `<p class="lead">רמז: ${task.hint || 'בנו סדר פעולות קטן שיעזור ללומי להחליט.'}</p>`);
-  $('host').innerHTML = `<div class="task-card blocks-card"><div class="task-title">${lesson.icon} ${lesson.title}</div><p class="task-text">${task.prompt}</p>${visual}<div class="algorithm-layout"><div class="blockly-panel"><b>בלוקים לגרירה</b><div class="block-palette wide" id="algo-palette"></div></div><div class="program-panel"><b>האלגוריתם שלי</b><div class="algo-program drop-zone" id="algo-program"><span class="lead">גררו לכאן בלוקים לפי הסדר</span></div><div class="route-actions"><button class="btn green" id="run-algo">▶️ בדיקה</button><button class="btn yellow" id="clear-algo">🧹 ניקוי</button></div></div></div><div class="result" id="result"></div></div>`;
+  const guideText = isPattern
+    ? 'גררו בלוקים לפי הסדר: בודקים דפוס → בוחרים את הסימן הבא → רושמים במחברת.'
+    : 'גררו בלוקים לפי הסדר: בודקים רמזים → בוחרים מה מתאים → רושמים במחברת.';
+  $('host').innerHTML = `<div class="task-card blocks-card"><div class="task-title">${lesson.icon} ${lesson.title}</div><p class="task-text">${task.prompt}</p><div class="block-guide">👆 ${guideText}</div>${visual}<div class="algorithm-layout"><div class="blockly-panel"><b>מחסן בלוקים — גררו מכאן</b><div class="block-help">סגול = פעולה · ירוק = תשובה/תוצאה</div><div class="block-palette wide" id="algo-palette"></div></div><div class="program-panel"><b>האלגוריתם שלי — שחררו כאן</b><div class="algo-program drop-zone" id="algo-program"><div class="empty-program"><span>1️⃣ בדיקה</span><span>2️⃣ החלטה</span><span>3️⃣ רישום במחברת</span></div></div><div class="route-actions"><button class="btn green" id="run-algo">▶️ בדיקה</button><button class="btn yellow" id="clear-algo">🧹 ניקוי</button></div></div></div><div class="result" id="result"></div></div>`;
   const renderProgram = () => {
     $('algo-program').innerHTML = program.length
       ? program.map((step, index) => `<button class="algo-step ${step.kind}" data-index="${index}" title="לחצו להסרה"><span>${step.icon}</span>${step.label}</button>`).join('')
-      : '<span class="lead">גררו לכאן בלוקים לפי הסדר</span>';
+      : '<div class="empty-program"><span>1️⃣ בדיקה</span><span>2️⃣ החלטה</span><span>3️⃣ רישום במחברת</span></div>';
     document.querySelectorAll('.algo-step').forEach((button) => button.addEventListener('click', () => {
       program.splice(Number(button.dataset.index), 1);
       renderProgram();
