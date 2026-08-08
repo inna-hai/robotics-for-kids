@@ -1044,6 +1044,8 @@ const PUBLIC_HTML_PATHS = new Set([
   '/thankyou.html',
   '/about.html',
   '/sisi.html',
+  '/lumi.html',
+  '/lumi-play.html',
 ]);
 
 const FREE_SISI_HTML_PATHS = new Set([
