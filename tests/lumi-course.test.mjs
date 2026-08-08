@@ -38,6 +38,16 @@ test('lumi course covers logic and programming skills', () => {
   }
 });
 
+test('bird nest lesson is actually about birds, nests, and ordered steps', () => {
+  const nest = loadLessons().find((lesson) => lesson.id === 5);
+  assert.equal(nest.title, 'קן הציפורים');
+  const text = [nest.story, ...nest.tasks.map((task) => `${task.prompt} ${task.hint || ''}`)].join(' ');
+  for (const phrase of ['ציפור', 'קן', 'זרדים', 'גוזלים', 'מקום בטוח']) {
+    assert.ok(text.includes(phrase), `missing nest phrase ${phrase}`);
+  }
+  assert.ok(!text.includes('לומדת טבע ואין קפיצה'), 'generic debug text leaked into nest lesson');
+});
+
 test('all lumi tasks are child-friendly and have one valid answer', () => {
   const lessons = loadLessons();
   for (const lesson of lessons) {
