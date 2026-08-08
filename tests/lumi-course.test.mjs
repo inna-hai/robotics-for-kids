@@ -65,6 +65,8 @@ test('lumi play page loads lesson data and standalone play engine', () => {
 test('lumi play engine supports all fifteen lessons and stores progress separately', () => {
   const js = read('js/lumi-play.js');
   assert.doesNotMatch(js, /id <= 3/);
+  assert.match(js, /task\.condition\s*\?/);
+  assert.match(js, /רמז:/);
   assert.match(js, /lumi-nature-progress-v1/);
   assert.match(js, /courseId: 'lumi-nature'/);
   assert.match(js, /lessonId: String\(lesson\.id\)/);

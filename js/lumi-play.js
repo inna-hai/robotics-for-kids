@@ -87,7 +87,10 @@ function renderPattern(task) {
   });
 }
 function renderCondition(task) {
-  $('host').innerHTML = `<div class="task-card"><div class="task-title">${lesson.icon} ${lesson.title}</div><p class="task-text">${task.prompt}</p><div class="pattern"><span>${task.condition}</span><span>➡️</span><span>?</span></div><div class="options" id="options"></div><div class="result" id="result"></div></div>`;
+  const visual = task.condition
+    ? `<div class="pattern" dir="rtl"><span>${task.condition}</span><span>⬅️</span><span>?</span></div>`
+    : `<p class="lead">רמז: ${task.hint || 'בחרו את הפעולה שהכי מתקנת את האלגוריתם.'}</p>`;
+  $('host').innerHTML = `<div class="task-card"><div class="task-title">${lesson.icon} ${lesson.title}</div><p class="task-text">${task.prompt}</p>${visual}<div class="options" id="options"></div><div class="result" id="result"></div></div>`;
   $('options').innerHTML = task.options.map((option) => `<button class="option" data-id="${option.id}"><span class="emoji">${option.emoji}</span>${option.label}</button>`).join('');
   document.querySelectorAll('.option').forEach((button) => {
     button.addEventListener('click', () => {
