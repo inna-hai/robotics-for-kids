@@ -77,6 +77,10 @@ function checkCase() {
 }
 
 function showHint() {
+  if (lesson.hint) {
+    setResult(lesson.hint);
+    return;
+  }
   const clue = lesson.clues.find((item) => item.good);
   setResult(`רמז קטן: חפשו משהו שקשור ל־“${clue.text}”.`);
 }
@@ -96,6 +100,14 @@ function init() {
   document.getElementById('lesson-heading').textContent = `תיק ${lesson.id}: ${lesson.title}`;
   document.getElementById('lesson-emoji').textContent = lesson.emoji;
   document.getElementById('mission').textContent = lesson.mission;
+  const caseScene = document.getElementById('case-scene');
+  if (lesson.scene) {
+    caseScene.hidden = false;
+    caseScene.innerHTML = `<b>זירת החקירה:</b> ${lesson.scene}`;
+  } else {
+    caseScene.hidden = true;
+    caseScene.textContent = '';
+  }
   document.getElementById('learning-note').innerHTML = `<b>רגע למידה:</b> ${lesson.learningNote}`;
   document.getElementById('check').addEventListener('click', checkCase);
   document.getElementById('hint').addEventListener('click', showHint);
