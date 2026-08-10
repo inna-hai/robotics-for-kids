@@ -79,6 +79,8 @@ const miniPlanSource = miniPlans[lesson.id] || miniPlans[1];
 const miniPlan = { ...miniPlanSource, options: shuffled(miniPlanSource.options) };
 
 
+
+
 const gentleHints = {
   1: {
     control: 'רמז: חפשו מתקן שאפשר לראות ממנו את הלונה פארק מלמעלה, בקצב רגוע.',
@@ -208,9 +210,9 @@ function renderCommandPreview() {
 function renderRideStage() {
   const control = selectedControl ? controls[selectedControl] : controls[lesson.control];
   const setting = selectedSetting ? settings[selectedSetting] : null;
-  const levelClass = selectedSetting || 'empty';
+  const levelClass = selectedSetting || (selectedControl ? 'medium' : 'empty');
   document.getElementById('ride-stage').innerHTML = `
-    <div class="ride ${levelClass}">
+    <div class="ride ${levelClass} ${selectedControl || lesson.control}">
       <div class="ride-icon">${control.icon}</div>
       <div class="ride-label">${control.label}</div>
       <div class="ride-setting">${setting ? setting.label : 'עוד לא נבחרה הגדרה'}</div>
@@ -230,7 +232,7 @@ function renderAll() {
 
 function runCommand() {
   if (!selectedControl || !selectedSetting || !selectedMiniPlan) {
-    setResult('צריך לבחור מתקן, הגדרה ועוד נגיעה קטנה ללונה פארק.');
+    setResult('צריך לבחור מתקן, הגדרה ותוספת קטנה ללונה פארק.');
     return;
   }
   const controlOk = selectedControl === lesson.control;
@@ -250,7 +252,7 @@ function runCommand() {
   } else if (!settingOk) {
     setResult('המתקן נכון, אבל ההגדרה לא מתאימה לצורך של הילדים.');
   } else {
-    setResult('המתקן וההגדרה נכונים. בדקו שוב את הנגיעה הקטנה שהוספתם ללונה פארק.');
+    setResult('המתקן וההגדרה נכונים. בדקו שוב את התוספת הקטנה שהוספתם ללונה פארק.');
   }
   renderNextStep(false);
 }
