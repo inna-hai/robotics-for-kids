@@ -48,6 +48,7 @@ function animateMailGame(success) {
   const maze = document.getElementById('mail-maze');
   const activeCell = document.querySelector('.mail-cell.mail-current');
   if (!maze || !activeCell) return;
+  maze.classList.toggle('mail-maze-success', success);
   activeCell.classList.remove('mail-sent', 'mail-wrong');
   void activeCell.offsetWidth;
   activeCell.classList.add(success ? 'mail-sent' : 'mail-wrong');
@@ -84,7 +85,7 @@ function renderMailMaze() {
         <div class="mail-cell ${isBlocked ? 'mail-blocked' : ''} ${routeId ? 'mail-target' : ''} ${isCorrectMailbox ? 'mail-correct-target' : ''} ${selectedRoute === routeId ? 'active' : ''} ${isCurrent ? 'mail-current' : ''}" data-maze-route="${routeId || ''}">
           ${route ? `<span class="maze-mailbox-icon">${route.icon}</span><span class="maze-mailbox-label">${route.label}</span>` : ''}
           ${isBlocked ? '<span class="maze-block">🚧</span>' : ''}
-          ${isCurrent ? `<span class="maze-envelope">${lesson.emoji || '✉️'}</span>` : ''}
+          ${isCurrent ? '<span class="maze-envelope">✉️</span>' : ''}
         </div>
       `);
     }
@@ -121,6 +122,7 @@ function moveEnvelope(direction) {
   if (!delta) return;
   const next = { x: mailPosition.x + delta.x, y: mailPosition.y + delta.y };
   lastStepBlocked = false;
+  document.getElementById('mail-maze')?.classList.remove('mail-maze-success');
   if (!inside(next) || blockedCells.has(key(next))) {
     lastStepBlocked = true;
     renderMailMaze();
@@ -143,12 +145,13 @@ function moveEnvelope(direction) {
 
 function showHint() {
   const route = routes[lesson.route];
-  setResult(`רמז: ${route.hint}. חפשו את התיבה עם הסימן ${route.icon}.`);
+  setResult(`רמז: ${route.hint}. קראו שוב את ההודעה ובדקו איזה יעד הכי מתאים.`);
   renderNextStep(false);
 }
 
 function clearRoute() {
   selectedRoute = null;
+  document.getElementById('mail-maze')?.classList.remove('mail-maze-success');
   mailPosition = { x: 4, y: 3 };
   lastStepBlocked = false;
   renderRouteOptions();
