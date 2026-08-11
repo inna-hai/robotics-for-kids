@@ -46,6 +46,123 @@
     return lessons[lessons.length - 1].id === lesson.id;
   }
 
+  function missionProgressKey(pathname = window.location.pathname) {
+    const file = pathname.replace(/.*\//, '');
+    return `sisi-mission-unlocked-v1-${file}`;
+  }
+
+  function getUnlockedMission(pathname = window.location.pathname) {
+    const value = Number(localStorage.getItem(missionProgressKey(pathname)) || '1');
+    return Number.isFinite(value) && value > 1 ? value : 1;
+  }
+
+  function setUnlockedMission(nextId, pathname = window.location.pathname) {
+    const current = getUnlockedMission(pathname);
+    const next = Math.max(current, Number(nextId) || 1, 1);
+    localStorage.setItem(missionProgressKey(pathname), String(next));
+    decorateMissionNav();
+    return next;
+  }
+
+  function markMissionComplete(lessons, lesson) {
+    if (!Array.isArray(lessons) || !lesson) return getUnlockedMission();
+    const index = lessons.findIndex((item) => item.id === lesson.id);
+    if (index === -1) return getUnlockedMission();
+    const next = lessons[index + 1];
+    return setUnlockedMission(next ? next.id : lesson.id);
+  }
+
+  function injectMissionLockStyle() {
+    if (document.getElementById('sisi-mission-lock-style')) return;
+    const style = document.createElement('style');
+    style.id = 'sisi-mission-lock-style';
+    style.textContent = `
+      #lesson-nav a.locked{opacity:.45;filter:grayscale(.45);cursor:not-allowed;position:relative}
+      #lesson-nav a.locked::after{content:'🔒';font-size:.72em;margin-inline-start:4px}
+      #lesson-nav a.done{background:#dcfce7!important;color:#166534!important;border-color:#22c55e!important}
+      .sisi-lock-message{margin:12px 0;padding:12px 14px;border-radius:16px;background:#fff7ed;border:2px solid #fed7aa;color:#9a3412;font-weight:900;line-height:1.45}
+      .sisi-locked-overlay{position:fixed;inset:0;background:rgba(15,23,42,.64);z-index:9998;display:flex;align-items:center;justify-content:center;padding:18px;direction:rtl}
+      .sisi-locked-card{width:min(520px,100%);background:#fff7ed;color:#0f172a;border:4px solid #facc15;border-radius:28px;padding:24px;text-align:center;box-shadow:0 28px 70px rgba(15,23,42,.34)}
+      .sisi-locked-card h2{margin:0 0 10px;color:#92400e}.sisi-locked-card p{line-height:1.6;font-weight:800;color:#334155}
+      .sisi-locked-card .btn{display:inline-flex;align-items:center;justify-content:center;margin-top:8px}
+    `;
+    document.head.appendChild(style);
+  }
+
+  function lessonIdFromHref(href) {
+    try { return Number(new URL(href, window.location.href).searchParams.get('lesson') || '1'); }
+    catch (error) { return 1; }
+  }
+
+  function showExerciseLockMessage(text) {
+    const nav = document.getElementById('lesson-nav');
+    if (!nav) return;
+    let message = document.getElementById('sisi-lock-message');
+    if (!message) {
+      message = document.createElement('div');
+      message.id = 'sisi-lock-message';
+      message.className = 'sisi-lock-message';
+      nav.insertAdjacentElement('afterend', message);
+    }
+    message.textContent = text;
+  }
+
+  function decorateMissionNav() {
+    const nav = document.getElementById('lesson-nav');
+    if (!nav) return;
+    injectMissionLockStyle();
+    const unlocked = getUnlockedMission();
+    nav.querySelectorAll('a[href]').forEach((link) => {
+      const id = lessonIdFromHref(link.href);
+      const locked = id > unlocked;
+      link.classList.toggle('locked', locked);
+      link.classList.toggle('done', id < unlocked);
+      link.setAttribute('aria-disabled', locked ? 'true' : 'false');
+      if (!link.dataset.sisiLockBound) {
+        link.dataset.sisiLockBound = 'true';
+        link.addEventListener('click', (event) => {
+          const targetId = lessonIdFromHref(link.href);
+          const currentUnlocked = getUnlockedMission();
+          if (targetId <= currentUnlocked) return;
+          event.preventDefault();
+          showExerciseLockMessage(`כדי לפתוח את משימה ${targetId}, צריך קודם להשלים את משימה ${currentUnlocked}.`);
+        });
+      }
+    });
+  }
+
+  function enforceDirectMissionLock() {
+    const currentId = Number(new URLSearchParams(window.location.search).get('lesson') || '1');
+    const unlocked = getUnlockedMission();
+    if (!Number.isFinite(currentId) || currentId <= unlocked || document.getElementById('sisi-locked-overlay')) return;
+    injectMissionLockStyle();
+    const target = `${window.location.pathname.replace(/.*\//, '')}?lesson=${unlocked}`;
+    const card = document.createElement('div');
+    card.id = 'sisi-locked-overlay';
+    card.className = 'sisi-locked-overlay';
+    card.innerHTML = `
+      <div class="sisi-locked-card" role="dialog" aria-modal="true">
+        <h2>🔒 המשימה עדיין נעולה</h2>
+        <p>כדי לפתוח את משימה ${currentId}, צריך קודם להשלים את משימה ${unlocked}.</p>
+        <a class="btn" href="${target}">לחזור למשימה הפתוחה</a>
+      </div>
+    `;
+    document.body.appendChild(card);
+  }
+
+  function watchMissionNav() {
+    decorateMissionNav();
+    enforceDirectMissionLock();
+    const observer = new MutationObserver(() => {
+      decorateMissionNav();
+      enforceDirectMissionLock();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watchMissionNav);
+  else watchMissionNav();
+
   function show({ lessons, lesson, total, title, home, homeLabel, next, nextLabel } = {}) {
     if (!isLast(lessons, lesson)) return false;
     injectStyle();
@@ -100,6 +217,7 @@
   function showSuccessDialog({ message, lessons, lesson, nextHref, nextLabel, repeatLabel, onRepeat } = {}) {
     injectDialogStyle();
     document.getElementById('sisi-success-dialog')?.remove();
+    markMissionComplete(lessons, lesson);
     const info = courseInfo();
     const missionHref = nextMissionHref(lessons, lesson);
     const href = nextHref || missionHref || info.next || 'sisi.html';
@@ -135,4 +253,5 @@
 
   window.SisiCourseCertificate = { show, clear };
   window.SisiSuccessDialog = { show: showSuccessDialog, clear: clearSuccessDialog };
+  window.SisiMissionProgress = { getUnlocked: getUnlockedMission, setUnlocked: setUnlockedMission, markComplete: markMissionComplete, decorate: decorateMissionNav };
 })();
