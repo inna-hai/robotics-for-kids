@@ -21,6 +21,7 @@ const mailHtml = readFileSync(join(root, 'mail.html'), 'utf8');
 const cinemaHtml = readFileSync(join(root, 'cinema.html'), 'utf8');
 const escapeHtml = readFileSync(join(root, 'escape.html'), 'utf8');
 const finaleHtml = readFileSync(join(root, 'finale.html'), 'utf8');
+const certificateSource = readFileSync(join(root, 'js/course-certificate.js'), 'utf8');
 
 const sisiLessonFiles = [
   'sisi.html',
@@ -111,6 +112,14 @@ test('hub frames the series for grade B age 7 and 75-minute lessons', () => {
   assertIncludes(hubHtml, 'גיל 7');
   assertIncludes(hubHtml, '75</b>דק׳ לשיעור');
   assertIncludes(hubHtml, '15</b>מכניקות שונות');
+});
+
+test('Sisi play missions unlock progressively after successful completion', () => {
+  assertIncludes(certificateSource, 'sisi-mission-unlocked-v1-', 'course helper should persist unlocked mission per play page');
+  assertIncludes(certificateSource, 'markMissionComplete(lessons, lesson)', 'success dialog should unlock the next mission');
+  assertIncludes(certificateSource, 'כדי לפתוח את משימה', 'locked missions should explain which previous mission is required');
+  assertIncludes(certificateSource, 'aria-disabled', 'locked mission buttons should expose disabled state');
+  assertIncludes(certificateSource, 'SisiMissionProgress', 'progress helper should be available for future Sisi pages');
 });
 
 let passed = 0;
