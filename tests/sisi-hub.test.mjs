@@ -115,9 +115,11 @@ test('hub frames the series for grade B age 7 and 75-minute lessons', () => {
 });
 
 test('Sisi play missions unlock progressively after successful completion', () => {
-  assertIncludes(certificateSource, 'sisi-mission-unlocked-v1-', 'course helper should persist unlocked mission per play page');
-  assertIncludes(certificateSource, 'markMissionComplete(lessons, lesson)', 'success dialog should unlock the next mission');
+  assertIncludes(certificateSource, 'sisi-mission-completed-v2-', 'course helper should persist completed missions per play page');
+  assertIncludes(certificateSource, 'completed.has(id - 1)', 'a mission should open only after the previous mission is completed');
+  assertIncludes(certificateSource, 'completed.add(Number(lesson.id))', 'success dialog should mark the current mission complete');
   assertIncludes(certificateSource, 'כדי לפתוח את משימה', 'locked missions should explain which previous mission is required');
+  assertIncludes(certificateSource, 'targetId - 1', 'locked mission message should point to the immediate previous mission');
   assertIncludes(certificateSource, 'aria-disabled', 'locked mission buttons should expose disabled state');
   assertIncludes(certificateSource, 'SisiMissionProgress', 'progress helper should be available for future Sisi pages');
 });
