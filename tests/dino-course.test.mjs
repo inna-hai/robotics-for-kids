@@ -57,6 +57,41 @@ test('dino data has twelve classification tasks with valid zone answers', () => 
   }
 });
 
+test('dino character names do not reveal the classification answer', () => {
+  const revealingWords = ['טורף', 'טורפי', 'צמח', 'צמחוני', 'ענק', 'מעופף', 'כנף', 'כנפי', 'ביצה', 'ביצ', 'דג', 'מים', 'מימי', 'שריון', 'חד', 'חוד', 'רץ', 'גבוה'];
+  for (const lesson of lessons) {
+    for (const word of revealingWords) {
+      assert.ok(!lesson.dino.name.includes(word), `Lesson ${lesson.id} dino name should not reveal answer: ${lesson.dino.name}`);
+    }
+  }
+});
+
+test('dino visuals are gently related to the destination zone', () => {
+  const allowedIcons = {
+    herbivore: new Set(['🦕', '🌳', '🌿']),
+    carnivore: new Set(['🦖', '🐊']),
+    nursery: new Set(['🥚', '🐣']),
+    giant: new Set(['🦕', '🐾']),
+    flying: new Set(['🐦', '🪽', '🦅'])
+  };
+  for (const lesson of lessons) {
+    assert.ok(allowedIcons[lesson.dino.answer].has(lesson.dino.icon), `Lesson ${lesson.id} icon ${lesson.dino.icon} should connect to ${lesson.dino.answer} without confusing learners`);
+  }
+});
+
+test('dino tasks use varied reasons instead of one repeated matching rule', () => {
+  const units = new Set(lessons.map((lesson) => lesson.unit));
+  assert.ok(units.size >= 10, 'dino tasks should vary the primary classification reason');
+  const requiredReasonWords = ['אוכל', 'שיניים', 'שלב חיים', 'גודל', 'דרך תנועה', 'מקום מחיה', 'אזור מתאים', 'התנהגות', 'צורת אכילה', 'טיפול'];
+  for (const word of requiredReasonWords) {
+    assert.ok([...units].some((unit) => unit.includes(word)), `Missing varied reason unit: ${word}`);
+  }
+  const answerCounts = lessons.reduce((counts, lesson) => ({ ...counts, [lesson.dino.answer]: (counts[lesson.dino.answer] || 0) + 1 }), {});
+  for (const zone of Object.keys(zones)) {
+    assert.ok(answerCounts[zone] >= 2, `${zone} should appear in multiple varied tasks`);
+  }
+});
+
 test('dino play page exposes classification controls rather than previous mechanics', () => {
   assertIncludes(playHtml, 'id="facts"');
   assertIncludes(playHtml, 'id="zones"');
