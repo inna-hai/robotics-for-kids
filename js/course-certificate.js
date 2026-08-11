@@ -51,25 +51,51 @@
     return `sisi-mission-unlocked-v1-${file}`;
   }
 
+  function missionCompletedKey(pathname = window.location.pathname) {
+    const file = pathname.replace(/.*\//, '');
+    return `sisi-mission-completed-v2-${file}`;
+  }
+
+  function getCompletedMissions(pathname = window.location.pathname) {
+    try {
+      const value = JSON.parse(localStorage.getItem(missionCompletedKey(pathname)) || '[]');
+      return new Set(Array.isArray(value) ? value.map(Number).filter(Number.isFinite) : []);
+    } catch (error) {
+      return new Set();
+    }
+  }
+
+  function saveCompletedMissions(completed, pathname = window.location.pathname) {
+    localStorage.setItem(missionCompletedKey(pathname), JSON.stringify([...completed].sort((a, b) => a - b)));
+  }
+
   function getUnlockedMission(pathname = window.location.pathname) {
-    const value = Number(localStorage.getItem(missionProgressKey(pathname)) || '1');
-    return Number.isFinite(value) && value > 1 ? value : 1;
+    const completed = getCompletedMissions(pathname);
+    let unlocked = 1;
+    while (completed.has(unlocked)) unlocked += 1;
+    return unlocked;
   }
 
   function setUnlockedMission(nextId, pathname = window.location.pathname) {
-    const current = getUnlockedMission(pathname);
-    const next = Math.max(current, Number(nextId) || 1, 1);
-    localStorage.setItem(missionProgressKey(pathname), String(next));
+    const target = Number(nextId) || 1;
+    const completed = getCompletedMissions(pathname);
+    for (let id = 1; id < target; id += 1) completed.add(id);
+    saveCompletedMissions(completed, pathname);
+    localStorage.setItem(missionProgressKey(pathname), String(getUnlockedMission(pathname)));
     decorateMissionNav();
-    return next;
+    return getUnlockedMission(pathname);
   }
 
   function markMissionComplete(lessons, lesson) {
     if (!Array.isArray(lessons) || !lesson) return getUnlockedMission();
     const index = lessons.findIndex((item) => item.id === lesson.id);
     if (index === -1) return getUnlockedMission();
-    const next = lessons[index + 1];
-    return setUnlockedMission(next ? next.id : lesson.id);
+    const completed = getCompletedMissions();
+    completed.add(Number(lesson.id));
+    saveCompletedMissions(completed);
+    localStorage.setItem(missionProgressKey(), String(getUnlockedMission()));
+    decorateMissionNav();
+    return getUnlockedMission();
   }
 
   function injectMissionLockStyle() {
@@ -114,18 +140,19 @@
     const unlocked = getUnlockedMission();
     nav.querySelectorAll('a[href]').forEach((link) => {
       const id = lessonIdFromHref(link.href);
-      const locked = id > unlocked;
+      const completed = getCompletedMissions();
+      const locked = id > 1 && !completed.has(id - 1);
       link.classList.toggle('locked', locked);
-      link.classList.toggle('done', id < unlocked);
+      link.classList.toggle('done', completed.has(id));
       link.setAttribute('aria-disabled', locked ? 'true' : 'false');
       if (!link.dataset.sisiLockBound) {
         link.dataset.sisiLockBound = 'true';
         link.addEventListener('click', (event) => {
           const targetId = lessonIdFromHref(link.href);
-          const currentUnlocked = getUnlockedMission();
-          if (targetId <= currentUnlocked) return;
+          const completed = getCompletedMissions();
+          if (targetId === 1 || completed.has(targetId - 1)) return;
           event.preventDefault();
-          showExerciseLockMessage(`כדי לפתוח את משימה ${targetId}, צריך קודם להשלים את משימה ${currentUnlocked}.`);
+          showExerciseLockMessage(`כדי לפתוח את משימה ${targetId}, צריך קודם להשלים את משימה ${targetId - 1}.`);
         });
       }
     });
@@ -133,8 +160,10 @@
 
   function enforceDirectMissionLock() {
     const currentId = Number(new URLSearchParams(window.location.search).get('lesson') || '1');
+    const completed = getCompletedMissions();
     const unlocked = getUnlockedMission();
-    if (!Number.isFinite(currentId) || currentId <= unlocked || document.getElementById('sisi-locked-overlay')) return;
+    const locked = currentId > 1 && !completed.has(currentId - 1);
+    if (!Number.isFinite(currentId) || !locked || document.getElementById('sisi-locked-overlay')) return;
     injectMissionLockStyle();
     const target = `${window.location.pathname.replace(/.*\//, '')}?lesson=${unlocked}`;
     const card = document.createElement('div');
@@ -143,7 +172,7 @@
     card.innerHTML = `
       <div class="sisi-locked-card" role="dialog" aria-modal="true">
         <h2>🔒 המשימה עדיין נעולה</h2>
-        <p>כדי לפתוח את משימה ${currentId}, צריך קודם להשלים את משימה ${unlocked}.</p>
+        <p>כדי לפתוח את משימה ${currentId}, צריך קודם להשלים את משימה ${currentId - 1}.</p>
         <a class="btn" href="${target}">לחזור למשימה הפתוחה</a>
       </div>
     `;
@@ -253,5 +282,5 @@
 
   window.SisiCourseCertificate = { show, clear };
   window.SisiSuccessDialog = { show: showSuccessDialog, clear: clearSuccessDialog };
-  window.SisiMissionProgress = { getUnlocked: getUnlockedMission, setUnlocked: setUnlockedMission, markComplete: markMissionComplete, decorate: decorateMissionNav };
+  window.SisiMissionProgress = { getUnlocked: getUnlockedMission, getCompleted: getCompletedMissions, setUnlocked: setUnlockedMission, markComplete: markMissionComplete, decorate: decorateMissionNav };
 })();
