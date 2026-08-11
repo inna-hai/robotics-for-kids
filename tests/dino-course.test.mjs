@@ -79,6 +79,14 @@ test('dino visuals are gently related to the destination zone', () => {
   }
 });
 
+test('dino fact chips use natural wording without colons', () => {
+  for (const lesson of lessons) {
+    for (const fact of lesson.dino.facts) {
+      assert.ok(!fact.includes(':'), `Lesson ${lesson.id} fact should use natural wording: ${fact}`);
+    }
+  }
+});
+
 test('dino tasks use varied reasons instead of one repeated matching rule', () => {
   const units = new Set(lessons.map((lesson) => lesson.unit));
   assert.ok(units.size >= 10, 'dino tasks should vary the primary classification reason');
