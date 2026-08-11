@@ -31,7 +31,16 @@
       <div class="preview-panel">
         <h2>הניתוב שלי</h2>
         <div class="route-preview" id="route-preview" aria-live="polite"></div>
-        <div class="mailbox-row" aria-label="תיבות דואר"><div class="mailbox">📚</div><div class="mailbox">🌱</div><div class="mailbox">🎵</div><div class="mailbox">🤖</div><div class="mailbox">🧁</div><div class="mailbox">🎡</div></div>
+        <div class="mail-game" aria-label="משחק הולכת מעטפה במבוך">
+          <div class="mail-game-hint">הוליכו את המעטפה עם החיצים אל תיבת הדואר המתאימה.</div>
+          <div class="mail-maze" id="mail-maze" aria-label="לוח מבוך דואר"></div>
+          <div class="maze-controls" aria-label="חיצי תנועה למעטפה">
+            <button class="maze-btn" data-move="up" type="button">⬆️</button>
+            <button class="maze-btn" data-move="right" type="button">➡️</button>
+            <button class="maze-btn" data-move="left" type="button">⬅️</button>
+            <button class="maze-btn" data-move="down" type="button">⬇️</button>
+          </div>
+        </div>
         <div class="controls">
           <button class="btn" id="check" type="button">✅ בדיקה</button>
           <button class="btn secondary" id="hint" type="button">💡 רמז</button>
@@ -44,9 +53,9 @@
       </div>
     </section>
   </main>
-  <script src="js/mail-lessons.js?v=20260717-mail-1"></script>
+  <script src="js/mail-lessons.js?v=20260810-mail-routes"></script>
   <script src="js/course-certificate.js?v=20260725-child-ux"></script>
-  <script src="js/mail-play.js?v=20260725-child-ux"></script>
+  <script src="js/mail-play.js?v=20260810-mail-maze"></script>
   <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
 </body>
 </html>
