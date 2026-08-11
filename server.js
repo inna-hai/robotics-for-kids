@@ -1061,8 +1061,48 @@ function isFreeTrialLearningHtml(pathname, url) {
   return FREE_SISI_HTML_PATHS.has(pathname);
 }
 
-function isPaidProfile(profile) {
-  return profile && profile.child && profile.child.subscription_status === 'active';
+function profileAccessList(profile) {
+  const raw = profile && profile.child && profile.child.access_json;
+  try {
+    const parsed = JSON.parse(raw || '[]');
+    return Array.isArray(parsed) ? parsed.map(item => String(item || '').trim()).filter(Boolean) : [];
+  } catch {
+    return [];
+  }
+}
+
+function courseForPaidPath(pathname) {
+  if (pathname === '/sensi-city.html' || pathname === '/smart-city.html' || pathname.startsWith('/slides/')) return 'sensi-city';
+  if (pathname === '/space.html' || pathname === '/space-play.html' || pathname === '/music.html' || pathname === '/music-play.html' || pathname === '/ocean.html' || pathname === '/ocean-play.html') return 'sisi-trial';
+  if (pathname === '/sensi-classic.html' || pathname === '/sensi-classic-about.html' || pathname === '/sensi-classic-teachers.html' || pathname.startsWith('/sensi-classic-slides/')) return 'sensi-classic';
+  if (pathname === '/python-turtle.html' || pathname === '/python-turtle-play.html' || pathname.startsWith('/python-turtle-slides/')) return 'python-turtle';
+  if (pathname === '/webmakers.html' || pathname === '/webmakers-play.html') return 'webmakers';
+  if (pathname === '/webcode.html' || pathname === '/webcode-play.html') return 'webcode';
+  if (pathname === '/pygame.html' || pathname === '/pygame-play.html') return 'pygame';
+  if (pathname === '/roblox.html' || pathname === '/roblox-play.html') return 'roblox';
+  if (pathname === '/minecraft.html' || pathname === '/minecraft-play.html') return 'minecraft';
+  if (pathname === '/gamelab.html' || pathname === '/gamelab-play.html' || pathname === '/gamelab-slides.html') return 'gamelab';
+  if (pathname === '/codequest.html' || pathname === '/codequest-play.html') return 'codequest';
+  if (pathname === '/money-smart.html' || pathname.startsWith('/money-smart-')) return 'money-smart';
+  if (pathname === '/craftom.html' || pathname === '/craftom-play.html') return 'craftom';
+  return '';
+}
+
+function isPaidProfile(profile, pathname = '') {
+  if (!profile || !profile.child || profile.child.subscription_status !== 'active') return false;
+
+  const access = profileAccessList(profile);
+  const restricted = access.some(item => item.startsWith('restrict:'));
+  if (!restricted) return true;
+
+  const course = courseForPaidPath(pathname);
+  if (!course) return false;
+
+  return access.includes(course)
+    || access.includes(`${course}:all`)
+    || access.includes(`${course}-all`)
+    || access.includes(`restrict:${course}`)
+    || access.includes('*');
 }
 
 function lockedPage(pathname, user, options = {}) {
@@ -1179,8 +1219,12 @@ function serveStatic(req, res) {
     return send(res, 401, lockedPage(pathname, null, { trialOnly: true }), 'text/html; charset=utf-8');
   }
 
+  if (ext === '.html' && isFreeTrialLearningHtml(pathname, url) && profile && profileAccessList(profile).some(item => item.startsWith('restrict:')) && !isPaidProfile(profile, pathname)) {
+    return send(res, 402, lockedPage(pathname, profile && profile.user), 'text/html; charset=utf-8');
+  }
+
   if (requiresPaidAccess(pathname, ext, url)) {
-    if (!isPaidProfile(profile)) {
+    if (!isPaidProfile(profile, pathname)) {
       return send(res, 402, lockedPage(pathname, profile && profile.user), 'text/html; charset=utf-8');
     }
   }

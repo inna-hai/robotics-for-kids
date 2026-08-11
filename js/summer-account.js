@@ -146,6 +146,56 @@
     return String(value || '').replace(/[&<>"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char]));
   }
 
+  function accessList(user, child) {
+    const values = [];
+    if (Array.isArray(user?.access)) values.push(...user.access);
+    if (Array.isArray(child?.access)) values.push(...child.access);
+    return values.map(item => String(item || '').trim()).filter(Boolean);
+  }
+
+  function isRestrictedToSensiCity(user, child) {
+    const access = accessList(user, child);
+    return access.some(item => item.startsWith('restrict:'))
+      && (access.includes('sensi-city') || access.includes('restrict:sensi-city') || access.includes('sensi-city-all'));
+  }
+
+  function shouldGoDirectlyToSensiCity(user, child) {
+    return isRestrictedToSensiCity(user, child);
+  }
+
+  function renderCourseList(user, options = {}) {
+    const list = document.querySelector('.course-list');
+    if (!list || !user) return;
+    const child = options.child;
+    const active = user.subscriptionStatus === 'active';
+
+    if (isRestrictedToSensiCity(user, child)) {
+      list.innerHTML = `
+        <article class="course">
+          <div>
+            <h3>סנסי בעיר החכמה · 15 שיעורי רובוטיקה</h3>
+            <p>הגישה שלך פתוחה למסלול סנסי בעיר החכמה בלבד.</p>
+          </div>
+          <a class="btn green" href="smart-city.html">כניסה לסנסי בעיר החכמה</a>
+        </article>
+      `;
+      return;
+    }
+
+    if (active) {
+      list.innerHTML = `
+        <article class="course"><div><h3>קטלוג הלומדות</h3><p>המנוי פעיל. אפשר לבחור לומדה מתוך הקטלוג.</p></div><a class="btn green" href="index.html#courses">בחירת לומדה</a></article>
+        <article class="course"><div><h3>סנסי בעיר החכמה</h3><p>מסלול Blockly וסימולטור רובוט עם 15 שיעורים.</p></div><a class="btn light" href="smart-city.html">כניסה לסנסי</a></article>
+      `;
+      return;
+    }
+
+    list.innerHTML = `
+      <article class="course"><div><h3>חשיבה ותכנות · 3 שיעורים בחינם</h3><p>אפשר להתחיל עכשיו עם 3 שיעורים בחינם, וההתקדמות נשמרת לילד/ה.</p></div><a class="btn green" href="space.html">להתחיל ללמוד</a></article>
+      <article class="course"><div><h3>לפתוח את כל הלומדות</h3><p>מפעילים מנוי לילד/ה ואז כל הקורסים הזמינים נפתחים.</p></div><a class="btn primary" href="https://mrng.to/fZiL2SITRp">הפעלת מנוי</a></article>
+    `;
+  }
+
   function renderUser(user, options = {}) {
     if (!user) return;
     if (authPanel) authPanel.style.display = 'none';
@@ -160,6 +210,7 @@
       statusBadge.textContent = active ? 'מנוי פעיל' : 'התנסות פתוחה';
       statusBadge.classList.toggle('active', active);
     }
+    renderCourseList(user, options);
     if (!isChild) {
       renderChildren(options.children || []);
       loadProgressSummary();
@@ -220,8 +271,17 @@
         }
         const data = await api(API_PATHS[action], payload);
         saveToken(data.token);
+        if (shouldGoDirectlyToSensiCity(data.user, data.child)) {
+          setMessage('נכנסת בהצלחה. מעבירים אותך לסנסי בעיר החכמה…', 'ok');
+          location.href = 'smart-city.html';
+          return;
+        }
         setMessage(action === 'register' ? 'החשבון נוצר. מעבירים אותך לאזור האישי…' : 'נכנסת בהצלחה. מעבירים אותך לאזור האישי…', 'ok');
         if (!location.pathname.endsWith('/account.html')) {
+          if (shouldGoDirectlyToSensiCity(data.user, data.child)) {
+            location.href = 'smart-city.html';
+            return;
+          }
           location.href = 'account.html';
           return;
         }
