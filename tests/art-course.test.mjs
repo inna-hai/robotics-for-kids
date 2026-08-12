@@ -77,8 +77,9 @@ test('art play page exposes pixel boards and command cards instead of previous m
 test('art labels explain Hebrew row and column orientation', () => {
   assertIncludes(playHtml, 'שורה היא פס אופקי בלוח');
   assertIncludes(playHtml, 'עמודה היא פס אנכי');
-  assertIncludes(playSource, 'שורה ${command.row} (אופקית)');
-  assertIncludes(playSource, 'עמודה ${command.col} (אנכית)');
+  assertIncludes(playSource, 'שורה ${command.row}, עמודה ${command.col}');
+  assert.ok(!playSource.includes('(אופקית)'), 'command cards should stay concise after the instruction explains row orientation');
+  assert.ok(!playSource.includes('(אנכית)'), 'command cards should stay concise after the instruction explains column orientation');
 });
 
 test('art engine validates selected commands against target pixels and supports debugging', () => {
