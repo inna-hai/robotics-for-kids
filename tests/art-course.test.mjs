@@ -77,9 +77,21 @@ test('art play page exposes pixel boards and command cards instead of previous m
 test('art labels explain Hebrew row and column orientation', () => {
   assertIncludes(playHtml, 'שורה היא פס אופקי בלוח');
   assertIncludes(playHtml, 'עמודה היא פס אנכי');
-  assertIncludes(playSource, 'שורה ${command.row}, עמודה ${command.col}');
+  assertIncludes(playSource, 'function displayColumnFromInternal(col)');
+  assertIncludes(playSource, 'lesson.size - col + 1');
+  assertIncludes(playSource, 'function displayColumn(command)');
+  assertIncludes(playSource, 'שורה ${command.row}, עמודה ${displayColumn(command)}');
   assert.ok(!playSource.includes('(אופקית)'), 'command cards should stay concise after the instruction explains row orientation');
   assert.ok(!playSource.includes('(אנכית)'), 'command cards should stay concise after the instruction explains column orientation');
+});
+
+test('art command labels count columns from the visible RTL side', () => {
+  const lessonOneYellow = lessons[0].target.find((command) => command.color === 'yellow');
+  assert.equal(lessonOneYellow.row, 2);
+  assert.equal(lessons[0].size - lessonOneYellow.col + 1, 3, 'lesson 1 yellow center should display as row 2 column 3 in the RTL-visible grid');
+  assert.ok(!playSource.includes('עמודה ${command.col}'), 'command labels must not expose internal column numbers');
+  assert.ok(!playSource.includes('עמודה ${col}'), 'board aria labels must not expose internal column numbers');
+  assertIncludes(playSource, 'עמודה ${displayColumnFromInternal(col)}');
 });
 
 test('art engine validates selected commands against target pixels and supports debugging', () => {
