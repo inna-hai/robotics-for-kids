@@ -64,14 +64,28 @@ test('escape data has twelve AND-condition tasks with two required keys and dist
 
 test('escape play page checks two selected keys and reason for AND', () => {
   assertIncludes(playHtml, 'id="key-options"');
+  assertIncludes(playHtml, 'id="how-to-read-target"');
+  assertIncludes(playHtml, 'id="how-to-choose-target"');
   assertIncludes(playHtml, 'id="condition-preview"');
   assertIncludes(playHtml, 'id="reason-options"');
   assertIncludes(playSource, 'selected.length !== 2');
   assertIncludes(playSource, 'lesson.reasonOptions');
   assertIncludes(playSource, 'selectedReason === lesson.successReason');
+  assertIncludes(playSource, 'sameKeysInAnyOrder(selected, lesson.required)');
+  assertIncludes(playSource, 'function renderHowTo()');
+  assertIncludes(playSource, 'opened:');
+  assertIncludes(playSource, 'const openedText = howToTarget().opened');
   assertIncludes(playSource, 'lesson.feedbackWrongReason');
   assertIncludes(playSource, "href: 'finale.html'");
   assert.ok(!playHtml.includes('scene-bank'), 'Escape lesson should not use cinema scene bank');
+});
+
+test('escape required keys are accepted in any order', () => {
+  for (const lesson of lessons) {
+    const forward = [...lesson.required].sort().join('|');
+    const backward = [...lesson.required].reverse().sort().join('|');
+    assert.equal(forward, backward, `Lesson ${lesson.id} required keys should compare without order`);
+  }
 });
 
 test('escape lab, css, and plan support 76 minutes', () => {
