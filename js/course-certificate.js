@@ -53,7 +53,7 @@
 
   function missionCompletedKey(pathname = window.location.pathname) {
     const file = pathname.replace(/.*\//, '');
-    return `sisi-mission-completed-v2-${file}`;
+    return `sisi-mission-completed-v3-${file}`;
   }
 
   function getCompletedMissions(pathname = window.location.pathname) {
@@ -152,7 +152,7 @@
           const completed = getCompletedMissions();
           if (targetId === 1 || completed.has(targetId - 1)) return;
           event.preventDefault();
-          showExerciseLockMessage(`כדי לפתוח את משימה ${targetId}, צריך קודם להשלים את משימה ${targetId - 1}.`);
+          showExerciseLockMessage(`כדי לפתוח את משימה ${targetId}, צריך קודם להשלים את המשימות הקודמות.`);
         });
       }
     });
@@ -172,7 +172,7 @@
     card.innerHTML = `
       <div class="sisi-locked-card" role="dialog" aria-modal="true">
         <h2>🔒 המשימה עדיין נעולה</h2>
-        <p>כדי לפתוח את משימה ${currentId}, צריך קודם להשלים את משימה ${currentId - 1}.</p>
+        <p>כדי לפתוח את משימה ${currentId}, צריך קודם להשלים את המשימות הקודמות.</p>
         <a class="btn" href="${target}">לחזור למשימה הפתוחה</a>
       </div>
     `;
