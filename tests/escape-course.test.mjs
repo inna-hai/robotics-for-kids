@@ -62,6 +62,14 @@ test('escape data has twelve AND-condition tasks with two required keys and dist
   assert.equal(new Set(lessons.map((lesson) => lesson.successReason)).size, lessons.length, 'Each room should use a different correct explanation');
 });
 
+test('escape correct reasons appear in mixed positions', () => {
+  const positions = lessons.map((lesson) => lesson.reasonOptions.indexOf(lesson.successReason));
+  assert.ok(positions.includes(0), 'At least one correct reason can be first');
+  assert.ok(positions.includes(1), 'At least one correct reason should be second');
+  assert.ok(positions.includes(2), 'At least one correct reason should be third');
+  assert.ok(positions.some((position) => position !== 0), 'Correct reason should not always be first');
+});
+
 test('escape play page checks two selected keys and reason for AND', () => {
   assertIncludes(playHtml, 'id="key-options"');
   assertIncludes(playHtml, 'id="how-to-read-target"');
