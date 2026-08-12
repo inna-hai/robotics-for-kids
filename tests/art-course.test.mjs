@@ -74,6 +74,13 @@ test('art play page exposes pixel boards and command cards instead of previous m
   assert.ok(!playHtml.includes('recipe-steps'), 'Art lesson should not use recipe ordering');
 });
 
+test('art labels explain Hebrew row and column orientation', () => {
+  assertIncludes(playHtml, 'שורה היא פס אופקי בלוח');
+  assertIncludes(playHtml, 'עמודה היא פס אנכי');
+  assertIncludes(playSource, 'שורה ${command.row} (אופקית)');
+  assertIncludes(playSource, 'עמודה ${command.col} (אנכית)');
+});
+
 test('art engine validates selected commands against target pixels and supports debugging', () => {
   assertIncludes(playSource, 'function checkArtwork()');
   assertIncludes(playSource, 'missing.length === 0 && extra.length === 0');
