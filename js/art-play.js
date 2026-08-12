@@ -9,9 +9,17 @@ function keyOf(command) {
   return `${command.row}:${command.col}:${command.color}`;
 }
 
+function displayColumnFromInternal(col) {
+  return lesson.size - col + 1;
+}
+
+function displayColumn(command) {
+  return displayColumnFromInternal(command.col);
+}
+
 function commandLabel(command) {
   const color = colors[command.color] || { label: command.color, emoji: '⬛' };
-  return `${color.emoji} שורה ${command.row}, עמודה ${command.col} — ${color.label}`;
+  return `${color.emoji} שורה ${command.row}, עמודה ${displayColumn(command)} — ${color.label}`;
 }
 
 function setResult(text, success = false) {
@@ -32,7 +40,7 @@ function renderBoard(containerId, commands, label) {
     for (let col = 1; col <= lesson.size; col += 1) {
       const command = commandMap.get(`${row}:${col}`);
       const text = command ? colors[command.color].emoji : '';
-      cells.push(`<div class="pixel-cell" ${command ? cellStyle(command) : ''} aria-label="${label}: שורה ${row}, עמודה ${col}">${text}</div>`);
+      cells.push(`<div class="pixel-cell" ${command ? cellStyle(command) : ''} aria-label="${label}: שורה ${row}, עמודה ${displayColumnFromInternal(col)}">${text}</div>`);
     }
   }
   const board = document.getElementById(containerId);
