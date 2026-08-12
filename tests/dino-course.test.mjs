@@ -87,13 +87,15 @@ test('dino fact chips use natural wording without colons', () => {
   }
 });
 
-test('dino tasks use varied reasons instead of one repeated matching rule', () => {
-  const units = new Set(lessons.map((lesson) => lesson.unit));
-  assert.ok(units.size >= 10, 'dino tasks should vary the primary classification reason');
-  const requiredReasonWords = ['אוכל', 'שיניים', 'שלב חיים', 'גודל', 'דרך תנועה', 'מקום מחיה', 'אזור מתאים', 'התנהגות', 'צורת אכילה', 'טיפול'];
-  for (const word of requiredReasonWords) {
-    assert.ok([...units].some((unit) => unit.includes(word)), `Missing varied reason unit: ${word}`);
+test('dino tasks ask children to infer the classification reason', () => {
+  const visibleGuidance = lessons.map((lesson) => `${lesson.unit} ${lesson.mission} ${lesson.concept} ${lesson.learningNote}`).join(' ');
+  const leakedLabels = ['סיווג לפי אוכל', 'סיווג לפי דרך תנועה', 'סיווג לפי התנהגות', 'סיווג לפי צורת אכילה', 'סיווג לפי צורך בטיפול', 'סיווג לפי סביבת חיים'];
+  for (const label of leakedLabels) {
+    assert.ok(!visibleGuidance.includes(label), `should not reveal the sorting rule: ${label}`);
   }
+  assert.ok(lessons.every((lesson) => lesson.concept === 'בחירת אזור לפי רמזים'), 'missions should frame inference from clues, not reveal a rule label');
+  assert.ok(lessons.every((lesson) => lesson.learningNote.includes('רמז') || lesson.learningNote.includes('מה') || lesson.learningNote.includes('איזה') || lesson.learningNote.includes('אילו')), 'learning notes should prompt thinking from clues');
+  assert.ok(lessons.every((lesson) => lesson.learningNote.trim().endsWith('?')), 'learning notes should be phrased as questions');
   const answerCounts = lessons.reduce((counts, lesson) => ({ ...counts, [lesson.dino.answer]: (counts[lesson.dino.answer] || 0) + 1 }), {});
   for (const zone of Object.keys(zones)) {
     assert.ok(answerCounts[zone] >= 2, `${zone} should appear in multiple varied tasks`);
@@ -108,6 +110,17 @@ test('dino play page exposes classification controls rather than previous mechan
   assertIncludes(playHtml, 'js/dino-play.js');
   assert.ok(!playHtml.includes('recipe-steps'), 'Dino lesson should not use recipe ordering');
   assert.ok(!playHtml.includes('notes-bank'), 'Dino lesson should not use music notes');
+});
+
+test('dino mission navigation blocks locked jumps with a clear message', () => {
+  assertIncludes(playSource, 'isMissionOpen');
+  assertIncludes(playSource, 'showLockedMission');
+  assertIncludes(playSource, 'עדיין נעולה');
+  assertIncludes(playSource, 'צריך קודם להשלים את המשימות הקודמות');
+  assertIncludes(playSource, 'aria-disabled="true"');
+  assertIncludes(playSource, 'const href = `dino-play.html?lesson=${item.id}`;', 'locked nav links should keep the real lesson href so the shared lock decorator can parse the target');
+  assert.ok(!playSource.includes("locked ? '#'"), 'locked links must not use # because that is parsed as lesson 1');
+  assertIncludes(playSource, 'window.SisiMissionProgress?.decorate?.()');
 });
 
 test('dino engine checks selected zone against data answer and provides hints', () => {
