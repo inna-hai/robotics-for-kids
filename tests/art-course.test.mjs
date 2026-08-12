@@ -44,13 +44,18 @@ test('landing page frames a new pixel-coordinate mechanic for grade B', () => {
   assertIncludes(artHtml, 'css/art.css');
 });
 
+test('art color palette keeps pink and yellow visually distinct', () => {
+  assert.equal(colors.pink.hex, '#f9a8d4');
+  assert.equal(colors.yellow.hex, '#fde047');
+});
+
 test('art data has twelve pixel challenges with valid coordinates and distractors', () => {
   assert.equal(lessons.length, 12);
   const colorKeys = Object.keys(colors);
   for (const lesson of lessons) {
     assert.ok([4, 5].includes(lesson.size), `Lesson ${lesson.id} should use a young-kid-sized grid`);
     assert.ok(lesson.target.length >= 5, `Lesson ${lesson.id} needs enough target pixels`);
-    assert.ok(lesson.distractors.length >= 2, `Lesson ${lesson.id} needs distractor commands for debugging`);
+    assert.ok(lesson.distractors.length >= 9, `Lesson ${lesson.id} needs enough distractor commands for a real challenge`);
     const targetKeys = new Set();
     for (const command of [...lesson.target, ...lesson.distractors]) {
       assert.ok(command.row >= 1 && command.row <= lesson.size, `row out of range in lesson ${lesson.id}`);
@@ -62,6 +67,24 @@ test('art data has twelve pixel challenges with valid coordinates and distractor
       assert.ok(!targetKeys.has(keyOf(distractor)), `Distractor duplicates target in lesson ${lesson.id}`);
     }
   }
+});
+
+test('art challenges include enough unrelated command cards', () => {
+  for (const lesson of lessons) {
+    const targetKeys = new Set(lesson.target.map(keyOf));
+    assert.ok(lesson.distractors.length >= 9, `Lesson ${lesson.id} should include multiple extra distractors`);
+    for (const distractor of lesson.distractors) {
+      assert.ok(!targetKeys.has(keyOf(distractor)), `Distractor duplicates target in lesson ${lesson.id}`);
+    }
+  }
+});
+
+test('art command cards interleave distractors between correct commands', () => {
+  assertIncludes(playSource, 'function sortCommands(commands, salt)');
+  assertIncludes(playSource, 'const targets = sortCommands(lesson.target');
+  assertIncludes(playSource, 'const distractors = sortCommands(lesson.distractors');
+  assertIncludes(playSource, 'if (distractors[index]) mixed.push(distractors[index]);');
+  assertIncludes(playSource, 'if (targets[index]) mixed.push(targets[index]);');
 });
 
 test('art play page exposes pixel boards and command cards instead of previous mechanics', () => {
