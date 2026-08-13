@@ -45,6 +45,7 @@ function renderBoard(containerId, commands, label) {
   }
   const board = document.getElementById(containerId);
   board.style.gridTemplateColumns = `repeat(${lesson.size}, 1fr)`;
+  board.style.gridTemplateRows = `repeat(${lesson.size}, 1fr)`;
   board.innerHTML = cells.join('');
 }
 

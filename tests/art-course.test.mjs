@@ -98,7 +98,7 @@ test('art command cards are shuffled as one mixed deck across all lessons', () =
   assertIncludes(playSource, 'pixel-cards-v3');
   assertIncludes(playSource, 'return [...lesson.target, ...lesson.distractors]');
   assertIncludes(playSource, '.sort((a, b) => a.shuffleScore - b.shuffleScore)');
-  assertIncludes(playHtml, 'js/art-play.js?v=20260813-shuffled-no-hint-v3');
+  assertIncludes(playHtml, 'js/art-play.js?v=20260813-fixed-grid-v4');
   assert.ok(!playSource.includes('const targets = sortCommands(lesson.target'), 'cards should not split correct and distractor decks');
   assert.ok(!playSource.includes('if (distractors[index]) mixed.push(distractors[index]);'), 'cards should not use a fixed distractor-target alternation');
   for (const lesson of lessons) {
@@ -135,6 +135,7 @@ test('art command labels count columns from the visible RTL side', () => {
   assert.ok(!playSource.includes('עמודה ${command.col}'), 'command labels must not expose internal column numbers');
   assert.ok(!playSource.includes('עמודה ${col}'), 'board aria labels must not expose internal column numbers');
   assertIncludes(playSource, 'עמודה ${displayColumnFromInternal(col)}');
+  assertIncludes(playSource, 'board.style.gridTemplateRows = `repeat(${lesson.size}, 1fr)`');
 });
 
 test('art engine validates selected commands against target pixels and supports debugging', () => {
@@ -151,9 +152,12 @@ test('art engine validates selected commands against target pixels and supports 
 test('art css and plan support a visual 75-minute pixel lesson', () => {
   assertIncludes(artCss, '.pixel-board');
   assertIncludes(artCss, '.pixel-cell');
+  assertIncludes(artCss, 'grid-auto-rows:1fr');
+  assertIncludes(artCss, '.pixel-cell{min-width:0;min-height:0;aspect-ratio:1/1;box-sizing:border-box');
   assertIncludes(artCss, '.command-card');
+  assertIncludes(artCss, 'min-height:54px;width:100%');
   assertIncludes(artCss, 'outline:3px solid transparent;outline-offset:-5px');
-  assertIncludes(artCss, '.command-card.active{background:#fef08a;border-color:#f9a8d4;box-shadow:none;transform:none;outline-color:');
+  assertIncludes(artCss, '.command-card.active{background:#fff7ed;border-color:#f9a8d4;box-shadow:none;transform:none;outline-color:#db2777}');
   assert.ok(!artCss.includes('.command-card.active{background:#fef08a;border-color:#db2777;transform:'), 'Selecting command cards should not shift them out of alignment');
   assert.ok(!artCss.includes('.command-card.active{background:#fef08a;border-color:#f9a8d4;box-shadow:inset'), 'Selecting command cards should not add visual size with inset shadow');
   assertIncludes(artCss, '.boards-two');
