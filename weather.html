@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/weather.css?v=20260717-weather-1">
+  <link rel="stylesheet" href="css/weather.css?v=20260813-condition-no-icon-v3">
 </head>
 <body>
   <main class="shell">
@@ -39,7 +39,7 @@
 
     <section id="missions"><h2>תחנות מזג האוויר של סיסי</h2><div class="cards" id="cards"></div></section>
   </main>
-  <script src="js/weather-lessons.js?v=20260813-clear-lesson12"></script>
+  <script src="js/weather-lessons.js?v=20260813-debug-challenge-v6"></script>
   <script>
     document.getElementById('cards').innerHTML = window.WEATHER_LESSONS.map((lesson) => `
       <a class="card" href="weather-play.html?lesson=${lesson.id}" aria-label="פתח תחנה ${lesson.id}: ${lesson.title}">
