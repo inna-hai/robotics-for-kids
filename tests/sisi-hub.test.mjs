@@ -22,6 +22,7 @@ const cinemaHtml = readFileSync(join(root, 'cinema.html'), 'utf8');
 const escapeHtml = readFileSync(join(root, 'escape.html'), 'utf8');
 const finaleHtml = readFileSync(join(root, 'finale.html'), 'utf8');
 const sisiHubJs = readFileSync(join(root, 'js', 'sisi-hub.js'), 'utf8');
+const certificateSource = readFileSync(join(root, 'js/course-certificate.js'), 'utf8');
 
 const sisiLessonFiles = [
   'sisi.html',
@@ -126,6 +127,16 @@ test('free lesson cards require registration for guests before entering lessons'
   assertIncludes(sisiHubJs, "link.setAttribute('href', target)");
   assertIncludes(sisiHubJs, '✅ פתוח בחשבון שלך');
   assertIncludes(sisiHubJs, 'credentials: \'same-origin\'');
+});
+
+test('Sisi play missions unlock progressively after successful completion', () => {
+  assertIncludes(certificateSource, 'sisi-mission-completed-v3-', 'course helper should persist completed missions per play page');
+  assertIncludes(certificateSource, 'completed.has(id - 1)', 'a mission should open only after the previous mission is completed');
+  assertIncludes(certificateSource, 'completed.add(Number(lesson.id))', 'success dialog should mark the current mission complete');
+  assertIncludes(certificateSource, 'כדי לפתוח את משימה', 'locked missions should explain which previous mission is required');
+  assertIncludes(certificateSource, 'targetId - 1', 'locked mission message should point to the immediate previous mission');
+  assertIncludes(certificateSource, 'aria-disabled', 'locked mission buttons should expose disabled state');
+  assertIncludes(certificateSource, 'SisiMissionProgress', 'progress helper should be available for future Sisi pages');
 });
 
 let passed = 0;
