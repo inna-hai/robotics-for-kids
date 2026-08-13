@@ -83,7 +83,10 @@ test('art command cards avoid a predictable correct-wrong alternation pattern', 
   assertIncludes(playSource, 'function deterministicShuffle(commands, salt)');
   assertIncludes(playSource, 'function avoidPredictablePattern(commands, targetKeys)');
   assertIncludes(playSource, 'const allCommands = deterministicShuffle([...lesson.target, ...lesson.distractors]');
-  assertIncludes(playSource, 'currentType !== previousType && previousType !== beforePreviousType');
+  assertIncludes(playSource, 'function hasAlternatingWindow(commands, targetKeys, start)');
+  assertIncludes(playSource, 'function countAlternatingWindows(commands, targetKeys)');
+  assertIncludes(playSource, 'types[0] !== types[1] && types[0] === types[2] && types[1] === types[3]');
+  assertIncludes(playHtml, 'js/art-play.js?v=20260813-shuffled-cards-v2');
   assert.ok(!playSource.includes('if (distractors[index]) mixed.push(distractors[index]);'), 'commands should not use a fixed distractor-target alternation');
   assert.ok(!playSource.includes('if (targets[index]) mixed.push(targets[index]);'), 'commands should not use a fixed distractor-target alternation');
 });
