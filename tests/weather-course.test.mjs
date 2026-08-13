@@ -60,7 +60,8 @@ test('landing page frames a new sensor automation mechanic for grade B', () => {
   assertIncludes(weatherHtml, 'אם-אז');
   assertIncludes(weatherHtml, 'תחנות 1–4 לכל הכיתה, 5–12 להרחבה ותרגול');
   assertIncludes(weatherHtml, 'href="weather-play.html?lesson=1"');
-  assertIncludes(weatherHtml, 'js/weather-lessons.js');
+  assertIncludes(weatherHtml, 'js/weather-lessons.js?v=20260813-clear-lesson12');
+  assertIncludes(playHtml, 'js/weather-lessons.js?v=20260813-clear-lesson12');
   assertIncludes(weatherHtml, 'css/weather.css');
 });
 
@@ -77,6 +78,9 @@ test('weather data has twelve scenarios with valid sensor-action answers', () =>
     usedSensors.add(lesson.sensor);
   }
   assert.ok(usedSensors.size >= 6, 'Each weather scenario should use a distinct sensor');
+  const finalLesson = lessons.find((item) => item.id === 12);
+  assert.ok(finalLesson.scene.includes('רעש חזק'), 'Final weather mission should clearly describe the noise problem');
+  assert.ok(finalLesson.scene.includes('בשקט'), 'Final weather mission should clearly point to the quiet action');
 });
 
 test('weather play page exposes sensor and action selection rather than previous mechanics', () => {
