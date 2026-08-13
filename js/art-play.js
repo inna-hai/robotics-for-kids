@@ -48,24 +48,37 @@ function renderBoard(containerId, commands, label) {
   board.innerHTML = cells.join('');
 }
 
-function sortCommands(commands, salt) {
-  return commands.map((command, index) => ({ ...command, sortKey: (command.row * 11 + displayColumn(command) * 7 + index * 5 + salt) % 31 }))
+function commandSortKey(command, index, salt) {
+  return (command.row * 29 + displayColumn(command) * 17 + command.color.length * 13 + index * 19 + salt) % 97;
+}
+
+function deterministicShuffle(commands, salt) {
+  return commands.map((command, index) => ({ ...command, sortKey: commandSortKey(command, index, salt) }))
     .sort((a, b) => a.sortKey - b.sortKey)
     .map(({ sortKey, ...command }) => command);
 }
 
+function avoidPredictablePattern(commands, targetKeys) {
+  const mixed = [...commands];
+  for (let index = 2; index < mixed.length; index += 1) {
+    const currentType = targetKeys.has(keyOf(mixed[index]));
+    const previousType = targetKeys.has(keyOf(mixed[index - 1]));
+    const beforePreviousType = targetKeys.has(keyOf(mixed[index - 2]));
+    if (currentType !== previousType && previousType !== beforePreviousType) {
+      const replacementIndex = mixed.findIndex((candidate, candidateIndex) => candidateIndex > index && targetKeys.has(keyOf(candidate)) === previousType);
+      if (replacementIndex > index) {
+        [mixed[index], mixed[replacementIndex]] = [mixed[replacementIndex], mixed[index]];
+      }
+    }
+  }
+  return mixed;
+}
+
 function shuffledCommands() {
   const targetKeys = new Set(lesson.target.map(keyOf));
-  const targets = sortCommands(lesson.target, lesson.id * 3);
-  const distractors = sortCommands(lesson.distractors, lesson.id * 7);
-  const mixed = [];
-  const max = Math.max(targets.length, distractors.length);
-  for (let index = 0; index < max; index += 1) {
-    if (distractors[index]) mixed.push(distractors[index]);
-    if (targets[index]) mixed.push(targets[index]);
-    if (distractors[index + max]) mixed.push(distractors[index + max]);
-  }
-  return mixed.map((command) => ({ ...command, isTarget: targetKeys.has(keyOf(command)) }));
+  const allCommands = deterministicShuffle([...lesson.target, ...lesson.distractors], lesson.id * 11);
+  return avoidPredictablePattern(allCommands, targetKeys)
+    .map((command) => ({ ...command, isTarget: targetKeys.has(keyOf(command)) }));
 }
 
 function renderCommands() {

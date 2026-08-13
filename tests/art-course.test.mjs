@@ -79,12 +79,13 @@ test('art challenges include enough unrelated command cards', () => {
   }
 });
 
-test('art command cards interleave distractors between correct commands', () => {
-  assertIncludes(playSource, 'function sortCommands(commands, salt)');
-  assertIncludes(playSource, 'const targets = sortCommands(lesson.target');
-  assertIncludes(playSource, 'const distractors = sortCommands(lesson.distractors');
-  assertIncludes(playSource, 'if (distractors[index]) mixed.push(distractors[index]);');
-  assertIncludes(playSource, 'if (targets[index]) mixed.push(targets[index]);');
+test('art command cards avoid a predictable correct-wrong alternation pattern', () => {
+  assertIncludes(playSource, 'function deterministicShuffle(commands, salt)');
+  assertIncludes(playSource, 'function avoidPredictablePattern(commands, targetKeys)');
+  assertIncludes(playSource, 'const allCommands = deterministicShuffle([...lesson.target, ...lesson.distractors]');
+  assertIncludes(playSource, 'currentType !== previousType && previousType !== beforePreviousType');
+  assert.ok(!playSource.includes('if (distractors[index]) mixed.push(distractors[index]);'), 'commands should not use a fixed distractor-target alternation');
+  assert.ok(!playSource.includes('if (targets[index]) mixed.push(targets[index]);'), 'commands should not use a fixed distractor-target alternation');
 });
 
 test('art play page exposes pixel boards and command cards instead of previous mechanics', () => {
