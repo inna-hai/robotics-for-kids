@@ -14,6 +14,8 @@ let dolphinGuideTimer = null;
 let movingDecorationTimer = null;
 let movingDecorationTick = 0;
 let passedCaveGate = false;
+let runToken = 0;
+let running = false;
 const revealedNightCells = new Set();
 const pearlsStorageKey = 'sisi-ocean-pearls-best-v1';
 
@@ -228,18 +230,38 @@ function countDirectionChanges(commands) {
   return changes;
 }
 
+function stopRun() {
+  if (!running) return;
+  runToken += 1;
+  running = false;
+  setResult('ההרצה נעצרה. המסלול נשאר כמו שהוא — אפשר לשנות פקודות או להריץ שוב.');
+}
+
+function setRunning(value) {
+  running = value;
+  const runButton = document.getElementById('run');
+  const stopButton = document.getElementById('stop');
+  if (runButton) runButton.disabled = value;
+  if (stopButton) stopButton.disabled = !value;
+}
+
 async function runProgram() {
+  const myRun = ++runToken;
+  setRunning(true);
   resetRobot();
   setResult('סיסי יוצאת לדרך...');
   if (!program.length) {
     setResult('צריך להוסיף לפחות פקודה אחת לפני ההרצה.');
+    setRunning(false);
     return;
   }
   for (const cmd of program) {
     await new Promise((resolve) => setTimeout(resolve, 420));
+    if (myRun !== runToken) return;
     const outcome = step(cmd);
     if (!outcome.ok) {
       setResult(outcome.reason);
+      setRunning(false);
       return;
     }
   }
@@ -247,10 +269,12 @@ async function runProgram() {
     if (!collectedRequired()) {
       const missing = requiredCollectibles().filter((item) => !collected.has(key(item)));
       setResult(lesson.requiredMissingMessage || missing[0]?.missingMessage || `כמעט! קודם צריך לאסוף את ${missing[0]?.name || 'הפריט'}, ורק אחר כך להגיע ליעד.`);
+      setRunning(false);
       return;
     }
     if (!passedRequiredCaveGate()) {
       setResult(lesson.caveGateRequiredMessage || 'כמעט! צריך לעבור דרך שער המערה לפני שמגיעים ליעד.');
+      setRunning(false);
       return;
     }
     const pearlCount = currentPearlsCount();
@@ -265,6 +289,7 @@ async function runProgram() {
   } else {
     setResult('כמעט! סיסי לא הגיעה ליעד. הוסיפו או שנו פקודות ונסו שוב.');
   }
+  setRunning(false);
 }
 
 function init() {
@@ -308,6 +333,8 @@ function init() {
   });
 
   document.getElementById('run').addEventListener('click', runProgram);
+  document.getElementById('stop').addEventListener('click', stopRun);
+  setRunning(false);
   document.getElementById('undo').addEventListener('click', () => { program.pop(); renderProgram(); window.SisiSuccessDialog?.clear(); setResult(''); });
   document.getElementById('clear').addEventListener('click', () => { window.SisiSuccessDialog?.clear(); repeatCurrentLesson(); });
   document.getElementById('demo').addEventListener('click', () => { program = [...lesson.commands]; renderProgram(); resetRobot(); window.SisiSuccessDialog?.clear(); setResult('פתרון לדוגמה נטען. עכשיו לחצו הרצה.'); });

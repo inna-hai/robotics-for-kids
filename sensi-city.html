@@ -2277,9 +2277,25 @@
 
         function resizeCanvas() {
             const container = canvas.parentElement;
-            canvas.width = container.clientWidth;
-            canvas.height = container.clientHeight - ([9, 11, 12, 13, 15].includes(currentLesson) ? 0 : 60); // Account for ground except full-background scenes; Lesson 11 has no separate ground strip
+            const rect = container.getBoundingClientRect();
+            const width = Math.max(320, Math.round(rect.width || container.clientWidth || 640));
+            const rawHeight = Math.round(rect.height || container.clientHeight || 360);
+            const groundOffset = [9, 11, 12, 13, 15].includes(currentLesson) ? 0 : 60;
+            const height = Math.max(220, rawHeight - groundOffset); // Keep refresh/layout races from creating a distorted giant canvas.
+            canvas.width = width;
+            canvas.height = height;
             resetPositions();
+        }
+
+        function stabilizeLayoutAfterPaint() {
+            requestAnimationFrame(() => {
+                resizeCanvas();
+                if (workspace && window.Blockly) Blockly.svgResize(workspace);
+                requestAnimationFrame(() => {
+                    resizeCanvas();
+                    if (workspace && window.Blockly) Blockly.svgResize(workspace);
+                });
+            });
         }
 
         function resetPositions() {
@@ -5902,6 +5918,14 @@
             }
         }
 
+        function activateDefaultEnvironmentForLesson(lessonNum = currentLesson) {
+            if (lessonNum === 4 && !environment.smoke) {
+                environment.smoke = true;
+                smokeStartedAt = Date.now();
+                syncEnvironmentButtons();
+            }
+        }
+
         function syncEnvironmentButtons() {
             for (const [buttonId, key] of Object.entries(envButtonStateKeys)) {
                 const button = document.getElementById(buttonId);
@@ -9335,6 +9359,7 @@
             if (workspace && previousLesson !== num) saveWorkspaceForLesson(previousLesson);
             currentLesson = num;
             sanitizeEnvironmentForLesson(num);
+            activateDefaultEnvironmentForLesson(num);
             if (num !== 15) {
                 lesson15SelectedZone = null;
                 lesson15MuseumInside = false;
@@ -9423,6 +9448,7 @@
             scheduleWelcomeAutoClose();
             resizeCanvas();
             selectLesson(initialLesson);
+            stabilizeLayoutAfterPaint();
             draw();
             updateSensors();
 
@@ -9432,6 +9458,7 @@
                     if (window.Blockly) {
                         initBlockly();
                         if (workspace) workspace.updateToolbox(buildToolbox());
+                        stabilizeLayoutAfterPaint();
                     } else {
                         console.warn('Blockly did not load; lesson navigation remains available.');
                     }

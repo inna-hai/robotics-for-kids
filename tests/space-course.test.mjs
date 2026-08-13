@@ -196,7 +196,7 @@ test('space success opens a decision dialog and repeat resets the current lesson
   assertIncludes(playSource, 'function repeatCurrentLesson');
   assertIncludes(playSource, 'program = []');
   assertIncludes(playSource, 'השיעור אופס');
-  assertIncludes(playHtml, 'js/space-play.js?v=20260725-child-ux');
+  assertIncludes(playHtml, 'js/space-play.js?v=20260813-stop-run');
 });
 
 test('game board uses left-to-right grid direction so right and left buttons move visually correctly', () => {
