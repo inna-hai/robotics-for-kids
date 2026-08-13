@@ -48,60 +48,24 @@ function renderBoard(containerId, commands, label) {
   board.innerHTML = cells.join('');
 }
 
-function commandSortKey(command, index, salt) {
-  const raw = `${lesson.id}:${salt}:${index}:${command.row}:${command.col}:${command.color}`;
-  return [...raw].reduce((hash, char) => ((hash << 5) - hash + char.charCodeAt(0)) >>> 0, 2166136261);
-}
-
-function deterministicShuffle(commands, salt) {
-  return commands.map((command, index) => ({ ...command, sortKey: commandSortKey(command, index, salt) }))
+function sortCommands(commands, salt) {
+  return commands.map((command, index) => ({ ...command, sortKey: (command.row * 11 + displayColumn(command) * 7 + index * 5 + salt) % 31 }))
     .sort((a, b) => a.sortKey - b.sortKey)
     .map(({ sortKey, ...command }) => command);
 }
 
-function hasAlternatingWindow(commands, targetKeys, start) {
-  if (start + 3 >= commands.length) return false;
-  const types = commands.slice(start, start + 4).map((command) => targetKeys.has(keyOf(command)));
-  return types[0] !== types[1] && types[0] === types[2] && types[1] === types[3];
-}
-
-function countAlternatingWindows(commands, targetKeys) {
-  let count = 0;
-  for (let start = 0; start < commands.length - 3; start += 1) {
-    if (hasAlternatingWindow(commands, targetKeys, start)) count += 1;
-  }
-  return count;
-}
-
-function avoidPredictablePattern(commands, targetKeys) {
-  const mixed = [...commands];
-  let attempts = mixed.length * mixed.length;
-  while (countAlternatingWindows(mixed, targetKeys) > 0 && attempts > 0) {
-    attempts -= 1;
-    const start = mixed.findIndex((command, index) => hasAlternatingWindow(mixed, targetKeys, index));
-    const currentScore = countAlternatingWindows(mixed, targetKeys);
-    let bestIndex = -1;
-    let bestScore = currentScore;
-    for (let candidateIndex = start + 2; candidateIndex < mixed.length; candidateIndex += 1) {
-      [mixed[start + 2], mixed[candidateIndex]] = [mixed[candidateIndex], mixed[start + 2]];
-      const score = countAlternatingWindows(mixed, targetKeys);
-      [mixed[start + 2], mixed[candidateIndex]] = [mixed[candidateIndex], mixed[start + 2]];
-      if (score < bestScore) {
-        bestScore = score;
-        bestIndex = candidateIndex;
-      }
-    }
-    if (bestIndex < 0) break;
-    [mixed[start + 2], mixed[bestIndex]] = [mixed[bestIndex], mixed[start + 2]];
-  }
-  return mixed;
-}
-
 function shuffledCommands() {
   const targetKeys = new Set(lesson.target.map(keyOf));
-  const allCommands = deterministicShuffle([...lesson.target, ...lesson.distractors], lesson.id * 37);
-  return avoidPredictablePattern(allCommands, targetKeys)
-    .map((command) => ({ ...command, isTarget: targetKeys.has(keyOf(command)) }));
+  const targets = sortCommands(lesson.target, lesson.id * 3);
+  const distractors = sortCommands(lesson.distractors, lesson.id * 7);
+  const mixed = [];
+  const max = Math.max(targets.length, distractors.length);
+  for (let index = 0; index < max; index += 1) {
+    if (distractors[index]) mixed.push(distractors[index]);
+    if (targets[index]) mixed.push(targets[index]);
+    if (distractors[index + max]) mixed.push(distractors[index + max]);
+  }
+  return mixed.map((command) => ({ ...command, isTarget: targetKeys.has(keyOf(command)) }));
 }
 
 function renderCommands() {

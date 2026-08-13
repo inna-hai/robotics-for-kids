@@ -79,16 +79,12 @@ test('art challenges include enough unrelated command cards', () => {
   }
 });
 
-test('art command cards avoid a predictable correct-wrong alternation pattern', () => {
-  assertIncludes(playSource, 'function deterministicShuffle(commands, salt)');
-  assertIncludes(playSource, 'function avoidPredictablePattern(commands, targetKeys)');
-  assertIncludes(playSource, 'const allCommands = deterministicShuffle([...lesson.target, ...lesson.distractors]');
-  assertIncludes(playSource, 'function hasAlternatingWindow(commands, targetKeys, start)');
-  assertIncludes(playSource, 'function countAlternatingWindows(commands, targetKeys)');
-  assertIncludes(playSource, 'types[0] !== types[1] && types[0] === types[2] && types[1] === types[3]');
-  assertIncludes(playHtml, 'js/art-play.js?v=20260813-shuffled-cards-v2');
-  assert.ok(!playSource.includes('if (distractors[index]) mixed.push(distractors[index]);'), 'commands should not use a fixed distractor-target alternation');
-  assert.ok(!playSource.includes('if (targets[index]) mixed.push(targets[index]);'), 'commands should not use a fixed distractor-target alternation');
+test('art command cards interleave distractors between correct commands', () => {
+  assertIncludes(playSource, 'function sortCommands(commands, salt)');
+  assertIncludes(playSource, 'const targets = sortCommands(lesson.target');
+  assertIncludes(playSource, 'const distractors = sortCommands(lesson.distractors');
+  assertIncludes(playSource, 'if (distractors[index]) mixed.push(distractors[index]);');
+  assertIncludes(playSource, 'if (targets[index]) mixed.push(targets[index]);');
 });
 
 test('art play page exposes pixel boards and command cards instead of previous mechanics', () => {
@@ -126,8 +122,8 @@ test('art engine validates selected commands against target pixels and supports 
   assertIncludes(playSource, 'missing.length === 0 && extra.length === 0');
   assertIncludes(playSource, 'הוראות מיותרות');
   assertIncludes(playSource, 'function resetArtwork()');
-  assert.ok(!playHtml.includes('id="hint"'), 'Pixel lesson should not expose a hint button that reveals the missing command');
-  assert.ok(!playSource.includes('function showHint()'), 'Pixel lesson should encourage visual comparison rather than direct hints');
+  assert.ok(!playHtml.includes('id="hint"'), 'Pixel lesson should not expose a hint button');
+  assert.ok(!playSource.includes('function showHint()'), 'Pixel lesson should not include direct hint logic');
   assertIncludes(playSource, 'renderNextStep(true)');
   assertIncludes(playSource, 'art-play.html?lesson=');
 });
