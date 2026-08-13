@@ -25,6 +25,20 @@ const tests = [];
 function test(name, fn) { tests.push({ name, fn }); }
 function assertIncludes(source, needle, message = `Missing: ${needle}`) { assert.ok(source.includes(needle), message); }
 function keyOf(command) { return `${command.row}:${command.col}:${command.color}`; }
+function shuffleScoreForLesson(lesson, command, index) {
+  const raw = `${lesson.id}|${index}|${command.row}|${command.col}|${command.color}|pixel-cards-v3`;
+  return [...raw].reduce((hash, char) => ((hash * 33) ^ char.charCodeAt(0)) >>> 0, 5381);
+}
+function shuffledTypesForLesson(lesson) {
+  const targetKeys = new Set(lesson.target.map(keyOf));
+  return [...lesson.target, ...lesson.distractors]
+    .map((command, index) => ({ ...command, shuffleScore: shuffleScoreForLesson(lesson, command, index) }))
+    .sort((a, b) => a.shuffleScore - b.shuffleScore)
+    .map((command) => targetKeys.has(keyOf(command)) ? 'T' : 'D');
+}
+function hasSimpleAlternatingPattern(types) {
+  return types.slice(0, Math.min(types.length, 10)).every((type, index) => type === (index % 2 === 0 ? types[0] : types[1]) && types[0] !== types[1]);
+}
 
 test('art course is linked as lesson 7 in the Sisi series', () => {
   assertIncludes(smartCityHtml, 'href="art.html"');
@@ -79,12 +93,18 @@ test('art challenges include enough unrelated command cards', () => {
   }
 });
 
-test('art command cards interleave distractors between correct commands', () => {
-  assertIncludes(playSource, 'function sortCommands(commands, salt)');
-  assertIncludes(playSource, 'const targets = sortCommands(lesson.target');
-  assertIncludes(playSource, 'const distractors = sortCommands(lesson.distractors');
-  assertIncludes(playSource, 'if (distractors[index]) mixed.push(distractors[index]);');
-  assertIncludes(playSource, 'if (targets[index]) mixed.push(targets[index]);');
+test('art command cards are shuffled as one mixed deck across all lessons', () => {
+  assertIncludes(playSource, 'function shuffleScore(command, index)');
+  assertIncludes(playSource, 'pixel-cards-v3');
+  assertIncludes(playSource, 'return [...lesson.target, ...lesson.distractors]');
+  assertIncludes(playSource, '.sort((a, b) => a.shuffleScore - b.shuffleScore)');
+  assertIncludes(playHtml, 'js/art-play.js?v=20260813-shuffled-no-hint-v3');
+  assert.ok(!playSource.includes('const targets = sortCommands(lesson.target'), 'cards should not split correct and distractor decks');
+  assert.ok(!playSource.includes('if (distractors[index]) mixed.push(distractors[index]);'), 'cards should not use a fixed distractor-target alternation');
+  for (const lesson of lessons) {
+    const types = shuffledTypesForLesson(lesson);
+    assert.ok(!hasSimpleAlternatingPattern(types), `Lesson ${lesson.id} should not start with an easy correct/wrong alternation`);
+  }
 });
 
 test('art play page exposes pixel boards and command cards instead of previous mechanics', () => {
