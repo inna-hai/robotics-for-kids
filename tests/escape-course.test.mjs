@@ -45,12 +45,13 @@ test('landing page frames a 76-minute experiential programming lesson', () => {
   assertIncludes(escapeHtml, 'href="escape-lab.html"');
 });
 
-test('escape data has twelve AND-condition tasks with two required keys and distractors', () => {
+test('escape data has twelve AND-condition tasks with two required keys and progressive distractors', () => {
   assert.equal(lessons.length, 12);
   const keyIds = Object.keys(keys);
   for (const lesson of lessons) {
     assert.equal(lesson.required.length, 2, `Lesson ${lesson.id} needs two required conditions`);
-    assert.equal(lesson.distractors.length, 2, `Lesson ${lesson.id} needs two distractors`);
+    const expectedDistractors = lesson.id >= 10 ? 3 : 2;
+    assert.equal(lesson.distractors.length, expectedDistractors, `Lesson ${lesson.id} needs ${expectedDistractors} distractors`);
     for (const id of [...lesson.required, ...lesson.distractors]) assert.ok(keyIds.includes(id), `Unknown key ${id}`);
     assertIncludes(lesson.conditionText, 'וגם');
     assert.ok(lesson.learningNote.length >= 35, `Lesson ${lesson.id} needs learning note`);
