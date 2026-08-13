@@ -152,8 +152,9 @@ test('art css and plan support a visual 75-minute pixel lesson', () => {
   assertIncludes(artCss, '.pixel-board');
   assertIncludes(artCss, '.pixel-cell');
   assertIncludes(artCss, '.command-card');
-  assertIncludes(artCss, '.command-card.active{background:#fef08a;border-color:#db2777;box-shadow:');
+  assertIncludes(artCss, '.command-card.active{background:#fef08a;border-color:#f9a8d4;box-shadow:none;transform:none}');
   assert.ok(!artCss.includes('.command-card.active{background:#fef08a;border-color:#db2777;transform:'), 'Selecting command cards should not shift them out of alignment');
+  assert.ok(!artCss.includes('.command-card.active{background:#fef08a;border-color:#f9a8d4;box-shadow:inset'), 'Selecting command cards should not add visual size with inset shadow');
   assertIncludes(artCss, '.boards-two');
   assertIncludes(artCss, 'direction:ltr');
   assertIncludes(plan, 'שיעור 75 דקות לכיתות ב׳ / גיל 7');
