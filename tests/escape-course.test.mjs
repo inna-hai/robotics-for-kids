@@ -34,8 +34,8 @@ test('escape course is linked as lesson 14 in the Sisi series', () => {
   assertIncludes(hubHtml, 'סיסי בחדר הבריחה');
 });
 
-test('landing page frames a 76-minute experiential programming lesson', () => {
-  assertIncludes(escapeHtml, 'שיעור 14 • תנאי וגם • כיתות ב׳ • 76 דקות');
+test('landing page frames a 75-minute experiential programming lesson', () => {
+  assertIncludes(escapeHtml, 'שיעור 14 • תנאי וגם • כיתות ב׳ • 75 דקות');
   assertIncludes(escapeHtml, 'אם שני תנאים נכונים');
   assertIncludes(escapeHtml, 'אתגר “אחד נכון לא מספיק”');
   assertIncludes(escapeHtml, 'משחק בוני חדרים בזוגות');
@@ -97,14 +97,14 @@ test('escape required keys are accepted in any order', () => {
   }
 });
 
-test('escape lab, css, and plan support 76 minutes', () => {
+test('escape lab, css, and plan support 75 minutes', () => {
   assertIncludes(labHtml, 'פעילות יצירה • 15–20 דקות');
   assertIncludes(labHtml, 'תנאי 1');
   assertIncludes(labHtml, 'תנאי 2');
   assertIncludes(labHtml, 'רמז מבלבל');
   assertIncludes(escapeCss, '.condition-preview');
   assertIncludes(escapeCss, '.key-card');
-  assertIncludes(plan, 'שיעור 76 דקות');
+  assertIncludes(plan, 'שיעור 75 דקות');
   assertIncludes(plan, 'מתקדם בתכנות בצורה חווייתית');
   assertIncludes(plan, 'גיוון בין החדרים');
 });
