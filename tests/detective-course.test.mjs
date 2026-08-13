@@ -57,7 +57,7 @@ test('detective play page exposes clue/rule selection rather than navigation or 
   assertIncludes(playHtml, 'id="clues"');
   assertIncludes(playHtml, 'id="rules"');
   assertIncludes(playHtml, 'id="check"');
-  assertIncludes(playHtml, 'id="hint"');
+  assert.ok(!playHtml.includes('id="hint"'), 'Detective lesson should not expose an extra hint button');
   assertIncludes(playHtml, 'js/detective-play.js');
   assert.ok(!playHtml.includes('data-cmd="right"'), 'Detective lesson should not use board movement commands');
   assert.ok(!playHtml.includes('notes-bank'), 'Detective lesson should not use music note bank');
@@ -69,7 +69,7 @@ test('detective engine checks both clue and if-then rule and gives targeted feed
   assertIncludes(playSource, 'clue.good && rule.good');
   assertIncludes(playSource, 'הכלל טוב, אבל הרמז');
   assertIncludes(playSource, 'הרמז טוב, אבל כלל');
-  assertIncludes(playSource, 'function showHint()');
+  assert.ok(!playSource.includes('function showHint()'), 'Detective lesson should not include an extra hint helper');
   assertIncludes(playSource, 'renderSuspects(true)');
 });
 

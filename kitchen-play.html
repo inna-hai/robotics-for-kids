@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/kitchen.css?v=20260717-kitchen-1">
+  <link rel="stylesheet" href="css/how-to.css?v=20260812-practical-help">
 </head>
 <body>
   <main class="shell">
@@ -35,6 +36,15 @@
       </div>
 
       <div class="recipe-goal" id="cooking-note"></div>
+      <section class="how-to-card" aria-label="מה עושים במשימה">
+        <div class="how-to-title">👀 מה עושים?</div>
+        <div class="how-to-steps">
+          <span class="how-to-step">1️⃣ קוראים את המתכון</span>
+          <span class="how-to-step">2️⃣ לוחצים על שלבים לפי הסדר</span>
+          <span class="how-to-step">3️⃣ לוחצים ✅ בדיקה</span>
+          <span class="how-to-step hint">💡 רמז אם נתקעים</span>
+        </div>
+      </section>
       <div class="timer-box"><span id="goal"></span><span>טיפ: אפשר למחוק שלב ולנסות שוב</span></div>
 
       <div class="recipe-layout">
@@ -52,7 +62,7 @@
         <button class="btn" id="check">✅ בדיקה</button>
         <button class="btn secondary" id="undo">↩️ צעד אחורה</button>
         <button class="btn secondary" id="clear">🔁 לנסות שוב</button>
-        <button class="btn secondary" id="demo">💡 דוגמה</button>
+        <button class="btn secondary" id="demo">💡 רמז</button>
       </div>
 
       <p class="result" id="result" aria-live="polite"></p>
@@ -62,7 +72,7 @@
   </main>
 
   <script src="js/kitchen-lessons.js?v=20260717-kitchen-1"></script>
-  <script src="js/course-certificate.js?v=20260725-child-ux"></script>
+  <script src="js/course-certificate.js?v=20260811-completed-locks"></script>
   <script src="js/kitchen-play.js?v=20260725-child-ux"></script>
   <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
 </body>

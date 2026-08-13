@@ -9,9 +9,17 @@ function keyOf(command) {
   return `${command.row}:${command.col}:${command.color}`;
 }
 
+function displayColumnFromInternal(col) {
+  return lesson.size - col + 1;
+}
+
+function displayColumn(command) {
+  return displayColumnFromInternal(command.col);
+}
+
 function commandLabel(command) {
   const color = colors[command.color] || { label: command.color, emoji: '⬛' };
-  return `${color.emoji} שורה ${command.row}, עמודה ${command.col} — ${color.label}`;
+  return `${color.emoji} שורה ${command.row}, עמודה ${displayColumn(command)} — ${color.label}`;
 }
 
 function setResult(text, success = false) {
@@ -32,7 +40,7 @@ function renderBoard(containerId, commands, label) {
     for (let col = 1; col <= lesson.size; col += 1) {
       const command = commandMap.get(`${row}:${col}`);
       const text = command ? colors[command.color].emoji : '';
-      cells.push(`<div class="pixel-cell" ${command ? cellStyle(command) : ''} aria-label="${label}: שורה ${row}, עמודה ${col}">${text}</div>`);
+      cells.push(`<div class="pixel-cell" ${command ? cellStyle(command) : ''} aria-label="${label}: שורה ${row}, עמודה ${displayColumnFromInternal(col)}">${text}</div>`);
     }
   }
   const board = document.getElementById(containerId);
@@ -40,11 +48,24 @@ function renderBoard(containerId, commands, label) {
   board.innerHTML = cells.join('');
 }
 
-function shuffledCommands() {
-  const all = [...lesson.target, ...lesson.distractors];
-  return all.map((command, index) => ({ ...command, sortKey: (command.row * 7 + command.col * 3 + index * 5) % 17 }))
+function sortCommands(commands, salt) {
+  return commands.map((command, index) => ({ ...command, sortKey: (command.row * 11 + displayColumn(command) * 7 + index * 5 + salt) % 31 }))
     .sort((a, b) => a.sortKey - b.sortKey)
     .map(({ sortKey, ...command }) => command);
+}
+
+function shuffledCommands() {
+  const targetKeys = new Set(lesson.target.map(keyOf));
+  const targets = sortCommands(lesson.target, lesson.id * 3);
+  const distractors = sortCommands(lesson.distractors, lesson.id * 7);
+  const mixed = [];
+  const max = Math.max(targets.length, distractors.length);
+  for (let index = 0; index < max; index += 1) {
+    if (distractors[index]) mixed.push(distractors[index]);
+    if (targets[index]) mixed.push(targets[index]);
+    if (distractors[index + max]) mixed.push(distractors[index + max]);
+  }
+  return mixed.map((command) => ({ ...command, isTarget: targetKeys.has(keyOf(command)) }));
 }
 
 function renderCommands() {
@@ -108,16 +129,6 @@ function checkArtwork() {
   renderNextStep(false);
 }
 
-function showHint() {
-  const firstMissing = lesson.target.find((command) => !selectedCommands.some((item) => keyOf(item) === keyOf(command)));
-  if (firstMissing) {
-    setResult(`רמז: נסו להוסיף ${commandLabel(firstMissing)}.`);
-  } else {
-    setResult('רמז: אולי בחרתם הוראה שלא קיימת בציור המטרה?');
-  }
-  renderNextStep(false);
-}
-
 function resetArtwork() {
   selectedCommands = [];
   renderCommands();
@@ -151,7 +162,6 @@ function init() {
   document.getElementById('mission').textContent = lesson.mission;
   document.getElementById('learning-note').innerHTML = `<b>רגע למידה:</b> ${lesson.learningNote}`;
   document.getElementById('check').addEventListener('click', checkArtwork);
-  document.getElementById('hint').addEventListener('click', showHint);
   document.getElementById('clear').addEventListener('click', resetArtwork);
   document.getElementById('lesson-nav').innerHTML = lessons.map((item) => `<a class="${item.id === lesson.id ? 'active' : ''}" href="art-play.html?lesson=${item.id}">${item.id}</a>`).join('');
   renderBoard('target-board', lesson.target, 'ציור המטרה');

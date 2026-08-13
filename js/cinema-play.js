@@ -21,22 +21,42 @@ function renderCommandBank() {
     </button>`).join('');
   document.querySelectorAll('[data-command]').forEach((button)=>button.addEventListener('click',()=>addCommand(button.dataset.command)));
 }
+function expectedCommandCount() {
+  return lesson.correctOrder.length;
+}
 function renderTimeline() {
-  const labels = ['פקודה 1', 'פקודה 2', 'פקודה 3'];
-  document.getElementById('timeline').innerHTML = [0,1,2].map((index) => {
+  const labels = Array.from({ length: expectedCommandCount() }, (_, index) => `פקודה ${index + 1}`);
+  document.getElementById('timeline').innerHTML = labels.map((label, index) => {
     const id = selectedOrder[index];
     const command = id ? lesson.commands[id] : null;
-    return `<div class="timeline-slot"><b>${labels[index]}</b><span>${command ? command.icon : '❔'}</span><p>${command ? command.text : 'בחרו פקודה'}</p></div>`;
+    return `<div class="timeline-slot ${command ? 'filled' : ''}"><b>${labels[index]}</b><span>${command ? command.icon : '❔'}</span><p>${command ? command.text : 'בחרו פקודה'}</p>${command ? `<button type="button" class="remove-command" data-remove-index="${index}" aria-label="מחיקת ${command.text}">✕ למחוק</button>` : ''}</div>`;
   }).join('');
+  document.querySelectorAll('[data-remove-index]').forEach((button) => button.addEventListener('click', () => removeCommand(Number(button.dataset.removeIndex))));
 }
 function addCommand(id) {
-  if (selectedOrder.length >= 3 || selectedOrder.includes(id)) return;
+  if (selectedOrder.length >= expectedCommandCount() || selectedOrder.includes(id)) return;
   selectedOrder.push(id);
   renderAll(false);
 }
+function removeCommand(index) {
+  selectedOrder.splice(index, 1);
+  selectedReason = null;
+  renderAll(false);
+}
+function correctReason() {
+  return lesson.correctReason || 'כי שלוש הפקודות מסודרות לפי הסדר שמוביל למטרה, בלי פקודה מיותרת.';
+}
+function reasonOptions() {
+  const options = [
+    correctReason(),
+    'כי כל פקודה נחמדה יכולה להיות חלק מהאלגוריתם.',
+    'כי מספיק לבחור שלוש פקודות, גם אם הסדר לא מדויק.',
+    lesson.commands[lesson.distractor].reason
+  ];
+  return options.map((reason, index) => ({ reason, sort: (index * 5 + lesson.id * 2) % 7 })).sort((a, b) => a.sort - b.sort).map((item) => item.reason);
+}
 function renderReasons() {
-  const options = lesson.correctOrder.map((id) => lesson.commands[id].reason).concat([lesson.commands[lesson.distractor].reason]);
-  document.getElementById('reason-options').innerHTML = options.map((reason) => `
+  document.getElementById('reason-options').innerHTML = reasonOptions().map((reason) => `
     <button type="button" class="reason-card ${selectedReason === reason ? 'active' : ''}" data-reason="${reason}">${reason}</button>
   `).join('');
   document.querySelectorAll('[data-reason]').forEach((button)=>button.addEventListener('click',()=>{ selectedReason = button.dataset.reason; renderReasons(); setResult(''); }));
@@ -46,19 +66,22 @@ function renderAll(clearReason = true) {
   renderCommandBank(); renderTimeline(); renderReasons(); renderNextStep(false); setResult('');
 }
 function checkMovie() {
-  if (selectedOrder.length < 3) { setResult('צריך לבחור 3 פקודות לאלגוריתם.'); return; }
+  if (selectedOrder.length < expectedCommandCount()) { setResult(`צריך לבחור ${expectedCommandCount()} פקודות לאלגוריתם.`); return; }
   const orderOk = selectedOrder.every((id, index) => id === lesson.correctOrder[index]);
   const noDistractor = !selectedOrder.includes(lesson.distractor);
-  const reasonOk = selectedReason && selectedReason !== lesson.commands[lesson.distractor].reason;
+  const reasonOk = selectedReason === correctReason();
   if (orderOk && noDistractor && reasonOk) { setResult('מעולה! בניתם אלגוריתם רובוטי שמגיע למטרה 🎬🤖', true); window.SisiCourseCertificate?.show({ lessons, lesson }); renderNextStep(true); }
   else if (!noDistractor) setResult('יש פקודה מיותרת באלגוריתם. חפשו פקודה שלא מקדמת את המטרה.');
   else if (!orderOk) setResult('הפקודות טובות, אבל הסדר לא נכון. חשבו מה חייב לקרות קודם.');
   else setResult('הסדר נכון — עכשיו בחרו נימוק שמסביר למה האלגוריתם עובד.');
 }
 function showHint() {
-  const nextId = lesson.correctOrder[selectedOrder.length] || lesson.correctOrder[0];
-  const command = lesson.commands[nextId];
-  setResult(`רמז: הפקודה הבאה שכדאי לבחור היא ${command.icon} ${command.text}`);
+  const hintByStep = [
+    'רמז: התחילו בפעולה שמכינה את הדרך למטרה. חפשו מה חייב לקרות לפני הכול.',
+    'רמז: עכשיו חפשו פעולה שממשיכה את מה שכבר התחלתם, בלי לקפוץ ישר לסוף.',
+    'רמז: לסיום בחרו פעולה שמשלימה את המטרה, אחרי שההכנות כבר נעשו.'
+  ];
+  setResult(hintByStep[Math.min(selectedOrder.length, hintByStep.length - 1)]);
   renderNextStep(false);
 }
 function clearTimeline() { selectedOrder = []; renderAll(true); }

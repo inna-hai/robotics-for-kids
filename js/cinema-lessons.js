@@ -9,6 +9,7 @@ window.CINEMA_LESSONS = [
     goal: 'המטרה: הרובוט מחזיר את הבלון לילדה.',
     correctOrder: ['goBalloon', 'grabBalloon', 'giveGirl'],
     distractor: 'dance',
+    correctReason: 'כי הרובוט קודם מגיע לבלון, אחר כך תופס אותו, ובסוף מחזיר אותו לילדה — בלי לרקוד באמצע.',
     commands: {
       goBalloon: { icon: '🤖➡️🎈', text: 'לך אל הבלון', reason: 'קודם הרובוט צריך להגיע לחפץ.' },
       grabBalloon: { icon: '🤖🤏🎈', text: 'תפוס את הבלון', reason: 'אחרי שמגיעים, אפשר לתפוס.' },
@@ -27,6 +28,7 @@ window.CINEMA_LESSONS = [
     goal: 'המטרה: עוגיות מגיעות לשולחן המסיבה.',
     correctOrder: ['takeTray', 'walkTable', 'putCookies'],
     distractor: 'turnLight',
+    correctReason: 'כי קודם לוקחים את המגש, אחר כך הולכים לשולחן, ובסוף מניחים את העוגיות במקום.',
     commands: {
       takeTray: { icon: '🤖🧺🍪', text: 'קח מגש עוגיות', reason: 'אי אפשר להביא עוגיות בלי לקחת אותן קודם.' },
       walkTable: { icon: '🤖➡️🪑', text: 'לך אל שולחן המסיבה', reason: 'אחרי שלוקחים, צריך להגיע ליעד.' },
@@ -45,6 +47,7 @@ window.CINEMA_LESSONS = [
     goal: 'המטרה: הצב עובר לצד השני בבטחה.',
     correctOrder: ['scanWater', 'placeBridge', 'guideTurtle'],
     distractor: 'paintBridge',
+    correctReason: 'כי קודם מזהים את הבעיה, אחר כך בונים מעבר, ובסוף מובילים את הצב בבטחה.',
     commands: {
       scanWater: { icon: '🤖👀🌊', text: 'בדוק איפה הנחל', reason: 'קודם מזהים את הבעיה.' },
       placeBridge: { icon: '🤖🌉', text: 'הנח גשר קטן', reason: 'אחרי שמבינים איפה הבעיה, יוצרים מעבר.' },
@@ -63,6 +66,7 @@ window.CINEMA_LESSONS = [
     goal: 'המטרה: החללית משוגרת רק אחרי הכנה.',
     correctOrder: ['buildRocket', 'checkReady', 'launchRocket'],
     distractor: 'sleep',
+    correctReason: 'כי קודם בונים, אחר כך בודקים שהכול מוכן, ורק בסוף משגרים.',
     commands: {
       buildRocket: { icon: '🤖🧱🚀', text: 'בנה את החללית', reason: 'קודם יוצרים את מה שרוצים לשגר.' },
       checkReady: { icon: '🤖✅', text: 'בדוק שהחללית מוכנה', reason: 'לפני פעולה חשובה עושים בדיקה.' },
@@ -81,6 +85,7 @@ window.CINEMA_LESSONS = [
     goal: 'המטרה: לחתול יש קופסה נקייה ונוחה.',
     correctOrder: ['openBox', 'putBlanket', 'inviteCat'],
     distractor: 'closeBox',
+    correctReason: 'כי קודם פותחים את הקופסה, אחר כך מכינים אותה, ובסוף מזמינים את החתול להיכנס.',
     commands: {
       openBox: { icon: '🤖📦⬆️', text: 'פתח את הקופסה', reason: 'אי אפשר להכניס שמיכה אם הקופסה סגורה.' },
       putBlanket: { icon: '🤖🧺📦', text: 'שים שמיכה בקופסה', reason: 'השמיכה הופכת את הקופסה לנוחה.' },
@@ -99,6 +104,7 @@ window.CINEMA_LESSONS = [
     goal: 'המטרה: לצלם קשת בזמן הנכון.',
     correctOrder: ['waitRainStop', 'lookSky', 'takePhoto'],
     distractor: 'photoFloor',
+    correctReason: 'כי קודם מחכים לרגע מתאים, אחר כך מחפשים את הקשת, ובסוף מצלמים אותה.',
     commands: {
       waitRainStop: { icon: '🤖⏳🌧️', text: 'חכה שהגשם ייחלש', reason: 'קודם מחכים לרגע מתאים.' },
       lookSky: { icon: '🤖👀🌈', text: 'חפש קשת בשמיים', reason: 'לפני צילום צריך למצוא את האובייקט.' },
@@ -110,10 +116,10 @@ window.CINEMA_LESSONS = [
 ];
 
 window.CINEMA_LESSONS.push(
-  { id: 7, emoji: '🎬', title: 'הרובוט פותח סצנה', unit: 'צילום ראשון', concept: 'אלגוריתם פתיחה', story: 'סיסי רוצה לצלם סצנה שבה הרובוט נכנס לאולפן.', goal: 'המטרה: להתחיל צילום מסודר.', correctOrder: ['turnLights','placeRobot','startCamera'], distractor: 'eatPopcorn', commands: { turnLights:{icon:'💡',text:'הדלק אורות אולפן',reason:'קודם מכינים תאורה.'}, placeRobot:{icon:'🤖➡️',text:'מקם את הרובוט בסימן',reason:'הרובוט צריך להיות במקום הנכון.'}, startCamera:{icon:'📹',text:'התחל צילום',reason:'מצלמים רק אחרי ההכנות.'}, eatPopcorn:{icon:'🍿',text:'אכול פופקורן',reason:'זה נחמד, אבל לא מקדם את הצילום.'} }, learningNote:'אלגוריתם צילום מתחיל בהכנה ורק אז פעולה.' },
-  { id: 8, emoji: '🎭', title: 'סצנת מסכות', unit: 'אביזרים', concept: 'סדר אביזרים', story: 'הרובוט צריך לבחור מסכה, לעמוד במקום, ואז להופיע.', goal: 'המטרה: הופעה קצרה וברורה.', correctOrder: ['chooseMask','standMark','perform'], distractor: 'turnOffLights', commands: { chooseMask:{icon:'🎭',text:'בחר מסכה מתאימה',reason:'קודם בוחרים אביזר.'}, standMark:{icon:'📍',text:'עמוד על הסימון',reason:'צריך מיקום מדויק.'}, perform:{icon:'🤖✨',text:'בצע הופעה קצרה',reason:'בסוף מבצעים.'}, turnOffLights:{icon:'🌑',text:'כבה אורות',reason:'זה יקשה לראות את ההופעה.'} }, learningNote:'אביזר, מיקום, פעולה — זה רצף ברור שעוזר לצלם בלי בלבול.' },
-  { id: 9, emoji: '🔊', title: 'צליל בזמן הנכון', unit: 'פסקול', concept: 'תזמון', story: 'בסצנה יש דלת שנפתחת ואז צריך צליל פעמון.', goal: 'המטרה: להשמיע צליל ברגע הנכון.', correctOrder: ['openDoor','waitMoment','playBell'], distractor: 'playBefore', commands: { openDoor:{icon:'🚪',text:'פתח דלת בסצנה',reason:'האירוע מתחיל.'}, waitMoment:{icon:'⏳',text:'חכה רגע קצר',reason:'התזמון חשוב.'}, playBell:{icon:'🔔',text:'השמע פעמון',reason:'הצליל מגיע אחרי הפתיחה.'}, playBefore:{icon:'🔔🚫',text:'השמע פעמון לפני הדלת',reason:'זה מוקדם מדי.'} }, learningNote:'תזמון הוא חלק מאלגוריתם, כי אותה פקודה בזמן אחר יוצרת תוצאה אחרת.' },
-  { id: 10, emoji: '🌧️', title: 'סצנת גשם', unit: 'אפקטים', concept: 'הכנה לפני צילום', story: 'סיסי מצלמת גשם מלאכותי באולפן.', goal: 'המטרה: להפעיל אפקט בלי לבלגן.', correctOrder: ['coverFloor','startRain','filmScene'], distractor: 'dryFloorFirst', commands: { coverFloor:{icon:'🧽',text:'כסה את הרצפה',reason:'קודם מכינים בטיחות.'}, startRain:{icon:'🌧️',text:'הפעל אפקט גשם',reason:'רק אחרי ההכנה מפעילים.'}, filmScene:{icon:'📹🌧️',text:'צלם את הסצנה',reason:'בסוף מצלמים.'}, dryFloorFirst:{icon:'☀️',text:'ייבש לפני הגשם',reason:'זה לא מתאים לפני אפקט גשם.'} }, learningNote:'גם אפקטים צריכים סדר בטוח כדי שהסצנה תעבוד ולא תיצור בלגן.' },
-  { id: 11, emoji: '🧙', title: 'קסם על המסך', unit: 'אפקט מיוחד', concept: 'סיבה ותוצאה', story: 'הרובוט מניף שרביט ואז מופיע כוכב במסך.', goal: 'המטרה: ליצור קסם לפי סדר.', correctOrder: ['liftWand','addSpark','showStar'], distractor: 'showCredits', commands: { liftWand:{icon:'🪄',text:'הרם שרביט',reason:'זו פעולת ההתחלה.'}, addSpark:{icon:'✨',text:'הוסף ניצוץ',reason:'הניצוץ מכין את הקסם.'}, showStar:{icon:'⭐',text:'הצג כוכב',reason:'זה הפלט הסופי.'}, showCredits:{icon:'🎞️',text:'הצג כתוביות סיום',reason:'מוקדם מדי לסיום.'} }, learningNote:'סיבה ותוצאה עוזרות לבנות סצנה הגיונית.' },
-  { id: 12, emoji: '🏆', title: 'סרט הסיום של סיסי', unit: 'אתגר סיום', concept: 'אלגוריתם סרט מלא', story: 'סיסי בונה סצנת סיום עם הכנה, צילום וסיום.', goal: 'המטרה: לצלם סיום חגיגי.', correctOrder: ['setStage','filmHero','showCredits'], distractor: 'leaveCamera', commands: { setStage:{icon:'🎬',text:'הכן במה ואורות',reason:'קודם מכינים את הסט.'}, filmHero:{icon:'🤖📹',text:'צלם את סיסי',reason:'זו הפעולה המרכזית.'}, showCredits:{icon:'🏆',text:'הצג כתוביות סיום',reason:'בסוף מסיימים.'}, leaveCamera:{icon:'📹💤',text:'עזוב מצלמה כבויה',reason:'בלי מצלמה אין סרט.'} }, learningNote:'בסיום מחברים תכנון, סדר ודיבוג לסרט אחד.' }
+  { id: 7, emoji: '🎬', title: 'הרובוט פותח סצנה', unit: 'צילום ראשון', concept: 'אלגוריתם פתיחה', story: 'סיסי רוצה לצלם סצנה שבה הרובוט נכנס לאולפן. צריך להכין אותו לצילום מסודר.', goal: 'המטרה: להתחיל צילום מסודר.', correctOrder: ['turnLights','placeRobot','checkFrame','startCamera'], distractor: 'eatPopcorn', correctReason:'כי קודם מכינים את האור, אחר כך ממקמים את הרובוט, בודקים את התמונה, ורק בסוף מתחילים צילום.', commands: { turnLights:{icon:'💡',text:'הדלק אורות אולפן',reason:'קודם מכינים תאורה.'}, placeRobot:{icon:'🤖➡️',text:'מקם את הרובוט בסימן',reason:'הרובוט צריך להיות במקום הנכון.'}, checkFrame:{icon:'🎞️✅',text:'בדוק שהרובוט בתמונה',reason:'לפני צילום בודקים שהכול נראה טוב.'}, startCamera:{icon:'📹',text:'התחל צילום',reason:'מצלמים רק אחרי ההכנות.'}, eatPopcorn:{icon:'🍿',text:'אכול פופקורן',reason:'זה נחמד, אבל לא מקדם את הצילום.'} }, learningNote:'אלגוריתם צילום מתחיל בהכנה ורק אז פעולה.' },
+  { id: 8, emoji: '🎭', title: 'סצנת מסכות', unit: 'אביזרים', concept: 'סדר אביזרים', story: 'הרובוט צריך לבחור מסכה, לעמוד במקום, לפנות למצלמה, ואז להופיע.', goal: 'המטרה: הופעה קצרה וברורה.', correctOrder: ['chooseMask','standMark','faceCamera','perform'], distractor: 'turnOffLights', correctReason:'כי קודם בוחרים מסכה, עומדים במקום, פונים למצלמה, ואז מבצעים את ההופעה.', commands: { chooseMask:{icon:'🎭',text:'בחר מסכה מתאימה',reason:'קודם בוחרים אביזר.'}, standMark:{icon:'📍',text:'עמוד על הסימון',reason:'צריך מיקום מדויק.'}, faceCamera:{icon:'🤖📹',text:'פנה אל המצלמה',reason:'לפני הופעה צריך שיראו את הרובוט.'}, perform:{icon:'🤖✨',text:'בצע הופעה קצרה',reason:'בסוף מבצעים.'}, turnOffLights:{icon:'🌑',text:'כבה אורות',reason:'זה יקשה לראות את ההופעה.'} }, learningNote:'אביזר, מיקום, פעולה — זה רצף ברור שעוזר לצלם בלי בלבול.' },
+  { id: 9, emoji: '🔊', title: 'צליל בזמן הנכון', unit: 'פסקול', concept: 'תזמון', story: 'בסצנה יש דלת שנפתחת, מישהו נכנס, ואז צריך צליל פעמון בזמן מתאים.', goal: 'המטרה: להשמיע צליל ברגע הנכון.', correctOrder: ['openDoor','waitMoment','showGuest','playBell'], distractor: 'playBefore', correctReason:'כי קודם הדלת נפתחת, מחכים רגע, רואים מי נכנס, ואז משמיעים את הפעמון בזמן.', commands: { openDoor:{icon:'🚪',text:'פתח דלת בסצנה',reason:'האירוע מתחיל.'}, waitMoment:{icon:'⏳',text:'חכה רגע קצר',reason:'התזמון חשוב.'}, showGuest:{icon:'🙂',text:'הראה מי נכנס',reason:'צריך לראות את האירוע לפני הצליל.'}, playBell:{icon:'🔔',text:'השמע פעמון',reason:'הצליל מגיע אחרי הפתיחה.'}, playBefore:{icon:'🔔🚫',text:'השמע פעמון לפני הדלת',reason:'זה מוקדם מדי.'} }, learningNote:'תזמון הוא חלק מאלגוריתם, כי אותה פקודה בזמן אחר יוצרת תוצאה אחרת.' },
+  { id: 10, emoji: '🌧️', title: 'סצנת גשם', unit: 'אפקטים', concept: 'הכנה לפני צילום', story: 'סיסי מצלמת גשם מלאכותי באולפן. צריך להכין את המקום לפני שמפעילים את האפקט.', goal: 'המטרה: להפעיל אפקט בלי לבלגן.', correctOrder: ['coverFloor','checkCamera','startRain','filmScene'], distractor: 'dryFloorFirst', correctReason:'כי קודם מכינים את הרצפה, בודקים שהמצלמה מוכנה, מפעילים גשם, ואז מצלמים.', commands: { coverFloor:{icon:'🧽',text:'כסה את הרצפה',reason:'קודם מכינים בטיחות.'}, checkCamera:{icon:'📹✅',text:'בדוק שהמצלמה מוכנה',reason:'לפני אפקט חשוב בודקים צילום.'}, startRain:{icon:'🌧️',text:'הפעל אפקט גשם',reason:'רק אחרי ההכנה מפעילים.'}, filmScene:{icon:'📹🌧️',text:'צלם את הסצנה',reason:'בסוף מצלמים.'}, dryFloorFirst:{icon:'☀️',text:'ייבש לפני הגשם',reason:'זה לא מתאים לפני אפקט גשם.'} }, learningNote:'גם אפקטים צריכים סדר בטוח כדי שהסצנה תעבוד ולא תיצור בלגן.' },
+  { id: 11, emoji: '🧙', title: 'קסם על המסך', unit: 'אפקט מיוחד', concept: 'סיבה ותוצאה', story: 'סיסי מצלמת קסם קצר: הרובוט מתחיל תנועת קסם, מופיע ניצוץ קטן, האור גדל, ואז מופיע כוכב גדול על המסך.', goal: 'המטרה: ליצור קסם לפי סדר.', correctOrder: ['liftWand','addSpark','makeGlow','showStar'], distractor: 'showCredits', correctReason:'כי קודם מתחילים את תנועת הקסם, אחר כך מופיע ניצוץ, האור גדל, ובסוף מופיע הכוכב הגדול.', commands: { liftWand:{icon:'🪄',text:'התחל תנועת קסם',reason:'זו פעולת ההתחלה.'}, addSpark:{icon:'✨',text:'הפעל ניצוץ קטן',reason:'הניצוץ הוא סימן ראשון שהקסם מתחיל.'}, makeGlow:{icon:'💫',text:'הגדל את אור הקסם',reason:'האור מכין את ההופעה הגדולה.'}, showStar:{icon:'⭐',text:'הצג כוכב גדול',reason:'זה הפלט הסופי של הקסם.'}, showCredits:{icon:'🎞️',text:'הצג כתוביות סיום',reason:'מוקדם מדי לסיום.'} }, learningNote:'סיבה ותוצאה עוזרות לבנות סצנה הגיונית.' },
+  { id: 12, emoji: '🏆', title: 'סרט הסיום של סיסי', unit: 'אתגר סיום', concept: 'אלגוריתם סרט מלא', story: 'סיסי מצלמת סרטון סיום: מכינים במה, מצלמים את סיסי, מוסיפים מוזיקה לסרטון, ואז מציגים מסך תודה בסוף.', goal: 'המטרה: ליצור סרטון סיום חגיגי וברור.', correctOrder: ['setStage','filmHero','addMusic','showCredits'], distractor: 'leaveCamera', correctReason:'כי קודם מכינים במה, אחר כך מצלמים את סיסי, מוסיפים מוזיקה לסרטון, ובסוף מציגים מסך תודה.', commands: { setStage:{icon:'🎬',text:'הכן במה ואורות',reason:'קודם מכינים את הסט.'}, filmHero:{icon:'🤖📹',text:'צלם את סיסי',reason:'זו הפעולה המרכזית.'}, addMusic:{icon:'🎵',text:'הוסף מוזיקה לסרטון',reason:'אחרי הצילום מוסיפים אווירה חגיגית.'}, showCredits:{icon:'🙏',text:'הצג מסך תודה',reason:'זה מסך הסיום אחרי שהסרטון מוכן.'}, leaveCamera:{icon:'📹💤',text:'עזוב מצלמה כבויה',reason:'בלי מצלמה אין סרט.'} }, learningNote:'בסיום מחברים תכנון, סדר ודיבוג לסרט אחד.' }
 );

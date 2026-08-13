@@ -59,6 +59,11 @@ function renderAll() {
   renderRecipe();
 }
 
+function showHint() {
+  const fallback = 'חפשו מה חייב לקרות קודם, ומה אפשר לעשות רק אחרי שיש משהו מוכן.';
+  setResult(lesson.hint || fallback);
+}
+
 function checkRecipe() {
   if (!recipe.length) {
     setResult('קודם צריך לבחור שלבים למתכון.');
@@ -90,7 +95,7 @@ function init() {
   document.getElementById('check').addEventListener('click', checkRecipe);
   document.getElementById('undo').addEventListener('click', () => { recipe.pop(); renderAll(); setResult(''); });
   document.getElementById('clear').addEventListener('click', () => { recipe = []; renderAll(); setResult(''); });
-  document.getElementById('demo').addEventListener('click', () => { recipe = [...lesson.correctOrder]; renderAll(); setResult('סדר לדוגמה נטען. עכשיו בדקו את המתכון.'); });
+  document.getElementById('demo').addEventListener('click', showHint);
   document.getElementById('lesson-nav').innerHTML = lessons.map((item) => `
     <a class="${item.id === lesson.id ? 'active' : ''}" href="kitchen-play.html?lesson=${item.id}">${item.id}</a>
   `).join('');

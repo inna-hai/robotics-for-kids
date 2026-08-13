@@ -57,6 +57,7 @@ test('kitchen lesson data has twelve recipes with valid unique ordered steps and
     assert.ok(lesson.steps.every((step) => step.emoji && step.emoji.length >= 1), `Recipe ${lesson.id} steps should have visual emojis`);
     assert.ok(lesson.cookingNote.length >= 20, `Recipe ${lesson.id} needs a learning note`);
   }
+  assertIncludes(lessonsSource, 'התחילו בחומרים, אחר כך הכינו את הבצק, ורק בסוף הכניסו לתנור.');
 });
 
 test('kitchen play page exposes recipe ordering controls rather than previous mechanics', () => {
@@ -79,7 +80,8 @@ test('kitchen engine checks exact step order and gives debugging feedback', () =
   assertIncludes(playSource, 'lesson.correctOrder.length');
   assertIncludes(playSource, 'recipe.findIndex((id, index) => id !== lesson.correctOrder[index])');
   assertIncludes(playSource, 'שלב');
-  assertIncludes(playSource, 'recipe = [...lesson.correctOrder]');
+  assertIncludes(playSource, 'function showHint()');
+  assertIncludes(playSource, 'lesson.hint || fallback');
 });
 
 test('kitchen 75-minute plan is realistic and does not require all recipes for the whole class', () => {
