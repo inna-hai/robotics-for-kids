@@ -25,6 +25,26 @@ const actions = sandbox.window.WEATHER_ACTIONS;
 const tests = [];
 function test(name, fn) { tests.push({ name, fn }); }
 function assertIncludes(source, needle, message = `Missing: ${needle}`) { assert.ok(source.includes(needle), message); }
+function optionOrderScoreForLesson(lesson, id, type, index) {
+  const raw = `${type}|${lesson.id}|${index}|${id}|weather-options-v2`;
+  return [...raw].reduce((hash, char) => ((hash * 31) + char.charCodeAt(0)) >>> 0, 7);
+}
+function rawOrderedKeysForLesson(lesson, items, type) {
+  return Object.keys(items)
+    .map((id, index) => ({ id, score: optionOrderScoreForLesson(lesson, id, type, index) }))
+    .sort((a, b) => a.score - b.score)
+    .map((item) => item.id);
+}
+function orderedKeysForLesson(lesson, items, type) {
+  const ordered = rawOrderedKeysForLesson(lesson, items, type);
+  if (type !== 'action') return ordered;
+  const sensorOrder = orderedKeysForLesson(lesson, sensors, 'sensor');
+  let actionOrder = ordered;
+  while (sensorOrder.indexOf(lesson.sensor) === actionOrder.indexOf(lesson.action)) {
+    actionOrder = [...actionOrder.slice(1), actionOrder[0]];
+  }
+  return actionOrder;
+}
 
 test('weather course is linked as lesson 8 in the Sisi series', () => {
   assertIncludes(smartCityHtml, 'href="weather.html"');
@@ -63,10 +83,26 @@ test('weather play page exposes sensor and action selection rather than previous
   assertIncludes(playHtml, 'id="sensor-options"');
   assertIncludes(playHtml, 'id="action-options"');
   assertIncludes(playHtml, 'id="rule-preview"');
-  assertIncludes(playHtml, 'id="condition-chip"');
-  assertIncludes(playHtml, 'js/weather-play.js');
+  assert.ok(!playHtml.includes('id="condition-chip"'), 'Weather play should not reveal the condition as a separate clue chip');
+  assert.ok(!playSource.includes('condition-chip'), 'Weather engine should not fill a separate condition clue chip');
+  assertIncludes(playHtml, 'js/weather-play.js?v=20260813-shuffled-options-v2');
   assert.ok(!playHtml.includes('pixel-board'), 'Weather lesson should not use pixel boards');
   assert.ok(!playHtml.includes('recipe-steps'), 'Weather lesson should not use recipe ordering');
+});
+
+test('weather option columns are shuffled so answers do not line up by row', () => {
+  assertIncludes(playSource, 'function optionOrderScore(id, type, index)');
+  assertIncludes(playSource, 'function orderedOptions(items, type)');
+  assertIncludes(playSource, 'weather-options-v2');
+  const lessonEight = lessons.find((lesson) => lesson.id === 8);
+  const sensorOrder = orderedKeysForLesson(lessonEight, sensors, 'sensor');
+  const actionOrder = orderedKeysForLesson(lessonEight, actions, 'action');
+  assert.notEqual(sensorOrder.indexOf(lessonEight.sensor), actionOrder.indexOf(lessonEight.action), 'Lesson 8 answer should not be solvable by matching row positions');
+  for (const lesson of lessons) {
+    const sOrder = orderedKeysForLesson(lesson, sensors, 'sensor');
+    const aOrder = orderedKeysForLesson(lesson, actions, 'action');
+    assert.notEqual(sOrder.join(','), aOrder.join(','), `Lesson ${lesson.id} sensor/action lists should not share identical order`);
+  }
 });
 
 test('weather engine checks sensor plus action and gives targeted feedback', () => {
@@ -83,7 +119,6 @@ test('weather css and plan support a 75-minute sensor lesson', () => {
   assertIncludes(weatherCss, '.option-card');
   assertIncludes(weatherCss, '.rule-preview');
   assertIncludes(weatherCss, '.station-card');
-  assertIncludes(weatherCss, '.condition-chip');
   assertIncludes(plan, 'שיעור 75 דקות לכיתות ב׳ / גיל 7');
   assertIncludes(plan, 'תחנות 1–4 מספיקות לשיעור מלא');
   assertIncludes(plan, 'חיישן שקולט מצב בעולם לבין פעולה');

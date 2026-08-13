@@ -13,8 +13,26 @@ function setResult(text, success = false) {
   result.style.color = success ? '#047857' : '#075985';
 }
 
+function optionOrderScore(id, type, index) {
+  const raw = `${type}|${lesson.id}|${index}|${id}|weather-options-v2`;
+  return [...raw].reduce((hash, char) => ((hash * 31) + char.charCodeAt(0)) >>> 0, 7);
+}
+
+function orderedOptions(items, type) {
+  const ordered = Object.entries(items)
+    .map(([id, item], index) => ({ id, item, score: optionOrderScore(id, type, index) }))
+    .sort((a, b) => a.score - b.score);
+  if (type !== 'action') return ordered;
+  const sensorOrder = orderedOptions(sensors, 'sensor').map((option) => option.id);
+  let actionOrder = ordered;
+  while (sensorOrder.indexOf(lesson.sensor) === actionOrder.findIndex((option) => option.id === lesson.action)) {
+    actionOrder = [...actionOrder.slice(1), actionOrder[0]];
+  }
+  return actionOrder;
+}
+
 function renderOptions(containerId, items, selected, type) {
-  document.getElementById(containerId).innerHTML = Object.entries(items).map(([id, item]) => `
+  document.getElementById(containerId).innerHTML = orderedOptions(items, type).map(({ id, item }) => `
     <button type="button" class="option-card ${selected === id ? 'active' : ''}" data-${type}="${id}">
       <span class="option-icon">${item.icon}</span>
       <span>${item.label}</span>
@@ -117,7 +135,6 @@ function init() {
   document.getElementById('lesson-emoji').textContent = lesson.emoji;
   document.getElementById('scene').textContent = lesson.scene;
   document.getElementById('learning-note').innerHTML = `<b>רגע למידה:</b> ${lesson.learningNote}`;
-  document.getElementById('condition-chip').textContent = lesson.condition;
   document.getElementById('check').addEventListener('click', checkAutomation);
   document.getElementById('hint').addEventListener('click', showHint);
   document.getElementById('clear').addEventListener('click', clearAutomation);
