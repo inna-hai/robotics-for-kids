@@ -82,11 +82,16 @@ function renderAll(clearResult = true) {
 function checkProgram() {
   if (!selectedCondition || selectedActions.length !== 3) { setResult('צריך לבחור תנאי וגם 3 פעולות לפי סדר.'); return; }
   const conditionOk = selectedCondition === mission.condition;
-  const actionsOk = selectedActions.every((id, index) => id === mission.correctActions[index]) && !selectedActions.includes(mission.distractor);
+  const hasDistractor = selectedActions.includes(mission.distractor);
+  const hasAllCorrectActions = mission.correctActions.every((id) => selectedActions.includes(id));
+  const actionsInOrder = selectedActions.every((id, index) => id === mission.correctActions[index]);
+  const actionsOk = actionsInOrder && !hasDistractor;
   const explanationOk = selectedExplanation === mission.explanation;
   if (conditionOk && actionsOk && explanationOk) { setResult('מצוין! בניתם תכנית עיר חכמה שעובדת 🎉', true); renderNextStep(true); window.SisiCourseCertificate?.show({ lessons: missions, lesson: mission }); }
   else if (!conditionOk) setResult('התנאי לא מתאים למשימה. חפשו את שני הרמזים שמתארים את הבעיה בעיר.');
-  else if (!actionsOk) setResult('יש בעיה ברצף הפעולות או פעולה מיותרת. בדקו מה מקדם את המטרה ומה לא.');
+  else if (!actionsOk && hasAllCorrectActions && !hasDistractor) setResult('הפעולות שבחרתם מתאימות, אבל הסדר עוד לא נכון. חשבו מה צריך לקרות קודם ומה אחר כך.');
+  else if (!actionsOk && hasDistractor) setResult('יש פעולה אחת שלא מתאימה למשימה. חפשו פעולה שבאמת עוזרת לפתור את הבעיה.');
+  else if (!actionsOk) setResult('חסרה פעולה שמתאימה למשימה. בדקו מה סיסי צריכה לעשות כדי להגיע למטרה.');
   else setResult('התכנית טובה. עכשיו בחרו הסבר נכון שמראה שהבנתם למה היא עובדת.');
 }
 function showHint() {
