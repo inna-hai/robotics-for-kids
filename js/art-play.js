@@ -165,16 +165,6 @@ function checkArtwork() {
   renderNextStep(false);
 }
 
-function showHint() {
-  const firstMissing = lesson.target.find((command) => !selectedCommands.some((item) => keyOf(item) === keyOf(command)));
-  if (firstMissing) {
-    setResult(`רמז: נסו להוסיף ${commandLabel(firstMissing)}.`);
-  } else {
-    setResult('רמז: אולי בחרתם הוראה שלא קיימת בציור המטרה?');
-  }
-  renderNextStep(false);
-}
-
 function resetArtwork() {
   selectedCommands = [];
   renderCommands();
@@ -208,7 +198,6 @@ function init() {
   document.getElementById('mission').textContent = lesson.mission;
   document.getElementById('learning-note').innerHTML = `<b>רגע למידה:</b> ${lesson.learningNote}`;
   document.getElementById('check').addEventListener('click', checkArtwork);
-  document.getElementById('hint').addEventListener('click', showHint);
   document.getElementById('clear').addEventListener('click', resetArtwork);
   document.getElementById('lesson-nav').innerHTML = lessons.map((item) => `<a class="${item.id === lesson.id ? 'active' : ''}" href="art-play.html?lesson=${item.id}">${item.id}</a>`).join('');
   renderBoard('target-board', lesson.target, 'ציור המטרה');

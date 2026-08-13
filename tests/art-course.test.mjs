@@ -125,8 +125,9 @@ test('art engine validates selected commands against target pixels and supports 
   assertIncludes(playSource, 'function checkArtwork()');
   assertIncludes(playSource, 'missing.length === 0 && extra.length === 0');
   assertIncludes(playSource, 'הוראות מיותרות');
-  assertIncludes(playSource, 'function showHint()');
   assertIncludes(playSource, 'function resetArtwork()');
+  assert.ok(!playHtml.includes('id="hint"'), 'Pixel lesson should not expose a hint button that reveals the missing command');
+  assert.ok(!playSource.includes('function showHint()'), 'Pixel lesson should encourage visual comparison rather than direct hints');
   assertIncludes(playSource, 'renderNextStep(true)');
   assertIncludes(playSource, 'art-play.html?lesson=');
 });
