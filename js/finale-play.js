@@ -84,7 +84,7 @@ function checkProgram() {
   const conditionOk = selectedCondition === mission.condition;
   const actionsOk = selectedActions.every((id, index) => id === mission.correctActions[index]) && !selectedActions.includes(mission.distractor);
   const explanationOk = selectedExplanation === mission.explanation;
-  if (conditionOk && actionsOk && explanationOk) { setResult('מצוין! בניתם תכנית עיר חכמה שעובדת 🎉', true); window.SisiCourseCertificate?.show({ lessons: missions, lesson: mission }); renderNextStep(true); }
+  if (conditionOk && actionsOk && explanationOk) { setResult('מצוין! בניתם תכנית עיר חכמה שעובדת 🎉', true); renderNextStep(true); window.SisiCourseCertificate?.show({ lessons: missions, lesson: mission }); }
   else if (!conditionOk) setResult('התנאי לא מתאים למשימה. חפשו את שני הרמזים שמתארים את הבעיה בעיר.');
   else if (!actionsOk) setResult('יש בעיה ברצף הפעולות או פעולה מיותרת. בדקו מה מקדם את המטרה ומה לא.');
   else setResult('התכנית טובה. עכשיו בחרו הסבר נכון שמראה שהבנתם למה היא עובדת.');
@@ -104,8 +104,19 @@ function renderNextStep(show = false) {
   if (!box) return;
   if (!show) { box.innerHTML = ''; return; }
   const target = nextTarget();
-  box.innerHTML = `<div class="next-step-note">המשימה בעיר הצליחה! ממשיכים לאתגר הבא.</div><a class="btn" href="${target.href}">${target.label}</a>`;
-  window.SisiSuccessDialog?.show({ message: box.querySelector('.next-step-note')?.textContent || 'כל הכבוד! אפשר להמשיך קדימה או לנסות שוב.', lessons: missions, lesson: mission, nextHref: target.href, nextLabel: target.label, onRepeat: () => window.location.reload() });
+  const isLastMission = missions[missions.length - 1]?.id === mission.id;
+  const note = isLastMission ? 'איזה יופי! סיסי סיימה יחד איתכם את כל משימות העיר החכמה. למדתם תנאים, רצף פעולות, דיבוג והסבר לתוכנית — עכשיו קורס סיסי הושלם 🎉' : 'המשימה בעיר הצליחה! ממשיכים לאתגר הבא.';
+  box.innerHTML = `<div class="next-step-note">${note}</div><a class="btn" href="${target.href}">${target.label}</a>`;
+  window.SisiSuccessDialog?.show({
+    badge: isLastMission ? '🏆 סיום הקורס!' : undefined,
+    title: isLastMission ? 'כל הכבוד! סיימתם את כל קורס סיסי' : undefined,
+    message: note,
+    lessons: missions,
+    lesson: mission,
+    nextHref: target.href,
+    nextLabel: target.label,
+    onRepeat: () => window.location.reload()
+  });
 }
 function init() {
   document.getElementById('page-title').textContent = `${mission.emoji} ${mission.title}`;

@@ -97,7 +97,7 @@
     return `${window.location.pathname.replace(/.*\//, '')}?lesson=${lessons[index + 1].id}`;
   }
 
-  function showSuccessDialog({ message, lessons, lesson, nextHref, nextLabel, repeatLabel, onRepeat } = {}) {
+  function showSuccessDialog({ message, title, badge, lessons, lesson, nextHref, nextLabel, repeatLabel, onRepeat } = {}) {
     injectDialogStyle();
     document.getElementById('sisi-success-dialog')?.remove();
     const info = courseInfo();
@@ -111,8 +111,8 @@
     card.setAttribute('aria-modal', 'true');
     card.innerHTML = `
       <div class="sisi-success-dialog">
-        <div class="badge">🎉 הצלחה!</div>
-        <h2>סיסי הצליחה במשימה</h2>
+        <div class="badge">${badge || '🎉 הצלחה!'}</div>
+        <h2>${title || 'סיסי הצליחה במשימה'}</h2>
         <p>${message || 'כל הכבוד! אפשר להמשיך קדימה או לנסות שוב מהתחלה.'}</p>
         <div class="sisi-success-actions">
           <a class="btn" href="${href}">${label}</a>
