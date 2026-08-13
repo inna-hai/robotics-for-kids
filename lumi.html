@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🦉 לומי חוקרת הטבע - חשיבה לילדים</title>
+  <meta name="description" content="לומי חוקרת הטבע היא לומדה משחקית לכיתות ב׳ ומעלה: מיון, דפוסים, אם-אז, דאטה וחשיבה לוגית דרך טבע, חיות ומחברת מסע." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/lumi.css?v=20260808-lumi-3">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <div class="kicker">מסע טבע חמוד • כיתה ב׳ ומעלה • חשיבה דרך משחק</div>
+        <h1>🦉 לומי חוקרת הטבע</h1>
+        <p>
+          סדרה חדשה באותו גיל של סיסי, אבל עם חוויה אחרת לגמרי: מחברת מסע, מדבקות טבע, חיות, דפוסים ומזג אוויר. הילדים לא “מפעילים רובוט”, אלא עוזרים ללומי לחקור, למיין, לזהות חוקיות ולקבל החלטות.
+        </p>
+        <div class="actions">
+          <a class="btn" href="lumi-play.html?lesson=1">🐾 התחילו שיעור ראשון</a>
+          <a class="btn alt" href="index.html">↩️ כל הלומדות</a>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true"><div><div class="lumi-face">🦉</div><strong>מחברת מסע · מדבקות · משימות קצרות</strong></div></div>
+    </section>
+
+    <section class="section">
+      <h2>מה לומדים עם לומי?</h2>
+      <p class="lead">אותם שרירי חשיבה של סיסי — רצף, תנאי, דפוס, מיון, לולאות, דיבוג ודאטה — אבל דרך עולם טבעי, רגוע וסיפורי יותר. במסלול יש 15 תחנות פעילות ו־12 תרגולים בכל תחנה.</p>
+    </section>
+
+    <section class="section">
+      <h2>מסע 15 תחנות בטבע</h2>
+      <div class="trail" id="trail"></div>
+    </section>
+  </main>
+  <script src="js/lumi-lessons.js?v=20260808-lumi-5"></script>
+  <script>
+    const trail = document.getElementById('trail');
+    trail.innerHTML = window.LUMI_LESSONS.map((lesson) => {
+      const open = true;
+      const href = `lumi-play.html?lesson=${lesson.id}`;
+      return `<a class="trail-card open" href="${href}">
+        <div class="icon">${lesson.icon}</div>
+        <b>תחנה ${lesson.id}</b>
+        <span class="badge open">12 תרגולים</span>
+        <h3>${lesson.title}</h3>
+        <p>${lesson.story}</p>
+        <div class="chips"><span class="chip">${lesson.concept}</span><span class="chip">${lesson.sticker}</span></div>
+      </a>`;
+    }).join('');
+  </script>
+</body>
+</html>

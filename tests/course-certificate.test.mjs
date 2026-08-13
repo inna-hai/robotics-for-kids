@@ -30,12 +30,16 @@ test('certificate next buttons follow the Sisi lesson sequence, not optional lab
   assertIncludes(certificateSource, "'/escape-play.html': { title: 'חדר הבריחה', home: 'escape.html', homeLabel: '🔐 לעמוד חדר הבריחה', next: 'finale.html'");
 });
 
-test('shared success dialog offers continue and repeat actions', () => {
+test('shared success dialog offers continue and repeat actions and saves local progress', () => {
   assertIncludes(certificateSource, 'window.SisiSuccessDialog');
   assertIncludes(certificateSource, "setAttribute('role', 'dialog')");
   assertIncludes(certificateSource, 'למשימה הבאה');
   assertIncludes(certificateSource, 'לנסות שוב');
   assertIncludes(certificateSource, 'onRepeat');
+  assertIncludes(certificateSource, 'window.SisiProgress');
+  assertIncludes(certificateSource, 'localStorage.setItem(key, JSON.stringify(progress))');
+  assertIncludes(certificateSource, 'progress.completed[lesson.id]');
+  assertIncludes(certificateSource, 'markProgress(lesson)');
 });
 
 test('all Sisi course play pages load the certificate helper before their play engine', () => {

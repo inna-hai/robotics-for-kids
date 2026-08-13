@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🦉 משחק עם לומי</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/lumi.css?v=20260808-lumi-12">
+</head>
+<body>
+  <main class="shell">
+    <div class="topline">
+      <a class="home-link" href="lumi.html">↩️ חזרה למסע של לומי</a>
+      <span class="lesson-pill" id="lesson-pill">תחנה 1</span>
+    </div>
+    <section class="notebook">
+      <aside class="side">
+        <h2>🦉 מחברת המסע</h2>
+        <p class="lead" id="lesson-story">לומי מכינה משימה...</p>
+        <div class="journal">
+          <div class="journal-item">⭐ נקודות תצפית: <span id="stars">0</span></div>
+          <div class="journal-item">✅ משימות: <span id="done">0</span>/<span id="total">3</span></div>
+          <div><div class="progress"><div class="bar" id="bar"></div></div></div>
+          <div><strong>מדבקות שאספנו:</strong><div class="sticker-row" id="stickers"></div></div>
+        </div>
+      </aside>
+      <section class="stage">
+        <div id="host"></div>
+        <div id="summary" class="summary">
+          <div class="big" id="summary-icon">🏆</div>
+          <h2>כל הכבוד! לומי רשמה תצפית חדשה</h2>
+          <p class="lead" id="summary-text"></p>
+          <div class="actions" style="justify-content:center">
+            <button class="btn green" id="next-btn">לתחנה הבאה</button>
+            <a class="btn yellow" href="lumi.html">למפת המסע</a>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+  <script src="js/lumi-lessons.js?v=20260808-lumi-13"></script>
+  <script src="js/lumi-play.js?v=20260808-lumi-12"></script>
+</body>
+</html>
