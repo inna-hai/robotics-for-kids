@@ -35,15 +35,44 @@ function renderReasons() {
   document.getElementById('reason-options').innerHTML = options.map((reason) => `<button type="button" class="reason-card ${selectedReason === reason ? 'active' : ''}" data-reason="${reason}">${reason}</button>`).join('');
   document.querySelectorAll('[data-reason]').forEach((button) => button.addEventListener('click', () => { selectedReason = button.dataset.reason; renderReasons(); setResult(''); }));
 }
-function renderAll() { renderOptions(); renderCondition(); renderReasons(); renderNextStep(false); setResult(''); }
+function howToTarget() {
+  const targets = {
+    1: { read: 'על הדלת', choose: 'לדלת', opened: 'הדלת נפתחה' },
+    2: { read: 'על התיבה', choose: 'לתיבה', opened: 'התיבה נפתחה' },
+    3: { read: 'על השער', choose: 'לשער', opened: 'השער נפתח' },
+    4: { read: 'על המנעול', choose: 'למנעול', opened: 'המנעול נפתח' },
+    5: { read: 'על הקיר הסודי', choose: 'לקיר הסודי', opened: 'הקיר הסודי נפתח' },
+    6: { read: 'על החדר האחרון', choose: 'לחדר האחרון', opened: 'החדר האחרון נפתח' },
+    7: { read: 'על הדלת', choose: 'לדלת', opened: 'הדלת נפתחה' },
+    8: { read: 'על החדר', choose: 'לחדר', opened: 'החדר נפתח' },
+    9: { read: 'על הדלת', choose: 'לדלת', opened: 'הדלת נפתחה' },
+    10: { read: 'על השער', choose: 'לשער', opened: 'השער נפתח' },
+    11: { read: 'על החדר', choose: 'לחדר', opened: 'החדר נפתח' },
+    12: { read: 'על שער הסיום', choose: 'לשער הסיום', opened: 'שער הסיום נפתח' }
+  };
+  return targets[lesson.id] || { read: 'על החדר', choose: 'לחדר', opened: 'החדר נפתח' };
+}
+function renderHowTo() {
+  const target = howToTarget();
+  const readStep = document.getElementById('how-to-read-target');
+  const chooseStep = document.getElementById('how-to-choose-target');
+  if (readStep) readStep.textContent = `1️⃣ קוראים מה כתוב ${target.read}`;
+  if (chooseStep) chooseStep.textContent = `2️⃣ בוחרים שני רמזים שמתאימים ${target.choose}`;
+}
+function renderAll() { renderHowTo(); renderOptions(); renderCondition(); renderReasons(); renderNextStep(false); setResult(''); }
+function sameKeysInAnyOrder(first, second) {
+  if (first.length !== second.length) return false;
+  const firstSorted = [...first].sort();
+  const secondSorted = [...second].sort();
+  return firstSorted.every((id, index) => id === secondSorted[index]);
+}
 function checkEscape() {
   if (selected.length !== 2) { setResult('צריך לבחור בדיוק שני רמזים.'); return; }
-  const required = new Set(lesson.required);
-  const selectedSet = new Set(selected);
-  const keysOk = lesson.required.every((id) => selectedSet.has(id)) && selected.length === required.size;
+  const keysOk = sameKeysInAnyOrder(selected, lesson.required);
   const reasonOk = selectedReason === lesson.successReason;
   if (keysOk && reasonOk) { setResult(`נכון! ${lesson.result} 🔓`, true); window.SisiCourseCertificate?.show({ lessons, lesson }); renderNextStep(true); }
   else if (!keysOk) setResult('כמעט. בתנאי “וגם” שני הרמזים חייבים להתאים בדיוק למה שכתוב על הדלת.');
+  else if (!selectedReason) setResult('כמעט סיימתם — עכשיו בחרו למה שני הרמזים פותחים את החדר.');
   else setResult(lesson.feedbackWrongReason || 'הרמזים נכונים. עכשיו בחרו נימוק שמסביר למה תנאי “וגם” עובד.');
 }
 function showHint() {
@@ -63,7 +92,8 @@ function renderNextStep(show = false) {
   if (!box) return;
   if (!show) { box.innerHTML = ''; return; }
   const target = nextTarget();
-  box.innerHTML = `<div class="next-step-note">הדלת נפתחה! ממשיכים לחדר הבא.</div><a class="btn" href="${target.href}">${target.label}</a>`;
+  const openedText = howToTarget().opened;
+  box.innerHTML = `<div class="next-step-note">${openedText}! ממשיכים לחדר הבא.</div><a class="btn" href="${target.href}">${target.label}</a>`;
   window.SisiSuccessDialog?.show({ message: box.querySelector('.next-step-note')?.textContent || 'כל הכבוד! אפשר להמשיך קדימה או לנסות שוב.', lessons, lesson, nextHref: target.href, nextLabel: target.label, onRepeat: () => window.location.reload() });
 }
 function init() {
