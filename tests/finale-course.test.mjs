@@ -35,8 +35,8 @@ test('finale course is linked as lesson 15 and capstone', () => {
   assertIncludes(hubHtml, 'סיסי מצילה את העיר החכמה');
 });
 
-test('landing page frames a 76-minute capstone integrating programming ideas', () => {
-  assertIncludes(finaleHtml, 'שיעור 15 • שיעור שיא • עיר חכמה • 76 דקות');
+test('landing page frames a 75-minute capstone integrating programming ideas', () => {
+  assertIncludes(finaleHtml, 'שיעור 15 • שיעור שיא • עיר חכמה • 75 דקות');
   assertIncludes(finaleHtml, 'תנאי, רצף פעולות, דיבוג ונימוק');
   assertIncludes(finaleHtml, 'אתגר צוותי');
   assertIncludes(finaleHtml, 'הצגת פתרון');
@@ -50,6 +50,9 @@ test('finale data has twelve missions combining condition, ordered actions, and 
   const actionKeys = Object.keys(actions);
   for (const mission of missions) {
     assert.ok(conditionKeys.includes(mission.condition), `Mission ${mission.id} condition must exist`);
+    assert.equal(mission.conditionOptions.length, 4, `Mission ${mission.id} should offer four city states`);
+    assert.ok(mission.conditionOptions.includes(mission.condition), `Mission ${mission.id} options should include the correct city state`);
+    for (const id of mission.conditionOptions) assert.ok(conditionKeys.includes(id), `Unknown condition option ${id}`);
     assert.equal(mission.correctActions.length, 3, `Mission ${mission.id} needs three actions`);
     assert.ok(actionKeys.includes(mission.distractor), `Mission ${mission.id} distractor must exist`);
     for (const id of mission.correctActions) assert.ok(actionKeys.includes(id), `Unknown action ${id}`);
@@ -65,17 +68,24 @@ test('finale play page requires condition, ordered actions, and explanation', ()
   assertIncludes(playSource, 'selectedCondition === mission.condition');
   assertIncludes(playSource, 'selectedActions.every');
   assertIncludes(playSource, 'selectedExplanation === mission.explanation');
+  assertIncludes(playSource, 'function explanationChoices()');
+  assertIncludes(playSource, 'distractorPairs');
+  assertIncludes(playSource, 'mission.id % 3');
+  assertIncludes(playSource, 'function removeAction(id)');
+  assertIncludes(playSource, 'data-remove-action');
+  assertIncludes(playSource, 'toggleAction(button.dataset.action)');
   assertIncludes(playSource, "href: 'sisi.html'");
 });
 
-test('finale lab, css, and plan support a 76-minute capstone project', () => {
+test('finale lab, css, and plan support a 75-minute capstone project', () => {
   assertIncludes(labHtml, 'פרויקט סיום • 20 דקות');
   assertIncludes(labHtml, 'בעיה בעיר');
   assertIncludes(labHtml, 'פעולה מיותרת');
   assertIncludes(labHtml, 'בדיקת חברים');
   assertIncludes(finaleCss, '.program-grid');
   assertIncludes(finaleCss, '.condition-line');
-  assertIncludes(plan, 'שיעור שיא של 76 דקות');
+  assertIncludes(finaleCss, '.remove-action');
+  assertIncludes(plan, 'שיעור שיא של 75 דקות');
   assertIncludes(plan, 'מסכם את קורס סיסי');
 });
 
