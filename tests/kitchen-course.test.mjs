@@ -79,6 +79,7 @@ test('kitchen engine checks exact step order and gives debugging feedback', () =
   assertIncludes(playSource, 'lesson.displayOrder || lesson.steps.map');
   assertIncludes(playSource, 'lesson.correctOrder.length');
   assertIncludes(playSource, 'recipe.findIndex((id, index) => id !== lesson.correctOrder[index])');
+  assertIncludes(playSource, 'השלבים מתאימים למתכון, אבל שלב');
   assertIncludes(playSource, 'שלב');
   assertIncludes(playSource, 'function showHint()');
   assertIncludes(playSource, 'lesson.hint || fallback');
