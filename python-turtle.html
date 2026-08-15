@@ -9,7 +9,7 @@
   <script src="https://unpkg.com/blockly/msg/he.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <style>
-    *{box-sizing:border-box}body{margin:0;font-family:Rubik,Arial,sans-serif;background:linear-gradient(135deg,#e0f2fe,#fdf4ff 48%,#ecfeff);color:#102033;min-height:100vh}.app{display:grid;grid-template-rows:auto 1fr;min-height:100vh}.topbar{display:grid;grid-template-columns:minmax(260px,1fr) auto;gap:14px;align-items:center;padding:12px 18px;background:rgba(255,255,255,.92);border-bottom:1px solid rgba(15,23,42,.09);box-shadow:0 8px 24px rgba(15,23,42,.08);position:sticky;top:0;z-index:20}.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.2rem;min-width:0}.brand .bot{font-size:2rem}.brand-text{display:flex;flex-direction:column;gap:2px}.brand-text small{font-size:.78rem;color:#64748b;font-weight:800}.nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-start}.nav a{border:1px solid #e2e8f0;border-radius:999px;padding:9px 13px;text-decoration:none;font-weight:900;color:#0f172a;background:#fff;box-shadow:0 5px 14px rgba(15,23,42,.07);white-space:nowrap}.nav a.primary{background:linear-gradient(135deg,#22d3ee,#a78bfa);border-color:transparent;color:#08111f}.layout{display:grid;direction:ltr;grid-template-columns:minmax(420px,1.05fr) minmax(390px,.95fr) minmax(340px,380px);grid-template-areas:'canvas workspace lessons';gap:14px;padding:14px;height:calc(100vh - 73px);min-height:700px}.layout>.panel{direction:rtl}.panel{background:rgba(255,255,255,.9);border:1px solid rgba(15,23,42,.1);border-radius:24px;box-shadow:0 16px 40px rgba(15,23,42,.1);overflow:hidden}.lessons{grid-area:lessons;padding:18px;overflow:auto}.lessons h1{font-size:1.45rem;margin:0 0 8px}.lessons p{line-height:1.65;color:#475569;margin:0 0 14px}.lesson{width:100%;text-align:right;border:2px solid #e2e8f0;background:#fff;border-radius:16px;padding:11px 12px;margin:7px 0;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between;gap:10px}.lesson.active{border-color:#22d3ee;background:#ecfeff}.lesson b{display:block;font-size:1rem}.lesson span{display:block;color:#64748b;font-size:.82rem;line-height:1.35;white-space:nowrap}.teacher-note{margin-top:14px;background:#f8fafc;border:1px dashed #94a3b8;border-radius:18px;padding:12px;line-height:1.55;color:#334155;font-size:.92rem}.workspace-wrap{grid-area:workspace;display:grid;grid-template-rows:auto 1fr 230px}.work-head,.canvas-head{padding:12px 16px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;gap:10px}.work-head h2,.canvas-head h2{font-size:1.05rem;margin:0}.hint{font-size:.9rem;color:#64748b;font-weight:700}.blockly-area{min-height:300px;height:100%;direction:ltr}.code-box{border-top:1px solid #e2e8f0;background:#07111f;color:#d7fbe8;display:grid;grid-template-rows:auto 1fr}.code-title{padding:10px 14px;color:#93c5fd;font-weight:900;display:flex;justify-content:space-between;align-items:center}.code-title small{color:#cbd5e1}.code{margin:0;padding:12px 16px;overflow:auto;direction:ltr;text-align:left;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.95rem;line-height:1.55;white-space:pre}.code-line{display:block;min-height:1.55em;border-radius:8px;padding:0 7px;margin:1px 0;border-right:3px solid transparent}.code-line.active-code-line{background:rgba(34,211,238,.18);border-right-color:#22d3ee;color:#fff7ad;box-shadow:0 0 0 1px rgba(34,211,238,.24) inset}.canvas-panel{grid-area:canvas;display:grid;grid-template-rows:auto minmax(0,1fr) auto minmax(180px,250px);min-height:0}.canvas-wrap{position:relative;background:linear-gradient(180deg,#f8fafc,#e0f2fe);display:grid;place-items:center;padding:18px 14px;min-height:0;overflow:hidden}.canvas-card{position:relative;width:min(100%,620px);height:min(100%,574px);background:white;border-radius:22px;border:2px solid #cbd5e1;box-shadow:inset 0 0 0 1px rgba(15,23,42,.04);overflow:hidden}.grid-bg{position:absolute;inset:0;background-image:linear-gradient(#e2e8f0 1px,transparent 1px),linear-gradient(90deg,#e2e8f0 1px,transparent 1px);background-size:32px 32px;opacity:.7}canvas{position:absolute;inset:0;width:100%;height:100%}.turtle{position:absolute;width:46px;height:46px;display:grid;place-items:center;transform-origin:center;filter:drop-shadow(0 6px 8px rgba(15,23,42,.24));transition:.12s linear}.turtle svg{width:46px;height:46px;display:block}.actions{padding:12px 14px;display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid #e2e8f0;background:#fff;z-index:2}.btn{border:0;border-radius:999px;padding:12px 17px;font-weight:900;font-family:inherit;cursor:pointer;background:#0f172a;color:white}.btn.run{background:linear-gradient(135deg,#16a34a,#22c55e);color:white}.btn.reset{background:#f1f5f9;color:#0f172a}.mission{padding:14px 16px;background:#fff7ed;border-top:1px solid #fed7aa;line-height:1.55;color:#7c2d12;overflow:auto;min-height:0}.exercise-focus{background:white;border:1px solid #fed7aa;border-radius:18px;padding:14px 16px;box-shadow:0 8px 20px rgba(124,45,18,.08)}.exercise-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.exercise-focus h3{margin:0;color:#9a3412;font-size:1.05rem}.exercise-back{border:1px solid #fed7aa;border-radius:999px;background:#fff7ed;color:#9a3412;font-family:inherit;font-weight:900;padding:7px 11px;cursor:pointer}.exercise-back:disabled{opacity:.35;cursor:not-allowed}.exercise-focus p{margin:7px 0;color:#431407}.exercise-focus .muted{color:#64748b}.exercise-controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.exercise-feedback{margin-top:10px;font-weight:900}.exercise-feedback.ok{color:#15803d}.exercise-feedback.warn{color:#b45309}.btn.next{background:linear-gradient(135deg,#2563eb,#22d3ee);color:white}.btn.next:disabled{opacity:.5;cursor:not-allowed}.mission b{color:#9a3412}.student-steps{margin:10px 0 0;padding:0;display:grid;gap:7px;list-style:none}.student-steps li{background:#fff;border:1px solid #fed7aa;border-radius:13px;padding:8px 10px;color:#431407}.student-steps li::before{content:'✓ ';font-weight:900;color:#ea580c}.lesson-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}.lesson-meta div{background:#fff;border:1px solid #fed7aa;border-radius:14px;padding:9px}.lesson-section{margin:10px 0 0;padding:11px 13px;border-radius:16px;line-height:1.6}.lesson-section h3{margin:0 0 7px;font-size:1rem}.story-box{background:#eef2ff;border:1px solid #c7d2fe;color:#312e81}.exercise-card{background:#fff;border:1px solid #fed7aa;border-radius:15px;padding:10px;margin:8px 0}.exercise-card b{display:block;color:#9a3412}.exercise-card small{display:block;color:#64748b;margin-top:5px}.vocab-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.vocab-item{background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:9px}.criteria-list{margin:6px 0 0;padding-right:18px}.criteria-list li{margin:4px 0}.lesson-picker{width:100%;border:2px solid #e2e8f0;border-radius:16px;background:white;padding:11px 12px;font-family:inherit;font-weight:900;color:#0f172a;margin:8px 0 12px}.teacher-slide-btn{display:flex;justify-content:center;align-items:center;text-align:center;text-decoration:none;background:linear-gradient(135deg,#7c3aed,#2563eb);color:white;border-radius:999px;padding:11px 13px;font-weight:900;margin:8px 0 12px;box-shadow:0 8px 18px rgba(37,99,235,.22)}.side-task-list{margin:8px 0 8px;padding-right:18px;max-height:none;overflow:visible}.side-task-list li{margin:5px 0;color:#0f172a;line-height:1.45}.teacher-note small{display:block;color:#64748b;margin-top:8px}.exercise-nav{display:grid;gap:7px;margin-top:12px}.exercise-nav button{border:1px solid #e2e8f0;background:#fff;border-radius:999px;padding:8px 10px;font-family:inherit;font-weight:900;color:#0f172a;cursor:pointer;text-align:center}.exercise-nav button.active{background:linear-gradient(135deg,#22d3ee,#a78bfa);border-color:transparent}.exercise-nav button:disabled{opacity:.45;cursor:not-allowed}.exercise-progress{margin-top:10px;color:#64748b;font-weight:800;font-size:.9rem}.lesson-links{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.lesson-links a{display:inline-flex;align-items:center;gap:6px;background:#0f172a;color:white;text-decoration:none;border-radius:999px;padding:8px 12px;font-weight:900}.lesson-links a.slides{background:linear-gradient(135deg,#7c3aed,#2563eb)}.lesson-plan{margin:10px 0 0;padding:10px 14px;background:#ecfeff;border:1px solid #67e8f9;border-radius:16px;color:#164e63}.lesson-plan b{color:#155e75}.lesson-plan ol{margin:6px 0 0;padding-right:18px}.lesson-plan li{margin:3px 0}.ok{color:#15803d;font-weight:900}.roadmap{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.chip{background:#eef2ff;color:#3730a3;border-radius:999px;padding:6px 9px;font-size:.78rem;font-weight:900}@media(max-width:1150px){.layout{grid-template-columns:1fr;grid-template-areas:'canvas' 'workspace' 'lessons';height:auto}.panel{min-height:0}.lessons{max-height:320px}.canvas-panel{min-height:650px}.workspace-wrap{min-height:680px}.canvas-card{width:auto;height:100%;max-width:100%}}@media(max-width:600px){.topbar{grid-template-columns:1fr;align-items:flex-start}.layout{padding:8px}.nav{width:100%}.nav a{flex:1;text-align:center}.lessons{max-height:220px}.canvas-panel{min-height:500px}.canvas-card{aspect-ratio:.95}.code{font-size:.85rem}}
+    *{box-sizing:border-box}body{margin:0;font-family:Rubik,Arial,sans-serif;background:linear-gradient(135deg,#e0f2fe,#fdf4ff 48%,#ecfeff);color:#102033;min-height:100vh}.app{display:grid;grid-template-rows:auto 1fr;min-height:100vh}.topbar{display:grid;grid-template-columns:minmax(260px,1fr) auto;gap:14px;align-items:center;padding:12px 18px;background:rgba(255,255,255,.92);border-bottom:1px solid rgba(15,23,42,.09);box-shadow:0 8px 24px rgba(15,23,42,.08);position:sticky;top:0;z-index:20}.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.2rem;min-width:0}.brand .bot{font-size:2rem}.brand-text{display:flex;flex-direction:column;gap:2px}.brand-text small{font-size:.78rem;color:#64748b;font-weight:800}.nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-start}.nav a{border:1px solid #e2e8f0;border-radius:999px;padding:9px 13px;text-decoration:none;font-weight:900;color:#0f172a;background:#fff;box-shadow:0 5px 14px rgba(15,23,42,.07);white-space:nowrap}.nav a.primary{background:linear-gradient(135deg,#22d3ee,#a78bfa);border-color:transparent;color:#08111f}.layout{display:grid;direction:ltr;grid-template-columns:minmax(420px,1.05fr) minmax(390px,.95fr) minmax(340px,380px);grid-template-areas:'canvas workspace lessons';gap:14px;padding:14px;height:calc(100vh - 73px);min-height:700px}.layout>.panel{direction:rtl}.panel{background:rgba(255,255,255,.9);border:1px solid rgba(15,23,42,.1);border-radius:24px;box-shadow:0 16px 40px rgba(15,23,42,.1);overflow:hidden}.lessons{grid-area:lessons;padding:18px;overflow:auto}.lessons h1{font-size:1.45rem;margin:0 0 8px}.lessons p{line-height:1.65;color:#475569;margin:0 0 14px}.lesson{width:100%;text-align:right;border:2px solid #e2e8f0;background:#fff;border-radius:16px;padding:11px 12px;margin:7px 0;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between;gap:10px}.lesson.active{border-color:#22d3ee;background:#ecfeff}.lesson b{display:block;font-size:1rem}.lesson span{display:block;color:#64748b;font-size:.82rem;line-height:1.35;white-space:nowrap}.teacher-note{margin-top:14px;background:#f8fafc;border:1px dashed #94a3b8;border-radius:18px;padding:12px;line-height:1.55;color:#334155;font-size:.92rem}.workspace-wrap{grid-area:workspace;display:grid;grid-template-rows:auto 1fr 230px}.work-head,.canvas-head{padding:12px 16px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;gap:10px}.work-head h2,.canvas-head h2{font-size:1.05rem;margin:0}.hint{font-size:.9rem;color:#64748b;font-weight:700}.blockly-area{min-height:300px;height:100%;direction:ltr}.code-box{border-top:1px solid #e2e8f0;background:#07111f;color:#d7fbe8;display:grid;grid-template-rows:auto 1fr}.code-title{padding:10px 14px;color:#93c5fd;font-weight:900;display:flex;justify-content:space-between;align-items:center}.code-title small{color:#cbd5e1}.code{margin:0;padding:12px 16px;overflow:auto;direction:ltr;text-align:left;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.95rem;line-height:1.55;white-space:pre}.code-line{display:block;min-height:1.55em;border-radius:8px;padding:0 7px;margin:1px 0;border-right:3px solid transparent}.code-line.active-code-line{background:rgba(34,211,238,.18);border-right-color:#22d3ee;color:#fff7ad;box-shadow:0 0 0 1px rgba(34,211,238,.24) inset}.canvas-panel{grid-area:canvas;display:grid;grid-template-rows:auto minmax(0,1fr) auto minmax(180px,250px);min-height:0}.canvas-wrap{position:relative;background:linear-gradient(180deg,#f8fafc,#e0f2fe);display:grid;place-items:stretch;padding:10px;min-height:0;overflow:hidden}.canvas-card{position:relative;width:100%;height:100%;min-height:0;background:white;border-radius:22px;border:2px solid #cbd5e1;box-shadow:inset 0 0 0 1px rgba(15,23,42,.04);overflow:hidden}.grid-bg{position:absolute;inset:0;background-image:linear-gradient(#e2e8f0 1px,transparent 1px),linear-gradient(90deg,#e2e8f0 1px,transparent 1px);background-size:32px 32px;opacity:.7}canvas{position:absolute;inset:0;width:100%;height:100%}.turtle{position:absolute;width:46px;height:46px;display:grid;place-items:center;transform-origin:center;filter:drop-shadow(0 6px 8px rgba(15,23,42,.24));transition:.12s linear}.turtle svg{width:46px;height:46px;display:block}.actions{padding:12px 14px;display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid #e2e8f0;background:#fff;z-index:2}.btn{border:0;border-radius:999px;padding:12px 17px;font-weight:900;font-family:inherit;cursor:pointer;background:#0f172a;color:white}.btn.run{background:linear-gradient(135deg,#16a34a,#22c55e);color:white}.btn.reset{background:#f1f5f9;color:#0f172a}.mission{padding:14px 16px;background:#fff7ed;border-top:1px solid #fed7aa;line-height:1.55;color:#7c2d12;overflow:auto;min-height:0}.exercise-focus{background:white;border:1px solid #fed7aa;border-radius:18px;padding:14px 16px;box-shadow:0 8px 20px rgba(124,45,18,.08)}.exercise-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.exercise-focus h3{margin:0;color:#9a3412;font-size:1.05rem}.exercise-back{border:1px solid #fed7aa;border-radius:999px;background:#fff7ed;color:#9a3412;font-family:inherit;font-weight:900;padding:7px 11px;cursor:pointer}.exercise-back:disabled{opacity:.35;cursor:not-allowed}.exercise-focus p{margin:7px 0;color:#431407}.exercise-focus .muted{color:#64748b}.exercise-controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.exercise-feedback{margin-top:10px;font-weight:900}.exercise-feedback.ok{color:#15803d}.exercise-feedback.warn{color:#b45309}.btn.next{background:linear-gradient(135deg,#2563eb,#22d3ee);color:white}.btn.next:disabled{opacity:.5;cursor:not-allowed}.mission b{color:#9a3412}.student-steps{margin:10px 0 0;padding:0;display:grid;gap:7px;list-style:none}.student-steps li{background:#fff;border:1px solid #fed7aa;border-radius:13px;padding:8px 10px;color:#431407}.student-steps li::before{content:'✓ ';font-weight:900;color:#ea580c}.lesson-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}.lesson-meta div{background:#fff;border:1px solid #fed7aa;border-radius:14px;padding:9px}.lesson-section{margin:10px 0 0;padding:11px 13px;border-radius:16px;line-height:1.6}.lesson-section h3{margin:0 0 7px;font-size:1rem}.story-box{background:#eef2ff;border:1px solid #c7d2fe;color:#312e81}.exercise-card{background:#fff;border:1px solid #fed7aa;border-radius:15px;padding:10px;margin:8px 0}.exercise-card b{display:block;color:#9a3412}.exercise-card small{display:block;color:#64748b;margin-top:5px}.vocab-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.vocab-item{background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:9px}.criteria-list{margin:6px 0 0;padding-right:18px}.criteria-list li{margin:4px 0}.lesson-picker{width:100%;border:2px solid #e2e8f0;border-radius:16px;background:white;padding:11px 12px;font-family:inherit;font-weight:900;color:#0f172a;margin:8px 0 12px}.teacher-slide-btn{display:flex;justify-content:center;align-items:center;text-align:center;text-decoration:none;background:linear-gradient(135deg,#7c3aed,#2563eb);color:white;border-radius:999px;padding:11px 13px;font-weight:900;margin:8px 0 12px;box-shadow:0 8px 18px rgba(37,99,235,.22)}.side-task-list{margin:8px 0 8px;padding-right:18px;max-height:none;overflow:visible}.side-task-list li{margin:5px 0;color:#0f172a;line-height:1.45}.teacher-note small{display:block;color:#64748b;margin-top:8px}.exercise-nav{display:grid;gap:7px;margin-top:12px}.exercise-nav button{border:1px solid #e2e8f0;background:#fff;border-radius:999px;padding:8px 10px;font-family:inherit;font-weight:900;color:#0f172a;cursor:pointer;text-align:center}.exercise-nav button.active{background:linear-gradient(135deg,#22d3ee,#a78bfa);border-color:transparent}.exercise-nav button:disabled{opacity:.45;cursor:not-allowed}.exercise-progress{margin-top:10px;color:#64748b;font-weight:800;font-size:.9rem}.lesson-links{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.lesson-links a{display:inline-flex;align-items:center;gap:6px;background:#0f172a;color:white;text-decoration:none;border-radius:999px;padding:8px 12px;font-weight:900}.lesson-links a.slides{background:linear-gradient(135deg,#7c3aed,#2563eb)}.lesson-plan{margin:10px 0 0;padding:10px 14px;background:#ecfeff;border:1px solid #67e8f9;border-radius:16px;color:#164e63}.lesson-plan b{color:#155e75}.lesson-plan ol{margin:6px 0 0;padding-right:18px}.lesson-plan li{margin:3px 0}.ok{color:#15803d;font-weight:900}.roadmap{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.chip{background:#eef2ff;color:#3730a3;border-radius:999px;padding:6px 9px;font-size:.78rem;font-weight:900}@media(max-width:1150px){.layout{grid-template-columns:1fr;grid-template-areas:'canvas' 'workspace' 'lessons';height:auto}.panel{min-height:0}.lessons{max-height:320px}.canvas-panel{min-height:650px}.workspace-wrap{min-height:680px}.canvas-card{width:auto;height:100%;max-width:100%}}@media(max-width:600px){.topbar{grid-template-columns:1fr;align-items:flex-start}.layout{padding:8px}.nav{width:100%}.nav a{flex:1;text-align:center}.lessons{max-height:220px}.canvas-panel{min-height:500px}.canvas-card{aspect-ratio:.95}.code{font-size:.85rem}}
     .lessons-toggle{position:fixed;right:0;top:98px;z-index:60;display:inline-flex;align-items:center;justify-content:center;gap:.45rem;width:46px;min-height:46px;overflow:hidden;border:1px solid rgba(23,32,51,.14);border-right:0;border-radius:999px 0 0 999px;padding:0;font-family:inherit;font-size:.9rem;font-weight:900;line-height:1;white-space:nowrap;cursor:pointer;background:rgba(255,255,255,.94);color:#172033;box-shadow:0 10px 26px rgba(15,23,42,.14);backdrop-filter:blur(12px);transition:width .18s ease,transform .18s ease,box-shadow .18s ease,background .18s ease}.lessons-toggle:hover,.lessons-toggle:focus-visible{width:142px;justify-content:flex-start;padding:0 .72rem;background:#fff;box-shadow:0 14px 34px rgba(15,23,42,.18);outline:none}.lessons-toggle:hover .open-text,.lessons-toggle:focus-visible .open-text,.lessons-toggle:hover .closed-text,.lessons-toggle:focus-visible .closed-text{justify-content:flex-start}.lessons-toggle .open-text,.lessons-toggle .closed-text{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;direction:rtl;width:100%}.lessons-toggle [aria-hidden="true"]{flex:0 0 auto;font-size:1.15rem;line-height:1}.lessons-toggle .open-text span:not([aria-hidden]),.lessons-toggle .closed-text span:not([aria-hidden]){display:none;opacity:0;transform:translateX(4px);transition:opacity .16s ease,transform .16s ease}.lessons-toggle:hover .open-text span:not([aria-hidden]),.lessons-toggle:focus-visible .open-text span:not([aria-hidden]),.lessons-toggle:hover .closed-text span:not([aria-hidden]),.lessons-toggle:focus-visible .closed-text span:not([aria-hidden]){display:inline;opacity:1;transform:translateX(0)}.lessons-toggle .closed-text{display:none}.layout.lessons-collapsed+.lessons-toggle .open-text{display:none}.layout.lessons-collapsed+.lessons-toggle .closed-text{display:inline-flex}.lessons{position:relative}.lessons-tools{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}.lessons-collapse-btn{border:1px solid #e2e8f0;border-radius:999px;background:#fff;color:#0f172a;font-family:inherit;font-weight:900;padding:8px 12px;cursor:pointer;box-shadow:0 5px 14px rgba(15,23,42,.07)}.lessons-resizer{position:absolute;left:-8px;top:18px;bottom:18px;width:16px;cursor:col-resize;z-index:3;display:flex;align-items:center;justify-content:center}.lessons-resizer::before{content:'';width:5px;height:72px;border-radius:999px;background:linear-gradient(180deg,#22d3ee,#a78bfa);box-shadow:0 0 0 3px rgba(255,255,255,.75)}.layout{--lessons-width:360px;grid-template-columns:minmax(420px,1.08fr) minmax(430px,1fr) minmax(280px,var(--lessons-width))}.layout.lessons-collapsed{grid-template-columns:minmax(420px,var(--canvas-width,1.08fr)) minmax(470px,1fr) 0px}.layout.lessons-collapsed .lessons{padding:0;border:0;opacity:0;pointer-events:none;overflow:hidden}.layout.is-resizing,.layout.is-resizing *{cursor:col-resize!important;user-select:none}@media(min-width:1151px){.layout:not(.lessons-collapsed)+.lessons-toggle{opacity:0;pointer-events:none}.layout.lessons-collapsed+.lessons-toggle{opacity:1;pointer-events:auto}.layout.lessons-collapsed{grid-template-areas:'canvas workspace lessons'}}@media(min-width:1400px){.layout{--lessons-width:420px}}@media(min-width:1680px){.layout{--lessons-width:480px}}@media(max-width:1150px){.layout{grid-template-columns:1fr!important;grid-template-areas:'canvas' 'workspace';height:auto}.lessons{position:fixed;right:12px;top:84px;bottom:12px;width:min(88vw,var(--lessons-width,360px));max-height:none!important;z-index:55;transform:translateX(0);transition:transform .22s ease,opacity .18s ease;padding:18px}.layout.lessons-collapsed .lessons{padding:18px;border:1px solid rgba(15,23,42,.1);opacity:0;transform:translateX(calc(100% + 24px));pointer-events:none}.lessons-resizer{left:-10px;top:22px;bottom:22px}.lessons-toggle{top:auto;right:max(10px,env(safe-area-inset-right));bottom:18px;width:auto;min-height:38px;border-radius:999px;border-right:1px solid rgba(23,32,51,.14);padding:0 .7rem}.lessons-toggle .open-text span:not([aria-hidden]),.lessons-toggle .closed-text span:not([aria-hidden]){opacity:1;transform:none}.lessons-toggle:hover,.lessons-toggle:focus-visible{width:auto;transform:translateY(-1px)}.layout:not(.lessons-collapsed)::before{content:'';position:fixed;inset:0;background:rgba(15,23,42,.18);z-index:50}.canvas-panel{min-height:650px}.workspace-wrap{min-height:680px}}@media(max-width:600px){.lessons{right:8px;left:8px;width:auto}.lessons-toggle{right:10px;bottom:12px}.layout:not(.lessons-collapsed)::before{background:rgba(15,23,42,.24)}}
   </style>
   <link rel="stylesheet" href="css/platform-home-link.css">
@@ -75,6 +75,9 @@
   </div>
 
   <xml id="toolbox" style="display:none">
+    <label text="‫הופך את הקוד ל-⁦Python⁩‬"></label>
+    <block type="py_python"></block>
+    <sep gap="14"></sep>
     <label text="תנועה"></label>
     <block type="py_forward"><field name="STEPS">100</field></block>
     <block type="py_left"><field name="ANGLE">90</field></block>
@@ -252,16 +255,16 @@
                         "title": "תרגול 6 — תרגול דיוק",
                         "prompt": "בנו מסלול עם 4 פקודות לפחות.",
                         "hint": "בנו את המסלול צעד־צעד: גררו בלוק, הריצו, ואז הוסיפו את הבלוק הבא עד שיש לפחות 4 פקודות.",
-                        "check": "הבאג תוקן והתלמיד/ה יודע/ת לומר מה הייתה הטעות.",
+                        "check": "יש במסלול לפחות 4 פקודות, כולל תנועה ופנייה.",
                         "commonMistake": "מוחקים את כל הפתרון במקום לתקן בלוק/ערך קטן."
                   },
                   {
                         "id": 7,
                         "minutes": "53–60",
-                        "title": "תרגול 7 — דיבאג מכוון",
-                        "prompt": "נסו פנייה שמאלה במקום ימינה.",
-                        "hint": "הריצו פעם עם פנייה ימינה ופעם עם פנייה שמאלה, והשוו לאיזה כיוון הצב ממשיך.",
-                        "check": "התוצר עדיין קשור למשימה: מסלול רובוט קצר.",
+                        "title": "נסו גם פנייה שמאלה",
+                        "prompt": "נסו גם פנייה שמאלה.",
+                        "hint": "הוסיפו בלוק פנייה שמאלה והריצו כדי לראות לאיזה כיוון הצב ממשיך.",
+                        "check": "יש בקוד בלוק פנייה שמאלה.",
                         "commonMistake": "מוסיפים קישוטים אבל מאבדים את מטרת השיעור."
                   },
                   {
@@ -279,7 +282,7 @@
                         "title": "תרגול 9 — קריאת Python בקול",
                         "prompt": "הוסיפו צבע אחד לבחירתכם.",
                         "hint": "בחרו צבע מהבלוקים, מקמו אותו לפני פקודות התנועה, ואז הריצו כדי לראות שהקו נצבע.",
-                        "check": "התלמיד/ה קרא/ה 3 שורות Python והסביר/ה אותן במילים.",
+                        "check": "נבחר צבע חדש שאינו הכחול ההתחלתי, והצב זז כדי לצייר בצבע החדש.",
                         "commonMistake": "קוראים את הקוד מהר מדי בלי להבין את סדר הפעולות."
                   },
                   {
@@ -512,7 +515,7 @@
                   {
                         "id": 6,
                         "minutes": "47–53",
-                        "title": "תרגול 6 — תרגול דיוק",
+                        "title": "תרגול 4 — תרגול דיוק",
                         "prompt": "בנו מסלול שמסתיים בנקודת ההתחלה.",
                         "hint": "נסו לבנות מסלול סגור: בסוף הצב צריך לחזור למקום שממנו התחיל.",
                         "check": "נקודת הסיום של הצב חוזרת לנקודת ההתחלה.",
@@ -521,47 +524,20 @@
                   {
                         "id": 7,
                         "minutes": "53–60",
-                        "title": "תרגול 7 — דיבאג מכוון",
+                        "title": "תרגול 5 — דיבאג מכוון",
                         "prompt": "גרמו לצב לצייר בשני צבעים שונים באותה הרצה.",
-                        "hint": "את בלוק הצבע מוצאים תחת ׳עט וצבע׳. השתמשו בשני בלוקי צבע בצבעים שונים.",
-                        "check": "יש בקוד שני צבעים שונים, והצב מצייר אחרי כל אחד מהם.",
+                        "hint": "את בלוק הצבע מוצאים תחת ׳עט וצבע׳. אפשר להתחיל מהכחול ההתחלתי ואז לשנות לצבע נוסף באותה הרצה.",
+                        "check": "הצב מצייר בשני צבעים שונים באותה הרצה.",
                         "commonMistake": "מוסיפים קישוטים אבל מאבדים את מטרת השיעור."
                   },
                   {
                         "id": 8,
                         "minutes": "60–66",
-                        "title": "תרגול 8 — שדרוג יצירתי",
-                        "prompt": "בצעו דיבאג לזווית לא נכונה.",
-                        "hint": "הסבר טוב מתחיל ב: “קודם הצב עושה…, ואז…”.",
-                        "check": "ההסבר כולל רצף: פקודה → תוצאה → תיקון או שיפור.",
+                        "title": "תרגול 6 — אתגר דיבאג מדרגות",
+                        "prompt": "תקנו את קוד המדרגות היורדות למטה: יש פנייה אחת לא נכונה שמקלקלת את המסלול.",
+                        "hint": "הקוד ההתחלתי אמור לבנות מדרגות יורדות. אל תשנו מרחקים ואל תמחקו בלוקים — מצאו את הפנייה שמקלקלת והחליפו רק את הכיוון שלה.",
+                        "check": "מבנה המדרגות תקין: קדימה, ימינה, קדימה, שמאלה — 3 פעמים.",
                         "commonMistake": "אומרים “זה עובד” בלי להסביר למה."
-                  },
-                  {
-                        "id": 9,
-                        "minutes": "66–71",
-                        "title": "תרגול 9 — קריאת Python בקול",
-                        "prompt": "הסבירו למה סדר הפקודות חשוב.",
-                        "hint": "קראו את הקוד כאילו הוא הוראות לצב, לא כמו טקסט זר.",
-                        "check": "התלמיד/ה קרא/ה 3 שורות Python והסביר/ה אותן במילים.",
-                        "commonMistake": "קוראים את הקוד מהר מדי בלי להבין את סדר הפעולות."
-                  },
-                  {
-                        "id": 10,
-                        "minutes": "71–76",
-                        "title": "תרגול 10 — עבודה בזוגות",
-                        "prompt": "אתגר: מסלול רובוט שמגיע ל״בית״ בלי לעבור קו דמיוני.",
-                        "hint": "בזוגות — אחד מדבר ואחד נוגע במחשב, ואז מחליפים.",
-                        "check": "הזוג ביצע ניבוי ואז בדיקה בפועל.",
-                        "commonMistake": "בן/בת זוג אחד עושה הכל והשני לא מסביר."
-                  },
-                  {
-                        "id": 11,
-                        "minutes": "76–81",
-                        "title": "תרגול 11 — אתגר למתקדמים",
-                        "prompt": "בנו גרסה מורכבת יותר שמשתמשת במושג המרכזי של השיעור לפחות פעמיים.",
-                        "hint": "האתגר פתוח, אבל עדיין צריך להשתמש במושג של השיעור.",
-                        "check": "האתגר משתמש במושג המרכזי ולא רק מוסיף קישוט.",
-                        "commonMistake": "קופצים לפתרון מורכב מדי לפני שהבסיס יציב."
                   },
                   {
                         "id": 12,
@@ -8202,6 +8178,7 @@
       }
 ];
     const blockJson = [
+      {type:'py_python',message0:'Python',nextStatement:null,colour:48,tooltip:'בלוק Python — עדיין בלי פעולה'},
       {type:'py_forward',message0:'זוז קדימה %1 צעדים',args0:[{type:'field_number',name:'STEPS',value:100,min:1,max:500}],previousStatement:null,nextStatement:null,colour:145,tooltip:'מקביל ל־forward בפייתון turtle'},
       {type:'py_right',message0:'פנה ימינה %1 מעלות',args0:[{type:'field_number',name:'ANGLE',value:90,min:0,max:360}],previousStatement:null,nextStatement:null,colour:145},
       {type:'py_left',message0:'פנה שמאלה %1 מעלות',args0:[{type:'field_number',name:'ANGLE',value:90,min:0,max:360}],previousStatement:null,nextStatement:null,colour:145},
@@ -8264,6 +8241,10 @@
     const completedExercises = {};
     const exerciseCheckValues = {};
     const exerciseBaselines = {};
+    const exerciseStartXml = {};
+    const exerciseWorkspaceXml = {};
+    const lessonWorkspaceXml = {};
+    const exerciseReturnXml = {};
     const exerciseStarterLoaded = {};
     const PROGRESS_KEY = 'python-turtle-progress-v2';
     let restoringProgress = false;
@@ -8280,6 +8261,7 @@
       if(!block) return [];
       const id = block.id;
       const t=block.type;
+      if(t==='py_python') return [];
       if(t==='py_forward') return [{text:`${indent}forward(${numericField(block,'STEPS')})`, id}];
       if(t==='py_right') return [{text:`${indent}right(${numericField(block,'ANGLE',90)})`, id}];
       if(t==='py_left') return [{text:`${indent}left(${numericField(block,'ANGLE',90)})`, id}];
@@ -8313,11 +8295,30 @@
       }).join('');
       highlightSelectedCode();
     }
+    function codeTopBlocks(){
+      return workspace.getBlocksByType('py_python', false)
+        .map(block=>block.getNextBlock())
+        .filter(Boolean);
+    }
+    function codeBlocks(){
+      const out = [];
+      codeTopBlocks().forEach(top=>{
+        let block = top;
+        while(block){
+          out.push(block);
+          if(block.type === 'py_repeat'){
+            let child = block.getInputTargetBlock('DO');
+            while(child){ out.push(child); child = child.getNextBlock(); }
+          }
+          block = block.getNextBlock();
+        }
+      });
+      return out;
+    }
     function generatePython(){
-      const top = workspace.getTopBlocks(true).filter(b=>!b.outputConnection);
-      const body = top.flatMap(b=>stackToPythonLines(b));
+      const body = codeTopBlocks().flatMap(b=>stackToPythonLines(b));
       const lines = [{text:'from turtle import *', id:null},{text:'', id:null}];
-      lines.push(...(body.length ? body : [{text:'# גררו בלוקים לכאן כדי ליצור קוד', id:null}]));
+      lines.push(...(body.length ? body : [{text:'# \u202Bחברו בלוקים מתחת ל־\u2066Python\u2069 כדי ליצור קוד\u202C', id:null}]));
       lines.push({text:'', id:null},{text:'done()', id:null});
       renderCode(lines);
       return lines.map(line=>line.text).join('\n');
@@ -8353,7 +8354,7 @@
       }
       return out;
     }
-    function getActions(){return workspace.getTopBlocks(true).flatMap(b=>actionsFrom(b,[]));}
+    function getActions(){return codeTopBlocks().flatMap(b=>actionsFrom(b,[]));}
     function simulatePath(actions){
       const start = {x:canvas.width/2,y:canvas.height/2};
       const pos = {x:start.x,y:start.y,heading:0};
@@ -8377,7 +8378,18 @@
       return {minX,maxX,minY,maxY,endX:pos.x,endY:pos.y,distanceFromStart,out:minX < 0 || maxX > canvas.width || minY < 0 || maxY > canvas.height};
     }
     function simulateBounds(actions){ return simulatePath(actions); }
+    function syncCanvasSize(clear=true){
+      const card=document.getElementById('stage');
+      const nextWidth = Math.max(320, Math.round(card.clientWidth));
+      const nextHeight = Math.max(260, Math.round(card.clientHeight));
+      if(canvas.width === nextWidth && canvas.height === nextHeight) return false;
+      canvas.width = nextWidth;
+      canvas.height = nextHeight;
+      if(clear) ctx.clearRect(0,0,canvas.width,canvas.height);
+      return true;
+    }
     function resetDrawing(clear=true){
+      syncCanvasSize(clear);
       if(clear) ctx.clearRect(0,0,canvas.width,canvas.height);
       turtle={x:canvas.width/2,y:canvas.height/2,heading:0,pen:true,color:'#2563eb',width:4};
       updateTurtle(); statusEl.textContent='מוכן להרצה';
@@ -8486,12 +8498,69 @@
         .filter(a=>['forward','forwardVar','right','left'].includes(a.cmd))
         .map(a=>({cmd: a.cmd === 'forwardVar' ? 'forward' : a.cmd, v: a.v ?? null}));
     }
+    function findStairRun(actions, repeats=3){
+      const pattern = ['forward','right','forward','left'];
+      const needed = repeats * pattern.length;
+      for(let start=0; start <= actions.length - needed; start++){
+        let ok = true;
+        for(let i=0; i<needed; i++){
+          const a = actions[start + i];
+          const expected = pattern[i % pattern.length];
+          if(!a || a.cmd !== expected){ ok = false; break; }
+          if((expected === 'right' || expected === 'left') && a.v !== 90){ ok = false; break; }
+        }
+        if(ok) return start;
+      }
+      return -1;
+    }
     function baselineKey(index=currentExerciseIndex){
       return `${currentLesson}:${index+1}`;
     }
     function rememberExerciseBaseline(index=currentExerciseIndex){
       const key = baselineKey(index);
       if(exerciseBaselines[key] === undefined) exerciseBaselines[key] = comparableActions();
+    }
+    function needsEntryReset(ex){
+      return false;
+    }
+    function captureExerciseEntry(index=currentExerciseIndex){
+      const ex = currentExercises()[index];
+      if(!needsEntryReset(ex)) return;
+      const key = baselineKey(index);
+      exerciseBaselines[key] = comparableActions();
+      try{ exerciseStartXml[key] = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace)); } catch {}
+    }
+    function xmlHasBlocks(xml){
+      return /<block\b/.test(String(xml || ''));
+    }
+    function restoreXml(xml){
+      if(!xmlHasBlocks(xml)) return false;
+      workspace.clear();
+      Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(xml), workspace);
+      generatePython();
+      resetDrawing(true);
+      return true;
+    }
+    function currentWorkspaceXml(){
+      try{ return Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace)); } catch { return ''; }
+    }
+    function isIsolatedExercise(ex){
+      return !!starterXmlForExercise(ex);
+    }
+    function saveActiveWorkspace(index=currentExerciseIndex){
+      const xml = currentWorkspaceXml();
+      const ex = currentExercises()[index];
+      if(isIsolatedExercise(ex)) exerciseWorkspaceXml[baselineKey(index)] = xml;
+      else lessonWorkspaceXml[currentLesson] = xml;
+    }
+    function restoreExerciseWorkspace(index=currentExerciseIndex){
+      return restoreXml(exerciseWorkspaceXml[baselineKey(index)]);
+    }
+    function restoreLessonWorkspace(){
+      return restoreXml(lessonWorkspaceXml[currentLesson]);
+    }
+    function restoreExerciseEntry(index=currentExerciseIndex){
+      return restoreXml(exerciseStartXml[baselineKey(index)]);
     }
     function isTipExercise(ex){
       const text = `${ex?.title || ''} ${ex?.prompt || ''}`;
@@ -8527,9 +8596,9 @@
       sideNote.querySelectorAll('[data-exercise]').forEach(btn=>btn.addEventListener('click',()=>{
         const index = Number(btn.dataset.exercise);
         if(btn.disabled) return;
-        currentExerciseIndex = index;
-        rememberExerciseBaseline(index);
-        maybeLoadExerciseStarter(index);
+        const enteringNewExercise = index !== currentExerciseIndex;
+        if(enteringNewExercise) enterExercise(index);
+        else maybeLoadExerciseStarter(index);
         exerciseCheckValues[`${currentLesson}:${index+1}`] = [];
         exercisePassed = done.has(index);
         renderCurrentExercise();
@@ -8537,15 +8606,48 @@
         saveProgress();
       }));
     }
+    function starterXmlForExercise(ex){
+      if(/מחוץ למסך/.test(`${ex?.prompt || ''} ${ex?.check || ''}`)) return '<xml><block type="py_forward" x="40" y="40"><field name="STEPS">700</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">500</field></block></next></block></next></block></xml>';
+      if(currentLesson === 2 && ex?.id === 8) return '<xml><block type="py_forward" x="40" y="40"><field name="STEPS">80</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">80</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">80</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">80</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">80</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">80</field><next><block type="py_left"><field name="ANGLE">90</field></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
+      return '';
+    }
+    function shouldRestorePreviousCodeAfterStarter(ex){
+      return isIsolatedExercise(ex);
+    }
+    function enterExercise(index){
+      const previousIndex = currentExerciseIndex;
+      if(index !== previousIndex) saveActiveWorkspace(previousIndex);
+      currentExerciseIndex = index;
+      const targetEx = currentExercises()[index];
+      restoringProgress = true;
+      try{
+        if(isIsolatedExercise(targetEx)){
+          if(restoreExerciseWorkspace(index)) exerciseStarterLoaded[baselineKey(index)] = true;
+          else maybeLoadExerciseStarter(index, true);
+          saveActiveWorkspace(index);
+        } else {
+          if(!restoreLessonWorkspace()){
+            workspace.clear();
+            generatePython();
+            resetDrawing(true);
+          }
+        }
+        rememberExerciseBaseline(index);
+        captureExerciseEntry(index);
+      } finally {
+        restoringProgress = false;
+      }
+    }
     function maybeLoadExerciseStarter(index=currentExerciseIndex, force=false){
       const ex = currentExercises()[index];
-      if(!ex || !/מחוץ למסך/.test(`${ex.prompt || ''} ${ex.check || ''}`)) return;
+      const xml = starterXmlForExercise(ex);
+      if(!xml) return;
       const key = `${currentLesson}:${index+1}`;
       if(exerciseStarterLoaded[key] && !force) return;
       const actions = getActions();
-      if(!force && actions.length && simulateBounds(actions).out) return;
+      if(!force && /מחוץ למסך/.test(`${ex.prompt || ''} ${ex.check || ''}`) && actions.length && simulateBounds(actions).out) return;
+      if(!force && currentLesson === 2 && ex.id === 8 && actions.length && exerciseStarterLoaded[key]) return;
       exerciseStarterLoaded[key] = true;
-      const xml = '<xml><block type="py_forward" x="40" y="40"><field name="STEPS">700</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">500</field></block></next></block></next></block></xml>';
       workspace.clear();
       Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(xml), workspace);
       generatePython();
@@ -8564,14 +8666,20 @@
       maybeLoadExerciseStarter();
       const isLast = currentExerciseIndex >= exercises.length - 1;
       const isTip = isTipExercise(ex);
+      const hasGeneratedStarter = !!starterXmlForExercise(ex);
+      const hasEntryReset = needsEntryReset(ex) && !!exerciseStartXml[baselineKey()];
+      const resetButton = (hasGeneratedStarter || hasEntryReset) ? '<button class="btn reset" id="resetExerciseBtn">🔄 החזר לקוד תחילת התרגיל</button>' : '';
       const canContinue = exercisePassed || completedSet().has(currentExerciseIndex) || isTip || isChallengeExercise(ex);
-      missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div><p><b>${escapeHtml(ex.prompt || '')}</b></p>${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p><p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}<div class="exercise-controls">${(isTip || isChallengeExercise(ex)) ? '' : '<button class="btn run" id="checkExerciseBtn">✅ בדוק תרגיל</button>'}${/מחוץ למסך/.test(`${ex.prompt || ''} ${ex.check || ''}`) ? '<button class="btn reset" id="resetExerciseBtn">🔄 החזר לקוד תחילת התרגיל</button>' : ''}<button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${isLast ? 'סיום שיעור' : 'המשך'}</button></div><div class="exercise-feedback ${ok ? 'ok' : 'warn'}">${escapeHtml(message)}</div></div>`;
+      missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div><p><b>${escapeHtml(ex.prompt || '')}</b></p>${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p><p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}<div class="exercise-controls">${(isTip || isChallengeExercise(ex)) ? '' : '<button class="btn run" id="checkExerciseBtn">✅ בדוק תרגיל</button>'}${resetButton}<button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${isLast ? 'סיום שיעור' : 'המשך'}</button></div><div class="exercise-feedback ${ok ? 'ok' : 'warn'}">${escapeHtml(message)}</div></div>`;
       const checkBtn = document.getElementById('checkExerciseBtn');
       if(checkBtn) checkBtn.addEventListener('click', checkExercise);
       const resetExerciseBtn = document.getElementById('resetExerciseBtn');
       if(resetExerciseBtn) resetExerciseBtn.addEventListener('click',()=>{
-        exerciseStarterLoaded[baselineKey()] = false;
-        maybeLoadExerciseStarter(currentExerciseIndex, true);
+        const restored = restoreExerciseEntry();
+        if(!restored){
+          exerciseStarterLoaded[baselineKey()] = false;
+          maybeLoadExerciseStarter(currentExerciseIndex, true);
+        }
         exercisePassed = false;
         renderCurrentExercise('הקוד חזר למצב תחילת התרגיל.', false);
       });
@@ -8581,25 +8689,77 @@
       saveProgress();
     }
     function hasBlock(type){
-      return workspace.getAllBlocks(false).some(block=>block.type===type);
+      return codeBlocks().some(block=>block.type===type);
     }
     function validateExercise(){
       const ex = currentExercises()[currentExerciseIndex] || {};
       if(isTipExercise(ex) || isChallengeExercise(ex)) return [];
       const text = `${ex.title || ''} ${ex.prompt || ''} ${ex.check || ''}`;
       const actions = getActions();
+      const allBlocks = workspace.getAllBlocks(false);
+      const hasPythonBlock = allBlocks.some(block=>block.type === 'py_python');
+      const hasCodeBlock = allBlocks.some(block=>block.type !== 'py_python' && !block.outputConnection);
+      if(!actions.length) return [hasCodeBlock
+        ? (hasPythonBlock ? 'חברו את הבלוקים מתחת לבלוק Python — רק מה שמחובר אליו הופך לקוד ונבדק.' : 'הוסיפו בלוק Python וחברו מתחתיו את הבלוקים — רק מה שמחובר אליו הופך לקוד ונבדק.')
+        : 'גררו בלוק Python, ואז חברו מתחתיו את הבלוקים של התרגיל — רק מה שמחובר אליו הופך לקוד ונבדק.'];
       const problems = [];
-      if(currentLesson === 1 && currentExerciseIndex === 2){
-        const values = actions.filter(a=>a.cmd==='forward').map(a=>a.v);
-        const current = values.find(v=>v===50 || v===150);
-        if(!current) return ['בדקו פעם אחת עם 50 ופעם אחת עם 150.'];
-        const key = `${currentLesson}:3`;
-        exerciseCheckValues[key] = exerciseCheckValues[key] || [];
-        if(!exerciseCheckValues[key].includes(current)) exerciseCheckValues[key].push(current);
-        if(!(exerciseCheckValues[key].includes(50) && exerciseCheckValues[key].includes(150))){
-          const missing = current === 50 ? 150 : 50;
-          return [`מעולה. עכשיו שנו ל־${missing}, הריצו ובדקו שוב.`];
+      if(currentLesson === 1){
+        if(ex.id === 1){
+          if(!actions.some(a=>a.cmd==='forward' && a.v===100)) return ['צריך לגרור בלוק ׳זוז קדימה׳ עם הערך 100.'];
+          return [];
         }
+        if(ex.id === 2){
+          const right90Index = actions.findIndex(a=>a.cmd==='right' && a.v===90);
+          if(!actions.some(a=>a.cmd==='forward' || a.cmd==='forwardVar')) return ['צריך להתחיל מבלוק קדימה.'];
+          if(right90Index < 0) return ['צריך להוסיף פנייה ימינה של 90 מעלות.'];
+          if(!actions.slice(right90Index + 1).some(a=>a.cmd==='forward' || a.cmd==='forwardVar')) return ['צריך להוסיף בלוק ׳זוז קדימה׳ אחרי הפנייה ימינה.'];
+          return [];
+        }
+        if(ex.id === 3){
+          const values = actions.filter(a=>a.cmd==='forward').map(a=>a.v);
+          const current = values.find(v=>v===50 || v===150);
+          if(!current) return ['בדקו פעם אחת עם 50 ופעם אחת עם 150.'];
+          const key = `${currentLesson}:${ex.id}`;
+          exerciseCheckValues[key] = exerciseCheckValues[key] || [];
+          if(!exerciseCheckValues[key].includes(current)) exerciseCheckValues[key].push(current);
+          if(!(exerciseCheckValues[key].includes(50) && exerciseCheckValues[key].includes(150))){
+            const missing = current === 50 ? 150 : 50;
+            return [`מעולה. עכשיו שנו ל־${missing}, הריצו ובדקו שוב.`];
+          }
+          return [];
+        }
+        if(ex.id === 6){
+          if(actions.length < 4) return ['צריך לבנות מסלול עם לפחות 4 פקודות.'];
+          if(!actions.some(a=>a.cmd==='forward' || a.cmd==='forwardVar')) return ['במסלול צריכה להיות לפחות תנועה אחת קדימה.'];
+          if(!actions.some(a=>a.cmd==='right' || a.cmd==='left')) return ['במסלול צריכה להיות לפחות פנייה אחת.'];
+          return [];
+        }
+        if(ex.id === 7){
+          if(!actions.some(a=>a.cmd==='left')) return ['צריך להוסיף בלוק פנייה שמאלה.'];
+          return [];
+        }
+        if(ex.id === 8){
+          if(actions.length < 2) return ['לא למחוק את כל הקוד — צריך לתקן את הקוד ההתחלתי שיוצא מהמסך.'];
+          if(!actions.some(a=>a.cmd==='forward' || a.cmd==='forwardVar')) return ['צריך להשאיר פקודת קדימה בקוד.'];
+          if(simulateBounds(actions).out) return ['הצב עדיין יוצא מהמסך — הקטינו מרחק או תקנו פנייה.'];
+          return [];
+        }
+        if(ex.id === 9){
+          const defaultBlue = '#2563eb';
+          let color = defaultBlue, pen = true, drewWithNewColor = false;
+          for(const a of actions){
+            if(a.cmd==='color') color = String(a.v || '').toLowerCase();
+            else if(a.cmd==='pen') pen = a.v;
+            else if((a.cmd==='forward' || a.cmd==='forwardVar') && pen && color !== defaultBlue) drewWithNewColor = true;
+          }
+          if(!actions.some(a=>a.cmd==='color' && String(a.v || '').toLowerCase() !== defaultBlue)) return ['צריך לבחור צבע חדש — לא הכחול ההתחלתי.'];
+          if(!drewWithNewColor) return ['אחרי בחירת הצבע החדש צריך להזיז את הצב כדי שבאמת יצייר בצבע החדש.'];
+          return [];
+        }
+      }
+      if(currentLesson === 2 && ex.id === 1){
+        const current = comparableActions();
+        if(findStairRun(current, 1) < 0) return ['צריך לבנות מדרגה בסדר: קדימה, ימינה, קדימה, שמאלה.'];
         return [];
       }
       if(currentLesson === 2 && ex.id === 2){
@@ -8623,23 +8783,29 @@
         }
         return [];
       }
-      if(currentLesson === 2 && ex.id === 3){
-        const baseline = exerciseBaselines[baselineKey()] || [];
+      if(currentLesson === 2 && (ex.id === 3 || ex.id === 8)){
         const current = comparableActions();
-        if(!baseline.length) return ['קודם צריך להתחיל מתרגיל 2, ואז לשנות פנייה אחת בלבד.'];
-        if(current.length !== baseline.length) return ['אל תוסיפו ואל תמחקו בלוקים — שנו רק פנייה אחת מהקוד הקודם.'];
+        const expected = ['forward','right','forward','left','forward','right','forward','left','forward','right','forward','left'];
+        if(current.length !== expected.length) return [ex.id === 8 ? 'השתמשו בקוד ההתחלתי ותקנו רק פנייה אחת — אל תוסיפו ואל תמחקו בלוקים.' : 'התחילו מהמבנה של תרגיל 2: קדימה, ימינה, קדימה, שמאלה — 3 פעמים. אל תוסיפו ואל תמחקו בלוקים.'];
         let changedTurns = 0;
-        for(let i=0;i<baseline.length;i++){
-          const before = baseline[i];
+        for(let i=0;i<expected.length;i++){
           const after = current[i];
-          if(before.cmd === after.cmd && before.v === after.v) continue;
-          const bothTurns = (before.cmd === 'right' || before.cmd === 'left') && (after.cmd === 'right' || after.cmd === 'left');
-          if(!bothTurns) return ['השינוי צריך להיות רק בכיוון של פנייה אחת, לא בפקודות קדימה.'];
-          if(before.v !== after.v) return ['אל תשנו את המעלות — רק החליפו פנייה אחת מימינה לשמאלה או להפך.'];
-          changedTurns += 1;
+          const beforeCmd = expected[i];
+          if(!after) return ['חסר בלוק במבנה המדרגות.'];
+          if(beforeCmd === 'forward'){
+            if(after.cmd !== 'forward') return ['השינוי צריך להיות רק בכיוון של פנייה אחת, לא בפקודות קדימה.'];
+            continue;
+          }
+          if(after.cmd !== 'right' && after.cmd !== 'left') return ['במקום הזה צריך להיות בלוק פנייה.'];
+          if(after.v !== 90) return ['אל תשנו את המעלות — הפנייה צריכה להישאר 90.'];
+          if(after.cmd !== beforeCmd) changedTurns += 1;
         }
-        if(changedTurns === 0) return ['עוד לא שיניתם פנייה מהקוד המקורי.'];
-        if(changedTurns > 1) return ['שנו רק פנייה אחת, לא כמה פניות.'];
+        if(ex.id === 8){
+          if(changedTurns === 0) return [];
+          return ['עדיין יש פנייה שמקלקלת את המדרגות — החליפו רק את כיוון הפנייה הלא נכונה.'];
+        }
+        if(changedTurns === 0) return ['עוד לא שיניתם כיוון של פנייה מהקוד של תרגיל 2.'];
+        if(changedTurns > 1) return ['שנו רק כיוון של פנייה אחת, לא כמה פניות.'];
         return [];
       }
       if(!actions.length) problems.push('גררו לפחות בלוק אחד לפני הבדיקה.');
@@ -8683,14 +8849,24 @@
         if(/ימינה|שמאלה|פנייה|סיבוב|פניות/.test(text) && !actions.some(a=>a.cmd==='right' || a.cmd==='left')) problems.push('חסרה פנייה.');
         if(/90/.test(text) && !actions.some(a=>(a.cmd==='right' || a.cmd==='left') && a.v===90)) problems.push('צריך פנייה של 90 מעלות.');
       }
-      if(/צבע|עט/.test(text) && !actions.some(a=>a.cmd==='color' || a.cmd==='width' || a.cmd==='pen')) problems.push('חסר בלוק צבע או עט.');
-      if(currentLesson === 2 && /שני צבעים שונים|שני בלוקי צבע/.test(text)){
+      if(currentLesson === 2 && /שני צבעים שונים|שני צבעים/.test(text)){
+        const defaultBlue = '#2563eb';
+        let color = defaultBlue, pen = true;
+        const drawnColors = new Set();
+        for(const a of actions){
+          if(a.cmd==='color') color = String(a.v || '').toLowerCase();
+          else if(a.cmd==='pen') pen = a.v;
+          else if((a.cmd==='forward' || a.cmd==='forwardVar') && pen) drawnColors.add(color);
+        }
+        if(drawnColors.size < 2) problems.push('צריך שהצב יצייר בפועל בשני צבעים באותה הרצה — למשל כחול בהתחלה ואז צבע נוסף אחרי שינוי צבע.');
+      } else if(/צבע/.test(text)){
         const defaultBlue = '#2563eb';
         const colorActions = actions.map((a,i)=>({...a,i,color:String(a.v || '').toLowerCase()})).filter(a=>a.cmd==='color');
         const changedColor = colorActions.find(a=>a.color && a.color !== defaultBlue);
         if(!changedColor) problems.push('צריך לבחור צבע שונה מהכחול ההתחלתי.');
         else if(!actions.slice(changedColor.i + 1).some(a=>a.cmd==='forward' || a.cmd==='forwardVar')) problems.push('אחרי הצבע החדש צריך בלוק תנועה, כדי שהצב באמת יצייר בצבע החדש.');
       }
+      if(/עט/.test(text) && !actions.some(a=>a.cmd==='width' || a.cmd==='pen')) problems.push('חסר בלוק עט מתאים.');
       if(/לולאה|חזור|חזרה|repeat/.test(text) && !hasBlock('py_repeat')) problems.push('חסרה לולאת חזור.');
       if(/length|אורך|משתנה/.test(text) && !actions.some(a=>a.cmd==='setVar' || a.cmd==='forwardVar' || a.cmd==='growVar')) problems.push('חסר שימוש באורך/משתנה.');
       if(/4 פקודות|לפחות 4/.test(text) && actions.length < 4) problems.push('צריך לפחות 4 פקודות.');
@@ -8707,19 +8883,17 @@
     }
     function prevExercise(){
       if(currentExerciseIndex <= 0) return;
-      currentExerciseIndex -= 1;
-      rememberExerciseBaseline();
+      enterExercise(currentExerciseIndex - 1);
       exercisePassed = completedSet().has(currentExerciseIndex);
       renderCurrentExercise();
     }
     function nextExercise(){
-      if(!exercisePassed && !completedSet().has(currentExerciseIndex) && !isTipExercise(currentExercises()[currentExerciseIndex]) && !isChallengeExercise(currentExercises()[currentExerciseIndex])) return;
-      if(isTipExercise(currentExercises()[currentExerciseIndex]) || isChallengeExercise(currentExercises()[currentExerciseIndex])) completedSet().add(currentExerciseIndex);
+      const leavingEx = currentExercises()[currentExerciseIndex];
+      if(!exercisePassed && !completedSet().has(currentExerciseIndex) && !isTipExercise(leavingEx) && !isChallengeExercise(leavingEx)) return;
+      if(isTipExercise(leavingEx) || isChallengeExercise(leavingEx)) completedSet().add(currentExerciseIndex);
       const exercises = currentExercises();
       if(currentExerciseIndex < exercises.length - 1){
-        currentExerciseIndex += 1;
-        rememberExerciseBaseline();
-        maybeLoadExerciseStarter();
+        enterExercise(currentExerciseIndex + 1);
         exercisePassed = completedSet().has(currentExerciseIndex);
         renderCurrentExercise();
       } else {
@@ -8833,7 +9007,7 @@
       const shouldOpen = savedOpen === null ? window.innerWidth >= 1150 : savedOpen === 'true';
       function refreshBlockly(){
         try{ Blockly.svgResize(workspace); }catch{}
-        updateTurtle();
+        resetDrawing(true);
       }
       function freezeCanvasWidth(){
         if(window.innerWidth < 1151) return;
@@ -8896,12 +9070,16 @@
     workspace.addChangeListener((event)=>{
       if(event.type === Blockly.Events.SELECTED){ highlightSelectedCode(); return; }
       generatePython();
+      if(!restoringProgress) saveActiveWorkspace();
       exercisePassed = false;
       const nextBtn = document.getElementById('nextExerciseBtn');
-      if(nextBtn) nextBtn.disabled = !completedSet().has(currentExerciseIndex);
+      if(nextBtn){
+        const ex = currentExercises()[currentExerciseIndex];
+        nextBtn.disabled = !(completedSet().has(currentExerciseIndex) || isTipExercise(ex) || isChallengeExercise(ex));
+      }
       saveProgress();
     });
-    window.addEventListener('resize',updateTurtle);
+    window.addEventListener('resize',()=>resetDrawing(true));
     function restoreOrStart(){
       const saved = loadProgress();
       restoringProgress = true;
@@ -8915,8 +9093,9 @@
         if(saved.workspaceXml){
           workspace.clear();
           Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(saved.workspaceXml), workspace);
-        }
+            }
         generatePython();
+        saveActiveWorkspace();
         resetDrawing(true);
         renderLessonPicker();
         renderCurrentExercise();
