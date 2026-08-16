@@ -30,6 +30,13 @@ test('certificate next buttons follow the Sisi lesson sequence, not optional lab
   assertIncludes(certificateSource, "'/escape-play.html': { title: 'חדר הבריחה', home: 'escape.html', homeLabel: '🔐 לעמוד חדר הבריחה', next: 'finale.html'");
 });
 
+test('final mission success dialog becomes a festive course-completion dialog', () => {
+  assertIncludes(certificateSource, 'finalMission = isLast(lessons, lesson)');
+  assertIncludes(certificateSource, '🏆 סיום כל המשימות!');
+  assertIncludes(certificateSource, 'סיימתם את כל משימות');
+  assertIncludes(certificateSource, 'השלמתם את כל');
+});
+
 test('shared success dialog offers continue and repeat actions and saves local progress', () => {
   assertIncludes(certificateSource, 'window.SisiSuccessDialog');
   assertIncludes(certificateSource, "setAttribute('role', 'dialog')");
@@ -40,6 +47,13 @@ test('shared success dialog offers continue and repeat actions and saves local p
   assertIncludes(certificateSource, 'localStorage.setItem(key, JSON.stringify(progress))');
   assertIncludes(certificateSource, 'progress.completed[lesson.id]');
   assertIncludes(certificateSource, 'markProgress(lesson)');
+});
+
+test('lessons 6 to 10 load final mission celebration cache bust', () => {
+  for (const course of ['dino', 'art', 'weather', 'factory', 'garden']) {
+    const html = readFileSync(join(root, `${course}-play.html`), 'utf8');
+    assertIncludes(html, 'js/course-certificate.js?v=20260816-final-mission-celebration', `${course}-play.html should load the final celebration helper`);
+  }
 });
 
 test('all Sisi course play pages load the certificate helper before their play engine', () => {
