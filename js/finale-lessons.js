@@ -46,10 +46,10 @@ window.FINALE_CONDITIONS = {
   nightEmpty: { label: 'עכשיו לילה אבל הרחוב ריק', icon: '🌙+🏙️' },
   dayEmpty: { label: 'עכשיו יום והרחוב ריק', icon: '☀️+🏙️' },
 
-  waterAndTurtle: { label: 'יש מים ויש צב שמחכה', icon: '🌊+🐢' },
-  waterNoTurtle: { label: 'יש מים אבל אין צב שמחכה', icon: '🌊+➖' },
-  turtleNoWater: { label: 'יש צב שמחכה אבל אין מים', icon: '🐢+➖' },
-  noWaterNoTurtle: { label: 'אין מים ואין צב שמחכה', icon: '🏞️' },
+  waterAndTurtle: { label: 'יש נחל ויש צב שמחכה', icon: '🌊+🐢' },
+  waterNoTurtle: { label: 'יש נחל אבל אין צב שמחכה', icon: '🌊+➖' },
+  turtleNoWater: { label: 'יש צב שמחכה אבל אין נחל', icon: '🐢+➖' },
+  noWaterNoTurtle: { label: 'אין נחל ואין צב שמחכה', icon: '🏞️' },
 
   noiseAndClass: { label: 'יש רעש ויש שיעור פעיל', icon: '🔊+🏫' },
   noiseNoClass: { label: 'יש רעש אבל אין שיעור פעיל', icon: '🔊+➖' },
@@ -112,7 +112,7 @@ window.FINALE_MISSIONS = [
     conditionOptions: ['dayAndPeople', 'nightAndPeople', 'nightEmpty', 'dayEmpty'],
     correctActions: ['streetMove', 'streetLight', 'markSafe'],
     distractor: 'celebrate',
-    explanation: 'קודם נוסעים לרחוב החשוך, אחר כך מדליקים את האור, ואז מסמנים שהדרך בטוחה.',
+    explanation: 'כי היא פועלת רק בלילה כשיש אנשים ברחוב, ואז מדליקה אור לפני שמסמנים שהדרך בטוחה.',
     hint: 'רמז: חפשו מצב שבו שני הדברים נכונים. אחר כך חשבו מה סיסי צריכה לעשות כדי שהדרך תהיה בטוחה, ומה רק נשמע נחמד אבל לא באמת עוזר עכשיו.',
     learningNote: 'זו משימת שילוב: תנאי “וגם” מוביל לרצף פעולות קצר.'
   },
@@ -126,7 +126,7 @@ window.FINALE_MISSIONS = [
     conditionOptions: ['waterNoTurtle', 'turtleNoWater', 'waterAndTurtle', 'noWaterNoTurtle'],
     correctActions: ['move', 'bridge', 'markSafe'],
     distractor: 'light',
-    explanation: 'קודם נוסעים אל הנחל, אחר כך מניחים גשר, ואז מסמנים שהמעבר בטוח.',
+    explanation: 'כי היא פועלת רק כשיש נחל וצב שצריך לעבור, ואז מניחה גשר לפני שמסמנים שהמעבר בטוח.',
     hint: 'רמז: חפשו מצב שבו שני הדברים נכונים. אחר כך חשבו מה עוזר לעבור בבטחה, ומה מתאים אולי לסיפור אחר אבל לא לבעיה הזאת.',
     learningNote: 'דיבוג: פעולה יכולה להיות נכונה במקום אחר אבל מיותרת במשימה הזו.'
   },
@@ -140,7 +140,7 @@ window.FINALE_MISSIONS = [
     conditionOptions: ['classNoNoise', 'quietNoClass', 'noiseAndClass', 'noiseNoClass'],
     correctActions: ['quietMessage', 'quietSign', 'markClassCalm'],
     distractor: 'bridge',
-    explanation: 'קודם שולחים הודעה להקשיב בשקט, אחר כך מציגים סימן שקט, ואז מסמנים שהכיתה רגועה.',
+    explanation: 'כי היא פועלת רק כשיש כיתה ורעש, ואז מזכירה לשמור על שקט לפני שמסמנים שהכיתה רגועה.',
     hint: 'רמז: חפשו מצב שבו שני הדברים נכונים. אחר כך חשבו מה עוזר לכיתה לחזור לשקט, ומה לא באמת קשור ללמידה רגועה.',
     learningNote: 'לפעמים פעולה היא הודעה ולא תנועה פיזית. גם זה פלט של מערכת חכמה.'
   },
@@ -154,7 +154,7 @@ window.FINALE_MISSIONS = [
     conditionOptions: ['guardNoCode', 'guardAndCode', 'noGuardNoCode', 'codeNoGuard'],
     correctActions: ['checkGuard', 'enterCode', 'open'],
     distractor: 'celebrate',
-    explanation: 'קודם בודקים שיש שומר, אחר כך מכניסים קוד נכון, ואז פותחים את השער.',
+    explanation: 'כי היא פועלת רק כשיש שומר וקוד נכון, ואז בודקת ומכניסה קוד לפני שפותחים את השער.',
     hint: 'רמז: חפשו מצב שבו שני הדברים נכונים. אחר כך חשבו איזו פעולה מתאימה לכניסה לבית ספר, ומה עלול להיות מיותר או לא בטוח.',
     learningNote: 'תנאי “וגם” עוזר למנוע פעולה בזמן לא נכון.'
   },
@@ -168,7 +168,7 @@ window.FINALE_MISSIONS = [
     conditionOptions: ['kidsNoRain', 'rainNoKids', 'rainAndKids', 'noRainNoKids'],
     correctActions: ['rainMessage', 'umbrella', 'guideInside'],
     distractor: 'light',
-    explanation: 'קודם שולחים הודעה שיש גשם בחוץ, אחר כך פותחים מטריה, ואז מכוונים את הילדים פנימה.',
+    explanation: 'כי היא פועלת רק כשיש גשם וילדים בחוץ, ואז מגינה עליהם לפני שמכוונים אותם פנימה.',
     hint: 'רמז: חפשו מצב שבו שני הדברים נכונים. אחר כך חשבו מה עוזר לילדים להגיע למקום בטוח, ומה לא קשור לגשם בחצר.',
     learningNote: 'אותו רעיון תכנותי יכול לעבוד בסיפורים שונים: תנאי, פעולה, בדיקה.'
   },
@@ -182,17 +182,17 @@ window.FINALE_MISSIONS = [
     conditionOptions: ['cleanOpenPark', 'trashAndPark', 'trashClosedPark', 'cleanClosedPark'],
     correctActions: ['findTrash', 'cleanTrash', 'photoCleanPark'],
     distractor: 'light',
-    explanation: 'קודם מוצאים את האשפה, אחר כך אוספים אותה, ואז מצלמים את הפארק נקי.',
+    explanation: 'כי היא פועלת רק כשהפארק פתוח ויש אשפה, ואז מנקה לפני שמתעדים שהפארק נקי.',
     hint: 'רמז: חפשו מצב שבו שני הדברים נכונים. אחר כך חשבו מה באמת מטפל בלכלוך, ומה לא עוזר להפוך את הפארק לנקי.',
     learningNote: 'שיעור שיא: הילדים מחברים תנאים, רצף, פעולה מתאימה ודיבוג.'
   }
 ];
 
 window.FINALE_MISSIONS.push(
-  { id: 7, emoji: '🚦', title: 'מעבר חציה עמוס', district: 'רחוב בית הספר', goal: 'יש הרבה ילדים ליד מעבר החציה, וסיסי צריכה לעזור להם לחצות בבטחה.', condition: 'kidsAndGreenLight', conditionOptions: ['kidsAndRedLight', 'greenLightNoKids', 'kidsAndGreenLight', 'noKidsRedLight'], correctActions: ['checkGreenLight','crossingSound','markCanCross'], distractor: 'bridge', explanation: 'קודם בודקים שהרמזור ירוק, אחר כך מפעילים צליל מעבר, ואז מסמנים שאפשר לחצות.', hint: 'רמז: חפשו מצב שבו שני הדברים נכונים. אחר כך חשבו מה עוזר לילדים לדעת מתי לחצות, ומה לא פותר בעיית חציה.', learningNote: 'תנאי נכון מוביל לפעולה בטוחה ומתאימה.' },
-  { id: 8, emoji: '🌉', title: 'גשרון אחרי גשם', district: 'גינת העיר', goal: 'לעזור לילדים לעבור שלולית גדולה.', condition: 'puddleAndKids', conditionOptions: ['puddleNoKids', 'puddleAndKids', 'noPuddleNoKids', 'kidsNoPuddle'], correctActions: ['puddleMove','bridge','guideKids'], distractor: 'open', explanation: 'קודם ניגשים אל השלולית, אחר כך מניחים גשרון, ואז מכוונים את הילדים לעבור בבטחה.', hint: 'רמז: חפשו מצב שבו שני הדברים נכונים. אחר כך חשבו מה עוזר לעבור מעל מכשול בדרך, ומה לא פותר את הבעיה הזאת.', learningNote: 'דיבוג: פעולה טובה במקום אחד יכולה להיות לא מתאימה במקום אחר.' },
-  { id: 9, emoji: '📚', title: 'שעת סיפור בספרייה', district: 'ספרייה עירונית', goal: 'בספרייה יש שעת סיפור, ויש רעש שמפריע לילדים להקשיב. סיסי צריכה להזכיר לכולם לשמור על שקט בעדינות.', condition: 'libraryNoiseAndActivity', conditionOptions: ['libraryActivityNoNoise', 'libraryNoiseNoActivity', 'libraryNoiseAndActivity', 'libraryQuietNoActivity'], correctActions: ['libraryMessage','quietSign','markLibraryCalm'], distractor: 'light', explanation: 'קודם שולחים הודעה: נא לשמור על שקט, אחר כך מציגים סימן שקט, ואז מסמנים שהספרייה רגועה.', hint: 'רמז: חפשו מצב שבו שני הדברים נכונים. אחר כך חשבו מה עוזר לילדים להקשיב בשקט, ומה לא קשור לפעילות בספרייה.', learningNote: 'פלט של מערכת יכול להיות גם הודעה שמכוונת אנשים לפעולה רגועה ונכונה.' },
-  { id: 10, emoji: '💡', title: 'פנס רחוב כבוי', district: 'מרכז העיר', goal: 'בלילה פנס אחד ברחוב כבוי, וסיסי צריכה לעזור להחזיר אור לרחוב.', condition: 'nightAndBrokenLamp', conditionOptions: ['dayAndBrokenLamp', 'nightNoBrokenLamp', 'nightAndBrokenLamp', 'dayNoBrokenLamp'], correctActions: ['checkBrokenLamp','fixLamp','reportLightFixed'], actionOptions: ['fixLamp','bridge','reportLightFixed','checkBrokenLamp'], distractor: 'bridge', explanation: 'קודם בודקים איזה פנס כבוי, אחר כך מתקנים את הפנס, ואז מסמנים שהרחוב מואר.', hint: 'רמז: חפשו מצב שבו שני הדברים נכונים. אחר כך חשבו מה עוזר להחזיר אור לרחוב, ומה מתאים אולי למכשול בדרך.', learningNote: 'תנאי וגם עוזר לבצע תיקון רק בזמן ובמקום שבהם באמת צריך אותו.' },
-  { id: 11, emoji: '🚌', title: 'תחנת האוטובוס', district: 'תחנה חכמה', goal: 'ילדים מחכים בתחנה, והאוטובוס הגיע. סיסי צריכה לעזור להם לעלות בבטחה.', condition: 'kidsAndBusArrived', conditionOptions: ['kidsNoBus', 'busNoKids', 'kidsAndBusArrived', 'noKidsNoBus'], correctActions: ['busMessage','openBusDoor','guideToBus'], actionOptions: ['guideToBus','busMessage','bridge','openBusDoor'], distractor: 'bridge', explanation: 'קודם מודיעים שהאוטובוס הגיע, אחר כך פותחים דלת אוטובוס, ואז מכוונים את הילדים לעלות.', hint: 'רמז: חפשו מצב שבו שני הדברים נכונים. אחר כך חשבו מה עוזר לילדים לעלות לאוטובוס בבטחה, ומה מתאים למכשול בדרך ולא לתחנה.', learningNote: 'מערכת חכמה עוזרת לאנשים בזמן הנכון ורק כשהמצב מתאים.' },
-  { id: 12, emoji: '🏁', title: 'אירוע הסיום בכיכר', district: 'כיכר העיר', goal: 'בכיכר העיר מתקיים אירוע סיום, ויש נזילה ליד המקום שבו אנשים עוברים. סיסי צריכה לעצור את המים ולשמור שהאירוע ימשיך בבטחה.', condition: 'finishEventAndLeak', conditionOptions: ['finishEventNoLeak', 'leakNoFinishEvent', 'finishEventAndLeak', 'noEventNoLeak'], correctActions: ['placeWarningSign','closeWater','markAreaSafe'], actionOptions: ['markAreaSafe','celebrate','closeWater','placeWarningSign'], distractor: 'celebrate', explanation: 'קודם מציבים שלט זהירות, אחר כך סוגרים את המים, ואז מסמנים שהאירוע בטוח.', hint: 'רמז: חפשו מצב שבו שני הדברים נכונים. אחר כך חשבו מה שומר על האנשים ומה עוצר את הבעיה, ומה רק משמח אבל לא פותר את הנזילה.', learningNote: 'סיום הקורס: תנאי נכון, רצף פעולות, והסבר למה הפעולה מתאימה.' }
+  { id: 7, emoji: '🚦', title: 'מעבר חציה עמוס', district: 'רחוב בית הספר', goal: 'יש הרבה ילדים ליד מעבר החציה, וסיסי צריכה לעזור להם לחצות בבטחה.', condition: 'kidsAndGreenLight', conditionOptions: ['kidsAndRedLight', 'greenLightNoKids', 'kidsAndGreenLight', 'noKidsRedLight'], correctActions: ['checkGreenLight','crossingSound','markCanCross'], distractor: 'bridge', explanation: 'כי היא פועלת רק כשהרמזור ירוק ויש ילדים, ואז נותנת סימן לפני שמסמנים שאפשר לחצות.', hint: 'רמז: חפשו מצב שבו שני הדברים נכונים. אחר כך חשבו מה עוזר לילדים לדעת מתי לחצות, ומה לא פותר בעיית חציה.', learningNote: 'תנאי נכון מוביל לפעולה בטוחה ומתאימה.' },
+  { id: 8, emoji: '🌉', title: 'גשרון אחרי גשם', district: 'גינת העיר', goal: 'לעזור לילדים לעבור שלולית גדולה.', condition: 'puddleAndKids', conditionOptions: ['puddleNoKids', 'puddleAndKids', 'noPuddleNoKids', 'kidsNoPuddle'], correctActions: ['puddleMove','bridge','guideKids'], distractor: 'open', explanation: 'כי היא פועלת רק כשיש שלולית וילדים, ואז מניחה גשרון לפני שמכוונים אותם לעבור בבטחה.', hint: 'רמז: חפשו מצב שבו שני הדברים נכונים. אחר כך חשבו מה עוזר לעבור מעל מכשול בדרך, ומה לא פותר את הבעיה הזאת.', learningNote: 'דיבוג: פעולה טובה במקום אחד יכולה להיות לא מתאימה במקום אחר.' },
+  { id: 9, emoji: '📚', title: 'שעת סיפור בספרייה', district: 'ספרייה עירונית', goal: 'בספרייה יש שעת סיפור, ויש רעש שמפריע לילדים להקשיב. סיסי צריכה להזכיר לכולם לשמור על שקט בעדינות.', condition: 'libraryNoiseAndActivity', conditionOptions: ['libraryActivityNoNoise', 'libraryNoiseNoActivity', 'libraryNoiseAndActivity', 'libraryQuietNoActivity'], correctActions: ['libraryMessage','quietSign','markLibraryCalm'], distractor: 'light', explanation: 'כי היא פועלת רק כשיש פעילות ורעש בספרייה, ואז מזכירה שקט לפני שמסמנים שהספרייה רגועה.', hint: 'רמז: חפשו מצב שבו שני הדברים נכונים. אחר כך חשבו מה עוזר לילדים להקשיב בשקט, ומה לא קשור לפעילות בספרייה.', learningNote: 'פלט של מערכת יכול להיות גם הודעה שמכוונת אנשים לפעולה רגועה ונכונה.' },
+  { id: 10, emoji: '💡', title: 'פנס רחוב כבוי', district: 'מרכז העיר', goal: 'בלילה פנס אחד ברחוב כבוי, וסיסי צריכה לעזור להחזיר אור לרחוב.', condition: 'nightAndBrokenLamp', conditionOptions: ['dayAndBrokenLamp', 'nightNoBrokenLamp', 'nightAndBrokenLamp', 'dayNoBrokenLamp'], correctActions: ['checkBrokenLamp','fixLamp','reportLightFixed'], actionOptions: ['fixLamp','bridge','reportLightFixed','checkBrokenLamp'], distractor: 'bridge', explanation: 'כי היא פועלת רק בלילה כשיש פנס כבוי, ואז מתקנת אותו לפני שמסמנים שהרחוב מואר.', hint: 'רמז: חפשו מצב שבו שני הדברים נכונים. אחר כך חשבו מה עוזר להחזיר אור לרחוב, ומה מתאים אולי למכשול בדרך.', learningNote: 'תנאי וגם עוזר לבצע תיקון רק בזמן ובמקום שבהם באמת צריך אותו.' },
+  { id: 11, emoji: '🚌', title: 'תחנת האוטובוס', district: 'תחנה חכמה', goal: 'ילדים מחכים בתחנה, והאוטובוס הגיע. סיסי צריכה לעזור להם לעלות בבטחה.', condition: 'kidsAndBusArrived', conditionOptions: ['kidsNoBus', 'busNoKids', 'kidsAndBusArrived', 'noKidsNoBus'], correctActions: ['busMessage','openBusDoor','guideToBus'], actionOptions: ['guideToBus','busMessage','bridge','openBusDoor'], distractor: 'bridge', explanation: 'כי היא פועלת רק כשהאוטובוס הגיע ויש ילדים בתחנה, ואז פותחת דלת לפני שמכוונים אותם לעלות.', hint: 'רמז: חפשו מצב שבו שני הדברים נכונים. אחר כך חשבו מה עוזר לילדים לעלות לאוטובוס בבטחה, ומה מתאים למכשול בדרך ולא לתחנה.', learningNote: 'מערכת חכמה עוזרת לאנשים בזמן הנכון ורק כשהמצב מתאים.' },
+  { id: 12, emoji: '🏁', title: 'אירוע הסיום בכיכר', district: 'כיכר העיר', goal: 'בכיכר העיר מתקיים אירוע סיום, ויש נזילה ליד המקום שבו אנשים עוברים. סיסי צריכה לעצור את המים ולשמור שהאירוע ימשיך בבטחה.', condition: 'finishEventAndLeak', conditionOptions: ['finishEventNoLeak', 'leakNoFinishEvent', 'finishEventAndLeak', 'noEventNoLeak'], correctActions: ['placeWarningSign','closeWater','markAreaSafe'], actionOptions: ['markAreaSafe','celebrate','closeWater','placeWarningSign'], distractor: 'celebrate', explanation: 'כי היא פועלת רק כשיש אירוע ונזילה, ואז מזהירה וסוגרת את המים לפני שמסמנים שהאזור בטוח.', hint: 'רמז: חפשו מצב שבו שני הדברים נכונים. אחר כך חשבו מה שומר על האנשים ומה עוצר את הבעיה, ומה רק משמח אבל לא פותר את הנזילה.', learningNote: 'סיום הקורס: תנאי נכון, רצף פעולות, והסבר למה הפעולה מתאימה.' }
 );
