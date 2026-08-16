@@ -59,7 +59,7 @@ test('cinema data has twelve robot algorithm tasks with progressive correct comm
 test('cinema play page builds command algorithm, removes distractor, and asks for reason', () => {
   assertIncludes(playHtml, 'id="scene-bank"');
   assertIncludes(playHtml, 'id="timeline"');
-  assertIncludes(playHtml, 'id="goal"');
+  assert.ok(!playHtml.includes('goal-chip'), 'Cinema lesson should not show a revealing goal chip');
   assertIncludes(playHtml, 'id="reason-options"');
   assertIncludes(playSource, 'selectedOrder.every');
   assertIncludes(playSource, 'lesson.distractor');
@@ -75,7 +75,7 @@ test('cinema lab and plan ensure a full 75-minute programming lesson', () => {
   assertIncludes(labHtml, 'בדיקת חברים');
   assertIncludes(cinemaCss, '.timeline-slot');
   assertIncludes(cinemaCss, '.reason-card');
-  assertIncludes(cinemaCss, '.goal-chip');
+  assertIncludes(cinemaCss, '.goal-chip{display:none!important}');
   assertIncludes(plan, 'בדיקת 75 דקות');
   assertIncludes(plan, 'מקדם ישירות לכיוון תכנות');
 });
