@@ -13,9 +13,13 @@ function setResult(text, success = false) {
   result.textContent = text;
   result.style.color = success ? '#15803d' : '#0f766e';
 }
-function actionChoices() { return [...mission.correctActions, mission.distractor].sort((a,b)=>a.localeCompare(b)); }
+function actionChoices() { return mission.actionOptions || [...mission.correctActions, mission.distractor].sort((a,b)=>a.localeCompare(b)); }
+function conditionChoices() {
+  const ids = mission.conditionOptions || Object.keys(conditions);
+  return ids.map((id) => [id, conditions[id]]).filter(([, condition]) => condition);
+}
 function renderConditions() {
-  document.getElementById('condition-options').innerHTML = Object.entries(conditions).map(([id, condition]) => `
+  document.getElementById('condition-options').innerHTML = conditionChoices().map(([id, condition]) => `
     <button type="button" class="choice-card ${selectedCondition === id ? 'active' : ''}" data-condition="${id}"><span>${condition.icon}</span><b>${condition.label}</b></button>`).join('');
   document.querySelectorAll('[data-condition]').forEach((button)=>button.addEventListener('click',()=>{ selectedCondition = button.dataset.condition; selectedExplanation = null; renderAll(false); }));
 }
@@ -23,13 +27,22 @@ function renderActions() {
   const chosen = new Set(selectedActions);
   document.getElementById('action-options').innerHTML = actionChoices().map((id) => {
     const action = actions[id];
-    return `<button type="button" class="choice-card ${chosen.has(id) ? 'used' : ''}" data-action="${id}" ${chosen.has(id) ? 'disabled' : ''}><span>${action.icon}</span><b>${action.label}</b></button>`;
+    return `<button type="button" class="choice-card ${chosen.has(id) ? 'used' : ''}" data-action="${id}" aria-pressed="${chosen.has(id)}"><span>${action.icon}</span><b>${action.label}</b><small>${chosen.has(id) ? 'לחצו שוב כדי למחוק' : ''}</small></button>`;
   }).join('');
-  document.querySelectorAll('[data-action]').forEach((button)=>button.addEventListener('click',()=>addAction(button.dataset.action)));
+  document.querySelectorAll('[data-action]').forEach((button)=>button.addEventListener('click',()=>toggleAction(button.dataset.action)));
+}
+function toggleAction(id) {
+  if (selectedActions.includes(id)) { removeAction(id); return; }
+  addAction(id);
 }
 function addAction(id) {
-  if (selectedActions.length >= 3 || selectedActions.includes(id)) return;
+  if (selectedActions.length >= 3) return;
   selectedActions.push(id);
+  selectedExplanation = null;
+  renderAll(false);
+}
+function removeAction(id) {
+  selectedActions = selectedActions.filter((actionId) => actionId !== id);
   selectedExplanation = null;
   renderAll(false);
 }
@@ -38,12 +51,28 @@ function renderProgram() {
   const slots = [0,1,2].map((index) => {
     const id = selectedActions[index];
     const action = id ? actions[id] : null;
-    return `<div class="program-step"><b>צעד ${index + 1}</b><span>${action ? action.icon : '❔'}</span><p>${action ? action.label : 'בחרו פעולה'}</p></div>`;
+    const removeButton = action ? `<button type="button" class="remove-action" data-remove-action="${id}" aria-label="מחיקת ${action.label}">✕ למחוק</button>` : '';
+    return `<div class="program-step"><b>צעד ${index + 1}</b><span>${action ? action.icon : '❔'}</span><p>${action ? action.label : 'בחרו פעולה'}</p>${removeButton}</div>`;
   }).join('');
   document.getElementById('program-preview').innerHTML = `<div class="condition-line"><b>אם</b><span>${condition ? `${condition.icon} ${condition.label}` : 'בחרו תנאי'}</span><b>אז</b></div><div class="program-grid">${slots}</div>`;
+  document.querySelectorAll('[data-remove-action]').forEach((button)=>button.addEventListener('click',()=>removeAction(button.dataset.removeAction)));
+}
+function explanationChoices() {
+  const distractorPairs = [
+    ['כי בחרנו את הפעולות הכי צבעוניות', 'כי מספיק לבחור פעולה אחת נכונה'],
+    ['כי התוכנית פועלת בכל מצב', 'כי הפעולה האחרונה תמיד מספיקה'],
+    ['כי אין צורך לבדוק תנאי', 'כי בחרנו פעולה שנשמעת נחמדה'],
+    ['כי הסדר של הפעולות לא משנה', 'כי כל פעולה בעיר מתאימה לכל בעיה'],
+    ['כי הרובוט מנחש מה לעשות', 'כי המסיח עוזר לפתור את המשימה'],
+    ['כי מספיק לבחור את התנאי בלי פעולות', 'כי כל התשובות בתוכנית נכונות תמיד']
+  ];
+  const distractors = distractorPairs[(mission.id - 1) % distractorPairs.length];
+  if (mission.id % 3 === 1) return [distractors[0], mission.explanation, distractors[1]];
+  if (mission.id % 3 === 2) return [distractors[0], distractors[1], mission.explanation];
+  return [mission.explanation, distractors[0], distractors[1]];
 }
 function renderExplanations() {
-  const options = [mission.explanation, 'כי בחרנו את הפעולות הכי צבעוניות', 'כי מספיק לבחור פעולה אחת נכונה'];
+  const options = explanationChoices();
   document.getElementById('explanation-options').innerHTML = options.map((text) => `<button type="button" class="reason-card ${selectedExplanation === text ? 'active' : ''}" data-explanation="${text}">${text}</button>`).join('');
   document.querySelectorAll('[data-explanation]').forEach((button)=>button.addEventListener('click',()=>{ selectedExplanation = button.dataset.explanation; renderExplanations(); setResult(''); }));
 }
@@ -53,17 +82,20 @@ function renderAll(clearResult = true) {
 function checkProgram() {
   if (!selectedCondition || selectedActions.length !== 3) { setResult('צריך לבחור תנאי וגם 3 פעולות לפי סדר.'); return; }
   const conditionOk = selectedCondition === mission.condition;
-  const actionsOk = selectedActions.every((id, index) => id === mission.correctActions[index]) && !selectedActions.includes(mission.distractor);
+  const hasDistractor = selectedActions.includes(mission.distractor);
+  const hasAllCorrectActions = mission.correctActions.every((id) => selectedActions.includes(id));
+  const actionsInOrder = selectedActions.every((id, index) => id === mission.correctActions[index]);
+  const actionsOk = actionsInOrder && !hasDistractor;
   const explanationOk = selectedExplanation === mission.explanation;
-  if (conditionOk && actionsOk && explanationOk) { setResult('מצוין! בניתם תכנית עיר חכמה שעובדת 🎉', true); window.SisiCourseCertificate?.show({ lessons: missions, lesson: mission }); renderNextStep(true); }
+  if (conditionOk && actionsOk && explanationOk) { setResult('מצוין! בניתם תכנית עיר חכמה שעובדת 🎉', true); renderNextStep(true); window.SisiCourseCertificate?.show({ lessons: missions, lesson: mission }); }
   else if (!conditionOk) setResult('התנאי לא מתאים למשימה. חפשו את שני הרמזים שמתארים את הבעיה בעיר.');
-  else if (!actionsOk) setResult('יש בעיה ברצף הפעולות או פעולה מיותרת. בדקו מה מקדם את המטרה ומה לא.');
+  else if (!actionsOk && hasAllCorrectActions && !hasDistractor) setResult('הפעולות שבחרתם מתאימות, אבל הסדר עוד לא נכון. חשבו מה צריך לקרות קודם ומה אחר כך.');
+  else if (!actionsOk && hasDistractor) setResult('יש פעולה אחת שלא מתאימה למשימה. חפשו פעולה שבאמת עוזרת לפתור את הבעיה.');
+  else if (!actionsOk) setResult('חסרה פעולה שמתאימה למשימה. בדקו מה סיסי צריכה לעשות כדי להגיע למטרה.');
   else setResult('התכנית טובה. עכשיו בחרו הסבר נכון שמראה שהבנתם למה היא עובדת.');
 }
 function showHint() {
-  const condition = conditions[mission.condition];
-  const first = actions[mission.correctActions[selectedActions.length] || mission.correctActions[0]];
-  setResult(`רמז: התנאי הוא ${condition.icon} ${condition.label}. הפעולה הבאה: ${first.icon} ${first.label}.`);
+  setResult(mission.hint || 'רמז: חפשו מצב שבו שני דברים נכונים, ואז בחרו פעולות שעוזרות בלי להוסיף פעולה מיותרת.');
 }
 function clearProgram() { selectedCondition = null; selectedActions = []; selectedExplanation = null; renderAll(); }
 function nextTarget() {
@@ -77,8 +109,19 @@ function renderNextStep(show = false) {
   if (!box) return;
   if (!show) { box.innerHTML = ''; return; }
   const target = nextTarget();
-  box.innerHTML = `<div class="next-step-note">המשימה בעיר הצליחה! ממשיכים לאתגר הבא.</div><a class="btn" href="${target.href}">${target.label}</a>`;
-  window.SisiSuccessDialog?.show({ message: box.querySelector('.next-step-note')?.textContent || 'כל הכבוד! אפשר להמשיך קדימה או לנסות שוב.', lessons: missions, lesson: mission, nextHref: target.href, nextLabel: target.label, onRepeat: () => window.location.reload() });
+  const isLastMission = missions[missions.length - 1]?.id === mission.id;
+  const note = isLastMission ? 'איזה יופי! סיסי סיימה יחד איתכם את כל משימות העיר החכמה. למדתם תנאים, רצף פעולות, דיבוג והסבר לתוכנית — עכשיו קורס סיסי הושלם 🎉' : 'המשימה בעיר הצליחה! ממשיכים לאתגר הבא.';
+  box.innerHTML = `<div class="next-step-note">${note}</div><a class="btn" href="${target.href}">${target.label}</a>`;
+  window.SisiSuccessDialog?.show({
+    badge: isLastMission ? '🏆 סיום הקורס!' : undefined,
+    title: isLastMission ? 'כל הכבוד! סיימתם את כל קורס סיסי' : undefined,
+    message: note,
+    lessons: missions,
+    lesson: mission,
+    nextHref: target.href,
+    nextLabel: target.label,
+    onRepeat: () => window.location.reload()
+  });
 }
 function init() {
   document.getElementById('page-title').textContent = `${mission.emoji} ${mission.title}`;

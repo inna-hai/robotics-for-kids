@@ -291,7 +291,8 @@ test('lesson 9 uses a cute classroom background image with empty chairs and over
   assertIncludes(indexHtml, '// Cute classroom background image: empty chairs by default, no grass/sky/CSS classroom drawing.');
   assertIncludes(indexHtml, '.ground.classroom-ground');
   assertIncludes(indexHtml, 'ground?.classList.toggle(\'classroom-ground\', num === 9);');
-  assertIncludes(indexHtml, "canvas.height = container.clientHeight - ([9, 11, 12, 13, 15].includes(currentLesson) ? 0 : 60); // Account for ground except full-background scenes");
+  assertIncludes(indexHtml, 'const groundOffset = [9, 11, 12, 13, 15].includes(currentLesson) ? 0 : 60;');
+  assertIncludes(indexHtml, 'const height = Math.max(220, rawHeight - groundOffset);');
   assertIncludes(indexHtml, '// Use source-cropping instead of stretching, so the classroom stays sharp and not smeared.');
   assertIncludes(indexHtml, 'ctx.drawImage(lesson9ClassroomBg, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);');
   assertIncludes(indexHtml, '// Keep the original classroom image, but cover only the built-in ceiling lamp with a ceiling-shaped patch.');
@@ -546,7 +547,7 @@ test('lesson 11 has student-built arming rules with visitors, safe touch, door a
   assertIncludes(indexHtml, 'No green stripe and no straight floor boundary');
   assertIncludes(indexHtml, '.robot-stage.museum-stage .ground');
   assertIncludes(indexHtml, 'display: none;');
-  assertIncludes(indexHtml, 'Lesson 11 has no separate ground strip');
+  assertIncludes(indexHtml, 'const groundOffset = [9, 11, 12, 13, 15].includes(currentLesson) ? 0 : 60;');
   assertIncludes(indexHtml, "classList.toggle('museum-stage', num === 11)");
   assertIncludes(indexHtml, 'const visitors = [');
   assertIncludes(indexHtml, 'Visitors face different directions');

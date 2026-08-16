@@ -25,46 +25,20 @@ function assertNotIncludes(source, needle, message = `Unexpected: ${needle}`) { 
 test('homepage is now a platform gateway and links to primary learning modules', () => {
   assertIncludes(homepageHtml, '<title>פלטפורמת לומדות טכנולוגיה</title>');
   assertIncludes(homepageHtml, 'מרכז הלומדות');
-  assertIncludes(homepageHtml, '<a class="btn alt" href="sisi.html">נסו 3 שיעורי חשיבה ותכנות בחינם</a>');
-  assertNotIncludes(homepageHtml, 'href="register.html">נסו 3 שיעורי חשיבה ותכנות בחינם');
-  assertIncludes(homepageHtml, 'התנסות חינמית');
-  assertNotIncludes(homepageHtml, 'href="space.html"');
+  assertIncludes(homepageHtml, 'href="sensi-city.html?lesson=1"');
+  assertIncludes(homepageHtml, 'href="sensi-classic.html?lesson=1"');
+  assertIncludes(homepageHtml, 'href="sensi-classic-slides/index.html"');
+  assertIncludes(homepageHtml, 'href="pygame.html"');
+  assertIncludes(homepageHtml, 'href="roblox.html"');
+  assertIncludes(homepageHtml, 'href="python-turtle.html"');
   assertIncludes(homepageHtml, 'href="sisi.html"');
-  assertIncludes(homepageHtml, '<a class="btn" href="sisi.html">התחילו בחינם</a><a class="btn secondary" href="sisi.html">מרכז הקורס</a>');
-  assertIncludes(homepageHtml, 'חשיבה ותכנות לילדים עם סיסי');
-  assertIncludes(homepageHtml, '3 שיעורים בחינם · המשך הסדרה למנויים');
-  assertIncludes(homepageHtml, 'href="https://mrng.to/fZiL2SITRp"');
-  assertIncludes(homepageHtml, 'class="actions cta-actions"');
-  assertIncludes(homepageHtml, '<a class="btn cta-free" href="sisi.html">נסו 3 שיעורי חשיבה ותכנות בחינם</a><a class="btn" href="summer-subscription.html">עמוד מנוי קיץ</a>');
-  assertNotIncludes(homepageHtml, 'style="justify-content:center"><a class="btn" href="summer-subscription.html">עמוד מנוי קיץ</a><a class="btn cta-free"');
-  assertNotIncludes(homepageHtml, 'href="sensi-city.html"');
-  assertNotIncludes(homepageHtml, 'href="sensi-classic.html?lesson=1"');
-  assertNotIncludes(homepageHtml, 'href="sensi-classic-slides/index.html"');
-  assertNotIncludes(homepageHtml, 'href="pygame.html"');
-  assertNotIncludes(homepageHtml, 'href="pygame-course.html"');
-  assertNotIncludes(homepageHtml, 'href="python-turtle.html"');
-  assertNotIncludes(homepageHtml, 'href="python-turtle-course.html"');
-  assertNotIncludes(homepageHtml, 'href="webcode.html"');
-  assertNotIncludes(homepageHtml, 'href="webcode-play.html"');
-  assertNotIncludes(homepageHtml, 'href="minecraft.html"');
-  assertNotIncludes(homepageHtml, 'href="minecraft-teachers.html"');
-  assertNotIncludes(homepageHtml, 'href="gamelab.html"');
-  assertNotIncludes(homepageHtml, 'href="gamelab-play.html"');
-  assertNotIncludes(homepageHtml, 'href="appforge.html"');
-  assertNotIncludes(homepageHtml, 'href="appforge-play.html"');
-  assertIncludes(homepageHtml, 'CodeQuest');
-  assertIncludes(homepageHtml, 'Roblox Studio');
-  assertIncludes(homepageHtml, 'Money Smart Lab');
-  assertIncludes(homepageHtml, 'Craftom School');
-  assertNotIncludes(homepageHtml, 'href="codequest.html"');
-  assertNotIncludes(homepageHtml, 'href="codequest-play.html"');
-  assertNotIncludes(homepageHtml, 'href="roblox.html"');
-  assertNotIncludes(homepageHtml, 'href="roblox-course.html"');
-  assertNotIncludes(homepageHtml, 'href="money-smart-lab.html"');
-  assertNotIncludes(homepageHtml, 'href="money-smart-course.html"');
-  assertNotIncludes(homepageHtml, 'href="money-smart-slides.html"');
-  assertNotIncludes(homepageHtml, 'href="craftom-school/preview/index.html"');
-  assertNotIncludes(homepageHtml, 'href="craftom-school/README.md"');
+  assertIncludes(homepageHtml, 'סדרת סיסי לכיתות ב׳');
+  assertIncludes(homepageHtml, 'href="finale.html"');
+  assertIncludes(homepageHtml, 'href="codequest.html"');
+  assertIncludes(homepageHtml, 'href="gamelab.html"');
+  assertIncludes(homepageHtml, 'href="appforge.html"');
+  assertIncludes(homepageHtml, 'href="craftom-school/preview/index.html"');
+  assertIncludes(homepageHtml, 'href="craftom-school/README.md"');
 });
 
 test('Sensi 15 remains on sensi-city and classic 5-lesson Sensi is restored separately', () => {
@@ -112,7 +86,7 @@ test('classic Sensi support pages are isolated from the 15-lesson course', () =>
 
 test('homepage local html links point to existing files', () => {
   const hrefs = [...homepageHtml.matchAll(/href="([^"]+\.html(?:\?[^\"]*)?)"/g)].map((match) => match[1]);
-  assert.ok(hrefs.length >= 4, 'Homepage should expose safe homepage actions without direct locked-course entry');
+  assert.ok(hrefs.length >= 16, 'Homepage should expose a useful course catalog');
   for (const href of hrefs) {
     const clean = href.replace(/^\.\//, '').split('?')[0].split('#')[0];
     assert.ok(existsSync(join(root, clean)), `Missing homepage target: ${href}`);

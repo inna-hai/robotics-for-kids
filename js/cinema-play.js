@@ -24,6 +24,13 @@ function renderCommandBank() {
 function expectedCommandCount() {
   return lesson.correctOrder.length;
 }
+function renderCommandBankInstructions() {
+  const instructions = document.getElementById('command-bank-instructions');
+  if (!instructions) return;
+  const correctCount = expectedCommandCount();
+  const totalCount = Object.keys(lesson.commands).length;
+  instructions.textContent = `בחרו ${correctCount} פקודות מתוך ${totalCount}. אחת הפקודות מיותרת ולא מקדמת את המטרה.`;
+}
 function renderTimeline() {
   const labels = Array.from({ length: expectedCommandCount() }, (_, index) => `פקודה ${index + 1}`);
   document.getElementById('timeline').innerHTML = labels.map((label, index) => {
@@ -63,7 +70,7 @@ function renderReasons() {
 }
 function renderAll(clearReason = true) {
   if (clearReason) selectedReason = null;
-  renderCommandBank(); renderTimeline(); renderReasons(); renderNextStep(false); setResult('');
+  renderCommandBankInstructions(); renderCommandBank(); renderTimeline(); renderReasons(); renderNextStep(false); setResult('');
 }
 function checkMovie() {
   if (selectedOrder.length < expectedCommandCount()) { setResult(`צריך לבחור ${expectedCommandCount()} פקודות לאלגוריתם.`); return; }
@@ -76,12 +83,15 @@ function checkMovie() {
   else setResult('הסדר נכון — עכשיו בחרו נימוק שמסביר למה האלגוריתם עובד.');
 }
 function showHint() {
-  const hintByStep = [
+  const defaultHints = [
     'רמז: התחילו בפעולה שמכינה את הדרך למטרה. חפשו מה חייב לקרות לפני הכול.',
     'רמז: עכשיו חפשו פעולה שממשיכה את מה שכבר התחלתם, בלי לקפוץ ישר לסוף.',
     'רמז: לסיום בחרו פעולה שמשלימה את המטרה, אחרי שההכנות כבר נעשו.'
   ];
-  setResult(hintByStep[Math.min(selectedOrder.length, hintByStep.length - 1)]);
+  const hints = lesson.hints || defaultHints;
+  const expectedCount = expectedCommandCount();
+  const hintIndex = Math.floor((selectedOrder.length / Math.max(expectedCount, 1)) * hints.length);
+  setResult(hints[Math.min(hintIndex, hints.length - 1)]);
   renderNextStep(false);
 }
 function clearTimeline() { selectedOrder = []; renderAll(true); }

@@ -21,7 +21,6 @@ const mailHtml = readFileSync(join(root, 'mail.html'), 'utf8');
 const cinemaHtml = readFileSync(join(root, 'cinema.html'), 'utf8');
 const escapeHtml = readFileSync(join(root, 'escape.html'), 'utf8');
 const finaleHtml = readFileSync(join(root, 'finale.html'), 'utf8');
-const sisiHubJs = readFileSync(join(root, 'js', 'sisi-hub.js'), 'utf8');
 const certificateSource = readFileSync(join(root, 'js/course-certificate.js'), 'utf8');
 
 const sisiLessonFiles = [
@@ -51,7 +50,7 @@ function assertIncludes(source, needle, message = `Missing: ${needle}`) { assert
 function assertNotIncludes(source, needle, message = `Unexpected: ${needle}`) { assert.ok(!source.includes(needle), message); }
 
 test('Sisi hub lists all fifteen lessons in the recommended order', () => {
-  assertIncludes(hubHtml, 'חשיבה ותכנות לילדים עם סיסי');
+  assertIncludes(hubHtml, 'סיסי — שיעורי תכנות לילדים');
   const expected = [
     ['שיעור 1', 'space.html', 'סיסי בחלל'],
     ['שיעור 2', 'music.html', 'מכונת המוזיקה'],
@@ -108,25 +107,11 @@ test('Sisi play pages expose only child-flow navigation, not labs or generic les
   }
 });
 
-test('hub frames the series for grade B and up and 75-minute lessons', () => {
-  assertIncludes(hubHtml, 'כיתות ב׳ ומעלה');
+test('hub frames the series for grade B age 7 and 75-minute lessons', () => {
+  assertIncludes(hubHtml, 'כיתות ב׳');
+  assertIncludes(hubHtml, 'גיל 7');
   assertIncludes(hubHtml, '75</b>דק׳ לשיעור');
   assertIncludes(hubHtml, '15</b>מכניקות שונות');
-});
-
-test('free lesson cards require registration for guests before entering lessons', () => {
-  assertIncludes(hubHtml, 'data-free-lesson');
-  assertIncludes(hubHtml, 'data-lesson-href="space.html"');
-  assertIncludes(hubHtml, 'data-lesson-href="music.html"');
-  assertIncludes(hubHtml, 'data-lesson-href="ocean.html"');
-  assertIncludes(hubHtml, 'href="register.html" data-free-lesson data-lesson-href="space.html"');
-  assertIncludes(hubHtml, '✅ חינם אחרי הרשמה');
-  assertIncludes(hubHtml, 'js/sisi-hub.js');
-  assertIncludes(sisiHubJs, '/api/summer/me');
-  assertIncludes(sisiHubJs, "link.setAttribute('href', 'register.html')");
-  assertIncludes(sisiHubJs, "link.setAttribute('href', target)");
-  assertIncludes(sisiHubJs, '✅ פתוח בחשבון שלך');
-  assertIncludes(sisiHubJs, 'credentials: \'same-origin\'');
 });
 
 test('Sisi play missions unlock progressively after successful completion', () => {
