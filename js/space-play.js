@@ -12,6 +12,8 @@ let collectedItems = new Set();
 let greetedAlien = false;
 let broadcastPulse = false;
 let reachedGoalDuringRun = false;
+let runToken = 0;
+let running = false;
 const starsStorageKey = 'sisi-space-stars-best-v1';
 
 function key(pos) { return `${pos.x},${pos.y}`; }
@@ -185,32 +187,55 @@ function step(cmd) {
   return { ok: true, message: item?.collectedMessage };
 }
 
+function stopRun() {
+  if (!running) return;
+  runToken += 1;
+  running = false;
+  setResult('ההרצה נעצרה. המסלול נשאר כמו שהוא — אפשר לשנות פקודות או להריץ שוב.');
+}
+
+function setRunning(value) {
+  running = value;
+  const runButton = document.getElementById('run');
+  const stopButton = document.getElementById('stop');
+  if (runButton) runButton.disabled = value;
+  if (stopButton) stopButton.disabled = !value;
+}
+
 async function runProgram() {
+  const myRun = ++runToken;
+  setRunning(true);
   resetRobot();
   setResult('סיסי יוצאת לדרך...');
   if (!program.length) {
     setResult('צריך להוסיף לפחות פקודה אחת לפני ההרצה.');
+    setRunning(false);
     return;
   }
   for (const cmd of program) {
     await new Promise((resolve) => setTimeout(resolve, 420));
+    if (myRun !== runToken) return;
     const outcome = step(cmd);
     if (!outcome.ok) {
       if (reachedGoalDuringRun) {
         setResult('סיסי כבר הגיעה ליעד — המסלול המשיך צעד אחד יותר מדי. מחקו את הפקודות שאחרי ההגעה ליעד ונסו שוב.');
+        setRunning(false);
         return;
       }
       setResult(outcome.reason);
+      setRunning(false);
       return;
     }
     if (outcome.message) setResult(outcome.message, true);
   }
   if (same(robot, lesson.goal) && !hasAllRequiredItems()) {
     setResult(`כמעט! לפני שמסיימים צריך לאסוף: ${requiredItemsText()}.`);
+    setRunning(false);
     return;
   }
   if (lesson.id === 5 && same(robot, lesson.goal) && !greetedAlien) {
     setResult('סיסי הגיעה לחייזר! עכשיו הוסיפו את הפקודה 📡 שדר שלום והריצו שוב.');
+    setRunning(false);
     return;
   }
   if (same(robot, lesson.goal)) {
@@ -225,6 +250,7 @@ async function runProgram() {
   } else {
     setResult('כמעט! סיסי לא הגיעה ליעד. הוסיפו או שנו פקודות ונסו שוב.');
   }
+  setRunning(false);
 }
 
 function init() {
@@ -252,6 +278,8 @@ function init() {
   });
 
   document.getElementById('run').addEventListener('click', runProgram);
+  document.getElementById('stop').addEventListener('click', stopRun);
+  setRunning(false);
   document.getElementById('undo').addEventListener('click', () => { program.pop(); renderProgram(); window.SisiSuccessDialog?.clear(); setResult(''); });
   document.getElementById('clear').addEventListener('click', () => {
     window.SisiSuccessDialog?.clear();
