@@ -85,6 +85,12 @@ test('park css and plan support a 75-minute parameter lesson', () => {
   assertIncludes(plan, 'מתקנים 1–4 מספיקים לשיעור מלא');
 });
 
+
+test('park play page does not show a ready-made goal chip', () => {
+  assert.ok(!playHtml.includes('goal-chip'), 'Park lesson should not show a ready-made goal chip');
+  assert.ok(!playSource.includes("getElementById('goal-chip')"), 'Park engine should not fill a revealing goal chip');
+});
+
 let passed = 0;
 for (const { name, fn } of tests) {
   try { fn(); passed += 1; console.log(`✓ ${name}`); }
