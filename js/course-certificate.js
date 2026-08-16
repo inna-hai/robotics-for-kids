@@ -229,6 +229,7 @@
       .sisi-success-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.58);display:flex;align-items:center;justify-content:center;padding:18px;z-index:9999;direction:rtl}
       .sisi-success-dialog{width:min(520px,100%);background:linear-gradient(135deg,#fff7ed,#ecfeff);border:4px solid #facc15;border-radius:30px;padding:24px;box-shadow:0 28px 70px rgba(15,23,42,.32);text-align:center;color:#0f172a}
       .sisi-success-dialog .badge{display:inline-flex;align-items:center;gap:8px;background:#22c55e;color:#fff;border-radius:999px;padding:8px 14px;font-weight:900;margin-bottom:10px}
+      .sisi-finish-art{font-size:clamp(2.6rem,9vw,4.8rem);line-height:1;margin:8px 0 4px;filter:drop-shadow(0 8px 12px rgba(15,23,42,.12))}
       .sisi-success-dialog h2{margin:8px 0 10px;font-size:clamp(1.45rem,4vw,2rem);color:#14532d}.sisi-success-dialog p{margin:0 0 18px;line-height:1.65;font-weight:800;color:#334155}
       .sisi-success-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}.sisi-success-actions .btn{justify-content:center;text-align:center}.sisi-success-actions .btn.repeat{background:linear-gradient(135deg,#e0f2fe,#bae6fd);color:#075985;box-shadow:none}
       @media(max-width:560px){.sisi-success-actions{grid-template-columns:1fr}.sisi-success-dialog{padding:20px}}
@@ -271,8 +272,32 @@
     markMissionComplete(lessons, lesson);
     const info = courseInfo();
     const missionHref = nextMissionHref(lessons, lesson);
+    const path = window.location.pathname.replace(/.*\//, '/');
+    const finishMessagePaths = new Set([
+      '/space-play.html', '/music-play.html', '/ocean-play.html', '/detective-play.html', '/kitchen-play.html',
+      '/park-play.html', '/mail-play.html', '/cinema-play.html', '/escape-play.html', '/finale-play.html'
+    ]);
+    const finishArt = {
+      '/space-play.html': '🚀🪐✨',
+      '/music-play.html': '🎵🎹🎧',
+      '/ocean-play.html': '🌊🐠🤖',
+      '/detective-play.html': '🔎🕵️‍♀️✨',
+      '/kitchen-play.html': '🧁🍪🤖',
+      '/park-play.html': '🎡🎢🎟️',
+      '/mail-play.html': '✉️📬🤖',
+      '/cinema-play.html': '🎬🤖🌟',
+      '/escape-play.html': '🔐🗝️🚪',
+      '/finale-play.html': '🏙️🤖🏆'
+    };
+    const finishedCourse = finishMessagePaths.has(path) && isLast(lessons, lesson);
     const href = nextHref || missionHref || info.next || 'sisi.html';
     const label = nextLabel || (missionHref ? '➡️ למשימה הבאה' : (info.next ? '➡️ לשיעור הבא' : '🤖 לעמוד סיסי'));
+    const displayBadge = badge || (finishedCourse ? '🏆 שיעור הושלם!' : '🎉 הצלחה!');
+    const displayTitle = title || (finishedCourse ? `כל הכבוד! סיימתם את ${info.title}` : 'סיסי הצליחה במשימה');
+    const displayMessage = finishedCourse
+      ? 'איזה יופי! השלמתם את כל המשימות בשיעור. סיסי גאה בכם — אפשר לעבור לשיעור הבא או לנסות שוב בשביל הכיף.'
+      : (message || 'כל הכבוד! אפשר להמשיך קדימה או לנסות שוב מהתחלה.');
+    const displayArt = finishedCourse ? `<div class="sisi-finish-art" aria-hidden="true">${finishArt[path] || '🤖🏆✨'}</div>` : '';
     const card = document.createElement('div');
     card.id = 'sisi-success-dialog';
     card.className = 'sisi-success-backdrop';
@@ -280,9 +305,10 @@
     card.setAttribute('aria-modal', 'true');
     card.innerHTML = `
       <div class="sisi-success-dialog">
-        <div class="badge">${badge || '🎉 הצלחה!'}</div>
-        <h2>${title || 'סיסי הצליחה במשימה'}</h2>
-        <p>${message || 'כל הכבוד! אפשר להמשיך קדימה או לנסות שוב מהתחלה.'}</p>
+        <div class="badge">${displayBadge}</div>
+        ${displayArt}
+        <h2>${displayTitle}</h2>
+        <p>${displayMessage}</p>
         <div class="sisi-success-actions">
           <a class="btn" href="${href}">${label}</a>
           <button class="btn repeat" type="button" data-repeat>${repeatLabel || '🔁 לנסות שוב'}</button>
