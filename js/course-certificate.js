@@ -271,8 +271,11 @@
     markMissionComplete(lessons, lesson);
     const info = courseInfo();
     const missionHref = nextMissionHref(lessons, lesson);
+    const finalMission = isLast(lessons, lesson);
     const href = nextHref || missionHref || info.next || 'sisi.html';
     const label = nextLabel || (missionHref ? '➡️ למשימה הבאה' : (info.next ? '➡️ לשיעור הבא' : '🤖 לעמוד סיסי'));
+    const finalTitle = `סיימתם את כל משימות ${info.title}!`;
+    const finalMessage = `איזה יופי! השלמתם את כל ${lessons?.length || ''} המשימות בשיעור הזה. סיסי מוכנה להמשיך איתכם לשיעור הבא.`;
     const card = document.createElement('div');
     card.id = 'sisi-success-dialog';
     card.className = 'sisi-success-backdrop';
@@ -280,9 +283,9 @@
     card.setAttribute('aria-modal', 'true');
     card.innerHTML = `
       <div class="sisi-success-dialog">
-        <div class="badge">${badge || '🎉 הצלחה!'}</div>
-        <h2>${title || 'סיסי הצליחה במשימה'}</h2>
-        <p>${message || 'כל הכבוד! אפשר להמשיך קדימה או לנסות שוב מהתחלה.'}</p>
+        <div class="badge">${badge || (finalMission ? '🏆 סיום כל המשימות!' : '🎉 הצלחה!')}</div>
+        <h2>${title || (finalMission ? finalTitle : 'סיסי הצליחה במשימה')}</h2>
+        <p>${finalMission ? finalMessage : (message || 'כל הכבוד! אפשר להמשיך קדימה או לנסות שוב מהתחלה.')}</p>
         <div class="sisi-success-actions">
           <a class="btn" href="${href}">${label}</a>
           <button class="btn repeat" type="button" data-repeat>${repeatLabel || '🔁 לנסות שוב'}</button>
