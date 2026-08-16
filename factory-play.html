@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/factory.css?v=20260717-factory-1">
+  <link rel="stylesheet" href="css/factory.css?v=20260816-factory-no-order-hints-v5">
 </head>
 <body>
   <main class="shell">
@@ -19,19 +19,35 @@
 
     <section class="mission-card">
       <div class="big-emoji" id="lesson-emoji" aria-hidden="true">🏭</div>
-      <div><h2 id="lesson-heading">משימת מפעל</h2><p id="story"></p><span class="goal-chip" id="goal-chip"></span><div class="learning-note" id="learning-note"></div></div>
+      <div><h2 id="lesson-heading">משימת מפעל</h2><p id="story"></p><div class="learning-note" id="learning-note"></div></div>
+    </section>
+
+    <section class="task-guide" id="task-guide">
+      <h2>הבעיה דורשת כמה פעולות</h2>
+      <p class="guide-note">במשימות המתקדמות לא מספיק לבחור פעולה אחת: צריך לבנות כמה לולאות או שלבים לפי הסיפור.</p>
     </section>
 
     <section class="factory-layout">
-      <div class="option-panel">
-        <h2>1. איזו פעולה חוזרת?</h2>
-        <p>בחרו את הפעולה שהמפעל צריך לעשות שוב ושוב.</p>
-        <div class="option-grid" id="action-options"></div>
+      <div class="option-panel program-panel">
+        <h2>בנו שתי לולאות כמו בציור</h2>
+        <p>בכל משימה בוחרים את הפעולות ואת מספר הפעמים לפי הסיפור.</p>
+        <div class="program-loops" id="action-options"></div>
       </div>
-      <div class="option-panel">
-        <h2>2. כמה פעמים לחזור?</h2>
-        <p>בחרו מספר חזרות מדויק. מעט מדי או יותר מדי יוצר באג.</p>
+      <div class="option-panel" id="count-panel">
+        <h2>מספר חזרות</h2>
+        <p>בחרו כמה פעמים הלולאה צריכה לחזור.</p>
         <div class="option-grid" id="count-options"></div>
+      </div>
+      <div class="option-panel challenge-panel" id="challenge-panel" hidden>
+        <h2>3. חקרו ותקנו את הבאג</h2>
+        <p id="challenge-prompt"></p>
+        <div class="buggy-loop" id="buggy-loop"></div>
+        <h3>א. מה יצא מהטיוטה?</h3>
+        <div class="option-grid" id="symptom-options"></div>
+        <h3>ב. מה צריך לתקן?</h3>
+        <div class="option-grid" id="repair-options"></div>
+        <h3>ג. איזה סוג באג זה?</h3>
+        <div class="option-grid" id="debug-options"></div>
       </div>
     </section>
 
@@ -50,9 +66,9 @@
       <div class="next-step" id="next-step"></div>
     </section>
   </main>
-  <script src="js/factory-lessons.js?v=20260717-factory-1"></script>
-  <script src="js/course-certificate.js?v=20260811-completed-locks"></script>
-  <script src="js/factory-play.js?v=20260725-child-ux"></script>
+  <script src="js/factory-lessons.js?v=20260816-factory-no-order-hints-v5"></script>
+  <script src="js/course-certificate.js?v=20260816-final-mission-celebration"></script>
+  <script src="js/factory-play.js?v=20260816-factory-no-order-hints-v5"></script>
   <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
 </body>
 </html>
