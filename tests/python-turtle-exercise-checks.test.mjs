@@ -1,0 +1,48 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+
+const html = readFileSync(new URL('../python-turtle.html', import.meta.url), 'utf8');
+
+assert.match(html, /function repeatShapeMatches\(sides, angle\)/, 'shape exercises use a dedicated repeat/sides/angle validator');
+assert.match(html, /netTurn = bodyActions\.reduce/, 'shape validator rejects loops whose opposite turns cancel out instead of forming a shape');
+assert.match(html, /closesShape = simulatePath\(repeatedActions\)\.distanceFromStart <= 25/, 'shape validator checks that the repeated loop actually closes into a polygon');
+assert.match(html, /currentLesson === 3/, 'lesson 3 has specific validators instead of only generic checks');
+assert.match(html, /if\(isTipExercise\(ex\) \|\| isChallengeExercise\(ex\)\) return \[\]/, 'challenge exercises are not forced through hard validators');
+assert.match(html, /isTip \|\| isChallengeExercise\(ex\) \|\| isSelectionOnly/, 'challenge exercises do not show a dedicated check button');
+assert.match(html, /if\(isChallengeExercise\(ex\)\) run\(\);/, 'running challenge code runs the turtle without falsely rendering exercise success');
+assert.match(html, /let lastSelectedBlockId = null/, 'selection-only checks remember the last selected block before the check button steals focus');
+assert.match(html, /function isSelectionOnlyExercise\(ex\)/, 'lesson 3 for-highlight exercise is a selection-only step');
+assert.match(html, /isTip \|\| isChallengeExercise\(ex\) \|\| isSelectionOnly/, 'selection-only exercise and challenges have no check button');
+assert.match(html, /completedSet\(\)\.delete\(index\)/, 'selection-only exercise ignores stale completed progress until the user selects the repeat block again');
+assert.match(html, /const canContinue = isSelectionOnly \? !!selectionExerciseUnlocked\[selectionUnlockKey\(\)\]/, 'selection-only exercise unlocks continue from an explicit saved unlock flag');
+assert.match(html, /function selectionOnlyBlockType\(ex\)/, 'selection-only exercises can specify the block type to select');
+assert.match(html, /currentLesson === 4 && ex\?\.id === 6\) return 'py_color'/, 'lesson 4 color-code exercise unlocks by selecting the color block');
+assert.match(html, /selected\?\.type === selectionOnlyBlockType\(ex\)/, 'selection-only unlock listener uses the exercise-specific selected block type');
+assert.match(html, /selectionExerciseUnlocked\[selectionUnlockKey\(\)\] = true/, 'continue remains available after the correct block was selected, even after focus moves to the button');
+assert.match(html, /const skipRun = currentLesson === 3 && ex\.id === 4/, 'lesson 3 for-highlight exercise checks selection without running or moving the turtle');
+assert.match(html, /selected \|\| \(lastSelectedBlockId \? workspace\.getBlockById\(lastSelectedBlockId\) : null\)/, 'selected-block validator can use the last highlighted block');
+assert.match(html, /repeatShapeMatches\(4, 90\)/, 'lesson 3 exercise 1 checks a real square: 4 repeats and 90 degrees');
+assert.match(html, /repeatShapeMatches\(3, 120\)/, 'lesson 3 exercise 2 checks a real triangle');
+assert.match(html, /repeatShapeMatches\(6, 60\)/, 'lesson 3 exercise 3 checks a real hexagon');
+assert.match(html, /repeatShapeMatches\(5, 72\)/, 'pentagon checks require 5 repeats and 72 degrees');
+assert.match(html, /actionDrawnColors\(actions\)\.size < 2/, 'color exercises check colors that are actually drawn, not only selected');
+assert.match(html, /const needsNonBlue = \/שונה מהכחול/, 'generic color checks allow blue unless the exercise explicitly asks for a non-blue color');
+assert.match(html, /const requestedColor = needsNonBlue \? colorActions\.find/, 'generic color checks only require an explicit color block when non-blue is requested');
+assert.match(html, /!needsNonBlue \|\| color !== defaultBlue/, 'generic color checks count pen-down drawing in blue when blue is allowed');
+assert.match(html, /function forwardStepsChangedFromBaseline\(actions, index=currentExerciseIndex\)/, 'side-length exercise compares current forward steps to the exercise-start baseline');
+assert.match(html, /צריך לשנות את מספר הצעדים בבלוק ׳זוז קדימה׳ לעומת מה שהיה בתחילת התרגיל/, 'side-length exercise fails until the forward step count actually changes');
+assert.match(html, /function actionDrawsWithWidth\(actions, width\)/, 'width exercises check that drawing happens after the requested pen width is set');
+assert.match(html, /actionDrawsWithWidth\(actions, 3\)/, 'width 3 exercises require actual drawing with width 3');
+assert.match(html, /function actionChangesColorBetweenDraws\(actions\)/, 'middle-color exercises require drawing before and after a color change');
+assert.match(html, /ex\.id === 4[\s\S]*actionChangesColorBetweenDraws\(actions\)/, 'lesson 4 color-change exercise uses the middle-drawing color validator');
+assert.match(html, /function actionDrawsDifferentColorLengths\(actions\)/, 'two-line color exercise checks actual drawn line colors and lengths');
+assert.match(html, /segments\.length !== 2/, 'two-line color exercise requires exactly two drawn lines');
+assert.match(html, /ex\.id === 5[\s\S]*actionDrawsDifferentColorLengths\(actions\)/, 'lesson 4 two-line exercise has a specific validator');
+assert.match(html, /currentLesson === 4 && ex\?\.id === 7[\s\S]*py_color/, 'lesson 4 late-color debug exercise has generated starter code');
+assert.match(html, /function fixesLateColorStarter\(actions\)/, 'late-color debug exercise checks that the starter shape is preserved and recolored');
+assert.match(html, /const intendedColor = '#16a34a'/, 'late-color debug exercise requires the intended starter color, not any non-blue color');
+assert.match(html, /ex\.id === 7[\s\S]*fixesLateColorStarter\(actions\)/, 'lesson 4 late-color exercise uses its specific starter-fix validator');
+assert.match(html, /penup\|הרימו עט/, 'penup exercises require the pen-up block');
+assert.match(html, /pendown\|הורידו עט/, 'pendown exercises require the pen-down block');
+
+console.log('python turtle exercise check regressions passed');
