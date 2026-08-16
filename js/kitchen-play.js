@@ -80,7 +80,7 @@ function checkRecipe() {
     window.SisiCourseCertificate?.show({ lessons, lesson });
     window.SisiSuccessDialog?.show({ message, lessons, lesson, onRepeat: () => window.location.reload() });
   } else {
-    setResult(`כמעט. שלב ${wrongIndex + 1} לא במקום. בדקו מה צריך לקרות לפניו.`);
+    setResult(`כמעט. השלבים מתאימים למתכון, אבל שלב ${wrongIndex + 1} עוד לא במקום. בדקו מה צריך לקרות לפניו.`);
   }
 }
 
