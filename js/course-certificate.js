@@ -243,8 +243,30 @@
     return `${window.location.pathname.replace(/.*\//, '')}?lesson=${lessons[index + 1].id}`;
   }
 
-  function showSuccessDialog({ message, lessons, lesson, nextHref, nextLabel, repeatLabel, onRepeat } = {}) {
+  function progressKey() {
+    const path = window.location.pathname.replace(/.*\//, '') || 'sisi-play';
+    return `sisi-progress:${path}`;
+  }
+
+  function markProgress(lesson) {
+    if (!lesson?.id) return null;
+    try {
+      const key = progressKey();
+      const progress = JSON.parse(localStorage.getItem(key) || '{}');
+      progress.completed = progress.completed || {};
+      progress.completed[lesson.id] = { completedAt: new Date().toISOString(), title: lesson.title || lesson.place || `משימה ${lesson.id}` };
+      progress.lastCompleted = lesson.id;
+      progress.updatedAt = new Date().toISOString();
+      localStorage.setItem(key, JSON.stringify(progress));
+      return progress;
+    } catch {
+      return null;
+    }
+  }
+
+  function showSuccessDialog({ message, title, badge, lessons, lesson, nextHref, nextLabel, repeatLabel, onRepeat } = {}) {
     injectDialogStyle();
+    markProgress(lesson);
     document.getElementById('sisi-success-dialog')?.remove();
     markMissionComplete(lessons, lesson);
     const info = courseInfo();
@@ -258,8 +280,8 @@
     card.setAttribute('aria-modal', 'true');
     card.innerHTML = `
       <div class="sisi-success-dialog">
-        <div class="badge">🎉 הצלחה!</div>
-        <h2>סיסי הצליחה במשימה</h2>
+        <div class="badge">${badge || '🎉 הצלחה!'}</div>
+        <h2>${title || 'סיסי הצליחה במשימה'}</h2>
         <p>${message || 'כל הכבוד! אפשר להמשיך קדימה או לנסות שוב מהתחלה.'}</p>
         <div class="sisi-success-actions">
           <a class="btn" href="${href}">${label}</a>
@@ -281,6 +303,7 @@
   }
 
   window.SisiCourseCertificate = { show, clear };
+  window.SisiProgress = { mark: markProgress };
   window.SisiSuccessDialog = { show: showSuccessDialog, clear: clearSuccessDialog };
   window.SisiMissionProgress = { getUnlocked: getUnlockedMission, getCompleted: getCompletedMissions, setUnlocked: setUnlockedMission, markComplete: markMissionComplete, decorate: decorateMissionNav };
 })();
