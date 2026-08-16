@@ -4,19 +4,19 @@ const lessons = window.MAIL_LESSONS || [];
 const routes = window.MAIL_ROUTES || {};
 const lesson = lessons.find((item) => item.id === lessonId) || lessons[0];
 let selectedRoute = null;
-let mailPosition = { x: 4, y: 3 };
+let mailPosition = { x: 5, y: 3 };
 let lastStepBlocked = false;
 
-const mazeSize = { cols: 7, rows: 5 };
+const mazeSize = { cols: 9, rows: 5 };
 const mailboxPositions = {
   library: { x: 1, y: 1 },
-  garden: { x: 4, y: 1 },
-  music: { x: 7, y: 1 },
+  garden: { x: 5, y: 1 },
+  music: { x: 9, y: 1 },
   lab: { x: 1, y: 5 },
-  kitchen: { x: 4, y: 5 },
-  park: { x: 7, y: 5 }
+  kitchen: { x: 5, y: 5 },
+  park: { x: 9, y: 5 }
 };
-const blockedCells = new Set(['2,2', '6,2', '2,4', '6,4']);
+const blockedCells = new Set(['2,2', '4,2', '6,2', '8,2', '2,4', '4,4', '6,4', '8,4']);
 const moves = {
   up: { x: 0, y: -1 },
   down: { x: 0, y: 1 },
@@ -56,8 +56,9 @@ function animateMailGame(success) {
 
 function renderRouteOptions() {
   document.getElementById('route-options').innerHTML = Object.entries(routes).map(([id, route]) => `
-    <button type="button" class="route-card ${selectedRoute === id ? 'active' : ''}" data-route="${id}">
-      <span class="route-icon">${route.icon}</span><span>${route.label}</span>
+    <button type="button" class="route-card mail-route-card ${selectedRoute === id ? 'active' : ''}" data-route="${id}">
+      <span class="route-icon mail-route-icon">${route.icon}</span>
+      <span class="route-card-text"><b>${route.label}</b><small>${route.reason}</small></span>
     </button>
   `).join('');
   document.querySelectorAll('[data-route]').forEach((button) => {
@@ -96,7 +97,7 @@ function renderMailMaze() {
 function renderRoutePreview() {
   const route = selectedRoute ? routes[selectedRoute] : null;
   document.getElementById('route-preview').innerHTML = route
-    ? `<span>${lesson.emoji}</span><b>הרמז:</b><span>${lesson.clue}</span><b>שליחה אל:</b><span>${route.icon} ${route.label}</span>`
+    ? `<span>${lesson.emoji}</span><b>הרמז:</b><span>${lesson.clue}</span><b>שליחה אל:</b><span>${route.icon} ${route.label}</span><b>למה?</b><span>${route.reason}</span>`
     : `<span>${lesson.emoji}</span><b>הרמז:</b><span>${lesson.clue}</span><b>שליחה אל:</b><span>הוליכו לתיבה</span>`;
 }
 
@@ -152,7 +153,7 @@ function showHint() {
 function clearRoute() {
   selectedRoute = null;
   document.getElementById('mail-maze')?.classList.remove('mail-maze-success');
-  mailPosition = { x: 4, y: 3 };
+  mailPosition = { x: 5, y: 3 };
   lastStepBlocked = false;
   renderRouteOptions();
   renderRoutePreview();
@@ -174,7 +175,7 @@ function renderNextStep(show = false) {
   if (!show) { box.innerHTML = ''; return; }
   const target = nextTarget();
   box.innerHTML = `<div class="next-step-note">הדואר נותב נכון! <span class="mailbox-stamp">נשלח בהצלחה</span><br>ממשיכים להודעה הבאה.</div><a class="btn" href="${target.href}">${target.label}</a>`;
-  window.SisiSuccessDialog?.show({ message: box.querySelector('.next-step-note')?.textContent || 'כל הכבוד! אפשר להמשיך קדימה או לנסות שוב.', lessons, lesson, nextHref: target.href, nextLabel: target.label, onRepeat: () => window.location.reload() });
+  window.SisiSuccessDialog?.show({ message: 'הדואר נותב נכון! נשלח בהצלחה. ממשיכים להודעה הבאה.', lessons, lesson, nextHref: target.href, nextLabel: target.label, onRepeat: () => window.location.reload() });
 }
 
 function init() {
