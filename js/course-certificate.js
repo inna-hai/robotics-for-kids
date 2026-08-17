@@ -103,6 +103,8 @@
     const style = document.createElement('style');
     style.id = 'sisi-mission-lock-style';
     style.textContent = `
+      #lesson-nav a{transition:transform .16s ease,box-shadow .16s ease,outline-color .16s ease}
+      #lesson-nav a.active{transform:scale(1.14);box-shadow:0 8px 18px rgba(15,23,42,.22);outline:3px solid rgba(255,255,255,.72);outline-offset:2px;position:relative;z-index:2}
       #lesson-nav a.locked{opacity:.45;filter:grayscale(.45);cursor:not-allowed;position:relative}
       #lesson-nav a.locked::after{content:'🔒';font-size:.72em;margin-inline-start:4px}
       #lesson-nav a.done{background:#dcfce7!important;color:#166534!important;border-color:#22c55e!important}
