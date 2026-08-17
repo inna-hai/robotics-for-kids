@@ -126,7 +126,7 @@ function checkEscape() {
   if (selected.length !== 2) { setResult('צריך ללחוץ על הפריט שמתאים לשני הרמזים.'); return; }
   const keysOk = sameKeysInAnyOrder(selected, lesson.required);
   const reasonOk = selectedReason === lesson.successReason;
-  if (keysOk && reasonOk) { setResult(`נכון! ${lesson.result} 🔓`, true); window.SisiCourseCertificate?.show({ lessons, lesson }); renderNextStep(true); }
+  if (keysOk && reasonOk) { setResult(`נכון! ${lesson.result} 🔓`, true); renderNextStep(true); }
   else if (!keysOk) setResult('כמעט. בתנאי “וגם” שני הרמזים חייבים להתאים בדיוק למה שכתוב על הדלת.');
   else if (!selectedReason) setResult('כמעט סיימתם — עכשיו בחרו למה שני הרמזים פותחים את החדר.');
   else setResult(lesson.feedbackWrongReason || 'הרמזים נכונים. עכשיו בחרו נימוק שמסביר למה תנאי “וגם” עובד.');
