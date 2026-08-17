@@ -17,7 +17,8 @@ assert.match(html, /completedSet\(\)\.delete\(index\)/, 'selection-only exercise
 assert.match(html, /const canContinue = isSelectionOnly \? !!selectionExerciseUnlocked\[selectionUnlockKey\(\)\]/, 'selection-only exercise unlocks continue from an explicit saved unlock flag');
 assert.match(html, /function selectionOnlyBlockType\(ex\)/, 'selection-only exercises can specify the block type to select');
 assert.match(html, /currentLesson === 4 && ex\?\.id === 6\) return \['py_color'\]/, 'lesson 4 color-code exercise unlocks by selecting the color block');
-assert.match(html, /selectionOnlyBlockTypes\(ex\)\.includes\(selected\.type\)/, 'selection-only unlock listener uses the exercise-specific selected block types');
+assert.match(html, /const requiredTypes = isSelectionOnlyExercise\(ex\) \? selectionOnlyBlockTypes\(ex\) : \[\]/, 'selection-only unlock listener uses the exercise-specific selected block types');
+assert.match(html, /const matchedType = requiredTypes\.find\(type=>selectedBlockHighlightsExpectedCode\(selected, type, highlighted\)\)/, 'selection-only unlock requires selecting a block whose Python line is actually highlighted');
 assert.match(html, /currentLesson === 5 && ex\?\.id === 3\) return \['py_penup', 'py_pendown'\]/, 'lesson 5 pen-code exercise unlocks by selecting both pen blocks');
 assert.match(html, /requiredTypes\.every\(type=>selectionExerciseSelections\[key\]\.has\(type\)\)/, 'multi-block selection exercises require all selected blocks before continue unlocks');
 assert.match(html, /selectionExerciseUnlocked\[key\] = true/, 'continue remains available after the correct block was selected, even after focus moves to the button');
@@ -91,4 +92,83 @@ assert.match(html, /currentLesson === 5 && ex\.id === 5[\s\S]*penUpIndex[\s\S]*p
 
 assert.match(html, /requiresFreshCheckExercise\(targetEx\)[\s\S]*completedSet\(\)\.delete\(index\)/, 'fresh-check exercises clear stale completion on entry');
 
-assert.match(html, /requiresFreshCheckExercise\(leavingEx\) && !exercisePassed\) return/, 'fresh-check exercises cannot continue from stale completed progress');
+assert.match(html, /requiresCheckedContinue\(leavingEx\) && !exercisePassed\) return/, 'normal checked exercises cannot continue from stale completed progress');
+
+assert.match(html, /currentLesson === 5 && ex\.id === 2[\s\S]*penUpIndex[\s\S]*forwardAfterPenUpIndex[\s\S]*pendownIndex/, 'lesson 5 exercise 2 requires continuing from exercise 1 with penup movement before pendown');
+
+assert.match(html, /המשיכו מהקוד של תרגול 1[\s\S]*תנועה בלי ציור[\s\S]*הורד עט[\s\S]*משולש/, 'lesson 5 exercise 2 wording asks to continue from exercise 1 and matches the penup-to-pendown flow');
+
+assert.match(html, /currentLesson === 6 && ex\?\.id === 3\) return \['py_set_length'\]/, 'lesson 6 code-selection exercise unlocks by selecting the set-length block');
+assert.match(html, /function repeatUsesLengthShape\(sides, angle\)/, 'lesson 6 validates shapes that use forward(length), not hard-coded numbers');
+assert.match(html, /currentLesson === 6[\s\S]*ex\.id === 1[\s\S]*values\.includes\(70\)[\s\S]*firstForwardLengthIndex/, 'lesson 6 exercise 1 requires setting length to 70 before using forward length');
+assert.match(html, /ex\.id === 2[\s\S]*repeatUsesLengthShape\(4, 90\)/, 'lesson 6 exercise 2 requires a square drawn with the length variable');
+assert.match(html, /ex\.id === 4[\s\S]*values\.includes\(120\)[\s\S]*repeatUsesLengthShape\(4, 90\)/, 'lesson 6 exercise 4 requires changing length to 120 while keeping a variable square');
+assert.match(html, /ex\.id === 5[\s\S]*uniqueValues\.size < 2[\s\S]*צריך לבנות שני ריבועים/, 'lesson 6 exercise 5 requires two variable-based squares with different length values');
+
+assert.match(html, /currentLesson === 6 && ex\?\.id === 3[\s\S]*py_set_length[\s\S]*py_forward_length/, 'lesson 6 code-selection exercise loads starter blocks to select');
+
+
+assert.match(html, /function starterXmlForExercise\(ex\)[\s\S]*currentLesson === 6 && ex\?\.id === 3[\s\S]*py_set_length[\s\S]*py_forward_length/, 'lesson 6 exercise 3 starter XML lives in starterXmlForExercise');
+
+assert.match(html, /תרגול 6 — מגדילים את האורך תוך כדי ציור/, 'lesson 6 restores the grow-length exercise before the final challenge');
+
+assert.match(html, /ex\.id === 6[\s\S]*growIndex[\s\S]*forwardBeforeGrow[\s\S]*forwardAfterGrow/, 'lesson 6 grow-length exercise requires drawing before and after increasing length');
+
+assert.doesNotMatch(html, /function selectionOnlyBlockTypes\(ex\)\{[^}]*return '<xml>/, 'selection-only block type helpers must not return starter XML');
+
+assert.match(html, /selectedBlockHighlightsExpectedCode[\s\S]*highlightedLines=null[\s\S]*textContent\.includes\(expectedText\)/, 'selection-only exercises require the expected Python code line to be highlighted');
+
+assert.match(html, /if\(isSelectionOnlyExercise\(ex\)\)\{[\s\S]*selectionExerciseUnlocked\[key\] = false[\s\S]*completedSet\(\)\.delete\(currentExerciseIndex\)/, 'selection-only completion is cleared after workspace edits');
+
+assert.match(html, /תרגול 7 — מחומש בצבע אחר/, 'lesson 6 restores the useful color-variation exercise');
+
+assert.match(html, /אתגר למתקדמים — משתמשים ב־length פעמיים/, 'lesson 6 restores an advanced open-ended length challenge');
+
+assert.match(html, /ex\.id === 7[\s\S]*cmd==='color'[\s\S]*cmd==='forward'[\s\S]*repeatUsesLengthShape\(5, 72\)/, 'lesson 6 color pentagon requires color, no numeric forward movement, and a length-based pentagon');
+
+assert.match(html, /event\.newElementId \? workspace\.getBlockById\(event\.newElementId\) : \(Blockly\.getSelected \? Blockly\.getSelected\(\) : null\)/, 'selection-only handler falls back to the actual selected Blockly block');
+
+assert.match(html, /selectedNames[\s\S]*עכשיו אפשר ללחוץ המשך/, 'selection-only feedback tells the student Continue is now unlocked after the correct highlight');
+
+assert.match(html, /const isCodeEditEvent = !event\.isUiEvent[\s\S]*event\.type !== Blockly\.Events\.CLICK/, 'selection-only unlock is not cleared by Blockly UI-only events such as clicking Continue');
+
+assert.match(html, /if\(isCodeEditEvent\)\{[\s\S]*selectionExerciseUnlocked\[key\] = false/, 'selection-only unlock clears only when the workspace code is edited');
+
+assert.match(html, /בחרו צבע אחר וציירו מחומש שמשתמש רק ב־length לתנועה קדימה/, 'lesson 6 exercise 7 asks for a specific pentagon instead of a vague shape');
+
+assert.match(html, /כמעט — בדקו שכל התנועות קדימה במחומש משתמשות במשתנה/, 'lesson 6 exercise 7 rejects numeric forward movement without revealing the exact answer');
+
+assert.doesNotMatch(html, /צריך לצייר מחומש: חזרה 5 פעמים, פנייה של 72 מעלות/, 'lesson 6 exercise 7 feedback must not reveal the exact pentagon answer');
+
+assert.match(html, /function requiresCheckedContinue\(ex\)[\s\S]*!isTipExercise\(ex\)[\s\S]*!isChallengeExercise\(ex\)[\s\S]*!isSelectionOnlyExercise\(ex\)[\s\S]*!isRunOnlyExampleExercise\(ex\)/, 'normal exercises require an approved check before Continue unlocks');
+
+assert.match(html, /const canContinue = isSelectionOnly[\s\S]*requiresCheckedContinue\(ex\) \? exercisePassed/, 'normal exercises do not unlock Continue from stale completed progress');
+
+assert.match(html, /if\(requiresCheckedContinue\(leavingEx\) && !exercisePassed\) return/, 'nextExercise blocks normal exercises until the current check passes');
+
+assert.doesNotMatch(html, /exercisePassed \|\| completedSet\(\)\.has\(currentExerciseIndex\)/, 'normal exercise Continue gate must not use stale completedSet progress');
+
+
+assert.match(html, /\.exercise-feedback:empty\{display:none\}/, 'empty feedback box is hidden before any check result');
+
+assert.match(html, /<div class="exercise-bottom"><div class="exercise-controls">[\s\S]*<div class="exercise-feedback/, 'exercise feedback shares the bottom row with the buttons so Continue remains visible');
+
+assert.match(html, /\.exercise-bottom\{display:flex;gap:10px;align-items:center/, 'exercise bottom row keeps feedback and controls visible together');
+
+assert.doesNotMatch(html, /exercise-feedback'\)\?\.scrollIntoView/, 'exercise feedback should not auto-scroll controls out of view');
+
+assert.match(html, /תרגול 6 — תקנו בלוק מיותר/, 'lesson 7 includes a concrete debug exercise instead of filler');
+
+assert.doesNotMatch(html, /currentLesson === 7 && ex\?\.id === 4\) return \['py_repeat'\]/, 'lesson 7 no longer repeats the code-highlight selection exercise');
+
+assert.doesNotMatch(html, /currentLesson === 7 && ex\?\.id === 4[\s\S]*py_repeat[\s\S]*py_forward/, 'lesson 7 removed the redundant selection-only starter');
+
+assert.match(html, /if\(currentLesson === 7\)\{[\s\S]*ex\.id === 2[\s\S]*repeatHasForwardThenTurn\(4\)/, 'lesson 7 exercise 2 validates a 4-repeat base frame');
+
+assert.match(html, /if\(currentLesson === 7\)\{[\s\S]*ex\.id === 3[\s\S]*times === 8[\s\S]*a\.v === 45/, 'lesson 7 exercise 3 validates an 8-sided frame, not a repeated square');
+
+assert.match(html, /if\(currentLesson === 7\)\{[\s\S]*ex\.id === 4[\s\S]*actionDrawnColors/, 'lesson 7 color exercise validates color actually drawn');
+
+assert.match(html, /if\(currentLesson === 7\)\{[\s\S]*ex\.id === 5[\s\S]*repeatHasTwoForwardPattern/, 'lesson 7 two-line pattern validates repeated pattern content');
+
+assert.match(html, /if\(currentLesson === 7\)\{[\s\S]*ex\.id === 7[\s\S]*simulatePath\(actions\)\.distanceFromStart/, 'lesson 7 frame exercise validates a closed repeated path');
