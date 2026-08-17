@@ -126,7 +126,7 @@ function checkEscape() {
   if (selected.length !== 2) { setResult('צריך ללחוץ על הפריט שמתאים לשני הרמזים.'); return; }
   const keysOk = sameKeysInAnyOrder(selected, lesson.required);
   const reasonOk = selectedReason === lesson.successReason;
-  if (keysOk && reasonOk) { setResult(`נכון! ${lesson.result} 🔓`, true); window.SisiCourseCertificate?.show({ lessons, lesson }); renderNextStep(true); }
+  if (keysOk && reasonOk) { setResult(`נכון! ${lesson.result} 🔓`, true); renderNextStep(true); }
   else if (!keysOk) setResult('כמעט. בתנאי “וגם” שני הרמזים חייבים להתאים בדיוק למה שכתוב על הדלת.');
   else if (!selectedReason) setResult('כמעט סיימתם — עכשיו בחרו למה שני הרמזים פותחים את החדר.');
   else setResult(lesson.feedbackWrongReason || 'הרמזים נכונים. עכשיו בחרו נימוק שמסביר למה תנאי “וגם” עובד.');
@@ -143,14 +143,23 @@ function nextTarget() {
   if (nextLesson) return { href: `escape-play.html?lesson=${nextLesson.id}`, label: `➡️ המשך לחדר ${nextLesson.id}` };
   return { href: 'finale.html', label: '🏙️ לשיעור הבא' };
 }
+function unlockSceneHtml(openedText) {
+  if (openedText.includes('תיבה')) {
+    return `<div class="escape-unlock-scene" aria-hidden="true"><span class="escape-chest"><span class="escape-chest-lid">🔓</span><span class="escape-chest-base">💎</span></span><span class="escape-unlock-spark">✨</span></div>`;
+  }
+  return `<div class="escape-unlock-scene" aria-hidden="true"><span class="escape-door"><span class="escape-door-panel">🔓</span></span><span class="escape-unlock-spark">✨</span></div>`;
+}
 function renderNextStep(show = false) {
   const box = document.getElementById('next-step');
   if (!box) return;
   if (!show) { box.innerHTML = ''; return; }
   const target = nextTarget();
   const openedText = howToTarget().opened;
-  box.innerHTML = `<div class="next-step-note">${openedText}! ממשיכים לחדר הבא.</div><a class="btn" href="${target.href}">${target.label}</a>`;
-  window.SisiSuccessDialog?.show({ message: box.querySelector('.next-step-note')?.textContent || 'כל הכבוד! אפשר להמשיך קדימה או לנסות שוב.', lessons, lesson, nextHref: target.href, nextLabel: target.label, onRepeat: () => window.location.reload() });
+  const successMessage = `${openedText}! ממשיכים לחדר הבא.`;
+  box.innerHTML = unlockSceneHtml(openedText);
+  window.setTimeout(() => {
+    window.SisiSuccessDialog?.show({ message: successMessage, lessons, lesson, nextHref: target.href, nextLabel: target.label, onRepeat: () => window.location.reload() });
+  }, 1200);
 }
 function init() {
   document.getElementById('page-title').textContent = `${lesson.emoji} ${lesson.title}`;

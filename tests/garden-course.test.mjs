@@ -33,53 +33,66 @@ test('garden course is linked as lesson 10 in the Sisi series', () => {
   assertIncludes(hubHtml, 'סיסי בגינת הקסמים');
 });
 
-test('landing page frames an interesting but gentle sequence mechanic for grade B', () => {
-  assertIncludes(gardenHtml, 'שיעור 10 • רצף ושלבי גדילה • כיתות ב׳ • 75 דקות');
-  assertIncludes(gardenHtml, 'בלי קפיצה חדה');
-  assertIncludes(gardenHtml, 'רצף');
-  assertIncludes(gardenHtml, 'שלבים 1–4 לכל הכיתה, 5–12 להרחבה ותרגול');
+test('landing page frames a vegetable garden game for grade B', () => {
+  assertIncludes(gardenHtml, 'שיעור 10 • משימת הערוגות • כיתות ב׳ • 75 דקות');
+  assertIncludes(gardenHtml, 'מחסן הכלים נשאר קבוע');
+  assertIncludes(gardenHtml, 'טיפול וקטיף');
+  assertIncludes(gardenHtml, 'ערוגות 1–6 לכל הכיתה, 7–12 להרחבה ואתגר');
   assertIncludes(gardenHtml, 'href="garden-play.html?lesson=1"');
   assertIncludes(gardenHtml, 'js/garden-lessons.js');
   assertIncludes(gardenHtml, 'css/garden.css');
 });
 
-test('garden data has twelve growth stages with valid one-action answers', () => {
+test('garden data has twelve vegetable beds with clear bed-and-tool missions', () => {
   assert.equal(lessons.length, 12);
   const actionKeys = Object.keys(actions);
-  const expectedCycle = ['soil', 'seed', 'water', 'sun', 'support', 'harvest'];
-  assert.deepEqual(Array.from(lessons.slice(0, 6), (lesson) => lesson.answer), expectedCycle);
-  assert.deepEqual(Array.from(lessons.slice(6), (lesson) => lesson.answer), expectedCycle);
+  assert.deepEqual(Array.from(lessons, (lesson) => lesson.mode), Array(12).fill('bed-tool'));
+  assert.ok(actionKeys.includes('harvest'));
+  assert.ok(actionKeys.includes('drain'));
+  assert.ok(actionKeys.includes('shade'));
   for (const lesson of lessons) {
+    assert.equal(lesson.choices.length, 3, `Lesson ${lesson.id} needs three vegetable beds`);
+    assert.ok(lesson.choices.some((choice) => choice.id === lesson.correctBed), `Lesson ${lesson.id} needs a valid correct bed`);
+    assert.ok(lesson.mission.startsWith('משימה:'), `Lesson ${lesson.id} mission should be explicit`);
+    assert.ok(lesson.mission.length >= 45, `Lesson ${lesson.id} needs a clear mission`);
     assert.ok(actionKeys.includes(lesson.answer), `Lesson ${lesson.id} answer must be valid`);
-    assert.ok(lesson.plantStage.length >= 20, `Lesson ${lesson.id} needs plant stage`);
     assert.ok(lesson.learningNote.length >= 35, `Lesson ${lesson.id} needs learning note`);
   }
 });
 
-test('garden play page exposes stage and action choice rather than harder mechanics', () => {
+test('garden play page exposes fixed tools and a visual vegetable board', () => {
   assertIncludes(playHtml, 'id="action-options"');
   assertIncludes(playHtml, 'id="choice-preview"');
   assertIncludes(playHtml, 'id="growth-path"');
+  assertIncludes(playHtml, 'id="garden-board"');
+  assertIncludes(playHtml, 'id="garden-score"');
   assertIncludes(playHtml, 'id="stage"');
   assertIncludes(playHtml, 'js/garden-play.js');
   assert.ok(!playHtml.includes('count-options'), 'Garden lesson should not use repeat counts');
   assert.ok(!playHtml.includes('sensor-options'), 'Garden lesson should not use sensor/action pairing');
 });
 
-test('garden engine checks one appropriate action and keeps feedback simple', () => {
+test('garden engine checks beds and tools while keeping feedback game-like', () => {
   assertIncludes(playSource, 'function checkAction()');
+  assertIncludes(playSource, 'shuffleChoices(lesson.choices)');
+  assertIncludes(playSource, 'selectedBed === lesson.correctBed');
   assertIncludes(playSource, 'selectedAction === lesson.answer');
-  assertIncludes(playSource, 'הפעולה לא מתאימה לשלב הנוכחי');
+  assertIncludes(playSource, 'צריך לבחור אחת משלוש הערוגות');
   assertIncludes(playSource, 'function showHint()');
   assertIncludes(playSource, 'garden-play.html?lesson=');
-  assertIncludes(playSource, 'renderGrowthPath()');
+  assertIncludes(playSource, 'renderGardenBoard()');
+  assertIncludes(playSource, 'gardenSavedVegetables');
 });
 
-test('garden css and plan support a gentle 75-minute growth lesson', () => {
+test('garden css and plan support the lesson shell and visual board', () => {
   assertIncludes(gardenCss, '.growth-path');
   assertIncludes(gardenCss, '.growth-step');
   assertIncludes(gardenCss, '.action-card');
   assertIncludes(gardenCss, '.choice-preview');
+  assertIncludes(gardenCss, '.garden-board');
+  assertIncludes(gardenCss, '.bed-grid');
+  assertIncludes(gardenCss, '.mini-bed');
+  assertIncludes(gardenCss, '.score-pill');
   assertIncludes(plan, 'בלי קפיצה חדה ברמה');
   assertIncludes(plan, 'שלבים 1–4 מספיקים לשיעור מלא');
   assertIncludes(plan, 'מתאים לילדים שמתקשים אחרי לולאות');
