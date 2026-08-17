@@ -291,13 +291,14 @@
       '/escape-play.html': '🔐🗝️🚪',
       '/finale-play.html': '🏙️🤖🏆'
     };
-    const finishedCourse = finishMessagePaths.has(path) && isLast(lessons, lesson);
+    const finalMission = isLast(lessons, lesson);
+    const finishedCourse = finishMessagePaths.has(path) && finalMission;
     const href = nextHref || missionHref || info.next || 'sisi.html';
     const label = nextLabel || (missionHref ? '➡️ למשימה הבאה' : (info.next ? '➡️ לשיעור הבא' : '🤖 לעמוד סיסי'));
-    const displayBadge = badge || (finishedCourse ? '🏆 שיעור הושלם!' : '🎉 הצלחה!');
-    const displayTitle = title || (finishedCourse ? `כל הכבוד! סיימתם את ${info.title}` : 'סיסי הצליחה במשימה');
+    const displayBadge = badge || (finishedCourse ? '🏆 סיום כל המשימות!' : '🎉 הצלחה!');
+    const displayTitle = title || (finishedCourse ? `סיימתם את כל משימות ${info.title}!` : 'סיסי הצליחה במשימה');
     const displayMessage = finishedCourse
-      ? 'איזה יופי! השלמתם את כל המשימות בשיעור. סיסי גאה בכם — אפשר לעבור לשיעור הבא או לנסות שוב בשביל הכיף.'
+      ? `איזה יופי! השלמתם את כל ${lessons?.length || ''} המשימות בשיעור הזה. סיסי גאה בכם — אפשר לעבור לשיעור הבא או לנסות שוב בשביל הכיף.`
       : (message || 'כל הכבוד! אפשר להמשיך קדימה או לנסות שוב מהתחלה.');
     const displayArt = finishedCourse ? `<div class="sisi-finish-art" aria-hidden="true">${finishArt[path] || '🤖🏆✨'}</div>` : '';
     const card = document.createElement('div');

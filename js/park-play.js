@@ -309,7 +309,6 @@ function init() {
   document.getElementById('lesson-emoji').textContent = lesson.emoji;
   document.getElementById('story').textContent = lesson.story;
   document.getElementById('learning-note').innerHTML = `<b>רגע למידה:</b> ${lesson.learningNote}`;
-  document.getElementById('goal-chip').textContent = lesson.challengeText || lesson.commandText;
   document.getElementById('check').addEventListener('click', runCommand);
   document.getElementById('hint').addEventListener('click', showHint);
   document.getElementById('clear').addEventListener('click', clearCommand);

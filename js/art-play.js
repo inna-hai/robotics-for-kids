@@ -45,27 +45,21 @@ function renderBoard(containerId, commands, label) {
   }
   const board = document.getElementById(containerId);
   board.style.gridTemplateColumns = `repeat(${lesson.size}, 1fr)`;
+  board.style.gridTemplateRows = `repeat(${lesson.size}, 1fr)`;
   board.innerHTML = cells.join('');
 }
 
-function sortCommands(commands, salt) {
-  return commands.map((command, index) => ({ ...command, sortKey: (command.row * 11 + displayColumn(command) * 7 + index * 5 + salt) % 31 }))
-    .sort((a, b) => a.sortKey - b.sortKey)
-    .map(({ sortKey, ...command }) => command);
+function shuffleScore(command, index) {
+  const raw = `${lesson.id}|${index}|${command.row}|${command.col}|${command.color}|pixel-cards-v3`;
+  return [...raw].reduce((hash, char) => ((hash * 33) ^ char.charCodeAt(0)) >>> 0, 5381);
 }
 
 function shuffledCommands() {
   const targetKeys = new Set(lesson.target.map(keyOf));
-  const targets = sortCommands(lesson.target, lesson.id * 3);
-  const distractors = sortCommands(lesson.distractors, lesson.id * 7);
-  const mixed = [];
-  const max = Math.max(targets.length, distractors.length);
-  for (let index = 0; index < max; index += 1) {
-    if (distractors[index]) mixed.push(distractors[index]);
-    if (targets[index]) mixed.push(targets[index]);
-    if (distractors[index + max]) mixed.push(distractors[index + max]);
-  }
-  return mixed.map((command) => ({ ...command, isTarget: targetKeys.has(keyOf(command)) }));
+  return [...lesson.target, ...lesson.distractors]
+    .map((command, index) => ({ ...command, shuffleScore: shuffleScore(command, index) }))
+    .sort((a, b) => a.shuffleScore - b.shuffleScore)
+    .map(({ shuffleScore, ...command }) => ({ ...command, isTarget: targetKeys.has(keyOf(command)) }));
 }
 
 function renderCommands() {
