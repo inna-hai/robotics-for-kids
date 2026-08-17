@@ -103,6 +103,8 @@
     const style = document.createElement('style');
     style.id = 'sisi-mission-lock-style';
     style.textContent = `
+      #lesson-nav a{transition:transform .16s ease,box-shadow .16s ease}
+      #lesson-nav a.active{transform:scale(1.12);box-shadow:0 0 0 3px rgba(37,99,235,.85),0 0 0 6px rgba(255,255,255,.95),0 10px 20px rgba(15,23,42,.22);outline:0;position:relative;z-index:2}
       #lesson-nav a.locked{opacity:.45;filter:grayscale(.45);cursor:not-allowed;position:relative}
       #lesson-nav a.locked::after{content:'🔒';font-size:.72em;margin-inline-start:4px}
       #lesson-nav a.done{background:#dcfce7!important;color:#166534!important;border-color:#22c55e!important}
@@ -289,13 +291,14 @@
       '/escape-play.html': '🔐🗝️🚪',
       '/finale-play.html': '🏙️🤖🏆'
     };
-    const finishedCourse = finishMessagePaths.has(path) && isLast(lessons, lesson);
+    const finalMission = isLast(lessons, lesson);
+    const finishedCourse = finishMessagePaths.has(path) && finalMission;
     const href = nextHref || missionHref || info.next || 'sisi.html';
     const label = nextLabel || (missionHref ? '➡️ למשימה הבאה' : (info.next ? '➡️ לשיעור הבא' : '🤖 לעמוד סיסי'));
-    const displayBadge = badge || (finishedCourse ? '🏆 שיעור הושלם!' : '🎉 הצלחה!');
-    const displayTitle = title || (finishedCourse ? `כל הכבוד! סיימתם את ${info.title}` : 'סיסי הצליחה במשימה');
+    const displayBadge = badge || (finishedCourse ? '🏆 סיום כל המשימות!' : '🎉 הצלחה!');
+    const displayTitle = title || (finishedCourse ? `סיימתם את כל משימות ${info.title}!` : 'סיסי הצליחה במשימה');
     const displayMessage = finishedCourse
-      ? 'איזה יופי! השלמתם את כל המשימות בשיעור. סיסי גאה בכם — אפשר לעבור לשיעור הבא או לנסות שוב בשביל הכיף.'
+      ? `איזה יופי! השלמתם את כל ${lessons?.length || ''} המשימות בשיעור הזה. סיסי גאה בכם — אפשר לעבור לשיעור הבא או לנסות שוב בשביל הכיף.`
       : (message || 'כל הכבוד! אפשר להמשיך קדימה או לנסות שוב מהתחלה.');
     const displayArt = finishedCourse ? `<div class="sisi-finish-art" aria-hidden="true">${finishArt[path] || '🤖🏆✨'}</div>` : '';
     const card = document.createElement('div');

@@ -25,6 +25,20 @@ const tests = [];
 function test(name, fn) { tests.push({ name, fn }); }
 function assertIncludes(source, needle, message = `Missing: ${needle}`) { assert.ok(source.includes(needle), message); }
 function keyOf(command) { return `${command.row}:${command.col}:${command.color}`; }
+function shuffleScoreForLesson(lesson, command, index) {
+  const raw = `${lesson.id}|${index}|${command.row}|${command.col}|${command.color}|pixel-cards-v3`;
+  return [...raw].reduce((hash, char) => ((hash * 33) ^ char.charCodeAt(0)) >>> 0, 5381);
+}
+function shuffledTypesForLesson(lesson) {
+  const targetKeys = new Set(lesson.target.map(keyOf));
+  return [...lesson.target, ...lesson.distractors]
+    .map((command, index) => ({ ...command, shuffleScore: shuffleScoreForLesson(lesson, command, index) }))
+    .sort((a, b) => a.shuffleScore - b.shuffleScore)
+    .map((command) => targetKeys.has(keyOf(command)) ? 'T' : 'D');
+}
+function hasSimpleAlternatingPattern(types) {
+  return types.slice(0, Math.min(types.length, 10)).every((type, index) => type === (index % 2 === 0 ? types[0] : types[1]) && types[0] !== types[1]);
+}
 
 test('art course is linked as lesson 7 in the Sisi series', () => {
   assertIncludes(smartCityHtml, 'href="art.html"');
@@ -79,12 +93,18 @@ test('art challenges include enough unrelated command cards', () => {
   }
 });
 
-test('art command cards interleave distractors between correct commands', () => {
-  assertIncludes(playSource, 'function sortCommands(commands, salt)');
-  assertIncludes(playSource, 'const targets = sortCommands(lesson.target');
-  assertIncludes(playSource, 'const distractors = sortCommands(lesson.distractors');
-  assertIncludes(playSource, 'if (distractors[index]) mixed.push(distractors[index]);');
-  assertIncludes(playSource, 'if (targets[index]) mixed.push(targets[index]);');
+test('art command cards are shuffled as one mixed deck across all lessons', () => {
+  assertIncludes(playSource, 'function shuffleScore(command, index)');
+  assertIncludes(playSource, 'pixel-cards-v3');
+  assertIncludes(playSource, 'return [...lesson.target, ...lesson.distractors]');
+  assertIncludes(playSource, '.sort((a, b) => a.shuffleScore - b.shuffleScore)');
+  assertIncludes(playHtml, 'js/art-play.js?v=20260813-fixed-grid-v4');
+  assert.ok(!playSource.includes('const targets = sortCommands(lesson.target'), 'cards should not split correct and distractor decks');
+  assert.ok(!playSource.includes('if (distractors[index]) mixed.push(distractors[index]);'), 'cards should not use a fixed distractor-target alternation');
+  for (const lesson of lessons) {
+    const types = shuffledTypesForLesson(lesson);
+    assert.ok(!hasSimpleAlternatingPattern(types), `Lesson ${lesson.id} should not start with an easy correct/wrong alternation`);
+  }
 });
 
 test('art play page exposes pixel boards and command cards instead of previous mechanics', () => {
@@ -115,6 +135,7 @@ test('art command labels count columns from the visible RTL side', () => {
   assert.ok(!playSource.includes('עמודה ${command.col}'), 'command labels must not expose internal column numbers');
   assert.ok(!playSource.includes('עמודה ${col}'), 'board aria labels must not expose internal column numbers');
   assertIncludes(playSource, 'עמודה ${displayColumnFromInternal(col)}');
+  assertIncludes(playSource, 'board.style.gridTemplateRows = `repeat(${lesson.size}, 1fr)`');
 });
 
 test('art engine validates selected commands against target pixels and supports debugging', () => {
@@ -131,7 +152,14 @@ test('art engine validates selected commands against target pixels and supports 
 test('art css and plan support a visual 75-minute pixel lesson', () => {
   assertIncludes(artCss, '.pixel-board');
   assertIncludes(artCss, '.pixel-cell');
+  assertIncludes(artCss, 'grid-auto-rows:1fr');
+  assertIncludes(artCss, '.pixel-cell{min-width:0;min-height:0;aspect-ratio:1/1;box-sizing:border-box');
   assertIncludes(artCss, '.command-card');
+  assertIncludes(artCss, 'min-height:54px;width:100%');
+  assertIncludes(artCss, 'outline:3px solid transparent;outline-offset:-5px');
+  assertIncludes(artCss, '.command-card.active{background:#fff7ed;border-color:#f9a8d4;box-shadow:none;transform:none;outline-color:#db2777}');
+  assert.ok(!artCss.includes('.command-card.active{background:#fef08a;border-color:#db2777;transform:'), 'Selecting command cards should not shift them out of alignment');
+  assert.ok(!artCss.includes('.command-card.active{background:#fef08a;border-color:#f9a8d4;box-shadow:inset'), 'Selecting command cards should not add visual size with inset shadow');
   assertIncludes(artCss, '.boards-two');
   assertIncludes(artCss, 'direction:ltr');
   assertIncludes(plan, 'שיעור 75 דקות לכיתות ב׳ / גיל 7');

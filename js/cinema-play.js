@@ -115,7 +115,6 @@ function init() {
   document.getElementById('lesson-heading').textContent = `משימת בימוי ${lesson.id}: ${lesson.title}`;
   document.getElementById('lesson-emoji').textContent = lesson.emoji;
   document.getElementById('story').textContent = lesson.story;
-  document.getElementById('goal').textContent = lesson.goal;
   document.getElementById('learning-note').innerHTML = `<b>רגע למידה:</b> ${lesson.learningNote}`;
   document.getElementById('check').addEventListener('click', checkMovie);
   document.getElementById('hint').addEventListener('click', showHint);
