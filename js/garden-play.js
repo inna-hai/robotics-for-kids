@@ -3,7 +3,45 @@ const lessonId = Number(params.get('lesson') || 1);
 const lessons = window.GARDEN_LESSONS || [];
 const actions = window.GARDEN_ACTIONS || {};
 const lesson = lessons.find((item) => item.id === lessonId) || lessons[0];
+function shuffleChoices(choices = []) {
+  const shuffled = [...choices];
+  for (let i = shuffled.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+const displayChoices = shuffleChoices(lesson.choices);
 let selectedAction = null;
+let selectedBed = null;
+let savedVegetables = Number(sessionStorage.getItem('gardenSavedVegetables') || 0);
+
+function renderLessonIcon(item, className = '') {
+  if (item?.art === 'greenTomato') {
+    return `<span class="green-tomato-emoji ${className}" role="img" aria-label="עגבנייה ירוקה">🍅</span>`;
+  }
+  return `<span class="${className}">${item?.emoji || ''}</span>`;
+}
+
+function isBedLesson() {
+  return Array.isArray(lesson.choices) && lesson.choices.length > 0;
+}
+
+function needsTool() {
+  return lesson.mode !== 'bed';
+}
+
+function correctChoice() {
+  return displayChoices?.find((choice) => choice.id === lesson.correctBed);
+}
+
+function selectedChoice() {
+  return displayChoices?.find((choice) => choice.id === selectedBed);
+}
+
+function renderChoiceIcon(choice, className = '') {
+  return renderLessonIcon(choice || {}, className);
+}
 
 function setResult(text, success = false) {
   const result = document.getElementById('result');
@@ -12,9 +50,14 @@ function setResult(text, success = false) {
 }
 
 function renderActionOptions() {
+  const helper = needsTool()
+    ? 'בחרו כלי מהמחסן'
+    : 'בשלב הזה בוחרים ערוגה לפי המשימה. המחסן נשאר כאן כדי לזכור מה תפקיד כל כלי.';
+  document.querySelector('.action-panel p').textContent = helper;
   document.getElementById('action-options').innerHTML = Object.entries(actions).map(([id, action]) => `
-    <button type="button" class="action-card ${selectedAction === id ? 'active' : ''}" data-action="${id}">
-      <span class="action-icon">${action.icon}</span><span>${action.label}</span>
+    <button type="button" class="action-card ${selectedAction === id ? 'active' : ''}" data-action="${id}" aria-label="${action.label}">
+      <span class="action-icon">${action.icon}</span>
+      <span><b>${action.tool}</b><small>${action.role || action.label}</small></span>
     </button>
   `).join('');
   document.querySelectorAll('[data-action]').forEach((button) => {
@@ -28,44 +71,128 @@ function renderActionOptions() {
   });
 }
 
+function gardenMood() {
+  if (isBedLesson()) {
+    if (!selectedBed) return 'waiting';
+    if (lesson.mode === 'bed') return selectedBed === lesson.correctBed ? 'ready' : 'warning';
+    if (!selectedAction) return 'waiting';
+    return selectedBed === lesson.correctBed && selectedAction === lesson.answer ? 'ready' : 'warning';
+  }
+  if (!selectedAction) return 'waiting';
+  return selectedAction === lesson.answer ? 'ready' : 'warning';
+}
+
+function renderGardenBoard() {
+  const board = document.getElementById('garden-board');
+  if (!board) return;
+  const mood = gardenMood();
+  const action = selectedAction ? actions[selectedAction] : null;
+  board.className = `garden-board ${isBedLesson() ? 'multi-bed-board' : ''} ${mood}`;
+
+  if (isBedLesson()) {
+    board.innerHTML = `
+      <div class="garden-sky"><span>☀️</span><span>☁️</span><span>🦋</span></div>
+      <div class="mission-strip">${lesson.mission || 'בחרו ערוגה מתאימה למשימה'}</div>
+      <div class="bed-grid" role="group" aria-label="בחירת ערוגה">
+        ${displayChoices.map((choice) => `
+          <button type="button" class="mini-bed ${selectedBed === choice.id ? 'active' : ''}" data-bed="${choice.id}">
+            <span class="mini-veg">${renderChoiceIcon(choice)}</span>
+            <b>${choice.label}</b>
+            <small>${choice.status}</small>
+          </button>
+        `).join('')}
+      </div>
+      <div class="tool-feedback">${selectedBed ? `נבחרה ערוגת ${selectedChoice()?.label}` : 'בחרו ירק לפי המשימה'}${needsTool() ? ` · ${action ? `${action.icon} ${action.tool} נבחר` : 'בחרו גם כלי מהמחסן'}` : ''}</div>
+    `;
+    document.querySelectorAll('[data-bed]').forEach((button) => {
+      button.addEventListener('click', () => {
+        selectedBed = button.dataset.bed;
+        renderGardenBoard();
+        renderChoicePreview();
+        renderNextStep(false);
+        setResult('');
+      });
+    });
+    return;
+  }
+
+  board.innerHTML = `
+    <div class="garden-sky"><span>☀️</span><span>☁️</span><span>🦋</span></div>
+    <div class="garden-bed">
+      <div class="garden-vegetable">${renderLessonIcon(lesson)}</div>
+      <div class="garden-status">${lesson.plantStage}</div>
+    </div>
+    <div class="tool-feedback">${action ? `${action.icon} ${action.tool} נבחר` : 'בחרו כלי מהמחסן'}</div>
+  `;
+}
+
 function renderChoicePreview() {
   const action = selectedAction ? actions[selectedAction] : null;
-  document.getElementById('choice-preview').innerHTML = action
-    ? `<span>${lesson.emoji}</span><b>השלב:</b><span>${lesson.plantStage}</span><b>הפעולה:</b><span>${action.icon} ${action.label}</span>`
-    : `<span>${lesson.emoji}</span><b>השלב:</b><span>${lesson.plantStage}</span><b>הפעולה:</b><span>בחרו פעולה מתאימה</span>`;
+  if (isBedLesson()) {
+    const choice = selectedChoice();
+    document.getElementById('choice-preview').innerHTML = `
+      ${choice ? renderChoiceIcon(choice) : '🌱'}
+      <b>הערוגה:</b><span>${choice ? choice.label : 'בחרו ירק מתוך שלוש הערוגות'}</span>
+      ${needsTool() ? `<b>הכלי:</b><span>${action ? `${action.icon} ${action.tool}` : 'בחרו כלי מתאים מהמחסן'}</span>` : '<b>המשימה:</b><span>מצאו את הירק המתאים</span>'}
+    `;
+  } else {
+    document.getElementById('choice-preview').innerHTML = action
+      ? `${renderLessonIcon(lesson)}<b>הערוגה:</b><span>${lesson.vegetable || lesson.title}</span><b>הכלי:</b><span>${action.icon} ${action.tool}</span>`
+      : `${renderLessonIcon(lesson)}<b>הערוגה:</b><span>${lesson.vegetable || lesson.title}</span><b>הכלי:</b><span>בחרו כלי מתאים מהמחסן</span>`;
+  }
+  renderGardenBoard();
 }
 
 function renderGrowthPath() {
   document.getElementById('growth-path').innerHTML = lessons.map((item) => `
     <a class="growth-step ${item.id === lesson.id ? 'active' : ''}" href="garden-play.html?lesson=${item.id}">
-      <span>${item.emoji}</span><small>${item.id}</small>
+      <span>🌱</span><small>${item.id}</small>
     </a>
   `).join('');
 }
 
+function renderScore() {
+  const score = document.getElementById('garden-score');
+  if (!score) return;
+  score.innerHTML = `<b>${savedVegetables}</b><span>ירקות שניצלו/נאספו</span>`;
+}
+
 function checkAction() {
-  if (!selectedAction) {
-    setResult('צריך לבחור פעולה לגינה לפני הבדיקה.');
+  if (isBedLesson() && !selectedBed) {
+    setResult('צריך לבחור אחת משלוש הערוגות לפני הבדיקה.');
     return;
   }
-  if (selectedAction === lesson.answer) {
-    setResult(`נכון! ${actions[selectedAction].label}. ${lesson.result} 🌼`, true);
+  if (needsTool() && !selectedAction) {
+    setResult('צריך לבחור כלי מהמחסן לפני הבדיקה.');
+    return;
+  }
+
+  const bedOk = !isBedLesson() || selectedBed === lesson.correctBed;
+  const actionOk = !needsTool() || selectedAction === lesson.answer;
+  if (bedOk && actionOk) {
+    savedVegetables = Math.max(savedVegetables, lesson.id);
+    sessionStorage.setItem('gardenSavedVegetables', String(savedVegetables));
+    renderScore();
+    renderGardenBoard();
+    const toolText = selectedAction ? `${actions[selectedAction].tool}. ` : '';
+    setResult(`נכון! ${toolText}${lesson.result} 🥕`, true);
     window.SisiCourseCertificate?.show({ lessons, lesson });
     renderNextStep(true);
   } else {
-    setResult('כמעט. הפעולה לא מתאימה לשלב הנוכחי של הצמח. קראו שוב מה מצב הגינה.');
+    renderGardenBoard();
+    setResult('כמעט. בדקו שוב גם את המשימה, גם את מצב הירקות, וגם את תפקיד הכלי שבחרתם.');
     renderNextStep(false);
   }
 }
 
 function showHint() {
-  const answer = actions[lesson.answer];
-  setResult(`רמז: בשלב הזה הכי מתאים/ה — ${answer.icon} ${answer.label}.`);
+  setResult(lesson.hint || 'רמז: קראו קודם את המשימה, ואז חפשו באיזו ערוגה מופיע אותו סימן בדיוק.');
   renderNextStep(false);
 }
 
 function clearChoice() {
   selectedAction = null;
+  selectedBed = null;
   renderActionOptions();
   renderChoicePreview();
   renderNextStep(false);
@@ -75,26 +202,25 @@ function clearChoice() {
 function nextTarget() {
   const currentIndex = lessons.findIndex((item) => item.id === lesson.id);
   const nextLesson = lessons[currentIndex + 1];
-  if (nextLesson) return { href: `garden-play.html?lesson=${nextLesson.id}`, label: `➡️ המשך לשלב ${nextLesson.id}` };
+  if (nextLesson) return { href: `garden-play.html?lesson=${nextLesson.id}`, label: `➡️ המשך לערוגה ${nextLesson.id}` };
   return { href: 'park.html', label: '🎡 לשיעור הבא' };
 }
 
 function renderNextStep(show = false) {
   const box = document.getElementById('next-step');
-  if (!box) return;
-  if (!show) { box.innerHTML = ''; return; }
+  if (box) box.innerHTML = '';
+  if (!show) return;
   const target = nextTarget();
-  box.innerHTML = `<div class="next-step-note">הגינה התקדמה שלב! ממשיכים לשלב הבא במחזור החיים.</div><a class="btn" href="${target.href}">${target.label}</a>`;
-  window.SisiSuccessDialog?.show({ message: box.querySelector('.next-step-note')?.textContent || 'כל הכבוד! אפשר להמשיך קדימה או לנסות שוב.', lessons, lesson, nextHref: target.href, nextLabel: target.label, onRepeat: () => window.location.reload() });
+  window.SisiSuccessDialog?.show({ message: 'הערוגה טופלה נכון! ממשיכים לערוגה הבאה במשימת הירקות.', lessons, lesson, nextHref: target.href, nextLabel: target.label, onRepeat: () => window.location.reload() });
 }
 
 function init() {
-  document.getElementById('page-title').textContent = `${lesson.emoji} ${lesson.title}`;
-  document.getElementById('page-subtitle').textContent = `שיעור 10 • רצף ושלבי גדילה • ${lesson.concept}`;
-  document.getElementById('lesson-heading').textContent = `שלב ${lesson.id}: ${lesson.title}`;
-  document.getElementById('lesson-emoji').textContent = lesson.emoji;
+  document.getElementById('page-title').textContent = `🌱 ${lesson.title}`;
+  document.getElementById('page-subtitle').textContent = `שיעור 10 • משימת הערוגות • ${lesson.concept}`;
+  document.getElementById('lesson-heading').textContent = `ערוגה ${lesson.id}: ${lesson.title}`;
+  document.getElementById('lesson-emoji').textContent = '🌱';
   document.getElementById('story').textContent = lesson.story;
-  document.getElementById('stage').textContent = lesson.plantStage;
+  document.getElementById('stage').textContent = lesson.mission || lesson.plantStage;
   document.getElementById('learning-note').innerHTML = `<b>רגע למידה:</b> ${lesson.learningNote}`;
   document.getElementById('check').addEventListener('click', checkAction);
   document.getElementById('hint').addEventListener('click', showHint);
@@ -103,6 +229,7 @@ function init() {
   renderActionOptions();
   renderChoicePreview();
   renderGrowthPath();
+  renderScore();
   renderNextStep(false);
 }
 
