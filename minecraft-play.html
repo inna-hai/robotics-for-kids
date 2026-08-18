@@ -135,7 +135,7 @@
       12: [
         { level:'מבוך קל', note:'דגם קל: התחלה בזהב, מטרה ביהלום ומסלול עם מעט פניות', cols:7, rows:5, cells:['wood','wood','wood','wood','wood','wood','wood','gold','empty','empty','wood','empty','empty','diamond','wood','wood','empty','wood','empty','wood','wood','wood','empty','empty','empty','empty','empty','wood','wood','wood','wood','wood','wood','wood','wood'] },
         { level:'מבוך בינוני', note:'דגם בינוני: כמה פניות וקירות שמכריחים לתכנן את הדרך', cols:7, rows:5, cells:['wood','wood','wood','wood','wood','wood','wood','gold','empty','empty','empty','wood','empty','diamond','wood','empty','wood','empty','wood','empty','wood','wood','empty','wood','empty','empty','empty','wood','wood','wood','wood','wood','wood','wood','wood'] },
-        { level:'מבוך אתגר', note:'דגם אתגר: מסלול זיגזג עם כמה פניות עד היהלום', cols:7, rows:5, cells:['wood','wood','wood','wood','wood','wood','wood','gold','empty','wood','empty','empty','empty','diamond','wood','empty','wood','empty','wood','wood','wood','wood','empty','empty','empty','empty','empty','wood','wood','wood','wood','wood','wood','wood','wood'] }
+        { level:'מבוך שתי דרכים', note:'דגם אתגר: שתי דרכים עם כמה פניות שמתחברות לפני המטרה', cols:8, rows:6, cells:['wood','wood','wood','wood','wood','wood','wood','wood','wood','gold','empty','empty','empty','wood','diamond','wood','wood','empty','wood','wood','empty','wood','empty','wood','wood','empty','empty','wood','empty','empty','empty','wood','wood','wood','empty','empty','empty','wood','wood','wood','wood','wood','wood','wood','wood','wood','wood','wood'] }
       ]
     };
     const lessonThreeModels = [
@@ -373,7 +373,7 @@
     function addBlock(cls, x, y, extraClass=''){ const el=document.createElement('div'); el.className=`block ${cls}${extraClass ? ' '+extraClass : ''}`; el.style.left=x+'px'; el.style.bottom=y+'px'; document.getElementById('world').appendChild(el); return el; }
     function addEmoji(cls, icon, x, y){ const el=document.createElement('div'); el.className=cls; el.textContent=icon; el.style.left=x+'px'; el.style.bottom=y+'px'; document.getElementById('world').appendChild(el); return el; }
 
-    function addDiamondMarker(){ if (lesson.id === 2 || lesson.id === 3 || lesson.id === 4 || lesson.id === 6 || lesson.id === 8 || lesson.id === 10) return; addEmoji('hint','💠', 220, 88); }
+    function addDiamondMarker(){ if (lesson.id === 2 || lesson.id === 3 || lesson.id === 4 || lesson.id === 6 || lesson.id === 8 || lesson.id === 10 || lesson.id === 12) return; addEmoji('hint','💠', 220, 88); }
     const treasureSpots = [{x:105,y:GROUND_Y,label:'תחילת השביל'}, {x:195,y:GROUND_Y,label:'ענף תחתון'}, {x:285,y:GROUND_Y,label:'ענף ישר'}, {x:375,y:GROUND_Y,label:'קצה ימני'}, {x:195,y:GROUND_Y + 42,label:'ענף עליון'}, {x:285,y:GROUND_Y + 42,label:'פנייה גבוהה'}, {x:375,y:GROUND_Y + 84,label:'קצה עליון'}];
     function drawTreasureSpots(){ /* שיעור 10: לא מציגים סימני שאלה, כדי שהאוצר יישאר חבוי באמת. */ }
     function treasureSearchSpots(){ return state.pathSpots || []; }
