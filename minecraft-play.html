@@ -33,6 +33,7 @@
         <button type="button" class="drawer-close" onclick="closeInstructions()" aria-label="סגור הוראות">×</button>
       </div>
       <div class="drawer-intro"><b>משימה:</b> <span id="drawerSuccessText"></span></div>
+      <div class="drawer-intro" id="drawerBlockHelp" hidden></div>
       <div class="drawer-exercises" id="drawerExerciseList"></div>
     </aside>
   </div>
@@ -43,6 +44,7 @@
         <div class="chip" id="lessonConcept"></div>
         <h1 id="lessonTitle"></h1>
         <p id="lessonStory"></p>
+        <p id="lessonBlockSummary" hidden></p>
         <div class="chips"><span class="chip" id="lessonGoal"></span><span class="chip" id="lessonChallenge"></span></div>
       </div>
       <div class="world-wrap">
@@ -201,18 +203,53 @@
       return `<xml><block type="event_start" x="40" y="40"><next><block type="${first}">${second}</block></next></block></xml>`;
     }
 
+    function lessonTenText(){
+      return {
+        story: 'בוחרים דגם שביל אחד לבנייה, או ממציאים שביל משלכם. אחר כך מחביאים יהלום, עוברים על כל השביל ובכל אריח בודקים האם היהלום נמצא כאן. אם מוצאים — פותחים דלת ומקבלים אוצר.',
+        blockSummary: 'בלוקים חדשים: הסתר יהלום — שם אוצר במקום סודי, בדוק את המקום — בודק אריח בשביל, אם מצאת יהלום — מפעיל פעולות רק כשמצאנו, פתח דלת ותן אוצר — נותנים פרס, סיים תוכנית — עוצר את החיפוש.',
+        goal: 'מטרה: לבנות שביל ולחפש בו את היהלום החבוי בעזרת תנאי.',
+        challenge: 'שדרוג: תכננו דגם יהלום אישי אחרי שמצאתם את האוצר.',
+        drawerTask: 'בנו שביל עם כמה מקומות חשודים. החביאו יהלום. בדקו מקומות עם דוד. אם מצאתם יהלום — פתחו דלת וקבלו אוצר.',
+        blockHelp: [
+          ['הסתר יהלום', 'שם את האוצר במקום סודי.'],
+          ['בדוק את המקום', 'דוד בודק אם כאן היהלום.'],
+          ['אם מצאת יהלום', 'רק אם מצאנו — עושים את מה שבפנים.'],
+          ['פתח דלת / תן אוצר', 'הפרס אחרי שמצליחים.'],
+          ['סיים תוכנית', 'עוצר את החיפוש.']
+        ]
+      };
+    }
+
     function init(){
+      const lessonTen = lesson.id === 10 ? lessonTenText() : null;
       document.title = `${lesson.emoji} שיעור ${lesson.id}: ${lesson.title}`;
       document.getElementById('lessonTitle').textContent = `${lesson.emoji} שיעור ${lesson.id}: ${lesson.title}`;
-      document.getElementById('lessonStory').textContent = lesson.story;
+      document.getElementById('lessonStory').textContent = lessonTen ? lessonTen.story : lesson.story;
+      const blockSummary = document.getElementById('lessonBlockSummary');
+      if (lessonTen) {
+        blockSummary.hidden = false;
+        blockSummary.innerHTML = `<b>${esc('בלוקים חדשים:')}</b> ${esc(lessonTen.blockSummary.replace('בלוקים חדשים: ', ''))}`;
+      } else {
+        blockSummary.hidden = true;
+        blockSummary.textContent = '';
+      }
       document.getElementById('lessonConcept').textContent = lesson.concept;
-      document.getElementById('lessonGoal').textContent = `מטרה: ${lesson.goal}`;
-      document.getElementById('lessonChallenge').textContent = `שדרוג: ${lesson.challenge}`;
+      document.getElementById('lessonGoal').textContent = lessonTen ? lessonTen.goal : `מטרה: ${lesson.goal}`;
+      document.getElementById('lessonChallenge').textContent = lessonTen ? lessonTen.challenge : `שדרוג: ${lesson.challenge}`;
 
-      document.getElementById('drawerSuccessText').textContent = lesson.success;
+      document.getElementById('drawerSuccessText').textContent = lessonTen ? lessonTen.drawerTask : lesson.success;
+      const blockHelp = document.getElementById('drawerBlockHelp');
+      if (lessonTen) {
+        blockHelp.hidden = false;
+        blockHelp.innerHTML = `<b>בלוקים חדשים:</b><ul style="margin:.45rem 1.1rem 0 0;padding:0;line-height:1.45">${lessonTen.blockHelp.map(([name, text]) => `<li><b>${esc(name)}</b> — ${esc(text)}</li>`).join('')}</ul>`;
+      } else {
+        blockHelp.hidden = true;
+        blockHelp.innerHTML = '';
+      }
       document.getElementById('player').setAttribute('aria-label', 'דוד בעולם מיינקראפט');
       document.getElementById('drawerExerciseList').innerHTML = (lesson.programmingExercises || []).map((exercise) => `<div class="exercise-item"><small>${exercise.minutes}</small><b>${esc(exercise.title)}</b><span>${esc(exercise.studentPrompt)}</span></div>`).join('');
       document.getElementById('slidesLink').href = `minecraft-slides.html?lesson=${lesson.id}`;
+      applyLessonWorldClass();
       setupModelPager();
       document.getElementById('tabs').innerHTML = window.MINECRAFT_KIDS_LESSONS.map(l => `<a class="tab ${l.id===lesson.id?'active':''}" href="minecraft-play.html?lesson=${l.id}" title="${esc(l.title)}"><span>${l.emoji}</span><small>${l.id}</small></a>`).join('');
       workspace = Blockly.inject('blocklyDiv', { toolbox: toolboxXml(), rtl: true, trashcan: true, scrollbars: true, zoom: { controls: true, wheel: true, startScale: .9, maxScale: 1.4, minScale: .55 } });
@@ -225,6 +262,12 @@
     function openInstructions(){ document.getElementById('instructionsBackdrop').classList.add('open'); }
     function closeInstructions(event){ if (event && event.target !== document.getElementById('instructionsBackdrop')) return; document.getElementById('instructionsBackdrop').classList.remove('open'); }
     window.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeInstructions(); });
+
+    function applyLessonWorldClass(){
+      const world = document.getElementById('world');
+      if (!world) return;
+      world.className = `world ${lesson.id === 1 ? 'lesson-one' : lesson.id === 2 ? 'lesson-two' : lesson.id === 3 ? 'lesson-three' : lesson.id === 4 ? 'lesson-four' : lesson.id === 6 ? 'lesson-six' : lesson.id === 8 ? 'lesson-eight' : lesson.id === 10 ? 'lesson-ten' : ''}`.trim();
+    }
 
     function setupModelPager(){
       if (lessonModelsByLesson[lesson.id]) {
@@ -286,62 +329,11 @@
       resetWorld();
     }
 
-    function setupModelPager(){
-      if (lesson.id === 2) {
-        document.querySelectorAll('.model-choice').forEach((button) => {
-          button.onclick = () => { modelIndex = Number(button.dataset.model || 0); renderBuildModel(); };
-        });
-        renderBuildModel();
-      }
-      if (lesson.id === 3) {
-        document.querySelectorAll('.pixel-choice').forEach((button) => {
-          button.onclick = () => { pixelIndex = Number(button.dataset.pixel || 0); renderPixelModel(); };
-        });
-        renderPixelModel();
-      }
-    }
-    function renderBuildModel(){
-      const model = lessonTwoModels[modelIndex];
-      const shape = document.getElementById('modelShape');
-      if (!model || !shape) return;
-      document.getElementById('modelLevel').textContent = model.level;
-      document.getElementById('modelNote').textContent = model.note;
-      document.querySelectorAll('.model-choice').forEach((button) => button.classList.toggle('active', Number(button.dataset.model || 0) === modelIndex));
-      shape.innerHTML = model.cells.map(cls => `<span class="model-cell ${cls}"></span>`).join('');
-    }
-    function renderPixelModel(){
-      const model = lessonThreeModels[pixelIndex];
-      const shape = document.getElementById('pixelShape');
-      if (!model || !shape) return;
-      document.getElementById('pixelLevel').textContent = model.level;
-      document.getElementById('pixelNote').textContent = model.note;
-      document.querySelectorAll('.pixel-choice').forEach((button) => button.classList.toggle('active', Number(button.dataset.pixel || 0) === pixelIndex));
-      shape.innerHTML = model.cells.map(cls => `<span class="model-cell ${cls}"></span>`).join('');
-    }
-
-    function workspaceStorageKey(){ return `minecraftKidsWorkspace:v1:lesson:${lesson.id}`; }
-    function loadSavedWorkspace(){
-      const savedXml = localStorage.getItem(workspaceStorageKey());
-      const xmlText = savedXml || starterXml();
-      try {
-        const xmlDom = Blockly.utils.xml.textToDom(xmlText);
-        Blockly.Xml.domToWorkspace(xmlDom, workspace);
-      } catch (error) {
-        localStorage.removeItem(workspaceStorageKey());
-        Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(starterXml()), workspace);
-      }
-    }
-    function saveWorkspaceOnChange(event){
-      if (event && event.isUiEvent) return;
-      const xml = Blockly.Xml.workspaceToDom(workspace);
-      localStorage.setItem(workspaceStorageKey(), Blockly.Xml.domToText(xml));
-    }
-
     function resetWorld(){
 
       state.score = 0; state.day = true; state.weather = 'sun'; state.playerOnDiamond = lesson.id === 10 ? false : true; state.foundDiamond = false; state.hiddenDiamondIndex = null; state.hiddenDiamondSpot = null; state.pathSpots = []; state.stopProgram = false; state.steveX = 260; state.steveY = GROUND_Y; state.petX = null; state.petY = null; state.lessonOneBlocks = 0; state.lastMove = null;
       const world = document.getElementById('world');
-      world.className = `world ${lesson.id === 1 ? 'lesson-one' : lesson.id === 2 ? 'lesson-two' : lesson.id === 3 ? 'lesson-three' : lesson.id === 4 ? 'lesson-four' : lesson.id === 6 ? 'lesson-six' : lesson.id === 8 ? 'lesson-eight' : lesson.id === 10 ? 'lesson-ten' : ''}`.trim();
+      applyLessonWorldClass();
       [...world.querySelectorAll('.block,.pet,.mob,.treasure,.apple,.hint')].forEach(el => el.remove());
       document.getElementById('door').classList.remove('open');
       setStevePosition();
