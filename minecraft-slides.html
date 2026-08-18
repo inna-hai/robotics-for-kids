@@ -46,10 +46,14 @@
     ];
 
     function todayBlocks(lesson){
-      if (lesson.id === 10) {
-        return ['event_start_first','event_start_second','build_simple_path','hide_diamond','check_spot','if_found_diamond','open_door','give_treasure','finish_program'];
-      }
-      return lesson.blocks.filter((b,i,a)=>a.indexOf(b)===i);
+      const focusedBlocks = {
+        4: ['place_block','place_path','place_half_block','move_right','move_up','move_down','move_to_ground'],
+        6: ['spawn_pet','place_block','place_path','place_half_block','move_pet_right','move_pet_left','move_pet_up','move_pet_down'],
+        8: ['weather_sun','weather_rain','weather_snow','place_block','place_half_block','move_right','move_up','move_down','move_to_ground','say'],
+        10: ['event_start_first','event_start_second','build_simple_path','hide_diamond','check_spot','if_found_diamond','open_door','give_treasure','finish_program'],
+        12: ['place_block','move_right','move_left','move_up','move_down','say']
+      };
+      return (focusedBlocks[lesson.id] || lesson.blocks).filter((b,i,a)=>a.indexOf(b)===i);
     }
     function blockName(type){ const names={event_start:'כאשר לוחצים ▶️',event_start_first:'כאשר לוחצים ▶️ קוד ראשון',event_start_second:'אחר כך הרץ קוד שני',say:'אמור',move_up:'עלה למעלה',move_down:'רד למטה',move_to_ground:'רד לקרקע',move_right:'זוז ימינה',move_left:'זוז שמאלה',place_block:'הנח בלוק',place_path:'הנח אריח שביל',place_half_block:'הנח חצי בלוק',reset_blocks:'מחק בנין',wait_seconds:'חכה שניות',build_tower:'בנה מגדל',rain_blocks:'גשם של בלוקים צבעוניים',magic_trail:'צור שביל קסום',teleport:'טלפורט למקום חדש',spawn_pet:'זמן חיית מחמד',move_pet_right:'הזז את חיית המחמד ימינה',move_pet_left:'הזז את חיית המחמד שמאלה',move_pet_up:'הזז את חיית המחמד למעלה',move_pet_down:'הזז את חיית המחמד למטה',set_day:'עשה יום',set_night:'עשה לילה',weather_sun:'מזג אוויר שמש',weather_rain:'מזג אוויר גשם',weather_snow:'מזג אוויר שלג',if_on_diamond:'אם עומדים על היהלום',build_simple_path:'בנה שביל פשוט',hide_diamond:'הסתר יהלום במקום סודי',check_spot:'בדוק את המקום',if_found_diamond:'אם מצאת יהלום',open_door:'פתח דלת סודית',give_treasure:'תן אוצר',finish_program:'סיים תוכנית',start_collect_game:'התחל משחק איסוף 5 תפוחים',build_maze:'בנה מבוך קטן',show_hint:'הצג רמז',spawn_funny_mob:'זמן מפלצת מצחיקה'}; return names[type]||type; }
     document.getElementById('deck').innerHTML = slides.map((s,i)=>`<section class="slide ${i===0?'active':''}">${s.html}</section>`).join('');
