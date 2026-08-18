@@ -690,11 +690,11 @@
     exercises: [
       { id: 1, minutes: '0–5', title: 'תרגול 1 — וואו תוך שתי דקות', prompt: 'לחצו הרצה, לחצו על הכפתור בתצוגה, וגלו מה השתנה במסך.', hint: 'חפשו שינוי הודעה או שינוי רקע — לא צריך להבין עדיין את כל הקוד.', check: { htmlIncludes: ['onclick="showMessage()"'], jsIncludes: ['function showMessage', 'document.body.style.background'] } },
       { id: 2, minutes: '5–12', title: 'תרגול 2 — משנים קסם קטן', prompt: 'שנו את בחירת הרקע או את טקסט הכפתור, הריצו שוב ולחצו.', hint: 'בגיל הזה קודם משחקים עם התוצאה, ורק אחר כך נותנים שם מקצועי לפעולה.', check: { htmlIncludes: ['button'], jsIncludes: ['document.body.style.background'] } },
-      { id: 3, minutes: '12–22', title: 'תרגול 3 — מוצאים את הכפתור בקוד', prompt: 'בחרו את בלוק הכפתור וראו איזה HTML מסומן בקוד.', hint: 'חפשו onclick="showMessage()".', check: { htmlIncludes: ['onclick="showMessage()"'], jsIncludes: ['function showMessage'] } },
-      { id: 4, minutes: '22–34', title: 'תרגול 4 — הודעה בלחיצה', prompt: 'גררו בלוק “בלחיצה שנה הודעה”, כתבו הודעה משלכם, הריצו ולחצו על הכפתור.', hint: 'הבלוק משנה את message.textContent.', check: { jsIncludes: ['message.textContent'] } },
-      { id: 5, minutes: '34–46', title: 'תרגול 5 — שינוי סמל', prompt: 'גררו בלוק “בלחיצה שנה סמל” ובחרו אימוג׳י חדש.', hint: 'צריך להיות בעמוד בלוק סמל כדי שיהיה מה לשנות.', check: { htmlIncludes: ['id="heroEmoji"'], jsIncludes: ['heroEmoji.textContent'] } },
-      { id: 6, minutes: '46–58', title: 'תרגול 6 — שינוי רקע', prompt: 'שנו את בלוק הרקע או גררו בלוק “בלחיצה שנה רקע” אם הוא לא מחובר, ואז לחצו ובדקו.', hint: 'חפשו document.body.style.background.', check: { jsIncludes: ['document.body.style.background'] } },
-      { id: 7, minutes: '58–72', title: 'תרגול 7 — מצב קסם', prompt: 'גררו בלוק “בלחיצה החלף מצב קסם”, הריצו ולחצו כמה פעמים.', hint: 'toggle מדליק ומכבה class.', check: { cssIncludes: ['.page-card.magic'], jsIncludes: ['classList.toggle("magic")'] } },
+      { id: 3, minutes: '12–22', title: 'תרגול 3 — מוצאים את הכפתור בקוד', prompt: 'בחרו את בלוק הכפתור וראו איזה HTML מסומן בקוד.', hint: 'חפשו onclick="showMessage()".', check: { htmlIncludes: ['onclick="showMessage()"'], jsIncludes: ['function showMessage'], blockTypes: ['web_button'] } },
+      { id: 4, minutes: '22–34', title: 'תרגול 4 — הודעה בלחיצה', prompt: 'גררו בלוק “בלחיצה שנה הודעה”, כתבו הודעה משלכם, הריצו ולחצו על הכפתור.', hint: 'הבלוק משנה את message.textContent.', check: { jsIncludes: ['message.textContent'], blockTypes: ['web_action_message'] } },
+      { id: 5, minutes: '34–46', title: 'תרגול 5 — שינוי סמל', prompt: 'גררו בלוק “בלחיצה שנה סמל” ובחרו אימוג׳י חדש.', hint: 'צריך להיות בעמוד בלוק סמל כדי שיהיה מה לשנות.', check: { htmlIncludes: ['id="heroEmoji"'], jsIncludes: ['heroEmoji.textContent'], blockTypes: ['web_emoji', 'web_action_emoji'] } },
+      { id: 6, minutes: '46–58', title: 'תרגול 6 — שינוי רקע', prompt: 'שנו את בלוק הרקע או גררו בלוק “בלחיצה שנה רקע” אם הוא לא מחובר, ואז לחצו ובדקו.', hint: 'חפשו document.body.style.background.', check: { jsIncludes: ['document.body.style.background'], blockTypes: ['web_action_background'] } },
+      { id: 7, minutes: '58–72', title: 'תרגול 7 — מצב קסם', prompt: 'גררו בלוק “בלחיצה החלף מצב קסם”, הריצו ולחצו כמה פעמים.', hint: 'toggle מדליק ומכבה class.', check: { cssIncludes: ['.page-card.magic'], jsIncludes: ['classList.toggle("magic")'], blockTypes: ['web_action_magic'] } },
       { id: 8, minutes: '72–84', title: 'תרגול 8 — מסמנים קוד מבלוק ומשתפים', prompt: 'בחרו בלוק פעולה, ראו באיזה טאב הקוד מסומן, ואז העתיקו קישור ציבורי לתוצר.', hint: 'בלוקי פעולה אמורים להוביל בעיקר ל־JavaScript.', check: { htmlIncludes: ['page-card'], cssIncludes: ['.page-card'], jsIncludes: ['function showMessage'] } }
     ],
     vocabulary: [
@@ -732,12 +732,12 @@
       { minutes: '82–90', title: 'גלריית עיצובים ושיתוף', teacher: 'מבקשים מכל תלמיד להעתיק קישור ציבורי ולשתף תוצר אחד.', students: 'מציגים בחירה עיצובית אחת ומסבירים למה בחרו אותה.' }
     ],
     exercises: [
-      { id: 1, minutes: '8–16', title: 'תרגול 1 — מתחילים פשוט', prompt: 'העמוד מתחיל רק עם עיצוב בסיסי, כותרת ופסקה. שנו את פלטת העיצוב ובדקו מה השתנה.', hint: 'בהתחלה אין הרבה בלוקים — זה בכוונה. נבנה את העיצוב בשלבים.', check: { cssIncludes: ['background:'] } },
-      { id: 2, minutes: '16–25', title: 'תרגול 2 — מוסיפים בלוק ראשון', prompt: 'עכשיו גררו בעצמכם בלוק “צורת כרטיס” וחברו אותו לשרשרת.', hint: 'זה הבלוק הראשון שהתלמיד מוסיף לבד ל־starter הפשוט.', check: { cssIncludes: ['border-radius'] } },
-      { id: 3, minutes: '25–34', title: 'תרגול 3 — מוסיפים עומק', prompt: 'גררו בלוק “צל כרטיס”, חברו אותו אחרי צורת הכרטיס, ובחרו צל.', hint: 'צל ב־CSS נקרא box-shadow.', check: { cssIncludes: ['box-shadow'] } },
-      { id: 4, minutes: '34–43', title: 'תרגול 4 — צבע כותרת', prompt: 'חברו בלוק “צבע כותרת” ובחרו צבע שמתאים לפלטה.', hint: 'הכותרת היא h1.', check: { cssIncludes: ['h1 { color:'] } },
-      { id: 5, minutes: '43–52', title: 'תרגול 5 — סגנון כפתור', prompt: 'חברו בלוק “סגנון כפתור” ובחרו גלולה, קובייה, ניאון או עדין.', hint: 'הכפתור משתנה דרך background, border-radius ו־box-shadow.', check: { cssIncludes: ['button {', 'border-radius'] } },
-      { id: 6, minutes: '52–62', title: 'תרגול 6 — אפקט Hover', prompt: 'חברו בלוק “אפקט מעבר עכבר” ובדקו מה קורה כשעוברים על הכפתור.', hint: 'Hover הוא עיצוב שקורה רק כשעוברים עם העכבר.', check: { cssIncludes: ['button:hover'] } },
+      { id: 1, minutes: '8–16', title: 'תרגול 1 — מתחילים פשוט', prompt: 'העמוד מתחיל רק עם עיצוב בסיסי, כותרת ופסקה. שנו את פלטת העיצוב ובדקו מה השתנה.', hint: 'בהתחלה אין הרבה בלוקים — זה בכוונה. נבנה את העיצוב בשלבים.', check: { cssIncludes: ['background:'], cssExcludes: ['background: #ede9fe;'], blockTypes: ['web_theme'] } },
+      { id: 2, minutes: '16–25', title: 'תרגול 2 — מוסיפים בלוק ראשון', prompt: 'עכשיו גררו בעצמכם בלוק “צורת כרטיס” וחברו אותו לשרשרת.', hint: 'זה הבלוק הראשון שהתלמיד מוסיף לבד ל־starter הפשוט.', check: { cssIncludes: ['border-radius'], blockTypes: ['web_card_shape'] } },
+      { id: 3, minutes: '25–34', title: 'תרגול 3 — מוסיפים עומק', prompt: 'גררו בלוק “צל כרטיס”, חברו אותו אחרי צורת הכרטיס, ובחרו צל.', hint: 'צל כרטיס צריך להיות מחובר אחרי בלוק צורת כרטיס.', check: { cssIncludes: ['box-shadow'], blockTypes: ['web_shadow'], orderedBlockTypes: ['web_card_shape', 'web_shadow'] } },
+      { id: 4, minutes: '34–43', title: 'תרגול 4 — צבע כותרת', prompt: 'חברו בלוק “צבע כותרת” ובחרו צבע שמתאים לפלטה.', hint: 'הכותרת היא h1.', check: { cssIncludes: ['h1 { color:'], blockTypes: ['web_title_color'] } },
+      { id: 5, minutes: '43–52', title: 'תרגול 5 — סגנון כפתור', prompt: 'חברו בלוק “סגנון כפתור” ובחרו גלולה, קובייה, ניאון או עדין.', hint: 'הכפתור משתנה דרך background, border-radius ו־box-shadow.', check: { cssIncludes: ['button {', 'border-radius'], blockTypes: ['web_button_style'] } },
+      { id: 6, minutes: '52–62', title: 'תרגול 6 — אפקט Hover', prompt: 'חברו בלוק “אפקט מעבר עכבר” ובדקו מה קורה כשעוברים על הכפתור.', hint: 'Hover הוא עיצוב שקורה רק כשעוברים עם העכבר.', check: { cssIncludes: ['button:hover'], blockTypes: ['web_hover'] } },
       { id: 7, minutes: '62–74', title: 'תרגול 7 — שני מצבי עיצוב', prompt: 'צרו גרסה רגועה ואז גרסה משחקית לאותו עמוד. איזה בלוקים החלפתם?', hint: 'אל תשנו תוכן — רק בלוקי עיצוב.', check: { htmlIncludes: ['page-card'], cssIncludes: ['.page-card'] } },
       { id: 8, minutes: '74–84', title: 'תרגול 8 — משתפים גלריה', prompt: 'פתחו “לראות קוד שנוצר”, מצאו שורת CSS אחת, ואז העתיקו קישור ציבורי ושלחו לחבר/ה.', hint: 'הסבירו: הבלוק שלי יצר את שורת ה־CSS הזו.', check: { cssIncludes: ['background', 'box-shadow'], jsIncludes: ['showMessage'] } }
     ],
@@ -758,10 +758,10 @@
   });
 
   Object.assign(lessons[0], {
-    title: 'בונים עמוד עם Blockly אמיתי — גוררים, מחברים, מרכיבים',
+    title: 'בונים עמוד אמיתי עם Blockly',
     concept: 'Blockly אמיתי → הרכבת עמוד Web: מבנה · עיצוב · פעולה',
-    story: 'הפעם לא לוחצים על כפתורי דמו־בלוקים ולא מתחילים מקוד. הילדים עובדים בסביבת Google Blockly אמיתית: גוררים בלוקים מארגז כלים, מחברים אותם מתחת ל“עמוד האתר שלי”, וכל שינוי בונה עמוד חי בתצוגה.',
-    mission: 'להרכיב עמוד אישי שלם ב־Blockly: כותרת, פסקה, סמל, עיצוב, כפתור, קוביות מידע וחתימה — ואז לראות את הקוד שנוצר רק כהצצה.',
+    story: 'היום בונים עמוד מבלוקים אמיתיים: גוררים בלוק, מחברים לשרשרת, ורואים מיד שינוי בתצוגה.',
+    mission: 'חברו בלוקים מתחת ל“עמוד האתר שלי”. רק בלוקים מחוברים יוצרים את העמוד.',
     outcome: 'עמוד Web אישי שנבנה מבלוקים נגררים ומחוברים, עם תצוגה חיה וקוד שנוצר אוטומטית מאחור',
     mode: 'Real Blockly page builder',
     realBlocklyBuilder: true,
@@ -776,14 +776,14 @@
       { minutes: '84–90', title: 'מיני תערוכה', teacher: 'מבקשים מכל תלמיד להציג בלוק אחד שבחר ולמה.', students: 'מציגים עמוד ומסבירים: “חיברתי בלוק ___ ולכן בעמוד קרה ___”.' }
     ],
     exercises: [
-      { id: 1, minutes: '8–16', title: 'תרגול 1 — מחברים בלוק כותרת', prompt: 'גררו בלוק “כותרת” וחברו אותו מתחת ל“עמוד האתר שלי”. שנו את הטקסט בתוך הבלוק.', hint: 'הבלוק חייב להיצמד לבלוק שמעליו, כמו פאזל.', check: { htmlIncludes: ['<h1>'] } },
-      { id: 2, minutes: '16–24', title: 'תרגול 2 — מוסיפים פסקה', prompt: 'גררו בלוק “פסקה”, חברו אותו מתחת לכותרת, וכתבו משפט על העמוד שלכם.', hint: 'אם הפסקה לא מופיעה — היא כנראה לא מחוברת לשרשרת.', check: { htmlIncludes: ['<p>'] } },
-      { id: 3, minutes: '24–32', title: 'תרגול 3 — בוחרים סמל גדול', prompt: 'גררו או השאירו בלוק “סמל גדול” ובחרו אימוג׳י שמתאים לעמוד.', hint: 'זה בלוק תוכן ויזואלי, לא קוד.', check: { htmlIncludes: ['hero-emoji'] } },
-      { id: 4, minutes: '32–42', title: 'תרגול 4 — מחליפים עיצוב', prompt: 'גררו בלוק “עיצוב עמוד” ובחרו פלטה אחרת מהתפריט.', hint: 'אותו עמוד יכול להיראות אחרת לגמרי עם בלוק עיצוב אחד.', check: { cssIncludes: ['background:', 'box-shadow'] } },
-      { id: 5, minutes: '42–54', title: 'תרגול 5 — כפתור עם הודעה', prompt: 'חברו בלוק “כפתור” ושנו גם את טקסט הכפתור וגם את ההודעה שהוא מציג.', hint: 'אחרי הרצה, לחצו על הכפתור בתצוגה החיה.', check: { htmlIncludes: ['onclick="showMessage()"'], jsIncludes: ['function showMessage'] } },
-      { id: 6, minutes: '54–64', title: 'תרגול 6 — שתי קוביות מידע', prompt: 'גררו בלוק “שתי קוביות מידע” וכתבו שני רעיונות/תחביבים/עובדות.', hint: 'זה מלמד שהעמוד בנוי מחלקים, לא משורה אחת.', check: { htmlIncludes: ['class="columns"'], cssIncludes: ['grid-template-columns'] } },
-      { id: 7, minutes: '64–74', title: 'תרגול 7 — חתימה וסדר', prompt: 'הוסיפו בלוק חתימה. אחר כך נסו להזיז אותו למקום אחר בשרשרת וראו מה משתנה.', hint: 'סדר הבלוקים הוא סדר האלמנטים בעמוד.', check: { htmlIncludes: ['<footer>'] } },
-      { id: 8, minutes: '74–84', title: 'תרגול 8 — הצצה לקוד', prompt: 'פתחו “הצצה לקוד שנוצר” ומצאו איפה הבלוק שלכם הפך ל־HTML או CSS.', hint: 'לא צריך לערוך קוד. רק לזהות: הבלוק שלי יצר את השורה הזו.', check: { htmlIncludes: ['page-card'], cssIncludes: ['.page-card'], jsIncludes: ['textContent'] } }
+      { id: 1, minutes: '8–16', title: 'תרגול 1 — מחברים בלוק כותרת', prompt: 'גררו בלוק “כותרת” וחברו אותו מתחת ל“עמוד האתר שלי”. שנו את הטקסט בתוך הבלוק.', hint: 'הבלוק חייב להיצמד לבלוק שמעליו, כמו פאזל.', check: { htmlIncludes: ['<h1>'], blockTypes: ['web_title'], nonEmptyBlocklyFields: [{ type: 'web_title', field: 'TEXT' }], changedBlocklyFields: [{ type: 'web_title', field: 'TEXT', defaultValue: 'האתר הראשון שלי' }], emptyFeedback: 'כמעט. הכותרת מחוברת, אבל היא לא יכולה להיות ריקה.', fieldFeedback: 'כמעט. הכותרת מחוברת, עכשיו שנו את הטקסט שבתוך בלוק הכותרת.' } },
+      { id: 2, minutes: '16–24', title: 'תרגול 2 — מוסיפים פסקה', prompt: 'גררו בלוק “פסקה”, חברו אותו מתחת לכותרת, וכתבו משפט על העמוד שלכם.', hint: 'הפסקה צריכה להיות מחוברת מתחת לכותרת, לא מעליה.', check: { htmlIncludes: ['<p>'], blockTypes: ['web_paragraph'], orderedBlockTypes: ['web_title', 'web_paragraph'], nonEmptyBlocklyFields: [{ type: 'web_paragraph', field: 'TEXT' }], changedBlocklyFields: [{ type: 'web_paragraph', field: 'TEXT', defaultValue: 'אני בונה עמוד עם בלוקלי אמיתי' }], orderFeedback: 'כמעט. הפסקה צריכה להיות מחוברת מתחת לכותרת.', emptyFeedback: 'כמעט. הפסקה במקום הנכון, אבל היא לא יכולה להיות ריקה.', fieldFeedback: 'כמעט. הפסקה במקום הנכון, עכשיו שנו את הטקסט שבתוך בלוק הפסקה.' } },
+      { id: 3, minutes: '24–32', title: 'תרגול 3 — בוחרים סמל גדול', prompt: 'גררו בלוק “סמל גדול”, חברו אותו לעמוד, ובחרו אימוג׳י שמתאים לעמוד.', hint: 'זה בלוק תוכן ויזואלי, לא קוד.', check: { htmlIncludes: ['hero-emoji'], blockTypes: ['web_emoji'] } },
+      { id: 4, minutes: '32–42', title: 'תרגול 4 — מחליפים עיצוב', prompt: 'גררו בלוק “עיצוב עמוד” ובחרו פלטה שאינה ברירת המחדל.', hint: 'פתחו את התפריט בתוך בלוק העיצוב ובחרו אפשרות אחרת.', check: { cssIncludes: ['background:'], blockTypes: ['web_theme'], changedBlocklyFields: [{ type: 'web_theme', field: 'THEME', defaultValue: 'sky' }], fieldFeedback: 'כמעט. בלוק העיצוב מחובר, עכשיו בחרו פלטה אחרת מתוך התפריט שבתוכו.' } },
+      { id: 5, minutes: '42–54', title: 'תרגול 5 — כפתור עם הודעה', prompt: 'חברו בלוק “כפתור” ושנו גם את טקסט הכפתור וגם את ההודעה שהוא מציג.', hint: 'אחרי הרצה, לחצו על הכפתור בתצוגה החיה.', check: { htmlIncludes: ['onclick="showMessage()"'], jsIncludes: ['function showMessage'], blockTypes: ['web_button'], nonEmptyBlocklyFields: [{ type: 'web_button', field: 'LABEL' }, { type: 'web_button', field: 'MESSAGE' }], changedBlocklyFields: [{ type: 'web_button', field: 'LABEL', defaultValue: 'לחצו להפתעה' }, { type: 'web_button', field: 'MESSAGE', defaultValue: 'הכפתור שלי עובד 🎉' }], emptyFeedback: 'כמעט. הכפתור מחובר, אבל טקסט הכפתור וההודעה לא יכולים להיות ריקים.', fieldFeedback: 'כמעט. הכפתור מחובר, עכשיו שנו גם את טקסט הכפתור וגם את ההודעה שבתוכו.' } },
+      { id: 6, minutes: '54–64', title: 'תרגול 6 — שתי קוביות מידע', prompt: 'גררו בלוק “שתי קוביות מידע” וכתבו שני רעיונות/תחביבים/עובדות.', hint: 'זה מלמד שהעמוד בנוי מחלקים, לא משורה אחת.', check: { htmlIncludes: ['class="columns"'], cssIncludes: ['grid-template-columns'], blockTypes: ['web_columns'], nonEmptyBlocklyFields: [{ type: 'web_columns', field: 'A' }, { type: 'web_columns', field: 'B' }], changedBlocklyFields: [{ type: 'web_columns', field: 'A', defaultValue: 'רעיון ראשון' }, { type: 'web_columns', field: 'B', defaultValue: 'רעיון שני' }], emptyFeedback: 'כמעט. שתי קוביות המידע צריכות להכיל טקסט.', fieldFeedback: 'כמעט. כתבו שני רעיונות משלכם בתוך קוביות המידע.' } },
+      { id: 7, minutes: '64–74', title: 'תרגול 7 — חתימה וסדר', prompt: 'הוסיפו בלוק חתימה ובדקו. אחר כך הזיזו אותו למקום אחר בשרשרת ולחצו בדיקה שוב.', hint: 'התרגול הזה צריך שתי בדיקות: פעם אחת כשהחתימה מחוברת, ופעם נוספת אחרי שינוי הסדר.', check: { htmlIncludes: ['<footer>'], blockTypes: ['web_footer'], nonEmptyBlocklyFields: [{ type: 'web_footer', field: 'TEXT' }], twoStepFooterMove: true, blockFeedback: 'כמעט. קודם חברו בלוק חתימה לשרשרת.', emptyFeedback: 'כמעט. החתימה לא יכולה להיות ריקה.', firstCheckFeedback: 'מעולה, החתימה מחוברת. עכשיו הזיזו אותה למקום אחר בשרשרת ולחצו בדיקה שוב.', secondCheckFeedback: 'כמעט. עכשיו צריך להזיז את בלוק החתימה למקום אחר בשרשרת ולבדוק שוב.' } },
+      { id: 8, minutes: '74–84', title: 'תרגול 8 — הצצה לקוד', prompt: 'פתחו למטה במסך את “הצצה לקוד שנוצר” ומצאו איפה הבלוק שלכם הפך ל־HTML או CSS.', hint: 'לא צריך לערוך קוד. רק לזהות: הבלוק שלי יצר את השורה הזו.', check: { htmlIncludes: ['page-card'], cssIncludes: ['.page-card'], jsIncludes: ['textContent'], blockTypes: ['web_title', 'web_paragraph'], nonEmptyBlocklyFields: [{ type: 'web_title', field: 'TEXT' }, { type: 'web_paragraph', field: 'TEXT' }], requiresCodePeek: true, emptyFeedback: 'כמעט. לפני שמציצים לקוד, ודאו שהכותרת והפסקה לא ריקות.', codePeekFeedback: 'כמעט. קודם פתחו למטה במסך את “הצצה לקוד שנוצר”, ואז בדקו.' } }
     ],
     vocabulary: [
       ['workspace', 'אזור העבודה שבו גוררים ומחברים בלוקים'],
@@ -1352,7 +1352,7 @@
           ],
           "jsIncludes": [
             "CSS",
-            "style"
+            "textContent"
           ]
         }
       },
@@ -1371,7 +1371,7 @@
           ],
           "jsIncludes": [
             "CSS",
-            "style"
+            "textContent"
           ]
         }
       },
@@ -1390,7 +1390,7 @@
           ],
           "jsIncludes": [
             "CSS",
-            "style"
+            "textContent"
           ]
         }
       },
@@ -1409,7 +1409,7 @@
           ],
           "jsIncludes": [
             "CSS",
-            "style"
+            "textContent"
           ]
         }
       },
@@ -1428,7 +1428,7 @@
           ],
           "jsIncludes": [
             "CSS",
-            "style"
+            "textContent"
           ]
         }
       },
@@ -1447,7 +1447,7 @@
           ],
           "jsIncludes": [
             "CSS",
-            "style"
+            "textContent"
           ]
         }
       },
@@ -1466,7 +1466,7 @@
           ],
           "jsIncludes": [
             "CSS",
-            "style"
+            "textContent"
           ]
         }
       },
@@ -1485,7 +1485,7 @@
           ],
           "jsIncludes": [
             "CSS",
-            "style"
+            "textContent"
           ]
         }
       }
@@ -5110,6 +5110,28 @@
   });
   lessons.forEach(lesson => {
     if (advancedBridgeBlocksByLesson[lesson.id]) lesson.bridgeBlocks = advancedBridgeBlocksByLesson[lesson.id];
+  });
+  lessons.slice(12).forEach(lesson => {
+    lesson.exercises.forEach(exercise => {
+      if ([3, 5, 6, 7, 8].includes(exercise.id)) exercise.check.changedAny = ['html', 'css', 'js'];
+      if (exercise.id === 4 && lesson.bridgeBlocks?.length) exercise.check.changedAny = ['html', 'css', 'js'];
+    });
+  });
+  lessons.forEach(lesson => {
+    if (lesson.realBlocklyBuilder) return;
+    lesson.exercises.forEach(exercise => {
+      const text = `${exercise.title} ${exercise.prompt}`;
+      const c = exercise.check || {};
+      const starterPasses = (c.htmlIncludes || []).every(x => lesson.starter.html.includes(x)) &&
+        (c.cssIncludes || []).every(x => lesson.starter.css.includes(x)) &&
+        (c.jsIncludes || []).every(x => lesson.starter.js.includes(x)) &&
+        (c.htmlExcludes || []).every(x => !lesson.starter.html.includes(x)) &&
+        (c.cssExcludes || []).every(x => !lesson.starter.css.includes(x)) &&
+        (c.jsExcludes || []).every(x => !lesson.starter.js.includes(x));
+      if (/גררו|חברו|הפעילו|שנו|השלימו|תקנו|הוסיפו|צרו/.test(text) && starterPasses) {
+        c.changedAny = ['html', 'css', 'js'];
+      }
+    });
   });
 
   window.WEBCODE_LESSONS = lessons;
