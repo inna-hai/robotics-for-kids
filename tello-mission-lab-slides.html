@@ -17,6 +17,8 @@
   <script>
     const params = new URLSearchParams(location.search);
     const lesson = window.getTelloMissionLabLesson(params.get('lesson'));
+    const labels = window.TELLO_MISSION_LAB_BLOCK_LABELS || {};
+    const missionLines = (lesson.blocks || []).map((b,i) => `${i+1}. ${labels[b] || b}`).join('\n');
     const esc = v => String(v || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     document.title = `מצגת מדריך — ${lesson.title}`;
     document.getElementById('playLink').href = `tello-mission-lab-play.html?lesson=${lesson.id}`;
@@ -26,12 +28,12 @@
     const flowSlides = (lesson.lessonFlow || []).map(step => ({ html: `<div class="kicker">מהלך שיעור 90 דקות</div><h2>${esc(step.minutes)} — ${esc(step.title)}</h2><div class="cards"><div class="card"><b>מה המדריך עושה</b>${esc(step.teacher)}</div><div class="card"><b>מה התלמידים עושים</b>${esc(step.students)}</div></div>` }));
     const exerciseList = (lesson.exercises || []).map(ex => `<li><b>${esc(ex.minutes)} — ${esc(ex.title)}:</b> ${esc(ex.prompt)}</li>`).join('');
     const slides = [
-      { html: `<div class="big-icon">🚁📱</div><div class="kicker">Tello Mission Lab · כיתה ו׳ · שיעור 1</div><h1>${esc(lesson.title)}</h1><p class="lead">${esc(lesson.subtitle || lesson.story)}</p><div class="note"><b>כלל פתיחה:</b> היום עובדים בסימולטור בלבד. דיוק הנדסי מתחיל לפני שהמדחפים מסתובבים.</div>` },
+      { html: `<div class="big-icon">🚁📱</div><div class="kicker">Tello Mission Lab · כיתה ו׳ · שיעור ${lesson.id}</div><h1>${esc(lesson.title)}</h1><p class="lead">${esc(lesson.subtitle || lesson.story)}</p><div class="note"><b>כלל פתיחה:</b> ${lesson.physicalFlightAllowed ? 'טיסה פיזית רק באישור מדריך ובאזור סטרילי.' : 'היום עובדים בסימולטור בלבד. דיוק הנדסי מתחיל לפני שהמדחפים מסתובבים.'}</div>` },
       { html: `<div class="kicker">למה זה מלהיב?</div><h2>רחפנים בעולם האמיתי</h2><p class="lead">רחפן הוא מערכת טכנולוגית שעוזרת לאנשים לראות, למדוד ולהגיע למקומות מסוכנים או קשים.</p><div class="cards">${realCards}</div>` },
-      { html: `<div class="kicker">בטיחות לפני טיסה</div><h2>הרחפן קטן — האחריות גדולה</h2><div class="cards">${safetyCards}</div><div class="note warning"><b>אמירה למדריך:</b> בשיעור 1 לא מחברים רחפן ולא מבצעים Launch Mission פיזי. הסימולטור הוא סביבת הבדיקה שלנו.</div>` },
-      { html: `<div class="kicker">שפה מקצועית</div><h2>מילון טיסה בסיסי</h2><div class="cards three">${vocabCards}</div><div class="note"><b>דיוק מילולי יוצר דיוק טכני:</b> Takeoff, Land, Hover ו־Hover הם לא “בערך” — אלו שמות פעולה מקובלים.</div>` },
-      { html: `<div class="kicker">הדגמה בכיתה</div><h2>Hover הוא סיבוב, לא תזוזה הצידה</h2><div class="cards"><div class="card"><b>Hover Right / Left</b>הרחפן מסתובב סביב הציר האנכי — האף משנה כיוון.</div><div class="card"><b>Move Right / Left</b>הרחפן זז הצידה, אבל הכיוון שלו לא חייב להשתנות.</div></div><p class="lead">תנו לתלמידים להדגים בגוף: לעמוד במקום ולהסתובב = Hover; לזוז צעד ימינה = Right.</p>` },
-      { html: `<div class="kicker">משימת היום</div><h2>System Check Alpha</h2><p class="lead">שלוש פקודות, משימה אחת, סדר בטוח אחד.</p><div class="mission">1. Takeoff\n2. Hover 5 seconds\n3. Land</div><div class="note"><b>שאלה:</b> מה יקרה אם Land יהיה ראשון? למה זה לא רצף טיסה הגיוני?</div>` },
+      { html: `<div class="kicker">בטיחות לפני טיסה</div><h2>הרחפן קטן — האחריות גדולה</h2><div class="cards">${safetyCards}</div><div class="note warning"><b>אמירה למדריך:</b> ${lesson.physicalFlightAllowed ? 'אם מטיסים פיזית — רק אחרי אישור מדריך, משקפי מגן ובדיקת סוללה/מרחב.' : 'בשיעור הזה לא מחברים רחפן ולא מבצעים Launch Mission פיזי. הסימולטור הוא סביבת הבדיקה שלנו.'}</div>` },
+      { html: `<div class="kicker">שפה מקצועית</div><h2>מילון טיסה בסיסי</h2><div class="cards three">${vocabCards}</div><div class="note"><b>דיוק מילולי יוצר דיוק טכני:</b> Takeoff, Land, Pitch/Roll/Yaw ו־Hover הם לא “בערך” — אלו שמות פעולה מקובלים.</div>` },
+      { html: `<div class="kicker">הדגמה בכיתה</div><h2>Pitch, Roll ו־Yaw — שפת התנועה</h2><div class="cards three"><div class="card"><b>Pitch</b>קדימה/אחורה ביחס לאף הרחפן.</div><div class="card"><b>Roll</b>תנועה צדית בלי לסובב את האף.</div><div class="card"><b>Yaw</b>סיבוב האף ימינה או שמאלה במקום.</div></div><p class="lead">תנו לתלמידים להדגים בגוף: צעד קדימה = Pitch; צעד צד = Roll; סיבוב במקום = Yaw.</p>` },
+      { html: `<div class="kicker">משימת היום</div><h2>${esc(lesson.subtitle || lesson.concept || lesson.title)}</h2><p class="lead">רצף הבלוקים של השיעור — קודם בסימולטור, ורק בעתיד בעולם האמיתי.</p><div class="mission">${esc(missionLines)}</div><div class="note"><b>שאלה:</b> מה יקרה אם Land יהיה ראשון? למה סדר הפקודות הוא חלק מהבטיחות?</div>` },
       { html: `<div class="kicker">טאבלטים בכיתה</div><h2>הנחיות עבודה ב־Lenovo TB311FU</h2><div class="cards">${(lesson.tabletTips || []).map(t => `<div class="card">📱 ${esc(t)}</div>`).join('')}</div>` },
       ...flowSlides,
       { html: `<div class="kicker">תרגול תלמידים</div><h2>רצף משימות בלומדה</h2><ul>${exerciseList}</ul>` },

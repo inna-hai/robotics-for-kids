@@ -42,7 +42,7 @@
 
     <section class="panel workspace-panel">
       <div class="panel-head"><h2>🧩 אזור עבודה — בלוקים מתחברים כמו DroneBlocks</h2><span class="chip">Lenovo TB311FU</span></div>
-      <div class="workspace-tip">📱 גררו בלוקים מהסרגל הכתום וחברו אותם אחד מתחת לשני. בשיעור 1 הרצף התקין הוא: Takeoff → Yaw Right 360° → Land.</div>
+      <div class="workspace-tip">📱 גררו בלוקים מהסרגל הכתום וחברו אותם אחד מתחת לשני. הרצף התקין מופיע בתדריך המשימה ומשתנה לפי מספר השיעור.</div>
       <div class="blockly-shell"><div id="blocklyDiv"></div></div>
     </section>
 
@@ -73,10 +73,16 @@
   <xml id="toolbox" class="hidden-xml">
     <category name="🚁 Tello Blocks" colour="#ff8a00">
       <block type="tello_takeoff"></block>
+      <block type="tello_forward"></block>
+      <block type="tello_right"></block>
+      <block type="tello_back"></block>
+      <block type="tello_left"></block>
+      <block type="tello_yaw_right_90"></block>
       <block type="tello_yaw_right_360"></block>
-      <block type="tello_land"></block>
       <block type="tello_hover"></block>
-      <block type="tello_yaw_left_180"></block>
+      <block type="tello_land"></block>
+      <block type="tello_up_100"></block>
+      <block type="tello_abort"></block>
     </category>
     <category name="🛡️ Safety" colour="#22c55e">
       <block type="tello_safety_check"></block>
@@ -89,23 +95,45 @@
     const params = new URLSearchParams(location.search);
     const lesson = window.getTelloEduGrade5Lesson(params.get('lesson'));
     const labels = window.TELLO_EDU_GRADE5_BLOCK_LABELS;
-    const expectedTypes = ['tello_takeoff','tello_yaw_right_360','tello_land'];
+    const blockKeyToType = { takeoff:'tello_takeoff', land:'tello_land', yaw_360:'tello_yaw_right_360', yaw_right:'tello_yaw_right_90', yaw_left:'tello_yaw_left_90', hover:'tello_hover', hover_data:'tello_hover', forward:'tello_forward', back:'tello_back', right:'tello_right', left:'tello_left', up:'tello_up_100', up_100:'tello_up_100', down:'tello_down_50', down_50:'tello_down_50', abort:'tello_abort', safety_check:'tello_safety_check', comment:'tello_comment', repeat_square:'tello_repeat_square', repeat_scan:'tello_repeat_scan', grid_scan:'tello_grid_scan', photo:'tello_photo', go_pad:'tello_go_pad', share:'tello_share', debug_distance:'tello_debug_distance', show_code:'tello_show_code', project_path:'tello_project_path' };
+    const typeToHuman = { tello_run_program:'Run Mission', tello_takeoff:'Takeoff', tello_land:'Land', tello_yaw_right_360:'Yaw Right 360°', tello_yaw_right_90:'Yaw Right 90°', tello_yaw_left_90:'Yaw Left 90°', tello_hover:'Hover 5 sec', tello_forward:'Forward 1.5m', tello_back:'Back 1.5m', tello_right:'Right 1.5m', tello_left:'Left 1.5m', tello_up_100:'Go Up 2.5m', tello_down_50:'Go Down 1.25m', tello_abort:'Abort', tello_safety_check:'Safety Check', tello_comment:'Comment', tello_repeat_square:'Repeat Square', tello_repeat_scan:'Repeat Scan', tello_grid_scan:'Grid Scan', tello_photo:'Take Photo', tello_go_pad:'Go to Mission Pad', tello_share:'Share Mission', tello_debug_distance:'Debug Distance', tello_show_code:'Show Mission Code', tello_project_path:'Project Path' };
+    const expectedTypes = (lesson.blocks || []).map(key => blockKeyToType[key]).filter(Boolean).filter(t => t !== 'tello_comment' && t !== 'tello_safety_check' && t !== 'tello_share');
     let workspace;
-    const steps = [
+    const steps = lesson.id === 2 ? [
+      { right: 12, bottom: 24, msg: 'Takeoff: ממריאים מנקודת תחילת החממה.' },
+      { right: 42, bottom: 58, msg: 'Forward / Pitch: צלע ראשונה של הריבוע.' },
+      { right: 67, bottom: 58, msg: 'Right / Roll: זזים הצידה בלי לסובב את האף.' },
+      { right: 67, bottom: 24, msg: 'Back / Pitch: חוזרים לאורך הצלע השלישית.' },
+      { right: 12, bottom: 24, msg: 'Left / Roll + Land: סוגרים את הריבוע ונוחתים.' }
+    ] : [
       { right: 12, bottom: 24, msg: 'Takeoff: הרחפן ממריא מהמשטח.' },
       { right: 43, bottom: 57, msg: 'Hover: הרחפן מתייצב באוויר.' },
-      { right: 43, bottom: 57, msg: 'Yaw Right 360°: סיבוב מלא במקום.' },
+      { right: 43, bottom: 57, msg: (lesson.id === 1 && expectedTypes.includes('tello_yaw_right_360')) ? 'Yaw Right 360°: סיבוב מלא במקום.' : 'Hover 5 sec: ריחוף לבדיקת מערכת.' },
       { right: 74, bottom: 24, msg: 'Land: נחיתה באזור פנוי.' }
     ];
     const esc = v => String(v || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const $ = id => document.getElementById(id);
 
     Blockly.defineBlocksWithJsonArray([
+      { type:'tello_run_program', message0:'Run Mission  הרץ תוכנית', nextStatement:null, colour:45, tooltip:'בלוק התחלה — מחברים מתחתיו את תוכנית הטיסה' },
       { type:'tello_takeoff', message0:'Takeoff  המראה', previousStatement:null, nextStatement:null, colour:32, tooltip:'פקודת המראה — תחילת משימת טיסה' },
-      { type:'tello_yaw_right_360', message0:'Yaw Right 360°  סיבוב ימינה מלא', previousStatement:null, nextStatement:null, colour:204, tooltip:'סבסוב סביב הציר האנכי' },
+      { type:'tello_forward', message0:'Forward 1.5m  קדימה', previousStatement:null, nextStatement:null, colour:210, tooltip:'Pitch קדימה' },
+      { type:'tello_right', message0:'Right 1.5m  ימינה', previousStatement:null, nextStatement:null, colour:210, tooltip:'Roll ימינה — תנועה צדית' },
+      { type:'tello_back', message0:'Back 1.5m  אחורה', previousStatement:null, nextStatement:null, colour:210, tooltip:'Pitch אחורה' },
+      { type:'tello_left', message0:'Left 1.5m  שמאלה', previousStatement:null, nextStatement:null, colour:210, tooltip:'Roll שמאלה — תנועה צדית' },
+      { type:'tello_yaw_right_90', message0:'Yaw Right 90°  פנייה ימינה', previousStatement:null, nextStatement:null, colour:204, tooltip:'סבסוב 90 מעלות סביב הציר האנכי' },
+      { type:'tello_yaw_left_90', message0:'Yaw Left 90°  פנייה שמאלה', previousStatement:null, nextStatement:null, colour:204, tooltip:'סבסוב שמאלה סביב הציר האנכי' },
+      { type:'tello_yaw_right_360', message0:'Yaw Right 360°  סיבוב מלא', previousStatement:null, nextStatement:null, colour:204, tooltip:'סבסוב מלא סביב הציר האנכי' },
+      { type:'tello_hover', message0:'Hover 5 sec  ריחוף', previousStatement:null, nextStatement:null, colour:190, tooltip:'ריחוף במקום' },
       { type:'tello_land', message0:'Land  נחיתה', previousStatement:null, nextStatement:null, colour:32, tooltip:'פקודת נחיתה — סיום בטוח' },
-      { type:'tello_hover', message0:'Hover / Wait 3 sec  ריחוף', previousStatement:null, nextStatement:null, colour:190, tooltip:'ריחוף במקום' },
-      { type:'tello_yaw_left_180', message0:'Yaw Left 180°  סיבוב שמאלה חצי', previousStatement:null, nextStatement:null, colour:204, tooltip:'בלוק ניסוי לשינוי מבוקר' },
+      { type:'tello_up_100', message0:'Go Up 2.5m  עלייה לגובה', previousStatement:null, nextStatement:null, colour:260, tooltip:'עלייה בסימולטור' },
+      { type:'tello_down_50', message0:'Go Down 1.25m  ירידה', previousStatement:null, nextStatement:null, colour:260, tooltip:'ירידה בסימולטור' },
+      { type:'tello_repeat_square', message0:'Repeat 4 × Forward + Yaw 90°  ריבוע עם לולאה', previousStatement:null, nextStatement:null, colour:290, tooltip:'הכנה ללולאות ריבוע' },
+      { type:'tello_repeat_scan', message0:'Repeat Scan  סריקה חוזרת', previousStatement:null, nextStatement:null, colour:290, tooltip:'תבנית סריקה חוזרת' },
+      { type:'tello_grid_scan', message0:'Grid Scan  סריקת גריד', previousStatement:null, nextStatement:null, colour:290, tooltip:'סריקה שיטתית' },
+      { type:'tello_photo', message0:'Take Photo  צילום', previousStatement:null, nextStatement:null, colour:20, tooltip:'צילום נקודת עניין' },
+      { type:'tello_go_pad', message0:'Go to Mission Pad  גישה לפד', previousStatement:null, nextStatement:null, colour:160, tooltip:'תחנת Mission Pad' },
+      { type:'tello_abort', message0:'Abort  עצירת חירום', previousStatement:null, nextStatement:null, colour:0, tooltip:'עצירת חירום' },
       { type:'tello_safety_check', message0:'Safety Check  בדיקת בטיחות', previousStatement:null, nextStatement:null, colour:120, tooltip:'תזכורת בטיחות לפני טיסה פיזית' },
       { type:'tello_comment', message0:'Comment  הערה: %1', args0:[{type:'field_input', name:'TEXT', text:'סימולטור בלבד'}], previousStatement:null, nextStatement:null, colour:60, tooltip:'הערה לתוכנית הטיסה' }
     ]);
@@ -120,6 +148,7 @@
       $('slidesLink').href = `tello-edu-grade5-slides.html?lesson=${lesson.id}`;
       $('teacherLink').href = `tello-edu-grade5-slides.html?lesson=${lesson.id}`;
       $('tabs').innerHTML = window.TELLO_EDU_GRADE5_LESSONS.map(l => `<a class="tab ${l.id===lesson.id?'active':''}" href="tello-edu-grade5-play.html?lesson=${l.id}">${l.id}</a>`).join('');
+      if (lesson.id === 2) { document.querySelector('.zone.start').innerHTML='Start<br>חממה'; document.querySelector('.zone.air').innerHTML='Box 1.5m<br>ריבוע סריקה'; document.querySelector('.zone.land').innerHTML='Land<br>סיום'; }
       $('realUses').innerHTML = (lesson.realWorldUses || []).map(use => `<article class="real-card"><span class="icon">${esc(use.icon)}</span><b>${esc(use.title)}</b>${esc(use.text)}</article>`).join('');
       $('safety').innerHTML = (lesson.safetyRules || []).slice(0,4).map((rule,i) => `<label class="safety-item"><input type="checkbox" ${i===0?'checked':''}><span>${esc(rule)}</span></label>`).join('');
       $('vocab').innerHTML = (lesson.vocabulary || []).slice(2,7).map(([term, text]) => `<article class="vocab-card"><b>${esc(term)}</b>${esc(text)}</article>`).join('');
@@ -140,41 +169,48 @@
     }
 
     function starterXml(){
-      return `<xml><block type="tello_takeoff" x="360" y="75"><next><block type="tello_yaw_right_360"><next><block type="tello_land"></block></next></block></next></block></xml>`;
+      return '<xml><block type="tello_run_program" x="360" y="75"></block></xml>';
     }
     function resetWorkspace(){
       if(!workspace) return;
       workspace.clear();
       Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(starterXml()), workspace);
       moveDrone(steps[0]);
-      feedback('איפוס: תוכנית Hello Tello מוכנה. נסו לנתק, לחבר מחדש או להריץ.', false);
+      feedback(`אזור העבודה מוכן: התחילו מבלוק Run Mission וחברו מתחתיו את פקודות הטיסה שלכם.`, false);
       updateProgramView();
     }
+    function getRunBlock(){
+      return workspace.getTopBlocks(true).find(b => !b.isInFlyout && b.type === 'tello_run_program');
+    }
     function getMainStack(){
-      const tops = workspace.getTopBlocks(true).filter(b => !b.isInFlyout && b.type !== 'tello_comment' && b.type !== 'tello_safety_check');
-      if(!tops.length) return [];
-      let block = tops[0];
+      const runBlock = getRunBlock();
+      if(!runBlock) return [];
+      let block = runBlock.getNextBlock();
       const stack = [];
-      while(block){ stack.push(block.type); block = block.getNextBlock(); }
+      while(block){
+        if(block.type !== 'tello_comment' && block.type !== 'tello_safety_check') stack.push(block.type);
+        block = block.getNextBlock();
+      }
       return stack;
     }
     function humanStack(){
-      const map = { tello_takeoff:'Takeoff', tello_yaw_right_360:'Yaw Right 360°', tello_land:'Land', tello_hover:'Hover', tello_yaw_left_180:'Yaw Left 180°', tello_safety_check:'Safety Check', tello_comment:'Comment' };
-      return getMainStack().map(t => map[t] || t);
+      return getMainStack().map(t => typeToHuman[t] || t);
     }
+    function expectedHuman(){ return expectedTypes.map(t => typeToHuman[t] || t).join(' → '); }
     function updateProgramView(){
       if(!workspace) return;
       const stack = humanStack();
       $('blockCount').textContent = stack.length;
-      $('path').textContent = stack.length ? stack.join(' → ') : 'חברו בלוקים באזור העבודה.';
-      const ok = expectedTypes.every((t,i)=>getMainStack()[i]===t) && getMainStack().length === expectedTypes.length;
+      $('path').textContent = stack.length ? stack.join(' → ') : 'חברו פקודות מתחת ל־Run Mission.';
+      const current = getMainStack();
+      const ok = expectedTypes.every((t,i)=>current[i]===t) && current.length === expectedTypes.length;
       $('orderStatus').textContent = ok ? 'תקין' : 'לבדוק';
     }
     function checkMission(){
       const stack = getMainStack();
       const ok = expectedTypes.every((t,i)=>stack[i]===t) && stack.length === expectedTypes.length;
-      if(ok) feedback('רצף מצוין ✅ הבלוקים מחוברים כמו תוכנית DroneBlocks: Takeoff → Yaw 360° → Land.');
-      else feedback('עדיין לא מדויק. חברו בדיוק שלושה בלוקים בסדר: Takeoff → Yaw Right 360° → Land.', true);
+      if(ok) feedback(`רצף מצוין ✅ הבלוקים מחוברים כמו תוכנית DroneBlocks: ${expectedHuman()}.`);
+      else feedback('עדיין לא מדויק. בדקו שהפקודות מחוברות מתחת ל־Run Mission, שההמראה לפני התנועה, והנחיתה בסוף.', true);
       updateProgramView();
       return ok;
     }
@@ -183,7 +219,7 @@
     function runMission(){
       if(!checkMission()) return;
       let i=0; feedback('הסימולציה מתחילה: צפו בתוכנית הטיסה.');
-      const timer=setInterval(()=>{ const step=steps[i]; moveDrone(step); feedback(step.msg); i += 1; if(i >= steps.length){ clearInterval(timer); feedback('הסימולציה הסתיימה ✅ הקוד הוא תוכנית הטיסה: המראה → סיבוב → נחיתה.'); } }, 900);
+      const timer=setInterval(()=>{ const step=steps[i]; moveDrone(step); feedback(step.msg); i += 1; if(i >= steps.length){ clearInterval(timer); feedback(`הסימולציה הסתיימה ✅ הקוד הוא תוכנית הטיסה של שיעור ${lesson.id}: ${expectedHuman()}.`); } }, 900);
     }
     window.addEventListener('resize', () => workspace && Blockly.svgResize(workspace));
     init();

@@ -40,6 +40,22 @@ test('Mission Lab lesson 1 follows the user-provided research and safety brief',
   assert.ok(lesson.exercises.length >= 7);
 });
 
+test('Mission Lab lesson 2 adapts the greenhouse Box Mission as a grade 6 research challenge', () => {
+  const lesson = data.TELLO_MISSION_LAB_LESSONS[1];
+  assertIncludes(lesson.title, 'חממת העתיד');
+  assertIncludes(lesson.concept, 'Pitch');
+  assertIncludes(lesson.concept, 'Roll');
+  assertIncludes(lesson.concept, 'Yaw');
+  assertIncludes(lesson.mission, 'Strafing Box');
+  assertIncludes(lesson.mission, 'Yaw Box');
+  assert.deepEqual(Array.from(lesson.blocks), ['takeoff', 'forward', 'right', 'back', 'left', 'land']);
+  assert.equal(lesson.physicalFlightAllowed, false);
+  assert.ok(lesson.vocabulary.some(([term]) => term.includes('Loop')));
+  assert.ok(lesson.teamRoles.length === 3);
+  assert.ok(lesson.networkProcedure.some(step => step.includes('WiFi בית ספרי')));
+  assert.ok(lesson.debuggingGuide.some(([issue]) => issue.includes('שמירה')));
+});
+
 test('Mission Lab pages are linked and use Blockly connected blocks with simulator UI', () => {
   assertIncludes(homepageHtml, 'Tello Mission Lab — משימות חקר');
   assertIncludes(homepageHtml, 'href="tello-mission-lab.html"');
@@ -48,8 +64,17 @@ test('Mission Lab pages are linked and use Blockly connected blocks with simulat
   assertIncludes(courseHtml, 'js/tello-mission-lab-lessons.js');
   assertIncludes(playHtml, 'Blockly.inject');
   assertIncludes(playHtml, 'tello_hover');
+  assertIncludes(playHtml, 'tello_run_program');
+  assertIncludes(playHtml, 'Run Mission  הרץ תוכנית');
+  assertIncludes(playHtml, 'return \'<xml><block type="tello_run_program" x="360" y="75"></block></xml>\';');
+  assertIncludes(playHtml, 'getRunBlock');
+  assertIncludes(playHtml, 'tello_forward');
+  assertIncludes(playHtml, 'tello_right');
+  assertIncludes(playHtml, 'expectedTypes = (lesson.blocks || [])');
   assertIncludes(playHtml, 'System Check Alpha');
   assertIncludes(playHtml, 'סימולטור שמיים');
   assertIncludes(slidesHtml, 'System Check Alpha');
   assertIncludes(slidesHtml, 'Ingenuity');
+  assertIncludes(slidesHtml, 'missionLines');
+  assertIncludes(slidesHtml, 'Pitch, Roll ו־Yaw');
 });

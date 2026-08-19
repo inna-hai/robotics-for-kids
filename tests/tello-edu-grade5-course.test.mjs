@@ -58,6 +58,20 @@ test('Tello EDU lessons expose 90 minute flow, exercises, and drone navigation c
   }
 });
 
+test('Tello EDU lesson 2 adapts the Box Mission plan for grade 5 navigation and control', () => {
+  const lesson = data.TELLO_EDU_GRADE5_LESSONS[1];
+  assertIncludes(lesson.title, 'ניווט דו־מימדי');
+  assertIncludes(lesson.concept, 'Pitch');
+  assertIncludes(lesson.concept, 'Roll');
+  assertIncludes(lesson.concept, 'Yaw');
+  assertIncludes(lesson.mission, 'Box Mission');
+  assert.deepEqual(Array.from(lesson.blocks), ['takeoff', 'forward', 'right', 'back', 'left', 'land']);
+  assert.equal(lesson.physicalFlightAllowed, false);
+  assert.ok(lesson.vocabulary.some(([term]) => term.includes('Strafing')));
+  assert.ok(lesson.exercises.some(ex => ex.title.includes('Strafing Box')));
+  assert.ok(lesson.instructorSlides.some(slide => slide.title.includes('Yaw Box')));
+});
+
 test('Tello EDU pages are linked from catalog and expose student learning shell', () => {
   assertIncludes(homepageHtml, 'Tello EDU — ניווט ובקרה');
   assertIncludes(homepageHtml, 'href="tello-edu-grade5.html"');
@@ -71,6 +85,13 @@ test('Tello EDU pages are linked from catalog and expose student learning shell'
   assertIncludes(playHtml, 'Blockly.inject');
   assertIncludes(playHtml, 'tello_takeoff');
   assertIncludes(playHtml, 'tello_yaw_right_360');
+  assertIncludes(playHtml, 'tello_run_program');
+  assertIncludes(playHtml, 'Run Mission  הרץ תוכנית');
+  assertIncludes(playHtml, 'return \'<xml><block type="tello_run_program" x="360" y="75"></block></xml>\';');
+  assertIncludes(playHtml, 'getRunBlock');
+  assertIncludes(playHtml, 'tello_forward');
+  assertIncludes(playHtml, 'tello_right');
+  assertIncludes(playHtml, 'expectedTypes = (lesson.blocks || [])');
   assertIncludes(playHtml, 'renderer: \'zelos\'');
   assertIncludes(playHtml, 'מילון טיסה');
   assertIncludes(playHtml, 'צ׳קליסט בטיחות');
@@ -79,6 +100,8 @@ test('Tello EDU pages are linked from catalog and expose student learning shell'
   assertIncludes(playHtml, 'getTelloEduGrade5Lesson');
   assertIncludes(playHtml, 'class="platform-home-link"');
   assertIncludes(slidesHtml, 'מצגת מדריך');
+  assertIncludes(slidesHtml, 'missionLines');
+  assertIncludes(slidesHtml, 'Pitch, Roll ו־Yaw');
   assertIncludes(slidesHtml, 'רחפנים בעולם האמיתי');
   assertIncludes(slidesHtml, 'בטיחות לפני טיסה');
   assertIncludes(slidesHtml, 'Lenovo TB311FU');
