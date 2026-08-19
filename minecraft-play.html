@@ -130,7 +130,7 @@
     const PATH_TILE_HEIGHT = 14;
     const HALF_BLOCK_HEIGHT = 24;
 
-    const state = { score: 0, day: true, weather: 'sun', playerOnDiamond: true, steveX: 260, steveY: GROUND_Y, steveDepth: 0, lessonOneBlocks: 0, gatePassed: false, lastMove: null, sayTimer: null, runToken: 0 };
+    const state = { score: 0, day: true, weather: 'sun', playerOnDiamond: true, steveX: 260, steveY: GROUND_Y, steveDepth: 0, lessonOneBlocks: 0, gatePassed: false, applesLeft: 0, lastMove: null, sayTimer: null, runToken: 0 };
     let modelIndex = 0;
     let pixelIndex = 0;
     let gateMissionIndex = 0;
@@ -278,7 +278,8 @@
       document.getElementById('lessonConcept').textContent = lesson.concept;
       document.getElementById('lessonGoal').textContent = lessonTen ? lessonTen.goal : `מטרה: ${lesson.goal}`;
       const challengeText = lessonTen ? lessonTen.challenge : lesson.challenge;
-      document.getElementById('lessonChallenge').textContent = /^אתגר:/.test(challengeText) ? challengeText : `שדרוג: ${challengeText}`;
+      const challengePrefix = lesson.id === 14 ? 'הסבר' : 'שדרוג';
+      document.getElementById('lessonChallenge').textContent = /^אתגר:|^הסבר:/.test(challengeText) ? challengeText : `${challengePrefix}: ${challengeText}`;
 
       document.getElementById('drawerSuccessText').textContent = lessonTen ? lessonTen.drawerTask : lesson.success;
       const blockHelp = document.getElementById('drawerBlockHelp');
@@ -410,7 +411,7 @@
 
     function resetWorld(){
 
-      state.score = 0; state.day = true; state.weather = 'sun'; state.playerOnDiamond = lesson.id === 10 ? false : true; state.foundDiamond = false; state.hiddenDiamondIndex = null; state.hiddenDiamondSpot = null; state.pathSpots = []; state.stopProgram = false; state.steveX = lesson.id === 5 ? 235 : 260; state.steveY = GROUND_Y; state.steveDepth = 0; state.petX = null; state.petY = null; state.lessonOneBlocks = 0; state.gatePassed = false; state.behindGate = false; state.lastMove = null;
+      state.score = 0; state.day = true; state.weather = 'sun'; state.playerOnDiamond = lesson.id === 10 || lesson.id === 14 ? false : true; state.foundDiamond = false; state.hiddenDiamondIndex = null; state.hiddenDiamondSpot = null; state.pathSpots = []; state.stopProgram = false; state.steveX = lesson.id === 5 ? 235 : 260; state.steveY = GROUND_Y; state.steveDepth = 0; state.petX = null; state.petY = null; state.lessonOneBlocks = 0; state.gatePassed = false; state.behindGate = false; state.applesLeft = 0; state.lastMove = null;
       const world = document.getElementById('world');
       applyLessonWorldClass();
       setPlayerInFront(false);
@@ -452,16 +453,34 @@
       timeCaption.textContent = 'זמן';
       weatherCaption.textContent = 'מזג אוויר';
     }
-    function addBlock(cls, x, y, extraClass=''){ const el=document.createElement('div'); el.className=`block ${cls}${extraClass ? ' '+extraClass : ''}`; el.style.left=x+'px'; el.style.bottom=y+'px'; document.getElementById('world').appendChild(el); return el; }
+    function addBlock(cls, x, y, extraClass=''){
+      const el=document.createElement('div');
+      el.className=`block ${cls}${extraClass ? ' '+extraClass : ''}`;
+      el.style.left=x+'px';
+      el.style.bottom=y+'px';
+      document.getElementById('world').appendChild(el);
+      if (lesson.id === 14) registerTreasureSpotFromBlock(x, y, extraClass);
+      return el;
+    }
+    function registerTreasureSpotFromBlock(x, y, extraClass=''){
+      if (!state.pathSpots) state.pathSpots = [];
+      const isPath = /path-slab/.test(extraClass);
+      const isHalf = /half-slab/.test(extraClass);
+      state.pathSpots.push({
+        x: x + (isPath ? 23 : isHalf ? 22 : 21),
+        y: y + (isPath ? 7 : isHalf ? 12 : 21),
+        label: isPath ? 'אריח שביל' : isHalf ? 'חצי בלוק' : 'בלוק שנבנה'
+      });
+    }
     function addEmoji(cls, icon, x, y){ const el=document.createElement('div'); el.className=cls; el.textContent=icon; el.style.left=x+'px'; el.style.bottom=y+'px'; document.getElementById('world').appendChild(el); return el; }
 
     function addDiamondMarker(){ if (lesson.id === 2 || lesson.id === 3 || lesson.id === 4 || lesson.id === 5 || lesson.id === 6 || lesson.id === 8 || lesson.id === 10 || lesson.id === 12) return; addEmoji('hint','💠', 220, 88); }
     const treasureSpots = [{x:105,y:GROUND_Y,label:'תחילת השביל'}, {x:195,y:GROUND_Y,label:'ענף תחתון'}, {x:285,y:GROUND_Y,label:'ענף ישר'}, {x:375,y:GROUND_Y,label:'קצה ימני'}, {x:195,y:GROUND_Y + 42,label:'ענף עליון'}, {x:285,y:GROUND_Y + 42,label:'פנייה גבוהה'}, {x:375,y:GROUND_Y + 84,label:'קצה עליון'}];
     function drawTreasureSpots(){ /* שיעור 10: לא מציגים סימני שאלה, כדי שהאוצר יישאר חבוי באמת. */ }
     function treasureSearchSpots(){ return state.pathSpots || []; }
-    function hideDiamond(){ const spots = treasureSearchSpots(); if (!spots.length) { say('קודם בנו שביל, ואז הסתירו יהלום'); return; } state.hiddenDiamondIndex = Math.floor(Math.random() * spots.length); state.hiddenDiamondSpot = spots[state.hiddenDiamondIndex]; state.foundDiamond = false; state.playerOnDiamond = false; document.querySelectorAll('#world .hint,#world .treasure').forEach(el => el.remove()); say('היהלום הוסתר על אחד מאריחי השביל'); }
+    function hideDiamond(){ const spots = treasureSearchSpots(); if (!spots.length) { say(lesson.id === 14 ? 'קודם בנו כמה בלוקים, חצי בלוקים או אריחי שביל' : 'קודם בנו שביל, ואז הסתירו יהלום'); return; } state.hiddenDiamondIndex = Math.floor(Math.random() * spots.length); state.hiddenDiamondSpot = spots[state.hiddenDiamondIndex]; state.foundDiamond = false; state.playerOnDiamond = false; document.querySelectorAll('#world .hint,#world .treasure').forEach(el => el.remove()); say(lesson.id === 14 ? 'היהלום הוסתר באחד המקומות שבניתם' : 'היהלום הוסתר על אחד מאריחי השביל'); }
     function nearestTreasureSpot(){ let best=0, dist=Infinity; const spots = treasureSearchSpots(); spots.forEach((spot,index)=>{ const dx=(state.steveX + 20) - spot.x; const dy=state.steveY - spot.y; const d=Math.sqrt(dx*dx + dy*dy); if(d<dist){ dist=d; best=index; } }); return { index:best, distance:dist, spot:spots[best] }; }
-    function checkSpot(){ if (lesson.id !== 10) return; if (!state.hiddenDiamondSpot) hideDiamond(); if (!state.hiddenDiamondSpot) return; const found = nearestTreasureSpot(); if (!found.spot || found.distance > 34) { say('דוד רחוק ממקום חיפוש'); return; } if (found.spot === state.hiddenDiamondSpot) { state.foundDiamond = true; state.playerOnDiamond = true; addEmoji('hint','💠', found.spot.x, found.spot.y); say('מצאתי את היהלום החבוי!'); } else { state.foundDiamond = false; state.playerOnDiamond = false; say('אין כאן כלום... נסו מקום אחר'); } }
+    function checkSpot(){ if (![10,14].includes(lesson.id)) return; if (!state.hiddenDiamondSpot) hideDiamond(); if (!state.hiddenDiamondSpot) return; const found = nearestTreasureSpot(); if (!found.spot || found.distance > 34) { say('דוד רחוק ממקום חיפוש'); return; } if (found.spot === state.hiddenDiamondSpot) { state.foundDiamond = true; state.playerOnDiamond = true; addEmoji('hint','💠', found.spot.x, found.spot.y); say('מצאתי את היהלום החבוי!'); } else { state.foundDiamond = false; state.playerOnDiamond = false; say('אין כאן כלום... נסו מקום אחר'); } }
     function positionBubble(){ const bubble=document.getElementById('bubble'); const world=document.getElementById('world'); const maxBottom=Math.max(125, (world?.clientHeight || 330) - 105); bubble.style.left=Math.max(12, state.steveX - 72)+'px'; bubble.style.right='auto'; bubble.style.bottom=Math.min(state.steveY + 92, maxBottom)+'px'; }
     function setPlayerInFront(isInFront){
       const player = document.getElementById('player');
@@ -471,7 +490,7 @@
     }
     function isInsideGateSpan(x = state.steveX){ return lesson.id === 5 && x >= 335 && x <= 420; }
     function isAtGateFrontBlocker(x = state.steveX){ const center = x + 31; return lesson.id === 5 && ((center >= 292 && center <= 347) || (center >= 395 && center <= 450)); }
-    function setStevePosition(){ const player=document.getElementById('player'); const behindGate = lesson.id === 5 && state.steveDepth > 0; player.style.left=state.steveX+'px'; player.style.right='auto'; player.style.bottom=state.steveY+'px'; player.style.transform = state.steveDepth > 0 ? 'scale(.82)' : ''; player.style.opacity = state.steveDepth > 0 ? '.9' : ''; if (lesson.id === 5) player.style.zIndex = behindGate ? 1 : 4; positionBubble(); }
+    function setStevePosition(){ const player=document.getElementById('player'); const behindGate = lesson.id === 5 && state.steveDepth > 0; player.style.left=state.steveX+'px'; player.style.right='auto'; player.style.bottom=state.steveY+'px'; player.style.transform = state.steveDepth > 0 ? 'scale(.82)' : ''; player.style.opacity = state.steveDepth > 0 ? '.9' : ''; if (lesson.id === 5) player.style.zIndex = behindGate ? 1 : 4; positionBubble(); collectNearbyApples(); }
     function moveSteve(dx, dy){ const world=document.getElementById('world'); const maxX=Math.max(470, (world?.clientWidth || 640) - 92); let nextX=Math.max(24, Math.min(maxX, state.steveX + dx)); if (lesson.id === 5 && state.steveDepth === 0 && state.steveY === GROUND_Y && dx > 0 && state.steveX < 330 && nextX > 330) nextX = 330; if (lesson.id === 5 && state.steveDepth === 0 && state.steveY === GROUND_Y && dx < 0 && state.steveX > 420 && nextX < 420) nextX = 420; if (lesson.id === 5 && state.steveDepth > 0 && dx !== 0 && !state.behindGate && isInsideGateSpan(nextX)) state.behindGate = true; state.steveX=nextX; state.steveY=Math.max(GROUND_Y, Math.min(250, state.steveY + dy)); state.lastMove = dx > 0 ? 'right' : dx < 0 ? 'left' : dy > 0 ? 'up' : dy < 0 ? 'down' : null; if (lesson.id === 5 && state.steveDepth > 0 && isInsideGateSpan()) state.gatePassed = true; setStevePosition(); updateStatus(); }
     function moveDepth(delta){ if (lesson.id === 5 && delta < 0 && state.steveDepth > 0 && isAtGateFrontBlocker()) { say('אין אפשרות להתקדם, השער חוסם'); state.lastMove = 'blocked'; updateStatus(); return; } state.steveDepth=Math.max(0, Math.min(2, state.steveDepth + delta)); if (state.steveDepth === 0) state.behindGate = false; state.steveY=Math.max(GROUND_Y, Math.min(250, state.steveY + (delta > 0 ? 28 : -28))); state.lastMove = delta > 0 ? 'back' : 'forward'; setStevePosition(); updateStatus(); }
     function placeBlock(color){ const blockY = state.steveY; addBlock(color || 'grass', state.steveX + 10, blockY); if (lesson.id === 1) state.lessonOneBlocks += 1; state.lastMove = null; updateStatus(); }
@@ -518,14 +537,44 @@
     function setWeather(weather){ state.weather=weather; const world=document.getElementById('world'); world.classList.remove('rain','snow'); if(weather==='rain'||weather==='snow') world.classList.add(weather); updateStatus(); }
     function openDoor(){ document.getElementById('door').classList.add('open'); }
     function giveTreasure(){ addEmoji('treasure','🎁', 72, 172); state.score += 10; updateStatus(); }
-    function startCollectGame(){ for(let i=0;i<5;i++) addEmoji('apple','🍎', 70+i*70, 90+(i%2)*55); state.score = 5; updateStatus(); say('אספתם 5 תפוחים! ניצחון!'); }
+    function startCollectGame(){
+      document.querySelectorAll('#world .apple').forEach(el => el.remove());
+      state.score = 0;
+      state.applesLeft = 5;
+      for(let i=0;i<5;i++){
+        const apple = addEmoji('apple','🍎', 70+i*70, 90+(i%2)*55);
+        apple.dataset.collectible = 'true';
+      }
+      updateStatus();
+      say('5 תפוחים הופיעו! עכשיו אספו אותם.');
+    }
+    function collectApple(apple){
+      if (!apple || !apple.parentNode) return;
+      apple.remove();
+      state.score += 1;
+      state.applesLeft = Math.max(0, state.applesLeft - 1);
+      updateStatus();
+      say(state.applesLeft === 0 ? 'אספתם את כל התפוחים! ניצחון!' : `נשארו ${state.applesLeft} תפוחים`);
+    }
+    function collectNearbyApples(){
+      if (!state.applesLeft) return;
+      const steveCenterX = state.steveX + 31;
+      const steveCenterY = state.steveY + 46;
+      document.querySelectorAll('#world .apple[data-collectible="true"]').forEach((apple) => {
+        const appleX = parseFloat(apple.style.left || '0') + 18;
+        const appleY = parseFloat(apple.style.bottom || '0') + 18;
+        const dx = steveCenterX - appleX;
+        const dy = steveCenterY - appleY;
+        if (Math.sqrt(dx * dx + dy * dy) <= 38) collectApple(apple);
+      });
+    }
     function buildMaze(){ for(let i=0;i<6;i++){ addBlock('wood', 70+i*44, 82); if(i%2===0) addBlock('wood', 70+i*44, 124); } addBlock('gold', 340, 82); }
     function showHint(text){ addEmoji('hint','🧭', 250, 175); say(text || 'חפשו את היהלום'); }
     function spawnFunnyMob(name){ addEmoji('mob','🐌', 280, 86); say(`${name || 'מר קובייה'} אומר: בלופ בלופ!`); }
     function resetBlocks(){
       document.querySelectorAll('#world .block').forEach(el => el.remove());
 
-      if (lesson.id === 10) { state.foundDiamond = false; state.playerOnDiamond = false; state.hiddenDiamondIndex = null; state.hiddenDiamondSpot = null; state.pathSpots = []; document.querySelectorAll('#world .hint,#world .treasure').forEach(el => el.remove()); drawTreasureSpots(); }
+      if ([10,14].includes(lesson.id)) { state.foundDiamond = false; state.playerOnDiamond = false; state.hiddenDiamondIndex = null; state.hiddenDiamondSpot = null; state.pathSpots = []; document.querySelectorAll('#world .hint,#world .treasure').forEach(el => el.remove()); drawTreasureSpots(); }
       state.steveX = 260; state.steveY = GROUND_Y; state.lessonOneBlocks = 0; state.lastMove = null;
       setStevePosition(); positionBubble(); updateStatus();
     }

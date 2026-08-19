@@ -31,7 +31,7 @@
       const slides = [
         { html:`<div class="kicker">${exerciseTimeLabel(ex)} • תרגול מעשי ${ex.number}</div><h2>${esc(ex.title)}</h2><p>${esc(ex.studentPrompt)}</p><div class="note"><b>בדיקה בכיתה:</b><ul>${(ex.testSteps||[]).map(s=>`<li>${esc(s)}</li>`).join('')}</ul></div>` }
       ];
-      if ((ex.answerBlocks || []).length) {
+      if (lesson.id !== 14 && (ex.answerBlocks || []).length) {
         slides.push({ html:`<div class="kicker">פתרון למדריך • תרגול ${ex.number}</div><h2>${esc(ex.title)}</h2>${renderBlocks(ex.answerBlocks||[])}${ex.solutionNote ? `<div class="note"><b>שימו לב:</b> ${esc(ex.solutionNote.replace(/^שימו לב:\s*/, ''))}</div>` : ''}<p><b>תוצאה מצופה:</b> ${esc(ex.expectedResult)}</p><div class="note"><b>טעות נפוצה:</b> ${esc(ex.commonMistake)}</div>` });
       }
       return slides;
@@ -39,14 +39,15 @@
     function summaryPrompt(lesson) {
       const prompts = {
         10: 'מה נבנה בקוד הראשון, איך דוד חיפש בקוד השני, ומה קרה כשהיהלום נמצא.',
-        12: 'איזה מבוך בנינו, איזה מסלול דוד הלך, ואיך שינינו את הצעדים לפי המבוך.'
+        12: 'איזה מבוך בנינו, איזה מסלול דוד הלך, ואיך שינינו את הצעדים לפי המבוך.',
+        14: 'מה שם המשחק, מה המטרה, מה השחקן עושה, ומה קורה כשהוא מצליח.'
       };
       return prompts[lesson.id] || 'מה הקוד עשה לפי הסדר, ומה הייתה התוצאה.';
     }
     const slides = [
       { html:`<div class="emoji">${lesson.emoji}</div><div class="kicker">מיינקראפט קידס • שיעור ${lesson.id} • ${lesson.durationMinutes} דקות</div><h1>${esc(lesson.title)}</h1><p>${esc(lesson.story)}</p>` },
       { html:`<h2>🎯 מטרת השיעור</h2><p>${esc(lesson.goal)}</p><div class="cards"><div class="card"><b>רעיון תכנותי</b>${esc(lesson.concept)}</div><div class="card"><b>אתגר מסכם</b>${esc(lesson.challenge)}</div></div>` },
-      { html:`<h2>🧱 הבלוקים של היום</h2><div class="cards">${todayBlocks(lesson).map(b=>`<div class="card"><b>${esc(blockName(b))}</b></div>`).join('')}</div>` },
+      ...(lesson.id === 14 ? [] : [{ html:`<h2>🧱 הבלוקים של היום</h2><div class="cards">${todayBlocks(lesson).map(b=>`<div class="card"><b>${esc(blockName(b))}</b></div>`).join('')}</div>` }]),
       { html:`<h2>⏱️ מהלך שיעור 60 דקות</h2><div class="flow">${(lesson.lessonFlow||[]).map(step=>`<div class="card"><b>${step.minutes} — ${esc(step.title)}</b>${esc(step.teacher)}<br><em>${esc(step.students)}</em></div>`).join('')}</div>` },
       { html:`<h2>🧪 רצף התרגולים</h2><div class="note"><b>לפני התרגילים:</b> 0–20 דקות — סיפור פתיחה, הדגמת מדריך ובנייה יחד.</div><ul>${(lesson.programmingExercises||[]).map(ex=>`<li><b>${exerciseTimeLabel(ex)}:</b> ${esc(ex.title)}</li>`).join('')}</ul>` },
       ...exerciseSlides,
