@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <style>
 
-    *{box-sizing:border-box} :root{--grass:#55b947;--dirt:#8b5a2b;--stone:#8d99ae;--sky:#83d8ff;--dark:#173018;--green:#2f8f2f;--gold:#ffd166;--blue:#2a85c7} body{margin:0;height:100vh;overflow:hidden;font-family:Rubik,Arial,sans-serif;direction:rtl;background:linear-gradient(135deg,#7ddf64,#5ec1ff 55%,#b58cff);color:var(--dark);display:flex;flex-direction:column}.topbar{background:white;box-shadow:0 4px 20px rgba(0,0,0,.12);padding:.55rem .85rem;display:grid;grid-template-columns:minmax(190px,auto) minmax(0,1fr) auto;gap:.65rem;align-items:center;z-index:5}.brand{display:flex;align-items:center;gap:.45rem;font-weight:900;font-size:1.08rem;white-space:nowrap}.tabs{display:flex;gap:.28rem;overflow-x:auto;justify-content:flex-start;padding:.16rem .1rem;scrollbar-width:thin;scroll-padding-inline:.25rem}.tab{border:2px solid #dbeafe;background:#f8fafc;border-radius:50%;width:42px;min-width:42px;height:42px;padding:0;display:grid;place-items:center;text-decoration:none;font-weight:900;flex:0 0 auto;position:relative;box-shadow:0 4px 10px rgba(15,23,42,.06)}.tab span{font-size:.82rem;line-height:1;transform:translateY(-6px)}.tab small{position:absolute;left:50%;bottom:4px;transform:translateX(-50%);font-size:.9rem;color:#173018;line-height:1;font-weight:900}.tab b{display:none}.tab.active{background:linear-gradient(135deg,#35b24a,#2a85c7);color:white;border-color:#35b24a;box-shadow:0 8px 18px rgba(47,143,47,.28);transform:translateY(-1px)}.tab.active small{color:white}.actions{display:flex;gap:.45rem}.btn{border:0;border-radius:999px;padding:.65rem 1rem;font-family:inherit;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.35rem}.run{background:#00d084;color:#073b1a}.reset{background:#ff6b6b;color:white}.stop{background:#111827;color:white}.link{background:#eef8ec;color:#166534}.main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(360px,44%) minmax(0,1fr);gap:1rem;padding:1rem}.world-panel,.code-panel{background:rgba(255,255,255,.95);border-radius:28px;box-shadow:0 16px 42px rgba(23,48,24,.14);min-height:0;overflow:hidden;display:flex;flex-direction:column}.lesson-info{padding:.7rem 1rem;border-bottom:1px solid #e5e7eb}.lesson-info h1{font-size:1.45rem;margin:.1rem 0 .15rem}.lesson-info p{margin:.18rem 0;line-height:1.32}.chips{display:flex;gap:.45rem;flex-wrap:wrap;margin-top:.55rem}.chip{background:#f0fdf4;color:#166534;border-radius:999px;padding:.32rem .65rem;font-weight:900;font-size:.82rem}.world-wrap{padding:.65rem .8rem .8rem;display:grid;grid-template-columns:1fr;gap:.45rem;min-height:0;flex:1}.status{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem}.status div{background:#f8fafc;border-radius:13px;padding:.38rem .45rem;text-align:center;font-weight:900;font-size:.82rem;line-height:1.1}.status b{display:block;color:var(--green);font-size:1.05rem;line-height:1.05}.world{position:relative;min-height:330px;flex:1;border:8px solid #5c3b20;border-radius:18px;overflow:hidden;background:linear-gradient(#83d8ff 0 58%,#55b947 58% 100%);box-shadow:inset 0 -42px #8b5a2b}.world.night{background:linear-gradient(#172554 0 58%,#31572c 58% 100%)}.world.rain::after,.world.snow::after{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(120deg,rgba(255,255,255,.55) 2px,transparent 3px);background-size:18px 24px;opacity:.7}.world.snow::after{background-image:radial-gradient(circle,white 2px,transparent 3px);background-size:26px 26px}.player{position:absolute;width:54px;height:92px;right:54%;bottom:82px;transition:.45s;z-index:4;image-rendering:pixelated;filter:drop-shadow(0 5px 0 rgba(0,0,0,.18))}.steve-head{position:absolute;top:0;left:9px;width:36px;height:36px;background:#c68642;border:4px solid #3b2416}.steve-hair{position:absolute;top:0;left:0;right:0;height:10px;background:#3b2416}.steve-hair::before{content:'';position:absolute;right:4px;top:8px;width:8px;height:8px;background:#3b2416}.steve-eye{position:absolute;top:17px;width:6px;height:6px;background:#2b5fa8}.steve-eye.left{left:8px}.steve-eye.right{right:8px}.steve-nose{position:absolute;top:22px;left:15px;width:6px;height:5px;background:#a86a37}.steve-shirt{position:absolute;top:36px;left:7px;width:40px;height:30px;background:#00a7a7;border:4px solid #07575b}.steve-arm{position:absolute;top:40px;width:9px;height:32px;background:#c68642;border:3px solid #3b2416}.steve-arm.left{left:0}.steve-arm.right{right:0}.steve-leg{position:absolute;top:66px;width:18px;height:26px;background:#3446a8;border:3px solid #172554}.steve-leg.left{left:9px}.steve-leg.right{right:9px}.bubble{position:absolute;right:calc(54% - 30px);bottom:158px;background:white;border:3px solid #173018;border-radius:18px;padding:.7rem 1rem;font-weight:900;max-width:260px;display:none;z-index:8;box-shadow:0 8px 20px rgba(0,0,0,.15)}.bubble.show{display:block}.block{position:absolute;width:42px;height:42px;border:3px solid rgba(0,0,0,.18);box-shadow:inset 0 5px rgba(255,255,255,.22);z-index:6}.block.path-slab{width:46px;height:14px;border-width:3px;border-radius:6px 6px 4px 4px;box-shadow:inset 0 4px rgba(255,255,255,.24),0 4px 0 rgba(0,0,0,.12);z-index:5}.block.half-slab{width:44px;height:24px;border-width:3px;border-radius:5px 5px 4px 4px;box-shadow:inset 0 5px rgba(255,255,255,.24),0 5px 0 rgba(0,0,0,.12);z-index:5}.grass{background:#55b947}.wood{background:#9b6a3b}.gold{background:#ffd166}.diamond{background:#67e8f9}.red{background:#ef4444}.purple{background:#a855f7}.door{position:absolute;width:52px;height:88px;left:54px;bottom:82px;background:#8b5a2b;border:5px solid #5c3b20;border-radius:8px 8px 0 0;z-index:3}.door.open{transform:rotateY(65deg);background:#c084fc}.pet,.mob,.treasure,.apple,.hint{position:absolute;font-size:2.2rem;z-index:5;text-shadow:0 4px 8px rgba(0,0,0,.16)}.pet{z-index:7}.hint-card{background:#fff7ed;border-right:7px solid #fb923c;border-radius:16px;padding:.8rem 1rem;line-height:1.5;font-weight:800}.exercise-list{background:#f8fafc;border-radius:18px;padding:.55rem .65rem;max-height:118px;overflow:auto;border:1px solid #e5e7eb}.exercise-list h3{margin:0 0 .38rem;font-size:.92rem;color:#166534}.exercise-item{background:white;border-radius:12px;padding:.42rem .55rem;margin-bottom:.35rem;border-right:5px solid #35b24a;line-height:1.28}.exercise-item b{display:block;color:#173018;font-size:.86rem}.exercise-item span{font-size:.84rem}.exercise-item small{color:#64748b;font-weight:800;font-size:.72rem}.code-head{padding:1rem 1.1rem;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;gap:.8rem;align-items:center}.code-head h2{margin:0;font-size:1.25rem}.blockly-area{flex:1;min-height:0}#blocklyDiv{height:100%;width:100%}.toolbox-note{font-size:.9rem;color:#475569}.lesson-one-only,.lesson-model-only,.lesson-three-only,.lesson-five-only,.lesson-seven-only{display:none}.world.lesson-one .lesson-one-only,.world.lesson-two .lesson-model-only,.world.lesson-three .lesson-three-only,.world.lesson-four .lesson-model-only,.world.lesson-five .lesson-five-only,.world.lesson-six .lesson-model-only,.world.lesson-seven .lesson-seven-only,.world.lesson-eight .lesson-model-only,.world.lesson-ten .lesson-model-only{display:block}.build-model{position:absolute;right:16px;top:14px;background:rgba(255,255,255,.94);border:4px solid #7c4a21;border-radius:18px;padding:.5rem .6rem;z-index:3;box-shadow:0 10px 20px rgba(0,0,0,.16);width:156px;text-align:center}.build-model-title{font-weight:900;color:#7c2d12;margin-bottom:.25rem}.model-level{font-size:.72rem;font-weight:900;color:#166534;margin-bottom:.2rem}.model-shape{display:grid;grid-template-columns:repeat(4,24px);grid-template-rows:repeat(3,24px);justify-content:center;gap:0;margin:.18rem auto}.model-cell{width:24px;height:24px;border:3px solid rgba(0,0,0,.24);box-shadow:inset 0 4px rgba(255,255,255,.24);align-self:end}.model-cell.path-slab{height:10px;border-radius:6px 6px 4px 4px}.model-cell.half-slab{height:15px;border-radius:5px 5px 4px 4px}.model-cell.empty{border:0;box-shadow:none;background:transparent}.model-note{margin-top:.28rem;font-size:.68rem;font-weight:900;color:#334155;line-height:1.18}.model-pager{display:flex;align-items:center;justify-content:center;gap:.25rem;margin-top:.35rem}.model-pager button{border:0;border-radius:999px;background:#e0f2fe;color:#075985;font-family:inherit;font-weight:900;cursor:pointer;padding:.24rem .5rem;min-width:28px}.model-pager button.active{background:#35b24a;color:white}.model-counter{font-size:.72rem;font-weight:900;color:#475569}.world.lesson-three .build-model{width:230px}.world.lesson-three .model-shape{grid-template-columns:repeat(7,20px);grid-template-rows:repeat(5,20px)}.world.lesson-three .model-cell{width:20px;height:20px;border-width:2px}.target-sign{position:absolute;left:190px;bottom:182px;background:#fff7ed;border:4px solid #7c4a21;border-radius:16px;padding:.55rem .75rem;font-weight:900;text-align:center;z-index:2;box-shadow:0 10px 18px rgba(0,0,0,.16)}.target-sign::after{content:'';position:absolute;width:10px;height:38px;background:#7c4a21;left:50%;transform:translateX(-50%);bottom:-40px}.gate-scene{position:absolute;left:292px;bottom:82px;width:158px;height:166px;z-index:2;pointer-events:none}.gate-scene::before{content:'';position:absolute;inset:18px 18px 0;border:18px solid #7c4a21;border-bottom:0;border-radius:24px 24px 4px 4px;background:linear-gradient(180deg,rgba(168,85,247,.22),rgba(103,232,249,.18));box-shadow:inset 0 0 0 6px rgba(255,209,102,.32),0 12px 0 rgba(92,59,32,.3)}.gate-scene::after{content:'1 שער';position:absolute;top:-16px;left:50%;transform:translateX(-50%);background:#fff7ed;border:2px solid #7c4a21;border-radius:999px;padding:.08rem .42rem;font-weight:900;font-size:.7rem;color:#7c2d12;white-space:nowrap}.gate-opening{position:absolute;left:55px;right:55px;bottom:0;height:94px;background:linear-gradient(180deg,rgba(255,255,255,.34),rgba(255,255,255,.08));border-radius:20px 20px 0 0}.gate-missions{width:188px;right:16px;top:14px;text-align:right}.gate-missions .build-model-title{text-align:center}.gate-missions .model-pager button{min-width:24px;padding:.2rem .42rem}.lesson-missions{width:218px;right:16px;top:14px;text-align:right}.lesson-missions .build-model-title{text-align:center}.lesson-missions .model-pager{flex-wrap:wrap}.lesson-missions .model-pager button{min-width:24px;padding:.2rem .42rem}.gate-object{position:absolute;z-index:2;text-align:center;filter:drop-shadow(0 5px 8px rgba(0,0,0,.18));pointer-events:none}.gate-object .icon{display:block;font-size:1.45rem;line-height:1}.gate-object .label{display:none}.gate-magic{left:475px;bottom:70px}.player-name{display:none;position:absolute;left:50%;transform:translateX(-50%);top:45px;color:white;font-weight:900;font-size:.62rem;line-height:1;text-shadow:0 1px 0 #07575b,0 -1px 0 #07575b,1px 0 0 #07575b,-1px 0 0 #07575b;z-index:6;pointer-events:none}.player-name{display:block}.player{width:62px;height:100px;filter:drop-shadow(0 7px 4px rgba(0,0,0,.2))}.steve-head{left:8px;width:46px;height:44px;border-radius:4px;background:#f4b17c;border:4px solid #5b321c;box-shadow:inset 0 4px rgba(255,255,255,.18)}.steve-hair{height:14px;background:#4a2a18;border-radius:0}.steve-hair::before{right:4px;top:10px;width:11px;height:8px;border-radius:0;background:#4a2a18;box-shadow:-18px 0 0 #4a2a18}.steve-head::after{content:'';position:absolute;left:15px;top:29px;width:14px;height:7px;border-bottom:3px solid #7a3f2a;border-radius:0 0 10px 10px}.steve-eye{top:19px;width:7px;height:7px;border-radius:2px;background:#1f4f8f;box-shadow:inset 2px 1px 0 rgba(255,255,255,.65)}.steve-eye.left{left:10px}.steve-eye.right{right:10px}.steve-nose{top:24px;left:19px;width:6px;height:5px;border-radius:1px;background:#d18b5a}.steve-shirt{top:44px;left:8px;width:46px;height:33px;border-radius:3px;background:linear-gradient(180deg,#35d0a0,#0891b2);border:4px solid #07575b;box-shadow:inset 0 5px rgba(255,255,255,.16)}.steve-arm{top:47px;width:12px;height:32px;border-radius:2px;background:#f4b17c;border:3px solid #5b321c;z-index:1}.steve-arm.left{left:0}.steve-arm.right{right:0}.steve-leg{top:75px;width:20px;height:25px;border-radius:0 0 3px 3px;background:#2563eb;border:3px solid #172554}.steve-leg.left{left:10px}.steve-leg.right{right:10px}.player-name{top:56px;font-size:.58rem;text-shadow:0 1px 0 #04706f,0 -1px 0 #04706f,1px 0 0 #04706f,-1px 0 0 #04706f}.world.lesson-one .target-sign{position:absolute;left:190px;bottom:182px;background:#fff7ed;border:4px solid #7c4a21;border-radius:16px;padding:.55rem .75rem;font-weight:900;text-align:center;z-index:2;box-shadow:0 10px 18px rgba(0,0,0,.16)}.world.lesson-two .door,.world.lesson-three .door,.world.lesson-four .door,.world.lesson-five .door,.world.lesson-six .door,.world.lesson-eight .door{display:none}.target-sign::after{content:'';position:absolute;width:10px;height:38px;background:#7c4a21;left:50%;transform:translateX(-50%);bottom:-40px}.player-name{display:block}.world.lesson-one .player{width:62px;height:100px;filter:drop-shadow(0 7px 4px rgba(0,0,0,.2))}.world.lesson-one .steve-head{left:8px;width:46px;height:44px;border-radius:4px;background:#f4b17c;border:4px solid #5b321c;box-shadow:inset 0 4px rgba(255,255,255,.18)}.world.lesson-one .steve-hair{height:14px;background:#4a2a18;border-radius:0}.world.lesson-one .steve-hair::before{right:4px;top:10px;width:11px;height:8px;border-radius:0;background:#4a2a18;box-shadow:-18px 0 0 #4a2a18}.world.lesson-one .steve-head::after{content:'';position:absolute;left:15px;top:29px;width:14px;height:7px;border-bottom:3px solid #7a3f2a;border-radius:0 0 10px 10px}.world.lesson-one .steve-eye{top:19px;width:7px;height:7px;border-radius:2px;background:#1f4f8f;box-shadow:inset 2px 1px 0 rgba(255,255,255,.65)}.world.lesson-one .steve-nose{top:24px;left:19px;width:6px;height:5px;border-radius:1px;background:#d18b5a}.world.lesson-one .steve-shirt{top:44px;left:8px;width:46px;height:33px;border-radius:3px;background:linear-gradient(180deg,#35d0a0,#0891b2);border:4px solid #07575b;box-shadow:inset 0 5px rgba(255,255,255,.16)}.world.lesson-one .steve-arm{top:47px;width:12px;height:32px;border-radius:2px;background:#f4b17c;border:3px solid #5b321c;z-index:1}.world.lesson-one .steve-arm.left{left:0}.world.lesson-one .steve-arm.right{right:0}.world.lesson-one .steve-leg{top:75px;width:20px;height:25px;border-radius:0 0 3px 3px;background:#2563eb;border:3px solid #172554}.world.lesson-one .steve-leg.left{left:10px}.world.lesson-one .steve-leg.right{right:10px}.world.lesson-one .player-name{top:56px;font-size:.58rem;text-shadow:0 1px 0 #04706f,0 -1px 0 #04706f,1px 0 0 #04706f,-1px 0 0 #04706f}.mobile-warning{display:none;background:#fff7ed;padding:.8rem 1rem;border-bottom:1px solid #fed7aa;font-weight:800}@media(max-width:900px){body{height:auto;min-height:100vh;overflow:auto;overflow-x:hidden}.topbar{grid-template-columns:1fr}.tabs{justify-content:flex-start;padding-bottom:.25rem}.tab{min-width:44px}.actions{justify-content:stretch}.actions .btn,.actions a{flex:1}.main{display:flex;flex-direction:column;padding:.75rem}.code-panel{order:1;min-height:560px}.world-panel{order:2}.world{min-height:300px}.world-panel,.code-panel{border-radius:20px}.mobile-warning{display:block}.brand{white-space:normal}.status{grid-template-columns:1fr 1fr 1fr}}.instructions-toggle{background:#fff7ed;color:#9a3412}.drawer-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.38);z-index:30;display:none}.drawer-backdrop.open{display:block}.instructions-drawer{position:absolute;top:0;right:0;bottom:0;width:min(430px,92vw);background:#fff;box-shadow:-18px 0 45px rgba(15,23,42,.24);padding:1rem;overflow:auto}.drawer-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;border-bottom:1px solid #e5e7eb;padding-bottom:.75rem;margin-bottom:.85rem}.drawer-head h2{margin:0;font-size:1.25rem}.drawer-close{border:0;background:#fee2e2;color:#991b1b;border-radius:999px;width:38px;height:38px;font-weight:900;font-size:1.15rem;cursor:pointer}.drawer-intro{background:#f0fdf4;border-right:6px solid #35b24a;border-radius:16px;padding:.75rem .85rem;line-height:1.45;font-weight:800;margin-bottom:.85rem}.drawer-exercises{display:grid;gap:.65rem}.drawer-exercises .exercise-item{border-right-color:#fb923c;box-shadow:0 6px 16px rgba(15,23,42,.08)}@media(max-width:520px){.main{padding:.55rem}.status{grid-template-columns:repeat(3,1fr);gap:.35rem}.status div{padding:.5rem .25rem;font-size:.78rem}.status b{font-size:1rem}.lesson-info{padding:.85rem}.lesson-info h1{font-size:1.22rem}.lesson-info p{font-size:.95rem}.chips{gap:.32rem}.chip{font-size:.72rem;padding:.28rem .5rem}.btn{padding:.55rem .75rem;font-size:.9rem}.world{min-height:235px;border-width:6px}.code-panel{min-height:520px}.world-wrap{padding:.75rem;gap:.55rem}.player{transform:scale(.85);transform-origin:bottom center}.door{transform:scale(.86);transform-origin:bottom left}.door.open{transform:scale(.86) rotateY(65deg)}}
+    *{box-sizing:border-box} :root{--grass:#55b947;--dirt:#8b5a2b;--stone:#8d99ae;--sky:#83d8ff;--dark:#173018;--green:#2f8f2f;--gold:#ffd166;--blue:#2a85c7} body{margin:0;height:100vh;overflow:hidden;font-family:Rubik,Arial,sans-serif;direction:rtl;background:linear-gradient(135deg,#7ddf64,#5ec1ff 55%,#b58cff);color:var(--dark);display:flex;flex-direction:column}.topbar{background:white;box-shadow:0 4px 20px rgba(0,0,0,.12);padding:.55rem .85rem;display:grid;grid-template-columns:minmax(190px,auto) minmax(0,1fr) auto;gap:.65rem;align-items:center;z-index:5}.brand{display:flex;align-items:center;gap:.45rem;font-weight:900;font-size:1.08rem;white-space:nowrap}.tabs{display:flex;gap:.28rem;overflow-x:auto;justify-content:flex-start;padding:.16rem .1rem;scrollbar-width:thin;scroll-padding-inline:.25rem}.tab{border:2px solid #dbeafe;background:#f8fafc;border-radius:50%;width:42px;min-width:42px;height:42px;padding:0;display:grid;place-items:center;text-decoration:none;font-weight:900;flex:0 0 auto;position:relative;box-shadow:0 4px 10px rgba(15,23,42,.06)}.tab span{font-size:.82rem;line-height:1;transform:translateY(-6px)}.tab small{position:absolute;left:50%;bottom:4px;transform:translateX(-50%);font-size:.9rem;color:#173018;line-height:1;font-weight:900}.tab b{display:none}.tab.active{background:linear-gradient(135deg,#35b24a,#2a85c7);color:white;border-color:#35b24a;box-shadow:0 8px 18px rgba(47,143,47,.28);transform:translateY(-1px)}.tab.active small{color:white}.actions{display:flex;gap:.45rem}.btn{border:0;border-radius:999px;padding:.65rem 1rem;font-family:inherit;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.35rem}.run{background:#00d084;color:#073b1a}.reset{background:#ff6b6b;color:white}.stop{background:#111827;color:white}.link{background:#eef8ec;color:#166534}.main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(360px,44%) minmax(0,1fr);gap:1rem;padding:1rem}.world-panel,.code-panel{background:rgba(255,255,255,.95);border-radius:28px;box-shadow:0 16px 42px rgba(23,48,24,.14);min-height:0;overflow:hidden;display:flex;flex-direction:column}.lesson-info{padding:.7rem 1rem;border-bottom:1px solid #e5e7eb}.lesson-info h1{font-size:1.45rem;margin:.1rem 0 .15rem}.lesson-info p{margin:.18rem 0;line-height:1.32}.chips{display:flex;gap:.45rem;flex-wrap:wrap;margin-top:.55rem}.chip{background:#f0fdf4;color:#166534;border-radius:999px;padding:.32rem .65rem;font-weight:900;font-size:.82rem}.world-wrap{padding:.65rem .8rem .8rem;display:grid;grid-template-columns:1fr;gap:.45rem;min-height:0;flex:1}.status{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem}.status div{background:#f8fafc;border-radius:13px;padding:.38rem .45rem;text-align:center;font-weight:900;font-size:.82rem;line-height:1.1}.status b{display:block;color:var(--green);font-size:1.05rem;line-height:1.05}.world{position:relative;min-height:330px;flex:1;border:8px solid #5c3b20;border-radius:18px;overflow:hidden;background:linear-gradient(#83d8ff 0 58%,#55b947 58% 100%);box-shadow:inset 0 -42px #8b5a2b}.world.night{background:linear-gradient(#172554 0 58%,#31572c 58% 100%)}.world.rain::after,.world.snow::after{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(120deg,rgba(255,255,255,.55) 2px,transparent 3px);background-size:18px 24px;opacity:.7}.world.snow::after{background-image:radial-gradient(circle,white 2px,transparent 3px);background-size:26px 26px}.player{position:absolute;width:54px;height:92px;right:54%;bottom:82px;transition:.45s;z-index:4;image-rendering:pixelated;filter:drop-shadow(0 5px 0 rgba(0,0,0,.18))}.steve-head{position:absolute;top:0;left:9px;width:36px;height:36px;background:#c68642;border:4px solid #3b2416}.steve-hair{position:absolute;top:0;left:0;right:0;height:10px;background:#3b2416}.steve-hair::before{content:'';position:absolute;right:4px;top:8px;width:8px;height:8px;background:#3b2416}.steve-eye{position:absolute;top:17px;width:6px;height:6px;background:#2b5fa8}.steve-eye.left{left:8px}.steve-eye.right{right:8px}.steve-nose{position:absolute;top:22px;left:15px;width:6px;height:5px;background:#a86a37}.steve-shirt{position:absolute;top:36px;left:7px;width:40px;height:30px;background:#00a7a7;border:4px solid #07575b}.steve-arm{position:absolute;top:40px;width:9px;height:32px;background:#c68642;border:3px solid #3b2416}.steve-arm.left{left:0}.steve-arm.right{right:0}.steve-leg{position:absolute;top:66px;width:18px;height:26px;background:#3446a8;border:3px solid #172554}.steve-leg.left{left:9px}.steve-leg.right{right:9px}.bubble{position:absolute;right:calc(54% - 30px);bottom:158px;background:white;border:3px solid #173018;border-radius:18px;padding:.7rem 1rem;font-weight:900;max-width:260px;display:none;z-index:8;box-shadow:0 8px 20px rgba(0,0,0,.15)}.bubble.show{display:block}.block{position:absolute;width:42px;height:42px;border:3px solid rgba(0,0,0,.18);box-shadow:inset 0 5px rgba(255,255,255,.22);z-index:6}.block.path-slab{width:46px;height:14px;border-width:3px;border-radius:6px 6px 4px 4px;box-shadow:inset 0 4px rgba(255,255,255,.24),0 4px 0 rgba(0,0,0,.12);z-index:5}.block.half-slab{width:44px;height:24px;border-width:3px;border-radius:5px 5px 4px 4px;box-shadow:inset 0 5px rgba(255,255,255,.24),0 5px 0 rgba(0,0,0,.12);z-index:5}.grass{background:#55b947}.wood{background:#9b6a3b}.gold{background:#ffd166}.diamond{background:#67e8f9}.red{background:#ef4444}.purple{background:#a855f7}.door{position:absolute;width:52px;height:88px;left:54px;bottom:82px;background:#8b5a2b;border:5px solid #5c3b20;border-radius:8px 8px 0 0;z-index:3}.door.open{transform:rotateY(65deg);background:#c084fc}.pet,.mob,.treasure,.apple,.hint{position:absolute;font-size:2.2rem;z-index:5;text-shadow:0 4px 8px rgba(0,0,0,.16)}.pet{z-index:7}.hint-card{background:#fff7ed;border-right:7px solid #fb923c;border-radius:16px;padding:.8rem 1rem;line-height:1.5;font-weight:800}.exercise-list{background:#f8fafc;border-radius:18px;padding:.55rem .65rem;max-height:118px;overflow:auto;border:1px solid #e5e7eb}.exercise-list h3{margin:0 0 .38rem;font-size:.92rem;color:#166534}.exercise-item{background:white;border-radius:12px;padding:.42rem .55rem;margin-bottom:.35rem;border-right:5px solid #35b24a;line-height:1.28}.exercise-item b{display:block;color:#173018;font-size:.86rem}.exercise-item span{font-size:.84rem}.exercise-item small{color:#64748b;font-weight:800;font-size:.72rem}.code-head{padding:1rem 1.1rem;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;gap:.8rem;align-items:center}.code-head h2{margin:0;font-size:1.25rem}.blockly-area{flex:1;min-height:0}#blocklyDiv{height:100%;width:100%}.toolbox-note{font-size:.9rem;color:#475569}.lesson-one-only,.lesson-model-only,.lesson-three-only,.lesson-five-only,.lesson-seven-only{display:none}.world.lesson-one .lesson-one-only,.world.lesson-two .lesson-model-only,.world.lesson-three .lesson-three-only,.world.lesson-four .lesson-model-only,.world.lesson-five .lesson-five-only,.world.lesson-six .lesson-model-only,.world.lesson-seven .lesson-seven-only,.world.lesson-eight .lesson-model-only,.world.lesson-ten .lesson-model-only,.world.lesson-twelve .lesson-model-only{display:block}.build-model{position:absolute;right:16px;top:14px;background:rgba(255,255,255,.94);border:4px solid #7c4a21;border-radius:18px;padding:.5rem .6rem;z-index:3;box-shadow:0 10px 20px rgba(0,0,0,.16);width:156px;text-align:center}.build-model-title{font-weight:900;color:#7c2d12;margin-bottom:.25rem}.model-level{font-size:.72rem;font-weight:900;color:#166534;margin-bottom:.2rem}.model-shape{display:grid;grid-template-columns:repeat(4,24px);grid-template-rows:repeat(3,24px);justify-content:center;gap:0;margin:.18rem auto}.model-cell{width:24px;height:24px;border:3px solid rgba(0,0,0,.24);box-shadow:inset 0 4px rgba(255,255,255,.24);align-self:end}.model-cell.path-slab{height:10px;border-radius:6px 6px 4px 4px}.model-cell.half-slab{height:15px;border-radius:5px 5px 4px 4px}.model-cell.empty{border:0;box-shadow:none;background:transparent}.model-note{margin-top:.28rem;font-size:.68rem;font-weight:900;color:#334155;line-height:1.18}.model-pager{display:flex;align-items:center;justify-content:center;gap:.25rem;margin-top:.35rem}.model-pager button{border:0;border-radius:999px;background:#e0f2fe;color:#075985;font-family:inherit;font-weight:900;cursor:pointer;padding:.24rem .5rem;min-width:28px}.model-pager button.active{background:#35b24a;color:white}.model-counter{font-size:.72rem;font-weight:900;color:#475569}.world.lesson-three .build-model{width:230px}.world.lesson-three .model-shape{grid-template-columns:repeat(7,20px);grid-template-rows:repeat(5,20px)}.world.lesson-three .model-cell{width:20px;height:20px;border-width:2px}.target-sign{position:absolute;left:190px;bottom:182px;background:#fff7ed;border:4px solid #7c4a21;border-radius:16px;padding:.55rem .75rem;font-weight:900;text-align:center;z-index:2;box-shadow:0 10px 18px rgba(0,0,0,.16)}.target-sign::after{content:'';position:absolute;width:10px;height:38px;background:#7c4a21;left:50%;transform:translateX(-50%);bottom:-40px}.gate-scene{position:absolute;left:292px;bottom:82px;width:158px;height:166px;z-index:2;pointer-events:none}.gate-scene::before{content:'';position:absolute;inset:18px 18px 0;border:18px solid #7c4a21;border-bottom:0;border-radius:24px 24px 4px 4px;background:linear-gradient(180deg,rgba(168,85,247,.22),rgba(103,232,249,.18));box-shadow:inset 0 0 0 6px rgba(255,209,102,.32),0 12px 0 rgba(92,59,32,.3)}.gate-scene::after{content:'1 שער';position:absolute;top:-16px;left:50%;transform:translateX(-50%);background:#fff7ed;border:2px solid #7c4a21;border-radius:999px;padding:.08rem .42rem;font-weight:900;font-size:.7rem;color:#7c2d12;white-space:nowrap}.gate-opening{position:absolute;left:55px;right:55px;bottom:0;height:94px;background:linear-gradient(180deg,rgba(255,255,255,.34),rgba(255,255,255,.08));border-radius:20px 20px 0 0}.gate-missions{width:188px;right:16px;top:14px;text-align:right}.gate-missions .build-model-title{text-align:center}.gate-missions .model-pager button{min-width:24px;padding:.2rem .42rem}.lesson-missions{width:218px;right:16px;top:14px;text-align:right}.lesson-missions .build-model-title{text-align:center}.lesson-missions .model-pager{flex-wrap:wrap}.lesson-missions .model-pager button{min-width:24px;padding:.2rem .42rem}.gate-object{position:absolute;z-index:2;text-align:center;filter:drop-shadow(0 5px 8px rgba(0,0,0,.18));pointer-events:none}.gate-object .icon{display:block;font-size:1.45rem;line-height:1}.gate-object .label{display:none}.gate-magic{left:475px;bottom:70px}.player-name{display:none;position:absolute;left:50%;transform:translateX(-50%);top:45px;color:white;font-weight:900;font-size:.62rem;line-height:1;text-shadow:0 1px 0 #07575b,0 -1px 0 #07575b,1px 0 0 #07575b,-1px 0 0 #07575b;z-index:6;pointer-events:none}.player-name{display:block}.player{width:62px;height:100px;filter:drop-shadow(0 7px 4px rgba(0,0,0,.2))}.steve-head{left:8px;width:46px;height:44px;border-radius:4px;background:#f4b17c;border:4px solid #5b321c;box-shadow:inset 0 4px rgba(255,255,255,.18)}.steve-hair{height:14px;background:#4a2a18;border-radius:0}.steve-hair::before{right:4px;top:10px;width:11px;height:8px;border-radius:0;background:#4a2a18;box-shadow:-18px 0 0 #4a2a18}.steve-head::after{content:'';position:absolute;left:15px;top:29px;width:14px;height:7px;border-bottom:3px solid #7a3f2a;border-radius:0 0 10px 10px}.steve-eye{top:19px;width:7px;height:7px;border-radius:2px;background:#1f4f8f;box-shadow:inset 2px 1px 0 rgba(255,255,255,.65)}.steve-eye.left{left:10px}.steve-eye.right{right:10px}.steve-nose{top:24px;left:19px;width:6px;height:5px;border-radius:1px;background:#d18b5a}.steve-shirt{top:44px;left:8px;width:46px;height:33px;border-radius:3px;background:linear-gradient(180deg,#35d0a0,#0891b2);border:4px solid #07575b;box-shadow:inset 0 5px rgba(255,255,255,.16)}.steve-arm{top:47px;width:12px;height:32px;border-radius:2px;background:#f4b17c;border:3px solid #5b321c;z-index:1}.steve-arm.left{left:0}.steve-arm.right{right:0}.steve-leg{top:75px;width:20px;height:25px;border-radius:0 0 3px 3px;background:#2563eb;border:3px solid #172554}.steve-leg.left{left:10px}.steve-leg.right{right:10px}.player-name{top:56px;font-size:.58rem;text-shadow:0 1px 0 #04706f,0 -1px 0 #04706f,1px 0 0 #04706f,-1px 0 0 #04706f}.world.lesson-one .target-sign{position:absolute;left:190px;bottom:182px;background:#fff7ed;border:4px solid #7c4a21;border-radius:16px;padding:.55rem .75rem;font-weight:900;text-align:center;z-index:2;box-shadow:0 10px 18px rgba(0,0,0,.16)}.world.lesson-two .door,.world.lesson-three .door,.world.lesson-four .door,.world.lesson-five .door,.world.lesson-six .door,.world.lesson-eight .door{display:none}.target-sign::after{content:'';position:absolute;width:10px;height:38px;background:#7c4a21;left:50%;transform:translateX(-50%);bottom:-40px}.player-name{display:block}.world.lesson-one .player{width:62px;height:100px;filter:drop-shadow(0 7px 4px rgba(0,0,0,.2))}.world.lesson-one .steve-head{left:8px;width:46px;height:44px;border-radius:4px;background:#f4b17c;border:4px solid #5b321c;box-shadow:inset 0 4px rgba(255,255,255,.18)}.world.lesson-one .steve-hair{height:14px;background:#4a2a18;border-radius:0}.world.lesson-one .steve-hair::before{right:4px;top:10px;width:11px;height:8px;border-radius:0;background:#4a2a18;box-shadow:-18px 0 0 #4a2a18}.world.lesson-one .steve-head::after{content:'';position:absolute;left:15px;top:29px;width:14px;height:7px;border-bottom:3px solid #7a3f2a;border-radius:0 0 10px 10px}.world.lesson-one .steve-eye{top:19px;width:7px;height:7px;border-radius:2px;background:#1f4f8f;box-shadow:inset 2px 1px 0 rgba(255,255,255,.65)}.world.lesson-one .steve-nose{top:24px;left:19px;width:6px;height:5px;border-radius:1px;background:#d18b5a}.world.lesson-one .steve-shirt{top:44px;left:8px;width:46px;height:33px;border-radius:3px;background:linear-gradient(180deg,#35d0a0,#0891b2);border:4px solid #07575b;box-shadow:inset 0 5px rgba(255,255,255,.16)}.world.lesson-one .steve-arm{top:47px;width:12px;height:32px;border-radius:2px;background:#f4b17c;border:3px solid #5b321c;z-index:1}.world.lesson-one .steve-arm.left{left:0}.world.lesson-one .steve-arm.right{right:0}.world.lesson-one .steve-leg{top:75px;width:20px;height:25px;border-radius:0 0 3px 3px;background:#2563eb;border:3px solid #172554}.world.lesson-one .steve-leg.left{left:10px}.world.lesson-one .steve-leg.right{right:10px}.world.lesson-one .player-name{top:56px;font-size:.58rem;text-shadow:0 1px 0 #04706f,0 -1px 0 #04706f,1px 0 0 #04706f,-1px 0 0 #04706f}.mobile-warning{display:none;background:#fff7ed;padding:.8rem 1rem;border-bottom:1px solid #fed7aa;font-weight:800}@media(max-width:900px){body{height:auto;min-height:100vh;overflow:auto;overflow-x:hidden}.topbar{grid-template-columns:1fr}.tabs{justify-content:flex-start;padding-bottom:.25rem}.tab{min-width:44px}.actions{justify-content:stretch}.actions .btn,.actions a{flex:1}.main{display:flex;flex-direction:column;padding:.75rem}.code-panel{order:1;min-height:560px}.world-panel{order:2}.world{min-height:300px}.world-panel,.code-panel{border-radius:20px}.mobile-warning{display:block}.brand{white-space:normal}.status{grid-template-columns:1fr 1fr 1fr}}.instructions-toggle{background:#fff7ed;color:#9a3412}.drawer-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.38);z-index:30;display:none}.drawer-backdrop.open{display:block}.instructions-drawer{position:absolute;top:0;right:0;bottom:0;width:min(430px,92vw);background:#fff;box-shadow:-18px 0 45px rgba(15,23,42,.24);padding:1rem;overflow:auto}.drawer-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;border-bottom:1px solid #e5e7eb;padding-bottom:.75rem;margin-bottom:.85rem}.drawer-head h2{margin:0;font-size:1.25rem}.drawer-close{border:0;background:#fee2e2;color:#991b1b;border-radius:999px;width:38px;height:38px;font-weight:900;font-size:1.15rem;cursor:pointer}.drawer-intro{background:#f0fdf4;border-right:6px solid #35b24a;border-radius:16px;padding:.75rem .85rem;line-height:1.45;font-weight:800;margin-bottom:.85rem}.drawer-exercises{display:grid;gap:.65rem}.drawer-exercises .exercise-item{border-right-color:#fb923c;box-shadow:0 6px 16px rgba(15,23,42,.08)}@media(max-width:520px){.main{padding:.55rem}.status{grid-template-columns:repeat(3,1fr);gap:.35rem}.status div{padding:.5rem .25rem;font-size:.78rem}.status b{font-size:1rem}.lesson-info{padding:.85rem}.lesson-info h1{font-size:1.22rem}.lesson-info p{font-size:.95rem}.chips{gap:.32rem}.chip{font-size:.72rem;padding:.28rem .5rem}.btn{padding:.55rem .75rem;font-size:.9rem}.world{min-height:235px;border-width:6px}.code-panel{min-height:520px}.world-wrap{padding:.75rem;gap:.55rem}.player{transform:scale(.85);transform-origin:bottom center}.door{transform:scale(.86);transform-origin:bottom left}.door.open{transform:scale(.86) rotateY(65deg)}}
   </style>
 </head>
 <body>
@@ -33,6 +33,7 @@
         <button type="button" class="drawer-close" onclick="closeInstructions()" aria-label="סגור הוראות">×</button>
       </div>
       <div class="drawer-intro"><b>משימה:</b> <span id="drawerSuccessText"></span></div>
+      <div class="drawer-intro" id="drawerBlockHelp" hidden></div>
       <div class="drawer-exercises" id="drawerExerciseList"></div>
     </aside>
   </div>
@@ -43,6 +44,7 @@
         <div class="chip" id="lessonConcept"></div>
         <h1 id="lessonTitle"></h1>
         <p id="lessonStory"></p>
+        <p id="lessonBlockSummary" hidden></p>
         <div class="chips"><span class="chip" id="lessonGoal"></span><span class="chip" id="lessonChallenge"></span></div>
       </div>
       <div class="world-wrap">
@@ -118,7 +120,7 @@
   </main>
 
 
-  <script src="js/minecraft-lessons.js?v=20260818-lesson7-shelter-wording"></script>
+  <script src="js/minecraft-lessons.js?v=20260819-move-direction-merge"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const lesson = window.getMinecraftLesson(params.get('lesson'));
@@ -128,7 +130,7 @@
     const PATH_TILE_HEIGHT = 14;
     const HALF_BLOCK_HEIGHT = 24;
 
-    const state = { score: 0, day: true, weather: 'sun', playerOnDiamond: true, steveX: 260, steveY: GROUND_Y, steveDepth: 0, lessonOneBlocks: 0, gatePassed: false, lastMove: null, sayTimer: null, runToken: 0 };
+    const state = { score: 0, day: true, weather: 'sun', playerOnDiamond: true, steveX: 260, steveY: GROUND_Y, steveDepth: 0, lessonOneBlocks: 0, gatePassed: false, applesLeft: 0, lastMove: null, sayTimer: null, runToken: 0 };
     let modelIndex = 0;
     let pixelIndex = 0;
     let gateMissionIndex = 0;
@@ -158,6 +160,11 @@
         { level:'שביל מתפצל', note:'דגם השראה: שביל ראשי שמתפצל לשני כיוונים', cols:7, rows:5, cells:['empty','empty','grass path-slab','empty','empty','empty','grass path-slab','empty','empty','grass path-slab','empty','empty','grass path-slab','empty','grass path-slab','grass path-slab','grass path-slab','grass path-slab','grass path-slab','empty','empty','empty','empty','grass path-slab','empty','empty','grass path-slab','empty','empty','empty','grass path-slab','empty','empty','empty','grass path-slab'] },
         { level:'שביל שלושה ענפים', note:'דגם השראה מתקדם: באמצע בוחרים ענף עליון, ישר או תחתון', cols:7, rows:5, cells:['empty','empty','empty','grass path-slab','empty','empty','grass path-slab','empty','empty','empty','grass path-slab','empty','grass path-slab','empty','grass path-slab','grass path-slab','grass path-slab','grass path-slab','grass path-slab','grass path-slab','grass path-slab','empty','empty','empty','grass path-slab','empty','grass path-slab','empty','empty','empty','empty','grass path-slab','empty','empty','grass path-slab'] },
         { level:'מבוך שבילים קטן', note:'דגם השראה: כמה פניות קצרות, בלי סימון איפה היהלום', cols:7, rows:5, cells:['grass path-slab','grass path-slab','grass path-slab','empty','empty','grass path-slab','grass path-slab','empty','empty','grass path-slab','empty','empty','grass path-slab','empty','grass path-slab','grass path-slab','grass path-slab','grass path-slab','grass path-slab','grass path-slab','empty','grass path-slab','empty','empty','empty','empty','grass path-slab','empty','grass path-slab','grass path-slab','grass path-slab','empty','empty','grass path-slab','grass path-slab'] }
+      ],
+      12: [
+        { level:'מבוך קל', note:'דגם קל: התחלה בזהב, מטרה ביהלום ומסלול עם מעט פניות', cols:7, rows:5, cells:['wood','wood','wood','wood','wood','wood','wood','gold','empty','empty','wood','empty','empty','diamond','wood','wood','empty','wood','empty','wood','wood','wood','empty','empty','empty','empty','empty','wood','wood','wood','wood','wood','wood','wood','wood'] },
+        { level:'מבוך בינוני', note:'דגם בינוני: כמה פניות וקירות שמכריחים לתכנן את הדרך', cols:7, rows:5, cells:['wood','wood','wood','wood','wood','wood','wood','gold','empty','empty','empty','wood','empty','diamond','wood','empty','wood','empty','wood','empty','wood','wood','empty','wood','empty','empty','empty','wood','wood','wood','wood','wood','wood','wood','wood'] },
+        { level:'מבוך שתי דרכים', note:'דגם אתגר: שתי דרכים עם כמה פניות שמתחברות לפני המטרה', cols:8, rows:6, cells:['wood','wood','wood','wood','wood','wood','wood','wood','wood','gold','empty','empty','empty','wood','diamond','wood','wood','empty','wood','wood','empty','wood','empty','wood','wood','empty','empty','wood','empty','empty','empty','wood','wood','wood','empty','empty','empty','wood','wood','wood','wood','wood','wood','wood','wood','wood','wood','wood'] }
       ]
     };
     const lessonThreeModels = [
@@ -179,11 +186,7 @@
       { type:'event_start_first', message0:'כאשר לוחצים ▶️ קוד ראשון', nextStatement:null, colour:40, hat:'cap' },
       { type:'event_start_second', message0:'אחר כך הרץ קוד שני', nextStatement:null, colour:40, hat:'cap' },
       { type:'say', message0:'אמור %1', args0:[{type:'field_input', name:'TEXT', text:'תכנתתי קסם!'}], previousStatement:null, nextStatement:null, colour:290 },
-      { type:'move_up', message0:'עלה למעלה בגובה %1', args0:[{type:'field_dropdown', name:'HEIGHT', options:[['בלוק מלא','full'],['חצי בלוק','half'],['אריח שביל','path']]}], previousStatement:null, nextStatement:null, colour:210 },
-      { type:'move_down', message0:'רד למטה בגובה %1', args0:[{type:'field_dropdown', name:'HEIGHT', options:[['בלוק מלא','full'],['חצי בלוק','half'],['אריח שביל','path']]}], previousStatement:null, nextStatement:null, colour:210 },
       { type:'move_to_ground', message0:'רד לקרקע', previousStatement:null, nextStatement:null, colour:210 },
-      { type:'move_right', message0:'זוז ימינה', previousStatement:null, nextStatement:null, colour:210 },
-      { type:'move_left', message0:'זוז שמאלה', previousStatement:null, nextStatement:null, colour:210 },
       { type:'move_direction', message0:'זוז %1', args0:[{type:'field_dropdown', name:'DIR', options:[['ימינה','right'],['שמאלה','left'],['למעלה','up'],['למטה','down'],['קדימה','forward'],['אחורה','back']]}], previousStatement:null, nextStatement:null, colour:210 },
       { type:'place_block', message0:'הנח בלוק בצבע %1', args0:[{type:'field_dropdown', name:'COLOR', options:[['ירוק','grass'],['עץ','wood'],['זהב','gold'],['יהלום','diamond'],['אדום','red'],['סגול','purple']]}], previousStatement:null, nextStatement:null, colour:120 },
 
@@ -196,10 +199,7 @@
       { type:'magic_trail', message0:'צור שביל קסמים', previousStatement:null, nextStatement:null, colour:140 },
       { type:'teleport', message0:'טלפורט למקום חדש', previousStatement:null, nextStatement:null, colour:210 },
       { type:'spawn_pet', message0:'זמן חיית מחמד בשם %1', args0:[{type:'field_input', name:'NAME', text:'פיקסל'}], previousStatement:null, nextStatement:null, colour:75 },
-      { type:'move_pet_right', message0:'הזז את חיית המחמד ימינה', previousStatement:null, nextStatement:null, colour:75 },
-      { type:'move_pet_left', message0:'הזז את חיית המחמד שמאלה', previousStatement:null, nextStatement:null, colour:75 },
-      { type:'move_pet_up', message0:'הזז את חיית המחמד למעלה בגובה %1', args0:[{type:'field_dropdown', name:'HEIGHT', options:[['בלוק','full'],['חצי בלוק','half'],['אריח שביל','path']]}], previousStatement:null, nextStatement:null, colour:75 },
-      { type:'move_pet_down', message0:'הזז את חיית המחמד למטה בגובה %1', args0:[{type:'field_dropdown', name:'HEIGHT', options:[['בלוק','full'],['חצי בלוק','half'],['אריח שביל','path']]}], previousStatement:null, nextStatement:null, colour:75 },
+      { type:'move_pet_direction', message0:'הזז חיית מחמד ← %1', args0:[{type:'field_dropdown', name:'DIR', options:[['ימינה','right'],['שמאלה','left'],['למעלה','up'],['למטה','down']]}], previousStatement:null, nextStatement:null, colour:75 },
       { type:'set_day', message0:'עשה יום ☀️', previousStatement:null, nextStatement:null, colour:55 },
       { type:'set_night', message0:'עשה לילה 🌙', previousStatement:null, nextStatement:null, colour:240 },
       { type:'weather_sun', message0:'מזג אוויר שמש', previousStatement:null, nextStatement:null, colour:55 },
@@ -207,6 +207,7 @@
       { type:'weather_snow', message0:'מזג אוויר שלג', previousStatement:null, nextStatement:null, colour:195 },
       { type:'if_on_diamond', message0:'אם עומדים על היהלום %1 אז %2', args0:[{type:'input_dummy'},{type:'input_statement', name:'DO'}], previousStatement:null, nextStatement:null, colour:20 },
       { type:'hide_diamond', message0:'הסתר יהלום במקום סודי', previousStatement:null, nextStatement:null, colour:185 },
+      { type:'build_simple_path', message0:'בנה שביל פשוט', previousStatement:null, nextStatement:null, colour:100 },
       { type:'check_spot', message0:'בדוק את המקום', previousStatement:null, nextStatement:null, colour:185 },
       { type:'if_found_diamond', message0:'אם מצאת יהלום %1 אז %2', args0:[{type:'input_dummy'},{type:'input_statement', name:'DO'}], previousStatement:null, nextStatement:null, colour:20 },
       { type:'open_door', message0:'פתח דלת סודית', previousStatement:null, nextStatement:null, colour:30 },
@@ -224,35 +225,73 @@
       const allowed = new Set([...(lesson.id === 10 ? [] : ['event_start']), ...lesson.blocks]);
       const labels = {
 
-        event_start:'התחלה', event_start_first:'התחלה — קוד ראשון', event_start_second:'המשך — קוד שני', say:'דיבור', move_up:'תנועה ישנה', move_down:'תנועה ישנה', move_to_ground:'תנועה — רד לקרקע', move_right:'תנועה ישנה', move_left:'תנועה ישנה', move_direction:'תנועה', place_block:'בנייה ידנית', place_path:'שביל נמוך', place_half_block:'חצי בלוק', reset_blocks:'מחיקת בנין בתמונה', wait_seconds:'המתנה לפי שניות', build_tower:'בנייה', rain_blocks:'בלוקים', magic_trail:'שביל', teleport:'טלפורט', spawn_pet:'חיה', move_pet_right:'חיה — תנועה', move_pet_left:'חיה — תנועה', move_pet_up:'חיה — תנועה', move_pet_down:'חיה — תנועה', set_day:'יום', set_night:'לילה', weather_sun:'שמש', weather_rain:'גשם', weather_snow:'שלג', if_on_diamond:'אם/אז', hide_diamond:'חיפוש אוצר', check_spot:'חיפוש אוצר', if_found_diamond:'אם/אז', open_door:'דלת', give_treasure:'אוצר', finish_program:'סיום', start_collect_game:'משחק', build_maze:'מבוך', show_hint:'רמז', spawn_funny_mob:'מוב'
+        event_start:'התחלה', event_start_first:'התחלה — קוד ראשון', event_start_second:'המשך — קוד שני', say:'דיבור', move_direction:'תנועה', move_to_ground:'תנועה — רד לקרקע', place_block:'בנייה ידנית', place_path:'שביל נמוך', place_half_block:'חצי בלוק', reset_blocks:'מחיקת בנין בתמונה', wait_seconds:'המתנה לפי שניות', build_tower:'בנייה', rain_blocks:'בלוקים', magic_trail:'שביל', teleport:'טלפורט', spawn_pet:'חיה', move_pet_direction:'חיה — תנועה', set_day:'יום', set_night:'לילה', weather_sun:'שמש', weather_rain:'גשם', weather_snow:'שלג', if_on_diamond:'אם/אז', hide_diamond:'חיפוש אוצר', build_simple_path:'שביל פשוט', check_spot:'חיפוש אוצר', if_found_diamond:'אם/אז', open_door:'דלת', give_treasure:'אוצר', finish_program:'סיום', start_collect_game:'משחק', build_maze:'מבוך', show_hint:'רמז', spawn_funny_mob:'מוב'
       };
       return `<xml>${[...allowed].map(type => `<block type="${type}"></block>`).join('')}</xml>`;
     }
     function starterXml(){
-      const first = lesson.blocks.find(b => b !== 'event_start') || 'say';
+      const first = lesson.blocks.find(b => !['event_start', 'event_start_first', 'event_start_second'].includes(b)) || 'say';
       if (lesson.id === 1) return `<xml><block type="event_start" x="40" y="40"><next><block type="say"><field name="TEXT">אני דוד, ואני בונה מגדל!</field><next><block type="place_block"><field name="COLOR">wood</field><next><block type="move_direction"><field name="DIR">up</field><next><block type="place_block"><field name="COLOR">gold</field><next><block type="move_direction"><field name="DIR">up</field><next><block type="place_block"><field name="COLOR">diamond</field></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>`;
       if (lesson.id === 5) return `<xml><block type="event_start" x="40" y="40"><next><block type="say"><field name="TEXT">אני עובר דרך השער!</field><next><block type="move_direction"><field name="DIR">right</field><next><block type="move_direction"><field name="DIR">right</field><next><block type="move_direction"><field name="DIR">back</field><next><block type="move_direction"><field name="DIR">right</field><next><block type="move_direction"><field name="DIR">right</field><next><block type="say"><field name="TEXT">אני מאחורי השער!</field></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>`;
 
       if (lesson.id === 4) return `<xml><block type="event_start" x="40" y="40"><next><block type="say"><field name="TEXT">בונים כלי אוכל לפי דגם!</field><next><block type="place_path"><field name="COLOR">grass</field><next><block type="move_direction"><field name="DIR">right</field><next><block type="place_half_block"><field name="COLOR">gold</field><next><block type="move_direction"><field name="DIR">up</field><next><block type="place_block"><field name="COLOR">diamond</field></block></next></block></next></block></next></block></next></block></next></block></xml>`;
       const second = lesson.blocks.includes('say') && first !== 'say' ? '<next><block type="say"></block></next>' : '';
-      if (lesson.id === 10) return `<xml><block type="event_start_first" x="40" y="40"><next><block type="place_path"><field name="COLOR">grass</field><next><block type="move_direction"><field name="DIR">right</field><next><block type="place_path"><field name="COLOR">grass</field><next><block type="move_direction"><field name="DIR">right</field><next><block type="place_path"><field name="COLOR">grass</field><next><block type="hide_diamond"></block></next></block></next></block></next></block></next></block></next></block><block type="event_start_second" x="320" y="40"><next><block type="check_spot"><next><block type="if_found_diamond"><statement name="DO"><block type="open_door"><next><block type="give_treasure"><next><block type="finish_program"></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
+      if (lesson.id === 10) return `<xml><block type="event_start_first" x="40" y="40"><next><block type="build_simple_path"><next><block type="hide_diamond"></block></next></block></next></block><block type="event_start_second" x="320" y="40"><next><block type="check_spot"><next><block type="if_found_diamond"><statement name="DO"><block type="open_door"><next><block type="give_treasure"><next><block type="finish_program"></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
+      if (lesson.id === 12) return `<xml><block type="event_start_first" x="40" y="40"><next><block type="say"><field name="TEXT">בונים את המבוך</field><next><block type="place_block"><field name="COLOR">wood</field></block></next></block></next></block><block type="event_start_second" x="320" y="40"><next><block type="say"><field name="TEXT">דוד יוצא לדרך</field><next><block type="move_direction"><field name="DIR">right</field></block></next></block></next></block></xml>`;
       if (first === 'if_on_diamond') return `<xml><block type="event_start" x="40" y="40"><next><block type="if_on_diamond"><statement name="DO"><block type="open_door"></block></statement></block></next></block></xml>`;
       return `<xml><block type="event_start" x="40" y="40"><next><block type="${first}">${second}</block></next></block></xml>`;
     }
 
+    function lessonTenText(){
+      return {
+        story: 'בוחרים דגם שביל אחד לבנייה, או ממציאים שביל משלכם. אחר כך מחביאים יהלום, עוברים על כל השביל ובכל אריח בודקים האם היהלום נמצא כאן. אם מוצאים — פותחים דלת ומקבלים אוצר.',
+        blockSummary: 'בלוקים חדשים: הסתר יהלום — שם אוצר במקום סודי, בדוק את המקום — בודק אריח בשביל, אם מצאת יהלום — מפעיל פעולות רק כשמצאנו, פתח דלת ותן אוצר — נותנים פרס, סיים תוכנית — עוצר את החיפוש.',
+        goal: 'מטרה: לבנות שביל ולחפש בו את היהלום החבוי בעזרת תנאי.',
+        challenge: 'שדרוג: תכננו דגם יהלום אישי אחרי שמצאתם את האוצר.',
+        drawerTask: 'בנו שביל עם כמה מקומות חשודים. החביאו יהלום. בדקו מקומות עם דוד. אם מצאתם יהלום — פתחו דלת וקבלו אוצר.',
+        blockHelp: [
+          ['הסתר יהלום', 'שם את האוצר במקום סודי.'],
+          ['בדוק את המקום', 'דוד בודק אם כאן היהלום.'],
+          ['אם מצאת יהלום', 'רק אם מצאנו — עושים את מה שבפנים.'],
+          ['פתח דלת / תן אוצר', 'הפרס אחרי שמצליחים.'],
+          ['סיים תוכנית', 'עוצר את החיפוש.']
+        ]
+      };
+    }
+
     function init(){
+      const lessonTen = lesson.id === 10 ? lessonTenText() : null;
       document.title = `${lesson.emoji} שיעור ${lesson.id}: ${lesson.title}`;
       document.getElementById('lessonTitle').textContent = `${lesson.emoji} שיעור ${lesson.id}: ${lesson.title}`;
-      document.getElementById('lessonStory').textContent = lesson.story;
+      document.getElementById('lessonStory').textContent = lessonTen ? lessonTen.story : lesson.story;
+      const blockSummary = document.getElementById('lessonBlockSummary');
+      if (lessonTen) {
+        blockSummary.hidden = false;
+        blockSummary.innerHTML = `<b>${esc('בלוקים חדשים:')}</b> ${esc(lessonTen.blockSummary.replace('בלוקים חדשים: ', ''))}`;
+      } else {
+        blockSummary.hidden = true;
+        blockSummary.textContent = '';
+      }
       document.getElementById('lessonConcept').textContent = lesson.concept;
-      document.getElementById('lessonGoal').textContent = `מטרה: ${lesson.goal}`;
-      document.getElementById('lessonChallenge').textContent = `שדרוג: ${lesson.challenge}`;
+      document.getElementById('lessonGoal').textContent = lessonTen ? lessonTen.goal : `מטרה: ${lesson.goal}`;
+      const challengeText = lessonTen ? lessonTen.challenge : lesson.challenge;
+      const challengePrefix = lesson.id === 14 ? 'הסבר' : 'שדרוג';
+      document.getElementById('lessonChallenge').textContent = /^אתגר:|^הסבר:/.test(challengeText) ? challengeText : `${challengePrefix}: ${challengeText}`;
 
-      document.getElementById('drawerSuccessText').textContent = lesson.success;
+      document.getElementById('drawerSuccessText').textContent = lessonTen ? lessonTen.drawerTask : lesson.success;
+      const blockHelp = document.getElementById('drawerBlockHelp');
+      if (lessonTen) {
+        blockHelp.hidden = false;
+        blockHelp.innerHTML = `<b>בלוקים חדשים:</b><ul style="margin:.45rem 1.1rem 0 0;padding:0;line-height:1.45">${lessonTen.blockHelp.map(([name, text]) => `<li><b>${esc(name)}</b> — ${esc(text)}</li>`).join('')}</ul>`;
+      } else {
+        blockHelp.hidden = true;
+        blockHelp.innerHTML = '';
+      }
       document.getElementById('player').setAttribute('aria-label', 'דוד בעולם מיינקראפט');
       const exerciseItemsHtml = (lesson.programmingExercises || []).map((exercise) => `<div class="exercise-item"><small>${exercise.minutes}</small><b>${esc(exercise.title)}</b><span>${esc(exercise.studentPrompt)}</span></div>`).join('');
       document.getElementById('drawerExerciseList').innerHTML = exerciseItemsHtml;
       document.getElementById('slidesLink').href = `minecraft-slides.html?lesson=${lesson.id}`;
+      applyLessonWorldClass();
       setupModelPager();
       document.getElementById('tabs').innerHTML = window.MINECRAFT_KIDS_LESSONS.map(l => `<a class="tab ${l.id===lesson.id?'active':''}" href="minecraft-play.html?lesson=${l.id}" title="שיעור ${l.id}: ${esc(l.title)}"><span>${l.emoji}</span><small>${l.id}</small><b>${esc(l.title)}</b></a>`).join('');
       workspace = Blockly.inject('blocklyDiv', { toolbox: toolboxXml(), rtl: true, trashcan: true, scrollbars: true, zoom: { controls: true, wheel: true, startScale: .9, maxScale: 1.4, minScale: .55 } });
@@ -265,6 +304,12 @@
     function openInstructions(){ document.getElementById('instructionsBackdrop').classList.add('open'); }
     function closeInstructions(event){ if (event && event.target !== document.getElementById('instructionsBackdrop')) return; document.getElementById('instructionsBackdrop').classList.remove('open'); }
     window.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeInstructions(); });
+
+    function applyLessonWorldClass(){
+      const world = document.getElementById('world');
+      if (!world) return;
+      world.className = `world ${lesson.id === 1 ? 'lesson-one' : lesson.id === 2 ? 'lesson-two' : lesson.id === 3 ? 'lesson-three' : lesson.id === 4 ? 'lesson-four' : lesson.id === 5 ? 'lesson-five' : lesson.id === 6 ? 'lesson-six' : lesson.id === 7 ? 'lesson-seven' : lesson.id === 8 ? 'lesson-eight' : lesson.id === 10 ? 'lesson-ten' : lesson.id === 12 ? 'lesson-twelve' : ''}`.trim();
+    }
 
     function setupModelPager(){
       if (lessonModelsByLesson[lesson.id]) {
@@ -300,8 +345,9 @@
       document.getElementById('modelLevel').textContent = model.level;
       document.getElementById('modelNote').textContent = model.note;
       document.querySelectorAll('.model-choice').forEach((button) => button.classList.toggle('active', Number(button.dataset.model || 0) === modelIndex));
-      shape.style.gridTemplateColumns = `repeat(${model.cols || 4}, 24px)`;
-      shape.style.gridTemplateRows = `repeat(${model.rows || 3}, 24px)`;
+      const cellSize = lesson.id === 12 ? 16 : 24;
+      shape.style.gridTemplateColumns = `repeat(${model.cols || 4}, ${cellSize}px)`;
+      shape.style.gridTemplateRows = `repeat(${model.rows || 3}, ${cellSize}px)`;
       shape.innerHTML = model.cells.map(cls => `<span class="model-cell ${cls}"></span>`).join('');
     }
     function renderPixelModel(){
@@ -362,9 +408,10 @@
 
     function resetWorld(){
 
-      state.score = 0; state.day = true; state.weather = 'sun'; state.playerOnDiamond = lesson.id === 10 ? false : true; state.foundDiamond = false; state.hiddenDiamondIndex = null; state.hiddenDiamondSpot = null; state.pathSpots = []; state.stopProgram = false; state.steveX = lesson.id === 5 ? 235 : 260; state.steveY = GROUND_Y; state.steveDepth = 0; state.petX = null; state.petY = null; state.lessonOneBlocks = 0; state.gatePassed = false; state.behindGate = false; state.lastMove = null;
+      state.score = 0; state.day = true; state.weather = 'sun'; state.playerOnDiamond = lesson.id === 10 || lesson.id === 14 ? false : true; state.foundDiamond = false; state.hiddenDiamondIndex = null; state.hiddenDiamondSpot = null; state.pathSpots = []; state.stopProgram = false; state.steveX = lesson.id === 5 ? 235 : 260; state.steveY = GROUND_Y; state.steveDepth = 0; state.petX = null; state.petY = null; state.lessonOneBlocks = 0; state.gatePassed = false; state.behindGate = false; state.applesLeft = 0; state.lastMove = null;
       const world = document.getElementById('world');
-      world.className = `world ${lesson.id === 1 ? 'lesson-one' : lesson.id === 2 ? 'lesson-two' : lesson.id === 3 ? 'lesson-three' : lesson.id === 4 ? 'lesson-four' : lesson.id === 5 ? 'lesson-five' : lesson.id === 6 ? 'lesson-six' : lesson.id === 7 ? 'lesson-seven' : lesson.id === 8 ? 'lesson-eight' : lesson.id === 10 ? 'lesson-ten' : ''}`.trim();
+      applyLessonWorldClass();
+      setPlayerInFront(false);
       [...world.querySelectorAll('.block,.pet,.mob,.treasure,.apple,.hint')].forEach(el => el.remove());
       document.getElementById('door').classList.remove('open');
       setStevePosition();
@@ -403,25 +450,64 @@
       timeCaption.textContent = 'זמן';
       weatherCaption.textContent = 'מזג אוויר';
     }
-    function addBlock(cls, x, y, extraClass=''){ const el=document.createElement('div'); el.className=`block ${cls}${extraClass ? ' '+extraClass : ''}`; el.style.left=x+'px'; el.style.bottom=y+'px'; document.getElementById('world').appendChild(el); return el; }
+    function addBlock(cls, x, y, extraClass=''){
+      const el=document.createElement('div');
+      el.className=`block ${cls}${extraClass ? ' '+extraClass : ''}`;
+      el.style.left=x+'px';
+      el.style.bottom=y+'px';
+      document.getElementById('world').appendChild(el);
+      if (lesson.id === 14) registerTreasureSpotFromBlock(x, y, extraClass);
+      return el;
+    }
+    function registerTreasureSpotFromBlock(x, y, extraClass=''){
+      if (!state.pathSpots) state.pathSpots = [];
+      const isPath = /path-slab/.test(extraClass);
+      const isHalf = /half-slab/.test(extraClass);
+      state.pathSpots.push({
+        x: x + (isPath ? 23 : isHalf ? 22 : 21),
+        y: y + (isPath ? 7 : isHalf ? 12 : 21),
+        label: isPath ? 'אריח שביל' : isHalf ? 'חצי בלוק' : 'בלוק שנבנה'
+      });
+    }
     function addEmoji(cls, icon, x, y){ const el=document.createElement('div'); el.className=cls; el.textContent=icon; el.style.left=x+'px'; el.style.bottom=y+'px'; document.getElementById('world').appendChild(el); return el; }
 
-    function addDiamondMarker(){ if (lesson.id === 2 || lesson.id === 3 || lesson.id === 4 || lesson.id === 5 || lesson.id === 6 || lesson.id === 8 || lesson.id === 10) return; addEmoji('hint','💠', 220, 88); }
+    function addDiamondMarker(){ if (lesson.id === 2 || lesson.id === 3 || lesson.id === 4 || lesson.id === 5 || lesson.id === 6 || lesson.id === 8 || lesson.id === 10 || lesson.id === 12) return; addEmoji('hint','💠', 220, 88); }
     const treasureSpots = [{x:105,y:GROUND_Y,label:'תחילת השביל'}, {x:195,y:GROUND_Y,label:'ענף תחתון'}, {x:285,y:GROUND_Y,label:'ענף ישר'}, {x:375,y:GROUND_Y,label:'קצה ימני'}, {x:195,y:GROUND_Y + 42,label:'ענף עליון'}, {x:285,y:GROUND_Y + 42,label:'פנייה גבוהה'}, {x:375,y:GROUND_Y + 84,label:'קצה עליון'}];
     function drawTreasureSpots(){ /* שיעור 10: לא מציגים סימני שאלה, כדי שהאוצר יישאר חבוי באמת. */ }
     function treasureSearchSpots(){ return state.pathSpots || []; }
-    function hideDiamond(){ const spots = treasureSearchSpots(); if (!spots.length) { say('קודם בנו שביל, ואז הסתירו יהלום'); return; } state.hiddenDiamondIndex = Math.floor(Math.random() * spots.length); state.hiddenDiamondSpot = spots[state.hiddenDiamondIndex]; state.foundDiamond = false; state.playerOnDiamond = false; document.querySelectorAll('#world .hint,#world .treasure').forEach(el => el.remove()); say('היהלום הוסתר על אחד מאריחי השביל'); }
+    function hideDiamond(){ const spots = treasureSearchSpots(); if (!spots.length) { say(lesson.id === 14 ? 'קודם בנו כמה בלוקים, חצי בלוקים או אריחי שביל' : 'קודם בנו שביל, ואז הסתירו יהלום'); return; } state.hiddenDiamondIndex = Math.floor(Math.random() * spots.length); state.hiddenDiamondSpot = spots[state.hiddenDiamondIndex]; state.foundDiamond = false; state.playerOnDiamond = false; document.querySelectorAll('#world .hint,#world .treasure').forEach(el => el.remove()); say(lesson.id === 14 ? 'היהלום הוסתר באחד המקומות שבניתם' : 'היהלום הוסתר על אחד מאריחי השביל'); }
     function nearestTreasureSpot(){ let best=0, dist=Infinity; const spots = treasureSearchSpots(); spots.forEach((spot,index)=>{ const dx=(state.steveX + 20) - spot.x; const dy=state.steveY - spot.y; const d=Math.sqrt(dx*dx + dy*dy); if(d<dist){ dist=d; best=index; } }); return { index:best, distance:dist, spot:spots[best] }; }
-    function checkSpot(){ if (lesson.id !== 10) return; if (!state.hiddenDiamondSpot) hideDiamond(); if (!state.hiddenDiamondSpot) return; const found = nearestTreasureSpot(); if (!found.spot || found.distance > 34) { say('דוד רחוק ממקום חיפוש'); return; } if (found.spot === state.hiddenDiamondSpot) { state.foundDiamond = true; state.playerOnDiamond = true; addEmoji('hint','💠', found.spot.x, found.spot.y); say('מצאתי את היהלום החבוי!'); } else { state.foundDiamond = false; state.playerOnDiamond = false; say('אין כאן כלום... נסו מקום אחר'); } }
+    function checkSpot(){ if (![10,14].includes(lesson.id)) return; if (!state.hiddenDiamondSpot) hideDiamond(); if (!state.hiddenDiamondSpot) return; const found = nearestTreasureSpot(); if (!found.spot || found.distance > 34) { say('דוד רחוק ממקום חיפוש'); return; } if (found.spot === state.hiddenDiamondSpot) { state.foundDiamond = true; state.playerOnDiamond = true; addEmoji('hint','💠', found.spot.x, found.spot.y); say('מצאתי את היהלום החבוי!'); } else { state.foundDiamond = false; state.playerOnDiamond = false; say('אין כאן כלום... נסו מקום אחר'); } }
     function positionBubble(){ const bubble=document.getElementById('bubble'); const world=document.getElementById('world'); const maxBottom=Math.max(125, (world?.clientHeight || 330) - 105); bubble.style.left=Math.max(12, state.steveX - 72)+'px'; bubble.style.right='auto'; bubble.style.bottom=Math.min(state.steveY + 92, maxBottom)+'px'; }
+    function setPlayerInFront(isInFront){
+      const player = document.getElementById('player');
+      const bubble = document.getElementById('bubble');
+      player.style.zIndex = isInFront ? '9' : '';
+      bubble.style.zIndex = isInFront ? '10' : '';
+    }
     function isInsideGateSpan(x = state.steveX){ return lesson.id === 5 && x >= 335 && x <= 420; }
     function isAtGateFrontBlocker(x = state.steveX){ const center = x + 31; return lesson.id === 5 && ((center >= 292 && center <= 347) || (center >= 395 && center <= 450)); }
-    function setStevePosition(){ const player=document.getElementById('player'); const behindGate = lesson.id === 5 && state.steveDepth > 0; player.style.left=state.steveX+'px'; player.style.right='auto'; player.style.bottom=state.steveY+'px'; player.style.transform = state.steveDepth > 0 ? 'scale(.82)' : ''; player.style.opacity = state.steveDepth > 0 ? '.9' : ''; player.style.zIndex = behindGate ? 1 : 4; positionBubble(); }
+    function setStevePosition(){ const player=document.getElementById('player'); const behindGate = lesson.id === 5 && state.steveDepth > 0; player.style.left=state.steveX+'px'; player.style.right='auto'; player.style.bottom=state.steveY+'px'; player.style.transform = state.steveDepth > 0 ? 'scale(.82)' : ''; player.style.opacity = state.steveDepth > 0 ? '.9' : ''; if (lesson.id === 5) player.style.zIndex = behindGate ? 1 : 4; positionBubble(); collectNearbyApples(); }
     function moveSteve(dx, dy){ const world=document.getElementById('world'); const maxX=Math.max(470, (world?.clientWidth || 640) - 92); let nextX=Math.max(24, Math.min(maxX, state.steveX + dx)); if (lesson.id === 5 && state.steveDepth === 0 && state.steveY === GROUND_Y && dx > 0 && state.steveX < 330 && nextX > 330) nextX = 330; if (lesson.id === 5 && state.steveDepth === 0 && state.steveY === GROUND_Y && dx < 0 && state.steveX > 420 && nextX < 420) nextX = 420; if (lesson.id === 5 && state.steveDepth > 0 && dx !== 0 && !state.behindGate && isInsideGateSpan(nextX)) state.behindGate = true; state.steveX=nextX; state.steveY=Math.max(GROUND_Y, Math.min(250, state.steveY + dy)); state.lastMove = dx > 0 ? 'right' : dx < 0 ? 'left' : dy > 0 ? 'up' : dy < 0 ? 'down' : null; if (lesson.id === 5 && state.steveDepth > 0 && isInsideGateSpan()) state.gatePassed = true; setStevePosition(); updateStatus(); }
     function moveDepth(delta){ if (lesson.id === 5 && delta < 0 && state.steveDepth > 0 && isAtGateFrontBlocker()) { say('אין אפשרות להתקדם, השער חוסם'); state.lastMove = 'blocked'; updateStatus(); return; } state.steveDepth=Math.max(0, Math.min(2, state.steveDepth + delta)); if (state.steveDepth === 0) state.behindGate = false; state.steveY=Math.max(GROUND_Y, Math.min(250, state.steveY + (delta > 0 ? 28 : -28))); state.lastMove = delta > 0 ? 'back' : 'forward'; setStevePosition(); updateStatus(); }
     function placeBlock(color){ const blockY = state.steveY; addBlock(color || 'grass', state.steveX + 10, blockY); if (lesson.id === 1) state.lessonOneBlocks += 1; state.lastMove = null; updateStatus(); }
 
     function placePath(color){ const blockY = state.steveY; const x = state.steveX + 8; addBlock(color || 'grass', x, blockY, 'path-slab'); if (lesson.id === 10) state.pathSpots.push({ x: x + 15, y: blockY, label:'אריח שביל שנבנה' }); state.lastMove = null; updateStatus(); }
+    function buildSimplePath(){
+      const startX = state.steveX + 20;
+      const startY = state.steveY;
+      const spots = [
+        { x:startX, y:startY },
+        { x:startX + 45, y:startY },
+        { x:startX + 90, y:startY },
+        { x:startX + 90, y:startY + 42 },
+        { x:startX + 135, y:startY + 42 }
+      ];
+      spots.forEach((spot) => { addBlock('grass', spot.x - 15, spot.y, 'path-slab'); });
+      state.pathSpots = spots.map((spot) => ({ ...spot, label:'אריח בשביל הפשוט' }));
+      state.lastMove = null;
+      updateStatus();
+    }
     function placeHalfBlock(color){ const blockY = state.steveY; addBlock(color || 'grass', state.steveX + 9, blockY, 'half-slab'); state.lastMove = null; updateStatus(); }
     function say(text){
       const bubble=document.getElementById('bubble');
@@ -448,14 +534,44 @@
     function setWeather(weather){ state.weather=weather; const world=document.getElementById('world'); world.classList.remove('rain','snow'); if(weather==='rain'||weather==='snow') world.classList.add(weather); updateStatus(); }
     function openDoor(){ document.getElementById('door').classList.add('open'); }
     function giveTreasure(){ addEmoji('treasure','🎁', 72, 172); state.score += 10; updateStatus(); }
-    function startCollectGame(){ for(let i=0;i<5;i++) addEmoji('apple','🍎', 70+i*70, 90+(i%2)*55); state.score = 5; updateStatus(); say('אספתם 5 תפוחים! ניצחון!'); }
+    function startCollectGame(){
+      document.querySelectorAll('#world .apple').forEach(el => el.remove());
+      state.score = 0;
+      state.applesLeft = 5;
+      for(let i=0;i<5;i++){
+        const apple = addEmoji('apple','🍎', 70+i*70, 90+(i%2)*55);
+        apple.dataset.collectible = 'true';
+      }
+      updateStatus();
+      say('5 תפוחים הופיעו! עכשיו אספו אותם.');
+    }
+    function collectApple(apple){
+      if (!apple || !apple.parentNode) return;
+      apple.remove();
+      state.score += 1;
+      state.applesLeft = Math.max(0, state.applesLeft - 1);
+      updateStatus();
+      say(state.applesLeft === 0 ? 'אספתם את כל התפוחים! ניצחון!' : `נשארו ${state.applesLeft} תפוחים`);
+    }
+    function collectNearbyApples(){
+      if (!state.applesLeft) return;
+      const steveCenterX = state.steveX + 31;
+      const steveCenterY = state.steveY + 46;
+      document.querySelectorAll('#world .apple[data-collectible="true"]').forEach((apple) => {
+        const appleX = parseFloat(apple.style.left || '0') + 18;
+        const appleY = parseFloat(apple.style.bottom || '0') + 18;
+        const dx = steveCenterX - appleX;
+        const dy = steveCenterY - appleY;
+        if (Math.sqrt(dx * dx + dy * dy) <= 38) collectApple(apple);
+      });
+    }
     function buildMaze(){ for(let i=0;i<6;i++){ addBlock('wood', 70+i*44, 82); if(i%2===0) addBlock('wood', 70+i*44, 124); } addBlock('gold', 340, 82); }
     function showHint(text){ addEmoji('hint','🧭', 250, 175); say(text || 'חפשו את היהלום'); }
     function spawnFunnyMob(name){ addEmoji('mob','🐌', 280, 86); say(`${name || 'מר קובייה'} אומר: בלופ בלופ!`); }
     function resetBlocks(){
       document.querySelectorAll('#world .block').forEach(el => el.remove());
 
-      if (lesson.id === 10) { state.foundDiamond = false; state.playerOnDiamond = false; state.hiddenDiamondIndex = null; state.hiddenDiamondSpot = null; state.pathSpots = []; document.querySelectorAll('#world .hint,#world .treasure').forEach(el => el.remove()); drawTreasureSpots(); }
+      if ([10,14].includes(lesson.id)) { state.foundDiamond = false; state.playerOnDiamond = false; state.hiddenDiamondIndex = null; state.hiddenDiamondSpot = null; state.pathSpots = []; document.querySelectorAll('#world .hint,#world .treasure').forEach(el => el.remove()); drawTreasureSpots(); }
       state.steveX = 260; state.steveY = GROUND_Y; state.lessonOneBlocks = 0; state.lastMove = null;
       setStevePosition(); positionBubble(); updateStatus();
     }
@@ -487,6 +603,7 @@
           await wait(250);
           if (state.stopProgram || state.runToken !== runToken) break;
         }
+        if (lesson.id === 12 && startOrder(start) === 2) setPlayerInFront(true);
         await runChain(start.getNextBlock(), runToken);
       }
       if (state.runToken === runToken && lesson.id === 1) celebrateLessonOneIfReady();
@@ -510,11 +627,7 @@
     async function runBlock(block, runToken = state.runToken){
       switch(block.type){
         case 'say': say(block.getFieldValue('TEXT')); break;
-        case 'move_up': { const h = block.getFieldValue('HEIGHT') || 'full'; const step = h === 'path' ? PATH_TILE_HEIGHT : h === 'half' ? HALF_BLOCK_HEIGHT : 42; moveSteve(0, step); break; }
-        case 'move_down': { const h = block.getFieldValue('HEIGHT') || 'full'; const step = h === 'path' ? PATH_TILE_HEIGHT : h === 'half' ? HALF_BLOCK_HEIGHT : 42; moveSteve(0, -step); break; }
         case 'move_to_ground': moveSteve(0, GROUND_Y - state.steveY); break;
-        case 'move_right': moveSteve(45, 0); break;
-        case 'move_left': moveSteve(-45, 0); break;
         case 'move_direction': {
           const dir = block.getFieldValue('DIR') || 'right';
           if (dir === 'right') moveSteve(45, 0);
@@ -535,10 +648,14 @@
         case 'magic_trail': magicTrail(); break;
         case 'teleport': teleport(); break;
         case 'spawn_pet': spawnPet(block.getFieldValue('NAME')); break;
-        case 'move_pet_right': movePet(45); break;
-        case 'move_pet_left': movePet(-45); break;
-        case 'move_pet_up': { const h = block.getFieldValue('HEIGHT') || 'full'; const step = h === 'path' ? PATH_TILE_HEIGHT : h === 'half' ? HALF_BLOCK_HEIGHT : 42; movePet(0, step); break; }
-        case 'move_pet_down': { const h = block.getFieldValue('HEIGHT') || 'full'; const step = h === 'path' ? PATH_TILE_HEIGHT : h === 'half' ? HALF_BLOCK_HEIGHT : 42; movePet(0, -step); break; }
+        case 'move_pet_direction': {
+          const dir = block.getFieldValue('DIR') || 'right';
+          if (dir === 'right') movePet(45, 0);
+          else if (dir === 'left') movePet(-45, 0);
+          else if (dir === 'up') movePet(0, 42);
+          else if (dir === 'down') movePet(0, -42);
+          break;
+        }
         case 'set_day': setDay(true); break;
         case 'set_night': setDay(false); break;
         case 'weather_sun': setWeather('sun'); break;
@@ -546,6 +663,7 @@
         case 'weather_snow': setWeather('snow'); break;
         case 'if_on_diamond': if(state.playerOnDiamond) await runChain(block.getInputTargetBlock('DO'), runToken); break;
         case 'hide_diamond': hideDiamond(); break;
+        case 'build_simple_path': buildSimplePath(); break;
         case 'check_spot': checkSpot(); break;
         case 'if_found_diamond': if(state.foundDiamond) await runChain(block.getInputTargetBlock('DO'), runToken); break;
         case 'open_door': openDoor(); break;
