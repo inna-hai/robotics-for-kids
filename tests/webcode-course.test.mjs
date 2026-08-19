@@ -188,7 +188,9 @@ assert.ok(hub.includes('webcode-play.html?lesson=1'), 'hub links to lesson 1');
 assert.ok(hub.includes('webcode-slides.html?lesson=1'), 'hub links to guide slides');
 assert.ok(hub.includes('כרטיסי קוד אמיתי') && hub.includes('25–30'), 'hub explains gradual move to real coding');
 assert.ok(hub.includes('formatMixedText') && hub.includes('tech-term'), 'hub isolates English tech terms so RTL lesson cards do not flip mixed text');
-assert.ok(hub.includes('js/webcode-lessons.js?v=20260819-course-v32'), 'hub bumps internal lesson-data script version to avoid stale course cards');
+assert.ok(hub.includes('js/webcode-lessons.js?v=20260819-course-v33'), 'hub bumps internal lesson-data script version to avoid stale course cards');
+assert.ok(!hub.includes('Blockly אמיתי'), 'course-page hero avoids unclear “Blockly אמיתי” phrasing');
+assert.ok(!JSON.stringify(lessons.slice(0, 3).map(lesson => lesson.concept)).includes('Blockly אמיתי'), 'visible course-card concepts avoid unclear “Blockly אמיתי” phrasing');
 
 const play = read('webcode-play.html');
 assert.ok(play.includes('textarea id="htmlCode"'), 'play page has HTML editor');
