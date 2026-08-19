@@ -31,7 +31,7 @@
         { html:`<div class="kicker">${ex.minutes} • תרגול מעשי ${ex.number}</div><h2>${esc(ex.title)}</h2><p>${esc(ex.studentPrompt)}</p><div class="note"><b>בדיקה בכיתה:</b><ul>${(ex.testSteps||[]).map(s=>`<li>${esc(s)}</li>`).join('')}</ul></div>` }
       ];
       if ((ex.answerBlocks || []).length) {
-        slides.push({ html:`<div class="kicker">פתרון למדריך • תרגול ${ex.number}</div><h2>${esc(ex.title)}</h2>${renderBlocks(ex.answerBlocks||[])}<p><b>תוצאה מצופה:</b> ${esc(ex.expectedResult)}</p><div class="note"><b>טעות נפוצה:</b> ${esc(ex.commonMistake)}</div>` });
+        slides.push({ html:`<div class="kicker">פתרון למדריך • תרגול ${ex.number}</div><h2>${esc(ex.title)}</h2>${renderBlocks(ex.answerBlocks||[])}${ex.solutionNote ? `<div class="note"><b>שימו לב:</b> ${esc(ex.solutionNote.replace(/^שימו לב:\s*/, ''))}</div>` : ''}<p><b>תוצאה מצופה:</b> ${esc(ex.expectedResult)}</p><div class="note"><b>טעות נפוצה:</b> ${esc(ex.commonMistake)}</div>` });
       }
       return slides;
     });
@@ -51,7 +51,7 @@
         6: ['spawn_pet','place_block','place_path','place_half_block','move_pet_right','move_pet_left','move_pet_up','move_pet_down'],
         8: ['weather_sun','weather_rain','weather_snow','place_block','place_half_block','move_right','move_up','move_down','move_to_ground','say'],
         10: ['event_start_first','event_start_second','build_simple_path','hide_diamond','check_spot','if_found_diamond','open_door','give_treasure','finish_program'],
-        12: ['place_block','move_right','move_left','move_up','move_down','say']
+        12: ['event_start_first','event_start_second','place_block','move_right','move_left','move_up','move_down','say']
       };
       return (focusedBlocks[lesson.id] || lesson.blocks).filter((b,i,a)=>a.indexOf(b)===i);
     }
