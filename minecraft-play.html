@@ -199,10 +199,7 @@
       { type:'magic_trail', message0:'צור שביל קסמים', previousStatement:null, nextStatement:null, colour:140 },
       { type:'teleport', message0:'טלפורט למקום חדש', previousStatement:null, nextStatement:null, colour:210 },
       { type:'spawn_pet', message0:'זמן חיית מחמד בשם %1', args0:[{type:'field_input', name:'NAME', text:'פיקסל'}], previousStatement:null, nextStatement:null, colour:75 },
-      { type:'move_pet_right', message0:'הזז את חיית המחמד ימינה', previousStatement:null, nextStatement:null, colour:75 },
-      { type:'move_pet_left', message0:'הזז את חיית המחמד שמאלה', previousStatement:null, nextStatement:null, colour:75 },
-      { type:'move_pet_up', message0:'הזז את חיית המחמד למעלה בגובה %1', args0:[{type:'field_dropdown', name:'HEIGHT', options:[['בלוק','full'],['חצי בלוק','half'],['אריח שביל','path']]}], previousStatement:null, nextStatement:null, colour:75 },
-      { type:'move_pet_down', message0:'הזז את חיית המחמד למטה בגובה %1', args0:[{type:'field_dropdown', name:'HEIGHT', options:[['בלוק','full'],['חצי בלוק','half'],['אריח שביל','path']]}], previousStatement:null, nextStatement:null, colour:75 },
+      { type:'move_pet_direction', message0:'הזז חיית מחמד ← %1', args0:[{type:'field_dropdown', name:'DIR', options:[['ימינה','right'],['שמאלה','left'],['למעלה','up'],['למטה','down']]}], previousStatement:null, nextStatement:null, colour:75 },
       { type:'set_day', message0:'עשה יום ☀️', previousStatement:null, nextStatement:null, colour:55 },
       { type:'set_night', message0:'עשה לילה 🌙', previousStatement:null, nextStatement:null, colour:240 },
       { type:'weather_sun', message0:'מזג אוויר שמש', previousStatement:null, nextStatement:null, colour:55 },
@@ -228,7 +225,7 @@
       const allowed = new Set([...(lesson.id === 10 ? [] : ['event_start']), ...lesson.blocks]);
       const labels = {
 
-        event_start:'התחלה', event_start_first:'התחלה — קוד ראשון', event_start_second:'המשך — קוד שני', say:'דיבור', move_direction:'תנועה', move_to_ground:'תנועה — רד לקרקע', place_block:'בנייה ידנית', place_path:'שביל נמוך', place_half_block:'חצי בלוק', reset_blocks:'מחיקת בנין בתמונה', wait_seconds:'המתנה לפי שניות', build_tower:'בנייה', rain_blocks:'בלוקים', magic_trail:'שביל', teleport:'טלפורט', spawn_pet:'חיה', move_pet_right:'חיה — תנועה', move_pet_left:'חיה — תנועה', move_pet_up:'חיה — תנועה', move_pet_down:'חיה — תנועה', set_day:'יום', set_night:'לילה', weather_sun:'שמש', weather_rain:'גשם', weather_snow:'שלג', if_on_diamond:'אם/אז', hide_diamond:'חיפוש אוצר', build_simple_path:'שביל פשוט', check_spot:'חיפוש אוצר', if_found_diamond:'אם/אז', open_door:'דלת', give_treasure:'אוצר', finish_program:'סיום', start_collect_game:'משחק', build_maze:'מבוך', show_hint:'רמז', spawn_funny_mob:'מוב'
+        event_start:'התחלה', event_start_first:'התחלה — קוד ראשון', event_start_second:'המשך — קוד שני', say:'דיבור', move_direction:'תנועה', move_to_ground:'תנועה — רד לקרקע', place_block:'בנייה ידנית', place_path:'שביל נמוך', place_half_block:'חצי בלוק', reset_blocks:'מחיקת בנין בתמונה', wait_seconds:'המתנה לפי שניות', build_tower:'בנייה', rain_blocks:'בלוקים', magic_trail:'שביל', teleport:'טלפורט', spawn_pet:'חיה', move_pet_direction:'חיה — תנועה', set_day:'יום', set_night:'לילה', weather_sun:'שמש', weather_rain:'גשם', weather_snow:'שלג', if_on_diamond:'אם/אז', hide_diamond:'חיפוש אוצר', build_simple_path:'שביל פשוט', check_spot:'חיפוש אוצר', if_found_diamond:'אם/אז', open_door:'דלת', give_treasure:'אוצר', finish_program:'סיום', start_collect_game:'משחק', build_maze:'מבוך', show_hint:'רמז', spawn_funny_mob:'מוב'
       };
       return `<xml>${[...allowed].map(type => `<block type="${type}"></block>`).join('')}</xml>`;
     }
@@ -651,10 +648,14 @@
         case 'magic_trail': magicTrail(); break;
         case 'teleport': teleport(); break;
         case 'spawn_pet': spawnPet(block.getFieldValue('NAME')); break;
-        case 'move_pet_right': movePet(45); break;
-        case 'move_pet_left': movePet(-45); break;
-        case 'move_pet_up': { const h = block.getFieldValue('HEIGHT') || 'full'; const step = h === 'path' ? PATH_TILE_HEIGHT : h === 'half' ? HALF_BLOCK_HEIGHT : 42; movePet(0, step); break; }
-        case 'move_pet_down': { const h = block.getFieldValue('HEIGHT') || 'full'; const step = h === 'path' ? PATH_TILE_HEIGHT : h === 'half' ? HALF_BLOCK_HEIGHT : 42; movePet(0, -step); break; }
+        case 'move_pet_direction': {
+          const dir = block.getFieldValue('DIR') || 'right';
+          if (dir === 'right') movePet(45, 0);
+          else if (dir === 'left') movePet(-45, 0);
+          else if (dir === 'up') movePet(0, 42);
+          else if (dir === 'down') movePet(0, -42);
+          break;
+        }
         case 'set_day': setDay(true); break;
         case 'set_night': setDay(false); break;
         case 'weather_sun': setWeather('sun'); break;
