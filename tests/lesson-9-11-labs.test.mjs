@@ -29,10 +29,10 @@ test('lessons 9-11 landing pages link to creator labs', () => {
   assertIncludes(parkHtml, 'href="park-lab.html"');
 });
 
-test('final game flow continues to creator labs instead of ending early', () => {
-  assertIncludes(factoryPlay, "href: 'factory-lab.html'");
-  assertIncludes(gardenPlay, "href: 'garden-lab.html'");
-  assertIncludes(parkPlay, "href: 'park-lab.html'");
+test('final game flow stays inside the Sisi lesson sequence', () => {
+  assertIncludes(factoryPlay, "href: 'garden.html'");
+  assertIncludes(gardenPlay, "href: 'park.html'");
+  assertIncludes(parkPlay, "href: 'mail.html'");
 });
 
 test('factory lab adds a 15-20 minute invented loop activity', () => {

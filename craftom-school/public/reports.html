@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>דוח התקדמות | Craftom School</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="brand">Craftom School</div>
+      <div class="muted" id="user-label">דוח התקדמות</div>
+    </div>
+    <div class="actions compact">
+      <button class="btn ghost" onclick="exportReport()">ייצוא HTML</button>
+      <button class="btn ghost" id="home-btn">דף הבית</button>
+      <button class="btn ghost" onclick="logout()">יציאה</button>
+    </div>
+  </header>
+
+  <main class="shell dashboard">
+    <section class="panel home-main">
+      <div class="eyebrow">דוח התקדמות</div>
+      <h1 id="report-title">טוען...</h1>
+      <p class="muted" id="report-subtitle"></p>
+      <div class="stats" id="report-stats"></div>
+    </section>
+
+    <aside class="panel side-panel">
+      <h2>שיתוף פעולה</h2>
+      <p class="note" id="collaboration-note"></p>
+      <div class="task-list" id="collaboration-metrics"></div>
+      <h2>צוותים</h2>
+      <p class="note" id="teams-note"></p>
+    </aside>
+
+    <section class="panel wide-panel" id="student-section">
+      <h2>פירוט אישי</h2>
+      <div class="report-grid" id="student-report"></div>
+    </section>
+
+    <section class="panel wide-panel hidden" id="teacher-section">
+      <h2>פירוט תלמידים</h2>
+      <div class="task-list" id="teacher-students"></div>
+    </section>
+
+    <section class="panel wide-panel">
+      <h2>דוח צוותים</h2>
+      <div class="task-list" id="team-reports"></div>
+    </section>
+
+    <section class="panel wide-panel">
+      <h2>משימות ומשוב אחרונים</h2>
+      <div class="task-list" id="recent-items"></div>
+    </section>
+  </main>
+
+<script src="/main.js"></script>
+<script>
+let REPORT = null;
+
+function stat(label, value){
+  return `<div class="stat"><b>${esc(value)}</b><span>${esc(label)}</span></div>`;
+}
+
+function exportReport(){
+  if(!REPORT) return toast('הדוח עדיין לא נטען', true);
+  const title = document.getElementById('report-title').textContent || 'דוח התקדמות';
+  const now = new Date().toLocaleString('he-IL');
+  const fileName = `${REPORT.mode === 'student' ? 'student-report' : 'teacher-report'}-${new Date().toISOString().slice(0,10)}.html`;
+  const html = `<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>${esc(title)}</title>
+  <style>
+    body{font-family:Arial,"Noto Sans Hebrew",sans-serif;color:#1d2430;background:#f6f2e9;margin:0}
+    main{max-width:960px;margin:0 auto;padding:28px 16px}
+    section{background:#fffaf0;border:3px solid #2b3038;margin:0 0 14px;padding:18px}
+    h1{margin:0 0 8px;font-size:30px} h2{margin:0 0 10px;font-size:22px}
+    p,li{line-height:1.55}.muted{color:#5a6575}.task-row,.report-card{background:#fff;border:2px solid #c5baa7;padding:12px;margin:8px 0}
+    .stats,.report-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}.stat{background:#fff;border:2px solid #c5baa7;padding:10px}
+    .status-badge{display:inline-block;border:2px solid #b7d8a6;background:#ecf8e7;color:#2f651f;padding:3px 7px;font-weight:700}
+    button{display:none}
+  </style>
+</head>
+<body>
+  <main>
+    <section>
+      <h1>${esc(title)}</h1>
+      <p class="muted">יוצא מתוך Craftom School · ${esc(now)}</p>
+    </section>
+    ${document.querySelector('main').innerHTML}
+  </main>
+</body>
+</html>`;
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = fileName;
+  link.click();
+  URL.revokeObjectURL(url);
+  toast('קובץ הדוח ירד למחשב');
+}
+
+function count(report, key){
+  return (report.tasks && report.tasks.status_counts && report.tasks.status_counts[key]) ||
+    (report.summary && report.summary.status_counts && report.summary.status_counts[key]) || 0;
+}
+
+function reportCard(title, value, detail){
+  return `<div class="report-card"><b>${esc(title)}</b><strong>${esc(value)}</strong><span>${esc(detail || '')}</span></div>`;
+}
+
+function studentRow(row){
+  return `<div class="task-row">
+    <div>
+      <b>${esc(row.name)}</b>
+      <span>${esc(row.completed_lessons)} שיעורים הושלמו · ${esc(row.submitted_tasks)} משימות הוגשו</span>
+      <span>${esc(row.reflections)} רפלקציות · ${esc(row.feedback_count)} משובים · ${esc(row.observations)} תצפיות</span>
+    </div>
+    ${row.needs_fix ? statusBadge('needs_fix') : statusBadge('completed')}
+  </div>`;
+}
+
+function recentRow(item){
+  return `<div class="task-row">
+    <div>
+      <b>${esc(item.student_name || item.task_title || item.title)}</b>
+      <span>${esc(item.task_title || item.message || '')}</span>
+      ${item.feedback ? `<span>משוב: ${esc(item.feedback)}</span>` : ''}
+      ${item.reflection ? `<span>רפלקציה: ${esc(item.reflection)}</span>` : ''}
+    </div>
+    ${statusBadge(item.status || 'feedback')}
+  </div>`;
+}
+
+function metricRow(metric){
+  return `<div class="task-row">
+    <div><b>${esc(metric.label)}</b><span>${esc(metric.count)} תצפיות</span></div>
+    ${metric.count ? statusBadge('feedback') : statusBadge('empty')}
+  </div>`;
+}
+
+function teamReportRow(team){
+  const members = team.members.map(m => m.name).join(', ') || 'אין חברי צוות';
+  const feedbackCount = team.team_feedback ? team.team_feedback.length : 0;
+  const reflectionCount = team.member_reflections ? team.member_reflections.length : 0;
+  return `<div class="task-row">
+    <div>
+      <b>${esc(team.name)}</b>
+      <span>חברי צוות: ${esc(members)}</span>
+      <span>${esc(team.submitted_team_tasks)} משימות צוותיות הוגשו · ${esc(feedbackCount)} משובים צוותיים · ${esc(reflectionCount)} רפלקציות חברי צוות</span>
+    </div>
+    ${statusBadge(team.submitted_team_tasks ? 'submitted' : 'to_do')}
+  </div>`;
+}
+
+function renderTeamReports(report){
+  const teams = report.mode === 'student'
+    ? (report.teams.report ? [report.teams.report] : [])
+    : (report.teams.reports || []);
+  document.getElementById('team-reports').innerHTML = teams.length
+    ? teams.map(teamReportRow).join('')
+    : `<div class="task-row"><div><b>אין עדיין דוח צוות</b><span>אחרי שיוגדרו צוותים והגשות צוותיות, הדוח יתמלא.</span></div>${statusBadge('empty')}</div>`;
+}
+
+function renderCollaboration(report){
+  document.getElementById('collaboration-note').textContent = `${report.collaboration.status} · ${report.collaboration.note}`;
+  document.getElementById('collaboration-metrics').innerHTML = report.collaboration.metrics && report.collaboration.metrics.length
+    ? report.collaboration.metrics.map(metricRow).join('')
+    : `<div class="task-row"><div><b>עוד אין מדדים</b><span>תצפיות מורה יופיעו כאן.</span></div>${statusBadge('empty')}</div>`;
+}
+
+function renderStudent(report){
+  document.getElementById('report-title').textContent = `דוח אישי · ${report.student.name}`;
+  document.getElementById('report-subtitle').textContent = report.class ? `כיתה: ${report.class.name}` : 'עדיין אין שיוך כיתה';
+  document.getElementById('report-stats').innerHTML =
+    stat('שיעורים הושלמו', `${report.lessons.completed}/${report.lessons.total}`) +
+    stat('משימות הוגשו', report.tasks.total_submitted) +
+    stat('משובים', report.feedback.length) +
+    stat('תצפיות', report.collaboration.rows.length);
+  document.getElementById('student-report').innerHTML =
+    reportCard('שיעורים שהושלמו', report.lessons.completed_titles.length ? report.lessons.completed_titles.join(' | ') : 'עדיין אין שיעורים שהושלמו', 'אפשר לחזור לשיעורים שהושלמו מדף הבית') +
+    reportCard('רפלקציות', report.reflections.length, 'כמות רפלקציות שנשמרו מתוך הגשות המשימה') +
+    reportCard('משימות שהושלמו', count(report, 'completed'), 'משימות שמורה סימן כהושלמו') +
+    reportCard('משימות להגשה/תיקון', count(report, 'to_do') + count(report, 'needs_fix'), 'מה שכדאי להשלים לפני השיעור הבא');
+  document.getElementById('recent-items').innerHTML = report.feedback.length ? report.feedback.map(recentRow).join('') : `<div class="task-row"><div><b>עדיין אין משוב</b><span>כשהמורה יכתוב משוב הוא יופיע כאן.</span></div>${statusBadge('empty')}</div>`;
+}
+
+function renderTeacher(report){
+  document.getElementById('report-title').textContent = 'דוח כיתתי למורה';
+  document.getElementById('report-subtitle').textContent = `${report.summary.classes} כיתות · ${report.summary.students} תלמידים`;
+  document.getElementById('report-stats').innerHTML =
+    stat('תלמידים', report.summary.students) +
+    stat('שיעורים שהושלמו', report.summary.completed_lessons) +
+    stat('משימות שהוגשו', report.summary.submitted_tasks) +
+    stat('תצפיות', report.summary.observations);
+  document.getElementById('student-section').classList.add('hidden');
+  document.getElementById('teacher-section').classList.remove('hidden');
+  document.getElementById('teacher-students').innerHTML = report.students.length ? report.students.map(studentRow).join('') : `<div class="task-row"><div><b>אין עדיין תלמידים</b><span>אחרי שתלמידים יצטרפו לכיתה, הדוח יתמלא.</span></div>${statusBadge('empty')}</div>`;
+  document.getElementById('recent-items').innerHTML = report.submissions.length ? report.submissions.map(recentRow).join('') : `<div class="task-row"><div><b>אין עדיין הגשות</b><span>הגשות ומשובים יופיעו כאן.</span></div>${statusBadge('empty')}</div>`;
+}
+
+async function loadReport(){
+  const me = await guard();
+  if(!me) return;
+  document.getElementById('user-label').textContent = `${me.user.name || me.user.email} · דוח התקדמות`;
+  document.getElementById('home-btn').onclick = () => navigateTo(me.home_url || '/');
+  const data = await fetch('/api/reports').then(r => r.json());
+  if(!data.ok) return toast(data.error || 'לא ניתן לטעון דוח', true);
+  const report = data.report;
+  REPORT = report;
+  document.getElementById('collaboration-note').textContent = report.collaboration.note;
+  renderCollaboration(report);
+  document.getElementById('teams-note').textContent = report.teams.note;
+  renderTeamReports(report);
+  if(report.mode === 'student') renderStudent(report);
+  else renderTeacher(report);
+}
+
+loadReport();
+</script>
+</body>
+</html>

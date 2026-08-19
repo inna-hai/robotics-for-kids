@@ -26,9 +26,9 @@ function assertMatches(source, regex, message = `Missing pattern: ${regex}`) { a
 test('space course is a separate entry point and does not replace the smart-city course', () => {
   assertIncludes(smartCityHtml, 'href="space.html"');
   assertIncludes(smartCityHtml, 'שיעור 1: סיסי בחלל');
-  assertIncludes(smartCityHtml, 'href="index.html?lesson=1"');
+  assertIncludes(smartCityHtml, 'href="sensi-city.html?lesson=1"');
   assertIncludes(smartCityHtml, 'סנסי בעיר החכמה');
-  assertIncludes(spaceHtml, 'href="smart-city.html"');
+  assertIncludes(spaceHtml, 'href="sisi.html"');
 });
 
 test('landing page is clearly a space lesson for grade B and frames a 75 minute first lesson', () => {
@@ -52,7 +52,7 @@ test('space course has twelve lightweight missions with child-friendly space fac
     assert.ok(lesson.mission.length >= 20, `Lesson ${lesson.id} needs a mission story`);
     assert.ok(lesson.spaceFact.length >= 20, `Lesson ${lesson.id} needs a space fact`);
     assert.ok(lesson.commands.length >= 3, `Lesson ${lesson.id} needs a demo command path`);
-    assert.ok(lesson.commands.every((cmd) => ['up', 'down', 'right', 'left'].includes(cmd)), `Lesson ${lesson.id} has unsupported command`);
+    assert.ok(lesson.commands.every((cmd) => ['up', 'down', 'right', 'left', 'broadcast'].includes(cmd)), `Lesson ${lesson.id} has unsupported command`);
   }
   assert.deepEqual(Array.from(lessons, (lesson) => lesson.id), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
 });
@@ -74,8 +74,16 @@ test('demo solutions reach each goal, collect required items, and avoid obstacle
     const obstacles = new Set(lesson.obstacles.map((point) => `${point.x},${point.y}`));
     const required = new Set((lesson.requiredItems || []).map((item) => `${item.position.x},${item.position.y}`));
     const collectedRequired = new Set();
+    let greetedAlien = false;
     const pos = { ...lesson.start };
     for (const cmd of lesson.commands) {
+      if (cmd === 'broadcast') {
+        assert.equal(lesson.id, 5, 'Broadcast command should only appear in lesson 5');
+        assert.equal(pos.x, lesson.goal.x, 'Lesson 5 should broadcast only after reaching the alien x');
+        assert.equal(pos.y, lesson.goal.y, 'Lesson 5 should broadcast only after reaching the alien y');
+        greetedAlien = true;
+        continue;
+      }
       const [dx, dy] = deltas[cmd];
       pos.x += dx;
       pos.y += dy;
@@ -86,8 +94,76 @@ test('demo solutions reach each goal, collect required items, and avoid obstacle
     }
     assert.equal(pos.x, lesson.goal.x, `Lesson ${lesson.id} demo should reach the goal x`);
     assert.equal(pos.y, lesson.goal.y, `Lesson ${lesson.id} demo should reach the goal y`);
+    if (lesson.id === 5) assert.equal(greetedAlien, true, 'Lesson 5 demo should broadcast hello to the alien');
     assert.deepEqual(collectedRequired, required, `Lesson ${lesson.id} demo should collect all required items`);
   }
+});
+
+test('lesson 5 adds a broadcast hello action and keeps the alien visible with Sisi', () => {
+  const alienLesson = lessons.find((item) => item.id === 5);
+  assert.ok(alienLesson.commands.includes('broadcast'));
+  assertIncludes(playSource, "broadcast: '📡 שדר שלום'");
+  assertIncludes(playSource, 'data-cmd="broadcast"');
+  assertIncludes(playSource, "'🤖👽'");
+  assertIncludes(playSource, 'greetedAlien');
+});
+
+test('lesson 8 shows the telescope carried with Sisi after pickup', () => {
+  const telescopeLesson = lessons.find((item) => item.id === 8);
+  assert.equal(telescopeLesson.requiredItems?.[0]?.id, 'telescope');
+  assertIncludes(playSource, 'function carriedItemIcon()');
+  assertIncludes(playSource, "lesson.id !== 8");
+  assertIncludes(playSource, "item.id === 'telescope'");
+  assertIncludes(playSource, '`🤖${carriedItemIcon()}`');
+});
+
+test('space course explains when a route passes the goal instead of reporting a fake obstacle', () => {
+  assertIncludes(playSource, 'reachedGoalDuringRun');
+  assertIncludes(playSource, 'סיסי כבר הגיעה ליעד');
+  assertIncludes(playSource, 'המסלול המשיך צעד אחד יותר מדי');
+});
+
+test('lesson 9 includes the requested top-right bonus star', () => {
+  const lesson = lessons.find((item) => item.id === 9);
+  assert.ok(lesson.stars.some((star) => star.x === 6 && star.y === 1), 'Lesson 9 should include a requested star at the top-right corner 6,1');
+  assert.equal(lesson.obstacles.some((obstacle) => obstacle.x === 1 && obstacle.y === 5), false, 'Lesson 9 should not keep the bottom-left obstacle');
+});
+
+test('lesson 11 includes the requested bottom-left obstacle', () => {
+  const lesson = lessons.find((item) => item.id === 11);
+  assert.ok(lesson.obstacles.some((obstacle) => obstacle.x === 1 && obstacle.y === 5), 'Lesson 11 should include a requested obstacle at the bottom-left corner 1,5');
+});
+
+test('lesson 12 goal is moved one cell left', () => {
+  const lesson = lessons.find((item) => item.id === 12);
+  assert.equal(lesson.goal.x, 5);
+  assert.equal(lesson.goal.y, 5);
+  assert.equal(lesson.commands.at(-1), 'left', 'Lesson 12 demo should end with a left move into the shifted goal');
+});
+
+test('lesson 12 uses Earth as the goal and includes an extra obstacle', () => {
+  const lesson = lessons.find((item) => item.id === 12);
+  assert.ok(lesson.obstacles.some((obstacle) => obstacle.x === 1 && obstacle.y === 4), 'Lesson 12 should include the extra obstacle at 1,4');
+  assertIncludes(playSource, "if (lesson.id === 12) return '🌍';");
+});
+
+test('lesson 12 ends with an open star-collection challenge', () => {
+  const lesson = lessons.find((item) => item.id === 12);
+  assertIncludes(lesson.mission, 'אתגר פתוח לסיום');
+  assertIncludes(lesson.mission, 'לאסוף כמה שיותר כוכבים');
+});
+
+test('lesson 12 includes the requested bottom-left-adjacent star', () => {
+  const lesson = lessons.find((item) => item.id === 12);
+  assert.ok(lesson.stars.some((star) => star.x === 2 && star.y === 5), 'Lesson 12 should include a star to the right of the bottom-left corner at 2,5');
+});
+
+test('space course shows a total collected stars counter without a max total', () => {
+  assertIncludes(playSource, 'sisi-space-stars-best-v1');
+  assertIncludes(playSource, 'function saveBestStarsForLesson()');
+  assertIncludes(playSource, '⭐ כוכבים שנאספו בשיעור החלל:');
+  assertIncludes(playSource, 'שיא חדש במשימה');
+  assertIncludes(spaceCss, '.stars-progress');
 });
 
 test('interactive play page exposes simple controls, run/reset flow, and lesson navigation', () => {
@@ -102,7 +178,7 @@ test('interactive play page exposes simple controls, run/reset flow, and lesson 
   assertIncludes(playHtml, 'id="run"');
   assertIncludes(playHtml, 'id="undo"');
   assertIncludes(playHtml, 'id="clear"');
-  assertIncludes(playHtml, '🔄 איפוס');
+  assertIncludes(playHtml, '🔁 לנסות שוב');
   assertIncludes(playHtml, 'id="demo"');
   assertIncludes(playHtml, 'js/course-certificate.js');
   assertIncludes(playHtml, 'js/space-play.js');
@@ -113,6 +189,14 @@ test('interactive play page exposes simple controls, run/reset flow, and lesson 
   assertIncludes(playSource, 'פתרון לדוגמה נטען');
   assertIncludes(playSource, 'lessons.map((item)');
   assertIncludes(playSource, 'requiredItems');
+});
+
+test('space success opens a decision dialog and repeat resets the current lesson', () => {
+  assertIncludes(playSource, 'SisiSuccessDialog?.show');
+  assertIncludes(playSource, 'function repeatCurrentLesson');
+  assertIncludes(playSource, 'program = []');
+  assertIncludes(playSource, 'השיעור אופס');
+  assertIncludes(playHtml, 'js/space-play.js?v=20260813-stop-run');
 });
 
 test('game board uses left-to-right grid direction so right and left buttons move visually correctly', () => {

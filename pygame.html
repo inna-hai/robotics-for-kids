@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎮 Pygame Lab — לומדת משחקים בפייתון</title>
+  <meta name="description" content="לומדת Pygame עצמאית: 28 שיעורים, מערך מדריך, תרגולים, בלוקים, קוד Python בסגנון Pygame ומסך משחק עובד." />
+  <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+  <script src="https://unpkg.com/blockly/msg/he.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{--gap:clamp(.35rem,.65vw,.65rem);--panel-radius:clamp(.75rem,1vw,1.1rem);--topbar:clamp(2.8rem,5.2dvh,3.45rem);--sidebar:clamp(11.5rem,15vw,15rem);--game:clamp(22rem,34vw,36rem);--code:clamp(9.5rem,24dvh,14rem);--pad:clamp(.45rem,.8vw,.75rem);--text:clamp(.78rem,.95vw,.9rem);--small:clamp(.66rem,.8vw,.76rem);--shadow:0 .65rem 1.7rem rgba(0,0,0,.2)}
+    *{box-sizing:border-box}html,body{inline-size:100%;block-size:100%;margin:0;overflow:hidden}body{font-family:Rubik,Arial,sans-serif;background:linear-gradient(135deg,#07111f,#1d4ed8 50%,#7c3aed);color:#0f172a}.app{block-size:100dvh;display:grid;grid-template-rows:var(--topbar) minmax(0,1fr);overflow:hidden}.topbar{display:grid;grid-template-columns:minmax(12rem,1fr) auto;gap:var(--gap);align-items:center;padding:calc(var(--pad)*.55) var(--pad);background:rgba(255,255,255,.95);border-block-end:1px solid rgba(15,23,42,.12);box-shadow:0 .35rem 1.1rem rgba(0,0,0,.16);z-index:20;min-block-size:0}.brand{display:flex;align-items:center;gap:.45rem;font-weight:900;font-size:clamp(.86rem,1.15vw,1.03rem);min-inline-size:0}.brand .bot{font-size:clamp(1.2rem,1.8vw,1.55rem)}.brand small{display:block;color:#64748b;font-size:clamp(.6rem,.8vw,.7rem);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nav{display:flex;gap:.35rem;flex-wrap:nowrap;justify-content:flex-start}.nav a{border:1px solid #e2e8f0;border-radius:999rem;padding:.38rem .62rem;text-decoration:none;font-weight:900;color:#0f172a;background:white;font-size:clamp(.7rem,.9vw,.82rem);white-space:nowrap}.nav a.primary{background:linear-gradient(135deg,#22c55e,#38bdf8);border-color:transparent}.layout{block-size:100%;min-block-size:0;display:grid;grid-template-columns:var(--sidebar) minmax(20rem,1fr) var(--game);gap:var(--gap);padding:var(--gap);overflow:hidden}.panel{background:rgba(255,255,255,.96);border:1px solid rgba(255,255,255,.36);border-radius:var(--panel-radius);box-shadow:var(--shadow);overflow:hidden;min-block-size:0}.lessons{display:grid;grid-template-rows:auto auto minmax(0,1fr) minmax(4.5rem,auto);gap:.4rem;padding:var(--pad);overflow:hidden}.lessons h1{font-size:clamp(.92rem,1.2vw,1.1rem);margin:0}.lessons p{line-height:1.35;color:#475569;margin:0;font-size:var(--text)}.lesson-list{overflow:auto;padding-inline-start:.1rem;min-block-size:0}.lesson{inline-size:100%;text-align:right;border:.11rem solid #e2e8f0;background:white;border-radius:.72rem;padding:.45rem .52rem;margin:.26rem 0;cursor:pointer;font-family:inherit;display:grid;grid-template-columns:1fr;gap:.16rem;align-items:center}.lesson.active{border-color:#22c55e;background:#f0fdf4}.lesson b{font-size:clamp(.7rem,.86vw,.82rem);line-height:1.18}.lesson span{color:#64748b;font-size:.64rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.teacher-note{background:#f8fafc;border:1px dashed #94a3b8;border-radius:.8rem;padding:.5rem;line-height:1.33;color:#334155;font-size:clamp(.68rem,.82vw,.78rem);max-block-size:clamp(4.7rem,12dvh,7.5rem);overflow:auto}.workspace{display:grid;grid-template-rows:auto minmax(0,1fr) var(--code);overflow:hidden}.head{padding:.48rem .62rem;border-block-end:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;gap:.5rem;min-block-size:0}.head h2{font-size:clamp(.78rem,1vw,.92rem);margin:0}.hint{font-size:var(--small);color:#64748b;font-weight:800}.blockly-area{block-size:100%;min-block-size:0;direction:ltr}.code-box{border-block-start:1px solid #e2e8f0;background:#07111f;color:#d7fbe8;display:grid;grid-template-rows:auto minmax(0,1fr);min-block-size:0}.code-title{padding:.38rem .58rem;color:#93c5fd;font-weight:900;display:flex;justify-content:space-between;font-size:clamp(.68rem,.85vw,.8rem)}.code{margin:0;padding:.5rem .58rem;overflow:auto;direction:ltr;text-align:left;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:clamp(.64rem,.78vw,.78rem);line-height:1.35;white-space:pre}.game-panel{display:grid;grid-template-rows:auto minmax(0,1fr) auto minmax(8rem,32dvh);overflow:hidden}.stage-wrap{background:linear-gradient(180deg,#020617,#0f172a);display:grid;place-items:center;padding:var(--gap);min-block-size:0;overflow:hidden}.stage{position:relative;inline-size:min(100%,calc((100dvh - var(--topbar) - 11rem)*1.333));max-block-size:100%;aspect-ratio:4/3;background:#111827;border:.14rem solid #475569;border-radius:.9rem;overflow:hidden;box-shadow:inset 0 0 0 .1rem rgba(255,255,255,.08)}canvas{position:absolute;inset:0;inline-size:100%;block-size:100%}.screen-label{position:absolute;inset-block-start:.45rem;inset-inline-start:.45rem;background:rgba(15,23,42,.85);color:#e0f2fe;border:1px solid rgba(148,163,184,.4);border-radius:999rem;padding:.24rem .45rem;font-weight:900;font-size:clamp(.58rem,.72vw,.68rem)}.actions{padding:.45rem .58rem;display:flex;gap:.38rem;flex-wrap:wrap;border-block-start:1px solid #e2e8f0;background:white;align-items:center}.btn{border:0;border-radius:999rem;padding:.48rem .66rem;font-weight:900;font-family:inherit;cursor:pointer;background:#0f172a;color:white;font-size:clamp(.68rem,.86vw,.82rem)}.btn.run{background:linear-gradient(135deg,#16a34a,#22c55e)}.btn.reset{background:#f1f5f9;color:#0f172a}.btn.demo{background:linear-gradient(135deg,#7c3aed,#2563eb)}.btn.slides{background:linear-gradient(135deg,#f97316,#facc15);color:#111827;text-decoration:none}.btn.slides.unavailable{display:none}.mission{padding:.55rem .65rem;background:#fff7ed;border-block-start:1px solid #fed7aa;line-height:1.33;color:#7c2d12;overflow:auto;min-block-size:0;font-size:clamp(.72rem,.88vw,.84rem)}.mission h3{margin:0 0 .28rem;color:#9a3412;font-size:.95em}.mission b{color:#9a3412}.mission ul,.mission ol{margin:.3rem 0 0;padding-inline-start:1rem}.meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.35rem;margin:.35rem 0}.meta div{background:white;border:1px solid #fed7aa;border-radius:.65rem;padding:.42rem}.section-box{background:white;border:1px solid #fed7aa;border-radius:.72rem;padding:.46rem;margin:.38rem 0}.chips{display:flex;gap:.3rem;flex-wrap:wrap;margin-block-start:.38rem}.chip{background:#eef2ff;color:#3730a3;border-radius:999rem;padding:.26rem .4rem;font-size:clamp(.58rem,.7vw,.66rem);font-weight:900}.blocklyToolboxDiv{font-family:Rubik,Arial,sans-serif}.blocklyTreeLabel{font-family:Rubik,Arial,sans-serif;font-weight:800;font-size:.78rem}.blocklyTreeRow{height:1.85rem!important;line-height:1.85rem!important}.blocklyFlyoutLabelText{font-family:Rubik,Arial,sans-serif!important;font-weight:900!important;fill:#475569!important;font-size:.82rem!important}.blocklyFlyoutBackground{fill:#f8fafc!important}
+    @media(max-width:64rem){html,body{overflow:auto}.app{block-size:auto;min-block-size:100dvh;overflow:visible}.layout{block-size:auto;grid-template-columns:minmax(15rem,.8fr) minmax(22rem,1.2fr);grid-template-areas:'lessons workspace' 'game game';overflow:visible}.lessons{grid-area:lessons;max-block-size:44rem}.workspace{grid-area:workspace;min-block-size:min(48rem,88dvh)}.game-panel{grid-area:game;min-block-size:min(45rem,90dvh)}.stage{inline-size:min(38rem,88vw)}}
+    @media(max-width:48rem){.topbar{grid-template-columns:1fr;grid-template-rows:auto auto;block-size:auto}.nav{flex-wrap:wrap}.layout{grid-template-columns:1fr;grid-template-areas:'lessons' 'workspace' 'game'}.lessons{max-block-size:none}.workspace{min-block-size:44rem}.game-panel{min-block-size:42rem}.meta{grid-template-columns:1fr}.nav a{flex:1;text-align:center}.stage{inline-size:min(34rem,90vw)}}
+    @media(max-width:34rem){:root{--pad:.5rem;--gap:.38rem;--code:9rem}.brand small{white-space:normal}.workspace{min-block-size:38rem}.game-panel{min-block-size:36rem}.actions .btn{flex:1}.screen-label{display:none}}
+  </style>
+  <link rel="stylesheet" href="css/platform-home-link.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand"><span class="bot">🎮</span><span>Pygame Lab<small>לומדה לתרגול משחקים בפייתון</small></span></div>
+      <nav class="nav" aria-label="ניווט"><a class="primary" href="pygame.html">הלומדה</a><a href="pygame-course.html">עמוד הקורס</a></nav>
+    </header>
+    <main class="layout">
+      <aside class="panel lessons"><h1 id="sideTitle">בחרו שיעור</h1><p id="sideIntro">כל השיעור בתוך הלומדה: פתיחה, הסבר, תרגולים, דגשי מדריך והרצה.</p><div class="lesson-list" id="lessonList"></div><div class="teacher-note" id="sideNote"></div></aside>
+      <section class="panel workspace"><div class="head"><h2>1. בונים לוגיקה בבלוקים</h2><span class="hint">הקוד מתעדכן אוטומטית</span></div><div id="blocklyDiv" class="blockly-area"></div><section class="code-box"><div class="code-title">2. קוד Python בסגנון Pygame <small>הסימולטור מריץ את הבלוקים</small></div><pre id="pythonCode" class="code"></pre></section></section>
+      <section class="panel game-panel"><div class="head"><h2>3. מסך המשחק</h2><span id="status" class="hint">מוכן</span></div><div class="stage-wrap"><div class="stage"><canvas id="gameCanvas" width="640" height="480"></canvas><div class="screen-label">pygame.display.set_mode((640, 480))</div></div></div><div class="actions"><button class="btn run" id="runBtn">▶️ הרץ משחקון</button><button class="btn reset" id="resetBtn">🔄 איפוס</button><button class="btn demo" id="demoBtn">✨ טען דוגמת שיעור</button><a class="btn slides" id="slideBtn" href="pygame-slides.html" target="_blank" rel="noopener">📽️ מצגת השיעור</a></div><div class="mission" id="mission"></div></section>
+    </main>
+  </div>
+
+  <xml id="toolbox" style="display:none">
+    <label text="מסך"></label>
+    <block type="pg_screen"></block>
+    <block type="pg_background"><field name="COLOR">#0f172a</field></block>
+    <label text="משחק"></label>
+    <block type="pg_loop"></block>
+    <label text="הסבר"></label>
+    <block type="pg_comment"><field name="TEXT">מה המשחק עושה?</field></block>
+  </xml>
+
+  <script src="content/pygame-lessons.js"></script>
+  <script>
+    let workspace, currentLesson = 1;
+
+    const LESSON_PRESETS = {
+      1:['pg_screen','pg_background','#0f172a','pg_loop'],
+      2:['pg_screen','pg_player',300,220,'pg_draw_player','pg_loop'],
+      3:['pg_screen','pg_player',300,220,'pg_speed',6,'pg_move_keys','pg_draw_player','pg_loop'],
+      4:['pg_screen','pg_player',300,220,'pg_speed',8,'pg_move_keys','pg_keep_inside','pg_draw_player','pg_loop'],
+      5:['pg_screen','pg_background','#111827','pg_player',220,220,'pg_draw_player','pg_coin',420,220,'pg_loop'],
+      6:['pg_screen','pg_background','#0f172a','pg_player',300,220,'pg_draw_player','pg_loop'],
+      7:['pg_screen','pg_background','#172554','pg_player',180,180,'pg_draw_player','pg_coin',410,250,'pg_loop'],
+      8:['pg_screen','pg_player',300,220,'pg_speed',7,'pg_move_keys','pg_keep_inside','pg_draw_player','pg_loop'],
+      9:['pg_comment','פונקציה: קודם מעדכנים ואז מציירים','pg_screen','pg_player',300,220,'pg_draw_player','pg_loop'],
+      10:['pg_comment','class Circle / Rect עם self','pg_screen','pg_player',300,220,'pg_speed',6,'pg_move_keys','pg_draw_player','pg_loop'],
+      11:['pg_screen','pg_player',320,220,'pg_draw_player','pg_coin',360,220,'pg_collision','pg_score','pg_loop'],
+      12:['pg_screen','pg_background','#312e81','pg_player',260,210,'pg_draw_player','pg_coin',440,230,'pg_obstacle',520,330,'pg_loop'],
+      13:['pg_comment','פרויקט: שחקן + מטרה + ניקוד','pg_screen','pg_player',260,220,'pg_draw_player','pg_coin',420,220,'pg_collision','pg_score','pg_loop'],
+      14:['pg_screen','pg_player',300,220,'pg_speed',10,'pg_move_keys','pg_draw_player','pg_obstacle',420,210,'pg_game_over','pg_loop'],
+      15:['pg_screen','pg_background','#082f49','pg_player',260,220,'pg_speed',10,'pg_move_keys','pg_keep_inside','pg_draw_player','pg_coin',420,220,'pg_collision','pg_score','pg_loop'],
+      16:['pg_comment','סיכום: input → update → draw → display','pg_screen','pg_player',300,220,'pg_speed',8,'pg_move_keys','pg_keep_inside','pg_draw_player','pg_coin',420,220,'pg_collision','pg_score','pg_loop'],
+      17:['pg_comment','עכבר: pygame.mouse.get_pos / MOUSEBUTTONDOWN','pg_screen','pg_player',260,220,'pg_draw_player','pg_coin',420,220,'pg_loop'],
+      18:['pg_comment','טיימר: pygame.USEREVENT + set_timer','pg_screen','pg_player',120,220,'pg_draw_player','pg_obstacle',520,240,'pg_game_over','pg_loop'],
+      19:['pg_comment','Simon: sequence של צבעים','pg_screen','pg_background','#1e1b4b','pg_score','pg_loop'],
+      20:['pg_comment','Simon: משווים player_input מול sequence','pg_screen','pg_background','#1e1b4b','pg_score','pg_loop'],
+      21:['pg_comment','Simon: מצבי משחק show / input / game_over','pg_screen','pg_background','#1e1b4b','pg_score','pg_loop'],
+      22:['pg_comment','Trex: מכשול זז שמאלה','pg_screen','pg_player',120,350,'pg_draw_player','pg_obstacle',520,330,'pg_loop'],
+      23:['pg_comment','Trex: קפיצה + כבידה','pg_screen','pg_player',120,330,'pg_speed',12,'pg_move_keys','pg_draw_player','pg_obstacle',520,330,'pg_loop'],
+      24:['pg_comment','Trex: ניקוד וקושי עולה','pg_screen','pg_player',120,350,'pg_draw_player','pg_obstacle',520,330,'pg_score','pg_game_over','pg_loop'],
+      25:['pg_comment','מבוך: player_rect וגבולות','pg_screen','pg_background','#111827','pg_player',300,220,'pg_speed',6,'pg_move_keys','pg_keep_inside','pg_draw_player','pg_loop'],
+      26:['pg_comment','מבוך: maze[row][col] == 1 קיר, 2 מטרה','pg_screen','pg_background','#111827','pg_player',80,80,'pg_draw_player','pg_coin',520,380,'pg_loop'],
+      27:['pg_comment','נחש מספר: random_number + guesses[]','pg_screen','pg_background','#0c4a6e','pg_score','pg_loop'],
+      28:['pg_comment','ניחוש מילים: word_list + random.choice + guessed_letters','pg_screen','pg_background','#3b0764','pg_score','pg_loop']
+    };
+
+    const BLOCK_GROUPS = [
+      {key:'screen', label:'מסך', types:['pg_screen','pg_background']},
+      {key:'player', label:'דמות ותנועה', types:['pg_player','pg_speed','pg_move_keys','pg_keep_inside']},
+      {key:'draw', label:'ציור ואובייקטים', types:['pg_draw_player','pg_coin','pg_obstacle']},
+      {key:'game', label:'חוקי משחק', types:['pg_loop','pg_score','pg_collision','pg_game_over']},
+      {key:'note', label:'הסבר', types:['pg_comment']}
+    ];
+    const BLOCK_UNLOCK_LESSON = {
+      pg_screen:1, pg_background:1, pg_loop:1, pg_comment:1,
+      pg_player:2, pg_draw_player:2,
+      pg_speed:3, pg_move_keys:3,
+      pg_keep_inside:4,
+      pg_coin:5,
+      pg_score:5,
+      pg_collision:11,
+      pg_obstacle:12,
+      pg_game_over:14
+    };
+    function blockXml(type){
+      if(type==='pg_background') return '<block type="pg_background"><field name="COLOR">#0f172a</field></block>';
+      if(type==='pg_player') return '<block type="pg_player"><field name="X">300</field><field name="Y">220</field></block>';
+      if(type==='pg_speed') return '<block type="pg_speed"><field name="SPEED">5</field></block>';
+      if(type==='pg_coin') return '<block type="pg_coin"><field name="X">460</field><field name="Y">220</field></block>';
+      if(type==='pg_obstacle') return '<block type="pg_obstacle"><field name="X">520</field><field name="Y">340</field></block>';
+      if(type==='pg_comment') return '<block type="pg_comment"><field name="TEXT">מה המשחק עושה?</field></block>';
+      return `<block type="${type}"></block>`;
+    }
+    function lessonTypes(id){
+      return BLOCK_GROUPS.flatMap(g => g.types).filter(type => (BLOCK_UNLOCK_LESSON[type] || 99) <= id);
+    }
+    function toolboxForLesson(id){
+      const allowed = new Set(lessonTypes(id));
+      let xml = '<xml>';
+      for (const group of BLOCK_GROUPS) {
+        const types = group.types.filter(type => allowed.has(type));
+        if (!types.length) continue;
+        xml += `<label text="${group.label}"></label>`;
+        xml += types.map(blockXml).join('');
+        xml += '<sep gap="8"></sep>';
+      }
+      return xml + '</xml>';
+    }
+    function updateLessonToolbox(id){
+      if(!workspace?.updateToolbox) return;
+      workspace.updateToolbox(Blockly.utils.xml.textToDom(toolboxForLesson(id)));
+      setTimeout(() => Blockly.svgResize(workspace), 0);
+    }
+    function presetToXml(items){
+      const blocks=[];
+      for(let i=0;i<items.length;i++){
+        const t=items[i]; let fields='';
+        if(t==='pg_background') fields=`<field name="COLOR">${items[++i]}</field>`;
+        if(t==='pg_player') fields=`<field name="X">${items[++i]}</field><field name="Y">${items[++i]}</field>`;
+        if(t==='pg_speed') fields=`<field name="SPEED">${items[++i]}</field>`;
+        if(t==='pg_coin') fields=`<field name="X">${items[++i]}</field><field name="Y">${items[++i]}</field>`;
+        if(t==='pg_obstacle') fields=`<field name="X">${items[++i]}</field><field name="Y">${items[++i]}</field>`;
+        if(t==='pg_comment') fields=`<field name="TEXT">${String(items[++i]).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')}</field>`;
+        blocks.push({type:t,fields});
+      }
+      let chain='';
+      for(let i=blocks.length-1;i>=0;i--){
+        const b=blocks[i];
+        chain=`<block type="${b.type}"${i===0?' x="30" y="20"':''}>${b.fields}${chain?`<next>${chain}</next>`:''}</block>`;
+      }
+      return `<xml>${chain}</xml>`;
+    }
+    function loadLessonPreset(id){ if(!workspace) return; updateLessonToolbox(id); workspace.clear(); const xml=Blockly.utils.xml.textToDom(presetToXml(LESSON_PRESETS[id]||LESSON_PRESETS[1])); Blockly.Xml.domToWorkspace(xml,workspace); updateCode(); Blockly.svgResize(workspace); drawScene(simulateBlocks(false)); }
+    const blockCode = {
+      pg_screen: () => 'pygame.init()\nscreen = pygame.display.set_mode((640, 480))\npygame.display.set_caption("Pygame Lab")\nclock = pygame.time.Clock()',
+      pg_background: b => `screen.fill("${b.getFieldValue('COLOR') || '#0f172a'}")`,
+      pg_player: b => `player = pygame.Rect(${num(b,'X',300)}, ${num(b,'Y',220)}, 42, 42)`,
+      pg_speed: b => `speed = ${num(b,'SPEED',5)}`,
+      pg_move_keys: () => 'keys = pygame.key.get_pressed()\nif keys[pygame.K_RIGHT]: player.x += speed\nif keys[pygame.K_LEFT]: player.x -= speed\nif keys[pygame.K_DOWN]: player.y += speed\nif keys[pygame.K_UP]: player.y -= speed',
+      pg_keep_inside: () => 'player.clamp_ip(screen.get_rect())',
+      pg_draw_player: () => 'pygame.draw.rect(screen, "#22c55e", player, border_radius=10)',
+      pg_coin: b => `coin = pygame.Rect(${num(b,'X',460)}, ${num(b,'Y',220)}, 26, 26)\npygame.draw.ellipse(screen, "gold", coin)`,
+      pg_obstacle: b => `obstacle = pygame.Rect(${num(b,'X',520)}, ${num(b,'Y',340)}, 42, 70)\npygame.draw.rect(screen, "#ef4444", obstacle, border_radius=8)`,
+      pg_loop: () => 'running = True\nwhile running:\n    for event in pygame.event.get():\n        if event.type == pygame.QUIT:\n            running = False\n    # input → update → draw → display\n    pygame.display.flip()\n    clock.tick(60)',
+      pg_score: () => 'score = 0\nfont = pygame.font.SysFont(None, 36)\nscore_text = font.render(f"Score: {score}", True, "white")\nscreen.blit(score_text, (20, 20))',
+      pg_collision: () => 'if player.colliderect(coin):\n    score += 1\n    coin.x = 80\n    coin.y = 80',
+      pg_game_over: () => 'if player.colliderect(obstacle):\n    game_over = True\n    print("Game Over")',
+      pg_comment: b => `# ${b.getFieldValue('TEXT') || 'הערה'}`
+    };
+    function num(block, field, fallback){ const n = Number(block.getFieldValue(field)); return Number.isFinite(n) ? n : fallback; }
+    function defineBlocks(){
+      const simple = (type, text, args, color) => { Blockly.Blocks[type] = { init(){ this.appendDummyInput().appendField(text); for (const a of args||[]) this.appendDummyInput().appendField(a.label).appendField(new Blockly.FieldNumber(a.value), a.name); this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(color); } }; };
+      simple('pg_screen','אתחול Pygame וחלון',[],210); Blockly.Blocks.pg_background={init(){this.appendDummyInput().appendField('צבע רקע').appendField(new Blockly.FieldDropdown([['כחול כהה','#0f172a'],['שחור','#020617'],['סגול','#312e81'],['ים','#0c4a6e'],['ירוק','#14532d'],['לבן','#ffffff']]),'COLOR');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(210)}};
+      simple('pg_player','דמות player',[{label:'x',name:'X',value:300},{label:'y',name:'Y',value:220}],120); simple('pg_speed','מהירות',[{label:'speed',name:'SPEED',value:5}],120); simple('pg_move_keys','תנועה עם מקשי חצים',[],120); simple('pg_keep_inside','שמור דמות בתוך המסך',[],120);
+      simple('pg_draw_player','צייר player',[],25); simple('pg_coin','מטבע',[{label:'x',name:'X',value:460},{label:'y',name:'Y',value:220}],25); simple('pg_obstacle','מכשול',[{label:'x',name:'X',value:520},{label:'y',name:'Y',value:340}],25);
+      simple('pg_loop','לולאת משחק',[],270); simple('pg_score','ניקוד',[],270); simple('pg_collision','אם player נוגע במטבע',[],270); simple('pg_game_over','אם player נוגע במכשול',[],270); Blockly.Blocks.pg_comment={init(){this.appendDummyInput().appendField('הערה').appendField(new Blockly.FieldTextInput('מה המשחק עושה?'),'TEXT');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(0)}};
+    }
+    function walk(block){ const out=[block]; let child=block.getNextBlock(); while(child){ out.push(...walk(child)); child=child.getNextBlock(); } return out; }
+    function blocks(){ return workspace ? workspace.getTopBlocks(true).flatMap(walk) : []; }
+    function workspaceCode(){ const body=blocks().map(b=>blockCode[b.type]?.(b)||'').filter(Boolean).join('\n\n'); return 'import pygame\n\n' + (body || '# גררו בלוקים כדי לבנות משחקון Pygame') + '\n\npygame.quit()'; }
+    function updateCode(){ document.getElementById('pythonCode').textContent=workspaceCode(); }
+    function renderLessons(){ const list=document.getElementById('lessonList'); list.innerHTML=''; for(const l of PYGAME_LESSONS){ const btn=document.createElement('button'); btn.className='lesson'+(l.id===currentLesson?' active':''); btn.innerHTML=`<b>${l.id}. ${l.title}</b><span>${l.concept}</span>`; btn.onclick=()=>setLesson(l.id); list.appendChild(btn); } }
+
+
+    function lessonSlideUrl(id){ return ({1:'pygame-lesson-1-slides.html',2:'pygame-lesson-2-slides.html'})[id] || ''; }
+    function updateSlideButton(id){ const btn=document.getElementById('slideBtn'); if(!btn) return; const url=lessonSlideUrl(id); if(url){ btn.href=url; btn.classList.remove('unavailable'); btn.textContent='📽️ מצגת שיעור '+id; } else { btn.href='pygame-slides.html'; btn.classList.add('unavailable'); } }
+    function sourceBox(l){ const src=SOURCE_ENRICHMENT[l.id]; if(!src) return ''; return `<div class="section-box"><b>דוגמאות ותרגילי העמקה:</b><br>${src.source}<div class="chips">${src.examples.map(x=>`<span class="chip">${x.replaceAll('<','&lt;')}</span>`).join('')}</div><b>משימות תרגול:</b><ol>${src.tasks.map(x=>`<li>${x}</li>`).join('')}</ol></div>`; }
+    function setLesson(id){ currentLesson=id; const l=PYGAME_LESSONS.find(x=>x.id===id)||PYGAME_LESSONS[0]; renderLessons(); document.getElementById('sideTitle').textContent=`שיעור ${l.id}: ${l.title}`; document.getElementById('sideIntro').textContent=l.goal; document.getElementById('sideNote').innerHTML=`<b>דגש מדריך:</b> ${l.teacher}<div class="chips"><span class="chip">${l.concept}</span><span class="chip">${l.product}</span></div>`; document.getElementById('mission').innerHTML=`<h3>מהלך השיעור</h3><div class="meta"><div><b>מושג</b><br>${l.concept}</div><div><b>תוצר</b><br>${l.product}</div></div><div class="section-box"><b>הסבר לתלמיד:</b><br>${l.explain}</div>${sourceBox(l)}<div class="section-box"><b>תרגולים:</b><ol>${l.practice.map(x=>`<li>${x}</li>`).join('')}</ol></div><div class="section-box"><b>מבנה 90 דקות:</b><ul>${l.timing.map(x=>`<li>${x}</li>`).join('')}</ul></div>`; const url=new URL(location.href); url.searchParams.set('lesson',id); history.replaceState(null,'',url); updateSlideButton(l.id); loadLessonPreset(l.id); }
+    function loadDemo(){ loadLessonPreset(currentLesson); }
+    function simulateBlocks(run){ const state={bg:'#0f172a',player:{x:300,y:220,w:42,h:42},speed:0,coin:null,obstacle:null,score:0,gameOver:false,hasPlayer:false,hasScore:false,hasBounds:false}; for(const b of blocks()){ if(b.type==='pg_background') state.bg=b.getFieldValue('COLOR')||state.bg; if(b.type==='pg_player'){state.player.x=num(b,'X',300);state.player.y=num(b,'Y',220);state.hasPlayer=true;} if(b.type==='pg_speed') state.speed=num(b,'SPEED',5); if(b.type==='pg_move_keys'&&run){state.player.x+=state.speed;state.player.y-=Math.round(state.speed/2);} if(b.type==='pg_keep_inside') state.hasBounds=true; if(b.type==='pg_coin') state.coin={x:num(b,'X',460),y:num(b,'Y',220),w:26,h:26}; if(b.type==='pg_obstacle') state.obstacle={x:num(b,'X',520),y:num(b,'Y',340),w:42,h:70}; if(b.type==='pg_score') state.hasScore=true; }
+      if(state.hasBounds){ state.player.x=Math.max(0,Math.min(640-state.player.w,state.player.x)); state.player.y=Math.max(0,Math.min(480-state.player.h,state.player.y)); }
+      if(run && state.coin && rectHit(state.player,state.coin)){ state.score=1; state.coin.x=80; state.coin.y=80; }
+      if(run && state.obstacle && rectHit(state.player,state.obstacle)) state.gameOver=true; return state; }
+    function rectHit(a,b){return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y}
+    function drawScene(state){ const c=document.getElementById('gameCanvas'),ctx=c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height); ctx.fillStyle=state.bg||'#0f172a'; ctx.fillRect(0,0,c.width,c.height); ctx.fillStyle='rgba(255,255,255,.08)'; for(let x=0;x<c.width;x+=40)ctx.fillRect(x,0,1,c.height); for(let y=0;y<c.height;y+=40)ctx.fillRect(0,y,c.width,1); const l=PYGAME_LESSONS[currentLesson-1]; ctx.fillStyle='white'; ctx.font='bold 22px Rubik, Arial'; ctx.fillText(`שיעור ${l.id}: ${l.title}`,24,45); if(state.hasPlayer){ctx.fillStyle='#22c55e'; roundRect(ctx,state.player.x,state.player.y,state.player.w,state.player.h,10);ctx.fill();} if(state.coin){ctx.fillStyle='#facc15';ctx.beginPath();ctx.ellipse(state.coin.x+13,state.coin.y+13,13,13,0,0,Math.PI*2);ctx.fill();} if(state.obstacle){ctx.fillStyle='#ef4444';roundRect(ctx,state.obstacle.x,state.obstacle.y,state.obstacle.w,state.obstacle.h,8);ctx.fill();} ctx.fillStyle='white';ctx.font='20px Rubik, Arial';ctx.fillText('Score: '+(state.hasScore?state.score:0),24,82); if(state.gameOver){ctx.fillStyle='rgba(239,68,68,.92)';roundRect(ctx,205,185,230,86,18);ctx.fill();ctx.fillStyle='white';ctx.font='bold 30px Rubik, Arial';ctx.fillText('Game Over',242,238);} document.getElementById('status').textContent=state.gameOver?'התנגשות במכשול':(state.score?'מטבע נאסף!':'מוכן'); }
+    function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+    function init(){defineBlocks();workspace=Blockly.inject('blocklyDiv',{toolbox:document.getElementById('toolbox'),rtl:true,trashcan:true,scrollbars:true});workspace.addChangeListener(()=>{updateCode();drawScene(simulateBlocks(false));});renderLessons();const initial=Number(new URL(location.href).searchParams.get('lesson'))||1;setLesson(Math.min(Math.max(initial,1),PYGAME_LESSONS.length));updateCode();}
+    document.getElementById('runBtn').onclick=()=>drawScene(simulateBlocks(true));document.getElementById('resetBtn').onclick=()=>{workspace?.clear();updateCode();drawScene(simulateBlocks(false));};document.getElementById('demoBtn').onclick=loadDemo;window.addEventListener('load',init);
+  </script>
+
+  <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
+</body>
+</html>

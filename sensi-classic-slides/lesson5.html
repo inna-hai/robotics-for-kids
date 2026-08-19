@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⭐ שיעור 5: פרויקט מסכם!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --primary: #f59e0b; --secondary: #fbbf24; --accent: #8b5cf6; --dark: #1e293b; }
+        body { font-family: 'Rubik', sans-serif; background: var(--dark); color: white; overflow: hidden; }
+        .slides-container { width: 100vw; height: 100vh; overflow: hidden; position: relative; }
+        .slide { width: 100vw; height: 100vh; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 3rem; text-align: center; position: absolute; top: 0; left: 0; animation: fadeIn 0.5s ease; }
+        .slide.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .slide-title { background: linear-gradient(135deg, #f59e0b, #ef4444, #8b5cf6); background-size: 200% 200%; animation: gradient 5s ease infinite; }
+        @keyframes gradient { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        .slide-content { background: linear-gradient(135deg, #78350f, #92400e); }
+        .slide-video { background: #000; }
+        .slide-activity { background: linear-gradient(135deg, #065f46, #047857); }
+        .slide-project { background: linear-gradient(135deg, #4c1d95, #6d28d9); }
+        .slide-summary { background: linear-gradient(135deg, #ea580c, #f97316); }
+        .slide-celebration { background: linear-gradient(135deg, #dc2626, #f59e0b, #16a34a, #2563eb, #9333ea); background-size: 300% 300%; animation: rainbow 3s ease infinite; }
+        @keyframes rainbow { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        h1 { font-size: 4rem; margin-bottom: 1rem; text-shadow: 3px 3px 6px rgba(0,0,0,0.3); }
+        h2 { font-size: 3rem; margin-bottom: 1.5rem; }
+        h3 { font-size: 2rem; margin-bottom: 1rem; color: var(--secondary); }
+        p { font-size: 1.75rem; line-height: 1.6; max-width: 900px; }
+        .subtitle { font-size: 2rem; opacity: 0.9; }
+        .emoji-big { font-size: 8rem; margin-bottom: 1rem; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        .emoji-row { font-size: 5rem; margin: 2rem 0; }
+        ul { list-style: none; text-align: right; font-size: 1.75rem; }
+        li { margin: 1rem 0; padding-right: 2rem; position: relative; }
+        li::before { content: '⭐'; position: absolute; right: 0; }
+        .video-container { width: 80%; max-width: 900px; aspect-ratio: 16/9; background: #000; border-radius: 1rem; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+        .video-container iframe { width: 100%; height: 100%; border: none; }
+        .video-title { margin-top: 1.5rem; font-size: 1.5rem; opacity: 0.8; }
+        .senses-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 2rem; }
+        .sense-card { background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 1.5rem; }
+        .sense-card .emoji { font-size: 3.5rem; margin-bottom: 0.5rem; }
+        .sense-card h4 { font-size: 1.25rem; color: var(--secondary); }
+        .sense-card p { font-size: 1rem; }
+        .project-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-top: 2rem; max-width: 900px; }
+        .project-card { background: rgba(255,255,255,0.1); padding: 2rem; border-radius: 1.5rem; cursor: pointer; transition: all 0.3s; border: 3px solid transparent; }
+        .project-card:hover { border-color: var(--secondary); transform: scale(1.02); }
+        .project-card .emoji { font-size: 4rem; margin-bottom: 1rem; }
+        .project-card h3 { color: var(--secondary); margin-bottom: 0.5rem; }
+        .project-card p { font-size: 1.1rem; }
+        .info-box { background: rgba(251, 191, 36, 0.2); border: 3px solid var(--secondary); border-radius: 1.5rem; padding: 2rem; margin-top: 2rem; max-width: 800px; }
+        .nav-bar { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); display: flex; gap: 1rem; background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-radius: 50px; z-index: 100; }
+        .nav-btn { width: 60px; height: 60px; border-radius: 50%; border: none; background: rgba(255,255,255,0.2); color: white; font-size: 1.5rem; cursor: pointer; transition: all 0.3s; }
+        .nav-btn:hover { background: var(--primary); transform: scale(1.1); }
+        .slide-counter { display: flex; align-items: center; padding: 0 1.5rem; font-size: 1.25rem; font-weight: 600; }
+        .progress-bar { position: fixed; top: 0; left: 0; height: 6px; background: var(--secondary); transition: width 0.3s ease; z-index: 100; }
+        .fullscreen-btn { position: fixed; top: 1.5rem; left: 1.5rem; padding: 0.75rem 1.5rem; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50px; font-size: 1rem; cursor: pointer; z-index: 100; font-family: inherit; }
+        .activity-card { background: rgba(255,255,255,0.15); border-radius: 1.5rem; padding: 2.5rem; max-width: 700px; margin-top: 1.5rem; }
+        .activity-card h3 { color: #86efac; margin-bottom: 1rem; }
+        .activity-steps { text-align: right; }
+        .activity-steps li::before { content: '👉'; }
+        .questions-list li::before { content: '❓'; }
+        /* Confetti animation */
+        .confetti { position: absolute; animation: fall 3s linear infinite; }
+        @keyframes fall { 0% { transform: translateY(-100vh) rotate(0deg); } 100% { transform: translateY(100vh) rotate(720deg); } }
+        /* Trophy */
+        .trophy { font-size: 10rem; animation: pulse 1s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        /* Timeline */
+        .timeline { display: flex; flex-direction: column; align-items: flex-start; max-width: 600px; text-align: right; }
+        .timeline-item { display: flex; align-items: center; gap: 1rem; margin: 0.75rem 0; }
+        .timeline-time { background: var(--secondary); color: #333; padding: 0.5rem 1rem; border-radius: 50px; font-weight: 700; min-width: 80px; text-align: center; }
+        .timeline-content { font-size: 1.25rem; }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progress"></div>
+    <button class="fullscreen-btn" onclick="toggleFullscreen()">⛶ מסך מלא</button>
+    
+    <div class="slides-container">
+        <div class="slide slide-title active">
+            <div class="emoji-big">⭐</div>
+            <h1>שיעור 5: פרויקט מסכם!</h1>
+            <p class="subtitle">רובוט עם כל החושים! 🤖</p>
+        </div>
+        
+        <div class="slide slide-content">
+            <h2>🎉 הגענו לשיעור האחרון!</h2>
+            <p>היום נבנה רובוט חכם שמשתמש בכל מה שלמדנו!</p>
+            <div class="emoji-row">👁️ 👂 ✋ 👃 = 🤖💪</div>
+        </div>
+        
+        <div class="slide slide-content">
+            <h2>🔄 בואו נזכר - מה למדנו?</h2>
+            <div class="senses-grid">
+                <div class="sense-card">
+                    <div class="emoji">👁️</div>
+                    <h4>ראייה</h4>
+                    <p>חיישן אור</p>
+                </div>
+                <div class="sense-card">
+                    <div class="emoji">👂</div>
+                    <h4>שמיעה</h4>
+                    <p>מיקרופון</p>
+                </div>
+                <div class="sense-card">
+                    <div class="emoji">✋</div>
+                    <h4>מישוש</h4>
+                    <p>חיישן מגע</p>
+                </div>
+                <div class="sense-card">
+                    <div class="emoji">👃</div>
+                    <h4>ריח</h4>
+                    <p>חיישן גז</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide slide-video">
+            <h2>🎬 רובוטים אמיתיים עם חושים!</h2>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/e3eFfcfrOY0" title="רובוטים מתגלגלים - בליפי בעברית" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <p class="video-title">סרטון: רובוטים וחיישנים</p>
+        </div>
+        
+        <div class="slide slide-project">
+            <h2>🤖 איזה רובוט תרצו לבנות?</h2>
+            <div class="project-grid">
+                <div class="project-card">
+                    <div class="emoji">🏠</div>
+                    <h3>רובוט שומר בית</h3>
+                    <p>מזהה אור (יום/לילה)<br>מתריע על עשן<br>שומר על הבית!</p>
+                </div>
+                <div class="project-card">
+                    <div class="emoji">🚗</div>
+                    <h3>רובוט נוסע חכם</h3>
+                    <p>נוסע רק באור<br>נמנע ממכשולים<br>נעצר כששומע צליל</p>
+                </div>
+                <div class="project-card">
+                    <div class="emoji">🤝</div>
+                    <h3>רובוט חבר</h3>
+                    <p>מגיב לצלילים<br>אומר "שלום!"<br>זז לכיוון האור</p>
+                </div>
+                <div class="project-card">
+                    <div class="emoji">🚒</div>
+                    <h3>רובוט כבאי</h3>
+                    <p>מזהה עשן<br>משמיע אזעקה<br>נוסע להציל!</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide slide-activity">
+            <h2>📋 כללי הפרויקט</h2>
+            <div class="activity-card">
+                <h3>הרובוט שלכם חייב:</h3>
+                <ul class="activity-steps">
+                    <li>להשתמש ב-<strong>3 חושים לפחות</strong></li>
+                    <li>לזוז בצורה כלשהי 🚗</li>
+                    <li>לדבר או להשמיע צליל 💬</li>
+                    <li>להגיב לשינויים בסביבה 🌍</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="slide slide-content">
+            <h2>⏱️ לוח זמנים</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <span class="timeline-time">15 דק'</span>
+                    <span class="timeline-content">📋 תכנון - בחרו רובוט וחושים</span>
+                </div>
+                <div class="timeline-item">
+                    <span class="timeline-time">35 דק'</span>
+                    <span class="timeline-content">💻 בנייה - תכנתו את הרובוט</span>
+                </div>
+                <div class="timeline-item">
+                    <span class="timeline-time">25 דק'</span>
+                    <span class="timeline-content">🎤 הצגות - הציגו לכיתה!</span>
+                </div>
+                <div class="timeline-item">
+                    <span class="timeline-time">5 דק'</span>
+                    <span class="timeline-content">🎉 חגיגה!</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide slide-activity">
+            <h2>📝 שלב 1: תכנון</h2>
+            <div class="activity-card">
+                <h3>ענו על השאלות:</h3>
+                <ul class="questions-list">
+                    <li>איזה רובוט אני בונה?</li>
+                    <li>באילו חושים הוא ישתמש?</li>
+                    <li>מה הוא יעשה?</li>
+                    <li>למה בחרתי את החושים האלה?</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="slide slide-activity">
+            <div class="emoji-big">💻</div>
+            <h1>שלב 2: בנייה!</h1>
+            <p>35 דקות לבנות את הרובוט שלכם</p>
+            <div class="info-box">
+                <h3>💡 טיפים:</h3>
+                <p>• התחילו פשוט, הוסיפו בהדרגה<br>
+                • בדקו אחרי כל שינוי<br>
+                • אל תפחדו לנסות!</p>
+            </div>
+        </div>
+        
+        <div class="slide slide-project">
+            <h2>📝 דוגמה: רובוט שומר בית</h2>
+            <div class="activity-card" style="background: #1e293b; direction: ltr; text-align: left; max-width: 800px;">
+                <p style="font-family: monospace; font-size: 1.2rem;">
+                    <span style="background: #FFAB19; padding: 0.4rem 0.8rem; border-radius: 0.5rem; color: #333; display: inline-block; margin: 0.2rem;">🚩 כאשר לוחצים ▶️</span><br>
+                    <span style="background: #FF8C1A; padding: 0.4rem 0.8rem; border-radius: 0.5rem; color: #333; display: inline-block; margin: 0.2rem; margin-right: 1.5rem;">🔁 לנצח</span><br>
+                    <span style="background: #FF8C1A; padding: 0.4rem 0.8rem; border-radius: 0.5rem; color: #333; display: inline-block; margin: 0.2rem; margin-right: 3rem;">אם</span>
+                    <span style="background: #40BF4A; padding: 0.4rem 0.8rem; border-radius: 0.5rem; display: inline-block; margin: 0.2rem;">👃 מריח עשן? = כן</span><br>
+                    <span style="background: #9966FF; padding: 0.4rem 0.8rem; border-radius: 0.5rem; display: inline-block; margin: 0.2rem; margin-right: 4.5rem;">💬 אמור "אש!"</span><br>
+                    <span style="background: #9966FF; padding: 0.4rem 0.8rem; border-radius: 0.5rem; display: inline-block; margin: 0.2rem; margin-right: 4.5rem;">🔔 השמע אזעקה</span><br>
+                    <span style="background: #FF8C1A; padding: 0.4rem 0.8rem; border-radius: 0.5rem; color: #333; display: inline-block; margin: 0.2rem; margin-right: 3rem;">אם</span>
+                    <span style="background: #40BF4A; padding: 0.4rem 0.8rem; border-radius: 0.5rem; display: inline-block; margin: 0.2rem;">👂 שומע צליל? = כן</span><br>
+                    <span style="background: #9966FF; padding: 0.4rem 0.8rem; border-radius: 0.5rem; display: inline-block; margin: 0.2rem; margin-right: 4.5rem;">💬 אמור "מי שם?"</span>
+                </p>
+            </div>
+        </div>
+        
+        <div class="slide slide-activity">
+            <h2>🎤 שלב 3: הצגות!</h2>
+            <div class="activity-card">
+                <h3>כשמציגים, ספרו:</h3>
+                <ul class="activity-steps">
+                    <li>איזה רובוט בניתם?</li>
+                    <li>באילו חושים הוא משתמש?</li>
+                    <li>למה בחרתם את החושים האלה?</li>
+                    <li>הדגימו איך הוא עובד!</li>
+                </ul>
+            </div>
+            <p style="margin-top: 1rem; font-size: 1.5rem;">2-3 דקות לכל הצגה 🎯</p>
+        </div>
+        
+        <div class="slide slide-activity">
+            <h2>🎯 אתגרי סופר-רובוט!</h2>
+            <div class="activity-card" style="text-align: right;">
+                <ul class="activity-steps">
+                    <li><strong>🥉 אתגר ברונזה:</strong> סנסי משתמש ב-2 חושים ביחד</li>
+                    <li><strong>🥈 אתגר כסף:</strong> סנסי משתמש ב-3 חושים ביחד</li>
+                    <li><strong>🥇 אתגר זהב:</strong> סנסי משתמש בכל 4 החושים!</li>
+                    <li><strong>💎 אתגר יהלום:</strong> "רובוט אוטונומי" - סנסי שורד בכל מצב!</li>
+                    <li><strong>🌟 אתגר אולטימטיבי:</strong> צרו סיפור שלם עם סנסי!</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="slide slide-summary">
+            <h2>📚 מה למדנו בקורס?</h2>
+            <ul>
+                <li>👁️ ראייה - עין וחיישן אור</li>
+                <li>👂 שמיעה - אוזן ומיקרופון</li>
+                <li>✋ מישוש - עור וחיישן מגע</li>
+                <li>👃 ריח - אף וחיישן גז</li>
+                <li>🤖 תכנות בבלוקים!</li>
+                <li>🧠 חשיבה לוגית!</li>
+            </ul>
+        </div>
+        
+        <div class="slide slide-celebration">
+            <div class="trophy">🏆</div>
+            <h1>כל הכבוד!</h1>
+            <p class="subtitle">סיימתם את הקורס!</p>
+            <div class="emoji-row">🎉 👏 🌟 🎊 ⭐</div>
+        </div>
+        
+        <div class="slide slide-celebration">
+            <h2>🌟 עכשיו אתם יודעים:</h2>
+            <ul style="font-size: 2rem;">
+                <li>איך החושים שלנו עובדים</li>
+                <li>איך רובוטים "חשים" את העולם</li>
+                <li>לתכנת רובוט בבלוקים!</li>
+            </ul>
+            <div class="emoji-row">🤖 ❤️ 👧👦</div>
+        </div>
+        
+        <div class="slide slide-title">
+            <div class="emoji-big">🚀</div>
+            <h1>מה הלאה?</h1>
+            <p>המשיכו לחקור, לבנות, לתכנת!</p>
+            <p style="margin-top: 1rem;">אולי יום אחד תבנו רובוט אמיתי! 🤖</p>
+        </div>
+        
+        <div class="slide slide-celebration">
+            <div class="trophy">👏</div>
+            <h1>תודה רבה!</h1>
+            <p class="subtitle">היה כיף ללמוד איתכם!</p>
+            <div class="emoji-row">💜 🤖 💜</div>
+        </div>
+    </div>
+    
+    <div class="nav-bar">
+        <button class="nav-btn" onclick="prevSlide()">▶</button>
+        <div class="slide-counter"><span id="currentSlide">1</span> / <span id="totalSlides">16</span></div>
+        <button class="nav-btn" onclick="nextSlide()">◀</button>
+    </div>
+    
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        document.getElementById('totalSlides').textContent = totalSlides;
+        
+        function showSlide(n) {
+            slides.forEach(s => s.classList.remove('active'));
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('currentSlide').textContent = currentSlide + 1;
+            document.getElementById('progress').style.width = ((currentSlide + 1) / totalSlides * 100) + '%';
+        }
+        
+        function nextSlide() { showSlide(currentSlide + 1); }
+        function prevSlide() { showSlide(currentSlide - 1); }
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === ' ') nextSlide();
+            if (e.key === 'ArrowRight') prevSlide();
+        });
+        
+        document.querySelector('.slides-container').addEventListener('click', (e) => {
+            if (!e.target.closest('.nav-bar') && !e.target.closest('iframe') && !e.target.closest('button')) nextSlide();
+        });
+        
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+            else document.exitFullscreen();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>המלצות להמשך פיתוח Craftom School</title>
+  <style>
+    body {
+      margin: 0;
+      color: #243042;
+      font-family: Arial, "Noto Sans Hebrew", sans-serif;
+      background: linear-gradient(135deg, #e8f7ff, #eafff7 42%, #fff4ca 75%, #ffe0dc);
+    }
+    main {
+      width: min(980px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 40px;
+    }
+    section {
+      background: rgba(255,255,255,.94);
+      border: 1px solid #dce8f5;
+      border-radius: 18px;
+      box-shadow: 0 12px 34px rgba(36,48,66,.12);
+      padding: 22px;
+      margin: 0 0 16px;
+    }
+    h1, h2, h3 { margin: 0 0 10px; line-height: 1.2; }
+    h1 { font-size: 34px; }
+    h2 { font-size: 24px; }
+    p, li { line-height: 1.65; }
+    ul, ol { padding-right: 22px; }
+    .muted { color: #617086; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+    .card {
+      border: 1px solid #dce8f5;
+      border-radius: 14px;
+      background: #fff;
+      padding: 14px;
+    }
+    .tag {
+      display: inline-block;
+      border-radius: 999px;
+      background: #ecfffb;
+      color: #08796f;
+      font-weight: 700;
+      padding: 5px 10px;
+      margin: 0 0 10px 6px;
+    }
+    .urgent { background: #fff4dc; color: #7a4b00; }
+    .mvp { background: #e8f7ff; color: #116389; }
+    .later { background: #f0ebff; color: #6041be; }
+    code {
+      direction: ltr;
+      display: inline-block;
+      background: #eef4ff;
+      border-radius: 999px;
+      padding: 3px 8px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section>
+      <span class="tag">Craftom School</span>
+      <span class="tag mvp">MVP</span>
+      <h1>המלצות לשינויים ושיפורים במערכת</h1>
+      <p class="muted">נכתב לפי מצב המערכת נכון ל-21/07/2026: יש כניסה, הרשמה, תפקידי אדמין/מורה/תלמיד, עורך שיעורים, דמו, משימות, משוב ודוחות.</p>
+      <p><b>קישור בדיקה:</b> <a href="https://craftom-school.orma-ai.com/login.html">https://craftom-school.orma-ai.com/login.html</a></p>
+      <p><b>PR:</b> <a href="https://github.com/inna-hai/robotics-for-kids/pull/13">https://github.com/inna-hai/robotics-for-kids/pull/13</a></p>
+    </section>
+
+    <section>
+      <h2>סדר עדיפויות מומלץ</h2>
+      <div class="grid">
+        <div class="card">
+          <span class="tag urgent">דחוף לפני הצגה</span>
+          <h3>להפוך את שיעורים 1-3 לשיעורים אמיתיים</h3>
+          <p>לכל שיעור צריך פתיחה, הסבר למורה, פעילות Craftom, משימת תכנות, זמן משוער, שאלות רפלקציה ותוצר להגשה.</p>
+        </div>
+        <div class="card">
+          <span class="tag urgent">דחוף לפני הצגה</span>
+          <h3>להחליט פורמט תוכן ראשי</h3>
+          <p>אני ממליץ להתחיל במצגת/HTML קצר לכל שיעור, ורק אחר כך להוסיף סרטונים או רובי-בוט. זה הכי מהיר לבדיקה בכיתה.</p>
+        </div>
+        <div class="card">
+          <span class="tag mvp">MVP</span>
+          <h3>לחדד את חוויית המורה</h3>
+          <p>מורה צריכה לראות מיד: מה השיעור הבא, מי הגיש, מי צריך תיקון, איזה צוות תקוע, ומה להסביר בתחילת שיעור.</p>
+        </div>
+        <div class="card">
+          <span class="tag mvp">MVP</span>
+          <h3>לחדד את חוויית התלמיד</h3>
+          <p>תלמיד צריך לראות פעולה אחת ברורה: המשימה של היום, כפתור כניסה לשיעור, משימה להגשה ומשוב מהמורה.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>מה כדאי לבנות עכשיו</h2>
+      <ol>
+        <li><b>תוכן מלא לשיעורים 1-3:</b> זה ייתן דמו אמיתי שאפשר להראות לעמי/אינה ולבדוק עם ילד.</li>
+        <li><b>מסך “ניהול תלמידים” למורה:</b> רשימת תלמידים, סטטוס הרשמה, כיתה, צוות, התקדמות ושיוך צוות ידני.</li>
+        <li><b>מסך “פתיחת שיעור” ברור יותר:</b> במקום כפתורי אחורה/קדימה בלבד, לבחור שיעור מתוך רשימה ולפתוח אותו לכיתה.</li>
+        <li><b>תצוגת שיעור בסגנון מצגת:</b> מצב הקרנה למורה עם שקפים קצרים: פתיחה, הדגמה, משימה, סיכום.</li>
+        <li><b>תבניות משוב מוכנות:</b> “כל הכבוד על…”, “נסו לשפר…”, “שימו לב ל…”, כדי לחסוך זמן למורה.</li>
+        <li><b>בדיקת מובייל וטאבלט:</b> תלמידים יכולים להיכנס ממכשירים שונים, וצריך לוודא שאין חיתוכים או כפתורים קטנים מדי.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>המלצה על פורמט שיעורים</h2>
+      <p>לא הייתי מחכה להחלטה מושלמת על וידאו/הקלטה/רובי. הייתי בונה כל שיעור בפורמט גמיש:</p>
+      <ul>
+        <li><b>שקף פתיחה:</b> סיפור/אתגר קצר לילדים.</li>
+        <li><b>הדגמת מורה:</b> 5-10 דקות עם מושג תכנות אחד.</li>
+        <li><b>משימת Craftom:</b> פעילות צוותית בתוך העולם.</li>
+        <li><b>משימת קוד:</b> מנגנון קטן שמדגים את המושג.</li>
+        <li><b>רפלקציה:</b> 2-3 שאלות קצרות.</li>
+      </ul>
+      <p>אחרי שהשלד הזה עובד, אפשר להחליף כל בלוק תוכן בסרטון, הקלטה, מצגת, רובי-בוט או HTML.</p>
+    </section>
+
+    <section>
+      <h2>שיפורי UX מומלצים</h2>
+      <ul>
+        <li>להוסיף “מצב דמו” ברור עם כפתור איפוס נתוני דמו לאדמין בלבד.</li>
+        <li>להוסיף כפתור העתקה לקוד כיתה ולקוד צוות.</li>
+        <li>להציג לתלמיד התקדמות כמשחק: מדליות/תגים לשיעורים שהושלמו.</li>
+        <li>להוסיף מצב “הקרנה בכיתה” בלי מידע ניהולי, רק מה שצריך להציג לתלמידים.</li>
+        <li>להפריד בין משימות שמחכות להגשה לבין משימות שמחכות למשוב.</li>
+        <li>להוסיף הודעות הצלחה ברורות אחרי הרשמה, הגשה ומשוב.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>שיפורי תוכן פדגוגי</h2>
+      <ul>
+        <li>לכל שיעור להגדיר “מטרת שיעור אחת” ולא כמה מטרות מתחרות.</li>
+        <li>לכל משימה להוסיף קריטריון הצלחה פשוט: איך התלמיד יודע שסיים.</li>
+        <li>לכל שיעור להוסיף התאמה לילדים שמתקשים והתאמה לילדים שמסיימים מהר.</li>
+        <li>להוסיף דוגמאות משפטי רפלקציה כדי שילדים לא ייתקעו מול שדה ריק.</li>
+        <li>לשמור על שפה קצרה, חמה ומעשית, בלי עומס הסברים.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>שיפורי מערכת בהמשך</h2>
+      <ul>
+        <li>שמירה במסד נתונים אמיתי במקום קובץ JSON, לפני שימוש עם כיתות אמיתיות.</li>
+        <li>ניהול הרשאות מלא: אדמין, מורה, תלמיד, אולי גם הורה/צופה.</li>
+        <li>ייצוא דוחות PDF/HTML מסודר למורה ולהורים.</li>
+        <li>לוג פעילות בסיסי: מי נכנס, מי הגיש, מי שינה שיעור.</li>
+        <li>גיבוי אוטומטי לנתוני מערכת.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>הצעד הבא שאני ממליץ עליו</h2>
+      <p><b>לבנות שיעורים 1-3 עד הסוף</b>, כאילו מורה נכנסת מחר לכיתה: פתיחה, הסבר, פעילות, משימה, רפלקציה ומשוב. אחרי זה לבדוק שיעור אחד מקצה לקצה עם משתמש מורה ותלמיד, ואז להמשיך לשיעורים 4-15 באותו פורמט.</p>
+    </section>
+  </main>
+</body>
+</html>

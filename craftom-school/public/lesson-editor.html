@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>עורך שיעורים | Craftom School</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="brand">Craftom School</div>
+      <div class="muted" id="teacher-name">טוען...</div>
+    </div>
+    <div class="actions compact">
+      <button class="btn ghost" onclick="navigateTo('/teacher.html')">דף מורה</button>
+      <button class="btn ghost" onclick="logout()">יציאה</button>
+    </div>
+  </header>
+
+  <main class="shell editor-layout">
+    <aside class="panel editor-nav">
+      <div class="eyebrow">עורך שיעורים</div>
+      <h1>15 מפגשים</h1>
+      <p class="muted">בחרו שיעור, ערכו את התוכן, ושמרו. התלמידים יראו רק את החלקים לתלמידים.</p>
+      <div class="editor-lessons" id="lesson-list"></div>
+    </aside>
+
+    <section class="panel editor-main">
+      <div class="section-head">
+        <div>
+          <h2 id="editor-title">טוען שיעור...</h2>
+          <p class="muted" id="editor-state"></p>
+        </div>
+        <div class="actions compact">
+          <button class="btn ghost" onclick="previewLesson()">תצוגה</button>
+          <button class="btn" onclick="saveLesson()">שמור שיעור</button>
+        </div>
+      </div>
+
+      <div class="editor-grid">
+        <label>שם השיעור
+          <input id="title">
+        </label>
+        <label>מושג תכנות
+          <input id="concept">
+        </label>
+        <label>תוצר מצופה
+          <input id="product">
+        </label>
+        <label>מטרת השיעור
+          <textarea id="objective"></textarea>
+        </label>
+      </div>
+
+      <label>פתיחה לתלמידים
+        <textarea id="student_intro"></textarea>
+      </label>
+
+      <div class="editor-columns">
+        <label>שלבי עבודה
+          <textarea id="steps" placeholder="כל שורה היא שלב"></textarea>
+        </label>
+        <label>מה מגישים בסוף
+          <textarea id="deliverables" placeholder="כל שורה היא תוצר להגשה"></textarea>
+        </label>
+      </div>
+
+      <section class="editor-section">
+        <div class="section-head">
+          <div>
+            <h2>בלוקי תוכן</h2>
+            <p class="muted">טקסט, קישור, וידאו, אודיו, HTML, רובי-בוט או פעילות Craftom.</p>
+          </div>
+          <button class="btn ghost" onclick="addBlock()">הוסף בלוק</button>
+        </div>
+        <div class="editor-stack" id="content-blocks"></div>
+      </section>
+
+      <section class="editor-section">
+        <div class="section-head">
+          <div>
+            <h2>משימות</h2>
+            <p class="muted">משימות צוותיות או אישיות עם שאלות רפלקציה.</p>
+          </div>
+          <button class="btn ghost" onclick="addTask()">הוסף משימה</button>
+        </div>
+        <div class="editor-stack" id="tasks"></div>
+      </section>
+
+      <section class="editor-section">
+        <h2>למורה בלבד</h2>
+        <div class="editor-columns">
+          <label>מהלך הנחיה
+            <textarea id="teacher_plan" placeholder="כל שורה היא שלב למורה"></textarea>
+          </label>
+          <label>נקודות תצפית
+            <textarea id="observation_focus" placeholder="כל שורה היא נקודת תצפית"></textarea>
+          </label>
+        </div>
+      </section>
+    </section>
+  </main>
+
+<script src="/main.js"></script>
+<script>
+const params = new URLSearchParams(location.search);
+let lessonNumber = Number(params.get('lesson') || 1);
+let COURSE = null;
+let LESSON = null;
+
+function lines(value){
+  return (value || []).join('\n');
+}
+
+function fromLines(id){
+  return document.getElementById(id).value.split('\n').map(x => x.trim()).filter(Boolean);
+}
+
+function option(value, label, selected){
+  return `<option value="${esc(value)}"${value === selected ? ' selected' : ''}>${esc(label)}</option>`;
+}
+
+function renderLessonList(){
+  document.getElementById('lesson-list').innerHTML = COURSE.lessons.map(lesson => `<button class="editor-lesson ${lesson.number === lessonNumber ? 'active' : ''}" onclick="openLesson(${lesson.number})">
+    <b>${lesson.number}</b>
+    <span>${esc(lesson.title)}</span>
+  </button>`).join('');
+}
+
+function renderBlock(block, index){
+  return `<article class="editor-card" data-block-index="${index}">
+    <div class="card-tools">
+      <b>בלוק ${index + 1}</b>
+      <button class="btn ghost" onclick="removeBlock(${index})">מחק</button>
+    </div>
+    <div class="editor-grid compact-fields">
+      <label>סוג
+        <select class="block-type">
+          ${option('text', 'טקסט', block.type)}
+          ${option('video', 'וידאו', block.type)}
+          ${option('audio', 'אודיו', block.type)}
+          ${option('link', 'קישור', block.type)}
+          ${option('html', 'HTML', block.type)}
+          ${option('robi', 'רובי-בוט', block.type)}
+          ${option('craftom', 'Craftom', block.type)}
+          ${option('file', 'קובץ', block.type)}
+        </select>
+      </label>
+      <label>כותרת
+        <input class="block-title" value="${esc(block.title)}">
+      </label>
+      <label>פורמט לתצוגה
+        <input class="block-format" value="${esc(block.format)}">
+      </label>
+      <label>קישור
+        <input class="block-url" value="${esc(block.url || '')}" placeholder="אופציונלי">
+      </label>
+    </div>
+    <label>תיאור / הנחיה
+      <textarea class="block-description">${esc(block.description || '')}</textarea>
+    </label>
+  </article>`;
+}
+
+function renderTask(task, index){
+  return `<article class="editor-card" data-task-index="${index}">
+    <div class="card-tools">
+      <b>משימה ${index + 1}</b>
+      <button class="btn ghost" onclick="removeTask(${index})">מחק</button>
+    </div>
+    <div class="editor-grid compact-fields">
+      <label>סוג משימה
+        <input class="task-type" value="${esc(task.type)}">
+      </label>
+      <label>היקף
+        <select class="task-scope">
+          ${option('team', 'צוותי', task.scope)}
+          ${option('individual', 'אישי', task.scope)}
+        </select>
+      </label>
+      <label>כותרת
+        <input class="task-title" value="${esc(task.title)}">
+      </label>
+    </div>
+    <label>תיאור
+      <textarea class="task-description">${esc(task.description || '')}</textarea>
+    </label>
+    <label>שאלות רפלקציה
+      <textarea class="task-reflection">${esc(lines(task.reflection_questions))}</textarea>
+    </label>
+  </article>`;
+}
+
+function renderLesson(){
+  document.getElementById('editor-title').textContent = `מפגש ${LESSON.number}: ${LESSON.title}`;
+  document.getElementById('editor-state').textContent = LESSON.edited ? 'נשמרה גרסה ערוכה לשיעור הזה.' : 'מבוסס כרגע על תבנית ברירת המחדל.';
+  document.getElementById('title').value = LESSON.title || '';
+  document.getElementById('concept').value = LESSON.concept || '';
+  document.getElementById('product').value = LESSON.product || '';
+  document.getElementById('objective').value = LESSON.objective || '';
+  document.getElementById('student_intro').value = LESSON.student_intro || '';
+  document.getElementById('steps').value = lines(LESSON.steps);
+  document.getElementById('deliverables').value = lines(LESSON.deliverables);
+  document.getElementById('teacher_plan').value = lines(LESSON.teacher_plan);
+  document.getElementById('observation_focus').value = lines(LESSON.observation_focus);
+  document.getElementById('content-blocks').innerHTML = (LESSON.content_blocks || []).map(renderBlock).join('');
+  document.getElementById('tasks').innerHTML = (LESSON.tasks || []).map(renderTask).join('');
+}
+
+function collectBlocks(){
+  return [...document.querySelectorAll('[data-block-index]')].map((el, index) => ({
+    id: (LESSON.content_blocks && LESSON.content_blocks[index] && LESSON.content_blocks[index].id) || `lesson-${lessonNumber}-content-${index + 1}`,
+    type: el.querySelector('.block-type').value,
+    title: el.querySelector('.block-title').value,
+    format: el.querySelector('.block-format').value,
+    url: el.querySelector('.block-url').value,
+    description: el.querySelector('.block-description').value,
+  }));
+}
+
+function collectTasks(){
+  return [...document.querySelectorAll('[data-task-index]')].map((el, index) => ({
+    id: (LESSON.tasks && LESSON.tasks[index] && LESSON.tasks[index].id) || `lesson-${lessonNumber}-task-${index + 1}`,
+    lesson_number: lessonNumber,
+    type: el.querySelector('.task-type').value,
+    scope: el.querySelector('.task-scope').value,
+    title: el.querySelector('.task-title').value,
+    description: el.querySelector('.task-description').value,
+    reflection_questions: el.querySelector('.task-reflection').value.split('\n').map(x => x.trim()).filter(Boolean),
+  }));
+}
+
+function syncDraft(){
+  LESSON = {
+    ...LESSON,
+    title: document.getElementById('title').value,
+    concept: document.getElementById('concept').value,
+    product: document.getElementById('product').value,
+    objective: document.getElementById('objective').value,
+    student_intro: document.getElementById('student_intro').value,
+    steps: fromLines('steps'),
+    deliverables: fromLines('deliverables'),
+    teacher_plan: fromLines('teacher_plan'),
+    observation_focus: fromLines('observation_focus'),
+    content_blocks: collectBlocks(),
+    tasks: collectTasks(),
+  };
+}
+
+function addBlock(){
+  syncDraft();
+  LESSON.content_blocks.push({
+    id: `lesson-${lessonNumber}-content-${Date.now()}`,
+    type: 'text',
+    title: 'בלוק תוכן חדש',
+    format: 'טקסט / קישור / רובי',
+    description: '',
+    url: '',
+  });
+  renderLesson();
+}
+
+function removeBlock(index){
+  syncDraft();
+  LESSON.content_blocks.splice(index, 1);
+  renderLesson();
+}
+
+function addTask(){
+  syncDraft();
+  LESSON.tasks.push({
+    id: `lesson-${lessonNumber}-task-${Date.now()}`,
+    lesson_number: lessonNumber,
+    type: 'משימה',
+    scope: 'team',
+    title: 'משימה חדשה',
+    description: '',
+    reflection_questions: ['מה עשיתם?', 'מה עבד טוב?', 'מה צריך לשפר?'],
+  });
+  renderLesson();
+}
+
+function removeTask(index){
+  syncDraft();
+  LESSON.tasks.splice(index, 1);
+  renderLesson();
+}
+
+function previewLesson(){
+  navigateTo(`/lesson.html?lesson=${lessonNumber}`);
+}
+
+async function saveLesson(){
+  syncDraft();
+  const r = await post(`/api/teacher/lessons/${lessonNumber}/edit`, LESSON);
+  if(!r.ok) return toast(r.error || 'לא ניתן לשמור שיעור כרגע', true);
+  LESSON = r.lesson;
+  toast('השיעור נשמר');
+  await loadCourseOnly();
+  renderLesson();
+}
+
+async function loadCourseOnly(){
+  const home = await fetch('/api/teacher/home').then(r => r.json());
+  if(!home.ok) return;
+  COURSE = home.dashboard.course;
+  renderLessonList();
+}
+
+async function openLesson(number){
+  lessonNumber = number;
+  const url = new URL(location.href);
+  url.searchParams.set('lesson', number);
+  history.replaceState(null, '', url);
+  const data = await fetch(`/api/teacher/lessons/${lessonNumber}/edit`).then(r => r.json());
+  if(!data.ok) return toast(data.error || 'לא ניתן לטעון שיעור', true);
+  LESSON = data.lesson;
+  renderLessonList();
+  renderLesson();
+}
+
+async function start(){
+  const me = await guard(['admin','teacher']);
+  if(!me) return;
+  document.getElementById('teacher-name').textContent = `${me.user.name || me.user.email} · ${me.user.role === 'admin' ? 'מנהל' : 'מורה'}`;
+  await loadCourseOnly();
+  await openLesson(lessonNumber);
+}
+start();
+</script>
+</body>
+</html>

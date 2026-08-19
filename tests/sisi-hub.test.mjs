@@ -21,10 +21,33 @@ const mailHtml = readFileSync(join(root, 'mail.html'), 'utf8');
 const cinemaHtml = readFileSync(join(root, 'cinema.html'), 'utf8');
 const escapeHtml = readFileSync(join(root, 'escape.html'), 'utf8');
 const finaleHtml = readFileSync(join(root, 'finale.html'), 'utf8');
+const certificateSource = readFileSync(join(root, 'js/course-certificate.js'), 'utf8');
+
+const sisiLessonFiles = [
+  'sisi.html',
+  'space.html', 'space-play.html',
+  'music.html', 'music-play.html',
+  'ocean.html', 'ocean-play.html',
+  'detective.html', 'detective-play.html',
+  'kitchen.html', 'kitchen-play.html',
+  'dino.html', 'dino-play.html', 'dino-lab.html',
+  'art.html', 'art-play.html',
+  'weather.html', 'weather-play.html',
+  'factory.html', 'factory-play.html', 'factory-lab.html',
+  'garden.html', 'garden-play.html', 'garden-lab.html',
+  'park.html', 'park-play.html', 'park-lab.html',
+  'mail.html', 'mail-play.html', 'mail-lab.html',
+  'cinema.html', 'cinema-play.html', 'cinema-lab.html',
+  'escape.html', 'escape-play.html', 'escape-lab.html',
+  'finale.html', 'finale-play.html', 'finale-lab.html',
+];
+
+const playFiles = sisiLessonFiles.filter((file) => file.endsWith('-play.html'));
 
 const tests = [];
 function test(name, fn) { tests.push({ name, fn }); }
 function assertIncludes(source, needle, message = `Missing: ${needle}`) { assert.ok(source.includes(needle), message); }
+function assertNotIncludes(source, needle, message = `Unexpected: ${needle}`) { assert.ok(!source.includes(needle), message); }
 
 test('Sisi hub lists all fifteen lessons in the recommended order', () => {
   assertIncludes(hubHtml, 'סיסי — שיעורי תכנות לילדים');
@@ -63,11 +86,42 @@ test('main and lesson landing pages link back to the Sisi hub', () => {
   }
 });
 
+test('Sisi lesson pages stay inside the Sisi flow', () => {
+  for (const file of sisiLessonFiles) {
+    const html = readFileSync(join(root, file), 'utf8');
+    assertNotIncludes(html, 'href="index.html"', `${file} should not send children to the general homepage`);
+    assertNotIncludes(html, 'לעמוד הראשי', `${file} should say Sisi page, not generic main page`);
+    assertNotIncludes(html, 'חזרה לעמוד הראשי', `${file} should not use a generic main-page label`);
+    assertNotIncludes(html, 'href="smart-city.html"', `${file} should not link from Sisi to smart-city`);
+    assertNotIncludes(html, 'href="sensi-city.html', `${file} should not link from Sisi to Sensi 15`);
+    assertNotIncludes(html, 'href="sensi-classic.html', `${file} should not link from Sisi to Sensi classic`);
+  }
+});
+
+test('Sisi play pages expose only child-flow navigation, not labs or generic lesson pages', () => {
+  for (const file of playFiles) {
+    const html = readFileSync(join(root, file), 'utf8');
+    assertNotIncludes(html, '-lab.html', `${file} should not send children to lab pages from the main play flow`);
+    assertNotIncludes(html, 'עמוד השיעור', `${file} should use Sisi/next navigation instead of a generic lesson-page link`);
+    assertIncludes(html, 'לעמוד סיסי', `${file} should include a clear Sisi hub link`);
+  }
+});
+
 test('hub frames the series for grade B age 7 and 75-minute lessons', () => {
   assertIncludes(hubHtml, 'כיתות ב׳');
   assertIncludes(hubHtml, 'גיל 7');
   assertIncludes(hubHtml, '75</b>דק׳ לשיעור');
   assertIncludes(hubHtml, '15</b>מכניקות שונות');
+});
+
+test('Sisi play missions unlock progressively after successful completion', () => {
+  assertIncludes(certificateSource, 'sisi-mission-completed-v3-', 'course helper should persist completed missions per play page');
+  assertIncludes(certificateSource, 'completed.has(id - 1)', 'a mission should open only after the previous mission is completed');
+  assertIncludes(certificateSource, 'completed.add(Number(lesson.id))', 'success dialog should mark the current mission complete');
+  assertIncludes(certificateSource, 'כדי לפתוח את משימה', 'locked missions should explain which previous mission is required');
+  assertIncludes(certificateSource, 'targetId - 1', 'locked mission message should point to the immediate previous mission');
+  assertIncludes(certificateSource, 'aria-disabled', 'locked mission buttons should expose disabled state');
+  assertIncludes(certificateSource, 'SisiMissionProgress', 'progress helper should be available for future Sisi pages');
 });
 
 let passed = 0;

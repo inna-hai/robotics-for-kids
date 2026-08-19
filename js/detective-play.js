@@ -59,8 +59,10 @@ function checkCase() {
   const rule = lesson.rules.find((item) => item.id === selectedRule);
   if (clue.good && rule.good) {
     renderSuspects(true);
-    setResult(`פתרתם! ${lesson.answer}`, true);
+    const message = `פתרתם! ${lesson.answer}`;
+    setResult(message, true);
     window.SisiCourseCertificate?.show({ lessons, lesson });
+    window.SisiSuccessDialog?.show({ message, lessons, lesson, onRepeat: () => window.location.reload() });
     return;
   }
   if (!clue.good && rule.good) {
@@ -72,11 +74,6 @@ function checkCase() {
     return;
   }
   setResult('שניהם לא מתאימים עדיין. בלשים טובים בודקים שוב 🙂');
-}
-
-function showHint() {
-  const clue = lesson.clues.find((item) => item.good);
-  setResult(`רמז קטן: חפשו משהו שקשור ל־“${clue.text}”.`);
 }
 
 function clearCase() {
@@ -94,9 +91,16 @@ function init() {
   document.getElementById('lesson-heading').textContent = `תיק ${lesson.id}: ${lesson.title}`;
   document.getElementById('lesson-emoji').textContent = lesson.emoji;
   document.getElementById('mission').textContent = lesson.mission;
+  const caseScene = document.getElementById('case-scene');
+  if (lesson.scene) {
+    caseScene.hidden = false;
+    caseScene.innerHTML = `<b>זירת החקירה:</b> ${lesson.scene}`;
+  } else {
+    caseScene.hidden = true;
+    caseScene.textContent = '';
+  }
   document.getElementById('learning-note').innerHTML = `<b>רגע למידה:</b> ${lesson.learningNote}`;
   document.getElementById('check').addEventListener('click', checkCase);
-  document.getElementById('hint').addEventListener('click', showHint);
   document.getElementById('clear').addEventListener('click', clearCase);
   document.getElementById('lesson-nav').innerHTML = lessons.map((item) => `
     <a class="${item.id === lesson.id ? 'active' : ''}" href="detective-play.html?lesson=${item.id}">${item.id}</a>

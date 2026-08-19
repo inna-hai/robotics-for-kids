@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/mail.css?v=20260717-mail-1">
+  <link rel="stylesheet" href="css/mail.css?v=20260816-learning-notes-routing">
 </head>
 <body>
   <main class="shell">
@@ -25,27 +25,37 @@
     <section class="mail-layout">
       <div class="route-panel">
         <h2>לאיזו תיבה שולחים?</h2>
-        <p>קראו את ההודעה ובחרו יעד לפי הרמזים.</p>
+        <p>קראו את ההודעה, הסתכלו על הרמזים שעל כל תיבה, ואז הוליכו את המעטפה ליעד המתאים.</p>
         <div class="route-grid" id="route-options"></div>
       </div>
       <div class="preview-panel">
         <h2>הניתוב שלי</h2>
         <div class="route-preview" id="route-preview" aria-live="polite"></div>
-        <div class="mailbox-row" aria-label="תיבות דואר"><div class="mailbox">📚</div><div class="mailbox">🌱</div><div class="mailbox">🎵</div><div class="mailbox">🤖</div><div class="mailbox">🧁</div><div class="mailbox">🎡</div></div>
+        <div class="mail-game" aria-label="משחק הולכת מעטפה במבוך">
+          <div class="mail-game-hint">הוליכו את המעטפה עם החיצים אל תיבת הדואר המתאימה.</div>
+          <div class="mail-maze" id="mail-maze" aria-label="לוח מבוך דואר"></div>
+          <div class="maze-controls" aria-label="חיצי תנועה למעטפה">
+            <button class="maze-btn" data-move="up" type="button">⬆️</button>
+            <button class="maze-btn" data-move="right" type="button">➡️</button>
+            <button class="maze-btn" data-move="left" type="button">⬅️</button>
+            <button class="maze-btn" data-move="down" type="button">⬇️</button>
+          </div>
+        </div>
         <div class="controls">
-          <button class="btn" id="check" type="button">📬 לשלוח</button>
+          <button class="btn" id="check" type="button">✅ בדיקה</button>
           <button class="btn secondary" id="hint" type="button">💡 רמז</button>
-          <button class="btn secondary" id="clear" type="button">🔄 להתחיל מחדש</button>
-          <a class="btn secondary" href="mail.html">✉️ עמוד השיעור</a>
+          <button class="btn secondary" id="clear" type="button">🔁 לנסות שוב</button>
+          <a class="btn secondary" href="sisi.html">🤖 לעמוד סיסי</a>
+          <a class="btn secondary" href="cinema.html">🎬 לשיעור הבא</a>
         </div>
         <div class="result" id="result" aria-live="polite"></div>
         <div class="next-step" id="next-step"></div>
       </div>
     </section>
   </main>
-  <script src="js/mail-lessons.js?v=20260717-mail-1"></script>
-  <script src="js/course-certificate.js?v=20260717-cert-1"></script>
-  <script src="js/mail-play.js?v=20260717-mail-1"></script>
+  <script src="js/mail-lessons.js?v=20260816-learning-notes-routing"></script>
+  <script src="js/course-certificate.js?v=20260817-merged-final-mission-stability"></script>
+  <script src="js/mail-play.js?v=20260816-learning-notes-routing"></script>
   <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
 </body>
 </html>

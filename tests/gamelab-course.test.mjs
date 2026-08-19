@@ -62,6 +62,10 @@ test('PlayCode Lab play page exposes Blockly, character editor, and direct lesso
   assertIncludes(playHtml, 'newAiChallenge');
   assertIncludes(playHtml, 'runProgram');
   assertIncludes(playHtml, 'resetGame');
+  assertIncludes(playHtml, 'configuredKeyMoves');
+  assertIncludes(playHtml, "document.addEventListener('keydown'");
+  assertIncludes(playHtml, "ArrowRight:'right'");
+  assertIncludes(playHtml, 'keyControls');
   assertIncludes(playHtml, 'gamelab-play.html?lesson=');
   assertIncludes(playHtml, 'gamelab-slides.html?lesson=');
 });

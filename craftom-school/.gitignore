@@ -1,0 +1,4 @@
+data/state.json
+node_modules/
+.env
+.herenow/
