@@ -199,12 +199,13 @@
       return `<xml>${[...allowed].map(type => `<block type="${type}"></block>`).join('')}</xml>`;
     }
     function starterXml(){
-      const first = lesson.blocks.find(b => b !== 'event_start') || 'say';
+      const first = lesson.blocks.find(b => !['event_start', 'event_start_first', 'event_start_second'].includes(b)) || 'say';
       if (lesson.id === 1) return `<xml><block type="event_start" x="40" y="40"><next><block type="say"><field name="TEXT">אני דוד, ואני בונה מגדל!</field><next><block type="place_block"><field name="COLOR">wood</field><next><block type="move_up"><next><block type="place_block"><field name="COLOR">gold</field><next><block type="move_up"><next><block type="place_block"><field name="COLOR">diamond</field></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>`;
 
       if (lesson.id === 4) return `<xml><block type="event_start" x="40" y="40"><next><block type="say"><field name="TEXT">בונים כלי אוכל לפי דגם!</field><next><block type="place_path"><field name="COLOR">grass</field><next><block type="move_right"><next><block type="place_half_block"><field name="COLOR">gold</field><next><block type="move_up"><field name="HEIGHT">half</field><next><block type="place_block"><field name="COLOR">diamond</field></block></next></block></next></block></next></block></next></block></next></block></xml>`;
       const second = lesson.blocks.includes('say') && first !== 'say' ? '<next><block type="say"></block></next>' : '';
       if (lesson.id === 10) return `<xml><block type="event_start_first" x="40" y="40"><next><block type="build_simple_path"><next><block type="hide_diamond"></block></next></block></next></block><block type="event_start_second" x="320" y="40"><next><block type="check_spot"><next><block type="if_found_diamond"><statement name="DO"><block type="open_door"><next><block type="give_treasure"><next><block type="finish_program"></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
+      if (lesson.id === 12) return `<xml><block type="event_start_first" x="40" y="40"><next><block type="say"><field name="TEXT">בונים את המבוך</field><next><block type="place_block"><field name="COLOR">wood</field></block></next></block></next></block><block type="event_start_second" x="320" y="40"><next><block type="say"><field name="TEXT">דוד יוצא לדרך</field><next><block type="move_right"></block></next></block></next></block></xml>`;
       if (first === 'if_on_diamond') return `<xml><block type="event_start" x="40" y="40"><next><block type="if_on_diamond"><statement name="DO"><block type="open_door"></block></statement></block></next></block></xml>`;
       return `<xml><block type="event_start" x="40" y="40"><next><block type="${first}">${second}</block></next></block></xml>`;
     }
@@ -241,7 +242,8 @@
       }
       document.getElementById('lessonConcept').textContent = lesson.concept;
       document.getElementById('lessonGoal').textContent = lessonTen ? lessonTen.goal : `מטרה: ${lesson.goal}`;
-      document.getElementById('lessonChallenge').textContent = lessonTen ? lessonTen.challenge : `שדרוג: ${lesson.challenge}`;
+      const challengeText = lessonTen ? lessonTen.challenge : lesson.challenge;
+      document.getElementById('lessonChallenge').textContent = /^אתגר:/.test(challengeText) ? challengeText : `שדרוג: ${challengeText}`;
 
       document.getElementById('drawerSuccessText').textContent = lessonTen ? lessonTen.drawerTask : lesson.success;
       const blockHelp = document.getElementById('drawerBlockHelp');
@@ -341,6 +343,7 @@
       state.score = 0; state.day = true; state.weather = 'sun'; state.playerOnDiamond = lesson.id === 10 ? false : true; state.foundDiamond = false; state.hiddenDiamondIndex = null; state.hiddenDiamondSpot = null; state.pathSpots = []; state.stopProgram = false; state.steveX = 260; state.steveY = GROUND_Y; state.petX = null; state.petY = null; state.lessonOneBlocks = 0; state.lastMove = null;
       const world = document.getElementById('world');
       applyLessonWorldClass();
+      setPlayerInFront(false);
       [...world.querySelectorAll('.block,.pet,.mob,.treasure,.apple,.hint')].forEach(el => el.remove());
       document.getElementById('door').classList.remove('open');
       setStevePosition();
@@ -381,6 +384,12 @@
     function nearestTreasureSpot(){ let best=0, dist=Infinity; const spots = treasureSearchSpots(); spots.forEach((spot,index)=>{ const dx=(state.steveX + 20) - spot.x; const dy=state.steveY - spot.y; const d=Math.sqrt(dx*dx + dy*dy); if(d<dist){ dist=d; best=index; } }); return { index:best, distance:dist, spot:spots[best] }; }
     function checkSpot(){ if (lesson.id !== 10) return; if (!state.hiddenDiamondSpot) hideDiamond(); if (!state.hiddenDiamondSpot) return; const found = nearestTreasureSpot(); if (!found.spot || found.distance > 34) { say('דוד רחוק ממקום חיפוש'); return; } if (found.spot === state.hiddenDiamondSpot) { state.foundDiamond = true; state.playerOnDiamond = true; addEmoji('hint','💠', found.spot.x, found.spot.y); say('מצאתי את היהלום החבוי!'); } else { state.foundDiamond = false; state.playerOnDiamond = false; say('אין כאן כלום... נסו מקום אחר'); } }
     function positionBubble(){ const bubble=document.getElementById('bubble'); const world=document.getElementById('world'); const maxBottom=Math.max(125, (world?.clientHeight || 330) - 105); bubble.style.left=Math.max(12, state.steveX - 72)+'px'; bubble.style.right='auto'; bubble.style.bottom=Math.min(state.steveY + 92, maxBottom)+'px'; }
+    function setPlayerInFront(isInFront){
+      const player = document.getElementById('player');
+      const bubble = document.getElementById('bubble');
+      player.style.zIndex = isInFront ? '9' : '';
+      bubble.style.zIndex = isInFront ? '10' : '';
+    }
     function setStevePosition(){ const player=document.getElementById('player'); player.style.left=state.steveX+'px'; player.style.right='auto'; player.style.bottom=state.steveY+'px'; positionBubble(); }
     function moveSteve(dx, dy){ state.steveX=Math.max(24, Math.min(470, state.steveX + dx)); state.steveY=Math.max(GROUND_Y, Math.min(250, state.steveY + dy)); state.lastMove = dx > 0 ? 'right' : dx < 0 ? 'left' : dy > 0 ? 'up' : dy < 0 ? 'down' : null; setStevePosition(); updateStatus(); }
     function placeBlock(color){ const blockY = state.steveY; addBlock(color || 'grass', state.steveX + 10, blockY); if (lesson.id === 1) state.lessonOneBlocks += 1; state.lastMove = null; updateStatus(); }
@@ -468,6 +477,7 @@
           await wait(250);
           if (state.stopProgram || state.runToken !== runToken) break;
         }
+        if (lesson.id === 12 && startOrder(start) === 2) setPlayerInFront(true);
         await runChain(start.getNextBlock(), runToken);
       }
       if (state.runToken === runToken && lesson.id === 1) celebrateLessonOneIfReady();
