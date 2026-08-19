@@ -16,6 +16,7 @@ const sensiClassicHtml = readFileSync(join(root, 'sensi-classic.html'), 'utf8');
 const sensiClassicAboutHtml = readFileSync(join(root, 'sensi-classic-about.html'), 'utf8');
 const sensiClassicTeachersHtml = readFileSync(join(root, 'sensi-classic-teachers.html'), 'utf8');
 const sensiClassicSlidesIndexHtml = readFileSync(join(root, 'sensi-classic-slides', 'index.html'), 'utf8');
+const serverJs = readFileSync(join(root, 'server.js'), 'utf8');
 
 const tests = [];
 function test(name, fn) { tests.push({ name, fn }); }
@@ -113,6 +114,13 @@ test('primary learning pages expose a visible homepage back link', () => {
 
   assertIncludes(slidesIndexHtml, 'class="platform-home-link"', 'slides/index.html should include the shared homepage link');
   assertIncludes(slidesIndexHtml, 'href="../index.html"', 'slides/index.html should link back to the platform homepage');
+});
+
+test('static server normalizes double-slash request paths without crashing', () => {
+  assertIncludes(serverJs, 'function requestUrl(req)', 'server should parse request URLs through a shared helper');
+  assertIncludes(serverJs, "raw.startsWith('//')", 'server should detect protocol-relative path input');
+  assertIncludes(serverJs, "raw.replace(/^\\/+/, '')", 'server should collapse leading slashes before URL parsing');
+  assertIncludes(serverJs, 'const url = requestUrl(req);', 'server handlers should use normalized request URLs');
 });
 
 let failed = 0;
