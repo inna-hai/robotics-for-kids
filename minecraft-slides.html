@@ -35,6 +35,13 @@
       }
       return slides;
     });
+    function summaryPrompt(lesson) {
+      const prompts = {
+        10: 'מה נבנה בקוד הראשון, איך דוד חיפש בקוד השני, ומה קרה כשהיהלום נמצא.',
+        12: 'איזה מבוך בנינו, איזה מסלול דוד הלך, ואיך שינינו את הצעדים לפי המבוך.'
+      };
+      return prompts[lesson.id] || 'מה הקוד עשה לפי הסדר, ומה הייתה התוצאה.';
+    }
     const slides = [
       { html:`<div class="emoji">${lesson.emoji}</div><div class="kicker">מיינקראפט קידס • שיעור ${lesson.id} • ${lesson.durationMinutes} דקות</div><h1>${esc(lesson.title)}</h1><p>${esc(lesson.story)}</p>` },
       { html:`<h2>🎯 מטרת השיעור</h2><p>${esc(lesson.goal)}</p><div class="cards"><div class="card"><b>רעיון תכנותי</b>${esc(lesson.concept)}</div><div class="card"><b>אתגר מסכם</b>${esc(lesson.challenge)}</div></div>` },
@@ -42,7 +49,7 @@
       { html:`<h2>⏱️ מהלך שיעור 60 דקות</h2><div class="flow">${(lesson.lessonFlow||[]).map(step=>`<div class="card"><b>${step.minutes} — ${esc(step.title)}</b>${esc(step.teacher)}<br><em>${esc(step.students)}</em></div>`).join('')}</div>` },
       { html:`<h2>🧪 רצף התרגולים</h2><ul>${(lesson.programmingExercises||[]).map(ex=>`<li><b>${ex.minutes}:</b> ${esc(ex.title)}</li>`).join('')}</ul>` },
       ...exerciseSlides,
-      { html:`<h2>🏁 סיכום והצגה</h2><p><b>התלמידים צריכים להצליח להגיד:</b></p><p>“כשלחצתי הרצה, דוד עשה פעולה קטנה, ואז עוד פעולה, ובגלל הסדר יצאה התוצאה.”</p><div class="note">${esc(lesson.success)}</div>` }
+      { html:`<h2>🏁 סיכום והצגה</h2><p><b>התלמידים צריכים להצליח להסביר בקצרה:</b></p><p>${esc(summaryPrompt(lesson))}</p><div class="note">${esc(lesson.success)}</div>` }
     ];
 
     function todayBlocks(lesson){
