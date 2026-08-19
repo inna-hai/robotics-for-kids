@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>תודה! המנוי הופעל | hai.tech</title>
+  <meta name="description" content="תודה על רכישת מנוי ללומדות hai.tech. המנוי מופעל לילד או לילדה בחשבון.">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:Rubik,Arial,sans-serif;direction:rtl;color:#102033;background:radial-gradient(circle at 15% 10%,#dcfce7,transparent 28%),radial-gradient(circle at 85% 8%,#dbeafe,transparent 28%),linear-gradient(135deg,#f8fafc,#eef2ff);line-height:1.7}.card{width:min(680px,calc(100% - 28px));background:rgba(255,255,255,.96);border:1px solid #e6edf7;border-radius:34px;padding:34px;box-shadow:0 28px 90px rgba(15,23,42,.16);text-align:center}.icon{width:96px;height:96px;margin:0 auto 18px;border-radius:32px;display:grid;place-items:center;font-size:3rem;background:linear-gradient(135deg,#16a34a,#22c55e);box-shadow:0 18px 44px rgba(22,163,74,.24)}h1{font-size:clamp(2rem,5vw,3.1rem);line-height:1.06;margin:0 0 12px;letter-spacing:-.04em}p{margin:0;color:#526070;font-size:1.12rem}.status{margin:18px auto 0;padding:12px 16px;border-radius:20px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;font-weight:900}.status.ok{background:#f0fdf4;border-color:#bbf7d0;color:#166534}.status.error{background:#fff7ed;border-color:#fed7aa;color:#9a3412}.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:26px}.btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:14px 22px;text-decoration:none;font-weight:900}.primary{background:#0f172a;color:#fff}.green{background:#16a34a;color:#fff}.light{background:#fff;color:#0f172a;border:1px solid #dbe3ef}@media(max-width:560px){.card{padding:26px 20px}.actions .btn{width:100%}}
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="icon">✅</div>
+    <h1>תודה! מפעילים את המנוי</h1>
+    <p>התשלום בוצע ב־Morning. אנחנו מעדכנים עכשיו את החשבון כדי לפתוח את הלומדות לילד/ה.</p>
+    <div class="status" id="status">בודק חשבון ומפעיל מנוי...</div>
+    <div class="actions" id="actions" hidden>
+      <a class="btn green" href="sisi.html">כניסה ללומדות</a>
+      <a class="btn primary" href="account.html">האזור שלי</a>
+      <a class="btn light" href="login.html">כניסה לחשבון</a>
+    </div>
+  </main>
+
+  <script>
+    (async () => {
+      const status = document.getElementById('status');
+      const actions = document.getElementById('actions');
+      function token() {
+        try { return localStorage.getItem('haiTechSummerToken') || ''; } catch { return ''; }
+      }
+      try {
+        const headers = { 'Content-Type': 'application/json' };
+        const savedToken = token();
+        if (savedToken) headers.Authorization = `Bearer ${savedToken}`;
+        const response = await fetch('/api/summer/activate-subscription', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ source: 'morning-thankyou' }),
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.error || 'לא הצלחנו להפעיל את המנוי אוטומטית.');
+        status.className = 'status ok';
+        const childName = data.child && data.child.name ? ` עבור ${data.child.name}` : '';
+        status.textContent = `המנוי הופעל בהצלחה${childName}. אפשר להתחיל ללמוד.`;
+        actions.hidden = false;
+      } catch (error) {
+        status.className = 'status error';
+        status.textContent = error.message || 'לא הצלחנו להפעיל את המנוי אוטומטית.';
+        actions.hidden = false;
+      }
+    })();
+  </script>
+</body>
+</html>
