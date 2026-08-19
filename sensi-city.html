@@ -2277,9 +2277,25 @@
 
         function resizeCanvas() {
             const container = canvas.parentElement;
-            canvas.width = container.clientWidth;
-            canvas.height = container.clientHeight - ([9, 11, 12, 13, 15].includes(currentLesson) ? 0 : 60); // Account for ground except full-background scenes; Lesson 11 has no separate ground strip
+            const rect = container.getBoundingClientRect();
+            const width = Math.max(320, Math.round(rect.width || container.clientWidth || 640));
+            const rawHeight = Math.round(rect.height || container.clientHeight || 360);
+            const groundOffset = [9, 11, 12, 13, 15].includes(currentLesson) ? 0 : 60;
+            const height = Math.max(220, rawHeight - groundOffset); // Keep refresh/layout races from creating a distorted giant canvas.
+            canvas.width = width;
+            canvas.height = height;
             resetPositions();
+        }
+
+        function stabilizeLayoutAfterPaint() {
+            requestAnimationFrame(() => {
+                resizeCanvas();
+                if (workspace && window.Blockly) Blockly.svgResize(workspace);
+                requestAnimationFrame(() => {
+                    resizeCanvas();
+                    if (workspace && window.Blockly) Blockly.svgResize(workspace);
+                });
+            });
         }
 
         function resetPositions() {
@@ -5902,6 +5918,14 @@
             }
         }
 
+        function activateDefaultEnvironmentForLesson(lessonNum = currentLesson) {
+            if (lessonNum === 4 && !environment.smoke) {
+                environment.smoke = true;
+                smokeStartedAt = Date.now();
+                syncEnvironmentButtons();
+            }
+        }
+
         function syncEnvironmentButtons() {
             for (const [buttonId, key] of Object.entries(envButtonStateKeys)) {
                 const button = document.getElementById(buttonId);
@@ -8323,8 +8347,12 @@
 
             const state = currentLesson === 1
                 ? (environment.light ? 'BRIGHT' : 'DARK')
+                : currentLesson === 2
+                    ? (getSoundLevel() === 'LOUD' ? 'LOUD' : 'QUIET')
                 : currentLesson === 9
                     ? (currentRunTrace?.startSoundState || (environment.sound ? 'LOUD' : 'QUIET'))
+                    : currentLesson === 12
+                        ? (environment.obstacle ? 'FENCE' : 'NO_FENCE')
                     : 'RUN';
 
             if (!states.includes(state)) states.push(state);
@@ -8341,13 +8369,19 @@
             const promptText = normalizeHebrew([exercise?.title, exercise?.studentPrompt].join(' '));
             const isSameProgramTest = promptText.includes('בדקו את אותה תוכנית') || promptText.includes('בדיקת כמה מצבים');
             if (currentLesson === 1 && isSameProgramTest && promptText.includes('יום') && promptText.includes('לילה')) return ['DARK', 'BRIGHT'];
+            if (currentLesson === 2 && isSameProgramTest && promptText.includes('רעש חלש') && promptText.includes('רעש חזק')) return ['LOUD', 'QUIET'];
             if (currentLesson === 9 && promptText.includes('תרגיל 4') && promptText.includes('רעש') && promptText.includes('שקט')) return ['LOUD', 'QUIET'];
+            if (currentLesson === 12 && promptText.includes('בלי גדר') && promptText.includes('עם גדר')) return ['NO_FENCE', 'FENCE'];
 
             return [];
         }
 
         function normalizeHebrew(value) {
             return String(value || '').replace(/[״”]/g, '"').replace(/[׳’]/g, "'").toLowerCase();
+        }
+
+        function isTeacherApprovalExercise(exercise) {
+            return ['teacherApproval', 'discussion', 'summary'].includes(exercise?.completionMode);
         }
 
         const exerciseBlockHints = [
@@ -8881,6 +8915,14 @@
                 if (!hasDirectBurglarAlarm) missing.push('rule_burglar_alarm_on');
                 if (!hasQuietMotionAlarm) missing.push('rule_quiet_motion_alarm_on');
             }
+            if (currentLesson === 13 && title.includes('תרגיל 3')) {
+                const hasHomeownerMessage = hasIfRuleWithAction('sensor_homeowner', 'YES', 'action_say');
+                const hasBurglarMessage = hasIfRuleWithAction('sensor_burglar', 'YES', 'action_say');
+                const hasQuietMotionMessage = hasNestedIfRuleWithAction('sensor_motion', 'YES', 'sensor_sound', ['QUIET', 'NO'], 'action_say');
+                if (!hasHomeownerMessage) missing.push('rule_homeowner_message_inside_condition');
+                if (!hasBurglarMessage) missing.push('rule_burglar_message_inside_condition');
+                if (!hasQuietMotionMessage) missing.push('rule_quiet_motion_message_inside_nested_condition');
+            }
             if (currentLesson === 12 && title.includes('תרגיל 3')) {
                 const hasLoopObstacleRecovery = hasForeverRuleWithAction('sensor_obstacle', 'YES', 'move_backward')
                     && (hasForeverRuleWithAction('sensor_obstacle', 'YES', 'turn_right')
@@ -8941,6 +8983,9 @@
             const cityLesson = window.getSensiLesson ? window.getSensiLesson(currentLesson) : null;
             const exercise = cityLesson?.programmingExercises?.[activeExerciseIndex];
             if (!exercise) return { ok: true, missing: [] };
+            if (isTeacherApprovalExercise(exercise)) {
+                return { ok: true, missing: [], exercise };
+            }
             if (currentLesson === 15 && activeExerciseIndex < 2) {
                 return { ok: true, missing: [], exercise };
             }
@@ -8994,6 +9039,9 @@
             }
             if (type === 'test_state:LOUD' || type === 'test_state:QUIET') {
                 return 'כדי להשלים את תרגיל הבדיקה, הריצו פעם אחת עם רעש חזק ופעם אחת במצב שקט.';
+            }
+            if (type === 'test_state:NO_FENCE' || type === 'test_state:FENCE') {
+                return 'כדי להשלים את תרגיל הבדיקה, הריצו פעם אחת בלי גדר ופעם אחת עם גדר במסלול.';
             }
 
 
@@ -9078,6 +9126,9 @@
                 rule_obstacle_manual_navigation: 'אחרי “חפש דרך בטוחה” צריך להוסיף ניווט אמיתי סביב המכשול: סובב ימינה/שמאלה ואז זוז קדימה בזהירות.',
                 rule_burglar_alarm_on: 'כאשר חיישן גנב מזהה גנב, צריך להפעיל אזעקה מיד. אפשר להשתמש באחת משתי האפשרויות: “אזעקה — הפעל” או “השמע אזעקה”.',
                 rule_quiet_motion_alarm_on: 'הוסיפו גם כלל למצב שבו הגנב לא זוהה ישירות: אם יש תנועה, ובתוך זה בדיקת “אין רעש” — אז להפעיל אזעקה. אין רעש לבד לא מספיק; צריך תנועה + אין רעש.',
+                rule_homeowner_message_inside_condition: 'בתרגיל הדיווח למוקד הוסיפו הודעה בתוך תנאי בעל הבית, למשל “בעל הבית חזר”.',
+                rule_burglar_message_inside_condition: 'בתרגיל הדיווח למוקד הוסיפו הודעה בתוך תנאי הגנב, למשל “גנב זוהה!”.',
+                rule_quiet_motion_message_inside_nested_condition: 'בתרגיל הדיווח למוקד הוסיפו הודעה בתוך התנאי המקונן: יש תנועה + אין רעש, למשל “תנועה שקטה חשודה!”.',
                 rule_lesson15_two_sensor_conditions_with_actions: 'בפרויקט הגמר צריך מינימום פתוח: בלוק התחלה, לפחות שני תנאי אם–אז עם חיישן, ולפחות פעולה אחת בתוך כל תנאי.'
             };
             if (valueLabels[type] || labels[type]) return valueLabels[type] || labels[type];
@@ -9159,6 +9210,13 @@
             advanceCompletedExercise('סומן כבוצע');
         }
 
+        function completeTeacherApprovalExercise() {
+            const cityLesson = window.getSensiLesson ? window.getSensiLesson(currentLesson) : null;
+            const exercise = cityLesson?.programmingExercises?.[activeExerciseIndex];
+            if (!isTeacherApprovalExercise(exercise)) return;
+            advanceCompletedExercise('סומן כבוצע');
+        }
+
         function renderExerciseToc(lessonNum) {
             const toc = document.getElementById('topExerciseToc');
             const list = document.getElementById('topExerciseList');
@@ -9208,6 +9266,9 @@
             const planningStepActionHtml = currentLesson === 15 && index < 2
                 ? '<button class="btn btn-primary" type="button" onclick="completeLesson15PlanningStep()">סיימתי את שלב התכנון — פתח את השלב הבא</button>'
                 : '';
+            const teacherApprovalActionHtml = isTeacherApprovalExercise(exercise)
+                ? `<button class="btn btn-primary" type="button" onclick="completeTeacherApprovalExercise()">${escapeHtml(exercise.completionButtonLabel || 'סיימתי להסביר למדריך — פתח את השלב הבא')}</button>`
+                : '';
             body.innerHTML = `
                 <div class="exercise-meta">${escapeHtml(exercise.afterFlowMinutes || exercise.minutes || '')}</div>
                 <h3>${escapeHtml(exercise.title || `תרגיל ${index + 1}`)}</h3>
@@ -9217,6 +9278,7 @@
                 ${exercise.testSteps?.length ? `<p class="detail-label">איך בודקים:</p>${listItems(exercise.testSteps)}` : ''}
                 ${exercise.commonMistake ? `<p><span class="detail-label">טעות נפוצה:</span> ${escapeHtml(exercise.commonMistake)}</p>` : ''}
                 ${planningStepActionHtml}
+                ${teacherApprovalActionHtml}
             `;
             modal.classList.add('active');
         }
@@ -9335,6 +9397,7 @@
             if (workspace && previousLesson !== num) saveWorkspaceForLesson(previousLesson);
             currentLesson = num;
             sanitizeEnvironmentForLesson(num);
+            activateDefaultEnvironmentForLesson(num);
             if (num !== 15) {
                 lesson15SelectedZone = null;
                 lesson15MuseumInside = false;
@@ -9423,6 +9486,7 @@
             scheduleWelcomeAutoClose();
             resizeCanvas();
             selectLesson(initialLesson);
+            stabilizeLayoutAfterPaint();
             draw();
             updateSensors();
 
@@ -9432,6 +9496,7 @@
                     if (window.Blockly) {
                         initBlockly();
                         if (workspace) workspace.updateToolbox(buildToolbox());
+                        stabilizeLayoutAfterPaint();
                     } else {
                         console.warn('Blockly did not load; lesson navigation remains available.');
                     }
