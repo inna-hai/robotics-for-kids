@@ -43,11 +43,12 @@ test('landing page frames a programming-oriented robot algorithm lesson', () => 
   assertIncludes(cinemaHtml, 'href="cinema-lab.html"');
 });
 
-test('cinema data has twelve robot algorithm tasks with three correct commands plus distractor', () => {
+test('cinema data has twelve robot algorithm tasks with progressive correct commands plus distractor', () => {
   assert.equal(lessons.length, 12);
   for (const lesson of lessons) {
-    assert.equal(lesson.correctOrder.length, 3, `Lesson ${lesson.id} should have three ordered commands`);
-    assert.equal(Object.keys(lesson.commands).length, 4, `Lesson ${lesson.id} should expose four command choices`);
+    const expectedCorrectCommands = lesson.id <= 6 ? 3 : 4;
+    assert.equal(lesson.correctOrder.length, expectedCorrectCommands, `Lesson ${lesson.id} should have ${expectedCorrectCommands} ordered commands`);
+    assert.equal(Object.keys(lesson.commands).length, expectedCorrectCommands + 1, `Lesson ${lesson.id} should expose correct commands plus one distractor`);
     assert.ok(lesson.distractor, `Lesson ${lesson.id} needs distractor command`);
     assert.ok(lesson.commands[lesson.distractor], `Lesson ${lesson.id} distractor must exist`);
     for (const id of lesson.correctOrder) assert.ok(lesson.commands[id], `Missing command ${id}`);
@@ -58,13 +59,13 @@ test('cinema data has twelve robot algorithm tasks with three correct commands p
 test('cinema play page builds command algorithm, removes distractor, and asks for reason', () => {
   assertIncludes(playHtml, 'id="scene-bank"');
   assertIncludes(playHtml, 'id="timeline"');
-  assertIncludes(playHtml, 'id="goal"');
+  assert.ok(!playHtml.includes('goal-chip'), 'Cinema lesson should not show a revealing goal chip');
   assertIncludes(playHtml, 'id="reason-options"');
   assertIncludes(playSource, 'selectedOrder.every');
   assertIncludes(playSource, 'lesson.distractor');
   assertIncludes(playSource, 'פקודה מיותרת');
   assertIncludes(playSource, 'selectedReason');
-  assertIncludes(playSource, "href: 'cinema-lab.html'");
+  assertIncludes(playSource, "href: 'escape.html'");
 });
 
 test('cinema lab and plan ensure a full 75-minute programming lesson', () => {
@@ -74,7 +75,7 @@ test('cinema lab and plan ensure a full 75-minute programming lesson', () => {
   assertIncludes(labHtml, 'בדיקת חברים');
   assertIncludes(cinemaCss, '.timeline-slot');
   assertIncludes(cinemaCss, '.reason-card');
-  assertIncludes(cinemaCss, '.goal-chip');
+  assertIncludes(cinemaCss, '.goal-chip{display:none!important}');
   assertIncludes(plan, 'בדיקת 75 דקות');
   assertIncludes(plan, 'מקדם ישירות לכיוון תכנות');
 });

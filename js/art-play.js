@@ -9,9 +9,17 @@ function keyOf(command) {
   return `${command.row}:${command.col}:${command.color}`;
 }
 
+function displayColumnFromInternal(col) {
+  return lesson.size - col + 1;
+}
+
+function displayColumn(command) {
+  return displayColumnFromInternal(command.col);
+}
+
 function commandLabel(command) {
   const color = colors[command.color] || { label: command.color, emoji: '⬛' };
-  return `${color.emoji} שורה ${command.row}, עמודה ${command.col} — ${color.label}`;
+  return `${color.emoji} שורה ${command.row}, עמודה ${displayColumn(command)} — ${color.label}`;
 }
 
 function setResult(text, success = false) {
@@ -32,19 +40,26 @@ function renderBoard(containerId, commands, label) {
     for (let col = 1; col <= lesson.size; col += 1) {
       const command = commandMap.get(`${row}:${col}`);
       const text = command ? colors[command.color].emoji : '';
-      cells.push(`<div class="pixel-cell" ${command ? cellStyle(command) : ''} aria-label="${label}: שורה ${row}, עמודה ${col}">${text}</div>`);
+      cells.push(`<div class="pixel-cell" ${command ? cellStyle(command) : ''} aria-label="${label}: שורה ${row}, עמודה ${displayColumnFromInternal(col)}">${text}</div>`);
     }
   }
   const board = document.getElementById(containerId);
   board.style.gridTemplateColumns = `repeat(${lesson.size}, 1fr)`;
+  board.style.gridTemplateRows = `repeat(${lesson.size}, 1fr)`;
   board.innerHTML = cells.join('');
 }
 
+function shuffleScore(command, index) {
+  const raw = `${lesson.id}|${index}|${command.row}|${command.col}|${command.color}|pixel-cards-v3`;
+  return [...raw].reduce((hash, char) => ((hash * 33) ^ char.charCodeAt(0)) >>> 0, 5381);
+}
+
 function shuffledCommands() {
-  const all = [...lesson.target, ...lesson.distractors];
-  return all.map((command, index) => ({ ...command, sortKey: (command.row * 7 + command.col * 3 + index * 5) % 17 }))
-    .sort((a, b) => a.sortKey - b.sortKey)
-    .map(({ sortKey, ...command }) => command);
+  const targetKeys = new Set(lesson.target.map(keyOf));
+  return [...lesson.target, ...lesson.distractors]
+    .map((command, index) => ({ ...command, shuffleScore: shuffleScore(command, index) }))
+    .sort((a, b) => a.shuffleScore - b.shuffleScore)
+    .map(({ shuffleScore, ...command }) => ({ ...command, isTarget: targetKeys.has(keyOf(command)) }));
 }
 
 function renderCommands() {
@@ -108,16 +123,6 @@ function checkArtwork() {
   renderNextStep(false);
 }
 
-function showHint() {
-  const firstMissing = lesson.target.find((command) => !selectedCommands.some((item) => keyOf(item) === keyOf(command)));
-  if (firstMissing) {
-    setResult(`רמז: נסו להוסיף ${commandLabel(firstMissing)}.`);
-  } else {
-    setResult('רמז: אולי בחרתם הוראה שלא קיימת בציור המטרה?');
-  }
-  renderNextStep(false);
-}
-
 function resetArtwork() {
   selectedCommands = [];
   renderCommands();
@@ -131,7 +136,7 @@ function nextTarget() {
   const currentIndex = lessons.findIndex((item) => item.id === lesson.id);
   const nextLesson = lessons[currentIndex + 1];
   if (nextLesson) return { href: `art-play.html?lesson=${nextLesson.id}`, label: `➡️ המשך לציור ${nextLesson.id}` };
-  return { href: 'sisi.html', label: '🤖 חזרה לכל שיעורי סיסי' };
+  return { href: 'weather.html', label: '⛅ לשיעור הבא' };
 }
 
 function renderNextStep(show = false) {
@@ -140,6 +145,7 @@ function renderNextStep(show = false) {
   if (!show) { box.innerHTML = ''; return; }
   const target = nextTarget();
   box.innerHTML = `<div class="next-step-note">מעולה — ממשיכים ברצף השיעור לאתגר הבא.</div><a class="btn" href="${target.href}">${target.label}</a>`;
+  window.SisiSuccessDialog?.show({ message: box.querySelector('.next-step-note')?.textContent || 'כל הכבוד! אפשר להמשיך קדימה או לנסות שוב.', lessons, lesson, nextHref: target.href, nextLabel: target.label, onRepeat: () => window.location.reload() });
 }
 
 function init() {
@@ -150,7 +156,6 @@ function init() {
   document.getElementById('mission').textContent = lesson.mission;
   document.getElementById('learning-note').innerHTML = `<b>רגע למידה:</b> ${lesson.learningNote}`;
   document.getElementById('check').addEventListener('click', checkArtwork);
-  document.getElementById('hint').addEventListener('click', showHint);
   document.getElementById('clear').addEventListener('click', resetArtwork);
   document.getElementById('lesson-nav').innerHTML = lessons.map((item) => `<a class="${item.id === lesson.id ? 'active' : ''}" href="art-play.html?lesson=${item.id}">${item.id}</a>`).join('');
   renderBoard('target-board', lesson.target, 'ציור המטרה');

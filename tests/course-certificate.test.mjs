@@ -16,7 +16,44 @@ test('shared certificate helper defines a reusable completion certificate', () =
   assertIncludes(certificateSource, 'window.SisiCourseCertificate');
   assertIncludes(certificateSource, 'תעודת סיום');
   assertIncludes(certificateSource, 'סיימתם את');
-  assertIncludes(certificateSource, 'כל שיעורי סיסי');
+  assertIncludes(certificateSource, 'לעמוד סיסי');
+});
+
+test('certificate helper ignores empty override values so text never becomes undefined', () => {
+  assertIncludes(certificateSource, 'compactInfo');
+  assertIncludes(certificateSource, "value !== undefined && value !== null && value !== ''");
+});
+
+test('certificate next buttons follow the Sisi lesson sequence, not optional labs', () => {
+  assertIncludes(certificateSource, "'/dino-play.html': { title: 'פארק הדינוזאורים', home: 'dino.html', homeLabel: '🦕 לעמוד הדינוזאורים', next: 'art.html'");
+  assertIncludes(certificateSource, "'/factory-play.html': { title: 'מפעל הלולאות', home: 'factory.html', homeLabel: '🏭 לעמוד המפעל', next: 'garden.html'");
+  assertIncludes(certificateSource, "'/escape-play.html': { title: 'חדר הבריחה', home: 'escape.html', homeLabel: '🔐 לעמוד חדר הבריחה', next: 'finale.html'");
+});
+
+test('final mission success dialog becomes a festive course-completion dialog', () => {
+  assertIncludes(certificateSource, 'finalMission = isLast(lessons, lesson)');
+  assertIncludes(certificateSource, '🏆 סיום כל המשימות!');
+  assertIncludes(certificateSource, 'סיימתם את כל משימות');
+  assertIncludes(certificateSource, 'השלמתם את כל');
+});
+
+test('shared success dialog offers continue and repeat actions and saves local progress', () => {
+  assertIncludes(certificateSource, 'window.SisiSuccessDialog');
+  assertIncludes(certificateSource, "setAttribute('role', 'dialog')");
+  assertIncludes(certificateSource, 'למשימה הבאה');
+  assertIncludes(certificateSource, 'לנסות שוב');
+  assertIncludes(certificateSource, 'onRepeat');
+  assertIncludes(certificateSource, 'window.SisiProgress');
+  assertIncludes(certificateSource, 'localStorage.setItem(key, JSON.stringify(progress))');
+  assertIncludes(certificateSource, 'progress.completed[lesson.id]');
+  assertIncludes(certificateSource, 'markProgress(lesson)');
+});
+
+test('Sisi course play pages load merged final mission helper cache bust', () => {
+  for (const course of courses) {
+    const html = readFileSync(join(root, `${course}-play.html`), 'utf8');
+    assertIncludes(html, 'js/course-certificate.js?v=20260817-merged-final-mission-stability', `${course}-play.html should load the merged final mission helper`);
+  }
 });
 
 test('all Sisi course play pages load the certificate helper before their play engine', () => {
@@ -30,10 +67,11 @@ test('all Sisi course play pages load the certificate helper before their play e
   }
 });
 
-test('all Sisi course play engines show certificate on successful final mission', () => {
+test('all Sisi course play engines show a shared completion UI on successful final mission', () => {
   for (const course of courses) {
     const source = readFileSync(join(root, 'js', `${course}-play.js`), 'utf8');
-    assertIncludes(source, 'SisiCourseCertificate?.show', `${course}-play.js should call certificate helper on success`);
+    const hasCompletionUi = source.includes('SisiCourseCertificate?.show') || source.includes('SisiSuccessDialog?.show');
+    assert.ok(hasCompletionUi, `${course}-play.js should call a shared completion helper on success`);
   }
 });
 

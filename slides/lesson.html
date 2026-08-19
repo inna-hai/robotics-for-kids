@@ -258,7 +258,7 @@
   </nav>
 
 
-  <script src="../js/lessons-data.js?v=20260720-lesson11-13-merge-v1"></script>
+  <script src="../js/lessons-data.js?v=20260805-lesson15-open-project-v2"></script>
 
   <script>
     const params = new URLSearchParams(window.location.search);
@@ -347,8 +347,10 @@
       const exercises = (lesson.programmingExercises || []).filter((exercise) => exercise.afterFlowMinutes === step.minutes);
       return exercises.flatMap((exercise) => {
         const exerciseNumber = (lesson.programmingExercises || []).indexOf(exercise) + 1;
+        const exerciseSlide = { html: `<span class="time-badge">${step.minutes}</span><div class="exercise-kind">🧩 תרגול תכנות ${exerciseNumber} — עכשיו בכיתה</div><h2>${exercise.title}</h2><p>${exercise.studentPrompt}</p><div class="teacher-box no-scroll"><h3>מה לבקש מהתלמידים עכשיו</h3><ul>${(exercise.testSteps || []).map(testStep => `<li>${testStep}</li>`).join('')}</ul></div><div class="teacher-note"><strong>למדריך:</strong> השקף הזה מגיע מיד אחרי חלק “${step.title}”, כדי שהתרגול יופיע בדיוק בזמן הנכון ברצף השיעור.</div>` };
+        if (exercise.hideSolution) return [exerciseSlide];
         return [
-          { html: `<span class="time-badge">${step.minutes}</span><div class="exercise-kind">🧩 תרגול תכנות ${exerciseNumber} — עכשיו בכיתה</div><h2>${exercise.title}</h2><p>${exercise.studentPrompt}</p><div class="teacher-box no-scroll"><h3>מה לבקש מהתלמידים עכשיו</h3><ul>${(exercise.testSteps || []).map(testStep => `<li>${testStep}</li>`).join('')}</ul></div><div class="teacher-note"><strong>למדריך:</strong> השקף הזה מגיע מיד אחרי חלק “${step.title}”, כדי שהתרגול יופיע בדיוק בזמן הנכון ברצף השיעור.</div>` },
+          exerciseSlide,
           { html: `<span class="time-badge">${step.minutes}</span><div class="exercise-kind">✅ פתרון למדריך — תרגול ${exerciseNumber}</div><h2 class="solution-title">${exercise.answerTitle}</h2>${renderSolutionBlocks(exercise.answerBlocks)}<p class="compact-note"><strong>תוצאה מצופה:</strong> ${exercise.expectedResult}</p><p class="compact-note"><strong>טעות נפוצה:</strong> ${exercise.commonMistake}</p>` }
         ];
       });
@@ -381,11 +383,11 @@
       { html: `<h2>🧱 הבלוקים המרכזיים</h2><div class="cards"><div class="card">אם 👁️ חיישן אור = חשוך</div><div class="card">אם 👥 יותר מדי מבקרים</div><div class="card">אם 🚪 דלת צדדית פתוחה</div><div class="card">🔐 שמירה — דרוך</div><div class="card">אם 🔐 מערכת שמירה דרוכה</div><div class="card">אם 👥 יותר מדי מבקרים</div><div class="card">אם ✋ נגיעה בכספת</div><div class="card">אם 🚪 דלת צדדית פתוחה</div><div class="card">אמור הודעת שמירה</div><div class="card">חכה 5 שניות</div><div class="card">🚨 אזעקת מוזיאון — הפעל</div></div>` },
       { html: `<h2>✅ מה נבנה?</h2><ul><li>שומר מוזיאון שלא מפעיל אזעקות שווא.</li><li>תנאי מקונן: קודם דריכה ידנית/אוטומטית, ורק בתוכה בדיקת תנועה או דלת.</li><li>תרחיש עלילתי: רמז חשוד → הודעה → המתנה קצרה → אזעקה.</li></ul>` }
     ] : Number(lesson.id) === 14 ? [
-      { html: `<div class="emoji">🛟</div><div class="kicker">שיעור 14 • זירת חילוץ</div><h1>סיפור חילוץ — הנתיב הבטוח</h1><p>קריאת חירום מגיעה מהמגדל: יש חום מסוכן, עשן וחסם במסלול. סנסי צריך לזהות את הסכנה, להפעיל עזרה, ורק אז לבחור נתיב בטוח.</p>` },
-      { html: `<h2>🎬 עלילת השיעור</h2><div class="cards"><div class="card">🚨 המגדל שולח קריאת חירום</div><div class="card">🔥💨🪨 סנסי בודק סכנות</div><div class="card">🚁🛟 סנסי בוחר נתיב בטוח</div></div>` },
-      { html: `<h2>👁️ החיישנים בסיפור</h2><ul><li><strong>חום מסוכן</strong> — לא נכנסים לאזור חם.</li><li><strong>עשן בזירה</strong> — מפעילים אזעקה ומזהירים.</li><li><strong>חסם במסלול</strong> — בוחרים דרך חלופית.</li></ul>` },
-      { html: `<h2>🧱 הבלוקים המרכזיים</h2><div class="cards"><div class="card">אם חום מסוכן</div><div class="card">אם עשן בזירה</div><div class="card">אם חסם במסלול</div><div class="card">אמור הודעת חילוץ</div><div class="card">הפעל אזעקה</div><div class="card">הפעל רחפן חילוץ</div><div class="card">בחר נתיב בטוח</div><div class="card">עקוף לפי נתיב בטוח</div><div class="card">התקדם בזהירות</div></div>` },
-      { html: `<h2>✅ מה נבנה?</h2><ul><li>רצף חילוץ ברור: קריאה → בדיקת סכנות → פעולה.</li><li>תגובה שונה לכל סכנה.</li><li>בחירת נתיב בטוח לפני תנועה.</li></ul>` }
+      { html: `<div class="emoji">🛟</div><div class="kicker">שיעור 14 • זירת חילוץ</div><h1>סיפור חילוץ — הנתיב הבטוח</h1><p>קריאת חירום מגיעה מהמגדל: יש עשן, חום מסוכן ומכשול במסלול. סנסי צריך להודיע מה זיהה, לבחור פעולה בטוחה, ולנווט בזהירות — לא לרוץ קדימה בלי בדיקה.</p>` },
+      { html: `<h2>🎬 עלילת השיעור</h2><div class="cards"><div class="card">🚨 המגדל שולח קריאת חירום</div><div class="card">💨 עשן: מודיעים ומחפשים דרך בטוחה</div><div class="card">🔥 חום: מתריעים ועוצרים</div><div class="card">🪨 מכשול: מודיעים ואז מנווטים ידנית סביבו</div></div>` },
+      { html: `<h2>👁️ החיישנים בסיפור</h2><ul><li><strong>עשן</strong> — סנסי מודיע “עשן באזור!” ומפעיל חיפוש דרך בטוחה.</li><li><strong>חום מסוכן</strong> — סנסי לא נכנס לאזור: מודיע, מפעיל אזעקה ועוצר.</li><li><strong>מכשול במסלול</strong> — נדלק רק כשהקצה של הרובוט נוגע במכשול; אחר כך צריך ניווט ידני.</li></ul>` },
+      { html: `<h2>🧱 הבלוקים המרכזיים</h2><div class="cards"><div class="card">אם עשן</div><div class="card">אם חם מדי</div><div class="card">אם מכשול</div><div class="card">אמור הודעה</div><div class="card">חפש דרך בטוחה</div><div class="card">אזעקה — הפעל / השמע אזעקה</div><div class="card">סובב ימינה/שמאלה</div><div class="card">התקדם בזהירות</div><div class="card">עצור תוכנית</div></div>` },
+      { html: `<h2>✅ ארבעת התרגילים</h2><ul><li><strong>תרגיל 1:</strong> עשן → הודעה + חפש דרך בטוחה.</li><li><strong>תרגיל 2:</strong> חום → הודעה + אזעקה/צליל + עצירה.</li><li><strong>תרגיל 3:</strong> מכשול → הודעה + חפש דרך בטוחה + ניסיון עקיפה סמלי: סיבוב, תנועה, הרצה ותיקון.</li><li><strong>תרגיל 4:</strong> סיכום נוהל חילוץ במילים — בלי קוד חדש.</li></ul><p class="compact-note"><strong>חשוב:</strong> “חפש דרך בטוחה” לא מזיז את הרובוט לבד. כדי לעקוף באמת צריך לפרט בלוקים, להריץ, לראות מה קרה ולתקן.</p>` }
     ] : [
       { html: `<div class="emoji">${lesson.emoji}</div><div class="kicker">שיעור ${lesson.id} • ${lesson.cityZone}</div><h1>${lesson.title}</h1><p>${lesson.story}</p>` },
       { html: `<h2>🎯 מה נלמד היום?</h2><ul>${lesson.learningGoals.map(goal => `<li>${goal}</li>`).join('')}</ul>` },
@@ -400,7 +402,7 @@
       ...introSlides,
       ...flowSlides,
       { html: Number(lesson.id) === 14
-        ? `<h2>💬 שאלת סיכום</h2><p>איזו סכנה סנסי צריך לבדוק קודם — חום, עשן או חסם? למה?</p><p><strong>משפט סיכום:</strong> חיישן סכנה → החלטה → פעולה בטוחה.</p>`
+        ? `<h2>💬 שאלת סיכום</h2><p>איך סנסי מחליט מה לעשות כשיש עשן, חום או מכשול?</p><p><strong>משפט סיכום:</strong> מזהים סכנה → מודיעים → פועלים בבטחה → מנווטים רק כשצריך.</p>`
         : Number(lesson.id) === 10
           ? `<h2>💬 שאלת סיכום</h2><p>${lesson.teacherNotes.discussionQuestions[0] || 'איפה עוד בעיר אפשר להשתמש ברעיון הזה?'}</p><p><strong>משפט סיכום:</strong> אדמה קובעת אם משקים · חום קובע כמה זמן · טפטפות נסגרות לחיסכון</p>`
           : Number(lesson.id) === 11

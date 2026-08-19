@@ -34,8 +34,8 @@ test('escape course is linked as lesson 14 in the Sisi series', () => {
   assertIncludes(hubHtml, 'סיסי בחדר הבריחה');
 });
 
-test('landing page frames a 76-minute experiential programming lesson', () => {
-  assertIncludes(escapeHtml, 'שיעור 14 • תנאי וגם • כיתות ב׳ • 76 דקות');
+test('landing page frames a 75-minute experiential programming lesson', () => {
+  assertIncludes(escapeHtml, 'שיעור 14 • תנאי וגם • כיתות ב׳ • 75 דקות');
   assertIncludes(escapeHtml, 'אם שני תנאים נכונים');
   assertIncludes(escapeHtml, 'אתגר “אחד נכון לא מספיק”');
   assertIncludes(escapeHtml, 'משחק בוני חדרים בזוגות');
@@ -45,12 +45,13 @@ test('landing page frames a 76-minute experiential programming lesson', () => {
   assertIncludes(escapeHtml, 'href="escape-lab.html"');
 });
 
-test('escape data has twelve AND-condition tasks with two required keys and distractors', () => {
+test('escape data has twelve AND-condition tasks with two required keys and progressive distractors', () => {
   assert.equal(lessons.length, 12);
   const keyIds = Object.keys(keys);
   for (const lesson of lessons) {
     assert.equal(lesson.required.length, 2, `Lesson ${lesson.id} needs two required conditions`);
-    assert.equal(lesson.distractors.length, 2, `Lesson ${lesson.id} needs two distractors`);
+    const expectedDistractors = lesson.id >= 10 ? 3 : 2;
+    assert.equal(lesson.distractors.length, expectedDistractors, `Lesson ${lesson.id} needs ${expectedDistractors} distractors`);
     for (const id of [...lesson.required, ...lesson.distractors]) assert.ok(keyIds.includes(id), `Unknown key ${id}`);
     assertIncludes(lesson.conditionText, 'וגם');
     assert.ok(lesson.learningNote.length >= 35, `Lesson ${lesson.id} needs learning note`);
@@ -62,26 +63,48 @@ test('escape data has twelve AND-condition tasks with two required keys and dist
   assert.equal(new Set(lessons.map((lesson) => lesson.successReason)).size, lessons.length, 'Each room should use a different correct explanation');
 });
 
+test('escape correct reasons appear in mixed positions', () => {
+  const positions = lessons.map((lesson) => lesson.reasonOptions.indexOf(lesson.successReason));
+  assert.ok(positions.includes(0), 'At least one correct reason can be first');
+  assert.ok(positions.includes(1), 'At least one correct reason should be second');
+  assert.ok(positions.includes(2), 'At least one correct reason should be third');
+  assert.ok(positions.some((position) => position !== 0), 'Correct reason should not always be first');
+});
+
 test('escape play page checks two selected keys and reason for AND', () => {
   assertIncludes(playHtml, 'id="key-options"');
+  assertIncludes(playHtml, 'id="how-to-read-target"');
+  assertIncludes(playHtml, 'id="how-to-choose-target"');
   assertIncludes(playHtml, 'id="condition-preview"');
   assertIncludes(playHtml, 'id="reason-options"');
   assertIncludes(playSource, 'selected.length !== 2');
   assertIncludes(playSource, 'lesson.reasonOptions');
   assertIncludes(playSource, 'selectedReason === lesson.successReason');
+  assertIncludes(playSource, 'sameKeysInAnyOrder(selected, lesson.required)');
+  assertIncludes(playSource, 'function renderHowTo()');
+  assertIncludes(playSource, 'opened:');
+  assertIncludes(playSource, 'const openedText = howToTarget().opened');
   assertIncludes(playSource, 'lesson.feedbackWrongReason');
-  assertIncludes(playSource, "href: 'escape-lab.html'");
+  assertIncludes(playSource, "href: 'finale.html'");
   assert.ok(!playHtml.includes('scene-bank'), 'Escape lesson should not use cinema scene bank');
 });
 
-test('escape lab, css, and plan support 76 minutes', () => {
+test('escape required keys are accepted in any order', () => {
+  for (const lesson of lessons) {
+    const forward = [...lesson.required].sort().join('|');
+    const backward = [...lesson.required].reverse().sort().join('|');
+    assert.equal(forward, backward, `Lesson ${lesson.id} required keys should compare without order`);
+  }
+});
+
+test('escape lab, css, and plan support 75 minutes', () => {
   assertIncludes(labHtml, 'פעילות יצירה • 15–20 דקות');
   assertIncludes(labHtml, 'תנאי 1');
   assertIncludes(labHtml, 'תנאי 2');
   assertIncludes(labHtml, 'רמז מבלבל');
   assertIncludes(escapeCss, '.condition-preview');
   assertIncludes(escapeCss, '.key-card');
-  assertIncludes(plan, 'שיעור 76 דקות');
+  assertIncludes(plan, 'שיעור 75 דקות');
   assertIncludes(plan, 'מתקדם בתכנות בצורה חווייתית');
   assertIncludes(plan, 'גיוון בין החדרים');
 });

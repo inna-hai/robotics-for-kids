@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/weather.css?v=20260717-weather-1">
+  <link rel="stylesheet" href="css/weather.css?v=20260813-condition-no-icon-v3">
 </head>
 <body>
   <main class="shell">
@@ -19,38 +19,50 @@
 
     <section class="station-card">
       <div class="big-emoji" id="lesson-emoji" aria-hidden="true">⛅</div>
-      <div><h2 id="lesson-heading">תחנת מזג אוויר</h2><p id="scene"></p><span class="condition-chip" id="condition-chip"></span><div class="learning-note" id="learning-note"></div></div>
+      <div><h2 id="lesson-heading">תחנת מזג אוויר</h2><p id="scene"></p><div class="learning-note" id="learning-note"></div></div>
     </section>
 
     <section class="automation-layout">
       <div class="option-panel">
-        <h2>1. איזה חיישן צריך?</h2>
+        <h2>1. מה התנאי?</h2>
+        <p>בחרו את משפט ה־אם שמתאים לסיפור.</p>
+        <div class="option-grid" id="condition-options"></div>
+      </div>
+      <div class="option-panel">
+        <h2>2. איזה חיישן צריך?</h2>
         <p>בחרו את החיישן שמזהה את הבעיה בסיפור.</p>
         <div class="option-grid" id="sensor-options"></div>
       </div>
       <div class="option-panel">
-        <h2>2. איזו פעולה מתאימה?</h2>
+        <h2>3. איזו פעולה מתאימה?</h2>
         <p>בחרו פעולה שתפתור את הבעיה בלי להפריע.</p>
         <div class="option-grid" id="action-options"></div>
       </div>
+    </section>
+
+    <section class="debug-panel option-panel">
+      <h2>4. בדיקת תקלה</h2>
+      <p>סיסי קיבלה כלל שגוי. מצאו איזה חלק צריך לתקן.</p>
+      <div class="bug-preview" id="bug-preview" aria-live="polite"></div>
+      <div class="option-grid bug-grid" id="bug-options"></div>
     </section>
 
     <section class="rule-panel">
       <h2>הכלל שבניתי</h2>
       <div class="rule-preview" id="rule-preview" aria-live="polite"></div>
       <div class="controls">
-        <button class="btn" id="check" type="button">▶️ להריץ תחנה</button>
-        <button class="btn secondary" id="hint" type="button">💡 רמז</button>
-        <button class="btn secondary" id="clear" type="button">🔄 להתחיל מחדש</button>
-        <a class="btn secondary" href="weather.html">⛅ עמוד השיעור</a>
+        <button class="btn" id="check" type="button">▶️ הרצה</button>
+        <button class="btn secondary" id="clear" type="button">🔁 לנסות שוב</button>
+        <a class="btn secondary" href="sisi.html">🤖 לעמוד סיסי</a>
+          <a class="btn secondary" href="factory.html">🏭 לשיעור הבא</a>
       </div>
       <div class="result" id="result" aria-live="polite"></div>
       <div class="next-step" id="next-step"></div>
     </section>
   </main>
-  <script src="js/weather-lessons.js?v=20260717-weather-1"></script>
-  <script src="js/course-certificate.js?v=20260717-cert-1"></script>
-  <script src="js/weather-play.js?v=20260717-weather-1"></script>
+  <script src="js/weather-lessons.js?v=20260813-debug-challenge-v6"></script>
+  <script src="js/course-certificate.js?v=20260817-merged-final-mission-stability"></script>
+  <script src="js/weather-play.js?v=20260813-debug-challenge-v6"></script>
   <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
 </body>
 </html>

@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/detective.css?v=20260717-detective-1">
+  <link rel="stylesheet" href="css/how-to.css?v=20260812-practical-help">
 </head>
 <body>
   <main class="shell">
@@ -18,8 +19,8 @@
         <h1 id="page-title">🕵️‍♀️ טוען תיק...</h1>
         <p id="page-subtitle">בחרו רמז, בחרו כלל, ובדקו אם סיסי פתרה את התעלומה.</p>
         <div class="actions">
-          <a class="btn secondary" href="detective.html">🔎 כל תיקי החקירה</a>
-          <a class="btn secondary" href="ocean.html">🌊 שיעור 3: אוקיינוס</a>
+          <a class="btn secondary" href="sisi.html">🤖 לעמוד סיסי</a>
+          <a class="btn secondary" href="kitchen.html">🧁 לשיעור הבא</a>
         </div>
       </div>
       <div class="hero-art" aria-hidden="true">🤖🕵️‍♀️</div>
@@ -34,7 +35,17 @@
         <div class="emoji" id="lesson-emoji"></div>
       </div>
 
+      <div class="case-scene" id="case-scene" hidden></div>
       <div class="teacher-note" id="learning-note"></div>
+      <section class="how-to-card" aria-label="מה עושים במשימה">
+        <div class="how-to-title">👀 מה עושים?</div>
+        <div class="how-to-steps">
+          <span class="how-to-step">1️⃣ קוראים את התיק</span>
+          <span class="how-to-step">2️⃣ לוחצים על רמז</span>
+          <span class="how-to-step">3️⃣ לוחצים על כלל אם-אז שמתאים לרמז שבחרתם</span>
+          <span class="how-to-step">4️⃣ לוחצים ✅ בדיקה</span>
+        </div>
+      </section>
       <div class="answer-card"><b>חשודים / אפשרויות:</b><div class="suspects" id="suspects"></div></div>
 
       <div class="case-board">
@@ -49,9 +60,8 @@
       </div>
 
       <div class="music-controls">
-        <button class="btn" id="check">✅ בדיקת פתרון</button>
-        <button class="btn secondary" id="hint">💡 רמז קטן</button>
-        <button class="btn secondary" id="clear">🧹 ניקוי</button>
+        <button class="btn" id="check">✅ בדיקה</button>
+        <button class="btn secondary" id="clear">🔁 לנסות שוב</button>
       </div>
 
       <p class="result" id="result" aria-live="polite"></p>
@@ -61,8 +71,8 @@
   </main>
 
   <script src="js/detective-lessons.js?v=20260717-detective-1"></script>
-  <script src="js/course-certificate.js?v=20260717-cert-1"></script>
-  <script src="js/detective-play.js?v=20260717-detective-1"></script>
+  <script src="js/course-certificate.js?v=20260817-merged-final-mission-stability"></script>
+  <script src="js/detective-play.js?v=20260725-child-ux"></script>
   <script src="/js/feedback-widget.js?v=20260714-mobile-offset"></script>
 </body>
 </html>

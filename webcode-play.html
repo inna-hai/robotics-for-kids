@@ -8,7 +8,7 @@
   <script src="https://unpkg.com/blockly/blockly.min.js"></script>
   <script src="https://unpkg.com/blockly/msg/he.js"></script>
   <style>
-    *{box-sizing:border-box}:root{--ink:#0f172a;--blue:#2563eb;--orange:#f97316;--green:#22c55e;--red:#ef4444}body{margin:0;height:100vh;overflow:hidden;font-family:Rubik,Arial,sans-serif;direction:rtl;background:linear-gradient(135deg,#0f172a,#1e3a8a 55%,#7c2d12);color:var(--ink);display:flex;flex-direction:column}.topbar{background:rgba(255,255,255,.97);box-shadow:0 5px 22px rgba(0,0,0,.18);padding:.65rem .9rem;display:grid;grid-template-columns:auto 1fr auto;gap:.75rem;align-items:center;z-index:5}.brand{font-weight:900;font-size:1.08rem;white-space:nowrap}.lesson-title{text-align:center;font-weight:900;color:#1e3a8a}.actions{display:flex;gap:.45rem;flex-wrap:wrap}.btn{border:0;border-radius:999px;padding:.62rem .95rem;font-family:inherit;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.32rem}.run{background:#00e096;color:#052e16}.check{background:#facc15;color:#422006}.reset{background:#fb7185;color:white}.share{background:#38bdf8;color:#082f49}.link{background:#eef2ff;color:#3730a3}.main{flex:1;min-height:0;display:grid;grid-template-columns:360px minmax(0,1fr) var(--preview-width,420px);gap:1rem;padding:1rem}.panel{background:rgba(255,255,255,.96);border-radius:26px;box-shadow:0 18px 48px rgba(0,0,0,.2);min-height:0;overflow:hidden;display:flex;flex-direction:column}.lesson-toggle{border:0;background:linear-gradient(135deg,#fff7ed,#eff6ff);padding:.9rem 1rem;font-family:inherit;font-weight:900;color:#1e3a8a;display:flex;align-items:center;justify-content:space-between;gap:.8rem;cursor:pointer;text-align:right;border-bottom:1px solid #fed7aa}.lesson-toggle span:first-child{display:flex;align-items:center;gap:.45rem}.lesson-toggle-icon{background:#1e3a8a;color:white;border-radius:999px;min-width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center}.lesson-collapsible{display:flex;flex-direction:column;min-height:0;overflow:hidden}.main.lesson-collapsed{grid-template-columns:74px minmax(0,1.35fr) var(--preview-width,460px)}.lesson-panel.collapsed{min-height:0}.lesson-panel.collapsed .lesson-collapsible{display:none}.lesson-panel.collapsed .lesson-toggle{height:100%;min-height:360px;writing-mode:vertical-rl;text-orientation:mixed;justify-content:center;border-bottom:0}.lesson-panel.collapsed .lesson-toggle span:first-child{flex-direction:column}.lesson-panel.collapsed .lesson-toggle-icon{writing-mode:horizontal-tb}.info{padding:1rem;border-bottom:1px solid #e5e7eb}.info h1{font-size:1.35rem;margin:.2rem 0}.info p{margin:.25rem 0;line-height:1.55}.chip{display:inline-flex;background:#fff7ed;color:#9a3412;border-radius:999px;padding:.32rem .65rem;font-weight:900;font-size:.78rem;margin:.12rem}.exercise-list{overflow:auto;padding:1rem;display:grid;gap:.65rem}.exercise{background:#f8fafc;border:2px solid #e5e7eb;border-radius:18px;padding:.75rem;line-height:1.45;cursor:pointer}.exercise.active{border-color:#f97316;background:#fff7ed}.exercise.done{border-color:#22c55e;background:#f0fdf4}.exercise b{display:block;color:#1e3a8a}.hint{font-size:.88rem;color:#64748b;margin-top:.35rem}.editor-panel{background:linear-gradient(135deg,#fff7ed,#eff6ff)}.blocks-stage{flex:1;min-height:0;overflow:auto;padding:1rem;display:flex;flex-direction:column;gap:.75rem}.blocks-intro{background:white;border:2px dashed #fb923c;border-radius:22px;padding:.85rem;line-height:1.5;font-weight:800;color:#7c2d12}.blocks-intro small{display:block;color:#475569;font-weight:700;margin-top:.25rem}.real-blockly{display:none;flex:1;min-height:430px;background:white;border:3px solid #f97316;border-radius:24px;overflow:hidden;box-shadow:inset 0 0 0 1px #fed7aa}.real-blockly.active{display:flex;flex-direction:column}.blockly-top{display:flex;align-items:center;justify-content:space-between;gap:.7rem;padding:.65rem .85rem;background:#fff7ed;border-bottom:1px solid #fed7aa;font-weight:900;color:#7c2d12}.blockly-top small{font-weight:800;color:#475569}.blockly-live{background:#dcfce7;color:#166534;border-radius:999px;padding:.25rem .6rem;font-size:.82rem}#blocklyDiv{flex:1;min-height:0;width:100%;direction:ltr}.blocklyToolboxDiv{direction:rtl}.blocklyTreeLabel{font-family:Rubik,Arial,sans-serif}.code-peek{border-top:1px solid #fed7aa;background:#0f172a;color:white}.code-peek summary{cursor:pointer;padding:.75rem 1rem;font-weight:900;background:#1e293b;color:#ffedd5}.code-peek[open]{max-height:44%;display:flex;flex-direction:column}.code-peek[open] .code-box{display:flex;flex:1;min-height:260px;flex-direction:column}.editor-tabs{display:flex;background:#0f172a;padding:.45rem;gap:.4rem}.editor-tabs button{flex:1;border:0;border-radius:12px;padding:.6rem;font-weight:900;cursor:pointer;background:#334155;color:white}.editor-tabs button.active{background:#fb923c;color:#111827}.editor{flex:1;min-height:0;display:none}.editor.active{display:block}textarea{width:100%;height:100%;min-height:260px;resize:none;border:0;outline:0;padding:1rem;font:600 15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;direction:ltr;text-align:left;background:#07111f;color:#e5f3ff}.preview-panel{position:relative}.preview-resize{position:absolute;top:0;right:-.68rem;bottom:0;width:1.36rem;z-index:4;cursor:col-resize;display:flex;align-items:center;justify-content:center;touch-action:none}.preview-resize::before{content:"";width:7px;height:86px;border-radius:999px;background:linear-gradient(180deg,#fb923c,#2563eb);box-shadow:0 0 0 4px rgba(255,255,255,.88),0 8px 22px rgba(15,23,42,.22)}.preview-resize:hover::before,.preview-resize.dragging::before{background:linear-gradient(180deg,#f97316,#1d4ed8);width:9px}.preview-resize-hint{font-size:.78rem;color:#64748b;font-weight:800}.preview-head{padding:.8rem 1rem;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;gap:.5rem;align-items:center;font-weight:900}.preview-wrap{flex:1;min-height:0;background:white}iframe{width:100%;height:100%;border:0;background:white}.feedback{padding:.8rem 1rem;border-top:1px solid #e5e7eb;font-weight:900;line-height:1.45}.feedback.good{color:#15803d}.feedback.bad{color:#b91c1c}.helper{background:linear-gradient(135deg,#eff6ff,#fff7ed);border-radius:18px;padding:.8rem;margin-top:.7rem;line-height:1.5}.helper b{color:#1d4ed8}.bridge{margin-top:.8rem;display:grid;gap:.5rem}.bridge-title{font-weight:900;color:#7c2d12}.bridge-block{border:0;border-radius:16px;background:linear-gradient(135deg,#ffedd5,#dbeafe);padding:.7rem;text-align:right;font-family:inherit;font-weight:900;cursor:pointer;box-shadow:0 5px 0 rgba(15,23,42,.08)}.bridge-block small{display:block;font-weight:700;color:#475569;margin-top:.22rem;line-height:1.35}.bridge-empty{display:none}@media(max-width:1100px){.preview-resize{display:none}body{height:auto;min-height:100vh;overflow:auto}.topbar{grid-template-columns:1fr}.lesson-title{text-align:right}.main,.main.lesson-collapsed{display:flex;flex-direction:column;padding:.75rem}.panel{min-height:360px}.lesson-panel.collapsed{min-height:58px}.lesson-panel.collapsed .lesson-toggle{height:auto;min-height:58px;writing-mode:horizontal-tb;justify-content:space-between}.lesson-panel.collapsed .lesson-toggle span:first-child{flex-direction:row}.panel.editor-panel{min-height:620px}.main.lesson-collapsed .panel.editor-panel{min-height:72vh}.panel.preview-panel{min-height:420px}.main.lesson-collapsed .panel.preview-panel{min-height:58vh}.actions .btn{flex:1}}@media(max-width:560px){.main{padding:.55rem}.topbar{padding:.55rem}.btn{font-size:.86rem;padding:.55rem .7rem}.panel{border-radius:20px}textarea{font-size:13px}}
+    *{box-sizing:border-box}:root{--ink:#0f172a;--blue:#2563eb;--orange:#f97316;--green:#22c55e;--red:#ef4444}body{margin:0;height:100vh;overflow:hidden;font-family:Rubik,Arial,sans-serif;direction:rtl;background:linear-gradient(135deg,#0f172a,#1e3a8a 55%,#7c2d12);color:var(--ink);display:flex;flex-direction:column}.topbar{background:rgba(255,255,255,.97);box-shadow:0 5px 22px rgba(0,0,0,.18);padding:.65rem .9rem;display:grid;grid-template-columns:auto 1fr auto;gap:.75rem;align-items:center;z-index:5}.brand{font-weight:900;font-size:1.08rem;white-space:nowrap}.lesson-title{text-align:center;font-weight:900;color:#1e3a8a}.actions{display:flex;gap:.45rem;flex-wrap:wrap}.btn{border:0;border-radius:999px;padding:.62rem .95rem;font-family:inherit;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.32rem}.btn:disabled{background:#e5e7eb!important;color:#94a3b8!important;cursor:not-allowed;filter:grayscale(1);opacity:.72;box-shadow:none}.run{background:#00e096;color:#052e16}.check{background:#facc15;color:#422006}.reset{background:#fb7185;color:white}.share{background:#38bdf8;color:#082f49}.link{background:#eef2ff;color:#3730a3}.main{flex:1;min-height:0;display:grid;grid-template-columns:360px minmax(0,1fr) var(--preview-width,420px);gap:1rem;padding:1rem}.panel{background:rgba(255,255,255,.96);border-radius:26px;box-shadow:0 18px 48px rgba(0,0,0,.2);min-height:0;overflow:hidden;display:flex;flex-direction:column}.lesson-toggle{border:0;background:linear-gradient(135deg,#fff7ed,#eff6ff);padding:.9rem 1rem;font-family:inherit;font-weight:900;color:#1e3a8a;display:flex;align-items:center;justify-content:space-between;gap:.8rem;cursor:pointer;text-align:right;border-bottom:1px solid #fed7aa}.lesson-toggle span:first-child{display:flex;align-items:center;gap:.45rem}.lesson-toggle-icon{background:#1e3a8a;color:white;border-radius:999px;min-width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center}.lesson-collapsible{display:flex;flex-direction:column;min-height:0;overflow:hidden}.main.lesson-collapsed{grid-template-columns:74px minmax(0,1.35fr) var(--preview-width,460px)}.lesson-panel.collapsed{min-height:0}.lesson-panel.collapsed .lesson-collapsible{display:none}.lesson-panel.collapsed .lesson-toggle{height:100%;min-height:360px;writing-mode:vertical-rl;text-orientation:mixed;justify-content:center;border-bottom:0}.lesson-panel.collapsed .lesson-toggle span:first-child{flex-direction:column}.lesson-panel.collapsed .lesson-toggle-icon{writing-mode:horizontal-tb}.info{padding:1rem;border-bottom:1px solid #e5e7eb}.info h1{font-size:1.35rem;margin:.2rem 0}.info p{margin:.25rem 0;line-height:1.55}.compact-info{padding:.8rem 1rem}.compact-info h1{font-size:1.05rem}.compact-info p{font-size:.9rem;color:#475569}.hidden-chip{display:none!important}.chip{display:inline-flex;background:#fff7ed;color:#9a3412;border-radius:999px;padding:.32rem .65rem;font-weight:900;font-size:.78rem;margin:.12rem}.exercise-list{overflow:auto;padding:1rem;display:grid;gap:.65rem}.exercise{background:#f8fafc;border:2px solid #e5e7eb;border-radius:18px;padding:.75rem;line-height:1.45;cursor:pointer}.exercise.active{border-color:#f97316;background:#fff7ed}.exercise.done{border-color:#22c55e;background:#f0fdf4}.exercise.locked{opacity:.58;cursor:not-allowed}.exercise b{display:block;color:#1e3a8a}.hint{font-size:.88rem;color:#64748b;margin-top:.35rem}.exercise-top{display:flex;align-items:start;justify-content:space-between;gap:.75rem}.exercise-bottom{display:grid;gap:.65rem;margin-top:.8rem}.exercise-controls{display:flex;gap:.55rem;flex-wrap:wrap}.exercise-controls .btn{box-shadow:none}.exercise-feedback{background:white;border:2px solid #fed7aa;border-radius:18px;color:#7c2d12;padding:.7rem .85rem;font-weight:900;line-height:1.45}.exercise-feedback.good{border-color:#86efac;background:#f0fdf4;color:#15803d}.exercise-feedback.bad{border-color:#fecaca;background:#fff1f2;color:#b91c1c}.exercise-meta{color:#64748b;font-weight:900}.exercise-status{background:#eef2ff;color:#3730a3;border-radius:999px;padding:.3rem .65rem;font-size:.78rem;font-weight:900;white-space:nowrap}.editor-panel{background:linear-gradient(135deg,#fff7ed,#eff6ff)}.blocks-stage{flex:1;min-height:0;overflow:auto;padding:1rem;display:flex;flex-direction:column;gap:.75rem}.blocks-intro{background:white;border:2px dashed #fb923c;border-radius:22px;padding:.85rem;line-height:1.5;font-weight:800;color:#7c2d12}.blocks-intro small{display:block;color:#475569;font-weight:700;margin-top:.25rem}.blocks-stage.real-blockly-stage{padding:0;gap:0}.real-blockly{display:none;flex:1;min-height:430px;background:white;border:0;border-radius:0;overflow:hidden;box-shadow:none}.real-blockly.active{display:flex;flex-direction:column;min-height:100%}.blockly-top{display:flex;align-items:center;justify-content:space-between;gap:.7rem;padding:.65rem .85rem;background:#fff7ed;border-bottom:1px solid #fed7aa;font-weight:900;color:#7c2d12}.blockly-top small{font-weight:800;color:#475569}.blockly-live{background:#dcfce7;color:#166534;border-radius:999px;padding:.25rem .6rem;font-size:.82rem}#blocklyDiv{flex:1;min-height:0;width:100%;direction:ltr}.blocklyToolboxDiv{direction:rtl}.blocklyTreeLabel{font-family:Rubik,Arial,sans-serif}.blocklyFlyoutLabelText{font-family:Rubik,Arial,sans-serif;font-weight:900;fill:#7c2d12}.blocklyFlyoutBackground{fill:#f8fafc;fill-opacity:1}.code-peek:not([open]){flex:0 0 auto}.code-peek{border-top:1px solid #fed7aa;background:#0f172a;color:white}.code-peek summary{cursor:pointer;padding:.75rem 1rem;font-weight:900;background:#1e293b;color:#ffedd5}.code-peek[open]{max-height:44%;display:flex;flex-direction:column}.code-peek[open] .code-box{display:flex;flex:1;min-height:260px;flex-direction:column}.editor-tabs{display:flex;background:#0f172a;padding:.45rem;gap:.4rem}.editor-tabs button{flex:1;border:0;border-radius:12px;padding:.6rem;font-weight:900;cursor:pointer;background:#334155;color:white}.editor-tabs button.active{background:#fb923c;color:#111827}.editor{flex:1;min-height:0;display:none}.editor.active{display:block}textarea{width:100%;height:100%;min-height:260px;resize:none;border:0;outline:0;padding:1rem;font:600 15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;direction:ltr;text-align:left;background:#07111f;color:#e5f3ff}.preview-panel{position:relative}.preview-resize{position:absolute;top:0;right:-.68rem;bottom:0;width:1.36rem;z-index:4;cursor:col-resize;display:flex;align-items:center;justify-content:center;touch-action:none}.preview-resize::before{content:"";width:7px;height:86px;border-radius:999px;background:linear-gradient(180deg,#fb923c,#2563eb);box-shadow:0 0 0 4px rgba(255,255,255,.88),0 8px 22px rgba(15,23,42,.22)}.preview-resize:hover::before,.preview-resize.dragging::before{background:linear-gradient(180deg,#f97316,#1d4ed8);width:9px}.preview-resize-hint{font-size:.78rem;color:#64748b;font-weight:800}.preview-head{padding:.8rem 1rem;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;gap:.5rem;align-items:center;font-weight:900}.preview-wrap{flex:1;min-height:0;background:white}iframe{width:100%;height:100%;border:0;background:white}.feedback{background:white;border:2px solid #fed7aa;border-radius:18px;color:#7c2d12;padding:.7rem .85rem;font-weight:900;line-height:1.45}.feedback.good{border-color:#86efac;background:#f0fdf4;color:#15803d}.feedback.bad{border-color:#fecaca;background:#fff1f2;color:#b91c1c}.helper{background:linear-gradient(135deg,#eff6ff,#fff7ed);border-radius:18px;padding:.8rem;margin-top:.7rem;line-height:1.5}.helper b{color:#1d4ed8}.bridge{margin-top:.8rem;display:grid;gap:.5rem}.bridge-title{font-weight:900;color:#7c2d12}.bridge-block{border:0;border-radius:16px;background:linear-gradient(135deg,#ffedd5,#dbeafe);padding:.7rem;text-align:right;font-family:inherit;font-weight:900;cursor:pointer;box-shadow:0 5px 0 rgba(15,23,42,.08)}.bridge-block small{display:block;font-weight:700;color:#475569;margin-top:.22rem;line-height:1.35}.bridge-empty{display:none}@media(max-width:1100px){.preview-resize{display:none}body{height:auto;min-height:100vh;overflow:auto}.topbar{grid-template-columns:1fr}.lesson-title{text-align:right}.main,.main.lesson-collapsed{display:flex;flex-direction:column;padding:.75rem}.panel{min-height:360px}.lesson-panel.collapsed{min-height:58px}.lesson-panel.collapsed .lesson-toggle{height:auto;min-height:58px;writing-mode:horizontal-tb;justify-content:space-between}.lesson-panel.collapsed .lesson-toggle span:first-child{flex-direction:row}.panel.editor-panel{min-height:620px}.main.lesson-collapsed .panel.editor-panel{min-height:72vh}.panel.preview-panel{min-height:420px}.main.lesson-collapsed .panel.preview-panel{min-height:58vh}.actions .btn{flex:1}}@media(max-width:560px){.main{padding:.55rem}.topbar{padding:.55rem}.btn{font-size:.86rem;padding:.55rem .7rem}.panel{border-radius:20px}textarea{font-size:13px}}
   </style>
   <link rel="stylesheet" href="css/platform-home-link.css">
 </head>
@@ -16,7 +16,7 @@
   <header class="topbar">
     <div class="brand">💻 WebCode Lab</div>
     <div class="lesson-title" id="topTitle"></div>
-    <div class="actions"><button class="btn run" onclick="runCode()">▶️ הרצה</button><button class="btn check" onclick="checkExercise()">✅ בדיקה</button><button class="btn reset" onclick="resetCode()">↺ איפוס</button><button class="btn share" onclick="shareProject()">📤 שליחה לחברים</button><button class="btn link" onclick="showGeneratedCode()">👀 לראות קוד שנוצר</button><a class="btn link" id="slidesLink" href="webcode-slides.html">מצגת</a><a class="btn link" href="webcode.html">כל השיעורים</a></div>
+    <div class="actions"><button class="btn run" onclick="runCode()">▶️ הרצה</button><button class="btn check" onclick="checkExercise()">✅ בדיקה</button><button class="btn reset" onclick="resetCode()">↺ איפוס</button><button class="btn share" onclick="shareProject()">📤 שליחה לחברים</button><button class="btn link" onclick="showGeneratedCode()">👀 לראות קוד שנוצר</button><a class="btn link" id="slidesLink" href="webcode-slides.html">מצגת</a><a class="btn link" href="webcode.html">🏠 עמוד הקורס</a></div>
   </header>
   <main class="main">
     <section class="panel lesson-panel" id="lessonPanel">
@@ -24,7 +24,7 @@
         <span>📘 הסבר ותרגולים</span><span class="lesson-toggle-icon" id="lessonToggleIcon" aria-hidden="true">⌃</span>
       </button>
       <div class="lesson-collapsible" id="lessonCollapsible">
-        <div class="info"><span class="chip" id="concept"></span><h1 id="title"></h1><p id="story"></p><p><b>משימה:</b> <span id="mission"></span></p><div class="helper"><b>כלל זהב:</b> בוחרים בלוק → מריצים → רואים מה השתנה. הקוד הוא הצצה, לא נקודת ההתחלה.</div></div>
+        <div class="info compact-info"><h1 id="title"></h1><p><b>חשוב:</b> גררו בלוקים וחברו אותם לשרשרת. הקוד הוא רק הצצה.</p><span class="chip hidden-chip" id="concept"></span><span id="story" hidden></span><span id="mission" hidden></span></div>
         <div class="exercise-list" id="exercises"></div>
       </div>
     </section>
@@ -53,28 +53,75 @@
       <div class="preview-resize" id="previewResize" role="separator" aria-orientation="vertical" aria-label="גררו כדי להרחיב או להצר את התצוגה"></div>
       <div class="preview-head"><span>👀 תצוגה חיה</span><span class="preview-resize-hint">↔ גרירה להרחבה</span><span class="chip" id="progress">0/0 הושלמו</span></div>
       <div class="preview-wrap"><iframe id="preview" title="תצוגת התוצר"></iframe></div>
-      <div class="feedback" id="feedback">בחרו תרגול, שנו קוד ולחצו הרצה.</div>
     </section>
   </main>
-  <script src="js/webcode-lessons.js?v=20260718-30-lessons"></script>
+  <script src="js/webcode-lessons.js?v=20260818-course-home-v20"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const lesson = window.getWebCodeLesson(params.get('lesson'));
+    const initialStarter = { html: lesson.starter?.html || '', css: lesson.starter?.css || '', js: lesson.starter?.js || '' };
     let activeExercise = 1;
+    let highestUnlockedExercise = 1;
     const done = new Set();
+    const checkMemory = {};
+    const storageKey = `webcodeLessonState:v2:${lesson.id}`;
+    let stateReady = false;
+    let codePeekOpened = false;
     const $ = id => document.getElementById(id);
+    function loadSavedState(){
+      try { return JSON.parse(localStorage.getItem(storageKey) || 'null') || {}; }
+      catch(error){ return {}; }
+    }
+    function currentBlocklyXml(){
+      if(!blocklyWorkspace || !window.Blockly) return '';
+      try { return Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(blocklyWorkspace)); }
+      catch(error){ return ''; }
+    }
+    function saveLessonState(){
+      if(!stateReady) return;
+      const state = {
+        html: $('htmlCode')?.value || '',
+        css: $('cssCode')?.value || '',
+        js: $('jsCode')?.value || '',
+        blocklyXml: currentBlocklyXml(),
+        activeExercise,
+        highestUnlockedExercise,
+        codePeekOpened,
+        done: [...done],
+        checkMemory
+      };
+      localStorage.setItem(storageKey, JSON.stringify(state));
+    }
+    function restoreProgress(saved){
+      (saved.done || []).forEach(id => done.add(Number(id)));
+      Object.assign(checkMemory, saved.checkMemory || {});
+      highestUnlockedExercise = Math.max(1, Math.min(lesson.exercises.length, Number(saved.highestUnlockedExercise) || 1));
+      activeExercise = Math.max(1, Math.min(lesson.exercises.length, Number(saved.activeExercise) || 1));
+      codePeekOpened = Boolean(saved.codePeekOpened);
+    }
     function esc(v){return String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
     function init(){
       document.title = `WebCode Lab — שיעור ${lesson.id}: ${lesson.title}`;
-      $('topTitle').textContent = `שיעור ${lesson.id}: ${lesson.title}`;
+      $('topTitle').innerHTML = `שיעור <bdi>${lesson.id}</bdi>: ${esc(lesson.title)}`;
       $('title').textContent = lesson.title;
       $('story').textContent = lesson.story;
       $('concept').textContent = lesson.concept;
       $('mission').textContent = lesson.mission;
       $('slidesLink').href = `webcode-slides.html?lesson=${lesson.id}`;
-      $('htmlCode').value = lesson.starter.html; $('cssCode').value = lesson.starter.css; $('jsCode').value = lesson.starter.js;
-      $('exercises').innerHTML = lesson.exercises.map(ex => `<article class="exercise" id="ex-${ex.id}" onclick="selectExercise(${ex.id})"><b>${esc(ex.title)}</b><span>${esc(ex.minutes)}</span><p>${esc(ex.prompt)}</p><div class="hint">💡 ${esc(ex.hint)}</div></article>`).join('');
-      initPreviewResize(); renderBridgeBlocks(); selectExercise(1); runCode(); renderProgress();
+      const saved = loadSavedState();
+      restoreProgress(saved);
+      if(lesson.realBlocklyBuilder){
+        $('htmlCode').value = saved.html || '';
+        $('cssCode').value = saved.css || '';
+        $('jsCode').value = saved.js || '';
+      } else {
+        $('htmlCode').value = saved.html || lesson.starter.html;
+        $('cssCode').value = saved.css || lesson.starter.css;
+        $('jsCode').value = saved.js || lesson.starter.js;
+      }
+      ['htmlCode','cssCode','jsCode'].forEach(id => $(id).addEventListener('input', saveLessonState));
+      $('codePeek').addEventListener('toggle', () => { if($('codePeek').open){ codePeekOpened = true; saveLessonState(); } });
+      initPreviewResize(); selectExercise(activeExercise); renderBridgeBlocks(); if(!lesson.realBlocklyBuilder) runCode(); renderProgress(); stateReady = true; saveLessonState();
     }
 
     function initPreviewResize(){
@@ -123,7 +170,7 @@
     function activateCodeTab(name){ document.querySelectorAll('.editor').forEach(e=>e.classList.remove('active')); document.querySelectorAll('.editor-tabs button').forEach(b=>b.classList.remove('active')); $(`tab-${name}`).classList.add('active'); const buttons=[...document.querySelectorAll('.editor-tabs button')]; const index={html:0,css:1,js:2}[name]||0; buttons[index]?.classList.add('active'); }
     function showTab(name, btn){ activateCodeTab(name); if(btn){ document.querySelectorAll('.editor-tabs button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); } }
     function toggleLessonPanel(){ const panel=$('lessonPanel'); const button=panel.querySelector('.lesson-toggle'); const collapsed=panel.classList.toggle('collapsed'); document.querySelector('.main').classList.toggle('lesson-collapsed', collapsed); button.setAttribute('aria-expanded', String(!collapsed)); $('lessonToggleIcon').textContent = collapsed ? '⌄' : '⌃'; if(window.Blockly && blocklyWorkspace) setTimeout(() => { Blockly.svgResize(blocklyWorkspace); alignBlocklyStarterBlocksRight(); }, 120); }
-    function showGeneratedCode(){ $('codePeek').open = true; $('codePeek').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('feedback').className='feedback good'; $('feedback').textContent='זה הקוד שנוצר מהבלוקים שלך: HTML למבנה, CSS לעיצוב, JavaScript לפעולה.'; }
+    function showGeneratedCode(){ codePeekOpened = true; $('codePeek').open = true; saveLessonState(); $('codePeek').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('feedback').className='feedback good'; $('feedback').textContent='זה הקוד שנוצר מהבלוקים שלך: HTML למבנה, CSS לעיצוב, JavaScript לפעולה.'; }
 
     function codeTargetForBlock(block){
       if(!block) return null;
@@ -174,12 +221,9 @@
       const target = codeTargetForBlock(block);
       if(!target) return;
       generateCodeFromBlockly();
-      $('codePeek').open = true;
+      if(!$('codePeek').open) return;
       const highlighted = selectSnippetInEditor(target.tab, target.snippets);
-      if(highlighted){
-        $('feedback').className='feedback good';
-        $('feedback').textContent=`בחרת בלוק — סימנתי בקוד את: ${target.label}.`;
-      }
+      if(highlighted){ /* keep current exercise feedback stable while still selecting the generated code */ }
     }
 
     let blocklyWorkspace = null;
@@ -190,7 +234,7 @@
         { type:'page_start', message0:'עמוד האתר שלי', nextStatement:null, colour:24, tooltip:'כל בלוקי העמוד מתחברים מתחת לכאן.' },
         { type:'web_theme', message0:'עיצוב עמוד %1', args0:[{type:'field_dropdown', name:'THEME', options:[['שמיים כחולים','sky'],['חלל סגול','space'],['ארקייד ירוק','arcade'],['שקיעה כתומה','sunset']]}], previousStatement:null, nextStatement:null, colour:260 },
         { type:'web_title', message0:'כותרת %1', args0:[{type:'field_input', name:'TEXT', text:'האתר הראשון שלי'}], previousStatement:null, nextStatement:null, colour:210 },
-        { type:'web_paragraph', message0:'פסקה %1', args0:[{type:'field_input', name:'TEXT', text:'אני בונה עמוד עם Blockly אמיתי'}], previousStatement:null, nextStatement:null, colour:195 },
+        { type:'web_paragraph', message0:'פסקה %1', args0:[{type:'field_input', name:'TEXT', text:'אני בונה עמוד עם בלוקלי אמיתי'}], previousStatement:null, nextStatement:null, colour:195 },
         { type:'web_emoji', message0:'סמל גדול %1', args0:[{type:'field_dropdown', name:'EMOJI', options:[['🚀 רקטה','🚀'],['🤖 רובוט','🤖'],['🎮 משחק','🎮'],['🌈 קשת','🌈'],['🧠 מוח','🧠']]}], previousStatement:null, nextStatement:null, colour:45 },
         { type:'web_button', message0:'כפתור %1 מציג הודעה %2', args0:[{type:'field_input', name:'LABEL', text:'לחצו להפתעה'},{type:'field_input', name:'MESSAGE', text:'הכפתור שלי עובד 🎉'}], previousStatement:null, nextStatement:null, colour:120 },
         { type:'web_columns', message0:'שתי קוביות מידע %1 וגם %2', args0:[{type:'field_input', name:'A', text:'רעיון ראשון'},{type:'field_input', name:'B', text:'רעיון שני'}], previousStatement:null, nextStatement:null, colour:300 },
@@ -208,21 +252,37 @@
       window.__webBuilderBlocksDefined = true;
     }
     function webBuilderToolbox(){
-      const designStudio = lesson.id === 2 ? '<category name="סטודיו עיצוב" colour="285"><block type="web_card_shape"></block><block type="web_shadow"></block><block type="web_title_color"></block><block type="web_button_style"></block><block type="web_hover"></block></category>' : '';
-      const actionStudio = lesson.id === 3 ? '<category name="סטודיו פעולה" colour="120"><block type="web_action_message"></block><block type="web_action_emoji"></block><block type="web_action_background"></block><block type="web_action_magic"></block></category>' : '';
+      const designStudio = lesson.id === 2 ? '<sep gap="14"></sep><label text="סטודיו עיצוב"></label><block type="web_card_shape"></block><block type="web_shadow"></block><block type="web_title_color"></block><block type="web_button_style"></block><block type="web_hover"></block>' : '';
+      const actionStudio = lesson.id === 3 ? '<sep gap="14"></sep><label text="סטודיו פעולה"></label><block type="web_action_message"></block><block type="web_action_emoji"></block><block type="web_action_background"></block><block type="web_action_magic"></block>' : '';
       return `<xml xmlns="https://developers.google.com/blockly/xml">
-      <category name="מבנה עמוד" colour="210"><block type="page_start"></block><block type="web_title"></block><block type="web_paragraph"></block><block type="web_emoji"></block></category>
-      <category name="עיצוב" colour="260"><block type="web_theme"></block><block type="web_columns"></block></category>
+      <label text="מבנה עמוד"></label>
+      <block type="page_start"></block>
+      <block type="web_title"></block>
+      <block type="web_paragraph"></block>
+      <block type="web_emoji"></block>
+      <sep gap="14"></sep>
+      <label text="עיצוב"></label>
+      <block type="web_theme"></block>
+      <block type="web_columns"></block>
       ${designStudio}
       ${actionStudio}
-      <category name="פעולה" colour="120"><block type="web_button"></block></category>
-      <category name="סיום" colour="15"><block type="web_footer"></block></category>
+      <sep gap="14"></sep>
+      <label text="פעולה"></label>
+      <block type="web_button"></block>
+      <sep gap="14"></sep>
+      <label text="סיום"></label>
+      <block type="web_footer"></block>
     </xml>`;
+    }
+    function parseBlocklyXml(xmlText){
+      if(window.Blockly?.utils?.xml?.textToDom) return Blockly.utils.xml.textToDom(xmlText);
+      if(window.Blockly?.Xml?.textToDom) return Blockly.Xml.textToDom(xmlText);
+      return new DOMParser().parseFromString(xmlText, 'text/xml').documentElement;
     }
     function webBuilderStarterXml(){
       if(lesson.id === 2) return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="page_start" x="40" y="40"><next><block type="web_theme"><field name="THEME">space</field><next><block type="web_title"><field name="TEXT">כרטיס העיצוב שלי</field><next><block type="web_paragraph"><field name="TEXT">בשיעור הזה אני מעצב/ת את אותו עמוד בעזרת CSS</field></block></next></block></next></block></xml>`;
       if(lesson.id === 3) return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="page_start" x="40" y="40"><next><block type="web_theme"><field name="THEME">arcade</field><next><block type="web_title"><field name="TEXT">עמוד הקסמים שלי</field><next><block type="web_paragraph"><field name="TEXT">לחיצה על כפתור יכולה לשנות את העמוד</field><next><block type="web_emoji"><field name="EMOJI">✨</field><next><block type="web_button"><field name="LABEL">הפעילו קסם</field><field name="MESSAGE">הכפתור הפעיל קסם 🎉</field><next><block type="web_action_background"><field name="BG">pink</field></block></next></block></next></block></next></block></next></block></next></block></xml>`;
-      return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="page_start" x="40" y="40"><next><block type="web_theme"><field name="THEME">sky</field><next><block type="web_title"><field name="TEXT">העמוד הראשון שלי</field><next><block type="web_paragraph"><field name="TEXT">גררתי בלוקים והרכבתי עמוד בעצמי</field><next><block type="web_emoji"><field name="EMOJI">🚀</field><next><block type="web_button"><field name="LABEL">לחצו עליי</field><field name="MESSAGE">איזה כיף! בניתי עמוד מבלוקים 🎉</field></block></next></block></next></block></next></block></next></block></xml>`;
+      return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="page_start" x="40" y="40"></block></xml>`;
     }
     function alignBlocklyStarterBlocksRight(){
       if(!blocklyWorkspace || !window.Blockly) return;
@@ -241,12 +301,17 @@
     }
     function renderRealBlocklyBuilder(){
       if(!window.Blockly){ $('blocksIntro').innerHTML = '⚠️ Blockly לא נטען<small>אם אין אינטרנט רגעי, אפשר עדיין להשתמש בכפתורי הגיבוי למטה.</small>'; return; }
+      $('blocksIntro').style.display = 'none';
+      $('blocksStage').classList.add('real-blockly-stage');
       $('realBlockly').classList.add('active');
+      $('codePeek').open = false;
       $('bridge').classList.add('bridge-empty');
       defineWebBuilderBlocks();
       if(blocklyWorkspace) return;
       blocklyWorkspace = Blockly.inject('blocklyDiv',{rtl:true,trashcan:true,scrollbars:true,toolbox:webBuilderToolbox(),zoom:{controls:true,wheel:true,startScale:.85,maxScale:1.35,minScale:.45}});
-      Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(webBuilderStarterXml()), blocklyWorkspace);
+      const saved = loadSavedState();
+      try { Blockly.Xml.domToWorkspace(parseBlocklyXml(saved.blocklyXml || webBuilderStarterXml()), blocklyWorkspace); }
+      catch(error){ Blockly.Xml.domToWorkspace(parseBlocklyXml(webBuilderStarterXml()), blocklyWorkspace); }
       setTimeout(alignBlocklyStarterBlocksRight, 80);
       setTimeout(alignBlocklyStarterBlocksRight, 300);
       blocklyWorkspace.addChangeListener(event => { if(!blocklyReady) return; if(event.type === Blockly.Events.SELECTED && event.newElementId){ highlightGeneratedCodeForBlock(event.newElementId); return; } if(event.isUiEvent) return; generateCodeFromBlockly(); });
@@ -376,13 +441,27 @@ button:hover {
       if(magicToggle) jsLines.push(`  document.querySelector(".page-card").classList.toggle("magic");`);
       jsLines.push('}');
       $('jsCode').value = jsLines.join('\n');
-      runCode();
-      $('feedback').className='feedback good';
-      $('feedback').textContent='Blockly יצר עמוד חי. גררו עוד בלוק או פתחו הצצה לקוד כדי לראות מה נוצר.';
+      runCode(true);
+      saveLessonState();
     }
-    function renderBridgeBlocks(){ if(lesson.realBlocklyBuilder){ renderRealBlocklyBuilder(); return; } const blocks = lesson.bridgeBlocks || []; if(!blocks.length){ $('blocksStage').style.display='none'; $('codePeek').open = true; return; } $('blocksIntro').innerHTML = '🧩 סביבת בלוקים<small>לחצו על בלוק גדול. הוא יעדכן את המשחק, ואז אפשר לפתוח “הצצה לקוד” כדי לראות מה נוצר מאחור.</small>'; $('bridge').classList.remove('bridge-empty'); $('bridge').innerHTML = `<div class="bridge-title">בחרו בלוק עבודה</div>` + blocks.map((block,index)=>`<button class="bridge-block" onclick="applyBridgeBlock(${index})">${esc(block.label)}<small>${esc(block.hint)}</small></button>`).join(''); }
-    function applyBridgeBlock(index){ const block=(lesson.bridgeBlocks||[])[index]; if(!block) return; const field = block.target === 'css' ? 'cssCode' : block.target === 'js' ? 'jsCode' : 'htmlCode'; const editor=$(field); if(editor.value.includes(block.find)) editor.value = editor.value.replace(block.find, block.replace); else if(!editor.value.includes(block.replace)) editor.value += `\n${block.replace}`; runCode(); $('feedback').className='feedback good'; $('feedback').textContent = `הבלוק הופעל: ${block.label}. המשחק עודכן. אם רוצים, פתחו הצצה לקוד כדי לראות מה נוצר.`; }
-    function selectExercise(id){ activeExercise = id; document.querySelectorAll('.exercise').forEach(e=>e.classList.remove('active')); $(`ex-${id}`).classList.add('active'); const ex=lesson.exercises.find(e=>e.id===id); $('feedback').className='feedback'; $('feedback').textContent = `עכשיו עובדים על: ${ex.title}`; }
+    function renderBridgeBlocks(){
+      if(lesson.realBlocklyBuilder){
+        try { renderRealBlocklyBuilder(); }
+        catch(error){
+          console.error('WebCode Blockly failed:', error);
+          runCode();
+          $('feedback').className='feedback bad';
+          $('feedback').textContent='Blockly לא נטען כרגע. רעננו את הדף ובדקו חיבור אינטרנט.';
+        }
+        return;
+      }
+      const blocks = lesson.bridgeBlocks || [];
+      if(!blocks.length){ $('blocksStage').style.display='none'; $('codePeek').open = true; return; }
+      $('blocksIntro').innerHTML = '🧩 סביבת בלוקים<small>לחצו על בלוק גדול. הוא יעדכן את המשחק, ואז אפשר לפתוח “הצצה לקוד” כדי לראות מה נוצר מאחור.</small>';
+      $('bridge').classList.remove('bridge-empty');
+      $('bridge').innerHTML = `<div class="bridge-title">בחרו בלוק עבודה</div>` + blocks.map((block,index)=>`<button class="bridge-block" onclick="applyBridgeBlock(${index})">${esc(block.label)}<small>${esc(block.hint)}</small></button>`).join('');
+    }
+    function applyBridgeBlock(index){ const block=(lesson.bridgeBlocks||[])[index]; if(!block) return; const field = block.target === 'css' ? 'cssCode' : block.target === 'js' ? 'jsCode' : 'htmlCode'; const editor=$(field); if(editor.value.includes(block.find)) editor.value = editor.value.replace(block.find, block.replace); else if(!editor.value.includes(block.replace)) editor.value += `\n${block.replace}`; runCode(); saveLessonState(); $('feedback').className='feedback good'; $('feedback').textContent = `הבלוק הופעל: ${block.label}. המשחק עודכן. אם רוצים, פתחו הצצה לקוד כדי לראות מה נוצר.`; }
     function debugHint(message){ const text=String(message||''); if(/Unexpected end|missing|Unexpected token/.test(text)) return 'בדקו סוגריים, גרשיים, פסיקים או סוגר מסולסל חסר.'; if(/is not defined/.test(text)) return 'יש שם שהקוד לא מכיר. בדקו ששם הפונקציה או המשתנה כתוב אותו דבר בדיוק.'; if(/Cannot set properties|null/.test(text)) return 'כנראה שה־id ב־HTML לא תואם למה ש־JavaScript מחפש.'; return 'עברו על השורה האחרונה ששיניתם וחפשו טעות קטנה בסינטקס.'; }
     function safeScript(code){ return String(code).replaceAll('<' + '/script>', '<\\/script>'); }
     function encodeSharePayload(payload){
@@ -413,16 +492,113 @@ button:hover {
       }
     }
     function validateJavaScriptSyntax(code){ try { new Function(code); return null; } catch (error) { return error; } }
-    function runCode(){ const syntaxError = validateJavaScriptSyntax($('jsCode').value); if(syntaxError){ $('feedback').className='feedback bad'; $('feedback').textContent = `שגיאת סינטקס ב־JavaScript: ${syntaxError.message}. רמז: ${debugHint(syntaxError.message)}`; const safeHtml = `<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><style>${$('cssCode').value}</style></head><body>${$('htmlCode').value}
-  <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-</body></html>`; $('preview').srcdoc = safeHtml; return; } const errorBridge = `<script>window.onerror=function(message,source,line,column){parent.postMessage({type:'webcode-error',message:String(message),line:line,column:column},'*');};<\/script>`; const src = `<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><style>${$('cssCode').value}</style></head><body>${$('htmlCode').value}${errorBridge}<script>${safeScript($('jsCode').value)}<\/script></body></html>`; $('preview').srcdoc = src; $('feedback').className='feedback good'; $('feedback').textContent='הרצה בוצעה. בדקו בתצוגה אם זה נראה ועובד כמו שרציתם.'; }
+    function previewDocument(bodyHtml, cssText, jsText=''){
+      const previewBase = `html{width:100%;min-height:100%;overflow-x:hidden}body{max-width:100%;min-height:100vh;margin:0;overflow-x:hidden}*,*::before,*::after{box-sizing:border-box}img,video,canvas,svg{max-width:100%;height:auto}main,.card,.profile-card,.page-card{max-width:calc(100vw - 24px)}`;
+      const errorBridge = `<script>window.onerror=function(message,source,line,column){parent.postMessage({type:'webcode-error',message:String(message),line:line,column:column},'*');};<\/script>`;
+      const script = jsText ? `<script>${safeScript(jsText)}<\/script>` : '';
+      return `<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${previewBase}</style><style>${cssText}</style></head><body>${bodyHtml}${errorBridge}${script}</body></html>`;
+    }
+    function runCode(silent=false){ const syntaxError = validateJavaScriptSyntax($('jsCode').value); if(syntaxError){ $('feedback').className='feedback bad'; $('feedback').textContent = `שגיאת סינטקס ב־JavaScript: ${syntaxError.message}. רמז: ${debugHint(syntaxError.message)}`; $('preview').srcdoc = previewDocument($('htmlCode').value, $('cssCode').value); return; } $('preview').srcdoc = previewDocument($('htmlCode').value, $('cssCode').value, $('jsCode').value); if(!silent){ $('feedback').className='feedback good'; $('feedback').textContent='הרצה בוצעה. בדקו בתצוגה אם זה נראה ועובד כמו שרציתם.'; } }
     window.addEventListener('message', event => { if(!event.data || event.data.type !== 'webcode-error') return; $('feedback').className='feedback bad'; $('feedback').textContent = `שגיאת קוד קטנה: ${event.data.message}. רמז: ${debugHint(event.data.message)}`; });
-    function resetCode(){ if(!confirm('לאפס לקוד ההתחלתי של השיעור?')) return; if(lesson.realBlocklyBuilder && blocklyWorkspace && window.Blockly){ blocklyReady = false; blocklyWorkspace.clear(); Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(webBuilderStarterXml()), blocklyWorkspace); setTimeout(alignBlocklyStarterBlocksRight, 80); setTimeout(alignBlocklyStarterBlocksRight, 300); blocklyReady = true; generateCodeFromBlockly(); } else { $('htmlCode').value=lesson.starter.html; $('cssCode').value=lesson.starter.css; $('jsCode').value=lesson.starter.js; runCode(); } done.clear(); renderProgress(); selectExercise(1); }
+    function resetCode(){ if(!confirm('לאפס לקוד ההתחלתי של השיעור?')) return; if(lesson.realBlocklyBuilder && blocklyWorkspace && window.Blockly){ blocklyReady = false; blocklyWorkspace.clear(); Blockly.Xml.domToWorkspace(parseBlocklyXml(webBuilderStarterXml()), blocklyWorkspace); setTimeout(alignBlocklyStarterBlocksRight, 80); setTimeout(alignBlocklyStarterBlocksRight, 300); blocklyReady = true; generateCodeFromBlockly(); } else { $('htmlCode').value=lesson.starter.html; $('cssCode').value=lesson.starter.css; $('jsCode').value=lesson.starter.js; runCode(); } done.clear(); Object.keys(checkMemory).forEach(key => delete checkMemory[key]); codePeekOpened = false; highestUnlockedExercise = 1; renderProgress(); selectExercise(1); saveLessonState(); }
     function includesAll(text, list){ return (list||[]).every(x => text.includes(x)); }
-    function checkExercise(){ const ex=lesson.exercises.find(e=>e.id===activeExercise); const c=ex.check||{}; const ok = includesAll($('htmlCode').value,c.htmlIncludes) && includesAll($('cssCode').value,c.cssIncludes) && includesAll($('jsCode').value,c.jsIncludes); runCode(); if(ok){ done.add(ex.id); $(`ex-${ex.id}`).classList.add('done'); const completedTitle = ex.title; if(activeExercise < lesson.exercises.length) selectExercise(activeExercise+1); $('feedback').className='feedback good'; $('feedback').textContent=`מעולה ✅ ${completedTitle} הושלם. אפשר להמשיך לתרגול הבא או לשדרג.`; } else { $('feedback').className='feedback bad'; $('feedback').textContent=`כמעט. רמז: ${ex.hint}`; } renderProgress(); }
+    function excludesAll(text, list){ return (list||[]).every(x => !text.includes(x)); }
+    function currentCode(){ return { html:$('htmlCode').value, css:$('cssCode').value, js:$('jsCode').value }; }
+    function hasChanged(fields){ const code = currentCode(); return (fields||[]).some(field => code[field] !== initialStarter[field]); }
+    function hasBlockTypes(types){ if(!types?.length) return true; const actual = collectPageBlocks().map(block => block.type); return types.every(type => actual.includes(type)); }
+    function hasOrderedBlockTypes(types){
+      if(!types?.length) return true;
+      const actual = collectPageBlocks().map(block => block.type);
+      let cursor = 0;
+      return types.every(type => {
+        const index = actual.indexOf(type, cursor);
+        if(index < 0) return false;
+        cursor = index + 1;
+        return true;
+      });
+    }
+    function hasChangedBlocklyFields(rules){
+      if(!rules?.length) return true;
+      if(!blocklyWorkspace) return false;
+      return rules.every(rule => collectPageBlocks().some(block => {
+        if(block.type !== rule.type) return false;
+        const value = block.getFieldValue(rule.field);
+        return value !== undefined && String(value).trim() !== String(rule.defaultValue ?? '').trim();
+      }));
+    }
+    function hasNonEmptyBlocklyFields(rules){
+      if(!rules?.length) return true;
+      if(!blocklyWorkspace) return false;
+      return rules.every(rule => collectPageBlocks().some(block => {
+        if(block.type !== rule.type) return false;
+        const value = block.getFieldValue(rule.field);
+        return value !== undefined && String(value).trim().length > 0;
+      }));
+    }
+    function blockOrderSignature(){ return collectPageBlocks().map(block => block.type).join('>'); }
+    function checkFooterMoveExercise(ex, c){
+      const blocks = collectPageBlocks();
+      const footer = blocks.find(block => block.type === 'web_footer');
+      if(!footer) return { ok:false, message:c.blockFeedback || `כמעט. רמז: ${ex.hint}` };
+      const footerText = String(footer.getFieldValue('TEXT') || '').trim();
+      if(!footerText) return { ok:false, message:c.emptyFeedback || 'כמעט. החתימה לא יכולה להיות ריקה.' };
+      const signature = blockOrderSignature();
+      const key = `exercise-${ex.id}`;
+      if(!checkMemory[key]?.firstOrder){
+        checkMemory[key] = { firstOrder: signature };
+        saveLessonState();
+        return { ok:false, message:c.firstCheckFeedback || 'מעולה, החתימה מחוברת. עכשיו הזיזו אותה למקום אחר בשרשרת ולחצו בדיקה שוב.' };
+      }
+      if(checkMemory[key].firstOrder === signature) return { ok:false, message:c.secondCheckFeedback || 'כמעט. עכשיו צריך להזיז את בלוק החתימה למקום אחר בשרשרת ולבדוק שוב.' };
+      return { ok:true };
+    }
+    function exerciseFailureMessage(ex, c){
+      if(!includesAll($('htmlCode').value,c.htmlIncludes) || !includesAll($('cssCode').value,c.cssIncludes) || !includesAll($('jsCode').value,c.jsIncludes)) return `כמעט. רמז: ${ex.hint}`;
+      if(!excludesAll($('htmlCode').value,c.htmlExcludes) || !excludesAll($('cssCode').value,c.cssExcludes) || !excludesAll($('jsCode').value,c.jsExcludes)) return c.excludeFeedback || `כמעט. רמז: ${ex.hint}`;
+      if(!hasBlockTypes(c.blockTypes)) return c.blockFeedback || `כמעט. רמז: ${ex.hint}`;
+      if(!hasOrderedBlockTypes(c.orderedBlockTypes)) return c.orderFeedback || `כמעט. רמז: ${ex.hint}`;
+      if(!hasNonEmptyBlocklyFields(c.nonEmptyBlocklyFields)) return c.emptyFeedback || 'כמעט. השאירו טקסט בתוך הבלוק — אי אפשר להשלים עם טקסט ריק.';
+      if(!hasChangedBlocklyFields(c.changedBlocklyFields)) return c.fieldFeedback || 'כמעט. הבלוק מחובר, עכשיו שנו את הטקסט או הבחירה שבתוכו לפי התרגול.';
+      if(c.requiresCodePeek && !codePeekOpened) return c.codePeekFeedback || 'כמעט. קודם פתחו את ההצצה לקוד שנוצר.';
+      if(c.changedAny && !hasChanged(c.changedAny)) return c.changeFeedback || 'כמעט. צריך לבצע שינוי אמיתי בקוד לפני הבדיקה.';
+      return `כמעט. רמז: ${ex.hint}`;
+    }
+    function currentExercise(){ return lesson.exercises.find(e=>e.id===activeExercise) || lesson.exercises[0]; }
+    function canOpenExercise(id){ return id <= highestUnlockedExercise || done.has(id); }
+    function renderCurrentExercise(){
+      const ex = currentExercise();
+      const isDone = done.has(ex.id);
+      const isFirst = ex.id <= 1;
+      const isLast = ex.id >= lesson.exercises.length;
+      const nextUnlocked = highestUnlockedExercise >= ex.id + 1;
+      const nextButton = isLast
+        ? `<button class="btn run" type="button" onclick="goCourseHome()" ${isDone ? '' : 'disabled'}>חזרה לעמוד הקורס ←</button>`
+        : `<button class="btn run" type="button" onclick="continueExercise()" ${(!isDone && !nextUnlocked) ? 'disabled' : ''}>המשך ←</button>`;
+      $('exercises').innerHTML = `<article class="exercise active ${isDone ? 'done' : ''}" id="ex-${ex.id}"><div class="exercise-top"><div><b>${esc(ex.title)}</b></div><span class="exercise-status">${ex.id}/${lesson.exercises.length}</span></div><p>${esc(ex.prompt)}</p><div class="hint">💡 ${esc(ex.hint)}</div><div class="exercise-bottom"><div class="exercise-controls"><button class="btn link" type="button" onclick="goPreviousExercise()" ${isFirst ? 'disabled' : ''}>→ הקודם</button><button class="btn check" type="button" onclick="checkExercise()">✅ בדיקה</button>${nextButton}</div><div class="feedback exercise-feedback" id="feedback">בחרו תרגול, שנו קוד ולחצו הרצה.</div></div></article>`;
+    }
+    function goPreviousExercise(){ if(activeExercise > 1) selectExercise(activeExercise - 1); }
+    function continueExercise(){ if(activeExercise < lesson.exercises.length && canOpenExercise(activeExercise + 1)) selectExercise(activeExercise + 1); }
+    function goCourseHome(){ location.href = 'webcode.html'; }
+    function selectExercise(id){
+      if(!canOpenExercise(id)){
+        $('feedback').className='feedback bad';
+        $('feedback').textContent='קודם משלימים את התרגול הנוכחי עם בדיקה מוצלחת.';
+        return;
+      }
+      activeExercise = id;
+      renderCurrentExercise();
+      const ex=currentExercise();
+      $('feedback').className='feedback';
+      $('feedback').textContent = done.has(ex.id) ? `תרגול ${ex.id} כבר הושלם. אפשר להמשיך או לשדרג.` : `עכשיו עובדים על: ${ex.title}`;
+      renderProgress();
+      saveLessonState();
+    }
+    function checkExercise(){ const ex=currentExercise(); const completedTitle = ex.title; const c=ex.check||{}; const special = c.twoStepFooterMove ? checkFooterMoveExercise(ex, c) : null; const ok = special ? special.ok : includesAll($('htmlCode').value,c.htmlIncludes) && includesAll($('cssCode').value,c.cssIncludes) && includesAll($('jsCode').value,c.jsIncludes) && excludesAll($('htmlCode').value,c.htmlExcludes) && excludesAll($('cssCode').value,c.cssExcludes) && excludesAll($('jsCode').value,c.jsExcludes) && hasBlockTypes(c.blockTypes) && hasOrderedBlockTypes(c.orderedBlockTypes) && hasNonEmptyBlocklyFields(c.nonEmptyBlocklyFields) && hasChangedBlocklyFields(c.changedBlocklyFields) && (!c.requiresCodePeek || codePeekOpened) && (!c.changedAny || hasChanged(c.changedAny)); runCode(); if(ok){ done.add(ex.id); highestUnlockedExercise = Math.max(highestUnlockedExercise, Math.min(lesson.exercises.length, ex.id + 1)); renderCurrentExercise(); $('feedback').className='feedback good'; $('feedback').textContent= ex.id < lesson.exercises.length ? `מעולה ✅ ${completedTitle} הושלם. כפתור המשך נפתח.` : `מעולה ✅ סיימת את כל התרגולים בשיעור הזה.`; } else { $('feedback').className='feedback bad'; $('feedback').textContent=special?.message || exerciseFailureMessage(ex, c); } renderProgress(); saveLessonState(); }
     function renderProgress(){ $('progress').textContent = `${done.size}/${lesson.exercises.length} הושלמו`; }
     init();
   </script>
   <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
+
+  <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
 </body>
 </html>

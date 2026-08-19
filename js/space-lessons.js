@@ -50,8 +50,8 @@ window.SPACE_LESSONS = [
     unit: 'השמש',
     emoji: '☀️',
     place: 'קרוב לשמש',
-    mission: 'סיסי בודקת חום עם חיישן ונשארת באזור בטוח.',
-    concept: 'אם חם מדי — עוצרים',
+    mission: 'סיסי מתכננת מסלול בטוח ליד השמש ומגיעה ליעד בלי להיתקע בסלעי החלל.',
+    concept: 'תכנון מסלול בטוח סביב מכשולים',
     spaceFact: 'השמש היא כוכב. היא נותנת לכדור הארץ אור וחום.',
     goal: { x: 5, y: 5 },
     start: { x: 1, y: 1 },
@@ -72,7 +72,7 @@ window.SPACE_LESSONS = [
     start: { x: 1, y: 3 },
     obstacles: [{ x: 3, y: 2 }, { x: 3, y: 3 }, { x: 5, y: 5 }],
     stars: [{ x: 2, y: 3 }, { x: 4, y: 4 }, { x: 6, y: 5 }],
-    commands: ['down', 'right', 'right', 'right', 'right', 'right']
+    commands: ['down', 'right', 'right', 'right', 'right', 'right', 'broadcast']
   },
   {
     id: 6,
@@ -136,7 +136,7 @@ window.SPACE_LESSONS.push(
     goal: { x: 6, y: 4 },
     start: { x: 1, y: 1 },
     obstacles: [{ x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 3 }, { x: 5, y: 3 }],
-    stars: [{ x: 2, y: 1 }, { x: 4, y: 2 }, { x: 6, y: 3 }],
+    stars: [{ x: 2, y: 1 }, { x: 4, y: 2 }, { x: 6, y: 3 }, { x: 6, y: 1 }],
     commands: ['right', 'right', 'right', 'right', 'right', 'down', 'down', 'down']
   },
   {
@@ -165,9 +165,9 @@ window.SPACE_LESSONS.push(
     spaceFact: 'כוכב שביט עשוי קרח ואבק, וכשהוא מתקרב לשמש נוצר לו זנב בהיר.',
     goal: { x: 5, y: 5 },
     start: { x: 1, y: 2 },
-    obstacles: [{ x: 2, y: 1 }, { x: 3, y: 3 }, { x: 4, y: 3 }, { x: 6, y: 4 }],
+    obstacles: [{ x: 2, y: 1 }, { x: 3, y: 3 }, { x: 4, y: 3 }, { x: 6, y: 4 }, { x: 1, y: 5 }],
     stars: [{ x: 2, y: 2 }, { x: 4, y: 4 }, { x: 5, y: 5 }],
-    commands: ['down', 'down', 'down', 'right', 'right', 'right', 'right']
+    commands: ['down', 'down', 'right', 'right', 'right', 'right', 'down']
   },
   {
     id: 12,
@@ -175,13 +175,13 @@ window.SPACE_LESSONS.push(
     unit: 'אתגר סיום',
     emoji: '🌍',
     place: 'מסלול חזרה',
-    mission: 'סיסי מסיימת את שיעור החלל וחוזרת לנחיתה בטוחה בכדור הארץ.',
+    mission: 'סיסי מסיימת את שיעור החלל וחוזרת לנחיתה בטוחה בכדור הארץ. אתגר פתוח לסיום: נסו לשנות את המסלול כדי לאסוף כמה שיותר כוכבים בדרך.',
     concept: 'אלגוריתם מסלול מלא',
     spaceFact: 'כדור הארץ הוא הבית שלנו, ולכן משימות חלל מסתיימות תמיד בתכנון חזרה בטוח.',
-    goal: { x: 6, y: 5 },
+    goal: { x: 5, y: 5 },
     start: { x: 1, y: 1 },
-    obstacles: [{ x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 4 }, { x: 5, y: 4 }],
-    stars: [{ x: 2, y: 1 }, { x: 4, y: 3 }, { x: 6, y: 4 }],
-    commands: ['right', 'right', 'right', 'right', 'right', 'down', 'down', 'down', 'down']
+    obstacles: [{ x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 4 }, { x: 5, y: 4 }, { x: 1, y: 4 }],
+    stars: [{ x: 2, y: 1 }, { x: 4, y: 3 }, { x: 6, y: 4 }, { x: 2, y: 5 }],
+    commands: ['right', 'right', 'right', 'right', 'right', 'down', 'down', 'down', 'down', 'left']
   }
 );
