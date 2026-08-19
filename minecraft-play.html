@@ -478,20 +478,18 @@
 
     function placePath(color){ const blockY = state.steveY; const x = state.steveX + 8; addBlock(color || 'grass', x, blockY, 'path-slab'); if (lesson.id === 10) state.pathSpots.push({ x: x + 15, y: blockY, label:'אריח שביל שנבנה' }); state.lastMove = null; updateStatus(); }
     function buildSimplePath(){
-      const startX = 105;
+      const startX = state.steveX + 20;
+      const startY = state.steveY;
       const spots = [
-        { x:startX, y:GROUND_Y },
-        { x:startX + 45, y:GROUND_Y },
-        { x:startX + 90, y:GROUND_Y },
-        { x:startX + 90, y:GROUND_Y + 42 },
-        { x:startX + 135, y:GROUND_Y + 42 }
+        { x:startX, y:startY },
+        { x:startX + 45, y:startY },
+        { x:startX + 90, y:startY },
+        { x:startX + 90, y:startY + 42 },
+        { x:startX + 135, y:startY + 42 }
       ];
       spots.forEach((spot) => { addBlock('grass', spot.x - 15, spot.y, 'path-slab'); });
       state.pathSpots = spots.map((spot) => ({ ...spot, label:'אריח בשביל הפשוט' }));
-      state.steveX = startX - 20;
-      state.steveY = GROUND_Y;
       state.lastMove = null;
-      setStevePosition();
       updateStatus();
     }
     function placeHalfBlock(color){ const blockY = state.steveY; addBlock(color || 'grass', state.steveX + 9, blockY, 'half-slab'); state.lastMove = null; updateStatus(); }

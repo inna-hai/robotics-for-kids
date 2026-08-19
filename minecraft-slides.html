@@ -26,9 +26,10 @@
     const esc = (v) => String(v || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     function cls(text){ if(/כאשר/.test(text)) return 'event'; if(/זוז|עלה|רד|טלפורט/.test(text)) return 'motion'; if(/הנח|בנה|גשם|מזג/.test(text)) return 'build'; if(/אמור|הצג/.test(text)) return 'say'; if(/אם|תנאי|בתוך/.test(text)) return 'condition'; if(/אוצר|חיית|מפלצת|איסוף/.test(text)) return 'reward'; return ''; }
     function renderBlocks(blocks){ return `<div class="solution"><div class="kicker">פתרון בבלוקים</div><div class="blocks">${blocks.map(b => `<div class="block ${cls(b)}">${esc(b)}</div>`).join('')}</div></div>`; }
+    function exerciseTimeLabel(ex){ return ex.number === 1 ? `${ex.minutes} • אחרי פתיחה, הדגמה ובנייה יחד` : ex.minutes; }
     const exerciseSlides = (lesson.programmingExercises || []).flatMap((ex) => {
       const slides = [
-        { html:`<div class="kicker">${ex.minutes} • תרגול מעשי ${ex.number}</div><h2>${esc(ex.title)}</h2><p>${esc(ex.studentPrompt)}</p><div class="note"><b>בדיקה בכיתה:</b><ul>${(ex.testSteps||[]).map(s=>`<li>${esc(s)}</li>`).join('')}</ul></div>` }
+        { html:`<div class="kicker">${exerciseTimeLabel(ex)} • תרגול מעשי ${ex.number}</div><h2>${esc(ex.title)}</h2><p>${esc(ex.studentPrompt)}</p><div class="note"><b>בדיקה בכיתה:</b><ul>${(ex.testSteps||[]).map(s=>`<li>${esc(s)}</li>`).join('')}</ul></div>` }
       ];
       if ((ex.answerBlocks || []).length) {
         slides.push({ html:`<div class="kicker">פתרון למדריך • תרגול ${ex.number}</div><h2>${esc(ex.title)}</h2>${renderBlocks(ex.answerBlocks||[])}${ex.solutionNote ? `<div class="note"><b>שימו לב:</b> ${esc(ex.solutionNote.replace(/^שימו לב:\s*/, ''))}</div>` : ''}<p><b>תוצאה מצופה:</b> ${esc(ex.expectedResult)}</p><div class="note"><b>טעות נפוצה:</b> ${esc(ex.commonMistake)}</div>` });
@@ -47,7 +48,7 @@
       { html:`<h2>🎯 מטרת השיעור</h2><p>${esc(lesson.goal)}</p><div class="cards"><div class="card"><b>רעיון תכנותי</b>${esc(lesson.concept)}</div><div class="card"><b>אתגר מסכם</b>${esc(lesson.challenge)}</div></div>` },
       { html:`<h2>🧱 הבלוקים של היום</h2><div class="cards">${todayBlocks(lesson).map(b=>`<div class="card"><b>${esc(blockName(b))}</b></div>`).join('')}</div>` },
       { html:`<h2>⏱️ מהלך שיעור 60 דקות</h2><div class="flow">${(lesson.lessonFlow||[]).map(step=>`<div class="card"><b>${step.minutes} — ${esc(step.title)}</b>${esc(step.teacher)}<br><em>${esc(step.students)}</em></div>`).join('')}</div>` },
-      { html:`<h2>🧪 רצף התרגולים</h2><ul>${(lesson.programmingExercises||[]).map(ex=>`<li><b>${ex.minutes}:</b> ${esc(ex.title)}</li>`).join('')}</ul>` },
+      { html:`<h2>🧪 רצף התרגולים</h2><div class="note"><b>לפני התרגילים:</b> 0–20 דקות — סיפור פתיחה, הדגמת מדריך ובנייה יחד.</div><ul>${(lesson.programmingExercises||[]).map(ex=>`<li><b>${exerciseTimeLabel(ex)}:</b> ${esc(ex.title)}</li>`).join('')}</ul>` },
       ...exerciseSlides,
       { html:`<h2>🏁 סיכום והצגה</h2><p><b>התלמידים צריכים להצליח להסביר בקצרה:</b></p><p>${esc(summaryPrompt(lesson))}</p><div class="note">${esc(lesson.success)}</div>` }
     ];
