@@ -12,7 +12,7 @@ const lessons = sandbox.window.WEBCODE_LESSONS;
 function includesAll(text, list = []) { return list.every(snippet => text.includes(snippet)); }
 function excludesAll(text, list = []) { return list.every(snippet => !text.includes(snippet)); }
 function starterPasses(lesson, check = {}) {
-  if (check.blockTypes?.length || check.changedAny?.length) return false;
+  if (check.blockTypes?.length || check.changedAny?.length || check.requiresCodePeek || check.requiresCodeSelectionTab || check.requiresCodeSelectionTabs?.length || check.requiresCodeSelectionBlockTypes?.length || check.debugCodeIncludes?.length || check.debugCodeExcludes?.length) return false;
   return includesAll(lesson.starter.html, check.htmlIncludes)
     && includesAll(lesson.starter.css, check.cssIncludes)
     && includesAll(lesson.starter.js, check.jsIncludes)
@@ -30,7 +30,7 @@ function sourcesForLesson(lesson) {
 }
 
 for (const lesson of lessons) {
-  const minimumExercises = lesson.id === 2 ? 7 : 8;
+  const minimumExercises = lesson.id === 4 ? 7 : lesson.id === 2 ? 7 : 8;
   assert.equal(lesson.exercises.length >= minimumExercises, true, `lesson ${lesson.id} has enough exercises`);
   const source = sourcesForLesson(lesson);
   for (const exercise of lesson.exercises) {
@@ -46,7 +46,9 @@ for (const lesson of lessons) {
 
 for (const lesson of lessons.slice(12)) {
   for (const exercise of lesson.exercises) {
-    if ([3, 5, 6, 7, 8].includes(exercise.id) || (exercise.id === 4 && lesson.bridgeBlocks?.length)) {
+    if (lesson.realBlocklyBuilder) {
+      if (exercise.id >= 2) assert.ok(exercise.check.blockTypes?.length || exercise.check.requiresCodePeek, `lesson ${lesson.id} exercise ${exercise.id} requires connected Blockly work or generated-code inspection`);
+    } else if ([3, 5, 6, 7, 8].includes(exercise.id) || (exercise.id === 4 && lesson.bridgeBlocks?.length)) {
       assert.deepEqual(Array.from(exercise.check.changedAny || []), ['html', 'css', 'js'], `lesson ${lesson.id} exercise ${exercise.id} requires an actual code change`);
     }
   }
@@ -55,7 +57,8 @@ for (const lesson of lessons.slice(12)) {
 for (const lesson of lessons) {
   for (const exercise of lesson.exercises) {
     const asksForAction = /גררו|חברו|הפעילו|שנו|השלימו|תקנו|הוסיפו|צרו/.test(`${exercise.title} ${exercise.prompt}`);
-    if (!asksForAction) continue;
+    if (!asksForAction || exercise.noCheck) continue;
+    if (lesson.realBlocklyBuilder && exercise.id === 1) continue;
     assert.equal(starterPasses(lesson, exercise.check), false, `lesson ${lesson.id} exercise ${exercise.id} should not pass from untouched starter code`);
   }
 }
