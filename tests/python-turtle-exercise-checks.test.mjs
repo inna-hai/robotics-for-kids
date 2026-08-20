@@ -4,6 +4,13 @@ import { readFileSync } from 'node:fs';
 const html = readFileSync(new URL('../python-turtle.html', import.meta.url), 'utf8');
 
 assert.match(html, /function repeatShapeMatches\(sides, angle\)/, 'shape exercises use a dedicated repeat/sides/angle validator');
+
+assert.match(html, /"id": 2,[\s\S]*"prompt": "בנו מדרגה שיורדת ימינה: קטע ישר, ירידה קצרה, ואז המשך ישר\."/, 'lesson 2 exercise 1 asks for a descending stair without revealing the block sequence');
+assert.match(html, /const pattern = \['forward','right','forward','left','forward'\]/, 'lesson 2 stair validator uses the updated 5-block stair pattern');
+assert.match(html, /עדיין לא נראית מדרגה שיורדת ימינה/, 'lesson 2 exercise 1 feedback does not reveal the full block sequence');
+assert.match(html, /מבנה המדרגות תקין: קדימה, ימינה, קדימה, שמאלה, קדימה — 3 פעמים/, 'lesson 2 repeated stair wording uses the updated pattern');
+assert.match(html, />✨ דוגמת הפעלה<\//, 'demo button is labeled as an operation demo');
+assert.match(html, /זו דוגמת הפעלה בלבד — לא הפתרון של המשימה/, 'demo button explains it is not the task solution');
 assert.match(html, /netTurn = bodyActions\.reduce/, 'shape validator rejects loops whose opposite turns cancel out instead of forming a shape');
 assert.match(html, /closesShape = simulatePath\(repeatedActions\)\.distanceFromStart <= 25/, 'shape validator checks that the repeated loop actually closes into a polygon');
 assert.match(html, /currentLesson === 3/, 'lesson 3 has specific validators instead of only generic checks');
@@ -162,8 +169,12 @@ assert.match(html, /function repeatPatternBlocks\(\)\{[\s\S]*activeValidationSna
 
 
 assert.match(html, /\.exercise-feedback:empty\{display:none\}/, 'empty feedback box is hidden before any check result');
+assert.match(html, /\.exercise-feedback\{[^}]*max-height:none;overflow:visible/, 'feedback boxes expand instead of showing an inner scrollbar');
 
-assert.match(html, /<div class="exercise-bottom"><div class="exercise-controls">[\s\S]*<div class="exercise-feedback/, 'exercise feedback shares the bottom row with the buttons so Continue remains visible');
+assert.match(html, /const feedbackBelowButtons = Number\(currentLesson\) === 1 && exerciseNumberForIndex\(currentExerciseIndex\) === 6/, 'lesson 1 exercise 6 has an explicit feedback layout exception');
+assert.match(html, /feedbackBelowButtons \? '<br>' : feedbackHtml/, 'exercise 6 inserts a real line break before feedback');
+assert.match(html, /feedbackBelowButtons \? feedbackHtml : ''/, 'exercise 6 feedback is rendered below the button row');
+assert.match(html, /if\(feedbackBelowButtons && message\)\{[\s\S]*missionEl\.scrollTo\(\{top: missionEl\.scrollHeight, behavior:'smooth'\}\)/, 'lesson 1 exercise 6 scrolls the instructions area down when feedback first appears');
 
 assert.match(html, /\.exercise-bottom\{display:flex;gap:10px;align-items:center/, 'exercise bottom row keeps feedback and controls visible together');
 
@@ -306,3 +317,8 @@ assert.match(html, /if\(isSelectionOnlyExercise\(ex\) && !alreadyCompleted\)/, '
 
 assert.match(html, /else if\(isSelectionOnlyExercise\(ex\)\)\{[\s\S]*await run\(\);[\s\S]*כדי להמשיך, לחצו על הבלוק המתאים/, 'running a selection-only exercise does not show generic check success feedback');
 assert.doesNotMatch(html, /else if\(isSelectionOnlyExercise\(ex\)\)[\s\S]{0,160}else checkExercise\(\)/, 'selection-only exercises are not validated by the global Run button');
+
+
+assert.ok(!html.includes('בלי להפוך את כיוון הירידה'), 'lesson 2 exercise 1 feedback stays concise without the direction-warning phrase');
+
+assert.match(html, /"hint": "חשבו על צורת מדרגה: קודם קטע ישר, אחר כך ירידה קצרה, ואז ממשיכים ישר/, 'lesson 2 exercise 1 hint explains the stair shape without revealing block order');
