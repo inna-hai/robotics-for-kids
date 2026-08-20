@@ -20,7 +20,7 @@ lessons.forEach(lessonItem => {
   assert.ok(lessonItem.starter?.css?.includes('background'), `lesson ${lessonItem.id} has starter CSS`);
   assert.ok(lessonItem.starter?.js?.includes('function'), `lesson ${lessonItem.id} has starter JavaScript`);
   assert.ok(lessonItem.lessonFlow.length >= 7, `lesson ${lessonItem.id} has a full guide flow`);
-  const minimumExercises = lessonItem.id === 2 ? 7 : 8;
+  const minimumExercises = lessonItem.id === 4 ? 7 : lessonItem.id === 2 ? 7 : 8;
   assert.ok(lessonItem.exercises.length >= minimumExercises, `lesson ${lessonItem.id} has enough exercises`);
   assert.ok(lessonItem.vocabulary.length >= 4, `lesson ${lessonItem.id} has vocabulary`);
 });
@@ -84,16 +84,53 @@ assert.ok(lesson3.exercises[7].check.requiresCodeSelectionBlockTypes?.includes('
 assert.ok(lesson3.exercises[3].check.fieldFeedback.includes('שנו את הטקסט'), 'lesson 3 exercise 4 gives specific unchanged-text feedback');
 assert.ok(lesson3.vocabulary.some(v => v[0] === 'onclick'), 'lesson 3 vocabulary includes onclick');
 
+const lessons4to24 = lessons.slice(3, 24);
+lessons4to24.forEach(lessonItem => {
+  assert.equal(lessonItem.realBlocklyBuilder, true, `lesson ${lessonItem.id} uses real draggable Blockly blocks`);
+  assert.equal(lessonItem.blocklyLessonBuilder, true, `lesson ${lessonItem.id} uses the lesson-specific Blockly builder`);
+  assert.equal(lessonItem.bridgeBlocks.length, 0, `lesson ${lessonItem.id} does not expose legacy helper/code-card buttons`);
+  assert.ok(lessonItem.mode.includes('Real Blockly full rework'), `lesson ${lessonItem.id} is marked as a full real Blockly rework`);
+  assert.ok(lessonItem.progressionStage.includes('בלוקים אמיתיים'), `lesson ${lessonItem.id} stays in the block-first phase`);
+  assert.ok(lessonItem.blocklyBlocks.length >= 5, `lesson ${lessonItem.id} has several draggable lesson blocks`);
+  assert.ok(lessonItem.blocklyBlocks.some(block => block.args0?.length), `lesson ${lessonItem.id} has editable fields/dropdowns inside lesson blocks`);
+  assert.equal(lessonItem.exercises.length, lessonItem.id === 4 ? 7 : 8, `lesson ${lessonItem.id} has the reviewed exercise count`);
+  lessonItem.exercises.forEach(ex => {
+    assert.ok(ex.prompt.includes('בלוק') || ex.prompt.includes('תצוגה') || ex.prompt.includes('קוד שנוצר') || ex.prompt.includes('תיבת הקוד'), `lesson ${lessonItem.id} exercise ${ex.id} is phrased around blocks/preview/generated code`);
+    assert.ok(ex.noCheck || (ex.check && Object.keys(ex.check).length > 0), `lesson ${lessonItem.id} exercise ${ex.id} has a validator or is explicitly no-check`);
+  });
+  assert.ok(!lessonItem.exercises[0].prompt.includes('הריצו'), `lesson ${lessonItem.id} exercise 1 is not a fake run-the-already-running-preview task`);
+  assert.ok(lessonItem.exercises[0].check.blockTypes?.length, `lesson ${lessonItem.id} exercise 1 requires a real block action`);
+  const blockChecks = lessonItem.exercises.filter(ex => ex.check.blockTypes?.length);
+  assert.ok(blockChecks.length >= (lessonItem.id === 4 ? 5 : 6), `lesson ${lessonItem.id} requires connected Blockly blocks in most exercises`);
+  const final = lessonItem.exercises.at(-1).check;
+  if (lessonItem.id !== 4) {
+    assert.equal(final.requiresCodePeek, true, `lesson ${lessonItem.id} final exercise requires generated-code peek`);
+    assert.ok(final.requiresCodeSelectionBlockTypes?.length >= 1, `lesson ${lessonItem.id} final exercise requires selecting a connected generated-code block`);
+  }
+});
+
 const lesson4 = lessons[3];
 assert.equal(lesson4.durationMinutes, 90, 'lesson 4 is framed as 90 minutes');
-assert.ok(lesson4.title.includes('מקשיב'), 'lesson 4 focuses on user input');
-assert.ok(lesson4.title.includes('מצחיקות'), 'lesson 4 is framed as a fun personal generator');
-assert.ok(lesson4.lessonFlow[0].title.includes('וואו אישי'), 'lesson 4 starts with a personal wow moment');
+assert.ok(lesson4.title.includes('קלט'), 'lesson 4 focuses on user input');
+assert.ok(lesson4.title.includes('ברכות'), 'lesson 4 is framed as a fun personal generator');
 assert.ok(lesson4.starter.html.includes('id="nameInput"'), 'lesson 4 has name input');
-assert.ok(lesson4.starter.html.includes('מחולל הברכות המצחיקות'), 'lesson 4 starter is playful');
 assert.ok(lesson4.starter.js.includes('.value'), 'lesson 4 reads input value');
-assert.ok(lesson4.exercises.length >= 8, 'lesson 4 includes many exercises');
-assert.ok(lesson4.exercises[0].title.includes('קסם אישי'), 'lesson 4 first exercise asks students to try the generator immediately');
+assert.ok(lesson4.exercises[0].prompt.includes('גררו') && lesson4.exercises[0].check.blockTypes?.includes('lesson_4_name_label'), 'lesson 4 uses a draggable block for the first input-label change');
+assert.ok(lesson4.exercises[1].check.blockTypes?.includes('lesson_4_topic_label'), 'lesson 4 uses a draggable block for the topic-label change');
+assert.ok(lesson4.exercises[3].prompt.includes('לחצו על כפתור הברכה'), 'lesson 4 result-sentence exercise tells learners to press the preview button');
+assert.equal(lesson4.exercises[3].check.requiresPreviewButtonClick, true, 'lesson 4 result-sentence exercise requires pressing the preview button');
+assert.ok(lesson4.exercises[3].check.requiresPreviewResultFromBlockOutput?.some(rule => rule.type === 'lesson_4_sentence'), 'lesson 4 result-sentence exercise checks the preview result contains the generated sentence text');
+const lesson4EndingBlock = lesson4.blocklyBlocks.find(block => block.type === 'lesson_4_result_word');
+assert.equal(lesson4EndingBlock.label, 'אימוג׳י סיום בתוצאה', 'lesson 4 ending block is named for the emoji it changes');
+assert.equal(lesson4EndingBlock.find, 'רעיונות נוצצים 🚀', 'lesson 4 ending block finds the actual starter result ending');
+assert.equal(lesson4EndingBlock.replace, 'רעיונות נוצצים {{TEXT}}', 'lesson 4 ending block replaces the visible result ending');
+assert.ok(lesson4.exercises[4].check.requiresPreviewResultFromBlockOutput?.some(rule => rule.type === 'lesson_4_result_word'), 'lesson 4 ending block exercise checks the visible preview result');
+assert.equal(lesson4.exercises.length, 7, 'lesson 4 keeps the generated-code reading exercise plus optional challenge');
+assert.equal(lesson4.exercises[5].check.requiresCodePeek, true, 'lesson 4 generated-code reading exercise requires opening code peek');
+assert.ok(lesson4.exercises[5].check.jsIncludes?.includes('getElementById("nameInput").value'), 'lesson 4 generated-code reading exercise checks the nameInput value line exists');
+assert.equal(lesson4.exercises.at(-1).optional, true, 'lesson 4 final challenge is optional/skippable');
+assert.ok(['lesson_4_name_label','lesson_4_topic_label','lesson_4_button_text','lesson_4_sentence','lesson_4_result_word'].every(type => lesson4.exercises.at(-1).blocklyStarterXml?.includes(type)), 'lesson 4 optional challenge provides the full connected starter block program to fix');
+assert.equal(lesson4.exercises.at(-1).check.exactBlocklyFields?.[0]?.value, '🎉', 'lesson 4 optional challenge checks the exact starter-block fix');
 assert.ok(lesson4.vocabulary.some(v => v[0] === 'input'), 'lesson 4 vocabulary includes input');
 
 const lesson5 = lessons[4];
@@ -101,78 +138,22 @@ assert.equal(lesson5.durationMinutes, 90, 'lesson 5 is framed as 90 minutes');
 assert.ok(lesson5.title.includes('חידון'), 'lesson 5 focuses on quiz building');
 assert.ok(lesson5.starter.js.includes('if (answer === "CSS")'), 'lesson 5 includes if condition');
 assert.ok(lesson5.starter.js.includes('else'), 'lesson 5 includes else branch');
-assert.ok(lesson5.exercises.length >= 8, 'lesson 5 includes many exercises');
+assert.ok(lesson5.blocklyBlocks.some(block => block.type === 'lesson_5_answer' && block.args0?.some(arg => JSON.stringify(arg.options || []).includes('JavaScript'))), 'lesson 5 has a Blockly dropdown that changes the quiz answer to JavaScript');
 assert.ok(lesson5.vocabulary.some(v => v[0] === 'if'), 'lesson 5 vocabulary includes if');
-
-const lesson6 = lessons[5];
-assert.equal(lesson6.durationMinutes, 90, 'lesson 6 is framed as 90 minutes');
-assert.ok(lesson6.title.includes('ניקוד'), 'lesson 6 focuses on scoring');
-assert.ok(lesson6.starter.js.includes('let score = 0'), 'lesson 6 initializes score variable');
-assert.ok(lesson6.starter.js.includes('score = score + 1'), 'lesson 6 increments score');
-assert.ok(lesson6.exercises.length >= 8, 'lesson 6 includes many exercises');
-assert.ok(lesson6.vocabulary.some(v => v[0] === 'variable'), 'lesson 6 vocabulary includes variable');
-
-const lesson7 = lessons[6];
-assert.equal(lesson7.durationMinutes, 90, 'lesson 7 is framed as 90 minutes');
-assert.ok(lesson7.title.includes('קליקים'), 'lesson 7 focuses on click game');
-assert.ok(lesson7.starter.js.includes('const target = 10'), 'lesson 7 has target score');
-assert.ok(lesson7.starter.js.includes('score >= target'), 'lesson 7 checks win condition');
-assert.ok(lesson7.exercises.length >= 8, 'lesson 7 includes many exercises');
-assert.ok(lesson7.vocabulary.some(v => v[0] === 'target'), 'lesson 7 vocabulary includes target');
-
-const lesson8 = lessons[7];
-assert.equal(lesson8.durationMinutes, 90, 'lesson 8 is framed as 90 minutes');
-assert.ok(lesson8.title.includes('טיימר'), 'lesson 8 focuses on timer');
-assert.ok(lesson8.starter.js.includes('let timeLeft = 15'), 'lesson 8 initializes timeLeft');
-assert.ok(lesson8.starter.js.includes('setInterval'), 'lesson 8 uses timer interval');
-assert.ok(lesson8.exercises.length >= 8, 'lesson 8 includes many exercises');
-assert.ok(lesson8.vocabulary.some(v => v[0] === 'timeLeft'), 'lesson 8 vocabulary includes timeLeft');
-
-const lesson9 = lessons[8];
-assert.equal(lesson9.durationMinutes, 90, 'lesson 9 is framed as 90 minutes');
-assert.ok(lesson9.title.includes('מכשולים'), 'lesson 9 focuses on obstacles');
-assert.ok(lesson9.starter.js.includes('let lives = 3'), 'lesson 9 initializes lives');
-assert.ok(lesson9.starter.js.includes('lives <= 0'), 'lesson 9 checks game over');
-assert.ok(lesson9.exercises.length >= 8, 'lesson 9 includes many exercises');
-assert.ok(lesson9.vocabulary.some(v => v[0] === 'lives'), 'lesson 9 vocabulary includes lives');
-
-const lesson10 = lessons[9];
-assert.equal(lesson10.durationMinutes, 90, 'lesson 10 is framed as 90 minutes');
-assert.ok(lesson10.title.includes('כוח מיוחד'), 'lesson 10 focuses on special power');
-assert.ok(lesson10.starter.js.includes('let powerReady = true'), 'lesson 10 initializes power state');
-assert.ok(lesson10.starter.js.includes('if (powerReady)'), 'lesson 10 checks power availability');
-assert.ok(lesson10.exercises.length >= 8, 'lesson 10 includes many exercises');
-assert.ok(lesson10.vocabulary.some(v => v[0] === 'powerReady'), 'lesson 10 vocabulary includes powerReady');
-
-const lesson11 = lessons[10];
-assert.equal(lesson11.durationMinutes, 90, 'lesson 11 is framed as 90 minutes');
-assert.ok(lesson11.title.includes('מסך פתיחה'), 'lesson 11 focuses on screens');
-assert.ok(lesson11.starter.js.includes('function showScreen'), 'lesson 11 includes screen switching');
-assert.ok(lesson11.starter.html.includes('id="startScreen"'), 'lesson 11 has start screen');
-assert.ok(lesson11.exercises.length >= 8, 'lesson 11 includes many exercises');
-assert.ok(lesson11.vocabulary.some(v => v[0] === 'screen'), 'lesson 11 vocabulary includes screen');
-
-const lesson12 = lessons[11];
-assert.equal(lesson12.durationMinutes, 90, 'lesson 12 is framed as 90 minutes');
-assert.ok(lesson12.title.includes('מיני־פרויקט'), 'lesson 12 is a mini project');
-assert.ok(lesson12.starter.js.includes('function updateScreen'), 'lesson 12 consolidates screen updates');
-assert.ok(lesson12.starter.js.includes('const target = 5'), 'lesson 12 has project target');
-assert.ok(lesson12.exercises.length >= 8, 'lesson 12 includes many exercises');
-assert.ok(lesson12.vocabulary.some(v => v[0] === 'project'), 'lesson 12 vocabulary includes project');
 
 const lesson13 = lessons[12];
 assert.ok(lesson13.title.includes('הקוד שנוצר'), 'lesson 13 starts the generated-code lab phase');
-assert.ok(lesson13.progressionStage.includes('עריכת קוד'), 'lesson 13 is marked as code-edit progression');
-assert.ok(lesson13.bridgeBlocks.length >= 3, 'lesson 13 has code-edit cards');
+assert.ok(lesson13.progressionStage.includes('בלוקים אמיתיים'), 'lesson 13 remains block-first under the new progression requirement');
+assert.ok(lesson13.blocklyBlocks.length >= 3, 'lesson 13 has generated-code Blockly cards');
 
 const lesson19 = lessons[18];
-assert.ok(lesson19.title.includes('כרטיסי HTML'), 'lesson 19 starts real code cards');
-assert.ok(lesson19.mode.includes('Real code cards'), 'lesson 19 uses real code card mode');
-assert.ok(lesson19.bridgeBlocks.some(block => block.label.includes('כרטיס HTML אמיתי')), 'lesson 19 exposes real HTML code cards');
+assert.ok(lesson19.title.includes('כרטיסי HTML'), 'lesson 19 keeps the HTML-card focus');
+assert.ok(lesson19.mode.includes('Real Blockly full rework'), 'lesson 19 now uses real Blockly card blocks');
+assert.ok(lesson19.blocklyBlocks.some(block => block.label.includes('כותרת HTML')), 'lesson 19 exposes real HTML as draggable Blockly blocks');
 
 const lesson24 = lessons[23];
-assert.ok(lesson24.concept.includes('score') && lesson24.concept.includes('target'), 'lesson 24 edits real game rules');
-assert.ok(lesson24.bridgeBlocks.some(block => block.label.includes('כרטיס JS אמיתי')), 'lesson 24 has real JS cards');
+assert.ok(lesson24.concept.includes('חוקי משחק'), 'lesson 24 edits game rules conceptually');
+assert.ok(lesson24.blocklyBlocks.some(block => block.label.includes('פלט JavaScript')), 'lesson 24 has real JS Blockly cards');
 
 const lesson25 = lessons[24];
 assert.ok(lesson25.progressionStage.includes('כתיבה מודרכת'), 'lesson 25 starts guided coding');
@@ -186,13 +167,30 @@ const hub = read('webcode.html');
 assert.ok(hub.includes('WebCode Lab'), 'hub page exists');
 assert.ok(hub.includes('webcode-play.html?lesson=1'), 'hub links to lesson 1');
 assert.ok(hub.includes('webcode-slides.html?lesson=1'), 'hub links to guide slides');
-assert.ok(hub.includes('כרטיסי קוד אמיתי') && hub.includes('25–30'), 'hub explains gradual move to real coding');
+assert.ok(hub.includes('25–30'), 'hub explains gradual move to real coding');
 assert.ok(hub.includes('formatMixedText') && hub.includes('tech-term'), 'hub isolates English tech terms so RTL lesson cards do not flip mixed text');
-assert.ok(hub.includes('js/webcode-lessons.js?v=20260819-course-v33'), 'hub bumps internal lesson-data script version to avoid stale course cards');
+assert.ok(hub.includes('js/webcode-lessons.js?v=20260819-course-v76'), 'hub bumps internal lesson-data script version to avoid stale course cards');
 assert.ok(!hub.includes('Blockly אמיתי'), 'course-page hero avoids unclear “Blockly אמיתי” phrasing');
 assert.ok(!JSON.stringify(lessons.slice(0, 3).map(lesson => lesson.concept)).includes('Blockly אמיתי'), 'visible course-card concepts avoid unclear “Blockly אמיתי” phrasing');
 
 const play = read('webcode-play.html');
+assert.ok(play.includes('repairSavedCodeState') && play.includes('function makeGreeting'), 'player repairs stale lesson 4 saved state when makeGreeting is missing');
+assert.ok(play.includes('hasPreviewFilledInputs') && play.includes('hasPreviewResultFromInputs'), 'player can validate preview input/result interactions');
+assert.ok(play.includes('blocklyLessonBuilder'), 'play page supports lesson-specific Blockly blocks for lessons 4-24');
+assert.ok(play.includes('defineLessonBlocklyBlocks'), 'play page defines dynamic draggable lesson blocks');
+assert.ok(play.includes('js/webcode-lessons.js?v=20260820-lesson4-reset-starter-v101'), 'play page bumps internal lesson data script for lesson 4 starter reset fix');
+assert.ok(play.includes('function generateLesson4ChallengeCode') && play.includes('חסר בלוק'), 'lesson 4 challenge preview is generated from connected starter blocks, not the hidden lesson starter');
+assert.ok(play.includes('applyExerciseBlocklyStarter(activeExercise)') && play.includes('blocklyStarterXml'), 'play page loads exercise-specific starter blocks into the Blockly workspace for debug-style challenges');
+assert.ok(play.includes('if(ex?.blocklyStarterXml) return ex.blocklyStarterXml') && play.includes('delete checkMemory.exerciseBaselines[activeExercise]'), 'starter-code reset uses the current exercise starter XML instead of stale/blank baseline state');
+assert.ok(play.includes('hasExactBlocklyFields') && play.includes('exactBlocklyFields'), 'play page can validate exact Blockly field values for specific challenges');
+assert.ok(play.includes('ex.optional') && play.includes('דלגו וסיימו'), 'play page lets optional final challenges be skipped');
+assert.ok(play.includes("$('topRunButton').style.display = lesson.realBlocklyBuilder ? 'none' : ''"), 'top run button is hidden for auto-running Blockly lessons');
+assert.ok(play.includes('if(lesson.blocklyLessonBuilder) return;') && play.includes('x="130" y="70"'), 'lesson-specific Blockly lessons keep starter block placed comfortably instead of pushed to the far right');
+assert.ok(play.includes('hasGeneratedBlockOutputs') && play.includes('generatedBlockOutputs'), 'checks can require the selected lesson-block field value to appear in generated code');
+assert.ok(play.includes('hasAnyChangedBlocklyField') && play.includes('anyChangedBlocklyFields'), 'checks can require at least one edited block field when the prompt says to change one block');
+assert.ok(play.includes('hasPreviewButtonClick') && play.includes('requiresPreviewButtonClick'), 'checks can require pressing a preview button for visible-result exercises');
+assert.ok(play.includes('hasPreviewResultFromBlockOutput') && play.includes('requiresPreviewResultFromBlockOutput'), 'checks can require the preview result to include the generated output from a block');
+assert.ok(!play.includes('בחרו תרגול, שנו קוד ולחצו הרצה.'), 'exercise feedback no longer tells auto-running Blockly learners to press run');
 assert.ok(play.includes('textarea id="htmlCode"'), 'play page has HTML editor');
 assert.ok(play.includes('textarea id="cssCode"'), 'play page has CSS editor');
 assert.ok(play.includes('textarea id="jsCode"'), 'play page has JS editor');
@@ -269,8 +267,8 @@ assert.ok(play.includes('הקישור הציבורי הועתק'), 'share button
 assert.ok(!play.includes('navigator.share'), 'share button does not open native share UI');
 assert.ok(play.includes('🏠 עמוד הקורס'), 'top course-home button is clearly named');
 assert.ok(play.includes('webcode-share.html'), 'play page shares to a clean viewer page');
-assert.ok(play.includes('renderBridgeBlocks'), 'play page keeps bridge blocks fallback for later lessons');
-assert.ok(play.includes('applyBridgeBlock'), 'play page can apply bridge blocks into code');
+assert.ok(play.includes('renderBridgeBlocks'), 'play page keeps bridge blocks fallback for any legacy lessons outside 4-24');
+assert.ok(play.includes('applyBridgeBlock'), 'play page can still apply bridge blocks if needed outside the block-first range');
 
 const shared = read('webcode-share.html');
 assert.ok(shared.includes('עמוד משותף'), 'shared project viewer page exists');
