@@ -136,10 +136,13 @@ assert.ok(lesson4.vocabulary.some(v => v[0] === 'input'), 'lesson 4 vocabulary i
 const lesson5 = lessons[4];
 assert.equal(lesson5.durationMinutes, 90, 'lesson 5 is framed as 90 minutes');
 assert.ok(lesson5.title.includes('חידון'), 'lesson 5 focuses on quiz building');
-assert.ok(lesson5.starter.js.includes('if (answer === "CSS")'), 'lesson 5 includes if condition');
+assert.ok(lesson5.starter.html.includes("chooseAnswer('yes')"), 'lesson 5 uses fixed yes/no choices instead of free text');
+assert.ok(!lesson5.starter.html.includes('answerInput'), 'lesson 5 avoids exact typed-answer matching');
+assert.ok(lesson5.starter.js.includes('if (choice === "yes")'), 'lesson 5 includes a simple choice-based if condition');
 assert.ok(lesson5.starter.js.includes('else'), 'lesson 5 includes else branch');
-assert.ok(lesson5.blocklyBlocks.some(block => block.type === 'lesson_5_answer' && block.args0?.some(arg => JSON.stringify(arg.options || []).includes('JavaScript'))), 'lesson 5 has a Blockly dropdown that changes the quiz answer to JavaScript');
+assert.ok(lesson5.blocklyBlocks.some(block => block.type === 'lesson_5_choice' && block.args0?.some(arg => JSON.stringify(arg.options || []).includes('no'))), 'lesson 5 has a Blockly dropdown that changes the correct yes/no choice');
 assert.ok(lesson5.vocabulary.some(v => v[0] === 'if'), 'lesson 5 vocabulary includes if');
+assert.ok(lesson5.vocabulary.some(v => v[0] === 'choice'), 'lesson 5 vocabulary names the user choice');
 
 const lesson13 = lessons[12];
 assert.ok(lesson13.title.includes('הקוד שנוצר'), 'lesson 13 starts the generated-code lab phase');

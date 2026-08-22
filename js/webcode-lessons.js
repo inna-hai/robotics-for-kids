@@ -188,45 +188,46 @@
     },
     {
       id: 5,
-      title: 'חידון כן או לא — בלוקי תנאי',
+      title: 'חידון כן או לא — בלוקי תנאי נקיים',
       concept: 'בלוקי תנאי → JavaScript: אם / אחרת ומשוב',
       durationMinutes: 90,
-      story: 'בונים חידון קטן דרך בלוקי תנאי: שאלה, תשובה נכונה, משוב הצלחה ומשוב רמז. אחר כך מציצים ל־if/else שנוצר בקוד.' ,
-      mission: 'לבנות חידון אינטראקטיבי בעזרת בלוקי תנאי, ואז לזהות איך if/else בודק תשובה.' ,
-      outcome: 'חידון קצר שנבנה מבלוקי תנאי, עם קלט, if/else ומשוב צבעוני',
+      story: 'בונים חידון קטן דרך בלוקי תנאי עם שתי בחירות מוכנות: כן או לא. קודם מבינים “אם הבחירה נכונה / אחרת”, ורק אחר כך מציצים ל־if/else שנוצר בקוד.' ,
+      mission: 'לבנות חידון אינטראקטיבי בעזרת בלוקי תנאי, בלי להסתבך בהקלדת טקסט מדויקת.' ,
+      outcome: 'חידון קצר שנבנה מבלוקי תנאי, עם בחירה מוכנה, if/else ומשוב צבעוני',
       starter: {
-        html: '<main class="quiz">\n  <h1>חידון WebCode</h1>\n  <p class="question">איזו שפה מעצבת את העמוד?</p>\n  <input id="answerInput" placeholder="כתבו תשובה">\n  <button onclick="checkAnswer()">בדקו תשובה</button>\n  <p id="feedback">כאן יופיע משוב...</p>\n</main>',
-        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #f0fdf4, #eff6ff);\n}\n\n.quiz {\n  background: white;\n  width: 390px;\n  margin: 45px auto;\n  padding: 28px;\n  border-radius: 28px;\n  box-shadow: 0 16px 35px #bbf7d0;\n}\n\n.question {\n  font-size: 22px;\n  font-weight: bold;\n}\n\ninput {\n  width: 100%;\n  padding: 12px;\n  border: 2px solid #cbd5e1;\n  border-radius: 14px;\n  text-align: center;\n}\n\nbutton {\n  margin-top: 14px;\n  background: #16a34a;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 20px;\n  font-weight: bold;\n}\n\n.correct { color: #15803d; font-weight: bold; }\n.wrong { color: #b91c1c; font-weight: bold; }',
-        js: 'function checkAnswer() {\n  const answer = document.getElementById("answerInput").value;\n  const feedback = document.getElementById("feedback");\n\n  if (answer === "CSS") {\n    feedback.textContent = "נכון מאוד! CSS מעצב את העמוד 🎨";\n    feedback.className = "correct";\n  } else {\n    feedback.textContent = "כמעט! נסו לחשוב איזו שפה אחראית לצבעים.";\n    feedback.className = "wrong";\n  }\n}'
+        html: '<main class="quiz">\n  <h1>חידון כן או לא</h1>\n  <p class="question">CSS אחראי על העיצוב של העמוד?</p>\n  <button onclick="chooseAnswer(\'yes\')">כן</button>\n  <button onclick="chooseAnswer(\'no\')">לא</button>\n  <p id="feedback">בחרו תשובה ותקבלו משוב...</p>\n</main>',
+        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #f0fdf4, #eff6ff);\n}\n\n.quiz {\n  background: white;\n  width: 390px;\n  margin: 45px auto;\n  padding: 28px;\n  border-radius: 28px;\n  box-shadow: 0 16px 35px #bbf7d0;\n}\n\n.question {\n  font-size: 22px;\n  font-weight: bold;\n}\n\nbutton {\n  margin: 14px 6px 0;\n  background: #16a34a;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 20px;\n  font-weight: bold;\n}\n\nbutton:last-of-type {\n  background: #2563eb;\n}\n\n.correct { color: #15803d; font-weight: bold; }\n.wrong { color: #b91c1c; font-weight: bold; }',
+        js: 'function chooseAnswer(choice) {\n  const feedback = document.getElementById("feedback");\n\n  if (choice === "yes") {\n    feedback.textContent = "נכון! CSS אחראי על העיצוב 🎨";\n    feedback.className = "correct";\n  } else {\n    feedback.textContent = "לא בדיוק. CSS הוא הצד של הצבעים והעיצוב.";\n    feedback.className = "wrong";\n  }\n}'
       },
       lessonFlow: [
-        { minutes: '0–8', title: 'פתיחה: בלוק שמחליט', teacher: 'מציגים חידון ושואלים איך בלוק יכול להחליט אם תשובה נכונה.', students: 'מזהים שאלה, תשובה, הצלחה ורמז.' },
-        { minutes: '8–18', title: 'בלוק תנאי ראשון', teacher: 'מפעילים בלוק “שאלה חדשה” ובלוק “תשובה נכונה”, ואז מציצים ל־if בקוד.', students: 'רואים שהתנאי בודק אם answer שווה לתשובה.' },
-        { minutes: '18–34', title: 'בנייה מודרכת בבלוקי חידון', teacher: 'מפעילים בלוקים: שאלה, תשובה, הודעת הצלחה, רמז.', students: 'מריצים ובודקים תשובה נכונה ושגויה.' },
+        { minutes: '0–8', title: 'פתיחה: בלוק שמחליט', teacher: 'מציגים חידון עם שני כפתורים ושואלים איך האתר יודע אם לחצנו נכון.', students: 'מזהים שאלה, שתי בחירות, הצלחה ורמז.' },
+        { minutes: '8–18', title: 'בלוק תנאי ראשון', teacher: 'מפעילים בלוק “שאלה חדשה” ובלוק “בחירה נכונה”, ואז מציצים ל־if בקוד.', students: 'רואים שהתנאי בודק בחירה אחת מוכנה, לא טקסט שהקלידו.' },
+        { minutes: '18–34', title: 'בנייה מודרכת בבלוקי חידון', teacher: 'מפעילים בלוקים: שאלה, בחירה נכונה, הודעת הצלחה, הודעת אחרת.', students: 'מריצים ולוחצים על שתי הבחירות כדי לראות שתי תוצאות.' },
         { minutes: '34–50', title: 'מציצים ל־if/else', teacher: 'לא כותבים תנאי חופשי. רק מזהים if, else ושתי תוצאות אפשריות.', students: 'מסמנים מה קורה אם נכון ומה קורה אחרת.' },
-        { minutes: '50–66', title: 'תרגול עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לבנות חידון אישי דרך בלוקים ושינויי טקסט בטוחים.', students: 'מבצעים תרגולים 1–5.' },
-        { minutes: '66–78', title: 'דיבאג תנאי עדין', teacher: 'מדגימים תשובה שלא מזוהה בגלל הבדל קטן בטקסט.', students: 'בודקים התאמה בין התשובה הנכונה לבין מה שמקלידים.' },
+        { minutes: '50–66', title: 'תרגול עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לבנות חידון כן/לא אישי דרך בלוקים ושינויי טקסט בטוחים.', students: 'מבצעים תרגולים 1–5.' },
+        { minutes: '66–78', title: 'דיבאג תנאי עדין', teacher: 'מדגימים בחירה נכונה שהוגדרה הפוך ומחזירים לרעיון: התנאי בודק בחירה.', students: 'בודקים האם ה־if מתאים לכפתור הנכון.' },
         { minutes: '78–90', title: 'חידון חברים', teacher: 'מחלקים זוגות לבדיקה ומשוב.', students: 'מנסים חידון של חבר ומסבירים את כלל ה־אם/אחרת.' }
       ],
       exercises: [
         { id: 1, minutes: '18–24', title: 'תרגול 1 — בלוק שאלה', prompt: 'הפעילו בלוק “שאלה חדשה” ובדקו שהשאלה בחידון השתנתה.', hint: 'הבלוק משנה את הטקסט ב־class="question".', check: { htmlIncludes: ['איזו שפה גורמת לכפתור להגיב?'] } },
-        { id: 2, minutes: '24–31', title: 'תרגול 2 — בלוק תשובה נכונה', prompt: 'הפעילו בלוק “תשובה נכונה” ובדקו שהתנאי מחפש JavaScript.', hint: 'חפשו answer === "JavaScript".', check: { jsIncludes: ['answer === "JavaScript"'] } },
+        { id: 2, minutes: '24–31', title: 'תרגול 2 — בלוק בחירה נכונה', prompt: 'הפעילו בלוק “בחירה נכונה: לא” ובדקו שהתנאי עבר לבדוק no.', hint: 'חפשו choice === "no".', check: { jsIncludes: ['choice === "no"'] } },
         { id: 3, minutes: '31–39', title: 'תרגול 3 — בלוק הצלחה', prompt: 'הפעילו בלוק הודעת הצלחה שמתאים לשאלה החדשה.', hint: 'ההודעה נמצאת בתוך ה־if.', check: { jsIncludes: ['נכון! JavaScript מפעיל תגובות'] } },
-        { id: 4, minutes: '39–47', title: 'תרגול 4 — בלוק רמז', prompt: 'הפעילו בלוק רמז לתשובה שגויה.', hint: 'ההודעה נמצאת בתוך else.', check: { jsIncludes: ['רמז: זו השפה של הפעולות'] } },
-        { id: 5, minutes: '47–56', title: 'תרגול 5 — בודקים אם/אחרת', prompt: 'הריצו, כתבו JavaScript ואז תשובה שגויה, וראו שתי תגובות שונות.', hint: 'if הוא נכון, else הוא אחרת.', check: { jsIncludes: ['if', 'else'] } },
+        { id: 4, minutes: '39–47', title: 'תרגול 4 — בלוק אחרת', prompt: 'הפעילו בלוק הודעה לתשובה השנייה.', hint: 'ההודעה נמצאת בתוך else.', check: { jsIncludes: ['רמז: JavaScript היא השפה של הפעולות'] } },
+        { id: 5, minutes: '47–56', title: 'תרגול 5 — בודקים אם/אחרת', prompt: 'הריצו, לחצו על שני הכפתורים, וראו שתי תגובות שונות.', hint: 'if הוא נכון, else הוא כל בחירה אחרת.', check: { jsIncludes: ['if', 'else'] } },
         { id: 6, minutes: '56–65', title: 'תרגול 6 — צבעי משוב', prompt: 'שנו צבעי correct/wrong רק אם אתם מרגישים בטוחים.', hint: 'זה שינוי CSS קטן, לא חובה לשנות מבנה.', check: { cssIncludes: ['.correct', '.wrong'] } },
-        { id: 7, minutes: '65–75', title: 'תרגול 7 — דיבאג תשובה', prompt: 'אם התשובה לא מזוהה, בדקו שהטקסט בתנאי זהה למה שמקלידים.', hint: 'בשלב הזה JavaScript ≠ javascript.', check: { htmlIncludes: ['id="answerInput"'], jsIncludes: ['getElementById("answerInput")'] } },
-        { id: 8, minutes: '75–84', title: 'תרגול 8 — חידון חברים', prompt: 'תנו לחבר לענות והסבירו איפה ה־if ואיפה ה־else.', hint: 'השתמשו במילים: אם נכון / אחרת / משוב.', check: { htmlIncludes: ['input', 'button'], jsIncludes: ['if', 'else'] } }
+        { id: 7, minutes: '65–75', title: 'תרגול 7 — דיבאג בחירה', prompt: 'אם הכפתור הנכון מסומן כשגוי, בדקו שה־if בודק yes או no לפי השאלה.', hint: 'אין פה אותיות גדולות/קטנות. בודקים רק איזו בחירה הכפתור שולח.', check: { htmlIncludes: ['chooseAnswer'], jsIncludes: ['choice ==='] } },
+        { id: 8, minutes: '75–84', title: 'תרגול 8 — חידון חברים', prompt: 'תנו לחבר לענות והסבירו איפה ה־if ואיפה ה־else.', hint: 'השתמשו במילים: אם נכון / אחרת / משוב.', check: { htmlIncludes: ['button'], jsIncludes: ['if', 'else'] } }
       ],
       aiHelper: [
-        'הציעו 5 שאלות חידון פשוטות לכיתה ד׳ בנושא מחשבים.',
+        'הציעו 5 שאלות כן/לא פשוטות לכיתה ד׳ בנושא מחשבים.',
         'הסבירו בשפה פשוטה מה עושה if ומה עושה else.',
-        'עזרו למצוא למה תשובה נכונה לא מזוהה בגלל אותיות גדולות/קטנות.',
-        'הציעו הודעת שגיאה שנותנת רמז ולא מגלה מיד את התשובה.'
+        'עזרו למצוא למה הכפתור הנכון נכנס ל־else.',
+        'הציעו הודעת אחרת שנותנת רמז ולא מגלה מיד את התשובה.'
       ],
       vocabulary: [
         ['if', 'אם התנאי נכון — בצעו פעולה'],
         ['else', 'אחרת — בצעו פעולה אחרת'],
+        ['choice', 'הבחירה שהמשתמש לחץ עליה'],
         ['===', 'בדיקה אם שני דברים שווים בדיוק'],
         ['משוב', 'הודעה שעוזרת למשתמש להבין מה קרה'],
         ['className', 'שינוי שם class כדי להחליף עיצוב']
@@ -578,10 +579,10 @@
       { label: '🔁 הדלק/כבה עיצוב', target: 'js', find: 'classList.toggle("magic")', replace: 'classList.toggle("magic")', hint: 'בלוק toggle: אותו קוד, אבל עכשיו מבינים שהוא מדליק ומכבה class.' }
     ],
     5: [
-      { label: '❓ שאלה חדשה', target: 'html', find: 'איזו שפה מעצבת את העמוד?', replace: 'איזו שפה גורמת לכפתור להגיב?', hint: 'בלוק חידון: משנה את השאלה שהמשתמש רואה.' },
-      { label: '✅ תשובה נכונה', target: 'js', find: 'answer === "CSS"', replace: 'answer === "JavaScript"', hint: 'בלוק תנאי: משנה מה נחשב תשובה נכונה.' },
-      { label: '🎉 הודעת הצלחה', target: 'js', find: 'נכון מאוד! CSS מעצב את העמוד 🎨', replace: 'נכון! JavaScript מפעיל תגובות ⚡', hint: 'בלוק משוב: מה קורה אם התנאי נכון.' },
-      { label: '💡 רמז לתשובה שגויה', target: 'js', find: 'כמעט! נסו לחשוב איזו שפה אחראית לצבעים.', replace: 'כמעט! רמז: זו השפה של הפעולות והכפתורים.', hint: 'בלוק אחרת: מה קורה אם התנאי לא נכון.' }
+      { label: '❓ שאלה חדשה', target: 'html', find: 'CSS אחראי על העיצוב של העמוד?', replace: 'JavaScript גורם לכפתור להגיב?', hint: 'בלוק חידון: משנה את השאלה שהמשתמש רואה.' },
+      { label: '✅ בחירה נכונה: לא', target: 'js', find: 'choice === "yes"', replace: 'choice === "no"', hint: 'בלוק תנאי: משנה איזו בחירה נכנסת ל־if.' },
+      { label: '🎉 הודעת הצלחה', target: 'js', find: 'נכון! CSS אחראי על העיצוב 🎨', replace: 'נכון! JavaScript מפעיל תגובות ⚡', hint: 'בלוק משוב: מה קורה אם התנאי נכון.' },
+      { label: '💡 הודעת אחרת', target: 'js', find: 'לא בדיוק. CSS הוא הצד של הצבעים והעיצוב.', replace: 'כמעט! רמז: JavaScript היא השפה של הפעולות והכפתורים.', hint: 'בלוק אחרת: מה קורה אם התנאי לא נכון.' }
     ],
 
     6: [
@@ -5135,7 +5136,7 @@
 
   const lessonBlocklyPlan = {
     4: { focus: 'קלט אישי', intro: 'בונים מחולל אישי דרך בלוקים נגררים שמעדכנים HTML ו־JavaScript בלי לכתוב קוד חופשי.' },
-    5: { focus: 'תנאים if/else', intro: 'בונים חידון דרך בלוקים נגררים: שאלה, תשובה נכונה, הצלחה ורמז.' },
+    5: { focus: 'תנאים if/else', intro: 'בונים חידון כן/לא דרך בלוקים נגררים: שאלה, בחירה נכונה, הצלחה ואחרת.' },
     6: { focus: 'משתנים וניקוד', intro: 'משנים חוקי ניקוד דרך בלוקים ורואים איך score שומר מספר.' },
     7: { focus: 'יעד ניצחון', intro: 'מאזנים משחק קליקים דרך בלוקים של יעד, נקודות ומשוב.' },
     8: { focus: 'זמן וטיימר', intro: 'בודקים משחק עם זמן ומפעילים בלוקים שמשנים ספירה לאחור וסיום.' },
@@ -5223,12 +5224,12 @@
       ['sentence','משפט תוצאה מתחיל ב־ %1','js','הנה ברכה מצחיקה על','{{TEXT}}',[['field_input','TEXT','הברכה שבחרת היא על']]],
       ['result_word','אימוג׳י סיום בתוצאה %1','js','רעיונות נוצצים 🚀','רעיונות נוצצים {{TEXT}}',[['field_dropdown','TEXT',[['🚀 טיסה','🚀'],['🎉 חגיגה','🎉'],['✨ קסם','✨']]]]]
     ]},
-    5: { title:'תנאים — חידון שחושב עם if/else', concept:'if · else · תשובה נכונה ושגויה', blocks:[
-      ['question','שאלת חידון %1','html','איזו שפה מעצבת את העמוד?','{{TEXT}}',[['field_input','TEXT','איזו שפה גורמת לכפתור להגיב?']]],
-      ['answer','התשובה הנכונה היא %1','js','answer === "CSS"','answer === "{{TEXT}}"',[['field_dropdown','TEXT',[['JavaScript','JavaScript'],['HTML','HTML'],['CSS','CSS']]]]],
-      ['success','אם נכון כתוב %1','js','נכון מאוד! CSS מעצב את העמוד 🎨','{{TEXT}}',[['field_input','TEXT','נכון! JavaScript מפעיל תגובות ⚡']]],
-      ['wrong','אם לא נכון רמז %1','js','כמעט! נסו לחשוב איזו שפה אחראית לצבעים.','{{TEXT}}',[['field_input','TEXT','כמעט! רמז: זו השפה של הפעולות.']]],
-      ['trim','נקה רווחים לפני בדיקה','js','const answer = document.getElementById("answerInput").value;','const answer = document.getElementById("answerInput").value.trim();',[]]
+    5: { title:'תנאים — חידון כן/לא שחושב עם if/else', concept:'if · else · בחירה נכונה ושגויה', blocks:[
+      ['question','שאלת כן/לא %1','html','CSS אחראי על העיצוב של העמוד?','{{TEXT}}',[['field_input','TEXT','JavaScript גורם לכפתור להגיב?']]],
+      ['choice','הבחירה הנכונה היא %1','js','choice === "yes"','choice === "{{VALUE}}"',[['field_dropdown','VALUE',[['לא','no'],['כן','yes']]]]],
+      ['success','אם נכון כתוב %1','js','נכון! CSS אחראי על העיצוב 🎨','{{TEXT}}',[['field_input','TEXT','נכון! JavaScript מפעיל תגובות ⚡']]],
+      ['wrong','אחרת כתוב %1','js','לא בדיוק. CSS הוא הצד של הצבעים והעיצוב.','{{TEXT}}',[['field_input','TEXT','כמעט! רמז: JavaScript היא השפה של הפעולות.']]],
+      ['button_style','צבע כפתור לא %1','css','button:last-of-type {\n  background: #2563eb;\n}','button:last-of-type {\n  background: {{COLOR}};\n}',[['field_dropdown','COLOR',[['כחול','#2563eb'],['סגול','#7c3aed'],['כתום','#f97316']]]]]
     ]},
     6: { title:'משתנים וניקוד — score זוכר בשבילנו', concept:'variable · score · update screen', blocks:[
       ['start_score','ניקוד התחלתי %1','js','let score = 0;','let score = {{N}};',[['field_dropdown','N',[['0','0'],['1','1'],['3','3']]]]],
