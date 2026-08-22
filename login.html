@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>כניסה ללומדות hai.tech</title>
+  <meta name="description" content="כניסה לאזור הלמידה של hai.tech והמשך שיעור סיסי הראשון.">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/account.css">
+</head>
+<body>
+  <header class="shell top">
+    <a class="brand" href="index.html"><span class="mark">🌈</span><span>hai.tech · לומדות לילדים</span></a>
+    <nav class="nav"><a href="account.html">האזור שלי</a><a href="register.html">הרשמה חדשה</a><a href="register.html">התנסות חינמית</a></nav>
+  </header>
+
+  <main class="shell account-grid compact">
+    <section class="hero-card">
+      <span class="eyebrow">ברוכים השבים</span>
+      <h1>ממשיכים ללמוד מהמקום הנכון</h1>
+      <p>היכנסו לחשבון כדי להתחיל התנסות חינמית בקורס חשיבה ותכנות לילדים עם סיסי ולראות את אפשרויות ההמשך.</p>
+      <div class="benefits">
+        <span>🚀 התנסות חינמית פתוחה</span>
+        <span>📚 המשך המסלול עם מנוי</span>
+        <span>🔐 חשבון אישי לכל ילד/ה</span>
+      </div>
+    </section>
+
+    <section class="panel" id="auth-panel">
+      <h2>כניסה לחשבון</h2>
+      <p class="hint">הורה נכנס עם מייל וסיסמה. ילד/ה יכולים להיכנס לבד עם קוד ילד ו-PIN שקיבלו מההורה.</p>
+      <form id="login-form" data-auth-form="login">
+        <div class="field"><label for="login-email">מייל</label><input id="login-email" name="email" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="login-password">סיסמה</label><div class="password-wrap"><input id="login-password" name="password" type="password" autocomplete="current-password" required><button class="password-toggle" type="button" data-toggle-password="login-password" aria-label="הצגת סיסמה"><span class="eye-icon" aria-hidden="true"></span></button></div></div>
+        <button class="btn primary" type="submit">כניסת הורה</button>
+      </form>
+      <hr class="soft-divider">
+      <form id="child-login-form" data-auth-form="child-login">
+        <h3>כניסת ילד/ה</h3>
+        <div class="field"><label for="child-access-code">קוד ילד</label><input id="child-access-code" name="accessCode" autocomplete="username" inputmode="text" required></div>
+        <div class="field"><label for="child-pin">PIN</label><div class="password-wrap"><input id="child-pin" name="pin" type="password" autocomplete="current-password" inputmode="numeric" pattern="[0-9]{4,6}" required><button class="password-toggle" type="button" data-toggle-password="child-pin" aria-label="הצגת PIN"><span class="eye-icon" aria-hidden="true"></span></button></div></div>
+        <button class="btn green" type="submit">כניסה לילדים</button>
+      </form>
+      <p class="switch-line">נכנסת כהורה ורוצה לראות את קוד הילד? <a href="account.html">מעבר לאזור שלי</a></p>
+      <p class="switch-line">עוד אין חשבון? <a href="register.html">הרשמה קצרה</a></p>
+      <div class="message" id="auth-message" aria-live="polite"></div>
+    </section>
+
+    <section class="panel dashboard" id="dashboard-panel">
+      <h2>האזור שלי</h2>
+      <p class="hint" id="welcome-text"></p>
+      <span class="status" id="subscription-status">התנסות</span>
+      <div class="progress-summary" id="progress-summary">התקדמות: עדיין אין משימות שהושלמו.</div>
+      <div class="course-list">
+        <article class="course"><div><h3>חשיבה ותכנות · 3 שיעורים בחינם</h3><p>אפשר להתחיל עכשיו עם 3 שיעורים בחינם, ובהמשך לפתוח את כל הסדרה במנוי.</p></div><a class="btn green" href="space.html">התחילו ללמוד</a></article>
+        <article class="course"><div><h3>רוצים להמשיך לכל הסדרה?</h3><p>המנוי המלא יפתח את שאר שיעורי הקורס ולומדות נוספות.</p></div><a class="btn light" href="https://mrng.to/fZiL2SITRp">הפעלת מנוי</a></article>
+      </div>
+      <p><button class="btn light" id="logout-button" type="button">התנתקות</button></p>
+    </section>
+  </main>
+
+  <script src="js/summer-account.js?v=20260809-sensi-only-redirect"></script>
+</body>
+</html>
