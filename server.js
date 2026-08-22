@@ -39,6 +39,12 @@ function send(res, status, body, type = 'application/json; charset=utf-8') {
   res.end(body);
 }
 
+function requestUrl(req) {
+  const raw = String(req.url || '/');
+  const normalized = raw.startsWith('//') ? `/${raw.replace(/^\/+/, '')}` : raw;
+  return new URL(normalized || '/', `http://${req.headers.host || 'localhost'}`);
+}
+
 function sendWithHeaders(res, status, body, type = 'application/json; charset=utf-8', extraHeaders = {}) {
   res.writeHead(status, {
     'Content-Type': type,
