@@ -144,6 +144,16 @@ assert.ok(lesson5.blocklyBlocks.some(block => block.type === 'lesson_5_choice' &
 assert.ok(lesson5.vocabulary.some(v => v[0] === 'if'), 'lesson 5 vocabulary includes if');
 assert.ok(lesson5.vocabulary.some(v => v[0] === 'choice'), 'lesson 5 vocabulary names the user choice');
 
+const lesson6 = lessons[5];
+assert.equal(lesson6.durationMinutes, 90, 'lesson 6 is framed as 90 minutes');
+assert.ok(lesson6.title.includes('ניקוד') || lesson6.title.includes('score'), 'lesson 6 focuses on scoring');
+assert.ok(lesson6.starter.html.includes("chooseAnswer('yes')"), 'lesson 6 keeps scoring on fixed choices');
+assert.ok(!lesson6.starter.html.includes('answerInput'), 'lesson 6 avoids typed-answer matching while teaching score');
+assert.ok(lesson6.starter.js.includes('let score = 0'), 'lesson 6 initializes score');
+assert.ok(lesson6.starter.js.includes('score = score + 1'), 'lesson 6 increments score');
+assert.ok(lesson6.blocklyBlocks.some(block => block.type === 'lesson_6_plus'), 'lesson 6 has a Blockly block for score increment size');
+assert.ok(lesson6.blocklyBlocks.some(block => block.type === 'lesson_6_reset_message' && block.find === 'איפוס ניקוד'), 'lesson 6 reset-label block matches the starter button text');
+
 const lesson13 = lessons[12];
 assert.ok(lesson13.title.includes('הקוד שנוצר'), 'lesson 13 starts the generated-code lab phase');
 assert.ok(lesson13.progressionStage.includes('בלוקים אמיתיים'), 'lesson 13 remains block-first under the new progression requirement');

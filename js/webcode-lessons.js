@@ -238,18 +238,18 @@
       title: 'ניקוד ומשתנים — בלוקי זיכרון',
       concept: 'בלוקי ניקוד → JavaScript: משתנה · score · עדכון מסך',
       durationMinutes: 90,
-      story: 'אחרי חידון התנאים, מוסיפים זיכרון למשחק דרך בלוקי ניקוד: התחל ניקוד, הוסף נקודה, הצג ניקוד ואפס משחק. אחר כך מציצים ל־let score.' ,
-      mission: 'לבנות חידון ניקוד בעזרת בלוקי זיכרון, ואז להבין ש־score הוא מספר שהמשחק שומר.' ,
+      story: 'אחרי חידון התנאים, מוסיפים זיכרון למשחק דרך בלוקי ניקוד: בחירה נכונה מוסיפה נקודות, הבחירה השנייה נותנת משוב, וכפתור איפוס מחזיר להתחלה. אחר כך מציצים ל־let score.' ,
+      mission: 'לבנות משחק ניקוד בעזרת בלוקי זיכרון ובחירות מוכנות, ואז להבין ש־score הוא מספר שהמשחק שומר.' ,
       outcome: 'משחק חידון עם ניקוד שנבנה מבלוקי זיכרון, עם הצצה ל־let score ועדכון span במסך',
       starter: {
-        html: '<main class="score-game">\n  <h1>משחק הניקוד שלי</h1>\n  <p>ניקוד: <span id="scoreText">0</span></p>\n  <p class="question">מה מוסיף עיצוב לעמוד?</p>\n  <input id="answerInput" placeholder="כתבו תשובה">\n  <button onclick="checkAnswer()">בדקו</button>\n  <button onclick="resetScore()">איפוס ניקוד</button>\n  <p id="feedback">ענו כדי לקבל נקודות.</p>\n</main>',
-        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #fef3c7, #dbeafe);\n}\n\n.score-game {\n  background: white;\n  width: 390px;\n  margin: 45px auto;\n  padding: 28px;\n  border-radius: 28px;\n  box-shadow: 0 16px 35px #fde68a;\n}\n\n#scoreText {\n  display: inline-block;\n  background: #facc15;\n  border-radius: 999px;\n  padding: 6px 14px;\n  font-weight: bold;\n}\n\ninput {\n  width: 100%;\n  padding: 12px;\n  border: 2px solid #cbd5e1;\n  border-radius: 14px;\n  text-align: center;\n}\n\nbutton {\n  margin: 8px 4px;\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 18px;\n  font-weight: bold;\n}\n\n.success { color: #15803d; font-weight: bold; }\n.try-again { color: #b45309; font-weight: bold; }',
-        js: 'let score = 0;\n\nfunction checkAnswer() {\n  const answer = document.getElementById("answerInput").value;\n  const feedback = document.getElementById("feedback");\n\n  if (answer === "CSS") {\n    score = score + 1;\n    document.getElementById("scoreText").textContent = score;\n    feedback.textContent = "נכון! קיבלת נקודה ⭐";\n    feedback.className = "success";\n  } else {\n    feedback.textContent = "כמעט. נסו שוב בלי לאבד נקודות.";\n    feedback.className = "try-again";\n  }\n}\n\nfunction resetScore() {\n  score = 0;\n  document.getElementById("scoreText").textContent = score;\n  document.getElementById("feedback").textContent = "הניקוד אופס.";\n}'
+        html: '<main class="score-game">\n  <h1>משחק הניקוד שלי</h1>\n  <p>ניקוד: <span id="scoreText">0</span></p>\n  <p class="question">CSS אחראי על העיצוב של העמוד?</p>\n  <button onclick="chooseAnswer(\'yes\')">כן</button>\n  <button onclick="chooseAnswer(\'no\')">לא</button>\n  <button onclick="resetScore()">איפוס ניקוד</button>\n  <p id="feedback">בחרו תשובה כדי לקבל נקודות.</p>\n</main>',
+        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #fef3c7, #dbeafe);\n}\n\n.score-game {\n  background: white;\n  width: 390px;\n  margin: 45px auto;\n  padding: 28px;\n  border-radius: 28px;\n  box-shadow: 0 16px 35px #fde68a;\n}\n\n#scoreText {\n  display: inline-block;\n  background: #facc15;\n  border-radius: 999px;\n  padding: 6px 14px;\n  font-weight: bold;\n}\n\nbutton {\n  margin: 8px 4px;\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 18px;\n  font-weight: bold;\n}\n\nbutton:first-of-type {\n  background: #16a34a;\n}\n\n.success { color: #15803d; font-weight: bold; }\n.try-again { color: #b45309; font-weight: bold; }',
+        js: 'let score = 0;\n\nfunction chooseAnswer(choice) {\n  const feedback = document.getElementById("feedback");\n\n  if (choice === "yes") {\n    score = score + 1;\n    document.getElementById("scoreText").textContent = score;\n    feedback.textContent = "נכון! קיבלת נקודה ⭐";\n    feedback.className = "success";\n  } else {\n    feedback.textContent = "כמעט. נסו שוב בלי לאבד נקודות.";\n    feedback.className = "try-again";\n  }\n}\n\nfunction resetScore() {\n  score = 0;\n  document.getElementById("scoreText").textContent = score;\n  document.getElementById("feedback").textContent = "הניקוד אופס.";\n}'
       },
       lessonFlow: [
         { minutes: '0–8', title: 'פתיחה: משחק שזוכר נקודות', teacher: 'שואלים איך משחק זוכר ניקוד גם אחרי כמה תשובות.', students: 'מעלים רעיון של קופה/מד נקודות שנשמר.' },
         { minutes: '8–18', title: 'בלוק ניקוד ראשון', teacher: 'מפעילים בלוק “התחל ניקוד” ומראים את let score = 0 כקופסת נקודות.', students: 'רואים שהמשחק מתחיל מ־0.' },
-        { minutes: '18–34', title: 'בנייה מודרכת בבלוקי ניקוד', teacher: 'מפעילים בלוקים: הוסף נקודה, הצג ניקוד, הודעת הצלחה, איפוס.', students: 'מריצים, עונים נכון, ורואים שהניקוד עולה.' },
+        { minutes: '18–34', title: 'בנייה מודרכת בבלוקי ניקוד', teacher: 'מפעילים בלוקים: הוסף נקודה, הצג ניקוד, הודעת הצלחה, איפוס.', students: 'לוחצים על הבחירה הנכונה ורואים שהניקוד עולה.' },
         { minutes: '34–50', title: 'מציצים למשתנה', teacher: 'לא כותבים משתנים חופשיים. רק מזהים score, score + 1, ו־scoreText.', students: 'מחברים בין המספר בקוד למספר שמופיע במסך.' },
         { minutes: '50–66', title: 'תרגול עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לשנות חוק ניקוד דרך בלוק מוכן ושינוי טקסט בטוח.', students: 'מבצעים תרגולים 1–5.' },
         { minutes: '66–78', title: 'דיבאג ניקוד עדין', teacher: 'מדגימים id לא תואם ל־scoreText ומסבירים למה המסך לא מתעדכן.', students: 'בודקים התאמה בין span לבין JavaScript.' },
@@ -263,7 +263,7 @@
         { id: 5, minutes: '47–56', title: 'תרגול 5 — בלוק הודעת ניקוד', prompt: 'הפעילו בלוק שמשנה את הודעת ההצלחה לניקוד כפול.', hint: 'ההודעה נמצאת בתוך ה־if.', check: { jsIncludes: ['קיבלת 2 נקודות'] } },
         { id: 6, minutes: '56–65', title: 'תרגול 6 — בלוק איפוס', prompt: 'בדקו שכפתור האיפוס מחזיר את score ל־0.', hint: 'חפשו function resetScore ו־score = 0.', check: { jsIncludes: ['function resetScore', 'score = 0'] } },
         { id: 7, minutes: '65–75', title: 'תרגול 7 — דיבאג ניקוד', prompt: 'אם המספר לא מתעדכן, בדקו שה־id scoreText זהה ב־HTML וב־JS.', hint: 'scoreText חייב להיות כתוב אותו דבר בדיוק.', check: { htmlIncludes: ['id="scoreText"'], jsIncludes: ['getElementById("scoreText")'] } },
-        { id: 8, minutes: '75–84', title: 'תרגול 8 — הצגת משחק ניקוד', prompt: 'תנו לחבר לענות והסבירו איפה המשחק שומר את הניקוד.', hint: 'השתמשו במילים: score, משתנה, הצג ניקוד.', check: { htmlIncludes: ['scoreText', 'button'], jsIncludes: ['score', 'if', 'else'] } }
+        { id: 8, minutes: '75–84', title: 'תרגול 8 — הצגת משחק ניקוד', prompt: 'תנו לחבר ללחוץ על תשובה והסבירו איפה המשחק שומר את הניקוד.', hint: 'השתמשו במילים: score, משתנה, הצג ניקוד.', check: { htmlIncludes: ['scoreText', 'button'], jsIncludes: ['score', 'if', 'else'] } }
       ],
       aiHelper: [
         'הסבירו לילד בכיתה ד׳ מה זה משתנה בעזרת דוגמה של קופת נקודות.',
@@ -5236,7 +5236,7 @@
       ['plus','תשובה נכונה מוסיפה %1','js','score = score + 1;','score = score + {{N}};',[['field_dropdown','N',[['1','1'],['2','2'],['3','3']]]]],
       ['message','הודעת הצלחה %1','js','נכון! קיבלת נקודה ⭐','{{TEXT}}',[['field_input','TEXT','נכון! קיבלת 2 נקודות ⭐⭐']]],
       ['score_label','כותרת ניקוד %1','html','ניקוד:','{{TEXT}}',[['field_input','TEXT','הניקוד שלי:']]],
-      ['reset_message','כפתור איפוס אומר %1','html','אפס ניקוד','{{TEXT}}',[['field_input','TEXT','התחלה מחדש']]]
+      ['reset_message','כפתור איפוס אומר %1','html','איפוס ניקוד','{{TEXT}}',[['field_input','TEXT','התחלה מחדש']]]
     ]},
     7: { title:'משחק קליקים — מאזנים יעד ונקודות', concept:'click event · target · win condition', blocks:[
       ['target','יעד ניצחון %1','js','const target = 10;','const target = {{N}};',[['field_dropdown','N',[['5','5'],['8','8'],['12','12']]]]],
