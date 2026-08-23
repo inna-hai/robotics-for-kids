@@ -5,38 +5,19 @@
   "minecraftMode": "Minecraft Education + Craftom",
   "challengeStructure": {
     "challengeNumber": 3,
-    "estimatedMeetings": 1,
+    "estimatedMeetings": 4,
     "theme": "קיימות ומשאבים",
     "learningFocus": [
       "משאב כמערכת",
       "זרימה ממקור לשימוש",
       "טבע כחלק מהעיר",
       "השפעה על תושבים"
-    ]
+    ],
+    "sameForAllTeams": true,
+    "teamWorkModel": "כל הצוותים עושים את אותו רצף שיעורים; כל צוות בונה בחלקה שלו.",
+    "childWorldPrompt": "דמיינו יום חם בעומר: איפה הילדים משחקים בלי להתחמם מדי, איפה שותים מים, ואיך האורות נדלקים בערב?"
   },
   "studentDeliverable": {
-    "teamBuildOptions": [
-      {
-        "team": "צוות פארק מוצל",
-        "build": "פארק קטן עם עצים או סככות ומקומות ישיבה נגד חום",
-        "requiredEvidence": ["צל ברור", "מקום ישיבה", "שלט איפה נחים"]
-      },
-      {
-        "team": "צוות מים חכמים",
-        "build": "מאגר מים, תעלה או נקודת שתייה שמחוברת לאזור אחר",
-        "requiredEvidence": ["מקור מים", "מסלול זרימה", "שלט שמסביר לאן המים מגיעים"]
-      },
-      {
-        "team": "צוות אנרגיה סולארית",
-        "build": "שדה פאנלים או תחנת אנרגיה שמפעילה תאורה או אזור ציבורי",
-        "requiredEvidence": ["מקור אנרגיה", "חיבור ויזואלי", "שלט שימוש"]
-      },
-      {
-        "team": "צוות שביל מואר",
-        "build": "שביל בטוח ומואר שמחבר בין שכונה, פארק ומרכז קהילתי",
-        "requiredEvidence": ["תאורה לאורך השביל", "סימוני כיוון", "שלט בטיחות"]
-      }
-    ],
     "requiredBuild": [
       "מערכת טבע/מים/אנרגיה אחת",
       "חיבור ברור לאזור אחר בעיר",
@@ -47,6 +28,28 @@
       "הצוות מסביר מה המשאב ולמי הוא עוזר",
       "הצוות מסביר מה יקרה אם המערכת לא תעבוד",
       "המערכת אינה קישוט בלבד, אלא חלק מהיישוב"
+    ],
+    "meetingDeliverables": [
+      {
+        "meeting": "3.1",
+        "title": "פארק מוצל",
+        "deliverable": "פארק קטן עם צל ושלט שימוש"
+      },
+      {
+        "meeting": "3.2",
+        "title": "מים חכמים",
+        "deliverable": "מים עם מסלול זרימה או הסבר שימוש"
+      },
+      {
+        "meeting": "3.3",
+        "title": "אנרגיה ותאורה",
+        "deliverable": "מקור אנרגיה וחיבור לשביל/מבנה"
+      },
+      {
+        "meeting": "3.4",
+        "title": "בדיקת תקלה ושיפור",
+        "deliverable": "שלט תקלה אפשרית ושיפור אחד"
+      }
     ]
   },
   "craftomEvidence": {
@@ -54,37 +57,95 @@
       {
         "id": "resourceSystem",
         "label": "מערכת משאב",
-        "eventTypes": ["block_place", "sign_text", "chat"],
-        "keywordsAny": ["מים", "אנרגיה", "אור", "צל", "טבע", "פארק", "שמש"]
+        "eventTypes": [
+          "block_place",
+          "sign_text",
+          "chat"
+        ],
+        "keywordsAny": [
+          "מים",
+          "אנרגיה",
+          "אור",
+          "צל",
+          "טבע",
+          "פארק",
+          "שמש"
+        ]
       },
       {
         "id": "resourceFlow",
         "label": "חיבור וזרימה",
-        "eventTypes": ["block_place", "sign_text", "chat"],
-        "keywordsAny": ["מגיע", "זורם", "מתחבר", "מסלול", "מקור", "שימוש"]
+        "eventTypes": [
+          "block_place",
+          "sign_text",
+          "chat"
+        ],
+        "keywordsAny": [
+          "מגיע",
+          "זורם",
+          "מתחבר",
+          "מסלול",
+          "מקור",
+          "שימוש"
+        ]
       },
       {
         "id": "comfortPlace",
         "label": "שיפור נוחות לתושבים",
-        "eventTypes": ["block_place", "sign_text"],
-        "keywordsAny": ["מנוחה", "צל", "ישיבה", "בטוח", "נעים", "קריר"]
+        "eventTypes": [
+          "block_place",
+          "sign_text"
+        ],
+        "keywordsAny": [
+          "מנוחה",
+          "צל",
+          "ישיבה",
+          "בטוח",
+          "נעים",
+          "קריר"
+        ]
       }
     ],
     "thinkingEvidence": [
       {
         "id": "failureThinking",
         "label": "חשיבה על תקלה",
-        "eventTypes": ["chat", "reflection"],
-        "keywordsAny": ["אם לא יעבוד", "בעיה", "תקלה", "חסר", "מה יקרה"]
+        "eventTypes": [
+          "chat",
+          "reflection"
+        ],
+        "keywordsAny": [
+          "אם לא יעבוד",
+          "בעיה",
+          "תקלה",
+          "חסר",
+          "מה יקרה"
+        ]
       }
     ]
   },
   "teacherReport": {
     "scoreBands": [
-      { "id": "notStarted", "label": "לא התחיל", "condition": "אין ראיות למערכת משאב" },
-      { "id": "builtResource", "label": "בנה מערכת", "condition": "יש מערכת טבע/מים/אנרגיה" },
-      { "id": "explainedFlow", "label": "הסביר זרימה", "condition": "יש הסבר מקור, חיבור או שימוש" },
-      { "id": "systemThinking", "label": "חשב מערכתית", "condition": "הצוות מסביר השפעה או תקלה אפשרית" }
+      {
+        "id": "notStarted",
+        "label": "לא התחיל",
+        "condition": "אין ראיות למערכת משאב"
+      },
+      {
+        "id": "builtResource",
+        "label": "בנה מערכת",
+        "condition": "יש מערכת טבע/מים/אנרגיה"
+      },
+      {
+        "id": "explainedFlow",
+        "label": "הסביר זרימה",
+        "condition": "יש הסבר מקור, חיבור או שימוש"
+      },
+      {
+        "id": "systemThinking",
+        "label": "חשב מערכתית",
+        "condition": "הצוות מסביר השפעה או תקלה אפשרית"
+      }
     ],
     "summaryTemplate": "{studentName} בנה/בנתה מערכת משאב לעומר העתידנית. זרימה: {flowSummary}. השפעה על תושבים: {impactSummary}. הצעד הבא: {nextStep}."
   }
