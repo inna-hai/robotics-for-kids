@@ -68,14 +68,15 @@ assert.equal(program.buildProtocol.roles.length, 5, 'program defines build roles
 const hub = read('omer-future-craftom.html');
 assert.ok(hub.includes('עומר העתידנית'), 'hub has course title');
 assert.ok(hub.includes('בלי תכנות'), 'hub states no coding');
-assert.ok(hub.includes('4 אתגרים'), 'hub presents 4 challenges');
+assert.ok(hub.includes('grid-4'), 'hub uses Craftom preview style stats grid');
+assert.ok(hub.includes('4</h2><b>אתגרים'), 'hub presents 4 challenges');
 assert.ok(hub.includes('תמונת Minecraft'), 'hub mentions Minecraft image');
 assert.ok(hub.includes('JSON הצלחה'), 'hub links JSON success');
-assert.ok(hub.includes('חלוקת צוותים מוכנה'), 'hub shows fixed team assignments');
+assert.ok(hub.includes('teamBuilds'), 'hub renders fixed team assignments');
 assert.ok(hub.includes('program.omerAnchor'), 'hub renders Omer anchor text');
 assert.ok(hub.includes('lesson.image'), 'hub renders images from challenge data');
-assert.ok(hub.includes('omer-future-craftom-students.html?lesson=1'), 'hub links student worksheets');
-assert.ok(hub.includes('omer-future-craftom-slides.html?lesson=1'), 'hub links instructor slides');
+assert.ok(hub.includes('omer-future-craftom-students.html?lesson=${lesson.id}'), 'hub links student worksheets');
+assert.ok(hub.includes('omer-future-craftom-slides.html?lesson=${lesson.id}'), 'hub links instructor slides');
 assert.ok(hub.includes('js/omer-future-craftom-lessons.js'), 'hub loads course data');
 
 const students = read('omer-future-craftom-students.html');

@@ -1,126 +1,104 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="he" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>עומר העתידנית | Craftom כיתה ד׳</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <style>
-    *{box-sizing:border-box}:root{--ink:#132117;--muted:#53635a;--green:#16a34a;--teal:#0f766e;--amber:#f59e0b;--sky:#0284c7;--line:#dfeee7}html{scroll-behavior:smooth}body{margin:0;font-family:Rubik,Arial,sans-serif;direction:rtl;color:var(--ink);background:linear-gradient(135deg,#f0fdf4,#f8fafc 44%,#fff7ed);line-height:1.68}a{color:inherit}.shell{width:min(1180px,calc(100% - 28px));margin:0 auto}.hero{color:white;background:linear-gradient(135deg,#143421,#0f766e 52%,#b45309);padding:28px 0 48px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:28px}.brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:1.18rem}.mark{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,#bbf7d0,#fde68a);color:#143421;font-size:1.6rem}.nav{display:flex;gap:8px;flex-wrap:wrap}.nav a{padding:9px 14px;border-radius:999px;text-decoration:none;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);font-weight:900}.hero-grid{display:grid;grid-template-columns:minmax(0,1.06fr) minmax(320px,.94fr);gap:24px;align-items:center}.kicker{display:inline-flex;border-radius:999px;padding:8px 13px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);font-weight:900;margin-bottom:14px}h1{font-size:clamp(2.25rem,5.3vw,4.7rem);line-height:1.04;margin:0 0 16px}h2{font-size:clamp(1.7rem,3.5vw,2.7rem);line-height:1.14;margin:0 0 10px}.hero p{font-size:clamp(1.08rem,2vw,1.28rem);color:#f1fff6;margin:0;max-width:850px}.actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:22px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border-radius:999px;padding:12px 18px;text-decoration:none;font-weight:900;background:white;color:#143421;box-shadow:0 12px 30px rgba(0,0,0,.17);border:0}.btn.alt{background:rgba(255,255,255,.12);color:white;border:1px solid rgba(255,255,255,.24);box-shadow:none}.hero-card,.outcome,.lesson,.panel{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 16px 40px rgba(15,23,42,.07)}.hero-card{color:var(--ink);box-shadow:0 26px 70px rgba(0,0,0,.22)}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stat{background:linear-gradient(135deg,#ecfdf5,#fff7ed);border:1px solid #bbf7d0;border-radius:18px;padding:15px;text-align:center;font-weight:900}.stat b{display:block;font-size:1.9rem;color:var(--teal);line-height:1}.section{padding:50px 0}.lead{font-size:1.12rem;color:var(--muted);max-width:900px;margin:0 0 24px}.outcomes{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.outcome b{display:block;color:#0f766e;margin-bottom:6px}.lessons{display:grid;gap:18px}.lesson{display:grid;grid-template-columns:150px minmax(0,1fr);gap:20px;align-items:start}.badge{background:linear-gradient(135deg,#dcfce7,#fef3c7);border-radius:20px;padding:16px;text-align:center;font-weight:900}.badge b{display:block;font-size:2.4rem;color:#0f766e}.lesson h3{font-size:1.52rem;margin:0 0 5px}.subtitle{font-weight:900;color:#0f766e;margin-bottom:8px}.meta{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}.chip{background:#f1f5f9;border-radius:999px;padding:7px 10px;font-weight:900;font-size:.83rem;color:#334155}.minecraft-shot{border:2px solid #bbf7d0;border-radius:18px;overflow:hidden;background:#ecfdf5}.minecraft-shot img{display:block;width:100%;height:clamp(210px,34vw,360px);object-fit:cover}.shot-caption{padding:10px 12px;background:#f8fafc;border-top:1px solid #dfeee7;font-weight:900;color:#0f766e}.lesson-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.mini{background:#f8fafc;border-radius:16px;padding:14px;border-right:6px solid #16a34a}.mini b{display:block;color:#0f766e;margin-bottom:4px}.flow{display:grid;gap:8px;margin-top:14px}.flow-row{display:grid;grid-template-columns:90px 1fr 1fr;gap:10px;background:#f8fafc;border-radius:16px;padding:11px;border:1px solid #e2e8f0}.flow-row b{color:#b45309}.tools{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}.list{margin:10px 0 0;padding:0 1.1rem}.list li{margin:5px 0}.safety{background:linear-gradient(135deg,#ecfeff,#fff7ed)}.footer{text-align:center;color:#64748b;font-weight:800;padding:26px 0 42px}@media(max-width:980px){.hero-grid,.outcomes,.tools,.lesson-grid{grid-template-columns:1fr}.lesson{grid-template-columns:1fr}.flow-row{grid-template-columns:1fr}.nav{display:none}.top{align-items:flex-start;flex-direction:column}}@media(max-width:560px){.section{padding:38px 0}.hero-card,.outcome,.lesson,.panel{border-radius:18px;padding:17px}.actions .btn{width:100%}.stats{grid-template-columns:1fr}}
-  </style>
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css">
   <link rel="stylesheet" href="css/platform-home-link.css">
+  <style>
+    .preview-home .hero{grid-template-columns:minmax(0,1fr) 360px}
+    .preview-home .minecraft-shot{max-width:360px}
+    .preview-home .minecraft-shot img{height:260px}
+    .challenge-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .challenge-actions .btn{padding:9px 12px;font-size:.92rem}
+    .team-list{display:grid;gap:8px;margin:10px 0 0;padding:0;list-style:none}
+    .team-list li{border:1px solid #cfe2f3;background:#f7fcff;border-radius:12px;padding:9px 10px;font-size:.96rem}
+    .team-list b{color:var(--blue)}
+    .anchor-card{border-color:#9fd8a8;background:#f7fff8}
+    .wide-card{grid-column:1/-1}
+    .lesson-card{align-content:start}
+    @media(max-width:850px){.preview-home .hero{grid-template-columns:1fr}.preview-home .minecraft-shot{max-width:100%}.preview-home .minecraft-shot img{height:220px}}
+  </style>
 </head>
-<body>
-  <header class="hero">
-    <div class="shell">
-      <div class="top">
-        <div class="brand"><span class="mark">🏘️</span><span>hai.tech · Craftom כיתה ד׳</span></div>
-        <nav class="nav"><a href="#overview">מטרה</a><a href="#meetings">4 אתגרים</a><a href="#tools">איך עובדים</a></nav>
+<body class="preview-home">
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <div class="kicker">עומר העתידנית • כיתה ד׳ • Minecraft Education + Craftom • בלי תכנות</div>
+        <h1>בונים יישוב עומר עתידני דרך אתגרי Minecraft</h1>
+        <p class="goal">לומדה של 4 אתגרים ממוקדים. בכל אתגר המדריך מחלק לצוותים מוקדי בנייה שונים, הילדים חוקרים צורך אמיתי של יישוב, בונים ב־Craftom, בודקים עם מבקר ומגישים לפי JSON הצלחה.</p>
+        <div class="actions" id="heroActions"></div>
       </div>
-      <div class="hero-grid">
-        <div>
-          <div class="kicker">כיתה ד׳ · בני 9 · 4 אתגרים · Minecraft Education · Craftom · בלי תכנות</div>
-          <h1>עומר העתידנית — 4 אתגרי בנייה וחקר במיינקראפט</h1>
-          <p>לומדה יצירתית שבה ילדים בונים גרסה עתידנית של יישוב עומר. המדריך מחלק לכל צוות מוקד בנייה אחר, ובסוף כל החלקים מתחברים ליישוב אחד שאפשר לסייר בו.</p>
-          <div class="actions">
-            <a class="btn" href="#meetings">ראו את 4 האתגרים</a>
-            <a class="btn alt" href="omer-future-craftom-students.html?lesson=1">דף תלמידים</a>
-            <a class="btn alt" href="omer-future-craftom-slides.html?lesson=1">מצגת מדריך</a>
-          </div>
-        </div>
-        <aside class="hero-card">
-          <h2>תוצר סופי</h2>
-          <div class="stats">
-            <div class="stat"><b>4</b>אתגרים</div>
-            <div class="stat"><b>75</b>דקות</div>
-            <div class="stat"><b>JSON</b>הצלחה</div>
-            <div class="stat"><b>סיור</b>עיר שלמה</div>
-          </div>
-        </aside>
-      </div>
-    </div>
-  </header>
-
-  <main>
-    <section class="section" id="overview">
-      <div class="shell">
-        <h2>מטרת הלומדה</h2>
-        <p class="lead">לא מלמדים כאן קוד. מלמדים ילדים לחשוב כמו מתכנני יישוב: לחקור צורך, לבנות פתרון במיינקראפט, לבדוק עם מבקר, ולראות איך חלק אחד משפיע על מערכת שלמה.</p>
-        <p class="lead" id="omerAnchor"></p>
-        <div class="outcomes" id="outcomes"></div>
-      </div>
+      <figure class="minecraft-shot">
+        <img id="heroImage" src="assets/craftom/challenges/my-smart-city-1-plan.webp" alt="תמונת Minecraft של תכנון יישוב עתידני">
+        <figcaption class="shot-caption" id="heroCaption">שער, מפה ושביל ראשון לעומר העתידנית.</figcaption>
+      </figure>
     </section>
 
-    <section class="section" id="meetings">
-      <div class="shell">
-        <h2>4 אתגרים ממוקדים</h2>
-        <p class="lead">כל אתגר הוא שיעור אחד מאוד ברור: תמונת Minecraft, שאלת חקר, תוצר Craftom, בדיקת הצלחה ו־JSON ראיות.</p>
-        <div class="lessons" id="lessons"></div>
-      </div>
+    <section class="grid-4">
+      <div class="card highlight"><h2>4</h2><b>אתגרים</b><p class="muted">כל אתגר הוא שיעור אחד ברור.</p></div>
+      <div class="card highlight"><h2>4</h2><b>צוותים בכל אתגר</b><p class="muted">כל צוות בונה משהו אחר.</p></div>
+      <div class="card highlight"><h2>75</h2><b>דקות לאתגר</b><p class="muted">חקר, בנייה, בדיקה ושיפור.</p></div>
+      <div class="card highlight"><h2>JSON</h2><b>הצלחה</b><p class="muted">ראיות Craftom ודוח מורה עתידי.</p></div>
     </section>
 
-    <section class="section" id="tools">
-      <div class="shell">
-        <div class="tools">
-          <article class="panel">
-            <h2>איך עובדים בכיתה</h2>
-            <p id="workModeIntro"></p>
-            <ul class="list" id="teamRoles"></ul>
-          </article>
-          <article class="panel safety">
-            <h2>כללי עולם משותף</h2>
-            <ul class="list" id="safety"></ul>
-          </article>
-        </div>
-      </div>
+    <section class="grid" style="margin-top:14px">
+      <article class="card anchor-card wide-card">
+        <span class="tag">העוגן של הקורס</span>
+        <h2>לא “עיר כללית” — עומר עתידנית</h2>
+        <p id="omerAnchor" class="goal"></p>
+      </article>
+    </section>
+
+    <section class="steps" id="challengeCards"></section>
+
+    <section class="grid" style="margin-top:14px">
+      <article class="card">
+        <h2>איך עובדים בכיתה</h2>
+        <p id="workModeIntro"></p>
+        <ul id="teamRoles"></ul>
+      </article>
+      <article class="card build-first">
+        <h2>כללי עולם משותף</h2>
+        <ul id="safety"></ul>
+      </article>
     </section>
   </main>
 
-  <footer class="footer">עומר העתידנית · Craftom כיתה ד׳ · hai.tech</footer>
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="js/omer-future-craftom-lessons.js?v=20260823-omer-teams"></script>
+  <script src="js/omer-future-craftom-lessons.js?v=20260823-omer-preview-style"></script>
   <script>
     const program = window.OMER_FUTURE_CRAFTOM_PROGRAM;
     const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+
     document.getElementById('omerAnchor').textContent = program.omerAnchor;
-    document.getElementById('outcomes').innerHTML = program.sharedOutcomes.map((item, index) => `<div class="outcome"><b>${index + 1}. יעד למידה</b>${esc(item)}</div>`).join('');
     document.getElementById('workModeIntro').textContent = program.buildProtocol.defaultMode;
-    document.getElementById('teamRoles').innerHTML = program.buildProtocol.roles.map(role => `<li><strong>${esc(role[0])}:</strong> ${esc(role[1])}</li>`).join('');
+    document.getElementById('teamRoles').innerHTML = program.buildProtocol.roles.map(role => `<li><b>${esc(role[0])}:</b> ${esc(role[1])}</li>`).join('');
     document.getElementById('safety').innerHTML = program.safetyRules.map(item => `<li>${esc(item)}</li>`).join('');
-    document.getElementById('lessons').innerHTML = program.lessons.map(lesson => `
-      <article class="lesson">
-        <div class="badge"><b>${lesson.id}</b>אתגר</div>
-        <div>
-          <h3>${esc(lesson.title)}</h3>
-          <div class="subtitle">${esc(lesson.theme)} · ${esc(lesson.systemFocus)}</div>
-          <p>${esc(lesson.story)}</p>
-          <div class="meta">
-            <span class="chip">${lesson.durationMinutes} דקות</span>
-            <span class="chip">${esc(lesson.grade)}</span>
-            <span class="chip">${esc(lesson.platform)}</span>
-            <span class="chip">תוצר: ${esc(lesson.productStage)}</span>
-          </div>
-          <figure class="minecraft-shot" style="margin:12px 0">
-            <img src="${esc(lesson.image)}" alt="תמונת Minecraft לאתגר ${lesson.id}: ${esc(lesson.title)}">
-            <figcaption class="shot-caption">${esc(lesson.minecraftBuild)}</figcaption>
-          </figure>
-          <div class="lesson-grid">
-            <div class="mini"><b>שאלת האתגר</b>${esc(lesson.bigQuestion)}</div>
-            <div class="mini"><b>חקר קצר</b>${esc(lesson.researchPrompt)}</div>
-            <div class="mini"><b>מה בונים במיינקראפט</b>${esc(lesson.minecraftBuild)}</div>
-            <div class="mini"><b>חשיבה מערכתית</b>${esc(lesson.systemFocus)}</div>
-            <div class="mini"><b>חלוקת צוותים מוכנה</b><ol class="list">${lesson.teamBuilds.map(item => `<li><strong>${esc(item.team)}:</strong> ${esc(item.build)}</li>`).join('')}</ol></div>
-            <div class="mini"><b>בדיקת הצלחה</b><ol class="list">${lesson.successChecks.map(step => `<li>${esc(step)}</li>`).join('')}</ol></div>
-            <div class="mini"><b>צעדים בכיתה</b><ol class="list">${lesson.exactSteps.map(step => `<li>${esc(step)}</li>`).join('')}</ol></div>
-          </div>
-          <div class="flow">
-            ${lesson.flow.map(step => `<div class="flow-row"><b>${esc(step.minutes)}</b><div><strong>${esc(step.title)}</strong><br>${esc(step.teacher)}</div><div>${esc(step.students)}</div></div>`).join('')}
-          </div>
-          <div class="actions">
-            <a class="btn" href="omer-future-craftom-slides.html?lesson=${lesson.id}">מצגת מדריך</a>
-            <a class="btn" href="omer-future-craftom-students.html?lesson=${lesson.id}">דף תלמידים</a>
-            <a class="btn" href="${esc(lesson.jsonSpec)}">JSON הצלחה</a>
-          </div>
+    document.getElementById('heroImage').src = program.lessons[0].image;
+    document.getElementById('heroCaption').textContent = program.lessons[0].minecraftBuild;
+
+    document.getElementById('heroActions').innerHTML = program.lessons.map(lesson => `<a class="btn" href="omer-future-craftom-students.html?lesson=${lesson.id}">כניסה לאתגר ${lesson.id}</a>`).join('')
+      + program.lessons.map(lesson => `<a class="btn secondary" href="${esc(lesson.jsonSpec)}">JSON אתגר ${lesson.id}</a>`).join('');
+
+    document.getElementById('challengeCards').innerHTML = program.lessons.map(lesson => `
+      <article class="card lesson-card">
+        <img class="lesson-thumb" src="${esc(lesson.image)}" alt="תמונת Minecraft לאתגר ${lesson.id}: ${esc(lesson.title)}">
+        <span class="tag">אתגר ${lesson.id} • ${lesson.durationMinutes} דקות • כיתה ד׳</span>
+        <h2>${esc(lesson.title)}</h2>
+        <p>${esc(lesson.bigQuestion)}</p>
+        <b>בונים: ${esc(lesson.minecraftBuild)}</b>
+        <ul class="team-list">
+          ${lesson.teamBuilds.map(item => `<li><b>${esc(item.team)}</b><br>${esc(item.build)}</li>`).join('')}
+        </ul>
+        <div class="challenge-actions">
+          <a class="btn" href="omer-future-craftom-students.html?lesson=${lesson.id}">דף תלמידים</a>
+          <a class="btn secondary" href="omer-future-craftom-slides.html?lesson=${lesson.id}">מצגת מדריך</a>
+          <a class="btn secondary" href="${esc(lesson.jsonSpec)}">JSON הצלחה</a>
         </div>
       </article>
     `).join('');
