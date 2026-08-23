@@ -21,7 +21,8 @@
         <p>קורס טאבלט־פירסט לכיתה ה׳: התלמידים מתכננים תוכניות טיסה ב־DroneBlocks, בודקים בסימולטור, לומדים דיוק הנדסי, ורק במפגש 5 עוברים לטיסה פיזית מבוקרת. הקוד הוא תוכנית הטיסה — ודיוק הוא תנאי בטיחות.</p>
         <div class="actions">
           <a class="btn" href="tello-edu-grade5-play.html?lesson=1">▶️ להתחיל שיעור 1</a>
-          <a class="btn secondary" href="tello-edu-grade5-slides.html?lesson=1">📽️ מצגת מדריך לשיעור 1</a>
+          <a class="btn secondary" href="tello-edu-grade5-slides.html?lesson=1">📽️ מצגת הקרנה לשיעור 1</a>
+          <a class="btn secondary" href="tello-edu-grade5-guide.html?lesson=1">🧭 מערך מדריך לשיעור 1</a>
           <a class="btn secondary" href="index.html">🏠 כל הלומדות</a>
         </div>
       </div>
@@ -53,7 +54,7 @@
         <div class="story">${lesson.story}</div>
         <div class="tags"><span class="tag">${lesson.durationMinutes} דק׳</span><span class="tag">כיתה ה׳</span><span class="tag">DroneBlocks</span>${lesson.physicalFlightAllowed ? '<span class="tag warn">כולל אפשרות פיזית</span>' : '<span class="tag">סימולטור בלבד</span>'}</div>
         <div class="start">לפתיחת הלומדה ←</div>
-        <div class="tags"><span class="tag">📽️ <object><a href="tello-edu-grade5-slides.html?lesson=${lesson.id}" onclick="event.stopPropagation()">מצגת מדריך</a></object></span></div>
+        <div class="tags"><span class="tag">📽️ <object><a href="tello-edu-grade5-slides.html?lesson=${lesson.id}" onclick="event.stopPropagation()">מצגת הקרנה</a></object></span><span class="tag">🧭 <object><a href="tello-edu-grade5-guide.html?lesson=${lesson.id}" onclick="event.stopPropagation()">מערך מדריך</a></object></span></div>
       </a>`).join('');
   </script>
   <script src="/js/feedback-widget.js?v=20260711-feedback"></script>

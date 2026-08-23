@@ -22,6 +22,7 @@
       <button class="btn run" onclick="runMission()">▶️ הרצה</button>
       <button class="btn reset" onclick="resetWorkspace()">↺ איפוס</button>
       <a class="btn link" id="slidesLink" href="tello-edu-grade5-slides.html?lesson=1">מצגת</a>
+      <a class="btn link" id="guideTopLink" href="tello-edu-grade5-guide.html?lesson=1">מערך</a>
       <a class="btn link" href="tello-edu-grade5.html">כל השיעורים</a>
     </div>
   </header>
@@ -34,7 +35,8 @@
         <h1 id="title"></h1>
         <p id="story"></p>
         <p><b>משימה:</b> <span id="mission"></span></p>
-        <a class="teacher-link" id="teacherLink" href="tello-edu-grade5-slides.html?lesson=1">📽️ מצגת מדריך</a>
+        <a class="teacher-link" id="teacherLink" href="tello-edu-grade5-slides.html?lesson=1">📽️ מצגת הקרנה</a>
+        <a class="teacher-link" id="guideLink" href="tello-edu-grade5-guide.html?lesson=1">🧭 מערך מדריך</a>
         <div class="mini-section"><h3>🌍 שימושים אמיתיים</h3><div id="realUses"></div></div>
         <div class="mini-section"><h3>🛡️ צ׳קליסט בטיחות</h3><div id="safety"></div></div>
       </div>
@@ -146,7 +148,9 @@
       $('story').textContent = lesson.story;
       $('mission').textContent = lesson.mission;
       $('slidesLink').href = `tello-edu-grade5-slides.html?lesson=${lesson.id}`;
+      $('guideTopLink').href = `tello-edu-grade5-guide.html?lesson=${lesson.id}`;
       $('teacherLink').href = `tello-edu-grade5-slides.html?lesson=${lesson.id}`;
+      $('guideLink').href = `tello-edu-grade5-guide.html?lesson=${lesson.id}`;
       $('tabs').innerHTML = window.TELLO_EDU_GRADE5_LESSONS.map(l => `<a class="tab ${l.id===lesson.id?'active':''}" href="tello-edu-grade5-play.html?lesson=${l.id}">${l.id}</a>`).join('');
       if (lesson.id === 2) { document.querySelector('.zone.start').innerHTML='Start<br>חממה'; document.querySelector('.zone.air').innerHTML='Box 1.5m<br>ריבוע סריקה'; document.querySelector('.zone.land').innerHTML='Land<br>סיום'; }
       $('realUses').innerHTML = (lesson.realWorldUses || []).map(use => `<article class="real-card"><span class="icon">${esc(use.icon)}</span><b>${esc(use.title)}</b>${esc(use.text)}</article>`).join('');
