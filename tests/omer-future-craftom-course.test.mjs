@@ -64,7 +64,7 @@ for (const lesson of program.lessons) {
   assert.ok(json.teacherReport?.scoreBands?.length >= 4, `challenge ${lesson.id} JSON has score bands`);
 }
 
-assert.ok(program.lessons[0].title.includes('שער'), 'challenge 1 opens with vision gate');
+assert.ok(program.lessons[0].title.includes('בניין'), 'challenge 1 opens with a concrete wonder building');
 assert.ok(program.lessons[1].title.includes('שכונה'), 'challenge 2 builds a neighborhood');
 assert.ok(program.lessons[2].title.includes('טבע'), 'challenge 3 covers nature/water/energy');
 assert.ok(program.lessons[3].title.includes('רכבת'), 'challenge 4 closes with a train tour');
