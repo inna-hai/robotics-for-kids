@@ -21,7 +21,8 @@
         <p>קורס טאבלט־פירסט לכיתה ו׳: התלמידים עובדים כצוותי חקר רחפנים, מתכננים משימות ב־DroneBlocks Simulator, לומדים בטיחות, איסוף נתונים, סריקות שטח, Mission Pads ותיעוד ממצאים. טיסה פיזית רק ממפגש 5.</p>
         <div class="actions">
           <a class="btn" href="tello-mission-lab-play.html?lesson=1">▶️ להתחיל שיעור 1</a>
-          <a class="btn secondary" href="tello-mission-lab-slides.html?lesson=1">📽️ מצגת מדריך לשיעור 1</a>
+          <a class="btn secondary" href="tello-mission-lab-slides.html?lesson=1">📽️ מצגת הקרנה לשיעור 1</a>
+          <a class="btn secondary" href="tello-mission-lab-guide.html?lesson=1">🧭 מערך מדריך לשיעור 1</a>
           <a class="btn secondary" href="index.html">🏠 כל הלומדות</a>
         </div>
       </div>
@@ -53,7 +54,7 @@
         <div class="story">${lesson.story}</div>
         <div class="tags"><span class="tag">${lesson.durationMinutes} דק׳</span><span class="tag">כיתה ו׳</span><span class="tag">DroneBlocks</span>${lesson.physicalFlightAllowed ? '<span class="tag warn">כולל אפשרות פיזית</span>' : '<span class="tag">סימולטור בלבד</span>'}</div>
         <div class="start">לפתיחת הלומדה ←</div>
-        <div class="tags"><span class="tag">📽️ <object><a href="tello-mission-lab-slides.html?lesson=${lesson.id}" onclick="event.stopPropagation()">מצגת מדריך</a></object></span></div>
+        <div class="tags"><span class="tag">📽️ <object><a href="tello-mission-lab-slides.html?lesson=${lesson.id}" onclick="event.stopPropagation()">מצגת הקרנה</a></object></span><span class="tag">🧭 <object><a href="tello-mission-lab-guide.html?lesson=${lesson.id}" onclick="event.stopPropagation()">מערך מדריך</a></object></span></div>
       </a>`).join('');
   </script>
   <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
