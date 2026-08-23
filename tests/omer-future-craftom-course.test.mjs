@@ -35,6 +35,7 @@ for (const lesson of program.lessons) {
   assert.equal(lesson.grade, 'כיתה ד׳', `challenge ${lesson.id} targets grade 4`);
   assert.equal(lesson.platform, 'Minecraft Education + Craftom', `challenge ${lesson.id} uses Craftom/Minecraft`);
   assert.ok(lesson.title && lesson.theme && lesson.systemFocus && lesson.story, `challenge ${lesson.id} has core metadata`);
+  assert.ok(lesson.imaginePrompt && lesson.imaginePrompt.includes('דמיינו'), `challenge ${lesson.id} has child-world prompt`);
   assert.ok(lesson.teacherGoal && lesson.studentOutcome && lesson.bigQuestion, `challenge ${lesson.id} has pedagogy`);
   assert.ok(lesson.researchPrompt && lesson.researchPrompt.includes('חקר'), `challenge ${lesson.id} has research prompt`);
   assert.ok(lesson.minecraftBuild && lesson.minecraftBuild.length > 20, `challenge ${lesson.id} has concrete Minecraft build`);
@@ -57,6 +58,7 @@ for (const lesson of program.lessons) {
 
   const json = JSON.parse(read(lesson.jsonSpec));
   assert.equal(json.challengeStructure.estimatedMeetings, 4, `challenge ${lesson.id} JSON is four meetings`);
+  assert.ok(json.challengeStructure.childWorldPrompt, `challenge ${lesson.id} JSON has child-world prompt`);
   assert.equal(json.studentDeliverable?.meetingDeliverables?.length, 4, `challenge ${lesson.id} JSON has meeting deliverables`);
   assert.ok(json.craftomEvidence, `challenge ${lesson.id} JSON has craftom evidence`);
   assert.ok(json.teacherReport?.scoreBands?.length >= 4, `challenge ${lesson.id} JSON has score bands`);
@@ -76,6 +78,7 @@ assert.ok(hub.includes('4</h2><b>אתגרים'), 'hub presents 4 challenges');
 assert.ok(hub.includes('תמונת Minecraft'), 'hub mentions Minecraft image');
 assert.ok(hub.includes('JSON הצלחה'), 'hub links JSON success');
 assert.ok(hub.includes('lesson.meetings'), 'hub renders meetings per challenge');
+assert.ok(hub.includes('lesson.imaginePrompt'), 'hub renders child-world prompt');
 assert.ok(hub.includes('program.omerAnchor'), 'hub renders Omer anchor text');
 assert.ok(hub.includes('lesson.image'), 'hub renders images from challenge data');
 assert.ok(hub.includes('omer-future-craftom-challenge.html?lesson=${lesson.id}'), 'hub links Omer challenge pages');
@@ -102,6 +105,7 @@ assert.ok(slides.includes('תבנית סיור סופי'), 'slides include final
 const challengePage = read('omer-future-craftom-challenge.html');
 assert.ok(challengePage.includes('grid-4'), 'challenge page uses Craftom challenge card grid');
 assert.ok(challengePage.includes('lesson.meetings'), 'challenge page renders four meeting cards');
+assert.ok(challengePage.includes('imaginePrompt'), 'challenge page renders child-world prompt');
 assert.ok(challengePage.includes('minecraft-shot'), 'challenge page has Minecraft hero image');
 assert.ok(challengePage.includes('JSON הצלחה'), 'challenge page links JSON success');
 assert.ok(challengePage.includes('window.getOmerFutureCraftomLesson'), 'challenge page loads lesson by query');

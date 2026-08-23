@@ -90,7 +90,7 @@
         <img class="lesson-thumb" src="${esc(lesson.image)}" alt="תמונת Minecraft לאתגר ${lesson.id}: ${esc(lesson.title)}">
         <span class="tag">אתגר ${lesson.id} • ${esc(lesson.challengeDuration)} • ${esc(lesson.meetingDuration)}</span>
         <h2>${esc(lesson.title)}</h2>
-        <p>${esc(lesson.bigQuestion)}</p>
+        <p>${esc(lesson.imaginePrompt)}</p>
         <b>בונים בכל חלקה: ${esc(lesson.minecraftBuild)}</b>
         <ul class="team-list">
           ${lesson.meetings.map(item => `<li><b>שיעור ${esc(item[0])}: ${esc(item[1])}</b><br>${esc(item[3])}</li>`).join('')}

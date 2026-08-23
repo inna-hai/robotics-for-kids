@@ -44,6 +44,10 @@
 
     <section class="steps">
       <div class="card build-first">
+        <h2>דמיון של ילדים</h2>
+        <p id="imaginePrompt"></p>
+      </div>
+      <div class="card build-first">
         <h2>מה הילדים בונים במיינקראפט</h2>
         <p id="minecraftBuild"></p>
         <ul id="meetingSteps"></ul>
@@ -102,6 +106,7 @@
     `).join('');
 
     document.getElementById('minecraftBuild').textContent = lesson.minecraftBuild;
+    document.getElementById('imaginePrompt').textContent = lesson.imaginePrompt;
     document.getElementById('researchPrompt').textContent = lesson.researchPrompt;
     document.getElementById('bigQuestion').textContent = lesson.bigQuestion;
     document.getElementById('meetingSteps').innerHTML = lesson.meetings.map(item => `<li><strong>שיעור ${esc(item[0])} - ${esc(item[1])}:</strong> ${esc(item[2])} תוצר: ${esc(item[3])}</li>`).join('');
