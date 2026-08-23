@@ -18,19 +18,19 @@
         { minutes: '8–18', title: 'הדגמת בלוק ראשון', teacher: 'לוחצים יחד על הבלוק “צור כרטיס אישי”, מריצים, ואז מצביעים על השורה שנוצרה ב־HTML.', students: 'רואים שהבלוק שינה את הקוד בלי שהיו צריכים לכתוב סינטקס.' },
         { minutes: '18–34', title: 'בנייה מודרכת בבלוקים', teacher: 'מפעילים עם הכיתה 3–4 בלוקי Web לפי הסדר: מבנה, משפט, צבע, כפתור.', students: 'לוחצים על בלוקים, מריצים אחרי כל בלוק, ומתארים מה השתנה במסך.' },
         { minutes: '34–50', title: 'התבוננות בקוד שנוצר', teacher: 'פותחים בכל פעם לשונית אחרת: HTML/CSS/JS, ומדגישים רק מילים מוכרות: h1, background, textContent.', students: 'מחברים בין בלוק לבין הקוד שהוא שינה.' },
-        { minutes: '50–66', title: 'תרגול עצמאי עם בלוקים', teacher: 'נותנים לתלמידים להשלים את הכרטיס בעזרת בלוקי Web ורק שינויי טקסט קטנים.', students: 'מבצעים תרגולים 1–5 בלי לכתוב קוד חופשי.' },
+        { minutes: '50–66', title: 'תרגיל עצמאי עם בלוקים', teacher: 'נותנים לתלמידים להשלים את הכרטיס בעזרת בלוקי Web ורק שינויי טקסט קטנים.', students: 'מבצעים תרגילים 1–5 בלי לכתוב קוד חופשי.' },
         { minutes: '66–78', title: 'שינוי קטן בקוד', teacher: 'מאפשרים שינוי בטוח אחד: טקסט בכותרת או הודעת כפתור, לא מבנה חדש.', students: 'משנים מילים בתוך הקוד, מריצים, ומתקנים בעזרת רמזים אם נשבר.' },
         { minutes: '78–90', title: 'הצגה וסיכום הגשר', teacher: 'מסכמים: בלוק הוא דרך נוחה לבנות; קוד הוא מה שהדפדפן קורא.', students: 'מציגים כרטיס ואומרים: “הבלוק שבחרתי שינה את ___ בקוד”.' }
       ],
       exercises: [
-        { id: 1, minutes: '18–24', title: 'תרגול 1 — מפעילים בלוק מבנה', prompt: 'לחצו על הבלוק “צור כרטיס אישי”, הריצו, ובדקו מה השתנה בכותרת.', hint: 'אל תכתבו קוד עדיין — רק לחצו על הבלוק והסתכלו על HTML.', check: { htmlIncludes: ['מפתח/ת צעיר/ה'] } },
-        { id: 2, minutes: '24–30', title: 'תרגול 2 — בלוק משפט אישי', prompt: 'הפעילו בלוק שמחליף את המשפט בכרטיס, ואז מצאו את המשפט בתוך HTML.', hint: 'המשפט נמצא בתוך תגית <p>.', check: { htmlIncludes: ['ליצור דברים בדפדפן'] } },
-        { id: 3, minutes: '30–38', title: 'תרגול 3 — בלוק צבע רקע', prompt: 'הפעילו בלוק עיצוב שמשנה צבע רקע, ואז עברו ללשונית CSS וראו את background.', hint: 'CSS אחראי לאיך האתר נראה.', check: { cssIncludes: ['background: #fef3c7'] } },
-        { id: 4, minutes: '38–46', title: 'תרגול 4 — בלוק כפתור', prompt: 'הפעילו בלוק שמשנה את טקסט הכפתור ל“גלו הודעה”.', hint: 'הכפתור עדיין מפעיל onclick, אבל אנחנו משנים רק את הטקסט שלו.', check: { htmlIncludes: ['גלו הודעה', 'onclick="sayHello()"'] } },
-        { id: 5, minutes: '46–56', title: 'תרגול 5 — בלוק הודעה בלחיצה', prompt: 'הפעילו בלוק שמשנה את ההודעה שמופיעה אחרי לחיצה על הכפתור.', hint: 'זו הצצה ל־JavaScript: הוא משנה textContent.', check: { jsIncludes: ['ברוכים הבאים לאתר הראשון שלי'] } },
-        { id: 6, minutes: '56–66', title: 'תרגול 6 — שינוי בטוח בקוד', prompt: 'עכשיו מותר לשנות רק מילה אחת בתוך הכותרת או המשפט. הריצו ובדקו.', hint: 'שנו טקסט בין תגיות, לא את הסימנים < >.', check: { htmlIncludes: ['<h1', '<p'] } },
-        { id: 7, minutes: '66–76', title: 'תרגול 7 — דיבאג עדין', prompt: 'אם משהו נשבר, לחצו איפוס או בדקו שלא מחקתם גרשיים/סוגריים. נסו לתקן בעזרת הרמז.', hint: 'בשיעור 1 מתקנים רק טקסט ו־id, לא כותבים פונקציה חדשה.', check: { htmlIncludes: ['id="message"'], jsIncludes: ['getElementById("message")'] } },
-        { id: 8, minutes: '76–84', title: 'תרגול 8 — הצגת הכרטיס', prompt: 'תנו לחבר/ה ללחוץ על הכפתור ולהגיד איזה בלוק הכי שינה את הכרטיס.', hint: 'הסבירו במילים: הבלוק הזה שינה HTML / CSS / JavaScript.', check: { htmlIncludes: ['button'], cssIncludes: ['border-radius'], jsIncludes: ['textContent'] } }
+        { id: 1, minutes: '18–24', title: 'תרגיל 1 — מפעילים בלוק מבנה', prompt: 'לחצו על הבלוק “צור כרטיס אישי”, הריצו, ובדקו מה השתנה בכותרת.', hint: 'אל תכתבו קוד עדיין — רק לחצו על הבלוק והסתכלו על HTML.', check: { htmlIncludes: ['מפתח/ת צעיר/ה'] } },
+        { id: 2, minutes: '24–30', title: 'תרגיל 2 — בלוק משפט אישי', prompt: 'הפעילו בלוק שמחליף את המשפט בכרטיס, ואז מצאו את המשפט בתוך HTML.', hint: 'המשפט נמצא בתוך תגית <p>.', check: { htmlIncludes: ['ליצור דברים בדפדפן'] } },
+        { id: 3, minutes: '30–38', title: 'תרגיל 3 — בלוק צבע רקע', prompt: 'הפעילו בלוק עיצוב שמשנה צבע רקע, ואז עברו ללשונית CSS וראו את background.', hint: 'CSS אחראי לאיך האתר נראה.', check: { cssIncludes: ['background: #fef3c7'] } },
+        { id: 4, minutes: '38–46', title: 'תרגיל 4 — בלוק כפתור', prompt: 'הפעילו בלוק שמשנה את טקסט הכפתור ל“גלו הודעה”.', hint: 'הכפתור עדיין מפעיל onclick, אבל אנחנו משנים רק את הטקסט שלו.', check: { htmlIncludes: ['גלו הודעה', 'onclick="sayHello()"'] } },
+        { id: 5, minutes: '46–56', title: 'תרגיל 5 — בלוק הודעה בלחיצה', prompt: 'הפעילו בלוק שמשנה את ההודעה שמופיעה אחרי לחיצה על הכפתור.', hint: 'זו הצצה ל־JavaScript: הוא משנה textContent.', check: { jsIncludes: ['ברוכים הבאים לאתר הראשון שלי'] } },
+        { id: 6, minutes: '56–66', title: 'תרגיל 6 — שינוי בטוח בקוד', prompt: 'עכשיו מותר לשנות רק מילה אחת בתוך הכותרת או המשפט. הריצו ובדקו.', hint: 'שנו טקסט בין תגיות, לא את הסימנים < >.', check: { htmlIncludes: ['<h1', '<p'] } },
+        { id: 7, minutes: '66–76', title: 'תרגיל 7 — דיבאג עדין', prompt: 'אם משהו נשבר, לחצו איפוס או בדקו שלא מחקתם גרשיים/סוגריים. נסו לתקן בעזרת הרמז.', hint: 'בשיעור 1 מתקנים רק טקסט ו־id, לא כותבים פונקציה חדשה.', check: { htmlIncludes: ['id="message"'], jsIncludes: ['getElementById("message")'] } },
+        { id: 8, minutes: '76–84', title: 'תרגיל 8 — הצגת הכרטיס', prompt: 'תנו לחבר/ה ללחוץ על הכפתור ולהגיד איזה בלוק הכי שינה את הכרטיס.', hint: 'הסבירו במילים: הבלוק הזה שינה HTML / CSS / JavaScript.', check: { htmlIncludes: ['button'], cssIncludes: ['border-radius'], jsIncludes: ['textContent'] } }
       ],
       aiHelper: [
         'הציעו לילד/ה 3 רעיונות למשפט פתיחה מצחיק לכרטיס אישי.',
@@ -64,19 +64,19 @@
         { minutes: '8–18', title: 'בלוק עיצוב ראשון', teacher: 'לוחצים יחד על בלוק “פלטת צבעים” ומראים ששורת background ב־CSS השתנתה.', students: 'רואים שבלוק עיצוב משנה CSS, לא HTML.' },
         { minutes: '18–34', title: 'בנייה מודרכת בבלוקי CSS', teacher: 'מפעילים בלוקים: בחר דמות, פלטת צבעים, כפתור משתנה.', students: 'לוחצים על בלוקים, מריצים, ומתארים מה השתנה ויזואלית.' },
         { minutes: '34–50', title: 'קוראים CSS בעיניים', teacher: 'לא כותבים CSS חופשי. רק מזהים מילים: background, padding, border-radius, button.', students: 'מסמנים איפה ב־CSS מופיעים צבע, ריווח וצורת כפתור.' },
-        { minutes: '50–66', title: 'תרגול עצמאי בבלוקים', teacher: 'נותנים לתלמידים לבחור בלוקי עיצוב ולהשלים כרטיס אישי.', students: 'מבצעים תרגולים 1–5 בעזרת בלוקים ושינויים קטנים בלבד.' },
+        { minutes: '50–66', title: 'תרגיל עצמאי בבלוקים', teacher: 'נותנים לתלמידים לבחור בלוקי עיצוב ולהשלים כרטיס אישי.', students: 'מבצעים תרגילים 1–5 בעזרת בלוקים ושינויים קטנים בלבד.' },
         { minutes: '66–78', title: 'Hover כהפתעה', teacher: 'מדגימים אפקט מעבר עכבר כבלוק מוכן, בלי להעמיס סינטקס.', students: 'מפעילים/משנים hover ובודקים מה קורה לכפתור.' },
         { minutes: '78–90', title: 'גלריית עיצוב', teacher: 'מבקשים מכל תלמיד להסביר החלטת עיצוב אחת והקוד שהיא שינתה.', students: 'מציגים כרטיס ואומרים: “הבלוק הזה שינה את ___ ב־CSS”.' }
       ],
       exercises: [
-        { id: 1, minutes: '18–24', title: 'תרגול 1 — בלוק דמות', prompt: 'לחצו על בלוק “בחר דמות” ובדקו שהאימוג׳י בכרטיס השתנה.', hint: 'הבלוק משנה HTML קטן בתוך class="avatar".', check: { htmlIncludes: ['🎮'] } },
-        { id: 2, minutes: '24–31', title: 'תרגול 2 — בלוק פלטת צבעים', prompt: 'הפעילו בלוק פלטת צבעים ואז מצאו את linear-gradient ב־CSS.', hint: 'לא כותבים גרדיאנט לבד — רק רואים איפה הוא נוצר.', check: { cssIncludes: ['#fdf2f8', '#dcfce7'] } },
-        { id: 3, minutes: '31–39', title: 'תרגול 3 — בלוק כפתור', prompt: 'הפעילו בלוק שמשנה את צבע הכפתור.', hint: 'הבלוק משנה background בתוך button.', check: { cssIncludes: ['background: #7c3aed'] } },
-        { id: 4, minutes: '39–48', title: 'תרגול 4 — קוראים CSS', prompt: 'מצאו בקוד CSS שלושה דברים: background, padding, border-radius.', hint: 'אלה מילים של עיצוב: צבע, ריווח ועיגול.', check: { cssIncludes: ['background', 'padding', 'border-radius'] } },
-        { id: 5, minutes: '48–57', title: 'תרגול 5 — שינוי טקסט בטוח', prompt: 'שנו רק פריט אחד ברשימת הפרטים שלכם.', hint: 'שנו מילים בתוך <li>, לא את הסימנים.', check: { htmlIncludes: ['<li>'] } },
-        { id: 6, minutes: '57–66', title: 'תרגול 6 — בלוק Hover', prompt: 'הפעילו בלוק שמוסיף אפקט לכפתור במעבר עכבר.', hint: 'חפשו button:hover ב־CSS.', check: { cssIncludes: ['button:hover', 'transform: scale'] } },
-        { id: 7, minutes: '66–76', title: 'תרגול 7 — דיבאג CSS עדין', prompt: 'אם עיצוב נשבר, בדקו נקודה לפני class וסוגריים מסולסלים.', hint: 'class ב־CSS מתחיל בנקודה, למשל .profile-card.', check: { cssIncludes: ['.profile-card'] } },
-        { id: 8, minutes: '76–84', title: 'תרגול 8 — גלריית עיצוב', prompt: 'הציגו לחבר/ה איזה בלוק עיצוב הכי שינה את הכרטיס שלכם.', hint: 'הסבירו: הבלוק שינה צבע / צורה / תנועה.', check: { htmlIncludes: ['class="avatar"'], cssIncludes: ['button', 'background'] } }
+        { id: 1, minutes: '18–24', title: 'תרגיל 1 — בלוק דמות', prompt: 'לחצו על בלוק “בחר דמות” ובדקו שהאימוג׳י בכרטיס השתנה.', hint: 'הבלוק משנה HTML קטן בתוך class="avatar".', check: { htmlIncludes: ['🎮'] } },
+        { id: 2, minutes: '24–31', title: 'תרגיל 2 — בלוק פלטת צבעים', prompt: 'הפעילו בלוק פלטת צבעים ואז מצאו את linear-gradient ב־CSS.', hint: 'לא כותבים גרדיאנט לבד — רק רואים איפה הוא נוצר.', check: { cssIncludes: ['#fdf2f8', '#dcfce7'] } },
+        { id: 3, minutes: '31–39', title: 'תרגיל 3 — בלוק כפתור', prompt: 'הפעילו בלוק שמשנה את צבע הכפתור.', hint: 'הבלוק משנה background בתוך button.', check: { cssIncludes: ['background: #7c3aed'] } },
+        { id: 4, minutes: '39–48', title: 'תרגיל 4 — קוראים CSS', prompt: 'מצאו בקוד CSS שלושה דברים: background, padding, border-radius.', hint: 'אלה מילים של עיצוב: צבע, ריווח ועיגול.', check: { cssIncludes: ['background', 'padding', 'border-radius'] } },
+        { id: 5, minutes: '48–57', title: 'תרגיל 5 — שינוי טקסט בטוח', prompt: 'שנו רק פריט אחד ברשימת הפרטים שלכם.', hint: 'שנו מילים בתוך <li>, לא את הסימנים.', check: { htmlIncludes: ['<li>'] } },
+        { id: 6, minutes: '57–66', title: 'תרגיל 6 — בלוק Hover', prompt: 'הפעילו בלוק שמוסיף אפקט לכפתור במעבר עכבר.', hint: 'חפשו button:hover ב־CSS.', check: { cssIncludes: ['button:hover', 'transform: scale'] } },
+        { id: 7, minutes: '66–76', title: 'תרגיל 7 — דיבאג CSS עדין', prompt: 'אם עיצוב נשבר, בדקו נקודה לפני class וסוגריים מסולסלים.', hint: 'class ב־CSS מתחיל בנקודה, למשל .profile-card.', check: { cssIncludes: ['.profile-card'] } },
+        { id: 8, minutes: '76–84', title: 'תרגיל 8 — גלריית עיצוב', prompt: 'הציגו לחבר/ה איזה בלוק עיצוב הכי שינה את הכרטיס שלכם.', hint: 'הסבירו: הבלוק שינה צבע / צורה / תנועה.', check: { htmlIncludes: ['class="avatar"'], cssIncludes: ['button', 'background'] } }
       ],
       aiHelper: [
         'הציעו שלוש פלטות צבעים לכרטיס של תלמיד/ה שאוהב/ת ספורט, חלל או מוזיקה.',
@@ -110,19 +110,19 @@
         { minutes: '8–18', title: 'הדגמת בלוק מצב', teacher: 'לוחצים על בלוק “מצב שמח” ומראים שהוא משנה טקסט בתוך פונקציה.', students: 'לוחצים, מריצים, ורואים שהכפתור משנה הודעה במסך.' },
         { minutes: '18–34', title: 'בנייה מודרכת בבלוקי פעולה', teacher: 'מפעילים בלוקים: מצב שמח, מצב רובוט, מצב קסם.', students: 'בודקים כל כפתור ומסבירים מה השתנה: אימוג׳י, טקסט או צבע.' },
         { minutes: '34–50', title: 'מציצים לקוד פעולה', teacher: 'לא כותבים פונקציות חדשות. רק מזהים onclick ב־HTML ו־function ב־JS עם אותו שם.', students: 'מחברים בין שם הכפתור לשם הפונקציה.' },
-        { minutes: '50–66', title: 'תרגול עצמאי עם בלוקים', teacher: 'נותנים לתלמידים להפעיל בלוקי פעולה ולשנות טקסטים בטוחים.', students: 'מבצעים תרגולים 1–5 בלי להמציא סינטקס חדש.' },
+        { minutes: '50–66', title: 'תרגיל עצמאי עם בלוקים', teacher: 'נותנים לתלמידים להפעיל בלוקי פעולה ולשנות טקסטים בטוחים.', students: 'מבצעים תרגילים 1–5 בלי להמציא סינטקס חדש.' },
         { minutes: '66–78', title: 'Toggle כמתג', teacher: 'מדגימים את בלוק “הדלק/כבה עיצוב” כמתג שמוסיף ומסיר class.', students: 'לוחצים כמה פעמים ומבינים שיש מצב דולק/כבוי.' },
         { minutes: '78–90', title: 'הצגת שרשרת פעולה', teacher: 'מבקשים מכל תלמיד להסביר שרשרת אחת: בלוק → כפתור → פונקציה → שינוי במסך.', students: 'מציגים מצב אחד שבנו ומסבירים אותו במילים.' }
       ],
       exercises: [
-        { id: 1, minutes: '18–24', title: 'תרגול 1 — בלוק מצב שמח', prompt: 'הפעילו את בלוק “מצב שמח”, הריצו, ולחצו על הכפתור.', hint: 'הבלוק משנה טקסט בתוך function makeHappy.', check: { jsIncludes: ['מצב שמח הופעל'] } },
-        { id: 2, minutes: '24–31', title: 'תרגול 2 — בלוק מצב רובוט', prompt: 'הפעילו את בלוק “מצב רובוט” ובדקו שההודעה השתנתה.', hint: 'חפשו את function makeRobot.', check: { jsIncludes: ['הרובוט התחיל לעבוד'] } },
-        { id: 3, minutes: '31–39', title: 'תרגול 3 — בלוק מצב קסם', prompt: 'הפעילו בלוק שמשנה את העיצוב של מצב הקסם.', hint: 'הבלוק משנה CSS בתוך .magic.', check: { cssIncludes: ['border: 4px solid #7c3aed'] } },
-        { id: 4, minutes: '39–48', title: 'תרגול 4 — מצאו את onclick', prompt: 'עברו ל־HTML ומצאו איפה הכפתור קורא לפונקציה.', hint: 'חפשו onclick="makeHappy()" או onclick="makeRobot()".', check: { htmlIncludes: ['onclick="makeHappy()"', 'onclick="makeRobot()"'] } },
-        { id: 5, minutes: '48–57', title: 'תרגול 5 — מצאו את function', prompt: 'עברו ל־JavaScript ומצאו function עם אותו שם כמו הכפתור.', hint: 'שם ב־onclick ושם ב־function חייבים להיות זהים.', check: { jsIncludes: ['function makeHappy', 'function makeRobot'] } },
-        { id: 6, minutes: '57–66', title: 'תרגול 6 — בלוק Toggle', prompt: 'הפעילו את בלוק הדלק/כבה עיצוב ובדקו את classList.toggle.', hint: 'זה מתג: לחיצה אחת מדליקה, לחיצה נוספת מכבה.', check: { jsIncludes: ['classList.toggle("magic")'] } },
-        { id: 7, minutes: '66–76', title: 'תרגול 7 — דיבאג שם פעולה', prompt: 'אם כפתור לא עובד, בדקו שהשם ב־onclick זהה לשם ה־function.', hint: 'לא מוסיפים פונקציה חדשה בשיעור הזה — רק מתקנים שמות.', check: { htmlIncludes: ['makeRobot()'], jsIncludes: ['function makeRobot'] } },
-        { id: 8, minutes: '76–84', title: 'תרגול 8 — הצגת מצב', prompt: 'בחרו כפתור אחד והסבירו: איזה בלוק שינה אותו ומה קורה בלחיצה.', hint: 'השתמשו במילים: בלוק, כפתור, פונקציה, שינוי במסך.', check: { htmlIncludes: ['button'], jsIncludes: ['function', 'textContent'] } }
+        { id: 1, minutes: '18–24', title: 'תרגיל 1 — בלוק מצב שמח', prompt: 'הפעילו את בלוק “מצב שמח”, הריצו, ולחצו על הכפתור.', hint: 'הבלוק משנה טקסט בתוך function makeHappy.', check: { jsIncludes: ['מצב שמח הופעל'] } },
+        { id: 2, minutes: '24–31', title: 'תרגיל 2 — בלוק מצב רובוט', prompt: 'הפעילו את בלוק “מצב רובוט” ובדקו שההודעה השתנתה.', hint: 'חפשו את function makeRobot.', check: { jsIncludes: ['הרובוט התחיל לעבוד'] } },
+        { id: 3, minutes: '31–39', title: 'תרגיל 3 — בלוק מצב קסם', prompt: 'הפעילו בלוק שמשנה את העיצוב של מצב הקסם.', hint: 'הבלוק משנה CSS בתוך .magic.', check: { cssIncludes: ['border: 4px solid #7c3aed'] } },
+        { id: 4, minutes: '39–48', title: 'תרגיל 4 — מצאו את onclick', prompt: 'עברו ל־HTML ומצאו איפה הכפתור קורא לפונקציה.', hint: 'חפשו onclick="makeHappy()" או onclick="makeRobot()".', check: { htmlIncludes: ['onclick="makeHappy()"', 'onclick="makeRobot()"'] } },
+        { id: 5, minutes: '48–57', title: 'תרגיל 5 — מצאו את function', prompt: 'עברו ל־JavaScript ומצאו function עם אותו שם כמו הכפתור.', hint: 'שם ב־onclick ושם ב־function חייבים להיות זהים.', check: { jsIncludes: ['function makeHappy', 'function makeRobot'] } },
+        { id: 6, minutes: '57–66', title: 'תרגיל 6 — בלוק Toggle', prompt: 'הפעילו את בלוק הדלק/כבה עיצוב ובדקו את classList.toggle.', hint: 'זה מתג: לחיצה אחת מדליקה, לחיצה נוספת מכבה.', check: { jsIncludes: ['classList.toggle("magic")'] } },
+        { id: 7, minutes: '66–76', title: 'תרגיל 7 — דיבאג שם פעולה', prompt: 'אם כפתור לא עובד, בדקו שהשם ב־onclick זהה לשם ה־function.', hint: 'לא מוסיפים פונקציה חדשה בשיעור הזה — רק מתקנים שמות.', check: { htmlIncludes: ['makeRobot()'], jsIncludes: ['function makeRobot'] } },
+        { id: 8, minutes: '76–84', title: 'תרגיל 8 — הצגת מצב', prompt: 'בחרו כפתור אחד והסבירו: איזה בלוק שינה אותו ומה קורה בלחיצה.', hint: 'השתמשו במילים: בלוק, כפתור, פונקציה, שינוי במסך.', check: { htmlIncludes: ['button'], jsIncludes: ['function', 'textContent'] } }
       ],
       aiHelper: [
         'הסבירו לילד בכיתה ד׳ מה הקשר בין onclick לבין function.',
@@ -162,14 +162,14 @@
         { minutes: '80–90', title: 'תערוכת מחוללים מצחיקים', teacher: 'כל תלמיד נותן לחבר למלא את המחולל ומסביר איזה שדה נקרא בקוד.', students: 'מציגים מחולל ואומרים: “הקוד קרא את ___ מתוך השדה”.' }
       ],
       exercises: [
-        { id: 1, minutes: '0–6', title: 'תרגול 1 — בדיקת קסם אישי', prompt: 'בתצוגה החיה משמאל, כתבו שם ונושא לברכה בתוך שני השדות, לחצו על “צרו ברכה מצחיקה”, ובדקו שהברכה משתמשת במה שהקלדתם.', hint: 'לא צריך לכתוב קוד בתרגול הזה. אם כתבתם “נועה” ו“רובוטים”, שני הדברים צריכים להופיע בברכה.', check: { jsIncludes: ['function makeGreeting'], requiresPreviewButtonText: 'צרו ברכה מצחיקה', requiresPreviewFilledInputs: ['nameInput', 'hobbyInput'], requiresPreviewResultFromInputs: ['nameInput', 'hobbyInput'], previewClickFeedback: 'כמעט. בתצוגה החיה משמאל לחצו על הכפתור “צרו ברכה מצחיקה”.', previewInputFeedback: 'כמעט. קודם כתבו שם ונושא לברכה בתוך שני השדות שבתצוגה החיה משמאל, ואז לחצו על הכפתור.', previewResultFeedback: 'כמעט. לחצתם על הכפתור, אבל התוצאה עדיין לא משתמשת גם בשם וגם בנושא שהקלדתם.' } },
-        { id: 2, minutes: '6–14', title: 'תרגול 2 — מי המציא את המשפט הכי מצחיק?', prompt: 'נסו שלושה זוגות של שם+נושא ובחרו את התוצאה הכי מצחיקה.', hint: 'זה עדיין אותו קוד — רק ה־value שהמשתמש מקליד משתנה.', check: { htmlIncludes: ['id="nameInput"', 'id="hobbyInput"'], jsIncludes: ['textContent'] } },
-        { id: 3, minutes: '14–24', title: 'תרגול 3 — כלי עזר לשדה שם', prompt: 'לחצו על כלי העזר “שדה שם” ובדקו שבתצוגה הכותרת מעל השדה הראשון השתנתה ל“מה השם שלך?”.', hint: 'זה לא בלוק לגרירה ולא הכפתור שבתצוגה — זה כלי עזר שמעדכן טקסט גלוי ב־HTML.', check: { htmlIncludes: ['מה השם שלך?'] } },
-        { id: 4, minutes: '24–34', title: 'תרגול 4 — כלי עזר לשדה נושא', prompt: 'לחצו על כלי העזר “שדה נושא” ובדקו שבתצוגה הכותרת מעל השדה השני השתנתה ל“על מה הברכה?”.', hint: 'זה כלי עזר מוכן, לא בלוק לגרירה ולא הכפתור שבתצוגה. הוא משנה טקסט גלוי ליד hobbyInput.', check: { htmlIncludes: ['על מה הברכה?'] } },
-        { id: 5, minutes: '34–44', title: 'תרגול 5 — מוצאים את value', prompt: 'פתחו “הצצה לקוד” ומצאו בקוד JavaScript את השורה שקוראת את השם מהשדה.', hint: 'חפשו value. לא צריך לכתוב את זה לבד.', check: { jsIncludes: ['getElementById("nameInput").value'], requiresCodePeek: true, codePeekFeedback: 'כמעט. פתחו את “לראות קוד שנוצר” וחפשו את value ב־JavaScript.' } },
-        { id: 6, minutes: '44–58', title: 'תרגול 6 — משפט אישי יותר', prompt: 'לחצו על כלי העזר “צור משפט אישי”, ואז בדקו בתצוגה עם שם ונושא אמיתיים.', hint: 'כלי העזר מעדכן חלק מה־textContent. אחר כך צריך ללחוץ שוב על “צרו ברכה מצחיקה” בתצוגה כדי לראות את המשפט החדש.', check: { jsIncludes: ['נהדר! שמעתי שהנושא שלך הוא'] } },
-        { id: 7, minutes: '58–72', title: 'תרגול 7 — שינוי טקסט בטוח', prompt: 'שנו כותרת, טקסט כפתור או משפט פתיחה — אבל אל תשנו id.', hint: 'אל תשנו nameInput או hobbyInput בתרגול הזה.', check: { htmlIncludes: ['id="nameInput"', 'id="hobbyInput"'] } },
-        { id: 8, minutes: '72–84', title: 'תרגול 8 — תערוכת מחוללים', prompt: 'תנו לחבר/ה למלא את המחולל והסבירו איזה שדה הקוד קרא.', hint: 'השתמשו במילים: input, id, value.', check: { htmlIncludes: ['input', 'button'], jsIncludes: ['value', 'textContent'] } }
+        { id: 1, minutes: '0–6', title: 'תרגיל 1 — בדיקת קסם אישי', prompt: 'בתצוגה החיה משמאל, כתבו שם ונושא לברכה בתוך שני השדות, לחצו על “צרו ברכה מצחיקה”, ובדקו שהברכה משתמשת במה שהקלדתם.', hint: 'לא צריך לכתוב קוד בתרגיל הזה. אם כתבתם “נועה” ו“רובוטים”, שני הדברים צריכים להופיע בברכה.', check: { jsIncludes: ['function makeGreeting'], requiresPreviewButtonText: 'צרו ברכה מצחיקה', requiresPreviewFilledInputs: ['nameInput', 'hobbyInput'], requiresPreviewResultFromInputs: ['nameInput', 'hobbyInput'], previewClickFeedback: 'כמעט. בתצוגה החיה משמאל לחצו על הכפתור “צרו ברכה מצחיקה”.', previewInputFeedback: 'כמעט. קודם כתבו שם ונושא לברכה בתוך שני השדות שבתצוגה החיה משמאל, ואז לחצו על הכפתור.', previewResultFeedback: 'כמעט. לחצתם על הכפתור, אבל התוצאה עדיין לא משתמשת גם בשם וגם בנושא שהקלדתם.' } },
+        { id: 2, minutes: '6–14', title: 'תרגיל 2 — מי המציא את המשפט הכי מצחיק?', prompt: 'נסו שלושה זוגות של שם+נושא ובחרו את התוצאה הכי מצחיקה.', hint: 'זה עדיין אותו קוד — רק ה־value שהמשתמש מקליד משתנה.', check: { htmlIncludes: ['id="nameInput"', 'id="hobbyInput"'], jsIncludes: ['textContent'] } },
+        { id: 3, minutes: '14–24', title: 'תרגיל 3 — כלי עזר לשדה שם', prompt: 'לחצו על כלי העזר “שדה שם” ובדקו שבתצוגה הכותרת מעל השדה הראשון השתנתה ל“מה השם שלך?”.', hint: 'זה לא בלוק לגרירה ולא הכפתור שבתצוגה — זה כלי עזר שמעדכן טקסט גלוי ב־HTML.', check: { htmlIncludes: ['מה השם שלך?'] } },
+        { id: 4, minutes: '24–34', title: 'תרגיל 4 — כלי עזר לשדה נושא', prompt: 'לחצו על כלי העזר “שדה נושא” ובדקו שבתצוגה הכותרת מעל השדה השני השתנתה ל“על מה הברכה?”.', hint: 'זה כלי עזר מוכן, לא בלוק לגרירה ולא הכפתור שבתצוגה. הוא משנה טקסט גלוי ליד hobbyInput.', check: { htmlIncludes: ['על מה הברכה?'] } },
+        { id: 5, minutes: '34–44', title: 'תרגיל 5 — מוצאים את value', prompt: 'פתחו “הצצה לקוד” ומצאו בקוד JavaScript את השורה שקוראת את השם מהשדה.', hint: 'חפשו value. לא צריך לכתוב את זה לבד.', check: { jsIncludes: ['getElementById("nameInput").value'], requiresCodePeek: true, codePeekFeedback: 'כמעט. פתחו את “לראות קוד שנוצר” וחפשו את value ב־JavaScript.' } },
+        { id: 6, minutes: '44–58', title: 'תרגיל 6 — משפט אישי יותר', prompt: 'לחצו על כלי העזר “צור משפט אישי”, ואז בדקו בתצוגה עם שם ונושא אמיתיים.', hint: 'כלי העזר מעדכן חלק מה־textContent. אחר כך צריך ללחוץ שוב על “צרו ברכה מצחיקה” בתצוגה כדי לראות את המשפט החדש.', check: { jsIncludes: ['נהדר! שמעתי שהנושא שלך הוא'] } },
+        { id: 7, minutes: '58–72', title: 'תרגיל 7 — שינוי טקסט בטוח', prompt: 'שנו כותרת, טקסט כפתור או משפט פתיחה — אבל אל תשנו id.', hint: 'אל תשנו nameInput או hobbyInput בתרגיל הזה.', check: { htmlIncludes: ['id="nameInput"', 'id="hobbyInput"'] } },
+        { id: 8, minutes: '72–84', title: 'תרגיל 8 — תערוכת מחוללים', prompt: 'תנו לחבר/ה למלא את המחולל והסבירו איזה שדה הקוד קרא.', hint: 'השתמשו במילים: input, id, value.', check: { htmlIncludes: ['input', 'button'], jsIncludes: ['value', 'textContent'] } }
       ],
       aiHelper: [
         'הציעו 5 רעיונות למחוללים מצחיקים שמתאימים לכיתה ד׳.',
@@ -188,35 +188,35 @@
     },
     {
       id: 5,
-      title: 'חידון כן או לא — בלוקי תנאי נקיים',
+      title: 'חידון תשובה חופשית — בלוקי תנאי נקיים',
       concept: 'בלוקי תנאי → JavaScript: אם / אחרת ומשוב',
       durationMinutes: 90,
-      story: 'בונים חידון קטן דרך בלוקי תנאי עם שתי בחירות מוכנות: כן או לא. קודם מבינים “אם הבחירה נכונה / אחרת”, ורק אחר כך מציצים ל־if/else שנוצר בקוד.' ,
-      mission: 'לבנות חידון אינטראקטיבי בעזרת בלוקי תנאי, בלי להסתבך בהקלדת טקסט מדויקת.' ,
-      outcome: 'חידון קצר שנבנה מבלוקי תנאי, עם בחירה מוכנה, if/else ומשוב צבעוני',
+      story: 'בונים חידון קטן דרך בלוקי תנאי עם שאלה ותשובה נכונה שאפשר לכתוב לבד. קודם מבינים “אם התשובה שווה לערך הנכון / אחרת”, ורק אחר כך מציצים ל־if/else שנוצר בקוד.' ,
+      mission: 'לבנות חידון אינטראקטיבי בעזרת בלוקי תנאי, עם תשובה נכונה חופשית שמתאימה לשאלה שהתלמידים כתבו.' ,
+      outcome: 'חידון קצר שנבנה מבלוקי תנאי, עם שדה תשובה חופשית, if/else ומשוב צבעוני',
       starter: {
-        html: '<main class="quiz">\n  <h1>חידון כן או לא</h1>\n  <p class="question">CSS אחראי על העיצוב של העמוד?</p>\n  <button onclick="chooseAnswer(\'yes\')">כן</button>\n  <button onclick="chooseAnswer(\'no\')">לא</button>\n  <p id="feedback">בחרו תשובה ותקבלו משוב...</p>\n</main>',
-        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #f0fdf4, #eff6ff);\n}\n\n.quiz {\n  background: white;\n  width: 390px;\n  margin: 45px auto;\n  padding: 28px;\n  border-radius: 28px;\n  box-shadow: 0 16px 35px #bbf7d0;\n}\n\n.question {\n  font-size: 22px;\n  font-weight: bold;\n}\n\nbutton {\n  margin: 14px 6px 0;\n  background: #16a34a;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 20px;\n  font-weight: bold;\n}\n\nbutton:last-of-type {\n  background: #2563eb;\n}\n\n.correct { color: #15803d; font-weight: bold; }\n.wrong { color: #b91c1c; font-weight: bold; }',
-        js: 'function chooseAnswer(choice) {\n  const feedback = document.getElementById("feedback");\n\n  if (choice === "yes") {\n    feedback.textContent = "נכון! CSS אחראי על העיצוב 🎨";\n    feedback.className = "correct";\n  } else {\n    feedback.textContent = "לא בדיוק. CSS הוא הצד של הצבעים והעיצוב.";\n    feedback.className = "wrong";\n  }\n}'
+        html: '<main class="quiz">\n  <h1>חידון תשובה קצרה</h1>\n  <p class="question">CSS אחראי על העיצוב של העמוד?</p>\n  <input id="answerInput" placeholder="כתבו תשובה כאן">\n  <button onclick="checkAnswer()">בדקו תשובה</button>\n  <p id="feedback">כתבו תשובה ותקבלו משוב...</p>\n</main>',
+        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #f0fdf4, #eff6ff);\n}\n\n.quiz {\n  background: white;\n  width: 390px;\n  margin: 45px auto;\n  padding: 28px;\n  border-radius: 28px;\n  box-shadow: 0 16px 35px #bbf7d0;\n}\n\n.question {\n  font-size: 22px;\n  font-weight: bold;\n}\n\ninput {\n  display: block;\n  width: min(260px, 84%);\n  margin: 16px auto 10px;\n  padding: 12px 14px;\n  border: 2px solid #bbf7d0;\n  border-radius: 16px;\n  text-align: center;\n}\n\nbutton {\n  display: block;\n  margin: 12px auto 0;\n  background: #16a34a;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 22px;\n  font-weight: bold;\n}\n\n.correct { color: #15803d; font-weight: bold; }\n.wrong { color: #b91c1c; font-weight: bold; }',
+        js: 'function checkAnswer() {\n  const answer = document.getElementById("answerInput").value.trim();\n  const feedback = document.getElementById("feedback");\n\n  if (answer === "CSS") {\n    feedback.textContent = "נכון! CSS אחראי על העיצוב 🎨";\n    feedback.className = "correct";\n  } else {\n    feedback.textContent = "לא בדיוק. CSS הוא הצד של הצבעים והעיצוב.";\n    feedback.className = "wrong";\n  }\n}'
       },
       lessonFlow: [
-        { minutes: '0–8', title: 'פתיחה: בלוק שמחליט', teacher: 'מציגים חידון עם שני כפתורים ושואלים איך האתר יודע אם לחצנו נכון.', students: 'מזהים שאלה, שתי בחירות, הצלחה ורמז.' },
-        { minutes: '8–18', title: 'בלוק תנאי ראשון', teacher: 'מפעילים בלוק “שאלה חדשה” ובלוק “בחירה נכונה”, ואז מציצים ל־if בקוד.', students: 'רואים שהתנאי בודק בחירה אחת מוכנה, לא טקסט שהקלידו.' },
-        { minutes: '18–34', title: 'בנייה מודרכת בבלוקי חידון', teacher: 'מפעילים בלוקים: שאלה, בחירה נכונה, הודעת הצלחה, הודעת אחרת.', students: 'מריצים ולוחצים על שתי הבחירות כדי לראות שתי תוצאות.' },
+        { minutes: '0–8', title: 'פתיחה: בלוק שמחליט', teacher: 'מציגים חידון עם שדה תשובה ושואלים איך האתר יודע אם כתבנו נכון.', students: 'מזהים שאלה, שדה תשובה, הצלחה ורמז.' },
+        { minutes: '8–18', title: 'בלוק תנאי ראשון', teacher: 'מפעילים בלוק “שאלה חדשה” ובלוק “תשובה נכונה”, ואז מציצים ל־if בקוד.', students: 'רואים שהתנאי בודק טקסט שאפשר לבחור לפי השאלה, לא רשימת אפשרויות מוגבלת.' },
+        { minutes: '18–34', title: 'בנייה מודרכת בבלוקי חידון', teacher: 'מפעילים בלוקים: שאלה, תשובה נכונה, הודעת הצלחה, הודעת אחרת.', students: 'מריצים, כותבים תשובה נכונה ושגויה, ורואים שתי תוצאות.' },
         { minutes: '34–50', title: 'מציצים ל־if/else', teacher: 'לא כותבים תנאי חופשי. רק מזהים if, else ושתי תוצאות אפשריות.', students: 'מסמנים מה קורה אם נכון ומה קורה אחרת.' },
-        { minutes: '50–66', title: 'תרגול עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לבנות חידון כן/לא אישי דרך בלוקים ושינויי טקסט בטוחים.', students: 'מבצעים תרגולים 1–5.' },
-        { minutes: '66–78', title: 'דיבאג תנאי עדין', teacher: 'מדגימים בחירה נכונה שהוגדרה הפוך ומחזירים לרעיון: התנאי בודק בחירה.', students: 'בודקים האם ה־if מתאים לכפתור הנכון.' },
+        { minutes: '50–66', title: 'תרגיל עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לבנות חידון אישי דרך בלוקים ושינויי טקסט בטוחים.', students: 'מבצעים תרגילים 1–5.' },
+        { minutes: '66–78', title: 'דיבאג תנאי עדין', teacher: 'מדגימים תשובה נכונה שלא מתאימה לשאלה ומחזירים לרעיון: התנאי בודק טקסט מדויק.', students: 'בודקים האם ה־if מתאים לתשובה הנכונה שכתבו.' },
         { minutes: '78–90', title: 'חידון חברים', teacher: 'מחלקים זוגות לבדיקה ומשוב.', students: 'מנסים חידון של חבר ומסבירים את כלל ה־אם/אחרת.' }
       ],
       exercises: [
-        { id: 1, minutes: '18–24', title: 'תרגול 1 — בלוק שאלה', prompt: 'הפעילו בלוק “שאלה חדשה” ובדקו שהשאלה בחידון השתנתה.', hint: 'הבלוק משנה את הטקסט ב־class="question".', check: { htmlIncludes: ['איזו שפה גורמת לכפתור להגיב?'] } },
-        { id: 2, minutes: '24–31', title: 'תרגול 2 — בלוק בחירה נכונה', prompt: 'הפעילו בלוק “בחירה נכונה: לא” ובדקו שהתנאי עבר לבדוק no.', hint: 'חפשו choice === "no".', check: { jsIncludes: ['choice === "no"'] } },
-        { id: 3, minutes: '31–39', title: 'תרגול 3 — בלוק הצלחה', prompt: 'הפעילו בלוק הודעת הצלחה שמתאים לשאלה החדשה.', hint: 'ההודעה נמצאת בתוך ה־if.', check: { jsIncludes: ['נכון! JavaScript מפעיל תגובות'] } },
-        { id: 4, minutes: '39–47', title: 'תרגול 4 — בלוק אחרת', prompt: 'הפעילו בלוק הודעה לתשובה השנייה.', hint: 'ההודעה נמצאת בתוך else.', check: { jsIncludes: ['רמז: JavaScript היא השפה של הפעולות'] } },
-        { id: 5, minutes: '47–56', title: 'תרגול 5 — בודקים אם/אחרת', prompt: 'הריצו, לחצו על שני הכפתורים, וראו שתי תגובות שונות.', hint: 'if הוא נכון, else הוא כל בחירה אחרת.', check: { jsIncludes: ['if', 'else'] } },
-        { id: 6, minutes: '56–65', title: 'תרגול 6 — צבעי משוב', prompt: 'שנו צבעי correct/wrong רק אם אתם מרגישים בטוחים.', hint: 'זה שינוי CSS קטן, לא חובה לשנות מבנה.', check: { cssIncludes: ['.correct', '.wrong'] } },
-        { id: 7, minutes: '65–75', title: 'תרגול 7 — דיבאג בחירה', prompt: 'אם הכפתור הנכון מסומן כשגוי, בדקו שה־if בודק yes או no לפי השאלה.', hint: 'אין פה אותיות גדולות/קטנות. בודקים רק איזו בחירה הכפתור שולח.', check: { htmlIncludes: ['chooseAnswer'], jsIncludes: ['choice ==='] } },
-        { id: 8, minutes: '75–84', title: 'תרגול 8 — חידון חברים', prompt: 'תנו לחבר לענות והסבירו איפה ה־if ואיפה ה־else.', hint: 'השתמשו במילים: אם נכון / אחרת / משוב.', check: { htmlIncludes: ['button'], jsIncludes: ['if', 'else'] } }
+        { id: 1, minutes: '18–24', title: 'תרגיל 1 — בלוק שאלה', prompt: 'הפעילו בלוק “שאלה חדשה” ובדקו שהשאלה בחידון השתנתה.', hint: 'הבלוק משנה את הטקסט ב־class="question".', check: { htmlIncludes: ['איזו שפה גורמת לכפתור להגיב?'] } },
+        { id: 2, minutes: '24–31', title: 'תרגיל 2 — בלוק בחירה נכונה', prompt: 'הפעילו בלוק “בחירה נכונה: לא” ובדקו שהתנאי עבר לבדוק no.', hint: 'חפשו choice === "no".', check: { jsIncludes: ['choice === "no"'] } },
+        { id: 3, minutes: '31–39', title: 'תרגיל 3 — בלוק הצלחה', prompt: 'הפעילו בלוק הודעת הצלחה שמתאים לשאלה החדשה.', hint: 'ההודעה נמצאת בתוך ה־if.', check: { jsIncludes: ['נכון! JavaScript מפעיל תגובות'] } },
+        { id: 4, minutes: '39–47', title: 'תרגיל 4 — בלוק אחרת', prompt: 'הפעילו בלוק הודעה לתשובה השנייה.', hint: 'ההודעה נמצאת בתוך else.', check: { jsIncludes: ['רמז: JavaScript היא השפה של הפעולות'] } },
+        { id: 5, minutes: '47–56', title: 'תרגיל 5 — בודקים אם/אחרת', prompt: 'הריצו, לחצו על שני הכפתורים, וראו שתי תגובות שונות.', hint: 'if הוא נכון, else הוא כל בחירה אחרת.', check: { jsIncludes: ['if', 'else'] } },
+        { id: 6, minutes: '56–65', title: 'תרגיל 6 — צבעי משוב', prompt: 'שנו צבעי correct/wrong רק אם אתם מרגישים בטוחים.', hint: 'זה שינוי CSS קטן, לא חובה לשנות מבנה.', check: { cssIncludes: ['.correct', '.wrong'] } },
+        { id: 7, minutes: '65–75', title: 'תרגיל 7 — דיבאג בחירה', prompt: 'אם הכפתור הנכון מסומן כשגוי, בדקו שה־if בודק yes או no לפי השאלה.', hint: 'אין פה אותיות גדולות/קטנות. בודקים רק איזו בחירה הכפתור שולח.', check: { htmlIncludes: ['chooseAnswer'], jsIncludes: ['choice ==='] } },
+        { id: 8, minutes: '75–84', title: 'תרגיל 8 — חידון חברים', prompt: 'תנו לחבר לענות והסבירו איפה ה־if ואיפה ה־else.', hint: 'השתמשו במילים: אם נכון / אחרת / משוב.', check: { htmlIncludes: ['button'], jsIncludes: ['if', 'else'] } }
       ],
       aiHelper: [
         'הציעו 5 שאלות כן/לא פשוטות לכיתה ד׳ בנושא מחשבים.',
@@ -227,7 +227,7 @@
       vocabulary: [
         ['if', 'אם התנאי נכון — בצעו פעולה'],
         ['else', 'אחרת — בצעו פעולה אחרת'],
-        ['choice', 'הבחירה שהמשתמש לחץ עליה'],
+        ['answer', 'התשובה שהמשתמש כתב בשדה'],
         ['===', 'בדיקה אם שני דברים שווים בדיוק'],
         ['משוב', 'הודעה שעוזרת למשתמש להבין מה קרה'],
         ['className', 'שינוי שם class כדי להחליף עיצוב']
@@ -244,26 +244,26 @@
       starter: {
         html: '<main class="score-game">\n  <h1>משחק הניקוד שלי</h1>\n  <p>ניקוד: <span id="scoreText">0</span></p>\n  <p class="question">CSS אחראי על העיצוב של העמוד?</p>\n  <button onclick="chooseAnswer(\'yes\')">כן</button>\n  <button onclick="chooseAnswer(\'no\')">לא</button>\n  <button onclick="resetScore()">איפוס ניקוד</button>\n  <p id="feedback">בחרו תשובה כדי לקבל נקודות.</p>\n</main>',
         css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #fef3c7, #dbeafe);\n}\n\n.score-game {\n  background: white;\n  width: 390px;\n  margin: 45px auto;\n  padding: 28px;\n  border-radius: 28px;\n  box-shadow: 0 16px 35px #fde68a;\n}\n\n#scoreText {\n  display: inline-block;\n  background: #facc15;\n  border-radius: 999px;\n  padding: 6px 14px;\n  font-weight: bold;\n}\n\nbutton {\n  margin: 8px 4px;\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 18px;\n  font-weight: bold;\n}\n\nbutton:first-of-type {\n  background: #16a34a;\n}\n\n.success { color: #15803d; font-weight: bold; }\n.try-again { color: #b45309; font-weight: bold; }',
-        js: 'let score = 0;\n\nfunction chooseAnswer(choice) {\n  const feedback = document.getElementById("feedback");\n\n  if (choice === "yes") {\n    score = score + 1;\n    document.getElementById("scoreText").textContent = score;\n    feedback.textContent = "נכון! קיבלת נקודה ⭐";\n    feedback.className = "success";\n  } else {\n    feedback.textContent = "כמעט. נסו שוב בלי לאבד נקודות.";\n    feedback.className = "try-again";\n  }\n}\n\nfunction resetScore() {\n  score = 0;\n  document.getElementById("scoreText").textContent = score;\n  document.getElementById("feedback").textContent = "הניקוד אופס.";\n}'
+        js: 'const startScore = 0;\nconst pointsForCorrect = 0;\nconst successMessage = "";\nlet score = startScore;\ndocument.getElementById("scoreText").textContent = score;\n\nfunction chooseAnswer(choice) {\n  const feedback = document.getElementById("feedback");\n\n  if (choice === "yes") {\n    score = score + pointsForCorrect;\n    document.getElementById("scoreText").textContent = score;\n    const pointsWord = pointsForCorrect === 1 ? "נקודה" : "נקודות";\n    feedback.textContent = successMessage || (pointsForCorrect === 1 ? "נכון! קיבלת נקודה ⭐" : "נכון! קיבלת " + pointsForCorrect + " " + pointsWord + " ⭐");\n    feedback.className = "success";\n  } else {\n    feedback.textContent = "כמעט. נסו שוב בלי לאבד נקודות.";\n    feedback.className = "try-again";\n  }\n}\n\nfunction resetScore() {\n  const feedback = document.getElementById("feedback");\n  score = startScore;\n  document.getElementById("scoreText").textContent = score;\n  feedback.textContent = "הניקוד אופס.";\n  feedback.className = "try-again";\n}'
       },
       lessonFlow: [
         { minutes: '0–8', title: 'פתיחה: משחק שזוכר נקודות', teacher: 'שואלים איך משחק זוכר ניקוד גם אחרי כמה תשובות.', students: 'מעלים רעיון של קופה/מד נקודות שנשמר.' },
         { minutes: '8–18', title: 'בלוק ניקוד ראשון', teacher: 'מפעילים בלוק “התחל ניקוד” ומראים את let score = 0 כקופסת נקודות.', students: 'רואים שהמשחק מתחיל מ־0.' },
         { minutes: '18–34', title: 'בנייה מודרכת בבלוקי ניקוד', teacher: 'מפעילים בלוקים: הוסף נקודה, הצג ניקוד, הודעת הצלחה, איפוס.', students: 'לוחצים על הבחירה הנכונה ורואים שהניקוד עולה.' },
         { minutes: '34–50', title: 'מציצים למשתנה', teacher: 'לא כותבים משתנים חופשיים. רק מזהים score, score + 1, ו־scoreText.', students: 'מחברים בין המספר בקוד למספר שמופיע במסך.' },
-        { minutes: '50–66', title: 'תרגול עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לשנות חוק ניקוד דרך בלוק מוכן ושינוי טקסט בטוח.', students: 'מבצעים תרגולים 1–5.' },
+        { minutes: '50–66', title: 'תרגיל עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לשנות חוק ניקוד דרך בלוק מוכן ושינוי טקסט בטוח.', students: 'מבצעים תרגילים 1–5.' },
         { minutes: '66–78', title: 'דיבאג ניקוד עדין', teacher: 'מדגימים id לא תואם ל־scoreText ומסבירים למה המסך לא מתעדכן.', students: 'בודקים התאמה בין span לבין JavaScript.' },
         { minutes: '78–90', title: 'בדיקת משחק', teacher: 'זוגות משחקים ומסבירים איפה המשחק “זוכר” את הניקוד.', students: 'מציגים משחק ואומרים: “score שומר את ___”.' }
       ],
       exercises: [
-        { id: 1, minutes: '18–24', title: 'תרגול 1 — בלוק התחלת ניקוד', prompt: 'מצאו את בלוק “התחל ניקוד” ובדקו שהמשחק מתחיל מ־0.', hint: 'הבלוק מתאים ל־let score = 0.', check: { jsIncludes: ['let score = 0'] } },
-        { id: 2, minutes: '24–31', title: 'תרגול 2 — בלוק הוסף נקודה', prompt: 'הפעילו בלוק שמוסיף נקודה ובדקו שהקוד מעלה את score.', hint: 'חפשו score = score + 1.', check: { jsIncludes: ['score = score + 1'] } },
-        { id: 3, minutes: '31–39', title: 'תרגול 3 — בלוק הצג ניקוד', prompt: 'מצאו איפה הקוד מציג את הניקוד בתוך scoreText.', hint: 'המסך מתעדכן דרך span עם id.', check: { htmlIncludes: ['id="scoreText"'], jsIncludes: ['getElementById("scoreText")'] } },
-        { id: 4, minutes: '39–47', title: 'תרגול 4 — בלוק שתי נקודות', prompt: 'הפעילו בלוק שמחליף את החוק כך שתשובה נכונה מוסיפה 2 נקודות.', hint: 'הבלוק משנה רק את המספר שמתווסף.', check: { jsIncludes: ['score = score + 2'] } },
-        { id: 5, minutes: '47–56', title: 'תרגול 5 — בלוק הודעת ניקוד', prompt: 'הפעילו בלוק שמשנה את הודעת ההצלחה לניקוד כפול.', hint: 'ההודעה נמצאת בתוך ה־if.', check: { jsIncludes: ['קיבלת 2 נקודות'] } },
-        { id: 6, minutes: '56–65', title: 'תרגול 6 — בלוק איפוס', prompt: 'בדקו שכפתור האיפוס מחזיר את score ל־0.', hint: 'חפשו function resetScore ו־score = 0.', check: { jsIncludes: ['function resetScore', 'score = 0'] } },
-        { id: 7, minutes: '65–75', title: 'תרגול 7 — דיבאג ניקוד', prompt: 'אם המספר לא מתעדכן, בדקו שה־id scoreText זהה ב־HTML וב־JS.', hint: 'scoreText חייב להיות כתוב אותו דבר בדיוק.', check: { htmlIncludes: ['id="scoreText"'], jsIncludes: ['getElementById("scoreText")'] } },
-        { id: 8, minutes: '75–84', title: 'תרגול 8 — הצגת משחק ניקוד', prompt: 'תנו לחבר ללחוץ על תשובה והסבירו איפה המשחק שומר את הניקוד.', hint: 'השתמשו במילים: score, משתנה, הצג ניקוד.', check: { htmlIncludes: ['scoreText', 'button'], jsIncludes: ['score', 'if', 'else'] } }
+        { id: 1, minutes: '18–24', title: 'תרגיל 1 — בלוק התחלת ניקוד', prompt: 'מצאו את בלוק “התחל ניקוד” ובדקו שהמשחק מתחיל מ־0.', hint: 'הבלוק מתאים ל־let score = 0.', check: { jsIncludes: ['let score = 0'] } },
+        { id: 2, minutes: '24–31', title: 'תרגיל 2 — בלוק הוסף נקודה', prompt: 'הפעילו בלוק שמוסיף נקודה ובדקו שהקוד מעלה את score.', hint: 'חפשו score = score + 1.', check: { jsIncludes: ['score = score + 1'] } },
+        { id: 3, minutes: '31–39', title: 'תרגיל 3 — בלוק הצג ניקוד', prompt: 'מצאו איפה הקוד מציג את הניקוד בתוך scoreText.', hint: 'המסך מתעדכן דרך span עם id.', check: { htmlIncludes: ['id="scoreText"'], jsIncludes: ['getElementById("scoreText")'] } },
+        { id: 4, minutes: '39–47', title: 'תרגיל 4 — בלוק שתי נקודות', prompt: 'הפעילו בלוק שמחליף את החוק כך שתשובה נכונה מוסיפה 2 נקודות.', hint: 'הבלוק משנה רק את המספר שמתווסף.', check: { jsIncludes: ['score = score + 2'] } },
+        { id: 5, minutes: '47–56', title: 'תרגיל 5 — בלוק הודעת ניקוד', prompt: 'הפעילו בלוק שמשנה את הודעת ההצלחה לניקוד כפול.', hint: 'ההודעה נמצאת בתוך ה־if.', check: { jsIncludes: ['קיבלת 2 נקודות'] } },
+        { id: 6, minutes: '56–65', title: 'תרגיל 6 — בלוק איפוס', prompt: 'בדקו שכפתור האיפוס מחזיר את score ל־0.', hint: 'חפשו function resetScore ו־score = 0.', check: { jsIncludes: ['function resetScore', 'score = 0'] } },
+        { id: 7, minutes: '65–75', title: 'תרגיל 7 — דיבאג ניקוד', prompt: 'אם המספר לא מתעדכן, בדקו שה־id scoreText זהה ב־HTML וב־JS.', hint: 'scoreText חייב להיות כתוב אותו דבר בדיוק.', check: { htmlIncludes: ['id="scoreText"'], jsIncludes: ['getElementById("scoreText")'] } },
+        { id: 8, minutes: '75–84', title: 'תרגיל 8 — הצגת משחק ניקוד', prompt: 'תנו לחבר ללחוץ על תשובה והסבירו איפה המשחק שומר את הניקוד.', hint: 'השתמשו במילים: score, משתנה, הצג ניקוד.', check: { htmlIncludes: ['scoreText', 'button'], jsIncludes: ['score', 'if', 'else'] } }
       ],
       aiHelper: [
         'הסבירו לילד בכיתה ד׳ מה זה משתנה בעזרת דוגמה של קופת נקודות.',
@@ -297,19 +297,19 @@
         { minutes: '8–18', title: 'בלוק משחק ראשון', teacher: 'מפעילים בלוק “כפתור קליק” ומראים שהכפתור קורא לפעולה addPoint.', students: 'לוחצים על הכפתור ורואים שהניקוד עולה.' },
         { minutes: '18–34', title: 'בנייה מודרכת בבלוקי משחק', teacher: 'מפעילים בלוקים: יעד ניצחון, נקודות כפולות, הודעת ניצחון, איפוס.', students: 'מריצים אחרי כל בלוק ובודקים מה השתנה במשחק.' },
         { minutes: '34–50', title: 'מציצים לקוד המשחק', teacher: 'לא כותבים משחק חופשי. רק מזהים score, target, addPoint ו־resetGame.', students: 'מחברים בין בלוק המשחק לבין הקוד שהוא שינה.' },
-        { minutes: '50–66', title: 'תרגול עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לשנות קושי ומשוב דרך בלוקים מוכנים.', students: 'מבצעים תרגולים 1–5.' },
+        { minutes: '50–66', title: 'תרגיל עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לשנות קושי ומשוב דרך בלוקים מוכנים.', students: 'מבצעים תרגילים 1–5.' },
         { minutes: '66–78', title: 'איזון ודיבאג', teacher: 'מדגימים יעד קל מדי/קשה מדי ו־id שלא מציג ניקוד.', students: 'מתקנים/מאזנים בלי לכתוב פונקציות חדשות.' },
         { minutes: '78–90', title: 'בדיקת שחקנים', teacher: 'זוגות משחקים, נותנים משוב על קושי, ומציגים בלוק אחד ששינה את המשחק.', students: 'מסבירים: “הבלוק הזה שינה את ___ במשחק”.' }
       ],
       exercises: [
-        { id: 1, minutes: '18–24', title: 'תרגול 1 — בלוק כפתור קליק', prompt: 'מצאו את כפתור הקליק, הריצו, ולחצו כדי לראות ניקוד עולה.', hint: 'הכפתור מפעיל addPoint.', check: { htmlIncludes: ['id="clickButton"'], jsIncludes: ['function addPoint'] } },
-        { id: 2, minutes: '24–31', title: 'תרגול 2 — בלוק יעד ניצחון', prompt: 'הפעילו בלוק שמגדיר יעד ניצחון ל־10 נקודות.', hint: 'היעד נשמר בשם target.', check: { jsIncludes: ['const target = 10'] } },
-        { id: 3, minutes: '31–39', title: 'תרגול 3 — בלוק יעד קל', prompt: 'הפעילו בלוק שמחליף את היעד ל־5 כדי לבדוק משחק קצר יותר.', hint: 'שינוי target משנה את הקושי.', check: { jsIncludes: ['const target = 5'] } },
-        { id: 4, minutes: '39–47', title: 'תרגול 4 — בלוק נקודות כפולות', prompt: 'הפעילו בלוק שכל קליק יוסיף 2 נקודות.', hint: 'הבלוק משנה את score = score + ...', check: { jsIncludes: ['score = score + 2'] } },
-        { id: 5, minutes: '47–56', title: 'תרגול 5 — בלוק הודעת ניצחון', prompt: 'הפעילו בלוק שמשנה את הודעת הניצחון.', hint: 'ההודעה נמצאת בתוך התנאי score >= target.', check: { jsIncludes: ['אליפות! ניצחת במשחק הקליקים'] } },
-        { id: 6, minutes: '56–65', title: 'תרגול 6 — בלוק צבע ניצחון', prompt: 'הפעילו בלוק שמשנה את צבע מצב הניצחון.', hint: 'הבלוק משנה את .win ב־CSS.', check: { cssIncludes: ['#bbf7d0'] } },
-        { id: 7, minutes: '65–75', title: 'תרגול 7 — דיבאג ניקוד', prompt: 'אם הניקוד לא מוצג, בדקו התאמה של scoreText.', hint: 'scoreText חייב להיות זהה ב־HTML וב־JS.', check: { htmlIncludes: ['id="scoreText"'], jsIncludes: ['getElementById("scoreText")'] } },
-        { id: 8, minutes: '75–84', title: 'תרגול 8 — בדיקת קושי', prompt: 'תנו לחבר לשחק ובדקו אם היעד קל מדי או קשה מדי.', hint: 'אפשר לבחור יעד 5 או 10 לפי הכיתה.', check: { htmlIncludes: ['button'], jsIncludes: ['target', 'resetGame'] } }
+        { id: 1, minutes: '18–24', title: 'תרגיל 1 — בלוק כפתור קליק', prompt: 'מצאו את כפתור הקליק, הריצו, ולחצו כדי לראות ניקוד עולה.', hint: 'הכפתור מפעיל addPoint.', check: { htmlIncludes: ['id="clickButton"'], jsIncludes: ['function addPoint'] } },
+        { id: 2, minutes: '24–31', title: 'תרגיל 2 — בלוק יעד ניצחון', prompt: 'הפעילו בלוק שמגדיר יעד ניצחון ל־10 נקודות.', hint: 'היעד נשמר בשם target.', check: { jsIncludes: ['const target = 10'] } },
+        { id: 3, minutes: '31–39', title: 'תרגיל 3 — בלוק יעד קל', prompt: 'הפעילו בלוק שמחליף את היעד ל־5 כדי לבדוק משחק קצר יותר.', hint: 'שינוי target משנה את הקושי.', check: { jsIncludes: ['const target = 5'] } },
+        { id: 4, minutes: '39–47', title: 'תרגיל 4 — בלוק נקודות כפולות', prompt: 'הפעילו בלוק שכל קליק יוסיף 2 נקודות.', hint: 'הבלוק משנה את score = score + ...', check: { jsIncludes: ['score = score + 2'] } },
+        { id: 5, minutes: '47–56', title: 'תרגיל 5 — בלוק הודעת ניצחון', prompt: 'הפעילו בלוק שמשנה את הודעת הניצחון.', hint: 'ההודעה נמצאת בתוך התנאי score >= target.', check: { jsIncludes: ['אליפות! ניצחת במשחק הקליקים'] } },
+        { id: 6, minutes: '56–65', title: 'תרגיל 6 — בלוק צבע ניצחון', prompt: 'הפעילו בלוק שמשנה את צבע מצב הניצחון.', hint: 'הבלוק משנה את .win ב־CSS.', check: { cssIncludes: ['#bbf7d0'] } },
+        { id: 7, minutes: '65–75', title: 'תרגיל 7 — דיבאג ניקוד', prompt: 'אם הניקוד לא מוצג, בדקו התאמה של scoreText.', hint: 'scoreText חייב להיות זהה ב־HTML וב־JS.', check: { htmlIncludes: ['id="scoreText"'], jsIncludes: ['getElementById("scoreText")'] } },
+        { id: 8, minutes: '75–84', title: 'תרגיל 8 — בדיקת קושי', prompt: 'תנו לחבר לשחק ובדקו אם היעד קל מדי או קשה מדי.', hint: 'אפשר לבחור יעד 5 או 10 לפי הכיתה.', check: { htmlIncludes: ['button'], jsIncludes: ['target', 'resetGame'] } }
       ],
       aiHelper: [
         'הציעו 5 נושאים למשחק קליקים פשוט לכיתה ד׳.',
@@ -343,19 +343,19 @@
         { minutes: '8–18', title: 'בלוק זמן ראשון', teacher: 'מפעילים בלוק “התחל טיימר” ומראים timeLeft כמד זמן.', students: 'רואים שהזמן מתחיל מ־15.' },
         { minutes: '18–34', title: 'בנייה מודרכת בבלוקי זמן', teacher: 'מפעילים בלוקים: הצג זמן, הורד שנייה, סיום כשהזמן נגמר.', students: 'מריצים, מתחילים משחק, ורואים את הזמן יורד.' },
         { minutes: '34–50', title: 'מציצים לקוד הזמן', teacher: 'לא כותבים setInterval חופשי. רק מזהים timeLeft, tick ו־clearInterval.', students: 'מחברים בין בלוק הזמן לבין הספירה במסך.' },
-        { minutes: '50–66', title: 'תרגול עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לשנות זמן התחלה ומשוב סיום דרך בלוקים.', students: 'מבצעים תרגולים 1–5.' },
+        { minutes: '50–66', title: 'תרגיל עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לשנות זמן התחלה ומשוב סיום דרך בלוקים.', students: 'מבצעים תרגילים 1–5.' },
         { minutes: '66–78', title: 'דיבאג זמן', teacher: 'מדגימים מה קורה אם timeText לא תואם או אם הטיימר מהיר מדי.', students: 'בודקים התאמה בין timeText לבין JavaScript.' },
         { minutes: '78–90', title: 'בדיקת שחקנים', teacher: 'זוגות משחקים ובודקים אם 15 שניות זה קל/קשה.', students: 'מציעים איזון זמן: 10, 15 או 20 שניות.' }
       ],
       exercises: [
-        { id: 1, minutes: '18–24', title: 'תרגול 1 — בלוק התחלת זמן', prompt: 'מצאו את בלוק הזמן ובדקו שהמשחק מתחיל מ־15 שניות.', hint: 'הזמן נשמר ב־timeLeft.', check: { jsIncludes: ['let timeLeft = 15'] } },
-        { id: 2, minutes: '24–31', title: 'תרגול 2 — בלוק הצג זמן', prompt: 'בדקו שהזמן מופיע במסך בתוך timeText.', hint: 'timeText הוא המקום שבו הדפדפן מציג את הזמן.', check: { htmlIncludes: ['id="timeText"'], jsIncludes: ['getElementById("timeText")'] } },
-        { id: 3, minutes: '31–39', title: 'תרגול 3 — בלוק ספירה לאחור', prompt: 'מצאו את הקוד שמוריד שנייה בכל פעם.', hint: 'חפשו timeLeft = timeLeft - 1.', check: { jsIncludes: ['timeLeft = timeLeft - 1'] } },
-        { id: 4, minutes: '39–47', title: 'תרגול 4 — בלוק זמן קצר', prompt: 'הפעילו בלוק שמשנה את הזמן ל־10 שניות.', hint: 'שינוי timeLeft משנה את קושי המשחק.', check: { jsIncludes: ['timeLeft = 10'] } },
-        { id: 5, minutes: '47–56', title: 'תרגול 5 — בלוק הודעת סיום', prompt: 'הפעילו בלוק שמשנה את הודעת הסיום.', hint: 'ההודעה מופיעה כאשר timeLeft <= 0.', check: { jsIncludes: ['נגמר הזמן! הצלחת לצבור'] } },
-        { id: 6, minutes: '56–65', title: 'תרגול 6 — בלוק צבע סיום', prompt: 'הפעילו בלוק שמשנה את צבע מצב הסיום.', hint: 'הבלוק משנה את .finished ב־CSS.', check: { cssIncludes: ['#fecaca'] } },
-        { id: 7, minutes: '65–75', title: 'תרגול 7 — דיבאג timeText', prompt: 'אם הזמן לא מוצג, בדקו התאמה של id="timeText".', hint: 'ה־id חייב להיות זהה ב־HTML וב־JS.', check: { htmlIncludes: ['id="timeText"'], jsIncludes: ['getElementById("timeText")'] } },
-        { id: 8, minutes: '75–84', title: 'תרגול 8 — איזון זמן', prompt: 'תנו לחבר לשחק והחליטו אם המשחק צריך 10, 15 או 20 שניות.', hint: 'משחק טוב לא קל מדי ולא מתסכל מדי.', check: { jsIncludes: ['setInterval', 'clearInterval'], htmlIncludes: ['startButton'] } }
+        { id: 1, minutes: '18–24', title: 'תרגיל 1 — בלוק התחלת זמן', prompt: 'מצאו את בלוק הזמן ובדקו שהמשחק מתחיל מ־15 שניות.', hint: 'הזמן נשמר ב־timeLeft.', check: { jsIncludes: ['let timeLeft = 15'] } },
+        { id: 2, minutes: '24–31', title: 'תרגיל 2 — בלוק הצג זמן', prompt: 'בדקו שהזמן מופיע במסך בתוך timeText.', hint: 'timeText הוא המקום שבו הדפדפן מציג את הזמן.', check: { htmlIncludes: ['id="timeText"'], jsIncludes: ['getElementById("timeText")'] } },
+        { id: 3, minutes: '31–39', title: 'תרגיל 3 — בלוק ספירה לאחור', prompt: 'מצאו את הקוד שמוריד שנייה בכל פעם.', hint: 'חפשו timeLeft = timeLeft - 1.', check: { jsIncludes: ['timeLeft = timeLeft - 1'] } },
+        { id: 4, minutes: '39–47', title: 'תרגיל 4 — בלוק זמן קצר', prompt: 'הפעילו בלוק שמשנה את הזמן ל־10 שניות.', hint: 'שינוי timeLeft משנה את קושי המשחק.', check: { jsIncludes: ['timeLeft = 10'] } },
+        { id: 5, minutes: '47–56', title: 'תרגיל 5 — בלוק הודעת סיום', prompt: 'הפעילו בלוק שמשנה את הודעת הסיום.', hint: 'ההודעה מופיעה כאשר timeLeft <= 0.', check: { jsIncludes: ['נגמר הזמן! הצלחת לצבור'] } },
+        { id: 6, minutes: '56–65', title: 'תרגיל 6 — בלוק צבע סיום', prompt: 'הפעילו בלוק שמשנה את צבע מצב הסיום.', hint: 'הבלוק משנה את .finished ב־CSS.', check: { cssIncludes: ['#fecaca'] } },
+        { id: 7, minutes: '65–75', title: 'תרגיל 7 — דיבאג timeText', prompt: 'אם הזמן לא מוצג, בדקו התאמה של id="timeText".', hint: 'ה־id חייב להיות זהה ב־HTML וב־JS.', check: { htmlIncludes: ['id="timeText"'], jsIncludes: ['getElementById("timeText")'] } },
+        { id: 8, minutes: '75–84', title: 'תרגיל 8 — איזון זמן', prompt: 'תנו לחבר לשחק והחליטו אם המשחק צריך 10, 15 או 20 שניות.', hint: 'משחק טוב לא קל מדי ולא מתסכל מדי.', check: { jsIncludes: ['setInterval', 'clearInterval'], htmlIncludes: ['startButton'] } }
       ],
       aiHelper: [
         'הסבירו לילד בכיתה ד׳ מה זה טיימר בעזרת דוגמה של שעון חול.',
@@ -389,19 +389,19 @@
         { minutes: '8–18', title: 'בלוק חוק משחק ראשון', teacher: 'מפעילים בלוק “הוסף חיים” ומראים את lives כמד חיים.', students: 'רואים שהמשחק מתחיל עם 3 חיים.' },
         { minutes: '18–34', title: 'בנייה מודרכת בבלוקי חוק', teacher: 'מפעילים בלוקים: אסוף כוכב, נגע במכשול, הורד חיים, בדוק game over.', students: 'מריצים, לוחצים על כוכב ומכשול, ורואים ניקוד/חיים משתנים.' },
         { minutes: '34–50', title: 'מציצים לקוד החוק', teacher: 'לא כותבים תנאי חופשי. רק מזהים lives, lives - 1, if lives <= 0.', students: 'מחברים בין בלוק פסילה לבין קוד if.' },
-        { minutes: '50–66', title: 'תרגול עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לשנות מספר חיים ומשוב פסילה דרך בלוקים.', students: 'מבצעים תרגולים 1–5.' },
+        { minutes: '50–66', title: 'תרגיל עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לשנות מספר חיים ומשוב פסילה דרך בלוקים.', students: 'מבצעים תרגילים 1–5.' },
         { minutes: '66–78', title: 'דיבאג חיים', teacher: 'מדגימים id לא תואם ל־livesText או חוק שלא עוצר ב־0.', students: 'בודקים התאמה בין livesText לבין JavaScript.' },
         { minutes: '78–90', title: 'בדיקת שחקנים', teacher: 'זוגות בודקים אם 3 חיים זה קל/קשה ומציעים איזון.', students: 'מסבירים את חוק הפסילה במילים.' }
       ],
       exercises: [
-        { id: 1, minutes: '18–24', title: 'תרגול 1 — בלוק חיים', prompt: 'מצאו את בלוק החיים ובדקו שהמשחק מתחיל עם 3 חיים.', hint: 'החיים נשמרים במשתנה lives.', check: { jsIncludes: ['let lives = 3'], htmlIncludes: ['id="livesText"'] } },
-        { id: 2, minutes: '24–31', title: 'תרגול 2 — בלוק איסוף כוכב', prompt: 'לחצו על איסוף כוכב ובדקו שהניקוד עולה.', hint: 'הפעולה collectStar מעלה score.', check: { jsIncludes: ['function collectStar', 'score = score + 1'] } },
-        { id: 3, minutes: '31–39', title: 'תרגול 3 — בלוק מכשול', prompt: 'לחצו על מכשול ובדקו שחיים יורדים.', hint: 'הפעולה hitObstacle מורידה lives.', check: { jsIncludes: ['function hitObstacle', 'lives = lives - 1'] } },
-        { id: 4, minutes: '39–47', title: 'תרגול 4 — בלוק Game Over', prompt: 'מצאו את התנאי שבודק אם החיים נגמרו.', hint: 'חפשו lives <= 0.', check: { jsIncludes: ['if (lives <= 0)'] } },
-        { id: 5, minutes: '47–56', title: 'תרגול 5 — בלוק 5 חיים', prompt: 'הפעילו בלוק שמתחיל את המשחק עם 5 חיים.', hint: 'הבלוק משנה lives = 3 ל־5.', check: { jsIncludes: ['let lives = 5'] } },
-        { id: 6, minutes: '56–65', title: 'תרגול 6 — הודעת פסילה', prompt: 'הפעילו בלוק שמשנה את הודעת המשחק נגמר.', hint: 'ההודעה נמצאת בתוך if.', check: { jsIncludes: ['נגמרו החיים'] } },
-        { id: 7, minutes: '65–75', title: 'תרגול 7 — דיבאג livesText', prompt: 'אם החיים לא מוצגים, בדקו התאמה של id="livesText".', hint: 'ה־id חייב להיות זהה ב־HTML וב־JS.', check: { htmlIncludes: ['id="livesText"'], jsIncludes: ['getElementById("livesText")'] } },
-        { id: 8, minutes: '75–84', title: 'תרגול 8 — איזון קושי', prompt: 'תנו לחבר לשחק והחליטו אם 3 או 5 חיים מתאים יותר.', hint: 'יותר חיים = משחק קל יותר.', check: { jsIncludes: ['lives', 'resetGame'], htmlIncludes: ['button'] } }
+        { id: 1, minutes: '18–24', title: 'תרגיל 1 — בלוק חיים', prompt: 'מצאו את בלוק החיים ובדקו שהמשחק מתחיל עם 3 חיים.', hint: 'החיים נשמרים במשתנה lives.', check: { jsIncludes: ['let lives = 3'], htmlIncludes: ['id="livesText"'] } },
+        { id: 2, minutes: '24–31', title: 'תרגיל 2 — בלוק איסוף כוכב', prompt: 'לחצו על איסוף כוכב ובדקו שהניקוד עולה.', hint: 'הפעולה collectStar מעלה score.', check: { jsIncludes: ['function collectStar', 'score = score + 1'] } },
+        { id: 3, minutes: '31–39', title: 'תרגיל 3 — בלוק מכשול', prompt: 'לחצו על מכשול ובדקו שחיים יורדים.', hint: 'הפעולה hitObstacle מורידה lives.', check: { jsIncludes: ['function hitObstacle', 'lives = lives - 1'] } },
+        { id: 4, minutes: '39–47', title: 'תרגיל 4 — בלוק Game Over', prompt: 'מצאו את התנאי שבודק אם החיים נגמרו.', hint: 'חפשו lives <= 0.', check: { jsIncludes: ['if (lives <= 0)'] } },
+        { id: 5, minutes: '47–56', title: 'תרגיל 5 — בלוק 5 חיים', prompt: 'הפעילו בלוק שמתחיל את המשחק עם 5 חיים.', hint: 'הבלוק משנה lives = 3 ל־5.', check: { jsIncludes: ['let lives = 5'] } },
+        { id: 6, minutes: '56–65', title: 'תרגיל 6 — הודעת פסילה', prompt: 'הפעילו בלוק שמשנה את הודעת המשחק נגמר.', hint: 'ההודעה נמצאת בתוך if.', check: { jsIncludes: ['נגמרו החיים'] } },
+        { id: 7, minutes: '65–75', title: 'תרגיל 7 — דיבאג livesText', prompt: 'אם החיים לא מוצגים, בדקו התאמה של id="livesText".', hint: 'ה־id חייב להיות זהה ב־HTML וב־JS.', check: { htmlIncludes: ['id="livesText"'], jsIncludes: ['getElementById("livesText")'] } },
+        { id: 8, minutes: '75–84', title: 'תרגיל 8 — איזון קושי', prompt: 'תנו לחבר לשחק והחליטו אם 3 או 5 חיים מתאים יותר.', hint: 'יותר חיים = משחק קל יותר.', check: { jsIncludes: ['lives', 'resetGame'], htmlIncludes: ['button'] } }
       ],
       aiHelper: [
         'הסבירו לילד בכיתה ד׳ מה ההבדל בין ניקוד לבין חיים במשחק.',
@@ -435,19 +435,19 @@
         { minutes: '8–18', title: 'בלוק יכולת ראשון', teacher: 'מפעילים בלוק “כוח מוכן” ומראים את powerReady כמצב כן/לא.', students: 'רואים שיש כוח שאפשר להפעיל פעם אחת.' },
         { minutes: '18–34', title: 'בנייה מודרכת בבלוקי יכולת', teacher: 'מפעילים בלוקים: בוסט נקודות, הודעת כוח, צבע כוח, שימוש חד־פעמי.', students: 'מריצים, מפעילים כוח, ובודקים שאי אפשר להפעיל שוב.' },
         { minutes: '34–50', title: 'מציצים לקוד מצב', teacher: 'לא כותבים מצב חופשי. רק מזהים powerReady, if, true/false ו־classList.', students: 'מחברים בין בלוק כוח לבין שינוי ניקוד/עיצוב.' },
-        { minutes: '50–66', title: 'תרגול עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לשנות סוג כוח ומשוב דרך בלוקים.', students: 'מבצעים תרגולים 1–5.' },
+        { minutes: '50–66', title: 'תרגיל עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לשנות סוג כוח ומשוב דרך בלוקים.', students: 'מבצעים תרגילים 1–5.' },
         { minutes: '66–78', title: 'איזון כוח', teacher: 'מדברים על כוח חזק מדי: למה כדאי להגביל שימוש.', students: 'משווים בוסט 3 מול בוסט 5 ומחליטים מה הוגן.' },
         { minutes: '78–90', title: 'הצגת כוח', teacher: 'זוגות משחקים ומסבירים את כלל הכוח.', students: 'מסבירים: “הכוח עובד רק אם powerReady נכון”.' }
       ],
       exercises: [
-        { id: 1, minutes: '18–24', title: 'תרגול 1 — בלוק כוח מוכן', prompt: 'מצאו את בלוק הכוח ובדקו שהכוח מתחיל במצב מוכן.', hint: 'המצב נשמר ב־powerReady.', check: { jsIncludes: ['let powerReady = true'], htmlIncludes: ['id="powerText"'] } },
-        { id: 2, minutes: '24–31', title: 'תרגול 2 — בלוק הפעל כוח', prompt: 'לחצו על הפעל כוח ובדקו שהניקוד עולה.', hint: 'הכוח מוסיף נקודות בתוך activatePower.', check: { jsIncludes: ['function activatePower', 'score = score + 3'] } },
-        { id: 3, minutes: '31–39', title: 'תרגול 3 — בלוק חד־פעמי', prompt: 'נסו להפעיל כוח פעמיים ובדקו שהפעם השנייה לא מוסיפה ניקוד.', hint: 'if (powerReady) קובע אם מותר להפעיל.', check: { jsIncludes: ['if (powerReady)', 'powerReady = false'] } },
-        { id: 4, minutes: '39–47', title: 'תרגול 4 — בלוק בוסט 5', prompt: 'הפעילו בלוק שמחליף את הבוסט ל־5 נקודות.', hint: 'זה חזק יותר — בדקו אם זה מאוזן.', check: { jsIncludes: ['score = score + 5'] } },
-        { id: 5, minutes: '47–56', title: 'תרגול 5 — בלוק הודעת כוח', prompt: 'הפעילו בלוק שמשנה את הודעת הכוח המיוחד.', hint: 'ההודעה נמצאת בתוך activatePower.', check: { jsIncludes: ['כוח על הופעל'] } },
-        { id: 6, minutes: '56–65', title: 'תרגול 6 — בלוק צבע כוח', prompt: 'הפעילו בלוק שמשנה את צבע מצב הכוח.', hint: 'הבלוק משנה את .power-on ב־CSS.', check: { cssIncludes: ['#bbf7d0'] } },
-        { id: 7, minutes: '65–75', title: 'תרגול 7 — דיבאג powerText', prompt: 'אם מצב הכוח לא מוצג, בדקו התאמה של id="powerText".', hint: 'ה־id חייב להיות זהה ב־HTML וב־JS.', check: { htmlIncludes: ['id="powerText"'], jsIncludes: ['getElementById("powerText")'] } },
-        { id: 8, minutes: '75–84', title: 'תרגול 8 — איזון כוח', prompt: 'תנו לחבר לשחק והחליטו אם כוח של 3 או 5 נקודות הוגן יותר.', hint: 'כוח טוב עוזר, אבל לא מנצח את המשחק לבד.', check: { jsIncludes: ['powerReady', 'resetGame'], htmlIncludes: ['button'] } }
+        { id: 1, minutes: '18–24', title: 'תרגיל 1 — בלוק כוח מוכן', prompt: 'מצאו את בלוק הכוח ובדקו שהכוח מתחיל במצב מוכן.', hint: 'המצב נשמר ב־powerReady.', check: { jsIncludes: ['let powerReady = true'], htmlIncludes: ['id="powerText"'] } },
+        { id: 2, minutes: '24–31', title: 'תרגיל 2 — בלוק הפעל כוח', prompt: 'לחצו על הפעל כוח ובדקו שהניקוד עולה.', hint: 'הכוח מוסיף נקודות בתוך activatePower.', check: { jsIncludes: ['function activatePower', 'score = score + 3'] } },
+        { id: 3, minutes: '31–39', title: 'תרגיל 3 — בלוק חד־פעמי', prompt: 'נסו להפעיל כוח פעמיים ובדקו שהפעם השנייה לא מוסיפה ניקוד.', hint: 'if (powerReady) קובע אם מותר להפעיל.', check: { jsIncludes: ['if (powerReady)', 'powerReady = false'] } },
+        { id: 4, minutes: '39–47', title: 'תרגיל 4 — בלוק בוסט 5', prompt: 'הפעילו בלוק שמחליף את הבוסט ל־5 נקודות.', hint: 'זה חזק יותר — בדקו אם זה מאוזן.', check: { jsIncludes: ['score = score + 5'] } },
+        { id: 5, minutes: '47–56', title: 'תרגיל 5 — בלוק הודעת כוח', prompt: 'הפעילו בלוק שמשנה את הודעת הכוח המיוחד.', hint: 'ההודעה נמצאת בתוך activatePower.', check: { jsIncludes: ['כוח על הופעל'] } },
+        { id: 6, minutes: '56–65', title: 'תרגיל 6 — בלוק צבע כוח', prompt: 'הפעילו בלוק שמשנה את צבע מצב הכוח.', hint: 'הבלוק משנה את .power-on ב־CSS.', check: { cssIncludes: ['#bbf7d0'] } },
+        { id: 7, minutes: '65–75', title: 'תרגיל 7 — דיבאג powerText', prompt: 'אם מצב הכוח לא מוצג, בדקו התאמה של id="powerText".', hint: 'ה־id חייב להיות זהה ב־HTML וב־JS.', check: { htmlIncludes: ['id="powerText"'], jsIncludes: ['getElementById("powerText")'] } },
+        { id: 8, minutes: '75–84', title: 'תרגיל 8 — איזון כוח', prompt: 'תנו לחבר לשחק והחליטו אם כוח של 3 או 5 נקודות הוגן יותר.', hint: 'כוח טוב עוזר, אבל לא מנצח את המשחק לבד.', check: { jsIncludes: ['powerReady', 'resetGame'], htmlIncludes: ['button'] } }
       ],
       aiHelper: [
         'הציעו 5 כוחות מיוחדים פשוטים למשחק ילדים.',
@@ -481,19 +481,19 @@
         { minutes: '8–18', title: 'בלוק מסך ראשון', teacher: 'מפעילים בלוק “מסך פתיחה” ומראים ש־section אחד פעיל.', students: 'רואים שרק מסך אחד מוצג בכל פעם.' },
         { minutes: '18–34', title: 'בנייה מודרכת בבלוקי מסך', teacher: 'מפעילים בלוקים: התחל משחק, מסך ניצחון, מסך הפסד, שחק שוב.', students: 'מריצים ועוברים בין המסכים בעזרת כפתורים.' },
         { minutes: '34–50', title: 'מציצים לקוד החלפת מסך', teacher: 'לא כותבים לולאות חופשיות. רק מזהים showScreen, active ו־classList.', students: 'מחברים בין בלוק מסך לבין class active.' },
-        { minutes: '50–66', title: 'תרגול עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לשנות טקסטי מסך ויעד נקודות דרך בלוקים.', students: 'מבצעים תרגולים 1–5.' },
+        { minutes: '50–66', title: 'תרגיל עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לשנות טקסטי מסך ויעד נקודות דרך בלוקים.', students: 'מבצעים תרגילים 1–5.' },
         { minutes: '66–78', title: 'דיבאג מסכים', teacher: 'מדגימים id לא תואם למסך או class active חסר.', students: 'בודקים שהשמות startScreen/playScreen תואמים.' },
         { minutes: '78–90', title: 'בדיקת חוויית משתמש', teacher: 'זוגות משחקים ומוודאים שהוראות הפתיחה ברורות.', students: 'משפרים טקסט במסך פתיחה או ניצחון.' }
       ],
       exercises: [
-        { id: 1, minutes: '18–24', title: 'תרגול 1 — בלוק מסך פתיחה', prompt: 'מצאו את מסך הפתיחה ובדקו שהוא המסך הפעיל הראשון.', hint: 'המסך הפעיל מקבל class active.', check: { htmlIncludes: ['id="startScreen"', 'class="screen active"'] } },
-        { id: 2, minutes: '24–31', title: 'תרגול 2 — בלוק התחלת משחק', prompt: 'לחצו התחילו ובדקו שעוברים למסך המשחק.', hint: 'startGame מפעיל showScreen("playScreen").', check: { jsIncludes: ['function startGame', 'showScreen("playScreen")'] } },
-        { id: 3, minutes: '31–39', title: 'תרגול 3 — בלוק יעד 3', prompt: 'מצאו את היעד לניצחון: 3 נקודות.', hint: 'היעד נשמר ב־target.', check: { jsIncludes: ['const target = 3'] } },
-        { id: 4, minutes: '39–47', title: 'תרגול 4 — בלוק מסך ניצחון', prompt: 'אספו נקודות עד שהמשחק עובר למסך ניצחון.', hint: 'המעבר קורה כאשר score >= target.', check: { htmlIncludes: ['id="winScreen"'], jsIncludes: ['showScreen("winScreen")'] } },
-        { id: 5, minutes: '47–56', title: 'תרגול 5 — בלוק מסך הפסד', prompt: 'לחצו על כפתור הפסד ובדקו שעוברים למסך הפסד.', hint: 'loseGame מפעיל showScreen("loseScreen").', check: { htmlIncludes: ['id="loseScreen"'], jsIncludes: ['showScreen("loseScreen")'] } },
-        { id: 6, minutes: '56–65', title: 'תרגול 6 — בלוק שחק שוב', prompt: 'בדקו שכפתור שחקו שוב מחזיר למסך הפתיחה.', hint: 'resetGame מחזיר ל־startScreen.', check: { jsIncludes: ['function resetGame', 'showScreen("startScreen")'] } },
-        { id: 7, minutes: '65–75', title: 'תרגול 7 — דיבאג id מסך', prompt: 'אם מעבר מסך לא עובד, בדקו שה־id במסך זהה לשם ב־showScreen.', hint: 'playScreen חייב להיות כתוב אותו דבר בשני המקומות.', check: { htmlIncludes: ['id="playScreen"'], jsIncludes: ['showScreen("playScreen")'] } },
-        { id: 8, minutes: '75–84', title: 'תרגול 8 — שיפור חוויית משתמש', prompt: 'שנו טקסט במסך הפתיחה כך שיהיה ברור לשחקן מה המטרה.', hint: 'שינוי בטוח: טקסט בתוך p או h1.', check: { htmlIncludes: ['startScreen', 'button'], jsIncludes: ['showScreen'] } }
+        { id: 1, minutes: '18–24', title: 'תרגיל 1 — בלוק מסך פתיחה', prompt: 'מצאו את מסך הפתיחה ובדקו שהוא המסך הפעיל הראשון.', hint: 'המסך הפעיל מקבל class active.', check: { htmlIncludes: ['id="startScreen"', 'class="screen active"'] } },
+        { id: 2, minutes: '24–31', title: 'תרגיל 2 — בלוק התחלת משחק', prompt: 'לחצו התחילו ובדקו שעוברים למסך המשחק.', hint: 'startGame מפעיל showScreen("playScreen").', check: { jsIncludes: ['function startGame', 'showScreen("playScreen")'] } },
+        { id: 3, minutes: '31–39', title: 'תרגיל 3 — בלוק יעד 3', prompt: 'מצאו את היעד לניצחון: 3 נקודות.', hint: 'היעד נשמר ב־target.', check: { jsIncludes: ['const target = 3'] } },
+        { id: 4, minutes: '39–47', title: 'תרגיל 4 — בלוק מסך ניצחון', prompt: 'אספו נקודות עד שהמשחק עובר למסך ניצחון.', hint: 'המעבר קורה כאשר score >= target.', check: { htmlIncludes: ['id="winScreen"'], jsIncludes: ['showScreen("winScreen")'] } },
+        { id: 5, minutes: '47–56', title: 'תרגיל 5 — בלוק מסך הפסד', prompt: 'לחצו על כפתור הפסד ובדקו שעוברים למסך הפסד.', hint: 'loseGame מפעיל showScreen("loseScreen").', check: { htmlIncludes: ['id="loseScreen"'], jsIncludes: ['showScreen("loseScreen")'] } },
+        { id: 6, minutes: '56–65', title: 'תרגיל 6 — בלוק שחק שוב', prompt: 'בדקו שכפתור שחקו שוב מחזיר למסך הפתיחה.', hint: 'resetGame מחזיר ל־startScreen.', check: { jsIncludes: ['function resetGame', 'showScreen("startScreen")'] } },
+        { id: 7, minutes: '65–75', title: 'תרגיל 7 — דיבאג id מסך', prompt: 'אם מעבר מסך לא עובד, בדקו שה־id במסך זהה לשם ב־showScreen.', hint: 'playScreen חייב להיות כתוב אותו דבר בשני המקומות.', check: { htmlIncludes: ['id="playScreen"'], jsIncludes: ['showScreen("playScreen")'] } },
+        { id: 8, minutes: '75–84', title: 'תרגיל 8 — שיפור חוויית משתמש', prompt: 'שנו טקסט במסך הפתיחה כך שיהיה ברור לשחקן מה המטרה.', hint: 'שינוי בטוח: טקסט בתוך p או h1.', check: { htmlIncludes: ['startScreen', 'button'], jsIncludes: ['showScreen'] } }
       ],
       aiHelper: [
         'הציעו טקסט קצר למסך פתיחה של משחק ילדים.',
@@ -532,14 +532,14 @@
         { minutes: '82–90', title: 'דמו קצר', teacher: 'מבקשים 2–3 הצגות קצרות.', students: 'מציגים: שם המשחק, המטרה, והשדרוג שבחרו.' }
       ],
       exercises: [
-        { id: 1, minutes: '18–24', title: 'תרגול 1 — בלוק שם משחק', prompt: 'הפעילו בלוק שמשנה את שם המשחק.', hint: 'השם נמצא בתוך h1.', check: { htmlIncludes: ['משחק הכוכבים המשודרג'] } },
-        { id: 2, minutes: '24–31', title: 'תרגול 2 — בלוק יעד', prompt: 'הפעילו בלוק שמגדיר יעד של 7 כוכבים.', hint: 'היעד נשמר ב־target.', check: { jsIncludes: ['const target = 7'] } },
-        { id: 3, minutes: '31–39', title: 'תרגול 3 — בלוק 5 חיים', prompt: 'הפעילו בלוק שנותן 5 חיים בתחילת המשחק.', hint: 'שימו לב שגם startGame מאפס חיים.', check: { jsIncludes: ['let lives = 5', 'lives = 5'] } },
-        { id: 4, minutes: '39–47', title: 'תרגול 4 — בלוק זמן 30', prompt: 'הפעילו בלוק שמשנה את הזמן ל־30.', hint: 'timeLeft צריך להשתנות גם בהתחלה וגם באיפוס.', check: { jsIncludes: ['let timeLeft = 30', 'timeLeft = 30'] } },
-        { id: 5, minutes: '47–56', title: 'תרגול 5 — בלוק הודעת ניצחון', prompt: 'הפעילו בלוק הודעת ניצחון אישית.', hint: 'ההודעה נמצאת אחרי score >= target.', check: { jsIncludes: ['ניצחון מושלם'] } },
-        { id: 6, minutes: '56–65', title: 'תרגול 6 — בלוק צבעי פרויקט', prompt: 'הפעילו בלוק שמשנה את צבע הניצחון.', hint: 'הבלוק משנה את .win ב־CSS.', check: { cssIncludes: ['#bbf7d0'] } },
-        { id: 7, minutes: '65–75', title: 'תרגול 7 — בדיקת פונקציות', prompt: 'מצאו בקוד את ארבע הפונקציות המרכזיות של המשחק.', hint: 'חפשו function startGame / collectStar / hitObstacle / updateScreen.', check: { jsIncludes: ['function startGame', 'function collectStar', 'function hitObstacle', 'function updateScreen'] } },
-        { id: 8, minutes: '75–84', title: 'תרגול 8 — הצגת פרויקט', prompt: 'תנו לחבר לשחק והסבירו איזה שני בלוקים שדרגו את המשחק.', hint: 'הסבירו במילים, לא בקוד.', check: { htmlIncludes: ['button'], jsIncludes: ['resetGame'], cssIncludes: ['.win', '.lose'] } }
+        { id: 1, minutes: '18–24', title: 'תרגיל 1 — בלוק שם משחק', prompt: 'הפעילו בלוק שמשנה את שם המשחק.', hint: 'השם נמצא בתוך h1.', check: { htmlIncludes: ['משחק הכוכבים המשודרג'] } },
+        { id: 2, minutes: '24–31', title: 'תרגיל 2 — בלוק יעד', prompt: 'הפעילו בלוק שמגדיר יעד של 7 כוכבים.', hint: 'היעד נשמר ב־target.', check: { jsIncludes: ['const target = 7'] } },
+        { id: 3, minutes: '31–39', title: 'תרגיל 3 — בלוק 5 חיים', prompt: 'הפעילו בלוק שנותן 5 חיים בתחילת המשחק.', hint: 'שימו לב שגם startGame מאפס חיים.', check: { jsIncludes: ['let lives = 5', 'lives = 5'] } },
+        { id: 4, minutes: '39–47', title: 'תרגיל 4 — בלוק זמן 30', prompt: 'הפעילו בלוק שמשנה את הזמן ל־30.', hint: 'timeLeft צריך להשתנות גם בהתחלה וגם באיפוס.', check: { jsIncludes: ['let timeLeft = 30', 'timeLeft = 30'] } },
+        { id: 5, minutes: '47–56', title: 'תרגיל 5 — בלוק הודעת ניצחון', prompt: 'הפעילו בלוק הודעת ניצחון אישית.', hint: 'ההודעה נמצאת אחרי score >= target.', check: { jsIncludes: ['ניצחון מושלם'] } },
+        { id: 6, minutes: '56–65', title: 'תרגיל 6 — בלוק צבעי פרויקט', prompt: 'הפעילו בלוק שמשנה את צבע הניצחון.', hint: 'הבלוק משנה את .win ב־CSS.', check: { cssIncludes: ['#bbf7d0'] } },
+        { id: 7, minutes: '65–75', title: 'תרגיל 7 — בדיקת פונקציות', prompt: 'מצאו בקוד את ארבע הפונקציות המרכזיות של המשחק.', hint: 'חפשו function startGame / collectStar / hitObstacle / updateScreen.', check: { jsIncludes: ['function startGame', 'function collectStar', 'function hitObstacle', 'function updateScreen'] } },
+        { id: 8, minutes: '75–84', title: 'תרגיל 8 — הצגת פרויקט', prompt: 'תנו לחבר לשחק והסבירו איזה שני בלוקים שדרגו את המשחק.', hint: 'הסבירו במילים, לא בקוד.', check: { htmlIncludes: ['button'], jsIncludes: ['resetGame'], cssIncludes: ['.win', '.lose'] } }
       ],
       aiHelper: [
         'הציעו שם למשחק כוכבים של תלמיד בכיתה ד׳.',
@@ -688,14 +688,14 @@
       { minutes: '84–90', title: 'תערוכת קסמים', teacher: 'מבקשים מכל תלמיד לשתף קישור ציבורי ולהציג פעולה אחת.', students: 'מציגים עמוד ואומרים מה משתנה בלחיצה.' }
     ],
     exercises: [
-      { id: 1, minutes: '0–5', title: 'תרגול 1 — וואו תוך שתי דקות', prompt: 'לחצו על כפתור “הפעילו קסם” בתצוגה החיה בצד שמאל, וגלו מה השתנה במסך.', hint: 'חפשו שינוי הודעה או שינוי רקע בתצוגה אחרי הלחיצה על “הפעילו קסם” — לא צריך להבין עדיין את כל הקוד.', check: { htmlIncludes: ['onclick="showMessage()"'], jsIncludes: ['function showMessage', 'document.body.style.background'], requiresPreviewButtonText: 'הפעילו קסם', previewClickFeedback: 'כמעט. לחצו קודם על כפתור “הפעילו קסם” בתוך התצוגה החיה בצד שמאל, ואז לחצו בדיקה.' } },
-      { id: 2, minutes: '5–12', title: 'תרגול 2 — משנים קסם קטן', prompt: 'שנו את ההודעה בתוך בלוק הכפתור למשהו משלכם, ואז לחצו שוב על “הפעילו קסם” בתצוגה החיה.', hint: 'שנו רק את השדה שאחרי המילים “מציג הודעה”. אם שיניתם בטעות את שם הכפתור, לחצו ↺ קוד התחלה.', check: { htmlIncludes: ['button'], jsIncludes: ['document.body.style.background'], blockTypes: ['web_button'], nonEmptyBlocklyFields: [{ type: 'web_button', field: 'MESSAGE' }], unchangedBlocklyFields: [{ type: 'web_button', field: 'LABEL', value: 'הפעילו קסם' }], changedBlocklyFields: [{ type: 'web_button', field: 'MESSAGE', defaultValue: 'הכפתור הפעיל קסם 🎉' }], requiresPreviewButtonText: 'הפעילו קסם', requiresPreviewMessageChangedFrom: 'כאן תופיע הודעה מהכפתור...', emptyFeedback: 'כמעט. ההודעה בתוך בלוק הכפתור לא יכולה להיות ריקה.', unchangedFieldFeedback: 'כמעט. שיניתם את שם הכפתור במקום את ההודעה. לחצו ↺ קוד התחלה, ואז שנו רק את השדה שאחרי “מציג הודעה”.', fieldFeedback: 'כמעט. שנו את שדה ההודעה — השדה שאחרי המילים “מציג הודעה” — למשהו משלכם.', previewClickFeedback: 'כמעט. ההודעה השתנתה; עכשיו לחצו על “הפעילו קסם” בתצוגה החיה ואז על בדיקה.', previewMessageFeedback: 'כמעט. לחצתם על הכפתור, אבל ההודעה בתצוגה עדיין לא השתנתה. ודאו ששיניתם את שדה ההודעה בבלוק הכפתור.' } },
-      { id: 3, minutes: '12–22', title: 'תרגול 3 — מוצאים את הכפתור בקוד', prompt: 'פתחו את ההצצה לקוד שנוצר, בחרו את בלוק הכפתור, וראו איזה HTML מסומן בקוד.', hint: 'חפשו את שורת הכפתור עם onclick="showMessage()" בלשונית HTML.', check: { htmlIncludes: ['onclick="showMessage()"'], jsIncludes: ['function showMessage'], blockTypes: ['web_button'], requiresCodePeek: true, requiresCodeSelectionTab: 'html', requiresCodeSelectionBlockTypes: ['web_button'], codePeekFeedback: 'כמעט. קודם פתחו את “לראות קוד שנוצר”.', codeSelectionFeedback: 'כמעט. אחרי פתיחת ההצצה, לחצו על בלוק הכפתור וודאו ששורת HTML של הכפתור מסומנת.' } },
-      { id: 4, minutes: '22–34', title: 'תרגול 4 — הודעה בלחיצה', prompt: 'גררו בלוק “בלחיצה שנה הודעה”, כתבו הודעה משלכם בתוך הבלוק, ואז לחצו על הכפתור בתצוגה החיה.', hint: 'הבלוק משנה את message.textContent. הטקסט שבתוכו צריך להיות שלכם, לא ברירת המחדל.', check: { jsIncludes: ['message.textContent'], blockTypes: ['web_action_message'], nonEmptyBlocklyFields: [{ type: 'web_action_message', field: 'TEXT' }], changedBlocklyFields: [{ type: 'web_action_message', field: 'TEXT', defaultValue: 'הכפתור הפעיל קסם 🎉' }], requiresPreviewButtonText: 'הפעילו קסם', requiresPreviewMessageChangedFrom: 'כאן תופיע הודעה מהכפתור...', emptyFeedback: 'כמעט. ההודעה בתוך בלוק הפעולה לא יכולה להיות ריקה.', blockFeedback: 'כמעט. חסר בלוק “בלחיצה שנה הודעה” מסטודיו פעולה.', fieldFeedback: 'כמעט. בלוק “בלחיצה שנה הודעה” מחובר, עכשיו שנו את הטקסט שבתוכו להודעה משלכם.', previewClickFeedback: 'כמעט. ההודעה השתנתה; עכשיו לחצו על כפתור “הפעילו קסם” בתצוגה החיה ואז על בדיקה.', previewMessageFeedback: 'כמעט. לחצתם על הכפתור, אבל ההודעה בתצוגה עדיין לא השתנתה. ודאו שבלוק “בלחיצה שנה הודעה” מחובר ושהטקסט שלו שונה.' } },
-      { id: 5, minutes: '34–46', title: 'תרגול 5 — שינוי סמל', prompt: 'גררו בלוק “בלחיצה שנה סמל ל־”, בחרו אימוג׳י שונה מברירת המחדל, ואז לחצו על הכפתור בתצוגה החיה.', hint: 'צריך להיות בעמוד בלוק “סמל גדול” כדי שלבלוק “בלחיצה שנה סמל ל־” יהיה מה לשנות. אל תשאירו את האימוג׳י על 🤖.', check: { htmlIncludes: ['id="heroEmoji"'], jsIncludes: ['heroEmoji.textContent'], blockTypes: ['web_emoji', 'web_action_emoji'], changedBlocklyFields: [{ type: 'web_action_emoji', field: 'EMOJI', defaultValue: '🤖' }], requiresPreviewButtonText: 'הפעילו קסם', requiresPreviewEmojiChangedFrom: '✨', fieldFeedback: 'כמעט. בלוק “בלחיצה שנה סמל ל־” מחובר, אבל צריך לבחור אימוג׳י אחר מברירת המחדל 🤖.', previewClickFeedback: 'כמעט. עכשיו לחצו על “הפעילו קסם” בתצוגה החיה ואז על בדיקה.', previewEmojiFeedback: 'כמעט. לחצתם על הכפתור, אבל הסמל בתצוגה עדיין לא השתנה. בחרו אימוג׳י אחר ולחצו שוב.' } },
-      { id: 6, minutes: '46–58', title: 'תרגול 6 — שינוי רקע', prompt: 'בלוק “בלחיצה שנה רקע” כבר נמצא בקוד ההתחלתי. שנו רק את הבחירה שבתוכו לרקע אחר, ואז לחצו על הכפתור בתצוגה החיה ובדקו.', hint: 'אל תגררו בלוק רקע חדש — שנו את הבלוק שכבר מחובר. בקוד ההתחלתי הוא ורוד, וזה לא מספיק כי עוד לא שיניתם אותו.', check: { jsIncludes: ['document.body.style.background'], blockTypes: ['web_action_background'], ensureStarterBlocks: [{ type: 'web_action_background', after: 'web_button', fields: { BG: 'pink' } }], exactBlockTypeCounts: { web_action_background: 1 }, changedBlocklyFieldsFromBaseline: [{ type: 'web_action_background', field: 'BG' }], requiresPreviewButtonText: 'הפעילו קסם', countFeedback: 'כמעט. אל תוסיפו בלוק “בלחיצה שנה רקע” נוסף — צריך לשנות את הבלוק שכבר נמצא בקוד כשהתחלתם את התרגול.', fieldFeedback: 'כמעט. בלוק “בלחיצה שנה רקע” כבר מחובר, עכשיו בחרו בו רקע אחר ממה שהיה כשנכנסתם לתרגול.', previewClickFeedback: 'כמעט. הרקע השתנה בקוד; עכשיו לחצו על “הפעילו קסם” בתצוגה החיה ואז על בדיקה.' } },
-      { id: 7, minutes: '58–72', title: 'תרגול 7 — מצב קסם', prompt: 'גררו בלוק “בלחיצה החלף מצב קסם”, לחצו על הכפתור בתצוגה החיה וודאו שהכרטיס נכנס למצב קסם.', hint: 'toggle מדליק ומכבה class. צריך לראות את הכרטיס משתנה אחרי הלחיצה.', check: { cssIncludes: ['.page-card.magic'], jsIncludes: ['classList.toggle("magic")'], blockTypes: ['web_action_magic'], requiresPreviewButtonText: 'הפעילו קסם', requiresPreviewCardClass: 'magic', previewClickFeedback: 'כמעט. הבלוק מחובר; עכשיו לחצו על “הפעילו קסם” בתצוגה החיה ואז על בדיקה.', previewClassFeedback: 'כמעט. לחצתם, אבל הכרטיס לא נכנס למצב קסם. ודאו שהבלוק “בלחיצה החלף מצב קסם” מחובר ולחצו פעם אחת.' } },
-      { id: 8, minutes: '72–84', title: 'תרגול 8 — מסמנים קוד מבלוק', prompt: 'פתחו את ההצצה לקוד שנוצר, לחצו על בלוק שמחובר בקוד ומשנה משהו בלחיצה, וודאו ששורת JavaScript שנוצרה ממנו מסומנת.', hint: 'בחרו בלוק שנמצא בתוך שרשרת הקוד, לא בלוק חופשי בצד. הבלוקים האלה נמצאים באזור “סטודיו פעולה” ומשנים את JavaScript.', check: { htmlIncludes: ['page-card'], cssIncludes: ['.page-card'], jsIncludes: ['function showMessage'], requiresCodePeek: true, requiresCodeSelectionTab: 'js', requiresCodeSelectionBlockTypes: ['web_action_message', 'web_action_emoji', 'web_action_background', 'web_action_magic'], codePeekFeedback: 'כמעט. קודם פתחו את “לראות קוד שנוצר”.', codeSelectionFeedback: 'כמעט. אחרי פתיחת ההצצה, לחצו על אחד מהבלוקים שמחוברים בקוד: “בלחיצה שנה הודעה”, “בלחיצה שנה סמל ל־”, “בלחיצה שנה רקע” או “בלחיצה החלף מצב קסם”, וודאו ששורת JavaScript מסומנת.' } }
+      { id: 1, minutes: '0–5', title: 'תרגיל 1 — וואו תוך שתי דקות', prompt: 'לחצו על כפתור “הפעילו קסם” בתצוגה החיה בצד שמאל, וגלו מה השתנה במסך.', hint: 'חפשו שינוי הודעה או שינוי רקע בתצוגה אחרי הלחיצה על “הפעילו קסם” — לא צריך להבין עדיין את כל הקוד.', check: { htmlIncludes: ['onclick="showMessage()"'], jsIncludes: ['function showMessage', 'document.body.style.background'], requiresPreviewButtonText: 'הפעילו קסם', previewClickFeedback: 'כמעט. לחצו קודם על כפתור “הפעילו קסם” בתוך התצוגה החיה בצד שמאל, ואז לחצו בדיקה.' } },
+      { id: 2, minutes: '5–12', title: 'תרגיל 2 — משנים קסם קטן', prompt: 'שנו את ההודעה בתוך בלוק הכפתור למשהו משלכם, ואז לחצו שוב על “הפעילו קסם” בתצוגה החיה.', hint: 'שנו רק את השדה שאחרי המילים “מציג הודעה”. אם שיניתם בטעות את שם הכפתור, לחצו ↺ קוד התחלה.', check: { htmlIncludes: ['button'], jsIncludes: ['document.body.style.background'], blockTypes: ['web_button'], nonEmptyBlocklyFields: [{ type: 'web_button', field: 'MESSAGE' }], unchangedBlocklyFields: [{ type: 'web_button', field: 'LABEL', value: 'הפעילו קסם' }], changedBlocklyFields: [{ type: 'web_button', field: 'MESSAGE', defaultValue: 'הכפתור הפעיל קסם 🎉' }], requiresPreviewButtonText: 'הפעילו קסם', requiresPreviewMessageChangedFrom: 'כאן תופיע הודעה מהכפתור...', emptyFeedback: 'כמעט. ההודעה בתוך בלוק הכפתור לא יכולה להיות ריקה.', unchangedFieldFeedback: 'כמעט. שיניתם את שם הכפתור במקום את ההודעה. לחצו ↺ קוד התחלה, ואז שנו רק את השדה שאחרי “מציג הודעה”.', fieldFeedback: 'כמעט. שנו את שדה ההודעה — השדה שאחרי המילים “מציג הודעה” — למשהו משלכם.', previewClickFeedback: 'כמעט. ההודעה השתנתה; עכשיו לחצו על “הפעילו קסם” בתצוגה החיה ואז על בדיקה.', previewMessageFeedback: 'כמעט. לחצתם על הכפתור, אבל ההודעה בתצוגה עדיין לא השתנתה. ודאו ששיניתם את שדה ההודעה בבלוק הכפתור.' } },
+      { id: 3, minutes: '12–22', title: 'תרגיל 3 — מוצאים את הכפתור בקוד', prompt: 'פתחו את ההצצה לקוד שנוצר, בחרו את בלוק הכפתור, וראו איזה HTML מסומן בקוד.', hint: 'חפשו את שורת הכפתור עם onclick="showMessage()" בלשונית HTML.', check: { htmlIncludes: ['onclick="showMessage()"'], jsIncludes: ['function showMessage'], blockTypes: ['web_button'], requiresCodePeek: true, requiresCodeSelectionTab: 'html', requiresCodeSelectionBlockTypes: ['web_button'], codePeekFeedback: 'כמעט. קודם פתחו את “לראות קוד שנוצר”.', codeSelectionFeedback: 'כמעט. אחרי פתיחת ההצצה, לחצו על בלוק הכפתור וודאו ששורת HTML של הכפתור מסומנת.' } },
+      { id: 4, minutes: '22–34', title: 'תרגיל 4 — הודעה בלחיצה', prompt: 'גררו בלוק “בלחיצה שנה הודעה”, כתבו הודעה משלכם בתוך הבלוק, ואז לחצו על הכפתור בתצוגה החיה.', hint: 'הבלוק משנה את message.textContent. הטקסט שבתוכו צריך להיות שלכם, לא ברירת המחדל.', check: { jsIncludes: ['message.textContent'], blockTypes: ['web_action_message'], nonEmptyBlocklyFields: [{ type: 'web_action_message', field: 'TEXT' }], changedBlocklyFields: [{ type: 'web_action_message', field: 'TEXT', defaultValue: 'הכפתור הפעיל קסם 🎉' }], requiresPreviewButtonText: 'הפעילו קסם', requiresPreviewMessageChangedFrom: 'כאן תופיע הודעה מהכפתור...', emptyFeedback: 'כמעט. ההודעה בתוך בלוק הפעולה לא יכולה להיות ריקה.', blockFeedback: 'כמעט. חסר בלוק “בלחיצה שנה הודעה” מסטודיו פעולה.', fieldFeedback: 'כמעט. בלוק “בלחיצה שנה הודעה” מחובר, עכשיו שנו את הטקסט שבתוכו להודעה משלכם.', previewClickFeedback: 'כמעט. ההודעה השתנתה; עכשיו לחצו על כפתור “הפעילו קסם” בתצוגה החיה ואז על בדיקה.', previewMessageFeedback: 'כמעט. לחצתם על הכפתור, אבל ההודעה בתצוגה עדיין לא השתנתה. ודאו שבלוק “בלחיצה שנה הודעה” מחובר ושהטקסט שלו שונה.' } },
+      { id: 5, minutes: '34–46', title: 'תרגיל 5 — שינוי סמל', prompt: 'גררו בלוק “בלחיצה שנה סמל ל־”, בחרו אימוג׳י שונה מברירת המחדל, ואז לחצו על הכפתור בתצוגה החיה.', hint: 'צריך להיות בעמוד בלוק “סמל גדול” כדי שלבלוק “בלחיצה שנה סמל ל־” יהיה מה לשנות. אל תשאירו את האימוג׳י על 🤖.', check: { htmlIncludes: ['id="heroEmoji"'], jsIncludes: ['heroEmoji.textContent'], blockTypes: ['web_emoji', 'web_action_emoji'], changedBlocklyFields: [{ type: 'web_action_emoji', field: 'EMOJI', defaultValue: '🤖' }], requiresPreviewButtonText: 'הפעילו קסם', requiresPreviewEmojiChangedFrom: '✨', fieldFeedback: 'כמעט. בלוק “בלחיצה שנה סמל ל־” מחובר, אבל צריך לבחור אימוג׳י אחר מברירת המחדל 🤖.', previewClickFeedback: 'כמעט. עכשיו לחצו על “הפעילו קסם” בתצוגה החיה ואז על בדיקה.', previewEmojiFeedback: 'כמעט. לחצתם על הכפתור, אבל הסמל בתצוגה עדיין לא השתנה. בחרו אימוג׳י אחר ולחצו שוב.' } },
+      { id: 6, minutes: '46–58', title: 'תרגיל 6 — שינוי רקע', prompt: 'בלוק “בלחיצה שנה רקע” כבר נמצא בקוד ההתחלתי. שנו רק את הבחירה שבתוכו לרקע אחר, ואז לחצו על הכפתור בתצוגה החיה ובדקו.', hint: 'אל תגררו בלוק רקע חדש — שנו את הבלוק שכבר מחובר. בקוד ההתחלתי הוא ורוד, וזה לא מספיק כי עוד לא שיניתם אותו.', check: { jsIncludes: ['document.body.style.background'], blockTypes: ['web_action_background'], ensureStarterBlocks: [{ type: 'web_action_background', after: 'web_button', fields: { BG: 'pink' } }], exactBlockTypeCounts: { web_action_background: 1 }, changedBlocklyFieldsFromBaseline: [{ type: 'web_action_background', field: 'BG' }], requiresPreviewButtonText: 'הפעילו קסם', countFeedback: 'כמעט. אל תוסיפו בלוק “בלחיצה שנה רקע” נוסף — צריך לשנות את הבלוק שכבר נמצא בקוד כשהתחלתם את התרגיל.', fieldFeedback: 'כמעט. בלוק “בלחיצה שנה רקע” כבר מחובר, עכשיו בחרו בו רקע אחר ממה שהיה כשנכנסתם לתרגיל.', previewClickFeedback: 'כמעט. הרקע השתנה בקוד; עכשיו לחצו על “הפעילו קסם” בתצוגה החיה ואז על בדיקה.' } },
+      { id: 7, minutes: '58–72', title: 'תרגיל 7 — מצב קסם', prompt: 'גררו בלוק “בלחיצה החלף מצב קסם”, לחצו על הכפתור בתצוגה החיה וודאו שהכרטיס נכנס למצב קסם.', hint: 'toggle מדליק ומכבה class. צריך לראות את הכרטיס משתנה אחרי הלחיצה.', check: { cssIncludes: ['.page-card.magic'], jsIncludes: ['classList.toggle("magic")'], blockTypes: ['web_action_magic'], requiresPreviewButtonText: 'הפעילו קסם', requiresPreviewCardClass: 'magic', previewClickFeedback: 'כמעט. הבלוק מחובר; עכשיו לחצו על “הפעילו קסם” בתצוגה החיה ואז על בדיקה.', previewClassFeedback: 'כמעט. לחצתם, אבל הכרטיס לא נכנס למצב קסם. ודאו שהבלוק “בלחיצה החלף מצב קסם” מחובר ולחצו פעם אחת.' } },
+      { id: 8, minutes: '72–84', title: 'תרגיל 8 — מסמנים קוד מבלוק', prompt: 'פתחו את ההצצה לקוד שנוצר, לחצו על בלוק שמחובר בקוד ומשנה משהו בלחיצה, וודאו ששורת JavaScript שנוצרה ממנו מסומנת.', hint: 'בחרו בלוק שנמצא בתוך שרשרת הקוד, לא בלוק חופשי בצד. הבלוקים האלה נמצאים באזור “סטודיו פעולה” ומשנים את JavaScript.', check: { htmlIncludes: ['page-card'], cssIncludes: ['.page-card'], jsIncludes: ['function showMessage'], requiresCodePeek: true, requiresCodeSelectionTab: 'js', requiresCodeSelectionBlockTypes: ['web_action_message', 'web_action_emoji', 'web_action_background', 'web_action_magic'], codePeekFeedback: 'כמעט. קודם פתחו את “לראות קוד שנוצר”.', codeSelectionFeedback: 'כמעט. אחרי פתיחת ההצצה, לחצו על אחד מהבלוקים שמחוברים בקוד: “בלחיצה שנה הודעה”, “בלחיצה שנה סמל ל־”, “בלחיצה שנה רקע” או “בלחיצה החלף מצב קסם”, וודאו ששורת JavaScript מסומנת.' } }
     ],
     vocabulary: [
       ['event', 'משהו שקורה בעמוד, למשל לחיצה'],
@@ -732,13 +732,13 @@
       { minutes: '82–90', title: 'גלריית עיצובים ושיתוף', teacher: 'מבקשים מכל תלמיד להעתיק קישור ציבורי ולשתף תוצר אחד.', students: 'מציגים בחירה עיצובית אחת ומסבירים למה בחרו אותה.' }
     ],
     exercises: [
-      { id: 1, minutes: '8–16', title: 'תרגול 1 — מתחילים פשוט', prompt: 'העמוד מתחיל רק עם עיצוב בסיסי, כותרת ופסקה. שנו את בלוק “פלטת עיצוב עמוד” ובדקו מה השתנה.', hint: 'בהתחלה אין הרבה בלוקים — זה בכוונה. נבנה את העיצוב בשלבים.', check: { cssIncludes: ['background:'], cssExcludes: ['background: #ede9fe;'], blockTypes: ['web_theme'], changedBlocklyFields: [{ type: 'web_theme', field: 'THEME', defaultValue: 'space' }], fieldFeedback: 'כמעט. בלוק פלטת עיצוב העמוד מחובר, עכשיו בחרו פלטה אחרת מתוך התפריט שבתוכו.' } },
-      { id: 2, minutes: '16–25', title: 'תרגול 2 — מוסיפים בלוק ראשון', prompt: 'עכשיו גררו בעצמכם בלוק “צורת כרטיס”, חברו אותו לשרשרת, ושנו את הצורה מברירת המחדל.', hint: 'פתחו את התפריט בתוך בלוק צורת הכרטיס ובחרו צורה אחרת.', check: { cssIncludes: ['border-radius'], blockTypes: ['web_card_shape'], changedBlocklyFields: [{ type: 'web_card_shape', field: 'SHAPE', defaultValue: 'round' }], fieldFeedback: 'כמעט. בלוק צורת הכרטיס מחובר, עכשיו בחרו צורה אחרת מתוך התפריט שבתוכו.' } },
-      { id: 3, minutes: '25–34', title: 'תרגול 3 — מוסיפים עומק', prompt: 'גררו בלוק “צל כרטיס”, חברו אותו אחרי צורת הכרטיס, ושנו את הצל מברירת המחדל.', hint: 'צל כרטיס צריך להיות מחובר אחרי בלוק צורת כרטיס. פתחו את התפריט בתוך בלוק הצל ובחרו אפשרות אחרת.', check: { cssIncludes: ['box-shadow'], blockTypes: ['web_shadow'], orderedBlockTypes: ['web_card_shape', 'web_shadow'], changedBlocklyFields: [{ type: 'web_shadow', field: 'SHADOW', defaultValue: 'soft' }], fieldFeedback: 'כמעט. בלוק צל הכרטיס מחובר במקום הנכון, עכשיו בחרו צל אחר מתוך התפריט שבתוכו.' } },
-      { id: 4, minutes: '34–43', title: 'תרגול 4 — צבע כותרת', prompt: 'חברו בלוק “צבע כותרת” ושנו את צבע הכותרת מברירת המחדל לצבע אחר שמתאים לעמוד.', hint: 'הכותרת היא h1. פתחו את התפריט בתוך בלוק צבע הכותרת ובחרו צבע אחר.', check: { cssIncludes: ['h1 { color:'], blockTypes: ['web_title_color'], changedBlocklyFields: [{ type: 'web_title_color', field: 'COLOR', defaultValue: 'blue' }], fieldFeedback: 'כמעט. בלוק צבע הכותרת מחובר, עכשיו בחרו צבע אחר מתוך התפריט שבתוכו.' } },
-      { id: 5, minutes: '43–52', title: 'תרגול 5 — סוג כפתור', prompt: 'חברו בלוק “סגנון כפתור” ושנו את סוג הכפתור מברירת המחדל.', hint: 'הכפתור משתנה דרך background, border-radius ו־box-shadow. פתחו את התפריט בתוך בלוק סגנון הכפתור ובחרו סוג כפתור אחר.', check: { cssIncludes: ['button {', 'border-radius'], blockTypes: ['web_button_style'], changedBlocklyFields: [{ type: 'web_button_style', field: 'STYLE', defaultValue: 'pill' }], fieldFeedback: 'כמעט. בלוק סגנון הכפתור מחובר, עכשיו בחרו סוג כפתור אחר מתוך התפריט שבתוכו.' } },
-      { id: 6, minutes: '52–62', title: 'תרגול 6 — אפקט Hover', prompt: 'חברו בלוק “אפקט מעבר עכבר”, שנו את אפקט העכבר על הכפתור מברירת המחדל, ובדקו מה קורה כשעוברים על הכפתור עם העכבר.', hint: 'Hover הוא עיצוב שקורה רק כשעוברים עם העכבר. יש כפתור בתצוגת האתר בצד שמאל — עברו עליו עם העכבר כדי לראות את השינוי.', check: { cssIncludes: ['button:hover'], blockTypes: ['web_hover'], changedBlocklyFields: [{ type: 'web_hover', field: 'EFFECT', defaultValue: 'grow' }], fieldFeedback: 'כמעט. בלוק אפקט המעבר מחובר, עכשיו בחרו אפקט עכבר אחר מתוך התפריט שבתוכו.' } },
-      { id: 7, minutes: '62–74', title: 'תרגול 7 — הצצה ל־CSS', prompt: 'פתחו “לראות קוד שנוצר”, לחצו על אחד מבלוקי העיצוב, וראו איזו שורת CSS הבלוק יצר בתוך תיבת ה־CSS.', hint: 'בחרו למשל את בלוק “צל כרטיס” או “צורת כרטיס” אחרי שפתחתם את הצצת הקוד. הסימון צריך להיות בלשונית CSS, לא ב־HTML או JavaScript.', check: { cssIncludes: ['background', 'box-shadow'], blockTypes: ['web_theme', 'web_card_shape', 'web_shadow'], requiresCodePeek: true, requiresCodeSelectionTab: 'css', requiresCodeSelectionBlockTypes: ['web_theme', 'web_card_shape', 'web_shadow', 'web_title_color', 'web_button_style', 'web_hover'], codePeekFeedback: 'כמעט. קודם פתחו את “לראות קוד שנוצר”.', codeSelectionFeedback: 'כמעט. עכשיו לחצו על בלוק עיצוב וודאו ששורת CSS מסומנת בתיבת ה־CSS, לא ב־HTML או JavaScript.' } }
+      { id: 1, minutes: '8–16', title: 'תרגיל 1 — מתחילים פשוט', prompt: 'העמוד מתחיל רק עם עיצוב בסיסי, כותרת ופסקה. שנו את בלוק “פלטת עיצוב עמוד” ובדקו מה השתנה.', hint: 'בהתחלה אין הרבה בלוקים — זה בכוונה. נבנה את העיצוב בשלבים.', check: { cssIncludes: ['background:'], cssExcludes: ['background: #ede9fe;'], blockTypes: ['web_theme'], changedBlocklyFields: [{ type: 'web_theme', field: 'THEME', defaultValue: 'space' }], fieldFeedback: 'כמעט. בלוק פלטת עיצוב העמוד מחובר, עכשיו בחרו פלטה אחרת מתוך התפריט שבתוכו.' } },
+      { id: 2, minutes: '16–25', title: 'תרגיל 2 — מוסיפים בלוק ראשון', prompt: 'עכשיו גררו בעצמכם בלוק “צורת כרטיס”, חברו אותו לשרשרת, ושנו את הצורה מברירת המחדל.', hint: 'פתחו את התפריט בתוך בלוק צורת הכרטיס ובחרו צורה אחרת.', check: { cssIncludes: ['border-radius'], blockTypes: ['web_card_shape'], changedBlocklyFields: [{ type: 'web_card_shape', field: 'SHAPE', defaultValue: 'round' }], fieldFeedback: 'כמעט. בלוק צורת הכרטיס מחובר, עכשיו בחרו צורה אחרת מתוך התפריט שבתוכו.' } },
+      { id: 3, minutes: '25–34', title: 'תרגיל 3 — מוסיפים עומק', prompt: 'גררו בלוק “צל כרטיס”, חברו אותו אחרי צורת הכרטיס, ושנו את הצל מברירת המחדל.', hint: 'צל כרטיס צריך להיות מחובר אחרי בלוק צורת כרטיס. פתחו את התפריט בתוך בלוק הצל ובחרו אפשרות אחרת.', check: { cssIncludes: ['box-shadow'], blockTypes: ['web_shadow'], orderedBlockTypes: ['web_card_shape', 'web_shadow'], changedBlocklyFields: [{ type: 'web_shadow', field: 'SHADOW', defaultValue: 'soft' }], fieldFeedback: 'כמעט. בלוק צל הכרטיס מחובר במקום הנכון, עכשיו בחרו צל אחר מתוך התפריט שבתוכו.' } },
+      { id: 4, minutes: '34–43', title: 'תרגיל 4 — צבע כותרת', prompt: 'חברו בלוק “צבע כותרת” ושנו את צבע הכותרת מברירת המחדל לצבע אחר שמתאים לעמוד.', hint: 'הכותרת היא h1. פתחו את התפריט בתוך בלוק צבע הכותרת ובחרו צבע אחר.', check: { cssIncludes: ['h1 { color:'], blockTypes: ['web_title_color'], changedBlocklyFields: [{ type: 'web_title_color', field: 'COLOR', defaultValue: 'blue' }], fieldFeedback: 'כמעט. בלוק צבע הכותרת מחובר, עכשיו בחרו צבע אחר מתוך התפריט שבתוכו.' } },
+      { id: 5, minutes: '43–52', title: 'תרגיל 5 — סוג כפתור', prompt: 'חברו בלוק “סגנון כפתור” ושנו את סוג הכפתור מברירת המחדל.', hint: 'הכפתור משתנה דרך background, border-radius ו־box-shadow. פתחו את התפריט בתוך בלוק סגנון הכפתור ובחרו סוג כפתור אחר.', check: { cssIncludes: ['button {', 'border-radius'], blockTypes: ['web_button_style'], changedBlocklyFields: [{ type: 'web_button_style', field: 'STYLE', defaultValue: 'pill' }], fieldFeedback: 'כמעט. בלוק סגנון הכפתור מחובר, עכשיו בחרו סוג כפתור אחר מתוך התפריט שבתוכו.' } },
+      { id: 6, minutes: '52–62', title: 'תרגיל 6 — אפקט Hover', prompt: 'חברו בלוק “אפקט מעבר עכבר”, שנו את אפקט העכבר על הכפתור מברירת המחדל, ובדקו מה קורה כשעוברים על הכפתור עם העכבר.', hint: 'Hover הוא עיצוב שקורה רק כשעוברים עם העכבר. יש כפתור בתצוגת האתר בצד שמאל — עברו עליו עם העכבר כדי לראות את השינוי.', check: { cssIncludes: ['button:hover'], blockTypes: ['web_hover'], changedBlocklyFields: [{ type: 'web_hover', field: 'EFFECT', defaultValue: 'grow' }], fieldFeedback: 'כמעט. בלוק אפקט המעבר מחובר, עכשיו בחרו אפקט עכבר אחר מתוך התפריט שבתוכו.' } },
+      { id: 7, minutes: '62–74', title: 'תרגיל 7 — הצצה ל־CSS', prompt: 'פתחו “לראות קוד שנוצר”, לחצו על אחד מבלוקי העיצוב, וראו איזו שורת CSS הבלוק יצר בתוך תיבת ה־CSS.', hint: 'בחרו למשל את בלוק “צל כרטיס” או “צורת כרטיס” אחרי שפתחתם את הצצת הקוד. הסימון צריך להיות בלשונית CSS, לא ב־HTML או JavaScript.', check: { cssIncludes: ['background', 'box-shadow'], blockTypes: ['web_theme', 'web_card_shape', 'web_shadow'], requiresCodePeek: true, requiresCodeSelectionTab: 'css', requiresCodeSelectionBlockTypes: ['web_theme', 'web_card_shape', 'web_shadow', 'web_title_color', 'web_button_style', 'web_hover'], codePeekFeedback: 'כמעט. קודם פתחו את “לראות קוד שנוצר”.', codeSelectionFeedback: 'כמעט. עכשיו לחצו על בלוק עיצוב וודאו ששורת CSS מסומנת בתיבת ה־CSS, לא ב־HTML או JavaScript.' } }
     ],
     vocabulary: [
       ['CSS', 'שפת העיצוב: צבעים, צורות, ריווח ותנועה'],
@@ -775,14 +775,14 @@
       { minutes: '84–90', title: 'מיני תערוכה', teacher: 'מבקשים מכל תלמיד להציג בלוק אחד שבחר ולמה.', students: 'מציגים עמוד ומסבירים: “חיברתי בלוק ___ ולכן בעמוד קרה ___”.' }
     ],
     exercises: [
-      { id: 1, minutes: '8–16', title: 'תרגול 1 — מחברים בלוק כותרת', prompt: 'גררו בלוק “כותרת” וחברו אותו מתחת ל“עמוד האתר שלי”. שנו את הטקסט בתוך הבלוק.', hint: 'הבלוק חייב להיצמד לבלוק שמעליו, כמו פאזל.', check: { htmlIncludes: ['<h1>'], blockTypes: ['web_title'], nonEmptyBlocklyFields: [{ type: 'web_title', field: 'TEXT' }], changedBlocklyFields: [{ type: 'web_title', field: 'TEXT', defaultValue: 'האתר הראשון שלי' }], emptyFeedback: 'כמעט. הכותרת מחוברת, אבל היא לא יכולה להיות ריקה.', fieldFeedback: 'כמעט. הכותרת מחוברת, עכשיו שנו את הטקסט שבתוך בלוק הכותרת.' } },
-      { id: 2, minutes: '16–24', title: 'תרגול 2 — מוסיפים פסקה', prompt: 'גררו בלוק “פסקה”, חברו אותו מתחת לכותרת, וכתבו משפט על העמוד שלכם.', hint: 'הפסקה צריכה להיות מחוברת מתחת לכותרת, לא מעליה.', check: { htmlIncludes: ['<p>'], blockTypes: ['web_paragraph'], orderedBlockTypes: ['web_title', 'web_paragraph'], nonEmptyBlocklyFields: [{ type: 'web_paragraph', field: 'TEXT' }], changedBlocklyFields: [{ type: 'web_paragraph', field: 'TEXT', defaultValue: 'אני בונה עמוד עם בלוקלי אמיתי' }], orderFeedback: 'כמעט. הפסקה צריכה להיות מחוברת מתחת לכותרת.', emptyFeedback: 'כמעט. הפסקה במקום הנכון, אבל היא לא יכולה להיות ריקה.', fieldFeedback: 'כמעט. הפסקה במקום הנכון, עכשיו שנו את הטקסט שבתוך בלוק הפסקה.' } },
-      { id: 3, minutes: '24–32', title: 'תרגול 3 — בוחרים סמל גדול', prompt: 'גררו בלוק “סמל גדול”, חברו אותו לעמוד, ובחרו אימוג׳י שמתאים לעמוד.', hint: 'זה בלוק תוכן ויזואלי, לא קוד.', check: { htmlIncludes: ['hero-emoji'], blockTypes: ['web_emoji'] } },
-      { id: 4, minutes: '32–42', title: 'תרגול 4 — מחליפים עיצוב', prompt: 'גררו בלוק “עיצוב עמוד” ובחרו פלטה שאינה ברירת המחדל.', hint: 'פתחו את התפריט בתוך בלוק העיצוב ובחרו אפשרות אחרת.', check: { cssIncludes: ['background:'], blockTypes: ['web_theme'], changedBlocklyFields: [{ type: 'web_theme', field: 'THEME', defaultValue: 'sky' }], fieldFeedback: 'כמעט. בלוק העיצוב מחובר, עכשיו בחרו פלטה אחרת מתוך התפריט שבתוכו.' } },
-      { id: 5, minutes: '42–54', title: 'תרגול 5 — כפתור עם הודעה', prompt: 'חברו בלוק “כפתור” ושנו גם את טקסט הכפתור וגם את ההודעה שהוא מציג.', hint: 'אחרי הרצה, לחצו על הכפתור בתצוגה החיה.', check: { htmlIncludes: ['onclick="showMessage()"'], jsIncludes: ['function showMessage'], blockTypes: ['web_button'], nonEmptyBlocklyFields: [{ type: 'web_button', field: 'LABEL' }, { type: 'web_button', field: 'MESSAGE' }], changedBlocklyFields: [{ type: 'web_button', field: 'LABEL', defaultValue: 'לחצו להפתעה' }, { type: 'web_button', field: 'MESSAGE', defaultValue: 'הכפתור שלי עובד 🎉' }], emptyFeedback: 'כמעט. הכפתור מחובר, אבל טקסט הכפתור וההודעה לא יכולים להיות ריקים.', fieldFeedback: 'כמעט. הכפתור מחובר, עכשיו שנו גם את טקסט הכפתור וגם את ההודעה שבתוכו.' } },
-      { id: 6, minutes: '54–64', title: 'תרגול 6 — שתי קוביות מידע', prompt: 'גררו בלוק “שתי קוביות מידע” וכתבו שני רעיונות/נושאים/עובדות.', hint: 'זה מלמד שהעמוד בנוי מחלקים, לא משורה אחת.', check: { htmlIncludes: ['class="columns"'], cssIncludes: ['grid-template-columns'], blockTypes: ['web_columns'], nonEmptyBlocklyFields: [{ type: 'web_columns', field: 'A' }, { type: 'web_columns', field: 'B' }], changedBlocklyFields: [{ type: 'web_columns', field: 'A', defaultValue: 'רעיון ראשון' }, { type: 'web_columns', field: 'B', defaultValue: 'רעיון שני' }], emptyFeedback: 'כמעט. שתי קוביות המידע צריכות להכיל טקסט.', fieldFeedback: 'כמעט. כתבו שני רעיונות משלכם בתוך קוביות המידע.' } },
-      { id: 7, minutes: '64–74', title: 'תרגול 7 — חתימה וסדר', prompt: 'הוסיפו בלוק חתימה ובדקו. אחר כך הזיזו אותו למקום אחר בשרשרת ולחצו בדיקה שוב.', hint: 'התרגול הזה צריך שתי בדיקות: פעם אחת כשהחתימה מחוברת, ופעם נוספת אחרי שינוי הסדר.', check: { htmlIncludes: ['<footer>'], blockTypes: ['web_footer'], nonEmptyBlocklyFields: [{ type: 'web_footer', field: 'TEXT' }], twoStepFooterMove: true, blockFeedback: 'כמעט. קודם חברו בלוק חתימה לשרשרת.', emptyFeedback: 'כמעט. החתימה לא יכולה להיות ריקה.', firstCheckFeedback: 'מעולה, החתימה מחוברת. עכשיו הזיזו אותה למקום אחר בשרשרת ולחצו בדיקה שוב.', secondCheckFeedback: 'כמעט. עכשיו צריך להזיז את בלוק החתימה למקום אחר בשרשרת ולבדוק שוב.' } },
-      { id: 8, minutes: '74–84', title: 'תרגול 8 — הצצה לקוד', prompt: 'פתחו למטה במסך את “הצצה לקוד שנוצר”, לחצו על אחד הבלוקים שלכם, ומצאו איפה השורה שלו מסומנת ב־HTML או CSS.', hint: 'לא צריך לערוך קוד. לחצו על בלוק בעמוד כדי להדגיש את השורה שהוא יצר בקוד.', check: { htmlIncludes: ['page-card'], cssIncludes: ['.page-card'], jsIncludes: ['textContent'], blockTypes: ['web_title', 'web_paragraph'], nonEmptyBlocklyFields: [{ type: 'web_title', field: 'TEXT' }, { type: 'web_paragraph', field: 'TEXT' }], requiresCodePeek: true, requiresCodeSelectionTabs: ['html', 'css'], requiresCodeSelectionBlockTypes: ['page_start', 'web_theme', 'web_title', 'web_paragraph', 'web_emoji', 'web_button', 'web_columns', 'web_footer'], emptyFeedback: 'כמעט. לפני שמציצים לקוד, ודאו שהכותרת והפסקה לא ריקות.', codePeekFeedback: 'כמעט. קודם פתחו למטה במסך את “הצצה לקוד שנוצר”.', codeSelectionFeedback: 'כמעט. עכשיו לחצו על אחד הבלוקים שלכם וודאו ששורה מתאימה מסומנת ב־HTML או CSS.' } }
+      { id: 1, minutes: '8–16', title: 'תרגיל 1 — מחברים בלוק כותרת', prompt: 'גררו בלוק “כותרת” וחברו אותו מתחת ל“עמוד האתר שלי”. שנו את הטקסט בתוך הבלוק.', hint: 'הבלוק חייב להיצמד לבלוק שמעליו, כמו פאזל.', check: { htmlIncludes: ['<h1>'], blockTypes: ['web_title'], nonEmptyBlocklyFields: [{ type: 'web_title', field: 'TEXT' }], changedBlocklyFields: [{ type: 'web_title', field: 'TEXT', defaultValue: 'האתר הראשון שלי' }], emptyFeedback: 'כמעט. הכותרת מחוברת, אבל היא לא יכולה להיות ריקה.', fieldFeedback: 'כמעט. הכותרת מחוברת, עכשיו שנו את הטקסט שבתוך בלוק הכותרת.' } },
+      { id: 2, minutes: '16–24', title: 'תרגיל 2 — מוסיפים פסקה', prompt: 'גררו בלוק “פסקה”, חברו אותו מתחת לכותרת, וכתבו משפט על העמוד שלכם.', hint: 'הפסקה צריכה להיות מחוברת מתחת לכותרת, לא מעליה.', check: { htmlIncludes: ['<p>'], blockTypes: ['web_paragraph'], orderedBlockTypes: ['web_title', 'web_paragraph'], nonEmptyBlocklyFields: [{ type: 'web_paragraph', field: 'TEXT' }], changedBlocklyFields: [{ type: 'web_paragraph', field: 'TEXT', defaultValue: 'אני בונה עמוד עם בלוקלי אמיתי' }], orderFeedback: 'כמעט. הפסקה צריכה להיות מחוברת מתחת לכותרת.', emptyFeedback: 'כמעט. הפסקה במקום הנכון, אבל היא לא יכולה להיות ריקה.', fieldFeedback: 'כמעט. הפסקה במקום הנכון, עכשיו שנו את הטקסט שבתוך בלוק הפסקה.' } },
+      { id: 3, minutes: '24–32', title: 'תרגיל 3 — בוחרים סמל גדול', prompt: 'גררו בלוק “סמל גדול”, חברו אותו לעמוד, ובחרו אימוג׳י שמתאים לעמוד.', hint: 'זה בלוק תוכן ויזואלי, לא קוד.', check: { htmlIncludes: ['hero-emoji'], blockTypes: ['web_emoji'] } },
+      { id: 4, minutes: '32–42', title: 'תרגיל 4 — מחליפים עיצוב', prompt: 'גררו בלוק “עיצוב עמוד” ובחרו פלטה שאינה ברירת המחדל.', hint: 'פתחו את התפריט בתוך בלוק העיצוב ובחרו אפשרות אחרת.', check: { cssIncludes: ['background:'], blockTypes: ['web_theme'], changedBlocklyFields: [{ type: 'web_theme', field: 'THEME', defaultValue: 'sky' }], fieldFeedback: 'כמעט. בלוק העיצוב מחובר, עכשיו בחרו פלטה אחרת מתוך התפריט שבתוכו.' } },
+      { id: 5, minutes: '42–54', title: 'תרגיל 5 — כפתור עם הודעה', prompt: 'חברו בלוק “כפתור” ושנו גם את טקסט הכפתור וגם את ההודעה שהוא מציג.', hint: 'אחרי הרצה, לחצו על הכפתור בתצוגה החיה.', check: { htmlIncludes: ['onclick="showMessage()"'], jsIncludes: ['function showMessage'], blockTypes: ['web_button'], nonEmptyBlocklyFields: [{ type: 'web_button', field: 'LABEL' }, { type: 'web_button', field: 'MESSAGE' }], changedBlocklyFields: [{ type: 'web_button', field: 'LABEL', defaultValue: 'לחצו להפתעה' }, { type: 'web_button', field: 'MESSAGE', defaultValue: 'הכפתור שלי עובד 🎉' }], emptyFeedback: 'כמעט. הכפתור מחובר, אבל טקסט הכפתור וההודעה לא יכולים להיות ריקים.', fieldFeedback: 'כמעט. הכפתור מחובר, עכשיו שנו גם את טקסט הכפתור וגם את ההודעה שבתוכו.' } },
+      { id: 6, minutes: '54–64', title: 'תרגיל 6 — שתי קוביות מידע', prompt: 'גררו בלוק “שתי קוביות מידע” וכתבו שני רעיונות/נושאים/עובדות.', hint: 'זה מלמד שהעמוד בנוי מחלקים, לא משורה אחת.', check: { htmlIncludes: ['class="columns"'], cssIncludes: ['grid-template-columns'], blockTypes: ['web_columns'], nonEmptyBlocklyFields: [{ type: 'web_columns', field: 'A' }, { type: 'web_columns', field: 'B' }], changedBlocklyFields: [{ type: 'web_columns', field: 'A', defaultValue: 'רעיון ראשון' }, { type: 'web_columns', field: 'B', defaultValue: 'רעיון שני' }], emptyFeedback: 'כמעט. שתי קוביות המידע צריכות להכיל טקסט.', fieldFeedback: 'כמעט. כתבו שני רעיונות משלכם בתוך קוביות המידע.' } },
+      { id: 7, minutes: '64–74', title: 'תרגיל 7 — חתימה וסדר', prompt: 'הוסיפו בלוק חתימה ובדקו. אחר כך הזיזו אותו למקום אחר בשרשרת ולחצו בדיקה שוב.', hint: 'התרגיל הזה צריך שתי בדיקות: פעם אחת כשהחתימה מחוברת, ופעם נוספת אחרי שינוי הסדר.', check: { htmlIncludes: ['<footer>'], blockTypes: ['web_footer'], nonEmptyBlocklyFields: [{ type: 'web_footer', field: 'TEXT' }], twoStepFooterMove: true, blockFeedback: 'כמעט. קודם חברו בלוק חתימה לשרשרת.', emptyFeedback: 'כמעט. החתימה לא יכולה להיות ריקה.', firstCheckFeedback: 'מעולה, החתימה מחוברת. עכשיו הזיזו אותה למקום אחר בשרשרת ולחצו בדיקה שוב.', secondCheckFeedback: 'כמעט. עכשיו צריך להזיז את בלוק החתימה למקום אחר בשרשרת ולבדוק שוב.' } },
+      { id: 8, minutes: '74–84', title: 'תרגיל 8 — הצצה לקוד', prompt: 'פתחו למטה במסך את “הצצה לקוד שנוצר”, לחצו על אחד הבלוקים שלכם, ומצאו איפה השורה שלו מסומנת ב־HTML או CSS.', hint: 'לא צריך לערוך קוד. לחצו על בלוק בעמוד כדי להדגיש את השורה שהוא יצר בקוד.', check: { htmlIncludes: ['page-card'], cssIncludes: ['.page-card'], jsIncludes: ['textContent'], blockTypes: ['web_title', 'web_paragraph'], nonEmptyBlocklyFields: [{ type: 'web_title', field: 'TEXT' }, { type: 'web_paragraph', field: 'TEXT' }], requiresCodePeek: true, requiresCodeSelectionTabs: ['html', 'css'], requiresCodeSelectionBlockTypes: ['page_start', 'web_theme', 'web_title', 'web_paragraph', 'web_emoji', 'web_button', 'web_columns', 'web_footer'], emptyFeedback: 'כמעט. לפני שמציצים לקוד, ודאו שהכותרת והפסקה לא ריקות.', codePeekFeedback: 'כמעט. קודם פתחו למטה במסך את “הצצה לקוד שנוצר”.', codeSelectionFeedback: 'כמעט. עכשיו לחצו על אחד הבלוקים שלכם וודאו ששורה מתאימה מסומנת ב־HTML או CSS.' } }
     ],
     vocabulary: [
       ['workspace', 'אזור העבודה שבו גוררים ומחברים בלוקים'],
@@ -842,7 +842,7 @@
       },
       {
         "minutes": "52–68",
-        "title": "תרגול עצמאי הדרגתי",
+        "title": "תרגיל עצמאי הדרגתי",
         "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
         "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
       },
@@ -863,7 +863,7 @@
       {
         "id": 1,
         "minutes": "0–8",
-        "title": "תרגול 1 — מריצים קודם",
+        "title": "תרגיל 1 — מריצים קודם",
         "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
         "hint": "קודם תוצאה, אחר כך קוד.",
         "check": {
@@ -882,7 +882,7 @@
       {
         "id": 2,
         "minutes": "10–18",
-        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "title": "תרגיל 2 — מוצאים שורה חשובה",
         "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
         "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
         "check": {
@@ -901,7 +901,7 @@
       {
         "id": 3,
         "minutes": "20–28",
-        "title": "תרגול 3 — שינוי בטוח",
+        "title": "תרגיל 3 — שינוי בטוח",
         "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
         "hint": "שמרו על גרשיים וסוגריים.",
         "check": {
@@ -920,7 +920,7 @@
       {
         "id": 4,
         "minutes": "30–38",
-        "title": "תרגול 4 — כרטיס קוד",
+        "title": "תרגיל 4 — כרטיס קוד",
         "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
         "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
         "check": {
@@ -939,7 +939,7 @@
       {
         "id": 5,
         "minutes": "40–48",
-        "title": "תרגול 5 — השלמת חור",
+        "title": "תרגיל 5 — השלמת חור",
         "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
         "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
         "check": {
@@ -958,7 +958,7 @@
       {
         "id": 6,
         "minutes": "50–58",
-        "title": "תרגול 6 — דיבאג קטן",
+        "title": "תרגיל 6 — דיבאג קטן",
         "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
         "hint": "בדקו שהשמות זהים בדיוק.",
         "check": {
@@ -977,7 +977,7 @@
       {
         "id": 7,
         "minutes": "60–68",
-        "title": "תרגול 7 — שדרוג אישי",
+        "title": "תרגיל 7 — שדרוג אישי",
         "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
         "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
         "check": {
@@ -996,7 +996,7 @@
       {
         "id": 8,
         "minutes": "70–78",
-        "title": "תרגול 8 — הצגה",
+        "title": "תרגיל 8 — הצגה",
         "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
         "hint": "השתמשו במילים של השיעור.",
         "check": {
@@ -1080,7 +1080,7 @@
       },
       {
         "minutes": "52–68",
-        "title": "תרגול עצמאי הדרגתי",
+        "title": "תרגיל עצמאי הדרגתי",
         "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
         "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
       },
@@ -1101,7 +1101,7 @@
       {
         "id": 1,
         "minutes": "0–8",
-        "title": "תרגול 1 — מריצים קודם",
+        "title": "תרגיל 1 — מריצים קודם",
         "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
         "hint": "קודם תוצאה, אחר כך קוד.",
         "check": {
@@ -1120,7 +1120,7 @@
       {
         "id": 2,
         "minutes": "10–18",
-        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "title": "תרגיל 2 — מוצאים שורה חשובה",
         "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
         "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
         "check": {
@@ -1139,7 +1139,7 @@
       {
         "id": 3,
         "minutes": "20–28",
-        "title": "תרגול 3 — שינוי בטוח",
+        "title": "תרגיל 3 — שינוי בטוח",
         "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
         "hint": "שמרו על גרשיים וסוגריים.",
         "check": {
@@ -1158,7 +1158,7 @@
       {
         "id": 4,
         "minutes": "30–38",
-        "title": "תרגול 4 — כרטיס קוד",
+        "title": "תרגיל 4 — כרטיס קוד",
         "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
         "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
         "check": {
@@ -1177,7 +1177,7 @@
       {
         "id": 5,
         "minutes": "40–48",
-        "title": "תרגול 5 — השלמת חור",
+        "title": "תרגיל 5 — השלמת חור",
         "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
         "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
         "check": {
@@ -1196,7 +1196,7 @@
       {
         "id": 6,
         "minutes": "50–58",
-        "title": "תרגול 6 — דיבאג קטן",
+        "title": "תרגיל 6 — דיבאג קטן",
         "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
         "hint": "בדקו שהשמות זהים בדיוק.",
         "check": {
@@ -1215,7 +1215,7 @@
       {
         "id": 7,
         "minutes": "60–68",
-        "title": "תרגול 7 — שדרוג אישי",
+        "title": "תרגיל 7 — שדרוג אישי",
         "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
         "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
         "check": {
@@ -1234,7 +1234,7 @@
       {
         "id": 8,
         "minutes": "70–78",
-        "title": "תרגול 8 — הצגה",
+        "title": "תרגיל 8 — הצגה",
         "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
         "hint": "השתמשו במילים של השיעור.",
         "check": {
@@ -1318,7 +1318,7 @@
       },
       {
         "minutes": "52–68",
-        "title": "תרגול עצמאי הדרגתי",
+        "title": "תרגיל עצמאי הדרגתי",
         "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
         "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
       },
@@ -1339,7 +1339,7 @@
       {
         "id": 1,
         "minutes": "0–8",
-        "title": "תרגול 1 — מריצים קודם",
+        "title": "תרגיל 1 — מריצים קודם",
         "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
         "hint": "קודם תוצאה, אחר כך קוד.",
         "check": {
@@ -1358,7 +1358,7 @@
       {
         "id": 2,
         "minutes": "10–18",
-        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "title": "תרגיל 2 — מוצאים שורה חשובה",
         "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
         "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
         "check": {
@@ -1377,7 +1377,7 @@
       {
         "id": 3,
         "minutes": "20–28",
-        "title": "תרגול 3 — שינוי בטוח",
+        "title": "תרגיל 3 — שינוי בטוח",
         "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
         "hint": "שמרו על גרשיים וסוגריים.",
         "check": {
@@ -1396,7 +1396,7 @@
       {
         "id": 4,
         "minutes": "30–38",
-        "title": "תרגול 4 — כרטיס קוד",
+        "title": "תרגיל 4 — כרטיס קוד",
         "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
         "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
         "check": {
@@ -1415,7 +1415,7 @@
       {
         "id": 5,
         "minutes": "40–48",
-        "title": "תרגול 5 — השלמת חור",
+        "title": "תרגיל 5 — השלמת חור",
         "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
         "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
         "check": {
@@ -1434,7 +1434,7 @@
       {
         "id": 6,
         "minutes": "50–58",
-        "title": "תרגול 6 — דיבאג קטן",
+        "title": "תרגיל 6 — דיבאג קטן",
         "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
         "hint": "בדקו שהשמות זהים בדיוק.",
         "check": {
@@ -1453,7 +1453,7 @@
       {
         "id": 7,
         "minutes": "60–68",
-        "title": "תרגול 7 — שדרוג אישי",
+        "title": "תרגיל 7 — שדרוג אישי",
         "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
         "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
         "check": {
@@ -1472,7 +1472,7 @@
       {
         "id": 8,
         "minutes": "70–78",
-        "title": "תרגול 8 — הצגה",
+        "title": "תרגיל 8 — הצגה",
         "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
         "hint": "השתמשו במילים של השיעור.",
         "check": {
@@ -1556,7 +1556,7 @@
       },
       {
         "minutes": "52–68",
-        "title": "תרגול עצמאי הדרגתי",
+        "title": "תרגיל עצמאי הדרגתי",
         "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
         "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
       },
@@ -1577,7 +1577,7 @@
       {
         "id": 1,
         "minutes": "0–8",
-        "title": "תרגול 1 — מריצים קודם",
+        "title": "תרגיל 1 — מריצים קודם",
         "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
         "hint": "קודם תוצאה, אחר כך קוד.",
         "check": {
@@ -1596,7 +1596,7 @@
       {
         "id": 2,
         "minutes": "10–18",
-        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "title": "תרגיל 2 — מוצאים שורה חשובה",
         "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
         "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
         "check": {
@@ -1615,7 +1615,7 @@
       {
         "id": 3,
         "minutes": "20–28",
-        "title": "תרגול 3 — שינוי בטוח",
+        "title": "תרגיל 3 — שינוי בטוח",
         "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
         "hint": "שמרו על גרשיים וסוגריים.",
         "check": {
@@ -1634,7 +1634,7 @@
       {
         "id": 4,
         "minutes": "30–38",
-        "title": "תרגול 4 — כרטיס קוד",
+        "title": "תרגיל 4 — כרטיס קוד",
         "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
         "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
         "check": {
@@ -1653,7 +1653,7 @@
       {
         "id": 5,
         "minutes": "40–48",
-        "title": "תרגול 5 — השלמת חור",
+        "title": "תרגיל 5 — השלמת חור",
         "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
         "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
         "check": {
@@ -1672,7 +1672,7 @@
       {
         "id": 6,
         "minutes": "50–58",
-        "title": "תרגול 6 — דיבאג קטן",
+        "title": "תרגיל 6 — דיבאג קטן",
         "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
         "hint": "בדקו שהשמות זהים בדיוק.",
         "check": {
@@ -1691,7 +1691,7 @@
       {
         "id": 7,
         "minutes": "60–68",
-        "title": "תרגול 7 — שדרוג אישי",
+        "title": "תרגיל 7 — שדרוג אישי",
         "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
         "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
         "check": {
@@ -1710,7 +1710,7 @@
       {
         "id": 8,
         "minutes": "70–78",
-        "title": "תרגול 8 — הצגה",
+        "title": "תרגיל 8 — הצגה",
         "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
         "hint": "השתמשו במילים של השיעור.",
         "check": {
@@ -1794,7 +1794,7 @@
       },
       {
         "minutes": "52–68",
-        "title": "תרגול עצמאי הדרגתי",
+        "title": "תרגיל עצמאי הדרגתי",
         "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
         "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
       },
@@ -1815,7 +1815,7 @@
       {
         "id": 1,
         "minutes": "0–8",
-        "title": "תרגול 1 — מריצים קודם",
+        "title": "תרגיל 1 — מריצים קודם",
         "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
         "hint": "קודם תוצאה, אחר כך קוד.",
         "check": {
@@ -1834,7 +1834,7 @@
       {
         "id": 2,
         "minutes": "10–18",
-        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "title": "תרגיל 2 — מוצאים שורה חשובה",
         "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
         "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
         "check": {
@@ -1853,7 +1853,7 @@
       {
         "id": 3,
         "minutes": "20–28",
-        "title": "תרגול 3 — שינוי בטוח",
+        "title": "תרגיל 3 — שינוי בטוח",
         "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
         "hint": "שמרו על גרשיים וסוגריים.",
         "check": {
@@ -1872,7 +1872,7 @@
       {
         "id": 4,
         "minutes": "30–38",
-        "title": "תרגול 4 — כרטיס קוד",
+        "title": "תרגיל 4 — כרטיס קוד",
         "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
         "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
         "check": {
@@ -1891,7 +1891,7 @@
       {
         "id": 5,
         "minutes": "40–48",
-        "title": "תרגול 5 — השלמת חור",
+        "title": "תרגיל 5 — השלמת חור",
         "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
         "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
         "check": {
@@ -1910,7 +1910,7 @@
       {
         "id": 6,
         "minutes": "50–58",
-        "title": "תרגול 6 — דיבאג קטן",
+        "title": "תרגיל 6 — דיבאג קטן",
         "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
         "hint": "בדקו שהשמות זהים בדיוק.",
         "check": {
@@ -1929,7 +1929,7 @@
       {
         "id": 7,
         "minutes": "60–68",
-        "title": "תרגול 7 — שדרוג אישי",
+        "title": "תרגיל 7 — שדרוג אישי",
         "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
         "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
         "check": {
@@ -1948,7 +1948,7 @@
       {
         "id": 8,
         "minutes": "70–78",
-        "title": "תרגול 8 — הצגה",
+        "title": "תרגיל 8 — הצגה",
         "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
         "hint": "השתמשו במילים של השיעור.",
         "check": {
@@ -2032,7 +2032,7 @@
       },
       {
         "minutes": "52–68",
-        "title": "תרגול עצמאי הדרגתי",
+        "title": "תרגיל עצמאי הדרגתי",
         "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
         "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
       },
@@ -2053,7 +2053,7 @@
       {
         "id": 1,
         "minutes": "0–8",
-        "title": "תרגול 1 — מריצים קודם",
+        "title": "תרגיל 1 — מריצים קודם",
         "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
         "hint": "קודם תוצאה, אחר כך קוד.",
         "check": {
@@ -2072,7 +2072,7 @@
       {
         "id": 2,
         "minutes": "10–18",
-        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "title": "תרגיל 2 — מוצאים שורה חשובה",
         "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
         "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
         "check": {
@@ -2091,7 +2091,7 @@
       {
         "id": 3,
         "minutes": "20–28",
-        "title": "תרגול 3 — שינוי בטוח",
+        "title": "תרגיל 3 — שינוי בטוח",
         "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
         "hint": "שמרו על גרשיים וסוגריים.",
         "check": {
@@ -2110,7 +2110,7 @@
       {
         "id": 4,
         "minutes": "30–38",
-        "title": "תרגול 4 — כרטיס קוד",
+        "title": "תרגיל 4 — כרטיס קוד",
         "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
         "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
         "check": {
@@ -2129,7 +2129,7 @@
       {
         "id": 5,
         "minutes": "40–48",
-        "title": "תרגול 5 — השלמת חור",
+        "title": "תרגיל 5 — השלמת חור",
         "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
         "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
         "check": {
@@ -2148,7 +2148,7 @@
       {
         "id": 6,
         "minutes": "50–58",
-        "title": "תרגול 6 — דיבאג קטן",
+        "title": "תרגיל 6 — דיבאג קטן",
         "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
         "hint": "בדקו שהשמות זהים בדיוק.",
         "check": {
@@ -2167,7 +2167,7 @@
       {
         "id": 7,
         "minutes": "60–68",
-        "title": "תרגול 7 — שדרוג אישי",
+        "title": "תרגיל 7 — שדרוג אישי",
         "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
         "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
         "check": {
@@ -2186,7 +2186,7 @@
       {
         "id": 8,
         "minutes": "70–78",
-        "title": "תרגול 8 — הצגה",
+        "title": "תרגיל 8 — הצגה",
         "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
         "hint": "השתמשו במילים של השיעור.",
         "check": {
@@ -2270,7 +2270,7 @@
       },
       {
         "minutes": "52–68",
-        "title": "תרגול עצמאי הדרגתי",
+        "title": "תרגיל עצמאי הדרגתי",
         "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
         "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
       },
@@ -2291,7 +2291,7 @@
       {
         "id": 1,
         "minutes": "0–8",
-        "title": "תרגול 1 — מריצים קודם",
+        "title": "תרגיל 1 — מריצים קודם",
         "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
         "hint": "קודם תוצאה, אחר כך קוד.",
         "check": {
@@ -2310,7 +2310,7 @@
       {
         "id": 2,
         "minutes": "10–18",
-        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "title": "תרגיל 2 — מוצאים שורה חשובה",
         "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
         "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
         "check": {
@@ -2329,7 +2329,7 @@
       {
         "id": 3,
         "minutes": "20–28",
-        "title": "תרגול 3 — שינוי בטוח",
+        "title": "תרגיל 3 — שינוי בטוח",
         "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
         "hint": "שמרו על גרשיים וסוגריים.",
         "check": {
@@ -2348,7 +2348,7 @@
       {
         "id": 4,
         "minutes": "30–38",
-        "title": "תרגול 4 — כרטיס קוד",
+        "title": "תרגיל 4 — כרטיס קוד",
         "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
         "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
         "check": {
@@ -2367,7 +2367,7 @@
       {
         "id": 5,
         "minutes": "40–48",
-        "title": "תרגול 5 — השלמת חור",
+        "title": "תרגיל 5 — השלמת חור",
         "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
         "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
         "check": {
@@ -2386,7 +2386,7 @@
       {
         "id": 6,
         "minutes": "50–58",
-        "title": "תרגול 6 — דיבאג קטן",
+        "title": "תרגיל 6 — דיבאג קטן",
         "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
         "hint": "בדקו שהשמות זהים בדיוק.",
         "check": {
@@ -2405,7 +2405,7 @@
       {
         "id": 7,
         "minutes": "60–68",
-        "title": "תרגול 7 — שדרוג אישי",
+        "title": "תרגיל 7 — שדרוג אישי",
         "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
         "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
         "check": {
@@ -2424,7 +2424,7 @@
       {
         "id": 8,
         "minutes": "70–78",
-        "title": "תרגול 8 — הצגה",
+        "title": "תרגיל 8 — הצגה",
         "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
         "hint": "השתמשו במילים של השיעור.",
         "check": {
@@ -2508,7 +2508,7 @@
       },
       {
         "minutes": "52–68",
-        "title": "תרגול עצמאי הדרגתי",
+        "title": "תרגיל עצמאי הדרגתי",
         "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
         "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
       },
@@ -2529,7 +2529,7 @@
       {
         "id": 1,
         "minutes": "0–8",
-        "title": "תרגול 1 — מריצים קודם",
+        "title": "תרגיל 1 — מריצים קודם",
         "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
         "hint": "קודם תוצאה, אחר כך קוד.",
         "check": {
@@ -2548,7 +2548,7 @@
       {
         "id": 2,
         "minutes": "10–18",
-        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "title": "תרגיל 2 — מוצאים שורה חשובה",
         "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
         "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
         "check": {
@@ -2567,7 +2567,7 @@
       {
         "id": 3,
         "minutes": "20–28",
-        "title": "תרגול 3 — שינוי בטוח",
+        "title": "תרגיל 3 — שינוי בטוח",
         "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
         "hint": "שמרו על גרשיים וסוגריים.",
         "check": {
@@ -2586,7 +2586,7 @@
       {
         "id": 4,
         "minutes": "30–38",
-        "title": "תרגול 4 — כרטיס קוד",
+        "title": "תרגיל 4 — כרטיס קוד",
         "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
         "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
         "check": {
@@ -2605,7 +2605,7 @@
       {
         "id": 5,
         "minutes": "40–48",
-        "title": "תרגול 5 — השלמת חור",
+        "title": "תרגיל 5 — השלמת חור",
         "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
         "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
         "check": {
@@ -2624,7 +2624,7 @@
       {
         "id": 6,
         "minutes": "50–58",
-        "title": "תרגול 6 — דיבאג קטן",
+        "title": "תרגיל 6 — דיבאג קטן",
         "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
         "hint": "בדקו שהשמות זהים בדיוק.",
         "check": {
@@ -2643,7 +2643,7 @@
       {
         "id": 7,
         "minutes": "60–68",
-        "title": "תרגול 7 — שדרוג אישי",
+        "title": "תרגיל 7 — שדרוג אישי",
         "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
         "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
         "check": {
@@ -2662,7 +2662,7 @@
       {
         "id": 8,
         "minutes": "70–78",
-        "title": "תרגול 8 — הצגה",
+        "title": "תרגיל 8 — הצגה",
         "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
         "hint": "השתמשו במילים של השיעור.",
         "check": {
@@ -2746,7 +2746,7 @@
       },
       {
         "minutes": "52–68",
-        "title": "תרגול עצמאי הדרגתי",
+        "title": "תרגיל עצמאי הדרגתי",
         "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
         "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
       },
@@ -2767,7 +2767,7 @@
       {
         "id": 1,
         "minutes": "0–8",
-        "title": "תרגול 1 — מריצים קודם",
+        "title": "תרגיל 1 — מריצים קודם",
         "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
         "hint": "קודם תוצאה, אחר כך קוד.",
         "check": {
@@ -2786,7 +2786,7 @@
       {
         "id": 2,
         "minutes": "10–18",
-        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "title": "תרגיל 2 — מוצאים שורה חשובה",
         "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
         "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
         "check": {
@@ -2805,7 +2805,7 @@
       {
         "id": 3,
         "minutes": "20–28",
-        "title": "תרגול 3 — שינוי בטוח",
+        "title": "תרגיל 3 — שינוי בטוח",
         "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
         "hint": "שמרו על גרשיים וסוגריים.",
         "check": {
@@ -2824,7 +2824,7 @@
       {
         "id": 4,
         "minutes": "30–38",
-        "title": "תרגול 4 — כרטיס קוד",
+        "title": "תרגיל 4 — כרטיס קוד",
         "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
         "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
         "check": {
@@ -2843,7 +2843,7 @@
       {
         "id": 5,
         "minutes": "40–48",
-        "title": "תרגול 5 — השלמת חור",
+        "title": "תרגיל 5 — השלמת חור",
         "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
         "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
         "check": {
@@ -2862,7 +2862,7 @@
       {
         "id": 6,
         "minutes": "50–58",
-        "title": "תרגול 6 — דיבאג קטן",
+        "title": "תרגיל 6 — דיבאג קטן",
         "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
         "hint": "בדקו שהשמות זהים בדיוק.",
         "check": {
@@ -2881,7 +2881,7 @@
       {
         "id": 7,
         "minutes": "60–68",
-        "title": "תרגול 7 — שדרוג אישי",
+        "title": "תרגיל 7 — שדרוג אישי",
         "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
         "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
         "check": {
@@ -2900,7 +2900,7 @@
       {
         "id": 8,
         "minutes": "70–78",
-        "title": "תרגול 8 — הצגה",
+        "title": "תרגיל 8 — הצגה",
         "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
         "hint": "השתמשו במילים של השיעור.",
         "check": {
@@ -2984,7 +2984,7 @@
       },
       {
         "minutes": "52–68",
-        "title": "תרגול עצמאי הדרגתי",
+        "title": "תרגיל עצמאי הדרגתי",
         "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
         "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
       },
@@ -3005,7 +3005,7 @@
       {
         "id": 1,
         "minutes": "0–8",
-        "title": "תרגול 1 — מריצים קודם",
+        "title": "תרגיל 1 — מריצים קודם",
         "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
         "hint": "קודם תוצאה, אחר כך קוד.",
         "check": {
@@ -3024,7 +3024,7 @@
       {
         "id": 2,
         "minutes": "10–18",
-        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "title": "תרגיל 2 — מוצאים שורה חשובה",
         "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
         "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
         "check": {
@@ -3043,7 +3043,7 @@
       {
         "id": 3,
         "minutes": "20–28",
-        "title": "תרגול 3 — שינוי בטוח",
+        "title": "תרגיל 3 — שינוי בטוח",
         "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
         "hint": "שמרו על גרשיים וסוגריים.",
         "check": {
@@ -3062,7 +3062,7 @@
       {
         "id": 4,
         "minutes": "30–38",
-        "title": "תרגול 4 — כרטיס קוד",
+        "title": "תרגיל 4 — כרטיס קוד",
         "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
         "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
         "check": {
@@ -3081,7 +3081,7 @@
       {
         "id": 5,
         "minutes": "40–48",
-        "title": "תרגול 5 — השלמת חור",
+        "title": "תרגיל 5 — השלמת חור",
         "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
         "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
         "check": {
@@ -3100,7 +3100,7 @@
       {
         "id": 6,
         "minutes": "50–58",
-        "title": "תרגול 6 — דיבאג קטן",
+        "title": "תרגיל 6 — דיבאג קטן",
         "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
         "hint": "בדקו שהשמות זהים בדיוק.",
         "check": {
@@ -3119,7 +3119,7 @@
       {
         "id": 7,
         "minutes": "60–68",
-        "title": "תרגול 7 — שדרוג אישי",
+        "title": "תרגיל 7 — שדרוג אישי",
         "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
         "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
         "check": {
@@ -3138,7 +3138,7 @@
       {
         "id": 8,
         "minutes": "70–78",
-        "title": "תרגול 8 — הצגה",
+        "title": "תרגיל 8 — הצגה",
         "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
         "hint": "השתמשו במילים של השיעור.",
         "check": {
@@ -3222,7 +3222,7 @@
       },
       {
         "minutes": "52–68",
-        "title": "תרגול עצמאי הדרגתי",
+        "title": "תרגיל עצמאי הדרגתי",
         "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
         "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
       },
@@ -3243,7 +3243,7 @@
       {
         "id": 1,
         "minutes": "0–8",
-        "title": "תרגול 1 — מריצים קודם",
+        "title": "תרגיל 1 — מריצים קודם",
         "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
         "hint": "קודם תוצאה, אחר כך קוד.",
         "check": {
@@ -3262,7 +3262,7 @@
       {
         "id": 2,
         "minutes": "10–18",
-        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "title": "תרגיל 2 — מוצאים שורה חשובה",
         "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
         "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
         "check": {
@@ -3281,7 +3281,7 @@
       {
         "id": 3,
         "minutes": "20–28",
-        "title": "תרגול 3 — שינוי בטוח",
+        "title": "תרגיל 3 — שינוי בטוח",
         "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
         "hint": "שמרו על גרשיים וסוגריים.",
         "check": {
@@ -3300,7 +3300,7 @@
       {
         "id": 4,
         "minutes": "30–38",
-        "title": "תרגול 4 — כרטיס קוד",
+        "title": "תרגיל 4 — כרטיס קוד",
         "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
         "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
         "check": {
@@ -3319,7 +3319,7 @@
       {
         "id": 5,
         "minutes": "40–48",
-        "title": "תרגול 5 — השלמת חור",
+        "title": "תרגיל 5 — השלמת חור",
         "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
         "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
         "check": {
@@ -3338,7 +3338,7 @@
       {
         "id": 6,
         "minutes": "50–58",
-        "title": "תרגול 6 — דיבאג קטן",
+        "title": "תרגיל 6 — דיבאג קטן",
         "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
         "hint": "בדקו שהשמות זהים בדיוק.",
         "check": {
@@ -3357,7 +3357,7 @@
       {
         "id": 7,
         "minutes": "60–68",
-        "title": "תרגול 7 — שדרוג אישי",
+        "title": "תרגיל 7 — שדרוג אישי",
         "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
         "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
         "check": {
@@ -3376,7 +3376,7 @@
       {
         "id": 8,
         "minutes": "70–78",
-        "title": "תרגול 8 — הצגה",
+        "title": "תרגיל 8 — הצגה",
         "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
         "hint": "השתמשו במילים של השיעור.",
         "check": {
@@ -3460,7 +3460,7 @@
       },
       {
         "minutes": "52–68",
-        "title": "תרגול עצמאי הדרגתי",
+        "title": "תרגיל עצמאי הדרגתי",
         "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
         "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
       },
@@ -3481,7 +3481,7 @@
       {
         "id": 1,
         "minutes": "0–8",
-        "title": "תרגול 1 — מריצים קודם",
+        "title": "תרגיל 1 — מריצים קודם",
         "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
         "hint": "קודם תוצאה, אחר כך קוד.",
         "check": {
@@ -3500,7 +3500,7 @@
       {
         "id": 2,
         "minutes": "10–18",
-        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "title": "תרגיל 2 — מוצאים שורה חשובה",
         "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
         "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
         "check": {
@@ -3519,7 +3519,7 @@
       {
         "id": 3,
         "minutes": "20–28",
-        "title": "תרגול 3 — שינוי בטוח",
+        "title": "תרגיל 3 — שינוי בטוח",
         "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
         "hint": "שמרו על גרשיים וסוגריים.",
         "check": {
@@ -3538,7 +3538,7 @@
       {
         "id": 4,
         "minutes": "30–38",
-        "title": "תרגול 4 — כרטיס קוד",
+        "title": "תרגיל 4 — כרטיס קוד",
         "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
         "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
         "check": {
@@ -3557,7 +3557,7 @@
       {
         "id": 5,
         "minutes": "40–48",
-        "title": "תרגול 5 — השלמת חור",
+        "title": "תרגיל 5 — השלמת חור",
         "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
         "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
         "check": {
@@ -3576,7 +3576,7 @@
       {
         "id": 6,
         "minutes": "50–58",
-        "title": "תרגול 6 — דיבאג קטן",
+        "title": "תרגיל 6 — דיבאג קטן",
         "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
         "hint": "בדקו שהשמות זהים בדיוק.",
         "check": {
@@ -3595,7 +3595,7 @@
       {
         "id": 7,
         "minutes": "60–68",
-        "title": "תרגול 7 — שדרוג אישי",
+        "title": "תרגיל 7 — שדרוג אישי",
         "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
         "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
         "check": {
@@ -3614,7 +3614,7 @@
       {
         "id": 8,
         "minutes": "70–78",
-        "title": "תרגול 8 — הצגה",
+        "title": "תרגיל 8 — הצגה",
         "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
         "hint": "השתמשו במילים של השיעור.",
         "check": {
@@ -3698,7 +3698,7 @@
       },
       {
         "minutes": "52–68",
-        "title": "תרגול עצמאי הדרגתי",
+        "title": "תרגיל עצמאי הדרגתי",
         "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
         "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
       },
@@ -3719,7 +3719,7 @@
       {
         "id": 1,
         "minutes": "0–8",
-        "title": "תרגול 1 — מריצים קודם",
+        "title": "תרגיל 1 — מריצים קודם",
         "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
         "hint": "קודם תוצאה, אחר כך קוד.",
         "check": {
@@ -3738,7 +3738,7 @@
       {
         "id": 2,
         "minutes": "10–18",
-        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "title": "תרגיל 2 — מוצאים שורה חשובה",
         "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
         "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
         "check": {
@@ -3757,7 +3757,7 @@
       {
         "id": 3,
         "minutes": "20–28",
-        "title": "תרגול 3 — שינוי בטוח",
+        "title": "תרגיל 3 — שינוי בטוח",
         "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
         "hint": "שמרו על גרשיים וסוגריים.",
         "check": {
@@ -3776,7 +3776,7 @@
       {
         "id": 4,
         "minutes": "30–38",
-        "title": "תרגול 4 — כרטיס קוד",
+        "title": "תרגיל 4 — כרטיס קוד",
         "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
         "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
         "check": {
@@ -3795,7 +3795,7 @@
       {
         "id": 5,
         "minutes": "40–48",
-        "title": "תרגול 5 — השלמת חור",
+        "title": "תרגיל 5 — השלמת חור",
         "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
         "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
         "check": {
@@ -3814,7 +3814,7 @@
       {
         "id": 6,
         "minutes": "50–58",
-        "title": "תרגול 6 — דיבאג קטן",
+        "title": "תרגיל 6 — דיבאג קטן",
         "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
         "hint": "בדקו שהשמות זהים בדיוק.",
         "check": {
@@ -3833,7 +3833,7 @@
       {
         "id": 7,
         "minutes": "60–68",
-        "title": "תרגול 7 — שדרוג אישי",
+        "title": "תרגיל 7 — שדרוג אישי",
         "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
         "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
         "check": {
@@ -3852,7 +3852,7 @@
       {
         "id": 8,
         "minutes": "70–78",
-        "title": "תרגול 8 — הצגה",
+        "title": "תרגיל 8 — הצגה",
         "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
         "hint": "השתמשו במילים של השיעור.",
         "check": {
@@ -3936,7 +3936,7 @@
       },
       {
         "minutes": "52–68",
-        "title": "תרגול עצמאי הדרגתי",
+        "title": "תרגיל עצמאי הדרגתי",
         "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
         "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
       },
@@ -3957,7 +3957,7 @@
       {
         "id": 1,
         "minutes": "0–8",
-        "title": "תרגול 1 — מריצים קודם",
+        "title": "תרגיל 1 — מריצים קודם",
         "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
         "hint": "קודם תוצאה, אחר כך קוד.",
         "check": {
@@ -3976,7 +3976,7 @@
       {
         "id": 2,
         "minutes": "10–18",
-        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "title": "תרגיל 2 — מוצאים שורה חשובה",
         "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
         "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
         "check": {
@@ -3995,7 +3995,7 @@
       {
         "id": 3,
         "minutes": "20–28",
-        "title": "תרגול 3 — שינוי בטוח",
+        "title": "תרגיל 3 — שינוי בטוח",
         "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
         "hint": "שמרו על גרשיים וסוגריים.",
         "check": {
@@ -4014,7 +4014,7 @@
       {
         "id": 4,
         "minutes": "30–38",
-        "title": "תרגול 4 — כרטיס קוד",
+        "title": "תרגיל 4 — כרטיס קוד",
         "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
         "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
         "check": {
@@ -4033,7 +4033,7 @@
       {
         "id": 5,
         "minutes": "40–48",
-        "title": "תרגול 5 — השלמת חור",
+        "title": "תרגיל 5 — השלמת חור",
         "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
         "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
         "check": {
@@ -4052,7 +4052,7 @@
       {
         "id": 6,
         "minutes": "50–58",
-        "title": "תרגול 6 — דיבאג קטן",
+        "title": "תרגיל 6 — דיבאג קטן",
         "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
         "hint": "בדקו שהשמות זהים בדיוק.",
         "check": {
@@ -4071,7 +4071,7 @@
       {
         "id": 7,
         "minutes": "60–68",
-        "title": "תרגול 7 — שדרוג אישי",
+        "title": "תרגיל 7 — שדרוג אישי",
         "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
         "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
         "check": {
@@ -4090,7 +4090,7 @@
       {
         "id": 8,
         "minutes": "70–78",
-        "title": "תרגול 8 — הצגה",
+        "title": "תרגיל 8 — הצגה",
         "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
         "hint": "השתמשו במילים של השיעור.",
         "check": {
@@ -4174,7 +4174,7 @@
       },
       {
         "minutes": "52–68",
-        "title": "תרגול עצמאי הדרגתי",
+        "title": "תרגיל עצמאי הדרגתי",
         "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
         "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
       },
@@ -4195,7 +4195,7 @@
       {
         "id": 1,
         "minutes": "0–8",
-        "title": "תרגול 1 — מריצים קודם",
+        "title": "תרגיל 1 — מריצים קודם",
         "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
         "hint": "קודם תוצאה, אחר כך קוד.",
         "check": {
@@ -4214,7 +4214,7 @@
       {
         "id": 2,
         "minutes": "10–18",
-        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "title": "תרגיל 2 — מוצאים שורה חשובה",
         "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
         "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
         "check": {
@@ -4233,7 +4233,7 @@
       {
         "id": 3,
         "minutes": "20–28",
-        "title": "תרגול 3 — שינוי בטוח",
+        "title": "תרגיל 3 — שינוי בטוח",
         "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
         "hint": "שמרו על גרשיים וסוגריים.",
         "check": {
@@ -4252,7 +4252,7 @@
       {
         "id": 4,
         "minutes": "30–38",
-        "title": "תרגול 4 — כרטיס קוד",
+        "title": "תרגיל 4 — כרטיס קוד",
         "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
         "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
         "check": {
@@ -4271,7 +4271,7 @@
       {
         "id": 5,
         "minutes": "40–48",
-        "title": "תרגול 5 — השלמת חור",
+        "title": "תרגיל 5 — השלמת חור",
         "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
         "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
         "check": {
@@ -4290,7 +4290,7 @@
       {
         "id": 6,
         "minutes": "50–58",
-        "title": "תרגול 6 — דיבאג קטן",
+        "title": "תרגיל 6 — דיבאג קטן",
         "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
         "hint": "בדקו שהשמות זהים בדיוק.",
         "check": {
@@ -4309,7 +4309,7 @@
       {
         "id": 7,
         "minutes": "60–68",
-        "title": "תרגול 7 — שדרוג אישי",
+        "title": "תרגיל 7 — שדרוג אישי",
         "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
         "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
         "check": {
@@ -4328,7 +4328,7 @@
       {
         "id": 8,
         "minutes": "70–78",
-        "title": "תרגול 8 — הצגה",
+        "title": "תרגיל 8 — הצגה",
         "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
         "hint": "השתמשו במילים של השיעור.",
         "check": {
@@ -4412,7 +4412,7 @@
       },
       {
         "minutes": "52–68",
-        "title": "תרגול עצמאי הדרגתי",
+        "title": "תרגיל עצמאי הדרגתי",
         "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
         "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
       },
@@ -4433,7 +4433,7 @@
       {
         "id": 1,
         "minutes": "0–8",
-        "title": "תרגול 1 — מריצים קודם",
+        "title": "תרגיל 1 — מריצים קודם",
         "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
         "hint": "קודם תוצאה, אחר כך קוד.",
         "check": {
@@ -4452,7 +4452,7 @@
       {
         "id": 2,
         "minutes": "10–18",
-        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "title": "תרגיל 2 — מוצאים שורה חשובה",
         "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
         "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
         "check": {
@@ -4471,7 +4471,7 @@
       {
         "id": 3,
         "minutes": "20–28",
-        "title": "תרגול 3 — שינוי בטוח",
+        "title": "תרגיל 3 — שינוי בטוח",
         "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
         "hint": "שמרו על גרשיים וסוגריים.",
         "check": {
@@ -4490,7 +4490,7 @@
       {
         "id": 4,
         "minutes": "30–38",
-        "title": "תרגול 4 — כרטיס קוד",
+        "title": "תרגיל 4 — כרטיס קוד",
         "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
         "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
         "check": {
@@ -4509,7 +4509,7 @@
       {
         "id": 5,
         "minutes": "40–48",
-        "title": "תרגול 5 — השלמת חור",
+        "title": "תרגיל 5 — השלמת חור",
         "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
         "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
         "check": {
@@ -4528,7 +4528,7 @@
       {
         "id": 6,
         "minutes": "50–58",
-        "title": "תרגול 6 — דיבאג קטן",
+        "title": "תרגיל 6 — דיבאג קטן",
         "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
         "hint": "בדקו שהשמות זהים בדיוק.",
         "check": {
@@ -4547,7 +4547,7 @@
       {
         "id": 7,
         "minutes": "60–68",
-        "title": "תרגול 7 — שדרוג אישי",
+        "title": "תרגיל 7 — שדרוג אישי",
         "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
         "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
         "check": {
@@ -4566,7 +4566,7 @@
       {
         "id": 8,
         "minutes": "70–78",
-        "title": "תרגול 8 — הצגה",
+        "title": "תרגיל 8 — הצגה",
         "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
         "hint": "השתמשו במילים של השיעור.",
         "check": {
@@ -4650,7 +4650,7 @@
       },
       {
         "minutes": "52–68",
-        "title": "תרגול עצמאי הדרגתי",
+        "title": "תרגיל עצמאי הדרגתי",
         "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
         "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
       },
@@ -4671,7 +4671,7 @@
       {
         "id": 1,
         "minutes": "0–8",
-        "title": "תרגול 1 — מריצים קודם",
+        "title": "תרגיל 1 — מריצים קודם",
         "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
         "hint": "קודם תוצאה, אחר כך קוד.",
         "check": {
@@ -4690,7 +4690,7 @@
       {
         "id": 2,
         "minutes": "10–18",
-        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "title": "תרגיל 2 — מוצאים שורה חשובה",
         "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
         "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
         "check": {
@@ -4709,7 +4709,7 @@
       {
         "id": 3,
         "minutes": "20–28",
-        "title": "תרגול 3 — שינוי בטוח",
+        "title": "תרגיל 3 — שינוי בטוח",
         "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
         "hint": "שמרו על גרשיים וסוגריים.",
         "check": {
@@ -4728,7 +4728,7 @@
       {
         "id": 4,
         "minutes": "30–38",
-        "title": "תרגול 4 — כרטיס קוד",
+        "title": "תרגיל 4 — כרטיס קוד",
         "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
         "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
         "check": {
@@ -4747,7 +4747,7 @@
       {
         "id": 5,
         "minutes": "40–48",
-        "title": "תרגול 5 — השלמת חור",
+        "title": "תרגיל 5 — השלמת חור",
         "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
         "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
         "check": {
@@ -4766,7 +4766,7 @@
       {
         "id": 6,
         "minutes": "50–58",
-        "title": "תרגול 6 — דיבאג קטן",
+        "title": "תרגיל 6 — דיבאג קטן",
         "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
         "hint": "בדקו שהשמות זהים בדיוק.",
         "check": {
@@ -4785,7 +4785,7 @@
       {
         "id": 7,
         "minutes": "60–68",
-        "title": "תרגול 7 — שדרוג אישי",
+        "title": "תרגיל 7 — שדרוג אישי",
         "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
         "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
         "check": {
@@ -4804,7 +4804,7 @@
       {
         "id": 8,
         "minutes": "70–78",
-        "title": "תרגול 8 — הצגה",
+        "title": "תרגיל 8 — הצגה",
         "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
         "hint": "השתמשו במילים של השיעור.",
         "check": {
@@ -4888,7 +4888,7 @@
       },
       {
         "minutes": "52–68",
-        "title": "תרגול עצמאי הדרגתי",
+        "title": "תרגיל עצמאי הדרגתי",
         "teacher": "נותנים בחירה אישית עם גבולות בטוחים כדי ליצור תוצר משלהם.",
         "students": "משנים טקסטים, מספרים, צבעים או שורות מוכנות לפי המשימה."
       },
@@ -4909,7 +4909,7 @@
       {
         "id": 1,
         "minutes": "0–8",
-        "title": "תרגול 1 — מריצים קודם",
+        "title": "תרגיל 1 — מריצים קודם",
         "prompt": "הריצו את הפרויקט וכתבו במילים מה קרה במסך.",
         "hint": "קודם תוצאה, אחר כך קוד.",
         "check": {
@@ -4928,7 +4928,7 @@
       {
         "id": 2,
         "minutes": "10–18",
-        "title": "תרגול 2 — מוצאים שורה חשובה",
+        "title": "תרגיל 2 — מוצאים שורה חשובה",
         "prompt": "פתחו הצצה לקוד ומצאו את השורה שהמדריכה סימנה.",
         "hint": "אל תקראו הכל — חפשו מילת מפתח אחת.",
         "check": {
@@ -4947,7 +4947,7 @@
       {
         "id": 3,
         "minutes": "20–28",
-        "title": "תרגול 3 — שינוי בטוח",
+        "title": "תרגיל 3 — שינוי בטוח",
         "prompt": "שנו רק טקסט, צבע או מספר אחד והריצו שוב.",
         "hint": "שמרו על גרשיים וסוגריים.",
         "check": {
@@ -4966,7 +4966,7 @@
       {
         "id": 4,
         "minutes": "30–38",
-        "title": "תרגול 4 — כרטיס קוד",
+        "title": "תרגיל 4 — כרטיס קוד",
         "prompt": "הפעילו/גררו כרטיס קוד מתאים ובדקו מה השתנה.",
         "hint": "כרטיס קוד הוא כבר קוד אמיתי, רק באריזה נוחה.",
         "check": {
@@ -4985,7 +4985,7 @@
       {
         "id": 5,
         "minutes": "40–48",
-        "title": "תרגול 5 — השלמת חור",
+        "title": "תרגיל 5 — השלמת חור",
         "prompt": "השלימו מילה חסרה או ערך חסר בקוד.",
         "hint": "אם לא בטוחים, השוו לדוגמה שעובדת.",
         "check": {
@@ -5004,7 +5004,7 @@
       {
         "id": 6,
         "minutes": "50–58",
-        "title": "תרגול 6 — דיבאג קטן",
+        "title": "תרגיל 6 — דיבאג קטן",
         "prompt": "תקנו באג אחד: id, מרכאות, סוגר או שם פונקציה.",
         "hint": "בדקו שהשמות זהים בדיוק.",
         "check": {
@@ -5023,7 +5023,7 @@
       {
         "id": 7,
         "minutes": "60–68",
-        "title": "תרגול 7 — שדרוג אישי",
+        "title": "תרגיל 7 — שדרוג אישי",
         "prompt": "הוסיפו בחירה אישית קטנה שמתאימה לנושא שלכם.",
         "hint": "שדרוג קטן עדיף על קוד גדול שנשבר.",
         "check": {
@@ -5042,7 +5042,7 @@
       {
         "id": 8,
         "minutes": "70–78",
-        "title": "תרגול 8 — הצגה",
+        "title": "תרגיל 8 — הצגה",
         "prompt": "הציגו לחבר/ה והסבירו שורת קוד אחת שעבדה.",
         "hint": "השתמשו במילים של השיעור.",
         "check": {
@@ -5181,14 +5181,14 @@
     const blockCheck = block => block ? { blockTypes: [block.type], [`${block.target || 'html'}Includes`]: [block.replace || block.highlight || ''] } : {};
     const selectedTypes = blocks.map(block => block.type);
     return [
-      { id: 1, minutes: '0–8', title: 'תרגול 1 — מפעילים את הפרויקט', prompt: `הריצו את הפרויקט בתצוגה החיה משמאל ונסו להבין מה המשתמש יכול לעשות בו. בשיעור הזה נלמד דרך בלוקים: ${lessonBlocklyPlan[lesson.id]?.focus || lesson.concept}.`, hint: 'קודם מסתכלים על ההתנהגות, ורק אחר כך גוררים בלוקים.', check: { htmlIncludes: ['<main'], cssIncludes: ['background'], jsIncludes: ['function'] } },
-      { id: 2, minutes: '8–18', title: `תרגול 2 — גוררים ${first?.label || 'בלוק ראשון'}`, prompt: `גררו וחברו את הבלוק “${first?.label || 'בלוק ראשון'}” מתחת ל“עמוד האתר שלי”. בדקו מה השתנה בקוד ובתצוגה.`, hint: first?.hint || 'הבלוק חייב להיות מחובר לשרשרת, לא חופשי בצד.', check: { ...blockCheck(first), blockFeedback: `כמעט. גררו וחברו את הבלוק “${first?.label || 'בלוק ראשון'}” לשרשרת.` } },
-      { id: 3, minutes: '18–28', title: `תרגול 3 — מוסיפים ${second?.label || 'בלוק שני'}`, prompt: `חברו גם את הבלוק “${second?.label || 'בלוק שני'}”. עכשיו השוו: איזה חלק השתנה — HTML, CSS או JavaScript?`, hint: second?.hint || 'חפשו את השינוי בלשונית המתאימה בהצצה לקוד.', check: { ...blockCheck(second), blockFeedback: `כמעט. חסר הבלוק “${second?.label || 'בלוק שני'}”.` } },
-      { id: 4, minutes: '28–40', title: `תרגול 4 — בלוק שמשנה תגובה`, prompt: `חברו את הבלוק “${third?.label || 'בלוק תגובה'}” ובדקו שהתוצאה השתנתה בצורה שאפשר להסביר לחבר/ה.`, hint: third?.hint || 'נסו להגיד במילים: לפני הבלוק קרה __, אחרי הבלוק קרה __.', check: { ...blockCheck(third), blockFeedback: `כמעט. חברו את הבלוק “${third?.label || 'בלוק תגובה'}” לשרשרת.` } },
-      { id: 5, minutes: '40–52', title: `תרגול 5 — בודקים מקרה נוסף`, prompt: `חברו את הבלוק “${fourth?.label || 'בלוק נוסף'}” ונסו את הפרויקט שוב. המטרה היא להבין חוק, לא רק לעבור בדיקה.`, hint: fourth?.hint || 'אם זה משחק או חידון, נסו גם תשובה/לחיצה נכונה וגם לא נכונה.', check: { ...blockCheck(fourth), blockFeedback: `כמעט. חסר הבלוק “${fourth?.label || 'בלוק נוסף'}”.` } },
-      { id: 6, minutes: '52–64', title: `תרגול 6 — איזון ושיפור`, prompt: `חברו את הבלוק “${fifth?.label || 'בלוק שיפור'}”. שאלו את עצמכם: האם השינוי עוזר למשתמש או הופך את המשחק לקל/קשה מדי?`, hint: fifth?.hint || 'שינוי טוב הוא שינוי שאפשר להסביר, לא רק שינוי צבע או מספר.', check: { ...blockCheck(fifth), blockFeedback: `כמעט. חברו את הבלוק “${fifth?.label || 'בלוק שיפור'}”.` } },
-      { id: 7, minutes: '64–74', title: `תרגול 7 — דיבאג עם בלוקים`, prompt: `חברו את הבלוק “${sixth?.label || 'בלוק בדיקה'}” ואז בדקו שלא נשבר קשר חשוב כמו id, function או שם משתנה.`, hint: sixth?.hint || 'חפשו התאמה בין השמות ב־HTML וב־JavaScript.', check: { ...blockCheck(sixth), blockFeedback: `כמעט. חסר הבלוק “${sixth?.label || 'בלוק בדיקה'}”.` } },
-      { id: 8, minutes: '74–84', title: 'תרגול 8 — מסמנים קוד שנוצר', prompt: 'פתחו “לראות קוד שנוצר”, לחצו על אחד הבלוקים שחיברתם, וודאו ששורת הקוד שהוא יצר מסומנת בלשונית הנכונה.', hint: 'זה הגשר לשיעורים 25–30: קודם בלוק, אחר כך מבינים איזו שורת קוד נוצרה ממנו.', check: { htmlIncludes: ['<main'], cssIncludes: ['background'], jsIncludes: ['function'], blockTypes: selectedTypes.slice(0, Math.min(2, selectedTypes.length)), requiresCodePeek: true, requiresCodeSelectionBlockTypes: selectedTypes, codePeekFeedback: 'כמעט. קודם פתחו את “לראות קוד שנוצר”.', codeSelectionFeedback: 'כמעט. אחרי פתיחת ההצצה, לחצו על בלוק מחובר וראו שהקוד שלו מסומן.' } }
+      { id: 1, minutes: '0–8', title: 'תרגיל 1 — מפעילים את הפרויקט', prompt: `הריצו את הפרויקט בתצוגה החיה משמאל ונסו להבין מה המשתמש יכול לעשות בו. בשיעור הזה נלמד דרך בלוקים: ${lessonBlocklyPlan[lesson.id]?.focus || lesson.concept}.`, hint: 'קודם מסתכלים על ההתנהגות, ורק אחר כך גוררים בלוקים.', check: { htmlIncludes: ['<main'], cssIncludes: ['background'], jsIncludes: ['function'] } },
+      { id: 2, minutes: '8–18', title: `תרגיל 2 — גוררים ${first?.label || 'בלוק ראשון'}`, prompt: `גררו וחברו את הבלוק “${first?.label || 'בלוק ראשון'}” מתחת ל“עמוד האתר שלי”. בדקו מה השתנה בקוד ובתצוגה.`, hint: first?.hint || 'הבלוק חייב להיות מחובר לשרשרת, לא חופשי בצד.', check: { ...blockCheck(first), blockFeedback: `כמעט. גררו וחברו את הבלוק “${first?.label || 'בלוק ראשון'}” לשרשרת.` } },
+      { id: 3, minutes: '18–28', title: `תרגיל 3 — מוסיפים ${second?.label || 'בלוק שני'}`, prompt: `חברו גם את הבלוק “${second?.label || 'בלוק שני'}”. עכשיו השוו: איזה חלק השתנה — HTML, CSS או JavaScript?`, hint: second?.hint || 'חפשו את השינוי בלשונית המתאימה בהצצה לקוד.', check: { ...blockCheck(second), blockFeedback: `כמעט. חסר הבלוק “${second?.label || 'בלוק שני'}”.` } },
+      { id: 4, minutes: '28–40', title: `תרגיל 4 — בלוק שמשנה תגובה`, prompt: `חברו את הבלוק “${third?.label || 'בלוק תגובה'}” ובדקו שהתוצאה השתנתה בצורה שאפשר להסביר לחבר/ה.`, hint: third?.hint || 'נסו להגיד במילים: לפני הבלוק קרה __, אחרי הבלוק קרה __.', check: { ...blockCheck(third), blockFeedback: `כמעט. חברו את הבלוק “${third?.label || 'בלוק תגובה'}” לשרשרת.` } },
+      { id: 5, minutes: '40–52', title: `תרגיל 5 — בודקים מקרה נוסף`, prompt: `חברו את הבלוק “${fourth?.label || 'בלוק נוסף'}” ונסו את הפרויקט שוב. המטרה היא להבין חוק, לא רק לעבור בדיקה.`, hint: fourth?.hint || 'אם זה משחק או חידון, נסו גם תשובה/לחיצה נכונה וגם לא נכונה.', check: { ...blockCheck(fourth), blockFeedback: `כמעט. חסר הבלוק “${fourth?.label || 'בלוק נוסף'}”.` } },
+      { id: 6, minutes: '52–64', title: `תרגיל 6 — איזון ושיפור`, prompt: `חברו את הבלוק “${fifth?.label || 'בלוק שיפור'}”. שאלו את עצמכם: האם השינוי עוזר למשתמש או הופך את המשחק לקל/קשה מדי?`, hint: fifth?.hint || 'שינוי טוב הוא שינוי שאפשר להסביר, לא רק שינוי צבע או מספר.', check: { ...blockCheck(fifth), blockFeedback: `כמעט. חברו את הבלוק “${fifth?.label || 'בלוק שיפור'}”.` } },
+      { id: 7, minutes: '64–74', title: `תרגיל 7 — דיבאג עם בלוקים`, prompt: `חברו את הבלוק “${sixth?.label || 'בלוק בדיקה'}” ואז בדקו שלא נשבר קשר חשוב כמו id, function או שם משתנה.`, hint: sixth?.hint || 'חפשו התאמה בין השמות ב־HTML וב־JavaScript.', check: { ...blockCheck(sixth), blockFeedback: `כמעט. חסר הבלוק “${sixth?.label || 'בלוק בדיקה'}”.` } },
+      { id: 8, minutes: '74–84', title: 'תרגיל 8 — מסמנים קוד שנוצר', prompt: 'פתחו “לראות קוד שנוצר”, לחצו על אחד הבלוקים שחיברתם, וודאו ששורת הקוד שהוא יצר מסומנת בלשונית הנכונה.', hint: 'זה הגשר לשיעורים 25–30: קודם בלוק, אחר כך מבינים איזו שורת קוד נוצרה ממנו.', check: { htmlIncludes: ['<main'], cssIncludes: ['background'], jsIncludes: ['function'], blockTypes: selectedTypes.slice(0, Math.min(2, selectedTypes.length)), requiresCodePeek: true, requiresCodeSelectionBlockTypes: selectedTypes, codePeekFeedback: 'כמעט. קודם פתחו את “לראות קוד שנוצר”.', codeSelectionFeedback: 'כמעט. אחרי פתיחת ההצצה, לחצו על בלוק מחובר וראו שהקוד שלו מסומן.' } }
     ];
   }
   lessons.forEach(lesson => {
@@ -5224,17 +5224,17 @@
       ['sentence','משפט תוצאה מתחיל ב־ %1','js','הנה ברכה מצחיקה על','{{TEXT}}',[['field_input','TEXT','הברכה שבחרת היא על']]],
       ['result_word','אימוג׳י סיום בתוצאה %1','js','רעיונות נוצצים 🚀','רעיונות נוצצים {{TEXT}}',[['field_dropdown','TEXT',[['🚀 טיסה','🚀'],['🎉 חגיגה','🎉'],['✨ קסם','✨']]]]]
     ]},
-    5: { title:'תנאים — חידון כן/לא שחושב עם if/else', concept:'if · else · בחירה נכונה ושגויה', blocks:[
-      ['question','שאלת כן/לא %1','html','CSS אחראי על העיצוב של העמוד?','{{TEXT}}',[['field_input','TEXT','JavaScript גורם לכפתור להגיב?']]],
-      ['choice','הבחירה הנכונה היא %1','js','choice === "yes"','choice === "{{VALUE}}"',[['field_dropdown','VALUE',[['לא','no'],['כן','yes']]]]],
+    5: { title:'תנאים — חידון תשובה חופשית עם if/else', concept:'if · else · תשובה נכונה ושגויה', blocks:[
+      ['question','שאלת חידון %1','html','CSS אחראי על העיצוב של העמוד?','{{TEXT}}',[['field_input','TEXT','איזו שפה גורמת לכפתור להגיב?']]],
+      ['answer','התשובה הנכונה היא %1','js','answer === "CSS"','answer === "{{TEXT}}"',[['field_input','TEXT','JavaScript']]],
       ['success','אם נכון כתוב %1','js','נכון! CSS אחראי על העיצוב 🎨','{{TEXT}}',[['field_input','TEXT','נכון! JavaScript מפעיל תגובות ⚡']]],
       ['wrong','אחרת כתוב %1','js','לא בדיוק. CSS הוא הצד של הצבעים והעיצוב.','{{TEXT}}',[['field_input','TEXT','כמעט! רמז: JavaScript היא השפה של הפעולות.']]],
-      ['button_style','צבע כפתור לא %1','css','button:last-of-type {\n  background: #2563eb;\n}','button:last-of-type {\n  background: {{COLOR}};\n}',[['field_dropdown','COLOR',[['כחול','#2563eb'],['סגול','#7c3aed'],['כתום','#f97316']]]]]
+      ['button_style','צבע כפתור בדיקה %1','css','button {\n  display: block;\n  margin: 12px auto 0;\n  background: #16a34a;','button {\n  display: block;\n  margin: 12px auto 0;\n  background: {{COLOR}};',[['field_dropdown','COLOR',[['ירוק','#16a34a'],['סגול','#7c3aed'],['כתום','#f97316'],['כחול','#2563eb'],['ורוד','#db2777'],['צהוב','#facc15']]]]]
     ]},
     6: { title:'משתנים וניקוד — score זוכר בשבילנו', concept:'variable · score · update screen', blocks:[
-      ['start_score','ניקוד התחלתי %1','js','let score = 0;','let score = {{N}};',[['field_dropdown','N',[['0','0'],['1','1'],['3','3']]]]],
-      ['plus','תשובה נכונה מוסיפה %1','js','score = score + 1;','score = score + {{N}};',[['field_dropdown','N',[['1','1'],['2','2'],['3','3']]]]],
-      ['message','הודעת הצלחה %1','js','נכון! קיבלת נקודה ⭐','{{TEXT}}',[['field_input','TEXT','נכון! קיבלת 2 נקודות ⭐⭐']]],
+      ['start_score','ניקוד התחלתי %1','js','const startScore = 0;','const startScore = {{N}};',[['field_dropdown','N',[['0','0'],['1','1'],['3','3']]]]],
+      ['plus','תשובה נכונה מוסיפה %1','js','const pointsForCorrect = 0;','const pointsForCorrect = {{N}};',[['field_dropdown','N',[['1','1'],['2','2'],['3','3']]]]],
+      ['message','הודעת הצלחה %1','js','const successMessage = "";','const successMessage = "{{TEXT}}";',[['field_input','TEXT','נכון! קיבלת 2 נקודות ⭐⭐']]],
       ['score_label','כותרת ניקוד %1','html','ניקוד:','{{TEXT}}',[['field_input','TEXT','הניקוד שלי:']]],
       ['reset_message','כפתור איפוס אומר %1','html','איפוס ניקוד','{{TEXT}}',[['field_input','TEXT','התחלה מחדש']]]
     ]},
@@ -5363,10 +5363,10 @@
     const practiceBlocks = blocks.slice(0,5);
     const checkFor = block => ({ blockTypes:[block.type], generatedBlockOutputs:[{ type:block.type, target:block.target }], generatedFeedback:'כמעט. הבלוק מחובר, אבל עוד לא רואים את הערך שבחרתם בקוד שנוצר.' });
     return [
-      ...practiceBlocks.map((block,i)=>{ const edit = blockEditInstruction(block); return { id:i+1, minutes:`${i*10}–${10+i*10}`, title:`תרגול ${i+1} — ${block.label}`, prompt:`גררו וחברו את הבלוק “${block.label}”. ${edit.action}, ואז בדקו בתצוגה החיה משמאל מה השתנה.`, hint:block.hint || 'בלוק מחובר משפיע מיד בתצוגה; בלוק חופשי בצד לא משנה את הקוד.', check:{ ...checkFor(block), blockFeedback:`כמעט. גררו וחברו את הבלוק “${block.label}” לשרשרת.`, ...(block.args0?.length ? { changedBlocklyFields:block.args0.map(arg=>({type:block.type, field:arg.name, defaultValue:arg.text ?? arg.options?.[0]?.[1]})), fieldFeedback:edit.feedback } : {}) } }; }),
-      { id:6, minutes:'50–64', title:'תרגול 6 — בודקים בתצוגה, לא בכפתור הרצה', prompt:'שנו טקסט או בחרו אפשרות בתוך אחד הבלוקים שכבר חיברתם וראו שהתצוגה מתעדכנת לבד. הסבירו לעצמכם מה השתנה ולמה.', hint:'בשיעורי Blockly התצוגה מתעדכנת אוטומטית אחרי שינוי בלוק — אין צורך בכפתור הרצה.', check:{ blockTypes:blocks.slice(0,1).map(b=>b.type), anyChangedBlocklyFields:blocks.flatMap(block => (block.args0 || []).map(arg=>({type:block.type, field:arg.name, defaultValue:arg.text ?? arg.options?.[0]?.[1]}))), anyFieldFeedback:'כמעט. שנו טקסט או בחרו אפשרות בתוך לפחות אחד מהבלוקים המחוברים כדי לראות שינוי אמיתי.' } },
-      { id:7, minutes:'64–74', title:'תרגול 7 — משלבים כמה בלוקים', prompt:'השאירו מחוברים לפחות שני בלוקים מהשיעור והסבירו לעצמכם איך הם עובדים יחד. שינוי טוב הוא שינוי שאפשר להסביר, לא רק לעבור בדיקה.', hint:'נסו לחבר בלוק שמשנה תוכן עם בלוק שמשנה חוק, עיצוב או תגובה.', check:{ blockTypes:blocks.slice(0, Math.min(2, blocks.length)).map(b=>b.type), generatedBlockOutputs:blocks.slice(0, Math.min(2, blocks.length)).map(b=>({ type:b.type, target:b.target })), blockFeedback:'כמעט. חברו לפחות שני בלוקים מהשיעור כדי לבנות שינוי משולב.', generatedFeedback:'כמעט. שני הבלוקים מחוברים, אבל הקוד שנוצר מהם עדיין לא מופיע בתוצאה.' } },
-      { id:8, minutes:'74–84', title:'תרגול 8 — בלוק הופך לקוד', prompt:'פתחו “לראות קוד שנוצר”, לחצו על בלוק שחיברתם, וודאו שהשורה שהוא יצר מסומנת.', hint:'בחרו בלוק שמחובר לשרשרת, לא בלוק חופשי בצד.', check:{ blockTypes:blocks.slice(0,2).map(b=>b.type), requiresCodePeek:true, requiresCodeSelectionBlockTypes:blocks.map(b=>b.type), codePeekFeedback:'כמעט. קודם פתחו את “לראות קוד שנוצר”.', codeSelectionFeedback:'כמעט. לחצו על בלוק מחובר כדי שהקוד שנוצר ממנו יסומן.' } }
+      ...practiceBlocks.map((block,i)=>{ const edit = blockEditInstruction(block); return { id:i+1, minutes:`${i*10}–${10+i*10}`, title:`תרגיל ${i+1} — ${block.label}`, prompt:`גררו וחברו את הבלוק “${block.label}”. ${edit.action}, ואז בדקו בתצוגה החיה משמאל מה השתנה.`, hint:block.hint || 'בלוק מחובר משפיע מיד בתצוגה; בלוק חופשי בצד לא משנה את הקוד.', check:{ ...checkFor(block), blockFeedback:`כמעט. גררו וחברו את הבלוק “${block.label}” לשרשרת.`, ...(block.args0?.length ? { changedBlocklyFields:block.args0.map(arg=>({type:block.type, field:arg.name, defaultValue:arg.text ?? arg.options?.[0]?.[1]})), fieldFeedback:edit.feedback } : {}) } }; }),
+      { id:6, minutes:'50–64', title:'תרגיל 6 — בודקים בתצוגה, לא בכפתור הרצה', prompt:'שנו טקסט או בחרו אפשרות בתוך אחד הבלוקים שכבר חיברתם וראו שהתצוגה מתעדכנת לבד. הסבירו לעצמכם מה השתנה ולמה.', hint:'בשיעורי Blockly התצוגה מתעדכנת אוטומטית אחרי שינוי בלוק — אין צורך בכפתור הרצה.', check:{ blockTypes:blocks.slice(0,1).map(b=>b.type), anyChangedBlocklyFields:blocks.flatMap(block => (block.args0 || []).map(arg=>({type:block.type, field:arg.name, defaultValue:arg.text ?? arg.options?.[0]?.[1]}))), anyFieldFeedback:'כמעט. שנו טקסט או בחרו אפשרות בתוך לפחות אחד מהבלוקים המחוברים כדי לראות שינוי אמיתי.' } },
+      { id:7, minutes:'64–74', title:'תרגיל 7 — משלבים כמה בלוקים', prompt:'השאירו מחוברים לפחות שני בלוקים מהשיעור והסבירו לעצמכם איך הם עובדים יחד. שינוי טוב הוא שינוי שאפשר להסביר, לא רק לעבור בדיקה.', hint:'נסו לחבר בלוק שמשנה תוכן עם בלוק שמשנה חוק, עיצוב או תגובה.', check:{ blockTypes:blocks.slice(0, Math.min(2, blocks.length)).map(b=>b.type), generatedBlockOutputs:blocks.slice(0, Math.min(2, blocks.length)).map(b=>({ type:b.type, target:b.target })), blockFeedback:'כמעט. חברו לפחות שני בלוקים מהשיעור כדי לבנות שינוי משולב.', generatedFeedback:'כמעט. שני הבלוקים מחוברים, אבל הקוד שנוצר מהם עדיין לא מופיע בתוצאה.' } },
+      { id:8, minutes:'74–84', title:'תרגיל 8 — בלוק הופך לקוד', prompt:'פתחו “לראות קוד שנוצר”, לחצו על בלוק שחיברתם, וודאו שהשורה שהוא יצר מסומנת.', hint:'בחרו בלוק שמחובר לשרשרת, לא בלוק חופשי בצד.', check:{ blockTypes:blocks.slice(0,2).map(b=>b.type), requiresCodePeek:true, requiresCodeSelectionBlockTypes:blocks.map(b=>b.type), codePeekFeedback:'כמעט. קודם פתחו את “לראות קוד שנוצר”.', codeSelectionFeedback:'כמעט. לחצו על בלוק מחובר כדי שהקוד שנוצר ממנו יסומן.' } }
     ];
   }
   lessons.forEach(lesson => {
@@ -5389,6 +5389,102 @@
       return { type:`lesson_${lesson.id}_${key}`, label:message.replace(/ %1/g,''), message, args0, target, find, replace, highlight:replace, hint:`בלוק ${target.toUpperCase()} שמלמד ${spec.concept}.`, colour: target === 'css' ? 285 : target === 'js' ? 120 : 210 };
     });
     lesson.exercises = makeFullReworkExercises(lesson, spec);
+    if(lesson.id === 5){
+      const questionBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_5_question');
+      const questionExercise = lesson.exercises.find(item => item.id === 1);
+      if(questionExercise && questionBlock){
+        questionExercise.prompt = 'גררו וחברו את הבלוק “שאלת חידון”. כתבו בתוכו שאלה שמתאימה לפרויקט שלכם, עם סימן שאלה בסוף, ואז בדקו בתצוגה החיה משמאל מה השתנה.';
+        questionExercise.hint = 'שאלה טובה בחידון צריכה להיראות כמו שאלה. אל תשכחו לסיים אותה בסימן שאלה.';
+        questionExercise.check.nonEmptyBlocklyFields = [{ type: questionBlock.type, field: 'TEXT' }];
+        questionExercise.check.blocklyFieldsContaining = [{ type: questionBlock.type, field: 'TEXT', includes: '?' }];
+        questionExercise.check.emptyFeedback = 'כמעט. כתבו שאלה בתוך הבלוק — אי אפשר להשאיר אותה ריקה.';
+        questionExercise.check.containsFeedback = 'כמעט. זו צריכה להיות שאלה, אז הוסיפו סימן שאלה בסוף הטקסט.';
+      }
+      const answerBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_5_answer');
+      const successBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_5_success');
+      const answerExercise = lesson.exercises.find(item => item.id === 2);
+      if(answerExercise && answerBlock){
+        answerExercise.title = 'תרגיל 2 — תשובה נכונה בטקסט חופשי';
+        answerExercise.prompt = 'גררו וחברו את הבלוק “התשובה הנכונה היא”. כתבו בתוכו תשובה נכונה שמתאימה לשאלה שלכם. אחר כך כתבו תשובה כלשהי בתצוגה החיה ולחצו על “בדקו תשובה” כדי לראות מה החידון מחזיר.';
+        answerExercise.hint = 'הבלוק משנה את הטקסט שבתוך if. אחרי השינוי חשוב לנסות את החידון בתצוגה החיה — אפשר לכתוב תשובה נכונה או שגויה ולראות את המשוב.';
+        answerExercise.check.nonEmptyBlocklyFields = [{ type: answerBlock.type, field: 'TEXT' }];
+        answerExercise.check.requiresPreviewButtonClick = true;
+        answerExercise.check.requiresPreviewFilledInputs = ['answerInput'];
+        answerExercise.check.emptyFeedback = 'כמעט. כתבו תשובה בתוך הבלוק — אי אפשר להשאיר תשובה ריקה.';
+        answerExercise.check.fieldFeedback = 'כמעט. הבלוק מחובר, עכשיו כתבו בתוכו תשובה נכונה משלכם במקום ברירת המחדל.';
+        answerExercise.check.previewClickFeedback = 'כמעט. עכשיו כתבו תשובה כלשהי בתצוגה החיה ולחצו על “בדקו תשובה”.';
+        answerExercise.check.previewInputFeedback = 'כמעט. כתבו תשובה בשדה שבתצוגה החיה לפני הלחיצה.';
+        answerExercise.check.generatedFeedback = 'כמעט. התשובה שכתבתם עוד לא נכנסה לתנאי ה־JavaScript שנוצר. ודאו שהבלוק מחובר לשרשרת.';
+      }
+      const successExercise = lesson.exercises.find(item => item.id === 3);
+      const wrongExercise = lesson.exercises.find(item => item.id === 4);
+      if(successExercise && answerBlock && successBlock){
+        successExercise.prompt = 'גררו וחברו את הבלוק “אם נכון כתוב”. שנו את הטקסט שבתוך הבלוק לטקסט שמתאים לפרויקט שלכם. אחר כך כתבו בתצוגה החיה תשובה נכונה, לחצו על “בדקו תשובה”, וודאו שמתקבל משוב נכון.';
+        successExercise.hint = 'כדי לראות את הודעת “אם נכון”, צריך לבדוק בתצוגה החיה תשובה שהחידון מקבל כנכונה.';
+        successExercise.check.requiresPreviewButtonClick = true;
+        successExercise.check.requiresPreviewFilledInputs = ['answerInput'];
+        delete successExercise.check.requiresPreviewInputMatchesBlockFields;
+        successExercise.check.requiresPreviewFeedbackClass = 'correct';
+        successExercise.check.previewClickFeedback = 'כמעט. עכשיו כתבו בתצוגה החיה את התשובה הנכונה ולחצו על “בדקו תשובה”.';
+        successExercise.check.previewInputFeedback = 'כמעט. כתבו תשובה בשדה שבתצוגה החיה לפני הלחיצה.';
+        delete successExercise.check.previewInputMatchFeedback;
+        successExercise.check.previewFeedbackClassFeedback = 'כמעט. לחצתם, אבל החידון עוד לא קיבל את התשובה כנכונה. נסו תשובה נכונה שמתאימה לשאלה.';
+      }
+      if(wrongExercise && answerBlock){
+        wrongExercise.prompt = 'גררו וחברו את הבלוק “אחרת כתוב”. שנו את הטקסט שבתוכו לטקסט שמתאים לפרויקט שלכם. אחר כך כתבו בתצוגה החיה תשובה שגויה — תשובה שונה מהתשובה הנכונה — לחצו על “בדקו תשובה”, וודאו שמתקבל משוב של “אחרת”.';
+        wrongExercise.hint = 'כדי לבדוק את else, חייבים לנסות תשובה לא נכונה בתצוגה החיה. אם כתבתם את התשובה הנכונה, תראו את הודעת “אם נכון” במקום “אחרת”.';
+        wrongExercise.check.requiresPreviewButtonClick = true;
+        wrongExercise.check.requiresPreviewFilledInputs = ['answerInput'];
+        wrongExercise.check.requiresPreviewInputDiffersFromBlockFields = [{ inputId: 'answerInput', type: answerBlock.type, field: 'TEXT' }];
+        wrongExercise.check.requiresPreviewFeedbackClass = 'wrong';
+        wrongExercise.check.previewClickFeedback = 'כמעט. עכשיו כתבו בתצוגה החיה תשובה שגויה ולחצו על “בדקו תשובה”.';
+        wrongExercise.check.previewInputFeedback = 'כמעט. כתבו תשובה בשדה שבתצוגה החיה לפני הלחיצה.';
+        wrongExercise.check.previewInputDiffersFeedback = 'כמעט. בתרגיל הזה צריך לבדוק תשובה שגויה — כתבו תשובה שונה מהתשובה הנכונה שהגדרתם.';
+        wrongExercise.check.previewFeedbackClassFeedback = 'כמעט. לחצתם, אבל עוד לא התקבל משוב של “אחרת”. בדקו שכתבתם תשובה שגויה.';
+      }
+      lesson.exercises = lesson.exercises.filter(exercise => exercise.id !== 7);
+      const codePeekExercise = lesson.exercises.find(item => item.id === 8);
+      if(codePeekExercise){
+        codePeekExercise.id = 7;
+        codePeekExercise.title = 'תרגיל 7 — בלוק הופך לקוד';
+        codePeekExercise.minutes = '64–74';
+      }
+    }
+    if(lesson.id === 6){
+      const startScoreBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_6_start_score');
+      const plusBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_6_plus');
+      const scoreLabelBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_6_score_label');
+      const startScoreExercise = lesson.exercises.find(item => item.id === 1);
+      const plusExercise = lesson.exercises.find(item => item.id === 2);
+      const scoreLabelExercise = lesson.exercises.find(item => item.id === 4);
+      if(startScoreExercise && startScoreBlock){
+        startScoreExercise.prompt = 'הבלוק “ניקוד התחלתי” כבר מחובר בקוד ההתחלה. בחרו בתפריט שבתוכו ערך אחר מ־0, ואז בדקו שהתוצאה מתחילה מהניקוד שבחרתם.';
+        startScoreExercise.hint = 'בתרגיל הזה לא צריך לגרור בלוק חדש. רק לשנות את הערך בתוך הבלוק שכבר מחובר מתחת ל“עמוד האתר שלי”.';
+        startScoreExercise.blocklyStarterXml = '<xml xmlns="https://developers.google.com/blockly/xml"><block type="page_start" x="130" y="70"><next><block type="lesson_6_start_score"><field name="N">0</field></block></next></block></xml>';
+        startScoreExercise.check.blockFeedback = 'כמעט. הבלוק “ניקוד התחלתי” אמור להיות מחובר בקוד ההתחלה. לחצו “קוד התחלה”/איפוס לתרגיל ואז שנו את הערך שבתוכו.';
+        startScoreExercise.check.fieldFeedback = 'כמעט. הבלוק מחובר, אבל הוא עדיין על 0. בחרו בתפריט ערך התחלתי אחר.';
+        startScoreExercise.check.generatedFeedback = 'כמעט. הניקוד ההתחלתי שבחרתם עוד לא מופיע בקוד. ודאו שאתם משנים את הבלוק המחובר, לא בלוק חדש בצד.';
+      }
+      if(plusExercise && plusBlock){
+        plusExercise.prompt = 'גררו וחברו את הבלוק “תשובה נכונה מוסיפה”. בחרו אפשרות אחרת בתפריט שבתוך הבלוק, ואז בדקו בתצוגה החיה משמאל מה השתנה.';
+        plusExercise.hint = 'הבלוק הזה קובע כמה נקודות מקבלים על תשובה נכונה.';
+        delete plusExercise.check.orderedBlockTypes;
+        plusExercise.check.blockFeedback = 'כמעט. גררו וחברו את הבלוק “תשובה נכונה מוסיפה” לשרשרת.';
+        delete plusExercise.check.orderFeedback;
+        plusExercise.check.fieldFeedback = 'כמעט. הבלוק מחובר, עכשיו בחרו אפשרות אחרת בתפריט שבתוכו.';
+      }
+      if(scoreLabelExercise && scoreLabelBlock && startScoreBlock){
+        scoreLabelExercise.prompt = 'גררו וחברו את הבלוק “כותרת ניקוד” מעל הבלוק “ניקוד התחלתי” שכבר מחובר בקוד ההתחלה. אחר כך שנו את הטקסט שבתוך הבלוק לטקסט שמתאים לפרויקט שלכם.';
+        scoreLabelExercise.hint = 'הבלוק הזה משנה את הכותרת שמופיעה ליד המספר. שימו אותו מעל “ניקוד התחלתי” כדי שהשרשרת תתחיל בתווית הניקוד ואז בערך ההתחלתי.';
+        scoreLabelExercise.check.orderedBlockTypes = [scoreLabelBlock.type, startScoreBlock.type];
+        scoreLabelExercise.check.blockFeedback = 'כמעט. גררו את “כותרת ניקוד” וחברו אותו לשרשרת מעל הבלוק “ניקוד התחלתי”.';
+        scoreLabelExercise.check.orderFeedback = 'כמעט. הבלוק מחובר, אבל בתרגיל הזה הוא צריך להיות מעל “ניקוד התחלתי”, לא מתחתיו.';
+        scoreLabelExercise.check.fieldFeedback = 'כמעט. הבלוק במקום הנכון — עכשיו שנו את הטקסט שבתוכו.';
+      }
+      lesson.exercises = lesson.exercises
+        .filter(item => item.id !== 6 && item.id !== 7)
+        .map(item => item.id === 8 ? { ...item, id: 6, minutes: '50–62', title: item.title.replace('תרגיל 8', 'תרגיל 6') } : item);
+    }
     if(lesson.id === 4){
       const byId = id => lesson.exercises.find(item => item.id === id);
       const sentenceBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_4_sentence');
@@ -5416,8 +5512,8 @@
       }
       const valueExercise = byId(6);
       if(valueExercise){
-        valueExercise.title = 'תרגול 6 — בלי בלוק חדש: איפה קוראים קלט?';
-        valueExercise.prompt = 'אל תגררו בלוק חדש בתרגול הזה. פתחו “לראות קוד שנוצר”, הסתכלו בלשונית JavaScript, ומצאו את שתי השורות עם value שקוראות את nameInput ואת hobbyInput.';
+        valueExercise.title = 'תרגיל 6 — בלי בלוק חדש: איפה קוראים קלט?';
+        valueExercise.prompt = 'אל תגררו בלוק חדש בתרגיל הזה. פתחו “לראות קוד שנוצר”, הסתכלו בלשונית JavaScript, ומצאו את שתי השורות עם value שקוראות את nameInput ואת hobbyInput.';
         valueExercise.hint = 'value הוא מה שהמשתמש כתב בתוך השדה. בשתי השורות האלה הקוד שומר את השם ואת הנושא לפני שהוא בונה את הברכה.';
         delete valueExercise.noCheck;
         valueExercise.check = {
@@ -5431,7 +5527,7 @@
         id: 7,
         minutes: '70–84',
         optional: true,
-        title: 'תרגול 7 — אתגר רשות: תיקון מדויק',
+        title: 'תרגיל 7 — אתגר רשות: תיקון מדויק',
         prompt: 'אתגר רשות: בקוד ההתחלתי של האתגר יש בלוק אחד שכבר מחובר. תקנו אותו כך שהברכה שמופיעה אחרי הלחיצה תסתיים בדיוק באימוג׳י 🎉. אפשר לבדוק, או לדלג ולסיים את השיעור גם בלי שהבדיקה מאשרת.',
         hint: 'אל תגררו בלוקים חדשים. כל הבלוקים שיוצרים את המחולל כבר מחוברים כאן — מצאו איזה ערך קטן משפיע על סוף הברכה ושנו אותו לערך המדויק.',
         blocklyStarterXml: '<xml xmlns="https://developers.google.com/blockly/xml"><block type="page_start" x="130" y="70"><next><block type="lesson_4_name_label"><field name="TEXT">שם גיבור/ה:</field><next><block type="lesson_4_topic_label"><field name="TEXT">נושא לברכה:</field><next><block type="lesson_4_button_text"><field name="TEXT">צרו ברכה מצחיקה</field><next><block type="lesson_4_sentence"><field name="TEXT">הנה ברכה מצחיקה על</field><next><block type="lesson_4_result_word"><field name="TEXT">🚀</field></block></next></block></next></block></next></block></next></block></xml>',
