@@ -1,0 +1,91 @@
+{
+  "id": "omer-future-challenge-1-vision-gate",
+  "title": "אתגר 1: שער הכניסה והחזון",
+  "audience": "כיתה ד׳, בני 9",
+  "minecraftMode": "Minecraft Education + Craftom",
+  "challengeStructure": {
+    "challengeNumber": 1,
+    "estimatedMeetings": 1,
+    "theme": "זהות היישוב והתחלת עולם כיתתי",
+    "learningFocus": [
+      "חזון ליישוב עתידני",
+      "צרכים של ילדים ותושבים",
+      "נקודת התחלה למבקרים",
+      "שלטים והכוונה"
+    ]
+  },
+  "studentDeliverable": {
+    "teamBuildOptions": [
+      {
+        "team": "צוות שער היישוב",
+        "build": "שער כניסה ראשי עם שם היישוב, צבעים וסמל שמייצגים את עומר העתידנית",
+        "requiredEvidence": ["שלט שם", "שער ברור", "סמל או דגל ליד הכניסה"]
+      },
+      {
+        "team": "צוות מפת עומר",
+        "build": "מיני־מפה עם ארבעה אזורים: שכונות, טבע ומים, קהילה ולמידה, מסלול סיור",
+        "requiredEvidence": ["מפה על הקרקע או קיר", "שלט לכל אזור", "כיוון לשביל ראשון"]
+      },
+      {
+        "team": "צוות מרכז מידע",
+        "build": "עמדת מבקרים שמסבירה מה מותר, לאן הולכים ומה חשוב לראות",
+        "requiredEvidence": ["שלט ברוכים הבאים", "שלט כללי עולם", "שלט התחנה הבאה"]
+      },
+      {
+        "team": "צוות שביל ראשון",
+        "build": "שביל כניסה ברור שמוביל מהשער לאזור הראשון של היישוב",
+        "requiredEvidence": ["שביל רציף", "סימוני כיוון", "תאורה או סימנים בצדדים"]
+      }
+    ],
+    "requiredBuild": [
+      "שער כניסה או נקודת פתיחה ברורה",
+      "שלט חזון עם משפט קצר על עומר העתידנית",
+      "מיני־מפה או סימון של אזורים עתידיים",
+      "שביל או סימון שמראה לאן ממשיכים"
+    ],
+    "requiredThinking": [
+      "הצוות יודע להסביר איזה יישוב הוא רוצה לבנות",
+      "הצוות מציין לפחות ארבעה צרכים של ילדים ביישוב",
+      "מבקר חדש מבין איפה מתחילים ומה הרעיון הכללי"
+    ]
+  },
+  "craftomEvidence": {
+    "buildEvidence": [
+      {
+        "id": "entryGate",
+        "label": "שער או נקודת התחלה",
+        "eventTypes": ["block_place", "sign_text", "chat"],
+        "keywordsAny": ["שער", "כניסה", "start", "welcome", "ברוכים"]
+      },
+      {
+        "id": "visionSign",
+        "label": "שלט חזון",
+        "eventTypes": ["sign_text", "chat"],
+        "keywordsAny": ["עומר", "עתיד", "חזון", "חשוב לנו", "יישוב"]
+      },
+      {
+        "id": "futureMap",
+        "label": "מפה או סימון אזורים",
+        "eventTypes": ["block_place", "sign_text", "chat"],
+        "keywordsAny": ["מפה", "אזור", "שכונה", "פארק", "בית ספר", "קהילה"]
+      }
+    ],
+    "thinkingEvidence": [
+      {
+        "id": "childrenNeeds",
+        "label": "צרכים של ילדים ביישוב",
+        "eventTypes": ["chat", "sign_text", "reflection"],
+        "keywordsAny": ["ילדים", "בטוח", "משחק", "ללמוד", "צל", "חברים"]
+      }
+    ]
+  },
+  "teacherReport": {
+    "scoreBands": [
+      { "id": "notStarted", "label": "לא התחיל", "condition": "אין ראיות לשער, שלט או חזון" },
+      { "id": "builtEntry", "label": "בנה כניסה", "condition": "יש שער או נקודת התחלה" },
+      { "id": "explainedVision", "label": "הסביר חזון", "condition": "יש שלט חזון או הסבר על עומר העתידנית" },
+      { "id": "visitorReady", "label": "מוכן למבקר", "condition": "מבקר יודע איפה מתחילים ולאן ממשיכים" }
+    ],
+    "summaryTemplate": "{studentName} השתתף/ה באתגר שער הכניסה. חזון: {visionSummary}. הכוונה למבקרים: {navigationSummary}. הצעד הבא: {nextStep}."
+  }
+}

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>דף עבודה לתלמידים - Mission Impossible Lab — אתגרי פתרון בעיות עם AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}:root{--ink:#102033;--muted:#526070;--blue:#2563eb;--green:#16a34a;--purple:#7c3aed;--line:#e4edf8;--bg:#f6f9fd}body{margin:0;font-family:Rubik,Arial,sans-serif;direction:rtl;color:var(--ink);background:linear-gradient(135deg,#eef7ff,#fff7ed 46%,#f5f3ff);line-height:1.65}.shell{width:min(1120px,calc(100% - 26px));margin:0 auto}.topbar{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);box-shadow:0 8px 24px rgba(15,23,42,.08)}.topbar-inner{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:12px 0}.brand{display:flex;align-items:center;gap:10px;font-weight:900}.mark{width:44px;height:44px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,#67e8f9,#fde68a);font-size:1.35rem}.lesson-tabs{display:flex;gap:7px;justify-content:center;flex-wrap:wrap}.tab{border:1px solid #dbeafe;background:#f8fafc;color:#1e293b;border-radius:999px;padding:9px 12px;text-decoration:none;font-weight:900}.tab.active{background:#2563eb;color:white;border-color:#2563eb}.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:0;border-radius:999px;padding:11px 15px;font-family:inherit;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#0f172a;color:white}.btn.secondary{background:#eef2ff;color:#3730a3}.btn.green{background:#16a34a}.hero{padding:34px 0 18px}.hero-card{background:linear-gradient(135deg,#0f172a,#1e40af 55%,#6d28d9);color:white;border-radius:30px;padding:28px;box-shadow:0 22px 60px rgba(37,99,235,.18)}.kicker{display:inline-flex;border-radius:999px;padding:7px 12px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);font-weight:900;margin-bottom:12px}h1{font-size:clamp(2rem,5vw,4rem);line-height:1.05;margin:0 0 12px}h2{font-size:clamp(1.45rem,3vw,2.35rem);line-height:1.14;margin:0 0 10px}.hero-card p{font-size:1.12rem;color:#eaf6ff;margin:0}.grid{display:grid;grid-template-columns:minmax(0,1.05fr) 330px;gap:18px;align-items:start;padding:16px 0 48px}.panel{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:26px;padding:20px;box-shadow:0 16px 40px rgba(15,23,42,.07)}.field{display:grid;gap:7px;margin-bottom:14px}.field label{font-weight:900;color:#1d4ed8}.field input,.field textarea{width:100%;border:2px solid #dbeafe;border-radius:16px;padding:13px 14px;font:inherit;background:#fbfdff;color:#0f172a;outline:0}.field textarea{min-height:94px;resize:vertical}.field textarea.large{min-height:150px}.field input:focus,.field textarea:focus{border-color:#7c3aed;box-shadow:0 0 0 4px rgba(124,58,237,.1)}.checklist{display:grid;gap:10px;margin-top:12px}.check{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:11px;font-weight:800}.check input{width:20px;height:20px;margin-top:3px}.side{display:grid;gap:14px}.status{border-right:7px solid #16a34a}.progress{height:14px;border-radius:999px;background:#e2e8f0;overflow:hidden;margin:10px 0}.bar{height:100%;width:0;background:linear-gradient(90deg,#16a34a,#67e8f9);transition:.2s}.prompt{background:#0f172a;color:#e5f3ff;border-radius:18px;padding:14px;white-space:pre-wrap;line-height:1.7}.small{color:var(--muted);font-size:.95rem}.submit-box{background:linear-gradient(135deg,#ecfeff,#fff7ed);border-right:7px solid #06b6d4}.done-badge{display:none;background:#dcfce7;color:#166534;border-radius:16px;padding:11px;margin-top:10px;font-weight:900}.done-badge.show{display:block}.footer{text-align:center;color:#64748b;font-weight:800;padding:24px 0 40px}@media(max-width:920px){.topbar-inner,.grid{grid-template-columns:1fr}.lesson-tabs{justify-content:flex-start}.actions .btn{flex:1}.side{grid-row:auto}}@media print{.topbar,.actions,.footer{display:none}.hero{padding:0}.hero-card,.panel{box-shadow:none;border:1px solid #cbd5e1}.grid{display:block}.side{margin-top:12px}body{background:white}.shell{width:100%}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="brand"><span class="mark">🚀</span><span>Mission Impossible Lab</span></div>
+      <nav class="lesson-tabs" id="tabs"></nav>
+      <div class="actions">
+        <a class="btn secondary" href="https://opal.hai.tech/">כלי AI</a>
+        <a class="btn secondary" href="mission-impossible-lab-improvement.html">בקשת שיפור</a>
+        <button class="btn green" onclick="markSubmitted()">הגשה</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-card">
+        <div class="kicker" id="kicker"></div>
+        <h1 id="title"></h1>
+        <p id="intro"></p>
+      </div>
+    </section>
+
+    <section class="grid">
+      <form class="panel" id="worksheetForm">
+        <h2>ממלאים ומסמנים</h2>
+        <p class="small">הדף נשמר אוטומטית בדפדפן של המחשב הזה. בסוף אפשר ללחוץ הגשה, להעתיק סיכום או להדפיס.</p>
+        <div id="fields"></div>
+      </form>
+
+      <aside class="side">
+        <section class="panel status">
+          <h2>התקדמות</h2>
+          <div class="progress"><div class="bar" id="bar"></div></div>
+          <p id="progressText" class="small"></p>
+          <div class="done-badge" id="doneBadge">הדף סומן כמוגש ✅</div>
+        </section>
+
+        <section class="panel">
+          <h2>איך עובדים היום</h2>
+          <p id="workMode" class="small"></p>
+          <div class="checklist" id="exactSteps"></div>
+        </section>
+
+        <section class="panel">
+          <h2>צ׳קליסט סיום</h2>
+          <div class="checklist" id="checklist"></div>
+        </section>
+
+        <section class="panel submit-box">
+          <h2>סיכום להגשה</h2>
+          <p class="small">בסיום המפגש העתיקו את הסיכום או הדפיסו אותו לפי הנחיית המדריך.</p>
+          <div class="actions">
+            <button class="btn" onclick="copySummary()" type="button">העתקת סיכום</button>
+            <button class="btn secondary" onclick="window.print()" type="button">הדפסה</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>פרומפט עזר</h2>
+          <div class="prompt" id="prompt"></div>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="footer">דף עבודה לתלמידים · hai.tech</footer>
+
+  <script src="js/mission-impossible-lab-lessons.js?v=20260823-milab-students"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const lesson = window.getMissionImpossibleLabLesson(params.get('lesson'));
+    const program = window.MISSION_IMPOSSIBLE_LAB_PROGRAM;
+    const worksheet = lesson.studentWorksheet;
+    const storageKey = `mission-impossible-lab-student-lesson-${lesson.id}`;
+    let state = loadState();
+
+    const $ = id => document.getElementById(id);
+    const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+
+    function loadState() {
+      try {
+        return JSON.parse(localStorage.getItem(storageKey) || '{}');
+      } catch {
+        return {};
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(storageKey, JSON.stringify(state));
+      renderProgress();
+    }
+
+    function init() {
+      document.title = `דף עבודה - מפגש ${lesson.id}: ${lesson.title}`;
+      $('tabs').innerHTML = program.lessons.map(item => `<a class="tab ${item.id === lesson.id ? 'active' : ''}" href="mission-impossible-lab-students.html?lesson=${item.id}">מפגש ${item.id}</a>`).join('');
+      $('kicker').textContent = `מפגש ${lesson.id} מתוך ${program.totalMeetings} · ${lesson.productStage}`;
+      $('title').textContent = worksheet.title;
+      $('intro').textContent = worksheet.intro;
+      $('prompt').textContent = lesson.opalPrompt;
+      $('workMode').textContent = lesson.workMode;
+      $('exactSteps').innerHTML = lesson.exactSteps.map((item, index) => `
+        <div class="check">
+          <span>${index + 1}</span>
+          <span>${esc(item)}</span>
+        </div>
+      `).join('');
+      $('fields').innerHTML = worksheet.fields.map(field => `
+        <div class="field">
+          <label for="${field.id}">${esc(field.label)}</label>
+          ${field.type === 'textarea'
+            ? `<textarea id="${field.id}" class="${field.large ? 'large' : ''}" placeholder="${esc(field.placeholder)}">${esc(state[field.id] || '')}</textarea>`
+            : `<input id="${field.id}" type="text" placeholder="${esc(field.placeholder)}" value="${esc(state[field.id] || '')}">`}
+        </div>
+      `).join('');
+      $('checklist').innerHTML = worksheet.checklist.map((item, index) => `
+        <label class="check">
+          <input type="checkbox" id="check-${index}" ${state[`check-${index}`] ? 'checked' : ''}>
+          <span>${esc(item)}</span>
+        </label>
+      `).join('');
+
+      worksheet.fields.forEach(field => {
+        $(field.id).addEventListener('input', event => {
+          state[field.id] = event.target.value;
+          state.submitted = false;
+          saveState();
+        });
+      });
+
+      worksheet.checklist.forEach((_, index) => {
+        $(`check-${index}`).addEventListener('change', event => {
+          state[`check-${index}`] = event.target.checked;
+          state.submitted = false;
+          saveState();
+        });
+      });
+
+      renderProgress();
+    }
+
+    function filledCount() {
+      const fields = worksheet.fields.filter(field => String(state[field.id] || '').trim().length > 0).length;
+      const checks = worksheet.checklist.filter((_, index) => state[`check-${index}`]).length;
+      return { fields, checks, total: worksheet.fields.length + worksheet.checklist.length };
+    }
+
+    function renderProgress() {
+      const counts = filledCount();
+      const done = counts.fields + counts.checks;
+      const percent = Math.round((done / counts.total) * 100);
+      $('bar').style.width = `${percent}%`;
+      $('progressText').textContent = `${done} מתוך ${counts.total} סעיפים הושלמו`;
+      $('doneBadge').classList.toggle('show', Boolean(state.submitted));
+    }
+
+    function buildSummary() {
+      const lines = [
+        worksheet.submitTitle,
+        `מפגש ${lesson.id}: ${lesson.title}`,
+        ''
+      ];
+      worksheet.fields.forEach(field => {
+        lines.push(`${field.label}:`);
+        lines.push(String(state[field.id] || '').trim() || '-');
+        lines.push('');
+      });
+      lines.push('צ׳קליסט:');
+      worksheet.checklist.forEach((item, index) => {
+        lines.push(`${state[`check-${index}`] ? '[x]' : '[ ]'} ${item}`);
+      });
+      return lines.join('\n');
+    }
+
+    async function copySummary() {
+      const summary = buildSummary();
+      try {
+        await navigator.clipboard.writeText(summary);
+        alert('הסיכום הועתק.');
+      } catch {
+        prompt('העתיקו את הסיכום:', summary);
+      }
+    }
+
+    function markSubmitted() {
+      state.submitted = true;
+      state.submittedAt = new Date().toISOString();
+      saveState();
+      copySummary();
+    }
+
+    init();
+  </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+{
+  "id": "omer-future-challenge-2-connected-neighborhood",
+  "title": "אתגר 2: שכונה שמחברת אנשים",
+  "audience": "כיתה ד׳, בני 9",
+  "minecraftMode": "Minecraft Education + Craftom",
+  "challengeStructure": {
+    "challengeNumber": 2,
+    "estimatedMeetings": 1,
+    "theme": "מגורים, קהילה ושבילים",
+    "learningFocus": [
+      "צרכים של תושבים שונים",
+      "שכונה כמערכת",
+      "מרחב משותף",
+      "התמצאות ושלטים"
+    ]
+  },
+  "studentDeliverable": {
+    "teamBuildOptions": [
+      {
+        "team": "צוות שכונת הילדים",
+        "build": "שלושה בתים קטנים סביב חצר משותפת לילדים",
+        "requiredEvidence": ["3 בתים שונים", "חצר משותפת", "שלט שמסביר למי כל בית מתאים"]
+      },
+      {
+        "team": "צוות הדרך לבית הספר",
+        "build": "שביל בטוח מהשכונה לבית הספר העתידי",
+        "requiredEvidence": ["שביל רציף", "סימוני מעבר", "תאורה או גדרות בטיחות"]
+      },
+      {
+        "team": "צוות מרכז קהילתי",
+        "build": "מבנה או רחבה למפגשים, חוגים ואירועים של היישוב",
+        "requiredEvidence": ["רחבה או מבנה", "מקום ישיבה", "שלט פעילות"]
+      },
+      {
+        "team": "צוות גן משחקים וצל",
+        "build": "מרחב משחק עם הצללה, מים או מקום מנוחה",
+        "requiredEvidence": ["מתקן משחק", "צל או עצים", "שלט כללים"]
+      }
+    ],
+    "requiredBuild": [
+      "לפחות שלושה בתים או אזורי מגורים",
+      "מרחב משותף אחד",
+      "שביל שמחבר לשער או לאזור ציבורי",
+      "שלטים שמסבירים למי כל מקום מתאים"
+    ],
+    "requiredThinking": [
+      "הצוות מזהה שלושה סוגי משתמשים",
+      "הצוות מסביר למה השכונה טובה לילדים",
+      "מבקר מצליח למצוא לפחות שני מקומות בלי הסבר"
+    ]
+  },
+  "craftomEvidence": {
+    "buildEvidence": [
+      {
+        "id": "homes",
+        "label": "בתים או אזורי מגורים",
+        "eventTypes": ["block_place", "sign_text"],
+        "keywordsAny": ["בית", "שכונה", "מגורים", "משפחה", "ילדים"],
+        "minimumCount": 3
+      },
+      {
+        "id": "sharedSpace",
+        "label": "מרחב משותף",
+        "eventTypes": ["block_place", "sign_text", "chat"],
+        "keywordsAny": ["כיכר", "מפגש", "גן", "משחק", "קהילה", "חברים"]
+      },
+      {
+        "id": "paths",
+        "label": "שבילים וחיבור",
+        "eventTypes": ["block_place", "sign_text"],
+        "keywordsAny": ["שביל", "דרך", "חיבור", "כניסה", "מסלול"]
+      }
+    ],
+    "visitorEvidence": [
+      {
+        "id": "visitorUnderstood",
+        "label": "מבקר הבין את השכונה",
+        "eventTypes": ["chat", "reflection"],
+        "keywordsAny": ["מבקר", "הבין", "מצא", "התבלבל", "שיפרנו"]
+      }
+    ]
+  },
+  "teacherReport": {
+    "scoreBands": [
+      { "id": "notStarted", "label": "לא התחיל", "condition": "אין ראיות למבני מגורים" },
+      { "id": "builtHomes", "label": "בנה שכונה", "condition": "יש לפחות שלושה בתים או אזורי מגורים" },
+      { "id": "connectedNeighborhood", "label": "חיבר מערכת", "condition": "יש שבילים ומרחב משותף" },
+      { "id": "visitorTested", "label": "בדק עם מבקר", "condition": "יש ראיית בדיקת מבקר או שיפור" }
+    ],
+    "summaryTemplate": "{studentName} עבד/ה על שכונה עתידנית. חיבורי מערכת: {connectionSummary}. בדיקת מבקר: {visitorSummary}. הצעד הבא: {nextStep}."
+  }
+}

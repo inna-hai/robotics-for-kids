@@ -1,0 +1,92 @@
+{
+  "id": "omer-future-challenge-4-final-tour",
+  "title": "אתגר 4: סיור בעומר העתידנית",
+  "audience": "כיתה ד׳, בני 9",
+  "minecraftMode": "Minecraft Education + Craftom",
+  "challengeStructure": {
+    "challengeNumber": 4,
+    "estimatedMeetings": 1,
+    "theme": "בדיקה, שיפור והצגת מערכת שלמה",
+    "learningFocus": [
+      "סיור כמבנה הסבר",
+      "בדיקת מבקר",
+      "שיפור לפי משוב",
+      "חיבור חלקים למערכת אחת"
+    ]
+  },
+  "studentDeliverable": {
+    "teamBuildOptions": [
+      {
+        "team": "צוות תחנת שער",
+        "build": "תחנת סיור ראשונה ליד הכניסה שמסבירה את החזון של עומר",
+        "requiredEvidence": ["שלט פתיחה", "חץ לתחנה הבאה", "משפט חזון"]
+      },
+      {
+        "team": "צוות תחנת שכונה",
+        "build": "תחנה שמסבירה איך חיים בשכונה ומה נוח לילדים",
+        "requiredEvidence": ["שלט הסבר", "נקודת צפייה", "שאלה למבקר"]
+      },
+      {
+        "team": "צוות תחנת קיימות",
+        "build": "תחנה שמסבירה מים, צל או אנרגיה בעומר",
+        "requiredEvidence": ["שלט איך זה עובד", "סימון חיבור למערכת אחרת", "דוגמת תקלה או צורך"]
+      },
+      {
+        "team": "צוות מסלול וסימונים",
+        "build": "חצים, תאורה ושביל שמחבר את כל תחנות הסיור",
+        "requiredEvidence": ["מסלול רציף", "התחלה וסוף", "לפחות 4 סימוני כיוון"]
+      }
+    ],
+    "requiredBuild": [
+      "מסלול סיור עם התחלה וסיום",
+      "לפחות ארבע תחנות",
+      "שלט קצר לכל תחנה",
+      "שיפור אחד בעקבות בדיקת מבקר"
+    ],
+    "requiredThinking": [
+      "הצוות מסביר איך כל תחנה מתחברת ליישוב",
+      "הצוות מציג שינוי שעשה בעקבות מבקר",
+      "הסיור מוכיח שהעיר היא מערכת ולא אוסף מבנים"
+    ]
+  },
+  "craftomEvidence": {
+    "buildEvidence": [
+      {
+        "id": "tourPath",
+        "label": "מסלול סיור",
+        "eventTypes": ["block_place", "sign_text"],
+        "keywordsAny": ["סיור", "תחנה", "התחלה", "סיום", "מסלול"]
+      },
+      {
+        "id": "tourStations",
+        "label": "תחנות עם שלטים",
+        "eventTypes": ["sign_text", "block_place"],
+        "keywordsAny": ["תחנה 1", "תחנה 2", "תחנה 3", "תחנה 4", "שלט"],
+        "minimumCount": 4
+      },
+      {
+        "id": "improvement",
+        "label": "שיפור בעקבות בדיקה",
+        "eventTypes": ["chat", "sign_text", "reflection", "block_place"],
+        "keywordsAny": ["שיפרנו", "תיקנו", "מבקר", "התבלבל", "ברור יותר"]
+      }
+    ],
+    "presentationEvidence": [
+      {
+        "id": "systemExplanation",
+        "label": "הסבר מערכת שלמה",
+        "eventTypes": ["chat", "reflection"],
+        "keywordsAny": ["מתחבר", "מערכת", "יישוב", "עומר", "עוזר", "תלוי"]
+      }
+    ]
+  },
+  "teacherReport": {
+    "scoreBands": [
+      { "id": "notStarted", "label": "לא התחיל", "condition": "אין ראיות למסלול סיור" },
+      { "id": "tourBuilt", "label": "בנה סיור", "condition": "יש מסלול ותחנות" },
+      { "id": "visitorImproved", "label": "שיפר לפי מבקר", "condition": "יש ראיית בדיקה ותיקון" },
+      { "id": "systemPresented", "label": "הציג מערכת", "condition": "הצוות מסביר חיבור בין חלקי היישוב" }
+    ],
+    "summaryTemplate": "{studentName} השתתף/ה בסיור עומר העתידנית. תחנות: {stationsSummary}. שיפור לפי מבקר: {improvementSummary}. חוזקה להצגה: {presentationStrength}."
+  }
+}

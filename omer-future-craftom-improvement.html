@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>בקשת שיפור - עומר העתידנית</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}body{margin:0;font-family:Rubik,Arial,sans-serif;direction:rtl;color:#132117;background:linear-gradient(135deg,#f0fdf4,#fff7ed);line-height:1.65}.shell{width:min(860px,calc(100% - 26px));margin:0 auto;padding:34px 0}.panel{background:white;border:1px solid #dfeee7;border-radius:24px;padding:24px;box-shadow:0 18px 50px rgba(15,23,42,.08)}h1{font-size:clamp(2rem,5vw,3.7rem);line-height:1.06;margin:0 0 12px}p{color:#53635a}.field{display:grid;gap:7px;margin:14px 0}.field label{font-weight:900;color:#0f766e}.field input,.field select,.field textarea{width:100%;border:2px solid #bbf7d0;border-radius:14px;padding:13px 14px;font:inherit;background:#fbfffd;color:#0f172a}.field textarea{min-height:120px;resize:vertical}.btn{border:0;border-radius:999px;padding:12px 18px;font-family:inherit;font-weight:900;cursor:pointer;background:#143421;color:white}.secondary{background:#ecfdf5;color:#166534;text-decoration:none;display:inline-flex;align-items:center;margin-inline-start:8px}.status{font-weight:900;margin-top:12px}.ok{color:#166534}.bad{color:#b91c1c}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="panel">
+      <h1>בקשת שיפור ללומדה</h1>
+      <p>מיועד למדריכות ולמורות: אם שיעור לא ברור, לא מתאים לכיתה ד׳, או לא מחובר מספיק לעומר העתידנית, ממלאים כאן בקשה מדויקת.</p>
+      <form id="form">
+        <div class="field">
+          <label for="lesson">אתגר</label>
+          <select id="lesson" name="lesson"></select>
+        </div>
+        <div class="field">
+          <label for="role">מי מדווח/ת?</label>
+          <input id="role" name="role" placeholder="שם + תפקיד">
+        </div>
+        <div class="field">
+          <label for="problem">מה הבעיה?</label>
+          <textarea id="problem" name="problem" required placeholder="לדוגמה: הילדים לא הבינו מה לבנות / אין מספיק חיבור לעומר / המשימה ארוכה מדי."></textarea>
+        </div>
+        <div class="field">
+          <label for="suggestion">מה ההצעה לתיקון?</label>
+          <textarea id="suggestion" name="suggestion" required placeholder="כתבו תיקון פרקטי: משפט לפתיחה, משימה חדשה, שדה בדף, שינוי בזמן, דוגמה למיינקראפט."></textarea>
+        </div>
+        <button class="btn" type="submit">שליחת בקשה</button>
+        <a class="btn secondary" href="omer-future-craftom.html">חזרה לקורס</a>
+        <div id="status" class="status"></div>
+      </form>
+    </section>
+  </main>
+  <script src="js/omer-future-craftom-lessons.js?v=20260823-omer-improve"></script>
+  <script>
+    const program = window.OMER_FUTURE_CRAFTOM_PROGRAM;
+    const lessonSelect = document.getElementById('lesson');
+    lessonSelect.innerHTML = program.lessons.map(lesson => `<option value="אתגר ${lesson.id} - ${lesson.title}">אתגר ${lesson.id} - ${lesson.title}</option>`).join('');
+    document.getElementById('form').addEventListener('submit', async event => {
+      event.preventDefault();
+      const status = document.getElementById('status');
+      const payload = {
+        source: 'omer-future-craftom',
+        course: program.title,
+        lesson: lessonSelect.value,
+        role: document.getElementById('role').value,
+        problem: document.getElementById('problem').value,
+        suggestion: document.getElementById('suggestion').value
+      };
+      try {
+        const response = await fetch('/api/feedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!response.ok) throw new Error('feedback failed');
+        status.className = 'status ok';
+        status.textContent = 'הבקשה נשלחה.';
+        event.target.reset();
+      } catch {
+        status.className = 'status bad';
+        status.textContent = 'לא הצלחתי לשלוח כרגע. העתיקו את הטקסט ושלחו ידנית.';
+      }
+    });
+  </script>
+</body>
+</html>

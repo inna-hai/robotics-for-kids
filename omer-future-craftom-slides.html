@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מצגת מדריך - עומר העתידנית</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}body{margin:0;font-family:Rubik,Arial,sans-serif;direction:rtl;color:#132117;background:linear-gradient(135deg,#143421,#0f766e 54%,#b45309);min-height:100vh;overflow:hidden}.deck{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;padding:30px}.slide{display:none;width:min(1140px,100%);min-height:min(700px,calc(100vh - 120px));background:rgba(255,255,255,.97);border-radius:28px;padding:42px;box-shadow:0 28px 80px rgba(0,0,0,.32);overflow:auto}.slide.active{display:flex;flex-direction:column;justify-content:center}.kicker{font-weight:900;color:#b45309;margin-bottom:10px}h1{font-size:clamp(2.3rem,6vw,4.55rem);line-height:1.06;margin:0 0 16px}h2{font-size:clamp(1.9rem,5vw,3.2rem);line-height:1.1;margin:0 0 18px}p,li{font-size:clamp(1.05rem,1.7vw,1.28rem);line-height:1.58}.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.card{background:#f8fafc;border-radius:16px;padding:16px;border-right:7px solid #16a34a}.card b{display:block;color:#0f766e;margin-bottom:5px}.timeline{display:grid;gap:8px}.row{display:grid;grid-template-columns:96px 1fr 1fr;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:11px}.row b{color:#b45309}.note{background:#ecfdf5;border-right:7px solid #16a34a;border-radius:18px;padding:14px;margin-top:12px;white-space:pre-wrap}.nav{position:fixed;inset:auto 24px 24px 24px;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;color:white;font-weight:900;pointer-events:none}.nav>*{pointer-events:auto}button,.back{border:0;border-radius:999px;background:white;color:#14532d;padding:12px 18px;font-weight:900;text-decoration:none;cursor:pointer;font-family:inherit}.counter{background:rgba(0,0,0,.25);padding:10px 16px;border-radius:999px;justify-self:center}.lesson-picker{position:fixed;top:18px;left:18px;z-index:4;display:flex;gap:7px;flex-wrap:wrap}.lesson-picker a{background:rgba(255,255,255,.15);color:white;border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:8px 12px;text-decoration:none;font-weight:900}.lesson-picker a.active{background:white;color:#14532d}@media(max-width:760px){body{overflow:auto}.deck{height:auto;min-height:100svh;padding:72px 10px 88px}.slide{min-height:calc(100svh - 150px);padding:22px 16px}.cards,.row{grid-template-columns:1fr}.nav{inset:auto 10px 10px 10px;display:flex;justify-content:space-between}.counter{display:none}.lesson-picker{right:10px;left:10px;top:10px}}
+  </style>
+</head>
+<body>
+  <div class="lesson-picker" id="lessonPicker"></div>
+  <main class="deck" id="deck"></main>
+  <nav class="nav">
+    <button onclick="prevSlide()">→ הקודם</button>
+    <span class="counter" id="counter"></span>
+    <div>
+      <button onclick="nextSlide()">הבא ←</button>
+      <a class="back" href="omer-future-craftom.html">לתוכנית</a>
+    </div>
+  </nav>
+
+  <script src="js/omer-future-craftom-lessons.js?v=20260823-omer-slide-teams"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const program = window.OMER_FUTURE_CRAFTOM_PROGRAM;
+    const lesson = window.getOmerFutureCraftomLesson(params.get('lesson'));
+    let current = 0;
+    const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+    const list = rows => `<ul>${rows.map(row => `<li>${esc(row)}</li>`).join('')}</ul>`;
+    const cards = rows => `<div class="cards">${rows.map(row => `<div class="card"><b>${esc(row[0])}</b>${esc(row[1])}</div>`).join('')}</div>`;
+
+    document.title = `מצגת מדריך - אתגר ${lesson.id}: ${lesson.title}`;
+    document.getElementById('lessonPicker').innerHTML = program.lessons.map(item => `<a class="${item.id === lesson.id ? 'active' : ''}" href="omer-future-craftom-slides.html?lesson=${item.id}">אתגר ${item.id}</a>`).join('');
+
+    const slides = [
+      { html: `<div class="kicker">${esc(program.title)} • ${esc(program.targetAudience)} • ${esc(program.age)}</div><h1>אתגר ${lesson.id}: ${esc(lesson.title)}</h1><p>${esc(lesson.theme)} • ${esc(lesson.systemFocus)}</p><div class="note">תוצר האתגר: ${esc(lesson.minecraftBuild)}</div>` },
+      { html: `<h2>שאלת האתגר</h2><p>${esc(lesson.bigQuestion)}</p>${cards([['מטרת מדריך', lesson.teacherGoal], ['מה יוצא לתלמידים', lesson.studentOutcome]])}` },
+      { html: `<h2>חוק השיעור</h2><p>לא מלמדים קוד. מלמדים תכנון, בנייה, בדיקה והסבר.</p><div class="note">שאלות שחוזרות בכל שיעור: למי זה עוזר? איך זה מתחבר? איך מבקר יודע מה לעשות כאן?</div>` },
+      { html: `<h2>איך עובדים בדיוק</h2><p>${esc(program.buildProtocol.defaultMode)}</p>${cards(program.buildProtocol.roles.map(role => [role[0], role[1]]))}` },
+      { html: `<h2>הכנת מדריך לפני שיעור</h2>${list(lesson.teacherPrep)}` },
+      { html: `<h2>פתיחה מומלצת</h2><p>${esc(lesson.openingDemo)}</p><div class="note">לא לפתוח בהרצאה ארוכה. להראות דוגמה, לשאול שאלה, ולהכניס לבנייה.</div>` },
+      { html: `<h2>מהלך שיעור ${lesson.durationMinutes} דקות</h2><div class="timeline">${lesson.flow.map(step => `<div class="row"><b>${esc(step.minutes)}</b><div><strong>${esc(step.title)}</strong><br>${esc(step.teacher)}</div><div>${esc(step.students)}</div></div>`).join('')}</div>` },
+      { html: `<h2>משימות עבודה לצוותים</h2>${list(lesson.workshopTasks)}` },
+      { html: `<h2>שדות שחייבים להתמלא בדף</h2>${list(lesson.studentWorksheet.fields.map(field => field.label))}` },
+      { html: `<h2>מה לבדוק בזמן עבודה</h2>${list(['האם כל ילד עושה תפקיד אמיתי?', 'האם ברור איזה חלק בעומר נבנה?', 'האם יש חיבור למערכת אחרת ולא רק מבנה יפה?', 'האם יש שלט שמסביר למבקר?', 'האם הצוות בדק ושיפר משהו אחד?'])}` },
+      { html: `<h2>הערות למדריך</h2>${list(lesson.instructorNotes)}` },
+      { html: `<h2>כללי עולם משותף</h2>${list(program.safetyRules)}` },
+      { html: `<h2>כרטיס יציאה</h2><p>${esc(lesson.exitTicket)}</p><div class="note">לפני מעבר לשיעור הבא ודאו שיש תוצר שנשאר בעולם.</div>` },
+      { html: `<h2>תבנית סיור סופי</h2>${list(program.finalTourTemplate)}` }
+    ];
+
+    document.getElementById('deck').innerHTML = slides.map((slide, index) => `<section class="slide ${index ? '' : 'active'}">${slide.html}</section>`).join('');
+
+    function render() {
+      document.querySelectorAll('.slide').forEach((slide, index) => slide.classList.toggle('active', index === current));
+      document.getElementById('counter').textContent = `${current + 1} / ${slides.length}`;
+    }
+    function nextSlide() { current = Math.min(current + 1, slides.length - 1); render(); }
+    function prevSlide() { current = Math.max(current - 1, 0); render(); }
+    document.addEventListener('keydown', event => {
+      if (event.key === 'ArrowLeft' || event.key === ' ') nextSlide();
+      if (event.key === 'ArrowRight') prevSlide();
+    });
+    render();
+  </script>
+  <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
+</body>
+</html>
