@@ -5263,14 +5263,14 @@
       ['boost','כוח מוסיף %1 נקודות','js','score = score + 3;','score = score + {{N}};',[['field_dropdown','N',[['3','3'],['5','5'],['8','8']]]]],
       ['message','הודעת כוח %1','js','כוח מיוחד! קיבלת בוסט של 3 נקודות 🛡️','{{TEXT}}',[['field_input','TEXT','כוח על הופעל! קיבלת בונוס ⚡']]],
       ['used','אחרי שימוש הכוח %1','js','powerReady = false;','powerReady = {{VAL}};',[['field_dropdown','VAL',[['נגמר','false'],['נשאר פעיל','true']]]]],
-      ['label','תווית כוח %1','html','כוח מיוחד:','{{TEXT}}',[['field_input','TEXT','מצב כוח:']]],
+      ['label','תווית כוח %1','html','כוח:','{{TEXT}}',[['field_input','TEXT','מצב כוח:']]],
       ['color','צבע כוח פעיל %1','css','#dcfce7','{{COLOR}}',[['field_dropdown','COLOR',[['ירוק','#bbf7d0'],['כחול','#bfdbfe'],['צהוב','#fef08a']]]]]
     ]},
     11: { title:'מסכים במשחק — פתיחה, ניצחון והפסד', concept:'screens · showScreen · game state', blocks:[
       ['intro','הוראות פתיחה %1','html','אספו 3 נקודות כדי לנצח.','{{TEXT}}',[['field_input','TEXT','המטרה: להגיע ל־3 נקודות ולפתוח מסך ניצחון.']]],
       ['target','יעד מסך ניצחון %1','js','const target = 3;','const target = {{N}};',[['field_dropdown','N',[['3','3'],['5','5']]]]],
       ['win','שם מסך ניצחון %1','js','showScreen("winScreen")','showScreen("{{SCREEN}}")',[['field_dropdown','SCREEN',[['winScreen','winScreen'],['loseScreen','loseScreen']]]]],
-      ['lose_text','טקסט הפסד %1','html','הפסדתם','{{TEXT}}',[['field_input','TEXT','נסו שוב — עוד רגע מנצחים']]],
+      ['lose_text','טקסט הפסד %1','html','לא נורא, מנסים שוב.','{{TEXT}}',[['field_input','TEXT','נסו שוב — עוד רגע מנצחים']]],
       ['again','כפתור שוב %1','html','שחקו שוב','{{TEXT}}',[['field_input','TEXT','חזרה להתחלה']]]
     ]},
     12: { title:'מיני־פרויקט משחק — משלבים כמה חוקים', concept:'project · game rules · balancing', blocks:[
@@ -5283,8 +5283,8 @@
     ]}
   };
 
-  function addCodeLabReworkSpecs(){
-    const titles = {
+	  function addCodeLabReworkSpecs(){
+	    const titles = {
       13:['מעבדת הקוד שנוצר — קוראים לפני שכותבים','קריאת קוד שנוצר'],
       14:['HTML דרך בלוקים — מבנה אמיתי בלי פחד','HTML דרך בלוקים'],
       15:['CSS דרך בלוקים — עיצוב אמיתי בהדרגה','CSS דרך בלוקים'],
@@ -5297,18 +5297,39 @@
       22:['סדר קוד — לפני ואחרי חשובים','סדר קוד'],
       23:['חורים בקוד — משלימים דרך בלוקים','השלמת חורים'],
       24:['חוקי משחק — הכנה אחרונה לקוד עצמאי','חוקי משחק']
-    };
-    for(let id=13; id<=24; id++){
-      fullBlockRework[id] = { title: titles[id][0], concept: titles[id][1], blocks: [
-        ['title','כותרת HTML חדשה %1','html',`<h1>${lessons.find(l=>l.id===id).title}</h1>`,`<h1>{{TEXT}}</h1>`,[['field_input','TEXT',titles[id][0]]]],
-        ['intro','משפט הסבר %1','html','<p class="intro">','<p class="intro">{{TEXT}} ',[['field_input','TEXT','אני בודק/ת קוד שנוצר מבלוקים:']]],
-        ['button','טקסט כפתור %1','html','הריצו פרויקט','{{TEXT}}', [['field_input','TEXT','בדקו את הפרויקט']]],
-        ['output','פלט JavaScript %1','js','document.getElementById("output").textContent =','document.getElementById("output").textContent = "{{TEXT}}"; //', [['field_input','TEXT','הבלוק שלי שינה את הפלט']]],
-        ['radius','עיגול כפתור %1','css','border-radius: 999px;','border-radius: {{R}};', [['field_dropdown','R',[['עגול','999px'],['רך','16px'],['מרובע','4px']]]]],
-        ['background','רקע המעבדה %1','css','background: linear-gradient(135deg, #eff6ff, #fff7ed);','background: {{BG}};', [['field_dropdown','BG',[['כחול-כתום','linear-gradient(135deg, #eff6ff, #fff7ed)'],['ורוד-תכלת','linear-gradient(135deg, #fdf2f8, #ecfeff)'],['ירוק בהיר','#dcfce7']]]]]
-      ]};
-    }
-  }
+	    };
+	    for(let id=13; id<=24; id++){
+	      fullBlockRework[id] = { title: titles[id][0], concept: titles[id][1], blocks: [
+	        ['title','כותרת HTML חדשה %1','html',`<h1>${lessons.find(l=>l.id===id).title}</h1>`,`<h1>{{TEXT}}</h1>`,[['field_input','TEXT',titles[id][0]]]],
+	        ['intro','משפט הסבר %1','html','<p class="intro">','<p class="intro">{{TEXT}} ',[['field_input','TEXT','אני בודק/ת קוד שנוצר מבלוקים:']]],
+	        ['button','טקסט כפתור %1','html','הריצו בדיקה','{{TEXT}}', [['field_input','TEXT','בדקו את הפרויקט']]],
+	        ['output','פלט JavaScript %1','js','document.getElementById("output").textContent =','document.getElementById("output").textContent = "{{TEXT}}"; //', [['field_input','TEXT','הבלוק שלי שינה את הפלט']]],
+	        ['radius','עיגול כפתור %1','css','border-radius: 999px;','border-radius: {{R}};', [['field_dropdown','R',[['עגול','999px'],['רך','16px'],['מרובע','4px']]]]],
+	        ['background','רקע המעבדה %1','css','background: linear-gradient(135deg, #eff6ff, #fff7ed);','background: {{BG}};', [['field_dropdown','BG',[['כחול-כתום','linear-gradient(135deg, #eff6ff, #fff7ed)'],['ורוד-תכלת','linear-gradient(135deg, #fdf2f8, #ecfeff)'],['ירוק בהיר','#dcfce7']]]]]
+	      ]};
+	    }
+	    fullBlockRework[13] = { title: titles[13][0], concept: titles[13][1], blocks: [
+	      ['title','מצא/י כותרת HTML %1','html',`<h1>${lessons.find(l=>l.id===13).title}</h1>`,`<h1>{{TEXT}}</h1>`,[['field_input','TEXT','מעבדת הקוד שלי']]],
+	      ['button','מצא/י כפתור HTML %1','html','הריצו בדיקה','{{TEXT}}', [['field_input','TEXT','בדקו שינוי']]],
+	      ['output','מצא/י שורת פלט JS %1','js','מצאתי את השורה שהבלוק יצר ✅','{{TEXT}}', [['field_input','TEXT','מצאתי קוד שנוצר מבלוק ✅']]],
+	      ['radius','מצא/י עיצוב כפתור %1','css','border-radius: 999px;','border-radius: {{R}};', [['field_dropdown','R',[['עגול','999px'],['רך','16px'],['מרובע','4px']]]]],
+	      ['background','מצא/י רקע CSS %1','css','background: linear-gradient(135deg, #eff6ff, #fff7ed);','background: {{BG}};', [['field_dropdown','BG',[['כחול-כתום','linear-gradient(135deg, #eff6ff, #fff7ed)'],['ורוד-תכלת','linear-gradient(135deg, #fdf2f8, #ecfeff)'],['ירוק בהיר','#dcfce7']]]]]
+	    ]};
+	    fullBlockRework[14] = { title: titles[14][0], concept: titles[14][1], blocks: [
+	      ['title','כותרת h1 %1','html',`<h1>${lessons.find(l=>l.id===14).title}</h1>`,`<h1>{{TEXT}}</h1>`,[['field_input','TEXT','עמוד HTML שבניתי']]],
+	      ['intro','פסקת intro %1','html','<p class="intro">','<p class="intro">{{TEXT}} ',[['field_input','TEXT','HTML מסדר את חלקי העמוד:']]],
+	      ['button','כפתור HTML %1','html','הריצו בדיקה','{{TEXT}}', [['field_input','TEXT','בדקו את ה־HTML']]],
+	      ['output','אזור פלט id=output %1','html','<p id="output">כאן תופיע התוצאה...</p>','<p id="output">{{TEXT}}</p>', [['field_input','TEXT','כאן רואים פלט מהעמוד']]],
+	      ['note','תגית מידע חדשה %1','html','<main class="code-lab">','<main class="code-lab">\\n  <p class="html-note">{{TEXT}}</p>', [['field_input','TEXT','HTML הוא שלד העמוד']]]
+	    ]};
+	    fullBlockRework[15] = { title: titles[15][0], concept: titles[15][1], blocks: [
+	      ['background','רקע body %1','css','background: linear-gradient(135deg, #eff6ff, #fff7ed);','background: {{BG}};', [['field_dropdown','BG',[['כחול-כתום','linear-gradient(135deg, #eff6ff, #fff7ed)'],['ורוד-תכלת','linear-gradient(135deg, #fdf2f8, #ecfeff)'],['ירוק בהיר','#dcfce7']]]]],
+	      ['card_radius','עיגול כרטיס %1','css','border-radius: 28px;','border-radius: {{R}};', [['field_dropdown','R',[['עגול','28px'],['רך','16px'],['כמעט מרובע','6px']]]]],
+	      ['card_padding','ריווח כרטיס %1','css','padding: 30px;','padding: {{P}};', [['field_dropdown','P',[['רגיל','30px'],['צפוף','18px'],['מרווח','42px']]]]],
+	      ['button_color','צבע כפתור %1','css','background: #2563eb;','background: {{COLOR}};', [['field_dropdown','COLOR',[['כחול','#2563eb'],['ירוק','#16a34a'],['סגול','#7c3aed']]]]],
+	      ['output_box','רקע תיבת פלט %1','css','background: #f8fafc;','background: {{COLOR}};', [['field_dropdown','COLOR',[['אפור בהיר','#f8fafc'],['צהוב','#fef9c3'],['תכלת','#e0f2fe']]]]]
+	    ]};
+	  }
   addCodeLabReworkSpecs();
 
   function makeArgs(args){

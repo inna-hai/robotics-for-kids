@@ -168,10 +168,29 @@ assert.equal(lesson8TimeBlock.find, 'const startTime = 15;', 'lesson 8 time bloc
 assert.ok(lesson8.starter.js.includes('timeLeft = startTime;'), 'lesson 8 starts each run from the configurable start time');
 assert.ok(lesson8.starter.js.includes(lesson8EndBlock.find), 'lesson 8 end-message block finds the actual starter end text');
 
+for (const lesson of lessons.slice(3, 15)) {
+  for (const block of lesson.blocklyBlocks || []) {
+    const targetSource = block.target === 'css' ? lesson.starter.css : block.target === 'js' ? lesson.starter.js : lesson.starter.html;
+    const finds = Array.isArray(block.find) ? block.find : [block.find];
+    assert.ok(finds.some(find => find && targetSource.includes(find)), `lesson ${lesson.id} block ${block.type} finds real starter ${block.target || 'html'} text`);
+  }
+}
+
 const lesson13 = lessons[12];
 assert.ok(lesson13.title.includes('הקוד שנוצר'), 'lesson 13 starts the generated-code lab phase');
 assert.ok(lesson13.progressionStage.includes('בלוקים אמיתיים'), 'lesson 13 remains block-first under the new progression requirement');
 assert.ok(lesson13.blocklyBlocks.length >= 3, 'lesson 13 has generated-code Blockly cards');
+assert.ok(lesson13.blocklyBlocks.some(block => block.target === 'html'), 'lesson 13 asks learners to identify generated HTML');
+assert.ok(lesson13.blocklyBlocks.some(block => block.target === 'css'), 'lesson 13 asks learners to identify generated CSS');
+assert.ok(lesson13.blocklyBlocks.some(block => block.target === 'js'), 'lesson 13 asks learners to identify generated JavaScript');
+
+const lesson14 = lessons[13];
+assert.ok(lesson14.title.includes('HTML'), 'lesson 14 focuses on HTML');
+assert.ok(lesson14.blocklyBlocks.every(block => block.target === 'html'), 'lesson 14 uses HTML-only Blockly cards');
+
+const lesson15 = lessons[14];
+assert.ok(lesson15.title.includes('CSS'), 'lesson 15 focuses on CSS');
+assert.ok(lesson15.blocklyBlocks.every(block => block.target === 'css'), 'lesson 15 uses CSS-only Blockly cards');
 
 const lesson19 = lessons[18];
 assert.ok(lesson19.title.includes('כרטיסי HTML'), 'lesson 19 keeps the HTML-card focus');
