@@ -1,0 +1,15 @@
+{
+  "name": "robotics-for-kids",
+  "version": "1.0.0",
+  "private": true,
+  "description": "hai.tech robotics learning platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js && node --check js/summer-account.js && node --check js/summer-subscription.js && node --check js/student-progress.js && node --check js/user-badge.js && node --check js/sisi-hub.js && node --check js/space-play.js && node --check js/lumi-play.js",
+    "test": "for f in tests/*.mjs; do node \"$f\"; done"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.10.0"
+  }
+}
