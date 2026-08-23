@@ -38,7 +38,7 @@
       minecraftBuild: 'בחלקת עומר של כל צוות: בניין מיוחד לילדים, חזית בולטת, שלט שם, חדר פנימי אחד ופרט הפתעה שמראה למה המקום חשוב.',
       researchPrompt: 'חקר קצר: איזה מקום חסר לילדים ביישוב, ומה צריך להיות בתוך מבנה כזה כדי שיהיה כיף ושימושי?',
       systemFocus: 'זהות, שימושיות, חזית, חלל פנימי, שילוט וחוויית כניסה',
-      image: 'assets/craftom/challenges/my-smart-city-1-plan.webp',
+      image: 'assets/craftom/omer-future/wonder-building.webp',
       jsonSpec: 'craftom-integration/omer-future-challenge-1.json',
       plotTask: 'כל צוות בונה בחלקה שלו בניין מיוחד שמייצג צורך של ילדים בעומר העתידנית.',
       meetings: [
@@ -64,7 +64,7 @@
       minecraftBuild: 'בחלקת עומר של כל צוות: בתים, חצר משותפת, דרך לבית ספר, מרכז קהילתי/גן משחקים ושלטים.',
       researchPrompt: 'חקר קצר: מה ילדים צריכים קרוב לבית כדי להרגיש שייכים, בטוחים ועצמאיים?',
       systemFocus: 'מגורים, שבילים, קהילה, בטיחות ונוחות לילדים',
-      image: 'assets/craftom/challenges/builder-bridge-4-final.webp',
+      image: 'assets/craftom/omer-future/kids-neighborhood.webp',
       jsonSpec: 'craftom-integration/omer-future-challenge-2.json',
       plotTask: 'כל צוות בונה בחלקה שלו שכונת ילדים עם דרך לבית ספר ומקום קהילתי.',
       meetings: [
@@ -90,7 +90,7 @@
       minecraftBuild: 'בחלקת עומר של כל צוות: פארק מוצל, מים חכמים, אנרגיה סולארית ושביל מואר.',
       researchPrompt: 'חקר קצר: מה קורה ביישוב מדברי אם אין צל, מים זמינים, תאורה או אנרגיה?',
       systemFocus: 'משאבים, קיימות, זרימה, תקלות והשפעה על תושבים',
-      image: 'assets/craftom/challenges/smart-crossing-4-final.webp',
+      image: 'assets/craftom/omer-future/nature-water-energy.webp',
       jsonSpec: 'craftom-integration/omer-future-challenge-3.json',
       plotTask: 'כל צוות בונה בחלקה שלו מערכת צל, מים, אנרגיה ותאורה.',
       meetings: [
@@ -116,7 +116,7 @@
       minecraftBuild: 'בחלקת עומר של כל צוות: מסילת רכבת/קרוניות, תחנת התחלה, תחנות ליד רכיבי היישוב, שלטי הסבר ונסיעת בדיקה.',
       researchPrompt: 'חקר קצר: מה מבקר צריך לראות מהרכבת כדי להבין את הסיפור של החלקה והמושב העתידני?',
       systemFocus: 'חיבור רכיבים, מסלול תנועה, תחנות, בדיקת נסיעה והצגה',
-      image: 'assets/craftom/challenges/my-smart-city-4-final.webp',
+      image: 'assets/craftom/omer-future/tour-train.webp',
       jsonSpec: 'craftom-integration/omer-future-challenge-4.json',
       plotTask: 'כל צוות בונה רכבת סיור בחלקה שלו, שמראה את כל הרכיבים שבנה בשלושת האתגרים הקודמים.',
       meetings: [

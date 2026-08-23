@@ -46,6 +46,7 @@ for (const lesson of program.lessons) {
   assert.ok(lesson.workshopTasks.length === 4, `challenge ${lesson.id} exposes workshop tasks for slides`);
   assert.ok(lesson.exitTicket, `challenge ${lesson.id} has exit ticket`);
   assert.ok(lesson.image && exists(lesson.image), `challenge ${lesson.id} has an existing Minecraft image`);
+  assert.ok(lesson.image.startsWith('assets/craftom/omer-future/'), `challenge ${lesson.id} uses a dedicated Omer image`);
   assert.ok(lesson.jsonSpec && exists(lesson.jsonSpec), `challenge ${lesson.id} has JSON success spec`);
   assert.ok(lesson.successChecks.length >= 4, `challenge ${lesson.id} has success checks`);
   assert.ok(lesson.teacherPrep.length >= 3, `challenge ${lesson.id} has teacher prep`);
@@ -63,6 +64,17 @@ for (const lesson of program.lessons) {
   assert.ok(json.craftomEvidence, `challenge ${lesson.id} JSON has craftom evidence`);
   assert.ok(json.teacherReport?.scoreBands?.length >= 4, `challenge ${lesson.id} JSON has score bands`);
 }
+
+assert.deepEqual(
+  Array.from(program.lessons, lesson => lesson.image),
+  [
+    'assets/craftom/omer-future/wonder-building.webp',
+    'assets/craftom/omer-future/kids-neighborhood.webp',
+    'assets/craftom/omer-future/nature-water-energy.webp',
+    'assets/craftom/omer-future/tour-train.webp'
+  ],
+  'challenge images match the actual Omer challenge topics'
+);
 
 assert.ok(program.lessons[0].title.includes('בניין'), 'challenge 1 opens with a concrete wonder building');
 assert.ok(program.lessons[1].title.includes('שכונה'), 'challenge 2 builds a neighborhood');
