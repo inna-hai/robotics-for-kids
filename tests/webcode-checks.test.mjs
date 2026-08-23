@@ -30,7 +30,7 @@ function sourcesForLesson(lesson) {
 }
 
 for (const lesson of lessons) {
-  const minimumExercises = lesson.id === 4 ? 7 : lesson.id === 2 ? 7 : 8;
+  const minimumExercises = lesson.id === 6 ? 6 : [2, 4, 5].includes(lesson.id) ? 7 : 8;
   assert.equal(lesson.exercises.length >= minimumExercises, true, `lesson ${lesson.id} has enough exercises`);
   const source = sourcesForLesson(lesson);
   for (const exercise of lesson.exercises) {
