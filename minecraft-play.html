@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <style>
 
-    *{box-sizing:border-box} :root{--grass:#55b947;--dirt:#8b5a2b;--stone:#8d99ae;--sky:#83d8ff;--dark:#173018;--green:#2f8f2f;--gold:#ffd166;--blue:#2a85c7} body{margin:0;height:100vh;overflow:hidden;font-family:Rubik,Arial,sans-serif;direction:rtl;background:linear-gradient(135deg,#7ddf64,#5ec1ff 55%,#b58cff);color:var(--dark);display:flex;flex-direction:column}.topbar{background:white;box-shadow:0 4px 20px rgba(0,0,0,.12);padding:.55rem .85rem;display:grid;grid-template-columns:minmax(190px,auto) minmax(0,1fr) auto;gap:.65rem;align-items:center;z-index:5}.brand{display:flex;align-items:center;gap:.45rem;font-weight:900;font-size:1.08rem;white-space:nowrap}.tabs{display:flex;gap:.28rem;overflow-x:auto;justify-content:flex-start;padding:.16rem .1rem;scrollbar-width:thin;scroll-padding-inline:.25rem}.tab{border:2px solid #dbeafe;background:#f8fafc;border-radius:50%;width:42px;min-width:42px;height:42px;padding:0;display:grid;place-items:center;text-decoration:none;font-weight:900;flex:0 0 auto;position:relative;box-shadow:0 4px 10px rgba(15,23,42,.06)}.tab span{font-size:.82rem;line-height:1;transform:translateY(-6px)}.tab small{position:absolute;left:50%;bottom:4px;transform:translateX(-50%);font-size:.9rem;color:#173018;line-height:1;font-weight:900}.tab b{display:none}.tab.active{background:linear-gradient(135deg,#35b24a,#2a85c7);color:white;border-color:#35b24a;box-shadow:0 8px 18px rgba(47,143,47,.28);transform:translateY(-1px)}.tab.active small{color:white}.actions{display:flex;gap:.45rem}.btn{border:0;border-radius:999px;padding:.65rem 1rem;font-family:inherit;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.35rem}.run{background:#00d084;color:#073b1a}.reset{background:#ff6b6b;color:white}.stop{background:#111827;color:white}.link{background:#eef8ec;color:#166534}.main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(360px,44%) minmax(0,1fr);gap:1rem;padding:1rem}.world-panel,.code-panel{background:rgba(255,255,255,.95);border-radius:28px;box-shadow:0 16px 42px rgba(23,48,24,.14);min-height:0;overflow:hidden;display:flex;flex-direction:column}.lesson-info{padding:.7rem 1rem;border-bottom:1px solid #e5e7eb}.lesson-info h1{font-size:1.45rem;margin:.1rem 0 .15rem}.lesson-info p{margin:.18rem 0;line-height:1.32}.chips{display:flex;gap:.45rem;flex-wrap:wrap;margin-top:.55rem}.chip{background:#f0fdf4;color:#166534;border-radius:999px;padding:.32rem .65rem;font-weight:900;font-size:.82rem}.world-wrap{padding:.65rem .8rem .8rem;display:grid;grid-template-columns:1fr;gap:.45rem;min-height:0;flex:1}.status{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem}.status div{background:#f8fafc;border-radius:13px;padding:.38rem .45rem;text-align:center;font-weight:900;font-size:.82rem;line-height:1.1}.status b{display:block;color:var(--green);font-size:1.05rem;line-height:1.05}.world{position:relative;min-height:330px;flex:1;border:8px solid #5c3b20;border-radius:18px;overflow:hidden;background:linear-gradient(#83d8ff 0 58%,#55b947 58% 100%);box-shadow:inset 0 -42px #8b5a2b}.world.night{background:linear-gradient(#172554 0 58%,#31572c 58% 100%)}.world.rain::after,.world.snow::after{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(120deg,rgba(255,255,255,.55) 2px,transparent 3px);background-size:18px 24px;opacity:.7}.world.snow::after{background-image:radial-gradient(circle,white 2px,transparent 3px);background-size:26px 26px}.player{position:absolute;width:54px;height:92px;right:54%;bottom:82px;transition:.45s;z-index:4;image-rendering:pixelated;filter:drop-shadow(0 5px 0 rgba(0,0,0,.18))}.steve-head{position:absolute;top:0;left:9px;width:36px;height:36px;background:#c68642;border:4px solid #3b2416}.steve-hair{position:absolute;top:0;left:0;right:0;height:10px;background:#3b2416}.steve-hair::before{content:'';position:absolute;right:4px;top:8px;width:8px;height:8px;background:#3b2416}.steve-eye{position:absolute;top:17px;width:6px;height:6px;background:#2b5fa8}.steve-eye.left{left:8px}.steve-eye.right{right:8px}.steve-nose{position:absolute;top:22px;left:15px;width:6px;height:5px;background:#a86a37}.steve-shirt{position:absolute;top:36px;left:7px;width:40px;height:30px;background:#00a7a7;border:4px solid #07575b}.steve-arm{position:absolute;top:40px;width:9px;height:32px;background:#c68642;border:3px solid #3b2416}.steve-arm.left{left:0}.steve-arm.right{right:0}.steve-leg{position:absolute;top:66px;width:18px;height:26px;background:#3446a8;border:3px solid #172554}.steve-leg.left{left:9px}.steve-leg.right{right:9px}.bubble{position:absolute;right:calc(54% - 30px);bottom:158px;background:white;border:3px solid #173018;border-radius:18px;padding:.7rem 1rem;font-weight:900;max-width:260px;display:none;z-index:8;box-shadow:0 8px 20px rgba(0,0,0,.15)}.bubble.show{display:block}.block{position:absolute;width:42px;height:42px;border:3px solid rgba(0,0,0,.18);box-shadow:inset 0 5px rgba(255,255,255,.22);z-index:6}.block.path-slab{width:46px;height:14px;border-width:3px;border-radius:6px 6px 4px 4px;box-shadow:inset 0 4px rgba(255,255,255,.24),0 4px 0 rgba(0,0,0,.12);z-index:5}.block.half-slab{width:44px;height:24px;border-width:3px;border-radius:5px 5px 4px 4px;box-shadow:inset 0 5px rgba(255,255,255,.24),0 5px 0 rgba(0,0,0,.12);z-index:5}.grass{background:#55b947}.wood{background:#9b6a3b}.gold{background:#ffd166}.diamond{background:#67e8f9}.red{background:#ef4444}.purple{background:#a855f7}.door{position:absolute;width:52px;height:88px;left:54px;bottom:82px;background:#8b5a2b;border:5px solid #5c3b20;border-radius:8px 8px 0 0;z-index:3}.door.open{transform:rotateY(65deg);background:#c084fc}.pet,.mob,.treasure,.apple,.hint{position:absolute;font-size:2.2rem;z-index:5;text-shadow:0 4px 8px rgba(0,0,0,.16)}.pet{z-index:7}.hint-card{background:#fff7ed;border-right:7px solid #fb923c;border-radius:16px;padding:.8rem 1rem;line-height:1.5;font-weight:800}.exercise-list{background:#f8fafc;border-radius:18px;padding:.55rem .65rem;max-height:118px;overflow:auto;border:1px solid #e5e7eb}.exercise-list h3{margin:0 0 .38rem;font-size:.92rem;color:#166534}.exercise-item{background:white;border-radius:12px;padding:.42rem .55rem;margin-bottom:.35rem;border-right:5px solid #35b24a;line-height:1.28}.exercise-item b{display:block;color:#173018;font-size:.86rem}.exercise-item span{font-size:.84rem}.exercise-item small{color:#64748b;font-weight:800;font-size:.72rem}.code-head{padding:1rem 1.1rem;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;gap:.8rem;align-items:center}.code-head h2{margin:0;font-size:1.25rem}.blockly-area{flex:1;min-height:0}#blocklyDiv{height:100%;width:100%}.toolbox-note{font-size:.9rem;color:#475569}.lesson-one-only,.lesson-model-only,.lesson-three-only,.lesson-five-only,.lesson-seven-only{display:none}.world.lesson-one .lesson-one-only,.world.lesson-two .lesson-model-only,.world.lesson-three .lesson-three-only,.world.lesson-four .lesson-model-only,.world.lesson-five .lesson-five-only,.world.lesson-six .lesson-model-only,.world.lesson-seven .lesson-seven-only,.world.lesson-eight .lesson-model-only,.world.lesson-ten .lesson-model-only{display:block}.build-model{position:absolute;right:16px;top:14px;background:rgba(255,255,255,.94);border:4px solid #7c4a21;border-radius:18px;padding:.5rem .6rem;z-index:3;box-shadow:0 10px 20px rgba(0,0,0,.16);width:156px;text-align:center}.build-model-title{font-weight:900;color:#7c2d12;margin-bottom:.25rem}.model-level{font-size:.72rem;font-weight:900;color:#166534;margin-bottom:.2rem}.model-shape{display:grid;grid-template-columns:repeat(4,24px);grid-template-rows:repeat(3,24px);justify-content:center;gap:0;margin:.18rem auto}.model-cell{width:24px;height:24px;border:3px solid rgba(0,0,0,.24);box-shadow:inset 0 4px rgba(255,255,255,.24);align-self:end}.model-cell.path-slab{height:10px;border-radius:6px 6px 4px 4px}.model-cell.half-slab{height:15px;border-radius:5px 5px 4px 4px}.model-cell.empty{border:0;box-shadow:none;background:transparent}.model-note{margin-top:.28rem;font-size:.68rem;font-weight:900;color:#334155;line-height:1.18}.model-pager{display:flex;align-items:center;justify-content:center;gap:.25rem;margin-top:.35rem}.model-pager button{border:0;border-radius:999px;background:#e0f2fe;color:#075985;font-family:inherit;font-weight:900;cursor:pointer;padding:.24rem .5rem;min-width:28px}.model-pager button.active{background:#35b24a;color:white}.model-counter{font-size:.72rem;font-weight:900;color:#475569}.world.lesson-three .build-model{width:230px}.world.lesson-three .model-shape{grid-template-columns:repeat(7,20px);grid-template-rows:repeat(5,20px)}.world.lesson-three .model-cell{width:20px;height:20px;border-width:2px}.target-sign{position:absolute;left:190px;bottom:182px;background:#fff7ed;border:4px solid #7c4a21;border-radius:16px;padding:.55rem .75rem;font-weight:900;text-align:center;z-index:2;box-shadow:0 10px 18px rgba(0,0,0,.16)}.target-sign::after{content:'';position:absolute;width:10px;height:38px;background:#7c4a21;left:50%;transform:translateX(-50%);bottom:-40px}.gate-scene{position:absolute;left:292px;bottom:82px;width:158px;height:166px;z-index:2;pointer-events:none}.gate-scene::before{content:'';position:absolute;inset:18px 18px 0;border:18px solid #7c4a21;border-bottom:0;border-radius:24px 24px 4px 4px;background:linear-gradient(180deg,rgba(168,85,247,.22),rgba(103,232,249,.18));box-shadow:inset 0 0 0 6px rgba(255,209,102,.32),0 12px 0 rgba(92,59,32,.3)}.gate-scene::after{content:'1 שער';position:absolute;top:-16px;left:50%;transform:translateX(-50%);background:#fff7ed;border:2px solid #7c4a21;border-radius:999px;padding:.08rem .42rem;font-weight:900;font-size:.7rem;color:#7c2d12;white-space:nowrap}.gate-opening{position:absolute;left:55px;right:55px;bottom:0;height:94px;background:linear-gradient(180deg,rgba(255,255,255,.34),rgba(255,255,255,.08));border-radius:20px 20px 0 0}.gate-missions{width:188px;right:16px;top:14px;text-align:right}.gate-missions .build-model-title{text-align:center}.gate-missions .model-pager button{min-width:24px;padding:.2rem .42rem}.lesson-missions{width:218px;right:16px;top:14px;text-align:right}.lesson-missions .build-model-title{text-align:center}.lesson-missions .model-pager{flex-wrap:wrap}.lesson-missions .model-pager button{min-width:24px;padding:.2rem .42rem}.gate-object{position:absolute;z-index:2;text-align:center;filter:drop-shadow(0 5px 8px rgba(0,0,0,.18));pointer-events:none}.gate-object .icon{display:block;font-size:1.45rem;line-height:1}.gate-object .label{display:none}.gate-magic{left:475px;bottom:70px}.player-name{display:none;position:absolute;left:50%;transform:translateX(-50%);top:45px;color:white;font-weight:900;font-size:.62rem;line-height:1;text-shadow:0 1px 0 #07575b,0 -1px 0 #07575b,1px 0 0 #07575b,-1px 0 0 #07575b;z-index:6;pointer-events:none}.player-name{display:block}.player{width:62px;height:100px;filter:drop-shadow(0 7px 4px rgba(0,0,0,.2))}.steve-head{left:8px;width:46px;height:44px;border-radius:4px;background:#f4b17c;border:4px solid #5b321c;box-shadow:inset 0 4px rgba(255,255,255,.18)}.steve-hair{height:14px;background:#4a2a18;border-radius:0}.steve-hair::before{right:4px;top:10px;width:11px;height:8px;border-radius:0;background:#4a2a18;box-shadow:-18px 0 0 #4a2a18}.steve-head::after{content:'';position:absolute;left:15px;top:29px;width:14px;height:7px;border-bottom:3px solid #7a3f2a;border-radius:0 0 10px 10px}.steve-eye{top:19px;width:7px;height:7px;border-radius:2px;background:#1f4f8f;box-shadow:inset 2px 1px 0 rgba(255,255,255,.65)}.steve-eye.left{left:10px}.steve-eye.right{right:10px}.steve-nose{top:24px;left:19px;width:6px;height:5px;border-radius:1px;background:#d18b5a}.steve-shirt{top:44px;left:8px;width:46px;height:33px;border-radius:3px;background:linear-gradient(180deg,#35d0a0,#0891b2);border:4px solid #07575b;box-shadow:inset 0 5px rgba(255,255,255,.16)}.steve-arm{top:47px;width:12px;height:32px;border-radius:2px;background:#f4b17c;border:3px solid #5b321c;z-index:1}.steve-arm.left{left:0}.steve-arm.right{right:0}.steve-leg{top:75px;width:20px;height:25px;border-radius:0 0 3px 3px;background:#2563eb;border:3px solid #172554}.steve-leg.left{left:10px}.steve-leg.right{right:10px}.player-name{top:56px;font-size:.58rem;text-shadow:0 1px 0 #04706f,0 -1px 0 #04706f,1px 0 0 #04706f,-1px 0 0 #04706f}.world.lesson-one .target-sign{position:absolute;left:190px;bottom:182px;background:#fff7ed;border:4px solid #7c4a21;border-radius:16px;padding:.55rem .75rem;font-weight:900;text-align:center;z-index:2;box-shadow:0 10px 18px rgba(0,0,0,.16)}.world.lesson-two .door,.world.lesson-three .door,.world.lesson-four .door,.world.lesson-five .door,.world.lesson-six .door,.world.lesson-eight .door{display:none}.target-sign::after{content:'';position:absolute;width:10px;height:38px;background:#7c4a21;left:50%;transform:translateX(-50%);bottom:-40px}.player-name{display:block}.world.lesson-one .player{width:62px;height:100px;filter:drop-shadow(0 7px 4px rgba(0,0,0,.2))}.world.lesson-one .steve-head{left:8px;width:46px;height:44px;border-radius:4px;background:#f4b17c;border:4px solid #5b321c;box-shadow:inset 0 4px rgba(255,255,255,.18)}.world.lesson-one .steve-hair{height:14px;background:#4a2a18;border-radius:0}.world.lesson-one .steve-hair::before{right:4px;top:10px;width:11px;height:8px;border-radius:0;background:#4a2a18;box-shadow:-18px 0 0 #4a2a18}.world.lesson-one .steve-head::after{content:'';position:absolute;left:15px;top:29px;width:14px;height:7px;border-bottom:3px solid #7a3f2a;border-radius:0 0 10px 10px}.world.lesson-one .steve-eye{top:19px;width:7px;height:7px;border-radius:2px;background:#1f4f8f;box-shadow:inset 2px 1px 0 rgba(255,255,255,.65)}.world.lesson-one .steve-nose{top:24px;left:19px;width:6px;height:5px;border-radius:1px;background:#d18b5a}.world.lesson-one .steve-shirt{top:44px;left:8px;width:46px;height:33px;border-radius:3px;background:linear-gradient(180deg,#35d0a0,#0891b2);border:4px solid #07575b;box-shadow:inset 0 5px rgba(255,255,255,.16)}.world.lesson-one .steve-arm{top:47px;width:12px;height:32px;border-radius:2px;background:#f4b17c;border:3px solid #5b321c;z-index:1}.world.lesson-one .steve-arm.left{left:0}.world.lesson-one .steve-arm.right{right:0}.world.lesson-one .steve-leg{top:75px;width:20px;height:25px;border-radius:0 0 3px 3px;background:#2563eb;border:3px solid #172554}.world.lesson-one .steve-leg.left{left:10px}.world.lesson-one .steve-leg.right{right:10px}.world.lesson-one .player-name{top:56px;font-size:.58rem;text-shadow:0 1px 0 #04706f,0 -1px 0 #04706f,1px 0 0 #04706f,-1px 0 0 #04706f}.mobile-warning{display:none;background:#fff7ed;padding:.8rem 1rem;border-bottom:1px solid #fed7aa;font-weight:800}@media(max-width:900px){body{height:auto;min-height:100vh;overflow:auto;overflow-x:hidden}.topbar{grid-template-columns:1fr}.tabs{justify-content:flex-start;padding-bottom:.25rem}.tab{min-width:44px}.actions{justify-content:stretch}.actions .btn,.actions a{flex:1}.main{display:flex;flex-direction:column;padding:.75rem}.code-panel{order:1;min-height:560px}.world-panel{order:2}.world{min-height:300px}.world-panel,.code-panel{border-radius:20px}.mobile-warning{display:block}.brand{white-space:normal}.status{grid-template-columns:1fr 1fr 1fr}}.instructions-toggle{background:#fff7ed;color:#9a3412}.drawer-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.38);z-index:30;display:none}.drawer-backdrop.open{display:block}.instructions-drawer{position:absolute;top:0;right:0;bottom:0;width:min(430px,92vw);background:#fff;box-shadow:-18px 0 45px rgba(15,23,42,.24);padding:1rem;overflow:auto}.drawer-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;border-bottom:1px solid #e5e7eb;padding-bottom:.75rem;margin-bottom:.85rem}.drawer-head h2{margin:0;font-size:1.25rem}.drawer-close{border:0;background:#fee2e2;color:#991b1b;border-radius:999px;width:38px;height:38px;font-weight:900;font-size:1.15rem;cursor:pointer}.drawer-intro{background:#f0fdf4;border-right:6px solid #35b24a;border-radius:16px;padding:.75rem .85rem;line-height:1.45;font-weight:800;margin-bottom:.85rem}.drawer-exercises{display:grid;gap:.65rem}.drawer-exercises .exercise-item{border-right-color:#fb923c;box-shadow:0 6px 16px rgba(15,23,42,.08)}@media(max-width:520px){.main{padding:.55rem}.status{grid-template-columns:repeat(3,1fr);gap:.35rem}.status div{padding:.5rem .25rem;font-size:.78rem}.status b{font-size:1rem}.lesson-info{padding:.85rem}.lesson-info h1{font-size:1.22rem}.lesson-info p{font-size:.95rem}.chips{gap:.32rem}.chip{font-size:.72rem;padding:.28rem .5rem}.btn{padding:.55rem .75rem;font-size:.9rem}.world{min-height:235px;border-width:6px}.code-panel{min-height:520px}.world-wrap{padding:.75rem;gap:.55rem}.player{transform:scale(.85);transform-origin:bottom center}.door{transform:scale(.86);transform-origin:bottom left}.door.open{transform:scale(.86) rotateY(65deg)}}
+    *{box-sizing:border-box} :root{--grass:#55b947;--dirt:#8b5a2b;--stone:#8d99ae;--sky:#83d8ff;--dark:#173018;--green:#2f8f2f;--gold:#ffd166;--blue:#2a85c7} body{margin:0;height:100vh;overflow:hidden;font-family:Rubik,Arial,sans-serif;direction:rtl;background:linear-gradient(135deg,#7ddf64,#5ec1ff 55%,#b58cff);color:var(--dark);display:flex;flex-direction:column}.topbar{background:white;box-shadow:0 4px 20px rgba(0,0,0,.12);padding:.55rem .85rem;display:grid;grid-template-columns:minmax(190px,auto) minmax(0,1fr) auto;gap:.65rem;align-items:center;z-index:5}.brand{display:flex;align-items:center;gap:.45rem;font-weight:900;font-size:1.08rem;white-space:nowrap}.tabs{display:flex;gap:.28rem;overflow-x:auto;justify-content:flex-start;padding:.16rem .1rem;scrollbar-width:thin;scroll-padding-inline:.25rem}.tab{border:2px solid #dbeafe;background:#f8fafc;border-radius:50%;width:42px;min-width:42px;height:42px;padding:0;display:grid;place-items:center;text-decoration:none;font-weight:900;flex:0 0 auto;position:relative;box-shadow:0 4px 10px rgba(15,23,42,.06)}.tab span{font-size:.82rem;line-height:1;transform:translateY(-6px)}.tab small{position:absolute;left:50%;bottom:4px;transform:translateX(-50%);font-size:.9rem;color:#173018;line-height:1;font-weight:900}.tab b{display:none}.tab.active{background:linear-gradient(135deg,#35b24a,#2a85c7);color:white;border-color:#35b24a;box-shadow:0 8px 18px rgba(47,143,47,.28);transform:translateY(-1px)}.tab.active small{color:white}.actions{display:flex;gap:.45rem}.btn{border:0;border-radius:999px;padding:.65rem 1rem;font-family:inherit;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.35rem}.run{background:#00d084;color:#073b1a}.reset{background:#ff6b6b;color:white}.stop{background:#111827;color:white}.link{background:#eef8ec;color:#166534}.main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(360px,44%) minmax(0,1fr);gap:1rem;padding:1rem}.world-panel,.code-panel{background:rgba(255,255,255,.95);border-radius:28px;box-shadow:0 16px 42px rgba(23,48,24,.14);min-height:0;overflow:hidden;display:flex;flex-direction:column}.lesson-info{padding:.7rem 1rem;border-bottom:1px solid #e5e7eb}.lesson-info h1{font-size:1.45rem;margin:.1rem 0 .15rem}.lesson-info p{margin:.18rem 0;line-height:1.32}.chips{display:flex;gap:.45rem;flex-wrap:wrap;margin-top:.55rem}.chip{background:#f0fdf4;color:#166534;border-radius:999px;padding:.32rem .65rem;font-weight:900;font-size:.82rem}.world-wrap{padding:.65rem .8rem .8rem;display:grid;grid-template-columns:1fr;gap:.45rem;min-height:0;flex:1}.status{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem}.status div{background:#f8fafc;border-radius:13px;padding:.38rem .45rem;text-align:center;font-weight:900;font-size:.82rem;line-height:1.1}.status b{display:block;color:var(--green);font-size:1.05rem;line-height:1.05}.world{position:relative;min-height:330px;flex:1;border:8px solid #5c3b20;border-radius:18px;overflow:hidden;background:linear-gradient(#83d8ff 0 58%,#55b947 58% 100%);box-shadow:inset 0 -42px #8b5a2b}.world.night{background:linear-gradient(#172554 0 58%,#31572c 58% 100%)}.world.rain::after,.world.snow::after{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(120deg,rgba(255,255,255,.55) 2px,transparent 3px);background-size:18px 24px;opacity:.7}.world.snow::after{background-image:radial-gradient(circle,white 2px,transparent 3px);background-size:26px 26px}.player{position:absolute;width:54px;height:92px;right:54%;bottom:82px;transition:.45s;z-index:4;image-rendering:pixelated;filter:drop-shadow(0 5px 0 rgba(0,0,0,.18))}.steve-head{position:absolute;top:0;left:9px;width:36px;height:36px;background:#c68642;border:4px solid #3b2416}.steve-hair{position:absolute;top:0;left:0;right:0;height:10px;background:#3b2416}.steve-hair::before{content:'';position:absolute;right:4px;top:8px;width:8px;height:8px;background:#3b2416}.steve-eye{position:absolute;top:17px;width:6px;height:6px;background:#2b5fa8}.steve-eye.left{left:8px}.steve-eye.right{right:8px}.steve-nose{position:absolute;top:22px;left:15px;width:6px;height:5px;background:#a86a37}.steve-shirt{position:absolute;top:36px;left:7px;width:40px;height:30px;background:#00a7a7;border:4px solid #07575b}.steve-arm{position:absolute;top:40px;width:9px;height:32px;background:#c68642;border:3px solid #3b2416}.steve-arm.left{left:0}.steve-arm.right{right:0}.steve-leg{position:absolute;top:66px;width:18px;height:26px;background:#3446a8;border:3px solid #172554}.steve-leg.left{left:9px}.steve-leg.right{right:9px}.bubble{position:absolute;right:calc(54% - 30px);bottom:158px;background:white;border:3px solid #173018;border-radius:18px;padding:.7rem 1rem;font-weight:900;max-width:260px;display:none;z-index:8;box-shadow:0 8px 20px rgba(0,0,0,.15)}.bubble.show{display:block}.block{position:absolute;width:42px;height:42px;border:3px solid rgba(0,0,0,.18);box-shadow:inset 0 5px rgba(255,255,255,.22);z-index:6}.block.path-slab{width:46px;height:14px;border-width:3px;border-radius:6px 6px 4px 4px;box-shadow:inset 0 4px rgba(255,255,255,.24),0 4px 0 rgba(0,0,0,.12);z-index:5}.block.half-slab{width:44px;height:24px;border-width:3px;border-radius:5px 5px 4px 4px;box-shadow:inset 0 5px rgba(255,255,255,.24),0 5px 0 rgba(0,0,0,.12);z-index:5}.grass{background:#55b947}.wood{background:#9b6a3b}.gold{background:#ffd166}.diamond{background:#67e8f9}.red{background:#ef4444}.purple{background:#a855f7}.door{position:absolute;width:52px;height:88px;left:54px;bottom:82px;background:#8b5a2b;border:5px solid #5c3b20;border-radius:8px 8px 0 0;z-index:3}.door.open{transform:rotateY(65deg);background:#c084fc}.pet,.mob,.treasure,.apple,.hint{position:absolute;font-size:2.2rem;z-index:5;text-shadow:0 4px 8px rgba(0,0,0,.16)}.pet{z-index:7}.hint-card{background:#fff7ed;border-right:7px solid #fb923c;border-radius:16px;padding:.8rem 1rem;line-height:1.5;font-weight:800}.exercise-list{background:#f8fafc;border-radius:18px;padding:.55rem .65rem;max-height:118px;overflow:auto;border:1px solid #e5e7eb}.exercise-list h3{margin:0 0 .38rem;font-size:.92rem;color:#166534}.exercise-item{background:white;border-radius:12px;padding:.42rem .55rem;margin-bottom:.35rem;border-right:5px solid #35b24a;line-height:1.28}.exercise-item b{display:block;color:#173018;font-size:.86rem}.exercise-item span{font-size:.84rem}.exercise-item small{color:#64748b;font-weight:800;font-size:.72rem}.code-head{padding:1rem 1.1rem;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;gap:.8rem;align-items:center}.code-head h2{margin:0;font-size:1.25rem}.blockly-area{flex:1;min-height:0}#blocklyDiv{height:100%;width:100%}.toolbox-note{font-size:.9rem;color:#475569}.lesson-one-only,.lesson-model-only,.lesson-three-only,.lesson-five-only,.lesson-seven-only{display:none}.world.lesson-one .lesson-one-only,.world.lesson-two .lesson-model-only,.world.lesson-three .lesson-three-only,.world.lesson-four .lesson-model-only,.world.lesson-five .lesson-five-only,.world.lesson-six .lesson-model-only,.world.lesson-seven .lesson-seven-only,.world.lesson-eight .lesson-model-only,.world.lesson-nine .lesson-model-only,.world.lesson-ten .lesson-model-only{display:block}.build-model{position:absolute;right:16px;top:14px;background:rgba(255,255,255,.94);border:4px solid #7c4a21;border-radius:18px;padding:.5rem .6rem;z-index:3;box-shadow:0 10px 20px rgba(0,0,0,.16);width:156px;text-align:center}.build-model-title{font-weight:900;color:#7c2d12;margin-bottom:.25rem}.model-level{font-size:.72rem;font-weight:900;color:#166534;margin-bottom:.2rem}.model-shape{display:grid;grid-template-columns:repeat(4,24px);grid-template-rows:repeat(3,24px);justify-content:center;gap:0;margin:.18rem auto}.model-cell{width:24px;height:24px;border:3px solid rgba(0,0,0,.24);box-shadow:inset 0 4px rgba(255,255,255,.24);align-self:end}.model-cell.path-slab{height:10px;border-radius:6px 6px 4px 4px}.model-cell.half-slab{height:15px;border-radius:5px 5px 4px 4px}.model-cell.empty{border:0;box-shadow:none;background:transparent}.model-note{margin-top:.28rem;font-size:.68rem;font-weight:900;color:#334155;line-height:1.18}.model-pager{display:flex;align-items:center;justify-content:center;gap:.25rem;margin-top:.35rem}.model-pager button{border:0;border-radius:999px;background:#e0f2fe;color:#075985;font-family:inherit;font-weight:900;cursor:pointer;padding:.24rem .5rem;min-width:28px}.model-pager button.active{background:#35b24a;color:white}.model-counter{font-size:.72rem;font-weight:900;color:#475569}.world.lesson-nine .lesson-missions{width:285px;max-width:calc(100% - 32px);border-color:#2563eb}.world.lesson-nine .lesson-missions .model-note{font-size:.76rem;line-height:1.28;text-align:right}.world.lesson-nine .lesson-missions .mission-steps{margin:.35rem 0 0;padding:0 1.05rem 0 0;text-align:right}.world.lesson-nine .lesson-missions .mission-steps li{margin:.16rem 0}.world.lesson-nine .build-model.lesson-model-only{width:200px;padding:.38rem .45rem;border-width:3px;border-radius:15px}.world.lesson-nine .build-model-title{font-size:.88rem;margin-bottom:.15rem}.world.lesson-nine .model-level{font-size:.68rem;margin-bottom:.12rem}.world.lesson-nine .build-model.lesson-model-only .model-note{font-size:.63rem;line-height:1.1;margin-top:.18rem}.world.lesson-nine .build-model.lesson-model-only .model-pager{margin-top:.22rem}.world.lesson-nine #lessonMissionBoard{display:none}.world.lesson-eleven .lesson-missions{width:210px;padding:.36rem .42rem;border-width:3px;border-radius:14px}.world.lesson-eleven .lesson-missions .build-model-title{font-size:.82rem;margin-bottom:.1rem}.world.lesson-eleven .lesson-missions .model-level{font-size:.66rem;margin-bottom:.08rem}.world.lesson-eleven .lesson-missions .model-note{font-size:.66rem;line-height:1.12}.world.lesson-eleven .lesson-missions .mission-steps{margin:.2rem 0 0;padding:0 .95rem 0 0}.world.lesson-eleven .lesson-missions .mission-steps li{margin:.08rem 0}.world.lesson-eleven .lesson-missions small{font-size:.62rem;line-height:1.08}.mission-source-drawing{display:flex;justify-content:center;align-items:center;margin:.14rem auto .2rem;padding:.12rem;background:#f8fafc;border:1px solid #dbeafe;border-radius:10px}.mission-source-drawing .pixel-art-svg{width:68px;max-height:46px}.drawing-card{height:104px;display:flex;align-items:center;justify-content:center;margin:.15rem auto;border-radius:14px;background:transparent;border:0;box-shadow:none;overflow:visible}.drawing-card svg{width:150px;height:104px;overflow:visible}.drawing-card .soft-line{stroke:#334155;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;fill:none}.drawing-card .fill-red{fill:#ef4444}.drawing-card .fill-gold{fill:#ffd166}.drawing-card .fill-wood{fill:#9b6a3b}.drawing-card .fill-green{fill:#55b947}.drawing-card .fill-blue{fill:#67e8f9}.drawing-card .fill-purple{fill:#a855f7}.drawing-card .fill-white{fill:#f8fafc}.drawing-card.pixel-art{display:flex;align-items:center;justify-content:center;padding:.1rem;background:transparent}.pixel-art-svg{width:112px;height:auto;display:block;shape-rendering:crispEdges}.pixel-art-svg rect{stroke:none}.pixel-cell{display:none}.world.lesson-three .build-model{width:230px}.world.lesson-three .model-shape{grid-template-columns:repeat(7,20px);grid-template-rows:repeat(5,20px)}.world.lesson-three .model-cell{width:20px;height:20px;border-width:2px}.target-sign{position:absolute;left:190px;bottom:182px;background:#fff7ed;border:4px solid #7c4a21;border-radius:16px;padding:.55rem .75rem;font-weight:900;text-align:center;z-index:2;box-shadow:0 10px 18px rgba(0,0,0,.16)}.target-sign::after{content:'';position:absolute;width:10px;height:38px;background:#7c4a21;left:50%;transform:translateX(-50%);bottom:-40px}.gate-scene{position:absolute;left:292px;bottom:82px;width:158px;height:166px;z-index:2;pointer-events:none}.gate-scene::before{content:'';position:absolute;inset:18px 18px 0;border:18px solid #7c4a21;border-bottom:0;border-radius:24px 24px 4px 4px;background:linear-gradient(180deg,rgba(168,85,247,.22),rgba(103,232,249,.18));box-shadow:inset 0 0 0 6px rgba(255,209,102,.32),0 12px 0 rgba(92,59,32,.3)}.gate-scene::after{content:'1 שער';position:absolute;top:-16px;left:50%;transform:translateX(-50%);background:#fff7ed;border:2px solid #7c4a21;border-radius:999px;padding:.08rem .42rem;font-weight:900;font-size:.7rem;color:#7c2d12;white-space:nowrap}.gate-opening{position:absolute;left:55px;right:55px;bottom:0;height:94px;background:linear-gradient(180deg,rgba(255,255,255,.34),rgba(255,255,255,.08));border-radius:20px 20px 0 0}.gate-missions{width:188px;right:16px;top:14px;text-align:right}.gate-missions .build-model-title{text-align:center}.gate-missions .model-pager button{min-width:24px;padding:.2rem .42rem}.lesson-missions{width:238px;left:16px;right:auto;top:14px;text-align:right}.lesson-missions .build-model-title{text-align:center}.lesson-missions .model-pager{flex-wrap:wrap}.lesson-missions .model-pager button{min-width:24px;padding:.2rem .42rem}.gate-object{position:absolute;z-index:2;text-align:center;filter:drop-shadow(0 5px 8px rgba(0,0,0,.18));pointer-events:none}.gate-object .icon{display:block;font-size:1.45rem;line-height:1}.gate-object .label{display:none}.gate-magic{left:475px;bottom:70px}.player-name{display:none;position:absolute;left:50%;transform:translateX(-50%);top:45px;color:white;font-weight:900;font-size:.62rem;line-height:1;text-shadow:0 1px 0 #07575b,0 -1px 0 #07575b,1px 0 0 #07575b,-1px 0 0 #07575b;z-index:6;pointer-events:none}.player-name{display:block}.player{width:62px;height:100px;filter:drop-shadow(0 7px 4px rgba(0,0,0,.2))}.steve-head{left:8px;width:46px;height:44px;border-radius:4px;background:#f4b17c;border:4px solid #5b321c;box-shadow:inset 0 4px rgba(255,255,255,.18)}.steve-hair{height:14px;background:#4a2a18;border-radius:0}.steve-hair::before{right:4px;top:10px;width:11px;height:8px;border-radius:0;background:#4a2a18;box-shadow:-18px 0 0 #4a2a18}.steve-head::after{content:'';position:absolute;left:15px;top:29px;width:14px;height:7px;border-bottom:3px solid #7a3f2a;border-radius:0 0 10px 10px}.steve-eye{top:19px;width:7px;height:7px;border-radius:2px;background:#1f4f8f;box-shadow:inset 2px 1px 0 rgba(255,255,255,.65)}.steve-eye.left{left:10px}.steve-eye.right{right:10px}.steve-nose{top:24px;left:19px;width:6px;height:5px;border-radius:1px;background:#d18b5a}.steve-shirt{top:44px;left:8px;width:46px;height:33px;border-radius:3px;background:linear-gradient(180deg,#35d0a0,#0891b2);border:4px solid #07575b;box-shadow:inset 0 5px rgba(255,255,255,.16)}.steve-arm{top:47px;width:12px;height:32px;border-radius:2px;background:#f4b17c;border:3px solid #5b321c;z-index:1}.steve-arm.left{left:0}.steve-arm.right{right:0}.steve-leg{top:75px;width:20px;height:25px;border-radius:0 0 3px 3px;background:#2563eb;border:3px solid #172554}.steve-leg.left{left:10px}.steve-leg.right{right:10px}.player-name{top:56px;font-size:.58rem;text-shadow:0 1px 0 #04706f,0 -1px 0 #04706f,1px 0 0 #04706f,-1px 0 0 #04706f}.world.lesson-one .target-sign{position:absolute;left:190px;bottom:182px;background:#fff7ed;border:4px solid #7c4a21;border-radius:16px;padding:.55rem .75rem;font-weight:900;text-align:center;z-index:2;box-shadow:0 10px 18px rgba(0,0,0,.16)}.world.lesson-two .door,.world.lesson-three .door,.world.lesson-four .door,.world.lesson-five .door,.world.lesson-six .door,.world.lesson-eight .door{display:none}.target-sign::after{content:'';position:absolute;width:10px;height:38px;background:#7c4a21;left:50%;transform:translateX(-50%);bottom:-40px}.player-name{display:block}.world.lesson-one .player{width:62px;height:100px;filter:drop-shadow(0 7px 4px rgba(0,0,0,.2))}.world.lesson-one .steve-head{left:8px;width:46px;height:44px;border-radius:4px;background:#f4b17c;border:4px solid #5b321c;box-shadow:inset 0 4px rgba(255,255,255,.18)}.world.lesson-one .steve-hair{height:14px;background:#4a2a18;border-radius:0}.world.lesson-one .steve-hair::before{right:4px;top:10px;width:11px;height:8px;border-radius:0;background:#4a2a18;box-shadow:-18px 0 0 #4a2a18}.world.lesson-one .steve-head::after{content:'';position:absolute;left:15px;top:29px;width:14px;height:7px;border-bottom:3px solid #7a3f2a;border-radius:0 0 10px 10px}.world.lesson-one .steve-eye{top:19px;width:7px;height:7px;border-radius:2px;background:#1f4f8f;box-shadow:inset 2px 1px 0 rgba(255,255,255,.65)}.world.lesson-one .steve-nose{top:24px;left:19px;width:6px;height:5px;border-radius:1px;background:#d18b5a}.world.lesson-one .steve-shirt{top:44px;left:8px;width:46px;height:33px;border-radius:3px;background:linear-gradient(180deg,#35d0a0,#0891b2);border:4px solid #07575b;box-shadow:inset 0 5px rgba(255,255,255,.16)}.world.lesson-one .steve-arm{top:47px;width:12px;height:32px;border-radius:2px;background:#f4b17c;border:3px solid #5b321c;z-index:1}.world.lesson-one .steve-arm.left{left:0}.world.lesson-one .steve-arm.right{right:0}.world.lesson-one .steve-leg{top:75px;width:20px;height:25px;border-radius:0 0 3px 3px;background:#2563eb;border:3px solid #172554}.world.lesson-one .steve-leg.left{left:10px}.world.lesson-one .steve-leg.right{right:10px}.world.lesson-one .player-name{top:56px;font-size:.58rem;text-shadow:0 1px 0 #04706f,0 -1px 0 #04706f,1px 0 0 #04706f,-1px 0 0 #04706f}.mobile-warning{display:none;background:#fff7ed;padding:.8rem 1rem;border-bottom:1px solid #fed7aa;font-weight:800}@media(max-width:900px){body{height:auto;min-height:100vh;overflow:auto;overflow-x:hidden}.topbar{grid-template-columns:1fr}.tabs{justify-content:flex-start;padding-bottom:.25rem}.tab{min-width:44px}.actions{justify-content:stretch}.actions .btn,.actions a{flex:1}.main{display:flex;flex-direction:column;padding:.75rem}.code-panel{order:1;min-height:560px}.world-panel{order:2}.world{min-height:300px}.world-panel,.code-panel{border-radius:20px}.mobile-warning{display:block}.brand{white-space:normal}.status{grid-template-columns:1fr 1fr 1fr}}.instructions-toggle{background:#fff7ed;color:#9a3412}.drawer-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.38);z-index:30;display:none}.drawer-backdrop.open{display:block}.instructions-drawer{position:absolute;top:0;right:0;bottom:0;width:min(430px,92vw);background:#fff;box-shadow:-18px 0 45px rgba(15,23,42,.24);padding:1rem;overflow:auto}.drawer-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;border-bottom:1px solid #e5e7eb;padding-bottom:.75rem;margin-bottom:.85rem}.drawer-head h2{margin:0;font-size:1.25rem}.drawer-close{border:0;background:#fee2e2;color:#991b1b;border-radius:999px;width:38px;height:38px;font-weight:900;font-size:1.15rem;cursor:pointer}.drawer-intro{background:#f0fdf4;border-right:6px solid #35b24a;border-radius:16px;padding:.75rem .85rem;line-height:1.45;font-weight:800;margin-bottom:.85rem}.drawer-exercises{display:grid;gap:.65rem}.drawer-exercises .exercise-item{border-right-color:#fb923c;box-shadow:0 6px 16px rgba(15,23,42,.08)}@media(max-width:520px){.main{padding:.55rem}.status{grid-template-columns:repeat(3,1fr);gap:.35rem}.status div{padding:.5rem .25rem;font-size:.78rem}.status b{font-size:1rem}.lesson-info{padding:.85rem}.lesson-info h1{font-size:1.22rem}.lesson-info p{font-size:.95rem}.chips{gap:.32rem}.chip{font-size:.72rem;padding:.28rem .5rem}.btn{padding:.55rem .75rem;font-size:.9rem}.world{min-height:235px;border-width:6px}.code-panel{min-height:520px}.world-wrap{padding:.75rem;gap:.55rem}.player{transform:scale(.85);transform-origin:bottom center}.door{transform:scale(.86);transform-origin:bottom left}.door.open{transform:scale(.86) rotateY(65deg)}}
     .mission-feedback{display:none;border-radius:16px;padding:.58rem .72rem;border:2px solid #bbf7d0;background:#f0fdf4;color:#14532d;font-weight:900;line-height:1.32;box-shadow:0 8px 18px rgba(15,23,42,.08)}.mission-feedback.show{display:block}.mission-feedback.fail{border-color:#fed7aa;background:#fff7ed;color:#9a3412}.mission-feedback small{display:block;margin-top:.18rem;color:#475569;font-weight:800}
     .river-scene{position:absolute;left:270px;bottom:42px;width:128px;height:calc(42% - 42px);border-radius:0 0 24px 24px;background:linear-gradient(110deg,#075985 0%,#0ea5e9 34%,#67e8f9 58%,#0284c7 100%);clip-path:polygon(10% 0,100% 0,84% 100%,0 100%);box-shadow:inset 0 0 0 4px rgba(255,255,255,.2),inset -10px 0 18px rgba(3,105,161,.35),0 9px 14px rgba(14,165,233,.23);transform:skewX(-8deg);z-index:1;pointer-events:none}.river-scene::before{content:'נהר';position:absolute;top:42%;left:50%;transform:translateX(-50%) skewX(8deg);background:rgba(255,255,255,.88);color:#075985;border-radius:999px;padding:.1rem .48rem;font-weight:900;font-size:.72rem}.river-scene::after{content:'';position:absolute;inset:14px 14px 14px;background:repeating-linear-gradient(178deg,rgba(255,255,255,.52) 0 11px,transparent 11px 30px);clip-path:polygon(10% 0,100% 0,84% 100%,0 100%);border-radius:0 0 18px 18px;opacity:.86}.bridge-label{position:absolute;left:228px;bottom:calc(42% + 10px);background:#fff7ed;border:3px solid #7c4a21;border-radius:999px;padding:.2rem .68rem;font-weight:900;color:#7c2d12;z-index:2;pointer-events:none}
   
@@ -103,7 +103,7 @@
       .toolbox-note{font-size:.74rem;}
       .mission-feedback{padding:.36rem .52rem;font-size:.8rem;line-height:1.16;}
       .mission-feedback small{font-size:.7rem;}
-      .lesson-missions{transform:scale(.86);transform-origin:top right;}
+      .lesson-missions{transform:scale(.86);transform-origin:top left;}
       .build-model{right:10px;top:10px;}
     }
 
@@ -208,7 +208,15 @@
     }
 
   </style>
-</head>
+<meta property="og:title" content="haitech Technology Learning Platform" />
+<meta property="og:description" content="A comprehensive educational platform for children featuring interactive courses in robotics, coding, game development, AI, and financial literacy." />
+<meta property="og:url" content="https://lilac-crest-kppb.here.now/minecraft-play.html" />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="https://here.now/og/lilac-crest-kppb.jpg" />
+<meta property="og:image:width" content="1280" />
+<meta property="og:image:height" content="720" />
+<meta name="twitter:image" content="https://here.now/og/lilac-crest-kppb.jpg" />
+<meta name="twitter:card" content="summary_large_image" /></head>
 <body>
   <header class="topbar">
     <div class="brand">⛏️ מיינקראפט קידס</div>
@@ -272,7 +280,7 @@
               <button type="button" class="gate-choice" data-gate="4" aria-label="משימה 5">5</button>
             </div>
           </div>
-          <div class="build-model lesson-missions lesson-seven-only" aria-label="משימות שיעור 7">
+          <div class="build-model lesson-missions" id="lessonMissionBoard" aria-label="משימות השיעור">
             <div class="build-model-title">משימות השיעור</div>
             <div class="model-level" id="lessonMissionTitle">משימה 1</div>
             <div class="model-note" id="lessonMissionNote">בחרו משימה והפכו אותה לבלוקים.</div>
@@ -294,6 +302,7 @@
               <button type="button" class="model-choice active" data-model="0" aria-label="דגם 1">1</button>
               <button type="button" class="model-choice" data-model="1" aria-label="דגם 2">2</button>
               <button type="button" class="model-choice" data-model="2" aria-label="דגם 3">3</button>
+              <button type="button" class="model-choice" data-model="3" aria-label="דגם 4" hidden>4</button>
             </div>
           </div>
           <div class="build-model lesson-three-only" aria-label="ציור לבנייה">
@@ -321,7 +330,7 @@
   </main>
 
 
-  <script src="js/minecraft-lessons-20260820-stairs.js?v=1"></script>
+  <script src="js/minecraft-lessons-20260820-stairs.js?v=20260823-lesson11-no-path-in-task2"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const lesson = window.getMinecraftLesson(params.get('lesson'));
@@ -363,10 +372,22 @@
         { level:'מטריית גשם רחבה', note:'דגם רחב: שכבת אריחים עדינה מעל מקל עץ ארוך', cols:7, rows:6, cells:['empty','diamond path-slab','diamond path-slab','diamond','diamond path-slab','diamond path-slab','empty','diamond half-slab','diamond','purple','purple','purple','diamond','diamond half-slab','empty','empty','empty','wood','empty','empty','empty','empty','empty','empty','wood','empty','empty','empty','empty','empty','empty','wood','empty','empty','empty','empty','empty','wood','empty','empty','empty','empty'] },
         { level:'תחנת מזג אוויר', note:'דגם נוסף: עמוד, חץ רוח למעלה וסימון צבעוני למזג האוויר', cols:7, rows:6, cells:['empty','empty','empty','diamond path-slab','gold path-slab','empty','empty','empty','empty','empty','wood','empty','empty','empty','empty','empty','empty','wood','empty','red','empty','empty','empty','empty','wood','empty','purple','empty','empty','empty','empty','wood','empty','diamond','empty','empty','empty','grass','grass','grass','grass','grass'] }
       ],
+      9: [
+        { level:'ציור דגל', note:'ציור דגל לבנייה: עמוד, בד צבעוני ובסיס קטן.', drawing:'pixel', cols:5, rows:4, cells:['empty','red','red','red','empty','wood','red','red','gold','empty','wood','empty','empty','empty','empty','wood','grass path-slab','grass path-slab','empty','empty'] },
+        { level:'ציור בית', note:'ציור בית לבנייה: גג, קירות ודלת.', drawing:'pixel', cols:5, rows:5, cells:['empty','empty','red','empty','empty','empty','red','red','red','empty','wood','wood','gold','wood','wood','wood','wood','gold','wood','wood','wood','wood','wood','wood','wood'] },
+        { level:'ציור יהלום', note:'ציור יהלום לבנייה: צורה סימטרית בכמה שורות.', drawing:'pixel', cols:5, rows:5, cells:['empty','empty','diamond','empty','empty','empty','diamond','diamond','diamond','empty','diamond','diamond','gold','diamond','diamond','empty','diamond','diamond','diamond','empty','empty','empty','diamond','empty','empty'] },
+        { level:'ציור רובוט', note:'ציור רובוט לבנייה: ראש, גוף, פרטים ורגליים.', drawing:'pixel', cols:5, rows:5, cells:['empty','purple','purple','purple','empty','empty','gold','purple','gold','empty','diamond','diamond','diamond','diamond','diamond','empty','diamond','diamond','diamond','empty','empty','diamond','empty','diamond','empty'] }
+      ],
       10: [
         { level:'שביל מתפצל', note:'דגם השראה: שביל ראשי שמתפצל לשני כיוונים', cols:7, rows:5, cells:['empty','empty','grass path-slab','empty','empty','empty','grass path-slab','empty','empty','grass path-slab','empty','empty','grass path-slab','empty','grass path-slab','grass path-slab','grass path-slab','grass path-slab','grass path-slab','empty','empty','empty','empty','grass path-slab','empty','empty','grass path-slab','empty','empty','empty','grass path-slab','empty','empty','empty','grass path-slab'] },
         { level:'שביל שלושה ענפים', note:'דגם השראה מתקדם: באמצע בוחרים ענף עליון, ישר או תחתון', cols:7, rows:5, cells:['empty','empty','empty','grass path-slab','empty','empty','grass path-slab','empty','empty','empty','grass path-slab','empty','grass path-slab','empty','grass path-slab','grass path-slab','grass path-slab','grass path-slab','grass path-slab','grass path-slab','grass path-slab','empty','empty','empty','grass path-slab','empty','grass path-slab','empty','empty','empty','empty','grass path-slab','empty','empty','grass path-slab'] },
         { level:'מבוך שבילים קטן', note:'דגם השראה: כמה פניות קצרות, בלי סימון איפה היהלום', cols:7, rows:5, cells:['grass path-slab','grass path-slab','grass path-slab','empty','empty','grass path-slab','grass path-slab','empty','empty','grass path-slab','empty','empty','grass path-slab','empty','grass path-slab','grass path-slab','grass path-slab','grass path-slab','grass path-slab','grass path-slab','empty','grass path-slab','empty','empty','empty','empty','grass path-slab','empty','grass path-slab','grass path-slab','grass path-slab','empty','empty','grass path-slab','grass path-slab'] }
+      ],
+      11: [
+        { level:'ציור שדה תפוחים', note:'ציור שדה לבנייה: שני עצים/סימני שדה ומשחק איסוף.', drawing:'pixel', cols:5, rows:4, cells:['empty','grass','empty','grass','empty','empty','wood','empty','wood','empty','empty','empty','empty','empty','empty','empty','grass path-slab','grass path-slab','grass path-slab','empty'] },
+        { level:'ציור שלט פתיחה', note:'ציור שלט לבנייה: עמוד, לוח כתיבה וסימון תפוח.', drawing:'pixel', cols:5, rows:4, cells:['empty','gold','gold','red','empty','empty','wood','empty','empty','empty','empty','wood','empty','empty','empty','empty','grass path-slab','grass path-slab','empty','empty'] },
+        { level:'ציור שביל איסוף', note:'ציור שביל לבנייה: אריחי שביל נמוכים ותפוחים בצדדים.', drawing:'pixel', cols:5, rows:4, cells:['red','empty','empty','empty','red','empty','empty','empty','empty','empty','grass path-slab','grass path-slab','grass path-slab','grass path-slab','grass path-slab','empty','empty','empty','empty','empty'] },
+        { level:'ציור גביע ניצחון', note:'ציור גביע לבנייה: גביע זהב ובסיס יהלום.', drawing:'pixel', cols:5, rows:4, cells:['empty','gold','gold','gold','empty','empty','empty','gold','empty','empty','empty','empty','diamond','empty','empty','empty','grass path-slab','grass path-slab','grass path-slab','empty'] }
       ],
       12: [
         { level:'מבוך קל', note:'דגם קל: התחלה בזהב, מטרה ביהלום ומסלול עם מעט פניות', cols:7, rows:5, cells:['wood','wood','wood','wood','wood','wood','wood','gold','empty','empty','wood','empty','empty','diamond','wood','wood','empty','wood','empty','wood','wood','wood','empty','empty','empty','empty','empty','wood','wood','wood','wood','wood','wood','wood','wood'] },
@@ -422,7 +443,7 @@
       { type:'open_door', message0:'פתח דלת סודית', previousStatement:null, nextStatement:null, colour:30 },
       { type:'give_treasure', message0:'תן אוצר 💎', previousStatement:null, nextStatement:null, colour:45 },
       { type:'finish_program', message0:'סיים תוכנית', previousStatement:null, nextStatement:null, colour:0 },
-      { type:'start_collect_game', message0:'התחל משחק איסוף 5 תפוחים', previousStatement:null, nextStatement:null, colour:0 },
+      { type:'start_collect_game', message0:'הצג 5 תפוחים לאיסוף', previousStatement:null, nextStatement:null, colour:0 },
       { type:'build_maze', message0:'בנה מבוך קטן', previousStatement:null, nextStatement:null, colour:25 },
       { type:'show_hint', message0:'הצג רמז %1', args0:[{type:'field_input', name:'TEXT', text:'חפשו את היהלום'}], previousStatement:null, nextStatement:null, colour:300 },
       { type:'spawn_funny_mob', message0:'זמן מפלצת מצחיקה בשם %1', args0:[{type:'field_input', name:'NAME', text:'מר קובייה'}], previousStatement:null, nextStatement:null, colour:15 }
@@ -517,14 +538,21 @@
     function applyLessonWorldClass(){
       const world = document.getElementById('world');
       if (!world) return;
-      world.className = `world ${lesson.id === 1 ? 'lesson-one' : lesson.id === 2 ? 'lesson-two' : lesson.id === 3 ? 'lesson-three' : lesson.id === 4 ? 'lesson-four' : lesson.id === 5 ? 'lesson-five' : lesson.id === 6 ? 'lesson-six' : lesson.id === 7 ? 'lesson-seven' : lesson.id === 8 ? 'lesson-eight' : lesson.id === 10 ? 'lesson-ten' : lesson.id === 12 ? 'lesson-twelve' : ''}`.trim();
+      world.className = `world ${lesson.id === 1 ? 'lesson-one' : lesson.id === 2 ? 'lesson-two' : lesson.id === 3 ? 'lesson-three' : lesson.id === 4 ? 'lesson-four' : lesson.id === 5 ? 'lesson-five' : lesson.id === 6 ? 'lesson-six' : lesson.id === 7 ? 'lesson-seven' : lesson.id === 8 ? 'lesson-eight' : lesson.id === 9 ? 'lesson-nine' : lesson.id === 10 ? 'lesson-ten' : lesson.id === 11 ? 'lesson-eleven' : lesson.id === 12 ? 'lesson-twelve' : ''}`.trim();
     }
 
     function setupModelPager(){
       if (lessonModelsByLesson[lesson.id]) {
         document.querySelectorAll('.model-choice').forEach((button) => {
-          button.onclick = () => { modelIndex = Number(button.dataset.model || 0); renderBuildModel(); };
+          button.onclick = () => {
+            const index = Number(button.dataset.model || 0);
+            if (lesson.id === 9 || lesson.id === 11) lessonMissionIndex = index;
+            modelIndex = index;
+            renderBuildModel();
+            if (lesson.id === 9 || lesson.id === 11) renderLessonMission();
+          };
         });
+        if (lesson.id === 9 || lesson.id === 11) modelIndex = lessonModelIndexForMission(lesson.id, lessonMissionIndex);
         renderBuildModel();
       }
       if (lesson.id === 3) {
@@ -539,21 +567,68 @@
         });
         renderGateMission();
       }
-      if (lesson.id === 7) {
+      if (lesson.id !== 5) {
         document.querySelectorAll('.lesson-mission-choice').forEach((button) => {
-          button.onclick = () => { lessonMissionIndex = Number(button.dataset.mission || 0); renderLessonMission(); };
+          button.onclick = () => {
+            lessonMissionIndex = Number(button.dataset.mission || 0);
+            if (lesson.id === 9 || lesson.id === 11) { modelIndex = lessonModelIndexForMission(lesson.id, lessonMissionIndex); renderBuildModel(); }
+            renderLessonMission();
+          };
         });
         renderLessonMission();
+      } else {
+        const board = document.getElementById('lessonMissionBoard');
+        if (board) board.hidden = true;
       }
     }
+    function pixelArtHtml(model){
+      const colorMap = { grass:'#55b947', wood:'#9b6a3b', gold:'#ffd166', diamond:'#67e8f9', red:'#ef4444', purple:'#a855f7' };
+      const cols = model.cols || 5;
+      const rows = model.rows || 5;
+      const cell = 20;
+      const rects = (model.cells || []).map((cls, index) => {
+        const bits = String(cls || '').split(/\s+/);
+        const colorKey = bits.find(part => colorMap[part]);
+        if (!colorKey) return '';
+        const x = (index % cols) * cell;
+        const y = Math.floor(index / cols) * cell;
+        const isPath = bits.includes('path-slab');
+        const isHalf = bits.includes('half-slab');
+        const rectHeight = isPath ? 7 : isHalf ? 12 : cell;
+        const rectY = y + (cell - rectHeight);
+        const rx = isPath || isHalf ? 2 : 0;
+        return `<rect x="${x}" y="${rectY}" width="${cell}" height="${rectHeight}" rx="${rx}" fill="${colorMap[colorKey]}"></rect>`;
+      }).join('');
+      return `<svg class="pixel-art-svg" viewBox="0 0 ${cols * cell} ${rows * cell}" aria-hidden="true">${rects}</svg>`;
+    }
+
     function renderBuildModel(){
       const models = lessonModelsByLesson[lesson.id] || [];
       const model = models[modelIndex] || models[0];
       const shape = document.getElementById('modelShape');
       if (!model || !shape) return;
+      const modelCard = shape.closest('.build-model');
+      const modelTitle = modelCard && modelCard.querySelector('.build-model-title');
+      if (modelTitle) modelTitle.textContent = (lesson.id === 9 || lesson.id === 11) ? 'ציור מקור' : 'דגם לבנייה';
       document.getElementById('modelLevel').textContent = model.level;
-      document.getElementById('modelNote').textContent = model.note;
-      document.querySelectorAll('.model-choice').forEach((button) => button.classList.toggle('active', Number(button.dataset.model || 0) === modelIndex));
+      document.getElementById('modelNote').textContent = (lesson.id === 9 || lesson.id === 11) ? `${model.note} הסתכלו על הציור, זהו את החלקים, ובנו אותם עם בלוקי בנייה ותנועה.` : model.note;
+      document.querySelectorAll('.model-choice').forEach((button) => {
+        const index = Number(button.dataset.model || 0);
+        const maxVisibleModels = lesson.id === 11 ? 4 : 3;
+        const exists = index < Math.min(models.length, maxVisibleModels);
+        button.hidden = !exists;
+        button.disabled = !exists;
+        button.classList.toggle('active', exists && index === modelIndex);
+        if (lesson.id === 9 || lesson.id === 11) button.setAttribute('aria-label', `דגם ${index + 1}`);
+      });
+      if (model.drawing === 'pixel') {
+        shape.className = 'model-shape drawing-card pixel-art';
+        shape.style.gridTemplateColumns = '';
+        shape.style.gridTemplateRows = '';
+        shape.innerHTML = pixelArtHtml(model);
+        return;
+      }
+      shape.className = 'model-shape';
       const cellSize = lesson.id === 12 ? 16 : 24;
       shape.style.gridTemplateColumns = `repeat(${model.cols || 4}, ${cellSize}px)`;
       shape.style.gridTemplateRows = `repeat(${model.rows || 3}, ${cellSize}px)`;
@@ -585,10 +660,26 @@
       const mission = missions[lessonMissionIndex] || missions[0];
       const title = document.getElementById('lessonMissionTitle');
       const note = document.getElementById('lessonMissionNote');
+      const board = document.getElementById('lessonMissionBoard');
+      if (board) board.hidden = !missions.length || lesson.id === 5;
       if (!mission || !title || !note) return;
       title.textContent = mission.title || `משימה ${lessonMissionIndex + 1}`;
-      note.textContent = mission.studentPrompt || mission.description || '';
-      document.querySelectorAll('.lesson-mission-choice').forEach((button) => button.classList.toggle('active', Number(button.dataset.mission || 0) === lessonMissionIndex));
+      if (lesson.id === 9) {
+        note.innerHTML = `<b>מה עושים עכשיו?</b><ol class="mission-steps"><li>מסתכלים על הדוגמה בכרטיס.</li><li>מזהים את החלקים והצבעים.</li><li>בונים עם בלוקים ותנועה.</li><li>מריצים, משווים לדוגמה, ומתקנים.</li></ol><small>${esc(mission.studentPrompt || '')}</small>`;
+      } else if (lesson.id === 11) {
+        const sourceModel = lessonElevenModelForMission(lessonMissionIndex);
+        const sourceDrawing = sourceModel ? `<div class="mission-source-drawing" aria-label="דוגמה לבנייה">${pixelArtHtml(sourceModel)}</div>` : '';
+        note.innerHTML = `<b>מה עושים עכשיו?</b>${sourceDrawing}<ol class="mission-steps"><li>בונים בדיוק לפי הדוגמה: אותו מיקום, צבע וסוג חלק.</li><li>לוחצים ▶️.</li><li>מצליחים רק כשהבנייה זהה לדוגמה.</li></ol><small>${esc(mission.studentPrompt || '')}</small>`;
+      } else {
+        note.textContent = mission.studentPrompt || mission.description || '';
+      }
+      document.querySelectorAll('.lesson-mission-choice').forEach((button) => {
+        const index = Number(button.dataset.mission || 0);
+        const exists = index < missions.length;
+        button.hidden = !exists;
+        button.disabled = !exists;
+        button.classList.toggle('active', exists && index === lessonMissionIndex);
+      });
     }
 
     function workspaceStorageKey(){ return `minecraftKidsWorkspace:${lesson.id === 5 ? 'v4-hour-gate' : lesson.id === 7 ? 'v2-bridge' : 'v1'}:lesson:${lesson.id}`; }
@@ -701,7 +792,7 @@
       const { clearDrawing = true, resetPlayer = true } = options;
       state.score = 0; state.day = true; state.weather = 'sun'; state.playerOnDiamond = lesson.id === 10 ? false : true; state.foundDiamond = false; state.hiddenDiamondIndex = null; state.hiddenDiamondSpot = null; if (clearDrawing) state.pathSpots = []; state.stopProgram = false; if (resetPlayer) { state.steveX = lesson.id === 5 ? 235 : 260; state.steveY = GROUND_Y; state.steveDepth = 0; } state.petX = null; state.petY = null; state.lessonOneBlocks = 0; state.gatePassed = false; state.behindGate = false; state.lastMove = null; state.runStats = createRunStats();
       const world = document.getElementById('world');
-      world.className = `world ${lesson.id === 1 ? 'lesson-one' : lesson.id === 2 ? 'lesson-two' : lesson.id === 3 ? 'lesson-three' : lesson.id === 4 ? 'lesson-four' : lesson.id === 5 ? 'lesson-five' : lesson.id === 6 ? 'lesson-six' : lesson.id === 7 ? 'lesson-seven' : lesson.id === 8 ? 'lesson-eight' : lesson.id === 10 ? 'lesson-ten' : ''}`.trim();
+      world.className = `world ${lesson.id === 1 ? 'lesson-one' : lesson.id === 2 ? 'lesson-two' : lesson.id === 3 ? 'lesson-three' : lesson.id === 4 ? 'lesson-four' : lesson.id === 5 ? 'lesson-five' : lesson.id === 6 ? 'lesson-six' : lesson.id === 7 ? 'lesson-seven' : lesson.id === 8 ? 'lesson-eight' : lesson.id === 9 ? 'lesson-nine' : lesson.id === 10 ? 'lesson-ten' : ''}`.trim();
       if (clearDrawing) [...world.querySelectorAll('.block,.pet,.mob,.treasure,.apple,.hint')].forEach(el => el.remove());
       document.getElementById('door').classList.remove('open');
       setStevePosition();
@@ -731,6 +822,14 @@
     function selectedExerciseIndex(){ return lesson.id === 5 ? gateMissionIndex : lessonMissionIndex; }
     function selectedExerciseTitle(index = selectedExerciseIndex()){
       if (lesson.id === 5) return (gateMissions[index] || gateMissions[0] || {}).title || `משימה ${index + 1}`;
+      if (lesson.id === 9) {
+        const lessonNineTitles = ['תרגיל 1 — דגל', 'תרגיל 2 — בית', 'תרגיל 3 — יהלום', 'תרגיל 4 — אתגר ציור אישי'];
+        return lessonNineTitles[index] || `משימה ${index + 1}`;
+      }
+      if (lesson.id === 11) {
+        const lessonElevenTitles = ['תרגיל 1 — שדה תפוחים', 'תרגיל 2 — שלט פתיחה', 'תרגיל 3 — שביל איסוף', 'תרגיל 4 — גביע ניצחון'];
+        return lessonElevenTitles[index] || `משימה ${index + 1}`;
+      }
       const exercise = (lesson.programmingExercises || [])[index];
       return (exercise && exercise.title) || `משימה ${index + 1}`;
     }
@@ -836,6 +935,162 @@
       const leftish = dirCount('left') + dirCount('left_up') + dirCount('left_down');
       return horizontalSpan >= 90 && (rightish >= 3 || leftish >= 3 || diagonalStepCount('half') >= 2);
     }
+    function modelColorCounts(model){
+      const counts = {};
+      if (!model || !Array.isArray(model.cells)) return counts;
+      model.cells.forEach((cell) => {
+        const color = String(cell || '').split(/\s+/).find(part => ['grass','wood','gold','diamond','red','purple'].includes(part));
+        if (color) counts[color] = (counts[color] || 0) + 1;
+      });
+      return counts;
+    }
+    function placedColorCounts(){
+      const counts = {};
+      (stats().placed || []).forEach((item) => {
+        if (item.color) counts[item.color] = (counts[item.color] || 0) + 1;
+      });
+      return counts;
+    }
+    function placementKey(item){ return `${Math.round(item.x || 0)}:${Math.round(item.y || 0)}:${item.kind || 'block'}`; }
+    function conflictingColorOverlaps(){
+      const spots = new Map();
+      (stats().placed || []).forEach((item) => {
+        const key = placementKey(item);
+        if (!spots.has(key)) spots.set(key, new Set());
+        if (item.color) spots.get(key).add(item.color);
+      });
+      return [...spots.entries()].filter(([, colors]) => colors.size > 1).map(([key, colors]) => ({ key, colors:[...colors] }));
+    }
+    function hasConflictingColorOverlap(){ return conflictingColorOverlaps().length > 0; }
+    function hasRequiredModelColors(model, options = {}){
+      const required = modelColorCounts(model);
+      const actual = placedColorCounts();
+      const colors = Object.keys(required);
+      const hasAllRequired = colors.every(color => (actual[color] || 0) >= required[color]);
+      if (!hasAllRequired) return false;
+      if (options.strict && hasConflictingColorOverlap()) return false;
+      if (!options.strict) return true;
+      return Object.keys(actual).every(color => !actual[color] || required[color]);
+    }
+    function missingModelColorNote(model, label = 'הדגם'){
+      const required = modelColorCounts(model);
+      const actual = placedColorCounts();
+      const colorNames = { grass:'ירוק', wood:'עץ/חום', gold:'צהוב/זהב', diamond:'תכלת/יהלום', red:'אדום', purple:'סגול' };
+      const missing = Object.entries(required)
+        .filter(([color, count]) => (actual[color] || 0) < count)
+        .map(([color, count]) => `חסר בלוק בצבע ${colorNames[color] || color}: יש ${actual[color] || 0}, צריך ${count}`);
+      const unexpected = Object.keys(actual)
+        .filter(color => (actual[color] || 0) > 0 && !required[color])
+        .map(color => `יש צבע שלא שייך ל${label}: ${colorNames[color] || color}`);
+      const overlaps = conflictingColorOverlaps()
+        .map(overlap => `יש שני צבעים באותו מקום (${overlap.colors.map(color => colorNames[color] || color).join(' + ')}). בדקו שלא בניתם ירוק מעל אדום או להפך.`);
+      return [...missing, ...unexpected, ...overlaps].join(' · ');
+    }
+    function selectedBuildModel(index = selectedExerciseIndex()){
+      if (lesson.id === 3) return lessonThreeModels[Math.min(index, lessonThreeModels.length - 1)];
+      const models = lessonModelsByLesson[lesson.id] || [];
+      return models[Math.min(index, models.length - 1)] || null;
+    }
+    function lessonModelIndexForMission(lessonId, index){
+      const models = lessonModelsByLesson[lessonId] || [];
+      const maxModelIndex = lessonId === 11 ? 3 : 2;
+      return Math.min(index, Math.min(maxModelIndex, Math.max(0, models.length - 1)));
+    }
+    function lessonNineModelIndexForMission(index){ return lessonModelIndexForMission(9, index); }
+    function lessonNineModelForMission(index = selectedExerciseIndex()){
+      const models = lessonModelsByLesson[9] || [];
+      return models[lessonNineModelIndexForMission(index)] || null;
+    }
+    function lessonElevenModelForMission(index = selectedExerciseIndex()){
+      const models = lessonModelsByLesson[11] || [];
+      return models[lessonModelIndexForMission(11, index)] || null;
+    }
+    function modelPartCount(model){
+      return Object.values(modelColorCounts(model)).reduce((sum, count) => sum + count, 0);
+    }
+    function missingLessonNineModelNote(model, label){
+      const notes = [];
+      const requiredParts = modelPartCount(model);
+      const builtParts = placedCount('block') + placedCount('path') + placedCount('half');
+      if (builtParts < requiredParts) notes.push(`${label} צריך בערך ${requiredParts} חלקים לפי הציור; כרגע בניתם ${builtParts}.`);
+      const colorNote = missingModelColorNote(model, label);
+      if (colorNote) notes.push(colorNote);
+      return notes.join(' · ');
+    }
+    function modelPattern(model){
+      if (!model || !Array.isArray(model.cells)) return [];
+      const cols = model.cols || 4;
+      const parts = [];
+      model.cells.forEach((cell, index) => {
+        const bits = String(cell || '').split(/\s+/);
+        const color = bits.find(part => ['grass','wood','gold','diamond','red','purple'].includes(part));
+        if (!color) return;
+        const kind = bits.includes('path-slab') ? 'path' : bits.includes('half-slab') ? 'half' : 'block';
+        parts.push({ col:index % cols, row:Math.floor(index / cols), color, kind });
+      });
+      if (!parts.length) return [];
+      const minCol = Math.min(...parts.map(part => part.col));
+      const minRow = Math.min(...parts.map(part => part.row));
+      return parts.map(part => `${part.col - minCol}:${part.row - minRow}:${part.kind}:${part.color}`).sort();
+    }
+    function finalPlacedParts(){
+      const placed = (stats().placed || []).filter(item => item && item.color);
+      if (!placed.length) return [];
+      const minX = Math.min(...placed.map(item => item.x || 0));
+      const maxY = Math.max(...placed.map(item => item.y || 0));
+      const finalParts = new Map();
+      placed.forEach(item => {
+        const col = Math.round(((item.x || 0) - minX) / 45);
+        const row = Math.round((maxY - (item.y || 0)) / 42);
+        const kind = item.kind || 'block';
+        const spotKey = `${col}:${row}:${kind}`;
+        finalParts.set(spotKey, { col, row, kind, color:item.color });
+      });
+      return [...finalParts.values()];
+    }
+    function placedPattern(){
+      return finalPlacedParts().map(part => `${part.col}:${part.row}:${part.kind}:${part.color}`).sort();
+    }
+    function finalColorCount(color){
+      return finalPlacedParts().filter(part => part.color === color).length;
+    }
+    function hasColumnWithColor(color, minimum){
+      const byCol = new Map();
+      finalPlacedParts().filter(part => part.color === color).forEach(part => byCol.set(part.col, new Set([...(byCol.get(part.col) || []), part.row])));
+      return [...byCol.values()].some(rows => rows.size >= minimum);
+    }
+    function lessonNineFlagLooksRight(){
+      const parts = finalPlacedParts();
+      const partCount = parts.length;
+      const woodColumnOk = hasColumnWithColor('wood', 3);
+      const redParts = parts.filter(part => part.color === 'red');
+      const redBlockOk = redParts.length >= 5 && new Set(redParts.map(part => part.row)).size >= 2 && new Set(redParts.map(part => part.col)).size >= 2;
+      const hasAccent = finalColorCount('gold') >= 1;
+      const hasBase = finalColorCount('grass') >= 1;
+      return partCount >= 10 && partCount <= 12 && woodColumnOk && redBlockOk && hasAccent && hasBase;
+    }
+    function lessonNineModelMatches(model){
+      if (model && model.level === 'ציור דגל' && lessonNineFlagLooksRight()) return true;
+      const expected = modelPattern(model);
+      const actual = placedPattern();
+      return expected.length > 0 && expected.length === actual.length && expected.every((part, index) => part === actual[index]);
+    }
+    function lessonNineShapeNote(model, label){
+      const expectedCount = modelPattern(model).length;
+      const actualCount = placedPattern().length;
+      if (model && model.level === 'ציור דגל') {
+        const missing = [];
+        if (actualCount < 10) missing.push(`יש ${actualCount} חלקים; לדגל צריך בערך 10–12 חלקים.`);
+        if (!hasColumnWithColor('wood', 3)) missing.push('צריך עמוד עץ ברור של לפחות 3 חלקים באותו טור.');
+        if (finalColorCount('red') < 5) missing.push(`צריך בד דגל אדום רחב יותר; כרגע יש ${finalColorCount('red')} חלקים אדומים.`);
+        if (finalColorCount('gold') < 1) missing.push('צריך חלק זהב אחד בדגל.');
+        if (finalColorCount('grass') < 1) missing.push('צריך בסיס ירוק לדגל.');
+        return lessonNineFlagLooksRight() ? '' : `${label} עדיין לא נראה כמו דגל הדוגמה: ${missing.join(' · ') || 'בדקו שהעמוד, הבד והבסיס מסודרים כמו דגל.'}`;
+      }
+      if (actualCount !== expectedCount) return `${label} לא תואם עדיין: בדגם יש ${expectedCount} חלקים, ובציור שבניתם יש ${actualCount}.`;
+      if (!lessonNineModelMatches(model)) return `${label} לא תואם עדיין לציור הדוגמה: בדקו מיקום, גובה, צבע וסוג חלק בכל מקום.`;
+      return '';
+    }
     function evaluateMissionScore(index){
       if (!evaluateLessonMission(index)) return 0;
       const s = stats();
@@ -860,100 +1115,98 @@
       });
       return bestIndex;
     }
-    function evaluateLessonMission(index){
+    function missionRuleDefinitions(){
       const s = stats();
-      const checks = {
-        1: [() => state.lessonOneBlocks >= 3],
+      const totalBuilding = () => placedCount('block') + placedCount('path') + placedCount('half');
+      const uniqueColors = () => new Set((s.placed || []).map(item => item.color)).size;
+      const movedPet = () => !!(s.counts.move_pet_direction || 0);
+      const treasureAction = () => s.gaveTreasure || s.openedDoor || state.foundDiamond;
+      const rules = {
+        1: [
+          { ok:() => placedCount('block') >= 1, missing:() => [`הניחו לפחות בלוק אחד. כרגע יש ${placedCount('block')}.`] },
+          { ok:() => placedCount('block') >= 2 && dirCount('up') >= 1, missing:() => [`צריך שתי קומות: ${placedCount('block')}/2 בלוקים`, `צריך לעלות לפחות פעם אחת: ${dirCount('up')}/1.`] },
+          { ok:() => state.lessonOneBlocks >= 3 && dirCount('up') >= 2, missing:() => [`מגדל של 3 בלוקים: ${state.lessonOneBlocks}/3`, `עלו בין הקומות פעמיים: ${dirCount('up')}/2.`] },
+          { ok:() => state.lessonOneBlocks >= 3 && s.blocks[0] === 'say', missing:() => ['התחילו בהודעת פתיחה ואז בנו את המגדל לפי סדר.'] },
+          { ok:() => state.lessonOneBlocks >= 3 && placedCount('path') >= 2, missing:() => [`אחרי המגדל הוסיפו לפחות 2 אריחי שביל. כרגע יש ${placedCount('path')}.`] }
+        ],
+        2: [
+          { ok:() => placedCount('block') >= 2 && hasRequiredModelColors(selectedBuildModel(0)), missing:() => [`בנו ספסל משני בלוקים לפחות: ${placedCount('block')}/2.`, missingModelColorNote(selectedBuildModel(0), 'ספסל')] },
+          { ok:() => placedCount('block') >= 3 && dirCount('up') >= 1 && hasRequiredModelColors(selectedBuildModel(1)), missing:() => [`שער צריך עמודים וקורה: ${placedCount('block')}/3 בלוקים`, `עלו לגובה הקורה לפחות פעם אחת.`, missingModelColorNote(selectedBuildModel(1), 'שער')] },
+          { ok:() => placedCount('block') >= 3 && (dirCount('up') + dirCount('right_up')) >= 2 && hasRequiredModelColors(selectedBuildModel(2)), missing:() => ['בנו מדרגות: כמה בלוקים בגבהים שונים ועליות בין השלבים.', missingModelColorNote(selectedBuildModel(2), 'מדרגות')] },
+          { ok:() => placedCount('block') >= 6 && (s.usedWait || hasBlock('reset_blocks')), missing:() => ['בנו יותר מדגם אחד, והוסיפו חכה או מחק בניין בין הדגמים.'] },
+          { ok:() => placedCount('block') >= 4 && s.saidTexts.length >= 1, missing:() => ['לדגם אישי צריך לפחות 4 בלוקים ומשפט שמסביר מה בניתם.'] }
+        ],
+        3: [
+          { ok:() => placedCount('block') >= 6 && uniqueColors() >= 2 && hasRequiredModelColors(selectedBuildModel(0), { strict:true }), missing:() => [placedCount('block') < 6 && `חסרים בלוקים לציור הפרחים: יש ${placedCount('block')}, צריך לפחות 6.`, uniqueColors() < 2 && `צריך להשתמש לפחות בשני צבעים בציור הפרחים. כרגע יש ${uniqueColors()}.`, missingModelColorNote(selectedBuildModel(0), 'ציור הפרחים')] },
+          { ok:() => placedCount('block') >= 8 && uniqueColors() >= 2 && dirCount('up') >= 1 && hasRequiredModelColors(selectedBuildModel(1), { strict:true }), missing:() => [placedCount('block') < 8 && `חסרים בלוקים לבית הקטן: יש ${placedCount('block')}, צריך לפחות 8.`, uniqueColors() < 2 && `צריך לפחות שני צבעים לבית הקטן. כרגע יש ${uniqueColors()}.`, dirCount('up') < 1 && 'צריך לעלות לפחות פעם אחת כדי לבנות שורה גבוהה/גג.', missingModelColorNote(selectedBuildModel(1), 'בית קטן')] },
+          { ok:() => placedCount('block') >= 9 && hasRequiredModelColors(selectedBuildModel(2), { strict:true }), missing:() => [placedCount('block') < 9 && `חסרים בלוקים ללב הפיקסלים: יש ${placedCount('block')}, צריך לפחות 9.`, missingModelColorNote(selectedBuildModel(2), 'לב פיקסלים')] },
+          { ok:() => placedCount('block') >= 12 && (s.usedWait || hasBlock('reset_blocks')), missing:() => ['לרצף גלריה מתקדם בנו יותר מציור אחד והפרידו ביניהם עם חכה או מחק בניין.'] },
+          { ok:() => placedCount('block') >= 10 && s.saidTexts.length >= 1, missing:() => ['לציור אישי מתקדם צריך ציור של לפחות 10 בלוקים ומשפט הסבר.'] }
+        ],
+        4: [
+          { ok:() => totalBuilding() >= 3 && dirCount('up') >= 1 && hasRequiredModelColors(selectedBuildModel(0)), missing:() => ['כף צריכה ידית וקערית: בנו לפחות 3 חלקים ועלו לגובה.', missingModelColorNote(selectedBuildModel(0), 'כף')] },
+          { ok:() => totalBuilding() >= 5 && placedCount('path') + placedCount('half') >= 1 && hasRequiredModelColors(selectedBuildModel(1)), missing:() => ['כוס צבעונית צריכה תחתית/דפנות וחלק נמוך או חצי בלוק.', missingModelColorNote(selectedBuildModel(1), 'כוס')] },
+          { ok:() => totalBuilding() >= 6 && uniqueColors() >= 2 && hasRequiredModelColors(selectedBuildModel(2)), missing:() => ['מזלג צריך ידית ושיניים — לפחות 6 חלקים ושני צבעים.', missingModelColorNote(selectedBuildModel(2), 'מזלג')] }
+        ],
         5: [
-          () => completedGateEntryMission(),
-          () => hasDirectionSequence(['right', 'back', 'left', 'forward']) && targetWasCircled(LESSON5_TARGETS.star),
-          () => placedCount() >= 3 && new Set(s.placed.map(item => item.color)).size >= 2,
-          () => gateWasBypassed() && s.maxX >= 390 && dirCount('right') >= 3,
-          () => completedGateEntryMission() && gateWasBypassed()
+          { ok:() => completedGateEntryMission(), missing:() => ['השתמשו ב־זוז לפי כיוון: ימינה עד הפתח, ואז אחורה כדי לעבור דרך השער.'] },
+          { ok:() => hasDirectionSequence(['right', 'back', 'left', 'forward']) && targetWasCircled(LESSON5_TARGETS.star), missing:() => ['צריך רצף הקפה סביב הכוכב: ימינה, אחורה, שמאלה, קדימה, ממש סביב הכוכב.'] },
+          { ok:() => placedCount() >= 3 && uniqueColors() >= 2, missing:() => [`סמנו דרך עם לפחות 3 בלוקים/אריחים ושני צבעים. כרגע ${placedCount()} חלקים ו־${uniqueColors()} צבעים.`] },
+          { ok:() => gateWasBypassed() && s.maxX >= 390 && dirCount('right') >= 3, missing:() => ['עקפו את השער בעומק והתקדמו מספיק ימינה עד אזור הכוכב.'] },
+          { ok:() => completedGateEntryMission() && gateWasBypassed(), missing:() => ['צריך גם מעבר דרך השער וגם עקיפה/תנועה בעומק סביבו.'] }
+        ],
+        6: [
+          { ok:() => s.spawnedPet && totalBuilding() >= 4 && hasRequiredModelColors(selectedBuildModel(0)), missing:() => ['זמנו את פיקסל ובנו לה בית קטן של לפחות 4 חלקים.', missingModelColorNote(selectedBuildModel(0), 'בית לחיית מחמד')] },
+          { ok:() => s.spawnedPet && totalBuilding() >= 3 && uniqueColors() >= 2 && hasRequiredModelColors(selectedBuildModel(1)), missing:() => ['זמנו חיית מחמד ובנו קערה/אוכל משני צבעים לפחות.', missingModelColorNote(selectedBuildModel(1), 'קערת אוכל')] },
+          { ok:() => s.spawnedPet && placedCount('path') >= 2 && movedPet() && hasRequiredModelColors(selectedBuildModel(2)), missing:() => ['בנו שביל/חצר, זמנו את פיקסל והזיזו אותה לפחות פעם אחת.', missingModelColorNote(selectedBuildModel(2), 'חצר משחק')] }
         ],
         7: [
-          () => placedCount('path') >= 3 && dirCount('right') >= 2,
-          () => placedCount('block') >= 2 && colorCount('wood') >= 2,
-          () => placedCount('half') >= 3,
-          () => placedCount('half') >= 6 && dirCount('right') >= 2 && verticalHalfStepCount() >= 2 && hasBridgeStepSpeech(),
-          () => availablePlacedCount('path') >= 1 && availablePlacedCount('half') >= 3 && bridgeCrossingMovement() && s.saidTexts.some(text => /עברתי|צד השני|גשר|מדרג/.test(text)),
-          () => placedCount('path') >= 1 && placedCount('block') >= 2 && placedCount('half') >= 6 && (dirCount('right') >= 4 || dirCount('left') >= 4 || bridgeCrossingMovement()) && verticalHalfStepCount() >= 2 && s.saidTexts.length >= 1
-        ]
+          { ok:() => placedCount('path') >= 3 && dirCount('right') >= 2, missing:() => [`אריחי שביל: ${placedCount('path')}/3`, `צעדים ימינה: ${dirCount('right')}/2.`] },
+          { ok:() => placedCount('block') >= 2 && colorCount('wood') >= 2, missing:() => [`עמודי עץ: ${colorCount('wood')}/2.`] },
+          { ok:() => placedCount('half') >= 3, missing:() => [`חצאי בלוקים למשטח הגשר: ${placedCount('half')}/3.`] },
+          { ok:() => placedCount('half') >= 6 && dirCount('right') >= 2 && verticalHalfStepCount() >= 2 && hasBridgeStepSpeech(), missing:() => ['בנו מדרגות 3–2–1 מחצאי בלוקים, זזו ביניהן, והוסיפו משפט שמסביר.'] },
+          { ok:() => availablePlacedCount('path') >= 1 && availablePlacedCount('half') >= 3 && bridgeCrossingMovement() && s.saidTexts.some(text => /עברתי|צד השני|גשר|מדרג/.test(text)), missing:() => ['העבירו את דוד על המדרגות והגשר לצד השני והוסיפו משפט מעבר.'] },
+          { ok:() => placedCount('path') >= 1 && placedCount('block') >= 2 && placedCount('half') >= 6 && (dirCount('right') >= 4 || dirCount('left') >= 4 || bridgeCrossingMovement()) && verticalHalfStepCount() >= 2 && s.saidTexts.length >= 1, missing:() => ['גשר שלם צריך שביל, עמודים, חצאי בלוקים, מעבר של דוד ומשפט סיום.'] }
+        ],
+        8: [
+          { ok:() => hasBlock('weather_rain') && totalBuilding() >= 4 && hasRequiredModelColors(selectedBuildModel(0)), missing:() => ['הפעילו מזג אוויר גשם ובנו מטריה ראשונה של לפחות 4 חלקים.', missingModelColorNote(selectedBuildModel(0), 'מטריה')] },
+          { ok:() => hasBlock('weather_rain') && totalBuilding() >= 6 && placedCount('half') + placedCount('path') >= 1 && hasRequiredModelColors(selectedBuildModel(1)), missing:() => ['למטריה שנייה צריך גשם, גג רחב, וחצי בלוק/אריח אחד לפחות.', missingModelColorNote(selectedBuildModel(1), 'מטריה שנייה')] },
+          { ok:() => hasBlock('weather_rain') && movementCount() >= 1 && totalBuilding() >= 4, missing:() => ['הזיזו את דוד אל מתחת למטריה אחרי שבניתם אותה בגשם.'] },
+          { ok:() => (hasBlock('weather_sun') || hasBlock('weather_rain') || hasBlock('weather_snow')) && totalBuilding() >= 3 && s.saidTexts.length >= 1, missing:() => ['בנו תחנת מזג אוויר, בחרו מזג אוויר, והוסיפו משפט תחזית.'] }
+        ],
+        9: [
+          { ok:() => lessonNineModelMatches(lessonNineModelForMission(0)) && hasRequiredModelColors(lessonNineModelForMission(0), { strict:true }), missing:() => [lessonNineShapeNote(lessonNineModelForMission(0), 'ציור הדגל'), missingLessonNineModelNote(lessonNineModelForMission(0), 'ציור הדגל')] },
+          { ok:() => lessonNineModelMatches(lessonNineModelForMission(1)) && hasRequiredModelColors(lessonNineModelForMission(1), { strict:true }), missing:() => [lessonNineShapeNote(lessonNineModelForMission(1), 'ציור הבית'), missingLessonNineModelNote(lessonNineModelForMission(1), 'ציור הבית')] },
+          { ok:() => lessonNineModelMatches(lessonNineModelForMission(2)) && hasRequiredModelColors(lessonNineModelForMission(2), { strict:true }), missing:() => [lessonNineShapeNote(lessonNineModelForMission(2), 'ציור היהלום'), missingLessonNineModelNote(lessonNineModelForMission(2), 'ציור היהלום')] },
+          { ok:() => totalBuilding() >= 8 && uniqueColors() >= 3, missing:() => [totalBuilding() < 8 && `ציור אישי צריך לפחות 8 חלקים; כרגע יש ${totalBuilding()}.`, uniqueColors() < 3 && `ציור אישי צריך לפחות 3 צבעים; כרגע יש ${uniqueColors()}.`] }
+        ],
+        10: [ { ok:() => treasureAction() || hasBlock('hide_diamond') || hasBlock('check_spot'), missing:() => ['בנו שביל/חיפוש אוצר והשתמשו בבלוקי החיפוש של שיעור 10.'] } ],
+        11: [
+          { ok:() => lessonNineModelMatches(lessonElevenModelForMission(0)) && hasRequiredModelColors(lessonElevenModelForMission(0), { strict:true }), missing:() => [lessonNineShapeNote(lessonElevenModelForMission(0), 'דוגמת שדה התפוחים'), missingLessonNineModelNote(lessonElevenModelForMission(0), 'דוגמת שדה התפוחים')] },
+          { ok:() => lessonNineModelMatches(lessonElevenModelForMission(1)) && hasRequiredModelColors(lessonElevenModelForMission(1), { strict:true }), missing:() => [lessonNineShapeNote(lessonElevenModelForMission(1), 'דוגמת שלט הפתיחה'), missingLessonNineModelNote(lessonElevenModelForMission(1), 'דוגמת שלט הפתיחה')] },
+          { ok:() => lessonNineModelMatches(lessonElevenModelForMission(2)) && hasRequiredModelColors(lessonElevenModelForMission(2), { strict:true }), missing:() => [lessonNineShapeNote(lessonElevenModelForMission(2), 'דוגמת שביל האיסוף'), missingLessonNineModelNote(lessonElevenModelForMission(2), 'דוגמת שביל האיסוף')] },
+          { ok:() => lessonNineModelMatches(lessonElevenModelForMission(3)) && hasRequiredModelColors(lessonElevenModelForMission(3), { strict:true }), missing:() => [lessonNineShapeNote(lessonElevenModelForMission(3), 'דוגמת גביע הניצחון'), missingLessonNineModelNote(lessonElevenModelForMission(3), 'דוגמת גביע הניצחון')] }
+        ],
+        12: [ { ok:() => s.builtMaze || totalBuilding() >= 3, missing:() => ['השתמשו בבלוק בנה מבוך קטן או בנו לפחות כמה קירות/חלקים למסלול.'] } ],
+        13: [ { ok:() => s.spawnedMob || totalBuilding() >= 3, missing:() => ['זמנו מפלצת מצחיקה או בנו לה במה/סביבה.'] } ],
+        14: [ { ok:() => Object.keys(s.counts).filter(type => type !== 'event_start').length >= 3, missing:() => ['שלבו לפחות שלושה סוגי פעולות בפרויקט.'] } ],
+        15: [ { ok:() => Object.keys(s.counts).filter(type => type !== 'event_start').length >= 3 && s.saidTexts.length >= 1, missing:() => ['להרצה מול חבר צריך לפחות 3 סוגי פעולות ומשפט הצגה שמסביר את הפרויקט.'] } ]
       };
-      if (checks[lesson.id]) return !!(checks[lesson.id][index] && checks[lesson.id][index]());
-      const genericChecks = {
-        2: () => placedCount('block') >= 2,
-        3: () => placedCount('block') >= 5,
-        4: () => placedCount() >= 3 && movementCount() >= 2,
-        6: () => s.spawnedPet && placedCount() >= 3,
-        8: () => (hasBlock('weather_sun') || hasBlock('weather_rain') || hasBlock('weather_snow')) && placedCount() >= 3 && s.saidTexts.length >= 1,
-        9: () => s.openedDoor,
-        10: () => s.gaveTreasure || (s.openedDoor && state.foundDiamond),
-        11: () => s.collectedApples || state.score >= 5,
-        12: () => s.builtMaze && hasBlock('show_hint'),
-        13: () => s.spawnedMob,
-        14: () => Object.keys(s.counts).filter(type => type !== 'event_start').length >= 3,
-        15: () => Object.keys(s.counts).filter(type => type !== 'event_start').length >= 3 && s.saidTexts.length >= 1
-      };
-      return genericChecks[lesson.id] ? genericChecks[lesson.id]() : false;
+      return rules;
+    }
+    function currentMissionRule(index){
+      const rules = missionRuleDefinitions()[lesson.id] || [];
+      return rules[index] || rules[0] || null;
+    }
+    function evaluateLessonMission(index){
+      const rule = currentMissionRule(index);
+      return rule ? !!rule.ok() : false;
     }
     function missingMissionNote(index){
-      const s = stats();
       const missing = [];
-      const need = (condition, text) => { if (!condition) missing.push(text); };
-      const needMore = (actual, required, label) => need(actual >= required, `${label}: יש ${actual}, צריך ${required}`);
-      if (lesson.id === 5) {
-        const gateHint = 'השתמשו ב־זוז לפי כיוון: ימינה עד הפתח, ואז אחורה כדי לעבור דרך השער.';
-        if (index === 0) need(completedGateEntryMission(), gateHint);
-        if (index === 1) {
-          need(hasDirectionSequence(['right', 'back', 'left', 'forward']), 'צריך רצף הקפה סביב הכוכב: ימינה, אחורה, שמאלה, קדימה.');
-          need(targetWasCircled(LESSON5_TARGETS.star), 'דוד צריך להגיע ממש סביב הכוכב מכל הצדדים.');
-        }
-        if (index === 2) {
-          needMore(placedCount(), 3, 'בלוקים/אריחים בדרך');
-          need(new Set(s.placed.map(item => item.color)).size >= 2, 'צריך להשתמש לפחות בשני צבעים שונים לסימון הדרך.');
-        }
-        if (index === 3) {
-          need(gateWasBypassed(), 'צריך לעקוף את השער בעזרת אחורה ואז לחזור קדימה אחרי שעוברים אותו.');
-          need(s.maxX >= 390 && dirCount('right') >= 3, 'דוד צריך להתקדם מספיק ימינה עד אזור הכוכב.');
-        }
-        if (index === 4) {
-          need(completedGateEntryMission(), gateHint);
-          need(gateWasBypassed(), 'צריך גם להראות מעבר/עקיפה סביב השער, לא רק צעד אחד.');
-        }
-      } else if (lesson.id === 7) {
-        if (index === 0) {
-          needMore(placedCount('path'), 3, 'אריחי שביל');
-          needMore(dirCount('right'), 2, 'צעדים ימינה');
-        }
-        if (index === 1) {
-          needMore(placedCount('block'), 2, 'בלוקים רגילים לעמודים');
-          needMore(colorCount('wood'), 2, 'בלוקים בצבע עץ');
-        }
-        if (index === 2) needMore(placedCount('half'), 3, 'חצאי בלוקים למשטח הגשר');
-        if (index === 3) {
-          needMore(placedCount('half'), 6, 'חצאי בלוקים למדרגות במבנה 3–2–1');
-          needMore(dirCount('right'), 2, 'צעדים ימינה בין עמודי המדרגות');
-          needMore(verticalHalfStepCount(), 2, 'פסיעות חצי־גובה — אפשר לבנות מלמטה למעלה עם זוז למעלה, או מלמעלה למטה עם זוז למטה');
-          need(hasBridgeStepSpeech(), 'הוסיפו בלוק אמור שמסביר שבונים מדרגות מחצאי בלוקים. אפשר להשאיר את הגשר/השביל שכבר נבנו; הבדיקה מסתכלת על המדרגות עצמן.');
-        }
-        if (index === 4) {
-          need(availablePlacedCount('path') >= 1, 'צריך שיהיה שביל גישה בציור שעל המסך. הוא יכול להגיע מהרצה קודמת ולא חייב להופיע בבלוקים של ההרצה הנוכחית.');
-          need(availablePlacedCount('half') >= 3, 'צריך שהגשר/המדרגות מחצאי בלוקים כבר יהיו בציור שעל המסך. הם יכולים להגיע מהרצות קודמות ולא חייבים להיבנות מחדש עכשיו.');
-          need(bridgeCrossingMovement(), 'העבירו את דוד על המדרגות והגשר — אפשר משמאל לימין או מימין לשמאל. במדרגות השתמשו בזוז: ימינה/שמאלה ולמעלה או למטה, בצעד חצי מדרגה.');
-          need(s.saidTexts.some(text => /עברתי|צד השני|גשר|מדרג/.test(text)), 'הוסיפו משפט שמספר שדוד עבר על המדרגות והגשר לצד השני.');
-        }
-        if (index === 5) {
-          needMore(placedCount('path'), 1, 'אריח שביל גישה');
-          needMore(placedCount('block'), 2, 'בלוקים רגילים לעמודים/תמיכה');
-          needMore(placedCount('half'), 6, 'חצאי בלוקים למשטח הגשר ולמדרגות');
-          need(dirCount('right') >= 4 || dirCount('left') >= 4 || bridgeCrossingMovement(), 'צריך להראות מעבר לאורך הגשר — אפשר משמאל לימין או מימין לשמאל.');
-          needMore(verticalHalfStepCount(), 2, 'פסיעות חצי־גובה למדרגות');
-          needMore(s.saidTexts.length, 1, 'הודעת סיום אחת');
-        }
-      }
+      const rule = currentMissionRule(index);
+      if (rule && rule.missing) missing.push(...rule.missing().filter(Boolean));
       if (missing.length) return `כדי להשלים: ${missing.join(' · ')}`;
-      if (lesson.id === 1) return `כדי להשלים: בנו לפחות 3 בלוקים במגדל. כרגע יש ${state.lessonOneBlocks}.`;
       return 'כדי להשלים: בדקו את המשימה שמופיעה עכשיו ובנו בדיוק את סוגי הבלוקים/הצעדים שמופיעים בה.';
     }
     function evaluateProgramResult(){
@@ -1032,6 +1285,36 @@
     }
     function addEmoji(cls, icon, x, y){ const el=document.createElement('div'); el.className=cls; el.textContent=icon; el.style.left=x+'px'; el.style.bottom=y+'px'; document.getElementById('world').appendChild(el); return el; }
 
+    function normalizeBlockColor(color){
+      const raw = String(color || '').trim();
+      const map = { grass:'grass', wood:'wood', gold:'gold', diamond:'diamond', red:'red', purple:'purple', green:'grass', brown:'wood', yellow:'gold', blue:'diamond', ירוק:'grass', עץ:'wood', זהב:'gold', יהלום:'diamond', אדום:'red', סגול:'purple', 'אדום':'red' };
+      return map[raw] || null;
+    }
+    function blockColorFromField(block){
+      const raw = block && block.getFieldValue ? block.getFieldValue('COLOR') : null;
+      const color = normalizeBlockColor(raw);
+      if (!color) {
+        console.warn('Minecraft block color missing or invalid', { type:block?.type, rawColor:raw });
+        return null;
+      }
+      return color;
+    }
+    function placeBlockFromCommand(block){
+      const color = blockColorFromField(block);
+      if (!color) { say('לא הצלחתי לקרוא את צבע הבלוק — בחרו צבע מחדש והריצו שוב'); return; }
+      placeBlock(color);
+    }
+    function placePathFromCommand(block){
+      const color = blockColorFromField(block);
+      if (!color) { say('לא הצלחתי לקרוא את צבע האריח — בחרו צבע מחדש והריצו שוב'); return; }
+      placePath(color);
+    }
+    function placeHalfBlockFromCommand(block){
+      const color = blockColorFromField(block);
+      if (!color) { say('לא הצלחתי לקרוא את צבע חצי הבלוק — בחרו צבע מחדש והריצו שוב'); return; }
+      placeHalfBlock(color);
+    }
+
     function addDiamondMarker(){ if (lesson.id === 2 || lesson.id === 3 || lesson.id === 4 || lesson.id === 5 || lesson.id === 6 || lesson.id === 7 || lesson.id === 8 || lesson.id === 10) return; addEmoji('hint','💠', 220, 88); }
     const treasureSpots = [{x:105,y:GROUND_Y,label:'תחילת השביל'}, {x:195,y:GROUND_Y,label:'ענף תחתון'}, {x:285,y:GROUND_Y,label:'ענף ישר'}, {x:375,y:GROUND_Y,label:'קצה ימני'}, {x:195,y:GROUND_Y + 42,label:'ענף עליון'}, {x:285,y:GROUND_Y + 42,label:'פנייה גבוהה'}, {x:375,y:GROUND_Y + 84,label:'קצה עליון'}];
     function drawTreasureSpots(){ /* שיעור 10: לא מציגים סימני שאלה, כדי שהאוצר יישאר חבוי באמת. */ }
@@ -1053,10 +1336,10 @@
     function setStevePosition(){ const player=document.getElementById('player'); const behindGate = lesson.id === 5 && state.steveDepth > 1; player.style.left=state.steveX+'px'; player.style.right='auto'; player.style.bottom=state.steveY+'px'; player.style.transform = state.steveDepth > 0 ? 'scale(.82)' : ''; player.style.opacity = state.steveDepth > 0 ? '.9' : ''; player.style.zIndex = behindGate ? 1 : 4; positionBubble(); }
     function moveSteve(dx, dy){ const world=document.getElementById('world'); const maxX=Math.max(470, (world?.clientWidth || 640) - 92); let nextX=Math.max(24, Math.min(maxX, state.steveX + dx)); if (lesson.id === 5 && state.steveDepth === 0 && state.steveY === GROUND_Y && dx > 0 && state.steveX < 330 && nextX > 330) nextX = 330; if (lesson.id === 5 && state.steveDepth === 0 && state.steveY === GROUND_Y && dx < 0 && state.steveX > 420 && nextX < 420) nextX = 420; if (lesson.id === 5 && state.steveDepth > 0 && dx !== 0 && !state.behindGate && isInsideGateSpan(nextX)) state.behindGate = true; state.steveX=nextX; state.steveY=Math.max(GROUND_Y, Math.min(250, state.steveY + dy)); state.lastMove = dx > 0 ? 'right' : dx < 0 ? 'left' : dy > 0 ? 'up' : dy < 0 ? 'down' : null; if (lesson.id === 5 && state.steveDepth > 0 && isInsideGateSpan()) state.gatePassed = true; recordPosition(); setStevePosition(); updateStatus(); }
     function moveDepth(delta){ if (lesson.id === 5 && delta < 0 && state.steveDepth > 0 && isAtGateFrontBlocker()) { say('אין אפשרות להתקדם, השער חוסם'); state.lastMove = 'blocked'; updateStatus(); return; } state.steveDepth=Math.max(0, Math.min(2, state.steveDepth + delta)); if (state.steveDepth === 0) state.behindGate = false; state.steveY=Math.max(GROUND_Y, Math.min(250, state.steveY + (delta > 0 ? 28 : -28))); state.lastMove = delta > 0 ? 'back' : 'forward'; recordPosition(); setStevePosition(); updateStatus(); }
-    function placeBlock(color){ const blockY = state.steveY; const blockColor = color || 'grass'; addBlock(blockColor, state.steveX + 10, blockY); stats().placed.push({ kind:'block', color:blockColor, x:state.steveX + 10, y:blockY }); if (lesson.id === 1) state.lessonOneBlocks += 1; state.lastMove = null; updateStatus(); }
+    function placeBlock(color){ const blockY = state.steveY; const blockColor = normalizeBlockColor(color); if (!blockColor) return false; addBlock(blockColor, state.steveX + 10, blockY); stats().placed.push({ kind:'block', color:blockColor, x:state.steveX + 10, y:blockY }); if (lesson.id === 1) state.lessonOneBlocks += 1; state.lastMove = null; updateStatus(); }
 
-    function placePath(color){ const blockY = state.steveY; const x = state.steveX + 8; const blockColor = color || 'grass'; addBlock(blockColor, x, blockY, 'path-slab'); stats().placed.push({ kind:'path', color:blockColor, x, y:blockY }); if (lesson.id === 10) state.pathSpots.push({ x: x + 15, y: blockY, label:'אריח שביל שנבנה' }); state.lastMove = null; updateStatus(); }
-    function placeHalfBlock(color){ const blockY = state.steveY; const blockColor = color || 'grass'; addBlock(blockColor, state.steveX + 9, blockY, 'half-slab'); stats().placed.push({ kind:'half', color:blockColor, x:state.steveX + 9, y:blockY }); state.lastMove = null; updateStatus(); }
+    function placePath(color){ const blockY = state.steveY; const x = state.steveX + 8; const blockColor = normalizeBlockColor(color); if (!blockColor) return false; addBlock(blockColor, x, blockY, 'path-slab'); stats().placed.push({ kind:'path', color:blockColor, x, y:blockY }); if (lesson.id === 10) state.pathSpots.push({ x: x + 15, y: blockY, label:'אריח שביל שנבנה' }); state.lastMove = null; updateStatus(); }
+    function placeHalfBlock(color){ const blockY = state.steveY; const blockColor = normalizeBlockColor(color); if (!blockColor) return false; addBlock(blockColor, state.steveX + 9, blockY, 'half-slab'); stats().placed.push({ kind:'half', color:blockColor, x:state.steveX + 9, y:blockY }); state.lastMove = null; updateStatus(); }
     function say(text){
       const bubble=document.getElementById('bubble');
       if (state.sayTimer) clearTimeout(state.sayTimer);
@@ -1173,9 +1456,9 @@
           else if (dir === 'forward') moveDepth(-1);
           break;
         }
-        case 'place_block': placeBlock(block.getFieldValue('COLOR')); break;
-        case 'place_path': placePath(block.getFieldValue('COLOR')); break;
-        case 'place_half_block': placeHalfBlock(block.getFieldValue('COLOR')); break;
+        case 'place_block': placeBlockFromCommand(block); break;
+        case 'place_path': placePathFromCommand(block); break;
+        case 'place_half_block': placeHalfBlockFromCommand(block); break;
         case 'reset_blocks': resetBlocks(); break;
         case 'wait_seconds': { stats().usedWait = true; const seconds = Number(block.getFieldValue('SECONDS')) || 2; await wait(Math.max(1, Math.min(10, seconds)) * 1000); break; }
         case 'build_tower': buildTower(); break;
