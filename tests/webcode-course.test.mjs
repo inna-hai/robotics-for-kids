@@ -154,6 +154,12 @@ assert.ok(lesson6.starter.js.includes('score = score + 1'), 'lesson 6 increments
 assert.ok(lesson6.blocklyBlocks.some(block => block.type === 'lesson_6_plus'), 'lesson 6 has a Blockly block for score increment size');
 assert.ok(lesson6.blocklyBlocks.some(block => block.type === 'lesson_6_reset_message' && block.find === 'איפוס ניקוד'), 'lesson 6 reset-label block matches the starter button text');
 
+const lesson7 = lessons[6];
+const lesson7WinTextBlock = lesson7.blocklyBlocks.find(block => block.type === 'lesson_7_win_text');
+assert.ok(lesson7.title.includes('קליקים'), 'lesson 7 focuses on the first click game');
+assert.equal(lesson7WinTextBlock.find, 'ניצחת! הגעת ליעד 🎉', 'lesson 7 win-message block finds the actual starter win text');
+assert.ok(lesson7.starter.js.includes(lesson7WinTextBlock.find), 'lesson 7 starter contains the text changed by the win-message block');
+
 const lesson13 = lessons[12];
 assert.ok(lesson13.title.includes('הקוד שנוצר'), 'lesson 13 starts the generated-code lab phase');
 assert.ok(lesson13.progressionStage.includes('בלוקים אמיתיים'), 'lesson 13 remains block-first under the new progression requirement');

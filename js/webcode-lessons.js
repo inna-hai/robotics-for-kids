@@ -5241,7 +5241,7 @@
     7: { title:'משחק קליקים — מאזנים יעד ונקודות', concept:'click event · target · win condition', blocks:[
       ['target','יעד ניצחון %1','js','const target = 10;','const target = {{N}};',[['field_dropdown','N',[['5','5'],['8','8'],['12','12']]]]],
       ['click_points','כל קליק מוסיף %1','js','score = score + 1;','score = score + {{N}};',[['field_dropdown','N',[['1','1'],['2','2'],['3','3']]]]],
-      ['win_text','הודעת ניצחון %1','js','ניצחת במשחק הקליקים!','{{TEXT}}',[['field_input','TEXT','אליפות! ניצחת במשחק הקליקים']]],
+      ['win_text','הודעת ניצחון %1','js','ניצחת! הגעת ליעד 🎉','{{TEXT}}',[['field_input','TEXT','אליפות! ניצחת במשחק הקליקים']]],
       ['button','טקסט כפתור %1','html','לחצו לנקודה','{{TEXT}}',[['field_input','TEXT','תנו קליק!']]],
       ['win_color','צבע ניצחון %1','css','#dcfce7','{{COLOR}}',[['field_dropdown','COLOR',[['ירוק','#bbf7d0'],['צהוב','#fef08a'],['ורוד','#fbcfe8']]]]]
     ]},
