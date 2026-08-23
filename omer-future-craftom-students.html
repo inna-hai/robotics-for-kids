@@ -33,7 +33,7 @@
     <section class="grid">
       <form class="panel" id="worksheetForm">
         <h2>ממלאים תוך כדי עבודה</h2>
-        <p class="small">הדף נשמר אוטומטית במחשב הזה. בסוף המפגש מעתיקים סיכום או מדפיסים לפי הנחיית המדריך.</p>
+        <p class="small">הדף נשמר אוטומטית במחשב הזה. בסוף האתגר מעתיקים סיכום או מדפיסים לפי הנחיית המדריך.</p>
         <div id="fields"></div>
       </form>
 
@@ -91,9 +91,9 @@
     }
 
     function init() {
-      document.title = `דף תלמידים - מפגש ${lesson.id}: ${lesson.title}`;
-      $('tabs').innerHTML = program.lessons.map(item => `<a class="tab ${item.id === lesson.id ? 'active' : ''}" href="omer-future-craftom-students.html?lesson=${item.id}">מפגש ${item.id}</a>`).join('');
-      $('kicker').textContent = `מפגש ${lesson.id} מתוך ${program.totalMeetings} · ${lesson.productStage}`;
+      document.title = `דף תלמידים - אתגר ${lesson.id}: ${lesson.title}`;
+      $('tabs').innerHTML = program.lessons.map(item => `<a class="tab ${item.id === lesson.id ? 'active' : ''}" href="omer-future-craftom-students.html?lesson=${item.id}">אתגר ${item.id}</a>`).join('');
+      $('kicker').textContent = `אתגר ${lesson.id} מתוך ${program.totalChallenges} · ${lesson.theme}`;
       $('title').textContent = worksheet.title;
       $('intro').textContent = worksheet.intro;
       $('workMode').textContent = lesson.workMode;
@@ -142,7 +142,7 @@
     }
 
     function buildSummary() {
-      const lines = [worksheet.submitTitle, `מפגש ${lesson.id}: ${lesson.title}`, ''];
+      const lines = [worksheet.submitTitle, `אתגר ${lesson.id}: ${lesson.title}`, ''];
       worksheet.fields.forEach(field => {
         lines.push(`${field.label}:`);
         lines.push(String(state[field.id] || '').trim() || '-');

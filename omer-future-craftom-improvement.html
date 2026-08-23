@@ -16,7 +16,7 @@
       <p>מיועד למדריכות ולמורות: אם שיעור לא ברור, לא מתאים לכיתה ד׳, או לא מחובר מספיק לעומר העתידנית, ממלאים כאן בקשה מדויקת.</p>
       <form id="form">
         <div class="field">
-          <label for="lesson">מפגש</label>
+          <label for="lesson">אתגר</label>
           <select id="lesson" name="lesson"></select>
         </div>
         <div class="field">
@@ -41,7 +41,7 @@
   <script>
     const program = window.OMER_FUTURE_CRAFTOM_PROGRAM;
     const lessonSelect = document.getElementById('lesson');
-    lessonSelect.innerHTML = program.lessons.map(lesson => `<option value="מפגש ${lesson.id} - ${lesson.title}">מפגש ${lesson.id} - ${lesson.title}</option>`).join('');
+    lessonSelect.innerHTML = program.lessons.map(lesson => `<option value="אתגר ${lesson.id} - ${lesson.title}">אתגר ${lesson.id} - ${lesson.title}</option>`).join('');
     document.getElementById('form').addEventListener('submit', async event => {
       event.preventDefault();
       const status = document.getElementById('status');

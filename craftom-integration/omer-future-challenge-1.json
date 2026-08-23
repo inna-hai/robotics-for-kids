@@ -1,0 +1,69 @@
+{
+  "id": "omer-future-challenge-1-vision-gate",
+  "title": "אתגר 1: שער הכניסה והחזון",
+  "audience": "כיתה ד׳, בני 9",
+  "minecraftMode": "Minecraft Education + Craftom",
+  "challengeStructure": {
+    "challengeNumber": 1,
+    "estimatedMeetings": 1,
+    "theme": "זהות היישוב והתחלת עולם כיתתי",
+    "learningFocus": [
+      "חזון ליישוב עתידני",
+      "צרכים של ילדים ותושבים",
+      "נקודת התחלה למבקרים",
+      "שלטים והכוונה"
+    ]
+  },
+  "studentDeliverable": {
+    "requiredBuild": [
+      "שער כניסה או נקודת פתיחה ברורה",
+      "שלט חזון עם משפט קצר על עומר העתידנית",
+      "מיני־מפה או סימון של אזורים עתידיים",
+      "שביל או סימון שמראה לאן ממשיכים"
+    ],
+    "requiredThinking": [
+      "הצוות יודע להסביר איזה יישוב הוא רוצה לבנות",
+      "הצוות מציין לפחות ארבעה צרכים של ילדים ביישוב",
+      "מבקר חדש מבין איפה מתחילים ומה הרעיון הכללי"
+    ]
+  },
+  "craftomEvidence": {
+    "buildEvidence": [
+      {
+        "id": "entryGate",
+        "label": "שער או נקודת התחלה",
+        "eventTypes": ["block_place", "sign_text", "chat"],
+        "keywordsAny": ["שער", "כניסה", "start", "welcome", "ברוכים"]
+      },
+      {
+        "id": "visionSign",
+        "label": "שלט חזון",
+        "eventTypes": ["sign_text", "chat"],
+        "keywordsAny": ["עומר", "עתיד", "חזון", "חשוב לנו", "יישוב"]
+      },
+      {
+        "id": "futureMap",
+        "label": "מפה או סימון אזורים",
+        "eventTypes": ["block_place", "sign_text", "chat"],
+        "keywordsAny": ["מפה", "אזור", "שכונה", "פארק", "בית ספר", "קהילה"]
+      }
+    ],
+    "thinkingEvidence": [
+      {
+        "id": "childrenNeeds",
+        "label": "צרכים של ילדים ביישוב",
+        "eventTypes": ["chat", "sign_text", "reflection"],
+        "keywordsAny": ["ילדים", "בטוח", "משחק", "ללמוד", "צל", "חברים"]
+      }
+    ]
+  },
+  "teacherReport": {
+    "scoreBands": [
+      { "id": "notStarted", "label": "לא התחיל", "condition": "אין ראיות לשער, שלט או חזון" },
+      { "id": "builtEntry", "label": "בנה כניסה", "condition": "יש שער או נקודת התחלה" },
+      { "id": "explainedVision", "label": "הסביר חזון", "condition": "יש שלט חזון או הסבר על עומר העתידנית" },
+      { "id": "visitorReady", "label": "מוכן למבקר", "condition": "מבקר יודע איפה מתחילים ולאן ממשיכים" }
+    ],
+    "summaryTemplate": "{studentName} השתתף/ה באתגר שער הכניסה. חזון: {visionSummary}. הכוונה למבקרים: {navigationSummary}. הצעד הבא: {nextStep}."
+  }
+}

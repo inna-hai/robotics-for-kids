@@ -31,12 +31,12 @@
     const list = rows => `<ul>${rows.map(row => `<li>${esc(row)}</li>`).join('')}</ul>`;
     const cards = rows => `<div class="cards">${rows.map(row => `<div class="card"><b>${esc(row[0])}</b>${esc(row[1])}</div>`).join('')}</div>`;
 
-    document.title = `מצגת מדריך - מפגש ${lesson.id}: ${lesson.title}`;
-    document.getElementById('lessonPicker').innerHTML = program.lessons.map(item => `<a class="${item.id === lesson.id ? 'active' : ''}" href="omer-future-craftom-slides.html?lesson=${item.id}">מפגש ${item.id}</a>`).join('');
+    document.title = `מצגת מדריך - אתגר ${lesson.id}: ${lesson.title}`;
+    document.getElementById('lessonPicker').innerHTML = program.lessons.map(item => `<a class="${item.id === lesson.id ? 'active' : ''}" href="omer-future-craftom-slides.html?lesson=${item.id}">אתגר ${item.id}</a>`).join('');
 
     const slides = [
-      { html: `<div class="kicker">${esc(program.title)} • ${esc(program.targetAudience)} • ${esc(program.age)}</div><h1>מפגש ${lesson.id}: ${esc(lesson.title)}</h1><p>${esc(lesson.subtitle)}</p><div class="note">תוצר המפגש: ${esc(lesson.productStage)}</div>` },
-      { html: `<h2>שאלת המפגש</h2><p>${esc(lesson.bigQuestion)}</p>${cards([['מטרת מדריך', lesson.teacherGoal], ['מה יוצא לתלמידים', lesson.studentOutcome]])}` },
+      { html: `<div class="kicker">${esc(program.title)} • ${esc(program.targetAudience)} • ${esc(program.age)}</div><h1>אתגר ${lesson.id}: ${esc(lesson.title)}</h1><p>${esc(lesson.theme)} • ${esc(lesson.systemFocus)}</p><div class="note">תוצר האתגר: ${esc(lesson.minecraftBuild)}</div>` },
+      { html: `<h2>שאלת האתגר</h2><p>${esc(lesson.bigQuestion)}</p>${cards([['מטרת מדריך', lesson.teacherGoal], ['מה יוצא לתלמידים', lesson.studentOutcome]])}` },
       { html: `<h2>חוק השיעור</h2><p>לא מלמדים קוד. מלמדים תכנון, בנייה, בדיקה והסבר.</p><div class="note">שאלות שחוזרות בכל שיעור: למי זה עוזר? איך זה מתחבר? איך מבקר יודע מה לעשות כאן?</div>` },
       { html: `<h2>איך עובדים בדיוק</h2><p>${esc(program.buildProtocol.defaultMode)}</p>${cards(program.buildProtocol.roles.map(role => [role[0], role[1]]))}` },
       { html: `<h2>הכנת מדריך לפני שיעור</h2>${list(lesson.teacherPrep)}` },
