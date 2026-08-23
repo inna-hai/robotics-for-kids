@@ -62,7 +62,8 @@ for (const lesson of program.lessons) {
 assert.ok(program.lessons[0].title.includes('שער'), 'challenge 1 opens with vision gate');
 assert.ok(program.lessons[1].title.includes('שכונה'), 'challenge 2 builds a neighborhood');
 assert.ok(program.lessons[2].title.includes('טבע'), 'challenge 3 covers nature/water/energy');
-assert.ok(program.lessons[3].title.includes('סיור'), 'challenge 4 closes with a tour');
+assert.ok(program.lessons[3].title.includes('רכבת'), 'challenge 4 closes with a train tour');
+assert.ok(program.lessons[3].teamBuilds.every(item => item.team.includes('רכבת') || item.build.includes('רכבת')), 'challenge 4 team builds are train-based');
 assert.equal(program.buildProtocol.roles.length, 5, 'program defines build roles');
 
 const hub = read('omer-future-craftom.html');
@@ -75,6 +76,7 @@ assert.ok(hub.includes('JSON הצלחה'), 'hub links JSON success');
 assert.ok(hub.includes('teamBuilds'), 'hub renders fixed team assignments');
 assert.ok(hub.includes('program.omerAnchor'), 'hub renders Omer anchor text');
 assert.ok(hub.includes('lesson.image'), 'hub renders images from challenge data');
+assert.ok(hub.includes('omer-future-craftom-challenge.html?lesson=${lesson.id}'), 'hub links Omer challenge pages');
 assert.ok(hub.includes('omer-future-craftom-students.html?lesson=${lesson.id}'), 'hub links student worksheets');
 assert.ok(hub.includes('omer-future-craftom-slides.html?lesson=${lesson.id}'), 'hub links instructor slides');
 assert.ok(hub.includes('js/omer-future-craftom-lessons.js'), 'hub loads course data');
@@ -94,6 +96,13 @@ assert.ok(slides.includes('lessonPicker'), 'slides page can switch challenges');
 assert.ok(slides.includes('לא מלמדים קוד'), 'slides remind no coding');
 assert.ok(slides.includes('מה לבדוק בזמן עבודה'), 'slides include teacher observation checks');
 assert.ok(slides.includes('תבנית סיור סופי'), 'slides include final tour template');
+
+const challengePage = read('omer-future-craftom-challenge.html');
+assert.ok(challengePage.includes('grid-4'), 'challenge page uses Craftom challenge card grid');
+assert.ok(challengePage.includes('teamBuilds'), 'challenge page renders team build cards');
+assert.ok(challengePage.includes('minecraft-shot'), 'challenge page has Minecraft hero image');
+assert.ok(challengePage.includes('JSON הצלחה'), 'challenge page links JSON success');
+assert.ok(challengePage.includes('window.getOmerFutureCraftomLesson'), 'challenge page loads lesson by query');
 
 const improvement = read('omer-future-craftom-improvement.html');
 assert.ok(improvement.includes('בקשת שיפור'), 'improvement page has title');

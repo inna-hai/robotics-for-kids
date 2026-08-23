@@ -82,7 +82,7 @@
     document.getElementById('heroImage').src = program.lessons[0].image;
     document.getElementById('heroCaption').textContent = program.lessons[0].minecraftBuild;
 
-    document.getElementById('heroActions').innerHTML = program.lessons.map(lesson => `<a class="btn" href="omer-future-craftom-students.html?lesson=${lesson.id}">כניסה לאתגר ${lesson.id}</a>`).join('')
+    document.getElementById('heroActions').innerHTML = program.lessons.map(lesson => `<a class="btn" href="omer-future-craftom-challenge.html?lesson=${lesson.id}">כניסה לאתגר ${lesson.id}</a>`).join('')
       + program.lessons.map(lesson => `<a class="btn secondary" href="${esc(lesson.jsonSpec)}">JSON אתגר ${lesson.id}</a>`).join('');
 
     document.getElementById('challengeCards').innerHTML = program.lessons.map(lesson => `
@@ -96,6 +96,7 @@
           ${lesson.teamBuilds.map(item => `<li><b>${esc(item.team)}</b><br>${esc(item.build)}</li>`).join('')}
         </ul>
         <div class="challenge-actions">
+          <a class="btn" href="omer-future-craftom-challenge.html?lesson=${lesson.id}">כניסה לאתגר</a>
           <a class="btn" href="omer-future-craftom-students.html?lesson=${lesson.id}">דף תלמידים</a>
           <a class="btn secondary" href="omer-future-craftom-slides.html?lesson=${lesson.id}">מצגת מדריך</a>
           <a class="btn secondary" href="${esc(lesson.jsonSpec)}">JSON הצלחה</a>

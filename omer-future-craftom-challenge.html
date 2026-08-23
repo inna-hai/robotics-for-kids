@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>אתגר עומר העתידנית</title>
+  <meta name="description" content="אתגרי עומר העתידנית לכיתה ד׳: בנייה וחקר ב־Minecraft Education + Craftom." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css">
+  <link rel="stylesheet" href="css/platform-home-link.css">
+  <style>
+    .team-card{min-height:0}
+    .team-card p{margin:0}
+    .evidence{display:block;margin-top:8px;color:var(--muted);font-weight:800}
+    .flow-list{display:grid;gap:10px;padding:0;list-style:none}
+    .flow-list li{display:grid;grid-template-columns:82px 1fr;gap:10px;border:1px solid var(--line);background:#f8fcff;border-radius:14px;padding:12px}
+    .flow-list b{color:var(--blue)}
+    .challenge-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+    .challenge-nav a{display:inline-flex;text-decoration:none;border:1px solid #bdd8f4;background:#fff;color:var(--blue);border-radius:999px;padding:8px 12px;font-weight:900}
+    .challenge-nav a.active{background:var(--blue);color:white}
+    @media(max-width:850px){.flow-list li{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <nav class="challenge-nav" id="challengeNav"></nav>
+
+    <section class="hero">
+      <div>
+        <div class="kicker" id="kicker"></div>
+        <h1 id="title"></h1>
+        <p class="goal" id="goal"></p>
+        <div class="actions" id="actions"></div>
+      </div>
+      <figure class="minecraft-shot">
+        <img id="heroImage" src="assets/craftom/challenges/my-smart-city-1-plan.webp" alt="תמונת Minecraft לאתגר עומר העתידנית">
+        <figcaption class="shot-caption" id="caption"></figcaption>
+      </figure>
+    </section>
+
+    <section class="grid-4" id="teamCards"></section>
+
+    <section class="steps">
+      <div class="card build-first">
+        <h2>מה הילדים בונים במיינקראפט</h2>
+        <p id="minecraftBuild"></p>
+        <ul id="exactSteps"></ul>
+      </div>
+      <div class="card">
+        <h2>מה חוקרים לפני הבנייה</h2>
+        <p id="researchPrompt"></p>
+        <div class="rule" id="bigQuestion"></div>
+      </div>
+      <div class="card">
+        <h2>בדיקת הצלחה</h2>
+        <ul id="successChecks"></ul>
+      </div>
+      <div class="card">
+        <h2>חיבור ל־Craftom</h2>
+        <p>האתגר מחובר ל־JSON הצלחה שמגדיר ראיות בנייה, שלטים, רפלקציה ודוח מורה עתידי.</p>
+        <div class="actions"><a class="btn secondary" id="jsonLink" href="#">פתחו JSON הצלחה</a></div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:14px">
+      <h2>מהלך שיעור מומלץ</h2>
+      <ul class="flow-list" id="flow"></ul>
+    </section>
+  </main>
+
+  <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
+  <script src="js/omer-future-craftom-lessons.js?v=20260823-omer-challenge-train"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const program = window.OMER_FUTURE_CRAFTOM_PROGRAM;
+    const lesson = window.getOmerFutureCraftomLesson(params.get('lesson'));
+    const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+
+    document.title = `אתגר ${lesson.id} - ${lesson.title}`;
+    document.getElementById('challengeNav').innerHTML = program.lessons.map(item => `<a class="${item.id === lesson.id ? 'active' : ''}" href="omer-future-craftom-challenge.html?lesson=${item.id}">אתגר ${item.id}</a>`).join('');
+    document.getElementById('kicker').textContent = `אתגר ${lesson.id} מתוך ${program.totalChallenges} • ${lesson.durationMinutes} דקות • ${lesson.grade}`;
+    document.getElementById('title').textContent = lesson.title;
+    document.getElementById('goal').textContent = lesson.story;
+    document.getElementById('heroImage').src = lesson.image;
+    document.getElementById('heroImage').alt = `תמונת Minecraft לאתגר ${lesson.id}: ${lesson.title}`;
+    document.getElementById('caption').textContent = lesson.minecraftBuild;
+    document.getElementById('actions').innerHTML = `
+      <a class="btn" href="omer-future-craftom-students.html?lesson=${lesson.id}">דף תלמידים</a>
+      <a class="btn secondary" href="omer-future-craftom-slides.html?lesson=${lesson.id}">מצגת מדריך</a>
+      <a class="btn secondary" href="omer-future-craftom.html">חזרה למפת האתגרים</a>
+    `;
+
+    document.getElementById('teamCards').innerHTML = lesson.teamBuilds.map((item, index) => `
+      <article class="card lesson-card highlight team-card">
+        <span><span class="num">${index + 1}</span><span class="tag">${esc(item.team)}</span></span>
+        <h2>${esc(item.team.replace('צוות ', ''))}</h2>
+        <p>${esc(item.build)}</p>
+        <span class="evidence">${esc(item.evidence)}</span>
+      </article>
+    `).join('');
+
+    document.getElementById('minecraftBuild').textContent = lesson.minecraftBuild;
+    document.getElementById('researchPrompt').textContent = lesson.researchPrompt;
+    document.getElementById('bigQuestion').textContent = lesson.bigQuestion;
+    document.getElementById('exactSteps').innerHTML = lesson.exactSteps.map(step => `<li>${esc(step)}</li>`).join('');
+    document.getElementById('successChecks').innerHTML = lesson.successChecks.map(step => `<li>${esc(step)}</li>`).join('');
+    document.getElementById('jsonLink').href = lesson.jsonSpec;
+    document.getElementById('flow').innerHTML = lesson.flow.map(step => `<li><b>${esc(step.minutes)}</b><span><strong>${esc(step.title)}</strong><br>${esc(step.students)}</span></li>`).join('');
+  </script>
+  <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
+</body>
+</html>
