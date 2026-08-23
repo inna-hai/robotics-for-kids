@@ -14,13 +14,9 @@
     .team-card{min-height:0}
     .team-card p{margin:0}
     .evidence{display:block;margin-top:8px;color:var(--muted);font-weight:800}
-    .flow-list{display:grid;gap:10px;padding:0;list-style:none}
-    .flow-list li{display:grid;grid-template-columns:82px 1fr;gap:10px;border:1px solid var(--line);background:#f8fcff;border-radius:14px;padding:12px}
-    .flow-list b{color:var(--blue)}
     .challenge-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
     .challenge-nav a{display:inline-flex;text-decoration:none;border:1px solid #bdd8f4;background:#fff;color:var(--blue);border-radius:999px;padding:8px 12px;font-weight:900}
     .challenge-nav a.active{background:var(--blue);color:white}
-    @media(max-width:850px){.flow-list li{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -68,10 +64,6 @@
       </div>
     </section>
 
-    <section class="card" style="margin-top:14px">
-      <h2>מהלך שיעור מומלץ</h2>
-      <ul class="flow-list" id="flow"></ul>
-    </section>
   </main>
 
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
@@ -112,7 +104,6 @@
     document.getElementById('meetingSteps').innerHTML = lesson.meetings.map(item => `<li><strong>שיעור ${esc(item[0])} - ${esc(item[1])}:</strong> ${esc(item[2])} תוצר: ${esc(item[3])}</li>`).join('');
     document.getElementById('successChecks').innerHTML = lesson.successChecks.map(step => `<li>${esc(step)}</li>`).join('');
     document.getElementById('jsonLink').href = lesson.jsonSpec;
-    document.getElementById('flow').innerHTML = lesson.flow.map(step => `<li><b>${esc(step.minutes)}</b><span><strong>${esc(step.title)}</strong><br>${esc(step.students)}</span></li>`).join('');
   </script>
   <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
 </body>
