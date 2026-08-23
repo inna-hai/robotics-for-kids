@@ -160,6 +160,14 @@ assert.ok(lesson7.title.includes('קליקים'), 'lesson 7 focuses on the first
 assert.equal(lesson7WinTextBlock.find, 'ניצחת! הגעת ליעד 🎉', 'lesson 7 win-message block finds the actual starter win text');
 assert.ok(lesson7.starter.js.includes(lesson7WinTextBlock.find), 'lesson 7 starter contains the text changed by the win-message block');
 
+const lesson8 = lessons[7];
+const lesson8TimeBlock = lesson8.blocklyBlocks.find(block => block.type === 'lesson_8_time');
+const lesson8EndBlock = lesson8.blocklyBlocks.find(block => block.type === 'lesson_8_end');
+assert.ok(lesson8.title.includes('טיימר'), 'lesson 8 focuses on timer gameplay');
+assert.equal(lesson8TimeBlock.find, 'const startTime = 15;', 'lesson 8 time block changes the game start time source');
+assert.ok(lesson8.starter.js.includes('timeLeft = startTime;'), 'lesson 8 starts each run from the configurable start time');
+assert.ok(lesson8.starter.js.includes(lesson8EndBlock.find), 'lesson 8 end-message block finds the actual starter end text');
+
 const lesson13 = lessons[12];
 assert.ok(lesson13.title.includes('הקוד שנוצר'), 'lesson 13 starts the generated-code lab phase');
 assert.ok(lesson13.progressionStage.includes('בלוקים אמיתיים'), 'lesson 13 remains block-first under the new progression requirement');
