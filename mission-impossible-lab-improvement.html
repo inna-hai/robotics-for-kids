@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>בקשת שיפור - Mission Impossible Lab — אתגרי פתרון בעיות עם AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}:root{--ink:#102033;--muted:#526070;--blue:#2563eb;--purple:#7c3aed;--green:#16a34a;--line:#e4edf8}body{margin:0;font-family:Rubik,Arial,sans-serif;direction:rtl;color:var(--ink);background:linear-gradient(135deg,#eef7ff,#fff7ed 45%,#f5f3ff);line-height:1.65}.shell{width:min(960px,calc(100% - 26px));margin:0 auto}.hero{padding:34px 0 18px}.hero-card{background:linear-gradient(135deg,#0f172a,#1e40af 55%,#6d28d9);color:white;border-radius:30px;padding:28px;box-shadow:0 22px 60px rgba(37,99,235,.18)}.kicker{display:inline-flex;border-radius:999px;padding:7px 12px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);font-weight:900;margin-bottom:12px}h1{font-size:clamp(2rem,5vw,4rem);line-height:1.05;margin:0 0 12px}h2{font-size:clamp(1.45rem,3vw,2.25rem);line-height:1.14;margin:0 0 10px}.hero-card p{font-size:1.12rem;color:#eaf6ff;margin:0}.panel{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:26px;padding:22px;box-shadow:0 16px 40px rgba(15,23,42,.07);margin:16px 0 44px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:grid;gap:7px;margin-bottom:14px}.field.full{grid-column:1/-1}.field label{font-weight:900;color:#1d4ed8}.field input,.field textarea,.field select{width:100%;border:2px solid #dbeafe;border-radius:16px;padding:13px 14px;font:inherit;background:#fbfdff;color:#0f172a;outline:0}.field textarea{min-height:112px;resize:vertical}.field textarea.large{min-height:165px}.field input:focus,.field textarea:focus,.field select:focus{border-color:#7c3aed;box-shadow:0 0 0 4px rgba(124,58,237,.1)}.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.btn{border:0;border-radius:999px;padding:12px 18px;font-family:inherit;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#0f172a;color:white}.btn.green{background:#16a34a}.btn.secondary{background:#eef2ff;color:#3730a3}.msg{font-weight:900}.help{color:var(--muted);font-size:.95rem}.preview{display:none;align-items:center;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:10px;margin-top:8px}.preview img{width:58px;height:58px;object-fit:cover;border-radius:12px}.footer{text-align:center;color:#64748b;font-weight:800;padding:22px 0 38px}@media(max-width:760px){.grid{grid-template-columns:1fr}.panel,.hero-card{border-radius:22px;padding:18px}.actions .btn{width:100%}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-card">
+        <div class="kicker">בקשת שיפור ללומדת פתרון בעיות עם AI</div>
+        <h1>מה כדאי לשנות או להוסיף?</h1>
+        <p>הטופס הזה מיועד להצעות ממוקדות ללומדה “Mission Impossible Lab — אתגרי פתרון בעיות עם AI”: דפי תלמידים, מצגות מדריך, מהלך שיעור, ניסוחים, משימות ו-AI.</p>
+      </div>
+    </section>
+
+    <form class="panel" id="form">
+      <h2>ממלאים בקשה מסודרת</h2>
+      <p class="help">הבקשה תישמר במערכת הפידבק של robotics15. עדיף לכתוב שינוי אחד ברור בכל שליחה.</p>
+      <div class="grid">
+        <div class="field">
+          <label for="name">שם</label>
+          <input id="name" autocomplete="name" placeholder="שם ממלאת הבקשה">
+        </div>
+        <div class="field">
+          <label for="contact">מייל / טלפון</label>
+          <input id="contact" autocomplete="email" placeholder="לא חובה, רק אם צריך לחזור אלייך">
+        </div>
+        <div class="field">
+          <label for="lesson">מפגש</label>
+          <select id="lesson">
+            <option value="כללי">כללי / כל התוכנית</option>
+            <option value="1">מפגש 1 - פתיחת המעבדה: מהי משימה בלתי אפשרית?</option>
+            <option value="2">מפגש 2 - חוקרי AI: שואלים שאלות חכמות</option>
+            <option value="3">מפגש 3 - בודקים את הסוכן: אמת, טעות והזיה</option>
+            <option value="4">מפגש 4 - מפת בעיה: מי מושפע ומה כואב?</option>
+            <option value="5">מפגש 5 - חלוקת תפקידים בצוות מבצעי</option>
+            <option value="6">מפגש 6 - מרעיון לפתרון: שלוש חלופות</option>
+            <option value="7">מפגש 7 - אפיון מוצר דיגיטלי ראשון</option>
+            <option value="8">מפגש 8 - בונים אבטיפוס בעזרת AI</option>
+            <option value="9">מפגש 9 - בדיקות משתמשים ודיבוג</option>
+            <option value="10">מפגש 10 - שיפור לפי משוב</option>
+            <option value="11">מפגש 11 - משימה מורכבת: דאטה וסיפור</option>
+            <option value="12">מפגש 12 - הכנת פרזנטציה מנצחת</option>
+            <option value="13">מפגש 13 - חזרת Demo: תסריט, תפקידים וזמן</option>
+            <option value="14">מפגש 14 - פיץ׳ מול קהל: שאלות קשות</option>
+            <option value="15">מפגש 15 - Mission Impossible Expo</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="area">איפה השינוי?</label>
+          <select id="area">
+            <option>דף תלמידים</option>
+            <option>מצגת מדריך</option>
+            <option>עמוד תוכנית</option>
+            <option>פרומפטים ל-AI</option>
+            <option>משימות / דף עבודה</option>
+            <option>עיצוב / UX</option>
+            <option>אחר</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="type">סוג בקשה</label>
+          <select id="type">
+            <option>שיפור תוכן</option>
+            <option>תיקון טעות</option>
+            <option>הוספת פעילות</option>
+            <option>פישוט לתלמידים</option>
+            <option>שיפור למדריך</option>
+            <option>תקלה טכנית</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="priority">עדיפות</label>
+          <select id="priority">
+            <option>רגיל</option>
+            <option>חשוב לפני שיעור</option>
+            <option>דחוף - חוסם שימוש</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label for="problem">מה הבעיה או החוסר?</label>
+          <textarea id="problem" required placeholder="לדוגמה: במפגש 2 דף התלמידים דורש יותר מדי כתיבה, וצריך לפרק לשאלות קצרות יותר."></textarea>
+        </div>
+        <div class="field full">
+          <label for="suggestion">מה את מציעה לשנות?</label>
+          <textarea id="suggestion" class="large" required placeholder="כתבי את השינוי המבוקש בצורה הכי ברורה שאפשר. אפשר להציע ניסוח מדויק."></textarea>
+        </div>
+        <div class="field full">
+          <label for="example">דוגמה / ניסוח חלופי / קישור</label>
+          <textarea id="example" placeholder="לא חובה. אפשר להדביק טקסט חלופי, קישור, או להסביר איך זה צריך להיראות."></textarea>
+        </div>
+        <div class="field full">
+          <label for="image">צילום מסך / תמונה</label>
+          <input id="image" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
+          <div class="preview" id="preview"><img alt="תצוגה מקדימה"><span></span></div>
+          <div class="help">אפשר לצרף תמונה עד 5MB.</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn green" id="submit" type="submit">שליחת בקשה</button>
+        <a class="btn secondary" href="mission-impossible-lab.html">חזרה לתוכנית</a>
+        <a class="btn secondary" href="mission-impossible-lab-students.html?lesson=1">דף תלמידים</a>
+        <span class="msg" id="msg" aria-live="polite"></span>
+      </div>
+    </form>
+  </main>
+  <footer class="footer">בקשת שיפור · robotics15 · hai.tech</footer>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    const form = $('form');
+    const msg = $('msg');
+    const submit = $('submit');
+    const imageInput = $('image');
+    const preview = $('preview');
+    let attachment = null;
+
+    imageInput.addEventListener('change', () => {
+      attachment = null;
+      preview.style.display = 'none';
+      const file = imageInput.files && imageInput.files[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        msg.style.color = '#dc2626';
+        msg.textContent = 'אפשר לצרף רק תמונה.';
+        imageInput.value = '';
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        msg.style.color = '#dc2626';
+        msg.textContent = 'התמונה גדולה מדי. עד 5MB.';
+        imageInput.value = '';
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        attachment = { name: file.name, type: file.type, size: file.size, dataUrl: reader.result };
+        preview.querySelector('img').src = reader.result;
+        preview.querySelector('span').textContent = `${file.name} · ${Math.round(file.size / 1024)}KB`;
+        preview.style.display = 'flex';
+        msg.textContent = '';
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function buildMessage() {
+      return [
+        'בקשת שיפור ללומדת "Mission Impossible Lab — אתגרי פתרון בעיות עם AI"',
+        '',
+        `שם: ${$('name').value || '-'}`,
+        `מפגש: ${$('lesson').value}`,
+        `אזור בלומדה: ${$('area').value}`,
+        `סוג בקשה: ${$('type').value}`,
+        `עדיפות: ${$('priority').value}`,
+        '',
+        'מה הבעיה או החוסר:',
+        $('problem').value,
+        '',
+        'מה מוצע לשנות:',
+        $('suggestion').value,
+        '',
+        'דוגמה / ניסוח חלופי / קישור:',
+        $('example').value || '-'
+      ].join('\n');
+    }
+
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      submit.disabled = true;
+      submit.textContent = 'שולח...';
+      msg.textContent = '';
+      let response = null;
+      try {
+        response = await fetch('/api/feedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            kind: 'feature',
+            message: buildMessage(),
+            contact: $('contact').value,
+            page: '/mission-impossible-lab-improvement.html',
+            lesson: $('lesson').value,
+            attachment
+          })
+        });
+        if (!response.ok) throw new Error('bad_response');
+        msg.style.color = '#15803d';
+        msg.textContent = 'הבקשה נשלחה. תודה!';
+        form.reset();
+        attachment = null;
+        preview.style.display = 'none';
+      } catch (error) {
+        let errorMessage = 'לא הצלחנו לשלוח. נסו שוב.';
+        try {
+          const payload = await response?.json?.();
+          if (payload?.error) errorMessage = payload.error;
+        } catch (_) {}
+        msg.style.color = '#dc2626';
+        msg.textContent = errorMessage;
+      } finally {
+        submit.disabled = false;
+        submit.textContent = 'שליחת בקשה';
+      }
+    });
+  </script>
+</body>
+</html>
