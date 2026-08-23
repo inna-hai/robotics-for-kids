@@ -5,7 +5,7 @@
   "minecraftMode": "Minecraft Education + Craftom",
   "challengeStructure": {
     "challengeNumber": 4,
-    "estimatedMeetings": 1,
+    "estimatedMeetings": 4,
     "theme": "רכבת מבקרים, תחנות ושיפור היישוב",
     "learningFocus": [
       "רכבת סיור כמבנה הסבר",
@@ -13,31 +13,11 @@
       "נסיעת בדיקת מבקר",
       "שיפור לפי משוב",
       "חיבור חלקים למערכת אחת"
-    ]
+    ],
+    "sameForAllTeams": true,
+    "teamWorkModel": "כל הצוותים עושים את אותו רצף שיעורים; כל צוות בונה בחלקה שלו."
   },
   "studentDeliverable": {
-    "teamBuildOptions": [
-      {
-        "team": "צוות רכבת שער",
-        "build": "מסילת קרוניות קצרה שיוצאת משער היישוב ומציגה את מפת עומר העתידנית",
-        "requiredEvidence": ["תחנת התחלה", "מסילה", "קרונית או סימון נסיעה", "שלט ברוכים הבאים"]
-      },
-      {
-        "team": "צוות רכבת שכונה",
-        "build": "רכבת שעוברת ליד הבתים, החצר המשותפת והדרך לבית הספר",
-        "requiredEvidence": ["מסילה ליד השכונה", "תחנת עצירה", "שלט מה רואים כאן"]
-      },
-      {
-        "team": "צוות רכבת קיימות",
-        "build": "רכבת שעוברת ליד פארק הצל, מים חכמים או אנרגיה סולארית",
-        "requiredEvidence": ["מסילה ליד מערכת קיימות", "שלט איך זה עובד", "שלט למי זה עוזר"]
-      },
-      {
-        "team": "צוות רכבת קהילה",
-        "build": "רכבת שעוברת דרך המרכז הקהילתי או בית הספר ומחברת חזרה לתחנת הסיום",
-        "requiredEvidence": ["תחנת קהילה", "חיבור למסילה אחרת", "שלט סיום טיול"]
-      }
-    ],
     "requiredBuild": [
       "מסילת רכבת או מסלול קרוניות עם התחלה וסיום",
       "לפחות שתי תחנות עצירה",
@@ -48,6 +28,28 @@
       "הצוות מסביר מה רואים מהרכבת ולמה זה חשוב לעומר",
       "הצוות מציג שינוי שעשה בעקבות נסיעת מבקר",
       "רכבת הסיור מוכיחה שהיישוב הוא מערכת ולא אוסף מבנים"
+    ],
+    "meetingDeliverables": [
+      {
+        "meeting": "4.1",
+        "title": "תחנת רכבת התחלה",
+        "deliverable": "תחנת התחלה ושלט מסלול"
+      },
+      {
+        "meeting": "4.2",
+        "title": "מסילה בין רכיבי היישוב",
+        "deliverable": "מסלול רכבת שמחבר לפחות שלושה רכיבים"
+      },
+      {
+        "meeting": "4.3",
+        "title": "תחנות ושלטי טיול מושב",
+        "deliverable": "לפחות שלוש תחנות עם שלטי הסבר"
+      },
+      {
+        "meeting": "4.4",
+        "title": "נסיעת מבקר ושיפור",
+        "deliverable": "נסיעת בדיקה, שיפור אחד והצגת טיול של 2 דקות"
+      }
     ]
   },
   "craftomEvidence": {
@@ -55,38 +57,97 @@
       {
         "id": "trainPath",
         "label": "מסילת רכבת סיור",
-        "eventTypes": ["block_place", "sign_text"],
-        "keywordsAny": ["רכבת", "מסילה", "קרונית", "תחנה", "התחלה", "סיום"]
+        "eventTypes": [
+          "block_place",
+          "sign_text"
+        ],
+        "keywordsAny": [
+          "רכבת",
+          "מסילה",
+          "קרונית",
+          "תחנה",
+          "התחלה",
+          "סיום"
+        ]
       },
       {
         "id": "trainStations",
         "label": "תחנות רכבת עם שלטים",
-        "eventTypes": ["sign_text", "block_place"],
-        "keywordsAny": ["תחנה 1", "תחנה 2", "תחנת שער", "תחנת שכונה", "תחנת קיימות", "שלט"],
+        "eventTypes": [
+          "sign_text",
+          "block_place"
+        ],
+        "keywordsAny": [
+          "תחנה 1",
+          "תחנה 2",
+          "תחנת שער",
+          "תחנת שכונה",
+          "תחנת קיימות",
+          "שלט"
+        ],
         "minimumCount": 2
       },
       {
         "id": "improvement",
         "label": "שיפור בעקבות נסיעת בדיקה",
-        "eventTypes": ["chat", "sign_text", "reflection", "block_place"],
-        "keywordsAny": ["שיפרנו", "תיקנו", "מבקר", "נסיעה", "התבלבל", "ברור יותר"]
+        "eventTypes": [
+          "chat",
+          "sign_text",
+          "reflection",
+          "block_place"
+        ],
+        "keywordsAny": [
+          "שיפרנו",
+          "תיקנו",
+          "מבקר",
+          "נסיעה",
+          "התבלבל",
+          "ברור יותר"
+        ]
       }
     ],
     "presentationEvidence": [
       {
         "id": "systemExplanation",
         "label": "הסבר מערכת שלמה דרך רכבת",
-        "eventTypes": ["chat", "reflection"],
-        "keywordsAny": ["רכבת", "מתחבר", "מערכת", "יישוב", "עומר", "עוזר", "תלוי"]
+        "eventTypes": [
+          "chat",
+          "reflection"
+        ],
+        "keywordsAny": [
+          "רכבת",
+          "מתחבר",
+          "מערכת",
+          "יישוב",
+          "עומר",
+          "עוזר",
+          "תלוי"
+        ]
       }
     ]
   },
   "teacherReport": {
     "scoreBands": [
-      { "id": "notStarted", "label": "לא התחיל", "condition": "אין ראיות למסילת רכבת או תחנה" },
-      { "id": "trainBuilt", "label": "בנה רכבת סיור", "condition": "יש מסילה או קרוניות ותחנות" },
-      { "id": "visitorImproved", "label": "שיפר לפי נסיעת מבקר", "condition": "יש ראיית בדיקה ותיקון" },
-      { "id": "systemPresented", "label": "הציג מערכת", "condition": "הצוות מסביר חיבור בין חלקי היישוב דרך הרכבת" }
+      {
+        "id": "notStarted",
+        "label": "לא התחיל",
+        "condition": "אין ראיות למסילת רכבת או תחנה"
+      },
+      {
+        "id": "trainBuilt",
+        "label": "בנה רכבת סיור",
+        "condition": "יש מסילה או קרוניות ותחנות"
+      },
+      {
+        "id": "visitorImproved",
+        "label": "שיפר לפי נסיעת מבקר",
+        "condition": "יש ראיית בדיקה ותיקון"
+      },
+      {
+        "id": "systemPresented",
+        "label": "הציג מערכת",
+        "condition": "הצוות מסביר חיבור בין חלקי היישוב דרך הרכבת"
+      }
     ],
     "summaryTemplate": "{studentName} השתתף/ה בבניית רכבת הסיור של עומר העתידנית. תחנות: {stationsSummary}. שיפור לפי נסיעת מבקר: {improvementSummary}. חוזקה להצגה: {presentationStrength}."
   }

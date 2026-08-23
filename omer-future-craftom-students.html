@@ -52,9 +52,9 @@
         </section>
 
         <section class="panel">
-          <h2>חלוקת צוותים</h2>
-          <p class="small">המדריך מחלק לכל צוות אחד מהמוקדים. לא כולם בונים אותו דבר.</p>
-          <div class="checklist" id="teamBuilds"></div>
+          <h2>4 שיעורים באתגר</h2>
+          <p class="small">כל הצוותים עושים את אותו רצף. כל צוות בונה בחלקה שלו.</p>
+          <div class="checklist" id="challengeMeetings"></div>
         </section>
 
         <section class="panel">
@@ -103,8 +103,8 @@
       $('title').textContent = worksheet.title;
       $('intro').textContent = worksheet.intro;
       $('workMode').textContent = lesson.workMode;
-      $('exactSteps').innerHTML = lesson.exactSteps.map((item, index) => `<div class="check"><span>${index + 1}</span><span>${esc(item)}</span></div>`).join('');
-      $('teamBuilds').innerHTML = lesson.teamBuilds.map(item => `<div class="check"><span>•</span><span><strong>${esc(item.team)}</strong><br>${esc(item.build)}<br><small>${esc(item.evidence)}</small></span></div>`).join('');
+      $('exactSteps').innerHTML = lesson.meetings.map((item, index) => `<div class="check"><span>${index + 1}</span><span><strong>שיעור ${esc(item[0])}: ${esc(item[1])}</strong><br>${esc(item[2])}</span></div>`).join('');
+      $('challengeMeetings').innerHTML = lesson.meetings.map(item => `<div class="check"><span>${esc(item[0])}</span><span><strong>${esc(item[1])}</strong><br>${esc(item[2])}<br><small>תוצר: ${esc(item[3])}</small></span></div>`).join('');
       $('fields').innerHTML = worksheet.fields.map(field => `
         <div class="field">
           <label for="${field.id}">${esc(field.label)}</label>

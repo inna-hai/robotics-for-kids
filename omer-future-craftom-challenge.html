@@ -40,13 +40,13 @@
       </figure>
     </section>
 
-    <section class="grid-4" id="teamCards"></section>
+    <section class="grid-4" id="meetingCards"></section>
 
     <section class="steps">
       <div class="card build-first">
         <h2>מה הילדים בונים במיינקראפט</h2>
         <p id="minecraftBuild"></p>
-        <ul id="exactSteps"></ul>
+        <ul id="meetingSteps"></ul>
       </div>
       <div class="card">
         <h2>מה חוקרים לפני הבנייה</h2>
@@ -92,19 +92,19 @@
       <a class="btn secondary" href="omer-future-craftom.html">חזרה למפת האתגרים</a>
     `;
 
-    document.getElementById('teamCards').innerHTML = lesson.teamBuilds.map((item, index) => `
+    document.getElementById('meetingCards').innerHTML = lesson.meetings.map((item, index) => `
       <article class="card lesson-card highlight team-card">
-        <span><span class="num">${index + 1}</span><span class="tag">${esc(item.team)}</span></span>
-        <h2>${esc(item.team.replace('צוות ', ''))}</h2>
-        <p>${esc(item.build)}</p>
-        <span class="evidence">${esc(item.evidence)}</span>
+        <span><span class="num">${index + 1}</span><span class="tag">שיעור ${esc(item[0])}</span></span>
+        <h2>${esc(item[1])}</h2>
+        <p>${esc(item[2])}</p>
+        <span class="evidence">תוצר: ${esc(item[3])}</span>
       </article>
     `).join('');
 
     document.getElementById('minecraftBuild').textContent = lesson.minecraftBuild;
     document.getElementById('researchPrompt').textContent = lesson.researchPrompt;
     document.getElementById('bigQuestion').textContent = lesson.bigQuestion;
-    document.getElementById('exactSteps').innerHTML = lesson.exactSteps.map(step => `<li>${esc(step)}</li>`).join('');
+    document.getElementById('meetingSteps').innerHTML = lesson.meetings.map(item => `<li><strong>שיעור ${esc(item[0])} - ${esc(item[1])}:</strong> ${esc(item[2])} תוצר: ${esc(item[3])}</li>`).join('');
     document.getElementById('successChecks').innerHTML = lesson.successChecks.map(step => `<li>${esc(step)}</li>`).join('');
     document.getElementById('jsonLink').href = lesson.jsonSpec;
     document.getElementById('flow').innerHTML = lesson.flow.map(step => `<li><b>${esc(step.minutes)}</b><span><strong>${esc(step.title)}</strong><br>${esc(step.students)}</span></li>`).join('');

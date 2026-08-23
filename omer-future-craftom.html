@@ -30,7 +30,7 @@
       <div>
         <div class="kicker">עומר העתידנית • כיתה ד׳ • Minecraft Education + Craftom • בלי תכנות</div>
         <h1>בונים יישוב עומר עתידני דרך אתגרי Minecraft</h1>
-        <p class="goal">לומדה של 4 אתגרים ממוקדים. בכל אתגר המדריך מחלק לצוותים מוקדי בנייה שונים, הילדים חוקרים צורך אמיתי של יישוב, בונים ב־Craftom, בודקים עם מבקר ומגישים לפי JSON הצלחה.</p>
+        <p class="goal">לומדה של 4 אתגרים ממוקדים, 4 שיעורים בכל אתגר. כל הצוותים עושים את אותו רצף ובונים את אותם רכיבי יישוב — כל צוות בחלקה שלו, עם סגנון ותכנון משלו.</p>
         <div class="actions" id="heroActions"></div>
       </div>
       <figure class="minecraft-shot">
@@ -41,8 +41,8 @@
 
     <section class="grid-4">
       <div class="card highlight"><h2>4</h2><b>אתגרים</b><p class="muted">כל אתגר הוא שיעור אחד ברור.</p></div>
-      <div class="card highlight"><h2>4</h2><b>צוותים בכל אתגר</b><p class="muted">כל צוות בונה משהו אחר.</p></div>
-      <div class="card highlight"><h2>75</h2><b>דקות לאתגר</b><p class="muted">חקר, בנייה, בדיקה ושיפור.</p></div>
+      <div class="card highlight"><h2>4</h2><b>שיעורים בכל אתגר</b><p class="muted">מתקדמים לאט כמו בלומדה הקודמת.</p></div>
+      <div class="card highlight"><h2>16</h2><b>שיעורים סך הכול</b><p class="muted">כל צוות בונה חלקה מלאה.</p></div>
       <div class="card highlight"><h2>JSON</h2><b>הצלחה</b><p class="muted">ראיות Craftom ודוח מורה עתידי.</p></div>
     </section>
 
@@ -91,9 +91,9 @@
         <span class="tag">אתגר ${lesson.id} • ${lesson.durationMinutes} דקות • כיתה ד׳</span>
         <h2>${esc(lesson.title)}</h2>
         <p>${esc(lesson.bigQuestion)}</p>
-        <b>בונים: ${esc(lesson.minecraftBuild)}</b>
+        <b>בונים בכל חלקה: ${esc(lesson.minecraftBuild)}</b>
         <ul class="team-list">
-          ${lesson.teamBuilds.map(item => `<li><b>${esc(item.team)}</b><br>${esc(item.build)}</li>`).join('')}
+          ${lesson.meetings.map(item => `<li><b>שיעור ${esc(item[0])}: ${esc(item[1])}</b><br>${esc(item[3])}</li>`).join('')}
         </ul>
         <div class="challenge-actions">
           <a class="btn" href="omer-future-craftom-challenge.html?lesson=${lesson.id}">כניסה לאתגר</a>
