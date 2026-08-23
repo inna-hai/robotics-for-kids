@@ -36,6 +36,11 @@ for (const lesson of program.lessons) {
   assert.ok(lesson.teacherGoal && lesson.studentOutcome && lesson.bigQuestion, `challenge ${lesson.id} has pedagogy`);
   assert.ok(lesson.researchPrompt && lesson.researchPrompt.includes('חקר'), `challenge ${lesson.id} has research prompt`);
   assert.ok(lesson.minecraftBuild && lesson.minecraftBuild.length > 20, `challenge ${lesson.id} has concrete Minecraft build`);
+  assert.ok(lesson.story.includes('עומר') || lesson.minecraftBuild.includes('עומר'), `challenge ${lesson.id} is anchored to Omer`);
+  assert.equal(lesson.teamBuilds.length, 4, `challenge ${lesson.id} assigns 4 concrete team builds`);
+  assert.ok(lesson.teamBuilds.every(item => item.team && item.build && item.evidence), `challenge ${lesson.id} team builds include evidence`);
+  assert.ok(lesson.workshopTasks.length === 4, `challenge ${lesson.id} exposes workshop tasks for slides`);
+  assert.ok(lesson.exitTicket, `challenge ${lesson.id} has exit ticket`);
   assert.ok(lesson.image && exists(lesson.image), `challenge ${lesson.id} has an existing Minecraft image`);
   assert.ok(lesson.jsonSpec && exists(lesson.jsonSpec), `challenge ${lesson.id} has JSON success spec`);
   assert.ok(lesson.successChecks.length >= 4, `challenge ${lesson.id} has success checks`);
@@ -49,6 +54,7 @@ for (const lesson of program.lessons) {
 
   const json = JSON.parse(read(lesson.jsonSpec));
   assert.equal(json.challengeStructure.estimatedMeetings, 1, `challenge ${lesson.id} JSON is one focused lesson`);
+  assert.equal(json.studentDeliverable?.teamBuildOptions?.length, 4, `challenge ${lesson.id} JSON has team build options`);
   assert.ok(json.craftomEvidence, `challenge ${lesson.id} JSON has craftom evidence`);
   assert.ok(json.teacherReport?.scoreBands?.length >= 4, `challenge ${lesson.id} JSON has score bands`);
 }
@@ -65,6 +71,8 @@ assert.ok(hub.includes('בלי תכנות'), 'hub states no coding');
 assert.ok(hub.includes('4 אתגרים'), 'hub presents 4 challenges');
 assert.ok(hub.includes('תמונת Minecraft'), 'hub mentions Minecraft image');
 assert.ok(hub.includes('JSON הצלחה'), 'hub links JSON success');
+assert.ok(hub.includes('חלוקת צוותים מוכנה'), 'hub shows fixed team assignments');
+assert.ok(hub.includes('program.omerAnchor'), 'hub renders Omer anchor text');
 assert.ok(hub.includes('lesson.image'), 'hub renders images from challenge data');
 assert.ok(hub.includes('omer-future-craftom-students.html?lesson=1'), 'hub links student worksheets');
 assert.ok(hub.includes('omer-future-craftom-slides.html?lesson=1'), 'hub links instructor slides');
@@ -76,6 +84,7 @@ assert.ok(students.includes('window.getOmerFutureCraftomLesson'), 'students page
 assert.ok(students.includes('localStorage'), 'students page saves locally');
 assert.ok(students.includes('copySummary'), 'students page can copy summary');
 assert.ok(students.includes('מה עושים היום'), 'students page presents exact work mode');
+assert.ok(students.includes('חלוקת צוותים'), 'students page shows assigned team builds');
 assert.ok(students.includes('אתגר'), 'students page uses challenge language');
 
 const slides = read('omer-future-craftom-slides.html');

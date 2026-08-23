@@ -21,7 +21,7 @@
         <div>
           <div class="kicker">כיתה ד׳ · בני 9 · 4 אתגרים · Minecraft Education · Craftom · בלי תכנות</div>
           <h1>עומר העתידנית — 4 אתגרי בנייה וחקר במיינקראפט</h1>
-          <p>לומדה יצירתית שבה ילדים מתכננים ובונים יישוב עתידני שלהם. בכל אתגר יש חקר קצר, בנייה ממוקדת ב־Craftom, בדיקת מבקר, JSON הצלחה ורפלקציה.</p>
+          <p>לומדה יצירתית שבה ילדים בונים גרסה עתידנית של יישוב עומר. המדריך מחלק לכל צוות מוקד בנייה אחר, ובסוף כל החלקים מתחברים ליישוב אחד שאפשר לסייר בו.</p>
           <div class="actions">
             <a class="btn" href="#meetings">ראו את 4 האתגרים</a>
             <a class="btn alt" href="omer-future-craftom-students.html?lesson=1">דף תלמידים</a>
@@ -46,6 +46,7 @@
       <div class="shell">
         <h2>מטרת הלומדה</h2>
         <p class="lead">לא מלמדים כאן קוד. מלמדים ילדים לחשוב כמו מתכנני יישוב: לחקור צורך, לבנות פתרון במיינקראפט, לבדוק עם מבקר, ולראות איך חלק אחד משפיע על מערכת שלמה.</p>
+        <p class="lead" id="omerAnchor"></p>
         <div class="outcomes" id="outcomes"></div>
       </div>
     </section>
@@ -77,10 +78,11 @@
 
   <footer class="footer">עומר העתידנית · Craftom כיתה ד׳ · hai.tech</footer>
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="js/omer-future-craftom-lessons.js?v=20260823-omer"></script>
+  <script src="js/omer-future-craftom-lessons.js?v=20260823-omer-teams"></script>
   <script>
     const program = window.OMER_FUTURE_CRAFTOM_PROGRAM;
     const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+    document.getElementById('omerAnchor').textContent = program.omerAnchor;
     document.getElementById('outcomes').innerHTML = program.sharedOutcomes.map((item, index) => `<div class="outcome"><b>${index + 1}. יעד למידה</b>${esc(item)}</div>`).join('');
     document.getElementById('workModeIntro').textContent = program.buildProtocol.defaultMode;
     document.getElementById('teamRoles').innerHTML = program.buildProtocol.roles.map(role => `<li><strong>${esc(role[0])}:</strong> ${esc(role[1])}</li>`).join('');
@@ -107,6 +109,7 @@
             <div class="mini"><b>חקר קצר</b>${esc(lesson.researchPrompt)}</div>
             <div class="mini"><b>מה בונים במיינקראפט</b>${esc(lesson.minecraftBuild)}</div>
             <div class="mini"><b>חשיבה מערכתית</b>${esc(lesson.systemFocus)}</div>
+            <div class="mini"><b>חלוקת צוותים מוכנה</b><ol class="list">${lesson.teamBuilds.map(item => `<li><strong>${esc(item.team)}:</strong> ${esc(item.build)}</li>`).join('')}</ol></div>
             <div class="mini"><b>בדיקת הצלחה</b><ol class="list">${lesson.successChecks.map(step => `<li>${esc(step)}</li>`).join('')}</ol></div>
             <div class="mini"><b>צעדים בכיתה</b><ol class="list">${lesson.exactSteps.map(step => `<li>${esc(step)}</li>`).join('')}</ol></div>
           </div>
