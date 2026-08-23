@@ -40,7 +40,7 @@
     </section>
 
     <section class="grid-4">
-      <div class="card highlight"><h2>4</h2><b>אתגרים</b><p class="muted">כל אתגר הוא שיעור אחד ברור.</p></div>
+      <div class="card highlight"><h2>4</h2><b>אתגרים</b><p class="muted">כל אתגר נמשך 4 שיעורים.</p></div>
       <div class="card highlight"><h2>4</h2><b>שיעורים בכל אתגר</b><p class="muted">מתקדמים לאט כמו בלומדה הקודמת.</p></div>
       <div class="card highlight"><h2>16</h2><b>שיעורים סך הכול</b><p class="muted">כל צוות בונה חלקה מלאה.</p></div>
       <div class="card highlight"><h2>JSON</h2><b>הצלחה</b><p class="muted">ראיות Craftom ודוח מורה עתידי.</p></div>
@@ -88,7 +88,7 @@
     document.getElementById('challengeCards').innerHTML = program.lessons.map(lesson => `
       <article class="card lesson-card">
         <img class="lesson-thumb" src="${esc(lesson.image)}" alt="תמונת Minecraft לאתגר ${lesson.id}: ${esc(lesson.title)}">
-        <span class="tag">אתגר ${lesson.id} • ${lesson.durationMinutes} דקות • כיתה ד׳</span>
+        <span class="tag">אתגר ${lesson.id} • ${esc(lesson.challengeDuration)} • ${esc(lesson.meetingDuration)}</span>
         <h2>${esc(lesson.title)}</h2>
         <p>${esc(lesson.bigQuestion)}</p>
         <b>בונים בכל חלקה: ${esc(lesson.minecraftBuild)}</b>

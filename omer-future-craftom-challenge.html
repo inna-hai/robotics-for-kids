@@ -80,7 +80,7 @@
 
     document.title = `אתגר ${lesson.id} - ${lesson.title}`;
     document.getElementById('challengeNav').innerHTML = program.lessons.map(item => `<a class="${item.id === lesson.id ? 'active' : ''}" href="omer-future-craftom-challenge.html?lesson=${item.id}">אתגר ${item.id}</a>`).join('');
-    document.getElementById('kicker').textContent = `אתגר ${lesson.id} מתוך ${program.totalChallenges} • ${lesson.durationMinutes} דקות • ${lesson.grade}`;
+    document.getElementById('kicker').textContent = `אתגר ${lesson.id} מתוך ${program.totalChallenges} • ${lesson.challengeDuration} • ${lesson.meetingDuration} • ${lesson.grade}`;
     document.getElementById('title').textContent = lesson.title;
     document.getElementById('goal').textContent = lesson.story;
     document.getElementById('heroImage').src = lesson.image;

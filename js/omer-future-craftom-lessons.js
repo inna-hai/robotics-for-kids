@@ -169,6 +169,8 @@
     grade: 'כיתה ד׳',
     age: 'בני 9',
     durationMinutes: 75,
+    challengeDuration: '4 שיעורים',
+    meetingDuration: '75 דקות לשיעור',
     totalMeetings: 4,
     platform: 'Minecraft Education + Craftom',
     productStage: challenge.minecraftBuild,

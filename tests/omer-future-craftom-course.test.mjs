@@ -17,7 +17,7 @@ assert.equal(program.age, 'בני 9', 'program targets age 9');
 assert.equal(program.totalChallenges, 4, 'program has 4 challenges');
 assert.equal(program.totalMeetings, 16, 'program has 16 meetings');
 assert.equal(program.meetingsPerChallenge, 4, 'program has 4 meetings per challenge');
-assert.equal(program.meetingMinutes, 75, 'challenges are 75 minutes');
+assert.equal(program.meetingMinutes, 75, 'each meeting is 75 minutes');
 assert.equal(program.lessons.length, 4, 'program exposes 4 challenges');
 assert.deepEqual(Array.from(program.lessons, lesson => lesson.id), [1, 2, 3, 4], 'challenge ids are sequential');
 assert.ok(program.title.includes('עומר העתידנית'), 'course title is about futuristic Omer');
@@ -30,7 +30,8 @@ assert.ok(!serialized.includes('player.onChat'), 'grade 4 course does not includ
 assert.ok(!serialized.includes('JavaScript'), 'grade 4 course does not teach JavaScript');
 
 for (const lesson of program.lessons) {
-  assert.equal(lesson.durationMinutes, 75, `challenge ${lesson.id} is 75 minutes`);
+  assert.equal(lesson.durationMinutes, 75, `challenge ${lesson.id} meetings are 75 minutes`);
+  assert.equal(lesson.challengeDuration, '4 שיעורים', `challenge ${lesson.id} is presented as 4 meetings`);
   assert.equal(lesson.grade, 'כיתה ד׳', `challenge ${lesson.id} targets grade 4`);
   assert.equal(lesson.platform, 'Minecraft Education + Craftom', `challenge ${lesson.id} uses Craftom/Minecraft`);
   assert.ok(lesson.title && lesson.theme && lesson.systemFocus && lesson.story, `challenge ${lesson.id} has core metadata`);
