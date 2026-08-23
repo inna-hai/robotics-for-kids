@@ -231,6 +231,7 @@
         <button type="button" class="drawer-close" onclick="closeInstructions()" aria-label="סגור הוראות">×</button>
       </div>
       <div class="drawer-intro"><b>משימה:</b> <span id="drawerSuccessText"></span></div>
+      <div class="drawer-intro" id="drawerBlockHelp" hidden></div>
       <div class="drawer-exercises" id="drawerExerciseList"></div>
     </aside>
   </div>
@@ -241,6 +242,7 @@
         <div class="chip" id="lessonConcept"></div>
         <h1 id="lessonTitle"></h1>
         <p id="lessonStory"></p>
+        <p id="lessonBlockSummary" hidden></p>
         <div class="chips"><span class="chip" id="lessonGoal"></span><span class="chip" id="lessonChallenge"></span></div>
       </div>
       <div class="world-wrap">
@@ -365,6 +367,11 @@
         { level:'שביל מתפצל', note:'דגם השראה: שביל ראשי שמתפצל לשני כיוונים', cols:7, rows:5, cells:['empty','empty','grass path-slab','empty','empty','empty','grass path-slab','empty','empty','grass path-slab','empty','empty','grass path-slab','empty','grass path-slab','grass path-slab','grass path-slab','grass path-slab','grass path-slab','empty','empty','empty','empty','grass path-slab','empty','empty','grass path-slab','empty','empty','empty','grass path-slab','empty','empty','empty','grass path-slab'] },
         { level:'שביל שלושה ענפים', note:'דגם השראה מתקדם: באמצע בוחרים ענף עליון, ישר או תחתון', cols:7, rows:5, cells:['empty','empty','empty','grass path-slab','empty','empty','grass path-slab','empty','empty','empty','grass path-slab','empty','grass path-slab','empty','grass path-slab','grass path-slab','grass path-slab','grass path-slab','grass path-slab','grass path-slab','grass path-slab','empty','empty','empty','grass path-slab','empty','grass path-slab','empty','empty','empty','empty','grass path-slab','empty','empty','grass path-slab'] },
         { level:'מבוך שבילים קטן', note:'דגם השראה: כמה פניות קצרות, בלי סימון איפה היהלום', cols:7, rows:5, cells:['grass path-slab','grass path-slab','grass path-slab','empty','empty','grass path-slab','grass path-slab','empty','empty','grass path-slab','empty','empty','grass path-slab','empty','grass path-slab','grass path-slab','grass path-slab','grass path-slab','grass path-slab','grass path-slab','empty','grass path-slab','empty','empty','empty','empty','grass path-slab','empty','grass path-slab','grass path-slab','grass path-slab','empty','empty','grass path-slab','grass path-slab'] }
+      ],
+      12: [
+        { level:'מבוך קל', note:'דגם קל: התחלה בזהב, מטרה ביהלום ומסלול עם מעט פניות', cols:7, rows:5, cells:['wood','wood','wood','wood','wood','wood','wood','gold','empty','empty','wood','empty','empty','diamond','wood','wood','empty','wood','empty','wood','wood','wood','empty','empty','empty','empty','empty','wood','wood','wood','wood','wood','wood','wood','wood'] },
+        { level:'מבוך בינוני', note:'דגם בינוני: כמה פניות וקירות שמכריחים לתכנן את הדרך', cols:7, rows:5, cells:['wood','wood','wood','wood','wood','wood','wood','gold','empty','empty','empty','wood','empty','diamond','wood','empty','wood','empty','wood','empty','wood','wood','empty','wood','empty','empty','empty','wood','wood','wood','wood','wood','wood','wood','wood'] },
+        { level:'מבוך שתי דרכים', note:'דגם אתגר: שתי דרכים עם כמה פניות שמתחברות לפני המטרה', cols:8, rows:6, cells:['wood','wood','wood','wood','wood','wood','wood','wood','wood','gold','empty','empty','empty','wood','diamond','wood','wood','empty','wood','wood','empty','wood','empty','wood','wood','empty','empty','wood','empty','empty','empty','wood','wood','wood','empty','empty','empty','wood','wood','wood','wood','wood','wood','wood','wood','wood','wood','wood'] }
       ]
     };
     const lessonThreeModels = [
@@ -386,8 +393,6 @@
       { type:'event_start_first', message0:'כאשר לוחצים ▶️ קוד ראשון', nextStatement:null, colour:40, hat:'cap' },
       { type:'event_start_second', message0:'אחר כך הרץ קוד שני', nextStatement:null, colour:40, hat:'cap' },
       { type:'say', message0:'אמור %1', args0:[{type:'field_input', name:'TEXT', text:'תכנתתי קסם!'}], previousStatement:null, nextStatement:null, colour:290 },
-      { type:'move_up', message0:'עלה למעלה בגובה %1', args0:[{type:'field_dropdown', name:'HEIGHT', options:[['בלוק מלא','full'],['חצי בלוק','half'],['אריח שביל','path']]}], previousStatement:null, nextStatement:null, colour:210 },
-      { type:'move_down', message0:'רד למטה בגובה %1', args0:[{type:'field_dropdown', name:'HEIGHT', options:[['בלוק מלא','full'],['חצי בלוק','half'],['אריח שביל','path']]}], previousStatement:null, nextStatement:null, colour:210 },
       { type:'move_to_ground', message0:'רד לקרקע', previousStatement:null, nextStatement:null, colour:210 },
       { type:'move_right', message0:'זוז ימינה', previousStatement:null, nextStatement:null, colour:210 },
       { type:'move_left', message0:'זוז שמאלה', previousStatement:null, nextStatement:null, colour:210 },
@@ -403,10 +408,7 @@
       { type:'magic_trail', message0:'צור שביל קסמים', previousStatement:null, nextStatement:null, colour:140 },
       { type:'teleport', message0:'טלפורט למקום חדש', previousStatement:null, nextStatement:null, colour:210 },
       { type:'spawn_pet', message0:'זמן חיית מחמד בשם %1', args0:[{type:'field_input', name:'NAME', text:'פיקסל'}], previousStatement:null, nextStatement:null, colour:75 },
-      { type:'move_pet_right', message0:'הזז את חיית המחמד ימינה', previousStatement:null, nextStatement:null, colour:75 },
-      { type:'move_pet_left', message0:'הזז את חיית המחמד שמאלה', previousStatement:null, nextStatement:null, colour:75 },
-      { type:'move_pet_up', message0:'הזז את חיית המחמד למעלה בגובה %1', args0:[{type:'field_dropdown', name:'HEIGHT', options:[['בלוק','full'],['חצי בלוק','half'],['אריח שביל','path']]}], previousStatement:null, nextStatement:null, colour:75 },
-      { type:'move_pet_down', message0:'הזז את חיית המחמד למטה בגובה %1', args0:[{type:'field_dropdown', name:'HEIGHT', options:[['בלוק','full'],['חצי בלוק','half'],['אריח שביל','path']]}], previousStatement:null, nextStatement:null, colour:75 },
+      { type:'move_pet_direction', message0:'הזז חיית מחמד ← %1', args0:[{type:'field_dropdown', name:'DIR', options:[['ימינה','right'],['שמאלה','left'],['למעלה','up'],['למטה','down']]}], previousStatement:null, nextStatement:null, colour:75 },
       { type:'set_day', message0:'עשה יום ☀️', previousStatement:null, nextStatement:null, colour:55 },
       { type:'set_night', message0:'עשה לילה 🌙', previousStatement:null, nextStatement:null, colour:240 },
       { type:'weather_sun', message0:'מזג אוויר שמש', previousStatement:null, nextStatement:null, colour:55 },
@@ -414,6 +416,7 @@
       { type:'weather_snow', message0:'מזג אוויר שלג', previousStatement:null, nextStatement:null, colour:195 },
       { type:'if_on_diamond', message0:'אם עומדים על היהלום %1 אז %2', args0:[{type:'input_dummy'},{type:'input_statement', name:'DO'}], previousStatement:null, nextStatement:null, colour:20 },
       { type:'hide_diamond', message0:'הסתר יהלום במקום סודי', previousStatement:null, nextStatement:null, colour:185 },
+      { type:'build_simple_path', message0:'בנה שביל פשוט', previousStatement:null, nextStatement:null, colour:100 },
       { type:'check_spot', message0:'בדוק את המקום', previousStatement:null, nextStatement:null, colour:185 },
       { type:'if_found_diamond', message0:'אם מצאת יהלום %1 אז %2', args0:[{type:'input_dummy'},{type:'input_statement', name:'DO'}], previousStatement:null, nextStatement:null, colour:20 },
       { type:'open_door', message0:'פתח דלת סודית', previousStatement:null, nextStatement:null, colour:30 },
@@ -431,35 +434,73 @@
       const allowed = new Set([...(lesson.id === 10 ? [] : ['event_start']), ...lesson.blocks]);
       const labels = {
 
-        event_start:'התחלה', event_start_first:'התחלה — קוד ראשון', event_start_second:'המשך — קוד שני', say:'דיבור', move_up:'תנועה ישנה', move_down:'תנועה ישנה', move_to_ground:'תנועה — רד לקרקע', move_right:'תנועה ישנה', move_left:'תנועה ישנה', move_direction:'תנועה', place_block:'בנייה ידנית', place_path:'שביל נמוך', place_half_block:'חצי בלוק', reset_blocks:'מחיקת בנין בתמונה', wait_seconds:'המתנה לפי שניות', build_tower:'בנייה', rain_blocks:'בלוקים', magic_trail:'שביל', teleport:'טלפורט', spawn_pet:'חיה', move_pet_right:'חיה — תנועה', move_pet_left:'חיה — תנועה', move_pet_up:'חיה — תנועה', move_pet_down:'חיה — תנועה', set_day:'יום', set_night:'לילה', weather_sun:'שמש', weather_rain:'גשם', weather_snow:'שלג', if_on_diamond:'אם/אז', hide_diamond:'חיפוש אוצר', check_spot:'חיפוש אוצר', if_found_diamond:'אם/אז', open_door:'דלת', give_treasure:'אוצר', finish_program:'סיום', start_collect_game:'משחק', build_maze:'מבוך', show_hint:'רמז', spawn_funny_mob:'מוב'
+        event_start:'התחלה', event_start_first:'התחלה — קוד ראשון', event_start_second:'המשך — קוד שני', say:'דיבור', move_direction:'תנועה', move_to_ground:'תנועה — רד לקרקע', place_block:'בנייה ידנית', place_path:'שביל נמוך', place_half_block:'חצי בלוק', reset_blocks:'מחיקת בנין בתמונה', wait_seconds:'המתנה לפי שניות', build_tower:'בנייה', rain_blocks:'בלוקים', magic_trail:'שביל', teleport:'טלפורט', spawn_pet:'חיה', move_pet_direction:'חיה — תנועה', set_day:'יום', set_night:'לילה', weather_sun:'שמש', weather_rain:'גשם', weather_snow:'שלג', if_on_diamond:'אם/אז', hide_diamond:'חיפוש אוצר', build_simple_path:'שביל פשוט', check_spot:'חיפוש אוצר', if_found_diamond:'אם/אז', open_door:'דלת', give_treasure:'אוצר', finish_program:'סיום', start_collect_game:'משחק', build_maze:'מבוך', show_hint:'רמז', spawn_funny_mob:'מוב'
       };
       return `<xml>${[...allowed].map(type => `<block type="${type}"></block>`).join('')}</xml>`;
     }
     function starterXml(){
-      const first = lesson.blocks.find(b => b !== 'event_start') || 'say';
+      const first = lesson.blocks.find(b => !['event_start', 'event_start_first', 'event_start_second'].includes(b)) || 'say';
       if (lesson.id === 1) return `<xml><block type="event_start" x="40" y="40"><next><block type="say"><field name="TEXT">אני דוד, ואני בונה מגדל!</field><next><block type="place_block"><field name="COLOR">wood</field><next><block type="move_direction"><field name="DIR">up</field><next><block type="place_block"><field name="COLOR">gold</field><next><block type="move_direction"><field name="DIR">up</field><next><block type="place_block"><field name="COLOR">diamond</field></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>`;
       if (lesson.id === 5) return `<xml><block type="event_start" x="40" y="40"><next><block type="say"><field name="TEXT">אני עובר דרך השער!</field><next><block type="move_direction"><field name="DIR">right</field><next><block type="move_direction"><field name="DIR">right</field><next><block type="move_direction"><field name="DIR">back</field><next><block type="move_direction"><field name="DIR">right</field><next><block type="move_direction"><field name="DIR">right</field><next><block type="say"><field name="TEXT">אני מאחורי השער!</field></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>`;
 
       if (lesson.id === 4) return `<xml><block type="event_start" x="40" y="40"><next><block type="say"><field name="TEXT">בונים כלי אוכל לפי דגם!</field><next><block type="place_path"><field name="COLOR">grass</field><next><block type="move_direction"><field name="DIR">right</field><next><block type="place_half_block"><field name="COLOR">gold</field><next><block type="move_direction"><field name="DIR">up</field><next><block type="place_block"><field name="COLOR">diamond</field></block></next></block></next></block></next></block></next></block></next></block></xml>`;
       const second = lesson.blocks.includes('say') && first !== 'say' ? '<next><block type="say"></block></next>' : '';
-      if (lesson.id === 10) return `<xml><block type="event_start_first" x="40" y="40"><next><block type="place_path"><field name="COLOR">grass</field><next><block type="move_direction"><field name="DIR">right</field><next><block type="place_path"><field name="COLOR">grass</field><next><block type="move_direction"><field name="DIR">right</field><next><block type="place_path"><field name="COLOR">grass</field><next><block type="hide_diamond"></block></next></block></next></block></next></block></next></block></next></block><block type="event_start_second" x="320" y="40"><next><block type="check_spot"><next><block type="if_found_diamond"><statement name="DO"><block type="open_door"><next><block type="give_treasure"><next><block type="finish_program"></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
+      if (lesson.id === 10) return `<xml><block type="event_start_first" x="40" y="40"><next><block type="build_simple_path"><next><block type="hide_diamond"></block></next></block></next></block><block type="event_start_second" x="320" y="40"><next><block type="check_spot"><next><block type="if_found_diamond"><statement name="DO"><block type="open_door"><next><block type="give_treasure"><next><block type="finish_program"></block></next></block></next></block></statement></block></next></block></next></block></xml>`;
+      if (lesson.id === 12) return `<xml><block type="event_start_first" x="40" y="40"><next><block type="say"><field name="TEXT">בונים את המבוך</field><next><block type="place_block"><field name="COLOR">wood</field></block></next></block></next></block><block type="event_start_second" x="320" y="40"><next><block type="say"><field name="TEXT">דוד יוצא לדרך</field><next><block type="move_direction"><field name="DIR">right</field></block></next></block></next></block></xml>`;
       if (first === 'if_on_diamond') return `<xml><block type="event_start" x="40" y="40"><next><block type="if_on_diamond"><statement name="DO"><block type="open_door"></block></statement></block></next></block></xml>`;
       return `<xml><block type="event_start" x="40" y="40"><next><block type="${first}">${second}</block></next></block></xml>`;
     }
 
+    function lessonTenText(){
+      return {
+        story: 'בוחרים דגם שביל אחד לבנייה, או ממציאים שביל משלכם. אחר כך מחביאים יהלום, עוברים על כל השביל ובכל אריח בודקים האם היהלום נמצא כאן. אם מוצאים — פותחים דלת ומקבלים אוצר.',
+        blockSummary: 'בלוקים חדשים: הסתר יהלום — שם אוצר במקום סודי, בדוק את המקום — בודק אריח בשביל, אם מצאת יהלום — מפעיל פעולות רק כשמצאנו, פתח דלת ותן אוצר — נותנים פרס, סיים תוכנית — עוצר את החיפוש.',
+        goal: 'מטרה: לבנות שביל ולחפש בו את היהלום החבוי בעזרת תנאי.',
+        challenge: 'שדרוג: תכננו דגם יהלום אישי אחרי שמצאתם את האוצר.',
+        drawerTask: 'בנו שביל עם כמה מקומות חשודים. החביאו יהלום. בדקו מקומות עם דוד. אם מצאתם יהלום — פתחו דלת וקבלו אוצר.',
+        blockHelp: [
+          ['הסתר יהלום', 'שם את האוצר במקום סודי.'],
+          ['בדוק את המקום', 'דוד בודק אם כאן היהלום.'],
+          ['אם מצאת יהלום', 'רק אם מצאנו — עושים את מה שבפנים.'],
+          ['פתח דלת / תן אוצר', 'הפרס אחרי שמצליחים.'],
+          ['סיים תוכנית', 'עוצר את החיפוש.']
+        ]
+      };
+    }
+
     function init(){
+      const lessonTen = lesson.id === 10 ? lessonTenText() : null;
       document.title = `${lesson.emoji} שיעור ${lesson.id}: ${lesson.title}`;
       document.getElementById('lessonTitle').textContent = `${lesson.emoji} שיעור ${lesson.id}: ${lesson.title}`;
-      document.getElementById('lessonStory').textContent = lesson.story;
+      document.getElementById('lessonStory').textContent = lessonTen ? lessonTen.story : lesson.story;
+      const blockSummary = document.getElementById('lessonBlockSummary');
+      if (lessonTen) {
+        blockSummary.hidden = false;
+        blockSummary.innerHTML = `<b>${esc('בלוקים חדשים:')}</b> ${esc(lessonTen.blockSummary.replace('בלוקים חדשים: ', ''))}`;
+      } else {
+        blockSummary.hidden = true;
+        blockSummary.textContent = '';
+      }
       document.getElementById('lessonConcept').textContent = lesson.concept;
-      document.getElementById('lessonGoal').textContent = `מטרה: ${lesson.goal}`;
-      document.getElementById('lessonChallenge').textContent = `שדרוג: ${lesson.challenge}`;
+      document.getElementById('lessonGoal').textContent = lessonTen ? lessonTen.goal : `מטרה: ${lesson.goal}`;
+      const challengeText = lessonTen ? lessonTen.challenge : lesson.challenge;
+      const challengePrefix = lesson.id === 14 ? 'הסבר' : 'שדרוג';
+      document.getElementById('lessonChallenge').textContent = /^אתגר:|^הסבר:/.test(challengeText) ? challengeText : `${challengePrefix}: ${challengeText}`;
 
-      document.getElementById('drawerSuccessText').textContent = lesson.success;
+      document.getElementById('drawerSuccessText').textContent = lessonTen ? lessonTen.drawerTask : lesson.success;
+      const blockHelp = document.getElementById('drawerBlockHelp');
+      if (lessonTen) {
+        blockHelp.hidden = false;
+        blockHelp.innerHTML = `<b>בלוקים חדשים:</b><ul style="margin:.45rem 1.1rem 0 0;padding:0;line-height:1.45">${lessonTen.blockHelp.map(([name, text]) => `<li><b>${esc(name)}</b> — ${esc(text)}</li>`).join('')}</ul>`;
+      } else {
+        blockHelp.hidden = true;
+        blockHelp.innerHTML = '';
+      }
       document.getElementById('player').setAttribute('aria-label', 'דוד בעולם מיינקראפט');
       const exerciseItemsHtml = (lesson.programmingExercises || []).map((exercise) => `<div class="exercise-item"><small>${exercise.minutes}</small><b>${esc(exercise.title)}</b><span>${esc(exercise.studentPrompt)}</span></div>`).join('');
       document.getElementById('drawerExerciseList').innerHTML = exerciseItemsHtml;
       document.getElementById('slidesLink').href = `minecraft-slides.html?lesson=${lesson.id}`;
+      applyLessonWorldClass();
       setupModelPager();
       document.getElementById('tabs').innerHTML = window.MINECRAFT_KIDS_LESSONS.map(l => `<a class="tab ${l.id===lesson.id?'active':''}" href="minecraft-play.html?lesson=${l.id}" title="שיעור ${l.id}: ${esc(l.title)}"><span>${l.emoji}</span><small>${l.id}</small><b>${esc(l.title)}</b></a>`).join('');
       workspace = Blockly.inject('blocklyDiv', { toolbox: toolboxXml(), rtl: true, trashcan: true, scrollbars: true, zoom: { controls: true, wheel: true, startScale: .9, maxScale: 1.4, minScale: .55 } });
@@ -472,6 +513,12 @@
     function openInstructions(){ document.getElementById('instructionsBackdrop').classList.add('open'); }
     function closeInstructions(event){ if (event && event.target !== document.getElementById('instructionsBackdrop')) return; document.getElementById('instructionsBackdrop').classList.remove('open'); }
     window.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeInstructions(); });
+
+    function applyLessonWorldClass(){
+      const world = document.getElementById('world');
+      if (!world) return;
+      world.className = `world ${lesson.id === 1 ? 'lesson-one' : lesson.id === 2 ? 'lesson-two' : lesson.id === 3 ? 'lesson-three' : lesson.id === 4 ? 'lesson-four' : lesson.id === 5 ? 'lesson-five' : lesson.id === 6 ? 'lesson-six' : lesson.id === 7 ? 'lesson-seven' : lesson.id === 8 ? 'lesson-eight' : lesson.id === 10 ? 'lesson-ten' : lesson.id === 12 ? 'lesson-twelve' : ''}`.trim();
+    }
 
     function setupModelPager(){
       if (lessonModelsByLesson[lesson.id]) {
@@ -507,8 +554,9 @@
       document.getElementById('modelLevel').textContent = model.level;
       document.getElementById('modelNote').textContent = model.note;
       document.querySelectorAll('.model-choice').forEach((button) => button.classList.toggle('active', Number(button.dataset.model || 0) === modelIndex));
-      shape.style.gridTemplateColumns = `repeat(${model.cols || 4}, 24px)`;
-      shape.style.gridTemplateRows = `repeat(${model.rows || 3}, 24px)`;
+      const cellSize = lesson.id === 12 ? 16 : 24;
+      shape.style.gridTemplateColumns = `repeat(${model.cols || 4}, ${cellSize}px)`;
+      shape.style.gridTemplateRows = `repeat(${model.rows || 3}, ${cellSize}px)`;
       shape.innerHTML = model.cells.map(cls => `<span class="model-cell ${cls}"></span>`).join('');
     }
     function renderPixelModel(){
@@ -963,17 +1011,41 @@
       timeCaption.textContent = 'זמן';
       weatherCaption.textContent = 'מזג אוויר';
     }
-    function addBlock(cls, x, y, extraClass=''){ const el=document.createElement('div'); el.className=`block ${cls}${extraClass ? ' '+extraClass : ''}`; el.style.left=x+'px'; el.style.bottom=y+'px'; document.getElementById('world').appendChild(el); return el; }
+    function addBlock(cls, x, y, extraClass=''){
+      const el=document.createElement('div');
+      el.className=`block ${cls}${extraClass ? ' '+extraClass : ''}`;
+      el.style.left=x+'px';
+      el.style.bottom=y+'px';
+      document.getElementById('world').appendChild(el);
+      if (lesson.id === 14) registerTreasureSpotFromBlock(x, y, extraClass);
+      return el;
+    }
+    function registerTreasureSpotFromBlock(x, y, extraClass=''){
+      if (!state.pathSpots) state.pathSpots = [];
+      const isPath = /path-slab/.test(extraClass);
+      const isHalf = /half-slab/.test(extraClass);
+      state.pathSpots.push({
+        x: x + (isPath ? 23 : isHalf ? 22 : 21),
+        y: y + (isPath ? 7 : isHalf ? 12 : 21),
+        label: isPath ? 'אריח שביל' : isHalf ? 'חצי בלוק' : 'בלוק שנבנה'
+      });
+    }
     function addEmoji(cls, icon, x, y){ const el=document.createElement('div'); el.className=cls; el.textContent=icon; el.style.left=x+'px'; el.style.bottom=y+'px'; document.getElementById('world').appendChild(el); return el; }
 
     function addDiamondMarker(){ if (lesson.id === 2 || lesson.id === 3 || lesson.id === 4 || lesson.id === 5 || lesson.id === 6 || lesson.id === 7 || lesson.id === 8 || lesson.id === 10) return; addEmoji('hint','💠', 220, 88); }
     const treasureSpots = [{x:105,y:GROUND_Y,label:'תחילת השביל'}, {x:195,y:GROUND_Y,label:'ענף תחתון'}, {x:285,y:GROUND_Y,label:'ענף ישר'}, {x:375,y:GROUND_Y,label:'קצה ימני'}, {x:195,y:GROUND_Y + 42,label:'ענף עליון'}, {x:285,y:GROUND_Y + 42,label:'פנייה גבוהה'}, {x:375,y:GROUND_Y + 84,label:'קצה עליון'}];
     function drawTreasureSpots(){ /* שיעור 10: לא מציגים סימני שאלה, כדי שהאוצר יישאר חבוי באמת. */ }
     function treasureSearchSpots(){ return state.pathSpots || []; }
-    function hideDiamond(){ const spots = treasureSearchSpots(); if (!spots.length) { say('קודם בנו שביל, ואז הסתירו יהלום'); return; } state.hiddenDiamondIndex = Math.floor(Math.random() * spots.length); state.hiddenDiamondSpot = spots[state.hiddenDiamondIndex]; state.foundDiamond = false; state.playerOnDiamond = false; document.querySelectorAll('#world .hint,#world .treasure').forEach(el => el.remove()); say('היהלום הוסתר על אחד מאריחי השביל'); }
+    function hideDiamond(){ const spots = treasureSearchSpots(); if (!spots.length) { say(lesson.id === 14 ? 'קודם בנו כמה בלוקים, חצי בלוקים או אריחי שביל' : 'קודם בנו שביל, ואז הסתירו יהלום'); return; } state.hiddenDiamondIndex = Math.floor(Math.random() * spots.length); state.hiddenDiamondSpot = spots[state.hiddenDiamondIndex]; state.foundDiamond = false; state.playerOnDiamond = false; document.querySelectorAll('#world .hint,#world .treasure').forEach(el => el.remove()); say(lesson.id === 14 ? 'היהלום הוסתר באחד המקומות שבניתם' : 'היהלום הוסתר על אחד מאריחי השביל'); }
     function nearestTreasureSpot(){ let best=0, dist=Infinity; const spots = treasureSearchSpots(); spots.forEach((spot,index)=>{ const dx=(state.steveX + 20) - spot.x; const dy=state.steveY - spot.y; const d=Math.sqrt(dx*dx + dy*dy); if(d<dist){ dist=d; best=index; } }); return { index:best, distance:dist, spot:spots[best] }; }
-    function checkSpot(){ if (lesson.id !== 10) return; if (!state.hiddenDiamondSpot) hideDiamond(); if (!state.hiddenDiamondSpot) return; const found = nearestTreasureSpot(); if (!found.spot || found.distance > 34) { say('דוד רחוק ממקום חיפוש'); return; } if (found.spot === state.hiddenDiamondSpot) { state.foundDiamond = true; state.playerOnDiamond = true; addEmoji('hint','💠', found.spot.x, found.spot.y); say('מצאתי את היהלום החבוי!'); } else { state.foundDiamond = false; state.playerOnDiamond = false; say('אין כאן כלום... נסו מקום אחר'); } }
+    function checkSpot(){ if (![10,14].includes(lesson.id)) return; if (!state.hiddenDiamondSpot) hideDiamond(); if (!state.hiddenDiamondSpot) return; const found = nearestTreasureSpot(); if (!found.spot || found.distance > 34) { say('דוד רחוק ממקום חיפוש'); return; } if (found.spot === state.hiddenDiamondSpot) { state.foundDiamond = true; state.playerOnDiamond = true; addEmoji('hint','💠', found.spot.x, found.spot.y); say('מצאתי את היהלום החבוי!'); } else { state.foundDiamond = false; state.playerOnDiamond = false; say('אין כאן כלום... נסו מקום אחר'); } }
     function positionBubble(){ const bubble=document.getElementById('bubble'); const world=document.getElementById('world'); const maxBottom=Math.max(125, (world?.clientHeight || 330) - 105); bubble.style.left=Math.max(12, state.steveX - 72)+'px'; bubble.style.right='auto'; bubble.style.bottom=Math.min(state.steveY + 92, maxBottom)+'px'; }
+    function setPlayerInFront(isInFront){
+      const player = document.getElementById('player');
+      const bubble = document.getElementById('bubble');
+      player.style.zIndex = isInFront ? '9' : '';
+      bubble.style.zIndex = isInFront ? '10' : '';
+    }
     function isInsideGateSpan(x = state.steveX){ return lesson.id === 5 && x >= 335 && x <= 420; }
     function isInsideGateOpening(x = state.steveX){ const center = x + 31; return lesson.id === 5 && center >= 292 && center <= 450; }
     function isInsideGatePassage(){ return lesson.id === 5 && state.steveDepth > 0 && state.steveDepth < 2 && isInsideGateOpening(); }
@@ -1018,7 +1090,7 @@
     function resetBlocks(){
       document.querySelectorAll('#world .block').forEach(el => el.remove());
 
-      if (lesson.id === 10) { state.foundDiamond = false; state.playerOnDiamond = false; state.hiddenDiamondIndex = null; state.hiddenDiamondSpot = null; state.pathSpots = []; document.querySelectorAll('#world .hint,#world .treasure').forEach(el => el.remove()); drawTreasureSpots(); }
+      if ([10,14].includes(lesson.id)) { state.foundDiamond = false; state.playerOnDiamond = false; state.hiddenDiamondIndex = null; state.hiddenDiamondSpot = null; state.pathSpots = []; document.querySelectorAll('#world .hint,#world .treasure').forEach(el => el.remove()); drawTreasureSpots(); }
       state.steveX = 260; state.steveY = GROUND_Y; state.lessonOneBlocks = 0; state.lastMove = null;
       setStevePosition(); positionBubble(); updateStatus();
     }
@@ -1052,6 +1124,7 @@
           await wait(250);
           if (state.stopProgram || state.runToken !== runToken) break;
         }
+        if (lesson.id === 12 && startOrder(start) === 2) setPlayerInFront(true);
         await runChain(start.getNextBlock(), runToken);
       }
       if (state.runToken === runToken && lesson.id === 1) celebrateLessonOneIfReady();
@@ -1077,8 +1150,6 @@
       recordBlockUse(block.type);
       switch(block.type){
         case 'say': say(block.getFieldValue('TEXT')); break;
-        case 'move_up': { const h = block.getFieldValue('HEIGHT') || 'full'; const step = h === 'path' ? PATH_TILE_HEIGHT : h === 'half' ? HALF_BLOCK_HEIGHT : 42; moveSteve(0, step); break; }
-        case 'move_down': { const h = block.getFieldValue('HEIGHT') || 'full'; const step = h === 'path' ? PATH_TILE_HEIGHT : h === 'half' ? HALF_BLOCK_HEIGHT : 42; moveSteve(0, -step); break; }
         case 'move_to_ground': moveSteve(0, GROUND_Y - state.steveY); break;
         case 'move_right': stats().directions.push('right'); moveSteve(45, 0); break;
         case 'move_left': stats().directions.push('left'); moveSteve(-45, 0); break;
@@ -1112,10 +1183,14 @@
         case 'magic_trail': magicTrail(); break;
         case 'teleport': teleport(); break;
         case 'spawn_pet': spawnPet(block.getFieldValue('NAME')); break;
-        case 'move_pet_right': movePet(45); break;
-        case 'move_pet_left': movePet(-45); break;
-        case 'move_pet_up': { const h = block.getFieldValue('HEIGHT') || 'full'; const step = h === 'path' ? PATH_TILE_HEIGHT : h === 'half' ? HALF_BLOCK_HEIGHT : 42; movePet(0, step); break; }
-        case 'move_pet_down': { const h = block.getFieldValue('HEIGHT') || 'full'; const step = h === 'path' ? PATH_TILE_HEIGHT : h === 'half' ? HALF_BLOCK_HEIGHT : 42; movePet(0, -step); break; }
+        case 'move_pet_direction': {
+          const dir = block.getFieldValue('DIR') || 'right';
+          if (dir === 'right') movePet(45, 0);
+          else if (dir === 'left') movePet(-45, 0);
+          else if (dir === 'up') movePet(0, 42);
+          else if (dir === 'down') movePet(0, -42);
+          break;
+        }
         case 'set_day': setDay(true); break;
         case 'set_night': setDay(false); break;
         case 'weather_sun': setWeather('sun'); break;
@@ -1123,6 +1198,7 @@
         case 'weather_snow': setWeather('snow'); break;
         case 'if_on_diamond': if(state.playerOnDiamond) await runChain(block.getInputTargetBlock('DO'), runToken); break;
         case 'hide_diamond': hideDiamond(); break;
+        case 'build_simple_path': buildSimplePath(); break;
         case 'check_spot': checkSpot(); break;
         case 'if_found_diamond': if(state.foundDiamond) await runChain(block.getInputTargetBlock('DO'), runToken); break;
         case 'open_door': openDoor(); break;

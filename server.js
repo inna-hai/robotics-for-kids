@@ -39,6 +39,12 @@ function send(res, status, body, type = 'application/json; charset=utf-8') {
   res.end(body);
 }
 
+function requestUrl(req) {
+  const raw = String(req.url || '/');
+  const normalized = raw.startsWith('//') ? `/${raw.replace(/^\/+/, '')}` : raw;
+  return new URL(normalized || '/', `http://${req.headers.host || 'localhost'}`);
+}
+
 function sendWithHeaders(res, status, body, type = 'application/json; charset=utf-8', extraHeaders = {}) {
   res.writeHead(status, {
     'Content-Type': type,
@@ -60,7 +66,7 @@ function ensureAdminToken() {
 }
 
 function isAuthorized(req) {
-  const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  const url = requestUrl(req);
   const header = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '').trim();
   const token = header || url.searchParams.get('token') || req.headers['x-admin-token'];
   if (!token) return false;
@@ -976,7 +982,7 @@ async function handleFeedback(req, res) {
 
 async function handleAdminFeedback(req, res) {
   if (!requireAdmin(req, res)) return;
-  const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  const url = requestUrl(req);
   const parts = url.pathname.split('/').filter(Boolean);
   const id = parts[3];
   const action = parts[4];
@@ -1204,7 +1210,7 @@ function proxyEnglishBuddy(req, res) {
 }
 
 function serveStatic(req, res) {
-  const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  const url = requestUrl(req);
   let pathname = decodeURIComponent(url.pathname);
   if (pathname === '/') pathname = '/index.html';
   if (pathname === '/thankyou') pathname = '/thankyou.html';
