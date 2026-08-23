@@ -188,45 +188,46 @@
     },
     {
       id: 5,
-      title: 'חידון כן או לא — בלוקי תנאי',
+      title: 'חידון כן או לא — בלוקי תנאי נקיים',
       concept: 'בלוקי תנאי → JavaScript: אם / אחרת ומשוב',
       durationMinutes: 90,
-      story: 'בונים חידון קטן דרך בלוקי תנאי: שאלה, תשובה נכונה, משוב הצלחה ומשוב רמז. אחר כך מציצים ל־if/else שנוצר בקוד.' ,
-      mission: 'לבנות חידון אינטראקטיבי בעזרת בלוקי תנאי, ואז לזהות איך if/else בודק תשובה.' ,
-      outcome: 'חידון קצר שנבנה מבלוקי תנאי, עם קלט, if/else ומשוב צבעוני',
+      story: 'בונים חידון קטן דרך בלוקי תנאי עם שתי בחירות מוכנות: כן או לא. קודם מבינים “אם הבחירה נכונה / אחרת”, ורק אחר כך מציצים ל־if/else שנוצר בקוד.' ,
+      mission: 'לבנות חידון אינטראקטיבי בעזרת בלוקי תנאי, בלי להסתבך בהקלדת טקסט מדויקת.' ,
+      outcome: 'חידון קצר שנבנה מבלוקי תנאי, עם בחירה מוכנה, if/else ומשוב צבעוני',
       starter: {
-        html: '<main class="quiz">\n  <h1>חידון WebCode</h1>\n  <p class="question">איזו שפה מעצבת את העמוד?</p>\n  <input id="answerInput" placeholder="כתבו תשובה">\n  <button onclick="checkAnswer()">בדקו תשובה</button>\n  <p id="feedback">כאן יופיע משוב...</p>\n</main>',
-        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #f0fdf4, #eff6ff);\n}\n\n.quiz {\n  background: white;\n  width: 390px;\n  margin: 45px auto;\n  padding: 28px;\n  border-radius: 28px;\n  box-shadow: 0 16px 35px #bbf7d0;\n}\n\n.question {\n  font-size: 22px;\n  font-weight: bold;\n}\n\ninput {\n  width: 100%;\n  padding: 12px;\n  border: 2px solid #cbd5e1;\n  border-radius: 14px;\n  text-align: center;\n}\n\nbutton {\n  margin-top: 14px;\n  background: #16a34a;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 20px;\n  font-weight: bold;\n}\n\n.correct { color: #15803d; font-weight: bold; }\n.wrong { color: #b91c1c; font-weight: bold; }',
-        js: 'function checkAnswer() {\n  const answer = document.getElementById("answerInput").value;\n  const feedback = document.getElementById("feedback");\n\n  if (answer === "CSS") {\n    feedback.textContent = "נכון מאוד! CSS מעצב את העמוד 🎨";\n    feedback.className = "correct";\n  } else {\n    feedback.textContent = "כמעט! נסו לחשוב איזו שפה אחראית לצבעים.";\n    feedback.className = "wrong";\n  }\n}'
+        html: '<main class="quiz">\n  <h1>חידון כן או לא</h1>\n  <p class="question">CSS אחראי על העיצוב של העמוד?</p>\n  <button onclick="chooseAnswer(\'yes\')">כן</button>\n  <button onclick="chooseAnswer(\'no\')">לא</button>\n  <p id="feedback">בחרו תשובה ותקבלו משוב...</p>\n</main>',
+        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #f0fdf4, #eff6ff);\n}\n\n.quiz {\n  background: white;\n  width: 390px;\n  margin: 45px auto;\n  padding: 28px;\n  border-radius: 28px;\n  box-shadow: 0 16px 35px #bbf7d0;\n}\n\n.question {\n  font-size: 22px;\n  font-weight: bold;\n}\n\nbutton {\n  margin: 14px 6px 0;\n  background: #16a34a;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 20px;\n  font-weight: bold;\n}\n\nbutton:last-of-type {\n  background: #2563eb;\n}\n\n.correct { color: #15803d; font-weight: bold; }\n.wrong { color: #b91c1c; font-weight: bold; }',
+        js: 'function chooseAnswer(choice) {\n  const feedback = document.getElementById("feedback");\n\n  if (choice === "yes") {\n    feedback.textContent = "נכון! CSS אחראי על העיצוב 🎨";\n    feedback.className = "correct";\n  } else {\n    feedback.textContent = "לא בדיוק. CSS הוא הצד של הצבעים והעיצוב.";\n    feedback.className = "wrong";\n  }\n}'
       },
       lessonFlow: [
-        { minutes: '0–8', title: 'פתיחה: בלוק שמחליט', teacher: 'מציגים חידון ושואלים איך בלוק יכול להחליט אם תשובה נכונה.', students: 'מזהים שאלה, תשובה, הצלחה ורמז.' },
-        { minutes: '8–18', title: 'בלוק תנאי ראשון', teacher: 'מפעילים בלוק “שאלה חדשה” ובלוק “תשובה נכונה”, ואז מציצים ל־if בקוד.', students: 'רואים שהתנאי בודק אם answer שווה לתשובה.' },
-        { minutes: '18–34', title: 'בנייה מודרכת בבלוקי חידון', teacher: 'מפעילים בלוקים: שאלה, תשובה, הודעת הצלחה, רמז.', students: 'מריצים ובודקים תשובה נכונה ושגויה.' },
+        { minutes: '0–8', title: 'פתיחה: בלוק שמחליט', teacher: 'מציגים חידון עם שני כפתורים ושואלים איך האתר יודע אם לחצנו נכון.', students: 'מזהים שאלה, שתי בחירות, הצלחה ורמז.' },
+        { minutes: '8–18', title: 'בלוק תנאי ראשון', teacher: 'מפעילים בלוק “שאלה חדשה” ובלוק “בחירה נכונה”, ואז מציצים ל־if בקוד.', students: 'רואים שהתנאי בודק בחירה אחת מוכנה, לא טקסט שהקלידו.' },
+        { minutes: '18–34', title: 'בנייה מודרכת בבלוקי חידון', teacher: 'מפעילים בלוקים: שאלה, בחירה נכונה, הודעת הצלחה, הודעת אחרת.', students: 'מריצים ולוחצים על שתי הבחירות כדי לראות שתי תוצאות.' },
         { minutes: '34–50', title: 'מציצים ל־if/else', teacher: 'לא כותבים תנאי חופשי. רק מזהים if, else ושתי תוצאות אפשריות.', students: 'מסמנים מה קורה אם נכון ומה קורה אחרת.' },
-        { minutes: '50–66', title: 'תרגול עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לבנות חידון אישי דרך בלוקים ושינויי טקסט בטוחים.', students: 'מבצעים תרגולים 1–5.' },
-        { minutes: '66–78', title: 'דיבאג תנאי עדין', teacher: 'מדגימים תשובה שלא מזוהה בגלל הבדל קטן בטקסט.', students: 'בודקים התאמה בין התשובה הנכונה לבין מה שמקלידים.' },
+        { minutes: '50–66', title: 'תרגול עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לבנות חידון כן/לא אישי דרך בלוקים ושינויי טקסט בטוחים.', students: 'מבצעים תרגולים 1–5.' },
+        { minutes: '66–78', title: 'דיבאג תנאי עדין', teacher: 'מדגימים בחירה נכונה שהוגדרה הפוך ומחזירים לרעיון: התנאי בודק בחירה.', students: 'בודקים האם ה־if מתאים לכפתור הנכון.' },
         { minutes: '78–90', title: 'חידון חברים', teacher: 'מחלקים זוגות לבדיקה ומשוב.', students: 'מנסים חידון של חבר ומסבירים את כלל ה־אם/אחרת.' }
       ],
       exercises: [
         { id: 1, minutes: '18–24', title: 'תרגול 1 — בלוק שאלה', prompt: 'הפעילו בלוק “שאלה חדשה” ובדקו שהשאלה בחידון השתנתה.', hint: 'הבלוק משנה את הטקסט ב־class="question".', check: { htmlIncludes: ['איזו שפה גורמת לכפתור להגיב?'] } },
-        { id: 2, minutes: '24–31', title: 'תרגול 2 — בלוק תשובה נכונה', prompt: 'הפעילו בלוק “תשובה נכונה” ובדקו שהתנאי מחפש JavaScript.', hint: 'חפשו answer === "JavaScript".', check: { jsIncludes: ['answer === "JavaScript"'] } },
+        { id: 2, minutes: '24–31', title: 'תרגול 2 — בלוק בחירה נכונה', prompt: 'הפעילו בלוק “בחירה נכונה: לא” ובדקו שהתנאי עבר לבדוק no.', hint: 'חפשו choice === "no".', check: { jsIncludes: ['choice === "no"'] } },
         { id: 3, minutes: '31–39', title: 'תרגול 3 — בלוק הצלחה', prompt: 'הפעילו בלוק הודעת הצלחה שמתאים לשאלה החדשה.', hint: 'ההודעה נמצאת בתוך ה־if.', check: { jsIncludes: ['נכון! JavaScript מפעיל תגובות'] } },
-        { id: 4, minutes: '39–47', title: 'תרגול 4 — בלוק רמז', prompt: 'הפעילו בלוק רמז לתשובה שגויה.', hint: 'ההודעה נמצאת בתוך else.', check: { jsIncludes: ['רמז: זו השפה של הפעולות'] } },
-        { id: 5, minutes: '47–56', title: 'תרגול 5 — בודקים אם/אחרת', prompt: 'הריצו, כתבו JavaScript ואז תשובה שגויה, וראו שתי תגובות שונות.', hint: 'if הוא נכון, else הוא אחרת.', check: { jsIncludes: ['if', 'else'] } },
+        { id: 4, minutes: '39–47', title: 'תרגול 4 — בלוק אחרת', prompt: 'הפעילו בלוק הודעה לתשובה השנייה.', hint: 'ההודעה נמצאת בתוך else.', check: { jsIncludes: ['רמז: JavaScript היא השפה של הפעולות'] } },
+        { id: 5, minutes: '47–56', title: 'תרגול 5 — בודקים אם/אחרת', prompt: 'הריצו, לחצו על שני הכפתורים, וראו שתי תגובות שונות.', hint: 'if הוא נכון, else הוא כל בחירה אחרת.', check: { jsIncludes: ['if', 'else'] } },
         { id: 6, minutes: '56–65', title: 'תרגול 6 — צבעי משוב', prompt: 'שנו צבעי correct/wrong רק אם אתם מרגישים בטוחים.', hint: 'זה שינוי CSS קטן, לא חובה לשנות מבנה.', check: { cssIncludes: ['.correct', '.wrong'] } },
-        { id: 7, minutes: '65–75', title: 'תרגול 7 — דיבאג תשובה', prompt: 'אם התשובה לא מזוהה, בדקו שהטקסט בתנאי זהה למה שמקלידים.', hint: 'בשלב הזה JavaScript ≠ javascript.', check: { htmlIncludes: ['id="answerInput"'], jsIncludes: ['getElementById("answerInput")'] } },
-        { id: 8, minutes: '75–84', title: 'תרגול 8 — חידון חברים', prompt: 'תנו לחבר לענות והסבירו איפה ה־if ואיפה ה־else.', hint: 'השתמשו במילים: אם נכון / אחרת / משוב.', check: { htmlIncludes: ['input', 'button'], jsIncludes: ['if', 'else'] } }
+        { id: 7, minutes: '65–75', title: 'תרגול 7 — דיבאג בחירה', prompt: 'אם הכפתור הנכון מסומן כשגוי, בדקו שה־if בודק yes או no לפי השאלה.', hint: 'אין פה אותיות גדולות/קטנות. בודקים רק איזו בחירה הכפתור שולח.', check: { htmlIncludes: ['chooseAnswer'], jsIncludes: ['choice ==='] } },
+        { id: 8, minutes: '75–84', title: 'תרגול 8 — חידון חברים', prompt: 'תנו לחבר לענות והסבירו איפה ה־if ואיפה ה־else.', hint: 'השתמשו במילים: אם נכון / אחרת / משוב.', check: { htmlIncludes: ['button'], jsIncludes: ['if', 'else'] } }
       ],
       aiHelper: [
-        'הציעו 5 שאלות חידון פשוטות לכיתה ד׳ בנושא מחשבים.',
+        'הציעו 5 שאלות כן/לא פשוטות לכיתה ד׳ בנושא מחשבים.',
         'הסבירו בשפה פשוטה מה עושה if ומה עושה else.',
-        'עזרו למצוא למה תשובה נכונה לא מזוהה בגלל אותיות גדולות/קטנות.',
-        'הציעו הודעת שגיאה שנותנת רמז ולא מגלה מיד את התשובה.'
+        'עזרו למצוא למה הכפתור הנכון נכנס ל־else.',
+        'הציעו הודעת אחרת שנותנת רמז ולא מגלה מיד את התשובה.'
       ],
       vocabulary: [
         ['if', 'אם התנאי נכון — בצעו פעולה'],
         ['else', 'אחרת — בצעו פעולה אחרת'],
+        ['choice', 'הבחירה שהמשתמש לחץ עליה'],
         ['===', 'בדיקה אם שני דברים שווים בדיוק'],
         ['משוב', 'הודעה שעוזרת למשתמש להבין מה קרה'],
         ['className', 'שינוי שם class כדי להחליף עיצוב']
@@ -237,18 +238,18 @@
       title: 'ניקוד ומשתנים — בלוקי זיכרון',
       concept: 'בלוקי ניקוד → JavaScript: משתנה · score · עדכון מסך',
       durationMinutes: 90,
-      story: 'אחרי חידון התנאים, מוסיפים זיכרון למשחק דרך בלוקי ניקוד: התחל ניקוד, הוסף נקודה, הצג ניקוד ואפס משחק. אחר כך מציצים ל־let score.' ,
-      mission: 'לבנות חידון ניקוד בעזרת בלוקי זיכרון, ואז להבין ש־score הוא מספר שהמשחק שומר.' ,
+      story: 'אחרי חידון התנאים, מוסיפים זיכרון למשחק דרך בלוקי ניקוד: בחירה נכונה מוסיפה נקודות, הבחירה השנייה נותנת משוב, וכפתור איפוס מחזיר להתחלה. אחר כך מציצים ל־let score.' ,
+      mission: 'לבנות משחק ניקוד בעזרת בלוקי זיכרון ובחירות מוכנות, ואז להבין ש־score הוא מספר שהמשחק שומר.' ,
       outcome: 'משחק חידון עם ניקוד שנבנה מבלוקי זיכרון, עם הצצה ל־let score ועדכון span במסך',
       starter: {
-        html: '<main class="score-game">\n  <h1>משחק הניקוד שלי</h1>\n  <p>ניקוד: <span id="scoreText">0</span></p>\n  <p class="question">מה מוסיף עיצוב לעמוד?</p>\n  <input id="answerInput" placeholder="כתבו תשובה">\n  <button onclick="checkAnswer()">בדקו</button>\n  <button onclick="resetScore()">איפוס ניקוד</button>\n  <p id="feedback">ענו כדי לקבל נקודות.</p>\n</main>',
-        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #fef3c7, #dbeafe);\n}\n\n.score-game {\n  background: white;\n  width: 390px;\n  margin: 45px auto;\n  padding: 28px;\n  border-radius: 28px;\n  box-shadow: 0 16px 35px #fde68a;\n}\n\n#scoreText {\n  display: inline-block;\n  background: #facc15;\n  border-radius: 999px;\n  padding: 6px 14px;\n  font-weight: bold;\n}\n\ninput {\n  width: 100%;\n  padding: 12px;\n  border: 2px solid #cbd5e1;\n  border-radius: 14px;\n  text-align: center;\n}\n\nbutton {\n  margin: 8px 4px;\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 18px;\n  font-weight: bold;\n}\n\n.success { color: #15803d; font-weight: bold; }\n.try-again { color: #b45309; font-weight: bold; }',
-        js: 'let score = 0;\n\nfunction checkAnswer() {\n  const answer = document.getElementById("answerInput").value;\n  const feedback = document.getElementById("feedback");\n\n  if (answer === "CSS") {\n    score = score + 1;\n    document.getElementById("scoreText").textContent = score;\n    feedback.textContent = "נכון! קיבלת נקודה ⭐";\n    feedback.className = "success";\n  } else {\n    feedback.textContent = "כמעט. נסו שוב בלי לאבד נקודות.";\n    feedback.className = "try-again";\n  }\n}\n\nfunction resetScore() {\n  score = 0;\n  document.getElementById("scoreText").textContent = score;\n  document.getElementById("feedback").textContent = "הניקוד אופס.";\n}'
+        html: '<main class="score-game">\n  <h1>משחק הניקוד שלי</h1>\n  <p>ניקוד: <span id="scoreText">0</span></p>\n  <p class="question">CSS אחראי על העיצוב של העמוד?</p>\n  <button onclick="chooseAnswer(\'yes\')">כן</button>\n  <button onclick="chooseAnswer(\'no\')">לא</button>\n  <button onclick="resetScore()">איפוס ניקוד</button>\n  <p id="feedback">בחרו תשובה כדי לקבל נקודות.</p>\n</main>',
+        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #fef3c7, #dbeafe);\n}\n\n.score-game {\n  background: white;\n  width: 390px;\n  margin: 45px auto;\n  padding: 28px;\n  border-radius: 28px;\n  box-shadow: 0 16px 35px #fde68a;\n}\n\n#scoreText {\n  display: inline-block;\n  background: #facc15;\n  border-radius: 999px;\n  padding: 6px 14px;\n  font-weight: bold;\n}\n\nbutton {\n  margin: 8px 4px;\n  background: #2563eb;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 12px 18px;\n  font-weight: bold;\n}\n\nbutton:first-of-type {\n  background: #16a34a;\n}\n\n.success { color: #15803d; font-weight: bold; }\n.try-again { color: #b45309; font-weight: bold; }',
+        js: 'let score = 0;\n\nfunction chooseAnswer(choice) {\n  const feedback = document.getElementById("feedback");\n\n  if (choice === "yes") {\n    score = score + 1;\n    document.getElementById("scoreText").textContent = score;\n    feedback.textContent = "נכון! קיבלת נקודה ⭐";\n    feedback.className = "success";\n  } else {\n    feedback.textContent = "כמעט. נסו שוב בלי לאבד נקודות.";\n    feedback.className = "try-again";\n  }\n}\n\nfunction resetScore() {\n  score = 0;\n  document.getElementById("scoreText").textContent = score;\n  document.getElementById("feedback").textContent = "הניקוד אופס.";\n}'
       },
       lessonFlow: [
         { minutes: '0–8', title: 'פתיחה: משחק שזוכר נקודות', teacher: 'שואלים איך משחק זוכר ניקוד גם אחרי כמה תשובות.', students: 'מעלים רעיון של קופה/מד נקודות שנשמר.' },
         { minutes: '8–18', title: 'בלוק ניקוד ראשון', teacher: 'מפעילים בלוק “התחל ניקוד” ומראים את let score = 0 כקופסת נקודות.', students: 'רואים שהמשחק מתחיל מ־0.' },
-        { minutes: '18–34', title: 'בנייה מודרכת בבלוקי ניקוד', teacher: 'מפעילים בלוקים: הוסף נקודה, הצג ניקוד, הודעת הצלחה, איפוס.', students: 'מריצים, עונים נכון, ורואים שהניקוד עולה.' },
+        { minutes: '18–34', title: 'בנייה מודרכת בבלוקי ניקוד', teacher: 'מפעילים בלוקים: הוסף נקודה, הצג ניקוד, הודעת הצלחה, איפוס.', students: 'לוחצים על הבחירה הנכונה ורואים שהניקוד עולה.' },
         { minutes: '34–50', title: 'מציצים למשתנה', teacher: 'לא כותבים משתנים חופשיים. רק מזהים score, score + 1, ו־scoreText.', students: 'מחברים בין המספר בקוד למספר שמופיע במסך.' },
         { minutes: '50–66', title: 'תרגול עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לשנות חוק ניקוד דרך בלוק מוכן ושינוי טקסט בטוח.', students: 'מבצעים תרגולים 1–5.' },
         { minutes: '66–78', title: 'דיבאג ניקוד עדין', teacher: 'מדגימים id לא תואם ל־scoreText ומסבירים למה המסך לא מתעדכן.', students: 'בודקים התאמה בין span לבין JavaScript.' },
@@ -262,7 +263,7 @@
         { id: 5, minutes: '47–56', title: 'תרגול 5 — בלוק הודעת ניקוד', prompt: 'הפעילו בלוק שמשנה את הודעת ההצלחה לניקוד כפול.', hint: 'ההודעה נמצאת בתוך ה־if.', check: { jsIncludes: ['קיבלת 2 נקודות'] } },
         { id: 6, minutes: '56–65', title: 'תרגול 6 — בלוק איפוס', prompt: 'בדקו שכפתור האיפוס מחזיר את score ל־0.', hint: 'חפשו function resetScore ו־score = 0.', check: { jsIncludes: ['function resetScore', 'score = 0'] } },
         { id: 7, minutes: '65–75', title: 'תרגול 7 — דיבאג ניקוד', prompt: 'אם המספר לא מתעדכן, בדקו שה־id scoreText זהה ב־HTML וב־JS.', hint: 'scoreText חייב להיות כתוב אותו דבר בדיוק.', check: { htmlIncludes: ['id="scoreText"'], jsIncludes: ['getElementById("scoreText")'] } },
-        { id: 8, minutes: '75–84', title: 'תרגול 8 — הצגת משחק ניקוד', prompt: 'תנו לחבר לענות והסבירו איפה המשחק שומר את הניקוד.', hint: 'השתמשו במילים: score, משתנה, הצג ניקוד.', check: { htmlIncludes: ['scoreText', 'button'], jsIncludes: ['score', 'if', 'else'] } }
+        { id: 8, minutes: '75–84', title: 'תרגול 8 — הצגת משחק ניקוד', prompt: 'תנו לחבר ללחוץ על תשובה והסבירו איפה המשחק שומר את הניקוד.', hint: 'השתמשו במילים: score, משתנה, הצג ניקוד.', check: { htmlIncludes: ['scoreText', 'button'], jsIncludes: ['score', 'if', 'else'] } }
       ],
       aiHelper: [
         'הסבירו לילד בכיתה ד׳ מה זה משתנה בעזרת דוגמה של קופת נקודות.',
@@ -335,7 +336,7 @@
       starter: {
         html: '<main class="timer-game">\n  <h1>אתגר הקליקים בזמן</h1>\n  <p>ניקוד: <span id="scoreText">0</span></p>\n  <p>זמן: <span id="timeText">15</span></p>\n  <button id="startButton" onclick="startGame()">התחילו משחק</button>\n  <button id="clickButton" onclick="addPoint()">🎯 קליק לנקודה</button>\n  <p id="message">לחצו התחלה ואז אספו נקודות!</p>\n</main>',
         css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #ecfeff, #fef9c3);\n}\n\n.timer-game {\n  background: white;\n  width: 400px;\n  margin: 45px auto;\n  padding: 30px;\n  border-radius: 30px;\n  box-shadow: 0 16px 35px #bae6fd;\n}\n\n#scoreText, #timeText {\n  display: inline-block;\n  min-width: 45px;\n  background: #dbeafe;\n  border-radius: 999px;\n  padding: 6px 14px;\n  font-weight: bold;\n}\n\nbutton {\n  margin: 8px;\n  padding: 14px 20px;\n  border: 0;\n  border-radius: 999px;\n  background: #0891b2;\n  color: white;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n.finished {\n  background: #fee2e2;\n  border: 3px solid #ef4444;\n}',
-        js: 'let score = 0;\nlet timeLeft = 15;\nlet timerId = null;\n\nfunction startGame() {\n  score = 0;\n  timeLeft = 15;\n  document.getElementById("scoreText").textContent = score;\n  document.getElementById("timeText").textContent = timeLeft;\n  document.getElementById("message").textContent = "המשחק התחיל!";\n\n  timerId = setInterval(tick, 1000);\n}\n\nfunction tick() {\n  timeLeft = timeLeft - 1;\n  document.getElementById("timeText").textContent = timeLeft;\n\n  if (timeLeft <= 0) {\n    clearInterval(timerId);\n    document.getElementById("message").textContent = "הזמן נגמר! הניקוד שלך: " + score;\n    document.querySelector(".timer-game").classList.add("finished");\n  }\n}\n\nfunction addPoint() {\n  if (timeLeft > 0) {\n    score = score + 1;\n    document.getElementById("scoreText").textContent = score;\n  }\n}'
+        js: 'let score = 0;\nconst startTime = 15;\nlet timeLeft = startTime;\nlet timerId = null;\n\nfunction startGame() {\n  score = 0;\n  timeLeft = startTime;\n  document.getElementById("scoreText").textContent = score;\n  document.getElementById("timeText").textContent = timeLeft;\n  document.getElementById("message").textContent = "המשחק התחיל!";\n\n  timerId = setInterval(tick, 1000);\n}\n\nfunction tick() {\n  timeLeft = timeLeft - 1;\n  document.getElementById("timeText").textContent = timeLeft;\n\n  if (timeLeft <= 0) {\n    clearInterval(timerId);\n    document.getElementById("message").textContent = "הזמן נגמר! הניקוד שלך: " + score;\n    document.querySelector(".timer-game").classList.add("finished");\n  }\n}\n\nfunction addPoint() {\n  if (timeLeft > 0) {\n    score = score + 1;\n    document.getElementById("scoreText").textContent = score;\n  }\n}'
       },
       lessonFlow: [
         { minutes: '0–8', title: 'פתיחה: משחק נגד השעון', teacher: 'מציגים משחק קליקים עם זמן ושואלים מה משתנה כשיש שעון.', students: 'מזהים לחץ זמן, התחלה, ספירה לאחור וסיום.' },
@@ -578,10 +579,10 @@
       { label: '🔁 הדלק/כבה עיצוב', target: 'js', find: 'classList.toggle("magic")', replace: 'classList.toggle("magic")', hint: 'בלוק toggle: אותו קוד, אבל עכשיו מבינים שהוא מדליק ומכבה class.' }
     ],
     5: [
-      { label: '❓ שאלה חדשה', target: 'html', find: 'איזו שפה מעצבת את העמוד?', replace: 'איזו שפה גורמת לכפתור להגיב?', hint: 'בלוק חידון: משנה את השאלה שהמשתמש רואה.' },
-      { label: '✅ תשובה נכונה', target: 'js', find: 'answer === "CSS"', replace: 'answer === "JavaScript"', hint: 'בלוק תנאי: משנה מה נחשב תשובה נכונה.' },
-      { label: '🎉 הודעת הצלחה', target: 'js', find: 'נכון מאוד! CSS מעצב את העמוד 🎨', replace: 'נכון! JavaScript מפעיל תגובות ⚡', hint: 'בלוק משוב: מה קורה אם התנאי נכון.' },
-      { label: '💡 רמז לתשובה שגויה', target: 'js', find: 'כמעט! נסו לחשוב איזו שפה אחראית לצבעים.', replace: 'כמעט! רמז: זו השפה של הפעולות והכפתורים.', hint: 'בלוק אחרת: מה קורה אם התנאי לא נכון.' }
+      { label: '❓ שאלה חדשה', target: 'html', find: 'CSS אחראי על העיצוב של העמוד?', replace: 'JavaScript גורם לכפתור להגיב?', hint: 'בלוק חידון: משנה את השאלה שהמשתמש רואה.' },
+      { label: '✅ בחירה נכונה: לא', target: 'js', find: 'choice === "yes"', replace: 'choice === "no"', hint: 'בלוק תנאי: משנה איזו בחירה נכנסת ל־if.' },
+      { label: '🎉 הודעת הצלחה', target: 'js', find: 'נכון! CSS אחראי על העיצוב 🎨', replace: 'נכון! JavaScript מפעיל תגובות ⚡', hint: 'בלוק משוב: מה קורה אם התנאי נכון.' },
+      { label: '💡 הודעת אחרת', target: 'js', find: 'לא בדיוק. CSS הוא הצד של הצבעים והעיצוב.', replace: 'כמעט! רמז: JavaScript היא השפה של הפעולות והכפתורים.', hint: 'בלוק אחרת: מה קורה אם התנאי לא נכון.' }
     ],
 
     6: [
@@ -5135,7 +5136,7 @@
 
   const lessonBlocklyPlan = {
     4: { focus: 'קלט אישי', intro: 'בונים מחולל אישי דרך בלוקים נגררים שמעדכנים HTML ו־JavaScript בלי לכתוב קוד חופשי.' },
-    5: { focus: 'תנאים if/else', intro: 'בונים חידון דרך בלוקים נגררים: שאלה, תשובה נכונה, הצלחה ורמז.' },
+    5: { focus: 'תנאים if/else', intro: 'בונים חידון כן/לא דרך בלוקים נגררים: שאלה, בחירה נכונה, הצלחה ואחרת.' },
     6: { focus: 'משתנים וניקוד', intro: 'משנים חוקי ניקוד דרך בלוקים ורואים איך score שומר מספר.' },
     7: { focus: 'יעד ניצחון', intro: 'מאזנים משחק קליקים דרך בלוקים של יעד, נקודות ומשוב.' },
     8: { focus: 'זמן וטיימר', intro: 'בודקים משחק עם זמן ומפעילים בלוקים שמשנים ספירה לאחור וסיום.' },
@@ -5223,31 +5224,31 @@
       ['sentence','משפט תוצאה מתחיל ב־ %1','js','הנה ברכה מצחיקה על','{{TEXT}}',[['field_input','TEXT','הברכה שבחרת היא על']]],
       ['result_word','אימוג׳י סיום בתוצאה %1','js','רעיונות נוצצים 🚀','רעיונות נוצצים {{TEXT}}',[['field_dropdown','TEXT',[['🚀 טיסה','🚀'],['🎉 חגיגה','🎉'],['✨ קסם','✨']]]]]
     ]},
-    5: { title:'תנאים — חידון שחושב עם if/else', concept:'if · else · תשובה נכונה ושגויה', blocks:[
-      ['question','שאלת חידון %1','html','איזו שפה מעצבת את העמוד?','{{TEXT}}',[['field_input','TEXT','איזו שפה גורמת לכפתור להגיב?']]],
-      ['answer','התשובה הנכונה היא %1','js','answer === "CSS"','answer === "{{TEXT}}"',[['field_dropdown','TEXT',[['JavaScript','JavaScript'],['HTML','HTML'],['CSS','CSS']]]]],
-      ['success','אם נכון כתוב %1','js','נכון מאוד! CSS מעצב את העמוד 🎨','{{TEXT}}',[['field_input','TEXT','נכון! JavaScript מפעיל תגובות ⚡']]],
-      ['wrong','אם לא נכון רמז %1','js','כמעט! נסו לחשוב איזו שפה אחראית לצבעים.','{{TEXT}}',[['field_input','TEXT','כמעט! רמז: זו השפה של הפעולות.']]],
-      ['trim','נקה רווחים לפני בדיקה','js','const answer = document.getElementById("answerInput").value;','const answer = document.getElementById("answerInput").value.trim();',[]]
+    5: { title:'תנאים — חידון כן/לא שחושב עם if/else', concept:'if · else · בחירה נכונה ושגויה', blocks:[
+      ['question','שאלת כן/לא %1','html','CSS אחראי על העיצוב של העמוד?','{{TEXT}}',[['field_input','TEXT','JavaScript גורם לכפתור להגיב?']]],
+      ['choice','הבחירה הנכונה היא %1','js','choice === "yes"','choice === "{{VALUE}}"',[['field_dropdown','VALUE',[['לא','no'],['כן','yes']]]]],
+      ['success','אם נכון כתוב %1','js','נכון! CSS אחראי על העיצוב 🎨','{{TEXT}}',[['field_input','TEXT','נכון! JavaScript מפעיל תגובות ⚡']]],
+      ['wrong','אחרת כתוב %1','js','לא בדיוק. CSS הוא הצד של הצבעים והעיצוב.','{{TEXT}}',[['field_input','TEXT','כמעט! רמז: JavaScript היא השפה של הפעולות.']]],
+      ['button_style','צבע כפתור לא %1','css','button:last-of-type {\n  background: #2563eb;\n}','button:last-of-type {\n  background: {{COLOR}};\n}',[['field_dropdown','COLOR',[['כחול','#2563eb'],['סגול','#7c3aed'],['כתום','#f97316']]]]]
     ]},
     6: { title:'משתנים וניקוד — score זוכר בשבילנו', concept:'variable · score · update screen', blocks:[
       ['start_score','ניקוד התחלתי %1','js','let score = 0;','let score = {{N}};',[['field_dropdown','N',[['0','0'],['1','1'],['3','3']]]]],
       ['plus','תשובה נכונה מוסיפה %1','js','score = score + 1;','score = score + {{N}};',[['field_dropdown','N',[['1','1'],['2','2'],['3','3']]]]],
       ['message','הודעת הצלחה %1','js','נכון! קיבלת נקודה ⭐','{{TEXT}}',[['field_input','TEXT','נכון! קיבלת 2 נקודות ⭐⭐']]],
       ['score_label','כותרת ניקוד %1','html','ניקוד:','{{TEXT}}',[['field_input','TEXT','הניקוד שלי:']]],
-      ['reset_message','כפתור איפוס אומר %1','html','אפס ניקוד','{{TEXT}}',[['field_input','TEXT','התחלה מחדש']]]
+      ['reset_message','כפתור איפוס אומר %1','html','איפוס ניקוד','{{TEXT}}',[['field_input','TEXT','התחלה מחדש']]]
     ]},
     7: { title:'משחק קליקים — מאזנים יעד ונקודות', concept:'click event · target · win condition', blocks:[
       ['target','יעד ניצחון %1','js','const target = 10;','const target = {{N}};',[['field_dropdown','N',[['5','5'],['8','8'],['12','12']]]]],
       ['click_points','כל קליק מוסיף %1','js','score = score + 1;','score = score + {{N}};',[['field_dropdown','N',[['1','1'],['2','2'],['3','3']]]]],
-      ['win_text','הודעת ניצחון %1','js','ניצחת במשחק הקליקים!','{{TEXT}}',[['field_input','TEXT','אליפות! ניצחת במשחק הקליקים']]],
+      ['win_text','הודעת ניצחון %1','js','ניצחת! הגעת ליעד 🎉','{{TEXT}}',[['field_input','TEXT','אליפות! ניצחת במשחק הקליקים']]],
       ['button','טקסט כפתור %1','html','לחצו לנקודה','{{TEXT}}',[['field_input','TEXT','תנו קליק!']]],
       ['win_color','צבע ניצחון %1','css','#dcfce7','{{COLOR}}',[['field_dropdown','COLOR',[['ירוק','#bbf7d0'],['צהוב','#fef08a'],['ורוד','#fbcfe8']]]]]
     ]},
     8: { title:'טיימר — זמן משנה את המשחק', concept:'timer · setInterval · countdown', blocks:[
-      ['time','זמן התחלה %1 שניות','js','let timeLeft = 15;','let timeLeft = {{N}};',[['field_dropdown','N',[['10','10'],['15','15'],['20','20']]]]],
+      ['time','זמן התחלה %1 שניות','js','const startTime = 15;','const startTime = {{N}};',[['field_dropdown','N',[['10','10'],['15','15'],['20','20']]]]],
       ['tick','כל פעימה מורידה %1','js','timeLeft = timeLeft - 1;','timeLeft = timeLeft - {{N}};',[['field_dropdown','N',[['1','1'],['2','2']]]]],
-      ['end','הודעת סיום %1','js','נגמר הזמן!','{{TEXT}}',[['field_input','TEXT','נגמר הזמן! כמה נקודות הספקת?']]],
+      ['end','הודעת סיום %1','js','הזמן נגמר! הניקוד שלך:','{{TEXT}}',[['field_input','TEXT','נגמר הזמן! כמה נקודות הספקת?']]],
       ['start','כפתור התחלה %1','html','התחילו משחק','{{TEXT}}',[['field_input','TEXT','התחילו את הטיימר']]],
       ['end_color','צבע זמן שנגמר %1','css','#fee2e2','{{COLOR}}',[['field_dropdown','COLOR',[['אדום','#fecaca'],['כתום','#fed7aa'],['סגול','#ddd6fe']]]]]
     ]},
@@ -5262,14 +5263,14 @@
       ['boost','כוח מוסיף %1 נקודות','js','score = score + 3;','score = score + {{N}};',[['field_dropdown','N',[['3','3'],['5','5'],['8','8']]]]],
       ['message','הודעת כוח %1','js','כוח מיוחד! קיבלת בוסט של 3 נקודות 🛡️','{{TEXT}}',[['field_input','TEXT','כוח על הופעל! קיבלת בונוס ⚡']]],
       ['used','אחרי שימוש הכוח %1','js','powerReady = false;','powerReady = {{VAL}};',[['field_dropdown','VAL',[['נגמר','false'],['נשאר פעיל','true']]]]],
-      ['label','תווית כוח %1','html','כוח מיוחד:','{{TEXT}}',[['field_input','TEXT','מצב כוח:']]],
+      ['label','תווית כוח %1','html','כוח:','{{TEXT}}',[['field_input','TEXT','מצב כוח:']]],
       ['color','צבע כוח פעיל %1','css','#dcfce7','{{COLOR}}',[['field_dropdown','COLOR',[['ירוק','#bbf7d0'],['כחול','#bfdbfe'],['צהוב','#fef08a']]]]]
     ]},
     11: { title:'מסכים במשחק — פתיחה, ניצחון והפסד', concept:'screens · showScreen · game state', blocks:[
       ['intro','הוראות פתיחה %1','html','אספו 3 נקודות כדי לנצח.','{{TEXT}}',[['field_input','TEXT','המטרה: להגיע ל־3 נקודות ולפתוח מסך ניצחון.']]],
       ['target','יעד מסך ניצחון %1','js','const target = 3;','const target = {{N}};',[['field_dropdown','N',[['3','3'],['5','5']]]]],
       ['win','שם מסך ניצחון %1','js','showScreen("winScreen")','showScreen("{{SCREEN}}")',[['field_dropdown','SCREEN',[['winScreen','winScreen'],['loseScreen','loseScreen']]]]],
-      ['lose_text','טקסט הפסד %1','html','הפסדתם','{{TEXT}}',[['field_input','TEXT','נסו שוב — עוד רגע מנצחים']]],
+      ['lose_text','טקסט הפסד %1','html','לא נורא, מנסים שוב.','{{TEXT}}',[['field_input','TEXT','נסו שוב — עוד רגע מנצחים']]],
       ['again','כפתור שוב %1','html','שחקו שוב','{{TEXT}}',[['field_input','TEXT','חזרה להתחלה']]]
     ]},
     12: { title:'מיני־פרויקט משחק — משלבים כמה חוקים', concept:'project · game rules · balancing', blocks:[
@@ -5282,8 +5283,8 @@
     ]}
   };
 
-  function addCodeLabReworkSpecs(){
-    const titles = {
+	  function addCodeLabReworkSpecs(){
+	    const titles = {
       13:['מעבדת הקוד שנוצר — קוראים לפני שכותבים','קריאת קוד שנוצר'],
       14:['HTML דרך בלוקים — מבנה אמיתי בלי פחד','HTML דרך בלוקים'],
       15:['CSS דרך בלוקים — עיצוב אמיתי בהדרגה','CSS דרך בלוקים'],
@@ -5296,18 +5297,39 @@
       22:['סדר קוד — לפני ואחרי חשובים','סדר קוד'],
       23:['חורים בקוד — משלימים דרך בלוקים','השלמת חורים'],
       24:['חוקי משחק — הכנה אחרונה לקוד עצמאי','חוקי משחק']
-    };
-    for(let id=13; id<=24; id++){
-      fullBlockRework[id] = { title: titles[id][0], concept: titles[id][1], blocks: [
-        ['title','כותרת HTML חדשה %1','html',`<h1>${lessons.find(l=>l.id===id).title}</h1>`,`<h1>{{TEXT}}</h1>`,[['field_input','TEXT',titles[id][0]]]],
-        ['intro','משפט הסבר %1','html','<p class="intro">','<p class="intro">{{TEXT}} ',[['field_input','TEXT','אני בודק/ת קוד שנוצר מבלוקים:']]],
-        ['button','טקסט כפתור %1','html','הריצו פרויקט','{{TEXT}}', [['field_input','TEXT','בדקו את הפרויקט']]],
-        ['output','פלט JavaScript %1','js','document.getElementById("output").textContent =','document.getElementById("output").textContent = "{{TEXT}}"; //', [['field_input','TEXT','הבלוק שלי שינה את הפלט']]],
-        ['radius','עיגול כפתור %1','css','border-radius: 999px;','border-radius: {{R}};', [['field_dropdown','R',[['עגול','999px'],['רך','16px'],['מרובע','4px']]]]],
-        ['background','רקע המעבדה %1','css','background: linear-gradient(135deg, #eff6ff, #fff7ed);','background: {{BG}};', [['field_dropdown','BG',[['כחול-כתום','linear-gradient(135deg, #eff6ff, #fff7ed)'],['ורוד-תכלת','linear-gradient(135deg, #fdf2f8, #ecfeff)'],['ירוק בהיר','#dcfce7']]]]]
-      ]};
-    }
-  }
+	    };
+	    for(let id=13; id<=24; id++){
+	      fullBlockRework[id] = { title: titles[id][0], concept: titles[id][1], blocks: [
+	        ['title','כותרת HTML חדשה %1','html',`<h1>${lessons.find(l=>l.id===id).title}</h1>`,`<h1>{{TEXT}}</h1>`,[['field_input','TEXT',titles[id][0]]]],
+	        ['intro','משפט הסבר %1','html','<p class="intro">','<p class="intro">{{TEXT}} ',[['field_input','TEXT','אני בודק/ת קוד שנוצר מבלוקים:']]],
+	        ['button','טקסט כפתור %1','html','הריצו בדיקה','{{TEXT}}', [['field_input','TEXT','בדקו את הפרויקט']]],
+	        ['output','פלט JavaScript %1','js','document.getElementById("output").textContent =','document.getElementById("output").textContent = "{{TEXT}}"; //', [['field_input','TEXT','הבלוק שלי שינה את הפלט']]],
+	        ['radius','עיגול כפתור %1','css','border-radius: 999px;','border-radius: {{R}};', [['field_dropdown','R',[['עגול','999px'],['רך','16px'],['מרובע','4px']]]]],
+	        ['background','רקע המעבדה %1','css','background: linear-gradient(135deg, #eff6ff, #fff7ed);','background: {{BG}};', [['field_dropdown','BG',[['כחול-כתום','linear-gradient(135deg, #eff6ff, #fff7ed)'],['ורוד-תכלת','linear-gradient(135deg, #fdf2f8, #ecfeff)'],['ירוק בהיר','#dcfce7']]]]]
+	      ]};
+	    }
+	    fullBlockRework[13] = { title: titles[13][0], concept: titles[13][1], blocks: [
+	      ['title','מצא/י כותרת HTML %1','html',`<h1>${lessons.find(l=>l.id===13).title}</h1>`,`<h1>{{TEXT}}</h1>`,[['field_input','TEXT','מעבדת הקוד שלי']]],
+	      ['button','מצא/י כפתור HTML %1','html','הריצו בדיקה','{{TEXT}}', [['field_input','TEXT','בדקו שינוי']]],
+	      ['output','מצא/י שורת פלט JS %1','js','מצאתי את השורה שהבלוק יצר ✅','{{TEXT}}', [['field_input','TEXT','מצאתי קוד שנוצר מבלוק ✅']]],
+	      ['radius','מצא/י עיצוב כפתור %1','css','border-radius: 999px;','border-radius: {{R}};', [['field_dropdown','R',[['עגול','999px'],['רך','16px'],['מרובע','4px']]]]],
+	      ['background','מצא/י רקע CSS %1','css','background: linear-gradient(135deg, #eff6ff, #fff7ed);','background: {{BG}};', [['field_dropdown','BG',[['כחול-כתום','linear-gradient(135deg, #eff6ff, #fff7ed)'],['ורוד-תכלת','linear-gradient(135deg, #fdf2f8, #ecfeff)'],['ירוק בהיר','#dcfce7']]]]]
+	    ]};
+	    fullBlockRework[14] = { title: titles[14][0], concept: titles[14][1], blocks: [
+	      ['title','כותרת h1 %1','html',`<h1>${lessons.find(l=>l.id===14).title}</h1>`,`<h1>{{TEXT}}</h1>`,[['field_input','TEXT','עמוד HTML שבניתי']]],
+	      ['intro','פסקת intro %1','html','<p class="intro">','<p class="intro">{{TEXT}} ',[['field_input','TEXT','HTML מסדר את חלקי העמוד:']]],
+	      ['button','כפתור HTML %1','html','הריצו בדיקה','{{TEXT}}', [['field_input','TEXT','בדקו את ה־HTML']]],
+	      ['output','אזור פלט id=output %1','html','<p id="output">כאן תופיע התוצאה...</p>','<p id="output">{{TEXT}}</p>', [['field_input','TEXT','כאן רואים פלט מהעמוד']]],
+	      ['note','תגית מידע חדשה %1','html','<main class="code-lab">','<main class="code-lab">\\n  <p class="html-note">{{TEXT}}</p>', [['field_input','TEXT','HTML הוא שלד העמוד']]]
+	    ]};
+	    fullBlockRework[15] = { title: titles[15][0], concept: titles[15][1], blocks: [
+	      ['background','רקע body %1','css','background: linear-gradient(135deg, #eff6ff, #fff7ed);','background: {{BG}};', [['field_dropdown','BG',[['כחול-כתום','linear-gradient(135deg, #eff6ff, #fff7ed)'],['ורוד-תכלת','linear-gradient(135deg, #fdf2f8, #ecfeff)'],['ירוק בהיר','#dcfce7']]]]],
+	      ['card_radius','עיגול כרטיס %1','css','border-radius: 28px;','border-radius: {{R}};', [['field_dropdown','R',[['עגול','28px'],['רך','16px'],['כמעט מרובע','6px']]]]],
+	      ['card_padding','ריווח כרטיס %1','css','padding: 30px;','padding: {{P}};', [['field_dropdown','P',[['רגיל','30px'],['צפוף','18px'],['מרווח','42px']]]]],
+	      ['button_color','צבע כפתור %1','css','background: #2563eb;','background: {{COLOR}};', [['field_dropdown','COLOR',[['כחול','#2563eb'],['ירוק','#16a34a'],['סגול','#7c3aed']]]]],
+	      ['output_box','רקע תיבת פלט %1','css','background: #f8fafc;','background: {{COLOR}};', [['field_dropdown','COLOR',[['אפור בהיר','#f8fafc'],['צהוב','#fef9c3'],['תכלת','#e0f2fe']]]]]
+	    ]};
+	  }
   addCodeLabReworkSpecs();
 
   function makeArgs(args){

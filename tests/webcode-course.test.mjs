@@ -136,15 +136,61 @@ assert.ok(lesson4.vocabulary.some(v => v[0] === 'input'), 'lesson 4 vocabulary i
 const lesson5 = lessons[4];
 assert.equal(lesson5.durationMinutes, 90, 'lesson 5 is framed as 90 minutes');
 assert.ok(lesson5.title.includes('חידון'), 'lesson 5 focuses on quiz building');
-assert.ok(lesson5.starter.js.includes('if (answer === "CSS")'), 'lesson 5 includes if condition');
+assert.ok(lesson5.starter.html.includes("chooseAnswer('yes')"), 'lesson 5 uses fixed yes/no choices instead of free text');
+assert.ok(!lesson5.starter.html.includes('answerInput'), 'lesson 5 avoids exact typed-answer matching');
+assert.ok(lesson5.starter.js.includes('if (choice === "yes")'), 'lesson 5 includes a simple choice-based if condition');
 assert.ok(lesson5.starter.js.includes('else'), 'lesson 5 includes else branch');
-assert.ok(lesson5.blocklyBlocks.some(block => block.type === 'lesson_5_answer' && block.args0?.some(arg => JSON.stringify(arg.options || []).includes('JavaScript'))), 'lesson 5 has a Blockly dropdown that changes the quiz answer to JavaScript');
+assert.ok(lesson5.blocklyBlocks.some(block => block.type === 'lesson_5_choice' && block.args0?.some(arg => JSON.stringify(arg.options || []).includes('no'))), 'lesson 5 has a Blockly dropdown that changes the correct yes/no choice');
 assert.ok(lesson5.vocabulary.some(v => v[0] === 'if'), 'lesson 5 vocabulary includes if');
+assert.ok(lesson5.vocabulary.some(v => v[0] === 'choice'), 'lesson 5 vocabulary names the user choice');
+
+const lesson6 = lessons[5];
+assert.equal(lesson6.durationMinutes, 90, 'lesson 6 is framed as 90 minutes');
+assert.ok(lesson6.title.includes('ניקוד') || lesson6.title.includes('score'), 'lesson 6 focuses on scoring');
+assert.ok(lesson6.starter.html.includes("chooseAnswer('yes')"), 'lesson 6 keeps scoring on fixed choices');
+assert.ok(!lesson6.starter.html.includes('answerInput'), 'lesson 6 avoids typed-answer matching while teaching score');
+assert.ok(lesson6.starter.js.includes('let score = 0'), 'lesson 6 initializes score');
+assert.ok(lesson6.starter.js.includes('score = score + 1'), 'lesson 6 increments score');
+assert.ok(lesson6.blocklyBlocks.some(block => block.type === 'lesson_6_plus'), 'lesson 6 has a Blockly block for score increment size');
+assert.ok(lesson6.blocklyBlocks.some(block => block.type === 'lesson_6_reset_message' && block.find === 'איפוס ניקוד'), 'lesson 6 reset-label block matches the starter button text');
+
+const lesson7 = lessons[6];
+const lesson7WinTextBlock = lesson7.blocklyBlocks.find(block => block.type === 'lesson_7_win_text');
+assert.ok(lesson7.title.includes('קליקים'), 'lesson 7 focuses on the first click game');
+assert.equal(lesson7WinTextBlock.find, 'ניצחת! הגעת ליעד 🎉', 'lesson 7 win-message block finds the actual starter win text');
+assert.ok(lesson7.starter.js.includes(lesson7WinTextBlock.find), 'lesson 7 starter contains the text changed by the win-message block');
+
+const lesson8 = lessons[7];
+const lesson8TimeBlock = lesson8.blocklyBlocks.find(block => block.type === 'lesson_8_time');
+const lesson8EndBlock = lesson8.blocklyBlocks.find(block => block.type === 'lesson_8_end');
+assert.ok(lesson8.title.includes('טיימר'), 'lesson 8 focuses on timer gameplay');
+assert.equal(lesson8TimeBlock.find, 'const startTime = 15;', 'lesson 8 time block changes the game start time source');
+assert.ok(lesson8.starter.js.includes('timeLeft = startTime;'), 'lesson 8 starts each run from the configurable start time');
+assert.ok(lesson8.starter.js.includes(lesson8EndBlock.find), 'lesson 8 end-message block finds the actual starter end text');
+
+for (const lesson of lessons.slice(3, 15)) {
+  for (const block of lesson.blocklyBlocks || []) {
+    const targetSource = block.target === 'css' ? lesson.starter.css : block.target === 'js' ? lesson.starter.js : lesson.starter.html;
+    const finds = Array.isArray(block.find) ? block.find : [block.find];
+    assert.ok(finds.some(find => find && targetSource.includes(find)), `lesson ${lesson.id} block ${block.type} finds real starter ${block.target || 'html'} text`);
+  }
+}
 
 const lesson13 = lessons[12];
 assert.ok(lesson13.title.includes('הקוד שנוצר'), 'lesson 13 starts the generated-code lab phase');
 assert.ok(lesson13.progressionStage.includes('בלוקים אמיתיים'), 'lesson 13 remains block-first under the new progression requirement');
 assert.ok(lesson13.blocklyBlocks.length >= 3, 'lesson 13 has generated-code Blockly cards');
+assert.ok(lesson13.blocklyBlocks.some(block => block.target === 'html'), 'lesson 13 asks learners to identify generated HTML');
+assert.ok(lesson13.blocklyBlocks.some(block => block.target === 'css'), 'lesson 13 asks learners to identify generated CSS');
+assert.ok(lesson13.blocklyBlocks.some(block => block.target === 'js'), 'lesson 13 asks learners to identify generated JavaScript');
+
+const lesson14 = lessons[13];
+assert.ok(lesson14.title.includes('HTML'), 'lesson 14 focuses on HTML');
+assert.ok(lesson14.blocklyBlocks.every(block => block.target === 'html'), 'lesson 14 uses HTML-only Blockly cards');
+
+const lesson15 = lessons[14];
+assert.ok(lesson15.title.includes('CSS'), 'lesson 15 focuses on CSS');
+assert.ok(lesson15.blocklyBlocks.every(block => block.target === 'css'), 'lesson 15 uses CSS-only Blockly cards');
 
 const lesson19 = lessons[18];
 assert.ok(lesson19.title.includes('כרטיסי HTML'), 'lesson 19 keeps the HTML-card focus');

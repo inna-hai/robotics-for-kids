@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>הרשמה ללומדות hai.tech</title>
+  <meta name="description" content="פותחים חשבון למידה לילדים, מתחילים 3 שיעורים בחינם ושומרים את ההתקדמות.">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/account.css">
+</head>
+<body>
+  <header class="shell top">
+    <a class="brand" href="index.html"><span class="mark">🌈</span><span>hai.tech · לומדות לילדים</span></a>
+    <nav class="nav"><a href="login.html">כבר יש חשבון?</a></nav>
+  </header>
+
+  <main class="shell account-grid">
+    <section class="hero-card">
+      <span class="eyebrow">יאללה, יוצאים לדרך 🚀</span>
+      <h1>פותחים חשבון למידה לילדים</h1>
+      <p>כמה צעדים קצרים וזהו: מתחילים 3 שיעורים בחינם, והמערכת שומרת את ההתקדמות. בפעם הבאה חוזרים בדיוק למשימה שבה עצרתם.</p>
+    </section>
+
+    <section class="panel" id="auth-panel">
+      <h2>פרטים קצרים ומתחילים</h2>
+      <p class="hint">ממלאים פרטי הורה ופרטי הילד, בוחרים סיסמה, ומתחילים. אחר כך אפשר להוסיף עוד ילדים מהאזור האישי.</p>
+      <form id="register-form" data-auth-form="register">
+        <div class="field"><label for="register-parent">שם הורה</label><input id="register-parent" name="parentName" autocomplete="name" required></div>
+        <div class="field"><label for="register-student">שם הילד</label><input id="register-student" name="studentName" required></div>
+        <div class="field"><label for="register-phone">טלפון</label><input id="register-phone" name="phone" autocomplete="tel"></div>
+        <div class="field"><label for="register-email">מייל</label><input id="register-email" name="email" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="register-password">סיסמה</label><div class="password-wrap"><input id="register-password" name="password" type="password" autocomplete="new-password" minlength="6" required><button class="password-toggle" type="button" data-toggle-password="register-password" aria-label="הצגת סיסמה"><span class="eye-icon" aria-hidden="true"></span></button></div></div>
+        <div class="field"><label for="register-password-confirm">אימות סיסמה</label><div class="password-wrap"><input id="register-password-confirm" name="confirmPassword" type="password" autocomplete="new-password" minlength="6" required><button class="password-toggle" type="button" data-toggle-password="register-password-confirm" aria-label="הצגת סיסמה"><span class="eye-icon" aria-hidden="true"></span></button></div></div>
+        <button class="btn primary" type="submit">יאללה, להתחיל ללמוד</button>
+      </form>
+      <p class="switch-line">כבר רשומים? <a href="login.html">כניסה לחשבון</a></p>
+      <div class="message" id="auth-message" aria-live="polite"></div>
+    </section>
+
+    <section class="panel dashboard" id="dashboard-panel">
+      <h2>האזור שלי</h2>
+      <p class="hint" id="welcome-text"></p>
+      <span class="status" id="subscription-status">התנסות</span>
+      <div class="progress-summary" id="progress-summary">התקדמות: עדיין אין משימות שהושלמו.</div>
+      <div class="course-list">
+        <article class="course"><div><h3>חשיבה ותכנות · 3 שיעורים בחינם</h3><p>אפשר להתחיל עם 3 שיעורים בחינם, וההתקדמות נשמרת לילד.</p></div><a class="btn green" href="space.html">להתחיל ללמוד</a></article>
+        <article class="course"><div><h3>לפתוח את כל הלומדות</h3><p>מפעילים מנוי לילד ואז כל הקורסים הזמינים נפתחים.</p></div><a class="btn primary" href="https://mrng.to/fZiL2SITRp">הפעלת מנוי</a></article>
+      </div>
+      <p><button class="btn light" id="logout-button" type="button">התנתקות</button></p>
+    </section>
+  </main>
+
+  <script src="js/summer-account.js?v=20260809-sensi-only-redirect"></script>
+</body>
+</html>
