@@ -292,7 +292,7 @@ assert.ok(hub.includes('webcode-play.html?lesson=1'), 'hub links to lesson 1');
 assert.ok(hub.includes('webcode-slides.html?lesson=1'), 'hub links to guide slides');
 assert.ok(hub.includes('25–30'), 'hub explains gradual move to real coding');
 assert.ok(hub.includes('formatMixedText') && hub.includes('tech-term'), 'hub isolates English tech terms so RTL lesson cards do not flip mixed text');
-assert.ok(hub.includes('js/webcode-lessons.js?v=20260823-lesson6-delete-weak-exercises-v143'), 'hub bumps internal lesson-data script version to avoid stale course cards');
+assert.ok(hub.includes('js/webcode-lessons-365fc3c.js'), 'hub loads a cache-busted lesson-data asset to avoid stale course cards');
 assert.ok(!hub.includes('Blockly אמיתי'), 'course-page hero avoids unclear “Blockly אמיתי” phrasing');
 assert.ok(!JSON.stringify(lessons.slice(0, 3).map(lesson => lesson.concept)).includes('Blockly אמיתי'), 'visible course-card concepts avoid unclear “Blockly אמיתי” phrasing');
 
@@ -301,7 +301,7 @@ assert.ok(play.includes('repairSavedCodeState') && play.includes('function makeG
 assert.ok(play.includes('hasPreviewFilledInputs') && play.includes('hasPreviewResultFromInputs'), 'player can validate preview input/result interactions');
 assert.ok(play.includes('blocklyLessonBuilder'), 'play page supports lesson-specific Blockly blocks for lessons 4-24');
 assert.ok(play.includes('defineLessonBlocklyBlocks'), 'play page defines dynamic draggable lesson blocks');
-assert.ok(play.includes('js/webcode-lessons.js?v=20260823-lesson6-delete-weak-exercises-v143'), 'play page bumps internal lesson data script for lesson 5 success-copy fix');
+assert.ok(play.includes('js/webcode-lessons-365fc3c.js'), 'play page loads a cache-busted lesson data asset for refreshed WebCode lessons');
 assert.ok(play.includes('scoreText:scoreText?String(scoreText.textContent') && play.includes('scoreText:event.data.scoreText'), 'preview click bridge records scoreText for lesson 6 score validators');
 assert.ok(play.includes('function hasPreviewScoreSum(rule)'), 'play page can validate preview score sums');
 assert.ok(play.includes('function hasPreviewScoreFromBlockField(rule)'), 'play page can validate preview score against a block field');
