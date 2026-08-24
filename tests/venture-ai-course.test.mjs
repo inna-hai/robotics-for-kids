@@ -42,8 +42,8 @@ assert.ok(program.pitchTemplate[0].includes('חולון'), 'pitch template keeps
 
 const page = read('venture-ai.html');
 assert.ok(page.includes('מרעיון למיזם עם AI'), 'course page has title');
-assert.ok(page.includes('venture-ai-slides.html?lesson=1'), 'course page links instructor slides');
-assert.ok(page.includes('venture-ai-students.html?lesson=1'), 'course page links student worksheet');
+assert.ok(page.includes('venture-ai-slides.html?lesson=${lesson.id}'), 'course page links instructor slides inside each lesson');
+assert.ok(page.includes('venture-ai-students.html?lesson=${lesson.id}'), 'course page links student worksheet inside each lesson');
 assert.ok(page.includes('venture-ai-improvement.html'), 'course page links improvement request form');
 assert.ok(page.includes('https://opal.hai.tech/'), 'course page links Opal');
 
