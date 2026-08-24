@@ -11,7 +11,9 @@ vm.createContext(sandbox);
 vm.runInContext(read('js/omer-future-craftom-lessons.js'), sandbox);
 
 const program = sandbox.window.OMER_FUTURE_CRAFTOM_PROGRAM;
+const cacheBustedLessonsAsset = 'js/omer-future-craftom-lessons-25f8f8e.js';
 assert.ok(program, 'Omer future Craftom program exists');
+assert.ok(exists(cacheBustedLessonsAsset), 'cache-busted Omer lesson data asset exists');
 assert.equal(program.targetAudience, 'כיתה ד׳', 'program targets grade 4');
 assert.equal(program.age, 'בני 9', 'program targets age 9');
 assert.equal(program.totalChallenges, 4, 'program has 4 challenges');
@@ -101,7 +103,7 @@ assert.ok(hub.includes('challenge-video'), 'hub shows challenge videos in the ch
 assert.ok(hub.includes('omer-future-craftom-challenge.html?lesson=${lesson.id}'), 'hub links Omer challenge pages');
 assert.ok(hub.includes('omer-future-craftom-students.html?lesson=${lesson.id}'), 'hub links student worksheets');
 assert.ok(hub.includes('omer-future-craftom-slides.html?lesson=${lesson.id}'), 'hub links instructor slides');
-assert.ok(hub.includes('js/omer-future-craftom-lessons.js'), 'hub loads course data');
+assert.ok(hub.includes(cacheBustedLessonsAsset), 'hub loads cache-busted course data');
 
 const students = read('omer-future-craftom-students.html');
 assert.ok(students.includes('דף תלמידים'), 'students page is a worksheet');
@@ -128,6 +130,7 @@ assert.ok(challengePage.includes('challengeVideo'), 'challenge page has a dedica
 assert.ok(challengePage.includes('lesson.video'), 'challenge page loads the video for the selected challenge');
 assert.ok(challengePage.includes('JSON הצלחה'), 'challenge page links JSON success');
 assert.ok(challengePage.includes('window.getOmerFutureCraftomLesson'), 'challenge page loads lesson by query');
+assert.ok(challengePage.includes(cacheBustedLessonsAsset), 'challenge page loads cache-busted course data');
 
 const improvement = read('omer-future-craftom-improvement.html');
 assert.ok(improvement.includes('בקשת שיפור'), 'improvement page has title');
