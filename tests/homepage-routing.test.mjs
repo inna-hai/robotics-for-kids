@@ -35,7 +35,9 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertIncludes(homepageHtml, 'href="sensi-classic-slides/index.html"');
   assertNotIncludes(homepageHtml, 'href="pygame.html"', 'Pygame should be hidden from the main homepage');
   assertNotIncludes(homepageHtml, 'Pygame', 'Pygame should not appear as a main homepage card');
-  assertIncludes(homepageHtml, 'href="roblox.html"');
+  assertNotIncludes(homepageHtml, 'href="roblox.html"', 'Roblox should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'href="roblox-course.html"', 'Roblox course page should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'Roblox', 'Roblox should not appear as a main homepage card');
   assertIncludes(homepageHtml, 'href="python-turtle.html"');
   assertIncludes(homepageHtml, 'href="sisi.html"');
   assertIncludes(homepageHtml, 'סדרת סיסי לכיתות ב׳');
