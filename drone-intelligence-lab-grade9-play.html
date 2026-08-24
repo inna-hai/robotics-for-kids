@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🚁 Drone Intelligence Lab — לומדת JavaScript רחפנים</title>
+  <meta name="description" content="לומדת Drone Intelligence Lab לכיתה ט׳ עתודה: תדריך JavaScript רחפנים, DroneBlocks Code בטאבלט, סימולטור לפני טיסה פיזית, בטיחות, סינטקס ודיבוג." />
+  <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+  <script src="https://unpkg.com/blockly/msg/he.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/platform-home-link.css?v=20260819-tello-4">
+  <style>
+    *{box-sizing:border-box}:root{--ink:#172033;--orange:#ff8a00;--orange2:#ffb000;--blue:#0ea5e9;--sky:#7dd3fc;--teal:#14b8a6;--green:#22c55e;--red:#fb7185;--panel:#fff;--soft:#fff7ed}body{margin:0;height:100vh;overflow:hidden;font-family:Rubik,Arial,sans-serif;direction:rtl;background:radial-gradient(circle at 12% 0,rgba(255,138,0,.25),transparent 28%),radial-gradient(circle at 88% 6%,rgba(125,211,252,.28),transparent 26%),linear-gradient(135deg,#111827,#123c69 54%,#0f766e);color:var(--ink);display:flex;flex-direction:column}a{color:inherit}.topbar{background:rgba(255,255,255,.97);box-shadow:0 5px 22px rgba(0,0,0,.18);padding:.56rem .8rem;display:grid;grid-template-columns:minmax(210px,auto) minmax(0,1fr) auto;gap:.65rem;align-items:center;z-index:50;flex:0 0 auto}.brand{display:flex;align-items:center;gap:.5rem;font-weight:900;font-size:1.04rem;white-space:nowrap}.app-mark{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,var(--orange),var(--orange2));display:grid;place-items:center;color:#172033;box-shadow:0 7px 18px rgba(255,138,0,.3);font-size:.82rem}.tabs{display:flex;gap:.25rem;overflow-x:auto;justify-content:center;-webkit-overflow-scrolling:touch}.tab{border:2px solid #e5e7eb;background:white;border-radius:999px;min-width:38px;height:36px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-weight:900;flex:0 0 auto}.tab.active{background:linear-gradient(135deg,var(--orange),var(--orange2));color:#172033;border-color:var(--orange)}.actions{display:flex;gap:.42rem}.btn{border:0;border-radius:999px;padding:.58rem .85rem;font-family:inherit;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.3rem}.run{background:#00e096;color:#052e16}.reset{background:#fb7185;color:white}.link{background:#eef2ff;color:#3730a3}.main{flex:1;min-height:0;display:grid;grid-template-columns:260px minmax(460px,1.35fr) minmax(330px,.85fr);gap:.8rem;padding:.8rem;width:min(1500px,100%);margin:0 auto}.panel{background:rgba(255,255,255,.97);border:1px solid rgba(255,255,255,.55);border-radius:24px;box-shadow:0 16px 44px rgba(0,0,0,.18);overflow:hidden;display:flex;flex-direction:column;min-height:0}.panel-head{padding:.72rem .92rem;border-bottom:1px solid #e5e7eb;background:linear-gradient(135deg,#ffffff,#fff7ed);display:flex;justify-content:space-between;gap:.5rem;align-items:center;flex:0 0 auto}.panel-head h2{font-size:1rem;margin:0}.panel-body{padding:.82rem;min-height:0;overflow:auto}.brief h1{font-size:1.16rem;line-height:1.2;margin:.2rem 0 .5rem}.brief p{line-height:1.48;color:#334155;margin:.35rem 0;font-size:.93rem}.chips{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.45rem}.chip{background:#fff7ed;color:#9a3412;border-radius:999px;padding:.24rem .5rem;font-weight:900;font-size:.72rem}.chip.blue{background:#ecfeff;color:#0e7490}.real-card,.vocab-card,.exercise,.safety-item{background:#f8fafc;border:1px solid #e5e7eb;border-radius:15px;padding:.62rem;margin-bottom:.5rem;line-height:1.38;font-size:.9rem}.real-card b,.vocab-card b,.exercise b{display:block;color:#c2410c}.real-card .icon{font-size:1.45rem;float:left;margin-right:.4rem}.safety-item{display:flex;gap:.5rem;align-items:flex-start}.safety-item input{width:19px;height:19px;accent-color:#f97316;flex:0 0 auto}.workspace-panel{background:rgba(255,255,255,.98)}.workspace-tip{background:#fff7ed;color:#9a3412;border-bottom:1px solid #fed7aa;padding:.65rem .9rem;font-weight:900;line-height:1.38;flex:0 0 auto}.app-workflow-shell{display:none;flex:1;min-height:0;padding:1rem;background:linear-gradient(135deg,#fff7ed,#ecfeff);overflow:auto}.app-workflow-card{background:white;border:1px solid #fed7aa;border-radius:18px;padding:.85rem;margin-bottom:.7rem;box-shadow:0 8px 22px rgba(15,23,42,.08);line-height:1.48}.app-workflow-card b{display:block;color:#c2410c;margin-bottom:.25rem}.workspace-panel.app-mode .blockly-shell{display:none}.workspace-panel.app-mode .app-workflow-shell{display:block}.workspace-panel.app-mode .workspace-tip{background:#ecfeff;color:#0e7490;border-bottom-color:#a5f3fc}.blockly-shell{flex:1;min-height:0;padding:.75rem;background:linear-gradient(135deg,#f8fafc,#fff7ed)}#blocklyDiv{height:100%;width:100%;min-height:520px;border-radius:20px;overflow:hidden;border:4px solid #1f2937;box-shadow:inset 0 0 0 1px rgba(255,255,255,.5)}.blocklyTreeLabel{font-family:Rubik,Arial,sans-serif}.sim-body{display:grid;grid-template-rows:minmax(285px,1fr) auto auto;gap:.7rem;height:100%;min-height:0}.stage{position:relative;min-height:285px;border:6px solid #1e293b;border-radius:22px;overflow:hidden;background:linear-gradient(#7dd3fc 0 58%,#dbeafe 58% 70%,#86efac 70% 100%);box-shadow:inset 0 -35px #16a34a}.stage:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 18% 16%,rgba(255,255,255,.98) 0 28px,transparent 30px),radial-gradient(circle at 28% 19%,rgba(255,255,255,.9) 0 22px,transparent 24px),radial-gradient(circle at 74% 12%,rgba(255,255,255,.85) 0 24px,transparent 26px),linear-gradient(transparent 0 68%,rgba(255,255,255,.35) 68% 70%,transparent 70%);pointer-events:none}.sun{position:absolute;right:18px;top:18px;width:54px;height:54px;border-radius:50%;background:#fde047;box-shadow:0 0 34px #fde047;z-index:1}.zone{position:absolute;border:2px dashed rgba(14,116,144,.45);border-radius:18px;background:rgba(255,255,255,.68);display:grid;place-items:center;text-align:center;font-weight:900;color:#075985;padding:.4rem;z-index:2}.zone.start{right:7%;bottom:15%;width:112px;height:76px}.zone.air{right:37%;top:20%;width:145px;height:80px}.zone.land{left:7%;bottom:15%;width:112px;height:76px}.drone{position:absolute;right:12%;bottom:24%;font-size:3.1rem;transition:.45s;filter:drop-shadow(0 12px 14px rgba(15,23,42,.25));z-index:5}.path{background:rgba(255,255,255,.9);border:1px solid #fed7aa;border-radius:18px;padding:.62rem;font-weight:900;color:#9a3412;line-height:1.38;max-height:82px;overflow:auto}.feedback{background:#ecfdf5;color:#14532d;border-radius:18px;padding:.72rem;font-weight:900;line-height:1.42}.feedback.bad{background:#fff7ed;color:#9a3412}.status-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.45rem}.status{background:#f8fafc;border:1px solid #e5e7eb;border-radius:15px;padding:.55rem;text-align:center;font-weight:900}.status b{display:block;color:#f97316;font-size:1.15rem}.teacher-link{display:block;margin-top:.65rem;text-align:center;background:#111827;color:white;text-decoration:none;border-radius:16px;padding:.7rem;font-weight:900}.mini-section{margin-top:.85rem}.mini-section h3{margin:.1rem 0 .48rem;font-size:.96rem}.directions{display:grid;gap:.38rem}.direction{background:#eef2ff;color:#3730a3;border-radius:14px;padding:.5rem;font-weight:800;font-size:.88rem}.mission-visual{height:100%;min-height:285px;display:grid;grid-template-rows:auto 1fr auto;gap:.65rem;background:linear-gradient(135deg,#ecfeff,#fff7ed);padding:.8rem}.mission-visual h3{margin:0;color:#0f172a;font-size:1.05rem}.mission-visual img{width:100%;height:100%;min-height:210px;object-fit:contain;background:white;border-radius:18px;border:1px solid #bae6fd}.mission-visual p{margin:0;color:#334155;font-weight:800;line-height:1.35}.sim-panel.app-mode .stage{border-color:#0ea5e9;background:white;box-shadow:none}.sim-panel.app-mode .stage:before,.sim-panel.app-mode .sun,.sim-panel.app-mode .zone,.sim-panel.app-mode .drone{display:none}.hidden-xml{display:none}@media(max-width:1180px){body{height:auto;min-height:100vh;overflow:auto}.main{grid-template-columns:280px minmax(0,1fr);align-items:stretch}.sim-panel{grid-column:1/-1}.sim-body{grid-template-columns:minmax(0,1fr) 300px;grid-template-rows:auto auto;height:auto}.stage{min-height:320px}.status-row{grid-template-columns:repeat(3,1fr)}.blockly-shell{min-height:620px}#blocklyDiv{min-height:600px}}@media(max-width:860px){.topbar{grid-template-columns:1fr}.tabs{justify-content:flex-start}.actions{justify-content:stretch}.actions .btn,.actions a{flex:1}.main{display:flex;flex-direction:column;padding:.6rem}.info-panel{order:3}.workspace-panel{order:1;min-height:650px}.sim-panel{order:2}.sim-body{display:block}.stage{min-height:320px;margin-bottom:.65rem}.blockly-shell{min-height:560px}#blocklyDiv{min-height:540px}}@media(max-width:560px){.btn{font-size:.82rem;padding:.5rem .56rem}.panel{border-radius:18px}.panel-body{padding:.68rem}.workspace-panel{min-height:590px}.blockly-shell{padding:.48rem;min-height:500px}#blocklyDiv{min-height:485px;border-width:3px}.stage{min-height:280px}.zone{font-size:.78rem}.zone.air{right:31%;width:130px}.drone{font-size:2.65rem}.status-row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <a class="platform-home-link" href="index.html"><span class="platform-home-icon">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
+  <header class="topbar">
+    <div class="brand"><span class="app-mark">DB</span><span>Drone Intelligence ז׳</span></div>
+    <nav class="tabs" id="tabs"></nav>
+    <div class="actions">
+      <button class="btn run" onclick="runMission()">▶️ הרצה</button>
+      <button class="btn reset" onclick="resetWorkspace()">↺ איפוס</button>
+      <a class="btn link" id="slidesLink" href="drone-intelligence-lab-grade9-slides.html?lesson=1">מצגת</a>
+      <a class="btn link" id="guideTopLink" href="drone-intelligence-lab-grade9-guide.html?lesson=1">מערך</a>
+      <a class="btn link" href="drone-intelligence-lab-grade9.html">כל השיעורים</a>
+    </div>
+  </header>
+
+  <main class="main">
+    <aside class="panel info-panel">
+      <div class="panel-head"><h2>🧭 תדריך משימה</h2></div>
+      <div class="panel-body brief">
+        <div class="chips"><span class="chip" id="unit"></span><span class="chip blue" id="mode"></span></div>
+        <h1 id="title"></h1>
+        <p id="story"></p>
+        <p><b>משימה:</b> <span id="mission"></span></p>
+        <a class="teacher-link" id="teacherLink" href="drone-intelligence-lab-grade9-slides.html?lesson=1">📽️ מצגת הקרנה</a>
+        <a class="teacher-link" id="guideLink" href="drone-intelligence-lab-grade9-guide.html?lesson=1">🧭 מערך מדריך</a>
+        <div class="mini-section"><h3>🌍 שימושים אמיתיים</h3><div id="realUses"></div></div>
+        <div class="mini-section"><h3>🛡️ צ׳קליסט בטיחות</h3><div id="safety"></div></div>
+      </div>
+    </aside>
+
+    <section class="panel workspace-panel" id="workspacePanel">
+      <div class="panel-head"><h2 id="workspaceTitle">💻 אזור עבודה — DroneBlocks Code בטאבלט</h2><span class="chip">Lenovo TB311FU</span></div>
+      <div class="workspace-tip" id="workspaceTip">📱 בשיעור הזה האתר נותן תדריך מסודר; את הקוד כותבים ומריצים ב־DroneBlocks Code בטאבלט.</div>
+      <div class="blockly-shell"><div id="blocklyDiv"></div></div>
+      <div class="app-workflow-shell" id="appWorkflowShell"></div>
+    </section>
+
+    <aside class="panel sim-panel">
+      <div class="panel-head"><h2 id="simTitle">💻 תדריך קוד רחפנים</h2><span class="chip blue" id="simModeChip">סימולטור בלבד</span></div>
+      <div class="panel-body sim-body">
+        <div class="stage" id="stage">
+          <div class="sun"></div>
+          <div class="zone start">Takeoff<br>המראה</div>
+          <div class="zone air">Hover 5 sec<br>ריחוף חקר</div>
+          <div class="zone land">Land<br>נחיתה</div>
+          <div class="drone" id="drone">🚁</div>
+        </div>
+        <div>
+          <div class="status-row"><div class="status"><b id="blockCount">0</b>שלבים</div><div class="status"><b id="orderStatus">—</b>תוכנית</div><div class="status"><b>0</b>טיסה פיזית</div></div>
+          <div class="path" id="path">חברו שלבים באזור העבודה.</div>
+          <div class="feedback" id="feedback">שיעור 1: עבודה בסימולטור בלבד — אין טיסה פיזית.</div>
+        </div>
+        <div>
+          <div class="mini-section"><h3>📚 מילון טיסה</h3><div id="vocab"></div></div>
+          <div class="mini-section"><h3>🧭 כיוונים מקצועיים</h3><div class="directions" id="directions"></div></div>
+          <div class="mini-section"><h3>🧪 תרגולים</h3><div id="exercises"></div></div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <xml id="toolbox" class="hidden-xml">
+    <category name="🚁 Tello Blocks" colour="#ff8a00">
+      <block type="tello_takeoff"></block>
+      <block type="tello_forward"></block>
+      <block type="tello_right"></block>
+      <block type="tello_back"></block>
+      <block type="tello_left"></block>
+      <block type="tello_yaw_right_90"></block>
+      <block type="tello_yaw_right_360"></block>
+      <block type="tello_hover"></block>
+      <block type="tello_land"></block>
+      <block type="tello_up_100"></block>
+      <block type="tello_down_50"></block>
+      <block type="tello_abort"></block>
+    </category>
+    <category name="🛡️ Safety" colour="#22c55e">
+      <block type="tello_safety_check"></block>
+      <block type="tello_comment"></block>
+    </category>
+  </xml>
+
+  <script src="js/drone-intelligence-lab-grade9-lessons.js?v=20260824-g9-1"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const lesson = window.getDroneIntelligenceLabGrade9Lesson(params.get('lesson'));
+    const labels = window.DRONE_INTELLIGENCE_LAB_GRADE9_COMMAND_LABELS;
+    const blockKeyToType = { takeoff:'tello_takeoff', land:'tello_land', yaw_360:'tello_yaw_right_360', yaw_right:'tello_yaw_right_90', yaw_left:'tello_yaw_left_90', hover:'tello_hover', hover_data:'tello_hover', forward:'tello_forward', back:'tello_back', right:'tello_right', left:'tello_left', up:'tello_up_100', up_100:'tello_up_100', down:'tello_down_50', down_50:'tello_down_50', abort:'tello_abort', safety_check:'tello_safety_check', comment:'tello_comment', repeat_square:'tello_repeat_square', repeat_scan:'tello_repeat_scan', grid_scan:'tello_grid_scan', photo:'tello_photo', wait:'tello_hover', go_pad:'tello_go_pad', share:'tello_share', debug_distance:'tello_debug_distance', show_code:'tello_show_code', project_path:'tello_project_path' };
+    const typeToHuman = { tello_run_program:'Run Mission', tello_takeoff:'Takeoff', tello_land:'Land', tello_yaw_right_360:'Yaw Right 360°', tello_yaw_right_90:'Yaw Right 90°', tello_yaw_left_90:'Yaw Left 90°', tello_hover:'Hover 5 sec', tello_forward:'Forward 1.5m', tello_back:'Back 1.5m', tello_right:'Right 1.5m', tello_left:'Left 1.5m', tello_up_100:'Go Up 2.5m', tello_down_50:'Go Down 1.25m', tello_abort:'Abort', tello_safety_check:'Safety Check', tello_comment:'Comment', tello_repeat_square:'Repeat Square', tello_repeat_scan:'Repeat Scan', tello_grid_scan:'Grid Scan', tello_photo:'Take Photo', tello_go_pad:'Go to Mission Pad', tello_share:'Share Mission', tello_debug_distance:'Debug Distance', tello_show_code:'Show Mission Code', tello_project_path:'Project Path' };
+    const expectedTypes = (lesson.blocks || []).map(key => blockKeyToType[key]).filter(Boolean).filter(t => t !== 'tello_comment' && t !== 'tello_safety_check' && t !== 'tello_share');
+    const toolboxTypes = new Set(Array.from(document.querySelectorAll('#toolbox block')).map(block => block.getAttribute('type')));
+    let workspace;
+    let siteBlocklyEnabled = false;
+    const steps = lesson.id === 2 ? [
+      { right: 12, bottom: 24, msg: 'Takeoff: ממריאים מנקודת תחילת החממה.' },
+      { right: 42, bottom: 58, msg: 'Forward / Pitch: צלע ראשונה של הריבוע.' },
+      { right: 67, bottom: 58, msg: 'Right / Roll: זזים הצידה בלי לסובב את האף.' },
+      { right: 67, bottom: 24, msg: 'Back / Pitch: חוזרים לאורך הצלע השלישית.' },
+      { right: 12, bottom: 24, msg: 'Left / Roll + Land: סוגרים את הריבוע ונוחתים.' }
+    ] : [
+      { right: 12, bottom: 24, msg: 'Takeoff: הרחפן ממריא מהמשטח.' },
+      { right: 43, bottom: 57, msg: 'Hover: הרחפן מתייצב באוויר.' },
+      { right: 43, bottom: 57, msg: (lesson.id === 1 && expectedTypes.includes('tello_yaw_right_360')) ? 'Yaw Right 360°: סיבוב מלא במקום.' : 'Hover 5 sec: ריחוף לבדיקת מערכת.' },
+      { right: 74, bottom: 24, msg: 'Land: נחיתה באזור פנוי.' }
+    ];
+    const esc = v => String(v || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const $ = id => document.getElementById(id);
+
+    Blockly.defineBlocksWithJsonArray([
+      { type:'tello_run_program', message0:'Run Mission  הרץ תוכנית', nextStatement:null, colour:45, tooltip:'בלוק התחלה — מחברים מתחתיו את תוכנית הטיסה' },
+      { type:'tello_takeoff', message0:'Takeoff  המראה', previousStatement:null, nextStatement:null, colour:32, tooltip:'פקודת המראה — תחילת משימת טיסה' },
+      { type:'tello_forward', message0:'Forward 1.5m  קדימה', previousStatement:null, nextStatement:null, colour:210, tooltip:'Pitch קדימה' },
+      { type:'tello_right', message0:'Right 1.5m  ימינה', previousStatement:null, nextStatement:null, colour:210, tooltip:'Roll ימינה — תנועה צדית' },
+      { type:'tello_back', message0:'Back 1.5m  אחורה', previousStatement:null, nextStatement:null, colour:210, tooltip:'Pitch אחורה' },
+      { type:'tello_left', message0:'Left 1.5m  שמאלה', previousStatement:null, nextStatement:null, colour:210, tooltip:'Roll שמאלה — תנועה צדית' },
+      { type:'tello_yaw_right_90', message0:'Yaw Right 90°  פנייה ימינה', previousStatement:null, nextStatement:null, colour:204, tooltip:'סבסוב 90 מעלות סביב הציר האנכי' },
+      { type:'tello_yaw_left_90', message0:'Yaw Left 90°  פנייה שמאלה', previousStatement:null, nextStatement:null, colour:204, tooltip:'סבסוב שמאלה סביב הציר האנכי' },
+      { type:'tello_yaw_right_360', message0:'Yaw Right 360°  סיבוב מלא', previousStatement:null, nextStatement:null, colour:204, tooltip:'סבסוב מלא סביב הציר האנכי' },
+      { type:'tello_hover', message0:'Hover 5 sec  ריחוף', previousStatement:null, nextStatement:null, colour:190, tooltip:'ריחוף במקום' },
+      { type:'tello_land', message0:'Land  נחיתה', previousStatement:null, nextStatement:null, colour:32, tooltip:'פקודת נחיתה — סיום בטוח' },
+      { type:'tello_up_100', message0:'Go Up 2.5m  עלייה לגובה', previousStatement:null, nextStatement:null, colour:260, tooltip:'עלייה בסימולטור' },
+      { type:'tello_down_50', message0:'Go Down 1.25m  ירידה', previousStatement:null, nextStatement:null, colour:260, tooltip:'ירידה בסימולטור' },
+      { type:'tello_repeat_square', message0:'Repeat 4 × Forward + Yaw 90°  ריבוע עם לולאה', previousStatement:null, nextStatement:null, colour:290, tooltip:'הכנה ללולאות ריבוע' },
+      { type:'tello_repeat_scan', message0:'Repeat Scan  סריקה חוזרת', previousStatement:null, nextStatement:null, colour:290, tooltip:'תבנית סריקה חוזרת' },
+      { type:'tello_grid_scan', message0:'Grid Scan  סריקת גריד', previousStatement:null, nextStatement:null, colour:290, tooltip:'סריקה שיטתית' },
+      { type:'tello_photo', message0:'Take Photo  צילום', previousStatement:null, nextStatement:null, colour:20, tooltip:'צילום נקודת עניין' },
+      { type:'tello_go_pad', message0:'Go to Mission Pad  גישה לפד', previousStatement:null, nextStatement:null, colour:160, tooltip:'תחנת Mission Pad' },
+      { type:'tello_abort', message0:'Abort  עצירת חירום', previousStatement:null, nextStatement:null, colour:0, tooltip:'עצירת חירום' },
+      { type:'tello_safety_check', message0:'Safety Check  בדיקת בטיחות', previousStatement:null, nextStatement:null, colour:120, tooltip:'תזכורת בטיחות לפני טיסה פיזית' },
+      { type:'tello_comment', message0:'Comment  הערה: %1', args0:[{type:'field_input', name:'TEXT', text:'סימולטור בלבד'}], previousStatement:null, nextStatement:null, colour:60, tooltip:'הערה לתוכנית הטיסה' }
+    ]);
+
+    function init(){
+      document.title = `🚁 ${lesson.title}`;
+      $('title').textContent = lesson.title;
+      $('unit').textContent = lesson.unit;
+      $('mode').textContent = lesson.physicalFlightAllowed ? 'אפשרות טיסה פיזית' : 'סימולטור בלבד';
+      $('story').textContent = lesson.story;
+      $('mission').textContent = lesson.mission;
+      $('slidesLink').href = `drone-intelligence-lab-grade9-slides.html?lesson=${lesson.id}`;
+      $('guideTopLink').href = `drone-intelligence-lab-grade9-guide.html?lesson=${lesson.id}`;
+      $('teacherLink').href = `drone-intelligence-lab-grade9-slides.html?lesson=${lesson.id}`;
+      $('guideLink').href = `drone-intelligence-lab-grade9-guide.html?lesson=${lesson.id}`;
+      $('tabs').innerHTML = window.DRONE_INTELLIGENCE_LAB_GRADE9_LESSONS.map(l => `<a class="tab ${l.id===lesson.id?'active':''}" href="drone-intelligence-lab-grade9-play.html?lesson=${l.id}">${l.id}</a>`).join('');
+      if (lesson.id === 2) { document.querySelector('.zone.start').innerHTML='Start<br>חממה'; document.querySelector('.zone.air').innerHTML='Box 1.5m<br>ריבוע סריקה'; document.querySelector('.zone.land').innerHTML='Land<br>סיום'; }
+      $('realUses').innerHTML = (lesson.realWorldUses || []).map(use => `<article class="real-card"><span class="icon">${esc(use.icon)}</span><b>${esc(use.title)}</b>${esc(use.text)}</article>`).join('');
+      $('safety').innerHTML = (lesson.safetyRules || []).slice(0,4).map((rule,i) => `<label class="safety-item"><input type="checkbox" ${i===0?'checked':''}><span>${esc(rule)}</span></label>`).join('');
+      $('vocab').innerHTML = (lesson.vocabulary || []).slice(2,7).map(([term, text]) => `<article class="vocab-card"><b>${esc(term)}</b>${esc(text)}</article>`).join('');
+      $('directions').innerHTML = (lesson.commonDirections || []).map(([term,text]) => `<div class="direction"><b>${esc(term)}:</b> ${esc(text)}</div>`).join('');
+      $('exercises').innerHTML = lesson.exercises.slice(0,4).map((ex,i)=>`<div class="exercise"><b>${i+1}. ${esc(ex.title)}</b>${esc(ex.prompt)}</div>`).join('');
+      const missingToolboxBlocks = expectedTypes.filter(type => !toolboxTypes.has(type));
+      const externalWorkspaceModes = new Set(['droneblocks-app', 'physical-lab', 'project-workflow', 'submission-workflow', 'droneblocks-code']);
+      siteBlocklyEnabled = !externalWorkspaceModes.has(lesson.workspaceMode) && missingToolboxBlocks.length === 0;
+      if (!siteBlocklyEnabled) {
+        renderAppWorkflow(missingToolboxBlocks);
+        return;
+      }
+      workspace = Blockly.inject('blocklyDiv', {
+        rtl: true,
+        trashcan: true,
+        scrollbars: true,
+        toolbox: document.getElementById('toolbox'),
+        renderer: 'zelos',
+        zoom: { controls: true, wheel: false, startScale: .94, maxScale: 1.25, minScale: .65, scaleSpeed: 1.05 },
+        move: { scrollbars: true, drag: true, wheel: false }
+      });
+      resetWorkspace();
+      workspace.addChangeListener(updateProgramView);
+      setTimeout(() => Blockly.svgResize(workspace), 120);
+    }
+
+    function renderAppWorkflow(missingToolboxBlocks){
+      $('workspacePanel').classList.add('app-mode');
+      const modeTitles = { 'physical-lab': '🚁 מעבדת רחפן פיזי', 'project-workflow': '📋 עבודת פרויקט', 'submission-workflow': '📦 חבילת הגשה' };
+      $('workspaceTitle').textContent = modeTitles[lesson.workspaceMode] || '📱 משימת טאבלט — DroneBlocks App';
+      $('workspaceTip').textContent = lesson.appWorkflowNote || 'בשיעור הזה העבודה מתבצעת באפליקציית DroneBlocks / בסימולטור / ברחפן פיזי. האתר מציג תדריך, שלבי עבודה ותוצר הגשה — לא סביבת Blockly פנימית.';
+      const steps = lesson.appWorkflow && lesson.appWorkflow.length ? lesson.appWorkflow : (lesson.setupSteps || []).map((step, index) => ({ title: `שלב ${index + 1}`, detail: step }));
+      $('appWorkflowShell').innerHTML = `<div class="app-workflow-card"><b>${esc(lesson.appWorkflowTitle || 'עובדים בכלי החיצוני המתאים לשיעור')}</b>${esc(lesson.appWorkflowNote || 'עקבו אחרי השלבים, בנו את המשימה בטאבלט ושמרו תוצר למדריך.')}</div>` + steps.map((step, index) => `<article class="app-workflow-card"><b>${index + 1}. ${esc(step.title)}</b>${esc(step.detail)}</article>`).join('') + (missingToolboxBlocks.length ? `<div class="app-workflow-card"><b>למה לא מוצג Blockly באתר?</b>השיעור משתמש בשלבים/פעולות של DroneBlocks App שאינם זמינים בלומדה הפנימית: ${esc(missingToolboxBlocks.map(t => typeToHuman[t] || t).join(', '))}. לכן מציגים תדריך עבודה מדויק במקום כלי מטעה.</div>` : '');
+      renderMissionVisual();
+      document.querySelector('.actions .run').textContent = '📱 עבודה באפליקציה';
+      document.querySelector('.actions .reset').style.display = 'none';
+      $('blockCount').textContent = '—';
+      $('orderStatus').textContent = 'אפליקציה';
+      $('path').textContent = 'בונים את תוכנית הטיסה באפליקציית DroneBlocks לפי שלבי המשימה.';
+      feedback('בשיעור הזה לא משתמשים ב־Blockly הפנימי של האתר. פתחו DroneBlocks App בטאבלט ועבדו לפי השלבים.', false);
+    }
+
+    function renderMissionVisual(){
+      document.querySelector('.sim-panel')?.classList.add('app-mode');
+      if ($('simTitle')) $('simTitle').textContent = lesson.visualDiagram?.panelTitle || '🗺️ שרטוט משימה';
+      if ($('simModeChip')) $('simModeChip').textContent = lesson.visualDiagram?.chip || (lesson.workspaceMode === 'physical-lab' ? 'מעבדה פיזית' : 'תדריך חזותי');
+      const visual = lesson.visualDiagram || {};
+      $('stage').innerHTML = `<div class="mission-visual"><h3>${esc(visual.title || lesson.title)}</h3>${visual.src ? `<img src="${esc(visual.src)}" alt="${esc(visual.alt || visual.title || lesson.title)}">` : '<p>עקבו אחרי כרטיסי העבודה ובנו את המשימה באפליקציה.</p>'}<p>${esc(visual.caption || lesson.mission)}</p></div>`;
+    }
+
+    function starterXml(){
+      return '<xml><block type="tello_run_program" x="360" y="75"></block></xml>';
+    }
+    function resetWorkspace(){
+      if(!siteBlocklyEnabled){ feedback('אין מה לאפס באתר: העבודה בשיעור הזה מתבצעת ב־DroneBlocks App בטאבלט.', false); return; }
+      if(!workspace) return;
+      workspace.clear();
+      Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(starterXml()), workspace);
+      moveDrone(steps[0]);
+      feedback(`אזור העבודה מוכן: התחילו מבלוק Run Mission וחברו מתחתיו את פקודות הטיסה שלכם.`, false);
+      updateProgramView();
+    }
+    function getRunBlock(){
+      return workspace.getTopBlocks(true).find(b => !b.isInFlyout && b.type === 'tello_run_program');
+    }
+    function getMainStack(){
+      const runBlock = getRunBlock();
+      if(!runBlock) return [];
+      let block = runBlock.getNextBlock();
+      const stack = [];
+      while(block){
+        if(block.type !== 'tello_comment' && block.type !== 'tello_safety_check') stack.push(block.type);
+        block = block.getNextBlock();
+      }
+      return stack;
+    }
+    function humanStack(){
+      return getMainStack().map(t => typeToHuman[t] || t);
+    }
+    function expectedHuman(){ return expectedTypes.map(t => typeToHuman[t] || t).join(' → '); }
+    function updateProgramView(){
+      if(!workspace) return;
+      const stack = humanStack();
+      $('blockCount').textContent = stack.length;
+      $('path').textContent = stack.length ? stack.join(' → ') : 'חברו פקודות מתחת ל־Run Mission.';
+      const current = getMainStack();
+      const ok = expectedTypes.every((t,i)=>current[i]===t) && current.length === expectedTypes.length;
+      $('orderStatus').textContent = ok ? 'תקין' : 'לבדוק';
+    }
+    function checkMission(){
+      const stack = getMainStack();
+      const ok = expectedTypes.every((t,i)=>stack[i]===t) && stack.length === expectedTypes.length;
+      if(ok) feedback(`תוכנית מצוין ✅ השלבים מחוברים כמו תוכנית DroneBlocks: ${expectedHuman()}.`);
+      else feedback('עדיין לא מדויק. בדקו שהפקודות מחוברות מתחת ל־Run Mission, שההמראה לפני התנועה, והנחיתה בסוף.', true);
+      updateProgramView();
+      return ok;
+    }
+    function moveDrone(step){ const drone=$('drone'); drone.style.right=step.right+'%'; drone.style.bottom=step.bottom+'%'; }
+    function feedback(text, bad=false){ const el=$('feedback'); el.textContent=text; el.classList.toggle('bad', bad); }
+    function runMission(){
+      if(!siteBlocklyEnabled){ feedback('הרצה מתבצעת באפליקציית DroneBlocks / סימולטור הטאבלט, לא באתר. השתמשו בכפתור Run/Start באפליקציה ושמרו תוצר.', false); return; }
+      if(!checkMission()) return;
+      let i=0; feedback('הסימולציה מתחילה: צפו בתוכנית הטיסה.');
+      const timer=setInterval(()=>{ const step=steps[i]; moveDrone(step); feedback(step.msg); i += 1; if(i >= steps.length){ clearInterval(timer); feedback(`הסימולציה הסתיימה ✅ הקוד הוא תוכנית החקר של שיעור ${lesson.id}: ${expectedHuman()}.`); } }, 900);
+    }
+    window.addEventListener('resize', () => workspace && Blockly.svgResize(workspace));
+    init();
+  </script>
+  <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
+</body>
+</html>

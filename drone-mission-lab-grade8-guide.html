@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מערך מדריך — Drone Mission Lab כיתה ח׳</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/platform-home-link.css?v=20260819-tello-1">
+  <style>
+    *{box-sizing:border-box}body{margin:0;font-family:Rubik,Arial,sans-serif;direction:rtl;color:#102033;background:#f1f5f9;line-height:1.65}.shell{width:min(1120px,calc(100% - 28px));margin:0 auto;padding:24px 0 56px}.hero{background:linear-gradient(135deg,#0f3b5f,#0f766e);color:white;border-radius:30px;padding:30px;box-shadow:0 22px 60px rgba(15,23,42,.18)}.kicker{font-weight:900;color:#99f6e4;margin-bottom:8px}h1{font-size:clamp(2rem,4.8vw,4rem);line-height:1.08;margin:0 0 12px}h2{font-size:1.65rem;margin:30px 0 12px;color:#0f3b5f}h3{margin:.2rem 0 .5rem}.lead{font-size:1.18rem;color:#e0f2fe;max-width:900px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:11px 17px;background:#fff;color:#0f3b5f;text-decoration:none;font-weight:900}.btn.alt{background:rgba(255,255,255,.13);color:white;border:1px solid rgba(255,255,255,.25)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.card{background:white;border:1px solid #e2e8f0;border-radius:22px;padding:18px;box-shadow:0 10px 28px rgba(15,23,42,.07)}.card b{display:block;color:#0e7490;margin-bottom:5px}.timeline{display:grid;gap:12px}.step{display:grid;grid-template-columns:90px 1fr;gap:14px;background:white;border:1px solid #e2e8f0;border-radius:22px;padding:16px}.time{font-weight:900;color:#0e7490}.note{background:#ecfeff;border-right:7px solid #0e7490;border-radius:18px;padding:16px;margin-top:14px}.warn{background:#fff7ed;border-right-color:#f97316}.danger{background:#fff1f2;border-right-color:#fb7185}.list{margin:0;padding-right:1.1rem}.list li{margin:.35rem 0}.video a{color:#0e7490;font-weight:900}@media(max-width:760px){.grid,.grid.three{grid-template-columns:1fr}.step{grid-template-columns:1fr}.hero{padding:22px}.shell{width:min(100% - 18px,1120px)}}
+  </style>
+</head>
+<body>
+  <a class="platform-home-link" href="index.html"><span class="platform-home-icon">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
+  <main class="shell" id="app"></main>
+  <script src="js/drone-mission-lab-grade8-lessons.js?v=20260824-g8-1"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const lesson = window.getDroneMissionLabGrade8Lesson(params.get('lesson'));
+    const labels = window.DRONE_MISSION_LAB_GRADE8_COMMAND_LABELS || {};
+    const esc = v => String(v || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const list = arr => (arr || []).map(x => `<li>${esc(x)}</li>`).join('');
+    const cards = (arr, mapper) => (arr || []).map(mapper).join('');
+    const blockSequence = (lesson.blocks || []).map((b,i)=>`${i+1}. ${labels[b] || b}`).join(' ← ');
+    document.title = `מערך מדריך — ${lesson.title}`;
+    document.getElementById('app').innerHTML = `
+      <section class="hero">
+        <div class="kicker">Drone Mission Lab · כיתה ח׳ · מערך מדריך · שיעור ${lesson.id}</div>
+        <h1>${esc(lesson.title)}</h1>
+        <p class="lead">${esc(lesson.subtitle || lesson.story)}</p>
+        <div class="actions">
+          <a class="btn" href="drone-mission-lab-grade8-play.html?lesson=${lesson.id}">לומדת תלמיד</a>
+          <a class="btn alt" href="drone-mission-lab-grade8-slides.html?lesson=${lesson.id}">מצגת הקרנה</a>
+          <a class="btn alt" href="drone-mission-lab-grade8.html">כל שיעורי הקורס</a>
+        </div>
+      </section>
+
+      <section>
+        <h2>תמונת שיעור</h2>
+        <div class="grid three">
+          <div class="card"><b>שאלה מובילה</b>${esc(lesson.essentialQuestion || lesson.concept)}</div>
+          <div class="card"><b>משימת תלמידים</b>${esc(lesson.mission)}</div>
+          <div class="card"><b>תוצר סיום</b>${esc(lesson.deliverable || 'קוד/שלד JavaScript שמור + תיעוד דיבוג קצר.')}</div>
+        </div>
+        <div class="note"><b>רצף בלוקים:</b> ${esc(blockSequence)}</div>
+      </section>
+
+      <section>
+        <h2>מטרות הצלחה לתלמידים</h2>
+        <div class="grid">${cards(lesson.successCriteria || [], item => `<div class="card">✅ ${esc(item)}</div>`)}</div>
+      </section>
+
+      <section>
+        <h2>בדיקת תנאי קדם וגשר מהשיעור הקודם</h2>
+        <div class="card">${esc((lesson.instructorGuide && lesson.instructorGuide.prerequisites) || 'לוודא שהתלמידים יודעים לפתוח DroneBlocks Code, לזהות Takeoff/Land ולעבוד בסימולטור.')}</div>
+      </section>
+
+      <section>
+        <h2>מהלך 90 דקות — למדריך</h2>
+        <div class="timeline">${cards(lesson.lessonFlow || [], step => `<div class="step"><div class="time">${esc(step.minutes)}</div><div><h3>${esc(step.title)}</h3><p><b>פעולת מדריך:</b> ${esc(step.teacher)}</p><p><b>פעולת תלמידים:</b> ${esc(step.students)}</p></div></div>`)}</div>
+      </section>
+
+      <section>
+        <h2>בדיקת איכות — נקודת מבט מדריך ותלמיד</h2>
+        <div class="grid">
+          <div class="card"><b>מדריך</b><ul class="list"><li>האם ברור מה עושים בדקות הראשונות?</li><li>האם יש נקודת עצירה בטיחותית לפני הרצה?</li><li>האם התוצר ניתן לבדיקה תוך כדי שיעור?</li><li>האם יש דיבוג צפוי ולא רק תוכן אידיאלי?</li></ul></div>
+          <div class="card"><b>תלמיד</b><ul class="list"><li>האם המשימה מובנת במשפט אחד?</li><li>האם רצף הבלוקים ברור?</li><li>האם ברור מה מגישים בסוף?</li><li>האם יש סיפור חקר שמרגיש משמעותי?</li></ul></div>
+        </div>
+      </section>
+
+      <section>
+        <h2>דגשים פדגוגיים</h2>
+        <div class="grid">${cards((lesson.instructorGuide && lesson.instructorGuide.pedagogy) || [], item => `<div class="card">${esc(item)}</div>`)}</div>
+      </section>
+
+      <section>
+        <h2>בטיחות וניהול טאבלטים</h2>
+        <div class="grid">
+          <div class="card"><b>בטיחות</b><ul class="list">${list(lesson.safetyRules)}</ul></div>
+          <div class="card"><b>טאבלטים / DroneBlocks Code</b><ul class="list">${list(lesson.tabletTips)}</ul></div>
+        </div>
+        <div class="note warn"><b>כלל עבודה:</b> שיעורים 1–4 בסימולטור בלבד. שיעור 5 כולל טיסה פיזית קצרה רק באישור מדריך. ממפגש 6 העבודה המרכזית היא JavaScript ב־DroneBlocks Code.</div>
+      </section>
+
+      <section>
+        <h2>דוגמאות וסרטונים למדריך</h2>
+        <div class="grid">${cards(lesson.videoResources || [], v => `<div class="card video"><b>${esc(v.title)}</b><a href="${esc(v.url)}" target="_blank" rel="noopener">פתיחת מקור</a><p>${esc(v.note)}</p></div>`)}</div>
+      </section>
+
+      <section>
+        <h2>דיבוג ותקלות צפויות</h2>
+        <div class="grid">${cards(lesson.debugging || [], bug => `<div class="card danger"><b>${esc(bug.problem)}</b>${esc(bug.fix)}</div>`)}</div>
+      </section>
+
+      <section>
+        <h2>התאמות רמה</h2>
+        <div class="grid">
+          <div class="card"><b>לתלמידים שצריכים פיגום</b><ul class="list">${list(lesson.differentiation && lesson.differentiation.support)}</ul></div>
+          <div class="card"><b>לתלמידים מתקדמים</b><ul class="list">${list(lesson.differentiation && lesson.differentiation.extension)}</ul></div>
+        </div>
+      </section>
+
+      <section>
+        <h2>הערכה וסיכום</h2>
+        <div class="grid">
+          <div class="card"><b>קריטריוני הערכה</b><ul class="list">${list(lesson.assessment)}</ul></div>
+          <div class="card"><b>כרטיס יציאה</b>${esc((lesson.instructorGuide && lesson.instructorGuide.exitTicket) || 'משפט מסכם על הקשר בין קוד, חקר ובטיחות.')}</div>
+        </div>
+      </section>
+    `;
+  </script>
+  <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
+</body>
+</html>
