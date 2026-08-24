@@ -201,9 +201,14 @@ assert.ok(lesson6.exercises.every(ex => !ex.check.requiresPreviewScoreSum && !ex
 
 const lesson7 = lessons[6];
 const lesson7WinTextBlock = lesson7.blocklyBlocks.find(block => block.type === 'lesson_7_win_text');
+const lesson7TargetBlock = lesson7.blocklyBlocks.find(block => block.type === 'lesson_7_target');
 assert.ok(lesson7.title.includes('קליקים'), 'lesson 7 focuses on the first click game');
 assert.equal(lesson7WinTextBlock.find, 'המפלצת שבעה! חגיגת עוגיות 🎉', 'lesson 7 win-message block finds the actual starter win text');
 assert.ok(lesson7.starter.js.includes(lesson7WinTextBlock.find), 'lesson 7 starter contains the text changed by the win-message block');
+assert.ok(lesson7.starter.html.includes('id="targetText"'), 'lesson 7 preview shows the visible win target total');
+assert.ok(lesson7.starter.js.includes('document.getElementById("targetText").textContent = target'), 'lesson 7 starter syncs the visible target total from target');
+assert.ok(lesson7.starter.js.includes('"המפלצת רעבה. תגיעו ל־" + target'), 'lesson 7 reset message uses the current target instead of hard-coded 10');
+assert.ok(lesson7TargetBlock.find.includes('targetText') && lesson7TargetBlock.replace.includes('targetText'), 'lesson 7 target block updates the visible target total as well as the JS constant');
 
 const lesson8 = lessons[7];
 const lesson8TimeBlock = lesson8.blocklyBlocks.find(block => block.type === 'lesson_8_time');
@@ -292,7 +297,7 @@ assert.ok(hub.includes('webcode-play.html?lesson=1'), 'hub links to lesson 1');
 assert.ok(hub.includes('webcode-slides.html?lesson=1'), 'hub links to guide slides');
 assert.ok(hub.includes('25–30'), 'hub explains gradual move to real coding');
 assert.ok(hub.includes('formatMixedText') && hub.includes('tech-term'), 'hub isolates English tech terms so RTL lesson cards do not flip mixed text');
-assert.ok(hub.includes('js/webcode-lessons-365fc3c.js'), 'hub loads a cache-busted lesson-data asset to avoid stale course cards');
+assert.ok(hub.includes('js/webcode-lessons-lesson7-target-fix.js'), 'hub loads a cache-busted lesson-data asset to avoid stale course cards');
 assert.ok(!hub.includes('Blockly אמיתי'), 'course-page hero avoids unclear “Blockly אמיתי” phrasing');
 assert.ok(!JSON.stringify(lessons.slice(0, 3).map(lesson => lesson.concept)).includes('Blockly אמיתי'), 'visible course-card concepts avoid unclear “Blockly אמיתי” phrasing');
 
@@ -301,7 +306,7 @@ assert.ok(play.includes('repairSavedCodeState') && play.includes('function makeG
 assert.ok(play.includes('hasPreviewFilledInputs') && play.includes('hasPreviewResultFromInputs'), 'player can validate preview input/result interactions');
 assert.ok(play.includes('blocklyLessonBuilder'), 'play page supports lesson-specific Blockly blocks for lessons 4-24');
 assert.ok(play.includes('defineLessonBlocklyBlocks'), 'play page defines dynamic draggable lesson blocks');
-assert.ok(play.includes('js/webcode-lessons-365fc3c.js'), 'play page loads a cache-busted lesson data asset for refreshed WebCode lessons');
+assert.ok(play.includes('js/webcode-lessons-lesson7-target-fix.js'), 'play page loads a cache-busted lesson data asset for refreshed WebCode lessons');
 assert.ok(play.includes('scoreText:scoreText?String(scoreText.textContent') && play.includes('scoreText:event.data.scoreText'), 'preview click bridge records scoreText for lesson 6 score validators');
 assert.ok(play.includes('function hasPreviewScoreSum(rule)'), 'play page can validate preview score sums');
 assert.ok(play.includes('function hasPreviewScoreFromBlockField(rule)'), 'play page can validate preview score against a block field');
