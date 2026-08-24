@@ -47,6 +47,9 @@ for (const lesson of program.lessons) {
   assert.ok(lesson.exitTicket, `challenge ${lesson.id} has exit ticket`);
   assert.ok(lesson.image && exists(lesson.image), `challenge ${lesson.id} has an existing Minecraft image`);
   assert.ok(lesson.image.startsWith('assets/craftom/omer-future/'), `challenge ${lesson.id} uses a dedicated Omer image`);
+  assert.ok(lesson.video && exists(lesson.video), `challenge ${lesson.id} has an existing explainer video`);
+  assert.ok(lesson.video.startsWith('marketing/omer-future-challenge'), `challenge ${lesson.id} uses the Omer explainer video set`);
+  assert.ok(lesson.video.endsWith('.mp4'), `challenge ${lesson.id} video is an mp4`);
   assert.ok(lesson.jsonSpec && exists(lesson.jsonSpec), `challenge ${lesson.id} has JSON success spec`);
   assert.ok(lesson.successChecks.length >= 4, `challenge ${lesson.id} has success checks`);
   assert.ok(lesson.teacherPrep.length >= 3, `challenge ${lesson.id} has teacher prep`);
@@ -93,6 +96,8 @@ assert.ok(hub.includes('lesson.meetings'), 'hub renders meetings per challenge')
 assert.ok(hub.includes('lesson.imaginePrompt'), 'hub renders child-world prompt');
 assert.ok(hub.includes('program.omerAnchor'), 'hub renders Omer anchor text');
 assert.ok(hub.includes('lesson.image'), 'hub renders images from challenge data');
+assert.ok(hub.includes('lesson.video'), 'hub renders videos from challenge data');
+assert.ok(hub.includes('challenge-video'), 'hub shows challenge videos in the challenge cards');
 assert.ok(hub.includes('omer-future-craftom-challenge.html?lesson=${lesson.id}'), 'hub links Omer challenge pages');
 assert.ok(hub.includes('omer-future-craftom-students.html?lesson=${lesson.id}'), 'hub links student worksheets');
 assert.ok(hub.includes('omer-future-craftom-slides.html?lesson=${lesson.id}'), 'hub links instructor slides');
@@ -119,6 +124,8 @@ assert.ok(challengePage.includes('grid-4'), 'challenge page uses Craftom challen
 assert.ok(challengePage.includes('lesson.meetings'), 'challenge page renders four meeting cards');
 assert.ok(challengePage.includes('imaginePrompt'), 'challenge page renders child-world prompt');
 assert.ok(challengePage.includes('minecraft-shot'), 'challenge page has Minecraft hero image');
+assert.ok(challengePage.includes('challengeVideo'), 'challenge page has a dedicated explainer video player');
+assert.ok(challengePage.includes('lesson.video'), 'challenge page loads the video for the selected challenge');
 assert.ok(challengePage.includes('JSON הצלחה'), 'challenge page links JSON success');
 assert.ok(challengePage.includes('window.getOmerFutureCraftomLesson'), 'challenge page loads lesson by query');
 

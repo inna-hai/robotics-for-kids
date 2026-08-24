@@ -39,6 +39,7 @@
       researchPrompt: 'חקר קצר: איזה מקום חסר לילדים ביישוב, ומה צריך להיות בתוך מבנה כזה כדי שיהיה כיף ושימושי?',
       systemFocus: 'זהות, שימושיות, חזית, חלל פנימי, שילוט וחוויית כניסה',
       image: 'assets/craftom/omer-future/wonder-building.webp',
+      video: 'marketing/omer-future-challenge1-explainer-gemini-live-1.08x.mp4',
       jsonSpec: 'craftom-integration/omer-future-challenge-1.json',
       plotTask: 'כל צוות בונה בחלקה שלו בניין מיוחד שמייצג צורך של ילדים בעומר העתידנית.',
       meetings: [
@@ -65,6 +66,7 @@
       researchPrompt: 'חקר קצר: מה ילדים צריכים קרוב לבית כדי להרגיש שייכים, בטוחים ועצמאיים?',
       systemFocus: 'מגורים, שבילים, קהילה, בטיחות ונוחות לילדים',
       image: 'assets/craftom/omer-future/kids-neighborhood.webp',
+      video: 'marketing/omer-future-challenge2-explainer-gemini-live-1.08x.mp4',
       jsonSpec: 'craftom-integration/omer-future-challenge-2.json',
       plotTask: 'כל צוות בונה בחלקה שלו שכונת ילדים עם דרך לבית ספר ומקום קהילתי.',
       meetings: [
@@ -91,6 +93,7 @@
       researchPrompt: 'חקר קצר: מה קורה ביישוב מדברי אם אין צל, מים זמינים, תאורה או אנרגיה?',
       systemFocus: 'משאבים, קיימות, זרימה, תקלות והשפעה על תושבים',
       image: 'assets/craftom/omer-future/nature-water-energy.webp',
+      video: 'marketing/omer-future-challenge3-explainer-gemini-live-1.08x.mp4',
       jsonSpec: 'craftom-integration/omer-future-challenge-3.json',
       plotTask: 'כל צוות בונה בחלקה שלו מערכת צל, מים, אנרגיה ותאורה.',
       meetings: [
@@ -117,6 +120,7 @@
       researchPrompt: 'חקר קצר: מה מבקר צריך לראות מהרכבת כדי להבין את הסיפור של החלקה והמושב העתידני?',
       systemFocus: 'חיבור רכיבים, מסלול תנועה, תחנות, בדיקת נסיעה והצגה',
       image: 'assets/craftom/omer-future/tour-train.webp',
+      video: 'marketing/omer-future-challenge4-explainer-gemini-live-1.08x.mp4',
       jsonSpec: 'craftom-integration/omer-future-challenge-4.json',
       plotTask: 'כל צוות בונה רכבת סיור בחלקה שלו, שמראה את כל הרכיבים שבנה בשלושת האתגרים הקודמים.',
       meetings: [
