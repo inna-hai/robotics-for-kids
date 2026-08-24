@@ -54,7 +54,7 @@ for (const lesson of program.lessons) {
   assert.ok(lesson.image.startsWith('assets/craftom/omer-future/'), `challenge ${lesson.id} uses a dedicated Omer image`);
   assert.ok(lesson.video && exists(lesson.video), `challenge ${lesson.id} has an existing explainer video`);
   assert.ok(lesson.video.startsWith('marketing/omer-future-challenge'), `challenge ${lesson.id} uses the Omer explainer video set`);
-  assert.ok(lesson.video.endsWith('.mp4'), `challenge ${lesson.id} video is an mp4`);
+  assert.ok(new URL(lesson.video, 'https://example.test/').pathname.endsWith('.mp4'), `challenge ${lesson.id} video is an mp4`);
   assert.ok(lesson.jsonSpec && exists(lesson.jsonSpec), `challenge ${lesson.id} has JSON success spec`);
   assert.ok(lesson.successChecks.length >= 4, `challenge ${lesson.id} has success checks`);
   assert.ok(lesson.teacherPrep.length >= 3, `challenge ${lesson.id} has teacher prep`);
