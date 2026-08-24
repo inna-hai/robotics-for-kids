@@ -26,7 +26,6 @@ function assertNotIncludes(source, needle, message = `Unexpected: ${needle}`) { 
 test('homepage is now a platform gateway and links to primary learning modules', () => {
   assertIncludes(homepageHtml, '<title>פלטפורמת לומדות טכנולוגיה</title>');
   assertIncludes(homepageHtml, 'מרכז הלומדות');
-  assertIncludes(homepageHtml, 'href="sensi-city.html?lesson=1"');
   assertIncludes(homepageHtml, 'href="sensi-classic.html?lesson=1"');
   assertIncludes(homepageHtml, 'href="sensi-classic-slides/index.html"');
   assertIncludes(homepageHtml, 'href="pygame.html"');
@@ -40,6 +39,8 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertIncludes(homepageHtml, 'href="appforge.html"');
   assertIncludes(homepageHtml, 'href="craftom-school/preview/index.html"');
   assertIncludes(homepageHtml, 'href="craftom-school/README.md"');
+  assertNotIncludes(homepageHtml, 'href="sensi-city.html?lesson=1"', 'Sensi city should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'סנסי בעיר החכמה', 'Sensi city should not appear as a main homepage card');
 });
 
 test('Sensi 15 remains on sensi-city and classic 5-lesson Sensi is restored separately', () => {

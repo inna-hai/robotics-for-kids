@@ -145,9 +145,8 @@ assert.ok(improvement.includes('/api/feedback'), 'improvement page posts feedbac
 assert.ok(improvement.includes("source: 'omer-future-craftom'"), 'improvement page identifies course source');
 
 const index = read('index.html');
-assert.ok(index.includes('omer-future-craftom.html'), 'home page links Omer future course');
-assert.ok(index.includes('עומר העתידנית'), 'home page labels Omer future course');
-assert.ok(index.includes('4 אתגרים'), 'home page presents the revised challenge structure');
+assert.ok(!index.includes('omer-future-craftom.html'), 'Omer future course should be hidden from the main homepage');
+assert.ok(!index.includes('עומר העתידנית'), 'Omer future course should not appear as a main homepage card');
 
 const server = read('server.js');
 for (const publicOmerPath of [
