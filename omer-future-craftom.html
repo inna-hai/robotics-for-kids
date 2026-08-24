@@ -88,7 +88,6 @@
 
     document.getElementById('challengeCards').innerHTML = program.lessons.map(lesson => `
       <article class="card lesson-card">
-        <img class="lesson-thumb" src="${esc(lesson.image)}" alt="תמונת Minecraft לאתגר ${lesson.id}: ${esc(lesson.title)}">
         <video class="challenge-video" src="${esc(lesson.video)}" poster="${esc(lesson.image)}" controls preload="metadata" playsinline aria-label="סרטון הסבר לאתגר ${lesson.id}: ${esc(lesson.title)}"></video>
         <span class="tag">אתגר ${lesson.id} • ${esc(lesson.challengeDuration)} • ${esc(lesson.meetingDuration)}</span>
         <h2>${esc(lesson.title)}</h2>
