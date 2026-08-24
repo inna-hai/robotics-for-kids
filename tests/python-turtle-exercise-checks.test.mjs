@@ -25,6 +25,7 @@ assert.match(html, /function actionDrawsStyledSquare/, 'lesson 4 exercise 5 vali
 const loadDemoSource = html.slice(html.indexOf('function loadDemo()'), html.indexOf('function updateLessonUrl'));
 assert.match(loadDemoSource, /const existingTopBlocks = workspace\.getTopBlocks\(false\)\.length[\s\S]*Blockly\.Xml\.domToWorkspace\(demoXml, workspace\)/, "demo button appends example blocks to the existing workspace instead of replacing the child's blocks");
 assert.doesNotMatch(loadDemoSource, /workspace\.clear\(\)/, 'demo button does not clear existing blocks before adding the example');
+assert.match(loadDemoSource, /5: "<xml><block type=\\"py_forward\\"[\s\S]*py_penup[\s\S]*py_pendown[\s\S]*py_forward/, 'lesson 5 demo button uses the small pen-up demo, not the old two-shape example');
 
 assert.match(html, /netTurn = bodyActions\.reduce/, 'shape validator rejects loops whose opposite turns cancel out instead of forming a shape');
 assert.match(html, /closesShape = simulatePath\(repeatedActions\)\.distanceFromStart <= 25/, 'shape validator checks that the repeated loop actually closes into a polygon');
@@ -97,7 +98,10 @@ assert.match(html, /function isChallengeExercise\(ex\)\{[\s\S]*return \/אתגר
 assert.doesNotMatch(html, /אתגר\|אות ראשונה של השם/, 'regular creative name-letter exercise is not automatically labeled as a challenge');
 
 assert.match(html, /function isRunOnlyExampleExercise\(ex\)/, 'run-only example exercises can unlock continue after running without a check button');
-assert.match(html, /currentLesson === 5 && ex\?\.id === 4[\s\S]*movable="false"/, 'lesson 5 forgotten-pendown demo loads locked starter code');
+assert.match(html, /currentLesson === 5 && ex\?\.id === 4[\s\S]*py_repeat[\s\S]*py_forward[\s\S]*py_right[\s\S]*py_forward[\s\S]*py_penup[\s\S]*py_pendown[\s\S]*py_repeat/, 'lesson 5 order-debug exercise starts with two shapes and penup too late after the connector was drawn');
+assert.match(html, /currentLesson === 5 && ex\.id === 4[\s\S]*beforePenUpForwards < 4[\s\S]*הצורה הראשונה ולפני המעבר[\s\S]*afterPendownTriangleTurns/, 'lesson 5 order-debug exercise validates moving penup between the first shape and the transition');
+assert.match(html, /currentLesson === 5 && ex\?\.id === 5[\s\S]*py_forward[\s\S]*py_penup[\s\S]*py_forward[\s\S]*py_pendown[\s\S]*py_forward[\s\S]*movable="false"/, 'lesson 5 small penup demo loads locked starter code with two separated lines');
+assert.match(html, /"id": 3[\s\S]*"title": "הרצה מודרכת"[\s\S]*"id": 4[\s\S]*"title": "תרגול 4 — למה הופיע קו מחבר\?"/, 'lesson 5 guided run appears before the order-debug exercise');
 assert.match(html, /isRunOnlyExampleExercise\(ex\)[\s\S]*await run\(\)[\s\S]*completedSet\(\)\.add\(currentExerciseIndex\)/, 'lesson 5 demo unlocks continue only after running');
 
 assert.match(html, /const runOnlyExampleStarted = \{\}/, 'run-only examples track whether the user ran this demo in the current entry');
@@ -105,6 +109,8 @@ assert.match(html, /!isRunOnlyExampleExercise\(ex\) && \(hasGeneratedStarter \|\
 assert.match(html, /isRunOnlyExampleExercise\(ex\) \? !!runOnlyExampleStarted\[selectionUnlockKey\(\)\]/, 'run-only examples keep continue disabled until the demo is run');
 
 assert.match(html, /currentLesson === 5 && ex\?\.id === 3[\s\S]*py_penup[\s\S]*py_pendown/, 'lesson 5 code-selection exercise loads starter blocks to select');
+assert.match(html, /תרגול 3 — בלוקים לקוד Python[\s\S]*האם הצב מצייר או לא מצייר אחריה[\s\S]*מצב הציור אחרי כל שורה/, 'lesson 5 exercise 3 asks students to explain penup and pendown, not only click blocks');
+assert.match(html, /lineMatches \|\| selectionOnlyBlockTypes\(currentExercises\(\)\[currentExerciseIndex\][\s\S]*includes\(expectedType\)/, 'selection exercises can unlock from selecting the correct block even if code highlight text matching is brittle');
 
 
 assert.match(html, /runOnlyExampleStarted\[key\] = false;[\s\S]*exercisePassed = false;/, 'run-only examples relock continue on every entry until Run is pressed');
@@ -131,9 +137,18 @@ assert.match(html, /function requiresFreshCheckExercise\(ex\)/, 'some starter-fi
 
 
 
-assert.match(html, /currentLesson === 5 && ex\?\.id === 5[\s\S]*py_repeat[\s\S]*py_forward[\s\S]*py_repeat/, 'lesson 5 connector-fix exercise loads starter code with two shapes and a connector');
-
-assert.match(html, /currentLesson === 5 && ex\.id === 5[\s\S]*penUpIndex[\s\S]*pendownIndex[\s\S]*transitionForwards/, 'lesson 5 connector-fix exercise validates penup transition and pendown before the second shape');
+assert.match(html, /currentLesson === 5 && ex\?\.id === 6\) return '<xml><block type="py_python" x="20" y="20"><\/block><\/xml>'/, 'lesson 5 house exercise starts from a clean Python block, not the previous debug code');
+assert.match(html, /תרגול 5 — בית עם גג מרחף[\s\S]*ריבוע לקירות ומשולש לגג[\s\S]*רווח קטן בין הקירות לגג/, 'lesson 5 exercise 5 asks for a meaningful house drawing with a separated roof');
+assert.match(html, /currentLesson === 5 && ex\.id === 6[\s\S]*squareForwards[\s\S]*squareTurns[\s\S]*transitionForwards[\s\S]*roofTurns/, 'lesson 5 house exercise validates square walls, pen-up transition, and triangle roof');
+assert.match(html, /תרגול 6 — שלוש צורות צבעוניות ומופרדות[\s\S]*יש שלוש צורות נפרדות[\s\S]*לפחות שלושה צבעים שונים/, 'lesson 5 former first challenge is now a required checked exercise');
+assert.doesNotMatch(html, /אתגר — שלוש צורות צבעוניות ומופרדות/, 'lesson 5 three-shapes task is no longer marked as an optional challenge');
+assert.doesNotMatch(html, /אתגר — עיר קטנה עם בתים נפרדים/, 'lesson 5 duplicate city challenge was removed');
+assert.match(html, /currentLesson === 5 && ex\.id === 7[\s\S]*actionDrawnColors\(actions\)\.size < 3[\s\S]*cleanTransitions < 2/, 'lesson 5 three-shapes exercise validates colors and pen-up transitions');
+assert.match(html, /currentLesson === 5 && ex\?\.id === 12\) return 5/, 'lesson 5 final Python writing challenge requires five short lines');
+assert.match(html, /currentLesson === 5 && ex\?\.id === 12\) return '<xml><block type="py_python" x="20" y="20"><\/block><\/xml>'/, 'lesson 5 final Python writing challenge starts from a clean workspace');
+assert.match(html, /currentLesson === 5 && ex\?\.id === 12 \? 'forward\(70\).*penup\(\).*pendown\(\).*forward\(70\)'/, 'lesson 5 final Python writing challenge keeps the helpful placeholder example');
+assert.match(html, /כתבו בקוד Python פקודות שגורמות לצב לצייר קו[\s\S]*penup\(\)[\s\S]*pendown\(\)/, 'lesson 5 final Python writing challenge asks for forward, penup, forward, pendown, forward');
+assert.match(html, /currentLesson === 5 && ex\?\.id === 12[\s\S]*matchesPenLiftLine[\s\S]*forward[\s\S]*penup[\s\S]*pendown/, 'lesson 5 final Python writing challenge validates pen lift sequence');
 
 assert.match(html, /if\(requiresFreshCheckExercise\(targetEx\) && !completedSet\(\)\.has\(index\)\)\{\s*exercisePassed = false;\s*\}/, 'fresh-check exercises relock Continue only until they have been completed once');
 assert.doesNotMatch(html, /requiresFreshCheckExercise\(targetEx\)[\s\S]{0,120}completedSet\(\)\.delete\(index\)/, 'returning to a completed fresh-check exercise must not relock later unlocked exercises');
@@ -162,7 +177,7 @@ assert.match(html, /ex\.id === 6[\s\S]*growIndex[\s\S]*forwardBeforeGrow[\s\S]*f
 
 assert.doesNotMatch(html, /function selectionOnlyBlockTypes\(ex\)\{[^}]*return '<xml>/, 'selection-only block type helpers must not return starter XML');
 
-assert.match(html, /selectedBlockHighlightsExpectedCode[\s\S]*highlightedLines=null[\s\S]*textContent\.includes\(expectedText\)/, 'selection-only exercises require the expected Python code line to be highlighted');
+assert.match(html, /selectedBlockHighlightsExpectedCode[\s\S]*highlightedLines=null[\s\S]*lineMatches[\s\S]*selectionOnlyBlockTypes\(currentExercises\(\)\[currentExerciseIndex\]/, 'selection-only exercises prefer highlighted Python code but still unlock from selecting the correct block if highlight matching is brittle');
 
 assert.match(html, /if\(isSelectionOnlyExercise\(ex\) && !alreadyCompleted\)\{[\s\S]*selectionExerciseUnlocked\[key\] = false/, 'selection-only completion is cleared after workspace edits only before the exercise has been completed once');
 assert.doesNotMatch(html, /if\(isSelectionOnlyExercise\(ex\)[\s\S]{0,180}completedSet\(\)\.delete\(currentExerciseIndex\)/, 'selection-only workspace edits do not remove already unlocked navigation');

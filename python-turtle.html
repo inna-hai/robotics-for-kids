@@ -172,7 +172,7 @@
             {
                 "minutes": "18–34",
                 "title": "בנייה מודרכת",
-                "teacher": "מובילים את תרגילים 1–4 בקצב כיתה, עם עצירות ניבוי קצרות.",
+                "teacher": "מובילים את תרגילים 1–5 בקצב כיתה, עם עצירות ניבוי קצרות ודיבאג של סדר פקודות.",
                 "students": "בונים, מריצים אחרי כל שינוי, ומתקנים אם הצב הלך לכיוון לא צפוי."
             },
             {
@@ -184,7 +184,7 @@
             {
                 "minutes": "48–64",
                 "title": "תרגול עצמאי",
-                "teacher": "נותנים לתלמידים לעבוד על תרגילים 5–10 בלי להראות פתרון מלא.",
+                "teacher": "נותנים לתלמידים לעבוד על תרגילים 6–11 בלי להראות פתרון מלא.",
                 "students": "מבצעים שינוי קטן, מריצים, משווים ומתקנים."
             },
             {
@@ -1157,14 +1157,15 @@
         "practice": [
             "הרימו עט בעזרת הבלוק ״הרם עט״, ואז זוזו קדימה בלי לצייר.",
             "המשיכו מהקוד של תרגול 1: אחרי המעבר בלי ציור, הורידו עט בעזרת הבלוק ״הורד עט״ וציירו משולש.",
-            "בחרו את הבלוקים ״הרם עט״ ו״הורד עט״ וראו בקוד את השורות המתאימות.",
-            "הריצו דוגמה: מה קורה כשמרימים את העט ושוכחים להוריד אותו?",
-            "תקנו את הקוד: הסירו את הקו המחבר בין שתי הצורות.",
+            "בחרו את הבלוקים ״הרם עט״ ו״הורד עט״, מצאו את שורות Python, והסבירו מה מצב הציור אחרי כל שורה.",
+            "הריצו דוגמה קטנה: קו אחד, מעבר בלי ציור, ואז קו נוסף.",
+            "תקנו באג קטן: למה הופיע קו מחבר בין שתי צורות?",
+            "ציירו בית קטן: ריבוע לקירות ומשולש לגג, עם רווח קטן בין הבית לגג.",
             "בנו שלוש צורות מופרדות וגם הוסיפו צבע שונה לכל צורה.",
-            "אתגר: ציור של עיר קטנה עם בתים נפרדים.",
             "בדקו שהתוכנית עובדת אחרי איפוס והרצה מחדש, ושאין קווי מעבר מיותרים.",
             "הכינו משפט הצגה: איפה השתמשתי ב״הרם עט״, איפה השתמשתי ב״הורד עט״, ומה זה שינה בציור.",
-            "השלימו משפט: היום למדתי שהצב לא מצייר כאשר ___, ובפעם הבאה אשפר ___."
+            "השלימו משפט: היום למדתי שהצב לא מצייר כאשר ___, ובפעם הבאה אשפר ___.",
+            "כתבו בקוד Python: קו, הרם עט, מעבר בלי ציור, הורד עט, ואז קו נוסף."
         ],
         "timing": [
             "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
@@ -1262,74 +1263,83 @@
             {
                 "id": 3,
                 "minutes": "32–40",
-                "title": "תרגול 3 — בוחרים בלוקים ורואים קוד",
-                "prompt": "בחרו את הבלוקים ״הרם עט״ ו״הורד עט״, וראו בקוד איפה מופיעות השורות ‎penup()‎ ו־‎pendown()‎.",
-                "hint": "לחצו פעם על ״הרם עט״ ופעם על ״הורד עט״. בכל לחיצה חפשו איזו שורת Python נדלקת.",
-                "check": "נבחרו שני הבלוקים, ושורות ‎penup()‎ ו־‎pendown()‎ הודגשו בקוד.",
-                "commonMistake": "מסתכלים רק על הציור ולא מחברים את הבלוק לשורת הקוד."
-            },
-            {
-                "id": 4,
-                "minutes": "40–47",
-                "title": "דוגמה",
-                "prompt": "הריצו דוגמה: מה קורה כשמרימים את העט ושוכחים להוריד אותו?",
-                "hint": "לחצו על הרצה בלבד ושימו לב איזו צורה חסרה בציור.",
-                "check": "אחרי ההרצה רואים שהצורה השנייה לא מצוירת, כי העט נשאר מורם.",
-                "commonMistake": "מנסים לתקן את הדוגמה במקום להתבונן במה שקורה."
+                "title": "תרגול 3 — בלוקים לקוד Python",
+                "prompt": "בחרו את הבלוקים ״הרם עט״ ו״הורד עט״. מצאו בקוד את השורות ‎penup()‎ ו־‎pendown()‎, ואז אמרו או כתבו ליד כל שורה: האם הצב מצייר או לא מצייר אחריה?",
+                "hint": "לחצו פעם על ״הרם עט״ ופעם על ״הורד עט״. בכל לחיצה חפשו איזו שורת Python נדלקת, ומה משתנה במצב העט אחריה.",
+                "check": "נבחרו שני הבלוקים, ושורות ‎penup()‎ ו־‎pendown()‎ הודגשו בקוד, עם הסבר מה מצב הציור אחרי כל שורה.",
+                "commonMistake": "זוכרים רק את שם השורה, אבל לא מסבירים אם הצב מצייר או לא מצייר אחריה."
             },
             {
                 "id": 5,
-                "minutes": "47–53",
-                "title": "תרגול 5 — מתקנים קו מחבר",
-                "prompt": "תקנו את הקוד: הסירו את הקו המחבר בין שתי הצורות.",
-                "hint": "במעבר בין הצורות צריך להרים את העט, לזוז למקום החדש, ואז להוריד את העט לפני הצורה השנייה.",
-                "check": "לפני המעבר יש ״הרם עט״, אחרי המעבר יש ״הורד עט״, ושתי הצורות נשארות מצוירות בנפרד.",
-                "commonMistake": "מוסיפים קישוטים אבל מאבדים את מטרת השיעור."
+                "minutes": "40–45",
+                "title": "הרצה מודרכת",
+                "prompt": "הריצו דוגמה קטנה: קו אחד, מעבר בלי ציור, ואז קו נוסף. איפה הצב הרים את העט ואיפה הוריד אותו?",
+                "hint": "לחצו על הרצה בלבד. חפשו את הרווח בין שני הקווים — זה המקום שבו הצב זז עם עט מורם.",
+                "check": "אחרי ההרצה רואים שני קווים נפרדים, וביניהם מעבר בלי ציור.",
+                "commonMistake": "מנסים להפוך את ההרצה המודרכת לצורות שלמות במקום להתבונן ברעיון הקטן: מעבר בלי קו."
+            },
+            {
+                "id": 4,
+                "minutes": "45–52",
+                "title": "תרגול 4 — למה הופיע קו מחבר?",
+                "prompt": "תקנו את הבאג: הקוד מצייר שתי צורות, אבל מופיע ביניהן קו מחבר. סדרו את בלוקי העט כך שבזמן המעבר בין הצורות הצב לא יצייר.",
+                "hint": "חפשו איפה נגמרת הצורה הראשונה ואיפה מתחיל המעבר לצורה השנייה. בזמן המעבר העט צריך להיות מורם, ולפני הצורה השנייה צריך להוריד אותו שוב.",
+                "check": "הקוד מצייר צורה ראשונה, אחר כך עובר בלי לצייר, ואז מצייר צורה נוספת אחרי ״הורד עט״.",
+                "commonMistake": "משאירים את ״הרם עט״ אחרי המעבר, ואז הקו המחבר כבר צויר."
             },
             {
                 "id": 6,
-                "minutes": "60–66",
-                "title": "אתגר — שלוש צורות צבעוניות ומופרדות",
-                "prompt": "בנו שלוש צורות מופרדות וגם הוסיפו צבע שונה לכל צורה.",
-                "hint": "תכננו שלושה אזורים נפרדים בדף. חשבו איך הצב יכול לעבור מאזור לאזור בלי להשאיר סימן, ובחרו צבע חדש לפני שמציירים כל צורה.",
-                "check": "אתגר פתוח — יש שלוש צורות נפרדות, וכל צורה בצבע שונה.",
-                "commonMistake": "משנים צבע רק אחרי שכבר צוירה הצורה, או משאירים קו מעבר בין הצורות."
+                "minutes": "52–60",
+                "title": "תרגול 5 — בית עם גג מרחף",
+                "prompt": "ציירו בית קטן: ריבוע לקירות ומשולש לגג. השאירו רווח קטן בין הקירות לגג — הצב צריך לעבור מהריבוע אל הגג בלי לצייר קו מחבר.",
+                "hint": "בנו קודם ריבוע. אחר כך הרימו עט, עברו למקום של הגג בלי לצייר, הורידו עט, וציירו משולש מעל הבית.",
+                "check": "יש ריבוע לבית, מעבר בלי ציור, ואז משולש לגג אחרי ״הורד עט״.",
+                "commonMistake": "מציירים את הגג צמוד לבית, או עוברים אל הגג בלי להרים עט ונוצר קו מחבר."
             },
             {
                 "id": 7,
-                "minutes": "66–72",
-                "title": "אתגר — עיר קטנה עם בתים נפרדים",
-                "prompt": "אתגר: ציירו עיר קטנה עם בתים נפרדים.",
-                "hint": "כל בית יכול להיות צורה פשוטה. תכננו את הבתים במקומות שונים, ונסו שהדרך ביניהם לא תופיע בציור.",
-                "check": "אתגר פתוח — יש כמה בתים נפרדים, והמעברים ביניהם בלי קווי חיבור.",
-                "commonMistake": "מציירים בית אחד גדול במקום כמה בתים נפרדים."
+                "minutes": "60–72",
+                "title": "תרגול 6 — שלוש צורות צבעוניות ומופרדות",
+                "prompt": "בנו שלוש צורות מופרדות וגם הוסיפו צבע שונה לכל צורה.",
+                "hint": "תכננו שלושה אזורים נפרדים בדף. בין צורה לצורה השתמשו ב״הרם עט״, מעבר בלי ציור, ואז ״הורד עט״. בחרו צבע חדש לפני שמציירים כל צורה.",
+                "check": "יש שלוש צורות נפרדות, לפחות שני מעברים בלי ציור, ולפחות שלושה צבעים שונים בציור.",
+                "commonMistake": "משנים צבע רק אחרי שכבר צוירה הצורה, או משאירים קו מעבר בין הצורות."
             },
             {
-                "id": 8,
+                "id": 9,
                 "minutes": "72–78",
-                "title": "תרגול 8 — בדיקת איכות",
+                "title": "תרגול 9 — בדיקת איכות",
                 "prompt": "בדקו שהתוכנית עובדת אחרי איפוס והרצה מחדש, ושאין קווי מעבר מיותרים.",
                 "hint": "לחצו איפוס, הריצו שוב, וחפשו קווים שלא היו אמורים להופיע.",
                 "check": "אחרי איפוס והרצה מחדש הציור עדיין נקי מקווי מעבר מיותרים.",
                 "commonMistake": "בודקים רק את סוף הציור ולא מריצים מחדש מהתחלה."
             },
             {
-                "id": 9,
+                "id": 10,
                 "minutes": "78–84",
-                "title": "תרגול 9 — הכנה להצגה",
+                "title": "תרגול 10 — הכנה להצגה",
                 "prompt": "הכינו משפט הצגה: איפה השתמשתי ב״הרם עט״, איפה השתמשתי ב״הורד עט״, ומה זה שינה בציור.",
                 "hint": "הצביעו על מקום אחד בציור שבו המעבר היה בלי קו.",
                 "check": "יש משפט שמסביר שימוש אחד בהרמת עט ושימוש אחד בהורדת עט.",
                 "commonMistake": "מציגים רק “זה יפה” בלי להסביר את הרעיון התכנותי."
             },
             {
-                "id": 10,
-                "minutes": "84–90",
-                "title": "תרגול 10 — רפלקציה קצרה",
+                "id": 11,
+                "minutes": "84–87",
+                "title": "תרגול 11 — רפלקציה קצרה",
                 "prompt": "השלימו משפט: היום למדתי שהצב לא מצייר כאשר ___, ובפעם הבאה אשפר ___.",
                 "hint": "החלק הראשון קשור למצב העט, והחלק השני קשור לשיפור אישי בציור או בקוד.",
                 "check": "המשפט כולל מה קורה כשהעט מורם ומה תרצו לשפר בפעם הבאה.",
                 "commonMistake": "כותבים משפט כללי בלי להזכיר את מצב העט."
+            },
+            {
+                "id": 12,
+                "minutes": "87–90",
+                "title": "אתגר סיום — כותבים Python קצר",
+                "prompt": "כתבו בקוד Python פקודות שגורמות לצב לצייר קו, להרים עט, לעבור בלי לצייר, להוריד עט, ואז לצייר קו נוסף.",
+                "hint": "כתבו שורות קצרות לפי הסדר: forward, אחר כך penup(), עוד forward למעבר, pendown(), ואז forward נוסף.",
+                "check": "יש בתיבה 5 שורות Python קצרות לפי הסדר: קו, הרם עט, מעבר בלי ציור, הורד עט, וקו נוסף.",
+                "commonMistake": "שוכחים להוריד עט לפני הקו השני, או כותבים רק תנועה בלי penup ו־pendown."
             }
         ],
         "vocabulary": [
@@ -8034,8 +8044,9 @@
     function selectedBlockHighlightsExpectedCode(selected, expectedType, highlightedLines=null){
       if(!selected || selected.type !== expectedType) return false;
       const highlighted = highlightedLines || highlightSelectedCode();
-      const expectedText = selectionOnlyLineName(expectedType);
-      return highlighted.some(line=>line.textContent.includes(expectedText));
+      const expectedText = selectionOnlyLineName(expectedType).replace(/\u200e/g, '');
+      const lineMatches = highlighted.some(line=>line.textContent.replace(/\u200e/g, '').includes(expectedText));
+      return lineMatches || selectionOnlyBlockTypes(currentExercises()[currentExerciseIndex] || {}).includes(expectedType);
     }
     function actionsFrom(block, out=[], depth=0){
       if(depth>1000 || !block) return out;
@@ -8165,11 +8176,12 @@
       return /כתבו במחברת|במחברת|מחברת|סמנו על דף|כיוון הראש לפני כל פקודה|החליפו ימינה ושמאלה|החליפו ימינה ושמאלה והשוו תוצאה|הציגו לחבר מה כל שורה עושה|כל שורה עושה|הכינו משפט הצגה|משפט הצגה|איפה רואים את זה בקוד|היום למדתי|בפעם הבאה אפשר|רפלקציה קצרה|משפט סיכום|איפוס והרצה מחדש|איפוס והרצה נקייה/.test(text);
     }
     function isPythonWritingExercise(ex){
-      return (currentLesson === 1 || currentLesson === 2 || currentLesson === 3 || currentLesson === 4) && /כותבים Python קצר/.test(`${ex?.title || ''} ${ex?.prompt || ''}`);
+      return (currentLesson === 1 || currentLesson === 2 || currentLesson === 3 || currentLesson === 4 || currentLesson === 5) && /כותבים Python קצר/.test(`${ex?.title || ''} ${ex?.prompt || ''}`);
     }
     function requiredWrittenPythonLineCount(ex){
       if(currentLesson === 3 && ex?.id === 13) return 5;
       if(currentLesson === 4 && ex?.id === 12) return 4;
+      if(currentLesson === 5 && ex?.id === 12) return 5;
       return 3;
     }
     function pythonWritingKey(){
@@ -8359,10 +8371,10 @@
       return /אתגר/.test(text);
     }
     function isRunOnlyExampleExercise(ex){
-      return currentLesson === 5 && ex?.id === 4;
+      return currentLesson === 5 && ex?.id === 5;
     }
     function requiresFreshCheckExercise(ex){
-      return (currentLesson === 5 && ex?.id === 5) || (currentLesson === 8 && ex?.id === 7) || (currentLesson === 9 && ex?.id === 7) || (currentLesson === 10 && [1,2,3,4,5,6,7].includes(ex?.id)) || (currentLesson === 11 && ex?.id === 6);
+      return (currentLesson === 5 && ex?.id === 6) || (currentLesson === 8 && ex?.id === 7) || (currentLesson === 9 && ex?.id === 7) || (currentLesson === 10 && [1,2,3,4,5,6,7].includes(ex?.id)) || (currentLesson === 11 && ex?.id === 6);
     }
     function requiresCheckedContinue(ex){
       return !isTipExercise(ex) && !isChallengeExercise(ex) && !isSelectionOnlyExercise(ex) && !isRunOnlyExampleExercise(ex);
@@ -8401,7 +8413,7 @@
     function exerciseLabel(index){
       const ex = currentExercises()[index];
       if(isTipExercise(ex)) return 'הידעתם?';
-      if(isRunOnlyExampleExercise(ex)) return 'דוגמה';
+      if(isRunOnlyExampleExercise(ex)) return 'הרצה מודרכת';
       if(isChallengeExercise(ex)) return `תרגיל ${exerciseNumberForIndex(index)} - אתגר`;
       return `תרגיל ${exerciseNumberForIndex(index)}`;
     }
@@ -8453,8 +8465,10 @@
       if(currentLesson === 7 && ex?.id === 6) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_repeat"><field name="TIMES">6</field><statement name="DO"><block type="py_forward"><field name="STEPS">60</field><next><block type="py_right"><field name="ANGLE">60</field><next><block type="py_left"><field name="ANGLE">30</field></block></next></block></next></block></statement></block></next></block></xml>';
       if(currentLesson === 6 && ex?.id === 3) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_set_length"><field name="VALUE">70</field><next><block type="py_forward_length"></block></next></block></next></block></xml>';
       if(currentLesson === 5 && ex?.id === 3) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_penup"><next><block type="py_forward"><field name="STEPS">120</field><next><block type="py_pendown"><next><block type="py_repeat"><field name="TIMES">3</field><statement name="DO"><block type="py_forward"><field name="STEPS">80</field><next><block type="py_right"><field name="ANGLE">120</field></block></next></block></statement></block></next></block></next></block></next></block></next></block></xml>';
-      if(currentLesson === 5 && ex?.id === 4) return '<xml><block type="py_python" x="20" y="20" movable="false" editable="false" deletable="false"><next><block type="py_repeat" movable="false" editable="false" deletable="false"><field name="TIMES">4</field><statement name="DO"><block type="py_forward" movable="false" editable="false" deletable="false"><field name="STEPS">70</field><next><block type="py_right" movable="false" editable="false" deletable="false"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_penup" movable="false" editable="false" deletable="false"><next><block type="py_forward" movable="false" editable="false" deletable="false"><field name="STEPS">150</field><next><block type="py_repeat" movable="false" editable="false" deletable="false"><field name="TIMES">3</field><statement name="DO"><block type="py_forward" movable="false" editable="false" deletable="false"><field name="STEPS">90</field><next><block type="py_right" movable="false" editable="false" deletable="false"><field name="ANGLE">120</field></block></next></block></statement></block></next></block></next></block></next></block></xml>';
-      if(currentLesson === 5 && ex?.id === 5) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">70</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_forward"><field name="STEPS">150</field><next><block type="py_repeat"><field name="TIMES">3</field><statement name="DO"><block type="py_forward"><field name="STEPS">90</field><next><block type="py_right"><field name="ANGLE">120</field></block></next></block></statement></block></next></block></next></block></xml>';
+      if(currentLesson === 5 && ex?.id === 4) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">60</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_forward"><field name="STEPS">140</field><next><block type="py_penup"><next><block type="py_pendown"><next><block type="py_repeat"><field name="TIMES">3</field><statement name="DO"><block type="py_forward"><field name="STEPS">75</field><next><block type="py_right"><field name="ANGLE">120</field></block></next></block></statement></block></next></block></next></block></next></block></next></block></next></block></xml>';
+      if(currentLesson === 5 && ex?.id === 5) return '<xml><block type="py_python" x="20" y="20" movable="false" editable="false" deletable="false"><next><block type="py_forward" movable="false" editable="false" deletable="false"><field name="STEPS">70</field><next><block type="py_penup" movable="false" editable="false" deletable="false"><next><block type="py_forward" movable="false" editable="false" deletable="false"><field name="STEPS">100</field><next><block type="py_pendown" movable="false" editable="false" deletable="false"><next><block type="py_forward" movable="false" editable="false" deletable="false"><field name="STEPS">70</field></block></next></block></next></block></next></block></next></block></next></block></xml>';
+      if(currentLesson === 5 && ex?.id === 6) return '<xml><block type="py_python" x="20" y="20"></block></xml>';
+      if(currentLesson === 5 && ex?.id === 12) return '<xml><block type="py_python" x="20" y="20"></block></xml>'; 
       if(currentLesson === 4 && ex?.id === 7) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">100</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_color"><field name="COLOR">#16a34a</field></block></next></block></next></block></xml>';
       return '';
     }
@@ -8491,7 +8505,8 @@
       restoringProgress = true;
       try{
         if(isIsolatedExercise(targetEx)){
-          if(restoreExerciseWorkspace(index)) exerciseStarterLoaded[baselineKey(index)] = true;
+          if(isRunOnlyExampleExercise(targetEx)) maybeLoadExerciseStarter(index, true);
+          else if(restoreExerciseWorkspace(index)) exerciseStarterLoaded[baselineKey(index)] = true;
           else maybeLoadExerciseStarter(index, true);
           saveActiveWorkspace(index);
         } else {
@@ -8546,7 +8561,7 @@
       const nextButtonLabel = isLast ? (nextLessonId ? 'סיימתי — לשיעור הבא' : 'סיימתי את הקורס') : 'המשך';
       const writingExercise = isPythonWritingExercise(ex);
       const writingValue = pythonWritingAnswers[pythonWritingKey()] || '';
-      const writingPlaceholder = currentLesson === 4 && ex?.id === 12 ? `color('#16a34a')&#10;forward(60)&#10;right(90)&#10;forward(60)` : (requiredWrittenPythonLineCount(ex) === 5 ? 'forward(50)&#10;right(90)&#10;forward(50)&#10;right(90)&#10;forward(50)' : 'forward(50)&#10;right(90)&#10;forward(50)');
+      const writingPlaceholder = currentLesson === 5 && ex?.id === 12 ? 'forward(70)&#10;penup()&#10;forward(100)&#10;pendown()&#10;forward(70)' : (currentLesson === 4 && ex?.id === 12 ? `color('#16a34a')&#10;forward(60)&#10;right(90)&#10;forward(60)` : (requiredWrittenPythonLineCount(ex) === 5 ? 'forward(50)&#10;right(90)&#10;forward(50)&#10;right(90)&#10;forward(50)' : 'forward(50)&#10;right(90)&#10;forward(50)'));
       const writingHtml = writingExercise ? `<label class="muted" for="pythonWritingAnswer"><b>כתבו כאן בתוך הלומדה:</b></label><textarea id="pythonWritingAnswer" dir="ltr" spellcheck="false" style="width:100%;min-height:${requiredWrittenPythonLineCount(ex) === 5 ? '132' : '96'}px;margin-top:8px;border:1px solid #fed7aa;border-radius:14px;padding:10px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.95rem;line-height:1.45;direction:ltr;text-align:left;background:#fff;" placeholder="${writingPlaceholder}">${escapeHtml(writingValue)}</textarea><button class="btn run" id="runWrittenPythonBtn" type="button" style="margin-top:8px;">▶️ הרץ את הקוד שכתבתי</button>` : '';
       const feedbackHtml = `<div class="exercise-feedback ${feedbackBelowButtons ? 'feedback-line-break' : ''} ${ok ? 'ok' : 'warn'}">${escapeHtml(message)}</div>`;
       missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div><p><b>${escapeHtml(ex.prompt || '')}</b></p>${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p>${(isChallengeExercise(ex) || isRunOnlyExampleExercise(ex)) ? '' : `<p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}`}${writingHtml}<div class="exercise-bottom"><div class="exercise-controls">${(isTip || isChallengeExercise(ex) || isSelectionOnly || isRunOnlyExampleExercise(ex)) ? '' : '<button class="btn run" id="checkExerciseBtn">✅ בדוק תרגיל</button>'}${resetButton}<button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${nextButtonLabel}</button></div>${feedbackBelowButtons ? '<br>' : feedbackHtml}</div>${feedbackBelowButtons ? feedbackHtml : ''}</div>`;
@@ -9462,17 +9477,54 @@
         if(drawnForwards < 3 || triangleTurns < 2) return ['אחרי שהצב חוזר לצייר צריך לבנות משולש.'];
         return [];
       }
-      if(currentLesson === 5 && ex.id === 5){
+      if(currentLesson === 5 && ex.id === 4){
         const penUpIndex = actions.findIndex(a=>a.cmd==='pen' && a.v===false);
-        if(penUpIndex < 0) return ['צריך להוסיף ״הרם עט״ לפני המעבר בין הצורות.'];
+        if(penUpIndex < 0) return ['צריך להשתמש ב״הרם עט״ כדי שהמעבר בין הצורות לא יצויר.'];
         const pendownIndex = actions.findIndex((a,i)=>i > penUpIndex && a.cmd==='pen' && a.v===true);
-        if(pendownIndex < 0) return ['צריך להוסיף ״הורד עט״ אחרי המעבר, לפני שמציירים את הצורה השנייה.'];
-        const beforePenUpForwards = actions.slice(0, penUpIndex).filter(a=>a.cmd==='forward' || a.cmd==='forwardVar').length;
-        if(beforePenUpForwards < 4) return ['השאירו את הצורה הראשונה לפני המעבר.'];
+        if(pendownIndex < 0) return ['אחרי המעבר צריך להחזיר את העט למטה עם ״הורד עט״ לפני הצורה השנייה.'];
+        const beforePenUp = actions.slice(0, penUpIndex);
+        const beforePenUpForwards = beforePenUp.filter(a=>a.cmd==='forward' || a.cmd==='forwardVar').length;
+        const beforePenUpRightAngles = beforePenUp.filter(a=>(a.cmd==='right' || a.cmd==='left') && a.v===90).length;
+        if(beforePenUpForwards < 4 || beforePenUpRightAngles < 3) return ['״הרם עט״ צריך לבוא אחרי הצורה הראשונה ולפני המעבר — לא אחרי שהמעבר כבר צויר.'];
         const transitionForwards = actions.slice(penUpIndex + 1, pendownIndex).filter(a=>a.cmd==='forward' || a.cmd==='forwardVar').length;
-        if(transitionForwards < 1) return ['אחרי ״הרם עט״ צריך להיות מעבר למקום חדש.'];
-        const afterPendownForwards = actions.slice(pendownIndex + 1).filter(a=>a.cmd==='forward' || a.cmd==='forwardVar').length;
-        if(afterPendownForwards < 3) return ['אחרי ״הורד עט״ צריך להשאיר את הצורה השנייה מצוירת.'];
+        if(transitionForwards < 1) return ['בין ״הרם עט״ ל״הורד עט״ צריך להיות מעבר קדימה בלי ציור.'];
+        const afterPendown = actions.slice(pendownIndex + 1);
+        const afterPendownForwards = afterPendown.filter(a=>a.cmd==='forward' || a.cmd==='forwardVar').length;
+        const afterPendownTriangleTurns = afterPendown.filter(a=>(a.cmd==='right' || a.cmd==='left') && a.v===120).length;
+        if(afterPendownForwards < 3 || afterPendownTriangleTurns < 2) return ['אחרי ״הורד עט״ צריך לצייר את הצורה השנייה.'];
+        return [];
+      }
+      if(currentLesson === 5 && ex.id === 6){
+        const penUpIndex = actions.findIndex(a=>a.cmd==='pen' && a.v===false);
+        if(penUpIndex < 0) return ['צריך להרים עט לפני המעבר מהריבוע אל מקום הגג.'];
+        const pendownIndex = actions.findIndex((a,i)=>i > penUpIndex && a.cmd==='pen' && a.v===true);
+        if(pendownIndex < 0) return ['צריך להוריד עט לפני שמציירים את הגג.'];
+        const beforePenUp = actions.slice(0, penUpIndex);
+        const squareForwards = beforePenUp.filter(a=>a.cmd==='forward' || a.cmd==='forwardVar').length;
+        const squareTurns = beforePenUp.filter(a=>(a.cmd==='right' || a.cmd==='left') && a.v===90).length;
+        if(squareForwards < 4 || squareTurns < 3) return ['הבית צריך להתחיל מריבוע לקירות: 4 צלעות ופניות של 90 מעלות.'];
+        const transitionForwards = actions.slice(penUpIndex + 1, pendownIndex).filter(a=>a.cmd==='forward' || a.cmd==='forwardVar').length;
+        if(transitionForwards < 1) return ['בין הקירות לגג צריך להיות מעבר למקום חדש כשהעט מורם.'];
+        const roofActions = actions.slice(pendownIndex + 1);
+        const roofForwards = roofActions.filter(a=>a.cmd==='forward' || a.cmd==='forwardVar').length;
+        const roofTurns = roofActions.filter(a=>(a.cmd==='right' || a.cmd==='left') && a.v===120).length;
+        if(roofForwards < 3 || roofTurns < 2) return ['אחרי ״הורד עט״ צריך לצייר משולש לגג.'];
+        return [];
+      }
+      if(currentLesson === 5 && ex.id === 7){
+        const segments = drawnSegments(actions);
+        if(segments.length < 9) return ['צריך לצייר שלוש צורות — לא רק קווים בודדים. נסו לבנות כמה צלעות לכל צורה.'];
+        if(actionDrawnColors(actions).size < 3) return ['צריך לצייר בפועל בשלושה צבעים שונים. שימו צבע חדש לפני כל צורה.'];
+        const penUpCount = actions.filter(a=>a.cmd==='pen' && a.v===false).length;
+        const penDownCount = actions.filter(a=>a.cmd==='pen' && a.v===true).length;
+        if(penUpCount < 2 || penDownCount < 2) return ['בין שלוש הצורות צריכים להיות לפחות שני מעברים בלי ציור: הרם עט, מעבר, ואז הורד עט.'];
+        let cleanTransitions = 0;
+        for(let i=0;i<actions.length;i++){
+          if(!(actions[i].cmd==='pen' && actions[i].v===false)) continue;
+          const nextDown = actions.findIndex((a,j)=>j > i && a.cmd==='pen' && a.v===true);
+          if(nextDown > i && actions.slice(i + 1, nextDown).some(a=>a.cmd==='forward' || a.cmd==='forwardVar')) cleanTransitions++;
+        }
+        if(cleanTransitions < 2) return ['צריך שיהיו שני מעברים למקומות חדשים כשהעט מורם, כדי שהצורות יהיו מופרדות.'];
         return [];
       }
       if(!actions.length) problems.push('גררו לפחות בלוק אחד לפני הבדיקה.');
@@ -9569,9 +9621,14 @@
           actions.push({cmd:'color', v:colorMatch[1].toLowerCase()});
           continue;
         }
+        const penMatch = cleaned.match(/^(penup|pendown)\s*\(\s*\)\s*$/i);
+        if(penMatch){
+          actions.push({cmd:'pen', v: penMatch[1].toLowerCase() === 'pendown'});
+          continue;
+        }
         const match = cleaned.match(/^(forward|right|left)\s*(?:\(\s*(\d+)\s*\)|\s+(\d+))\s*$/i);
         if(!match){
-          problems.push("אפשר להריץ רק שורות פשוטות כמו color('#16a34a'), forward(50), right(90), left(90).");
+          problems.push("אפשר להריץ רק שורות פשוטות כמו color('#16a34a'), forward(50), right(90), left(90), penup(), pendown().");
           break;
         }
         const cmdName = match[1].toLowerCase();
@@ -9611,6 +9668,13 @@
         const matchesColoredCorner = comparable[0] === 'color' && comparable[1] === 'forward' && comparable[2] === 'turn90' && comparable[3] === 'forward';
         if(!matchesColoredCorner || String(actions[0]?.v || '').toLowerCase() === defaultBlue){
           problems.push('כתבו 4 שורות לפי הסדר: color עם צבע חדש, forward, right(90) או left(90), ואז forward נוסף.');
+        }
+      }
+      if(currentLesson === 5 && ex?.id === 12){
+        const comparable = actions.map(action=>action.cmd === 'pen' ? (action.v ? 'pendown' : 'penup') : action.cmd);
+        const matchesPenLiftLine = comparable[0] === 'forward' && comparable[1] === 'penup' && comparable[2] === 'forward' && comparable[3] === 'pendown' && comparable[4] === 'forward';
+        if(!matchesPenLiftLine){
+          problems.push('כתבו 5 שורות לפי הסדר: forward, penup(), forward, pendown(), ואז forward נוסף.');
         }
       }
       return problems;
@@ -9705,7 +9769,7 @@
         2: "<xml><block type=\"py_color\" x=\"40\" y=\"40\"><field name=\"COLOR\">#2563eb</field><next><block type=\"py_repeat\"><field name=\"TIMES\">4</field><statement name=\"DO\"><block type=\"py_forward\"><field name=\"STEPS\">100</field><next><block type=\"py_right\"><field name=\"ANGLE\">90</field></block></next></block></statement></block></next></block></xml>",
         3: "<xml><block type=\"py_color\" x=\"40\" y=\"40\"><field name=\"COLOR\">#7c3aed</field><next><block type=\"py_repeat\"><field name=\"TIMES\">5</field><statement name=\"DO\"><block type=\"py_forward\"><field name=\"STEPS\">85</field><next><block type=\"py_right\"><field name=\"ANGLE\">72</field></block></next></block></statement></block></next></block></xml>",
         4: "<xml><block type=\"py_color\" x=\"40\" y=\"40\"><field name=\"COLOR\">#2563eb</field><next><block type=\"py_repeat\"><field name=\"TIMES\">4</field><statement name=\"DO\"><block type=\"py_forward\"><field name=\"STEPS\">100</field><next><block type=\"py_right\"><field name=\"ANGLE\">90</field></block></next></block></statement></block></next></block></xml>",
-        5: "<xml><block type=\"py_repeat\" x=\"40\" y=\"40\"><field name=\"TIMES\">4</field><statement name=\"DO\"><block type=\"py_forward\"><field name=\"STEPS\">70</field><next><block type=\"py_right\"><field name=\"ANGLE\">90</field></block></next></block></statement><next><block type=\"py_penup\"><next><block type=\"py_forward\"><field name=\"STEPS\">140</field><next><block type=\"py_pendown\"><next><block type=\"py_repeat\"><field name=\"TIMES\">3</field><statement name=\"DO\"><block type=\"py_forward\"><field name=\"STEPS\">90</field><next><block type=\"py_right\"><field name=\"ANGLE\">120</field></block></next></block></statement></block></next></block></next></block></next></block></next></block></xml>",
+        5: "<xml><block type=\"py_forward\" x=\"40\" y=\"40\"><field name=\"STEPS\">70</field><next><block type=\"py_penup\"><next><block type=\"py_forward\"><field name=\"STEPS\">100</field><next><block type=\"py_pendown\"><next><block type=\"py_forward\"><field name=\"STEPS\">70</field></block></next></block></next></block></next></block></next></block></xml>",
         6: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">70</field><next><block type=\"py_repeat\"><field name=\"TIMES\">4</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field></block></next></block></statement></block></next></block></xml>",
         7: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">70</field><next><block type=\"py_repeat\"><field name=\"TIMES\">4</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field></block></next></block></statement></block></next></block></xml>",
         8: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
@@ -9853,7 +9917,7 @@
         runOnlyExampleStarted[selectionUnlockKey()] = true;
         exercisePassed = true;
         completedSet().add(currentExerciseIndex);
-        renderCurrentExercise('ראיתם? אחרי ״הרם עט״ הצב זז, אבל בלי ״הורד עט״ הוא לא חוזר לצייר.', true);
+        renderCurrentExercise('ראיתם? יש קו ראשון, אחר כך מעבר בלי ציור כשהעט מורם, ואז קו נוסף אחרי ״הורד עט״.', true);
         renderExerciseNav();
         saveProgress();
       } else if(isChallengeExercise(ex)) run();
