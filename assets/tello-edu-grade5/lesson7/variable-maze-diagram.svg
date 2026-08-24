@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">מבוך משתנה עם distance</title>
+  <desc id="desc">אותו מסלול S עם ערך distance קטן או גדול</desc>
+  <rect width="960" height="540" rx="32" fill="#f8fafc"/>
+  <text x="480" y="52" text-anchor="middle" font-family="Arial" font-size="30" font-weight="700" fill="#0f172a">אותו קוד — distance אחר</text>
+  <g font-family="Arial">
+    <rect x="70" y="95" width="370" height="360" rx="24" fill="#eff6ff" stroke="#2563eb" stroke-width="4"/>
+    <text x="255" y="135" text-anchor="middle" font-size="26" font-weight="700" fill="#1e3a8a">Maze A: distance = 60</text>
+    <rect x="150" y="180" width="60" height="60" rx="10" fill="#fecaca"/><rect x="260" y="280" width="60" height="60" rx="10" fill="#fecaca"/><rect x="150" y="370" width="60" height="60" rx="10" fill="#fecaca"/>
+    <path d="M110 420 V340 H290 V240 H180 V170" fill="none" stroke="#2563eb" stroke-width="7" marker-end="url(#a)"/>
+    <rect x="520" y="95" width="370" height="360" rx="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+    <text x="705" y="135" text-anchor="middle" font-size="26" font-weight="700" fill="#166534">Maze B: distance = 120</text>
+    <rect x="595" y="175" width="60" height="60" rx="10" fill="#fecaca"/><rect x="755" y="285" width="60" height="60" rx="10" fill="#fecaca"/><rect x="595" y="390" width="60" height="60" rx="10" fill="#fecaca"/>
+    <path d="M560 430 V345 H785 V235 H625 V165" fill="none" stroke="#16a34a" stroke-width="7" marker-end="url(#b)"/>
+    <text x="480" y="500" text-anchor="middle" font-size="26" font-weight="700" fill="#0f172a">Set distance פעם אחת בראש הקוד → כל פקודות Forward מתעדכנות</text>
+  </g>
+  <defs><marker id="a" markerWidth="12" markerHeight="12" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#2563eb"/></marker><marker id="b" markerWidth="12" markerHeight="12" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#16a34a"/></marker></defs>
+</svg>

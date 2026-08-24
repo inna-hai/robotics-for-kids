@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" role="img" aria-label="Grid Scan zigzag path">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#ecfeff"/><stop offset="1" stop-color="#fff7ed"/></linearGradient>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#f97316"/></marker>
+  </defs>
+  <rect width="900" height="560" rx="34" fill="url(#bg)"/>
+  <text x="450" y="52" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="800" fill="#0f172a">Grid Scan — סריקה שורה־אחר־שורה</text>
+  <rect x="120" y="92" width="660" height="360" rx="18" fill="#fff" stroke="#0ea5e9" stroke-width="5" stroke-dasharray="14 10"/>
+  <g stroke="#bae6fd" stroke-width="3">
+    <line x1="120" y1="182" x2="780" y2="182"/><line x1="120" y1="272" x2="780" y2="272"/><line x1="120" y1="362" x2="780" y2="362"/>
+  </g>
+  <g font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#075985">
+    <text x="84" y="145">שורה 1</text><text x="84" y="235">שורה 2</text><text x="84" y="325">שורה 3</text><text x="84" y="415">שורה 4</text>
+  </g>
+  <path d="M170 137 H720 Q760 137 760 177 V210 Q760 227 742 227 H180 Q140 227 140 267 V300 Q140 317 158 317 H720 Q760 317 760 357 V390 Q760 407 742 407 H190" fill="none" stroke="#f97316" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+  <circle cx="170" cy="137" r="22" fill="#22c55e"/><text x="170" y="145" text-anchor="middle" font-family="Arial" font-size="18" font-weight="900" fill="#fff">S</text>
+  <circle cx="190" cy="407" r="22" fill="#ef4444"/><text x="190" y="415" text-anchor="middle" font-family="Arial" font-size="18" font-weight="900" fill="#fff">L</text>
+  <g font-family="Arial, sans-serif" font-size="24" font-weight="800" fill="#9a3412">
+    <text x="450" y="500" text-anchor="middle">תבנית: Forward → מעבר צד → Forward חזרה → Loop</text>
+    <text x="450" y="532" text-anchor="middle" font-size="20" fill="#334155">המטרה: כיסוי מלא בלי “חורים” במפה</text>
+  </g>
+</svg>
