@@ -147,4 +147,15 @@ assert.ok(index.includes('omer-future-craftom.html'), 'home page links Omer futu
 assert.ok(index.includes('עומר העתידנית'), 'home page labels Omer future course');
 assert.ok(index.includes('4 אתגרים'), 'home page presents the revised challenge structure');
 
+const server = read('server.js');
+for (const publicOmerPath of [
+  '/omer-future-craftom.html',
+  '/omer-future-craftom-challenge.html',
+  '/omer-future-craftom-students.html',
+  '/omer-future-craftom-slides.html',
+  '/omer-future-craftom-improvement.html',
+]) {
+  assert.ok(server.includes(`'${publicOmerPath}'`), `${publicOmerPath} is public and not subscription-gated`);
+}
+
 console.log('omer-future-craftom-course tests passed');

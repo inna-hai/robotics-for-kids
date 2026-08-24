@@ -1071,6 +1071,11 @@ const PUBLIC_HTML_PATHS = new Set([
   '/sisi.html',
   '/lumi.html',
   '/lumi-play.html',
+  '/omer-future-craftom.html',
+  '/omer-future-craftom-challenge.html',
+  '/omer-future-craftom-students.html',
+  '/omer-future-craftom-slides.html',
+  '/omer-future-craftom-improvement.html',
 ]);
 
 const FREE_SISI_HTML_PATHS = new Set([
