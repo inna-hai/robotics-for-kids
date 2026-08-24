@@ -25,10 +25,11 @@ function assertIncludes(source, needle, message = `Missing: ${needle}`) { assert
 function assertNotIncludes(source, needle, message = `Unexpected: ${needle}`) { assert.ok(!source.includes(needle), message); }
 
 test('homepage promotes the subscription and routes free Sisi through registration', () => {
-  assertIncludes(homepageHtml, 'href="summer-subscription.html"');
-  assertIncludes(homepageHtml, 'מנוי קיץ לילדים');
-  assertIncludes(homepageHtml, 'נסו 3 שיעורי חשיבה ותכנות בחינם');
-  assertIncludes(homepageHtml, 'חשיבה ותכנות לילדים עם סיסי הוא קורס משחקי לילדים צעירים');
+  assertIncludes(homepageHtml, 'איך מתחילים?');
+  assertIncludes(homepageHtml, 'יש לי קוד ילד');
+  assertIncludes(homepageHtml, 'התחילו בהתנסות');
+  assertIncludes(homepageHtml, 'פתוח להתנסות');
+  assertIncludes(homepageHtml, 'להתחיל עם סיסי');
   assertIncludes(homepageHtml, 'href="sisi.html"');
   assertNotIncludes(homepageHtml, 'href="register.html">נסו 3 שיעורי חשיבה ותכנות בחינם');
   assertNotIncludes(homepageHtml, 'href="space.html"');
@@ -72,12 +73,15 @@ test('registration, login, and account pages are separate product screens', () =
   assertIncludes(loginHtml, 'id="login-form"');
   assertNotIncludes(loginHtml, 'id="register-form"');
   assertIncludes(loginHtml, 'ברוכים השבים');
+  assertIncludes(loginHtml, 'אני ילד/ה');
+  assertIncludes(loginHtml, 'אני הורה');
   assertIncludes(loginHtml, 'account.html');
   assertIncludes(loginHtml, 'מעבר לאזור שלי');
   assertIncludes(loginHtml, 'register.html');
 
   assertIncludes(accountHtml, '<title>האזור שלי | hai.tech</title>');
-  assertIncludes(accountHtml, 'נרשמים כדי להתחיל ללמוד');
+  assertIncludes(accountHtml, 'האזור האישי ללמידה');
+  assertNotIncludes(accountHtml, 'נרשמים כדי להתחיל ללמוד');
   assertIncludes(accountHtml, 'הרשמה חדשה');
   assertIncludes(accountHtml, 'כניסה לחשבון קיים');
   assertIncludes(accountHtml, 'חשיבה ותכנות · 3 שיעורים בחינם');
@@ -100,6 +104,7 @@ test('summer auth client and server expose account endpoints and protected pages
   assertIncludes(accountJs, '/api/summer/dashboard');
   assertIncludes(accountJs, "location.href = 'account.html'");
   assertIncludes(accountJs, "!location.pathname.endsWith('/account.html')");
+  assertIncludes(accountJs, 'index.html#catalog');
   assertIncludes(accountHtml, 'מה הילדים עשו?');
   assertIncludes(serverJs, "action === 'dashboard'");
   assertIncludes(serverJs, "profile.kind !== 'child'");

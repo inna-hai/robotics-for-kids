@@ -184,7 +184,7 @@
 
     if (active) {
       list.innerHTML = `
-        <article class="course"><div><h3>קטלוג הלומדות</h3><p>המנוי פעיל. אפשר לבחור לומדה מתוך הקטלוג.</p></div><a class="btn green" href="index.html#courses">בחירת לומדה</a></article>
+        <article class="course"><div><h3>הלומדות שלי</h3><p>המנוי פעיל. אפשר לבחור לומדה מתוך הקטלוג ולהמשיך ללמוד.</p></div><a class="btn green" href="index.html#catalog">בחירת לומדה</a></article>
         <article class="course"><div><h3>סנסי בעיר החכמה</h3><p>מסלול Blockly וסימולטור רובוט עם 15 שיעורים.</p></div><a class="btn light" href="smart-city.html">כניסה לסנסי</a></article>
       `;
       return;
@@ -244,6 +244,13 @@
       setMessage('');
     });
   });
+
+  const initialAuthTab = document.querySelector('[data-tab].active')?.dataset.tab;
+  if (initialAuthTab) {
+    Object.entries(forms).forEach(([name, form]) => {
+      if (form) form.hidden = name !== initialAuthTab;
+    });
+  }
 
 
   document.querySelectorAll('[data-toggle-password]').forEach((button) => {

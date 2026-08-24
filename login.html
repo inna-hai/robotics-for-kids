@@ -28,8 +28,19 @@
 
     <section class="panel" id="auth-panel">
       <h2>כניסה לחשבון</h2>
-      <p class="hint">הורה נכנס עם מייל וסיסמה. ילד/ה יכולים להיכנס לבד עם קוד ילד ו-PIN שקיבלו מההורה.</p>
-      <form id="login-form" data-auth-form="login">
+      <p class="hint">בחרו מי נכנס עכשיו. ילד/ה צריכים רק קוד ו-PIN; הורה נכנס עם מייל וסיסמה.</p>
+      <div class="role-tabs" aria-label="בחירת סוג כניסה">
+        <button class="role-tab active" type="button" data-tab="child-login">
+          <strong>אני ילד/ה</strong>
+          <span>קוד ילד + PIN</span>
+        </button>
+        <button class="role-tab" type="button" data-tab="login">
+          <strong>אני הורה</strong>
+          <span>מייל וסיסמה</span>
+        </button>
+      </div>
+      <form id="login-form" data-auth-form="login" hidden>
+        <h3>כניסת הורה</h3>
         <div class="field"><label for="login-email">מייל</label><input id="login-email" name="email" type="email" autocomplete="email" required></div>
         <div class="field"><label for="login-password">סיסמה</label><div class="password-wrap"><input id="login-password" name="password" type="password" autocomplete="current-password" required><button class="password-toggle" type="button" data-toggle-password="login-password" aria-label="הצגת סיסמה"><span class="eye-icon" aria-hidden="true"></span></button></div></div>
         <button class="btn primary" type="submit">כניסת הורה</button>
