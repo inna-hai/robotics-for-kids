@@ -873,6 +873,7 @@ button {
 }`,
       js: `let score = 0;
 const target = 10;
+document.getElementById("targetText").textContent = target;
 
 function feedMonster() {
   score = score + 1;
@@ -899,7 +900,8 @@ function resetGame() {
   document.getElementById("scoreText").textContent = score;
   document.getElementById("progressFill").style.width = "0%";
   document.getElementById("monster").textContent = "😋";
-  document.getElementById("message").textContent = "המפלצת רעבה. תגיעו ל־10 עוגיות!";
+  document.getElementById("targetText").textContent = target;
+  document.getElementById("message").textContent = "המפלצת רעבה. תגיעו ל־" + target + " עוגיות!";
   document.querySelector(".cookie-game").classList.remove("win");
 }`
     },
