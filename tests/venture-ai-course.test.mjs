@@ -30,10 +30,15 @@ for (const lesson of program.lessons) {
   assert.ok(lesson.studentWorksheet.checklist.length >= 5, `lesson ${lesson.id} has worksheet checklist`);
 }
 
-assert.ok(program.lessons[0].title.includes('מרעיון'), 'lesson 1 starts from idea');
-assert.ok(program.lessons[1].title.includes('מאפיינים'), 'lesson 2 focuses on specification');
+assert.ok(program.lessons[0].title.includes('מיזם עירוני'), 'lesson 1 starts from a city venture');
+assert.ok(program.lessons[0].keyConcepts.includes('לאו-טק'), 'lesson 1 introduces high-tech and low-tech framing');
+assert.ok(program.lessons[1].keyConcepts.includes('MoSCoW'), 'lesson 2 uses MoSCoW to narrow scope');
+assert.ok(program.lessons[1].opalPrompt.includes('Must'), 'lesson 2 feeds Must scope into the Opal prompt');
 assert.ok(program.lessons[2].title.includes('Opal'), 'lesson 3 builds in Opal');
+assert.ok(program.lessons[2].keyConcepts.includes('תפקידי צוות'), 'lesson 3 includes team roles');
 assert.ok(program.lessons[3].title.includes('מציגים'), 'lesson 4 closes with demo/pitch');
+assert.ok(program.lessons[3].keyConcepts.includes('ביקורת עמיתים'), 'lesson 4 includes peer critique');
+assert.ok(program.pitchTemplate[0].includes('חולון'), 'pitch template keeps the city context');
 
 const page = read('venture-ai.html');
 assert.ok(page.includes('מרעיון למיזם עם AI'), 'course page has title');
