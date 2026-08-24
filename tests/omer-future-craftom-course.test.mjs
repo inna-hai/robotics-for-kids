@@ -11,7 +11,12 @@ vm.createContext(sandbox);
 vm.runInContext(read('js/omer-future-craftom-lessons.js'), sandbox);
 
 const program = sandbox.window.OMER_FUTURE_CRAFTOM_PROGRAM;
+const cacheBustedLessonsAsset = 'js/omer-future-craftom-lessons-25f8f8e.js';
+const craftomStylesheet = 'assets/craftom/craftom-challenges.css';
+const cacheBustedCraftomStylesheet = `${craftomStylesheet}?v=20260824-omer-style`;
 assert.ok(program, 'Omer future Craftom program exists');
+assert.ok(exists(cacheBustedLessonsAsset), 'cache-busted Omer lesson data asset exists');
+assert.ok(exists(craftomStylesheet), 'Craftom challenge stylesheet exists');
 assert.equal(program.targetAudience, 'כיתה ד׳', 'program targets grade 4');
 assert.equal(program.age, 'בני 9', 'program targets age 9');
 assert.equal(program.totalChallenges, 4, 'program has 4 challenges');
@@ -47,6 +52,9 @@ for (const lesson of program.lessons) {
   assert.ok(lesson.exitTicket, `challenge ${lesson.id} has exit ticket`);
   assert.ok(lesson.image && exists(lesson.image), `challenge ${lesson.id} has an existing Minecraft image`);
   assert.ok(lesson.image.startsWith('assets/craftom/omer-future/'), `challenge ${lesson.id} uses a dedicated Omer image`);
+  assert.ok(lesson.video && exists(lesson.video), `challenge ${lesson.id} has an existing explainer video`);
+  assert.ok(lesson.video.startsWith('marketing/omer-future-challenge'), `challenge ${lesson.id} uses the Omer explainer video set`);
+  assert.ok(new URL(lesson.video, 'https://example.test/').pathname.endsWith('.mp4'), `challenge ${lesson.id} video is an mp4`);
   assert.ok(lesson.jsonSpec && exists(lesson.jsonSpec), `challenge ${lesson.id} has JSON success spec`);
   assert.ok(lesson.successChecks.length >= 4, `challenge ${lesson.id} has success checks`);
   assert.ok(lesson.teacherPrep.length >= 3, `challenge ${lesson.id} has teacher prep`);
@@ -93,10 +101,13 @@ assert.ok(hub.includes('lesson.meetings'), 'hub renders meetings per challenge')
 assert.ok(hub.includes('lesson.imaginePrompt'), 'hub renders child-world prompt');
 assert.ok(hub.includes('program.omerAnchor'), 'hub renders Omer anchor text');
 assert.ok(hub.includes('lesson.image'), 'hub renders images from challenge data');
+assert.ok(hub.includes('lesson.video'), 'hub renders videos from challenge data');
+assert.ok(hub.includes('challenge-video'), 'hub shows challenge videos in the challenge cards');
 assert.ok(hub.includes('omer-future-craftom-challenge.html?lesson=${lesson.id}'), 'hub links Omer challenge pages');
 assert.ok(hub.includes('omer-future-craftom-students.html?lesson=${lesson.id}'), 'hub links student worksheets');
 assert.ok(hub.includes('omer-future-craftom-slides.html?lesson=${lesson.id}'), 'hub links instructor slides');
-assert.ok(hub.includes('js/omer-future-craftom-lessons.js'), 'hub loads course data');
+assert.ok(hub.includes(cacheBustedLessonsAsset), 'hub loads cache-busted course data');
+assert.ok(hub.includes(cacheBustedCraftomStylesheet), 'hub loads cache-busted Craftom challenge stylesheet');
 
 const students = read('omer-future-craftom-students.html');
 assert.ok(students.includes('דף תלמידים'), 'students page is a worksheet');
@@ -119,8 +130,12 @@ assert.ok(challengePage.includes('grid-4'), 'challenge page uses Craftom challen
 assert.ok(challengePage.includes('lesson.meetings'), 'challenge page renders four meeting cards');
 assert.ok(challengePage.includes('imaginePrompt'), 'challenge page renders child-world prompt');
 assert.ok(challengePage.includes('minecraft-shot'), 'challenge page has Minecraft hero image');
+assert.ok(challengePage.includes('challengeVideo'), 'challenge page has a dedicated explainer video player');
+assert.ok(challengePage.includes('lesson.video'), 'challenge page loads the video for the selected challenge');
 assert.ok(challengePage.includes('JSON הצלחה'), 'challenge page links JSON success');
 assert.ok(challengePage.includes('window.getOmerFutureCraftomLesson'), 'challenge page loads lesson by query');
+assert.ok(challengePage.includes(cacheBustedLessonsAsset), 'challenge page loads cache-busted course data');
+assert.ok(challengePage.includes(cacheBustedCraftomStylesheet), 'challenge page loads cache-busted Craftom challenge stylesheet');
 
 const improvement = read('omer-future-craftom-improvement.html');
 assert.ok(improvement.includes('בקשת שיפור'), 'improvement page has title');
@@ -131,5 +146,16 @@ const index = read('index.html');
 assert.ok(index.includes('omer-future-craftom.html'), 'home page links Omer future course');
 assert.ok(index.includes('עומר העתידנית'), 'home page labels Omer future course');
 assert.ok(index.includes('4 אתגרים'), 'home page presents the revised challenge structure');
+
+const server = read('server.js');
+for (const publicOmerPath of [
+  '/omer-future-craftom.html',
+  '/omer-future-craftom-challenge.html',
+  '/omer-future-craftom-students.html',
+  '/omer-future-craftom-slides.html',
+  '/omer-future-craftom-improvement.html',
+]) {
+  assert.ok(server.includes(`'${publicOmerPath}'`), `${publicOmerPath} is public and not subscription-gated`);
+}
 
 console.log('omer-future-craftom-course tests passed');

@@ -21,7 +21,7 @@
   <main class="main">
     <section class="panel lesson-panel" id="lessonPanel">
       <button class="lesson-toggle" onclick="toggleLessonPanel()" aria-expanded="true" aria-controls="lessonCollapsible">
-        <span>📘 הסבר ותרגולים</span><span class="lesson-toggle-icon" id="lessonToggleIcon" aria-hidden="true">⌃</span>
+        <span>📘 הסבר ותרגילים</span><span class="lesson-toggle-icon" id="lessonToggleIcon" aria-hidden="true">⌃</span>
       </button>
       <div class="lesson-collapsible" id="lessonCollapsible">
         <div class="info compact-info"><h1 id="title"></h1><p><b>חשוב:</b> גררו בלוקים וחברו אותם לשרשרת. הקוד הוא רק הצצה.</p><span class="chip hidden-chip" id="concept"></span><span id="story" hidden></span><span id="mission" hidden></span></div>
@@ -55,7 +55,7 @@
       <div class="preview-wrap"><iframe id="preview" title="תצוגת התוצר"></iframe></div>
     </section>
   </main>
-  <script src="js/webcode-lessons.js?v=20260820-lesson4-reset-starter-v101"></script>
+  <script src="js/webcode-lessons-lesson7-target-fix.js"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const lesson = window.getWebCodeLesson(params.get('lesson'));
@@ -741,12 +741,12 @@ ${block.replace}`; changed = true; }
     function previewDocument(bodyHtml, cssText, jsText=''){
       const previewBase = `html{width:100%;min-height:100%;overflow-x:hidden}body{max-width:100%;min-height:100vh;margin:0;overflow-x:hidden}*,*::before,*::after{box-sizing:border-box}img,video,canvas,svg{max-width:100%;height:auto}main,.card,.profile-card,.page-card{max-width:calc(100vw - 24px)}`;
       const errorBridge = `<script>window.onerror=function(message,source,line,column){parent.postMessage({type:'webcode-error',message:String(message),line:line,column:column},'*');};<\/script>`;
-      const clickBridge = `<script>document.addEventListener('click',function(event){var button=event.target&&event.target.closest&&event.target.closest('button');if(button){setTimeout(function(){var message=document.getElementById('message');var emoji=document.getElementById('heroEmoji');var card=document.querySelector('.page-card');var result=document.getElementById('result');var inputValues={};document.querySelectorAll('input[id]').forEach(function(input){inputValues[input.id]=String(input.value||'').trim();});parent.postMessage({type:'webcode-preview-click',tag:'button',text:String(button.textContent||'').trim(),messageText:message?String(message.textContent||'').trim():'',emojiText:emoji?String(emoji.textContent||'').trim():'',cardClass:card?String(card.className||''):'',resultText:result?String(result.textContent||'').trim():'',inputValues:inputValues},'*');},0);}},true);<\/script>`;
+      const clickBridge = `<script>document.addEventListener('click',function(event){var button=event.target&&event.target.closest&&event.target.closest('button');if(button){setTimeout(function(){var message=document.getElementById('message');var feedback=document.getElementById('feedback');var emoji=document.getElementById('heroEmoji');var card=document.querySelector('.page-card');var result=document.getElementById('result');var inputValues={};document.querySelectorAll('input[id]').forEach(function(input){inputValues[input.id]=String(input.value||'').trim();});var scoreText=document.getElementById('scoreText');parent.postMessage({type:'webcode-preview-click',tag:'button',text:String(button.textContent||'').trim(),messageText:message?String(message.textContent||'').trim():'',feedbackText:feedback?String(feedback.textContent||'').trim():'',feedbackClass:feedback?String(feedback.className||''):'',emojiText:emoji?String(emoji.textContent||'').trim():'',cardClass:card?String(card.className||''):'',resultText:result?String(result.textContent||'').trim():'',scoreText:scoreText?String(scoreText.textContent||'').trim():'',inputValues:inputValues},'*');},0);}},true);<\/script>`;
       const script = jsText ? `<script>${safeScript(jsText)}<\/script>` : '';
       return `<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${previewBase}</style><style>${cssText}</style></head><body>${bodyHtml}${errorBridge}${clickBridge}${script}</body></html>`;
     }
     function runCode(silent=false){ previewClicks = []; const syntaxError = validateJavaScriptSyntax($('jsCode').value); if(syntaxError){ $('feedback').className='feedback bad'; $('feedback').textContent = `שגיאת סינטקס ב־JavaScript: ${syntaxError.message}. רמז: ${debugHint(syntaxError.message)}`; $('preview').srcdoc = previewDocument($('htmlCode').value, $('cssCode').value); return; } $('preview').srcdoc = previewDocument($('htmlCode').value, $('cssCode').value, $('jsCode').value); if(!silent){ $('feedback').className='feedback good'; $('feedback').textContent='הרצה בוצעה. בדקו בתצוגה אם זה נראה ועובד כמו שרציתם.'; } }
-    window.addEventListener('message', event => { if(!event.data) return; if(event.data.type === 'webcode-preview-click'){ previewClicks.push({ exerciseId:activeExercise, tag:event.data.tag, text:event.data.text, messageText:event.data.messageText, emojiText:event.data.emojiText, cardClass:event.data.cardClass, resultText:event.data.resultText, inputValues:event.data.inputValues || {} }); return; } if(event.data.type !== 'webcode-error') return; $('feedback').className='feedback bad'; $('feedback').textContent = `שגיאת קוד קטנה: ${event.data.message}. רמז: ${debugHint(event.data.message)}`; });
+    window.addEventListener('message', event => { if(!event.data) return; if(event.data.type === 'webcode-preview-click'){ previewClicks.push({ exerciseId:activeExercise, tag:event.data.tag, text:event.data.text, messageText:event.data.messageText, feedbackText:event.data.feedbackText, feedbackClass:event.data.feedbackClass, emojiText:event.data.emojiText, cardClass:event.data.cardClass, resultText:event.data.resultText, scoreText:event.data.scoreText, inputValues:event.data.inputValues || {} }); return; } if(event.data.type !== 'webcode-error') return; $('feedback').className='feedback bad'; $('feedback').textContent = `שגיאת קוד קטנה: ${event.data.message}. רמז: ${debugHint(event.data.message)}`; });
     function resetCode(){ if(!confirm('לאפס לקוד ההתחלתי של השיעור?')) return; if(lesson.realBlocklyBuilder && blocklyWorkspace && window.Blockly){ blocklyReady = false; blocklyWorkspace.clear(); Blockly.Xml.domToWorkspace(parseBlocklyXml(webBuilderStarterXml()), blocklyWorkspace); setTimeout(alignBlocklyStarterBlocksRight, 80); setTimeout(alignBlocklyStarterBlocksRight, 300); blocklyReady = true; generateCodeFromBlockly(); } else { $('htmlCode').value=lesson.starter.html; $('cssCode').value=lesson.starter.css; $('jsCode').value=lesson.starter.js; runCode(); } done.clear(); Object.keys(checkMemory).forEach(key => delete checkMemory[key]); codePeekOpened = false; lastGeneratedCodeSelection = null; highestUnlockedExercise = 1; renderProgress(); selectExercise(1); saveLessonState(); }
     function includesAll(text, list){ return (list||[]).every(x => text.includes(x)); }
     function excludesAll(text, list){ return (list||[]).every(x => !text.includes(x)); }
@@ -776,6 +776,15 @@ ${block.replace}`; changed = true; }
         if(block.type !== rule.type) return false;
         const value = block.getFieldValue(rule.field);
         return value !== undefined && String(value).trim() !== String(rule.defaultValue ?? '').trim();
+      }));
+    }
+    function hasBlocklyFieldsContaining(rules){
+      if(!rules?.length) return true;
+      if(!blocklyWorkspace) return false;
+      return rules.every(rule => collectPageBlocks().some(block => {
+        if(block.type !== rule.type) return false;
+        const value = block.getFieldValue(rule.field);
+        return value !== undefined && String(value).includes(String(rule.includes ?? ''));
       }));
     }
     function hasAnyChangedBlocklyField(rules){
@@ -865,6 +874,53 @@ ${block.replace}`; changed = true; }
       if(!ids?.length) return true;
       return previewClicks.some(click => click.exerciseId === activeExercise && click.tag === 'button' && ids.every(id => { const value = String(click.inputValues?.[id] || '').trim(); return value && String(click.resultText || '').includes(value); }));
     }
+    function hasPreviewInputMatchesBlockFields(rules){
+      if(!rules?.length) return true;
+      const blocks = collectPageBlocks();
+      return rules.every(rule => {
+        const block = blocks.find(item => item.type === rule.type);
+        const expected = String(block?.getFieldValue?.(rule.field) || '').trim();
+        if(!expected) return false;
+        return previewClicks.some(click => click.exerciseId === activeExercise && click.tag === 'button' && String(click.inputValues?.[rule.inputId] || '').trim() === expected);
+      });
+    }
+    function hasPreviewInputDiffersFromBlockFields(rules){
+      if(!rules?.length) return true;
+      const blocks = collectPageBlocks();
+      return rules.every(rule => {
+        const block = blocks.find(item => item.type === rule.type);
+        const expected = String(block?.getFieldValue?.(rule.field) || '').trim();
+        if(!expected) return false;
+        return previewClicks.some(click => {
+          const actual = String(click.inputValues?.[rule.inputId] || '').trim();
+          return click.exerciseId === activeExercise && click.tag === 'button' && actual && actual !== expected;
+        });
+      });
+    }
+    function hasPreviewFeedbackClass(className){
+      if(!className) return true;
+      return previewClicks.some(click => click.exerciseId === activeExercise && click.tag === 'button' && String(click.feedbackClass || '').split(/\s+/).includes(className));
+    }
+    function blockFieldNumber(type, field, fallback=0){
+      const block = collectPageBlocks().find(item => item.type === type);
+      const value = block?.getFieldValue?.(field);
+      const number = Number(value ?? fallback);
+      return Number.isFinite(number) ? number : fallback;
+    }
+    function hasPreviewScoreSum(rule){
+      if(!rule) return true;
+      const expected = (rule.terms || []).reduce((sum, term) => sum + blockFieldNumber(term.type, term.field, term.fallback || 0), 0);
+      return previewClicks.some(click => click.exerciseId === activeExercise && click.tag === 'button' && (!rule.clickText || String(click.text || '').includes(rule.clickText)) && Number(String(click.scoreText || '').trim()) === expected);
+    }
+    function hasPreviewScoreFromBlockField(rule){
+      if(!rule) return true;
+      const expected = blockFieldNumber(rule.type, rule.field, rule.fallback || 0);
+      return previewClicks.some(click => click.exerciseId === activeExercise && click.tag === 'button' && (!rule.clickText || String(click.text || '').includes(rule.clickText)) && Number(String(click.scoreText || '').trim()) === expected);
+    }
+    function hasPreviewFeedbackText(text){
+      if(!text) return true;
+      return previewClicks.some(click => click.exerciseId === activeExercise && click.tag === 'button' && String(click.feedbackText || '').includes(text));
+    }
     function hasPreviewResultFromBlockOutput(rules){
       if(!rules?.length) return true;
       const blocks = collectPageBlocks();
@@ -939,11 +995,12 @@ ${block.replace}`; changed = true; }
       if(!hasOrderedBlockTypes(c.orderedBlockTypes)) return c.orderFeedback || `כמעט. רמז: ${ex.hint}`;
       if(!hasNonEmptyBlocklyFields(c.nonEmptyBlocklyFields)) return c.emptyFeedback || 'כמעט. השאירו טקסט בתוך הבלוק — אי אפשר להשלים עם טקסט ריק.';
       if(!hasUnchangedBlocklyFields(c.unchangedBlocklyFields)) return c.unchangedFieldFeedback || 'כמעט. שדה שלא היה צריך להשתנות השתנה. לחצו איפוס/קוד התחלה ונסו שוב.';
-      if(!hasExactBlocklyFields(c.exactBlocklyFields)) return c.exactFieldFeedback || 'כמעט. מצאו את השדה הנכון ושנו אותו לערך המדויק שבתרגול.';
-      if(!hasChangedBlocklyFields(c.changedBlocklyFields)) return c.fieldFeedback || 'כמעט. הבלוק מחובר, עכשיו שנו את הטקסט או הבחירה שבתוכו לפי התרגול.';
+      if(!hasExactBlocklyFields(c.exactBlocklyFields)) return c.exactFieldFeedback || 'כמעט. מצאו את השדה הנכון ושנו אותו לערך המדויק שבתרגיל.';
+      if(!hasChangedBlocklyFields(c.changedBlocklyFields)) return c.fieldFeedback || 'כמעט. הבלוק מחובר, עכשיו שנו את הטקסט או הבחירה שבתוכו לפי התרגיל.';
+      if(!hasBlocklyFieldsContaining(c.blocklyFieldsContaining)) return c.containsFeedback || 'כמעט. חסר סימן או טקסט חשוב בתוך הבלוק.';
       if(!hasAnyChangedBlocklyField(c.anyChangedBlocklyFields)) return c.anyFieldFeedback || 'כמעט. שנו לפחות בחירה או טקסט אחד בתוך בלוק מחובר.';
       if(!hasGeneratedBlockOutputs(c.generatedBlockOutputs)) return c.generatedFeedback || 'כמעט. הבלוק מחובר, אבל הקוד שנוצר ממנו עדיין לא מופיע בתוצאה. שנו ערך בבלוק ונסו שוב.';
-      if(!hasChangedBlocklyFieldsFromBaseline(c.changedBlocklyFieldsFromBaseline)) return c.fieldFeedback || 'כמעט. הבלוק מחובר, עכשיו שנו את הטקסט או הבחירה שבתוכו לפי התרגול.';
+      if(!hasChangedBlocklyFieldsFromBaseline(c.changedBlocklyFieldsFromBaseline)) return c.fieldFeedback || 'כמעט. הבלוק מחובר, עכשיו שנו את הטקסט או הבחירה שבתוכו לפי התרגיל.';
       if(c.requiresCodePeek && !isCodePeekOpen()) return c.codePeekFeedback || 'כמעט. קודם פתחו את ההצצה לקוד שנוצר.';
       if(!hasGeneratedCodeSelection(c.requiresCodeSelectionTab, c.requiresCodeSelectionBlockTypes, c.requiresCodeSelectionTabs)) return c.codeSelectionFeedback || 'כמעט. פתחו את הצצת הקוד, לחצו על בלוק מתאים, וודאו שהשורה המסומנת נמצאת בלשונית הנכונה.';
       if(!hasPreviewButtonClick(c.requiresPreviewButtonClick)) return c.previewClickFeedback || 'כמעט. צריך ללחוץ על הכפתור בתצוגה החיה לפני הבדיקה.';
@@ -954,6 +1011,12 @@ ${block.replace}`; changed = true; }
       if(!hasPreviewCardClass(c.requiresPreviewCardClass)) return c.previewClassFeedback || 'כמעט. לחצו על הכפתור בתצוגה וודאו שמצב הקסם נדלק.';
       if(!hasPreviewFilledInputs(c.requiresPreviewFilledInputs)) return c.previewInputFeedback || 'כמעט. כתבו משהו בשדות שבתצוגה החיה ואז לחצו על הכפתור.';
       if(!hasPreviewResultFromInputs(c.requiresPreviewResultFromInputs)) return c.previewResultFeedback || 'כמעט. לחצו על הכפתור ובדקו שהתוצאה משתמשת במה שהקלדתם.';
+      if(!hasPreviewInputMatchesBlockFields(c.requiresPreviewInputMatchesBlockFields)) return c.previewInputMatchFeedback || 'כמעט. כתבו בתצוגה החיה את אותה תשובה שהגדרתם בבלוק ולחצו על כפתור הבדיקה.';
+      if(!hasPreviewInputDiffersFromBlockFields(c.requiresPreviewInputDiffersFromBlockFields)) return c.previewInputDiffersFeedback || 'כמעט. כתבו בתצוגה החיה תשובה שונה מהתשובה הנכונה שהגדרתם בבלוק.';
+      if(!hasPreviewFeedbackClass(c.requiresPreviewFeedbackClass)) return c.previewFeedbackClassFeedback || 'כמעט. בדקו בתצוגה שהתשובה שכתבתם מתקבלת כמשוב המתאים.';
+      if(!hasPreviewScoreSum(c.requiresPreviewScoreSum)) return c.previewScoreFeedback || 'כמעט. לחצו בתצוגה ובדקו שהניקוד השתנה בדיוק לפי הבלוקים.';
+      if(!hasPreviewScoreFromBlockField(c.requiresPreviewScoreFromBlockField)) return c.previewScoreFeedback || 'כמעט. לחצו בתצוגה ובדקו שהניקוד חזר לערך הנכון.';
+      if(!hasPreviewFeedbackText(c.requiresPreviewFeedbackText)) return c.previewFeedbackTextFeedback || 'כמעט. לחצו בתצוגה ובדקו שהמשוב המתאים מופיע.';
       if(!hasDebugCodeIncludes(c.debugCodeIncludes) || !hasDebugCodeExcludes(c.debugCodeExcludes)) return c.debugCodeFeedback || 'כמעט. תקנו את קוד האתגר לפי ההוראה.';
       if(c.changedAny && !hasChanged(c.changedAny)) return c.changeFeedback || 'כמעט. צריך לבצע שינוי אמיתי בקוד לפני הבדיקה.';
       return `כמעט. רמז: ${ex.hint}`;
@@ -982,7 +1045,7 @@ ${block.replace}`; changed = true; }
     function selectExercise(id){
       if(!canOpenExercise(id)){
         $('feedback').className='feedback bad';
-        $('feedback').textContent='קודם משלימים את התרגול הנוכחי עם בדיקה מוצלחת.';
+        $('feedback').textContent='קודם משלימים את התרגיל הנוכחי עם בדיקה מוצלחת.';
         return;
       }
       activeExercise = id;
@@ -993,12 +1056,12 @@ ${block.replace}`; changed = true; }
       renderCurrentExercise();
       const ex=currentExercise();
       $('feedback').className='feedback';
-      $('feedback').textContent = done.has(ex.id) ? `תרגול ${ex.id} כבר הושלם. אפשר להמשיך או לשדרג.` : `עכשיו עובדים על: ${ex.title}`;
+      $('feedback').textContent = done.has(ex.id) ? `תרגיל ${ex.id} כבר הושלם. אפשר להמשיך או לשדרג.` : `עכשיו עובדים על: ${ex.title}`;
       applyStarterExerciseLocks();
       renderProgress();
       saveLessonState();
     }
-    function checkExercise(){ const ex=currentExercise(); const completedTitle = ex.title; const c=ex.check||{}; const special = c.twoStepFooterMove ? checkFooterMoveExercise(ex, c) : null; const ok = special ? special.ok : includesAll($('htmlCode').value,c.htmlIncludes) && includesAll($('cssCode').value,c.cssIncludes) && excludesAll($('htmlCode').value,c.htmlExcludes) && excludesAll($('cssCode').value,c.cssExcludes) && excludesAll($('jsCode').value,c.jsExcludes) && hasBlockTypes(c.blockTypes) && hasExactBlockTypeCounts(c.exactBlockTypeCounts) && hasOrderedBlockTypes(c.orderedBlockTypes) && hasNonEmptyBlocklyFields(c.nonEmptyBlocklyFields) && hasUnchangedBlocklyFields(c.unchangedBlocklyFields) && hasExactBlocklyFields(c.exactBlocklyFields) && hasChangedBlocklyFields(c.changedBlocklyFields) && hasAnyChangedBlocklyField(c.anyChangedBlocklyFields) && hasGeneratedBlockOutputs(c.generatedBlockOutputs) && hasChangedBlocklyFieldsFromBaseline(c.changedBlocklyFieldsFromBaseline) && (!c.requiresCodePeek || isCodePeekOpen()) && hasGeneratedCodeSelection(c.requiresCodeSelectionTab, c.requiresCodeSelectionBlockTypes, c.requiresCodeSelectionTabs) && hasPreviewButtonClick(c.requiresPreviewButtonClick) && hasPreviewClickText(c.requiresPreviewButtonText) && hasPreviewResultFromBlockOutput(c.requiresPreviewResultFromBlockOutput) && hasPreviewMessageChanged(c.requiresPreviewMessageChangedFrom) && hasPreviewEmojiChanged(c.requiresPreviewEmojiChangedFrom) && hasPreviewCardClass(c.requiresPreviewCardClass) && hasPreviewFilledInputs(c.requiresPreviewFilledInputs) && hasPreviewResultFromInputs(c.requiresPreviewResultFromInputs) && hasDebugCodeIncludes(c.debugCodeIncludes) && hasDebugCodeExcludes(c.debugCodeExcludes) && includesAll($('jsCode').value,c.jsIncludes) && (!c.changedAny || hasChanged(c.changedAny)); if(ok){ done.add(ex.id); highestUnlockedExercise = Math.max(highestUnlockedExercise, Math.min(lesson.exercises.length, ex.id + 1)); renderCurrentExercise(); $('feedback').className='feedback good'; $('feedback').textContent= ex.id < lesson.exercises.length ? `מעולה ✅ ${completedTitle} הושלם. כפתור המשך נפתח.` : `מעולה ✅ סיימת את כל התרגולים בשיעור הזה.`; } else { $('feedback').className='feedback bad'; $('feedback').textContent=special?.message || exerciseFailureMessage(ex, c); } renderProgress(); saveLessonState(); }
+    function checkExercise(){ const ex=currentExercise(); const completedTitle = ex.title; const c=ex.check||{}; const special = c.twoStepFooterMove ? checkFooterMoveExercise(ex, c) : null; const ok = special ? special.ok : includesAll($('htmlCode').value,c.htmlIncludes) && includesAll($('cssCode').value,c.cssIncludes) && excludesAll($('htmlCode').value,c.htmlExcludes) && excludesAll($('cssCode').value,c.cssExcludes) && excludesAll($('jsCode').value,c.jsExcludes) && hasBlockTypes(c.blockTypes) && hasExactBlockTypeCounts(c.exactBlockTypeCounts) && hasOrderedBlockTypes(c.orderedBlockTypes) && hasNonEmptyBlocklyFields(c.nonEmptyBlocklyFields) && hasUnchangedBlocklyFields(c.unchangedBlocklyFields) && hasExactBlocklyFields(c.exactBlocklyFields) && hasChangedBlocklyFields(c.changedBlocklyFields) && hasBlocklyFieldsContaining(c.blocklyFieldsContaining) && hasAnyChangedBlocklyField(c.anyChangedBlocklyFields) && hasGeneratedBlockOutputs(c.generatedBlockOutputs) && hasChangedBlocklyFieldsFromBaseline(c.changedBlocklyFieldsFromBaseline) && (!c.requiresCodePeek || isCodePeekOpen()) && hasGeneratedCodeSelection(c.requiresCodeSelectionTab, c.requiresCodeSelectionBlockTypes, c.requiresCodeSelectionTabs) && hasPreviewButtonClick(c.requiresPreviewButtonClick) && hasPreviewClickText(c.requiresPreviewButtonText) && hasPreviewResultFromBlockOutput(c.requiresPreviewResultFromBlockOutput) && hasPreviewMessageChanged(c.requiresPreviewMessageChangedFrom) && hasPreviewEmojiChanged(c.requiresPreviewEmojiChangedFrom) && hasPreviewCardClass(c.requiresPreviewCardClass) && hasPreviewFilledInputs(c.requiresPreviewFilledInputs) && hasPreviewResultFromInputs(c.requiresPreviewResultFromInputs) && hasPreviewInputMatchesBlockFields(c.requiresPreviewInputMatchesBlockFields) && hasPreviewInputDiffersFromBlockFields(c.requiresPreviewInputDiffersFromBlockFields) && hasPreviewFeedbackClass(c.requiresPreviewFeedbackClass) && hasPreviewScoreSum(c.requiresPreviewScoreSum) && hasPreviewScoreFromBlockField(c.requiresPreviewScoreFromBlockField) && hasPreviewFeedbackText(c.requiresPreviewFeedbackText) && hasDebugCodeIncludes(c.debugCodeIncludes) && hasDebugCodeExcludes(c.debugCodeExcludes) && includesAll($('jsCode').value,c.jsIncludes) && (!c.changedAny || hasChanged(c.changedAny)); if(ok){ done.add(ex.id); highestUnlockedExercise = Math.max(highestUnlockedExercise, Math.min(lesson.exercises.length, ex.id + 1)); renderCurrentExercise(); $('feedback').className='feedback good'; $('feedback').textContent= ex.id < lesson.exercises.length ? `מעולה ✅ ${completedTitle} הושלם. כפתור המשך נפתח.` : `מעולה ✅ סיימת את כל התרגילים בשיעור הזה.`; } else { $('feedback').className='feedback bad'; $('feedback').textContent=special?.message || exerciseFailureMessage(ex, c); } renderProgress(); saveLessonState(); }
     function renderProgress(){ $('progress').textContent = `${done.size}/${lesson.exercises.length} הושלמו`; }
     init();
   </script>
