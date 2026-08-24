@@ -72,10 +72,10 @@ test('Tello EDU lesson 2 adapts the Box Mission plan for grade 5 navigation and 
   assert.ok(lesson.instructorSlides.some(slide => slide.title.includes('Yaw Box')));
 });
 
-test('Tello EDU pages are linked from catalog and expose student learning shell', () => {
-  assertIncludes(homepageHtml, 'Tello EDU — ניווט ובקרה');
-  assertIncludes(homepageHtml, 'href="tello-edu-grade5.html"');
-  assertIncludes(homepageHtml, 'href="tello-edu-grade5-play.html?lesson=1"');
+test('Tello EDU pages exist but are hidden from the main platform homepage', () => {
+  assert.ok(!homepageHtml.includes('Tello EDU — ניווט ובקרה'), 'Tello EDU should not appear as a main homepage card');
+  assert.ok(!homepageHtml.includes('href="tello-edu-grade5.html"'), 'Tello EDU course should not be linked from the main homepage');
+  assert.ok(!homepageHtml.includes('href="tello-edu-grade5-play.html?lesson=1"'), 'Tello EDU lesson should not be linked from the main homepage');
   assertIncludes(courseHtml, 'Tello EDU — ניווט ובקרה');
   assertIncludes(courseHtml, 'js/tello-edu-grade5-lessons.js');
   assertIncludes(courseHtml, 'tello-edu-grade5-slides.html?lesson=1');

@@ -56,10 +56,10 @@ test('Mission Lab lesson 2 adapts the greenhouse Box Mission as a grade 6 resear
   assert.ok(lesson.debuggingGuide.some(([issue]) => issue.includes('שמירה')));
 });
 
-test('Mission Lab pages are linked and use Blockly connected blocks with simulator UI', () => {
-  assertIncludes(homepageHtml, 'Tello Mission Lab — משימות חקר');
-  assertIncludes(homepageHtml, 'href="tello-mission-lab.html"');
-  assertIncludes(homepageHtml, 'href="tello-mission-lab-play.html?lesson=1"');
+test('Mission Lab pages exist but are hidden from the main platform homepage', () => {
+  assert.ok(!homepageHtml.includes('Tello Mission Lab — משימות חקר'), 'Tello Mission Lab should not appear as a main homepage card');
+  assert.ok(!homepageHtml.includes('href="tello-mission-lab.html"'), 'Tello Mission Lab course should not be linked from the main homepage');
+  assert.ok(!homepageHtml.includes('href="tello-mission-lab-play.html?lesson=1"'), 'Tello Mission Lab lesson should not be linked from the main homepage');
   assertIncludes(courseHtml, 'Tello Mission Lab — משימות חקר');
   assertIncludes(courseHtml, 'js/tello-mission-lab-lessons.js');
   assertIncludes(playHtml, 'Blockly.inject');

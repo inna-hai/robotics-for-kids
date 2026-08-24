@@ -69,7 +69,7 @@ assert.ok(improvement.includes('/api/feedback'), 'improvement page posts feedbac
 assert.ok(improvement.includes('מפגש 15 - Mission Impossible Expo'), 'improvement page can target lesson 15');
 
 const index = read('index.html');
-assert.ok(index.includes('mission-impossible-lab.html'), 'home page links mission lab course');
-assert.ok(index.includes('Mission Impossible Lab'), 'home page labels mission lab course');
+assert.ok(!index.includes('mission-impossible-lab.html'), 'home page should not link mission lab course on main');
+assert.ok(!index.includes('Mission Impossible Lab'), 'home page should not label mission lab course on main');
 
 console.log('mission-impossible-lab-course tests passed');
