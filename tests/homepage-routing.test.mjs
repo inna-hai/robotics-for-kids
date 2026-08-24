@@ -55,7 +55,9 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertNotIncludes(homepageHtml, 'href="codequest.html"', 'CodeQuest should be hidden from the main homepage');
   assertNotIncludes(homepageHtml, 'href="codequest-play.html"', 'CodeQuest practice should be hidden from the main homepage');
   assertNotIncludes(homepageHtml, 'CodeQuest', 'CodeQuest should not appear as a main homepage card');
-  assertIncludes(homepageHtml, 'href="gamelab.html"');
+  assertNotIncludes(homepageHtml, 'href="gamelab.html"', 'PlayCode Lab should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'href="gamelab-play.html"', 'PlayCode Lab practice should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'PlayCode Lab', 'PlayCode Lab should not appear as a main homepage card');
   assertNotIncludes(homepageHtml, 'href="appforge.html"', 'WebMakers Lab should be hidden from the main homepage');
   assertNotIncludes(homepageHtml, 'href="appforge-play.html"', 'WebMakers Lab practice should be hidden from the main homepage');
   assertNotIncludes(homepageHtml, 'WebMakers', 'WebMakers Lab should not appear as a main homepage card or CTA');
