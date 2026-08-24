@@ -31,8 +31,10 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertNotIncludes(homepageHtml, 'רצף התקדמות', 'Progression sequence section should be hidden from the main homepage');
   assertNotIncludes(homepageHtml, '<h2>התחלה מהירה</h2>', 'Quick start section should be hidden from the main homepage');
   assertNotIncludes(homepageHtml, 'class="quick"', 'Quick start cards should be hidden from the main homepage');
-  assertIncludes(homepageHtml, 'href="sensi-classic.html?lesson=1"');
-  assertIncludes(homepageHtml, 'href="sensi-classic-slides/index.html"');
+  assertNotIncludes(homepageHtml, 'href="sensi-classic.html?lesson=1"', 'Sensi classic should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'href="sensi-classic-slides/index.html"', 'Sensi classic slides should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'סנסי קלאסי', 'Sensi classic should not appear as a main homepage card');
+  assertNotIncludes(homepageHtml, 'רובוטיקה קלאסית', 'Sensi classic tag should not appear on the main homepage');
   assertIncludes(homepageHtml, 'href="sensi-city.html?lesson=1"');
   assertIncludes(homepageHtml, 'סנסי בעיר החכמה');
   assertIncludes(homepageHtml, 'href="smart-city.html"');
