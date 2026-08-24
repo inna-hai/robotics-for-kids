@@ -202,7 +202,7 @@ assert.ok(lesson6.exercises.every(ex => !ex.check.requiresPreviewScoreSum && !ex
 const lesson7 = lessons[6];
 const lesson7WinTextBlock = lesson7.blocklyBlocks.find(block => block.type === 'lesson_7_win_text');
 assert.ok(lesson7.title.includes('קליקים'), 'lesson 7 focuses on the first click game');
-assert.equal(lesson7WinTextBlock.find, 'ניצחת! הגעת ליעד 🎉', 'lesson 7 win-message block finds the actual starter win text');
+assert.equal(lesson7WinTextBlock.find, 'המפלצת שבעה! חגיגת עוגיות 🎉', 'lesson 7 win-message block finds the actual starter win text');
 assert.ok(lesson7.starter.js.includes(lesson7WinTextBlock.find), 'lesson 7 starter contains the text changed by the win-message block');
 
 const lesson8 = lessons[7];
@@ -220,6 +220,38 @@ for (const lesson of lessons.slice(3, 15)) {
     assert.ok(finds.some(find => find && targetSource.includes(find)), `lesson ${lesson.id} block ${block.type} finds real starter ${block.target || 'html'} text`);
   }
 }
+
+const lesson9 = lessons[8];
+assert.equal(lesson9.durationMinutes, 90, 'lesson 9 is framed as 90 minutes');
+assert.ok(lesson9.title.includes('מכשולים'), 'lesson 9 focuses on obstacles');
+assert.ok(lesson9.starter.js.includes('let lives = 3'), 'lesson 9 initializes lives');
+assert.ok(lesson9.starter.js.includes('lives <= 0'), 'lesson 9 checks game over');
+assert.ok(lesson9.exercises.length >= 8, 'lesson 9 includes many exercises');
+assert.ok(lesson9.vocabulary.some(v => v[0] === 'lives'), 'lesson 9 vocabulary includes lives');
+
+const lesson10 = lessons[9];
+assert.equal(lesson10.durationMinutes, 90, 'lesson 10 is framed as 90 minutes');
+assert.ok(lesson10.title.includes('כוח מיוחד'), 'lesson 10 focuses on special power');
+assert.ok(lesson10.starter.js.includes('let powerReady = true'), 'lesson 10 initializes power state');
+assert.ok(lesson10.starter.js.includes('if (powerReady)'), 'lesson 10 checks power availability');
+assert.ok(lesson10.exercises.length >= 8, 'lesson 10 includes many exercises');
+assert.ok(lesson10.vocabulary.some(v => v[0] === 'powerReady'), 'lesson 10 vocabulary includes powerReady');
+
+const lesson11 = lessons[10];
+assert.equal(lesson11.durationMinutes, 90, 'lesson 11 is framed as 90 minutes');
+assert.ok(lesson11.title.includes('הרפתקה') && lesson11.concept.includes('מסכים'), 'lesson 11 focuses on adventure screens');
+assert.ok(lesson11.starter.js.includes('function showScreen'), 'lesson 11 includes screen switching');
+assert.ok(lesson11.starter.html.includes('id="startScreen"'), 'lesson 11 has start screen');
+assert.ok(lesson11.exercises.length >= 8, 'lesson 11 includes many exercises');
+assert.ok(lesson11.vocabulary.some(v => v[0] === 'screen'), 'lesson 11 vocabulary includes screen');
+
+const lesson12 = lessons[11];
+assert.equal(lesson12.durationMinutes, 90, 'lesson 12 is framed as 90 minutes');
+assert.ok(lesson12.title.includes('מיני־פרויקט'), 'lesson 12 is a mini project');
+assert.ok(lesson12.starter.js.includes('function updateScreen'), 'lesson 12 consolidates screen updates');
+assert.ok(lesson12.starter.js.includes('const target = 5'), 'lesson 12 has project target');
+assert.ok(lesson12.exercises.length >= 8, 'lesson 12 includes many exercises');
+assert.ok(lesson12.vocabulary.some(v => v[0] === 'project'), 'lesson 12 vocabulary includes project');
 
 const lesson13 = lessons[12];
 assert.ok(lesson13.title.includes('הקוד שנוצר'), 'lesson 13 starts the generated-code lab phase');
