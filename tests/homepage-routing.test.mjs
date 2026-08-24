@@ -29,6 +29,8 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertNotIncludes(homepageHtml, 'href="#roadmap"', 'Progression sequence link should be hidden from the main homepage');
   assertNotIncludes(homepageHtml, 'רצף גילאים', 'Progression sequence nav label should be hidden from the main homepage');
   assertNotIncludes(homepageHtml, 'רצף התקדמות', 'Progression sequence section should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, '<h2>התחלה מהירה</h2>', 'Quick start section should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'class="quick"', 'Quick start cards should be hidden from the main homepage');
   assertIncludes(homepageHtml, 'href="sensi-classic.html?lesson=1"');
   assertIncludes(homepageHtml, 'href="sensi-classic-slides/index.html"');
   assertNotIncludes(homepageHtml, 'href="pygame.html"', 'Pygame should be hidden from the main homepage');
