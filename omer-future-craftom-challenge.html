@@ -17,10 +17,10 @@
     .challenge-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
     .challenge-nav a{display:inline-flex;text-decoration:none;border:1px solid #bdd8f4;background:#fff;color:var(--blue);border-radius:999px;padding:8px 12px;font-weight:900}
     .challenge-nav a.active{background:var(--blue);color:white}
-    .video-section{margin-top:16px}
-    .video-card{overflow:hidden}
-    .challenge-video{display:block;width:100%;aspect-ratio:16/9;border:0;border-radius:16px;background:#111;box-shadow:0 12px 28px rgba(20,50,80,.16)}
-    .video-card .tag{margin-bottom:10px}
+    .hero-video{overflow:hidden}
+    .hero-video .tag{margin:0 0 10px}
+    .challenge-video{display:block;width:100%;aspect-ratio:16/9;border:0;border-radius:16px 16px 0 0;background:#111}
+    .video-caption{margin:0;padding:12px 14px;color:var(--muted);font-weight:800;line-height:1.6;background:#fff}
   </style>
 </head>
 <body>
@@ -34,19 +34,11 @@
         <p class="goal" id="goal"></p>
         <div class="actions" id="actions"></div>
       </div>
-      <figure class="minecraft-shot">
-        <img id="heroImage" src="assets/craftom/omer-future/wonder-building.webp" alt="תמונת Minecraft לאתגר עומר העתידנית">
-        <figcaption class="shot-caption" id="caption"></figcaption>
-      </figure>
-    </section>
-
-    <section class="steps video-section">
-      <article class="card video-card">
+      <figure class="minecraft-shot hero-video">
         <span class="tag">סרטון פתיחת אתגר</span>
-        <h2 id="videoTitle"></h2>
-        <video id="challengeVideo" class="challenge-video" controls preload="metadata" playsinline></video>
-        <p class="muted">אפשר לפתוח את האתגר עם הסרטון ואז לעבור לבנייה בחלקה.</p>
-      </article>
+        <video id="challengeVideo" class="challenge-video" controls preload="metadata" playsinline poster="assets/craftom/omer-future/wonder-building.webp" aria-label="סרטון פתיחת אתגר עומר"></video>
+        <figcaption class="video-caption" id="caption"></figcaption>
+      </figure>
     </section>
 
     <section class="grid-4" id="meetingCards"></section>
@@ -92,12 +84,11 @@
     document.getElementById('kicker').textContent = `אתגר ${lesson.id} מתוך ${program.totalChallenges} • ${lesson.challengeDuration} • ${lesson.meetingDuration} • ${lesson.grade}`;
     document.getElementById('title').textContent = lesson.title;
     document.getElementById('goal').textContent = lesson.story;
-    document.getElementById('heroImage').src = lesson.image;
-    document.getElementById('heroImage').alt = `תמונת Minecraft לאתגר ${lesson.id}: ${lesson.title}`;
     document.getElementById('caption').textContent = lesson.minecraftBuild;
-    document.getElementById('videoTitle').textContent = `צפו לפני שמתחילים: אתגר ${lesson.id} - ${lesson.title}`;
-    document.getElementById('challengeVideo').src = lesson.video;
-    document.getElementById('challengeVideo').poster = lesson.image;
+    const challengeVideo = document.getElementById('challengeVideo');
+    challengeVideo.src = lesson.video;
+    challengeVideo.poster = lesson.image;
+    challengeVideo.setAttribute('aria-label', `סרטון פתיחת אתגר ${lesson.id}: ${lesson.title}`);
     document.getElementById('actions').innerHTML = `
       <a class="btn" href="omer-future-craftom-students.html?lesson=${lesson.id}">דף תלמידים</a>
       <a class="btn secondary" href="omer-future-craftom-slides.html?lesson=${lesson.id}">מצגת מדריך</a>
