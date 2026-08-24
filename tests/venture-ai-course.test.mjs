@@ -61,9 +61,9 @@ assert.ok(improvement.includes('מפגש 4 - דמו ופיץ׳'), 'improvement p
 assert.ok(improvement.includes('buildMessage'), 'improvement page builds structured request');
 
 const index = read('index.html');
-assert.ok(index.includes('venture-ai.html'), 'home page links venture AI course');
-assert.ok(index.includes('venture-ai-students.html?lesson=1'), 'home page links student worksheet');
-assert.ok(index.includes('venture-ai-improvement.html'), 'home page links improvement form');
-assert.ok(index.includes('יזמות AI'), 'home page labels venture AI course');
+assert.ok(!index.includes('venture-ai.html'), 'home page hides guided venture AI course');
+assert.ok(!index.includes('venture-ai-students.html?lesson=1'), 'home page hides venture AI student worksheet');
+assert.ok(!index.includes('venture-ai-improvement.html'), 'home page hides venture AI improvement form');
+assert.ok(!index.includes('יזמות AI'), 'home page hides venture AI label');
 
 console.log('venture-ai-course tests passed');

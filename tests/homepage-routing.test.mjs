@@ -41,6 +41,11 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertNotIncludes(homepageHtml, 'href="roblox.html"', 'Roblox should be hidden from the main homepage');
   assertNotIncludes(homepageHtml, 'href="roblox-course.html"', 'Roblox course page should be hidden from the main homepage');
   assertNotIncludes(homepageHtml, 'Roblox', 'Roblox should not appear as a main homepage card');
+  assertNotIncludes(homepageHtml, 'href="venture-ai.html"', 'Venture AI should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'href="venture-ai-students.html?lesson=1"', 'Venture AI worksheet should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'href="venture-ai-improvement.html"', 'Venture AI improvement form should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'מרעיון למיזם עם AI', 'Guided Venture AI course should not appear as a self-learning homepage card');
+  assertNotIncludes(homepageHtml, 'יזמות AI', 'Guided Venture AI tag should not appear on the main homepage');
   assertIncludes(homepageHtml, 'href="python-turtle.html"');
   assertIncludes(homepageHtml, 'href="sisi.html"');
   assertIncludes(homepageHtml, 'סדרת סיסי לכיתות ב׳');
@@ -98,7 +103,7 @@ test('classic Sensi support pages are isolated from the 15-lesson course', () =>
 
 test('homepage local html links point to existing files', () => {
   const hrefs = [...homepageHtml.matchAll(/href="([^"]+\.html(?:\?[^\"]*)?)"/g)].map((match) => match[1]);
-  assert.ok(hrefs.length >= 16, 'Homepage should expose a useful course catalog');
+  assert.ok(hrefs.length >= 13, 'Homepage should expose a useful self-learning course catalog');
   for (const href of hrefs) {
     const clean = href.replace(/^\.\//, '').split('?')[0].split('#')[0];
     assert.ok(existsSync(join(root, clean)), `Missing homepage target: ${href}`);
