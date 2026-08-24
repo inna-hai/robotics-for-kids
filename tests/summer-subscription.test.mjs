@@ -120,6 +120,8 @@ test('summer auth client and server expose account endpoints and protected pages
   assertIncludes(faviconSvg, 'hai.tech robotics favicon');
   assertIncludes(serverJs, 'better-sqlite3');
   assertIncludes(serverJs, 'SUMMER_DB_FILE');
+  assertIncludes(serverJs, 'ROBOTICS_SUBSCRIPTION_GATE');
+  assertIncludes(serverJs, 'PORT === 3006');
   assertIncludes(serverJs, 'summer_users');
   assertIncludes(serverJs, 'summer_sessions');
   assertIncludes(serverJs, 'summer_subscription_events');

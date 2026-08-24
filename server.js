@@ -14,6 +14,9 @@ const ADMIN_TOKEN_FILE = path.join(DATA_DIR, 'admin-token.txt');
 const SUMMER_USERS_FILE = path.join(DATA_DIR, 'summer-users.json');
 const SUMMER_DB_FILE = path.join(DATA_DIR, 'summer-subscriptions.sqlite');
 const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 30;
+const SUBSCRIPTION_GATE_ENABLED = process.env.ROBOTICS_SUBSCRIPTION_GATE
+  ? process.env.ROBOTICS_SUBSCRIPTION_GATE === '1'
+  : PORT === 3006;
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -39,6 +42,12 @@ function send(res, status, body, type = 'application/json; charset=utf-8') {
   res.end(body);
 }
 
+function requestUrl(req) {
+  const raw = String(req.url || '/');
+  const normalized = raw.startsWith('//') ? `/${raw.replace(/^\/+/, '')}` : raw;
+  return new URL(normalized || '/', `http://${req.headers.host || 'localhost'}`);
+}
+
 function sendWithHeaders(res, status, body, type = 'application/json; charset=utf-8', extraHeaders = {}) {
   res.writeHead(status, {
     'Content-Type': type,
@@ -47,6 +56,25 @@ function sendWithHeaders(res, status, body, type = 'application/json; charset=ut
     ...extraHeaders,
   });
   res.end(body);
+}
+
+function parseByteRange(rangeHeader, size) {
+  const match = /^bytes=(\d*)-(\d*)$/.exec(String(rangeHeader || '').trim());
+  if (!match) return null;
+  let start;
+  let end;
+  if (match[1] === '' && match[2] === '') return null;
+  if (match[1] === '') {
+    const suffixLength = Number(match[2]);
+    if (!Number.isInteger(suffixLength) || suffixLength <= 0) return null;
+    start = Math.max(size - suffixLength, 0);
+    end = size - 1;
+  } else {
+    start = Number(match[1]);
+    end = match[2] === '' ? size - 1 : Number(match[2]);
+  }
+  if (!Number.isInteger(start) || !Number.isInteger(end) || start < 0 || end < start || start >= size) return null;
+  return { start, end: Math.min(end, size - 1) };
 }
 
 function ensureAdminToken() {
@@ -60,7 +88,7 @@ function ensureAdminToken() {
 }
 
 function isAuthorized(req) {
-  const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  const url = requestUrl(req);
   const header = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '').trim();
   const token = header || url.searchParams.get('token') || req.headers['x-admin-token'];
   if (!token) return false;
@@ -976,7 +1004,7 @@ async function handleFeedback(req, res) {
 
 async function handleAdminFeedback(req, res) {
   if (!requireAdmin(req, res)) return;
-  const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  const url = requestUrl(req);
   const parts = url.pathname.split('/').filter(Boolean);
   const id = parts[3];
   const action = parts[4];
@@ -1046,6 +1074,11 @@ const PUBLIC_HTML_PATHS = new Set([
   '/sisi.html',
   '/lumi.html',
   '/lumi-play.html',
+  '/omer-future-craftom.html',
+  '/omer-future-craftom-challenge.html',
+  '/omer-future-craftom-students.html',
+  '/omer-future-craftom-slides.html',
+  '/omer-future-craftom-improvement.html',
 ]);
 
 const FREE_SISI_HTML_PATHS = new Set([
@@ -1204,7 +1237,7 @@ function proxyEnglishBuddy(req, res) {
 }
 
 function serveStatic(req, res) {
-  const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  const url = requestUrl(req);
   let pathname = decodeURIComponent(url.pathname);
   if (pathname === '/') pathname = '/index.html';
   if (pathname === '/thankyou') pathname = '/thankyou.html';
@@ -1213,17 +1246,17 @@ function serveStatic(req, res) {
   if (filePath === DATA_DIR || filePath.startsWith(DATA_DIR + path.sep)) return send(res, 403, 'Forbidden', 'text/plain; charset=utf-8');
   const ext = path.extname(filePath).toLowerCase();
 
-  const profile = getSummerProfileFromRequest(req);
+  const profile = SUBSCRIPTION_GATE_ENABLED ? getSummerProfileFromRequest(req) : null;
 
-  if (ext === '.html' && isFreeTrialLearningHtml(pathname, url) && !profile) {
+  if (SUBSCRIPTION_GATE_ENABLED && ext === '.html' && isFreeTrialLearningHtml(pathname, url) && !profile) {
     return send(res, 401, lockedPage(pathname, null, { trialOnly: true }), 'text/html; charset=utf-8');
   }
 
-  if (ext === '.html' && isFreeTrialLearningHtml(pathname, url) && profile && profileAccessList(profile).some(item => item.startsWith('restrict:')) && !isPaidProfile(profile, pathname)) {
+  if (SUBSCRIPTION_GATE_ENABLED && ext === '.html' && isFreeTrialLearningHtml(pathname, url) && profile && profileAccessList(profile).some(item => item.startsWith('restrict:')) && !isPaidProfile(profile, pathname)) {
     return send(res, 402, lockedPage(pathname, profile && profile.user), 'text/html; charset=utf-8');
   }
 
-  if (requiresPaidAccess(pathname, ext, url)) {
+  if (SUBSCRIPTION_GATE_ENABLED && requiresPaidAccess(pathname, ext, url)) {
     if (!isPaidProfile(profile, pathname)) {
       return send(res, 402, lockedPage(pathname, profile && profile.user), 'text/html; charset=utf-8');
     }
@@ -1234,12 +1267,38 @@ function serveStatic(req, res) {
     if (ext === '.html') {
       fs.readFile(filePath, 'utf8', (readErr, html) => {
         if (readErr) return send(res, 500, 'Server error', 'text/plain; charset=utf-8');
-        send(res, 200, injectUserBadge(html), 'text/html; charset=utf-8');
+        const output = SUBSCRIPTION_GATE_ENABLED ? injectUserBadge(html) : injectHeadAssets(html);
+        send(res, 200, output, 'text/html; charset=utf-8');
       });
       return;
     }
+    const type = MIME[ext] || 'application/octet-stream';
+    const range = parseByteRange(req.headers.range, stat.size);
+    if (req.headers.range && !range) {
+      res.writeHead(416, {
+        'Content-Range': `bytes */${stat.size}`,
+        'Cache-Control': 'no-store',
+        'X-Content-Type-Options': 'nosniff',
+      });
+      res.end();
+      return;
+    }
+    if (range) {
+      res.writeHead(206, {
+        'Content-Type': type,
+        'Content-Length': range.end - range.start + 1,
+        'Content-Range': `bytes ${range.start}-${range.end}/${stat.size}`,
+        'Accept-Ranges': 'bytes',
+        'Cache-Control': 'public, max-age=300',
+        'X-Content-Type-Options': 'nosniff',
+      });
+      fs.createReadStream(filePath, range).pipe(res);
+      return;
+    }
     res.writeHead(200, {
-      'Content-Type': MIME[ext] || 'application/octet-stream',
+      'Content-Type': type,
+      'Content-Length': stat.size,
+      'Accept-Ranges': 'bytes',
       'Cache-Control': 'public, max-age=300',
       'X-Content-Type-Options': 'nosniff',
     });

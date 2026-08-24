@@ -1,0 +1,154 @@
+{
+  "id": "omer-future-challenge-1-wonder-building",
+  "title": "אתגר 1: בניין הפלא של עומר",
+  "audience": "כיתה ד׳, בני 9",
+  "minecraftMode": "Minecraft Education + Craftom",
+  "challengeStructure": {
+    "challengeNumber": 1,
+    "estimatedMeetings": 4,
+    "theme": "מבנה מיוחד שמספר מה חשוב בעומר העתידנית",
+    "learningFocus": [
+      "בחירת צורך של ילדים ביישוב",
+      "בניית מבנה ברור ושימושי",
+      "חזית, כניסה וחדר פנימי",
+      "שלטים קצרים שמסבירים שימוש"
+    ],
+    "sameForAllTeams": true,
+    "teamWorkModel": "כל הצוותים עושים את אותו רצף שיעורים; כל צוות בונה בחלקה שלו.",
+    "childWorldPrompt": "דמיינו שיש בעומר העתידנית בניין מיוחד רק לילדים: מקום להמציא, לשחק, לנוח, ללמוד או להיפגש. איך הוא נראה מבחוץ ומה מגלים כשנכנסים פנימה?"
+  },
+  "studentDeliverable": {
+    "requiredBuild": [
+      "מבנה מיוחד שאפשר להיכנס אליו",
+      "חזית ברורה עם דלת/פתח, חלונות או צורה בולטת",
+      "שלט שם שמסביר מה המקום",
+      "חדר פנימי או אזור שימוש אחד",
+      "פרט הפתעה יצירתי שילדים יאהבו"
+    ],
+    "requiredThinking": [
+      "הצוות יודע להסביר איזה צורך של ילדים המבנה פותר",
+      "הצוות מציין לפחות שלושה דברים שחייבים להיות במבנה",
+      "ילד שנכנס למבנה מבין מה עושים שם בלי הסבר ארוך"
+    ],
+    "meetingDeliverables": [
+      {
+        "meeting": "1.1",
+        "title": "בוחרים בניין מיוחד לעומר",
+        "deliverable": "שם למבנה, שלט ראשון ו־3 דברים שחייבים להיות בו"
+      },
+      {
+        "meeting": "1.2",
+        "title": "בונים חזית וכניסה מגניבה",
+        "deliverable": "מבנה שאפשר להיכנס אליו ושלט שם ברור"
+      },
+      {
+        "meeting": "1.3",
+        "title": "מוסיפים חדר שימוש והפתעה",
+        "deliverable": "חדר פנימי ופרט הפתעה אחד שילדים יאהבו"
+      },
+      {
+        "meeting": "1.4",
+        "title": "בדיקת שימוש ושיפור",
+        "deliverable": "שיפור אחד, שלט הסבר קצר וצילום/סיכום של המבנה"
+      }
+    ]
+  },
+  "craftomEvidence": {
+    "buildEvidence": [
+      {
+        "id": "specialBuilding",
+        "label": "מבנה מיוחד לילדים",
+        "eventTypes": [
+          "block_place",
+          "sign_text",
+          "chat"
+        ],
+        "keywordsAny": [
+          "בניין",
+          "בית",
+          "מרכז",
+          "מועדון",
+          "מעבדה",
+          "ספרייה"
+        ]
+      },
+      {
+        "id": "buildingSign",
+        "label": "שלט שם והסבר",
+        "eventTypes": [
+          "sign_text",
+          "chat"
+        ],
+        "keywordsAny": [
+          "עומר",
+          "עתיד",
+          "ילדים",
+          "כיף",
+          "מקום",
+          "מיוחד"
+        ]
+      },
+      {
+        "id": "insideRoom",
+        "label": "חדר פנימי או אזור שימוש",
+        "eventTypes": [
+          "block_place",
+          "sign_text",
+          "chat"
+        ],
+        "keywordsAny": [
+          "חדר",
+          "משחק",
+          "יצירה",
+          "המצאות",
+          "ספורט",
+          "מפגש"
+        ]
+      }
+    ],
+    "thinkingEvidence": [
+      {
+        "id": "childrenNeeds",
+        "label": "צורך של ילדים ביישוב",
+        "eventTypes": [
+          "chat",
+          "sign_text",
+          "reflection"
+        ],
+        "keywordsAny": [
+          "ילדים",
+          "בטוח",
+          "משחק",
+          "ללמוד",
+          "צל",
+          "חברים"
+        ]
+      }
+    ]
+  },
+  "teacherReport": {
+    "scoreBands": [
+      {
+        "id": "notStarted",
+        "label": "לא התחיל",
+        "condition": "אין ראיות למבנה, שלט או חדר פנימי"
+      },
+      {
+        "id": "builtStructure",
+        "label": "בנה מבנה",
+        "condition": "יש מבנה שאפשר להיכנס אליו"
+      },
+      {
+        "id": "explainedUse",
+        "label": "הסביר שימוש",
+        "condition": "יש שלט שם או הסבר למה המבנה נועד"
+      },
+      {
+        "id": "kidReady",
+        "label": "מוכן לילדים",
+        "condition": "ילד שנכנס מבין מה עושים במבנה ויש פרט יצירתי אחד"
+      }
+    ],
+    "summaryTemplate": "{studentName} השתתף/ה באתגר בניין הפלא. מבנה: {buildingSummary}. שימוש לילדים: {useSummary}. הצעד הבא: {nextStep}."
+  }
+}
