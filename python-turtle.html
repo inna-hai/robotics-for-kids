@@ -1399,13 +1399,12 @@
         "practice": [
             "קבעו אורך ל־70 ואז השתמשו ב״זוז קדימה לפי האורך״.",
             "בנו ריבוע שמשתמש באורך במקום במספר רגיל בצלעות.",
-            "בחרו את בלוק ״קבע אורך״ וודאו ששורת length = נדלקת בקוד.",
-            "שנו את האורך ל־120 והריצו שוב כדי לראות שהריבוע גדל.",
+            "בחרו את בלוק ״קבע אורך״, ראו את שורת length = בקוד, ואז שנו את האורך ל־120 כדי לראות שהריבוע גדל.",
             "בנו ריבוע קטן ואחריו ריבוע גדול בעזרת שני ערכי אורך שונים.",
             "הגדילו את האורך במהלך הציור כדי שכל צעד יהיה גדול יותר מהקודם.",
-            "צרו וריאציה עם צבע אחר, אבל עדיין השתמשו ב־length לציור.",
-            "אתגר: בנו מדרגות שהולכות וגדלות בעזרת הגדלת אורך.",
-            "אתגר מתקדם: בנו ציור שמשתמש במשתנה length לפחות פעמיים בצורה חכמה."
+            "בנו מדרגות שהולכות וגדלות בעזרת length ובלוק ״הגדל אורך״.",
+            "אתגר: בנו דפוס חופשי שהולך וגדל בעזרת הגדלת אורך.",
+            "בסוף השיעור: כתבו Python קצר שמשתמש ב־length, ב־forward(length), ובהגדלת length."
         ],
         "timing": [
             "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
@@ -1502,66 +1501,57 @@
             },
             {
                 "id": 3,
-                "minutes": "36–41",
-                "title": "תרגול 3 — בוחרים בלוק ורואים קוד",
-                "prompt": "בחרו את בלוק ״קבע אורך״ וודאו ששורת length = נדלקת בקוד.",
-                "hint": "לא מספיק שהבלוק קיים. לחצו על הבלוק הנכון עד שהשורה המתאימה בקוד מודגשת.",
-                "check": "כפתור המשך נפתח רק אחרי ששורת length = מודגשת.",
-                "commonMistake": "ממשיכים בלי לבחור את בלוק ״קבע אורך״ עצמו או בוחרים בלוק אחר."
-            },
-            {
-                "id": 4,
-                "minutes": "41–50",
-                "title": "תרגול 4 — משנים ערך אחד והריבוע גדל",
-                "prompt": "המשיכו מהריבוע עם המשתנה: שנו את האורך ל־120 והריצו שוב.",
-                "hint": "אם השתמשתם נכון במשתנה, שינוי מספר אחד ישנה את כל הצורה.",
-                "check": "יש length = 120 והריבוע עדיין משתמש ב־length בצלעות.",
+                "minutes": "36–50",
+                "title": "תרגול 3 — משנים length ורואים את הקוד",
+                "prompt": "המשיכו מהריבוע עם המשתנה: בחרו את בלוק ״קבע אורך״ וראו את שורת length = בקוד. אחר כך שנו את האורך ל־120 והריצו שוב כדי לראות שהריבוע גדל.",
+                "hint": "אם הריבוע משתמש נכון במשתנה, שינוי מספר אחד בבלוק ״קבע אורך״ ישנה את כל הריבוע.",
+                "check": "יש length = 120 והריבוע עדיין משתמש ב־length בכל הצלעות.",
                 "commonMistake": "משנים את המספרים בתוך הצלעות במקום לשנות את הערך של length."
             },
             {
-                "id": 5,
+                "id": 4,
                 "minutes": "50–60",
-                "title": "תרגול 5 — ריבוע קטן וריבוע גדול",
+                "title": "תרגול 4 — ריבוע קטן וריבוע גדול",
                 "prompt": "בנו ריבוע קטן ואחריו ריבוע גדול בעזרת שני ערכי אורך שונים.",
                 "hint": "ציירו ריבוע אחד, שנו את האורך, ואז ציירו ריבוע נוסף.",
                 "check": "יש שני ערכי length שונים ושני ריבועים שמשתמשים ב־length.",
                 "commonMistake": "מציירים שני ריבועים באותו גודל כי לא משנים את length לפני השני."
             },
             {
-                "id": 6,
+                "id": 5,
                 "minutes": "60–68",
-                "title": "תרגול 6 — מגדילים את האורך תוך כדי ציור",
+                "title": "תרגול 5 — מגדילים את האורך תוך כדי ציור",
                 "prompt": "הגדילו את האורך במהלך הציור כדי שכל צעד יהיה גדול יותר מהקודם.",
                 "hint": "השתמשו בבלוק ״הגדל אורך״ כדי לשנות את הערך של length בין תנועות או בתוך חזרה.",
                 "check": "יש שימוש ב״הגדל אורך״ אחרי תנועה לפי האורך, כך שהצעדים גדלים במהלך הציור.",
                 "commonMistake": "משנים את האורך רק בהתחלה ולכן כל הצעדים נשארים באותו גודל."
             },
             {
+                "id": 6,
+                "minutes": "68–78",
+                "title": "תרגול 6 — מדרגות שהולכות וגדלות",
+                "prompt": "בנו מדרגות שבהן כל צעד ארוך יותר מהקודם. התחילו עם length קטן, השתמשו ב״זוז קדימה לפי האורך״, ובין מדרגה למדרגה השתמשו ב״הגדל אורך״.",
+                "hint": "בכל מדרגה צריך לראות תנועה לפי length, פנייה, עוד תנועה לפי length, ואז הגדלת length לפני המדרגה הבאה.",
+                "check": "יש מדרגות עם כמה תנועות לפי length, פניות של מדרגות, ובלוק ״הגדל אורך״ שמשפיע על הצעדים הבאים.",
+                "commonMistake": "משתמשים ב״זוז קדימה״ עם מספר רגיל, או מגדילים את length רק בסוף אחרי שכל המדרגות כבר צוירו."
+            },
+            {
                 "id": 7,
-                "minutes": "68–74",
-                "title": "תרגול 7 — מחומש בצבע אחר",
-                "prompt": "בחרו צבע אחר וציירו מחומש שמשתמש רק ב־length לתנועה קדימה.",
-                "hint": "הוסיפו בלוק צבע לפני הציור. בתוך בלוק ״חזור״ השתמשו ב״זוז קדימה לפי האורך״ כדי שכל הצלעות יגיעו מהמשתנה.",
-                "check": "הציור צריך להיות מחומש בצבע אחר, וכל תנועה קדימה במחומש צריכה להשתמש ב־length.",
-                "commonMistake": "מציירים צורה כללית או משתמשים ב״זוז קדימה״ עם מספר רגיל במקום ב־length."
+                "minutes": "78–82",
+                "title": "אתגר — דפוס חופשי שהולך וגדל",
+                "prompt": "אתגר: בנו דפוס אישי שגדל בהדרגה בעזרת length ובלוק ״הגדל אורך״.",
+                "hint": "אפשר לחשוב על שביל, מניפה, ספירלה קטנה או צורה שחוזרת כמה פעמים — העיקר ש־length באמת משתנה לאורך הציור.",
+                "check": "אין בדיקה אוטומטית לאתגר — הריצו ובדקו שרואים שהציור גדל בהדרגה.",
+                "commonMistake": "משתמשים ב־length בהתחלה, אבל אחר כך ממשיכים עם מספרים רגילים."
             },
             {
                 "id": 8,
-                "minutes": "74–82",
-                "title": "אתגר — מדרגות שהולכות וגדלות",
-                "prompt": "אתגר: בנו מדרגות שהולכות וגדלות בעזרת הגדלת אורך.",
-                "hint": "חשבו על צעד, פנייה, ואז שינוי קטן באורך לפני הצעד הבא.",
-                "check": "אין בדיקה אוטומטית לאתגר — הריצו ובדקו שהמדרגות באמת גדלות.",
-                "commonMistake": "כל המדרגות באותו גודל כי האורך לא משתנה לאורך הדרך."
-            },
-            {
-                "id": 9,
                 "minutes": "82–88",
-                "title": "אתגר למתקדמים — משתמשים ב־length פעמיים",
-                "prompt": "בנו גרסה מורכבת יותר שמשתמשת במשתנה length לפחות פעמיים בצורה חכמה.",
-                "hint": "אפשר לחשוב על שתי צורות, שתי שורות של דפוס, או ציור שגדל בהדרגה.",
-                "check": "אין בדיקה אוטומטית לאתגר — הסבירו איפה רואים את השימוש החוזר ב־length.",
-                "commonMistake": "משתמשים במשתנה פעם אחת בלבד ואז ממשיכים עם מספרים רגילים."
+                "title": "תרגול 8 — כותבים Python קצר עם length",
+                "prompt": "כתבו בתוך התיבה קוד Python קצר: קבעו length, ציירו קדימה לפי length, הגדילו את length, ואז ציירו שוב לפי length.",
+                "hint": "השתמשו בשורות כמו length = 30, forward(length), length = length + 20, forward(length).",
+                "check": "יש קביעת length, תנועה forward(length), הגדלת length, ואז עוד forward(length).",
+                "commonMistake": "כותבים forward עם מספר רגיל במקום forward(length), או מגדילים את length רק אחרי שסיימו לצייר."
             }
         ],
         "vocabulary": [
@@ -8176,12 +8166,13 @@
       return /כתבו במחברת|במחברת|מחברת|סמנו על דף|כיוון הראש לפני כל פקודה|החליפו ימינה ושמאלה|החליפו ימינה ושמאלה והשוו תוצאה|הציגו לחבר מה כל שורה עושה|כל שורה עושה|הכינו משפט הצגה|משפט הצגה|איפה רואים את זה בקוד|היום למדתי|בפעם הבאה אפשר|רפלקציה קצרה|משפט סיכום|איפוס והרצה מחדש|איפוס והרצה נקייה/.test(text);
     }
     function isPythonWritingExercise(ex){
-      return (currentLesson === 1 || currentLesson === 2 || currentLesson === 3 || currentLesson === 4 || currentLesson === 5) && /כותבים Python קצר/.test(`${ex?.title || ''} ${ex?.prompt || ''}`);
+      return (currentLesson === 1 || currentLesson === 2 || currentLesson === 3 || currentLesson === 4 || currentLesson === 5 || currentLesson === 6) && /כותבים Python קצר/.test(`${ex?.title || ''} ${ex?.prompt || ''}`);
     }
     function requiredWrittenPythonLineCount(ex){
       if(currentLesson === 3 && ex?.id === 13) return 5;
       if(currentLesson === 4 && ex?.id === 12) return 4;
       if(currentLesson === 5 && ex?.id === 12) return 5;
+      if(currentLesson === 6 && ex?.id === 8) return 4;
       return 3;
     }
     function pythonWritingKey(){
@@ -8362,7 +8353,7 @@
       return restoreXml(exerciseStartXml[baselineKey(index)]);
     }
     function isTipExercise(ex){
-      if((currentLesson === 3 && ex?.id === 4) || (currentLesson === 4 && ex?.id === 6) || (currentLesson === 5 && ex?.id === 3) || (currentLesson === 6 && ex?.id === 3) || (currentLesson === 8 && ex?.id === 4) || (currentLesson === 9 && ex?.id === 4) || (currentLesson === 11 && ex?.id === 3)) return false;
+      if((currentLesson === 3 && ex?.id === 4) || (currentLesson === 4 && ex?.id === 6) || (currentLesson === 5 && ex?.id === 3) || (currentLesson === 8 && ex?.id === 4) || (currentLesson === 9 && ex?.id === 4) || (currentLesson === 11 && ex?.id === 3)) return false;
       const text = `${ex?.title || ''} ${ex?.prompt || ''}`;
       return /הידעתם|לחצו על בלוק|לוחצים על בלוק|שורת קוד נדלקת|שורת הקוד.*נדלקת|שורת Python/.test(text);
     }
@@ -8380,12 +8371,11 @@
       return !isTipExercise(ex) && !isChallengeExercise(ex) && !isSelectionOnlyExercise(ex) && !isRunOnlyExampleExercise(ex);
     }
     function isSelectionOnlyExercise(ex){
-      return (currentLesson === 3 && ex?.id === 4) || (currentLesson === 4 && ex?.id === 6) || (currentLesson === 5 && ex?.id === 3) || (currentLesson === 6 && ex?.id === 3) || (currentLesson === 8 && ex?.id === 4) || (currentLesson === 9 && ex?.id === 4) || (currentLesson === 11 && ex?.id === 3);
+      return (currentLesson === 3 && ex?.id === 4) || (currentLesson === 4 && ex?.id === 6) || (currentLesson === 5 && ex?.id === 3) || (currentLesson === 8 && ex?.id === 4) || (currentLesson === 9 && ex?.id === 4) || (currentLesson === 11 && ex?.id === 3);
     }
     function selectionOnlyBlockTypes(ex){
       if(currentLesson === 4 && ex?.id === 6) return ['py_color'];
       if(currentLesson === 5 && ex?.id === 3) return ['py_penup', 'py_pendown'];
-      if(currentLesson === 6 && ex?.id === 3) return ['py_set_length'];
       if(currentLesson === 8 && ex?.id === 4) return ['py_grow_length'];
       if(currentLesson === 9 && ex?.id === 4) return ['py_right'];
       if(currentLesson === 11 && ex?.id === 3) return ['py_comment'];
@@ -8463,7 +8453,6 @@
       if(currentLesson === 11 && ex?.id === 3) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_comment"><field name="TEXT">רחוב ראשי</field><next><block type="py_forward"><field name="STEPS">120</field></block></next></block></next></block></xml>';
       if(currentLesson === 11 && ex?.id === 6) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_comment"><field name="TEXT">בית</field><next><block type="py_set_length"><field name="VALUE">70</field><next><block type="py_color"><field name="COLOR">#2563eb</field><next><block type="py_forward_length"><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_comment"><field name="TEXT">מעבר לרחוב צדדי</field><next><block type="py_forward"><field name="STEPS">140</field><next><block type="py_color"><field name="COLOR">#16a34a</field><next><block type="py_comment"><field name="TEXT">רחוב צדדי</field><next><block type="py_forward"><field name="STEPS">35</field><next><block type="py_comment"><field name="TEXT">בית ספר</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward_length"><next><block type="py_forward"><field name="STEPS">70</field></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
       if(currentLesson === 7 && ex?.id === 6) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_repeat"><field name="TIMES">6</field><statement name="DO"><block type="py_forward"><field name="STEPS">60</field><next><block type="py_right"><field name="ANGLE">60</field><next><block type="py_left"><field name="ANGLE">30</field></block></next></block></next></block></statement></block></next></block></xml>';
-      if(currentLesson === 6 && ex?.id === 3) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_set_length"><field name="VALUE">70</field><next><block type="py_forward_length"></block></next></block></next></block></xml>';
       if(currentLesson === 5 && ex?.id === 3) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_penup"><next><block type="py_forward"><field name="STEPS">120</field><next><block type="py_pendown"><next><block type="py_repeat"><field name="TIMES">3</field><statement name="DO"><block type="py_forward"><field name="STEPS">80</field><next><block type="py_right"><field name="ANGLE">120</field></block></next></block></statement></block></next></block></next></block></next></block></next></block></xml>';
       if(currentLesson === 5 && ex?.id === 4) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">60</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_forward"><field name="STEPS">140</field><next><block type="py_penup"><next><block type="py_pendown"><next><block type="py_repeat"><field name="TIMES">3</field><statement name="DO"><block type="py_forward"><field name="STEPS">75</field><next><block type="py_right"><field name="ANGLE">120</field></block></next></block></statement></block></next></block></next></block></next></block></next></block></next></block></xml>';
       if(currentLesson === 5 && ex?.id === 5) return '<xml><block type="py_python" x="20" y="20" movable="false" editable="false" deletable="false"><next><block type="py_forward" movable="false" editable="false" deletable="false"><field name="STEPS">70</field><next><block type="py_penup" movable="false" editable="false" deletable="false"><next><block type="py_forward" movable="false" editable="false" deletable="false"><field name="STEPS">100</field><next><block type="py_pendown" movable="false" editable="false" deletable="false"><next><block type="py_forward" movable="false" editable="false" deletable="false"><field name="STEPS">70</field></block></next></block></next></block></next></block></next></block></next></block></xml>';
@@ -8561,7 +8550,7 @@
       const nextButtonLabel = isLast ? (nextLessonId ? 'סיימתי — לשיעור הבא' : 'סיימתי את הקורס') : 'המשך';
       const writingExercise = isPythonWritingExercise(ex);
       const writingValue = pythonWritingAnswers[pythonWritingKey()] || '';
-      const writingPlaceholder = currentLesson === 5 && ex?.id === 12 ? 'forward(70)&#10;penup()&#10;forward(100)&#10;pendown()&#10;forward(70)' : (currentLesson === 4 && ex?.id === 12 ? `color('#16a34a')&#10;forward(60)&#10;right(90)&#10;forward(60)` : (requiredWrittenPythonLineCount(ex) === 5 ? 'forward(50)&#10;right(90)&#10;forward(50)&#10;right(90)&#10;forward(50)' : 'forward(50)&#10;right(90)&#10;forward(50)'));
+      const writingPlaceholder = currentLesson === 6 && ex?.id === 8 ? 'length = 30&#10;forward(length)&#10;length = length + 20&#10;forward(length)' : (currentLesson === 5 && ex?.id === 12 ? 'forward(70)&#10;penup()&#10;forward(100)&#10;pendown()&#10;forward(70)' : (currentLesson === 4 && ex?.id === 12 ? `color('#16a34a')&#10;forward(60)&#10;right(90)&#10;forward(60)` : (requiredWrittenPythonLineCount(ex) === 5 ? 'forward(50)&#10;right(90)&#10;forward(50)&#10;right(90)&#10;forward(50)' : 'forward(50)&#10;right(90)&#10;forward(50)')));
       const writingHtml = writingExercise ? `<label class="muted" for="pythonWritingAnswer"><b>כתבו כאן בתוך הלומדה:</b></label><textarea id="pythonWritingAnswer" dir="ltr" spellcheck="false" style="width:100%;min-height:${requiredWrittenPythonLineCount(ex) === 5 ? '132' : '96'}px;margin-top:8px;border:1px solid #fed7aa;border-radius:14px;padding:10px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.95rem;line-height:1.45;direction:ltr;text-align:left;background:#fff;" placeholder="${writingPlaceholder}">${escapeHtml(writingValue)}</textarea><button class="btn run" id="runWrittenPythonBtn" type="button" style="margin-top:8px;">▶️ הרץ את הקוד שכתבתי</button>` : '';
       const feedbackHtml = `<div class="exercise-feedback ${feedbackBelowButtons ? 'feedback-line-break' : ''} ${ok ? 'ok' : 'warn'}">${escapeHtml(message)}</div>`;
       missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div><p><b>${escapeHtml(ex.prompt || '')}</b></p>${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p>${(isChallengeExercise(ex) || isRunOnlyExampleExercise(ex)) ? '' : `<p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}`}${writingHtml}<div class="exercise-bottom"><div class="exercise-controls">${(isTip || isChallengeExercise(ex) || isSelectionOnly || isRunOnlyExampleExercise(ex)) ? '' : '<button class="btn run" id="checkExerciseBtn">✅ בדוק תרגיל</button>'}${resetButton}<button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${nextButtonLabel}</button></div>${feedbackBelowButtons ? '<br>' : feedbackHtml}</div>${feedbackBelowButtons ? feedbackHtml : ''}</div>`;
@@ -9230,12 +9219,12 @@
           if(!repeatUsesLengthShape(4, 90)) return ['הריבוע צריך להשתמש ב־4 חזרות, פנייה של 90 מעלות, ו״זוז קדימה לפי האורך״ בתוך החזרה.'];
           return [];
         }
-        if(ex.id === 4){
+        if(ex.id === 3){
           if(!values.includes(120)) return ['צריך לשנות את האורך ל־120.'];
-          if(!repeatUsesLengthShape(4, 90)) return ['השאירו ריבוע שמשתמש ב״זוז קדימה לפי האורך״.'];
+          if(!repeatUsesLengthShape(4, 90)) return ['השאירו ריבוע שמשתמש ב״זוז קדימה לפי האורך״ בכל הצלעות.'];
           return [];
         }
-        if(ex.id === 5){
+        if(ex.id === 4){
           const uniqueValues = new Set(values);
           if(uniqueValues.size < 2) return ['צריך להשתמש בשני ערכי אורך שונים.'];
           if(repeatBlocks().filter(block=>{
@@ -9245,7 +9234,7 @@
           }).length < 2) return ['צריך לבנות שני ריבועים שמשתמשים באורך.'];
           return [];
         }
-        if(ex.id === 6){
+        if(ex.id === 5){
           const growIndex = actions.findIndex(a=>a.cmd==='growVar' && a.name==='length');
           if(growIndex < 0) return ['צריך להשתמש בבלוק ״הגדל אורך״.'];
           const forwardBeforeGrow = actions.slice(0, growIndex).some(a=>a.cmd==='forwardVar' && a.name==='length');
@@ -9253,10 +9242,15 @@
           if(!forwardBeforeGrow || !forwardAfterGrow) return ['צריך לצייר לפי האורך לפני ואחרי שמגדילים אותו.'];
           return [];
         }
-        if(ex.id === 7){
-          if(!actions.some(a=>a.cmd==='color' && a.v && a.v !== '#2563eb')) return ['צריך לבחור צבע שאינו צבע ברירת המחדל.'];
-          if(actions.some(a=>a.cmd==='forward')) return ['כמעט — בדקו שכל התנועות קדימה במחומש משתמשות במשתנה.'];
-          if(!repeatUsesLengthShape(5, 72)) return ['כמעט — המחומש עדיין לא מתאים למשימה. בדקו את מספר הצלעות, הפניות, והשימוש ב־length.'];
+        if(ex.id === 6){
+          const forwardLengthCount = actions.filter(a=>a.cmd==='forwardVar' && a.name==='length').length;
+          const growIndexes = actions.map((a,i)=>a.cmd==='growVar' && a.name==='length' ? i : -1).filter(i=>i>=0);
+          const turnCount = actions.filter(a=>a.cmd==='right' || a.cmd==='left').length;
+          if(actions.some(a=>a.cmd==='forward')) return ['בתרגיל הזה כל תנועות הקדימה צריכות להשתמש ב־length, לא במספר רגיל.'];
+          if(forwardLengthCount < 4) return ['צריך לבנות כמה מדרגות עם ״זוז קדימה לפי האורך״.'];
+          if(turnCount < 3) return ['במדרגות צריך להוסיף פניות בין הקווים.'];
+          if(!growIndexes.length) return ['צריך להשתמש בבלוק ״הגדל אורך״ כדי שהמדרגות ילכו ויגדלו.'];
+          if(!growIndexes.some(i=>actions.slice(0, i).some(a=>a.cmd==='forwardVar' && a.name==='length') && actions.slice(i + 1).some(a=>a.cmd==='forwardVar' && a.name==='length'))) return ['הגדלת האורך צריכה להיות באמצע הציור, כך שתשפיע על מדרגות שמגיעות אחר כך.'];
           return [];
         }
       }
@@ -9626,9 +9620,24 @@
           actions.push({cmd:'pen', v: penMatch[1].toLowerCase() === 'pendown'});
           continue;
         }
+        const setLengthMatch = cleaned.match(/^length\s*=\s*(\d+)\s*$/i);
+        if(setLengthMatch){
+          actions.push({cmd:'setVar', name:'length', v:Number(setLengthMatch[1])});
+          continue;
+        }
+        const growLengthMatch = cleaned.match(/^length\s*=\s*length\s*\+\s*(\d+)\s*$/i);
+        if(growLengthMatch){
+          actions.push({cmd:'growVar', name:'length', v:Number(growLengthMatch[1])});
+          continue;
+        }
+        const forwardLengthMatch = cleaned.match(/^forward\s*\(\s*length\s*\)\s*$/i);
+        if(forwardLengthMatch){
+          actions.push({cmd:'forwardVar', name:'length'});
+          continue;
+        }
         const match = cleaned.match(/^(forward|right|left)\s*(?:\(\s*(\d+)\s*\)|\s+(\d+))\s*$/i);
         if(!match){
-          problems.push("אפשר להריץ רק שורות פשוטות כמו color('#16a34a'), forward(50), right(90), left(90), penup(), pendown().");
+          problems.push("אפשר להריץ רק שורות פשוטות כמו length = 30, forward(length), length = length + 20, forward(50), right(90), penup().");
           break;
         }
         const cmdName = match[1].toLowerCase();
@@ -9675,6 +9684,15 @@
         const matchesPenLiftLine = comparable[0] === 'forward' && comparable[1] === 'penup' && comparable[2] === 'forward' && comparable[3] === 'pendown' && comparable[4] === 'forward';
         if(!matchesPenLiftLine){
           problems.push('כתבו 5 שורות לפי הסדר: forward, penup(), forward, pendown(), ואז forward נוסף.');
+        }
+      }
+      if(currentLesson === 6 && ex?.id === 8){
+        const setIndex = actions.findIndex(action=>action.cmd === 'setVar' && action.name === 'length');
+        const firstForwardLengthIndex = actions.findIndex(action=>action.cmd === 'forwardVar' && action.name === 'length');
+        const growIndex = actions.findIndex(action=>action.cmd === 'growVar' && action.name === 'length');
+        const secondForwardLengthIndex = actions.findIndex((action, index)=>index > growIndex && action.cmd === 'forwardVar' && action.name === 'length');
+        if(!(setIndex >= 0 && firstForwardLengthIndex > setIndex && growIndex > firstForwardLengthIndex && secondForwardLengthIndex > growIndex)){
+          problems.push('כתבו לפי הסדר: length = מספר, forward(length), length = length + מספר, ואז forward(length) נוסף.');
         }
       }
       return problems;

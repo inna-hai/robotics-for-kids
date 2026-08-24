@@ -159,21 +159,15 @@ assert.match(html, /currentLesson === 5 && ex\.id === 2[\s\S]*penUpIndex[\s\S]*f
 
 assert.match(html, /המשיכו מהקוד של תרגול 1[\s\S]*תנועה בלי ציור[\s\S]*הורד עט[\s\S]*משולש/, 'lesson 5 exercise 2 wording asks to continue from exercise 1 and matches the penup-to-pendown flow');
 
-assert.match(html, /currentLesson === 6 && ex\?\.id === 3\) return \['py_set_length'\]/, 'lesson 6 code-selection exercise unlocks by selecting the set-length block');
 assert.match(html, /function repeatUsesLengthShape\(sides, angle\)/, 'lesson 6 validates shapes that use forward(length), not hard-coded numbers');
 assert.match(html, /currentLesson === 6[\s\S]*ex\.id === 1[\s\S]*values\.includes\(70\)[\s\S]*firstForwardLengthIndex/, 'lesson 6 exercise 1 requires setting length to 70 before using forward length');
 assert.match(html, /ex\.id === 2[\s\S]*repeatUsesLengthShape\(4, 90\)/, 'lesson 6 exercise 2 requires a square drawn with the length variable');
-assert.match(html, /ex\.id === 4[\s\S]*values\.includes\(120\)[\s\S]*repeatUsesLengthShape\(4, 90\)/, 'lesson 6 exercise 4 requires changing length to 120 while keeping a variable square');
-assert.match(html, /ex\.id === 5[\s\S]*uniqueValues\.size < 2[\s\S]*צריך לבנות שני ריבועים/, 'lesson 6 exercise 5 requires two variable-based squares with different length values');
+assert.match(html, /ex\.id === 3[\s\S]*values\.includes\(120\)[\s\S]*repeatUsesLengthShape\(4, 90\)/, 'lesson 6 merged exercise 3 requires changing length to 120 while keeping a variable square');
+assert.match(html, /ex\.id === 4[\s\S]*uniqueValues\.size < 2[\s\S]*צריך לבנות שני ריבועים/, 'lesson 6 exercise 4 requires two variable-based squares with different length values');
 
-assert.match(html, /currentLesson === 6 && ex\?\.id === 3[\s\S]*py_set_length[\s\S]*py_forward_length/, 'lesson 6 code-selection exercise loads starter blocks to select');
+assert.match(html, /תרגול 5 — מגדילים את האורך תוך כדי ציור/, 'lesson 6 keeps the grow-length exercise before the final challenge');
 
-
-assert.match(html, /function starterXmlForExercise\(ex\)[\s\S]*currentLesson === 6 && ex\?\.id === 3[\s\S]*py_set_length[\s\S]*py_forward_length/, 'lesson 6 exercise 3 starter XML lives in starterXmlForExercise');
-
-assert.match(html, /תרגול 6 — מגדילים את האורך תוך כדי ציור/, 'lesson 6 restores the grow-length exercise before the final challenge');
-
-assert.match(html, /ex\.id === 6[\s\S]*growIndex[\s\S]*forwardBeforeGrow[\s\S]*forwardAfterGrow/, 'lesson 6 grow-length exercise requires drawing before and after increasing length');
+assert.match(html, /ex\.id === 5[\s\S]*growIndex[\s\S]*forwardBeforeGrow[\s\S]*forwardAfterGrow/, 'lesson 6 grow-length exercise requires drawing before and after increasing length');
 
 assert.doesNotMatch(html, /function selectionOnlyBlockTypes\(ex\)\{[^}]*return '<xml>/, 'selection-only block type helpers must not return starter XML');
 
@@ -182,11 +176,11 @@ assert.match(html, /selectedBlockHighlightsExpectedCode[\s\S]*highlightedLines=n
 assert.match(html, /if\(isSelectionOnlyExercise\(ex\) && !alreadyCompleted\)\{[\s\S]*selectionExerciseUnlocked\[key\] = false/, 'selection-only completion is cleared after workspace edits only before the exercise has been completed once');
 assert.doesNotMatch(html, /if\(isSelectionOnlyExercise\(ex\)[\s\S]{0,180}completedSet\(\)\.delete\(currentExerciseIndex\)/, 'selection-only workspace edits do not remove already unlocked navigation');
 
-assert.match(html, /תרגול 7 — מחומש בצבע אחר/, 'lesson 6 restores the useful color-variation exercise');
+assert.match(html, /תרגול 6 — מדרגות שהולכות וגדלות/, 'lesson 6 exercise 6 uses the new length-growth blocks for growing stairs');
 
-assert.match(html, /אתגר למתקדמים — משתמשים ב־length פעמיים/, 'lesson 6 restores an advanced open-ended length challenge');
+assert.match(html, /תרגול 8 — כותבים Python קצר עם length/, 'lesson 6 ends with a required Python writing exercise using length');
 
-assert.match(html, /ex\.id === 7[\s\S]*cmd==='color'[\s\S]*cmd==='forward'[\s\S]*repeatUsesLengthShape\(5, 72\)/, 'lesson 6 color pentagon requires color, no numeric forward movement, and a length-based pentagon');
+assert.match(html, /ex\.id === 6[\s\S]*forwardLengthCount[\s\S]*growIndexes[\s\S]*turnCount/, 'lesson 6 growing-stairs exercise requires forward length, growth, and turns');
 
 assert.match(html, /event\.newElementId \? workspace\.getBlockById\(event\.newElementId\) : \(Blockly\.getSelected \? Blockly\.getSelected\(\) : null\)/, 'selection-only handler falls back to the actual selected Blockly block');
 
@@ -196,11 +190,11 @@ assert.match(html, /const isCodeEditEvent = !event\.isUiEvent[\s\S]*event\.type 
 
 assert.match(html, /if\(isCodeEditEvent\)\{[\s\S]*selectionExerciseUnlocked\[key\] = false/, 'selection-only unlock clears only when the workspace code is edited');
 
-assert.match(html, /בחרו צבע אחר וציירו מחומש שמשתמש רק ב־length לתנועה קדימה/, 'lesson 6 exercise 7 asks for a specific pentagon instead of a vague shape');
+assert.match(html, /תרגול 6 — מדרגות שהולכות וגדלות[\s\S]*בין מדרגה למדרגה השתמשו ב״הגדל אורך״/, 'lesson 6 exercise 6 asks for growing stairs using grow length');
 
-assert.match(html, /כמעט — בדקו שכל התנועות קדימה במחומש משתמשות במשתנה/, 'lesson 6 exercise 7 rejects numeric forward movement without revealing the exact answer');
+assert.match(html, /כל תנועות הקדימה צריכות להשתמש ב־length, לא במספר רגיל/, 'lesson 6 exercise 6 rejects numeric forward movement');
 
-assert.doesNotMatch(html, /צריך לצייר מחומש: חזרה 5 פעמים, פנייה של 72 מעלות/, 'lesson 6 exercise 7 feedback must not reveal the exact pentagon answer');
+assert.doesNotMatch(html, /תרגול 6 — מחומש בצבע אחר/, 'lesson 6 exercise 6 is no longer the easy color pentagon exercise');
 
 assert.match(html, /function requiresCheckedContinue\(ex\)[\s\S]*!isTipExercise\(ex\)[\s\S]*!isChallengeExercise\(ex\)[\s\S]*!isSelectionOnlyExercise\(ex\)[\s\S]*!isRunOnlyExampleExercise\(ex\)/, 'normal exercises require an approved check before Continue unlocks');
 
@@ -396,3 +390,9 @@ assert.match(html, /currentLesson === 4 && ex\?\.id === 12\) return 4/, 'lesson 
 assert.match(html, /קודם בחרו צבע חדש[\s\S]*אחר כך ציירו קו[\s\S]*פנו 90 מעלות[\s\S]*שינוי הצבע צריך להופיע לפני הקו הראשון/, 'lesson 4 final writing challenge explains the task in words, with color before movement');
 assert.match(html, /const colorMatch = cleaned\.match/, 'written Python parser accepts simple color lines');
 assert.match(html, /currentLesson === 4 && ex\?\.id === 12[\s\S]*matchesColoredCorner/, 'lesson 4 writing challenge validates color before the drawn corner');
+
+assert.match(html, /תרגול 3 — משנים length ורואים את הקוד[\s\S]*שנו את האורך ל־120/, 'lesson 6 merges the former code-selection and resize exercises into exercise 3');
+assert.doesNotMatch(html, /תרגול 4 — משנים ערך אחד והריבוע גדל/, 'lesson 6 no longer has a separate resize exercise 4');
+
+assert.match(html, /currentLesson === 6 && ex\?\.id === 8[\s\S]*length = מספר[\s\S]*forward\(length\)/, 'lesson 6 Python writing exercise validates length assignment, growth, and forward(length) order');
+assert.match(html, /setLengthMatch[\s\S]*growLengthMatch[\s\S]*forwardLengthMatch/, 'written Python parser accepts length assignment, length growth, and forward(length)');
