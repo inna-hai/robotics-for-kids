@@ -284,712 +284,427 @@
   });
 
   Object.assign(window.TELLO_MISSION_LAB_LESSONS[3], {
-    title: 'שיעור 4: סיבוב תצפית 360° — סורקים בלי לזוז',
-    subtitle: 'Yaw כתצפית סביבתית והכנה אחרונה לפני רחפן פיזי',
-    concept: 'Yaw 360°, תצפית סביבתית, כיוון מצלמה ורשימת מוכנות לטיסה פיזית',
-    story: 'צוות החקר מגיע לתחנה שבה אסור להתקדם — יש סביב נקודת הדגימה מכשולים. הפתרון: להמריא, לרחף, להסתובב במקום 360°, לתעד אזורי עניין ולנחות.',
-    mission: 'לבנות משימת תצפית בסימולטור: Takeoff → Hover → Yaw Right 360° → Hover → Land, ולמלא Ready-for-Physical checklist לקראת שיעור 5.',
-    blocks: ['takeoff','hover','yaw_360','hover','land'],
-    essentialQuestion: 'מתי סיבוב במקום נותן יותר מידע מתנועה קדימה?',
-    successCriteria: ['אני מסביר/ה Yaw כתצפית ולא כתנועה צדית.', 'אני בונה סריקת 360° בטוחה בסימולטור.', 'אני מזהה מתי כדאי להישאר במקום ולסרוק.', 'אני משלים/ה צ׳קליסט מוכנות לטיסה פיזית.', 'אני מסביר/ה למה שיעורים 1–4 היו סימולטור בלבד.'],
-    realWorldUses: [{ icon:'🗼', title:'בדיקת מגדל/תורן', text:'רחפן יכול להסתובב ולתעד סביב נקודה בלי להתקרב מדי.' }, { icon:'🚧', title:'אזור מכשולים', text:'כשאי אפשר להתקדם, תצפית במקום מצמצמת סיכון.' }, { icon:'🧭', title:'מודעות מרחבית', text:'סריקה סביבתית עוזרת לתכנן את הצעד הבא.' }],
-    vocabulary: [['Yaw 360°','סיבוב מלא של האף סביב הציר האנכי.'], ['Observation Point','נקודת תצפית קבועה.'], ['Field of View','מה שהמצלמה מסוגלת לראות בכל רגע.'], ['Obstacle Awareness','מודעות למכשולים סביב הרחפן.'], ['Readiness Checklist','רשימת מוכנות לפני טיסה פיזית.']],
-    safetyRules: commonResearchSafety,
-    commonDirections: [['Hover','עצירה לפני ואחרי הסיבוב.'], ['Yaw 360°','סריקה סביבתית במקום.'], ['Observation','תיעוד מה רואים מכל כיוון.'], ['Checklist','בדיקה לפני מעבר פיזי.'], ['Land','סיום בטוח.']],
-    setupSteps: commonGrade6Setup,
-    tabletTips: commonGrade6TabletTips,
+    title: 'שיעור 4: Grid Scan ראשון — סריקת שטח חכמה',
+    subtitle: 'Loop בסימולטור: סריקה שיטתית של שטח בלי לפספס נקודות',
+    unit: 'יחידה 2 — סריקות שטח וגבהים',
+    concept: 'Grid Scan, תבנית זיגזג, Loop, כיסוי שטח ומוכנות אחרונה לפני רחפן פיזי',
+    workspaceMode: 'droneblocks-app',
+    appWorkflowTitle: 'עובדים ב־DroneBlocks App — Grid Scan בסימולטור',
+    appWorkflowNote: 'האתר משמש כתדריך חקר וכרטיס משימה. את הלולאות והסריקה בונים באפליקציית DroneBlocks בטאבלט, בסימולטור Minimal Grid או Mars Simulator.',
+    visualDiagram: { panelTitle:'🗺️ שרטוט Grid Scan', chip:'מסלול זיגזג', title:'סריקה שיטתית של 4 שורות', src:'assets/tello-mission-lab/lesson4/grid-scan-diagram.svg', alt:'שרטוט Grid Scan עם נתיב זיגזג בין ארבע שורות', caption:'כמו לקרוא ספר שורה־אחר־שורה: Forward מכסה שורה, מעבר צד עובר לשורה הבאה, ו־Loop חוזר על התבנית בלי להשאיר חורים.' },
+    story: 'צוות Mission Lab מצטרף למשימת חקר בהשראת SeeTree: רחפנים סורקים מטעים ושדות בצורה שיטתית כדי לא לפספס אף אזור. הטיסה האקראית נראית מהירה, אבל מהנדסי חקר עובדים עם Grid Scan — מעבר שורה־אחר־שורה, כמו קריאת מפה מדעית.',
+    mission: 'לבנות בסימולטור DroneBlocks משימת Grid Scan ראשונה: Takeoff → Loop ×2 של תבנית זיגזג קצרה: Forward 80in → Yaw Right 90° → Forward 30in → Yaw Right 90° → Forward 80in → מעבר לשורה הבאה → Land. המטרה היא להבין כיסוי שטח ולתעד אילו “שורות” נסרקו. משתנים מוצגים כהרחבה בלבד, לא כחובת שיעור.',
+    essentialQuestion: 'איך אלגוריתם סריקה שיטתי מבטיח כיסוי שטח טוב יותר מטיסה אקראית?',
+    successCriteria: [
+      'אני מסביר/ה מהו Grid Scan ולמה הוא מתאים למשימות חקר.',
+      'אני מזהה את תבנית הזיגזג החוזרת ומכניס/ה אותה ל־Loop.',
+      'אני בונה או מתכנן/ת סריקה של לפחות 3–4 שורות בסימולטור.',
+      'אני מתעד/ת אילו שורות נסרקו ומה נחשב כיסוי שטח מוצלח.',
+      'אני משלים/ה Ready-for-Physical checklist לקראת שיעור 5.'
+    ],
+    blocks: ['takeoff','repeat_scan','forward','right','back','land'],
+    realWorldUses: [
+      { icon:'🌳', title:'חקלאות מדויקת', text:'רחפנים סורקים מטעים שורה־אחר־שורה כדי לזהות עצים שזקוקים למים או טיפול.' },
+      { icon:'🗺️', title:'מיפוי שטח', text:'Grid Scan עוזר לוודא שכל אזור נסרק ולא נשארו “חורים” במפה.' },
+      { icon:'🚨', title:'איתור וחילוץ', text:'במשימת חיפוש לא טסים באקראי — מחלקים שטח לרצועות סריקה ומתקדמים באופן שיטתי.' },
+      { icon:'🧪', title:'ניסוי מדעי', text:'סריקה חוזרת באותה תבנית מאפשרת להשוות בין הרצות ולזהות סטיות.' }
+    ],
+    vocabulary: [
+      ['Grid Scan','סריקה שיטתית של שטח לפי שורות/רצועות.'],
+      ['Coverage / כיסוי שטח','כמה מהאזור נסרק בפועל וכמה נשאר לא מכוסה.'],
+      ['Zigzag Pattern','תבנית הלוך־חזור: שורה קדימה, מעבר צד, שורה חזרה.'],
+      ['Loop / לולאה','מבנה שחוזר על תבנית סריקה כמה פעמים.'],
+      ['Row Length','אורך שורת הסריקה — בשיעור זה ערך קבוע, לא משתנה חובה.'],
+      ['Scan Step','המרחק בין שורה לשורה.'],
+      ['Variable / משתנה','ערך שאפשר לשנות במקום אחד; היום מוצג כהרחבה בלבד.' ],
+      ['Ready-for-Physical Checklist','בדיקת מוכנות לפני מעבר לרחפן אמיתי.' ]
+    ],
+    safetyRules: [
+      'שיעור 4 עדיין סימולטור בלבד — לא מחברים רחפנים פיזיים ולא עוברים ל־Tello WiFi.',
+      'Grid Scan ארוך מדי בסימולטור הוא סימן לסיכון עתידי: מקצרים לפני מעבר לפיזי.',
+      'לא מכניסים Takeoff או Land לתוך הלולאה.',
+      'בודקים שהזיגזג נשאר בתוך גבולות השטח המדומה.',
+      'משנים רק פרמטר אחד בכל פעם: אורך שורה, רוחב מעבר או מספר חזרות.',
+      'שיעור 5 יתחיל רק בצ׳קליסט בטיחות, לא במסלול סריקה מלא.'
+    ],
+    commonDirections: [
+      ['Forward 80in','סריקת שורה אחת קדימה.'],
+      ['Yaw Right 90°','פנייה להכנת מעבר לשורה הבאה.'],
+      ['Forward 30in','מעבר צד לרצועת הסריקה הבאה.'],
+      ['Loop ×2','חזרה על תבנית זוג שורות כדי להגיע ל־4 שורות.'],
+      ['Coverage Table','טבלה פשוטה: שורה 1/2/3/4 — נסרקה או לא נסרקה.']
+    ],
+    setupSteps: [
+      'פותחים DroneBlocks App בטאבלט כשהמכשיר מחובר ל־WiFi בית ספרי.',
+      'נכנסים לסימולטור Minimal Grid או Mars Simulator ויוצרים משימה בשם Grid_Scan_G6_TeamName.',
+      'מציירים על דף/לוח שטח של 4 שורות ומסמנים מאיפה מתחילים ואיפה נוחתים.',
+      'בונים תחילה שתי שורות ידנית: Forward → מעבר צד → Forward חזרה.',
+      'מחליפים את התבנית החוזרת ב־Loop ×2 לפי רמת הכיתה.',
+      'מריצים בסימולטור וממלאים Coverage Table: אילו שורות נסרקו?',
+      'שומרים/משתפים תוצר וממלאים Ready-for-Physical checklist.'
+    ],
+    tabletTips: [
+      'אם Mars Simulator כבד או איטי — עובדים ב־Minimal Grid; המטרה היא האלגוריתם, לא הגרפיקה.',
+      'אם התלמידים מסתבכים עם Loop, לבנות קודם גרסה ידנית קצרה ואז להראות איפה התבנית חוזרת.',
+      'Variables הם הרחבה בלבד: צוות מתקדם יכול ליצור row_length, אבל הכיתה לא חייבת.',
+      'שם משימה מומלץ: Grid_Scan_G6_TeamName.'
+    ],
+    appWorkflow: [
+      { title:'פתיחת סביבת חקר', detail:'DroneBlocks App → Simulator → Minimal Grid/Mars → משימה חדשה Grid_Scan_G6_TeamName.' },
+      { title:'שרטוט שטח סריקה', detail:'מציירים 4 שורות. מסמנים Start, שורה 1, מעבר צד, שורה 2, שורה 3, שורה 4 ו־Land.' },
+      { title:'גרסה ידנית קצרה', detail:'Takeoff → Forward 80in → Yaw Right 90° → Forward 30in → Yaw Right 90° → Forward 80in → Land. מבינים זוג שורות.' },
+      { title:'גרסת Loop', detail:'מכניסים את תבנית זוג השורות ל־Loop ×2 כדי לכסות 4 שורות. Takeoff ו־Land נשארים מחוץ ללולאה.' },
+      { title:'תיעוד כיסוי שטח', detail:'ממלאים Coverage Table: אילו שורות נסרקו? האם הייתה חפיפה? האם נוצר אזור שלא נסרק?' },
+      { title:'הרחבה למצטיינים', detail:'יוצרים משתנה row_length ומשנים מ־80 ל־120 כדי לראות איך שינוי אחד משפיע על כל הסריקה.' },
+      { title:'מוכנות לשיעור 5', detail:'שומרים/משתפים וממלאים Ready-for-Physical checklist: אזור סטרילי, צוות, Land, Stop/Abort, סוללה.' }
+    ],
     lessonFlow: [
-      { minutes:'0–8', title:'גשר משיעור 3', teacher:'מחזיר לנקודת דגימה: לפעמים לא מתקדמים — רק סורקים.', students:'נותנים דוגמה מתי לא כדאי להתקדם.' },
-      { minutes:'8–18', title:'Yaw כתצפית', teacher:'מדגים בגוף: סיבוב במקום מול הליכה צדית.', students:'מבדילים Yaw מ־Roll.' },
-      { minutes:'18–30', title:'תכנון נקודת תצפית', teacher:'מצייר תחנה עם מכשולים סביב.', students:'מסמנים כיווני תצפית.' },
-      { minutes:'30–46', title:'בניית משימה', teacher:'מדגים Hover לפני/אחרי Yaw.', students:'בונים Takeoff → Hover → Yaw 360 → Hover → Land.' },
-      { minutes:'46–60', title:'הרצה ותיעוד', teacher:'מבקש לתעד מה רואים בארבעה כיוונים.', students:'מריצים וכותבים תצפיות.' },
-      { minutes:'60–74', title:'דיבוג סיבוב', teacher:'שואל מה קורה אם Yaw לפני Hover או בלי Land.', students:'מתקנים סדר פקודות.' },
-      { minutes:'74–84', title:'Ready for Physical', teacher:'מציג צ׳קליסט לקראת שיעור 5.', students:'מסמנים מוכנות/חוסר מוכנות.' },
-      { minutes:'84–90', title:'סיכום יחידת סימולטור', teacher:'מסכם 1–4: בדיקה, ריבוע, דגימה, תצפית.', students:'כרטיס יציאה.' }
+      { minutes:'0–8', title:'בדיקת תנאי קדם', teacher:'מחברים לשיעור 3: כבר יודעים מרחק, גובה ותיעוד ניסוי. היום מוסיפים כיסוי שטח שיטתי.', students:'מסבירים למה טיסה אקראית עלולה לפספס נקודות.' },
+      { minutes:'8–18', title:'סיפור חקר: SeeTree', teacher:'מציגים חקלאות מדויקת וסריקת מטעים. שואלים איך מכסים שטח גדול בלי לפספס.', students:'מציעים שיטות סריקה ומשווים אקראי מול שיטתי.' },
+      { minutes:'18–30', title:'Grid Scan על הלוח', teacher:'מציירים מלבן עם 4 שורות ומדגימים זיגזג: הלוך, מעבר צד, חזור.', students:'מסמנים שורות סרוקות ו“חורים” בכיסוי.' },
+      { minutes:'30–42', title:'פתיחת DroneBlocks וסביבת סימולטור', teacher:'מדגים Minimal Grid/Mars ושם משימה מסודר.', students:'פותחים משימה Grid_Scan_G6_TeamName.' },
+      { minutes:'42–56', title:'בונים זוג שורות ידני', teacher:'מדגישים כיוון, Yaw ומעבר צד. עוד לא חייבים Loop.', students:'בונים Takeoff → Forward → מעבר צד → Forward חזרה → Land.' },
+      { minutes:'56–70', title:'מזהים תבנית ומכניסים Loop', teacher:'מראה מה חוזר ואיך Loop ×2 יוצר 4 שורות.', students:'בונים/משדרגים לגרסת Loop לפי רמת הצוות.' },
+      { minutes:'70–80', title:'תיעוד Coverage Table', teacher:'מחלק/מציג טבלת כיסוי: שורה, נסרקה?, הערה/סטייה.', students:'ממלאים טבלה לפי הרצת הסימולטור.' },
+      { minutes:'80–86', title:'הרחבה או דיבוג', teacher:'למתקדמים: row_length כמשתנה; לתמיכה: דיבוג Loop/זווית/מרחק.', students:'מבצעים תיקון אחד או הרחבה אחת בלבד.' },
+      { minutes:'86–90', title:'Ready for Physical', teacher:'מסכם: שיעור הבא פיזי, אבל לא סורקים מלא — קודם System Check.', students:'כרטיס יציאה: “Grid Scan עדיף מטיסה אקראית כי...”' }
     ],
     exercises: [
-      { minutes:'8–18', title:'Yaw מול Roll', prompt:'הדגימו בגוף מה ההבדל.', check:'Yaw הוא סיבוב במקום.' },
-      { minutes:'18–30', title:'מפת תצפית', prompt:'סמנו ארבעה כיווני תצפית סביב נקודה.', check:'יש צפון/דרום/מזרח/מערב או ארבעה אזורים.' },
-      { minutes:'30–46', title:'סריקת 360', prompt:'בנו Takeoff → Hover → Yaw 360 → Hover → Land.', check:'Hover לפני ואחרי הסיבוב.' },
-      { minutes:'46–60', title:'תיעוד תצפית', prompt:'כתבו מה הרחפן “בודק” בכל כיוון.', check:'יש לפחות שלוש תצפיות.' },
-      { minutes:'60–74', title:'דיבוג סדר', prompt:'מה מסוכן אם Yaw מתרחש מיד אחרי Takeoff בלי Hover?', check:'התשובה מזכירה יציבות.' },
-      { minutes:'74–84', title:'צ׳קליסט מוכנות', prompt:'סמנו מה צריך לפני טיסה פיזית.', check:'כולל אזור, משקפיים, סוללה ואישור מדריך.' },
-      { minutes:'84–90', title:'כרטיס יציאה', prompt:'אני מוכן/ה לשיעור 5 כש...', check:'התשובה כוללת בטיחות וקוד.' }
+      { minutes:'18–26', title:'מפת שורות', prompt:'שרטטו שטח עם 4 שורות וסמנו נתיב זיגזג.', check:'יש Start, ארבע שורות ו־Land.' },
+      { minutes:'26–34', title:'Coverage מול Random', prompt:'הסבירו למה טיסה אקראית עלולה להשאיר אזור לא סרוק.', check:'התשובה מזכירה כיסוי שטח/חורים.' },
+      { minutes:'34–42', title:'פתיחת משימה', prompt:'צרו משימה Grid_Scan_G6_TeamName בסימולטור.', check:'שם המשימה ברור והטאבלט ב־WiFi בית ספרי.' },
+      { minutes:'42–56', title:'זוג שורות ידני', prompt:'בנו מסלול שמכסה שתי שורות: Forward → מעבר צד → Forward חזרה.', check:'המסלול נשאר בשטח המדומה.' },
+      { minutes:'56–70', title:'Loop Grid Scan', prompt:'הפכו את זוג השורות לתבנית שחוזרת פעמיים כדי לכסות 4 שורות.', check:'Takeoff/Land מחוץ ל־Loop והתבנית בתוך ה־Loop.' },
+      { minutes:'70–78', title:'Coverage Table', prompt:'מלאו: שורה 1–4 — נסרקה? האם הייתה חפיפה או פספוס?', check:'יש תיעוד כיסוי ולא רק קוד.' },
+      { minutes:'78–86', title:'דיבוג או משתנה הרחבה', prompt:'תקנו סטייה אחת, או לצוות מתקדם: הגדירו row_length ושנו ערך אחד.', check:'שינוי אחד בלבד בכל הרצה.' },
+      { minutes:'86–90', title:'כרטיס יציאה', prompt:'השלימו: “Grid Scan עדיף מטיסה אקראית כי...”', check:'התשובה מחברת בין שיטתיות, כיסוי ודיוק.' }
     ],
-    deliverable: 'Observation_360_G6: משימת סריקה 360° + צ׳קליסט מוכנות לשיעור פיזי ראשון.',
-    assessment: ['Yaw מוסבר כסיבוב ולא כתנועה.', 'יש Hover לפני/אחרי Yaw.', 'התיעוד כולל כיווני תצפית.', 'הצ׳קליסט כולל בטיחות פיזית.', 'התלמיד יודע לנמק למה לא טסנו פיזית לפני שיעור 5.'],
-    debugging: [{ problem:'בלבול Yaw/Roll', fix:'חוזרים להדגמה גופנית.' }, { problem:'הסיבוב מתחיל לפני יציבות', fix:'מוסיפים Hover לפני Yaw.' }, { problem:'הצ׳קליסט שטחי', fix:'דורשים לפחות ארבעה פריטי בטיחות.' }, { problem:'התלמידים רוצים להטיס עכשיו', fix:'מסבירים: שיעור 4 הוא שער מוכנות, לא טיסה.' }],
-    differentiation: { support:['להשתמש בתבנית מוכנה של ארבעה כיוונים.', 'להריץ רק רצף בסיסי ללא שינוי.', 'לעבוד עם צ׳קליסט מצויר.'], extension:['להוסיף צילום תאורטי בכל כיוון.', 'לתכנן מתי עדיף Yaw ומתי Grid Scan.', 'להציע כלל Abort לתצפית מסוכנת.'] },
-    instructorGuide: { prerequisites:'נדרש שיעור 3: הבנת נקודת דגימה וגובה/מרחק. שיעור 4 סוגר את שלב הסימולטור לפני מעבר פיזי.', pedagogy:['שיעור זה מחזק מודעות מרחבית ובטיחות לפני טיסה אמיתית.', 'הצ׳קליסט חשוב כמו הקוד — הוא תנאי מעבר לשיעור 5.', 'להחזיק את המתח: עוד לא מטיסים, כי מהנדסים בודקים מוכנות.'], mediaNote: commonInstructorMediaNote, exitTicket:'לפני טיסה פיזית חייבים לוודא ___.' },
-    videoResources: grade6VideoResources,
+    deliverable: 'Grid_Scan_G6: משימת סימולטור DroneBlocks עם סריקת 3–4 שורות, Coverage Table קצר, Share Link/צילום מסך ו־Ready-for-Physical checklist לקראת שיעור 5.',
+    assessment: [
+      'התלמיד מסביר Grid Scan וכיסוי שטח.',
+      'המסלול בנוי כתבנית זיגזג ולא כתנועה אקראית.',
+      'יש שימוש ב־Loop או הסבר ברור היכן התבנית החוזרת הייתה נכנסת ל־Loop.',
+      'יש Coverage Table או תיעוד שורות סרוקות.',
+      'התלמיד מבין ששיעור 5 מתחיל ב־System Check פיזי קצר ולא בסריקה מלאה.'
+    ],
+    debugging: [
+      { problem:'הזיגזג מסתובב סביב עצמו', fix:'בודקים סדר Yaw: אחרי שורה קדימה צריך פנייה, מעבר צד ופנייה לכיוון השורה הבאה.' },
+      { problem:'המסלול יוצא מהשטח', fix:'מקצרים row_length/scan_step ומריצים שוב. שינוי אחד בלבד.' },
+      { problem:'Loop חוזר על Takeoff או Land', fix:'מוציאים Takeoff/Land מחוץ ללולאה ומשאירים רק תבנית הסריקה בפנים.' },
+      { problem:'התלמידים נתקעים במשתנים', fix:'משתנים אינם חובה. חוזרים לערכי מרחק קבועים ומסיימים Coverage Table.' },
+      { problem:'הטאבלט לא שומר', fix:'בודקים WiFi בית ספרי, Save ידני ואז Share/צילום מסך.' }
+    ],
+    differentiation: {
+      support: ['לבנות שתי שורות ידנית בלי Loop ורק לסמן מה היה חוזר.', 'לתת דף שרטוט Grid עם Start ו־Land מוכנים.', 'להפחית ל־3 שורות במקום 4 כדי לשמור על הצלחה.'],
+      extension: ['להוסיף משתנה row_length ולבדוק 80 מול 120 אינץ׳.', 'להשוות Grid Scan מול מסלול אקראי מבחינת אזורים מפוספסים.', 'להציע כיצד Mission Pad עתידי יכול לסמן תחנת דגימה בתוך אחת השורות.' ]
+    },
+    instructorGuide: {
+      prerequisites: 'התלמידים מכירים Takeoff/Land, Forward/Back/Yaw וגובה בסיסי. אם Yaw עדיין לא יציב, להדגים בגוף לפני בניית הזיגזג.',
+      pedagogy: ['זהו שיעור חקר ראשון שבו “כיסוי שטח” הוא התוצר, לא רק טיסה יפה.', 'Variables הם רעיון הרחבה. החובה הפדגוגית היא Grid Scan + Loop + תיעוד Coverage.', 'שיעור 4 הוא עדיין סימולטור בלבד כדי למנוע מעבר מוקדם למסלולים פיזיים מורכבים.'],
+      exitTicket: 'Grid Scan עדיף מטיסה אקראית כי ___.',
+      safetyBridge: 'להדגיש בסיום: בשיעור 5 הטיסה הפיזית תהיה System Check קצר; סריקה פיזית תותר רק כהרחבה זעירה לצוותים יציבים.'
+    },
     screenshotSlides: [
-      { title:'פותחים משימת תצפית', src:'assets/tello-mission-lab/lesson4/open-app.png', caption:'נקודת תצפית קבועה בסימולטור.' },
-      { title:'רצף Yaw 360°', src:'assets/tello-mission-lab/lesson4/block-sequence.png', caption:'Hover לפני ואחרי הסיבוב כדי לשמור יציבות.' },
-      { title:'בודקים תצפית', src:'assets/tello-mission-lab/lesson4/simulator-run.png', caption:'הרחפן סורק בלי להתקדם.' },
-      { title:'שומרים מוכנות', src:'assets/tello-mission-lab/lesson4/save-share.png', caption:'שמירה + צ׳קליסט לקראת שיעור 5.' }
+      { title:'שרטוט Grid Scan', src:'assets/tello-mission-lab/lesson4/grid-scan-diagram.svg', caption:'המסלול נראה כמו קריאת ספר: שורה, מעבר צד, שורה חזרה — עד כיסוי מלא.' },
+      { title:'משרטטים אזור סריקה', src:'assets/tello-mission-lab/lesson4/open-app.png', caption:'לפני קוד — מגדירים שורות, התחלה, מעבר צד ונחיתה.' },
+      { title:'תבנית זיגזג', src:'assets/tello-mission-lab/lesson4/block-sequence.png', caption:'Forward → מעבר צד → Forward חזרה. זו התבנית שנכנסת ל־Loop.' },
+      { title:'בודקים כיסוי שטח', src:'assets/tello-mission-lab/lesson4/simulator-run.png', caption:'מסמנים אילו שורות נסרקו והאם נשארו חורים בכיסוי.' },
+      { title:'שומרים ומוכנים לפיזי', src:'assets/tello-mission-lab/lesson4/save-share.png', caption:'Share Link/צילום מסך + צ׳קליסט מוכנות לשיעור 5.' }
     ],
     instructorSlides: [
-      { title:'סורקים בלי לזוז', body:'לפעמים סיבוב במקום הוא החלטה בטוחה יותר מהתקדמות.', bullets:['Observation Point', 'Yaw 360°', 'Obstacle Awareness'] },
-      { title:'Hover לפני Yaw', body:'יציבות לפני סיבוב יוצרת תצפית טובה יותר.', bullets:['Takeoff', 'Hover', 'Yaw', 'Land'] },
-      { title:'שער לשיעור 5', body:'אין מעבר לרחפן פיזי בלי צ׳קליסט מוכנות.', bullets:['משקפיים', 'אזור סטרילי', 'סוללה', 'אישור מדריך'] }
+      { title:'Grid Scan ראשון', body:'היום לומדים לסרוק שטח כמו חוקרים: שורה־אחר־שורה, לא באקראי. האנלוגיה: קוראים ספר — לא קופצים בין מילים, עוברים שורה אחרי שורה.', bullets:['SeeTree', 'כיסוי שטח', 'סימולטור בלבד'] },
+      { title:'מה הבעיה בטיסה אקראית?', body:'טיסה אקראית דומה לצביעה עם עיניים עצומות: חלקים נצבעים פעמיים וחלקים נשארים לבנים. Grid Scan מונע “חורים” במפה.', bullets:['Coverage', 'חורים במפה', 'אלגוריתם סריקה'] },
+      { title:'תבנית הזיגזג — רואים לפני שבונים', body:'שרטטו על הלוח: שורה קדימה, מעבר צד, שורה חזרה. רק אחרי שהמסלול נראה ברור — מעבירים אותו לבלוקים.', bullets:['Forward', 'Yaw', 'Scan Step', 'Loop ×2'] },
+      { title:'Variables כהרחבה', body:'משתנה row_length הוא כמו כפתור מרחק מרכזי: משנים ערך במקום אחד וכל שורות הסריקה מתארכות או מתקצרות.', bullets:['לא להעמיס', 'ערכים קבועים מספיקים', 'הרחבה למצטיינים'] },
+      { title:'גשר לשיעור 5', body:'בשיעור הבא עוברים לפיזי בזהירות: System Check קודם, סריקה קטנה רק אם הצוות יציב.', bullets:['צ׳קליסט', 'אזור סטרילי', 'Land תמיד בסוף'] }
     ]
   });
+
 
   Object.assign(window.TELLO_MISSION_LAB_LESSONS[4], {
-    title: 'שיעור 5: טיסת חקר פיזית ראשונה — System Check מבוקר',
-    subtitle: 'מעבר ראשון מהסימולטור לרחפן אמיתי באישור מדריך בלבד',
-    concept: 'Pre-Flight Check, Tello WiFi, תפקידים, המראה/ריחוף/נחיתה פיזית מבוקרת',
-    story: 'אחרי ארבעה שיעורי סימולטור, צוותי Mission Lab מוכנים לבדוק רחפן אמיתי. המטרה אינה “לעוף רחוק”, אלא להוכיח שהצוות יודע לעבוד בבטיחות, לפי צ׳קליסט ולפי תוכנית קצרה.',
-    mission: 'לבצע Pre-Flight Check, להתחבר ל־Tello WiFi רק בהנחיית מדריך, להריץ System Check פיזי קצר: Safety Check → Takeoff → Hover → Land, ולתעד הבדל אחד בין סימולטור למציאות.',
-    blocks: ['safety_check','takeoff','hover','land'],
-    essentialQuestion: 'מה חייב להיות נכון לפני שהקוד עובר מסימולטור למדחפים אמיתיים?',
-    successCriteria: ['אני מבצע/ת Pre-Flight Check מלא לפני חיבור לרחפן.', 'אני מבדיל/ה בין WiFi בית ספרי לבין WiFi רחפן.', 'אני שומר/ת על תפקידים ואזור סטרילי.', 'אני מריץ/ה רק משימת System Check פיזית קצרה באישור מדריך.', 'אני מתעד/ת הבדל אחד בין סימולטור למציאות.'],
-    realWorldUses: [{ icon:'🛡️', title:'בדיקות לפני הפעלה', text:'בכל מערכת רובוטית בודקים ציוד, סביבה וסיכון לפני הרצה.' }, { icon:'🔋', title:'ניהול סוללה', text:'סוללה היא מגבלת משימה וחלק מנוהל הבטיחות.' }, { icon:'🧑‍✈️', title:'צוות תפעול', text:'טיסה בטוחה היא עבודת צוות: מפעיל, נווט ותצפיתן.' }],
-    vocabulary: [['Pre-Flight Check','בדיקה לפני טיסה: סוללה, מדחפים, מרחב וקוד.'], ['Tello WiFi','רשת הרחפן לטיסה פיזית — לא אינטרנט.'], ['Sterile Zone','אזור נקי מאנשים/חפצים בזמן טיסה.'], ['Observer','תצפיתן בטיחות שמסתכל על המרחב.'], ['Battery Box','קופסת Full וקופסת Empty לניהול סוללות.']],
-    safetyRules: ['טיסה פיזית רק באישור מדריך ובתור מוגדר.', 'משקפי מגן חובה לכל מי שבאזור.', 'שיער אסוף, חפצים רופפים מחוץ לאזור.', 'אזור סטרילי לפני Takeoff.', 'אם התצפיתן אומר Stop — נוחתים/עוצרים מיד.', 'אין שינוי קוד בזמן הרחפן באוויר.'],
-    commonDirections: [['Safety Check','בדיקת בטיחות לפני המראה.'], ['Takeoff','המראה קצרה ומבוקרת.'], ['Hover','ריחוף לבדיקת יציבות.'], ['Land','נחיתה מיד בסוף הבדיקה.'], ['Observer Stop','קריאת עצירה מחייבת.']],
-    setupSteps: ['מסמנים אזור טיסה סטרילי בכיתה.', 'בודקים מגיני פרופלורים, מדחפים וסוללה.', 'מריצים קודם בסימולטור.', 'רק באישור מדריך עוברים ל־Tello WiFi.', 'מריצים System Check קצר ונוחתים.'],
-    tabletTips: ['לשמור עותק סימולטור לפני מעבר ל־Tello WiFi.', 'לא לצפות לשמירה בענן בזמן חיבור לרשת הרחפן.', 'להחזיר ל־WiFi בית ספרי אחרי הטיסה לצורך תיעוד/שיתוף.', 'להחזיק את הטאבלט יציב ולא ללחוץ פעמיים על הרצה.'],
+    title: 'שיעור 5: טיסת הבכורה של רחפני המחקר והתצפית',
+    subtitle: 'מעבר ראשון לרחפן פיזי: יציבות חיישנים, WiFi כפול, טלמטריה וסריקת ריבוע מוקטנת',
+    unit: unitNames.launch,
+    concept: 'Pre-Flight Check, Tello WiFi, Telemetry, ריחוף יציב, Yaw תצפית, scan_distance ו־Grid Scan פיזי מוקטן',
+    workspaceMode: 'physical-lab',
+    appWorkflowTitle: 'מעבדת טיסה פיזית — DroneBlocks App ורחפן Tello באישור מדריך בלבד',
+    appWorkflowNote: 'האתר הוא תדריך ומערך עבודה. הקוד נבנה/נטען באפליקציית DroneBlocks בטאבלט, נשמר בענן דרך WiFi בית ספרי, ומורץ פיזית רק אחרי Pre‑Flight Check וחיבור מבוקר ל־Tello WiFi.',
+    story: 'צוותי המעבדה הניידת של כיתה ו׳ מקבלים אישור ראשון להוציא את רחפני החקר מהסימולטור אל השטח. בארבעת המפגשים הקודמים הם תכננו סריקות וחקר בסביבה וירטואלית; היום הם בודקים האם קוד סטרילי עומד מול פיזיקה אמיתית: רוח מזגן, תאורת רצפה, VPS, סוללה, רעש ולחץ בטיחות.',
+    mission: 'לבצע טיסת בכורה פיזית בשתי משימות מאושרות: 1) בדיקת ריחוף ותצפית: Takeoff → Delay 15 sec → Yaw Right 90° → Yaw Left 90° → Land, מדידת סחיפה ובדיקת מוכנות לצילום; 2) טעינת קוד סריקת הריבוע משיעור 4, שינוי scan_distance פעם אחת מ־60in ל־30in, והרצה פיזית רק אם המדריך מאשר שהריבוע נשאר בתוך Safe Fly Zone.',
+    blocks: ['safety_check','takeoff','hover','yaw_360','land','grid_scan'],
+    physicalFlightAllowed: true,
+    essentialQuestion: 'מה קורה כשקוד סריקה מחקרי שעבד בסימולטור פוגש רחפן אמיתי, חיישנים אמיתיים ואזור טיסה מוגבל?',
+    successCriteria: [
+      'אני מבצע/ת Pre‑Flight Check מלא: סוללה, פרופלורים, מגינים, אזור, קוד ותפקידים.',
+      'אני מסביר/ה מתי משתמשים ב־WiFi בית ספרי ומתי עוברים ל־Tello WiFi.',
+      'אני מריץ/ה בדיקת ריחוף ותצפית קצרה ומודד/ת סחיפה בס״מ.',
+      'אני יודע/ת למה מקטינים scan_distance מ־60in ל־30in לפני הרצה בכיתה.',
+      'אני מתעד/ת הבדל אחד בין סימולטור למציאות ומחזיר/ה ציוד וסוללות לפי נוהל.'
+    ],
+    realWorldUses: [
+      { icon:'🛰️', title:'בדיקת יציבות חיישנים', text:'רחפן מחקר צריך להיות יציב מספיק לפני צילום או מיפוי.' },
+      { icon:'📡', title:'טלמטריה', text:'נתוני גובה, סוללה וחיבור עוזרים לקבל החלטות בזמן טיסה.' },
+      { icon:'🧭', title:'כיול למציאות', text:'אותו קוד דורש Scale Down כאשר עוברים מסימולטור לכיתה.' },
+      { icon:'🦺', title:'צוות טיסה', text:'Driver, Navigator ו־Safety Observer מקטינים סיכון ומעלים דיוק.' }
+    ],
+    vocabulary: [
+      ['Pre‑Flight Check','בדיקת כשירות אווירית לפני כל המראה פיזית.'],
+      ['Telemetry Bar','אזור באפליקציה שמציג נתוני חיבור, סוללה וגובה.'],
+      ['Safe Fly Zone','מלבן טיסה מסומן שאסור להיכנס אליו כשהרחפן דולק או באוויר.'],
+      ['Takeoff Callout','הכרזה קולית לפני Run: “צוות X ממריא / רחפנים באוויר”.'],
+      ['VPS','חיישני ראייה תחתיים שמושפעים מתאורה ומרקם הרצפה.'],
+      ['scan_distance','משתנה מרחק מרכזי שמאפשר להקטין את הסריקה בפעם אחת.'],
+      ['Scale Down','התאמת קנה מידה: הקטנת 60in ל־30in כדי להישאר בטוחים בכיתה.']
+    ],
+    safetyRules: [
+      'אין חיבור לרחפן ואין Run פיזי בלי אישור מדריך.',
+      'משקפי מגן לצוות המטיס ושיער ארוך אסוף.',
+      'אף תלמיד לא נכנס ל־Safe Fly Zone כאשר הרחפן דולק או באוויר.',
+      'לפני כל המראה הנהג מכריז בקול והשאר מאשרים שהשטח פנוי.',
+      'רק תצפיתן בטיחות מניח ומחזיר רחפן כשהוא כבוי ועל הקרקע.',
+      'אם הרחפן סוטה לכיוון גבול — משתמשים ב־Land/Abort לפי הנחיית מדריך ולא רצים אליו.',
+      'סוללות ריקות עוברות מיד לקופסת 0%; לא מאחסנים סוללה בתוך הרחפן.'
+    ],
+    commonDirections: [
+      ['Takeoff → Delay 15 → Yaw Right 90 → Yaw Left 90 → Land','בדיקת ריחוף ותצפית ראשונית.'],
+      ['scan_distance = 60in','ערך סימולטור/שיעור 4 גדול מדי לכיתה.'],
+      ['scan_distance = 30in','ערך פיזי מוקטן להרצת ריבוע בתוך Safe Fly Zone.'],
+      ['Tello WiFi','חיבור פיזי לרחפן, ללא אינטרנט לענן.'],
+      ['School WiFi','שמירה, טעינה ושיתוף בענן DroneBlocks.']
+    ],
+    setupSteps: [
+      'מסמנים מלבני Safe Fly Zone בגודל כ־1.5×1.5 מטר ומכינים קופסאות סוללות 100% / 0%.',
+      'פותחים DroneBlocks ב־WiFi בית ספרי, נכנסים לחשבון וטוענים את קוד סריקת החממה/הריבוע משיעור 4.',
+      'בונים/בודקים משימת ריחוף קצרה בסימולטור לפני רחפן פיזי.',
+      'מבצעים Pre‑Flight Check פיזי: סוללה, פרופלורים, מגינים, אזור, תפקידים וקוד.',
+      'מתחברים ל־Tello WiFi רק בהוראת מדריך ומריצים צוות אחד בכל פעם.',
+      'אחרי הרצה חוזרים ל־WiFi בית ספרי לשמירה, Share Link ותחקיר.'
+    ],
+    tabletTips: [
+      'אם אין Share Link — כנראה עדיין מחוברים ל־Tello WiFi; לחזור ל־WiFi בית ספרי.',
+      'אם האפליקציה מציגה Disconnected — לבדוק שהטאבלט מחובר לרשת TELLO הנכונה.',
+      'לא עורכים קוד בזמן שהרחפן באוויר.',
+      'לשמור גרסה בשם Grid_Scan_Physical_Tested או TeamX_Physical_Check.'
+    ],
+    appWorkflow: [
+      { title:'פתיחה בענן', detail:'School WiFi → DroneBlocks → Login → טעינת קוד שיעור 4: סריקת חממה/ריבוע עם scan_distance.' },
+      { title:'משימה 1 — בדיקת ריחוף ותצפית', detail:'בונים/בודקים: Takeoff → Delay 15 sec → Yaw Right 90° → Yaw Left 90° → Land. מוודאים Land בסוף.' },
+      { title:'Pre‑Flight Check', detail:'סוללה 100%, פרופלורים ומגינים, Safe Fly Zone, משקפי מגן, שיער אסוף, Driver/Navigator/Observer והכרזת המראה.' },
+      { title:'חיבור Tello WiFi', detail:'רק בהנחיית מדריך עוברים לרשת TELLO‑XXXXXX של הרחפן האישי. לא מתחברים לרחפן של צוות אחר.' },
+      { title:'מדידת סחיפה', detail:'מריצים משימת ריחוף, מודדים כמה ס״מ הרחפן סטה מנקודת ההמראה ומחליטים אם הוא יציב מספיק לצילום עתידי.' },
+      { title:'משימה 2 — סריקת ריבוע פיזית', detail:'משנים scan_distance מ־60in ל־30in פעם אחת בלבד, מתרגלים Land/Abort, ומריצים רק באישור מדריך.' },
+      { title:'סגירה ושיתוף', detail:'Land, כיבוי רחפן, סוללה לקופסת 0%, חזרה ל־School WiFi, שמירת Grid_Scan_Physical_Tested ו־Share Link.' }
+    ],
+    visualDiagram: { panelTitle:'🛫 טיסת בכורה מחקרית', chip:'Physical Lab', title:'מסימולטור למציאות: ריחוף, סחיפה וריבוע מוקטן', src:'assets/tello-mission-lab/lesson5/research-first-flight-diagram.svg', alt:'תרשים טיסת בכורה מחקרית: ריחוף, מדידת סחיפה והקטנת scan_distance', caption:'קודם בודקים יציבות; רק אחר כך מקטינים את סריקת הריבוע ל־30in ומריצים בזהירות.' },
     lessonFlow: [
-      { minutes:'0–8', title:'בדיקת תנאי קדם', teacher:'בודק צ׳קליסט שיעור 4 ו־Observation_360.', students:'מציגים כלל בטיחות אחד.' },
-      { minutes:'8–20', title:'Pre-Flight Check', teacher:'מדגים בדיקת מדחפים, סוללה, מרחב ותפקידים.', students:'מסמנים צ׳קליסט צוותי.' },
-      { minutes:'20–32', title:'WiFi כפול', teacher:'מסביר WiFi בית ספרי מול Tello WiFi.', students:'אומרים מתי משתמשים בכל רשת.' },
-      { minutes:'32–44', title:'סימולטור אחרון', teacher:'דורש הרצה תקינה לפני פיזי.', students:'מריצים Safety Check → Takeoff → Hover → Land בסימולטור.' },
-      { minutes:'44–62', title:'טיסות פיזיות לפי תור', teacher:'מאשר צוותים, מנהל אזור סטרילי וסוללות.', students:'מבצעים רק System Check קצר.' },
-      { minutes:'62–74', title:'תיעוד הבדל מציאות', teacher:'שואל מה השתנה לעומת הסימולטור.', students:'כותבים הבדל אחד וסיכון אחד.' },
-      { minutes:'74–84', title:'תחזוקת ציוד', teacher:'מנהל Full/Empty batteries וטעינת טאבלטים.', students:'מחזירים ציוד לפי נוהל.' },
-      { minutes:'84–90', title:'סיכום והכנה לשיעור 6', teacher:'מחבר לסריקת קו חוף: טיסה פיזית קצרה הופכת למשימת חקר.', students:'כרטיס יציאה.' }
+      { minutes:'0–8', title:'בדיקת תנאי קדם', teacher:'מחברים לשיעור 4: Grid Scan/Variables בסימולטור. מסבירים שהיום בודקים מציאות לפני משימת חקר מלאה.', students:'מציינים סיכון פיזי אחד שלא קיים בסימולטור.' },
+      { minutes:'8–20', title:'בטיחות ותפקידי צוות', teacher:'מציג PPE, Safe Fly Zone, Takeoff Callout ו־Driver/Navigator/Observer.', students:'מתחלקים לצוותים ומסמנים תפקידים.' },
+      { minutes:'20–35', title:'WiFi כפול וטעינת קוד', teacher:'מדגים School WiFi לשמירה ו־Tello WiFi להרצה; טוענים את קוד שיעור 4.', students:'פותחים DroneBlocks, נכנסים לחשבון ומאתרים את קוד הסריקה.' },
+      { minutes:'35–45', title:'Pre‑Flight Check', teacher:'עובר עם התצפיתנים על סוללה, פרופלורים, מגינים, אזור וקוד.', students:'מסמנים צ׳ק־ליסט ומחכים לאישור.' },
+      { minutes:'45–60', title:'משימה 1: ריחוף ותצפית', teacher:'מאשר צוותים לפי תור ומבקש למדוד סחיפה.', students:'מריצים Takeoff → Delay → Yaw ימינה/שמאלה → Land ומתעדים יציבות.' },
+      { minutes:'60–76', title:'משימה 2: ריבוע פיזי מוקטן', teacher:'מדגיש שינוי scan_distance פעם אחת בלבד מ־60in ל־30in ותרגול Abort.', students:'מעדכנים משתנה, מריצים/צופים ומתעדים האם הריבוע נשאר בגבולות.' },
+      { minutes:'76–85', title:'תחקיר מחקרי', teacher:'שואל: מה ההבדל בין הסימולטור לרחפן אמיתי? האם היה יציב מספיק לצילום?', students:'כותבים הבדל אחד והחלטת מוכנות לצילום.' },
+      { minutes:'85–90', title:'תחזוקה ושיתוף', teacher:'מנהל כיבוי, סוללות, החזרת ציוד וחזרה ל־School WiFi.', students:'שומרים/משתפים Grid_Scan_Physical_Tested.' }
     ],
     exercises: [
-      { minutes:'8–20', title:'צ׳קליסט פיזי', prompt:'סמנו סוללה, מדחפים, אזור, משקפיים ואישור.', check:'כל הפריטים קיימים.' },
-      { minutes:'20–32', title:'איזו רשת?', prompt:'מתי WiFi בית ספרי ומתי Tello WiFi?', check:'התשובה מבחינה בין שמירה לטיסה.' },
-      { minutes:'32–44', title:'הרצת סימולטור אחרונה', prompt:'הריצו Safety Check → Takeoff → Hover → Land.', check:'הרצף תקין לפני פיזי.' },
-      { minutes:'44–62', title:'System Check פיזי', prompt:'בצעו רק באישור מדריך.', check:'המראה/ריחוף/נחיתה קצרה.' },
-      { minutes:'62–74', title:'מציאות מול סימולטור', prompt:'כתבו הבדל אחד שחוויתם.', check:'ההבדל קשור לרעש/רוח/סוללה/מרחב.' },
-      { minutes:'74–84', title:'תחזוקת ציוד', prompt:'החזירו סוללה לקופסה הנכונה וטאבלט לטעינה.', check:'ציוד מסודר.' },
-      { minutes:'84–90', title:'כרטיס יציאה', prompt:'לפני טיסה פיזית חייבים...', check:'התשובה כוללת אישור מדריך ובטיחות.' }
+      { minutes:'8–18', title:'תפקידי צוות', prompt:'כתבו מי הנהג, הנווט ותצפיתן הבטיחות ומה כל אחד עושה בזמן Run.', check:'לכל תלמיד תפקיד ברור.' },
+      { minutes:'20–28', title:'מפת WiFi כפול', prompt:'סמנו מתי משתמשים ב־School WiFi ומתי ב־Tello WiFi.', check:'התלמיד יודע ש־Tello WiFi אינו מתאים לשמירה בענן.' },
+      { minutes:'28–35', title:'טעינת קוד שיעור 4', prompt:'פתחו את קוד סריקת החממה/הריבוע ומצאו את scan_distance.', check:'הצוות מצא את ערך המרחק המרכזי.' },
+      { minutes:'35–45', title:'Pre‑Flight Check', prompt:'בדקו סוללה, פרופלורים, מגינים, אזור וקוד.', check:'אין סעיף ריק לפני אישור.' },
+      { minutes:'45–60', title:'ריחוף וסחיפה', prompt:'הריצו Takeoff → Delay 15 → Yaw Right/Left → Land ומדדו סטייה בס״מ.', check:'הייתה הכרזה, נחיתה ותיעוד סחיפה.' },
+      { minutes:'60–70', title:'Scale Down', prompt:'שנו scan_distance מ־60in ל־30in בלבד. אל תשנו את שאר מבנה הקוד.', check:'השינוי נעשה במקום אחד.' },
+      { minutes:'70–76', title:'תרגול Abort', prompt:'לפני Run, הצביעו על Land/Abort והסבירו מתי משתמשים בו.', check:'הצוות יודע לעצור במקרה סיכון.' },
+      { minutes:'76–90', title:'תחקיר ושיתוף', prompt:'שמרו Grid_Scan_Physical_Tested וכתבו הבדל אחד בין סימולטור למציאות.', check:'יש תוצר או תיעוד ברור.' }
     ],
-    deliverable: 'Physical_System_Check_G6: הרצה פיזית קצרה מאושרת + תיעוד הבדל סימולטור/מציאות.',
-    assessment: ['Pre-Flight Check בוצע לפני חיבור לרחפן.', 'הצוות שמר על תפקידים ואזור סטרילי.', 'הטיסה הפיזית הייתה קצרה והסתיימה ב־Land.', 'התיעוד מזהה הבדל מציאותי.', 'התלמיד יודע מתי להשתמש בכל רשת WiFi.'],
-    debugging: [{ problem:'הטאבלט לא שומר אחרי טיסה', fix:'חוזרים מ־Tello WiFi ל־WiFi בית ספרי.' }, { problem:'רחפן לא יציב', fix:'נוחתים, בודקים סוללה/רצפה/VPS/מזגן.' }, { problem:'תלמיד נכנס לאזור', fix:'עוצרים מיד ומחדשים אזור סטרילי.' }, { problem:'קוד לא עבר בסימולטור', fix:'אין טיסה פיזית; חוזרים לתיקון סימולטור.' }],
-    differentiation: { support:['לאפשר תפקיד Observer בלבד בטיסה ראשונה.', 'להציג סימולטור במקום פיזי אם תלמיד חושש.', 'לתת צ׳קליסט מודפס.'], extension:['להיות אחראי תיעוד הבדלי מציאות.', 'להציע שיפור בטיחות לקראת שיעור 6.', 'למדוד זמן ריחוף בטוח.'] },
-    instructorGuide: { prerequisites:'נדרשים שיעורים 1–4: System Check, Box, נקודת דגימה, Yaw 360 וצ׳קליסט מוכנות. לא מטיסים צוות שלא עבר סימולטור תקין.', pedagogy:['שיעור 5 הוא שיעור אמון ובטיחות, לא שיעור ביצועים.', 'הצלחה היא נחיתה בטוחה ותיעוד, גם אם הטיסה קצרה מאוד.', 'להקפיד שהתלמידים מבינים שהמציאות מוסיפה רעש, רוח, VPS וסוללה.'], mediaNote: commonInstructorMediaNote, exitTicket:'טיסה פיזית בטוחה מתחילה ב___ ולא ב___.' },
-    videoResources: grade6VideoResources,
+    deliverable: 'Grid_Scan_Physical_Tested: תיעוד ריחוף וסחיפה, קוד סריקת ריבוע עם scan_distance מוקטן ל־30in, תרגול Land/Abort ו־Share Link/צילום מסך לאחר חזרה ל־School WiFi.',
+    assessment: ['הצוות עמד בכל נהלי הבטיחות לפני חיבור לרחפן.', 'הריחוף הפיזי הסתיים בנחיתה ותועד בס״מ/משפט תצפית.', 'scan_distance הוקטן מ־60in ל־30in במקום אחד בלבד.', 'התלמיד יודע להסביר הבדל אחד בין סימולטור למציאות.', 'הציוד והסוללות הוחזרו לפי נוהל שתי קופסאות.'],
+    debugging: [
+      { problem:'נורת סטטוס צהובה / אין חיבור', fix:'בודקים שהטאבלט מחובר לרשת TELLO‑XXXXXX הנכונה ולא ל־School WiFi.' },
+      { problem:'הרחפן לא ממריא / נורה אדומה', fix:'מחליפים סוללה מקופסת 100% ומעבירים חלשה ל־0%.' },
+      { problem:'סחיפה חזקה בריחוף', fix:'בודקים תאורה ורצפה, מוסיפים טקסטורה/סרט צבעוני ובודקים פרופלורים.' },
+      { problem:'הריבוע יוצא מהאזור', fix:'מוודאים ש־scan_distance הוא 30in ולא 60in; לא משנים כמה פרמטרים יחד.' },
+      { problem:'Share Link נכשל', fix:'חוזרים ל־School WiFi ורק אז שומרים/משתפים.' }
+    ],
+    differentiation: { support:['להריץ רק משימת ריחוף ותצפית, בלי ריבוע פיזי.', 'לתת צ׳ק־ליסט מודפס לתלמידים שזקוקים למסגרת.', 'לאפשר תפקיד תצפיתן לפני נהג.'], extension:['לחשב סחיפה בס״מ ולסווג יציבות: טוב/בינוני/לא מוכן לצילום.', 'להשוות scan_distance 30in ל־25in אם האזור קטן.', 'לנסח המלצת צוות לקראת שיעור 6: מה לשפר לפני Grid Scan מלא.'] },
+    instructorGuide: { prerequisites:'שיעור 5 נשען על שיעור 4: התלמידים מכירים Grid Scan/Loop/scan_distance בסימולטור. אם שיעור 4 לא הושלם היטב, לבצע רק ריחוף פיזי ותחקיר ולא להריץ ריבוע.', pedagogy:['זה שיעור מעבר מבוקר: ההצלחה היא בטיחות, תפקידים ותחקיר פיזיקלי.', 'Yaw ימינה/שמאלה משמש כתצפית ולא כתרגיל ראווה.', 'משימת הריבוע היא בדיקת Scale Down של קוד מחקרי, לא תחרות ביצועים.', 'הכנה לצילום בשיעורים הבאים: יציבות היא תנאי לאיסוף נתונים איכותי.'], mediaNote:'התרשים המקומי הוא ויזואל מקורי. צילומי מסך DroneBlocks קיימים הם טיוטה ויש להחליף בצילומי טאבלט מקוריים לפני פרסום.', exitTicket:'רחפן שמוכן לצילום צריך להיות יציב כי ___.' },
     screenshotSlides: [
-      { title:'פותחים גרסת סימולטור', src:'assets/tello-mission-lab/lesson5/open-app.png', caption:'לא עוברים לפיזי בלי גרסת סימולטור תקינה.' },
-      { title:'System Check קצר', src:'assets/tello-mission-lab/lesson5/block-sequence.png', caption:'Safety Check → Takeoff → Hover → Land.' },
-      { title:'בדיקה מבוקרת', src:'assets/tello-mission-lab/lesson5/simulator-run.png', caption:'הסימולטור והפיזי נשארים קצרים ומבוקרים.' },
-      { title:'שומרים תיעוד', src:'assets/tello-mission-lab/lesson5/save-share.png', caption:'חוזרים ל־WiFi בית ספרי לתיעוד ושיתוף.' }
+      { title:'טיסת בכורה מחקרית', src:'assets/tello-mission-lab/lesson5/research-first-flight-diagram.svg', caption:'ריחוף, מדידת סחיפה וריבוע מוקטן ל־30in.' },
+      { title:'צ׳ק־ליסט לפני פיזי', src:'assets/tello-mission-lab/lesson5/open-app.png', caption:'אזור סטרילי, תפקידים, סוללה, פרופלורים ו־Land.' },
+      { title:'קוד קצר + scan_distance', src:'assets/tello-mission-lab/lesson5/block-sequence.png', caption:'בודקים ריחוף ואז מקטינים את קוד הריבוע משיעור 4.' }
     ],
     instructorSlides: [
-      { title:'טיסה פיזית ראשונה', body:'המטרה היא בדיקה בטוחה — לא משימה מורכבת.', bullets:['Pre-Flight', 'Tello WiFi', 'System Check'] },
-      { title:'תפקידים מצילים בטיחות', body:'Driver, Navigator ו־Observer עובדים יחד.', bullets:['אישור מדריך', 'אזור סטרילי', 'Stop מחייב'] },
-      { title:'מציאות ≠ סימולטור', body:'רעש, רוח, VPS וסוללה הם חלק מהלמידה.', bullets:['תיעוד', 'דיבוג', 'נחיתה בטוחה'] }
+      { title:'טיסת בכורה של רחפני המחקר', body:'היום עוברים מהסימולטור לשטח — בזהירות, בצוותים ובקוד קצר.', bullets:['Safe Fly Zone', 'WiFi כפול', 'Telemetry'] },
+      { title:'בדיקת ריחוף ותצפית', body:'רחפן מחקר חייב להיות יציב לפני צילום ומיפוי.', bullets:['Delay 15', 'Yaw 90° ימינה/שמאלה', 'מדידת סחיפה'] },
+      { title:'Scale Down לסריקה', body:'קוד של 60in מהסימולטור גדול מדי לכיתה; משנים scan_distance ל־30in.', bullets:['שינוי אחד', 'פחות סיכון', 'יותר שליטה'] },
+      { title:'תחקיר מציאות', body:'הפיזיקה היא חלק מהלמידה: רוח, תאורה, VPS, סוללה ולחץ.', bullets:['מה ראינו?', 'מה מדדנו?', 'מה נשפר?'] }
     ]
   });
-  // HYBRID_MODEL_GRADE6_LESSONS_1_5_END
 
-  // HYBRID_MODEL_GRADE6_LESSONS_6_15_QUALITY_REWRITE_START
 
   Object.assign(window.TELLO_MISSION_LAB_LESSONS[5], {
-    "title": "שיעור 6: סריקת קו חוף — מסלול חקר ליניארי",
-    "subtitle": "מהטיסה הפיזית הראשונה למסלול הלוך־חזור קצר עם נקודת תצפית",
-    "concept": "Linear Scan, Point of Interest, Hover for Data, Battery Budget",
-    "story": "אחרי System Check פיזי ראשון, הצוותים מקבלים משימת חקר מציאותית: לבדוק קו חוף קצר אחרי סערה. המשימה בכוונה פשוטה — קו אחד, נקודת עניין אחת וחזרה בטוחה — כדי לא לבזבז סוללה ולא לאבד שליטה.",
-    "mission": "לבנות Coastline Scan: Safety Check → Takeoff → Forward → Hover for Data → Back → Land, לתעד נקודת עניין אחת ולהסביר למה המסלול חוזר לנקודת התחלה.",
-    "blocks": [
-        "safety_check",
-        "takeoff",
-        "forward",
-        "hover_data",
-        "back",
-        "land"
+    title: 'שיעור 6: מבצע איתור ניצולים — Search & Grid Scan',
+    subtitle: 'סריקת שטח שיטתית בזיגזג: כיסוי, לולאות, Hover ו־Physical Debugging',
+    unit: unitNames.survey,
+    concept: 'Grid Scan, Zigzag, Random vs Systematic Search, Loops, Hover for Data, Battery Budget, Physical Debugging',
+    workspaceMode: 'physical-lab',
+    appWorkflowTitle: 'משימת חקר פיזית — DroneBlocks App, סימולטור Minimal Grid ורחפן באישור',
+    appWorkflowNote: 'בונים את מסלול הזיגזג באפליקציית DroneBlocks, בודקים ב־Minimal Grid, ורק לאחר אישור בטיחות מעבירים לרחפן פיזי באזור האסון המסומן.',
+    story: 'מפקדת הסיוע האווירי מזעיקה את צוותי החקר: באזור הררי מרוחק התרחש אירוע, וצוותי הקרקע לא יכולים להיכנס. הרחפן צריך לסרוק שטח מסומן בצורה שיטתית, לא אקראית, לעצור מעל נקודות עניין ולחסוך סוללה כדי למצוא את כרטיסיות הניצולים.',
+    mission: 'לבנות ולהריץ משימת Grid Scan זיגזגית: Takeoff → Forward 80cm → Hover 2 sec → מעבר שורה 50cm → Backward 80cm → Hover 2 sec → מעבר שורה 50cm → Forward 80cm → Land. בסימולטור בודקים כיסוי; בפיזי מריצים באזור האסון המסומן ומתקנים סטייה אחת בכל פעם.',
+    blocks: ['safety_check','takeoff','forward','hover_data','left','back','hover_data','left','forward','land'],
+    physicalFlightAllowed: true,
+    essentialQuestion: 'למה סריקה שיטתית בזיגזג עדיפה על טיסה אקראית כאשר מחפשים ניצולים תחת מגבלת סוללה?',
+    successCriteria: ['אני מסביר/ה את ההבדל בין Random Search ל־Grid Scan.', 'אני מפרק/ת סריקת שטח לשורות, מעברי שורה וריחוף נתונים.', 'אני משתמש/ת בלולאה/תבנית חוזרת כדי לקצר קוד ולהפחית טעויות.', 'אני מריץ/ה קודם ב־Minimal Grid ורק אחר כך פיזית באישור.', 'אני מתעד/ת סטייה פיזית ומתקן/ת פרמטר אחד בלבד.'],
+    realWorldUses: [
+      { icon:'🚑', title:'חיפוש והצלה', text:'סריקה שיטתית מגדילה סיכוי למצוא יעד בלי לפספס אזורים.' },
+      { icon:'🌳', title:'SeeTree וחקלאות', text:'רחפנים סורקים שורות עצים כדי לזהות בעיות במהירות.' },
+      { icon:'🔋', title:'Battery Budget', text:'מסלול מסודר חוסך זמן וסוללה לעומת תנועה אקראית.' },
+      { icon:'🧩', title:'Decomposition', text:'מסלול מורכב נבנה ממקטעים פשוטים שחוזרים על עצמם.' }
     ],
-    "essentialQuestion": "איך אוספים מידע מנקודה אחת בלי להפוך את הטיסה לארוכה ומסוכנת?",
-    "successCriteria": [
-        "אני מתכנן/ת מסלול ליניארי קצר וברור.",
-        "אני משתמש/ת ב־Hover for Data כזמן תצפית, לא כעצירה ריקה.",
-        "אני מחזיר/ה את הרחפן לנקודת התחלה לפני נחיתה.",
-        "אני מתעד/ת נקודת עניין אחת.",
-        "אני מסביר/ה איך Battery Budget מגביל את המשימה."
+    vocabulary: [['Grid Scan','סריקת שטח לפי שורות/תאים כדי לא לפספס אזורים.'], ['Zigzag','תבנית הלוך־חזור בין שורות.'], ['Random Search','חיפוש אקראי שעלול להשאיר חורים בכיסוי.'], ['Coverage','מידת הכיסוי של כל תא שטח.'], ['Hover for Data','ריחוף קצר לצילום/סריקת חיישנים מדומה.'], ['Battery Budget','ניהול זמן טיסה קצר תחת מגבלת סוללה.'], ['Physical Debugging','תיקון קוד בעקבות סחיפה, רוח או תנאי רצפה.']],
+    safetyRules: ['הרחפן הפיזי מופעל רק באזור האסון המסומן ובאישור מדריך.', 'משקפי מגן, שיער אסוף ומגיני פרופלור הם חובה.', 'רק צוות אחד/מעט צוותים מטיסים לפי החלטת מדריך; שאר הצוותים עובדים בסימולטור.', 'תצפיתן בטיחות שומר קשר עין ויודע היכן Land/Abort.', 'אין שינויי קוד בזמן רחפן באוויר.', 'בסוף כל סבב מוציאים סוללה ומחזירים לקופסה הנכונה.'],
+    commonDirections: [['Forward 80cm','סריקת שורה קדימה.'], ['Hover 2 sec','עצירת איסוף נתונים מעל נקודת קצה/מטרה.'], ['Left 50cm','מעבר לשורה הבאה.'], ['Backward 80cm','סריקת שורה בכיוון ההפוך.'], ['Loop / Repeat','קיצור תבנית שחוזרת במסלול הזיגזג.'], ['Grid_Scan_Team_X','שם פרויקט לשמירה ושיתוף.']],
+    setupSteps: ['מסמנים על הרצפה אזור אסון 1.5×1.5 מטר וכרטיסיות ניצולים.', 'פותחים DroneBlocks ב־School WiFi ויוצרים Grid_Scan_Team_X.', 'בונים את מסלול הזיגזג ומריצים ב־Minimal Grid.', 'מבצעים Pre‑Flight Check ותפקידים.', 'עוברים ל־Tello WiFi רק לפי הוראת מדריך ומריצים באזור המסומן.', 'חוזרים ל־School WiFi לשמירה, Share Link ותחקיר.'],
+    tabletTips: ['אם עובדים פיזית לפי תור, צוותים ממתינים ממשיכים לשפר סימולטור ולא מבזבזים סוללה.', 'אם Share Link נכשל, לחזור מ־Tello WiFi לרשת בית ספרית.', 'לא להגדיל מרחקים בלי למדוד את האזור הפיזי.', 'שם גרסה מומלץ: Grid_Scan_Team_X_V1/V2.'],
+    appWorkflow: [
+      { title:'הגדרת אזור אסון', detail:'מסמנים מלבן 1.5×1.5 מטר, 4 כרטיסיות ניצולים ונקודת המראה/נחיתה.' },
+      { title:'Random מול Grid', detail:'משווים סריקה אקראית לסריקה שיטתית: האם יש כיסוי מלא? איפה נוצרים חורים?' },
+      { title:'בניית Zigzag ב־DroneBlocks', detail:'Takeoff → Forward 80cm → Hover 2s → Left 50cm → Backward 80cm → Hover 2s → Left 50cm → Forward 80cm → Land.' },
+      { title:'בדיקת Minimal Grid', detail:'מריצים בסימולטור, בודקים שהזיגזג משלים את השטח ולא יוצא מגבולות.' },
+      { title:'הרצה פיזית', detail:'רק לאחר Pre‑Flight Check: מתחברים ל־Tello WiFi, מריצים, התצפיתן שומר אזור והנווט מתעד סטייה.' },
+      { title:'Physical Debugging', detail:'אם הייתה סחיפה, משנים ערך אחד בלבד, למשל מעבר שורה מ־50cm ל־60cm או קיצור שורה.' },
+      { title:'שיתוף וסגירה', detail:'חוזרים ל־School WiFi, שומרים Grid_Scan_Team_X, מפיקים Share Link ומחזירים סוללות.' }
     ],
-    "realWorldUses": [
-        {
-            "icon": "🌊",
-            "title": "סריקת קו חוף",
-            "text": "בדיקה מהירה של נזקי סערה מנקודת מבט אווירית."
-        },
-        {
-            "icon": "🔋",
-            "title": "ניהול סוללה",
-            "text": "משימה קצרה מאפשרת חזרה בטוחה לפני סוללה חלשה."
-        },
-        {
-            "icon": "📍",
-            "title": "Point of Interest",
-            "text": "חוקרים לא טסים לכל מקום — הם עוצרים בנקודה שממנה נדרש מידע."
-        }
+    visualDiagram: { panelTitle:'🗺️ Search & Grid Scan', chip:'Physical Lab', title:'זיגזג שיטתי במקום טיסה אקראית', src:'assets/tello-mission-lab/lesson6/search-grid-scan-diagram.svg', alt:'תרשים זיגזג Grid Scan עם שלוש שורות וכרטיסיות ניצולים', caption:'הרחפן קורא את השטח כמו שורות בספר: שורה קדימה, מעבר, שורה חזרה — עד לכיסוי מלא.' },
+    lessonFlow: [
+      { minutes:'0–5', title:'התכנסות וציוד', teacher:'מחלקים טאבלטים אך לא פותחים רחפנים. הרחפנים כבויים עד שלב פיזי.', students:'מתיישבים בצוותים ומוודאים טאבלט טעון.' },
+      { minutes:'5–12', title:'השראה: חיפוש והצלה', teacher:'מציג סרטון/סיפור SeeTree או DJI Search & Rescue ושואל למה לא לטוס אקראית.', students:'מציעים יתרונות של קוד אוטונומי.' },
+      { minutes:'12–20', title:'Random מול Grid', teacher:'מדגים רומבה/סריקה בעיניים עצומות מול שורות מסודרות.', students:'מזהים למה שיטת השורות מכסה טוב יותר.' },
+      { minutes:'20–25', title:'נוהל WiFi וענן', teacher:'מדגיש School WiFi לפני בנייה ושמירה; Tello WiFi רק להרצה.', students:'פותחים DroneBlocks ופרויקט חדש.' },
+      { minutes:'25–40', title:'בניית זיגזג בסימולטור', teacher:'מדגים שורה, מעבר שורה, ריחוף נתונים וחזרה.', students:'בונים ומריצים ב־Minimal Grid.' },
+      { minutes:'40–45', title:'רענון בטיחות ותפקידים', teacher:'מחלק Driver/Navigator/Observer ומוודא PPE.', students:'מסמנים צ׳ק־ליסט לפני פיזי.' },
+      { minutes:'45–70', title:'מבצע איתור ניצולים', teacher:'מנהל סבבי טיסה. בזמן צוות אחד באוויר, אחרים משפרים סימולטור.', students:'מריצים זיגזג, מתעדים כיסוי וסטייה.' },
+      { minutes:'70–78', title:'שמירה ושיתוף', teacher:'מחזיר לטאבלטים School WiFi ומדגים Share Link.', students:'שומרים Grid_Scan_Team_X ומגישים קישור/צילום.' },
+      { minutes:'78–85', title:'דיון יעילות', teacher:'שואל איך לולאות עזרו לסוללה ומה גרם לסטיות.', students:'מנסחים תובנת חקר אחת.' },
+      { minutes:'85–90', title:'תחזוקה', teacher:'מנהל סוללות, פרופלורים, החזרת רחפנים וטאבלטים.', students:'מחזירים ציוד וכרטיס יציאה.' }
     ],
-    "vocabulary": [
-        [
-            "Linear Scan",
-            "סריקה בקו אחד: יציאה, תצפית וחזרה."
-        ],
-        [
-            "Point of Interest",
-            "נקודת עניין שממנה רוצים מידע."
-        ],
-        [
-            "Hover for Data",
-            "ריחוף קצר לאיסוף מידע/תצפית."
-        ],
-        [
-            "Return Path",
-            "הדרך הבטוחה חזרה לנקודת התחלה."
-        ],
-        [
-            "Battery Budget",
-            "תכנון משימה לפי מגבלת סוללה."
-        ]
+    exercises: [
+      { minutes:'12–18', title:'Random vs Grid', prompt:'ציירו אזור חיפוש וסמנו מה עלול להתפספס בטיסה אקראית.', check:'יש לפחות אזור חסר אחד והסבר.' },
+      { minutes:'25–35', title:'בניית שורת זיגזג', prompt:'בנו Forward 80cm → Hover 2s → Left 50cm → Backward 80cm.', check:'הרצף כולל ריחוף נתונים.' },
+      { minutes:'35–40', title:'בדיקת Minimal Grid', prompt:'הריצו וסמנו האם הזיגזג נשאר בגבולות.', check:'יש תוצאה ותיקון מוצע.' },
+      { minutes:'40–45', title:'צ׳ק־ליסט פיזי', prompt:'בדקו PPE, תפקידים, סוללה, מגינים ו־Land/Abort.', check:'אין סעיף חסר.' },
+      { minutes:'45–65', title:'סריקת אזור האסון', prompt:'הריצו/צפו בסריקה ותעדו כמה כרטיסיות/תחנות כוסו.', check:'יש מפת כיסוי או רשימת נקודות שנצפו.' },
+      { minutes:'65–70', title:'דיבוג פיזי', prompt:'בחרו תיקון אחד: שורה, מעבר שורה או זמן Hover.', check:'לא משנים יותר מפרמטר אחד.' },
+      { minutes:'70–78', title:'Share Link', prompt:'שמרו Grid_Scan_Team_X והפיקו Share Link/צילום מסך.', check:'התוצר ניתן להגשה.' },
+      { minutes:'78–90', title:'כרטיס יציאה', prompt:'Grid Scan עדיף על Random כי ___.', check:'התשובה מזכירה כיסוי/סוללה/פספוסים.' }
     ],
-    "safetyRules": [
-        "טיסה פיזית רק באישור מדריך ובתור מוגדר.",
-        "משקפי מגן ואזור סטרילי בכל הפעלה פיזית.",
-        "מריצים בסימולטור לפני כל הרצה פיזית.",
-        "אם יש סטייה, אדם באזור או אי־ודאות — Abort/Land מיד.",
-        "לא משנים קוד בזמן הרחפן באוויר."
+    deliverable: 'Grid_Scan_Team_X: קוד זיגזג שמור ב־DroneBlocks, מפת כיסוי/תיעוד כרטיסיות ניצולים, תיקון פיזי אחד מתועד ו־Share Link/צילום מסך.',
+    assessment: ['התלמיד מסביר Random מול Grid Scan.', 'הקוד כולל תבנית זיגזג וריחוף נתונים.', 'ההרצה הפיזית בוצעה רק לאחר סימולטור וצ׳ק־ליסט.', 'יש תיעוד כיסוי ולא רק “הרחפן טס”.', 'הדיבוג משנה פרמטר אחד בלבד.'],
+    debugging: [
+      { problem:'הרחפן סוטה ימינה/שמאלה', fix:'בודקים מזגן/לכלוך במנוע ומתקנים ערך אחד ב־10cm לפי כיוון הסטייה.' },
+      { problem:'הרחפן לא ממריא / אדום מהיר', fix:'מחליפים סוללה טעונה ומאתחלים על רצפה ישרה.' },
+      { problem:'שגיאת חיבור לרחפן', fix:'מוודאים שהטאבלט מחובר ל־Tello WiFi ולא School WiFi בזמן Run.' },
+      { problem:'Share Link נכשל', fix:'חוזרים ל־School WiFi לפני שמירה ושיתוף.' },
+      { problem:'הסריקה מפספסת כרטיסייה', fix:'מוסיפים Hover בנקודת קצה או מתקנים מעבר שורה, לא את כל הקוד.' }
     ],
-    "commonDirections": [
-        [
-            "Forward",
-            "יציאה לנקודת העניין."
-        ],
-        [
-            "Hover Data",
-            "עצירת תצפית."
-        ],
-        [
-            "Back",
-            "חזרה במסלול ידוע."
-        ],
-        [
-            "Battery",
-            "גבול זמן וטווח."
-        ],
-        [
-            "Land",
-            "סיום בטוח."
-        ]
+    differentiation: { support:['להריץ שתי שורות בלבד במקום שלוש.', 'לתת תרשים זיגזג מוכן ולהשאיר רק התאמת מרחקים.', 'לאפשר לצוות חלש להישאר בסימולטור ולבצע תצפית פיזית.'], extension:['להוסיף טבלת כיסוי 3×3.', 'לחשב כמה שניות/סוללה נחסכו בעזרת לולאה.', 'להשוות Random Route קצר מול Grid Route מסודר.'] },
+    instructorGuide: { prerequisites:'נדרש שיעור 5 מוצלח: התלמידים יודעים לחבר Tello WiFi, לבצע Pre‑Flight Check ולתעד סחיפה. אם לא — לצמצם לשתי שורות או סימולטור בלבד.', pedagogy:['זה השיעור שבו חקר הופך מכיוון יחיד לכיסוי שטח.', 'הדגש אינו “לסיים מסלול”, אלא להוכיח כיסוי שיטתי.', 'רומבה/קריאת ספר בשורות היא אנלוגיה חזקה להסבר הזיגזג.', 'בזמן המתנה לסבבי טיסה אין זמן סרק: צוותים משפרים סימולטור ומפת כיסוי.'], mediaNote:'התרשים המקומי הוא ויזואל מקורי. צילומי המסך קיימים כטיוטה ויש להחליף בצילומי טאבלט מקוריים לפני פרסום.', exitTicket:'סריקה שיטתית חוסכת סוללה כי ___.' },
+    screenshotSlides: [
+      { title:'מבצע איתור ניצולים', src:'assets/tello-mission-lab/lesson6/search-grid-scan-diagram.svg', caption:'זיגזג שיטתי מכסה שטח טוב יותר מטיסה אקראית.' },
+      { title:'פותחים Grid Scan', src:'assets/tello-mission-lab/lesson6/open-app.png', caption:'יוצרים Grid_Scan_Team_X ב־School WiFi.' },
+      { title:'רצף זיגזג', src:'assets/tello-mission-lab/lesson6/block-sequence.png', caption:'שורה, Hover, מעבר שורה וחזרה.' },
+      { title:'שומרים ומגישים', src:'assets/tello-mission-lab/lesson6/save-share.png', caption:'Share Link ותיעוד כיסוי.' }
     ],
-    "setupSteps": [
-        "פותחים תוצר קודם ובודקים מה נשמר.",
-        "מריצים גרסת סימולטור לפני כל שינוי.",
-        "מגדירים תפקידים: Driver, Navigator, Observer/Data Recorder.",
-        "בודקים סוללה/אזור אם יש הרצה פיזית.",
-        "שומרים גרסה בשם ברור ומשתפים או מצלמים תוצר."
-    ],
-    "tabletTips": [
-        "לשמור עותק לפני שינוי משמעותי.",
-        "לשנות פרמטר אחד בלבד בכל בדיקה.",
-        "Share Link רק ב־WiFi בית ספרי.",
-        "לצלם מסך אם שיתוף לא זמין.",
-        "לחזור ל־WiFi בית ספרי אחרי עבודה עם Tello WiFi."
-    ],
-    "lessonFlow": [
-        {
-            "minutes": "0–8",
-            "title": "גשר משיעור 5",
-            "teacher": "מזכיר מה למדנו בטיסה הפיזית הראשונה: רעש, סוללה, אזור ו־VPS.",
-            "students": "פותחים תיעוד הבדל סימולטור/מציאות."
-        },
-        {
-            "minutes": "8–18",
-            "title": "תדריך קו חוף",
-            "teacher": "מצייר קו חוף, נקודת התחלה ונקודת עניין אחת.",
-            "students": "מסמנים Start, POI ו־Return."
-        },
-        {
-            "minutes": "18–28",
-            "title": "Battery Budget",
-            "teacher": "מסביר למה משימת חקר ראשונה אחרי טיסה פיזית חייבת להיות קצרה.",
-            "students": "מגדירים מגבלת זמן/מרחק פשוטה."
-        },
-        {
-            "minutes": "28–44",
-            "title": "בניית Coastline Scan",
-            "teacher": "מדגים Forward → Hover Data → Back כרצף חקר.",
-            "students": "בונים ומריצים בסימולטור."
-        },
-        {
-            "minutes": "44–58",
-            "title": "הרצה פיזית חלקית",
-            "teacher": "מאשר רק צוותים מוכנים ומנהל אזור סטרילי.",
-            "students": "מריצים קטע קצר או צופים ומתעדים."
-        },
-        {
-            "minutes": "58–72",
-            "title": "תיעוד POI",
-            "teacher": "דורש משפט ממצא: מה ראינו ומה זה אומר.",
-            "students": "כותבים ממצא אחד וסיכון אחד."
-        },
-        {
-            "minutes": "72–84",
-            "title": "דיבוג חזרה",
-            "teacher": "שואל מה מתקנים אם הרחפן לא חוזר לנקודת התחלה.",
-            "students": "מציעים תיקון אחד בלבד."
-        },
-        {
-            "minutes": "84–90",
-            "title": "סיכום",
-            "teacher": "מחבר לשיעור 7: קו אחד לא מספיק כשצריך לכסות שטח.",
-            "students": "כרטיס יציאה."
-        }
-    ],
-    "exercises": [
-        {
-            "minutes": "8–18",
-            "title": "מפת קו חוף",
-            "prompt": "שרטטו Start, POI ו־Return.",
-            "check": "יש שלוש נקודות ברורות."
-        },
-        {
-            "minutes": "18–28",
-            "title": "גבול סוללה",
-            "prompt": "כתבו כלל קצר: כמה רחוק מותר לטוס לפני שחוזרים?",
-            "check": "הכלל שמרני וברור."
-        },
-        {
-            "minutes": "28–44",
-            "title": "Coastline Scan",
-            "prompt": "בנו והריצו Safety Check → Takeoff → Forward → Hover → Back → Land.",
-            "check": "יש חזרה לפני נחיתה."
-        },
-        {
-            "minutes": "44–58",
-            "title": "בדיקה מבוקרת",
-            "prompt": "הריצו פיזית רק באישור או תעדו הרצת סימולטור.",
-            "check": "אין חריגה מאזור."
-        },
-        {
-            "minutes": "58–72",
-            "title": "ממצא POI",
-            "prompt": "כתבו מה נאסף בנקודת העניין.",
-            "check": "יש ממצא ולא רק תיאור טיסה."
-        },
-        {
-            "minutes": "72–84",
-            "title": "תיקון חזרה",
-            "prompt": "בחרו שינוי אחד שישפר חזרה לנקודת התחלה.",
-            "check": "שינוי אחד בלבד."
-        },
-        {
-            "minutes": "84–90",
-            "title": "כרטיס יציאה",
-            "prompt": "מסלול חקר טוב חייב לחזור כי...",
-            "check": "מזכיר סוללה/בטיחות/שליטה."
-        }
-    ],
-    "deliverable": "Coastline_Scan_G6: מסלול הלוך־חזור קצר, ממצא POI אחד ו־Battery Budget פשוט.",
-    "assessment": [
-        "המסלול ליניארי וקצר.",
-        "יש Hover for Data בנקודת העניין.",
-        "יש Back/Return לפני Land.",
-        "התיעוד כולל ממצא חקר.",
-        "הדיבוג עוסק בחזרה בטוחה ולא בהארכת מסלול."
-    ],
-    "debugging": [
-        {
-            "problem": "המסלול מתארך מדי",
-            "fix": "מקצרים Forward ושומרים POI אחד."
-        },
-        {
-            "problem": "אין חזרה לנקודת התחלה",
-            "fix": "מוסיפים Back לפני Land ומסמנים Return Path."
-        },
-        {
-            "problem": "התיעוד הוא רק “טסנו קדימה”",
-            "fix": "דורשים ממצא: מה נקודת העניין אומרת?"
-        },
-        {
-            "problem": "הרצה פיזית לא בטוחה",
-            "fix": "עוברים לסימולטור ומתעדים החלטת בטיחות."
-        }
-    ],
-    "differentiation": {
-        "support": [
-            "לתת מפה מוכנה עם POI מסומן.",
-            "להפעיל רק בסימולטור לתלמידים חוששים.",
-            "להשתמש בערכי מרחק מוכנים."
-        ],
-        "extension": [
-            "להוסיף POI שני בסימולטור בלבד.",
-            "להשוות מסלול חזרה מול נחיתה בנקודת יעד.",
-            "להציע מדד סוללה כמותי."
-        ]
-    },
-    "instructorGuide": {
-        "prerequisites": "נדרש שיעור 5: System Check פיזי או החלטה מודעת להישאר בסימולטור. אין להאריך משימות פיזיות לפני שהצוותים שומרים על תפקידים ואזור סטרילי.",
-        "pedagogy": [
-            "השיעור מרחיב את הטיסה הפיזית בלי לקפוץ למורכבות גבוהה מדי.",
-            "החזרה לנקודת התחלה היא יעד בטיחותי ופדגוגי מרכזי.",
-            "הממצא חשוב יותר מהמרחק שהרחפן עבר."
-        ],
-        "mediaNote": commonInstructorMediaNote,
-        "exitTicket": "חזרה בטוחה חשובה כי ___."
-    },
-    "videoResources": grade6VideoResources,
-    "screenshotSlides": [
-        {
-            "title": "פותחים משימת Coastline",
-            "src": "assets/tello-mission-lab/lesson6/open-app.png",
-            "caption": "מגדירים Start, POI ו־Return לפני קוד."
-        },
-        {
-            "title": "רצף הלוך־חזור",
-            "src": "assets/tello-mission-lab/lesson6/block-sequence.png",
-            "caption": "Forward, Hover Data ו־Back יוצרים סריקה קצרה."
-        },
-        {
-            "title": "בדיקת נקודת עניין",
-            "src": "assets/tello-mission-lab/lesson6/simulator-run.png",
-            "caption": "בודקים אם ה־POI נאסף בלי חריגה מהאזור."
-        },
-        {
-            "title": "שומרים ממצא חוף",
-            "src": "assets/tello-mission-lab/lesson6/save-share.png",
-            "caption": "שומרים ממצא POI ו־Battery Budget."
-        }
-    ],
-    "instructorSlides": [
-        {
-            "title": "קו חוף, לא מבוך",
-            "body": "המשימה בכוונה פשוטה: נקודת עניין אחת וחזרה בטוחה.",
-            "bullets": [
-                "Start",
-                "POI",
-                "Return"
-            ]
-        },
-        {
-            "title": "Battery Budget",
-            "body": "סוללה היא מגבלת חקר, לא פרט טכני צדדי.",
-            "bullets": [
-                "קצר",
-                "מדיד",
-                "חוזר"
-            ]
-        },
-        {
-            "title": "ממצא מנקודת עניין",
-            "body": "Hover הופך לזמן איסוף מידע כשהתלמידים יודעים מה הם מחפשים.",
-            "bullets": [
-                "Observe",
-                "Record",
-                "Explain"
-            ]
-        }
+    instructorSlides: [
+      { title:'משימות חקר וסריקת שטח', body:'היום הרחפן מחפש ניצולים באזור מסומן — לא טס אקראית.', bullets:['Search', 'Grid Scan', 'Coverage'] },
+      { title:'Random מפספס, Grid מכסה', body:'כמו רומבה חדשה או קריאת ספר: שורה אחרי שורה.', bullets:['שיטתי', 'חוסך סוללה', 'פחות חורים'] },
+      { title:'תכנות חכם', body:'לולאות וריחוף הופכים מסלול ארוך לקוד קצר וברור.', bullets:['Loop', 'Hover 2s', 'Zigzag'] },
+      { title:'דיבוג מהמסך למציאות', body:'רוח, סוללה ורצפה משנים את המסלול. מתקנים ערך אחד בלבד.', bullets:['+10cm', '-10cm', 'תיעוד'] }
     ]
-});
+  });
+
 
   Object.assign(window.TELLO_MISSION_LAB_LESSONS[6], {
-    "title": "שיעור 7: Grid Scan ראשון — מכסים שטח כמו חוקרים",
-    "subtitle": "מעבר מקו יחיד לכיסוי שטח שיטתי",
-    "concept": "Grid Scan, Coverage Map, Search Cells, Missed Areas",
-    "story": "הצוותים מגלים שקו חוף אחד לא מספיק כשצריך לחפש חפץ אבוד באזור רחב. במקום “לטוס איפה שנראה”, מחלקים את השטח לתאים ומסמנים מה נסרק ומה נשאר פתוח.",
-    "mission": "לבנות Grid Scan בסימולטור, לסמן מפת כיסוי של 3×3 תאים, ולזהות תא אחד שלא נסרק מספיק.",
-    "blocks": [
-        "safety_check",
-        "takeoff",
-        "grid_scan",
-        "hover_data",
-        "land"
+    title: 'שיעור 7: שומרי היערות — מצלמה כחיישן ואיסוף מידע חזותי',
+    subtitle: 'Take Photo, Motion Blur, Hover לפני צילום ופענוח קוד SOS מתמונות',
+    unit: unitNames.camera,
+    concept: 'Camera as Sensor, Take Photo, Hover/Wait לפני צילום, Motion Blur, Data Retrieval, Battery Management',
+    workspaceMode: 'physical-lab',
+    appWorkflowTitle: 'משימת צילום פיזית — DroneBlocks App, City/Minimal Simulator וגלריית הרחפן',
+    appWorkflowNote: 'האתר מציג את תדריך הצילום והבטיחות. את בלוק Take Photo, שמירת התמונות והורדת הגלריה מבצעים באפליקציית DroneBlocks/הרחפן בטאבלט.',
+    story: 'צוותי כיתה ו׳ מצטרפים לחברת Aerobotics במשימת שומרי היערות. הרחפן כבר יודע לטוס ולסרוק; עכשיו הוא הופך לפלטפורמת חיישנים ניידת. עליו להגיע לנקודות צילום, לעצור לריחוף כדי למנוע Motion Blur, לצלם מטרות בגבהים שונים ולפענח את קוד ה־SOS מהתמונות.',
+    mission: 'לתכנן ולהריץ משימת Tree_Scan_TeamX: Takeoff → Up/Forward אל מטרה → Hover/Wait 2 sec → Take Photo → מעבר למטרה הבאה → Take Photo → Land. לאחר הנחיתה מורידים/פותחים את התמונות, בודקים חדות, מפענחים את הקוד הסודי ושומרים Share Link/תיעוד.',
+    blocks: ['safety_check','takeoff','up_100','forward','hover','photo','wait','land'],
+    physicalFlightAllowed: true,
+    essentialQuestion: 'איך הופכים רחפן מכלי טיסה לפלטפורמת חיישנים שאוספת מידע חזותי אמין?',
+    successCriteria: ['אני מסביר/ה למה מצלמה היא חיישן מדעי ולא “סתם צילום”.', 'אני מוסיף/ה Hover/Wait לפני Take Photo כדי למנוע Motion Blur.', 'אני מתכנן/ת מסלול צילום קצר עם 2–3 מטרות בגבהים בטוחים.', 'אני יודע/ת להוריד/לבדוק תמונות ולפענח קוד חזותי.', 'אני מנהל/ת סוללה: הרחפנים כבויים בזמן תכנון ורק סבבים מאושרים עולים לאוויר.'],
+    realWorldUses: [
+      { icon:'🌲', title:'שימור יערות', text:'רחפנים מצלמים אזורים קשים לגישה כדי לזהות שריפות, כריתה או בעלי חיים.' },
+      { icon:'📷', title:'חיישן חזותי', text:'תמונה היא נתון שאפשר לנתח, להשוות ולפענח.' },
+      { icon:'🧪', title:'איכות נתונים', text:'צילום מטושטש הוא דאטה גרוע; ריחוף לפני צילום משפר אמינות.' },
+      { icon:'🔋', title:'סוללה קצרה', text:'תכנון נתיב יעיל שומר זמן טיסה לצילום עצמו.' }
     ],
-    "essentialQuestion": "איך מוכיחים שכיסינו שטח ולא רק טסנו מעל חלק ממנו?",
-    "successCriteria": [
-        "אני מסביר/ה למה טיסה אקראית מפספסת אזורים.",
-        "אני מחלק/ת שטח לתאי גריד.",
-        "אני בונה Grid Scan בסימולטור.",
-        "אני מסמן/ת כיסוי ומזהה תא חסר.",
-        "אני מציע/ה תיקון שמכסה תא חסר."
+    vocabulary: [['Take Photo','בלוק צילום באפליקציית DroneBlocks.'], ['Camera as Sensor','המצלמה אוספת נתונים חזותיים למחקר.'], ['Motion Blur','טשטוש שנוצר כשהרחפן זז בזמן צילום.'], ['Hover/Wait','עצירה לפני צילום כדי לייצב את הרחפן והמצלמה.'], ['Data Retrieval','הורדת/פתיחת התמונות מהרחפן/האפליקציה לטאבלט.'], ['Target / מטרה','כרטיסייה עם אות/מספר שצריך לצלם ולפענח.']],
+    safetyRules: ['צילום פיזי מבוצע רק אחרי סימולטור ואישור מדריך.', 'מטרות הצילום מוצבות כך שאין טיסה מעל תלמידים.', 'לא מתקרבים למטרה ביד בזמן שהרחפן דולק או באוויר.', 'מגיני פרופלור, משקפי מגן ושיער אסוף חובה.', 'אם התמונה לא טובה — לא רצים לתקן פיזית; נוחתים, מתכננים, ואז מריצים שוב.', 'רחפנים כבויים בזמן תכנון כדי לשמור סוללה.'],
+    commonDirections: [['Hover 2 sec → Take Photo','חוק התמונה החדה: קודם מתייצבים, אחר כך מצלמים.'], ['Yaw קטן אל המטרה','התאמת כיוון מצלמה לפני צילום.'], ['Tree_Scan_TeamX','שם המשימה לשמירה בענן.'], ['SOS Targets','כרטיסיות צילום שמרכיבות קוד סודי.'], ['Download Gallery','פתיחה/הורדת תמונות ובדיקת חדות.']],
+    setupSteps: ['מכינים 3 מטרות צילום עם אותיות/מספרים בגבהים 50cm, 80cm ו־120cm לפי בטיחות הכיתה.', 'מסמנים מנחת ואזור עמידה בטוח.', 'פותחים DroneBlocks ב־School WiFi ושומרים Tree_Scan_TeamX.', 'בונים מסלול סימולטור עם Hover/Wait לפני Take Photo.', 'מבצעים Pre‑Flight Check, מתחברים ל־Tello WiFi ומריצים סבב צילום קצר.', 'אחרי נחיתה פותחים/מורידים תמונות, מפענחים קוד ושומרים תיעוד.'],
+    tabletTips: ['אם תמונות לא זמינות, לבדוק שהצילום בוצע אחרי חיבור אמיתי לרחפן ולא רק בסימולטור.', 'אם Share Link נכשל, לחזור ל־School WiFi.', 'לא לשכוח Wait לפני Photo — אחרת התמונה תצא מטושטשת.', 'להחזיק טבלת מטרות: מטרה, גובה, האם התמונה חדה, אות שפוענחה.'],
+    appWorkflow: [
+      { title:'סיפור ואתגר צילום', detail:'Aerobotics / שומרי היערות: מצלמים 3 מטרות בגבהים שונים ומפענחים קוד SOS.' },
+      { title:'חוק התמונה החדה', detail:'כל צילום חייב להיות אחרי Hover/Wait של 2 שניות לפחות. תנועה בזמן צילום = Motion Blur.' },
+      { title:'תכנון בסימולטור', detail:'City/Minimal: Takeoff → Up/Forward → Hover/Wait → Take Photo → מעבר למטרה הבאה → Land.' },
+      { title:'הקמת זירה פיזית', detail:'מטרות על שולחן/כיסא/לוח בגבהים בטוחים, Safe Fly Zone ואזור עמידה לצוות.' },
+      { title:'הרצה וצילום', detail:'מתחברים ל־Tello WiFi, מריצים סבב מאושר, מצלמים מטרות ונוחתים.' },
+      { title:'Data Retrieval', detail:'פותחים גלריה/תמונות בטאבלט, בודקים חדות, מפענחים אותיות/מספרים ורושמים ממצא.' },
+      { title:'שיתוף ותחזוקה', detail:'חוזרים ל־School WiFi, שומרים קוד/תיעוד, מוציאים סוללות ומחזירים ציוד.' }
     ],
-    "realWorldUses": [
-        {
-            "icon": "🧭",
-            "title": "חיפוש והצלה",
-            "text": "גריד עוזר לצוותים לדעת איזה אזור נסרק."
-        },
-        {
-            "icon": "🗺️",
-            "title": "מיפוי שטח",
-            "text": "כיסוי שיטתי מייצר מפה אמינה יותר."
-        },
-        {
-            "icon": "✅",
-            "title": "בקרת איכות",
-            "text": "תא שלא נסרק הוא סיכון, גם אם הטיסה נראתה יפה."
-        }
+    visualDiagram: { panelTitle:'📷 Camera Sensor Mission', chip:'Physical Lab', title:'Hover → Take Photo → Decode', src:'assets/tello-mission-lab/lesson7/camera-sos-scan-diagram.svg', alt:'תרשים משימת צילום עם שלוש מטרות SOS בגבהים שונים', caption:'תמונה טובה היא נתון מחקרי: מתייצבים, מצלמים, מורידים ומפענחים.' },
+    lessonFlow: [
+      { minutes:'0–5', title:'סיפור שומרי היערות', teacher:'מציג Aerobotics/WWF ואתגר צילום אזורי יער מסוכנים.', students:'מגדירים למה רחפן עדיף מאדם בשטח מסוכן.' },
+      { minutes:'5–15', title:'מצלמה כחיישן', teacher:'מסביר שמצלמה היא Sensor ושואל מה קורה אם מצלמים תוך כדי תנועה.', students:'מזהים Motion Blur ומציעים ריחוף לפני צילום.' },
+      { minutes:'15–20', title:'בטיחות פיזית', teacher:'מרענן PPE, Safe Fly Zone, תפקידים ו־VPS/תאורה.', students:'מתחלקים לתפקידים ומוודאים ציוד.' },
+      { minutes:'20–40', title:'תכנון וסימולטור', teacher:'מדגים Take Photo עם Wait/Hover לפניו ושמירת Tree_Scan_TeamX.', students:'בונים מסלול צילום קצר ובודקים בסימולטור.' },
+      { minutes:'40–48', title:'הקמת מטרות', teacher:'מציג 3 מטרות בגבהים בטוחים ומסביר חוקי זירה.', students:'מסמנים טבלת מטרות וגבהים.' },
+      { minutes:'48–70', title:'צילום פיזי ופענוח', teacher:'מנהל סבבי טיסה. צוותים ממתינים משפרים קוד/טבלה.', students:'מריצים, מצלמים, מורידים תמונות ומפענחים קוד.' },
+      { minutes:'70–80', title:'בדיקת איכות נתונים', teacher:'שואל מי קיבל תמונה מטושטשת ומה בקוד פתר זאת.', students:'מסמנים חד/מטושטש ומציעים תיקון.' },
+      { minutes:'80–85', title:'שיתוף קוד ותוצרים', teacher:'מוביל חזרה ל־School WiFi ושמירה.', students:'שומרים קוד ותיעוד/Share Link.' },
+      { minutes:'85–90', title:'תחזוקה וסיכום', teacher:'מנהל הוצאת סוללות, פרופלורים והחזרת ציוד.', students:'כרטיס יציאה: “צילום טוב דורש...”' }
     ],
-    "vocabulary": [
-        [
-            "Grid",
-            "חלוקת שטח לתאים."
-        ],
-        [
-            "Coverage",
-            "איזה חלק מהשטח נסרק."
-        ],
-        [
-            "Search Cell",
-            "תא בודד במפת חיפוש."
-        ],
-        [
-            "Missed Area",
-            "אזור שלא קיבל כיסוי מספיק."
-        ],
-        [
-            "Sweep Pattern",
-            "תבנית סריקה שיטתית."
-        ]
+    exercises: [
+      { minutes:'5–12', title:'חיישן או צעצוע?', prompt:'כתבו שימוש מחקרי אחד לתמונה מרחפן.', check:'התשובה מתייחסת לנתונים/ראיות.' },
+      { minutes:'20–32', title:'חוק התמונה החדה', prompt:'הכניסו Hover/Wait לפני כל Take Photo במסלול.', check:'אין Take Photo מיד אחרי תנועה בלי המתנה.' },
+      { minutes:'32–40', title:'בדיקת סימולטור', prompt:'הריצו Tree_Scan_TeamX בסימולטור ובדקו שיש נחיתה בטוחה.', check:'המסלול קצר ומסתיים ב־Land.' },
+      { minutes:'40–48', title:'טבלת מטרות', prompt:'רשמו מטרה 1/2/3, גובה משוער ומה צריך לצלם.', check:'יש 3 מטרות או גרסה מצומצמת מאושרת.' },
+      { minutes:'48–65', title:'צילום פיזי', prompt:'הריצו סבב מאושר וצילמו לפחות מטרה אחת, עד שלוש לפי זמן ובטיחות.', check:'יש תמונה/תיעוד או צפייה מודרכת.' },
+      { minutes:'65–75', title:'פענוח איכות', prompt:'בדקו אם התמונה חדה ומה האות/מספר שנקלט.', check:'יש החלטת חדות וקוד מפוענח.' },
+      { minutes:'75–85', title:'דיבוג צילום', prompt:'אם התמונה מטושטשת, איזה בלוק תוסיפו או תאריכו?', check:'התשובה מזכירה Hover/Wait לפני Take Photo.' },
+      { minutes:'85–90', title:'כרטיס יציאה', prompt:'רחפן בלי מצלמה הוא כמו ___ כי ___.', check:'התשובה מחברת מצלמה לחיישן/מידע.' }
     ],
-    "safetyRules": [
-        "טיסה פיזית רק באישור מדריך ובתור מוגדר.",
-        "משקפי מגן ואזור סטרילי בכל הפעלה פיזית.",
-        "מריצים בסימולטור לפני כל הרצה פיזית.",
-        "אם יש סטייה, אדם באזור או אי־ודאות — Abort/Land מיד.",
-        "לא משנים קוד בזמן הרחפן באוויר."
+    deliverable: 'Tree_Scan_TeamX: קוד משימת צילום עם Hover/Wait לפני Take Photo, טבלת מטרות ותמונות/פענוח קוד SOS, בתוספת Share Link/צילום מסך ותיעוד איכות תמונה.',
+    assessment: ['התלמיד מסביר מצלמה כחיישן מדעי.', 'הקוד כולל Hover/Wait לפני Take Photo.', 'ההרצה הפיזית מנוהלת בתפקידים ובטיחות.', 'התלמיד בודק איכות תמונה ומציע תיקון Motion Blur.', 'הציוד והסוללות נסגרים לפי נוהל.'],
+    debugging: [
+      { problem:'תמונות מטושטשות', fix:'מוסיפים/מאריכים Wait/Hover של 2 שניות לפני Take Photo.' },
+      { problem:'סחיפה בריחוף', fix:'משפרים תאורה/טקסטורת רצפה, מכבים זרם מזגן או מוסיפים סימוני סרט צבעוני.' },
+      { problem:'ניתוק WiFi בזמן טיסה', fix:'מצב טיסה + WiFi בלבד, פחות רחפנים במקביל וסבבי הטסה מדורגים.' },
+      { problem:'אדום מהיר / סוללה חלשה', fix:'כיבוי, הוצאת סוללה לקופסה אדומה והחלפה ל־100%.' },
+      { problem:'לא מוצאים תמונות', fix:'בודקים שהצילום בוצע בהרצה פיזית ושפותחים את גלריית הרחפן/האפליקציה המתאימה.' }
     ],
-    "commonDirections": [
-        [
-            "Grid Scan",
-            "סריקה שיטתית של תאים."
-        ],
-        [
-            "Coverage Map",
-            "סימון מה נסרק."
-        ],
-        [
-            "Cell",
-            "יחידת שטח."
-        ],
-        [
-            "Missed Area",
-            "פער כיסוי."
-        ],
-        [
-            "Fix",
-            "תיקון תא חסר."
-        ]
+    differentiation: { support:['לצלם מטרה אחת בלבד בגובה קבוע.', 'לתת תבנית קוד עם מקום חסר ל־Wait ו־Photo.', 'לאפשר צוות תצפית שמפענח תמונות במקום להטיס.'], extension:['לצלם שלוש מטרות בגבהים שונים ולדרג איכות.', 'להשוות Wait 1 sec מול 3 sec.', 'להוסיף Yaw קטן לפני צילום כדי לשפר זווית.'] },
+    instructorGuide: { prerequisites:'התלמידים כבר ביצעו טיסת בכורה ו־Grid Scan פיזי. אם בטיחות/חיבור עדיין לא יציבים, לצמצם למטרה אחת ולסימולטור.', pedagogy:['שיעור 7 מגדיר את הרחפן ככלי חקר אמיתי: איסוף דאטה ולא רק תנועה.', 'Motion Blur הוא מושג פיזיקלי מצוין לגשר בין קוד למציאות.', 'מומלץ להכין מטרות גדולות וברורות כדי שהתלמידים יחוו הצלחה.', 'ניהול סוללות קריטי: הרחפנים כבויים בזמן תכנון.'], mediaNote:'התרשים המקומי הוא ויזואל מקורי. לפני פרסום רצוי לצלם מסכי DroneBlocks/גלריה מקוריים מהטאבלטים.', exitTicket:'לפני Take Photo צריך Hover כי ___.' },
+    screenshotSlides: [
+      { title:'משימת צילום SOS', src:'assets/tello-mission-lab/lesson7/camera-sos-scan-diagram.svg', caption:'מטרות צילום בגבהים שונים: Hover, Photo, Decode.' },
+      { title:'פתיחת Tree Scan', src:'assets/tello-mission-lab/lesson7/open-app.png', caption:'שומרים Tree_Scan_TeamX ב־School WiFi.' },
+      { title:'Hover לפני Photo', src:'assets/tello-mission-lab/lesson7/block-sequence.png', caption:'חוק התמונה החדה: קודם מתייצבים, אחר כך מצלמים.' },
+      { title:'פענוח ושיתוף', src:'assets/tello-mission-lab/lesson7/save-share.png', caption:'בודקים תמונות, מפענחים ושומרים תיעוד.' }
     ],
-    "setupSteps": [
-        "פותחים תוצר קודם ובודקים מה נשמר.",
-        "מריצים גרסת סימולטור לפני כל שינוי.",
-        "מגדירים תפקידים: Driver, Navigator, Observer/Data Recorder.",
-        "בודקים סוללה/אזור אם יש הרצה פיזית.",
-        "שומרים גרסה בשם ברור ומשתפים או מצלמים תוצר."
-    ],
-    "tabletTips": [
-        "לשמור עותק לפני שינוי משמעותי.",
-        "לשנות פרמטר אחד בלבד בכל בדיקה.",
-        "Share Link רק ב־WiFi בית ספרי.",
-        "לצלם מסך אם שיתוף לא זמין.",
-        "לחזור ל־WiFi בית ספרי אחרי עבודה עם Tello WiFi."
-    ],
-    "lessonFlow": [
-        {
-            "minutes": "0–8",
-            "title": "למה קו אחד לא מספיק",
-            "teacher": "משווה את Coastline Scan לאזור חיפוש רחב.",
-            "students": "מסבירים מה עלול להתפספס."
-        },
-        {
-            "minutes": "8–20",
-            "title": "מפת 3×3",
-            "teacher": "מצייר גריד ומסמן תאי חיפוש.",
-            "students": "מסמנים תאים A1–C3."
-        },
-        {
-            "minutes": "20–32",
-            "title": "כיסוי מול תנועה",
-            "teacher": "מדגיש שמסלול יפה אינו הוכחת כיסוי.",
-            "students": "מגדירים מה ייחשב תא מכוסה."
-        },
-        {
-            "minutes": "32–50",
-            "title": "בניית Grid Scan",
-            "teacher": "מדגים בלוק Grid Scan ותיעוד תאים.",
-            "students": "בונים ומריצים בסימולטור."
-        },
-        {
-            "minutes": "50–64",
-            "title": "מפת כיסוי",
-            "teacher": "מנחה סימון תאים שכוסו.",
-            "students": "צובעים/מסמנים Coverage Map."
-        },
-        {
-            "minutes": "64–76",
-            "title": "תא חסר ותיקון",
-            "teacher": "מבקש למצוא Missed Area אחד.",
-            "students": "מציעים תיקון תא אחד."
-        },
-        {
-            "minutes": "76–86",
-            "title": "דיון חוקר",
-            "teacher": "שואל מה עדיף: מהר או מכסה היטב?",
-            "students": "מנמקים בחירת כיסוי."
-        },
-        {
-            "minutes": "86–90",
-            "title": "סיכום",
-            "teacher": "מחבר לשיעור 8: אחרי כיסוי צריך ראיה חזותית.",
-            "students": "כרטיס יציאה."
-        }
-    ],
-    "exercises": [
-        {
-            "minutes": "8–20",
-            "title": "בניית גריד",
-            "prompt": "ציירו 3×3 וסמנו תאים.",
-            "check": "יש 9 תאים מסומנים."
-        },
-        {
-            "minutes": "20–32",
-            "title": "הגדרת כיסוי",
-            "prompt": "כתבו מתי תא נחשב “נסרק”.",
-            "check": "הקריטריון ברור."
-        },
-        {
-            "minutes": "32–50",
-            "title": "Grid Scan",
-            "prompt": "בנו והריצו Grid Scan בסימולטור.",
-            "check": "הרצף מסתיים ב־Land."
-        },
-        {
-            "minutes": "50–64",
-            "title": "Coverage Map",
-            "prompt": "סמנו אילו תאים כוסו.",
-            "check": "יש מפה עם סימונים."
-        },
-        {
-            "minutes": "64–76",
-            "title": "Missed Area",
-            "prompt": "מצאו תא אחד בעייתי והציעו תיקון.",
-            "check": "התיקון מכוון לתא."
-        },
-        {
-            "minutes": "76–86",
-            "title": "מהירות מול כיסוי",
-            "prompt": "מה חשוב יותר במשימת חיפוש?",
-            "check": "נימוק מבוסס חקר."
-        },
-        {
-            "minutes": "86–90",
-            "title": "כרטיס יציאה",
-            "prompt": "כיסוי שטח מוכח כש...",
-            "check": "מזכיר תאים/מפה."
-        }
-    ],
-    "deliverable": "Grid_Coverage_G6: משימת Grid Scan + מפת כיסוי 3×3 עם תא חסר ותיקון מוצע.",
-    "assessment": [
-        "יש מפת גריד מלאה.",
-        "התלמיד מבחין בין תנועה לכיסוי.",
-        "Grid Scan מורץ בסימולטור.",
-        "יש Missed Area ותיקון ממוקד.",
-        "ההסבר מחבר כיסוי לאמינות חקר."
-    ],
-    "debugging": [
-        {
-            "problem": "התלמידים מתארים מסלול בלי כיסוי",
-            "fix": "מחזירים למפת תאים: מה נסרק ומה לא?"
-        },
-        {
-            "problem": "הגריד גדול מדי",
-            "fix": "מצמצמים ל־3×3 בלבד."
-        },
-        {
-            "problem": "אין תא חסר",
-            "fix": "המדריך מסמן אילוץ: תא מוסתר/מכשול."
-        },
-        {
-            "problem": "רוצים להטיס פיזית את כל הגריד",
-            "fix": "פיזי רק קטע קצר; הכיסוי המלא בסימולטור."
-        }
-    ],
-    "differentiation": {
-        "support": [
-            "לתת גריד מודפס.",
-            "לסמן מראש תא חסר אחד.",
-            "לעבוד רק על שורה אחת ואז להרחיב."
-        ],
-        "extension": [
-            "להשוות שתי תבניות Sweep.",
-            "להוסיף מדד אחוז כיסוי.",
-            "לתכנן גיבוי לתא חסום."
-        ]
-    },
-    "instructorGuide": {
-        "prerequisites": "נדרש שיעור 6: הבנת POI וחזרה בטוחה. עכשיו מרחיבים מנקודה אחת לכיסוי שטח.",
-        "pedagogy": [
-            "השיעור מלמד חשיבה מרחבית ולא רק שימוש בבלוק Grid Scan.",
-            "הכיסוי הוא הראיה שהסריקה שיטתית.",
-            "חשוב להחזיק את העבודה בסימולטור כדי לא ליצור עומס פיזי מוקדם."
-        ],
-        "mediaNote": commonInstructorMediaNote,
-        "exitTicket": "שטח נחשב מכוסה כש___."
-    },
-    "videoResources": grade6VideoResources,
-    "screenshotSlides": [
-        {
-            "title": "פותחים מפת גריד",
-            "src": "assets/tello-mission-lab/lesson7/open-app.png",
-            "caption": "השטח מחולק לתאים לפני כתיבת קוד."
-        },
-        {
-            "title": "רצף Grid Scan",
-            "src": "assets/tello-mission-lab/lesson7/block-sequence.png",
-            "caption": "בלוק Grid Scan משרת מפת כיסוי, לא להפך."
-        },
-        {
-            "title": "בודקים כיסוי",
-            "src": "assets/tello-mission-lab/lesson7/simulator-run.png",
-            "caption": "בודקים אילו תאים קיבלו כיסוי."
-        },
-        {
-            "title": "שומרים Coverage Map",
-            "src": "assets/tello-mission-lab/lesson7/save-share.png",
-            "caption": "שומרים מפת כיסוי ותיקון לתא חסר."
-        }
-    ],
-    "instructorSlides": [
-        {
-            "title": "טיסה אקראית מפספסת",
-            "body": "סריקה שיטתית מתחילה במפה, לא בבלוק.",
-            "bullets": [
-                "Grid",
-                "Cells",
-                "Coverage"
-            ]
-        },
-        {
-            "title": "מה נחשב כיסוי?",
-            "body": "מגדירים קריטריון לפני ההרצה כדי לא לשפוט לפי תחושה.",
-            "bullets": [
-                "תא נסרק",
-                "תא חסר",
-                "תיקון"
-            ]
-        },
-        {
-            "title": "מפת כיסוי היא תוצר",
-            "body": "התוצר אינו רק קוד — הוא הוכחה שיטתית למה נסרק.",
-            "bullets": [
-                "Mark",
-                "Compare",
-                "Improve"
-            ]
-        }
+    instructorSlides: [
+      { title:'ברוכים הבאים ל־Aerobotics', body:'היום הרחפן הופך לפלטפורמת חיישנים שמגנה על יערות.', bullets:['יער', 'חקר', 'צילום'] },
+      { title:'המצלמה היא חיישן', body:'תמונה היא נתון. אם הרחפן זז בזמן צילום — הנתון נפגע.', bullets:['Camera Sensor', 'Motion Blur', 'Data'] },
+      { title:'חוק התמונה החדה', body:'בכל תחנה: מגיעים, מרחפים, מצלמים — ורק אז ממשיכים.', bullets:['Hover/Wait', 'Take Photo', 'Next target'] },
+      { title:'פענוח הקוד הסודי', body:'התוצר הוא לא רק קוד — הוא תמונות שאפשר לקרוא ולנתח.', bullets:['SOS', 'חדות', 'Share'] }
     ]
-});
+  });
+
 
   Object.assign(window.TELLO_MISSION_LAB_LESSONS[7], {
     "title": "שיעור 8: צילום ראיות — מצלמה ככלי נתונים",

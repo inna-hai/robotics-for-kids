@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">תרשים טיסת בכורה בטוחה</title>
+  <desc id="desc">אזור טיסה בטוח, צוות, חיבור WiFi כפול ורצף ריחוף קצר</desc>
+  <defs><linearGradient id="bg" x1="0" x2="1"><stop stop-color="#eef7ff"/><stop offset="1" stop-color="#f7fbff"/></linearGradient></defs>
+  <rect width="960" height="540" rx="32" fill="url(#bg)"/>
+  <rect x="80" y="70" width="500" height="360" rx="24" fill="#fff" stroke="#12b981" stroke-width="8" stroke-dasharray="18 14"/>
+  <text x="330" y="52" text-anchor="middle" font-family="Arial" font-size="30" font-weight="700" fill="#064e3b">Safe Fly Zone</text>
+  <circle cx="330" cy="250" r="54" fill="#dbeafe" stroke="#2563eb" stroke-width="5"/>
+  <text x="330" y="258" text-anchor="middle" font-family="Arial" font-size="24" font-weight="700" fill="#1e3a8a">Tello</text>
+  <path d="M330 175v-48" stroke="#2563eb" stroke-width="6" marker-end="url(#arrow)"/>
+  <g font-family="Arial" fill="#0f172a">
+    <text x="330" y="455" text-anchor="middle" font-size="24" font-weight="700">Takeoff → Hover 15s → Land</text>
+    <text x="660" y="110" font-size="24" font-weight="700">צוות הטסה</text>
+    <text x="660" y="155" font-size="22">👨‍💻 Driver — טאבלט ו־Run</text>
+    <text x="660" y="200" font-size="22">🧭 Navigator — קוד ומדידה</text>
+    <text x="660" y="245" font-size="22">🦺 Observer — אזור וסוללה</text>
+    <text x="660" y="315" font-size="24" font-weight="700">WiFi כפול</text>
+    <text x="660" y="360" font-size="22">1. School WiFi — שמירה</text>
+    <text x="660" y="405" font-size="22">2. Tello WiFi — הטסה</text>
+  </g>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#2563eb"/></marker></defs>
+</svg>
