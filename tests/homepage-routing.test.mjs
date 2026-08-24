@@ -28,7 +28,8 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertIncludes(homepageHtml, 'מרכז הלומדות');
   assertIncludes(homepageHtml, 'href="sensi-classic.html?lesson=1"');
   assertIncludes(homepageHtml, 'href="sensi-classic-slides/index.html"');
-  assertIncludes(homepageHtml, 'href="pygame.html"');
+  assertNotIncludes(homepageHtml, 'href="pygame.html"', 'Pygame should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'Pygame', 'Pygame should not appear as a main homepage card');
   assertIncludes(homepageHtml, 'href="roblox.html"');
   assertIncludes(homepageHtml, 'href="python-turtle.html"');
   assertIncludes(homepageHtml, 'href="sisi.html"');
@@ -37,8 +38,9 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertIncludes(homepageHtml, 'href="codequest.html"');
   assertIncludes(homepageHtml, 'href="gamelab.html"');
   assertIncludes(homepageHtml, 'href="appforge.html"');
-  assertIncludes(homepageHtml, 'href="craftom-school/preview/index.html"');
-  assertIncludes(homepageHtml, 'href="craftom-school/README.md"');
+  assertNotIncludes(homepageHtml, 'href="craftom-school/preview/index.html"', 'Craftom School should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'href="craftom-school/README.md"', 'Craftom School README should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'Craftom School', 'Craftom School should not appear as a main homepage card');
   assertNotIncludes(homepageHtml, 'href="sensi-city.html?lesson=1"', 'Sensi city should be hidden from the main homepage');
   assertNotIncludes(homepageHtml, 'סנסי בעיר החכמה', 'Sensi city should not appear as a main homepage card');
 });
