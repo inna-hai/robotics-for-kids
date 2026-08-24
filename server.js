@@ -14,6 +14,7 @@ const ADMIN_TOKEN_FILE = path.join(DATA_DIR, 'admin-token.txt');
 const SUMMER_USERS_FILE = path.join(DATA_DIR, 'summer-users.json');
 const SUMMER_DB_FILE = path.join(DATA_DIR, 'summer-subscriptions.sqlite');
 const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 30;
+const SUBSCRIPTION_GATE_ENABLED = process.env.ROBOTICS_SUBSCRIPTION_GATE === '1';
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -1243,17 +1244,17 @@ function serveStatic(req, res) {
   if (filePath === DATA_DIR || filePath.startsWith(DATA_DIR + path.sep)) return send(res, 403, 'Forbidden', 'text/plain; charset=utf-8');
   const ext = path.extname(filePath).toLowerCase();
 
-  const profile = getSummerProfileFromRequest(req);
+  const profile = SUBSCRIPTION_GATE_ENABLED ? getSummerProfileFromRequest(req) : null;
 
-  if (ext === '.html' && isFreeTrialLearningHtml(pathname, url) && !profile) {
+  if (SUBSCRIPTION_GATE_ENABLED && ext === '.html' && isFreeTrialLearningHtml(pathname, url) && !profile) {
     return send(res, 401, lockedPage(pathname, null, { trialOnly: true }), 'text/html; charset=utf-8');
   }
 
-  if (ext === '.html' && isFreeTrialLearningHtml(pathname, url) && profile && profileAccessList(profile).some(item => item.startsWith('restrict:')) && !isPaidProfile(profile, pathname)) {
+  if (SUBSCRIPTION_GATE_ENABLED && ext === '.html' && isFreeTrialLearningHtml(pathname, url) && profile && profileAccessList(profile).some(item => item.startsWith('restrict:')) && !isPaidProfile(profile, pathname)) {
     return send(res, 402, lockedPage(pathname, profile && profile.user), 'text/html; charset=utf-8');
   }
 
-  if (requiresPaidAccess(pathname, ext, url)) {
+  if (SUBSCRIPTION_GATE_ENABLED && requiresPaidAccess(pathname, ext, url)) {
     if (!isPaidProfile(profile, pathname)) {
       return send(res, 402, lockedPage(pathname, profile && profile.user), 'text/html; charset=utf-8');
     }
@@ -1264,7 +1265,8 @@ function serveStatic(req, res) {
     if (ext === '.html') {
       fs.readFile(filePath, 'utf8', (readErr, html) => {
         if (readErr) return send(res, 500, 'Server error', 'text/plain; charset=utf-8');
-        send(res, 200, injectUserBadge(html), 'text/html; charset=utf-8');
+        const output = SUBSCRIPTION_GATE_ENABLED ? injectUserBadge(html) : injectHeadAssets(html);
+        send(res, 200, output, 'text/html; charset=utf-8');
       });
       return;
     }
