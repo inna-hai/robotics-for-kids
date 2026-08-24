@@ -29,7 +29,7 @@ const lesson2 = readFileSync(new URL('../python-turtle-lesson-2-slides.html', im
 const lesson6 = readFileSync(new URL('../python-turtle-lesson-6-slides.html', import.meta.url), 'utf8');
 const lesson30 = readFileSync(new URL('../python-turtle-lesson-30-slides.html', import.meta.url), 'utf8');
 assert.match(lesson2, /מסלול מדרגות/);
-assert.match(lesson2, /תרגול 7 — מדרגות בשני צבעים/);
+assert.match(lesson2, /תרגול 9 — מדרגות בשני צבעים/);
 assert.match(lesson6, /משתנה/);
 assert.match(lesson30, /פרויקט גמר קצר/);
 
