@@ -872,6 +872,7 @@ button {
 }`,
       js: `let score = 0;
 const target = 10;
+document.getElementById("targetText").textContent = target;
 
 function feedMonster() {
   score = score + 1;
@@ -898,7 +899,8 @@ function resetGame() {
   document.getElementById("scoreText").textContent = score;
   document.getElementById("progressFill").style.width = "0%";
   document.getElementById("monster").textContent = "😋";
-  document.getElementById("message").textContent = "המפלצת רעבה. תגיעו ל־10 עוגיות!";
+  document.getElementById("targetText").textContent = target;
+  document.getElementById("message").textContent = "המפלצת רעבה. תגיעו ל־" + target + " עוגיות!";
   document.querySelector(".cookie-game").classList.remove("win");
 }`
     },
@@ -5978,7 +5980,7 @@ function resetAdventure() {
       ['reset_message','כפתור איפוס אומר %1','html','איפוס ניקוד','{{TEXT}}',[['field_input','TEXT','התחלה מחדש']]]
     ]},
     7: { title:'מפלצת העוגיות — משחק קליקים ראשון', concept:'click event · target · progress · win condition', blocks:[
-      ['target','יעד ניצחון %1','js','const target = 10;','const target = {{N}};',[['field_dropdown','N',[['5','5'],['8','8'],['12','12']]]]],
+      ['target','יעד ניצחון %1','js','const target = 10;\ndocument.getElementById("targetText").textContent = target;','const target = {{N}};\ndocument.getElementById("targetText").textContent = target;',[['field_dropdown','N',[['5','5'],['8','8'],['12','12']]]]],
       ['click_points','כל קליק מוסיף %1','js','score = score + 1;','score = score + {{N}};',[['field_dropdown','N',[['1','1'],['2','2'],['3','3']]]]],
       ['win_text','הודעת ניצחון %1','js','המפלצת שבעה! חגיגת עוגיות 🎉','{{TEXT}}',[['field_input','TEXT','אליפות! המפלצת פתחה מסיבה 🎉']]],
       ['button','טקסט כפתור %1','html','האכילו עוגייה','{{TEXT}}',[['field_input','TEXT','תנו ביס!']]],
