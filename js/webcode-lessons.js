@@ -801,6 +801,744 @@
     ]
   });
 
+  Object.assign(lessons[6], {
+    title: 'מפלצת העוגיות — משחק קליקים ראשון',
+    concept: 'משחק קליקים → score · target · התקדמות · ניצחון',
+    story: 'פותחים את יחידת המשחקים בצעצוע דיגיטלי שילדים מבינים מיד: מאכילים מפלצת עוגיות. כל קליק מגדיל ניקוד, ממלא מד התקדמות, משנה את מצב המפלצת, ובסוף פותח חגיגת ניצחון.',
+    mission: 'לבנות משחק Cookie Clicker קטן: ללחוץ על עוגייה, להעלות ניקוד, למלא מד יעד ולחגוג כשהמפלצת שבעה.',
+    outcome: 'משחק קליקים צבעוני עם דמות, מד התקדמות וניצחון, שמלמד score, target ו־classList בלי להרגיש כמו תרגיל',
+    starter: {
+      html: `<main class="cookie-game">
+  <h1>מפלצת העוגיות</h1>
+  <div id="monster" class="monster">😋</div>
+  <p>עוגיות: <span id="scoreText">0</span> מתוך <span id="targetText">10</span></p>
+  <div class="progress"><div id="progressFill"></div></div>
+  <button id="clickButton" onclick="feedMonster()">🍪 האכילו עוגייה</button>
+  <button onclick="resetGame()">איפוס</button>
+  <p id="message">המפלצת רעבה. תגיעו ל־10 עוגיות!</p>
+</main>`,
+      css: `body {
+  font-family: Arial, sans-serif;
+  direction: rtl;
+  text-align: center;
+  background: linear-gradient(135deg, #fff7ed, #dbeafe);
+}
+
+.cookie-game {
+  background: white;
+  width: min(430px, 92vw);
+  margin: 42px auto;
+  padding: 30px;
+  border-radius: 30px;
+  box-shadow: 0 18px 40px #fed7aa;
+}
+
+.monster {
+  font-size: 84px;
+  transition: transform 0.2s;
+}
+
+.monster.bump {
+  transform: scale(1.18) rotate(-4deg);
+}
+
+.progress {
+  height: 18px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 18px 0;
+}
+
+#progressFill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #f97316, #22c55e);
+}
+
+button {
+  margin: 8px;
+  padding: 14px 20px;
+  border: 0;
+  border-radius: 999px;
+  background: #f97316;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.win {
+  background: #dcfce7;
+  border: 3px solid #22c55e;
+}`,
+      js: `let score = 0;
+const target = 10;
+
+function feedMonster() {
+  score = score + 1;
+  document.getElementById("scoreText").textContent = score;
+  document.getElementById("progressFill").style.width = (score / target * 100) + "%";
+
+  const monster = document.getElementById("monster");
+  monster.classList.add("bump");
+  setTimeout(function () {
+    monster.classList.remove("bump");
+  }, 200);
+
+  if (score >= target) {
+    monster.textContent = "🤩";
+    document.getElementById("message").textContent = "המפלצת שבעה! חגיגת עוגיות 🎉";
+    document.querySelector(".cookie-game").classList.add("win");
+  } else {
+    document.getElementById("message").textContent = "יאמי! עוד " + (target - score) + " עוגיות.";
+  }
+}
+
+function resetGame() {
+  score = 0;
+  document.getElementById("scoreText").textContent = score;
+  document.getElementById("progressFill").style.width = "0%";
+  document.getElementById("monster").textContent = "😋";
+  document.getElementById("message").textContent = "המפלצת רעבה. תגיעו ל־10 עוגיות!";
+  document.querySelector(".cookie-game").classList.remove("win");
+}`
+    },
+    lessonFlow: [
+      { minutes: '0–8', title: 'וואו: מפלצת רעבה', teacher: 'מריצים מיד את המשחק, לוחצים כמה פעמים, ונותנים לילדים לצעוק מה השתנה.', students: 'מזהים דמות, עוגיות, ניקוד, מד התקדמות וניצחון.' },
+      { minutes: '8–18', title: 'הקליק שמאכיל', teacher: 'מצביעים על כפתור העוגייה ועל feedMonster, בלי להעמיס תחביר.', students: 'מחברים בין לחיצה לבין עליית score.' },
+      { minutes: '18–34', title: 'מד התקדמות', teacher: 'מדגימים איך score/target הופך לאחוז רוחב במד.', students: 'רואים שהמספר יוצר שינוי ויזואלי.' },
+      { minutes: '34–50', title: 'מצב ניצחון', teacher: 'מראים את התנאי score >= target ואת שינוי הדמות.', students: 'מסבירים מתי המשחק מחליט שהמפלצת שבעה.' },
+      { minutes: '50–66', title: 'שדרוגים בבלוקים', teacher: 'נותנים לשנות יעד, הודעה, צבע ודמות דרך בלוקים מוכנים.', students: 'יוצרים גרסה אישית של המפלצת.' },
+      { minutes: '66–78', title: 'דיבאג ידידותי', teacher: 'מדגימים מה קורה אם scoreText או progressFill לא תואמים.', students: 'בודקים id ומתקנים בלי לפחד.' },
+      { minutes: '78–90', title: 'תערוכת מפלצות', teacher: 'זוגות משחקים ומצביעים על שדרוג אחד.', students: 'מציגים מפלצת ואומרים מה הבלוק שלהם שינה.' }
+    ],
+    exercises: [
+      { id: 1, minutes: '0–8', title: 'תרגול 1 — מאכילים קודם', prompt: 'הריצו ולחצו על העוגייה עד שהמפלצת משתנה.', hint: 'קודם משחקים, אחר כך מחפשים את הקוד.', check: { htmlIncludes: ['id="clickButton"', 'id="monster"'], jsIncludes: ['function feedMonster'] } },
+      { id: 2, minutes: '8–18', title: 'תרגול 2 — מוצאים ניקוד', prompt: 'מצאו איפה score מתחיל ואיפה הוא עולה בכל קליק.', hint: 'חפשו score = score + 1.', check: { jsIncludes: ['let score = 0', 'score = score + 1'] } },
+      { id: 3, minutes: '18–28', title: 'תרגול 3 — יעד 10', prompt: 'מצאו את יעד העוגיות ובדקו שהוא 10.', hint: 'היעד נקרא target.', check: { jsIncludes: ['const target = 10'] } },
+      { id: 4, minutes: '28–38', title: 'תרגול 4 — מד מתמלא', prompt: 'מצאו את השורה שמשנה את רוחב מד ההתקדמות.', hint: 'width משנה את המד במסך.', check: { jsIncludes: ['progressFill', 'style.width'] } },
+      { id: 5, minutes: '38–50', title: 'תרגול 5 — חגיגת ניצחון', prompt: 'בדקו מה קורה כשהניקוד מגיע ליעד.', hint: 'חפשו score >= target.', check: { jsIncludes: ['score >= target'], cssIncludes: ['.win'] } },
+      { id: 6, minutes: '50–60', title: 'תרגול 6 — דמות אישית', prompt: 'שנו את דמות המפלצת או הודעת הניצחון.', hint: 'שינוי בטוח: טקסט או אימוג׳י בתוך גרשיים.', check: { htmlIncludes: ['monster'], jsIncludes: ['textContent'] } },
+      { id: 7, minutes: '60–74', title: 'תרגול 7 — דיבאג id', prompt: 'אם המד או הניקוד לא משתנים, בדקו שה־id זהה ב־HTML וב־JS.', hint: 'scoreText ו־progressFill חייבים להיות כתובים אותו דבר.', check: { htmlIncludes: ['id="scoreText"', 'id="progressFill"'], jsIncludes: ['getElementById("scoreText")', 'getElementById("progressFill")'] } },
+      { id: 8, minutes: '74–84', title: 'תרגול 8 — בדיקת חבר', prompt: 'תנו לחבר לשחק והחליטו אם צריך יעד קל או קשה יותר.', hint: 'משחק טוב נותן ניצחון, אבל לא מיד.', check: { jsIncludes: ['target', 'resetGame'], htmlIncludes: ['button'] } }
+    ],
+    aiHelper: [
+      'הציעו 5 דמויות מצחיקות למשחק האכלה.',
+      'עזרו לילד להסביר איך score ממלא את מד ההתקדמות.',
+      'הציעו הודעות ניצחון מצחיקות ולא מעליבות.',
+      'עזרו לאזן יעד של 5, 10 או 15 עוגיות.'
+    ],
+    vocabulary: [
+      ['score', 'כמה עוגיות המפלצת קיבלה'],
+      ['target', 'כמה צריך כדי לנצח'],
+      ['progress', 'מד שמראה כמה התקדמנו'],
+      ['style.width', 'שינוי רוחב של אלמנט במסך'],
+      ['classList', 'דרך להוסיף מצב עיצובי כמו ניצחון']
+    ],
+    bridgeBlocks: [
+      { label: '🍪 טקסט כפתור עוגייה', target: 'html', find: '🍪 האכילו עוגייה', replace: '🍪 תנו ביס!', hint: 'בלוק משחק: משנה את הפעולה שהילד רואה.' },
+      { label: '🏁 יעד קל 5', target: 'js', find: 'const target = 10;', replace: 'const target = 5;', hint: 'בלוק איזון: מקצר את המשחק.' },
+      { label: '✌️ שתי עוגיות', target: 'js', find: 'score = score + 1;', replace: 'score = score + 2;', hint: 'בלוק ניקוד: כל קליק שווה יותר.' },
+      { label: '🤩 דמות ניצחון', target: 'js', find: 'monster.textContent = "🤩";', replace: 'monster.textContent = "🥳";', hint: 'בלוק דמות: מחליף את מצב הניצחון.' },
+      { label: '🎉 הודעת ניצחון', target: 'js', find: 'המפלצת שבעה! חגיגת עוגיות 🎉', replace: 'אליפות! המפלצת פתחה מסיבה 🎉', hint: 'בלוק משוב: משנה הודעת סיום.' },
+      { label: '🟢 צבע ניצחון', target: 'css', find: 'background: #dcfce7;', replace: 'background: #bbf7d0;', hint: 'בלוק עיצוב: משנה את מצב הניצחון.' }
+    ]
+  });
+
+  Object.assign(lessons[7], {
+    title: 'טיימר הצלת העיר — משחק נגד השעון',
+    concept: 'טיימר משחק → timeLeft · setInterval · משימה בזמן',
+    story: 'הילדים מקבלים עיר חשוכה ו־15 שניות להציל אותה. כל לחיצה מדליקה עוד חלון בבניין, והשעון יורד. זה עדיין מלמד טיימר וניקוד, אבל מרגיש כמו משימת הצלה.',
+    mission: 'לבנות אתגר זמן שבו מדליקים כמה שיותר חלונות בעיר לפני שהשעון מגיע לאפס.',
+    outcome: 'משחק הצלת עיר עם טיימר, חלונות נדלקים והודעת סיום לפי ניקוד',
+    starter: {
+      html: `<main class="city-game">
+  <h1>הצילו את העיר!</h1>
+  <p>חלונות מוארים: <span id="scoreText">0</span> | זמן: <span id="timeText">15</span></p>
+  <div id="city" class="city">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <button id="startButton" onclick="startGame()">▶️ התחילו משימה</button>
+  <button id="clickButton" onclick="lightWindow()">💡 הדליקו חלון</button>
+  <p id="message">יש לכם 15 שניות להאיר את העיר.</p>
+</main>`,
+      css: `body {
+  font-family: Arial, sans-serif;
+  direction: rtl;
+  text-align: center;
+  background: linear-gradient(135deg, #0f172a, #1e3a8a);
+  color: #f8fafc;
+}
+
+.city-game {
+  background: #111827;
+  width: min(450px, 92vw);
+  margin: 42px auto;
+  padding: 30px;
+  border-radius: 30px;
+  box-shadow: 0 18px 45px #1d4ed8;
+}
+
+.city {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin: 22px auto;
+}
+
+.city span {
+  height: 46px;
+  background: #334155;
+  border-radius: 10px;
+}
+
+.city span.lit {
+  background: #fde047;
+  box-shadow: 0 0 18px #facc15;
+}
+
+button {
+  margin: 8px;
+  padding: 14px 20px;
+  border: 0;
+  border-radius: 999px;
+  background: #38bdf8;
+  color: #0f172a;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.finished {
+  border: 3px solid #fde047;
+}`,
+      js: `let score = 0;
+let timeLeft = 15;
+let timerId = null;
+
+function startGame() {
+  score = 0;
+  timeLeft = 15;
+  document.getElementById("scoreText").textContent = score;
+  document.getElementById("timeText").textContent = timeLeft;
+  document.getElementById("message").textContent = "רוצו! העיר מחכה לאור.";
+  document.querySelectorAll("#city span").forEach(function (windowBox) {
+    windowBox.classList.remove("lit");
+  });
+  clearInterval(timerId);
+  timerId = setInterval(tick, 1000);
+}
+
+function tick() {
+  timeLeft = timeLeft - 1;
+  document.getElementById("timeText").textContent = timeLeft;
+
+  if (timeLeft <= 0) {
+    clearInterval(timerId);
+    document.getElementById("message").textContent = "הזמן נגמר! הארתם " + score + " חלונות.";
+    document.querySelector(".city-game").classList.add("finished");
+  }
+}
+
+function lightWindow() {
+  if (timeLeft > 0) {
+    const windows = document.querySelectorAll("#city span");
+    if (score < windows.length) {
+      windows[score].classList.add("lit");
+    }
+    score = score + 1;
+    document.getElementById("scoreText").textContent = score;
+  }
+}`
+    },
+    lessonFlow: [
+      { minutes: '0–8', title: 'וואו: עיר חשוכה', teacher: 'מריצים, לוחצים התחלה, ומדליקים חלונות עד שהזמן נגמר.', students: 'מרגישים משימת זמן ולא עוד תרגיל ניקוד.' },
+      { minutes: '8–18', title: 'השעון מתחיל', teacher: 'מצביעים על timeLeft ועל setInterval כפעימת שעון.', students: 'מזהים שכל שנייה משנה את המסך.' },
+      { minutes: '18–34', title: 'חלונות נדלקים', teacher: 'מראים איך score בוחר את החלון הבא ברשימה.', students: 'מחברים בין ניקוד לבין שינוי ויזואלי.' },
+      { minutes: '34–50', title: 'סיום משימה', teacher: 'מראים clearInterval והודעת סיום.', students: 'מבינים למה צריך לעצור טיימר.' },
+      { minutes: '50–66', title: 'שדרוגי עיר', teacher: 'נותנים לשנות זמן, הודעה וצבע חלונות.', students: 'יוצרים עיר בסגנון אישי.' },
+      { minutes: '66–78', title: 'דיבאג זמן', teacher: 'בודקים timeText ו־timerId.', students: 'מוצאים למה שעון לא יורד או לא נעצר.' },
+      { minutes: '78–90', title: 'תחרות ידידותית', teacher: 'זוגות בודקים אם 15 שניות מאוזן.', students: 'מציעים איזון זמן וקושי.' }
+    ],
+    exercises: [
+      { id: 1, minutes: '0–8', title: 'תרגול 1 — מצילים עיר', prompt: 'הריצו, התחילו משימה, והדליקו כמה שיותר חלונות.', hint: 'אל תגעו בקוד לפני שהבנתם את המשחק.', check: { htmlIncludes: ['id="city"', 'id="timeText"'], jsIncludes: ['function startGame'] } },
+      { id: 2, minutes: '8–18', title: 'תרגול 2 — מוצאים טיימר', prompt: 'מצאו איפה הזמן מתחיל מ־15.', hint: 'חפשו timeLeft.', check: { jsIncludes: ['let timeLeft = 15'] } },
+      { id: 3, minutes: '18–28', title: 'תרגול 3 — פעימת שעון', prompt: 'מצאו את הקוד שמוריד שנייה.', hint: 'tick היא פעימת הזמן.', check: { jsIncludes: ['setInterval', 'timeLeft = timeLeft - 1'] } },
+      { id: 4, minutes: '28–38', title: 'תרגול 4 — חלון נדלק', prompt: 'מצאו איזה קוד מוסיף class לחלון.', hint: 'class lit מדליק חלון.', check: { jsIncludes: ['classList.add("lit")'], cssIncludes: ['.city span.lit'] } },
+      { id: 5, minutes: '38–50', title: 'תרגול 5 — סיום זמן', prompt: 'מצאו מה קורה כשהזמן מגיע לאפס.', hint: 'חפשו timeLeft <= 0.', check: { jsIncludes: ['timeLeft <= 0', 'clearInterval'] } },
+      { id: 6, minutes: '50–60', title: 'תרגול 6 — זמן קצר', prompt: 'שנו את הזמן ל־10 שניות ובדקו אם זה מלחיץ מדי.', hint: 'צריך לשנות גם בהתחלה וגם ב־startGame.', check: { jsIncludes: ['timeLeft'] } },
+      { id: 7, minutes: '60–74', title: 'תרגול 7 — דיבאג עיר', prompt: 'אם חלונות לא נדלקים, בדקו שיש #city span גם ב־HTML וגם ב־JS.', hint: 'ה־querySelectorAll מחפש את החלונות.', check: { htmlIncludes: ['id="city"'], jsIncludes: ['querySelectorAll("#city span")'] } },
+      { id: 8, minutes: '74–84', title: 'תרגול 8 — מבחן זמן', prompt: 'תנו לחבר לשחק והחליטו אם העיר צריכה יותר חלונות או יותר זמן.', hint: 'איזון טוב יוצר לחץ כיפי.', check: { jsIncludes: ['timerId', 'score'], htmlIncludes: ['startButton'] } }
+    ],
+    aiHelper: [
+      'הציעו סיפור קצר למשימת הצלת עיר בזמן.',
+      'עזרו לילד להסביר מה עושה setInterval.',
+      'הציעו הודעות סיום לפי ניקוד נמוך/בינוני/גבוה.',
+      'עזרו לאזן מספר חלונות וזמן משחק.'
+    ],
+    vocabulary: [
+      ['timeLeft', 'כמה זמן נשאר למשימה'],
+      ['setInterval', 'להפעיל פעולה שוב ושוב לפי זמן'],
+      ['tick', 'פעימת שעון אחת'],
+      ['querySelectorAll', 'בחירה של כמה אלמנטים יחד'],
+      ['clearInterval', 'לעצור את השעון']
+    ],
+    bridgeBlocks: [
+      { label: '⏱️ זמן 15', target: 'js', find: 'let timeLeft = 15;', replace: 'let timeLeft = 15;', hint: 'בלוק זמן: זמן המשימה.' },
+      { label: '⚡ זמן קצר 10', target: 'js', find: 'timeLeft = 15;', replace: 'timeLeft = 10;', hint: 'בלוק איזון: מקצר את המשימה.' },
+      { label: '💡 טקסט כפתור', target: 'html', find: '💡 הדליקו חלון', replace: '💡 הצילו חלון!', hint: 'בלוק חוויה: משנה את הפעולה.' },
+      { label: '🏁 הודעת סיום', target: 'js', find: 'הזמן נגמר! הארתם ', replace: 'סיום! הצלחתם להאיר ', hint: 'בלוק משוב: הודעת סוף.' },
+      { label: '🟡 צבע חלון', target: 'css', find: 'background: #fde047;', replace: 'background: #a7f3d0;', hint: 'בלוק עיצוב: משנה חלון מואר.' },
+      { label: '📺 הצג זמן', target: 'js', find: 'document.getElementById("timeText").textContent = timeLeft;', replace: 'document.getElementById("timeText").textContent = timeLeft;', hint: 'בלוק תצוגה: מעדכן זמן במסך.' }
+    ]
+  });
+
+  Object.assign(lessons[8], {
+    title: 'תופסים כוכבים, לא מכשולים',
+    concept: 'חוקי משחק → lives · random · if · בחירה נכונה',
+    story: 'המשחק כבר לא כפתור שמוריד חיים. עכשיו מופיע כרטיס הפתעה: לפעמים כוכב ולפעמים מכשול. הילד צריך להחליט מהר אם ללחוץ או לדלג.',
+    mission: 'לבנות משחק תגובה שבו אוספים כוכבים, נזהרים ממכשולים, ושומרים על חיים.',
+    outcome: 'משחק תגובה עם כרטיס מתחלף, ניקוד וחיים, שמרגיש שונה ממשחק הקליקים',
+    starter: {
+      html: `<main class="reaction-game">
+  <h1>כוכבים או מכשולים?</h1>
+  <p>ניקוד: <span id="scoreText">0</span> | חיים: <span id="livesText">3</span></p>
+  <button onclick="nextItem()">🎲 פריט חדש</button>
+  <button id="itemButton" class="item star" onclick="chooseItem()">⭐</button>
+  <button onclick="skipItem()">דלגו</button>
+  <button onclick="resetGame()">איפוס</button>
+  <p id="message">לחצו על כוכבים. דלגו על מכשולים.</p>
+</main>`,
+      css: `body {
+  font-family: Arial, sans-serif;
+  direction: rtl;
+  text-align: center;
+  background: linear-gradient(135deg, #eef2ff, #fff7ed);
+}
+
+.reaction-game {
+  background: white;
+  width: min(430px, 92vw);
+  margin: 42px auto;
+  padding: 30px;
+  border-radius: 30px;
+  box-shadow: 0 18px 40px #c7d2fe;
+}
+
+.item {
+  display: block;
+  width: 120px;
+  height: 120px;
+  margin: 20px auto;
+  font-size: 58px;
+  border-radius: 28px;
+  transition: transform 0.15s;
+}
+
+.item:hover {
+  transform: scale(1.08);
+}
+
+.star {
+  background: #fef3c7;
+}
+
+.obstacle {
+  background: #fee2e2;
+}
+
+button {
+  margin: 8px;
+  padding: 13px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: #7c3aed;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.game-over {
+  background: #f1f5f9;
+  border: 3px solid #64748b;
+}`,
+      js: `let score = 0;
+let lives = 3;
+let currentItem = "star";
+
+function nextItem() {
+  const itemButton = document.getElementById("itemButton");
+  const options = ["star", "obstacle"];
+  currentItem = options[Math.floor(Math.random() * options.length)];
+
+  if (currentItem === "star") {
+    itemButton.textContent = "⭐";
+    itemButton.className = "item star";
+    document.getElementById("message").textContent = "כוכב! כדאי ללחוץ.";
+  } else {
+    itemButton.textContent = "🌋";
+    itemButton.className = "item obstacle";
+    document.getElementById("message").textContent = "מכשול! עדיף לדלג.";
+  }
+}
+
+function chooseItem() {
+  if (currentItem === "star") {
+    score = score + 1;
+    document.getElementById("scoreText").textContent = score;
+    document.getElementById("message").textContent = "אספתם כוכב ⭐";
+  } else {
+    loseLife();
+  }
+  nextItem();
+}
+
+function skipItem() {
+  if (currentItem === "obstacle") {
+    document.getElementById("message").textContent = "דילוג חכם!";
+  } else {
+    document.getElementById("message").textContent = "אופס, דילגתם על כוכב.";
+  }
+  nextItem();
+}
+
+function loseLife() {
+  lives = lives - 1;
+  document.getElementById("livesText").textContent = lives;
+
+  if (lives <= 0) {
+    document.getElementById("message").textContent = "נגמרו החיים. נסו שוב!";
+    document.querySelector(".reaction-game").classList.add("game-over");
+  }
+}
+
+function resetGame() {
+  score = 0;
+  lives = 3;
+  document.getElementById("scoreText").textContent = score;
+  document.getElementById("livesText").textContent = lives;
+  document.querySelector(".reaction-game").classList.remove("game-over");
+  nextItem();
+}`
+    },
+    lessonFlow: [
+      { minutes: '0–8', title: 'וואו: ללחוץ או לדלג?', teacher: 'מריצים כמה סיבובים ומבקשים מהכיתה להגיד מהר: ללחוץ או לדלג.', students: 'מבינים חוק משחק דרך פעולה, לא דרך הסבר.' },
+      { minutes: '8–18', title: 'כוכב מול מכשול', teacher: 'מראים currentItem כמצב הנוכחי של המשחק.', students: 'מחברים בין מה שרואים לבין הערך בקוד.' },
+      { minutes: '18–34', title: 'אקראיות פשוטה', teacher: 'מצביעים על options ועל Math.random בלי להיכנס לעומק מתמטי.', students: 'מבינים שהמשחק בוחר פריט חדש.' },
+      { minutes: '34–50', title: 'חיים ופסילה', teacher: 'מדגימים loseLife והבדיקה lives <= 0.', students: 'רואים איך טעות מורידה חיים.' },
+      { minutes: '50–66', title: 'שדרוגי חוק', teacher: 'נותנים לשנות מספר חיים, הודעות וסמלי פריטים.', students: 'יוצרים גרסה מצחיקה או מאתגרת.' },
+      { minutes: '66–78', title: 'דיבאג חוק משחק', teacher: 'בודקים itemButton, currentItem ו־livesText.', students: 'מתקנים מצב שבו המשחק לא יודע מה הפריט.' },
+      { minutes: '78–90', title: 'טסט שחקנים', teacher: 'זוגות משחקים ומחליטים אם המשחק הוגן.', students: 'מסבירים חוק אחד שבנו.' }
+    ],
+    exercises: [
+      { id: 1, minutes: '0–8', title: 'תרגול 1 — משחקים קודם', prompt: 'הריצו, החליפו פריט, ולחצו רק כשמופיע כוכב.', hint: 'החוויה חשובה לפני הקוד.', check: { htmlIncludes: ['id="itemButton"'], jsIncludes: ['function chooseItem'] } },
+      { id: 2, minutes: '8–18', title: 'תרגול 2 — מצב הפריט', prompt: 'מצאו את currentItem ובדקו שהוא מתחיל כ־star.', hint: 'currentItem אומר מה מופיע עכשיו.', check: { jsIncludes: ['let currentItem = "star"'] } },
+      { id: 3, minutes: '18–28', title: 'תרגול 3 — פריט אקראי', prompt: 'מצאו את הרשימה שממנה המשחק בוחר כוכב או מכשול.', hint: 'חפשו options.', check: { jsIncludes: ['Math.random', 'options'] } },
+      { id: 4, minutes: '28–38', title: 'תרגול 4 — תנאי בחירה', prompt: 'מצאו מה קורה אם הפריט הוא כוכב.', hint: 'חפשו if (currentItem === "star").', check: { jsIncludes: ['if (currentItem === "star")'] } },
+      { id: 5, minutes: '38–50', title: 'תרגול 5 — חיים יורדים', prompt: 'מצאו איפה מכשול מוריד חיים.', hint: 'loseLife אחראית לפסילה.', check: { jsIncludes: ['let lives = 3', 'lives = lives - 1'] } },
+      { id: 6, minutes: '50–60', title: 'תרגול 6 — Game Over', prompt: 'בדקו מה קורה כשהחיים מגיעים ל־0.', hint: 'חפשו lives <= 0.', check: { jsIncludes: ['lives <= 0'], cssIncludes: ['.game-over'] } },
+      { id: 7, minutes: '60–74', title: 'תרגול 7 — דיבאג כפתור', prompt: 'אם הפריט לא משתנה, בדקו itemButton ו־className.', hint: 'אותו כפתור מחליף גם סמל וגם class.', check: { htmlIncludes: ['id="itemButton"'], jsIncludes: ['itemButton.className'] } },
+      { id: 8, minutes: '74–84', title: 'תרגול 8 — איזון חיים', prompt: 'תנו לחבר לשחק והחליטו אם צריך 3 או 5 חיים.', hint: 'יותר חיים מתאים לכיתה שמתחילה.', check: { jsIncludes: ['lives', 'resetGame'], htmlIncludes: ['skipItem'] } }
+    ],
+    aiHelper: [
+      'הציעו זוגות של פרס ומכשול שילדים יבינו מיד.',
+      'הסבירו currentItem כמו קלף שמונח עכשיו על השולחן.',
+      'עזרו לילד להבין למה דילוג על כוכב הוא לא פסילה.',
+      'הציעו רמת קושי קלה/בינונית/קשה למשחק תגובה.'
+    ],
+    vocabulary: [
+      ['lives', 'כמה ניסיונות נשארו'],
+      ['currentItem', 'הפריט שמופיע עכשיו במשחק'],
+      ['random', 'בחירה אקראית של פריט'],
+      ['if', 'אם זה כוכב עושים דבר אחד, אחרת דבר אחר'],
+      ['game over', 'מצב שבו אין יותר חיים']
+    ],
+    bridgeBlocks: [
+      { label: '❤️ 5 חיים', target: 'js', find: 'let lives = 3;', replace: 'let lives = 5;', hint: 'בלוק איזון: נותן יותר ניסיונות.' },
+      { label: '⭐ טקסט כוכב', target: 'js', find: 'אספתם כוכב ⭐', replace: 'תפיסה מושלמת ⭐', hint: 'בלוק משוב: הודעת הצלחה.' },
+      { label: '🌋 מכשול אחר', target: 'js', find: 'itemButton.textContent = "🌋";', replace: 'itemButton.textContent = "💣";', hint: 'בלוק דמות: מחליף מכשול.' },
+      { label: '🏁 הודעת פסילה', target: 'js', find: 'נגמרו החיים. נסו שוב!', replace: 'נגמרו החיים — נסו סיבוב חדש!', hint: 'בלוק משוב: הודעת Game Over.' },
+      { label: '🟣 צבע פריט', target: 'css', find: 'background: #fef3c7;', replace: 'background: #dcfce7;', hint: 'בלוק עיצוב: משנה כרטיס כוכב.' },
+      { label: '🎲 פריט חדש', target: 'js', find: 'function nextItem()', replace: 'function nextItem()', hint: 'בלוק משחק: בוחר פריט חדש.' }
+    ]
+  });
+
+  Object.assign(lessons[9], {
+    title: 'מעבדת גיבורי־על — כוח מיוחד לדמות',
+    concept: 'מצב דמות → powerReady · selectedHero · classList · true/false',
+    story: 'מוציאים את הכוח המיוחד ממשחק הקליקים והופכים אותו לסטודיו דמות. הילד בוחר גיבור, מפעיל כוח, רואה שינוי ויזואלי, ולומד שמצב בקוד משנה חוויה במסך.',
+    mission: 'לבנות סטודיו גיבורי־על: לבחור דמות, להפעיל כוח חד־פעמי, ולהציג כרטיס כוח.',
+    outcome: 'סטודיו דמויות וכוחות עם מצב true/false ושינויי classList ברורים',
+    starter: {
+      html: `<main class="hero-lab">
+  <h1>מעבדת גיבורי־על</h1>
+  <div id="heroAvatar" class="hero-avatar">🤖</div>
+  <p>גיבור: <span id="heroName">רובוט אור</span> | כוח: <span id="powerText">מוכן</span></p>
+  <button onclick="chooseHero('robot')">🤖 רובוט</button>
+  <button onclick="chooseHero('ninja')">🥷 נינג׳ה</button>
+  <button onclick="chooseHero('space')">👩‍🚀 חלל</button>
+  <button onclick="activatePower()">⚡ הפעל כוח</button>
+  <button onclick="resetPower()">טעינת כוח</button>
+  <p id="message">בחרו גיבור והפעילו כוח מיוחד.</p>
+</main>`,
+      css: `body {
+  font-family: Arial, sans-serif;
+  direction: rtl;
+  text-align: center;
+  background: linear-gradient(135deg, #f5d0fe, #dbeafe);
+}
+
+.hero-lab {
+  background: white;
+  width: min(460px, 92vw);
+  margin: 42px auto;
+  padding: 30px;
+  border-radius: 30px;
+  box-shadow: 0 18px 42px #c4b5fd;
+}
+
+.hero-avatar {
+  font-size: 88px;
+  margin: 16px;
+  transition: transform 0.25s, filter 0.25s;
+}
+
+.power-on .hero-avatar {
+  transform: scale(1.18) rotate(4deg);
+  filter: drop-shadow(0 0 18px #facc15);
+}
+
+button {
+  margin: 7px;
+  padding: 13px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: #7c3aed;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.power-on {
+  background: #dcfce7;
+  border: 3px solid #22c55e;
+}`,
+      js: `let powerReady = true;
+let selectedHero = "robot";
+
+function chooseHero(hero) {
+  selectedHero = hero;
+
+  if (hero === "robot") {
+    document.getElementById("heroAvatar").textContent = "🤖";
+    document.getElementById("heroName").textContent = "רובוט אור";
+  } else if (hero === "ninja") {
+    document.getElementById("heroAvatar").textContent = "🥷";
+    document.getElementById("heroName").textContent = "נינג׳ה צל";
+  } else {
+    document.getElementById("heroAvatar").textContent = "👩‍🚀";
+    document.getElementById("heroName").textContent = "חוקרת חלל";
+  }
+
+  document.getElementById("message").textContent = "הגיבור נבחר. הכוח מוכן?";
+}
+
+function activatePower() {
+  if (powerReady) {
+    powerReady = false;
+    document.getElementById("powerText").textContent = "נטען מחדש";
+    document.querySelector(".hero-lab").classList.add("power-on");
+    document.getElementById("message").textContent = "כוח מיוחד הופעל עבור " + selectedHero + " ⚡";
+  } else {
+    document.getElementById("message").textContent = "הכוח כבר נוצל. צריך טעינה.";
+  }
+}
+
+function resetPower() {
+  powerReady = true;
+  document.getElementById("powerText").textContent = "מוכן";
+  document.querySelector(".hero-lab").classList.remove("power-on");
+  document.getElementById("message").textContent = "הכוח נטען מחדש!";
+}`
+    },
+    lessonFlow: [
+      { minutes: '0–8', title: 'וואו: בוחרים גיבור', teacher: 'נותנים לילדים לבחור דמות ולהפעיל כוח לפני הסבר.', students: 'רואים דמות, שם, מצב כוח ואפקט.' },
+      { minutes: '8–18', title: 'מצב דמות', teacher: 'מסבירים selectedHero כבחירה הנוכחית.', students: 'מחברים כפתור לבחירת דמות.' },
+      { minutes: '18–34', title: 'כוח מוכן או לא', teacher: 'מראים powerReady כ־true/false.', students: 'מבינים למה כוח חד־פעמי צריך מצב.' },
+      { minutes: '34–50', title: 'אפקט כוח', teacher: 'מצביעים על classList.add("power-on").', students: 'רואים ש־class משנה את המראה.' },
+      { minutes: '50–66', title: 'שדרוגי גיבור', teacher: 'נותנים לשנות דמות, שם כוח והודעה.', students: 'יוצרים גיבור אישי.' },
+      { minutes: '66–78', title: 'דיבאג מצב', teacher: 'בודקים powerText ו־heroAvatar.', students: 'מתקנים id או מצב שלא מתעדכן.' },
+      { minutes: '78–90', title: 'מצעד גיבורים', teacher: 'כל זוג מציג גיבור וכוח.', students: 'מסבירים מתי powerReady נכון ומתי לא.' }
+    ],
+    exercises: [
+      { id: 1, minutes: '0–8', title: 'תרגול 1 — בוחרים דמות', prompt: 'בחרו רובוט, נינג׳ה או חלל והפעילו כוח.', hint: 'שימו לב מה משתנה לפני שקוראים קוד.', check: { htmlIncludes: ['id="heroAvatar"', 'chooseHero'], jsIncludes: ['function chooseHero'] } },
+      { id: 2, minutes: '8–18', title: 'תרגול 2 — כוח מוכן', prompt: 'מצאו איפה הכוח מתחיל במצב מוכן.', hint: 'powerReady הוא כן/לא.', check: { jsIncludes: ['let powerReady = true'] } },
+      { id: 3, minutes: '18–28', title: 'תרגול 3 — גיבור נבחר', prompt: 'מצאו איפה נשמרת הדמות הנבחרת.', hint: 'selectedHero שומר בחירה.', check: { jsIncludes: ['let selectedHero = "robot"', 'selectedHero = hero'] } },
+      { id: 4, minutes: '28–38', title: 'תרגול 4 — אם הכוח מוכן', prompt: 'מצאו את התנאי שמחליט אם מותר להפעיל כוח.', hint: 'חפשו if (powerReady).', check: { jsIncludes: ['if (powerReady)', 'powerReady = false'] } },
+      { id: 5, minutes: '38–50', title: 'תרגול 5 — אפקט כוח', prompt: 'מצאו את ה־class שמדליק אפקט כוח.', hint: 'power-on משנה את הכרטיס.', check: { jsIncludes: ['classList.add("power-on")'], cssIncludes: ['.power-on'] } },
+      { id: 6, minutes: '50–60', title: 'תרגול 6 — טעינה מחדש', prompt: 'בדקו שכפתור טעינה מחזיר את הכוח למוכן.', hint: 'resetPower מחזיר true.', check: { jsIncludes: ['function resetPower', 'powerReady = true'] } },
+      { id: 7, minutes: '60–74', title: 'תרגול 7 — גיבור אישי', prompt: 'שנו שם של גיבור או הודעת כוח.', hint: 'שינוי בטוח: טקסט בתוך גרשיים.', check: { htmlIncludes: ['heroName'], jsIncludes: ['textContent'] } },
+      { id: 8, minutes: '74–84', title: 'תרגול 8 — הצגת כוח', prompt: 'תנו לחבר לבחור דמות ולהסביר למה אי אפשר להפעיל כוח פעמיים.', hint: 'הסבירו powerReady במילים.', check: { jsIncludes: ['powerReady', 'selectedHero'], htmlIncludes: ['activatePower'] } }
+    ],
+    aiHelper: [
+      'הציעו שמות מצחיקים לגיבורי־על של ילדים.',
+      'הסבירו true/false כמו כפתור כוח מוכן/לא מוכן.',
+      'הציעו אפקטים לכוח מיוחד בלי קוד מסובך.',
+      'עזרו להבין למה classList משנה מראה של דמות.'
+    ],
+    vocabulary: [
+      ['powerReady', 'האם הכוח מוכן להפעלה'],
+      ['selectedHero', 'הדמות שנבחרה עכשיו'],
+      ['true / false', 'כן או לא בקוד'],
+      ['classList', 'הוספה או הסרה של מצב עיצובי'],
+      ['state', 'מצב שהאפליקציה זוכרת']
+    ],
+    bridgeBlocks: [
+      { label: '🤖 שם רובוט', target: 'js', find: 'רובוט אור', replace: 'רובוט ברק', hint: 'בלוק דמות: שם אישי.' },
+      { label: '🥷 סמל נינג׳ה', target: 'js', find: 'document.getElementById("heroAvatar").textContent = "🥷";', replace: 'document.getElementById("heroAvatar").textContent = "🦸";', hint: 'בלוק דמות: מחליף סמל.' },
+      { label: '⚡ הודעת כוח', target: 'js', find: 'כוח מיוחד הופעל עבור ', replace: 'כוח על נדלק עבור ', hint: 'בלוק משוב: הודעת כוח.' },
+      { label: '🟢 צבע כוח', target: 'css', find: 'background: #dcfce7;', replace: 'background: #bbf7d0;', hint: 'בלוק עיצוב: מצב כוח.' },
+      { label: '🔒 שימוש חד־פעמי', target: 'js', find: 'powerReady = false;', replace: 'powerReady = false;', hint: 'בלוק מצב: כוח כבר לא מוכן.' },
+      { label: '🔁 טעינת כוח', target: 'js', find: 'powerReady = true;', replace: 'powerReady = true;', hint: 'בלוק איפוס: הכוח חוזר.' }
+    ]
+  });
+
+  Object.assign(lessons[10], {
+    title: 'בחרו הרפתקה — אפליקציית מסכים',
+    concept: 'אפליקציית מסכים → showScreen · choices · navigation · state',
+    story: 'במקום עוד משחק עם מסך פתיחה וניצחון, הילדים בונים סיפור אינטראקטיבי. כל בחירה מעבירה למסך אחר: דלת אדומה, דלת כחולה, סוף מצחיק או סוף ניצחון.',
+    mission: 'לבנות אפליקציית “בחרו את ההרפתקה”: מסך פתיחה, שתי בחירות, שני מסלולים וסוף.',
+    outcome: 'סיפור אינטראקטיבי עם ניווט בין מסכים, שמלמד showScreen ו־class active דרך חוויה סיפורית',
+    starter: {
+      html: `<main class="adventure-app">
+  <section id="startScreen" class="screen active">
+    <h1>הטירה הסודית</h1>
+    <p>מצאתם שתי דלתות. איזו דלת תפתחו?</p>
+    <button onclick="showScreen('redDoorScreen')">🚪 דלת אדומה</button>
+    <button onclick="showScreen('blueDoorScreen')">🚪 דלת כחולה</button>
+  </section>
+  <section id="redDoorScreen" class="screen">
+    <h2>חדר הדרקון</h2>
+    <p>דרקון קטן מבקש בדיחה כדי לתת לכם לעבור.</p>
+    <button onclick="showScreen('winScreen')">ספרו בדיחה</button>
+    <button onclick="showScreen('startScreen')">חזרו לטירה</button>
+  </section>
+  <section id="blueDoorScreen" class="screen">
+    <h2>חדר המראה</h2>
+    <p>המראה שואלת: “מה הכוח המיוחד שלך?”</p>
+    <button onclick="showScreen('funnyEndScreen')">להיות יצירתיים</button>
+    <button onclick="showScreen('startScreen')">חזרו לטירה</button>
+  </section>
+  <section id="winScreen" class="screen">
+    <h2>ניצחתם!</h2>
+    <p>הדרקון צחק ופתח לכם אוצר 🎉</p>
+    <button onclick="showScreen('startScreen')">שחקו שוב</button>
+  </section>
+  <section id="funnyEndScreen" class="screen">
+    <h2>סוף מצחיק</h2>
+    <p>המראה החליטה שאתם קוסמי רעיונות ✨</p>
+    <button onclick="showScreen('startScreen')">התחילו מחדש</button>
+  </section>
+</main>`,
+      css: `body {
+  font-family: Arial, sans-serif;
+  direction: rtl;
+  text-align: center;
+  background: linear-gradient(135deg, #312e81, #f97316);
+}
+
+.adventure-app {
+  background: white;
+  width: min(500px, 92vw);
+  margin: 42px auto;
+  padding: 30px;
+  border-radius: 30px;
+  box-shadow: 0 18px 45px #4338ca;
+}
+
+.screen {
+  display: none;
+  min-height: 260px;
+}
+
+.screen.active {
+  display: block;
+}
+
+h1, h2 {
+  color: #4338ca;
+}
+
+button {
+  margin: 8px;
+  padding: 14px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: #4338ca;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  transform: scale(1.05);
+}`,
+      js: `let currentScreen = "startScreen";
+
+function showScreen(screenId) {
+  currentScreen = screenId;
+  document.querySelectorAll(".screen").forEach(function (screen) {
+    screen.classList.remove("active");
+  });
+  document.getElementById(screenId).classList.add("active");
+}
+
+function resetAdventure() {
+  showScreen("startScreen");
+}`
+    },
+    lessonFlow: [
+      { minutes: '0–8', title: 'וואו: בוחרים דלת', teacher: 'מריצים את הסיפור ונותנים לכיתה לבחור דלתות.', students: 'רואים שמסך משתנה לפי בחירה.' },
+      { minutes: '8–18', title: 'מה זה מסך?', teacher: 'מצביעים על section ועל class active.', students: 'מבינים שרק מסך אחד מוצג.' },
+      { minutes: '18–34', title: 'פונקציית ניווט', teacher: 'מראים showScreen כמעלית בין חדרים.', students: 'מחברים כפתור למסך יעד.' },
+      { minutes: '34–50', title: 'מפת סיפור', teacher: 'מציירים תרשים: התחלה → דלת אדומה/כחולה → סוף.', students: 'מתכננים מסלול נוסף.' },
+      { minutes: '50–66', title: 'שדרוג סיפור', teacher: 'נותנים לשנות דלת, חדר, סוף או הודעה.', students: 'כותבים סיפור אישי קצר.' },
+      { minutes: '66–78', title: 'דיבאג מסכים', teacher: 'בודקים id ו־showScreen עם שם זהה.', students: 'מתקנים מעבר שלא עובד.' },
+      { minutes: '78–90', title: 'משחקים בסיפורים', teacher: 'זוגות משחקים בסיפור של חבר.', students: 'מסבירים את מפת הבחירות.' }
+    ],
+    exercises: [
+      { id: 1, minutes: '0–8', title: 'תרגול 1 — בוחרים דלת', prompt: 'הריצו ובחרו דלת אדומה או כחולה.', hint: 'בדקו איזה מסך נפתח.', check: { htmlIncludes: ['id="startScreen"', 'class="screen active"'], jsIncludes: ['function showScreen'] } },
+      { id: 2, minutes: '8–18', title: 'תרגול 2 — מסך פעיל', prompt: 'מצאו איזה class גורם למסך להופיע.', hint: 'active הוא המסך שמוצג עכשיו.', check: { cssIncludes: ['.screen.active'], htmlIncludes: ['class="screen active"'] } },
+      { id: 3, minutes: '18–28', title: 'תרגול 3 — מעבר לדלת אדומה', prompt: 'מצאו את הכפתור שמעביר לחדר הדרקון.', hint: 'חפשו redDoorScreen.', check: { htmlIncludes: ['redDoorScreen'], jsIncludes: ['showScreen'] } },
+      { id: 4, minutes: '28–38', title: 'תרגול 4 — מעבר לדלת כחולה', prompt: 'מצאו את הכפתור שמעביר לחדר המראה.', hint: 'חפשו blueDoorScreen.', check: { htmlIncludes: ['blueDoorScreen'], jsIncludes: ['showScreen'] } },
+      { id: 5, minutes: '38–50', title: 'תרגול 5 — סוף ניצחון', prompt: 'מצאו את המסך שבו הדרקון פותח אוצר.', hint: 'זה winScreen.', check: { htmlIncludes: ['id="winScreen"'] } },
+      { id: 6, minutes: '50–60', title: 'תרגול 6 — סוף מצחיק', prompt: 'שנו את הטקסט בסוף המצחיק.', hint: 'שינוי בטוח: רק מילים בתוך p.', check: { htmlIncludes: ['funnyEndScreen'] } },
+      { id: 7, minutes: '60–74', title: 'תרגול 7 — דיבאג id', prompt: 'אם כפתור לא עובד, בדקו שהשם ב־showScreen זהה ל־id של section.', hint: 'שם אחד שונה שובר מעבר.', check: { htmlIncludes: ['id="blueDoorScreen"'], jsIncludes: ['getElementById(screenId)'] } },
+      { id: 8, minutes: '74–84', title: 'תרגול 8 — מפת הרפתקה', prompt: 'ציירו על דף את מסכי הסיפור ואז שנו שם של חדר אחד.', hint: 'קודם תכנון, אחר כך קוד.', check: { htmlIncludes: ['section', 'button'], jsIncludes: ['currentScreen', 'showScreen'] } }
+    ],
+    aiHelper: [
+      'הציעו רעיונות לשתי דלתות ושני סופים מצחיקים.',
+      'עזרו לילד לתכנן מפת סיפור עם 5 מסכים.',
+      'הסבירו showScreen כמו מעבר חדרים בטירה.',
+      'עזרו למצוא למה כפתור לא עובר למסך הנכון.'
+    ],
+    vocabulary: [
+      ['screen', 'מסך אחד באפליקציה או בסיפור'],
+      ['active', 'המסך שמוצג עכשיו'],
+      ['showScreen', 'פונקציה שמעבירה למסך אחר'],
+      ['navigation', 'מעבר בין מסכים'],
+      ['currentScreen', 'המסך שהאפליקציה זוכרת כרגע']
+    ],
+    bridgeBlocks: [
+      { label: '🚪 שם דלת', target: 'html', find: '🚪 דלת אדומה', replace: '🚪 דלת אש', hint: 'בלוק סיפור: משנה בחירה.' },
+      { label: '🐉 חדר אחר', target: 'html', find: 'חדר הדרקון', replace: 'חדר הרובוטים', hint: 'בלוק תוכן: משנה שם מסך.' },
+      { label: '🎉 סוף ניצחון', target: 'html', find: 'הדרקון צחק ופתח לכם אוצר 🎉', replace: 'הרובוטים רקדו ופתחו לכם שער 🎉', hint: 'בלוק סוף: משנה תוצאה.' },
+      { label: '✨ סוף מצחיק', target: 'html', find: 'המראה החליטה שאתם קוסמי רעיונות ✨', replace: 'המראה אמרה שאתם אלופי הדמיון ✨', hint: 'בלוק סוף: סוף חלופי.' },
+      { label: '▶️ מעבר למסך', target: 'js', find: 'function showScreen(screenId)', replace: 'function showScreen(screenId)', hint: 'בלוק ניווט: פונקציית המעבר.' },
+      { label: '🎨 צבע הרפתקה', target: 'css', find: 'background: #4338ca;', replace: 'background: #be123c;', hint: 'בלוק עיצוב: משנה כפתורים.' }
+    ]
+  });
+
 
   const webCodeAdvancedLessons = [
   {

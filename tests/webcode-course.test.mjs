@@ -119,7 +119,7 @@ assert.ok(lesson10.vocabulary.some(v => v[0] === 'powerReady'), 'lesson 10 vocab
 
 const lesson11 = lessons[10];
 assert.equal(lesson11.durationMinutes, 90, 'lesson 11 is framed as 90 minutes');
-assert.ok(lesson11.title.includes('מסך פתיחה'), 'lesson 11 focuses on screens');
+assert.ok(lesson11.title.includes('הרפתקה') && lesson11.concept.includes('מסכים'), 'lesson 11 focuses on adventure screens');
 assert.ok(lesson11.starter.js.includes('function showScreen'), 'lesson 11 includes screen switching');
 assert.ok(lesson11.starter.html.includes('id="startScreen"'), 'lesson 11 has start screen');
 assert.ok(lesson11.exercises.length >= 8, 'lesson 11 includes many exercises');
