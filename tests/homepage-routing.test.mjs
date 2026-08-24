@@ -26,6 +26,9 @@ function assertNotIncludes(source, needle, message = `Unexpected: ${needle}`) { 
 test('homepage is now a platform gateway and links to primary learning modules', () => {
   assertIncludes(homepageHtml, '<title>פלטפורמת לומדות טכנולוגיה</title>');
   assertIncludes(homepageHtml, 'מרכז הלומדות');
+  assertNotIncludes(homepageHtml, 'href="#roadmap"', 'Progression sequence link should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'רצף גילאים', 'Progression sequence nav label should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'רצף התקדמות', 'Progression sequence section should be hidden from the main homepage');
   assertIncludes(homepageHtml, 'href="sensi-classic.html?lesson=1"');
   assertIncludes(homepageHtml, 'href="sensi-classic-slides/index.html"');
   assertNotIncludes(homepageHtml, 'href="pygame.html"', 'Pygame should be hidden from the main homepage');
