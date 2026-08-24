@@ -27,10 +27,13 @@ for (let id = 1; id <= 30; id++) {
 
 const lesson2 = readFileSync(new URL('../python-turtle-lesson-2-slides.html', import.meta.url), 'utf8');
 const lesson6 = readFileSync(new URL('../python-turtle-lesson-6-slides.html', import.meta.url), 'utf8');
+const lesson7 = readFileSync(new URL('../python-turtle-lesson-7-slides.html', import.meta.url), 'utf8');
 const lesson30 = readFileSync(new URL('../python-turtle-lesson-30-slides.html', import.meta.url), 'utf8');
 assert.match(lesson2, /מסלול מדרגות/);
 assert.match(lesson2, /תרגול 9 — מדרגות בשני צבעים/);
 assert.match(lesson6, /משתנה/);
+assert.match(lesson7, /קרש ראשון בגדר/);
+assert.match(lesson7, /מתחילים משמאל/);
 assert.match(lesson30, /פרויקט גמר קצר/);
 
 console.log('python-turtle teacher slides checks passed');

@@ -227,15 +227,22 @@ assert.match(html, /\.exercise-bottom\{display:flex;gap:10px;align-items:center/
 
 assert.doesNotMatch(html, /exercise-feedback'\)\?\.scrollIntoView/, 'exercise feedback should not auto-scroll controls out of view');
 
+assert.match(html, /תרגול 1 — קרש ראשון בגדר/, 'lesson 7 opens with a concrete fence plank rather than another forward-turn exercise');
+assert.match(html, /function hasFencePlankUnit/, 'lesson 7 validates a real fence plank unit');
+assert.match(html, /קו קטן הצידה שמפריד בין הקרשים/, 'lesson 7 requires a small connector line between fence planks');
+assert.match(html, /אתגר קטן — מתחילים משמאל/, 'lesson 7 includes a short challenge to move left before drawing the long fence');
+assert.match(html, /function movesLeftBeforeFence/, 'lesson 7 left-start challenge validates pen-up repositioning');
 assert.match(html, /תרגול 6 — תקנו בלוק מיותר/, 'lesson 7 includes a concrete debug exercise instead of filler');
 
 assert.doesNotMatch(html, /currentLesson === 7 && ex\?\.id === 4\) return \['py_repeat'\]/, 'lesson 7 no longer repeats the code-highlight selection exercise');
 
 assert.doesNotMatch(html, /currentLesson === 7 && ex\?\.id === 4[\s\S]*py_repeat[\s\S]*py_forward/, 'lesson 7 removed the redundant selection-only starter');
 
-assert.match(html, /if\(currentLesson === 7\)\{[\s\S]*ex\.id === 2[\s\S]*repeatHasForwardThenTurn\(4\)/, 'lesson 7 exercise 2 validates a 4-repeat base frame');
+assert.match(html, /if\(currentLesson === 7\)\{[\s\S]*ex\.id === 2[\s\S]*repeatHasFencePlankPattern\(4, true\)/, 'lesson 7 exercise 2 validates a repeated fence plank pattern with connector line');
 
-assert.match(html, /if\(currentLesson === 7\)\{[\s\S]*ex\.id === 3[\s\S]*times === 8[\s\S]*a\.v === 45/, 'lesson 7 exercise 3 validates an 8-sided frame, not a repeated square');
+assert.match(html, /if\(currentLesson === 7\)\{[\s\S]*ex\.id === 3[\s\S]*repeatHasFencePlankPattern\(8, true\)/, 'lesson 7 exercise 3 validates an 8-repeat fence row with connector line');
+
+assert.match(html, /if\(currentLesson === 7\)\{[\s\S]*ex\.id === 10[\s\S]*movesLeftBeforeFence[\s\S]*repeatHasFencePlankPattern\(8, true\)/, 'lesson 7 left-start challenge validates moving left before an 8-plank fence row');
 
 assert.match(html, /if\(currentLesson === 7\)\{[\s\S]*ex\.id === 4[\s\S]*actionDrawnColors/, 'lesson 7 color exercise validates color actually drawn');
 
