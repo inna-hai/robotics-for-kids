@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { strict as assert } from 'node:assert';
 import vm from 'node:vm';
 
@@ -28,6 +28,8 @@ for (const lesson of program.lessons) {
   assert.ok(lesson.studentWorksheet, `lesson ${lesson.id} has student worksheet`);
   assert.ok(lesson.studentWorksheet.fields.length >= 6, `lesson ${lesson.id} has worksheet fields`);
   assert.ok(lesson.studentWorksheet.checklist.length >= 5, `lesson ${lesson.id} has worksheet checklist`);
+  assert.ok(lesson.image, `lesson ${lesson.id} has a visual asset`);
+  assert.ok(existsSync(new URL(lesson.image, root)), `lesson ${lesson.id} image file exists`);
 }
 
 assert.ok(program.lessons[0].title.includes('מיזם עירוני'), 'lesson 1 starts from a city venture');
@@ -46,6 +48,7 @@ assert.ok(page.includes('venture-ai-slides.html?lesson=${lesson.id}'), 'course p
 assert.ok(page.includes('venture-ai-students.html?lesson=${lesson.id}'), 'course page links student worksheet inside each lesson');
 assert.ok(page.includes('venture-ai-improvement.html'), 'course page links improvement request form');
 assert.ok(page.includes('https://opal.hai.tech/'), 'course page links Opal');
+assert.ok(page.includes('meeting-image'), 'course page renders meeting images');
 
 const slides = read('venture-ai-slides.html');
 assert.ok(slides.includes('מצגת מדריך'), 'slides page is instructor deck');

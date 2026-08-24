@@ -54,6 +54,17 @@
       align-content: start;
     }
 
+    .meeting-image {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      margin-bottom: 16px;
+      border-radius: 16px;
+      object-fit: cover;
+      border: 1px solid #dbe8f4;
+      background: #f8fcff;
+      box-shadow: 0 14px 30px rgba(23, 32, 51, .09);
+    }
+
     .meeting-number {
       display: inline-grid;
       place-items: center;
@@ -270,7 +281,7 @@
   </main>
 
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="js/venture-ai-lessons.js?v=20260824-venture-minimal"></script>
+  <script src="js/venture-ai-lessons.js?v=20260824-venture-images"></script>
   <script>
     const program = window.VENTURE_AI_PROGRAM;
     const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
@@ -279,6 +290,7 @@
 
     document.getElementById('lessonCards').innerHTML = program.lessons.map(lesson => `
       <article class="card meeting-card">
+        ${lesson.image ? `<img class="meeting-image" src="${esc(lesson.image)}" alt="${esc(lesson.title)}">` : ''}
         <span class="tag">מפגש ${lesson.id} • ${lesson.durationMinutes} דקות</span>
         <div class="meeting-title">
           <span class="meeting-number">${lesson.id}</span>
