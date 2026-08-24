@@ -13,6 +13,8 @@ assert.match(html, /function hasDescendingStairSequence\(actions, stairCount=3\)
 assert.match(html, /function isOneTurnChangeFromDescendingStairs\(actions, stairCount=3\)/, 'lesson 2 exercise 3 accepts a one-turn change from natural descending stair sequences');
 assert.match(html, /currentLesson === 2 && ex\.id === 3[\s\S]*isOneTurnChangeFromDescendingStairs\(actions, 3\)/, 'lesson 2 exercise 3 uses the flexible one-turn stair validator');
 assert.match(html, /עדיין לא רואים 3 מדרגות יורדות ברצף/, 'lesson 2 exercise 2 feedback does not reveal the full block sequence');
+assert.match(html, /תרגול 7 — מדרגות בשני צבעים/, 'lesson 2 adds an active two-color stairs exercise to fill the later part of the lesson');
+assert.match(html, /currentLesson === 2 && ex\.id === 9[\s\S]*hasDescendingStairSequence\(current, 3\)[\s\S]*actionDrawnColors\(actions\)\.size < 2/, 'lesson 2 colored stairs exercise validates both stair structure and two drawn colors');
 assert.match(html, />✨ דוגמת הפעלה<\//, 'demo button is labeled as an operation demo');
 assert.match(html, /זו דוגמת הפעלה בלבד — לא הפתרון של המשימה/, 'demo button explains it is not the task solution');
 assert.match(html, /ensureStarterHasPythonBlock\(xmls\[currentLesson\] \|\| xmls\[1\]\)/, 'operation demo examples are wrapped with the Python block');
