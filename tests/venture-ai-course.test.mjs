@@ -53,6 +53,10 @@ assert.ok(page.includes('venture-ai-improvement.html'), 'course page links impro
 assert.ok(page.includes('https://opal.hai.tech/'), 'course page links Opal');
 assert.ok(page.includes('meeting-image'), 'course page renders meeting images');
 assert.ok(page.includes('teamFrameTitle'), 'course page renders team framework');
+assert.ok(page.includes('<video controls playsinline'), 'course page embeds the program explainer video');
+assert.ok(page.includes('marketing/venture-ai-program-explainer.mp4'), 'course page uses internal MP4 explainer video');
+assert.ok(page.includes('סרטון פתיחה'), 'course page labels the explainer video clearly');
+assert.ok(existsSync(new URL('marketing/venture-ai-program-explainer.mp4', root)), 'explainer video file exists');
 
 const slides = read('venture-ai-slides.html');
 assert.ok(slides.includes('מצגת מדריך'), 'slides page is instructor deck');

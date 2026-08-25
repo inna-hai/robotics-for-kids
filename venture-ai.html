@@ -50,6 +50,42 @@
       font-weight: 600;
     }
 
+    .program-video {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 380px);
+      gap: 18px;
+      align-items: center;
+      margin: 18px 0;
+      padding: 18px;
+      border: 1px solid #cfe2f3;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #ffffff, #f4fbff);
+      box-shadow: 0 16px 36px rgba(23,32,51,.08);
+    }
+
+    .program-video video {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 1px solid #dbe8f4;
+      border-radius: 14px;
+      background: #0f172a;
+      box-shadow: 0 18px 34px rgba(15,23,42,.12);
+    }
+
+    .program-video-copy {
+      display: grid;
+      gap: 10px;
+    }
+
+    .program-video-copy h2 {
+      margin-bottom: 0;
+    }
+
+    .program-video-copy p {
+      margin: 0;
+    }
+
     .meeting-card {
       align-content: start;
     }
@@ -241,6 +277,7 @@
 
     @media (max-width: 850px) {
       .venture-home .hero,
+      .program-video,
       .mini-grid,
       .role-grid {
         grid-template-columns: 1fr;
@@ -270,6 +307,17 @@
         <div class="venture-stat"><b>90</b><span>דקות לכל מפגש</span></div>
         <div class="venture-stat"><b>MVP</b><span>תוצר קטן שעובד</span></div>
       </aside>
+    </section>
+
+    <section class="program-video" aria-labelledby="programVideoTitle">
+      <video controls playsinline preload="metadata" poster="assets/venture-ai/meeting-1-city.webp">
+        <source src="marketing/venture-ai-program-explainer.mp4?v=20260825-opal-first" type="video/mp4">
+      </video>
+      <div class="program-video-copy">
+        <span class="tag">סרטון פתיחה</span>
+        <h2 id="programVideoTitle">הסבר קצר על התוכנית</h2>
+        <p class="goal">סרטון קריינות שמציג את תוכנית עיר חולון ביזמות עם בינה מלאכותית: צוותים, אופאל מהשיעור הראשון, ארבעת המפגשים והתוצר הסופי.</p>
+      </div>
     </section>
 
     <section class="grid-4">
