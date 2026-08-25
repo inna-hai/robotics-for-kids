@@ -32,11 +32,15 @@ for (const lesson of program.lessons) {
   assert.ok(lesson.studentWorksheet.checklist.length >= 5, `lesson ${lesson.id} has worksheet checklist`);
   assert.ok(lesson.image, `lesson ${lesson.id} has a visual asset`);
   assert.ok(existsSync(new URL(lesson.image, root)), `lesson ${lesson.id} image file exists`);
+  if (lesson.video) {
+    assert.ok(existsSync(new URL(lesson.video, root)), `lesson ${lesson.id} video file exists`);
+  }
 }
 
 assert.ok(program.lessons[0].title.includes('מיזם עירוני'), 'lesson 1 starts from a city venture');
 assert.ok(program.lessons[0].keyConcepts.includes('לאו-טק'), 'lesson 1 introduces high-tech and low-tech framing');
 assert.ok(program.lessons[0].keyConcepts.includes('אופאל כסוכן AI'), 'lesson 1 opens Opal as an AI thinking agent');
+assert.equal(program.lessons[0].video, 'marketing/venture-ai-lesson1-explainer.mp4', 'lesson 1 has embedded explainer video');
 assert.ok(program.lessons[1].keyConcepts.includes('MoSCoW'), 'lesson 2 uses MoSCoW to narrow scope');
 assert.ok(program.lessons[1].opalPrompt.includes('Must'), 'lesson 2 feeds Must scope into the Opal prompt');
 assert.ok(program.lessons[2].title.includes('אופאל'), 'lesson 3 builds in Opal');
@@ -52,9 +56,11 @@ assert.ok(page.includes('venture-ai-students.html?lesson=${lesson.id}'), 'course
 assert.ok(page.includes('venture-ai-improvement.html'), 'course page links improvement request form');
 assert.ok(page.includes('https://opal.hai.tech/'), 'course page links Opal');
 assert.ok(page.includes('meeting-image'), 'course page renders meeting images');
+assert.ok(page.includes('meeting-video'), 'course page can render lesson videos instead of images');
 assert.ok(page.includes('teamFrameTitle'), 'course page renders team framework');
 assert.ok(page.includes('<video controls playsinline'), 'course page embeds the program explainer video');
 assert.ok(page.includes('marketing/venture-ai-program-explainer.mp4'), 'course page uses internal MP4 explainer video');
+assert.ok(page.includes('lesson.video ? `<video class="meeting-video"'), 'course page embeds lesson videos inside meeting cards');
 assert.ok(page.includes('סרטון פתיחה'), 'course page labels the explainer video clearly');
 assert.ok(existsSync(new URL('marketing/venture-ai-program-explainer.mp4', root)), 'explainer video file exists');
 

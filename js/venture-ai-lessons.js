@@ -33,6 +33,7 @@
       title: 'מרעיון למיזם עירוני עם אופאל',
       subtitle: 'טכנולוגיה, חולון, בעיה אמיתית וסוכן AI שמלווה את החשיבה',
       image: 'assets/venture-ai/meeting-1-city.webp',
+      video: 'marketing/venture-ai-lesson1-explainer.mp4',
       durationMinutes: 90,
       productStage: 'כרטיס מיזם עירוני',
       bigQuestion: 'איך משתמשים בסוכן AI כדי למצוא בעיה אמיתית בחולון ולהפוך אותה למיזם קטן?',

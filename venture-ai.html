@@ -90,15 +90,23 @@
       align-content: start;
     }
 
-    .meeting-image {
+    .meeting-image,
+    .meeting-video {
       width: 100%;
       aspect-ratio: 16 / 9;
       margin-bottom: 16px;
       border-radius: 16px;
-      object-fit: cover;
       border: 1px solid #dbe8f4;
       background: #f8fcff;
       box-shadow: 0 14px 30px rgba(23, 32, 51, .09);
+    }
+
+    .meeting-image {
+      object-fit: cover;
+    }
+
+    .meeting-video {
+      display: block;
     }
 
     .meeting-number {
@@ -378,7 +386,7 @@
 
     document.getElementById('lessonCards').innerHTML = program.lessons.map(lesson => `
       <article class="card meeting-card">
-        ${lesson.image ? `<img class="meeting-image" src="${esc(lesson.image)}" alt="${esc(lesson.title)}">` : ''}
+        ${lesson.video ? `<video class="meeting-video" controls playsinline preload="metadata" poster="${esc(lesson.image)}"><source src="${esc(lesson.video)}?v=20260825-lesson1" type="video/mp4"></video>` : lesson.image ? `<img class="meeting-image" src="${esc(lesson.image)}" alt="${esc(lesson.title)}">` : ''}
         <span class="tag">מפגש ${lesson.id} • ${lesson.durationMinutes} דקות</span>
         <div class="meeting-title">
           <span class="meeting-number">${lesson.id}</span>
