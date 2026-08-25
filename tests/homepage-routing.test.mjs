@@ -22,13 +22,18 @@ const tests = [];
 function test(name, fn) { tests.push({ name, fn }); }
 function assertIncludes(source, needle, message = `Missing: ${needle}`) { assert.ok(source.includes(needle), message); }
 function assertNotIncludes(source, needle, message = `Unexpected: ${needle}`) { assert.ok(!source.includes(needle), message); }
+function assertBefore(source, first, second) {
+  const firstIndex = source.indexOf(first);
+  const secondIndex = source.indexOf(second);
+  assert.ok(firstIndex >= 0, `Missing ordered text: ${first}`);
+  assert.ok(secondIndex >= 0, `Missing ordered text: ${second}`);
+  assert.ok(firstIndex < secondIndex, `Expected "${first}" before "${second}"`);
+}
 
 test('homepage is now a platform gateway and links to primary learning modules', () => {
   assertIncludes(homepageHtml, '<title>פלטפורמת לומדות טכנולוגיה</title>');
   assertIncludes(homepageHtml, 'מרכז הלומדות');
   assertIncludes(homepageHtml, 'href="sensi-city.html?lesson=1"');
-  assertIncludes(homepageHtml, 'href="sensi-classic.html?lesson=1"');
-  assertIncludes(homepageHtml, 'href="sensi-classic-slides/index.html"');
   assertIncludes(homepageHtml, 'href="pygame.html"');
   assertIncludes(homepageHtml, 'href="roblox.html"');
   assertIncludes(homepageHtml, 'href="python-turtle.html"');
@@ -41,17 +46,26 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertIncludes(homepageHtml, 'href="craftom-school/preview/index.html"');
   assertIncludes(homepageHtml, 'href="craftom-school/README.md"');
   assertIncludes(homepageHtml, '<h3>Money Smart Lab</h3>');
-  assertIncludes(homepageHtml, '<span class="tag">חינוך פיננסי</span><span class="tag dev">בפיתוח</span></div><h3>Money Smart Lab</h3>');
-  assertIncludes(homepageHtml, 'מה לפתוח עכשיו?');
+  assertIncludes(homepageHtml, '<span class="badge dev">בפיתוח</span><span class="badge">חינוך פיננסי</span>');
   assertIncludes(homepageHtml, 'Venture AI — תוכנית חולון ביזמות עם בינה מלאכותית');
-  assertIncludes(homepageHtml, 'status-guide');
-  assertIncludes(homepageHtml, 'משפחות הלמידה');
-  assertIncludes(homepageHtml, 'robotics15 · סביבת פיילוט רחבה');
-  assertIncludes(homepageHtml, 'פיילוטים ותוכניות חדשות');
-  assertIncludes(homepageHtml, 'רחפנים ורובוטיקה');
-  assertIncludes(homepageHtml, 'צעירים');
-  assertIncludes(homepageHtml, 'קוד, משחקים ו־Web');
+  assertIncludes(homepageHtml, 'קטלוג פשוט של סביבת הפיילוטים');
+  assertIncludes(homepageHtml, 'הלומדות שנשארו גם ב־main');
+  assertIncludes(homepageHtml, 'רחפנים');
+  assertIncludes(homepageHtml, 'עומר / Craftom');
+  assertIncludes(homepageHtml, 'בפיתוח ופיילוטים נוספים');
   assertIncludes(homepageHtml, 'href="#development"');
+});
+
+test('Robotics15 homepage catalog follows the requested simple order', () => {
+  assertBefore(homepageHtml, 'id="main-courses"', 'id="drones"');
+  assertBefore(homepageHtml, 'id="drones"', 'id="omer"');
+  assertBefore(homepageHtml, 'id="omer"', 'id="development"');
+  assertBefore(homepageHtml, '<h3>Minecraft</h3>', '<h3>Tello EDU — ניווט ובקרה</h3>');
+  assertBefore(homepageHtml, '<h3>Drone Intelligence Lab</h3>', '<h3>עומר העתידנית / Omer Future Craftom</h3>');
+  assertBefore(homepageHtml, '<h3>Craftom School</h3>', '<h3>Venture AI — תוכנית חולון ביזמות עם בינה מלאכותית</h3>');
+  assertBefore(homepageHtml, '<h3>Money Smart Lab</h3>', '<h3>Pygame</h3>');
+  assertBefore(homepageHtml, '<h3>Pygame</h3>', '<h3>Roblox Studio</h3>');
+  assertBefore(homepageHtml, '<h3>PlayCode Lab</h3>', '<h3>WebMakers Lab</h3>');
 });
 
 test('Sensi 15 remains on sensi-city and classic 5-lesson Sensi is restored separately', () => {
