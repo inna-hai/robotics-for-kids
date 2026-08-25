@@ -15,6 +15,8 @@ assert.equal(program.targetAudience, 'כיתות ח׳', 'program targets grade 8
 assert.equal(program.totalMeetings, 4, 'program has 4 meetings');
 assert.equal(program.toolName, 'Opal', 'program uses Opal');
 assert.equal(program.lessons.length, 4, 'program exposes 4 lessons');
+assert.ok(program.teamFramework.summary.includes('4-5 תלמידים'), 'program defines fixed 4-5 student teams');
+assert.equal(program.teamFramework.roles.length, 5, 'program defines five team roles');
 assert.deepEqual(Array.from(program.lessons, lesson => lesson.id), [1, 2, 3, 4], 'lesson ids are sequential');
 
 for (const lesson of program.lessons) {
@@ -49,11 +51,13 @@ assert.ok(page.includes('venture-ai-students.html?lesson=${lesson.id}'), 'course
 assert.ok(page.includes('venture-ai-improvement.html'), 'course page links improvement request form');
 assert.ok(page.includes('https://opal.hai.tech/'), 'course page links Opal');
 assert.ok(page.includes('meeting-image'), 'course page renders meeting images');
+assert.ok(page.includes('teamFrameTitle'), 'course page renders team framework');
 
 const slides = read('venture-ai-slides.html');
 assert.ok(slides.includes('מצגת מדריך'), 'slides page is instructor deck');
 assert.ok(slides.includes('lessonPicker'), 'slides page can switch lessons');
 assert.ok(slides.includes('תבנית פיץ׳ סיום'), 'slides include pitch template');
+assert.ok(slides.includes('teamFramework'), 'slides include team framework');
 
 const students = read('venture-ai-students.html');
 assert.ok(students.includes('דף עבודה לתלמידים'), 'students page is a worksheet');
@@ -61,6 +65,7 @@ assert.ok(students.includes('localStorage'), 'students page saves locally');
 assert.ok(students.includes('copySummary'), 'students page can copy submission summary');
 assert.ok(students.includes('markSubmitted'), 'students page can mark submission');
 assert.ok(students.includes('venture-ai-improvement.html'), 'students page links improvement request form');
+assert.ok(students.includes('teamRoles'), 'students page renders team roles');
 
 const improvement = read('venture-ai-improvement.html');
 assert.ok(improvement.includes('בקשת שיפור'), 'improvement page has title');

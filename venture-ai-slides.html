@@ -22,7 +22,7 @@
     </div>
   </nav>
 
-  <script src="js/venture-ai-lessons.js?v=20260824-zamir-refine"></script>
+  <script src="js/venture-ai-lessons.js?v=20260825-team-frame"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const program = window.VENTURE_AI_PROGRAM;
@@ -31,12 +31,14 @@
     const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
     const list = rows => `<ul>${rows.map(row => `<li>${esc(row)}</li>`).join('')}</ul>`;
     const cards = rows => `<div class="cards">${rows.map(row => `<div class="card"><b>${esc(row[0])}</b>${esc(row[1])}</div>`).join('')}</div>`;
+    const roleCards = roles => `<div class="cards">${roles.map(role => `<div class="card"><b>${esc(role[0])}</b>${esc(role[1])}</div>`).join('')}</div>`;
 
     document.title = `מצגת מדריך - מפגש ${lesson.id}: ${lesson.title}`;
     document.getElementById('lessonPicker').innerHTML = program.lessons.map(item => `<a class="${item.id === lesson.id ? 'active' : ''}" href="venture-ai-slides.html?lesson=${item.id}">מפגש ${item.id}</a>`).join('');
 
     const slides = [
       { html: `<div class="kicker">${esc(program.title)} • ${esc(program.targetAudience)}</div><h1>מפגש ${lesson.id}: ${esc(lesson.title)}</h1><p>${esc(lesson.subtitle)}</p><div class="note">תוצר המפגש: ${esc(lesson.productStage)}</div>` },
+      { html: `<h2>${esc(program.teamFramework.title)}</h2><p>${esc(program.teamFramework.summary)}</p>${roleCards(program.teamFramework.roles)}<div class="note">${esc(program.teamFramework.note)}</div>` },
       { html: `<h2>שאלת המפגש</h2><p>${esc(lesson.bigQuestion)}</p>${cards([['מטרת מדריך', lesson.teacherGoal], ['מה יוצא לתלמידים', lesson.studentOutcome]])}` },
       { html: `<h2>פתיחה מומלצת</h2><p>${esc(lesson.openingDemo)}</p><div class="note">טיפ: לפתוח בדמו או סיפור קצר לפני שמכניסים מושגים.</div>` },
       { html: `<h2>מושגים מרכזיים</h2><div class="cards">${lesson.keyConcepts.map(item => `<div class="card"><b>${esc(item)}</b>מושג לשימוש במהלך השיעור, אחרי שהתלמידים ראו דוגמה מוחשית.</div>`).join('')}</div>` },

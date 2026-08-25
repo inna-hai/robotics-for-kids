@@ -213,9 +213,36 @@
       background: linear-gradient(180deg, #ffffff, #f1f7ff);
     }
 
+    .team-frame {
+      border-color: rgba(124,58,237,.24);
+      background: linear-gradient(180deg, #ffffff, #f7f3ff);
+    }
+
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .role-item {
+      min-width: 0;
+      padding: 11px;
+      border: 1px solid #e6ddff;
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .role-item b {
+      display: block;
+      margin-bottom: 5px;
+      color: #6d28d9;
+    }
+
     @media (max-width: 850px) {
       .venture-home .hero,
-      .mini-grid {
+      .mini-grid,
+      .role-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -259,6 +286,13 @@
     <section class="steps" id="lessonCards"></section>
 
     <section class="grid" style="margin-top:16px">
+      <article class="card wide-card team-frame">
+        <span class="tag">מעטפת עבודה</span>
+        <h2 id="teamFrameTitle"></h2>
+        <p class="goal" id="teamFrameSummary"></p>
+        <div class="role-grid" id="teamRoles"></div>
+        <p class="muted" id="teamFrameNote"></p>
+      </article>
       <article class="card opal-card">
         <span class="tag">כלי העבודה</span>
         <h2>Opal הוא סביבת הבנייה</h2>
@@ -281,12 +315,18 @@
   </main>
 
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="js/venture-ai-lessons.js?v=20260824-venture-images"></script>
+  <script src="js/venture-ai-lessons.js?v=20260825-team-frame"></script>
   <script>
     const program = window.VENTURE_AI_PROGRAM;
     const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 
     document.getElementById('safetyRules').innerHTML = program.safetyRules.map(item => `<li>${esc(item)}</li>`).join('');
+    document.getElementById('teamFrameTitle').textContent = program.teamFramework.title;
+    document.getElementById('teamFrameSummary').textContent = program.teamFramework.summary;
+    document.getElementById('teamFrameNote').textContent = program.teamFramework.note;
+    document.getElementById('teamRoles').innerHTML = program.teamFramework.roles.map(role => `
+      <div class="role-item"><b>${esc(role[0])}</b>${esc(role[1])}</div>
+    `).join('');
 
     document.getElementById('lessonCards').innerHTML = program.lessons.map(lesson => `
       <article class="card meeting-card">

@@ -61,6 +61,13 @@
         </section>
 
         <section class="panel">
+          <h2 id="teamFrameTitle"></h2>
+          <p class="small" id="teamFrameSummary"></p>
+          <div class="checklist" id="teamRoles"></div>
+          <p class="small" id="teamFrameNote"></p>
+        </section>
+
+        <section class="panel">
           <h2>פרומפט עזר</h2>
           <div class="prompt" id="prompt"></div>
         </section>
@@ -70,7 +77,7 @@
 
   <footer class="footer">דף עבודה לתלמידים · hai.tech</footer>
 
-  <script src="js/venture-ai-lessons.js?v=20260824-zamir-refine"></script>
+  <script src="js/venture-ai-lessons.js?v=20260825-team-frame"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const lesson = window.getVentureAiLesson(params.get('lesson'));
@@ -102,6 +109,15 @@
       $('title').textContent = worksheet.title;
       $('intro').textContent = worksheet.intro;
       $('prompt').textContent = lesson.opalPrompt;
+      $('teamFrameTitle').textContent = program.teamFramework.title;
+      $('teamFrameSummary').textContent = program.teamFramework.summary;
+      $('teamFrameNote').textContent = program.teamFramework.note;
+      $('teamRoles').innerHTML = program.teamFramework.roles.map(role => `
+        <div class="check">
+          <strong>${esc(role[0])}</strong>
+          <span>${esc(role[1])}</span>
+        </div>
+      `).join('');
       $('fields').innerHTML = worksheet.fields.map(field => `
         <div class="field">
           <label for="${field.id}">${esc(field.label)}</label>
