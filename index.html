@@ -137,6 +137,20 @@
       flex-direction: column;
       gap: 10px;
       box-shadow: 0 10px 28px rgba(15, 23, 42, .05);
+      overflow: hidden;
+    }
+    .course-media {
+      margin: -16px -16px 2px;
+      aspect-ratio: 16 / 9;
+      background: linear-gradient(135deg, var(--a), var(--b));
+      border-bottom: 1px solid var(--line);
+      overflow: hidden;
+    }
+    .course-media img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
     .course-top {
       display: flex;
@@ -274,6 +288,7 @@
         </div>
         <div class="cards">
           <article class="course" style="--a:#2563eb;--b:#06b6d4">
+            <div class="course-media"><img src="assets/course-covers/sensi-city.svg" alt="" loading="lazy"></div>
             <div class="course-top"><span class="icon">🏙</span><div class="badges"><span class="badge ready">פעיל</span><span class="badge">רובוטיקה</span></div></div>
             <h3>סנסי בעיר החכמה</h3>
             <p>15 שיעורי Blockly, חיישנים ומשימות עיר חכמה בסימולטור.</p>
@@ -282,6 +297,7 @@
           </article>
 
           <article class="course" style="--a:#ec4899;--b:#8b5cf6">
+            <div class="course-media"><img src="assets/course-covers/sisi.svg" alt="" loading="lazy"></div>
             <div class="course-top"><span class="icon">ס</span><div class="badges"><span class="badge ready">פעיל</span><span class="badge">צעירים</span></div></div>
             <h3>סדרת סיסי לכיתות ב׳</h3>
             <p>15 שיעורים של חשיבה אלגוריתמית דרך סיפור, רצפים, תנאים ומשימות משחקיות.</p>
@@ -290,6 +306,7 @@
           </article>
 
           <article class="course" style="--a:#ea580c;--b:#facc15">
+            <div class="course-media"><img src="assets/course-covers/python-turtle.svg" alt="" loading="lazy"></div>
             <div class="course-top"><span class="icon">Py</span><div class="badges"><span class="badge ready">פעיל</span><span class="badge">Python</span></div></div>
             <h3>Python Turtle</h3>
             <p>מעבר נעים לקוד אמיתי דרך ציור, צורות, צבעים ודפוסים.</p>
@@ -298,6 +315,7 @@
           </article>
 
           <article class="course" style="--a:#111827;--b:#4f46e5">
+            <div class="course-media"><img src="assets/course-covers/webcode.svg" alt="" loading="lazy"></div>
             <div class="course-top"><span class="icon">JS</span><div class="badges"><span class="badge ready">פעיל</span><span class="badge">Web</span></div></div>
             <h3>Web Code</h3>
             <p>תרגול HTML, CSS ו־JavaScript ובניית דפי Web קטנים ויצירתיים.</p>
@@ -306,6 +324,7 @@
           </article>
 
           <article class="course" style="--a:#16a34a;--b:#64748b">
+            <div class="course-media"><img src="assets/course-covers/minecraft.svg" alt="" loading="lazy"></div>
             <div class="course-top"><span class="icon">MC</span><div class="badges"><span class="badge ready">פעיל</span><span class="badge">יצירה</span></div></div>
             <h3>Minecraft</h3>
             <p>מסלול יצירתי סביב תכנון משימות, בנייה וחשיבה מערכתית בסביבה מוכרת.</p>
@@ -324,6 +343,7 @@
         </div>
         <div class="cards">
           <article class="course" style="--a:#0891b2;--b:#2dd4bf">
+            <div class="course-media"><img src="assets/course-covers/tello-edu-grade5.svg" alt="" loading="lazy"></div>
             <div class="course-top"><span class="icon">ה׳</span><div class="badges"><span class="badge pilot">פיילוט</span><span class="badge">רחפנים</span></div></div>
             <h3>Tello EDU — ניווט ובקרה</h3>
             <p>תכנון טיסה בטאבלט, סימולטור, בטיחות, מרחקים, פניות ודיוק הנדסי.</p>
@@ -332,6 +352,7 @@
           </article>
 
           <article class="course" style="--a:#f97316;--b:#facc15">
+            <div class="course-media"><img src="assets/course-covers/tello-mission-lab.svg" alt="" loading="lazy"></div>
             <div class="course-top"><span class="icon">ו׳</span><div class="badges"><span class="badge pilot">פיילוט</span><span class="badge">רחפנים</span></div></div>
             <h3>Tello Mission Lab — משימות חקר</h3>
             <p>רחפנים ככלי מחקר: סימולטור, סקרי גובה, צילום, Mission Pads ופרויקט מסכם.</p>
@@ -340,6 +361,7 @@
           </article>
 
           <article class="course" style="--a:#1d4ed8;--b:#7c3aed">
+            <div class="course-media"><img src="assets/course-covers/drone-coding-foundations.svg" alt="" loading="lazy"></div>
             <div class="course-top"><span class="icon">ז׳</span><div class="badges"><span class="badge pilot">פיילוט</span><span class="badge">JavaScript</span></div></div>
             <h3>Drone Coding Foundations</h3>
             <p>מעבר מבלוקים לקוד JavaScript ב־DroneBlocks Code: סינטקס, לולאות, פונקציות ודיבוג.</p>
@@ -348,6 +370,7 @@
           </article>
 
           <article class="course" style="--a:#7c3aed;--b:#ec4899">
+            <div class="course-media"><img src="assets/course-covers/drone-mission-lab.svg" alt="" loading="lazy"></div>
             <div class="course-top"><span class="icon">ח׳</span><div class="badges"><span class="badge pilot">פיילוט</span><span class="badge">צילום וחקר</span></div></div>
             <h3>Drone Mission Lab</h3>
             <p>משימות סריקה, צילום, חיפוש והצלה, אופטימיזציית סוללה ותיעוד ממצאים.</p>
@@ -356,6 +379,7 @@
           </article>
 
           <article class="course" style="--a:#0f172a;--b:#38bdf8">
+            <div class="course-media"><img src="assets/course-covers/drone-intelligence-lab.svg" alt="" loading="lazy"></div>
             <div class="course-top"><span class="icon">ט׳</span><div class="badges"><span class="badge pilot">פיילוט</span><span class="badge">רחפנים חכמים</span></div></div>
             <h3>Drone Intelligence Lab</h3>
             <p>משימות חכמות, תנאים מקוננים, מיפוי גבהים, אילוצים דינמיים וניתוח טלמטריה.</p>
@@ -374,6 +398,7 @@
         </div>
         <div class="cards">
           <article class="course" style="--a:#155e75;--b:#7c3aed">
+            <div class="course-media"><img src="assets/course-covers/omer-future-craftom.svg" alt="" loading="lazy"></div>
             <div class="course-top"><span class="icon">O</span><div class="badges"><span class="badge pilot">פיילוט</span><span class="badge">Craftom</span></div></div>
             <h3>עומר העתידנית / Omer Future Craftom</h3>
             <p>אתגרי Craftom/Minecraft סביב יישוב עתידני: מגורים, תנועה, טבע, קהילה ובטיחות.</p>
@@ -382,6 +407,7 @@
           </article>
 
           <article class="course" style="--a:#14b8a6;--b:#22c55e">
+            <div class="course-media"><img src="assets/course-covers/craftom-school.svg" alt="" loading="lazy"></div>
             <div class="course-top"><span class="icon">C</span><div class="badges"><span class="badge pilot">Preview</span><span class="badge">Craftom</span></div></div>
             <h3>Craftom School</h3>
             <p>קורס צוותי של 15 מפגשים סביב בנייה, תכנות, רפלקציה ודוחות התקדמות.</p>
@@ -400,6 +426,7 @@
         </div>
         <div class="cards">
           <article class="course" style="--a:#7c3aed;--b:#06b6d4">
+            <div class="course-media"><img src="assets/course-covers/venture-ai.svg" alt="" loading="lazy"></div>
             <div class="course-top"><span class="icon">AI</span><div class="badges"><span class="badge pilot">פיילוט</span></div></div>
             <h3>Venture AI — תוכנית חולון ביזמות עם בינה מלאכותית</h3>
             <p>4 מפגשים צוותיים: בעיה עירונית, אופאל מהמפגש הראשון, MVP ופיץ׳ מסכם.</p>
@@ -408,6 +435,7 @@
           </article>
 
           <article class="course" style="--a:#111827;--b:#dc2626">
+            <div class="course-media"><img src="assets/course-covers/mission-impossible-lab.svg" alt="" loading="lazy"></div>
             <div class="course-top"><span class="icon">MI</span><div class="badges"><span class="badge pilot">פיילוט</span></div></div>
             <h3>Mission Impossible Lab</h3>
             <p>פתרון בעיות עם AI, עבודת צוות, תוצר דיגיטלי ופיץ׳ מול קהל.</p>
@@ -416,6 +444,7 @@
           </article>
 
           <article class="course" style="--a:#f59e0b;--b:#22c55e">
+            <div class="course-media"><img src="assets/course-covers/money-smart-lab.svg" alt="" loading="lazy"></div>
             <div class="course-top"><span class="icon">₪</span><div class="badges"><span class="badge dev">בפיתוח</span><span class="badge">חינוך פיננסי</span></div></div>
             <h3>Money Smart Lab</h3>
             <p>מסלול חינוך פיננסי לילדים: תקציב, בחירות, מטרות, יזמות קטנה וחשיבה צרכנית.</p>
@@ -424,6 +453,7 @@
           </article>
 
           <article class="course" style="--a:#16a34a;--b:#84cc16">
+            <div class="course-media"><img src="assets/course-covers/lumi.svg" alt="" loading="lazy"></div>
             <div class="course-top"><span class="icon">ל</span><div class="badges"><span class="badge dev">בפיתוח</span><span class="badge">צעירים</span></div></div>
             <h3>לומי חוקרת הטבע</h3>
             <p>תחנות חשיבה ראשונות במיון, דפוסים, תנאים, לולאות, דיבוג ודאטה.</p>
@@ -432,6 +462,7 @@
           </article>
 
           <article class="course" style="--a:#7c3aed;--b:#db2777">
+            <div class="course-media"><img src="assets/course-covers/pygame.svg" alt="" loading="lazy"></div>
             <div class="course-top"><span class="icon">PG</span><div class="badges"><span class="badge dev">בפיתוח</span><span class="badge">Python</span></div></div>
             <h3>Pygame</h3>
             <p>בניית משחקים ב־Python עם תרגול חזותי, קוד בסגנון Pygame ומערכי שיעור למדריכים.</p>
@@ -440,6 +471,7 @@
           </article>
 
           <article class="course" style="--a:#0f766e;--b:#22c55e">
+            <div class="course-media"><img src="assets/course-covers/roblox.svg" alt="" loading="lazy"></div>
             <div class="course-top"><span class="icon">Rb</span><div class="badges"><span class="badge dev">בפיתוח</span><span class="badge">Roblox</span></div></div>
             <h3>Roblox Studio</h3>
             <p>בניית עולמות, תכנות משחקים ותרגול הדרגתי למתחילים ב־Roblox Studio.</p>
@@ -448,6 +480,7 @@
           </article>
 
           <article class="course" style="--a:#312e81;--b:#7c3aed">
+            <div class="course-media"><img src="assets/course-covers/codequest.svg" alt="" loading="lazy"></div>
             <div class="course-top"><span class="icon">CQ</span><div class="badges"><span class="badge pilot">פיילוט</span><span class="badge">Python</span></div></div>
             <h3>CodeQuest</h3>
             <p>מסע פייתון משחקי עם אתגרי קוד, משימות ופתרון בעיות.</p>
@@ -456,6 +489,7 @@
           </article>
 
           <article class="course" style="--a:#c026d3;--b:#f97316">
+            <div class="course-media"><img src="assets/course-covers/playcode.svg" alt="" loading="lazy"></div>
             <div class="course-top"><span class="icon">PC</span><div class="badges"><span class="badge dev">בפיתוח</span><span class="badge">Blockly</span></div></div>
             <h3>PlayCode Lab</h3>
             <p>פיתוח משחקים עם Blockly: אירועים, כללים, אינטראקציות וחשיבה משחקית.</p>
@@ -464,6 +498,7 @@
           </article>
 
           <article class="course" style="--a:#06b6d4;--b:#8b5cf6">
+            <div class="course-media"><img src="assets/course-covers/webmakers.svg" alt="" loading="lazy"></div>
             <div class="course-top"><span class="icon">WM</span><div class="badges"><span class="badge dev">בפיתוח</span><span class="badge">Web</span></div></div>
             <h3>WebMakers Lab</h3>
             <p>בניית אתרי Web לכיתות ה׳–ו׳: HTML, CSS, פרויקטים ומסלול יצירה.</p>

@@ -73,6 +73,15 @@ test('Robotics15 homepage catalog follows the requested simple order', () => {
   assertBefore(homepageHtml, '<h3>PlayCode Lab</h3>', '<h3>WebMakers Lab</h3>');
 });
 
+test('Robotics15 catalog cards include cover images for every course', () => {
+  const cards = [...homepageHtml.matchAll(/<article class="course"/g)];
+  const covers = [...homepageHtml.matchAll(/<img src="(assets\/course-covers\/[^"]+\.svg)"/g)].map((match) => match[1]);
+  assert.equal(covers.length, cards.length, 'Every course card should include a cover image');
+  for (const cover of covers) {
+    assert.ok(existsSync(join(root, cover)), `Missing course cover image: ${cover}`);
+  }
+});
+
 test('Sensi 15 remains on sensi-city and classic 5-lesson Sensi is restored separately', () => {
   assertIncludes(sensiCityHtml, '<title>🏙️ סנסי בעיר החכמה - 15 שיעורי רובוטיקה</title>');
   assertIncludes(sensiCityHtml, 'Blockly.Blocks');
