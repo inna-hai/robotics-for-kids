@@ -96,28 +96,6 @@
       font-size: clamp(1.02rem, 2vw, 1.22rem);
       max-width: 900px;
     }
-    .anchors {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-      margin-top: 24px;
-    }
-    .anchor {
-      display: block;
-      text-decoration: none;
-      background: rgba(255, 255, 255, .08);
-      border: 1px solid rgba(255, 255, 255, .14);
-      border-radius: 16px;
-      padding: 14px;
-      font-weight: 900;
-    }
-    .anchor span {
-      display: block;
-      color: #cbd5e1;
-      font-size: .86rem;
-      font-weight: 700;
-      margin-top: 3px;
-    }
     main { padding: 34px 0 56px; }
     .catalog {
       display: grid;
@@ -256,13 +234,12 @@
     }
 
     @media (max-width: 980px) {
-      .anchors { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     @media (max-width: 650px) {
       .top { align-items: flex-start; flex-direction: column; }
       .nav { display: none; }
-      .anchors, .cards { grid-template-columns: 1fr; }
+      .cards { grid-template-columns: 1fr; }
       .group-head { display: block; }
       .course { min-height: 0; }
       .actions .btn { flex: 1 1 100%; }
@@ -283,12 +260,6 @@
       </div>
       <div class="kicker">קטלוג פשוט של סביבת הפיילוטים</div>
       <h1>בוחרים לומדה לפי סדר ברור</h1>
-      <div class="anchors">
-        <a class="anchor" href="#active-courses">1. קורסים פעילים<span>סנסי, סיסי, לומי, Python, Web, Minecraft</span></a>
-        <a class="anchor" href="#drones">2. רחפנים<span>Tello ו־DroneBlocks לפי כיתות</span></a>
-        <a class="anchor" href="#omer">3. עומר / Craftom<span>עולם עתידני וקראפטום</span></a>
-        <a class="anchor" href="#development">4. פיתוח ופיילוטים<span>AI, משחקים, Roblox ו־WebMakers</span></a>
-      </div>
     </div>
   </header>
 

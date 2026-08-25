@@ -54,6 +54,8 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertIncludes(homepageHtml, 'עומר / Craftom');
   assertIncludes(homepageHtml, 'בפיתוח ופיילוטים נוספים');
   assertIncludes(homepageHtml, 'href="#development"');
+  assertNotIncludes(homepageHtml, 'class="anchors"');
+  assertNotIncludes(homepageHtml, 'class="anchor"');
 });
 
 test('Robotics15 homepage catalog follows the requested simple order', () => {
