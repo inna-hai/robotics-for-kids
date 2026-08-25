@@ -40,6 +40,8 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertIncludes(homepageHtml, 'href="appforge.html"');
   assertIncludes(homepageHtml, 'href="craftom-school/preview/index.html"');
   assertIncludes(homepageHtml, 'href="craftom-school/README.md"');
+  assertIncludes(homepageHtml, '<b>Money Smart Lab</b><span>בפיתוח</span>');
+  assertIncludes(homepageHtml, '<span class="tag">חינוך פיננסי</span><span class="tag">בפיתוח</span></div><h3>Money Smart Lab</h3>');
 });
 
 test('Sensi 15 remains on sensi-city and classic 5-lesson Sensi is restored separately', () => {
