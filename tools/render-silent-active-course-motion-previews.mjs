@@ -44,14 +44,21 @@ async function prepare(page) {
     #motionCursor.dragging::after{display:none}
     #motionDragChip{position:fixed;left:0;top:0;z-index:999999;direction:rtl;border-radius:14px;padding:10px 16px;min-width:150px;text-align:center;background:linear-gradient(135deg,#fb923c,#facc15);color:#111827;border:3px solid rgba(17,24,39,.22);font:900 21px Rubik,Arial,sans-serif;box-shadow:0 16px 34px rgba(15,23,42,.28);pointer-events:none;opacity:0;transform:translate(-120px,-120px)}
     .motion-ring{position:fixed;z-index:999997;border:6px solid #22c55e;border-radius:18px;box-shadow:0 0 0 8px rgba(34,197,94,.18);pointer-events:none;animation:pulseRing .72s ease-in-out infinite alternate}
+    body.motion-webcode-focus .lesson-panel{display:none!important}
+    body.motion-webcode-focus .main{grid-template-columns:minmax(0,1.45fr) minmax(370px,.9fr)!important;gap:.8rem!important;padding:.75rem!important}
+    body.motion-webcode-focus .editor-panel,body.motion-webcode-focus .preview-panel{min-height:0!important;border-radius:22px!important}
+    body.motion-webcode-focus #blocksStage{padding:0!important}
+    body.motion-webcode-focus .blockly-top{padding:.5rem .75rem!important}
+    body.motion-webcode-focus #motionCaption{right:20px!important;bottom:16px!important;font-size:23px!important;max-width:620px!important}
     body.motion-code-zoom .lesson-panel,body.motion-code-zoom .preview-panel{opacity:.18;filter:blur(1px)}
-    body.motion-code-zoom .editor-panel{position:fixed!important;left:205px!important;right:auto!important;top:76px!important;width:870px!important;height:604px!important;z-index:999991!important;border:8px solid #22c55e!important;border-radius:28px!important;box-shadow:0 0 0 9999px rgba(15,23,42,.38),0 24px 80px rgba(15,23,42,.44)!important}
-    body.motion-code-zoom #blocksStage{flex:0 0 235px!important;min-height:235px!important}
+    body.motion-code-zoom .lesson-panel{display:none!important}
+    body.motion-code-zoom .editor-panel{position:fixed!important;left:58px!important;right:auto!important;top:70px!important;width:1164px!important;height:620px!important;z-index:999991!important;border:8px solid #22c55e!important;border-radius:28px!important;box-shadow:0 0 0 9999px rgba(15,23,42,.38),0 24px 80px rgba(15,23,42,.44)!important}
+    body.motion-code-zoom #blocksStage{flex:0 0 250px!important;min-height:250px!important}
     body.motion-code-zoom #codePeek{display:flex!important;flex:1!important;max-height:none!important;min-height:0!important;border-top:5px solid #22c55e!important}
-    body.motion-code-zoom #codePeek summary{font-size:24px!important;padding:12px 18px!important}
+    body.motion-code-zoom #codePeek summary{font-size:27px!important;padding:12px 18px!important}
     body.motion-code-zoom #codePeek .code-box{display:flex!important;flex:1!important;min-height:0!important}
-    body.motion-code-zoom .editor-tabs button{font-size:22px!important;padding:12px!important}
-    body.motion-code-zoom textarea{font-size:25px!important;line-height:1.38!important;padding:18px!important}
+    body.motion-code-zoom .editor-tabs button{font-size:25px!important;padding:12px!important}
+    body.motion-code-zoom textarea{font-size:30px!important;line-height:1.32!important;padding:18px!important}
     body.motion-world-zoom .code-panel,body.motion-world-zoom .lesson-info,body.motion-world-zoom .status{opacity:.2;filter:blur(1px)}
     body.motion-world-zoom #world{position:fixed!important;left:94px!important;right:auto!important;top:72px!important;width:1090px!important;height:590px!important;z-index:999990!important;border-width:10px!important;border-color:#facc15!important;border-radius:26px!important;box-shadow:0 0 0 9999px rgba(15,23,42,.35),0 24px 80px rgba(15,23,42,.44)!important}
     @keyframes pulseRing{from{transform:scale(.98);opacity:.68}to{transform:scale(1.03);opacity:1}}
@@ -277,11 +284,39 @@ async function webcodeWorkspace(page, xmlText) {
   }, xmlText);
 }
 
+async function webcodeDropPoint(page) {
+  return page.evaluate(() => {
+    const divRect = document.querySelector('#blocklyDiv')?.getBoundingClientRect();
+    const fallback = divRect
+      ? { x: divRect.left + divRect.width * 0.56, y: divRect.top + 92 }
+      : { x: 520, y: 170 };
+    if (!window.blocklyWorkspace || !divRect) return fallback;
+    const blocks = blocklyWorkspace.getAllBlocks(false)
+      .filter((block) => block.isRendered?.() && block.getSvgRoot?.())
+      .map((block) => block.getSvgRoot().getBoundingClientRect())
+      .filter((rect) => rect.width > 6 && rect.height > 6)
+      .sort((a, b) => (a.bottom - b.bottom) || (b.left - a.left));
+    if (!blocks.length) return fallback;
+    const last = blocks[blocks.length - 1];
+    return {
+      x: Math.max(divRect.left + 110, Math.min(divRect.right - 150, last.left + last.width * 0.5)),
+      y: Math.max(divRect.top + 88, Math.min(divRect.bottom - 46, last.bottom + 18))
+    };
+  });
+}
+
 async function webcodeAdd(page, dir, frame, label, beforeXml, afterXml, seconds = 0.75) {
   await webcodeWorkspace(page, beforeXml);
-  await ghostMove(page, label, '.blocklyToolboxDiv', '#blocklyDiv');
-  await hold(page, dir, frame, 0.75);
+  const from = await selectorPoint(page, '.blocklyFlyout,.blocklyToolboxDiv', { x: 945, y: 210 }, 0.5, 0.25);
+  const to = await webcodeDropPoint(page);
+  await setCursor(page, from.x, from.y, false);
+  await hold(page, dir, frame, 0.14);
+  await setCursor(page, from.x, from.y, true, label);
+  await hold(page, dir, frame, 0.12);
+  await moveCursor(page, dir, frame, from, to, 0.78, { down: true, chip: label });
+  await hold(page, dir, frame, 0.08);
   await webcodeWorkspace(page, afterXml);
+  await setCursor(page, to.x, to.y, false, '');
   await ring(page, '#blocklyDiv');
   await hold(page, dir, frame, seconds);
   await clearRing(page);
@@ -378,6 +413,15 @@ async function timeline(page, course, dir, frame) {
       label: plan[index].label,
       xml: webcodeXmlChain(plan.slice(0, index + 1))
     }));
+    await page.evaluate(() => {
+      document.body.classList.add('motion-webcode-focus');
+      try {
+        document.querySelector('.main')?.classList.remove('lesson-collapsed');
+        document.querySelector('#lessonPanel')?.classList.remove('collapsed');
+        document.documentElement.style.setProperty('--preview-width', '390px');
+        window.Blockly && blocklyWorkspace && setTimeout(() => Blockly.svgResize(blocklyWorkspace), 80);
+      } catch {}
+    });
     let currentXml = webcodeXmlChain([]);
     await webcodeWorkspace(page, currentXml);
     await caption(page, '1. מתחילים מעמוד ריק', 'הבלוקים ייצרו את האתר והתוצאה תופיע משמאל');
@@ -389,12 +433,7 @@ async function timeline(page, course, dir, frame) {
       currentXml = step.xml;
     }
     await page.evaluate(() => { try { window.runCode?.(); } catch {} });
-    await caption(page, '3. התוצאה מופיעה בתצוגה החיה', 'רואים את האתר שנבנה מהבלוקים');
-    await spot(page, '#previewPanel, iframe');
-    await ring(page, '#previewPanel');
-    await hold(page, dir, frame, 2.1);
-    await clearRing(page);
-    await caption(page, '4. פותחים קוד שנוצר', 'רואים HTML, CSS ו־JavaScript');
+    await caption(page, '3. פותחים קוד שנוצר מהבלוקים', 'רואים בגדול HTML, CSS ו־JavaScript');
     await page.evaluate(() => {
       try {
         window.showGeneratedCode?.();
@@ -403,22 +442,22 @@ async function timeline(page, course, dir, frame) {
       } catch {}
     });
     await spot(page, '#codePeek');
-    await hold(page, dir, frame, 1.4);
+    await hold(page, dir, frame, 1);
     await page.evaluate(() => document.querySelector('.editor-tabs button:nth-child(1)')?.click());
     await ring(page, '#htmlCode');
-    await hold(page, dir, frame, 1.8);
+    await hold(page, dir, frame, 2.1);
     await page.evaluate(() => document.querySelector('.editor-tabs button:nth-child(2)')?.click());
     await ring(page, '#cssCode');
-    await hold(page, dir, frame, 1.8);
+    await hold(page, dir, frame, 2.1);
     await page.evaluate(() => document.querySelector('.editor-tabs button:nth-child(3)')?.click());
     await ring(page, '#jsCode');
-    await hold(page, dir, frame, 1.8);
-    await caption(page, '5. חוזרים לתוצאה', 'האתר החי נשאר פתוח בצד שמאל');
+    await hold(page, dir, frame, 2.1);
+    await caption(page, '4. חוזרים לתוצאה', 'האתר החי נבנה מהבלוקים שהורכבו');
     await page.evaluate(() => document.body.classList.remove('motion-code-zoom'));
     await clearRing(page);
     await spot(page, '#previewPanel, iframe');
     await ring(page, '#previewPanel');
-    await hold(page, dir, frame, 2.8);
+    await hold(page, dir, frame, 2.2);
     return;
   }
 
