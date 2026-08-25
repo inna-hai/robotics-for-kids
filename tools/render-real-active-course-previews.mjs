@@ -232,10 +232,27 @@ async function courseTimeline(page, course, frameDir, frame) {
     await caption(page, 'בונים עמוד Web אמיתי', 'Blockly יוצר HTML/CSS/JS');
     await spot(page, '#blocklyDiv, #realBlockly');
     await hold(page, frameDir, frame, 6);
+    await page.evaluate(() => { try { window.runCode?.(); } catch {} });
+    await caption(page, 'פותחים את הקוד שנוצר', 'רואים ממש HTML, CSS ו־JavaScript');
+    await page.evaluate(() => {
+      try {
+        window.showGeneratedCode?.();
+        document.querySelector('#codePeek')?.scrollIntoView({ block: 'nearest' });
+      } catch {}
+    });
+    await spot(page, '#codePeek, .code-box');
+    await hold(page, frameDir, frame, 4);
+    await caption(page, 'HTML בונה את מבנה העמוד', 'הכותרת, הפסקה והכפתור מגיעים מהבלוקים');
+    await page.evaluate(() => document.querySelector('.editor-tabs button:nth-child(1)')?.click());
+    await hold(page, frameDir, frame, 4);
+    await caption(page, 'CSS מעצב את מה שרואים', 'צבעים, ריווחים וצורת הכרטיס');
+    await page.evaluate(() => document.querySelector('.editor-tabs button:nth-child(2)')?.click());
+    await hold(page, frameDir, frame, 4);
+    await caption(page, 'JavaScript מוסיף פעולה', 'הכפתור יודע להגיב ללחיצה');
+    await page.evaluate(() => document.querySelector('.editor-tabs button:nth-child(3)')?.click());
+    await hold(page, frameDir, frame, 4);
     await caption(page, 'התצוגה החיה מתעדכנת', 'הילד רואה אתר שהוא בונה בעצמו');
     await spot(page, '#previewPanel, iframe');
-    await hold(page, frameDir, frame, 6);
-    await page.evaluate(() => { try { window.runCode?.(); } catch {} });
     await hold(page, frameDir, frame, 3);
     await caption(page, 'בודקים את התרגיל', 'מקבלים משוב וממשיכים לשלב הבא');
     await spot(page, '#exercises, #feedback');
@@ -293,7 +310,8 @@ async function renderCourse(course, audioPath) {
 
 const outputs = [];
 const providers = {};
-for (const course of courses) {
+const selectedCourses = process.env.COURSE ? courses.filter((course) => course.slug === process.env.COURSE) : courses;
+for (const course of selectedCourses) {
   const { audioPath, provider } = await createNarration(course);
   providers[course.slug] = provider;
   outputs.push(await renderCourse(course, audioPath));
