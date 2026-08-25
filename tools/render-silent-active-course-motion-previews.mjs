@@ -37,7 +37,14 @@ async function prepare(page) {
     #motionCaption small{display:block;color:#bae6fd;font-size:18px;margin-top:4px}
     .motion-spot{outline:7px solid #facc15!important;box-shadow:0 0 0 12px rgba(250,204,21,.24),0 18px 42px rgba(15,23,42,.28)!important;border-radius:18px!important}
     .motion-ghost{position:fixed;z-index:999998;direction:rtl;border-radius:14px;padding:10px 18px;background:linear-gradient(135deg,#fb923c,#facc15);color:#111827;font:900 22px Rubik,Arial,sans-serif;box-shadow:0 16px 34px rgba(15,23,42,.28);transition:transform .72s cubic-bezier(.2,.9,.2,1),opacity .22s ease;will-change:transform}
+    #motionCursor{position:fixed;left:0;top:0;z-index:1000000;width:38px;height:38px;pointer-events:none;opacity:0;transform:translate(-80px,-80px);filter:drop-shadow(0 6px 8px rgba(15,23,42,.42))}
+    #motionCursor svg{width:38px;height:38px;display:block}
+    #motionCursor.down{filter:drop-shadow(0 2px 4px rgba(15,23,42,.34))}
+    #motionCursor.down svg{transform:scale(.88);transform-origin:6px 6px}
+    #motionDragChip{position:fixed;z-index:999999;direction:rtl;border-radius:14px;padding:10px 16px;background:linear-gradient(135deg,#fb923c,#facc15);color:#111827;font:900 21px Rubik,Arial,sans-serif;box-shadow:0 16px 34px rgba(15,23,42,.28);pointer-events:none;opacity:0;transform:translate(-120px,-120px)}
     .motion-ring{position:fixed;z-index:999997;border:6px solid #22c55e;border-radius:18px;box-shadow:0 0 0 8px rgba(34,197,94,.18);pointer-events:none;animation:pulseRing .72s ease-in-out infinite alternate}
+    body.motion-world-zoom .code-panel,body.motion-world-zoom .lesson-info,body.motion-world-zoom .status{opacity:.2;filter:blur(1px)}
+    body.motion-world-zoom #world{position:fixed!important;left:94px!important;right:auto!important;top:72px!important;width:1090px!important;height:590px!important;z-index:999990!important;border-width:10px!important;border-color:#facc15!important;border-radius:26px!important;box-shadow:0 0 0 9999px rgba(15,23,42,.35),0 24px 80px rgba(15,23,42,.44)!important}
     @keyframes pulseRing{from{transform:scale(.98);opacity:.68}to{transform:scale(1.03);opacity:1}}
   `});
   await page.evaluate(() => {
@@ -45,6 +52,13 @@ async function prepare(page) {
     caption.id = 'motionCaption';
     caption.innerHTML = 'הצצה מהירה מתוך השיעור <small>בלי קריינות — רואים מה עושים בפועל</small>';
     document.body.appendChild(caption);
+    const cursor = document.createElement('div');
+    cursor.id = 'motionCursor';
+    cursor.innerHTML = '<svg viewBox="0 0 44 44" aria-hidden="true"><path d="M7 4 34 28 21 30 16 41 10 39 15 29 5 35Z" fill="#fff" stroke="#0f172a" stroke-width="3" stroke-linejoin="round"/></svg>';
+    document.body.appendChild(cursor);
+    const chip = document.createElement('div');
+    chip.id = 'motionDragChip';
+    document.body.appendChild(chip);
   });
 }
 
@@ -110,6 +124,14 @@ async function hold(page, dir, frame, seconds) {
   for (let i = 0; i < frames; i += 1) await snap(page, dir, frame);
 }
 
+async function liveHold(page, dir, frame, seconds) {
+  const frames = Math.max(1, Math.round(seconds * FPS));
+  for (let i = 0; i < frames; i += 1) {
+    await sleep(1000 / FPS);
+    await snap(page, dir, frame);
+  }
+}
+
 async function clickText(page, text) {
   await page.evaluate((text) => {
     [...document.querySelectorAll('button,a')].find((el) => el.innerText?.includes(text))?.click();
@@ -126,12 +148,68 @@ async function minecraftWorkspace(page, xmlText) {
   }, xmlText);
 }
 
+async function selectorPoint(page, selector, fallback, xRatio = 0.5, yRatio = 0.5) {
+  return page.evaluate(({ selector, fallback, xRatio, yRatio }) => {
+    const rect = document.querySelector(selector)?.getBoundingClientRect();
+    if (!rect) return fallback;
+    return {
+      x: rect.left + rect.width * xRatio,
+      y: rect.top + rect.height * yRatio
+    };
+  }, { selector, fallback, xRatio, yRatio });
+}
+
+async function setCursor(page, x, y, down = false, chip = '') {
+  await page.evaluate(({ x, y, down, chip }) => {
+    const cursor = document.getElementById('motionCursor');
+    if (cursor) {
+      cursor.style.opacity = '1';
+      cursor.style.transform = `translate(${x}px, ${y}px)`;
+      cursor.classList.toggle('down', down);
+    }
+    const dragChip = document.getElementById('motionDragChip');
+    if (dragChip) {
+      dragChip.textContent = chip;
+      dragChip.style.opacity = chip ? '1' : '0';
+      dragChip.style.transform = `translate(${x - 170}px, ${y + 20}px)`;
+    }
+  }, { x, y, down, chip });
+}
+
+async function moveCursor(page, dir, frame, from, to, seconds, { down = false, chip = '' } = {}) {
+  const frames = Math.max(1, Math.round(seconds * FPS));
+  for (let i = 0; i < frames; i += 1) {
+    const t = frames === 1 ? 1 : i / (frames - 1);
+    const eased = t < 0.5 ? 2 * t * t : 1 - ((-2 * t + 2) ** 2) / 2;
+    const x = from.x + (to.x - from.x) * eased;
+    const y = from.y + (to.y - from.y) * eased;
+    await setCursor(page, x, y, down, chip);
+    await snap(page, dir, frame);
+  }
+}
+
 async function minecraftAdd(page, dir, frame, label, xmlText, seconds = 0.75) {
-  await ghostMove(page, label, '.blocklyFlyout', '#blocklyDiv');
-  await hold(page, dir, frame, 0.45);
+  const from = await selectorPoint(page, '.blocklyFlyout', { x: 680, y: 250 }, 0.58, 0.24);
+  const to = await selectorPoint(page, '#blocklyDiv', { x: 360, y: 260 }, 0.42, 0.42);
+  await setCursor(page, from.x, from.y, false);
+  await hold(page, dir, frame, 0.18);
+  await setCursor(page, from.x, from.y, true, label);
+  await hold(page, dir, frame, 0.14);
+  await moveCursor(page, dir, frame, from, to, 0.72, { down: true, chip: label });
+  await setCursor(page, to.x, to.y, false, '');
   await minecraftWorkspace(page, xmlText);
   await ring(page, '#blocklyDiv');
   await hold(page, dir, frame, seconds);
+}
+
+async function minecraftClickRun(page, dir, frame) {
+  const from = await selectorPoint(page, '#blocklyDiv', { x: 360, y: 260 }, 0.45, 0.5);
+  const to = await selectorPoint(page, '.btn.run', { x: 675, y: 24 }, 0.5, 0.5);
+  await moveCursor(page, dir, frame, from, to, 0.55);
+  await setCursor(page, to.x, to.y, true);
+  await hold(page, dir, frame, 0.2);
+  await setCursor(page, to.x, to.y, false);
+  await page.evaluate(() => document.querySelector('.btn.run')?.classList.add('motion-spot'));
 }
 
 async function timeline(page, course, dir, frame) {
@@ -253,14 +331,18 @@ async function timeline(page, course, dir, frame) {
     await minecraftAdd(page, dir, frame, 'עלה למעלה', xmlUpOne);
     await minecraftAdd(page, dir, frame, 'הנח בלוק זהב', xmlGold);
     await minecraftAdd(page, dir, frame, 'עלה + יהלום', xmlFull, 1);
-    await caption(page, '3. מריצים ורואים מה נבנה', 'העולם משתנה לפי הבלוקים');
+    await caption(page, '3. לוחצים הרצה', 'העכבר מפעיל את התוכנית');
     await clearRing(page);
-    await spot(page, '#world, .world');
-    await page.evaluate(async () => {
-      try { await runProgram(); } catch {}
+    await minecraftClickRun(page, dir, frame);
+    await caption(page, '4. זום־אין לתוצאה', 'רואים את העולם נבנה לפי הבלוקים');
+    await page.evaluate(() => {
+      try {
+        document.body.classList.add('motion-world-zoom');
+        runProgram();
+      } catch {}
     });
     await ring(page, '#world');
-    await hold(page, dir, frame, 3);
+    await liveHold(page, dir, frame, 5);
   }
 }
 
