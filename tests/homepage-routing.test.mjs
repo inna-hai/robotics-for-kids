@@ -75,7 +75,7 @@ test('Robotics15 homepage catalog follows the requested simple order', () => {
 
 test('Robotics15 catalog cards include cover media for every course', () => {
   const cards = [...homepageHtml.matchAll(/<article class="course"/g)];
-  const covers = [...homepageHtml.matchAll(/<img src="(assets\/course-covers\/[^"]+\.svg)"/g)].map((match) => match[1]);
+  const covers = [...homepageHtml.matchAll(/<img src="(assets\/course-covers\/[^"]+\.(?:svg|png))"/g)].map((match) => match[1]);
   const videos = [...homepageHtml.matchAll(/<source src="(marketing\/[^"]+\.mp4)" type="video\/mp4">/g)].map((match) => match[1]);
   assert.equal(covers.length + videos.length, cards.length, 'Every course card should include cover media');
   for (const cover of covers) {
