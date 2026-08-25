@@ -241,6 +241,44 @@ function minecraftXmlChain(items) {
   return `<xml>${chain}</xml>`;
 }
 
+function webcodeXmlChain(items) {
+  const chain = items
+    .slice()
+    .reverse()
+    .reduce((next, item) => {
+      const fields = Object.entries(item.fields || {})
+        .map(([name, value]) => `<field name="${name}">${value}</field>`)
+        .join('');
+      return `<block type="${item.type}">${fields}${next ? `<next>${next}</next>` : ''}</block>`;
+    }, '');
+  return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="page_start" x="130" y="70">${chain ? `<next>${chain}</next>` : ''}</block></xml>`;
+}
+
+async function webcodeWorkspace(page, xmlText) {
+  await page.evaluate((xmlText) => {
+    localStorage.removeItem(`webcodeLessonState:v2:${lesson.id}`);
+    if (!blocklyWorkspace || !window.Blockly) return;
+    blocklyReady = false;
+    blocklyWorkspace.clear();
+    Blockly.Xml.domToWorkspace(parseBlocklyXml(xmlText), blocklyWorkspace);
+    blocklyReady = true;
+    lastGeneratedCodeSelection = null;
+    generateCodeFromBlockly();
+    Blockly.svgResize(blocklyWorkspace);
+    setTimeout(alignBlocklyStarterBlocksRight, 40);
+  }, xmlText);
+}
+
+async function webcodeAdd(page, dir, frame, label, beforeXml, afterXml, seconds = 0.75) {
+  await webcodeWorkspace(page, beforeXml);
+  await ghostMove(page, label, '.blocklyToolboxDiv', '#blocklyDiv');
+  await hold(page, dir, frame, 0.75);
+  await webcodeWorkspace(page, afterXml);
+  await ring(page, '#blocklyDiv');
+  await hold(page, dir, frame, seconds);
+  await clearRing(page);
+}
+
 async function minecraftClickRun(page, dir, frame) {
   const from = await selectorPoint(page, '#blocklyDiv', { x: 360, y: 260 }, 0.45, 0.5);
   const to = await selectorPoint(page, '.btn.run', { x: 675, y: 24 }, 0.5, 0.5);
@@ -319,14 +357,36 @@ async function timeline(page, course, dir, frame) {
   }
 
   if (course.slug === 'webcode') {
-    await caption(page, '1. בלוקים בונים אתר', 'כל בלוק משנה HTML / CSS / JS');
+    const plan = [
+      { label: 'עיצוב שמיים', type: 'web_theme', fields: { THEME: 'sky' } },
+      { label: 'כותרת אתר', type: 'web_title', fields: { TEXT: 'האתר הראשון שלי' } },
+      { label: 'פסקה', type: 'web_paragraph', fields: { TEXT: 'אני בונה עמוד אמיתי בעזרת בלוקים' } },
+      { label: 'סמל גדול', type: 'web_emoji', fields: { EMOJI: '🚀' } },
+      { label: 'כפתור עובד', type: 'web_button', fields: { LABEL: 'לחצו להפתעה', MESSAGE: 'הכפתור עובד 🎉' } },
+      { label: 'שתי קוביות מידע', type: 'web_columns', fields: { A: 'HTML בונה מבנה', B: 'CSS מוסיף עיצוב' } },
+      { label: 'חתימה', type: 'web_footer', fields: { TEXT: 'נבנה ב-WebCode Lab' } }
+    ];
+    const xmlSteps = [1, 3, 4, 6, plan.length - 1].map((index) => ({
+      label: plan[index].label,
+      xml: webcodeXmlChain(plan.slice(0, index + 1))
+    }));
+    let currentXml = webcodeXmlChain([]);
+    await webcodeWorkspace(page, currentXml);
+    await caption(page, '1. מתחילים מעמוד ריק', 'הבלוקים ייצרו את האתר והתוצאה תופיע משמאל');
     await spot(page, '#blocklyDiv');
-    await ghostMove(page, 'כותרת', '.blocklyToolboxDiv', '#blocklyDiv');
-    await hold(page, dir, frame, 1);
-    await ghostMove(page, 'פסקה', '.blocklyToolboxDiv', '#blocklyDiv');
-    await hold(page, dir, frame, 1);
+    await hold(page, dir, frame, 0.8);
+    await caption(page, '2. גוררים בלוקים שבונים אתר', 'כותרת, טקסט, סמל וכפתור נכנסים לשרשרת');
+    for (const step of xmlSteps) {
+      await webcodeAdd(page, dir, frame, step.label, currentXml, step.xml, 0.75);
+      currentXml = step.xml;
+    }
     await page.evaluate(() => { try { window.runCode?.(); } catch {} });
-    await caption(page, '2. פותחים קוד שנוצר', 'רואים HTML, CSS ו־JavaScript');
+    await caption(page, '3. התוצאה מופיעה בתצוגה החיה', 'רואים את האתר שנבנה מהבלוקים');
+    await spot(page, '#previewPanel, iframe');
+    await ring(page, '#previewPanel');
+    await hold(page, dir, frame, 2.1);
+    await clearRing(page);
+    await caption(page, '4. פותחים קוד שנוצר', 'רואים HTML, CSS ו־JavaScript');
     await page.evaluate(() => {
       try {
         window.showGeneratedCode?.();
@@ -344,10 +404,11 @@ async function timeline(page, course, dir, frame) {
     await page.evaluate(() => document.querySelector('.editor-tabs button:nth-child(3)')?.click());
     await ring(page, '#jsCode');
     await hold(page, dir, frame, 1.4);
-    await caption(page, '3. התוצאה משתנה בתצוגה', 'האתר החי מתעדכן לפי הבלוקים');
+    await caption(page, '5. חוזרים לתוצאה', 'האתר החי נשאר פתוח בצד שמאל');
     await clearRing(page);
     await spot(page, '#previewPanel, iframe');
-    await hold(page, dir, frame, 2.4);
+    await ring(page, '#previewPanel');
+    await hold(page, dir, frame, 2.8);
     return;
   }
 
