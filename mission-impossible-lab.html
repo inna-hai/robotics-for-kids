@@ -21,7 +21,7 @@
         <div>
           <div class="kicker">כיתה ז׳ · טאבלטים · AI · עבודת צוות · פיץ׳</div>
           <h1>Mission Impossible Lab — אתגרי פתרון בעיות עם AI</h1>
-          <p>לומדה צוותית מסודרת שבה בכל מפגש התלמידים מקבלים משימה חדשה, חוקרים בעזרת כלי AI, בונים תוצר דיגיטלי קטן, מתרגלים הצגה ועמידה מול קהל.</p>
+          <p>לומדה צוותית מסודרת שבה בכל מפגש ברור מי עובד, באיזה הרכב, מה כל תלמיד ממלא, מה הצוות מגיש, ואיזה תוצר נשאר בסוף השיעור.</p>
           <div class="actions">
             <a class="btn" href="#meetings">ראו את 15 המפגשים</a>
             <a class="btn alt" href="mission-impossible-lab-students.html?lesson=1">דף עבודה לתלמידים</a>
@@ -34,7 +34,7 @@
           <div class="stats">
             <div class="stat"><b>15</b>מפגשים</div>
             <div class="stat"><b>90</b>דקות</div>
-            <div class="stat"><b>AI</b>חקר ובנייה</div>
+            <div class="stat"><b>צוות</b>תפקידים קבועים</div>
             <div class="stat"><b>Expo</b>דמו ופיץ׳</div>
           </div>
         </aside>
@@ -64,12 +64,8 @@
         <div class="tools">
           <article class="panel">
             <h2>איך עובדים בכיתה</h2>
-            <ul class="list">
-              <li>עובדים בצוותים קבועים עם תפקידים מתחלפים: חוקר, בודק, מעצב, מציג ומנהל משימה.</li>
-              <li>כל מפגש מסתיים בתוצר ביניים שאפשר לראות או להציג.</li>
-              <li>כלי AI משמשים כשותף חשיבה ובנייה, לא כפתרון אוטומטי.</li>
-              <li>התלמידים מתעדים מה הם ביקשו מה-AI, מה בדקו ומה החליטו בעצמם.</li>
-            </ul>
+            <p id="workModeIntro"></p>
+            <ul class="list" id="teamRoles"></ul>
           </article>
           <article class="panel safety">
             <h2>גבולות בטיחות</h2>
@@ -87,6 +83,8 @@
     const program = window.MISSION_IMPOSSIBLE_LAB_PROGRAM;
     const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
     document.getElementById('outcomes').innerHTML = program.sharedOutcomes.map((item, index) => `<div class="outcome"><b>${index + 1}. יעד למידה</b>${esc(item)}</div>`).join('');
+    document.getElementById('workModeIntro').textContent = program.teamProtocol.defaultMode;
+    document.getElementById('teamRoles').innerHTML = program.teamProtocol.roles.map(role => `<li><strong>${esc(role[0])}:</strong> ${esc(role[1])}</li>`).join('');
     document.getElementById('safety').innerHTML = program.safetyRules.map(item => `<li>${esc(item)}</li>`).join('');
     document.getElementById('lessons').innerHTML = program.lessons.map(lesson => `
       <article class="lesson">
@@ -103,6 +101,8 @@
           <div class="lesson-grid">
             <div class="mini"><b>שאלת המפגש</b>${esc(lesson.bigQuestion)}</div>
             <div class="mini"><b>מה הילדים יוצרים</b>${esc(lesson.studentOutcome)}</div>
+            <div class="mini"><b>איך עובדים בדיוק</b>${esc(lesson.workMode)}</div>
+            <div class="mini"><b>צעדים בכיתה</b><ol class="list">${lesson.exactSteps.map(step => `<li>${esc(step)}</li>`).join('')}</ol></div>
           </div>
           <div class="flow">
             ${lesson.flow.map(step => `<div class="flow-row"><b>${esc(step.minutes)}</b><div><strong>${esc(step.title)}</strong><br>${esc(step.teacher)}</div><div>${esc(step.students)}</div></div>`).join('')}

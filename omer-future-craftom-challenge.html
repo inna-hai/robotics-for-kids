@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>אתגר עומר העתידנית</title>
+  <meta name="description" content="אתגרי עומר העתידנית לכיתה ד׳: בנייה וחקר ב־Minecraft Education + Craftom." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260824-omer-style">
+  <link rel="stylesheet" href="css/platform-home-link.css">
+  <style>
+    .team-card{min-height:0}
+    .team-card p{margin:0}
+    .evidence{display:block;margin-top:8px;color:var(--muted);font-weight:800}
+    .challenge-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+    .challenge-nav a{display:inline-flex;text-decoration:none;border:1px solid #bdd8f4;background:#fff;color:var(--blue);border-radius:999px;padding:8px 12px;font-weight:900}
+    .challenge-nav a.active{background:var(--blue);color:white}
+    .hero-video{overflow:hidden}
+    .hero-video .tag{margin:0 0 10px}
+    .challenge-video{display:block;width:100%;aspect-ratio:16/9;border:0;border-radius:16px 16px 0 0;background:#111}
+    .video-caption{margin:0;padding:12px 14px;color:var(--muted);font-weight:800;line-height:1.6;background:#fff}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <nav class="challenge-nav" id="challengeNav"></nav>
+
+    <section class="hero">
+      <div>
+        <div class="kicker" id="kicker"></div>
+        <h1 id="title"></h1>
+        <p class="goal" id="goal"></p>
+        <div class="actions" id="actions"></div>
+      </div>
+      <figure class="minecraft-shot hero-video">
+        <span class="tag">סרטון פתיחת אתגר</span>
+        <video id="challengeVideo" class="challenge-video" controls preload="metadata" playsinline poster="assets/craftom/omer-future/wonder-building.webp" aria-label="סרטון פתיחת אתגר עומר"></video>
+        <figcaption class="video-caption" id="caption"></figcaption>
+      </figure>
+    </section>
+
+    <section class="grid-4" id="meetingCards"></section>
+
+    <section class="steps">
+      <div class="card build-first">
+        <h2>דמיון של ילדים</h2>
+        <p id="imaginePrompt"></p>
+      </div>
+      <div class="card build-first">
+        <h2>מה הילדים בונים במיינקראפט</h2>
+        <p id="minecraftBuild"></p>
+        <ul id="meetingSteps"></ul>
+      </div>
+      <div class="card">
+        <h2>מה חוקרים לפני הבנייה</h2>
+        <p id="researchPrompt"></p>
+        <div class="rule" id="bigQuestion"></div>
+      </div>
+      <div class="card">
+        <h2>בדיקת הצלחה</h2>
+        <ul id="successChecks"></ul>
+      </div>
+      <div class="card">
+        <h2>חיבור ל־Craftom</h2>
+        <p>האתגר מחובר ל־JSON הצלחה שמגדיר ראיות בנייה, שלטים, רפלקציה ודוח מורה עתידי.</p>
+        <div class="actions"><a class="btn secondary" id="jsonLink" href="#">פתחו JSON הצלחה</a></div>
+      </div>
+    </section>
+
+  </main>
+
+  <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
+  <script src="js/omer-future-craftom-lessons-25f8f8e.js?v=mimefix-20260824"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const program = window.OMER_FUTURE_CRAFTOM_PROGRAM;
+    const lesson = window.getOmerFutureCraftomLesson(params.get('lesson'));
+    const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+
+    document.title = `אתגר ${lesson.id} - ${lesson.title}`;
+    document.getElementById('challengeNav').innerHTML = program.lessons.map(item => `<a class="${item.id === lesson.id ? 'active' : ''}" href="omer-future-craftom-challenge.html?lesson=${item.id}">אתגר ${item.id}</a>`).join('');
+    document.getElementById('kicker').textContent = `אתגר ${lesson.id} מתוך ${program.totalChallenges} • ${lesson.challengeDuration} • ${lesson.meetingDuration} • ${lesson.grade}`;
+    document.getElementById('title').textContent = lesson.title;
+    document.getElementById('goal').textContent = lesson.story;
+    document.getElementById('caption').textContent = lesson.minecraftBuild;
+    const challengeVideo = document.getElementById('challengeVideo');
+    challengeVideo.src = lesson.video;
+    challengeVideo.poster = lesson.image;
+    challengeVideo.setAttribute('aria-label', `סרטון פתיחת אתגר ${lesson.id}: ${lesson.title}`);
+    document.getElementById('actions').innerHTML = `
+      <a class="btn" href="omer-future-craftom-students.html?lesson=${lesson.id}">דף תלמידים</a>
+      <a class="btn secondary" href="omer-future-craftom-slides.html?lesson=${lesson.id}">מצגת מדריך</a>
+      <a class="btn secondary" href="omer-future-craftom.html">חזרה למפת האתגרים</a>
+    `;
+
+    document.getElementById('meetingCards').innerHTML = lesson.meetings.map((item, index) => `
+      <article class="card lesson-card highlight team-card">
+        <span><span class="num">${index + 1}</span><span class="tag">שיעור ${esc(item[0])}</span></span>
+        <h2>${esc(item[1])}</h2>
+        <p>${esc(item[2])}</p>
+        <span class="evidence">תוצר: ${esc(item[3])}</span>
+      </article>
+    `).join('');
+
+    document.getElementById('minecraftBuild').textContent = lesson.minecraftBuild;
+    document.getElementById('imaginePrompt').textContent = lesson.imaginePrompt;
+    document.getElementById('researchPrompt').textContent = lesson.researchPrompt;
+    document.getElementById('bigQuestion').textContent = lesson.bigQuestion;
+    document.getElementById('meetingSteps').innerHTML = lesson.meetings.map(item => `<li><strong>שיעור ${esc(item[0])} - ${esc(item[1])}:</strong> ${esc(item[2])} תוצר: ${esc(item[3])}</li>`).join('');
+    document.getElementById('successChecks').innerHTML = lesson.successChecks.map(step => `<li>${esc(step)}</li>`).join('');
+    document.getElementById('jsonLink').href = lesson.jsonSpec;
+  </script>
+  <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
+</body>
+</html>

@@ -22,6 +22,10 @@ for (const lesson of program.lessons) {
   assert.equal(lesson.grade, 'כיתה ז׳', `lesson ${lesson.id} targets grade 7`);
   assert.ok(lesson.title && lesson.unit && lesson.concept && lesson.story, `lesson ${lesson.id} has core metadata`);
   assert.ok(lesson.teacherGoal && lesson.studentOutcome && lesson.bigQuestion, `lesson ${lesson.id} has pedagogy`);
+  assert.ok(lesson.workMode && lesson.workMode.length > 20, `lesson ${lesson.id} explains exact work mode`);
+  assert.ok(lesson.teacherPrep.length >= 2, `lesson ${lesson.id} has teacher preparation`);
+  assert.ok(lesson.exactSteps.length >= 5, `lesson ${lesson.id} has concrete classroom steps`);
+  assert.ok(lesson.worksheetFields.length >= 3, `lesson ${lesson.id} has lesson-specific worksheet fields`);
   assert.ok(lesson.flow.length >= 7, `lesson ${lesson.id} has detailed flow`);
   assert.ok(lesson.workshopTasks.length >= 5, `lesson ${lesson.id} has workshop tasks`);
   assert.ok(lesson.opalPrompt.includes('כיתה ז׳'), `lesson ${lesson.id} has grade-specific AI prompt`);
@@ -33,10 +37,13 @@ assert.ok(program.lessons[0].title.includes('פתיחת המעבדה'), 'lesson 
 assert.ok(program.lessons[4].title.includes('תפקידים'), 'lesson 5 closes the research/team setup unit');
 assert.ok(program.lessons[7].title.includes('אבטיפוס'), 'lesson 8 builds a prototype');
 assert.ok(program.lessons[14].title.includes('Expo'), 'lesson 15 closes with an expo');
+assert.equal(program.teamProtocol.roles.length, 5, 'program defines team roles');
 
 const hub = read('mission-impossible-lab.html');
 assert.ok(hub.includes('Mission Impossible Lab'), 'hub has course title');
 assert.ok(hub.includes('15 מפגשים'), 'hub presents 15 meetings');
+assert.ok(hub.includes('איך עובדים בדיוק'), 'hub presents exact work mode per lesson');
+assert.ok(hub.includes('teamRoles'), 'hub renders role list');
 assert.ok(hub.includes('mission-impossible-lab-students.html?lesson=1'), 'hub links student worksheets');
 assert.ok(hub.includes('mission-impossible-lab-slides.html?lesson=1'), 'hub links instructor slides');
 assert.ok(hub.includes('js/mission-impossible-lab-lessons.js'), 'hub loads course data');
@@ -46,10 +53,14 @@ assert.ok(students.includes('דף עבודה לתלמידים'), 'students page 
 assert.ok(students.includes('window.getMissionImpossibleLabLesson'), 'students page uses mission lab lessons');
 assert.ok(students.includes('localStorage'), 'students page saves locally');
 assert.ok(students.includes('copySummary'), 'students page can copy summary');
+assert.ok(students.includes('איך עובדים היום'), 'students page presents concrete work mode');
+assert.ok(students.includes('exactSteps'), 'students page renders exact lesson steps');
 
 const slides = read('mission-impossible-lab-slides.html');
 assert.ok(slides.includes('מצגת מדריך'), 'slides page is instructor deck');
 assert.ok(slides.includes('lessonPicker'), 'slides page can switch lessons');
+assert.ok(slides.includes('הכנת מדריך לפני שיעור'), 'slides include teacher preparation');
+assert.ok(slides.includes('שדות שחייבים להתמלא בדף'), 'slides include worksheet fields');
 assert.ok(slides.includes('תבנית פיץ׳ סיום'), 'slides include pitch template');
 
 const improvement = read('mission-impossible-lab-improvement.html');
@@ -58,7 +69,7 @@ assert.ok(improvement.includes('/api/feedback'), 'improvement page posts feedbac
 assert.ok(improvement.includes('מפגש 15 - Mission Impossible Expo'), 'improvement page can target lesson 15');
 
 const index = read('index.html');
-assert.ok(index.includes('mission-impossible-lab.html'), 'home page links mission lab course');
-assert.ok(index.includes('Mission Impossible Lab'), 'home page labels mission lab course');
+assert.ok(!index.includes('mission-impossible-lab.html'), 'home page should not link mission lab course on main');
+assert.ok(!index.includes('Mission Impossible Lab'), 'home page should not label mission lab course on main');
 
 console.log('mission-impossible-lab-course tests passed');

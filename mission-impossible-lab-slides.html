@@ -38,10 +38,13 @@
     const slides = [
       { html: `<div class="kicker">${esc(program.title)} • ${esc(program.targetAudience)}</div><h1>מפגש ${lesson.id}: ${esc(lesson.title)}</h1><p>${esc(lesson.subtitle)}</p><div class="note">תוצר המפגש: ${esc(lesson.productStage)}</div>` },
       { html: `<h2>שאלת המפגש</h2><p>${esc(lesson.bigQuestion)}</p>${cards([['מטרת מדריך', lesson.teacherGoal], ['מה יוצא לתלמידים', lesson.studentOutcome]])}` },
+      { html: `<h2>איך עובדים בדיוק</h2><p>${esc(lesson.workMode)}</p>${cards(program.teamProtocol.roles.map(role => [role[0], role[1]]))}<div class="note">${esc(program.teamProtocol.personalLine)}</div>` },
+      { html: `<h2>הכנת מדריך לפני שיעור</h2>${list(lesson.teacherPrep)}` },
       { html: `<h2>פתיחה מומלצת</h2><p>${esc(lesson.openingDemo)}</p><div class="note">טיפ: לפתוח בדמו או סיפור קצר לפני שמכניסים מושגים.</div>` },
       { html: `<h2>מושגים מרכזיים</h2><div class="cards">${lesson.keyConcepts.map(item => `<div class="card"><b>${esc(item)}</b>מושג לשימוש במהלך השיעור, אחרי שהתלמידים ראו דוגמה מוחשית.</div>`).join('')}</div>` },
       { html: `<h2>מהלך שיעור ${lesson.durationMinutes} דקות</h2><div class="timeline">${lesson.flow.map(step => `<div class="row"><b>${esc(step.minutes)}</b><div><strong>${esc(step.title)}</strong><br>${esc(step.teacher)}</div><div>${esc(step.students)}</div></div>`).join('')}</div>` },
       { html: `<h2>משימות עבודה לצוותים</h2>${list(lesson.workshopTasks)}` },
+      { html: `<h2>שדות שחייבים להתמלא בדף</h2>${list(lesson.studentWorksheet.fields.map(field => field.label))}` },
       { html: `<h2>פרומפט עבודה ל-AI</h2><div class="prompt">${esc(lesson.opalPrompt)}</div>` },
       { html: `<h2>הערות למדריך</h2>${list(lesson.instructorNotes)}` },
       { html: `<h2>גבולות בטיחות</h2>${list(program.safetyRules)}<div class="note">הדמו עובד עם מידע דמיוני בלבד.</div>` },

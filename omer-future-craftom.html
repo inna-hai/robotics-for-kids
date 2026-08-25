@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>עומר העתידנית | Craftom כיתה ד׳</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260824-omer-style">
+  <link rel="stylesheet" href="css/platform-home-link.css">
+  <style>
+    .preview-home .hero{grid-template-columns:minmax(0,1fr) 360px}
+    .preview-home .minecraft-shot{max-width:360px}
+    .preview-home .minecraft-shot img{height:260px}
+    .challenge-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .challenge-actions .btn{padding:9px 12px;font-size:.92rem}
+    .team-list{display:grid;gap:8px;margin:10px 0 0;padding:0;list-style:none}
+    .team-list li{border:1px solid #cfe2f3;background:#f7fcff;border-radius:12px;padding:9px 10px;font-size:.96rem}
+    .team-list b{color:var(--blue)}
+    .anchor-card{border-color:#9fd8a8;background:#f7fff8}
+    .wide-card{grid-column:1/-1}
+    .lesson-card{align-content:start}
+    .challenge-video{display:block;width:100%;aspect-ratio:16/9;border:0;border-radius:14px;background:#111;box-shadow:0 10px 24px rgba(20,50,80,.14)}
+    @media(max-width:850px){.preview-home .hero{grid-template-columns:1fr}.preview-home .minecraft-shot{max-width:100%}.preview-home .minecraft-shot img{height:220px}}
+  </style>
+</head>
+<body class="preview-home">
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <div class="kicker">עומר העתידנית • כיתה ד׳ • Minecraft Education + Craftom • בלי תכנות</div>
+        <h1>בונים יישוב עומר עתידני דרך אתגרי Minecraft</h1>
+        <p class="goal">לומדה של 4 אתגרים ממוקדים, 4 שיעורים בכל אתגר. כל הצוותים עושים את אותו רצף ובונים את אותם רכיבי יישוב — כל צוות בחלקה שלו, עם סגנון ותכנון משלו.</p>
+        <div class="actions" id="heroActions"></div>
+      </div>
+      <figure class="minecraft-shot">
+        <img id="heroImage" src="assets/craftom/omer-future/wonder-building.webp" alt="תמונת Minecraft של בניין הפלא בעומר העתידנית">
+        <figcaption class="shot-caption" id="heroCaption">בניין מיוחד שמייצג משהו בעומר העתידנית.</figcaption>
+      </figure>
+    </section>
+
+    <section class="grid-4">
+      <div class="card highlight"><h2>4</h2><b>אתגרים</b><p class="muted">כל אתגר נמשך 4 שיעורים.</p></div>
+      <div class="card highlight"><h2>4</h2><b>שיעורים בכל אתגר</b><p class="muted">מתקדמים לאט כמו בלומדה הקודמת.</p></div>
+      <div class="card highlight"><h2>16</h2><b>שיעורים סך הכול</b><p class="muted">כל צוות בונה חלקה מלאה.</p></div>
+      <div class="card highlight"><h2>JSON</h2><b>הצלחה</b><p class="muted">ראיות Craftom ודוח מורה עתידי.</p></div>
+    </section>
+
+    <section class="grid" style="margin-top:14px">
+      <article class="card anchor-card wide-card">
+        <span class="tag">העוגן של הקורס</span>
+        <h2>לא “עיר כללית” — עומר עתידנית</h2>
+        <p id="omerAnchor" class="goal"></p>
+      </article>
+    </section>
+
+    <section class="steps" id="challengeCards"></section>
+
+    <section class="grid" style="margin-top:14px">
+      <article class="card">
+        <h2>איך עובדים בכיתה</h2>
+        <p id="workModeIntro"></p>
+        <ul id="teamRoles"></ul>
+      </article>
+      <article class="card build-first">
+        <h2>כללי עולם משותף</h2>
+        <ul id="safety"></ul>
+      </article>
+    </section>
+  </main>
+
+  <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
+  <script src="js/omer-future-craftom-lessons-25f8f8e.js?v=mimefix-20260824"></script>
+  <script>
+    const program = window.OMER_FUTURE_CRAFTOM_PROGRAM;
+    const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+
+    document.getElementById('omerAnchor').textContent = program.omerAnchor;
+    document.getElementById('workModeIntro').textContent = program.buildProtocol.defaultMode;
+    document.getElementById('teamRoles').innerHTML = program.buildProtocol.roles.map(role => `<li><b>${esc(role[0])}:</b> ${esc(role[1])}</li>`).join('');
+    document.getElementById('safety').innerHTML = program.safetyRules.map(item => `<li>${esc(item)}</li>`).join('');
+    document.getElementById('heroImage').src = program.lessons[0].image;
+    document.getElementById('heroCaption').textContent = program.lessons[0].minecraftBuild;
+
+    document.getElementById('heroActions').innerHTML = program.lessons.map(lesson => `<a class="btn" href="omer-future-craftom-challenge.html?lesson=${lesson.id}">כניסה לאתגר ${lesson.id}</a>`).join('')
+      + program.lessons.map(lesson => `<a class="btn secondary" href="${esc(lesson.jsonSpec)}">JSON אתגר ${lesson.id}</a>`).join('');
+
+    document.getElementById('challengeCards').innerHTML = program.lessons.map(lesson => `
+      <article class="card lesson-card">
+        <video class="challenge-video" src="${esc(lesson.video)}" poster="${esc(lesson.image)}" controls preload="metadata" playsinline aria-label="סרטון הסבר לאתגר ${lesson.id}: ${esc(lesson.title)}"></video>
+        <span class="tag">אתגר ${lesson.id} • ${esc(lesson.challengeDuration)} • ${esc(lesson.meetingDuration)}</span>
+        <h2>${esc(lesson.title)}</h2>
+        <p>${esc(lesson.imaginePrompt)}</p>
+        <b>בונים בכל חלקה: ${esc(lesson.minecraftBuild)}</b>
+        <ul class="team-list">
+          ${lesson.meetings.map(item => `<li><b>שיעור ${esc(item[0])}: ${esc(item[1])}</b><br>${esc(item[3])}</li>`).join('')}
+        </ul>
+        <div class="challenge-actions">
+          <a class="btn" href="omer-future-craftom-challenge.html?lesson=${lesson.id}">כניסה לאתגר</a>
+          <a class="btn" href="omer-future-craftom-students.html?lesson=${lesson.id}">דף תלמידים</a>
+          <a class="btn secondary" href="${esc(lesson.video)}">פתחו סרטון</a>
+          <a class="btn secondary" href="omer-future-craftom-slides.html?lesson=${lesson.id}">מצגת מדריך</a>
+          <a class="btn secondary" href="${esc(lesson.jsonSpec)}">JSON הצלחה</a>
+        </div>
+      </article>
+    `).join('');
+  </script>
+  <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
+</body>
+</html>

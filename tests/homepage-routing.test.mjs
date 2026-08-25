@@ -26,20 +26,57 @@ function assertNotIncludes(source, needle, message = `Unexpected: ${needle}`) { 
 test('homepage is now a platform gateway and links to primary learning modules', () => {
   assertIncludes(homepageHtml, '<title>פלטפורמת לומדות טכנולוגיה</title>');
   assertIncludes(homepageHtml, 'מרכז הלומדות');
+  assertNotIncludes(homepageHtml, 'href="#roadmap"', 'Progression sequence link should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'רצף גילאים', 'Progression sequence nav label should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'רצף התקדמות', 'Progression sequence section should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, '<h2>התחלה מהירה</h2>', 'Quick start section should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'class="quick"', 'Quick start cards should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'href="sensi-classic.html?lesson=1"', 'Sensi classic should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'href="sensi-classic-slides/index.html"', 'Sensi classic slides should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'סנסי קלאסי', 'Sensi classic should not appear as a main homepage card');
+  assertNotIncludes(homepageHtml, 'רובוטיקה קלאסית', 'Sensi classic tag should not appear on the main homepage');
   assertIncludes(homepageHtml, 'href="sensi-city.html?lesson=1"');
-  assertIncludes(homepageHtml, 'href="sensi-classic.html?lesson=1"');
-  assertIncludes(homepageHtml, 'href="sensi-classic-slides/index.html"');
-  assertIncludes(homepageHtml, 'href="pygame.html"');
-  assertIncludes(homepageHtml, 'href="roblox.html"');
+  assertIncludes(homepageHtml, 'סנסי בעיר החכמה');
+  assertIncludes(homepageHtml, 'marketing/sensi-city-silent-motion-preview.mp4');
+  assertIncludes(homepageHtml, 'href="smart-city.html"');
+  assertNotIncludes(homepageHtml, 'href="pygame.html"', 'Pygame should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'Pygame', 'Pygame should not appear as a main homepage card');
+  assertNotIncludes(homepageHtml, 'href="roblox.html"', 'Roblox should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'href="roblox-course.html"', 'Roblox course page should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'Roblox', 'Roblox should not appear as a main homepage card');
+  assertNotIncludes(homepageHtml, 'href="venture-ai.html"', 'Venture AI should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'href="venture-ai-students.html?lesson=1"', 'Venture AI worksheet should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'href="venture-ai-improvement.html"', 'Venture AI improvement form should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'מרעיון למיזם עם AI', 'Guided Venture AI course should not appear as a self-learning homepage card');
+  assertNotIncludes(homepageHtml, 'יזמות AI', 'Guided Venture AI tag should not appear on the main homepage');
   assertIncludes(homepageHtml, 'href="python-turtle.html"');
+  assertIncludes(homepageHtml, 'marketing/python-turtle-silent-motion-preview.mp4');
   assertIncludes(homepageHtml, 'href="sisi.html"');
+  assertIncludes(homepageHtml, 'marketing/sisi-silent-motion-preview.mp4');
   assertIncludes(homepageHtml, 'סדרת סיסי לכיתות ב׳');
   assertIncludes(homepageHtml, 'href="finale.html"');
-  assertIncludes(homepageHtml, 'href="codequest.html"');
-  assertIncludes(homepageHtml, 'href="gamelab.html"');
-  assertIncludes(homepageHtml, 'href="appforge.html"');
-  assertIncludes(homepageHtml, 'href="craftom-school/preview/index.html"');
-  assertIncludes(homepageHtml, 'href="craftom-school/README.md"');
+  assertNotIncludes(homepageHtml, 'href="codequest.html"', 'CodeQuest should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'href="codequest-play.html"', 'CodeQuest practice should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'CodeQuest', 'CodeQuest should not appear as a main homepage card');
+  assertNotIncludes(homepageHtml, 'href="gamelab.html"', 'PlayCode Lab should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'href="gamelab-play.html"', 'PlayCode Lab practice should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'PlayCode Lab', 'PlayCode Lab should not appear as a main homepage card');
+  assertNotIncludes(homepageHtml, 'href="appforge.html"', 'WebMakers Lab should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'href="appforge-play.html"', 'WebMakers Lab practice should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'WebMakers', 'WebMakers Lab should not appear as a main homepage card or CTA');
+  assertNotIncludes(homepageHtml, 'href="craftom-school/preview/index.html"', 'Craftom School should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'href="craftom-school/README.md"', 'Craftom School README should be hidden from the main homepage');
+  assertNotIncludes(homepageHtml, 'Craftom School', 'Craftom School should not appear as a main homepage card');
+  for (const video of [
+    'marketing/sensi-city-silent-motion-preview.mp4',
+    'marketing/sisi-silent-motion-preview.mp4',
+    'marketing/python-turtle-silent-motion-preview.mp4',
+    'marketing/webcode-silent-motion-preview.mp4',
+    'marketing/minecraft-silent-motion-preview.mp4',
+  ]) {
+    assertIncludes(homepageHtml, video);
+    assert.ok(existsSync(join(root, video)), `Missing homepage preview video: ${video}`);
+  }
 });
 
 test('Sensi 15 remains on sensi-city and classic 5-lesson Sensi is restored separately', () => {
@@ -87,7 +124,7 @@ test('classic Sensi support pages are isolated from the 15-lesson course', () =>
 
 test('homepage local html links point to existing files', () => {
   const hrefs = [...homepageHtml.matchAll(/href="([^"]+\.html(?:\?[^\"]*)?)"/g)].map((match) => match[1]);
-  assert.ok(hrefs.length >= 16, 'Homepage should expose a useful course catalog');
+  assert.ok(hrefs.length >= 13, 'Homepage should expose a useful self-learning course catalog');
   for (const href of hrefs) {
     const clean = href.replace(/^\.\//, '').split('?')[0].split('#')[0];
     assert.ok(existsSync(join(root, clean)), `Missing homepage target: ${href}`);

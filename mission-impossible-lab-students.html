@@ -47,6 +47,12 @@
         </section>
 
         <section class="panel">
+          <h2>איך עובדים היום</h2>
+          <p id="workMode" class="small"></p>
+          <div class="checklist" id="exactSteps"></div>
+        </section>
+
+        <section class="panel">
           <h2>צ׳קליסט סיום</h2>
           <div class="checklist" id="checklist"></div>
         </section>
@@ -102,6 +108,13 @@
       $('title').textContent = worksheet.title;
       $('intro').textContent = worksheet.intro;
       $('prompt').textContent = lesson.opalPrompt;
+      $('workMode').textContent = lesson.workMode;
+      $('exactSteps').innerHTML = lesson.exactSteps.map((item, index) => `
+        <div class="check">
+          <span>${index + 1}</span>
+          <span>${esc(item)}</span>
+        </div>
+      `).join('');
       $('fields').innerHTML = worksheet.fields.map(field => `
         <div class="field">
           <label for="${field.id}">${esc(field.label)}</label>

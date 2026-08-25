@@ -17,12 +17,12 @@ const css = read('css/money-smart.css');
 
 function includes(source, text, msg = `Missing ${text}`) { assert.ok(source.includes(text), msg); }
 
-test('Money Smart Lab is linked from platform homepage', () => {
-  includes(homepage, 'Money Smart Lab');
-  includes(homepage, 'href="money-smart-course.html"');
-  includes(homepage, 'href="money-smart-lab.html"');
-  includes(homepage, 'href="money-smart-slides.html"');
-  includes(homepage, 'חינוך פיננסי לנוער');
+test('Money Smart Lab exists but is hidden from the main platform homepage', () => {
+  assert.ok(!homepage.includes('Money Smart Lab'), 'Money Smart should not appear as a main homepage card');
+  assert.ok(!homepage.includes('href="money-smart-course.html"'), 'Money Smart course should not be linked from the main homepage');
+  assert.ok(!homepage.includes('href="money-smart-lab.html"'), 'Money Smart lab should not be linked from the main homepage');
+  assert.ok(!homepage.includes('href="money-smart-slides.html"'), 'Money Smart slides should not be linked from the main homepage');
+  assert.ok(!homepage.includes('חינוך פיננסי לנוער'), 'Money Smart quick-card copy should not be visible on the main homepage');
 });
 
 test('Money Smart course overview exposes core specification', () => {
