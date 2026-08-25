@@ -157,6 +157,7 @@
       title: 'בודקים, משפרים ומציגים מיזם',
       subtitle: 'ביקורת עמיתים, מחוון, פיץ׳, דמו והצבעה',
       image: 'assets/venture-ai/meeting-4-demo.webp',
+      video: 'marketing/venture-ai-lesson4-explainer.mp4',
       durationMinutes: 90,
       productStage: 'דמו ופיץ׳ סיום',
       bigQuestion: 'איך משפרים MVP פשוט ומציגים אותו כמיזם משכנע?',
