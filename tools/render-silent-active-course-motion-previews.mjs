@@ -17,7 +17,7 @@ const courses = [
   { slug: 'sisi', url: '/space-play.html?lesson=1', title: 'סדרת סיסי' },
   { slug: 'python-turtle', url: '/python-turtle.html', title: 'Python Turtle' },
   { slug: 'webcode', url: '/webcode-play.html?lesson=1', title: 'Web Code' },
-  { slug: 'minecraft', url: '/minecraft-play.html?lesson=1', title: 'Minecraft' }
+  { slug: 'minecraft', url: '/minecraft-play.html?lesson=9', title: 'Minecraft' }
 ];
 
 function run(cmd, args, opts = {}) {
@@ -205,6 +205,19 @@ async function minecraftAdd(page, dir, frame, label, xmlText, seconds = 0.75) {
   await hold(page, dir, frame, seconds);
 }
 
+function minecraftXmlChain(items) {
+  const chain = items
+    .slice()
+    .reverse()
+    .reduce((next, item) => {
+      const fields = Object.entries(item.fields || {})
+        .map(([name, value]) => `<field name="${name}">${value}</field>`)
+        .join('');
+      return `<block type="${item.type}">${fields}${next ? `<next>${next}</next>` : ''}</block>`;
+    }, '');
+  return `<xml>${chain}</xml>`;
+}
+
 async function minecraftClickRun(page, dir, frame) {
   const from = await selectorPoint(page, '#blocklyDiv', { x: 360, y: 260 }, 0.45, 0.5);
   const to = await selectorPoint(page, '.btn.run', { x: 675, y: 24 }, 0.5, 0.5);
@@ -316,28 +329,82 @@ async function timeline(page, course, dir, frame) {
   }
 
   if (course.slug === 'minecraft') {
-    const xmlStart = '<xml><block type="event_start" x="40" y="34"></block></xml>';
-    const xmlSay = '<xml><block type="event_start" x="40" y="34"><next><block type="say"><field name="TEXT">אני בונה מגדל!</field></block></next></block></xml>';
-    const xmlWood = '<xml><block type="event_start" x="40" y="34"><next><block type="say"><field name="TEXT">אני בונה מגדל!</field><next><block type="place_block"><field name="COLOR">wood</field></block></next></block></next></block></xml>';
-    const xmlUpOne = '<xml><block type="event_start" x="40" y="34"><next><block type="say"><field name="TEXT">אני בונה מגדל!</field><next><block type="place_block"><field name="COLOR">wood</field><next><block type="move_direction"><field name="DIR">up</field><field name="STEP">full</field></block></next></block></next></block></next></block></xml>';
-    const xmlGold = '<xml><block type="event_start" x="40" y="34"><next><block type="say"><field name="TEXT">אני בונה מגדל!</field><next><block type="place_block"><field name="COLOR">wood</field><next><block type="move_direction"><field name="DIR">up</field><field name="STEP">full</field><next><block type="place_block"><field name="COLOR">gold</field></block></next></block></next></block></next></block></next></block></xml>';
-    const xmlFull = '<xml><block type="event_start" x="40" y="34"><next><block type="say"><field name="TEXT">אני בונה מגדל!</field><next><block type="place_block"><field name="COLOR">wood</field><next><block type="move_direction"><field name="DIR">up</field><field name="STEP">full</field><next><block type="place_block"><field name="COLOR">gold</field><next><block type="move_direction"><field name="DIR">up</field><field name="STEP">full</field><next><block type="place_block"><field name="COLOR">diamond</field></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
+    const plan = [
+      { label: 'כאשר לוחצים ▶️', type: 'event_start' },
+      { label: 'אמור: בונים בית', type: 'say', fields: { TEXT: 'אני בונה בית פיקסלים!' } },
+      { label: 'קיר עץ', type: 'place_block', fields: { COLOR: 'wood' } },
+      { label: 'זוז ימינה', type: 'move_direction', fields: { DIR: 'right', STEP: 'full' } },
+      { label: 'קיר עץ', type: 'place_block', fields: { COLOR: 'wood' } },
+      { label: 'זוז ימינה', type: 'move_direction', fields: { DIR: 'right', STEP: 'full' } },
+      { label: 'קיר עץ', type: 'place_block', fields: { COLOR: 'wood' } },
+      { label: 'זוז ימינה', type: 'move_direction', fields: { DIR: 'right', STEP: 'full' } },
+      { label: 'קיר עץ', type: 'place_block', fields: { COLOR: 'wood' } },
+      { label: 'זוז ימינה', type: 'move_direction', fields: { DIR: 'right', STEP: 'full' } },
+      { label: 'קיר עץ', type: 'place_block', fields: { COLOR: 'wood' } },
+      { label: 'חוזרים להתחלת השורה', type: 'move_direction', fields: { DIR: 'left', STEP: 'full' } },
+      { label: 'שמאלה', type: 'move_direction', fields: { DIR: 'left', STEP: 'full' } },
+      { label: 'שמאלה', type: 'move_direction', fields: { DIR: 'left', STEP: 'full' } },
+      { label: 'שמאלה', type: 'move_direction', fields: { DIR: 'left', STEP: 'full' } },
+      { label: 'עולים שורה', type: 'move_direction', fields: { DIR: 'up', STEP: 'full' } },
+      { label: 'קיר עץ', type: 'place_block', fields: { COLOR: 'wood' } },
+      { label: 'זוז ימינה', type: 'move_direction', fields: { DIR: 'right', STEP: 'full' } },
+      { label: 'קיר עץ', type: 'place_block', fields: { COLOR: 'wood' } },
+      { label: 'זוז ימינה', type: 'move_direction', fields: { DIR: 'right', STEP: 'full' } },
+      { label: 'דלת זהב', type: 'place_block', fields: { COLOR: 'gold' } },
+      { label: 'זוז ימינה', type: 'move_direction', fields: { DIR: 'right', STEP: 'full' } },
+      { label: 'קיר עץ', type: 'place_block', fields: { COLOR: 'wood' } },
+      { label: 'זוז ימינה', type: 'move_direction', fields: { DIR: 'right', STEP: 'full' } },
+      { label: 'קיר עץ', type: 'place_block', fields: { COLOR: 'wood' } },
+      { label: 'חוזרים ועולים', type: 'move_direction', fields: { DIR: 'left', STEP: 'full' } },
+      { label: 'שמאלה', type: 'move_direction', fields: { DIR: 'left', STEP: 'full' } },
+      { label: 'שמאלה', type: 'move_direction', fields: { DIR: 'left', STEP: 'full' } },
+      { label: 'שמאלה', type: 'move_direction', fields: { DIR: 'left', STEP: 'full' } },
+      { label: 'עולים שורה', type: 'move_direction', fields: { DIR: 'up', STEP: 'full' } },
+      { label: 'קיר עץ', type: 'place_block', fields: { COLOR: 'wood' } },
+      { label: 'זוז ימינה', type: 'move_direction', fields: { DIR: 'right', STEP: 'full' } },
+      { label: 'קיר עץ', type: 'place_block', fields: { COLOR: 'wood' } },
+      { label: 'זוז ימינה', type: 'move_direction', fields: { DIR: 'right', STEP: 'full' } },
+      { label: 'דלת זהב', type: 'place_block', fields: { COLOR: 'gold' } },
+      { label: 'זוז ימינה', type: 'move_direction', fields: { DIR: 'right', STEP: 'full' } },
+      { label: 'קיר עץ', type: 'place_block', fields: { COLOR: 'wood' } },
+      { label: 'זוז ימינה', type: 'move_direction', fields: { DIR: 'right', STEP: 'full' } },
+      { label: 'קיר עץ', type: 'place_block', fields: { COLOR: 'wood' } },
+      { label: 'למרכז הגג', type: 'move_direction', fields: { DIR: 'left', STEP: 'full' } },
+      { label: 'שמאלה', type: 'move_direction', fields: { DIR: 'left', STEP: 'full' } },
+      { label: 'שמאלה', type: 'move_direction', fields: { DIR: 'left', STEP: 'full' } },
+      { label: 'עולים לגג', type: 'move_direction', fields: { DIR: 'up', STEP: 'full' } },
+      { label: 'גג אדום', type: 'place_block', fields: { COLOR: 'red' } },
+      { label: 'ימינה', type: 'move_direction', fields: { DIR: 'right', STEP: 'full' } },
+      { label: 'גג אדום', type: 'place_block', fields: { COLOR: 'red' } },
+      { label: 'ימינה', type: 'move_direction', fields: { DIR: 'right', STEP: 'full' } },
+      { label: 'גג אדום', type: 'place_block', fields: { COLOR: 'red' } },
+      { label: 'מרכז הגג', type: 'move_direction', fields: { DIR: 'left', STEP: 'full' } },
+      { label: 'עולים לשפיץ', type: 'move_direction', fields: { DIR: 'up', STEP: 'full' } },
+      { label: 'בלוק גג עליון', type: 'place_block', fields: { COLOR: 'red' } },
+      { label: 'סיימתי את הבית', type: 'say', fields: { TEXT: 'בית הפיקסלים מוכן!' } }
+    ];
+    const xmlSteps = [0, 1, 10, 24, 38, plan.length - 1].map((index) => ({
+      index,
+      label: index < 2 ? plan[index].label : ['שורת בסיס רחבה', 'קומה עם דלת', 'גג אדום', 'בית פיקסלים שלם'][Math.min(3, Math.max(0, [10, 24, 38, plan.length - 1].indexOf(index)))],
+      xml: minecraftXmlChain(plan.slice(0, index + 1))
+    }));
 
     await caption(page, '1. מתחילים ממשטח ריק', 'אין קוד — עכשיו בונים אותו');
     await spot(page, '#blocklyDiv');
     await minecraftWorkspace(page, '');
     await hold(page, dir, frame, 1);
-    await caption(page, '2. גוררים בלוקים ומרכיבים תוכנית', 'כל בלוק מוסיף פעולה בעולם');
-    await minecraftAdd(page, dir, frame, 'כאשר לוחצים ▶️', xmlStart);
-    await minecraftAdd(page, dir, frame, 'אמור: אני בונה מגדל', xmlSay);
-    await minecraftAdd(page, dir, frame, 'הנח בלוק עץ', xmlWood);
-    await minecraftAdd(page, dir, frame, 'עלה למעלה', xmlUpOne);
-    await minecraftAdd(page, dir, frame, 'הנח בלוק זהב', xmlGold);
-    await minecraftAdd(page, dir, frame, 'עלה + יהלום', xmlFull, 1);
-    await caption(page, '3. לוחצים הרצה', 'העכבר מפעיל את התוכנית');
+    await caption(page, '2. בוחרים שיעור מתקדם יותר', 'שיעור 9: מציור לדגם בלוקים');
+    await ring(page, '#lessonMissionBoard');
+    await hold(page, dir, frame, 1.1);
+    await clearRing(page);
+    await caption(page, '3. גוררים בלוקים ומרכיבים תוכנית', 'הסמן נשאר צמוד לבלוק בזמן הגרירה');
+    for (const step of xmlSteps) {
+      await minecraftAdd(page, dir, frame, step.label, step.xml, step.index < 2 ? 0.5 : 0.8);
+    }
+    await caption(page, '4. לוחצים הרצה', 'העכבר מפעיל את התוכנית');
     await clearRing(page);
     await minecraftClickRun(page, dir, frame);
-    await caption(page, '4. זום־אין לתוצאה', 'רואים את העולם נבנה לפי הבלוקים');
+    await caption(page, '5. זום־אין לתוצאה', 'רואים בית פיקסלים גדול נבנה מהבלוקים');
     await page.evaluate(() => {
       try {
         document.body.classList.add('motion-world-zoom');
@@ -345,7 +412,7 @@ async function timeline(page, course, dir, frame) {
       } catch {}
     });
     await ring(page, '#world');
-    await liveHold(page, dir, frame, 5);
+    await liveHold(page, dir, frame, 24);
   }
 }
 
