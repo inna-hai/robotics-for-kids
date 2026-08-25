@@ -116,6 +116,24 @@ async function clickText(page, text) {
   }, text);
 }
 
+async function minecraftWorkspace(page, xmlText) {
+  await page.evaluate((xmlText) => {
+    localStorage.removeItem(workspaceStorageKey());
+    workspace.clear();
+    if (xmlText) Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(xmlText), workspace);
+    resetWorld({ clearDrawing: true, resetPlayer: true });
+    Blockly.svgResize(workspace);
+  }, xmlText);
+}
+
+async function minecraftAdd(page, dir, frame, label, xmlText, seconds = 0.75) {
+  await ghostMove(page, label, '.blocklyFlyout', '#blocklyDiv');
+  await hold(page, dir, frame, 0.45);
+  await minecraftWorkspace(page, xmlText);
+  await ring(page, '#blocklyDiv');
+  await hold(page, dir, frame, seconds);
+}
+
 async function timeline(page, course, dir, frame) {
   if (course.slug === 'sensi-city') {
     await page.evaluate(() => localStorage.removeItem('sensi-blocks-lesson-1'));
@@ -217,16 +235,32 @@ async function timeline(page, course, dir, frame) {
   }
 
   if (course.slug === 'minecraft') {
-    await caption(page, '1. מחברים בלוקים למשימה', 'הבלוקים הם הפעולות בעולם');
+    const xmlStart = '<xml><block type="event_start" x="40" y="34"></block></xml>';
+    const xmlSay = '<xml><block type="event_start" x="40" y="34"><next><block type="say"><field name="TEXT">אני בונה מגדל!</field></block></next></block></xml>';
+    const xmlWood = '<xml><block type="event_start" x="40" y="34"><next><block type="say"><field name="TEXT">אני בונה מגדל!</field><next><block type="place_block"><field name="COLOR">wood</field></block></next></block></next></block></xml>';
+    const xmlUpOne = '<xml><block type="event_start" x="40" y="34"><next><block type="say"><field name="TEXT">אני בונה מגדל!</field><next><block type="place_block"><field name="COLOR">wood</field><next><block type="move_direction"><field name="DIR">up</field><field name="STEP">full</field></block></next></block></next></block></next></block></xml>';
+    const xmlGold = '<xml><block type="event_start" x="40" y="34"><next><block type="say"><field name="TEXT">אני בונה מגדל!</field><next><block type="place_block"><field name="COLOR">wood</field><next><block type="move_direction"><field name="DIR">up</field><field name="STEP">full</field><next><block type="place_block"><field name="COLOR">gold</field></block></next></block></next></block></next></block></next></block></xml>';
+    const xmlFull = '<xml><block type="event_start" x="40" y="34"><next><block type="say"><field name="TEXT">אני בונה מגדל!</field><next><block type="place_block"><field name="COLOR">wood</field><next><block type="move_direction"><field name="DIR">up</field><field name="STEP">full</field><next><block type="place_block"><field name="COLOR">gold</field><next><block type="move_direction"><field name="DIR">up</field><field name="STEP">full</field><next><block type="place_block"><field name="COLOR">diamond</field></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
+
+    await caption(page, '1. מתחילים ממשטח ריק', 'אין קוד — עכשיו בונים אותו');
     await spot(page, '#blocklyDiv');
-    await ghostMove(page, 'הנח בלוק', '.blocklyToolboxDiv', '#blocklyDiv');
+    await minecraftWorkspace(page, '');
     await hold(page, dir, frame, 1);
-    await ghostMove(page, 'זוז קדימה', '.blocklyToolboxDiv', '#blocklyDiv');
-    await hold(page, dir, frame, 1);
-    await caption(page, '2. מריצים ורואים בנייה', 'העולם משתנה לפי הקוד');
+    await caption(page, '2. גוררים בלוקים ומרכיבים תוכנית', 'כל בלוק מוסיף פעולה בעולם');
+    await minecraftAdd(page, dir, frame, 'כאשר לוחצים ▶️', xmlStart);
+    await minecraftAdd(page, dir, frame, 'אמור: אני בונה מגדל', xmlSay);
+    await minecraftAdd(page, dir, frame, 'הנח בלוק עץ', xmlWood);
+    await minecraftAdd(page, dir, frame, 'עלה למעלה', xmlUpOne);
+    await minecraftAdd(page, dir, frame, 'הנח בלוק זהב', xmlGold);
+    await minecraftAdd(page, dir, frame, 'עלה + יהלום', xmlFull, 1);
+    await caption(page, '3. מריצים ורואים מה נבנה', 'העולם משתנה לפי הבלוקים');
+    await clearRing(page);
     await spot(page, '#world, .world');
-    await page.evaluate(() => { try { window.runProgram?.(); } catch {} });
-    await hold(page, dir, frame, 6.4);
+    await page.evaluate(async () => {
+      try { await runProgram(); } catch {}
+    });
+    await ring(page, '#world');
+    await hold(page, dir, frame, 3);
   }
 }
 
