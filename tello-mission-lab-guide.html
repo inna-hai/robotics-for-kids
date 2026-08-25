@@ -51,6 +51,11 @@
       </section>
 
       <section>
+        <h2>מושגים מרכזיים לשיעור</h2>
+        <div class="grid">${cards(lesson.vocabulary || [], ([term, text]) => `<div class="card"><b>${esc(term)}</b>${esc(text)}</div>`)}</div>
+      </section>
+
+      <section>
         <h2>בדיקת תנאי קדם וגשר מהשיעור הקודם</h2>
         <div class="card">${esc((lesson.instructorGuide && lesson.instructorGuide.prerequisites) || 'לוודא שהתלמידים יודעים לפתוח DroneBlocks, לזהות Takeoff/Land ולעבוד בסימולטור.')}</div>
       </section>
