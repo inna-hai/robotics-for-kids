@@ -50,6 +50,25 @@ async function prepare(page) {
     body.motion-webcode-focus #blocksStage{padding:0!important}
     body.motion-webcode-focus .blockly-top{padding:.5rem .75rem!important}
     body.motion-webcode-focus #motionCaption{right:20px!important;bottom:16px!important;font-size:23px!important;max-width:620px!important}
+    body.motion-sensi-focus .header{height:54px!important;padding:.34rem .75rem!important}
+    body.motion-sensi-focus .home-link,body.motion-sensi-focus .logo,body.motion-sensi-focus .lesson-tabs,body.motion-sensi-focus .presentation-link{display:none!important}
+    body.motion-sensi-focus .play-buttons{margin-inline-start:auto!important}
+    body.motion-sensi-focus .main-container{grid-template-columns:minmax(0,1fr) minmax(560px,1.55fr)!important;gap:.8rem!important;padding:.75rem!important;overflow:hidden!important}
+    body.motion-sensi-focus .robot-section{padding:.65rem!important;border-radius:22px!important}
+    body.motion-sensi-focus .robot-title{font-size:1rem!important;margin-bottom:.45rem!important}
+    body.motion-sensi-focus .sensor-chip,body.motion-sensi-focus .env-btn{font-size:.72rem!important;min-height:42px!important}
+    body.motion-sensi-focus .lesson-drawer,body.motion-sensi-focus .drawer-toggle,.precheck-panel .check-panel-close{display:none!important}
+    body.motion-sensi-focus .blocks-section{border-radius:22px!important;box-shadow:0 0 0 8px rgba(34,197,94,.22),0 18px 60px rgba(15,23,42,.22)!important}
+    body.motion-sensi-focus .blocks-header{padding:.65rem 1rem!important;font-size:1.18rem!important}
+    body.motion-sensi-focus .blockly-workspace-shell{grid-template-columns:minmax(0,1fr) 34px!important;grid-template-rows:minmax(0,1fr) 34px!important}
+    body.motion-sensi-focus .blockly-scroll-btn{width:31px!important;height:31px!important}
+    body.motion-sensi-code-zoom .robot-section{opacity:.18!important;filter:blur(1px)!important}
+    body.motion-sensi-code-zoom .blocks-section{position:fixed!important;left:50px!important;right:auto!important;top:64px!important;width:1180px!important;height:630px!important;z-index:999991!important;border:8px solid #22c55e!important;border-radius:28px!important;box-shadow:0 0 0 9999px rgba(15,23,42,.36),0 24px 80px rgba(15,23,42,.44)!important}
+    body.motion-sensi-code-zoom .blocks-header{font-size:1.45rem!important;padding:.8rem 1.2rem!important}
+    body.motion-sensi-code-zoom #motionCaption{right:28px!important;bottom:22px!important;max-width:680px!important}
+    body.motion-sensi-stage-zoom .blocks-section{opacity:.18!important;filter:blur(1px)!important}
+    body.motion-sensi-stage-zoom .robot-section{position:fixed!important;left:70px!important;right:auto!important;top:64px!important;width:1140px!important;height:630px!important;z-index:999990!important;border:8px solid #facc15!important;border-radius:28px!important;box-shadow:0 0 0 9999px rgba(15,23,42,.34),0 24px 80px rgba(15,23,42,.44)!important}
+    body.motion-sensi-stage-zoom #robotCanvas{min-height:360px!important}
     body.motion-code-zoom .lesson-panel,body.motion-code-zoom .preview-panel{opacity:.18;filter:blur(1px)}
     body.motion-code-zoom .lesson-panel{display:none!important}
     body.motion-code-zoom .editor-panel{position:fixed!important;left:58px!important;right:auto!important;top:70px!important;width:1164px!important;height:620px!important;z-index:999991!important;border:8px solid #22c55e!important;border-radius:28px!important;box-shadow:0 0 0 9999px rgba(15,23,42,.38),0 24px 80px rgba(15,23,42,.44)!important}
@@ -322,6 +341,90 @@ async function webcodeAdd(page, dir, frame, label, beforeXml, afterXml, seconds 
   await clearRing(page);
 }
 
+function sensiLessonOneXml(items) {
+  const makeStatement = (item, next = '') => {
+    const fields = Object.entries(item.fields || {})
+      .map(([name, value]) => `<field name="${name}">${value}</field>`)
+      .join('');
+    if (item.type === 'control_if') {
+      const statements = item.do
+        .slice()
+        .reverse()
+        .reduce((innerNext, child) => makeStatement(child, innerNext), '');
+      return `<block type="control_if">${fields}<value name="COND"><block type="sensor_light"><field name="VAL">DARK</field></block></value><statement name="DO">${statements}</statement>${next ? `<next>${next}</next>` : ''}</block>`;
+    }
+    return `<block type="${item.type}">${fields}${next ? `<next>${next}</next>` : ''}</block>`;
+  };
+
+  const chain = items
+    .slice()
+    .reverse()
+    .reduce((next, item) => makeStatement(item, next), '');
+  return `<xml xmlns="https://developers.google.com/blockly/xml"><block type="event_start" x="430" y="70">${chain ? `<next>${chain}</next>` : ''}</block></xml>`;
+}
+
+async function sensiWorkspace(page, xmlText) {
+  await page.evaluate((xmlText) => {
+    localStorage.removeItem(workspaceStorageKey(currentLesson));
+    if (!workspace || !window.Blockly) return;
+    isRestoringWorkspace = true;
+    try {
+      workspace.clear();
+      if (xmlText) {
+        const xml = Blockly.utils.xml.textToDom(xmlText);
+        Blockly.Xml.domToWorkspace(xml, workspace);
+      }
+      Blockly.svgResize(workspace);
+      workspace.scrollCenter?.();
+      const metrics = workspace.getMetrics?.();
+      if (metrics && typeof workspace.scroll === 'function') {
+        workspace.scroll(-(metrics.contentLeft || 0) + 40, -(metrics.contentTop || 0) + 20);
+      }
+      saveWorkspaceForLesson(currentLesson);
+    } finally {
+      isRestoringWorkspace = false;
+    }
+  }, xmlText);
+}
+
+async function sensiDropPoint(page) {
+  return page.evaluate(() => {
+    const divRect = document.querySelector('#blocklyDiv')?.getBoundingClientRect();
+    const fallback = divRect
+      ? { x: divRect.left + divRect.width * 0.58, y: divRect.top + 84 }
+      : { x: 820, y: 160 };
+    if (!window.workspace || !divRect) return fallback;
+    const blocks = workspace.getAllBlocks(false)
+      .filter((block) => block.isRendered?.() && block.getSvgRoot?.())
+      .map((block) => block.getSvgRoot().getBoundingClientRect())
+      .filter((rect) => rect.width > 6 && rect.height > 6)
+      .sort((a, b) => (a.bottom - b.bottom) || (b.left - a.left));
+    if (!blocks.length) return fallback;
+    const last = blocks[blocks.length - 1];
+    return {
+      x: Math.max(divRect.left + 120, Math.min(divRect.right - 130, last.left + last.width * 0.54)),
+      y: Math.max(divRect.top + 74, Math.min(divRect.bottom - 54, last.bottom + 18))
+    };
+  });
+}
+
+async function sensiAdd(page, dir, frame, label, beforeXml, afterXml, seconds = 0.75) {
+  await sensiWorkspace(page, beforeXml);
+  const from = await selectorPoint(page, '.blocklyFlyout,.blocklyToolboxDiv', { x: 1140, y: 210 }, 0.55, 0.28);
+  const to = await sensiDropPoint(page);
+  await setCursor(page, from.x, from.y, false);
+  await hold(page, dir, frame, 0.16);
+  await setCursor(page, from.x, from.y, true, label);
+  await hold(page, dir, frame, 0.12);
+  await moveCursor(page, dir, frame, from, to, 0.86, { down: true, chip: label });
+  await hold(page, dir, frame, 0.1);
+  await sensiWorkspace(page, afterXml);
+  await setCursor(page, to.x, to.y, false, '');
+  await ring(page, '#blocklyDiv');
+  await hold(page, dir, frame, seconds);
+  await clearRing(page);
+}
+
 async function minecraftClickRun(page, dir, frame) {
   const from = await selectorPoint(page, '#blocklyDiv', { x: 360, y: 260 }, 0.45, 0.5);
   const to = await selectorPoint(page, '.btn.run', { x: 675, y: 24 }, 0.5, 0.5);
@@ -339,22 +442,78 @@ async function timeline(page, course, dir, frame) {
     await prepare(page);
     await clickText(page, 'התחילו בשיעור 1');
     await sleep(500);
-    await caption(page, '1. בוחרים בלוקים מהכלים', 'התוכנית נבנית בגרירה');
-    await spot(page, '.blocklyToolboxDiv, #blocklyDiv');
-    await ghostMove(page, 'אם חשוך', '.blocklyToolboxDiv', '#blocklyDiv');
-    await hold(page, dir, frame, 1.1);
-    await ghostMove(page, 'הדלק פנס', '.blocklyToolboxDiv', '#blocklyDiv');
-    await hold(page, dir, frame, 1.1);
-    await caption(page, '2. מסמנים מה השתנה בעיר', 'אור / חיישן / פידבק');
+    await page.evaluate(() => {
+      document.body.classList.add('motion-sensi-focus');
+      document.getElementById('lessonDrawer')?.classList.remove('open');
+      try {
+        Blockly.svgResize(workspace);
+      } catch {}
+    });
+    const plan = [
+      {
+        label: 'אם חשוך',
+        type: 'control_if',
+        do: [
+          { type: 'action_street_light', fields: { STATE: 'ON' } }
+        ]
+      },
+      {
+        label: 'אמור הודעה',
+        type: 'action_say',
+        fields: { TEXT: 'מצאתי חושך - מדליק פנס!' }
+      }
+    ];
+    const xmlSteps = [
+      { label: 'בלוק התחלה', xml: sensiLessonOneXml([]), seedOnly: true },
+      { label: 'אם חשוך', xml: sensiLessonOneXml(plan.slice(0, 1)) },
+      { label: 'אמור הודעה', xml: sensiLessonOneXml(plan) }
+    ];
+
+    let currentXml = '';
+    await sensiWorkspace(page, currentXml);
+    await caption(page, '1. מתחילים ממשטח בלוקים ריק', 'עכשיו רואים את התוכנית שנבנית בפועל');
+    await spot(page, '#blocklyDiv');
+    await hold(page, dir, frame, 0.8);
+    await caption(page, '2. גוררים בלוקים לתוכנית', 'הסמן מביא את הבלוק למקום הנכון');
+    for (const step of xmlSteps) {
+      await sensiAdd(page, dir, frame, step.label, currentXml, step.xml, step.seedOnly ? 0.45 : 0.8);
+      currentXml = step.xml;
+    }
+    await caption(page, '3. זום על הקוד בבלוקים', 'רואים התחלה, תנאי, חיישן ופעולות');
+    await page.evaluate(() => {
+      document.body.classList.add('motion-sensi-code-zoom');
+      try {
+        Blockly.svgResize(workspace);
+        workspace.zoomToFit?.();
+      } catch {}
+    });
+    await spot(page, '#blocklyDiv');
+    await ring(page, '#blocklyDiv');
+    await hold(page, dir, frame, 2.8);
+    await page.evaluate(() => document.body.classList.remove('motion-sensi-code-zoom'));
+    await clearRing(page);
+    await caption(page, '4. משנים מצב בעיר', 'מפעילים חושך כדי לבדוק את התוכנית');
     await spot(page, '#robotCanvas');
     await ring(page, '#sensorLight');
     await page.evaluate(() => { try { window.toggleEnv?.('light'); } catch {} });
-    await hold(page, dir, frame, 2.3);
-    await caption(page, '3. בודקים לפני הרצה', 'המערכת מחזירה משוב לתלמיד');
+    await hold(page, dir, frame, 1.6);
+    await caption(page, '5. בודקים לפני הרצה', 'המערכת מחזירה משוב לתלמיד');
     await clearRing(page);
     await spot(page, '#precheckButton, #precheckPanel');
     await page.evaluate(() => { try { window.checkProgramBeforeRun?.(); } catch {} });
-    await hold(page, dir, frame, 2.7);
+    await hold(page, dir, frame, 1.4);
+    await caption(page, '6. לוחצים הפעל ורואים תוצאה', 'זום לקאנבס: סנסי מגיבה לקוד שנבנה');
+    await page.evaluate(() => document.body.classList.add('motion-sensi-stage-zoom'));
+    await clearRing(page);
+    await ring(page, '#robotCanvas');
+    const runPoint = await selectorPoint(page, '.btn-run', { x: 670, y: 26 }, 0.5, 0.5);
+    const from = await selectorPoint(page, '#blocklyDiv', { x: 880, y: 350 }, 0.45, 0.5);
+    await moveCursor(page, dir, frame, from, runPoint, 0.55);
+    await setCursor(page, runPoint.x, runPoint.y, true);
+    await hold(page, dir, frame, 0.18);
+    await setCursor(page, runPoint.x, runPoint.y, false);
+    await page.evaluate(() => { try { window.runCode?.(); } catch {} });
+    await liveHold(page, dir, frame, 4.4);
     return;
   }
 
