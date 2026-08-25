@@ -244,9 +244,12 @@ assert.match(html, /if\(currentLesson === 7\)\{[\s\S]*ex\.id === 3[\s\S]*repeatH
 
 assert.match(html, /if\(currentLesson === 7\)\{[\s\S]*ex\.id === 10[\s\S]*movesLeftBeforeFence[\s\S]*repeatHasFencePlankPattern\(8, true\)/, 'lesson 7 left-start challenge validates moving left before an 8-plank fence row');
 
-assert.match(html, /if\(currentLesson === 7\)\{[\s\S]*ex\.id === 4[\s\S]*actionDrawnColors/, 'lesson 7 color exercise validates color actually drawn');
+assert.match(html, /תרגול 4 — קרש דו־צבעי חוזר/, 'lesson 7 upgrades the simple color exercise into a required two-color plank exercise');
+assert.match(html, /if\(currentLesson === 7\)\{[\s\S]*ex\.id === 4[\s\S]*repeatHasFencePlankPatternAtLeast\(4, true\)[\s\S]*actionDrawnColors\(actions\)\.size < 2/, 'lesson 7 two-color fence exercise validates fence structure with at least 4 repeats and two drawn colors');
 
-assert.match(html, /if\(currentLesson === 7\)\{[\s\S]*ex\.id === 5[\s\S]*repeatHasTwoForwardPattern/, 'lesson 7 two-line pattern validates repeated pattern content');
+assert.match(html, /תרגול 5 — מתקנים קרש שבור בלולאה/, 'lesson 7 replaces the generic two-line pattern with a fence-plank debugging exercise');
+assert.match(html, /function hasAlignedFencePlankUnit/, 'lesson 7 can validate that a repaired fence plank returns to the same height');
+assert.match(html, /if\(currentLesson === 7\)\{[\s\S]*ex\.id === 5[\s\S]*repeatHasAlignedFencePlankPatternAtLeast\(4, true\)/, 'lesson 7 broken-plank exercise validates a repaired aligned repeated fence plank');
 
 assert.match(html, /if\(currentLesson === 7\)\{[\s\S]*ex\.id === 7[\s\S]*simulatePath\(actions\)\.distanceFromStart/, 'lesson 7 frame exercise validates a closed repeated path');
 
@@ -378,6 +381,10 @@ assert.ok(!html.includes('בלי להפוך את כיוון הירידה'), 'les
 assert.match(html, /"hint": "חשבו על צורת מדרגה: קודם קטע ישר, אחר כך ירידה קצרה, ואז ממשיכים ישר/, 'lesson 2 exercise 1 hint explains the stair shape without revealing block order');
 
 assert.match(html, /תרגול 8 — מוצאים את הבאג בצורה[\s\S]*אמורים לצייר מחומש[\s\S]*currentLesson === 3 && ex\?\.id === 8[\s\S]*<field name="TIMES">4<\/field>[\s\S]*<field name="ANGLE">72<\/field>[\s\S]*if\(ex\.id === 8\)[\s\S]*repeatShapeMatches\(5, 72\)/, 'lesson 3 exercise 8 is a starter-block debugging task with a missing-side pentagon, not a square-looking wrong angle');
+
+assert.match(html, /אתגר רשות — גדר עם שפיצים[\s\S]*שפיץ קטן למעלה/, 'lesson 7 first challenge asks for a pointed fence instead of repeating the color task');
+assert.match(html, /אתגר מסכם — כותבים Python קצר[\s\S]*for כדי לחזור כמה פעמים/, 'lesson 7 adds a final Python writing challenge for the fence loop');
+assert.match(html, /currentLesson === 7 && ex\?\.id === 11[\s\S]*hasFencePlankUnit\(loop\.body, true\)/, 'lesson 7 Python writing challenge validates a for loop with a fence plank body');
 
 assert.match(html, /תרגול 9 — צורות בתוך צורות[\s\S]*בנו מחומש שהוא בתוך משושה שהוא בתוך מתומן/, 'lesson 3 exercise 9 uses nested shapes with integer turn angles and is not a second challenge');
 assert.doesNotMatch(html, /אתגר — בנו משושה|אתגר: בנו משושה/, 'lesson 3 keeps only the final Python writing exercise as a challenge');

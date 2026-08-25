@@ -37,3 +37,7 @@ assert.match(lesson7, /מתחילים משמאל/);
 assert.match(lesson30, /פרויקט גמר קצר/);
 
 console.log('python-turtle teacher slides checks passed');
+
+assert.match(readFileSync('python-turtle-lesson-7-slides.html', 'utf8'), /אתגר מסכם — כותבים Python קצר/, 'lesson 7 slides include the final Python writing challenge');
+
+assert.match(readFileSync('python-turtle-lesson-7-slides.html', 'utf8'), /אתגר רשות — גדר עם שפיצים/, 'lesson 7 slides include the pointed fence challenge');
