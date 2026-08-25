@@ -49,7 +49,7 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertIncludes(homepageHtml, '<span class="badge dev">בפיתוח</span><span class="badge">חינוך פיננסי</span>');
   assertIncludes(homepageHtml, 'Venture AI — תוכנית חולון ביזמות עם בינה מלאכותית');
   assertIncludes(homepageHtml, 'קטלוג פשוט של סביבת הפיילוטים');
-  assertIncludes(homepageHtml, 'הלומדות שנשארו גם ב־main');
+  assertIncludes(homepageHtml, 'קורסים פעילים');
   assertIncludes(homepageHtml, 'רחפנים');
   assertIncludes(homepageHtml, 'עומר / Craftom');
   assertIncludes(homepageHtml, 'בפיתוח ופיילוטים נוספים');
@@ -57,7 +57,7 @@ test('homepage is now a platform gateway and links to primary learning modules',
 });
 
 test('Robotics15 homepage catalog follows the requested simple order', () => {
-  assertBefore(homepageHtml, 'id="main-courses"', 'id="drones"');
+  assertBefore(homepageHtml, 'id="active-courses"', 'id="drones"');
   assertBefore(homepageHtml, 'id="drones"', 'id="omer"');
   assertBefore(homepageHtml, 'id="omer"', 'id="development"');
   assertBefore(homepageHtml, '<h3>Minecraft</h3>', '<h3>Tello EDU — ניווט ובקרה</h3>');
