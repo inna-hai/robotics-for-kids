@@ -41,7 +41,11 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertIncludes(homepageHtml, 'href="craftom-school/preview/index.html"');
   assertIncludes(homepageHtml, 'href="craftom-school/README.md"');
   assertIncludes(homepageHtml, '<h3>Money Smart Lab</h3>');
-  assertIncludes(homepageHtml, '<span class="tag">חינוך פיננסי</span><span class="tag">בפיתוח</span></div><h3>Money Smart Lab</h3>');
+  assertIncludes(homepageHtml, '<span class="tag">חינוך פיננסי</span><span class="tag dev">בפיתוח</span></div><h3>Money Smart Lab</h3>');
+  assertIncludes(homepageHtml, 'מה לפתוח עכשיו?');
+  assertIncludes(homepageHtml, 'Venture AI — תוכנית חולון ביזמות עם בינה מלאכותית');
+  assertIncludes(homepageHtml, 'status-guide');
+  assertIncludes(homepageHtml, 'משפחות הלמידה');
   assertIncludes(homepageHtml, 'robotics15 · סביבת פיילוט רחבה');
   assertIncludes(homepageHtml, 'פיילוטים ותוכניות חדשות');
   assertIncludes(homepageHtml, 'רחפנים ורובוטיקה');
