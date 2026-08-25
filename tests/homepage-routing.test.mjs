@@ -38,6 +38,7 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertIncludes(homepageHtml, 'href="roblox.html"');
   assertIncludes(homepageHtml, 'href="python-turtle.html"');
   assertIncludes(homepageHtml, 'href="sisi.html"');
+  assertIncludes(homepageHtml, 'href="lumi.html"');
   assertIncludes(homepageHtml, 'סדרת סיסי לכיתות ב׳');
   assertIncludes(homepageHtml, 'href="finale.html"');
   assertIncludes(homepageHtml, 'href="codequest.html"');
@@ -47,6 +48,7 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertIncludes(homepageHtml, 'href="craftom-school/README.md"');
   assertIncludes(homepageHtml, '<h3>Money Smart Lab</h3>');
   assertIncludes(homepageHtml, '<span class="badge dev">בפיתוח</span><span class="badge">חינוך פיננסי</span>');
+  assertIncludes(homepageHtml, '<span class="badge dev">בפיתוח</span><span class="badge">צעירים</span>');
   assertIncludes(homepageHtml, 'Venture AI — תוכנית חולון ביזמות עם בינה מלאכותית');
   assertIncludes(homepageHtml, 'קטלוג פשוט של סביבת הפיילוטים');
   assertIncludes(homepageHtml, 'קורסים פעילים');
@@ -65,7 +67,8 @@ test('Robotics15 homepage catalog follows the requested simple order', () => {
   assertBefore(homepageHtml, '<h3>Minecraft</h3>', '<h3>Tello EDU — ניווט ובקרה</h3>');
   assertBefore(homepageHtml, '<h3>Drone Intelligence Lab</h3>', '<h3>עומר העתידנית / Omer Future Craftom</h3>');
   assertBefore(homepageHtml, '<h3>Craftom School</h3>', '<h3>Venture AI — תוכנית חולון ביזמות עם בינה מלאכותית</h3>');
-  assertBefore(homepageHtml, '<h3>Money Smart Lab</h3>', '<h3>Pygame</h3>');
+  assertBefore(homepageHtml, '<h3>Money Smart Lab</h3>', '<h3>לומי חוקרת הטבע</h3>');
+  assertBefore(homepageHtml, '<h3>לומי חוקרת הטבע</h3>', '<h3>Pygame</h3>');
   assertBefore(homepageHtml, '<h3>Pygame</h3>', '<h3>Roblox Studio</h3>');
   assertBefore(homepageHtml, '<h3>PlayCode Lab</h3>', '<h3>WebMakers Lab</h3>');
 });
