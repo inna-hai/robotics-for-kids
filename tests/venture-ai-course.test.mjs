@@ -43,6 +43,7 @@ assert.ok(program.lessons[0].keyConcepts.includes('אופאל כסוכן AI'), '
 assert.equal(program.lessons[0].video, 'marketing/venture-ai-lesson1-explainer.mp4', 'lesson 1 has embedded explainer video');
 assert.ok(program.lessons[1].keyConcepts.includes('MoSCoW'), 'lesson 2 uses MoSCoW to narrow scope');
 assert.ok(program.lessons[1].opalPrompt.includes('Must'), 'lesson 2 feeds Must scope into the Opal prompt');
+assert.equal(program.lessons[1].video, 'marketing/venture-ai-lesson2-explainer.mp4', 'lesson 2 has embedded explainer video');
 assert.ok(program.lessons[2].title.includes('אופאל'), 'lesson 3 builds in Opal');
 assert.ok(program.lessons[2].keyConcepts.includes('תפקידי צוות'), 'lesson 3 includes team roles');
 assert.ok(program.lessons[3].title.includes('מציגים'), 'lesson 4 closes with demo/pitch');

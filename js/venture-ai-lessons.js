@@ -75,6 +75,7 @@
       title: 'מדייקים פתרון ובריף עם אופאל',
       subtitle: 'MoSCoW, מסכים, פעולה מרכזית, דאטה וגבולות בטיחות',
       image: 'assets/venture-ai/meeting-2-focus.webp',
+      video: 'marketing/venture-ai-lesson2-explainer.mp4',
       durationMinutes: 90,
       productStage: 'בריף מצומצם באופאל',
       bigQuestion: 'איך מצמצמים רעיון עירוני למוצר קטן שסוכן AI באמת יכול לבנות?',

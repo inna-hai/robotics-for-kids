@@ -386,7 +386,7 @@
 
     document.getElementById('lessonCards').innerHTML = program.lessons.map(lesson => `
       <article class="card meeting-card">
-        ${lesson.video ? `<video class="meeting-video" controls playsinline preload="metadata" poster="${esc(lesson.image)}"><source src="${esc(lesson.video)}?v=20260825-lesson1" type="video/mp4"></video>` : lesson.image ? `<img class="meeting-image" src="${esc(lesson.image)}" alt="${esc(lesson.title)}">` : ''}
+        ${lesson.video ? `<video class="meeting-video" controls playsinline preload="metadata" poster="${esc(lesson.image)}"><source src="${esc(lesson.video)}?v=20260825-meeting-videos" type="video/mp4"></video>` : lesson.image ? `<img class="meeting-image" src="${esc(lesson.image)}" alt="${esc(lesson.title)}">` : ''}
         <span class="tag">מפגש ${lesson.id} • ${lesson.durationMinutes} דקות</span>
         <div class="meeting-title">
           <span class="meeting-number">${lesson.id}</span>
