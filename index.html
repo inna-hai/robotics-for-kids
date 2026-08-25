@@ -146,7 +146,8 @@
       border-bottom: 1px solid var(--line);
       overflow: hidden;
     }
-    .course-media img {
+    .course-media img,
+    .course-media video {
       display: block;
       width: 100%;
       height: 100%;
@@ -324,7 +325,11 @@
           </article>
 
           <article class="course" style="--a:#16a34a;--b:#64748b">
-            <div class="course-media"><img src="assets/course-covers/minecraft.svg" alt="" loading="lazy"></div>
+            <div class="course-media">
+              <video autoplay muted loop playsinline preload="metadata" aria-label="הצצה לקורס Minecraft">
+                <source src="marketing/minecraft-silent-motion-preview.mp4" type="video/mp4">
+              </video>
+            </div>
             <div class="course-top"><span class="icon">MC</span><div class="badges"><span class="badge ready">פעיל</span><span class="badge">יצירה</span></div></div>
             <h3>Minecraft</h3>
             <p>מסלול יצירתי סביב תכנון משימות, בנייה וחשיבה מערכתית בסביבה מוכרת.</p>

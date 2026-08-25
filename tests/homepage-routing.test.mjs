@@ -73,13 +73,18 @@ test('Robotics15 homepage catalog follows the requested simple order', () => {
   assertBefore(homepageHtml, '<h3>PlayCode Lab</h3>', '<h3>WebMakers Lab</h3>');
 });
 
-test('Robotics15 catalog cards include cover images for every course', () => {
+test('Robotics15 catalog cards include cover media for every course', () => {
   const cards = [...homepageHtml.matchAll(/<article class="course"/g)];
   const covers = [...homepageHtml.matchAll(/<img src="(assets\/course-covers\/[^"]+\.svg)"/g)].map((match) => match[1]);
-  assert.equal(covers.length, cards.length, 'Every course card should include a cover image');
+  const videos = [...homepageHtml.matchAll(/<source src="(marketing\/[^"]+\.mp4)" type="video\/mp4">/g)].map((match) => match[1]);
+  assert.equal(covers.length + videos.length, cards.length, 'Every course card should include cover media');
   for (const cover of covers) {
     assert.ok(existsSync(join(root, cover)), `Missing course cover image: ${cover}`);
   }
+  for (const video of videos) {
+    assert.ok(existsSync(join(root, video)), `Missing course cover video: ${video}`);
+  }
+  assertIncludes(homepageHtml, 'aria-label="הצצה לקורס Minecraft"');
 });
 
 test('Sensi 15 remains on sensi-city and classic 5-lesson Sensi is restored separately', () => {
