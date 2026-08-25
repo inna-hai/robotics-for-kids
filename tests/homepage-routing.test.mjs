@@ -37,6 +37,7 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertNotIncludes(homepageHtml, 'רובוטיקה קלאסית', 'Sensi classic tag should not appear on the main homepage');
   assertIncludes(homepageHtml, 'href="sensi-city.html?lesson=1"');
   assertIncludes(homepageHtml, 'סנסי בעיר החכמה');
+  assertIncludes(homepageHtml, 'marketing/sensi-city-silent-motion-preview.mp4');
   assertIncludes(homepageHtml, 'href="smart-city.html"');
   assertNotIncludes(homepageHtml, 'href="pygame.html"', 'Pygame should be hidden from the main homepage');
   assertNotIncludes(homepageHtml, 'Pygame', 'Pygame should not appear as a main homepage card');
@@ -49,7 +50,9 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertNotIncludes(homepageHtml, 'מרעיון למיזם עם AI', 'Guided Venture AI course should not appear as a self-learning homepage card');
   assertNotIncludes(homepageHtml, 'יזמות AI', 'Guided Venture AI tag should not appear on the main homepage');
   assertIncludes(homepageHtml, 'href="python-turtle.html"');
+  assertIncludes(homepageHtml, 'marketing/python-turtle-silent-motion-preview.mp4');
   assertIncludes(homepageHtml, 'href="sisi.html"');
+  assertIncludes(homepageHtml, 'marketing/sisi-silent-motion-preview.mp4');
   assertIncludes(homepageHtml, 'סדרת סיסי לכיתות ב׳');
   assertIncludes(homepageHtml, 'href="finale.html"');
   assertNotIncludes(homepageHtml, 'href="codequest.html"', 'CodeQuest should be hidden from the main homepage');
@@ -64,6 +67,16 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertNotIncludes(homepageHtml, 'href="craftom-school/preview/index.html"', 'Craftom School should be hidden from the main homepage');
   assertNotIncludes(homepageHtml, 'href="craftom-school/README.md"', 'Craftom School README should be hidden from the main homepage');
   assertNotIncludes(homepageHtml, 'Craftom School', 'Craftom School should not appear as a main homepage card');
+  for (const video of [
+    'marketing/sensi-city-silent-motion-preview.mp4',
+    'marketing/sisi-silent-motion-preview.mp4',
+    'marketing/python-turtle-silent-motion-preview.mp4',
+    'marketing/webcode-silent-motion-preview.mp4',
+    'marketing/minecraft-silent-motion-preview.mp4',
+  ]) {
+    assertIncludes(homepageHtml, video);
+    assert.ok(existsSync(join(root, video)), `Missing homepage preview video: ${video}`);
+  }
 });
 
 test('Sensi 15 remains on sensi-city and classic 5-lesson Sensi is restored separately', () => {
