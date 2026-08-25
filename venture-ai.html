@@ -258,9 +258,9 @@
   <main class="shell">
     <section class="hero">
       <div>
-        <div class="kicker">כיתות ח׳ • 4 מפגשים • Opal • תוצר עובד</div>
+        <div class="kicker">כיתות ח׳ • 4 מפגשים • אופאל מהשיעור הראשון • תוצר עובד</div>
         <h1>מרעיון למיזם עם AI</h1>
-        <p class="goal">מהלך קצר וברור: מתחילים מחולון ובעיה אמיתית, מצמצמים ל-MVP, בונים אבטיפוס ב-Opal, ומסיימים בדמו ופיץ׳.</p>
+        <p class="goal">מהלך קצר וברור: מתחילים מחולון ובעיה אמיתית, פותחים את אופאל כסוכן AI שמלווה חשיבה, מצמצמים ל-MVP, בונים אבטיפוס ומסיימים בדמו ופיץ׳.</p>
         <div class="actions">
           <a class="btn" href="#meetings">4 המפגשים</a>
         </div>
@@ -275,7 +275,7 @@
     <section class="grid-4">
       <div class="card highlight"><h2>עיר</h2><b>מתחילים מחולון</b><p class="muted">בעיה אמיתית ומוחשית לילדים.</p></div>
       <div class="card highlight"><h2>דיוק</h2><b>MoSCoW</b><p class="muted">מצמצמים לפני שבונים.</p></div>
-      <div class="card highlight"><h2>בנייה</h2><b>Opal</b><p class="muted">סוכן AI מייצר אבטיפוס.</p></div>
+      <div class="card highlight"><h2>AI</h2><b>אופאל</b><p class="muted">סוכן שעוזר לחשוב, לבנות ולשפר.</p></div>
       <div class="card highlight"><h2>דמו</h2><b>פיץ׳ קצר</b><p class="muted">מציגים תוצר ולא רק רעיון.</p></div>
     </section>
 
@@ -295,8 +295,8 @@
       </article>
       <article class="card opal-card">
         <span class="tag">כלי העבודה</span>
-        <h2>Opal הוא סביבת הבנייה</h2>
-        <p>התלמידים לא מתחילים מקוד ריק. הם כותבים בריף, מקבלים אבטיפוס, בודקים, מבקשים תיקונים קטנים ונועלים גרסת MVP להצגה.</p>
+        <h2>אופאל מלווה מהשיעור הראשון</h2>
+        <p>התלמידים פותחים את אופאל כבר בגיבוש הרעיון. זה סוכן בינה מלאכותית שעוזר לשאול שאלות, לנסח בריף, לבנות סוכנים, אתרים ואפליקציות, לבדוק ולבקש תיקונים קטנים.</p>
       </article>
       <article class="card build-first">
         <span class="tag">גבולות</span>
@@ -306,7 +306,7 @@
       <article class="card wide-card">
         <span class="tag">תוצר סיום</span>
         <h2>מה חייב להיות בסוף?</h2>
-        <p class="goal">לכל צוות יש אבטיפוס פשוט ב-Opal, פעולה מרכזית אחת שעובדת, ופיץ׳ קצר שמסביר בעיה, קהל יעד, פתרון ודמו.</p>
+        <p class="goal">לכל צוות יש אבטיפוס פשוט באופאל, פעולה מרכזית אחת שעובדת, ופיץ׳ קצר שמסביר בעיה, קהל יעד, פתרון ודמו.</p>
         <div class="actions">
           <a class="btn" href="venture-ai-improvement.html">בקשת שיפור</a>
         </div>
@@ -315,7 +315,7 @@
   </main>
 
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="js/venture-ai-lessons.js?v=20260825-team-frame"></script>
+  <script src="js/venture-ai-lessons.js?v=20260825-opal-first"></script>
   <script>
     const program = window.VENTURE_AI_PROGRAM;
     const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
@@ -342,7 +342,7 @@
         <div class="meeting-actions">
           <a class="btn" href="venture-ai-slides.html?lesson=${lesson.id}">מצגת מדריך</a>
           <a class="btn secondary" href="venture-ai-students.html?lesson=${lesson.id}">דף תלמידים</a>
-          <a class="btn secondary" href="https://opal.hai.tech/">פתחו Opal</a>
+          <a class="btn secondary" href="https://opal.hai.tech/">פתחו אופאל</a>
         </div>
         <details class="deep-dive">
           <summary>צלילה פנימה למפגש</summary>
@@ -351,7 +351,7 @@
               <div class="mini-panel"><b>מטרת מדריך</b>${esc(lesson.teacherGoal)}</div>
               <div class="mini-panel"><b>מה הילדים יוצרים</b>${esc(lesson.studentOutcome)}</div>
               <div class="mini-panel"><b>פתיחה מומלצת</b>${esc(lesson.openingDemo)}</div>
-              <div class="mini-panel"><b>פרומפט Opal</b>${esc(lesson.opalPrompt)}</div>
+              <div class="mini-panel"><b>פרומפט אופאל</b>${esc(lesson.opalPrompt)}</div>
             </div>
             <div>
               <b>מהלך זמן</b>

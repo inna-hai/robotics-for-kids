@@ -18,11 +18,11 @@
     <div>
       <button onclick="nextSlide()">הבא ←</button>
       <a class="back" href="venture-ai.html">לתוכנית</a>
-      <a class="back" href="https://opal.hai.tech/">Opal</a>
+      <a class="back" href="https://opal.hai.tech/">אופאל</a>
     </div>
   </nav>
 
-  <script src="js/venture-ai-lessons.js?v=20260825-team-frame"></script>
+  <script src="js/venture-ai-lessons.js?v=20260825-opal-first"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const program = window.VENTURE_AI_PROGRAM;
@@ -44,7 +44,7 @@
       { html: `<h2>מושגים מרכזיים</h2><div class="cards">${lesson.keyConcepts.map(item => `<div class="card"><b>${esc(item)}</b>מושג לשימוש במהלך השיעור, אחרי שהתלמידים ראו דוגמה מוחשית.</div>`).join('')}</div>` },
       { html: `<h2>מהלך שיעור ${lesson.durationMinutes} דקות</h2><div class="timeline">${lesson.flow.map(step => `<div class="row"><b>${esc(step.minutes)}</b><div><strong>${esc(step.title)}</strong><br>${esc(step.teacher)}</div><div>${esc(step.students)}</div></div>`).join('')}</div>` },
       { html: `<h2>משימות עבודה לצוותים</h2>${list(lesson.workshopTasks)}` },
-      { html: `<h2>פרומפט עבודה ל-Opal</h2><div class="prompt">${esc(lesson.opalPrompt)}</div>` },
+      { html: `<h2>פרומפט עבודה לאופאל</h2><div class="prompt">${esc(lesson.opalPrompt)}</div>` },
       { html: `<h2>הערות למדריך</h2>${list(lesson.instructorNotes)}` },
       { html: `<h2>גבולות בטיחות</h2>${list(program.safetyRules)}<div class="note">הדמו עובד עם מידע דמיוני בלבד.</div>` },
       { html: `<h2>כרטיס יציאה</h2><p>${esc(lesson.exitTicket)}</p><div class="note">לפני שעוברים הלאה, ודאו שלכל צוות יש תוצר ביניים ברור.</div>` },

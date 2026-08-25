@@ -36,9 +36,10 @@ for (const lesson of program.lessons) {
 
 assert.ok(program.lessons[0].title.includes('מיזם עירוני'), 'lesson 1 starts from a city venture');
 assert.ok(program.lessons[0].keyConcepts.includes('לאו-טק'), 'lesson 1 introduces high-tech and low-tech framing');
+assert.ok(program.lessons[0].keyConcepts.includes('אופאל כסוכן AI'), 'lesson 1 opens Opal as an AI thinking agent');
 assert.ok(program.lessons[1].keyConcepts.includes('MoSCoW'), 'lesson 2 uses MoSCoW to narrow scope');
 assert.ok(program.lessons[1].opalPrompt.includes('Must'), 'lesson 2 feeds Must scope into the Opal prompt');
-assert.ok(program.lessons[2].title.includes('Opal'), 'lesson 3 builds in Opal');
+assert.ok(program.lessons[2].title.includes('אופאל'), 'lesson 3 builds in Opal');
 assert.ok(program.lessons[2].keyConcepts.includes('תפקידי צוות'), 'lesson 3 includes team roles');
 assert.ok(program.lessons[3].title.includes('מציגים'), 'lesson 4 closes with demo/pitch');
 assert.ok(program.lessons[3].keyConcepts.includes('ביקורת עמיתים'), 'lesson 4 includes peer critique');
