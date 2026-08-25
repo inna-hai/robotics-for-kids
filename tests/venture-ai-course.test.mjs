@@ -50,6 +50,8 @@ assert.equal(program.lessons[2].video, 'marketing/venture-ai-lesson3-explainer.m
 assert.ok(program.lessons[3].title.includes('מציגים'), 'lesson 4 closes with demo/pitch');
 assert.ok(program.lessons[3].keyConcepts.includes('ביקורת עמיתים'), 'lesson 4 includes peer critique');
 assert.equal(program.lessons[3].video, 'marketing/venture-ai-lesson4-explainer.mp4', 'lesson 4 has embedded explainer video');
+assert.ok(program.lessons[3].teacherGoal.includes('המפגש האחרון'), 'lesson 4 opens as the final meeting');
+assert.ok(program.lessons[3].studentOutcome.includes('מגיש'), 'lesson 4 ends with submission');
 assert.ok(program.pitchTemplate[0].includes('חולון'), 'pitch template keeps the city context');
 
 const page = read('venture-ai.html');
