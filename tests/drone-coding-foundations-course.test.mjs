@@ -23,7 +23,9 @@ test('Drone Coding Foundations exposes a 15 lesson grade 7 JavaScript drone scaf
   assert.ok(data.DRONE_CODING_FOUNDATIONS_LESSONS.every(l => l.language === 'JavaScript'));
   assert.ok(data.DRONE_CODING_FOUNDATIONS_LESSONS.every(l => l.tabletFirst === true));
   assert.ok(data.DRONE_CODING_FOUNDATIONS_LESSONS.slice(0, 4).every(l => l.physicalFlightAllowed === false));
-  assert.ok(data.DRONE_CODING_FOUNDATIONS_LESSONS.slice(4).every(l => l.physicalFlightAllowed === true));
+  assert.equal(data.DRONE_CODING_FOUNDATIONS_LESSONS[4].physicalFlightAllowed, true);
+  assert.equal(data.DRONE_CODING_FOUNDATIONS_LESSONS[5].physicalFlightAllowed, false);
+  assert.ok(data.DRONE_CODING_FOUNDATIONS_LESSONS.slice(6).every(l => l.physicalFlightAllowed === true));
 });
 
 test('Drone Coding Foundations follows the syllabus topics from shared base into JavaScript', () => {

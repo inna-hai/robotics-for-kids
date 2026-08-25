@@ -30,7 +30,12 @@
     sleep: 'tello.sleep(seconds); — השהייה/ריחוף יציב',
     simulator: 'DroneBlocks Simulator — Minimal Grid',
     function_reference: 'Function Reference — ספריית פקודות',
-    save_cloud: 'Save Project / Share Link — שמירה ושיתוף'
+    save_cloud: 'Save Project / Share Link — שמירה ושיתוף',
+    telemetry: 'Telemetry — נתוני סוללה/גובה/סטטוס',
+    battery: 'Battery Protocol — נוהל סוללות',
+    wifi: 'Double Network Handshake — נוהל רשת כפולה',
+    abort: 'Abort / Emergency Land — עצירת חירום',
+    code_editor: 'New Script — עורך קוד טקסטואלי'
   };
 
   const safetyRules = [
@@ -1926,6 +1931,896 @@
                 "City",
                 "Fallback",
                 "Share Link"
+            ]
+        }
+    ]
+});
+
+
+  Object.assign(window.DRONE_CODING_FOUNDATIONS_LESSONS[4], {
+    "title": "שיעור 5: SpaceX Static Fire — המעבר למציאות והטסה פיזית ראשונה",
+    "subtitle": "Sim‑to‑Reality Gap, Pre‑Flight Checklist, WiFi Handshake, Telemetry וסוללות",
+    "unit": "יחידה 1 — מעבר מסימולטור לטיסה פיזית מבוקרת",
+    "concept": "פער סימולציה־מציאות, כיול פיזי ראשון, עבודת צוות ובטיחות רחפן Tello",
+    "story": "אחרי ארבעה מפגשי סימולטור, צוותי כיתה ז׳ מגיעים לרגע השיא הראשון: ה־Static Fire של SpaceX בכן השיגור. קוד JavaScript שעבד בסביבה סטרילית פוגש עכשיו רצפה, תאורה, סוללה, זרמי מזגן וחיישני VPS. המטרה אינה “להטיס יפה”, אלא להוכיח שליטה בטוחה ומדידה.",
+    "mission": "לבצע Pre‑Flight Check מלא, להתחלק ל־Driver/Navigator/Safety Observer, לטעון קוד קצר מהענן, להתחבר לפי Double Network Handshake לרשת TELLO, להריץ טיסה פיזית קצרה בלבד באזור 1.5×1.5 מטר: takeoff, sleep(5), תנועה קדימה קצרה ובטוחה של 24 אינץ׳ ≈ 60 ס״מ, sleep(2), land. אם המדריך מאשר — להריץ Physical Box קטן עם for loop ו־24 אינץ׳ לצלע, למדוד סטייה ולשמור tello_physical_box_v1.",
+    "commands": [
+        "safety_check",
+        "wifi",
+        "takeoff",
+        "sleep",
+        "forward",
+        "sleep",
+        "loop",
+        "yaw",
+        "telemetry",
+        "battery",
+        "land",
+        "share"
+    ],
+    "blocks": [
+        "safety_check",
+        "wifi",
+        "takeoff",
+        "sleep",
+        "forward",
+        "sleep",
+        "loop",
+        "yaw",
+        "telemetry",
+        "battery",
+        "land",
+        "share"
+    ],
+    "workspaceMode": "physical-lab",
+    "physicalFlightAllowed": true,
+    "essentialQuestion": "מה משתנה כאשר קוד JavaScript שעבד בסימולטור מפעיל רחפן פיזי אמיתי?",
+    "successCriteria": [
+        "אני מבצע/ת Pre‑Flight Checklist לפני כל Run.",
+        "אני יודע/ת להסביר Sim‑to‑Reality Gap ולתת לפחות שני גורמים פיזיים.",
+        "אני פועל/ת בתפקיד ברור: Driver, Navigator או Safety Observer.",
+        "אני מבצע/ת Double Network Handshake בסדר נכון: WiFi בית ספרי → טעינת קוד → TELLO WiFi.",
+        "אני משתמש/ת ב־sleep לייצוב פיזי בין פעולות.",
+        "אני מודד/ת סטייה בס״מ ומתעד/ת הצעת כיול אחת.",
+        "אני מנהל/ת סוללות לפי נוהל שתי קופסאות."
+    ],
+    "realWorldUses": [
+        {
+            "icon": "🚀",
+            "title": "Static Fire",
+            "text": "לפני שיגור אמיתי בודקים מערכות בצורה מוגבלת ומבוקרת."
+        },
+        {
+            "icon": "🧪",
+            "title": "Sim‑to‑Reality Gap",
+            "text": "סימולטור הוא מודל; בעולם האמיתי יש רוח, תאורה, חיישנים וסוללה."
+        },
+        {
+            "icon": "👥",
+            "title": "צוות טיסה",
+            "text": "Driver, Navigator ו־Observer מפחיתים סיכון ומגדילים דיוק."
+        },
+        {
+            "icon": "🔋",
+            "title": "ניהול משאבים",
+            "text": "סוללה חלשה משנה ביצועים ועלולה להפוך טיסה פשוטה למסוכנת."
+        }
+    ],
+    "vocabulary": [
+        [
+            "Sim‑to‑Reality Gap",
+            "פער בין ביצוע מושלם בסימולטור לבין תנאים פיזיים בכיתה."
+        ],
+        [
+            "Calibration / כיול",
+            "כוונון עדין של הקוד/הסביבה לפי תוצאות מדידה בפועל."
+        ],
+        [
+            "Pre‑Flight Checklist",
+            "רשימת בדיקות חובה לפני המראה פיזית."
+        ],
+        [
+            "Double Network Handshake",
+            "סדר חיבור: אינטרנט לשמירה וטעינה, ואז TELLO WiFi לטיסה."
+        ],
+        [
+            "Telemetry",
+            "נתוני סטטוס כמו סוללה, חיבור וגובה."
+        ],
+        [
+            "VPS",
+            "חיישני ראייה תחתיים שמושפעים מתאורה ורצפה."
+        ],
+        [
+            "Abort",
+            "עצירת חירום/נחיתה מיידית כשיש סיכון."
+        ],
+        [
+            "Safe Fly Zone",
+            "אזור טיסה סטרילי מסומן שרק הרחפן נמצא בו בזמן Run."
+        ]
+    ],
+    "safetyRules": [
+        "משקפי מגן חובה לכל חבר צוות שמתקרב לאזור הטיסה.",
+        "שיער ארוך אסוף, מגיני פרופלור מורכבים, סוללה תקינה ורחפן קריר.",
+        "רק צוות אחד באוויר ורק בתוך Safe Fly Zone מסומן 1.5×1.5 מטר.",
+        "Driver בלבד לוחץ Run/Abort, ורק אחרי הכרזה “צוות X ממריא!” ואישור מדריך.",
+        "אם אדם נכנס לאזור הטיסה — Abort/Land מיידי.",
+        "סוללה מתחת ל־20% עוברת לקופסה אדומה; אין אחסון סוללות בתוך הרחפן.",
+        "בגלל מגבלת המרחב משתמשים ב־24 אינץ׳ ≈ 60 ס״מ לצלע פיזית, לא 60 אינץ׳."
+    ],
+    "commonDirections": [
+        [
+            "WiFi בית ספרי",
+            "פתיחת אפליקציה, Login וטעינת קוד מהענן."
+        ],
+        [
+            "TELLO-XXXX",
+            "רשת הרחפן הפיזי ללא אינטרנט — רק אחרי שהקוד מוכן."
+        ],
+        [
+            "tello.sleep(5);",
+            "ריחוף ייצוב לאחר המראה."
+        ],
+        [
+            "tello.moveForward(24);",
+            "תנועה פיזית קצרה ובטוחה בתוך אזור 1.5 מטר."
+        ],
+        [
+            "Telemetry",
+            "בודקים סוללה/סטטוס לפני Run ואחרי נחיתה."
+        ],
+        [
+            "tello_physical_box_v1",
+            "שם שמירת הקוד הפיזי הראשון."
+        ]
+    ],
+    "setupSteps": [
+        "לפנות מרכז כיתה ולסמן Safe Fly Zone של 1.5×1.5 מטר.",
+        "להכין Tello/Tello EDU לכל צוות עם מגיני פרופלורים.",
+        "להכין שתי סוללות לפחות לכל רחפן ועמדות טעינה.",
+        "להציב קופסה ירוקה לסוללות מלאות וקופסה אדומה לריקות.",
+        "לכבות מאווררים/מזגן חזק ולוודא תאורה טובה לרצפה.",
+        "להכין דף Run Log למדידת סטייה בס״מ.",
+        "לכתוב על הלוח: 24 אינץ׳ ≈ 60 ס״מ לטיסה פיזית בטוחה."
+    ],
+    "tabletTips": [
+        "לטעון קוד מהענן לפני מעבר ל־TELLO WiFi.",
+        "אם האפליקציה מציגה Not Connected — לבדוק שהטאבלט לא חוזר אוטומטית לרשת עם אינטרנט.",
+        "לכבות נתונים סלולריים/Smart Network Switch אם הם מנתקים רשת Tello.",
+        "לחזור ל־WiFi בית ספרי בסוף כדי לשמור Share Link.",
+        "לא להריץ לולאות פיזיות לפני שהן נבדקו בסימולטור.",
+        "לתעד סטייה מיד אחרי נחיתה, לפני שינוי קוד."
+    ],
+    "lessonFlow": [
+        {
+            "minutes": "0–8",
+            "title": "רגע המעבר לפיזי",
+            "teacher": "מגדיר שהיום הטיסה הפיזית הראשונה היא בדיקת מערכת, לא מופע.",
+            "students": "מזכירים שיעור 4: לולאה ומשתנה שנבדקו בסימולטור."
+        },
+        {
+            "minutes": "8–18",
+            "title": "SpaceX Static Fire ו־Sim‑to‑Reality",
+            "teacher": "מסביר סימולטור מול רצפה, תאורה, מזגן, סוללה וחיישני VPS.",
+            "students": "נותנים דוגמה לפער בין משחק מחשב למגרש אמיתי."
+        },
+        {
+            "minutes": "18–28",
+            "title": "תפקידי צוות",
+            "teacher": "מחלק Driver/Navigator/Safety Observer ומבהיר שכל חריגה מקרקעת צוות.",
+            "students": "מקבלים תפקיד ומקריאים אחריות."
+        },
+        {
+            "minutes": "28–40",
+            "title": "Double Network Handshake",
+            "teacher": "מוביל WiFi בית ספרי, Login, טעינת קוד, הפעלת רחפן, TELLO WiFi, Connected to Tello.",
+            "students": "מבצעים לפי צ׳קליסט ולא מדלגים."
+        },
+        {
+            "minutes": "40–48",
+            "title": "Pre‑Flight Check",
+            "teacher": "בודק משקפי מגן, שיער, מגינים, סוללה, אזור סטרילי ו־Abort.",
+            "students": "מאשרים בקול “פנוי”."
+        },
+        {
+            "minutes": "48–60",
+            "title": "Static Fire Hover",
+            "teacher": "מאשר צוותים לפי תור להרצת takeoff → sleep(5) → land או forward קצר.",
+            "students": "מריצים, צופים בטלמטריה ומתעדים יציבות."
+        },
+        {
+            "minutes": "60–75",
+            "title": "Physical Box קטן",
+            "teacher": "מאשר רק לצוותים יציבים: for loop עם 24 אינץ׳, sleep ו־yawRight.",
+            "students": "מריצים ריבוע קטן ומודדים סטייה בס״מ."
+        },
+        {
+            "minutes": "75–83",
+            "title": "כיול ודיון",
+            "teacher": "שואל למה סטינו למרות שהקוד נכון ומוביל הצעת שינוי אחת.",
+            "students": "רושמים גורם פיזי והצעת כיול."
+        },
+        {
+            "minutes": "83–90",
+            "title": "סוללות, שמירה וסגירה",
+            "teacher": "אוכף שתי קופסאות, הוצאת סוללות ושמירה בענן.",
+            "students": "שומרים tello_physical_box_v1 ומחזירים ציוד."
+        }
+    ],
+    "exercises": [
+        {
+            "minutes": "8–18",
+            "title": "פער סימולציה־מציאות",
+            "prompt": "כתבו שני גורמים שיכולים לשנות טיסה פיזית לעומת סימולטור.",
+            "check": "מוזכרים רוח/סוללה/תאורה/VPS/רצפה."
+        },
+        {
+            "minutes": "18–28",
+            "title": "תפקידי צוות",
+            "prompt": "כתבו מי Driver, Navigator ו־Safety Observer ומה כל אחד עושה.",
+            "check": "Driver היחיד שמריץ; Observer אחראי בטיחות."
+        },
+        {
+            "minutes": "28–40",
+            "title": "Handshake",
+            "prompt": "סדרו את שלבי הרשת: בית ספר, Login, טעינת קוד, TELLO WiFi.",
+            "check": "הסדר נכון."
+        },
+        {
+            "minutes": "40–48",
+            "title": "Pre‑Flight",
+            "prompt": "עברו על הצ׳קליסט לפני המראה.",
+            "check": "אין Run לפני אישור מדריך."
+        },
+        {
+            "minutes": "48–60",
+            "title": "Static Fire",
+            "prompt": "הריצו טיסה קצרה: takeoff, sleep, forward 24 אינץ׳, sleep, land.",
+            "check": "הרחפן נשאר באזור הסטרילי."
+        },
+        {
+            "minutes": "60–75",
+            "title": "Physical Box",
+            "prompt": "אם אושר: הריצו ריבוע קטן עם for loop, 24 אינץ׳ ו־sleep בין פעולות.",
+            "check": "נמדדה סטייה אחרי נחיתה."
+        },
+        {
+            "minutes": "75–83",
+            "title": "Run Log",
+            "prompt": "רשמו סטייה בס״מ והצעת כיול אחת.",
+            "check": "שינוי אחד בלבד מוצע."
+        },
+        {
+            "minutes": "83–90",
+            "title": "סוללות ושיתוף",
+            "prompt": "הוציאו סוללה, מיינו לקופסה, שמרו tello_physical_box_v1.",
+            "check": "אין סוללות ברחפנים באחסון."
+        }
+    ],
+    "deliverable": "tello_physical_box_v1: קוד טיסה פיזית ראשון, Run Log עם סטייה והצעת כיול, ותיעוד נוהל סוללה/בטיחות.",
+    "assessment": [
+        "הצוות עמד בכללי בטיחות ללא פשרות.",
+        "ה־Double Network Handshake בוצע בסדר נכון.",
+        "הקוד הפיזי כולל sleep בין פעולות.",
+        "המרחקים מותאמים לאזור 1.5×1.5 מטר.",
+        "הצוות מדד סטייה ולא רק אמר “עבד”.",
+        "הסוללות הוצאו ומוינו בסיום."
+    ],
+    "debugging": [
+        {
+            "problem": "Connected to Tello לא מופיע",
+            "fix": "לוודא TELLO WiFi, לכבות Smart Network Switch/Cellular ולחזור לאפליקציה."
+        },
+        {
+            "problem": "נורה אדומה מהבהבת מהר",
+            "fix": "להחליף לסוללה מלאה; אם הרחפן חם, לכבות ולקרר כמה דקות."
+        },
+        {
+            "problem": "הרחפן נוטה חזק ומתרסק",
+            "fix": "לכבות, לבדוק התאמת פרופלורים מסומנים לזרועות המסומנות."
+        },
+        {
+            "problem": "Drift משמעותי",
+            "fix": "להדליק תאורה, להוסיף סימוני רצפה/שטיחון ולכבות זרמי מזגן."
+        },
+        {
+            "problem": "לולאה פיזית לא נעצרת",
+            "fix": "Abort, לבדוק i++ ותנאי עצירה בסימולטור לפני ניסיון נוסף."
+        }
+    ],
+    "differentiation": {
+        "support": [
+            "להסתפק ב־Static Fire Hover בלבד בלי Physical Box.",
+            "לתת קוד מוכן ולבקש רק בדיקת סינטקס וצ׳קליסט.",
+            "לתת תפקיד Observer לתלמיד שעדיין לא מוכן להריץ."
+        ],
+        "extension": [
+            "להשוות סטייה לפני/אחרי הוספת sleep.",
+            "לחשב ממוצע סטייה בין שני Runs.",
+            "להציע כיול מהירות/מרחק אחד ולנמק לפי Run Log."
+        ]
+    },
+    "instructorGuide": {
+        "prerequisites": "נדרש שהכיתה השלימה ארבעה מפגשי סימולטור, כולל Box Mission ולולאה. אין להריץ פיזית צוות שלא יודע להסביר takeoff/land/Abort ואת תפקידיו.",
+        "pedagogy": [
+            "מפגש 5 הוא שיעור בטיחות לא פחות משהוא שיעור טכנולוגי.",
+            "לא לאפשר “רק עוד ניסיון” אם סוללה/מרחב/תפקידים לא תקינים.",
+            "לתקן את בלבול היחידות: בטיסה פיזית באזור 1.5 מטר להשתמש ב־24 אינץ׳ בערך, לא 60 אינץ׳.",
+            "המדידה אחרי נחיתה היא לב הלמידה: Sim‑to‑Reality Gap הופך מנתון מופשט לחוויה.",
+            "שבחו צוות שמבטל Run בגלל סיכון — זו אחריות הנדסית."
+        ],
+        "facilitationNotes": [
+            "להפעיל צוותים בתור קפדני, שאר הכיתה באזור צפייה.",
+            "להכין מראש רחפן דמו לפרופלורים/סוללה.",
+            "להכריז בקול: “אם מישהו נכנס לאזור — Land מיד”.",
+            "להחזיק סוללות אצל המדריך, לא בכיסי תלמידים.",
+            "לסיים 7 דקות לפני סוף שיעור לנוהל סוללות."
+        ],
+        "mediaNote": "סרטון Ingenuity/Static Fire קצר בלבד; עיקר השיעור הוא פרוטוקול בטיחות והתנסות מדודה.",
+        "exitTicket": "הרחפן סטה למרות שהקוד נכון כי ___; בפעם הבאה אכייל ___."
+    },
+    "appWorkflowTitle": "Physical Lab — SpaceX Static Fire בטוח",
+    "appWorkflowNote": "מפגש 5 הוא הטסה פיזית ראשונה. האתר מציג תדריך, תפקידים וצ׳קליסט; את הקוד מריצים ב־DroneBlocks Code רק באזור סטרילי ובאישור מדריך.",
+    "appWorkflow": [
+        {
+            "title": "WiFi בית ספרי וטעינת קוד",
+            "detail": "פתחו DroneBlocks Code, התחברו לחשבון וטענו את הקוד לפני מעבר לרשת הרחפן."
+        },
+        {
+            "title": "Pre‑Flight Checklist",
+            "detail": "משקפי מגן, שיער אסוף, מגיני פרופלור, סוללה, אזור סטרילי ו־Abort מוכנים."
+        },
+        {
+            "title": "TELLO WiFi",
+            "detail": "הדליקו רחפן, התחברו ל־TELLO-XXXX וחזרו לאפליקציה עד Connected to Tello."
+        },
+        {
+            "title": "Static Fire Hover",
+            "detail": "הריצו takeoff → sleep(5) → moveForward(24) → sleep(2) → land רק באישור."
+        },
+        {
+            "title": "Physical Box קטן",
+            "detail": "רק אם אושר: for loop עם 24 אינץ׳ לצלע, sleep ו־yawRight(90)."
+        },
+        {
+            "title": "Run Log + סוללות",
+            "detail": "מדדו סטייה, שמרו tello_physical_box_v1, הוציאו סוללה ומיינו לקופסאות."
+        }
+    ],
+    "visualDiagram": {
+        "panelTitle": "🚀 Static Fire Safe Zone",
+        "chip": "Physical Lab",
+        "title": "אזור טיסה סטרילי ותפקידי צוות",
+        "src": "assets/drone-coding-foundations/lesson5/spacex-static-fire-safe-zone.svg",
+        "alt": "תרשים אזור טיסה סטרילי עם Driver Navigator Safety Observer וקופסאות סוללות",
+        "caption": "הטסה פיזית ראשונה היא בדיקת מערכת מבוקרת: קצרה, מדידה, עם תפקידים ונוהל סוללות."
+    },
+    "videoResources": [
+        {
+            "title": "NASA JPL — The First Flight of Ingenuity on Mars",
+            "url": "https://www.youtube.com/watch?v=wX-y0M-YwK4",
+            "note": "להקרין קצר ולהדגיש כמה בדיקות קדמו לטיסה הפיזית."
+        }
+    ],
+    "screenshotSlides": [
+        {
+            "title": "Static Fire Safe Zone",
+            "src": "assets/drone-coding-foundations/lesson5/spacex-static-fire-safe-zone.svg",
+            "caption": "סידור כיתה, צוותים וסוללות."
+        },
+        {
+            "title": "פותחים DroneBlocks Code",
+            "src": "assets/tello-mission-lab/lesson1/open-app.png",
+            "caption": "קודם אינטרנט וטעינת קוד."
+        },
+        {
+            "title": "ריצת סימולטור לפני פיזי",
+            "src": "assets/tello-mission-lab/lesson1/simulator-run.png",
+            "caption": "לא מדלגים על בדיקה."
+        },
+        {
+            "title": "Save & Share",
+            "src": "assets/tello-mission-lab/lesson1/save-share.png",
+            "caption": "tello_physical_box_v1."
+        }
+    ],
+    "instructorSlides": [
+        {
+            "title": "SpaceX Static Fire",
+            "body": "היום עוברים מהסימולטור לרחפן פיזי — רק כבדיקת מערכת קצרה ומבוקרת.",
+            "bullets": [
+                "Physical first flight",
+                "Safety first",
+                "Measured run"
+            ]
+        },
+        {
+            "title": "Sim‑to‑Reality Gap",
+            "body": "רוח, סוללה, תאורה ורצפה משנים את מה שהקוד עושה בפועל.",
+            "bullets": [
+                "VPS",
+                "Battery",
+                "Drift"
+            ]
+        },
+        {
+            "title": "תפקידי צוות",
+            "body": "Driver מריץ, Navigator בודק קוד, Safety Observer שומר קשר עין ואחראי Abort.",
+            "bullets": [
+                "Driver",
+                "Navigator",
+                "Observer"
+            ]
+        },
+        {
+            "title": "Double Network Handshake",
+            "body": "WiFi בית ספרי לטעינה ושמירה, TELLO WiFi להרצה פיזית.",
+            "bullets": [
+                "Login",
+                "Load code",
+                "TELLO-XXXX"
+            ]
+        },
+        {
+            "title": "המרחק הבטוח",
+            "body": "באזור 1.5 מטר משתמשים ב־24 אינץ׳ בערך לצלע, לא 60 אינץ׳.",
+            "bullets": [
+                "24 inches",
+                "sleep",
+                "land"
+            ]
+        },
+        {
+            "title": "סוללות וסגירה",
+            "body": "סוללות לא נשארות ברחפנים. ירוק=מלא, אדום=ריק/מתחת 20%.",
+            "bullets": [
+                "Telemetry",
+                "Two boxes",
+                "No battery storage"
+            ]
+        }
+    ]
+});
+
+
+  Object.assign(window.DRONE_CODING_FOUNDATIONS_LESSONS[5], {
+    "title": "שיעור 6: מעבר מבלוקים לקוד טקסטואלי — Skydio JavaScript Bridge",
+    "subtitle": "Text‑based programming, Object.Action(argument), Function Reference ו־Box Mission בסימולטור",
+    "unit": "יחידה 2 — מעבר מממשק חזותי ל־JavaScript מקצועי",
+    "concept": "תרגום לוגיקה מבלוקים לקוד טקסטואלי ב־DroneBlocks Code",
+    "story": "אחרי הטיסה הפיזית הראשונה, כיתה ז׳ עולה שלב לצוות פיתוח האוטונומיה של Skydio. רחפנים מקצועיים שממפים ועוקפים מכשולים אינם מסתפקים בבלוקים צבעוניים: הם נשענים על קוד טקסטואלי מהיר, מדויק וקריא. היום מתרגמים חשיבה חזותית ל־JavaScript מקצועי.",
+    "mission": "לפתוח New Script ב־DroneBlocks Code, להשתמש ב־Function Reference, לכתוב הערות //, ולתרגם Box Mission של חממת העתיד לשתי גרסאות JavaScript בסימולטור: Strafing Box עם sleep בין פעולות, ו־Yaw Box שבו הרחפן טס קדימה ופונה 90° בכל פינה. בסיום שומרים Grade7_Meeting6_BoxMission_TeamX ומשתפים קישור.",
+    "commands": [
+        "code_editor",
+        "comment",
+        "takeoff",
+        "sleep",
+        "forward",
+        "right",
+        "back",
+        "left",
+        "yaw",
+        "land",
+        "save_cloud"
+    ],
+    "blocks": [
+        "code_editor",
+        "comment",
+        "takeoff",
+        "sleep",
+        "forward",
+        "right",
+        "back",
+        "left",
+        "yaw",
+        "land",
+        "save_cloud"
+    ],
+    "workspaceMode": "droneblocks-code",
+    "physicalFlightAllowed": false,
+    "essentialQuestion": "איך מתרגמים לוגיקה של בלוקים לקוד JavaScript מדויק שכל תו בו משפיע על הרצת הרחפן?",
+    "successCriteria": [
+        "אני מסביר/ה הבדל בין Block‑based לבין Text‑based programming.",
+        "אני פותח/ת New Script ומאתר/ת Function Reference.",
+        "אני כותב/ת Comment עם // שמסביר את הקוד.",
+        "אני מזהה את המבנה tello.action(argument);.",
+        "אני משתמש/ת בסוגריים, נקודה־פסיק ו־CamelCase מדויק.",
+        "אני בונה Box Mission בסימולטור עם sleep בין תנועות.",
+        "אני שומר/ת Grade7_Meeting6_BoxMission_TeamX ומשתף/ת קישור."
+    ],
+    "realWorldUses": [
+        {
+            "icon": "🤖",
+            "title": "Skydio Autonomy",
+            "text": "רחפנים אוטונומיים מנתחים סביבה ומקבלים החלטות בעזרת קוד מהיר ומדויק."
+        },
+        {
+            "icon": "💻",
+            "title": "קוד טקסטואלי בהייטק",
+            "text": "מערכות מורכבות נכתבות בקוד קריא, ניתן לבדיקה ולשיתוף."
+        },
+        {
+            "icon": "🌱",
+            "title": "חממות חכמות",
+            "text": "רחפן יכול לסרוק חממה במסלול מתוכנן כדי לזהות בעיות בצמחים."
+        },
+        {
+            "icon": "🧭",
+            "title": "Logic Architect",
+            "text": "נווט מתכנן לוגיקה; נהג מקליד ומריץ — גם בסימולטור."
+        }
+    ],
+    "vocabulary": [
+        [
+            "Block‑based Programming",
+            "תכנות חזותי בגרירת בלוקים; טוב ללוגיקה ראשונית."
+        ],
+        [
+            "Text‑based Programming",
+            "כתיבת קוד אמיתי שבו כל תו חשוב."
+        ],
+        [
+            "Object‑Oriented Syntax",
+            "מבנה שבו פונים לאובייקט tello ומפעילים עליו פעולה."
+        ],
+        [
+            "tello.action(argument);",
+            "תבנית פקודה: אובייקט, נקודה, פעולה, פרמטר ונקודה־פסיק."
+        ],
+        [
+            "Comment //",
+            "הערת קוד שהמחשב מתעלם ממנה והיא מיועדת למהנדסים."
+        ],
+        [
+            "Function Reference",
+            "ספריית פקודות שמונעת ניחוש ושגיאות כתיב."
+        ],
+        [
+            "SyntaxError",
+            "שגיאת תחביר שמונעת מהקוד לרוץ."
+        ],
+        [
+            "CamelCase",
+            "כתיבה כמו moveForward או yawRight עם אות גדולה באמצע."
+        ]
+    ],
+    "safetyRules": [
+        "אין הטסה פיזית במפגש 6 — למרות שהייתה טיסה בשיעור 5, היום חוזרים לסימולטור.",
+        "נשארים על WiFi בית ספרי לצורך שמירה ושיתוף.",
+        "לא מריצים קוד לפני שהנווט הקריא אותו שורה־שורה.",
+        "כל פקודת תנועה כוללת sleep אחריה כדי למנוע עומס פקודות והרגלי טיסה מסוכנים.",
+        "אם הסימולטור קופא, לא ממשיכים ללחוץ Run — סוגרים, מתקנים, ומריצים מחדש.",
+        "לא עוברים ל־TELLO WiFi בשיעור זה."
+    ],
+    "commonDirections": [
+        [
+            "New Script",
+            "פתיחת דף קוד חדש ב־DroneBlocks Code."
+        ],
+        [
+            "// comment",
+            "שורה שמסבירה למה הקוד קיים."
+        ],
+        [
+            "tello.moveForward(60);",
+            "קדימה 60 אינץ׳ בסימולטור."
+        ],
+        [
+            "tello.moveRight(60);",
+            "ימינה 60 אינץ׳ — Strafing."
+        ],
+        [
+            "tello.yawRight(90);",
+            "פנייה סביב ציר הרחפן — Yaw Box."
+        ],
+        [
+            "tello.sleep(3);",
+            "השהייה בין פקודות כדי לא להעמיס על הרצף."
+        ]
+    ],
+    "setupSteps": [
+        "טאבלטים טעונים ו־WiFi בית ספרי.",
+        "DroneBlocks Code פתוח על New Script.",
+        "מקרן עם תבנית tello.action(argument);.",
+        "Function Reference זמין להצגה.",
+        "דף תכנון לזוגות Driver/Logic Architect.",
+        "סביבת Minimal Grid, City כבונוס/הדגמה."
+    ],
+    "tabletTips": [
+        "להתחיל ב־New Script נקי ולא לערוך בטעות קוד משיעור 5.",
+        "לכתוב Comment בראש הקוד עם שם המשימה והצוות.",
+        "להעתיק פקודות מ־Function Reference במקום לנחש.",
+        "להשתמש ב־yawRight לפי API הקורס; אם האפליקציה מציגה turnRight, לבדוק במילון הפקודות המקומי.",
+        "לשמור לפני מעבר בין Strafing ל־Yaw.",
+        "אם Share נכשל — לבדוק WiFi בית ספרי."
+    ],
+    "lessonFlow": [
+        {
+            "minutes": "0–8",
+            "title": "גשר משיעור 5",
+            "teacher": "מזכיר את הטיסה הפיזית ואת חשיבות ה־sleep והדיוק. היום חוזרים לסימולטור כדי לחזק קוד טקסטואלי.",
+            "students": "משתפים שגיאת סינטקס/סטייה אחת שחוו."
+        },
+        {
+            "minutes": "8–18",
+            "title": "Skydio וקוד אמיתי",
+            "teacher": "מציג רחפנים אוטונומיים ושואל למה מערכות מקצועיות צריכות קוד טקסטואלי.",
+            "students": "מזהים יתרונות של קוד: מהירות, קריאות, תחזוקה."
+        },
+        {
+            "minutes": "18–28",
+            "title": "סינטקס והעוזר הרובוטי",
+            "teacher": "מסביר Case Sensitivity, סוגריים, נקודה־פסיק ו־SyntaxError דרך אנלוגיה.",
+            "students": "מזהים שגיאות בקוד דוגמה."
+        },
+        {
+            "minutes": "28–40",
+            "title": "DroneBlocks Code ו־Function Reference",
+            "teacher": "מראה Hamburger Menu, New Script, Comments ו־Function Reference.",
+            "students": "פותחים סקריפט חדש ומוסיפים Comment ראשון."
+        },
+        {
+            "minutes": "40–50",
+            "title": "תבנית פקודה",
+            "teacher": "כותב tello.moveForward(60); ומפרק Object.Action(argument);.",
+            "students": "מסמנים tello, action, argument ו־semicolon."
+        },
+        {
+            "minutes": "50–65",
+            "title": "Strafing Box עם sleep",
+            "teacher": "מלווה כתיבת ריבוע חממה: Forward/Right/Backward/Left עם sleep.",
+            "students": "מריצים בסימולטור Minimal Grid."
+        },
+        {
+            "minutes": "65–78",
+            "title": "Yaw Box Challenge",
+            "teacher": "מנחה גרסה עם moveForward ו־yawRight(90), כולל sleep בין פעולות.",
+            "students": "בודקים כיוון מצלמה וסופרים שורות."
+        },
+        {
+            "minutes": "78–85",
+            "title": "דיון אלגוריתמי",
+            "teacher": "שואל מה היה קשה במעבר מבלוקים לקוד ומה יתרון Yaw לסריקה.",
+            "students": "מנסחים תשובה על סינטקס ומצלמה."
+        },
+        {
+            "minutes": "85–90",
+            "title": "Save Script + Share",
+            "teacher": "אוסף קישורים ושומר אחידות בשם קובץ.",
+            "students": "שומרים Grade7_Meeting6_BoxMission_TeamX ומגישים."
+        }
+    ],
+    "exercises": [
+        {
+            "minutes": "8–18",
+            "title": "למה לא רק בלוקים?",
+            "prompt": "כתבו יתרון אחד של קוד טקסטואלי במערכת רחפן מקצועית.",
+            "check": "מוזכר דיוק/מהירות/תחזוקה/מורכבות."
+        },
+        {
+            "minutes": "18–28",
+            "title": "מצא את השגיאה",
+            "prompt": "תקנו tello.takeoff ו־tello.moveforward(60);.",
+            "check": "נוספו סוגריים, semicolon ו־moveForward."
+        },
+        {
+            "minutes": "28–40",
+            "title": "New Script + Comment",
+            "prompt": "פתחו סקריפט חדש וכתבו // זהו קוד הטיסה הראשון שלי ב-JavaScript.",
+            "check": "יש הערת קוד תקינה."
+        },
+        {
+            "minutes": "40–50",
+            "title": "פירוק פקודה",
+            "prompt": "פרקו tello.moveRight(60); לרכיבי הפקודה.",
+            "check": "Object/action/argument/semicolon מזוהים."
+        },
+        {
+            "minutes": "50–65",
+            "title": "Strafing Box",
+            "prompt": "כתבו ריבוע עם Forward, Right, Backward, Left ו־sleep בין תנועות.",
+            "check": "הרצף מסתיים ב־land."
+        },
+        {
+            "minutes": "65–78",
+            "title": "Yaw Box",
+            "prompt": "כתבו ריבוע שבו הרחפן טס קדימה ופונה yawRight(90) בכל פינה.",
+            "check": "יש ארבע פניות וכיוון האף חוזר."
+        },
+        {
+            "minutes": "78–85",
+            "title": "השוואת שיטות",
+            "prompt": "איזו שיטה עדיפה לרחפן עם מצלמה קדמית ולמה?",
+            "check": "מוזכר כיוון מצלמה ובטיחות."
+        },
+        {
+            "minutes": "85–90",
+            "title": "Share Script",
+            "prompt": "שמרו Grade7_Meeting6_BoxMission_TeamX והפיקו Share Link.",
+            "check": "יש קישור/תיעוד תקלה."
+        }
+    ],
+    "deliverable": "Grade7_Meeting6_BoxMission_TeamX: New Script עם Comment, Strafing Box ו/או Yaw Box בסימולטור, sleep בין פעולות ו־Share Link.",
+    "assessment": [
+        "התלמיד מבדיל בין בלוקים לקוד טקסטואלי.",
+        "הקוד עומד בתבנית tello.action(argument);.",
+        "יש שימוש ב־Function Reference לתיקון שגיאות.",
+        "הריבוע כולל sleep ו־land.",
+        "ההשוואה בין Strafing ל־Yaw מנומקת.",
+        "נוצר Share Link בשם מוסכם."
+    ],
+    "debugging": [
+        {
+            "problem": "Syntax Error",
+            "fix": "לבדוק Case Sensitivity, סוגריים, נקודה־פסיק וגרשיים."
+        },
+        {
+            "problem": "moveforward לא עובד",
+            "fix": "לתקן ל־moveForward לפי CamelCase."
+        },
+        {
+            "problem": "האפליקציה קופאת",
+            "fix": "לבדוק שאין לולאה אינסופית ושיש sleep בין פעולות; Force Close אם צריך."
+        },
+        {
+            "problem": "yaw לא עובד באפליקציה",
+            "fix": "לבדוק Function Reference: בחלק מהגרסאות הפקודה עשויה להופיע כ־yawRight או turnRight; להשתמש בשם שמופיע באפליקציה."
+        },
+        {
+            "problem": "Share Link לא עובד",
+            "fix": "לחזור ל־WiFi בית ספרי ולוודא Login."
+        }
+    ],
+    "differentiation": {
+        "support": [
+            "לתת שלד קוד עם שורות sleep מוכנות.",
+            "לעבוד בזוג Logic Architect/Developer.",
+            "להסתפק ב־Strafing Box אחד לפני Yaw."
+        ],
+        "extension": [
+            "להוסיף Comments לכל שלב.",
+            "להשוות מספר שורות מול שיעור 2/4.",
+            "להכין גרסה עם פונקציה כהכנה לשיעור 8."
+        ]
+    },
+    "instructorGuide": {
+        "prerequisites": "התלמידים מגיעים אחרי טיסה פיזית ראשונה, אבל שיעור 6 חוזר במכוון לסימולטור כדי לחזק יסודות קוד טקסטואלי. להזכיר שחוזרים ל־WiFi בית ספרי ולא לרשת Tello.",
+        "pedagogy": [
+            "שיעור 6 מחדד את המעבר לתכנות מקצועי גם אם שיעורים 1–4 כבר השתמשו ב־JavaScript; עכשיו עושים זאת במודע כתרגום מבלוקים/לוגיקה לקוד.",
+            "האתגר אינו חדש גיאומטרית — היתרון הוא הבנת הסינטקס וקריאות הקוד.",
+            "השתמשו בשגיאות מכוונות כדי להפוך SyntaxError לאירוע למידה ולא תסכול.",
+            "Function Reference הוא הרגל מקצועי: מתכנתים טובים בודקים תיעוד.",
+            "אין צורך בטיסה פיזית בשיעור זה; אחרי שיעור 5 חשוב להחזיר שליטה קוגניטיבית לפני המשך פיזי."
+        ],
+        "facilitationNotes": [
+            "להקרין סרטון Skydio קצר או רק תמונת השראה אם אין זמן.",
+            "להדגים New Script ו־Comment לפני כתיבה עצמאית.",
+            "להבהיר שאם האפליקציה משתמשת בשם פקודה אחר ל־Yaw, הולכים לפי Function Reference.",
+            "לאסוף Share Links בפורמט אחיד.",
+            "לשבח תלמידים שמזהים שגיאות סינטקס בעצמם."
+        ],
+        "mediaNote": "סרטון Skydio/Autonomy הוא השראה קצרה בלבד; הלב הוא תרגום לוגיקה לקוד טקסטואלי.",
+        "exitTicket": "בלוקים עוזרים להבין ___, אבל JavaScript דורש ___."
+    },
+    "appWorkflowTitle": "DroneBlocks Code — Skydio JavaScript Bridge",
+    "appWorkflowNote": "מפגש 6 מתקיים בסימולטור בלבד. האתר הוא תדריך; את הקוד כותבים ב־DroneBlocks Code בטאבלט ושומרים בענן.",
+    "appWorkflow": [
+        {
+            "title": "New Script",
+            "detail": "פתחו DroneBlocks Code על WiFi בית ספרי, Login, Hamburger Menu → New Script."
+        },
+        {
+            "title": "Comment ראשון",
+            "detail": "כתבו // עם שם המשימה ושם הצוות כדי לתעד את הקוד."
+        },
+        {
+            "title": "Function Reference",
+            "detail": "מצאו takeoff, moveForward, moveRight, moveBackward, moveLeft, yawRight/turnRight, sleep ו־land."
+        },
+        {
+            "title": "Strafing Box",
+            "detail": "כתבו ריבוע Forward/Right/Backward/Left עם sleep(3) בין תנועות."
+        },
+        {
+            "title": "Yaw Box",
+            "detail": "כתבו גרסה עם moveForward + yawRight(90) בכל פינה ושמרו על כיוון מצלמה."
+        },
+        {
+            "title": "Save & Share",
+            "detail": "שמרו Grade7_Meeting6_BoxMission_TeamX והגישו Device/Desktop Share Link."
+        }
+    ],
+    "visualDiagram": {
+        "panelTitle": "🤖 Skydio Code Bridge",
+        "chip": "JavaScript",
+        "title": "מבלוקים לקוד טקסטואלי",
+        "src": "assets/drone-coding-foundations/lesson6/skydio-text-code-bridge.svg",
+        "alt": "תרשים מעבר מבלוקים ל-JavaScript עם תבנית tello action argument",
+        "caption": "בלוקים מלמדים לוגיקה; JavaScript דורש דיוק של כל תו ושימוש ב־Function Reference."
+    },
+    "videoResources": [
+        {
+            "title": "Skydio 2 Autonomy — search suggestion",
+            "url": "https://www.youtube.com/results?search_query=Skydio+2+Autonomy+How+Autonomous+Drones+Think",
+            "note": "חיפוש מוצע לסרטון קצר על רחפנים אוטונומיים מקצועיים."
+        }
+    ],
+    "screenshotSlides": [
+        {
+            "title": "Skydio Code Bridge",
+            "src": "assets/drone-coding-foundations/lesson6/skydio-text-code-bridge.svg",
+            "caption": "תרגום לוגיקה חזותית לקוד מקצועי."
+        },
+        {
+            "title": "פותחים DroneBlocks Code",
+            "src": "assets/tello-mission-lab/lesson1/open-app.png",
+            "caption": "New Script ו־Function Reference."
+        },
+        {
+            "title": "Box Mission בסימולטור",
+            "src": "assets/drone-coding-foundations/lesson2/solar-box-strafing-vs-yaw.svg",
+            "caption": "Strafing מול Yaw."
+        },
+        {
+            "title": "Save & Share",
+            "src": "assets/tello-mission-lab/lesson1/save-share.png",
+            "caption": "Grade7_Meeting6_BoxMission_TeamX."
+        }
+    ],
+    "instructorSlides": [
+        {
+            "title": "Skydio Autonomy",
+            "body": "רחפנים מקצועיים צריכים קוד טקסטואלי מדויק ומהיר.",
+            "bullets": [
+                "Text code",
+                "Autonomy",
+                "JavaScript"
+            ]
+        },
+        {
+            "title": "העוזר הרובוטי",
+            "body": "המחשב לא מבין רמזים: כל אות, סוגריים ונקודה־פסיק חשובים.",
+            "bullets": [
+                "Case",
+                "()",
+                ";"
+            ]
+        },
+        {
+            "title": "New Script + Function Reference",
+            "body": "פותחים סקריפט חדש ומשתמשים בתיעוד הפקודות במקום לנחש.",
+            "bullets": [
+                "Hamburger Menu",
+                "New Script",
+                "Reference"
+            ]
+        },
+        {
+            "title": "Object.Action(argument)",
+            "body": "tello הוא האובייקט, הפעולה היא הפונקציה, והמספר הוא הארגומנט.",
+            "bullets": [
+                "tello",
+                "moveForward",
+                "60"
+            ]
+        },
+        {
+            "title": "Box Mission טקסטואלי",
+            "body": "מתרגמים ריבוע מוכר לקוד JavaScript עם sleep בין פעולות.",
+            "bullets": [
+                "Strafing",
+                "Yaw",
+                "sleep"
+            ]
+        },
+        {
+            "title": "שיתוף וסיכום",
+            "body": "שומרים את הסקריפט ומשתפים קישור לבדיקה.",
+            "bullets": [
+                "Save Script",
+                "Share Link",
+                "Debug"
             ]
         }
     ]
