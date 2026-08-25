@@ -24,7 +24,7 @@
     document.getElementById('playLink').href = `drone-coding-foundations-play.html?lesson=${lesson.id}`;
     document.getElementById('guideLink').href = `drone-coding-foundations-guide.html?lesson=${lesson.id}`;
     const realCards = (lesson.realWorldUses || []).map(u => `<div class="card"><b>${esc(u.icon)} ${esc(u.title)}</b>${esc(u.text)}</div>`).join('');
-    const vocabCards = (lesson.vocabulary || []).slice(2,7).map(([term,text]) => `<div class="card"><b>${esc(term)}</b>${esc(text)}</div>`).join('');
+    const vocabCards = (lesson.vocabulary || []).slice(0,6).map(([term,text]) => `<div class="card"><b>${esc(term)}</b>${esc(text)}</div>`).join('');
     const safetyCards = (lesson.safetyRules || []).slice(0,4).map(rule => `<div class="card">🛡️ ${esc(rule)}</div>`).join('');
     const criteriaCards = (lesson.successCriteria || []).map(item => `<div class="card">✅ ${esc(item)}</div>`).join('');
     const slideCards = (lesson.instructorSlides || []).map(slide => ({ html: `<div class="kicker">${esc(lesson.title)}</div><h2>${esc(slide.title)}</h2><p class="lead">${esc(slide.body)}</p><div class="cards three">${(slide.bullets || []).map(b => `<div class="card">${esc(b)}</div>`).join('')}</div>` }));

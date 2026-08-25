@@ -159,7 +159,7 @@
       if (lesson.id === 2) { document.querySelector('.zone.start').innerHTML='Start<br>חממה'; document.querySelector('.zone.air').innerHTML='Box 1.5m<br>ריבוע סריקה'; document.querySelector('.zone.land').innerHTML='Land<br>סיום'; }
       $('realUses').innerHTML = (lesson.realWorldUses || []).map(use => `<article class="real-card"><span class="icon">${esc(use.icon)}</span><b>${esc(use.title)}</b>${esc(use.text)}</article>`).join('');
       $('safety').innerHTML = (lesson.safetyRules || []).slice(0,4).map((rule,i) => `<label class="safety-item"><input type="checkbox" ${i===0?'checked':''}><span>${esc(rule)}</span></label>`).join('');
-      $('vocab').innerHTML = (lesson.vocabulary || []).slice(2,7).map(([term, text]) => `<article class="vocab-card"><b>${esc(term)}</b>${esc(text)}</article>`).join('');
+      $('vocab').innerHTML = (lesson.vocabulary || []).slice(0,6).map(([term, text]) => `<article class="vocab-card"><b>${esc(term)}</b>${esc(text)}</article>`).join('');
       $('directions').innerHTML = (lesson.commonDirections || []).map(([term,text]) => `<div class="direction"><b>${esc(term)}:</b> ${esc(text)}</div>`).join('');
       $('exercises').innerHTML = lesson.exercises.slice(0,4).map((ex,i)=>`<div class="exercise"><b>${i+1}. ${esc(ex.title)}</b>${esc(ex.prompt)}</div>`).join('');
       const missingToolboxBlocks = expectedTypes.filter(type => !toolboxTypes.has(type));
