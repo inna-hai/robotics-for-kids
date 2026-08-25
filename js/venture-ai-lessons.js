@@ -116,6 +116,7 @@
       title: 'בונים MVP באופאל',
       subtitle: 'תפקידי צוות, Vibe Coding, בדיקה ושיפור ראשון',
       image: 'assets/venture-ai/meeting-3-build.webp',
+      video: 'marketing/venture-ai-lesson3-explainer.mp4',
       durationMinutes: 90,
       productStage: 'גרסת MVP עובדת',
       bigQuestion: 'איך צוות צעיר עובד עם סוכן AI ומגיע לתוצר עובד, לא רק לרעיון יפה?',
