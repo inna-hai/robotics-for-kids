@@ -41,7 +41,8 @@ async function prepare(page) {
     #motionCursor svg{width:38px;height:38px;display:block}
     #motionCursor.down{filter:drop-shadow(0 2px 4px rgba(15,23,42,.34))}
     #motionCursor.down svg{transform:scale(.88);transform-origin:6px 6px}
-    #motionDragChip{position:fixed;z-index:999999;direction:rtl;border-radius:14px;padding:10px 16px;background:linear-gradient(135deg,#fb923c,#facc15);color:#111827;font:900 21px Rubik,Arial,sans-serif;box-shadow:0 16px 34px rgba(15,23,42,.28);pointer-events:none;opacity:0;transform:translate(-120px,-120px)}
+    #motionCursor.dragging::after{content:attr(data-chip);position:absolute;right:-150px;top:18px;direction:rtl;border-radius:14px;padding:10px 16px;min-width:150px;text-align:center;background:linear-gradient(135deg,#fb923c,#facc15);color:#111827;border:3px solid rgba(17,24,39,.22);font:900 21px Rubik,Arial,sans-serif;box-shadow:0 16px 34px rgba(15,23,42,.28)}
+    #motionDragChip{position:fixed;z-index:999999;direction:rtl;border-radius:14px;padding:10px 16px;min-width:150px;text-align:center;background:linear-gradient(135deg,#fb923c,#facc15);color:#111827;border:3px solid rgba(17,24,39,.22);font:900 21px Rubik,Arial,sans-serif;box-shadow:0 16px 34px rgba(15,23,42,.28);pointer-events:none;opacity:0;transform:translate(-120px,-120px)}
     .motion-ring{position:fixed;z-index:999997;border:6px solid #22c55e;border-radius:18px;box-shadow:0 0 0 8px rgba(34,197,94,.18);pointer-events:none;animation:pulseRing .72s ease-in-out infinite alternate}
     body.motion-world-zoom .code-panel,body.motion-world-zoom .lesson-info,body.motion-world-zoom .status{opacity:.2;filter:blur(1px)}
     body.motion-world-zoom #world{position:fixed!important;left:94px!important;right:auto!important;top:72px!important;width:1090px!important;height:590px!important;z-index:999990!important;border-width:10px!important;border-color:#facc15!important;border-radius:26px!important;box-shadow:0 0 0 9999px rgba(15,23,42,.35),0 24px 80px rgba(15,23,42,.44)!important}
@@ -166,12 +167,14 @@ async function setCursor(page, x, y, down = false, chip = '') {
       cursor.style.opacity = '1';
       cursor.style.transform = `translate(${x}px, ${y}px)`;
       cursor.classList.toggle('down', down);
+      cursor.classList.toggle('dragging', !!chip);
+      cursor.dataset.chip = chip || '';
     }
     const dragChip = document.getElementById('motionDragChip');
     if (dragChip) {
       dragChip.textContent = chip;
       dragChip.style.opacity = chip ? '1' : '0';
-      dragChip.style.transform = `translate(${x - 170}px, ${y + 20}px)`;
+      dragChip.style.transform = `translate(${x - 84}px, ${y - 8}px)`;
     }
   }, { x, y, down, chip });
 }
