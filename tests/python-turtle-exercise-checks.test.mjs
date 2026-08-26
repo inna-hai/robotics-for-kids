@@ -259,29 +259,43 @@ assert.match(html, /if\(type === 'py_grow_length'\) return 'length = length \+'/
 
 assert.match(html, /function repeatSpiralPattern\(times=null, angle=null, growAmount=null\)/, 'lesson 8 has a dedicated spiral validator for forward-length, turn, and grow-length order');
 
+assert.match(html, /if\(currentLesson === 8\)\{[\s\S]*ex\.id === 1[\s\S]*a\.cmd === 'right' && a\.v === 60[\s\S]*a\.cmd === 'growVar' && a\.name === 'length'/, 'lesson 8 exercise 1 requires a 60-degree right turn and length growth after moving by length');
+
 assert.match(html, /body\.some\(a=>a\.cmd === 'setVar' && a\.name === 'length'\)\) return false/, 'lesson 8 spiral validator rejects resetting length inside the repeat loop');
 
-assert.match(html, /if\(currentLesson === 8\)\{[\s\S]*ex\.id === 3[\s\S]*repeatSpiralPattern\(8, 90, 10\)/, 'lesson 8 exercise 3 validates the base spiral pattern');
+assert.match(html, /if\(currentLesson === 8\)\{[\s\S]*ex\.id === 2[\s\S]*repeatSpiralPattern\(3, 60, 10\)/, 'lesson 8 exercise 2 validates a short 3-step spiral loop with a 60-degree turn');
+
+assert.match(html, /if\(currentLesson === 8\)\{[\s\S]*ex\.id === 3[\s\S]*repeatSpiralPattern\(8, 60, 10\)/, 'lesson 8 exercise 3 validates the base hexagon-angle spiral pattern');
 
 assert.doesNotMatch(html, /כמעט — ודאו שהאורך נקבע לפני החזרה, ובתוך החזרה הוא רק מתקדם, פונה, ואז גדל/, 'lesson 8 spiral failure feedback should not reveal the exact block recipe');
 
-assert.match(html, /המשיכו מהקוד של תרגול 1: הוסיפו אחרי התנועה פנייה ימינה של 90/, 'lesson 8 exercise 2 makes clear it builds on exercise 1 code');
+assert.match(html, /הכניסו את יחידת הספירלה לתוך לולאה של 3 חזרות[\s\S]*פנייה ימינה 60 מעלות/, 'lesson 8 exercise 2 builds a short spiral loop using the same 60-degree angle as exercise 1');
 
-assert.match(html, /המשיכו מהספירלה שבניתם בתרגול 3: שנו רק את הגדלת length מ־10 ל־20/, 'lesson 8 exercise 5 makes clear it builds on exercise 3 code');
+assert.match(html, /הקוד שבניתם בתרגול 3 יופיע כאן\. שנו רק את הגדלת האורך מ־10 ל־20/, 'lesson 8 exercise 5 makes clear the learner continues from exercise 3 code instead of rebuilding');
 
-assert.match(html, /המשיכו מהקוד של תרגול 5: שנו רק את הפנייה ל־60/, 'lesson 8 exercise 6 makes clear it builds on exercise 5 code');
+assert.doesNotMatch(html, /currentLesson === 8 && ex\?\.id === 5\) return '<xml>/, 'lesson 8 exercise 5 has no generated starter, so it preserves the learner workspace from exercise 3');
 
-assert.match(html, /if\(currentLesson === 8\)\{[\s\S]*ex\.id === 5[\s\S]*repeatSpiralPattern\(8, 90, 20\)/, 'lesson 8 exercise 5 validates changing only the grow amount');
+assert.match(html, /המשיכו מהקוד של תרגול 5: שנו רק את הפנייה ל־72 מעלות/, 'lesson 8 exercise 6 changes from the base 60-degree angle to a pentagon-style 72-degree angle');
 
-assert.match(html, /if\(currentLesson === 8\)\{[\s\S]*ex\.id === 6[\s\S]*repeatSpiralPattern\(8, 60, null\)/, 'lesson 8 exercise 6 validates the alternate turn while preserving growth');
+assert.match(html, /if\(currentLesson === 8\)\{[\s\S]*ex\.id === 5[\s\S]*repeatSpiralPattern\(8, 60, 20\)/, 'lesson 8 exercise 5 validates changing only the grow amount while preserving the 60-degree angle');
+
+assert.match(html, /if\(currentLesson === 8\)\{[\s\S]*ex\.id === 6[\s\S]*repeatSpiralPattern\(8, 72, null\)/, 'lesson 8 exercise 6 validates the alternate 72-degree turn while preserving growth');
 
 assert.doesNotMatch(html, /תקנו את הקוד ההתחלתי: length מתאפס בתוך כל חזרה/, 'lesson 8 debug prompt should not reveal the exact bug before the learner investigates');
 
 assert.match(html, /תקנו את הקוד ההתחלתי כך שספירלת החלל תגדל בכל סיבוב/, 'lesson 8 debug exercise asks for the goal without naming the exact bug');
 
+assert.match(html, /איזה שינוי צריך להישאר לסיבוב הבא — אבל נמחק או נדרס בדרך/, 'lesson 8 debug hint points to the lost length/length-variable change without revealing the exact block fix');
+
 assert.match(html, /currentLesson === 8 && ex\?\.id === 7[\s\S]*py_repeat[\s\S]*py_set_length[\s\S]*py_forward_length[\s\S]*py_right[\s\S]*py_grow_length/, 'lesson 8 debug exercise loads a starter with set-length and grow-length inside the loop so there is a real bug to fix');
 
-assert.match(html, /if\(currentLesson === 8\)\{[\s\S]*ex\.id === 8[\s\S]*actionDrawnColors/, 'lesson 8 color exercise validates color actually drawn on the spiral');
+assert.match(html, /תרגול 8 — ספירלה כמעט חלקה וצבעונית/, 'lesson 8 exercise 8 upgrades the color task into a smoother colorful spiral lab');
+
+assert.match(html, /בנו גרסה צבעונית של הספירלה שנראית צפופה וחלקה יותר[\s\S]*נסו למצוא שילוב יפה של מספרים/, 'lesson 8 exercise 8 prompts exploration instead of a fixed recipe');
+
+assert.match(html, /אם הספירלה יוצאת מהמסך — הקטינו את האורך ההתחלתי או את קצב הגדילה/, 'lesson 8 exercise 8 hint keeps many repeats and suggests reducing initial length or growth when off-screen');
+
+assert.match(html, /if\(currentLesson === 8\)\{[\s\S]*ex\.id === 8[\s\S]*smallInitialLength[\s\S]*times < 30[\s\S]*a\.v >= 20 && a\.v <= 40[\s\S]*a\.v > 0 && a\.v <= 3[\s\S]*actionDrawnColors/, 'lesson 8 exercise 8 validates an exploratory screen-friendly smooth colorful spiral');
 
 assert.match(html, /"id": 9,[\s\S]*"prompt": "בנו קו אחד של כוכב: הזיזו את הצב קדימה ואז סובבו אותו ימינה ב־144 מעלות/, 'lesson 9 starts by teaching the most basic star unit with the required turn degree');
 
