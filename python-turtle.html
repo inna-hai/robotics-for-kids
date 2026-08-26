@@ -8189,11 +8189,11 @@
       return ((currentLesson >= 1 && currentLesson <= 7) || (currentLesson === 8 && ex?.id === 9) || (currentLesson === 9 && ex?.id === 9)) && /כותבים Python קצר/.test(`${ex?.title || ''} ${ex?.prompt || ''}`);
     }
     function requiredWrittenPythonLineCount(ex){
-      if(currentLesson === 3 && ex?.id === 13) return 5;
-      if(currentLesson === 4 && ex?.id === 12) return 4;
-      if(currentLesson === 5 && ex?.id === 12) return 5;
+      if(currentLesson === 3 && ex?.id === 11) return 5;
+      if(currentLesson === 4 && ex?.id === 9) return 4;
+      if(currentLesson === 5 && ex?.id === 8) return 5;
       if(currentLesson === 6 && ex?.id === 8) return 4;
-      if(currentLesson === 7 && ex?.id === 11) return 5;
+      if(currentLesson === 7 && ex?.id === 9) return 5;
       if(currentLesson === 8 && ex?.id === 9) return 4;
       if(currentLesson === 9 && ex?.id === 9) return 3;
       return 3;
@@ -8207,7 +8207,11 @@
         const filtered = l.exercises.filter(ex=>!isNotebookOnlyExercise(ex));
         const tips = filtered.filter(isTipExercise);
         const regular = filtered.filter(ex=>!isTipExercise(ex));
-        return regular.length ? [regular[0], ...tips, ...regular.slice(1)] : filtered;
+        const visibleExercises = regular.length ? [regular[0], ...tips, ...regular.slice(1)] : filtered;
+        if((currentLesson >= 1 && currentLesson <= 5) || currentLesson === 7){
+          return visibleExercises.map((ex, index)=>({...ex, id:index+1}));
+        }
+        return visibleExercises;
       }
       return (l.practice || [])
         .filter(prompt=>!/כתבו במחברת|במחברת|מחברת/.test(prompt))
@@ -8376,7 +8380,7 @@
       return restoreXml(exerciseStartXml[baselineKey(index)]);
     }
     function isTipExercise(ex){
-      if((currentLesson === 3 && ex?.id === 4) || (currentLesson === 4 && ex?.id === 6) || (currentLesson === 5 && ex?.id === 3) || (currentLesson === 8 && ex?.id === 4) || (currentLesson === 11 && ex?.id === 3)) return false;
+      if((currentLesson === 3 && ex?.id === 5) || (currentLesson === 4 && ex?.id === 6) || (currentLesson === 5 && ex?.id === 3) || (currentLesson === 8 && ex?.id === 4) || (currentLesson === 11 && ex?.id === 3)) return false;
       const text = `${ex?.title || ''} ${ex?.prompt || ''}`;
       return /הידעתם|לחצו על בלוק|לוחצים על בלוק|שורת קוד נדלקת|שורת הקוד.*נדלקת|שורת Python/.test(text);
     }
@@ -8385,7 +8389,7 @@
       return /אתגר/.test(text) && !isPythonWritingExercise(ex);
     }
     function isRunOnlyExampleExercise(ex){
-      return currentLesson === 5 && ex?.id === 5;
+      return currentLesson === 5 && ex?.id === 4;
     }
     function requiresFreshCheckExercise(ex){
       return (currentLesson === 5 && ex?.id === 6) || (currentLesson === 8 && ex?.id === 7) || (currentLesson === 9 && ex?.id === 6) || (currentLesson === 10 && [1,2,3,4,5,6,7].includes(ex?.id)) || (currentLesson === 11 && ex?.id === 6);
@@ -8394,7 +8398,7 @@
       return !isTipExercise(ex) && !isChallengeExercise(ex) && !isSelectionOnlyExercise(ex) && !isRunOnlyExampleExercise(ex);
     }
     function isSelectionOnlyExercise(ex){
-      return (currentLesson === 3 && ex?.id === 4) || (currentLesson === 4 && ex?.id === 6) || (currentLesson === 5 && ex?.id === 3) || (currentLesson === 8 && ex?.id === 4) || (currentLesson === 11 && ex?.id === 3);
+      return (currentLesson === 3 && ex?.id === 5) || (currentLesson === 4 && ex?.id === 6) || (currentLesson === 5 && ex?.id === 3) || (currentLesson === 8 && ex?.id === 4) || (currentLesson === 11 && ex?.id === 3);
     }
     function selectionOnlyBlockTypes(ex){
       if(currentLesson === 4 && ex?.id === 6) return ['py_color'];
@@ -8459,8 +8463,8 @@
     }
     function starterXmlForExercise(ex){
       if(/מחוץ למסך/.test(`${ex?.prompt || ''} ${ex?.check || ''}`)) return '<xml><block type="py_forward" x="40" y="40"><field name="STEPS">700</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">500</field></block></next></block></next></block></xml>';
-      if(currentLesson === 2 && ex?.id === 8) return '<xml><block type="py_forward" x="40" y="40"><field name="STEPS">55</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">55</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">55</field><next><block type="py_forward"><field name="STEPS">55</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">55</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">55</field><next><block type="py_forward"><field name="STEPS">55</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">55</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">55</field></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
-      if(currentLesson === 3 && ex?.id === 8) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">65</field><next><block type="py_right"><field name="ANGLE">72</field></block></next></block></statement></block></next></block></xml>';
+      if(currentLesson === 2 && ex?.id === 6) return '<xml><block type="py_forward" x="40" y="40"><field name="STEPS">55</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">55</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">55</field><next><block type="py_forward"><field name="STEPS">55</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">55</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">55</field><next><block type="py_forward"><field name="STEPS">55</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">55</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">55</field></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
+      if(currentLesson === 3 && ex?.id === 9) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">65</field><next><block type="py_right"><field name="ANGLE">72</field></block></next></block></statement></block></next></block></xml>';
       if(currentLesson === 8 && ex?.id === 4) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_set_length"><field name="VALUE">30</field><next><block type="py_repeat"><field name="TIMES">8</field><statement name="DO"><block type="py_forward_length"><next><block type="py_right"><field name="ANGLE">60</field><next><block type="py_grow_length"><field name="ADD">10</field></block></next></block></next></block></statement></block></next></block></next></block></xml>';
       if(currentLesson === 8 && ex?.id === 7) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_repeat"><field name="TIMES">8</field><statement name="DO"><block type="py_set_length"><field name="VALUE">30</field><next><block type="py_forward_length"><next><block type="py_right"><field name="ANGLE">60</field><next><block type="py_grow_length"><field name="ADD">10</field></block></next></block></next></block></next></block></statement></block></next></block></xml>';
       if(currentLesson === 9 && ex?.id === 3) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_repeat"><field name="TIMES">5</field><statement name="DO"><block type="py_forward"><field name="STEPS">80</field><next><block type="py_right"><field name="ANGLE">144</field></block></next></block></statement></block></next></block></xml>';
@@ -8474,13 +8478,13 @@
       if(currentLesson === 10 && ex?.id === 7) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">55</field><next><block type="py_right"><field name="ANGLE">80</field></block></next></block></statement><next><block type="py_forward"><field name="STEPS">160</field><next><block type="py_repeat"><field name="TIMES">5</field><statement name="DO"><block type="py_forward"><field name="STEPS">50</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_forward"><field name="STEPS">170</field><next><block type="py_repeat"><field name="TIMES">8</field><statement name="DO"><block type="py_set_length"><field name="VALUE">25</field><next><block type="py_forward_length"><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_grow_length"><field name="ADD">10</field></block></next></block></next></block></next></block></statement></block></next></block></next></block></next></block></next></block></xml>';
       if(currentLesson === 11 && ex?.id === 3) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_comment"><field name="TEXT">רחוב ראשי</field><next><block type="py_forward"><field name="STEPS">120</field></block></next></block></next></block></xml>';
       if(currentLesson === 11 && ex?.id === 6) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_comment"><field name="TEXT">בית</field><next><block type="py_set_length"><field name="VALUE">70</field><next><block type="py_color"><field name="COLOR">#2563eb</field><next><block type="py_forward_length"><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_comment"><field name="TEXT">מעבר לרחוב צדדי</field><next><block type="py_forward"><field name="STEPS">140</field><next><block type="py_color"><field name="COLOR">#16a34a</field><next><block type="py_comment"><field name="TEXT">רחוב צדדי</field><next><block type="py_forward"><field name="STEPS">35</field><next><block type="py_comment"><field name="TEXT">בית ספר</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward_length"><next><block type="py_forward"><field name="STEPS">70</field></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
-      if(currentLesson === 7 && ex?.id === 5) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_left"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">50</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">18</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">35</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">14</field></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></statement></block></next></block></xml>';
-      if(currentLesson === 7 && ex?.id === 6) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_repeat"><field name="TIMES">6</field><statement name="DO"><block type="py_forward"><field name="STEPS">60</field><next><block type="py_right"><field name="ANGLE">60</field><next><block type="py_left"><field name="ANGLE">30</field></block></next></block></next></block></statement></block></next></block></xml>';
+      if(currentLesson === 7 && ex?.id === 6) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_left"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">50</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">18</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">35</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">14</field></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></statement></block></next></block></xml>';
+      if(currentLesson === 7 && ex?.id === 7) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_repeat"><field name="TIMES">6</field><statement name="DO"><block type="py_forward"><field name="STEPS">60</field><next><block type="py_right"><field name="ANGLE">60</field><next><block type="py_left"><field name="ANGLE">30</field></block></next></block></next></block></statement></block></next></block></xml>';
       if(currentLesson === 5 && ex?.id === 3) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_penup"><next><block type="py_forward"><field name="STEPS">120</field><next><block type="py_pendown"><next><block type="py_repeat"><field name="TIMES">3</field><statement name="DO"><block type="py_forward"><field name="STEPS">80</field><next><block type="py_right"><field name="ANGLE">120</field></block></next></block></statement></block></next></block></next></block></next></block></next></block></xml>';
       if(currentLesson === 5 && ex?.id === 4) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">60</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_forward"><field name="STEPS">140</field><next><block type="py_penup"><next><block type="py_pendown"><next><block type="py_repeat"><field name="TIMES">3</field><statement name="DO"><block type="py_forward"><field name="STEPS">75</field><next><block type="py_right"><field name="ANGLE">120</field></block></next></block></statement></block></next></block></next></block></next></block></next></block></next></block></xml>';
       if(currentLesson === 5 && ex?.id === 5) return '<xml><block type="py_python" x="20" y="20" movable="false" editable="false" deletable="false"><next><block type="py_forward" movable="false" editable="false" deletable="false"><field name="STEPS">70</field><next><block type="py_penup" movable="false" editable="false" deletable="false"><next><block type="py_forward" movable="false" editable="false" deletable="false"><field name="STEPS">100</field><next><block type="py_pendown" movable="false" editable="false" deletable="false"><next><block type="py_forward" movable="false" editable="false" deletable="false"><field name="STEPS">70</field></block></next></block></next></block></next></block></next></block></next></block></xml>';
       if(currentLesson === 5 && ex?.id === 6) return '<xml><block type="py_python" x="20" y="20"></block></xml>';
-      if(currentLesson === 5 && ex?.id === 12) return '<xml><block type="py_python" x="20" y="20"></block></xml>'; 
+      if(currentLesson === 5 && ex?.id === 8) return '<xml><block type="py_python" x="20" y="20"></block></xml>'; 
       if(currentLesson === 4 && ex?.id === 7) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">100</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_color"><field name="COLOR">#16a34a</field></block></next></block></next></block></xml>';
       return '';
     }
@@ -8546,7 +8550,7 @@
       if(exerciseStarterLoaded[key] && !force) return;
       const actions = getActions();
       if(!force && /מחוץ למסך/.test(`${ex.prompt || ''} ${ex.check || ''}`) && actions.length && simulateBounds(actions).out) return;
-      if(!force && currentLesson === 2 && ex.id === 8 && actions.length && exerciseStarterLoaded[key]) return;
+      if(!force && currentLesson === 2 && ex.id === 6 && actions.length && exerciseStarterLoaded[key]) return;
       exerciseStarterLoaded[key] = true;
       workspace.clear();
       Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(xml), workspace);
@@ -8577,7 +8581,7 @@
       const nextButtonLabel = isLast ? (nextLessonId ? 'סיימתי — לשיעור הבא' : 'סיימתי את הקורס') : 'המשך';
       const writingExercise = isPythonWritingExercise(ex);
       const writingValue = pythonWritingAnswers[pythonWritingKey()] || '';
-      const writingPlaceholder = currentLesson === 9 && ex?.id === 9 ? 'for i in range(3):&#10;    forward(___)&#10;    right(120)' : (currentLesson === 8 && ex?.id === 9 ? 'length = ___&#10;for i in range(___):&#10;    forward(length)&#10;    right(___)&#10;    length = length + ___' : (currentLesson === 6 && ex?.id === 8 ? 'length = 30&#10;forward(length)&#10;length = length + 20&#10;forward(length)' : (currentLesson === 5 && ex?.id === 12 ? 'forward(70)&#10;penup()&#10;forward(100)&#10;pendown()&#10;forward(70)' : (currentLesson === 4 && ex?.id === 12 ? `color('#16a34a')&#10;forward(60)&#10;right(90)&#10;forward(60)` : (requiredWrittenPythonLineCount(ex) === 5 ? 'forward(50)&#10;right(90)&#10;forward(50)&#10;right(90)&#10;forward(50)' : 'forward(50)&#10;right(90)&#10;forward(50)')))));
+      const writingPlaceholder = currentLesson === 9 && ex?.id === 9 ? 'for i in range(3):&#10;    forward(___)&#10;    right(120)' : (currentLesson === 8 && ex?.id === 9 ? 'length = ___&#10;for i in range(___):&#10;    forward(length)&#10;    right(___)&#10;    length = length + ___' : (currentLesson === 6 && ex?.id === 8 ? 'length = 30&#10;forward(length)&#10;length = length + 20&#10;forward(length)' : (currentLesson === 5 && ex?.id === 8 ? 'forward(70)&#10;penup()&#10;forward(100)&#10;pendown()&#10;forward(70)' : (currentLesson === 4 && ex?.id === 9 ? `color('#16a34a')&#10;forward(60)&#10;right(90)&#10;forward(60)` : (requiredWrittenPythonLineCount(ex) === 5 ? 'forward(50)&#10;right(90)&#10;forward(50)&#10;right(90)&#10;forward(50)' : 'forward(50)&#10;right(90)&#10;forward(50)')))));
       const writingHtml = writingExercise ? `<label class="muted" for="pythonWritingAnswer"><b>כתבו כאן בתוך הלומדה:</b></label><textarea id="pythonWritingAnswer" dir="ltr" spellcheck="false" style="width:100%;min-height:${requiredWrittenPythonLineCount(ex) === 5 ? '132' : '96'}px;margin-top:8px;border:1px solid #fed7aa;border-radius:14px;padding:10px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.95rem;line-height:1.45;direction:ltr;text-align:left;background:#fff;" placeholder="${writingPlaceholder}">${escapeHtml(writingValue)}</textarea><button class="btn run" id="runWrittenPythonBtn" type="button" style="margin-top:8px;">▶️ הרץ את הקוד שכתבתי</button>` : '';
       const feedbackHtml = `<div class="exercise-feedback ${feedbackBelowButtons ? 'feedback-line-break' : ''} ${ok ? 'ok' : 'warn'}">${escapeHtml(message)}</div>`;
       missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div><p><b>${escapeHtml(ex.prompt || '')}</b></p>${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p>${(isChallengeExercise(ex) || isRunOnlyExampleExercise(ex)) ? '' : `<p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}`}${writingHtml}<div class="exercise-bottom"><div class="exercise-controls">${(isTip || isChallengeExercise(ex) || isSelectionOnly || isRunOnlyExampleExercise(ex)) ? '' : '<button class="btn run" id="checkExerciseBtn">✅ בדוק תרגיל</button>'}${resetButton}<button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${nextButtonLabel}</button></div>${feedbackBelowButtons ? '<br>' : feedbackHtml}</div>${feedbackBelowButtons ? feedbackHtml : ''}</div>`;
@@ -9193,7 +9197,7 @@
         if(!isOneTurnChangeFromDescendingStairs(actions, 3)) return ['שנו רק כיוון של פנייה אחת במסלול המדרגות: מימינה לשמאלה או משמאלה לימינה. אל תשנו מרחקים, מעלות או בלוקים אחרים.'];
         return [];
       }
-      if(currentLesson === 2 && ex.id === 8){
+      if(currentLesson === 2 && ex.id === 6){
         const current = comparableActions(actions);
         const expected = ['forward','right','forward','left','forward','forward','right','forward','left','forward','forward','right','forward','left','forward'];
         if(current.length !== expected.length) return ['השתמשו בקוד ההתחלתי ותקנו רק פנייה אחת — אל תוסיפו ואל תמחקו בלוקים.'];
@@ -9213,7 +9217,7 @@
         if(changedTurns === 0) return [];
         return ['עדיין יש פנייה שמקלקלת את המדרגות — החליפו רק את כיוון הפנייה הלא נכונה.'];
       }
-      if(currentLesson === 2 && ex.id === 9){
+      if(currentLesson === 2 && ex.id === 7){
         const current = comparableActions(actions);
         if(!hasDescendingStairSequence(current, 3)) return ['המדרגות צריכות להישאר תקינות: בכל מדרגה יש קטע ישר, ירידה קצרה, ואז המשך ישר.'];
         if(actionDrawnColors(actions).size < 2) return ['צריך לצייר את המדרגות בפועל לפחות בשני צבעים שונים. שימו צבע אחד בהתחלה וצבע נוסף לפני אחת המדרגות הבאות.'];
@@ -9245,39 +9249,39 @@
           if(!repeatShapeMatches(4, 90)) return ['הריבוע עדיין לא בנוי נכון — בדקו שהלולאה חוזרת מספר מתאים של פעמים ושהפנייה סוגרת ריבוע.'];
           return [];
         }
-        if(ex.id === 2){
+        if(ex.id === 3){
           if(!repeatShapeMatches(3, 120)) return ['המשולש עדיין לא בנוי נכון — בדקו שמספר החזרות וזווית הפנייה מתאימים למשולש.'];
           return [];
         }
-        if(ex.id === 3){
+        if(ex.id === 4){
           if(!repeatShapeMatches(6, 60)) return ['המשושה עדיין לא בנוי נכון — בדקו שמספר החזרות וזווית הפנייה מתאימים למשושה.'];
           return [];
         }
-        if(ex.id === 4){
+        if(ex.id === 5){
           const selected = selectedBlock();
           if(!selected || selected.type !== 'py_repeat') return ['בחרו את בלוק ׳חזור׳ כדי להדגיש את שורת ה־for בקוד Python.'];
           return [];
         }
-        if(ex.id === 5){
+        if(ex.id === 6){
           if(!hasBlock('py_repeat')) return ['צריך להשתמש בבלוק ׳חזור׳ כדי לבנות את הצורה שבחרתם.'];
           if(!repeatCalculatedShapeMatches()) return ['בחרו מספר צלעות/צדדים, ואז התאימו גם את מספר החזרות וגם את זווית הפנייה לפי 360 ÷ מספר הצלעות/הצדדים.'];
           return [];
         }
-        if(ex.id === 6){
+        if(ex.id === 7){
           const repeats = repeatBlocks().length;
           if(repeats < 2) return ['צריך לבנות שתי צורות אחת אחרי השנייה.'];
           if(actions.filter(a=>a.cmd === 'forward' || a.cmd === 'forwardVar').length < 6) return ['שתי צורות צריכות לכלול כמה תנועות קדימה, לא רק קו אחד.'];
           return [];
         }
-        if(ex.id === 7){
+        if(ex.id === 8){
           if(actionDrawnColors(actions).size < 2) return ['צריך שהצב יצייר בפועל לפחות בשני צבעים שונים.'];
           return [];
         }
-        if(ex.id === 8){
+        if(ex.id === 9){
           if(!repeatShapeMatches(5, 72)) return ['המחומש עדיין לא נסגר — בדקו את הבלוק היחיד שקובע כמה פעמים הצורה חוזרת.'];
           return [];
         }
-        if(ex.id === 9){
+        if(ex.id === 10){
           if(repeatBlocks().length < 2) return ['באתגר הזה צריך להשתמש בבלוק ׳חזור׳ יותר מפעם אחת.'];
           return [];
         }
@@ -9349,31 +9353,26 @@
           if(!repeatHasFencePlankPattern(8, true)) return ['כמעט — השאירו את קרש הגדר ואת הקו הקטן שבין הקרשים בתוך בלוק החזרה, ושנו את מספר החזרות ל־8.'];
           return [];
         }
-        if(ex.id === 10){
+        if(ex.id === 4){
           if(!movesLeftBeforeFence(actions)) return ['כמעט — לפני הגדר צריך להרים עט, לפנות שמאלה בעזרת פנייה של 180 מעלות, לזוז בלי לצייר, לפנות חזרה ולהוריד עט.'];
           if(!repeatHasFencePlankPattern(8, true)) return ['כמעט — אחרי ההזזה שמאלה עדיין צריכה להיות שורת גדר ארוכה עם 8 חזרות וקו קטן בין הקרשים.'];
           return [];
         }
-        if(ex.id === 4){
+        if(ex.id === 5){
           if(!hasBlock('py_repeat') || !repeatHasFencePlankPatternAtLeast(4, true)) return ['כמעט — שמרו על שורת גדר חוזרת: בתוך בלוק ״חזור״ צריך להיות קרש גדר שלם וגם קו קטן שמוביל לקרש הבא. אפשר להשתמש ב־4 חזרות או יותר.'];
           if(actionDrawnColors(actions).size < 2) return ['כמעט — כל קרש צריך להיות דו־צבעי: שימו צבע אחד לפני הקו שעולה וצבע אחר לפני הקו שיורד, כך ששני הצבעים יופיעו על הקרש עצמו.'];
           return [];
         }
-        if(ex.id === 5){
+        if(ex.id === 6){
           if(!repeatHasAlignedFencePlankPatternAtLeast(4, true)) return ['כמעט — מצאו את הבלוק היחיד שצריך לתקן: הערך של הקו שעולה והערך של הקו שיורד בקרש צריכים להיות שווים, כדי שכל הקרשים יחזרו לעמוד באותה שורה.'];
           return [];
         }
-        if(ex.id === 6){
+        if(ex.id === 7){
           if(!repeatHasForwardThenTurn(6)) return ['כמעט — שמרו על הדפוס החוזר ותקנו רק את מה שמקלקל אותו.'];
           const repeated = repeatPatternBlocks().find(({times, body})=>times === 6 && body.some(a=>a.cmd==='forward' || a.cmd==='forwardVar'));
           if(!repeated) return ['כמעט — השתמשו בקוד ההתחלתי ותקנו את הדפוס החוזר.'];
           const turns = repeated.body.filter(a=>a.cmd==='right' || a.cmd==='left');
           if(turns.length !== 1) return ['כמעט — עדיין יש בלוק שמקלקל את יחידת הדפוס.'];
-          return [];
-        }
-        if(ex.id === 7){
-          if(!hasBlock('py_repeat')) return ['כמעט — המסגרת צריכה להיבנות מדפוס חוזר.'];
-          if(simulatePath(actions).distanceFromStart > 25) return ['כמעט — המסגרת עדיין לא נסגרת. בדקו את הדפוס והפניות.'];
           return [];
         }
       }
@@ -9582,7 +9581,7 @@
         if(drawnForwards < 3 || triangleTurns < 2) return ['אחרי שהצב חוזר לצייר צריך לבנות משולש.'];
         return [];
       }
-      if(currentLesson === 5 && ex.id === 4){
+      if(currentLesson === 5 && ex.id === 5){
         const penUpIndex = actions.findIndex(a=>a.cmd==='pen' && a.v===false);
         if(penUpIndex < 0) return ['צריך להשתמש ב״הרם עט״ כדי שהמעבר בין הצורות לא יצויר.'];
         const pendownIndex = actions.findIndex((a,i)=>i > penUpIndex && a.cmd==='pen' && a.v===true);
@@ -9778,7 +9777,7 @@
     }
     function validateWrittenPythonExercise(ex, actions){
       const problems = [];
-      if(currentLesson === 2 && ex?.id === 15){
+      if(currentLesson === 2 && ex?.id === 8){
         const turnIndex = actions.findIndex(action=>action.cmd === 'right' || action.cmd === 'left');
         const hasForwardBeforeTurn = turnIndex > 0 && actions.slice(0, turnIndex).some(action=>action.cmd === 'forward');
         const hasForwardAfterTurn = turnIndex >= 0 && actions.slice(turnIndex + 1).some(action=>action.cmd === 'forward');
@@ -9786,7 +9785,7 @@
           problems.push('כדי ליצור מדרגה, כתבו קו קדימה, פנייה, ואז עוד קו קדימה.');
         }
       }
-      if(currentLesson === 3 && ex?.id === 13){
+      if(currentLesson === 3 && ex?.id === 11){
         const squareStartPattern = ['forward','turn90','forward','turn90','forward'];
         const comparable = actions.map(action=>(action.cmd === 'right' || action.cmd === 'left') && action.v === 90 ? 'turn90' : action.cmd);
         const matchesThreeSquareSides = squareStartPattern.every((expected, index)=>comparable[index] === expected);
@@ -9794,7 +9793,7 @@
           problems.push('כדי ליצור 3 צלעות של ריבוע, כתבו: קו קדימה, פנייה של 90 מעלות, קו קדימה, פנייה של 90 מעלות, ועוד קו קדימה.');
         }
       }
-      if(currentLesson === 4 && ex?.id === 12){
+      if(currentLesson === 4 && ex?.id === 9){
         const defaultBlue = '#2563eb';
         const comparable = actions.map(action=>(action.cmd === 'right' || action.cmd === 'left') && action.v === 90 ? 'turn90' : action.cmd);
         const matchesColoredCorner = comparable[0] === 'color' && comparable[1] === 'forward' && comparable[2] === 'turn90' && comparable[3] === 'forward';
@@ -9802,7 +9801,7 @@
           problems.push('כתבו 4 שורות לפי הסדר: color עם צבע חדש, forward, right(90) או left(90), ואז forward נוסף.');
         }
       }
-      if(currentLesson === 5 && ex?.id === 12){
+      if(currentLesson === 5 && ex?.id === 8){
         const comparable = actions.map(action=>action.cmd === 'pen' ? (action.v ? 'pendown' : 'penup') : action.cmd);
         const matchesPenLiftLine = comparable[0] === 'forward' && comparable[1] === 'penup' && comparable[2] === 'forward' && comparable[3] === 'pendown' && comparable[4] === 'forward';
         if(!matchesPenLiftLine){
@@ -9847,7 +9846,7 @@
           }
         }
       }
-      if(currentLesson === 7 && ex?.id === 11){
+      if(currentLesson === 7 && ex?.id === 9){
         const loop = actions.find(action=>action.cmd === 'for');
         if(!loop || loop.times < 2){
           problems.push('השתמשו בלולאת for עם range, למשל for i in range(4):');
@@ -9873,7 +9872,7 @@
         return;
       }
       const snapshot = createCodeSnapshot();
-      const skipRun = currentLesson === 3 && ex.id === 4;
+      const skipRun = currentLesson === 3 && ex.id === 5;
       if(!skipRun) await run(snapshot.actions);
       activeValidationSnapshot = snapshot;
       const problems = validateExercise(snapshot);
