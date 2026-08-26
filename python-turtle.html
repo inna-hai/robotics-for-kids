@@ -1863,7 +1863,7 @@
             "שנו רק את זווית הפנייה ובדקו איך הצורה משתנה.",
             "תקנו ספירלה התחלתית שלא גדלה כי חסר בה שינוי אורך.",
             "הוסיפו צבע לפני הספירלה כך שהקווים באמת יצוירו בצבע החדש.",
-            "אתגר: בנו ספירלה שנראית כמו שביל חלל אישי."
+            "כתבו Python קצר לספירלה בעזרת length ולולאת for."
         ],
         "timing": [
             "0–10 פתיחה: למה ספירלה צריכה אורך שמשתנה",
@@ -1872,7 +1872,7 @@
             "36–46 בלוק → Python: length = length + ...",
             "46–64 ניסויים מבוקרים בקצב גדילה ובזווית",
             "64–74 דיבאג ספירלה שלא גדלה",
-            "74–84 שדרוג צבע ואתגר יצירתי",
+            "74–84 שדרוג צבע וכתיבת Python קצרה",
             "84–90 שיתוף וסיכום"
         ],
         "teacherTips": [
@@ -1880,7 +1880,7 @@
             "לבקש מהילדים לנבא מה יקרה לפני שינוי קצב הגדילה או הזווית.",
             "לא לתת את כל המתכון מראש; לבנות: אורך → תנועה → פנייה → חזרה → הגדלה.",
             "כשבודקים צבע, לוודא שהצבע מופיע לפני ציור הקווים ולא אחרי הספירלה.",
-            "באתגר לשמור על שימוש באורך משתנה, לא להפוך את זה לקישוט רגיל."
+            "בתרגיל כתיבת Python לשמור על אורך משתנה בתוך לולאה, לא להפוך את זה לרצף פקודות רגילות."
         ],
         "unit": "יחידה 2 — סטודיו אומנות ודפוסים",
         "level": "קליל וחווייתי לגיל 10–11",
@@ -1930,8 +1930,8 @@
             {
                 "minutes": "74–84",
                 "title": "שדרוג ואתגר",
-                "teacher": "פותחים שדרוג צבע ואתגר אישי קצר תוך שמירה על אורך משתנה.",
-                "students": "מוסיפים צבע או סגנון ומוודאים שהספירלה עדיין גדלה."
+                "teacher": "פותחים שדרוג צבע ומסיימים בכתיבת ספירלה קצרה שמראה את שורות ה־Python המרכזיות.",
+                "students": "בונים ספירלה קצרה ומוודאים שבקוד רואים לולאה, forward(length), והגדלת אורך."
             },
             {
                 "minutes": "84–90",
@@ -2016,11 +2016,11 @@
             {
                 "id": 9,
                 "minutes": "76–86",
-                "title": "אתגר — שביל חלל אישי",
-                "prompt": "אתגר: בנו ספירלה שנראית כמו שביל חלל אישי, עם שינוי אחד משלכם בצבע, בזווית או בקצב הגדילה.",
-                "hint": "האתגר פתוח, אבל הספירלה חייבת להמשיך להשתמש באורך שמשתנה בתוך לולאה.",
-                "check": "אין בדיקה אוטומטית לאתגר — הסבירו איפה האורך משתנה ואיך זה משפיע על הציור.",
-                "commonMistake": "מוסיפים קישוטים אבל מאבדים את הרעיון של אורך שמשתנה."
+                "title": "תרגול 9 — כותבים Python קצר",
+                "prompt": "כתבו בתוך התיבה קוד Python קצר שיוצר ספירלה: קבעו length, כתבו לולאת for, ובתוכה כתבו forward(length), פנייה ימינה, ואז הגדלת length.",
+                "hint": "חשבו על השלד: length = ___ ואז for i in range(___): קדימה לפי האורך, right(___), ואז length = length + ___. בחרו מספרים קצרים וברורים.",
+                "check": "בתיבה כתוב קוד Python עם length, לולאת for, forward(length), right(...), והגדלת length בתוך הלולאה.",
+                "commonMistake": "כותבים forward עם מספר קבוע במקום forward(length), או שמגדילים את length מחוץ ללולאה."
             }
         ],
         "vocabulary": [
@@ -2053,7 +2053,7 @@
             "התוצר נראה כמו ספירלה או גרסה אישית שלו.",
             "האורך נקבע בתחילת הקוד ומשתנה בתוך לולאה.",
             "התלמיד/ה יודע/ת להסביר מה קורה לאורך בכל סיבוב.",
-            "שינוי בצבע, בזווית או בקצב הגדילה נעשה בלי לשבור את הספירלה."
+            "התלמיד/ה יודע/ת לבנות קוד Python קצר שבו האורך גדל בתוך לולאה."
         ],
         "teacherQuestions": [
             "מה יקרה אם האורך לא יגדל בתוך הלולאה?",
@@ -8186,7 +8186,7 @@
       return /כתבו במחברת|במחברת|מחברת|סמנו על דף|כיוון הראש לפני כל פקודה|החליפו ימינה ושמאלה|החליפו ימינה ושמאלה והשוו תוצאה|הציגו לחבר מה כל שורה עושה|כל שורה עושה|הכינו משפט הצגה|משפט הצגה|איפה רואים את זה בקוד|היום למדתי|בפעם הבאה אפשר|רפלקציה קצרה|משפט סיכום|איפוס והרצה מחדש|איפוס והרצה נקייה/.test(text);
     }
     function isPythonWritingExercise(ex){
-      return (currentLesson === 1 || currentLesson === 2 || currentLesson === 3 || currentLesson === 4 || currentLesson === 5 || currentLesson === 6 || currentLesson === 7) && /כותבים Python קצר/.test(`${ex?.title || ''} ${ex?.prompt || ''}`);
+      return ((currentLesson >= 1 && currentLesson <= 7) || (currentLesson === 8 && ex?.id === 9)) && /כותבים Python קצר/.test(`${ex?.title || ''} ${ex?.prompt || ''}`);
     }
     function requiredWrittenPythonLineCount(ex){
       if(currentLesson === 3 && ex?.id === 13) return 5;
@@ -8194,6 +8194,7 @@
       if(currentLesson === 5 && ex?.id === 12) return 5;
       if(currentLesson === 6 && ex?.id === 8) return 4;
       if(currentLesson === 7 && ex?.id === 11) return 5;
+      if(currentLesson === 8 && ex?.id === 9) return 4;
       return 3;
     }
     function pythonWritingKey(){
@@ -8572,7 +8573,7 @@
       const nextButtonLabel = isLast ? (nextLessonId ? 'סיימתי — לשיעור הבא' : 'סיימתי את הקורס') : 'המשך';
       const writingExercise = isPythonWritingExercise(ex);
       const writingValue = pythonWritingAnswers[pythonWritingKey()] || '';
-      const writingPlaceholder = currentLesson === 6 && ex?.id === 8 ? 'length = 30&#10;forward(length)&#10;length = length + 20&#10;forward(length)' : (currentLesson === 5 && ex?.id === 12 ? 'forward(70)&#10;penup()&#10;forward(100)&#10;pendown()&#10;forward(70)' : (currentLesson === 4 && ex?.id === 12 ? `color('#16a34a')&#10;forward(60)&#10;right(90)&#10;forward(60)` : (requiredWrittenPythonLineCount(ex) === 5 ? 'forward(50)&#10;right(90)&#10;forward(50)&#10;right(90)&#10;forward(50)' : 'forward(50)&#10;right(90)&#10;forward(50)')));
+      const writingPlaceholder = currentLesson === 8 && ex?.id === 9 ? 'length = ___&#10;for i in range(___):&#10;    forward(length)&#10;    right(___)&#10;    length = length + ___' : (currentLesson === 6 && ex?.id === 8 ? 'length = 30&#10;forward(length)&#10;length = length + 20&#10;forward(length)' : (currentLesson === 5 && ex?.id === 12 ? 'forward(70)&#10;penup()&#10;forward(100)&#10;pendown()&#10;forward(70)' : (currentLesson === 4 && ex?.id === 12 ? `color('#16a34a')&#10;forward(60)&#10;right(90)&#10;forward(60)` : (requiredWrittenPythonLineCount(ex) === 5 ? 'forward(50)&#10;right(90)&#10;forward(50)&#10;right(90)&#10;forward(50)' : 'forward(50)&#10;right(90)&#10;forward(50)'))));
       const writingHtml = writingExercise ? `<label class="muted" for="pythonWritingAnswer"><b>כתבו כאן בתוך הלומדה:</b></label><textarea id="pythonWritingAnswer" dir="ltr" spellcheck="false" style="width:100%;min-height:${requiredWrittenPythonLineCount(ex) === 5 ? '132' : '96'}px;margin-top:8px;border:1px solid #fed7aa;border-radius:14px;padding:10px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.95rem;line-height:1.45;direction:ltr;text-align:left;background:#fff;" placeholder="${writingPlaceholder}">${escapeHtml(writingValue)}</textarea><button class="btn run" id="runWrittenPythonBtn" type="button" style="margin-top:8px;">▶️ הרץ את הקוד שכתבתי</button>` : '';
       const feedbackHtml = `<div class="exercise-feedback ${feedbackBelowButtons ? 'feedback-line-break' : ''} ${ok ? 'ok' : 'warn'}">${escapeHtml(message)}</div>`;
       missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div><p><b>${escapeHtml(ex.prompt || '')}</b></p>${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p>${(isChallengeExercise(ex) || isRunOnlyExampleExercise(ex)) ? '' : `<p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}`}${writingHtml}<div class="exercise-bottom"><div class="exercise-controls">${(isTip || isChallengeExercise(ex) || isSelectionOnly || isRunOnlyExampleExercise(ex)) ? '' : '<button class="btn run" id="checkExerciseBtn">✅ בדוק תרגיל</button>'}${resetButton}<button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${nextButtonLabel}</button></div>${feedbackBelowButtons ? '<br>' : feedbackHtml}</div>${feedbackBelowButtons ? feedbackHtml : ''}</div>`;
@@ -9808,6 +9809,23 @@
         const secondForwardLengthIndex = actions.findIndex((action, index)=>index > growIndex && action.cmd === 'forwardVar' && action.name === 'length');
         if(!(setIndex >= 0 && firstForwardLengthIndex > setIndex && growIndex > firstForwardLengthIndex && secondForwardLengthIndex > growIndex)){
           problems.push('כתבו לפי הסדר: length = מספר, forward(length), length = length + מספר, ואז forward(length) נוסף.');
+        }
+      }
+      if(currentLesson === 8 && ex?.id === 9){
+        const setIndex = actions.findIndex(action=>action.cmd === 'setVar' && action.name === 'length');
+        const loop = actions.find(action=>action.cmd === 'for');
+        if(setIndex < 0){
+          problems.push('התחילו בשורה שקובעת את length, למשל length = 10.');
+        }
+        if(!loop || loop.times < 4){
+          problems.push('השתמשו בלולאת for עם כמה חזרות, למשל for i in range(8):');
+        } else {
+          const forwardIndex = loop.body.findIndex(action=>action.cmd === 'forwardVar' && action.name === 'length');
+          const turnIndex = loop.body.findIndex((action, index)=>index > forwardIndex && action.cmd === 'right');
+          const growIndex = loop.body.findIndex((action, index)=>index > turnIndex && action.cmd === 'growVar' && action.name === 'length');
+          if(!(forwardIndex >= 0 && turnIndex > forwardIndex && growIndex > turnIndex)){
+            problems.push('בתוך ה־for כתבו לפי הסדר: forward(length), right(...), ואז length = length + מספר.');
+          }
         }
       }
       if(currentLesson === 7 && ex?.id === 11){
