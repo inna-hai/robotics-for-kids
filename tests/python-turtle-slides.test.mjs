@@ -19,7 +19,12 @@ for (let id = 1; id <= 30; id++) {
   const lessonSlides = readFileSync(url, 'utf8');
   assert.match(lessonSlides, new RegExp(`שיעור ${id} מתוך 30`));
   assert.match(lessonSlides, /90 דקות/);
-  assert.match(lessonSlides, /הרבה תרגולים לשיעור/);
+  if (id === 9) {
+    assert.match(lessonSlides, /תרגולי הכוכב/);
+    assert.match(lessonSlides, /דיבאג ואתגרי סיום/);
+  } else {
+    assert.match(lessonSlides, /הרבה תרגולים לשיעור/);
+  }
   assert.match(lessonSlides, /מבנה 90 דקות/);
   assert.match(lessonSlides, /דגשי מדריך/);
   assert.match(lessonSlides, /פתח את שיעור/);
