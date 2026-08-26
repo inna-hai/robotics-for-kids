@@ -90,7 +90,7 @@ assert.match(html, /currentLesson === 2 && ex\?\.id === 15[\s\S]*hasForwardBefor
 assert.match(html, /כדי ליצור מדרגה, כתבו קו קדימה, פנייה, ואז עוד קו קדימה/, 'lesson 2 final writing task gives child-friendly feedback when the written code is not stair-like');
 
 
-assert.match(html, /currentLesson === 1 \|\| currentLesson === 2 \|\| currentLesson === 3/, 'final written Python task is available in lessons 1-3 only for now');
+assert.match(html, /currentLesson >= 1 && currentLesson <= 7[\s\S]*currentLesson === 8 && ex\?\.id === 9/, 'written Python task is available for earlier final challenges and lesson 8 exercise 9');
 assert.match(html, /currentLesson === 3 && ex\?\.id === 13[\s\S]*squareStartPattern = \['forward','turn90','forward','turn90','forward'\][\s\S]*כדי ליצור 3 צלעות של ריבוע/, 'lesson 3 final writing task requires three square sides, not only a stair-like forward-turn-forward sequence');
 assert.match(html, /בחרו צורה משלכם עם כמה צלעות\/צדדים שתרצו[\s\S]*360 ÷ מספר הצלעות\/הצדדים[\s\S]*function repeatCalculatedShapeMatches\(\)[\s\S]*360 \/ times/, 'lesson 3 has an open choose-and-calculate shape task validated by the formula, not fixed to 5 or 6 sides');
 assert.match(html, /כתבו בתוך התיבה בלומדה 5 שורות Python קצרות שיוצרות 3 צלעות של ריבוע/, 'lesson 3 includes a final written Python challenge for three square sides');
@@ -296,6 +296,13 @@ assert.match(html, /בנו גרסה צבעונית של הספירלה שנרא�
 assert.match(html, /אם הספירלה יוצאת מהמסך — הקטינו את האורך ההתחלתי או את קצב הגדילה/, 'lesson 8 exercise 8 hint keeps many repeats and suggests reducing initial length or growth when off-screen');
 
 assert.match(html, /if\(currentLesson === 8\)\{[\s\S]*ex\.id === 8[\s\S]*smallInitialLength[\s\S]*times < 30[\s\S]*a\.v >= 20 && a\.v <= 40[\s\S]*a\.v > 0 && a\.v <= 3[\s\S]*actionDrawnColors/, 'lesson 8 exercise 8 validates an exploratory screen-friendly smooth colorful spiral');
+
+assert.match(html, /תרגול 9 — כותבים Python קצר[\s\S]*כתבו בתוך התיבה קוד Python קצר[\s\S]*length = ___[\s\S]*length = length \+ ___/, 'lesson 8 exercise 9 replaces the repeated free spiral challenge with a real Python-writing task');
+assert.match(html, /function isPythonWritingExercise\(ex\)[\s\S]*currentLesson === 8 && ex\?\.id === 9/, 'lesson 8 exercise 9 uses the real written-Python textbox flow, not Blockly blocks');
+
+assert.doesNotMatch(html, /אתגר — שביל חלל אישי[\s\S]*אין בדיקה אוטומטית לאתגר/, 'lesson 8 exercise 9 should not remain an unvalidated free challenge that repeats exercise 8');
+
+assert.match(html, /validateWrittenPythonExercise\(ex, actions\)[\s\S]*currentLesson === 8 && ex\?\.id === 9[\s\S]*loop = actions\.find\(action=>action\.cmd === 'for'\)[\s\S]*forward\(length\), right\(\.\.\.\), ואז length = length \+ מספר/, 'lesson 8 exercise 9 validates written Python with length, for-loop, forward(length), right, and length growth');
 
 assert.match(html, /"id": 9,[\s\S]*"prompt": "בנו קו אחד של כוכב: הזיזו את הצב קדימה ואז סובבו אותו ימינה ב־144 מעלות/, 'lesson 9 starts by teaching the most basic star unit with the required turn degree');
 
