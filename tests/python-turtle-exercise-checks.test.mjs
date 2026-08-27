@@ -387,23 +387,26 @@ assert.match(html, /function lesson10SecretRevealHtml\(ex[\s\S]*כלל התחנ�
 assert.match(html, /if\(exercisePassed\) completedSet\(\)\.add\(currentExerciseIndex\);[\s\S]*lesson10CurrentRevealKey = \(currentLesson === 10 && exercisePassed\) \? `\$\{currentLesson\}:\$\{currentExerciseIndex\}:\$\{currentWorkspaceXml\(\)\}` : '';/, 'lesson 10 reveal key is set only after a fresh successful check of the current blocks');
 assert.match(html, /if\(isCodeEditEvent\)\{\s*lesson10CurrentRevealKey = '';\s*updateLesson10CanvasSecret\(ex\);/, 'editing blocks clears any lesson 10 reveal until the new code passes again');
 
-assert.match(html, /"id": 11,[\s\S]*"title": "מפת שכונה עם הערות וקנה מידה"[\s\S]*"concept": "הערות קוד וקנה מידה"/, 'lesson 11 is reworked around a real new concept: comments and scale');
+assert.match(html, /"id": 11,[\s\S]*"title": "מפת שכונה עם הערות ואורך"[\s\S]*"concept": "הערות קוד ואורך"/, 'lesson 11 is reworked around a real new concept: comments and length');
 assert.match(html, /if\(t==='py_comment'\) out\.push\(\{cmd:'comment'/, 'comment blocks are included in action snapshots for validation');
 assert.match(html, /function hasCommentBeforeFirstDraw\(actions, pattern=null\)/, 'lesson 11 can require comments before the drawing they document');
-assert.match(html, /ex\.id === 1[\s\S]*hasCommentBeforeFirstDraw\(actions, \/רחוב\|ראשי\/\)/, 'lesson 11 exercise 1 rejects comments placed after the first street or unrelated comment text');
+assert.match(html, /ex\.id === 1[\s\S]*hasCommentBeforeFirstDraw\(actions, \/\\S\/\)/, 'lesson 11 exercise 1 requires a non-empty comment before the drawing without forcing exact words');
+assert.match(html, /ex\.id === 1[\s\S]*a\.cmd === 'forward' && a\.v >= 80/, 'lesson 11 exercise 1 accepts a flexible long street length instead of exactly 120');
+assert.match(html, /לא חייבים מילים או מספרים מדויקים/, 'lesson 11 exercise 1 tells learners the example words and numbers are flexible');
 assert.match(html, /ההערה לא נראית בציור[\s\S]*רק בקוד Python/, 'lesson 11 exercise 1 explains comments are visible only in Python code');
-assert.match(html, /ex\.id === 2[\s\S]*comments\.every\(text=>\/רחוב\/\.test\(text\)\)/, 'lesson 11 exercise 2 requires each note/comment to include the word רחוב');
-assert.match(html, /כל הערה צריכה להכיל את המילה “רחוב”/, 'lesson 11 exercise 2 states the רחוב word requirement in learner text');
+assert.match(html, /ex\.id === 2[\s\S]*comments\.some\(text=>!text\.trim\(\) \|\| text\.trim\(\)\.length < 2\)/, 'lesson 11 exercise 2 requires non-empty street-name comments without forcing the word רחוב');
+assert.match(html, /הערה עם שם הרחוב/, 'lesson 11 exercise 2 asks learners to write street names in comments');
 assert.match(html, /currentLesson === 11 && ex\?\.id === 3\) return \['py_comment'\]/, 'lesson 11 selection exercise targets the comment block');
 assert.match(html, /if\(type === 'py_comment'\) return '#'/, 'lesson 11 comment selection highlights the Python # line');
 assert.match(html, /function renderCodeLineText\(text\)[\s\S]*commentMatch[\s\S]*<span dir="rtl" class="code-comment-text">/, 'Hebrew Python comments are isolated RTL after the # so text like רחוב א\' is not visually flipped');
 assert.match(html, /currentLesson === 11 && ex\?\.id === 3[\s\S]*<block type="py_comment"[\s\S]*רחוב ראשי/, 'lesson 11 exercise 3 has generated comment starter code');
-assert.match(html, /if\(currentLesson === 11\)\{[\s\S]*ex\.id === 4[\s\S]*commentTexts\(actions\)\.length < 1[\s\S]*repeatUsesLengthShape\(4, 90\)/, 'lesson 11 exercise 4 validates a note plus a scaled square block using length');
+assert.match(html, /if\(currentLesson === 11\)\{[\s\S]*ex\.id === 4[\s\S]*hasCommentBeforeFirstDraw\(actions, \/שכונה\|מסגרת\|אורך\|רחוב\|רחובות\/\)[\s\S]*repeatUsesLengthShape\(4, 90\)/, 'lesson 11 exercise 4 validates a relevant comment plus a scaled square block using length');
 
 assert.match(html, /"title": "תרגול 5 — שתי נקודות עניין נקיות"/, 'lesson 11 removes the too-easy scale-up exercise and makes points-of-interest exercise 5');
-assert.match(html, /"title": "תרגול 6 — דיבאג רחובות בקנה מידה"[\s\S]*כל הרחובות צריכים להשתמש ב־length/, 'lesson 11 exercise 6 title and prompt match street-only starter code');
+assert.match(html, /המשיכו מהמפה שבניתם[\s\S]*בתוך או ליד מסגרת השכונה/, 'lesson 11 exercise 5 connects map symbols to the existing neighborhood map instead of floating symbols');
+assert.match(html, /"title": "תרגול 6 — דיבאג רחובות עם אורך"[\s\S]*כל הרחובות צריכים להשתמש באורך/, 'lesson 11 exercise 6 title and prompt match street-only starter code');
 assert.match(html, /if\(currentLesson === 11\)\{[\s\S]*ex\.id === 5[\s\S]*actionDrawnColors\(actions\)\.size < 2[\s\S]*ex\.id === 6[\s\S]*forwardVarCount\(actions\) < 3/, 'lesson 11 validators match renumbered points and debug exercises');
-assert.match(html, /“זוז קדימה לפי האורך” יוצר בקוד: forward\(length\)/, 'lesson 11 exercise 4 hint explains the forward(length) block name');
+assert.match(html, /שכונה לפי אורך[\s\S]*בקוד Python תראו את השם length[\s\S]*forward\(length\)/, 'lesson 11 exercise 4 hint explains the Hebrew task wording and Python length code');
 assert.match(html, /function hasScaledMapDebugFix\(actions\)/, 'lesson 11 has a helper for the broken scale-map debug task');
 assert.match(html, /currentLesson === 11 && ex\?\.id === 6[\s\S]*<field name="TEXT">מעבר לרחוב צדדי<\/field>[\s\S]*<field name="TEXT">רחוב צדדי<\/field>[\s\S]*<block type="py_forward"><field name="STEPS">35<\/field>/, 'lesson 11 exercise 6 starter labels the fixed-number side street bug as a street');
 assert.match(html, /if\(currentLesson === 11\)\{[\s\S]*ex\.id === 6[\s\S]*forwardVarCount\(actions\) < 3[\s\S]*penUpMoveCount\(actions\) < 1/, 'lesson 11 exercise 6 validates scaled streets and a clean pen-up transition');
