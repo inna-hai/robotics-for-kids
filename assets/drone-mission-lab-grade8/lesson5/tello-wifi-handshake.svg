@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" role="img" aria-labelledby="title desc">
+  <title id="title">Tello WiFi handshake workflow</title>
+  <desc id="desc">School WiFi to load cloud code, then TELLO WiFi to connect to drone, then return to school WiFi to save calibrated version.</desc>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#f59e0b"/></marker><style>.bg{fill:#0f172a}.box{fill:#dbeafe;stroke:#60a5fa;stroke-width:3}.box2{fill:#dcfce7;stroke:#22c55e;stroke-width:3}.box3{fill:#fee2e2;stroke:#ef4444;stroke-width:3}.h{font:900 34px system-ui,Arial;fill:#fff}.t{font:800 22px system-ui,Arial;fill:#082f49}.s{font:650 16px system-ui,Arial;fill:#1e3a8a}.r{fill:none;stroke:#f59e0b;stroke-width:7;marker-end:url(#a)}</style></defs>
+  <rect width="900" height="520" class="bg"/>
+  <text x="450" y="62" text-anchor="middle" class="h">WiFi Handshake — Physical Tello Flight</text>
+  <rect x="55" y="150" width="220" height="170" rx="28" class="box"/><text x="165" y="210" text-anchor="middle" class="t">1. School WiFi</text><text x="165" y="250" text-anchor="middle" class="s">Login + Cloud Load</text><text x="165" y="280" text-anchor="middle" class="s">Meeting4 code</text>
+  <path d="M288 235 H395" class="r"/>
+  <rect x="405" y="150" width="220" height="170" rx="28" class="box2"/><text x="515" y="210" text-anchor="middle" class="t">2. TELLO WiFi</text><text x="515" y="250" text-anchor="middle" class="s">TELLO-XXXXXX</text><text x="515" y="280" text-anchor="middle" class="s">Battery visible</text>
+  <path d="M638 235 H745" class="r"/>
+  <rect x="635" y="350" width="220" height="105" rx="26" class="box3"/><text x="745" y="396" text-anchor="middle" class="t">Abort Ready</text><text x="745" y="428" text-anchor="middle" class="s">Launch only by approval</text>
+  <path d="M515 330 C515 430 350 460 230 375" class="r"/>
+  <text x="230" y="395" text-anchor="middle" fill="#fef3c7" font-size="18" font-family="system-ui" font-weight="800">3. Back to School WiFi → Save calibrated version</text>
+</svg>
