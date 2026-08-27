@@ -29,9 +29,54 @@ assert.ok(!playHtml.includes("blockColorFromField(block, fallback = 'grass')"), 
 assert.ok(playHtml.includes('function modelColorCounts(model)'), 'play page should derive required colors from visual models');
 assert.ok(playHtml.includes('function hasRequiredModelColors(model'), 'play page should reject model exercises with wrong colors');
 assert.ok(playHtml.includes('function conflictingColorOverlaps()'), 'play page should detect when a later green block covers an earlier red block in the same spot');
+assert.ok(playHtml.includes('function frontFeetSpawnPosition(existingSelector)'), 'front-of-feet spawns should use a shared offset helper');
+assert.ok(playHtml.includes('function funnyMobPosition()'), 'generic funny mob helper may still exist for other lessons');
+assert.ok(playHtml.includes('function spawnPetPosition()'), 'pet should have a dedicated front-of-feet position helper');
+assert.ok(playHtml.includes('state.steveX + 18 + offset'), 'funny mob and pet should spawn near David’s feet horizontally with a small offset for multiples');
+assert.ok(playHtml.includes('state.steveY - 4 + (existing % 2) * 6'), 'funny mob and pet should overlap David’s feet slightly from the front');
+assert.ok(!playHtml.includes("document.querySelectorAll('#world .mob').forEach(el => el.remove())"), 'funny mob spawning should allow multiple mobs in the same run');
+assert.ok(!playHtml.includes("document.querySelectorAll('#world .pet').forEach(el => el.remove())"), 'pet spawning should allow multiple pets in the same run');
+assert.ok(playHtml.includes("addEmoji('pet','🐶', spot.x, spot.y)"), 'pet spawning should add a visible pet icon');
+assert.ok(playHtml.includes('.mob{z-index:7;font-size:2.85rem'), 'funny mob should be larger and in front of David’s feet');
+assert.ok(playHtml.includes('@keyframes monster-wobble'), 'funny monster should wobble so it feels alive');
+assert.ok(playHtml.includes('@keyframes monster-horns'), 'funny monster should animate horn-like marks');
+assert.ok(!playHtml.includes("addEmoji('mob','🐌', 280, 86)"), 'funny mob must not spawn at a fixed center coordinate');
+assert.ok(!playHtml.includes("addEmoji('mob','🐌', spot.x, spot.y)"), 'funny mob should no longer look like a cute snail');
+assert.ok(playHtml.includes('function placedBlockColorCount()'), 'lesson 13 platform validation should count full block colors separately from path tiles');
+assert.ok(playHtml.includes('בית חיות שלם צריך כיסא, גדר, פינת אוכל'), 'lesson 13 final feedback should require a substantial pet-house project');
+assert.ok(playHtml.includes("petCount() >= 3 && placedCount('block') >= 8"), 'lesson 13 final validation should require several named pets and a larger build');
+assert.ok(!playHtml.includes('13: [ { ok:() => s.spawnedMob || totalBuilding() >= 3'), 'lesson 13 should not pass only because a mob was spawned or any three building parts exist');
 assert.ok(playHtml.includes('ירוק מעל אדום'), 'model feedback should explain overlapping wrong-color blocks');
 assert.ok(playHtml.includes('חסר בלוק בצבע ${colorNames[color]'), 'model feedback should explain when required color blocks are missing');
 assert.ok(playHtml.includes('יש צבע שלא שייך ל'), 'model feedback should explain when an unexpected color was used');
+assert.ok(lessons.find((lesson) => lesson.id === 13).title === 'בית החיות של דוד', 'lesson 13 should be a pet-only building lesson');
+assert.ok(lessons.find((lesson) => lesson.id === 13).programmingExercises.some((exercise) => exercise.title.includes('כיסא לחיית המחמד מהצד')), 'lesson 13 should include a side-view pet chair challenge');
+assert.ok(playHtml.includes('כיסא לחיית מחמד נמוך מהצד צריך להיבנות בדיוק'), 'lesson 13 first mission feedback should match the low side-view pet chair requirements');
+assert.ok(playHtml.includes('2 רגליים של בלוק אחד'), 'lesson 13 chair should require one block per leg');
+assert.ok(playHtml.includes('function hasSideViewPetChair()'), 'lesson 13 first mission should validate the exact side-view pet chair shape');
+assert.ok(!lessons.find((lesson) => lesson.id === 13).blocks.includes('spawn_funny_mob'), 'lesson 13 toolbox should not include the monster spawn block');
+assert.ok(!lessons.find((lesson) => lesson.id === 13).programmingExercises.some((exercise) => JSON.stringify(exercise).includes('מפלצת')), 'lesson 13 exercise text should not mention monsters');
+assert.ok(!forcedLessons.find((lesson) => lesson.id === 13).blocks.includes('spawn_funny_mob'), 'forced lesson 13 toolbox should not include the monster spawn block');
+for (const sourceLesson of [lessons.find((lesson) => lesson.id === 13), forcedLessons.find((lesson) => lesson.id === 13)]) {
+  assert.ok(!JSON.stringify(sourceLesson).includes('מפלצות'), 'lesson 13 should not mention monsters in any teacher/student text');
+  assert.ok(!JSON.stringify(sourceLesson).includes('מפלצת'), 'lesson 13 should not mention a monster in any teacher/student text');
+}
+assert.ok(!playHtml.includes('גן משחקים צריך ספסל/נדנדה מחצאים, גדר קצרה, שביל, זמנו מפלצת מצחיקה'), 'lesson 13 old mission 4 monster feedback must be removed');
+assert.ok(playHtml.includes('function hasLesson13PetSwing()'), 'lesson 13 mission 4 should validate the described swing requirements');
+assert.ok(playHtml.includes('function namedPetCount()'), 'lesson 13 mission 4 should count distinct named pets without requiring pixel-perfect placement');
+assert.ok(playHtml.includes('שורה אופקית של 5 חצאי בלוקים'), 'lesson 13 mission 4 feedback should explain the five-half-block swing beam');
+assert.ok(playHtml.includes('להיראות כמו נדנדה'), 'lesson 13 mission 4 feedback should emphasize visual shape, not only counts');
+assert.ok(playHtml.includes('הגדר היא קישוט בלבד ולא חובה'), 'lesson 13 mission 4 should not require a fence that may hide other objects');
+assert.ok(!playHtml.includes("petCount() >= 2 && placedCount('half') >= 2 && placedCount('block') >= 3 && placedCount('path') >= 1 && s.saidTexts.length >= 2"), 'lesson 13 mission 4 should not have a hidden speech requirement');
+assert.ok(!playHtml.includes('בית מפלצת שלם צריך'), 'lesson 13 old final monster feedback must be removed');
+assert.ok(playHtml.includes('stats().petSpawns.push({ name:petName'), 'lesson 13 first mission should validate where the named pet was spawned');
+assert.ok(lessons.find((lesson) => lesson.id === 13).programmingExercises.some((exercise) => exercise.title.includes('חזית גדר')), 'lesson 13 should include a 2D pet fence gate challenge');
+assert.ok(playHtml.includes('function hasFrontFenceForPet()'), 'lesson 13 second mission should validate the 2D fence shape');
+assert.ok(playHtml.includes('visibleBuildingCount() >= 4'), 'lesson 13 second mission should accept a flexible fence-like front without exact pet coordinates');
+assert.ok(playHtml.includes('חזית גדר דו־ממדית צריכה חיית מחמד'), 'lesson 13 second mission feedback should explain the 2D fence requirements');
+assert.ok(playHtml.includes('הכלב לא צריך להיות בדיוק בין בלוקים'), 'lesson 13 second mission should not fail because the pet is a little outside the detected fence bounds');
+assert.ok(playHtml.includes('availablePlacedCount'), 'lesson 13 second mission should count visible world blocks, not only blocks created in the last run');
+assert.ok(playHtml.includes('function visibleBuildingCount()'), 'lesson 13 second mission should not depend on a scoped helper from missionRuleDefinitions');
 assert.ok(playHtml.includes('id="lessonMissionBoard"'), 'play page should show a mission board for exercise selection');
 assert.ok(playHtml.includes("if (lesson.id !== 5)"), 'generic mission board should apply beyond lesson 7, while lesson 5 keeps its gate board');
 
@@ -52,7 +97,7 @@ assert.ok(playHtml.includes('function lessonNineModelMatches'), 'lesson 9 feedba
 assert.ok(playHtml.includes('missingLessonNineModelNote'), 'lesson 9 feedback should explain which model colors or parts are missing');
 assert.ok(playHtml.includes('finalParts = new Map'), 'lesson 9 shape check should count final visible parts, not every placement command');
 assert.ok(playHtml.includes('function selectedExerciseIndex(){ return lesson.id === 5 ? gateMissionIndex : lessonMissionIndex; }'), 'lesson 9 validation should follow the selected mission, not a stale model index');
-assert.ok(playHtml.includes('minecraft-lessons-20260820-stairs.js?v=20260823-lesson11-no-path-in-task2'), 'lesson data fixes should force a fresh cache key in the browser');
+assert.ok(playHtml.includes('minecraft-lessons-20260820-stairs.js?v=20260825-lesson13-swing-visual-v20'), 'lesson 13 data fixes should force a fresh cache key in the browser');
 assert.ok(playHtml.includes('ציור הבית'), 'lesson 9 feedback should validate the house drawing model for mission 2');
 assert.ok(playHtml.includes('ציור היהלום'), 'lesson 9 feedback should validate the diamond drawing model');
 assert.ok(!playHtml.includes('תרגיל 2 — דגל'), 'lesson 9 mission 2 title must not mention the flag');
@@ -105,10 +150,16 @@ for (const phrase of [
   'הפעילו מזג אוויר גשם',
   'אם עומדים על היהלום',
   'השתמשו בבלוק בנה מבוך קטן',
-  'זמנו מפלצת מצחיקה',
+  'זמנו חיית מחמד',
   'משפט הצגה'
 ]) {
   assert.ok(playHtml.includes(phrase), `Feedback should include learner-facing hint: ${phrase}`);
 }
 
 console.log('minecraft mission feedback tests passed');
+
+assert.ok(!playHtml.includes('כפתור המשימה לא היה מסומן'), 'lesson 13 should not complete mission 2 when another mission is selected');
+
+assert.ok(playHtml.includes('state.petsByName'), 'named pet summons should reuse and move an existing pet with the same name');
+assert.ok(playHtml.includes('pet.dataset.name = petName'), 'named pets should store their name in the DOM');
+assert.ok(playHtml.includes('pet-name'), 'named pets should show their name label');

@@ -6,189 +6,539 @@
   <title>פלטפורמת לומדות טכנולוגיה</title>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <style>
-    :root{--ink:#102033;--muted:#526070;--blue:#2563eb;--cyan:#06b6d4;--green:#22c55e;--purple:#7c3aed;--pink:#ec4899;--orange:#f97316;--card:#ffffff;--line:#e6edf7}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Rubik,Arial,sans-serif;direction:rtl;color:var(--ink);background:linear-gradient(135deg,#eef7ff,#fff7ed 42%,#f7f0ff);line-height:1.65}a{color:inherit}.shell{width:min(1220px,calc(100% - 30px));margin:0 auto}.hero{position:relative;overflow:hidden;color:white;background:radial-gradient(circle at 12% 12%,rgba(34,211,238,.38),transparent 27%),radial-gradient(circle at 80% 0,rgba(236,72,153,.28),transparent 31%),linear-gradient(135deg,#0f172a,#1d4ed8 54%,#4c1d95);padding:24px 0 44px}.hero:after{content:"";position:absolute;inset:auto -8% -28% -8%;height:230px;background:rgba(255,255,255,.12);filter:blur(55px);transform:rotate(-3deg)}.top{position:relative;z-index:2;display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:26px}.brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:1.35rem}.mark{width:56px;height:56px;border-radius:20px;background:linear-gradient(135deg,#67e8f9,#bef264);display:grid;place-items:center;color:#0f172a;font-size:1.85rem;box-shadow:0 16px 42px rgba(103,232,249,.25)}.nav{display:flex;gap:8px;flex-wrap:wrap}.nav a{padding:9px 14px;border-radius:999px;text-decoration:none;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);font-weight:900;backdrop-filter:blur(8px)}.hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);gap:28px;align-items:center}.kicker{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-weight:900;margin-bottom:14px}.hero h1{font-size:clamp(2.35rem,5.6vw,4.85rem);line-height:1.03;margin:0 0 14px;letter-spacing:-.04em}.gradient{background:linear-gradient(90deg,#67e8f9,#bef264,#fef08a);-webkit-background-clip:text;color:transparent}.hero p{font-size:clamp(1.08rem,2vw,1.32rem);color:#eaf6ff;margin:0;max-width:880px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:13px 20px;text-decoration:none;font-weight:900;background:#fff;color:#0f172a;box-shadow:0 12px 30px rgba(0,0,0,.18);border:0}.btn.alt{background:rgba(255,255,255,.12);color:white;border:1px solid rgba(255,255,255,.22);box-shadow:none}.btn.ghost{background:#f8fafc;color:#1e293b;border:1px solid #e2e8f0;box-shadow:none}.hero-visual{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:36px;padding:12px;box-shadow:0 28px 80px rgba(0,0,0,.28);backdrop-filter:blur(10px)}.hero-visual img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:28px}.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}.stat{display:block;text-decoration:none;color:inherit;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.15);border-radius:22px;padding:16px;text-align:center;font-weight:900;backdrop-filter:blur(8px)}.stat b{display:block;font-size:1.9rem;line-height:1;color:#bef264}.section{padding:48px 0}.section-head{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:22px}.section h2{font-size:clamp(1.9rem,4vw,3.15rem);line-height:1.1;margin:0 0 10px;letter-spacing:-.03em}.lead{font-size:1.15rem;color:var(--muted);max-width:920px;margin:0}.quick-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:12px}.quick{position:relative;overflow:hidden;background:white;border:1px solid var(--line);border-radius:24px;padding:18px;text-decoration:none;box-shadow:0 15px 42px rgba(15,23,42,.07);min-height:128px}.quick:before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,var(--a),transparent 62%);opacity:.16}.quick b,.quick span{position:relative;z-index:1;display:block}.quick b{font-size:1.1rem;margin-top:8px}.quick span{color:var(--muted);font-weight:800}.quick .emoji{font-size:2.15rem}.tracks{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.track{background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:28px;padding:21px;box-shadow:0 18px 45px rgba(15,23,42,.08)}.track-icon{width:62px;height:62px;border-radius:22px;display:grid;place-items:center;font-size:2rem;background:linear-gradient(135deg,var(--a),var(--b));color:white;margin-bottom:12px}.track h3{font-size:1.35rem;margin:0 0 8px}.track p{margin:0;color:var(--muted)}.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}.chip{background:#f1f5f9;border-radius:999px;padding:7px 10px;font-weight:900;font-size:.82rem;color:#334155}.catalog{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.course-card{position:relative;overflow:hidden;background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:30px;box-shadow:0 18px 45px rgba(15,23,42,.08);display:flex;flex-direction:column;min-height:380px}.visual{height:138px;background:radial-gradient(circle at 20% 20%,rgba(255,255,255,.85),transparent 22%),linear-gradient(135deg,var(--a),var(--b));display:flex;align-items:center;justify-content:space-between;padding:20px;color:white}.visual .big{font-size:4.4rem;filter:drop-shadow(0 14px 22px rgba(0,0,0,.22))}.visual .mini{display:grid;gap:7px}.dot{width:44px;height:44px;border-radius:16px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);display:grid;place-items:center;font-size:1.35rem;backdrop-filter:blur(8px)}.course-body{padding:21px;display:flex;flex-direction:column;gap:11px;flex:1}.course-top{display:flex;justify-content:space-between;align-items:center;gap:10px}.tag{display:inline-flex;align-items:center;border-radius:999px;padding:6px 10px;background:#eef2ff;color:#3730a3;font-weight:900;font-size:.8rem}.course-card h3{font-size:1.38rem;margin:0;line-height:1.2}.course-card p{margin:0;color:var(--muted)}.meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:auto}.meta span{background:#f8fafc;border:1px solid #e2e8f0;border-radius:999px;padding:6px 9px;font-weight:900;font-size:.78rem;color:#475569}.card-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:4px}.card-actions .btn{padding:10px 14px;font-size:.92rem;box-shadow:none;background:#0f172a;color:white}.card-actions .btn.secondary{background:#f8fafc;color:#0f172a;border:1px solid #e2e8f0}.roadmap{background:#0f172a;color:white;border-radius:36px;padding:30px;overflow:hidden;position:relative}.roadmap:before{content:"";position:absolute;inset:-20% 55% auto -10%;height:260px;background:rgba(34,211,238,.2);filter:blur(45px)}.roadmap .lead{color:#dbeafe}.rows{display:grid;gap:10px;margin-top:22px;position:relative}.row{display:grid;grid-template-columns:120px 1fr 1fr;gap:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:15px}.row b{color:#a7f3d0}.cta{padding:0 0 72px}.cta-box{background:linear-gradient(135deg,#2563eb,#7c3aed);color:white;border-radius:36px;padding:34px;text-align:center;box-shadow:0 22px 60px rgba(37,99,235,.24)}.cta-box p{color:#eef4ff;margin:0 auto 22px;max-width:760px}.footer{text-align:center;color:#64748b;padding:28px 0 42px;font-weight:800}@media(max-width:1100px){.tracks{grid-template-columns:1fr 1fr}}@media(max-width:1000px){.hero-grid,.catalog{grid-template-columns:1fr 1fr}.quick-strip{grid-template-columns:repeat(2,1fr)}.hero-stats{grid-template-columns:repeat(2,1fr)}.section-head{display:block}.row{grid-template-columns:1fr}.nav{display:none}}@media(max-width:650px){.hero-grid,.tracks,.catalog,.quick-strip{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}.hero{padding-top:22px}.section{padding:42px 0}.course-card{min-height:0}.actions .btn,.card-actions .btn{width:100%}.hero-visual,.track,.course-card,.roadmap,.cta-box{border-radius:23px}.visual{height:122px}.hero-stats{grid-template-columns:1fr 1fr}}
+    :root {
+      --ink: #102033;
+      --muted: #526070;
+      --line: #e2e8f0;
+      --page: #f6f8fb;
+      --card: #ffffff;
+      --ready: #15803d;
+      --pilot: #5b21b6;
+      --dev: #b45309;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Rubik, Arial, sans-serif;
+      color: var(--ink);
+      background: var(--page);
+      line-height: 1.6;
+    }
+    a { color: inherit; }
+    .shell {
+      width: min(1160px, calc(100% - 28px));
+      margin: 0 auto;
+    }
+    .hero {
+      background: #0f172a;
+      color: white;
+      padding: 30px 0 34px;
+    }
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.18rem;
+      font-weight: 900;
+    }
+    .mark {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: #22c55e;
+      color: #052e16;
+      font-size: 1.55rem;
+    }
+    .nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .nav a {
+      text-decoration: none;
+      padding: 8px 12px;
+      border: 1px solid rgba(255, 255, 255, .18);
+      border-radius: 999px;
+      color: #e2e8f0;
+      font-weight: 800;
+      font-size: .92rem;
+    }
+    .kicker {
+      display: inline-flex;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .1);
+      color: #bae6fd;
+      font-weight: 900;
+      margin-bottom: 13px;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(2.1rem, 5vw, 4.2rem);
+      line-height: 1.05;
+      letter-spacing: 0;
+      max-width: 850px;
+    }
+    .hero p {
+      margin: 16px 0 0;
+      color: #dbeafe;
+      font-size: clamp(1.02rem, 2vw, 1.22rem);
+      max-width: 900px;
+    }
+    main { padding: 34px 0 56px; }
+    .catalog {
+      display: grid;
+      gap: 34px;
+    }
+    .group-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 12px;
+    }
+    h2 {
+      margin: 0;
+      font-size: clamp(1.55rem, 3vw, 2.3rem);
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+    .group-head p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-weight: 700;
+      max-width: 720px;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .course {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      min-height: 214px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, .05);
+      overflow: hidden;
+    }
+    .course-media {
+      margin: -16px -16px 2px;
+      aspect-ratio: 16 / 9;
+      background: linear-gradient(135deg, var(--a), var(--b));
+      border-bottom: 1px solid var(--line);
+      overflow: hidden;
+    }
+    .course-media img,
+    .course-media video {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .course-media.preview-video {
+      background: #e8f1f4;
+    }
+    .course-media.preview-video video {
+      object-fit: contain;
+    }
+    .course-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--a), var(--b));
+      color: white;
+      font-size: 1.45rem;
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+    .badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-size: .78rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .badge.ready { background: #dcfce7; color: var(--ready); }
+    .badge.pilot { background: #ede9fe; color: var(--pilot); }
+    .badge.dev { background: #fff7ed; color: var(--dev); }
+    .course h3 {
+      margin: 0;
+      font-size: 1.25rem;
+      line-height: 1.22;
+      letter-spacing: 0;
+    }
+    .course p {
+      margin: 0;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .meta {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: auto;
+    }
+    .meta span {
+      padding: 5px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #f8fafc;
+      color: #475569;
+      font-size: .78rem;
+      font-weight: 800;
+    }
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: #0f172a;
+      color: white;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: .9rem;
+    }
+    .btn.secondary {
+      background: #f8fafc;
+      color: #0f172a;
+      border: 1px solid var(--line);
+    }
+    .footer {
+      color: #64748b;
+      text-align: center;
+      font-weight: 800;
+      padding: 28px 0 40px;
+    }
+
+    @media (max-width: 980px) {
+      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 650px) {
+      .top { align-items: flex-start; flex-direction: column; }
+      .nav { display: none; }
+      .cards { grid-template-columns: 1fr; }
+      .group-head { display: block; }
+      .course { min-height: 0; }
+      .actions .btn { flex: 1 1 100%; }
+    }
   </style>
 </head>
 <body>
   <header class="hero">
     <div class="shell">
       <div class="top">
-        <div class="brand"><span class="mark">🌟</span><span>hai.tech · מרכז הלומדות</span></div>
-        <nav class="nav"><a href="#paths">מסלולים</a><a href="#catalog">כל הלומדות</a><a href="#roadmap">רצף גילאים</a></nav>
+        <div class="brand"><span class="mark">H</span><span>hai.tech · מרכז הלומדות · robotics15</span></div>
+        <nav class="nav">
+          <a href="#active-courses">קורסים פעילים</a>
+          <a href="#drones">רחפנים</a>
+          <a href="#omer">עומר/Craftom</a>
+          <a href="#development">בפיתוח</a>
+        </nav>
       </div>
-      <div class="hero-grid">
-        <div>
-          <div class="kicker">רובוטיקה · סיסי · Python · Web · Roblox · משחקים</div>
-          <h1>פלטפורמת לומדות טכנולוגיה<br><span class="gradient">שילדים באמת רוצים לפתוח</span></h1>
-          <p>מרכז אחד לכל מסלולי הטכנולוגיה: רובוטיקה, סיסי, משחקים, Python, Web ו־Craftom. מנוי קיץ לילדים נותן גישה למסלולים המלאים, ובכניסה החינמית אפשר: נסו 3 שיעורי חשיבה ותכנות בחינם.</p>
-          <p>חשיבה ותכנות לילדים עם סיסי הוא קורס משחקי לילדים צעירים — מתחילים מסיפור, ממשיכים למשימה, ומגלים איך רצף, תנאים וחיישנים עובדים.</p>
-          <div class="actions"><a class="btn" href="summer-subscription.html">מנוי קיץ לילדים</a><a class="btn alt" href="sisi.html">נסו 3 שיעורי חשיבה ותכנות בחינם</a><a class="btn alt" href="#catalog">בחרו מסלול</a></div>
-          <div class="hero-stats"><a class="stat" href="sisi.html"><b>15</b>שיעורי סיסי</a><a class="stat" href="sensi-city.html?lesson=1"><b>15</b>שיעורי רובוטיקה</a><a class="stat" href="python-turtle.html"><b>30</b>שיעורי Turtle</a><a class="stat" href="pygame.html"><b>28</b>שיעורי Pygame</a></div>
-        </div>
-        <aside class="hero-visual"><img src="assets/robotics-home-hero.png" alt="ילדים לומדים תכנות, רובוטיקה ופיתוח משחקים בפלטפורמת hai.tech"></aside>
-      </div>
+      <div class="kicker">קטלוג פשוט של סביבת הפיילוטים</div>
+      <h1>בוחרים לומדה לפי סדר ברור</h1>
+      <p>מנוי קיץ לילדים: נסו 3 שיעורי חשיבה ותכנות בחינם. חשיבה ותכנות לילדים עם סיסי הוא קורס משחקי לילדים צעירים.</p>
+      <div class="actions" style="margin-top:18px"><a class="btn" href="summer-subscription.html">מנוי קיץ לילדים</a><a class="btn secondary" href="sisi.html">פתחו את סיסי</a></div>
     </div>
   </header>
 
   <main>
-    <section class="section">
-      <div class="shell">
-        <div class="section-head"><div><h2>התחלה מהירה</h2><p class="lead">שערים ברורים לפי עולם תוכן — כדי שתלמיד, הורה או מדריך ימצאו מיד את המסלול הנכון.</p></div></div>
-        <div class="quick-strip">
-          <a class="quick" style="--a:#0f766e" href="money-smart-course.html"><span class="emoji">₪</span><b>Money Smart Lab</b><span>חינוך פיננסי לנוער</span></a>
-          <a class="quick" style="--a:#0891b2" href="tello-edu-grade5.html"><span class="emoji">🚁</span><b>Tello EDU ה׳</b><span>ניווט ובקרה בטאבלט</span></a>
-          <a class="quick" style="--a:#f97316" href="tello-mission-lab.html"><span class="emoji">🧪</span><b>Tello Mission Lab ו׳</b><span>משימות חקר רחפנים</span></a>
-          <a class="quick" style="--a:#1d4ed8" href="drone-coding-foundations.html"><span class="emoji">💻</span><b>Drone Coding ז׳</b><span>JavaScript לרחפנים</span></a>
-          <a class="quick" style="--a:#7c3aed" href="drone-mission-lab-grade8.html"><span class="emoji">📸</span><b>Drone Mission ח׳</b><span>צילום וחקר ב־JS</span></a>
-          <a class="quick" style="--a:#0f172a" href="drone-intelligence-lab-grade9.html"><span class="emoji">🧠</span><b>Drone Intelligence ט׳</b><span>ניתוח שטח חכם</span></a>
-          <a class="quick" style="--a:#155e75" href="mission-impossible-lab.html"><span class="emoji">🕵️</span><b>Mission Impossible ז׳</b><span>פתרון בעיות עם AI</span></a>
-          <a class="quick" style="--a:#0f766e" href="omer-future-craftom.html"><span class="emoji">🏘️</span><b>עומר העתידנית ד׳</b><span>Craftom יצירתי במיינקראפט</span></a>
-          <a class="quick" style="--a:#2563eb" href="sensi-city.html?lesson=1"><span class="emoji">🤖</span><b>סנסי בעיר החכמה</b><span>רובוטיקה וחיישנים</span></a>
-          <a class="quick" style="--a:#ec4899" href="sisi.html"><span class="emoji">🌈</span><b>סדרת סיסי</b><span>15 שיעורים לכיתות ב׳</span></a>
-          <a class="quick" style="--a:#7c3aed" href="python-turtle.html"><span class="emoji">🐢</span><b>Python Turtle</b><span>ציור וקוד אמיתי</span></a>
-          <a class="quick" style="--a:#16a34a" href="roblox.html"><span class="emoji">🧱</span><b>Roblox Studio</b><span>עולמות ומשחקים</span></a>
-          <a class="quick" style="--a:#06b6d4" href="appforge.html"><span class="emoji">🛠️</span><b>WebMakers Lab</b><span>אתרים ואפליקציות</span></a>
-          <a class="quick" style="--a:#14b8a6" href="craftom-school/preview/index.html"><span class="emoji">🏗️</span><b>Craftom School</b><span>קורס צוותי בבנייה ותכנות</span></a>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="paths">
-      <div class="shell">
-        <div class="section-head"><div><h2>ארבעה עולמות למידה</h2><p class="lead">העמוד מסודר לפי משפחות תוכן: צעירים, רובוטיקה, קוד מתקדם ופרויקטים צוותיים. כך קל למצוא את המסלול הנכון לפי גיל ומטרה.</p></div></div>
-        <div class="tracks">
-          <article class="track" style="--a:#ec4899;--b:#8b5cf6"><div class="track-icon">🌈</div><h3>צעירים — חשיבה מחשובית דרך משחק</h3><p>סדרת סיסי מובילה ילדים דרך רצף, תנאים, חיישנים, דפוסים, ניתוב ופתרון בעיות — בלי להפוך את זה לשיעור יבש.</p><div class="chips"><span class="chip">כיתות ב׳</span><span class="chip">משימות קצרות</span><span class="chip">סיפור ואתגר</span></div></article>
-          <article class="track" style="--a:#0891b2;--b:#2dd4bf"><div class="track-icon">🚁</div><h3>רחפנים — Tello EDU בטאבלט</h3><p>רצף רחפנים מדורג: כיתה ה׳ ניווט ובקרה ב־DroneBlocks, כיתה ו׳ משימות חקר, וכיתה ז׳ עתודה מעבר ל־JavaScript ב־DroneBlocks Code.</p><div class="chips"><span class="chip">כיתות ה׳–ז׳</span><span class="chip">DroneBlocks</span><span class="chip">טיסה ממפגש 5</span></div></article>
-          <article class="track" style="--a:#2563eb;--b:#06b6d4"><div class="track-icon">🤖</div><h3>רובוטיקה — סנסי וחיישנים</h3><p>מסלול חיישנים וסימולטור רובוט בעיר חכמה, כולל גרסה קלאסית של 5 שיעורים וגרסת 15 שיעורים מתקדמת.</p><div class="chips"><span class="chip">Blockly</span><span class="chip">חיישנים</span><span class="chip">עיר חכמה</span></div></article>
-          <article class="track" style="--a:#0f172a;--b:#7c3aed"><div class="track-icon">💻</div><h3>קוד ויצירה — Python, Web ומשחקים</h3><p>מסלולים לתלמידים שמוכנים לעלות רמה: Python Turtle, Pygame, Roblox, WebCode, CodeQuest ו־WebMakers.</p><div class="chips"><span class="chip">Python</span><span class="chip">Web</span><span class="chip">משחקים</span></div></article>
-          <article class="track" style="--a:#155e75;--b:#7c3aed"><div class="track-icon">🕵️</div><h3>Mission Impossible Lab</h3><p>קורס שכבה ז׳ בטאבלטים: אתגרי חקר, שאלות AI, פתרון בעיות בצוותים, בניית תוצר דיגיטלי והצגת פיץ׳ מול קהל.</p><div class="chips"><span class="chip">כיתה ז׳</span><span class="chip">15 מפגשים</span><span class="chip">AI + פיץ׳</span></div></article>
-          <article class="track" style="--a:#0f766e;--b:#f59e0b"><div class="track-icon">🏘️</div><h3>עומר העתידנית — Craftom כיתה ד׳</h3><p>לומדת Minecraft/Craftom לבני 9: 4 אתגרי חקר ובנייה, תמונות Minecraft, בדיקת שימוש עצמית ו־JSON הצלחה לכל אתגר.</p><div class="chips"><span class="chip">כיתה ד׳</span><span class="chip">4 אתגרים</span><span class="chip">בלי תכנות</span></div></article>
-          <article class="track" style="--a:#14b8a6;--b:#22c55e"><div class="track-icon">🏗️</div><h3>Craftom — בנייה צוותית ומעקב למידה</h3><p>מסלול Craftom לכיתה ד׳ סביב “בונים את עומר העתידית”: צוותים, משימות, רפלקציה ותוצרים. כרגע מוצג כ־preview עד שיחובר לתשתית הכניסה הכללית.</p><div class="chips"><span class="chip">כיתה ד׳</span><span class="chip">15 מפגשים</span><span class="chip">MVP</span></div></article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="catalog">
-      <div class="shell">
-        <div class="section-head"><div><h2>קטלוג הלומדות</h2><p class="lead">כל המסלולים הפעילים במקום אחד — כל סדרה מופיעה פעם אחת, עם הסבר קצר וקישור ישיר לפתיחה.</p></div></div>
-        <div class="catalog">
-
-          <article class="course-card" style="--a:#7c3aed;--b:#06b6d4">
-            <div class="visual"><div class="big">💡</div><div class="mini"><span class="dot">AI</span><span class="dot">🚀</span></div></div>
-            <div class="course-body"><div class="course-top"><span class="tag">יזמות AI</span></div><h3>מרעיון למיזם עם AI</h3><p>מסלול יזמות לכיתות ח׳: אפיון בעיה, קהל יעד, בניית פתרון ב־Opal, דף עבודה לתלמידים, בקשת שיפור ופיץ׳ מסכם.</p><div class="meta"><span>4 מפגשים</span><span>כיתות ח׳</span><span>Opal</span></div><div class="card-actions"><a class="btn" href="venture-ai.html">פתחו קורס</a><a class="btn secondary" href="venture-ai-students.html?lesson=1">דף תלמידים</a><a class="btn secondary" href="venture-ai-improvement.html">בקשת שיפור</a></div></div>
-          </article>
-          <article class="course-card" style="--a:#155e75;--b:#7c3aed">
-            <div class="visual"><div class="big">🕵️</div><div class="mini"><span class="dot">AI</span><span class="dot">🎤</span></div></div>
-            <div class="course-body"><div class="course-top"><span class="tag">כיתה ז׳</span></div><h3>Mission Impossible Lab</h3><p>לומדה מסודרת לשכבה ז׳: בכל מפגש צוותים מקבלים משימה, חוקרים עם AI, בונים תוצר דיגיטלי, משפרים לפי משוב ומציגים פיץ׳ מול קהל.</p><div class="meta"><span>15 מפגשים</span><span>טאבלטים</span><span>AI + תוצר</span></div><div class="card-actions"><a class="btn" href="mission-impossible-lab.html">פתחו קורס</a><a class="btn secondary" href="mission-impossible-lab-students.html?lesson=1">דף תלמידים</a><a class="btn secondary" href="mission-impossible-lab-slides.html?lesson=1">מצגת</a></div></div>
-          </article>
-          <article class="course-card" style="--a:#0f766e;--b:#f59e0b">
-            <div class="visual"><div class="big">🏘️</div><div class="mini"><span class="dot">ד׳</span><span class="dot">MC</span></div></div>
-            <div class="course-body"><div class="course-top"><span class="tag">Craftom כיתה ד׳</span></div><h3>עומר העתידנית</h3><p>לומדה לילדים בני 9 במיינקראפט: לא תכנות, אלא יצירתיות, חקר וחשיבה מערכתית. כל אתגר ממוקד בתוצר Craftom, תמונת Minecraft, בדיקת שימוש עצמית ו־JSON הצלחה.</p><div class="meta"><span>4 אתגרים</span><span>75 דקות</span><span>JSON הצלחה</span></div><div class="card-actions"><a class="btn" href="omer-future-craftom.html">פתחו קורס</a><a class="btn secondary" href="omer-future-craftom-students.html?lesson=1">דף תלמידים</a><a class="btn secondary" href="omer-future-craftom-slides.html?lesson=1">מצגת</a></div></div>
-          </article>
-          <article class="course-card" style="--a:#0f766e;--b:#f7b731">
-            <div class="visual"><div class="big">₪</div><div class="mini"><span class="dot">💳</span><span class="dot">🛡️</span></div></div>
-            <div class="course-body"><div class="course-top"><span class="tag">חינוך פיננסי</span></div><h3>Money Smart Lab</h3><p>לומדה אינטראקטיבית לנוער: תקציב, קניות חכמות, ריבית, חיסכון, השקעה, כסף דיגיטלי והונאות — עם דמויות, סימולציות ומצב מדריך.</p><div class="meta"><span>5 מפגשים</span><span>כיתות ט׳–י׳</span><span>90 דקות</span></div><div class="card-actions"><a class="btn" href="money-smart-lab.html">פתחו לומדה</a><a class="btn secondary" href="money-smart-course.html">דף קורס</a><a class="btn secondary" href="money-smart-slides.html">מצגת</a></div></div>
-          </article>
-          <article class="course-card" style="--a:#0891b2;--b:#2dd4bf">
-            <div class="visual"><div class="big">🚁</div><div class="mini"><span class="dot">📱</span><span class="dot">🧭</span></div></div>
-            <div class="course-body"><div class="course-top"><span class="tag">רחפנים</span></div><h3>Tello EDU — ניווט ובקרה</h3><p>לומדת DroneBlocks לכיתה ה׳: תכנון טיסה בטאבלט, בדיקות סימולטור, בטיחות, מרחקים, פניות ודיוק הנדסי. טיסה פיזית רק ממפגש 5.</p><div class="meta"><span>15 שיעורים</span><span>כיתה ה׳</span><span>DroneBlocks</span></div><div class="card-actions"><a class="btn" href="tello-edu-grade5.html">פתחו קורס</a><a class="btn secondary" href="tello-edu-grade5-play.html?lesson=1">שיעור 1</a></div></div>
-          </article>
-          <article class="course-card" style="--a:#f97316;--b:#facc15">
-            <div class="visual"><div class="big">🧪</div><div class="mini"><span class="dot">🚁</span><span class="dot">🪐</span></div></div>
-            <div class="course-body"><div class="course-top"><span class="tag">רחפנים וחקר</span></div><h3>Tello Mission Lab — משימות חקר</h3><p>קורס DroneBlocks לכיתה ו׳: רחפנים ככלי מחקר, Ingenuity, בטיחות, סימולטור Minimal Grid, סקרי גובה, צילום, Mission Pads ופרויקט חקר מסכם.</p><div class="meta"><span>15 שיעורים</span><span>כיתה ו׳</span><span>Simulator</span></div><div class="card-actions"><a class="btn" href="tello-mission-lab.html">פתחו קורס</a><a class="btn secondary" href="tello-mission-lab-play.html?lesson=1">שיעור 1</a></div></div>
-          </article>
-          <article class="course-card" style="--a:#1d4ed8;--b:#7c3aed">
-            <div class="visual"><div class="big">💻</div><div class="mini"><span class="dot">JS</span><span class="dot">🚁</span></div></div>
-            <div class="course-body"><div class="course-top"><span class="tag">רחפנים JavaScript</span></div><h3>Drone Coding Foundations</h3><p>קורס כיתה ז׳ עתודה לפי הסילבוס: מעבר מבלוקים לקוד JavaScript ב־DroneBlocks Code, סינטקס, משתנים, לולאות, פונקציות, תנאים, דיבוג ופרויקט ניווט מסכם.</p><div class="meta"><span>15 שיעורים</span><span>כיתה ז׳ עתודה</span><span>DroneBlocks Code</span></div><div class="card-actions"><a class="btn" href="drone-coding-foundations.html">פתחו קורס</a><a class="btn secondary" href="drone-coding-foundations-play.html?lesson=1">שיעור 1</a><a class="btn secondary" href="drone-coding-foundations-slides.html?lesson=1">מצגת</a></div></div>
-          </article>
-          <article class="course-card" style="--a:#7c3aed;--b:#ec4899">
-            <div class="visual"><div class="big">📸</div><div class="mini"><span class="dot">JS</span><span class="dot">🚁</span></div></div>
-            <div class="course-body"><div class="course-top"><span class="tag">רחפנים צילום וחקר</span></div><h3>Drone Mission Lab</h3><p>קורס כיתה ח׳ לפי הסילבוס: JavaScript למשימות סריקה, צילום, חיפוש והצלה, אופטימיזציית סוללה, תיעוד ממצאים ופרויקט חקר חזותי מסכם.</p><div class="meta"><span>15 שיעורים</span><span>כיתה ח׳</span><span>DroneBlocks Code</span></div><div class="card-actions"><a class="btn" href="drone-mission-lab-grade8.html">פתחו קורס</a><a class="btn secondary" href="drone-mission-lab-grade8-play.html?lesson=1">שיעור 1</a><a class="btn secondary" href="drone-mission-lab-grade8-slides.html?lesson=1">מצגת</a></div></div>
-          </article>
-          <article class="course-card" style="--a:#0f172a;--b:#38bdf8">
-            <div class="visual"><div class="big">🧠</div><div class="mini"><span class="dot">JS</span><span class="dot">📊</span></div></div>
-            <div class="course-body"><div class="course-top"><span class="tag">רחפנים חכמים</span></div><h3>Drone Intelligence Lab</h3><p>קורס כיתה ט׳ עתודה לפי הסילבוס: JavaScript למשימות חכמות, תנאים מקוננים, מיפוי גבהים, אילוצים דינמיים, טלמטריה, אופטימיזציה ודוח טכנולוגי מבוסס נתונים.</p><div class="meta"><span>15 שיעורים</span><span>כיתה ט׳ עתודה</span><span>DroneBlocks Code</span></div><div class="card-actions"><a class="btn" href="drone-intelligence-lab-grade9.html">פתחו קורס</a><a class="btn secondary" href="drone-intelligence-lab-grade9-play.html?lesson=1">שיעור 1</a><a class="btn secondary" href="drone-intelligence-lab-grade9-slides.html?lesson=1">מצגת</a></div></div>
-          </article>
-          <article class="course-card" style="--a:#2563eb;--b:#06b6d4">
-            <div class="visual"><div class="big">🏙️</div><div class="mini"><span class="dot">🤖</span><span class="dot">📡</span></div></div>
-            <div class="course-body"><div class="course-top"><span class="tag">רובוטיקה</span></div><h3>סנסי בעיר החכמה</h3><p>לומדת Blockly וסימולטור רובוט עם 15 שיעורים, חיישנים, סביבה משתנה ומשימות עיר חכמה.</p><div class="meta"><span>15 שיעורים</span><span>Blockly</span><span>סימולטור</span></div><div class="card-actions"><a class="btn" href="sensi-city.html?lesson=1">פתחו לומדה</a><a class="btn secondary" href="smart-city.html">מפת מסלול</a></div></div>
-          </article>
-          <article class="course-card" style="--a:#f97316;--b:#facc15">
-            <div class="visual"><div class="big">👁️</div><div class="mini"><span class="dot">👂</span><span class="dot">✋</span></div></div>
-            <div class="course-body"><div class="course-top"><span class="tag">רובוטיקה קלאסית</span></div><h3>סנסי קלאסי</h3><p>הגרסה המקורית של סנסי: 5 שיעורי חושים עם Blockly, סימולטור רובוט ומצגות נפרדות.</p><div class="meta"><span>5 שיעורים</span><span>חיישנים</span><span>Blockly</span></div><div class="card-actions"><a class="btn" href="sensi-classic.html?lesson=1">פתחו לומדה</a><a class="btn secondary" href="sensi-classic-slides/index.html">מצגות</a></div></div>
-          </article>
-          <article class="course-card" style="--a:#ec4899;--b:#8b5cf6">
-            <div class="visual"><div class="big">🌈</div><div class="mini"><span class="dot">15</span><span class="dot">✨</span></div></div>
-            <div class="course-body"><div class="course-top"><span class="tag">סיסי</span></div><h3>סדרת סיסי לכיתות ב׳</h3><p>מרכז סדרת 15 שיעורי סיסי: חשיבה אלגוריתמית, רצפים, תנאים, חיישנים ומשימות משחקיות.</p><div class="meta"><span>15 שיעורים</span><span>כיתות ב׳</span><span>סדרה מלאה</span></div><div class="card-actions"><a class="btn" href="sisi.html">פתחו מרכז</a><a class="btn secondary" href="finale.html">שיעור שיא</a></div></div>
-          </article>
-          <article class="course-card" style="--a:#16a34a;--b:#84cc16">
-            <div class="visual"><div class="big">🦉</div><div class="mini"><span class="dot">🌿</span><span class="dot">15</span></div></div>
-            <div class="course-body"><div class="course-top"><span class="tag">לומי</span></div><h3>לומי חוקרת הטבע</h3><p>מסלול חשיבה חמוד לגיל ב׳: 15 תחנות ו־180 תרגולים במיון, דפוסים, תנאים, לולאות, דיבוג ודאטה דרך טבע וחיות.</p><div class="meta"><span>15 תחנות</span><span>כיתות ב׳</span><span>טבע ודאטה</span></div><div class="card-actions"><a class="btn" href="lumi.html">פתחו מסע</a><a class="btn secondary" href="lumi-play.html?lesson=1">התחלה מהירה</a></div></div>
-          </article>
-          <article class="course-card" style="--a:#7c3aed;--b:#db2777">
-            <div class="visual"><div class="big">🎮</div><div class="mini"><span class="dot">🐍</span><span class="dot">🕹️</span></div></div>
-            <div class="course-body"><div class="course-top"><span class="tag">Python</span></div><h3>Pygame</h3><p>מסלול בניית משחקים ב־Python עם תרגול חזותי, קוד בסגנון Pygame ומערכי שיעור למדריכים.</p><div class="meta"><span>28 שיעורים</span><span>משחקים</span><span>Python</span></div><div class="card-actions"><a class="btn" href="pygame.html">פתחו לומדה</a><a class="btn secondary" href="pygame-course.html">דף קורס</a></div></div>
-          </article>
-          <article class="course-card" style="--a:#0f766e;--b:#22c55e">
-            <div class="visual"><div class="big">🧱</div><div class="mini"><span class="dot">🌍</span><span class="dot">🎲</span></div></div>
-            <div class="course-body"><div class="course-top"><span class="tag">Roblox</span></div><h3>Roblox Studio</h3><p>כניסה לעולם Roblox Studio: בניית עולמות, תכנות משחקים ותרגול הדרגתי למתחילים.</p><div class="meta"><span>Lua</span><span>Studio</span><span>יצירה</span></div><div class="card-actions"><a class="btn" href="roblox.html">פתחו לומדה</a><a class="btn secondary" href="roblox-course.html">דף קורס</a></div></div>
-          </article>
-          <article class="course-card" style="--a:#ea580c;--b:#facc15">
-            <div class="visual"><div class="big">🐢</div><div class="mini"><span class="dot">🎨</span><span class="dot">📐</span></div></div>
-            <div class="course-body"><div class="course-top"><span class="tag">Python</span></div><h3>Python Turtle</h3><p>מסלול ציור ותכנות עם Python Turtle — מעבר נעים לקוד אמיתי דרך צורות, צבעים ודפוסים.</p><div class="meta"><span>30 שיעורים</span><span>ציור בקוד</span><span>Python</span></div><div class="card-actions"><a class="btn" href="python-turtle.html">פתחו לומדה</a><a class="btn secondary" href="python-turtle-course.html">דף קורס</a></div></div>
-          </article>
-          <article class="course-card" style="--a:#111827;--b:#4f46e5">
-            <div class="visual"><div class="big">💻</div><div class="mini"><span class="dot">HTML</span><span class="dot">JS</span></div></div>
-            <div class="course-body"><div class="course-top"><span class="tag">Web</span></div><h3>Web Code</h3><p>תרגול HTML/CSS/JS ובניית דפי Web, עם כניסה לעבודה יצירתית בקוד.</p><div class="meta"><span>HTML</span><span>CSS</span><span>JavaScript</span></div><div class="card-actions"><a class="btn" href="webcode.html">פתחו לומדה</a><a class="btn secondary" href="webcode-play.html">תרגול</a></div></div>
-          </article>
-          <article class="course-card" style="--a:#16a34a;--b:#84cc16">
-            <div class="visual"><div class="big">⛏️</div><div class="mini"><span class="dot">🧱</span><span class="dot">🌲</span></div></div>
-            <div class="course-body"><div class="course-top"><span class="tag">יצירה</span></div><h3>Minecraft</h3><p>מסלול יצירתי סביב Minecraft, תכנון משימות וחשיבה מערכתית בסביבה מוכרת לתלמידים.</p><div class="meta"><span>תכנון</span><span>משימות</span><span>יצירה</span></div><div class="card-actions"><a class="btn" href="minecraft.html">פתחו לומדה</a><a class="btn secondary" href="minecraft-teachers.html">מורים</a></div></div>
-          </article>
-          <article class="course-card" style="--a:#312e81;--b:#7c3aed">
-            <div class="visual"><div class="big">🐍</div><div class="mini"><span class="dot">{ }</span><span class="dot">🏆</span></div></div>
-            <div class="course-body"><div class="course-top"><span class="tag">Python</span></div><h3>CodeQuest</h3><p>מסע פייתון משחקי שמוביל תלמידים דרך אתגרי קוד, משימות ופתרון בעיות.</p><div class="meta"><span>Python</span><span>אתגרים</span><span>קוד</span></div><div class="card-actions"><a class="btn" href="codequest.html">פתחו לומדה</a><a class="btn secondary" href="codequest-play.html">תרגול</a></div></div>
-          </article>
-          <article class="course-card" style="--a:#c026d3;--b:#f97316">
-            <div class="visual"><div class="big">🎮</div><div class="mini"><span class="dot">⚡</span><span class="dot">Blockly</span></div></div>
-            <div class="course-body"><div class="course-top"><span class="tag">Blockly</span></div><h3>PlayCode Lab</h3><p>פיתוח משחקים עם Blockly: חשיבה משחקית, אירועים, כללים ואינטראקציות.</p><div class="meta"><span>GameLab</span><span>Blockly</span><span>משחקים</span></div><div class="card-actions"><a class="btn" href="gamelab.html">פתחו לומדה</a><a class="btn secondary" href="gamelab-play.html">תרגול</a></div></div>
-          </article>
-          <article class="course-card" style="--a:#06b6d4;--b:#8b5cf6">
-            <div class="visual"><div class="big">🛠️</div><div class="mini"><span class="dot">CSS</span><span class="dot">JS</span></div></div>
-            <div class="course-body"><div class="course-top"><span class="tag">Web</span></div><h3>WebMakers Lab</h3><p>בניית אתרי Web לכיתות ה׳–ו׳: HTML, CSS, פרויקטים ומסלול יצירה.</p><div class="meta"><span>HTML/CSS</span><span>כיתות ה׳–ו׳</span><span>פרויקט</span></div><div class="card-actions"><a class="btn" href="appforge.html">פתחו לומדה</a><a class="btn secondary" href="appforge-play.html">תרגול</a></div></div>
-          </article>
-          <article class="course-card" style="--a:#14b8a6;--b:#22c55e">
-            <div class="visual"><div class="big">🏗️</div><div class="mini"><span class="dot">👥</span><span class="dot">✓</span></div></div>
-            <div class="course-body"><div class="course-top"><span class="tag">Craftom</span></div><h3>Craftom School</h3><p>קורס צוותי של 15 מפגשים סביב בנייה, תכנות, רפלקציה ודוחות התקדמות. כרגע מוצג כ־preview סטטי עד לחיבור לתשתית הכניסה הכללית של כל הלומדות.</p><div class="meta"><span>15 מפגשים</span><span>כיתה ד׳</span><span>צוותים</span></div><div class="card-actions"><a class="btn" href="craftom-school/preview/index.html">פתחו Preview</a><a class="btn secondary" href="craftom-school/README.md">README</a></div></div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="roadmap">
-      <div class="shell">
-        <div class="roadmap">
-          <h2>רצף התקדמות — ממשחק לקוד אמיתי</h2>
-          <p class="lead">הילדים מתחילים במשימות וסיפורים, ממשיכים לרובוטיקה וחיישנים, ומשם עוברים לפייתון, Web ומשחקים. זו לא ערימה של דפים — זו מערכת למידה מתפתחת.</p>
-          <div class="rows">
-            <div class="row"><b>כיתות ב׳</b><div>סיסי: רצף, תנאים, חיישנים, דפוסים ופתרון בעיות</div><div>תוצר: פתרונות משחקיים קצרים ושיעור שיא</div></div>
-            <div class="row"><b>ג׳–ד׳</b><div>סנסי, WebCode ו־PlayCode Lab</div><div>תוצר: רובוט חכם, משחק או דף Web</div></div>
-            <div class="row"><b>ד׳</b><div>עומר העתידנית: Craftom/Minecraft ללא תכנות, יצירתיות, בנייה וחשיבה מערכתית על יישוב עתידני</div><div>תוצר: סיור בעולם כיתתי שמחבר מגורים, תנועה, טבע, קהילה ובטיחות</div></div><div class="row"><b>ה׳</b><div>Tello EDU — ניווט ובקרה: DroneBlocks בטאבלט, סימולטור, בטיחות וטיסה פיזית ממפגש 5</div><div>תוצר: תוכנית טיסה מדויקת ומוסברת</div></div><div class="row"><b>ו׳</b><div>Tello Mission Lab — משימות חקר: סימולטור, סקרי גובה, צילום, Mission Pads ופרויקט חקר</div><div>תוצר: משימת חקר מתועדת ומשותפת</div></div><div class="row"><b>ז׳ עתודה</b><div>Drone Coding Foundations: מעבר מבלוקים ל־JavaScript ב־DroneBlocks Code, לולאות, פונקציות, תנאים ודיבוג רחפנים</div><div>תוצר: קוד JavaScript למשימת ניווט רחפן + Share Link ותחקור</div></div><div class="row"><b>ח׳</b><div>Drone Mission Lab: רחפנים, צילום ומשימות חקר ב־JavaScript — סריקה, מצלמה, חיפוש והצלה ואופטימיזציה</div><div>תוצר: משימת חקר מצולמת, קוד JS, מצגת/סרטון וממצאים</div></div><div class="row"><b>ט׳ עתודה</b><div>Drone Intelligence Lab: משימות חכמות, תנאים מקוננים, מיפוי גבהים, אילוצים דינמיים וניתוח טלמטריה</div><div>תוצר: פרויקט רחפן חכם, קוד JS, דוח נתונים ופיץ׳ טכנולוגי</div></div><div class="row"><b>ז׳</b><div>Mission Impossible Lab: פתרון בעיות עם AI, עבודת צוות, תוצר דיגיטלי ופיץ׳ מול קהל</div><div>תוצר: פתרון צוותי, דמו דיגיטלי ופרזנטציה מסכמת</div></div><div class="row"><b>ה׳–ו׳</b><div>Python Turtle, CodeQuest, WebMakers ו־Roblox</div><div>תוצר: פרויקט אישי בקוד אמיתי</div></div>
+    <div class="shell catalog">
+      <section id="active-courses">
+        <div class="group-head">
+          <div>
+            <h2>קורסים פעילים</h2>
+            <p>הקטלוג היציב לפתיחה מהירה: רובוטיקה, צעירים, Python, Web ויצירה.</p>
           </div>
         </div>
-      </div>
-    </section>
+        <div class="cards">
+          <article class="course" style="--a:#2563eb;--b:#06b6d4">
+            <div class="course-media preview-video">
+              <video autoplay muted loop playsinline preload="metadata" aria-label="הצצה לקורס סנסי בעיר החכמה">
+                <source src="marketing/sensi-city-silent-motion-preview.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="course-top"><div class="badges"><span class="badge ready">פעיל</span><span class="badge">רובוטיקה</span></div></div>
+            <h3>סנסי בעיר החכמה</h3>
+            <p>15 שיעורי Blockly, חיישנים ומשימות עיר חכמה בסימולטור.</p>
+            <div class="meta"><span>15 שיעורים</span><span>חיישנים</span><span>Blockly</span></div>
+            <div class="actions"><a class="btn" href="sensi-city.html?lesson=1">פתחו לומדה</a><a class="btn secondary" href="smart-city.html">דף קורס</a></div>
+          </article>
 
-    <section class="cta">
-      <div class="shell">
-        <div class="cta-box">
-          <h2>מרכז למידה שאפשר לשלוח בביטחון</h2>
-          <p>כל מסלול מקבל כניסה ברורה, הקטלוג מסודר, והחוויה נראית מספיק מקצועית כדי לשלוח להורים, צוותים ובתי ספר.</p>
-          <div class="actions" style="justify-content:center"><a class="btn" href="sensi-city.html?lesson=1">סנסי 15</a><a class="btn" href="sisi.html">סדרת סיסי</a><a class="btn" href="python-turtle.html">Python Turtle</a><a class="btn" href="appforge.html">WebMakers</a><a class="btn" href="omer-future-craftom.html">עומר העתידנית</a><a class="btn" href="craftom-school/preview/index.html">Craftom</a></div>
+          <article class="course" style="--a:#ec4899;--b:#8b5cf6">
+            <div class="course-media preview-video">
+              <video autoplay muted loop playsinline preload="metadata" aria-label="הצצה לקורס סיסי">
+                <source src="marketing/sisi-silent-motion-preview.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="course-top"><div class="badges"><span class="badge ready">פעיל</span><span class="badge">צעירים</span></div></div>
+            <h3>סדרת סיסי לכיתות ב׳</h3>
+            <p>15 שיעורים של חשיבה אלגוריתמית דרך סיפור, רצפים, תנאים ומשימות משחקיות.</p>
+            <div class="meta"><span>15 שיעורים</span><span>כיתות ב׳</span><span>סדרה מלאה</span></div>
+            <div class="actions"><a class="btn" href="sisi.html">פתחו מרכז</a><a class="btn secondary" href="finale.html">שיעור שיא</a></div>
+          </article>
+
+          <article class="course" style="--a:#ea580c;--b:#facc15">
+            <div class="course-media preview-video">
+              <video autoplay muted loop playsinline preload="metadata" aria-label="הצצה לקורס Python Turtle">
+                <source src="marketing/python-turtle-silent-motion-preview.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="course-top"><div class="badges"><span class="badge ready">פעיל</span><span class="badge">Python</span></div></div>
+            <h3>Python Turtle</h3>
+            <p>מעבר נעים לקוד אמיתי דרך ציור, צורות, צבעים ודפוסים.</p>
+            <div class="meta"><span>30 שיעורים</span><span>ציור בקוד</span><span>Python</span></div>
+            <div class="actions"><a class="btn" href="python-turtle.html">פתחו לומדה</a><a class="btn secondary" href="python-turtle-course.html">דף קורס</a></div>
+          </article>
+
+          <article class="course" style="--a:#111827;--b:#4f46e5">
+            <div class="course-media preview-video">
+              <video autoplay muted loop playsinline preload="metadata" aria-label="הצצה לקורס Web Code">
+                <source src="marketing/webcode-silent-motion-preview.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="course-top"><div class="badges"><span class="badge ready">פעיל</span><span class="badge">Web</span></div></div>
+            <h3>Web Code</h3>
+            <p>תרגול HTML, CSS ו־JavaScript ובניית דפי Web קטנים ויצירתיים.</p>
+            <div class="meta"><span>HTML</span><span>CSS</span><span>JavaScript</span></div>
+            <div class="actions"><a class="btn" href="webcode.html">פתחו לומדה</a><a class="btn secondary" href="webcode-play.html">תרגול</a></div>
+          </article>
+
+          <article class="course" style="--a:#16a34a;--b:#64748b">
+            <div class="course-media preview-video">
+              <video autoplay muted loop playsinline preload="metadata" aria-label="הצצה לקורס Minecraft">
+                <source src="marketing/minecraft-silent-motion-preview.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="course-top"><div class="badges"><span class="badge ready">פעיל</span><span class="badge">יצירה</span></div></div>
+            <h3>Minecraft</h3>
+            <p>מסלול יצירתי סביב תכנון משימות, בנייה וחשיבה מערכתית בסביבה מוכרת.</p>
+            <div class="meta"><span>תכנון</span><span>משימות</span><span>יצירה</span></div>
+            <div class="actions"><a class="btn" href="minecraft.html">פתחו לומדה</a><a class="btn secondary" href="minecraft-teachers.html">מורים</a></div>
+          </article>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <section id="drones">
+        <div class="group-head">
+          <div>
+            <h2>רחפנים</h2>
+            <p>מסלולי Tello ו־DroneBlocks לפי כיתות, מהטסה בסיסית ועד JavaScript, צילום, טלמטריה ודוחות.</p>
+          </div>
+        </div>
+        <div class="cards">
+          <article class="course" style="--a:#0891b2;--b:#2dd4bf">
+            <div class="course-media"><img src="assets/course-covers/tello-edu-grade5.svg" alt="" loading="lazy"></div>
+            <div class="course-top"><span class="icon">ה׳</span><div class="badges"><span class="badge pilot">פיילוט</span><span class="badge">רחפנים</span></div></div>
+            <h3>Tello EDU — ניווט ובקרה</h3>
+            <p>תכנון טיסה בטאבלט, סימולטור, בטיחות, מרחקים, פניות ודיוק הנדסי.</p>
+            <div class="meta"><span>15 שיעורים</span><span>כיתה ה׳</span><span>DroneBlocks</span></div>
+            <div class="actions"><a class="btn" href="tello-edu-grade5.html">פתחו קורס</a><a class="btn secondary" href="tello-edu-grade5-play.html?lesson=1">שיעור 1</a></div>
+          </article>
+
+          <article class="course" style="--a:#f97316;--b:#facc15">
+            <div class="course-media"><img src="assets/course-covers/tello-mission-lab.svg" alt="" loading="lazy"></div>
+            <div class="course-top"><span class="icon">ו׳</span><div class="badges"><span class="badge pilot">פיילוט</span><span class="badge">רחפנים</span></div></div>
+            <h3>Tello Mission Lab — משימות חקר</h3>
+            <p>רחפנים ככלי מחקר: סימולטור, סקרי גובה, צילום, Mission Pads ופרויקט מסכם.</p>
+            <div class="meta"><span>15 שיעורים</span><span>כיתה ו׳</span><span>Simulator</span></div>
+            <div class="actions"><a class="btn" href="tello-mission-lab.html">פתחו קורס</a><a class="btn secondary" href="tello-mission-lab-play.html?lesson=1">שיעור 1</a></div>
+          </article>
+
+          <article class="course" style="--a:#1d4ed8;--b:#7c3aed">
+            <div class="course-media"><img src="assets/course-covers/drone-coding-foundations.svg" alt="" loading="lazy"></div>
+            <div class="course-top"><span class="icon">ז׳</span><div class="badges"><span class="badge pilot">פיילוט</span><span class="badge">JavaScript</span></div></div>
+            <h3>Drone Coding Foundations</h3>
+            <p>מעבר מבלוקים לקוד JavaScript ב־DroneBlocks Code: סינטקס, לולאות, פונקציות ודיבוג.</p>
+            <div class="meta"><span>15 שיעורים</span><span>כיתה ז׳ עתודה</span><span>DroneBlocks Code</span></div>
+            <div class="actions"><a class="btn" href="drone-coding-foundations.html">פתחו קורס</a><a class="btn secondary" href="drone-coding-foundations-play.html?lesson=1">שיעור 1</a></div>
+          </article>
+
+          <article class="course" style="--a:#7c3aed;--b:#ec4899">
+            <div class="course-media"><img src="assets/course-covers/drone-mission-lab.svg" alt="" loading="lazy"></div>
+            <div class="course-top"><span class="icon">ח׳</span><div class="badges"><span class="badge pilot">פיילוט</span><span class="badge">צילום וחקר</span></div></div>
+            <h3>Drone Mission Lab</h3>
+            <p>משימות סריקה, צילום, חיפוש והצלה, אופטימיזציית סוללה ותיעוד ממצאים.</p>
+            <div class="meta"><span>15 שיעורים</span><span>כיתה ח׳</span><span>DroneBlocks Code</span></div>
+            <div class="actions"><a class="btn" href="drone-mission-lab-grade8.html">פתחו קורס</a><a class="btn secondary" href="drone-mission-lab-grade8-play.html?lesson=1">שיעור 1</a></div>
+          </article>
+
+          <article class="course" style="--a:#0f172a;--b:#38bdf8">
+            <div class="course-media"><img src="assets/course-covers/drone-intelligence-lab.svg" alt="" loading="lazy"></div>
+            <div class="course-top"><span class="icon">ט׳</span><div class="badges"><span class="badge pilot">פיילוט</span><span class="badge">רחפנים חכמים</span></div></div>
+            <h3>Drone Intelligence Lab</h3>
+            <p>משימות חכמות, תנאים מקוננים, מיפוי גבהים, אילוצים דינמיים וניתוח טלמטריה.</p>
+            <div class="meta"><span>15 שיעורים</span><span>כיתה ט׳ עתודה</span><span>דאטה</span></div>
+            <div class="actions"><a class="btn" href="drone-intelligence-lab-grade9.html">פתחו קורס</a><a class="btn secondary" href="drone-intelligence-lab-grade9-play.html?lesson=1">שיעור 1</a></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="omer">
+        <div class="group-head">
+          <div>
+            <h2>עומר / Craftom</h2>
+            <p>תוכניות סביב עולם עתידני, בנייה, תכנון קהילתי, יצירתיות ועבודת צוות.</p>
+          </div>
+        </div>
+        <div class="cards">
+          <article class="course" style="--a:#155e75;--b:#7c3aed">
+            <div class="course-media"><img src="assets/course-covers/omer-future-craftom-frame.png" alt="" loading="lazy"></div>
+            <div class="course-top"><span class="icon">O</span><div class="badges"><span class="badge pilot">פיילוט</span><span class="badge">Craftom</span></div></div>
+            <h3>עומר העתידנית / Omer Future Craftom</h3>
+            <p>אתגרי Craftom/Minecraft סביב יישוב עתידני: מגורים, תנועה, טבע, קהילה ובטיחות.</p>
+            <div class="meta"><span>4 אתגרים</span><span>כיתה ד׳</span><span>סרטונים</span></div>
+            <div class="actions"><a class="btn" href="omer-future-craftom.html">פתחו לומדה</a><a class="btn secondary" href="omer-future-craftom-students.html">דף תלמיד</a></div>
+          </article>
+
+          <article class="course" style="--a:#14b8a6;--b:#22c55e">
+            <div class="course-media"><img src="assets/course-covers/craftom-school.svg" alt="" loading="lazy"></div>
+            <div class="course-top"><span class="icon">C</span><div class="badges"><span class="badge pilot">Preview</span><span class="badge">Craftom</span></div></div>
+            <h3>Craftom School</h3>
+            <p>קורס צוותי של 15 מפגשים סביב בנייה, תכנות, רפלקציה ודוחות התקדמות.</p>
+            <div class="meta"><span>15 מפגשים</span><span>צוותים</span><span>Preview</span></div>
+            <div class="actions"><a class="btn" href="craftom-school/preview/index.html">פתחו Preview</a><a class="btn secondary" href="craftom-school/README.md">README</a></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="development">
+        <div class="group-head">
+          <div>
+            <h2>בפיתוח ופיילוטים נוספים</h2>
+            <p>אלה נשארים זמינים ב־robotics15, אבל נמצאים בסוף ומסומנים ברור כדי לא לבלבל עם הקטלוג הראשי.</p>
+          </div>
+        </div>
+        <div class="cards">
+          <article class="course" style="--a:#7c3aed;--b:#06b6d4">
+            <div class="course-media"><img src="assets/course-covers/venture-ai.svg" alt="" loading="lazy"></div>
+            <div class="course-top"><span class="icon">AI</span><div class="badges"><span class="badge pilot">פיילוט</span></div></div>
+            <h3>Venture AI — תוכנית חולון ביזמות עם בינה מלאכותית</h3>
+            <p>יזמות AI ב־4 מפגשים צוותיים: בעיה עירונית, אופאל מהמפגש הראשון, MVP ופיץ׳ מסכם.</p>
+            <div class="meta"><span>4 מפגשים</span><span>אופאל</span><span>צוותים</span></div>
+            <div class="actions"><a class="btn" href="venture-ai.html">פתחו תוכנית</a><a class="btn secondary" href="venture-ai-students.html?lesson=1">דף תלמיד</a><a class="btn secondary" href="venture-ai-improvement.html">בקשת שיפור</a></div>
+          </article>
+
+          <article class="course" style="--a:#111827;--b:#dc2626">
+            <div class="course-media"><img src="assets/course-covers/mission-impossible-lab.svg" alt="" loading="lazy"></div>
+            <div class="course-top"><span class="icon">MI</span><div class="badges"><span class="badge pilot">פיילוט</span></div></div>
+            <h3>Mission Impossible Lab</h3>
+            <p>פתרון בעיות עם AI, עבודת צוות, תוצר דיגיטלי ופיץ׳ מול קהל.</p>
+            <div class="meta"><span>AI</span><span>צוותים</span><span>פיץ׳</span></div>
+            <div class="actions"><a class="btn" href="mission-impossible-lab.html">פתחו לומדה</a><a class="btn secondary" href="mission-impossible-lab-students.html">דף תלמיד</a></div>
+          </article>
+
+          <article class="course" style="--a:#f59e0b;--b:#22c55e">
+            <div class="course-media"><img src="assets/course-covers/money-smart-lab.svg" alt="" loading="lazy"></div>
+            <div class="course-top"><span class="icon">₪</span><div class="badges"><span class="badge dev">בפיתוח</span><span class="badge">חינוך פיננסי</span></div></div>
+            <h3>Money Smart Lab</h3>
+            <p>חינוך פיננסי לנוער: תקציב, בחירות, מטרות, יזמות קטנה וחשיבה צרכנית.</p>
+            <div class="meta"><span>פיננסים</span><span>יזמות</span><span>ילדים</span></div>
+            <div class="actions"><a class="btn" href="money-smart-lab.html">פתחו לומדה</a><a class="btn secondary" href="money-smart-course.html">דף קורס</a><a class="btn secondary" href="money-smart-slides.html">מצגות</a></div>
+          </article>
+
+          <article class="course" style="--a:#16a34a;--b:#84cc16">
+            <div class="course-media"><img src="assets/course-covers/lumi.svg" alt="" loading="lazy"></div>
+            <div class="course-top"><span class="icon">ל</span><div class="badges"><span class="badge dev">בפיתוח</span><span class="badge">צעירים</span></div></div>
+            <h3>לומי חוקרת הטבע</h3>
+            <p>תחנות חשיבה ראשונות במיון, דפוסים, תנאים, לולאות, דיבוג ודאטה.</p>
+            <div class="meta"><span>15 תחנות</span><span>כיתות ב׳</span><span>דאטה</span></div>
+            <div class="actions"><a class="btn" href="lumi.html">פתחו מסע</a><a class="btn secondary" href="lumi-play.html?lesson=1">התחלה מהירה</a></div>
+          </article>
+
+          <article class="course" style="--a:#7c3aed;--b:#db2777">
+            <div class="course-media"><img src="assets/course-covers/pygame.svg" alt="" loading="lazy"></div>
+            <div class="course-top"><span class="icon">PG</span><div class="badges"><span class="badge dev">בפיתוח</span><span class="badge">Python</span></div></div>
+            <h3>Pygame</h3>
+            <p>בניית משחקים ב־Python עם תרגול חזותי, קוד בסגנון Pygame ומערכי שיעור למדריכים.</p>
+            <div class="meta"><span>28 שיעורים</span><span>משחקים</span><span>Python</span></div>
+            <div class="actions"><a class="btn" href="pygame.html">פתחו לומדה</a><a class="btn secondary" href="pygame-course.html">דף קורס</a></div>
+          </article>
+
+          <article class="course" style="--a:#0f766e;--b:#22c55e">
+            <div class="course-media"><img src="assets/course-covers/roblox.svg" alt="" loading="lazy"></div>
+            <div class="course-top"><span class="icon">Rb</span><div class="badges"><span class="badge dev">בפיתוח</span><span class="badge">Roblox</span></div></div>
+            <h3>Roblox Studio</h3>
+            <p>בניית עולמות, תכנות משחקים ותרגול הדרגתי למתחילים ב־Roblox Studio.</p>
+            <div class="meta"><span>Lua</span><span>Studio</span><span>יצירה</span></div>
+            <div class="actions"><a class="btn" href="roblox.html">פתחו לומדה</a><a class="btn secondary" href="roblox-course.html">דף קורס</a></div>
+          </article>
+
+          <article class="course" style="--a:#312e81;--b:#7c3aed">
+            <div class="course-media"><img src="assets/course-covers/codequest.svg" alt="" loading="lazy"></div>
+            <div class="course-top"><span class="icon">CQ</span><div class="badges"><span class="badge pilot">פיילוט</span><span class="badge">Python</span></div></div>
+            <h3>CodeQuest</h3>
+            <p>מסע פייתון משחקי עם אתגרי קוד, משימות ופתרון בעיות.</p>
+            <div class="meta"><span>Python</span><span>אתגרים</span><span>קוד</span></div>
+            <div class="actions"><a class="btn" href="codequest.html">פתחו לומדה</a><a class="btn secondary" href="codequest-play.html">תרגול</a></div>
+          </article>
+
+          <article class="course" style="--a:#c026d3;--b:#f97316">
+            <div class="course-media"><img src="assets/course-covers/playcode.svg" alt="" loading="lazy"></div>
+            <div class="course-top"><span class="icon">PC</span><div class="badges"><span class="badge dev">בפיתוח</span><span class="badge">Blockly</span></div></div>
+            <h3>PlayCode Lab</h3>
+            <p>פיתוח משחקים עם Blockly: אירועים, כללים, אינטראקציות וחשיבה משחקית.</p>
+            <div class="meta"><span>GameLab</span><span>Blockly</span><span>משחקים</span></div>
+            <div class="actions"><a class="btn" href="gamelab.html">פתחו לומדה</a><a class="btn secondary" href="gamelab-play.html">תרגול</a></div>
+          </article>
+
+          <article class="course" style="--a:#06b6d4;--b:#8b5cf6">
+            <div class="course-media"><img src="assets/course-covers/webmakers.svg" alt="" loading="lazy"></div>
+            <div class="course-top"><span class="icon">WM</span><div class="badges"><span class="badge dev">בפיתוח</span><span class="badge">Web</span></div></div>
+            <h3>WebMakers Lab</h3>
+            <p>בניית אתרי Web לכיתות ה׳–ו׳: HTML, CSS, פרויקטים ומסלול יצירה.</p>
+            <div class="meta"><span>HTML/CSS</span><span>כיתות ה׳–ו׳</span><span>פרויקט</span></div>
+            <div class="actions"><a class="btn" href="appforge.html">פתחו לומדה</a><a class="btn secondary" href="appforge-play.html">תרגול</a></div>
+          </article>
+        </div>
+      </section>
+    </div>
   </main>
+
   <footer class="footer">פלטפורמת לומדות טכנולוגיה · hai.tech</footer>
 </body>
 </html>

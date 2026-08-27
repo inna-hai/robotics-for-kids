@@ -30,7 +30,7 @@ function sourcesForLesson(lesson) {
 }
 
 for (const lesson of lessons) {
-  const minimumExercises = lesson.id === 6 ? 6 : [2, 4, 5].includes(lesson.id) ? 7 : 8;
+  const minimumExercises = [6, 7, 8].includes(lesson.id) ? 6 : [2, 4, 5].includes(lesson.id) ? 7 : 8;
   assert.equal(lesson.exercises.length >= minimumExercises, true, `lesson ${lesson.id} has enough exercises`);
   const source = sourcesForLesson(lesson);
   for (const exercise of lesson.exercises) {
@@ -107,3 +107,27 @@ assert.ok(play.includes('changedAny') && play.includes('hasChanged'), 'player ca
 assert.ok(play.includes('htmlExcludes') && play.includes('excludesAll'), 'player can reject unchanged/default generated code when needed');
 
 console.log('webcode checks validation passed');
+
+
+const lesson8 = lessons.find(lesson => lesson.id === 8);
+const lesson8Time = lesson8.blocklyBlocks.find(block => block.type === 'lesson_8_time');
+const lesson8Color = lesson8.blocklyBlocks.find(block => block.type === 'lesson_8_lit_color');
+assert.equal(JSON.stringify(lesson8Time.args0[0].options.map(option => option[1])), JSON.stringify(['10', '15', '20']), 'lesson 8 time options are ordered smallest to largest');
+assert.ok(lesson8.exercises[0].check.requiresPreviewTimeFromBlockField, 'lesson 8 time exercise requires the live preview time display to match the block');
+assert.ok(lesson8.exercises[2].check.requiresPreviewMessageFromBlockOutput, 'lesson 8 ending-message exercise requires seeing the message after the timer ends');
+assert.ok(lesson8Color.args0[0].options.some(option => option[1] === '#fde047'), 'lesson 8 keeps yellow as an allowed/default lit-window color');
+assert.ok(lesson8Color.args0[0].options.length >= 6, 'lesson 8 lit-window color block includes extra color options');
+assert.equal(lesson8.exercises.length, 6, 'lesson 8 removes weak exercises 6 and 7');
+assert.equal(lesson8.exercises.at(-1).check.requiresCodeSelectionTab, 'js', 'lesson 8 final code-peek exercise requires JavaScript highlighting');
+assert.ok(play.includes('timeText') && play.includes('hasPreviewTimeFromBlockField'), 'player can validate timer text shown in the live preview');
+
+assert.equal(JSON.stringify(lesson8.blocklyBlocks.find(block => block.type === 'lesson_8_windows').args0[0].options.map(option => option[1])), JSON.stringify(['5', '10', '15', '20']), 'lesson 8 window-count options are ordered smallest to largest');
+
+assert.ok(lesson8.blocklyBlocks.find(block => block.type === 'lesson_8_end').args0[0].text === 'כל הכבוד 🎉', 'lesson 8 ending-message block default is only the ending message');
+assert.ok(!lesson8.starter.js.includes(' + score + " חלונות."'), 'lesson 8 does not append windows after the ending-message text');
+
+assert.ok(lesson8.starter.html.includes('id="windowsSummary"') && lesson8.starter.js.includes('מספר החלונות שהארתם הוא:'), 'lesson 8 separates the score summary from the editable ending message');
+
+assert.ok(!lesson8.exercises[2].prompt.includes('למשל כל הכבוד'), 'lesson 8 ending-message prompt does not use the default text as the example');
+
+assert.ok(lesson8.exercises[4].prompt.includes('בחרו את הצבע שאתם מעדיפים') && !lesson8.exercises[4].prompt.includes('אפשר להשאיר צהוב'), 'lesson 8 color prompt asks learners to choose their preferred color without calling out yellow');

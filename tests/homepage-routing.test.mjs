@@ -22,17 +22,23 @@ const tests = [];
 function test(name, fn) { tests.push({ name, fn }); }
 function assertIncludes(source, needle, message = `Missing: ${needle}`) { assert.ok(source.includes(needle), message); }
 function assertNotIncludes(source, needle, message = `Unexpected: ${needle}`) { assert.ok(!source.includes(needle), message); }
+function assertBefore(source, first, second) {
+  const firstIndex = source.indexOf(first);
+  const secondIndex = source.indexOf(second);
+  assert.ok(firstIndex >= 0, `Missing ordered text: ${first}`);
+  assert.ok(secondIndex >= 0, `Missing ordered text: ${second}`);
+  assert.ok(firstIndex < secondIndex, `Expected "${first}" before "${second}"`);
+}
 
 test('homepage is now a platform gateway and links to primary learning modules', () => {
   assertIncludes(homepageHtml, '<title>פלטפורמת לומדות טכנולוגיה</title>');
   assertIncludes(homepageHtml, 'מרכז הלומדות');
   assertIncludes(homepageHtml, 'href="sensi-city.html?lesson=1"');
-  assertIncludes(homepageHtml, 'href="sensi-classic.html?lesson=1"');
-  assertIncludes(homepageHtml, 'href="sensi-classic-slides/index.html"');
   assertIncludes(homepageHtml, 'href="pygame.html"');
   assertIncludes(homepageHtml, 'href="roblox.html"');
   assertIncludes(homepageHtml, 'href="python-turtle.html"');
   assertIncludes(homepageHtml, 'href="sisi.html"');
+  assertIncludes(homepageHtml, 'href="lumi.html"');
   assertIncludes(homepageHtml, 'סדרת סיסי לכיתות ב׳');
   assertIncludes(homepageHtml, 'href="finale.html"');
   assertIncludes(homepageHtml, 'href="codequest.html"');
@@ -40,6 +46,45 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertIncludes(homepageHtml, 'href="appforge.html"');
   assertIncludes(homepageHtml, 'href="craftom-school/preview/index.html"');
   assertIncludes(homepageHtml, 'href="craftom-school/README.md"');
+  assertIncludes(homepageHtml, '<h3>Money Smart Lab</h3>');
+  assertIncludes(homepageHtml, '<span class="badge dev">בפיתוח</span><span class="badge">חינוך פיננסי</span>');
+  assertIncludes(homepageHtml, '<span class="badge dev">בפיתוח</span><span class="badge">צעירים</span>');
+  assertIncludes(homepageHtml, 'Venture AI — תוכנית חולון ביזמות עם בינה מלאכותית');
+  assertIncludes(homepageHtml, 'קטלוג פשוט של סביבת הפיילוטים');
+  assertIncludes(homepageHtml, 'קורסים פעילים');
+  assertIncludes(homepageHtml, 'רחפנים');
+  assertIncludes(homepageHtml, 'עומר / Craftom');
+  assertIncludes(homepageHtml, 'בפיתוח ופיילוטים נוספים');
+  assertIncludes(homepageHtml, 'href="#development"');
+  assertNotIncludes(homepageHtml, 'class="anchors"');
+  assertNotIncludes(homepageHtml, 'class="anchor"');
+});
+
+test('Robotics15 homepage catalog follows the requested simple order', () => {
+  assertBefore(homepageHtml, 'id="active-courses"', 'id="drones"');
+  assertBefore(homepageHtml, 'id="drones"', 'id="omer"');
+  assertBefore(homepageHtml, 'id="omer"', 'id="development"');
+  assertBefore(homepageHtml, '<h3>Minecraft</h3>', '<h3>Tello EDU — ניווט ובקרה</h3>');
+  assertBefore(homepageHtml, '<h3>Drone Intelligence Lab</h3>', '<h3>עומר העתידנית / Omer Future Craftom</h3>');
+  assertBefore(homepageHtml, '<h3>Craftom School</h3>', '<h3>Venture AI — תוכנית חולון ביזמות עם בינה מלאכותית</h3>');
+  assertBefore(homepageHtml, '<h3>Money Smart Lab</h3>', '<h3>לומי חוקרת הטבע</h3>');
+  assertBefore(homepageHtml, '<h3>לומי חוקרת הטבע</h3>', '<h3>Pygame</h3>');
+  assertBefore(homepageHtml, '<h3>Pygame</h3>', '<h3>Roblox Studio</h3>');
+  assertBefore(homepageHtml, '<h3>PlayCode Lab</h3>', '<h3>WebMakers Lab</h3>');
+});
+
+test('Robotics15 catalog cards include cover media for every course', () => {
+  const cards = [...homepageHtml.matchAll(/<article class="course"/g)];
+  const covers = [...homepageHtml.matchAll(/<img src="(assets\/course-covers\/[^"]+\.(?:svg|png))"/g)].map((match) => match[1]);
+  const videos = [...homepageHtml.matchAll(/<source src="(marketing\/[^"]+\.mp4)" type="video\/mp4">/g)].map((match) => match[1]);
+  assert.equal(covers.length + videos.length, cards.length, 'Every course card should include cover media');
+  for (const cover of covers) {
+    assert.ok(existsSync(join(root, cover)), `Missing course cover image: ${cover}`);
+  }
+  for (const video of videos) {
+    assert.ok(existsSync(join(root, video)), `Missing course cover video: ${video}`);
+  }
+  assertIncludes(homepageHtml, 'aria-label="הצצה לקורס Minecraft"');
 });
 
 test('Sensi 15 remains on sensi-city and classic 5-lesson Sensi is restored separately', () => {
