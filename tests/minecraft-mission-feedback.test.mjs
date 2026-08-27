@@ -101,7 +101,12 @@ assert.ok(playHtml.includes('function lessonNineModelMatches'), 'lesson 9 feedba
 assert.ok(playHtml.includes('missingLessonNineModelNote'), 'lesson 9 feedback should explain which model colors or parts are missing');
 assert.ok(playHtml.includes('finalParts = new Map'), 'lesson 9 shape check should count final visible parts, not every placement command');
 assert.ok(playHtml.includes('function selectedExerciseIndex(){ return lesson.id === 5 ? gateMissionIndex : lessonMissionIndex; }'), 'lesson 9 validation should follow the selected mission, not a stale model index');
-assert.ok(playHtml.includes('minecraft-lessons-20260820-stairs.js?v=20260826-lesson13-short-prompts-v66'), 'lesson 13 garden model fixes should force a fresh cache key in the browser');
+
+assert.ok(playHtml.includes('minecraftKidsMissionPoints:v1'), 'mission points should persist in localStorage across lesson pages');
+assert.ok(playHtml.includes('function awardMissionPoint'), 'successful missions should award a point only once');
+assert.ok(playHtml.includes('נקודות בשיעור') && playHtml.includes('נקודות בכל השיעורים'), 'play page should show lesson and course point totals');
+assert.ok(playHtml.includes('המשימה הזו כבר הושלמה בעבר'), 'repeat completions should not award duplicate points');
+assert.ok(playHtml.includes('minecraft-lessons-20260820-stairs.js?v=20260827-mission-points-v68'), 'lesson 3 pixel model restore should force a fresh cache key in the browser');
 assert.ok(playHtml.includes("drawing:'garden-scene'"), 'lesson 13 should show a Minecraft-style square garden model without visible block outlines');
 assert.ok(playHtml.includes('שביל ירוק, ספסל ונדנדה לחיות'), 'lesson 13 garden model should name the path, bench, and pet swing');
 assert.ok(playHtml.includes('function lesson13MissionSceneHtml(index)'), 'lesson 13 should render a small model for every task');
