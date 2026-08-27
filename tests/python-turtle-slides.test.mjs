@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
+import { Script } from 'node:vm';
 
 const slides = readFileSync(new URL('../python-turtle-slides.html', import.meta.url), 'utf8');
 const app = readFileSync(new URL('../python-turtle.html', import.meta.url), 'utf8');
@@ -12,6 +13,12 @@ assert.match(slides, /פתח בלומדה/);
 assert.match(slides, /@media print/);
 assert.match(app, /python-turtle-slides\.html/);
 assert.doesNotMatch(slides, /MVP חדש לכיתה/);
+
+const inlineScripts = [...app.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g)].map(match => match[1]);
+assert.ok(inlineScripts.length > 0, 'python-turtle.html should include inline app script');
+for (const [index, script] of inlineScripts.entries()) {
+  assert.doesNotThrow(() => new Script(script), `inline script ${index + 1} in python-turtle.html should be valid JavaScript`);
+}
 
 for (let id = 1; id <= 30; id++) {
   const url = new URL(`../python-turtle-lesson-${id}-slides.html`, import.meta.url);
