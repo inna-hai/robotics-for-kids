@@ -1,0 +1,26 @@
+[Unit]
+Description=Back up Robotics for Kids SQLite database
+ConditionPathExists=%h/robotics-for-kids/data/summer-subscriptions.sqlite
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/robotics-for-kids
+UMask=0077
+ExecStart=/usr/bin/python3 %h/robotics-for-kids/scripts/backup_sqlite.py --source %h/robotics-for-kids/data/summer-subscriptions.sqlite --backup-dir %h/backups/robotics-for-kids/sqlite --retention 30
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateUsers=true
+ProtectSystem=strict
+ReadWritePaths=%h/backups/robotics-for-kids
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+SystemCallArchitectures=native
+KeyringMode=private
+Nice=10
+IOSchedulingClass=idle
