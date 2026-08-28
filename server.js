@@ -171,6 +171,7 @@ function openSummerDb() {
     CREATE TABLE IF NOT EXISTS student_progress (
       id TEXT PRIMARY KEY,
       user_id TEXT NOT NULL REFERENCES summer_users(id) ON DELETE CASCADE,
+      child_id TEXT REFERENCES summer_children(id) ON DELETE CASCADE,
       course_id TEXT NOT NULL,
       lesson_id TEXT NOT NULL,
       activity_id TEXT NOT NULL,
