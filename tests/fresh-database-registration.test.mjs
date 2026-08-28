@@ -10,20 +10,31 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'robotics-fresh-db-'));
 const port = 35000 + Math.floor(Math.random() * 5000);
 const base = `http://127.0.0.1:${port}`;
+const email = 'fresh-db-test@example.invalid';
+const password = 'Temporary-Check-123!';
+const childPin = '2468';
 fs.copyFileSync(path.join(ROOT, 'server.js'), path.join(tempRoot, 'server.js'));
 
-const child = spawn(process.execPath, ['server.js'], {
-  cwd: tempRoot,
-  env: {
-    ...process.env,
-    PORT: String(port),
-    NODE_PATH: path.join(ROOT, 'node_modules'),
-  },
-  stdio: ['ignore', 'pipe', 'pipe'],
-});
+let child;
 let logs = '';
-child.stdout.on('data', chunk => { logs += chunk.toString(); });
-child.stderr.on('data', chunk => { logs += chunk.toString(); });
+
+function startServer() {
+  logs = '';
+  const processHandle = spawn(process.execPath, ['server.js'], {
+    cwd: tempRoot,
+    env: { ...process.env, PORT: String(port), NODE_PATH: path.join(ROOT, 'node_modules') },
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  processHandle.stdout.on('data', chunk => { logs += chunk.toString(); });
+  processHandle.stderr.on('data', chunk => { logs += chunk.toString(); });
+  return processHandle;
+}
+
+async function stopServer() {
+  if (!child || child.exitCode !== null) return;
+  child.kill('SIGTERM');
+  await new Promise(resolve => child.once('exit', resolve));
+}
 
 async function waitForServer() {
   const deadline = Date.now() + 8000;
@@ -31,37 +42,108 @@ async function waitForServer() {
     try {
       await fetch(`${base}/`);
       return;
-    } catch {
-      await new Promise(resolve => setTimeout(resolve, 100));
-    }
+    } catch {}
+    await new Promise(resolve => setTimeout(resolve, 100));
   }
   throw new Error(`Server did not start:\n${logs}`);
 }
 
+async function request(route, { method = 'GET', token = '', body } = {}) {
+  const headers = {};
+  if (token) headers.Authorization = `Bearer ${token}`;
+  if (body) headers['content-type'] = 'application/json';
+  const response = await fetch(`${base}${route}`, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  return { response, body: await response.json() };
+}
+
 try {
+  child = startServer();
   await waitForServer();
-  const response = await fetch(`${base}/api/summer/register`, {
+
+  const registration = await request('/api/summer/register', {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({
+    body: {
       parentName: 'בדיקת מערכת',
       studentName: 'ילד בדיקה',
       phone: '0000000000',
-      email: 'fresh-db-test@example.invalid',
-      password: 'Temporary-Check-123!',
-      confirmPassword: 'Temporary-Check-123!',
-    }),
+      email,
+      password,
+      confirmPassword: password,
+    },
   });
-  const body = await response.json();
-  assert.equal(response.status, 201, `fresh database registration failed: ${JSON.stringify(body)}\n${logs}`);
-  assert.equal(body.ok, true);
-  assert.equal(body.mode, 'parent');
-  assert.ok(body.token);
-  assert.ok(body.child?.id);
+  assert.equal(registration.response.status, 201, `registration failed: ${JSON.stringify(registration.body)}\n${logs}`);
+  assert.equal(registration.body.mode, 'parent');
+  assert.ok(registration.body.token);
   assert.ok(fs.existsSync(path.join(tempRoot, 'data', 'summer-subscriptions.sqlite')));
-  console.log('fresh database registration test passed');
+
+  const parentLogin = await request('/api/summer/login', {
+    method: 'POST',
+    body: { email, password },
+  });
+  assert.equal(parentLogin.response.status, 200, `parent login failed: ${JSON.stringify(parentLogin.body)}`);
+  assert.equal(parentLogin.body.mode, 'parent');
+
+  const addedChild = await request('/api/summer/children', {
+    method: 'POST',
+    token: parentLogin.body.token,
+    body: { name: 'ילדת התקדמות', pin: childPin },
+  });
+  assert.equal(addedChild.response.status, 201, `child creation failed: ${JSON.stringify(addedChild.body)}`);
+  assert.ok(addedChild.body.child?.accessCode);
+
+  const childLogin = await request('/api/summer/child-login', {
+    method: 'POST',
+    body: { accessCode: addedChild.body.child.accessCode, pin: childPin },
+  });
+  assert.equal(childLogin.response.status, 200, `child login failed: ${JSON.stringify(childLogin.body)}`);
+  assert.equal(childLogin.body.mode, 'child');
+
+  const saved = await request('/api/progress', {
+    method: 'POST',
+    token: childLogin.body.token,
+    body: {
+      courseId: 'sisi',
+      lessonId: 'space',
+      activityId: 'mission-1',
+      status: 'completed',
+      score: 93,
+      metadata: { source: 'fresh-database-e2e' },
+    },
+  });
+  assert.equal(saved.response.status, 200, `progress save failed: ${JSON.stringify(saved.body)}\n${logs}`);
+  assert.equal(saved.body.progress.status, 'completed');
+  assert.equal(saved.body.progress.score, 93);
+
+  await stopServer();
+  child = startServer();
+  await waitForServer();
+
+  const childLoginAfterRestart = await request('/api/summer/child-login', {
+    method: 'POST',
+    body: { accessCode: addedChild.body.child.accessCode, pin: childPin },
+  });
+  assert.equal(childLoginAfterRestart.response.status, 200, `child login after restart failed: ${JSON.stringify(childLoginAfterRestart.body)}\n${logs}`);
+
+  const progress = await request('/api/progress?courseId=sisi&lessonId=space', {
+    token: childLoginAfterRestart.body.token,
+  });
+  assert.equal(progress.response.status, 200, `progress read failed: ${JSON.stringify(progress.body)}`);
+  assert.equal(progress.body.progress.length, 1);
+  const [savedProgress] = progress.body.progress;
+  assert.equal(savedProgress.courseId, 'sisi');
+  assert.equal(savedProgress.lessonId, 'space');
+  assert.equal(savedProgress.activityId, 'mission-1');
+  assert.equal(savedProgress.status, 'completed');
+  assert.equal(savedProgress.score, 93);
+  assert.equal(savedProgress.attempts, 1);
+  assert.deepEqual(savedProgress.metadata, { source: 'fresh-database-e2e' });
+
+  console.log('fresh database auth and progress E2E test passed');
 } finally {
-  child.kill('SIGTERM');
-  await new Promise(resolve => child.once('exit', resolve));
+  await stopServer();
   fs.rmSync(tempRoot, { recursive: true, force: true });
 }
