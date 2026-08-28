@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 from contextlib import closing
+import errno
 import fcntl
 import hashlib
 import json
@@ -60,7 +61,7 @@ def sha256_file(path: Path) -> str:
 
 
 def integrity_check(path: Path) -> str:
-    uri = f"{path.resolve().as_uri()}?mode=ro"
+    uri = f"file:{path.as_posix()}?mode=ro"
     with closing(sqlite3.connect(uri, uri=True)) as connection:
         row = connection.execute("PRAGMA integrity_check").fetchone()
     return str(row[0] if row else "missing result")
@@ -83,31 +84,98 @@ def fsync_directory(path: Path) -> None:
         os.close(descriptor)
 
 
-def ensure_backup_directory(backup_dir: Path) -> None:
-    if backup_dir.is_symlink():
-        raise ValueError(f"backup path must be a real directory: {backup_dir}")
-    if backup_dir.exists():
-        if not backup_dir.is_dir():
-            raise ValueError(f"backup path must be a real directory: {backup_dir}")
-        backup_dir.chmod(0o700)
-        fsync_directory(backup_dir)
-        return
+def close_suppress_errors(descriptor: int) -> None:
+    try:
+        os.close(descriptor)
+    except OSError:
+        pass
 
-    missing: list[Path] = []
-    parent = backup_dir
-    while not parent.exists():
-        if parent.is_symlink():
-            raise ValueError(f"backup path contains a dangling symlink: {parent}")
-        missing.append(parent)
-        parent = parent.parent
-    if not parent.is_dir():
-        raise ValueError(f"backup parent is not a directory: {parent}")
 
-    for directory in reversed(missing):
-        directory.mkdir(mode=0o700)
-        directory.chmod(0o700)
-        fsync_directory(directory)
-        fsync_directory(directory.parent)
+def fsync_open_directory_at(directory_fd: int) -> None:
+    descriptor = os.open(
+        ".",
+        os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC,
+        dir_fd=directory_fd,
+    )
+    try:
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+
+
+def ensure_backup_directory(backup_dir: Path) -> int:
+    """Open/create every path component without following symlinks.
+
+    The returned descriptor pins the final directory for the entire backup run,
+    preventing ancestor replacement from redirecting later operations.
+    """
+    if not backup_dir.is_absolute():
+        raise ValueError(f"backup path must be absolute: {backup_dir}")
+    if not hasattr(os, "O_NOFOLLOW") or not hasattr(os, "O_PATH"):
+        raise RuntimeError("secure backup paths require O_NOFOLLOW and O_PATH support")
+
+    traversal_flags = os.O_PATH | os.O_DIRECTORY | os.O_CLOEXEC | os.O_NOFOLLOW
+    current_fd: int | None = os.open(backup_dir.anchor, traversal_flags)
+    try:
+        for component in backup_dir.parts[1:]:
+            next_fd: int | None = None
+            try:
+                next_fd = os.open(component, traversal_flags, dir_fd=current_fd)
+            except FileNotFoundError:
+                os.mkdir(component, mode=0o700, dir_fd=current_fd)
+                next_fd = os.open(component, traversal_flags, dir_fd=current_fd)
+                try:
+                    fsync_open_directory_at(next_fd)
+                    fsync_open_directory_at(current_fd)
+                except Exception:
+                    close_suppress_errors(next_fd)
+                    next_fd = None
+                    raise
+            except OSError as error:
+                if error.errno in {errno.ELOOP, errno.ENOTDIR}:
+                    raise ValueError(
+                        f"backup path contains a symlink or non-directory component: {backup_dir}"
+                    ) from error
+                raise
+
+            previous_fd = current_fd
+            current_fd = next_fd
+            try:
+                os.close(previous_fd)
+            except OSError:
+                close_suppress_errors(current_fd)
+                current_fd = None
+                raise
+
+        backup_fd: int | None = None
+        try:
+            backup_fd = os.open(
+                ".",
+                os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC,
+                dir_fd=current_fd,
+            )
+            directory_stat = os.fstat(backup_fd)
+            if not stat.S_ISDIR(directory_stat.st_mode) or directory_stat.st_uid != os.geteuid():
+                raise PermissionError("backup directory must be owned by the current user")
+            os.fchmod(backup_fd, 0o700)
+            os.fsync(backup_fd)
+        except Exception:
+            if backup_fd is not None:
+                close_suppress_errors(backup_fd)
+            raise
+
+        previous_fd = current_fd
+        current_fd = None
+        try:
+            os.close(previous_fd)
+        except OSError:
+            close_suppress_errors(backup_fd)
+            raise
+        return backup_fd
+    except Exception:
+        if current_fd is not None:
+            close_suppress_errors(current_fd)
+        raise
 
 
 def cleanup_stale_temp_files(backup_dir: Path) -> list[str]:
@@ -152,22 +220,14 @@ def prune_backups(backup_dir: Path, retention: int) -> list[str]:
     return deleted
 
 
-def run(source: Path, backup_dir: Path, retention: int) -> dict[str, object]:
-    source = source.expanduser().resolve()
-    backup_dir = backup_dir.expanduser().absolute()
-    if retention < 1:
-        raise ValueError("retention must be at least 1")
-    if not source.exists():
-        return {"status": "skipped", "reason": "source database does not exist", "source": str(source)}
-    if not source.is_file():
-        raise ValueError(f"source is not a regular file: {source}")
-
-    ensure_backup_directory(backup_dir)
-
+def _run_in_backup_directory(
+    source: Path,
+    backup_dir: Path,
+    display_backup_dir: Path,
+    retention: int,
+) -> dict[str, object]:
     lock_path = backup_dir / ".backup.lock"
-    lock_flags = os.O_RDWR | os.O_CREAT | os.O_CLOEXEC
-    if hasattr(os, "O_NOFOLLOW"):
-        lock_flags |= os.O_NOFOLLOW
+    lock_flags = os.O_RDWR | os.O_CREAT | os.O_CLOEXEC | os.O_NOFOLLOW
     lock_fd = os.open(lock_path, lock_flags, 0o600)
     lock_stat = os.fstat(lock_fd)
     if not stat.S_ISREG(lock_stat.st_mode) or lock_stat.st_uid != os.geteuid():
@@ -183,6 +243,7 @@ def run(source: Path, backup_dir: Path, retention: int) -> dict[str, object]:
         cleanup_stale_temp_files(backup_dir)
         timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
         final_path = backup_dir / f"{BACKUP_PREFIX}{timestamp}.sqlite"
+        display_final_path = display_backup_dir / final_path.name
         temp_path = backup_dir / f".{final_path.name}.{uuid4().hex}.tmp"
         checksum_temp = backup_dir / f".{final_path.name}.{uuid4().hex}.sha256.tmp"
         checksum_path = final_path.with_name(f"{final_path.name}.sha256")
@@ -208,13 +269,14 @@ def run(source: Path, backup_dir: Path, retention: int) -> dict[str, object]:
             os.replace(temp_path, final_path)
             backup_published = True
             fsync_directory(backup_dir)
-            deleted = prune_backups(backup_dir, retention)
+            deleted_internal = prune_backups(backup_dir, retention)
+            deleted = [str(display_backup_dir / Path(path).name) for path in deleted_internal]
             fsync_directory(backup_dir)
             retained = len(recognized_backups(backup_dir))
             return {
                 "status": "created",
                 "source": str(source),
-                "backup": str(final_path),
+                "backup": str(display_final_path),
                 "sha256": checksum,
                 "bytes": final_path.stat().st_size,
                 "integrity": result,
@@ -228,6 +290,24 @@ def run(source: Path, backup_dir: Path, retention: int) -> dict[str, object]:
             if checksum_published and not backup_published:
                 checksum_path.unlink(missing_ok=True)
             fsync_directory(backup_dir)
+
+
+def run(source: Path, backup_dir: Path, retention: int) -> dict[str, object]:
+    source = source.expanduser().resolve()
+    backup_dir = backup_dir.expanduser().absolute()
+    if retention < 1:
+        raise ValueError("retention must be at least 1")
+    if not source.exists():
+        return {"status": "skipped", "reason": "source database does not exist", "source": str(source)}
+    if not source.is_file():
+        raise ValueError(f"source is not a regular file: {source}")
+
+    backup_directory_fd = ensure_backup_directory(backup_dir)
+    pinned_backup_dir = Path(f"/proc/self/fd/{backup_directory_fd}")
+    try:
+        return _run_in_backup_directory(source, pinned_backup_dir, backup_dir, retention)
+    finally:
+        os.close(backup_directory_fd)
 
 
 def main() -> int:

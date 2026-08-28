@@ -15,6 +15,11 @@ const directorySyncIndex = scriptSource.indexOf('fsync_directory(backup_dir)', c
 const databasePublishIndex = scriptSource.indexOf('os.replace(temp_path, final_path)');
 assert.ok(checksumPublishIndex >= 0 && directorySyncIndex > checksumPublishIndex && databasePublishIndex > directorySyncIndex,
   'checksum publication must be directory-fsynced before the database is published');
+const integrityStart = scriptSource.indexOf('def integrity_check');
+const integrityEnd = scriptSource.indexOf('\n\ndef ', integrityStart + 1);
+const integritySource = scriptSource.slice(integrityStart, integrityEnd);
+assert.ok(integrityStart >= 0 && !integritySource.includes('.resolve()'),
+  'integrity validation must not resolve a pinned /proc/self/fd path back to a mutable pathname');
 const pruneStart = scriptSource.indexOf('def prune_backups');
 const pruneEnd = scriptSource.indexOf('\n\ndef run(', pruneStart);
 const pruneSource = scriptSource.slice(pruneStart, pruneEnd);
@@ -28,25 +33,25 @@ assert.ok(retentionDatabaseDelete >= 0 && retentionDatabaseSync > retentionDatab
 const ensureDirectoryStart = scriptSource.indexOf('def ensure_backup_directory');
 const ensureDirectoryEnd = scriptSource.indexOf('\n\ndef ', ensureDirectoryStart + 1);
 const ensureDirectorySource = scriptSource.slice(ensureDirectoryStart, ensureDirectoryEnd);
-const directoryCreateIndex = ensureDirectorySource.indexOf('directory.mkdir');
-const createdDirectorySyncIndex = ensureDirectorySource.indexOf('fsync_directory(directory)', directoryCreateIndex);
-const parentDirectorySyncIndex = ensureDirectorySource.indexOf('fsync_directory(directory.parent)', createdDirectorySyncIndex);
+const directoryCreateIndex = ensureDirectorySource.indexOf('os.mkdir(component');
+const createdDirectorySyncIndex = ensureDirectorySource.indexOf('fsync_open_directory_at(next_fd)', directoryCreateIndex);
+const parentDirectorySyncIndex = ensureDirectorySource.indexOf('fsync_open_directory_at(current_fd)', createdDirectorySyncIndex);
 assert.ok(ensureDirectoryStart >= 0 && directoryCreateIndex >= 0
   && createdDirectorySyncIndex > directoryCreateIndex && parentDirectorySyncIndex > createdDirectorySyncIndex,
-  'new backup directories and their parent entries must be fsynced before use');
+  'new child directories must be fsynced before their parent entries');
 const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'robotics-sqlite-backup-'));
 const source = path.join(tempRoot, 'summer-subscriptions.sqlite');
 const backupRoot = path.join(tempRoot, 'nested');
 const backupProjectDir = path.join(backupRoot, 'robotics-for-kids');
 const backupDir = path.join(backupProjectDir, 'sqlite');
 
-function spawnBackup(retention = 2) {
+function spawnBackup(retention = 2, targetBackupDir = backupDir) {
   const previousUmask = process.umask(0o000);
   try {
     return spawnSync('python3', [
       SCRIPT,
       '--source', source,
-      '--backup-dir', backupDir,
+      '--backup-dir', targetBackupDir,
       '--retention', String(retention),
     ], { encoding: 'utf8' });
   } finally {
@@ -190,6 +195,78 @@ try {
   runPythonSqlite("import os,sys; os.mkfifo(sys.argv[1])", lockPath);
   const fifoAttempt = spawnBackup();
   assert.notEqual(fifoAttempt.status, 0, 'backup must reject a non-regular lock file');
+
+  const redirectedRoot = path.join(tempRoot, 'redirected-root');
+  const ancestorLink = path.join(tempRoot, 'ancestor-link');
+  fs.mkdirSync(redirectedRoot, { mode: 0o700 });
+  fs.symlinkSync(redirectedRoot, ancestorLink, 'dir');
+  const throughAncestorSymlink = path.join(ancestorLink, 'robotics-for-kids', 'sqlite');
+  const ancestorSymlinkAttempt = spawnBackup(2, throughAncestorSymlink);
+  assert.notEqual(ancestorSymlinkAttempt.status, 0,
+    'backup must reject a symlink in any existing ancestor component');
+  assert.deepEqual(fs.readdirSync(redirectedRoot), [],
+    'rejecting an ancestor symlink must not create files in its target');
+
+  runPythonSqlite(`
+import importlib.util
+import errno
+import os
+from pathlib import Path
+import shutil
+import tempfile
+import sys
+
+spec = importlib.util.spec_from_file_location('backup_sqlite', sys.argv[1])
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+root = Path(tempfile.mkdtemp(prefix='robotics-fd-leak-'))
+
+def fd_count():
+    return len(os.listdir('/proc/self/fd'))
+
+try:
+    before = fd_count()
+    original_fsync = module.os.fsync
+    module.os.fsync = lambda _fd: (_ for _ in ()).throw(OSError('forced fsync failure'))
+    try:
+        module.ensure_backup_directory(root / 'new' / 'sqlite')
+    except OSError:
+        pass
+    finally:
+        module.os.fsync = original_fsync
+    assert fd_count() == before, 'directory creation failure leaked a descriptor'
+
+    existing = root / 'existing'
+    existing.mkdir(mode=0o700)
+    before = fd_count()
+    original_fchmod = module.os.fchmod
+    module.os.fchmod = lambda _fd, _mode: (_ for _ in ()).throw(OSError('forced fchmod failure'))
+    try:
+        module.ensure_backup_directory(existing)
+    except OSError:
+        pass
+    finally:
+        module.os.fchmod = original_fchmod
+    assert fd_count() == before, 'final directory metadata failure leaked a descriptor'
+
+    close_existing = root / 'close-existing'
+    close_existing.mkdir(mode=0o700)
+    before = fd_count()
+    original_close = module.os.close
+    def close_then_raise(descriptor):
+        original_close(descriptor)
+        raise OSError(errno.EBADF, 'forced close failure after release')
+    module.os.close = close_then_raise
+    try:
+        module.ensure_backup_directory(close_existing)
+    except OSError:
+        pass
+    finally:
+        module.os.close = original_close
+    assert fd_count() == before, 'close failure leaked or double-closed a descriptor'
+finally:
+    shutil.rmtree(root)
+`, SCRIPT);
 
   console.log('SQLite backup, retention and restore test passed');
 } finally {
