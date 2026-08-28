@@ -16,7 +16,13 @@ const configJs = readFileSync(join(root, 'js', 'summer-subscription-config.js'),
 const behaviorJs = readFileSync(join(root, 'js', 'summer-subscription.js'), 'utf8');
 const accountJs = readFileSync(join(root, 'js', 'summer-account.js'), 'utf8');
 const userBadgeJs = readFileSync(join(root, 'js', 'user-badge.js'), 'utf8');
-const serverJs = readFileSync(join(root, 'server.js'), 'utf8');
+const serverSources = [
+  join(root, 'server.js'),
+  join(root, 'server', 'config.js'),
+  join(root, 'server', 'http-utils.js'),
+  join(root, 'server', 'summer-api.js'),
+  join(root, 'server', 'summer-db.js'),
+].map(file => readFileSync(file, 'utf8')).join('\n');
 const faviconSvg = readFileSync(join(root, 'favicon.svg'), 'utf8');
 
 const tests = [];
@@ -106,48 +112,48 @@ test('summer auth client and server expose account endpoints and protected pages
   assertIncludes(accountJs, "!location.pathname.endsWith('/account.html')");
   assertIncludes(accountJs, 'index.html#catalog');
   assertIncludes(accountHtml, 'מה הילדים עשו?');
-  assertIncludes(serverJs, "action === 'dashboard'");
-  assertIncludes(serverJs, "profile.kind !== 'child'");
-  assertIncludes(serverJs, 'תצוגת הורה בלבד');
+  assertIncludes(serverSources, "action === 'dashboard'");
+  assertIncludes(serverSources, "profile.kind !== 'child'");
+  assertIncludes(serverSources, 'תצוגת הורה בלבד');
   assertIncludes(accountJs, 'haiTechSummerToken');
   assertIncludes(userBadgeJs, 'haiTechSummerToken');
   assertIncludes(userBadgeJs, 'התקדמות נשמרת לילד/ה הזה/ו');
   assertIncludes(userBadgeJs, 'תצוגת הורה');
-  assertIncludes(serverJs, 'injectUserBadge');
-  assertIncludes(serverJs, 'injectHeadAssets');
-  assertIncludes(serverJs, '/favicon.svg');
-  assertIncludes(serverJs, '/favicon.ico');
-  assertIncludes(serverJs, '/favicon-32.png');
-  assertIncludes(serverJs, '/js/user-badge.js');
+  assertIncludes(serverSources, 'injectUserBadge');
+  assertIncludes(serverSources, 'injectHeadAssets');
+  assertIncludes(serverSources, '/favicon.svg');
+  assertIncludes(serverSources, '/favicon.ico');
+  assertIncludes(serverSources, '/favicon-32.png');
+  assertIncludes(serverSources, '/js/user-badge.js');
   assert.ok(existsSync(join(root, 'favicon.ico')), 'Missing favicon.ico');
   assert.ok(existsSync(join(root, 'favicon-32.png')), 'Missing favicon-32.png');
   assertIncludes(faviconSvg, '<svg');
   assertIncludes(faviconSvg, 'hai.tech robotics favicon');
-  assertIncludes(serverJs, 'better-sqlite3');
-  assertIncludes(serverJs, 'SUMMER_DB_FILE');
-  assertIncludes(serverJs, 'ROBOTICS_SUBSCRIPTION_GATE');
-  assertIncludes(serverJs, 'PORT === 3006');
-  assertIncludes(serverJs, 'summer_users');
-  assertIncludes(serverJs, 'summer_sessions');
-  assertIncludes(serverJs, 'summer_subscription_events');
-  assertIncludes(serverJs, 'PUBLIC_HTML_PATHS');
-  assertIncludes(serverJs, "'/account.html'");
-  assertIncludes(serverJs, "'/register.html'");
-  assertIncludes(serverJs, "'/login.html'");
-  assertIncludes(serverJs, "'/thankyou.html'");
-  assertIncludes(serverJs, "'/sisi.html'");
-  assertIncludes(serverJs, "pathname === '/thankyou'");
-  assertIncludes(serverJs, 'requiresPaidAccess');
-  assertIncludes(serverJs, 'isFreeTrialLearningHtml');
-  assertIncludes(serverJs, 'lockedPage');
-  assertIncludes(serverJs, 'כדי לפתוח את כל הלומדות צריך מנוי פעיל');
-  assertIncludes(serverJs, 'גם 3 השיעורים החינמיים בסיסי מתחילים אחרי הרשמה קצרה');
-  assertIncludes(serverJs, "'/space.html'");
-  assertIncludes(serverJs, "'/space-play.html'");
-  assertIncludes(serverJs, "'/music.html'");
-  assertIncludes(serverJs, "'/music-play.html'");
-  assertIncludes(serverJs, "'/ocean.html'");
-  assertIncludes(serverJs, "'/ocean-play.html'");
+  assertIncludes(serverSources, 'better-sqlite3');
+  assertIncludes(serverSources, 'SUMMER_DB_FILE');
+  assertIncludes(serverSources, 'ROBOTICS_SUBSCRIPTION_GATE');
+  assertIncludes(serverSources, 'PORT === 3006');
+  assertIncludes(serverSources, 'summer_users');
+  assertIncludes(serverSources, 'summer_sessions');
+  assertIncludes(serverSources, 'summer_subscription_events');
+  assertIncludes(serverSources, 'PUBLIC_HTML_PATHS');
+  assertIncludes(serverSources, "'/account.html'");
+  assertIncludes(serverSources, "'/register.html'");
+  assertIncludes(serverSources, "'/login.html'");
+  assertIncludes(serverSources, "'/thankyou.html'");
+  assertIncludes(serverSources, "'/sisi.html'");
+  assertIncludes(serverSources, "pathname === '/thankyou'");
+  assertIncludes(serverSources, 'requiresPaidAccess');
+  assertIncludes(serverSources, 'isFreeTrialLearningHtml');
+  assertIncludes(serverSources, 'lockedPage');
+  assertIncludes(serverSources, 'כדי לפתוח את כל הלומדות צריך מנוי פעיל');
+  assertIncludes(serverSources, 'גם 3 השיעורים החינמיים בסיסי מתחילים אחרי הרשמה קצרה');
+  assertIncludes(serverSources, "'/space.html'");
+  assertIncludes(serverSources, "'/space-play.html'");
+  assertIncludes(serverSources, "'/music.html'");
+  assertIncludes(serverSources, "'/music-play.html'");
+  assertIncludes(serverSources, "'/ocean.html'");
+  assertIncludes(serverSources, "'/ocean-play.html'");
 });
 
 test('subscription page uses a plain payment link and thank-you activation', () => {
@@ -160,9 +166,9 @@ test('subscription page uses a plain payment link and thank-you activation', () 
   assertIncludes(thankyouHtml, '<title>תודה! המנוי הופעל | hai.tech</title>');
   assertIncludes(thankyouHtml, '/api/summer/activate-subscription');
   assertIncludes(thankyouHtml, 'המנוי הופעל בהצלחה');
-  assertIncludes(serverJs, "action === 'activate-subscription'");
-  assertIncludes(serverJs, "subscription_status = ?");
-  assertIncludes(serverJs, "'thankyou_return'");
+  assertIncludes(serverSources, "action === 'activate-subscription'");
+  assertIncludes(serverSources, "subscription_status = ?");
+  assertIncludes(serverSources, "'thankyou_return'");
 });
 
 test('local html/script links point to existing files', () => {

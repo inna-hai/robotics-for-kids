@@ -14,6 +14,7 @@ const email = 'fresh-db-test@example.invalid';
 const password = 'Temporary-Check-123!';
 const childPin = '2468';
 fs.copyFileSync(path.join(ROOT, 'server.js'), path.join(tempRoot, 'server.js'));
+fs.cpSync(path.join(ROOT, 'server'), path.join(tempRoot, 'server'), { recursive: true });
 
 let child;
 let logs = '';
