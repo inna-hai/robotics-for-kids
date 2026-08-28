@@ -16,7 +16,7 @@
 <body>
   <a class="platform-home-link" href="index.html"><span class="platform-home-icon">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
   <header class="topbar">
-    <div class="brand"><span class="app-mark">DB</span><span>Drone Mission ז׳</span></div>
+    <div class="brand"><span class="app-mark">DB</span><span>Drone Mission ח׳</span></div>
     <nav class="tabs" id="tabs"></nav>
     <div class="actions">
       <button class="btn run" onclick="runMission()">▶️ הרצה</button>
@@ -163,7 +163,7 @@
       $('directions').innerHTML = (lesson.commonDirections || []).map(([term,text]) => `<div class="direction"><b>${esc(term)}:</b> ${esc(text)}</div>`).join('');
       $('exercises').innerHTML = lesson.exercises.slice(0,4).map((ex,i)=>`<div class="exercise"><b>${i+1}. ${esc(ex.title)}</b>${esc(ex.prompt)}</div>`).join('');
       const missingToolboxBlocks = expectedTypes.filter(type => !toolboxTypes.has(type));
-      const externalWorkspaceModes = new Set(['droneblocks-app', 'physical-lab', 'project-workflow', 'submission-workflow', 'droneblocks-code']);
+      const externalWorkspaceModes = new Set(['droneblocks-app', 'physical-lab', 'physical-drone', 'project-workflow', 'submission-workflow', 'droneblocks-code']);
       siteBlocklyEnabled = !externalWorkspaceModes.has(lesson.workspaceMode) && missingToolboxBlocks.length === 0;
       if (!siteBlocklyEnabled) {
         renderAppWorkflow(missingToolboxBlocks);
@@ -185,7 +185,7 @@
 
     function renderAppWorkflow(missingToolboxBlocks){
       $('workspacePanel').classList.add('app-mode');
-      const modeTitles = { 'physical-lab': '🚁 מעבדת רחפן פיזי', 'project-workflow': '📋 עבודת פרויקט', 'submission-workflow': '📦 חבילת הגשה' };
+      const modeTitles = { 'physical-lab': '🚁 מעבדת רחפן פיזי', 'physical-drone': '🚁 מעבדת רחפן פיזי', 'project-workflow': '📋 עבודת פרויקט', 'submission-workflow': '📦 חבילת הגשה' };
       $('workspaceTitle').textContent = modeTitles[lesson.workspaceMode] || '📱 משימת טאבלט — DroneBlocks App';
       $('workspaceTip').textContent = lesson.appWorkflowNote || 'בשיעור הזה העבודה מתבצעת באפליקציית DroneBlocks / בסימולטור / ברחפן פיזי. האתר מציג תדריך, שלבי עבודה ותוצר הגשה — לא סביבת Blockly פנימית.';
       const steps = lesson.appWorkflow && lesson.appWorkflow.length ? lesson.appWorkflow : (lesson.setupSteps || []).map((step, index) => ({ title: `שלב ${index + 1}`, detail: step }));

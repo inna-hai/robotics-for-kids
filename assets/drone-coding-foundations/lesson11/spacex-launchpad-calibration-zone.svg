@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">SpaceX launchpad calibration zone</title>
+  <desc id="desc">A physical classroom safe flight zone diagram for grade 7 showing launchpad testing, calibration variables, two buildings, drift correction, battery protocol and peer roles.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#050816"/><stop offset=".52" stop-color="#172554"/><stop offset="1" stop-color="#4a1d12"/></linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset="1" stop-color="#fff" stop-opacity=".07"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#000" flood-opacity=".38"/></filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#38bdf8"/></marker>
+    <style>.h1{font:900 42px system-ui,Segoe UI,Arial;fill:#fff}.sub{font:650 19px system-ui,Segoe UI,Arial;fill:#dbeafe}.h2{font:900 26px system-ui,Segoe UI,Arial;fill:#e0f2fe}.txt{font:700 18px system-ui,Segoe UI,Arial;fill:#dbeafe}.small{font:650 14px system-ui,Segoe UI,Arial;fill:#bfdbfe}.code{font:800 17px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#fef3c7}.panel{fill:url(#panel);stroke:#ffffff35;stroke-width:2;rx:28;filter:url(#shadow)}.safe{fill:#052e16;stroke:#22c55e;stroke-width:6;stroke-dasharray:18 10}.route{fill:none;stroke:#38bdf8;stroke-width:7;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}.drift{fill:none;stroke:#f97316;stroke-width:5;stroke-dasharray:10 8}.pad{fill:#22c55e;stroke:#dcfce7;stroke-width:4}.target{fill:#fbbf24;stroke:#fef3c7;stroke-width:4}.building{fill:#93c5fd;stroke:#e0f2fe;stroke-width:4}.high{fill:#c4b5fd;stroke:#ede9fe;stroke-width:4}.role{fill:#020617;stroke:#38bdf8;stroke-opacity:.45;stroke-width:2}.chip{font:900 16px system-ui,Segoe UI,Arial;fill:#052e16}</style>
+  </defs>
+  <rect width="1200" height="720" fill="url(#bg)"/>
+  <circle cx="1025" cy="95" r="165" fill="#fb923c" opacity=".14"/><circle cx="170" cy="645" r="200" fill="#38bdf8" opacity=".12"/>
+  <text x="600" y="56" class="h1" text-anchor="middle">SpaceX Launchpad Testing — Sim‑to‑Reality Calibration</text>
+  <text x="600" y="91" class="sub" text-anchor="middle">משיעור 10 Blueprint לקוד פיזי מכויל: משנים משתנים בראש הקוד, לא את גוף המשימה.</text>
+
+  <rect x="50" y="125" width="710" height="455" class="panel"/>
+  <text x="405" y="165" class="h2" text-anchor="middle">Physical Safe Fly Zone</text>
+  <rect x="120" y="210" width="565" height="310" rx="28" class="safe"/>
+  <text x="402" y="198" class="small" text-anchor="middle">מלבן טיסה מסומן · אין כניסה בזמן טיסה · Driver מוכן ל־Abort</text>
+  <circle cx="195" cy="475" r="24" class="pad"/><text x="195" y="510" class="small" text-anchor="middle">Launchpad</text>
+  <rect x="312" y="348" width="115" height="78" rx="10" class="building"/><text x="370" y="387" class="txt" text-anchor="middle">בניין א׳</text><text x="370" y="411" class="small" text-anchor="middle">80cm target</text>
+  <rect x="545" y="260" width="105" height="115" rx="10" class="high"/><text x="597" y="316" class="txt" text-anchor="middle">בניין ב׳</text><text x="597" y="340" class="small" text-anchor="middle">50cm</text>
+  <circle cx="635" cy="470" r="24" class="target"/><text x="635" y="508" class="small" text-anchor="middle">Final Land</text>
+  <path d="M220 465 C270 430 300 400 330 386 C390 355 430 365 470 382 C520 405 560 445 635 470" class="route"/>
+  <path d="M220 485 C300 510 410 508 515 488" class="drift"/><text x="395" y="535" class="small" text-anchor="middle" fill="#fed7aa">Drift observed → scanDistance 60→50</text>
+
+  <rect x="800" y="125" width="350" height="455" class="panel"/>
+  <text x="975" y="165" class="h2" text-anchor="middle">Calibration Variables</text>
+  <rect x="835" y="195" width="280" height="118" rx="20" fill="#020617" opacity=".82"/>
+  <text x="975" y="228" class="code" text-anchor="middle">scanDistance = 50</text>
+  <text x="975" y="260" class="code" text-anchor="middle">safeAltitude = 110</text>
+  <text x="975" y="292" class="code" text-anchor="middle">loopRepetitions = 4</text>
+  <g transform="translate(835 340)"><rect width="280" height="44" rx="22" fill="#34d399"/><text x="140" y="29" class="chip" text-anchor="middle">Change variables only</text></g>
+  <g transform="translate(835 405)"><rect width="280" height="44" rx="22" fill="#fbbf24"/><text x="140" y="29" class="chip" text-anchor="middle">sleep(2) stabilizes</text></g>
+  <g transform="translate(835 470)"><rect width="280" height="44" rx="22" fill="#60a5fa"/><text x="140" y="29" class="chip" text-anchor="middle">Two battery boxes</text></g>
+
+  <rect x="130" y="606" width="940" height="78" rx="28" fill="#020617" opacity=".82" stroke="#38bdf8" stroke-opacity=".45"/>
+  <text x="600" y="636" class="code" text-anchor="middle">Run Log: planned → actual → drift → one variable changed → next safe run</text>
+  <text x="600" y="665" class="small" text-anchor="middle">Driver · Navigator · Safety Observer | WiFi school → load code → TELLO WiFi → fly → school WiFi → share</text>
+</svg>

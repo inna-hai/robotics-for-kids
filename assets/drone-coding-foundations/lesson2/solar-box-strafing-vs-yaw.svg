@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="640" viewBox="0 0 1080 640" role="img" aria-labelledby="title desc">
+  <title id="title">SolarDrone Box Mission: Strafing Box versus Yaw Box</title>
+  <desc id="desc">Two square flight strategies over solar panels: strafing box keeps camera direction fixed, yaw box turns at each corner so the camera faces the direction of travel.</desc>
+  <defs>
+    <linearGradient id="sand" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff7ed"/>
+      <stop offset="1" stop-color="#fed7aa"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#0e7490"/>
+    </linearGradient>
+    <marker id="arrowBlue" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto">
+      <path d="M2,2 L12,7 L2,12 Z" fill="#0ea5e9"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto">
+      <path d="M2,2 L12,7 L2,12 Z" fill="#f97316"/>
+    </marker>
+    <filter id="shadow"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#431407" flood-opacity="0.22"/></filter>
+  </defs>
+  <rect width="1080" height="640" rx="34" fill="url(#sand)"/>
+  <circle cx="95" cy="82" r="42" fill="#fde047" opacity="0.92"/>
+  <text x="540" y="58" text-anchor="middle" font-family="Rubik,Arial" font-size="30" font-weight="900" fill="#7c2d12">SolarDrone · Box Mission ב־JavaScript</text>
+  <text x="540" y="91" text-anchor="middle" font-family="Rubik,Arial" font-size="18" font-weight="800" fill="#9a3412">אותה משימת ריבוע 60 אינץ׳ — שתי אסטרטגיות ניווט שונות</text>
+
+  <g transform="translate(70 125)">
+    <rect x="0" y="0" width="450" height="430" rx="26" fill="#ffffff" stroke="#fed7aa" stroke-width="4" filter="url(#shadow)"/>
+    <text x="225" y="42" text-anchor="middle" font-family="Rubik,Arial" font-size="24" font-weight="900" fill="#0e7490">שיטה 1: Strafing Box</text>
+    <text x="225" y="69" text-anchor="middle" font-family="Rubik,Arial" font-size="16" font-weight="800" fill="#334155">המצלמה נשארת קדימה · אין Yaw</text>
+    <g transform="translate(80 100)">
+      <rect x="0" y="0" width="285" height="230" rx="14" fill="url(#panel)"/>
+      <g stroke="#67e8f9" stroke-width="2" opacity="0.55">
+        <line x1="0" y1="46" x2="285" y2="46"/><line x1="0" y1="92" x2="285" y2="92"/><line x1="0" y1="138" x2="285" y2="138"/><line x1="0" y1="184" x2="285" y2="184"/>
+        <line x1="57" y1="0" x2="57" y2="230"/><line x1="114" y1="0" x2="114" y2="230"/><line x1="171" y1="0" x2="171" y2="230"/><line x1="228" y1="0" x2="228" y2="230"/>
+      </g>
+      <path d="M45 200 L45 40 L240 40 L240 200 L45 200" fill="none" stroke="#0ea5e9" stroke-width="9" stroke-linejoin="round" marker-end="url(#arrowBlue)"/>
+      <g font-family="Rubik,Arial" font-weight="900" font-size="13" fill="#e0f2fe">
+        <text x="105" y="30">moveForward(60)</text>
+        <text x="250" y="125" transform="rotate(90 250 125)">moveRight(60)</text>
+        <text x="98" y="222">moveBackward(60)</text>
+        <text x="20" y="130" transform="rotate(-90 20 130)">moveLeft(60)</text>
+      </g>
+      <g transform="translate(45 200)">
+        <circle cx="0" cy="0" r="19" fill="#f97316" stroke="#fff7ed" stroke-width="4"/>
+        <polygon points="0,-28 9,-8 -9,-8" fill="#fff7ed"/>
+      </g>
+    </g>
+    <rect x="48" y="355" width="354" height="48" rx="16" fill="#ecfeff"/>
+    <text x="225" y="385" text-anchor="middle" font-family="Rubik,Arial" font-size="15" font-weight="900" fill="#0e7490">6 שורות · יעיל בקוד · המצלמה לא תמיד פונה לכיוון התנועה</text>
+  </g>
+
+  <g transform="translate(560 125)">
+    <rect x="0" y="0" width="450" height="430" rx="26" fill="#ffffff" stroke="#fed7aa" stroke-width="4" filter="url(#shadow)"/>
+    <text x="225" y="42" text-anchor="middle" font-family="Rubik,Arial" font-size="24" font-weight="900" fill="#c2410c">שיטה 2: Yaw Box</text>
+    <text x="225" y="69" text-anchor="middle" font-family="Rubik,Arial" font-size="16" font-weight="800" fill="#334155">טסים קדימה ופונים 90° בכל פינה</text>
+    <g transform="translate(80 100)">
+      <rect x="0" y="0" width="285" height="230" rx="14" fill="url(#panel)"/>
+      <g stroke="#67e8f9" stroke-width="2" opacity="0.55">
+        <line x1="0" y1="46" x2="285" y2="46"/><line x1="0" y1="92" x2="285" y2="92"/><line x1="0" y1="138" x2="285" y2="138"/><line x1="0" y1="184" x2="285" y2="184"/>
+        <line x1="57" y1="0" x2="57" y2="230"/><line x1="114" y1="0" x2="114" y2="230"/><line x1="171" y1="0" x2="171" y2="230"/><line x1="228" y1="0" x2="228" y2="230"/>
+      </g>
+      <path d="M45 200 L45 40 L240 40 L240 200 L45 200" fill="none" stroke="#f97316" stroke-width="9" stroke-linejoin="round" marker-end="url(#arrowOrange)"/>
+      <g fill="#fff7ed" stroke="#fb923c" stroke-width="3">
+        <circle cx="45" cy="40" r="17"/><circle cx="240" cy="40" r="17"/><circle cx="240" cy="200" r="17"/><circle cx="45" cy="200" r="17"/>
+      </g>
+      <g font-family="Rubik,Arial" font-weight="900" font-size="13" fill="#e0f2fe">
+        <text x="96" y="30">moveForward(60)</text>
+        <text x="248" y="42" fill="#ffedd5">yawRight(90)</text>
+        <text x="248" y="202" fill="#ffedd5">yawRight(90)</text>
+        <text x="42" y="222" fill="#ffedd5">yawRight(90)</text>
+        <text x="42" y="43" fill="#ffedd5">yawRight(90)</text>
+      </g>
+      <g transform="translate(45 200)">
+        <circle cx="0" cy="0" r="19" fill="#f97316" stroke="#fff7ed" stroke-width="4"/>
+        <polygon points="0,-28 9,-8 -9,-8" fill="#fff7ed"/>
+      </g>
+    </g>
+    <rect x="48" y="355" width="354" height="48" rx="16" fill="#fff7ed"/>
+    <text x="225" y="385" text-anchor="middle" font-family="Rubik,Arial" font-size="15" font-weight="900" fill="#9a3412">10 שורות · יותר ארוך · המצלמה פונה לכיוון הטיסה</text>
+  </g>
+
+  <g font-family="Rubik,Arial" font-weight="900">
+    <rect x="210" y="575" width="660" height="38" rx="19" fill="#0f172a" opacity="0.92"/>
+    <text x="540" y="600" text-anchor="middle" font-size="17" fill="#e0f2fe">דילמת מהנדס: פחות שורות קוד או יותר מודעות מצלמה ובטיחות?</text>
+  </g>
+</svg>

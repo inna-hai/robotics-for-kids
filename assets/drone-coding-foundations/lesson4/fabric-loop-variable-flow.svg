@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="640" viewBox="0 0 1080 640" role="img" aria-labelledby="title desc">
+<title id="title">Fabric loop and variable flow</title><desc id="desc">A JavaScript loop and variable flow for scanning a square warehouse shelf with scan_distance and for loop.</desc>
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ecfeff"/><stop offset="1" stop-color="#fff7ed"/></linearGradient><marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#f97316"/></marker><filter id="sh"><feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#0f172a" flood-opacity=".18"/></filter></defs>
+<rect width="1080" height="640" rx="34" fill="url(#bg)"/><text x="540" y="58" text-anchor="middle" font-family="Rubik,Arial" font-size="31" font-weight="900" fill="#0f172a">Fabric · המתכנת העצלן החכם</text><text x="540" y="91" text-anchor="middle" font-family="Rubik,Arial" font-size="18" font-weight="800" fill="#334155">Loop + Variable = פחות שכפול, יותר שליטה</text>
+<g transform="translate(70 130)" font-family="Rubik,Arial" font-weight="900" filter="url(#sh)">
+  <rect x="0" y="0" width="430" height="410" rx="28" fill="#fff" stroke="#bae6fd" stroke-width="4"/>
+  <text x="215" y="42" text-anchor="middle" font-size="24" fill="#0e7490">Flowchart</text>
+  <rect x="92" y="70" width="245" height="48" rx="16" fill="#fef3c7"/><text x="215" y="101" text-anchor="middle" font-size="16" fill="#92400e">let scan_distance = 80;</text>
+  <rect x="112" y="145" width="205" height="48" rx="16" fill="#ecfeff"/><text x="215" y="176" text-anchor="middle" font-size="16" fill="#0e7490">tello.takeoff();</text>
+  <polygon points="215,220 325,275 215,330 105,275" fill="#fff7ed" stroke="#fb923c" stroke-width="4"/><text x="215" y="270" text-anchor="middle" font-size="16" fill="#9a3412">i &lt; 4 ?</text><text x="215" y="293" text-anchor="middle" font-size="13" fill="#334155">תנאי עצירה</text>
+  <rect x="48" y="355" width="335" height="44" rx="14" fill="#dcfce7"/><text x="215" y="383" text-anchor="middle" font-size="15" fill="#166534">moveForward(scan_distance) + yawRight(90) + i++</text>
+  <path d="M215 118 L215 145" stroke="#f97316" stroke-width="6" marker-end="url(#arr)"/><path d="M215 193 L215 220" stroke="#f97316" stroke-width="6" marker-end="url(#arr)"/><path d="M215 330 L215 355" stroke="#f97316" stroke-width="6" marker-end="url(#arr)"/><path d="M48 377 C-20 320 20 240 105 275" fill="none" stroke="#f97316" stroke-width="6" stroke-dasharray="10 8" marker-end="url(#arr)"/>
+</g>
+<g transform="translate(560 130)" filter="url(#sh)">
+  <rect x="0" y="0" width="450" height="410" rx="28" fill="#0f172a"/>
+  <text x="225" y="42" text-anchor="middle" font-family="Rubik,Arial" font-size="24" font-weight="900" fill="#fef3c7">JavaScript יעיל</text>
+  <g font-family="ui-monospace,Consolas,monospace" font-size="17" fill="#e0f2fe">
+    <text x="34" y="88">let scan_distance = 80;</text>
+    <text x="34" y="125">tello.takeoff();</text>
+    <text x="34" y="162">for (let i = 0; i &lt; 4; i++) {</text>
+    <text x="62" y="199">tello.moveForward(scan_distance);</text>
+    <text x="62" y="236">tello.yawRight(90);</text>
+    <text x="34" y="273">}</text>
+    <text x="34" y="310">tello.land();</text>
+  </g>
+  <rect x="34" y="340" width="382" height="46" rx="16" fill="#fff7ed"/><text x="225" y="369" text-anchor="middle" font-family="Rubik,Arial" font-size="15" font-weight="900" fill="#9a3412">משנים 80 ל־120 — כל המסלול גדל</text>
+</g>
+<g font-family="Rubik,Arial" font-weight="900"><rect x="230" y="570" width="620" height="40" rx="20" fill="#0f766e"/><text x="540" y="596" text-anchor="middle" font-size="17" fill="#ecfeff">סכנה: בלי i++ מקבלים Infinite Loop וקריסת סימולטור</text></g>
+</svg>

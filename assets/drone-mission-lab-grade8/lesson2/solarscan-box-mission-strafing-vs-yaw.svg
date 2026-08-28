@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">SolarScan Box Mission: Strafing Box versus Yaw Box</title>
+  <desc id="desc">A grade 8 Drone Mission Lab diagram comparing a square path with lateral strafing to a square path with yaw turns for solar panel inspection.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#082f49"/><stop offset=".52" stop-color="#0e7490"/><stop offset="1" stop-color="#fde68a"/></linearGradient>
+    <linearGradient id="sand" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fbbf24"/><stop offset="1" stop-color="#fb923c"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#000" flood-opacity=".25"/></filter>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#38bdf8"/></marker>
+    <marker id="arrowGold" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#f59e0b"/></marker>
+    <style>.h1{font:900 42px system-ui,Segoe UI,Arial;fill:#fff}.sub{font:650 19px system-ui,Segoe UI,Arial;fill:#e0f2fe}.panel{fill:#ffffffdd;stroke:#bae6fd;stroke-width:2;rx:28;filter:url(#shadow)}.h2{font:900 27px system-ui,Segoe UI,Arial;fill:#083344}.txt{font:750 18px system-ui,Segoe UI,Arial;fill:#164e63}.small{font:650 14px system-ui,Segoe UI,Arial;fill:#155e75}.code{font:800 16px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#0f172a}.routeA{fill:none;stroke:#38bdf8;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrowBlue)}.routeB{fill:none;stroke:#f59e0b;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrowGold)}.thin{fill:none;stroke:#0f172a;stroke-width:3;stroke-dasharray:8 8;opacity:.45}.solar{fill:#1e3a8a;stroke:#93c5fd;stroke-width:3}.cell{stroke:#60a5fa;stroke-width:1;opacity:.9}.hot{fill:#ef4444;opacity:.8}.drone{fill:#0f172a;stroke:#e0f2fe;stroke-width:3}.nose{fill:#fef3c7}.badge{font:900 15px system-ui,Segoe UI,Arial;fill:#082f49}</style>
+  </defs>
+  <rect width="1200" height="720" fill="url(#sky)"/>
+  <path d="M0 565 C170 525 260 585 430 550 S720 500 930 560 1080 610 1200 565 L1200 720 L0 720 Z" fill="url(#sand)" opacity=".92"/>
+  <circle cx="1015" cy="95" r="72" fill="#fde68a" opacity=".9"/>
+  <text x="600" y="56" text-anchor="middle" class="h1">SolarScan Box Mission — Grade 8 JavaScript</text>
+  <text x="600" y="91" text-anchor="middle" class="sub">Minimal Grid Simulator · 60×60 inch square · Compare Strafing vs Yaw · ללא הטסה פיזית</text>
+
+  <rect x="55" y="125" width="525" height="480" class="panel"/>
+  <text x="318" y="166" text-anchor="middle" class="h2">Challenge 1: Strafing Box</text>
+  <text x="318" y="193" text-anchor="middle" class="small">המצלמה/האף נשארים לאותו כיוון — ללא yaw</text>
+  <g transform="translate(168 245)">
+    <rect x="0" y="0" width="110" height="82" rx="10" class="solar"/><rect x="135" y="0" width="110" height="82" rx="10" class="solar"/><rect x="0" y="112" width="110" height="82" rx="10" class="solar"/><rect x="135" y="112" width="110" height="82" rx="10" class="solar"/>
+    <circle cx="190" cy="36" r="12" class="hot"/><circle cx="58" cy="151" r="10" class="hot"/>
+    <path d="M30 -25 H275 V225 H30 Z" class="routeA"/>
+    <text x="30" y="-42" text-anchor="middle" class="small">P1</text><text x="275" y="-42" text-anchor="middle" class="small">P2</text><text x="275" y="250" text-anchor="middle" class="small">P3</text><text x="30" y="250" text-anchor="middle" class="small">P4</text>
+    <g transform="translate(30 -25)"><rect x="-30" y="-18" width="60" height="36" rx="14" class="drone"/><polygon points="0,-30 12,-16 -12,-16" class="nose"/></g>
+  </g>
+  <text x="318" y="520" text-anchor="middle" class="code">flyForward → flyRight → flyBackward → flyLeft</text>
+  <text x="318" y="548" text-anchor="middle" class="small">קצר ויעיל, אבל המצלמה לא פונה תמיד לכיוון הטיסה.</text>
+
+  <rect x="620" y="125" width="525" height="480" class="panel"/>
+  <text x="883" y="166" text-anchor="middle" class="h2">Challenge 2: Yaw Box</text>
+  <text x="883" y="193" text-anchor="middle" class="small">בכל פינה מסתובבים 90° ואז טסים קדימה</text>
+  <g transform="translate(733 245)">
+    <rect x="0" y="0" width="110" height="82" rx="10" class="solar"/><rect x="135" y="0" width="110" height="82" rx="10" class="solar"/><rect x="0" y="112" width="110" height="82" rx="10" class="solar"/><rect x="135" y="112" width="110" height="82" rx="10" class="solar"/>
+    <circle cx="195" cy="150" r="12" class="hot"/><circle cx="45" cy="36" r="10" class="hot"/>
+    <path d="M30 -25 H275" class="routeB"/><path d="M275 -25 V225" class="routeB"/><path d="M275 225 H30" class="routeB"/><path d="M30 225 V-25" class="routeB"/>
+    <path d="M250 6 q25 -25 50 0" class="thin"/><path d="M244 196 q31 31 62 0" class="thin"/><path d="M58 252 q-28 -28 -56 0" class="thin"/>
+    <text x="30" y="-42" text-anchor="middle" class="small">P1</text><text x="275" y="-42" text-anchor="middle" class="small">yawRight(90)</text><text x="275" y="250" text-anchor="middle" class="small">yawRight(90)</text><text x="30" y="250" text-anchor="middle" class="small">yawRight(90)</text>
+    <g transform="translate(30 -25)"><rect x="-30" y="-18" width="60" height="36" rx="14" class="drone"/><polygon points="0,-30 12,-16 -12,-16" class="nose"/></g>
+  </g>
+  <text x="883" y="520" text-anchor="middle" class="code">flyForward → yawRight(90) × 4</text>
+  <text x="883" y="548" text-anchor="middle" class="small">יותר שורות, אבל האף והמצלמה פונים לכיוון החדש.</text>
+
+  <rect x="143" y="635" width="914" height="50" rx="25" fill="#0f172a" opacity=".9"/>
+  <text x="600" y="666" text-anchor="middle" fill="#fef3c7" font-size="18" font-family="ui-monospace,Menlo,monospace" font-weight="800">Meeting2_SolarScan_JS · Save both: Meeting2_StrafingBox + Meeting2_YawBox · Syntax: flyForward / yawRight</text>
+</svg>

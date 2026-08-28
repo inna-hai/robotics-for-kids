@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">InspeX autonomous photo inspection mission</title>
+  <desc id="desc">A grade 8 Drone Mission Lab diagram showing a Tello drone inspecting three infrastructure stations at different heights, using sleep stabilization before takePhoto and data retrieval after landing.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#111827"/><stop offset=".48" stop-color="#475569"/><stop offset="1" stop-color="#bfdbfe"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#000" flood-opacity=".30"/></filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#fbbf24"/></marker>
+    <style>.h1{font:900 41px system-ui,Segoe UI,Arial;fill:#fff}.sub{font:650 19px system-ui,Segoe UI,Arial;fill:#dbeafe}.panel{fill:#ffffffdf;stroke:#cbd5e1;stroke-width:2;rx:30;filter:url(#shadow)}.h2{font:900 27px system-ui,Segoe UI,Arial;fill:#0f172a}.txt{font:750 18px system-ui,Segoe UI,Arial;fill:#334155}.small{font:650 14px system-ui,Segoe UI,Arial;fill:#475569}.code{font:800 16px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#fef3c7}.darkcode{font:800 16px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#0f172a}.safe{fill:#f8fafc;stroke:#22c55e;stroke-width:7;stroke-dasharray:18 10}.route{fill:none;stroke:#fbbf24;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}.beam{fill:#fef3c7;opacity:.35}.station{fill:#334155;stroke:#e2e8f0;stroke-width:4}.crack{stroke:#ef4444;stroke-width:5;fill:none;stroke-linecap:round}.pad{fill:#22c55e;stroke:#f0fdf4;stroke-width:4}.drone{fill:#111827;stroke:#e0f2fe;stroke-width:3}.lens{fill:#38bdf8}.badge{font:900 15px system-ui,Segoe UI,Arial;fill:#082f49}.warn{font:900 15px system-ui,Segoe UI,Arial;fill:#7f1d1d}</style>
+  </defs>
+  <rect width="1200" height="720" fill="url(#bg)"/>
+  <text x="600" y="55" text-anchor="middle" class="h1">InspeX Autonomous Photo Inspection</text>
+  <text x="600" y="90" text-anchor="middle" class="sub">JavaScript Camera Control · Motion Blur Prevention · takePhoto + Data Retrieval</text>
+
+  <rect x="55" y="124" width="725" height="510" class="panel"/>
+  <text x="418" y="164" text-anchor="middle" class="h2">Safe Fly Zone — Infrastructure Inspection Stations</text>
+  <rect x="135" y="205" width="515" height="350" rx="24" class="safe"/>
+  <circle cx="220" cy="500" r="22" class="pad"/><text x="220" y="537" text-anchor="middle" class="small">Launch</text>
+  <rect x="285" y="440" width="105" height="68" rx="12" class="station"/><text x="337" y="481" text-anchor="middle" fill="#e2e8f0" font-size="21" font-weight="900" font-family="system-ui">A 40</text><path d="M320 448 l16 18 l-10 10 l18 20" class="crack"/>
+  <rect x="405" y="340" width="105" height="88" rx="12" class="station"/><text x="457" y="390" text-anchor="middle" fill="#e2e8f0" font-size="21" font-weight="900" font-family="system-ui">B 70</text><path d="M440 350 l18 20 l-8 15 l20 25" class="crack"/>
+  <rect x="525" y="230" width="105" height="112" rx="12" class="station"/><text x="577" y="292" text-anchor="middle" fill="#e2e8f0" font-size="21" font-weight="900" font-family="system-ui">C 100</text><path d="M560 242 l13 25 l-15 18 l22 38" class="crack"/>
+  <path d="M220 480 L320 410 L455 315 L575 205" class="route"/>
+  <g transform="translate(455 315)"><polygon points="0,10 95,75 -95,75" class="beam"/><rect x="-36" y="-22" width="72" height="44" rx="16" class="drone"/><circle cx="0" cy="5" r="10" class="lens"/><circle cx="-22" cy="0" r="7" fill="#67e8f9"/><circle cx="22" cy="0" r="7" fill="#67e8f9"/></g>
+  <text x="350" y="248" text-anchor="middle" class="darkcode">sleep(2) → takePhoto()</text>
+  <text x="418" y="586" text-anchor="middle" class="warn">No photo while moving: stabilize first to avoid Motion Blur</text>
+
+  <rect x="820" y="124" width="325" height="510" rx="30" fill="#020617" opacity=".86" stroke="#dbeafe" stroke-opacity=".55" filter="url(#shadow)"/>
+  <text x="982" y="164" text-anchor="middle" fill="#dbeafe" font-size="25" font-family="system-ui" font-weight="900">Meeting7_Inspection_JS</text>
+  <text x="982" y="212" text-anchor="middle" class="code">tello.takeoff();</text>
+  <text x="982" y="248" text-anchor="middle" class="code">tello.sleep(3);</text>
+  <text x="982" y="284" text-anchor="middle" class="code">tello.flyUp(40);</text>
+  <text x="982" y="320" text-anchor="middle" class="code">tello.sleep(2);</text>
+  <text x="982" y="356" text-anchor="middle" class="code">tello.takePhoto();</text>
+  <text x="982" y="392" text-anchor="middle" class="code">tello.sleep(3);</text>
+  <text x="982" y="428" text-anchor="middle" class="code">// repeat stations B+C</text>
+  <text x="982" y="464" text-anchor="middle" class="code">// city: yaw 90 + photo ×4</text>
+  <text x="982" y="500" text-anchor="middle" class="code">tello.land();</text>
+  <rect x="860" y="542" width="245" height="42" rx="21" fill="#dbeafe"/><text x="982" y="569" text-anchor="middle" class="badge">Data Retrieval: 3 sharp photos</text>
+
+  <rect x="105" y="660" width="990" height="44" rx="22" fill="#0f172a" opacity=".92"/>
+  <text x="600" y="688" text-anchor="middle" class="code">City Simulator → Physical inspection by safety gate → download photos → increase sleep if blurry → Meeting7_Inspection_Success</text>
+</svg>
