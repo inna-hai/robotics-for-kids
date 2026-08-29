@@ -15,6 +15,7 @@ const port = 40000 + Math.floor(Math.random() * 5000);
 const base = `http://127.0.0.1:${port}`;
 const videoBytes = Buffer.from('sensi-guide-video-fixture');
 const lesson2VideoBytes = Buffer.from('sensi-lesson-2-guide-video-fixture');
+const lesson3VideoBytes = Buffer.from('sensi-lesson-3-guide-video-fixture');
 
 fs.copyFileSync(path.join(ROOT, 'server.js'), path.join(tempRoot, 'server.js'));
 fs.copyFileSync(path.join(ROOT, 'teachers.html'), path.join(tempRoot, 'teachers.html'));
@@ -22,6 +23,7 @@ fs.cpSync(path.join(ROOT, 'server'), path.join(tempRoot, 'server'), { recursive:
 fs.mkdirSync(path.join(tempRoot, 'data', 'guide-videos'), { recursive: true });
 fs.writeFileSync(path.join(tempRoot, 'data', 'guide-videos', 'sensi-lesson-01-parent-guide.mp4'), videoBytes);
 fs.writeFileSync(path.join(tempRoot, 'data', 'guide-videos', 'sensi-lesson-02-parent-guide.mp4'), lesson2VideoBytes);
+fs.writeFileSync(path.join(tempRoot, 'data', 'guide-videos', 'sensi-lesson-03-parent-guide.mp4'), lesson3VideoBytes);
 
 let child;
 let logs = '';
@@ -61,8 +63,10 @@ try {
 
   const videoUrl = `${base}/api/sensi/guide-videos/lesson-1`;
   const lesson2VideoUrl = `${base}/api/sensi/guide-videos/lesson-2`;
+  const lesson3VideoUrl = `${base}/api/sensi/guide-videos/lesson-3`;
   assert.equal((await fetch(videoUrl)).status, 401, 'anonymous viewers must not receive the guide video');
   assert.equal((await fetch(lesson2VideoUrl)).status, 401, 'anonymous viewers must not receive the lesson 2 guide video');
+  assert.equal((await fetch(lesson3VideoUrl)).status, 401, 'anonymous viewers must not receive the lesson 3 guide video');
   assert.equal((await fetch(`${base}/teachers.html`)).status, 402, 'anonymous viewers must not receive the teacher guide');
 
   const registration = await fetch(`${base}/api/summer/register`, {
@@ -98,6 +102,11 @@ try {
   assert.equal(lesson2RangeResponse.status, 206);
   assert.equal(lesson2RangeResponse.headers.get('content-range'), `bytes 1-6/${lesson2VideoBytes.length}`);
   assert.deepEqual(Buffer.from(await lesson2RangeResponse.arrayBuffer()), lesson2VideoBytes.subarray(1, 7));
+
+  const lesson3RangeResponse = await fetch(lesson3VideoUrl, { headers: { ...authHeaders, Range: 'bytes=2-8' } });
+  assert.equal(lesson3RangeResponse.status, 206);
+  assert.equal(lesson3RangeResponse.headers.get('content-range'), `bytes 2-8/${lesson3VideoBytes.length}`);
+  assert.deepEqual(Buffer.from(await lesson3RangeResponse.arrayBuffer()), lesson3VideoBytes.subarray(2, 9));
 
   const teacherGuide = await fetch(`${base}/teachers.html`, { headers: authHeaders });
   assert.equal(teacherGuide.status, 200);
