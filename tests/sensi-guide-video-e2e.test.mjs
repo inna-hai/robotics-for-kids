@@ -20,6 +20,7 @@ const lesson4VideoBytes = Buffer.from('sensi-lesson-4-guide-video-fixture');
 const lesson5VideoBytes = Buffer.from('sensi-lesson-5-guide-video-fixture');
 const lesson6VideoBytes = Buffer.from('sensi-lesson-6-guide-video-fixture');
 const lesson7VideoBytes = Buffer.from('sensi-lesson-7-guide-video-fixture');
+const lesson8VideoBytes = Buffer.from('sensi-lesson-8-guide-video-fixture');
 
 fs.copyFileSync(path.join(ROOT, 'server.js'), path.join(tempRoot, 'server.js'));
 fs.copyFileSync(path.join(ROOT, 'teachers.html'), path.join(tempRoot, 'teachers.html'));
@@ -34,6 +35,7 @@ fs.writeFileSync(path.join(tempRoot, 'data', 'guide-videos', 'sensi-lesson-04-pa
 fs.writeFileSync(path.join(tempRoot, 'data', 'guide-videos', 'sensi-lesson-05-parent-guide.mp4'), lesson5VideoBytes);
 fs.writeFileSync(path.join(tempRoot, 'data', 'guide-videos', 'sensi-lesson-06-parent-guide.mp4'), lesson6VideoBytes);
 fs.writeFileSync(path.join(tempRoot, 'data', 'guide-videos', 'sensi-lesson-07-parent-guide.mp4'), lesson7VideoBytes);
+fs.writeFileSync(path.join(tempRoot, 'data', 'guide-videos', 'sensi-lesson-08-parent-guide.mp4'), lesson8VideoBytes);
 
 // The older Robotics 15 monolith cannot bootstrap student_progress from an empty DB
 // because its CREATE TABLE references child_id before the migration adds that column.
@@ -104,6 +106,7 @@ try {
   const lesson5VideoUrl = `${base}/api/sensi/guide-videos/lesson-5`;
   const lesson6VideoUrl = `${base}/api/sensi/guide-videos/lesson-6`;
   const lesson7VideoUrl = `${base}/api/sensi/guide-videos/lesson-7`;
+  const lesson8VideoUrl = `${base}/api/sensi/guide-videos/lesson-8`;
   assert.equal((await fetch(videoUrl)).status, 401, 'anonymous viewers must not receive the guide video');
   assert.equal((await fetch(lesson2VideoUrl)).status, 401, 'anonymous viewers must not receive the lesson 2 guide video');
   assert.equal((await fetch(lesson3VideoUrl)).status, 401, 'anonymous viewers must not receive the lesson 3 guide video');
@@ -111,6 +114,7 @@ try {
   assert.equal((await fetch(lesson5VideoUrl)).status, 401, 'anonymous viewers must not receive the lesson 5 guide video');
   assert.equal((await fetch(lesson6VideoUrl)).status, 401, 'anonymous viewers must not receive the lesson 6 guide video');
   assert.equal((await fetch(lesson7VideoUrl)).status, 401, 'anonymous viewers must not receive the lesson 7 guide video');
+  assert.equal((await fetch(lesson8VideoUrl)).status, 401, 'anonymous viewers must not receive the lesson 8 guide video');
   assert.equal((await fetch(`${base}/teachers.html`)).status, 402, 'anonymous viewers must not receive the teacher guide');
 
   const registration = await fetch(`${base}/api/summer/register`, {
@@ -134,6 +138,7 @@ try {
   assert.equal((await fetch(lesson5VideoUrl, { headers: authHeaders })).status, 403, 'trial viewers must not receive the lesson 5 guide video');
   assert.equal((await fetch(lesson6VideoUrl, { headers: authHeaders })).status, 403, 'trial viewers must not receive the lesson 6 guide video');
   assert.equal((await fetch(lesson7VideoUrl, { headers: authHeaders })).status, 403, 'trial viewers must not receive the lesson 7 guide video');
+  assert.equal((await fetch(lesson8VideoUrl, { headers: authHeaders })).status, 403, 'trial viewers must not receive the lesson 8 guide video');
 
   const db = new Database(path.join(tempRoot, 'data', 'summer-subscriptions.sqlite'));
   db.prepare("UPDATE summer_children SET subscription_status = 'active', access_json = ?").run(JSON.stringify(['restrict:sensi-city']));
@@ -175,6 +180,11 @@ try {
   assert.equal(lesson7RangeResponse.status, 206);
   assert.equal(lesson7RangeResponse.headers.get('content-range'), `bytes 6-12/${lesson7VideoBytes.length}`);
   assert.deepEqual(Buffer.from(await lesson7RangeResponse.arrayBuffer()), lesson7VideoBytes.subarray(6, 13));
+
+  const lesson8RangeResponse = await fetch(lesson8VideoUrl, { headers: { ...authHeaders, Range: 'bytes=7-13' } });
+  assert.equal(lesson8RangeResponse.status, 206);
+  assert.equal(lesson8RangeResponse.headers.get('content-range'), `bytes 7-13/${lesson8VideoBytes.length}`);
+  assert.deepEqual(Buffer.from(await lesson8RangeResponse.arrayBuffer()), lesson8VideoBytes.subarray(7, 14));
 
   const teacherGuide = await fetch(`${base}/teachers.html`, { headers: authHeaders });
   assert.equal(teacherGuide.status, 200);
