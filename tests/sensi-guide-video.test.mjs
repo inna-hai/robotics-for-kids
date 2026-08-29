@@ -33,6 +33,11 @@ assert.match(
   /id:\s*5,[\s\S]*?guideVideo:\s*\{[\s\S]*?src:\s*['"]\/api\/sensi\/guide-videos\/lesson-5['"][\s\S]*?\}/,
   'lesson 5 should declare its protected parent/instructor guide video',
 );
+assert.match(
+  lessonData,
+  /id:\s*6,[\s\S]*?guideVideo:\s*\{[\s\S]*?src:\s*['"]\/api\/sensi\/guide-videos\/lesson-6['"][\s\S]*?\}/,
+  'lesson 6 should declare its protected parent/instructor guide video',
+);
 assert.match(teachersHtml, /lesson\.guideVideo/, 'teacher guide should render videos from lesson data');
 assert.match(teachersHtml, /<video[^>]*controls[^>]*preload="metadata"/, 'guide video should use controls without autoplay');
 assert.ok(!teachersHtml.includes('<video autoplay'), 'guide video must not autoplay');
