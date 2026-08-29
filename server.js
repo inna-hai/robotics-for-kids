@@ -1103,7 +1103,7 @@ function profileAccessList(profile) {
 }
 
 function courseForPaidPath(pathname) {
-  if (pathname === '/sensi-city.html' || pathname === '/smart-city.html' || pathname.startsWith('/slides/')) return 'sensi-city';
+  if (pathname === '/sensi-city.html' || pathname === '/smart-city.html' || pathname === '/teachers.html' || pathname.startsWith('/slides/')) return 'sensi-city';
   if (pathname === '/space.html' || pathname === '/space-play.html' || pathname === '/music.html' || pathname === '/music-play.html' || pathname === '/ocean.html' || pathname === '/ocean-play.html') return 'sisi-trial';
   if (pathname === '/sensi-classic.html' || pathname === '/sensi-classic-about.html' || pathname === '/sensi-classic-teachers.html' || pathname.startsWith('/sensi-classic-slides/')) return 'sensi-classic';
   if (pathname === '/python-turtle.html' || pathname === '/python-turtle-play.html' || pathname.startsWith('/python-turtle-slides/')) return 'python-turtle';
@@ -1134,6 +1134,46 @@ function isPaidProfile(profile, pathname = '') {
     || access.includes(`${course}-all`)
     || access.includes(`restrict:${course}`)
     || access.includes('*');
+}
+
+function serveSensiGuideVideo(req, res) {
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
+    return send(res, 405, 'Method not allowed', 'text/plain; charset=utf-8');
+  }
+  const profile = getSummerProfileFromRequest(req);
+  if (!profile) return send(res, 401, 'Unauthorized', 'text/plain; charset=utf-8');
+  if (!isPaidProfile(profile, '/sensi-city.html')) return send(res, 403, 'Forbidden', 'text/plain; charset=utf-8');
+
+  const videoPath = path.join(DATA_DIR, 'guide-videos', 'sensi-lesson-01-parent-guide.mp4');
+  fs.stat(videoPath, (err, stat) => {
+    if (err || !stat.isFile()) return send(res, 404, 'Not found', 'text/plain; charset=utf-8');
+    const range = parseByteRange(req.headers.range, stat.size);
+    if (req.headers.range && !range) {
+      res.writeHead(416, {
+        'Content-Range': `bytes */${stat.size}`,
+        'Cache-Control': 'private, no-store',
+        'X-Content-Type-Options': 'nosniff',
+      });
+      return res.end();
+    }
+    const headers = {
+      'Content-Type': 'video/mp4',
+      'Accept-Ranges': 'bytes',
+      'Cache-Control': 'private, max-age=300',
+      'X-Content-Type-Options': 'nosniff',
+    };
+    if (range) {
+      headers['Content-Length'] = range.end - range.start + 1;
+      headers['Content-Range'] = `bytes ${range.start}-${range.end}/${stat.size}`;
+      res.writeHead(206, headers);
+      if (req.method === 'HEAD') return res.end();
+      return fs.createReadStream(videoPath, range).pipe(res);
+    }
+    headers['Content-Length'] = stat.size;
+    res.writeHead(200, headers);
+    if (req.method === 'HEAD') return res.end();
+    return fs.createReadStream(videoPath).pipe(res);
+  });
 }
 
 function lockedPage(pathname, user, options = {}) {
@@ -1306,6 +1346,7 @@ function serveStatic(req, res) {
 
 const server = http.createServer((req, res) => {
   if (req.url.startsWith('/english-buddy')) return proxyEnglishBuddy(req, res);
+  if (requestUrl(req).pathname === '/api/sensi/guide-videos/lesson-1') return serveSensiGuideVideo(req, res);
   if (req.url.startsWith('/api/admin/feedback')) return handleAdminFeedback(req, res);
   if (req.url.startsWith('/api/feedback')) return handleFeedback(req, res);
   if (req.url.startsWith('/api/summer/')) return handleSummerAuth(req, res);

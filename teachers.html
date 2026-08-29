@@ -90,6 +90,10 @@
     .exercise .phase { display: inline-block; color: white; background: var(--primary); border-radius: 999px; padding: 2px 10px; font-size: .82rem; font-weight: 800; margin-bottom: 8px; }
     .blocks { display: flex; flex-wrap: wrap; gap: 7px; margin: 10px 0; }
     .block { background: #ede9fe; color: #4c1d95; border: 1px solid #ddd6fe; padding: 7px 10px; border-radius: 12px; font-weight: 700; font-size: .9rem; }
+    .guide-video { margin-bottom: 20px; padding: 18px; border-radius: 22px; background: #f5f3ff; border: 1px solid #ddd6fe; }
+    .guide-video h3 { margin-top: 0; }
+    .guide-video p { color: #475569; margin-bottom: 12px; }
+    .guide-video video { display: block; width: min(100%, 800px); aspect-ratio: 16 / 9; margin: 0 auto; border-radius: 16px; background: #0f172a; }
     .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
     .footer { text-align: center; color: var(--muted); padding: 34px 16px; }
     @media (max-width: 760px) {
@@ -208,6 +212,15 @@
             </div>
           </div>
           <div class="lesson-body">
+            ${lesson.guideVideo ? `
+              <section class="guide-video" aria-label="${lesson.guideVideo.title}">
+                <h3>🎬 ${lesson.guideVideo.title}</h3>
+                <p>${lesson.guideVideo.description || ''}</p>
+                <video controls preload="metadata" playsinline>
+                  <source src="${lesson.guideVideo.src}" type="video/mp4">
+                  הדפדפן שלך אינו תומך בניגון וידאו.
+                </video>
+              </section>` : ''}
             <div class="grid">
               <div class="box green"><h3>🎯 מטרות למידה</h3>${list(lesson.learningGoals)}</div>
               <div class="box purple"><h3>🧱 בלוקים ורעיונות</h3><div class="blocks">${lesson.blocks.map(block => `<span class="block">${block}</span>`).join('')}</div><p><strong>טיפ:</strong> ${lesson.tip || ''}</p></div>
