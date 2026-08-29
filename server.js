@@ -294,6 +294,13 @@ function serveSensiGuideVideo(req, res, lessonId) {
     6: 'sensi-lesson-06-parent-guide.mp4',
     7: 'sensi-lesson-07-parent-guide.mp4',
     8: 'sensi-lesson-08-parent-guide.mp4',
+    9: 'sensi-lesson-09-parent-guide.mp4',
+    10: 'sensi-lesson-10-parent-guide.mp4',
+    11: 'sensi-lesson-11-parent-guide.mp4',
+    12: 'sensi-lesson-12-parent-guide.mp4',
+    13: 'sensi-lesson-13-parent-guide.mp4',
+    14: 'sensi-lesson-14-parent-guide.mp4',
+    15: 'sensi-lesson-15-parent-guide.mp4',
   };
   const filename = videoFiles[lessonId];
   if (!filename) return send(res, 404, 'Not found', 'text/plain; charset=utf-8');
