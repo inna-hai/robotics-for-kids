@@ -1147,6 +1147,7 @@ function serveSensiGuideVideo(req, res, lessonId) {
   const videoFiles = {
     1: 'sensi-lesson-01-parent-guide.mp4',
     2: 'sensi-lesson-02-parent-guide.mp4',
+    3: 'sensi-lesson-03-parent-guide.mp4',
   };
   const filename = videoFiles[lessonId];
   if (!filename) return send(res, 404, 'Not found', 'text/plain; charset=utf-8');
