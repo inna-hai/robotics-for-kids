@@ -48,6 +48,13 @@ assert.match(
   /id:\s*8,[\s\S]*?guideVideo:\s*\{[\s\S]*?src:\s*['"]\/api\/sensi\/guide-videos\/lesson-8['"][\s\S]*?\}/,
   'lesson 8 should declare its protected parent/instructor guide video',
 );
+for (let lessonId = 9; lessonId <= 15; lessonId += 1) {
+  assert.match(
+    lessonData,
+    new RegExp(`id:\\s*${lessonId},[\\s\\S]*?guideVideo:\\s*\\{[\\s\\S]*?src:\\s*['"]\\/api\\/sensi\\/guide-videos\\/lesson-${lessonId}['"][\\s\\S]*?\\}`),
+    `lesson ${lessonId} should declare its protected parent/instructor guide video`,
+  );
+}
 assert.match(teachersHtml, /lesson\.guideVideo/, 'teacher guide should render videos from lesson data');
 assert.match(teachersHtml, /<video[^>]*controls[^>]*preload="metadata"/, 'guide video should use controls without autoplay');
 assert.ok(!teachersHtml.includes('<video autoplay'), 'guide video must not autoplay');
