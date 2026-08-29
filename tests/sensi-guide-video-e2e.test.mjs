@@ -14,6 +14,7 @@ const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'sensi-guide-video-'));
 const port = 40000 + Math.floor(Math.random() * 5000);
 const base = `http://127.0.0.1:${port}`;
 const videoBytes = Buffer.from('sensi-guide-video-fixture');
+const lesson2VideoBytes = Buffer.from('sensi-lesson-2-guide-video-fixture');
 
 fs.copyFileSync(path.join(ROOT, 'server.js'), path.join(tempRoot, 'server.js'));
 fs.copyFileSync(path.join(ROOT, 'teachers.html'), path.join(tempRoot, 'teachers.html'));
@@ -22,6 +23,7 @@ if (fs.existsSync(path.join(ROOT, 'server'))) {
 }
 fs.mkdirSync(path.join(tempRoot, 'data', 'guide-videos'), { recursive: true });
 fs.writeFileSync(path.join(tempRoot, 'data', 'guide-videos', 'sensi-lesson-01-parent-guide.mp4'), videoBytes);
+fs.writeFileSync(path.join(tempRoot, 'data', 'guide-videos', 'sensi-lesson-02-parent-guide.mp4'), lesson2VideoBytes);
 
 // The older Robotics 15 monolith cannot bootstrap student_progress from an empty DB
 // because its CREATE TABLE references child_id before the migration adds that column.
@@ -86,7 +88,9 @@ try {
   await waitForServer();
 
   const videoUrl = `${base}/api/sensi/guide-videos/lesson-1`;
+  const lesson2VideoUrl = `${base}/api/sensi/guide-videos/lesson-2`;
   assert.equal((await fetch(videoUrl)).status, 401, 'anonymous viewers must not receive the guide video');
+  assert.equal((await fetch(lesson2VideoUrl)).status, 401, 'anonymous viewers must not receive the lesson 2 guide video');
   assert.equal((await fetch(`${base}/teachers.html`)).status, 402, 'anonymous viewers must not receive the teacher guide');
 
   const registration = await fetch(`${base}/api/summer/register`, {
@@ -117,6 +121,11 @@ try {
   assert.equal(rangeResponse.headers.get('accept-ranges'), 'bytes');
   assert.equal(rangeResponse.headers.get('content-range'), `bytes 0-4/${videoBytes.length}`);
   assert.deepEqual(Buffer.from(await rangeResponse.arrayBuffer()), videoBytes.subarray(0, 5));
+
+  const lesson2RangeResponse = await fetch(lesson2VideoUrl, { headers: { ...authHeaders, Range: 'bytes=1-6' } });
+  assert.equal(lesson2RangeResponse.status, 206);
+  assert.equal(lesson2RangeResponse.headers.get('content-range'), `bytes 1-6/${lesson2VideoBytes.length}`);
+  assert.deepEqual(Buffer.from(await lesson2RangeResponse.arrayBuffer()), lesson2VideoBytes.subarray(1, 7));
 
   const teacherGuide = await fetch(`${base}/teachers.html`, { headers: authHeaders });
   assert.equal(teacherGuide.status, 200);

@@ -1136,7 +1136,7 @@ function isPaidProfile(profile, pathname = '') {
     || access.includes('*');
 }
 
-function serveSensiGuideVideo(req, res) {
+function serveSensiGuideVideo(req, res, lessonId) {
   if (req.method !== 'GET' && req.method !== 'HEAD') {
     return send(res, 405, 'Method not allowed', 'text/plain; charset=utf-8');
   }
@@ -1144,7 +1144,13 @@ function serveSensiGuideVideo(req, res) {
   if (!profile) return send(res, 401, 'Unauthorized', 'text/plain; charset=utf-8');
   if (!isPaidProfile(profile, '/sensi-city.html')) return send(res, 403, 'Forbidden', 'text/plain; charset=utf-8');
 
-  const videoPath = path.join(DATA_DIR, 'guide-videos', 'sensi-lesson-01-parent-guide.mp4');
+  const videoFiles = {
+    1: 'sensi-lesson-01-parent-guide.mp4',
+    2: 'sensi-lesson-02-parent-guide.mp4',
+  };
+  const filename = videoFiles[lessonId];
+  if (!filename) return send(res, 404, 'Not found', 'text/plain; charset=utf-8');
+  const videoPath = path.join(DATA_DIR, 'guide-videos', filename);
   fs.stat(videoPath, (err, stat) => {
     if (err || !stat.isFile()) return send(res, 404, 'Not found', 'text/plain; charset=utf-8');
     const range = parseByteRange(req.headers.range, stat.size);
@@ -1346,7 +1352,8 @@ function serveStatic(req, res) {
 
 const server = http.createServer((req, res) => {
   if (req.url.startsWith('/english-buddy')) return proxyEnglishBuddy(req, res);
-  if (requestUrl(req).pathname === '/api/sensi/guide-videos/lesson-1') return serveSensiGuideVideo(req, res);
+  const guideVideoMatch = requestUrl(req).pathname.match(/^\/api\/sensi\/guide-videos\/lesson-(\d+)$/);
+  if (guideVideoMatch) return serveSensiGuideVideo(req, res, Number(guideVideoMatch[1]));
   if (req.url.startsWith('/api/admin/feedback')) return handleAdminFeedback(req, res);
   if (req.url.startsWith('/api/feedback')) return handleFeedback(req, res);
   if (req.url.startsWith('/api/summer/')) return handleSummerAuth(req, res);
