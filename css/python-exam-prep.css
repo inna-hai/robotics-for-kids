@@ -193,7 +193,39 @@ button:focus-visible, textarea:focus-visible, a:focus-visible {
 .challenge-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
 .challenge-heading h3 { margin: 0; font-size: clamp(1.35rem, 2.5vw, 1.85rem); }
 #challengePoints { padding: 7px 11px; border-radius: 999px; color: #63500a; background: #fff2b8; font-weight: 800; white-space: nowrap; }
-#challengePrompt { margin: 14px 0 18px; font-size: 1.08rem; line-height: 1.65; }
+.beginner-guide {
+  margin: 20px 0;
+  padding: clamp(17px, 2.5vw, 24px);
+  display: grid;
+  gap: 16px;
+  border: 1px solid #b9ddd7;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #f1fffb, #f7fbff);
+}
+.guide-title-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.guide-title-row h4 { margin: 2px 0 0; font-size: 1.25rem; }
+.guide-eyebrow { color: var(--teal); font-size: 0.78rem; font-weight: 800; letter-spacing: 0.04em; }
+.guide-stage { padding: 6px 10px; border-radius: 999px; color: #24551b; background: #e7ffd1; font-size: 0.82rem; font-weight: 800; }
+.guide-stage[data-stage='practice'] { color: #614c06; background: #fff0ad; }
+.guide-stage[data-stage='independent'] { color: #493b85; background: #ece8ff; }
+.guide-idea { margin: 0; color: #294f4a; font-size: 1.05rem; line-height: 1.65; }
+.guide-terms { padding: 13px 15px; border-radius: 13px; background: rgba(255,255,255,0.86); }
+.guide-terms dl { margin: 9px 0 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 7px 12px; align-items: baseline; }
+.guide-terms dt { direction: ltr; unicode-bidi: isolate; padding: 2px 7px; border-radius: 6px; color: #eafffb; background: var(--teal-dark); font: 600 0.84rem 'Fira Code', Consolas, monospace; }
+.guide-terms dd { margin: 0; color: #466762; line-height: 1.45; }
+.guide-example { overflow: hidden; border: 1px solid #c9dfdc; border-radius: 13px; background: rgba(255,255,255,0.72); }
+.guide-example summary { padding: 12px 15px; cursor: pointer; color: var(--teal-dark); font-weight: 800; }
+.guide-example[open] summary { border-bottom: 1px solid #d8e8e5; }
+.guide-example-content { padding: 14px; display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(280px, 1.2fr); gap: 16px; align-items: stretch; }
+.guide-example-content > div { padding: 8px; }
+.guide-example p { margin: 0; color: #466762; line-height: 1.55; }
+#guideExampleCode { margin: 0; padding: 15px; overflow: auto; border-radius: 13px; color: #ddfff8; background: #123c37; font: 14px/1.6 'Fira Code', Consolas, monospace; text-align: left; }
+.guide-steps { padding-top: 2px; }
+.guide-steps ol { margin: 9px 0 0; padding-right: 24px; display: grid; gap: 7px; }
+.guide-steps li { padding-right: 4px; line-height: 1.5; }
+.your-turn { margin: 20px 0 18px; padding: 15px 17px; border-right: 5px solid var(--gold); border-radius: 13px 4px 4px 13px; background: #fffaf0; }
+.your-turn > span { color: #866400; font-size: 0.8rem; font-weight: 800; letter-spacing: 0.04em; }
+#challengePrompt { margin: 5px 0 0; font-size: 1.08rem; line-height: 1.65; }
 .input-strip { margin-bottom: 15px; padding: 10px 14px; border-radius: 10px; background: #f1ecff; }
 .input-strip span { margin-right: 8px; direction: ltr; unicode-bidi: isolate; font-family: 'Fira Code', monospace; }
 .prediction-panel {
@@ -321,6 +353,7 @@ button:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 15p
   .mission-button { min-height: 76px; scroll-snap-align: start; }
   .mission-button strong { font-size: 0.82rem; }
   .lesson-workspace { padding: 16px; }
+  .guide-example-content { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 560px) {
@@ -330,6 +363,8 @@ button:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 15p
   #missionBadge { flex-basis: 52px; width: 52px; height: 52px; border-radius: 16px; font-size: 1.5rem; }
   .lesson-card, .challenge-card { border-radius: 18px; }
   .challenge-heading { align-items: center; }
+  .guide-terms dl { grid-template-columns: 1fr; }
+  .guide-terms dd { margin-bottom: 5px; }
   textarea { min-height: 285px; font-size: 13px; }
   .lab-actions { flex-wrap: wrap; }
   .lab-actions button { flex: 1 1 130px; }

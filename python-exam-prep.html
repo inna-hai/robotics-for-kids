@@ -28,7 +28,14 @@
         </section>
         <section class="challenge-card">
           <div class="challenge-heading"><div><p id="challengeCounter"></p><h3 id="challengeTitle">מעבדת הקוד</h3></div><span id="challengePoints"></span></div>
-          <p id="challengePrompt"></p>
+          <section id="beginnerGuide" class="beginner-guide" aria-labelledby="guideHeading">
+            <div class="guide-title-row"><div><span class="guide-eyebrow">לפני שנוגעים בקוד</span><h4 id="guideHeading">לומדים צעד־צעד</h4></div><span id="guideStage" class="guide-stage"></span></div>
+            <p id="guideIdea" class="guide-idea"></p>
+            <div class="guide-terms"><strong>מילון קטן לאתגר</strong><dl id="guideTerms"></dl></div>
+            <details id="guideExample" class="guide-example" open><summary>דוגמה פתורה</summary><div class="guide-example-content"><div><p id="guideExampleExplanation"></p></div><pre id="guideExampleCode" dir="ltr"></pre></div></details>
+            <div class="guide-steps"><strong>איך ניגשים לאתגר?</strong><ol id="guideSteps"></ol></div>
+          </section>
+          <div class="your-turn"><span>עכשיו תורך</span><p id="challengePrompt"></p></div>
           <div class="input-strip" id="inputStrip" hidden><strong>קלט להרצה:</strong><span id="inputPreview"></span></div>
           <div class="prediction-panel" id="predictionPanel" hidden>
             <label for="predictionInput"><strong>קודם מנבאים:</strong> מה יודפס?</label>
