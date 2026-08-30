@@ -2641,20 +2641,20 @@
             {
                 "id": 4,
                 "minutes": "38–48",
-                "title": "תרגול 4 — בלוק שכונה לפי אורך",
-                "prompt": "בנו שכונה מרובעת עם אורך: הוסיפו הערה שמסבירה שזו מסגרת שכונה, קבעו אורך פעם אחת, וציירו ריבוע שבו כל צלע משתמשת ב‘זוז קדימה לפי האורך’.",
-                "hint": "ההערה צריכה להיות קשורה למשימה, למשל: ‘מסגרת שכונה’ או ‘שכונה לפי אורך’. בקוד Python תראו את השם length ואת השורה forward(length).",
-                "check": "צריך ריבוע סגור שמשתמש באורך, והערה קשורה לשכונה/מסגרת/אורך לפני הציור.",
-                "commonMistake": "כותבים הערה לא קשורה או משתמשים ב־forward רגיל עם מספר במקום ‘זוז קדימה לפי האורך’."
+                "title": "תרגול 4 — שכונה מחולקת לפי אורך",
+                "prompt": "בנו מפה בסיסית של שכונה: הוסיפו הערה קשורה, קבעו אורך פעם אחת, ציירו מסגרת ריבועית, ואז הוסיפו קו אנכי וקו אופקי שמחלקים את השכונה ל־4 אזורים.",
+                "hint": "המסגרת צריכה להשתמש ב‘זוז קדימה לפי האורך’. אחרי המסגרת הרימו עט כדי לעבור לאמצע, הורידו עט, וציירו קו חלוקה. עשו כך גם לקו החלוקה השני. בקוד Python תראו length ו־forward(length).",
+                "check": "צריך מסגרת שכונה סגורה שמשתמשת באורך, ועוד שני קווי חלוקה שיוצרים 4 אזורים.",
+                "commonMistake": "מציירים רק ריבוע חיצוני, בלי לחלק את השכונה לאזורים פנימיים."
             },
             {
                 "id": 5,
                 "minutes": "48–58",
-                "title": "תרגול 5 — שתי נקודות עניין נקיות",
-                "prompt": "המשיכו מהמפה שבניתם: בתוך או ליד מסגרת השכונה הוסיפו שני מקומות חשובים. סמנו כל מקום בסמל פשוט — למשל ריבוע קטן לבית וכוכב קטן לפארק. עברו ביניהם עם הרם עט והורד עט כדי שלא יהיה קו מחבר.",
-                "hint": "אל תתחילו ציור חדש. השתמשו במפה שכבר יש לכם, והרימו עט כדי לעבור למקום פנוי לפני כל סמל.",
-                "check": "צריכים להיות במפה שני סמלים פשוטים בצבעים שונים, עם מעבר אחד לפחות בלי ציור.",
-                "commonMistake": "מציירים סמלים רחוק בלי קשר למפה, או שוכחים להרים עט במעבר ואז מופיע קו שלא שייך למפה."
+                "title": "תרגול 5 — סמלי מפה באזורים",
+                "prompt": "המשיכו מהמפה המחולקת שבניתם: באזור אחד הוסיפו סמל מפה פשוט של בית — ריבוע קטן. באזור אחר הוסיפו סמל מפה פשוט של פארק — משולש קטן. עברו בין הסמלים עם הרם עט והורד עט כדי שלא יהיה קו מחבר.",
+                "hint": "אל תתחילו ציור חדש. השתמשו במפה עם 4 האזורים, הרימו עט כדי לעבור לאזור פנוי, הורידו עט, וציירו סמל קטן.",
+                "check": "צריכים להיות במפה שני סמלים פשוטים באזורים שונים, בצבעים שונים, עם מעבר אחד לפחות בלי ציור.",
+                "commonMistake": "מציירים סמלים בלי קשר לאזורי המפה, או שוכחים להרים עט במעבר ואז מופיע קו שלא שייך למפה."
             },
             {
                 "id": 6,
@@ -8923,6 +8923,15 @@
       return actions.filter(a=>a.cmd === 'forwardVar' && a.name === 'length').length;
     }
 
+    function drawnForwardVarCount(actions){
+      let pen = true, count = 0;
+      for(const a of actions){
+        if(a.cmd === 'pen') pen = a.v;
+        else if(a.cmd === 'forwardVar' && a.name === 'length' && pen) count++;
+      }
+      return count;
+    }
+
     function hasTurn(actions){
       return actions.some(a=>a.cmd === 'right' || a.cmd === 'left');
     }
@@ -9597,14 +9606,17 @@
           return [];
         }
         if(ex.id === 4){
-          const relevantComment = commentTexts(actions).some(text=>/שכונה|מסגרת|אורך|רחוב|רחובות/.test(text));
-          if(!relevantComment || !hasCommentBeforeFirstDraw(actions, /שכונה|מסגרת|אורך|רחוב|רחובות/)) return ['כמעט — הוסיפו לפני הציור הערה קשורה, למשל ״מסגרת שכונה״ או ״שכונה לפי אורך״.'];
+          const relevantComment = commentTexts(actions).some(text=>/שכונה|מסגרת|אורך|רחוב|רחובות|אזורים|חלוקה/.test(text));
+          if(!relevantComment || !hasCommentBeforeFirstDraw(actions, /שכונה|מסגרת|אורך|רחוב|רחובות|אזורים|חלוקה/)) return ['כמעט — הוסיפו לפני הציור הערה קשורה, למשל ״שכונה מחולקת״ או ״שכונה לפי אורך״.'];
           if(!lengthSetBeforeFirstUse(actions, null)) return ['כמעט — קבעו את האורך לפני שמשתמשים בו במפה.'];
-          if(!repeatUsesLengthShape(4, 90)) return ['כמעט — בלוק השכונה צריך להיות ריבוע שמשתמש בבלוק ״זוז קדימה לפי האורך״.'];
+          if(!repeatUsesLengthShape(4, 90)) return ['כמעט — קודם צריך לבנות מסגרת ריבועית שמשתמשת בבלוק ״זוז קדימה לפי האורך״.'];
+          if(drawnForwardVarCount(actions) < 6) return ['כמעט — הוסיפו גם שני קווי חלוקה בתוך השכונה, כך שייווצרו 4 אזורים.'];
+          if(penUpMoveCount(actions) < 2) return ['כמעט — השתמשו בהרם עט / הורד עט כדי לעבור לאמצע לפני קווי החלוקה.'];
           return [];
         }
         if(ex.id === 5){
-          if(actionDrawnColors(actions).size < 2) return ['כמעט — שתי נקודות העניין צריכות להצטייר בצבעים שונים.'];
+          if(!hasSeparatedSquareAndTriangle(actions)) return ['כמעט — צריך להוסיף שני סמלי מפה פשוטים: ריבוע קטן לבית ומשולש קטן לפארק.'];
+          if(actionDrawnColors(actions).size < 2) return ['כמעט — שני סמלי המפה צריכים להצטייר בצבעים שונים.'];
           if(penUpMoveCount(actions) < 1) return ['כמעט — צריך מעבר אחד בלי ציור: הרם עט, זוזו, ואז הורד עט.'];
           return [];
         }
@@ -10081,15 +10093,25 @@
         30: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>"
 };
       const demoXml = Blockly.utils.xml.textToDom(ensureStarterHasPythonBlock(xmls[currentLesson] || xmls[1]));
-      const existingTopBlocks = workspace.getTopBlocks(false).length;
+      const existingTopBlocks = workspace.getTopBlocks(false);
+      let nextX = 40;
+      let nextY = 40;
+      if(existingTopBlocks.length){
+        const selected = Blockly.getSelected ? Blockly.getSelected() : null;
+        const remembered = lastSelectedBlockId ? workspace.getBlockById(lastSelectedBlockId) : null;
+        const anchor = selected || remembered || existingTopBlocks[0];
+        const anchorTop = anchor.getRootBlock ? anchor.getRootBlock() : anchor;
+        const xy = anchorTop.getRelativeToSurfaceXY();
+        nextX = xy.x;
+        nextY = xy.y;
+      }
       demoXml.querySelectorAll('xml > block').forEach((block, index)=>{
-        const currentX = Number(block.getAttribute('x') || 40);
-        const currentY = Number(block.getAttribute('y') || 40);
-        block.setAttribute('x', String(currentX + 34 * existingTopBlocks));
-        block.setAttribute('y', String(currentY + 34 * (existingTopBlocks + index)));
+        block.setAttribute('x', String(nextX + 12 * index));
+        block.setAttribute('y', String(nextY + 12 * index));
       });
       Blockly.Xml.domToWorkspace(demoXml, workspace);
       generatePython(); resetDrawing(true);
+      statusEl.textContent = '';
       saveProgress();
     }
     function updateLessonUrl(id){
