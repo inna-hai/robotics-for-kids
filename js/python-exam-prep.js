@@ -19,6 +19,13 @@
     challengeTitle: document.getElementById('challengeTitle'),
     challengePoints: document.getElementById('challengePoints'),
     challengePrompt: document.getElementById('challengePrompt'),
+    guideStage: document.getElementById('guideStage'),
+    guideIdea: document.getElementById('guideIdea'),
+    guideTerms: document.getElementById('guideTerms'),
+    guideExample: document.getElementById('guideExample'),
+    guideExampleCode: document.getElementById('guideExampleCode'),
+    guideExampleExplanation: document.getElementById('guideExampleExplanation'),
+    guideSteps: document.getElementById('guideSteps'),
     inputStrip: document.getElementById('inputStrip'),
     inputPreview: document.getElementById('inputPreview'),
     predictionPanel: document.getElementById('predictionPanel'),
@@ -176,6 +183,27 @@
     elements.challengeTitle.textContent = challenge.title;
     elements.challengePoints.textContent = `${challenge.points} נק׳`;
     elements.challengePrompt.textContent = challenge.prompt;
+    const guide = challenge.beginnerGuide;
+    const stageLabels = { guided: 'מודרך', practice: 'תרגול', independent: 'עצמאי' };
+    elements.guideStage.textContent = stageLabels[challenge.stage] || 'צעד־צעד';
+    elements.guideStage.dataset.stage = challenge.stage || 'guided';
+    elements.guideIdea.textContent = guide.idea;
+    elements.guideTerms.replaceChildren(...guide.terms.flatMap(({ term, meaning }) => {
+      const name = document.createElement('dt');
+      name.textContent = term;
+      const description = document.createElement('dd');
+      description.textContent = meaning;
+      return [name, description];
+    }));
+    elements.guideExample.open = challenge.stage !== 'independent';
+    elements.guideExample.querySelector('summary').textContent = challenge.stage === 'independent' ? 'צריכים דוגמה? פתחו כאן' : 'דוגמה פתורה';
+    elements.guideExampleCode.textContent = guide.example.code;
+    elements.guideExampleExplanation.textContent = guide.example.explanation;
+    elements.guideSteps.replaceChildren(...guide.steps.map((step) => {
+      const item = document.createElement('li');
+      item.textContent = step;
+      return item;
+    }));
     elements.codeEditor.value = state.drafts[key] ?? challenge.starterCode;
     elements.inputStrip.hidden = !challenge.inputs?.length;
     elements.inputPreview.textContent = challenge.inputs?.join(' · ') || '';
