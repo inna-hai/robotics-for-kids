@@ -20,7 +20,12 @@ for (let id = 1; id <= 30; id++) {
   const slides = readFileSync(url, 'utf8');
   assert.match(slides, new RegExp(`שיעור ${id} מתוך 30`));
   assert.match(slides, /90 דקות/);
-  assert.match(slides, /הרבה תרגולים לשיעור/);
+  if (id === 9) {
+    assert.match(slides, /תרגולי הכוכב/);
+    assert.match(slides, /דיבאג ואתגרי סיום/);
+  } else {
+    assert.match(slides, /הרבה תרגולים לשיעור/);
+  }
   assert.match(slides, /פתח את שיעור/);
 }
 
