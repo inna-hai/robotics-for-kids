@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Methane Loop Scan - סריקת זיגזג מטרית</title>
+  <desc id="desc">תרשים שיעור 4: רחפן סורק ארבעה שבילים מקבילים במטמנת דודאים. כל שביל באורך 150 סנטימטרים, מעבר בין שבילים 80 סנטימטרים, גובה עבודה 100 סנטימטרים, באמצעות משתנים ולולאת for.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#064e3b"/><stop offset="0.55" stop-color="#0f766e"/><stop offset="1" stop-color="#84cc16"/></linearGradient>
+    <linearGradient id="field" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ecfccb"/><stop offset="1" stop-color="#ccfbf1"/></linearGradient>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="7" refY="7" orient="auto"><path d="M2,2 L12,7 L2,12 Z" fill="#0ea5e9"/></marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#022c22" flood-opacity="0.35"/></filter>
+  </defs>
+  <rect width="1200" height="760" rx="34" fill="url(#bg)"/>
+  <circle cx="1040" cy="110" r="80" fill="#bef264" opacity="0.18"/>
+  <circle cx="150" cy="650" r="100" fill="#22d3ee" opacity="0.14"/>
+  <text x="600" y="54" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="900" fill="#ecfeff">שיעור 4: Methane LoopScan</text>
+  <text x="600" y="88" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="800" fill="#d9f99d">לולאות for · משתנים דינמיים · שיטה מטרית · סימולטור בלבד</text>
+
+  <g transform="translate(70 126)" filter="url(#shadow)">
+    <rect x="0" y="0" width="1060" height="560" rx="30" fill="#f8fafc"/>
+    <rect x="52" y="70" width="646" height="410" rx="26" fill="url(#field)" stroke="#0f766e" stroke-width="4" stroke-dasharray="12 10"/>
+    <text x="375" y="44" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="900" fill="#064e3b">אזור סריקה מטרי — מטמנת דודאים</text>
+
+    <g stroke="#0ea5e9" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <path d="M130 420 H560" marker-end="url(#arrow)"/>
+      <path d="M560 420 V330" marker-end="url(#arrow)"/>
+      <path d="M560 330 H130" marker-end="url(#arrow)"/>
+      <path d="M130 330 V240" marker-end="url(#arrow)"/>
+      <path d="M130 240 H560" marker-end="url(#arrow)"/>
+      <path d="M560 240 V150" marker-end="url(#arrow)"/>
+      <path d="M560 150 H130" marker-end="url(#arrow)"/>
+    </g>
+
+    <g font-family="Arial, sans-serif" font-weight="900" fill="#075985">
+      <text x="345" y="402" text-anchor="middle" font-size="18">שביל 1: flyForward(scanLength) = 150 ס״מ</text>
+      <text x="345" y="312" text-anchor="middle" font-size="18">שביל 2: flyBackward(scanLength)</text>
+      <text x="345" y="222" text-anchor="middle" font-size="18">שביל 3: flyForward(scanLength)</text>
+      <text x="345" y="132" text-anchor="middle" font-size="18">שביל 4: flyBackward(scanLength)</text>
+      <text x="612" y="375" text-anchor="middle" font-size="16" transform="rotate(90 612 375)">transitionDist = 80 ס״מ</text>
+      <text x="88" y="285" text-anchor="middle" font-size="16" transform="rotate(-90 88 285)">transitionDist = 80 ס״מ</text>
+    </g>
+
+    <g transform="translate(105 395)">
+      <ellipse cx="34" cy="58" rx="56" ry="12" fill="#0f172a" opacity="0.2"/>
+      <rect x="8" y="20" width="52" height="26" rx="13" fill="#111827"/>
+      <circle cx="5" cy="18" r="13" fill="#334155"/><circle cx="63" cy="18" r="13" fill="#334155"/><circle cx="5" cy="48" r="13" fill="#334155"/><circle cx="63" cy="48" r="13" fill="#334155"/>
+      <text x="34" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="900" fill="#fbbf24">CH4</text>
+    </g>
+
+    <g font-family="Arial, sans-serif">
+      <rect x="755" y="82" width="248" height="382" rx="24" fill="#0f172a" opacity="0.94"/>
+      <text x="879" y="120" text-anchor="middle" font-size="23" font-weight="900" fill="#d9f99d">משתנים בראש הקוד</text>
+      <text x="790" y="166" font-size="19" fill="#e0f2fe">let scanLength = 150;</text>
+      <text x="790" y="205" font-size="19" fill="#e0f2fe">let transitionDist = 80;</text>
+      <text x="790" y="244" font-size="19" fill="#e0f2fe">let safeAltitude = 100;</text>
+      <line x1="785" y1="270" x2="973" y2="270" stroke="#64748b"/>
+      <text x="790" y="312" font-size="19" fill="#fef3c7">for (let i = 0;</text>
+      <text x="820" y="348" font-size="19" fill="#fef3c7">i &lt; 2; i++) {</text>
+      <text x="817" y="386" font-size="18" fill="#bae6fd">הלוך + מעבר + חזור</text>
+      <text x="790" y="426" font-size="19" fill="#fef3c7">}</text>
+    </g>
+
+    <g font-family="Arial, sans-serif">
+      <rect x="120" y="503" width="820" height="34" rx="17" fill="#dcfce7" stroke="#22c55e"/>
+      <text x="530" y="526" text-anchor="middle" font-size="17" font-weight="900" fill="#166534">אתגר דינמי: עדכון מהשטח — scanLength = 220, safeAltitude = 130. משנים רק משתנים, לא את הלולאה.</text>
+    </g>
+  </g>
+</svg>

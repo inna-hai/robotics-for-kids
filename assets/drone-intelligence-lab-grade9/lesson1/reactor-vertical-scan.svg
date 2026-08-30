@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">סריקת כור וירטואלית - כיול גובה ברחפן</title>
+  <desc id="desc">תרשים משימת שיעור 1: רחפן Tello וירטואלי ממריא ממנחת, עולה לגובה 80 ס״מ למדידת טמפרטורה, ממשיך לגובה 120 ס״מ למדידת קרינה, יורד 60 ס״מ ונוחת בבטחה בסימולטור Minimal Grid.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="0.52" stop-color="#123c69"/>
+      <stop offset="1" stop-color="#0f766e"/>
+    </linearGradient>
+    <linearGradient id="core" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fde68a" stop-opacity="0.95"/>
+      <stop offset="0.5" stop-color="#fb923c" stop-opacity="0.72"/>
+      <stop offset="1" stop-color="#ef4444" stop-opacity="0.55"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#020617" flood-opacity="0.35"/>
+    </filter>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="7" refY="7" orient="auto-start-reverse">
+      <path d="M2,2 L12,7 L2,12 Z" fill="#22d3ee"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="760" rx="34" fill="url(#bg)"/>
+  <circle cx="150" cy="95" r="92" fill="#38bdf8" opacity="0.18"/>
+  <circle cx="1030" cy="120" r="110" fill="#f97316" opacity="0.15"/>
+
+  <text x="600" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="800" fill="#e0f2fe">שיעור 1: סריקת כור וירטואלית</text>
+  <text x="600" y="94" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#bae6fd">DroneBlocks Code · Minimal Grid · סימולטור בלבד · ללא רחפן פיזי</text>
+
+  <g transform="translate(98 130)">
+    <rect x="0" y="0" width="1004" height="560" rx="28" fill="#f8fafc" opacity="0.98" filter="url(#shadow)"/>
+    <rect x="34" y="42" width="936" height="458" rx="24" fill="#ecfeff" stroke="#0e7490" stroke-width="3" stroke-dasharray="12 10"/>
+    <text x="502" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="800" fill="#0f3b5f">ליבת הכור הווירטואלית — ציר גובה</text>
+
+    <rect x="144" y="118" width="248" height="322" rx="28" fill="url(#core)" stroke="#fb7185" stroke-width="4"/>
+    <text x="268" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="800" fill="#7f1d1d">אזור סריקה</text>
+    <text x="268" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#7f1d1d">אין כניסה לבני אדם</text>
+
+    <line x1="542" y1="390" x2="542" y2="170" stroke="#22d3ee" stroke-width="8" stroke-linecap="round" marker-end="url(#arrow)"/>
+    <line x1="542" y1="170" x2="542" y2="295" stroke="#22d3ee" stroke-width="8" stroke-linecap="round" marker-end="url(#arrow)" opacity="0.9"/>
+    <line x1="542" y1="295" x2="542" y2="430" stroke="#22d3ee" stroke-width="8" stroke-linecap="round" marker-end="url(#arrow)" opacity="0.7"/>
+
+    <g transform="translate(476 352)">
+      <ellipse cx="66" cy="88" rx="92" ry="18" fill="#0f172a" opacity="0.16"/>
+      <rect x="18" y="36" width="96" height="40" rx="20" fill="#111827"/>
+      <circle cx="15" cy="35" r="20" fill="#334155"/>
+      <circle cx="117" cy="35" r="20" fill="#334155"/>
+      <circle cx="15" cy="78" r="20" fill="#334155"/>
+      <circle cx="117" cy="78" r="20" fill="#334155"/>
+      <text x="66" y="63" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="800" fill="#fbbf24">Tello</text>
+    </g>
+
+    <g font-family="Arial, sans-serif">
+      <rect x="635" y="124" width="282" height="70" rx="16" fill="#fff1f2" stroke="#fb7185" stroke-width="3"/>
+      <text x="776" y="154" text-anchor="middle" font-size="21" font-weight="800" fill="#9f1239">חיישן קרינה</text>
+      <text x="776" y="180" text-anchor="middle" font-size="18" fill="#9f1239">גובה 120 ס״מ · sleep(3)</text>
+
+      <rect x="635" y="250" width="282" height="70" rx="16" fill="#fff7ed" stroke="#fb923c" stroke-width="3"/>
+      <text x="776" y="280" text-anchor="middle" font-size="21" font-weight="800" fill="#9a3412">חיישן טמפרטורה</text>
+      <text x="776" y="306" text-anchor="middle" font-size="18" fill="#9a3412">גובה 80 ס״מ · sleep(5)</text>
+
+      <rect x="635" y="382" width="282" height="70" rx="16" fill="#dcfce7" stroke="#22c55e" stroke-width="3"/>
+      <text x="776" y="412" text-anchor="middle" font-size="21" font-weight="800" fill="#166534">מנחת המראה ונחיתה</text>
+      <text x="776" y="438" text-anchor="middle" font-size="18" fill="#166534">takeoff → land</text>
+    </g>
+
+    <g transform="translate(88 468)" font-family="Arial, sans-serif">
+      <rect x="0" y="0" width="828" height="62" rx="18" fill="#0f172a" opacity="0.95"/>
+      <text x="414" y="38" text-anchor="middle" font-size="21" font-weight="800" fill="#e0f2fe">רצף משימה: takeoff → sleep → flyUp(120) → sleep → flyDown(60) → sleep → land</text>
+    </g>
+  </g>
+</svg>
