@@ -247,7 +247,7 @@ function courseForPaidPath(pathname) {
   if (pathname === '/sensi-city.html' || pathname === '/smart-city.html' || pathname === '/teachers.html' || pathname.startsWith('/slides/')) return 'sensi-city';
   if (pathname === '/space.html' || pathname === '/space-play.html' || pathname === '/music.html' || pathname === '/music-play.html' || pathname === '/ocean.html' || pathname === '/ocean-play.html') return 'sisi-trial';
   if (pathname === '/sensi-classic.html' || pathname === '/sensi-classic-about.html' || pathname === '/sensi-classic-teachers.html' || pathname.startsWith('/sensi-classic-slides/')) return 'sensi-classic';
-  if (pathname === '/python-turtle.html' || pathname === '/python-turtle-play.html' || pathname.startsWith('/python-turtle-slides/')) return 'python-turtle';
+  if (pathname === '/python-turtle.html' || pathname === '/python-turtle-play.html' || pathname === '/python-exam-prep.html' || pathname.startsWith('/python-turtle-slides/')) return 'python-turtle';
   if (pathname === '/webmakers.html' || pathname === '/webmakers-play.html') return 'webmakers';
   if (pathname === '/webcode.html' || pathname === '/webcode-play.html') return 'webcode';
   if (pathname === '/pygame.html' || pathname === '/pygame-play.html') return 'pygame';
