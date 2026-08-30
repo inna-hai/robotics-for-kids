@@ -398,10 +398,10 @@ assert.match(html, /לא חייבים מילים או מספרים מדויקי�
 assert.match(html, /ההערה לא נראית בציור[\s\S]*רק בקוד Python/, 'lesson 11 exercise 1 explains comments are visible only in Python code');
 assert.match(html, /ex\.id === 2[\s\S]*comments\.some\(text=>!text\.trim\(\) \|\| text\.trim\(\)\.length < 2\)/, 'lesson 11 exercise 2 requires non-empty street-name comments without forcing the word רחוב');
 assert.match(html, /הערה עם שם הרחוב/, 'lesson 11 exercise 2 asks learners to write street names in comments');
-assert.match(html, /currentLesson === 11 && ex\?\.id === 3\) return \['py_comment'\]/, 'lesson 11 selection exercise targets the comment block');
-assert.match(html, /if\(type === 'py_comment'\) return '#'/, 'lesson 11 comment selection highlights the Python # line');
+assert.doesNotMatch(html, /currentLesson === 11 && ex\?\.id === 3\) return \['py_comment'\]/, 'lesson 11 exercise 3 is no longer only a comment-selection exercise');
+assert.match(html, /"title": "תרגול 3 — שני רחובות לפי length"[\s\S]*שני רחובות מחוברים שמשתמשים באותו length[\s\S]*שנו את length/, 'lesson 11 exercise 3 is now a real connected-streets length exercise with concise wording');
 assert.match(html, /function renderCodeLineText\(text\)[\s\S]*commentMatch[\s\S]*<span dir="rtl" class="code-comment-text">/, 'Hebrew Python comments are isolated RTL after the # so text like רחוב א\' is not visually flipped');
-assert.match(html, /currentLesson === 11 && ex\?\.id === 3[\s\S]*<block type="py_comment"[\s\S]*רחוב ראשי/, 'lesson 11 exercise 3 has generated comment starter code');
+assert.match(html, /if\(currentLesson === 11\)\{[\s\S]*ex\.id === 3[\s\S]*comments\.length < 2[\s\S]*lengthSetBeforeFirstUse\(actions, null\)[\s\S]*forwardVarCount\(actions\) < 2[\s\S]*Number\(a\.v\) === 90[\s\S]*setLengthValues\(actions\)[\s\S]*שנו את length לערך אחר/, 'lesson 11 exercise 3 validates two comments, length, two length-based connected streets, a straight turn, and a second run after changing length');
 assert.match(html, /if\(currentLesson === 11\)\{[\s\S]*ex\.id === 4[\s\S]*hasCommentBeforeFirstDraw\(actions, \/שכונה\|מסגרת\|אורך\|רחוב\|רחובות\|אזורים\|חלוקה\/\)[\s\S]*repeatUsesLengthShape\(4, 90\)[\s\S]*drawnForwardVarCount\(actions\) < 6[\s\S]*penUpMoveCount\(actions\) < 2/, 'lesson 11 exercise 4 validates a relevant comment, scaled square frame, and two internal division lines');
 
 assert.match(html, /"title": "תרגול 5 — סמלי מפה באזורים"/, 'lesson 11 makes points-of-interest exercise 5 place map symbols in divided areas');
