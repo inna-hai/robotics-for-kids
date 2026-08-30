@@ -25,8 +25,10 @@ assert.match(html, /תרגול 5 — ריבוע משתנה/, 'lesson 4 exercise 
 assert.match(html, /function actionDrawsStyledSquare/, 'lesson 4 exercise 5 validates the styled square');
 
 const loadDemoSource = html.slice(html.indexOf('function loadDemo()'), html.indexOf('function updateLessonUrl'));
-assert.match(loadDemoSource, /const existingTopBlocks = workspace\.getTopBlocks\(false\)\.length[\s\S]*Blockly\.Xml\.domToWorkspace\(demoXml, workspace\)/, "demo button appends example blocks to the existing workspace instead of replacing the child's blocks");
-assert.doesNotMatch(loadDemoSource, /workspace\.clear\(\)/, 'demo button does not clear existing blocks before adding the example');
+assert.doesNotMatch(loadDemoSource, /workspace\.clear\(\)/, 'demo button does not erase the child workspace before adding the example');
+assert.match(loadDemoSource, /const existingTopBlocks = workspace\.getTopBlocks\(false\)[\s\S]*lastSelectedBlockId[\s\S]*const anchor = selected \|\| remembered \|\| existingTopBlocks\[0\][\s\S]*nextX = xy\.x;[\s\S]*nextY = xy\.y;[\s\S]*block\.setAttribute\('x', String\(nextX \+ 12 \* index\)\);[\s\S]*Blockly\.Xml\.domToWorkspace\(demoXml, workspace\)[\s\S]*statusEl\.textContent = '';/, 'demo button appends visible editable example blocks over the selected/existing workspace block without adding a status sentence');
+assert.doesNotMatch(loadDemoSource, /workspace\.zoomToFit[\s\S]*workspace\.scrollCenter/, 'demo button keeps the current view instead of jumping away from the child blocks');
+assert.doesNotMatch(loadDemoSource, /workspace\.scroll\(nextX - 40, nextY - 40\)/, 'demo button does not scroll away from the child blocks to show only the appended example');
 assert.match(loadDemoSource, /5: "<xml><block type=\\"py_forward\\"[\s\S]*py_penup[\s\S]*py_pendown[\s\S]*py_forward/, 'lesson 5 demo button uses the small pen-up demo, not the old two-shape example');
 
 assert.match(html, /netTurn = bodyActions\.reduce/, 'shape validator rejects loops whose opposite turns cancel out instead of forming a shape');
@@ -400,13 +402,13 @@ assert.match(html, /currentLesson === 11 && ex\?\.id === 3\) return \['py_commen
 assert.match(html, /if\(type === 'py_comment'\) return '#'/, 'lesson 11 comment selection highlights the Python # line');
 assert.match(html, /function renderCodeLineText\(text\)[\s\S]*commentMatch[\s\S]*<span dir="rtl" class="code-comment-text">/, 'Hebrew Python comments are isolated RTL after the # so text like רחוב א\' is not visually flipped');
 assert.match(html, /currentLesson === 11 && ex\?\.id === 3[\s\S]*<block type="py_comment"[\s\S]*רחוב ראשי/, 'lesson 11 exercise 3 has generated comment starter code');
-assert.match(html, /if\(currentLesson === 11\)\{[\s\S]*ex\.id === 4[\s\S]*hasCommentBeforeFirstDraw\(actions, \/שכונה\|מסגרת\|אורך\|רחוב\|רחובות\/\)[\s\S]*repeatUsesLengthShape\(4, 90\)/, 'lesson 11 exercise 4 validates a relevant comment plus a scaled square block using length');
+assert.match(html, /if\(currentLesson === 11\)\{[\s\S]*ex\.id === 4[\s\S]*hasCommentBeforeFirstDraw\(actions, \/שכונה\|מסגרת\|אורך\|רחוב\|רחובות\|אזורים\|חלוקה\/\)[\s\S]*repeatUsesLengthShape\(4, 90\)[\s\S]*drawnForwardVarCount\(actions\) < 6[\s\S]*penUpMoveCount\(actions\) < 2/, 'lesson 11 exercise 4 validates a relevant comment, scaled square frame, and two internal division lines');
 
-assert.match(html, /"title": "תרגול 5 — שתי נקודות עניין נקיות"/, 'lesson 11 removes the too-easy scale-up exercise and makes points-of-interest exercise 5');
-assert.match(html, /המשיכו מהמפה שבניתם[\s\S]*בתוך או ליד מסגרת השכונה/, 'lesson 11 exercise 5 connects map symbols to the existing neighborhood map instead of floating symbols');
+assert.match(html, /"title": "תרגול 5 — סמלי מפה באזורים"/, 'lesson 11 makes points-of-interest exercise 5 place map symbols in divided areas');
+assert.match(html, /המשיכו מהמפה המחולקת שבניתם[\s\S]*ריבוע קטן[\s\S]*משולש קטן/, 'lesson 11 exercise 5 connects square and triangle symbols to the divided neighborhood map');
 assert.match(html, /"title": "תרגול 6 — דיבאג רחובות עם אורך"[\s\S]*כל הרחובות צריכים להשתמש באורך/, 'lesson 11 exercise 6 title and prompt match street-only starter code');
 assert.match(html, /if\(currentLesson === 11\)\{[\s\S]*ex\.id === 5[\s\S]*actionDrawnColors\(actions\)\.size < 2[\s\S]*ex\.id === 6[\s\S]*forwardVarCount\(actions\) < 3/, 'lesson 11 validators match renumbered points and debug exercises');
-assert.match(html, /שכונה לפי אורך[\s\S]*בקוד Python תראו את השם length[\s\S]*forward\(length\)/, 'lesson 11 exercise 4 hint explains the Hebrew task wording and Python length code');
+assert.match(html, /שכונה מחולקת לפי אורך[\s\S]*length[\s\S]*forward\(length\)/, 'lesson 11 exercise 4 hint explains the Hebrew task wording and Python length code');
 assert.match(html, /function hasScaledMapDebugFix\(actions\)/, 'lesson 11 has a helper for the broken scale-map debug task');
 assert.match(html, /currentLesson === 11 && ex\?\.id === 6[\s\S]*<field name="TEXT">מעבר לרחוב צדדי<\/field>[\s\S]*<field name="TEXT">רחוב צדדי<\/field>[\s\S]*<block type="py_forward"><field name="STEPS">35<\/field>/, 'lesson 11 exercise 6 starter labels the fixed-number side street bug as a street');
 assert.match(html, /if\(currentLesson === 11\)\{[\s\S]*ex\.id === 6[\s\S]*forwardVarCount\(actions\) < 3[\s\S]*penUpMoveCount\(actions\) < 1/, 'lesson 11 exercise 6 validates scaled streets and a clean pen-up transition');
