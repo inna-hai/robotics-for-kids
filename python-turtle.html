@@ -2529,12 +2529,12 @@
         "practice": [
             "הוסיפו הערת קוד לפני רחוב ראשי כדי להסביר מה מתחיל בציור.",
             "צרו מסלול עם שתי הערות ברורות לשני רחובות ופנייה ביניהם.",
-            "בחרו בלוק הערה וראו את שורת ה־# בקוד Python.",
+            "בנו שני רחובות מחוברים עם שתי הערות, פנייה של 90 מעלות ו־length שמשפיע על שניהם.",
             "בנו בלוק שכונה לפי משתנה אורך במקום מספרים קבועים.",
             "הוסיפו שתי נקודות עניין בצבעים שונים בלי קו מחבר.",
-            "תקנו מפה שבורה שבה חלק מהרחובות לא משתמשים באורך ויש קו מחבר מיותר.",
+            "תקנו מפה שבורה שבה רחוב צדדי עבה מדי ורחוב צדדי אחר יצא אלכסוני.",
             "בנו מפה מתקדמת עם רחובות, סמלים, צבעים והערות לכל אזור.",
-            "אתגר: מפת עיר קטנה עם רשימת דרישות ארוכה למורה."
+            "אתגר רשות: כתבו Python קצר למפת רחובות קטנה."
         ],
         "timing": [
             "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
@@ -2581,9 +2581,9 @@
             },
             {
                 "minutes": "34–44",
-                "title": "בלוק הערה → שורת #",
-                "teacher": "מחברים בין בלוק ההערה לבין שורת # בקוד Python דרך בחירה/הדגשה.",
-                "students": "בוחרים את בלוק ההערה ומזהים את שורת ה־#."
+                "title": "שני רחובות לפי length",
+                "teacher": "בונים רחוב ראשי ורחוב צדדי מחוברים, עם שתי הערות ו־length אחד שמשפיע על שניהם.",
+                "students": "מריצים פעם אחת, משנים את length, ומוודאים ששני הרחובות משתנים יחד."
             },
             {
                 "minutes": "44–60",
@@ -2600,13 +2600,13 @@
             {
                 "minutes": "74–84",
                 "title": "דיבאג מפה שבורה",
-                "teacher": "נותנים מפה עם באגים אמיתיים: רחוב שלא משתמש באורך וקו מחבר.",
+                "teacher": "נותנים מפה עם שני באגים חזותיים: רחוב צדדי עבה מדי ורחוב צדדי אלכסוני.",
                 "students": "מתקנים דבר אחד בכל פעם ומוודאים שהקוד עדיין קריא."
             },
             {
                 "minutes": "84–90",
                 "title": "אתגר וסיכום",
-                "teacher": "פותחים אתגר ארוך עם רשימת דרישות ומסכמים: הערה → קוד קריא, אורך → שינוי גודל, penup → מעבר נקי.",
+                "teacher": "מסכמים את תרגיל המפה המסכמת ופותחים את אתגר הרשות ב־Python למי שסיים.",
                 "students": "משלימים: “ההערה שלי מסבירה…, והאורך משנה…”."
             }
         ],
@@ -2631,16 +2631,16 @@
             },
             {
                 "id": 3,
-                "minutes": "32–38",
-                "title": "תרגול 3 — מוצאים את שורת ההערה",
-                "prompt": "בחרו את בלוק ההערה בקוד ההתחלתי ובדקו איזו שורת Python נדלקת.",
-                "hint": "הערה בפייתון מתחילה בסימן #. היא עוזרת לקרוא את הקוד אבל לא מזיזה את הצב.",
-                "check": "המשך נפתח רק אחרי שבוחרים את בלוק ההערה ושורת # מודגשת בקוד.",
-                "commonMistake": "מחפשים תנועה בציור במקום לראות שהמטרה כאן היא לזהות שורת הסבר בקוד."
+                "minutes": "32–42",
+                "title": "תרגול 3 — שני רחובות לפי length",
+                "prompt": "בנו שני רחובות מחוברים שמשתמשים באותו length: רחוב ראשי, פנייה של 90 מעלות, ורחוב צדדי. לפני כל רחוב הוסיפו הערה שמסבירה אותו. בסוף שנו את length והריצו שוב.",
+                "hint": "אין צורך בהרם עט — הרחובות מחוברים. השתמשו ב־length פעם אחת, ובשני בלוקים של ׳זוז קדימה לפי האורך׳.",
+                "check": "צריך שתי הערות, length, שני forward(length), פנייה של 90 מעלות, ושתי הרצות עם ערכי length שונים.",
+                "commonMistake": "משתמשים במספר רגיל במקום ב־length, ואז שינוי האורך לא משפיע על שני הרחובות."
             },
             {
                 "id": 4,
-                "minutes": "38–48",
+                "minutes": "42–52",
                 "title": "תרגול 4 — שכונה מחולקת לפי אורך",
                 "prompt": "בנו מפה בסיסית של שכונה: הוסיפו הערה קשורה, קבעו אורך פעם אחת, ציירו מסגרת ריבועית, ואז הוסיפו קו אנכי וקו אופקי שמחלקים את השכונה ל־4 אזורים.",
                 "hint": "המסגרת צריכה להשתמש ב‘זוז קדימה לפי האורך’. אחרי המסגרת הרימו עט כדי לעבור לאמצע, הורידו עט, וציירו קו חלוקה. עשו כך גם לקו החלוקה השני. בקוד Python תראו length ו־forward(length).",
@@ -2649,7 +2649,7 @@
             },
             {
                 "id": 5,
-                "minutes": "48–58",
+                "minutes": "52–62",
                 "title": "תרגול 5 — סמלי מפה באזורים",
                 "prompt": "המשיכו מהמפה המחולקת. הוסיפו שני סמלי מפה קטנים בשני אזורים שונים: ריבוע קטן לבית, ומשולש קטן לפארק. עברו ביניהם בלי קו מחבר בעזרת הרם עט והורד עט.",
                 "hint": "השתמשו במפה עם 4 האזורים. הרימו עט כדי לעבור לאזור פנוי, הורידו עט, וציירו סמל קטן.",
@@ -2658,7 +2658,7 @@
             },
             {
                 "id": 6,
-                "minutes": "58–72",
+                "minutes": "62–74",
                 "title": "תרגול 6 — דיבאג רחובות עם אורך",
                 "prompt": "תקנו את קוד הרחובות הקצר. צריך לצאת רחוב ראשי עבה, וממנו רחובות צדדיים צרים וישרים. בקוד יש שני באגים: רחוב צדדי שצויר עבה מדי, ורחוב צדדי שיצא אלכסוני במקום ישר.",
                 "hint": "אל תמחקו את כל הקוד. תקנו רק את שני המקומות הבעייתיים: לפני הרחוב הצדדי העבה מדי שנו את עובי העט לעובי דק, וברחוב האלכסוני שנו את זווית הפנייה כך שיהיה ישר.",
@@ -2667,7 +2667,7 @@
             },
             {
                 "id": 7,
-                "minutes": "72–82",
+                "minutes": "74–86",
                 "title": "תרגול 7 — מפה מסכמת עם מקרא",
                 "prompt": "בנו מפה מסכמת בבלוקים: לפחות 3 אזורים עם הערות, 3 צבעים שונים, ריבוע שכונה לפי אורך, סמל קטן כמו כוכב או ספירלה, ולפחות שני מעברים בלי קווי חיבור.",
                 "hint": "עבדו ברשימת בדיקה. כל אזור מקבל הערה, צבע, ציור, ואז מעבר נקי לאזור הבא.",
@@ -2676,7 +2676,7 @@
             },
             {
                 "id": 8,
-                "minutes": "82–90",
+                "minutes": "86–90",
                 "title": "אתגר רשות — כותבים Python קצר למפת רחובות",
                 "prompt": "אתגר רשות למי שסיים: כתבו Python קצר שמצייר מפת רחובות קטנה: הערת # אחת, length, רחוב ראשי, פנייה, רחוב צדדי, ושינוי צבע או עובי עט לפני אחד הרחובות.",
                 "hint": "אפשר להתחיל מ־length = 50. כתבו forward(length), פנייה של 90 מעלות, ואז עוד forward(length). הוסיפו color(...) או pensize(...) לפני אחד הרחובות.",
@@ -8398,7 +8398,7 @@
       return restoreXml(exerciseStartXml[baselineKey(index)]);
     }
     function isTipExercise(ex){
-      if((currentLesson === 3 && ex?.id === 5) || (currentLesson === 4 && ex?.id === 6) || (currentLesson === 5 && ex?.id === 3) || (currentLesson === 8 && ex?.id === 4) || (currentLesson === 11 && ex?.id === 3)) return false;
+      if((currentLesson === 3 && ex?.id === 5) || (currentLesson === 4 && ex?.id === 6) || (currentLesson === 5 && ex?.id === 3) || (currentLesson === 8 && ex?.id === 4)) return false;
       const text = `${ex?.title || ''} ${ex?.prompt || ''}`;
       return /הידעתם|לחצו על בלוק|לוחצים על בלוק|שורת קוד נדלקת|שורת הקוד.*נדלקת|שורת Python/.test(text);
     }
@@ -8417,13 +8417,12 @@
       return !isTipExercise(ex) && !isChallengeExercise(ex) && !isSelectionOnlyExercise(ex) && !isRunOnlyExampleExercise(ex);
     }
     function isSelectionOnlyExercise(ex){
-      return (currentLesson === 3 && ex?.id === 5) || (currentLesson === 4 && ex?.id === 6) || (currentLesson === 5 && ex?.id === 3) || (currentLesson === 8 && ex?.id === 4) || (currentLesson === 11 && ex?.id === 3);
+      return (currentLesson === 3 && ex?.id === 5) || (currentLesson === 4 && ex?.id === 6) || (currentLesson === 5 && ex?.id === 3) || (currentLesson === 8 && ex?.id === 4);
     }
     function selectionOnlyBlockTypes(ex){
       if(currentLesson === 4 && ex?.id === 6) return ['py_color'];
       if(currentLesson === 5 && ex?.id === 3) return ['py_penup', 'py_pendown'];
       if(currentLesson === 8 && ex?.id === 4) return ['py_grow_length'];
-      if(currentLesson === 11 && ex?.id === 3) return ['py_comment'];
       return ['py_repeat'];
     }
     function selectionOnlyBlockType(ex){
@@ -8496,7 +8495,7 @@
       if(currentLesson === 10 && ex?.id === 6) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">60</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_forward"><field name="STEPS">95</field><next><block type="py_repeat"><field name="TIMES">3</field><statement name="DO"><block type="py_forward"><field name="STEPS">75</field><next><block type="py_right"><field name="ANGLE">120</field></block></next></block></statement><next><block type="py_forward"><field name="STEPS">95</field><next><block type="py_repeat"><field name="TIMES">5</field><statement name="DO"><block type="py_forward"><field name="STEPS">45</field><next><block type="py_right"><field name="ANGLE">72</field></block></next></block></statement></block></next></block></next></block></next></block></next></block></xml>';
       if(currentLesson === 10 && ex?.id === 7) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">55</field><next><block type="py_right"><field name="ANGLE">80</field></block></next></block></statement><next><block type="py_forward"><field name="STEPS">95</field><next><block type="py_repeat"><field name="TIMES">5</field><statement name="DO"><block type="py_forward"><field name="STEPS">50</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_forward"><field name="STEPS">90</field><next><block type="py_repeat"><field name="TIMES">8</field><statement name="DO"><block type="py_set_length"><field name="VALUE">25</field><next><block type="py_forward_length"><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_grow_length"><field name="ADD">10</field></block></next></block></next></block></next></block></statement></block></next></block></next></block></next></block></next></block></xml>';
       if(currentLesson === 10 && ex?.id === 8) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_color"><field name="COLOR">#2563eb</field><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">55</field><next><block type="py_right"><field name="ANGLE">80</field></block></next></block></statement><next><block type="py_penup"><next><block type="py_forward"><field name="STEPS">95</field><next><block type="py_pendown"><next><block type="py_color"><field name="COLOR">#16a34a</field><next><block type="py_repeat"><field name="TIMES">3</field><statement name="DO"><block type="py_forward"><field name="STEPS">70</field><next><block type="py_right"><field name="ANGLE">120</field></block></next></block></statement><next><block type="py_forward"><field name="STEPS">90</field><next><block type="py_pendown"><next><block type="py_color"><field name="COLOR">#dc2626</field><next><block type="py_repeat"><field name="TIMES">5</field><statement name="DO"><block type="py_forward"><field name="STEPS">45</field><next><block type="py_right"><field name="ANGLE">144</field></block></next></block></statement></block></next></block></next></block></next></block></next></block></next></block></statement></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
-      if(currentLesson === 11 && ex?.id === 3) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_comment"><field name="TEXT">רחוב ראשי</field><next><block type="py_forward"><field name="STEPS">120</field></block></next></block></next></block></xml>';
+      if(currentLesson === 11 && ex?.id === 3) return '<xml><block type="py_python" x="20" y="20"></block></xml>';
       if(currentLesson === 11 && ex?.id === 8) return '<xml><block type="py_python" x="20" y="20"></block></xml>';
       if(currentLesson === 11 && ex?.id === 6) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_comment"><field name="TEXT">רחוב ראשי עבה</field><next><block type="py_set_length"><field name="VALUE">55</field><next><block type="py_width"><field name="WIDTH">9</field><next><block type="py_color"><field name="COLOR">#2563eb</field><next><block type="py_forward_length"><next><block type="py_forward_length"><next><block type="py_comment"><field name="TEXT">באג: רחוב צדדי עבה מדי</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_color"><field name="COLOR">#16a34a</field><next><block type="py_forward_length"><next><block type="py_comment"><field name="TEXT">באג: רחוב צדדי אלכסוני</field><next><block type="py_left"><field name="ANGLE">100</field><next><block type="py_width"><field name="WIDTH">3</field><next><block type="py_color"><field name="COLOR">#7c3aed</field><next><block type="py_forward_length"></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
       if(currentLesson === 5 && ex?.id === 5) return '<xml><block type="py_python" x="20" y="20" movable="false" editable="false" deletable="false"><next><block type="py_forward" movable="false" editable="false" deletable="false"><field name="STEPS">70</field><next><block type="py_penup" movable="false" editable="false" deletable="false"><next><block type="py_forward" movable="false" editable="false" deletable="false"><field name="STEPS">100</field><next><block type="py_pendown" movable="false" editable="false" deletable="false"><next><block type="py_forward" movable="false" editable="false" deletable="false"><field name="STEPS">70</field></block></next></block></next></block></next></block></next></block></next></block></xml>';
@@ -9618,6 +9617,19 @@
           if(comments.some(text=>!text.trim() || text.trim().length < 2)) return ['כמעט — בכל הערה כתבו שם רחוב קצר.'];
           if(actions.filter(a=>a.cmd === 'forward' || a.cmd === 'forwardVar').length < 2) return ['כמעט — צריך לפחות שני קווי רחוב במסלול.'];
           if(!hasTurn(actions)) return ['כמעט — הוסיפו פנייה כדי שהמפה לא תהיה רק קו אחד.'];
+          return [];
+        }
+        if(ex.id === 3){
+          if(comments.length < 2) return ['כמעט — הוסיפו שתי הערות: אחת לרחוב הראשי ואחת לרחוב הצדדי.'];
+          if(!lengthSetBeforeFirstUse(actions, null)) return ['כמעט — קבעו את length לפני שמשתמשים בו ברחובות.'];
+          if(forwardVarCount(actions) < 2) return ['כמעט — שני הרחובות צריכים להשתמש בבלוק ״זוז קדימה לפי האורך״.'];
+          if(!actions.some(a=>(a.cmd === 'right' || a.cmd === 'left') && Number(a.v) === 90)) return ['כמעט — בין שני הרחובות צריכה להיות פנייה ישרה של 90 מעלות.'];
+          const currentLength = setLengthValues(actions).find(v=>Number.isFinite(Number(v)));
+          if(currentLength === undefined) return ['כמעט — הוסיפו ערך מספרי ל־length.'];
+          const key = `${currentLesson}:${ex.id}`;
+          exerciseCheckValues[key] = exerciseCheckValues[key] || [];
+          if(!exerciseCheckValues[key].includes(currentLength)) exerciseCheckValues[key].push(currentLength);
+          if(new Set(exerciseCheckValues[key]).size < 2) return [`יופי — המבנה נכון. עכשיו שנו את length לערך אחר, הריצו ובדקו שוב ששני הרחובות משתנים יחד.`];
           return [];
         }
         if(ex.id === 4){
