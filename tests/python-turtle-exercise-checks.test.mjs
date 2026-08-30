@@ -150,7 +150,7 @@ assert.doesNotMatch(html, /אתגר — עיר קטנה עם בתים נפרדי
 assert.match(html, /currentLesson === 5 && ex\.id === 7[\s\S]*actionDrawnColors\(actions\)\.size < 3[\s\S]*cleanTransitions < 2/, 'lesson 5 three-shapes exercise validates colors and pen-up transitions');
 assert.match(html, /currentLesson === 5 && ex\?\.id === 8\) return 5/, 'lesson 5 final Python writing challenge requires five short lines');
 assert.match(html, /currentLesson === 5 && ex\?\.id === 8\) return '<xml><block type="py_python" x="20" y="20"><\/block><\/xml>'/, 'lesson 5 final Python writing challenge starts from a clean workspace');
-assert.match(html, /currentLesson === 5 && ex\?\.id === 8 \? 'forward\(70\).*penup\(\).*pendown\(\).*forward\(70\)'/, 'lesson 5 final Python writing challenge keeps the helpful placeholder example');
+assert.match(html, /currentLesson === 5 && ex\?\.id === 8\) return 'forward\(70\).*?penup\(\).*?pendown\(\).*?forward\(70\)'/, 'lesson 5 final Python writing challenge keeps the helpful placeholder example');
 assert.match(html, /כתבו בקוד Python פקודות שגורמות לצב לצייר קו[\s\S]*penup\(\)[\s\S]*pendown\(\)/, 'lesson 5 final Python writing challenge asks for forward, penup, forward, pendown, forward');
 assert.match(html, /currentLesson === 5 && ex\?\.id === 8[\s\S]*matchesPenLiftLine[\s\S]*forward[\s\S]*penup[\s\S]*pendown/, 'lesson 5 final Python writing challenge validates pen lift sequence');
 
@@ -405,16 +405,21 @@ assert.match(html, /currentLesson === 11 && ex\?\.id === 3[\s\S]*<block type="py
 assert.match(html, /if\(currentLesson === 11\)\{[\s\S]*ex\.id === 4[\s\S]*hasCommentBeforeFirstDraw\(actions, \/שכונה\|מסגרת\|אורך\|רחוב\|רחובות\|אזורים\|חלוקה\/\)[\s\S]*repeatUsesLengthShape\(4, 90\)[\s\S]*drawnForwardVarCount\(actions\) < 6[\s\S]*penUpMoveCount\(actions\) < 2/, 'lesson 11 exercise 4 validates a relevant comment, scaled square frame, and two internal division lines');
 
 assert.match(html, /"title": "תרגול 5 — סמלי מפה באזורים"/, 'lesson 11 makes points-of-interest exercise 5 place map symbols in divided areas');
-assert.match(html, /המשיכו מהמפה המחולקת שבניתם[\s\S]*ריבוע קטן[\s\S]*משולש קטן/, 'lesson 11 exercise 5 connects square and triangle symbols to the divided neighborhood map');
-assert.match(html, /"title": "תרגול 6 — דיבאג רחובות עם אורך"[\s\S]*כל הרחובות צריכים להשתמש באורך/, 'lesson 11 exercise 6 title and prompt match street-only starter code');
+assert.match(html, /המשיכו מהמפה המחולקת[\s\S]*ריבוע קטן לבית[\s\S]*משולש קטן לפארק/, 'lesson 11 exercise 5 connects square and triangle symbols to the divided neighborhood map with concise wording');
+assert.match(html, /"title": "תרגול 6 — דיבאג רחובות עם אורך"[\s\S]*שני באגים[\s\S]*רחוב צדדי שצויר עבה מדי[\s\S]*רחוב צדדי שיצא אלכסוני/, 'lesson 11 exercise 6 prompt clearly states the two street-debug bugs');
 assert.match(html, /if\(currentLesson === 11\)\{[\s\S]*ex\.id === 5[\s\S]*actionDrawnColors\(actions\)\.size < 2[\s\S]*ex\.id === 6[\s\S]*forwardVarCount\(actions\) < 3/, 'lesson 11 validators match renumbered points and debug exercises');
 assert.match(html, /שכונה מחולקת לפי אורך[\s\S]*length[\s\S]*forward\(length\)/, 'lesson 11 exercise 4 hint explains the Hebrew task wording and Python length code');
 assert.match(html, /function hasScaledMapDebugFix\(actions\)/, 'lesson 11 has a helper for the broken scale-map debug task');
-assert.match(html, /currentLesson === 11 && ex\?\.id === 6[\s\S]*<field name="TEXT">מעבר לרחוב צדדי<\/field>[\s\S]*<field name="TEXT">רחוב צדדי<\/field>[\s\S]*<block type="py_forward"><field name="STEPS">35<\/field>/, 'lesson 11 exercise 6 starter labels the fixed-number side street bug as a street');
-assert.match(html, /if\(currentLesson === 11\)\{[\s\S]*ex\.id === 6[\s\S]*forwardVarCount\(actions\) < 3[\s\S]*penUpMoveCount\(actions\) < 1/, 'lesson 11 exercise 6 validates scaled streets and a clean pen-up transition');
+assert.match(html, /currentLesson === 11 && ex\?\.id === 6[\s\S]*<field name="TEXT">רחוב ראשי עבה<\/field>[\s\S]*<field name="TEXT">באג: רחוב צדדי עבה מדי<\/field>[\s\S]*<field name="TEXT">באג: רחוב צדדי אלכסוני<\/field>/, 'lesson 11 exercise 6 starter is short and clearly labels the two bugs');
+assert.match(html, /if\(currentLesson === 11\)\{[\s\S]*ex\.id === 6[\s\S]*forwardVarCount\(actions\) < 3[\s\S]*thickSideCommentIndex[\s\S]*הרחוב הצדדי הראשון עדיין עבה מדי[\s\S]*רחוב צדדי אלכסוני/, 'lesson 11 exercise 6 validates the specifically marked thick side street and straight side streets');
+assert.match(html, /לפני הרחוב הצדדי העבה מדי שנו את עובי העט[\s\S]*שנו את זווית הפנייה/, 'lesson 11 exercise 6 instructions explain how to fix the width and diagonal bugs');
 assert.match(html, /function hasAdvancedDocumentedMap\(actions\)/, 'lesson 11 has an advanced documented-map validator');
-assert.match(html, /"title": "אתגר — מפה מתקדמת עם מקרא"[\s\S]*אתגר: בנו מפה מתקדמת/, 'lesson 11 exercise 7 is marked as a challenge');
-assert.match(html, /"title": "אתגר — עיר קטנה מתועדת"[\s\S]*5 חלקים מתועדים[\s\S]*4 צבעים שונים[\s\S]*3 מעברים בלי ציור/, 'lesson 11 final challenge is a long structured classroom task');
+assert.match(html, /"title": "תרגול 7 — מפה מסכמת עם מקרא"[\s\S]*בנו מפה מסכמת בבלוקים/, 'lesson 11 exercise 7 is now a required summary block-building exercise');
+assert.match(html, /"title": "אתגר רשות — כותבים Python קצר למפת רחובות"[\s\S]*אתגר רשות למי שסיים[\s\S]*length[\s\S]*שינוי צבע או עובי עט/, 'lesson 11 exercise 8 is now an optional short Python writing challenge, distinct from the required block-building exercise');
+assert.match(html, /currentLesson === 11 && ex\?\.id === 8[\s\S]*אתגר רשות[\s\S]*return true/, 'lesson 11 optional Python challenge does not block Continue');
+assert.match(html, /currentLesson === 11 && ex\?\.id === 8[\s\S]*return 5/, 'lesson 11 Python writing challenge expects a short multi-line answer');
+assert.match(html, /currentLesson === 11 && ex\?\.id === 8[\s\S]*pensize\(8\)[\s\S]*forward\(length\)/, 'lesson 11 Python writing challenge provides a map-street placeholder');
+assert.match(html, /currentLesson === 11 && ex\?\.id === 8[\s\S]*length = מספר[\s\S]*forward\(length\)[\s\S]*פנייה של 90 מעלות[\s\S]*שינוי צבע או עובי עט/, 'lesson 11 Python writing challenge validates length, a straight turn, and styling');
 
 assert.doesNotMatch(html, /if\(!exercisePassed\) completedSet\(\)\.delete\(index\)/, 'completed exercises stay unlocked after revisiting selection exercises');
 assert.match(html, /const alreadyCompleted = completedSet\(\)\.has\(currentExerciseIndex\);[\s\S]*const canContinue = alreadyCompleted \|\|/, 'completed exercises keep Continue unlocked when revisited');
