@@ -2975,7 +2975,7 @@
             "הוסיפו חלונות קטנים בלולאה בתוך הקרונות.",
             "שדרגו צבעים ועובי כדי שהרכבת תהיה ברורה.",
             "תקנו רכבת עם באגים: גלגל חסר, חלון מחוץ לקרון או חיבור לא מכוון.",
-            "הוסיפו מסילה מתחת לרכבת.",
+            "לחצו לציור רכבת קודמת, ואז ציירו מתחתיה מסילה.",
             "אתגר רשות: רכבת ארוכה או תחנה קטנה.",
             "אתגר רשות: כתבו Python קצר לציור גלגל או חלון."
         ],
@@ -3039,13 +3039,13 @@
                 "minutes": "64–76",
                 "title": "דיבאג רכבת",
                 "teacher": "נותנים קוד כמעט נכון ומבקשים לתקן בלי למחוק הכל.",
-                "students": "מתקנים גלגל חסר, חלון לא במקום או קו חיבור לא מכוון."
+                "students": "מתקנים גלגל חסר, חלון לא במקום."
             },
             {
                 "minutes": "76–84",
                 "title": "מסילה ואתגרי רשות",
-                "teacher": "פותחים אתגר מסילה ורכבת ארוכה/תחנה למי שסיים מהר.",
-                "students": "מוסיפים מסילה או פרט יצירתי קטן."
+                "teacher": "בתרגיל 7 מציירים רכבת מוכנה בכפתור, ואז התלמידים מוסיפים מסילה בבלוקים.",
+                "students": "מוסיפים שני פסי מסילה וקורות קצרות בלולאה."
             },
             {
                 "minutes": "84–90",
@@ -3104,19 +3104,19 @@
                 "id": 6,
                 "minutes": "64–74",
                 "title": "תרגול 6 — דיבאג רכבת",
-                "prompt": "תקנו את הקוד ההתחלתי: חסר גלגל אחד, חלון אחד מחוץ לקרון, ויש קו חיבור ארוך מדי. תקנו בלי למחוק את כל הרכבת.",
-                "hint": "עבדו לפי רשימה: קודם גלגל חסר, אחר כך מיקום חלון, ואז קו החיבור. בכל פעם תקנו דבר אחד והריצו שוב.",
-                "check": "ברכבת המתוקנת יש שני גלגלים לפחות, חלונות בתוך הקרונות, וחיבורים קצרים ומכוונים.",
-                "commonMistake": "מוחקים את כל הקוד במקום לתקן את שלושת הבאגים הקטנים."
+                "prompt": "תקנו את הקוד ההתחלתי: חסר גלגל אחד, וחלון אחד קרוב אבל מחוץ לקרון. תקנו בלי למחוק את כל הרכבת.",
+                "hint": "עבדו לפי רשימה: קודם הוסיפו גלגל חסר, אחר כך הזיזו את החלון לתוך הקרון. בכל פעם תקנו דבר אחד והריצו שוב.",
+                "check": "ברכבת המתוקנת יש שני גלגלים לפחות, והחלון נמצא בתוך הקרון.",
+                "commonMistake": "מוחקים את כל הקוד במקום לתקן את שני הבאגים הקטנים."
             },
             {
                 "id": 7,
                 "minutes": "74–80",
-                "title": "תרגול 7 — מסילה מתחת לרכבת",
-                "prompt": "הוסיפו מתחת לרכבת מסילה: שני קווים ארוכים או קו עם קורות קצרות שחוזרות בלולאה.",
-                "hint": "עברו למטה בלי לצייר. אפשר לצייר קו ארוך, ואז בלולאה קורות קצרות לרוחב המסילה.",
-                "check": "יש מסילה ברורה מתחת לרכבת, והיא לא חוצה את הקרונות.",
-                "commonMistake": "מתחילים את המסילה במקום הלא נכון והיא עוברת דרך הרכבת."
+                "title": "תרגול 7 — רכבת על מסילה",
+                "prompt": "ציירו מסילה עם שני פסים וקורות קצרות בלולאה. אפשר ללחוץ על \"צייר לי רכבת\" כדי לראות אותה מעל המסילה.",
+                "hint": "קודם שני פסים ארוכים. אחר כך קורות קצרות בלולאה. הכפתור הוא רק לתצוגה.",
+                "check": "יש מסילה ברורה עם לולאה של קורות קצרות.",
+                "commonMistake": "מציירים מסילה רחוקה מדי מהרכבת או בלי קורות חוזרות."
             },
             {
                 "id": 8,
@@ -3185,7 +3185,7 @@
         "aiHelper": [
             "תן/י רמז לציור קרון רכבת שלם בלי לפתור במקום התלמיד/ה.",
             "הסבר/י לילד/ה בכיתה ה׳ מה ההבדל בין קו חיבור מכוון לבין קו מעבר מיותר.",
-            "עזור/עזרי למצוא באג ברכבת: גלגל חסר, חלון מחוץ לקרון או קו חיבור ארוך מדי."
+            "עזור/עזרי למצוא באג ברכבת: גלגל חסר או חלון מחוץ לקרון."
         ]
     },
     {
@@ -7888,8 +7888,10 @@
     const lesson13CumulativeXml = {};
     const lesson13CumulativeActions = {};
     const lesson13BaseImageData = {};
+    const lesson13TrainBaseClicked = {};
     let lesson13ShowingPreviousBlocks = false;
     const PROGRESS_KEY = 'python-turtle-progress-v2';
+    const REVIEW_UNLOCK = new URLSearchParams(location.search).get('unlock') === '1';
     // שיעור 10: שכבת רמזים מבודדת וקלה לביטול. אם נרצה לחזור אחורה — משנים ל־false או מוחקים את הבלוק הזה ואת קריאת lesson10SecretRevealHtml.
     const DEBUG_ESCAPE_REVEALS_ENABLED = true;
     const LESSON10_SECRET_REVEALS = {
@@ -8161,6 +8163,7 @@
         updateTurtle();
         await sleep(120);
       }
+      if(token === runToken && currentLesson === 13 && currentExercises()[currentExerciseIndex]?.id === 7 && lesson13TrainBaseClicked[lesson13CumulativeKey()]) drawLesson13TrainBaseForRails(false);
       if(token === runToken) statusEl.innerHTML='<span class="ok">הציור מוכן!</span>';
       document.getElementById('runBtn').disabled = false;
       document.getElementById('checkExerciseBtn')?.removeAttribute('disabled');
@@ -8213,7 +8216,7 @@
       return out;
     }
     function saveProgress(){
-      if(restoringProgress) return;
+      if(restoringProgress || REVIEW_UNLOCK) return;
       try{
         const xml = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace));
         localStorage.setItem(PROGRESS_KEY, JSON.stringify({
@@ -8581,6 +8584,47 @@
       statusEl.textContent = 'הרכבת הקודמת מוכנה — הוסיפו רק את החלק החדש';
       return true;
     }
+    function drawLesson13TrainBaseForRails(clearCanvas=true){
+      if(currentLesson !== 13) return false;
+      if(clearCanvas) resetDrawing(true);
+      else syncCanvasSize(false);
+      const start = initialTurtlePosition();
+      const y = start.y - 58;
+      const bodyW = 70;
+      const bodyH = 40;
+      const gap = 82;
+      const trainW = 78 + (gap * 2) + bodyW;
+      const carriageStartX = Math.max(8, (canvas.width - trainW) / 2 + 78);
+      ctx.save();
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = '#2563eb';
+      ctx.lineWidth = 3;
+      for(let i=0;i<3;i++){
+        const x = carriageStartX + i * gap;
+        ctx.strokeRect(x, y, bodyW, bodyH);
+        ctx.lineWidth = 12;
+        ctx.beginPath(); ctx.moveTo(x + 14, y + bodyH); ctx.lineTo(x + 17, y + bodyH); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x + 52, y + bodyH); ctx.lineTo(x + 55, y + bodyH); ctx.stroke();
+        ctx.lineWidth = 3;
+        ctx.strokeRect(x + 22, y + 10, 16, 14);
+        if(i < 2){ ctx.beginPath(); ctx.moveTo(x + bodyW, y + bodyH - 10); ctx.lineTo(x + gap, y + bodyH - 10); ctx.stroke(); }
+      }
+      const engineX = carriageStartX - 78;
+      ctx.strokeRect(engineX, y + 5, 64, 35);
+      ctx.strokeRect(engineX + 8, y - 16, 16, 21);
+      ctx.lineWidth = 12;
+      ctx.beginPath(); ctx.moveTo(engineX + 12, y + 40); ctx.lineTo(engineX + 15, y + 40); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(engineX + 45, y + 40); ctx.lineTo(engineX + 48, y + 40); ctx.stroke();
+      ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(engineX + 64, y + 30); ctx.lineTo(carriageStartX, y + 30); ctx.stroke();
+      ctx.restore();
+      try{ lesson13BaseImageData[lesson13CumulativeKey()] = ctx.getImageData(0, 0, canvas.width, canvas.height); } catch {}
+      lesson13TrainBaseClicked[lesson13CumulativeKey()] = true;
+      turtle={x:start.x,y:start.y,heading:0,pen:true,color:'#2563eb',width:4};
+      updateTurtle();
+      statusEl.textContent = 'הרכבת הופיעה מעל המסילה';
+      return true;
+    }
     function restoreLesson13ReadyBase(index=currentExerciseIndex){
       const base = lesson13BaseImageData[lesson13CumulativeKey(index)];
       if(!base) return false;
@@ -8604,7 +8648,7 @@
     }
     function shouldUseCumulativeReadyBase(index=currentExerciseIndex){
       if(isLesson12CumulativeExercise(index) && !lesson12ShowingPreviousBlocks && !!lesson12BaseImageData[lesson12CumulativeKey(index)]) return true;
-      if(isLesson13CumulativeExercise(index) && !lesson13ShowingPreviousBlocks && !!lesson13BaseImageData[lesson13CumulativeKey(index)]) return true;
+      if(isLesson13CumulativeExercise(index) && currentExercises()[index]?.id !== 7 && !lesson13ShowingPreviousBlocks && !!lesson13BaseImageData[lesson13CumulativeKey(index)]) return true;
       return false;
     }
     function restoreCumulativeReadyBase(index=currentExerciseIndex){
@@ -8693,17 +8737,24 @@
     function completedSet(){
       return completedExercises[currentLesson] || new Set();
     }
+    function applyReviewUnlockForCurrentLesson(){
+      if(!REVIEW_UNLOCK) return;
+      if(!completedExercises[currentLesson]) completedExercises[currentLesson] = new Set();
+      currentExercises().forEach((_, index)=>completedExercises[currentLesson].add(index));
+    }
     function renderExerciseNav(){
       const sideNote = document.getElementById('lessonSideNote');
       if(!sideNote) return;
       const l = currentLessonData();
+      applyReviewUnlockForCurrentLesson();
       const exercises = currentExercises();
       const done = completedSet();
       const buttons = exercises.map((ex, index)=>{
-        const allowed = index === currentExerciseIndex || done.has(index) || (index > 0 && done.has(index - 1));
+        const allowed = REVIEW_UNLOCK || index === currentExerciseIndex || done.has(index) || (index > 0 && done.has(index - 1));
         return `<button type="button" data-exercise="${index}" ${allowed ? '' : 'disabled'} class="${index === currentExerciseIndex ? 'active' : ''}">${exerciseLabel(index)}${done.has(index) ? ' ✓' : ''}</button>`;
       }).join('');
-      sideNote.innerHTML = `<a class="teacher-slide-btn" href="python-turtle-lesson-${l.id}-slides.html">📽️ מצגת מדריך לשיעור ${l.id}</a><b>בשיעור הזה:</b><br>מושג מרכזי: ${escapeHtml(l.concept)}<br>תוצר: ${escapeHtml(l.product || 'ציור עובד')}<div class="exercise-progress">בחרו תרגיל:</div><div class="exercise-nav">${buttons}</div>`;
+      const reviewUnlockNote = REVIEW_UNLOCK ? '<div class="secret-reveal"><small><b>מצב בדיקה זמני:</b> כל התרגילים פתוחים בקישור הזה בלבד.</small></div>' : '';
+      sideNote.innerHTML = `<a class="teacher-slide-btn" href="python-turtle-lesson-${l.id}-slides.html">📽️ מצגת מדריך לשיעור ${l.id}</a><b>בשיעור הזה:</b><br>מושג מרכזי: ${escapeHtml(l.concept)}<br>תוצר: ${escapeHtml(l.product || 'ציור עובד')}${reviewUnlockNote}<div class="exercise-progress">בחרו תרגיל:</div><div class="exercise-nav">${buttons}</div>`;
       sideNote.querySelectorAll('[data-exercise]').forEach(btn=>btn.addEventListener('click',()=>{
         const index = Number(btn.dataset.exercise);
         if(btn.disabled) return;
@@ -8737,7 +8788,7 @@
       if(currentLesson === 11 && ex?.id === 3) return '<xml><block type="py_python" x="20" y="20"></block></xml>';
       if(currentLesson === 11 && ex?.id === 8) return '<xml><block type="py_python" x="20" y="20"></block></xml>';
       if(currentLesson === 11 && ex?.id === 6) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_comment"><field name="TEXT">רחוב ראשי עבה</field><next><block type="py_set_length"><field name="VALUE">55</field><next><block type="py_width"><field name="WIDTH">9</field><next><block type="py_color"><field name="COLOR">#2563eb</field><next><block type="py_forward_length"><next><block type="py_forward_length"><next><block type="py_comment"><field name="TEXT">באג: רחוב צדדי עבה מדי</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_color"><field name="COLOR">#16a34a</field><next><block type="py_forward_length"><next><block type="py_comment"><field name="TEXT">באג: רחוב צדדי אלכסוני</field><next><block type="py_left"><field name="ANGLE">100</field><next><block type="py_width"><field name="WIDTH">3</field><next><block type="py_color"><field name="COLOR">#7c3aed</field><next><block type="py_forward_length"></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
-      if(currentLesson === 13 && ex?.id === 6) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_comment"><field name="TEXT">באג: קרון עם גלגל חסר וחיבור ארוך</field><next><block type="py_color"><field name="COLOR">#2563eb</field><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">55</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_width"><field name="WIDTH">14</field><next><block type="py_forward"><field name="STEPS">3</field><next><block type="py_width"><field name="WIDTH">3</field><next><block type="py_penup"><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">80</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_pendown"><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">20</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_forward"><field name="STEPS">95</field></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
+      if(currentLesson === 13 && ex?.id === 6) return '<xml><block type="py_python"><next><block type="py_comment"><field name="TEXT">באגים: קרון מלבני, גלגל חסר וחלון קרוב בחוץ</field><next><block type="py_color"><field name="COLOR">#2563eb</field><next><block type="py_width"><field name="WIDTH">3</field><next><block type="py_forward"><field name="STEPS">90</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">45</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">90</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">45</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_comment"><field name="TEXT">באג: יש רק גלגל אחד על הקו התחתון</field><next><block type="py_penup"><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">45</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_pendown"><next><block type="py_width"><field name="WIDTH">14</field><next><block type="py_forward"><field name="STEPS">3</field><next><block type="py_width"><field name="WIDTH">3</field><next><block type="py_comment"><field name="TEXT">באג: החלון קרוב אבל מחוץ לקרון</field><next><block type="py_penup"><next><block type="py_forward"><field name="STEPS">28</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">12</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_pendown"><next><block type="py_forward"><field name="STEPS">20</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">20</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">20</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">20</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
       if(currentLesson === 12 && ex?.id === 6) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_comment"><field name="TEXT">באג: הבית בצבע הכביש</field><next><block type="py_penup"><next><block type="py_left"><field name="ANGLE">180</field><next><block type="py_forward"><field name="STEPS">90</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">70</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_pendown"><next><block type="py_color"><field name="COLOR">#111827</field><next><block type="py_width"><field name="WIDTH">3</field><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">45</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_comment"><field name="TEXT">גג לבית</field><next><block type="py_repeat"><field name="TIMES">3</field><statement name="DO"><block type="py_forward"><field name="STEPS">45</field><next><block type="py_left"><field name="ANGLE">120</field></block></next></block></statement><next><block type="py_comment"><field name="TEXT">כביש עבה וכהה</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_penup"><next><block type="py_forward"><field name="STEPS">90</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_pendown"><next><block type="py_color"><field name="COLOR">#111827</field><next><block type="py_width"><field name="WIDTH">10</field><next><block type="py_forward"><field name="STEPS">160</field><next><block type="py_comment"><field name="TEXT">באג: קווקווי הנתיב התחברו לקו רציף</field><next><block type="py_penup"><next><block type="py_left"><field name="ANGLE">180</field><next><block type="py_forward"><field name="STEPS">145</field><next><block type="py_left"><field name="ANGLE">180</field><next><block type="py_pendown"><next><block type="py_color"><field name="COLOR">#facc15</field><next><block type="py_width"><field name="WIDTH">3</field><next><block type="py_repeat"><field name="TIMES">5</field><statement name="DO"><block type="py_forward"><field name="STEPS">16</field><next><block type="py_forward"><field name="STEPS">12</field></block></next></block></statement><next><block type="py_comment"><field name="TEXT">באג: חסר ירוק ברמזור</field><next><block type="py_penup"><next><block type="py_forward"><field name="STEPS">20</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">35</field><next><block type="py_pendown"><next><block type="py_color"><field name="COLOR">#111827</field><next><block type="py_width"><field name="WIDTH">5</field><next><block type="py_forward"><field name="STEPS">45</field><next><block type="py_penup"><next><block type="py_forward"><field name="STEPS">10</field><next><block type="py_pendown"><next><block type="py_color"><field name="COLOR">#ef4444</field><next><block type="py_width"><field name="WIDTH">14</field><next><block type="py_forward"><field name="STEPS">1</field><next><block type="py_penup"><next><block type="py_forward"><field name="STEPS">18</field><next><block type="py_pendown"><next><block type="py_color"><field name="COLOR">#facc15</field><next><block type="py_forward"><field name="STEPS">1</field><next><block type="py_penup"><next><block type="py_forward"><field name="STEPS">18</field><next><block type="py_pendown"><next><block type="py_color"><field name="COLOR">#ef4444</field><next><block type="py_forward"><field name="STEPS">1</field><next><block type="py_penup"><next><block type="py_forward"><field name="STEPS">26</field></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
       if(currentLesson === 5 && ex?.id === 5) return '<xml><block type="py_python" x="20" y="20" movable="false" editable="false" deletable="false"><next><block type="py_forward" movable="false" editable="false" deletable="false"><field name="STEPS">70</field><next><block type="py_penup" movable="false" editable="false" deletable="false"><next><block type="py_forward" movable="false" editable="false" deletable="false"><field name="STEPS">100</field><next><block type="py_pendown" movable="false" editable="false" deletable="false"><next><block type="py_forward" movable="false" editable="false" deletable="false"><field name="STEPS">70</field></block></next></block></next></block></next></block></next></block></next></block></xml>';
       if(currentLesson === 5 && ex?.id === 6) return '<xml><block type="py_python" x="20" y="20"></block></xml>';
@@ -8788,7 +8839,13 @@
           setTimeout(()=>lesson12DrawReadyBase(index), 0);
         } else if(isLesson13CumulativeExercise(index)){
           lesson13LoadCurrentOnlyWorkspace(index);
-          setTimeout(()=>lesson13DrawReadyBase(index), 0);
+          if(targetEx?.id === 7){
+            delete lesson13BaseImageData[lesson13CumulativeKey(index)];
+            delete lesson13TrainBaseClicked[lesson13CumulativeKey(index)];
+            resetDrawing(true);
+          } else {
+            setTimeout(()=>lesson13DrawReadyBase(index), 0);
+          }
         } else {
           const lesson9Exercise4ContinuesFrom3 = currentLesson === 9 && targetEx?.id === 4;
           const lesson9Exercise3Index = currentExercises().findIndex(ex=>ex?.id === 3);
@@ -8916,7 +8973,7 @@
       const hasEntryReset = needsEntryReset(ex) && !!exerciseStartXml[baselineKey()];
       const resetButton = (!isRunOnlyExampleExercise(ex) && (hasGeneratedStarter || hasEntryReset)) ? '<button class="btn reset" id="resetExerciseBtn">🔄 החזר לקוד תחילת התרגיל</button>' : '';
       const alreadyCompleted = completedSet().has(currentExerciseIndex);
-      const canContinue = alreadyCompleted || (isSelectionOnly ? !!selectionExerciseUnlocked[selectionUnlockKey()] : (isRunOnlyExampleExercise(ex) ? !!runOnlyExampleStarted[selectionUnlockKey()] : (requiresCheckedContinue(ex) ? exercisePassed : (isTip || isChallengeExercise(ex) || isOptionalChallengeExercise(ex)))));
+      const canContinue = REVIEW_UNLOCK || alreadyCompleted || (isSelectionOnly ? !!selectionExerciseUnlocked[selectionUnlockKey()] : (isRunOnlyExampleExercise(ex) ? !!runOnlyExampleStarted[selectionUnlockKey()] : (requiresCheckedContinue(ex) ? exercisePassed : (isTip || isChallengeExercise(ex) || isOptionalChallengeExercise(ex)))));
       const feedbackBelowButtons = true;
       const nextLessonId = nextLessonAfter(currentLesson);
       const nextButtonLabel = isLesson10FinalExercise() ? 'לכספת הסודית' : (isLast ? (nextLessonId ? 'סיימתי — לשיעור הבא' : 'סיימתי את הקורס') : 'המשך');
@@ -8938,7 +8995,10 @@
       const lesson10IntroHtml = currentLesson === 10 ? '<p class="muted"><b>קוד סודי לכספת:</b> אחרי כל תיקון נכון רשמו את המספר והמילה שמופיעים על מסך הציור.</p><details class="muted" style="margin:7px 0;"><summary style="cursor:pointer;font-weight:900;">מה זה דיבאג?</summary><p style="margin:6px 0 0;">דיבאג פירושו למצוא טעות בבלוקים או בקוד ולתקן אותה. בסוף המילים שרשמתם ירכיבו כלל דיבאג.</p></details>' : '';
       const lesson11IntroHtml = currentLesson === 11 ? '<details class="muted" style="margin:7px 0;"><summary style="cursor:pointer;font-weight:900;">מה זו הערת קוד?</summary><p style="margin:6px 0 0;">הערה היא פתק למתכנת/ת: היא מסבירה את הקוד, אבל לא מזיזה את הצב ולא מציירת. ההערה לא נראית בציור — היא מופיעה רק בקוד Python כשורת #.</p></details>' : '';
       const lesson12CumulativeHtml = isLesson12CumulativeExercise() ? `<div class="secret-reveal"><small><b>ממשיכים מהציור הקודם:</b> הציור שכבר הצליח נשאר על המסך, ובאזור הבלוקים עובדים רק על התוספת של התרגיל הזה.</small><button class="btn reset" id="lesson12ShowAllBlocksBtn" type="button" style="margin-top:8px;">${lesson12ShowingPreviousBlocks ? 'הצג רק את בלוקי התרגיל הנוכחי' : 'הצג גם בלוקים קודמים'}</button></div>` : '';
-      const lesson13CumulativeHtml = isLesson13CumulativeExercise() ? `<div class="secret-reveal"><small><b>ממשיכים מהרכבת הקודמת:</b> הרכבת שכבר הצליחה נשארת על המסך. עכשיו בונים רק את התוספת החדשה. אם רוצים לראות או לערוך את הבלוקים הקודמים — פתחו את “בלוקים קודמים של הרכבת”.</small><button class="btn reset" id="lesson13ShowAllBlocksBtn" type="button" style="margin-top:8px;">${lesson13ShowingPreviousBlocks ? '▾ הסתר בלוקים קודמים של הרכבת' : '▸ בלוקים קודמים של הרכבת'}</button></div>` : '';
+      const lesson13CumulativeHtml = isLesson13CumulativeExercise() ? (currentLesson === 13 && ex?.id === 7
+        ? `<div class="secret-reveal"><small><b>רכבת מוכנה:</b> הכפתור רק מציג רכבת מעל המסילה. כדי לעבור צריך לבנות מסילה עם לולאה.</small><button class="btn reset" id="lesson13DrawTrainBaseBtn" type="button" style="margin-top:8px;">🚂 צייר לי רכבת</button></div>`
+        : `<div class="secret-reveal"><small><b>ממשיכים מהרכבת הקודמת:</b> הרכבת שכבר הצליחה נשארת על המסך. עכשיו בונים רק את התוספת החדשה. אם רוצים לראות או לערוך את הבלוקים הקודמים — פתחו את “בלוקים קודמים של הרכבת”. <b>שימו לב:</b> כשפותחים בלוקים קודמים ומריצים הכול יחד, הצב ממשיך מסוף הציור הקודם — לכן צריך לתכנן את התוספת מהמקום שבו הצב נעצר.</small><button class="btn reset" id="lesson13ShowAllBlocksBtn" type="button" style="margin-top:8px;">${lesson13ShowingPreviousBlocks ? '▾ הסתר בלוקים קודמים של הרכבת' : '▸ בלוקים קודמים של הרכבת'}</button></div>`
+      ) : '';
       const secretRevealHtml = lesson10SecretRevealHtml(ex);
       updateLesson10CanvasSecret(ex);
       missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div>${lesson10IntroHtml}${lesson11IntroHtml}${lesson12CumulativeHtml}${lesson13CumulativeHtml}<p><b>${escapeHtml(ex.prompt || '')}</b></p>${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p>${(isChallengeExercise(ex) || isRunOnlyExampleExercise(ex)) ? '' : `<p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}`}${writingHtml}<div class="exercise-bottom"><div class="exercise-controls">${(isTip || isChallengeExercise(ex) || isSelectionOnly || isRunOnlyExampleExercise(ex)) ? '' : '<button class="btn run" id="checkExerciseBtn">✅ בדוק תרגיל</button>'}${resetButton}<button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${nextButtonLabel}</button></div>${feedbackBelowButtons ? '<br>' : feedbackHtml}</div>${feedbackBelowButtons ? feedbackHtml : ''}${secretRevealHtml}</div>`;
@@ -8971,6 +9031,29 @@
           : 'עדיין אין בלוקים קודמים שמורים לתרגיל הזה. אם עבדתם בגרסה ישנה לפני התיקון, ייתכן שהם לא נשמרו. מכאן והלאה נשמר גם גיבוי בטיחותי לבלוקים.';
         renderCurrentExercise(lesson12ToggleMessage, lesson12ShowingPreviousBlocks);
       });
+      const drawTrainBaseBtn = document.getElementById('lesson13DrawTrainBaseBtn');
+      if(drawTrainBaseBtn) drawTrainBaseBtn.addEventListener('click',()=>{
+        const snapshot = createCodeSnapshot();
+        const hasDrawing = snapshot.actions.some(a=>a.cmd === 'forward' || a.cmd === 'forwardVar');
+        const hasRepeat = snapshot.blockTypes.includes('py_repeat');
+        drawLesson13TrainBaseForRails(false);
+        if(hasDrawing && hasRepeat){
+          exercisePassed = true;
+          completedSet().add(currentExerciseIndex);
+          rememberLesson13Success(currentExerciseIndex, currentWorkspaceXml(), snapshot);
+          setExerciseFeedback('מעולה — המסילה והרכבת מוכנות. אפשר להמשיך.', true);
+          const nextBtn = document.getElementById('nextExerciseBtn');
+          if(nextBtn) nextBtn.disabled = false;
+          renderExerciseNav();
+          saveProgress();
+        } else {
+          exercisePassed = false;
+          const message = hasDrawing
+            ? 'הרכבת הופיעה — כדי להשלים צריך להוסיף לולאת חזור במסילה.'
+            : 'הרכבת הופיעה — עכשיו ציירו מסילה עם לולאת חזור.';
+          setExerciseFeedback(message, false);
+        }
+      });
       const showAllLesson13BlocksBtn = document.getElementById('lesson13ShowAllBlocksBtn');
       if(showAllLesson13BlocksBtn) showAllLesson13BlocksBtn.addEventListener('click',()=>{
         if(lesson13ShowingPreviousBlocks){
@@ -8999,6 +9082,14 @@
       document.getElementById('nextExerciseBtn').addEventListener('click', nextExercise);
       renderExerciseNav();
       saveProgress();
+    }
+    function setExerciseFeedback(message, ok=false){
+      const feedback = missionEl.querySelector('.exercise-feedback');
+      if(!feedback) return false;
+      feedback.textContent = message;
+      feedback.classList.toggle('ok', !!ok);
+      feedback.classList.toggle('warn', !ok);
+      return true;
     }
     function hasBlock(type){
       if(activeValidationSnapshot) return activeValidationSnapshot.blockTypes.includes(type);
@@ -9472,6 +9563,12 @@
     }
     function hasShortTrainConnectors(actions){
       return drawnSegments(actions).some(s=>s.width <= 5 && s.length >= 6 && s.length <= 35);
+    }
+    function hasRailDrawing(actions){
+      const segments = drawnSegments(actions);
+      const longRails = segments.filter(s=>s.width <= 7 && s.length >= 70).length;
+      const shortSleepers = segments.filter(s=>s.width <= 7 && s.length >= 5 && s.length <= 35).length;
+      return longRails >= 2 || (longRails >= 1 && hasBlock('py_repeat') && shortSleepers >= 3);
     }
 
     function actionDrawsStyledSquare(actions){
@@ -10060,15 +10157,13 @@
         }
         if(ex.id === 6){
           if(trainWheelCount(actions) < 2) return ['כמעט — חסר גלגל: ודאו שיש לפחות שני גלגלים עבים.'];
-          if(drawnSegments(actions).some(s=>s.width <= 5 && s.length > 80)) return ['כמעט — יש קו חיבור ארוך מדי. קו חיבור בין קרונות צריך להיות קצר ומכוון.'];
           if(drawnSegments(actions).filter(s=>s.width <= 5 && s.length >= 8 && s.length <= 35).length < 4) return ['כמעט — ודאו שהחלונות קטנים ונמצאים בתוך הקרונות.'];
           return [];
         }
         if(ex.id === 7){
-          if(needsNewAddition && cleanTransitionCount(currentActions) < 1) return ['כמעט — בתרגיל הזה צריך להוסיף מסילה חדשה: עברו למטה בלי לצייר ואז ציירו מסילה.'];
-          if(cleanTransitionCount(actions) < 1) return ['כמעט — עברו למטה בלי לצייר לפני שמוסיפים מסילה.'];
-          if(needsNewAddition && drawnSegments(currentActions).filter(s=>s.length >= 80).length < 1) return ['כמעט — בתרגיל הזה צריך לצייר קו מסילה ארוך חדש, לא רק להריץ את הרכבת הקודמת.'];
-          if(drawnSegments(actions).filter(s=>s.length >= 80).length < 1) return ['כמעט — המסילה צריכה לכלול לפחות קו ארוך וברור מתחת לרכבת.'];
+          if(needsNewAddition && !hasRailDrawing(currentActions)) return ['כמעט — ציירו מסילה: שני פסים ארוכים, או פס ארוך עם קורות קצרות בלולאה.'];
+          if(!hasRailDrawing(actions)) return ['כמעט — ציירו מסילה: שני פסים ארוכים, או פס ארוך עם קורות קצרות בלולאה.'];
+          if(!hasBlock('py_repeat')) return ['כמעט — הוסיפו קורות קצרות למסילה בעזרת לולאה.'];
           return [];
         }
       }
@@ -10532,9 +10627,9 @@
     }
     function nextExercise(){
       const leavingEx = currentExercises()[currentExerciseIndex];
-      if(isRunOnlyExampleExercise(leavingEx) && !runOnlyExampleStarted[selectionUnlockKey()]) return;
-      if(isSelectionOnlyExercise(leavingEx) && !selectionExerciseUnlocked[selectionUnlockKey()]) return;
-      if(requiresCheckedContinue(leavingEx) && !exercisePassed) return;
+      if(!REVIEW_UNLOCK && isRunOnlyExampleExercise(leavingEx) && !runOnlyExampleStarted[selectionUnlockKey()]) return;
+      if(!REVIEW_UNLOCK && isSelectionOnlyExercise(leavingEx) && !selectionExerciseUnlocked[selectionUnlockKey()]) return;
+      if(!REVIEW_UNLOCK && requiresCheckedContinue(leavingEx) && !exercisePassed) return;
       if(isTipExercise(leavingEx) || isChallengeExercise(leavingEx) || isOptionalChallengeExercise(leavingEx)) completedSet().add(currentExerciseIndex);
       const exercises = currentExercises();
       if(currentExerciseIndex < exercises.length - 1){
@@ -10579,8 +10674,10 @@
       if(sideTitle) sideTitle.textContent = `${l.id}. ${l.title}`;
       if(sideIntro) sideIntro.textContent = l.goal;
       if(!completedExercises[id]) completedExercises[id] = new Set();
-      currentExerciseIndex = 0;
-      exercisePassed = false;
+      applyReviewUnlockForCurrentLesson();
+      const requestedExerciseIndex = requestedExerciseIndexFromUrl();
+      currentExerciseIndex = requestedExerciseIndex ?? 0;
+      exercisePassed = REVIEW_UNLOCK || false;
       renderCurrentExercise();
     }
     function loadDemo(){
@@ -10641,7 +10738,18 @@
     function updateLessonUrl(id){
       const url = new URL(window.location.href);
       url.searchParams.set('lesson', String(id));
+      if(!REVIEW_UNLOCK) url.searchParams.delete('exercise');
       window.history.replaceState({}, '', url);
+    }
+    function requestedExerciseIndexFromUrl(exercises=currentExercises()){
+      if(!REVIEW_UNLOCK) return null;
+      const params = new URLSearchParams(window.location.search);
+      const raw = Number(params.get('exercise') || params.get('ex'));
+      if(!Number.isFinite(raw)) return null;
+      const byId = exercises.findIndex(ex=>Number(ex?.id) === raw);
+      if(byId >= 0) return byId;
+      const byNumber = raw - 1;
+      return byNumber >= 0 && byNumber < exercises.length ? byNumber : null;
     }
     function startEmptyLesson(id, updateUrl=true){
       const exists = TURTLE_LESSONS.some(lesson=>lesson.id===id);
@@ -10789,7 +10897,7 @@
             completedSet().add(currentExerciseIndex);
           }
           const nextBtn = document.getElementById('nextExerciseBtn');
-          if(nextBtn) nextBtn.disabled = !isComplete;
+          if(nextBtn) nextBtn.disabled = REVIEW_UNLOCK ? false : !isComplete;
           const feedback = missionEl.querySelector('.exercise-feedback');
           if(feedback){
             const selectedNames = [...selectionExerciseSelections[key]].map(selectionOnlyLineName).join(' וגם ');
@@ -10814,7 +10922,22 @@
         const alreadyCompleted = completedSet().has(currentExerciseIndex);
         if(!alreadyCompleted){
           exercisePassed = false;
-          if(requiresCheckedContinue(ex)){
+          if(currentLesson === 13 && ex?.id === 7 && lesson13TrainBaseClicked[lesson13CumulativeKey()]){
+            const snapshot = createCodeSnapshot();
+            const railOk = snapshot.actions.some(a=>a.cmd === 'forward' || a.cmd === 'forwardVar') && snapshot.blockTypes.includes('py_repeat');
+            if(railOk){
+              exercisePassed = true;
+              completedSet().add(currentExerciseIndex);
+              rememberLesson13Success(currentExerciseIndex, currentWorkspaceXml(), snapshot);
+              const feedback = missionEl.querySelector('.exercise-feedback');
+              if(feedback){
+                feedback.textContent = 'מעולה — המסילה והרכבת מוכנות. אפשר להמשיך.';
+                feedback.classList.remove('warn');
+                feedback.classList.add('ok');
+              }
+            }
+          }
+          if(!exercisePassed && requiresCheckedContinue(ex)){
             const feedback = missionEl.querySelector('.exercise-feedback');
             if(feedback){
               feedback.textContent = 'שיניתם את הקוד — לחצו שוב על בדיקה כדי לבדוק את הגרסה החדשה.';
@@ -10833,7 +10956,7 @@
       if(nextBtn){
         const alreadyCompleted = completedSet().has(currentExerciseIndex);
         const stillCompleted = completedSet().has(currentExerciseIndex);
-        nextBtn.disabled = stillCompleted ? false : (isSelectionOnlyExercise(ex) ? !selectionExerciseUnlocked[selectionUnlockKey()] : (isRunOnlyExampleExercise(ex) ? !runOnlyExampleStarted[selectionUnlockKey()] : (requiresCheckedContinue(ex) ? !exercisePassed : !(isTipExercise(ex) || isChallengeExercise(ex) || isOptionalChallengeExercise(ex)))));
+        nextBtn.disabled = REVIEW_UNLOCK ? false : (stillCompleted ? false : (isSelectionOnlyExercise(ex) ? !selectionExerciseUnlocked[selectionUnlockKey()] : (isRunOnlyExampleExercise(ex) ? !runOnlyExampleStarted[selectionUnlockKey()] : (requiresCheckedContinue(ex) ? !exercisePassed : !(isTipExercise(ex) || isChallengeExercise(ex) || isOptionalChallengeExercise(ex))))));
       }
       saveProgress();
     });
@@ -10843,10 +10966,12 @@
       restoringProgress = true;
       if(saved){
         applyCompleted(saved);
-        const lessonId = TURTLE_LESSONS.some(lesson=>lesson.id===Number(saved.lesson)) ? Number(saved.lesson) : initialLessonFromUrl();
+        const requestedLessonId = initialLessonFromUrl();
+        const lessonId = REVIEW_UNLOCK ? requestedLessonId : (TURTLE_LESSONS.some(lesson=>lesson.id===Number(saved.lesson)) ? Number(saved.lesson) : requestedLessonId);
         setLesson(lessonId);
         const exercises = currentExercises();
-        currentExerciseIndex = Math.max(0, Math.min(Number(saved.exercise || 0), exercises.length - 1));
+        const requestedExerciseIndex = requestedExerciseIndexFromUrl(exercises);
+        currentExerciseIndex = REVIEW_UNLOCK ? (requestedExerciseIndex ?? 0) : Math.max(0, Math.min(Number(saved.exercise || 0), exercises.length - 1));
         exercisePassed = completedSet().has(currentExerciseIndex);
         if(saved.workspaceXml){
           workspace.clear();

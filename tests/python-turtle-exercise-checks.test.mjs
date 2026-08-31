@@ -74,7 +74,11 @@ assert.match(html, /let lastSelectedBlockId = null/, 'selection-only checks reme
 assert.match(html, /function isSelectionOnlyExercise\(ex\)/, 'lesson 3 for-highlight exercise is a selection-only step');
 assert.match(html, /isTip \|\| isChallengeExercise\(ex\) \|\| isSelectionOnly/, 'selection-only exercise and challenges have no check button');
 assert.doesNotMatch(html, /completedSet\(\)\.delete\(index\)/, 'selection-only revisits do not clear an exercise that was already unlocked');
-assert.match(html, /const canContinue = alreadyCompleted \|\| \(isSelectionOnly \? !!selectionExerciseUnlocked\[selectionUnlockKey\(\)\]/, 'selection-only exercise keeps continue unlocked after completion and also unlocks from an explicit saved unlock flag');
+assert.match(html, /const canContinue = REVIEW_UNLOCK \|\| alreadyCompleted \|\| \(isSelectionOnly \? !!selectionExerciseUnlocked\[selectionUnlockKey\(\)\]/, 'selection-only exercise keeps continue unlocked after completion and also unlocks from an explicit saved unlock flag');
+assert.match(html, /const REVIEW_UNLOCK = new URLSearchParams\(location\.search\)\.get\('unlock'\) === '1'/, 'temporary review links can unlock all exercises with unlock=1 without changing the default flow');
+assert.match(html, /const allowed = REVIEW_UNLOCK \|\| index === currentExerciseIndex/, 'temporary review unlock opens every exercise button in the side navigation');
+assert.match(html, /function applyReviewUnlockForCurrentLesson\(\)[\s\S]*currentExercises\(\)\.forEach\(\(_, index\)=>completedExercises\[currentLesson\]\.add\(index\)\)/, 'temporary review unlock marks all current lesson exercises open in-memory');
+assert.match(html, /if\(restoringProgress \|\| REVIEW_UNLOCK\) return/, 'temporary review unlock does not persist fake completion to normal progress');
 assert.match(html, /function selectionOnlyBlockType\(ex\)/, 'selection-only exercises can specify the block type to select');
 assert.match(html, /currentLesson === 4 && ex\?\.id === 6\) return \['py_color'\]/, 'lesson 4 color-code exercise unlocks by selecting the color block');
 assert.match(html, /const requiredTypes = isSelectionOnlyExercise\(ex\) \? selectionOnlyBlockTypes\(ex\) : \[\]/, 'selection-only unlock listener uses the exercise-specific selected block types');
@@ -235,9 +239,9 @@ assert.doesNotMatch(html, /תרגול 6 — מחומש בצבע אחר/, 'lesson
 
 assert.match(html, /function requiresCheckedContinue\(ex\)[\s\S]*!isTipExercise\(ex\)[\s\S]*!isChallengeExercise\(ex\)[\s\S]*!isSelectionOnlyExercise\(ex\)[\s\S]*!isRunOnlyExampleExercise\(ex\)/, 'normal exercises require an approved check before Continue unlocks');
 
-assert.match(html, /const canContinue = alreadyCompleted \|\|[\s\S]*requiresCheckedContinue\(ex\) \? exercisePassed/, 'normal exercises unlock Continue after they pass once and stay unlocked when revisited');
+assert.match(html, /const canContinue = REVIEW_UNLOCK \|\| alreadyCompleted \|\|[\s\S]*requiresCheckedContinue\(ex\) \? exercisePassed/, 'normal exercises unlock Continue after they pass once and stay unlocked when revisited');
 
-assert.match(html, /if\(requiresCheckedContinue\(leavingEx\) && !exercisePassed\) return/, 'nextExercise blocks normal exercises until the current check passes before first completion');
+assert.match(html, /if\(!REVIEW_UNLOCK && requiresCheckedContinue\(leavingEx\) && !exercisePassed\) return/, 'nextExercise blocks normal exercises until the current check passes before first completion unless temporary review unlock is enabled');
 
 const nextExerciseSource = extractFunction(html, 'nextExercise');
 assert.doesNotMatch(nextExerciseSource, /hasTrainCarriageUnit|hasRepeatedTrainCarriages|lengthSetBeforeFirstUse|repeatUsesLengthShape|validateExercise\(/, 'nextExercise must not contain lesson validation code that can break the finished button');
@@ -459,7 +463,7 @@ assert.match(html, /currentLesson === 11 && ex\?\.id === 8[\s\S]*pensize\(8\)[\s
 assert.match(html, /currentLesson === 11 && ex\?\.id === 8[\s\S]*length = מספר[\s\S]*forward\(length\)[\s\S]*פנייה של 90 מעלות[\s\S]*שינוי צבע או עובי עט/, 'lesson 11 Python writing challenge validates length, a straight turn, and styling');
 
 assert.doesNotMatch(html, /if\(!exercisePassed\) completedSet\(\)\.delete\(index\)/, 'completed exercises stay unlocked after revisiting selection exercises');
-assert.match(html, /const alreadyCompleted = completedSet\(\)\.has\(currentExerciseIndex\);[\s\S]*const canContinue = alreadyCompleted \|\|/, 'completed exercises keep Continue unlocked when revisited');
+assert.match(html, /const alreadyCompleted = completedSet\(\)\.has\(currentExerciseIndex\);[\s\S]*const canContinue = REVIEW_UNLOCK \|\| alreadyCompleted \|\|/, 'completed exercises keep Continue unlocked when revisited');
 assert.match(html, /if\(isSelectionOnlyExercise\(ex\) && !alreadyCompleted\)/, 'editing a completed selection exercise does not clear its unlocked state');
 
 assert.match(html, /else if\(isSelectionOnlyExercise\(ex\)\)\{[\s\S]*await run\(\);[\s\S]*כדי להמשיך, לחצו על הבלוק המתאים/, 'running a selection-only exercise does not show generic check success feedback');
@@ -511,6 +515,12 @@ assert.match(html, /אתגר רשות — כותבים Python קצר[\s\S]*כת�
 assert.match(html, /currentLesson === 12 && ex\?\.id === 9[\s\S]*# קווקו \/ גלגל \/ אור ברמזור/, 'lesson 12 Python code challenge uses the existing writable textarea placeholder');
 assert.match(html, /function isLesson13CumulativeExercise\(index=currentExerciseIndex\)[\s\S]*currentLesson === 13[\s\S]*ex\.id >= 3 && ex\.id <= 7/, 'lesson 13 keeps the train drawing on canvas while exercises 3-7 add only the new part');
 assert.match(html, /בלוקים קודמים של הרכבת[\s\S]*lesson13ShowAllBlocksBtn/, 'lesson 13 has a toggle for showing previous train blocks');
+assert.match(html, /כשפותחים בלוקים קודמים[\s\S]*הצב ממשיך מסוף הציור הקודם[\s\S]*לתכנן את התוספת/, 'lesson 13 warns that previous-block mode continues from the end of the prior drawing');
+assert.match(html, /תרגול 7 — רכבת על מסילה[\s\S]*ציירו מסילה[\s\S]*שני פסים[\s\S]*קורות קצרות בלולאה[\s\S]*הכפתור הוא רק לתצוגה/, 'lesson 13 exercise 7 uses short rail-first instructions and makes the train button optional');
+assert.match(html, /lesson13DrawTrainBaseBtn[\s\S]*const hasDrawing = snapshot\.actions\.some\(a=>a\.cmd === 'forward'[\s\S]*const hasRepeat = snapshot\.blockTypes\.includes\('py_repeat'\)[\s\S]*drawLesson13TrainBaseForRails\(false\)[\s\S]*if\(hasDrawing && hasRepeat\)/, 'lesson 13 exercise 7 can complete from the optional train button after students draw with a repeat');
+assert.match(html, /currentLesson === 13 && currentExercises\(\)\[currentExerciseIndex\]\?\.id === 7[\s\S]*drawLesson13TrainBaseForRails\(false\)/, 'lesson 13 exercise 7 keeps rail-first visual order during run/check by drawing the train after the rail blocks when available');
+assert.match(html, /function hasRailDrawing\(actions\)[\s\S]*longRails[\s\S]*shortSleepers[\s\S]*hasBlock\('py_repeat'\)/, 'lesson 13 exercise 7 detects rails from the drawing, not only exact long-line counts');
+assert.doesNotMatch(html, /המסילה טובה\. עכשיו לחצו על “צייר לי רכבת”/, 'lesson 13 exercise 7 no longer requires pressing the train button to pass');
 assert.match(html, /function snapshotWithCumulativePrior\(snapshot[\s\S]*lesson13PriorActions/, 'lesson 13 validators include prior train actions while students work on only the current addition');
 assert.match(html, /function lesson13PriorXml\(index=currentExerciseIndex\)[\s\S]*directPriorIndex = index - 1[\s\S]*directPriorIndex - 1[\s\S]*priorIndex >= 0/, 'lesson 13 previous-block toggle falls back to the nearest saved prior train blocks only when the direct prior exercise is missing');
 assert.match(html, /עדיין אין בלוקים קודמים שמורים לתרגיל הזה/, 'lesson 13 explains when previous train blocks are not available yet');
