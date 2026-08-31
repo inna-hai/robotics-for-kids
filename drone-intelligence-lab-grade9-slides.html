@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>מצגת מדריך — Drone Intelligence Lab</title>
-  <meta name="description" content="מצגת מדריך לקורס Drone Intelligence Lab: JavaScript, בטיחות, סינטקס, DroneBlocks Code ודיבוג." />
+  <title>מצגת הקרנה — Drone Intelligence Lab כיתה ט׳ עתודה</title>
+  <meta name="description" content="מצגת הקרנה לקורס Drone Intelligence Lab לכיתה ט׳ עתודה: JavaScript, בטיחות, סינטקס, DroneBlocks Code ודיבוג." />
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <style>
     *{box-sizing:border-box}body{margin:0;font-family:Rubik,Arial,sans-serif;direction:rtl;color:#0f172a;background:radial-gradient(circle at 12% 0,rgba(34,211,238,.24),transparent 30%),linear-gradient(135deg,#07111f,#123c69 58%,#0f766e);height:100vh;overflow:hidden}.deck{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;padding:28px 28px 96px}.slide{display:none;width:min(1160px,100%);min-height:min(690px,calc(100vh - 124px));background:rgba(255,255,255,.98);border-radius:34px;padding:42px;box-shadow:0 28px 82px rgba(0,0,0,.34);overflow:auto}.slide.active{display:flex;flex-direction:column;justify-content:center}.kicker{font-weight:900;color:#0e7490;margin-bottom:10px}.big-icon{font-size:4.4rem;margin-bottom:10px}h1{font-size:clamp(2.4rem,6vw,4.8rem);line-height:1.05;margin:0 0 16px}h2{font-size:clamp(2rem,5vw,3.55rem);line-height:1.1;margin:0 0 20px}p,li{font-size:clamp(1.08rem,1.8vw,1.36rem);line-height:1.62}.lead{font-size:clamp(1.2rem,2.1vw,1.55rem);color:#334155}.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.card{background:#f8fafc;border-radius:18px;padding:16px;border-right:7px solid #22d3ee;line-height:1.55}.card b{display:block;color:#0e7490;font-size:1.12rem}.three{grid-template-columns:repeat(3,1fr)}.screenshot{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:center}.shot{background:#0f172a;border-radius:24px;min-height:360px;display:grid;place-items:center;overflow:hidden}.shot img{width:100%;height:100%;object-fit:contain;display:block}.video-link{display:inline-flex;margin-top:10px;background:#ecfeff;color:#0e7490;border-radius:999px;padding:8px 12px;text-decoration:none;font-weight:900}.note{background:#ecfeff;border-right:7px solid #0e7490;border-radius:18px;padding:16px;margin-top:14px}.warning{background:#fff7ed;border-right-color:#f97316}.mission{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;direction:ltr;text-align:left;background:#0f172a;color:#e0f2fe;border-radius:22px;padding:20px;font-size:clamp(1.15rem,2vw,1.65rem);line-height:1.8}.nav{position:fixed;inset:auto 24px 24px 24px;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;color:white;font-weight:900;pointer-events:none}.nav>*{pointer-events:auto}button,.back{border:0;border-radius:999px;background:white;color:#0e7490;padding:12px 18px;font-weight:900;text-decoration:none;cursor:pointer;font-family:inherit}.counter{background:rgba(0,0,0,.25);padding:10px 16px;border-radius:999px;justify-self:center}@media(max-width:780px){body{overflow:auto}.deck{height:auto;min-height:100svh;padding:12px 10px 92px}.slide{min-height:calc(100svh - 110px);padding:22px 16px;border-radius:22px}.cards,.three{grid-template-columns:1fr}.nav{inset:auto 10px 10px 10px;display:flex;justify-content:space-between}.counter{display:none}button,.back{padding:10px 12px;font-size:.9rem}}
@@ -20,7 +20,7 @@
     const labels = window.DRONE_INTELLIGENCE_LAB_GRADE9_COMMAND_LABELS || {};
     const missionLines = (lesson.blocks || []).map((b,i) => `${i+1}. ${labels[b] || b}`).join('\n');
     const esc = v => String(v || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    document.title = `מצגת מדריך — ${lesson.title}`;
+    document.title = `מצגת הקרנה — ${lesson.title}`;
     document.getElementById('playLink').href = `drone-intelligence-lab-grade9-play.html?lesson=${lesson.id}`;
     document.getElementById('guideLink').href = `drone-intelligence-lab-grade9-guide.html?lesson=${lesson.id}`;
     const realCards = (lesson.realWorldUses || []).map(u => `<div class="card"><b>${esc(u.icon)} ${esc(u.title)}</b>${esc(u.text)}</div>`).join('');
@@ -32,7 +32,7 @@
     const videoCards = (lesson.videoResources || []).map(v => `<div class="card"><b>${esc(v.title)}</b>${esc(v.note)}<br><a class="video-link" href="${esc(v.url)}" target="_blank" rel="noopener">מקור/סרטון למדריך</a></div>`).join('');
     const flowSlides = (lesson.lessonFlow || []).map(step => ({ html: `<div class="kicker">מהלך שיעור 90 דקות</div><h2>${esc(step.minutes)} — ${esc(step.title)}</h2><div class="cards"><div class="card"><b>מה המדריך עושה</b>${esc(step.teacher)}</div><div class="card"><b>מה התלמידים עושים</b>${esc(step.students)}</div></div>` }));
     const exerciseList = (lesson.exercises || []).map(ex => `<li><b>${esc(ex.minutes)} — ${esc(ex.title)}:</b> ${esc(ex.prompt)}</li>`).join('');
-    const slides = [
+    let slides = [
       { html: `<div class="big-icon">🧠🚁</div><div class="kicker">Drone Intelligence Lab · כיתה ט׳ עתודה · שיעור ${lesson.id}</div><h1>${esc(lesson.title)}</h1><p class="lead">${esc(lesson.subtitle || lesson.story)}</p><div class="note"><b>כלל פתיחה:</b> ${lesson.physicalFlightAllowed ? 'טיסה פיזית רק באישור מדריך ובאזור סטרילי.' : 'היום עובדים בסימולטור בלבד. דיוק הנדסי מתחיל לפני שהמדחפים מסתובבים.'}</div>` },
       { html: `<div class="kicker">למה זה מלהיב?</div><h2>JavaScript רחפנים בעולם האמיתי</h2><p class="lead">רחפן הוא מערכת טכנולוגית שעוזרת לאנשים לראות, למדוד ולהגיע למקומות מסוכנים או קשים.</p><div class="cards">${realCards}</div>` },
       { html: `<div class="kicker">בטיחות לפני טיסה</div><h2>הרחפן קטן — האחריות גדולה</h2><div class="cards">${safetyCards}</div><div class="note warning"><b>אמירה למדריך:</b> ${lesson.physicalFlightAllowed ? 'אם מטיסים פיזית — רק אחרי אישור מדריך, משקפי מגן ובדיקת סוללה/מרחב.' : 'בשיעור הזה לא מחברים רחפן ולא מבצעים Launch Mission פיזי. הסימולטור הוא סביבת הבדיקה שלנו.'}</div>` },
@@ -48,6 +48,9 @@
       { html: `<div class="kicker">תרגול תלמידים</div><h2>רצף משימות בלומדה</h2><ul>${exerciseList}</ul>` },
       { html: `<div class="kicker">סיכום</div><h2>הקוד הוא תוכנית הטיסה</h2><p class="lead">תלמידים יוצאים עם שפה מקצועית, מודעות בטיחות, והבנה שרצף פקודות מדויק הוא תנאי למשימה מוצלחת.</p><div class="note"><b>כרטיס יציאה:</b> “רחפן צריך תוכנית מדויקת כי...”</div>` }
     ];
+    if (lesson.presentationMode === 'focused') {
+      slides = slides.filter((_, i) => ![1,4,5].includes(i));
+    }
     let current = 0;
     document.getElementById('deck').innerHTML = slides.map((s,i)=>`<section class="slide ${i?'':'active'}">${s.html}</section>`).join('');
     function render(){ document.querySelectorAll('.slide').forEach((s,i)=>s.classList.toggle('active',i===current)); document.getElementById('counter').textContent = `${current+1} / ${slides.length}`; }
