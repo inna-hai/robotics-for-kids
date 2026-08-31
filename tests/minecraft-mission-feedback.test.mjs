@@ -17,16 +17,21 @@ const forcedLessons = forcedSandbox.window.MINECRAFT_KIDS_LESSONS;
 
 assert.equal(lessons.length, 15, 'Minecraft course should expose 15 lessons');
 const lessonOne = lessons.find((lesson) => lesson.id === 1);
-assert.equal(lessonOne.programmingExercises.length, 2, 'lesson 1 should expose exactly two learner missions');
+assert.equal(lessonOne.programmingExercises.length, 4, 'lesson 1 should expose four simple learner missions');
 assert.ok(lessonOne.programmingExercises[0].title.includes('שלושה בלוקים') && lessonOne.programmingExercises[0].studentPrompt.includes('3 בלוקים'), 'lesson 1 mission 1 should require a 3-block tower');
 assert.ok(lessonOne.programmingExercises[1].title.includes('שלושה אריחים') && lessonOne.programmingExercises[1].studentPrompt.includes('המגדל ממשימה 1') && lessonOne.programmingExercises[1].studentPrompt.includes('3 אריחי שביל'), 'lesson 1 mission 2 should require a 3-tile path beside the existing tower');
+assert.ok(lessonOne.programmingExercises[2].title.includes('מדרגה נמוכה') && lessonOne.programmingExercises[2].studentPrompt.includes('שני חצאי בלוקים'), 'lesson 1 mission 3 should add a simple half-block step');
+assert.ok(lessonOne.programmingExercises[3].title.includes('שלט סיום') && lessonOne.programmingExercises[3].studentPrompt.includes('משפט קצר'), 'lesson 1 mission 4 should add a small sign/speech task');
 assert.ok(playHtml.includes('משימה 1 דורשת מגדל של 3 בלוקים') && playHtml.includes("state.lessonOneBlocks >= 3 && dirCount('up') >= 2"), 'lesson 1 mission 1 validation should require 3 blocks and two upward moves');
 assert.ok(playHtml.includes('משימה 2 דורשת שהמגדל ממשימה 1 יישאר') && playHtml.includes("state.lessonOneBlocks >= 3 && placedCount('path') >= 3"), 'lesson 1 mission 2 validation should require existing tower plus 3 path tiles');
+assert.ok(playHtml.includes("placedCount('half') >= 2") && playHtml.includes('משימה 3 דורשת מדרגה נמוכה'), 'lesson 1 mission 3 validation should require two half blocks');
+assert.ok(playHtml.includes('משימה 4 דורשת סימן קטן') && playHtml.includes("s.saidTexts.length >= 1"), 'lesson 1 mission 4 validation should require a small build plus speech');
 assert.ok(playHtml.includes('if (clearDrawing) state.lessonOneBlocks = 0'), 'lesson 1 tower counter should persist across reruns and reset only when drawing is cleared');
 assert.ok(playHtml.includes('.world.lesson-one #lessonMissionBoard{display:block!important;width:230px;max-width:calc(100% - 32px);right:16px;left:auto;top:14px;}'), 'lesson 1 mission card should be positioned on the right side');
+assert.ok(!playHtml.includes('.world.lesson-one #lessonMissionBoard .lesson-mission-choice:nth-of-type(n+3){display:none!important;}'), 'lesson 1 should show all four mission buttons');
 
 assert.ok(playHtml.includes('Lesson mission board cleanup 2026-08-30'), 'regular model lessons should hide the extra lesson mission board behind the model card');
-assert.ok(playHtml.includes('const showLessonMissionBoard = missions.length && (lesson.id === 1 || lesson.id === 9 || lesson.id === 10 || lesson.id === 11)'), 'lesson 1 and dedicated mission-board lessons should show the in-world mission board');
+assert.ok(playHtml.includes('const showLessonMissionBoard = missions.length && (lesson.id === 1 || lesson.id === 9 || lesson.id === 11 || lesson.id === 14 || lesson.id === 15)'), 'lesson 1, drawing lessons, and free-project lessons should show the separate in-world mission board');
 assert.ok(playHtml.includes('.world.lesson-six #lessonMissionBoard') && playHtml.includes('display:none!important'), 'lesson 6 should not show the extra mission board rectangle behind the model card');
 
 assert.ok(lessons.find((lesson) => lesson.id === 15).title === 'תערוכת מיינקראפט', 'lesson 15 should be a distinct exhibition/debug lesson, not a repeat of lesson 14');
@@ -38,18 +43,18 @@ assert.ok(playHtml.includes('Model card restore 2026-08-30'), 'model card restor
 
 assert.ok(playHtml.includes('Pixel model restore 2026-08-30'), 'pixel model restore CSS should be present');
 assert.ok(playHtml.includes('without block outlines') && playHtml.includes('.pixel-grid-model .model-cell{width:18px;height:18px;border:0!important;box-shadow:none!important'), 'lesson 9/11 pixel drawings should be seamless color shapes without visible block outlines');
-assert.ok(playHtml.includes('function pixelGridHtml(model)') && playHtml.includes("shape.className = 'model-shape pixel-grid-art'") && playHtml.includes('pixelGridHtml(sourceModel)'), 'lesson 9/11 pixel drawings should render as visible HTML block grids instead of SVG-only drawings');
-assert.ok(!playHtml.includes("shape.className = 'model-shape drawing-card pixel-art'"), 'pixel model cards should no longer depend on the SVG drawing-card renderer that can disappear');
+assert.ok(playHtml.includes('function pixelGridHtml(model)') && playHtml.includes("lesson.id === 11 ? lessonElevenSourceDrawingHtml(modelIndex) : pixelGridHtml(model)"), 'lesson 9 should keep stable HTML pixel models while lesson 11 uses source drawings');
+assert.ok(!playHtml.includes("shape.className = 'model-shape drawing-card pixel-art'"), 'pixel model cards should not use the old disappearing drawing-card pixel-art class');
 assert.ok(playHtml.includes('.world.lesson-eleven .lesson-model-only') && playHtml.includes('.world.lesson-twelve .lesson-model-only') && playHtml.includes('.world.lesson-thirteen .lesson-model-only'), 'model cards should be visible for lessons 11, 12, and 13 as well as earlier model lessons');
 assert.ok(playHtml.includes('.world.lesson-thirteen .garden-scene-card{background:transparent!important;border:0!important'), 'lesson 13 scene should be visually unified with the outer model card');
 assert.ok(playHtml.includes('function missionRuleDefinitions()'), 'play page should define per-exercise mission checks');
-assert.ok(playHtml.includes('Lesson 1 mission card 2026-08-30') && playHtml.includes('lesson.id !== 1 || index < 2'), 'lesson 1 mission card should be available and limited to choices 1/2');
+assert.ok(playHtml.includes('Lesson 1 mission card 2026-08-30') && playHtml.includes('const exists = index < missions.length;'), 'lesson 1 mission card should be available and show all four choices');
 assert.ok(playHtml.includes("type:'move_pet_right'") && playHtml.includes("case 'move_pet_right'"), 'lesson 6 pet movement alias blocks should be defined and runnable');
 assert.ok(playHtml.includes('updatePointsStatus();') && playHtml.includes(`sizeBlocklyArea();
       workspace = Blockly.inject`), 'mission points should refresh and Blockly should be measured before injection');
 assert.ok(playHtml.includes('function currentMissionRule(index)'), 'play page should select the current exercise rule');
 assert.ok(playHtml.includes('return rules[index] || null;') && !playHtml.includes('return rules[index] || rules[0]'), 'current mission validation should not fall back to mission 1 or any other mission');
-assert.ok(playHtml.includes('function modelChoiceSelectsMission()') && playHtml.includes('return [2, 4, 6, 8, 12].includes(lesson.id);'), 'lesson 2 model choices should sync the selected mission');
+assert.ok(playHtml.includes('function modelChoiceSelectsMission()') && playHtml.includes('return [2, 4, 6, 8, 12].includes(lesson.id);'), 'model choices should sync selected missions without changing Chava lesson 10 flow');
 assert.ok(playHtml.includes('if (lesson.id === 9 || lesson.id === 11 || modelChoiceSelectsMission()) lessonMissionIndex = index;'), 'model-card lessons should update lessonMissionIndex when a model is selected');
 assert.ok(playHtml.includes('if (lesson.id === 1) return Math.max(0, Math.min(1, lessonMissionIndex));'), 'lesson 1 selected mission index should be clamped to missions 1/2');
 assert.ok(playHtml.includes('Lesson 1 strict mission card 2026-08-30') && playHtml.includes('.world.lesson-one .lesson-model-only{display:none!important;}'), 'lesson 1 should not show the generic model card or pager');
@@ -140,6 +145,15 @@ assert.ok(playHtml.includes('function selectedExerciseIndex()') && playHtml.incl
 assert.ok(playHtml.includes('minecraftKidsMissionPoints:v1'), 'mission points should persist in localStorage across lesson pages');
 assert.ok(playHtml.includes('function awardMissionPoint'), 'successful missions should award a point only once');
 assert.ok(playHtml.includes('נקודות בשיעור') && playHtml.includes('נקודות בכל השיעורים'), 'play page should show lesson and course point totals');
+assert.equal((playHtml.match(/class=\"points-status\"/g) || []).length, 1, 'points status should be rendered only once');
+assert.equal((playHtml.match(/id=\"lessonPointsLabel\"/g) || []).length, 1, 'lesson points label id should be unique');
+assert.equal((playHtml.match(/id=\"coursePointsLabel\"/g) || []).length, 1, 'course points label id should be unique');
+assert.ok(playHtml.includes('function updateBuiltInFrontBlocksAfterMove()') && playHtml.includes("document.querySelectorAll('#world .block.built-in-front')") && playHtml.includes("el.dataset.leftBuildSpot === 'true' && nearSameSpot") && playHtml.includes('setStevePosition(); finishMoveLayering(); updateStatus();'), 'movement should keep the current new block in front until David returns to its spot');
+assert.ok(playHtml.includes('function startBuildLayering()') && playHtml.includes('clearBuiltInFrontBlocks();') && playHtml.includes('setPlayerInFront(true);') && playHtml.includes('function placeBlock(color){ startBuildLayering();') && playHtml.includes('function placePath(color){ startBuildLayering();') && playHtml.includes('function placeHalfBlock(color){ startBuildLayering();'), 'placing blocks should keep David in front of old blocks while only the current block hides him');
+assert.ok(playHtml.includes('.block.built-in-front{z-index:11}'), 'newly placed blocks should be created immediately in front of David');
+assert.ok(playHtml.includes("const extraClass = ['built-in-front'") && playHtml.includes("addBlock(blockColor, x, blockY, 'path-slab built-in-front')") && playHtml.includes("addBlock(blockColor, state.steveX + 9, blockY, 'half-slab built-in-front')"), 'block/path/half placements should receive the front layer class at creation time');
+assert.ok(!playHtml.includes('<div class="status">'), 'play page should not show the redundant score/time/weather status row');
+assert.ok(!playHtml.includes('id="timeLabel"') && !playHtml.includes('id="weatherLabel"'), 'play page should remove redundant time/weather labels from the UI');
 assert.ok(playHtml.includes('Lesson 2 feedback compact fix 2026-08-30'), 'mission feedback compact CSS should prevent short feedback from stretching into a huge panel');
 assert.ok(playHtml.includes('Final feedback compact override 2026-08-30'), 'final responsive override should keep mission feedback content-sized after later CSS rules');
 assert.ok(playHtml.includes('Scroll safety 2026-08-30'), 'responsive layout should allow scrolling instead of cropping the world image');
@@ -170,7 +184,7 @@ assert.ok(playHtml.includes('Blockly layout restore 2026-08-30') && playHtml.inc
 assert.ok(playHtml.includes('removeLessonThreeStrayGreenBlocks();'), 'lesson 3 stray green cleanup should run before feedback');
 assert.ok(!playHtml.includes('pixel-art-finished .player'), 'lesson 3 should not hide David as a workaround for extra blocks');
 assert.ok(playHtml.includes('המשימה הזו כבר הושלמה בעבר'), 'repeat completions should not award duplicate points');
-assert.ok(playHtml.includes('minecraft-lessons-20260820-stairs.js?v=20260830-lesson5-four-missions-v123'), 'preview should force a fresh cache key in the browser');
+assert.ok(playHtml.includes('minecraft-lessons-20260820-stairs.js?v=20260831-revert-lesson10-to-chava-v163'), 'preview should force a fresh cache key in the browser');
 assert.ok(playHtml.includes("drawing:'garden-scene'"), 'lesson 13 should show a Minecraft-style square garden model without visible block outlines');
 assert.ok(playHtml.includes('שביל ירוק, ספסל ונדנדה לחיות'), 'lesson 13 garden model should name the path, bench, and pet swing');
 assert.ok(playHtml.includes('function lesson13MissionSceneHtml(index)'), 'lesson 13 should render a small model for every task');
@@ -229,9 +243,32 @@ assert.ok(lessonEleven.programmingExercises[2].studentPrompt.includes('5 ארי�
 assert.ok(!playHtml.includes('מסתכלים על הציור מימין'), 'lesson 11/9 instructions should not point to a fixed right-side drawing location');
 assert.ok(!playHtml.includes('כרטיס ציור המקור'), 'drawing missions should not refer to an unclear source drawing card');
 assert.ok(playHtml.includes('mission-source-drawing'), 'lesson 11 should embed the visible drawing example inside the mission card');
+assert.ok(playHtml.includes('function lessonElevenSourceDrawingHtml') && playHtml.includes('soft-line') && playHtml.includes('ציור שדה תפוחים'), 'lesson 11 should render soft source drawings, not visible block cells');
+assert.ok(playHtml.includes("lesson.id === 11 ? lessonElevenSourceDrawingHtml(modelIndex) : pixelGridHtml(model)"), 'lesson 11 model card should use the source drawing renderer instead of pixelGridHtml');
 assert.ok(playHtml.includes('בונים בדיוק לפי הדוגמה: אותו מיקום, צבע וסוג חלק'), 'lesson 11 instructions should clearly require an exact build');
 assert.ok(!playHtml.includes('בהתחלה או בסוף, העיקר שיהיה מחובר'), 'lesson 11 instructions should not discuss a separate apple block');
 assert.ok(playHtml.includes('מצליחים רק כשהבנייה זהה לדוגמה'), 'lesson 11 instructions should explain strict exact-match success');
+
+const lessonTwelve = lessons.find((lesson) => lesson.id === 12);
+const forcedLessonTwelve = forcedLessons.find((lesson) => lesson.id === 12);
+assert.equal(lessonTwelve.title, 'מבוך קטן לדוד', 'lesson 12 should be the David maze lesson');
+assert.equal(forcedLessonTwelve.title, lessonTwelve.title, 'forced lesson cache should match lesson 12 title');
+assert.deepEqual(
+  Array.from(forcedLessonTwelve.programmingExercises, (exercise) => exercise.title),
+  Array.from(lessonTwelve.programmingExercises, (exercise) => exercise.title),
+  'forced lesson cache should match the updated lesson 12 maze missions'
+);
+assert.ok(!forcedLessonTwelve.programmingExercises.some((exercise) => /רמז|קיר ראשון ידני|פינת מבוך/.test(`${exercise.title} ${exercise.studentPrompt}`)), 'lesson 12 should not keep the old hint/first-wall missions');
+assert.ok(forcedLessonTwelve.programmingExercises[0].title.includes('בניית מבוך והולכת דוד') && forcedLessonTwelve.programmingExercises[3].title.includes('אתגר פתוח'), 'lesson 12 should expose clear maze-model missions that include moving David');
+assert.ok(forcedLessonTwelve.programmingExercises[0].studentPrompt.includes('כניסה בזהב') && forcedLessonTwelve.programmingExercises[1].studentPrompt.includes('היציאה ביהלום'), 'lesson 12 text should explain that gold is the entrance and diamond is the exit');
+const lessonFourteen = lessons.find((lesson) => lesson.id === 14);
+const forcedLessonFourteen = forcedLessons.find((lesson) => lesson.id === 14);
+assert.deepEqual(
+  Array.from(forcedLessonFourteen.programmingExercises, (exercise) => exercise.title),
+  Array.from(lessonFourteen.programmingExercises, (exercise) => exercise.title),
+  'forced lesson cache should match the open-ended lesson 14 missions'
+);
+assert.ok(forcedLessonFourteen.programmingExercises[0].studentPrompt.includes('רעיון חדש משלכם') && forcedLessonFourteen.programmingExercises[4].studentPrompt.includes('מה הייתם משדרגים'), 'lesson 14 should keep open-ended imagination-focused instructions');
 
 const rulesBodyMatch = playHtml.match(/const rules = \{([\s\S]*?)\n\s*\};\n\s*return rules;/);
 assert.ok(rulesBodyMatch, 'mission rules object should be present');
@@ -244,10 +281,12 @@ for (const lesson of lessons) {
 
 for (const phrase of [
   'משימה 1 דורשת מגדל של 3 בלוקים',
-  'זמנו את פיקסל',
+  'זמנו את לונה',
   'הפעילו מזג אוויר גשם',
+  "type:'weather_choice'",
+  "weather_choice:'מזג אוויר',",
   'אם עומדים על היהלום',
-  'השתמשו בבלוק בנה מבוך קטן',
+  'בנו קודם מבוך',
   'זמנו חיית מחמד',
   'משפט הצגה'
 ]) {
@@ -272,6 +311,37 @@ assert.ok(lessonFive.blocks.includes('place_path'), 'lesson 5 should expose path
 assert.ok(lessonFive.blocks.includes('place_block'), 'lesson 5 should still expose full blocks for the gate missions');
 
 assert.ok(playHtml.includes("{ title:'4. עוקפים את השער'") && !playHtml.includes("{ title:'5. מעבר סודי'"), 'lesson 5 should have exactly four gate missions and no duplicate fifth mission');
+assert.ok(!playHtml.includes('data-gate="4" aria-label="משימה 5"'), 'lesson 5 should not show a fifth gate mission button');
+assert.ok(playHtml.includes("'empty','wood half-slab attached-top','wood half-slab attached-top','empty','empty','empty'"), 'lesson 8 umbrella model should show two lower wood half-blocks attached upward to the handle');
+assert.ok(playHtml.includes('.model-cell.half-slab.attached-top{align-self:start}'), 'attached lower half-blocks should align to the top of their grid cell so they touch the handle');
+assert.ok(playHtml.includes('.world.lesson-eight .build-model.lesson-model-only{width:188px;max-width:calc(100% - 32px);}'), 'lesson 8 model card should be wide enough for 7-column models');
+assert.ok(playHtml.includes("lesson.id === 12 ? 'כרטיס משימות — דגם מבוך'"), 'lesson 12 combined card should clearly identify the maze missions');
+assert.ok(!playHtml.includes('מבוך שתי דרכים') && !lessonsSource.includes('דרך קצרה ודרך ארוכה') && !forcedLessonsSource.includes('דרך קצרה ודרך ארוכה'), 'lesson 12 should not ask for two paths when the maze shows one route');
+assert.ok(playHtml.includes('secondCodeMoves:0') && playHtml.includes('function recordSecondCodeMove()') && playHtml.includes('state.currentStartOrder === 2') && playHtml.includes('secondCodeMoveCount() >= 2') && playHtml.includes('secondCodeMoveCount() >= 4'), 'lesson 12 mission success should require moving David in code two, not just building the maze');
+assert.ok(lessonsSource.includes('בניית מבוך והולכת דוד') && forcedLessonsSource.includes('בניית מבוך והולכת דוד'), 'lesson 12 mission wording should tell learners to build the maze and move David');
+assert.ok(playHtml.includes(".world.lesson-twelve .build-model.lesson-model-only .model-cell.gold::after{content:'כניסה'") && playHtml.includes(".world.lesson-twelve .build-model.lesson-model-only .model-cell.diamond::after{content:'יציאה'"), 'lesson 12 maze model should label entrance and exit directly on the model');
+assert.ok(!playHtml.includes('outline:3px solid #0f172a'), 'lesson 12 entrance/exit blocks should not have black outline borders');
+assert.ok(playHtml.includes('.world.lesson-twelve .build-model.lesson-model-only{width:210px;right:10px;top:10px;padding:.35rem .42rem;'), 'lesson 12 maze card should be compact enough to leave building space');
+assert.ok(playHtml.includes('.world.lesson-twelve .door{display:none}') || playHtml.includes('.world.lesson-eight .door,.world.lesson-twelve .door{display:none}'), 'lesson 12 should hide the unrelated brown secret door to leave maze-building space');
+assert.ok(playHtml.includes('.world.lesson-twelve .build-model.lesson-model-only .model-cell{width:20px;height:20px;}'), 'lesson 12 maze model cells should stay square and not visually compressed');
+assert.ok(playHtml.includes('const cellSize = lesson.id === 12 ? 20'), 'lesson 12 maze grid tracks should match the square compact model-cell size');
+assert.ok(!playHtml.includes('זה כרטיס המשימות: בחרו מספר, קראו את ההוראה'), 'lesson 12 card should not repeat redundant instructions once entrance/exit labels are visible');
+assert.ok(playHtml.includes('.world.lesson-fourteen #lessonMissionBoard') && playHtml.includes('.world.lesson-fifteen #lessonMissionBoard'), 'lessons 14 and 15 should show a visible free-project mission card');
+assert.ok(playHtml.includes("lesson.id === 14 || lesson.id === 15) ? 'כרטיס משימות חופשי'"), 'free-project lessons should label the card as open-ended missions');
 assert.ok(!playHtml.includes('index === 4 && completedGateEntryMission() && gateWasBypassed()'), 'lesson 5 should not keep scoring logic for removed mission 5');
 assert.ok(!playHtml.includes("צריך גם מעבר דרך השער וגם עקיפה/תנועה בעומק סביבו"), 'lesson 5 should not keep feedback for removed mission 5');
 assert.ok(!lessonsSource.includes('משימה 5: דוד מפעיל את הכדור הסגול'), 'lesson 5 slides/lesson data should not include removed mission 5');
+
+assert.ok(!lessons.find(lesson => lesson.id === 8).blocks.includes('weather_rain') && lessons.find(lesson => lesson.id === 8).blocks.includes('weather_choice'), 'lesson 8 should use one weather dropdown block in the main lesson file');
+assert.ok(!forcedLessons.find(lesson => lesson.id === 8).blocks.includes('weather_rain') && forcedLessons.find(lesson => lesson.id === 8).blocks.includes('weather_choice'), 'lesson 8 should use one weather dropdown block in the forced lesson file');
+
+assert.ok(!playHtml.includes("type:'weather_sun'") && !playHtml.includes("type:'weather_rain'") && !playHtml.includes("type:'weather_snow'"), 'old separate weather blocks should be removed from Blockly definitions');
+assert.ok(!playHtml.includes("case 'weather_sun'") && !playHtml.includes("case 'weather_rain'") && !playHtml.includes("case 'weather_snow'"), 'old separate weather runtime cases should be removed');
+assert.ok(!lessonsSource.includes('weather_sun:') && !forcedLessonsSource.includes('weather_sun:'), 'old separate weather labels should be removed from lesson files');
+
+const lesson8Main = lessons.find(lesson => lesson.id === 8);
+const lesson8Forced = forcedLessons.find(lesson => lesson.id === 8);
+assert.equal(lesson8Main.programmingExercises[2].title, 'תרגיל 3 — תחנת מזג אוויר', 'lesson 8 third mission should be weather station in main lesson data');
+assert.equal(lesson8Forced.programmingExercises[2].title, 'תרגיל 3 — תחנת מזג אוויר', 'lesson 8 third mission should be weather station in forced lesson data');
+assert.ok(!lesson8Main.programmingExercises.some(ex => /דוד מתחת למטריה/.test(ex.title)) && !lesson8Forced.programmingExercises.some(ex => /דוד מתחת למטריה/.test(ex.title)), 'lesson 8 should not keep the confusing separate David-under-umbrella mission');
+assert.ok(playHtml.includes('תחנת מזג אוויר לפי הדגם') && !playHtml.includes('הזיזו את דוד אל מתחת למטריה אחרי שבניתם אותה בגשם'), 'lesson 8 mission 3 feedback should refer to the weather station, not umbrella movement');
