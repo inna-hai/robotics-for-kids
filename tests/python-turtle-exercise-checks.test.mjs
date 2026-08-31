@@ -467,7 +467,11 @@ assert.match(html, /currentLesson === 6 && ex\?\.id === 8[\s\S]*length = מספ�
 assert.match(html, /setLengthMatch[\s\S]*growLengthMatch[\s\S]*forwardLengthMatch/, 'written Python parser accepts length assignment, length growth, and forward(length)');
 
 assert.match(html, /"id": 12,[\s\S]*"title": "רחוב חכם ליד בית"/, 'lesson 12 is redesigned as a smart street scene near a house, not only a traffic light');
-assert.match(html, /"title": "רחוב חכם ליד בית"[\s\S]*בית לפי אורך[\s\S]*כביש עבה[\s\S]*קווקווי נתיב בלולאה[\s\S]*רמזור בשלושה צבעים[\s\S]*תמרור/, 'lesson 12 exercise sequence includes Hebrew length-variable house, thick road, loop lane dashes, traffic light, and sign');
+assert.match(html, /"title": "רחוב חכם ליד בית"[\s\S]*בית לפי אורך[\s\S]*כביש עבה[\s\S]*קווקווי נתיב בלולאה[\s\S]*רמזור[\s\S]*תמרור/, 'lesson 12 exercise sequence includes Hebrew length-variable house, thick road, loop lane dashes, traffic light, and sign');
+assert.match(html, /תרגול 7 — מכונית קטנה בכביש[\s\S]*מלבן לגוף[\s\S]*חצי משושה[\s\S]*שני גלגלים[\s\S]*פניות של 60°[\s\S]*תקנו והריצו שוב/, 'lesson 12 exercise 7 guides students to use 60 degree turns and iterate if the car shape is unclear');
+assert.match(html, /אתגר רשות — אוטובוס עם חלונות[\s\S]*גוף ארוך[\s\S]*חלונות קטנים בלולאה/, 'lesson 12 optional challenge is a bus with looped windows');
+assert.match(html, /אתגר רשות — כותבים Python קצר[\s\S]*כתבו Python קצר בתיבה[\s\S]*העתיקו חלק קטן/, 'lesson 12 includes an optional Python code-writing challenge with the existing text box flow');
+assert.match(html, /currentLesson === 12 && ex\?\.id === 9[\s\S]*# קווקו \/ גלגל \/ אור ברמזור/, 'lesson 12 Python code challenge uses the existing writable textarea placeholder');
 assert.doesNotMatch(html, /"id": 12,[\s\S]{0,2500}בנו בית שני קטן יותר/, 'lesson 12 no longer keeps the old easy second-house task');
 assert.match(html, /if\(currentLesson === 12\)\{[\s\S]*ex\.id === 1[\s\S]*repeatUsesLengthShape\(4, 90\)[\s\S]*repeatShapeMatches\(3, 120\)/, 'lesson 12 exercise 1 validates a Hebrew length-variable house with square walls and triangle roof');
 assert.match(html, /if\(currentLesson === 12\)\{[\s\S]*ex\.id === 3[\s\S]*קווקווי הנתיב[\s\S]*לפחות 4 חזרות[\s\S]*cleanTransitionCount\(actions\) < 1/, 'lesson 12 lane dashes validate repeat and clean pen transitions');
@@ -475,5 +479,9 @@ assert.match(html, /function actionDrawsWithLightColor\(actions\)[\s\S]*#facc15[
 assert.match(html, /ex\.id === 3[\s\S]*actionDrawsWithLightColor\(actions\)/, 'lesson 12 exercise 3 validates actual light-colored lane dashes');
 assert.doesNotMatch(html, /צבע לבן או בהיר|קווקווים לבנים|קו לבן קצר/, 'lesson 12 does not ask for unavailable white color in lane dashes');
 assert.match(html, /function hasTrafficLightColors\(actions\)[\s\S]*#ef4444[\s\S]*#facc15[\s\S]*#16a34a/, 'lesson 12 has a helper that requires actual red, yellow, and green traffic-light drawing');
-assert.match(html, /if\(currentLesson === 12\)\{[\s\S]*ex\.id === 7[\s\S]*repeatBlocks\(\)\.length < 2[\s\S]*actionDrawnColors\(actions\)\.size < 4[\s\S]*hasTrafficLightColors/, 'lesson 12 summary exercise validates loops, colors, traffic light, and scene complexity');
+assert.match(html, /if\(currentLesson === 12\)\{[\s\S]*ex\.id === 7[\s\S]*hasCarBody[\s\S]*upperPartSegments[\s\S]*wheelCount[\s\S]*קווים קצרים עם עט עבה מאוד/, 'lesson 12 exercise 7 asks for a small car with body, upper part, and two thick short wheels');
 assert.match(html, /currentLesson === 12 && ex\?\.id === 6[\s\S]*באג: הבית בצבע הכביש[\s\S]*באג: קווקווי הנתיב התחברו לקו רציף[\s\S]*באג: חסר ירוק ברמזור/, 'lesson 12 debug exercise loads a concrete starter with color, lane-dash transition, and traffic-light bugs');
+assert.match(html, /function firstDrawnSegmentsAvoidColor[\s\S]*function drawnGroupsByColor/, 'lesson 12 has helpers for checking debug fixes precisely');
+assert.match(html, /ex\.id === 6[\s\S]*firstDrawnSegmentsAvoidColor\(actions, 4, '#111827'\)[\s\S]*drawnGroupsByColor\(actions, '#facc15'\) < 4[\s\S]*hasTrafficLightColors\(actions\)/, 'lesson 12 exercise 6 explicitly validates house color, separated yellow lane dashes, and green traffic light');
+
+assert.doesNotMatch(html, /py_raw_code|כתוב קוד Python %1|simulateRawPythonCommand/, 'lesson 12 code-writing challenge does not add a custom raw-code block');
