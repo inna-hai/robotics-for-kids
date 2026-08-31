@@ -3,6 +3,35 @@ import { readFileSync } from 'node:fs';
 
 const html = readFileSync(new URL('../python-turtle.html', import.meta.url), 'utf8');
 
+function extractFunction(source, name){
+  const start = source.indexOf(`function ${name}(`);
+  assert.notEqual(start, -1, `${name} function exists`);
+  let depth = 0;
+  let inString = false;
+  let quote = '';
+  let escaping = false;
+  for(let i = start; i < source.length; i += 1){
+    const ch = source[i];
+    if(inString){
+      if(escaping) escaping = false;
+      else if(ch === '\\') escaping = true;
+      else if(ch === quote) inString = false;
+      continue;
+    }
+    if(ch === '"' || ch === "'" || ch === '`'){
+      inString = true;
+      quote = ch;
+      continue;
+    }
+    if(ch === '{') depth += 1;
+    if(ch === '}'){
+      depth -= 1;
+      if(depth === 0) return source.slice(start, i + 1);
+    }
+  }
+  assert.fail(`${name} function has a closing brace`);
+}
+
 assert.match(html, /function repeatShapeMatches\(sides, angle\)/, 'shape exercises use a dedicated repeat/sides/angle validator');
 
 assert.match(html, /"id": 2,[\s\S]*"prompt": "בנו מדרגה שיורדת ימינה: קטע ישר, ירידה קצרה, ואז המשך ישר\."/, 'lesson 2 exercise 1 asks for a descending stair without revealing the block sequence');
@@ -18,6 +47,10 @@ assert.match(html, /currentLesson === 2 && ex\.id === 7[\s\S]*hasDescendingStair
 assert.match(html, />✨ דוגמת הפעלה<\//, 'demo button is labeled as an operation demo');
 assert.match(html, /זו דוגמת הפעלה בלבד — לא הפתרון של המשימה/, 'demo button explains it is not the task solution');
 assert.match(html, /ensureStarterHasPythonBlock\(xmls\[currentLesson\] \|\| xmls\[1\]\)/, 'operation demo examples are wrapped with the Python block');
+assert.match(html, /message0:'Python %1'[,\s\S]*field_label_serializable[,\s\S]*name:'INDEX'/, 'Python blocks include an optional visual number label');
+assert.match(html, /let nextPythonBlockOrder = 1[\s\S]*function ensurePythonBlockOrder\(block\)[\s\S]*_pythonOrder = nextPythonBlockOrder\+\+/, 'Python blocks get a stable creation order for numbering');
+assert.match(html, /function orderedPythonBlocks\(\)[\s\S]*getTopBlocks\(false\)[\s\S]*sort\(\(a,b\)=>\(a\._pythonOrder/, 'multiple Python blocks are ordered by stable creation order, not drag position');
+assert.match(html, /function updatePythonBlockNumbers\(\)[\s\S]*blocks\.length > 1 \? String\(index \+ 1\) : ''/, 'Python block numbers appear only when there is more than one Python block');
 assert.match(html, /שנו רק את המספר בבלוק ׳עובי עט׳ ל־8 והריצו/, 'lesson 4 exercise 3 hint tells students exactly what to change');
 assert.match(html, /אפשר לשנות צבע גם באמצע ציור של ריבוע/, 'lesson 4 exercise 4 hint explains where to place the color block');
 assert.match(html, /הצבע החדש צריך להופיע לפני החלק הבא של הציור/, 'lesson 4 exercise 4 feedback explains color order');
@@ -206,6 +239,10 @@ assert.match(html, /const canContinue = alreadyCompleted \|\|[\s\S]*requiresChec
 
 assert.match(html, /if\(requiresCheckedContinue\(leavingEx\) && !exercisePassed\) return/, 'nextExercise blocks normal exercises until the current check passes before first completion');
 
+const nextExerciseSource = extractFunction(html, 'nextExercise');
+assert.doesNotMatch(nextExerciseSource, /hasTrainCarriageUnit|hasRepeatedTrainCarriages|lengthSetBeforeFirstUse|repeatUsesLengthShape|validateExercise\(/, 'nextExercise must not contain lesson validation code that can break the finished button');
+assert.doesNotMatch(nextExerciseSource, /currentLesson === 12|currentLesson === 13/, 'nextExercise must not contain lesson-specific completion branches except the lesson 10 vault');
+
 assert.match(html, /exercisePassed = completedSet\(\)\.has\(currentExerciseIndex\)/, 'revisiting a completed normal exercise restores its passed state');
 
 assert.match(html, /function createCodeSnapshot\(\)[\s\S]*actions:getActions\(\)\.map[\s\S]*blockTypes:connectedBlocks\.map[\s\S]*repeatPatterns/, 'exercise checks snapshot the code and repeat structure at the moment the run starts');
@@ -387,7 +424,7 @@ assert.match(html, /🔓 סוף שיעור 10[\s\S]*לשיעור הבא/, 'after
 assert.match(html, /isLesson10FinalExercise\(\) \? 'לכספת הסודית'/, 'lesson 10 final exercise continues to the secret vault instead of jumping straight to the next lesson');
 assert.match(html, /function lesson10SecretRevealHtml\(ex[\s\S]*כלל התחנה[\s\S]*הקוד הסודי עד עכשיו[\s\S]*כלל הדיבאג עד עכשיו/, 'lesson 10 keeps detailed debug rule progress below the exercise while the short clue appears on the canvas');
 assert.match(html, /if\(exercisePassed\) completedSet\(\)\.add\(currentExerciseIndex\);[\s\S]*lesson10CurrentRevealKey = \(currentLesson === 10 && exercisePassed\) \? `\$\{currentLesson\}:\$\{currentExerciseIndex\}:\$\{currentWorkspaceXml\(\)\}` : '';/, 'lesson 10 reveal key is set only after a fresh successful check of the current blocks');
-assert.match(html, /if\(isCodeEditEvent\)\{\s*lesson10CurrentRevealKey = '';\s*updateLesson10CanvasSecret\(ex\);/, 'editing blocks clears any lesson 10 reveal until the new code passes again');
+assert.match(html, /if\(isCodeEditEvent\)\{[\s\S]*lesson10CurrentRevealKey = '';[\s\S]*updateLesson10CanvasSecret\(ex\);/, 'editing blocks clears any lesson 10 reveal until the new code passes again');
 
 assert.match(html, /"id": 11,[\s\S]*"title": "מפת שכונה עם הערות ואורך"[\s\S]*"concept": "הערות קוד ואורך"/, 'lesson 11 is reworked around a real new concept: comments and length');
 assert.match(html, /if\(t==='py_comment'\) out\.push\(\{cmd:'comment'/, 'comment blocks are included in action snapshots for validation');
