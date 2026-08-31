@@ -7884,6 +7884,11 @@
     const selectionExerciseSelections = {};
     const runOnlyExampleStarted = {};
     const pythonWritingAnswers = {};
+    const lesson12CurrentOnlyXml = {};
+    const lesson12CumulativeXml = {};
+    const lesson12CumulativeActions = {};
+    const lesson12BaseImageData = {};
+    let lesson12ShowingPreviousBlocks = false;
     const PROGRESS_KEY = 'python-turtle-progress-v2';
     // שיעור 10: שכבת רמזים מבודדת וקלה לביטול. אם נרצה לחזור אחורה — משנים ל־false או מוחקים את הבלוק הזה ואת קריאת lesson10SecretRevealHtml.
     const DEBUG_ESCAPE_REVEALS_ENABLED = true;
@@ -8092,31 +8097,42 @@
       turtleEl.style.transform = `rotate(${turtle.heading}deg)`;
     }
     async function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+    function applyTurtleAction(a, vars){
+      if(a.cmd==='setVar') vars[a.name] = a.v;
+      else if(a.cmd==='growVar') vars[a.name] = (vars[a.name] ?? 0) + a.v;
+      else if(a.cmd==='forward' || a.cmd==='forwardVar'){
+        const steps = a.cmd==='forwardVar' ? (vars[a.name] ?? 100) : a.v;
+        const rad=turtle.heading*Math.PI/180;
+        const nx=turtle.x+Math.cos(rad)*steps, ny=turtle.y+Math.sin(rad)*steps;
+        if(turtle.pen){ctx.strokeStyle=turtle.color;ctx.lineWidth=turtle.width;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(turtle.x,turtle.y);ctx.lineTo(nx,ny);ctx.stroke();}
+        turtle.x=nx;turtle.y=ny;
+      } else if(a.cmd==='right') turtle.heading += a.v;
+      else if(a.cmd==='left') turtle.heading -= a.v;
+      else if(a.cmd==='color') turtle.color = a.v;
+      else if(a.cmd==='width') turtle.width = a.v;
+      else if(a.cmd==='pen') turtle.pen = a.v;
+    }
+    function drawActionsInstant(actions, clear=true){
+      resetDrawing(clear);
+      const vars = {length:100};
+      actions.forEach(action=>applyTurtleAction(action, vars));
+      updateTurtle();
+    }
     async function run(actionsSnapshot=null){
       const token = ++runToken;
       document.getElementById('runBtn').disabled = true;
       document.getElementById('checkExerciseBtn')?.setAttribute('disabled','');
-      resetDrawing(true);
+      const useLesson12Base = isLesson12CumulativeExercise() && !lesson12ShowingPreviousBlocks && !!lesson12BaseImageData[lesson12CumulativeKey()];
+      if(useLesson12Base) restoreLesson12ReadyBase();
+      else resetDrawing(true);
       const actions=actionsSnapshot || getActions();
       if(!actions.length){statusEl.textContent='גררו בלוקים קודם 🙂';document.getElementById('runBtn').disabled = false;document.getElementById('checkExerciseBtn')?.removeAttribute('disabled');return;}
-      statusEl.textContent='מאפסים את הציור...';
+      statusEl.textContent=useLesson12Base ? 'משאירים את הציור הקודם ומריצים רק את התוספת...' : 'מאפסים את הציור...';
       await sleep(450);
       statusEl.textContent=`מריץ ${actions.length} פקודות...`;
       const vars = {length:100};
       for(const a of actions){
-        if(a.cmd==='setVar') vars[a.name] = a.v;
-        else if(a.cmd==='growVar') vars[a.name] = (vars[a.name] ?? 0) + a.v;
-        else if(a.cmd==='forward' || a.cmd==='forwardVar'){
-          const steps = a.cmd==='forwardVar' ? (vars[a.name] ?? 100) : a.v;
-          const rad=turtle.heading*Math.PI/180;
-          const nx=turtle.x+Math.cos(rad)*steps, ny=turtle.y+Math.sin(rad)*steps;
-          if(turtle.pen){ctx.strokeStyle=turtle.color;ctx.lineWidth=turtle.width;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(turtle.x,turtle.y);ctx.lineTo(nx,ny);ctx.stroke();}
-          turtle.x=nx;turtle.y=ny;
-        } else if(a.cmd==='right') turtle.heading += a.v;
-        else if(a.cmd==='left') turtle.heading -= a.v;
-        else if(a.cmd==='color') turtle.color = a.v;
-        else if(a.cmd==='width') turtle.width = a.v;
-        else if(a.cmd==='pen') turtle.pen = a.v;
+        applyTurtleAction(a, vars);
         if(token !== runToken) return;
         updateTurtle();
         await sleep(120);
@@ -8309,6 +8325,93 @@
     function currentWorkspaceXml(){
       try{ return Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace)); } catch { return ''; }
     }
+    function emptyPythonWorkspaceXml(){
+      return '<xml><block type="py_python" x="20" y="20"></block></xml>';
+    }
+    function combineWorkspaceXml(...xmlParts){
+      const blocks = xmlParts
+        .filter(xmlHasBlocks)
+        .map(xml=>String(xml).replace(/^\s*<xml[^>]*>/, '').replace(/<\/xml>\s*$/, '').trim())
+        .filter(Boolean)
+        .join('');
+      return blocks ? `<xml>${blocks}</xml>` : '';
+    }
+    function lesson12CumulativeKey(index=currentExerciseIndex){
+      return `${currentLesson}:${index+1}`;
+    }
+    function isLesson12CumulativeExercise(index=currentExerciseIndex){
+      const ex = currentExercises()[index];
+      return currentLesson === 12 && ex && ex.id >= 2 && ex.id <= 5;
+    }
+    function lesson12PriorActions(index=currentExerciseIndex){
+      if(currentLesson !== 12 || index <= 0) return [];
+      return (lesson12CumulativeActions[lesson12CumulativeKey(index - 1)] || []).map(action=>({...action}));
+    }
+    function lesson12SnapshotWithPrior(snapshot, index=currentExerciseIndex){
+      if(!isLesson12CumulativeExercise(index) || lesson12ShowingPreviousBlocks) return snapshot;
+      return {...snapshot, actions:[...lesson12PriorActions(index), ...snapshot.actions]};
+    }
+    function rememberLesson12Success(index=currentExerciseIndex, currentOnlyXml=currentWorkspaceXml(), snapshot=null){
+      if(currentLesson !== 12) return;
+      const key = lesson12CumulativeKey(index);
+      const actions = snapshot?.actions || getActions();
+      if(lesson12ShowingPreviousBlocks){
+        lesson12CumulativeXml[key] = currentOnlyXml;
+        lesson12CumulativeActions[key] = actions.map(action=>({...action}));
+        return;
+      }
+      lesson12CurrentOnlyXml[key] = currentOnlyXml;
+      const priorXml = index > 0 ? lesson12CumulativeXml[lesson12CumulativeKey(index - 1)] : '';
+      lesson12CumulativeXml[key] = combineWorkspaceXml(priorXml, currentOnlyXml) || currentOnlyXml;
+      lesson12CumulativeActions[key] = isLesson12CumulativeExercise(index)
+        ? [...lesson12PriorActions(index), ...actions.map(action=>({...action}))]
+        : actions.map(action=>({...action}));
+    }
+    function lesson12LoadCurrentOnlyWorkspace(index=currentExerciseIndex){
+      if(!isLesson12CumulativeExercise(index)) return false;
+      lesson12ShowingPreviousBlocks = false;
+      const key = lesson12CumulativeKey(index);
+      return restoreXml(lesson12CurrentOnlyXml[key] || emptyPythonWorkspaceXml());
+    }
+    function lesson12DrawReadyBase(index=currentExerciseIndex){
+      if(!isLesson12CumulativeExercise(index)) return false;
+      const priorActions = lesson12PriorActions(index);
+      if(!priorActions.length) return false;
+      drawActionsInstant(priorActions, true);
+      try{ lesson12BaseImageData[lesson12CumulativeKey(index)] = ctx.getImageData(0, 0, canvas.width, canvas.height); } catch {}
+      statusEl.textContent = 'הציור הקודם מוכן — הוסיפו רק את החלק החדש';
+      return true;
+    }
+    function restoreLesson12ReadyBase(index=currentExerciseIndex){
+      const base = lesson12BaseImageData[lesson12CumulativeKey(index)];
+      if(!base) return false;
+      syncCanvasSize(false);
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.putImageData(base, 0, 0);
+      turtle={x:canvas.width/2,y:canvas.height/2,heading:0,pen:true,color:'#2563eb',width:4};
+      updateTurtle();
+      return true;
+    }
+    function withPreservedDrawing(work){
+      let image = null;
+      try{ image = ctx.getImageData(0, 0, canvas.width, canvas.height); } catch {}
+      const result = work();
+      if(image){
+        try{
+          ctx.clearRect(0,0,canvas.width,canvas.height);
+          ctx.putImageData(image, 0, 0);
+          updateTurtle();
+        } catch {}
+      }
+      return result;
+    }
+    function lesson12ShowPreviousBlocks(index=currentExerciseIndex){
+      if(!isLesson12CumulativeExercise(index)) return;
+      lesson12CurrentOnlyXml[lesson12CumulativeKey(index)] = currentWorkspaceXml();
+      const priorXml = index > 0 ? lesson12CumulativeXml[lesson12CumulativeKey(index - 1)] : '';
+      const fullXml = combineWorkspaceXml(priorXml, lesson12CurrentOnlyXml[lesson12CumulativeKey(index)]);
+      if(withPreservedDrawing(()=>restoreXml(fullXml))) lesson12ShowingPreviousBlocks = true;
+    }
     function isIsolatedExercise(ex){
       return !!starterXmlForExercise(ex);
     }
@@ -8473,6 +8576,9 @@
           else if(restoreExerciseWorkspace(index)) exerciseStarterLoaded[baselineKey(index)] = true;
           else maybeLoadExerciseStarter(index, true);
           saveActiveWorkspace(index);
+        } else if(isLesson12CumulativeExercise(index)){
+          lesson12LoadCurrentOnlyWorkspace(index);
+          setTimeout(()=>lesson12DrawReadyBase(index), 0);
         } else {
           const lesson9Exercise4ContinuesFrom3 = currentLesson === 9 && targetEx?.id === 4;
           const lesson9Exercise3Index = currentExercises().findIndex(ex=>ex?.id === 3);
@@ -8619,9 +8725,10 @@
       const feedbackHtml = `<div class="exercise-feedback ${feedbackBelowButtons ? 'feedback-line-break' : ''} ${ok ? 'ok' : 'warn'}">${escapeHtml(message)}</div>`;
       const lesson10IntroHtml = currentLesson === 10 ? '<p class="muted"><b>קוד סודי לכספת:</b> אחרי כל תיקון נכון רשמו את המספר והמילה שמופיעים על מסך הציור.</p><details class="muted" style="margin:7px 0;"><summary style="cursor:pointer;font-weight:900;">מה זה דיבאג?</summary><p style="margin:6px 0 0;">דיבאג פירושו למצוא טעות בבלוקים או בקוד ולתקן אותה. בסוף המילים שרשמתם ירכיבו כלל דיבאג.</p></details>' : '';
       const lesson11IntroHtml = currentLesson === 11 ? '<details class="muted" style="margin:7px 0;"><summary style="cursor:pointer;font-weight:900;">מה זו הערת קוד?</summary><p style="margin:6px 0 0;">הערה היא פתק למתכנת/ת: היא מסבירה את הקוד, אבל לא מזיזה את הצב ולא מציירת. ההערה לא נראית בציור — היא מופיעה רק בקוד Python כשורת #.</p></details>' : '';
+      const lesson12CumulativeHtml = isLesson12CumulativeExercise() ? `<div class="secret-reveal"><small><b>ממשיכים מהציור הקודם:</b> הציור שכבר הצליח נשאר על המסך, ובאזור הבלוקים עובדים רק על התוספת של התרגיל הזה.</small><button class="btn reset" id="lesson12ShowAllBlocksBtn" type="button" style="margin-top:8px;">${lesson12ShowingPreviousBlocks ? 'הצג רק את בלוקי התרגיל הנוכחי' : 'הצג גם בלוקים קודמים'}</button></div>` : '';
       const secretRevealHtml = lesson10SecretRevealHtml(ex);
       updateLesson10CanvasSecret(ex);
-      missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div>${lesson10IntroHtml}${lesson11IntroHtml}<p><b>${escapeHtml(ex.prompt || '')}</b></p>${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p>${(isChallengeExercise(ex) || isRunOnlyExampleExercise(ex)) ? '' : `<p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}`}${writingHtml}<div class="exercise-bottom"><div class="exercise-controls">${(isTip || isChallengeExercise(ex) || isSelectionOnly || isRunOnlyExampleExercise(ex)) ? '' : '<button class="btn run" id="checkExerciseBtn">✅ בדוק תרגיל</button>'}${resetButton}<button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${nextButtonLabel}</button></div>${feedbackBelowButtons ? '<br>' : feedbackHtml}</div>${feedbackBelowButtons ? feedbackHtml : ''}${secretRevealHtml}</div>`;
+      missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div>${lesson10IntroHtml}${lesson11IntroHtml}${lesson12CumulativeHtml}<p><b>${escapeHtml(ex.prompt || '')}</b></p>${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p>${(isChallengeExercise(ex) || isRunOnlyExampleExercise(ex)) ? '' : `<p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}`}${writingHtml}<div class="exercise-bottom"><div class="exercise-controls">${(isTip || isChallengeExercise(ex) || isSelectionOnly || isRunOnlyExampleExercise(ex)) ? '' : '<button class="btn run" id="checkExerciseBtn">✅ בדוק תרגיל</button>'}${resetButton}<button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${nextButtonLabel}</button></div>${feedbackBelowButtons ? '<br>' : feedbackHtml}</div>${feedbackBelowButtons ? feedbackHtml : ''}${secretRevealHtml}</div>`;
       if(feedbackBelowButtons && message){
         requestAnimationFrame(()=>missionEl.scrollTo({top: missionEl.scrollHeight, behavior:'smooth'}));
       }
@@ -8638,6 +8745,15 @@
         }
         await run(parsed.actions);
         renderCurrentExercise('הרצנו את הקוד שכתבתם — אפשר להוסיף עוד שורות או לבדוק את התרגיל.', true);
+      });
+      const showAllBlocksBtn = document.getElementById('lesson12ShowAllBlocksBtn');
+      if(showAllBlocksBtn) showAllBlocksBtn.addEventListener('click',()=>{
+        if(lesson12ShowingPreviousBlocks){
+          withPreservedDrawing(()=>lesson12LoadCurrentOnlyWorkspace());
+        } else {
+          lesson12ShowPreviousBlocks();
+        }
+        renderCurrentExercise(lesson12ShowingPreviousBlocks ? 'עכשיו מוצגים גם הבלוקים הקודמים. אפשר להריץ את כל הקוד של הרחוב.' : 'חזרנו למצב קצר — מוצגים רק בלוקי התרגיל הנוכחי.', true);
       });
       const checkBtn = document.getElementById('checkExerciseBtn');
       if(checkBtn) checkBtn.addEventListener('click', checkExercise);
@@ -10054,13 +10170,17 @@
         return;
       }
       const snapshot = createCodeSnapshot();
+      const validationSnapshot = lesson12SnapshotWithPrior(snapshot);
       const skipRun = currentLesson === 3 && ex.id === 5;
       if(!skipRun) await run(snapshot.actions);
-      activeValidationSnapshot = snapshot;
-      const problems = validateExercise(snapshot);
+      activeValidationSnapshot = validationSnapshot;
+      const problems = validateExercise(validationSnapshot);
       activeValidationSnapshot = null;
       exercisePassed = problems.length === 0;
-      if(exercisePassed) completedSet().add(currentExerciseIndex);
+      if(exercisePassed){
+        completedSet().add(currentExerciseIndex);
+        rememberLesson12Success(currentExerciseIndex, currentWorkspaceXml(), snapshot);
+      }
       lesson10CurrentRevealKey = (currentLesson === 10 && exercisePassed) ? `${currentLesson}:${currentExerciseIndex}:${currentWorkspaceXml()}` : '';
       renderCurrentExercise(exercisePassed ? 'מעולה, אפשר להמשיך.' : problems[0], exercisePassed);
     }
@@ -10356,7 +10476,16 @@
       }
       else checkExercise();
     });
-    document.getElementById('resetBtn').addEventListener('click',()=>{ lesson10CurrentRevealKey = ''; updateLesson10CanvasSecret(); resetDrawing(true); saveProgress(); });
+    document.getElementById('resetBtn').addEventListener('click',()=>{
+      lesson10CurrentRevealKey = '';
+      updateLesson10CanvasSecret();
+      if(isLesson12CumulativeExercise() && !lesson12ShowingPreviousBlocks && restoreLesson12ReadyBase()){
+        statusEl.textContent = 'ניקינו רק את התוספת — הציור הקודם נשאר';
+      } else {
+        resetDrawing(true);
+      }
+      saveProgress();
+    });
     document.getElementById('demoBtn').addEventListener('click',()=>{ lesson10CurrentRevealKey = ''; updateLesson10CanvasSecret(); loadDemo(); });
     workspace.addChangeListener((event)=>{
       if(event.type === Blockly.Events.SELECTED){

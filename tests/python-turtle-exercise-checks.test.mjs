@@ -210,7 +210,7 @@ assert.match(html, /exercisePassed = completedSet\(\)\.has\(currentExerciseIndex
 
 assert.match(html, /function createCodeSnapshot\(\)[\s\S]*actions:getActions\(\)\.map[\s\S]*blockTypes:connectedBlocks\.map[\s\S]*repeatPatterns/, 'exercise checks snapshot the code and repeat structure at the moment the run starts');
 
-assert.match(html, /if\(!skipRun\) await run\(snapshot\.actions\)[\s\S]*const problems = validateExercise\(snapshot\)/, 'exercise checks validate the same code snapshot that the turtle just ran');
+assert.match(html, /const validationSnapshot = lesson12SnapshotWithPrior\(snapshot\)[\s\S]*if\(!skipRun\) await run\(snapshot\.actions\)[\s\S]*const problems = validateExercise\(validationSnapshot\)/, 'exercise checks run the visible code and validate the full lesson-12 cumulative snapshot when needed');
 
 assert.match(html, /function hasBlock\(type\)\{[\s\S]*activeValidationSnapshot[\s\S]*blockTypes\.includes\(type\)/, 'block-presence validators use the run snapshot during checks, not live mid-run edits');
 
