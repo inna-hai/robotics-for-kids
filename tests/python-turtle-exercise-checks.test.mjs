@@ -247,7 +247,7 @@ assert.match(html, /exercisePassed = completedSet\(\)\.has\(currentExerciseIndex
 
 assert.match(html, /function createCodeSnapshot\(\)[\s\S]*actions:getActions\(\)\.map[\s\S]*blockTypes:connectedBlocks\.map[\s\S]*repeatPatterns/, 'exercise checks snapshot the code and repeat structure at the moment the run starts');
 
-assert.match(html, /const validationSnapshot = lesson12SnapshotWithPrior\(snapshot\)[\s\S]*if\(!skipRun\) await run\(snapshot\.actions\)[\s\S]*const problems = validateExercise\(validationSnapshot\)/, 'exercise checks run the visible code and validate the full lesson-12 cumulative snapshot when needed');
+assert.match(html, /const validationSnapshot = snapshotWithCumulativePrior\(snapshot\)[\s\S]*if\(!skipRun\) await run\(snapshot\.actions\)[\s\S]*const problems = validateExercise\(validationSnapshot\)/, 'exercise checks run the visible code and validate the full cumulative snapshot when needed');
 
 assert.match(html, /function hasBlock\(type\)\{[\s\S]*activeValidationSnapshot[\s\S]*blockTypes\.includes\(type\)/, 'block-presence validators use the run snapshot during checks, not live mid-run edits');
 
@@ -509,6 +509,20 @@ assert.match(html, /תרגול 7 — מכונית קטנה בכביש[\s\S]*מל
 assert.match(html, /אתגר רשות — אוטובוס עם חלונות[\s\S]*גוף ארוך[\s\S]*חלונות קטנים בלולאה/, 'lesson 12 optional challenge is a bus with looped windows');
 assert.match(html, /אתגר רשות — כותבים Python קצר[\s\S]*כתבו Python קצר בתיבה[\s\S]*העתיקו חלק קטן/, 'lesson 12 includes an optional Python code-writing challenge with the existing text box flow');
 assert.match(html, /currentLesson === 12 && ex\?\.id === 9[\s\S]*# קווקו \/ גלגל \/ אור ברמזור/, 'lesson 12 Python code challenge uses the existing writable textarea placeholder');
+assert.match(html, /function isLesson13CumulativeExercise\(index=currentExerciseIndex\)[\s\S]*currentLesson === 13[\s\S]*ex\.id >= 3 && ex\.id <= 7/, 'lesson 13 keeps the train drawing on canvas while exercises 3-7 add only the new part');
+assert.match(html, /בלוקים קודמים של הרכבת[\s\S]*lesson13ShowAllBlocksBtn/, 'lesson 13 has a toggle for showing previous train blocks');
+assert.match(html, /function snapshotWithCumulativePrior\(snapshot[\s\S]*lesson13PriorActions/, 'lesson 13 validators include prior train actions while students work on only the current addition');
+assert.match(html, /function lesson13PriorXml\(index=currentExerciseIndex\)[\s\S]*directPriorIndex = index - 1[\s\S]*directPriorIndex - 1[\s\S]*priorIndex >= 0/, 'lesson 13 previous-block toggle falls back to the nearest saved prior train blocks only when the direct prior exercise is missing');
+assert.match(html, /עדיין אין בלוקים קודמים שמורים לתרגיל הזה/, 'lesson 13 explains when previous train blocks are not available yet');
+assert.match(html, /LESSON12_BLOCK_BACKUP_KEY[\s\S]*function saveLesson12SafetyBackup[\s\S]*localStorage\.setItem/, 'lesson 12 saves a local safety backup before hiding or replacing street blocks');
+assert.match(html, /function lesson12PriorXml\(index=currentExerciseIndex\)[\s\S]*lesson12SafetyBackupXml/, 'lesson 12 previous-block toggle can recover from the safety backup');
+assert.match(html, /LESSON13_BLOCK_BACKUP_KEY[\s\S]*function saveLesson13SafetyBackup[\s\S]*localStorage\.setItem/, 'lesson 13 saves a local safety backup before hiding or replacing train blocks');
+assert.match(html, /function lesson13PriorXml\(index=currentExerciseIndex\)[\s\S]*lesson13SafetyBackupXml/, 'lesson 13 previous-block toggle can recover from the safety backup');
+assert.match(html, /function lesson13PriorXml\(index=currentExerciseIndex\)[\s\S]*directPriorIndex = index - 1[\s\S]*directPriorXml[\s\S]*directPriorIndex - 1/, 'lesson 13 uses the direct previous exercise blocks first and only falls back farther back if they are missing');
+assert.match(html, /function combinePriorAndCurrentXml\(priorXml, currentXml\)[\s\S]*xmlAlreadyIncludesPrior[\s\S]*return currentXml/, 'cumulative block restore avoids duplicating prior blocks that are already in the current workspace');
+assert.match(html, /if\(ex\.id === 3\)\{[\s\S]*needsNewAddition && !hasEngineAddition\(currentActions\)[\s\S]*מלבן עם גלגלים וארובה/, 'lesson 13 exercise 3 requires a new engine addition, not only prior train blocks');
+assert.match(html, /if\(ex\.id === 5\)\{[\s\S]*needsNewAddition[\s\S]*שינוי צבע וגם שינוי עובי חדשים/, 'lesson 13 exercise 5 requires new styling work, not only prior train blocks');
+
 assert.doesNotMatch(html, /"id": 12,[\s\S]{0,2500}בנו בית שני קטן יותר/, 'lesson 12 no longer keeps the old easy second-house task');
 assert.match(html, /if\(currentLesson === 12\)\{[\s\S]*ex\.id === 1[\s\S]*repeatUsesLengthShape\(4, 90\)[\s\S]*repeatShapeMatches\(3, 120\)/, 'lesson 12 exercise 1 validates a Hebrew length-variable house with square walls and triangle roof');
 assert.match(html, /if\(currentLesson === 12\)\{[\s\S]*ex\.id === 3[\s\S]*קווקווי הנתיב[\s\S]*לפחות 4 חזרות[\s\S]*cleanTransitionCount\(actions\) < 1/, 'lesson 12 lane dashes validate repeat and clean pen transitions');

@@ -7882,7 +7882,13 @@
     const lesson12CumulativeXml = {};
     const lesson12CumulativeActions = {};
     const lesson12BaseImageData = {};
+    const lesson12SafetyXml = {};
     let lesson12ShowingPreviousBlocks = false;
+    const lesson13CurrentOnlyXml = {};
+    const lesson13CumulativeXml = {};
+    const lesson13CumulativeActions = {};
+    const lesson13BaseImageData = {};
+    let lesson13ShowingPreviousBlocks = false;
     const PROGRESS_KEY = 'python-turtle-progress-v2';
     // שיעור 10: שכבת רמזים מבודדת וקלה לביטול. אם נרצה לחזור אחורה — משנים ל־false או מוחקים את הבלוק הזה ואת קריאת lesson10SecretRevealHtml.
     const DEBUG_ESCAPE_REVEALS_ENABLED = true;
@@ -8140,12 +8146,12 @@
       const token = ++runToken;
       document.getElementById('runBtn').disabled = true;
       document.getElementById('checkExerciseBtn')?.setAttribute('disabled','');
-      const useLesson12Base = isLesson12CumulativeExercise() && !lesson12ShowingPreviousBlocks && !!lesson12BaseImageData[lesson12CumulativeKey()];
-      if(useLesson12Base) restoreLesson12ReadyBase();
+      const useReadyBase = shouldUseCumulativeReadyBase();
+      if(useReadyBase) restoreCumulativeReadyBase();
       else resetDrawing(true);
       const actions=actionsSnapshot || getActions();
       if(!actions.length){statusEl.textContent='גררו בלוקים קודם 🙂';document.getElementById('runBtn').disabled = false;document.getElementById('checkExerciseBtn')?.removeAttribute('disabled');return;}
-      statusEl.textContent=useLesson12Base ? 'משאירים את הציור הקודם ומריצים רק את התוספת...' : 'מאפסים את הציור...';
+      statusEl.textContent=useReadyBase ? 'משאירים את הציור הקודם ומריצים רק את התוספת...' : 'מאפסים את הציור...';
       await sleep(450);
       statusEl.textContent=`מריץ ${actions.length} פקודות...`;
       const vars = {length:100};
@@ -8356,8 +8362,54 @@
         .join('');
       return blocks ? `<xml>${blocks}</xml>` : '';
     }
+    function workspaceBlockIds(xml){
+      return [...String(xml || '').matchAll(/<block[^>]*id="([^"]+)"/g)].map(match=>match[1]);
+    }
+    function xmlAlreadyIncludesPrior(currentXml, priorXml){
+      const priorIds = workspaceBlockIds(priorXml);
+      if(!priorIds.length) return false;
+      const currentIds = new Set(workspaceBlockIds(currentXml));
+      return priorIds.every(id=>currentIds.has(id));
+    }
+    function combinePriorAndCurrentXml(priorXml, currentXml){
+      if(xmlHasBlocks(priorXml) && xmlAlreadyIncludesPrior(currentXml, priorXml)) return currentXml;
+      return combineWorkspaceXml(priorXml, currentXml) || currentXml || priorXml || '';
+    }
     function lesson12CumulativeKey(index=currentExerciseIndex){
       return `${currentLesson}:${index+1}`;
+    }
+
+    function lesson12StoredBackups(){
+      try{ return JSON.parse(localStorage.getItem(LESSON12_BLOCK_BACKUP_KEY) || '{}') || {}; } catch { return {}; }
+    }
+    function lesson12SafetyBackupXml(index=currentExerciseIndex){
+      const key = lesson12CumulativeKey(index);
+      if(xmlHasBlocks(lesson12SafetyXml[key])) return lesson12SafetyXml[key];
+      const stored = lesson12StoredBackups()[key];
+      return xmlHasBlocks(stored) ? stored : '';
+    }
+    function saveLesson12SafetyBackup(index=currentExerciseIndex, xml=currentWorkspaceXml()){
+      if(currentLesson !== 12 || !xmlHasBlocks(xml)) return;
+      const key = lesson12CumulativeKey(index);
+      const existing = lesson12SafetyBackupXml(index);
+      if(existing && xmlBlockCount(existing) > xmlBlockCount(xml)) return;
+      lesson12SafetyXml[key] = xml;
+      try{
+        const stored = lesson12StoredBackups();
+        stored[key] = xml;
+        localStorage.setItem(LESSON12_BLOCK_BACKUP_KEY, JSON.stringify(stored));
+      } catch {}
+    }
+    function lesson12PriorXml(index=currentExerciseIndex){
+      if(currentLesson !== 12 || index <= 0) return '';
+      const directPriorIndex = index - 1;
+      const directPriorXml = lesson12CumulativeXml[lesson12CumulativeKey(directPriorIndex)] || lesson12SafetyBackupXml(directPriorIndex);
+      if(xmlHasBlocks(directPriorXml)) return directPriorXml;
+      for(let priorIndex = directPriorIndex - 1; priorIndex >= 0; priorIndex--){
+        const xml = lesson12CumulativeXml[lesson12CumulativeKey(priorIndex)] || lesson12SafetyBackupXml(priorIndex);
+        if(xmlHasBlocks(xml)) return xml;
+      }
+      return '';
     }
     function isLesson12CumulativeExercise(index=currentExerciseIndex){
       const ex = currentExercises()[index];
@@ -8365,7 +8417,11 @@
     }
     function lesson12PriorActions(index=currentExerciseIndex){
       if(currentLesson !== 12 || index <= 0) return [];
-      return (lesson12CumulativeActions[lesson12CumulativeKey(index - 1)] || []).map(action=>({...action}));
+      for(let priorIndex = index - 1; priorIndex >= 0; priorIndex--){
+        const actions = lesson12CumulativeActions[lesson12CumulativeKey(priorIndex)];
+        if(actions?.length) return actions.map(action=>({...action}));
+      }
+      return [];
     }
     function lesson12SnapshotWithPrior(snapshot, index=currentExerciseIndex){
       if(!isLesson12CumulativeExercise(index) || lesson12ShowingPreviousBlocks) return snapshot;
@@ -8374,6 +8430,7 @@
     function rememberLesson12Success(index=currentExerciseIndex, currentOnlyXml=currentWorkspaceXml(), snapshot=null){
       if(currentLesson !== 12) return;
       const key = lesson12CumulativeKey(index);
+      saveLesson12SafetyBackup(index, currentOnlyXml);
       const actions = snapshot?.actions || getActions();
       if(lesson12ShowingPreviousBlocks){
         lesson12CumulativeXml[key] = currentOnlyXml;
@@ -8381,14 +8438,15 @@
         return;
       }
       lesson12CurrentOnlyXml[key] = currentOnlyXml;
-      const priorXml = index > 0 ? lesson12CumulativeXml[lesson12CumulativeKey(index - 1)] : '';
-      lesson12CumulativeXml[key] = combineWorkspaceXml(priorXml, currentOnlyXml) || currentOnlyXml;
+      const priorXml = lesson12PriorXml(index);
+      lesson12CumulativeXml[key] = combinePriorAndCurrentXml(priorXml, currentOnlyXml);
       lesson12CumulativeActions[key] = isLesson12CumulativeExercise(index)
         ? [...lesson12PriorActions(index), ...actions.map(action=>({...action}))]
         : actions.map(action=>({...action}));
     }
     function lesson12LoadCurrentOnlyWorkspace(index=currentExerciseIndex){
       if(!isLesson12CumulativeExercise(index)) return false;
+      saveLesson12SafetyBackup(index);
       lesson12ShowingPreviousBlocks = false;
       const key = lesson12CumulativeKey(index);
       return restoreXml(lesson12CurrentOnlyXml[key] || emptyPythonWorkspaceXml());
@@ -8408,7 +8466,8 @@
       syncCanvasSize(false);
       ctx.clearRect(0,0,canvas.width,canvas.height);
       ctx.putImageData(base, 0, 0);
-      turtle={x:canvas.width/2,y:canvas.height/2,heading:0,pen:true,color:'#2563eb',width:4};
+      const start = initialTurtlePosition();
+      turtle={x:start.x,y:start.y,heading:0,pen:true,color:'#2563eb',width:4};
       updateTurtle();
       return true;
     }
@@ -8426,17 +8485,140 @@
       return result;
     }
     function lesson12ShowPreviousBlocks(index=currentExerciseIndex){
-      if(!isLesson12CumulativeExercise(index)) return;
+      if(!isLesson12CumulativeExercise(index)) return false;
+      saveLesson12SafetyBackup(index);
       lesson12CurrentOnlyXml[lesson12CumulativeKey(index)] = currentWorkspaceXml();
-      const priorXml = index > 0 ? lesson12CumulativeXml[lesson12CumulativeKey(index - 1)] : '';
-      const fullXml = combineWorkspaceXml(priorXml, lesson12CurrentOnlyXml[lesson12CumulativeKey(index)]);
-      if(withPreservedDrawing(()=>restoreXml(fullXml))) lesson12ShowingPreviousBlocks = true;
+      const priorXml = lesson12PriorXml(index);
+      const fullXml = combinePriorAndCurrentXml(priorXml, lesson12CurrentOnlyXml[lesson12CumulativeKey(index)]);
+      const restored = withPreservedDrawing(()=>restoreXml(fullXml));
+      lesson12ShowingPreviousBlocks = restored && xmlHasBlocks(priorXml);
+      return lesson12ShowingPreviousBlocks;
+    }
+
+    function lesson13CumulativeKey(index=currentExerciseIndex){
+      return `${currentLesson}:${index+1}`;
+    }
+
+    function lesson13StoredBackups(){
+      try{ return JSON.parse(localStorage.getItem(LESSON13_BLOCK_BACKUP_KEY) || '{}') || {}; } catch { return {}; }
+    }
+    function lesson13SafetyBackupXml(index=currentExerciseIndex){
+      const key = lesson13CumulativeKey(index);
+      if(xmlHasBlocks(lesson13SafetyXml[key])) return lesson13SafetyXml[key];
+      const stored = lesson13StoredBackups()[key];
+      return xmlHasBlocks(stored) ? stored : '';
+    }
+    function saveLesson13SafetyBackup(index=currentExerciseIndex, xml=currentWorkspaceXml()){
+      if(currentLesson !== 13 || !xmlHasBlocks(xml)) return;
+      const key = lesson13CumulativeKey(index);
+      const existing = lesson13SafetyBackupXml(index);
+      if(existing && xmlBlockCount(existing) > xmlBlockCount(xml)) return;
+      lesson13SafetyXml[key] = xml;
+      try{
+        const stored = lesson13StoredBackups();
+        stored[key] = xml;
+        localStorage.setItem(LESSON13_BLOCK_BACKUP_KEY, JSON.stringify(stored));
+      } catch {}
+    }
+    function isLesson13CumulativeExercise(index=currentExerciseIndex){
+      const ex = currentExercises()[index];
+      return currentLesson === 13 && ex && ex.id >= 3 && ex.id <= 7;
+    }
+    function lesson13PriorActions(index=currentExerciseIndex){
+      if(currentLesson !== 13 || index <= 0) return [];
+      for(let priorIndex = index - 1; priorIndex >= 0; priorIndex--){
+        const actions = lesson13CumulativeActions[lesson13CumulativeKey(priorIndex)];
+        if(actions?.length) return actions.map(action=>({...action}));
+      }
+      return [];
+    }
+    function lesson13PriorXml(index=currentExerciseIndex){
+      if(currentLesson !== 13 || index <= 0) return '';
+      const directPriorIndex = index - 1;
+      const directPriorXml = lesson13CumulativeXml[lesson13CumulativeKey(directPriorIndex)] || lesson13SafetyBackupXml(directPriorIndex);
+      if(xmlHasBlocks(directPriorXml)) return directPriorXml;
+      for(let priorIndex = directPriorIndex - 1; priorIndex >= 0; priorIndex--){
+        const xml = lesson13CumulativeXml[lesson13CumulativeKey(priorIndex)] || lesson13SafetyBackupXml(priorIndex);
+        if(xmlHasBlocks(xml)) return xml;
+      }
+      return '';
+    }
+    function snapshotWithCumulativePrior(snapshot, index=currentExerciseIndex){
+      if(isLesson12CumulativeExercise(index) && !lesson12ShowingPreviousBlocks) return lesson12SnapshotWithPrior(snapshot, index);
+      if(isLesson13CumulativeExercise(index) && !lesson13ShowingPreviousBlocks) return {...snapshot, currentActions:[...snapshot.actions], actions:[...lesson13PriorActions(index), ...snapshot.actions]};
+      return snapshot;
+    }
+    function rememberLesson13Success(index=currentExerciseIndex, currentOnlyXml=currentWorkspaceXml(), snapshot=null){
+      if(currentLesson !== 13) return;
+      const key = lesson13CumulativeKey(index);
+      saveLesson13SafetyBackup(index, currentOnlyXml);
+      const actions = snapshot?.actions || getActions();
+      if(lesson13ShowingPreviousBlocks){
+        lesson13CumulativeXml[key] = currentOnlyXml;
+        lesson13CumulativeActions[key] = actions.map(action=>({...action}));
+        return;
+      }
+      lesson13CurrentOnlyXml[key] = currentOnlyXml;
+      const priorXml = lesson13PriorXml(index);
+      lesson13CumulativeXml[key] = combinePriorAndCurrentXml(priorXml, currentOnlyXml);
+      lesson13CumulativeActions[key] = isLesson13CumulativeExercise(index)
+        ? [...lesson13PriorActions(index), ...actions.map(action=>({...action}))]
+        : actions.map(action=>({...action}));
+    }
+    function lesson13LoadCurrentOnlyWorkspace(index=currentExerciseIndex){
+      if(!isLesson13CumulativeExercise(index)) return false;
+      saveLesson13SafetyBackup(index);
+      lesson13ShowingPreviousBlocks = false;
+      const key = lesson13CumulativeKey(index);
+      return restoreXml(lesson13CurrentOnlyXml[key] || emptyPythonWorkspaceXml());
+    }
+    function lesson13DrawReadyBase(index=currentExerciseIndex){
+      if(!isLesson13CumulativeExercise(index)) return false;
+      const priorActions = lesson13PriorActions(index);
+      if(!priorActions.length) return false;
+      drawActionsInstant(priorActions, true);
+      try{ lesson13BaseImageData[lesson13CumulativeKey(index)] = ctx.getImageData(0, 0, canvas.width, canvas.height); } catch {}
+      statusEl.textContent = 'הרכבת הקודמת מוכנה — הוסיפו רק את החלק החדש';
+      return true;
+    }
+    function restoreLesson13ReadyBase(index=currentExerciseIndex){
+      const base = lesson13BaseImageData[lesson13CumulativeKey(index)];
+      if(!base) return false;
+      syncCanvasSize(false);
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.putImageData(base, 0, 0);
+      const start = initialTurtlePosition();
+      turtle={x:start.x,y:start.y,heading:0,pen:true,color:'#2563eb',width:4};
+      updateTurtle();
+      return true;
+    }
+    function lesson13ShowPreviousBlocks(index=currentExerciseIndex){
+      if(!isLesson13CumulativeExercise(index)) return false;
+      saveLesson13SafetyBackup(index);
+      lesson13CurrentOnlyXml[lesson13CumulativeKey(index)] = currentWorkspaceXml();
+      const priorXml = lesson13PriorXml(index);
+      const fullXml = combinePriorAndCurrentXml(priorXml, lesson13CurrentOnlyXml[lesson13CumulativeKey(index)]);
+      const restored = withPreservedDrawing(()=>restoreXml(fullXml));
+      lesson13ShowingPreviousBlocks = restored && xmlHasBlocks(priorXml);
+      return lesson13ShowingPreviousBlocks;
+    }
+    function shouldUseCumulativeReadyBase(index=currentExerciseIndex){
+      if(isLesson12CumulativeExercise(index) && !lesson12ShowingPreviousBlocks && !!lesson12BaseImageData[lesson12CumulativeKey(index)]) return true;
+      if(isLesson13CumulativeExercise(index) && !lesson13ShowingPreviousBlocks && !!lesson13BaseImageData[lesson13CumulativeKey(index)]) return true;
+      return false;
+    }
+    function restoreCumulativeReadyBase(index=currentExerciseIndex){
+      if(isLesson12CumulativeExercise(index)) return restoreLesson12ReadyBase(index);
+      if(isLesson13CumulativeExercise(index)) return restoreLesson13ReadyBase(index);
+      return false;
     }
     function isIsolatedExercise(ex){
       return !!starterXmlForExercise(ex);
     }
     function saveActiveWorkspace(index=currentExerciseIndex){
       const xml = currentWorkspaceXml();
+      if(currentLesson === 12) saveLesson12SafetyBackup(index, xml);
+      if(currentLesson === 13) saveLesson13SafetyBackup(index, xml);
       const ex = currentExercises()[index];
       if(isIsolatedExercise(ex)) exerciseWorkspaceXml[baselineKey(index)] = xml;
       else lessonWorkspaceXml[currentLesson] = xml;
@@ -8604,6 +8786,9 @@
         } else if(isLesson12CumulativeExercise(index)){
           lesson12LoadCurrentOnlyWorkspace(index);
           setTimeout(()=>lesson12DrawReadyBase(index), 0);
+        } else if(isLesson13CumulativeExercise(index)){
+          lesson13LoadCurrentOnlyWorkspace(index);
+          setTimeout(()=>lesson13DrawReadyBase(index), 0);
         } else {
           const lesson9Exercise4ContinuesFrom3 = currentLesson === 9 && targetEx?.id === 4;
           const lesson9Exercise3Index = currentExercises().findIndex(ex=>ex?.id === 3);
@@ -8753,9 +8938,10 @@
       const lesson10IntroHtml = currentLesson === 10 ? '<p class="muted"><b>קוד סודי לכספת:</b> אחרי כל תיקון נכון רשמו את המספר והמילה שמופיעים על מסך הציור.</p><details class="muted" style="margin:7px 0;"><summary style="cursor:pointer;font-weight:900;">מה זה דיבאג?</summary><p style="margin:6px 0 0;">דיבאג פירושו למצוא טעות בבלוקים או בקוד ולתקן אותה. בסוף המילים שרשמתם ירכיבו כלל דיבאג.</p></details>' : '';
       const lesson11IntroHtml = currentLesson === 11 ? '<details class="muted" style="margin:7px 0;"><summary style="cursor:pointer;font-weight:900;">מה זו הערת קוד?</summary><p style="margin:6px 0 0;">הערה היא פתק למתכנת/ת: היא מסבירה את הקוד, אבל לא מזיזה את הצב ולא מציירת. ההערה לא נראית בציור — היא מופיעה רק בקוד Python כשורת #.</p></details>' : '';
       const lesson12CumulativeHtml = isLesson12CumulativeExercise() ? `<div class="secret-reveal"><small><b>ממשיכים מהציור הקודם:</b> הציור שכבר הצליח נשאר על המסך, ובאזור הבלוקים עובדים רק על התוספת של התרגיל הזה.</small><button class="btn reset" id="lesson12ShowAllBlocksBtn" type="button" style="margin-top:8px;">${lesson12ShowingPreviousBlocks ? 'הצג רק את בלוקי התרגיל הנוכחי' : 'הצג גם בלוקים קודמים'}</button></div>` : '';
+      const lesson13CumulativeHtml = isLesson13CumulativeExercise() ? `<div class="secret-reveal"><small><b>ממשיכים מהרכבת הקודמת:</b> הרכבת שכבר הצליחה נשארת על המסך. עכשיו בונים רק את התוספת החדשה. אם רוצים לראות או לערוך את הבלוקים הקודמים — פתחו את “בלוקים קודמים של הרכבת”.</small><button class="btn reset" id="lesson13ShowAllBlocksBtn" type="button" style="margin-top:8px;">${lesson13ShowingPreviousBlocks ? '▾ הסתר בלוקים קודמים של הרכבת' : '▸ בלוקים קודמים של הרכבת'}</button></div>` : '';
       const secretRevealHtml = lesson10SecretRevealHtml(ex);
       updateLesson10CanvasSecret(ex);
-      missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div>${lesson10IntroHtml}${lesson11IntroHtml}${lesson12CumulativeHtml}<p><b>${escapeHtml(ex.prompt || '')}</b></p>${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p>${(isChallengeExercise(ex) || isRunOnlyExampleExercise(ex)) ? '' : `<p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}`}${writingHtml}<div class="exercise-bottom"><div class="exercise-controls">${(isTip || isChallengeExercise(ex) || isSelectionOnly || isRunOnlyExampleExercise(ex)) ? '' : '<button class="btn run" id="checkExerciseBtn">✅ בדוק תרגיל</button>'}${resetButton}<button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${nextButtonLabel}</button></div>${feedbackBelowButtons ? '<br>' : feedbackHtml}</div>${feedbackBelowButtons ? feedbackHtml : ''}${secretRevealHtml}</div>`;
+      missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div>${lesson10IntroHtml}${lesson11IntroHtml}${lesson12CumulativeHtml}${lesson13CumulativeHtml}<p><b>${escapeHtml(ex.prompt || '')}</b></p>${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p>${(isChallengeExercise(ex) || isRunOnlyExampleExercise(ex)) ? '' : `<p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}`}${writingHtml}<div class="exercise-bottom"><div class="exercise-controls">${(isTip || isChallengeExercise(ex) || isSelectionOnly || isRunOnlyExampleExercise(ex)) ? '' : '<button class="btn run" id="checkExerciseBtn">✅ בדוק תרגיל</button>'}${resetButton}<button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${nextButtonLabel}</button></div>${feedbackBelowButtons ? '<br>' : feedbackHtml}</div>${feedbackBelowButtons ? feedbackHtml : ''}${secretRevealHtml}</div>`;
       if(feedbackBelowButtons && message){
         requestAnimationFrame(()=>missionEl.scrollTo({top: missionEl.scrollHeight, behavior:'smooth'}));
       }
@@ -8780,7 +8966,22 @@
         } else {
           lesson12ShowPreviousBlocks();
         }
-        renderCurrentExercise(lesson12ShowingPreviousBlocks ? 'עכשיו מוצגים גם הבלוקים הקודמים. אפשר להריץ את כל הקוד של הרחוב.' : 'חזרנו למצב קצר — מוצגים רק בלוקי התרגיל הנוכחי.', true);
+        const lesson12ToggleMessage = lesson12ShowingPreviousBlocks
+          ? 'עכשיו מוצגים גם הבלוקים הקודמים. אפשר להריץ את כל הקוד של הרחוב.'
+          : 'עדיין אין בלוקים קודמים שמורים לתרגיל הזה. אם עבדתם בגרסה ישנה לפני התיקון, ייתכן שהם לא נשמרו. מכאן והלאה נשמר גם גיבוי בטיחותי לבלוקים.';
+        renderCurrentExercise(lesson12ToggleMessage, lesson12ShowingPreviousBlocks);
+      });
+      const showAllLesson13BlocksBtn = document.getElementById('lesson13ShowAllBlocksBtn');
+      if(showAllLesson13BlocksBtn) showAllLesson13BlocksBtn.addEventListener('click',()=>{
+        if(lesson13ShowingPreviousBlocks){
+          withPreservedDrawing(()=>lesson13LoadCurrentOnlyWorkspace());
+        } else {
+          lesson13ShowPreviousBlocks();
+        }
+        const lesson13ToggleMessage = lesson13ShowingPreviousBlocks
+          ? 'עכשיו מוצגים גם הבלוקים הקודמים. אפשר לערוך או להריץ את כל הרכבת.'
+          : 'עדיין אין בלוקים קודמים שמורים לתרגיל הזה. אם עבדתם בגרסה ישנה לפני התיקון, ייתכן שהם לא נשמרו. מכאן והלאה נשמר גם גיבוי בטיחותי לבלוקים.';
+        renderCurrentExercise(lesson13ToggleMessage, lesson13ShowingPreviousBlocks);
       });
       const checkBtn = document.getElementById('checkExerciseBtn');
       if(checkBtn) checkBtn.addEventListener('click', checkExercise);
@@ -9257,6 +9458,11 @@
       const wheelCount = segments.filter(s=>s.width >= 10 && s.length <= 8).length;
       const normalSegments = segments.filter(s=>s.width <= 7 && s.length >= 8);
       return forwards >= 6 && squareTurns >= 4 && wheelCount >= 2 && normalSegments.length >= 4;
+    }
+    function hasEngineAddition(actionList){
+      const segments = drawnSegments(actionList);
+      const normalSegments = segments.filter(s=>s.width <= 7 && s.length >= 8);
+      return hasTrainCarriageUnit(actionList) && trainWheelCount(actionList) >= 2 && normalSegments.length >= 5;
     }
     function hasRepeatedTrainCarriages(minTimes=2){
       return repeatPatternBlocks().some(({times, body})=>times >= minTimes && hasTrainCarriageUnit(body));
@@ -9820,6 +10026,8 @@
         }
       }
       if(currentLesson === 13){
+        const currentActions = snapshot?.currentActions || actions;
+        const needsNewAddition = isLesson13CumulativeExercise() && !lesson13ShowingPreviousBlocks;
         if(ex.id === 1){
           if(!hasTrainCarriageUnit(actions)) return ['כמעט — הקרון צריך לכלול גוף מלבני ושני גלגלים עבים. את החלונות נוסיף בהמשך.'];
           return [];
@@ -9831,18 +10039,21 @@
           return [];
         }
         if(ex.id === 3){
+          if(needsNewAddition && !hasEngineAddition(currentActions)) return ['כמעט — בתרגיל הזה צריך להוסיף קטר חדש: מלבן עם גלגלים וארובה, לא רק להריץ את הקרונות הקודמים.'];
           if(!hasRepeatedTrainCarriages(2)) return ['כמעט — השאירו רכבת קרונות שחוזרת בלולאה.'];
           if(trainWheelCount(actions) < 3) return ['כמעט — הוסיפו גם קטר עם גלגל/ים, לא רק קרונות.'];
-          if(drawnSegments(actions).filter(s=>s.width <= 7 && s.length >= 8).length < 12) return ['כמעט — הקטר צריך להיות ברור: גוף, תא נהג וארובה.'];
+          if(drawnSegments(actions).filter(s=>s.width <= 7 && s.length >= 8).length < 12) return ['כמעט — הקטר צריך להיות ברור: גוף וארובה.'];
           if(!hasShortTrainConnectors(actions)) return ['כמעט — חברו את הקטר לקרון הראשון בקו קצר ומכוון.'];
           return [];
         }
         if(ex.id === 4){
           if(!hasBlock('py_repeat')) return ['כמעט — החלונות צריכים להופיע בעזרת לולאה.'];
+          if(needsNewAddition && drawnSegments(currentActions).filter(s=>s.width <= 5 && s.length >= 6 && s.length <= 35).length < 3) return ['כמעט — בתרגיל הזה צריך להוסיף חלונות חדשים בלולאה, לא רק להריץ את הבלוקים הקודמים.'];
           if(drawnSegments(actions).filter(s=>s.width <= 5 && s.length >= 6 && s.length <= 35).length < 6) return ['כמעט — ציירו כמה חלונות קטנים וברורים בתוך הקרונות.'];
           return [];
         }
         if(ex.id === 5){
+          if(needsNewAddition && (!currentActions.some(a=>a.cmd === 'color') || !currentActions.some(a=>a.cmd === 'width'))) return ['כמעט — בתרגיל הזה צריך להוסיף שינוי צבע וגם שינוי עובי חדשים, לא רק להריץ את הבלוקים הקודמים.'];
           if(actionDrawnColors(actions).size < 2) return ['כמעט — הרכבת צריכה לכלול לפחות שני צבעים שמצוירים בפועל.'];
           if(trainWheelCount(actions) < 2) return ['כמעט — הגלגלים צריכים להיות קווים קצרים עם עט עבה מאוד.'];
           return [];
@@ -9854,7 +10065,9 @@
           return [];
         }
         if(ex.id === 7){
+          if(needsNewAddition && cleanTransitionCount(currentActions) < 1) return ['כמעט — בתרגיל הזה צריך להוסיף מסילה חדשה: עברו למטה בלי לצייר ואז ציירו מסילה.'];
           if(cleanTransitionCount(actions) < 1) return ['כמעט — עברו למטה בלי לצייר לפני שמוסיפים מסילה.'];
+          if(needsNewAddition && drawnSegments(currentActions).filter(s=>s.length >= 80).length < 1) return ['כמעט — בתרגיל הזה צריך לצייר קו מסילה ארוך חדש, לא רק להריץ את הרכבת הקודמת.'];
           if(drawnSegments(actions).filter(s=>s.length >= 80).length < 1) return ['כמעט — המסילה צריכה לכלול לפחות קו ארוך וברור מתחת לרכבת.'];
           return [];
         }
@@ -10291,7 +10504,7 @@
         return;
       }
       const snapshot = createCodeSnapshot();
-      const validationSnapshot = lesson12SnapshotWithPrior(snapshot);
+      const validationSnapshot = snapshotWithCumulativePrior(snapshot);
       const skipRun = currentLesson === 3 && ex.id === 5;
       if(!skipRun) await run(snapshot.actions);
       activeValidationSnapshot = validationSnapshot;
@@ -10301,6 +10514,7 @@
       if(exercisePassed){
         completedSet().add(currentExerciseIndex);
         rememberLesson12Success(currentExerciseIndex, currentWorkspaceXml(), snapshot);
+        rememberLesson13Success(currentExerciseIndex, currentWorkspaceXml(), snapshot);
       }
       lesson10CurrentRevealKey = (currentLesson === 10 && exercisePassed) ? `${currentLesson}:${currentExerciseIndex}:${currentWorkspaceXml()}` : '';
       renderCurrentExercise(exercisePassed ? 'מעולה, אפשר להמשיך.' : problems[0], exercisePassed);
@@ -10548,7 +10762,7 @@
     document.getElementById('resetBtn').addEventListener('click',()=>{
       lesson10CurrentRevealKey = '';
       updateLesson10CanvasSecret();
-      if(isLesson12CumulativeExercise() && !lesson12ShowingPreviousBlocks && restoreLesson12ReadyBase()){
+      if(shouldUseCumulativeReadyBase() && restoreCumulativeReadyBase()){
         statusEl.textContent = 'ניקינו רק את התוספת — הציור הקודם נשאר';
       } else {
         resetDrawing(true);
