@@ -25,8 +25,10 @@ assert.match(html, /תרגול 5 — ריבוע משתנה/, 'lesson 4 exercise 
 assert.match(html, /function actionDrawsStyledSquare/, 'lesson 4 exercise 5 validates the styled square');
 
 const loadDemoSource = html.slice(html.indexOf('function loadDemo()'), html.indexOf('function updateLessonUrl'));
-assert.match(loadDemoSource, /const existingTopBlocks = workspace\.getTopBlocks\(false\)\.length[\s\S]*Blockly\.Xml\.domToWorkspace\(demoXml, workspace\)/, "demo button appends example blocks to the existing workspace instead of replacing the child's blocks");
-assert.doesNotMatch(loadDemoSource, /workspace\.clear\(\)/, 'demo button does not clear existing blocks before adding the example');
+assert.doesNotMatch(loadDemoSource, /workspace\.clear\(\)/, 'demo button does not erase the child workspace before adding the example');
+assert.match(loadDemoSource, /const existingTopBlocks = workspace\.getTopBlocks\(false\)[\s\S]*lastSelectedBlockId[\s\S]*const anchor = selected \|\| remembered \|\| existingTopBlocks\[0\][\s\S]*nextX = xy\.x;[\s\S]*nextY = xy\.y;[\s\S]*block\.setAttribute\('x', String\(nextX \+ 12 \* index\)\);[\s\S]*Blockly\.Xml\.domToWorkspace\(demoXml, workspace\)[\s\S]*statusEl\.textContent = '';/, 'demo button appends visible editable example blocks over the selected/existing workspace block without adding a status sentence');
+assert.doesNotMatch(loadDemoSource, /workspace\.zoomToFit[\s\S]*workspace\.scrollCenter/, 'demo button keeps the current view instead of jumping away from the child blocks');
+assert.doesNotMatch(loadDemoSource, /workspace\.scroll\(nextX - 40, nextY - 40\)/, 'demo button does not scroll away from the child blocks to show only the appended example');
 assert.match(loadDemoSource, /5: "<xml><block type=\\"py_forward\\"[\s\S]*py_penup[\s\S]*py_pendown[\s\S]*py_forward/, 'lesson 5 demo button uses the small pen-up demo, not the old two-shape example');
 
 assert.match(html, /netTurn = bodyActions\.reduce/, 'shape validator rejects loops whose opposite turns cancel out instead of forming a shape');
@@ -148,7 +150,7 @@ assert.doesNotMatch(html, /אתגר — עיר קטנה עם בתים נפרדי
 assert.match(html, /currentLesson === 5 && ex\.id === 7[\s\S]*actionDrawnColors\(actions\)\.size < 3[\s\S]*cleanTransitions < 2/, 'lesson 5 three-shapes exercise validates colors and pen-up transitions');
 assert.match(html, /currentLesson === 5 && ex\?\.id === 8\) return 5/, 'lesson 5 final Python writing challenge requires five short lines');
 assert.match(html, /currentLesson === 5 && ex\?\.id === 8\) return '<xml><block type="py_python" x="20" y="20"><\/block><\/xml>'/, 'lesson 5 final Python writing challenge starts from a clean workspace');
-assert.match(html, /currentLesson === 5 && ex\?\.id === 8 \? 'forward\(70\).*penup\(\).*pendown\(\).*forward\(70\)'/, 'lesson 5 final Python writing challenge keeps the helpful placeholder example');
+assert.match(html, /currentLesson === 5 && ex\?\.id === 8\) return 'forward\(70\).*?penup\(\).*?pendown\(\).*?forward\(70\)'/, 'lesson 5 final Python writing challenge keeps the helpful placeholder example');
 assert.match(html, /כתבו בקוד Python פקודות שגורמות לצב לצייר קו[\s\S]*penup\(\)[\s\S]*pendown\(\)/, 'lesson 5 final Python writing challenge asks for forward, penup, forward, pendown, forward');
 assert.match(html, /currentLesson === 5 && ex\?\.id === 8[\s\S]*matchesPenLiftLine[\s\S]*forward[\s\S]*penup[\s\S]*pendown/, 'lesson 5 final Python writing challenge validates pen lift sequence');
 
@@ -208,7 +210,7 @@ assert.match(html, /exercisePassed = completedSet\(\)\.has\(currentExerciseIndex
 
 assert.match(html, /function createCodeSnapshot\(\)[\s\S]*actions:getActions\(\)\.map[\s\S]*blockTypes:connectedBlocks\.map[\s\S]*repeatPatterns/, 'exercise checks snapshot the code and repeat structure at the moment the run starts');
 
-assert.match(html, /if\(!skipRun\) await run\(snapshot\.actions\)[\s\S]*const problems = validateExercise\(snapshot\)/, 'exercise checks validate the same code snapshot that the turtle just ran');
+assert.match(html, /const validationSnapshot = lesson12SnapshotWithPrior\(snapshot\)[\s\S]*if\(!skipRun\) await run\(snapshot\.actions\)[\s\S]*const problems = validateExercise\(validationSnapshot\)/, 'exercise checks run the visible code and validate the full lesson-12 cumulative snapshot when needed');
 
 assert.match(html, /function hasBlock\(type\)\{[\s\S]*activeValidationSnapshot[\s\S]*blockTypes\.includes\(type\)/, 'block-presence validators use the run snapshot during checks, not live mid-run edits');
 
@@ -396,23 +398,28 @@ assert.match(html, /לא חייבים מילים או מספרים מדויקי�
 assert.match(html, /ההערה לא נראית בציור[\s\S]*רק בקוד Python/, 'lesson 11 exercise 1 explains comments are visible only in Python code');
 assert.match(html, /ex\.id === 2[\s\S]*comments\.some\(text=>!text\.trim\(\) \|\| text\.trim\(\)\.length < 2\)/, 'lesson 11 exercise 2 requires non-empty street-name comments without forcing the word רחוב');
 assert.match(html, /הערה עם שם הרחוב/, 'lesson 11 exercise 2 asks learners to write street names in comments');
-assert.match(html, /currentLesson === 11 && ex\?\.id === 3\) return \['py_comment'\]/, 'lesson 11 selection exercise targets the comment block');
-assert.match(html, /if\(type === 'py_comment'\) return '#'/, 'lesson 11 comment selection highlights the Python # line');
+assert.doesNotMatch(html, /currentLesson === 11 && ex\?\.id === 3\) return \['py_comment'\]/, 'lesson 11 exercise 3 is no longer only a comment-selection exercise');
+assert.match(html, /"title": "תרגול 3 — שני רחובות לפי length"[\s\S]*שני רחובות מחוברים שמשתמשים באותו length[\s\S]*שנו את length/, 'lesson 11 exercise 3 is now a real connected-streets length exercise with concise wording');
 assert.match(html, /function renderCodeLineText\(text\)[\s\S]*commentMatch[\s\S]*<span dir="rtl" class="code-comment-text">/, 'Hebrew Python comments are isolated RTL after the # so text like רחוב א\' is not visually flipped');
-assert.match(html, /currentLesson === 11 && ex\?\.id === 3[\s\S]*<block type="py_comment"[\s\S]*רחוב ראשי/, 'lesson 11 exercise 3 has generated comment starter code');
-assert.match(html, /if\(currentLesson === 11\)\{[\s\S]*ex\.id === 4[\s\S]*hasCommentBeforeFirstDraw\(actions, \/שכונה\|מסגרת\|אורך\|רחוב\|רחובות\/\)[\s\S]*repeatUsesLengthShape\(4, 90\)/, 'lesson 11 exercise 4 validates a relevant comment plus a scaled square block using length');
+assert.match(html, /if\(currentLesson === 11\)\{[\s\S]*ex\.id === 3[\s\S]*comments\.length < 2[\s\S]*lengthSetBeforeFirstUse\(actions, null\)[\s\S]*forwardVarCount\(actions\) < 2[\s\S]*Number\(a\.v\) === 90[\s\S]*setLengthValues\(actions\)[\s\S]*שנו את length לערך אחר/, 'lesson 11 exercise 3 validates two comments, length, two length-based connected streets, a straight turn, and a second run after changing length');
+assert.match(html, /if\(currentLesson === 11\)\{[\s\S]*ex\.id === 4[\s\S]*hasCommentBeforeFirstDraw\(actions, \/שכונה\|מסגרת\|אורך\|רחוב\|רחובות\|אזורים\|חלוקה\/\)[\s\S]*repeatUsesLengthShape\(4, 90\)[\s\S]*drawnForwardVarCount\(actions\) < 6[\s\S]*penUpMoveCount\(actions\) < 2/, 'lesson 11 exercise 4 validates a relevant comment, scaled square frame, and two internal division lines');
 
-assert.match(html, /"title": "תרגול 5 — שתי נקודות עניין נקיות"/, 'lesson 11 removes the too-easy scale-up exercise and makes points-of-interest exercise 5');
-assert.match(html, /המשיכו מהמפה שבניתם[\s\S]*בתוך או ליד מסגרת השכונה/, 'lesson 11 exercise 5 connects map symbols to the existing neighborhood map instead of floating symbols');
-assert.match(html, /"title": "תרגול 6 — דיבאג רחובות עם אורך"[\s\S]*כל הרחובות צריכים להשתמש באורך/, 'lesson 11 exercise 6 title and prompt match street-only starter code');
+assert.match(html, /"title": "תרגול 5 — סמלי מפה באזורים"/, 'lesson 11 makes points-of-interest exercise 5 place map symbols in divided areas');
+assert.match(html, /המשיכו מהמפה המחולקת[\s\S]*ריבוע קטן לבית[\s\S]*משולש קטן לפארק/, 'lesson 11 exercise 5 connects square and triangle symbols to the divided neighborhood map with concise wording');
+assert.match(html, /"title": "תרגול 6 — דיבאג רחובות עם אורך"[\s\S]*שני באגים[\s\S]*רחוב צדדי שצויר עבה מדי[\s\S]*רחוב צדדי שיצא אלכסוני/, 'lesson 11 exercise 6 prompt clearly states the two street-debug bugs');
 assert.match(html, /if\(currentLesson === 11\)\{[\s\S]*ex\.id === 5[\s\S]*actionDrawnColors\(actions\)\.size < 2[\s\S]*ex\.id === 6[\s\S]*forwardVarCount\(actions\) < 3/, 'lesson 11 validators match renumbered points and debug exercises');
-assert.match(html, /שכונה לפי אורך[\s\S]*בקוד Python תראו את השם length[\s\S]*forward\(length\)/, 'lesson 11 exercise 4 hint explains the Hebrew task wording and Python length code');
+assert.match(html, /שכונה מחולקת לפי אורך[\s\S]*length[\s\S]*forward\(length\)/, 'lesson 11 exercise 4 hint explains the Hebrew task wording and Python length code');
 assert.match(html, /function hasScaledMapDebugFix\(actions\)/, 'lesson 11 has a helper for the broken scale-map debug task');
-assert.match(html, /currentLesson === 11 && ex\?\.id === 6[\s\S]*<field name="TEXT">מעבר לרחוב צדדי<\/field>[\s\S]*<field name="TEXT">רחוב צדדי<\/field>[\s\S]*<block type="py_forward"><field name="STEPS">35<\/field>/, 'lesson 11 exercise 6 starter labels the fixed-number side street bug as a street');
-assert.match(html, /if\(currentLesson === 11\)\{[\s\S]*ex\.id === 6[\s\S]*forwardVarCount\(actions\) < 3[\s\S]*penUpMoveCount\(actions\) < 1/, 'lesson 11 exercise 6 validates scaled streets and a clean pen-up transition');
+assert.match(html, /currentLesson === 11 && ex\?\.id === 6[\s\S]*<field name="TEXT">רחוב ראשי עבה<\/field>[\s\S]*<field name="TEXT">באג: רחוב צדדי עבה מדי<\/field>[\s\S]*<field name="TEXT">באג: רחוב צדדי אלכסוני<\/field>/, 'lesson 11 exercise 6 starter is short and clearly labels the two bugs');
+assert.match(html, /if\(currentLesson === 11\)\{[\s\S]*ex\.id === 6[\s\S]*forwardVarCount\(actions\) < 3[\s\S]*thickSideCommentIndex[\s\S]*הרחוב הצדדי הראשון עדיין עבה מדי[\s\S]*רחוב צדדי אלכסוני/, 'lesson 11 exercise 6 validates the specifically marked thick side street and straight side streets');
+assert.match(html, /לפני הרחוב הצדדי העבה מדי שנו את עובי העט[\s\S]*שנו את זווית הפנייה/, 'lesson 11 exercise 6 instructions explain how to fix the width and diagonal bugs');
 assert.match(html, /function hasAdvancedDocumentedMap\(actions\)/, 'lesson 11 has an advanced documented-map validator');
-assert.match(html, /"title": "אתגר — מפה מתקדמת עם מקרא"[\s\S]*אתגר: בנו מפה מתקדמת/, 'lesson 11 exercise 7 is marked as a challenge');
-assert.match(html, /"title": "אתגר — עיר קטנה מתועדת"[\s\S]*5 חלקים מתועדים[\s\S]*4 צבעים שונים[\s\S]*3 מעברים בלי ציור/, 'lesson 11 final challenge is a long structured classroom task');
+assert.match(html, /"title": "תרגול 7 — מפה מסכמת עם מקרא"[\s\S]*בנו מפה מסכמת בבלוקים/, 'lesson 11 exercise 7 is now a required summary block-building exercise');
+assert.match(html, /"title": "אתגר רשות — כותבים Python קצר למפת רחובות"[\s\S]*אתגר רשות למי שסיים[\s\S]*length[\s\S]*שינוי צבע או עובי עט/, 'lesson 11 exercise 8 is now an optional short Python writing challenge, distinct from the required block-building exercise');
+assert.match(html, /currentLesson === 11 && ex\?\.id === 8[\s\S]*אתגר רשות[\s\S]*return true/, 'lesson 11 optional Python challenge does not block Continue');
+assert.match(html, /currentLesson === 11 && ex\?\.id === 8[\s\S]*return 5/, 'lesson 11 Python writing challenge expects a short multi-line answer');
+assert.match(html, /currentLesson === 11 && ex\?\.id === 8[\s\S]*pensize\(8\)[\s\S]*forward\(length\)/, 'lesson 11 Python writing challenge provides a map-street placeholder');
+assert.match(html, /currentLesson === 11 && ex\?\.id === 8[\s\S]*length = מספר[\s\S]*forward\(length\)[\s\S]*פנייה של 90 מעלות[\s\S]*שינוי צבע או עובי עט/, 'lesson 11 Python writing challenge validates length, a straight turn, and styling');
 
 assert.doesNotMatch(html, /if\(!exercisePassed\) completedSet\(\)\.delete\(index\)/, 'completed exercises stay unlocked after revisiting selection exercises');
 assert.match(html, /const alreadyCompleted = completedSet\(\)\.has\(currentExerciseIndex\);[\s\S]*const canContinue = alreadyCompleted \|\|/, 'completed exercises keep Continue unlocked when revisited');
@@ -458,3 +465,23 @@ assert.doesNotMatch(html, /תרגול 4 — משנים ערך אחד והריב�
 
 assert.match(html, /currentLesson === 6 && ex\?\.id === 8[\s\S]*length = מספר[\s\S]*forward\(length\)/, 'lesson 6 Python writing exercise validates length assignment, growth, and forward(length) order');
 assert.match(html, /setLengthMatch[\s\S]*growLengthMatch[\s\S]*forwardLengthMatch/, 'written Python parser accepts length assignment, length growth, and forward(length)');
+
+assert.match(html, /"id": 12,[\s\S]*"title": "רחוב חכם ליד בית"/, 'lesson 12 is redesigned as a smart street scene near a house, not only a traffic light');
+assert.match(html, /"title": "רחוב חכם ליד בית"[\s\S]*בית לפי אורך[\s\S]*כביש עבה[\s\S]*קווקווי נתיב בלולאה[\s\S]*רמזור[\s\S]*תמרור/, 'lesson 12 exercise sequence includes Hebrew length-variable house, thick road, loop lane dashes, traffic light, and sign');
+assert.match(html, /תרגול 7 — מכונית קטנה בכביש[\s\S]*מלבן לגוף[\s\S]*חצי משושה[\s\S]*שני גלגלים[\s\S]*פניות של 60°[\s\S]*תקנו והריצו שוב/, 'lesson 12 exercise 7 guides students to use 60 degree turns and iterate if the car shape is unclear');
+assert.match(html, /אתגר רשות — אוטובוס עם חלונות[\s\S]*גוף ארוך[\s\S]*חלונות קטנים בלולאה/, 'lesson 12 optional challenge is a bus with looped windows');
+assert.match(html, /אתגר רשות — כותבים Python קצר[\s\S]*כתבו Python קצר בתיבה[\s\S]*העתיקו חלק קטן/, 'lesson 12 includes an optional Python code-writing challenge with the existing text box flow');
+assert.match(html, /currentLesson === 12 && ex\?\.id === 9[\s\S]*# קווקו \/ גלגל \/ אור ברמזור/, 'lesson 12 Python code challenge uses the existing writable textarea placeholder');
+assert.doesNotMatch(html, /"id": 12,[\s\S]{0,2500}בנו בית שני קטן יותר/, 'lesson 12 no longer keeps the old easy second-house task');
+assert.match(html, /if\(currentLesson === 12\)\{[\s\S]*ex\.id === 1[\s\S]*repeatUsesLengthShape\(4, 90\)[\s\S]*repeatShapeMatches\(3, 120\)/, 'lesson 12 exercise 1 validates a Hebrew length-variable house with square walls and triangle roof');
+assert.match(html, /if\(currentLesson === 12\)\{[\s\S]*ex\.id === 3[\s\S]*קווקווי הנתיב[\s\S]*לפחות 4 חזרות[\s\S]*cleanTransitionCount\(actions\) < 1/, 'lesson 12 lane dashes validate repeat and clean pen transitions');
+assert.match(html, /function actionDrawsWithLightColor\(actions\)[\s\S]*#facc15[\s\S]*#ec4899[\s\S]*#16a34a[\s\S]*#2563eb/, 'lesson 12 lane dashes require an available light color, not unavailable white');
+assert.match(html, /ex\.id === 3[\s\S]*actionDrawsWithLightColor\(actions\)/, 'lesson 12 exercise 3 validates actual light-colored lane dashes');
+assert.doesNotMatch(html, /צבע לבן או בהיר|קווקווים לבנים|קו לבן קצר/, 'lesson 12 does not ask for unavailable white color in lane dashes');
+assert.match(html, /function hasTrafficLightColors\(actions\)[\s\S]*#ef4444[\s\S]*#facc15[\s\S]*#16a34a/, 'lesson 12 has a helper that requires actual red, yellow, and green traffic-light drawing');
+assert.match(html, /if\(currentLesson === 12\)\{[\s\S]*ex\.id === 7[\s\S]*hasCarBody[\s\S]*upperPartSegments[\s\S]*wheelCount[\s\S]*קווים קצרים עם עט עבה מאוד/, 'lesson 12 exercise 7 asks for a small car with body, upper part, and two thick short wheels');
+assert.match(html, /currentLesson === 12 && ex\?\.id === 6[\s\S]*באג: הבית בצבע הכביש[\s\S]*באג: קווקווי הנתיב התחברו לקו רציף[\s\S]*באג: חסר ירוק ברמזור/, 'lesson 12 debug exercise loads a concrete starter with color, lane-dash transition, and traffic-light bugs');
+assert.match(html, /function firstDrawnSegmentsAvoidColor[\s\S]*function drawnGroupsByColor/, 'lesson 12 has helpers for checking debug fixes precisely');
+assert.match(html, /ex\.id === 6[\s\S]*firstDrawnSegmentsAvoidColor\(actions, 4, '#111827'\)[\s\S]*drawnGroupsByColor\(actions, '#facc15'\) < 4[\s\S]*hasTrafficLightColors\(actions\)/, 'lesson 12 exercise 6 explicitly validates house color, separated yellow lane dashes, and green traffic light');
+
+assert.doesNotMatch(html, /py_raw_code|כתוב קוד Python %1|simulateRawPythonCommand/, 'lesson 12 code-writing challenge does not add a custom raw-code block');
