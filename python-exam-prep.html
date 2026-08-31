@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="לומדת Python אינטראקטיבית לכיתה ז׳ כהכנה למבחן: קוד אמיתי, משוב מיידי ומעקב התקדמות.">
+  <title>Python Quest — הכנה למבחן</title>
+  <link rel="stylesheet" href="css/python-exam-prep.css">
+</head>
+<body>
+  <a class="skip-link" href="#lessonWorkspace">דלגו לתרגול</a>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="index.html" aria-label="חזרה למרכז הלומדות"><span>🐍</span><strong>Python Quest</strong></a>
+      <div class="progress-summary" aria-label="התקדמות בקורס"><span id="progressText">0 מתוך 9 משימות</span><div class="progress-track"><span id="progressBar"></span></div></div>
+    </header>
+    <div class="course-layout">
+      <aside class="mission-sidebar" aria-label="משימות הקורס">
+        <h1>הכנה למבחן</h1>
+        <p>לומדים, מנחשים, מריצים ומתקנים.</p>
+        <nav id="missionNav" class="mission-nav"></nav>
+      </aside>
+      <main id="lessonWorkspace" class="lesson-workspace" tabindex="-1">
+        <section class="lesson-card" aria-live="polite">
+          <div class="lesson-heading"><span id="missionBadge"></span><div><p id="missionKicker"></p><h2 id="missionTitle">טוענים את המשימה…</h2></div></div>
+          <p id="missionStory" class="mission-story"></p>
+          <div id="conceptPanel" class="concept-panel"></div>
+        </section>
+        <section class="challenge-card">
+          <div class="challenge-heading"><div><p id="challengeCounter"></p><h3 id="challengeTitle">מעבדת הקוד</h3></div><span id="challengePoints"></span></div>
+          <section id="beginnerGuide" class="beginner-guide" aria-labelledby="guideHeading">
+            <div class="guide-title-row"><div><span class="guide-eyebrow">לפני שנוגעים בקוד</span><h4 id="guideHeading">לומדים צעד־צעד</h4></div><span id="guideStage" class="guide-stage"></span></div>
+            <p id="guideIdea" class="guide-idea"></p>
+            <div class="guide-terms"><strong>מילון קטן לאתגר</strong><dl id="guideTerms"></dl></div>
+            <details id="guideExample" class="guide-example" open><summary>דוגמה פתורה</summary><div class="guide-example-content"><div><p id="guideExampleExplanation"></p></div><pre id="guideExampleCode" dir="ltr"></pre></div></details>
+            <div class="guide-steps"><strong>איך ניגשים לאתגר?</strong><ol id="guideSteps"></ol></div>
+          </section>
+          <div class="your-turn"><span>עכשיו תורך</span><p id="challengePrompt"></p></div>
+          <div class="input-strip" id="inputStrip" hidden><strong>קלט להרצה:</strong><span id="inputPreview"></span></div>
+          <div class="prediction-panel" id="predictionPanel" hidden>
+            <label for="predictionInput"><strong>קודם מנבאים:</strong> מה יודפס?</label>
+            <div><input id="predictionInput" type="text" dir="ltr" autocomplete="off" aria-describedby="predictionHelp"><button id="checkPredictionBtn" type="button">בדיקת ניבוי</button></div>
+            <small id="predictionHelp">רק אחרי ניבוי נכון נפתח את כפתור ההרצה.</small>
+          </div>
+          <div class="lab-grid">
+            <div class="editor-panel">
+              <div class="panel-label"><span>הקוד שלך</span><button id="resetCodeBtn" type="button">איפוס</button></div>
+              <textarea id="codeEditor" dir="ltr" spellcheck="false" aria-label="עורך קוד Python"></textarea>
+              <div class="lab-actions"><button id="runCodeBtn" class="primary-action" type="button">▶ הרצת קוד</button><button id="hintBtn" type="button">רמז</button></div>
+            </div>
+            <div class="result-panel">
+              <div class="panel-label"><span>תוצאה</span><span id="engineStatus">מכינים את Python…</span></div>
+              <pre id="codeOutput" dir="auto" aria-live="polite">הפלט יופיע כאן.</pre>
+              <div id="turtleStage" class="turtle-stage" hidden><div id="turtleCanvas"></div></div>
+              <div id="feedbackPanel" class="feedback-panel" role="status">הריצו את הקוד כדי לקבל משוב.</div>
+            </div>
+          </div>
+          <div class="challenge-nav"><button id="prevChallengeBtn" type="button">הקודם</button><button id="nextChallengeBtn" type="button">האתגר הבא</button></div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="vendor/skulpt/skulpt.min.js"></script>
+  <script src="vendor/skulpt/skulpt-stdlib.js"></script>
+  <script src="js/student-progress.js"></script>
+  <script src="js/python-exam-prep-data.js"></script>
+  <script src="js/python-exam-prep-checker.js"></script>
+  <script src="js/python-exam-prep.js"></script>
+</body>
+</html>
