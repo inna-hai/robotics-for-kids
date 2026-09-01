@@ -54,6 +54,9 @@ assert.ok(playHtml.includes('updatePointsStatus();') && playHtml.includes(`sizeB
       workspace = Blockly.inject`), 'mission points should refresh and Blockly should be measured before injection');
 assert.ok(playHtml.includes('function currentMissionRule(index)'), 'play page should select the current exercise rule');
 assert.ok(playHtml.includes('return rules[index] || null;') && !playHtml.includes('return rules[index] || rules[0]'), 'current mission validation should not fall back to mission 1 or any other mission');
+assert.ok(playHtml.includes('const completedTreasureSearch = () =>') && playHtml.includes("placedCount('path') >= 3") && playHtml.includes("secondCodeMoveCount() >= 1") && playHtml.includes('state.foundDiamond && (s.gaveTreasure || s.openedDoor)'), 'lesson 10 should only pass after building a path, moving/searching in code two, finding the diamond, and claiming the reward');
+assert.ok(!playHtml.includes("10: [ { ok:() => treasureAction() || hasBlock('hide_diamond') || hasBlock('check_spot')"), 'lesson 10 must not pass only because hide/search blocks exist in the workspace');
+assert.ok(playHtml.includes("if ([10, 12].includes(lesson.id) && state.currentStartOrder === 2)"), 'lesson 10 should count movement in the second code as real treasure-search evidence');
 assert.ok(playHtml.includes('function modelChoiceSelectsMission()') && playHtml.includes('return [2, 4, 6, 8, 12].includes(lesson.id);'), 'model choices should sync selected missions without changing Chava lesson 10 flow');
 assert.ok(playHtml.includes('if (lesson.id === 9 || lesson.id === 11 || modelChoiceSelectsMission()) lessonMissionIndex = index;'), 'model-card lessons should update lessonMissionIndex when a model is selected');
 assert.ok(playHtml.includes('if (lesson.id === 1) return Math.max(0, Math.min(1, lessonMissionIndex));'), 'lesson 1 selected mission index should be clamped to missions 1/2');
