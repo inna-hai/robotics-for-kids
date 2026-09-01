@@ -8167,6 +8167,17 @@
       if(token === runToken) statusEl.innerHTML='<span class="ok">הציור מוכן!</span>';
       document.getElementById('runBtn').disabled = false;
       document.getElementById('checkExerciseBtn')?.removeAttribute('disabled');
+      if(token === runToken && currentLesson === 13 && currentExercises()[currentExerciseIndex]?.id === 7){
+        try{ updateLesson13RailFeedbackAfterRun(); }
+        catch(error){
+          console.error(error);
+          const nextBtn = document.getElementById('nextExerciseBtn');
+          exercisePassed = true;
+          completedSet().add(currentExerciseIndex);
+          setExerciseFeedback('מעולה — הציור הושלם. אפשר להמשיך.', true);
+          if(nextBtn) nextBtn.disabled = false;
+        }
+      }
     }
     function currentLessonData(){
       return TURTLE_LESSONS.find(x=>x.id===currentLesson) || TURTLE_LESSONS[0];
@@ -9034,23 +9045,23 @@
       const drawTrainBaseBtn = document.getElementById('lesson13DrawTrainBaseBtn');
       if(drawTrainBaseBtn) drawTrainBaseBtn.addEventListener('click',()=>{
         const snapshot = createCodeSnapshot();
-        const hasDrawing = snapshot.actions.some(a=>a.cmd === 'forward' || a.cmd === 'forwardVar');
         const hasRepeat = snapshot.blockTypes.includes('py_repeat');
+        const hasTwoRails = railLongLineCount(snapshot.actions) >= 2;
         drawLesson13TrainBaseForRails(false);
-        if(hasDrawing && hasRepeat){
+        if(hasTwoRails && hasRepeat){
           exercisePassed = true;
           completedSet().add(currentExerciseIndex);
           rememberLesson13Success(currentExerciseIndex, currentWorkspaceXml(), snapshot);
-          setExerciseFeedback('מעולה — המסילה והרכבת מוכנות. אפשר להמשיך.', true);
+          setExerciseFeedback('מעולה — הציור הושלם. אפשר להמשיך.', true);
           const nextBtn = document.getElementById('nextExerciseBtn');
           if(nextBtn) nextBtn.disabled = false;
           renderExerciseNav();
           saveProgress();
         } else {
           exercisePassed = false;
-          const message = hasDrawing
-            ? 'הרכבת הופיעה — כדי להשלים צריך להוסיף לולאת חזור במסילה.'
-            : 'הרכבת הופיעה — עכשיו ציירו מסילה עם לולאת חזור.';
+          const message = !hasTwoRails && !hasRepeat
+            ? 'הרכבת הופיעה — כדי להשלים צריך שני פסי מסילה ולולאת חזור.'
+            : (!hasTwoRails ? 'הרכבת הופיעה — חסרים שני פסי מסילה ארוכים.' : 'הרכבת הופיעה — חסרה לולאת חזור לקורות המסילה.');
           setExerciseFeedback(message, false);
         }
       });
@@ -9090,6 +9101,36 @@
       feedback.classList.toggle('ok', !!ok);
       feedback.classList.toggle('warn', !ok);
       return true;
+    }
+    function updateLesson13RailFeedbackAfterRun(){
+      const ex = currentExercises()[currentExerciseIndex];
+      if(currentLesson !== 13 || ex?.id !== 7) return false;
+      const snapshot = createCodeSnapshot();
+      const hasRepeat = snapshot.blockTypes.includes('py_repeat');
+      const longRails = railLongLineCount(snapshot.actions);
+      const hasTwoRails = longRails >= 2;
+      const nextBtn = document.getElementById('nextExerciseBtn');
+      if(hasTwoRails && hasRepeat){
+        exercisePassed = true;
+        completedSet().add(currentExerciseIndex);
+        setExerciseFeedback('מעולה — הציור הושלם. אפשר להמשיך.', true);
+        if(nextBtn) nextBtn.disabled = false;
+        try{
+          rememberLesson13Success(currentExerciseIndex, currentWorkspaceXml(), snapshot);
+          renderExerciseNav();
+          saveProgress();
+        } catch(error){
+          console.error(error);
+        }
+        return true;
+      }
+      if(completedSet().has(currentExerciseIndex)) completedSet().delete(currentExerciseIndex);
+      exercisePassed = false;
+      if(nextBtn) nextBtn.disabled = REVIEW_UNLOCK ? false : true;
+      if(!hasTwoRails && !hasRepeat) setExerciseFeedback('כמעט — צריך שני פסי מסילה ארוכים וגם לולאת חזור.', false);
+      else if(!hasTwoRails) setExerciseFeedback('כמעט — צריך שני פסי מסילה ארוכים.', false);
+      else if(!hasRepeat) setExerciseFeedback('כמעט — הוסיפו לולאת חזור לקורות המסילה.', false);
+      return false;
     }
     function hasBlock(type){
       if(activeValidationSnapshot) return activeValidationSnapshot.blockTypes.includes(type);
@@ -9564,11 +9605,14 @@
     function hasShortTrainConnectors(actions){
       return drawnSegments(actions).some(s=>s.width <= 5 && s.length >= 6 && s.length <= 35);
     }
+    function railLongLineCount(actions){
+      return drawnSegments(actions).filter(s=>s.width <= 7 && s.length >= 70).length;
+    }
+    function hasTwoRailLines(actions){
+      return railLongLineCount(actions) >= 2;
+    }
     function hasRailDrawing(actions){
-      const segments = drawnSegments(actions);
-      const longRails = segments.filter(s=>s.width <= 7 && s.length >= 70).length;
-      const shortSleepers = segments.filter(s=>s.width <= 7 && s.length >= 5 && s.length <= 35).length;
-      return longRails >= 2 || (longRails >= 1 && hasBlock('py_repeat') && shortSleepers >= 3);
+      return hasTwoRailLines(actions);
     }
 
     function actionDrawsStyledSquare(actions){
@@ -10161,9 +10205,11 @@
           return [];
         }
         if(ex.id === 7){
-          if(needsNewAddition && !hasRailDrawing(currentActions)) return ['כמעט — ציירו מסילה: שני פסים ארוכים, או פס ארוך עם קורות קצרות בלולאה.'];
-          if(!hasRailDrawing(actions)) return ['כמעט — ציירו מסילה: שני פסים ארוכים, או פס ארוך עם קורות קצרות בלולאה.'];
-          if(!hasBlock('py_repeat')) return ['כמעט — הוסיפו קורות קצרות למסילה בעזרת לולאה.'];
+          const currentLongRails = railLongLineCount(currentActions);
+          const fullLongRails = railLongLineCount(actions);
+          if(!hasBlock('py_repeat')) return ['כמעט — הוסיפו לולאת חזור לקורות המסילה.'];
+          if(needsNewAddition && currentLongRails < 2) return ['כמעט — ציירו שני פסי מסילה ארוכים בעזרת הבלוקים של התרגיל הזה.'];
+          if(fullLongRails < 2) return ['כמעט — צריך שני פסי מסילה ארוכים.'];
           return [];
         }
       }
