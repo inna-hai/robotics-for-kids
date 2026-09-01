@@ -2976,8 +2976,8 @@
             "שדרגו צבעים ועובי כדי שהרכבת תהיה ברורה.",
             "תקנו רכבת עם באגים: גלגל חסר, חלון מחוץ לקרון או חיבור לא מכוון.",
             "לחצו לציור רכבת קודמת, ואז ציירו מתחתיה מסילה.",
-            "אתגר רשות: רכבת ארוכה או תחנה קטנה.",
-            "אתגר רשות: כתבו Python קצר לציור גלגל או חלון."
+            "אתגר רשות: בוחרים שדרוג קטן שאפשר לבנות — שלט תחנה, פנס קטר או עץ ליד המסילה.",
+            "אתגר רשות: כתבו Python קצר לציור קרון אחד פשוט."
         ],
         "timing": [
             "0–8 פתיחה: מה חוזר ברכבת?",
@@ -3121,20 +3121,20 @@
             {
                 "id": 8,
                 "minutes": "80–84",
-                "title": "אתגר רשות — רכבת ארוכה או תחנה",
-                "prompt": "אם סיימתם מוקדם, הוסיפו עוד קרונות, עשן מהארובה או תחנה קטנה ליד הרכבת.",
-                "hint": "בחרו שדרוג אחד בלבד ובנו אותו נקי. אם מוסיפים קרונות, השתמשו שוב בתבנית החוזרת.",
-                "check": "זה אתגר רשות — לא חייבים להשלים כדי להתקדם.",
-                "commonMistake": "מוסיפים יותר מדי פרטים ואז קשה להבין את הרכבת."
+                "title": "אתגר רשות — שדרוג קטן לרכבת",
+                "prompt": "בחרו רעיון אחד שקל לבנות: שלט תחנה קטן ליד המסילה, פנס קדמי לקטר או עץ ליד המסילה.",
+                "hint": "בחרו רק שדרוג אחד. רעיונות לביצוע: שלט = קו עומד ומלבן קטן; פנס = קו קצר ועבה בצהוב בקדמת הקטר; עץ = גזע וקווים ירוקים.",
+                "check": "זה אתגר רשות — מספיק להוסיף פרט אחד ברור שאפשר לראות בציור.",
+                "commonMistake": "בוחרים רעיון גדול מדי. עדיף פרט קטן וברור מאשר ציור מסובך שנתקע."
             },
             {
                 "id": 9,
                 "minutes": "84–88",
                 "title": "אתגר רשות — כותבים Python קצר",
-                "prompt": "כתבו Python קצר בתיבה: ציירו גלגל או חלון קטן לרכבת בעזרת כמה שורות קוד.",
-                "hint": "אפשר להתחיל מ־color, pensize ו־forward. לגלגל השתמשו בעט עבה וקו קצר; לחלון השתמשו בקווים ופניות.",
-                "check": "הקוד שכתבתם כולל לפחות 3 שורות Python ומצייר פרט קטן מהרכבת.",
-                "commonMistake": "כותבים טקסט חופשי במקום פקודות Python קצרות."
+                "prompt": "כתבו Python קצר בתיבה: ציירו קרון אחד פשוט — גוף הקרון ושני גלגלים.",
+                "hint": "אפשר להשתמש ב־color, pensize, forward, right וגם penup/pendown כדי לעבור מהגוף אל הגלגלים.",
+                "check": "הקוד כולל לפחות 5 שורות Python ומצייר קרון ברור אחד עם גוף ושני גלגלים.",
+                "commonMistake": "מציירים רק גלגל או חלון. כאן צריך קרון אחד שלם: גוף ושני גלגלים."
             },
             {
                 "id": 10,
@@ -8172,10 +8172,8 @@
         catch(error){
           console.error(error);
           const nextBtn = document.getElementById('nextExerciseBtn');
-          exercisePassed = true;
-          completedSet().add(currentExerciseIndex);
-          setExerciseFeedback('מעולה — הציור הושלם. אפשר להמשיך.', true);
-          if(nextBtn) nextBtn.disabled = false;
+          const snapshot = createCodeSnapshot();
+          finishLesson13RailExercise(snapshot);
         }
       }
     }
@@ -8199,7 +8197,7 @@
       if(currentLesson === 9 && ex?.id === 9) return 3;
       if(currentLesson === 11 && ex?.id === 8) return 5;
       if(currentLesson === 12 && ex?.id === 9) return 3;
-      if(currentLesson === 13 && ex?.id === 9) return 3;
+      if(currentLesson === 13 && ex?.id === 9) return 5;
       return 3;
     }
     function pythonWritingKey(){
@@ -8992,7 +8990,7 @@
       const writingValue = pythonWritingAnswers[pythonWritingKey()] || '';
       const writingPlaceholder = (()=>{
         if(currentLesson === 12 && ex?.id === 9) return '# קווקו / גלגל / אור ברמזור&#10;color("#facc15")&#10;pensize(14)&#10;forward(1)';
-        if(currentLesson === 13 && ex?.id === 9) return '# גלגל או חלון לרכבת&#10;color("#111827")&#10;pensize(14)&#10;forward(3)';
+        if(currentLesson === 13 && ex?.id === 9) return '# קרון אחד פשוט&#10;color("#2563eb")&#10;forward(80)&#10;right(90)&#10;forward(35)&#10;right(90)';
         if(currentLesson === 11 && ex?.id === 8) return '# רחוב ראשי&#10;length = 50&#10;pensize(8)&#10;forward(length)&#10;right(90)&#10;pensize(3)&#10;forward(length)';
         if(currentLesson === 9 && ex?.id === 9) return 'for i in range(3):&#10;    forward(___)&#10;    right(120)';
         if(currentLesson === 8 && ex?.id === 9) return 'length = ___&#10;for i in range(___):&#10;    forward(length)&#10;    right(___)&#10;    length = length + ___';
@@ -9049,14 +9047,7 @@
         const hasTwoRails = railLongLineCount(snapshot.actions) >= 2;
         drawLesson13TrainBaseForRails(false);
         if(hasTwoRails && hasRepeat){
-          exercisePassed = true;
-          completedSet().add(currentExerciseIndex);
-          rememberLesson13Success(currentExerciseIndex, currentWorkspaceXml(), snapshot);
-          setExerciseFeedback('מעולה — הציור הושלם. אפשר להמשיך.', true);
-          const nextBtn = document.getElementById('nextExerciseBtn');
-          if(nextBtn) nextBtn.disabled = false;
-          renderExerciseNav();
-          saveProgress();
+          finishLesson13RailExercise(snapshot);
         } else {
           exercisePassed = false;
           const message = !hasTwoRails && !hasRepeat
@@ -9079,6 +9070,18 @@
       });
       const checkBtn = document.getElementById('checkExerciseBtn');
       if(checkBtn) checkBtn.addEventListener('click', checkExercise);
+      const nextExerciseBtn = document.getElementById('nextExerciseBtn');
+      if(nextExerciseBtn && currentLesson === 13 && ex?.id === 7){
+        nextExerciseBtn.addEventListener('click', event=>{
+          const canContinueRail = exercisePassed || completedSet().has(currentExerciseIndex) || updateLesson13RailFeedbackAfterRun();
+          if(!canContinueRail) return;
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          exercisePassed = true;
+          completedSet().add(currentExerciseIndex);
+          advancePastCurrentExercise();
+        }, true);
+      }
       const resetExerciseBtn = document.getElementById('resetExerciseBtn');
       if(resetExerciseBtn) resetExerciseBtn.addEventListener('click',()=>{
         const restored = restoreExerciseEntry();
@@ -9102,6 +9105,22 @@
       feedback.classList.toggle('warn', !ok);
       return true;
     }
+    function unlockLesson13RailContinue(){
+      const nextBtn = document.getElementById('nextExerciseBtn');
+      if(!nextBtn || currentLesson !== 13 || currentExercises()[currentExerciseIndex]?.id !== 7) return;
+      nextBtn.disabled = false;
+      nextBtn.removeAttribute('disabled');
+      nextBtn.setAttribute('aria-disabled', 'false');
+    }
+    function finishLesson13RailExercise(snapshot){
+      exercisePassed = true;
+      completedSet().add(currentExerciseIndex);
+      if(snapshot) rememberLesson13Success(currentExerciseIndex, currentWorkspaceXml(), snapshot);
+      renderCurrentExercise('מעולה — הציור הושלם. אפשר להמשיך.', true);
+      unlockLesson13RailContinue();
+      renderExerciseNav();
+      saveProgress();
+    }
     function updateLesson13RailFeedbackAfterRun(){
       const ex = currentExercises()[currentExerciseIndex];
       if(currentLesson !== 13 || ex?.id !== 7) return false;
@@ -9111,16 +9130,14 @@
       const hasTwoRails = longRails >= 2;
       const nextBtn = document.getElementById('nextExerciseBtn');
       if(hasTwoRails && hasRepeat){
-        exercisePassed = true;
-        completedSet().add(currentExerciseIndex);
-        setExerciseFeedback('מעולה — הציור הושלם. אפשר להמשיך.', true);
-        if(nextBtn) nextBtn.disabled = false;
         try{
-          rememberLesson13Success(currentExerciseIndex, currentWorkspaceXml(), snapshot);
-          renderExerciseNav();
-          saveProgress();
+          finishLesson13RailExercise(snapshot);
         } catch(error){
           console.error(error);
+          exercisePassed = true;
+          completedSet().add(currentExerciseIndex);
+          setExerciseFeedback('מעולה — הציור הושלם. אפשר להמשיך.', true);
+          unlockLesson13RailContinue();
         }
         return true;
       }
@@ -10600,9 +10617,15 @@
         }
       }
       if(currentLesson === 13 && ex?.id === 9){
-        const hasSmallTrainPart = actions.some(action=>action.cmd === 'width' && action.v >= 10) || actions.filter(action=>action.cmd === 'forward' || action.cmd === 'forwardVar').length >= 3;
-        if(!hasSmallTrainPart){
-          problems.push('כתבו קוד קצר שמצייר פרט קטן מהרכבת — למשל גלגל עבה או חלון קטן.');
+        const forwardCount = actions.filter(action=>action.cmd === 'forward' || action.cmd === 'forwardVar').length;
+        const turn90Count = actions.filter(action=>(action.cmd === 'right' || action.cmd === 'left') && action.v === 90).length;
+        const thickWheelMarks = actions.filter(action=>action.cmd === 'width' && action.v >= 10).length;
+        const hasPenMove = actions.some(action=>action.cmd === 'pen');
+        if(forwardCount < 5 || turn90Count < 2){
+          problems.push('ציירו גוף קרון פשוט: כמה קווי forward עם פניות של 90 מעלות.');
+        }
+        if(thickWheelMarks < 1 && !hasPenMove){
+          problems.push('הוסיפו שני גלגלים לקרון — אפשר עם pensize עבה וקווים קצרים, או מעבר עם penup/pendown.');
         }
       }
       if(currentLesson === 9 && ex?.id === 9){
@@ -10671,16 +10694,25 @@
       const sortedIds = TURTLE_LESSONS.map(lesson=>lesson.id).sort((a,b)=>a-b);
       return sortedIds.find(lessonId=>lessonId > id) || null;
     }
-    function nextExercise(){
+    function canLeaveCheckedExercise(leavingEx){
+      if(exercisePassed) return true;
+      const lesson13RailExercise = currentLesson === 13 && leavingEx?.id === 7;
+      if(lesson13RailExercise && completedSet().has(currentExerciseIndex)){
+        exercisePassed = true;
+        return true;
+      }
+      if(lesson13RailExercise && updateLesson13RailFeedbackAfterRun()){
+        exercisePassed = true;
+        return true;
+      }
+      return false;
+    }
+    function advancePastCurrentExercise(){
       const leavingEx = currentExercises()[currentExerciseIndex];
-      if(!REVIEW_UNLOCK && isRunOnlyExampleExercise(leavingEx) && !runOnlyExampleStarted[selectionUnlockKey()]) return;
-      if(!REVIEW_UNLOCK && isSelectionOnlyExercise(leavingEx) && !selectionExerciseUnlocked[selectionUnlockKey()]) return;
-      if(!REVIEW_UNLOCK && requiresCheckedContinue(leavingEx) && !exercisePassed) return;
       if(isTipExercise(leavingEx) || isChallengeExercise(leavingEx) || isOptionalChallengeExercise(leavingEx)) completedSet().add(currentExerciseIndex);
       const exercises = currentExercises();
       if(currentExerciseIndex < exercises.length - 1){
         enterExercise(currentExerciseIndex + 1);
-        const ex = currentExercises()[currentExerciseIndex];
         exercisePassed = completedSet().has(currentExerciseIndex);
         renderCurrentExercise();
         return;
@@ -10697,6 +10729,13 @@
       } else {
         renderCurrentExercise('כל הכבוד! סיימתם את הקורס.', true);
       }
+    }
+    function nextExercise(){
+      const leavingEx = currentExercises()[currentExerciseIndex];
+      if(!REVIEW_UNLOCK && isRunOnlyExampleExercise(leavingEx) && !runOnlyExampleStarted[selectionUnlockKey()]) return;
+      if(!REVIEW_UNLOCK && isSelectionOnlyExercise(leavingEx) && !selectionExerciseUnlocked[selectionUnlockKey()]) return;
+      if(!REVIEW_UNLOCK && requiresCheckedContinue(leavingEx) && !canLeaveCheckedExercise(leavingEx)) return;
+      advancePastCurrentExercise();
     }
     function setLesson(id){
       currentLesson=id;
