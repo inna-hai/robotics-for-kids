@@ -1559,7 +1559,7 @@
     function hasBridgeStepSpeech(){ return stats().saidTexts.some(text => /מדרג|חצי|בלוק|שלוש|שתיים|אחד|גשר/.test(text)); }
     function diagonalStepCount(step){ return (stats().stepMoves || []).filter(move => ['right_up','right_down','left_up','left_down'].includes(move.dir) && (!step || move.step === step)).length; }
     function movementCount(){ return dirCount('right') + dirCount('left') + dirCount('up') + dirCount('down') + dirCount('right_up') + dirCount('right_down') + dirCount('left_up') + dirCount('left_down') + dirCount('back') + dirCount('forward') + (stats().counts.move_right || 0) + (stats().counts.move_left || 0); }
-    function recordSecondCodeMove(){ if (lesson.id === 12 && state.currentStartOrder === 2) stats().secondCodeMoves = (stats().secondCodeMoves || 0) + 1; }
+    function recordSecondCodeMove(){ if ([10, 12].includes(lesson.id) && state.currentStartOrder === 2) stats().secondCodeMoves = (stats().secondCodeMoves || 0) + 1; }
     function secondCodeMoveCount(){ return stats().secondCodeMoves || 0; }
     function bridgeCrossingMovement(){
       const path = stats().path || [];
@@ -1753,7 +1753,7 @@
       const totalBuilding = () => placedCount('block') + placedCount('path') + placedCount('half');
       const uniqueColors = () => new Set((s.placed || []).map(item => item.color)).size;
       const movedPet = () => !!((s.counts.move_pet_direction || 0) + (s.counts.move_pet_right || 0) + (s.counts.move_pet_left || 0) + (s.counts.move_pet_up || 0) + (s.counts.move_pet_down || 0));
-      const treasureAction = () => s.gaveTreasure || s.openedDoor || state.foundDiamond;
+      const completedTreasureSearch = () => placedCount('path') >= 3 && hasBlock('hide_diamond') && hasBlock('check_spot') && secondCodeMoveCount() >= 1 && state.foundDiamond && (s.gaveTreasure || s.openedDoor);
       const selectedWeather = (weather) => s.selectedWeather === weather;
       const hasAnyWeather = () => !!s.selectedWeather;
       const rules = {
@@ -1812,7 +1812,7 @@
           { ok:() => lessonNineModelMatches(lessonNineModelForMission(2)) && hasRequiredModelColors(lessonNineModelForMission(2), { strict:true }), missing:() => [lessonNineShapeNote(lessonNineModelForMission(2), 'ציור היהלום'), missingLessonNineModelNote(lessonNineModelForMission(2), 'ציור היהלום')] },
           { ok:() => totalBuilding() >= 8 && uniqueColors() >= 3, missing:() => [totalBuilding() < 8 && `ציור אישי צריך לפחות 8 חלקים; כרגע יש ${totalBuilding()}.`, uniqueColors() < 3 && `ציור אישי צריך לפחות 3 צבעים; כרגע יש ${uniqueColors()}.`] }
         ],
-        10: [ { ok:() => treasureAction() || hasBlock('hide_diamond') || hasBlock('check_spot'), missing:() => ['בנו שביל/חיפוש אוצר והשתמשו בבלוקי החיפוש של שיעור 10.'] } ],
+        10: [ { ok:() => completedTreasureSearch(), missing:() => [`המשימה תושלם רק אחרי כל השלבים: בנו לפחות 3 אריחי שביל (${placedCount('path')}/3), החביאו יהלום, הריצו קוד שני עם תנועה וחיפוש (${secondCodeMoveCount()}/1 תנועות), מצאו את היהלום, ואז פתחו דלת או קבלו אוצר.`] } ],
         11: [
           { ok:() => lessonNineModelMatches(lessonElevenModelForMission(0)) && hasRequiredModelColors(lessonElevenModelForMission(0), { strict:true }), missing:() => [lessonNineShapeNote(lessonElevenModelForMission(0), 'דוגמת שדה התפוחים'), missingLessonNineModelNote(lessonElevenModelForMission(0), 'דוגמת שדה התפוחים')] },
           { ok:() => lessonNineModelMatches(lessonElevenModelForMission(1)) && hasRequiredModelColors(lessonElevenModelForMission(1), { strict:true }), missing:() => [lessonNineShapeNote(lessonElevenModelForMission(1), 'דוגמת שלט הפתיחה'), missingLessonNineModelNote(lessonElevenModelForMission(1), 'דוגמת שלט הפתיחה')] },
