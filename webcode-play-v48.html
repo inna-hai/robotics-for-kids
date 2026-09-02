@@ -1324,7 +1324,7 @@ ${block.replace}`; changed = true; }
     function continueExercise(){ if(activeExercise < lesson.exercises.length && canOpenExercise(activeExercise + 1)) selectExercise(activeExercise + 1); }
     function goCourseHome(){ location.href = 'webcode.html'; }
     function courseLessonCount(){ return Array.isArray(window.WEBCODE_LESSONS) ? window.WEBCODE_LESSONS.length : lesson.id; }
-    function goNextLesson(){ location.href = `webcode-play.html?lesson=${Math.min(courseLessonCount(), lesson.id + 1)}`; }
+    function goNextLesson(){ location.href = `webcode-play-v48.html?lesson=${Math.min(courseLessonCount(), lesson.id + 1)}`; }
     function selectExercise(id){
       if(!canOpenExercise(id)){
         $('feedback').className='feedback bad';

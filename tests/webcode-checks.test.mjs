@@ -69,13 +69,13 @@ assert.ok(play.includes('orderedBlockTypes') && play.includes('hasOrderedBlockTy
 assert.ok(lessons[0].exercises[1].check.orderedBlockTypes.join('>') === 'web_title>web_paragraph', 'lesson 1 exercise 2 requires paragraph under title');
 assert.ok(lessons[1].exercises[0].check.changedBlocklyFields?.some(rule => rule.type === 'web_theme' && rule.field === 'THEME' && rule.defaultValue === 'space'), 'lesson 2 exercise 1 requires changing the page design palette from default');
 assert.ok(lessons[1].exercises[0].check.fieldFeedback.includes('פלטה אחרת'), 'lesson 2 exercise 1 gives specific feedback when the default palette is unchanged');
-assert.ok(lessons[1].exercises[1].check.changedBlocklyFields?.some(rule => rule.type === 'web_card_shape' && rule.field === 'SHAPE' && rule.defaultValue === 'round'), 'lesson 2 exercise 2 requires changing the card shape from default');
+assert.ok(lessons[1].exercises[1].check.changedBlocklyFields?.some(rule => rule.type === 'web_card_shape' && rule.field === 'SHAPE' && rule.defaultValue === 'none'), 'lesson 2 exercise 2 requires changing the card shape from default');
 assert.ok(lessons[1].exercises[2].check.orderedBlockTypes.join('>') === 'web_card_shape>web_shadow', 'lesson 2 exercise 3 requires shadow after card shape');
-assert.ok(lessons[1].exercises[2].check.changedBlocklyFields?.some(rule => rule.type === 'web_shadow' && rule.field === 'SHADOW' && rule.defaultValue === 'soft'), 'lesson 2 exercise 3 requires changing the card shadow from default');
-assert.ok(lessons[1].exercises[3].check.changedBlocklyFields?.some(rule => rule.type === 'web_title_color' && rule.field === 'COLOR' && rule.defaultValue === 'blue'), 'lesson 2 exercise 4 requires changing the title color from default');
-assert.ok(lessons[1].exercises[4].check.changedBlocklyFields?.some(rule => rule.type === 'web_button_style' && rule.field === 'STYLE' && rule.defaultValue === 'pill'), 'lesson 2 exercise 5 requires changing the button style from default');
+assert.ok(lessons[1].exercises[2].check.changedBlocklyFields?.some(rule => rule.type === 'web_shadow' && rule.field === 'SHADOW' && rule.defaultValue === 'choose'), 'lesson 2 exercise 3 requires changing the card shadow from default');
+assert.ok(lessons[1].exercises[3].check.changedBlocklyFields?.some(rule => rule.type === 'web_title_color' && rule.field === 'COLOR' && rule.defaultValue === 'none'), 'lesson 2 exercise 4 requires changing the title color from default');
+assert.ok(lessons[1].exercises[4].check.changedBlocklyFields?.some(rule => rule.type === 'web_button_style' && rule.field === 'STYLE' && rule.defaultValue === 'none'), 'lesson 2 exercise 5 requires changing the button style from default');
 assert.ok(lessons[1].exercises[5].prompt.includes('עם העכבר'), 'lesson 2 exercise 6 tells learners to hover over the button with the mouse');
-assert.ok(lessons[1].exercises[5].check.changedBlocklyFields?.some(rule => rule.type === 'web_hover' && rule.field === 'EFFECT' && rule.defaultValue === 'grow'), 'lesson 2 exercise 6 requires changing the hover effect from default');
+assert.ok(lessons[1].exercises[5].check.changedBlocklyFields?.some(rule => rule.type === 'web_hover' && rule.field === 'EFFECT' && rule.defaultValue === 'none'), 'lesson 2 exercise 6 requires changing the hover effect from default');
 assert.equal(lessons[1].exercises.length, 7, 'lesson 2 removes the redundant full-design recap exercise');
 assert.ok(lessons[1].exercises[6].check.requiresCodePeek, 'lesson 2 final exercise requires opening generated code peek');
 assert.equal(lessons[1].exercises[6].check.requiresCodeSelectionTab, 'css', 'lesson 2 final exercise requires selecting the CSS code box');
@@ -97,13 +97,13 @@ assert.ok(lessons[0].exercises[3].check.fieldFeedback.includes('פלטה אחר�
 assert.ok(lessons[0].exercises[4].check.nonEmptyBlocklyFields?.length === 2, 'lesson 1 exercise 5 rejects empty button label/message text');
 assert.ok(lessons[0].exercises[5].check.nonEmptyBlocklyFields?.length === 2, 'lesson 1 exercise 6 rejects empty info-box text');
 assert.ok(lessons[0].exercises[6].check.nonEmptyBlocklyFields?.some(rule => rule.type === 'web_footer'), 'lesson 1 exercise 7 rejects empty footer text');
-assert.equal(lessons[0].exercises[6].check.twoStepFooterMove, true, 'lesson 1 exercise 7 requires two checks: connect footer, then move it');
+assert.equal(lessons[0].exercises[6].check.footerMustBeLast, true, 'lesson 1 exercise 7 requires footer to be the last connected block');
 assert.ok(lessons[0].exercises[7].prompt.includes('לחצו על אחד הבלוקים'), 'lesson 1 exercise 8 tells learners to click a block to highlight generated code');
 assert.deepEqual(Array.from(lessons[0].exercises[7].check.requiresCodeSelectionTabs), ['html', 'css'], 'lesson 1 exercise 8 requires generated-code highlighting in HTML or CSS');
 assert.ok(lessons[0].exercises[7].check.requiresCodeSelectionBlockTypes?.includes('web_title'), 'lesson 1 exercise 8 requires selecting a page block that maps to generated code');
 assert.equal(lessons[0].exercises[7].check.requiresCodePeek, true, 'lesson 1 exercise 8 requires opening the generated-code peek before approval');
 assert.ok(play.includes('requiresCodePeek') && play.includes('codePeekOpened'), 'player can require opening the generated-code panel for code-peek exercises');
-assert.ok(play.includes('checkFooterMoveExercise') && play.includes('firstOrder') && play.includes('blockOrderSignature'), 'player supports two-step order-change checks');
+assert.ok(play.includes('footerMustBeLast') && play.includes('checkFooterAtEndExercise'), 'player can validate that the footer block is last');
 assert.ok(play.includes('changedAny') && play.includes('hasChanged'), 'player can require real code changes when an exercise asks for editing');
 assert.ok(play.includes('htmlExcludes') && play.includes('excludesAll'), 'player can reject unchanged/default generated code when needed');
 

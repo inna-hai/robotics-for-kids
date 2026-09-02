@@ -875,16 +875,9 @@ const target = 10;
 document.getElementById("targetText").textContent = target;
 
 function feedMonster() {
-  if (score >= target) {
-    return;
-  }
-
   score = score + 1;
-  if (score > target) {
-    score = target;
-  }
   document.getElementById("scoreText").textContent = score;
-  document.getElementById("progressFill").style.width = Math.min(score / target * 100, 100) + "%";
+  document.getElementById("progressFill").style.width = (score / target * 100) + "%";
 
   const monster = document.getElementById("monster");
   monster.classList.add("bump");
@@ -963,11 +956,13 @@ function resetGame() {
       html: `<main class="city-game">
   <h1>הצילו את העיר!</h1>
   <p>חלונות מוארים: <span id="scoreText">0</span> | זמן: <span id="timeText">15</span></p>
-  <div id="city" class="city"></div>
+  <div id="city" class="city">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
   <button id="startButton" onclick="startGame()">▶️ התחילו משימה</button>
   <button id="clickButton" onclick="lightWindow()">💡 הדליקו חלון</button>
   <p id="message">יש לכם 15 שניות להאיר את העיר.</p>
-  <p id="windowsSummary"></p>
 </main>`,
       css: `body {
   font-family: Arial, sans-serif;
@@ -1020,23 +1015,8 @@ button {
 }`,
       js: `let score = 0;
 const startTime = 15;
-const totalWindows = 10;
-document.getElementById("timeText").textContent = startTime;
-document.getElementById("message").textContent = "יש לכם " + startTime + " שניות להאיר את העיר.";
-document.getElementById("windowsSummary").textContent = "";
 let timeLeft = startTime;
 let timerId = null;
-
-function buildCity() {
-  const city = document.getElementById("city");
-  city.innerHTML = "";
-  for (let i = 0; i < totalWindows; i = i + 1) {
-    const windowBox = document.createElement("span");
-    city.appendChild(windowBox);
-  }
-}
-
-buildCity();
 
 function startGame() {
   score = 0;
@@ -1044,8 +1024,6 @@ function startGame() {
   document.getElementById("scoreText").textContent = score;
   document.getElementById("timeText").textContent = timeLeft;
   document.getElementById("message").textContent = "רוצו! העיר מחכה לאור.";
-  document.getElementById("windowsSummary").textContent = "";
-  buildCity();
   document.querySelectorAll("#city span").forEach(function (windowBox) {
     windowBox.classList.remove("lit");
   });
@@ -1059,8 +1037,7 @@ function tick() {
 
   if (timeLeft <= 0) {
     clearInterval(timerId);
-    document.getElementById("message").textContent = "כל הכבוד 🎉";
-    document.getElementById("windowsSummary").textContent = "מספר החלונות שהארתם הוא: " + score;
+    document.getElementById("message").textContent = "הזמן נגמר! הארתם " + score + " חלונות.";
     document.querySelector(".city-game").classList.add("finished");
   }
 }
@@ -1068,10 +1045,9 @@ function tick() {
 function lightWindow() {
   if (timeLeft > 0) {
     const windows = document.querySelectorAll("#city span");
-    if (score >= windows.length) {
-      return;
+    if (score < windows.length) {
+      windows[score].classList.add("lit");
     }
-    windows[score].classList.add("lit");
     score = score + 1;
     document.getElementById("scoreText").textContent = score;
   }
@@ -1113,7 +1089,7 @@ function lightWindow() {
       { label: '⏱️ זמן 15', target: 'js', find: 'let timeLeft = 15;', replace: 'let timeLeft = 15;', hint: 'בלוק זמן: זמן המשימה.' },
       { label: '⚡ זמן קצר 10', target: 'js', find: 'timeLeft = 15;', replace: 'timeLeft = 10;', hint: 'בלוק איזון: מקצר את המשימה.' },
       { label: '💡 טקסט כפתור', target: 'html', find: '💡 הדליקו חלון', replace: '💡 הצילו חלון!', hint: 'בלוק חוויה: משנה את הפעולה.' },
-      { label: '🏁 הודעת סיום', target: 'js', find: 'כל הכבוד 🎉', replace: 'כל הכבוד 🎉', hint: 'בלוק משוב: הודעת סוף.' },
+      { label: '🏁 הודעת סיום', target: 'js', find: 'הזמן נגמר! הארתם ', replace: 'סיום! הצלחתם להאיר ', hint: 'בלוק משוב: הודעת סוף.' },
       { label: '🟡 צבע חלון', target: 'css', find: 'background: #fde047;', replace: 'background: #a7f3d0;', hint: 'בלוק עיצוב: משנה חלון מואר.' },
       { label: '📺 הצג זמן', target: 'js', find: 'document.getElementById("timeText").textContent = timeLeft;', replace: 'document.getElementById("timeText").textContent = timeLeft;', hint: 'בלוק תצוגה: מעדכן זמן במסך.' }
     ]
@@ -6012,10 +5988,10 @@ function resetAdventure() {
     ]},
     8: { title:'טיימר הצלת העיר — משחק נגד השעון', concept:'timer · setInterval · countdown · visual feedback', blocks:[
       ['time','זמן התחלה %1 שניות','js','const startTime = 15;','const startTime = {{N}};',[['field_dropdown','N',[['10','10'],['15','15'],['20','20']]]]],
-      ['windows','מספר חלונות בעיר %1','js','const totalWindows = 10;','const totalWindows = {{N}};',[['field_dropdown','N',[['5','5'],['10','10'],['15','15'],['20','20']]]]],
-      ['end','הודעת סיום %1','js','כל הכבוד 🎉','{{TEXT}}',[['field_input','TEXT','כל הכבוד 🎉']]],
+      ['tick','כל פעימה מורידה %1','js','timeLeft = timeLeft - 1;','timeLeft = timeLeft - {{N}};',[['field_dropdown','N',[['1','1'],['2','2']]]]],
+      ['end','הודעת סיום %1','js','הזמן נגמר! הארתם','{{TEXT}}',[['field_input','TEXT','סיום! הצלחתם להאיר']]],
       ['start','כפתור התחלה %1','html','התחילו משימה','{{TEXT}}',[['field_input','TEXT','צאו להצלה!']]],
-      ['lit_color','צבע חלון מואר %1','css','#fde047','{{COLOR}}',[['field_dropdown','COLOR',[['צהוב','#fde047'],['ירוק','#a7f3d0'],['ורוד','#fbcfe8'],['כחול','#93c5fd'],['סגול','#c4b5fd'],['כתום','#fdba74']]]]]
+      ['lit_color','צבע חלון מואר %1','css','#fde047','{{COLOR}}',[['field_dropdown','COLOR',[['צהוב','#fde047'],['ירוק','#a7f3d0'],['ורוד','#fbcfe8']]]]]
     ]},
     9: { title:'תופסים כוכבים, לא מכשולים', concept:'lives · random · if · game over', blocks:[
       ['lives','מספר חיים %1','js','let lives = 3;','let lives = {{N}};',[['field_dropdown','N',[['3','3'],['5','5'],['7','7']]]]],
@@ -6154,101 +6130,6 @@ function resetAdventure() {
       return { type:`lesson_${lesson.id}_${key}`, label:message.replace(/ %1/g,''), message, args0, target, find, replace, highlight:replace, hint:`בלוק ${target.toUpperCase()} שמלמד ${spec.concept}.`, colour: target === 'css' ? 285 : target === 'js' ? 120 : 210 };
     });
     lesson.exercises = makeFullReworkExercises(lesson, spec);
-    if(lesson.id === 8){
-      const timeBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_8_time');
-      const endBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_8_end');
-      const colorBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_8_lit_color');
-      const timeExercise = lesson.exercises.find(item => item.id === 1);
-      if(timeBlock) timeBlock.toolboxFields = { N: '15' };
-      if(timeExercise && timeBlock){
-        timeExercise.prompt = 'גררו וחברו את הבלוק “זמן התחלה”. בחרו זמן מתוך הרשימה המסודרת מהקטן לגדול, ובדקו שמספר הזמן בתצוגה מתעדכן לפי הבחירה.';
-        timeExercise.hint = 'האפשרויות מסודרות 10, 15, 20. מספר הזמן ליד “זמן” צריך להתעדכן לפי הבלוק, לא רק בקוד.';
-        timeExercise.check.changedBlocklyFields = [{ type: timeBlock.type, field: 'N', defaultValue: '15' }];
-        timeExercise.check.requiresPreviewTimeFromBlockField = { type: timeBlock.type, field: 'N' };
-        timeExercise.check.fieldFeedback = 'כמעט. 15 הוא זמן ברירת המחדל — בחרו 10 או 20.';
-        timeExercise.check.previewTimeFeedback = 'כמעט. הבלוק מחובר, אבל מספר הזמן בתצוגה עדיין לא תואם לבחירה בבלוק.';
-      }
-      const windowsBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_8_windows');
-      if(windowsBlock) windowsBlock.toolboxFields = { N: '10' };
-      const windowsExercise = lesson.exercises.find(item => item.id === 2);
-      if(windowsExercise){
-        windowsExercise.title = 'תרגיל 2 — כמה חלונות בעיר?';
-        windowsExercise.prompt = 'גררו וחברו את הבלוק “מספר חלונות בעיר”. בחרו מספר חלונות אחר, ובדקו שהעיר מציגה יותר או פחות חלונות.';
-        windowsExercise.hint = 'ברירת המחדל היא 10 חלונות. בחרו 5, 15 או 20 כדי לשנות את גודל המשימה.';
-        windowsExercise.check = {
-          blockTypes: ['lesson_8_windows'],
-          changedBlocklyFields: [{ type: 'lesson_8_windows', field: 'N', defaultValue: '10' }],
-          generatedBlockOutputs: [{ type: 'lesson_8_windows', target: 'js' }],
-          blockFeedback: 'כמעט. חברו את הבלוק “מספר חלונות בעיר” לשרשרת.',
-          fieldFeedback: 'כמעט. בחרו מספר אחר מתוך התפריט — 5, 15 או 20.',
-          generatedFeedback: 'כמעט. מספר החלונות שבחרתם עוד לא מופיע בקוד שנוצר.'
-        };
-      }
-      const endExercise = lesson.exercises.find(item => item.id === 3);
-      if(endExercise && endBlock){
-        endExercise.title = 'תרגיל 3 — הודעת סיום אחרי שהזמן נגמר';
-        endExercise.prompt = 'גררו וחברו את הבלוק “הודעת סיום”. שנו את טקסט הסיום לטקסט משלכם. אחר כך לחצו התחלה בתצוגה וחכו עד שהטיימר מגיע לאפס כדי לראות את ההודעה מעל מספר החלונות.';
-        endExercise.hint = 'הודעת הסיום היא שורה נפרדת. מתחתיה המשחק מציג אוטומטית כמה חלונות הוארו.';
-        endExercise.check.requiresPreviewMessageFromBlockOutput = [{ type: endBlock.type }];
-        endExercise.check.previewMessageFeedback = 'כמעט. צריך להתחיל את הטיימר בתצוגה ולחכות עד 0 כדי לראות את הודעת הסיום החדשה.';
-      }
-      const colorExercise = lesson.exercises.find(item => item.id === 5);
-      if(colorExercise && colorBlock){
-        colorExercise.title = 'תרגיל 5 — צבע החלונות המוארים';
-        colorExercise.prompt = 'גררו וחברו את הבלוק “צבע חלון מואר”. בחרו את הצבע שאתם מעדיפים. אחר כך לחצו בתצוגה על הדלקת חלון כדי לראות את הצבע.';
-        colorExercise.hint = 'צהוב הוא צבע טוב וברירת מחדל מותרת. אם בחרתם צבע אחר, בדקו אותו על חלון שנדלק.';
-        colorExercise.check = {
-          blockTypes: [colorBlock.type],
-          generatedBlockOutputs: [{ type: colorBlock.type, target: 'css' }],
-          requiresPreviewButtonClick: true,
-          blockFeedback: 'כמעט. חברו את הבלוק “צבע חלון מואר” לשרשרת.',
-          generatedFeedback: 'כמעט. צבע החלון שבחרתם עוד לא מופיע ב־CSS שנוצר.',
-          previewClickFeedback: 'כמעט. עכשיו לחצו בתצוגה על “הדליקו חלון” כדי לראות את הצבע בפועל.'
-        };
-      }
-      lesson.exercises = lesson.exercises
-        .filter(item => item.id !== 6 && item.id !== 7)
-        .map(item => item.id === 8 ? { ...item, id: 6, minutes: '50–62', title: item.title.replace('תרגיל 8', 'תרגיל 6'), check: { ...item.check, requiresCodeSelectionTab: 'js', requiresCodeSelectionBlockTypes: ['lesson_8_time', 'lesson_8_end'], codeSelectionFeedback: 'כמעט. פתחו את הקוד שנוצר ולחצו על בלוק JavaScript של זמן או הודעת סיום כדי לסמן את השורה.' } } : item);
-    }
-    if(lesson.id === 7){
-      const winTextBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_7_win_text');
-      const winTextExercise = lesson.exercises.find(item => item.id === 3);
-      if(winTextExercise && winTextBlock){
-        winTextExercise.title = 'תרגיל 3 — הודעת ניצחון';
-        winTextExercise.prompt = 'גררו וחברו את הבלוק “הודעת ניצחון”. שנו את הטקסט שבתוכו. אחר כך האכילו את המפלצת עד הניצחון ובדקו שההודעה החדשה מופיעה.';
-        winTextExercise.hint = 'ההודעה מופיעה רק כשמגיעים ליעד. לחצו על העוגייה עד הניצחון ואז בדקו.';
-        winTextExercise.check.requiresPreviewMessageFromBlockOutput = [{ type: winTextBlock.type }];
-        winTextExercise.check.previewMessageFeedback = 'כמעט. הבלוק מחובר, אבל צריך ללחוץ על העוגייה בתצוגה עד שהמפלצת מגיעה ליעד הניצחון ורואים את הודעת הניצחון החדשה.';
-      }
-      const winColorExercise = lesson.exercises.find(item => item.id === 5);
-      if(winColorExercise){
-        winColorExercise.title = 'תרגיל 5 — צבע ניצחון אחרי שמנצחים';
-        winColorExercise.prompt = 'גררו וחברו את הבלוק “צבע ניצחון”. בחרו צבע אחר. עכשיו האכילו את המפלצת עד הניצחון ובדקו שהצבע החדש מופיע.';
-        winColorExercise.hint = 'צבע הניצחון מופיע רק בסוף המשחק. לחצו על העוגייה עד שהמפלצת מנצחת ואז בדקו.';
-        winColorExercise.check.requiresPreviewCardClass = 'win';
-        winColorExercise.check.previewClassFeedback = 'כמעט. כדי לראות את צבע הניצחון, צריך ללחוץ על העוגייה עד שהמפלצת מגיעה ליעד.';
-      }
-      const balanceExercise = lesson.exercises.find(item => item.id === 6);
-      const clickPointsBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_7_click_points');
-      if(balanceExercise && clickPointsBlock){
-        balanceExercise.title = 'תרגיל 6 — כמה עוגיות בכל לחיצה?';
-        balanceExercise.prompt = 'חברו את הבלוק “כל קליק מוסיף”, בחרו 2 או 3, ואז לחצו פעם אחת על העוגייה בתצוגה. בדקו שהמספר קופץ לפי הערך שבחרתם.';
-        balanceExercise.hint = 'זה משנה את קצב המשחק: אם בחרתם 3, קליק אחד צריך להוסיף 3 עוגיות.';
-        balanceExercise.check = {
-          blockTypes: [clickPointsBlock.type],
-          changedBlocklyFields: [{ type: clickPointsBlock.type, field: 'N', defaultValue: '1' }],
-          generatedBlockOutputs: [{ type: clickPointsBlock.type, target: 'js' }],
-          requiresPreviewScoreFromBlockField: { type: clickPointsBlock.type, field: 'N' },
-          blockFeedback: 'כמעט. חברו את הבלוק “כל קליק מוסיף” לשרשרת.',
-          fieldFeedback: 'כמעט. בחרו 2 או 3 בתוך הבלוק, לא 1.',
-          generatedFeedback: 'כמעט. הערך שבחרתם עוד לא מופיע בקוד שנוצר.',
-          previewScoreFeedback: 'כמעט. עכשיו לחצו פעם אחת על העוגייה בתצוגה ובדקו שהניקוד קופץ לפי הערך שבחרתם.'
-        };
-      }
-      lesson.exercises = lesson.exercises
-        .filter(item => item.id !== 6 && item.id !== 7)
-        .map(item => item.id === 8 ? { ...item, id: 6, minutes: '50–62', title: item.title.replace('תרגיל 8', 'תרגיל 6') } : item);
-    }
     if(lesson.id === 5){
       const questionBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_5_question');
       const questionExercise = lesson.exercises.find(item => item.id === 1);
