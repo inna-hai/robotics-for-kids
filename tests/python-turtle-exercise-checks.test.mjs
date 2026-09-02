@@ -33,6 +33,10 @@ function extractFunction(source, name){
 }
 
 assert.match(html, /function repeatShapeMatches\(sides, angle\)/, 'shape exercises use a dedicated repeat/sides/angle validator');
+
+assert.match(html, /id="stopRunBtn" disabled>⏹ עצור<\/button>/, 'app has a disabled stop-run button next to run');
+assert.match(html, /function stopCurrentRun\(\)[\s\S]*runToken \+= 1[\s\S]*ההרצה נעצרה/, 'stop-run button cancels the current run token without clearing blocks');
+assert.match(html, /const runFinished = await run\(snapshot\.actions\)[\s\S]*if\(!runFinished\)[\s\S]*הריצו שוב עד הסוף לפני בדיקת התרגיל/, 'exercise check does not validate a stopped run');
 assert.equal((html.match(/\"title\": \"לוגו לעיר הרובוטים\"/g) || []).length, 1, 'lesson 15 title appears only as lesson 15, not as stray exercises in lessons 1-2');
 
 assert.match(html, /if\(currentLesson === 1\)\{[\s\S]*if\(ex\.id === 6\)\{[\s\S]*actions\.length < 4[\s\S]*לפחות 4 פקודות[\s\S]*לפחות פקודת קדימה אחת[\s\S]*לפחות פנייה אחת/, 'lesson 1 exercise 6 validates a simple four-command route, not a later lesson frame task');
@@ -257,7 +261,7 @@ assert.match(html, /exercisePassed = completedSet\(\)\.has\(currentExerciseIndex
 
 assert.match(html, /function createCodeSnapshot\(\)[\s\S]*actions:getActions\(\)\.map[\s\S]*blockTypes:connectedBlocks\.map[\s\S]*repeatPatterns/, 'exercise checks snapshot the code and repeat structure at the moment the run starts');
 
-assert.match(html, /const validationSnapshot = snapshotWithCumulativePrior\(snapshot\)[\s\S]*if\(!skipRun\) await run\(snapshot\.actions\)[\s\S]*const problems = validateExercise\(validationSnapshot\)/, 'exercise checks run the visible code and validate the full cumulative snapshot when needed');
+assert.match(html, /const validationSnapshot = snapshotWithCumulativePrior\(snapshot\)[\s\S]*const runFinished = await run\(snapshot\.actions\)[\s\S]*if\(!runFinished\)[\s\S]*const problems = validateExercise\(validationSnapshot\)/, 'exercise checks run the visible code and validate the full cumulative snapshot when needed');
 
 assert.match(html, /function hasBlock\(type\)\{[\s\S]*activeValidationSnapshot[\s\S]*blockTypes\.includes\(type\)/, 'block-presence validators use the run snapshot during checks, not live mid-run edits');
 
