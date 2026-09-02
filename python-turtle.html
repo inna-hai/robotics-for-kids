@@ -7747,7 +7747,7 @@
       if(list) list.innerHTML = `<label for="lessonPicker"><b>בחירת שיעור:</b></label><select id="lessonPicker" class="lesson-picker">${TURTLE_LESSONS.map(lesson => `<option value="${lesson.id}" ${lesson.id === l.id ? 'selected' : ''}>שיעור ${lesson.id}: ${earlyEscape(lesson.title)}</option>`).join('')}</select>`;
       if(note) {
         const tasks = (l.exercises || []).map(ex => `<li>${earlyEscape(ex.prompt)}</li>`).join('');
-        note.innerHTML = `<a class="teacher-slide-btn" href="python-turtle-lesson-${l.id}-slides.html">📽️ מצגת מדריך לשיעור ${l.id}</a><b>בשיעור הזה:</b><br>מושג מרכזי: ${earlyEscape(l.concept)}<br>תוצר: ${earlyEscape(l.product || 'ציור עובד')}<br><br><b>משימות לתלמיד:</b>${tasks ? `<ol class="side-task-list">${tasks}</ol>` : '<br>המשימות יופיעו לאחר בחירת שיעור.'}<small>לא מציגים לילדים את כל הסילבוס בבת אחת — מוצגות כאן רק משימות השיעור הנבחר.</small>`;
+        note.innerHTML = `<b>בשיעור הזה:</b><br>מושג מרכזי: ${earlyEscape(l.concept)}<br>תוצר: ${earlyEscape(l.product || 'ציור עובד')}<br><br><b>משימות לתלמיד:</b>${tasks ? `<ol class="side-task-list">${tasks}</ol>` : '<br>המשימות יופיעו לאחר בחירת שיעור.'}<small>לא מציגים לילדים את כל הסילבוס בבת אחת — מוצגות כאן רק משימות השיעור הנבחר.</small>`;
       }
     }
     renderInitialLessonSidebar();
@@ -8697,7 +8697,7 @@
         return `<button type="button" data-exercise="${index}" ${allowed ? '' : 'disabled'} class="${index === currentExerciseIndex ? 'active' : ''}">${exerciseLabel(index)}${done.has(index) ? ' ✓' : ''}</button>`;
       }).join('');
       const reviewUnlockNote = REVIEW_UNLOCK ? '<div class="secret-reveal"><small><b>מצב בדיקה זמני:</b> כל התרגילים פתוחים בקישור הזה בלבד.</small></div>' : '';
-      sideNote.innerHTML = `<a class="teacher-slide-btn" href="python-turtle-lesson-${l.id}-slides.html">📽️ מצגת מדריך לשיעור ${l.id}</a><b>בשיעור הזה:</b><br>מושג מרכזי: ${escapeHtml(l.concept)}<br>תוצר: ${escapeHtml(l.product || 'ציור עובד')}${reviewUnlockNote}<div class="exercise-progress">בחרו תרגיל:</div><div class="exercise-nav">${buttons}</div>`;
+      sideNote.innerHTML = `<b>בשיעור הזה:</b><br>מושג מרכזי: ${escapeHtml(l.concept)}<br>תוצר: ${escapeHtml(l.product || 'ציור עובד')}${reviewUnlockNote}<div class="exercise-progress">בחרו תרגיל:</div><div class="exercise-nav">${buttons}</div>`;
       sideNote.querySelectorAll('[data-exercise]').forEach(btn=>btn.addEventListener('click',()=>{
         const index = Number(btn.dataset.exercise);
         if(btn.disabled) return;
@@ -10942,10 +10942,12 @@
       const url = new URL(window.location.href);
       url.searchParams.set('lesson', String(id));
       if(!REVIEW_UNLOCK) url.searchParams.delete('exercise');
+      url.searchParams.delete('reset');
+      url.searchParams.delete('fresh');
       window.history.replaceState({}, '', url);
     }
-    function requestedExerciseIndexFromUrl(exercises=currentExercises()){
-      if(!REVIEW_UNLOCK) return null;
+    function requestedExerciseIndexFromUrl(exercises=currentExercises(), allowDirect=false){
+      if(!REVIEW_UNLOCK && !allowDirect) return null;
       const params = new URLSearchParams(window.location.search);
       const raw = Number(params.get('exercise') || params.get('ex'));
       if(!Number.isFinite(raw)) return null;
@@ -10971,6 +10973,22 @@
       const params = new URLSearchParams(window.location.search);
       const id = Number(params.get('lesson') || params.get('l') || 1);
       return TURTLE_LESSONS.some(lesson=>lesson.id===id) ? id : 1;
+    }
+    function requestedLessonFromUrl(){
+      const params = new URLSearchParams(window.location.search);
+      if(!params.has('lesson') && !params.has('l')) return null;
+      const id = Number(params.get('lesson') || params.get('l'));
+      return TURTLE_LESSONS.some(lesson=>lesson.id===id) ? id : null;
+    }
+    function requestedFreshLessonFromUrl(){
+      const params = new URLSearchParams(window.location.search);
+      return ['reset', 'fresh'].some(key=>/^(1|true|yes)$/i.test(params.get(key) || ''))
+        || params.get('v') === 'fix-direct-lesson';
+    }
+    function firstIncompleteExerciseIndex(lessonId, exercises){
+      const done = completedExercises[lessonId] || new Set();
+      const index = exercises.findIndex((_, exerciseIndex)=>!done.has(exerciseIndex));
+      return index === -1 ? Math.max(0, exercises.length - 1) : index;
     }
     // legacy text kept for regression check: href="python-turtle.html?lesson=${l.id}" ${l.id === currentLesson ? 'נוכחי' : 'פתח'}</span>
     function renderLessonPicker(){
@@ -11170,17 +11188,26 @@
       restoringProgress = true;
       if(saved){
         applyCompleted(saved);
+        const urlLessonId = requestedLessonFromUrl();
         const requestedLessonId = initialLessonFromUrl();
-        const lessonId = REVIEW_UNLOCK ? requestedLessonId : (TURTLE_LESSONS.some(lesson=>lesson.id===Number(saved.lesson)) ? Number(saved.lesson) : requestedLessonId);
+        const savedLessonId = Number(saved.lesson);
+        const lessonId = urlLessonId || (TURTLE_LESSONS.some(lesson=>lesson.id===savedLessonId) ? savedLessonId : requestedLessonId);
         setLesson(lessonId);
         const exercises = currentExercises();
-        const requestedExerciseIndex = requestedExerciseIndexFromUrl(exercises);
-        currentExerciseIndex = REVIEW_UNLOCK ? (requestedExerciseIndex ?? 0) : Math.max(0, Math.min(Number(saved.exercise || 0), exercises.length - 1));
+        const requestedExerciseIndex = requestedExerciseIndexFromUrl(exercises, true);
+        const freshLessonRequest = requestedFreshLessonFromUrl();
+        const lessonChangedByUrl = urlLessonId !== null && savedLessonId !== lessonId;
+        const directLessonOverride = REVIEW_UNLOCK || (urlLessonId !== null && (freshLessonRequest || requestedExerciseIndex !== null || lessonChangedByUrl));
+        if(freshLessonRequest) completedExercises[lessonId] = new Set();
+        const rememberedLessonIndex = lessonChangedByUrl ? firstIncompleteExerciseIndex(lessonId, exercises) : Number(saved.exercise || 0);
+        currentExerciseIndex = directLessonOverride ? Math.max(0, Math.min(requestedExerciseIndex ?? (REVIEW_UNLOCK ? 0 : rememberedLessonIndex), exercises.length - 1)) : Math.max(0, Math.min(rememberedLessonIndex, exercises.length - 1));
         exercisePassed = completedSet().has(currentExerciseIndex);
-        if(saved.workspaceXml){
+        if(saved.workspaceXml && !directLessonOverride){
           workspace.clear();
           Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(saved.workspaceXml), workspace);
-            }
+        } else if(directLessonOverride){
+          workspace.clear();
+        }
         generatePython();
         const restoredExercise = currentExercises()[currentExerciseIndex];
         const forceLesson10FirstStarter = currentLesson === 10 && restoredExercise?.id === 1;

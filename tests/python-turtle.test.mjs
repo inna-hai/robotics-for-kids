@@ -45,6 +45,8 @@ assert.match(html, /כל השיעורים/);
 assert.match(html, /לא מציגים לילדים את כל הסילבוס בבת אחת/);
 assert.match(html, /href="python-turtle\.html\?lesson=\$\{l\.id\}"/);
 assert.match(html, /python-turtle-lesson-\$\{l\.id\}-slides\.html/);
+assert.match(html, /id="teacherSlidesNav"/, 'teacher slides link stays in the top course menu');
+assert.doesNotMatch(html, /<a class="teacher-slide-btn"/, 'teacher slides link should not be duplicated above exercises in the side panel');
 assert.match(html, /חומר ל־90 דקות/);
 assert.match(html, /פתח'\}<\/span>/);
 assert.doesNotMatch(html, /\$\{l\.concept\} · \$\{l\.goal\}/, 'lesson sidebar should be compact navigation, not the whole syllabus');
