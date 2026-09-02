@@ -56,7 +56,7 @@
       <div class="preview-wrap"><iframe id="preview" title="תצוגת התוצר"></iframe></div>
     </section>
   </main>
-  <script src="js/webcode-lessons-lesson3-show-message-v48.js"></script>
+  <script src="js/webcode-lessons-lesson3-show-message-v48.js?v=lesson7-code-writing-v4"></script>
   <script>
     if(!window.getWebCodeLesson){
       window.WEBCODE_LESSONS = [{ id:1, title:'בונים עמוד אמיתי עם Blockly', concept:'בלוקים שבונים אתר', durationMinutes:90, realBlocklyBuilder:true, story:'בונים אתר בעזרת בלוקים ורואים את התוצאה מיד.', mission:'גררו בלוקים לשרשרת כדי לבנות עמוד אישי.', starter:{ html:'', css:'', js:'' }, exercises:[
@@ -78,7 +78,7 @@
     let highestUnlockedExercise = 1;
     const done = new Set();
     const checkMemory = {};
-    const storageKey = `webcodeLessonState:v12:${lesson.id}`;
+    const storageKey = `webcodeLessonState:v15:${lesson.id}`;
     let stateReady = false;
     let codePeekOpened = false;
     let lastGeneratedCodeSelection = null;
@@ -983,7 +983,16 @@ ${block.replace}`; changed = true; }
       if(!answer || !selectedLine) return false;
       if(answer === selectedLine) return true;
       const required = rule.requiredSnippets || [];
-      return required.some(snippet => answer.includes(normalizeCodeAnswer(snippet).replace(/;$/, ''))) && selectedLine.includes(answer.replace(/;$/, ''));
+      const answerNoSemi = answer.replace(/;$/, '');
+      const compactAnswer = answerNoSemi.replace(/\s+/g, '');
+      const compactSelectedLine = selectedLine.replace(/;$/, '').replace(/\s+/g, '');
+      return required.some(snippet => {
+        const requiredSnippet = normalizeCodeAnswer(snippet).replace(/;$/, '');
+        const compactRequired = requiredSnippet.replace(/\s+/g, '');
+        const answerMatchesRequired = answerNoSemi.includes(requiredSnippet) || compactAnswer.includes(compactRequired);
+        const lineContainsAnswer = selectedLine.includes(answerNoSemi) || compactSelectedLine.includes(compactAnswer);
+        return answerMatchesRequired && lineContainsAnswer;
+      });
     }
     function expectedSelectionText(ex){
       const rule = ex?.check?.requiresCodeLineAnswer || {};
@@ -995,15 +1004,18 @@ ${block.replace}`; changed = true; }
       return 'בלוק מתאים למשימה';
     }
     function codeSelectionStatusHtml(ex){
-      if(!ex?.check?.requiresCodeLineAnswer) return '';
+      const needsSelectionStatus = ex?.check?.requiresCodeLineAnswer || ex?.check?.requiresCodeSelectionBlockTypes || ex?.check?.requiresCodeSelectionTab || ex?.check?.requiresCodeSelectionTabs;
+      if(!needsSelectionStatus) return '';
       const selected = lastGeneratedCodeSelection;
       const expected = expectedSelectionText(ex);
       if(!selected || selected.exerciseId !== ex.id) return `<div id="codeSelectionStatus" class="selected-code-line">עדיין לא נבחר בלוק. פתחו את הקוד שנוצר ולחצו על ${esc(expected)}.</div>`;
-      const rule = ex.check.requiresCodeLineAnswer;
-      const tabOk = !rule.tab || selected.tab === rule.tab;
-      const blockOk = !rule.blockTypes?.length || rule.blockTypes.includes(selected.blockType);
+      const rule = ex.check.requiresCodeLineAnswer || {};
+      const tabOk = ex?.check?.requiresCodeSelectionTabs ? ex.check.requiresCodeSelectionTabs.includes(selected.tab) : (rule.tab ? selected.tab === rule.tab : (!ex?.check?.requiresCodeSelectionTab || selected.tab === ex.check.requiresCodeSelectionTab));
+      const blockTypes = rule.blockTypes || ex?.check?.requiresCodeSelectionBlockTypes || [];
+      const blockOk = !blockTypes.length || blockTypes.includes(selected.blockType);
       if(!tabOk || !blockOk) return `<div id="codeSelectionStatus" class="selected-code-line">נבחר בלוק לא מתאים למשימה הזו. בחרו ${esc(expected)}.</div>`;
-      return `<div id="codeSelectionStatus" class="selected-code-line">נבחר בלוק: ${esc(selected.label || selected.blockType)}</div>`;
+      const codeLine = selected.line ? `<code>${esc(selected.line)}</code>` : '';
+      return `<div id="codeSelectionStatus" class="selected-code-line">נבחר בלוק: ${esc(selected.label || selected.blockType)}${codeLine}</div>`;
     }
     function refreshCodeSelectionStatus(){
       const box = $('codeSelectionStatus');
@@ -1318,7 +1330,8 @@ ${block.replace}`; changed = true; }
         : `<div class="exercise-controls"><button class="btn link" type="button" onclick="goPreviousExercise()" ${isFirst ? 'disabled' : ''}>→ הקודם</button>${ex.noCheck ? '' : '<button class="btn check" type="button" onclick="checkExercise()">✅ בדיקה</button>'}${nextButton}${courseButton}</div>`;
       const debugBox = ex.debugCode ? `<div class="helper"><b>תיבת קוד התחלה — ${esc(ex.debugCode.language || 'Code')}</b><textarea id="exerciseDebugCode" spellcheck="false" style="height:120px;min-height:120px;margin-top:.55rem;border-radius:14px">${esc(ex.debugCode.starter || '')}</textarea></div>` : '';
       const answerBox = ex.answerBox ? `<div class="helper code-answer-box"><label for="exerciseAnswer"><b>${esc(ex.answerBox.label || 'כתבו תשובה')}</b></label>${codeSelectionStatusHtml(ex)}<input id="exerciseAnswer" type="text" dir="ltr" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" enterkeyhint="done" data-lpignore="true" data-1p-ignore="true" placeholder="הקלד כאן את קוד הבלוק" value="${esc(exerciseAnswerValue(ex.id))}" onpaste="return blockAnswerPaste(event)" onkeydown="return blockAnswerKeydown(event)" oninput="saveExerciseAnswer(${ex.id}, this.value)" style="width:100%;margin-top:.55rem;border-radius:14px;border:1px solid #f5b7c8;padding:.75rem;font-family:monospace;font-size:.95rem"><small>${esc(ex.answerBox.note || 'אין הדבקה כאן — מקלידים בעצמכם כדי להבין את שורת ה־CSS.')}</small></div>` : '';
-      $('exercises').innerHTML = `<article class="exercise active ${isDone ? 'done' : ''}" id="ex-${ex.id}"><div class="exercise-top"><div><b>${esc(ex.title)}</b></div><span class="exercise-status">${ex.id}/${lesson.exercises.length}</span></div><p>${esc(ex.prompt)}</p>${debugBox}${answerBox}<div class="hint">💡 ${esc(ex.hint)}</div><div class="hint">➡️ עוברים תרגיל רק אחרי בדיקה מוצלחת: לוחצים על “לתרגיל הבא”.</div><div class="exercise-bottom">${controls}<div class="feedback exercise-feedback" id="feedback">גררו בלוק, בדקו את התצוגה ולחצו בדיקה.</div></div></article>`;
+      const selectionBox = !ex.answerBox && (ex.check?.requiresCodeSelectionBlockTypes || ex.check?.requiresCodeSelectionTab || ex.check?.requiresCodeSelectionTabs) ? codeSelectionStatusHtml(ex) : '';
+      $('exercises').innerHTML = `<article class="exercise active ${isDone ? 'done' : ''}" id="ex-${ex.id}"><div class="exercise-top"><div><b>${esc(ex.title)}</b></div><span class="exercise-status">${ex.id}/${lesson.exercises.length}</span></div><p>${esc(ex.prompt)}</p>${debugBox}${answerBox}${selectionBox}<div class="hint">💡 ${esc(ex.hint)}</div><div class="hint">➡️ עוברים תרגיל רק אחרי בדיקה מוצלחת: לוחצים על “לתרגיל הבא”.</div><div class="exercise-bottom">${controls}<div class="feedback exercise-feedback" id="feedback">גררו בלוק, בדקו את התצוגה ולחצו בדיקה.</div></div></article>`;
     }
     function goPreviousExercise(){ if(activeExercise > 1) selectExercise(activeExercise - 1); }
     function continueExercise(){ if(activeExercise < lesson.exercises.length && canOpenExercise(activeExercise + 1)) selectExercise(activeExercise + 1); }

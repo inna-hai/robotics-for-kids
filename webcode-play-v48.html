@@ -56,7 +56,7 @@
       <div class="preview-wrap"><iframe id="preview" title="תצוגת התוצר"></iframe></div>
     </section>
   </main>
-  <script src="js/webcode-lessons-lesson3-show-message-v48.js"></script>
+  <script src="js/webcode-lessons-lesson3-show-message-v48.js?v=lesson7-code-writing-v4"></script>
   <script>
     if(!window.getWebCodeLesson){
       window.WEBCODE_LESSONS = [{ id:1, title:'בונים עמוד אמיתי עם Blockly', concept:'בלוקים שבונים אתר', durationMinutes:90, realBlocklyBuilder:true, story:'בונים אתר בעזרת בלוקים ורואים את התוצאה מיד.', mission:'גררו בלוקים לשרשרת כדי לבנות עמוד אישי.', starter:{ html:'', css:'', js:'' }, exercises:[
@@ -983,7 +983,16 @@ ${block.replace}`; changed = true; }
       if(!answer || !selectedLine) return false;
       if(answer === selectedLine) return true;
       const required = rule.requiredSnippets || [];
-      return required.some(snippet => answer.includes(normalizeCodeAnswer(snippet).replace(/;$/, ''))) && selectedLine.includes(answer.replace(/;$/, ''));
+      const answerNoSemi = answer.replace(/;$/, '');
+      const compactAnswer = answerNoSemi.replace(/\s+/g, '');
+      const compactSelectedLine = selectedLine.replace(/;$/, '').replace(/\s+/g, '');
+      return required.some(snippet => {
+        const requiredSnippet = normalizeCodeAnswer(snippet).replace(/;$/, '');
+        const compactRequired = requiredSnippet.replace(/\s+/g, '');
+        const answerMatchesRequired = answerNoSemi.includes(requiredSnippet) || compactAnswer.includes(compactRequired);
+        const lineContainsAnswer = selectedLine.includes(answerNoSemi) || compactSelectedLine.includes(compactAnswer);
+        return answerMatchesRequired && lineContainsAnswer;
+      });
     }
     function expectedSelectionText(ex){
       const rule = ex?.check?.requiresCodeLineAnswer || {};

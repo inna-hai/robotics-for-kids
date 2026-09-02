@@ -801,20 +801,20 @@
   });
 
   Object.assign(lessons[6], {
-    title: 'מפלצת העוגיות — משחק קליקים ראשון',
+    title: 'דני אופה עוגיות — משחק קליקים ראשון',
     concept: 'משחק קליקים → score · target · התקדמות · ניצחון',
-    story: 'פותחים את יחידת המשחקים בצעצוע דיגיטלי שילדים מבינים מיד: מאכילים מפלצת עוגיות. כל קליק מגדיל ניקוד, ממלא מד התקדמות, משנה את מצב המפלצת, ובסוף פותח חגיגת ניצחון.',
-    mission: 'לבנות משחק Cookie Clicker קטן: ללחוץ על עוגייה, להעלות ניקוד, למלא מד יעד ולחגוג כשהמפלצת שבעה.',
-    outcome: 'משחק קליקים צבעוני עם דמות, מד התקדמות וניצחון, שמלמד score, target ו־classList בלי להרגיש כמו תרגיל',
+    story: 'פותחים את יחידת המשחקים בסיפור ביתי וחביב: דני אופה עוגיות למגש. כל קליק אופה עוד עוגייה, ממלא מד התקדמות, משנה את מצב דני, ובסוף המגש מלא והעוגיות מוכנות.',
+    mission: 'לבנות משחק אפיית עוגיות קטן: ללחוץ כדי לאפות עוגייה, להעלות ניקוד, למלא מד יעד ולחגוג כשהמגש מלא.',
+    outcome: 'משחק קליקים צבעוני עם דני, מד התקדמות וניצחון, שמלמד score, target ו־classList בלי להרגיש כמו תרגיל',
     starter: {
       html: `<main class="cookie-game">
-  <h1>מפלצת העוגיות</h1>
-  <div id="monster" class="monster">😋</div>
-  <p>עוגיות: <span id="scoreText">0</span> מתוך <span id="targetText">10</span></p>
+  <h1>דני אופה עוגיות</h1>
+  <div id="baker" class="baker">👦</div>
+  <p>עוגיות שנאפו: <span id="scoreText">0</span> מתוך <span id="targetText">10</span></p>
   <div class="progress"><div id="progressFill"></div></div>
-  <button id="clickButton" onclick="feedMonster()">🍪 האכילו עוגייה</button>
+  <button id="clickButton" onclick="bakeCookie()">🍪 אפו עוגייה</button>
   <button onclick="resetGame()">איפוס</button>
-  <p id="message">המפלצת רעבה. תגיעו ל־10 עוגיות!</p>
+  <p id="message">דני מתחיל לאפות. הגיעו ל־10 עוגיות במגש!</p>
 </main>`,
       css: `body {
   font-family: Arial, sans-serif;
@@ -832,12 +832,12 @@
   box-shadow: 0 18px 40px #fed7aa;
 }
 
-.monster {
+.baker {
   font-size: 84px;
   transition: transform 0.2s;
 }
 
-.monster.bump {
+.baker.bump {
   transform: scale(1.18) rotate(-4deg);
 }
 
@@ -873,8 +873,9 @@ button {
       js: `let score = 0;
 const target = 10;
 document.getElementById("targetText").textContent = target;
+document.getElementById("message").textContent = "דני מתחיל לאפות. הגיעו ל־" + target + " עוגיות במגש!";
 
-function feedMonster() {
+function bakeCookie() {
   if (score >= target) {
     return;
   }
@@ -886,18 +887,18 @@ function feedMonster() {
   document.getElementById("scoreText").textContent = score;
   document.getElementById("progressFill").style.width = Math.min(score / target * 100, 100) + "%";
 
-  const monster = document.getElementById("monster");
-  monster.classList.add("bump");
+  const baker = document.getElementById("baker");
+  baker.classList.add("bump");
   setTimeout(function () {
-    monster.classList.remove("bump");
+    baker.classList.remove("bump");
   }, 200);
 
   if (score >= target) {
-    monster.textContent = "🤩";
-    document.getElementById("message").textContent = "המפלצת שבעה! חגיגת עוגיות 🎉";
+    baker.textContent = "🥳";
+    document.getElementById("message").textContent = "המגש מלא! העוגיות מוכנות 🍪";
     document.querySelector(".cookie-game").classList.add("win");
   } else {
-    document.getElementById("message").textContent = "יאמי! עוד " + (target - score) + " עוגיות.";
+    document.getElementById("message").textContent = "נשארו עוד " + (target - score) + " עוגיות לאפות.";
   }
 }
 
@@ -905,50 +906,49 @@ function resetGame() {
   score = 0;
   document.getElementById("scoreText").textContent = score;
   document.getElementById("progressFill").style.width = "0%";
-  document.getElementById("monster").textContent = "😋";
+  document.getElementById("baker").textContent = "👦";
   document.getElementById("targetText").textContent = target;
-  document.getElementById("message").textContent = "המפלצת רעבה. תגיעו ל־" + target + " עוגיות!";
+  document.getElementById("message").textContent = "דני מתחיל לאפות. הגיעו ל־" + target + " עוגיות במגש!";
   document.querySelector(".cookie-game").classList.remove("win");
 }`
     },
     lessonFlow: [
-      { minutes: '0–8', title: 'וואו: מפלצת רעבה', teacher: 'מריצים מיד את המשחק, לוחצים כמה פעמים, ונותנים לילדים לצעוק מה השתנה.', students: 'מזהים דמות, עוגיות, ניקוד, מד התקדמות וניצחון.' },
-      { minutes: '8–18', title: 'הקליק שמאכיל', teacher: 'מצביעים על כפתור העוגייה ועל feedMonster, בלי להעמיס תחביר.', students: 'מחברים בין לחיצה לבין עליית score.' },
+      { minutes: '0–8', title: 'וואו: דני מתחיל לאפות', teacher: 'מריצים מיד את המשחק, אופים כמה עוגיות, ונותנים לילדים לזהות מה השתנה.', students: 'מזהים את דני, עוגיות שנאפו, ניקוד, מד התקדמות וניצחון.' },
+      { minutes: '8–18', title: 'הקליק שאופה', teacher: 'מצביעים על כפתור העוגייה ועל bakeCookie, בלי להעמיס תחביר.', students: 'מחברים בין לחיצה לבין עליית score.' },
       { minutes: '18–34', title: 'מד התקדמות', teacher: 'מדגימים איך score/target הופך לאחוז רוחב במד.', students: 'רואים שהמספר יוצר שינוי ויזואלי.' },
-      { minutes: '34–50', title: 'מצב ניצחון', teacher: 'מראים את התנאי score >= target ואת שינוי הדמות.', students: 'מסבירים מתי המשחק מחליט שהמפלצת שבעה.' },
-      { minutes: '50–66', title: 'שדרוגים בבלוקים', teacher: 'נותנים לשנות יעד, הודעה, צבע ודמות דרך בלוקים מוכנים.', students: 'יוצרים גרסה אישית של המפלצת.' },
+      { minutes: '34–50', title: 'מגש מלא', teacher: 'מראים את התנאי score >= target ואת שינוי מצב דני.', students: 'מסבירים מתי המשחק מחליט שהמגש מלא.' },
+      { minutes: '50–66', title: 'שדרוגים בבלוקים', teacher: 'נותנים לשנות יעד, הודעה, צבע וטקסט כפתור דרך בלוקים מוכנים.', students: 'יוצרים גרסת אפייה אישית.' },
       { minutes: '66–78', title: 'דיבאג ידידותי', teacher: 'מדגימים מה קורה אם scoreText או progressFill לא תואמים.', students: 'בודקים id ומתקנים בלי לפחד.' },
-      { minutes: '78–90', title: 'תערוכת מפלצות', teacher: 'זוגות משחקים ומצביעים על שדרוג אחד.', students: 'מציגים מפלצת ואומרים מה הבלוק שלהם שינה.' }
+      { minutes: '78–90', title: 'תערוכת מאפיות', teacher: 'זוגות משחקים ומצביעים על שדרוג אחד.', students: 'מציגים משחק אפייה ואומרים מה הבלוק שלהם שינה.' }
     ],
     exercises: [
-      { id: 1, minutes: '0–8', title: 'תרגול 1 — מאכילים קודם', prompt: 'הריצו ולחצו על העוגייה עד שהמפלצת משתנה.', hint: 'קודם משחקים, אחר כך מחפשים את הקוד.', check: { htmlIncludes: ['id="clickButton"', 'id="monster"'], jsIncludes: ['function feedMonster'] } },
+      { id: 1, minutes: '0–8', title: 'תרגול 1 — אופים קודם', prompt: 'הריצו ולחצו על העוגייה עד שדני מסיים לאפות.', hint: 'קודם משחקים, אחר כך מחפשים את הקוד.', check: { htmlIncludes: ['id="clickButton"', 'id="baker"'], jsIncludes: ['function bakeCookie'] } },
       { id: 2, minutes: '8–18', title: 'תרגול 2 — מוצאים ניקוד', prompt: 'מצאו איפה score מתחיל ואיפה הוא עולה בכל קליק.', hint: 'חפשו score = score + 1.', check: { jsIncludes: ['let score = 0', 'score = score + 1'] } },
       { id: 3, minutes: '18–28', title: 'תרגול 3 — יעד 10', prompt: 'מצאו את יעד העוגיות ובדקו שהוא 10.', hint: 'היעד נקרא target.', check: { jsIncludes: ['const target = 10'] } },
       { id: 4, minutes: '28–38', title: 'תרגול 4 — מד מתמלא', prompt: 'מצאו את השורה שמשנה את רוחב מד ההתקדמות.', hint: 'width משנה את המד במסך.', check: { jsIncludes: ['progressFill', 'style.width'] } },
       { id: 5, minutes: '38–50', title: 'תרגול 5 — חגיגת ניצחון', prompt: 'בדקו מה קורה כשהניקוד מגיע ליעד.', hint: 'חפשו score >= target.', check: { jsIncludes: ['score >= target'], cssIncludes: ['.win'] } },
-      { id: 6, minutes: '50–60', title: 'תרגול 6 — דמות אישית', prompt: 'שנו את דמות המפלצת או הודעת הניצחון.', hint: 'שינוי בטוח: טקסט או אימוג׳י בתוך גרשיים.', check: { htmlIncludes: ['monster'], jsIncludes: ['textContent'] } },
+      { id: 6, minutes: '50–60', title: 'תרגול 6 — הודעה אישית', prompt: 'שנו את הודעת הניצחון או טקסט הכפתור.', hint: 'שינוי בטוח: טקסט או אימוג׳י בתוך גרשיים.', check: { htmlIncludes: ['baker'], jsIncludes: ['textContent'] } },
       { id: 7, minutes: '60–74', title: 'תרגול 7 — דיבאג id', prompt: 'אם המד או הניקוד לא משתנים, בדקו שה־id זהה ב־HTML וב־JS.', hint: 'scoreText ו־progressFill חייבים להיות כתובים אותו דבר.', check: { htmlIncludes: ['id="scoreText"', 'id="progressFill"'], jsIncludes: ['getElementById("scoreText")', 'getElementById("progressFill")'] } },
       { id: 8, minutes: '74–84', title: 'תרגול 8 — בדיקת חבר', prompt: 'תנו לחבר לשחק והחליטו אם צריך יעד קל או קשה יותר.', hint: 'משחק טוב נותן ניצחון, אבל לא מיד.', check: { jsIncludes: ['target', 'resetGame'], htmlIncludes: ['button'] } }
     ],
     aiHelper: [
-      'הציעו 5 דמויות מצחיקות למשחק האכלה.',
+      'הציעו 5 רעיונות חביבים למשחק אפיית עוגיות.',
       'עזרו לילד להסביר איך score ממלא את מד ההתקדמות.',
-      'הציעו הודעות ניצחון מצחיקות ולא מעליבות.',
-      'עזרו לאזן יעד של 5, 10 או 15 עוגיות.'
+      'הציעו הודעות ניצחון חביבות לסיום האפייה.',
+      'עזרו לאזן יעד של 5, 10 או 15 עוגיות לאפות.'
     ],
     vocabulary: [
-      ['score', 'כמה עוגיות המפלצת קיבלה'],
+      ['score', 'כמה עוגיות דני אפה'],
       ['target', 'כמה צריך כדי לנצח'],
       ['progress', 'מד שמראה כמה התקדמנו'],
       ['style.width', 'שינוי רוחב של אלמנט במסך'],
       ['classList', 'דרך להוסיף מצב עיצובי כמו ניצחון']
     ],
     bridgeBlocks: [
-      { label: '🍪 טקסט כפתור עוגייה', target: 'html', find: '🍪 האכילו עוגייה', replace: '🍪 תנו ביס!', hint: 'בלוק משחק: משנה את הפעולה שהילד רואה.' },
+      { label: '🍪 טקסט כפתור אפייה', target: 'html', find: '🍪 אפו עוגייה', replace: '🍪 אפו עוד!', hint: 'בלוק משחק: משנה את הפעולה שהתלמיד רואה.' },
       { label: '🏁 יעד קל 5', target: 'js', find: 'const target = 10;', replace: 'const target = 5;', hint: 'בלוק איזון: מקצר את המשחק.' },
       { label: '✌️ שתי עוגיות', target: 'js', find: 'score = score + 1;', replace: 'score = score + 2;', hint: 'בלוק ניקוד: כל קליק שווה יותר.' },
-      { label: '🤩 דמות ניצחון', target: 'js', find: 'monster.textContent = "🤩";', replace: 'monster.textContent = "🥳";', hint: 'בלוק דמות: מחליף את מצב הניצחון.' },
-      { label: '🎉 הודעת ניצחון', target: 'js', find: 'המפלצת שבעה! חגיגת עוגיות 🎉', replace: 'אליפות! המפלצת פתחה מסיבה 🎉', hint: 'בלוק משוב: משנה הודעת סיום.' },
+            { label: '🎉 הודעת ניצחון', target: 'js', find: 'המגש מלא! העוגיות מוכנות 🍪', replace: 'אליפות! דני מילא מגש עוגיות 🎉', hint: 'בלוק משוב: משנה הודעת סיום.' },
       { label: '🟢 צבע ניצחון', target: 'css', find: 'background: #dcfce7;', replace: 'background: #bbf7d0;', hint: 'בלוק עיצוב: משנה את מצב הניצחון.' }
     ]
   });
@@ -6020,11 +6020,11 @@ function resetAdventure() {
       ['score_label','כותרת ניקוד %1','html','ניקוד:','{{TEXT}}',[['field_input','TEXT','הניקוד שלי:']]],
       ['reset_message','כפתור איפוס אומר %1','html','איפוס ניקוד','{{TEXT}}',[['field_input','TEXT','התחלה מחדש']]]
     ]},
-    7: { title:'מפלצת העוגיות — משחק קליקים ראשון', concept:'click event · target · progress · win condition', blocks:[
-      ['target','יעד ניצחון %1','js','const target = 10;\ndocument.getElementById("targetText").textContent = target;','const target = {{N}};\ndocument.getElementById("targetText").textContent = target;',[['field_dropdown','N',[['5','5'],['8','8'],['12','12']]]]],
+    7: { title:'דני אופה עוגיות — משחק קליקים ראשון', concept:'click event · target · progress · win condition', blocks:[
+      ['target','יעד ניצחון %1','js','const target = 10;\ndocument.getElementById("targetText").textContent = target;\ndocument.getElementById("message").textContent = "דני מתחיל לאפות. הגיעו ל־" + target + " עוגיות במגש!";','const target = {{N}};\ndocument.getElementById("targetText").textContent = target;\ndocument.getElementById("message").textContent = "דני מתחיל לאפות. הגיעו ל־" + target + " עוגיות במגש!";',[['field_dropdown','N',[['5','5'],['8','8'],['12','12']]]]],
       ['click_points','כל קליק מוסיף %1','js','score = score + 1;','score = score + {{N}};',[['field_dropdown','N',[['1','1'],['2','2'],['3','3']]]]],
-      ['win_text','הודעת ניצחון %1','js','המפלצת שבעה! חגיגת עוגיות 🎉','{{TEXT}}',[['field_input','TEXT','אליפות! המפלצת פתחה מסיבה 🎉']]],
-      ['button','טקסט כפתור %1','html','האכילו עוגייה','{{TEXT}}',[['field_input','TEXT','תנו ביס!']]],
+      ['win_text','הודעת ניצחון %1','js','המגש מלא! העוגיות מוכנות 🍪','{{TEXT}}',[['field_input','TEXT','אליפות! דני מילא מגש עוגיות 🎉']]],
+      ['button','טקסט כפתור %1','html','אפו עוגייה','{{TEXT}}',[['field_input','TEXT','אפו עוד עוגייה!']]],
       ['win_color','צבע ניצחון %1','css','#dcfce7','{{COLOR}}',[['field_dropdown','COLOR',[['ירוק','#bbf7d0'],['צהוב','#fef08a'],['ורוד','#fbcfe8']]]]]
     ]},
     8: { title:'טיימר הצלת העיר — משחק נגד השעון', concept:'timer · setInterval · countdown · visual feedback', blocks:[
@@ -6148,7 +6148,7 @@ function resetAdventure() {
       ...practiceBlocks.map((block,i)=>{ const edit = blockEditInstruction(block); return { id:i+1, minutes:`${i*10}–${10+i*10}`, title:`תרגיל ${i+1} — ${block.label}`, prompt:`גררו וחברו את הבלוק “${block.label}”. ${edit.action}, ואז בדקו בתצוגה החיה משמאל מה השתנה.`, hint:block.hint || 'בלוק מחובר משפיע מיד בתצוגה; בלוק חופשי בצד לא משנה את הקוד.', check:{ ...checkFor(block), blockFeedback:`כמעט. גררו וחברו את הבלוק “${block.label}” לשרשרת.`, ...(block.args0?.length ? { changedBlocklyFields:block.args0.map(arg=>({type:block.type, field:arg.name, defaultValue:arg.text ?? arg.options?.[0]?.[1]})), fieldFeedback:edit.feedback } : {}) } }; }),
       { id:6, minutes:'50–64', title:'תרגיל 6 — בודקים בתצוגה, לא בכפתור הרצה', prompt:'שנו טקסט או בחרו אפשרות בתוך אחד הבלוקים שכבר חיברתם וראו שהתצוגה מתעדכנת לבד. הסבירו לעצמכם מה השתנה ולמה.', hint:'בשיעורי Blockly התצוגה מתעדכנת אוטומטית אחרי שינוי בלוק — אין צורך בכפתור הרצה.', check:{ blockTypes:blocks.slice(0,1).map(b=>b.type), anyChangedBlocklyFields:blocks.flatMap(block => (block.args0 || []).map(arg=>({type:block.type, field:arg.name, defaultValue:arg.text ?? arg.options?.[0]?.[1]}))), anyFieldFeedback:'כמעט. שנו טקסט או בחרו אפשרות בתוך לפחות אחד מהבלוקים המחוברים כדי לראות שינוי אמיתי.' } },
       { id:7, minutes:'64–74', title:'תרגיל 7 — משלבים כמה בלוקים', prompt:'השאירו מחוברים לפחות שני בלוקים מהשיעור והסבירו לעצמכם איך הם עובדים יחד. שינוי טוב הוא שינוי שאפשר להסביר, לא רק לעבור בדיקה.', hint:'נסו לחבר בלוק שמשנה תוכן עם בלוק שמשנה חוק, עיצוב או תגובה.', check:{ blockTypes:blocks.slice(0, Math.min(2, blocks.length)).map(b=>b.type), generatedBlockOutputs:blocks.slice(0, Math.min(2, blocks.length)).map(b=>({ type:b.type, target:b.target })), blockFeedback:'כמעט. חברו לפחות שני בלוקים מהשיעור כדי לבנות שינוי משולב.', generatedFeedback:'כמעט. שני הבלוקים מחוברים, אבל הקוד שנוצר מהם עדיין לא מופיע בתוצאה.' } },
-      { id:8, minutes:'74–84', title:'תרגיל 8 — בלוק הופך לקוד', prompt:'פתחו “לראות קוד שנוצר”, לחצו על בלוק שחיברתם, וודאו שהשורה שהוא יצר מסומנת.', hint:'בחרו בלוק שמחובר לשרשרת, לא בלוק חופשי בצד.', check:{ blockTypes:blocks.slice(0,2).map(b=>b.type), requiresCodePeek:true, requiresCodeSelectionBlockTypes:blocks.map(b=>b.type), codePeekFeedback:'כמעט. קודם פתחו את “לראות קוד שנוצר”.', codeSelectionFeedback:'כמעט. לחצו על בלוק מחובר כדי שהקוד שנוצר ממנו יסומן.' } }
+      { id:8, minutes:'74–84', title:'תרגיל 8 — בלוק הופך לקוד', prompt:'פתחו “לראות קוד שנוצר”, לחצו על הבלוק שמתאים למשימה, וודאו שהשורה שהוא יצר מופיעה בכרטיס המשימה או מסומנת בקוד.', hint:'בחרו את הבלוק שמתאים למשימה מתוך השרשרת המחוברת. אם כבר חיברתם אותו — לחצו עליו שוב אחרי פתיחת הקוד שנוצר.', check:{ blockTypes:blocks.slice(0,2).map(b=>b.type), requiresCodePeek:true, requiresCodeSelectionBlockTypes:blocks.map(b=>b.type), codePeekFeedback:'כמעט. קודם פתחו את “לראות קוד שנוצר”.', codeSelectionFeedback:'כמעט. אחרי פתיחת הקוד שנוצר, לחצו על הבלוק שמתאים למשימה מתוך השרשרת המחוברת.' } }
     ];
   }
   lessons.forEach(lesson => {
@@ -6321,31 +6321,31 @@ function resetAdventure() {
       const winTextExercise = lesson.exercises.find(item => item.id === 3);
       if(winTextExercise && winTextBlock){
         winTextExercise.title = 'תרגיל 3 — הודעת ניצחון';
-        winTextExercise.prompt = 'גררו וחברו את הבלוק “הודעת ניצחון”. שנו את הטקסט שבתוכו. אחר כך האכילו את המפלצת עד הניצחון ובדקו שההודעה החדשה מופיעה.';
-        winTextExercise.hint = 'ההודעה מופיעה רק כשמגיעים ליעד. לחצו על העוגייה עד הניצחון ואז בדקו.';
+        winTextExercise.prompt = 'גררו וחברו את הבלוק “הודעת ניצחון”. שנו את הטקסט שבתוכו. אחר כך אפו עוגיות עד הניצחון ובדקו שההודעה החדשה מופיעה.';
+        winTextExercise.hint = 'ההודעה מופיעה רק כשמגיעים ליעד. לחצו על העוגייה עד שהמגש מלא ואז בדקו.';
         winTextExercise.check.requiresPreviewMessageFromBlockOutput = [{ type: winTextBlock.type }];
-        winTextExercise.check.previewMessageFeedback = 'כמעט. הבלוק מחובר, אבל צריך ללחוץ על העוגייה בתצוגה עד שהמפלצת מגיעה ליעד הניצחון ורואים את הודעת הניצחון החדשה.';
+        winTextExercise.check.previewMessageFeedback = 'כמעט. הבלוק מחובר, אבל צריך ללחוץ על העוגייה בתצוגה עד שדני מגיע ליעד האפייה ורואים את הודעת הניצחון החדשה.';
       }
       const winColorExercise = lesson.exercises.find(item => item.id === 5);
       if(winColorExercise){
         winColorExercise.title = 'תרגיל 5 — צבע ניצחון אחרי שמנצחים';
-        winColorExercise.prompt = 'גררו וחברו את הבלוק “צבע ניצחון”. בחרו צבע אחר. עכשיו האכילו את המפלצת עד הניצחון ובדקו שהצבע החדש מופיע.';
-        winColorExercise.hint = 'צבע הניצחון מופיע רק בסוף המשחק. לחצו על העוגייה עד שהמפלצת מנצחת ואז בדקו.';
+        winColorExercise.prompt = 'גררו וחברו את הבלוק “צבע ניצחון”. בחרו צבע אחר. עכשיו אפו עוגיות עד הניצחון ובדקו שהצבע החדש מופיע.';
+        winColorExercise.hint = 'צבע הניצחון מופיע רק כשהמגש מלא. לחצו על העוגייה עד סוף האפייה ואז בדקו.';
         winColorExercise.check.requiresPreviewCardClass = 'win';
-        winColorExercise.check.previewClassFeedback = 'כמעט. כדי לראות את צבע הניצחון, צריך ללחוץ על העוגייה עד שהמפלצת מגיעה ליעד.';
+        winColorExercise.check.previewClassFeedback = 'כמעט. כדי לראות את צבע הניצחון, צריך ללחוץ על העוגייה עד שדני מגיע ליעד האפייה.';
       }
       const balanceExercise = lesson.exercises.find(item => item.id === 6);
       const clickPointsBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_7_click_points');
       if(balanceExercise && clickPointsBlock){
         balanceExercise.title = 'תרגיל 6 — כמה עוגיות בכל לחיצה?';
-        balanceExercise.prompt = 'חברו את הבלוק “כל קליק מוסיף”, בחרו 2 או 3, ואז לחצו פעם אחת על העוגייה בתצוגה. בדקו שהמספר קופץ לפי הערך שבחרתם.';
-        balanceExercise.hint = 'זה משנה את קצב המשחק: אם בחרתם 3, קליק אחד צריך להוסיף 3 עוגיות.';
+        balanceExercise.prompt = 'חברו את הבלוק שמחליט כמה עוגיות ייאפו בכל לחיצה — “כל קליק מוסיף”. בחרו 2 או 3, ואז לחצו פעם אחת על העוגייה בתצוגה. בדקו שהמספר קופץ לפי הערך שבחרתם.';
+        balanceExercise.hint = 'חפשו את הבלוק “כל קליק מוסיף”. הוא מחליט כמה עוגיות דני אופה בכל לחיצה. אם בחרתם 3, קליק אחד צריך להוסיף 3 עוגיות.';
         balanceExercise.check = {
           blockTypes: [clickPointsBlock.type],
           changedBlocklyFields: [{ type: clickPointsBlock.type, field: 'N', defaultValue: '1' }],
           generatedBlockOutputs: [{ type: clickPointsBlock.type, target: 'js' }],
           requiresPreviewScoreFromBlockField: { type: clickPointsBlock.type, field: 'N' },
-          blockFeedback: 'כמעט. חברו את הבלוק “כל קליק מוסיף” לשרשרת.',
+          blockFeedback: 'כמעט. חברו לשרשרת את הבלוק שמחליט כמה עוגיות ייאפו בכל לחיצה — “כל קליק מוסיף”.',
           fieldFeedback: 'כמעט. בחרו 2 או 3 בתוך הבלוק, לא 1.',
           generatedFeedback: 'כמעט. הערך שבחרתם עוד לא מופיע בקוד שנוצר.',
           previewScoreFeedback: 'כמעט. עכשיו לחצו פעם אחת על העוגייה בתצוגה ובדקו שהניקוד קופץ לפי הערך שבחרתם.'
@@ -6354,6 +6354,28 @@ function resetAdventure() {
       lesson.exercises = lesson.exercises
         .filter(item => item.id !== 6 && item.id !== 7)
         .map(item => item.id === 8 ? { ...item, id: 6, minutes: '50–62', title: item.title.replace('תרגיל 8', 'תרגיל 6') } : item);
+      lesson.exercises.push({
+        id: 7,
+        minutes: '62–76',
+        title: 'תרגיל 7 — כותבים את שורת הניקוד',
+        prompt: 'פתחו “לראות קוד שנוצר”, לחצו על הבלוק שמחליט כמה עוגיות ייאפו בכל לחיצה — “כל קליק מוסיף”, ומצאו בשורת JavaScript שלו איזה חלק בקוד מגדיל את הניקוד. הקלידו בתיבה את קטע הקוד שמוסיף לעוגיות בכל לחיצה.',
+        hint: 'חפשו בשורה שסומנה את המשתנה של הניקוד ואת סימן החיבור. לא צריך להקליד את כל הפונקציה — רק את קטע ההגדלה מתוך השורה.',
+        answerBox: {
+          label: 'קטע הקוד שמגדיל ניקוד',
+          placeholder: 'הקלידו כאן את קטע ההגדלה',
+          note: 'אי אפשר להדביק כאן — מקלידים לבד קטע קצר מתוך שורת ה־JavaScript.'
+        },
+        check: {
+          blockTypes: [clickPointsBlock.type],
+          requiresCodePeek: true,
+          requiresCodeSelectionTab: 'js',
+          requiresCodeSelectionBlockTypes: [clickPointsBlock.type],
+          requiresCodeLineAnswer: { tab: 'js', blockTypes: [clickPointsBlock.type], requiredSnippets: ['score = score +'] },
+          codePeekFeedback: 'כמעט. קודם פתחו את “לראות קוד שנוצר”.',
+          codeSelectionFeedback: 'כמעט. לחצו על הבלוק שמחליט כמה עוגיות ייאפו בכל לחיצה — “כל קליק מוסיף” — כדי לראות את שורת ה־JavaScript שלו.',
+          codeLineAnswerFeedback: 'כמעט. כתבו את קטע הקוד שמגדיל את score בעזרת סימן = וסימן +. אפשר לכתוב עם רווחים או בלי רווחים.'
+        }
+      });
     }
     if(lesson.id === 5){
       const questionBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_5_question');
@@ -6461,26 +6483,29 @@ function resetAdventure() {
           generatedFeedback: 'כמעט. התיקון עוד לא מופיע בקוד JavaScript שנוצר.'
         };
       }
-      lesson.exercises = lesson.exercises.filter(exercise => exercise.id !== 7);
-      const codePeekExercise = lesson.exercises.find(item => item.id === 8);
-      if(codePeekExercise){
-        codePeekExercise.id = 7;
-        codePeekExercise.title = 'תרגיל 7 — מקלידים מילת JavaScript';
-        codePeekExercise.minutes = '66–78';
-        codePeekExercise.prompt = 'פתחו “לראות קוד שנוצר”, לחצו על בלוק תנאי שמייצר JavaScript, בדקו בכרטיס המשימה איזה בלוק נבחר, ואז הקלידו בעצמכם מילת קוד קצרה שראיתם בשורה שסומנה — למשל if, else, answer, colorChoice או className.';
-        codePeekExercise.hint = 'בחרו בלוק של תשובה נכונה, הודעת הצלחה או הודעת אחרת. מספיק להקליד מילת קוד אחת מתוך השורה שסומנה, לא את כל השורה.';
-        codePeekExercise.answerBox = { label: 'מילת JavaScript שראיתי', placeholder: 'הקלד כאן מילת קוד מהבלוק', note: 'אי אפשר להדביק כאן — מקלידים בעצמכם כדי לזהות מילים מתוך if/else.' };
-        codePeekExercise.check = {
-          blockTypes: ['lesson_5_answer', 'lesson_5_success', 'lesson_5_wrong', 'lesson_5_chosen_background'],
+      lesson.exercises = lesson.exercises.filter(exercise => exercise.id !== 7 && exercise.id !== 8);
+      lesson.exercises.push({
+        id: 7,
+        minutes: '66–78',
+        title: 'תרגיל 7 — כותבים קטע קוד קצר',
+        prompt: 'פתחו “לראות קוד שנוצר”. לחצו על הבלוק “התשובה הנכונה היא”. בכרטיס המשימה תופיע שורת קוד שמתחילה ב־if. מתוך השורה הזו הקלידו בתיבה רק את קטע ההשוואה הקצר: answer ===. אפשר גם בלי רווחים: answer===',
+        hint: 'לא צריך להקליד את כל שורת ה־if. חפשו בשורה שסומנה את החלק שבודק את התשובה, והקלידו רק: answer ===. גם answer=== מתקבל.',
+        answerBox: {
+          label: 'קטע הקוד שכתבתי',
+          placeholder: 'answer ===',
+          note: 'אין הדבקה כאן — מקלידים לבד קטע קצר מהתנאי כדי להתרגל לכתיבת JavaScript.'
+        },
+        check: {
+          blockTypes: ['lesson_5_answer'],
           requiresCodePeek: true,
           requiresCodeSelectionTab: 'js',
-          requiresCodeSelectionBlockTypes: ['lesson_5_answer', 'lesson_5_success', 'lesson_5_wrong', 'lesson_5_chosen_background'],
-          requiresCodeLineAnswer: { tab: 'js', blockTypes: ['lesson_5_answer', 'lesson_5_success', 'lesson_5_wrong', 'lesson_5_chosen_background'], requiredSnippets: ['if', 'else', 'answer', 'feedback.textContent', 'className', 'colorChoice'] },
+          requiresCodeSelectionBlockTypes: ['lesson_5_answer'],
+          requiresCodeLineAnswer: { tab: 'js', blockTypes: ['lesson_5_answer'], requiredSnippets: ['answer ==='] },
           codePeekFeedback: 'כמעט. קודם פתחו את “לראות קוד שנוצר”.',
-          codeSelectionFeedback: 'כמעט. עכשיו לחצו על בלוק תנאי שמייצר JavaScript — תשובה נכונה, אם נכון כתוב או אחרת כתוב.',
-          codeLineAnswerFeedback: 'כמעט. הקלידו בתיבה מילת JavaScript קצרה מתוך השורה שסומנה, למשל if, else, answer, colorChoice או className.'
-        };
-      }
+          codeSelectionFeedback: 'כמעט. לחצו על הבלוק “התשובה הנכונה היא” כדי למצוא את שורת התנאי.',
+          codeLineAnswerFeedback: 'כמעט. הקלידו רק את קטע ההשוואה הקצר: answer === או answer==='
+        }
+      });
     }
     if(lesson.id === 6){
       const startScoreBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_6_start_score');
