@@ -3,7 +3,45 @@ import { readFileSync } from 'node:fs';
 
 const html = readFileSync(new URL('../python-turtle.html', import.meta.url), 'utf8');
 
+function extractFunction(source, name){
+  const start = source.indexOf(`function ${name}(`);
+  assert.notEqual(start, -1, `${name} function exists`);
+  let depth = 0;
+  let inString = false;
+  let quote = '';
+  let escaping = false;
+  for(let i = start; i < source.length; i += 1){
+    const ch = source[i];
+    if(inString){
+      if(escaping) escaping = false;
+      else if(ch === '\\') escaping = true;
+      else if(ch === quote) inString = false;
+      continue;
+    }
+    if(ch === '"' || ch === "'" || ch === '`'){
+      inString = true;
+      quote = ch;
+      continue;
+    }
+    if(ch === '{') depth += 1;
+    if(ch === '}'){
+      depth -= 1;
+      if(depth === 0) return source.slice(start, i + 1);
+    }
+  }
+  assert.fail(`${name} function has a closing brace`);
+}
+
 assert.match(html, /function repeatShapeMatches\(sides, angle\)/, 'shape exercises use a dedicated repeat/sides/angle validator');
+
+assert.match(html, /id="stopRunBtn" disabled>⏹ עצור<\/button>/, 'app has a disabled stop-run button next to run');
+assert.match(html, /function stopCurrentRun\(\)[\s\S]*runToken \+= 1[\s\S]*ההרצה נעצרה/, 'stop-run button cancels the current run token without clearing blocks');
+assert.match(html, /const runFinished = await run\(snapshot\.actions\)[\s\S]*if\(!runFinished\)[\s\S]*הריצו שוב עד הסוף לפני בדיקת התרגיל/, 'exercise check does not validate a stopped run');
+assert.equal((html.match(/\"title\": \"לוגו לעיר הרובוטים\"/g) || []).length, 1, 'lesson 15 title appears only as lesson 15, not as stray exercises in lessons 1-2');
+
+assert.match(html, /if\(currentLesson === 1\)\{[\s\S]*if\(ex\.id === 6\)\{[\s\S]*actions\.length < 4[\s\S]*לפחות 4 פקודות[\s\S]*לפחות פקודת קדימה אחת[\s\S]*לפחות פנייה אחת/, 'lesson 1 exercise 6 validates a simple four-command route, not a later lesson frame task');
+const lesson1ValidatorSource = html.slice(html.indexOf('if(currentLesson === 1){'), html.indexOf('if(currentLesson === 2 && ex.id === 1)'));
+assert.doesNotMatch(lesson1ValidatorSource, /מסגרת הגנה|מסגרת ההגנה|cleanTransitionCount\(actions\)/, 'lesson 1 validators do not accidentally require lesson 15 frame/penup logic');
 
 assert.match(html, /"id": 2,[\s\S]*"prompt": "בנו מדרגה שיורדת ימינה: קטע ישר, ירידה קצרה, ואז המשך ישר\."/, 'lesson 2 exercise 1 asks for a descending stair without revealing the block sequence');
 assert.match(html, /const pattern = \['forward','right','forward','left','forward'\]/, 'lesson 2 stair validator uses the updated 5-block stair pattern');
@@ -18,6 +56,10 @@ assert.match(html, /currentLesson === 2 && ex\.id === 7[\s\S]*hasDescendingStair
 assert.match(html, />✨ דוגמת הפעלה<\//, 'demo button is labeled as an operation demo');
 assert.match(html, /זו דוגמת הפעלה בלבד — לא הפתרון של המשימה/, 'demo button explains it is not the task solution');
 assert.match(html, /ensureStarterHasPythonBlock\(xmls\[currentLesson\] \|\| xmls\[1\]\)/, 'operation demo examples are wrapped with the Python block');
+assert.match(html, /message0:'Python %1'[,\s\S]*field_label_serializable[,\s\S]*name:'INDEX'/, 'Python blocks include an optional visual number label');
+assert.match(html, /let nextPythonBlockOrder = 1[\s\S]*function ensurePythonBlockOrder\(block\)[\s\S]*_pythonOrder = nextPythonBlockOrder\+\+/, 'Python blocks get a stable creation order for numbering');
+assert.match(html, /function orderedPythonBlocks\(\)[\s\S]*getTopBlocks\(false\)[\s\S]*sort\(\(a,b\)=>\(a\._pythonOrder/, 'multiple Python blocks are ordered by stable creation order, not drag position');
+assert.match(html, /function updatePythonBlockNumbers\(\)[\s\S]*blocks\.length > 1 \? String\(index \+ 1\) : ''/, 'Python block numbers appear only when there is more than one Python block');
 assert.match(html, /שנו רק את המספר בבלוק ׳עובי עט׳ ל־8 והריצו/, 'lesson 4 exercise 3 hint tells students exactly what to change');
 assert.match(html, /אפשר לשנות צבע גם באמצע ציור של ריבוע/, 'lesson 4 exercise 4 hint explains where to place the color block');
 assert.match(html, /הצבע החדש צריך להופיע לפני החלק הבא של הציור/, 'lesson 4 exercise 4 feedback explains color order');
@@ -41,7 +83,11 @@ assert.match(html, /let lastSelectedBlockId = null/, 'selection-only checks reme
 assert.match(html, /function isSelectionOnlyExercise\(ex\)/, 'lesson 3 for-highlight exercise is a selection-only step');
 assert.match(html, /isTip \|\| isChallengeExercise\(ex\) \|\| isSelectionOnly/, 'selection-only exercise and challenges have no check button');
 assert.doesNotMatch(html, /completedSet\(\)\.delete\(index\)/, 'selection-only revisits do not clear an exercise that was already unlocked');
-assert.match(html, /const canContinue = alreadyCompleted \|\| \(isSelectionOnly \? !!selectionExerciseUnlocked\[selectionUnlockKey\(\)\]/, 'selection-only exercise keeps continue unlocked after completion and also unlocks from an explicit saved unlock flag');
+assert.match(html, /const canContinue = REVIEW_UNLOCK \|\| alreadyCompleted \|\| \(isSelectionOnly \? !!selectionExerciseUnlocked\[selectionUnlockKey\(\)\]/, 'selection-only exercise keeps continue unlocked after completion and also unlocks from an explicit saved unlock flag');
+assert.match(html, /const REVIEW_UNLOCK = new URLSearchParams\(location\.search\)\.get\('unlock'\) === '1'/, 'temporary review links can unlock all exercises with unlock=1 without changing the default flow');
+assert.match(html, /const allowed = REVIEW_UNLOCK \|\| index === currentExerciseIndex/, 'temporary review unlock opens every exercise button in the side navigation');
+assert.match(html, /function applyReviewUnlockForCurrentLesson\(\)[\s\S]*currentExercises\(\)\.forEach\(\(_, index\)=>completedExercises\[currentLesson\]\.add\(index\)\)/, 'temporary review unlock marks all current lesson exercises open in-memory');
+assert.match(html, /if\(restoringProgress \|\| REVIEW_UNLOCK\) return/, 'temporary review unlock does not persist fake completion to normal progress');
 assert.match(html, /function selectionOnlyBlockType\(ex\)/, 'selection-only exercises can specify the block type to select');
 assert.match(html, /currentLesson === 4 && ex\?\.id === 6\) return \['py_color'\]/, 'lesson 4 color-code exercise unlocks by selecting the color block');
 assert.match(html, /const requiredTypes = isSelectionOnlyExercise\(ex\) \? selectionOnlyBlockTypes\(ex\) : \[\]/, 'selection-only unlock listener uses the exercise-specific selected block types');
@@ -157,7 +203,7 @@ assert.match(html, /currentLesson === 5 && ex\?\.id === 8[\s\S]*matchesPenLiftLi
 assert.match(html, /if\(requiresFreshCheckExercise\(targetEx\) && !completedSet\(\)\.has\(index\)\)\{\s*exercisePassed = false;\s*\}/, 'fresh-check exercises relock Continue only until they have been completed once');
 assert.doesNotMatch(html, /requiresFreshCheckExercise\(targetEx\)[\s\S]{0,120}completedSet\(\)\.delete\(index\)/, 'returning to a completed fresh-check exercise must not relock later unlocked exercises');
 
-assert.match(html, /requiresCheckedContinue\(leavingEx\) && !exercisePassed\) return/, 'normal checked exercises cannot continue from stale completed progress');
+assert.match(html, /function canLeaveCheckedExercise\(leavingEx\)[\s\S]*if\(exercisePassed\) return true;[\s\S]*lesson13RailExercise[\s\S]*updateLesson13RailFeedbackAfterRun\(\)[\s\S]*return false;/, 'normal checked exercises cannot continue from stale completed progress, except lesson 13 exercise 7 can recover a completed rail state');
 
 assert.match(html, /currentLesson === 5 && ex\.id === 2[\s\S]*penUpIndex[\s\S]*forwardAfterPenUpIndex[\s\S]*pendownIndex/, 'lesson 5 exercise 2 requires continuing from exercise 1 with penup movement before pendown');
 
@@ -202,15 +248,20 @@ assert.doesNotMatch(html, /תרגול 6 — מחומש בצבע אחר/, 'lesson
 
 assert.match(html, /function requiresCheckedContinue\(ex\)[\s\S]*!isTipExercise\(ex\)[\s\S]*!isChallengeExercise\(ex\)[\s\S]*!isSelectionOnlyExercise\(ex\)[\s\S]*!isRunOnlyExampleExercise\(ex\)/, 'normal exercises require an approved check before Continue unlocks');
 
-assert.match(html, /const canContinue = alreadyCompleted \|\|[\s\S]*requiresCheckedContinue\(ex\) \? exercisePassed/, 'normal exercises unlock Continue after they pass once and stay unlocked when revisited');
+assert.match(html, /const canContinue = REVIEW_UNLOCK \|\| alreadyCompleted \|\|[\s\S]*requiresCheckedContinue\(ex\) \? exercisePassed/, 'normal exercises unlock Continue after they pass once and stay unlocked when revisited');
 
-assert.match(html, /if\(requiresCheckedContinue\(leavingEx\) && !exercisePassed\) return/, 'nextExercise blocks normal exercises until the current check passes before first completion');
+assert.match(html, /if\(!REVIEW_UNLOCK && requiresCheckedContinue\(leavingEx\) && !canLeaveCheckedExercise\(leavingEx\)\) return/, 'nextExercise blocks normal exercises until the current check passes before first completion unless temporary review unlock is enabled');
+
+const nextExerciseSource = extractFunction(html, 'nextExercise');
+assert.doesNotMatch(nextExerciseSource, /hasTrainCarriageUnit|hasRepeatedTrainCarriages|lengthSetBeforeFirstUse|repeatUsesLengthShape|validateExercise\(/, 'nextExercise must not contain lesson validation code that can break the finished button');
+assert.doesNotMatch(nextExerciseSource, /currentLesson === 12|currentLesson === 13/, 'nextExercise must not contain lesson-specific completion branches except the lesson 10 vault');
+assert.match(html, /function canLeaveCheckedExercise\(leavingEx\)[\s\S]*currentLesson === 13 && leavingEx\?\.id === 7/, 'lesson 13 exercise 7 has a safe Continue fallback outside nextExercise');
 
 assert.match(html, /exercisePassed = completedSet\(\)\.has\(currentExerciseIndex\)/, 'revisiting a completed normal exercise restores its passed state');
 
 assert.match(html, /function createCodeSnapshot\(\)[\s\S]*actions:getActions\(\)\.map[\s\S]*blockTypes:connectedBlocks\.map[\s\S]*repeatPatterns/, 'exercise checks snapshot the code and repeat structure at the moment the run starts');
 
-assert.match(html, /const validationSnapshot = lesson12SnapshotWithPrior\(snapshot\)[\s\S]*if\(!skipRun\) await run\(snapshot\.actions\)[\s\S]*const problems = validateExercise\(validationSnapshot\)/, 'exercise checks run the visible code and validate the full lesson-12 cumulative snapshot when needed');
+assert.match(html, /const validationSnapshot = snapshotWithCumulativePrior\(snapshot\)[\s\S]*const runFinished = await run\(snapshot\.actions\)[\s\S]*if\(!runFinished\)[\s\S]*const problems = validateExercise\(validationSnapshot\)/, 'exercise checks run the visible code and validate the full cumulative snapshot when needed');
 
 assert.match(html, /function hasBlock\(type\)\{[\s\S]*activeValidationSnapshot[\s\S]*blockTypes\.includes\(type\)/, 'block-presence validators use the run snapshot during checks, not live mid-run edits');
 
@@ -387,7 +438,7 @@ assert.match(html, /🔓 סוף שיעור 10[\s\S]*לשיעור הבא/, 'after
 assert.match(html, /isLesson10FinalExercise\(\) \? 'לכספת הסודית'/, 'lesson 10 final exercise continues to the secret vault instead of jumping straight to the next lesson');
 assert.match(html, /function lesson10SecretRevealHtml\(ex[\s\S]*כלל התחנה[\s\S]*הקוד הסודי עד עכשיו[\s\S]*כלל הדיבאג עד עכשיו/, 'lesson 10 keeps detailed debug rule progress below the exercise while the short clue appears on the canvas');
 assert.match(html, /if\(exercisePassed\) completedSet\(\)\.add\(currentExerciseIndex\);[\s\S]*lesson10CurrentRevealKey = \(currentLesson === 10 && exercisePassed\) \? `\$\{currentLesson\}:\$\{currentExerciseIndex\}:\$\{currentWorkspaceXml\(\)\}` : '';/, 'lesson 10 reveal key is set only after a fresh successful check of the current blocks');
-assert.match(html, /if\(isCodeEditEvent\)\{\s*lesson10CurrentRevealKey = '';\s*updateLesson10CanvasSecret\(ex\);/, 'editing blocks clears any lesson 10 reveal until the new code passes again');
+assert.match(html, /if\(isCodeEditEvent\)\{[\s\S]*lesson10CurrentRevealKey = '';[\s\S]*updateLesson10CanvasSecret\(ex\);/, 'editing blocks clears any lesson 10 reveal until the new code passes again');
 
 assert.match(html, /"id": 11,[\s\S]*"title": "מפת שכונה עם הערות ואורך"[\s\S]*"concept": "הערות קוד ואורך"/, 'lesson 11 is reworked around a real new concept: comments and length');
 assert.match(html, /if\(t==='py_comment'\) out\.push\(\{cmd:'comment'/, 'comment blocks are included in action snapshots for validation');
@@ -422,7 +473,7 @@ assert.match(html, /currentLesson === 11 && ex\?\.id === 8[\s\S]*pensize\(8\)[\s
 assert.match(html, /currentLesson === 11 && ex\?\.id === 8[\s\S]*length = מספר[\s\S]*forward\(length\)[\s\S]*פנייה של 90 מעלות[\s\S]*שינוי צבע או עובי עט/, 'lesson 11 Python writing challenge validates length, a straight turn, and styling');
 
 assert.doesNotMatch(html, /if\(!exercisePassed\) completedSet\(\)\.delete\(index\)/, 'completed exercises stay unlocked after revisiting selection exercises');
-assert.match(html, /const alreadyCompleted = completedSet\(\)\.has\(currentExerciseIndex\);[\s\S]*const canContinue = alreadyCompleted \|\|/, 'completed exercises keep Continue unlocked when revisited');
+assert.match(html, /const alreadyCompleted = completedSet\(\)\.has\(currentExerciseIndex\);[\s\S]*const canContinue = REVIEW_UNLOCK \|\| alreadyCompleted \|\|/, 'completed exercises keep Continue unlocked when revisited');
 assert.match(html, /if\(isSelectionOnlyExercise\(ex\) && !alreadyCompleted\)/, 'editing a completed selection exercise does not clear its unlocked state');
 
 assert.match(html, /else if\(isSelectionOnlyExercise\(ex\)\)\{[\s\S]*await run\(\);[\s\S]*כדי להמשיך, לחצו על הבלוק המתאים/, 'running a selection-only exercise does not show generic check success feedback');
@@ -472,6 +523,26 @@ assert.match(html, /תרגול 7 — מכונית קטנה בכביש[\s\S]*מל
 assert.match(html, /אתגר רשות — אוטובוס עם חלונות[\s\S]*גוף ארוך[\s\S]*חלונות קטנים בלולאה/, 'lesson 12 optional challenge is a bus with looped windows');
 assert.match(html, /אתגר רשות — כותבים Python קצר[\s\S]*כתבו Python קצר בתיבה[\s\S]*העתיקו חלק קטן/, 'lesson 12 includes an optional Python code-writing challenge with the existing text box flow');
 assert.match(html, /currentLesson === 12 && ex\?\.id === 9[\s\S]*# קווקו \/ גלגל \/ אור ברמזור/, 'lesson 12 Python code challenge uses the existing writable textarea placeholder');
+assert.match(html, /function isLesson13CumulativeExercise\(index=currentExerciseIndex\)[\s\S]*currentLesson === 13[\s\S]*ex\.id >= 3 && ex\.id <= 7/, 'lesson 13 keeps the train drawing on canvas while exercises 3-7 add only the new part');
+assert.match(html, /בלוקים קודמים של הרכבת[\s\S]*lesson13ShowAllBlocksBtn/, 'lesson 13 has a toggle for showing previous train blocks');
+assert.match(html, /כשפותחים בלוקים קודמים[\s\S]*הצב ממשיך מסוף הציור הקודם[\s\S]*לתכנן את התוספת/, 'lesson 13 warns that previous-block mode continues from the end of the prior drawing');
+assert.match(html, /תרגול 7 — רכבת על מסילה[\s\S]*ציירו מסילה[\s\S]*שני פסים[\s\S]*קורות קצרות בלולאה[\s\S]*הכפתור הוא רק לתצוגה/, 'lesson 13 exercise 7 uses short rail-first instructions and makes the train button optional');
+assert.match(html, /lesson13DrawTrainBaseBtn[\s\S]*const hasRepeat = snapshot\.blockTypes\.includes\('py_repeat'\)[\s\S]*const hasTwoRails = railLongLineCount\(snapshot\.actions\) >= 2[\s\S]*drawLesson13TrainBaseForRails\(false\)[\s\S]*if\(hasTwoRails && hasRepeat\)/, 'lesson 13 exercise 7 can complete from the optional train button only after two rails with a repeat');
+assert.match(html, /currentLesson === 13 && currentExercises\(\)\[currentExerciseIndex\]\?\.id === 7[\s\S]*drawLesson13TrainBaseForRails\(false\)/, 'lesson 13 exercise 7 keeps rail-first visual order during run/check by drawing the train after the rail blocks when available');
+assert.match(html, /function railLongLineCount\(actions\)[\s\S]*length >= 70[\s\S]*function hasTwoRailLines\(actions\)[\s\S]*railLongLineCount\(actions\) >= 2/, 'lesson 13 exercise 7 requires two long rail lines');
+assert.doesNotMatch(html, /המסילה טובה\. עכשיו לחצו על “צייר לי רכבת”/, 'lesson 13 exercise 7 no longer requires pressing the train button to pass');
+assert.match(html, /function snapshotWithCumulativePrior\(snapshot[\s\S]*lesson13PriorActions/, 'lesson 13 validators include prior train actions while students work on only the current addition');
+assert.match(html, /function lesson13PriorXml\(index=currentExerciseIndex\)[\s\S]*directPriorIndex = index - 1[\s\S]*directPriorIndex - 1[\s\S]*priorIndex >= 0/, 'lesson 13 previous-block toggle falls back to the nearest saved prior train blocks only when the direct prior exercise is missing');
+assert.match(html, /עדיין אין בלוקים קודמים שמורים לתרגיל הזה/, 'lesson 13 explains when previous train blocks are not available yet');
+assert.match(html, /LESSON12_BLOCK_BACKUP_KEY[\s\S]*function saveLesson12SafetyBackup[\s\S]*localStorage\.setItem/, 'lesson 12 saves a local safety backup before hiding or replacing street blocks');
+assert.match(html, /function lesson12PriorXml\(index=currentExerciseIndex\)[\s\S]*lesson12SafetyBackupXml/, 'lesson 12 previous-block toggle can recover from the safety backup');
+assert.match(html, /LESSON13_BLOCK_BACKUP_KEY[\s\S]*function saveLesson13SafetyBackup[\s\S]*localStorage\.setItem/, 'lesson 13 saves a local safety backup before hiding or replacing train blocks');
+assert.match(html, /function lesson13PriorXml\(index=currentExerciseIndex\)[\s\S]*lesson13SafetyBackupXml/, 'lesson 13 previous-block toggle can recover from the safety backup');
+assert.match(html, /function lesson13PriorXml\(index=currentExerciseIndex\)[\s\S]*directPriorIndex = index - 1[\s\S]*directPriorXml[\s\S]*directPriorIndex - 1/, 'lesson 13 uses the direct previous exercise blocks first and only falls back farther back if they are missing');
+assert.match(html, /function combinePriorAndCurrentXml\(priorXml, currentXml\)[\s\S]*xmlAlreadyIncludesPrior[\s\S]*return currentXml/, 'cumulative block restore avoids duplicating prior blocks that are already in the current workspace');
+assert.match(html, /if\(ex\.id === 3\)\{[\s\S]*needsNewAddition && !hasEngineAddition\(currentActions\)[\s\S]*מלבן עם גלגלים וארובה/, 'lesson 13 exercise 3 requires a new engine addition, not only prior train blocks');
+assert.match(html, /if\(ex\.id === 5\)\{[\s\S]*needsNewAddition[\s\S]*שינוי צבע וגם שינוי עובי חדשים/, 'lesson 13 exercise 5 requires new styling work, not only prior train blocks');
+
 assert.doesNotMatch(html, /"id": 12,[\s\S]{0,2500}בנו בית שני קטן יותר/, 'lesson 12 no longer keeps the old easy second-house task');
 assert.match(html, /if\(currentLesson === 12\)\{[\s\S]*ex\.id === 1[\s\S]*repeatUsesLengthShape\(4, 90\)[\s\S]*repeatShapeMatches\(3, 120\)/, 'lesson 12 exercise 1 validates a Hebrew length-variable house with square walls and triangle roof');
 assert.match(html, /if\(currentLesson === 12\)\{[\s\S]*ex\.id === 3[\s\S]*קווקווי הנתיב[\s\S]*לפחות 4 חזרות[\s\S]*cleanTransitionCount\(actions\) < 1/, 'lesson 12 lane dashes validate repeat and clean pen transitions');
@@ -485,3 +556,19 @@ assert.match(html, /function firstDrawnSegmentsAvoidColor[\s\S]*function drawnGr
 assert.match(html, /ex\.id === 6[\s\S]*firstDrawnSegmentsAvoidColor\(actions, 4, '#111827'\)[\s\S]*drawnGroupsByColor\(actions, '#facc15'\) < 4[\s\S]*hasTrafficLightColors\(actions\)/, 'lesson 12 exercise 6 explicitly validates house color, separated yellow lane dashes, and green traffic light');
 
 assert.doesNotMatch(html, /py_raw_code|כתוב קוד Python %1|simulateRawPythonCommand/, 'lesson 12 code-writing challenge does not add a custom raw-code block');
+
+assert.match(html, /"id": 15,[\s\S]*"title": "לוגו לעיר הרובוטים"/, 'lesson 15 is focused on the robot city logo');
+assert.match(html, /פענחו לוגו לדוגמה[\s\S]*הוסיפו ללוגו עוד חלקים[\s\S]*צבע, עובי[\s\S]*שער אנרגיה[\s\S]*penup/, 'lesson 15 opens with model decoding, adding logo parts, visual style, a energy-gate upgrade and clean pen movement');
+assert.match(html, /currentLesson === 15[\s\S]*centralShapeOk[\s\S]*repeatedDetailOk[\s\S]*cleanTransitionCount/, 'lesson 15 has dedicated validators for logo body, repeated details, color/style and penup');
+assert.match(html, /hasEnergySpiral = repeatSpiralPattern\(\)[\s\S]*hasEnergyStar = repeatStarPattern\(5, 144, null\)[\s\S]*if\(!hasEnergyStar\)[\s\S]*if\(!hasEnergySpiral\)/, 'lesson 15 exercise 4 requires both a star and a spiral for the energy-gate upgrade');
+assert.match(html, /תרגול 5 — מנקים ומשפרים את הלוגו[\s\S]*שפרו לפחות דבר אחד[\s\S]*הכוכב[\s\S]*הספירלה[\s\S]*הצבע[\s\S]*העובי/, 'lesson 15 exercise 5 cleans the logo and requires one visible improvement');
+assert.match(html, /if\(ex\.id === 5\)\{[\s\S]*visiblePolishOk[\s\S]*צבע נוסף[\s\S]*return \[\];\s*\}\s*if\(ex\.id === 6\)/, 'lesson 15 exercise 5 requires one visible polish option without forcing spiral-only changes');
+assert.match(html, /תרגול 6 — מסגרת הגנה לשער האנרגיה[\s\S]*סביב שער האנרגיה[\s\S]*penup[\s\S]*לפחות 3 קווים/, 'lesson 15 exercise 6 continues the energy-gate logo with a protective frame');
+assert.match(html, /תרגול 7 — שם העיר בלי קווים מחברים[\s\S]*רצף הבלוקים נהיה ארוך מדי[\s\S]*בלוק אחד ללוגו[\s\S]*בלוק נוסף למילה/, 'lesson 15 exercise 7 hints that a Python block can shorten a long block sequence');
+assert.match(html, /shortLetterLines = drawnSegments\(actions\)\.filter\(s=>s\.length >= 5 && s\.length <= 70 && s\.width <= 8\)\.length;[\s\S]*if\(shortLetterLines < 3\)/, 'lesson 15 exercise 7 accepts a short 3-letter word without overly strict line lengths');
+assert.match(html, /if\(currentLesson === 15\)\{[\s\S]*if\(ex\.id === 6\)\{[\s\S]*cleanTransitionCount\(actions\) < 1[\s\S]*moveCount < 3 \|\| turnCount < 2/, 'lesson 15 exercise 6 validates one clean transition plus a small frame with movement and turns');
+assert.doesNotMatch(html, /currentLesson === 15 && currentExercises\(\)\[currentExerciseIndex\]\?\.id === 2[\s\S]*exerciseRunValues\[key\]\.push\(Number\(currentLength\)\)/, 'lesson 15 exercise 2 no longer requires changing length across two runs');
+assert.match(html, /תרגול 9 — דיבאג לפני הצגה[\s\S]*רצף בלוקים מוכן[\s\S]*המסגרת צריכה להיסגר[\s\S]*הפרט הנפרד לא צריך להתחבר/, 'lesson 15 exercise 9 is an independent debug task with a prepared broken block sequence');
+assert.match(html, /currentLesson === 15 && ex\?\.id === 9[\s\S]*באג 1: המסגרת הריבועית לא נסגרת[\s\S]*ANGLE\">80[\s\S]*באג 2: הפרט מחובר בקו/, 'lesson 15 exercise 9 loads a prepared broken starter sequence');
+assert.match(html, /if\(ex\.id === 9\)\{[\s\S]*centralShapeOk[\s\S]*cleanTransitionCount\(actions\) < 1[\s\S]*actionDrawsWithColor\(actions, '#facc15'\)[\s\S]*actionDrawsWithMinWidth\(actions, 6\)/, 'lesson 15 exercise 9 validates fixing frame, connector, color and width bugs');
+assert.match(html, /currentLesson === 15 && ex\?\.id === 10[\s\S]*for i in range\(5\)[\s\S]*right\(144\)/, 'lesson 15 includes a final optional Python writing challenge for a small signature star');
