@@ -10096,6 +10096,9 @@
     function updateLessonUrl(id){
       const url = new URL(window.location.href);
       url.searchParams.set('lesson', String(id));
+      url.searchParams.delete('exercise');
+      url.searchParams.delete('reset');
+      url.searchParams.delete('fresh');
       window.history.replaceState({}, '', url);
     }
     function startEmptyLesson(id, updateUrl=true){
@@ -10121,6 +10124,22 @@
       if(!params.has('lesson') && !params.has('l')) return null;
       const id = Number(params.get('lesson') || params.get('l'));
       return TURTLE_LESSONS.some(lesson=>lesson.id===id) ? id : null;
+    }
+    function requestedExerciseFromUrl(){
+      const params = new URLSearchParams(window.location.search);
+      if(!params.has('exercise') && !params.has('ex')) return null;
+      const id = Number(params.get('exercise') || params.get('ex'));
+      return Number.isFinite(id) && id > 0 ? Math.floor(id) - 1 : null;
+    }
+    function requestedFreshLessonFromUrl(){
+      const params = new URLSearchParams(window.location.search);
+      return ['reset', 'fresh'].some(key=>/^(1|true|yes)$/i.test(params.get(key) || ''))
+        || params.get('v') === 'fix-direct-lesson';
+    }
+    function firstIncompleteExerciseIndex(lessonId, exercises){
+      const done = completedExercises[lessonId] || new Set();
+      const index = exercises.findIndex((_, exerciseIndex)=>!done.has(exerciseIndex));
+      return index === -1 ? Math.max(0, exercises.length - 1) : index;
     }
     // legacy text kept for regression check: href="python-turtle.html?lesson=${l.id}" ${l.id === currentLesson ? 'נוכחי' : 'פתח'}</span>
     function renderLessonPicker(){
@@ -10295,15 +10314,24 @@
       if(saved){
         applyCompleted(saved);
         const urlLessonId = requestedLessonFromUrl();
+        const urlExerciseIndex = requestedExerciseFromUrl();
+        const freshLessonRequest = requestedFreshLessonFromUrl();
         const lessonId = urlLessonId || (TURTLE_LESSONS.some(lesson=>lesson.id===Number(saved.lesson)) ? Number(saved.lesson) : initialLessonFromUrl());
+        const savedLessonId = Number(saved.lesson);
+        const lessonChangedByUrl = urlLessonId !== null && savedLessonId !== lessonId;
+        const directLessonOverride = urlLessonId !== null && (freshLessonRequest || urlExerciseIndex !== null || lessonChangedByUrl);
         setLesson(lessonId);
+        if(freshLessonRequest) completedExercises[lessonId] = new Set();
         const exercises = currentExercises();
-        currentExerciseIndex = Math.max(0, Math.min(Number(saved.exercise || 0), exercises.length - 1));
+        const rememberedLessonIndex = lessonChangedByUrl ? firstIncompleteExerciseIndex(lessonId, exercises) : Number(saved.exercise || 0);
+        currentExerciseIndex = directLessonOverride ? Math.max(0, Math.min(urlExerciseIndex ?? rememberedLessonIndex, exercises.length - 1)) : Math.max(0, Math.min(rememberedLessonIndex, exercises.length - 1));
         exercisePassed = completedSet().has(currentExerciseIndex);
-        if(saved.workspaceXml){
+        if(saved.workspaceXml && !directLessonOverride){
           workspace.clear();
           Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(saved.workspaceXml), workspace);
-            }
+        } else if(directLessonOverride){
+          workspace.clear();
+        }
         generatePython();
         const restoredExercise = currentExercises()[currentExerciseIndex];
         const forceLesson10FirstStarter = currentLesson === 10 && restoredExercise?.id === 1;
