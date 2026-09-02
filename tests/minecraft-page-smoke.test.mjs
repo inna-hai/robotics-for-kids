@@ -85,21 +85,23 @@ for (const id of regularModelLessonsWithoutMissionBoard) {
   const className = `lesson-${['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen'][id]}`;
   assert.ok(playHtml.includes(`.world.${className} #lessonMissionBoard`), `lesson ${id} should hide the extra mission board`);
 }
-assert.ok(playHtml.includes('const showLessonMissionBoard = missions.length && (lesson.id === 1 || lesson.id === 9 || lesson.id === 10 || lesson.id === 11)'), 'only dedicated mission-board lessons should show the in-world mission board');
+assert.ok(playHtml.includes('const showLessonMissionBoard = missions.length && (lesson.id === 1 || lesson.id === 9 || lesson.id === 11 || lesson.id === 14 || lesson.id === 15)'), 'only dedicated mission-board lessons should show the in-world mission board');
 
-assert.ok(playHtml.includes('Lesson 1 mission card 2026-08-30'), 'lesson 1 should show a dedicated mission 1/2 card');
+assert.ok(playHtml.includes('Lesson 1 mission card 2026-08-30'), 'lesson 1 should show a dedicated mission card');
 assert.ok(playHtml.includes('Lesson 1 strict mission card 2026-08-30') && playHtml.includes('.world.lesson-one .lesson-model-only{display:none!important;}'), 'lesson 1 should hide generic model card');
-assert.equal(forcedLessons.find(lesson => lesson.id === 1).programmingExercises.length, 2, 'lesson 1 should have exactly two mission choices');
+assert.equal(forcedLessons.find(lesson => lesson.id === 1).programmingExercises.length, 4, 'lesson 1 should have four simple mission choices');
 assert.ok(forcedLessons.find(lesson => lesson.id === 1).programmingExercises[0].studentPrompt.includes('3 בלוקים'), 'lesson 1 first mission instructions should require three blocks');
 assert.ok(forcedLessons.find(lesson => lesson.id === 1).programmingExercises[1].studentPrompt.includes('3 אריחי שביל') && forcedLessons.find(lesson => lesson.id === 1).programmingExercises[1].studentPrompt.includes('המגדל ממשימה 1'), 'lesson 1 second mission should add 3 path tiles beside the existing tower');
+assert.ok(forcedLessons.find(lesson => lesson.id === 1).programmingExercises[2].studentPrompt.includes('שני חצאי בלוקים'), 'lesson 1 third mission should add a simple half-block step');
+assert.ok(forcedLessons.find(lesson => lesson.id === 1).programmingExercises[3].studentPrompt.includes('משפט קצר'), 'lesson 1 fourth mission should add a small speech/sign task');
 assert.ok(playHtml.includes('if (clearDrawing) state.lessonOneBlocks = 0'), 'lesson 1 tower state should persist between reruns and clear only with drawing reset');
 assert.ok(playHtml.includes('right:16px;left:auto;top:14px'), 'lesson 1 mission card should sit on the right side like other instruction cards');
-assert.ok(playHtml.includes('lesson.id === 1 || lesson.id === 9 || lesson.id === 10 || lesson.id === 11'), 'lesson 1 should be included in mission board rendering');
-assert.ok(playHtml.includes('lesson.id !== 1 || index < 2'), 'lesson 1 mission card should expose only mission choices 1 and 2');
+assert.ok(playHtml.includes('lesson.id === 1 || lesson.id === 9 || lesson.id === 11 || lesson.id === 14 || lesson.id === 15'), 'lesson 1 should be included in mission board rendering');
+assert.ok(!playHtml.includes('lesson.id !== 1 || index < 2'), 'lesson 1 mission card should expose all four mission choices');
 
 assert.ok(playHtml.includes('function pixelGridHtml(model)'), 'pixel models should use robust HTML rendering');
 assert.ok(playHtml.includes('without block outlines'), 'pixel models should preserve no-outline visual intent');
-assert.ok(playHtml.includes("shape.innerHTML = pixelGridHtml(model)"), 'pixel model cards should render non-empty HTML');
+assert.ok(playHtml.includes("lesson.id === 11 ? lessonElevenSourceDrawingHtml(modelIndex) : pixelGridHtml(model)"), 'pixel/source model cards should render non-empty HTML');
 assert.ok(playHtml.includes("shape.innerHTML = lesson.id === 13 ? lesson13MissionSceneHtml(lessonMissionIndex) : gardenSceneHtml()"), 'garden-scene models should render non-empty HTML');
 
 const rulesMatch = playHtml.match(/const rules = \{([\s\S]*?)\n      \};\n      return rules;/);
