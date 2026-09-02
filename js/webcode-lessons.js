@@ -6,7 +6,7 @@
       concept: 'גשר מ־Blockly ל־Web: בלוק → קוד → תוצאה',
       durationMinutes: 90,
       story: 'פותחים מעבדת WebCode בצורה מוכרת מכיתה ג׳: קודם לוחצים על בלוקי Web שבונים כרטיס אישי, אחר כך רואים איזה HTML/CSS/JavaScript נוצר מאחורי הקלעים.' ,
-      mission: 'לבנות כרטיס אישי ראשון בעזרת בלוקי Web: כותרת, משפט, צבע, כפתור והודעה בלחיצה.' ,
+      mission: 'לבנות כרטיס אישי ראשון בעזרת בלוקי Web: כותרת, משפט, צבע, כפתור והצגת הודעה בלחיצה.' ,
       outcome: 'כרטיס אישי עובד שנבנה קודם בבלוקים, עם הצצה ראשונה לקוד שנוצר',
       starter: {
         html: '<main class="card">\n  <h1>שלום, אני נועה</h1>\n  <p>אני אוהבת רובוטים, משחקים וקוד.</p>\n  <button onclick="sayHello()">לחצו עליי</button>\n  <p id="message">כאן תופיע הודעה...</p>\n</main>',
@@ -27,7 +27,7 @@
         { id: 2, minutes: '24–30', title: 'תרגיל 2 — בלוק משפט אישי', prompt: 'הפעילו בלוק שמחליף את המשפט בכרטיס, ואז מצאו את המשפט בתוך HTML.', hint: 'המשפט נמצא בתוך תגית <p>.', check: { htmlIncludes: ['ליצור דברים בדפדפן'] } },
         { id: 3, minutes: '30–38', title: 'תרגיל 3 — בלוק צבע רקע', prompt: 'הפעילו בלוק עיצוב שמשנה צבע רקע, ואז עברו ללשונית CSS וראו את background.', hint: 'CSS אחראי לאיך האתר נראה.', check: { cssIncludes: ['background: #fef3c7'] } },
         { id: 4, minutes: '38–46', title: 'תרגיל 4 — בלוק כפתור', prompt: 'הפעילו בלוק שמשנה את טקסט הכפתור ל“גלו הודעה”.', hint: 'הכפתור עדיין מפעיל onclick, אבל אנחנו משנים רק את הטקסט שלו.', check: { htmlIncludes: ['גלו הודעה', 'onclick="sayHello()"'] } },
-        { id: 5, minutes: '46–56', title: 'תרגיל 5 — בלוק הודעה בלחיצה', prompt: 'הפעילו בלוק שמשנה את ההודעה שמופיעה אחרי לחיצה על הכפתור.', hint: 'זו הצצה ל־JavaScript: הוא משנה textContent.', check: { jsIncludes: ['ברוכים הבאים לאתר הראשון שלי'] } },
+        { id: 5, minutes: '46–56', title: 'תרגיל 5 — בלוק הצגת הודעה', prompt: 'הפעילו בלוק שמציג הודעה חדשה אחרי לחיצה על הכפתור.', hint: 'זו הצצה ל־JavaScript: הוא משנה textContent.', check: { jsIncludes: ['ברוכים הבאים לאתר הראשון שלי'] } },
         { id: 6, minutes: '56–66', title: 'תרגיל 6 — שינוי בטוח בקוד', prompt: 'עכשיו מותר לשנות רק מילה אחת בתוך הכותרת או המשפט. הריצו ובדקו.', hint: 'שנו טקסט בין תגיות, לא את הסימנים < >.', check: { htmlIncludes: ['<h1', '<p'] } },
         { id: 7, minutes: '66–76', title: 'תרגיל 7 — דיבאג עדין', prompt: 'אם משהו נשבר, לחצו איפוס או בדקו שלא מחקתם גרשיים/סוגריים. נסו לתקן בעזרת הרמז.', hint: 'בשיעור 1 מתקנים רק טקסט ו־id, לא כותבים פונקציה חדשה.', check: { htmlIncludes: ['id="message"'], jsIncludes: ['getElementById("message")'] } },
         { id: 8, minutes: '76–84', title: 'תרגיל 8 — הצגת הכרטיס', prompt: 'תנו לחבר/ה ללחוץ על הכפתור ולהגיד איזה בלוק הכי שינה את הכרטיס.', hint: 'הסבירו במילים: הבלוק הזה שינה HTML / CSS / JavaScript.', check: { htmlIncludes: ['button'], cssIncludes: ['border-radius'], jsIncludes: ['textContent'] } }
@@ -140,47 +140,47 @@
     },
     {
       id: 4,
-      title: 'העמוד שמקשיב לי — מחולל ברכות מצחיקות',
-      concept: 'בלוקי קלט → JavaScript: input · value · הודעה אישית',
+      title: 'העמוד שמקשיב לי — אתר שמחזיר תשובה אישית',
+      concept: 'HTML בסיסי: טקסט · input · id · כפתור',
       durationMinutes: 90,
-      story: 'השיעור נפתח כמו קסם אישי: מקלידים שם ונושא מצחיק, לוחצים על כפתור, והאתר עונה משפט אישי. רק אחרי שהילדים צוחקים מהתוצאה מסבירים איך JavaScript קורא value מתוך input.' ,
-      mission: 'לבנות מחולל אישי וכיפי: המשתמש כותב שם ונושא לברכה, לוחץ על כפתור, והעמוד מחזיר ברכה מצחיקה שמבוססת על מה שהוקלד.' ,
-      outcome: 'מחולל אישי שמרגיש כמו מיני־אפליקציה: input, id, value, שרשור טקסט ותוצאה שמתאימה למשתמש',
+      story: 'השיעור נפתח מאתר אישי פשוט: רואים טקסטים, שדות וכפתור בעמוד. קודם מבינים שהטקסט והשדות כתובים ב־HTML, ורק בסוף מציצים שיש גם קוד שמפעיל את הכפתור.' ,
+      mission: 'לבנות אתר אישי וכיפי: המשתמש כותב שני דברים, לוחץ על כפתור, והעמוד מחזיר תשובה שמבוססת על מה שהוקלד.' ,
+      outcome: 'אתר אישי עם HTML בסיסי: כותרת, שדות input, id, כפתור ואזור תוצאה',
       starter: {
-        html: '<main class="generator">\n  <div class="badge">✨ מחולל אישי</div>\n  <h1>מחולל הברכות המצחיקות שלי</h1>\n  <p class="intro">כתבו שם ונושא לברכה, והאתר ימציא לכם ברכה אישית.</p>\n  <label>שם גיבור/ה:\n    <input id="nameInput" placeholder="כתבו שם">\n  </label>\n  <label>נושא לברכה:\n    <input id="hobbyInput" placeholder="למשל: רובוטים">\n  </label>\n  <button onclick="makeGreeting()">צרו ברכה מצחיקה</button>\n  <p id="result">כאן תופיע הברכה האישית...</p>\n</main>',
+        html: '<main class="generator">\n  <div class="badge">✨ האתר שלי</div>\n  <h1>מחולל הברכות שלי</h1>\n  <p class="intro">כתבו שני דברים, והאתר יכתוב תשובה אישית.</p>\n  <label>שם גיבור/ה:\n    <input id="nameInput" placeholder="כתבו שם">\n  </label>\n  <label>נושא לתשובה:\n    <input id="hobbyInput" placeholder="למשל: רובוטים">\n  </label>\n  <button onclick="makeGreeting()">צרו תשובה אישית</button>\n  <p id="result">כאן תופיע התוצאה של לחיצת הכפתור...</p>\n</main>',
         css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #ecfeff, #fdf2f8 55%, #fef3c7);\n}\n\n.generator {\n  background: white;\n  width: min(430px, 92vw);\n  margin: 38px auto;\n  padding: 28px;\n  border-radius: 32px;\n  box-shadow: 0 18px 42px #bae6fd;\n}\n\n.badge {\n  display: inline-block;\n  background: #ede9fe;\n  color: #6d28d9;\n  border-radius: 999px;\n  padding: 7px 14px;\n  font-weight: bold;\n}\n\n.intro {\n  color: #475569;\n}\n\nlabel {\n  display: block;\n  margin: 14px;\n  font-weight: bold;\n}\n\ninput {\n  display: block;\n  width: 100%;\n  margin-top: 6px;\n  padding: 12px;\n  border: 2px solid #cbd5e1;\n  border-radius: 14px;\n  text-align: center;\n  font-size: 16px;\n}\n\nbutton {\n  background: #7c3aed;\n  color: white;\n  border: 0;\n  border-radius: 999px;\n  padding: 13px 22px;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n#result {\n  background: #fff7ed;\n  border: 2px dashed #fb923c;\n  border-radius: 20px;\n  padding: 16px;\n  min-height: 56px;\n  font-weight: bold;\n}',
-        js: 'function makeGreeting() {\n  const name = document.getElementById("nameInput").value;\n  const topic = document.getElementById("hobbyInput").value;\n  document.getElementById("result").textContent = name + ", הנה ברכה מצחיקה על " + topic + ": שתמיד יהיו לך רעיונות נוצצים 🚀";\n}'
+        js: 'function makeGreeting() {\n  const name = document.getElementById("nameInput").value;\n  const topic = document.getElementById("hobbyInput").value;\n  document.getElementById("result").textContent = name + ", הנה תשובה אישית על " + topic + " 🚀";\n}'
       },
       lessonFlow: [
         { minutes: '0–4', title: 'וואו אישי: האתר עונה לי', teacher: 'פותחים בהרצה חיה: מקלידים שם ונושא מצחיק לברכה, לוחצים, ונותנים לכיתה לצחוק מהמשפט שנוצר.', students: 'רואים שהאתר השתמש במה שהוקלד ולא בתשובה קבועה.' },
         { minutes: '4–12', title: 'זוגות ממציאים קלטים', teacher: 'מבקשים מכל זוג לנסות שם ונושא אחרים לפני שמדברים על קוד.', students: 'מקלידים, לוחצים ומשווים איזה משפט יצא הכי מצחיק.' },
         { minutes: '12–22', title: 'מה האתר קרא?', teacher: 'מצביעים על שני השדות ושואלים: מאיפה הקוד לקח את השם? מאיפה את הנושא לברכה?', students: 'מסמנים שדה שם, שדה נושא ותוצאה.' },
         { minutes: '22–36', title: 'כלי עזר לקלט בטוח', teacher: 'מפעילים כלי עזר: שדה שם, שדה נושא וצור משפט אישי.', students: 'משנים טקסטים גלויים ואת נוסח המשפט בלי לשבור id.' },
-        { minutes: '36–52', title: 'מציצים לקוד שקורא קלט', teacher: 'לא כותבים getElementById לבד. רק מזהים id ב־HTML ו־value ב־JS.', students: 'מחברים בין id="nameInput" לבין getElementById("nameInput").value.' },
-        { minutes: '52–68', title: 'מחוללים לפי נושא', teacher: 'נותנים נושאים: מחולל כוח־על, מחולל שם רובוט, מחולל ברכת יומולדת, מחולל משימת חלל.', students: 'בוחרים נושא ומשנים טקסטים בטוחים.' },
-        { minutes: '68–80', title: 'דיבאג קלט עדין', teacher: 'מדגימים id לא תואם ומחזירים לרמז: השמות חייבים להיות זהים.', students: 'בודקים התאמה בין input לבין JavaScript.' },
-        { minutes: '80–90', title: 'תערוכת מחוללים מצחיקים', teacher: 'כל תלמיד נותן לחבר למלא את המחולל ומסביר איזה שדה נקרא בקוד.', students: 'מציגים מחולל ואומרים: “הקוד קרא את ___ מתוך השדה”.' }
+        { minutes: '36–52', title: 'מציצים ל־HTML של השדות', teacher: 'מראים שהטקסט של השדה וה־id שלו נמצאים בשורת HTML. לא נכנסים עדיין ל־getElementById או value.', students: 'מסמנים שורת HTML של input ומעתיקים ממנה מילה קצרה.' },
+        { minutes: '52–68', title: 'אתרים לפי נושא', teacher: 'נותנים רעיונות: אתר חיות, אתר ספורט, אתר חלל, אתר בדיחות או אתר משימות.', students: 'בוחרים נושא ומשנים טקסטים בטוחים.' },
+        { minutes: '68–80', title: 'בודקים שמות id בזהירות', teacher: 'מדגימים ששדה צריך id ברור כדי שכפתור יוכל להשתמש בו בהמשך, בלי לדרוש כתיבת JavaScript.', students: 'בודקים שה־id של השדות נשאר nameInput ו־hobbyInput.' },
+        { minutes: '80–90', title: 'תערוכת אתרים מצחיקים', teacher: 'כל תלמיד נותן לחבר למלא את האתר ומסביר איזה שדה נקרא בקוד.', students: 'מציגים אתר ואומרים: “הקוד קרא את ___ מתוך השדה”.' }
       ],
       exercises: [
-        { id: 1, minutes: '0–6', title: 'תרגיל 1 — בדיקת קסם אישי', prompt: 'בתצוגה החיה משמאל, כתבו שם ונושא לברכה בתוך שני השדות, לחצו על “צרו ברכה מצחיקה”, ובדקו שהברכה משתמשת במה שהקלדתם.', hint: 'לא צריך לכתוב קוד בתרגיל הזה. אם כתבתם “נועה” ו“רובוטים”, שני הדברים צריכים להופיע בברכה.', check: { jsIncludes: ['function makeGreeting'], requiresPreviewButtonText: 'צרו ברכה מצחיקה', requiresPreviewFilledInputs: ['nameInput', 'hobbyInput'], requiresPreviewResultFromInputs: ['nameInput', 'hobbyInput'], previewClickFeedback: 'כמעט. בתצוגה החיה משמאל לחצו על הכפתור “צרו ברכה מצחיקה”.', previewInputFeedback: 'כמעט. קודם כתבו שם ונושא לברכה בתוך שני השדות שבתצוגה החיה משמאל, ואז לחצו על הכפתור.', previewResultFeedback: 'כמעט. לחצתם על הכפתור, אבל התוצאה עדיין לא משתמשת גם בשם וגם בנושא שהקלדתם.' } },
-        { id: 2, minutes: '6–14', title: 'תרגיל 2 — מי המציא את המשפט הכי מצחיק?', prompt: 'נסו שלושה זוגות של שם+נושא ובחרו את התוצאה הכי מצחיקה.', hint: 'זה עדיין אותו קוד — רק ה־value שהמשתמש מקליד משתנה.', check: { htmlIncludes: ['id="nameInput"', 'id="hobbyInput"'], jsIncludes: ['textContent'] } },
+        { id: 1, minutes: '0–6', title: 'תרגיל 1 — בדיקת קסם אישי', prompt: 'בתצוגה החיה משמאל, כתבו שם ונושא לברכה בתוך שני השדות, לחצו על “צרו תשובה אישית”, ובדקו שהתשובה משתמשת במה שהקלדתם.', hint: 'לא צריך לכתוב קוד בתרגיל הזה. אם כתבתם “נועה” ו“רובוטים”, שני הדברים צריכים להופיע בתשובה.', check: { jsIncludes: ['function makeGreeting'], requiresPreviewButtonText: 'צרו תשובה אישית', requiresPreviewFilledInputs: ['nameInput', 'hobbyInput'], requiresPreviewResultFromInputs: ['nameInput', 'hobbyInput'], previewClickFeedback: 'כמעט. בתצוגה החיה משמאל לחצו על הכפתור “צרו תשובה אישית”.', previewInputFeedback: 'כמעט. קודם כתבו שם ונושא לברכה בתוך שני השדות שבתצוגה החיה משמאל, ואז לחצו על הכפתור.', previewResultFeedback: 'כמעט. לחצתם על הכפתור, אבל התוצאה עדיין לא משתמשת גם בשם וגם בנושא שהקלדתם.' } },
+        { id: 2, minutes: '6–14', title: 'תרגיל 2 — מי המציא את המשפט הכי מצחיק?', prompt: 'נסו שלושה זוגות של שם+נושא ובחרו את התוצאה הכי מצחיקה.', hint: 'זה עדיין אותו עמוד — רק מה שהמשתמש מקליד בתוך השדות משתנה.', check: { htmlIncludes: ['id="nameInput"', 'id="hobbyInput"'], jsIncludes: ['textContent'] } },
         { id: 3, minutes: '14–24', title: 'תרגיל 3 — כלי עזר לשדה שם', prompt: 'לחצו על כלי העזר “שדה שם” ובדקו שבתצוגה הכותרת מעל השדה הראשון השתנתה ל“מה השם שלך?”.', hint: 'זה לא בלוק לגרירה ולא הכפתור שבתצוגה — זה כלי עזר שמעדכן טקסט גלוי ב־HTML.', check: { htmlIncludes: ['מה השם שלך?'] } },
-        { id: 4, minutes: '24–34', title: 'תרגיל 4 — כלי עזר לשדה נושא', prompt: 'לחצו על כלי העזר “שדה נושא” ובדקו שבתצוגה הכותרת מעל השדה השני השתנתה ל“על מה הברכה?”.', hint: 'זה כלי עזר מוכן, לא בלוק לגרירה ולא הכפתור שבתצוגה. הוא משנה טקסט גלוי ליד hobbyInput.', check: { htmlIncludes: ['על מה הברכה?'] } },
-        { id: 5, minutes: '34–44', title: 'תרגיל 5 — מוצאים את value', prompt: 'פתחו “הצצה לקוד” ומצאו בקוד JavaScript את השורה שקוראת את השם מהשדה.', hint: 'חפשו value. לא צריך לכתוב את זה לבד.', check: { jsIncludes: ['getElementById("nameInput").value'], requiresCodePeek: true, codePeekFeedback: 'כמעט. פתחו את “לראות קוד שנוצר” וחפשו את value ב־JavaScript.' } },
-        { id: 6, minutes: '44–58', title: 'תרגיל 6 — משפט אישי יותר', prompt: 'לחצו על כלי העזר “צור משפט אישי”, ואז בדקו בתצוגה עם שם ונושא אמיתיים.', hint: 'כלי העזר מעדכן חלק מה־textContent. אחר כך צריך ללחוץ שוב על “צרו ברכה מצחיקה” בתצוגה כדי לראות את המשפט החדש.', check: { jsIncludes: ['נהדר! שמעתי שהנושא שלך הוא'] } },
+        { id: 4, minutes: '24–34', title: 'תרגיל 4 — כלי עזר לשדה נושא', prompt: 'לחצו על כלי העזר “שדה נושא” ובדקו שבתצוגה הכותרת מעל השדה השני השתנתה ל“על מה האתר יכתוב?”.', hint: 'זה כלי עזר מוכן, לא בלוק לגרירה ולא הכפתור שבתצוגה. הוא משנה טקסט גלוי ליד hobbyInput.', check: { htmlIncludes: ['על מה האתר יכתוב?'] } },
+        { id: 5, minutes: '34–44', title: 'תרגיל 5 — מוצאים שדה ב־HTML', prompt: 'פתחו “הצצה לקוד”, לחצו על בלוק של שדה, ומצאו בשורת ה־HTML שסומנה את המילה input או id.', hint: 'ב־HTML השדה מופיע כ־input. ה־id הוא השם של השדה בעמוד.', check: { htmlIncludes: ['id="nameInput"', 'id="hobbyInput"'], requiresCodePeek: true, codePeekFeedback: 'כמעט. פתחו את “לראות קוד שנוצר” וחפשו את שורת ה־HTML של השדה.' } },
+        { id: 6, minutes: '44–58', title: 'תרגיל 6 — משפט אישי יותר', prompt: 'לחצו על כלי העזר “צור משפט אישי”, ואז בדקו בתצוגה עם שם ונושא אמיתיים.', hint: 'כלי העזר מעדכן חלק מה־textContent. אחר כך צריך ללחוץ שוב על “צרו תשובה אישית” בתצוגה כדי לראות את המשפט החדש.', check: { jsIncludes: ['נהדר! שמעתי שהנושא שלך הוא'] } },
         { id: 7, minutes: '58–72', title: 'תרגיל 7 — שינוי טקסט בטוח', prompt: 'שנו כותרת, טקסט כפתור או משפט פתיחה — אבל אל תשנו id.', hint: 'אל תשנו nameInput או hobbyInput בתרגיל הזה.', check: { htmlIncludes: ['id="nameInput"', 'id="hobbyInput"'] } },
-        { id: 8, minutes: '72–84', title: 'תרגיל 8 — תערוכת מחוללים', prompt: 'תנו לחבר/ה למלא את המחולל והסבירו איזה שדה הקוד קרא.', hint: 'השתמשו במילים: input, id, value.', check: { htmlIncludes: ['input', 'button'], jsIncludes: ['value', 'textContent'] } }
+        { id: 8, minutes: '72–84', title: 'תרגיל 8 — תערוכת אתרים', prompt: 'תנו לחבר/ה למלא את האתר והסבירו איפה ב־HTML נמצאים השדות והכפתור.', hint: 'השתמשו במילים: input, id, button.', check: { htmlIncludes: ['input', 'button'], jsIncludes: ['textContent'] } }
       ],
       aiHelper: [
-        'הציעו 5 רעיונות למחוללים מצחיקים שמתאימים לכיתה ד׳.',
+        'הציעו 5 רעיונות לאתרים קטנים שמחזירים תשובה מצחיקה ומתאימים לכיתה ד׳.',
         'תנו 10 משפטי תוצאה שמשתמשים בשם ובנושא בלי להעליב אף אחד.',
-        'הסבירו לילד מה ההבדל בין id של input לבין value שלו.',
+        'הסבירו לילד ש־input הוא שדה בעמוד, ו־id הוא השם שלו בתוך ה־HTML.',
         'עזרו למצוא למה getElementById לא מוצא את השדה.',
-        'הציעו מחולל בנושא חלל / רובוטים / חיות / ספורט / יומולדת.'
+        'הציעו אתר קטן בנושא חלל / רובוטים / חיות / ספורט / יומולדת.'
       ],
       vocabulary: [
         ['input', 'שדה שבו המשתמש מקליד משהו'],
-        ['value', 'מה שכתוב כרגע בתוך השדה'],
+        
         ['const', 'שם קטן שבו שומרים מידע שהקוד קרא'],
         ['placeholder', 'טקסט עזרה שמופיע בתוך שדה ריק'],
         ['שרשור', 'חיבור חלקי טקסט בעזרת +']
@@ -564,7 +564,7 @@
       { label: '✏️ הוסף משפט אישי', target: 'html', find: '<p>אני אוהבת רובוטים, משחקים וקוד.</p>', replace: '<p>אני אוהב/ת ליצור דברים בדפדפן.</p>', hint: 'בלוק תוכן: משנה פסקה בתוך הכרטיס.' },
       { label: '🎨 שנה צבע רקע', target: 'css', find: 'background: #e0f2fe;', replace: 'background: #fef3c7;', hint: 'בלוק עיצוב: משנה CSS בלי לכתוב סינטקס לבד.' },
       { label: '🔘 צור כפתור פעולה', target: 'html', find: '<button onclick="sayHello()">לחצו עליי</button>', replace: '<button onclick="sayHello()">גלו הודעה</button>', hint: 'בלוק אינטראקציה: הכפתור עדיין קורא לאותה פונקציה.' },
-      { label: '✨ הצג הודעה בלחיצה', target: 'js', find: 'איזה כיף! הכפתור עובד 🎉', replace: 'ברוכים הבאים לאתר הראשון שלי ✨', hint: 'בלוק JavaScript: משנה רק את ההודעה שמופיעה.' }
+      { label: '✨ הצג הודעה בלחיצה', target: 'js', find: 'איזה כיף! הכפתור עובד 🎉', replace: 'ברוכים הבאים לאתר הראשון שלי ✨', hint: 'בלוק JavaScript: מציג את ההודעה אחרי הלחיצה.' }
     ],
     2: [
       { label: '🚀 בחר דמות', target: 'html', find: '<div class="avatar">🚀</div>', replace: '<div class="avatar">🎮</div>', hint: 'בלוק תוכן ויזואלי: מחליף את הדמות בכרטיס.' },
@@ -657,8 +657,8 @@
 
     4: [
       { label: '📝 שדה שם', target: 'html', find: ['שם גיבור/ה:', 'שם גיבור/ה'], replace: 'מה השם שלך?', hint: 'כלי עזר: משנה טקסט גלוי מעל השדה הראשון.' },
-      { label: '🎯 שדה נושא', target: 'html', find: ['נושא לברכה:', 'תחביב או כוח־על:', 'תחביב או כוח־על'], replace: 'על מה הברכה?', hint: 'כלי עזר: משנה טקסט גלוי מעל השדה השני.' },
-      { label: '💬 צור משפט אישי', target: 'js', find: 'הנה ברכה מצחיקה על', replace: 'נהדר! שמעתי שהנושא שלך הוא', hint: 'כלי עזר: משנה את משפט התוצאה שמחבר את הקלט לברכה.' }
+      { label: '🎯 שדה נושא', target: 'html', find: ['נושא לתשובה:', 'תחביב או כוח־על:', 'תחביב או כוח־על'], replace: 'על מה האתר יכתוב?', hint: 'כלי עזר: משנה טקסט גלוי מעל השדה השני.' },
+      { label: '💬 צור משפט אישי', target: 'js', find: 'הנה תשובה אישית על', replace: 'נהדר! שמעתי שהנושא שלך הוא', hint: 'כלי עזר: משנה את משפט התוצאה שמחבר את הקלט לתשובה.' }
     ]
   };
 
@@ -680,7 +680,7 @@
       { minutes: '0–3', title: 'וואו ראשון: לוחצים והעמוד משתנה', teacher: 'בלי הקדמה ארוכה: מריצים, לוחצים על “הפעילו קסם”, ושואלים מה השתנה במסך.', students: 'רואים הודעה ורקע משתנים מיד ומנחשים איזה בלוק גרם לזה.' },
       { minutes: '3–10', title: 'משנים קסם קטן לבד', teacher: 'מבקשים לשנות בחירת רקע או טקסט בכפתור ולהריץ שוב. עדיין לא מסבירים תחביר.', students: 'משנים ערך בתוך בלוק, מריצים, לוחצים ורואים תוצאה אישית.' },
       { minutes: '10–20', title: 'כפתור ופונקציה מאחורי הקסם', teacher: 'רק עכשיו מצביעים על בלוק כפתור ועל ההצצה לקוד: onclick מפעיל function showMessage.', students: 'בוחרים את בלוק הכפתור ורואים את שורת ה־HTML המסומנת.' },
-      { minutes: '20–34', title: 'בלוק הודעה בלחיצה', teacher: 'גוררים בלוק “בלחיצה שנה הודעה” מסטודיו פעולה ומדגימים textContent.', students: 'כותבים הודעה מצחיקה, מריצים ולוחצים על הכפתור.' },
+      { minutes: '20–34', title: 'בלוק הצגת הודעה', teacher: 'גוררים בלוק “בלחיצה הצג הודעה” מסטודיו פעולה ומדגימים textContent.', students: 'כותבים הודעה מצחיקה, מריצים ולוחצים על הכפתור.' },
       { minutes: '34–48', title: 'בלוק שינוי סמל', teacher: 'מוסיפים בלוק שמחליף אימוג׳י בלחיצה ומראים איך JS משנה אלמנט עם id.', students: 'בוחרים סמל חדש ובודקים שינוי בתצוגה.' },
       { minutes: '48–62', title: 'שינוי רקע כפעולה', teacher: 'משנים או מוסיפים בלוק רקע ומראים document.body.style.background.', students: 'בודקים איך פעולה יכולה לשנות עיצוב בזמן אמת.' },
       { minutes: '62–76', title: 'מצב קסם כמתג', teacher: 'מוסיפים בלוק classList.toggle ומסבירים: לחיצה אחת מדליקה, לחיצה שנייה מכבה.', students: 'לוחצים כמה פעמים ומזהים מצב דולק/כבוי.' },
@@ -689,13 +689,13 @@
     ],
     exercises: [
       { id: 1, minutes: '0–5', title: 'תרגיל 1 — וואו תוך שתי דקות', prompt: 'לחצו על כפתור “הפעילו קסם” בתצוגה החיה בצד שמאל, וגלו מה השתנה במסך.', hint: 'חפשו שינוי הודעה או שינוי רקע בתצוגה אחרי הלחיצה על “הפעילו קסם” — לא צריך להבין עדיין את כל הקוד.', check: { htmlIncludes: ['onclick="showMessage()"'], jsIncludes: ['function showMessage', 'document.body.style.background'], requiresPreviewButtonText: 'הפעילו קסם', previewClickFeedback: 'כמעט. לחצו קודם על כפתור “הפעילו קסם” בתוך התצוגה החיה בצד שמאל, ואז לחצו בדיקה.' } },
-      { id: 2, minutes: '5–12', title: 'תרגיל 2 — משנים קסם קטן', prompt: 'שנו את ההודעה בתוך בלוק הכפתור למשהו משלכם, ואז לחצו שוב על “הפעילו קסם” בתצוגה החיה.', hint: 'שנו רק את השדה שאחרי המילים “מציג הודעה”. אם שיניתם בטעות את שם הכפתור, לחצו ↺ קוד התחלה.', check: { htmlIncludes: ['button'], jsIncludes: ['document.body.style.background'], blockTypes: ['web_button'], nonEmptyBlocklyFields: [{ type: 'web_button', field: 'MESSAGE' }], unchangedBlocklyFields: [{ type: 'web_button', field: 'LABEL', value: 'הפעילו קסם' }], changedBlocklyFields: [{ type: 'web_button', field: 'MESSAGE', defaultValue: 'הכפתור הפעיל קסם 🎉' }], requiresPreviewButtonText: 'הפעילו קסם', requiresPreviewMessageChangedFrom: 'כאן תופיע הודעה מהכפתור...', emptyFeedback: 'כמעט. ההודעה בתוך בלוק הכפתור לא יכולה להיות ריקה.', unchangedFieldFeedback: 'כמעט. שיניתם את שם הכפתור במקום את ההודעה. לחצו ↺ קוד התחלה, ואז שנו רק את השדה שאחרי “מציג הודעה”.', fieldFeedback: 'כמעט. שנו את שדה ההודעה — השדה שאחרי המילים “מציג הודעה” — למשהו משלכם.', previewClickFeedback: 'כמעט. ההודעה השתנתה; עכשיו לחצו על “הפעילו קסם” בתצוגה החיה ואז על בדיקה.', previewMessageFeedback: 'כמעט. לחצתם על הכפתור, אבל ההודעה בתצוגה עדיין לא השתנתה. ודאו ששיניתם את שדה ההודעה בבלוק הכפתור.' } },
-      { id: 3, minutes: '12–22', title: 'תרגיל 3 — מוצאים את הכפתור בקוד', prompt: 'פתחו את ההצצה לקוד שנוצר, בחרו את בלוק הכפתור, וראו איזה HTML מסומן בקוד.', hint: 'חפשו את שורת הכפתור עם onclick="showMessage()" בלשונית HTML.', check: { htmlIncludes: ['onclick="showMessage()"'], jsIncludes: ['function showMessage'], blockTypes: ['web_button'], requiresCodePeek: true, requiresCodeSelectionTab: 'html', requiresCodeSelectionBlockTypes: ['web_button'], codePeekFeedback: 'כמעט. קודם פתחו את “לראות קוד שנוצר”.', codeSelectionFeedback: 'כמעט. אחרי פתיחת ההצצה, לחצו על בלוק הכפתור וודאו ששורת HTML של הכפתור מסומנת.' } },
-      { id: 4, minutes: '22–34', title: 'תרגיל 4 — הודעה בלחיצה', prompt: 'גררו בלוק “בלחיצה שנה הודעה”, כתבו הודעה משלכם בתוך הבלוק, ואז לחצו על הכפתור בתצוגה החיה.', hint: 'הבלוק משנה את message.textContent. הטקסט שבתוכו צריך להיות שלכם, לא ברירת המחדל.', check: { jsIncludes: ['message.textContent'], blockTypes: ['web_action_message'], nonEmptyBlocklyFields: [{ type: 'web_action_message', field: 'TEXT' }], changedBlocklyFields: [{ type: 'web_action_message', field: 'TEXT', defaultValue: 'הכפתור הפעיל קסם 🎉' }], requiresPreviewButtonText: 'הפעילו קסם', requiresPreviewMessageChangedFrom: 'כאן תופיע הודעה מהכפתור...', emptyFeedback: 'כמעט. ההודעה בתוך בלוק הפעולה לא יכולה להיות ריקה.', blockFeedback: 'כמעט. חסר בלוק “בלחיצה שנה הודעה” מסטודיו פעולה.', fieldFeedback: 'כמעט. בלוק “בלחיצה שנה הודעה” מחובר, עכשיו שנו את הטקסט שבתוכו להודעה משלכם.', previewClickFeedback: 'כמעט. ההודעה השתנתה; עכשיו לחצו על כפתור “הפעילו קסם” בתצוגה החיה ואז על בדיקה.', previewMessageFeedback: 'כמעט. לחצתם על הכפתור, אבל ההודעה בתצוגה עדיין לא השתנתה. ודאו שבלוק “בלחיצה שנה הודעה” מחובר ושהטקסט שלו שונה.' } },
+      { id: 2, minutes: '5–12', title: 'תרגיל 2 — משנים טקסט של כפתור', prompt: 'שנו רק את הטקסט שמופיע על בלוק הכפתור למשהו משלכם, ואז לחצו על הכפתור בתצוגה החיה.', hint: 'בלוק “כפתור” קובע מה כתוב על הכפתור. את ההודעה החדשה שמופיעה אחרי לחיצה נשנה בתרגיל הבא בעזרת בלוק פעולה.', check: { htmlIncludes: ['button'], jsIncludes: ['document.body.style.background'], blockTypes: ['web_button'], nonEmptyBlocklyFields: [{ type: 'web_button', field: 'LABEL' }], changedBlocklyFields: [{ type: 'web_button', field: 'LABEL', defaultValue: 'הפעילו קסם' }], requiresPreviewButtonClick: true, emptyFeedback: 'כמעט. הטקסט שעל הכפתור לא יכול להיות ריק.', fieldFeedback: 'כמעט. שנו את הטקסט שעל בלוק הכפתור למשהו משלכם.', previewClickFeedback: 'כמעט. עכשיו לחצו על הכפתור בתצוגה החיה ואז על בדיקה.' } },
+      { id: 3, minutes: '12–22', title: 'תרגיל 3 — מוצאים את הכפתור בקוד', prompt: 'פתחו את ההצצה לקוד שנוצר, בחרו את בלוק הכפתור, ואז הקלידו בתיבה מילת קוד קצרה שראיתם בשורת ה־HTML — למשל button, id, onclick או showMessage().', hint: 'חפשו את שורת הכפתור בלשונית HTML. מספיק להקליד מילת קוד קצרה אחת מתוך השורה, לא את כל השורה.', answerBox: { label: 'מילת קוד שראיתי', placeholder: 'הקלד כאן מילת קוד מהבלוק', note: 'אין צורך להעתיק את כל השורה — כתבו למשל button, id, onclick או showMessage().' }, check: { htmlIncludes: ['onclick="showMessage()"'], jsIncludes: ['function showMessage'], blockTypes: ['web_button'], requiresCodePeek: true, requiresCodeSelectionTab: 'html', requiresCodeSelectionBlockTypes: ['web_button'], requiresCodeLineAnswer: { tab: 'html', blockTypes: ['web_button'], requiredSnippets: ['button', 'id', 'onclick', 'showMessage()'] }, codePeekFeedback: 'כמעט. קודם פתחו את “לראות קוד שנוצר”.', codeSelectionFeedback: 'כמעט. אחרי פתיחת ההצצה, לחצו על בלוק הכפתור וודאו ששם הבלוק מופיע בכרטיס המשימה.', codeLineAnswerFeedback: 'כמעט. כתבו בתיבה מילת קוד קצרה שראיתם בשורת הכפתור, למשל button, id, onclick או showMessage().' } },
+      { id: 4, minutes: '22–34', title: 'תרגיל 4 — הצגת הודעה בלחיצה', prompt: 'גררו בלוק “בלחיצה הצג הודעה”, כתבו הודעה חדשה שתופיע רק אחרי לחיצה, ואז לחצו על הכפתור בתצוגה החיה.', hint: 'זה בלוק פעולה: הוא משנה את message.textContent אחרי שלוחצים על הכפתור.', check: { jsIncludes: ['message.textContent'], blockTypes: ['web_action_message'], nonEmptyBlocklyFields: [{ type: 'web_action_message', field: 'TEXT' }], changedBlocklyFields: [{ type: 'web_action_message', field: 'TEXT', defaultValue: 'הודעה חדשה מהפעולה ✨' }], requiresPreviewButtonText: 'הפעילו קסם', requiresPreviewMessageChangedFrom: 'כאן תופיע הודעה מהכפתור...', emptyFeedback: 'כמעט. ההודעה החדשה בתוך בלוק הפעולה לא יכולה להיות ריקה.', blockFeedback: 'כמעט. חסר בלוק “בלחיצה הצג הודעה” מסטודיו פעולה.', fieldFeedback: 'כמעט. בלוק “בלחיצה הצג הודעה” מחובר, עכשיו שנו את הטקסט שבתוכו להודעה משלכם.', previewClickFeedback: 'כמעט. ההודעה השתנתה; עכשיו לחצו על כפתור “הפעילו קסם” בתצוגה החיה ואז על בדיקה.', previewMessageFeedback: 'כמעט. לחצתם על הכפתור, אבל ההודעה בתצוגה עדיין לא השתנתה. ודאו שבלוק “בלחיצה הצג הודעה” מחובר ושהטקסט שלו שונה.' } },
       { id: 5, minutes: '34–46', title: 'תרגיל 5 — שינוי סמל', prompt: 'גררו בלוק “בלחיצה שנה סמל ל־”, בחרו אימוג׳י שונה מברירת המחדל, ואז לחצו על הכפתור בתצוגה החיה.', hint: 'צריך להיות בעמוד בלוק “סמל גדול” כדי שלבלוק “בלחיצה שנה סמל ל־” יהיה מה לשנות. אל תשאירו את האימוג׳י על 🤖.', check: { htmlIncludes: ['id="heroEmoji"'], jsIncludes: ['heroEmoji.textContent'], blockTypes: ['web_emoji', 'web_action_emoji'], changedBlocklyFields: [{ type: 'web_action_emoji', field: 'EMOJI', defaultValue: '🤖' }], requiresPreviewButtonText: 'הפעילו קסם', requiresPreviewEmojiChangedFrom: '✨', fieldFeedback: 'כמעט. בלוק “בלחיצה שנה סמל ל־” מחובר, אבל צריך לבחור אימוג׳י אחר מברירת המחדל 🤖.', previewClickFeedback: 'כמעט. עכשיו לחצו על “הפעילו קסם” בתצוגה החיה ואז על בדיקה.', previewEmojiFeedback: 'כמעט. לחצתם על הכפתור, אבל הסמל בתצוגה עדיין לא השתנה. בחרו אימוג׳י אחר ולחצו שוב.' } },
       { id: 6, minutes: '46–58', title: 'תרגיל 6 — שינוי רקע', prompt: 'בלוק “בלחיצה שנה רקע” כבר נמצא בקוד ההתחלתי. שנו רק את הבחירה שבתוכו לרקע אחר, ואז לחצו על הכפתור בתצוגה החיה ובדקו.', hint: 'אל תגררו בלוק רקע חדש — שנו את הבלוק שכבר מחובר. בקוד ההתחלתי הוא ורוד, וזה לא מספיק כי עוד לא שיניתם אותו.', check: { jsIncludes: ['document.body.style.background'], blockTypes: ['web_action_background'], ensureStarterBlocks: [{ type: 'web_action_background', after: 'web_button', fields: { BG: 'pink' } }], exactBlockTypeCounts: { web_action_background: 1 }, changedBlocklyFieldsFromBaseline: [{ type: 'web_action_background', field: 'BG' }], requiresPreviewButtonText: 'הפעילו קסם', countFeedback: 'כמעט. אל תוסיפו בלוק “בלחיצה שנה רקע” נוסף — צריך לשנות את הבלוק שכבר נמצא בקוד כשהתחלתם את התרגיל.', fieldFeedback: 'כמעט. בלוק “בלחיצה שנה רקע” כבר מחובר, עכשיו בחרו בו רקע אחר ממה שהיה כשנכנסתם לתרגיל.', previewClickFeedback: 'כמעט. הרקע השתנה בקוד; עכשיו לחצו על “הפעילו קסם” בתצוגה החיה ואז על בדיקה.' } },
       { id: 7, minutes: '58–72', title: 'תרגיל 7 — מצב קסם', prompt: 'גררו בלוק “בלחיצה החלף מצב קסם”, לחצו על הכפתור בתצוגה החיה וודאו שהכרטיס נכנס למצב קסם.', hint: 'toggle מדליק ומכבה class. צריך לראות את הכרטיס משתנה אחרי הלחיצה.', check: { cssIncludes: ['.page-card.magic'], jsIncludes: ['classList.toggle("magic")'], blockTypes: ['web_action_magic'], requiresPreviewButtonText: 'הפעילו קסם', requiresPreviewCardClass: 'magic', previewClickFeedback: 'כמעט. הבלוק מחובר; עכשיו לחצו על “הפעילו קסם” בתצוגה החיה ואז על בדיקה.', previewClassFeedback: 'כמעט. לחצתם, אבל הכרטיס לא נכנס למצב קסם. ודאו שהבלוק “בלחיצה החלף מצב קסם” מחובר ולחצו פעם אחת.' } },
-      { id: 8, minutes: '72–84', title: 'תרגיל 8 — מסמנים קוד מבלוק', prompt: 'פתחו את ההצצה לקוד שנוצר, לחצו על בלוק שמחובר בקוד ומשנה משהו בלחיצה, וודאו ששורת JavaScript שנוצרה ממנו מסומנת.', hint: 'בחרו בלוק שנמצא בתוך שרשרת הקוד, לא בלוק חופשי בצד. הבלוקים האלה נמצאים באזור “סטודיו פעולה” ומשנים את JavaScript.', check: { htmlIncludes: ['page-card'], cssIncludes: ['.page-card'], jsIncludes: ['function showMessage'], requiresCodePeek: true, requiresCodeSelectionTab: 'js', requiresCodeSelectionBlockTypes: ['web_action_message', 'web_action_emoji', 'web_action_background', 'web_action_magic'], codePeekFeedback: 'כמעט. קודם פתחו את “לראות קוד שנוצר”.', codeSelectionFeedback: 'כמעט. אחרי פתיחת ההצצה, לחצו על אחד מהבלוקים שמחוברים בקוד: “בלחיצה שנה הודעה”, “בלחיצה שנה סמל ל־”, “בלחיצה שנה רקע” או “בלחיצה החלף מצב קסם”, וודאו ששורת JavaScript מסומנת.' } }
+      { id: 8, minutes: '72–84', title: 'תרגיל 8 — מבינים את קוד הבלוק', prompt: 'פתחו את ההצצה לקוד שנוצר, לחצו על בלוק פעולה שמחובר לקוד, ואז הקלידו בתיבה מילת JavaScript קצרה שראיתם בעצמכם בשורה שסומנה.', hint: 'בחרו בלוק שנמצא בתוך שרשרת הקוד, לא בלוק חופשי בצד. הסתכלו בשורת JavaScript שסומנה, ובחרו מתוכה מילה אמיתית להקלדה.', answerBox: { label: 'מילת JavaScript שראיתי', placeholder: 'הקלד כאן מילה מהשורה שסומנה', note: 'אין צורך להעתיק את כל השורה — הסתכלו בשורת JavaScript שסומנה והקלידו מילה אמיתית שמופיעה בה.' }, check: { htmlIncludes: ['page-card'], cssIncludes: ['.page-card'], jsIncludes: ['function showMessage'], requiresCodePeek: true, requiresCodeSelectionTab: 'js', requiresCodeSelectionBlockTypes: ['web_action_message', 'web_action_emoji', 'web_action_background', 'web_action_magic'], requiresCodeLineAnswer: { tab: 'js', blockTypes: ['web_action_message', 'web_action_emoji', 'web_action_background', 'web_action_magic'], requiredSnippets: ['message.textContent', 'heroEmoji.textContent', 'document.body.style.background', 'classList.toggle', 'document', 'body', 'style', 'message', 'heroEmoji', 'textContent', 'background', 'classList', 'toggle'] }, codePeekFeedback: 'כמעט. קודם פתחו את “לראות קוד שנוצר”.', codeSelectionFeedback: 'כמעט. אחרי פתיחת ההצצה, לחצו על אחד מהבלוקים שמחוברים בקוד: “בלחיצה הצג הודעה”, “בלחיצה שנה סמל ל־”, “בלחיצה שנה רקע” או “בלחיצה החלף מצב קסם”.', codeLineAnswerFeedback: 'כמעט. עכשיו הסתכלו בשורת JavaScript שסומנה והקלידו בתיבה מילה אמיתית שמופיעה בה.' } }
     ],
     vocabulary: [
       ['event', 'משהו שקורה בעמוד, למשל לחיצה'],
@@ -732,13 +732,13 @@
       { minutes: '82–90', title: 'גלריית עיצובים ושיתוף', teacher: 'מבקשים מכל תלמיד להעתיק קישור ציבורי ולשתף תוצר אחד.', students: 'מציגים בחירה עיצובית אחת ומסבירים למה בחרו אותה.' }
     ],
     exercises: [
-      { id: 1, minutes: '8–16', title: 'תרגיל 1 — מתחילים פשוט', prompt: 'העמוד מתחיל רק עם עיצוב בסיסי, כותרת ופסקה. שנו את בלוק “פלטת עיצוב עמוד” ובדקו מה השתנה.', hint: 'בהתחלה אין הרבה בלוקים — זה בכוונה. נבנה את העיצוב בשלבים.', check: { cssIncludes: ['background:'], cssExcludes: ['background: #ede9fe;'], blockTypes: ['web_theme'], changedBlocklyFields: [{ type: 'web_theme', field: 'THEME', defaultValue: 'space' }], fieldFeedback: 'כמעט. בלוק פלטת עיצוב העמוד מחובר, עכשיו בחרו פלטה אחרת מתוך התפריט שבתוכו.' } },
-      { id: 2, minutes: '16–25', title: 'תרגיל 2 — מוסיפים בלוק ראשון', prompt: 'עכשיו גררו בעצמכם בלוק “צורת כרטיס”, חברו אותו לשרשרת, ושנו את הצורה מברירת המחדל.', hint: 'פתחו את התפריט בתוך בלוק צורת הכרטיס ובחרו צורה אחרת.', check: { cssIncludes: ['border-radius'], blockTypes: ['web_card_shape'], changedBlocklyFields: [{ type: 'web_card_shape', field: 'SHAPE', defaultValue: 'round' }], fieldFeedback: 'כמעט. בלוק צורת הכרטיס מחובר, עכשיו בחרו צורה אחרת מתוך התפריט שבתוכו.' } },
-      { id: 3, minutes: '25–34', title: 'תרגיל 3 — מוסיפים עומק', prompt: 'גררו בלוק “צל כרטיס”, חברו אותו אחרי צורת הכרטיס, ושנו את הצל מברירת המחדל.', hint: 'צל כרטיס צריך להיות מחובר אחרי בלוק צורת כרטיס. פתחו את התפריט בתוך בלוק הצל ובחרו אפשרות אחרת.', check: { cssIncludes: ['box-shadow'], blockTypes: ['web_shadow'], orderedBlockTypes: ['web_card_shape', 'web_shadow'], changedBlocklyFields: [{ type: 'web_shadow', field: 'SHADOW', defaultValue: 'soft' }], fieldFeedback: 'כמעט. בלוק צל הכרטיס מחובר במקום הנכון, עכשיו בחרו צל אחר מתוך התפריט שבתוכו.' } },
-      { id: 4, minutes: '34–43', title: 'תרגיל 4 — צבע כותרת', prompt: 'חברו בלוק “צבע כותרת” ושנו את צבע הכותרת מברירת המחדל לצבע אחר שמתאים לעמוד.', hint: 'הכותרת היא h1. פתחו את התפריט בתוך בלוק צבע הכותרת ובחרו צבע אחר.', check: { cssIncludes: ['h1 { color:'], blockTypes: ['web_title_color'], changedBlocklyFields: [{ type: 'web_title_color', field: 'COLOR', defaultValue: 'blue' }], fieldFeedback: 'כמעט. בלוק צבע הכותרת מחובר, עכשיו בחרו צבע אחר מתוך התפריט שבתוכו.' } },
-      { id: 5, minutes: '43–52', title: 'תרגיל 5 — סוג כפתור', prompt: 'חברו בלוק “סגנון כפתור” ושנו את סוג הכפתור מברירת המחדל.', hint: 'הכפתור משתנה דרך background, border-radius ו־box-shadow. פתחו את התפריט בתוך בלוק סגנון הכפתור ובחרו סוג כפתור אחר.', check: { cssIncludes: ['button {', 'border-radius'], blockTypes: ['web_button_style'], changedBlocklyFields: [{ type: 'web_button_style', field: 'STYLE', defaultValue: 'pill' }], fieldFeedback: 'כמעט. בלוק סגנון הכפתור מחובר, עכשיו בחרו סוג כפתור אחר מתוך התפריט שבתוכו.' } },
-      { id: 6, minutes: '52–62', title: 'תרגיל 6 — אפקט Hover', prompt: 'חברו בלוק “אפקט מעבר עכבר”, שנו את אפקט העכבר על הכפתור מברירת המחדל, ובדקו מה קורה כשעוברים על הכפתור עם העכבר.', hint: 'Hover הוא עיצוב שקורה רק כשעוברים עם העכבר. יש כפתור בתצוגת האתר בצד שמאל — עברו עליו עם העכבר כדי לראות את השינוי.', check: { cssIncludes: ['button:hover'], blockTypes: ['web_hover'], changedBlocklyFields: [{ type: 'web_hover', field: 'EFFECT', defaultValue: 'grow' }], fieldFeedback: 'כמעט. בלוק אפקט המעבר מחובר, עכשיו בחרו אפקט עכבר אחר מתוך התפריט שבתוכו.' } },
-      { id: 7, minutes: '62–74', title: 'תרגיל 7 — הצצה ל־CSS', prompt: 'פתחו “לראות קוד שנוצר”, לחצו על אחד מבלוקי העיצוב, וראו איזו שורת CSS הבלוק יצר בתוך תיבת ה־CSS.', hint: 'בחרו למשל את בלוק “צל כרטיס” או “צורת כרטיס” אחרי שפתחתם את הצצת הקוד. הסימון צריך להיות בלשונית CSS, לא ב־HTML או JavaScript.', check: { cssIncludes: ['background', 'box-shadow'], blockTypes: ['web_theme', 'web_card_shape', 'web_shadow'], requiresCodePeek: true, requiresCodeSelectionTab: 'css', requiresCodeSelectionBlockTypes: ['web_theme', 'web_card_shape', 'web_shadow', 'web_title_color', 'web_button_style', 'web_hover'], codePeekFeedback: 'כמעט. קודם פתחו את “לראות קוד שנוצר”.', codeSelectionFeedback: 'כמעט. עכשיו לחצו על בלוק עיצוב וודאו ששורת CSS מסומנת בתיבת ה־CSS, לא ב־HTML או JavaScript.' } }
+      { id: 1, minutes: '8–16', title: 'תרגיל 1 — מתחילים פשוט', prompt: 'העמוד מתחיל רק עם עיצוב בסיסי, כותרת ופסקה. בחרו אפשרות בבלוק “פלטת עיצוב עמוד” ובדקו מה השתנה.', hint: 'בהתחלה אין הרבה בלוקים — זה בכוונה. נבנה את העיצוב בשלבים.', check: { cssIncludes: ['background:'], cssExcludes: ['background: #ede9fe;'], blockTypes: ['web_theme'], changedBlocklyFields: [{ type: 'web_theme', field: 'THEME', defaultValue: 'space' }], fieldFeedback: 'כמעט. בלוק פלטת עיצוב העמוד מחובר, עכשיו בחרו פלטה אחרת מתוך התפריט שבתוכו.' } },
+      { id: 2, minutes: '16–25', title: 'תרגיל 2 — מוסיפים בלוק ראשון', prompt: 'עכשיו גררו בעצמכם בלוק “צורת כרטיס”, חברו אותו לשרשרת, ובחרו צורה מתוך התפריט.', hint: 'גררו את הבלוק לאזור העבודה, ואז פתחו את התפריט בתוך הבלוק ובחרו צורה שמתאימה לעמוד.', check: { cssIncludes: ['border-radius'], blockTypes: ['web_card_shape'], changedBlocklyFields: [{ type: 'web_card_shape', field: 'SHAPE', defaultValue: 'none' }], fieldFeedback: 'כמעט. בלוק צורת הכרטיס מחובר, עכשיו פתחו את התפריט בתוך הבלוק שבאזור העבודה ובחרו צורה.' } },
+      { id: 3, minutes: '25–34', title: 'תרגיל 3 — מוסיפים עומק', prompt: 'גררו בלוק “צל כרטיס”, חברו אותו אחרי צורת הכרטיס, ובחרו צל מתוך התפריט.', hint: 'צל כרטיס צריך להיות מחובר אחרי בלוק צורת כרטיס. גררו את בלוק הצל לאזור העבודה, ואז פתחו את התפריט שבתוכו ובחרו את האפקט שמתאים לעמוד — גם “בלי צל” זו בחירה תקינה.', check: { cssIncludes: ['box-shadow'], blockTypes: ['web_shadow'], orderedBlockTypes: ['web_card_shape', 'web_shadow'], changedBlocklyFields: [{ type: 'web_shadow', field: 'SHADOW', defaultValue: 'choose' }], fieldFeedback: 'כמעט. בלוק צל הכרטיס מחובר במקום הנכון, עכשיו פתחו את התפריט בתוך הבלוק שבאזור העבודה ובחרו צל.' } },
+      { id: 4, minutes: '34–43', title: 'תרגיל 4 — צבע כותרת', prompt: 'חברו בלוק “צבע כותרת” ובחרו צבע כותרת שמתאים לעמוד.', hint: 'הכותרת היא h1. גררו את בלוק צבע הכותרת לאזור העבודה, ואז פתחו את התפריט שבתוכו ובחרו צבע.', check: { cssIncludes: ['h1 { color:'], blockTypes: ['web_title_color'], changedBlocklyFields: [{ type: 'web_title_color', field: 'COLOR', defaultValue: 'none' }], fieldFeedback: 'כמעט. בלוק צבע הכותרת מחובר, עכשיו פתחו את התפריט בתוך הבלוק שבאזור העבודה ובחרו צבע.' } },
+      { id: 5, minutes: '43–52', title: 'תרגיל 5 — סוג כפתור', prompt: 'חברו בלוק “סגנון כפתור” ובחרו סגנון כפתור.', hint: 'הכפתור משתנה דרך background, border-radius ו־box-shadow. גררו את בלוק סגנון הכפתור לאזור העבודה, ואז פתחו את התפריט שבתוכו ובחרו סגנון כפתור.', check: { cssIncludes: ['button {', 'border-radius'], blockTypes: ['web_button_style'], changedBlocklyFields: [{ type: 'web_button_style', field: 'STYLE', defaultValue: 'none' }], fieldFeedback: 'כמעט. בלוק סגנון הכפתור מחובר, עכשיו פתחו את התפריט בתוך הבלוק שבאזור העבודה ובחרו סגנון.' } },
+      { id: 6, minutes: '52–62', title: 'תרגיל 6 — אפקט Hover', prompt: 'חברו בלוק “אפקט מעבר עכבר”, בחרו אפקט עכבר לכפתור, ובדקו מה קורה כשעוברים על הכפתור עם העכבר.', hint: 'Hover הוא עיצוב שקורה רק כשעוברים עם העכבר. יש כפתור בתצוגת האתר בצד שמאל — עברו עליו עם העכבר כדי לראות את השינוי.', check: { cssIncludes: ['button:hover'], blockTypes: ['web_hover'], changedBlocklyFields: [{ type: 'web_hover', field: 'EFFECT', defaultValue: 'none' }], fieldFeedback: 'כמעט. בלוק אפקט המעבר מחובר, עכשיו פתחו את התפריט בתוך הבלוק שבאזור העבודה ובחרו אפקט עכבר.' } },
+      { id: 7, minutes: '62–74', title: 'תרגיל 7 — מקלידים שורת CSS', prompt: 'פתחו “לראות קוד שנוצר”, לחצו על בלוק עיצוב שמייצר CSS, בדקו בכרטיס המשימה איזה בלוק נבחר, ואז הקלידו בעצמכם שורה קצרה שסומנה.', hint: 'אפשר לבחור “עיצוב עמוד”, “צל כרטיס”, “צורת כרטיס”, “צבע כותרת” או “סגנון כפתור”. אפשר לבחור שורה קצרה כמו background: #dcfce7; או border-radius: 30px;', answerBox: { label: 'שורת CSS שמצאתי', placeholder: 'הקלד כאן את קוד הבלוק', note: 'אי אפשר להדביק כאן — מקלידים בעצמכם כדי להבין את שורת ה־CSS.' }, check: { cssIncludes: ['background:'], requiresCodePeek: true, requiresCodeSelectionTab: 'css', requiresCodeSelectionBlockTypes: ['web_theme', 'web_card_shape', 'web_shadow', 'web_title_color', 'web_button_style'], requiresCodeLineAnswer: { tab: 'css', blockTypes: ['web_theme', 'web_card_shape', 'web_shadow', 'web_title_color', 'web_button_style'], requiredSnippets: ['background:', 'border-radius:', 'box-shadow:', 'color:'] }, codePeekFeedback: 'כמעט. קודם פתחו את “לראות קוד שנוצר”.', codeSelectionFeedback: 'כמעט. עכשיו לחצו על בלוק עיצוב שמייצר שורת CSS ברורה, וודאו שהוא מופיע בכרטיס המשימה תחת “נבחר בלוק”.', codeLineAnswerFeedback: 'כמעט. הקלידו בתיבה את שורת ה־CSS שסומנה. אפשר לבחור שורה קצרה כמו background: #dcfce7; או border-radius: 30px;' } }
     ],
     vocabulary: [
       ['CSS', 'שפת העיצוב: צבעים, צורות, ריווח ותנועה'],
@@ -775,13 +775,13 @@
       { minutes: '84–90', title: 'מיני תערוכה', teacher: 'מבקשים מכל תלמיד להציג בלוק אחד שבחר ולמה.', students: 'מציגים עמוד ומסבירים: “חיברתי בלוק ___ ולכן בעמוד קרה ___”.' }
     ],
     exercises: [
-      { id: 1, minutes: '8–16', title: 'תרגיל 1 — מחברים בלוק כותרת', prompt: 'גררו בלוק “כותרת” וחברו אותו מתחת ל“עמוד האתר שלי”. שנו את הטקסט בתוך הבלוק.', hint: 'הבלוק חייב להיצמד לבלוק שמעליו, כמו פאזל.', check: { htmlIncludes: ['<h1>'], blockTypes: ['web_title'], nonEmptyBlocklyFields: [{ type: 'web_title', field: 'TEXT' }], changedBlocklyFields: [{ type: 'web_title', field: 'TEXT', defaultValue: 'האתר הראשון שלי' }], emptyFeedback: 'כמעט. הכותרת מחוברת, אבל היא לא יכולה להיות ריקה.', fieldFeedback: 'כמעט. הכותרת מחוברת, עכשיו שנו את הטקסט שבתוך בלוק הכותרת.' } },
-      { id: 2, minutes: '16–24', title: 'תרגיל 2 — מוסיפים פסקה', prompt: 'גררו בלוק “פסקה”, חברו אותו מתחת לכותרת, וכתבו משפט על העמוד שלכם.', hint: 'הפסקה צריכה להיות מחוברת מתחת לכותרת, לא מעליה.', check: { htmlIncludes: ['<p>'], blockTypes: ['web_paragraph'], orderedBlockTypes: ['web_title', 'web_paragraph'], nonEmptyBlocklyFields: [{ type: 'web_paragraph', field: 'TEXT' }], changedBlocklyFields: [{ type: 'web_paragraph', field: 'TEXT', defaultValue: 'אני בונה עמוד עם בלוקלי אמיתי' }], orderFeedback: 'כמעט. הפסקה צריכה להיות מחוברת מתחת לכותרת.', emptyFeedback: 'כמעט. הפסקה במקום הנכון, אבל היא לא יכולה להיות ריקה.', fieldFeedback: 'כמעט. הפסקה במקום הנכון, עכשיו שנו את הטקסט שבתוך בלוק הפסקה.' } },
+      { id: 1, minutes: '8–16', title: 'תרגיל 1 — מחברים בלוק כותרת', prompt: 'גררו בלוק “כותרת” וחברו אותו מתחת ל“עמוד האתר שלי”. שנו את הטקסט בתוך הבלוק.', hint: 'הבלוק חייב להיצמד לבלוק שמעליו, כמו פאזל.', check: { htmlIncludes: ['<h1>'], blockTypes: ['web_title'], nonEmptyBlocklyFields: [{ type: 'web_title', field: 'TEXT' }], changedBlocklyFields: [{ type: 'web_title', field: 'TEXT', defaultValue: 'האתר הראשון שלי' }], qualityBlocklyFields: [{ type: 'web_title', field: 'TEXT', minChars: 6, minWords: 2 }], emptyFeedback: 'כמעט. הכותרת מחוברת, אבל היא לא יכולה להיות ריקה.', fieldFeedback: 'כמעט. הכותרת מחוברת, עכשיו שנו את הטקסט שבתוך בלוק הכותרת.', qualityFeedback: 'כמעט. הכותרת עדיין כללית מדי. כתבו כותרת שמספרת על הנושא שבחרתם, למשל “הגינה החלומית שלי”.' } },
+      { id: 2, minutes: '16–24', title: 'תרגיל 2 — מוסיפים פסקה', prompt: 'גררו בלוק “פסקה”, חברו אותו מתחת לכותרת, וכתבו משפט על העמוד שלכם.', hint: 'הפסקה צריכה להיות מחוברת מתחת לכותרת, לא מעליה.', check: { htmlIncludes: ['<p>'], blockTypes: ['web_paragraph'], orderedBlockTypes: ['web_title', 'web_paragraph'], nonEmptyBlocklyFields: [{ type: 'web_paragraph', field: 'TEXT' }], changedBlocklyFields: [{ type: 'web_paragraph', field: 'TEXT', defaultValue: 'אני בונה עמוד עם בלוקלי אמיתי' }], qualityBlocklyFields: [{ type: 'web_paragraph', field: 'TEXT', minChars: 18, minWords: 5 }], relatedBlocklyTextGroups: [{ fields: [{ type: 'web_title', field: 'TEXT' }, { type: 'web_paragraph', field: 'TEXT' }], minFields: 2, minSharedWords: 1 }], orderFeedback: 'כמעט. הפסקה צריכה להיות מחוברת מתחת לכותרת.', emptyFeedback: 'כמעט. הפסקה במקום הנכון, אבל היא לא יכולה להיות ריקה.', fieldFeedback: 'כמעט. הפסקה במקום הנכון, עכשיו שנו את הטקסט שבתוך בלוק הפסקה.', qualityFeedback: 'כמעט. הפסקה צריכה להיות משפט אמיתי שמתאים לנושא, לא רק מילה אחת או טקסט כללי.', relatedTextFeedback: 'כמעט. נסו שהפסקה תתחבר לנושא שבכותרת.' } },
       { id: 3, minutes: '24–32', title: 'תרגיל 3 — בוחרים סמל גדול', prompt: 'גררו בלוק “סמל גדול”, חברו אותו לעמוד, ובחרו אימוג׳י שמתאים לעמוד.', hint: 'זה בלוק תוכן ויזואלי, לא קוד.', check: { htmlIncludes: ['hero-emoji'], blockTypes: ['web_emoji'] } },
       { id: 4, minutes: '32–42', title: 'תרגיל 4 — מחליפים עיצוב', prompt: 'גררו בלוק “עיצוב עמוד” ובחרו פלטה שאינה ברירת המחדל.', hint: 'פתחו את התפריט בתוך בלוק העיצוב ובחרו אפשרות אחרת.', check: { cssIncludes: ['background:'], blockTypes: ['web_theme'], changedBlocklyFields: [{ type: 'web_theme', field: 'THEME', defaultValue: 'sky' }], fieldFeedback: 'כמעט. בלוק העיצוב מחובר, עכשיו בחרו פלטה אחרת מתוך התפריט שבתוכו.' } },
-      { id: 5, minutes: '42–54', title: 'תרגיל 5 — כפתור עם הודעה', prompt: 'חברו בלוק “כפתור” ושנו גם את טקסט הכפתור וגם את ההודעה שהוא מציג.', hint: 'אחרי הרצה, לחצו על הכפתור בתצוגה החיה.', check: { htmlIncludes: ['onclick="showMessage()"'], jsIncludes: ['function showMessage'], blockTypes: ['web_button'], nonEmptyBlocklyFields: [{ type: 'web_button', field: 'LABEL' }, { type: 'web_button', field: 'MESSAGE' }], changedBlocklyFields: [{ type: 'web_button', field: 'LABEL', defaultValue: 'לחצו להפתעה' }, { type: 'web_button', field: 'MESSAGE', defaultValue: 'הכפתור שלי עובד 🎉' }], emptyFeedback: 'כמעט. הכפתור מחובר, אבל טקסט הכפתור וההודעה לא יכולים להיות ריקים.', fieldFeedback: 'כמעט. הכפתור מחובר, עכשיו שנו גם את טקסט הכפתור וגם את ההודעה שבתוכו.' } },
-      { id: 6, minutes: '54–64', title: 'תרגיל 6 — שתי קוביות מידע', prompt: 'גררו בלוק “שתי קוביות מידע” וכתבו שני רעיונות/נושאים/עובדות.', hint: 'זה מלמד שהעמוד בנוי מחלקים, לא משורה אחת.', check: { htmlIncludes: ['class="columns"'], cssIncludes: ['grid-template-columns'], blockTypes: ['web_columns'], nonEmptyBlocklyFields: [{ type: 'web_columns', field: 'A' }, { type: 'web_columns', field: 'B' }], changedBlocklyFields: [{ type: 'web_columns', field: 'A', defaultValue: 'רעיון ראשון' }, { type: 'web_columns', field: 'B', defaultValue: 'רעיון שני' }], emptyFeedback: 'כמעט. שתי קוביות המידע צריכות להכיל טקסט.', fieldFeedback: 'כמעט. כתבו שני רעיונות משלכם בתוך קוביות המידע.' } },
-      { id: 7, minutes: '64–74', title: 'תרגיל 7 — חתימה וסדר', prompt: 'הוסיפו בלוק חתימה ובדקו. אחר כך הזיזו אותו למקום אחר בשרשרת ולחצו בדיקה שוב.', hint: 'התרגיל הזה צריך שתי בדיקות: פעם אחת כשהחתימה מחוברת, ופעם נוספת אחרי שינוי הסדר.', check: { htmlIncludes: ['<footer>'], blockTypes: ['web_footer'], nonEmptyBlocklyFields: [{ type: 'web_footer', field: 'TEXT' }], twoStepFooterMove: true, blockFeedback: 'כמעט. קודם חברו בלוק חתימה לשרשרת.', emptyFeedback: 'כמעט. החתימה לא יכולה להיות ריקה.', firstCheckFeedback: 'מעולה, החתימה מחוברת. עכשיו הזיזו אותה למקום אחר בשרשרת ולחצו בדיקה שוב.', secondCheckFeedback: 'כמעט. עכשיו צריך להזיז את בלוק החתימה למקום אחר בשרשרת ולבדוק שוב.' } },
+      { id: 5, minutes: '42–54', title: 'תרגיל 5 — כפתור עם הודעה', prompt: 'חברו בלוק “כפתור” ושנו גם את טקסט הכפתור וגם את ההודעה שהוא מציג.', hint: 'אחרי הרצה, לחצו על הכפתור בתצוגה החיה.', check: { htmlIncludes: ['onclick="showMessage()"'], jsIncludes: ['function showMessage'], blockTypes: ['web_button'], nonEmptyBlocklyFields: [{ type: 'web_button', field: 'LABEL' }, { type: 'web_button', field: 'MESSAGE' }], changedBlocklyFields: [{ type: 'web_button', field: 'LABEL', defaultValue: 'לחצו להפתעה' }, { type: 'web_button', field: 'MESSAGE', defaultValue: 'הכפתור שלי עובד 🎉' }], qualityBlocklyFields: [{ type: 'web_button', field: 'LABEL', minChars: 5, minWords: 2 }, { type: 'web_button', field: 'MESSAGE', minChars: 12, minWords: 3 }], emptyFeedback: 'כמעט. הכפתור מחובר, אבל טקסט הכפתור וההודעה לא יכולים להיות ריקים.', fieldFeedback: 'כמעט. הכפתור מחובר, עכשיו שנו גם את טקסט הכפתור וגם את ההודעה שבתוכו.', qualityFeedback: 'כמעט. טקסט הכפתור או ההודעה עדיין כלליים מדי. כתבו פעולה והודעה שמתאימות לעמוד שבחרתם.' } },
+      { id: 6, minutes: '54–64', title: 'תרגיל 6 — שתי קוביות מידע וסדר', prompt: 'גררו בלוק “שתי קוביות מידע”, כתבו שני רעיונות, ומקמו אותו מתחת לפסקה ולפני הכפתור.', hint: 'קוביות המידע הן חלק מהתוכן של העמוד, לכן הגיוני שהן יופיעו לפני הכפתור.', check: { htmlIncludes: ['class="columns"'], cssIncludes: ['grid-template-columns'], blockTypes: ['web_columns'], orderedBlockTypes: ['web_paragraph', 'web_columns', 'web_button'], nonEmptyBlocklyFields: [{ type: 'web_columns', field: 'A' }, { type: 'web_columns', field: 'B' }], changedBlocklyFields: [{ type: 'web_columns', field: 'A', defaultValue: 'רעיון ראשון' }, { type: 'web_columns', field: 'B', defaultValue: 'רעיון שני' }], qualityBlocklyFields: [{ type: 'web_columns', field: 'A', minChars: 8, minWords: 2 }, { type: 'web_columns', field: 'B', minChars: 8, minWords: 2 }], relatedBlocklyTextGroups: [{ fields: [{ type: 'web_title', field: 'TEXT' }, { type: 'web_paragraph', field: 'TEXT' }, { type: 'web_columns', field: 'A' }, { type: 'web_columns', field: 'B' }], minFields: 3, minSharedWords: 1 }], orderFeedback: 'כמעט. גררו את “שתי קוביות מידע” מתחת לפסקה ולפני הכפתור.', emptyFeedback: 'כמעט. שתי קוביות המידע צריכות להכיל טקסט.', fieldFeedback: 'כמעט. כתבו שני רעיונות משלכם בתוך קוביות המידע.', qualityFeedback: 'כמעט. קוביות המידע צריכות להכיל רעיונות ברורים, לא מילים כלליות כמו “רעיון” או “טקסט”.', relatedTextFeedback: 'כמעט. נסו שקוביות המידע יתחברו לנושא של הכותרת והפסקה.' } },
+      { id: 7, minutes: '64–74', title: 'תרגיל 7 — חתימה בסוף הדף', prompt: 'הוסיפו בלוק “חתימה” וגררו אותו להיות הבלוק האחרון בשרשרת, כדי שהחתימה תופיע בסוף הדף.', hint: 'חתימה היא הסיום של העמוד — היא צריכה להופיע אחרי התוכן והכפתור.', check: { htmlIncludes: ['<footer>'], blockTypes: ['web_footer'], nonEmptyBlocklyFields: [{ type: 'web_footer', field: 'TEXT' }], qualityBlocklyFields: [{ type: 'web_footer', field: 'TEXT', minChars: 6, minWords: 2 }], footerMustBeLast: true, blockFeedback: 'כמעט. קודם חברו בלוק חתימה לשרשרת.', emptyFeedback: 'כמעט. החתימה לא יכולה להיות ריקה.', qualityFeedback: 'כמעט. כתבו חתימה אמיתית לסוף הדף, למשל שם יוצר/ת או משפט סיום קצר.', footerLastFeedback: 'כמעט. גררו את בלוק החתימה לסוף השרשרת — מתחת לכל שאר בלוקי העמוד.' } },
       { id: 8, minutes: '74–84', title: 'תרגיל 8 — הצצה לקוד', prompt: 'פתחו למטה במסך את “הצצה לקוד שנוצר”, לחצו על אחד הבלוקים שלכם, ומצאו איפה השורה שלו מסומנת ב־HTML או CSS.', hint: 'לא צריך לערוך קוד. לחצו על בלוק בעמוד כדי להדגיש את השורה שהוא יצר בקוד.', check: { htmlIncludes: ['page-card'], cssIncludes: ['.page-card'], jsIncludes: ['textContent'], blockTypes: ['web_title', 'web_paragraph'], nonEmptyBlocklyFields: [{ type: 'web_title', field: 'TEXT' }, { type: 'web_paragraph', field: 'TEXT' }], requiresCodePeek: true, requiresCodeSelectionTabs: ['html', 'css'], requiresCodeSelectionBlockTypes: ['page_start', 'web_theme', 'web_title', 'web_paragraph', 'web_emoji', 'web_button', 'web_columns', 'web_footer'], emptyFeedback: 'כמעט. לפני שמציצים לקוד, ודאו שהכותרת והפסקה לא ריקות.', codePeekFeedback: 'כמעט. קודם פתחו למטה במסך את “הצצה לקוד שנוצר”.', codeSelectionFeedback: 'כמעט. עכשיו לחצו על אחד הבלוקים שלכם וודאו ששורה מתאימה מסומנת ב־HTML או CSS.' } }
     ],
     vocabulary: [
@@ -5916,7 +5916,7 @@ function resetAdventure() {
 
 
   const lessonBlocklyPlan = {
-    4: { focus: 'קלט אישי', intro: 'בונים מחולל אישי דרך בלוקים נגררים שמעדכנים HTML ו־JavaScript בלי לכתוב קוד חופשי.' },
+    4: { focus: 'קלט אישי', intro: 'בונים אתר אישי דרך בלוקים נגררים, ומתמקדים קודם ב־HTML של השדות והכפתור.' },
     5: { focus: 'תנאים if/else', intro: 'בונים חידון כן/לא דרך בלוקים נגררים: שאלה, בחירה נכונה, הצלחה ואחרת.' },
     6: { focus: 'משתנים וניקוד', intro: 'משנים חוקי ניקוד דרך בלוקים ורואים איך score שומר מספר.' },
     7: { focus: 'יעד ניצחון', intro: 'מאזנים משחק קליקים דרך בלוקים של יעד, נקודות ומשוב.' },
@@ -5998,12 +5998,13 @@ function resetAdventure() {
   });
 
   const fullBlockRework = {
-    4: { title:'קלט מהמשתמש — מחולל ברכות בבלוקים', concept:'input · value · חיבור טקסטים', blocks:[
+    4: { title:'קלט מהמשתמש — אתר אישי בבלוקים', concept:'HTML בסיסי: input · id · כפתור', blocks:[
+      ['title','כותרת האתר מציגה %1','html','מחולל הברכות שלי','{{TEXT}}',[['field_input','TEXT','אתר החיות שלי']]],
       ['name_label','שדה שם מציג %1','html','שם גיבור/ה:','{{TEXT}}',[['field_input','TEXT','מה השם שלך?']]],
-      ['topic_label','שדה נושא מציג %1','html','נושא לברכה:','{{TEXT}}',[['field_input','TEXT','על מה הברכה?']]],
-      ['button_text','כפתור המחולל כותב %1','html','צרו ברכה מצחיקה','{{TEXT}}',[['field_input','TEXT','צרו ברכה אישית']]],
-      ['sentence','משפט תוצאה מתחיל ב־ %1','js','הנה ברכה מצחיקה על','{{TEXT}}',[['field_input','TEXT','הברכה שבחרת היא על']]],
-      ['result_word','אימוג׳י סיום בתוצאה %1','js','רעיונות נוצצים 🚀','רעיונות נוצצים {{TEXT}}',[['field_dropdown','TEXT',[['🚀 טיסה','🚀'],['🎉 חגיגה','🎉'],['✨ קסם','✨']]]]]
+      ['topic_label','שדה נושא מציג %1','html','נושא לתשובה:','{{TEXT}}',[['field_input','TEXT','על מה האתר יכתוב?']]],
+      ['button_text','כפתור הפעולה כותב %1','html','צרו תשובה אישית','{{TEXT}}',[['field_input','TEXT','צרו ברכה אישית']]],
+      ['sentence','משפט תוצאה מתחיל ב־ %1','js','הנה תשובה אישית על','{{TEXT}}',[['field_input','TEXT','התשובה שבחרת היא על']]],
+      ['result_word','אימוג׳י סיום בתוצאה %1','js','🚀','{{TEXT}}',[['field_dropdown','TEXT',[['🚀 טיסה','🚀'],['🎉 חגיגה','🎉'],['✨ קסם','✨'],['💡 רעיון','💡'],['❤️ לב','❤️'],['😊 חיוך','😊'],['⭐ כוכב','⭐'],['🌈 קשת','🌈'],['🌸 פרח','🌸'],['🌳 טבע','🌳'],['🐶 כלב','🐶'],['🐱 חתול','🐱'],['🦁 אריה','🦁'],['⚽ ספורט','⚽'],['🎮 משחק','🎮'],['🎵 מוזיקה','🎵'],['📚 ספרים','📚'],['🍕 אוכל','🍕'],['🏆 הצלחה','🏆'],['👍 אהבתי','👍']]]]]
     ]},
     5: { title:'תנאים — חידון תשובה חופשית עם if/else', concept:'if · else · תשובה נכונה ושגויה', blocks:[
       ['question','שאלת חידון %1','html','CSS אחראי על העיצוב של העמוד?','{{TEXT}}',[['field_input','TEXT','איזו שפה גורמת לכפתור להגיב?']]],
@@ -6134,7 +6135,7 @@ function resetAdventure() {
     const args = block.args0 || [];
     const hasInput = args.some(arg => arg.type === 'field_input');
     const hasDropdown = args.some(arg => arg.type === 'field_dropdown');
-    if(hasInput && !hasDropdown) return { action:'שנו את הטקסט שבתוך הבלוק לטקסט שמתאים לפרויקט שלכם', feedback:'כמעט. הבלוק מחובר, עכשיו שנו את הטקסט שבתוכו כדי שהשינוי יהיה שלכם.' };
+    if(hasInput && !hasDropdown) return { action:'שנו את הטקסט שבתוך הבלוק לטקסט חדש משלכם — אל תשאירו את הטקסט שמופיע כבר', feedback:'כמעט. הבלוק מחובר, אבל הטקסט עדיין ברירת־המחדל. כתבו בתוך הבלוק טקסט חדש משלכם.' };
     if(hasDropdown && !hasInput) return { action:'בחרו אפשרות אחרת בתפריט שבתוך הבלוק', feedback:'כמעט. הבלוק מחובר, עכשיו בחרו אפשרות אחרת בתפריט שבתוכו.' };
     if(hasInput && hasDropdown) return { action:'שנו את הטקסט או בחרו אפשרות בתפריט שבתוך הבלוק', feedback:'כמעט. הבלוק מחובר, עכשיו שנו את הטקסט או בחרו אפשרות בתפריט שבתוכו.' };
     return { action:'חברו את הבלוק לשרשרת ובדקו מה השתנה', feedback:'כמעט. הבלוק מחובר, עכשיו בדקו בתצוגה מה השתנה.' };
@@ -6452,65 +6453,116 @@ function resetAdventure() {
     }
     if(lesson.id === 4){
       const byId = id => lesson.exercises.find(item => item.id === id);
+      const titleBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_4_title');
+      const nameBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_4_name_label');
+      const topicBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_4_topic_label');
       const sentenceBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_4_sentence');
       const endingBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_4_result_word');
-      const sentenceExercise = byId(4);
+      const titleExercise = byId(1);
+      if(titleExercise && titleBlock){
+        titleExercise.title = 'תרגיל 1 — נותנים שם לאתר';
+        titleExercise.prompt = 'גררו וחברו את הבלוק “כותרת האתר”. כתבו בתוכו כותרת חדשה שמגדירה נושא אחר לפרויקט שלכם — למשל אתר חיות, אתר ספורט או אתר חלל. אל תשאירו את נושא הברכות של קוד ההתחלה.';
+        titleExercise.hint = 'קודם בוחרים רעיון לאתר. אחר כך שדה השם ושדה הנושא יכולים להתאים לרעיון הזה.';
+        titleExercise.check.fieldFeedback = 'כמעט. הבלוק מחובר, אבל הכותרת עדיין ברירת־המחדל. כתבו שם חדש לאתר שלכם.';
+      }
+      const nameExercise = byId(2);
+      if(nameExercise && nameBlock){
+        nameExercise.prompt = 'גררו וחברו את הבלוק “שדה שם”. שנו את הטקסט שבתוך הבלוק כך שיתאים לכותרת/רעיון שבחרתם לאתר, ואל תשאירו את הטקסט שמופיע כבר.';
+        nameExercise.hint = 'לדוגמה רעיונית בלבד: אם האתר הוא על חיות, השדה יכול לשאול על שם חיה; אם הוא על ספורט, על שם שחקן/ית. העיקר שיהיה קשור לכותרת שבחרתם.';
+        nameExercise.check.fieldFeedback = 'כמעט. הבלוק מחובר, אבל הטקסט עדיין ברירת־המחדל. כתבו טקסט שקשור לכותרת/רעיון של האתר שלכם.';
+      }
+      const topicExercise = byId(3);
+      if(topicExercise && topicBlock){
+        topicExercise.prompt = 'גררו וחברו את הבלוק “שדה נושא”. שנו את הטקסט שבתוך הבלוק כך שימשיך את אותו רעיון שבחרתם בכותרת האתר, ואל תשאירו את הטקסט שמופיע כבר.';
+        topicExercise.hint = 'שדה הנושא צריך לעזור למשתמש להבין מה להקליד באתר שלכם, בהתאם לכותרת שבחרתם בתרגיל 1.';
+        topicExercise.check.fieldFeedback = 'כמעט. הבלוק מחובר, אבל הטקסט עדיין ברירת־המחדל. כתבו טקסט שמתאים לאותו רעיון של הכותרת.';
+      }
+      const sentenceExercise = byId(5);
       if(sentenceExercise && sentenceBlock){
-        sentenceExercise.prompt += ' אחר כך כתבו שם ונושא בתצוגה החיה, לחצו על כפתור הברכה, ובדקו שפתיחת המשפט שבחרתם מופיעה בתוצאה.';
+        sentenceExercise.prompt += ' אחר כך כתבו שם ונושא בתצוגה החיה, לחצו על כפתור הפעולה, ובדקו שפתיחת המשפט שבחרתם מופיעה בתוצאה.';
         sentenceExercise.check.requiresPreviewButtonClick = true;
         sentenceExercise.check.requiresPreviewFilledInputs = ['nameInput', 'hobbyInput'];
         sentenceExercise.check.requiresPreviewResultFromBlockOutput = [{ type:sentenceBlock.type }];
-        sentenceExercise.check.previewClickFeedback = 'כמעט. אחרי שינוי בלוק המשפט, כתבו שם ונושא בתצוגה החיה ולחצו על כפתור הברכה.';
+        sentenceExercise.check.previewClickFeedback = 'כמעט. אחרי שינוי בלוק המשפט, כתבו שם ונושא בתצוגה החיה ולחצו על כפתור הפעולה.';
         sentenceExercise.check.previewInputFeedback = 'כמעט. מלאו גם שם וגם נושא בתצוגה החיה לפני הלחיצה.';
         sentenceExercise.check.previewResultFeedback = 'כמעט. לחצתם, אבל התוצאה עדיין לא מציגה את פתיחת המשפט מהבלוק.';
       }
-      const endingExercise = byId(5);
+      const endingExercise = byId(6);
       if(endingExercise && endingBlock){
-        endingExercise.prompt = 'גררו וחברו את הבלוק “אימוג׳י סיום בתוצאה”. בחרו אימוג׳י אחר בתפריט שבתוך הבלוק. אחר כך כתבו שם ונושא בתצוגה החיה, לחצו על כפתור הברכה, ובדקו שהאימוג׳י שבחרתם מופיע בסוף התוצאה.';
-        endingExercise.hint = 'הבלוק משנה רק את סוף המשפט שמופיע אחרי הלחיצה. כדי לראות אותו צריך למלא את שני השדות וללחוץ על כפתור הברכה בתצוגה.';
+        endingExercise.prompt = 'גררו וחברו את הבלוק “אימוג׳י סיום בתוצאה”. בחרו אימוג׳י אחר בתפריט שבתוך הבלוק. אחר כך כתבו שם ונושא בתצוגה החיה, לחצו על כפתור הפעולה, ובדקו שהאימוג׳י שבחרתם מופיע בסוף התוצאה.';
+        endingExercise.hint = 'הבלוק משנה רק את סוף המשפט שמופיע אחרי הלחיצה. כדי לראות אותו צריך למלא את שני השדות וללחוץ על כפתור הפעולה בתצוגה.';
         endingExercise.check.requiresPreviewButtonClick = true;
         endingExercise.check.requiresPreviewFilledInputs = ['nameInput', 'hobbyInput'];
         endingExercise.check.requiresPreviewResultFromBlockOutput = [{ type:endingBlock.type }];
-        endingExercise.check.previewClickFeedback = 'כמעט. אחרי בחירת אימוג׳י, כתבו שם ונושא ולחצו על כפתור הברכה בתצוגה החיה.';
+        endingExercise.check.previewClickFeedback = 'כמעט. אחרי בחירת אימוג׳י, כתבו שם ונושא ולחצו על כפתור הפעולה בתצוגה החיה.';
         endingExercise.check.previewInputFeedback = 'כמעט. מלאו גם שם וגם נושא בתצוגה החיה לפני הלחיצה.';
         endingExercise.check.previewResultFeedback = 'כמעט. לחצתם, אבל סוף התוצאה עדיין לא מציג את האימוג׳י שבחרתם.';
       }
-      const valueExercise = byId(6);
+      const valueExercise = byId(7);
       if(valueExercise){
-        valueExercise.title = 'תרגיל 6 — בלי בלוק חדש: איפה קוראים קלט?';
-        valueExercise.prompt = 'אל תגררו בלוק חדש בתרגיל הזה. פתחו “לראות קוד שנוצר”, הסתכלו בלשונית JavaScript, ומצאו את שתי השורות עם value שקוראות את nameInput ואת hobbyInput.';
-        valueExercise.hint = 'value הוא מה שהמשתמש כתב בתוך השדה. בשתי השורות האלה הקוד שומר את השם ואת הנושא לפני שהוא בונה את הברכה.';
+        valueExercise.title = 'תרגיל 6 — בלי בלוק חדש: איפה הטקסט של השדה?';
+        valueExercise.prompt = 'אל תגררו בלוק חדש בתרגיל הזה. פתחו “לראות קוד שנוצר”, לחצו על בלוק “שדה שם” או “שדה נושא” שמחובר לרצף, ואז הקלידו בתיבה מילה קצרה שראיתם בשורת ה־HTML שסומנה.';
+        valueExercise.hint = 'ב־HTML כותבים את הטקסט שהמשתמש רואה בעמוד. לחצו על בלוק של שדה, הסתכלו בשורת ה־HTML שסומנה, והקלידו מילה אמיתית מאותה שורה.';
+        valueExercise.answerBox = { label: 'מילת HTML שראיתי', placeholder: 'הקלד כאן מילה מהשורה שסומנה', note: 'אין צורך להעתיק את כל השורה — הקלידו מילה קצרה שמופיעה בשורת ה־HTML.' };
         delete valueExercise.noCheck;
         valueExercise.check = {
-          jsIncludes: ['getElementById("nameInput").value', 'getElementById("hobbyInput").value'],
+          htmlIncludes: ['id="nameInput"', 'id="hobbyInput"'],
           requiresCodePeek: true,
-          codePeekFeedback: 'כמעט. פתחו את “לראות קוד שנוצר” וחפשו את value בלשונית JavaScript.'
+          requiresCodeSelectionTab: 'html',
+          requiresCodeSelectionBlockTypes: ['lesson_4_name_label', 'lesson_4_topic_label'],
+          requiresCodeLineAnswer: { tab:'html', blockTypes:['lesson_4_name_label', 'lesson_4_topic_label'], requiredSnippets:['label', 'input', 'id', 'placeholder', 'nameInput', 'hobbyInput', 'שם', 'נושא', 'לתשובה', 'כתבו'] },
+          codePeekFeedback: 'כמעט. פתחו את “לראות קוד שנוצר”.',
+          codeSelectionFeedback: 'כמעט. עכשיו לחצו על בלוק “שדה שם” או “שדה נושא” שמחובר לרצף, כדי ששורת ה־HTML שלו תסומן.',
+          codeLineAnswerFeedback: 'כמעט. הסתכלו בשורת ה־HTML שסומנה והקלידו בתיבה מילה אמיתית שמופיעה בה.'
         };
       }
-      lesson.exercises = lesson.exercises.filter(exercise => exercise.id <= 6);
+      lesson.exercises = lesson.exercises.filter(exercise => exercise.id <= 7);
       lesson.exercises.push({
-        id: 7,
-        minutes: '70–84',
-        optional: true,
-        title: 'תרגיל 7 — אתגר רשות: תיקון מדויק',
-        prompt: 'אתגר רשות: בקוד ההתחלתי של האתגר יש בלוק אחד שכבר מחובר. תקנו אותו כך שהברכה שמופיעה אחרי הלחיצה תסתיים בדיוק באימוג׳י 🎉. אפשר לבדוק, או לדלג ולסיים את השיעור גם בלי שהבדיקה מאשרת.',
-        hint: 'אל תגררו בלוקים חדשים. כל הבלוקים שיוצרים את המחולל כבר מחוברים כאן — מצאו איזה ערך קטן משפיע על סוף הברכה ושנו אותו לערך המדויק.',
-        blocklyStarterXml: '<xml xmlns="https://developers.google.com/blockly/xml"><block type="page_start" x="130" y="70"><next><block type="lesson_4_name_label"><field name="TEXT">שם גיבור/ה:</field><next><block type="lesson_4_topic_label"><field name="TEXT">נושא לברכה:</field><next><block type="lesson_4_button_text"><field name="TEXT">צרו ברכה מצחיקה</field><next><block type="lesson_4_sentence"><field name="TEXT">הנה ברכה מצחיקה על</field><next><block type="lesson_4_result_word"><field name="TEXT">🚀</field></block></next></block></next></block></next></block></next></block></xml>',
+        id: 8,
+        minutes: '62–72',
+        title: 'תרגיל 7 — הצצה קטנה ל־JavaScript של התוצאה',
+        prompt: 'פתחו “לראות קוד שנוצר”, לחצו על בלוק “משפט תוצאה” או “אימוג׳י סיום בתוצאה” שמחובר לרצף, ואז הקלידו בתיבה מילה קצרה שראיתם בשורת ה־JavaScript שסומנה. המטרה היא לראות ש־JavaScript משנה טקסט בתוצאה — לא ללמוד עדיין getElementById.',
+        hint: 'חפשו מילה פשוטה כמו textContent או result בשורה שסומנה. לא צריך להבין את כל השורה הארוכה.',
+        answerBox: { label: 'מילת JavaScript שראיתי', placeholder: 'הקלד כאן מילה מהשורה שסומנה', note: 'הקלידו מילה קצרה מהשורה, למשל שם פשוט שמופיע בה.' },
         check: {
-          blockTypes: [endingBlock.type],
+          jsIncludes: ['textContent'],
+          blockTypes: ['lesson_4_sentence'],
+          requiresCodePeek: true,
+          requiresCodeSelectionTab: 'js',
+          requiresCodeSelectionBlockTypes: ['lesson_4_sentence', 'lesson_4_result_word'],
+          requiresCodeLineAnswer: { tab:'js', blockTypes:['lesson_4_sentence', 'lesson_4_result_word'], requiredSnippets:['textContent', 'result', 'document', 'getElementById', 'topic', 'name'] },
+          codePeekFeedback: 'כמעט. פתחו את “לראות קוד שנוצר”.',
+          codeSelectionFeedback: 'כמעט. עכשיו לחצו על בלוק “משפט תוצאה” או “אימוג׳י סיום בתוצאה” שמחובר לרצף, כדי ששורת JavaScript של התוצאה תסומן.',
+          codeLineAnswerFeedback: 'כמעט. הסתכלו בשורת ה־JavaScript שסומנה והקלידו בתיבה מילה קצרה שמופיעה בה, כמו textContent או result.'
+        }
+      });
+      lesson.exercises.push({
+        id: 9,
+        minutes: '72–84',
+        optional: true,
+        title: 'תרגיל 8 — אתגר רשות: תוצאה חגיגית',
+        prompt: 'אתגר רשות: חפשו בסוף הרצף שני בלוקים שמשפיעים על התוצאה — “משפט תוצאה מתחיל ב־” ו־“אימוג׳י סיום בתוצאה”. שנו את משפט התוצאה לטקסט חגיגי שמתאים לאימוג׳י 🎉, למשל עם מילה כמו חגיגה, שמחה, כיף או הצלחה. שנו גם את האימוג׳י ל־🎉. אחר כך כתבו שם ונושא בתצוגה החיה ולחצו על הכפתור כדי לבדוק שהתוצאה חגיגית ומסתיימת ב־🎉. אפשר לדלג ולסיים את השיעור גם בלי שהבדיקה מאשרת.',
+        hint: 'אל תגררו בלוקים חדשים. מצאו את בלוק משפט התוצאה ואת בלוק האימוג׳י. הטקסט צריך להתאים ל־🎉 — למשל חגיגה, שמחה, כיף או הצלחה.',
+        blocklyStarterXml: '<xml xmlns="https://developers.google.com/blockly/xml"><block type="page_start" x="130" y="70"><next><block type="lesson_4_title"><field name="TEXT">מחולל הברכות שלי</field><next><block type="lesson_4_name_label"><field name="TEXT">שם גיבור/ה:</field><next><block type="lesson_4_topic_label"><field name="TEXT">נושא לתשובה:</field><next><block type="lesson_4_button_text"><field name="TEXT">צרו תשובה אישית</field><next><block type="lesson_4_sentence"><field name="TEXT">הנה תשובה אישית על</field><next><block type="lesson_4_result_word"><field name="TEXT">🚀</field></block></next></block></next></block></next></block></next></block></next></block></xml>',
+        check: {
+          blockTypes: ['lesson_4_sentence', endingBlock.type],
           exactBlockTypeCounts: { lesson_4_result_word: 1 },
+          changedBlocklyFields: [{ type: 'lesson_4_sentence', field: 'TEXT', defaultValue: 'הנה תשובה אישית על' }],
+          blocklyFieldsContaining: [{ type: 'lesson_4_sentence', field: 'TEXT', includesAny: ['חגיגה', 'חגיג', 'לחגוג', 'חוגגים', 'נחגוג', 'שמחה', 'שמח', 'לשמוח', 'שמחים', 'נשמח', 'כיף', 'הצלחה', 'הצליח', 'להצליח', 'מצליחים', 'נצליח', 'מצוין', 'נהדר'] }],
           exactBlocklyFields: [{ type: endingBlock.type, field: 'TEXT', value: '🎉' }],
           generatedBlockOutputs: [{ type: endingBlock.type, target: 'js' }],
           requiresPreviewButtonClick: true,
           requiresPreviewFilledInputs: ['nameInput', 'hobbyInput'],
           requiresPreviewResultFromBlockOutput: [{ type: endingBlock.type }],
-          blockFeedback: 'כמעט. השתמשו בבלוק שכבר מחובר בקוד ההתחלתי של האתגר.',
+          blockFeedback: 'כמעט. באתגר הזה צריך להשתמש בבלוקים שכבר נמצאים ברצף: “משפט תוצאה מתחיל ב־” ו־“אימוג׳י סיום בתוצאה” — לא לגרור בלוקים חדשים.',
           countFeedback: 'כמעט. באתגר הזה צריך לעבוד רק עם הבלוק שכבר נמצא בקוד ההתחלתי — לא להוסיף עוד בלוק כזה.',
-          exactFieldFeedback: 'כמעט. מצאתם את המקום הנכון, אבל הברכה צריכה להסתיים בדיוק ב־🎉.',
+          fieldFeedback: 'כמעט. שנו גם את משפט התוצאה לטקסט חדש משלכם.',
+          containsFeedback: 'כמעט. משפט התוצאה צריך להיות קשור לאימוג׳י 🎉 — נסו מילה כמו חגיגה, שמחה, כיף או הצלחה.',
+          exactFieldFeedback: 'כמעט. מצאתם את המקום הנכון, אבל התשובה צריכה להסתיים בדיוק ב־🎉.',
           generatedFeedback: 'כמעט. השינוי עוד לא מופיע בקוד JavaScript שנוצר.',
-          previewClickFeedback: 'כמעט. עכשיו כתבו שם ונושא בתצוגה החיה ולחצו על כפתור הברכה.',
+          previewClickFeedback: 'כמעט. עכשיו כתבו שם ונושא בתצוגה החיה ולחצו על כפתור הפעולה.',
           previewInputFeedback: 'כמעט. מלאו גם שם וגם נושא לפני הלחיצה.',
-          previewResultFeedback: 'כמעט. אחרי הלחיצה, סוף הברכה צריך להציג 🎉.'
+          previewResultFeedback: 'כמעט. אחרי הלחיצה, סוף התשובה צריך להציג 🎉.'
         }
       });
     }
