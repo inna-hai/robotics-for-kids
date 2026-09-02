@@ -33,6 +33,11 @@ function extractFunction(source, name){
 }
 
 assert.match(html, /function repeatShapeMatches\(sides, angle\)/, 'shape exercises use a dedicated repeat/sides/angle validator');
+assert.equal((html.match(/\"title\": \"לוגו לעיר הרובוטים\"/g) || []).length, 1, 'lesson 15 title appears only as lesson 15, not as stray exercises in lessons 1-2');
+
+assert.match(html, /if\(currentLesson === 1\)\{[\s\S]*if\(ex\.id === 6\)\{[\s\S]*actions\.length < 4[\s\S]*לפחות 4 פקודות[\s\S]*לפחות פקודת קדימה אחת[\s\S]*לפחות פנייה אחת/, 'lesson 1 exercise 6 validates a simple four-command route, not a later lesson frame task');
+const lesson1ValidatorSource = html.slice(html.indexOf('if(currentLesson === 1){'), html.indexOf('if(currentLesson === 2 && ex.id === 1)'));
+assert.doesNotMatch(lesson1ValidatorSource, /מסגרת הגנה|מסגרת ההגנה|cleanTransitionCount\(actions\)/, 'lesson 1 validators do not accidentally require lesson 15 frame/penup logic');
 
 assert.match(html, /"id": 2,[\s\S]*"prompt": "בנו מדרגה שיורדת ימינה: קטע ישר, ירידה קצרה, ואז המשך ישר\."/, 'lesson 2 exercise 1 asks for a descending stair without revealing the block sequence');
 assert.match(html, /const pattern = \['forward','right','forward','left','forward'\]/, 'lesson 2 stair validator uses the updated 5-block stair pattern');
