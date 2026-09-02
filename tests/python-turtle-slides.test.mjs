@@ -53,3 +53,9 @@ console.log('python-turtle teacher slides checks passed');
 assert.match(readFileSync('python-turtle-lesson-7-slides.html', 'utf8'), /אתגר מסכם — כותבים Python קצר/, 'lesson 7 slides include the final Python writing challenge');
 
 assert.match(readFileSync('python-turtle-lesson-7-slides.html', 'utf8'), /אתגר רשות — גדר עם שפיצים/, 'lesson 7 slides include the pointed fence challenge');
+
+const lesson15 = readFileSync(new URL('../python-turtle-lesson-15-slides.html', import.meta.url), 'utf8');
+assert.match(lesson15, /לוגו לעיר הרובוטים/);
+assert.match(lesson15, /לוגו ויזואלי|מפענחים|שחזור/);
+assert.match(lesson15, /שער אנרגיה בתוך הלוגו|מנקים ומשפרים את הלוגו|ספירלה|כוכב/);
+assert.match(lesson15, /אתגר רשות — כותבים Python קצר/);
