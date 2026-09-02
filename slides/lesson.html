@@ -155,6 +155,27 @@
       font-size:clamp(1rem,1.6vw,1.25rem);
       line-height:1.55;
     }
+    .guide-video-slide .slide-content { justify-content:center; }
+    .guide-video-wrap {
+      display:grid;
+      gap:16px;
+      background:#0f172a;
+      color:#fff;
+      border-radius:26px;
+      padding:22px;
+      box-shadow:0 18px 48px rgba(15,23,42,.24);
+    }
+    .guide-video-wrap h2 { color:#fff; margin-bottom:0; }
+    .guide-video-wrap p { margin:0; color:#dbeafe; }
+    .guide-video-frame {
+      width:100%;
+      max-height:calc(100vh - 360px);
+      aspect-ratio:16/9;
+      border:0;
+      border-radius:18px;
+      background:#020617;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);
+    }
     .exercise-kind { display:inline-flex; align-items:center; gap:8px; background:#eef2ff; color:var(--purple); border-radius:999px; padding:8px 14px; font-weight:900; margin-bottom:12px; }
     .emoji { font-size:6rem; margin-bottom:14px; }
     .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:20px; }
@@ -211,6 +232,8 @@
 
       .slide-content > p{padding:20px 18px;border-radius:18px;margin:10px 0;text-align:right;}
       .teacher-box,.teacher-note{padding:24px 18px;border-radius:22px;margin:14px 0;min-height:0;max-height:none;overflow:visible;}
+      .guide-video-wrap{padding:16px;border-radius:20px;gap:12px;}
+      .guide-video-frame{max-height:none;border-radius:14px;}
       .blockly-solution{padding:24px 18px;border-radius:22px;margin:14px 0;min-height:0;max-height:70svh;overflow-y:auto;}
 
 
@@ -270,6 +293,25 @@
 
     function escapeHtml(value) {
       return String(value || '').replace(/[&<>"']/g, (char) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char]));
+    }
+
+    function guideVideoSlide() {
+      if (!lesson.guideVideo?.src) return null;
+      const title = lesson.guideVideo.title || 'סרטון הכנה למדריך';
+      const description = lesson.guideVideo.description || 'צפו בסרטון לפני תחילת השיעור.';
+      return {
+        className: 'guide-video-slide',
+        html: `
+          <div class="kicker">שיעור ${lesson.id} • הכנת מדריך</div>
+          <div class="guide-video-wrap">
+            <h2>🎬 ${escapeHtml(title)}</h2>
+            <p>${escapeHtml(description)}</p>
+            <video class="guide-video-frame" controls preload="metadata" playsinline>
+              <source src="${escapeHtml(lesson.guideVideo.src)}" type="video/mp4">
+            </video>
+          </div>
+        `
+      };
     }
 
     function normalizeBlockLabel(text) {
@@ -398,8 +440,11 @@
       ...(lesson.instructorQuickTasks ? [{ html: `<h2>🧑🏫 צ׳ק ליסט למדריך</h2><ul>${lesson.instructorQuickTasks.map(task => `<li>${task}</li>`).join('')}</ul>` }] : [])
     ];
 
+    const guideSlide = guideVideoSlide();
     const slides = [
-      ...introSlides,
+      introSlides[0],
+      ...(guideSlide ? [guideSlide] : []),
+      ...introSlides.slice(1),
       ...flowSlides,
       { html: Number(lesson.id) === 14
         ? `<h2>💬 שאלת סיכום</h2><p>איך סנסי מחליט מה לעשות כשיש עשן, חום או מכשול?</p><p><strong>משפט סיכום:</strong> מזהים סכנה → מודיעים → פועלים בבטחה → מנווטים רק כשצריך.</p>`
@@ -410,7 +455,7 @@
             : `<h2>💬 שאלת סיכום</h2><p>${lesson.teacherNotes.discussionQuestions[0] || 'איפה עוד בעיר אפשר להשתמש ברעיון הזה?'}</p><p><strong>משפט סיכום:</strong> חיישן → תנאי → פעולה.</p>` }
     ];
 
-    document.getElementById('deck').innerHTML = slides.map((slide, index) => `<section class="slide ${index === 0 ? 'active' : ''}"><div class="slide-content">${slide.html}</div></section>`).join('');
+    document.getElementById('deck').innerHTML = slides.map((slide, index) => `<section class="slide ${slide.className || ''} ${index === 0 ? 'active' : ''}"><div class="slide-content">${slide.html}</div></section>`).join('');
 
     function render() {
       document.querySelectorAll('.slide').forEach((slide, index) => slide.classList.toggle('active', index === current));

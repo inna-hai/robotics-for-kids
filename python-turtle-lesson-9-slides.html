@@ -21,7 +21,7 @@
 <li>שמים רק חלק מהיחידה בתוך החזרה.</li>
 <li>משנים כמה דברים ביחד ואז קשה לדעת איזה מספר שבר את הכוכב.</li>
 <li>שמים את הצבע רק לפני הכוכב, ואז כל הקווים יוצאים באותו צבע.</li>
-<li>שוכחים להרים עט לפני המעבר, ואז נוצר קו שמחבר בין הכוכבים.</li></ul></section><section class="slide"><h2>✅ איך יודעים שהצלחנו?</h2><ul><li>התוצר נראה כמו כוכב או גרסה אישית שלו.</li>
+<li>שוכחים להרים עט לפני המעבר, ואז נוצר קו שמחבר בין הכוכבים.</li></ul></section><section class="slide"><h2>✅ איך יודעים שהצלחנו?</h2><ul><li>כוכב ברור, דגל ישראל, וכתיבת Python קצרה למשולש של מגן דוד.</li>
 <li>נעשה שימוש מודע בזווית ובחזרה.</li>
 <li>התלמיד/ה משנה מספר אחד בכל פעם ומשווה תוצאה.</li>
 <li>התלמיד/ה יודע/ת להצביע על בלוק הפנייה ועל שורת right בקוד.</li></ul></section><section class="slide"><h2>🏁 סיום שיעור</h2><p>כל ילד משלים: “היום בניתי ___, השתמשתי ב־___, ותיקנתי ___.”</p><p><a href="python-turtle.html?lesson=9">פתח את שיעור 9 בלומדה</a></p></section></main><nav class="nav"><button onclick="prevSlide()">→ הקודם</button><span class="counter" id="counter"></span><div><button onclick="nextSlide()">הבא ←</button> <a class="back" href="python-turtle.html?lesson=9">ללומדה</a> <a class="back" href="python-turtle-slides.html">אינדקס</a></div></nav><script>let current=0;const slides=[...document.querySelectorAll('.slide')];function render(){slides.forEach((s,i)=>s.classList.toggle('active',i===current));document.getElementById('counter').textContent=(current+1)+' / '+slides.length}function nextSlide(){current=Math.min(current+1,slides.length-1);render()}function prevSlide(){current=Math.max(current-1,0);render()}document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key===' ')nextSlide();if(e.key==='ArrowRight')prevSlide()});render()</script></body></html>
