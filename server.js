@@ -1140,9 +1140,6 @@ function serveSensiGuideVideo(req, res, lessonId) {
   if (req.method !== 'GET' && req.method !== 'HEAD') {
     return send(res, 405, 'Method not allowed', 'text/plain; charset=utf-8');
   }
-  const profile = getSummerProfileFromRequest(req);
-  if (!profile) return send(res, 401, 'Unauthorized', 'text/plain; charset=utf-8');
-  if (!isPaidProfile(profile, '/sensi-city.html')) return send(res, 403, 'Forbidden', 'text/plain; charset=utf-8');
 
   const videoFiles = {
     1: 'sensi-lesson-01-parent-guide.mp4',
