@@ -58,4 +58,8 @@ const lesson15 = readFileSync(new URL('../python-turtle-lesson-15-slides.html', 
 assert.match(lesson15, /לוגו לעיר הרובוטים/);
 assert.match(lesson15, /לוגו ויזואלי|מפענחים|שחזור/);
 assert.match(lesson15, /שער אנרגיה בתוך הלוגו|מנקים ומשפרים את הלוגו|ספירלה|כוכב/);
+assert.match(lesson15, /מסגרת הגנה לשער האנרגיה/);
+assert.match(lesson15, /דיבאג לפני הצגה/);
+assert.match(lesson15, /מסגרת ריבועית סגורה ופרט צהוב עבה נפרד/);
+assert.doesNotMatch(lesson15, /תחנת טעינה|שלט\/בסיס/);
 assert.match(lesson15, /אתגר רשות — כותבים Python קצר/);
