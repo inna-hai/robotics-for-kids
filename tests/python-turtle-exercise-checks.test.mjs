@@ -547,3 +547,12 @@ assert.match(html, /function firstDrawnSegmentsAvoidColor[\s\S]*function drawnGr
 assert.match(html, /ex\.id === 6[\s\S]*firstDrawnSegmentsAvoidColor\(actions, 4, '#111827'\)[\s\S]*drawnGroupsByColor\(actions, '#facc15'\) < 4[\s\S]*hasTrafficLightColors\(actions\)/, 'lesson 12 exercise 6 explicitly validates house color, separated yellow lane dashes, and green traffic light');
 
 assert.doesNotMatch(html, /py_raw_code|כתוב קוד Python %1|simulateRawPythonCommand/, 'lesson 12 code-writing challenge does not add a custom raw-code block');
+
+assert.match(html, /"id": 15,[\s\S]*"title": "לוגו לעיר הרובוטים"/, 'lesson 15 is focused on the robot city logo');
+assert.match(html, /פענחו לוגו לדוגמה[\s\S]*הוסיפו ללוגו עוד חלקים[\s\S]*צבע, עובי[\s\S]*שער אנרגיה[\s\S]*penup/, 'lesson 15 opens with model decoding, adding logo parts, visual style, a energy-gate upgrade and clean pen movement');
+assert.match(html, /currentLesson === 15[\s\S]*centralShapeOk[\s\S]*repeatedDetailOk[\s\S]*cleanTransitionCount/, 'lesson 15 has dedicated validators for logo body, repeated details, color/style and penup');
+assert.match(html, /hasEnergySpiral = repeatSpiralPattern\(\)[\s\S]*hasEnergyStar = repeatStarPattern\(5, 144, null\)[\s\S]*if\(!hasEnergyStar\)[\s\S]*if\(!hasEnergySpiral\)/, 'lesson 15 exercise 4 requires both a star and a spiral for the energy-gate upgrade');
+assert.match(html, /תרגול 5 — מנקים ומשפרים את הלוגו[\s\S]*שפרו לפחות דבר אחד[\s\S]*הכוכב[\s\S]*הספירלה[\s\S]*הצבע[\s\S]*העובי/, 'lesson 15 exercise 5 cleans the logo and requires one visible improvement');
+assert.match(html, /if\(ex\.id === 5\)\{[\s\S]*visiblePolishOk[\s\S]*צבע נוסף[\s\S]*return \[\];\s*\}\s*if\(ex\.id === 6\)/, 'lesson 15 exercise 5 requires one visible polish option without forcing spiral-only changes');
+assert.doesNotMatch(html, /currentLesson === 15 && currentExercises\(\)\[currentExerciseIndex\]\?\.id === 2[\s\S]*exerciseRunValues\[key\]\.push\(Number\(currentLength\)\)/, 'lesson 15 exercise 2 no longer requires changing length across two runs');
+assert.match(html, /currentLesson === 15 && ex\?\.id === 10[\s\S]*for i in range\(5\)[\s\S]*right\(144\)/, 'lesson 15 includes a final optional Python writing challenge for a small signature star');
