@@ -95,7 +95,7 @@ lessons4to24.forEach(lessonItem => {
   assert.ok(lessonItem.progressionStage.includes('בלוקים אמיתיים'), `lesson ${lessonItem.id} stays in the block-first phase`);
   assert.ok(lessonItem.blocklyBlocks.length >= 5, `lesson ${lessonItem.id} has several draggable lesson blocks`);
   assert.ok(lessonItem.blocklyBlocks.some(block => block.args0?.length), `lesson ${lessonItem.id} has editable fields/dropdowns inside lesson blocks`);
-  assert.equal(lessonItem.exercises.length, [6, 8, 9].includes(lessonItem.id) ? 6 : [4, 5, 7].includes(lessonItem.id) ? 7 : 8, `lesson ${lessonItem.id} has the reviewed exercise count`);
+  assert.equal(lessonItem.exercises.length, [6, 8, 9].includes(lessonItem.id) ? 6 : [4, 5].includes(lessonItem.id) ? 7 : lessonItem.id === 7 ? 9 : 8, `lesson ${lessonItem.id} has the reviewed exercise count`);
   lessonItem.exercises.forEach(ex => {
     assert.ok(ex.prompt.includes('בלוק') || ex.prompt.includes('תצוגה') || ex.prompt.includes('קוד שנוצר') || ex.prompt.includes('תיבת הקוד'), `lesson ${lessonItem.id} exercise ${ex.id} is phrased around blocks/preview/generated code`);
     assert.ok(ex.noCheck || (ex.check && Object.keys(ex.check).length > 0), `lesson ${lessonItem.id} exercise ${ex.id} has a validator or is explicitly no-check`);
@@ -223,11 +223,18 @@ assert.ok(lesson7.starter.js.includes('document.getElementById("targetText").tex
 assert.ok(lesson7.starter.js.includes('"דני מתחיל לאפות. הגיעו ל־" + target'), 'lesson 7 reset message uses the current target instead of hard-coded 10');
 assert.ok(lesson7TargetBlock.find.includes('targetText') && lesson7TargetBlock.replace.includes('targetText'), 'lesson 7 target block updates the visible target total as well as the JS constant');
 assert.ok(lesson7TargetBlock.find.includes('message') && lesson7TargetBlock.replace.includes('message'), 'lesson 7 target block updates the visible instruction message with the selected target');
-assert.equal(lesson7.exercises.length, 7, 'lesson 7 keeps six gameplay exercises plus one code-writing exercise');
-assert.ok(lesson7.exercises.at(-1).title.includes('כותבים את שורת הניקוד'), 'lesson 7 final exercise is a code-writing task about score');
-assert.ok(lesson7.exercises.at(-1).answerBox?.label.includes('ניקוד'), 'lesson 7 final exercise has a typed answer box');
-assert.ok(lesson7.exercises.at(-1).check.requiresCodeLineAnswer?.requiredSnippets?.includes('score = score +'), 'lesson 7 final exercise asks for the score increment fragment');
-assert.ok(lesson7.exercises.at(-1).prompt.includes('איזה חלק בקוד מגדיל את הניקוד') && !lesson7.exercises.at(-1).prompt.includes('score +='), 'lesson 7 final prompt asks learners to find the fragment without giving the exact answer');
+const lesson7GoodStartConditionBlock = lesson7.blocklyBlocks.find(block => block.type === 'lesson_7_good_start_condition');
+const lesson7GoodStartMessageBlock = lesson7.blocklyBlocks.find(block => block.type === 'lesson_7_good_start_message');
+assert.ok(lesson7GoodStartConditionBlock, 'lesson 7 includes a separate good-start condition block');
+assert.ok(lesson7GoodStartMessageBlock, 'lesson 7 includes a separate good-start message block');
+assert.ok(lesson7GoodStartConditionBlock.replace.includes('score >= {{N}}'), 'lesson 7 good-start condition block exposes one simple score condition');
+assert.equal(lesson7.exercises.length, 9, 'lesson 7 keeps gameplay exercises plus split condition/message work and one code-writing exercise');
+assert.ok(lesson7.exercises.some(ex => ex.title.includes('תנאי ביניים')), 'lesson 7 includes an explicit condition exercise');
+assert.ok(lesson7.exercises.some(ex => ex.title.includes('הודעת התחלה טובה')), 'lesson 7 includes a good-start message exercise');
+assert.ok(lesson7.exercises.at(-1).title.includes('מזהים את סימן ההוספה'), 'lesson 7 final exercise is a code-writing task about the plus sign');
+assert.ok(lesson7.exercises.at(-1).answerBox?.label.includes('הסימן'), 'lesson 7 final exercise has a typed answer box for one symbol');
+assert.equal(lesson7.exercises.at(-1).check.requiresExactCodeAnswer, '+', 'lesson 7 final exercise asks for only the plus sign');
+assert.ok(lesson7.exercises.at(-1).prompt.includes('איזה סימן') && !lesson7.exercises.at(-1).prompt.includes('score +='), 'lesson 7 final prompt asks learners to identify the symbol without giving a full code fragment');
 
 const lesson8 = lessons[7];
 const lesson8TimeBlock = lesson8.blocklyBlocks.find(block => block.type === 'lesson_8_time');
@@ -374,7 +381,7 @@ assert.ok(!loadedLessonsCode.includes('הזיזו אותו למקום אחר ב�
 assert.ok(play.includes('repairSavedCodeState') && play.includes('function makeGreeting'), 'player repairs stale lesson 4 saved state when makeGreeting is missing');
 assert.ok(play.includes('hasPreviewFilledInputs') && play.includes('hasPreviewResultFromInputs'), 'player can validate preview input/result interactions');
 assert.ok(play.includes('blocklyLessonBuilder'), 'play page supports lesson-specific Blockly blocks for lessons 4-24');
-assert.ok(play.includes('webcodeLessonState:v15'), 'play page uses a fresh lesson state key so stale Blockly defaults do not persist');
+assert.ok(play.includes('webcodeLessonState:v18'), 'play page uses a fresh lesson state key so stale Blockly defaults do not persist');
 assert.ok(play.includes('<block type="lesson_8_time"><field name="N">15</field>') && play.includes('<block type="lesson_8_windows"><field name="N">10</field>'), 'lesson 8 starter XML defaults to 15 seconds and 10 windows');
 assert.ok(play.includes('block.toolboxFields') && play.includes('<field name="${name}">'), 'toolbox blocks can display explicit default field values');
 assert.ok(play.includes('defineLessonBlocklyBlocks'), 'play page defines dynamic draggable lesson blocks');
@@ -418,7 +425,7 @@ assert.ok(play.includes('lessonToggleIcon') && play.includes('⌃') && play.incl
 assert.ok(play.includes('lesson-collapsed'), 'collapsing instructions reallocates space to Blockly and preview sections');
 assert.ok(play.includes('previewResize') && play.includes('--preview-width'), 'preview panel has a draggable width resizer');
 assert.ok(play.includes('webcodePreviewWidth') && play.includes('pointermove'), 'preview width drag persists and handles pointer movement');
-assert.ok(play.includes('webcodeLessonState:v15') && play.includes('saveLessonState') && play.includes('restoreProgress'), 'lesson progress and code persist across page refreshes');
+assert.ok(play.includes('webcodeLessonState:v18') && play.includes('saveLessonState') && play.includes('restoreProgress'), 'lesson progress and code persist across page refreshes');
 assert.ok(play.includes('validExerciseIds') && play.includes('filter(id => validExerciseIds.has(id))'), 'saved completed exercises are pruned when a lesson is shortened');
 assert.ok(play.includes('blocklyXml') && play.includes('workspaceToDom') && play.includes('saved.blocklyXml || webBuilderStarterXml()'), 'real Blockly workspace persists across page refreshes');
 assert.ok(play.includes('stateReady = true; saveLessonState();'), 'initial restore does not overwrite saved work before Blockly loads');

@@ -56,7 +56,7 @@
       <div class="preview-wrap"><iframe id="preview" title="תצוגת התוצר"></iframe></div>
     </section>
   </main>
-  <script src="js/webcode-lessons-lesson3-show-message-v48.js?v=lesson7-code-writing-v4"></script>
+  <script src="js/webcode-lessons-lesson3-show-message-v48.js?v=lesson7-plus-answer-v1"></script>
   <script>
     if(!window.getWebCodeLesson){
       window.WEBCODE_LESSONS = [{ id:1, title:'בונים עמוד אמיתי עם Blockly', concept:'בלוקים שבונים אתר', durationMinutes:90, realBlocklyBuilder:true, story:'בונים אתר בעזרת בלוקים ורואים את התוצאה מיד.', mission:'גררו בלוקים לשרשרת כדי לבנות עמוד אישי.', starter:{ html:'', css:'', js:'' }, exercises:[
@@ -78,7 +78,7 @@
     let highestUnlockedExercise = 1;
     const done = new Set();
     const checkMemory = {};
-    const storageKey = `webcodeLessonState:v12:${lesson.id}`;
+    const storageKey = `webcodeLessonState:v18:${lesson.id}`;
     let stateReady = false;
     let codePeekOpened = false;
     let lastGeneratedCodeSelection = null;
@@ -973,6 +973,10 @@ ${block.replace}`; changed = true; }
       $('feedback').textContent='כאן מתרגלים הקלדה של שורת CSS — הקלידו בעצמכם בלי הדבקה.';
       return false;
     }
+    function hasExactCodeAnswer(expected){
+      if(expected === undefined || expected === null || expected === '') return true;
+      return String(exerciseAnswerValue()).trim() === String(expected).trim();
+    }
     function hasCodeLineAnswer(rule){
       if(!rule) return true;
       if(!lastGeneratedCodeSelection || lastGeneratedCodeSelection.exerciseId !== activeExercise) return false;
@@ -1173,6 +1177,19 @@ ${block.replace}`; changed = true; }
         return previewClicks.some(click => click.exerciseId === activeExercise && click.tag === 'button' && String(click.messageText || '').includes(expected));
       });
     }
+    function hasPreviewMessageAtScore(rule){
+      if(!rule) return true;
+      const block = collectPageBlocks().find(item => item.type === rule.type);
+      if(!block) return false;
+      const expected = String(block.getFieldValue?.(rule.field || 'TEXT') || '').trim();
+      if(!expected) return false;
+      const minScore = Number(rule.minScore || 0);
+      return previewClicks.some(click => {
+        if(click.exerciseId !== activeExercise || click.tag !== 'button') return false;
+        const score = Number(String(click.scoreText || '').trim());
+        return Number.isFinite(score) && score >= minScore && String(click.messageText || '').includes(expected);
+      });
+    }
     function hasNonEmptyBlocklyFields(rules){
       if(!rules?.length) return true;
       if(!blocklyWorkspace) return false;
@@ -1283,10 +1300,12 @@ ${block.replace}`; changed = true; }
       if(c.requiresCodePeek && !isCodePeekOpen()) return c.codePeekFeedback || 'כמעט. קודם פתחו את ההצצה לקוד שנוצר.';
       if(!hasGeneratedCodeSelection(c.requiresCodeSelectionTab, c.requiresCodeSelectionBlockTypes, c.requiresCodeSelectionTabs)) return c.codeSelectionFeedback || 'כמעט. פתחו את הצצת הקוד, לחצו על בלוק מתאים, וודאו שהשורה המסומנת נמצאת בלשונית הנכונה.';
       if(!hasCodeLineAnswer(c.requiresCodeLineAnswer)) return c.codeLineAnswerFeedback || 'כמעט. העתיקו לתיבה את שורת הקוד שסומנה בהצצה.';
+      if(!hasExactCodeAnswer(c.requiresExactCodeAnswer)) return c.exactCodeAnswerFeedback || 'כמעט. כתבו בדיוק את התשובה המבוקשת.';
       if(!hasPreviewButtonClick(c.requiresPreviewButtonClick)) return c.previewClickFeedback || 'כמעט. צריך ללחוץ על הכפתור בתצוגה החיה לפני הבדיקה.';
       if(!hasPreviewClickText(c.requiresPreviewButtonText)) return c.previewClickFeedback || 'כמעט. צריך ללחוץ על הכפתור המבוקש בתצוגה החיה לפני הבדיקה.';
       if(!hasPreviewResultFromBlockOutput(c.requiresPreviewResultFromBlockOutput)) return c.previewResultFeedback || 'כמעט. לחצתם על הכפתור, אבל התוצאה עדיין לא מציגה את הטקסט מהבלוק.';
       if(!hasPreviewMessageFromBlockOutput(c.requiresPreviewMessageFromBlockOutput)) return c.previewMessageFeedback || 'כמעט. לחצו בתצוגה עד שמגיעים לניצחון, ואז ודאו שההודעה מציגה את הטקסט מהבלוק.';
+      if(!hasPreviewMessageAtScore(c.requiresPreviewMessageAtScore)) return c.previewMessageAtScoreFeedback || 'כמעט. לחצו בתצוגה עד שמגיעים למספר הנדרש, ואז ודאו שההודעה מציגה את הטקסט מהבלוק.';
       if(!hasPreviewMessageChanged(c.requiresPreviewMessageChangedFrom)) return c.previewMessageFeedback || 'כמעט. לחצו על הכפתור בתצוגה וודאו שההודעה שמופיעה באמת השתנתה.';
       if(!hasPreviewEmojiChanged(c.requiresPreviewEmojiChangedFrom)) return c.previewEmojiFeedback || 'כמעט. לחצו על הכפתור בתצוגה וודאו שהסמל באמת השתנה.';
       if(!hasPreviewCardClass(c.requiresPreviewCardClass)) return c.previewClassFeedback || 'כמעט. לחצו על הכפתור בתצוגה וודאו שמצב הקסם נדלק.';
@@ -1354,7 +1373,7 @@ ${block.replace}`; changed = true; }
       renderProgress();
       saveLessonState();
     }
-    function checkExercise(){ const ex=currentExercise(); const completedTitle = ex.title; const c=ex.check||{}; const special = c.footerMustBeLast ? checkFooterAtEndExercise(ex, c) : null; const ok = special ? special.ok : includesAll($('htmlCode').value,c.htmlIncludes) && includesAll($('cssCode').value,c.cssIncludes) && excludesAll($('htmlCode').value,c.htmlExcludes) && excludesAll($('cssCode').value,c.cssExcludes) && excludesAll($('jsCode').value,c.jsExcludes) && hasBlockTypes(c.blockTypes) && hasExactBlockTypeCounts(c.exactBlockTypeCounts) && hasOrderedBlockTypes(c.orderedBlockTypes) && hasNonEmptyBlocklyFields(c.nonEmptyBlocklyFields) && hasQualityBlocklyFields(c.qualityBlocklyFields) && hasRelatedBlocklyTextGroups(c.relatedBlocklyTextGroups) && hasUnchangedBlocklyFields(c.unchangedBlocklyFields) && hasExactBlocklyFields(c.exactBlocklyFields) && hasChangedBlocklyFields(c.changedBlocklyFields) && hasBlocklyFieldsContaining(c.blocklyFieldsContaining) && hasAnyChangedBlocklyField(c.anyChangedBlocklyFields) && hasGeneratedBlockOutputs(c.generatedBlockOutputs) && hasChangedBlocklyFieldsFromBaseline(c.changedBlocklyFieldsFromBaseline) && (!c.requiresCodePeek || isCodePeekOpen()) && hasGeneratedCodeSelection(c.requiresCodeSelectionTab, c.requiresCodeSelectionBlockTypes, c.requiresCodeSelectionTabs) && hasCodeLineAnswer(c.requiresCodeLineAnswer) && hasPreviewButtonClick(c.requiresPreviewButtonClick) && hasPreviewClickText(c.requiresPreviewButtonText) && hasPreviewResultFromBlockOutput(c.requiresPreviewResultFromBlockOutput) && hasPreviewMessageFromBlockOutput(c.requiresPreviewMessageFromBlockOutput) && hasPreviewMessageChanged(c.requiresPreviewMessageChangedFrom) && hasPreviewEmojiChanged(c.requiresPreviewEmojiChangedFrom) && hasPreviewCardClass(c.requiresPreviewCardClass) && hasPreviewFilledInputs(c.requiresPreviewFilledInputs) && hasPreviewResultFromInputs(c.requiresPreviewResultFromInputs) && hasPreviewInputMatchesBlockFields(c.requiresPreviewInputMatchesBlockFields) && hasPreviewInputDiffersFromBlockFields(c.requiresPreviewInputDiffersFromBlockFields) && hasPreviewFeedbackClass(c.requiresPreviewFeedbackClass) && hasPreviewScoreSum(c.requiresPreviewScoreSum) && hasPreviewScoreFromBlockField(c.requiresPreviewScoreFromBlockField) && hasPreviewLivesFromBlockField(c.requiresPreviewLivesFromBlockField) && hasPreviewLivesAfterPenalty(c.requiresPreviewLivesAfterPenalty) && hasPreviewTimeFromBlockField(c.requiresPreviewTimeFromBlockField) && hasPreviewFeedbackText(c.requiresPreviewFeedbackText) && hasPreviewItemTextFromBlockOutput(c.requiresPreviewItemTextFromBlockOutput) && hasDebugCodeIncludes(c.debugCodeIncludes) && hasDebugCodeExcludes(c.debugCodeExcludes) && includesAll($('jsCode').value,c.jsIncludes) && (!c.changedAny || hasChanged(c.changedAny)); if(ok){ done.add(ex.id); highestUnlockedExercise = Math.max(highestUnlockedExercise, Math.min(lesson.exercises.length, ex.id + 1)); renderCurrentExercise(); $('feedback').className='feedback good'; $('feedback').textContent= ex.id < lesson.exercises.length ? `מעולה ✅ ${completedTitle} הושלם. עכשיו לחצו “לתרגיל הבא”.` : `מעולה ✅ סיימת את כל התרגילים בשיעור הזה.`; } else { $('feedback').className='feedback bad'; $('feedback').textContent=special?.message || exerciseFailureMessage(ex, c); } renderProgress(); saveLessonState(); }
+    function checkExercise(){ const ex=currentExercise(); const completedTitle = ex.title; const c=ex.check||{}; const special = c.footerMustBeLast ? checkFooterAtEndExercise(ex, c) : null; const ok = special ? special.ok : includesAll($('htmlCode').value,c.htmlIncludes) && includesAll($('cssCode').value,c.cssIncludes) && excludesAll($('htmlCode').value,c.htmlExcludes) && excludesAll($('cssCode').value,c.cssExcludes) && excludesAll($('jsCode').value,c.jsExcludes) && hasBlockTypes(c.blockTypes) && hasExactBlockTypeCounts(c.exactBlockTypeCounts) && hasOrderedBlockTypes(c.orderedBlockTypes) && hasNonEmptyBlocklyFields(c.nonEmptyBlocklyFields) && hasQualityBlocklyFields(c.qualityBlocklyFields) && hasRelatedBlocklyTextGroups(c.relatedBlocklyTextGroups) && hasUnchangedBlocklyFields(c.unchangedBlocklyFields) && hasExactBlocklyFields(c.exactBlocklyFields) && hasChangedBlocklyFields(c.changedBlocklyFields) && hasBlocklyFieldsContaining(c.blocklyFieldsContaining) && hasAnyChangedBlocklyField(c.anyChangedBlocklyFields) && hasGeneratedBlockOutputs(c.generatedBlockOutputs) && hasChangedBlocklyFieldsFromBaseline(c.changedBlocklyFieldsFromBaseline) && (!c.requiresCodePeek || isCodePeekOpen()) && hasGeneratedCodeSelection(c.requiresCodeSelectionTab, c.requiresCodeSelectionBlockTypes, c.requiresCodeSelectionTabs) && hasCodeLineAnswer(c.requiresCodeLineAnswer) && hasExactCodeAnswer(c.requiresExactCodeAnswer) && hasPreviewButtonClick(c.requiresPreviewButtonClick) && hasPreviewClickText(c.requiresPreviewButtonText) && hasPreviewResultFromBlockOutput(c.requiresPreviewResultFromBlockOutput) && hasPreviewMessageFromBlockOutput(c.requiresPreviewMessageFromBlockOutput) && hasPreviewMessageAtScore(c.requiresPreviewMessageAtScore) && hasPreviewMessageChanged(c.requiresPreviewMessageChangedFrom) && hasPreviewEmojiChanged(c.requiresPreviewEmojiChangedFrom) && hasPreviewCardClass(c.requiresPreviewCardClass) && hasPreviewFilledInputs(c.requiresPreviewFilledInputs) && hasPreviewResultFromInputs(c.requiresPreviewResultFromInputs) && hasPreviewInputMatchesBlockFields(c.requiresPreviewInputMatchesBlockFields) && hasPreviewInputDiffersFromBlockFields(c.requiresPreviewInputDiffersFromBlockFields) && hasPreviewFeedbackClass(c.requiresPreviewFeedbackClass) && hasPreviewScoreSum(c.requiresPreviewScoreSum) && hasPreviewScoreFromBlockField(c.requiresPreviewScoreFromBlockField) && hasPreviewLivesFromBlockField(c.requiresPreviewLivesFromBlockField) && hasPreviewLivesAfterPenalty(c.requiresPreviewLivesAfterPenalty) && hasPreviewTimeFromBlockField(c.requiresPreviewTimeFromBlockField) && hasPreviewFeedbackText(c.requiresPreviewFeedbackText) && hasPreviewItemTextFromBlockOutput(c.requiresPreviewItemTextFromBlockOutput) && hasDebugCodeIncludes(c.debugCodeIncludes) && hasDebugCodeExcludes(c.debugCodeExcludes) && includesAll($('jsCode').value,c.jsIncludes) && (!c.changedAny || hasChanged(c.changedAny)); if(ok){ done.add(ex.id); highestUnlockedExercise = Math.max(highestUnlockedExercise, Math.min(lesson.exercises.length, ex.id + 1)); renderCurrentExercise(); $('feedback').className='feedback good'; $('feedback').textContent= ex.id < lesson.exercises.length ? `מעולה ✅ ${completedTitle} הושלם. עכשיו לחצו “לתרגיל הבא”.` : `מעולה ✅ סיימת את כל התרגילים בשיעור הזה.`; } else { $('feedback').className='feedback bad'; $('feedback').textContent=special?.message || exerciseFailureMessage(ex, c); } renderProgress(); saveLessonState(); }
     function renderProgress(){ $('progress').textContent = `${done.size}/${lesson.exercises.length} הושלמו`; }
     init();
   </script>
