@@ -155,12 +155,22 @@ async function preparePage(page) {
     #realPreviewCaption{position:fixed;right:30px;bottom:24px;z-index:999999;max-width:720px;background:rgba(15,23,42,.88);color:#fff;border-radius:22px;padding:15px 20px;font:900 28px/1.25 Rubik,Arial,sans-serif;text-align:right;direction:rtl;box-shadow:0 18px 45px rgba(15,23,42,.28)}
     #realPreviewCaption small{display:block;color:#bae6fd;font-size:18px;margin-top:5px}
     .real-preview-spot{outline:7px solid #facc15!important;box-shadow:0 0 0 12px rgba(250,204,21,.25),0 18px 42px rgba(15,23,42,.28)!important;border-radius:18px!important}
+    #demoCursor{position:fixed;left:0;top:0;z-index:1000000;width:30px;height:30px;transform:translate3d(1120px,92px,0);pointer-events:none;filter:drop-shadow(0 8px 12px rgba(15,23,42,.35));transition:none}
+    #demoCursor::before{content:"";position:absolute;left:2px;top:0;width:0;height:0;border-top:26px solid #fff;border-right:16px solid transparent;transform:rotate(-18deg)}
+    #demoCursor::after{content:"";position:absolute;left:9px;top:17px;width:17px;height:17px;border-radius:50%;background:#f97316;border:3px solid #fff;box-shadow:0 0 0 0 rgba(249,115,22,.42)}
+    #demoCursor.tap::after{animation:cursorTap .42s ease-out}
+    @keyframes cursorTap{to{box-shadow:0 0 0 22px rgba(249,115,22,0);transform:scale(.72)}}
+    .blocklySelected>.blocklyPath,.blocklySelected>.blocklyPathLight{filter:drop-shadow(0 0 12px rgba(250,204,21,.95))}
   `});
   await page.evaluate(() => {
     const c = document.createElement('div');
     c.id = 'realPreviewCaption';
     c.innerHTML = 'הצצה מתוך השיעור <small>צילום אמיתי של הלומדה</small>';
     document.body.appendChild(c);
+    const cursor = document.createElement('div');
+    cursor.id = 'demoCursor';
+    document.body.appendChild(cursor);
+    window.__demoCursorPos = { x: 1120, y: 92 };
   });
 }
 
@@ -193,6 +203,114 @@ async function snap(page, frameDir, frame) {
 async function hold(page, frameDir, frame, seconds) {
   const count = Math.round(seconds * FPS);
   for (let i = 0; i < count; i += 1) await snap(page, frameDir, frame);
+}
+
+async function pointForSelector(page, selector, fallback = { x: 640, y: 360 }) {
+  return page.evaluate((selector, fallback) => {
+    const el = document.querySelector(selector);
+    if (!el) return fallback;
+    const rect = el.getBoundingClientRect();
+    return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+  }, selector, fallback);
+}
+
+async function moveCursor(page, frameDir, frame, target, seconds = 0.65) {
+  const to = typeof target === 'string' ? await pointForSelector(page, target) : target;
+  const from = await page.evaluate(() => window.__demoCursorPos || { x: 1120, y: 92 });
+  const steps = Math.max(1, Math.round(seconds * FPS));
+  for (let i = 1; i <= steps; i += 1) {
+    const t = i / steps;
+    const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    const x = from.x + (to.x - from.x) * eased;
+    const y = from.y + (to.y - from.y) * eased;
+    await page.evaluate(({ x, y }) => {
+      window.__demoCursorPos = { x, y };
+      const cursor = document.getElementById('demoCursor');
+      if (cursor) cursor.style.transform = `translate3d(${x}px,${y}px,0)`;
+    }, { x, y });
+    await snap(page, frameDir, frame);
+  }
+}
+
+async function tapCursor(page, frameDir, frame) {
+  await page.evaluate(() => {
+    const cursor = document.getElementById('demoCursor');
+    cursor?.classList.remove('tap');
+    void cursor?.offsetWidth;
+    cursor?.classList.add('tap');
+  });
+  await hold(page, frameDir, frame, 0.45);
+}
+
+async function resetWebcodeDemo(page) {
+  await page.evaluate(() => {
+    blocklyReady = false;
+    blocklyWorkspace.clear();
+    Blockly.Xml.domToWorkspace(parseBlocklyXml('<xml xmlns="https://developers.google.com/blockly/xml"><block type="page_start" x="130" y="70"></block></xml>'), blocklyWorkspace);
+    blocklyReady = true;
+    codePeekOpened = false;
+    document.getElementById('codePeek').open = false;
+    done.clear();
+    activeExercise = 1;
+    highestUnlockedExercise = 1;
+    renderProgress();
+    generateCodeFromBlockly();
+    saveLessonState();
+  });
+}
+
+async function addWebcodeBlock(page, type, fields = {}) {
+  return page.evaluate(({ type, fields }) => {
+    const block = blocklyWorkspace.newBlock(type);
+    Object.entries(fields).forEach(([name, value]) => block.setFieldValue(String(value), name));
+    block.initSvg();
+    block.render();
+    const chain = [];
+    let current = blocklyWorkspace.getTopBlocks(false).find(item => item.type === 'page_start');
+    while (current) {
+      chain.push(current);
+      current = current.getNextBlock?.();
+    }
+    const previous = chain[chain.length - 1];
+    previous?.nextConnection?.connect(block.previousConnection);
+    generateCodeFromBlockly();
+    block.select();
+    saveLessonState();
+    return block.id;
+  }, { type, fields });
+}
+
+async function updateWebcodeBlock(page, type, field, value) {
+  return page.evaluate(({ type, field, value }) => {
+    const block = collectPageBlocks().find(item => item.type === type);
+    if (!block) return false;
+    block.setFieldValue(String(value), field);
+    generateCodeFromBlockly();
+    block.select();
+    saveLessonState();
+    return true;
+  }, { type, field, value });
+}
+
+async function previewButtonPoint(page) {
+  return page.evaluate(() => {
+    const iframe = document.getElementById('preview');
+    const button = iframe?.contentDocument?.querySelector('button');
+    if (!iframe || !button) return { x: 1080, y: 365 };
+    const iframeRect = iframe.getBoundingClientRect();
+    const buttonRect = button.getBoundingClientRect();
+    return {
+      x: iframeRect.left + buttonRect.left + buttonRect.width / 2,
+      y: iframeRect.top + buttonRect.top + buttonRect.height / 2
+    };
+  });
+}
+
+async function clickPreviewButton(page) {
+  await page.evaluate(() => {
+    const button = document.getElementById('preview')?.contentDocument?.querySelector('button');
+    button?.click();
+  });
 }
 
 async function courseTimeline(page, course, frameDir, frame) {
@@ -231,10 +349,37 @@ async function courseTimeline(page, course, frameDir, frame) {
   }
 
   if (course.slug === 'webcode') {
-    await caption(page, 'בונים עמוד Web אמיתי', 'Blockly יוצר HTML/CSS/JS');
+    await resetWebcodeDemo(page);
+    await caption(page, 'בונים עמוד Web אמיתי', 'גוררים בלוקים והתצוגה משתנה תוך כדי');
     await spot(page, '#blocklyDiv, #realBlockly');
-    await hold(page, frameDir, frame, 6);
-    await page.evaluate(() => { try { window.runCode?.(); } catch {} });
+    await hold(page, frameDir, frame, 2.2);
+    const additions = [
+      ['web_title', { TEXT: 'אתר המשחקים שלי' }, 'מוסיפים כותרת', 'הבלוק יוצר כותרת HTML בעמוד'],
+      ['web_paragraph', { TEXT: 'אני בונה עמוד Web חי עם בלוקים.' }, 'מוסיפים טקסט', 'הפסקה מופיעה מיד בתצוגה'],
+      ['web_emoji', { EMOJI: '🎮' }, 'מוסיפים סמל', 'העמוד כבר מתחיל להרגיש אישי'],
+      ['web_theme', { THEME: 'space' }, 'מחליפים עיצוב', 'CSS משנה צבעים וסגנון'],
+      ['web_button', { LABEL: 'נסו אותי', MESSAGE: 'הכפתור עובד! זה JavaScript 🎉' }, 'מוסיפים כפתור', 'עכשיו יש גם אינטראקציה']
+    ];
+    for (const [type, fields, title, sub] of additions) {
+      await caption(page, title, sub);
+      await moveCursor(page, frameDir, frame, '.blocklyToolboxDiv', 0.45);
+      await tapCursor(page, frameDir, frame);
+      await moveCursor(page, frameDir, frame, '#blocklyDiv', 0.7);
+      await addWebcodeBlock(page, type, fields);
+      await tapCursor(page, frameDir, frame);
+      await hold(page, frameDir, frame, 0.9);
+    }
+    await caption(page, 'משנים טקסט ורואים תוצאה', 'שינוי קטן בבלוק מעדכן את האתר החי');
+    await moveCursor(page, frameDir, frame, '#blocklyDiv', 0.5);
+    await updateWebcodeBlock(page, 'web_title', 'TEXT', 'עמוד Web שבניתי בעצמי');
+    await tapCursor(page, frameDir, frame);
+    await hold(page, frameDir, frame, 1.6);
+    await caption(page, 'הכפתור באמת עובד', 'לוחצים בתצוגה וה־JavaScript מגיב');
+    await spot(page, '#previewPanel, iframe');
+    await moveCursor(page, frameDir, frame, await previewButtonPoint(page), 0.8);
+    await clickPreviewButton(page);
+    await tapCursor(page, frameDir, frame);
+    await hold(page, frameDir, frame, 2.1);
     await caption(page, 'פותחים את הקוד שנוצר', 'רואים ממש HTML, CSS ו־JavaScript');
     await page.evaluate(() => {
       try {
@@ -243,23 +388,28 @@ async function courseTimeline(page, course, frameDir, frame) {
       } catch {}
     });
     await spot(page, '#codePeek, .code-box');
-    await hold(page, frameDir, frame, 4);
+    await hold(page, frameDir, frame, 2.4);
     await caption(page, 'HTML בונה את מבנה העמוד', 'הכותרת, הפסקה והכפתור מגיעים מהבלוקים');
     await page.evaluate(() => document.querySelector('.editor-tabs button:nth-child(1)')?.click());
-    await hold(page, frameDir, frame, 4);
+    await moveCursor(page, frameDir, frame, '.editor-tabs button:nth-child(1)', 0.35);
+    await tapCursor(page, frameDir, frame);
+    await hold(page, frameDir, frame, 2.2);
     await caption(page, 'CSS מעצב את מה שרואים', 'צבעים, ריווחים וצורת הכרטיס');
     await page.evaluate(() => document.querySelector('.editor-tabs button:nth-child(2)')?.click());
-    await hold(page, frameDir, frame, 4);
+    await moveCursor(page, frameDir, frame, '.editor-tabs button:nth-child(2)', 0.45);
+    await tapCursor(page, frameDir, frame);
+    await hold(page, frameDir, frame, 2.2);
     await caption(page, 'JavaScript מוסיף פעולה', 'הכפתור יודע להגיב ללחיצה');
     await page.evaluate(() => document.querySelector('.editor-tabs button:nth-child(3)')?.click());
-    await hold(page, frameDir, frame, 4);
-    await caption(page, 'התצוגה החיה מתעדכנת', 'הילד רואה אתר שהוא בונה בעצמו');
-    await spot(page, '#previewPanel, iframe');
-    await hold(page, frameDir, frame, 3);
+    await moveCursor(page, frameDir, frame, '.editor-tabs button:nth-child(3)', 0.45);
+    await tapCursor(page, frameDir, frame);
+    await hold(page, frameDir, frame, 2.3);
     await caption(page, 'בודקים את התרגיל', 'מקבלים משוב וממשיכים לשלב הבא');
     await spot(page, '#exercises, #feedback');
+    await moveCursor(page, frameDir, frame, '.btn.check', 0.75);
     await page.evaluate(() => { try { window.checkExercise?.(); } catch {} });
-    await hold(page, frameDir, frame, 9);
+    await tapCursor(page, frameDir, frame);
+    await hold(page, frameDir, frame, 6);
     return;
   }
 
