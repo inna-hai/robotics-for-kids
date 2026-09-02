@@ -44,13 +44,15 @@ Character: warm, curious Israeli course narrator. Natural, expressive, inviting.
     slug: 'webcode',
     url: '/webcode-play.html?lesson=1',
     script: `TTS in fluent natural Israeli Hebrew.
-Character: warm, curious Israeli course narrator. Natural, expressive, inviting. Do not read bracket labels.
+Character: a mature Israeli female course narrator. Warm, confident, professional, clear, and pleasant. Not childish, not robotic, not overly dramatic.
+Style: polished marketing explainer for parents and schools, with natural pauses and calm energy. Do not read bracket labels. Bracket labels are acting directions only.
 
-[warm] ב־Web Code הילדים בונים אתר אמיתי, לא רק קוראים על HTML ו־CSS.
-[focused] הם עובדים עם בלוקים, ורואים איך כל בלוק יוצר חלק בעמוד.
-[curious] בצד שמאל יש תצוגה חיה: משנים כותרת, צבע או כפתור, ומיד רואים מה נוצר.
-[encouraging] אחר כך בודקים את התרגיל, מקבלים משוב, וממשיכים שלב אחרי שלב.
-[closing] זו הצצה ללמידה שמחברת בין בלוק, קוד, ותוצר חי בדפדפן.`
+[warm] הכירו את WebCode — מסלול שבו ילדים בונים עמודי Web אמיתיים דרך חוויה ברורה ומעשית.
+[focused] במקום להתחיל ישר מסינטקס מורכב, הם עובדים עם בלוקים שמייצרים HTML, CSS ו־JavaScript.
+[clear] בכל שינוי רואים מיד את התוצאה בתצוגה החיה: כותרת, טקסט, צבעים, כפתור ואינטראקציה.
+[confident] בהמשך הילדים פותחים הצצה לקוד, ומבינים איך הבלוקים שהם בנו הופכים לשורות קוד אמיתיות.
+[encouraging] הם מריצים, בודקים, מקבלים משוב, מתקנים ומתקדמים שלב אחרי שלב.
+[closing] כך WebCode מחבר בין יצירתיות, הבנת קוד ותוצר אמיתי שאפשר לראות בדפדפן.`
   },
   {
     slug: 'minecraft',
@@ -289,6 +291,33 @@ async function renderCourse(course, audioPath) {
     args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu', '--no-first-run', '--noerrdialogs']
   });
   const page = await browser.newPage();
+  if (course.slug === 'webcode') {
+    await page.evaluateOnNewDocument(() => {
+      const demoBlocklyXml = `<xml xmlns="https://developers.google.com/blockly/xml">
+        <block type="page_start" x="130" y="70">
+          <next><block type="web_theme"><field name="THEME">space</field>
+            <next><block type="web_title"><field name="TEXT">אתר המשחקים שלי</field>
+              <next><block type="web_paragraph"><field name="TEXT">אני בונה עמוד Web חי עם בלוקים, צבעים וכפתור שעובד.</field>
+                <next><block type="web_emoji"><field name="EMOJI">🎮</field>
+                  <next><block type="web_button"><field name="LABEL">נסו אותי</field><field name="MESSAGE">הכפתור עובד! זה JavaScript 🎉</field>
+                    <next><block type="web_footer"><field name="TEXT">נבנה על ידי תלמיד/ה</field></block></next>
+                  </block></next>
+                </block></next>
+              </block></next>
+            </block></next>
+          </block></next>
+        </block>
+      </xml>`;
+      localStorage.setItem('webcodeLessonState:v9:1', JSON.stringify({
+        blocklyXml: demoBlocklyXml,
+        activeExercise: 1,
+        highestUnlockedExercise: 1,
+        done: [],
+        codePeekOpened: false,
+        checkMemory: {}
+      }));
+    });
+  }
   await page.goto(`${BASE_URL}${course.url}`, { waitUntil: 'networkidle2', timeout: 90000 });
   await preparePage(page);
   const frame = { value: 0 };
