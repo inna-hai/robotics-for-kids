@@ -68,6 +68,7 @@
         </div>
         <div class="actions" aria-label="כפתורי הרצת ציור">
           <button class="btn run" id="runBtn">▶️ הרץ ציור</button>
+          <button class="btn reset" id="stopRunBtn" disabled>⏹ עצור</button>
           <button class="btn reset" id="resetBtn">🔄 נקה ציור</button>
           <button class="btn" id="demoBtn">✨ דוגמת הפעלה</button><span class="demo-note">זו דוגמת הפעלה בלבד — לא הפתרון של המשימה.</span>
         </div>
@@ -8045,27 +8046,39 @@
       actions.forEach(action=>applyTurtleAction(action, vars));
       updateTurtle();
     }
+    function setRunControls(isRunning){
+      document.getElementById('runBtn').disabled = isRunning;
+      document.getElementById('stopRunBtn').disabled = !isRunning;
+      if(isRunning) document.getElementById('checkExerciseBtn')?.setAttribute('disabled','');
+      else document.getElementById('checkExerciseBtn')?.removeAttribute('disabled');
+    }
+    function stopCurrentRun(){
+      runToken += 1;
+      setRunControls(false);
+      statusEl.innerHTML = '<span class="muted">ההרצה נעצרה. אפשר להריץ שוב או לתקן בלוקים.</span>';
+    }
     async function run(actionsSnapshot=null){
       const token = ++runToken;
-      document.getElementById('runBtn').disabled = true;
-      document.getElementById('checkExerciseBtn')?.setAttribute('disabled','');
+      setRunControls(true);
       const useReadyBase = shouldUseCumulativeReadyBase();
       if(useReadyBase) restoreCumulativeReadyBase();
       else resetDrawing(true);
       const actions=actionsSnapshot || getActions();
-      if(!actions.length){statusEl.textContent='גררו בלוקים קודם 🙂';document.getElementById('runBtn').disabled = false;document.getElementById('checkExerciseBtn')?.removeAttribute('disabled');return;}
+      if(!actions.length){statusEl.textContent='גררו בלוקים קודם 🙂';setRunControls(false);return true;}
       statusEl.textContent=useReadyBase ? 'משאירים את הציור הקודם ומריצים רק את התוספת...' : 'מאפסים את הציור...';
       await sleep(450);
+      if(token !== runToken) return false;
       statusEl.textContent=`מריץ ${actions.length} פקודות...`;
       const vars = {length:100};
       for(const a of actions){
+        if(token !== runToken) return false;
         applyTurtleAction(a, vars);
-        if(token !== runToken) return;
         updateTurtle();
         await sleep(120);
       }
-      if(token === runToken && currentLesson === 13 && currentExercises()[currentExerciseIndex]?.id === 7 && lesson13TrainBaseClicked[lesson13CumulativeKey()]) drawLesson13TrainBaseForRails(false);
-      if(token === runToken && currentLesson === 14 && currentExercises()[currentExerciseIndex]?.id === 2){
+      if(token !== runToken) return false;
+      if(currentLesson === 13 && currentExercises()[currentExerciseIndex]?.id === 7 && lesson13TrainBaseClicked[lesson13CumulativeKey()]) drawLesson13TrainBaseForRails(false);
+      if(currentLesson === 14 && currentExercises()[currentExerciseIndex]?.id === 2){
         const currentLength = setLengthValues(actions).find(v=>Number.isFinite(Number(v)));
         if(currentLength !== undefined){
           const key = `${currentLesson}:${currentExercises()[currentExerciseIndex]?.id}`;
@@ -8073,10 +8086,9 @@
           exerciseRunValues[key].push(Number(currentLength));
         }
       }
-      if(token === runToken) statusEl.innerHTML='<span class="ok">הציור מוכן!</span>';
-      document.getElementById('runBtn').disabled = false;
-      document.getElementById('checkExerciseBtn')?.removeAttribute('disabled');
-      if(token === runToken && currentLesson === 13 && currentExercises()[currentExerciseIndex]?.id === 7){
+      statusEl.innerHTML='<span class="ok">הציור מוכן!</span>';
+      setRunControls(false);
+      if(currentLesson === 13 && currentExercises()[currentExerciseIndex]?.id === 7){
         try{ updateLesson13RailFeedbackAfterRun(); }
         catch(error){
           console.error(error);
@@ -8085,6 +8097,7 @@
           finishLesson13RailExercise(snapshot);
         }
       }
+      return true;
     }
     function currentLessonData(){
       return TURTLE_LESSONS.find(x=>x.id===currentLesson) || TURTLE_LESSONS[0];
@@ -10768,7 +10781,13 @@
       const snapshot = createCodeSnapshot();
       const validationSnapshot = snapshotWithCumulativePrior(snapshot);
       const skipRun = currentLesson === 3 && ex.id === 5;
-      if(!skipRun) await run(snapshot.actions);
+      if(!skipRun){
+        const runFinished = await run(snapshot.actions);
+        if(!runFinished){
+          renderCurrentExercise('ההרצה נעצרה — הריצו שוב עד הסוף לפני בדיקת התרגיל.', false);
+          return;
+        }
+      }
       activeValidationSnapshot = validationSnapshot;
       const problems = validateExercise(validationSnapshot);
       activeValidationSnapshot = null;
@@ -11050,6 +11069,7 @@
       }
       else checkExercise();
     });
+    document.getElementById('stopRunBtn').addEventListener('click', stopCurrentRun);
     document.getElementById('resetBtn').addEventListener('click',()=>{
       lesson10CurrentRevealKey = '';
       updateLesson10CanvasSecret();
