@@ -152,8 +152,8 @@ async function preparePage(page) {
   await page.addStyleTag({ content: `
     *{scrollbar-width:none!important}::-webkit-scrollbar{display:none!important}
     #rfw-launcher,.platform-home-link{display:none!important}
-    body.webcode-video-wide-code .topbar{padding:.42rem .72rem!important}
-    body.webcode-video-wide-code .main{grid-template-columns:176px minmax(0,1fr) 356px!important;gap:.65rem!important;padding:.65rem!important}
+    body.webcode-video-wide-code .topbar{display:none!important}
+    body.webcode-video-wide-code .main{height:100vh!important;grid-template-columns:148px minmax(0,1fr) 328px!important;gap:.55rem!important;padding:.55rem!important}
     body.webcode-video-wide-code .lesson-panel{border-radius:20px!important}
     body.webcode-video-wide-code .lesson-panel .lesson-toggle{padding:.56rem .7rem!important;font-size:.82rem!important}
     body.webcode-video-wide-code .lesson-panel .lesson-toggle-icon{min-width:27px!important;height:27px!important}
@@ -168,7 +168,7 @@ async function preparePage(page) {
     body.webcode-video-wide-code .blockly-top{padding:.48rem .7rem!important;font-size:.9rem!important}
     body.webcode-video-wide-code .blockly-top small{display:none!important}
     body.webcode-video-wide-code .preview-head{padding:.55rem .7rem!important}
-    body.webcode-video-wide-code .blocklyZoom{transform:scale(.88);transform-origin:left bottom}
+    body.webcode-video-wide-code #realPreviewCaption{right:22px!important;bottom:18px!important;max-width:600px!important;font-size:25px!important;border-radius:18px!important;padding:12px 17px!important}
     #realPreviewCaption{position:fixed;right:30px;bottom:24px;z-index:999999;max-width:720px;background:rgba(15,23,42,.88);color:#fff;border-radius:22px;padding:15px 20px;font:900 28px/1.25 Rubik,Arial,sans-serif;text-align:right;direction:rtl;box-shadow:0 18px 45px rgba(15,23,42,.28)}
     #realPreviewCaption small{display:block;color:#bae6fd;font-size:18px;margin-top:5px}
     .real-preview-spot{outline:7px solid #facc15!important;box-shadow:0 0 0 12px rgba(250,204,21,.25),0 18px 42px rgba(15,23,42,.28)!important;border-radius:18px!important}
@@ -277,6 +277,42 @@ async function resetWebcodeDemo(page) {
   });
 }
 
+async function enlargeWebcodeBlocks(page) {
+  await page.evaluate(() => {
+    if (!window.Blockly || !blocklyWorkspace) return;
+    try {
+      blocklyWorkspace.setScale(1.06);
+      Blockly.svgResize(blocklyWorkspace);
+      const topBlock = blocklyWorkspace.getTopBlocks(false).find((block) => block.type === 'page_start');
+      const blockRoot = topBlock?.getSvgRoot?.();
+      const area = document.getElementById('blocklyDiv');
+      if (topBlock && blockRoot && area) {
+        const blockRect = blockRoot.getBoundingClientRect();
+        const areaRect = area.getBoundingClientRect();
+        const scale = blocklyWorkspace.scale || 1;
+        const desiredRight = areaRect.right - 18;
+        const desiredTop = areaRect.top + 58;
+        topBlock.moveBy((desiredRight - blockRect.right) / scale, (desiredTop - blockRect.top) / scale);
+      }
+      setTimeout(() => {
+        try {
+          blocklyWorkspace.setScale(1.06);
+          Blockly.svgResize(blocklyWorkspace);
+          const topBlock = blocklyWorkspace.getTopBlocks(false).find((block) => block.type === 'page_start');
+          const blockRoot = topBlock?.getSvgRoot?.();
+          const area = document.getElementById('blocklyDiv');
+          if (topBlock && blockRoot && area) {
+            const blockRect = blockRoot.getBoundingClientRect();
+            const areaRect = area.getBoundingClientRect();
+            const scale = blocklyWorkspace.scale || 1;
+            topBlock.moveBy((areaRect.right - 18 - blockRect.right) / scale, (areaRect.top + 58 - blockRect.top) / scale);
+          }
+        } catch {}
+      }, 80);
+    } catch {}
+  });
+}
+
 async function addWebcodeBlock(page, type, fields = {}) {
   return page.evaluate(({ type, fields }) => {
     const block = blocklyWorkspace.newBlock(type);
@@ -294,6 +330,10 @@ async function addWebcodeBlock(page, type, fields = {}) {
     generateCodeFromBlockly();
     block.select();
     saveLessonState();
+    try {
+      blocklyWorkspace.getFlyout?.()?.hide?.();
+      blocklyWorkspace.getToolbox?.()?.clearSelection?.();
+    } catch {}
     return block.id;
   }, { type, fields });
 }
@@ -306,6 +346,10 @@ async function updateWebcodeBlock(page, type, field, value) {
     generateCodeFromBlockly();
     block.select();
     saveLessonState();
+    try {
+      blocklyWorkspace.getFlyout?.()?.hide?.();
+      blocklyWorkspace.getToolbox?.()?.clearSelection?.();
+    } catch {}
     return true;
   }, { type, field, value });
 }
@@ -368,6 +412,7 @@ async function courseTimeline(page, course, frameDir, frame) {
 
   if (course.slug === 'webcode') {
     await resetWebcodeDemo(page);
+    await enlargeWebcodeBlocks(page);
     await caption(page, 'בונים עמוד Web אמיתי', 'גוררים בלוקים והתצוגה משתנה תוך כדי');
     await spot(page, '#blocklyDiv, #realBlockly');
     await hold(page, frameDir, frame, 2.2);
@@ -384,12 +429,14 @@ async function courseTimeline(page, course, frameDir, frame) {
       await tapCursor(page, frameDir, frame);
       await moveCursor(page, frameDir, frame, '#blocklyDiv', 0.7);
       await addWebcodeBlock(page, type, fields);
+      await enlargeWebcodeBlocks(page);
       await tapCursor(page, frameDir, frame);
       await hold(page, frameDir, frame, 0.9);
     }
     await caption(page, 'משנים טקסט ורואים תוצאה', 'שינוי קטן בבלוק מעדכן את האתר החי');
     await moveCursor(page, frameDir, frame, '#blocklyDiv', 0.5);
     await updateWebcodeBlock(page, 'web_title', 'TEXT', 'עמוד Web שבניתי בעצמי');
+    await enlargeWebcodeBlocks(page);
     await tapCursor(page, frameDir, frame);
     await hold(page, frameDir, frame, 1.6);
     await caption(page, 'הכפתור באמת עובד', 'לוחצים בתצוגה וה־JavaScript מגיב');
