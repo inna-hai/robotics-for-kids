@@ -152,6 +152,23 @@ async function preparePage(page) {
   await page.addStyleTag({ content: `
     *{scrollbar-width:none!important}::-webkit-scrollbar{display:none!important}
     #rfw-launcher,.platform-home-link{display:none!important}
+    body.webcode-video-wide-code .topbar{padding:.42rem .72rem!important}
+    body.webcode-video-wide-code .main{grid-template-columns:176px minmax(0,1fr) 356px!important;gap:.65rem!important;padding:.65rem!important}
+    body.webcode-video-wide-code .lesson-panel{border-radius:20px!important}
+    body.webcode-video-wide-code .lesson-panel .lesson-toggle{padding:.56rem .7rem!important;font-size:.82rem!important}
+    body.webcode-video-wide-code .lesson-panel .lesson-toggle-icon{min-width:27px!important;height:27px!important}
+    body.webcode-video-wide-code .lesson-panel .info{display:none!important}
+    body.webcode-video-wide-code .lesson-panel .exercise-list{padding:.58rem!important;gap:.45rem!important}
+    body.webcode-video-wide-code .lesson-panel .exercise{padding:.55rem!important;border-radius:14px!important;font-size:.78rem!important;line-height:1.3!important}
+    body.webcode-video-wide-code .lesson-panel .exercise p,
+    body.webcode-video-wide-code .lesson-panel .hint,
+    body.webcode-video-wide-code .lesson-panel .exercise-controls,
+    body.webcode-video-wide-code .lesson-panel .exercise-feedback{display:none!important}
+    body.webcode-video-wide-code .lesson-panel .exercise-status{font-size:.66rem!important;padding:.22rem .44rem!important}
+    body.webcode-video-wide-code .blockly-top{padding:.48rem .7rem!important;font-size:.9rem!important}
+    body.webcode-video-wide-code .blockly-top small{display:none!important}
+    body.webcode-video-wide-code .preview-head{padding:.55rem .7rem!important}
+    body.webcode-video-wide-code .blocklyZoom{transform:scale(.88);transform-origin:left bottom}
     #realPreviewCaption{position:fixed;right:30px;bottom:24px;z-index:999999;max-width:720px;background:rgba(15,23,42,.88);color:#fff;border-radius:22px;padding:15px 20px;font:900 28px/1.25 Rubik,Arial,sans-serif;text-align:right;direction:rtl;box-shadow:0 18px 45px rgba(15,23,42,.28)}
     #realPreviewCaption small{display:block;color:#bae6fd;font-size:18px;margin-top:5px}
     .real-preview-spot{outline:7px solid #facc15!important;box-shadow:0 0 0 12px rgba(250,204,21,.25),0 18px 42px rgba(15,23,42,.28)!important;border-radius:18px!important}
@@ -163,6 +180,7 @@ async function preparePage(page) {
     .blocklySelected>.blocklyPath,.blocklySelected>.blocklyPathLight{filter:drop-shadow(0 0 12px rgba(250,204,21,.95))}
   `});
   await page.evaluate(() => {
+    if (location.pathname.includes('webcode-play')) document.body.classList.add('webcode-video-wide-code');
     const c = document.createElement('div');
     c.id = 'realPreviewCaption';
     c.innerHTML = 'הצצה מתוך השיעור <small>צילום אמיתי של הלומדה</small>';
