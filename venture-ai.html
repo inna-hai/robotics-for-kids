@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/platform-home-link.css">
   <style>
     .venture-home .hero {
-      grid-template-columns: minmax(0, 1fr) 360px;
+      grid-template-columns: minmax(0, 1fr) minmax(420px, 520px);
     }
 
     .venture-home .goal {
@@ -19,6 +19,61 @@
     }
 
     .venture-summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .venture-visual {
+      display: grid;
+      gap: 12px;
+    }
+
+    .venture-image-stack {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .venture-photo {
+      position: relative;
+      min-height: 150px;
+      margin: 0;
+      overflow: hidden;
+      border: 1px solid #dbe8f4;
+      border-radius: 16px;
+      background: #f8fcff;
+      box-shadow: 0 18px 34px rgba(15,23,42,.1);
+    }
+
+    .venture-photo:first-child {
+      min-height: 260px;
+    }
+
+    .venture-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .venture-photo span {
+      position: absolute;
+      inset-inline: 12px;
+      bottom: 12px;
+      width: fit-content;
+      max-width: calc(100% - 24px);
+      padding: 8px 11px;
+      border-radius: 999px;
+      color: #10213f;
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 8px 22px rgba(15,23,42,.12);
+      font-size: .9rem;
+      font-weight: 900;
+    }
+
+    .venture-side-images {
       display: grid;
       gap: 12px;
     }
@@ -401,6 +456,7 @@
       .venture-home .hero,
       .program-video,
       .holon-paper-head,
+      .venture-image-stack,
       .mini-grid,
       .role-grid {
         grid-template-columns: 1fr;
@@ -418,8 +474,14 @@
       }
 
       .holon-grid,
-      .holon-timeline {
+      .holon-timeline,
+      .venture-summary {
         grid-template-columns: 1fr;
+      }
+
+      .venture-photo,
+      .venture-photo:first-child {
+        min-height: 190px;
       }
     }
   </style>
@@ -435,10 +497,28 @@
           <a class="btn" href="#meetings">4 המפגשים</a>
         </div>
       </div>
-      <aside class="venture-summary" aria-label="תקציר התוכנית">
-        <div class="venture-stat"><b>4</b><span>מפגשים בלבד</span></div>
-        <div class="venture-stat"><b>90</b><span>דקות לכל מפגש</span></div>
-        <div class="venture-stat"><b>MVP</b><span>תוצר קטן שעובד</span></div>
+      <aside class="venture-visual" aria-label="תמונות מתוך מהלך Venture AI">
+        <div class="venture-image-stack">
+          <figure class="venture-photo">
+            <img src="assets/venture-ai/meeting-1-city.webp" alt="תלמידים ממפים בעיה עירונית בחולון">
+            <span>מתחילים מבעיה עירונית</span>
+          </figure>
+          <div class="venture-side-images">
+            <figure class="venture-photo">
+              <img src="assets/venture-ai/meeting-3-build.webp" alt="צוות תלמידים בונה אבטיפוס באופאל">
+              <span>בונים MVP באופאל</span>
+            </figure>
+            <figure class="venture-photo">
+              <img src="assets/venture-ai/meeting-4-demo.webp" alt="תלמידים מציגים דמו ופיץ׳ סיום">
+              <span>מסיימים בדמו ופיץ׳</span>
+            </figure>
+          </div>
+        </div>
+        <div class="venture-summary" aria-label="תקציר התוכנית">
+          <div class="venture-stat"><b>4</b><span>מפגשים בלבד</span></div>
+          <div class="venture-stat"><b>90</b><span>דקות לכל מפגש</span></div>
+          <div class="venture-stat"><b>MVP</b><span>תוצר קטן שעובד</span></div>
+        </div>
       </aside>
     </section>
 
