@@ -159,14 +159,23 @@
       box-shadow: 0 10px 24px rgba(23,32,51,.06);
     }
 
-    .city-node .node-emoji {
+    .node-icon {
       display: grid;
       place-items: center;
       width: 58px;
       height: 58px;
       border-radius: 50%;
       background: #eaf4ff;
-      font-size: 1.9rem;
+    }
+
+    .node-icon svg {
+      width: 31px;
+      height: 31px;
+      fill: none;
+      stroke: #1d4ed8;
+      stroke-width: 2.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     .city-node strong {
@@ -205,6 +214,14 @@
       background: #fff;
       font-weight: 900;
       box-shadow: 0 8px 18px rgba(23,32,51,.05);
+    }
+
+    .chip-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--teal);
+      box-shadow: 0 0 0 4px rgba(20,184,166,.14);
     }
 
     .holon-timeline-wrap {
@@ -660,29 +677,35 @@
 
       <div class="holon-city-map" aria-label="מפת המהלך העירוני">
         <article class="city-node">
-          <span class="node-emoji" aria-hidden="true">🏫</span>
+          <span class="node-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48"><path d="M8 38h32"/><path d="M12 38V18l12-7 12 7v20"/><path d="M19 38V27h10v11"/><path d="M16 22h4M28 22h4"/></svg>
+          </span>
           <strong>כל כיתה</strong>
           <span>4 מפגשים לכל כיתה</span>
         </article>
         <div class="city-arrow" aria-hidden="true">←</div>
         <article class="city-node">
-          <span class="node-emoji" aria-hidden="true">👥</span>
+          <span class="node-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48"><path d="M9 36c3-7 8-10 15-10s12 3 15 10"/><path d="M24 22a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z"/><path d="M13 25a5 5 0 1 1 6-8M35 25a5 5 0 1 0-6-8"/></svg>
+          </span>
           <strong>צוותים</strong>
           <span>עבודה בצוותים עם אופאל</span>
         </article>
         <div class="city-arrow" aria-hidden="true">←</div>
         <article class="city-node">
-          <span class="node-emoji" aria-hidden="true">🏆</span>
+          <span class="node-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48"><path d="M14 38h20"/><path d="M18 38l2-8h8l2 8"/><path d="M14 10h20v8a10 10 0 0 1-20 0v-8Z"/><path d="M14 15H8c0 7 4 11 10 12M34 15h6c0 7-4 11-10 12"/></svg>
+          </span>
           <strong>20 נבחרים</strong>
           <span>האקתון ויום שיא ב-HIT</span>
         </article>
       </div>
 
       <div class="holon-chip-strip" aria-label="עקרונות הפעלה קצרים">
-        <span class="holon-chip">👩‍🏫 מורה קבוע</span>
-        <span class="holon-chip">⏱️ 90 דקות</span>
-        <span class="holon-chip">💻 BYOD</span>
-        <span class="holon-chip">🤝 ליווי בין מפגשים</span>
+        <span class="holon-chip"><i class="chip-dot" aria-hidden="true"></i>מורה קבוע</span>
+        <span class="holon-chip"><i class="chip-dot" aria-hidden="true"></i>90 דקות</span>
+        <span class="holon-chip"><i class="chip-dot" aria-hidden="true"></i>BYOD</span>
+        <span class="holon-chip"><i class="chip-dot" aria-hidden="true"></i>ליווי בין מפגשים</span>
       </div>
 
       <div>
