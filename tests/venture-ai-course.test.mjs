@@ -91,6 +91,8 @@ assert.ok(page.includes('marketing/venture-ai-program-explainer.mp4'), 'course p
 assert.ok(!page.includes('venture-ai-lesson1-explainer.mp4'), 'course page does not embed lesson videos');
 assert.equal([...page.matchAll(/<source src="marketing\/venture-ai-[^"]+\.mp4/g)].length, 1, 'course page embeds only the overview video');
 assert.ok(page.includes('סרטון פתיחה'), 'course page labels the explainer video clearly');
+assert.ok(page.includes('סרטון היכרות'), 'course page uses marketing-friendly video copy');
+assert.ok(!page.includes('פירוט המפגשים, סרטוני המפגשים, מצגות ודפי תלמידים עברו לעמוד נפרד'), 'course page avoids internal change-log copy');
 assert.ok(existsSync(new URL('marketing/venture-ai-program-explainer.mp4', root)), 'explainer video file exists');
 
 const preview = read('venture-ai-preview.html');
