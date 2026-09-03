@@ -121,83 +121,6 @@
       font-weight: 600;
     }
 
-    .holon-city-map {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-      gap: 12px;
-      align-items: stretch;
-    }
-
-    .city-node {
-      min-width: 0;
-      display: grid;
-      grid-template-rows: auto auto auto 1fr;
-      gap: 8px;
-      justify-items: center;
-      padding: 18px 12px;
-      border: 1px solid #dbe8f4;
-      border-radius: 18px;
-      background: #fff;
-      text-align: center;
-      box-shadow: 0 10px 24px rgba(23,32,51,.06);
-    }
-
-    .phase-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 34px;
-      height: 34px;
-      padding: 0 11px;
-      border-radius: 999px;
-      color: #fff;
-      background: var(--blue);
-      font-weight: 900;
-      box-shadow: 0 10px 20px rgba(37,99,235,.18);
-    }
-
-    .phase-node:nth-of-type(2) .phase-badge {
-      background: var(--teal);
-    }
-
-    .node-icon {
-      display: grid;
-      place-items: center;
-      width: 58px;
-      height: 58px;
-      border-radius: 50%;
-      background: #eaf4ff;
-    }
-
-    .node-icon svg {
-      width: 31px;
-      height: 31px;
-      fill: none;
-      stroke: #1d4ed8;
-      stroke-width: 2.6;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .city-node strong {
-      color: var(--blue-dark);
-      font-size: 1.25rem;
-      line-height: 1.25;
-    }
-
-    .city-node span:last-child {
-      color: var(--muted);
-      font-weight: 800;
-      line-height: 1.45;
-    }
-
-    .city-arrow {
-      align-self: center;
-      color: var(--teal);
-      font-size: 2rem;
-      font-weight: 900;
-    }
-
     .school-needs {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -633,13 +556,8 @@
         justify-self: stretch;
       }
 
-      .holon-city-map,
       .holon-timeline {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .city-arrow {
-        display: none;
       }
 
       .holon-timeline::before {
@@ -653,7 +571,6 @@
         grid-template-columns: 1fr;
       }
 
-      .holon-city-map,
       .holon-timeline,
       .school-needs,
       .venture-side-images {
@@ -737,26 +654,6 @@
         </div>
       </div>
 
-      <div class="holon-city-map" aria-label="חלוקת התוכנית לשני שלבים">
-        <article class="city-node phase-node">
-          <span class="phase-badge">1</span>
-          <span class="node-icon" aria-hidden="true">
-            <svg viewBox="0 0 48 48"><path d="M8 38h32"/><path d="M12 38V18l12-7 12 7v20"/><path d="M19 38V27h10v11"/><path d="M16 22h4M28 22h4"/></svg>
-          </span>
-          <strong>כל העיר</strong>
-          <span>4 מפגשים בכל כיתה עם מדריך מטעם ״דרך ההייטק״, בעבודה בצוותים</span>
-        </article>
-        <div class="city-arrow" aria-hidden="true">←</div>
-        <article class="city-node phase-node">
-          <span class="phase-badge">2</span>
-          <span class="node-icon" aria-hidden="true">
-            <svg viewBox="0 0 48 48"><path d="M14 38h20"/><path d="M18 38l2-8h8l2 8"/><path d="M14 10h20v8a10 10 0 0 1-20 0v-8Z"/><path d="M14 15H8c0 7 4 11 10 12M34 15h6c0 7-4 11-10 12"/></svg>
-          </span>
-          <strong>האקתון ויום שיא</strong>
-          <span>20 צוותים מכל העיר שעלו לשלב 2 ממשיכים ליום האקתון, ואחריו מציגים בפני שופטים מהעירייה ומהתעשייה</span>
-        </article>
-      </div>
-
       <div>
         <h3>מה נדרש מבית הספר?</h3>
         <div class="school-needs" aria-label="דרישות מבית הספר">
@@ -807,7 +704,7 @@
               <svg viewBox="0 0 48 48"><path d="M14 38h20"/><path d="M18 38l2-8h8l2 8"/><path d="M14 10h20v8a10 10 0 0 1-20 0v-8Z"/><path d="M14 15H8c0 7 4 11 10 12M34 15h6c0 7-4 11-10 12"/></svg>
             </div>
             <span>5.4.2027</span>
-            <h3>יום שיא עם שופטים</h3>
+            <h3>יום שיא עם שופטים מהעירייה ומהתעשייה</h3>
           </article>
         </div>
         </div>

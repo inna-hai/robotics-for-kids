@@ -70,14 +70,13 @@ assert.ok(page.includes('venture-visual'), 'course page has a visual hero area')
 assert.ok(page.indexOf('assets/venture-ai/meeting-1-city.webp') < page.indexOf('id="overview"'), 'hero image appears in the top section before Holon AI content');
 assert.ok(page.includes('assets/venture-ai/meeting-3-build.webp'), 'hero includes Opal build image');
 assert.ok(page.includes('assets/venture-ai/meeting-4-demo.webp'), 'hero includes demo image');
-assert.ok(page.includes('holon-city-map'), 'Holon content includes a compact visual city map');
+assert.ok(!page.includes('holon-city-map'), 'course page avoids duplicate phase cards above the illustrated timeline');
 assert.ok(!page.includes('holon-chip-strip'), 'course page avoids duplicate operating-detail chips');
 assert.ok(!page.includes('holon-card'), 'Holon top section avoids text-heavy cards');
 assert.ok(!page.includes('מורה קבוע'), 'course page no longer says fixed teacher');
 assert.ok(!page.includes('BYOD'), 'course page avoids BYOD jargon in the focused overview');
 assert.ok(page.includes('עד 8.10.2026'), 'course page includes Holon scheduling deadline');
 assert.ok(page.includes('15.2.2027'), 'course page includes Holon hackathon milestone date');
-assert.ok(page.includes('חלוקת התוכנית לשני שלבים'), 'course page frames the program as two clear phases');
 assert.ok(page.includes('4 מפגשים בכל כיתה עם מדריך מטעם ״דרך ההייטק״'), 'course page clarifies each class receives 4 meetings with a Derech HaHitech instructor');
 assert.ok(page.includes('20 צוותים מכל העיר שעלו לשלב 2'), 'course page clarifies the hackathon teams advanced from the citywide phase');
 assert.ok(page.includes('שופטים מהעירייה ומהתעשייה'), 'course page explains the final judging audience');
