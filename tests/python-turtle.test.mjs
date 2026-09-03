@@ -7,7 +7,8 @@ const research = readFileSync(new URL('../PYTHON_TURTLE_RESEARCH.md', import.met
 
 assert.match(html, /פייתון מצייר/);
 assert.match(html, /גוררים בלוקים ורואים קוד Python/);
-assert.match(html, /https:\/\/unpkg\.com\/blockly\/blockly\.min\.js/);
+assert.match(html, /js\/vendor\/blockly\/blockly\.min\.js/);
+assert.match(html, /js\/vendor\/blockly\/msg\/he\.js/);
 assert.match(html, /const TURTLE_LESSONS = \[/);
 assert.match(html, /py_forward/);
 assert.match(html, /py_right/);

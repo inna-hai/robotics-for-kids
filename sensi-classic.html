@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🤖 סנסי קלאסי - 5 שיעורי חושים</title>
-    <script src="https://unpkg.com/blockly/blockly.min.js"></script>
-    <script src="https://unpkg.com/blockly/msg/he.js"></script>
+    <script src="js/vendor/blockly/blockly.min.js"></script>
+    <script src="js/vendor/blockly/msg/he.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -1132,8 +1132,8 @@
                     }
                 ]
             };
-
             workspace = Blockly.inject('blocklyDiv', {
+                media: 'js/vendor/blockly/media/',
                 toolbox: toolbox,
                 rtl: true,
                 scrollbars: true,

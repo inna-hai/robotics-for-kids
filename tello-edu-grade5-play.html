@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🚁 Tello EDU — לומדת ניווט ובקרה</title>
   <meta name="description" content="לומדת Tello EDU מותאמת טאבלט Lenovo TB311FU: בלוקים מתחברים בסגנון DroneBlocks/Blockly, סימולטור שמיים, בטיחות, המראה, נחיתה ו־Yaw." />
-  <script src="https://unpkg.com/blockly/blockly.min.js"></script>
-  <script src="https://unpkg.com/blockly/msg/he.js"></script>
+  <script src="js/vendor/blockly/blockly.min.js"></script>
+  <script src="js/vendor/blockly/msg/he.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/platform-home-link.css?v=20260819-tello-4">
   <style>
@@ -169,6 +169,7 @@
         return;
       }
       workspace = Blockly.inject('blocklyDiv', {
+        media: 'js/vendor/blockly/media/',
         rtl: true,
         trashcan: true,
         scrollbars: true,

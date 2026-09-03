@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>⛏️ מיינקראפט קידס — Blockly</title>
-  <script src="https://unpkg.com/blockly/blockly.min.js"></script>
-  <script src="https://unpkg.com/blockly/msg/he.js"></script>
+  <script src="js/vendor/blockly/blockly.min.js"></script>
+  <script src="js/vendor/blockly/msg/he.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <style>
 
@@ -769,7 +769,7 @@
       document.getElementById('tabs').innerHTML = window.MINECRAFT_KIDS_LESSONS.map(l => `<a class="tab ${l.id===lesson.id?'active':''}" href="minecraft-play.html?lesson=${l.id}" title="שיעור ${l.id}: ${esc(l.title)}"><span>${l.emoji}</span><small>${l.id}</small><b>${esc(l.title)}</b></a>`).join('');
       updatePointsStatus();
       sizeBlocklyArea();
-      workspace = Blockly.inject('blocklyDiv', { toolbox: toolboxXml(), rtl: true, trashcan: true, scrollbars: true, zoom: { controls: true, wheel: true, startScale: .9, maxScale: 1.4, minScale: .55 } });
+      workspace = Blockly.inject('blocklyDiv', { media: 'js/vendor/blockly/media/', toolbox: toolboxXml(), rtl: true, trashcan: true, scrollbars: true, zoom: { controls: true, wheel: true, startScale: .9, maxScale: 1.4, minScale: .55 } });
       installBlocklyResizeWatcher();
       scheduleBlocklyLayoutRefresh();
       window.addEventListener('resize', scheduleBlocklyLayoutRefresh);
