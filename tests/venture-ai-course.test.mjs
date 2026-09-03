@@ -70,7 +70,7 @@ assert.ok(page.indexOf('assets/venture-ai/meeting-1-city.webp') < page.indexOf('
 assert.ok(page.includes('assets/venture-ai/meeting-3-build.webp'), 'hero includes Opal build image');
 assert.ok(page.includes('assets/venture-ai/meeting-4-demo.webp'), 'hero includes demo image');
 assert.ok(page.includes('holon-city-map'), 'Holon content includes a compact visual city map');
-assert.ok(page.includes('holon-chip-strip'), 'Holon operating details are compact chips');
+assert.ok(!page.includes('holon-chip-strip'), 'course page avoids duplicate operating-detail chips');
 assert.ok(!page.includes('holon-card'), 'Holon top section avoids text-heavy cards');
 assert.ok(!page.includes('מורה קבוע'), 'course page no longer says fixed teacher');
 assert.ok(!page.includes('BYOD'), 'course page avoids BYOD jargon in the focused overview');
