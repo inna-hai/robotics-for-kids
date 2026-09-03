@@ -104,12 +104,19 @@ assert.ok(existsSync(new URL('marketing/venture-ai-program-explainer.mp4', root)
 
 const preview = read('venture-ai-preview.html');
 assert.ok(preview.includes('הצצה לתוכנית'), 'preview page has title');
+assert.ok(preview.includes('הצצה לחוויית הלמידה'), 'preview page uses external marketing copy');
 assert.ok(preview.includes('id="lessonCards"'), 'preview page renders meeting cards');
 assert.ok(preview.includes('venture-ai-slides.html?lesson=${lesson.id}'), 'preview page links instructor slides inside each lesson');
 assert.ok(preview.includes('venture-ai-students.html?lesson=${lesson.id}'), 'preview page links student worksheet inside each lesson');
 assert.ok(preview.includes('https://opal.hai.tech/'), 'preview page links Opal');
 assert.ok(preview.includes('lesson.video ? `<video class="meeting-video"'), 'preview page embeds lesson videos inside meeting cards');
 assert.ok(!preview.includes('venture-ai-improvement.html'), 'preview page keeps improvement request out of the top hero actions');
+assert.ok(!preview.includes('עמוד פנימי'), 'preview page avoids internal positioning copy');
+assert.ok(!preview.includes('מצגות המדריך'), 'preview page avoids internal instructor-materials copy in the hero');
+assert.ok(!preview.includes('דפי התלמידים'), 'preview page avoids internal worksheet copy in the hero');
+assert.ok(!preview.includes('מצגת מדריך'), 'preview page avoids internal instructor button label');
+assert.ok(!preview.includes('דף תלמידים'), 'preview page avoids internal student-page button label');
+assert.ok(!preview.includes('מטרת מדריך'), 'preview page avoids internal instructor-detail label');
 
 const slides = read('venture-ai-slides.html');
 assert.ok(slides.includes('מצגת מדריך'), 'slides page is instructor deck');

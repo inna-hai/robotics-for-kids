@@ -159,9 +159,9 @@
   <main class="shell">
     <section class="hero preview-hero">
       <div>
-        <div class="kicker">הצצה לתוכנית • Venture AI</div>
-        <h1>מה קורה בארבעת המפגשים?</h1>
-        <p class="goal">עמוד פנימי למי שרוצה לראות את פירוט המפגשים, סרטוני ההסבר, מצגות המדריך ודפי התלמידים.</p>
+        <div class="kicker">Venture AI חולון • הצצה לתוכנית</div>
+        <h1>איך נראים ארבעת המפגשים?</h1>
+        <p class="goal">הצצה לחוויית הלמידה: צוותים בכיתה מזהים בעיה עירונית, מחדדים רעיון, בונים אבטיפוס ב־AI ומציגים תוצר יזמי קצר.</p>
         <div class="actions">
           <a class="btn" href="venture-ai.html">חזרה לעמוד התוכנית</a>
         </div>
@@ -178,7 +178,7 @@
       <div class="preview-chip-card"><b>4</b><span>דמו ופיץ׳</span></div>
     </section>
 
-    <section class="steps" id="lessonCards" aria-label="פירוט מפגשים"></section>
+    <section class="steps" id="lessonCards" aria-label="הצצה למפגשים"></section>
   </main>
 
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
@@ -198,23 +198,23 @@
         <p>${esc(lesson.subtitle)}</p>
         <div class="meeting-outcome">תוצר: ${esc(lesson.productStage)}</div>
         <div class="meeting-actions">
-          <a class="btn" href="venture-ai-slides.html?lesson=${lesson.id}">מצגת מדריך</a>
-          <a class="btn secondary" href="venture-ai-students.html?lesson=${lesson.id}">דף תלמידים</a>
-          <a class="btn secondary" href="https://opal.hai.tech/">פתחו אופאל</a>
+          <a class="btn" href="venture-ai-slides.html?lesson=${lesson.id}">מצגת המפגש</a>
+          <a class="btn secondary" href="venture-ai-students.html?lesson=${lesson.id}">דף פעילות</a>
+          <a class="btn secondary" href="https://opal.hai.tech/">סביבת Opal</a>
         </div>
         <details class="deep-dive">
-          <summary>פירוט מפגש</summary>
+          <summary>מה קורה במפגש</summary>
           <div class="mini-grid">
-            <div class="mini-panel"><b>מטרת מדריך</b>${esc(lesson.teacherGoal)}</div>
+            <div class="mini-panel"><b>מטרת המפגש</b>${esc(lesson.teacherGoal)}</div>
             <div class="mini-panel"><b>מה הילדים יוצרים</b>${esc(lesson.studentOutcome)}</div>
-            <div class="mini-panel"><b>פתיחה מומלצת</b>${esc(lesson.openingDemo)}</div>
-            <div class="mini-panel"><b>פרומפט אופאל</b>${esc(lesson.opalPrompt)}</div>
+            <div class="mini-panel"><b>פתיחת המפגש</b>${esc(lesson.openingDemo)}</div>
+            <div class="mini-panel"><b>עבודה עם Opal</b>${esc(lesson.opalPrompt)}</div>
           </div>
-          <b>מהלך זמן</b>
+          <b>רצף הפעילות</b>
           <ul class="flow-list">
             ${lesson.flow.map(step => `<li><b>${esc(step.minutes)}</b><span><strong>${esc(step.title)}</strong><br>${esc(step.students)}</span></li>`).join('')}
           </ul>
-          <b>משימות עבודה</b>
+          <b>משימות הצוותים</b>
           <ul class="simple-list">
             ${lesson.workshopTasks.map(task => `<li>${esc(task)}</li>`).join('')}
           </ul>
