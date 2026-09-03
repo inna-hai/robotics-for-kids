@@ -135,19 +135,16 @@ assert.ok(lesson8.exercises[4].prompt.includes('בחרו את הצבע שאתם 
 
 
 const lesson9 = lessons.find(lesson => lesson.id === 9);
-assert.equal(lesson9.exercises.length, 6, 'lesson 9 removes weak recap exercises');
-assert.ok(lesson9.exercises[0].check.requiresPreviewLivesFromBlockField, 'lesson 9 lives exercise validates the live lives display');
-assert.ok(lesson9.exercises[2].check.requiresPreviewLivesAfterPenalty, 'lesson 9 obstacle exercise validates lives after a preview penalty');
-assert.ok(lesson9.exercises[4].check.requiresPreviewMessageFromBlockOutput, 'lesson 9 smart-skip exercise validates the visible preview message');
+assert.equal(lesson9.exercises.length, 6, 'lesson 9 keeps a focused six-exercise sequence');
+assert.ok(lesson9.starter.js.includes('const totalStars = 28') && lesson9.starter.js.includes('const totalObstacles = 12'), 'lesson 9 uses fixed star and obstacle counts');
+assert.ok(lesson9.starter.js.includes('const totalItems = totalStars + totalObstacles'), 'lesson 9 ends after the fixed combined item count');
+assert.ok(lesson9.starter.js.includes('function shuffle') && lesson9.starter.js.includes('Math.random'), 'lesson 9 randomizes the fixed item deck');
+assert.ok(lesson9.starter.js.includes('function finishGame') && lesson9.starter.js.includes('מתוך " + totalStars'), 'lesson 9 final message compares collected stars to total stars');
+assert.ok(lesson9.exercises[1].check.jsIncludes?.includes('const totalStars = 28'), 'lesson 9 exercise 2 checks fixed star count');
+assert.ok(lesson9.exercises[2].check.requiresCodePeek, 'lesson 9 random exercise requires opening generated code');
+assert.ok(lesson9.exercises[4].check.jsIncludes?.includes('currentIndex >= totalItems'), 'lesson 9 finish exercise checks fixed-route ending');
 assert.equal(lesson9.exercises.at(-1).check.requiresCodeSelectionTab, 'js', 'lesson 9 final code-peek exercise requires JavaScript highlighting');
-assert.ok(play.includes('livesText') && play.includes('hasPreviewLivesAfterPenalty'), 'player can validate lives changes shown in the live preview');
-assert.ok(play.includes('livesText') && play.includes('hasPreviewLivesFromBlockField'), 'player can validate lives display from block fields');
-
-assert.ok(!lesson9.exercises.slice(0, 5).some(ex => ex.check.changedBlocklyFields), 'lesson 9 allows sensible default dropdown/text values when they fit the game');
-assert.ok(lesson9.starter.js.includes('nextItem(feedbackText = "")') && lesson9.starter.js.includes('feedbackText + " " + nextMessage'), 'lesson 9 keeps star/skip feedback visible with the current-item hint naturally appended');
-assert.ok(lesson9.starter.js.includes('score = Math.max(0, score - 1)') && lesson9.starter.js.includes('דילגתם על כוכב ואיבדתם נקודה'), 'lesson 9 skip-star path subtracts a point');
 assert.ok(!JSON.stringify(lesson9).includes('פריט חדש'), 'lesson 9 removes redundant new-item button/copy');
-assert.equal(lesson9.exercises[4].check.requiresPreviewButtonText, 'דלגו', 'lesson 9 smart-skip exercise checks the skip button');
 assert.notEqual(lesson9.blocklyBlocks.find(block => block.type === 'lesson_9_smart_skip').args0[0].text, 'דילוג חכם!', 'lesson 9 smart-skip block has a visible default change');
 assert.notEqual(lesson9.blocklyBlocks.find(block => block.type === 'lesson_9_gameover').args0[0].text, 'נגמרו החיים. נסו שוב!', 'lesson 9 game-over block has a visible default change');
 assert.ok(lesson9.starter.js.includes('if (lives > 0)') && lesson9.starter.js.includes('if (lives <= 0)'), 'lesson 9 does not overwrite Game Over by immediately rolling a new item');
@@ -155,5 +152,5 @@ assert.ok(lesson9.starter.js.includes('if (lives > 0)') && lesson9.starter.js.in
 assert.ok(play.includes('disabled="true"') && !play.includes('אפשר בלוק עמוד אחד בלבד'), 'toolbox greys/disables the page root block without an extra note');
 assert.ok(play.includes("getAllBlocks(false).filter(block => block.type === 'page_start')") && play.includes('block.dispose(false, true)'), 'player enforces a single page root block even if duplicates appear from saved state/history');
 
-assert.equal(lesson9.exercises[1].check.requiresPreviewScoreFromBlockField.mode, 'increase', 'lesson 9 exercise 2 accepts score increasing by the star value from the current score');
+assert.ok(lesson9.exercises[3].check.jsIncludes?.includes('score = score +'), 'lesson 9 action exercise checks score increase code');
 assert.ok(play.includes('scoreBefore') && play.includes("rule.mode === 'increase'") && play.includes('actual === before + expected'), 'player can validate score increase from a preview click');
