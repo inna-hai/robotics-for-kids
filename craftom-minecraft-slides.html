@@ -35,7 +35,8 @@
       <section class="slide"><span class="tag">Craftom Challenges • כיתה ז׳</span><h1>${esc(challenge.title)}</h1><p>${esc(challenge.story)}</p></section>
       <section class="slide"><h2>סרטון פתיחה</h2><video class="video" src="${esc(challenge.video)}" poster="${esc(challenge.poster)}" controls playsinline preload="metadata"></video></section>
       <section class="slide"><h2>מה לומדים?</h2><p>${esc(challenge.concept)}</p><p><b>פקודות:</b> ${esc(challenge.command)}</p></section>
-      <section class="slide"><h2>4 מפגשים</h2><ul>${challenge.meetings.map(item => `<li><b>${esc(item[0])} ${esc(item[1])}:</b> ${esc(item[3])}</li>`).join('')}</ul></section>
+      <section class="slide"><h2>4 מפגשים</h2><ul>${challenge.meetings.map(item => `<li><b>${esc(item[0])} ${esc(item[1])}:</b> ${esc(item[4].goal)}</li>`).join('')}</ul></section>
+      ${challenge.meetings.map(item => `<section class="slide"><span class="tag">שיעור ${esc(item[0])}</span><h2>${esc(item[1])}</h2><p>${esc(item[2])}</p><ul>${item[4].teacher.map(step => `<li>${esc(step)}</li>`).join('')}</ul></section>`).join('')}
       <section class="slide"><h2>איך יודעים שזה עבד?</h2><ul>${challenge.checks.map(item => `<li>${esc(item)}</li>`).join('')}</ul></section>
     `;
   </script>

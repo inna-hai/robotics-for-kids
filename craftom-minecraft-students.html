@@ -68,7 +68,10 @@
       <a class="btn secondary" href="${esc(challenge.video)}">פתחו סרטון</a>
       <a class="btn secondary" href="craftom-school/preview/index.html">מפת הקורס</a>
     `;
-    document.getElementById('meetings').innerHTML = challenge.meetings.map(item => `<li><b>${esc(item[0])} ${esc(item[1])}</b><br>${esc(item[2])}<br><span class="muted">תוצר: ${esc(item[3])}</span></li>`).join('');
+    document.getElementById('meetings').innerHTML = challenge.meetings.map(item => {
+      const detail = item[4];
+      return `<li><b>${esc(item[0])} ${esc(item[1])}</b><br>${esc(item[2])}<br><span class="muted">תוצר: ${esc(item[3])}</span><br><strong>מה עושים:</strong> ${detail.build.map(esc).join(' · ')}<br><strong>בודקים:</strong> ${esc(detail.exit)}</li>`;
+    }).join('');
     document.getElementById('checks').innerHTML = challenge.checks.map(item => `<li>${esc(item)}</li>`).join('');
   </script>
 </body>

@@ -19,6 +19,12 @@
     .meeting-card{min-height:0}
     .meeting-card p{margin:0}
     .evidence{display:block;margin-top:8px;color:var(--muted);font-weight:800}
+    .lesson-detail{display:grid;gap:12px}
+    .detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .detail-box{border:1px solid var(--line);border-radius:14px;background:#fff;padding:12px}
+    .detail-box h3{margin:0 0 8px;font-size:1rem;color:var(--blue-dark)}
+    .detail-box ul{margin:0;padding-right:18px}
+    @media(max-width:760px){.detail-grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -43,6 +49,7 @@
       <article class="card"><h2>בדיקת Craftom</h2><ul id="checks"></ul></article>
       <article class="card"><h2>רצף עבודה בכיתה</h2><ul id="flow"></ul></article>
     </section>
+    <section class="lesson-detail" id="lessonDetails" style="margin-top:16px"></section>
   </main>
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
   <script src="js/craftom-minecraft-challenges.js?v=20260903-grade7"></script>
@@ -76,6 +83,23 @@
     `).join('');
     document.getElementById('checks').innerHTML = challenge.checks.map(item => `<li>${esc(item)}</li>`).join('');
     document.getElementById('flow').innerHTML = challenge.meetings.map(item => `<li><strong>${esc(item[0])} - ${esc(item[1])}:</strong> ${esc(item[3])}</li>`).join('');
+    document.getElementById('lessonDetails').innerHTML = challenge.meetings.map(item => {
+      const detail = item[4];
+      return `
+        <article class="card">
+          <span class="tag">שיעור מפורט ${esc(item[0])}</span>
+          <h2>${esc(item[1])}</h2>
+          <p class="goal">${esc(detail.goal)}</p>
+          <div class="detail-grid">
+            <div class="detail-box"><h3>מה המורה עושה</h3><ul>${detail.teacher.map(step => `<li>${esc(step)}</li>`).join('')}</ul></div>
+            <div class="detail-box"><h3>מה בונים במיינקראפט</h3><ul>${detail.build.map(step => `<li>${esc(step)}</li>`).join('')}</ul></div>
+            <div class="detail-box"><h3>קוד / MakeCode</h3><ul>${detail.code.map(step => `<li>${esc(step)}</li>`).join('')}</ul></div>
+            <div class="detail-box"><h3>ראיות Craftom</h3><ul>${detail.evidence.map(step => `<li>${esc(step)}</li>`).join('')}</ul></div>
+          </div>
+          <p><strong>כרטיס יציאה:</strong> ${esc(detail.exit)}</p>
+        </article>
+      `;
+    }).join('');
   </script>
 </body>
 </html>
