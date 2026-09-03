@@ -8,37 +8,35 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260824-omer-style">
-  <link rel="stylesheet" href="css/platform-home-link.css">
   <style>
     .venture-home .hero {
-      grid-template-columns: minmax(0, 1fr) minmax(420px, 520px);
+      grid-template-columns: minmax(0, 1.08fr) minmax(340px, 440px);
+      gap: clamp(28px, 5vw, 68px);
+      align-items: center;
+      margin-bottom: 24px;
     }
 
     .venture-home .goal {
-      max-width: 760px;
-    }
-
-    .venture-summary {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
+      max-width: 700px;
     }
 
     .venture-visual {
       display: grid;
       gap: 12px;
+      max-width: 440px;
+      justify-self: start;
     }
 
     .venture-image-stack {
       display: grid;
-      grid-template-columns: 1.2fr .8fr;
+      grid-template-columns: 1fr;
       gap: 12px;
       align-items: stretch;
     }
 
     .venture-photo {
       position: relative;
-      min-height: 150px;
+      min-height: 116px;
       margin: 0;
       overflow: hidden;
       border: 1px solid #dbe8f4;
@@ -48,7 +46,7 @@
     }
 
     .venture-photo:first-child {
-      min-height: 260px;
+      min-height: 230px;
     }
 
     .venture-photo img {
@@ -75,23 +73,8 @@
 
     .venture-side-images {
       display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
-    }
-
-    .venture-stat {
-      display: grid;
-      gap: 4px;
-      padding: 16px;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      background: linear-gradient(180deg, #ffffff, #f2f8ff);
-      box-shadow: 0 10px 26px rgba(23,32,51,.07);
-    }
-
-    .venture-stat b {
-      color: var(--blue);
-      font-size: 2rem;
-      line-height: 1;
     }
 
     .section-title {
@@ -577,10 +560,14 @@
     @media (max-width: 850px) {
       .venture-home .hero,
       .program-video,
-      .venture-image-stack,
       .mini-grid,
       .role-grid {
         grid-template-columns: 1fr;
+      }
+
+      .venture-visual {
+        max-width: none;
+        justify-self: stretch;
       }
 
       .holon-city-map,
@@ -605,7 +592,7 @@
 
       .holon-city-map,
       .holon-timeline,
-      .venture-summary {
+      .venture-side-images {
         grid-template-columns: 1fr;
       }
 
@@ -668,11 +655,6 @@
               <span>מסיימים בדמו ופיץ׳</span>
             </figure>
           </div>
-        </div>
-        <div class="venture-summary" aria-label="תקציר התוכנית">
-          <div class="venture-stat"><b>ח׳</b><span>כל שכבת הגיל בעיר</span></div>
-          <div class="venture-stat"><b>4</b><span>מפגשים בכל כיתה</span></div>
-          <div class="venture-stat"><b>AI</b><span>מיזם צוותי קצר</span></div>
         </div>
       </aside>
     </section>
@@ -765,7 +747,5 @@
     </section>
   </main>
 
-  <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
 </body>
 </html>
