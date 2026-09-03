@@ -60,6 +60,9 @@ assert.ok(page.includes('HOLON AI'), 'course page includes Holon AI position pap
 assert.ok(page.includes('תוכנית דגל עירונית'), 'course page opens with the city flagship framing');
 assert.ok(page.includes('כל כיתות ח׳'), 'course page clarifies the citywide grade 8 audience');
 assert.ok(page.includes('מטרות התוכנית'), 'course page includes focused program goals');
+assert.ok(page.includes('לתת לכל תלמיד ותלמידה'), 'course page makes the main student goal clear');
+assert.ok(page.includes('כלים טכנולוגיים ב־AI'), 'course page frames AI as practical technology tools');
+assert.ok(page.includes('תוצר יזמי'), 'course page clarifies the entrepreneurial product outcome');
 assert.ok(page.includes('בשיתוף חברה חיצונית'), 'course page explains the external partner delivery');
 assert.ok(page.includes('מדריכים חיצוניים'), 'course page says external instructors lead the class');
 assert.ok(page.includes('venture-visual'), 'course page has a visual hero area');
