@@ -56,6 +56,11 @@ assert.ok(program.pitchTemplate[0].includes('חולון'), 'pitch template keeps
 
 const page = read('venture-ai.html');
 assert.ok(page.includes('מרעיון למיזם עם AI'), 'course page has title');
+assert.ok(page.includes('HOLON AI'), 'course page includes Holon AI position paper content');
+assert.ok(page.includes('המסגרת העירונית שמעל תוכנית Venture AI'), 'course page includes Holon AI overview');
+assert.ok(page.includes('שיבוץ עד 8.10.2026'), 'course page includes Holon scheduling deadline');
+assert.ok(page.includes('האקתון 15.2.2027'), 'course page includes Holon hackathon milestone');
+assert.ok(page.indexOf('id="holon-ai"') < page.indexOf('aria-labelledby="programVideoTitle"'), 'Holon AI content appears above the original course content');
 assert.ok(page.includes('venture-ai-slides.html?lesson=${lesson.id}'), 'course page links instructor slides inside each lesson');
 assert.ok(page.includes('venture-ai-students.html?lesson=${lesson.id}'), 'course page links student worksheet inside each lesson');
 assert.ok(page.includes('venture-ai-improvement.html'), 'course page links improvement request form');
