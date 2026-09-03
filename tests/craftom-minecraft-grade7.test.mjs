@@ -77,4 +77,11 @@ for (let id = 1; id <= 16; id += 1) {
   assert.match(lessonPage, /craftom-minecraft-lesson-page\.js/, `lesson ${id} loads shared renderer`);
 }
 
+const lessonTemplate = read('craftom-minecraft-lesson.html');
+const lessonRenderer = read('js/craftom-minecraft-lesson-page.js');
+assert.match(lessonTemplate, /challengeLessonMap/, 'lesson template has a map for lessons in the current challenge');
+assert.match(lessonRenderer, /filter\(item => item\.challengeId === lesson\.challengeId\)/, 'lesson renderer filters the current challenge lesson map');
+assert.match(lessonRenderer, /challengeMapLink/, 'lesson renderer links back to the current challenge map');
+assert.match(lessonRenderer, /לכל האתגרים/, 'lesson renderer links back up to all challenges');
+
 console.log('Craftom grade 7 course restoration checks passed');

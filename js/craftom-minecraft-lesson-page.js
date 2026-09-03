@@ -41,6 +41,15 @@
           <article class="detail-box"><h2>ראיות Craftom</h2><ul id="evidence"></ul></article>
         </section>
         <section class="card" style="margin-top:16px">
+          <span class="tag" id="challengeMapTitle"></span>
+          <h2>מפת שיעורי האתגר</h2>
+          <div class="challenge-lesson-map" id="challengeLessonMap"></div>
+          <div class="actions">
+            <a class="btn" id="challengeMapLink" href="#">למפת האתגר</a>
+            <a class="btn secondary" href="craftom-school/preview/index.html">לכל האתגרים</a>
+          </div>
+        </section>
+        <section class="card" style="margin-top:16px">
           <h2>כרטיס יציאה</h2>
           <p id="exitTicket"></p>
           <div class="worksheet-lines"><div class="line"></div></div>
@@ -71,9 +80,20 @@
   document.getElementById('video').src = lesson.video;
   document.getElementById('video').poster = lesson.poster;
   document.getElementById('challengeLink').href = `craftom-minecraft-challenge.html?challenge=${lesson.challengeId}`;
+  document.getElementById('challengeMapLink').href = `craftom-minecraft-challenge.html?challenge=${lesson.challengeId}`;
   document.getElementById('studentLink').href = `craftom-minecraft-students.html?challenge=${lesson.challengeId}`;
   document.getElementById('slidesLink').href = `craftom-minecraft-slides.html?challenge=${lesson.challengeId}`;
   document.getElementById('prevLink').href = `craftom-minecraft-lesson-${Math.max(1, lesson.id - 1)}.html`;
   document.getElementById('nextLink').href = `craftom-minecraft-lesson-${Math.min(program.totalMeetings, lesson.id + 1)}.html`;
   document.getElementById('lessonNav').innerHTML = program.lessons.map(item => `<a class="${item.id === lesson.id ? 'active' : ''}" href="craftom-minecraft-lesson-${item.id}.html">${item.id}</a>`).join('');
+  document.getElementById('challengeMapTitle').textContent = `אתגר ${lesson.challengeId}: ${lesson.challengeTitle}`;
+  document.getElementById('challengeLessonMap').innerHTML = program.lessons
+    .filter(item => item.challengeId === lesson.challengeId)
+    .map(item => `
+      <a class="${item.id === lesson.id ? 'active' : ''}" href="craftom-minecraft-lesson-${item.id}.html">
+        <span>שיעור ${item.id}</span>
+        <strong>${esc(item.title)}</strong>
+        <small>${esc(item.deliverable)}</small>
+      </a>
+    `).join('');
 })();

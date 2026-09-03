@@ -330,12 +330,52 @@ h2 {
   background: #f8fcff;
 }
 
+.challenge-lesson-map {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.challenge-lesson-map a {
+  display: grid;
+  gap: 5px;
+  min-height: 132px;
+  padding: 12px;
+  border: 1px solid #c7daec;
+  border-radius: 14px;
+  color: var(--ink);
+  background: #fff;
+  text-decoration: none;
+}
+
+.challenge-lesson-map a.active {
+  border-color: var(--blue);
+  background: #eef6ff;
+  box-shadow: 0 10px 22px rgba(37, 99, 235, .12);
+}
+
+.challenge-lesson-map span {
+  color: var(--blue-dark);
+  font-weight: 900;
+}
+
+.challenge-lesson-map strong {
+  font-size: 1.03rem;
+}
+
+.challenge-lesson-map small {
+  color: var(--muted);
+  font-weight: 700;
+  line-height: 1.45;
+}
+
 @media (max-width: 900px) {
   .hero,
   .grid,
   .grid-4,
   .steps,
-  .detail-grid {
+  .detail-grid,
+  .challenge-lesson-map {
     grid-template-columns: 1fr;
   }
 
