@@ -6369,6 +6369,9 @@ function resetAdventure() {
       const answerBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_5_answer');
       const successBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_5_success');
       const answerExercise = lesson.exercises.find(item => item.id === 2);
+      if(questionExercise?.check){
+        questionExercise.check.fieldFeedback = 'כמעט. הבלוק מחובר, עכשיו שנו את הטקסט שבתוכו כדי שהשינוי יהיה שלכם.';
+      }
       if(answerExercise && answerBlock){
         answerExercise.title = 'תרגיל 2 — תשובה נכונה בטקסט חופשי';
         answerExercise.prompt = 'גררו וחברו את הבלוק “התשובה הנכונה היא”. כתבו בתוכו תשובה נכונה שמתאימה לשאלה שלכם. אחר כך כתבו תשובה כלשהי בתצוגה החיה ולחצו על “בדקו תשובה” כדי לראות מה החידון מחזיר.';
@@ -6395,6 +6398,7 @@ function resetAdventure() {
         successExercise.check.previewInputFeedback = 'כמעט. כתבו תשובה בשדה שבתצוגה החיה לפני הלחיצה.';
         delete successExercise.check.previewInputMatchFeedback;
         successExercise.check.previewFeedbackClassFeedback = 'כמעט. לחצתם, אבל החידון עוד לא קיבל את התשובה כנכונה. נסו תשובה נכונה שמתאימה לשאלה.';
+        successExercise.check.fieldFeedback = 'כמעט. הבלוק מחובר, עכשיו שנו את הטקסט שבתוכו כדי שהשינוי יהיה שלכם.';
       }
       if(wrongExercise && answerBlock){
         wrongExercise.prompt = 'גררו וחברו את הבלוק “אחרת כתוב”. שנו את הטקסט שבתוכו לטקסט שמתאים לפרויקט שלכם. אחר כך כתבו בתצוגה החיה תשובה שגויה — תשובה שונה מהתשובה הנכונה — לחצו על “בדקו תשובה”, וודאו שמתקבל משוב של “אחרת”.';
@@ -6407,6 +6411,7 @@ function resetAdventure() {
         wrongExercise.check.previewInputFeedback = 'כמעט. כתבו תשובה בשדה שבתצוגה החיה לפני הלחיצה.';
         wrongExercise.check.previewInputDiffersFeedback = 'כמעט. בתרגיל הזה צריך לבדוק תשובה שגויה — כתבו תשובה שונה מהתשובה הנכונה שהגדרתם.';
         wrongExercise.check.previewFeedbackClassFeedback = 'כמעט. לחצתם, אבל עוד לא התקבל משוב של “אחרת”. בדקו שכתבתם תשובה שגויה.';
+        wrongExercise.check.fieldFeedback = 'כמעט. הבלוק מחובר, עכשיו שנו את הטקסט שבתוכו כדי שהשינוי יהיה שלכם.';
       }
       lesson.exercises = lesson.exercises.filter(exercise => exercise.id !== 7);
       const codePeekExercise = lesson.exercises.find(item => item.id === 8);
