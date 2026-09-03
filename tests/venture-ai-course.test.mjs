@@ -64,6 +64,9 @@ assert.ok(page.includes('assets/venture-ai/meeting-3-build.webp'), 'hero include
 assert.ok(page.includes('assets/venture-ai/meeting-4-demo.webp'), 'hero includes demo image');
 assert.ok(page.includes('שיבוץ עד 8.10.2026'), 'course page includes Holon scheduling deadline');
 assert.ok(page.includes('האקתון 15.2.2027'), 'course page includes Holon hackathon milestone');
+assert.ok(page.includes('4 מפגשים לכל כיתה'), 'course page clarifies that each class receives 4 meetings');
+assert.ok(page.includes('20 צוותים מכל העיר'), 'course page clarifies that 20 citywide teams advance');
+assert.ok(page.includes('עבודה בצוותים'), 'course page highlights team work inside each class');
 assert.ok(page.indexOf('id="holon-ai"') < page.indexOf('aria-labelledby="programVideoTitle"'), 'Holon AI content appears above the original course content');
 assert.ok(page.includes('venture-ai-slides.html?lesson=${lesson.id}'), 'course page links instructor slides inside each lesson');
 assert.ok(page.includes('venture-ai-students.html?lesson=${lesson.id}'), 'course page links student worksheet inside each lesson');
