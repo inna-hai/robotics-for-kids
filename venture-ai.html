@@ -126,8 +126,6 @@
     }
 
     .holon-paper-head p,
-    .holon-card p,
-    .holon-card li,
     .holon-step p,
     .holon-step li {
       color: var(--muted);
@@ -140,40 +138,73 @@
       font-weight: 600;
     }
 
-    .holon-grid {
+    .holon-city-map {
       display: grid;
-      gap: 12px;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 10px;
+      align-items: stretch;
     }
 
-    .holon-grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-
-    .holon-card,
-    .holon-step {
+    .city-node {
       min-width: 0;
-      padding: 16px;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: 6px;
+      justify-items: center;
+      padding: 18px 12px;
       border: 1px solid #dbe8f4;
-      border-radius: 14px;
+      border-radius: 18px;
       background: #fff;
+      text-align: center;
       box-shadow: 0 10px 24px rgba(23,32,51,.06);
     }
 
-    .holon-card b {
-      display: block;
+    .city-node .node-emoji {
+      display: grid;
+      place-items: center;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: #eaf4ff;
+      font-size: 1.9rem;
+    }
+
+    .city-node strong {
+      color: var(--blue-dark);
+      font-size: 1.25rem;
+      line-height: 1.25;
+    }
+
+    .city-node span:last-child {
+      color: var(--muted);
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .city-arrow {
+      align-self: center;
       color: var(--teal);
-      margin-bottom: 6px;
+      font-size: 2rem;
+      font-weight: 900;
     }
 
-    .holon-card p,
-    .holon-step p {
-      margin: 0;
+    .holon-chip-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
-    .holon-card ul,
-    .holon-step ul {
-      margin: 8px 18px 0 0;
-      padding: 0;
+    .holon-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 12px;
+      border: 1px solid #dbe8f4;
+      border-radius: 999px;
+      color: #17315b;
+      background: #fff;
+      font-weight: 900;
+      box-shadow: 0 8px 18px rgba(23,32,51,.05);
     }
 
     .holon-timeline-wrap {
@@ -218,6 +249,10 @@
       background: transparent;
       box-shadow: none;
       text-align: center;
+    }
+
+    .holon-step p {
+      margin: 0;
     }
 
     .holon-icon {
@@ -277,16 +312,6 @@
     .holon-step h3 {
       margin-top: 4px;
       font-size: 1rem;
-    }
-
-    .holon-callout {
-      padding: 14px 16px;
-      border-right: 5px solid var(--yellow);
-      border-radius: 14px;
-      color: #5b3b00;
-      background: #fff8df;
-      font-weight: 800;
-      line-height: 1.7;
     }
 
     .program-video {
@@ -531,9 +556,13 @@
         grid-template-columns: 1fr;
       }
 
-      .holon-grid,
+      .holon-city-map,
       .holon-timeline {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .city-arrow {
+        display: none;
       }
 
       .holon-timeline::before {
@@ -547,7 +576,7 @@
         grid-template-columns: 1fr;
       }
 
-      .holon-grid,
+      .holon-city-map,
       .holon-timeline,
       .venture-summary {
         grid-template-columns: 1fr;
@@ -625,66 +654,35 @@
         <div>
           <span class="tag">HOLON AI • נייר עמדה עירוני</span>
           <h2 id="holonAiTitle">המסגרת העירונית שמעל תוכנית Venture AI</h2>
-          <p>התוכנית נבנית כמהלך עירוני יציב לבתי הספר בחולון: כל כיתה מקבלת 4 מפגשי עומק, בכל כיתה נוצרים צוותי תלמידים, ו-20 צוותים מכל העיר עולים לשלב הבא של האקתון ויום השיא.</p>
+          <p>כיתות בחולון נכנסות למהלך אחיד: צוותים בכיתה, תוצר קצר, ואז 20 צוותים מכל העיר עולים להאקתון וליום השיא.</p>
         </div>
       </div>
 
-      <div class="holon-grid" aria-label="ארבעה מסרים למנהלים">
-        <article class="holon-card">
-          <b>שיבוץ</b>
-          <h3>מורה קבוע לכל כיתה</h3>
-          <p>כל כיתה מקבלת 4 מפגשים עם אותו מורה, כדי לשמור היכרות עם הקבוצה, הקצב והתוצרים.</p>
+      <div class="holon-city-map" aria-label="מפת המהלך העירוני">
+        <article class="city-node">
+          <span class="node-emoji" aria-hidden="true">🏫</span>
+          <strong>כל כיתה</strong>
+          <span>4 מפגשים לכל כיתה</span>
         </article>
-        <article class="holon-card">
-          <b>קצב</b>
-          <h3>אחת לשבועיים</h3>
-          <p>90 דקות רצופות בכל מפגש מאפשרות למידה, עבודה מעשית ותוצר ממשי בכל פעם.</p>
+        <div class="city-arrow" aria-hidden="true">←</div>
+        <article class="city-node">
+          <span class="node-emoji" aria-hidden="true">👥</span>
+          <strong>צוותים</strong>
+          <span>עבודה בצוותים עם אופאל</span>
         </article>
-        <article class="holon-card">
-          <b>ליווי</b>
-          <h3>לא רק בזמן השיעור</h3>
-          <p>הקבוצות מקבלות מענה ותמיכה בין המפגשים, כדי שלא יאבדו את הרצף עד המפגש הבא.</p>
-        </article>
-        <article class="holon-card">
-          <b>שיא</b>
-          <h3>האקתון וגמר עירוני</h3>
-          <p>20 צוותים מכל העיר עולים לשלב הבא: האקתון, חידוד מיזמים ויום שיא שמחבר בין בתי הספר, העירייה ו-HIT.</p>
+        <div class="city-arrow" aria-hidden="true">←</div>
+        <article class="city-node">
+          <span class="node-emoji" aria-hidden="true">🏆</span>
+          <strong>20 נבחרים</strong>
+          <span>האקתון ויום שיא ב-HIT</span>
         </article>
       </div>
 
-      <div class="holon-grid" aria-label="עקרונות הפעלה">
-        <article class="holon-card">
-          <h3>מה בית הספר צריך להכין</h3>
-          <ul>
-            <li>חלוקה לצוותי עבודה בתוך כל כיתה.</li>
-            <li>חלונות זמן מסודרים למפגשים הכפולים.</li>
-            <li>מוכנות BYOD לפי המציאות בכל בית ספר.</li>
-          </ul>
-        </article>
-        <article class="holon-card">
-          <h3>מה המערכת נותנת למנהלים</h3>
-          <ul>
-            <li>תמונת שיבוץ ברורה לפי כיתה ומורה.</li>
-            <li>מעקב אחר חלונות זמן וסטטוס שיבוץ.</li>
-            <li>ודאות תפעולית לפני תחילת ההדרכות.</li>
-          </ul>
-        </article>
-        <article class="holon-card">
-          <h3>איך זה מתחבר לשיעורים</h3>
-          <ul>
-            <li>כל צוות בכיתה בוחר בעיה עירונית מחולון.</li>
-            <li>אופאל מלווה רעיון, בריף, בנייה ושיפור.</li>
-            <li>בסוף יש MVP קצר ופיץ׳ להצגה.</li>
-          </ul>
-        </article>
-        <article class="holon-card">
-          <h3>מה מודדים בסוף</h3>
-          <ul>
-            <li>בעיה ברורה וקשר לחולון.</li>
-            <li>תוצר עובד ולא רק מצגת.</li>
-            <li>עבודת צוות, בטיחות, דמו ופיץ׳.</li>
-          </ul>
-        </article>
+      <div class="holon-chip-strip" aria-label="עקרונות הפעלה קצרים">
+        <span class="holon-chip">👩‍🏫 מורה קבוע</span>
+        <span class="holon-chip">⏱️ 90 דקות</span>
+        <span class="holon-chip">💻 BYOD</span>
+        <span class="holon-chip">🤝 ליווי בין מפגשים</span>
       </div>
 
       <div>
@@ -723,7 +721,6 @@
         </div>
       </div>
 
-      <div class="holon-callout">החלק שמתחת הוא המימוש הכיתתי: 4 מפגשים שכל כיתה מקבלת, עבודה בצוותים, ומתוכם בחירה עירונית של 20 צוותים להאקתון וליום השיא.</div>
     </section>
 
     <section class="program-video" aria-labelledby="programVideoTitle">
