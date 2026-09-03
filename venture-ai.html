@@ -198,6 +198,34 @@
       font-weight: 900;
     }
 
+    .school-needs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .school-need {
+      min-width: 0;
+      padding: 15px 16px;
+      border: 1px solid #dbe8f4;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 10px 22px rgba(23,32,51,.05);
+    }
+
+    .school-need strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--blue-dark);
+      font-size: 1.08rem;
+    }
+
+    .school-need span {
+      color: var(--muted);
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
     .holon-timeline-wrap {
       position: relative;
       overflow: hidden;
@@ -596,6 +624,7 @@
 
       .holon-city-map,
       .holon-timeline,
+      .school-needs,
       .venture-side-images {
         grid-template-columns: 1fr;
       }
@@ -689,6 +718,24 @@
           <strong>האקתון ויום שיא</strong>
           <span>20 צוותים ממשיכים ליום האקתון, ואחריו מציגים בפני שופטים מהעירייה ומהתעשייה</span>
         </article>
+      </div>
+
+      <div>
+        <h3>מה נדרש מבית הספר?</h3>
+        <div class="school-needs" aria-label="דרישות מבית הספר">
+          <article class="school-need">
+            <strong>שיתוף פעולה</strong>
+            <span>איש קשר ותיאום מול צוות התוכנית.</span>
+          </article>
+          <article class="school-need">
+            <strong>שיבוץ במערכת</strong>
+            <span>4 מפגשים של שעתיים אקדמיות לכל כיתה בשלב 1.</span>
+          </article>
+          <article class="school-need">
+            <strong>כיתה מתוקשבת</strong>
+            <span>כיתת מחשבים או טאבלטים לעבודה בצוותים.</span>
+          </article>
+        </div>
       </div>
 
       <div>
