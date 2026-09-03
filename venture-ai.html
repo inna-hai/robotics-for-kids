@@ -117,10 +117,7 @@
     }
 
     .holon-paper-head {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
-      gap: 18px;
-      align-items: start;
+      max-width: 900px;
     }
 
     .holon-paper-head h2,
@@ -141,24 +138,6 @@
       margin: 0;
       max-width: 760px;
       font-weight: 600;
-    }
-
-    .holon-quick {
-      display: grid;
-      gap: 10px;
-    }
-
-    .holon-quick-item {
-      padding: 13px 14px;
-      border: 1px solid #dbe8f4;
-      border-radius: 14px;
-      background: #fff;
-    }
-
-    .holon-quick-item b {
-      display: block;
-      color: var(--blue);
-      margin-bottom: 4px;
     }
 
     .holon-grid {
@@ -546,7 +525,6 @@
     @media (max-width: 850px) {
       .venture-home .hero,
       .program-video,
-      .holon-paper-head,
       .venture-image-stack,
       .mini-grid,
       .role-grid {
@@ -649,11 +627,6 @@
           <h2 id="holonAiTitle">המסגרת העירונית שמעל תוכנית Venture AI</h2>
           <p>התוכנית נבנית כמהלך עירוני יציב לבתי הספר בחולון: כל כיתה מקבלת 4 מפגשי עומק, בכל כיתה נוצרים צוותי תלמידים, ו-20 צוותים מכל העיר עולים לשלב הבא של האקתון ויום השיא.</p>
         </div>
-        <div class="holon-quick" aria-label="תקציר נייר העמדה">
-          <div class="holon-quick-item"><b>שיבוץ עד 8.10.2026</b><span>כיתות, מורים וחלונות הדרכה נסגרים מראש.</span></div>
-          <div class="holon-quick-item"><b>הדרכות 1.11.2026-31.1.2027</b><span>4 מפגשים לכל כיתה, בקצב דו-שבועי.</span></div>
-          <div class="holon-quick-item"><b>האקתון 15.2.2027</b><span>20 צוותים מכל העיר עולים לשלב הבא.</span></div>
-        </div>
       </div>
 
       <div class="holon-grid" aria-label="ארבעה מסרים למנהלים">
@@ -722,7 +695,7 @@
             <div class="holon-icon" aria-hidden="true">
               <svg viewBox="0 0 48 48"><path d="M13 15h22a4 4 0 0 1 4 4v19H9V19a4 4 0 0 1 4-4Z"/><path d="M16 10v8M32 10v8M9 24h30M17 31h3M25 31h3"/></svg>
             </div>
-            <span>אוקטובר 2026</span>
+            <span>עד 8.10.2026</span>
             <h3>שיבוץ כיתות</h3>
           </article>
           <article class="holon-step">

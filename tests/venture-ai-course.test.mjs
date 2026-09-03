@@ -62,8 +62,8 @@ assert.ok(page.includes('venture-visual'), 'course page has a visual hero area')
 assert.ok(page.indexOf('assets/venture-ai/meeting-1-city.webp') < page.indexOf('id="holon-ai"'), 'hero image appears in the top section before Holon AI content');
 assert.ok(page.includes('assets/venture-ai/meeting-3-build.webp'), 'hero includes Opal build image');
 assert.ok(page.includes('assets/venture-ai/meeting-4-demo.webp'), 'hero includes demo image');
-assert.ok(page.includes('שיבוץ עד 8.10.2026'), 'course page includes Holon scheduling deadline');
-assert.ok(page.includes('האקתון 15.2.2027'), 'course page includes Holon hackathon milestone');
+assert.ok(page.includes('עד 8.10.2026'), 'course page includes Holon scheduling deadline');
+assert.ok(page.includes('15.2.2027'), 'course page includes Holon hackathon milestone date');
 assert.ok(page.includes('4 מפגשים לכל כיתה'), 'course page clarifies that each class receives 4 meetings');
 assert.ok(page.includes('20 צוותים מכל העיר'), 'course page clarifies that 20 citywide teams advance');
 assert.ok(page.includes('עבודה בצוותים'), 'course page highlights team work inside each class');
