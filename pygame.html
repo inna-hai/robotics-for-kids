@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🎮 Pygame Lab — לומדת משחקים בפייתון</title>
   <meta name="description" content="לומדת Pygame עצמאית: 28 שיעורים, מערך מדריך, תרגולים, בלוקים, קוד Python בסגנון Pygame ומסך משחק עובד." />
-  <script src="https://unpkg.com/blockly/blockly.min.js"></script>
-  <script src="https://unpkg.com/blockly/msg/he.js"></script>
+  <script src="js/vendor/blockly/blockly.min.js"></script>
+  <script src="js/vendor/blockly/msg/he.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root{--gap:clamp(.35rem,.65vw,.65rem);--panel-radius:clamp(.75rem,1vw,1.1rem);--topbar:clamp(2.8rem,5.2dvh,3.45rem);--sidebar:clamp(11.5rem,15vw,15rem);--game:clamp(22rem,34vw,36rem);--code:clamp(9.5rem,24dvh,14rem);--pad:clamp(.45rem,.8vw,.75rem);--text:clamp(.78rem,.95vw,.9rem);--small:clamp(.66rem,.8vw,.76rem);--shadow:0 .65rem 1.7rem rgba(0,0,0,.2)}
@@ -185,7 +185,7 @@
     function rectHit(a,b){return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y}
     function drawScene(state){ const c=document.getElementById('gameCanvas'),ctx=c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height); ctx.fillStyle=state.bg||'#0f172a'; ctx.fillRect(0,0,c.width,c.height); ctx.fillStyle='rgba(255,255,255,.08)'; for(let x=0;x<c.width;x+=40)ctx.fillRect(x,0,1,c.height); for(let y=0;y<c.height;y+=40)ctx.fillRect(0,y,c.width,1); const l=PYGAME_LESSONS[currentLesson-1]; ctx.fillStyle='white'; ctx.font='bold 22px Rubik, Arial'; ctx.fillText(`שיעור ${l.id}: ${l.title}`,24,45); if(state.hasPlayer){ctx.fillStyle='#22c55e'; roundRect(ctx,state.player.x,state.player.y,state.player.w,state.player.h,10);ctx.fill();} if(state.coin){ctx.fillStyle='#facc15';ctx.beginPath();ctx.ellipse(state.coin.x+13,state.coin.y+13,13,13,0,0,Math.PI*2);ctx.fill();} if(state.obstacle){ctx.fillStyle='#ef4444';roundRect(ctx,state.obstacle.x,state.obstacle.y,state.obstacle.w,state.obstacle.h,8);ctx.fill();} ctx.fillStyle='white';ctx.font='20px Rubik, Arial';ctx.fillText('Score: '+(state.hasScore?state.score:0),24,82); if(state.gameOver){ctx.fillStyle='rgba(239,68,68,.92)';roundRect(ctx,205,185,230,86,18);ctx.fill();ctx.fillStyle='white';ctx.font='bold 30px Rubik, Arial';ctx.fillText('Game Over',242,238);} document.getElementById('status').textContent=state.gameOver?'התנגשות במכשול':(state.score?'מטבע נאסף!':'מוכן'); }
     function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
-    function init(){defineBlocks();workspace=Blockly.inject('blocklyDiv',{toolbox:document.getElementById('toolbox'),rtl:true,trashcan:true,scrollbars:true});workspace.addChangeListener(()=>{updateCode();drawScene(simulateBlocks(false));});renderLessons();const initial=Number(new URL(location.href).searchParams.get('lesson'))||1;setLesson(Math.min(Math.max(initial,1),PYGAME_LESSONS.length));updateCode();}
+    function init(){defineBlocks();workspace=Blockly.inject('blocklyDiv',{media:'js/vendor/blockly/media/',toolbox:document.getElementById('toolbox'),rtl:true,trashcan:true,scrollbars:true});workspace.addChangeListener(()=>{updateCode();drawScene(simulateBlocks(false));});renderLessons();const initial=Number(new URL(location.href).searchParams.get('lesson'))||1;setLesson(Math.min(Math.max(initial,1),PYGAME_LESSONS.length));updateCode();}
     document.getElementById('runBtn').onclick=()=>drawScene(simulateBlocks(true));document.getElementById('resetBtn').onclick=()=>{workspace?.clear();updateCode();drawScene(simulateBlocks(false));};document.getElementById('demoBtn').onclick=loadDemo;window.addEventListener('load',init);
   </script>
 
