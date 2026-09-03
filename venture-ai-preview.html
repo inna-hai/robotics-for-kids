@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>הצצה לתוכנית | Venture AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260824-omer-style">
+  <link rel="stylesheet" href="css/platform-home-link.css">
+  <style>
+    .preview-hero {
+      min-height: auto;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 460px);
+    }
+
+    .preview-hero .goal {
+      max-width: 760px;
+    }
+
+    .preview-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .preview-chip-card {
+      padding: 16px;
+      border: 1px solid #dbe8f4;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 10px 24px rgba(23,32,51,.06);
+    }
+
+    .preview-chip-card b {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--blue-dark);
+      font-size: 1.15rem;
+    }
+
+    .meeting-card {
+      align-content: start;
+    }
+
+    .meeting-video {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      margin-bottom: 16px;
+      border: 1px solid #dbe8f4;
+      border-radius: 16px;
+      background: #0f172a;
+      box-shadow: 0 14px 30px rgba(23,32,51,.09);
+    }
+
+    .meeting-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .meeting-number {
+      display: inline-grid;
+      place-items: center;
+      flex: 0 0 auto;
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--blue);
+      font-weight: 900;
+    }
+
+    .meeting-title h2 {
+      margin: 0;
+    }
+
+    .meeting-outcome {
+      margin: 12px 0;
+      padding: 12px 14px;
+      border-right: 5px solid var(--green);
+      border-radius: 14px;
+      color: #14532d;
+      background: #ecfdf3;
+      font-weight: 800;
+    }
+
+    .meeting-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    .mini-panel {
+      padding: 12px;
+      border: 1px solid #dbe8f4;
+      border-radius: 12px;
+      background: #f8fcff;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .mini-panel b {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--blue-dark);
+    }
+
+    .flow-list {
+      display: grid;
+      gap: 8px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .flow-list li {
+      display: grid;
+      grid-template-columns: 70px 1fr;
+      gap: 10px;
+      padding: 10px;
+      border: 1px solid #e7eef8;
+      border-radius: 12px;
+      background: #fff;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .simple-list {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .deep-dive {
+      margin-top: 14px;
+    }
+
+    @media (max-width: 850px) {
+      .preview-hero,
+      .preview-strip,
+      .mini-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero preview-hero">
+      <div>
+        <div class="kicker">הצצה לתוכנית • Venture AI</div>
+        <h1>מה קורה בארבעת המפגשים?</h1>
+        <p class="goal">עמוד פנימי למי שרוצה לראות את פירוט המפגשים, סרטוני ההסבר, מצגות המדריך ודפי התלמידים.</p>
+        <div class="actions">
+          <a class="btn" href="venture-ai.html">חזרה לעמוד התוכנית</a>
+          <a class="btn secondary" href="venture-ai-improvement.html">בקשת שיפור</a>
+        </div>
+      </div>
+      <figure class="cover-art" aria-label="Venture AI">
+        <img src="assets/venture-ai/meeting-3-build.webp" alt="צוות תלמידים בונה אבטיפוס באופאל">
+      </figure>
+    </section>
+
+    <section class="preview-strip" aria-label="מבנה מהיר">
+      <div class="preview-chip-card"><b>1</b><span>בעיה עירונית</span></div>
+      <div class="preview-chip-card"><b>2</b><span>בריף מצומצם</span></div>
+      <div class="preview-chip-card"><b>3</b><span>MVP באופאל</span></div>
+      <div class="preview-chip-card"><b>4</b><span>דמו ופיץ׳</span></div>
+    </section>
+
+    <section class="steps" id="lessonCards" aria-label="פירוט מפגשים"></section>
+  </main>
+
+  <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
+  <script src="js/venture-ai-lessons.js?v=20260825-opal-first"></script>
+  <script>
+    const program = window.VENTURE_AI_PROGRAM;
+    const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+
+    document.getElementById('lessonCards').innerHTML = program.lessons.map(lesson => `
+      <article class="card meeting-card">
+        ${lesson.video ? `<video class="meeting-video" controls playsinline preload="metadata" poster="${esc(lesson.image)}"><source src="${esc(lesson.video)}?v=20260825-meeting-videos" type="video/mp4"></video>` : ''}
+        <span class="tag">מפגש ${lesson.id} • ${lesson.durationMinutes} דקות</span>
+        <div class="meeting-title">
+          <span class="meeting-number">${lesson.id}</span>
+          <h2>${esc(lesson.title)}</h2>
+        </div>
+        <p>${esc(lesson.subtitle)}</p>
+        <div class="meeting-outcome">תוצר: ${esc(lesson.productStage)}</div>
+        <div class="meeting-actions">
+          <a class="btn" href="venture-ai-slides.html?lesson=${lesson.id}">מצגת מדריך</a>
+          <a class="btn secondary" href="venture-ai-students.html?lesson=${lesson.id}">דף תלמידים</a>
+          <a class="btn secondary" href="https://opal.hai.tech/">פתחו אופאל</a>
+        </div>
+        <details class="deep-dive">
+          <summary>פירוט מפגש</summary>
+          <div class="mini-grid">
+            <div class="mini-panel"><b>מטרת מדריך</b>${esc(lesson.teacherGoal)}</div>
+            <div class="mini-panel"><b>מה הילדים יוצרים</b>${esc(lesson.studentOutcome)}</div>
+            <div class="mini-panel"><b>פתיחה מומלצת</b>${esc(lesson.openingDemo)}</div>
+            <div class="mini-panel"><b>פרומפט אופאל</b>${esc(lesson.opalPrompt)}</div>
+          </div>
+          <b>מהלך זמן</b>
+          <ul class="flow-list">
+            ${lesson.flow.map(step => `<li><b>${esc(step.minutes)}</b><span><strong>${esc(step.title)}</strong><br>${esc(step.students)}</span></li>`).join('')}
+          </ul>
+          <b>משימות עבודה</b>
+          <ul class="simple-list">
+            ${lesson.workshopTasks.map(task => `<li>${esc(task)}</li>`).join('')}
+          </ul>
+        </details>
+      </article>
+    `).join('');
+  </script>
+  <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
+</body>
+</html>

@@ -367,6 +367,58 @@
       margin: 0;
     }
 
+    .program-focus {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .focus-panel {
+      min-height: 150px;
+      padding: 20px;
+      border: 1px solid #dbe8f4;
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 12px 28px rgba(23,32,51,.07);
+    }
+
+    .focus-panel h2 {
+      margin: 0 0 10px;
+      color: var(--blue-dark);
+    }
+
+    .focus-panel p,
+    .focus-panel li {
+      color: var(--muted);
+      font-weight: 700;
+      line-height: 1.7;
+    }
+
+    .focus-panel ul {
+      margin: 0;
+      padding-inline-start: 20px;
+    }
+
+    .preview-cta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 16px;
+      padding: 20px;
+      border: 1px solid #cfe2f3;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #ffffff, #f4fbff);
+    }
+
+    .preview-cta p {
+      margin: 0;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
     .meeting-card {
       align-content: start;
     }
@@ -568,6 +620,7 @@
       .venture-home .hero,
       .program-video,
       .venture-image-stack,
+      .program-focus,
       .mini-grid,
       .role-grid {
         grid-template-columns: 1fr;
@@ -634,11 +687,12 @@
   <main class="shell">
     <section class="hero">
       <div>
-        <div class="kicker">כיתות ח׳ • 4 מפגשים לכל כיתה • עבודה בצוותים • אופאל מהשיעור הראשון</div>
+        <div class="kicker">תוכנית דגל עירונית • חולון • כל כיתות ח׳</div>
         <h1>מרעיון למיזם עם AI</h1>
-        <p class="goal">מהלך עירוני ברור: כל כיתה מקבלת 4 מפגשי עומק, בכל כיתה התלמידים עובדים בצוותים, ומתוך כלל בתי הספר נבחרים 20 צוותים להמשך עבודה בהאקתון וביום השיא.</p>
+        <p class="goal">תוכנית עירונית קצרה וממוקדת לתלמידי כיתות ח׳ בחולון. מדריך חיצוני מגיע לבית הספר, מוביל את הכיתה בארבעה מפגשים, והתלמידים עובדים בצוותים על מיזם AI קטן סביב צורך עירוני אמיתי.</p>
         <div class="actions">
-          <a class="btn" href="#meetings">המהלך הכיתתי</a>
+          <a class="btn" href="#overview">מה התוכנית כוללת</a>
+          <a class="btn secondary" href="venture-ai-preview.html">הצצה לתוכנית</a>
         </div>
       </div>
       <aside class="venture-visual" aria-label="תמונות מתוך מהלך Venture AI">
@@ -659,19 +713,19 @@
           </div>
         </div>
         <div class="venture-summary" aria-label="תקציר התוכנית">
+          <div class="venture-stat"><b>ח׳</b><span>כל שכבת הגיל בעיר</span></div>
           <div class="venture-stat"><b>4</b><span>מפגשים לכל כיתה</span></div>
-          <div class="venture-stat"><b>20</b><span>צוותים עולים להאקתון</span></div>
-          <div class="venture-stat"><b>MVP</b><span>תוצר צוותי עובד</span></div>
+          <div class="venture-stat"><b>AI</b><span>מיזם צוותי קצר</span></div>
         </div>
       </aside>
     </section>
 
-    <section class="holon-paper" id="holon-ai" aria-labelledby="holonAiTitle">
+    <section class="holon-paper" id="overview" aria-labelledby="holonAiTitle">
       <div class="holon-paper-head">
         <div>
-          <span class="tag">HOLON AI • נייר עמדה עירוני</span>
-          <h2 id="holonAiTitle">המסגרת העירונית שמעל תוכנית Venture AI</h2>
-          <p>כיתות בחולון נכנסות למהלך אחיד: צוותים בכיתה, תוצר קצר, ואז 20 צוותים מכל העיר עולים להאקתון וליום השיא.</p>
+          <span class="tag">HOLON AI</span>
+          <h2 id="holonAiTitle">מהי התוכנית?</h2>
+          <p>תוכנית דגל עירונית של חולון לכיתות ח׳, בשיתוף חברה חיצונית. בכל בית ספר מתקיימת פעילות כיתתית קצרה שמחברת יזמות, בינה מלאכותית, עבודת צוות ואתגר עירוני.</p>
         </div>
       </div>
 
@@ -681,7 +735,7 @@
             <svg viewBox="0 0 48 48"><path d="M8 38h32"/><path d="M12 38V18l12-7 12 7v20"/><path d="M19 38V27h10v11"/><path d="M16 22h4M28 22h4"/></svg>
           </span>
           <strong>כל כיתה</strong>
-          <span>4 מפגשים לכל כיתה</span>
+          <span>מדריך חיצוני מגיע לבית הספר</span>
         </article>
         <div class="city-arrow" aria-hidden="true">←</div>
         <article class="city-node">
@@ -689,27 +743,27 @@
             <svg viewBox="0 0 48 48"><path d="M9 36c3-7 8-10 15-10s12 3 15 10"/><path d="M24 22a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z"/><path d="M13 25a5 5 0 1 1 6-8M35 25a5 5 0 1 0-6-8"/></svg>
           </span>
           <strong>צוותים</strong>
-          <span>עבודה בצוותים עם אופאל</span>
+          <span>בוחרים צורך עירוני ובונים רעיון</span>
         </article>
         <div class="city-arrow" aria-hidden="true">←</div>
         <article class="city-node">
           <span class="node-icon" aria-hidden="true">
             <svg viewBox="0 0 48 48"><path d="M14 38h20"/><path d="M18 38l2-8h8l2 8"/><path d="M14 10h20v8a10 10 0 0 1-20 0v-8Z"/><path d="M14 15H8c0 7 4 11 10 12M34 15h6c0 7-4 11-10 12"/></svg>
           </span>
-          <strong>20 נבחרים</strong>
-          <span>האקתון ויום שיא ב-HIT</span>
+          <strong>המשך עירוני</strong>
+          <span>20 צוותים עולים להאקתון ויום שיא</span>
         </article>
       </div>
 
       <div class="holon-chip-strip" aria-label="עקרונות הפעלה קצרים">
-        <span class="holon-chip"><i class="chip-dot" aria-hidden="true"></i>מורה קבוע</span>
+        <span class="holon-chip"><i class="chip-dot" aria-hidden="true"></i>מדריך חיצוני</span>
         <span class="holon-chip"><i class="chip-dot" aria-hidden="true"></i>90 דקות</span>
-        <span class="holon-chip"><i class="chip-dot" aria-hidden="true"></i>BYOD</span>
-        <span class="holon-chip"><i class="chip-dot" aria-hidden="true"></i>ליווי בין מפגשים</span>
+        <span class="holon-chip"><i class="chip-dot" aria-hidden="true"></i>4 מפגשים</span>
+        <span class="holon-chip"><i class="chip-dot" aria-hidden="true"></i>עבודה בצוותים</span>
       </div>
 
       <div>
-        <h3>ציר הזמן העירוני</h3>
+        <h3>לוז</h3>
         <div class="holon-timeline-wrap" aria-label="ציר זמן מצויר של מהלך HOLON AI">
         <div class="holon-timeline">
           <article class="holon-step">
@@ -753,108 +807,44 @@
       <div class="program-video-copy">
         <span class="tag">סרטון פתיחה</span>
         <h2 id="programVideoTitle">הסבר קצר על התוכנית</h2>
-        <p class="goal">סרטון קריינות שמציג את תוכנית עיר חולון ביזמות עם בינה מלאכותית: 4 מפגשים לכל כיתה, עבודה בצוותים, אופאל מהשיעור הראשון ותוצר שממנו נבחרים צוותים להמשך העירוני.</p>
+        <p class="goal">זה הסרטון היחיד בעמוד הראשי. שאר סרטוני המפגשים והתוכן המפורט נמצאים בעמוד הצצה נפרד.</p>
       </div>
     </section>
 
-    <section class="grid-4">
-      <div class="card highlight"><h2>עיר</h2><b>מתחילים מחולון</b><p class="muted">בעיה אמיתית ומוחשית לילדים.</p></div>
-      <div class="card highlight"><h2>דיוק</h2><b>MoSCoW</b><p class="muted">מצמצמים לפני שבונים.</p></div>
-      <div class="card highlight"><h2>AI</h2><b>אופאל</b><p class="muted">סוכן שעוזר לחשוב, לבנות ולשפר.</p></div>
-      <div class="card highlight"><h2>דמו</h2><b>פיץ׳ קצר</b><p class="muted">מציגים תוצר ולא רק רעיון.</p></div>
+    <section class="program-focus" aria-label="תקציר ממוקד">
+      <article class="focus-panel">
+        <span class="tag">מה התוכנית</span>
+        <h2>מהלך עירוני לכיתות ח׳</h2>
+        <p>תוכנית דגל של חולון שמכניסה את כל כיתות ח׳ להתנסות קצרה ביזמות ו-AI סביב אתגר עירוני.</p>
+      </article>
+      <article class="focus-panel">
+        <span class="tag">מה היא כוללת</span>
+        <h2>4 מפגשים בבית הספר</h2>
+        <ul>
+          <li>מדריך חיצוני שמוביל את הכיתה</li>
+          <li>עבודה בצוותים</li>
+          <li>רעיון, אבטיפוס ופיץ׳ קצר</li>
+        </ul>
+      </article>
+      <article class="focus-panel">
+        <span class="tag">לוז</span>
+        <h2>מהכיתה ליום שיא</h2>
+        <p>שיבוץ כיתות, ארבעה מפגשים, בחירת 20 צוותים מכל העיר, האקתון ויום שיא ב-HIT.</p>
+      </article>
     </section>
 
-    <section class="section-title" id="meetings">
-      <h2>המהלך הכיתתי ב-4 מפגשים</h2>
-    </section>
-
-    <section class="steps" id="lessonCards"></section>
-
-    <section class="grid" style="margin-top:16px">
-      <article class="card wide-card team-frame">
-        <span class="tag">מעטפת עבודה</span>
-        <h2 id="teamFrameTitle"></h2>
-        <p class="goal" id="teamFrameSummary"></p>
-        <div class="role-grid" id="teamRoles"></div>
-        <p class="muted" id="teamFrameNote"></p>
-      </article>
-      <article class="card opal-card">
-        <span class="tag">כלי העבודה</span>
-        <h2>אופאל מלווה מהשיעור הראשון</h2>
-        <p>התלמידים פותחים את אופאל כבר בגיבוש הרעיון. זה סוכן בינה מלאכותית שעוזר לשאול שאלות, לנסח בריף, לבנות סוכנים, אתרים ואפליקציות, לבדוק ולבקש תיקונים קטנים.</p>
-      </article>
-      <article class="card build-first">
-        <span class="tag">גבולות</span>
-        <h2>שומרים על תוצר קטן ובטוח</h2>
-        <ul id="safetyRules"></ul>
-      </article>
-      <article class="card wide-card">
-        <span class="tag">תוצר סיום</span>
-        <h2>מה חייב להיות בסוף?</h2>
-        <p class="goal">לכל צוות יש אבטיפוס פשוט באופאל, פעולה מרכזית אחת שעובדת, ופיץ׳ קצר שמסביר בעיה, קהל יעד, פתרון ודמו.</p>
-        <div class="actions">
-          <a class="btn" href="venture-ai-improvement.html">בקשת שיפור</a>
-        </div>
-      </article>
+    <section class="preview-cta" aria-label="הצצה לתוכנית">
+      <div>
+        <span class="tag">למי שרוצה להעמיק</span>
+        <p>פירוט המפגשים, סרטוני המפגשים, מצגות ודפי תלמידים עברו לעמוד נפרד.</p>
+      </div>
+      <div class="actions">
+        <a class="btn" href="venture-ai-preview.html">הצצה לתוכנית</a>
+      </div>
     </section>
   </main>
 
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="js/venture-ai-lessons.js?v=20260825-opal-first"></script>
-  <script>
-    const program = window.VENTURE_AI_PROGRAM;
-    const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
-
-    document.getElementById('safetyRules').innerHTML = program.safetyRules.map(item => `<li>${esc(item)}</li>`).join('');
-    document.getElementById('teamFrameTitle').textContent = program.teamFramework.title;
-    document.getElementById('teamFrameSummary').textContent = program.teamFramework.summary;
-    document.getElementById('teamFrameNote').textContent = program.teamFramework.note;
-    document.getElementById('teamRoles').innerHTML = program.teamFramework.roles.map(role => `
-      <div class="role-item"><b>${esc(role[0])}</b>${esc(role[1])}</div>
-    `).join('');
-
-    document.getElementById('lessonCards').innerHTML = program.lessons.map(lesson => `
-      <article class="card meeting-card">
-        ${lesson.video ? `<video class="meeting-video" controls playsinline preload="metadata" poster="${esc(lesson.image)}"><source src="${esc(lesson.video)}?v=20260825-meeting-videos" type="video/mp4"></video>` : lesson.image ? `<img class="meeting-image" src="${esc(lesson.image)}" alt="${esc(lesson.title)}">` : ''}
-        <span class="tag">מפגש ${lesson.id} • ${lesson.durationMinutes} דקות</span>
-        <div class="meeting-title">
-          <span class="meeting-number">${lesson.id}</span>
-          <h2>${esc(lesson.title)}</h2>
-        </div>
-        <p>${esc(lesson.subtitle)}</p>
-        <div class="meeting-outcome">תוצר: ${esc(lesson.productStage)}</div>
-        <p class="muted">${esc(lesson.bigQuestion)}</p>
-        <div class="meeting-actions">
-          <a class="btn" href="venture-ai-slides.html?lesson=${lesson.id}">מצגת מדריך</a>
-          <a class="btn secondary" href="venture-ai-students.html?lesson=${lesson.id}">דף תלמידים</a>
-          <a class="btn secondary" href="https://opal.hai.tech/">פתחו אופאל</a>
-        </div>
-        <details class="deep-dive">
-          <summary>צלילה פנימה למפגש</summary>
-          <div class="deep-content">
-            <div class="mini-grid">
-              <div class="mini-panel"><b>מטרת מדריך</b>${esc(lesson.teacherGoal)}</div>
-              <div class="mini-panel"><b>מה הילדים יוצרים</b>${esc(lesson.studentOutcome)}</div>
-              <div class="mini-panel"><b>פתיחה מומלצת</b>${esc(lesson.openingDemo)}</div>
-              <div class="mini-panel"><b>פרומפט אופאל</b>${esc(lesson.opalPrompt)}</div>
-            </div>
-            <div>
-              <b>מהלך זמן</b>
-              <ul class="flow-list">
-                ${lesson.flow.map(step => `<li><b>${esc(step.minutes)}</b><span><strong>${esc(step.title)}</strong><br>${esc(step.students)}</span></li>`).join('')}
-              </ul>
-            </div>
-            <div>
-              <b>משימות עבודה</b>
-              <ul class="simple-list">
-                ${lesson.workshopTasks.map(task => `<li>${esc(task)}</li>`).join('')}
-              </ul>
-            </div>
-          </div>
-        </details>
-      </article>
-    `).join('');
-  </script>
   <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
 </body>
 </html>
