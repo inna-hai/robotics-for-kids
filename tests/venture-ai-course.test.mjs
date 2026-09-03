@@ -84,6 +84,8 @@ assert.ok(page.includes('שופטים מהעירייה ומהתעשייה'), 'co
 assert.ok(page.includes('עבודה בצוותים'), 'course page highlights team work inside each class');
 assert.ok(page.includes('holon-timeline-wrap'), 'Holon timeline is rendered as an illustrated timeline');
 assert.ok(page.includes('holon-icon'), 'Holon timeline uses visual icons');
+assert.ok(page.includes('שלב 1 · כל העיר'), 'Holon timeline labels the citywide phase');
+assert.ok(page.includes('שלב 2 · האקתון ויום שיא'), 'Holon timeline labels the hackathon and final event phase');
 assert.ok(page.includes('1.11.2026 עד 31.1.2027'), 'course page formats the school program date range clearly for RTL');
 assert.ok(!page.includes('1.11.2026-31.1.2027'), 'course page avoids a hyphenated RTL date range');
 assert.ok(page.includes('האקתון מרוכז ל־20 צוותים מכל העיר שעלו לשלב 2'), 'Holon timeline names the focused hackathon day and advancing teams');

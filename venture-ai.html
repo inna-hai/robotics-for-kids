@@ -244,17 +244,48 @@
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 16px;
       align-items: stretch;
+      padding-top: 50px;
     }
 
     .holon-timeline::before {
       content: "";
       position: absolute;
-      top: 56px;
+      top: 106px;
       inset-inline: 12%;
       height: 7px;
       border-radius: 999px;
       background: linear-gradient(90deg, var(--blue), var(--teal), var(--yellow), #ff7a7a);
       box-shadow: 0 8px 20px rgba(37,99,235,.18);
+    }
+
+    .timeline-phase-label {
+      position: absolute;
+      top: 0;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      padding: 6px 14px;
+      border: 1px solid rgba(37,99,235,.16);
+      border-radius: 999px;
+      background: rgba(255,255,255,.86);
+      color: var(--blue-dark);
+      font-size: 1.08rem;
+      font-weight: 950;
+      box-shadow: 0 10px 24px rgba(37,99,235,.10);
+    }
+
+    .timeline-phase-label.phase-1 {
+      right: 0;
+      width: calc(50% - 8px);
+    }
+
+    .timeline-phase-label.phase-2 {
+      left: 0;
+      width: calc(50% - 8px);
+      border-color: rgba(190,18,60,.14);
+      color: #9f1239;
     }
 
     .holon-step {
@@ -298,27 +329,27 @@
       stroke-linejoin: round;
     }
 
-    .holon-step:nth-child(2) .holon-icon {
+    .holon-step:nth-of-type(2) .holon-icon {
       background: #e7fbf8;
     }
 
-    .holon-step:nth-child(2) .holon-icon svg {
+    .holon-step:nth-of-type(2) .holon-icon svg {
       stroke: #0f766e;
     }
 
-    .holon-step:nth-child(3) .holon-icon {
+    .holon-step:nth-of-type(3) .holon-icon {
       background: #fff7d6;
     }
 
-    .holon-step:nth-child(3) .holon-icon svg {
+    .holon-step:nth-of-type(3) .holon-icon svg {
       stroke: #b45309;
     }
 
-    .holon-step:nth-child(4) .holon-icon {
+    .holon-step:nth-of-type(4) .holon-icon {
       background: #fff1f2;
     }
 
-    .holon-step:nth-child(4) .holon-icon svg {
+    .holon-step:nth-of-type(4) .holon-icon svg {
       stroke: #be123c;
     }
 
@@ -612,7 +643,7 @@
       }
 
       .holon-timeline::before {
-        top: 56px;
+        top: 106px;
         inset-inline: 18%;
       }
     }
@@ -630,13 +661,19 @@
       }
 
       .holon-timeline::before {
-        top: 28px;
+        top: 78px;
         bottom: 28px;
         inset-inline: auto;
         right: 36px;
         width: 7px;
         height: auto;
         background: linear-gradient(180deg, var(--blue), var(--teal), var(--yellow), #ff7a7a);
+      }
+
+      .timeline-phase-label {
+        min-height: 30px;
+        padding-inline: 10px;
+        font-size: .88rem;
       }
 
       .holon-step {
@@ -742,6 +779,8 @@
         <h3>לוז</h3>
         <div class="holon-timeline-wrap" aria-label="ציר זמן מצויר של מהלך HOLON AI">
         <div class="holon-timeline">
+          <div class="timeline-phase-label phase-1">שלב 1 · כל העיר</div>
+          <div class="timeline-phase-label phase-2">שלב 2 · האקתון ויום שיא</div>
           <article class="holon-step">
             <div class="holon-icon" aria-hidden="true">
               <svg viewBox="0 0 48 48"><path d="M13 15h22a4 4 0 0 1 4 4v19H9V19a4 4 0 0 1 4-4Z"/><path d="M16 10v8M32 10v8M9 24h30M17 31h3M25 31h3"/></svg>
