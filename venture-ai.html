@@ -140,16 +140,16 @@
 
     .holon-city-map {
       display: grid;
-      grid-template-columns: 1fr auto 1fr auto 1fr;
-      gap: 10px;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      gap: 12px;
       align-items: stretch;
     }
 
     .city-node {
       min-width: 0;
       display: grid;
-      grid-template-rows: auto auto 1fr;
-      gap: 6px;
+      grid-template-rows: auto auto auto 1fr;
+      gap: 8px;
       justify-items: center;
       padding: 18px 12px;
       border: 1px solid #dbe8f4;
@@ -157,6 +157,24 @@
       background: #fff;
       text-align: center;
       box-shadow: 0 10px 24px rgba(23,32,51,.06);
+    }
+
+    .phase-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 34px;
+      height: 34px;
+      padding: 0 11px;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--blue);
+      font-weight: 900;
+      box-shadow: 0 10px 20px rgba(37,99,235,.18);
+    }
+
+    .phase-node:nth-of-type(2) .phase-badge {
+      background: var(--teal);
     }
 
     .node-icon {
@@ -653,7 +671,7 @@
         </div>
         <div class="venture-summary" aria-label="תקציר התוכנית">
           <div class="venture-stat"><b>ח׳</b><span>כל שכבת הגיל בעיר</span></div>
-          <div class="venture-stat"><b>4</b><span>מפגשים לכל כיתה</span></div>
+          <div class="venture-stat"><b>4</b><span>מפגשים בכל כיתה</span></div>
           <div class="venture-stat"><b>AI</b><span>מיזם צוותי קצר</span></div>
         </div>
       </aside>
@@ -668,29 +686,23 @@
         </div>
       </div>
 
-      <div class="holon-city-map" aria-label="מפת המהלך העירוני">
-        <article class="city-node">
+      <div class="holon-city-map" aria-label="חלוקת התוכנית לשני שלבים">
+        <article class="city-node phase-node">
+          <span class="phase-badge">1</span>
           <span class="node-icon" aria-hidden="true">
             <svg viewBox="0 0 48 48"><path d="M8 38h32"/><path d="M12 38V18l12-7 12 7v20"/><path d="M19 38V27h10v11"/><path d="M16 22h4M28 22h4"/></svg>
           </span>
-          <strong>כל כיתה</strong>
-          <span>מדריכים חיצוניים מגיעים לכיתה</span>
+          <strong>כל העיר</strong>
+          <span>4 מפגשים בכל כיתה: עבודה בצוותים לבניית תוצר יזמי־טכנולוגי ב־AI</span>
         </article>
         <div class="city-arrow" aria-hidden="true">←</div>
-        <article class="city-node">
-          <span class="node-icon" aria-hidden="true">
-            <svg viewBox="0 0 48 48"><path d="M9 36c3-7 8-10 15-10s12 3 15 10"/><path d="M24 22a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z"/><path d="M13 25a5 5 0 1 1 6-8M35 25a5 5 0 1 0-6-8"/></svg>
-          </span>
-          <strong>צוותים</strong>
-          <span>עבודה בצוותים: בעיה → רעיון → אבטיפוס</span>
-        </article>
-        <div class="city-arrow" aria-hidden="true">←</div>
-        <article class="city-node">
+        <article class="city-node phase-node">
+          <span class="phase-badge">2</span>
           <span class="node-icon" aria-hidden="true">
             <svg viewBox="0 0 48 48"><path d="M14 38h20"/><path d="M18 38l2-8h8l2 8"/><path d="M14 10h20v8a10 10 0 0 1-20 0v-8Z"/><path d="M14 15H8c0 7 4 11 10 12M34 15h6c0 7-4 11-10 12"/></svg>
           </span>
-          <strong>המשך עירוני</strong>
-          <span>20 צוותים מכל העיר להאקתון</span>
+          <strong>האקתון ויום שיא</strong>
+          <span>20 צוותים ממשיכים ליום האקתון, ואחריו מציגים בפני שופטים מהעירייה ומהתעשייה</span>
         </article>
       </div>
 
@@ -710,21 +722,21 @@
               <svg viewBox="0 0 48 48"><path d="M8 35c5-7 11-10 18-10s12 3 14 10"/><path d="M16 19a6 6 0 1 0 0-12 6 6 0 0 0 0 12ZM33 21a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"/><path d="M24 35v6M18 41h12"/></svg>
             </div>
             <span>1.11.2026-31.1.2027</span>
-            <h3>4 מפגשים לכל כיתה</h3>
+            <h3>4 מפגשים בכל כיתה</h3>
           </article>
           <article class="holon-step">
             <div class="holon-icon" aria-hidden="true">
               <svg viewBox="0 0 48 48"><path d="M9 36h30"/><path d="M13 32V18l11-6 11 6v14"/><path d="M19 32V21h10v11"/><path d="M24 12v20"/></svg>
             </div>
             <span>15.2.2027</span>
-            <h3>20 צוותים להאקתון</h3>
+            <h3>האקתון מרוכז</h3>
           </article>
           <article class="holon-step">
             <div class="holon-icon" aria-hidden="true">
               <svg viewBox="0 0 48 48"><path d="M14 38h20"/><path d="M18 38l2-8h8l2 8"/><path d="M14 10h20v8a10 10 0 0 1-20 0v-8Z"/><path d="M14 15H8c0 7 4 11 10 12M34 15h6c0 7-4 11-10 12"/></svg>
             </div>
             <span>5.4.2027</span>
-            <h3>יום שיא ב-HIT</h3>
+            <h3>יום שיא עם שופטים</h3>
           </article>
         </div>
         </div>

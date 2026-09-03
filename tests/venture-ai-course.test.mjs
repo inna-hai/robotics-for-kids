@@ -76,12 +76,15 @@ assert.ok(!page.includes('מורה קבוע'), 'course page no longer says fixed
 assert.ok(!page.includes('BYOD'), 'course page avoids BYOD jargon in the focused overview');
 assert.ok(page.includes('עד 8.10.2026'), 'course page includes Holon scheduling deadline');
 assert.ok(page.includes('15.2.2027'), 'course page includes Holon hackathon milestone date');
-assert.ok(page.includes('4 מפגשים לכל כיתה'), 'course page clarifies that each class receives 4 meetings');
-assert.ok(page.includes('20 צוותים מכל העיר'), 'course page clarifies that 20 citywide teams advance');
+assert.ok(page.includes('חלוקת התוכנית לשני שלבים'), 'course page frames the program as two clear phases');
+assert.ok(page.includes('4 מפגשים בכל כיתה'), 'course page clarifies that each class receives 4 meetings');
+assert.ok(page.includes('20 צוותים ממשיכים'), 'course page clarifies that 20 teams advance');
+assert.ok(page.includes('שופטים מהעירייה ומהתעשייה'), 'course page explains the final judging audience');
 assert.ok(page.includes('עבודה בצוותים'), 'course page highlights team work inside each class');
 assert.ok(page.includes('holon-timeline-wrap'), 'Holon timeline is rendered as an illustrated timeline');
 assert.ok(page.includes('holon-icon'), 'Holon timeline uses visual icons');
-assert.ok(page.includes('יום שיא ב-HIT'), 'Holon timeline separates the final event from the hackathon');
+assert.ok(page.includes('האקתון מרוכז'), 'Holon timeline names the focused hackathon day');
+assert.ok(page.includes('יום שיא עם שופטים'), 'Holon timeline separates the final judging event from the hackathon');
 assert.ok(page.indexOf('id="overview"') < page.indexOf('aria-labelledby="programVideoTitle"'), 'Holon AI content appears above the original course content');
 assert.ok(page.includes('venture-ai-preview.html'), 'course page links the detailed preview page');
 assert.ok(!page.includes('venture-ai-slides.html?lesson=${lesson.id}'), 'course page keeps slides out of the main overview');
