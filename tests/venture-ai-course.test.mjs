@@ -55,11 +55,11 @@ assert.ok(program.lessons[3].studentOutcome.includes('מגיש'), 'lesson 4 ends
 assert.ok(program.pitchTemplate[0].includes('חולון'), 'pitch template keeps the city context');
 
 const page = read('venture-ai.html');
-assert.ok(page.includes('מרעיון למיזם עם AI'), 'course page has title');
+assert.ok(page.includes('Venture AI חולון'), 'course page has title');
 assert.ok(page.includes('HOLON AI'), 'course page includes Holon AI position paper content');
 assert.ok(page.includes('תוכנית דגל עירונית'), 'course page opens with the city flagship framing');
 assert.ok(page.includes('כל כיתות ח׳'), 'course page clarifies the citywide grade 8 audience');
-assert.ok(page.includes('מהי התוכנית?'), 'course page includes focused program explanation');
+assert.ok(page.includes('מה בתוכנית?'), 'course page includes focused program explanation');
 assert.ok(page.includes('בשיתוף חברה חיצונית'), 'course page explains the external partner delivery');
 assert.ok(page.includes('מדריך חיצוני'), 'course page says an external instructor leads the class');
 assert.ok(page.includes('venture-visual'), 'course page has a visual hero area');
