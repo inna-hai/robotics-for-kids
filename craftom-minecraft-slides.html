@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>מצגת מדריך | Craftom כיתה ז׳</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260903-grade7">
+  <style>
+    body{background:#071528;color:#fff}
+    .shell{width:min(1180px,calc(100% - 28px));padding:20px 0}
+    .slides{display:grid;gap:18px}
+    .slide{min-height:calc(100vh - 40px);display:grid;align-content:center;gap:16px;border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:clamp(22px,5vw,56px);background:linear-gradient(135deg,#0f3b3a,#16345f)}
+    .slide h1,.slide h2{color:#fff;font-size:clamp(2rem,5vw,4.5rem)}
+    .slide p,.slide li{font-size:clamp(1.1rem,2vw,1.5rem);line-height:1.7}
+    .slide .tag{width:max-content;background:#d9f99d;color:#17320b}
+    .video{width:min(760px,100%);aspect-ratio:16/9;border:0;border-radius:16px;background:#000}
+    .actions{position:fixed;left:14px;bottom:14px;z-index:3}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="slides" id="slides"></div>
+  </main>
+  <div class="actions"><a class="btn secondary" href="craftom-school/preview/index.html">מפת הקורס</a></div>
+  <script src="js/craftom-minecraft-challenges.js?v=20260903-grade7"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const challenge = window.getCraftomMinecraftChallenge(params.get('challenge') || params.get('lesson'));
+    const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+    document.title = `מצגת מדריך - ${challenge.title}`;
+    document.getElementById('slides').innerHTML = `
+      <section class="slide"><span class="tag">Craftom Challenges • כיתה ז׳</span><h1>${esc(challenge.title)}</h1><p>${esc(challenge.story)}</p></section>
+      <section class="slide"><h2>סרטון פתיחה</h2><video class="video" src="${esc(challenge.video)}" poster="${esc(challenge.poster)}" controls playsinline preload="metadata"></video></section>
+      <section class="slide"><h2>מה לומדים?</h2><p>${esc(challenge.concept)}</p><p><b>פקודות:</b> ${esc(challenge.command)}</p></section>
+      <section class="slide"><h2>4 מפגשים</h2><ul>${challenge.meetings.map(item => `<li><b>${esc(item[0])} ${esc(item[1])}:</b> ${esc(item[3])}</li>`).join('')}</ul></section>
+      <section class="slide"><h2>איך יודעים שזה עבד?</h2><ul>${challenge.checks.map(item => `<li>${esc(item)}</li>`).join('')}</ul></section>
+    `;
+  </script>
+</body>
+</html>
