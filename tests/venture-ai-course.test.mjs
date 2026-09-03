@@ -82,8 +82,8 @@ assert.ok(page.includes('ליווי מקצועי שמחזיק את התהליך 
 assert.ok(page.includes('6.10.2026'), 'course page includes the coordinators Zoom milestone');
 assert.ok(page.includes('עד 8.10.2026'), 'course page includes Holon scheduling deadline');
 assert.ok(page.includes('15.2.2027'), 'course page includes Holon hackathon milestone date');
-assert.ok(page.includes('4 מפגשים בכל כיתה, אחת לשבועיים, עם מדריך מטעם ״דרך ההייטק״'), 'course page clarifies each class receives biweekly meetings with a Derech HaHitech instructor');
-assert.ok(page.includes('20 צוותים מכל העיר שעלו לשלב 2'), 'course page clarifies the hackathon teams advanced from the citywide phase');
+assert.ok(page.includes('4 מפגשים בכל כיתה עם מדריך מטעם ״דרך ההייטק״'), 'course page clarifies each class receives meetings with a Derech HaHitech instructor');
+assert.ok(page.includes('20 צוותים מכל העיר'), 'course page clarifies the hackathon teams advanced from the citywide phase');
 assert.ok(page.includes('שופטים מהעירייה ומהתעשייה'), 'course page explains the final judging audience');
 assert.ok(page.includes('ב־HIT'), 'course page includes the HIT final event location');
 assert.ok(page.includes('עבודה בצוותים'), 'course page highlights team work inside each class');
@@ -93,8 +93,8 @@ assert.ok(page.includes('שלב 1 · כל העיר'), 'Holon timeline labels the
 assert.ok(page.includes('שלב 2 · האקתון ויום שיא'), 'Holon timeline labels the hackathon and final event phase');
 assert.ok(page.includes('1.11.2026 עד 31.1.2027'), 'course page formats the school program date range clearly for RTL');
 assert.ok(!page.includes('1.11.2026-31.1.2027'), 'course page avoids a hyphenated RTL date range');
-assert.ok(page.includes('האקתון מרוכז ל־20 צוותים מכל העיר שעלו לשלב 2'), 'Holon timeline names the focused hackathon day and advancing teams');
-assert.ok(page.includes('יום שיא עם שופטים'), 'Holon timeline separates the final judging event from the hackathon');
+assert.ok(page.includes('האקתון מרוכז ל־20 צוותים מכל העיר'), 'Holon timeline names the focused hackathon day and advancing teams');
+assert.ok(page.includes('יום שיא ב־HIT עם שופטים'), 'Holon timeline separates the final judging event from the hackathon');
 assert.ok(page.includes('מה נדרש מבית הספר?'), 'course page explains what the school needs to provide');
 assert.ok(page.includes('שיתוף פעולה'), 'course page asks for school cooperation');
 assert.ok(page.includes('4 מפגשים של שעתיים אקדמיות לכל כיתה בשלב 1'), 'course page specifies the school scheduling requirement');

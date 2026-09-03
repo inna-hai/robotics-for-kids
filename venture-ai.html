@@ -577,34 +577,70 @@
         grid-template-columns: 1fr;
       }
 
+      .holon-timeline-wrap {
+        padding: 14px;
+      }
+
+      .holon-timeline {
+        gap: 10px;
+        padding-top: 0;
+      }
+
       .holon-timeline::before {
-        top: 78px;
-        bottom: 28px;
-        inset-inline: auto;
-        right: 36px;
-        width: 7px;
-        height: auto;
-        background: linear-gradient(180deg, var(--blue), var(--teal), var(--yellow), #ff7a7a);
+        display: none;
       }
 
       .timeline-phase-label {
-        min-height: 30px;
-        padding-inline: 10px;
-        font-size: .88rem;
+        position: static;
+        width: auto;
+        min-height: 0;
+        padding: 8px 12px;
+        font-size: .95rem;
+        text-align: center;
+      }
+
+      .timeline-phase-label.phase-1,
+      .timeline-phase-label.phase-2 {
+        width: auto;
       }
 
       .holon-step {
-        grid-template-columns: 86px minmax(0, 1fr);
+        grid-template-columns: 52px minmax(0, 1fr);
         grid-template-rows: auto auto;
-        justify-items: start;
-        min-height: 124px;
-        padding: 0 0 12px;
+        column-gap: 10px;
+        align-items: center;
+        justify-items: stretch;
+        min-height: 0;
+        padding: 10px;
+        border: 1px solid rgba(207,226,243,.9);
+        border-radius: 16px;
+        background: rgba(255,255,255,.86);
+        box-shadow: 0 10px 20px rgba(15,23,42,.06);
         text-align: right;
       }
 
       .holon-icon {
         grid-row: 1 / span 2;
+        width: 52px;
+        height: 52px;
         margin: 0;
+        border-width: 3px;
+      }
+
+      .holon-icon svg {
+        width: 27px;
+        height: 27px;
+      }
+
+      .holon-step span {
+        font-size: .9rem;
+        line-height: 1.2;
+      }
+
+      .holon-step h3 {
+        margin: 4px 0 0;
+        font-size: .98rem;
+        line-height: 1.25;
       }
 
       .venture-photo,
@@ -694,7 +730,6 @@
         <div class="holon-timeline-wrap" aria-label="ציר זמן מצויר של מהלך HOLON AI">
         <div class="holon-timeline">
           <div class="timeline-phase-label phase-1">שלב 1 · כל העיר</div>
-          <div class="timeline-phase-label phase-2">שלב 2 · האקתון ויום שיא</div>
           <article class="holon-step">
             <div class="holon-icon" aria-hidden="true">
               <svg viewBox="0 0 48 48"><path d="M13 15h22a4 4 0 0 1 4 4v19H9V19a4 4 0 0 1 4-4Z"/><path d="M16 10v8M32 10v8M9 24h30M17 31h3M25 31h3"/></svg>
@@ -714,21 +749,22 @@
               <svg viewBox="0 0 48 48"><path d="M8 35c5-7 11-10 18-10s12 3 14 10"/><path d="M16 19a6 6 0 1 0 0-12 6 6 0 0 0 0 12ZM33 21a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"/><path d="M24 35v6M18 41h12"/></svg>
             </div>
             <span>1.11.2026 עד 31.1.2027</span>
-            <h3>4 מפגשים בכל כיתה, אחת לשבועיים, עם מדריך מטעם ״דרך ההייטק״</h3>
+            <h3>4 מפגשים בכל כיתה עם מדריך מטעם ״דרך ההייטק״</h3>
           </article>
+          <div class="timeline-phase-label phase-2">שלב 2 · האקתון ויום שיא</div>
           <article class="holon-step">
             <div class="holon-icon" aria-hidden="true">
               <svg viewBox="0 0 48 48"><path d="M9 36h30"/><path d="M13 32V18l11-6 11 6v14"/><path d="M19 32V21h10v11"/><path d="M24 12v20"/></svg>
             </div>
             <span>15.2.2027</span>
-            <h3>האקתון מרוכז ל־20 צוותים מכל העיר שעלו לשלב 2</h3>
+            <h3>האקתון מרוכז ל־20 צוותים מכל העיר</h3>
           </article>
           <article class="holon-step">
             <div class="holon-icon" aria-hidden="true">
               <svg viewBox="0 0 48 48"><path d="M14 38h20"/><path d="M18 38l2-8h8l2 8"/><path d="M14 10h20v8a10 10 0 0 1-20 0v-8Z"/><path d="M14 15H8c0 7 4 11 10 12M34 15h6c0 7-4 11-10 12"/></svg>
             </div>
             <span>5.4.2027</span>
-            <h3>יום שיא עם שופטים מהעירייה ומהתעשייה ב־HIT</h3>
+            <h3>יום שיא ב־HIT עם שופטים מהעירייה ומהתעשייה</h3>
           </article>
         </div>
         </div>
