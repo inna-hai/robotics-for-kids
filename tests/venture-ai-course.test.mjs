@@ -64,7 +64,7 @@ assert.ok(!page.includes('התלמידים לומדים לזהות צורך בע
 assert.ok(page.includes('לתת לכל תלמיד ותלמידה'), 'course page makes the main student goal clear');
 assert.ok(page.includes('כלים טכנולוגיים ב־AI'), 'course page frames AI as practical technology tools');
 assert.ok(page.includes('תוצר יזמי'), 'course page clarifies the entrepreneurial product outcome');
-assert.ok(page.includes('בשיתוף חברה חיצונית'), 'course page explains the external partner delivery');
+assert.ok(page.includes('בשיתוף חברת דרך ההייטק'), 'course page names Derech HaHitech as the delivery partner');
 assert.ok(page.includes('מדריכים חיצוניים'), 'course page says external instructors lead the class');
 assert.ok(page.includes('venture-visual'), 'course page has a visual hero area');
 assert.ok(page.indexOf('assets/venture-ai/meeting-1-city.webp') < page.indexOf('id="overview"'), 'hero image appears in the top section before Holon AI content');
