@@ -67,6 +67,9 @@ assert.ok(page.includes('האקתון 15.2.2027'), 'course page includes Holon h
 assert.ok(page.includes('4 מפגשים לכל כיתה'), 'course page clarifies that each class receives 4 meetings');
 assert.ok(page.includes('20 צוותים מכל העיר'), 'course page clarifies that 20 citywide teams advance');
 assert.ok(page.includes('עבודה בצוותים'), 'course page highlights team work inside each class');
+assert.ok(page.includes('holon-timeline-wrap'), 'Holon timeline is rendered as an illustrated timeline');
+assert.ok(page.includes('holon-icon'), 'Holon timeline uses visual icons');
+assert.ok(page.includes('יום שיא ב-HIT'), 'Holon timeline separates the final event from the hackathon');
 assert.ok(page.indexOf('id="holon-ai"') < page.indexOf('aria-labelledby="programVideoTitle"'), 'Holon AI content appears above the original course content');
 assert.ok(page.includes('venture-ai-slides.html?lesson=${lesson.id}'), 'course page links instructor slides inside each lesson');
 assert.ok(page.includes('venture-ai-students.html?lesson=${lesson.id}'), 'course page links student worksheet inside each lesson');
