@@ -373,51 +373,51 @@
     },
     {
       id: 9,
-      title: 'מכשולים ופסילה — בלוקי חוקי משחק',
-      concept: 'בלוקי חוק משחק → JavaScript: lives · if · פסילה · איפוס מיקום',
+      title: 'מסלול כוכבים ומכשולים — משחק עם סיום קבוע',
+      concept: 'בלוקי חוק משחק → JavaScript: random · lives · fixed items · game over',
       durationMinutes: 90,
-      story: 'מוסיפים למשחק חוק חדש: לא רק אוספים נקודות, אלא גם נזהרים ממכשול. הילדים בונים קודם עם בלוקי חוק משחק: צור מכשול, אם נוגעים — הורד חיים, הצג פסילה, אפס משחק.',
-      mission: 'לבנות משחק קליקים/אתגר עם מכשול, חיים ופסילה בעזרת בלוקי חוקי משחק.',
-      outcome: 'משחק עם מכשול וחיים שנבנה מבלוקים, עם הצצה ל־lives, if ו־game over',
+      story: 'בונים משחק שבו יש מספר קבוע של כוכבים ומכשולים. בכל צעד מופיע פריט רנדומלי, והתלמידים מנסים לסיים את המסלול עם כמה שיותר כוכבים.',
+      mission: 'לבנות משחק עם 40 אירועים קבועים — כוכבים ומכשולים בסדר רנדומלי — ולבדוק כמה כוכבים נאספו עד הסיום או הפסילה.',
+      outcome: 'משחק עם 28 כוכבים, 12 מכשולים, חיים, פסילה וסיום שמציג כמה כוכבים נאספו',
       starter: {
-        html: '<main class="obstacle-game">\n  <h1>משחק המכשול הראשון</h1>\n  <p>ניקוד: <span id="scoreText">0</span> | חיים: <span id="livesText">3</span></p>\n  <button onclick="collectStar()">⭐ אספו כוכב</button>\n  <button onclick="hitObstacle()">🌋 נגעתי במכשול</button>\n  <button onclick="resetGame()">איפוס</button>\n  <p id="message">אספו כוכבים, אבל היזהרו מהמכשול!</p>\n</main>',
-        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #fef2f2, #eff6ff);\n}\n\n.obstacle-game {\n  background: white;\n  width: 420px;\n  margin: 45px auto;\n  padding: 30px;\n  border-radius: 30px;\n  box-shadow: 0 16px 35px #fecaca;\n}\n\n#scoreText, #livesText {\n  display: inline-block;\n  min-width: 38px;\n  background: #fee2e2;\n  border-radius: 999px;\n  padding: 6px 12px;\n  font-weight: bold;\n}\n\nbutton {\n  margin: 8px;\n  padding: 14px 18px;\n  border: 0;\n  border-radius: 999px;\n  background: #dc2626;\n  color: white;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n.game-over {\n  background: #f1f5f9;\n  border: 3px solid #64748b;\n}',
-        js: 'let score = 0;\nlet lives = 3;\n\nfunction collectStar() {\n  score = score + 1;\n  document.getElementById("scoreText").textContent = score;\n  document.getElementById("message").textContent = "יפה! אספת כוכב ⭐";\n}\n\nfunction hitObstacle() {\n  lives = lives - 1;\n  document.getElementById("livesText").textContent = lives;\n\n  if (lives <= 0) {\n    document.getElementById("message").textContent = "המשחק נגמר. נסו שוב!";\n    document.querySelector(".obstacle-game").classList.add("game-over");\n  } else {\n    document.getElementById("message").textContent = "אוי! איבדת חיים. נשארו לך " + lives;\n  }\n}\n\nfunction resetGame() {\n  score = 0;\n  lives = 3;\n  document.getElementById("scoreText").textContent = score;\n  document.getElementById("livesText").textContent = lives;\n  document.getElementById("message").textContent = "אספו כוכבים, אבל היזהרו מהמכשול!";\n  document.querySelector(".obstacle-game").classList.remove("game-over");\n}'
+        html: '<main class="obstacle-game">\n  <h1>מסלול כוכבים ומכשולים</h1>\n  <p>כוכבים: <span id="scoreText">0</span> | חיים: <span id="livesText">3</span></p>\n  <p>התקדמות: <span id="progressText">0</span>/40</p>\n  <button id="itemButton" onclick="playItem()">מתחילים...</button>\n  <button onclick="skipObstacle()">דלגו</button>\n  <button onclick="resetGame()">איפוס</button>\n  <p id="message">בכל צעד יופיע כוכב או מכשול. נסו לאסוף כמה שיותר כוכבים!</p>\n</main>',
+        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #fef2f2, #eff6ff);\n}\n\n.obstacle-game {\n  background: white;\n  width: 430px;\n  margin: 45px auto;\n  padding: 30px;\n  border-radius: 30px;\n  box-shadow: 0 16px 35px #fecaca;\n}\n\n#scoreText, #livesText, #progressText {\n  display: inline-block;\n  min-width: 38px;\n  background: #fee2e2;\n  border-radius: 999px;\n  padding: 6px 12px;\n  font-weight: bold;\n}\n\nbutton {\n  margin: 8px;\n  padding: 14px 18px;\n  border: 0;\n  border-radius: 999px;\n  background: #dc2626;\n  color: white;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n.finished {\n  background: #f0fdf4;\n  border: 3px solid #22c55e;\n}\n\n.game-over {\n  background: #f1f5f9;\n  border: 3px solid #64748b;\n}',
+        js: "let score = 0;\nconst startLives = 3;\nlet lives = startLives;\nconst totalStars = 28;\nconst totalObstacles = 12;\nconst totalItems = totalStars + totalObstacles;\nlet items = [];\nlet currentIndex = 0;\nlet currentItem = \"star\";\n\nfunction shuffle(list) {\n  for (let i = list.length - 1; i > 0; i = i - 1) {\n    const j = Math.floor(Math.random() * (i + 1));\n    const temp = list[i];\n    list[i] = list[j];\n    list[j] = temp;\n  }\n}\n\nfunction buildItems() {\n  items = [];\n  for (let i = 0; i < totalStars; i = i + 1) {\n    items.push(\"star\");\n  }\n  for (let i = 0; i < totalObstacles; i = i + 1) {\n    items.push(\"obstacle\");\n  }\n  shuffle(items);\n}\n\nfunction updateScreen() {\n  document.getElementById(\"scoreText\").textContent = score;\n  document.getElementById(\"livesText\").textContent = lives;\n  document.getElementById(\"progressText\").textContent = currentIndex;\n}\n\nfunction nextItem(feedbackText = \"\") {\n  if (currentIndex >= totalItems) {\n    finishGame();\n    return;\n  }\n  currentItem = items[currentIndex];\n  const nextMessage = currentItem === \"star\" ? \"הפריט הבא: כוכב ⭐\" : \"הפריט הבא: מכשול 🌋\";\n  document.getElementById(\"itemButton\").textContent = currentItem === \"star\" ? \"⭐ כוכב\" : \"🌋 מכשול\";\n  document.getElementById(\"message\").textContent = feedbackText ? feedbackText + \" \" + nextMessage : nextMessage;\n}\n\nfunction playItem() {\n  if (lives <= 0) return;\n  if (currentItem === \"star\") {\n    collectStar();\n  } else {\n    hitObstacle();\n  }\n}\n\nfunction collectStar() {\n  score = score + 1;\n  currentIndex = currentIndex + 1;\n  updateScreen();\n  nextItem(\"יפה! אספתם כוכב ⭐\");\n}\n\nfunction hitObstacle() {\n  lives = lives - 1;\n  currentIndex = currentIndex + 1;\n  updateScreen();\n\n  if (lives <= 0) {\n    document.getElementById(\"message\").textContent = \"נגמרו החיים. אספתם \" + score + \" כוכבים.\";\n    document.querySelector(\".obstacle-game\").classList.add(\"game-over\");\n    document.getElementById(\"itemButton\").disabled = true;\n  }\n\n  if (lives > 0) {\n    nextItem(\"אוי! איבדתם חיים. נשארו לכם \" + lives);\n  }\n}\n\nfunction skipObstacle() {\n  if (lives <= 0) return;\n  currentIndex = currentIndex + 1;\n  if (currentItem === \"obstacle\") {\n    updateScreen();\n    nextItem(\"דילוג חכם!\");\n  } else {\n    score = Math.max(0, score - 1);\n    updateScreen();\n    nextItem(\"דילגתם על כוכב ואיבדתם נקודה\");\n  }\n}\n\nfunction finishGame() {\n  document.getElementById(\"message\").textContent = \"סיום! אספתם \" + score + \" מתוך \" + totalStars + \" כוכבים.\";\n  document.querySelector(\".obstacle-game\").classList.add(\"finished\");\n  document.getElementById(\"itemButton\").disabled = true;\n}\n\nfunction resetGame() {\n  score = 0;\n  lives = startLives;\n  currentIndex = 0;\n  buildItems();\n  updateScreen();\n  document.querySelector(\".obstacle-game\").classList.remove(\"game-over\");\n  document.querySelector(\".obstacle-game\").classList.remove(\"finished\");\n  document.getElementById(\"itemButton\").disabled = false;\n  nextItem(\"משחק חדש התחיל.\");\n}\n\nresetGame();"
       },
       lessonFlow: [
-        { minutes: '0–8', title: 'פתיחה: למה צריך מכשול?', teacher: 'שואלים מה הופך משחק למאתגר: לא רק מטרה, גם סיכון.', students: 'מציעים מכשול, חיים, פסילה ואיפוס.' },
-        { minutes: '8–18', title: 'בלוק חוק משחק ראשון', teacher: 'מפעילים בלוק “הוסף חיים” ומראים את lives כמד חיים.', students: 'רואים שהמשחק מתחיל עם 3 חיים.' },
-        { minutes: '18–34', title: 'בנייה מודרכת בבלוקי חוק', teacher: 'מפעילים בלוקים: אסוף כוכב, נגע במכשול, הורד חיים, בדוק game over.', students: 'מריצים, לוחצים על כוכב ומכשול, ורואים ניקוד/חיים משתנים.' },
-        { minutes: '34–50', title: 'מציצים לקוד החוק', teacher: 'לא כותבים תנאי חופשי. רק מזהים lives, lives - 1, if lives <= 0.', students: 'מחברים בין בלוק פסילה לבין קוד if.' },
-        { minutes: '50–66', title: 'תרגיל עצמאי עם בלוקים', teacher: 'נותנים לתלמידים לשנות מספר חיים ומשוב פסילה דרך בלוקים.', students: 'מבצעים תרגילים 1–5.' },
-        { minutes: '66–78', title: 'דיבאג חיים', teacher: 'מדגימים id לא תואם ל־livesText או חוק שלא עוצר ב־0.', students: 'בודקים התאמה בין livesText לבין JavaScript.' },
-        { minutes: '78–90', title: 'בדיקת שחקנים', teacher: 'זוגות בודקים אם 3 חיים זה קל/קשה ומציעים איזון.', students: 'מסבירים את חוק הפסילה במילים.' }
+        { minutes: '0–8', title: 'פתיחה: מסלול רנדומלי', teacher: 'מסבירים שיש במשחק 40 אירועים קבועים, אבל הסדר שלהם משתנה בכל משחק.', students: 'מנחשים למה אותו מספר פריטים יכול ליצור משחק שונה בכל פעם.' },
+        { minutes: '8–18', title: 'חיים ופסילה', teacher: 'מראים איך מכשול מוריד lives ואיך פסילה יכולה לסיים משחק מוקדם.', students: 'בודקים מה קורה כשפוגעים במכשול.' },
+        { minutes: '18–34', title: 'כוכבים מול מכשולים', teacher: 'מדגישים שהמטרה אינה יעד ניקוד, אלא כמה כוכבים הצלחנו לאסוף מתוך המסלול.', students: 'משחקים כמה צעדים ומשווים כוכב/מכשול.' },
+        { minutes: '34–50', title: 'מציצים לקוד', teacher: 'מזהים totalStars, totalObstacles, shuffle ו־if lives <= 0.', students: 'מחברים בין בלוקי המשחק לבין שורות הקוד שנוצרות.' },
+        { minutes: '50–66', title: 'איזון משחק', teacher: 'בודקים האם מספר החיים ועונש המכשול הוגנים.', students: 'משנים בלוקים ובודקים האם המשחק קל או קשה מדי.' },
+        { minutes: '66–78', title: 'דיבאג התקדמות', teacher: 'בודקים שהתקדמות עולה בכל צעד ושסיום מופיע אחרי כל הפריטים.', students: 'מסבירים למה צריך currentIndex.' },
+        { minutes: '78–90', title: 'השוואת תוצאות', teacher: 'נותנים לתלמידים לשחק ולהשוות כמה כוכבים אספו.', students: 'מציגים תוצאה ומסבירים החלטת איזון אחת.' }
       ],
       exercises: [
-        { id: 1, minutes: '18–24', title: 'תרגיל 1 — בלוק חיים', prompt: 'מצאו את בלוק החיים ובדקו שהמשחק מתחיל עם 3 חיים.', hint: 'החיים נשמרים במשתנה lives.', check: { jsIncludes: ['let lives = 3'], htmlIncludes: ['id="livesText"'] } },
-        { id: 2, minutes: '24–31', title: 'תרגיל 2 — בלוק איסוף כוכב', prompt: 'לחצו על איסוף כוכב ובדקו שהניקוד עולה.', hint: 'הפעולה collectStar מעלה score.', check: { jsIncludes: ['function collectStar', 'score = score + 1'] } },
-        { id: 3, minutes: '31–39', title: 'תרגיל 3 — בלוק מכשול', prompt: 'לחצו על מכשול ובדקו שחיים יורדים.', hint: 'הפעולה hitObstacle מורידה lives.', check: { jsIncludes: ['function hitObstacle', 'lives = lives - 1'] } },
-        { id: 4, minutes: '39–47', title: 'תרגיל 4 — בלוק Game Over', prompt: 'מצאו את התנאי שבודק אם החיים נגמרו.', hint: 'חפשו lives <= 0.', check: { jsIncludes: ['if (lives <= 0)'] } },
-        { id: 5, minutes: '47–56', title: 'תרגיל 5 — בלוק 5 חיים', prompt: 'הפעילו בלוק שמתחיל את המשחק עם 5 חיים.', hint: 'הבלוק משנה lives = 3 ל־5.', check: { jsIncludes: ['let lives = 5'] } },
-        { id: 6, minutes: '56–65', title: 'תרגיל 6 — הודעת פסילה', prompt: 'הפעילו בלוק שמשנה את הודעת המשחק נגמר.', hint: 'ההודעה נמצאת בתוך if.', check: { jsIncludes: ['נגמרו החיים'] } },
-        { id: 7, minutes: '65–75', title: 'תרגיל 7 — דיבאג livesText', prompt: 'אם החיים לא מוצגים, בדקו התאמה של id="livesText".', hint: 'ה־id חייב להיות זהה ב־HTML וב־JS.', check: { htmlIncludes: ['id="livesText"'], jsIncludes: ['getElementById("livesText")'] } },
-        { id: 8, minutes: '75–84', title: 'תרגיל 8 — איזון קושי', prompt: 'תנו לחבר לשחק והחליטו אם 3 או 5 חיים מתאים יותר.', hint: 'יותר חיים = משחק קל יותר.', check: { jsIncludes: ['lives', 'resetGame'], htmlIncludes: ['button'] } }
+        { id: 1, minutes: '18–24', title: 'תרגיל 1 — בלוק חיים', prompt: 'מצאו את בלוק החיים ובדקו שהמשחק מתחיל עם 3 חיים.', hint: 'החיים נשמרים במשתנה lives.', check: { jsIncludes: ['const startLives = 3'], htmlIncludes: ['id="livesText"'] } },
+        { id: 2, minutes: '24–31', title: 'תרגיל 2 — כוכבים קבועים', prompt: 'בדקו שבמשחק יש מספר קבוע של כוכבים.', hint: 'חפשו totalStars.', check: { jsIncludes: ['const totalStars = 28'] } },
+        { id: 3, minutes: '31–39', title: 'תרגיל 3 — מכשולים קבועים', prompt: 'בדקו שבמשחק יש מספר קבוע של מכשולים.', hint: 'חפשו totalObstacles.', check: { jsIncludes: ['const totalObstacles = 12'] } },
+        { id: 4, minutes: '39–47', title: 'תרגיל 4 — סדר רנדומלי', prompt: 'מצאו את הפעולה שמערבבת את הכוכבים והמכשולים.', hint: 'חפשו shuffle.', check: { jsIncludes: ['function shuffle', 'Math.random'] } },
+        { id: 5, minutes: '47–56', title: 'תרגיל 5 — פסילה', prompt: 'לחצו על מכשולים עד שנגמרים החיים ובדקו שמופיעה הודעת פסילה.', hint: 'הפסילה עדיין תלויה ב־lives <= 0.', check: { jsIncludes: ['if (lives <= 0)', 'game-over'] } },
+        { id: 6, minutes: '56–65', title: 'תרגיל 6 — סיום מסלול', prompt: 'בדקו שבסיום המשחק מופיע כמה כוכבים נאספו.', hint: 'חפשו finishGame.', check: { jsIncludes: ['function finishGame', 'מתוך " + totalStars'] } },
+        { id: 7, minutes: '65–75', title: 'תרגיל 7 — דילוג על מכשול', prompt: 'כשמופיע מכשול, נסו לדלג ובדקו שהמשחק מתקדם בלי להוריד חיים.', hint: 'דילוג נכון הוא החלטה במשחק, לא רק כפתור נוסף.', check: { jsIncludes: ['function skipObstacle'] } },
+        { id: 8, minutes: '75–84', title: 'תרגיל 8 — השוואת תוצאות', prompt: 'שחקו סיבוב והשוו כמה כוכבים נאספו מתוך כל הכוכבים.', hint: 'אותם פריטים, סדר רנדומלי — לכן כל סיבוב יכול להרגיש אחרת.', check: { jsIncludes: ['totalStars', 'totalObstacles', 'score'] } }
       ],
       aiHelper: [
-        'הסבירו לילד בכיתה ד׳ מה ההבדל בין ניקוד לבין חיים במשחק.',
-        'הציעו שלושה סוגי מכשולים למשחק פשוט.',
-        'עזרו למצוא למה החיים יורדים בקוד אבל לא מתעדכנים במסך.',
-        'הציעו איך לאזן משחק: כמה חיים לתת ולמה.'
+        'הסבירו לילד בכיתה ד׳ למה סדר רנדומלי משנה משחק גם כשמספר הפריטים קבוע.',
+        'עזרו לאזן משחק עם 28 כוכבים, 12 מכשולים ו־3 חיים.',
+        'עזרו למצוא למה החיים יורדים אבל ההתקדמות לא עולה.',
+        'הציעו משפט סיום שמשווה כמה כוכבים נאספו מתוך כל הכוכבים.'
       ],
       vocabulary: [
         ['lives', 'כמה ניסיונות נשארו לשחקן'],
-        ['game over', 'מצב שבו המשחק נגמר'],
-        ['<=', 'קטן או שווה — בדיקה אם החיים הגיעו לאפס'],
-        ['מכשול', 'משהו במשחק שמוריד חיים או מקשה'],
-        ['איזון קושי', 'להחליט כמה חיים או מכשולים מתאימים']
+        ['random', 'בחירה או ערבוב בסדר לא קבוע'],
+        ['shuffle', 'ערבוב רשימה כדי שכל משחק יהיה קצת אחר'],
+        ['currentIndex', 'באיזה צעד במסלול אנחנו נמצאים'],
+        ['game over', 'מצב שבו המשחק נגמר לפני הסיום כי נגמרו החיים'],
+        ['איזון קושי', 'להחליט כמה חיים ומכשולים יוצרים משחק הוגן']
       ]
-    },
-    {
+    },    {
       id: 10,
       title: 'כוח מיוחד לדמות — בלוקי יכולת',
       concept: 'בלוקי יכולת → JavaScript: power · cooldown · מצב זמני',
@@ -1120,191 +1120,52 @@ function lightWindow() {
   });
 
   Object.assign(lessons[8], {
-    title: 'תופסים כוכבים, לא מכשולים',
-    concept: 'חוקי משחק → lives · random · if · בחירה נכונה',
-    story: 'המשחק כבר לא כפתור שמוריד חיים. עכשיו מופיע כרטיס הפתעה: לפעמים כוכב ולפעמים מכשול. הילד צריך להחליט מהר אם ללחוץ או לדלג.',
-    mission: 'לבנות משחק תגובה שבו אוספים כוכבים, נזהרים ממכשולים, ושומרים על חיים.',
-    outcome: 'משחק תגובה עם כרטיס מתחלף, ניקוד וחיים, שמרגיש שונה ממשחק הקליקים',
-    starter: {
-      html: `<main class="reaction-game">
-  <h1>כוכבים או מכשולים?</h1>
-  <p>ניקוד: <span id="scoreText">0</span> | חיים: <span id="livesText">3</span></p>
-  <button id="itemButton" class="item star" onclick="chooseItem()">⭐</button>
-  <button onclick="skipItem()">דלגו</button>
-  <button onclick="resetGame()">איפוס</button>
-  <p id="message">לחצו על כוכבים. דלגו על מכשולים.</p>
-</main>`,
-      css: `body {
-  font-family: Arial, sans-serif;
-  direction: rtl;
-  text-align: center;
-  background: linear-gradient(135deg, #eef2ff, #fff7ed);
-}
-
-.reaction-game {
-  background: white;
-  width: min(430px, 92vw);
-  margin: 42px auto;
-  padding: 30px;
-  border-radius: 30px;
-  box-shadow: 0 18px 40px #c7d2fe;
-}
-
-.item {
-  display: block;
-  width: 120px;
-  height: 120px;
-  margin: 20px auto;
-  font-size: 58px;
-  border-radius: 28px;
-  transition: transform 0.15s;
-}
-
-.item:hover {
-  transform: scale(1.08);
-}
-
-.star {
-  background: #fef3c7;
-}
-
-.obstacle {
-  background: #fee2e2;
-}
-
-button {
-  margin: 8px;
-  padding: 13px 18px;
-  border: 0;
-  border-radius: 999px;
-  background: #7c3aed;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.game-over {
-  background: #f1f5f9;
-  border: 3px solid #64748b;
-}`,
-      js: `let score = 0;
-const startLives = 3;
-let lives = startLives;
-document.getElementById("livesText").textContent = startLives;
-let currentItem = "star";
-
-function nextItem(feedbackText = "") {
-  if (lives <= 0) {
-    return;
-  }
-  const itemButton = document.getElementById("itemButton");
-  const options = ["star", "obstacle"];
-  currentItem = options[Math.floor(Math.random() * options.length)];
-  let nextMessage = "";
-
-  if (currentItem === "star") {
-    itemButton.textContent = "⭐";
-    itemButton.className = "item star";
-    nextMessage = "כוכב! כדאי ללחוץ.";
-  } else {
-    itemButton.textContent = "🌋";
-    itemButton.className = "item obstacle";
-    nextMessage = "מכשול! עדיף לדלג.";
-  }
-
-  document.getElementById("message").textContent = feedbackText ? feedbackText + " " + nextMessage : nextMessage;
-}
-
-function chooseItem() {
-  if (lives <= 0) {
-    return;
-  }
-  if (currentItem === "star") {
-    score = score + 1;
-    document.getElementById("scoreText").textContent = score;
-    nextItem("אספתם כוכב ⭐");
-  } else {
-    loseLife();
-    if (lives > 0) {
-      nextItem();
-    }
-  }
-}
-
-function skipItem() {
-  if (lives <= 0) {
-    return;
-  }
-  if (currentItem === "obstacle") {
-    nextItem("דילוג חכם!");
-  } else {
-    score = Math.max(0, score - 1);
-    document.getElementById("scoreText").textContent = score;
-    nextItem("אופס, דילגתם על כוכב ואיבדתם נקודה.");
-  }
-}
-
-function loseLife() {
-  lives = lives - 1;
-  document.getElementById("livesText").textContent = lives;
-
-  if (lives <= 0) {
-    document.getElementById("message").textContent = "נגמרו החיים. נסו שוב!";
-    document.querySelector(".reaction-game").classList.add("game-over");
-  }
-}
-
-function resetGame() {
-  score = 0;
-  lives = startLives;
-  document.getElementById("scoreText").textContent = score;
-  document.getElementById("livesText").textContent = lives;
-  document.querySelector(".reaction-game").classList.remove("game-over");
-  nextItem();
-}`
-    },
-    lessonFlow: [
-      { minutes: '0–8', title: 'וואו: ללחוץ או לדלג?', teacher: 'מריצים כמה סיבובים ומבקשים מהכיתה להגיד מהר: ללחוץ או לדלג.', students: 'מבינים חוק משחק דרך פעולה, לא דרך הסבר.' },
-      { minutes: '8–18', title: 'כוכב מול מכשול', teacher: 'מראים currentItem כמצב הנוכחי של המשחק.', students: 'מחברים בין מה שרואים לבין הערך בקוד.' },
-      { minutes: '18–34', title: 'אקראיות פשוטה', teacher: 'מצביעים על options ועל Math.random בלי להיכנס לעומק מתמטי.', students: 'מבינים שהמשחק מחליף בין כוכב למכשול.' },
-      { minutes: '34–50', title: 'חיים ופסילה', teacher: 'מדגימים loseLife והבדיקה lives <= 0.', students: 'רואים איך טעות מורידה חיים.' },
-      { minutes: '50–66', title: 'שדרוגי חוק', teacher: 'נותנים לשנות מספר חיים, הודעות וסמלי פריטים.', students: 'יוצרים גרסה מצחיקה או מאתגרת.' },
-      { minutes: '66–78', title: 'דיבאג חוק משחק', teacher: 'בודקים itemButton, currentItem ו־livesText.', students: 'מתקנים מצב שבו המשחק לא יודע מה הפריט.' },
-      { minutes: '78–90', title: 'טסט שחקנים', teacher: 'זוגות משחקים ומחליטים אם המשחק הוגן.', students: 'מסבירים חוק אחד שבנו.' }
-    ],
-    exercises: [
-      { id: 1, minutes: '0–8', title: 'תרגול 1 — משחקים קודם', prompt: 'הריצו, החליפו פריט, ולחצו רק כשמופיע כוכב.', hint: 'החוויה חשובה לפני הקוד.', check: { htmlIncludes: ['id="itemButton"'], jsIncludes: ['function chooseItem'] } },
-      { id: 2, minutes: '8–18', title: 'תרגול 2 — מצב הפריט', prompt: 'מצאו את currentItem ובדקו שהוא מתחיל כ־star.', hint: 'currentItem אומר מה מופיע עכשיו.', check: { jsIncludes: ['let currentItem = "star"'] } },
-      { id: 3, minutes: '18–28', title: 'תרגול 3 — פריט אקראי', prompt: 'מצאו את הרשימה שממנה המשחק בוחר כוכב או מכשול.', hint: 'חפשו options.', check: { jsIncludes: ['Math.random', 'options'] } },
-      { id: 4, minutes: '28–38', title: 'תרגול 4 — תנאי בחירה', prompt: 'מצאו מה קורה אם הפריט הוא כוכב.', hint: 'חפשו if (currentItem === "star").', check: { jsIncludes: ['if (currentItem === "star")'] } },
-      { id: 5, minutes: '38–50', title: 'תרגול 5 — חיים יורדים', prompt: 'מצאו איפה מכשול מוריד חיים.', hint: 'loseLife אחראית לפסילה.', check: { jsIncludes: ['let lives = 3', 'lives = lives - 1'] } },
-      { id: 6, minutes: '50–60', title: 'תרגול 6 — Game Over', prompt: 'בדקו מה קורה כשהחיים מגיעים ל־0.', hint: 'חפשו lives <= 0.', check: { jsIncludes: ['lives <= 0'], cssIncludes: ['.game-over'] } },
-      { id: 7, minutes: '60–74', title: 'תרגול 7 — דיבאג כפתור', prompt: 'אם הפריט לא משתנה, בדקו itemButton ו־className.', hint: 'אותו כפתור מחליף גם סמל וגם class.', check: { htmlIncludes: ['id="itemButton"'], jsIncludes: ['itemButton.className'] } },
-      { id: 8, minutes: '74–84', title: 'תרגול 8 — איזון חיים', prompt: 'תנו לחבר לשחק והחליטו אם צריך 3 או 5 חיים.', hint: 'יותר חיים מתאים לכיתה שמתחילה.', check: { jsIncludes: ['lives', 'resetGame'], htmlIncludes: ['skipItem'] } }
-    ],
-    aiHelper: [
-      'הציעו זוגות של פרס ומכשול שילדים יבינו מיד.',
-      'הסבירו currentItem כמו קלף שמונח עכשיו על השולחן.',
-      'עזרו לילד להבין למה דילוג על כוכב הוא לא פסילה.',
-      'הציעו רמת קושי קלה/בינונית/קשה למשחק תגובה.'
-    ],
-    vocabulary: [
-      ['lives', 'כמה ניסיונות נשארו'],
-      ['currentItem', 'הפריט שמופיע עכשיו במשחק'],
-      ['random', 'בחירה אקראית של פריט'],
-      ['if', 'אם זה כוכב עושים דבר אחד, אחרת דבר אחר'],
-      ['game over', 'מצב שבו אין יותר חיים']
-    ],
-    bridgeBlocks: [
-      { label: '❤️ 5 חיים', target: 'js', find: 'let lives = 3;', replace: 'let lives = 5;', hint: 'בלוק איזון: נותן יותר ניסיונות.' },
-      { label: '⭐ טקסט כוכב', target: 'js', find: 'אספתם כוכב ⭐', replace: 'תפיסה מושלמת ⭐', hint: 'בלוק משוב: הודעת הצלחה.' },
-      { label: '🌋 מכשול אחר', target: 'js', find: 'itemButton.textContent = "🌋";', replace: 'itemButton.textContent = "💣";', hint: 'בלוק דמות: מחליף מכשול.' },
-      { label: '🏁 הודעת פסילה', target: 'js', find: 'נגמרו החיים. נסו שוב!', replace: 'נגמרו החיים — נסו סיבוב חדש!', hint: 'בלוק משוב: הודעת Game Over.' },
-      { label: '🟣 צבע פריט', target: 'css', find: 'background: #fef3c7;', replace: 'background: #dcfce7;', hint: 'בלוק עיצוב: משנה כרטיס כוכב.' },
-      { label: '🎲 החלפת פריט', target: 'js', find: 'function nextItem()', replace: 'function nextItem()', hint: 'בלוק משחק: מחליף בין כוכב למכשול.' }
-    ]
-  });
-
+      id: 9,
+      title: 'מסלול כוכבים ומכשולים — משחק עם סיום קבוע',
+      concept: 'בלוקי חוק משחק → JavaScript: random · lives · fixed items · game over',
+      durationMinutes: 90,
+      story: 'בונים משחק שבו יש מספר קבוע של כוכבים ומכשולים. בכל צעד מופיע פריט רנדומלי, והתלמידים מנסים לסיים את המסלול עם כמה שיותר כוכבים.',
+      mission: 'לבנות משחק עם 40 אירועים קבועים — כוכבים ומכשולים בסדר רנדומלי — ולבדוק כמה כוכבים נאספו עד הסיום או הפסילה.',
+      outcome: 'משחק עם 28 כוכבים, 12 מכשולים, חיים, פסילה וסיום שמציג כמה כוכבים נאספו',
+      starter: {
+        html: '<main class="obstacle-game">\n  <h1>מסלול כוכבים ומכשולים</h1>\n  <p>כוכבים: <span id="scoreText">0</span> | חיים: <span id="livesText">3</span></p>\n  <p>התקדמות: <span id="progressText">0</span>/40</p>\n  <button id="itemButton" onclick="playItem()">מתחילים...</button>\n  <button onclick="skipObstacle()">דלגו</button>\n  <button onclick="resetGame()">איפוס</button>\n  <p id="message">בכל צעד יופיע כוכב או מכשול. נסו לאסוף כמה שיותר כוכבים!</p>\n</main>',
+        css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #fef2f2, #eff6ff);\n}\n\n.obstacle-game {\n  background: white;\n  width: 430px;\n  margin: 45px auto;\n  padding: 30px;\n  border-radius: 30px;\n  box-shadow: 0 16px 35px #fecaca;\n}\n\n#scoreText, #livesText, #progressText {\n  display: inline-block;\n  min-width: 38px;\n  background: #fee2e2;\n  border-radius: 999px;\n  padding: 6px 12px;\n  font-weight: bold;\n}\n\nbutton {\n  margin: 8px;\n  padding: 14px 18px;\n  border: 0;\n  border-radius: 999px;\n  background: #dc2626;\n  color: white;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n.finished {\n  background: #f0fdf4;\n  border: 3px solid #22c55e;\n}\n\n.game-over {\n  background: #f1f5f9;\n  border: 3px solid #64748b;\n}',
+        js: "let score = 0;\nconst startLives = 3;\nlet lives = startLives;\nconst totalStars = 28;\nconst totalObstacles = 12;\nconst totalItems = totalStars + totalObstacles;\nlet items = [];\nlet currentIndex = 0;\nlet currentItem = \"star\";\n\nfunction shuffle(list) {\n  for (let i = list.length - 1; i > 0; i = i - 1) {\n    const j = Math.floor(Math.random() * (i + 1));\n    const temp = list[i];\n    list[i] = list[j];\n    list[j] = temp;\n  }\n}\n\nfunction buildItems() {\n  items = [];\n  for (let i = 0; i < totalStars; i = i + 1) {\n    items.push(\"star\");\n  }\n  for (let i = 0; i < totalObstacles; i = i + 1) {\n    items.push(\"obstacle\");\n  }\n  shuffle(items);\n}\n\nfunction updateScreen() {\n  document.getElementById(\"scoreText\").textContent = score;\n  document.getElementById(\"livesText\").textContent = lives;\n  document.getElementById(\"progressText\").textContent = currentIndex;\n}\n\nfunction nextItem(feedbackText = \"\") {\n  if (currentIndex >= totalItems) {\n    finishGame();\n    return;\n  }\n  currentItem = items[currentIndex];\n  const nextMessage = currentItem === \"star\" ? \"הפריט הבא: כוכב ⭐\" : \"הפריט הבא: מכשול 🌋\";\n  document.getElementById(\"itemButton\").textContent = currentItem === \"star\" ? \"⭐ כוכב\" : \"🌋 מכשול\";\n  document.getElementById(\"message\").textContent = feedbackText ? feedbackText + \" \" + nextMessage : nextMessage;\n}\n\nfunction playItem() {\n  if (lives <= 0) return;\n  if (currentItem === \"star\") {\n    collectStar();\n  } else {\n    hitObstacle();\n  }\n}\n\nfunction collectStar() {\n  score = score + 1;\n  currentIndex = currentIndex + 1;\n  updateScreen();\n  nextItem(\"יפה! אספתם כוכב ⭐\");\n}\n\nfunction hitObstacle() {\n  lives = lives - 1;\n  currentIndex = currentIndex + 1;\n  updateScreen();\n\n  if (lives <= 0) {\n    document.getElementById(\"message\").textContent = \"נגמרו החיים. אספתם \" + score + \" כוכבים.\";\n    document.querySelector(\".obstacle-game\").classList.add(\"game-over\");\n    document.getElementById(\"itemButton\").disabled = true;\n  }\n\n  if (lives > 0) {\n    nextItem(\"אוי! איבדתם חיים. נשארו לכם \" + lives);\n  }\n}\n\nfunction skipObstacle() {\n  if (lives <= 0) return;\n  currentIndex = currentIndex + 1;\n  if (currentItem === \"obstacle\") {\n    updateScreen();\n    nextItem(\"דילוג חכם!\");\n  } else {\n    score = Math.max(0, score - 1);\n    updateScreen();\n    nextItem(\"דילגתם על כוכב ואיבדתם נקודה\");\n  }\n}\n\nfunction finishGame() {\n  document.getElementById(\"message\").textContent = \"סיום! אספתם \" + score + \" מתוך \" + totalStars + \" כוכבים.\";\n  document.querySelector(\".obstacle-game\").classList.add(\"finished\");\n  document.getElementById(\"itemButton\").disabled = true;\n}\n\nfunction resetGame() {\n  score = 0;\n  lives = startLives;\n  currentIndex = 0;\n  buildItems();\n  updateScreen();\n  document.querySelector(\".obstacle-game\").classList.remove(\"game-over\");\n  document.querySelector(\".obstacle-game\").classList.remove(\"finished\");\n  document.getElementById(\"itemButton\").disabled = false;\n  nextItem(\"משחק חדש התחיל.\");\n}\n\nresetGame();"
+      },
+      lessonFlow: [
+        { minutes: '0–8', title: 'פתיחה: מסלול רנדומלי', teacher: 'מסבירים שיש במשחק 40 אירועים קבועים, אבל הסדר שלהם משתנה בכל משחק.', students: 'מנחשים למה אותו מספר פריטים יכול ליצור משחק שונה בכל פעם.' },
+        { minutes: '8–18', title: 'חיים ופסילה', teacher: 'מראים איך מכשול מוריד lives ואיך פסילה יכולה לסיים משחק מוקדם.', students: 'בודקים מה קורה כשפוגעים במכשול.' },
+        { minutes: '18–34', title: 'כוכבים מול מכשולים', teacher: 'מדגישים שהמטרה אינה יעד ניקוד, אלא כמה כוכבים הצלחנו לאסוף מתוך המסלול.', students: 'משחקים כמה צעדים ומשווים כוכב/מכשול.' },
+        { minutes: '34–50', title: 'מציצים לקוד', teacher: 'מזהים totalStars, totalObstacles, shuffle ו־if lives <= 0.', students: 'מחברים בין בלוקי המשחק לבין שורות הקוד שנוצרות.' },
+        { minutes: '50–66', title: 'איזון משחק', teacher: 'בודקים האם מספר החיים ועונש המכשול הוגנים.', students: 'משנים בלוקים ובודקים האם המשחק קל או קשה מדי.' },
+        { minutes: '66–78', title: 'דיבאג התקדמות', teacher: 'בודקים שהתקדמות עולה בכל צעד ושסיום מופיע אחרי כל הפריטים.', students: 'מסבירים למה צריך currentIndex.' },
+        { minutes: '78–90', title: 'השוואת תוצאות', teacher: 'נותנים לתלמידים לשחק ולהשוות כמה כוכבים אספו.', students: 'מציגים תוצאה ומסבירים החלטת איזון אחת.' }
+      ],
+      exercises: [
+        { id: 1, minutes: '18–24', title: 'תרגיל 1 — בלוק חיים', prompt: 'מצאו את בלוק החיים ובדקו שהמשחק מתחיל עם 3 חיים.', hint: 'החיים נשמרים במשתנה lives.', check: { jsIncludes: ['const startLives = 3'], htmlIncludes: ['id="livesText"'] } },
+        { id: 2, minutes: '24–31', title: 'תרגיל 2 — כוכבים קבועים', prompt: 'בדקו שבמשחק יש מספר קבוע של כוכבים.', hint: 'חפשו totalStars.', check: { jsIncludes: ['const totalStars = 28'] } },
+        { id: 3, minutes: '31–39', title: 'תרגיל 3 — מכשולים קבועים', prompt: 'בדקו שבמשחק יש מספר קבוע של מכשולים.', hint: 'חפשו totalObstacles.', check: { jsIncludes: ['const totalObstacles = 12'] } },
+        { id: 4, minutes: '39–47', title: 'תרגיל 4 — סדר רנדומלי', prompt: 'מצאו את הפעולה שמערבבת את הכוכבים והמכשולים.', hint: 'חפשו shuffle.', check: { jsIncludes: ['function shuffle', 'Math.random'] } },
+        { id: 5, minutes: '47–56', title: 'תרגיל 5 — פסילה', prompt: 'לחצו על מכשולים עד שנגמרים החיים ובדקו שמופיעה הודעת פסילה.', hint: 'הפסילה עדיין תלויה ב־lives <= 0.', check: { jsIncludes: ['if (lives <= 0)', 'game-over'] } },
+        { id: 6, minutes: '56–65', title: 'תרגיל 6 — סיום מסלול', prompt: 'בדקו שבסיום המשחק מופיע כמה כוכבים נאספו.', hint: 'חפשו finishGame.', check: { jsIncludes: ['function finishGame', 'מתוך " + totalStars'] } },
+        { id: 7, minutes: '65–75', title: 'תרגיל 7 — דילוג על מכשול', prompt: 'כשמופיע מכשול, נסו לדלג ובדקו שהמשחק מתקדם בלי להוריד חיים.', hint: 'דילוג נכון הוא החלטה במשחק, לא רק כפתור נוסף.', check: { jsIncludes: ['function skipObstacle'] } },
+        { id: 8, minutes: '75–84', title: 'תרגיל 8 — השוואת תוצאות', prompt: 'שחקו סיבוב והשוו כמה כוכבים נאספו מתוך כל הכוכבים.', hint: 'אותם פריטים, סדר רנדומלי — לכן כל סיבוב יכול להרגיש אחרת.', check: { jsIncludes: ['totalStars', 'totalObstacles', 'score'] } }
+      ],
+      aiHelper: [
+        'הסבירו לילד בכיתה ד׳ למה סדר רנדומלי משנה משחק גם כשמספר הפריטים קבוע.',
+        'עזרו לאזן משחק עם 28 כוכבים, 12 מכשולים ו־3 חיים.',
+        'עזרו למצוא למה החיים יורדים אבל ההתקדמות לא עולה.',
+        'הציעו משפט סיום שמשווה כמה כוכבים נאספו מתוך כל הכוכבים.'
+      ],
+      vocabulary: [
+        ['lives', 'כמה ניסיונות נשארו לשחקן'],
+        ['random', 'בחירה או ערבוב בסדר לא קבוע'],
+        ['shuffle', 'ערבוב רשימה כדי שכל משחק יהיה קצת אחר'],
+        ['currentIndex', 'באיזה צעד במסלול אנחנו נמצאים'],
+        ['game over', 'מצב שבו המשחק נגמר לפני הסיום כי נגמרו החיים'],
+        ['איזון קושי', 'להחליט כמה חיים ומכשולים יוצרים משחק הוגן']
+      ]
+    });
   Object.assign(lessons[9], {
     title: 'מעבדת גיבורי־על — כוח מיוחד לדמות',
     concept: 'מצב דמות → powerReady · selectedHero · classList · true/false',
@@ -6024,7 +5885,7 @@ function resetAdventure() {
       ['target','יעד ניצחון %1','js','const target = 10;\ndocument.getElementById("targetText").textContent = target;\ndocument.getElementById("message").textContent = "דני מתחיל לאפות. הגיעו ל־" + target + " עוגיות במגש!";','const target = {{N}};\ndocument.getElementById("targetText").textContent = target;\ndocument.getElementById("message").textContent = "דני מתחיל לאפות. הגיעו ל־" + target + " עוגיות במגש!";',[['field_dropdown','N',[['5','5'],['8','8'],['12','12']]]]],
       ['click_points','כל קליק מוסיף %1','js','score = score + 1;','score = score + {{N}};',[['field_dropdown','N',[['1','1'],['2','2'],['3','3']]]]],
       ['good_start_condition','אם הניקוד לפחות %1','js','document.getElementById("message").textContent = "נשארו עוד " + (target - score) + " עוגיות לאפות.";','if (score >= {{N}}) {\n      document.getElementById("message").textContent = "התחלה טובה! דני כבר אפה 3 עוגיות 🍪";\n    } else {\n      document.getElementById("message").textContent = "נשארו עוד " + (target - score) + " עוגיות לאפות.";\n    }',[['field_dropdown','N',[['3','3'],['4','4']]]]],
-      ['good_start_message','הודעת התחלה טובה %1','js',['התחלה טובה! דני כבר אפה 3 עוגיות 🍪','נשארו עוד " + (target - score) + " עוגיות לאפות.'],'{{TEXT}}',[['field_input','TEXT','התחלה מצוינת! דני כבר מתקדם 🍪']]],
+      ['good_start_message','כתוב התחלה %1','js',['התחלה טובה! דני כבר אפה 3 עוגיות 🍪','נשארו עוד " + (target - score) + " עוגיות לאפות.'],'{{TEXT}}',[['field_input','TEXT','התחלה טובה! 🍪']]],
       ['win_text','הודעת ניצחון %1','js','המגש מלא! העוגיות מוכנות 🍪','{{TEXT}}',[['field_input','TEXT','אליפות! דני מילא מגש עוגיות 🎉']]],
       ['button','טקסט כפתור %1','html','אפו עוגייה','{{TEXT}}',[['field_input','TEXT','אפו עוד עוגייה!']]],
       ['win_color','צבע ניצחון %1','css','#dcfce7','{{COLOR}}',[['field_dropdown','COLOR',[['ירוק','#bbf7d0'],['צהוב','#fef08a'],['ורוד','#fbcfe8']]]]]
@@ -6036,12 +5897,13 @@ function resetAdventure() {
       ['start','כפתור התחלה %1','html','התחילו משימה','{{TEXT}}',[['field_input','TEXT','צאו להצלה!']]],
       ['lit_color','צבע חלון מואר %1','css','#fde047','{{COLOR}}',[['field_dropdown','COLOR',[['צהוב','#fde047'],['ירוק','#a7f3d0'],['ורוד','#fbcfe8'],['כחול','#93c5fd'],['סגול','#c4b5fd'],['כתום','#fdba74']]]]]
     ]},
-    9: { title:'תופסים כוכבים, לא מכשולים', concept:'lives · random · if · game over', blocks:[
-      ['lives','חיים בהתחלה %1','js','const startLives = 3;\nlet lives = startLives;\ndocument.getElementById("livesText").textContent = startLives;','const startLives = {{N}};\nlet lives = startLives;\ndocument.getElementById("livesText").textContent = startLives;',[['field_dropdown','N',[['3','3'],['5','5'],['7','7']]]]],
-      ['star','כוכב מוסיף %1 נקודות','js','score = score + 1;','score = score + {{N}};',[['field_dropdown','N',[['1','1'],['2','2'],['3','3']]]]],
+    9: { title:'תופסים כוכבים, לא מכשולים', concept:'lives · random · fixed events · game over', blocks:[
+      ['lives','חיים בהתחלה %1','js',"const startLives = 3;\nlet lives = startLives;","const startLives = {{N}};\nlet lives = startLives;\ndocument.getElementById(\"livesText\").textContent = startLives;",[['field_dropdown','N',[['3','3'],['5','5'],['7','7']]]]],
+      ['star','כוכב מוסיף %1 נקודה','js','score = score + 1;','score = score + {{N}};',[['field_dropdown','N',[['1','1'],['2','2'],['3','3']]]]],
       ['obstacle','מכשול מוריד %1 חיים','js','lives = lives - 1;','lives = lives - {{N}};',[['field_dropdown','N',[['1','1'],['2','2'],['3','3']]]]],
-      ['gameover','הודעת Game Over %1','js','נגמרו החיים. נסו שוב!','{{TEXT}}',[['field_input','TEXT','סוף המשחק! נסו סיבוב חדש 🎮']]],
-      ['smart_skip','דילוג חכם אומר %1','js','דילוג חכם!','{{TEXT}}',[['field_input','TEXT','יופי! התחמקתם מהמכשול 🛡️']]]
+      ['gameover','הודעת פסילה %1','js','נגמרו החיים. אספתם ','{{TEXT}}',[['field_input','TEXT','נגמרו החיים. אספתם ']]],
+      ['finish','הודעת סיום %1','js','סיום! אספתם ','{{TEXT}}',[['field_input','TEXT','סיום! אספתם ']]],
+      ['smart_skip','דילוג חכם אומר %1','js','דילוג חכם!','{{TEXT}}',[['field_input','TEXT','ניצלתם!']]]
     ]},
     10: { title:'מעבדת גיבורי־על — כוח מיוחד לדמות', concept:'boolean · selectedHero · one-time power · visual state', blocks:[
       ['hero_name','שם רובוט %1','js','רובוט אור','{{TEXT}}',[['field_input','TEXT','רובוט ברק']]],
@@ -6234,89 +6096,82 @@ function resetAdventure() {
       const starBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_9_star');
       const obstacleBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_9_obstacle');
       const gameoverBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_9_gameover');
+      const finishBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_9_finish');
       const smartSkipBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_9_smart_skip');
       if(livesBlock) livesBlock.toolboxFields = { N: '3' };
       if(starBlock) starBlock.toolboxFields = { N: '1' };
       if(obstacleBlock) obstacleBlock.toolboxFields = { N: '1' };
-      const livesExercise = lesson.exercises.find(item => item.id === 1);
-      if(livesExercise && livesBlock){
-        livesExercise.title = 'תרגיל 1 — כמה חיים יש לשחקן?';
-        livesExercise.prompt = 'גררו וחברו את הבלוק “חיים בהתחלה”. בחרו כמה חיים מתאימים למשחק שלכם, ובדקו שמספר החיים בתצוגה מתאים לבלוק.';
-        livesExercise.hint = '3 חיים הוא איזון טוב להרבה משחקים. הבלוק צריך לשלוט גם בהתחלה וגם באיפוס.';
-        livesExercise.check = {
-          blockTypes: [livesBlock.type],
-          generatedBlockOutputs: [{ type: livesBlock.type, target: 'js' }],
-          requiresPreviewLivesFromBlockField: { type: livesBlock.type, field: 'N', fallback: 3 },
-          blockFeedback: 'כמעט. חברו את הבלוק “חיים בהתחלה” לשרשרת.',
-          generatedFeedback: 'כמעט. מספר החיים שבבלוק עוד לא מופיע בקוד שנוצר.',
-          previewLivesFeedback: 'כמעט. החיים בתצוגה עדיין לא תואמים לבחירה בבלוק.'
-        };
-      }
-      const starExercise = lesson.exercises.find(item => item.id === 2);
-      if(starExercise && starBlock){
-        starExercise.title = 'תרגיל 2 — פרס על כוכב';
-        starExercise.prompt = 'גררו וחברו את הבלוק “כוכב מוסיף”. בחרו כמה נקודות כוכב שווה, ואז לחצו בתצוגה על הכוכב ⭐ ובדקו שהניקוד עולה לפי הבלוק.';
-        starExercise.hint = 'בתחילת המשחק הפריט הוא כוכב. קליק אחד עליו צריך להוסיף בדיוק את מספר הנקודות שבבלוק.';
-        starExercise.check = {
-          blockTypes: [starBlock.type],
-          generatedBlockOutputs: [{ type: starBlock.type, target: 'js' }],
-          requiresPreviewScoreFromBlockField: { type: starBlock.type, field: 'N', fallback: 1, clickText: '⭐', mode: 'increase' },
-          blockFeedback: 'כמעט. חברו את הבלוק “כוכב מוסיף” לשרשרת.',
-          generatedFeedback: 'כמעט. נקודות הכוכב שבבלוק עוד לא מופיעות בקוד שנוצר.',
-          previewScoreFeedback: 'כמעט. עכשיו לחצו על הכוכב בתצוגה ובדקו שהניקוד עולה לפי הבלוק.'
-        };
-      }
-      const obstacleExercise = lesson.exercises.find(item => item.id === 3);
-      if(obstacleExercise && obstacleBlock){
-        obstacleExercise.title = 'תרגיל 3 — מכשול מוריד חיים';
-        obstacleExercise.prompt = 'גררו וחברו את הבלוק “מכשול מוריד”. בחרו כמה חיים מכשול מוריד, שחקו עד שמופיע מכשול, ואז לחצו על המכשול ובדקו שהחיים ירדו לפי הבלוק.';
-        obstacleExercise.hint = 'זה שיעור סיכון: הבלוק צריך לשנות מה קורה לשחקן שטועה ולוחץ על מכשול.';
-        obstacleExercise.check = {
-          blockTypes: [obstacleBlock.type],
-          generatedBlockOutputs: [{ type: obstacleBlock.type, target: 'js' }],
-          requiresPreviewLivesAfterPenalty: { start: { type: 'lesson_9_lives', field: 'N', fallback: 3 }, penalty: { type: obstacleBlock.type, field: 'N', fallback: 1 }, clickText: '🌋' },
-          blockFeedback: 'כמעט. חברו את הבלוק “מכשול מוריד” לשרשרת.',
-          generatedFeedback: 'כמעט. עונש המכשול שבבלוק עוד לא מופיע בקוד שנוצר.',
-          previewLivesFeedback: 'כמעט. שחקו עד שמופיע מכשול, ואז לחצו עליו כדי לראות חיים יורדים.'
-        };
-      }
-      const gameoverExercise = lesson.exercises.find(item => item.id === 4);
-      if(gameoverExercise && gameoverBlock){
-        gameoverExercise.title = 'תרגיל 4 — הודעת Game Over אמיתית';
-        gameoverExercise.prompt = 'גררו וחברו את הבלוק “הודעת Game Over”. אפשר להשאיר את ההודעה כמו שהיא או לכתוב הודעה משלכם. אחר כך שחקו בתצוגה ולחצו על מכשולים עד שנגמרים החיים ורואים את הודעת הסיום.';
-        gameoverExercise.hint = 'ההודעה מופיעה רק כש־lives מגיע ל־0. אפשר להשתמש בבלוק מכשול שמוריד 3 כדי לבדוק מהר.';
-        gameoverExercise.check = {
-          blockTypes: [gameoverBlock.type],
-          generatedBlockOutputs: [{ type: gameoverBlock.type, target: 'js' }],
-          requiresPreviewMessageFromBlockOutput: [{ type: gameoverBlock.type }],
-          requiresPreviewCardClass: 'game-over',
-          blockFeedback: 'כמעט. גררו וחברו את הבלוק “הודעת Game Over” לשרשרת.',
-          generatedFeedback: 'כמעט. הודעת הסיום מהבלוק עוד לא מופיעה בקוד שנוצר.',
-          previewMessageFeedback: 'כמעט. שחקו עד Game Over כדי לראות את הודעת הסיום מהבלוק.',
-          previewClassFeedback: 'כמעט. הבלוק מחובר, אבל צריך להגיע למצב Game Over בתצוגה.'
-        };
-      }
-      const skipExercise = lesson.exercises.find(item => item.id === 5);
-      if(skipExercise && smartSkipBlock){
-        skipExercise.title = 'תרגיל 5 — דילוג הוא פעולה במשחק';
-        skipExercise.prompt = 'גררו וחברו את הבלוק “דילוג חכם אומר”. אפשר להשאיר את המשפט כמו שהוא או לכתוב משפט משלכם. שחקו עד שמופיע מכשול, ואז לחצו “דלגו” ובדקו שהמשחק נותן משוב טוב על החלטה נכונה.';
-        skipExercise.hint = 'בשיעור הזה השחקן לא תמיד צריך ללחוץ. לפעמים הפעולה הנכונה היא לדלג על סכנה.';
-        skipExercise.check = {
-          blockTypes: [smartSkipBlock.type],
-          nonEmptyBlocklyFields: [{ type: smartSkipBlock.type, field: 'TEXT' }],
-          generatedBlockOutputs: [{ type: smartSkipBlock.type, target: 'js' }],
-          requiresPreviewButtonText: 'דלגו',
-          requiresPreviewMessageFromBlockOutput: [{ type: smartSkipBlock.type }],
-          blockFeedback: 'כמעט. חברו את הבלוק “דילוג חכם אומר” לשרשרת.',
-          emptyFeedback: 'כמעט. הודעת הדילוג לא יכולה להיות ריקה.',
-          generatedFeedback: 'כמעט. הודעת הדילוג מהבלוק עוד לא מופיעה בקוד שנוצר.',
-          previewClickFeedback: 'כמעט. שחקו עד שמופיע מכשול, ואז לחצו “דלגו”.',
-          previewMessageFeedback: 'כמעט. אחרי דילוג על מכשול, המשוב צריך לכלול את הודעת הדילוג מהבלוק.'
-        };
-      }
-      lesson.exercises = lesson.exercises
-        .filter(item => item.id !== 6 && item.id !== 7)
-        .map(item => item.id === 8 ? { ...item, id: 6, minutes: '50–62', title: item.title.replace('תרגיל 8', 'תרגיל 6'), check: { ...item.check, blockTypes: [], requiresCodeSelectionTab: 'js', requiresCodeSelectionBlockTypes: ['lesson_9_lives', 'lesson_9_star', 'lesson_9_obstacle', 'lesson_9_gameover', 'lesson_9_smart_skip'], codeSelectionFeedback: 'כמעט. פתחו את הקוד שנוצר ולחצו על אחד מבלוקי המשחק — חיים, כוכב, מכשול, Game Over או דילוג — כדי לראות את שורת הפעולה ב־JavaScript.' } } : item);
+      lesson.exercises = [
+        {
+          id: 1,
+          minutes: '0–14',
+          title: 'תרגיל 1 — חיים בהתחלה',
+          prompt: 'גררו וחברו את הבלוק “חיים בהתחלה”. בדקו שבתצוגה המשחק מתחיל עם מספר החיים שבחרתם.',
+          hint: 'החיים נשמרים במשתנה lives ומשמשים לפסילה.',
+          check: {
+            blockTypes: [livesBlock.type],
+            generatedBlockOutputs: [{ type: livesBlock.type, target: 'js' }],
+            jsIncludes: ['const startLives'],
+            htmlIncludes: ['id="livesText"']
+          }
+        },
+        {
+          id: 2,
+          minutes: '14–28',
+          title: 'תרגיל 2 — כוכבים ומכשולים קבועים',
+          prompt: 'פתחו “לראות קוד שנוצר” ומצאו בקוד כמה כוכבים וכמה מכשולים יש במסלול. המספרים קבועים, ורק הסדר שלהם משתנה בכל משחק.',
+          hint: 'חפשו totalStars ו־totalObstacles.',
+          check: { blockTypes: [starBlock.type, obstacleBlock.type], generatedBlockOutputs: [{ type: starBlock.type, target: 'js' }, { type: obstacleBlock.type, target: 'js' }], jsIncludes: ['const totalStars = 28', 'const totalObstacles = 12', 'items.push("star")', 'items.push("obstacle")'], requiresCodePeek: true }
+        },
+        {
+          id: 3,
+          minutes: '28–42',
+          title: 'תרגיל 3 — ערבוב רנדומלי',
+          prompt: 'פתחו “לראות קוד שנוצר” ומצאו את הפעולה שמערבבת את רשימת הכוכבים והמכשולים.',
+          hint: 'הערבוב משתמש ב־Math.random.',
+          check: { jsIncludes: ['function shuffle', 'Math.random'], requiresCodePeek: true }
+        },
+        {
+          id: 4,
+          minutes: '42–58',
+          title: 'תרגיל 4 — כוכב ומכשול משנים מצב',
+          prompt: 'גררו את הבלוקים “כוכב מוסיף” ו“מכשול מוריד”. שחקו כמה צעדים ובדקו שכוכב מעלה ניקוד ומכשול מוריד חיים.',
+          hint: 'שני הבלוקים משנים את חוקי המשחק הקיימים — לא מוסיפים משחק חדש.',
+          check: {
+            blockTypes: [starBlock.type, obstacleBlock.type],
+            generatedBlockOutputs: [{ type: starBlock.type, target: 'js' }, { type: obstacleBlock.type, target: 'js' }],
+            jsIncludes: ['score = score +', 'lives = lives -']
+          }
+        },
+        {
+          id: 5,
+          minutes: '58–74',
+          title: 'תרגיל 5 — פסילה או סיום',
+          prompt: 'גררו את הבלוקים “הודעת פסילה” ו“הודעת סיום”. בדקו שבפסילה או בסוף המסלול מופיע כמה כוכבים נאספו.',
+          hint: 'פסילה תלויה ב־lives <= 0. סיום רגיל תלוי בכך שכל 40 הפריטים נגמרו.',
+          check: {
+            blockTypes: [gameoverBlock.type, finishBlock.type],
+            generatedBlockOutputs: [{ type: gameoverBlock.type, target: 'js' }, { type: finishBlock.type, target: 'js' }],
+            jsIncludes: ['if (lives <= 0)', 'function finishGame', 'currentIndex >= totalItems']
+          }
+        },
+        {
+          id: 6,
+          minutes: '74–90',
+          title: 'תרגיל 6 — השוואת תוצאות ואיזון',
+          prompt: 'גררו בלוק אחד של חוק משחק, פתחו “לראות קוד שנוצר”, ואז שחקו סיבוב בתצוגה והשוו כמה כוכבים נאספו. האם 28 כוכבים, 12 מכשולים ו־3 חיים יוצרים משחק הוגן?',
+          hint: 'אותם מספרים, סדר רנדומלי — לכן התוצאה יכולה להשתנות בין שחקנים.',
+          check: {
+            blockTypes: [smartSkipBlock.type],
+            generatedBlockOutputs: [{ type: smartSkipBlock.type, target: 'js' }],
+            jsIncludes: ['totalStars', 'totalObstacles', 'totalItems', 'shuffle'],
+            requiresCodePeek: true,
+            requiresCodeSelectionTab: 'js',
+            requiresCodeSelectionBlockTypes: ['lesson_9_lives', 'lesson_9_star', 'lesson_9_obstacle', 'lesson_9_gameover', 'lesson_9_finish', 'lesson_9_smart_skip'],
+            codeSelectionFeedback: 'כמעט. פתחו את הקוד שנוצר ולחצו על אחד מבלוקי המשחק כדי לראות איזו שורה הוא משנה.'
+          }
+        }
+      ];
     }
     if(lesson.id === 7){
       const targetBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_7_target');
@@ -6379,7 +6234,7 @@ function resetAdventure() {
           id: 4,
           minutes: '32–44',
           title: 'תרגיל 4 — הודעת התחלה טובה',
-          prompt: 'עכשיו חברו גם את הבלוק “הודעת התחלה טובה”. כתבו הודעה משלכם. אחר כך לחצו על העוגייה עד שדני מגיע לפחות ל־3 עוגיות, ובדקו שההודעה מופיעה לפני הניצחון.',
+          prompt: 'עכשיו חברו גם את הבלוק “כתוב התחלה”. כתבו הודעה משלכם. אחר כך לחצו על העוגייה עד שדני מגיע לפחות ל־3 עוגיות, ובדקו שההודעה מופיעה לפני הניצחון.',
           hint: 'כאן יש שני חלקים שעובדים יחד: בלוק התנאי מחליט מתי, ובלוק ההודעה מחליט מה כתוב.',
           check: {
             blockTypes: [goodStartConditionBlock.type, goodStartMessageBlock.type],
