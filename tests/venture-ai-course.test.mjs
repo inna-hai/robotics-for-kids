@@ -105,7 +105,7 @@ assert.ok(preview.includes('venture-ai-slides.html?lesson=${lesson.id}'), 'previ
 assert.ok(preview.includes('venture-ai-students.html?lesson=${lesson.id}'), 'preview page links student worksheet inside each lesson');
 assert.ok(preview.includes('https://opal.hai.tech/'), 'preview page links Opal');
 assert.ok(preview.includes('lesson.video ? `<video class="meeting-video"'), 'preview page embeds lesson videos inside meeting cards');
-assert.ok(preview.includes('venture-ai-improvement.html'), 'preview page links improvement request form');
+assert.ok(!preview.includes('venture-ai-improvement.html'), 'preview page keeps improvement request out of the top hero actions');
 
 const slides = read('venture-ai-slides.html');
 assert.ok(slides.includes('מצגת מדריך'), 'slides page is instructor deck');
@@ -118,7 +118,7 @@ assert.ok(students.includes('דף עבודה לתלמידים'), 'students page 
 assert.ok(students.includes('localStorage'), 'students page saves locally');
 assert.ok(students.includes('copySummary'), 'students page can copy submission summary');
 assert.ok(students.includes('markSubmitted'), 'students page can mark submission');
-assert.ok(students.includes('venture-ai-improvement.html'), 'students page links improvement request form');
+assert.ok(!students.includes('venture-ai-improvement.html'), 'students page keeps improvement request out of the top bar actions');
 assert.ok(students.includes('teamRoles'), 'students page renders team roles');
 
 const improvement = read('venture-ai-improvement.html');
