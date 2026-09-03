@@ -70,7 +70,10 @@
         <h2>${esc(challenge.title)}</h2>
         <p>${esc(challenge.story)}</p>
         <ul class="meeting-list">
-          ${challenge.meetings.map(item => `<li><b>${esc(item[0])} ${esc(item[1])}</b><br>${esc(item[3])}</li>`).join('')}
+          ${challenge.meetings.map((item, index) => {
+            const lessonId = ((challenge.id - 1) * 4) + index + 1;
+            return `<li><b><a href="../../craftom-minecraft-lesson-${lessonId}.html">${esc(item[0])} ${esc(item[1])}</a></b><br>${esc(item[3])}</li>`;
+          }).join('')}
         </ul>
         <div class="challenge-actions">
           <a class="btn" href="../../craftom-minecraft-challenge.html?challenge=${challenge.id}">כניסה לאתגר</a>

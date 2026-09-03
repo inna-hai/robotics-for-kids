@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>שיעור Craftom כיתה ז׳</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260903-grade7-lessons">
+  <link rel="stylesheet" href="css/platform-home-link.css">
+  <style>
+    .lesson-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+    .lesson-nav a{display:inline-flex;width:36px;height:36px;align-items:center;justify-content:center;border:1px solid #bdd8f4;border-radius:999px;background:#fff;color:var(--blue);font-weight:900;text-decoration:none}
+    .lesson-nav a.active{background:var(--blue);color:#fff}
+    .detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .detail-box{border:1px solid var(--line);border-radius:14px;background:#fff;padding:14px}
+    .detail-box h2{font-size:1.2rem}
+    .lesson-video{display:block;width:100%;aspect-ratio:16/9;border:0;border-radius:16px;background:#111}
+    .worksheet-lines{display:grid;gap:10px}
+    .line{min-height:54px;border:2px dashed #c7daec;border-radius:12px;background:#f8fcff}
+    @media(max-width:760px){.detail-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body data-lesson="1">
+  <main class="shell">
+    <nav class="lesson-nav" id="lessonNav" aria-label="בחירת שיעור"></nav>
+    <section class="hero">
+      <div>
+        <div class="kicker" id="kicker"></div>
+        <h1 id="title"></h1>
+        <p class="goal" id="summary"></p>
+        <p><strong>תוצר:</strong> <span id="deliverable"></span></p>
+        <div class="actions">
+          <a class="btn" id="studentLink" href="#">דף תלמידים</a>
+          <a class="btn secondary" id="slidesLink" href="#">מצגת מדריך</a>
+          <a class="btn secondary" id="challengeLink" href="#">דף האתגר</a>
+        </div>
+      </div>
+      <figure class="minecraft-shot">
+        <video id="video" class="lesson-video" controls preload="metadata" playsinline></video>
+        <figcaption class="shot-caption"><span id="concept"></span></figcaption>
+      </figure>
+    </section>
+
+    <section class="grid" style="margin-top:16px">
+      <article class="card build-first"><h2>יעד השיעור</h2><p id="goal"></p></article>
+      <article class="card build-first"><h2>פקודות מרכזיות</h2><p id="command"></p></article>
+    </section>
+
+    <section class="detail-grid" style="margin-top:16px">
+      <article class="detail-box"><h2>מה המורה עושה</h2><ul id="teacher"></ul></article>
+      <article class="detail-box"><h2>מה בונים במיינקראפט</h2><ul id="build"></ul></article>
+      <article class="detail-box"><h2>קוד / MakeCode</h2><ul id="code"></ul></article>
+      <article class="detail-box"><h2>ראיות Craftom</h2><ul id="evidence"></ul></article>
+    </section>
+
+    <section class="card" style="margin-top:16px">
+      <h2>כרטיס יציאה</h2>
+      <p id="exitTicket"></p>
+      <div class="worksheet-lines"><div class="line"></div></div>
+    </section>
+
+    <div class="actions">
+      <a class="btn secondary" id="prevLink" href="#">שיעור קודם</a>
+      <a class="btn" id="nextLink" href="#">שיעור הבא</a>
+      <a class="btn secondary" href="craftom-school/preview/index.html">מפת הקורס</a>
+    </div>
+  </main>
+  <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
+  <script src="js/craftom-minecraft-challenges.js?v=20260903-grade7-lessons"></script>
+  <script src="js/craftom-minecraft-lesson-page.js?v=20260903-grade7-lessons"></script>
+</body>
+</html>

@@ -76,7 +76,7 @@
     document.getElementById('meetingCards').innerHTML = challenge.meetings.map((item, index) => `
       <article class="card lesson-card highlight meeting-card">
         <span><span class="num">${index + 1}</span><span class="tag">מפגש ${esc(item[0])}</span></span>
-        <h2>${esc(item[1])}</h2>
+        <h2><a href="craftom-minecraft-lesson-${((challenge.id - 1) * 4) + index + 1}.html">${esc(item[1])}</a></h2>
         <p>${esc(item[2])}</p>
         <span class="evidence">תוצר: ${esc(item[3])}</span>
       </article>

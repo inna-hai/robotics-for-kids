@@ -233,6 +233,22 @@
     ]);
   });
 
+  const lessons = challenges.flatMap(challenge => challenge.meetings.map((meeting, index) => ({
+    id: ((challenge.id - 1) * 4) + index + 1,
+    challengeId: challenge.id,
+    meetingIndex: index + 1,
+    meetingCode: meeting[0],
+    title: meeting[1],
+    summary: meeting[2],
+    deliverable: meeting[3],
+    detail: meeting[4],
+    challengeTitle: challenge.title,
+    concept: challenge.concept,
+    video: challenge.video,
+    poster: challenge.poster,
+    command: challenge.command
+  })));
+
   const program = {
     title: 'Craftom Challenges - כיתה ז׳',
     subtitle: 'קורס Minecraft Education + Craftom בארבעה אתגרים, ארבעה מפגשים לכל אתגר, במגרש אישי 50x50.',
@@ -254,12 +270,17 @@
       'בכל תקלה מתקנים דבר אחד ומריצים שוב.',
       'בסוף כל מפגש משאירים סימן בעולם: שלט, פקודה, צילום או הסבר קצר.'
     ],
-    challenges
+    challenges,
+    lessons
   };
 
   window.CRAFTOM_MINECRAFT_PROGRAM = program;
   window.getCraftomMinecraftChallenge = function getCraftomMinecraftChallenge(value) {
     const id = Number(value || 1);
     return challenges.find(challenge => challenge.id === id) || challenges[0];
+  };
+  window.getCraftomMinecraftLesson = function getCraftomMinecraftLesson(value) {
+    const id = Number(value || 1);
+    return lessons.find(lesson => lesson.id === id) || lessons[0];
   };
 })();

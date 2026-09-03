@@ -14,6 +14,7 @@ assert.equal(program.totalChallenges, 4);
 assert.equal(program.totalMeetings, 16);
 assert.equal(program.meetingsPerChallenge, 4);
 assert.match(program.plot, /50x50/);
+assert.equal(program.lessons.length, 16, 'program exposes 16 detailed lesson pages');
 
 assert.deepEqual(Array.from(program.challenges, challenge => challenge.title), [
   'הרובוט השליח',
@@ -42,6 +43,7 @@ const hub = read('craftom-school/preview/index.html');
 assert.match(hub, /Craftom Challenges.*כיתה ז׳/);
 assert.match(hub, /js\/craftom-minecraft-challenges\.js/);
 assert.match(hub, /craftom-minecraft-challenge\.html\?challenge=/);
+assert.match(hub, /craftom-minecraft-lesson-\$\{lessonId\}\.html/);
 assert.doesNotMatch(hub, /כיתה ד׳ 1|עומר העתידית|15 מפגשים/);
 
 const challengePage = read('craftom-minecraft-challenge.html');
@@ -51,6 +53,7 @@ assert.match(challengePage, /craftom-minecraft-students\.html/);
 assert.match(challengePage, /שיעור מפורט/);
 assert.match(challengePage, /מה המורה עושה/);
 assert.match(challengePage, /ראיות Craftom/);
+assert.match(challengePage, /craftom-minecraft-lesson-\$\{\(\(challenge\.id - 1\) \* 4\) \+ index \+ 1\}\.html/);
 
 const studentsPage = read('craftom-minecraft-students.html');
 assert.match(studentsPage, /דף עבודה לתלמידים/);
@@ -66,7 +69,12 @@ assert.match(home, /craftom-school\/preview\/index\.html/);
 
 for (const id of [1, 2, 3, 4]) {
   assert.match(read(`craftom-minecraft-challenge-${id}.html`), new RegExp(`challenge=${id}`), `legacy challenge ${id} link redirects`);
-  assert.match(read(`craftom-minecraft-lesson-${id}.html`), new RegExp(`challenge=${id}`), `legacy lesson ${id} link redirects`);
+}
+
+for (let id = 1; id <= 16; id += 1) {
+  const lessonPage = read(`craftom-minecraft-lesson-${id}.html`);
+  assert.match(lessonPage, new RegExp(`data-lesson="${id}"`), `lesson ${id} has its own page`);
+  assert.match(lessonPage, /craftom-minecraft-lesson-page\.js/, `lesson ${id} loads shared renderer`);
 }
 
 console.log('Craftom grade 7 course restoration checks passed');
