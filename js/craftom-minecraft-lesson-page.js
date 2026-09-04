@@ -39,6 +39,7 @@
           <article class="detail-box"><h2>מה בונים במיינקראפט</h2><ul id="build"></ul></article>
           <article class="detail-box"><h2>קוד / MakeCode</h2><ul id="code"></ul></article>
           <article class="detail-box"><h2>ראיות Craftom</h2><ul id="evidence"></ul></article>
+          <article class="detail-box"><h2>מה מעלים בסוף</h2><p id="exitUpload"></p></article>
         </section>
         <section class="card" style="margin-top:16px">
           <h2>מצגת מדריך</h2>
@@ -56,6 +57,7 @@
         </section>
         <section class="card" style="margin-top:16px">
           <h2>כרטיס יציאה</h2>
+          <p><strong>העלאת תמונה:</strong> <span id="exitUploadInline"></span></p>
           <p id="exitTicket"></p>
           <div class="worksheet-lines"><div class="line"></div></div>
         </section>
@@ -82,11 +84,13 @@
     'בנו במיינקראפט את החלק הקטן של היום.',
     'פתחו MakeCode וכתבו רק את הקוד שמפעיל את ה-Agent.',
     'הריצו, בדקו מה קרה בעולם, תקנו דבר אחד והריצו שוב.',
-    'מלאו את כרטיס היציאה במילים שלכם.'
+    'העלו צילום של מה שבניתם ומלאו את כרטיס היציאה במילים שלכם.'
   ]);
   document.getElementById('build').innerHTML = list(lesson.detail.build);
   document.getElementById('code').innerHTML = list(lesson.detail.code);
   document.getElementById('evidence').innerHTML = list(lesson.detail.evidence);
+  document.getElementById('exitUpload').textContent = program.exitUpload;
+  document.getElementById('exitUploadInline').textContent = program.exitUpload;
   document.getElementById('exitTicket').textContent = lesson.detail.exit;
   document.getElementById('video').src = lesson.video;
   document.getElementById('video').poster = lesson.poster;

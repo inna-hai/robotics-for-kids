@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260904-self-study-1">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260904-self-study-2">
   <style>
     body{background:#071528;color:#fff}
     .shell{width:min(1180px,calc(100% - 28px));padding:20px 0}
@@ -25,9 +25,10 @@
     <div class="slides" id="slides"></div>
   </main>
   <div class="actions"><a class="btn secondary" href="craftom-school/preview/index.html">מפת הקורס</a></div>
-  <script src="js/craftom-minecraft-challenges.js?v=20260904-self-study-1"></script>
+  <script src="js/craftom-minecraft-challenges.js?v=20260904-self-study-2"></script>
   <script>
     const params = new URLSearchParams(location.search);
+    const program = window.CRAFTOM_MINECRAFT_PROGRAM;
     const challenge = window.getCraftomMinecraftChallenge(params.get('challenge') || params.get('lesson'));
     const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
     document.title = `מצגת מדריך - ${challenge.title}`;
@@ -36,7 +37,7 @@
       <section class="slide"><h2>סרטון פתיחה</h2><video class="video" src="${esc(challenge.video)}" poster="${esc(challenge.poster)}" controls playsinline preload="metadata"></video></section>
       <section class="slide"><h2>מה לומדים?</h2><p>${esc(challenge.concept)}</p><p><b>פקודות:</b> ${esc(challenge.command)}</p><p>האתגר ממשיך את אותה עיר: לא מתחילים עולם חדש, אלא מוסיפים שכבה חדשה למה שכבר נבנה.</p></section>
       <section class="slide"><h2>4 מפגשים</h2><ul>${challenge.meetings.map(item => `<li><b>${esc(item[0])} ${esc(item[1])}:</b> ${esc(item[4].goal)}</li>`).join('')}</ul></section>
-      ${challenge.meetings.map(item => `<section class="slide"><span class="tag">שיעור ${esc(item[0])}</span><h2>${esc(item[1])}</h2><p>${esc(item[2])}</p><ul>${item[4].teacher.map(step => `<li>${esc(step)}</li>`).join('')}</ul><p><b>בונים:</b> ${esc(item[4].build.join(' · '))}</p><p><b>MakeCode:</b> ${esc(item[4].code.join(' · '))}</p><p><b>כרטיס יציאה:</b> ${esc(item[4].exit)}</p></section>`).join('')}
+      ${challenge.meetings.map(item => `<section class="slide"><span class="tag">שיעור ${esc(item[0])}</span><h2>${esc(item[1])}</h2><p>${esc(item[2])}</p><ul>${item[4].teacher.map(step => `<li>${esc(step)}</li>`).join('')}</ul><p><b>בונים:</b> ${esc(item[4].build.join(' · '))}</p><p><b>MakeCode:</b> ${esc(item[4].code.join(' · '))}</p><p><b>העלאת תמונה:</b> ${esc(program.exitUpload)}</p><p><b>כרטיס יציאה:</b> ${esc(item[4].exit)}</p></section>`).join('')}
       <section class="slide"><h2>איך יודעים שזה עבד?</h2><ul>${challenge.checks.map(item => `<li>${esc(item)}</li>`).join('')}</ul></section>
     `;
   </script>

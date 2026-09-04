@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260904-self-study-1">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260904-self-study-2">
   <link rel="stylesheet" href="css/platform-home-link.css">
   <style>
     .challenge-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
@@ -24,6 +24,7 @@
     .detail-box{border:1px solid var(--line);border-radius:14px;background:#fff;padding:12px}
     .detail-box h3{margin:0 0 8px;font-size:1rem;color:var(--blue-dark)}
     .detail-box ul{margin:0;padding-right:18px}
+    .exit-upload{margin:12px 0 6px;padding:10px 12px;border:1px dashed #9cc7e8;border-radius:12px;background:#f7fbff;color:var(--blue-dark);font-weight:800;line-height:1.6}
     @media(max-width:760px){.detail-grid{grid-template-columns:1fr}}
   </style>
 </head>
@@ -52,7 +53,7 @@
     <section class="lesson-detail" id="lessonDetails" style="margin-top:16px"></section>
   </main>
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="js/craftom-minecraft-challenges.js?v=20260904-self-study-1"></script>
+  <script src="js/craftom-minecraft-challenges.js?v=20260904-self-study-2"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const program = window.CRAFTOM_MINECRAFT_PROGRAM;
@@ -96,6 +97,7 @@
             <div class="detail-box"><h3>קוד / MakeCode</h3><ul>${detail.code.map(step => `<li>${esc(step)}</li>`).join('')}</ul></div>
             <div class="detail-box"><h3>ראיות Craftom</h3><ul>${detail.evidence.map(step => `<li>${esc(step)}</li>`).join('')}</ul></div>
           </div>
+          <p class="exit-upload"><strong>העלאת תמונה:</strong> ${esc(program.exitUpload)}</p>
           <p><strong>כרטיס יציאה:</strong> ${esc(detail.exit)}</p>
         </article>
       `;

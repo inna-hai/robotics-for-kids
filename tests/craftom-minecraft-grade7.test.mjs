@@ -15,6 +15,7 @@ assert.equal(program.totalMeetings, 16);
 assert.equal(program.meetingsPerChallenge, 4);
 assert.match(program.plot, /50x50/);
 assert.equal(program.lessons.length, 16, 'program exposes 16 detailed lesson pages');
+assert.match(program.exitUpload, /צילום/, 'exit ticket asks students to upload a Minecraft photo');
 
 assert.deepEqual(Array.from(program.challenges, challenge => challenge.title), [
   'הרובוט השליח',
@@ -59,6 +60,7 @@ assert.match(challengePage, /craftom-minecraft-lesson-\$\{\(\(challenge\.id - 1\
 const studentsPage = read('craftom-minecraft-students.html');
 assert.match(studentsPage, /דף עבודה עצמית/);
 assert.match(studentsPage, /מגרש 50x50/);
+assert.match(studentsPage, /העלאת תמונה ל-Craftom/);
 
 const slidesPage = read('craftom-minecraft-slides.html');
 assert.match(slidesPage, /מצגת מדריך/);
@@ -76,6 +78,7 @@ for (let id = 1; id <= 16; id += 1) {
   const lessonPage = read(`craftom-minecraft-lesson-${id}.html`);
   assert.match(lessonPage, new RegExp(`data-lesson="${id}"`), `lesson ${id} has its own page`);
   assert.match(lessonPage, /craftom-minecraft-lesson-page\.js/, `lesson ${id} loads shared renderer`);
+  assert.match(lessonPage, /20260904-self-study-2/, `lesson ${id} cache-busts the updated exit upload renderer`);
 }
 
 const lessonTemplate = read('craftom-minecraft-lesson.html');
