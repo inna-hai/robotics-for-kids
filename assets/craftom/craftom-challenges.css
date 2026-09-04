@@ -276,27 +276,36 @@ h2 {
   font: 700 .95rem/1.55 "Courier New", Consolas, monospace;
 }
 
-.makecode-embed {
-  border: 1px solid #dbeafe;
-  border-radius: 14px;
-  background: #f8fbff;
-  padding: 12px;
-}
-
-.makecode-embed summary {
-  cursor: pointer;
-  color: var(--blue-dark);
-  font-weight: 900;
-}
-
-.makecode-embed iframe {
-  display: block;
+.craftom-blockly {
   width: 100%;
-  min-height: 560px;
-  margin-top: 12px;
+  height: 460px;
   border: 1px solid #c7daec;
-  border-radius: 12px;
+  border-radius: 16px;
+  background: #f8fbff;
+  overflow: hidden;
+}
+
+.makecode-mode-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.makecode-mode-tabs button {
+  border: 1px solid #c7daec;
+  border-radius: 999px;
   background: #fff;
+  color: var(--blue-dark);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 900;
+  padding: 9px 14px;
+}
+
+.makecode-mode-tabs button.active {
+  border-color: var(--blue);
+  background: var(--blue);
+  color: #fff;
 }
 
 .submit-status {

@@ -205,18 +205,19 @@ player.onChat("test", function () {
         <section class="card makecode-workspace" style="margin-top:16px">
           <div>
             <span class="tag">MakeCode</span>
-            <h2>קוד התחלתי לשיעור</h2>
-            <p>העתיקו את הקוד ל-Code Builder בתוך Minecraft Education, הריצו, ואז שנו מספר או פעולה אחת לפי המשימה.</p>
+            <h2>Code Builder לתכנון</h2>
+            <p>גררו בלוקים מהמחסנית, תכננו את פעולות ה-Agent, עברו בין JavaScript/Python והעתיקו את הקוד ל-Code Builder בתוך Minecraft Education.</p>
           </div>
+          <div class="makecode-mode-tabs" role="tablist" aria-label="בחירת מצב Code Builder">
+            <button class="active" type="button" data-craftom-code-mode="javascript">JavaScript</button>
+            <button type="button" data-craftom-code-mode="python">Python</button>
+          </div>
+          <div id="craftomBlockly" class="craftom-blockly" aria-label="עורך בלוקים לתכנון MakeCode"></div>
           <pre id="makeCodeSnippet" class="makecode-code" dir="ltr"></pre>
           <div class="actions">
             <button class="btn" id="copyMakeCode" type="button">העתקת קוד</button>
             <a class="btn secondary" href="https://minecraft.makecode.com/" target="_blank" rel="noopener">פתיחת MakeCode</a>
           </div>
-          <details class="makecode-embed">
-            <summary>פתיחת MakeCode בתוך העמוד</summary>
-            <iframe title="Microsoft MakeCode for Minecraft" src="https://minecraft.makecode.com/" loading="lazy"></iframe>
-          </details>
         </section>
         <section class="card" style="margin-top:16px">
           <h2>מצגת מדריך</h2>
@@ -266,6 +267,7 @@ player.onChat("test", function () {
   document.title = `שיעור ${lesson.id} - ${lesson.title} | Craftom כיתה ז׳`;
   document.getElementById('kicker').textContent = `${program.grade} • שיעור ${lesson.id} מתוך ${program.totalMeetings} • אתגר ${lesson.challengeId}: ${lesson.challengeTitle}`;
   document.getElementById('title').textContent = lesson.title;
+  window.CRAFTOM_CURRENT_MINECRAFT_LESSON = lesson;
   document.getElementById('summary').textContent = lesson.summary;
   document.getElementById('deliverable').textContent = lesson.deliverable;
   document.getElementById('concept').textContent = lesson.concept;

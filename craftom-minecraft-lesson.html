@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260904-makecode-1">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260904-codebuilder-1">
   <link rel="stylesheet" href="css/platform-home-link.css">
   <style>
     .lesson-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
@@ -59,18 +59,19 @@
     <section class="card makecode-workspace" style="margin-top:16px">
       <div>
         <span class="tag">MakeCode</span>
-        <h2>קוד התחלתי לשיעור</h2>
-        <p>העתיקו את הקוד ל-Code Builder בתוך Minecraft Education, הריצו, ואז שנו מספר או פעולה אחת לפי המשימה.</p>
+        <h2>Code Builder לתכנון</h2>
+        <p>גררו בלוקים מהמחסנית, תכננו את פעולות ה-Agent, עברו בין JavaScript/Python והעתיקו את הקוד ל-Code Builder בתוך Minecraft Education.</p>
       </div>
+      <div class="makecode-mode-tabs" role="tablist" aria-label="בחירת מצב Code Builder">
+        <button class="active" type="button" data-craftom-code-mode="javascript">JavaScript</button>
+        <button type="button" data-craftom-code-mode="python">Python</button>
+      </div>
+      <div id="craftomBlockly" class="craftom-blockly" aria-label="עורך בלוקים לתכנון MakeCode"></div>
       <pre id="makeCodeSnippet" class="makecode-code" dir="ltr"></pre>
       <div class="actions">
         <button class="btn" id="copyMakeCode" type="button">העתקת קוד</button>
         <a class="btn secondary" href="https://minecraft.makecode.com/" target="_blank" rel="noopener">פתיחת MakeCode</a>
       </div>
-      <details class="makecode-embed">
-        <summary>פתיחת MakeCode בתוך העמוד</summary>
-        <iframe title="Microsoft MakeCode for Minecraft" src="https://minecraft.makecode.com/" loading="lazy"></iframe>
-      </details>
     </section>
 
     <section class="card" style="margin-top:16px">
@@ -118,7 +119,7 @@
     </div>
   </main>
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="js/craftom-minecraft-challenges.js?v=20260904-makecode-1"></script>
-  <script src="js/craftom-minecraft-lesson-page.js?v=20260904-makecode-1"></script>
+  <script src="js/craftom-minecraft-challenges.js?v=20260904-codebuilder-1"></script>
+  <script src="js/craftom-minecraft-lesson-page.js?v=20260904-codebuilder-1"></script><script src="js/vendor/blockly/blockly.min.js"></script><script src="js/vendor/blockly/msg/he.js"></script><script src="js/craftom-minecraft-code-builder.js?v=20260904-codebuilder-1"></script>
 </body>
 </html>
