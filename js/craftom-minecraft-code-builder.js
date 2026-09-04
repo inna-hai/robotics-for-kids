@@ -17,37 +17,37 @@
     Blockly.defineBlocksWithJsonArray([
       {
         type: 'mc_on_chat',
-        message0: 'כשכותבים בצ׳אט %1',
+        message0: 'on chat command %1',
         args0: [{ type: 'field_input', name: 'COMMAND', text: 'deliver' }],
-        message1: 'עשה %1',
+        message1: 'run %1',
         args1: [{ type: 'input_statement', name: 'DO' }],
         colour: 215,
-        tooltip: 'פקודת צ׳אט שמפעילה את הקוד בתוך Minecraft',
+        tooltip: 'player.onChat command in Minecraft MakeCode',
       },
       {
         type: 'mc_forever',
-        message0: 'לעולמים',
-        message1: 'עשה %1',
+        message0: 'forever',
+        message1: 'do %1',
         args1: [{ type: 'input_statement', name: 'DO' }],
         colour: 120,
-        tooltip: 'לולאה שרצה שוב ושוב',
+        tooltip: 'loops.forever',
       },
       {
         type: 'mc_if_var',
-        message0: 'אם %1 פעיל',
+        message0: 'if %1',
         args0: [{ type: 'field_dropdown', name: 'VAR', options: [['running', 'running'], ['routeOpen', 'routeOpen'], ['stationFull', 'stationFull']] }],
-        message1: 'אז %1',
+        message1: 'then %1',
         args1: [{ type: 'input_statement', name: 'DO' }],
-        message2: 'אחרת %1',
+        message2: 'else %1',
         args2: [{ type: 'input_statement', name: 'ELSE' }],
         previousStatement: null,
         nextStatement: null,
         colour: 120,
-        tooltip: 'תנאי if/else לפי משתנה מצב',
+        tooltip: 'if / else condition',
       },
       {
         type: 'mc_set_boolean',
-        message0: 'קבע %1 ל־ %2',
+        message0: 'set %1 to %2',
         args0: [
           { type: 'field_dropdown', name: 'VAR', options: [['running', 'running'], ['routeOpen', 'routeOpen'], ['stationFull', 'stationFull']] },
           { type: 'field_dropdown', name: 'VALUE', options: [['true', 'true'], ['false', 'false']] }
@@ -55,11 +55,11 @@
         previousStatement: null,
         nextStatement: null,
         colour: 120,
-        tooltip: 'שינוי מצב של משתנה',
+        tooltip: 'set a Boolean variable',
       },
       {
         type: 'mc_teleport_agent',
-        message0: 'הבא Agent אליי',
+        message0: 'agent teleport to player',
         previousStatement: null,
         nextStatement: null,
         colour: 35,
@@ -67,9 +67,9 @@
       },
       {
         type: 'mc_move_agent',
-        message0: 'Agent זז %1 %2 צעדים',
+        message0: 'agent move %1 by %2',
         args0: [
-          { type: 'field_dropdown', name: 'DIR', options: [['קדימה', 'FORWARD'], ['אחורה', 'BACK'], ['למעלה', 'UP'], ['למטה', 'DOWN'], ['שמאלה', 'LEFT'], ['ימינה', 'RIGHT']] },
+          { type: 'field_dropdown', name: 'DIR', options: [['forward', 'FORWARD'], ['back', 'BACK'], ['up', 'UP'], ['down', 'DOWN'], ['left', 'LEFT'], ['right', 'RIGHT']] },
           { type: 'field_number', name: 'STEPS', value: 5, min: 1, max: 64 }
         ],
         previousStatement: null,
@@ -79,8 +79,8 @@
       },
       {
         type: 'mc_turn_agent',
-        message0: 'Agent פונה %1',
-        args0: [{ type: 'field_dropdown', name: 'TURN', options: [['שמאלה', 'LEFT_TURN'], ['ימינה', 'RIGHT_TURN']] }],
+        message0: 'agent turn %1',
+        args0: [{ type: 'field_dropdown', name: 'TURN', options: [['left', 'LEFT_TURN'], ['right', 'RIGHT_TURN']] }],
         previousStatement: null,
         nextStatement: null,
         colour: 35,
@@ -88,8 +88,8 @@
       },
       {
         type: 'mc_place_agent',
-        message0: 'Agent מניח בלוק %1',
-        args0: [{ type: 'field_dropdown', name: 'DIR', options: [['למטה', 'DOWN'], ['קדימה', 'FORWARD']] }],
+        message0: 'agent place %1',
+        args0: [{ type: 'field_dropdown', name: 'DIR', options: [['down', 'DOWN'], ['forward', 'FORWARD']] }],
         previousStatement: null,
         nextStatement: null,
         colour: 35,
@@ -97,7 +97,7 @@
       },
       {
         type: 'mc_pause',
-        message0: 'חכה %1 מילישניות',
+        message0: 'pause (ms) %1',
         args0: [{ type: 'field_number', name: 'MS', value: 500, min: 100, max: 10000 }],
         previousStatement: null,
         nextStatement: null,
@@ -106,7 +106,7 @@
       },
       {
         type: 'mc_say',
-        message0: 'אמור %1',
+        message0: 'player say %1',
         args0: [{ type: 'field_input', name: 'TEXT', text: 'המשלוח הגיע' }],
         previousStatement: null,
         nextStatement: null,
@@ -246,26 +246,26 @@
 
   function toolboxXml() {
     return `<xml xmlns="https://developers.google.com/blockly/xml">
-      <category name="אירועים" colour="215"><block type="mc_on_chat"></block></category>
+      <category name="Events" colour="215"><block type="mc_on_chat"></block></category>
       <category name="Agent" colour="35">
         <block type="mc_teleport_agent"></block>
         <block type="mc_move_agent"></block>
         <block type="mc_turn_agent"></block>
         <block type="mc_place_agent"></block>
       </category>
-      <category name="לולאות ותנאים" colour="120">
+      <category name="Loops & Logic" colour="120">
         <block type="mc_forever"></block>
         <block type="mc_if_var"></block>
         <block type="mc_set_boolean"></block>
         <block type="mc_pause"></block>
       </category>
-      <category name="שחקן" colour="290"><block type="mc_say"></block></category>
+      <category name="Player" colour="290"><block type="mc_say"></block></category>
     </xml>`;
   }
 
   const workspace = Blockly.inject('craftomBlockly', {
     media: 'js/vendor/blockly/media/',
-    rtl: true,
+    rtl: false,
     trashcan: true,
     scrollbars: true,
     toolbox: toolboxXml(),
