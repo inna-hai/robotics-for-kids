@@ -3,6 +3,7 @@
   const lessonNumber = document.body.dataset.lesson || params.get('lesson') || 1;
   const lesson = window.getCraftomMinecraftLesson(lessonNumber);
   const program = window.CRAFTOM_MINECRAFT_PROGRAM;
+  const challengeLessons = program.lessons.filter(item => item.challengeId === lesson.challengeId);
   const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 
   function list(items) {
@@ -21,7 +22,7 @@
   if (!document.getElementById('lessonNav')) {
     document.body.innerHTML = `
       <main class="shell">
-        <nav class="lesson-nav" id="lessonNav" aria-label="בחירת שיעור"></nav>
+        <nav class="lesson-nav" id="lessonNav" aria-label="בחירת שיעור באתגר הנוכחי"></nav>
         <section class="hero">
           <div>
             <div class="kicker" id="kicker"></div>
@@ -123,13 +124,18 @@
   document.getElementById('studentLink').href = `craftom-minecraft-students.html?challenge=${lesson.challengeId}`;
   document.getElementById('slidesLink').href = `craftom-minecraft-slides.html?challenge=${lesson.challengeId}`;
   document.getElementById('lessonSlidesBoxLink').href = `craftom-minecraft-slides.html?challenge=${lesson.challengeId}`;
-  document.getElementById('prevLink').href = `craftom-minecraft-lesson-${Math.max(1, lesson.id - 1)}.html`;
-  document.getElementById('nextLink').href = `craftom-minecraft-lesson-${Math.min(program.totalMeetings, lesson.id + 1)}.html`;
-  document.getElementById('lessonNav').innerHTML = program.lessons.map(item => `<a class="${item.id === lesson.id ? 'active' : ''}" href="craftom-minecraft-lesson-${item.id}.html">${item.id}</a>`).join('');
+  const currentLessonIndex = challengeLessons.findIndex(item => item.id === lesson.id);
+  const prevLesson = currentLessonIndex > 0 ? challengeLessons[currentLessonIndex - 1] : null;
+  const nextLesson = currentLessonIndex < challengeLessons.length - 1 ? challengeLessons[currentLessonIndex + 1] : null;
+  const prevLink = document.getElementById('prevLink');
+  const nextLink = document.getElementById('nextLink');
+  prevLink.style.display = prevLesson ? '' : 'none';
+  nextLink.style.display = nextLesson ? '' : 'none';
+  if (prevLesson) prevLink.href = `craftom-minecraft-lesson-${prevLesson.id}.html`;
+  if (nextLesson) nextLink.href = `craftom-minecraft-lesson-${nextLesson.id}.html`;
+  document.getElementById('lessonNav').innerHTML = challengeLessons.map(item => `<a class="${item.id === lesson.id ? 'active' : ''}" href="craftom-minecraft-lesson-${item.id}.html">${item.id}</a>`).join('');
   document.getElementById('challengeMapTitle').textContent = `אתגר ${lesson.challengeId}: ${lesson.challengeTitle}`;
-  document.getElementById('challengeLessonMap').innerHTML = program.lessons
-    .filter(item => item.challengeId === lesson.challengeId)
-    .map(item => `
+  document.getElementById('challengeLessonMap').innerHTML = challengeLessons.map(item => `
       <a class="${item.id === lesson.id ? 'active' : ''}" href="craftom-minecraft-lesson-${item.id}.html">
         <span>שיעור ${item.id}</span>
         <strong>${esc(item.title)}</strong>

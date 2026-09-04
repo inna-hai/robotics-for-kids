@@ -78,15 +78,20 @@ for (let id = 1; id <= 16; id += 1) {
   const lessonPage = read(`craftom-minecraft-lesson-${id}.html`);
   assert.match(lessonPage, new RegExp(`data-lesson="${id}"`), `lesson ${id} has its own page`);
   assert.match(lessonPage, /craftom-minecraft-lesson-page\.js/, `lesson ${id} loads shared renderer`);
-  assert.match(lessonPage, /20260904-self-study-3/, `lesson ${id} cache-busts the updated exit upload renderer`);
+  assert.match(lessonPage, /20260904-self-study-4/, `lesson ${id} cache-busts the updated exit upload renderer`);
 }
 
 const lessonTemplate = read('craftom-minecraft-lesson.html');
 const lessonRenderer = read('js/craftom-minecraft-lesson-page.js');
 assert.match(lessonTemplate, /challengeLessonMap/, 'lesson template has a map for lessons in the current challenge');
+assert.match(lessonTemplate, /בחירת שיעור באתגר הנוכחי/, 'lesson top nav is scoped to the current challenge');
 assert.match(lessonTemplate, /exitTicketForm/, 'lesson template has a real exit ticket form');
 assert.match(lessonTemplate, /type="file"/, 'lesson template has a real image upload input');
 assert.match(lessonRenderer, /fetch\('\/api\/craftom\/exit-ticket'/, 'lesson renderer submits exit tickets to the server');
+assert.match(lessonRenderer, /const challengeLessons = program\.lessons\.filter\(item => item\.challengeId === lesson\.challengeId\)/, 'lesson top nav only uses lessons from the current challenge');
+assert.doesNotMatch(lessonRenderer, /lessonNav'\)\.innerHTML = program\.lessons\.map/, 'lesson top nav no longer lists all 16 lessons');
+assert.match(lessonRenderer, /prevLink\.style\.display = prevLesson/, 'previous lesson button stays inside the current challenge');
+assert.match(lessonRenderer, /nextLink\.style\.display = nextLesson/, 'next lesson button stays inside the current challenge');
 assert.match(lessonRenderer, /filter\(item => item\.challengeId === lesson\.challengeId\)/, 'lesson renderer filters the current challenge lesson map');
 assert.match(lessonRenderer, /challengeMapLink/, 'lesson renderer links back to the current challenge map');
 assert.match(lessonRenderer, /לכל האתגרים/, 'lesson renderer links back up to all challenges');
