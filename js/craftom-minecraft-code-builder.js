@@ -4,11 +4,13 @@
   const lesson = window.CRAFTOM_CURRENT_MINECRAFT_LESSON;
   const blocklyDiv = document.getElementById('craftomBlockly');
   const codeOutput = document.getElementById('makeCodeSnippet');
+  const workspaceCard = document.querySelector('.makecode-workspace');
   if (!lesson || !blocklyDiv || !codeOutput) return;
 
   const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
   const commandName = text => String(text || 'run').replace(/[^A-Za-z0-9_]/g, '_') || 'run';
-  let activeMode = 'javascript';
+  let activeCodeMode = 'javascript';
+  let visibleMode = 'blocks';
 
   if (!window.__craftomMinecraftBlocksDefined) {
     window.__craftomMinecraftBlocksDefined = true;
@@ -337,14 +339,24 @@
   }
 
   function updateCode() {
-    codeOutput.textContent = workspaceCode(activeMode);
+    codeOutput.textContent = workspaceCode(activeCodeMode);
+  }
+
+  function renderMode() {
+    const showBlocks = visibleMode === 'blocks';
+    blocklyDiv.hidden = !showBlocks;
+    codeOutput.hidden = showBlocks;
+    workspaceCard?.classList.toggle('show-code', !showBlocks);
+    if (!showBlocks) updateCode();
+    if (showBlocks) setTimeout(() => Blockly.svgResize(workspace), 50);
   }
 
   document.querySelectorAll('[data-craftom-code-mode]').forEach(button => {
     button.addEventListener('click', () => {
-      activeMode = button.dataset.craftomCodeMode;
+      visibleMode = button.dataset.craftomCodeMode;
+      if (visibleMode !== 'blocks') activeCodeMode = visibleMode;
       document.querySelectorAll('[data-craftom-code-mode]').forEach(item => item.classList.toggle('active', item === button));
-      updateCode();
+      renderMode();
     });
   });
 
@@ -352,4 +364,5 @@
     if (!event.isUiEvent) updateCode();
   });
   updateCode();
+  renderMode();
 })();

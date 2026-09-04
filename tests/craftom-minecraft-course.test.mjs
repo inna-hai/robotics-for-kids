@@ -74,7 +74,7 @@ assert.ok(preview.includes('programVideo'), 'preview page renders the program vi
 assert.ok(preview.includes('סרטון פתיחת התוכנית'), 'preview page labels the overview video');
 assert.ok(preview.includes('program.overviewVideo'), 'preview page loads video from program data');
 assert.ok(preview.includes('איך עובדים בלומדה'), 'preview explains the self-study mode before teacher materials');
-assert.ok(preview.includes('20260904-codebuilder-1'), 'preview page cache-busts the updated challenge data');
+assert.ok(preview.includes('20260904-codebuilder-2'), 'preview page cache-busts the updated challenge data');
 
 for (const path of [
   'craftom-minecraft-challenge.html',
@@ -82,7 +82,7 @@ for (const path of [
   'craftom-minecraft-slides.html',
   'craftom-minecraft-lesson.html',
 ]) {
-  assert.ok(read(path).includes('20260904-codebuilder-1'), `${path} loads the updated challenge data`);
+  assert.ok(read(path).includes('20260904-codebuilder-2'), `${path} loads the updated challenge data`);
 }
 
 assert.ok(read('craftom-minecraft-challenge.html').includes('רצף עבודה עצמית'), 'challenge page frames the work as self-study');
@@ -97,6 +97,8 @@ assert.ok(
 );
 assert.ok(read('craftom-minecraft-lesson.html').includes('id="makeCodeSnippet"'), 'lesson page includes an embedded MakeCode snippet area');
 assert.ok(read('craftom-minecraft-lesson.html').includes('id="craftomBlockly"'), 'lesson page includes a Blockly workspace');
+assert.ok(read('craftom-minecraft-lesson.html').includes('data-craftom-code-mode="blocks"'), 'lesson page has a blocks tab');
+assert.ok(read('craftom-minecraft-lesson.html').includes('id="makeCodeSnippet" class="makecode-code" dir="ltr" hidden'), 'generated code starts hidden instead of below blocks');
 assert.ok(read('craftom-minecraft-lesson.html').includes('js/vendor/blockly/blockly.min.js'), 'lesson page loads local Blockly');
 assert.ok(read('craftom-minecraft-lesson.html').includes('craftom-minecraft-code-builder.js'), 'lesson page loads the Craftom Code Builder');
 assert.ok(read('craftom-minecraft-lesson.html').includes('https://minecraft.makecode.com/'), 'lesson page links or embeds MakeCode for Minecraft');

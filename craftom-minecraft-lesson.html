@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260904-codebuilder-1">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260904-codebuilder-2">
   <link rel="stylesheet" href="css/platform-home-link.css">
   <style>
     .lesson-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
@@ -63,11 +63,14 @@
         <p>גררו בלוקים מהמחסנית, תכננו את פעולות ה-Agent, עברו בין JavaScript/Python והעתיקו את הקוד ל-Code Builder בתוך Minecraft Education.</p>
       </div>
       <div class="makecode-mode-tabs" role="tablist" aria-label="בחירת מצב Code Builder">
-        <button class="active" type="button" data-craftom-code-mode="javascript">JavaScript</button>
+        <button class="active" type="button" data-craftom-code-mode="blocks">בלוקים</button>
         <button type="button" data-craftom-code-mode="python">Python</button>
+        <button type="button" data-craftom-code-mode="javascript">JavaScript</button>
       </div>
-      <div id="craftomBlockly" class="craftom-blockly" aria-label="עורך בלוקים לתכנון MakeCode"></div>
-      <pre id="makeCodeSnippet" class="makecode-code" dir="ltr"></pre>
+      <div class="makecode-editor-frame">
+        <div id="craftomBlockly" class="craftom-blockly" aria-label="עורך בלוקים לתכנון MakeCode"></div>
+        <pre id="makeCodeSnippet" class="makecode-code" dir="ltr" hidden></pre>
+      </div>
       <div class="actions">
         <button class="btn" id="copyMakeCode" type="button">העתקת קוד</button>
         <a class="btn secondary" href="https://minecraft.makecode.com/" target="_blank" rel="noopener">פתיחת MakeCode</a>
@@ -119,7 +122,7 @@
     </div>
   </main>
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="js/craftom-minecraft-challenges.js?v=20260904-codebuilder-1"></script>
-  <script src="js/craftom-minecraft-lesson-page.js?v=20260904-codebuilder-1"></script><script src="js/vendor/blockly/blockly.min.js"></script><script src="js/vendor/blockly/msg/he.js"></script><script src="js/craftom-minecraft-code-builder.js?v=20260904-codebuilder-1"></script>
+  <script src="js/craftom-minecraft-challenges.js?v=20260904-codebuilder-2"></script>
+  <script src="js/craftom-minecraft-lesson-page.js?v=20260904-codebuilder-2"></script><script src="js/vendor/blockly/blockly.min.js"></script><script src="js/vendor/blockly/msg/he.js"></script><script src="js/craftom-minecraft-code-builder.js?v=20260904-codebuilder-2"></script>
 </body>
 </html>

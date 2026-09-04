@@ -263,8 +263,13 @@ h2 {
   gap: 14px;
 }
 
+.makecode-editor-frame {
+  min-height: 460px;
+}
+
 .makecode-code {
   margin: 0;
+  min-height: 460px;
   overflow: auto;
   border: 1px solid #c7daec;
   border-radius: 14px;
@@ -274,6 +279,10 @@ h2 {
   text-align: left;
   white-space: pre;
   font: 700 .95rem/1.55 "Courier New", Consolas, monospace;
+}
+
+.makecode-code[hidden] {
+  display: none;
 }
 
 .craftom-blockly {

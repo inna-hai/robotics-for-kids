@@ -209,11 +209,14 @@ player.onChat("test", function () {
             <p>גררו בלוקים מהמחסנית, תכננו את פעולות ה-Agent, עברו בין JavaScript/Python והעתיקו את הקוד ל-Code Builder בתוך Minecraft Education.</p>
           </div>
           <div class="makecode-mode-tabs" role="tablist" aria-label="בחירת מצב Code Builder">
-            <button class="active" type="button" data-craftom-code-mode="javascript">JavaScript</button>
+            <button class="active" type="button" data-craftom-code-mode="blocks">בלוקים</button>
             <button type="button" data-craftom-code-mode="python">Python</button>
+            <button type="button" data-craftom-code-mode="javascript">JavaScript</button>
           </div>
-          <div id="craftomBlockly" class="craftom-blockly" aria-label="עורך בלוקים לתכנון MakeCode"></div>
-          <pre id="makeCodeSnippet" class="makecode-code" dir="ltr"></pre>
+          <div class="makecode-editor-frame">
+            <div id="craftomBlockly" class="craftom-blockly" aria-label="עורך בלוקים לתכנון MakeCode"></div>
+            <pre id="makeCodeSnippet" class="makecode-code" dir="ltr" hidden></pre>
+          </div>
           <div class="actions">
             <button class="btn" id="copyMakeCode" type="button">העתקת קוד</button>
             <a class="btn secondary" href="https://minecraft.makecode.com/" target="_blank" rel="noopener">פתיחת MakeCode</a>
