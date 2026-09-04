@@ -20,7 +20,7 @@
             <p class="goal" id="summary"></p>
             <p><strong>תוצר:</strong> <span id="deliverable"></span></p>
             <div class="actions">
-              <a class="btn" id="studentLink" href="#">דף תלמידים</a>
+              <a class="btn" id="studentLink" href="#">דף עבודה</a>
               <a class="btn secondary" id="slidesLink" href="#">מצגת מדריך</a>
               <a class="btn secondary" id="challengeLink" href="#">דף האתגר</a>
             </div>
@@ -35,10 +35,15 @@
           <article class="card build-first"><h2>פקודות מרכזיות</h2><p id="command"></p></article>
         </section>
         <section class="detail-grid" style="margin-top:16px">
-          <article class="detail-box"><h2>מצגת מדריך</h2><p>הנחיית השיעור נמצאת במצגת המדריך של האתגר.</p><a class="btn secondary" id="lessonSlidesBoxLink" href="#">פתיחת המצגת</a></article>
+          <article class="detail-box"><h2>איך עובדים לבד</h2><ul id="selfStudy"></ul></article>
           <article class="detail-box"><h2>מה בונים במיינקראפט</h2><ul id="build"></ul></article>
           <article class="detail-box"><h2>קוד / MakeCode</h2><ul id="code"></ul></article>
           <article class="detail-box"><h2>ראיות Craftom</h2><ul id="evidence"></ul></article>
+        </section>
+        <section class="card" style="margin-top:16px">
+          <h2>מצגת מדריך</h2>
+          <p>קישור למדריך/ה בלבד. העבודה של התלמיד נמצאת בעמוד הזה ובדף העבודה.</p>
+          <a class="btn secondary" id="lessonSlidesBoxLink" href="#">פתיחת המצגת</a>
         </section>
         <section class="card" style="margin-top:16px">
           <span class="tag" id="challengeMapTitle"></span>
@@ -72,6 +77,13 @@
   document.getElementById('concept').textContent = lesson.concept;
   document.getElementById('command').textContent = lesson.command;
   document.getElementById('goal').textContent = lesson.detail.goal;
+  document.getElementById('selfStudy').innerHTML = list([
+    'צפו בסרטון של האתגר והבינו מה צריך לקרות בעיר.',
+    'בנו במיינקראפט את החלק הקטן של היום.',
+    'פתחו MakeCode וכתבו רק את הקוד שמפעיל את ה-Agent.',
+    'הריצו, בדקו מה קרה בעולם, תקנו דבר אחד והריצו שוב.',
+    'מלאו את כרטיס היציאה במילים שלכם.'
+  ]);
   document.getElementById('build').innerHTML = list(lesson.detail.build);
   document.getElementById('code').innerHTML = list(lesson.detail.code);
   document.getElementById('evidence').innerHTML = list(lesson.detail.evidence);

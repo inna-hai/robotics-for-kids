@@ -18,8 +18,8 @@ assert.equal(program.lessons.length, 16, 'program exposes 16 detailed lesson pag
 
 assert.deepEqual(Array.from(program.challenges, challenge => challenge.title), [
   'הרובוט השליח',
-  'גשר הבנאי',
-  'מעבר חציה חכם',
+  'קו המשלוחים האוטומטי',
+  'קו משלוחים חכם',
   'העיר החכמה שלי'
 ]);
 
@@ -51,12 +51,13 @@ assert.match(challengePage, /window\.getCraftomMinecraftChallenge/);
 assert.match(challengePage, /challenge\.video/);
 assert.match(challengePage, /craftom-minecraft-students\.html/);
 assert.match(challengePage, /שיעור מפורט/);
-assert.match(challengePage, /מה המורה עושה/);
+assert.match(challengePage, /רצף עבודה עצמית/);
+assert.doesNotMatch(challengePage, /מה המורה עושה/);
 assert.match(challengePage, /ראיות Craftom/);
 assert.match(challengePage, /craftom-minecraft-lesson-\$\{\(\(challenge\.id - 1\) \* 4\) \+ index \+ 1\}\.html/);
 
 const studentsPage = read('craftom-minecraft-students.html');
-assert.match(studentsPage, /דף עבודה לתלמידים/);
+assert.match(studentsPage, /דף עבודה עצמית/);
 assert.match(studentsPage, /מגרש 50x50/);
 
 const slidesPage = read('craftom-minecraft-slides.html');

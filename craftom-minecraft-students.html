@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>דף תלמידים | Craftom כיתה ז׳</title>
+  <title>דף עבודה עצמית | Craftom כיתה ז׳</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260904-delivery-videos-6">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260904-self-study-1">
   <link rel="stylesheet" href="css/platform-home-link.css">
   <style>
     .worksheet{display:grid;gap:12px}
@@ -29,8 +29,8 @@
         <div class="actions" id="actions"></div>
       </div>
       <article class="card build-first">
-        <h2>מה מגישים בסוף?</h2>
-        <p>עולם קטן שעובד, פקודה או קוד קצר, בדיקה אחת, תיקון אחד והסבר במילים של התלמיד.</p>
+        <h2>איך עובדים לבד?</h2>
+        <p>קוראים את המשימה, עובדים במגרש 50x50 האישי, בונים במיינקראפט, כותבים קוד קצר ב-MakeCode, מריצים את ה-Agent, בודקים, מתקנים וכותבים מה השתנה.</p>
       </article>
     </section>
     <section class="grid">
@@ -44,7 +44,7 @@
       </article>
     </section>
     <section class="card worksheet" style="margin-top:16px">
-      <h2>דף עבודה לתלמידים</h2>
+      <h2>דף עבודה עצמית</h2>
       <div class="field"><label>שם / צוות</label><div class="line"></div></div>
       <div class="field"><label>איזה מפגש אנחנו עושים היום?</label><div class="line"></div></div>
       <div class="field"><label>מה כבר היה בעיר שלי מתחילת הקורס?</label><div class="line large"></div></div>
@@ -53,16 +53,16 @@
       <div class="field"><label>איזה רעיון תכנות השתמשתי בו: רצף, לולאה, משתנה או תנאי?</label><div class="line large"></div></div>
       <div class="field"><label>מה ה-Agent עושה בעולם כשמריצים את הקוד?</label><div class="line large"></div></div>
       <div class="field"><label>מה בדקתי ומה תיקנתי?</label><div class="line large"></div></div>
-      <div class="field"><label>הסבר קצר למורה: מה בניתי, מה הקוד עושה, ומה השתנה בעיר?</label><div class="line large"></div></div>
+      <div class="field"><label>הסבר קצר במילים שלי: מה בניתי, מה הקוד עושה, ומה השתנה בעיר?</label><div class="line large"></div></div>
     </section>
   </main>
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="js/craftom-minecraft-challenges.js?v=20260904-delivery-videos-6"></script>
+  <script src="js/craftom-minecraft-challenges.js?v=20260904-self-study-1"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const challenge = window.getCraftomMinecraftChallenge(params.get('challenge') || params.get('lesson'));
     const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
-    document.title = `דף תלמידים - ${challenge.title}`;
+    document.title = `דף עבודה עצמית - ${challenge.title}`;
     document.getElementById('kicker').textContent = `Craftom Challenges • כיתה ז׳ • אתגר ${challenge.id}`;
     document.getElementById('title').textContent = challenge.title;
     document.getElementById('story').textContent = challenge.story;
@@ -73,7 +73,7 @@
     `;
     document.getElementById('meetings').innerHTML = challenge.meetings.map(item => {
       const detail = item[4];
-      return `<li><b>${esc(item[0])} ${esc(item[1])}</b><br>${esc(item[2])}<br><span class="muted">תוצר: ${esc(item[3])}</span><br><strong>מה עושים:</strong> ${detail.build.map(esc).join(' · ')}<br><strong>בודקים:</strong> ${esc(detail.exit)}</li>`;
+      return `<li><b>${esc(item[0])} ${esc(item[1])}</b><br>${esc(item[2])}<br><span class="muted">תוצר: ${esc(item[3])}</span><br><strong>מה אני בונה:</strong> ${detail.build.map(esc).join(' · ')}<br><strong>מה אני בודק/ת:</strong> ${esc(detail.exit)}</li>`;
     }).join('');
     document.getElementById('checks').innerHTML = challenge.checks.map(item => `<li>${esc(item)}</li>`).join('');
   </script>

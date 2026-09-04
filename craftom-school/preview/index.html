@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Craftom Challenges כיתה ז׳</title>
-  <meta name="description" content="לומדת Craftom Challenges לכיתה ז׳: ארבעה אתגרי Minecraft + MakeCode עם סרטונים, דפי תלמידים ומצגות מדריך.">
+  <meta name="description" content="לומדה לעבודה עצמית לתלמידי כיתה ז׳: ארבעה אתגרי Minecraft + MakeCode עם סרטונים, משימות ברורות וקוד שה-Agent מבצע בעולם.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/craftom/craftom-challenges.css?v=20260904-delivery-videos-6">
+  <link rel="stylesheet" href="../../assets/craftom/craftom-challenges.css?v=20260904-self-study-1">
   <link rel="stylesheet" href="../../css/platform-home-link.css">
   <style>
     .preview-home .hero{grid-template-columns:minmax(0,1fr) 420px}
@@ -27,13 +27,13 @@
   <main class="shell">
     <section class="hero">
       <div>
-        <div class="kicker">Craftom Challenges • כיתה ז׳ • Minecraft Education + MakeCode</div>
+        <div class="kicker">Craftom Challenges • כיתה ז׳ • עבודה עצמית במיינקראפט ו-MakeCode</div>
         <h1>קראפטום לכיתה ז׳: בונים ומפעילים עיר חכמה במיינקראפט</h1>
         <p class="goal" id="subtitle"></p>
         <div class="actions" id="heroActions"></div>
       </div>
       <article class="card build-first">
-        <h2>מבנה הקורס</h2>
+        <h2>איך עובדים בלומדה?</h2>
         <p id="courseShape"></p>
         <ul id="outcomes"></ul>
       </article>
@@ -51,7 +51,7 @@
       <div>
         <span class="tag">סרטון פתיחת התוכנית</span>
         <h2 id="programVideoTitle">מה בונים, ואיך התכנות נכנס לתמונה?</h2>
-        <p class="goal">סרטון קצר שמראה את עולם המיינקראפט, קוד MakeCode מתחתיו, ואת ה-Agent מבצע פעולות בתוך העיר.</p>
+        <p class="goal">צופים, בונים במיינקראפט, כותבים את הקוד ב-MakeCode, מריצים, בודקים ומתקנים. הסרטון מראה את ה-Agent מבצע פעולות בתוך העיר.</p>
       </div>
     </section>
 
@@ -59,13 +59,13 @@
 
     <section class="grid" style="margin-top:16px">
       <article class="card wide-card">
-        <h2>כללי עבודה בכיתה</h2>
+        <h2>כללי עבודה עצמית</h2>
         <ul id="rules"></ul>
       </article>
     </section>
   </main>
   <a class="platform-home-link" href="../../index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="../../js/craftom-minecraft-challenges.js?v=20260904-delivery-videos-6"></script>
+  <script src="../../js/craftom-minecraft-challenges.js?v=20260904-self-study-1"></script>
   <script>
     const program = window.CRAFTOM_MINECRAFT_PROGRAM;
     const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
@@ -90,7 +90,7 @@
         </ul>
         <div class="challenge-actions">
           <a class="btn" href="../../craftom-minecraft-challenge.html?challenge=${challenge.id}">כניסה לאתגר</a>
-          <a class="btn" href="../../craftom-minecraft-students.html?challenge=${challenge.id}">דף תלמידים</a>
+          <a class="btn" href="../../craftom-minecraft-students.html?challenge=${challenge.id}">דף עבודה</a>
           <a class="btn secondary" href="../../craftom-minecraft-slides.html?challenge=${challenge.id}">מצגת מדריך</a>
           <a class="btn secondary" href="../../${esc(challenge.video)}">פתחו סרטון</a>
         </div>

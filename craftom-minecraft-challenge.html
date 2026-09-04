@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260904-delivery-videos-6">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260904-self-study-1">
   <link rel="stylesheet" href="css/platform-home-link.css">
   <style>
     .challenge-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
@@ -47,12 +47,12 @@
       <article class="card build-first"><h2>מה לומדים בקוד</h2><p id="concept"></p></article>
       <article class="card build-first"><h2>פקודות מרכזיות</h2><p id="command"></p></article>
       <article class="card"><h2>בדיקת Craftom</h2><ul id="checks"></ul></article>
-      <article class="card"><h2>רצף עבודה בכיתה</h2><ul id="flow"></ul></article>
+      <article class="card"><h2>רצף עבודה עצמית</h2><ul id="flow"></ul></article>
     </section>
     <section class="lesson-detail" id="lessonDetails" style="margin-top:16px"></section>
   </main>
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="js/craftom-minecraft-challenges.js?v=20260904-delivery-videos-6"></script>
+  <script src="js/craftom-minecraft-challenges.js?v=20260904-self-study-1"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const program = window.CRAFTOM_MINECRAFT_PROGRAM;
@@ -69,7 +69,7 @@
     document.getElementById('video').src = challenge.video;
     document.getElementById('video').poster = challenge.poster;
     document.getElementById('actions').innerHTML = `
-      <a class="btn" href="craftom-minecraft-students.html?challenge=${challenge.id}">דף תלמידים</a>
+      <a class="btn" href="craftom-minecraft-students.html?challenge=${challenge.id}">דף עבודה</a>
       <a class="btn secondary" href="craftom-minecraft-slides.html?challenge=${challenge.id}">מצגת מדריך</a>
       <a class="btn secondary" href="craftom-school/preview/index.html">חזרה למפת הקורס</a>
     `;
@@ -82,7 +82,7 @@
       </article>
     `).join('');
     document.getElementById('checks').innerHTML = challenge.checks.map(item => `<li>${esc(item)}</li>`).join('');
-    document.getElementById('flow').innerHTML = challenge.meetings.map(item => `<li><strong>${esc(item[0])} - ${esc(item[1])}:</strong> ${esc(item[3])}</li>`).join('');
+    document.getElementById('flow').innerHTML = challenge.meetings.map(item => `<li><strong>${esc(item[0])} - ${esc(item[1])}:</strong> ${esc(item[2])} בסוף: ${esc(item[3])}</li>`).join('');
     document.getElementById('lessonDetails').innerHTML = challenge.meetings.map(item => {
       const detail = item[4];
       return `
@@ -91,7 +91,7 @@
           <h2>${esc(item[1])}</h2>
           <p class="goal">${esc(detail.goal)}</p>
           <div class="detail-grid">
-            <div class="detail-box"><h3>מצגת מדריך</h3><p>הנחיית השיעור נמצאת במצגת המדריך של האתגר.</p><a class="btn secondary" href="craftom-minecraft-slides.html?challenge=${challenge.id}">פתיחת המצגת</a></div>
+            <div class="detail-box"><h3>איך עובדים לבד</h3><ul><li>פותחים את עמוד השיעור.</li><li>בונים את החלק של היום במיינקראפט.</li><li>כותבים קוד קצר ב-MakeCode, מריצים, בודקים ומתקנים.</li></ul></div>
             <div class="detail-box"><h3>מה בונים במיינקראפט</h3><ul>${detail.build.map(step => `<li>${esc(step)}</li>`).join('')}</ul></div>
             <div class="detail-box"><h3>קוד / MakeCode</h3><ul>${detail.code.map(step => `<li>${esc(step)}</li>`).join('')}</ul></div>
             <div class="detail-box"><h3>ראיות Craftom</h3><ul>${detail.evidence.map(step => `<li>${esc(step)}</li>`).join('')}</ul></div>

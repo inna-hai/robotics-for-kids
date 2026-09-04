@@ -14,6 +14,7 @@ const program = sandbox.window.CRAFTOM_MINECRAFT_PROGRAM;
 assert.ok(program, 'Craftom Minecraft program exists');
 assert.equal(program.totalChallenges, 4, 'program has 4 challenges');
 assert.equal(program.totalMeetings, 16, 'program has 16 meetings');
+assert.ok(program.subtitle.includes('עבודה עצמית'), 'program frames the course as a self-study lomda');
 assert.ok(program.subtitle.includes('בהמשכים'), 'program frames the course as one continuing city');
 assert.equal(
   program.overviewVideo,
@@ -70,7 +71,8 @@ const preview = read('craftom-school/preview/index.html');
 assert.ok(preview.includes('programVideo'), 'preview page renders the program video element');
 assert.ok(preview.includes('סרטון פתיחת התוכנית'), 'preview page labels the overview video');
 assert.ok(preview.includes('program.overviewVideo'), 'preview page loads video from program data');
-assert.ok(preview.includes('20260904-delivery-videos-6'), 'preview page cache-busts the updated challenge data');
+assert.ok(preview.includes('איך עובדים בלומדה'), 'preview explains the self-study mode before teacher materials');
+assert.ok(preview.includes('20260904-self-study-1'), 'preview page cache-busts the updated challenge data');
 
 for (const path of [
   'craftom-minecraft-challenge.html',
@@ -78,8 +80,12 @@ for (const path of [
   'craftom-minecraft-slides.html',
   'craftom-minecraft-lesson.html',
 ]) {
-  assert.ok(read(path).includes('20260904-delivery-videos-6'), `${path} loads the updated challenge data`);
+  assert.ok(read(path).includes('20260904-self-study-1'), `${path} loads the updated challenge data`);
 }
+
+assert.ok(read('craftom-minecraft-challenge.html').includes('רצף עבודה עצמית'), 'challenge page frames the work as self-study');
+assert.ok(read('craftom-minecraft-lesson.html').includes('איך עובדים לבד'), 'lesson page starts lesson detail with self-study steps');
+assert.ok(read('craftom-minecraft-students.html').includes('דף עבודה עצמית'), 'student worksheet is framed as self-study');
 
 for (const path of [
   'craftom-minecraft-challenge.html',
