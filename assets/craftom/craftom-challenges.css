@@ -215,6 +215,16 @@ h2 {
   font-weight: 900;
 }
 
+.exit-ticket-question {
+  display: block;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  padding: 10px 12px;
+  line-height: 1.55;
+}
+
 .exit-ticket-form input,
 .exit-ticket-form textarea {
   width: 100%;

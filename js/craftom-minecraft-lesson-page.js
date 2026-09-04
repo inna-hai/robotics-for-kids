@@ -68,14 +68,14 @@
         <section class="card" style="margin-top:16px">
           <h2>כרטיס יציאה</h2>
           <p><strong>העלאת תמונה:</strong> <span id="exitUploadInline"></span></p>
-          <p id="exitTicket"></p>
           <form class="exit-ticket-form" id="exitTicketForm">
             <label>
               <span>שם / צוות</span>
               <input id="exitStudentName" name="studentName" autocomplete="name" placeholder="כתבו שם או שם צוות">
             </label>
             <label>
-              <span>תשובה לכרטיס היציאה</span>
+              <span>שאלת כרטיס היציאה</span>
+              <strong id="exitTicket" class="exit-ticket-question"></strong>
               <textarea id="exitAnswer" name="answer" required rows="4" placeholder="כתבו כאן את התשובה הקצרה שלכם"></textarea>
             </label>
             <label>
