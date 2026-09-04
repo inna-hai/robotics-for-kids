@@ -101,7 +101,7 @@ const specs = [
   },
   {
     id: 4,
-    slug: 'craftom-challenge4-smart-city-project',
+    slug: 'craftom-challenge4-smart-city-automations',
     title: 'אתגר 4: העיר החכמה שלי',
     script: `סרטון הסבר לאתגר הרביעי בלומדה של קראפטום לכיתות ז: העיר החכמה שלי.
 
@@ -109,25 +109,27 @@ const specs = [
 
 כבר יש להם אזור משלוחים, Agent שיודע לבצע רצף פעולות, קו אוטומטי שעובד בלולאה, וחוק חכם אחד שמחליט לפי מצב בעולם.
 
-עכשיו כל תלמיד בוחר מערכת עיר חכמה קטנה משלו, מתוך אותה עיר. למשל: קו משלוחים משופר, שער חכם, תחנת איסוף, רמזור קטן, סיור בטיחות, או מערכת תחזוקה.
+עכשיו הם לא רק מציגים את מה שכבר נבנה. הם מוסיפים עוד אוטומציות למערכות בעיר, ומשדרגים אותה לעיר חכמה אישית.
 
-המטרה היא לא לבנות פרויקט ענק. המטרה היא לבנות משהו קטן שעובד באמת: יש בנייה במיינקראפט, יש קוד MakeCode שמפעיל אותה, ויש בדיקה שמראה אם זה הצליח.
+אפשר להוסיף קו משלוחים נוסף, שער חכם, תחנת איסוף שמסמנת אם היא מלאה, סיור בטיחות של ה-Agent, רמזור קטן, או מערכת תחזוקה שמניחה ומחליפה בלוקים.
 
-במפגש הראשון בוחרים מערכת וכותבים אלגוריתם בשלושה צעדים: מה קורה בהתחלה, מה הקוד משנה, ואיך יודעים שהמערכת עבדה.
+המטרה היא לא לבנות פרויקט ענק. המטרה היא לבחור שתיים או שלוש מערכות בעיר, להוסיף להן אוטומציה קטנה, ואז להראות שהן עובדות יחד.
 
-במפגש השני בונים גרסה ראשונה. פקודת start עושה פעולה אחת ברורה: מזיזה את ה-Agent, מניחה חבילה, משנה סימון, או מפעילה חלק קטן בעיר.
+במפגש הראשון ממפים את העיר: מה כבר עובד, איזה קו אוטומטי קיים, ואיפה כדאי להוסיף שדרוג.
 
-במפגש השלישי מריצים test. מחפשים תקלה קטנה: מרחק לא נכון, כיוון לא מתאים, בלוק במקום לא מדויק, או תנאי שלא מתנהג כמו שרצינו. מתקנים דבר אחד ומריצים שוב.
+במפגש השני מוסיפים אוטומציה חדשה. פקודת start יכולה להזיז Agent, להפעיל שער, להניח חבילה, לשנות סימון, או להתחיל סיור.
 
-במפגש הרביעי מכינים demo. התלמיד מציג מה הוא בנה, מה הקוד עושה, איזה רעיון תכנותי נכנס פנימה, ומה הוא תיקן אחרי הבדיקה.
+במפגש השלישי מריצים test על שתי אוטומציות בעיר. מחפשים תקלה קטנה: מרחק לא נכון, כיוון לא מתאים, זמן המתנה חסר, או תנאי שלא מתנהג כמו שרצינו. מתקנים דבר אחד ומריצים שוב.
 
-ככה אתגר 4 סוגר את כל התוכנית: רצף, לולאה, תנאי, Agent, בדיקה ודיבוג. לא רק עיר יפה במיינקראפט, אלא מערכת קטנה שהתלמיד תכנן, קידד, בדק והציג.`,
+במפגש הרביעי מכינים demo. התלמיד מציג מה היה בעיר לפני, אילו אוטומציות נוספו, מה הקוד עושה, ומה הוא תיקן אחרי הבדיקה.
+
+ככה אתגר 4 סוגר את כל התוכנית: לא רק עיר יפה במיינקראפט, אלא עיר שיש בה כמה מערכות אוטומטיות. הילדים משתמשים ברצף, לולאה, תנאי, Agent, בדיקה ודיבוג, ומראים עיר חכמה שבאמת עובדת.`,
     scenes: [
-      { source: 'challenge4', start: 8, span: 28, caption: 'חוזרים לעיר שהתפתחה', subtitle: 'לא מתחילים מאפס: משתמשים במה שנבנה באתגרים 1-3', codeTitle: 'מה כבר יש בעיר', code: ['delivery route ✓', 'Agent sequence ✓', 'loop with start/stop ✓', 'if / else rule ✓'], hot: [0, 1, 2, 3], weight: 18 },
-      { source: 'challenge4', start: 26, span: 34, caption: 'בוחרים מערכת אחת', subtitle: 'פרויקט קטן וברור: משלוחים, שער, איסוף, תחזוקה או סיור', codeTitle: 'מתכננים לפני קוד', code: ['system = one small idea', 'step 1: start state', 'step 2: code action', 'step 3: success sign'], hot: [0, 1, 2, 3], weight: 20 },
-      { source: 'challenge4', start: 50, span: 36, caption: 'בונים גרסה ראשונה', subtitle: 'start עושה פעולה אחת שרואים בעולם', codeTitle: 'MakeCode - start', code: ['player.onChat("start", function () {', '  agent.move(FORWARD, 3)', '  agent.drop(FORWARD, 1)', '  player.say("המערכת פעלה")', '})'], hot: [0, 1, 2, 3, 4], weight: 22 },
-      { source: 'challenge4', start: 78, span: 34, caption: 'בודקים ומתקנים', subtitle: 'test מחפש תקלה אחת, ואז מתקנים רק דבר אחד', codeTitle: 'MakeCode - test', code: ['player.onChat("test", function () {', '  player.say("בודק את המערכת")', '  player.runChatCommand("start")', '})', '// fix one number or direction'], hot: [0, 1, 2, 3, 4], weight: 20 },
-      { source: 'challenge4', start: 104, span: 24, caption: 'מציגים demo', subtitle: 'מה בניתי, מה הקוד עושה, ומה תיקנתי בדרך', codeTitle: 'ראיות Craftom', code: ['Minecraft build', 'start / test / demo', 'sequence + loop or if', 'one debug explanation'], hot: [0, 1, 2, 3], weight: 18 },
+      { source: 'challenge4', start: 8, span: 28, caption: 'חוזרים לעיר שהתפתחה', subtitle: 'כבר יש משלוח, לולאה ותנאי מאתגרים 1-3', codeTitle: 'מה כבר עובד בעיר', code: ['delivery route ✓', 'Agent sequence ✓', 'loop automation ✓', 'if / else decision ✓'], hot: [0, 1, 2, 3], weight: 17 },
+      { source: 'challenge4', start: 26, span: 34, caption: 'מוסיפים עוד אוטומציות', subtitle: 'שער, תחנת איסוף, קו נוסף, סיור או תחזוקה', codeTitle: 'תכנון העיר החכמה', code: ['automation 1 = delivery line', 'automation 2 = smart gate', 'automation 3 = safety patrol', 'each one has a trigger'], hot: [0, 1, 2, 3], weight: 21 },
+      { source: 'challenge4', start: 50, span: 36, caption: 'start מפעיל מערכת', subtitle: 'כל אוטומציה עושה פעולה שרואים בעולם', codeTitle: 'MakeCode - automation', code: ['player.onChat("start", function () {', '  agent.move(FORWARD, 3)', '  agent.drop(FORWARD, 1)', '  player.say("קו המשלוחים פעל")', '})'], hot: [0, 1, 2, 3, 4], weight: 20 },
+      { source: 'challenge4', start: 78, span: 34, caption: 'test בודק כמה מערכות', subtitle: 'בודקים שתי אוטומציות ומתקנים תקלה אחת', codeTitle: 'MakeCode - test', code: ['player.onChat("test", function () {', '  player.runChatCommand("start")', '  player.say("בודק שער וסיור")', '})', '// fix one number or condition'], hot: [0, 1, 2, 3, 4], weight: 20 },
+      { source: 'challenge4', start: 104, span: 24, caption: 'demo של עיר חכמה', subtitle: 'מה היה בעיר, מה נוסף, ומה עובד יחד', codeTitle: 'ראיות Craftom', code: ['2+ automations in Minecraft', 'start / test / demo', 'sequence + loop + if', 'debug explanation'], hot: [0, 1, 2, 3], weight: 20 },
     ],
   },
 ];

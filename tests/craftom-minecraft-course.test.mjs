@@ -28,10 +28,12 @@ assert.equal(challenge1.title, 'הרובוט השליח', 'challenge 1 keeps the
 assert.equal(challenge2.title, 'קו המשלוחים האוטומטי', 'challenge 2 is the automatic delivery line');
 assert.equal(challenge3.title, 'קו משלוחים חכם', 'challenge 3 is the smart delivery line');
 assert.equal(challenge4.title, 'העיר החכמה שלי', 'challenge 4 is the personal smart city project');
+assert.ok(challenge4.concept.includes('אוטומציות למערכות בעיר'), 'challenge 4 focuses on adding automations to city systems');
+assert.ok(challenge4.checks[0].includes('לפחות שתי מערכות'), 'challenge 4 requires more than one city system/automation');
 assert.equal(
   challenge4.video,
-  'marketing/craftom-challenge4-smart-city-project-gemini-live-1x.mp4',
-  'challenge 4 points to the updated smart city project video'
+  'marketing/craftom-challenge4-smart-city-automations-gemini-live-1x.mp4',
+  'challenge 4 points to the updated smart city automations video'
 );
 assert.ok(exists(challenge4.video), 'challenge 4 updated video file exists');
 assert.ok(exists(challenge4.poster), 'challenge 4 updated poster exists');
@@ -64,7 +66,7 @@ const preview = read('craftom-school/preview/index.html');
 assert.ok(preview.includes('programVideo'), 'preview page renders the program video element');
 assert.ok(preview.includes('סרטון פתיחת התוכנית'), 'preview page labels the overview video');
 assert.ok(preview.includes('program.overviewVideo'), 'preview page loads video from program data');
-assert.ok(preview.includes('20260904-delivery-videos-3'), 'preview page cache-busts the updated challenge data');
+assert.ok(preview.includes('20260904-delivery-videos-4'), 'preview page cache-busts the updated challenge data');
 
 for (const path of [
   'craftom-minecraft-challenge.html',
@@ -72,7 +74,7 @@ for (const path of [
   'craftom-minecraft-slides.html',
   'craftom-minecraft-lesson.html',
 ]) {
-  assert.ok(read(path).includes('20260904-delivery-videos-3'), `${path} loads the updated challenge data`);
+  assert.ok(read(path).includes('20260904-delivery-videos-4'), `${path} loads the updated challenge data`);
 }
 
 console.log('craftom-minecraft-course tests passed');
