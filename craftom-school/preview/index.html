@@ -8,17 +8,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/craftom/craftom-challenges.css?v=20260903-grade7">
+  <link rel="stylesheet" href="../../assets/craftom/craftom-challenges.css?v=20260904-delivery-videos-3">
   <link rel="stylesheet" href="../../css/platform-home-link.css">
   <style>
     .preview-home .hero{grid-template-columns:minmax(0,1fr) 420px}
+    .program-video-card{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:16px;align-items:center;margin:18px 0}
+    .program-video-card .challenge-video{border-radius:14px}
     .challenge-video{display:block;width:100%;aspect-ratio:16/9;border:0;border-radius:14px;background:#111;box-shadow:0 10px 24px rgba(20,50,80,.14)}
     .challenge-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
     .challenge-actions .btn{padding:9px 12px;font-size:.92rem}
     .meeting-list{display:grid;gap:8px;margin:10px 0 0;padding:0;list-style:none}
     .meeting-list li{border:1px solid #cfe2f3;background:#f8fcff;border-radius:12px;padding:9px 10px}
     .wide-card{grid-column:1/-1}
-    @media(max-width:850px){.preview-home .hero{grid-template-columns:1fr}}
+    @media(max-width:850px){.preview-home .hero,.program-video-card{grid-template-columns:1fr}}
   </style>
 </head>
 <body class="preview-home">
@@ -44,6 +46,15 @@
       <article class="card highlight"><h2>50x50</h2><b>מגרש אישי</b><p class="muted">כל תלמיד/צוות עובד בחלקה שלו.</p></article>
     </section>
 
+    <section class="card program-video-card" aria-labelledby="programVideoTitle">
+      <video id="programVideo" class="challenge-video" controls preload="metadata" playsinline aria-label="סרטון הסבר על תוכנית קראפטום לכיתה ז׳"></video>
+      <div>
+        <span class="tag">סרטון פתיחת התוכנית</span>
+        <h2 id="programVideoTitle">מה בונים, ואיך התכנות נכנס לתמונה?</h2>
+        <p class="goal">סרטון קצר שמראה את עולם המיינקראפט, קוד MakeCode מתחתיו, ואת ה-Agent מבצע פעולות בתוך העיר.</p>
+      </div>
+    </section>
+
     <section class="steps" id="challengeCards"></section>
 
     <section class="grid" style="margin-top:16px">
@@ -54,7 +65,7 @@
     </section>
   </main>
   <a class="platform-home-link" href="../../index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="../../js/craftom-minecraft-challenges.js?v=20260903-grade7"></script>
+  <script src="../../js/craftom-minecraft-challenges.js?v=20260904-delivery-videos-3"></script>
   <script>
     const program = window.CRAFTOM_MINECRAFT_PROGRAM;
     const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
@@ -63,6 +74,8 @@
     document.getElementById('outcomes').innerHTML = program.outcomes.map(item => `<li>${esc(item)}</li>`).join('');
     document.getElementById('rules').innerHTML = program.rules.map(item => `<li>${esc(item)}</li>`).join('');
     document.getElementById('heroActions').innerHTML = program.challenges.map(challenge => `<a class="btn" href="../../craftom-minecraft-challenge.html?challenge=${challenge.id}">אתגר ${challenge.id}</a>`).join('');
+    document.getElementById('programVideo').src = `../../${program.overviewVideo}`;
+    document.getElementById('programVideo').poster = `../../${program.overviewPoster}`;
     document.getElementById('challengeCards').innerHTML = program.challenges.map(challenge => `
       <article class="card lesson-card">
         <video class="challenge-video" src="../../${esc(challenge.video)}" poster="../../${esc(challenge.poster)}" controls preload="metadata" playsinline aria-label="סרטון הסבר לאתגר ${challenge.id}: ${esc(challenge.title)}"></video>
