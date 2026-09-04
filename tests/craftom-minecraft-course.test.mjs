@@ -70,7 +70,7 @@ const preview = read('craftom-school/preview/index.html');
 assert.ok(preview.includes('programVideo'), 'preview page renders the program video element');
 assert.ok(preview.includes('סרטון פתיחת התוכנית'), 'preview page labels the overview video');
 assert.ok(preview.includes('program.overviewVideo'), 'preview page loads video from program data');
-assert.ok(preview.includes('20260904-delivery-videos-5'), 'preview page cache-busts the updated challenge data');
+assert.ok(preview.includes('20260904-delivery-videos-6'), 'preview page cache-busts the updated challenge data');
 
 for (const path of [
   'craftom-minecraft-challenge.html',
@@ -78,7 +78,17 @@ for (const path of [
   'craftom-minecraft-slides.html',
   'craftom-minecraft-lesson.html',
 ]) {
-  assert.ok(read(path).includes('20260904-delivery-videos-5'), `${path} loads the updated challenge data`);
+  assert.ok(read(path).includes('20260904-delivery-videos-6'), `${path} loads the updated challenge data`);
+}
+
+for (const path of [
+  'craftom-minecraft-challenge.html',
+  'craftom-minecraft-lesson.html',
+  'js/craftom-minecraft-lesson-page.js',
+]) {
+  const content = read(path);
+  assert.ok(!content.includes('מה המורה עושה'), `${path} does not show teacher instructions in student-facing material`);
+  assert.ok(content.includes('מצגת מדריך'), `${path} links to the instructor slides instead`);
 }
 
 console.log('craftom-minecraft-course tests passed');

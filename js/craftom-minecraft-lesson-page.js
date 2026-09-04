@@ -35,7 +35,7 @@
           <article class="card build-first"><h2>פקודות מרכזיות</h2><p id="command"></p></article>
         </section>
         <section class="detail-grid" style="margin-top:16px">
-          <article class="detail-box"><h2>מה המורה עושה</h2><ul id="teacher"></ul></article>
+          <article class="detail-box"><h2>מצגת מדריך</h2><p>הנחיית השיעור נמצאת במצגת המדריך של האתגר.</p><a class="btn secondary" id="lessonSlidesBoxLink" href="#">פתיחת המצגת</a></article>
           <article class="detail-box"><h2>מה בונים במיינקראפט</h2><ul id="build"></ul></article>
           <article class="detail-box"><h2>קוד / MakeCode</h2><ul id="code"></ul></article>
           <article class="detail-box"><h2>ראיות Craftom</h2><ul id="evidence"></ul></article>
@@ -72,7 +72,6 @@
   document.getElementById('concept').textContent = lesson.concept;
   document.getElementById('command').textContent = lesson.command;
   document.getElementById('goal').textContent = lesson.detail.goal;
-  document.getElementById('teacher').innerHTML = list(lesson.detail.teacher);
   document.getElementById('build').innerHTML = list(lesson.detail.build);
   document.getElementById('code').innerHTML = list(lesson.detail.code);
   document.getElementById('evidence').innerHTML = list(lesson.detail.evidence);
@@ -83,6 +82,7 @@
   document.getElementById('challengeMapLink').href = `craftom-minecraft-challenge.html?challenge=${lesson.challengeId}`;
   document.getElementById('studentLink').href = `craftom-minecraft-students.html?challenge=${lesson.challengeId}`;
   document.getElementById('slidesLink').href = `craftom-minecraft-slides.html?challenge=${lesson.challengeId}`;
+  document.getElementById('lessonSlidesBoxLink').href = `craftom-minecraft-slides.html?challenge=${lesson.challengeId}`;
   document.getElementById('prevLink').href = `craftom-minecraft-lesson-${Math.max(1, lesson.id - 1)}.html`;
   document.getElementById('nextLink').href = `craftom-minecraft-lesson-${Math.min(program.totalMeetings, lesson.id + 1)}.html`;
   document.getElementById('lessonNav').innerHTML = program.lessons.map(item => `<a class="${item.id === lesson.id ? 'active' : ''}" href="craftom-minecraft-lesson-${item.id}.html">${item.id}</a>`).join('');
