@@ -9,6 +9,15 @@
     return items.map(item => `<li>${esc(item)}</li>`).join('');
   }
 
+  function fileToDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ''));
+      reader.onerror = () => reject(new Error('file_read_failed'));
+      reader.readAsDataURL(file);
+    });
+  }
+
   if (!document.getElementById('lessonNav')) {
     document.body.innerHTML = `
       <main class="shell">
@@ -59,7 +68,22 @@
           <h2>כרטיס יציאה</h2>
           <p><strong>העלאת תמונה:</strong> <span id="exitUploadInline"></span></p>
           <p id="exitTicket"></p>
-          <div class="worksheet-lines"><div class="line"></div></div>
+          <form class="exit-ticket-form" id="exitTicketForm">
+            <label>
+              <span>שם / צוות</span>
+              <input id="exitStudentName" name="studentName" autocomplete="name" placeholder="כתבו שם או שם צוות">
+            </label>
+            <label>
+              <span>תשובה לכרטיס היציאה</span>
+              <textarea id="exitAnswer" name="answer" required rows="4" placeholder="כתבו כאן את התשובה הקצרה שלכם"></textarea>
+            </label>
+            <label>
+              <span>תמונה של מה שבניתם במיינקראפט</span>
+              <input id="exitPhoto" name="photo" type="file" accept="image/png,image/jpeg,image/webp" required>
+            </label>
+            <button class="btn" id="exitSubmit" type="submit">הגשת כרטיס יציאה</button>
+            <p class="submit-status" id="exitSubmitStatus" role="status" aria-live="polite"></p>
+          </form>
         </section>
         <div class="actions">
           <a class="btn secondary" id="prevLink" href="#">שיעור קודם</a>
@@ -112,4 +136,56 @@
         <small>${esc(item.deliverable)}</small>
       </a>
     `).join('');
+
+  const form = document.getElementById('exitTicketForm');
+  const status = document.getElementById('exitSubmitStatus');
+  const submitButton = document.getElementById('exitSubmit');
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    status.textContent = '';
+    const photo = document.getElementById('exitPhoto').files[0];
+    const answer = document.getElementById('exitAnswer').value.trim();
+    const studentName = document.getElementById('exitStudentName').value.trim();
+
+    if (!answer) {
+      status.textContent = 'כתבו תשובה קצרה לפני ההגשה.';
+      return;
+    }
+    if (!photo) {
+      status.textContent = 'צרפו תמונה של מה שבניתם לפני ההגשה.';
+      return;
+    }
+    if (photo.size > 5 * 1024 * 1024) {
+      status.textContent = 'התמונה גדולה מדי. אפשר להעלות תמונה עד 5MB.';
+      return;
+    }
+
+    submitButton.disabled = true;
+    submitButton.textContent = 'שולחים...';
+    try {
+      const photoDataUrl = await fileToDataUrl(photo);
+      const response = await fetch('/api/craftom/exit-ticket', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lessonId: String(lesson.id),
+          lessonTitle: lesson.title,
+          challengeId: String(lesson.challengeId),
+          challengeTitle: lesson.challengeTitle,
+          studentName,
+          answer,
+          photo: { name: photo.name, dataUrl: photoDataUrl },
+        }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || 'לא הצלחנו לשמור את ההגשה.');
+      form.classList.add('submitted');
+      status.textContent = `כרטיס היציאה הוגש ונשמר. מספר הגשה: ${data.id}`;
+    } catch (error) {
+      status.textContent = error.message || 'לא הצלחנו לשמור את ההגשה.';
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = 'הגשת כרטיס יציאה';
+    }
+  });
 })();

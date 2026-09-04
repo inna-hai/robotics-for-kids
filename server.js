@@ -10,6 +10,8 @@ const PORT = Number(process.env.PORT || process.argv[2] || 3032);
 const DATA_DIR = path.join(ROOT, 'data');
 const ATTACHMENTS_DIR = path.join(DATA_DIR, 'feedback-attachments');
 const FEEDBACK_FILE = path.join(DATA_DIR, 'feedback.jsonl');
+const CRAFTOM_EXIT_ATTACHMENTS_DIR = path.join(DATA_DIR, 'craftom-exit-ticket-attachments');
+const CRAFTOM_EXIT_TICKETS_FILE = path.join(DATA_DIR, 'craftom-exit-tickets.jsonl');
 const ADMIN_TOKEN_FILE = path.join(DATA_DIR, 'admin-token.txt');
 const SUMMER_USERS_FILE = path.join(DATA_DIR, 'summer-users.json');
 const SUMMER_DB_FILE = path.join(DATA_DIR, 'summer-subscriptions.sqlite');
@@ -960,6 +962,73 @@ function saveImageAttachment(feedbackId, attachment) {
   };
 }
 
+function saveCraftomExitTicketImage(submissionId, attachment) {
+  if (!attachment || !attachment.dataUrl) throw new Error('missing_photo');
+  const match = String(attachment.dataUrl).match(/^data:(image\/(png|jpeg|jpg|webp));base64,([A-Za-z0-9+/=]+)$/);
+  if (!match) throw new Error('invalid_attachment');
+  const mime = match[1];
+  const subtype = match[2] === 'jpeg' ? 'jpg' : match[2];
+  const buffer = Buffer.from(match[3], 'base64');
+  if (!buffer.length || buffer.length > 5 * 1024 * 1024) throw new Error('attachment_too_large');
+  fs.mkdirSync(CRAFTOM_EXIT_ATTACHMENTS_DIR, { recursive: true });
+  const safeName = cleanText(attachment.name, 80).replace(/[^\w.א-ת-]+/g, '_') || `craftom.${subtype}`;
+  const filename = `${submissionId}-${Date.now()}.${subtype}`;
+  const fullPath = path.join(CRAFTOM_EXIT_ATTACHMENTS_DIR, filename);
+  fs.writeFileSync(fullPath, buffer);
+  return {
+    path: path.relative(ROOT, fullPath),
+    name: safeName,
+    mime,
+    size: buffer.length,
+  };
+}
+
+async function handleCraftomExitTicket(req, res) {
+  if (req.method !== 'POST') return send(res, 405, JSON.stringify({ error: 'Method not allowed' }));
+  try {
+    const raw = await readBody(req, 7 * 1024 * 1024);
+    const body = JSON.parse(raw || '{}');
+    const lessonId = cleanText(body.lessonId, 30);
+    const challengeId = cleanText(body.challengeId, 30);
+    const lessonTitle = cleanText(body.lessonTitle, 180);
+    const challengeTitle = cleanText(body.challengeTitle, 180);
+    const studentName = cleanText(body.studentName, 160);
+    const answer = cleanText(body.answer, 3000);
+
+    if (!lessonId || !challengeId) return send(res, 400, JSON.stringify({ error: 'חסרים פרטי שיעור.' }));
+    if (answer.length < 3) return send(res, 400, JSON.stringify({ error: 'נא לכתוב תשובה קצרה לכרטיס היציאה.' }));
+
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+    const id = crypto.randomUUID();
+    const photo = saveCraftomExitTicketImage(id, body.photo);
+    const item = {
+      id,
+      courseId: 'craftom-minecraft-grade7',
+      lessonId,
+      challengeId,
+      lessonTitle,
+      challengeTitle,
+      studentName,
+      answer,
+      photo,
+      userAgent: cleanText(req.headers['user-agent'], 500),
+      ip: cleanText(req.headers['x-forwarded-for'] || req.socket.remoteAddress, 120),
+      createdAt: new Date().toISOString(),
+    };
+    fs.appendFileSync(CRAFTOM_EXIT_TICKETS_FILE, JSON.stringify(item) + '\n', 'utf8');
+    return send(res, 201, JSON.stringify({ ok: true, id }));
+  } catch (error) {
+    const status = error.message === 'payload_too_large' || error.message === 'attachment_too_large' ? 413 : 400;
+    const messages = {
+      missing_photo: 'חובה לצרף תמונה של מה שבניתם במיינקראפט.',
+      invalid_attachment: 'אפשר להעלות רק תמונת PNG, JPG או WebP.',
+      attachment_too_large: 'התמונה גדולה מדי. אפשר להעלות תמונה עד 5MB.',
+      payload_too_large: 'ההגשה גדולה מדי. אפשר להעלות תמונה עד 5MB.',
+    };
+    return send(res, status, JSON.stringify({ error: messages[error.message] || 'לא הצלחנו לשמור את כרטיס היציאה.' }));
+  }
+}
+
 async function handleFeedback(req, res) {
   if (req.method !== 'POST') return send(res, 405, JSON.stringify({ error: 'Method not allowed' }));
   try {
@@ -1368,6 +1437,7 @@ const server = http.createServer((req, res) => {
   const guideVideoMatch = requestUrl(req).pathname.match(/^\/api\/sensi\/guide-videos\/lesson-(\d+)$/);
   if (guideVideoMatch) return serveSensiGuideVideo(req, res, Number(guideVideoMatch[1]));
   if (req.url.startsWith('/api/admin/feedback')) return handleAdminFeedback(req, res);
+  if (req.url.startsWith('/api/craftom/exit-ticket')) return handleCraftomExitTicket(req, res);
   if (req.url.startsWith('/api/feedback')) return handleFeedback(req, res);
   if (req.url.startsWith('/api/summer/')) return handleSummerAuth(req, res);
   if (req.url.startsWith('/api/progress')) return handleStudentProgress(req, res);

@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260904-self-study-2">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260904-self-study-3">
   <link rel="stylesheet" href="css/platform-home-link.css">
   <style>
     .lesson-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
@@ -76,7 +76,22 @@
       <h2>כרטיס יציאה</h2>
       <p><strong>העלאת תמונה:</strong> <span id="exitUploadInline"></span></p>
       <p id="exitTicket"></p>
-      <div class="worksheet-lines"><div class="line"></div></div>
+      <form class="exit-ticket-form" id="exitTicketForm">
+        <label>
+          <span>שם / צוות</span>
+          <input id="exitStudentName" name="studentName" autocomplete="name" placeholder="כתבו שם או שם צוות">
+        </label>
+        <label>
+          <span>תשובה לכרטיס היציאה</span>
+          <textarea id="exitAnswer" name="answer" required rows="4" placeholder="כתבו כאן את התשובה הקצרה שלכם"></textarea>
+        </label>
+        <label>
+          <span>תמונה של מה שבניתם במיינקראפט</span>
+          <input id="exitPhoto" name="photo" type="file" accept="image/png,image/jpeg,image/webp" required>
+        </label>
+        <button class="btn" id="exitSubmit" type="submit">הגשת כרטיס יציאה</button>
+        <p class="submit-status" id="exitSubmitStatus" role="status" aria-live="polite"></p>
+      </form>
     </section>
 
     <div class="actions">
@@ -86,7 +101,7 @@
     </div>
   </main>
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="js/craftom-minecraft-challenges.js?v=20260904-self-study-2"></script>
-  <script src="js/craftom-minecraft-lesson-page.js?v=20260904-self-study-2"></script>
+  <script src="js/craftom-minecraft-challenges.js?v=20260904-self-study-3"></script>
+  <script src="js/craftom-minecraft-lesson-page.js?v=20260904-self-study-3"></script>
 </body>
 </html>
