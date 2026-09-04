@@ -19,6 +19,157 @@
     });
   }
 
+  const makeCodeSnippets = {
+    1: `player.onChat("deliver", function () {
+    agent.teleportToPlayer()
+    agent.move(FORWARD, 5)
+})`,
+    2: `player.onChat("deliver", function () {
+    agent.teleportToPlayer()
+    agent.move(FORWARD, 4)
+    agent.turn(LEFT_TURN)
+    agent.move(FORWARD, 3)
+})`,
+    3: `player.onChat("deliver", function () {
+    agent.teleportToPlayer()
+    agent.setItem(DIRT, 1, 1)
+    agent.move(FORWARD, 5)
+    agent.place(DOWN)
+    player.say("המשלוח הגיע")
+})`,
+    4: `player.onChat("deliver", function () {
+    agent.teleportToPlayer()
+    agent.setItem(DIRT, 1, 1)
+    agent.move(FORWARD, 4)
+    agent.turn(LEFT_TURN)
+    agent.move(FORWARD, 3)
+    agent.place(DOWN)
+})`,
+    5: `player.onChat("deliver", function () {
+    agent.teleportToPlayer()
+    agent.move(FORWARD, 5)
+    agent.place(DOWN)
+    player.say("משלוח אחד הסתיים")
+})`,
+    6: `player.onChat("cycle", function () {
+    agent.teleportToPlayer()
+    agent.move(FORWARD, 5)
+    agent.place(DOWN)
+    agent.turn(LEFT_TURN)
+    agent.turn(LEFT_TURN)
+    agent.move(FORWARD, 5)
+})`,
+    7: `let running = false
+
+player.onChat("start", function () {
+    running = true
+})
+
+player.onChat("stop", function () {
+    running = false
+})
+
+loops.forever(function () {
+    if (running) {
+        agent.move(FORWARD, 5)
+        agent.place(DOWN)
+        agent.turn(LEFT_TURN)
+        agent.turn(LEFT_TURN)
+        agent.move(FORWARD, 5)
+    }
+    loops.pause(500)
+})`,
+    8: `let running = false
+
+player.onChat("start", function () {
+    running = true
+})
+
+player.onChat("stop", function () {
+    running = false
+})
+
+loops.forever(function () {
+    if (running) {
+        agent.move(FORWARD, 6)
+        agent.place(DOWN)
+        agent.turn(LEFT_TURN)
+        agent.move(FORWARD, 2)
+        agent.turn(LEFT_TURN)
+        agent.move(FORWARD, 6)
+    }
+    loops.pause(500)
+})`,
+    9: `let routeOpen = true
+
+player.onChat("open", function () {
+    routeOpen = true
+    player.say("הדרך פתוחה")
+})
+
+player.onChat("close", function () {
+    routeOpen = false
+    player.say("הדרך חסומה")
+})`,
+    10: `let routeOpen = true
+
+player.onChat("start", function () {
+    if (routeOpen) {
+        agent.move(FORWARD, 5)
+        player.say("ממשיכים במסלול")
+    } else {
+        player.say("ממתינים לפתיחת הדרך")
+    }
+})`,
+    11: `let routeOpen = false
+
+player.onChat("test", function () {
+    if (routeOpen) {
+        agent.move(FORWARD, 5)
+    } else {
+        player.say("הדרך חסומה - מחכים")
+        loops.pause(1000)
+    }
+})`,
+    12: `let stationFull = false
+
+player.onChat("test", function () {
+    if (stationFull) {
+        player.say("התחנה מלאה - עוברים לתחנה אחרת")
+    } else {
+        agent.move(FORWARD, 5)
+        agent.place(DOWN)
+        player.say("החבילה נמסרה")
+    }
+})`,
+    13: `player.onChat("plan", function () {
+    player.say("מערכת 1: קו משלוחים")
+    player.say("מערכת 2: שער או תחנת איסוף")
+})`,
+    14: `player.onChat("start", function () {
+    agent.teleportToPlayer()
+    agent.move(FORWARD, 4)
+    agent.place(DOWN)
+    player.say("אוטומציה חדשה הופעלה")
+})`,
+    15: `player.onChat("test", function () {
+    player.say("בודקים אוטומציה חדשה")
+    agent.move(FORWARD, 4)
+    player.say("בודקים מערכת קיימת")
+    agent.turn(LEFT_TURN)
+    agent.move(FORWARD, 2)
+})`,
+    16: `player.onChat("demo", function () {
+    player.say("דמו עיר חכמה מתחיל")
+    agent.move(FORWARD, 4)
+    agent.place(DOWN)
+    player.say("מערכת משלוחים עובדת")
+    agent.turn(LEFT_TURN)
+    agent.move(FORWARD, 3)
+    player.say("אוטומציה נוספת עובדת")
+})`
+  };
+
   if (!document.getElementById('lessonNav')) {
     document.body.innerHTML = `
       <main class="shell">
@@ -50,6 +201,22 @@
           <article class="detail-box"><h2>קוד / MakeCode</h2><ul id="code"></ul></article>
           <article class="detail-box"><h2>ראיות Craftom</h2><ul id="evidence"></ul></article>
           <article class="detail-box"><h2>מה מעלים בסוף</h2><p id="exitUpload"></p></article>
+        </section>
+        <section class="card makecode-workspace" style="margin-top:16px">
+          <div>
+            <span class="tag">MakeCode</span>
+            <h2>קוד התחלתי לשיעור</h2>
+            <p>העתיקו את הקוד ל-Code Builder בתוך Minecraft Education, הריצו, ואז שנו מספר או פעולה אחת לפי המשימה.</p>
+          </div>
+          <pre id="makeCodeSnippet" class="makecode-code" dir="ltr"></pre>
+          <div class="actions">
+            <button class="btn" id="copyMakeCode" type="button">העתקת קוד</button>
+            <a class="btn secondary" href="https://minecraft.makecode.com/" target="_blank" rel="noopener">פתיחת MakeCode</a>
+          </div>
+          <details class="makecode-embed">
+            <summary>פתיחת MakeCode בתוך העמוד</summary>
+            <iframe title="Microsoft MakeCode for Minecraft" src="https://minecraft.makecode.com/" loading="lazy"></iframe>
+          </details>
         </section>
         <section class="card" style="margin-top:16px">
           <h2>מצגת מדריך</h2>
@@ -114,6 +281,7 @@
   document.getElementById('build').innerHTML = list(lesson.detail.build);
   document.getElementById('code').innerHTML = list(lesson.detail.code);
   document.getElementById('evidence').innerHTML = list(lesson.detail.evidence);
+  document.getElementById('makeCodeSnippet').textContent = makeCodeSnippets[lesson.id] || makeCodeSnippets[1];
   document.getElementById('exitUpload').textContent = program.exitUpload;
   document.getElementById('exitUploadInline').textContent = program.exitUpload;
   document.getElementById('exitTicket').textContent = lesson.detail.exit;
@@ -142,6 +310,20 @@
         <small>${esc(item.deliverable)}</small>
       </a>
     `).join('');
+
+  const copyMakeCodeButton = document.getElementById('copyMakeCode');
+  copyMakeCodeButton.addEventListener('click', async () => {
+    const originalText = copyMakeCodeButton.textContent;
+    try {
+      await navigator.clipboard.writeText(document.getElementById('makeCodeSnippet').textContent || '');
+      copyMakeCodeButton.textContent = 'הקוד הועתק';
+    } catch (error) {
+      copyMakeCodeButton.textContent = 'בחרו והעתיקו ידנית';
+    }
+    setTimeout(() => {
+      copyMakeCodeButton.textContent = originalText;
+    }, 1700);
+  });
 
   const form = document.getElementById('exitTicketForm');
   const status = document.getElementById('exitSubmitStatus');

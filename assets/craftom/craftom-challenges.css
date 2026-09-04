@@ -258,6 +258,47 @@ h2 {
   opacity: .72;
 }
 
+.makecode-workspace {
+  display: grid;
+  gap: 14px;
+}
+
+.makecode-code {
+  margin: 0;
+  overflow: auto;
+  border: 1px solid #c7daec;
+  border-radius: 14px;
+  background: #0f172a;
+  color: #dbeafe;
+  padding: 16px;
+  text-align: left;
+  white-space: pre;
+  font: 700 .95rem/1.55 "Courier New", Consolas, monospace;
+}
+
+.makecode-embed {
+  border: 1px solid #dbeafe;
+  border-radius: 14px;
+  background: #f8fbff;
+  padding: 12px;
+}
+
+.makecode-embed summary {
+  cursor: pointer;
+  color: var(--blue-dark);
+  font-weight: 900;
+}
+
+.makecode-embed iframe {
+  display: block;
+  width: 100%;
+  min-height: 560px;
+  margin-top: 12px;
+  border: 1px solid #c7daec;
+  border-radius: 12px;
+  background: #fff;
+}
+
 .submit-status {
   min-height: 1.4em;
   margin: 0;
