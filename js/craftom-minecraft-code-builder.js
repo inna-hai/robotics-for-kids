@@ -286,7 +286,7 @@
       lines.push(blockCode(current, mode, level));
       current = current.getNextBlock();
     }
-    return lines.filter(Boolean).join('\\n');
+    return lines.filter(Boolean).join('\n');
   }
 
   function statementCode(block, mode, level) {
@@ -301,20 +301,20 @@
       const command = block.getFieldValue('COMMAND') || 'run';
       if (py) {
         const name = commandName(command);
-        return `${i}def on_chat_${name}():\\n${statementCode(block.getInputTargetBlock('DO'), mode, level)}\\n${i}player.on_chat("${command}", on_chat_${name})`;
+        return `${i}def on_chat_${name}():\n${statementCode(block.getInputTargetBlock('DO'), mode, level)}\n${i}player.on_chat("${command}", on_chat_${name})`;
       }
-      return `${i}player.onChat("${command}", function () {\\n${statementCode(block.getInputTargetBlock('DO'), mode, level)}\\n${i}})`;
+      return `${i}player.onChat("${command}", function () {\n${statementCode(block.getInputTargetBlock('DO'), mode, level)}\n${i}})`;
     }
     if (block.type === 'mc_forever') {
-      if (py) return `${i}def on_forever():\\n${statementCode(block.getInputTargetBlock('DO'), mode, level)}\\n${i}loops.forever(on_forever)`;
-      return `${i}loops.forever(function () {\\n${statementCode(block.getInputTargetBlock('DO'), mode, level)}\\n${i}})`;
+      if (py) return `${i}def on_forever():\n${statementCode(block.getInputTargetBlock('DO'), mode, level)}\n${i}loops.forever(on_forever)`;
+      return `${i}loops.forever(function () {\n${statementCode(block.getInputTargetBlock('DO'), mode, level)}\n${i}})`;
     }
     if (block.type === 'mc_if_var') {
       const variable = block.getFieldValue('VAR');
       if (py) {
-        return `${i}if ${variable}:\\n${statementCode(block.getInputTargetBlock('DO'), mode, level)}\\n${i}else:\\n${statementCode(block.getInputTargetBlock('ELSE'), mode, level)}`;
+        return `${i}if ${variable}:\n${statementCode(block.getInputTargetBlock('DO'), mode, level)}\n${i}else:\n${statementCode(block.getInputTargetBlock('ELSE'), mode, level)}`;
       }
-      return `${i}if (${variable}) {\\n${statementCode(block.getInputTargetBlock('DO'), mode, level)}\\n${i}} else {\\n${statementCode(block.getInputTargetBlock('ELSE'), mode, level)}\\n${i}}`;
+      return `${i}if (${variable}) {\n${statementCode(block.getInputTargetBlock('DO'), mode, level)}\n${i}} else {\n${statementCode(block.getInputTargetBlock('ELSE'), mode, level)}\n${i}}`;
     }
     if (block.type === 'mc_set_boolean') {
       const value = block.getFieldValue('VALUE');
@@ -335,7 +335,7 @@
     if (tops.some(block => block.getDescendants(false).some(item => ['mc_set_boolean', 'mc_if_var'].includes(item.type) && item.getFieldValue('VAR') === 'running'))) variables.push(mode === 'python' ? 'running = False' : 'let running = false');
     if (tops.some(block => block.getDescendants(false).some(item => ['mc_set_boolean', 'mc_if_var'].includes(item.type) && item.getFieldValue('VAR') === 'routeOpen'))) variables.push(mode === 'python' ? 'routeOpen = True' : 'let routeOpen = true');
     if (tops.some(block => block.getDescendants(false).some(item => ['mc_set_boolean', 'mc_if_var'].includes(item.type) && item.getFieldValue('VAR') === 'stationFull'))) variables.push(mode === 'python' ? 'stationFull = False' : 'let stationFull = false');
-    return [...variables, ...tops.map(block => chainCode(block, mode, 0))].filter(Boolean).join('\\n\\n');
+    return [...variables, ...tops.map(block => chainCode(block, mode, 0))].filter(Boolean).join('\n\n');
   }
 
   function updateCode() {

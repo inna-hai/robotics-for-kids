@@ -74,7 +74,7 @@ assert.ok(preview.includes('programVideo'), 'preview page renders the program vi
 assert.ok(preview.includes('סרטון פתיחת התוכנית'), 'preview page labels the overview video');
 assert.ok(preview.includes('program.overviewVideo'), 'preview page loads video from program data');
 assert.ok(preview.includes('איך עובדים בלומדה'), 'preview explains the self-study mode before teacher materials');
-assert.ok(preview.includes('20260904-codebuilder-3'), 'preview page cache-busts the updated challenge data');
+assert.ok(preview.includes('20260904-codebuilder-4'), 'preview page cache-busts the updated challenge data');
 
 for (const path of [
   'craftom-minecraft-challenge.html',
@@ -82,7 +82,7 @@ for (const path of [
   'craftom-minecraft-slides.html',
   'craftom-minecraft-lesson.html',
 ]) {
-  assert.ok(read(path).includes('20260904-codebuilder-3'), `${path} loads the updated challenge data`);
+  assert.ok(read(path).includes('20260904-codebuilder-4'), `${path} loads the updated challenge data`);
 }
 
 assert.ok(read('craftom-minecraft-challenge.html').includes('רצף עבודה עצמית'), 'challenge page frames the work as self-study');
@@ -108,6 +108,8 @@ assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('copyMakeCode'), 
 assert.ok(read('js/craftom-minecraft-code-builder.js').includes('Blockly.inject'), 'Craftom Code Builder creates a real Blockly workspace');
 assert.ok(read('js/craftom-minecraft-code-builder.js').includes('data-craftom-code-mode'), 'Craftom Code Builder supports code mode switching');
 assert.ok(read('js/craftom-minecraft-code-builder.js').includes('player.on_chat'), 'Craftom Code Builder can generate Python-style code');
+assert.ok(!read('js/craftom-minecraft-code-builder.js').includes("join('\\\\n"), 'Craftom Code Builder uses real newlines between generated code lines');
+assert.ok(!read('js/craftom-minecraft-code-builder.js').includes('():\\\\n'), 'Python generated code uses real line breaks after function definitions');
 assert.ok(read('js/craftom-minecraft-code-builder.js').includes('message0: \'on chat command %1\''), 'Craftom blocks use MakeCode-style English command labels');
 assert.ok(read('js/craftom-minecraft-code-builder.js').includes('message0: \'agent move %1 by %2\''), 'Agent movement block label is English like MakeCode');
 assert.ok(read('js/craftom-minecraft-code-builder.js').includes('category name="Loops & Logic"'), 'Blockly toolbox categories are English');
