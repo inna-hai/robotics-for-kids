@@ -1047,6 +1047,28 @@ function eventMessage(row) {
   return String(payload.message || payload.text || row.message || '');
 }
 
+function eventCompoundId(row) {
+  const payload = parseEventPayload(row);
+  const value = payload.compound_id ?? payload.compoundId ?? row.compound_id;
+  const id = Number(value);
+  if (Number.isFinite(id)) return id;
+  const pos = payload.player_position || payload.position || {};
+  return kugelCompoundIdFromPosition(pos.x ?? row.position_x ?? row.block_x, pos.z ?? row.position_z ?? row.block_z);
+}
+
+function kugelCompoundIdFromPosition(xValue, zValue) {
+  const x = Number(xValue);
+  const z = Number(zValue);
+  if (!Number.isFinite(x) || !Number.isFinite(z)) return null;
+  const col = Math.round((x + 315) / 70) + 1;
+  const row = Math.round((z + 140) / 70) + 1;
+  if (col < 1 || col > 10 || row < 1 || row > 5) return null;
+  const centerX = -315 + (col - 1) * 70;
+  const centerZ = -140 + (row - 1) * 70;
+  if (Math.abs(x - centerX) > 30 || Math.abs(z - centerZ) > 30) return null;
+  return (row - 1) * 10 + col;
+}
+
 function isSystemKugelParticipant(name) {
   const key = normalizeMinecraftName(name);
   if (!key || key === 'server' || key === 'npc' || key === 'clawtest') return true;
@@ -1327,12 +1349,30 @@ async function kugelSessionView() {
   };
 }
 
+async function kugelStudentForCompound(compoundId) {
+  const id = Number(compoundId);
+  if (!Number.isFinite(id)) return null;
+  const session = readKugelSession();
+  const events = await fetchKugelGameEvents(session);
+  const matching = events
+    .filter(row => eventCompoundId(row) === id)
+    .filter(row => !isSystemKugelParticipant(row.player_name))
+    .sort((a, b) => (eventCreatedAtMs(b) || 0) - (eventCreatedAtMs(a) || 0));
+  const name = matching[0]?.player_name ? canonicalKugelStudentName(matching[0].player_name) : '';
+  return name || null;
+}
+
 async function handleKugelApi(req, res) {
   const url = requestUrl(req);
   const pathname = url.pathname;
   try {
     if (req.method === 'GET' && pathname === '/api/kugel/session') {
       return jsonResponse(res, 200, await kugelSessionView());
+    }
+    const compoundStudentMatch = pathname.match(/^\/api\/kugel\/compounds\/(\d+)\/student$/);
+    if (req.method === 'GET' && compoundStudentMatch) {
+      const student = await kugelStudentForCompound(compoundStudentMatch[1]);
+      return jsonResponse(res, 200, { ok: true, compoundId: Number(compoundStudentMatch[1]), student });
     }
     const launchMatch = pathname.match(/^\/api\/kugel\/lessons\/(\d+)\/launch$/);
     if (req.method === 'POST' && launchMatch) {

@@ -74,6 +74,7 @@
   const storageKey = 'kugel-lomda-interface-state-v1';
   let liveSession = null;
   const studentMessageDrafts = new Map();
+  const pageParams = new URLSearchParams(window.location.search);
 
   async function api(path, options = {}) {
     const response = await fetch(path, {
@@ -148,6 +149,25 @@
     return qs('[name="studentName"]')?.value?.trim() || 'AmiM';
   }
 
+  async function applyStudentDeepLink() {
+    const nameInput = qs('[name="studentName"]');
+    if (!nameInput) return;
+    let studentName = pageParams.get('student') || pageParams.get('player') || pageParams.get('minecraft');
+    const compoundId = pageParams.get('compound') || pageParams.get('c');
+    if (!studentName && compoundId) {
+      try {
+        const data = await api(`/api/kugel/compounds/${encodeURIComponent(compoundId)}/student`);
+        studentName = data.student || '';
+      } catch {
+        studentName = '';
+      }
+    }
+    if (studentName && !isSystemParticipant(studentName)) {
+      nameInput.value = studentName;
+      setState({ activeLessonId: 0 });
+    }
+  }
+
   function currentStudents() {
     const students = liveSession?.students?.length ? liveSession.students : roster;
     return students.filter(student => !isSystemParticipant(student.name));
@@ -175,6 +195,7 @@
     if (!list) return;
 
     await refreshLiveSession();
+    await applyStudentDeepLink();
     let activeLessonId = Number(getState().activeLessonId ?? 0);
 
     function renderLesson(lessonId) {
@@ -336,6 +357,9 @@
 
     renderList();
     renderLesson(activeLessonId);
+    if (pageParams.get('compound') || pageParams.get('c') || pageParams.get('student') || pageParams.get('player') || pageParams.get('minecraft')) {
+      qs('#studentExitForm')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   async function renderTeacher() {
