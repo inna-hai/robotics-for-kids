@@ -480,6 +480,7 @@
         button.addEventListener('click', () => {
           selectedStudent = button.dataset.report;
           renderReport();
+          scrollToStudentReport(selectedStudent);
         });
       });
       qs('#studentMonitor').querySelectorAll('[data-message-for]').forEach(input => {
@@ -532,7 +533,7 @@
             const exitTicket = student.exitTicket || null;
             const ticketTime = exitTicket?.createdAt ? new Date(exitTicket.createdAt).toLocaleString('he-IL', { dateStyle: 'short', timeStyle: 'short' }) : '';
             return `
-              <article class="report-card ${student.name === selectedStudent ? 'is-selected' : ''}">
+              <article class="report-card ${student.name === selectedStudent ? 'is-selected' : ''}" data-report-card="${esc(student.name)}" tabindex="-1">
                 <strong>${esc(student.name)} • שיעור ${activeLessonId}</strong>
                 <p>הדוח נבנה מנתוני session ומאירועים שמגיעים מ-Minecraft Monitor.</p>
                 <div class="report-grid">
@@ -556,6 +557,16 @@
           }).join('')}
         </div>
       `;
+    }
+
+    function scrollToStudentReport(studentName) {
+      requestAnimationFrame(() => {
+        const selector = `[data-report-card="${CSS.escape(studentName)}"]`;
+        const card = qs(selector);
+        if (!card) return;
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        card.focus({ preventScroll: true });
+      });
     }
 
     qs('#teacherLaunchForm').addEventListener('submit', event => {
