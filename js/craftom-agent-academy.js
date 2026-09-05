@@ -307,49 +307,149 @@
     return criteria.map(([label, pass]) => ({ label, pass: Boolean(pass) }));
   }
 
-  function drawWorld(state = defaultState()) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#eaf7ef';
+  function drawBlock(x, y, w, h, topColor, sideColor, depth = 9, stroke = 'rgba(15, 23, 42, .22)') {
+    ctx.fillStyle = sideColor;
+    ctx.fillRect(x, y + depth, w, h);
+    ctx.fillStyle = topColor;
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x, y, w, h);
+    ctx.beginPath();
+    ctx.moveTo(x, y + h);
+    ctx.lineTo(x, y + h + depth);
+    ctx.lineTo(x + w, y + h + depth);
+    ctx.lineTo(x + w, y + h);
+    ctx.stroke();
+  }
+
+  function drawPixelGrass() {
+    ctx.fillStyle = '#5f9f3b';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.strokeStyle = '#d6e8dc';
+    for (let x = -10; x < canvas.width; x += cell) {
+      for (let y = -8; y < canvas.height; y += cell) {
+        const alt = ((x / cell) + (y / cell)) % 2 === 0;
+        ctx.fillStyle = alt ? '#69ad43' : '#579438';
+        ctx.fillRect(x, y, cell, cell);
+        ctx.strokeStyle = 'rgba(29, 78, 41, .25)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(x, y, cell, cell);
+      }
+    }
+
+    [
+      { x: 492, y: 35, w: 88, h: 132 },
+      { x: 18, y: 310, w: 132, h: 58 },
+    ].forEach(water => {
+      drawBlock(water.x, water.y, water.w, water.h, '#1d8fd1', '#12669d', 7, 'rgba(12, 74, 110, .42)');
+      ctx.fillStyle = 'rgba(191, 219, 254, .42)';
+      for (let i = 0; i < water.w; i += 24) ctx.fillRect(water.x + i + 6, water.y + 18, 13, 4);
+    });
+  }
+
+  function drawCobbleTile(x, y, w = 40, h = 32) {
+    drawBlock(x - w / 2, y - h / 2, w, h, '#a8b0b6', '#717b85', 8, '#48515a');
+    ctx.strokeStyle = 'rgba(55, 65, 81, .35)';
     ctx.lineWidth = 1;
-    for (let x = 20; x < canvas.width; x += cell) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, canvas.height);
-      ctx.stroke();
-    }
-    for (let y = 20; y < canvas.height; y += cell) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(canvas.width, y);
-      ctx.stroke();
-    }
-
-    ctx.fillStyle = '#c7d2fe';
-    ctx.fillRect(start.x - 44, start.y - 44, 88, 88);
-    ctx.fillStyle = '#1e3a8a';
-    ctx.font = '800 16px Rubik, Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('מחסן', start.x, start.y + 6);
-
-    ctx.fillStyle = '#bbf7d0';
-    ctx.fillRect(station.x - 48, station.y - 44, 96, 88);
-    ctx.fillStyle = '#166534';
-    ctx.fillText('תחנה', station.x, station.y + 6);
-
-    ctx.strokeStyle = '#94a3b8';
-    ctx.lineWidth = 12;
-    ctx.setLineDash([8, 12]);
     ctx.beginPath();
-    ctx.moveTo(start.x + 52, start.y);
-    ctx.lineTo(station.x - 56, station.y);
+    ctx.moveTo(x - w / 2 + 12, y - h / 2);
+    ctx.lineTo(x - w / 2 + 12, y + h / 2);
+    ctx.moveTo(x + 4, y - h / 2);
+    ctx.lineTo(x + 4, y + h / 2);
+    ctx.moveTo(x - w / 2, y - 1);
+    ctx.lineTo(x + w / 2, y - 1);
     ctx.stroke();
-    ctx.setLineDash([]);
+  }
 
-    ctx.strokeStyle = '#2563eb';
-    ctx.lineWidth = 7;
+  function drawWoodCrate(x, y, w = 86, h = 68) {
+    drawBlock(x - w / 2, y - h / 2, w, h, '#b8792b', '#7c4a18', 12, '#5f3712');
+    ctx.strokeStyle = 'rgba(95, 55, 18, .75)';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(x - w / 2 + 14, y - h / 2);
+    ctx.lineTo(x - w / 2 + 14, y + h / 2);
+    ctx.moveTo(x + w / 2 - 14, y - h / 2);
+    ctx.lineTo(x + w / 2 - 14, y + h / 2);
+    ctx.moveTo(x - w / 2, y - h / 2 + 20);
+    ctx.lineTo(x + w / 2, y - h / 2 + 20);
+    ctx.stroke();
+  }
+
+  function drawStationBlock(x, y) {
+    drawBlock(x - 50, y - 42, 100, 78, '#ded6c0', '#9b8c6d', 13, '#66543a');
+    drawBlock(x - 38, y - 56, 76, 20, '#7c2d12', '#451a03', 8, '#451a03');
+    ctx.fillStyle = '#362617';
+    ctx.fillRect(x - 10, y + 6, 20, 30);
+    ctx.fillStyle = '#60a5fa';
+    ctx.fillRect(x - 35, y - 19, 18, 16);
+    ctx.fillRect(x + 18, y - 19, 18, 16);
+    ctx.fillStyle = '#fef3c7';
+    ctx.strokeStyle = '#5f3712';
+    ctx.lineWidth = 2;
+    ctx.roundRect(x - 32, y - 72, 64, 23, 5);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#422006';
+    ctx.font = '900 14px Rubik, Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('תחנה', x, y - 56);
+  }
+
+  function drawAgent(state) {
+    ctx.save();
+    ctx.translate(state.x, state.y);
+    ctx.rotate((state.heading * Math.PI) / 180);
+    ctx.fillStyle = 'rgba(15, 23, 42, .32)';
+    ctx.fillRect(-27, 25, 58, 11);
+    drawBlock(-20, -14, 40, 36, '#0f9f8f', '#09685e', 7, '#053f39');
+    drawBlock(-15, -38, 30, 24, '#18c7b8', '#0f766e', 6, '#053f39');
+    ctx.fillStyle = '#d9fff3';
+    ctx.fillRect(-9, -31, 7, 7);
+    ctx.fillRect(4, -31, 7, 7);
+    ctx.fillStyle = '#052e2b';
+    ctx.fillRect(-7, -29, 3, 3);
+    ctx.fillRect(6, -29, 3, 3);
+    drawBlock(19, -6, 15, 13, '#fbbf24', '#b45309', 5, '#78350f');
+    ctx.fillStyle = '#34d399';
+    ctx.strokeStyle = '#065f46';
+    ctx.lineWidth = 2;
+    ctx.fillRect(-15, 22, 9, 14);
+    ctx.fillRect(6, 22, 9, 14);
+    ctx.strokeRect(-15, 22, 9, 14);
+    ctx.strokeRect(6, 22, 9, 14);
+    ctx.restore();
+  }
+
+  function drawWorld(state = defaultState()) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawPixelGrass();
+
+    ctx.fillStyle = 'rgba(15, 23, 42, .22)';
+    ctx.fillRect(34, 32, canvas.width - 68, canvas.height - 64);
+    ctx.strokeStyle = 'rgba(219, 234, 254, .32)';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(34, 32, canvas.width - 68, canvas.height - 64);
+
+    for (let step = 1; step <= 4; step += 1) drawCobbleTile(start.x + step * cell, start.y, 34, 28);
+    drawCobbleTile(station.x - 28, station.y, 34, 28);
+
+    drawWoodCrate(start.x, start.y + 4, 92, 74);
+    ctx.fillStyle = '#fff7ed';
+    ctx.strokeStyle = '#5f3712';
+    ctx.lineWidth = 2;
+    ctx.roundRect(start.x - 34, start.y - 66, 68, 24, 5);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#422006';
+    ctx.font = '900 14px Rubik, Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('מחסן', start.x, start.y - 49);
+
+    drawStationBlock(station.x, station.y);
+
+    ctx.strokeStyle = '#facc15';
+    ctx.lineWidth = 6;
     ctx.lineCap = 'round';
     state.path.forEach(segment => {
       ctx.beginPath();
@@ -359,51 +459,30 @@
     });
 
     state.packages.forEach(pkg => {
-      ctx.fillStyle = '#f59e0b';
-      ctx.fillRect(pkg.x - 12, pkg.y - 12, 24, 24);
-      ctx.strokeStyle = '#92400e';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(pkg.x - 12, pkg.y - 12, 24, 24);
+      drawBlock(pkg.x - 14, pkg.y - 18, 28, 26, '#f59e0b', '#92400e', 7, '#78350f');
+      ctx.strokeStyle = '#78350f';
+      ctx.beginPath();
+      ctx.moveTo(pkg.x, pkg.y - 18);
+      ctx.lineTo(pkg.x, pkg.y + 8);
+      ctx.moveTo(pkg.x - 14, pkg.y - 5);
+      ctx.lineTo(pkg.x + 14, pkg.y - 5);
+      ctx.stroke();
     });
 
-    ctx.save();
-    ctx.translate(state.x, state.y);
-    ctx.rotate((state.heading * Math.PI) / 180);
-    ctx.fillStyle = 'rgba(15, 23, 42, .18)';
-    ctx.beginPath();
-    ctx.ellipse(0, 21, 28, 8, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#0f766e';
-    ctx.strokeStyle = '#064e3b';
-    ctx.lineWidth = 2;
-    ctx.fillRect(-19, -15, 38, 32);
-    ctx.strokeRect(-19, -15, 38, 32);
-    ctx.fillStyle = '#14b8a6';
-    ctx.fillRect(-14, -28, 28, 18);
-    ctx.strokeRect(-14, -28, 28, 18);
-    ctx.fillStyle = '#d1fae5';
-    ctx.fillRect(-8, -23, 5, 5);
-    ctx.fillRect(4, -23, 5, 5);
-    ctx.fillStyle = '#f59e0b';
-    ctx.fillRect(18, -5, 12, 10);
-    ctx.strokeRect(18, -5, 12, 10);
-    ctx.fillStyle = '#34d399';
-    ctx.fillRect(-13, 17, 8, 11);
-    ctx.fillRect(5, 17, 8, 11);
-    ctx.restore();
+    drawAgent(state);
 
     if (state.says.length) {
       const text = state.says[state.says.length - 1];
-      ctx.fillStyle = 'rgba(255,255,255,.96)';
-      ctx.strokeStyle = '#bfdbfe';
+      ctx.fillStyle = 'rgba(15, 23, 42, .92)';
+      ctx.strokeStyle = '#facc15';
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.roundRect(255, 44, 250, 48, 10);
+      ctx.roundRect(244, 35, 280, 52, 6);
       ctx.fill();
       ctx.stroke();
-      ctx.fillStyle = '#1d4ed8';
+      ctx.fillStyle = '#f8fafc';
       ctx.font = '800 15px Rubik, Arial';
-      ctx.fillText(text, 380, 74);
+      ctx.fillText(text, 384, 67);
     }
   }
 
