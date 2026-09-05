@@ -203,10 +203,11 @@ player.onChat("test", function () {
           <article class="detail-box"><h2>מה מעלים בסוף</h2><p id="exitUpload"></p></article>
         </section>
         <section class="card agent-academy-cta" id="agentAcademyCta" style="margin-top:16px" hidden>
-          <span class="tag">חובה בשיעור הזה</span>
-          <h2>עובדים באקדמיית Agents</h2>
-          <p>את תרגול ה-MakeCode של השיעור עושים באקדמיה: שם בונים בבלוקים, עוברים לטאב Python, מריצים את ה-Agent על ההדמיה ומקבלים בדיקה אוטומטית.</p>
-          <a class="btn agent-academy-primary-link" id="agentAcademyLink" href="#">כניסה לאקדמיית Agents</a>
+          <span class="tag">חובה: קודם תרגול</span>
+          <h2>אקדמיית Agents לתרגול MakeCode</h2>
+          <p>כאן לא פותחים את ה-Code Builder הרגיל. קודם נכנסים לאקדמיה, בונים את הקוד בבלוקים, עוברים לטאב Python אם רוצים, מריצים את ה-Agent בהדמיה ומקבלים בדיקה אוטומטית.</p>
+          <p class="agent-academy-flow">אחרי שהתרגול עובר בדיקה, חוזרים לשיעור ומיישמים את אותו רעיון בתוך Minecraft Education.</p>
+          <a class="btn agent-academy-primary-link" id="agentAcademyLink" href="#">פתיחת אקדמיית Agents</a>
         </section>
         <section class="card makecode-workspace" id="makeCodeWorkspace" style="margin-top:16px">
           <div>
@@ -282,13 +283,22 @@ player.onChat("test", function () {
   document.getElementById('concept').textContent = lesson.concept;
   document.getElementById('command').textContent = lesson.command;
   document.getElementById('goal').textContent = lesson.detail.goal;
-  document.getElementById('selfStudy').innerHTML = list([
-    'צפו בסרטון של האתגר והבינו מה צריך לקרות בעיר.',
-    'בנו במיינקראפט את החלק הקטן של היום.',
-    'פתחו MakeCode וכתבו רק את הקוד שמפעיל את ה-Agent.',
-    'הריצו, בדקו מה קרה בעולם, תקנו דבר אחד והריצו שוב.',
-    'העלו צילום של מה שבניתם ומלאו את כרטיס היציאה במילים שלכם.'
-  ]);
+  const selfStudySteps = lesson.detail.academy
+    ? [
+        'צפו בסרטון והבינו מה צריך לקרות בעיר.',
+        'היכנסו לאקדמיית Agents ותרגלו שם את קוד ה-MakeCode בבלוקים.',
+        'הריצו את ה-Agent בהדמיה עד שהבדיקה באקדמיה עוברת.',
+        'חזרו לשיעור ויישמו את אותו רעיון בתוך Minecraft Education.',
+        'העלו צילום של מה שבניתם במיינקראפט ומלאו את כרטיס היציאה במילים שלכם.'
+      ]
+    : [
+        'צפו בסרטון של האתגר והבינו מה צריך לקרות בעיר.',
+        'בנו במיינקראפט את החלק הקטן של היום.',
+        'פתחו MakeCode וכתבו רק את הקוד שמפעיל את ה-Agent.',
+        'הריצו, בדקו מה קרה בעולם, תקנו דבר אחד והריצו שוב.',
+        'העלו צילום של מה שבניתם ומלאו את כרטיס היציאה במילים שלכם.'
+      ];
+  document.getElementById('selfStudy').innerHTML = list(selfStudySteps);
   document.getElementById('build').innerHTML = list(lesson.detail.build);
   document.getElementById('code').innerHTML = list(lesson.detail.code);
   document.getElementById('evidence').innerHTML = list(lesson.detail.evidence);

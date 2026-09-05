@@ -600,7 +600,9 @@
   function renderChecks(checks) {
     checksEl.innerHTML = checks.map(check => `<div class="${check.pass ? 'pass' : 'fail'}"><span>${check.pass ? '✓' : '·'}</span>${esc(check.label)}</div>`).join('');
     const passed = checks.length > 0 && checks.every(check => check.pass);
-    feedbackEl.textContent = passed ? 'התרגיל עבר. אפשר להמשיך לתרגיל הבא.' : 'עוד לא. הסתכלו על ההדמיה, תקנו בלוק אחד והריצו שוב.';
+    feedbackEl.textContent = passed
+      ? 'התרגיל עבר. המשיכו לתרגיל הבא; בסיום האקדמיה חוזרים לשיעור ומיישמים במיינקראפט.'
+      : 'עוד לא. הסתכלו על ההדמיה, תקנו בלוק אחד והריצו שוב.';
     feedbackEl.className = `academy-feedback ${passed ? 'pass' : 'fail'}`;
     progressEl.textContent = `תרגיל ${activeExercise + 1} מתוך ${academy.exercises.length}`;
   }
