@@ -1223,7 +1223,7 @@ function summarizeStudentFromEvents(studentName, rows, fallback = {}) {
   const fallbackFinishedAt = !resetAt || Date.parse(fallback.finishedAt || '') >= resetAt ? fallback.finishedAt : null;
   const fallbackStartedAtMs = Date.parse(fallbackStartedAt || '') || null;
   const fallbackFinishedAtMs = Date.parse(fallbackFinishedAt || '') || null;
-  const startedAt = eventCreatedAtMs(joinEvents[0] || ordered[0]) || fallbackStartedAtMs || null;
+  const startedAt = fallbackStartedAtMs || eventCreatedAtMs(joinEvents[0] || ordered[0]) || null;
   const fallbackCoins = fallbackFinishedAt ? Number(fallback.coins || 0) : 0;
   const coins = Math.min(8, Math.max(fallbackCoins, estimatedCoins.count, coinEvents.length, ...coinProgress));
   const lastCoinAt = eventCreatedAtMs(estimatedCoins.rows.at(-1) || coinEvents.at(-1));
