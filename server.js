@@ -1399,6 +1399,8 @@ async function handleKugelApi(req, res) {
     }
     const studentResetMatch = pathname.match(/^\/api\/kugel\/students\/([^/]+)\/reset$/);
     if (req.method === 'POST' && studentResetMatch) {
+      const raw = await readBody(req, 128 * 1024);
+      const body = raw ? JSON.parse(raw) : {};
       const rawName = cleanText(decodeURIComponent(studentResetMatch[1]), 80);
       if (isSystemKugelParticipant(rawName)) {
         const session = readKugelSession();
@@ -1409,9 +1411,12 @@ async function handleKugelApi(req, res) {
       const name = canonicalKugelStudentName(rawName);
       const session = readKugelSession();
       session.students = sanitizeKugelStudents(session.students);
+      const retryInGame = cleanText(body.source, 80) === 'kugel_maze_npc_retry';
+      const resetAt = nowIso();
       session.students[name] = {
-        resetAt: nowIso(),
-        connected: false,
+        resetAt,
+        startedAt: retryInGame ? resetAt : null,
+        connected: retryInGame,
         completed: false,
         coins: 0,
       };
