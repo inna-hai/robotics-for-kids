@@ -4,8 +4,8 @@
 
   const LESSON_WORLDS = {
     0: {
-      id: 'kugel-50-safe-compounds-v3-mazes-8-coins-npc-reset-v1-20260905',
-      name: 'Kugel 50 Safe Compounds v3 - Mazes, 8 Coins, NPC Reset',
+      id: 'kugel-50-safe-compounds-v3-mazes-8-coins-npc-reset-caged-inner-v1-20260905',
+      name: 'Kugel 50 Safe Compounds v3 - Mazes, 8 Coins, NPC Reset, Caged',
       mode: 'Adventure',
       mission: 'איסוף 8 מטבעות ולחיצה על כפתור סיום',
       report: 'זמן ביצוע, מטבעות שנאספו, לחיצה על סיום וסטטוס השלמה'

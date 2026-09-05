@@ -28,8 +28,8 @@ const KUGEL_MINECRAFT_SERVER_ID = process.env.KUGEL_MINECRAFT_SERVER_ID || '6ID5
 const KUGEL_MINECRAFT_ACCESS_CODE = process.env.KUGEL_MINECRAFT_ACCESS_CODE || 'Kugel2026';
 const KUGEL_LESSON_WORLD_CONFIG = {
   0: {
-    worldId: 'kugel-50-safe-compounds-v3-mazes-8-coins-npc-reset-v1-20260905',
-    worldName: 'Kugel 50 Safe Compounds v3 - Mazes, 8 Coins, NPC Reset',
+    worldId: 'kugel-50-safe-compounds-v3-mazes-8-coins-npc-reset-caged-inner-v1-20260905',
+    worldName: 'Kugel 50 Safe Compounds v3 - Mazes, 8 Coins, NPC Reset, Caged',
     mode: 'Adventure',
     mission: 'איסוף 8 מטבעות ולחיצה על כפתור סיום',
     startMode: 'reset',
