@@ -48,6 +48,18 @@
     const message = document.getElementById('student-login-message');
     const session = document.getElementById('student-session');
     const welcome = document.getElementById('student-welcome');
+    const studentLogout = document.getElementById('student-logout');
+
+    guest.addEventListener('click', async (event) => {
+      event.preventDefault();
+      setMessage(message, 'עוברים למצב אורח…');
+      try {
+        await api('/api/classroom/logout', {});
+        location.assign(next);
+      } catch (error) {
+        setMessage(message, error.message);
+      }
+    });
 
     function showStudent(data) {
       form.hidden = true;
@@ -67,6 +79,19 @@
         const data = await api('/api/classroom/student-login', formData(form));
         setMessage(message, '', true);
         showStudent(data);
+      } catch (error) {
+        setMessage(message, error.message);
+      }
+    });
+
+    studentLogout.addEventListener('click', async () => {
+      setMessage(message, 'מתנתקים…');
+      try {
+        await api('/api/classroom/logout', {});
+        session.hidden = true;
+        form.hidden = false;
+        form.reset();
+        setMessage(message, 'אפשר להיכנס עכשיו כתלמיד/ה אחר/ת.', true);
       } catch (error) {
         setMessage(message, error.message);
       }

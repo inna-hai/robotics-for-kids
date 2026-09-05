@@ -6,15 +6,24 @@
     if (/webcode/.test(pathname)) return 'webcode';
     if (/minecraft/.test(pathname)) return 'minecraft';
     if (/sensi-city|smart-city/.test(pathname)) return 'sensi-city';
-    if (/^(sisi|space|music|ocean|park|garden|factory|kitchen|cinema|detective|dino|art|mail|escape|finale)(-|\.|\/)/.test(pathname)) return 'sisi';
+    if (/^(sisi|space|music|ocean|park|garden|factory|kitchen|cinema|detective|dino|art|weather|mail|escape|finale)(-|\.|\/)/.test(pathname)) return 'sisi';
     return '';
   })();
 
   if (!courseId) return;
 
-  const params = new URLSearchParams(location.search);
-  const lessonId = String(params.get('lesson') || params.get('challenge') || 'course').slice(0, 80);
   let classroomStudent = null;
+
+  function currentLessonId() {
+    const params = new URLSearchParams(location.search);
+    const queryLesson = params.get('lesson') || params.get('challenge') || params.get('mission');
+    if (queryLesson) return String(queryLesson).slice(0, 80);
+    if (courseId === 'sisi') {
+      const basename = pathname.split('/').pop().replace(/\.html$/, '').replace(/-(play|lab)$/, '');
+      return basename === 'sisi' ? 'course' : basename.slice(0, 80);
+    }
+    return 'course';
+  }
 
   async function request(path, payload) {
     const response = await fetch(path, {
@@ -31,7 +40,7 @@
     if (!classroomStudent) return { ok: true, saved: false, role: 'guest' };
     const payload = {
       courseId,
-      lessonId: String(detail.lessonId || lessonId).slice(0, 80),
+      lessonId: String(detail.lessonId || currentLessonId()).slice(0, 80),
       activityId: String(detail.activityId || 'page-open').slice(0, 80),
       status: detail.status === 'completed' ? 'completed' : 'started',
       score: Number(detail.score || 0),
@@ -48,7 +57,7 @@
     document.body.append(badge);
   }
 
-  window.ClassroomProgress = { save, courseId, lessonId };
+  window.ClassroomProgress = { save, courseId, get lessonId() { return currentLessonId(); } };
   window.addEventListener('hai:classroom-progress', (event) => {
     save(event.detail || {}).catch(() => {});
   });

@@ -20,6 +20,7 @@ const SUBSCRIPTION_GATE_ENABLED = process.env.ROBOTICS_SUBSCRIPTION_GATE === '1'
 const CLASSROOM_COURSES = new Set(['sensi-city', 'sisi', 'python-turtle', 'webcode', 'minecraft', 'craftom-agent']);
 const CLASSROOM_LOGIN_WINDOW_MS = 10 * 60 * 1000;
 const CLASSROOM_LOGIN_MAX_FAILURES = 10;
+const CLASSROOM_LOGIN_MAX_KEYS = 1000;
 const classroomLoginFailures = new Map();
 const CLASSROOM_TEACHER_INVITE_CODE = String(process.env.ROBOTICS_TEACHER_INVITE_CODE || '');
 
@@ -1006,7 +1007,19 @@ function isClassroomLoginLimited(key) {
   return attempt.failures >= CLASSROOM_LOGIN_MAX_FAILURES;
 }
 
+function pruneClassroomLoginFailures() {
+  const now = Date.now();
+  for (const [key, attempt] of classroomLoginFailures) {
+    if (now - attempt.startedAt >= CLASSROOM_LOGIN_WINDOW_MS) classroomLoginFailures.delete(key);
+  }
+  while (classroomLoginFailures.size >= CLASSROOM_LOGIN_MAX_KEYS) {
+    const oldestKey = classroomLoginFailures.keys().next().value;
+    classroomLoginFailures.delete(oldestKey);
+  }
+}
+
 function recordClassroomLoginFailure(key) {
+  pruneClassroomLoginFailures();
   const attempt = classroomLoginFailures.get(key);
   if (!attempt || Date.now() - attempt.startedAt >= CLASSROOM_LOGIN_WINDOW_MS) {
     classroomLoginFailures.set(key, { failures: 1, startedAt: Date.now() });
@@ -1099,11 +1112,24 @@ function generateClassJoinCode(db) {
   throw new Error('class_code_generation_failed');
 }
 
-function generatePersonalLoginCode() {
+function personalLoginCodeExists(db, classroomId, code) {
+  return db.prepare('SELECT login_salt, login_hash FROM classroom_students WHERE classroom_id = ?')
+    .all(classroomId)
+    .some(student => {
+      const provided = Buffer.from(hashClassroomSecret(code, student.login_salt), 'hex');
+      const expected = Buffer.from(student.login_hash, 'hex');
+      return provided.length === expected.length && crypto.timingSafeEqual(provided, expected);
+    });
+}
+
+function generatePersonalLoginCode(db, classroomId) {
   const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let code = '';
-  for (let index = 0; index < 6; index += 1) code += alphabet[crypto.randomInt(0, alphabet.length)];
-  return code;
+  for (let attempt = 0; attempt < 30; attempt += 1) {
+    let code = '';
+    for (let index = 0; index < 6; index += 1) code += alphabet[crypto.randomInt(0, alphabet.length)];
+    if (!personalLoginCodeExists(db, classroomId, code)) return code;
+  }
+  throw new Error('student_code_generation_failed');
 }
 
 function classroomProgressPublic(row) {
@@ -1201,13 +1227,14 @@ async function handleClassroomApi(req, res) {
           WHERE student_id = ? AND course_id = ? AND lesson_id = ? AND activity_id = ?
         `).get(student.id, courseId, lessonId, activityId);
         if (existing) {
-          const completedAt = status === 'completed' ? (existing.completed_at || now) : existing.completed_at;
+          const effectiveStatus = existing.status === 'completed' ? 'completed' : status;
+          const completedAt = effectiveStatus === 'completed' ? (existing.completed_at || now) : null;
           db.prepare(`
             UPDATE classroom_progress
             SET status = ?, score = MAX(score, ?), attempts = attempts + 1,
                 metadata_json = ?, completed_at = ?, updated_at = ?
             WHERE id = ?
-          `).run(status, score, metadataJson, completedAt, now, existing.id);
+          `).run(effectiveStatus, score, metadataJson, completedAt, now, existing.id);
           return db.prepare('SELECT * FROM classroom_progress WHERE id = ?').get(existing.id);
         }
         const id = crypto.randomUUID();
@@ -1265,7 +1292,7 @@ async function handleClassroomApi(req, res) {
         const classroom = db.prepare('SELECT * FROM classrooms WHERE id = ? AND teacher_id = ?').get(segments[3], teacher.id);
         if (!classroom) return null;
         const now = new Date().toISOString();
-        const loginCode = generatePersonalLoginCode();
+        const loginCode = generatePersonalLoginCode(db, classroom.id);
         const salt = crypto.randomBytes(16).toString('hex');
         const student = {
           id: crypto.randomUUID(),
@@ -1818,7 +1845,7 @@ function classroomCourseForPath(pathname) {
   if (basename === 'webcode' || basename.startsWith('webcode-play')) return 'webcode';
   if (basename === 'minecraft' || basename.startsWith('minecraft-play')) return 'minecraft';
   if (basename === 'sensi-city') return 'sensi-city';
-  const sisiLessons = ['sisi', 'space', 'music', 'ocean', 'detective', 'kitchen', 'dino', 'art', 'factory', 'garden', 'park', 'mail', 'cinema', 'escape', 'finale'];
+  const sisiLessons = ['sisi', 'space', 'music', 'ocean', 'detective', 'kitchen', 'dino', 'art', 'weather', 'factory', 'garden', 'park', 'mail', 'cinema', 'escape', 'finale'];
   if (sisiLessons.some(name => basename === name || basename === `${name}-play` || basename === `${name}-lab`)) return 'sisi';
   return null;
 }
