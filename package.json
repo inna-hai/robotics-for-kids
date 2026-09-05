@@ -6,10 +6,10 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "check": "node --check server.js && node --check js/summer-account.js && node --check js/summer-subscription.js && node --check js/student-progress.js && node --check js/user-badge.js && node --check js/sisi-hub.js && node --check js/space-play.js && node --check js/lumi-play.js",
+    "check": "node --check server.js && node --check js/classroom-platform.js && node --check js/classroom-session.js && node --check js/summer-account.js && node --check js/summer-subscription.js && node --check js/student-progress.js && node --check js/user-badge.js && node --check js/sisi-hub.js && node --check js/space-play.js && node --check js/lumi-play.js",
     "test": "set -e; for f in tests/*.mjs; do node \"$f\"; done"
   },
   "dependencies": {
-    "better-sqlite3": "^11.10.0"
+    "better-sqlite3": "^13.0.3"
   }
 }
