@@ -1026,6 +1026,11 @@ function parseEventPayload(row) {
   try { return JSON.parse(row.payload); } catch { return {}; }
 }
 
+function eventMessage(row) {
+  const payload = parseEventPayload(row);
+  return String(payload.message || payload.text || row.message || '');
+}
+
 function eventCreatedAtMs(row) {
   const value = Number(row && row.created_at || 0);
   if (!value) return null;
@@ -1075,6 +1080,20 @@ async function openKugelMinecraftWorld(world, startMode) {
   }, 130000);
 }
 
+async function postKugelMonitor(pathname, body, timeoutMs = 15000) {
+  if (!KUGEL_MINECRAFT_INTERNAL_TOKEN) {
+    return { ok: false, skipped: true, error: 'missing_internal_token' };
+  }
+  return fetchJson(`${KUGEL_MONITOR_API_URL}${pathname}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${KUGEL_MINECRAFT_INTERNAL_TOKEN}`,
+    },
+    body: JSON.stringify({ server: KUGEL_MONITOR_SERVER_NAME, ...body }),
+  }, timeoutMs);
+}
+
 async function fetchKugelGameEvents(session) {
   const since = Number(session.eventsSince || 0) || Math.floor((Date.now() - 60 * 60 * 1000) / 1000);
   const params = new URLSearchParams({
@@ -1093,22 +1112,33 @@ async function fetchKugelGameEvents(session) {
 function summarizeStudentFromEvents(studentName, rows, fallback = {}) {
   const name = normalizeMinecraftName(studentName);
   const matching = rows.filter(row => normalizeMinecraftName(row.player_name) === name);
+  const coinProgress = matching.map(row => {
+    const match = eventMessage(row).match(/(?:מטבע נאסף|coin collected)\s*(\d+)\s*\/\s*8/i);
+    return match ? Number(match[1]) : 0;
+  });
   const coinEvents = matching.filter(row => {
     const payload = parseEventPayload(row);
     const type = String(row.event_type || '');
     const block = String(row.block_id || '');
-    return type === 'coin_collected' || payload.coin || payload.coin_index || /gold|coin/i.test(block);
+    const message = eventMessage(row);
+    return type === 'coin_collected' || payload.coin || payload.coin_index || /gold|coin/i.test(block) || /מטבע נאסף|coin collected/i.test(message);
   });
   const finishEvents = matching.filter(row => {
     const payload = parseEventPayload(row);
     const type = String(row.event_type || '');
-    return type === 'finish_button_pressed' || type === 'challenge_report' || payload.completed === true || payload.finish === true;
+    const message = eventMessage(row);
+    return type === 'finish_button_pressed' ||
+      type === 'challenge_report' ||
+      payload.completed === true ||
+      payload.finish === true ||
+      /כל\s*8\s*המטבעות|כפתור הסיום|finish button|all 8/i.test(message);
   });
   const joinEvents = matching.filter(row => ['player_join', 'player_spawn'].includes(String(row.event_type || '')));
-  const startedAt = eventCreatedAtMs(joinEvents.at(-1) || matching.at(-1)) || fallback.startedAt || null;
-  const finishedAt = eventCreatedAtMs(finishEvents[0]) || fallback.finishedAt || null;
-  const coins = Math.min(8, Math.max(Number(fallback.coins || 0), coinEvents.length));
-  const completed = Boolean(finishedAt || fallback.completed || coins >= 8 && finishEvents.length);
+  const ordered = [...matching].sort((a, b) => (eventCreatedAtMs(a) || 0) - (eventCreatedAtMs(b) || 0));
+  const startedAt = eventCreatedAtMs(joinEvents[0] || ordered[0]) || fallback.startedAt || null;
+  const finishedAt = eventCreatedAtMs(finishEvents.at(-1)) || (Math.max(...coinProgress, 0) >= 8 ? eventCreatedAtMs(ordered.at(-1)) : null) || fallback.finishedAt || null;
+  const coins = Math.min(8, Math.max(Number(fallback.coins || 0), coinEvents.length, ...coinProgress));
+  const completed = Boolean(finishedAt || fallback.completed || coins >= 8);
   const durationMs = startedAt && finishedAt ? Math.max(0, finishedAt - startedAt) : null;
   return {
     name: studentName,
@@ -1230,6 +1260,32 @@ async function handleKugelApi(req, res) {
       session.students[name] = { ...existing, finishedAt: nowIso(), completed: true, coins: 8 };
       writeKugelSession(session);
       return jsonResponse(res, 200, { ok: true, session });
+    }
+    if (req.method === 'POST' && pathname === '/api/kugel/live/message') {
+      const raw = await readBody(req, 128 * 1024);
+      const body = raw ? JSON.parse(raw) : {};
+      const text = cleanText(body.text, 240);
+      if (!text) return jsonResponse(res, 400, { ok: false, error: 'נא להזין הודעה' });
+      const scope = body.scope === 'player' ? 'player' : 'all';
+      const target = scope === 'player' ? cleanText(body.target, 80) : '';
+      if (scope === 'player' && !target) return jsonResponse(res, 400, { ok: false, error: 'לא נבחר תלמיד' });
+      const result = await postKugelMonitor('/api/internal/craftom-school/live/message', { text, scope, target });
+      return jsonResponse(res, 200, { ok: true, result });
+    }
+    if (req.method === 'POST' && pathname === '/api/kugel/live/freeze') {
+      const raw = await readBody(req, 128 * 1024);
+      const body = raw ? JSON.parse(raw) : {};
+      const scope = body.scope === 'player' ? 'player' : 'all';
+      const target = scope === 'player' ? cleanText(body.target, 80) : '';
+      if (scope === 'player' && !target) return jsonResponse(res, 400, { ok: false, error: 'לא נבחר תלמיד' });
+      const result = await postKugelMonitor('/api/internal/craftom-school/live/freeze', {
+        scope,
+        target,
+        on: Boolean(body.on),
+        mode: body.mode === 'adventure' ? 'adventure' : 'full',
+        restore: body.restore === 'adventure' ? 'adventure' : 'creative',
+      });
+      return jsonResponse(res, 200, { ok: true, result });
     }
     return jsonResponse(res, 404, { ok: false, error: 'Not found' });
   } catch (error) {

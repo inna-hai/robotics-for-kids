@@ -116,6 +116,14 @@
     return next;
   }
 
+  function normalizeMinecraftName(value) {
+    return String(value || '').trim().toLowerCase();
+  }
+
+  function currentStudents() {
+    return liveSession?.students?.length ? liveSession.students : roster;
+  }
+
   function getLesson(value) {
     const id = Number(value);
     if (id === 0) return ONBOARDING_LESSON;
@@ -286,13 +294,13 @@
     }
 
     function renderMonitor() {
-      const students = liveSession?.students?.length ? liveSession.students.map(item => ({
+      const students = currentStudents().map(item => ({
         name: item.name,
         status: item.status,
         coins: item.coins || 0,
         duration: item.durationSeconds ? `${Math.floor(item.durationSeconds / 60)}:${String(item.durationSeconds % 60).padStart(2, '0')}` : '-',
         connected: item.connected
-      })) : roster;
+      }));
       qs('#studentMonitor').innerHTML = students.map(student => `
         <div class="monitor-row">
           <strong>${esc(student.name)}</strong>
@@ -313,8 +321,19 @@
       });
     }
 
+    function renderControlTargets() {
+      const target = qs('#teacherControlTarget');
+      if (!target) return;
+      const current = target.value;
+      const names = currentStudents()
+        .map(student => student.name)
+        .filter(name => normalizeMinecraftName(name) !== 'server');
+      target.innerHTML = names.map(name => `<option value="${esc(name)}">${esc(name)}</option>`).join('');
+      if (names.includes(current)) target.value = current;
+    }
+
     function renderReport() {
-      const students = liveSession?.students?.length ? liveSession.students : roster;
+      const students = currentStudents();
       const student = students.find(item => item.name === selectedStudent) || students[0] || roster[0];
       const world = liveSession?.world?.worldId ? liveSession.world : getWorld(activeLessonId);
       const duration = student.durationSeconds ? `${Math.floor(student.durationSeconds / 60)}:${String(student.durationSeconds % 60).padStart(2, '0')}` : student.duration || '-';
@@ -361,6 +380,7 @@
           await refreshLiveSession();
           renderOverview();
           renderMetrics();
+          renderControlTargets();
           renderMonitor();
           renderReport();
         });
@@ -369,10 +389,63 @@
     qs('#simulateProgress').addEventListener('click', () => {
       refreshLiveSession().then(() => {
         renderMetrics();
+        renderControlTargets();
         renderMonitor();
         renderReport();
       });
     });
+
+    function setControlStatus(message) {
+      const el = qs('#teacherControlStatus');
+      if (el) el.textContent = message;
+    }
+
+    async function refreshTeacherBoard() {
+      await refreshLiveSession();
+      renderOverview();
+      renderMetrics();
+      renderControlTargets();
+      renderMonitor();
+      renderReport();
+    }
+
+    qs('#teacherMessageForm')?.addEventListener('submit', event => {
+      event.preventDefault();
+      const form = new FormData(event.currentTarget);
+      setControlStatus('שולח...');
+      api('/api/kugel/live/message', {
+        method: 'POST',
+        body: JSON.stringify({
+          scope: form.get('scope'),
+          target: form.get('target'),
+          text: form.get('text')
+        })
+      }).then(() => {
+        event.currentTarget.reset();
+        setControlStatus('הודעה נשלחה');
+      }).catch(error => setControlStatus(error.message || 'שליחה נכשלה'));
+    });
+
+    function freeze(scope, on) {
+      const target = qs('#teacherControlTarget')?.value || '';
+      setControlStatus(on ? 'עוצר...' : 'משחרר...');
+      api('/api/kugel/live/freeze', {
+        method: 'POST',
+        body: JSON.stringify({
+          scope,
+          target: scope === 'player' ? target : '',
+          on,
+          mode: 'full',
+          restore: activeLessonId === 0 ? 'adventure' : 'creative'
+        })
+      }).then(() => setControlStatus(on ? 'נעצר' : 'שוחרר'))
+        .catch(error => setControlStatus(error.message || 'הפעולה נכשלה'));
+    }
+
+    qs('#freezeAll')?.addEventListener('click', () => freeze('all', true));
+    qs('#releaseAll')?.addEventListener('click', () => freeze('all', false));
+    qs('#freezeSelected')?.addEventListener('click', () => freeze('player', true));
+    qs('#releaseSelected')?.addEventListener('click', () => freeze('player', false));
 
     select.addEventListener('change', () => {
       activeLessonId = Number(select.value ?? 0);
@@ -382,8 +455,10 @@
 
     renderOverview();
     renderMetrics();
+    renderControlTargets();
     renderMonitor();
     renderReport();
+    setInterval(refreshTeacherBoard, 5000);
   }
 
   renderStudent();

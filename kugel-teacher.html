@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260905-academy-clarity-1">
-  <link rel="stylesheet" href="assets/kugel/kugel-lomda-interfaces.css?v=20260905-lesson0-1">
+  <link rel="stylesheet" href="assets/kugel/kugel-lomda-interfaces.css?v=20260905-live-1">
 </head>
 <body class="kugel-app teacher-app">
   <header class="app-topbar">
@@ -78,6 +78,37 @@
           <article class="metric"><strong id="metricAttention">0</strong><span>דורשים בדיקה</span></article>
         </section>
 
+        <section class="panel teacher-live-tools">
+          <div class="panel-head">
+            <h3>שליטה בכיתה</h3>
+            <span class="status-pill" id="teacherControlStatus">מוכן</span>
+          </div>
+          <form class="compact-form teacher-message-form" id="teacherMessageForm">
+            <label>
+              <span>למי לשלוח</span>
+              <select name="scope" id="teacherControlScope">
+                <option value="all">כל הכיתה</option>
+                <option value="player">תלמיד/ה מסוים/ת</option>
+              </select>
+            </label>
+            <label>
+              <span>תלמיד/ה</span>
+              <select name="target" id="teacherControlTarget"></select>
+            </label>
+            <label class="message-field">
+              <span>הודעה במשחק</span>
+              <input name="text" placeholder="לדוגמה: כולם לעצור רגע ולהסתכל על המסך">
+            </label>
+            <button class="primary-action" type="submit">שליחת הודעה</button>
+          </form>
+          <div class="control-actions">
+            <button class="secondary-action danger-action" id="freezeAll" type="button">עצירת כיתה</button>
+            <button class="secondary-action" id="releaseAll" type="button">שחרור כיתה</button>
+            <button class="secondary-action danger-action" id="freezeSelected" type="button">עצירת תלמיד</button>
+            <button class="secondary-action" id="releaseSelected" type="button">שחרור תלמיד</button>
+          </div>
+        </section>
+
         <section class="panel">
           <div class="panel-head">
             <h3>לוח חי לתלמידים</h3>
@@ -98,6 +129,6 @@
   </main>
 
   <script src="js/craftom-minecraft-challenges.js?v=20260905-academy-clarity-1"></script>
-  <script src="js/kugel-lomda-interfaces.js?v=20260905-lesson0-1"></script>
+  <script src="js/kugel-lomda-interfaces.js?v=20260905-live-1"></script>
 </body>
 </html>
