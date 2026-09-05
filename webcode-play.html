@@ -56,7 +56,47 @@
       <div class="preview-wrap"><iframe id="preview" title="תצוגת התוצר"></iframe></div>
     </section>
   </main>
-  <script src="js/webcode-lessons-lesson3-show-message-v48.js?v=lesson7-short-good-start-v1"></script>
+  <script>
+    (function(){
+      if(!String.prototype.replaceAll){
+        String.prototype.replaceAll = function(search, replacement){
+          var source = String(this);
+          if(search instanceof RegExp) return source.replace(search, replacement);
+          return source.split(String(search)).join(String(replacement));
+        };
+      }
+      if(!Array.prototype.at){
+        Array.prototype.at = function(index){
+          var length = this.length >>> 0;
+          var offset = Number(index) || 0;
+          if(offset < 0) offset += length;
+          return this[offset];
+        };
+      }
+      window.showWebCodeStartupError = function(error){
+        var message = error && error.message ? error.message : String(error || 'שגיאה לא ידועה');
+        var exercises = document.getElementById('exercises');
+        var progress = document.getElementById('progress');
+        var realBlockly = document.getElementById('realBlockly');
+        var blocksIntro = document.getElementById('blocksIntro');
+        var safeMessage = message.replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; });
+        if(progress) progress.textContent = 'טעינת WebCode נכשלה';
+        if(realBlockly) realBlockly.classList.remove('active');
+        if(blocksIntro){
+          blocksIntro.style.display = '';
+          blocksIntro.innerHTML = '⚠️ WebCode לא נטען במחשב הזה<small>נסו רענון חזק Ctrl+F5 או דפדפן מעודכן. אם זה מחשב בית ספרי, שלחו צילום של Console.</small>';
+        }
+        if(exercises){
+          exercises.innerHTML = '<article class="exercise active"><b>הדף נטען חלקית</b><p>התרגילים לא נטענו בגלל שגיאת דפדפן/תאימות.</p><div class="hint">שגיאה טכנית: ' + safeMessage + '</div></article>';
+        }
+      };
+      window.addEventListener('error', function(event){
+        if(event && event.filename && !/webcode|blockly/i.test(event.filename)) return;
+        window.showWebCodeStartupError(event.error || event.message);
+      });
+    })();
+  </script>
+  <script src="js/webcode-lessons-lesson3-show-message-v48.js?v=20260905-webcode-compat-1"></script>
   <script>
     if(!window.getWebCodeLesson){
       window.WEBCODE_LESSONS = [{ id:1, title:'בונים עמוד אמיתי עם Blockly', concept:'בלוקים שבונים אתר', durationMinutes:90, realBlocklyBuilder:true, story:'בונים אתר בעזרת בלוקים ורואים את התוצאה מיד.', mission:'גררו בלוקים לשרשרת כדי לבנות עמוד אישי.', starter:{ html:'', css:'', js:'' }, exercises:[
@@ -282,7 +322,7 @@
       generateCodeFromBlockly();
       if(!$('codePeek').open) return;
       const highlighted = selectSnippetInEditor(target.tab, target.snippets);
-      if(highlighted?.ok){ lastGeneratedCodeSelection = { exerciseId: activeExercise, tab: target.tab, blockType: block.type, label: target.label, line: highlighted.line }; if(currentExercise()?.check?.requiresCodeLineAnswer){ checkMemory.exerciseAnswers ||= {}; delete checkMemory.exerciseAnswers[activeExercise]; const answer = $('exerciseAnswer'); if(answer) answer.value = ''; } refreshCodeSelectionStatus(); }
+      if(highlighted?.ok){ lastGeneratedCodeSelection = { exerciseId: activeExercise, tab: target.tab, blockType: block.type, label: target.label, line: highlighted.line }; if(currentExercise()?.check?.requiresCodeLineAnswer){ checkMemory.exerciseAnswers = checkMemory.exerciseAnswers || {}; delete checkMemory.exerciseAnswers[activeExercise]; const answer = $('exerciseAnswer'); if(answer) answer.value = ''; } refreshCodeSelectionStatus(); }
     }
 
     let blocklyWorkspace = null;
@@ -436,7 +476,7 @@
       if(Math.abs(visualDelta) > 4) topBlock.moveBy(visualDelta / scale, 0);
     }
     function renderRealBlocklyBuilder(){
-      if(!window.Blockly){ $('blocksIntro').innerHTML = '⚠️ Blockly לא נטען<small>אם אין אינטרנט רגעי, אפשר עדיין להשתמש בכפתורי הגיבוי למטה.</small>'; return; }
+      if(!window.Blockly){ $('blocksIntro').innerHTML = '⚠️ Blockly לא נטען<small>רעננו עם Ctrl+F5 או פתחו בדפדפן מעודכן. אם זה מחשב בית ספרי, שלחו צילום של Console.</small>'; return; }
       $('blocksIntro').style.display = 'none';
       $('blocksStage').classList.add('real-blockly-stage');
       $('realBlockly').classList.add('active');
@@ -488,7 +528,7 @@
       if(!blocklyWorkspace || !window.Blockly) return false;
       const ex = lesson.exercises?.find(item => item.id === id);
       if(!ex?.blocklyStarterXml) return false;
-      checkMemory.exerciseStarterLoaded ||= {};
+      checkMemory.exerciseStarterLoaded = checkMemory.exerciseStarterLoaded || {};
       if(checkMemory.exerciseStarterLoaded[id] === ex.blocklyStarterXml) return false;
       blocklyReady = false;
       blocklyWorkspace.clear();
@@ -521,7 +561,7 @@
     }
     function ensureStarterLockBaseline(id = activeExercise){
       if(!blocklyWorkspace || !isStarterStructureLockedExercise()) return null;
-      checkMemory.starterLockBaselines ||= {};
+      checkMemory.starterLockBaselines = checkMemory.starterLockBaselines || {};
       if(!checkMemory.starterLockBaselines[id]) checkMemory.starterLockBaselines[id] = { ids: starterChainBlocks().map(block => block.id) };
       return checkMemory.starterLockBaselines[id];
     }
@@ -578,9 +618,9 @@
       Blockly.Xml.domToWorkspace(parseBlocklyXml(resetXml), blocklyWorkspace);
       const ex = currentExercise();
       if(ex?.blocklyStarterXml){
-        checkMemory.exerciseStarterLoaded ||= {};
+        checkMemory.exerciseStarterLoaded = checkMemory.exerciseStarterLoaded || {};
         checkMemory.exerciseStarterLoaded[activeExercise] = ex.blocklyStarterXml;
-        checkMemory.exerciseBaselines ||= {};
+        checkMemory.exerciseBaselines = checkMemory.exerciseBaselines || {};
         delete checkMemory.exerciseBaselines[activeExercise];
       }
       setTimeout(alignBlocklyStarterBlocksRight, 80);
@@ -824,7 +864,7 @@ ${block.replace}`; changed = true; }
     function safeScript(code){ return String(code).replaceAll('<' + '/script>', '<\\/script>'); }
     function encodeSharePayload(payload){
       const json = JSON.stringify(payload);
-      const bytes = new TextEncoder().encode(json);
+      const bytes = window.TextEncoder ? new TextEncoder().encode(json) : unescape(encodeURIComponent(json)).split('').map(char => char.charCodeAt(0));
       let binary = '';
       bytes.forEach(byte => binary += String.fromCharCode(byte));
       return btoa(binary).replaceAll('+','-').replaceAll('/','_').replaceAll('=','');
@@ -918,13 +958,13 @@ ${block.replace}`; changed = true; }
       if(!blocklyWorkspace || !window.Blockly) return;
       const ex = lesson.exercises?.find(item => item.id === id);
       if(!(lesson.id === 3 && id === 6) && !ex?.blocklyStarterXml) return;
-      checkMemory.exerciseBaselines ||= {};
+      checkMemory.exerciseBaselines = checkMemory.exerciseBaselines || {};
       if(checkMemory.exerciseBaselines[id]) return;
       checkMemory.exerciseBaselines[id] = {
         blocklyXml: currentBlocklyXml(),
         fields: { 'web_action_background.BG': firstBlocklyFieldValue('web_action_background', 'BG') }
       };
-      checkMemory.starterLockBaselines ||= {};
+      checkMemory.starterLockBaselines = checkMemory.starterLockBaselines || {};
       checkMemory.starterLockBaselines[id] = { ids: starterChainBlocks().map(block => block.id) };
     }
     function hasGeneratedBlockOutputs(rules){
@@ -961,7 +1001,7 @@ ${block.replace}`; changed = true; }
     }
     function normalizeCodeAnswer(value){ return String(value || '').replace(/\s+/g, ' ').replace(/;?\s*$/, ';').trim().toLowerCase(); }
     function exerciseAnswerValue(id=activeExercise){ const value = checkMemory.exerciseAnswers?.[id]; const text = value && typeof value === 'object' ? '' : String(value || '').trim(); return /object\s*object/i.test(text) ? '' : text; }
-    function saveExerciseAnswer(id, value){ checkMemory.exerciseAnswers ||= {}; checkMemory.exerciseAnswers[id] = value; if(!currentExercise()?.check?.requiresCodeLineAnswer) saveLessonState(); }
+    function saveExerciseAnswer(id, value){ checkMemory.exerciseAnswers = checkMemory.exerciseAnswers || {}; checkMemory.exerciseAnswers[id] = value; if(!currentExercise()?.check?.requiresCodeLineAnswer) saveLessonState(); }
     function blockAnswerKeydown(event){
       if(event.key !== 'Tab') return true;
       if(!currentExercise()?.check?.requiresCodeLineAnswer) return true;
@@ -1382,7 +1422,12 @@ ${block.replace}`; changed = true; }
     }
     function checkExercise(){ const ex=currentExercise(); const completedTitle = ex.title; const c=ex.check||{}; const special = c.footerMustBeLast ? checkFooterAtEndExercise(ex, c) : null; const ok = special ? special.ok : includesAll($('htmlCode').value,c.htmlIncludes) && includesAll($('cssCode').value,c.cssIncludes) && excludesAll($('htmlCode').value,c.htmlExcludes) && excludesAll($('cssCode').value,c.cssExcludes) && excludesAll($('jsCode').value,c.jsExcludes) && hasBlockTypes(c.blockTypes) && hasExactBlockTypeCounts(c.exactBlockTypeCounts) && hasOrderedBlockTypes(c.orderedBlockTypes) && hasNonEmptyBlocklyFields(c.nonEmptyBlocklyFields) && hasQualityBlocklyFields(c.qualityBlocklyFields) && hasRelatedBlocklyTextGroups(c.relatedBlocklyTextGroups) && hasUnchangedBlocklyFields(c.unchangedBlocklyFields) && hasExactBlocklyFields(c.exactBlocklyFields) && hasChangedBlocklyFields(c.changedBlocklyFields) && hasBlocklyFieldsContaining(c.blocklyFieldsContaining) && hasAnyChangedBlocklyField(c.anyChangedBlocklyFields) && hasGeneratedBlockOutputs(c.generatedBlockOutputs) && hasChangedBlocklyFieldsFromBaseline(c.changedBlocklyFieldsFromBaseline) && (!c.requiresCodePeek || isCodePeekOpen()) && hasGeneratedCodeSelection(c.requiresCodeSelectionTab, c.requiresCodeSelectionBlockTypes, c.requiresCodeSelectionTabs) && hasCodeLineAnswer(c.requiresCodeLineAnswer) && hasExactCodeAnswer(c.requiresExactCodeAnswer) && hasPreviewButtonClick(c.requiresPreviewButtonClick) && hasPreviewClickText(c.requiresPreviewButtonText) && hasPreviewResultFromBlockOutput(c.requiresPreviewResultFromBlockOutput) && hasPreviewMessageFromBlockOutput(c.requiresPreviewMessageFromBlockOutput) && hasPreviewMessageAtScore(c.requiresPreviewMessageAtScore) && hasPreviewMessageChanged(c.requiresPreviewMessageChangedFrom) && hasPreviewEmojiChanged(c.requiresPreviewEmojiChangedFrom) && hasPreviewCardClass(c.requiresPreviewCardClass) && hasPreviewFilledInputs(c.requiresPreviewFilledInputs) && hasPreviewResultFromInputs(c.requiresPreviewResultFromInputs) && hasPreviewInputMatchesBlockFields(c.requiresPreviewInputMatchesBlockFields) && hasPreviewInputDiffersFromBlockFields(c.requiresPreviewInputDiffersFromBlockFields) && hasPreviewFeedbackClass(c.requiresPreviewFeedbackClass) && hasPreviewScoreSum(c.requiresPreviewScoreSum) && hasPreviewScoreFromBlockField(c.requiresPreviewScoreFromBlockField) && hasPreviewLivesFromBlockField(c.requiresPreviewLivesFromBlockField) && hasPreviewLivesAfterPenalty(c.requiresPreviewLivesAfterPenalty) && hasPreviewTimeFromBlockField(c.requiresPreviewTimeFromBlockField) && hasPreviewFeedbackText(c.requiresPreviewFeedbackText) && hasPreviewItemTextFromBlockOutput(c.requiresPreviewItemTextFromBlockOutput) && hasDebugCodeIncludes(c.debugCodeIncludes) && hasDebugCodeExcludes(c.debugCodeExcludes) && includesAll($('jsCode').value,c.jsIncludes) && (!c.changedAny || hasChanged(c.changedAny)); if(ok){ done.add(ex.id); highestUnlockedExercise = Math.max(highestUnlockedExercise, Math.min(lesson.exercises.length, ex.id + 1)); renderCurrentExercise(); $('feedback').className='feedback good'; $('feedback').textContent= ex.id < lesson.exercises.length ? `מעולה ✅ ${completedTitle} הושלם. עכשיו לחצו “לתרגיל הבא”.` : `מעולה ✅ סיימת את כל התרגילים בשיעור הזה.`; } else { $('feedback').className='feedback bad'; $('feedback').textContent=special?.message || exerciseFailureMessage(ex, c); } renderProgress(); saveLessonState(); }
     function renderProgress(){ $('progress').textContent = `${done.size}/${lesson.exercises.length} הושלמו`; }
-    init();
+    try {
+      init();
+    } catch (error) {
+      console.error('WebCode startup failed:', error);
+      window.showWebCodeStartupError(error);
+    }
   </script>
   <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
 
