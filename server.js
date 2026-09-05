@@ -1225,8 +1225,8 @@ function summarizeStudentFromEvents(studentName, rows, fallback = {}) {
   const fallbackCoins = fallbackFinishedAt ? Number(fallback.coins || 0) : 0;
   const coins = Math.min(8, Math.max(fallbackCoins, estimatedCoins.count, coinEvents.length, ...coinProgress));
   const lastCoinAt = eventCreatedAtMs(estimatedCoins.rows.at(-1) || coinEvents.at(-1));
-  const finishedAt = eventCreatedAtMs(finishEvents.at(-1)) || (coins >= 8 ? lastCoinAt : null) || fallbackFinishedAt || null;
-  const completed = Boolean(finishedAt || (!resetAt && fallback.completed) || coins >= 8);
+  const finishedAt = eventCreatedAtMs(finishEvents.at(-1)) || fallbackFinishedAt || null;
+  const completed = Boolean(finishedAt || (!resetAt && fallback.completed));
   const durationMs = startedAt && finishedAt ? Math.max(0, finishedAt - startedAt) : null;
   const hasLiveConnection = lastEvent && String(lastEvent.event_type || '') !== 'player_leave';
   const connected = Boolean(hasLiveConnection || fallback.connected && !lastEvent);
@@ -1385,6 +1385,8 @@ async function handleKugelApi(req, res) {
     }
     const studentFinishMatch = pathname.match(/^\/api\/kugel\/students\/([^/]+)\/finish$/);
     if (req.method === 'POST' && studentFinishMatch) {
+      const raw = await readBody(req, 128 * 1024);
+      const body = raw ? JSON.parse(raw) : {};
       const rawName = cleanText(decodeURIComponent(studentFinishMatch[1]), 80);
       if (isSystemKugelParticipant(rawName)) {
         return jsonResponse(res, 200, { ok: true, skipped: true, reason: 'system_participant' });
@@ -1393,7 +1395,21 @@ async function handleKugelApi(req, res) {
       const session = readKugelSession();
       session.students = sanitizeKugelStudents(session.students);
       const existing = session.students[name] || {};
-      session.students[name] = { ...existing, finishedAt: nowIso(), completed: true, coins: 8 };
+      const lessonId = Number(body.lessonId ?? session.lessonId);
+      if (lessonId === 0) {
+        const events = await fetchKugelGameEvents(session);
+        const summary = summarizeStudentFromEvents(name, events, existing);
+        const completed = summary.coins >= 8;
+        session.students[name] = {
+          ...existing,
+          connected: summary.connected || existing.connected !== false,
+          coins: summary.coins,
+          completed,
+          finishedAt: completed ? nowIso() : null,
+        };
+      } else {
+        session.students[name] = { ...existing, finishedAt: nowIso(), completed: true, coins: 8 };
+      }
       const saved = writeKugelSession(session);
       return jsonResponse(res, 200, { ok: true, session: saved });
     }
