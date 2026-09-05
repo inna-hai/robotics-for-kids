@@ -92,6 +92,24 @@
     return data;
   }
 
+  function fileToDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      if (!file) {
+        resolve(null);
+        return;
+      }
+      const reader = new FileReader();
+      reader.addEventListener('load', () => resolve({
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        dataUrl: reader.result
+      }));
+      reader.addEventListener('error', () => reject(new Error('לא הצלחנו לקרוא את התמונה.')));
+      reader.readAsDataURL(file);
+    });
+  }
+
   async function refreshLiveSession() {
     try {
       liveSession = await api('/api/kugel/session', { headers: {} });
@@ -240,14 +258,39 @@
         });
     });
 
-    qs('#studentExitForm').addEventListener('submit', event => {
+    qs('#studentExitForm').addEventListener('submit', async event => {
       event.preventDefault();
+      const formEl = event.currentTarget;
+      const statusEl = qs('#ticketStatus');
       const studentName = qs('[name="studentName"]')?.value || 'AmiM';
+      const lesson = getLesson(activeLessonId);
+      const answer = new FormData(formEl).get('answer');
+      const photoFile = formEl.querySelector('[name="photo"]')?.files?.[0] || null;
+      statusEl.textContent = 'שולח למורה...';
+      try {
+        const photo = await fileToDataUrl(photoFile);
+        await api('/api/craftom/exit-ticket', {
+          method: 'POST',
+          body: JSON.stringify({
+            lessonId: activeLessonId,
+            challengeId: lesson.challengeId ?? 0,
+            lessonTitle: lesson.title,
+            challengeTitle: lesson.challengeTitle || '',
+            studentName,
+            answer,
+            photo
+          })
+        });
+        statusEl.textContent = 'נשלח למורה';
+      } catch (error) {
+        statusEl.textContent = error.message || 'ההגשה נכשלה';
+        return;
+      }
       const state = getState();
       const completedLessons = new Set(state.completedLessons || []);
       completedLessons.add(activeLessonId);
       setState({ completedLessons: Array.from(completedLessons), activeLessonId });
-      api(`/api/kugel/students/${encodeURIComponent(studentName)}/finish`, { method: 'POST', body: JSON.stringify({ lessonId: activeLessonId }) })
+      await api(`/api/kugel/students/${encodeURIComponent(studentName)}/finish`, { method: 'POST', body: JSON.stringify({ lessonId: activeLessonId }) })
         .catch(() => null)
         .finally(async () => {
           await refreshLiveSession();
@@ -377,6 +420,8 @@
       const world = liveSession?.world?.worldId ? liveSession.world : getWorld(activeLessonId);
       const duration = student.durationSeconds ? `${Math.floor(student.durationSeconds / 60)}:${String(student.durationSeconds % 60).padStart(2, '0')}` : student.duration || '-';
       const lastSeen = student.lastSeenAt ? new Date(student.lastSeenAt).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '-';
+      const exitTicket = student.exitTicket || null;
+      const ticketTime = exitTicket?.createdAt ? new Date(exitTicket.createdAt).toLocaleString('he-IL', { dateStyle: 'short', timeStyle: 'short' }) : '';
       qs('#teacherReport').innerHTML = `
         <article class="report-card">
           <strong>${esc(student.name)} • שיעור ${activeLessonId}</strong>
@@ -389,6 +434,14 @@
             <div><span>נראה לאחרונה</span><strong>${esc(lastSeen)}</strong></div>
           </div>
           <p><strong>סיכום:</strong> ${esc(student.status)}. ${esc(world.report || world.mission)}.</p>
+          <section class="teacher-exit-ticket">
+            <h4>כרטיס יציאה מהשיעור</h4>
+            ${exitTicket ? `
+              <p class="ticket-meta">הוגש על ידי ${esc(exitTicket.studentName || student.name)}${ticketTime ? ` • ${esc(ticketTime)}` : ''}</p>
+              <p class="ticket-answer">${esc(exitTicket.answer || '')}</p>
+              ${exitTicket.photo?.url ? `<a class="ticket-photo-link" href="${esc(exitTicket.photo.url)}" target="_blank" rel="noopener"><img src="${esc(exitTicket.photo.url)}" alt="צילום שהועלה בכרטיס היציאה"></a>` : '<p class="ticket-empty">לא צורפה תמונה.</p>'}
+            ` : '<p class="ticket-empty">עדיין לא הוגש כרטיס יציאה מהשיעור.</p>'}
+          </section>
         </article>
       `;
     }

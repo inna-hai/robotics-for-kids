@@ -564,6 +564,49 @@
   display: block;
 }
 
+.teacher-exit-ticket {
+  display: grid;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 12px;
+  border: 1px solid #dbe8f4;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.teacher-exit-ticket h4 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.ticket-meta,
+.ticket-empty {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.ticket-answer {
+  margin: 0;
+  white-space: pre-wrap;
+  font-weight: 800;
+}
+
+.ticket-photo-link {
+  display: block;
+  width: min(100%, 420px);
+}
+
+.ticket-photo-link img {
+  display: block;
+  width: 100%;
+  max-height: 260px;
+  object-fit: contain;
+  border: 1px solid #dbe8f4;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
 .report-grid span {
   color: var(--muted);
   font-size: .82rem;

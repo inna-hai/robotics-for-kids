@@ -976,6 +976,21 @@ function writeJsonFile(file, data) {
   fs.writeFileSync(file, JSON.stringify(data, null, 2) + '\n', { mode: 0o600 });
 }
 
+function readJsonLines(file) {
+  if (!fs.existsSync(file)) return [];
+  return fs.readFileSync(file, 'utf8')
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .map(line => {
+      try {
+        return JSON.parse(line);
+      } catch {
+        return null;
+      }
+    })
+    .filter(Boolean);
+}
+
 function nowIso() {
   return new Date().toISOString();
 }
@@ -1197,6 +1212,7 @@ function summarizeStudentFromEvents(studentName, rows, fallback = {}) {
     durationSeconds: durationMs === null ? fallback.durationSeconds || null : Math.round(durationMs / 1000),
     eventCount: matching.length,
     completed,
+    exitTicket: fallback.exitTicket || null,
   };
 }
 
@@ -1217,13 +1233,43 @@ async function kugelSessionView() {
   const world = kugelLessonWorld(session.lessonId);
   const events = await fetchKugelGameEvents(session);
   const savedStudents = session.students || {};
+  const resetByName = new Map(Object.entries(savedStudents).map(([name, value]) => [normalizeMinecraftName(name), Date.parse(value.resetAt || '') || 0]));
+  const lessonTickets = readJsonLines(CRAFTOM_EXIT_TICKETS_FILE)
+    .filter(item => String(item.courseId || '') === 'craftom-minecraft-grade7')
+    .filter(item => Number(item.lessonId) === Number(session.lessonId))
+    .filter(item => {
+      const resetAt = resetByName.get(normalizeMinecraftName(item.studentName)) || 0;
+      return !resetAt || (Date.parse(item.createdAt || '') || 0) >= resetAt;
+    })
+    .sort((a, b) => (Date.parse(a.createdAt || '') || 0) - (Date.parse(b.createdAt || '') || 0));
+  const exitTicketByName = new Map();
+  for (const item of lessonTickets) {
+    exitTicketByName.set(normalizeMinecraftName(item.studentName), {
+      id: item.id,
+      studentName: item.studentName,
+      answer: item.answer,
+      createdAt: item.createdAt,
+      photo: item.photo ? {
+        name: item.photo.name,
+        mime: item.photo.mime,
+        size: item.photo.size,
+        url: `/api/craftom/exit-ticket/attachments/${encodeURIComponent(path.basename(item.photo.path || ''))}`,
+      } : null,
+    });
+  }
   const names = new Set(['AmiM', 'NoaK', 'ItayB', 'MayaL', 'OriS', ...Object.keys(savedStudents)]);
+  for (const item of lessonTickets) {
+    if (!isSystemKugelParticipant(item.studentName)) names.add(item.studentName);
+  }
   for (const row of events) {
     if (!isSystemKugelParticipant(row.player_name)) names.add(row.player_name);
   }
   const students = [...names]
     .filter(name => !isSystemKugelParticipant(name))
-    .map(name => summarizeStudentFromEvents(name, events, savedStudents[name] || {}));
+    .map(name => summarizeStudentFromEvents(name, events, {
+      ...(savedStudents[name] || {}),
+      exitTicket: exitTicketByName.get(normalizeMinecraftName(name)) || null,
+    }));
   return {
     ok: true,
     session,
@@ -1418,12 +1464,27 @@ function saveCraftomExitTicketImage(submissionId, attachment) {
 }
 
 async function handleCraftomExitTicket(req, res) {
+  const attachmentMatch = requestUrl(req).pathname.match(/^\/api\/craftom\/exit-ticket\/attachments\/([^/]+)$/);
+  if (req.method === 'GET' && attachmentMatch) {
+    const filename = path.basename(decodeURIComponent(attachmentMatch[1]));
+    const filePath = path.join(CRAFTOM_EXIT_ATTACHMENTS_DIR, filename);
+    if (!filePath.startsWith(CRAFTOM_EXIT_ATTACHMENTS_DIR + path.sep)) return send(res, 403, 'Forbidden', 'text/plain; charset=utf-8');
+    if (!fs.existsSync(filePath)) return send(res, 404, 'Not found', 'text/plain; charset=utf-8');
+    const ext = path.extname(filePath).toLowerCase();
+    const type = MIME[ext] || 'application/octet-stream';
+    res.writeHead(200, {
+      'Content-Type': type,
+      'Cache-Control': 'private, max-age=300',
+      'X-Content-Type-Options': 'nosniff',
+    });
+    return fs.createReadStream(filePath).pipe(res);
+  }
   if (req.method !== 'POST') return send(res, 405, JSON.stringify({ error: 'Method not allowed' }));
   try {
     const raw = await readBody(req, 7 * 1024 * 1024);
     const body = JSON.parse(raw || '{}');
-    const lessonId = cleanText(body.lessonId, 30);
-    const challengeId = cleanText(body.challengeId, 30);
+    const lessonId = cleanText(String(body.lessonId ?? ''), 30);
+    const challengeId = cleanText(String(body.challengeId ?? ''), 30);
     const lessonTitle = cleanText(body.lessonTitle, 180);
     const challengeTitle = cleanText(body.challengeTitle, 180);
     const studentName = cleanText(body.studentName, 160);
