@@ -6,6 +6,7 @@
   const codeOutput = document.getElementById('makeCodeSnippet');
   const workspaceCard = document.querySelector('.makecode-workspace');
   if (!lesson || !blocklyDiv || !codeOutput) return;
+  if (workspaceCard?.hidden) return;
 
   const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
   const commandName = text => String(text || 'run').replace(/[^A-Za-z0-9_]/g, '_') || 'run';

@@ -203,12 +203,12 @@ player.onChat("test", function () {
           <article class="detail-box"><h2>מה מעלים בסוף</h2><p id="exitUpload"></p></article>
         </section>
         <section class="card agent-academy-cta" id="agentAcademyCta" style="margin-top:16px" hidden>
-          <span class="tag">תרגול עצמאי</span>
-          <h2>אקדמיית Agents</h2>
-          <p>עברו למסך תרגול בסגנון Python Turtle: תרגילים, בניית MakeCode בבלוקים, טאב Python והדמיית Agent שבודקת את הפתרון.</p>
-          <a class="btn" id="agentAcademyLink" href="#">כניסה לאקדמיה</a>
+          <span class="tag">חובה בשיעור הזה</span>
+          <h2>עובדים באקדמיית Agents</h2>
+          <p>את תרגול ה-MakeCode של השיעור עושים באקדמיה: שם בונים בבלוקים, עוברים לטאב Python, מריצים את ה-Agent על ההדמיה ומקבלים בדיקה אוטומטית.</p>
+          <a class="btn agent-academy-primary-link" id="agentAcademyLink" href="#">כניסה לאקדמיית Agents</a>
         </section>
-        <section class="card makecode-workspace" style="margin-top:16px">
+        <section class="card makecode-workspace" id="makeCodeWorkspace" style="margin-top:16px">
           <div>
             <span class="tag">MakeCode</span>
             <h2>Code Builder לתכנון</h2>
@@ -293,9 +293,11 @@ player.onChat("test", function () {
   document.getElementById('code').innerHTML = list(lesson.detail.code);
   document.getElementById('evidence').innerHTML = list(lesson.detail.evidence);
   const academyCta = document.getElementById('agentAcademyCta');
+  const makeCodeWorkspace = document.getElementById('makeCodeWorkspace');
   if (lesson.detail.academy && academyCta) {
     academyCta.hidden = false;
     document.getElementById('agentAcademyLink').href = `craftom-agent-academy.html?lesson=${lesson.id}`;
+    if (makeCodeWorkspace) makeCodeWorkspace.hidden = true;
   }
   document.getElementById('makeCodeSnippet').textContent = makeCodeSnippets[lesson.id] || makeCodeSnippets[1];
   document.getElementById('exitUpload').textContent = program.exitUpload;
