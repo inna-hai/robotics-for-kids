@@ -198,6 +198,18 @@ try {
   assert.equal(classroomCourse.status, 200);
   const sisiWeatherLesson = await fetch(`${baseUrl}/weather.html`, { headers: { Cookie: studentCookie }, redirect: 'manual' });
   assert.equal(sisiWeatherLesson.status, 200);
+  for (const studentPath of [
+    '/craftom-school/preview/index.html',
+    '/craftom-minecraft-lesson-1.html',
+    '/craftom-agent-academy.html?lesson=1',
+    '/craftom-minecraft-challenge.html?challenge=1',
+    '/craftom-minecraft-students.html?challenge=1',
+  ]) {
+    const craftomStudentPage = await fetch(`${baseUrl}${studentPath}`, { headers: { Cookie: studentCookie }, redirect: 'manual' });
+    assert.equal(craftomStudentPage.status, 200, `${studentPath} must remain available to an authenticated classroom student`);
+  }
+  const craftomTeacherSlides = await fetch(`${baseUrl}/craftom-minecraft-slides.html?challenge=1`, { headers: { Cookie: studentCookie }, redirect: 'manual' });
+  assert.equal(craftomTeacherSlides.status, 402);
   const unrelatedProtectedPage = await fetch(`${baseUrl}/venture-ai.html`, { headers: { Cookie: studentCookie }, redirect: 'manual' });
   assert.equal(unrelatedProtectedPage.status, 402);
   const teacherMaterials = await fetch(`${baseUrl}/python-turtle-slides.html`, { headers: { Cookie: studentCookie }, redirect: 'manual' });

@@ -1875,6 +1875,14 @@
       if (evaluateLessonMission(selected)) {
         const earnedNewPoint = awardMissionPoint(selected);
         updatePointsStatus();
+        window.dispatchEvent(new CustomEvent('hai:classroom-progress', {
+          detail: {
+            lessonId: String(lesson.id),
+            activityId: `mission-${selected + 1}`,
+            status: 'completed',
+            score: 100
+          }
+        }));
         const isLastMission = selected >= exercises.length - 1;
         const progressNote = earnedNewPoint ? 'קיבלתם נקודה חדשה למשימה הזו.' : 'המשימה הזו כבר הושלמה בעבר, לכן לא נוספה נקודה נוספת.';
         const nextNote = isLastMission

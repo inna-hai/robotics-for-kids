@@ -13,6 +13,8 @@
   if (!courseId) return;
 
   let classroomStudent = null;
+  let classroomIdentityLoaded = false;
+  const pendingProgress = [];
 
   function currentLessonId() {
     const params = new URLSearchParams(location.search);
@@ -37,6 +39,10 @@
   }
 
   async function save(detail = {}) {
+    if (!classroomIdentityLoaded) {
+      pendingProgress.push({ ...detail });
+      return { ok: true, saved: false, queued: true };
+    }
     if (!classroomStudent) return { ok: true, saved: false, role: 'guest' };
     const payload = {
       courseId,
@@ -63,9 +69,18 @@
   });
 
   request('/api/classroom/me').then((me) => {
-    if (me.role !== 'student') return;
+    classroomIdentityLoaded = true;
+    if (me.role !== 'student') {
+      pendingProgress.length = 0;
+      return;
+    }
     classroomStudent = me.student;
     showStudentBadge(me);
+    const queued = pendingProgress.splice(0);
+    queued.forEach((detail) => save(detail).catch(() => {}));
     return save({ activityId: 'page-open', status: 'started', metadata: { path: `${pathname}${location.search}` } });
-  }).catch(() => {});
+  }).catch(() => {
+    classroomIdentityLoaded = true;
+    pendingProgress.length = 0;
+  });
 })();

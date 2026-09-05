@@ -1837,7 +1837,10 @@ function requiresPaidAccess(pathname, ext, url) {
 function classroomCourseForPath(pathname) {
   const normalized = String(pathname || '').toLowerCase();
   const basename = path.basename(normalized, path.extname(normalized));
-  if (normalized === '/craftom-school/preview/index.html' || ['craftom-agent-academy', 'craftom-minecraft', 'craftom-minecraft-lesson'].includes(basename)) return 'craftom-agent';
+  const craftomStudentPage = normalized === '/craftom-school/preview/index.html'
+    || ['craftom-agent-academy', 'craftom-minecraft', 'craftom-minecraft-lesson', 'craftom-minecraft-challenge', 'craftom-minecraft-students'].includes(basename)
+    || /^craftom-minecraft-lesson-(?:[1-9]|1[0-6])$/.test(basename);
+  if (craftomStudentPage) return 'craftom-agent';
   if (basename === 'python-turtle' || basename.startsWith('python-turtle-play')) return 'python-turtle';
   if (basename === 'webcode' || basename.startsWith('webcode-play')) return 'webcode';
   if (basename === 'minecraft' || basename.startsWith('minecraft-play')) return 'minecraft';

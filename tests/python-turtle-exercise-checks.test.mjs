@@ -152,7 +152,7 @@ assert.match(html, /currentLesson === 5 && ex\?\.id === 5[\s\S]*py_repeat[\s\S]*
 assert.match(html, /currentLesson === 5 && ex\.id === 5[\s\S]*beforePenUpForwards < 4[\s\S]*הצורה הראשונה ולפני המעבר[\s\S]*afterPendownTriangleTurns/, 'lesson 5 order-debug exercise validates moving penup between the first shape and the transition');
 assert.match(html, /currentLesson === 5 && ex\?\.id === 4[\s\S]*py_forward[\s\S]*py_penup[\s\S]*py_forward[\s\S]*py_pendown[\s\S]*py_forward[\s\S]*movable="false"/, 'lesson 5 small penup demo loads locked starter code with two separated lines');
 assert.match(html, /"title": "הרצה מודרכת"[\s\S]*"title": "תרגול 4 — למה הופיע קו מחבר\?"/, 'lesson 5 guided run appears before the order-debug exercise');
-assert.match(html, /isRunOnlyExampleExercise\(ex\)[\s\S]*await run\(\)[\s\S]*completedSet\(\)\.add\(currentExerciseIndex\)/, 'lesson 5 demo unlocks continue only after running');
+assert.match(html, /isRunOnlyExampleExercise\(ex\)[\s\S]*await run\(\)[\s\S]*completeCurrentTurtleExercise\(\)/, 'lesson 5 demo unlocks continue only after running');
 
 assert.match(html, /const runOnlyExampleStarted = \{\}/, 'run-only examples track whether the user ran this demo in the current entry');
 assert.match(html, /!isRunOnlyExampleExercise\(ex\) && \(hasGeneratedStarter \|\| hasEntryReset\)/, 'locked run-only examples do not show the reset-to-starter button');
@@ -442,7 +442,7 @@ assert.match(html, /lesson10VaultCloseBtn[\s\S]*lesson10VaultModalOpen = false;[
 assert.match(html, /🔓 סוף שיעור 10[\s\S]*לשיעור הבא/, 'after unlocking the vault, lesson 10 shows an ending screen with a separate next-lesson button');
 assert.match(html, /isLesson10FinalExercise\(\) \? 'לכספת הסודית'/, 'lesson 10 final exercise continues to the secret vault instead of jumping straight to the next lesson');
 assert.match(html, /function lesson10SecretRevealHtml\(ex[\s\S]*כלל התחנה[\s\S]*הקוד הסודי עד עכשיו[\s\S]*כלל הדיבאג עד עכשיו/, 'lesson 10 keeps detailed debug rule progress below the exercise while the short clue appears on the canvas');
-assert.match(html, /if\(exercisePassed\) completedSet\(\)\.add\(currentExerciseIndex\);[\s\S]*lesson10CurrentRevealKey = \(currentLesson === 10 && exercisePassed\) \? `\$\{currentLesson\}:\$\{currentExerciseIndex\}:\$\{currentWorkspaceXml\(\)\}` : '';/, 'lesson 10 reveal key is set only after a fresh successful check of the current blocks');
+assert.match(html, /if\(exercisePassed\) completeCurrentTurtleExercise\(\);[\s\S]*lesson10CurrentRevealKey = \(currentLesson === 10 && exercisePassed\) \? `\$\{currentLesson\}:\$\{currentExerciseIndex\}:\$\{currentWorkspaceXml\(\)\}` : '';/, 'lesson 10 reveal key is set only after a fresh successful check of the current blocks');
 assert.match(html, /if\(isCodeEditEvent\)\{[\s\S]*lesson10CurrentRevealKey = '';[\s\S]*updateLesson10CanvasSecret\(ex\);/, 'editing blocks clears any lesson 10 reveal until the new code passes again');
 
 assert.match(html, /"id": 11,[\s\S]*"title": "מפת שכונה עם הערות ואורך"[\s\S]*"concept": "הערות קוד ואורך"/, 'lesson 11 is reworked around a real new concept: comments and length');
