@@ -24,7 +24,8 @@ a { color: inherit; }
 h1 { margin: 12px 0 8px; font-size: clamp(2rem, 5vw, 3.7rem); }
 h2 { margin-top: 0; }
 p { color: var(--muted); line-height: 1.65; }
-.choice-grid, .auth-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.choice-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+.auth-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
 .card { padding: 26px; border: 1px solid var(--line); border-radius: 22px; background: var(--surface); box-shadow: 0 16px 45px rgba(30,41,59,.08); }
 .classroom-card { border-color: #a5b4fc; }
 .card-icon { font-size: 2.2rem; }
@@ -36,6 +37,8 @@ input:focus { outline: 3px solid rgba(79,70,229,.2); border-color: var(--primary
 .primary { color: #fff; background: var(--primary); }
 .primary:hover { background: var(--primary-dark); }
 .secondary { color: #fff; background: var(--secondary); }
+.subscription { color: #fff; background: #b45309; }
+.subscription:hover { background: #92400e; }
 .quiet { color: var(--primary-dark); background: var(--soft); }
 .message { min-height: 24px; margin: 8px 0 0; color: #b91c1c; font-weight: 700; }
 .message.success { color: var(--success); }

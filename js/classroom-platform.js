@@ -14,6 +14,28 @@
     return allowedNext.has(requested) ? requested : 'index.html#courses';
   }
 
+  function guestCourse() {
+    return 'sisi.html';
+  }
+
+  function summerToken() {
+    return localStorage.getItem('haiTechSummerToken') || '';
+  }
+
+  async function summerRequest(path) {
+    const token = summerToken();
+    const response = await fetch(path, {
+      method: path.endsWith('/logout') ? 'POST' : 'GET',
+      credentials: 'same-origin',
+      headers: token ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' },
+      body: path.endsWith('/logout') ? '{}' : undefined,
+    });
+    let data = {};
+    try { data = await response.json(); } catch {}
+    if (!response.ok) throw new Error(data.error || 'הפעולה לא הצליחה.');
+    return data;
+  }
+
   async function api(path, payload) {
     const response = await fetch(path, {
       method: payload === undefined ? 'GET' : 'POST',
@@ -39,9 +61,11 @@
 
   async function initEntry() {
     const next = nextCourse();
+    const guestNext = guestCourse();
     const guest = document.getElementById('guest-continue');
+    const subscription = document.getElementById('subscription-continue');
     const studentContinue = document.getElementById('student-continue');
-    if (guest) guest.href = next;
+    if (guest) guest.href = guestNext;
     if (studentContinue) studentContinue.href = next;
 
     const form = document.getElementById('student-login-form');
@@ -55,9 +79,33 @@
       setMessage(message, 'עוברים למצב אורח…');
       try {
         await api('/api/classroom/logout', {});
-        location.assign(next);
+        await summerRequest('/api/summer/logout');
+        localStorage.removeItem('haiTechSummerToken');
+        location.assign(guestNext);
       } catch (error) {
         setMessage(message, error.message);
+      }
+    });
+
+    subscription.addEventListener('click', async (event) => {
+      event.preventDefault();
+      setMessage(message, 'עוברים למנוי האישי…');
+      try {
+        await api('/api/classroom/logout', {});
+      } catch (error) {
+        setMessage(message, error.message);
+        return;
+      }
+      if (!summerToken()) {
+        location.assign('login.html');
+        return;
+      }
+      try {
+        const me = await summerRequest('/api/summer/me');
+        location.assign(me.mode === 'child' ? next : 'account.html');
+      } catch {
+        localStorage.removeItem('haiTechSummerToken');
+        location.assign('login.html');
       }
     });
 

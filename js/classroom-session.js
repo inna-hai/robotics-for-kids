@@ -55,13 +55,6 @@
     return request('/api/classroom/progress', payload);
   }
 
-  function showStudentBadge(me) {
-    const badge = document.createElement('aside');
-    badge.setAttribute('aria-label', 'מצב כיתה');
-    badge.style.cssText = 'position:fixed;z-index:2147483000;left:12px;bottom:12px;padding:9px 13px;border-radius:999px;background:#172033;color:#fff;font:700 13px Rubik,Arial,sans-serif;box-shadow:0 8px 24px #0003';
-    badge.textContent = `${me.student.name} · ${me.classroom.name}`;
-    document.body.append(badge);
-  }
 
   window.ClassroomProgress = { save, courseId, get lessonId() { return currentLessonId(); } };
   window.addEventListener('hai:classroom-progress', (event) => {
@@ -75,7 +68,6 @@
       return;
     }
     classroomStudent = me.student;
-    showStudentBadge(me);
     const queued = pendingProgress.splice(0);
     queued.forEach((detail) => save(detail).catch(() => {}));
     return save({ activityId: 'page-open', status: 'started', metadata: { path: `${pathname}${location.search}` } });

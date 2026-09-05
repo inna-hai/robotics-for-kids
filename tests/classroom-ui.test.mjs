@@ -31,7 +31,9 @@ for (const next of [
 assert.ok(entry.includes('id="guest-continue"'));
 assert.ok(entry.includes('id="student-login-form"'));
 assert.ok(entry.includes('id="student-logout"'));
-assert.ok(entry.includes('להמשיך בלי התחברות'));
+assert.ok(entry.includes('התנסות כאורח'));
+assert.ok(entry.includes('id="subscription-continue"'));
+assert.ok(entry.includes('מנוי אישי'));
 assert.ok(entry.includes('קוד כיתה'));
 assert.ok(entry.includes('קוד אישי'));
 assert.ok(entry.includes('teacher-classrooms.html'));
@@ -50,7 +52,8 @@ assert.ok(client.includes('/api/classroom/classes'));
 assert.ok(client.includes('/api/classroom/logout'));
 assert.ok(client.includes("guest.addEventListener('click'"));
 assert.ok(client.includes("document.getElementById('student-logout')"));
-assert.ok(!client.includes('localStorage'), 'classroom credentials must stay in HttpOnly cookies');
+assert.ok(!client.includes('haiTechClassroomToken'), 'classroom credentials must stay in HttpOnly cookies');
+assert.ok(!client.includes('localStorage.setItem'), 'classroom entry must never persist credentials in browser storage');
 for (const courseId of ['sensi-city', 'sisi', 'python-turtle', 'webcode', 'minecraft', 'craftom-agent']) {
   assert.ok(sessionClient.includes(courseId), `Missing classroom progress adapter for ${courseId}`);
 }
