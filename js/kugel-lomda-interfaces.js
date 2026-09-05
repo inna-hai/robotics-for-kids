@@ -475,6 +475,7 @@
           </div>
         </div>
       `).join('');
+      qs('#studentMonitor').querySelectorAll('[data-reset-student]').forEach(button => button.remove());
       qs('#studentMonitor').querySelectorAll('[data-report]').forEach(button => {
         button.addEventListener('click', () => {
           selectedStudent = button.dataset.report;
