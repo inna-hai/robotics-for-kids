@@ -89,7 +89,7 @@ for (let id = 1; id <= 16; id += 1) {
   assert.match(lessonPage, /craftom-minecraft-lesson-page\.js/, `lesson ${id} loads shared renderer`);
   assert.match(lessonPage, /js\/vendor\/blockly\/blockly\.min\.js/, `lesson ${id} loads Blockly`);
   assert.match(lessonPage, /craftom-minecraft-code-builder\.js/, `lesson ${id} loads the embedded Code Builder`);
-  assert.match(lessonPage, /20260905-agent-academy-minecraft-1/, `lesson ${id} cache-busts the updated exit upload renderer`);
+  assert.match(lessonPage, /20260905-agent-steps-2/, `lesson ${id} cache-busts the updated exit upload renderer`);
 }
 
 const lessonTemplate = read('craftom-minecraft-lesson.html');

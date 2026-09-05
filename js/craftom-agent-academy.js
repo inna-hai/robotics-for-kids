@@ -214,6 +214,7 @@
       y: start.y,
       heading: 0,
       path: [],
+      frames: [],
       packages: [],
       says: [],
       sawChat: false,
@@ -223,15 +224,30 @@
     };
   }
 
+  function visualSnapshot(state) {
+    return {
+      x: state.x,
+      y: state.y,
+      heading: state.heading,
+      path: state.path.slice(),
+      packages: state.packages.slice(),
+      says: state.says.slice(),
+    };
+  }
+
   function applyMove(state, command) {
     const directionOffset = { FORWARD: 0, RIGHT: 90, BACK: 180, LEFT: -90 }[command.direction] || 0;
     const radians = ((state.heading + directionOffset) * Math.PI) / 180;
-    const from = { x: state.x, y: state.y };
-    state.x += Math.cos(radians) * command.steps * cell;
-    state.y += Math.sin(radians) * command.steps * cell;
-    state.x = Math.max(52, Math.min(canvas.width - 52, state.x));
-    state.y = Math.max(74, Math.min(canvas.height - 52, state.y));
-    state.path.push({ x1: from.x, y1: from.y, x2: state.x, y2: state.y });
+    const steps = Math.max(1, Number(command.steps || 1));
+    for (let stepIndex = 0; stepIndex < steps; stepIndex += 1) {
+      const from = { x: state.x, y: state.y };
+      state.x += Math.cos(radians) * cell;
+      state.y += Math.sin(radians) * cell;
+      state.x = Math.max(52, Math.min(canvas.width - 52, state.x));
+      state.y = Math.max(74, Math.min(canvas.height - 52, state.y));
+      state.path.push({ x1: from.x, y1: from.y, x2: state.x, y2: state.y, step: state.path.length + 1 });
+      state.frames.push(visualSnapshot(state));
+    }
     state.moves.push(command);
   }
 
@@ -246,6 +262,7 @@
         state.y = start.y;
         state.heading = 0;
         state.sawTeleport = true;
+        state.frames.push(visualSnapshot(state));
       } else if (current.type === 'mc_move_agent') {
         applyMove(state, {
           direction: current.getFieldValue('DIR'),
@@ -255,10 +272,13 @@
         const turn = current.getFieldValue('TURN');
         state.heading += turn === 'LEFT_TURN' ? -90 : 90;
         state.turns.push(turn);
+        state.frames.push(visualSnapshot(state));
       } else if (current.type === 'mc_place_agent') {
         state.packages.push({ x: state.x, y: state.y, direction: current.getFieldValue('DIR') });
+        state.frames.push(visualSnapshot(state));
       } else if (current.type === 'mc_say') {
         state.says.push(current.getFieldValue('TEXT') || '');
+        state.frames.push(visualSnapshot(state));
       }
       current = current.getNextBlock();
     }
@@ -457,6 +477,18 @@
       ctx.lineTo(segment.x2, segment.y2);
       ctx.stroke();
     });
+    state.path.forEach((segment, index) => {
+      const markerSize = 18;
+      ctx.fillStyle = '#fde047';
+      ctx.strokeStyle = '#713f12';
+      ctx.lineWidth = 2;
+      ctx.fillRect(segment.x2 - markerSize / 2, segment.y2 - markerSize / 2, markerSize, markerSize);
+      ctx.strokeRect(segment.x2 - markerSize / 2, segment.y2 - markerSize / 2, markerSize, markerSize);
+      ctx.fillStyle = '#422006';
+      ctx.font = '900 11px Rubik, Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(String(index + 1), segment.x2, segment.y2 + 4);
+    });
 
     state.packages.forEach(pkg => {
       drawBlock(pkg.x - 14, pkg.y - 18, 28, 26, '#f59e0b', '#92400e', 7, '#78350f');
@@ -514,11 +546,42 @@
     pythonOutput.textContent = workspaceCode();
   }
 
-  function runAndCheck() {
+  let animationRunId = 0;
+
+  function animateRun(state, checks) {
+    const frames = state.frames.length ? state.frames : [state];
+    const runId = animationRunId;
+    let frameIndex = 0;
+    runButton.disabled = true;
+
+    function drawFrame() {
+      if (runId !== animationRunId) return;
+      drawWorld(frames[Math.min(frameIndex, frames.length - 1)]);
+      if (frameIndex < frames.length - 1) {
+        frameIndex += 1;
+        setTimeout(drawFrame, 260);
+        return;
+      }
+      runButton.disabled = false;
+      renderChecks(checks);
+    }
+
+    drawFrame();
+  }
+
+  function runAndCheck(options = {}) {
+    const animate = options.animate !== false;
     updatePython();
     const state = runProgram();
+    const checks = evaluate(state);
+    animationRunId += 1;
+    if (animate) {
+      animateRun(state, checks);
+      return;
+    }
+    runButton.disabled = false;
     drawWorld(state);
-    renderChecks(evaluate(state));
+    renderChecks(checks);
   }
 
   function resetExercise() {
@@ -526,7 +589,7 @@
     Blockly.Xml.domToWorkspace(new DOMParser().parseFromString(starterXml(), 'text/xml').documentElement, workspace);
     renderExercises();
     setTimeout(() => Blockly.svgResize(workspace), 20);
-    runAndCheck();
+    runAndCheck({ animate: false });
   }
 
   document.querySelectorAll('[data-academy-mode]').forEach(button => {
