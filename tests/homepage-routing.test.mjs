@@ -33,24 +33,23 @@ function assertBefore(source, first, second) {
 test('homepage is now a platform gateway and links to primary learning modules', () => {
   assertIncludes(homepageHtml, '<title>פלטפורמת לומדות טכנולוגיה</title>');
   assertIncludes(homepageHtml, 'מרכז הלומדות');
-  assertIncludes(homepageHtml, 'href="sensi-city.html?lesson=1"');
+  assertIncludes(homepageHtml, 'href="classroom-entry.html?next=sensi-city.html%3Flesson%3D1"');
   assertIncludes(homepageHtml, 'href="pygame.html"');
   assertIncludes(homepageHtml, 'href="roblox.html"');
-  assertIncludes(homepageHtml, 'href="python-turtle.html"');
-  assertIncludes(homepageHtml, 'href="sisi.html"');
+  assertIncludes(homepageHtml, 'href="classroom-entry.html?next=python-turtle.html"');
+  assertIncludes(homepageHtml, 'href="classroom-entry.html?next=sisi.html"');
   assertIncludes(homepageHtml, 'href="lumi.html"');
   assertIncludes(homepageHtml, 'סדרת סיסי לכיתות ב׳');
   assertIncludes(homepageHtml, 'href="finale.html"');
   assertIncludes(homepageHtml, 'href="codequest.html"');
   assertIncludes(homepageHtml, 'href="gamelab.html"');
   assertIncludes(homepageHtml, 'href="appforge.html"');
-  assertIncludes(homepageHtml, 'href="craftom-school/preview/index.html"');
-  assertIncludes(homepageHtml, 'href="craftom-school/README.md"');
+  assertIncludes(homepageHtml, 'href="classroom-entry.html?next=craftom-school%2Fpreview%2Findex.html"');
   assertIncludes(homepageHtml, '<h3>Money Smart Lab</h3>');
   assertIncludes(homepageHtml, '<span class="badge dev">בפיתוח</span><span class="badge">חינוך פיננסי</span>');
   assertIncludes(homepageHtml, '<span class="badge dev">בפיתוח</span><span class="badge">צעירים</span>');
   assertIncludes(homepageHtml, 'Venture AI — תוכנית חולון ביזמות עם בינה מלאכותית');
-  assertIncludes(homepageHtml, 'קטלוג פשוט של סביבת הפיילוטים');
+  assertIncludes(homepageHtml, 'אלה נשארים זמינים ב־robotics15, אבל נמצאים בסוף ומסומנים ברור כדי לא לבלבל עם הקטלוג הראשי.');
   assertIncludes(homepageHtml, 'קורסים פעילים');
   assertIncludes(homepageHtml, 'רחפנים');
   assertIncludes(homepageHtml, 'עומר / Craftom');
@@ -66,7 +65,7 @@ test('Robotics15 homepage catalog follows the requested simple order', () => {
   assertBefore(homepageHtml, 'id="omer"', 'id="development"');
   assertBefore(homepageHtml, '<h3>Minecraft</h3>', '<h3>Tello EDU — ניווט ובקרה</h3>');
   assertBefore(homepageHtml, '<h3>Drone Intelligence Lab</h3>', '<h3>עומר העתידנית / Omer Future Craftom</h3>');
-  assertBefore(homepageHtml, '<h3>Craftom School</h3>', '<h3>Venture AI — תוכנית חולון ביזמות עם בינה מלאכותית</h3>');
+  assertBefore(homepageHtml, '<h3>אקדמיית ה-Agent</h3>', '<h3>Venture AI — תוכנית חולון ביזמות עם בינה מלאכותית</h3>');
   assertBefore(homepageHtml, '<h3>Money Smart Lab</h3>', '<h3>לומי חוקרת הטבע</h3>');
   assertBefore(homepageHtml, '<h3>לומי חוקרת הטבע</h3>', '<h3>Pygame</h3>');
   assertBefore(homepageHtml, '<h3>Pygame</h3>', '<h3>Roblox Studio</h3>');

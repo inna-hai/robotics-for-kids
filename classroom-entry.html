@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>כניסה ללומדה | hai.tech</title>
+  <meta name="description" content="בחירה בין עבודה חופשית לבין כניסה כתלמיד בכיתה.">
+  <link rel="stylesheet" href="css/classroom-platform.css">
+</head>
+<body data-classroom-page="entry">
+  <header class="topbar">
+    <a class="brand" href="index.html">🌈 hai.tech</a>
+    <a class="text-link" href="teacher-classrooms.html">כניסת מורה</a>
+  </header>
+
+  <main class="shell entry-shell">
+    <section class="intro">
+      <span class="eyebrow">איך רוצים ללמוד היום?</span>
+      <h1>כניסה ללומדה</h1>
+      <p>אפשר להמשיך מיד בלי התחברות, או להיכנס לכיתה כדי שההתקדמות תישמר למורה.</p>
+    </section>
+
+    <div class="choice-grid">
+      <section class="card guest-card">
+        <span class="card-icon" aria-hidden="true">🚀</span>
+        <h2>עבודה חופשית</h2>
+        <p>מתחילים מיד. ההתקדמות המקומית נשארת במכשיר הזה והמורה לא רואה אותה.</p>
+        <a class="button secondary" id="guest-continue" href="index.html">להמשיך בלי התחברות</a>
+      </section>
+
+      <section class="card classroom-card">
+        <span class="card-icon" aria-hidden="true">🏫</span>
+        <h2>אני תלמיד/ה בכיתה</h2>
+        <p>הכניסו את שני הקודים שקיבלתם מהמורה.</p>
+        <form id="student-login-form">
+          <label>קוד כיתה
+            <input name="classCode" inputmode="text" autocomplete="organization" maxlength="6" required>
+          </label>
+          <label>קוד אישי
+            <input name="personalCode" type="password" inputmode="text" autocomplete="current-password" maxlength="6" required>
+          </label>
+          <button class="button primary" type="submit">כניסה לכיתה</button>
+        </form>
+        <p class="message" id="student-login-message" aria-live="polite"></p>
+        <div class="signed-in" id="student-session" hidden>
+          <strong id="student-welcome"></strong>
+          <a class="button primary" id="student-continue" href="index.html">להמשיך ללומדה</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="js/classroom-platform.js?v=20260905-classrooms-1"></script>
+</body>
+</html>

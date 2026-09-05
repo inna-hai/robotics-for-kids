@@ -24,13 +24,11 @@ function test(name, fn) { tests.push({ name, fn }); }
 function assertIncludes(source, needle, message = `Missing: ${needle}`) { assert.ok(source.includes(needle), message); }
 function assertNotIncludes(source, needle, message = `Unexpected: ${needle}`) { assert.ok(!source.includes(needle), message); }
 
-test('homepage promotes the subscription and routes free Sisi through registration', () => {
+test('homepage keeps the subscription visible and routes Sisi through the shared classroom choice', () => {
   assertIncludes(homepageHtml, 'href="summer-subscription.html"');
   assertIncludes(homepageHtml, 'מנוי קיץ לילדים');
-  assertIncludes(homepageHtml, 'נסו 3 שיעורי חשיבה ותכנות בחינם');
-  assertIncludes(homepageHtml, 'חשיבה ותכנות לילדים עם סיסי הוא קורס משחקי לילדים צעירים');
-  assertIncludes(homepageHtml, 'href="sisi.html"');
-  assertNotIncludes(homepageHtml, 'href="register.html">נסו 3 שיעורי חשיבה ותכנות בחינם');
+  assertIncludes(homepageHtml, 'לומדות תכנות ורובוטיקה לילדים');
+  assertIncludes(homepageHtml, 'href="classroom-entry.html?next=sisi.html"');
   assertNotIncludes(homepageHtml, 'href="space.html"');
   assertNotIncludes(homepageHtml, 'מפת הלמידה');
 });

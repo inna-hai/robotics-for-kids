@@ -92,7 +92,7 @@ assert.match(slidesPage, /challenge\.meetings/);
 
 const home = read('index.html');
 assert.match(home, /אקדמיית ה-Agent/);
-assert.match(home, /craftom-school\/preview\/index\.html/);
+assert.match(home, /classroom-entry\.html\?next=craftom-school%2Fpreview%2Findex\.html/);
 
 for (const id of [1, 2, 3, 4]) {
   assert.match(read(`craftom-minecraft-challenge-${id}.html`), new RegExp(`challenge=${id}`), `legacy challenge ${id} link redirects`);
