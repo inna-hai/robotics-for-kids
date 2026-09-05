@@ -1060,15 +1060,17 @@ function positionBucket(payload) {
 }
 
 function carpetCoinEstimate(rows) {
-  const buckets = new Set();
+  const events = new Map();
   for (const row of rows) {
     if (String(row.event_type || '') !== 'agent_break_candidate') continue;
     if (String(row.block_id || '') !== 'minecraft:yellow_carpet') continue;
-    const payload = parseEventPayload(row);
-    const bucket = positionBucket(payload) || String(row.created_at || row.id || '');
-    buckets.add(`${row.created_at || ''}:${bucket}`);
+    const bucket = `${Math.round(Number(row.block_x ?? row.position_x ?? 0))}:${Math.round(Number(row.block_z ?? row.position_z ?? 0))}`;
+    if (!events.has(bucket)) events.set(bucket, row);
   }
-  return Math.min(8, buckets.size);
+  return {
+    count: Math.min(8, events.size),
+    rows: [...events.values()].sort((a, b) => (eventCreatedAtMs(a) || 0) - (eventCreatedAtMs(b) || 0)),
+  };
 }
 
 async function fetchJson(url, options = {}, timeoutMs = 10000) {
@@ -1166,14 +1168,16 @@ function summarizeStudentFromEvents(studentName, rows, fallback = {}) {
   });
   const joinEvents = matching.filter(row => ['player_join', 'player_spawn'].includes(String(row.event_type || '')));
   const startedAt = eventCreatedAtMs(joinEvents[0] || ordered[0]) || fallback.startedAt || null;
-  const finishedAt = eventCreatedAtMs(finishEvents.at(-1)) || (Math.max(...coinProgress, 0) >= 8 ? eventCreatedAtMs(ordered.at(-1)) : null) || fallback.finishedAt || null;
-  const coins = Math.min(8, Math.max(Number(fallback.coins || 0), estimatedCoins, coinEvents.length, ...coinProgress));
+  const coins = Math.min(8, Math.max(Number(fallback.coins || 0), estimatedCoins.count, coinEvents.length, ...coinProgress));
+  const lastCoinAt = eventCreatedAtMs(estimatedCoins.rows.at(-1) || coinEvents.at(-1));
+  const finishedAt = eventCreatedAtMs(finishEvents.at(-1)) || (coins >= 8 ? lastCoinAt : null) || fallback.finishedAt || null;
   const completed = Boolean(finishedAt || fallback.completed || coins >= 8);
   const durationMs = startedAt && finishedAt ? Math.max(0, finishedAt - startedAt) : null;
-  const connected = lastEvent && String(lastEvent.event_type || '') !== 'player_leave';
+  const hasLiveConnection = lastEvent && String(lastEvent.event_type || '') !== 'player_leave';
+  const connected = Boolean(hasLiveConnection || fallback.connected && !lastEvent);
   return {
     name: studentName,
-    connected: Boolean(connected || fallback.connected && !lastEvent),
+    connected,
     connectionStatus: connected ? 'מחובר' : 'לא מחובר',
     status: completed ? 'סיים' : matching.length || fallback.startedAt ? 'בתהליך' : 'לא התחיל',
     coins,
@@ -1250,6 +1254,7 @@ async function handleKugelApi(req, res) {
         active: true,
         classroom: cleanText(body.classroom, 120) || 'קוגל ז׳ 1',
         lessonId,
+        students: startMode === 'reset' ? {} : readKugelSession().students || {},
         server: KUGEL_MONITOR_SERVER_NAME,
         serverState: 'starting',
         serverDetail: `מפעיל את ${world.worldName}`,
