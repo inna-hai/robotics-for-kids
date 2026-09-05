@@ -40,6 +40,8 @@ assert.equal(challenge1.meetings[2][4].academy.exercises.length, 6, 'challenge 1
 assert.ok(challenge1.meetings[2][4].academy.story.includes('משנה את העולם'), 'lesson 3 academy matches the package placement lesson');
 assert.ok(challenge1.meetings[2][4].academy.exercises.some(exercise => exercise.criteria.some(criterion => criterion.type === 'packageNearStation')), 'lesson 3 academy checks that the package is placed near the station');
 assert.ok(challenge1.meetings[2][4].academy.exercises.every(exercise => exercise.hint && exercise.starter && exercise.criteria && !exercise.python && !exercise.blocks), 'lesson 3 academy also gives scaffolds, not ready-made solutions');
+assert.ok(program.lessons.every(lesson => lesson.detail.academy?.exercises?.length === 6), 'every Craftom lesson now has a 6-step Agent academy');
+assert.ok(program.lessons.every(lesson => lesson.detail.academy.exercises.every(exercise => exercise.hint && exercise.starter && exercise.criteria && !exercise.python && !exercise.blocks)), 'all academies stay scaffolded without ready-made solution snippets');
 assert.equal(challenge2.title, 'קו המשלוחים האוטומטי', 'challenge 2 is the automatic delivery line');
 assert.equal(challenge3.title, 'קו משלוחים חכם', 'challenge 3 is the smart delivery line');
 assert.equal(challenge4.title, 'העיר החכמה שלי', 'challenge 4 is the personal smart city project');
@@ -86,7 +88,7 @@ assert.ok(preview.includes('programVideo'), 'preview page renders the program vi
 assert.ok(preview.includes('סרטון פתיחת התוכנית'), 'preview page labels the overview video');
 assert.ok(preview.includes('program.overviewVideo'), 'preview page loads video from program data');
 assert.ok(preview.includes('איך עובדים בלומדה'), 'preview explains the self-study mode before teacher materials');
-assert.ok(preview.includes('20260905-agent-lesson3-1'), 'preview page cache-busts the updated challenge data');
+assert.ok(preview.includes('20260905-agent-all-lessons-1'), 'preview page cache-busts the updated challenge data');
 assert.ok(preview.includes('אקדמיית ה-Agent'), 'preview uses the neutral Agent academy name');
 assert.ok(!preview.includes('Craftom Challenges • כיתה ז׳'), 'preview no longer presents the course as grade 7 only');
 
@@ -97,7 +99,7 @@ for (const path of [
   'craftom-minecraft-lesson.html',
   'craftom-agent-academy.html',
 ]) {
-  assert.ok(read(path).includes('20260905-agent-lesson3-1'), `${path} loads the updated challenge data`);
+  assert.ok(read(path).includes('20260905-agent-all-lessons-1'), `${path} loads the updated challenge data`);
 }
 
 assert.ok(read('craftom-minecraft-challenge.html').includes('רצף עבודה עצמית'), 'challenge page frames the work as self-study');

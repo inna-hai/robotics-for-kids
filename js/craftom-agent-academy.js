@@ -93,6 +93,28 @@
         nextStatement: null,
         colour: 290,
       },
+      {
+        type: 'mc_repeat',
+        message0: 'repeat %1 times',
+        args0: [{ type: 'field_number', name: 'TIMES', value: 2, min: 1, max: 8 }],
+        message1: 'do %1',
+        args1: [{ type: 'input_statement', name: 'DO' }],
+        previousStatement: null,
+        nextStatement: null,
+        colour: 120,
+      },
+      {
+        type: 'mc_if_route_open',
+        message0: 'if route is %1',
+        args0: [{ type: 'field_dropdown', name: 'STATE', options: [['open', 'OPEN'], ['blocked', 'BLOCKED']] }],
+        message1: 'then %1',
+        args1: [{ type: 'input_statement', name: 'DO' }],
+        message2: 'else %1',
+        args2: [{ type: 'input_statement', name: 'ELSE' }],
+        previousStatement: null,
+        nextStatement: null,
+        colour: 180,
+      },
     ]);
   }
 
@@ -126,6 +148,19 @@
     if (spec.type === 'turn') return tail => blockXml('mc_turn_agent', { TURN: spec.turn || 'RIGHT_TURN' }, '', next(tail));
     if (spec.type === 'place') return tail => blockXml('mc_place_agent', { DIR: spec.direction || 'DOWN' }, '', next(tail));
     if (spec.type === 'say') return tail => blockXml('mc_say', { TEXT: spec.text || '' }, '', next(tail));
+    if (spec.type === 'repeat') {
+      return tail => {
+        const body = (spec.blocks || []).map(blockFromSpec).filter(Boolean);
+        return blockXml('mc_repeat', { TIMES: spec.times || 2 }, statement('DO', chain(body)), next(tail));
+      };
+    }
+    if (spec.type === 'ifRoute') {
+      return tail => {
+        const thenBody = (spec.then || []).map(blockFromSpec).filter(Boolean);
+        const elseBody = (spec.else || []).map(blockFromSpec).filter(Boolean);
+        return blockXml('mc_if_route_open', { STATE: spec.state || 'OPEN' }, statement('DO', chain(thenBody)) + statement('ELSE', chain(elseBody)), next(tail));
+      };
+    }
     return null;
   }
 
@@ -182,6 +217,10 @@
         <block type="mc_turn_agent"></block>
         <block type="mc_place_agent"></block>
       </category>
+      <category name="Loops & Logic" colour="120">
+        <block type="mc_repeat"></block>
+        <block type="mc_if_route_open"></block>
+      </category>
       <category name="Player" colour="290"><block type="mc_say"></block></category>
     </xml>`;
   }
@@ -225,6 +264,12 @@
     if (block.type === 'mc_turn_agent') return `${i}agent.turn(${block.getFieldValue('TURN')})`;
     if (block.type === 'mc_place_agent') return `${i}agent.place(${block.getFieldValue('DIR')})`;
     if (block.type === 'mc_say') return `${i}player.say("${block.getFieldValue('TEXT') || ''}")`;
+    if (block.type === 'mc_repeat') {
+      return `${i}for count in range(${Number(block.getFieldValue('TIMES') || 2)}):\n${statementCode(block.getInputTargetBlock('DO'), level)}`;
+    }
+    if (block.type === 'mc_if_route_open') {
+      return `${i}if route_is_${String(block.getFieldValue('STATE') || 'OPEN').toLowerCase()}:\n${statementCode(block.getInputTargetBlock('DO'), level)}\n${i}else:\n${statementCode(block.getInputTargetBlock('ELSE'), level)}`;
+    }
     return '';
   }
 
@@ -246,6 +291,9 @@
       actions: [],
       moves: [],
       turns: [],
+      repeats: [],
+      conditions: [],
+      commands: [],
     };
   }
 
@@ -276,11 +324,24 @@
     state.moves.push(command);
   }
 
+  function hasNestedBlock(block, type) {
+    let current = block;
+    while (current) {
+      if (current.type === type) return true;
+      for (const input of current.inputList || []) {
+        if (hasNestedBlock(input.connection?.targetBlock?.(), type)) return true;
+      }
+      current = current.getNextBlock();
+    }
+    return false;
+  }
+
   function walkBlocks(block, state) {
     let current = block;
     while (current) {
       if (current.type === 'mc_on_chat') {
         state.sawChat = current.getFieldValue('COMMAND') === 'deliver';
+        state.commands.push(current.getFieldValue('COMMAND') || '');
         state.actions.push({ type: 'chat', command: current.getFieldValue('COMMAND') || '' });
         walkBlocks(current.getInputTargetBlock('DO'), state);
       } else if (current.type === 'mc_teleport_agent') {
@@ -311,6 +372,20 @@
         state.says.push(current.getFieldValue('TEXT') || '');
         state.actions.push({ type: 'say', text: current.getFieldValue('TEXT') || '' });
         state.frames.push(visualSnapshot(state));
+      } else if (current.type === 'mc_repeat') {
+        const times = Math.max(1, Number(current.getFieldValue('TIMES') || 1));
+        state.repeats.push(times);
+        state.actions.push({ type: 'repeat', times });
+        for (let index = 0; index < times; index += 1) {
+          walkBlocks(current.getInputTargetBlock('DO'), state);
+        }
+      } else if (current.type === 'mc_if_route_open') {
+        const routeState = current.getFieldValue('STATE') || 'OPEN';
+        const hasElse = Boolean(current.getInputTargetBlock('ELSE'));
+        const elseHasSay = hasNestedBlock(current.getInputTargetBlock('ELSE'), 'mc_say');
+        state.conditions.push({ state: routeState, hasElse, elseHasSay });
+        state.actions.push({ type: 'condition', state: routeState, hasElse });
+        walkBlocks(current.getInputTargetBlock(routeState === 'OPEN' ? 'DO' : 'ELSE'), state);
       }
       current = current.getNextBlock();
     }
@@ -334,14 +409,23 @@
     const reachedStation = isNear(state, station, criterion.radius || 74);
     const hasArrivalSay = state.says.some(text => /arrived|הגיע|נמסר|delivery/i.test(text));
     const hasPackageNearStation = state.packages.some(pkg => isNear(pkg, station, criterion.radius || 52));
+    const hasReturnToStart = isNear(state, start, criterion.radius || 52);
 
     if (criterion.type === 'chatDeliver') return state.sawChat;
+    if (criterion.type === 'command') return state.commands.includes(criterion.command || academy.command || 'deliver');
     if (criterion.type === 'teleport') return state.sawTeleport;
     if (criterion.type === 'moveCount') return state.moves.length >= Number(criterion.min || 1);
     if (criterion.type === 'firstMove') return firstMove?.direction === (criterion.direction || 'FORWARD') && firstMove.steps === Number(criterion.steps);
     if (criterion.type === 'secondMove') return secondMove?.direction === (criterion.direction || 'FORWARD') && secondMove.steps === Number(criterion.steps);
     if (criterion.type === 'anyMove') return state.moves.some(move => move.direction === (criterion.direction || 'FORWARD') && move.steps === Number(criterion.steps));
     if (criterion.type === 'turn') return criterion.turn ? state.turns.includes(criterion.turn) : state.turns.length > 0;
+    if (criterion.type === 'repeat') return state.repeats.length > 0;
+    if (criterion.type === 'repeatTimes') return state.repeats.some(times => times === Number(criterion.times || 2));
+    if (criterion.type === 'condition') return state.conditions.length > 0;
+    if (criterion.type === 'repeatOrCondition') return state.repeats.length > 0 || state.conditions.length > 0;
+    if (criterion.type === 'conditionState') return state.conditions.some(condition => condition.state === (criterion.state || 'OPEN'));
+    if (criterion.type === 'elseBranch') return state.conditions.some(condition => condition.hasElse);
+    if (criterion.type === 'elseSay') return state.conditions.some(condition => condition.elseHasSay);
     if (criterion.type === 'moveBeforeTurn') return firstMoveAction > -1 && firstTurnAction > -1 && firstMoveAction < firstTurnAction;
     if (criterion.type === 'turnBeforeSecondMove') {
       const moveActions = state.actions.map((action, index) => action.type === 'move' ? index : -1).filter(index => index > -1);
@@ -351,6 +435,8 @@
     if (criterion.type === 'place') return state.packages.length > 0;
     if (criterion.type === 'placeDirection') return state.packages.some(pkg => pkg.direction === (criterion.direction || 'DOWN'));
     if (criterion.type === 'packageNearStation') return hasPackageNearStation;
+    if (criterion.type === 'placeCount') return state.packages.length >= Number(criterion.min || 1);
+    if (criterion.type === 'returnToStart') return hasReturnToStart;
     if (criterion.type === 'say') return state.says.length > 0;
     if (criterion.type === 'arrivalSay') return hasArrivalSay;
     if (criterion.type === 'staysOnStartRow') return Math.abs(state.y - start.y) < Number(criterion.maxDelta || 8);

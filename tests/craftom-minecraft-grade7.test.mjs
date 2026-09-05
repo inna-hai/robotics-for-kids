@@ -44,6 +44,8 @@ assert.equal(lessonThreeDetail.academy.exercises.length, 6, 'lesson 3 has a grad
 assert.match(lessonThreeDetail.academy.story, /משנה את העולם/, 'lesson 3 academy focuses on changing the Minecraft world');
 assert.ok(lessonThreeDetail.academy.exercises.some(exercise => exercise.criteria.some(criterion => criterion.type === 'packageNearStation')), 'lesson 3 checks package placement near the station');
 assert.ok(lessonThreeDetail.academy.exercises.every(exercise => exercise.hint && exercise.starter && exercise.criteria && !exercise.python && !exercise.blocks), 'lesson 3 academy also gives scaffolds, not ready-made solutions');
+assert.ok(program.lessons.every(lesson => lesson.detail.academy?.exercises?.length === 6), 'all 16 lessons have a 6-step Agent academy');
+assert.ok(program.lessons.every(lesson => lesson.detail.academy.exercises.every(exercise => exercise.hint && exercise.starter && exercise.criteria && !exercise.python && !exercise.blocks)), 'all lesson academies use scaffolds and soft hints instead of ready-made solutions');
 
 for (const challenge of program.challenges) {
   assert.equal(challenge.meetings.length, 4, `challenge ${challenge.id} has 4 meetings`);
@@ -102,7 +104,7 @@ for (let id = 1; id <= 16; id += 1) {
   assert.match(lessonPage, /craftom-minecraft-lesson-page\.js/, `lesson ${id} loads shared renderer`);
   assert.match(lessonPage, /js\/vendor\/blockly\/blockly\.min\.js/, `lesson ${id} loads Blockly`);
   assert.match(lessonPage, /craftom-minecraft-code-builder\.js/, `lesson ${id} loads the embedded Code Builder`);
-  assert.match(lessonPage, /20260905-agent-lesson3-1/, `lesson ${id} cache-busts the updated exit upload renderer`);
+  assert.match(lessonPage, /20260905-agent-all-lessons-1/, `lesson ${id} cache-busts the updated exit upload renderer`);
 }
 
 const lessonTemplate = read('craftom-minecraft-lesson.html');
