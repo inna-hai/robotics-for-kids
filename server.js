@@ -1048,7 +1048,14 @@ function eventMessage(row) {
 
 function isSystemKugelParticipant(name) {
   const key = normalizeMinecraftName(name);
-  return !key || key === 'server';
+  if (!key || key === 'server' || key === 'npc') return true;
+  return key.includes('npc') || key === 'kugelguide' || key === 'kugel guide';
+}
+
+function sanitizeKugelStudents(students = {}) {
+  return Object.fromEntries(
+    Object.entries(students || {}).filter(([name]) => !isSystemKugelParticipant(name))
+  );
 }
 
 function eventCreatedAtMs(row) {
@@ -1230,6 +1237,7 @@ function minecraftJoinInfo() {
 
 async function kugelSessionView() {
   const session = readKugelSession();
+  session.students = sanitizeKugelStudents(session.students);
   const world = kugelLessonWorld(session.lessonId);
   const events = await fetchKugelGameEvents(session);
   const savedStudents = session.students || {};
@@ -1341,8 +1349,11 @@ async function handleKugelApi(req, res) {
     const studentStartMatch = pathname.match(/^\/api\/kugel\/students\/([^/]+)\/start$/);
     if (req.method === 'POST' && studentStartMatch) {
       const name = cleanText(decodeURIComponent(studentStartMatch[1]), 80);
+      if (isSystemKugelParticipant(name)) {
+        return jsonResponse(res, 200, { ok: true, skipped: true, reason: 'system_participant' });
+      }
       const session = readKugelSession();
-      session.students = session.students || {};
+      session.students = sanitizeKugelStudents(session.students);
       session.students[name] = { ...(session.students[name] || {}), startedAt: nowIso(), connected: true };
       writeKugelSession(session);
       return jsonResponse(res, 200, { ok: true, minecraft: minecraftJoinInfo(), session });
@@ -1350,8 +1361,11 @@ async function handleKugelApi(req, res) {
     const studentFinishMatch = pathname.match(/^\/api\/kugel\/students\/([^/]+)\/finish$/);
     if (req.method === 'POST' && studentFinishMatch) {
       const name = cleanText(decodeURIComponent(studentFinishMatch[1]), 80);
+      if (isSystemKugelParticipant(name)) {
+        return jsonResponse(res, 200, { ok: true, skipped: true, reason: 'system_participant' });
+      }
       const session = readKugelSession();
-      session.students = session.students || {};
+      session.students = sanitizeKugelStudents(session.students);
       const existing = session.students[name] || {};
       session.students[name] = { ...existing, finishedAt: nowIso(), completed: true, coins: 8 };
       writeKugelSession(session);
@@ -1360,8 +1374,14 @@ async function handleKugelApi(req, res) {
     const studentResetMatch = pathname.match(/^\/api\/kugel\/students\/([^/]+)\/reset$/);
     if (req.method === 'POST' && studentResetMatch) {
       const name = cleanText(decodeURIComponent(studentResetMatch[1]), 80);
+      if (isSystemKugelParticipant(name)) {
+        const session = readKugelSession();
+        session.students = sanitizeKugelStudents(session.students);
+        writeKugelSession(session);
+        return jsonResponse(res, 200, { ok: true, skipped: true, reason: 'system_participant' });
+      }
       const session = readKugelSession();
-      session.students = session.students || {};
+      session.students = sanitizeKugelStudents(session.students);
       session.students[name] = {
         resetAt: nowIso(),
         connected: false,
