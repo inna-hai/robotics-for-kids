@@ -73,6 +73,7 @@
   const qs = selector => document.querySelector(selector);
   const storageKey = 'kugel-lomda-interface-state-v1';
   let liveSession = null;
+  const studentMessageDrafts = new Map();
 
   async function api(path, options = {}) {
     const response = await fetch(path, {
@@ -303,6 +304,13 @@
         connected: item.connected,
         connectionStatus: item.connectionStatus || (item.connected ? 'מחובר' : 'לא מחובר')
       }));
+      const focusedMessageInput = document.activeElement?.matches?.('[data-message-for]')
+        ? {
+            name: document.activeElement.dataset.messageFor,
+            start: document.activeElement.selectionStart,
+            end: document.activeElement.selectionEnd
+          }
+        : null;
       qs('#studentMonitor').innerHTML = students.map(student => `
         <div class="monitor-row ${student.connected ? 'is-connected' : 'is-offline'}">
           <div class="student-identity">
@@ -316,7 +324,7 @@
           </div>
           <span class="duration-pill">זמן: ${esc(student.duration)}</span>
           <div class="student-row-actions">
-            <input class="student-message-input" data-message-for="${esc(student.name)}" placeholder="הודעה לתלמיד">
+            <input class="student-message-input" data-message-for="${esc(student.name)}" value="${esc(studentMessageDrafts.get(student.name) || '')}" placeholder="הודעה לתלמיד">
             <button class="secondary-action" type="button" data-message="${esc(student.name)}">שליחה</button>
             <button class="secondary-action danger-action" type="button" data-freeze="${esc(student.name)}">עצירה</button>
             <button class="secondary-action" type="button" data-release="${esc(student.name)}">שחרור</button>
@@ -330,6 +338,19 @@
           renderReport();
         });
       });
+      qs('#studentMonitor').querySelectorAll('[data-message-for]').forEach(input => {
+        input.addEventListener('input', () => {
+          studentMessageDrafts.set(input.dataset.messageFor, input.value);
+        });
+      });
+      if (focusedMessageInput) {
+        const input = [...qs('#studentMonitor').querySelectorAll('[data-message-for]')]
+          .find(item => item.dataset.messageFor === focusedMessageInput.name);
+        input?.focus?.();
+        try {
+          input?.setSelectionRange?.(focusedMessageInput.start, focusedMessageInput.end);
+        } catch {}
+      }
       qs('#studentMonitor').querySelectorAll('[data-message]').forEach(button => {
         button.addEventListener('click', () => {
           const name = button.dataset.message;
@@ -438,7 +459,10 @@
           text: clean
         })
       }).then(() => {
-        if (inputEl) inputEl.value = '';
+        if (inputEl) {
+          inputEl.value = '';
+          if (inputEl.dataset.messageFor) studentMessageDrafts.delete(inputEl.dataset.messageFor);
+        }
         setControlStatus('הודעה נשלחה');
       }).catch(error => setControlStatus(error.message || 'שליחה נכשלה'));
     }
