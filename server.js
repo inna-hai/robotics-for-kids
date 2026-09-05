@@ -12,11 +12,38 @@ const ATTACHMENTS_DIR = path.join(DATA_DIR, 'feedback-attachments');
 const FEEDBACK_FILE = path.join(DATA_DIR, 'feedback.jsonl');
 const CRAFTOM_EXIT_ATTACHMENTS_DIR = path.join(DATA_DIR, 'craftom-exit-ticket-attachments');
 const CRAFTOM_EXIT_TICKETS_FILE = path.join(DATA_DIR, 'craftom-exit-tickets.jsonl');
+const KUGEL_SESSION_FILE = path.join(DATA_DIR, 'kugel-lomda-session.json');
 const ADMIN_TOKEN_FILE = path.join(DATA_DIR, 'admin-token.txt');
 const SUMMER_USERS_FILE = path.join(DATA_DIR, 'summer-users.json');
 const SUMMER_DB_FILE = path.join(DATA_DIR, 'summer-subscriptions.sqlite');
 const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 30;
 const SUBSCRIPTION_GATE_ENABLED = process.env.ROBOTICS_SUBSCRIPTION_GATE === '1';
+const KUGEL_MONITOR_API_URL = (process.env.KUGEL_MONITOR_API_URL || process.env.MINECRAFT_MONITOR_API_URL || 'http://127.0.0.1:3070').replace(/\/+$/, '');
+const KUGEL_MONITOR_SERVER_NAME = process.env.KUGEL_MONITOR_SERVER_NAME || 'edu-kugel-holon';
+const KUGEL_MINECRAFT_INTERNAL_TOKEN = process.env.CRAFTOM_SCHOOL_WORLD_TOKEN || process.env.KUGEL_MINECRAFT_INTERNAL_TOKEN || process.env.MINECRAFT_INTERNAL_TOKEN || '';
+const KUGEL_MINECRAFT_SERVER_NAME = process.env.KUGEL_MINECRAFT_SERVER_NAME || 'Kugel-Holon';
+const KUGEL_MINECRAFT_SERVER_HOST = process.env.KUGEL_MINECRAFT_SERVER_HOST || '187.124.181.225';
+const KUGEL_MINECRAFT_SERVER_PORT = process.env.KUGEL_MINECRAFT_SERVER_PORT || '20203';
+const KUGEL_MINECRAFT_SERVER_ID = process.env.KUGEL_MINECRAFT_SERVER_ID || '6ID56SURLMDS';
+const KUGEL_MINECRAFT_ACCESS_CODE = process.env.KUGEL_MINECRAFT_ACCESS_CODE || 'Kugel2026';
+const KUGEL_LESSON_WORLD_CONFIG = {
+  1: {
+    worldId: 'kugel-50-safe-compounds-v3-mazes-8-coins-finish-v2-20260903',
+    worldName: 'Kugel 50 Safe Compounds v3 - Mazes, 8 Coins, Finish',
+    mode: 'Adventure',
+    mission: 'איסוף 8 מטבעות ולחיצה על כפתור סיום',
+    startMode: 'reset',
+    completionEvents: ['coin_collected', 'finish_button_pressed', 'challenge_report'],
+  },
+  2: {
+    worldId: 'kugel-50-safe-compounds-v3-20260824',
+    worldName: 'Kugel 50 Safe Compounds v3 - 2026-08-24',
+    mode: 'Creative',
+    mission: 'תחילת בנייה במתחם האישי אחרי תרגול התנועה',
+    startMode: 'reset',
+    completionEvents: ['player_join', 'block_place', 'block_break', 'challenge_report'],
+  },
+};
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -40,6 +67,10 @@ function send(res, status, body, type = 'application/json; charset=utf-8') {
     'X-Content-Type-Options': 'nosniff',
   });
   res.end(body);
+}
+
+function jsonResponse(res, status, value) {
+  return send(res, status, JSON.stringify(value), 'application/json; charset=utf-8');
 }
 
 function requestUrl(req) {
@@ -923,6 +954,281 @@ function cleanText(value, max = 2000) {
   return String(value || '').replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
 }
 
+function readJsonFile(file, fallback) {
+  try {
+    if (!fs.existsSync(file)) return fallback;
+    return JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch {
+    return fallback;
+  }
+}
+
+function writeJsonFile(file, data) {
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.writeFileSync(file, JSON.stringify(data, null, 2) + '\n', { mode: 0o600 });
+}
+
+function nowIso() {
+  return new Date().toISOString();
+}
+
+function kugelLessonWorld(lessonId) {
+  return KUGEL_LESSON_WORLD_CONFIG[Number(lessonId)] || {
+    worldId: 'kugel-course-world-tbd',
+    worldName: 'עולם שיעור ייעודי - להגדרה',
+    mode: 'לפי שיעור',
+    mission: 'משימת Minecraft לפי תוכן השיעור',
+    startMode: 'reset',
+    completionEvents: ['challenge_report'],
+  };
+}
+
+function defaultKugelSession() {
+  return {
+    active: false,
+    classroom: 'קוגל ז׳ 1',
+    lessonId: 1,
+    server: KUGEL_MONITOR_SERVER_NAME,
+    serverState: 'idle',
+    serverDetail: 'עדיין לא הופעל שיעור',
+    monitor: null,
+    students: {},
+    eventsSince: Math.floor((Date.now() - 60 * 60 * 1000) / 1000),
+    updatedAt: nowIso(),
+  };
+}
+
+function readKugelSession() {
+  return { ...defaultKugelSession(), ...readJsonFile(KUGEL_SESSION_FILE, {}) };
+}
+
+function writeKugelSession(patch) {
+  const next = {
+    ...readKugelSession(),
+    ...patch,
+    updatedAt: nowIso(),
+  };
+  writeJsonFile(KUGEL_SESSION_FILE, next);
+  return next;
+}
+
+function parseEventPayload(row) {
+  if (!row || !row.payload) return {};
+  if (typeof row.payload === 'object') return row.payload;
+  try { return JSON.parse(row.payload); } catch { return {}; }
+}
+
+function eventCreatedAtMs(row) {
+  const value = Number(row && row.created_at || 0);
+  if (!value) return null;
+  return value > 100000000000 ? value : value * 1000;
+}
+
+function normalizeMinecraftName(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+async function fetchJson(url, options = {}, timeoutMs = 10000) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    const text = await response.text();
+    let data = {};
+    try { data = text ? JSON.parse(text) : {}; } catch { data = { raw: text }; }
+    if (!response.ok) {
+      const message = data.error || data.message || `HTTP ${response.status}`;
+      const error = new Error(message);
+      error.status = response.status;
+      error.data = data;
+      throw error;
+    }
+    return data;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function openKugelMinecraftWorld(world, startMode) {
+  if (!KUGEL_MINECRAFT_INTERNAL_TOKEN) {
+    return { ok: false, skipped: true, error: 'missing_internal_token' };
+  }
+  return fetchJson(`${KUGEL_MONITOR_API_URL}/api/internal/craftom-school/world/open`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${KUGEL_MINECRAFT_INTERNAL_TOKEN}`,
+    },
+    body: JSON.stringify({
+      server: KUGEL_MONITOR_SERVER_NAME,
+      world: world.worldId,
+      start_mode: startMode || world.startMode || 'reset',
+    }),
+  }, 130000);
+}
+
+async function fetchKugelGameEvents(session) {
+  const since = Number(session.eventsSince || 0) || Math.floor((Date.now() - 60 * 60 * 1000) / 1000);
+  const params = new URLSearchParams({
+    server: KUGEL_MONITOR_SERVER_NAME,
+    since: String(since),
+    limit: '1000',
+  });
+  try {
+    const data = await fetchJson(`${KUGEL_MONITOR_API_URL}/api/game-events?${params}`, {}, 7000);
+    return Array.isArray(data.events) ? data.events : Array.isArray(data.rows) ? data.rows : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function summarizeStudentFromEvents(studentName, rows, fallback = {}) {
+  const name = normalizeMinecraftName(studentName);
+  const matching = rows.filter(row => normalizeMinecraftName(row.player_name) === name);
+  const coinEvents = matching.filter(row => {
+    const payload = parseEventPayload(row);
+    const type = String(row.event_type || '');
+    const block = String(row.block_id || '');
+    return type === 'coin_collected' || payload.coin || payload.coin_index || /gold|coin/i.test(block);
+  });
+  const finishEvents = matching.filter(row => {
+    const payload = parseEventPayload(row);
+    const type = String(row.event_type || '');
+    return type === 'finish_button_pressed' || type === 'challenge_report' || payload.completed === true || payload.finish === true;
+  });
+  const joinEvents = matching.filter(row => ['player_join', 'player_spawn'].includes(String(row.event_type || '')));
+  const startedAt = eventCreatedAtMs(joinEvents.at(-1) || matching.at(-1)) || fallback.startedAt || null;
+  const finishedAt = eventCreatedAtMs(finishEvents[0]) || fallback.finishedAt || null;
+  const coins = Math.min(8, Math.max(Number(fallback.coins || 0), coinEvents.length));
+  const completed = Boolean(finishedAt || fallback.completed || coins >= 8 && finishEvents.length);
+  const durationMs = startedAt && finishedAt ? Math.max(0, finishedAt - startedAt) : null;
+  return {
+    name: studentName,
+    connected: matching.some(row => String(row.event_type || '') !== 'player_leave') || Boolean(fallback.connected),
+    status: completed ? 'סיים' : matching.length || fallback.startedAt ? 'בתהליך' : 'לא התחיל',
+    coins,
+    startedAt: startedAt ? new Date(startedAt).toISOString() : fallback.startedAt || null,
+    finishedAt: finishedAt ? new Date(finishedAt).toISOString() : fallback.finishedAt || null,
+    durationSeconds: durationMs === null ? fallback.durationSeconds || null : Math.round(durationMs / 1000),
+    eventCount: matching.length,
+    completed,
+  };
+}
+
+function minecraftJoinInfo() {
+  return {
+    serverName: KUGEL_MINECRAFT_SERVER_NAME,
+    serverHost: KUGEL_MINECRAFT_SERVER_HOST,
+    serverPort: KUGEL_MINECRAFT_SERVER_PORT,
+    serverAddress: `${KUGEL_MINECRAFT_SERVER_HOST}:${KUGEL_MINECRAFT_SERVER_PORT}`,
+    serverId: KUGEL_MINECRAFT_SERVER_ID,
+    accessCode: KUGEL_MINECRAFT_ACCESS_CODE,
+    launchUrl: `minecraftedu://?addExternalServer=${encodeURIComponent(KUGEL_MINECRAFT_SERVER_NAME)}|${KUGEL_MINECRAFT_SERVER_HOST}:${KUGEL_MINECRAFT_SERVER_PORT}`,
+  };
+}
+
+async function kugelSessionView() {
+  const session = readKugelSession();
+  const world = kugelLessonWorld(session.lessonId);
+  const events = await fetchKugelGameEvents(session);
+  const savedStudents = session.students || {};
+  const names = new Set(['AmiM', 'NoaK', 'ItayB', 'MayaL', 'OriS', ...Object.keys(savedStudents)]);
+  for (const row of events) {
+    if (row.player_name) names.add(row.player_name);
+  }
+  const students = [...names].map(name => summarizeStudentFromEvents(name, events, savedStudents[name] || {}));
+  return {
+    ok: true,
+    session,
+    world,
+    minecraft: minecraftJoinInfo(),
+    students,
+    metrics: {
+      connected: students.filter(item => item.connected).length,
+      active: students.filter(item => item.status === 'בתהליך').length,
+      done: students.filter(item => item.completed).length,
+      attention: students.filter(item => item.status === 'בתהליך' && item.coins <= 1 && item.eventCount > 0).length,
+    },
+    recentEvents: events.slice(0, 30).map(row => ({
+      id: row.id,
+      type: row.event_type,
+      player: row.player_name,
+      block: row.block_id,
+      createdAt: eventCreatedAtMs(row) ? new Date(eventCreatedAtMs(row)).toISOString() : null,
+    })),
+  };
+}
+
+async function handleKugelApi(req, res) {
+  const url = requestUrl(req);
+  const pathname = url.pathname;
+  try {
+    if (req.method === 'GET' && pathname === '/api/kugel/session') {
+      return jsonResponse(res, 200, await kugelSessionView());
+    }
+    const launchMatch = pathname.match(/^\/api\/kugel\/lessons\/(\d+)\/launch$/);
+    if (req.method === 'POST' && launchMatch) {
+      const raw = await readBody(req, 128 * 1024);
+      const body = raw ? JSON.parse(raw) : {};
+      const lessonId = Number(launchMatch[1]);
+      const world = kugelLessonWorld(lessonId);
+      const startMode = body.start_mode === 'continue' ? 'continue' : world.startMode || 'reset';
+      const sessionBase = writeKugelSession({
+        active: true,
+        classroom: cleanText(body.classroom, 120) || 'קוגל ז׳ 1',
+        lessonId,
+        server: KUGEL_MONITOR_SERVER_NAME,
+        serverState: 'starting',
+        serverDetail: `מפעיל את ${world.worldName}`,
+        eventsSince: Math.floor(Date.now() / 1000),
+      });
+      let monitor;
+      try {
+        monitor = await openKugelMinecraftWorld(world, startMode);
+      } catch (error) {
+        monitor = { ok: false, error: error.message || 'monitor_failed', data: error.data || null };
+      }
+      const session = writeKugelSession({
+        ...sessionBase,
+        monitor,
+        serverState: monitor && monitor.ok ? 'running' : 'error',
+        serverDetail: monitor && monitor.ok
+          ? `העולם הפעיל: ${world.worldName}`
+          : `לא הצלחתי להפעיל עולם: ${monitor && monitor.error || 'שגיאה לא ידועה'}`,
+      });
+      return jsonResponse(res, monitor && monitor.ok ? 200 : 502, {
+        ok: Boolean(monitor && monitor.ok),
+        session,
+        world,
+        monitor,
+        minecraft: minecraftJoinInfo(),
+      });
+    }
+    const studentStartMatch = pathname.match(/^\/api\/kugel\/students\/([^/]+)\/start$/);
+    if (req.method === 'POST' && studentStartMatch) {
+      const name = cleanText(decodeURIComponent(studentStartMatch[1]), 80);
+      const session = readKugelSession();
+      session.students = session.students || {};
+      session.students[name] = { ...(session.students[name] || {}), startedAt: nowIso(), connected: true };
+      writeKugelSession(session);
+      return jsonResponse(res, 200, { ok: true, minecraft: minecraftJoinInfo(), session });
+    }
+    const studentFinishMatch = pathname.match(/^\/api\/kugel\/students\/([^/]+)\/finish$/);
+    if (req.method === 'POST' && studentFinishMatch) {
+      const name = cleanText(decodeURIComponent(studentFinishMatch[1]), 80);
+      const session = readKugelSession();
+      session.students = session.students || {};
+      const existing = session.students[name] || {};
+      session.students[name] = { ...existing, finishedAt: nowIso(), completed: true, coins: 8 };
+      writeKugelSession(session);
+      return jsonResponse(res, 200, { ok: true, session });
+    }
+    return jsonResponse(res, 404, { ok: false, error: 'Not found' });
+  } catch (error) {
+    return jsonResponse(res, 500, { ok: false, error: error.message || 'server_error' });
+  }
+}
+
 function readFeedbackItems() {
   if (!fs.existsSync(FEEDBACK_FILE)) return [];
   return fs.readFileSync(FEEDBACK_FILE, 'utf8')
@@ -1437,6 +1743,7 @@ const server = http.createServer((req, res) => {
   const guideVideoMatch = requestUrl(req).pathname.match(/^\/api\/sensi\/guide-videos\/lesson-(\d+)$/);
   if (guideVideoMatch) return serveSensiGuideVideo(req, res, Number(guideVideoMatch[1]));
   if (req.url.startsWith('/api/admin/feedback')) return handleAdminFeedback(req, res);
+  if (req.url.startsWith('/api/kugel/')) return handleKugelApi(req, res);
   if (req.url.startsWith('/api/craftom/exit-ticket')) return handleCraftomExitTicket(req, res);
   if (req.url.startsWith('/api/feedback')) return handleFeedback(req, res);
   if (req.url.startsWith('/api/summer/')) return handleSummerAuth(req, res);

@@ -4,8 +4,8 @@
 
   const LESSON_WORLDS = {
     1: {
-      id: 'kugel-maze-onboarding',
-      name: 'Kugel Maze Onboarding',
+      id: 'kugel-50-safe-compounds-v3-mazes-8-coins-finish-v2-20260903',
+      name: 'Kugel 50 Safe Compounds v3 - Mazes, 8 Coins, Finish',
       mode: 'Adventure',
       mission: 'איסוף 8 מטבעות ולחיצה על כפתור סיום',
       report: 'זמן ביצוע, מטבעות שנאספו, לחיצה על סיום וסטטוס השלמה'
@@ -38,6 +38,34 @@
   const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
   const qs = selector => document.querySelector(selector);
   const storageKey = 'kugel-lomda-interface-state-v1';
+  let liveSession = null;
+
+  async function api(path, options = {}) {
+    const response = await fetch(path, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(options.headers || {}),
+      },
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const error = new Error(data.error || 'הפעולה נכשלה');
+      error.data = data;
+      throw error;
+    }
+    return data;
+  }
+
+  async function refreshLiveSession() {
+    try {
+      liveSession = await api('/api/kugel/session', { headers: {} });
+      if (liveSession?.session?.lessonId) setState({ activeLessonId: Number(liveSession.session.lessonId) });
+    } catch {
+      liveSession = null;
+    }
+    return liveSession;
+  }
 
   function getState() {
     try {
@@ -68,10 +96,11 @@
     return lessonId < Number(state.activeLessonId || 1) ? 'נפתח' : 'נעול';
   }
 
-  function renderStudent() {
+  async function renderStudent() {
     const list = qs('#studentLessonList');
     if (!list) return;
 
+    await refreshLiveSession();
     let activeLessonId = Number(getState().activeLessonId || 1);
 
     function renderLesson(lessonId) {
@@ -90,11 +119,15 @@
       qs('#studentTitle').textContent = lesson.title;
       qs('#studentSummary').textContent = lesson.summary;
       qs('#studentDeliverable').textContent = lesson.deliverable;
-      qs('#studentWorld').textContent = `${world.name} • מצב ${world.mode} • ${world.mission}`;
+      const liveWorld = liveSession?.world?.worldId ? liveSession.world : null;
+      const minecraft = liveSession?.minecraft || {};
+      qs('#studentWorld').textContent = `${(liveWorld && liveWorld.worldName) || world.name} • מצב ${(liveWorld && liveWorld.mode) || world.mode} • ${(liveWorld && liveWorld.mission) || world.mission}`;
       qs('#studentVideo').src = lesson.video;
       qs('#studentVideo').poster = lesson.poster || challenge?.poster || program.overviewPoster;
       qs('#worldModePill').textContent = world.mode;
-      qs('#minecraftInstructions').textContent = `בלחיצה אמיתית Craftom יפעיל את העולם "${world.name}" ויכניס אתכם למתחם שלכם. בדמו הזה הכפתור מסמן התחלת משימה.`;
+      qs('#minecraftInstructions').textContent = liveSession?.session?.active
+        ? `השיעור פעיל. היכנסו לשרת ${minecraft.serverName || 'Kugel-Holon'} בכתובת ${minecraft.serverAddress || ''}. Server ID: ${minecraft.serverId || ''}.`
+        : `המורה עוד לא הפעילה שיעור. אחרי הפעלה יופיעו כאן פרטי הכניסה לעולם.`;
       qs('#studentSteps').innerHTML = [
         'צפו בהסבר של השיעור.',
         lesson.detail.academy ? 'פתחו את אקדמיית ה-Agent ותרגלו עד שהבדיקה עוברת.' : 'תכננו את הקוד ב-Code Builder של השיעור.',
@@ -144,29 +177,45 @@
     });
 
     qs('#launchWorld').addEventListener('click', () => {
-      setState({ launchedLesson: activeLessonId });
-      qs('#launchStatus').textContent = 'המשימה סומנה כהתחילה בדמו. בחיבור האמיתי כאן ייפתח Minecraft Education.';
-      renderLesson(activeLessonId);
+      const studentName = qs('[name="studentName"]')?.value || 'AmiM';
+      api(`/api/kugel/students/${encodeURIComponent(studentName)}/start`, { method: 'POST', body: JSON.stringify({ lessonId: activeLessonId }) })
+        .then(data => {
+          setState({ launchedLesson: activeLessonId });
+          qs('#launchStatus').textContent = `המשימה התחילה. אם Minecraft לא נפתח אוטומטית, הוסיפו שרת: ${data.minecraft?.serverAddress || ''}`;
+          if (data.minecraft?.launchUrl) window.location.href = data.minecraft.launchUrl;
+          return refreshLiveSession();
+        })
+        .then(() => renderLesson(activeLessonId))
+        .catch(error => {
+          qs('#launchStatus').textContent = error.message || 'לא הצלחנו לפתוח את המשימה.';
+        });
     });
 
     qs('#studentExitForm').addEventListener('submit', event => {
       event.preventDefault();
+      const studentName = qs('[name="studentName"]')?.value || 'AmiM';
       const state = getState();
       const completedLessons = new Set(state.completedLessons || []);
       completedLessons.add(activeLessonId);
       setState({ completedLessons: Array.from(completedLessons), activeLessonId });
-      renderList();
-      renderLesson(activeLessonId);
+      api(`/api/kugel/students/${encodeURIComponent(studentName)}/finish`, { method: 'POST', body: JSON.stringify({ lessonId: activeLessonId }) })
+        .catch(() => null)
+        .finally(async () => {
+          await refreshLiveSession();
+          renderList();
+          renderLesson(activeLessonId);
+        });
     });
 
     renderList();
     renderLesson(activeLessonId);
   }
 
-  function renderTeacher() {
+  async function renderTeacher() {
     const select = qs('#teacherLessonSelect');
     if (!select) return;
 
+    await refreshLiveSession();
     let activeLessonId = Number(getState().teacherLessonId || 1);
     let selectedStudent = roster[0].name;
 
@@ -175,26 +224,35 @@
 
     function renderOverview() {
       const lesson = getLesson(activeLessonId);
-      const world = getWorld(activeLessonId);
-      qs('#teacherKicker').textContent = `כיתה קוגל • שיעור ${lesson.id} מתוך ${program.totalMeetings}`;
+      const world = liveSession?.session?.lessonId === activeLessonId && liveSession?.world?.worldId ? liveSession.world : getWorld(activeLessonId);
+      const session = liveSession?.session || {};
+      qs('#teacherKicker').textContent = `${session.classroom || 'כיתה קוגל'} • שיעור ${lesson.id} מתוך ${program.totalMeetings}`;
       qs('#teacherTitle').textContent = lesson.title;
       qs('#teacherSummary').textContent = lesson.summary;
-      qs('#teacherWorldName').textContent = world.name;
-      qs('#teacherWorldMeta').textContent = `worldId: ${world.id} • מצב משחק: ${world.mode} • דוח: ${world.report}`;
+      qs('#teacherWorldName').textContent = world.worldName || world.name;
+      qs('#teacherWorldMeta').textContent = `worldId: ${world.worldId || world.id} • מצב משחק: ${world.mode} • משימה: ${world.mission || ''}`;
+      qs('#serverState').textContent = session.serverState === 'running' ? 'שרת פעיל' : session.serverState === 'error' ? 'שגיאת הפעלה' : session.serverState === 'starting' ? 'מפעיל עולם...' : 'שרת מוכן';
+      qs('#serverDetail').textContent = session.serverDetail || 'לא הופעל שיעור בדמו הנוכחי';
+      qs('#serverDot').classList.toggle('busy', session.serverState === 'starting');
     }
 
     function renderMetrics() {
-      const connected = roster.filter(item => item.connected).length;
-      const done = roster.filter(item => item.status === 'סיים').length;
-      const attention = roster.filter(item => item.status === 'נדרש טיפול').length;
-      qs('#metricConnected').textContent = connected;
-      qs('#metricActive').textContent = roster.filter(item => item.status === 'בתהליך').length;
-      qs('#metricDone').textContent = done;
-      qs('#metricAttention').textContent = attention;
+      const metrics = liveSession?.metrics || {};
+      qs('#metricConnected').textContent = metrics.connected ?? roster.filter(item => item.connected).length;
+      qs('#metricActive').textContent = metrics.active ?? roster.filter(item => item.status === 'בתהליך').length;
+      qs('#metricDone').textContent = metrics.done ?? roster.filter(item => item.status === 'סיים').length;
+      qs('#metricAttention').textContent = metrics.attention ?? roster.filter(item => item.status === 'נדרש טיפול').length;
     }
 
     function renderMonitor() {
-      qs('#studentMonitor').innerHTML = roster.map(student => `
+      const students = liveSession?.students?.length ? liveSession.students.map(item => ({
+        name: item.name,
+        status: item.status,
+        coins: item.coins || 0,
+        duration: item.durationSeconds ? `${Math.floor(item.durationSeconds / 60)}:${String(item.durationSeconds % 60).padStart(2, '0')}` : '-',
+        connected: item.connected
+      })) : roster;
+      qs('#studentMonitor').innerHTML = students.map(student => `
         <div class="monitor-row">
           <strong>${esc(student.name)}</strong>
           <span class="status-pill">${esc(student.status)}</span>
@@ -215,19 +273,21 @@
     }
 
     function renderReport() {
-      const student = roster.find(item => item.name === selectedStudent) || roster[0];
-      const world = getWorld(activeLessonId);
+      const students = liveSession?.students?.length ? liveSession.students : roster;
+      const student = students.find(item => item.name === selectedStudent) || students[0] || roster[0];
+      const world = liveSession?.world?.worldId ? liveSession.world : getWorld(activeLessonId);
+      const duration = student.durationSeconds ? `${Math.floor(student.durationSeconds / 60)}:${String(student.durationSeconds % 60).padStart(2, '0')}` : student.duration || '-';
       qs('#teacherReport').innerHTML = `
         <article class="report-card">
           <strong>${esc(student.name)} • שיעור ${activeLessonId}</strong>
-          <p>הדוח מציג מה ייאסף מאירועי Minecraft כשהחיבור האמיתי יופעל.</p>
+          <p>הדוח נבנה מנתוני session ומאירועים שמגיעים מ-Minecraft Monitor.</p>
           <div class="report-grid">
-            <div><span>עולם</span><strong>${esc(world.name)}</strong></div>
+            <div><span>עולם</span><strong>${esc(world.worldName || world.name)}</strong></div>
             <div><span>מצב</span><strong>${esc(world.mode)}</strong></div>
-            <div><span>מטבעות</span><strong>${student.coins} / 8</strong></div>
-            <div><span>זמן</span><strong>${esc(student.duration)}</strong></div>
+            <div><span>מטבעות</span><strong>${student.coins || 0} / 8</strong></div>
+            <div><span>זמן</span><strong>${esc(duration)}</strong></div>
           </div>
-          <p><strong>סיכום:</strong> ${esc(student.status)}. ${esc(world.report)}.</p>
+          <p><strong>סיכום:</strong> ${esc(student.status)}. ${esc(world.report || world.mission)}.</p>
         </article>
       `;
     }
@@ -239,26 +299,38 @@
       const dot = qs('#serverDot');
       dot.classList.add('busy');
       qs('#serverState').textContent = 'מחליף עולם...';
-      qs('#serverDetail').textContent = 'בדמו: מדמה כיבוי שרת, טעינת עולם והפעלה מחדש.';
+      qs('#serverDetail').textContent = 'שולח בקשה ל-Minecraft Monitor להחלפת עולם והפעלת שרת.';
       renderOverview();
-      setTimeout(() => {
-        dot.classList.remove('busy');
-        qs('#serverState').textContent = 'שרת פעיל';
-        qs('#serverDetail').textContent = `העולם הפעיל: ${getWorld(activeLessonId).name}`;
-      }, 900);
+      api(`/api/kugel/lessons/${activeLessonId}/launch`, {
+        method: 'POST',
+        body: JSON.stringify({ classroom: new FormData(event.currentTarget).get('classroom'), start_mode: 'reset' })
+      })
+        .then(data => {
+          liveSession = data;
+          dot.classList.remove('busy');
+          qs('#serverState').textContent = 'שרת פעיל';
+          qs('#serverDetail').textContent = `העולם הפעיל: ${data.world?.worldName || getWorld(activeLessonId).name}`;
+        })
+        .catch(error => {
+          dot.classList.remove('busy');
+          qs('#serverState').textContent = 'שגיאת הפעלה';
+          qs('#serverDetail').textContent = error.message || 'לא הצלחנו להפעיל את העולם.';
+        })
+        .finally(async () => {
+          await refreshLiveSession();
+          renderOverview();
+          renderMetrics();
+          renderMonitor();
+          renderReport();
+        });
     });
 
     qs('#simulateProgress').addEventListener('click', () => {
-      roster.forEach(student => {
-        if (student.status === 'בתהליך') student.coins = Math.min(8, student.coins + 1);
-        if (student.coins >= 8) {
-          student.status = 'סיים';
-          student.connected = true;
-        }
+      refreshLiveSession().then(() => {
+        renderMetrics();
+        renderMonitor();
+        renderReport();
       });
-      renderMetrics();
-      renderMonitor();
-      renderReport();
     });
 
     select.addEventListener('change', () => {
