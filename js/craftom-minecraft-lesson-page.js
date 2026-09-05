@@ -222,11 +222,42 @@ player.onChat("test", function () {
           <article class="detail-box"><h2>ראיות Craftom</h2><ul id="evidence"></ul></article>
           <article class="detail-box"><h2>מה מעלים בסוף</h2><p id="exitUpload"></p></article>
         </section>
-        <section class="card agent-academy" id="agentAcademy" style="margin-top:16px" hidden>
-          <span class="tag">תרגול מדורג</span>
-          <h2 id="academyTitle"></h2>
-          <p id="academyStory"></p>
-          <div class="academy-steps" id="academySteps"></div>
+        <section class="agent-academy" id="agentAcademy" style="margin-top:16px" hidden>
+          <div class="academy-intro">
+            <span class="tag">תרגול מדורג</span>
+            <h2 id="academyTitle"></h2>
+            <p id="academyStory"></p>
+          </div>
+          <div class="academy-lab" id="agentAcademyLab">
+            <aside class="academy-exercises">
+              <h3>תרגילים</h3>
+              <div id="academyExerciseList"></div>
+            </aside>
+            <section class="academy-code-panel" aria-label="אזור קוד">
+              <div class="academy-panel-head">
+                <h3>הקוד שלי</h3>
+                <div class="academy-actions">
+                  <button class="btn secondary" id="academyReset" type="button">איפוס</button>
+                  <button class="btn" id="academyRun" type="button">הרצה</button>
+                </div>
+              </div>
+              <textarea id="academyCode" dir="ltr" spellcheck="false"></textarea>
+              <div class="academy-feedback" id="academyFeedback" role="status" aria-live="polite"></div>
+            </section>
+            <section class="academy-sim-panel" aria-label="הדמיית תוצאה">
+              <div class="academy-panel-head">
+                <h3>הדמיית התוצאה</h3>
+                <span id="academyProgress"></span>
+              </div>
+              <canvas id="academyCanvas" width="640" height="420"></canvas>
+              <div class="academy-checks" id="academyChecks"></div>
+            </section>
+          </div>
+          <div class="academy-reference">
+            <h3>דוגמאות בלוקים ו-Python</h3>
+            <p>הכרטיסים האלה הם רמזים. העבודה עצמה היא להריץ את הקוד ולראות את ה-Agent זז בהדמיה.</p>
+            <div class="academy-steps" id="academySteps"></div>
+          </div>
         </section>
         <section class="card makecode-workspace" style="margin-top:16px">
           <div>

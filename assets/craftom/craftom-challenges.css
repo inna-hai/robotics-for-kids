@@ -203,8 +203,221 @@ h2 {
 }
 
 .agent-academy {
-  border-color: rgba(15, 118, 110, .26);
+  overflow: hidden;
+  border: 1px solid rgba(15, 118, 110, .26);
+  border-radius: 16px;
   background: #fff;
+  box-shadow: 0 10px 26px rgba(23,32,51,.07);
+}
+
+.academy-intro,
+.academy-reference {
+  padding: 18px;
+}
+
+.academy-intro {
+  border-bottom: 1px solid #d6e9e6;
+  background: #f8fffd;
+}
+
+.academy-reference {
+  border-top: 1px solid #d6e9e6;
+}
+
+.academy-lab {
+  display: grid;
+  grid-template-columns: minmax(210px, .72fr) minmax(290px, 1fr) minmax(320px, 1.18fr);
+  min-height: 530px;
+}
+
+.academy-exercises,
+.academy-code-panel,
+.academy-sim-panel {
+  min-width: 0;
+  padding: 14px;
+}
+
+.academy-exercises,
+.academy-code-panel {
+  border-left: 1px solid #d6e9e6;
+}
+
+.academy-exercises h3,
+.academy-panel-head h3,
+.academy-reference h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+#academyExerciseList {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+#academyExerciseList button {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 5px 9px;
+  width: 100%;
+  min-height: 86px;
+  padding: 10px;
+  border: 1px solid #d6e9e6;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  text-align: right;
+}
+
+#academyExerciseList button.active {
+  border-color: var(--blue);
+  background: #eef6ff;
+  box-shadow: 0 10px 20px rgba(37,99,235,.12);
+}
+
+#academyExerciseList span {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  grid-row: span 2;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--teal);
+  font-weight: 900;
+}
+
+#academyExerciseList strong,
+#academyExerciseList small {
+  min-width: 0;
+}
+
+#academyExerciseList small {
+  color: var(--muted);
+  font-size: .85rem;
+  line-height: 1.35;
+}
+
+.academy-panel-head {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.academy-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.academy-actions .btn {
+  min-height: 34px;
+  padding: 7px 11px;
+  font-size: .9rem;
+}
+
+#academyCode {
+  width: 100%;
+  min-height: 390px;
+  resize: vertical;
+  border: 2px solid #c7daec;
+  border-radius: 8px;
+  padding: 13px;
+  background: #0f172a;
+  color: #e2e8f0;
+  font: 500 .92rem/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  outline: none;
+  text-align: left;
+}
+
+.academy-feedback {
+  min-height: 42px;
+  margin-top: 10px;
+  padding: 9px 11px;
+  border: 1px solid #d6e9e6;
+  border-radius: 8px;
+  background: #f8fffd;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.academy-feedback.pass {
+  border-color: #86efac;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.academy-feedback.fail {
+  border-color: #fed7aa;
+  background: #fff7ed;
+  color: #9a3412;
+}
+
+#academyCanvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 64 / 42;
+  border: 1px solid #cfe2f3;
+  border-radius: 8px;
+  background: #eef8f2;
+}
+
+#academyProgress {
+  color: var(--muted);
+  font-size: .9rem;
+  font-weight: 900;
+}
+
+.academy-checks {
+  display: grid;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.academy-checks div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 7px 9px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+  color: #334155;
+  font-weight: 800;
+}
+
+.academy-checks span {
+  display: inline-flex;
+  width: 22px;
+  height: 22px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #e2e8f0;
+  color: #334155;
+  font-weight: 900;
+}
+
+.academy-checks .pass {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+}
+
+.academy-checks .pass span {
+  background: #22c55e;
+  color: #fff;
+}
+
+.academy-checks .fail {
+  border-color: #fed7aa;
+  background: #fff7ed;
+}
 }
 
 .academy-steps {
@@ -585,8 +798,15 @@ h2 {
   .steps,
   .detail-grid,
   .academy-steps,
+  .academy-lab,
   .challenge-lesson-map {
     grid-template-columns: 1fr;
+  }
+
+  .academy-exercises,
+  .academy-code-panel {
+    border-left: 0;
+    border-bottom: 1px solid #d6e9e6;
   }
 
   .shell {
