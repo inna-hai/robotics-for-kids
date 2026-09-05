@@ -27,13 +27,21 @@ const KUGEL_MINECRAFT_SERVER_PORT = process.env.KUGEL_MINECRAFT_SERVER_PORT || '
 const KUGEL_MINECRAFT_SERVER_ID = process.env.KUGEL_MINECRAFT_SERVER_ID || '6ID56SURLMDS';
 const KUGEL_MINECRAFT_ACCESS_CODE = process.env.KUGEL_MINECRAFT_ACCESS_CODE || 'Kugel2026';
 const KUGEL_LESSON_WORLD_CONFIG = {
-  1: {
+  0: {
     worldId: 'kugel-50-safe-compounds-v3-mazes-8-coins-finish-v2-20260903',
     worldName: 'Kugel 50 Safe Compounds v3 - Mazes, 8 Coins, Finish',
     mode: 'Adventure',
     mission: 'איסוף 8 מטבעות ולחיצה על כפתור סיום',
     startMode: 'reset',
     completionEvents: ['coin_collected', 'finish_button_pressed', 'challenge_report'],
+  },
+  1: {
+    worldId: 'kugel-50-safe-compounds-v3-20260824',
+    worldName: 'Kugel 50 Safe Compounds v3 - 2026-08-24',
+    mode: 'Creative',
+    mission: 'משלוח ראשון במתחם האישי אחרי תרגול התנועה',
+    startMode: 'reset',
+    completionEvents: ['player_join', 'block_place', 'block_break', 'challenge_report'],
   },
   2: {
     worldId: 'kugel-50-safe-compounds-v3-20260824',
@@ -974,10 +982,10 @@ function nowIso() {
 
 function kugelLessonWorld(lessonId) {
   return KUGEL_LESSON_WORLD_CONFIG[Number(lessonId)] || {
-    worldId: 'kugel-course-world-tbd',
-    worldName: 'עולם שיעור ייעודי - להגדרה',
-    mode: 'לפי שיעור',
-    mission: 'משימת Minecraft לפי תוכן השיעור',
+    worldId: 'kugel-50-safe-compounds-v3-20260824',
+    worldName: 'Kugel 50 Safe Compounds v3 - 2026-08-24',
+    mode: 'Creative',
+    mission: 'עבודה במתחם האישי והמשך בניית העיר',
     startMode: 'reset',
     completionEvents: ['challenge_report'],
   };
@@ -987,7 +995,7 @@ function defaultKugelSession() {
   return {
     active: false,
     classroom: 'קוגל ז׳ 1',
-    lessonId: 1,
+    lessonId: 0,
     server: KUGEL_MONITOR_SERVER_NAME,
     serverState: 'idle',
     serverDetail: 'עדיין לא הופעל שיעור',

@@ -3,29 +3,63 @@
   if (!program) return;
 
   const LESSON_WORLDS = {
-    1: {
+    0: {
       id: 'kugel-50-safe-compounds-v3-mazes-8-coins-finish-v2-20260903',
       name: 'Kugel 50 Safe Compounds v3 - Mazes, 8 Coins, Finish',
       mode: 'Adventure',
       mission: 'איסוף 8 מטבעות ולחיצה על כפתור סיום',
       report: 'זמן ביצוע, מטבעות שנאספו, לחיצה על סיום וסטטוס השלמה'
     },
-    2: {
-      id: 'kugel-50-safe-compounds-v3',
+    1: {
+      id: 'kugel-50-safe-compounds-v3-20260824',
       name: 'Kugel 50 Safe Compounds v3 - 2026-08-24',
       mode: 'Creative',
-      mission: 'תחילת בנייה במתחם האישי אחרי תרגול התנועה',
+      mission: 'משלוח ראשון במתחם האישי אחרי תרגול התנועה',
+      report: 'כניסה לעולם, זמן פעילות, צילום והגשה'
+    },
+    2: {
+      id: 'kugel-50-safe-compounds-v3-20260824',
+      name: 'Kugel 50 Safe Compounds v3 - 2026-08-24',
+      mode: 'Creative',
+      mission: 'המשך בנייה במתחם האישי',
       report: 'כניסה לעולם, זמן פעילות, צילום והגשה'
     }
   };
 
   const DEFAULT_WORLD = {
-    id: 'kugel-course-world-tbd',
-    name: 'עולם שיעור ייעודי - להגדרה',
-    mode: 'לפי שיעור',
-    mission: 'משימת Minecraft לפי תוכן השיעור',
+    id: 'kugel-50-safe-compounds-v3-20260824',
+    name: 'Kugel 50 Safe Compounds v3 - 2026-08-24',
+    mode: 'Creative',
+    mission: 'עבודה במתחם האישי והמשך בניית העיר',
     report: 'אירועי ביצוע, צילום וכרטיס יציאה'
   };
+
+  const ONBOARDING_LESSON = {
+    id: 0,
+    challengeId: 0,
+    meetingIndex: 0,
+    meetingCode: '0',
+    title: 'תרגול Minecraft: מבוך המטבעות',
+    summary: 'שיעור פתיחה בתוך המשחק: מתרגלים תנועה, התמצאות, איסוף מטבעות ולחיצה על כפתור סיום לפני שמתחילים את משימות MakeCode.',
+    deliverable: 'להיכנס למבוך, לאסוף 8 מטבעות, להגיע לסוף וללחוץ על כפתור הסיום.',
+    detail: {
+      academy: null,
+      evidence: [
+        'השחקן נכנס לעולם המבוך במצב Adventure.',
+        'נאספו 8 מטבעות או כמה שיותר בזמן התרגול.',
+        'נלחץ כפתור הסיום בקצה המבוך.',
+        'המורה רואה דוח זמן, מטבעות וסטטוס סיום.'
+      ],
+      exit: 'מה היה הכי קל ומה היה הכי קשה לך בתנועה בתוך Minecraft?'
+    },
+    challengeTitle: 'תרגול פתיחה',
+    concept: 'התמצאות, תנועה, איסוף ולחיצה בתוך Minecraft',
+    video: program.overviewVideo,
+    poster: program.overviewPoster,
+    command: 'maze'
+  };
+
+  const kugelLessons = [ONBOARDING_LESSON, ...program.lessons];
 
   const roster = [
     { name: 'AmiM', status: 'בתהליך', coins: 5, duration: '06:42', connected: true },
@@ -60,7 +94,8 @@
   async function refreshLiveSession() {
     try {
       liveSession = await api('/api/kugel/session', { headers: {} });
-      if (liveSession?.session?.lessonId) setState({ activeLessonId: Number(liveSession.session.lessonId) });
+      const lessonId = Number(liveSession?.session?.lessonId);
+      if (Number.isFinite(lessonId)) setState({ activeLessonId: lessonId });
     } catch {
       liveSession = null;
     }
@@ -82,7 +117,9 @@
   }
 
   function getLesson(value) {
-    return window.getCraftomMinecraftLesson?.(value) || program.lessons[0];
+    const id = Number(value);
+    if (id === 0) return ONBOARDING_LESSON;
+    return window.getCraftomMinecraftLesson?.(id) || program.lessons[0];
   }
 
   function getWorld(lessonId) {
@@ -92,8 +129,8 @@
   function lessonStatus(lessonId) {
     const state = getState();
     if (state.completedLessons?.includes(lessonId)) return 'הושלם';
-    if (Number(state.activeLessonId || 1) === lessonId) return 'פעיל';
-    return lessonId < Number(state.activeLessonId || 1) ? 'נפתח' : 'נעול';
+    if (Number(state.activeLessonId ?? 0) === lessonId) return 'פעיל';
+    return lessonId < Number(state.activeLessonId ?? 0) ? 'נפתח' : 'נעול';
   }
 
   async function renderStudent() {
@@ -101,7 +138,7 @@
     if (!list) return;
 
     await refreshLiveSession();
-    let activeLessonId = Number(getState().activeLessonId || 1);
+    let activeLessonId = Number(getState().activeLessonId ?? 0);
 
     function renderLesson(lessonId) {
       const lesson = getLesson(lessonId);
@@ -115,7 +152,9 @@
         { label: 'הגשה', done: status === 'הושלם' }
       ];
 
-      qs('#studentKicker').textContent = `שיעור ${lesson.id} מתוך ${program.totalMeetings} • אתגר ${lesson.challengeId}: ${lesson.challengeTitle}`;
+      qs('#studentKicker').textContent = lesson.id === 0
+        ? 'שיעור 0 • תרגול פתיחה לפני הלומדה'
+        : `שיעור ${lesson.id} מתוך ${program.totalMeetings} • אתגר ${lesson.challengeId}: ${lesson.challengeTitle}`;
       qs('#studentTitle').textContent = lesson.title;
       qs('#studentSummary').textContent = lesson.summary;
       qs('#studentDeliverable').textContent = lesson.deliverable;
@@ -154,7 +193,7 @@
     }
 
     function renderList() {
-      list.innerHTML = program.lessons.map(lesson => `
+      list.innerHTML = kugelLessons.map(lesson => `
         <button class="lesson-button ${lesson.id === activeLessonId ? 'active' : ''}" type="button" data-lesson-id="${lesson.id}">
           <span class="num">${lesson.id}</span>
           <span><strong>${esc(lesson.title)}</strong><small>${esc(lesson.challengeTitle)}</small></span>
@@ -163,7 +202,7 @@
       `).join('');
       list.querySelectorAll('[data-lesson-id]').forEach(button => {
         button.addEventListener('click', () => {
-          activeLessonId = Number(button.dataset.lessonId || 1);
+          activeLessonId = Number(button.dataset.lessonId ?? 0);
           setState({ activeLessonId });
           renderList();
           renderLesson(activeLessonId);
@@ -216,17 +255,19 @@
     if (!select) return;
 
     await refreshLiveSession();
-    let activeLessonId = Number(getState().teacherLessonId || 1);
+    let activeLessonId = Number(liveSession?.session?.lessonId ?? getState().teacherLessonId ?? 0);
     let selectedStudent = roster[0].name;
 
-    select.innerHTML = program.lessons.map(lesson => `<option value="${lesson.id}">שיעור ${lesson.id} - ${esc(lesson.title)}</option>`).join('');
+    select.innerHTML = kugelLessons.map(lesson => `<option value="${lesson.id}">שיעור ${lesson.id} - ${esc(lesson.title)}</option>`).join('');
     select.value = String(activeLessonId);
 
     function renderOverview() {
       const lesson = getLesson(activeLessonId);
       const world = liveSession?.session?.lessonId === activeLessonId && liveSession?.world?.worldId ? liveSession.world : getWorld(activeLessonId);
       const session = liveSession?.session || {};
-      qs('#teacherKicker').textContent = `${session.classroom || 'כיתה קוגל'} • שיעור ${lesson.id} מתוך ${program.totalMeetings}`;
+      qs('#teacherKicker').textContent = lesson.id === 0
+        ? `${session.classroom || 'כיתה קוגל'} • שיעור 0 • תרגול פתיחה`
+        : `${session.classroom || 'כיתה קוגל'} • שיעור ${lesson.id} מתוך ${program.totalMeetings}`;
       qs('#teacherTitle').textContent = lesson.title;
       qs('#teacherSummary').textContent = lesson.summary;
       qs('#teacherWorldName').textContent = world.worldName || world.name;
@@ -294,7 +335,7 @@
 
     qs('#teacherLaunchForm').addEventListener('submit', event => {
       event.preventDefault();
-      activeLessonId = Number(select.value || 1);
+      activeLessonId = Number(select.value ?? 0);
       setState({ teacherLessonId: activeLessonId, activeLessonId });
       const dot = qs('#serverDot');
       dot.classList.add('busy');
@@ -334,7 +375,7 @@
     });
 
     select.addEventListener('change', () => {
-      activeLessonId = Number(select.value || 1);
+      activeLessonId = Number(select.value ?? 0);
       renderOverview();
       renderReport();
     });
