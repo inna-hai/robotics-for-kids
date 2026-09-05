@@ -324,10 +324,11 @@
           </div>
           <span class="duration-pill">זמן: ${esc(student.duration)}</span>
           <div class="student-row-actions">
-            <input class="student-message-input" data-message-for="${esc(student.name)}" value="${esc(studentMessageDrafts.get(student.name) || '')}" placeholder="הודעה לתלמיד">
+            <textarea class="student-message-input" data-message-for="${esc(student.name)}" rows="2" placeholder="הודעה לתלמיד">${esc(studentMessageDrafts.get(student.name) || '')}</textarea>
             <button class="secondary-action" type="button" data-message="${esc(student.name)}">שליחה</button>
             <button class="secondary-action danger-action" type="button" data-freeze="${esc(student.name)}">עצירה</button>
             <button class="secondary-action" type="button" data-release="${esc(student.name)}">שחרור</button>
+            <button class="secondary-action" type="button" data-reset-student="${esc(student.name)}">איפוס משימה</button>
             <button class="icon-button" type="button" data-report="${esc(student.name)}" title="פתיחת דוח">›</button>
           </div>
         </div>
@@ -364,6 +365,9 @@
       });
       qs('#studentMonitor').querySelectorAll('[data-release]').forEach(button => {
         button.addEventListener('click', () => freeze('player', false, button.dataset.release));
+      });
+      qs('#studentMonitor').querySelectorAll('[data-reset-student]').forEach(button => {
+        button.addEventListener('click', () => resetStudentMission(button.dataset.resetStudent));
       });
     }
 
@@ -487,6 +491,25 @@
         })
       }).then(() => setControlStatus(on ? 'נעצר' : 'שוחרר'))
         .catch(error => setControlStatus(error.message || 'הפעולה נכשלה'));
+    }
+
+    function resetStudentMission(name) {
+      if (!name) return;
+      setControlStatus(`מאפס את ${name}...`);
+      api(`/api/kugel/students/${encodeURIComponent(name)}/reset`, {
+        method: 'POST',
+        body: JSON.stringify({ lessonId: activeLessonId })
+      })
+        .then(async () => {
+          studentMessageDrafts.delete(name);
+          selectedStudent = name;
+          await refreshLiveSession();
+          renderMetrics();
+          renderMonitor();
+          renderReport();
+          setControlStatus(`המשימה אופסה עבור ${name}`);
+        })
+        .catch(error => setControlStatus(error.message || 'האיפוס נכשל'));
     }
 
     qs('#freezeAll')?.addEventListener('click', () => freeze('all', true));

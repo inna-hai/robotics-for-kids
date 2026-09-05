@@ -1145,7 +1145,12 @@ async function fetchKugelGameEvents(session) {
 
 function summarizeStudentFromEvents(studentName, rows, fallback = {}) {
   const name = normalizeMinecraftName(studentName);
-  const matching = rows.filter(row => normalizeMinecraftName(row.player_name) === name);
+  const resetAt = fallback.resetAt ? Date.parse(fallback.resetAt) : 0;
+  const matching = rows.filter(row => {
+    if (normalizeMinecraftName(row.player_name) !== name) return false;
+    if (!resetAt) return true;
+    return (eventCreatedAtMs(row) || 0) >= resetAt;
+  });
   const ordered = [...matching].sort((a, b) => (eventCreatedAtMs(a) || 0) - (eventCreatedAtMs(b) || 0));
   const lastEvent = ordered.at(-1) || null;
   const lastEventAt = eventCreatedAtMs(lastEvent);
@@ -1169,11 +1174,14 @@ function summarizeStudentFromEvents(studentName, rows, fallback = {}) {
       /כל\s*8\s*המטבעות|כפתור הסיום|finish button|all 8/i.test(message);
   });
   const joinEvents = matching.filter(row => ['player_join', 'player_spawn'].includes(String(row.event_type || '')));
-  const startedAt = eventCreatedAtMs(joinEvents[0] || ordered[0]) || fallback.startedAt || null;
-  const coins = Math.min(8, Math.max(Number(fallback.coins || 0), estimatedCoins.count, coinEvents.length, ...coinProgress));
+  const fallbackStartedAt = !resetAt || Date.parse(fallback.startedAt || '') >= resetAt ? fallback.startedAt : null;
+  const fallbackFinishedAt = !resetAt || Date.parse(fallback.finishedAt || '') >= resetAt ? fallback.finishedAt : null;
+  const startedAt = eventCreatedAtMs(joinEvents[0] || ordered[0]) || fallbackStartedAt || null;
+  const fallbackCoins = fallbackFinishedAt ? Number(fallback.coins || 0) : 0;
+  const coins = Math.min(8, Math.max(fallbackCoins, estimatedCoins.count, coinEvents.length, ...coinProgress));
   const lastCoinAt = eventCreatedAtMs(estimatedCoins.rows.at(-1) || coinEvents.at(-1));
-  const finishedAt = eventCreatedAtMs(finishEvents.at(-1)) || (coins >= 8 ? lastCoinAt : null) || fallback.finishedAt || null;
-  const completed = Boolean(finishedAt || fallback.completed || coins >= 8);
+  const finishedAt = eventCreatedAtMs(finishEvents.at(-1)) || (coins >= 8 ? lastCoinAt : null) || fallbackFinishedAt || null;
+  const completed = Boolean(finishedAt || (!resetAt && fallback.completed) || coins >= 8);
   const durationMs = startedAt && finishedAt ? Math.max(0, finishedAt - startedAt) : null;
   const hasLiveConnection = lastEvent && String(lastEvent.event_type || '') !== 'player_leave';
   const connected = Boolean(hasLiveConnection || fallback.connected && !lastEvent);
@@ -1184,7 +1192,7 @@ function summarizeStudentFromEvents(studentName, rows, fallback = {}) {
     status: completed ? 'סיים' : matching.length || fallback.startedAt ? 'בתהליך' : 'לא התחיל',
     coins,
     startedAt: startedAt ? new Date(startedAt).toISOString() : fallback.startedAt || null,
-    finishedAt: finishedAt ? new Date(finishedAt).toISOString() : fallback.finishedAt || null,
+    finishedAt: finishedAt ? new Date(finishedAt).toISOString() : fallbackFinishedAt || null,
     lastSeenAt: lastEventAt ? new Date(lastEventAt).toISOString() : null,
     durationSeconds: durationMs === null ? fallback.durationSeconds || null : Math.round(durationMs / 1000),
     eventCount: matching.length,
@@ -1303,10 +1311,24 @@ async function handleKugelApi(req, res) {
       writeKugelSession(session);
       return jsonResponse(res, 200, { ok: true, session });
     }
+    const studentResetMatch = pathname.match(/^\/api\/kugel\/students\/([^/]+)\/reset$/);
+    if (req.method === 'POST' && studentResetMatch) {
+      const name = cleanText(decodeURIComponent(studentResetMatch[1]), 80);
+      const session = readKugelSession();
+      session.students = session.students || {};
+      session.students[name] = {
+        resetAt: nowIso(),
+        connected: false,
+        completed: false,
+        coins: 0,
+      };
+      writeKugelSession(session);
+      return jsonResponse(res, 200, { ok: true, session, student: name });
+    }
     if (req.method === 'POST' && pathname === '/api/kugel/live/message') {
       const raw = await readBody(req, 128 * 1024);
       const body = raw ? JSON.parse(raw) : {};
-      const text = cleanText(body.text, 240);
+      const text = cleanText(body.text, 1000);
       if (!text) return jsonResponse(res, 400, { ok: false, error: 'נא להזין הודעה' });
       const scope = body.scope === 'player' ? 'player' : 'all';
       const target = scope === 'player' ? cleanText(body.target, 80) : '';

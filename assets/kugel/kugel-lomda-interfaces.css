@@ -508,14 +508,15 @@
 
 .student-row-actions {
   display: grid;
-  grid-template-columns: minmax(135px, 1fr) auto auto auto auto;
+  grid-template-columns: minmax(180px, 1fr) auto auto auto auto auto;
   gap: 6px;
-  align-items: center;
+  align-items: stretch;
 }
 
 .student-message-input {
   min-width: 0;
-  height: 38px;
+  min-height: 56px;
+  resize: vertical;
   padding: 8px 10px;
   border: 1px solid #cbd5e1;
   border-radius: 10px;
