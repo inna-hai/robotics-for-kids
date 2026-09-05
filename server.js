@@ -1095,19 +1095,28 @@ function positionBucket(payload) {
   return `${Math.round(x / 3) * 3}:${Math.round(z / 3) * 3}`;
 }
 
-function carpetCoinEstimate(rows) {
-  const blocks = new Map();
+function collectibleCoinEstimate(rows) {
+  const carpetBlocks = new Map();
+  const pressurePlateCoins = new Map();
   for (const row of rows) {
     if (String(row.event_type || '') !== 'agent_break_candidate') continue;
-    if (String(row.block_id || '') !== 'minecraft:yellow_carpet') continue;
-    const bucket = `${Math.round(Number(row.block_x ?? row.position_x ?? 0))}:${Math.round(Number(row.block_z ?? row.position_z ?? 0))}`;
-    if (!blocks.has(bucket)) blocks.set(bucket, row);
+    const blockId = String(row.block_id || '');
+    if (blockId === 'minecraft:yellow_carpet') {
+      const bucket = `${Math.round(Number(row.block_x ?? row.position_x ?? 0))}:${Math.round(Number(row.block_z ?? row.position_z ?? 0))}`;
+      if (!carpetBlocks.has(bucket)) carpetBlocks.set(bucket, row);
+    }
+    if (blockId === 'minecraft:light_weighted_pressure_plate') {
+      const bucket = positionBucket(parseEventPayload(row));
+      if (bucket && !pressurePlateCoins.has(bucket)) pressurePlateCoins.set(bucket, row);
+    }
   }
-  const blockRows = [...blocks.values()].sort((a, b) => (eventCreatedAtMs(a) || 0) - (eventCreatedAtMs(b) || 0));
-  const count = Math.floor(blockRows.length / 4);
+  const carpetRows = [...carpetBlocks.values()].sort((a, b) => (eventCreatedAtMs(a) || 0) - (eventCreatedAtMs(b) || 0));
+  const pressureRows = [...pressurePlateCoins.values()].sort((a, b) => (eventCreatedAtMs(a) || 0) - (eventCreatedAtMs(b) || 0));
+  const rowsByTime = [...carpetRows, ...pressureRows].sort((a, b) => (eventCreatedAtMs(a) || 0) - (eventCreatedAtMs(b) || 0));
+  const count = Math.floor(carpetRows.length / 4) + pressureRows.length;
   return {
     count: Math.min(8, count),
-    rows: blockRows,
+    rows: rowsByTime,
   };
 }
 
@@ -1191,7 +1200,7 @@ function summarizeStudentFromEvents(studentName, rows, fallback = {}) {
   const lastEvent = ordered.at(-1) || null;
   const lastEventAt = eventCreatedAtMs(lastEvent);
   const coinProgress = matching.map(row => coinProgressFromMessage(eventMessage(row)));
-  const estimatedCoins = carpetCoinEstimate(matching);
+  const estimatedCoins = collectibleCoinEstimate(matching);
   const coinEvents = matching.filter(row => {
     const payload = parseEventPayload(row);
     const type = String(row.event_type || '');
