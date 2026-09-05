@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>קוגל | ממשק תלמיד</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260905-academy-clarity-1">
+  <link rel="stylesheet" href="assets/kugel/kugel-lomda-interfaces.css?v=20260905-1">
+</head>
+<body class="kugel-app student-app">
+  <header class="app-topbar">
+    <a class="brand-link" href="kugel-student.html" aria-label="ממשק תלמיד קוגל">
+      <span class="brand-mark">K</span>
+      <span>
+        <strong>קוגל Minecraft</strong>
+        <small>ממשק תלמיד</small>
+      </span>
+    </a>
+    <nav class="role-nav" aria-label="מעבר ממשקים">
+      <a class="active" href="kugel-student.html">תלמיד</a>
+      <a href="kugel-teacher.html">מורה</a>
+    </nav>
+  </header>
+
+  <main class="app-shell">
+    <section class="student-layout">
+      <aside class="lesson-rail" aria-label="רשימת שיעורים">
+        <div class="rail-head">
+          <span class="tag">אקדמיית ה-Agent</span>
+          <h1>השיעורים שלי</h1>
+          <p>מתקדמים לבד: צופים, מתרגלים, נכנסים למיינקראפט, מסיימים משימה ומגישים ראיה.</p>
+        </div>
+        <div class="lesson-list" id="studentLessonList"></div>
+      </aside>
+
+      <section class="student-workspace" aria-live="polite">
+        <div class="workspace-hero">
+          <div>
+            <div class="kicker" id="studentKicker"></div>
+            <h2 id="studentTitle"></h2>
+            <p class="goal" id="studentSummary"></p>
+            <div class="student-progress-strip" id="studentProgressStrip"></div>
+          </div>
+          <div class="mission-panel">
+            <span class="tag">מה עושים עכשיו</span>
+            <strong id="studentDeliverable"></strong>
+            <p id="studentWorld"></p>
+          </div>
+        </div>
+
+        <section class="student-stage-grid">
+          <article class="panel lesson-video-panel">
+            <div class="panel-head">
+              <h3>סרטון והסבר</h3>
+              <button class="icon-button" type="button" id="markWatched" title="סימון צפייה">✓</button>
+            </div>
+            <video id="studentVideo" controls preload="metadata" playsinline></video>
+          </article>
+
+          <article class="panel minecraft-launch-panel">
+            <div class="panel-head">
+              <h3>כניסה לעולם</h3>
+              <span class="status-pill" id="worldModePill"></span>
+            </div>
+            <p id="minecraftInstructions"></p>
+            <button class="primary-action" type="button" id="launchWorld">פתחו את עולם השיעור</button>
+            <small id="launchStatus"></small>
+          </article>
+        </section>
+
+        <section class="panel academy-panel" id="studentAcademyPanel" hidden>
+          <div>
+            <span class="tag">תרגול לפני Minecraft</span>
+            <h3>אקדמיית ה-Agent</h3>
+            <p>בונים את MakeCode בשלבים, מריצים הדמיה ומקבלים בדיקה לפני שמיישמים בעולם.</p>
+          </div>
+          <a class="primary-action link-action" id="studentAcademyLink" href="#">פתיחת תרגול</a>
+        </section>
+
+        <section class="detail-columns">
+          <article class="panel">
+            <h3>שלבי עבודה</h3>
+            <ol id="studentSteps"></ol>
+          </article>
+          <article class="panel">
+            <h3>מה צריך להוכיח</h3>
+            <ul id="studentEvidence"></ul>
+          </article>
+        </section>
+
+        <section class="panel exit-ticket-panel">
+          <div class="panel-head">
+            <h3>כרטיס יציאה</h3>
+            <span class="status-pill" id="ticketStatus">ממתין להגשה</span>
+          </div>
+          <p><strong id="studentExitQuestion"></strong></p>
+          <form id="studentExitForm" class="compact-form">
+            <label>
+              <span>שם / צוות</span>
+              <input name="studentName" value="AmiM" autocomplete="name">
+            </label>
+            <label>
+              <span>תשובה קצרה</span>
+              <textarea name="answer" rows="4" required placeholder="מה עשיתם ומה בדקתם?"></textarea>
+            </label>
+            <label>
+              <span>צילום ממיינקראפט</span>
+              <input name="photo" type="file" accept="image/png,image/jpeg,image/webp">
+            </label>
+            <button class="primary-action" type="submit">הגשה למורה</button>
+          </form>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <script src="js/craftom-minecraft-challenges.js?v=20260905-academy-clarity-1"></script>
+  <script src="js/kugel-lomda-interfaces.js?v=20260905-1"></script>
+</body>
+</html>

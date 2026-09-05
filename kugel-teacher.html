@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>קוגל | ממשק מורה</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260905-academy-clarity-1">
+  <link rel="stylesheet" href="assets/kugel/kugel-lomda-interfaces.css?v=20260905-1">
+</head>
+<body class="kugel-app teacher-app">
+  <header class="app-topbar">
+    <a class="brand-link" href="kugel-teacher.html" aria-label="ממשק מורה קוגל">
+      <span class="brand-mark teacher-mark">K</span>
+      <span>
+        <strong>קוגל Minecraft</strong>
+        <small>ממשק מורה</small>
+      </span>
+    </a>
+    <nav class="role-nav" aria-label="מעבר ממשקים">
+      <a href="kugel-student.html">תלמיד</a>
+      <a class="active" href="kugel-teacher.html">מורה</a>
+    </nav>
+  </header>
+
+  <main class="app-shell">
+    <section class="teacher-board">
+      <aside class="teacher-control">
+        <span class="tag">לוח הפעלה</span>
+        <h1>פתיחת שיעור לכיתה</h1>
+        <p>המורה בוחרת שיעור. הממשק מציג איזה עולם יעלה, באיזה מצב משחק, ומה יופיע בדוח.</p>
+
+        <form class="compact-form" id="teacherLaunchForm">
+          <label>
+            <span>כיתה</span>
+            <select name="classroom">
+              <option>קוגל ז׳ 1</option>
+              <option>קוגל ז׳ 2</option>
+              <option>קבוצת דמו</option>
+            </select>
+          </label>
+          <label>
+            <span>שיעור</span>
+            <select name="lessonId" id="teacherLessonSelect"></select>
+          </label>
+          <button class="primary-action" type="submit">הפעלת שיעור</button>
+        </form>
+
+        <div class="server-card">
+          <span class="status-dot" id="serverDot"></span>
+          <div>
+            <strong id="serverState">שרת מוכן</strong>
+            <small id="serverDetail">לא הופעל שיעור בדמו הנוכחי</small>
+          </div>
+        </div>
+      </aside>
+
+      <section class="teacher-main">
+        <div class="workspace-hero teacher-hero">
+          <div>
+            <div class="kicker" id="teacherKicker"></div>
+            <h2 id="teacherTitle"></h2>
+            <p class="goal" id="teacherSummary"></p>
+          </div>
+          <div class="mission-panel">
+            <span class="tag">העולם שיופעל</span>
+            <strong id="teacherWorldName"></strong>
+            <p id="teacherWorldMeta"></p>
+          </div>
+        </div>
+
+        <section class="metric-grid">
+          <article class="metric"><strong id="metricConnected">0</strong><span>מחוברים</span></article>
+          <article class="metric"><strong id="metricActive">0</strong><span>בתהליך</span></article>
+          <article class="metric"><strong id="metricDone">0</strong><span>סיימו</span></article>
+          <article class="metric"><strong id="metricAttention">0</strong><span>דורשים בדיקה</span></article>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h3>לוח חי לתלמידים</h3>
+            <button class="icon-button" id="simulateProgress" type="button" title="סימולציית התקדמות">↻</button>
+          </div>
+          <div class="student-monitor" id="studentMonitor"></div>
+        </section>
+
+        <section class="panel report-panel">
+          <div class="panel-head">
+            <h3>דוח סיום למורה</h3>
+            <span class="status-pill">נבנה מתוך אירועי Minecraft</span>
+          </div>
+          <div id="teacherReport"></div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <script src="js/craftom-minecraft-challenges.js?v=20260905-academy-clarity-1"></script>
+  <script src="js/kugel-lomda-interfaces.js?v=20260905-1"></script>
+</body>
+</html>
