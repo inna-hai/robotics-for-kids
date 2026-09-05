@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>מצגת מדריך | Craftom כיתה ז׳</title>
+  <title>מצגת מדריך | אקדמיית ה-Agent</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260904-codebuilder-4">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260905-agent-academy-1">
   <style>
     body{background:#071528;color:#fff}
     .shell{width:min(1180px,calc(100% - 28px));padding:20px 0}
@@ -25,7 +25,7 @@
     <div class="slides" id="slides"></div>
   </main>
   <div class="actions"><a class="btn secondary" href="craftom-school/preview/index.html">מפת הקורס</a></div>
-  <script src="js/craftom-minecraft-challenges.js?v=20260904-codebuilder-4"></script>
+  <script src="js/craftom-minecraft-challenges.js?v=20260905-agent-academy-1"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const program = window.CRAFTOM_MINECRAFT_PROGRAM;
@@ -33,7 +33,7 @@
     const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
     document.title = `מצגת מדריך - ${challenge.title}`;
     document.getElementById('slides').innerHTML = `
-      <section class="slide"><span class="tag">Craftom Challenges • כיתה ז׳</span><h1>${esc(challenge.title)}</h1><p>${esc(challenge.story)}</p></section>
+      <section class="slide"><span class="tag">אקדמיית ה-Agent</span><h1>${esc(challenge.title)}</h1><p>${esc(challenge.story)}</p></section>
       <section class="slide"><h2>סרטון פתיחה</h2><video class="video" src="${esc(challenge.video)}" poster="${esc(challenge.poster)}" controls playsinline preload="metadata"></video></section>
       <section class="slide"><h2>מה לומדים?</h2><p>${esc(challenge.concept)}</p><p><b>פקודות:</b> ${esc(challenge.command)}</p><p>האתגר ממשיך את אותה עיר: לא מתחילים עולם חדש, אלא מוסיפים שכבה חדשה למה שכבר נבנה.</p></section>
       <section class="slide"><h2>4 מפגשים</h2><ul>${challenge.meetings.map(item => `<li><b>${esc(item[0])} ${esc(item[1])}:</b> ${esc(item[4].goal)}</li>`).join('')}</ul></section>

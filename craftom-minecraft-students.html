@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>דף עבודה עצמית | Craftom כיתה ז׳</title>
+  <title>דף עבודה עצמית | אקדמיית ה-Agent</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260904-codebuilder-4">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260905-agent-academy-1">
   <link rel="stylesheet" href="css/platform-home-link.css">
   <style>
     .worksheet{display:grid;gap:12px}
@@ -58,14 +58,14 @@
     </section>
   </main>
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="js/craftom-minecraft-challenges.js?v=20260904-codebuilder-4"></script>
+  <script src="js/craftom-minecraft-challenges.js?v=20260905-agent-academy-1"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const program = window.CRAFTOM_MINECRAFT_PROGRAM;
     const challenge = window.getCraftomMinecraftChallenge(params.get('challenge') || params.get('lesson'));
     const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
     document.title = `דף עבודה עצמית - ${challenge.title}`;
-    document.getElementById('kicker').textContent = `Craftom Challenges • כיתה ז׳ • אתגר ${challenge.id}`;
+    document.getElementById('kicker').textContent = `אקדמיית ה-Agent • אתגר ${challenge.id}`;
     document.getElementById('title').textContent = challenge.title;
     document.getElementById('story').textContent = challenge.story;
     document.getElementById('actions').innerHTML = `

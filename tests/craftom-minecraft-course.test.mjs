@@ -12,6 +12,8 @@ vm.runInContext(read('js/craftom-minecraft-challenges.js'), sandbox);
 
 const program = sandbox.window.CRAFTOM_MINECRAFT_PROGRAM;
 assert.ok(program, 'Craftom Minecraft program exists');
+assert.equal(program.title, 'אקדמיית ה-Agent במיינקראפט', 'program has a grade-neutral user-facing name');
+assert.equal(program.grade, 'חטיבת ביניים', 'program is not locked to grade 7 in user-facing metadata');
 assert.equal(program.totalChallenges, 4, 'program has 4 challenges');
 assert.equal(program.totalMeetings, 16, 'program has 16 meetings');
 assert.ok(program.subtitle.includes('עבודה עצמית'), 'program frames the course as a self-study lomda');
@@ -28,6 +30,9 @@ assert.ok(program.exitUpload.includes('כרטיס היציאה'), 'photo upload 
 
 const [challenge1, challenge2, challenge3, challenge4] = program.challenges;
 assert.equal(challenge1.title, 'הרובוט השליח', 'challenge 1 keeps the courier foundation');
+assert.equal(challenge1.meetings[0][4].academy.exercises.length, 6, 'challenge 1 lesson 1 has gradual Agent academy exercises');
+assert.ok(challenge1.meetings[0][4].academy.story.includes('Python Turtle'), 'lesson 1 is inspired by Python Turtle slow-build exercises');
+assert.ok(!challenge1.meetings[1][4].academy, 'Agent academy exercises are currently scoped only to lesson 1');
 assert.equal(challenge2.title, 'קו המשלוחים האוטומטי', 'challenge 2 is the automatic delivery line');
 assert.equal(challenge3.title, 'קו משלוחים חכם', 'challenge 3 is the smart delivery line');
 assert.equal(challenge4.title, 'העיר החכמה שלי', 'challenge 4 is the personal smart city project');
@@ -74,7 +79,9 @@ assert.ok(preview.includes('programVideo'), 'preview page renders the program vi
 assert.ok(preview.includes('סרטון פתיחת התוכנית'), 'preview page labels the overview video');
 assert.ok(preview.includes('program.overviewVideo'), 'preview page loads video from program data');
 assert.ok(preview.includes('איך עובדים בלומדה'), 'preview explains the self-study mode before teacher materials');
-assert.ok(preview.includes('20260904-codebuilder-4'), 'preview page cache-busts the updated challenge data');
+assert.ok(preview.includes('20260905-agent-academy-1'), 'preview page cache-busts the updated challenge data');
+assert.ok(preview.includes('אקדמיית ה-Agent'), 'preview uses the neutral Agent academy name');
+assert.ok(!preview.includes('Craftom Challenges • כיתה ז׳'), 'preview no longer presents the course as grade 7 only');
 
 for (const path of [
   'craftom-minecraft-challenge.html',
@@ -82,11 +89,12 @@ for (const path of [
   'craftom-minecraft-slides.html',
   'craftom-minecraft-lesson.html',
 ]) {
-  assert.ok(read(path).includes('20260904-codebuilder-4'), `${path} loads the updated challenge data`);
+  assert.ok(read(path).includes('20260905-agent-academy-1'), `${path} loads the updated challenge data`);
 }
 
 assert.ok(read('craftom-minecraft-challenge.html').includes('רצף עבודה עצמית'), 'challenge page frames the work as self-study');
 assert.ok(read('craftom-minecraft-lesson.html').includes('איך עובדים לבד'), 'lesson page starts lesson detail with self-study steps');
+assert.ok(read('craftom-minecraft-lesson.html').includes('agentAcademy'), 'lesson page has a dedicated gradual exercise section');
 assert.ok(read('craftom-minecraft-students.html').includes('דף עבודה עצמית'), 'student worksheet is framed as self-study');
 assert.ok(read('craftom-minecraft-lesson.html').includes('העלאת תמונה'), 'lesson page asks for a photo upload in the exit ticket area');
 assert.ok(read('craftom-minecraft-lesson.html').includes('id="exitTicketForm"'), 'lesson page has a real exit ticket submission form');
@@ -113,6 +121,7 @@ assert.ok(!read('js/craftom-minecraft-code-builder.js').includes('():\\\\n'), 'P
 assert.ok(read('js/craftom-minecraft-code-builder.js').includes('message0: \'on chat command %1\''), 'Craftom blocks use MakeCode-style English command labels');
 assert.ok(read('js/craftom-minecraft-code-builder.js').includes('message0: \'agent move %1 by %2\''), 'Agent movement block label is English like MakeCode');
 assert.ok(read('js/craftom-minecraft-code-builder.js').includes('category name="Loops & Logic"'), 'Blockly toolbox categories are English');
+assert.ok(!read('js/craftom-minecraft-code-builder.js').includes('const [first, ...rest]'), 'Craftom starter block chains keep the intended command order');
 assert.ok(!read('js/craftom-minecraft-code-builder.js').includes('message0: \'Agent זז'), 'old Hebrew movement command label is removed');
 assert.ok(!read('js/craftom-minecraft-code-builder.js').includes('category name="לולאות ותנאים"'), 'old Hebrew logic category label is removed');
 assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('/api/craftom/exit-ticket'), 'lesson renderer posts exit tickets to the server');

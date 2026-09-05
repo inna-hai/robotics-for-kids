@@ -94,7 +94,55 @@
   const detailsByChallenge = {
     1: [
       {
-        goal: 'להבין שקוד הוא רצף הוראות מדויק: מזמנים את ה-Agent, נותנים לו תנועה אחת ובודקים מרחק.',
+        academy: {
+          title: 'אקדמיית ה-Agent - מסלול השליחים',
+          story: 'כמו בקורס Python Turtle: לא מתחילים מפרויקט גדול. מאמנים את ה-Agent בתרגיל קטן, מריצים, משנים מספר אחד, ואז מוסיפים עוד פקודה. בסוף כל התרגילים מתחברים למשלוח ראשון בעיר.',
+          exercises: [
+            {
+              title: 'תרגיל 1 - ה-Agent מתעורר',
+              mission: 'צרו פקודת chat בשם deliver שמזמנת את ה-Agent לשחקן.',
+              blocks: ['on chat command deliver', 'agent teleport to player'],
+              python: 'def on_chat_deliver():\n    agent.teleportToPlayer()\n\nplayer.on_chat("deliver", on_chat_deliver)',
+              check: 'כשכותבים deliver בצ׳אט, ה-Agent מופיע לידכם.'
+            },
+            {
+              title: 'תרגיל 2 - צעד מדויק ראשון',
+              mission: 'הוסיפו תנועה קדימה ב-3 צעדים בלבד, בלי תחנה עדיין.',
+              blocks: ['agent move forward by 3'],
+              python: 'agent.move(FORWARD, 3)',
+              check: 'ה-Agent זז קדימה, אבל לא רחוק מדי.'
+            },
+            {
+              title: 'תרגיל 3 - מודדים מרחק כמו Turtle',
+              mission: 'שנו רק את המספר: נסו 5 ואז 7, ובחרו את המרחק שמתאים לשביל שלכם.',
+              blocks: ['agent move forward by 5', 'agent move forward by 7'],
+              python: 'agent.move(FORWARD, 5)',
+              check: 'אתם יודעים להסביר איזה מספר התאים למסלול ולמה.'
+            },
+            {
+              title: 'תרגיל 4 - תחנת יעד',
+              mission: 'בנו תחנה קטנה בסוף השביל והריצו שוב את אותה פקודה.',
+              blocks: ['on chat command deliver', 'agent move forward by המספר שבחרתם'],
+              python: 'agent.move(FORWARD, steps_to_station)',
+              check: 'ה-Agent מגיע קרוב לתחנה, לא עוצר באמצע ולא עובר אותה.'
+            },
+            {
+              title: 'תרגיל 5 - אישור משלוח',
+              mission: 'הוסיפו הודעת player say שמודיעה שהמשלוח הגיע.',
+              blocks: ['player say "delivery arrived"'],
+              python: 'player.say("delivery arrived")',
+              check: 'בסוף ההרצה מופיעה הודעה שמסבירה מה קרה.'
+            },
+            {
+              title: 'אתגר קטן - תיקון אחד',
+              mission: 'שברו בכוונה מספר אחד, הריצו, ואז תקנו רק את אותו מספר.',
+              blocks: ['agent move forward by n'],
+              python: 'agent.move(FORWARD, n)',
+              check: 'יש לכם לפני/אחרי: מה לא עבד, ומה תיקנתם.'
+            }
+          ]
+        },
+        goal: 'להבין שקוד הוא רצף הוראות מדויק: מאמנים את ה-Agent בשלבים קטנים, מזמנים אותו, נותנים לו תנועה אחת, בודקים מרחק ומתקנים כמו בקורס Python Turtle.',
         teacher: ['פותחים בסרטון האתגר ובונים יחד מילון קצר: מחסן, תחנה, Agent, פקודה.', 'מדגימים פקודת צ׳אט אחת בשם deliver.', 'מבקשים מכל תלמיד לשנות רק מספר אחד ולראות מה משתנה.'],
         build: ['מחסן קטן עם דלת ושלט.', 'תחנת יעד מול המחסן.', 'שביל ישר וברור בין שתי הנקודות.'],
         code: ['on chat command deliver', 'agent.teleportToPlayer()', 'agent.move(FORWARD, מספר צעדים)'],
@@ -254,9 +302,9 @@
   })));
 
   const program = {
-    title: 'Craftom Challenges - כיתה ז׳',
+    title: 'אקדמיית ה-Agent במיינקראפט',
     subtitle: 'לומדה לעבודה עצמית בארבעה אתגרים שנבנים בהמשכים על אותה עיר: משלוח ראשון, קו אוטומטי, החלטות חכמות והוספת אוטומציות.',
-    grade: 'כיתה ז׳',
+    grade: 'חטיבת ביניים',
     platform: 'Minecraft Education + Craftom + MakeCode',
     overviewVideo: `${videoBase}craftom-program-real-minecraft-gemini-live-1x.mp4`,
     overviewPoster: 'assets/craftom/challenges/my-smart-city-1-plan.webp',

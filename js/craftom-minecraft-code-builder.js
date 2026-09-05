@@ -131,8 +131,7 @@
 
   function chain(blocks) {
     if (!blocks.length) return '';
-    const [first, ...rest] = blocks;
-    return rest.reduceRight((tail, block) => block(tail), first(''));
+    return blocks.reduceRight((tail, block) => block(tail), '');
   }
 
   function simpleDelivery(command, steps = 5) {

@@ -10,6 +10,26 @@
     return items.map(item => `<li>${esc(item)}</li>`).join('');
   }
 
+  function academyCards(exercises) {
+    return exercises.map((item, index) => `
+      <article class="academy-step">
+        <span class="academy-step-number">${index + 1}</span>
+        <div>
+          <h3>${esc(item.title)}</h3>
+          <p>${esc(item.mission)}</p>
+          <div class="academy-code-lines" dir="ltr">
+            ${item.blocks.map(block => `<code>${esc(block)}</code>`).join('')}
+          </div>
+          <details>
+            <summary>Python</summary>
+            <pre dir="ltr">${esc(item.python)}</pre>
+          </details>
+          <strong>${esc(item.check)}</strong>
+        </div>
+      </article>
+    `).join('');
+  }
+
   function fileToDataUrl(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -202,6 +222,12 @@ player.onChat("test", function () {
           <article class="detail-box"><h2>ראיות Craftom</h2><ul id="evidence"></ul></article>
           <article class="detail-box"><h2>מה מעלים בסוף</h2><p id="exitUpload"></p></article>
         </section>
+        <section class="card agent-academy" id="agentAcademy" style="margin-top:16px" hidden>
+          <span class="tag">תרגול מדורג</span>
+          <h2 id="academyTitle"></h2>
+          <p id="academyStory"></p>
+          <div class="academy-steps" id="academySteps"></div>
+        </section>
         <section class="card makecode-workspace" style="margin-top:16px">
           <div>
             <span class="tag">MakeCode</span>
@@ -267,7 +293,7 @@ player.onChat("test", function () {
     `;
   }
 
-  document.title = `שיעור ${lesson.id} - ${lesson.title} | Craftom כיתה ז׳`;
+  document.title = `שיעור ${lesson.id} - ${lesson.title} | ${program.title}`;
   document.getElementById('kicker').textContent = `${program.grade} • שיעור ${lesson.id} מתוך ${program.totalMeetings} • אתגר ${lesson.challengeId}: ${lesson.challengeTitle}`;
   document.getElementById('title').textContent = lesson.title;
   window.CRAFTOM_CURRENT_MINECRAFT_LESSON = lesson;
@@ -286,6 +312,14 @@ player.onChat("test", function () {
   document.getElementById('build').innerHTML = list(lesson.detail.build);
   document.getElementById('code').innerHTML = list(lesson.detail.code);
   document.getElementById('evidence').innerHTML = list(lesson.detail.evidence);
+  const academy = lesson.detail.academy;
+  const academySection = document.getElementById('agentAcademy');
+  if (academy && academySection) {
+    academySection.hidden = false;
+    document.getElementById('academyTitle').textContent = academy.title;
+    document.getElementById('academyStory').textContent = academy.story;
+    document.getElementById('academySteps').innerHTML = academyCards(academy.exercises);
+  }
   document.getElementById('makeCodeSnippet').textContent = makeCodeSnippets[lesson.id] || makeCodeSnippets[1];
   document.getElementById('exitUpload').textContent = program.exitUpload;
   document.getElementById('exitUploadInline').textContent = program.exitUpload;
