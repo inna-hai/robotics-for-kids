@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>אקדמיית Agents</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260905-agent-academy-page-1">
+  <link rel="stylesheet" href="css/platform-home-link.css">
+</head>
+<body class="agent-academy-page">
+  <main class="shell academy-shell">
+    <header class="academy-top">
+      <div>
+        <div class="kicker" id="academyKicker">אקדמיית Agents</div>
+        <h1 id="academyTitle">אקדמיית Agents</h1>
+        <p class="goal" id="academyStory"></p>
+      </div>
+      <div class="actions">
+        <a class="btn secondary" id="lessonBackLink" href="craftom-minecraft-lesson-1.html">חזרה לשיעור</a>
+      </div>
+    </header>
+
+    <section class="agent-academy" id="agentAcademy">
+      <div class="academy-lab" id="agentAcademyLab">
+        <aside class="academy-exercises">
+          <h2>תרגילים</h2>
+          <div id="academyExerciseList"></div>
+        </aside>
+
+        <section class="academy-code-panel" aria-label="אזור קוד">
+          <div class="academy-panel-head">
+            <h2>בניית MakeCode</h2>
+            <div class="academy-mode-tabs" role="tablist" aria-label="בחירת מצב קוד">
+              <button class="active" type="button" data-academy-mode="blocks">בלוקים</button>
+              <button type="button" data-academy-mode="python">Python</button>
+            </div>
+          </div>
+          <div class="academy-editor-frame">
+            <div id="academyBlockly" class="academy-blockly" aria-label="עורך בלוקים"></div>
+            <pre id="academyPython" class="academy-python" dir="ltr" hidden></pre>
+          </div>
+          <div class="academy-actions">
+            <button class="btn secondary" id="academyReset" type="button">איפוס</button>
+            <button class="btn secondary" id="academyHint" type="button">רמז</button>
+            <button class="btn" id="academyRun" type="button">הרצה ובדיקה</button>
+          </div>
+          <div class="academy-feedback" id="academyFeedback" role="status" aria-live="polite"></div>
+        </section>
+
+        <section class="academy-sim-panel" aria-label="הדמיית תוצאה">
+          <div class="academy-panel-head">
+            <h2>הדמיית התוצאה</h2>
+            <span id="academyProgress"></span>
+          </div>
+          <canvas id="academyCanvas" width="640" height="420"></canvas>
+          <div class="academy-checks" id="academyChecks"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+  <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
+  <script src="js/craftom-minecraft-challenges.js?v=20260905-agent-academy-page-1"></script>
+  <script src="js/vendor/blockly/blockly.min.js"></script>
+  <script src="js/vendor/blockly/msg/he.js"></script>
+  <script src="js/craftom-agent-academy.js?v=20260905-agent-academy-page-1"></script>
+</body>
+</html>

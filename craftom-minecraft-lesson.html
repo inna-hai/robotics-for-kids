@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260905-agent-lab-1">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260905-agent-academy-page-1">
   <link rel="stylesheet" href="css/platform-home-link.css">
   <style>
     .lesson-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
@@ -56,42 +56,11 @@
       <article class="detail-box"><h2>מה מעלים בסוף</h2><p id="exitUpload"></p></article>
     </section>
 
-    <section class="agent-academy" id="agentAcademy" style="margin-top:16px" hidden>
-      <div class="academy-intro">
-        <span class="tag">תרגול מדורג</span>
-        <h2 id="academyTitle"></h2>
-        <p id="academyStory"></p>
-      </div>
-      <div class="academy-lab" id="agentAcademyLab">
-        <aside class="academy-exercises">
-          <h3>תרגילים</h3>
-          <div id="academyExerciseList"></div>
-        </aside>
-        <section class="academy-code-panel" aria-label="אזור קוד">
-          <div class="academy-panel-head">
-            <h3>הקוד שלי</h3>
-            <div class="academy-actions">
-              <button class="btn secondary" id="academyReset" type="button">איפוס</button>
-              <button class="btn" id="academyRun" type="button">הרצה</button>
-            </div>
-          </div>
-          <textarea id="academyCode" dir="ltr" spellcheck="false"></textarea>
-          <div class="academy-feedback" id="academyFeedback" role="status" aria-live="polite"></div>
-        </section>
-        <section class="academy-sim-panel" aria-label="הדמיית תוצאה">
-          <div class="academy-panel-head">
-            <h3>הדמיית התוצאה</h3>
-            <span id="academyProgress"></span>
-          </div>
-          <canvas id="academyCanvas" width="640" height="420"></canvas>
-          <div class="academy-checks" id="academyChecks"></div>
-        </section>
-      </div>
-      <div class="academy-reference">
-        <h3>דוגמאות בלוקים ו-Python</h3>
-        <p>הכרטיסים האלה הם רמזים. העבודה עצמה היא להריץ את הקוד ולראות את ה-Agent זז בהדמיה.</p>
-        <div class="academy-steps" id="academySteps"></div>
-      </div>
+    <section class="card agent-academy-cta" id="agentAcademyCta" style="margin-top:16px" hidden>
+      <span class="tag">תרגול עצמאי</span>
+      <h2>אקדמיית Agents</h2>
+      <p>עברו למסך תרגול בסגנון Python Turtle: תרגילים, בניית MakeCode בבלוקים, טאב Python והדמיית Agent שבודקת את הפתרון.</p>
+      <a class="btn" id="agentAcademyLink" href="#">כניסה לאקדמיה</a>
     </section>
 
     <section class="card makecode-workspace" style="margin-top:16px">
@@ -160,7 +129,7 @@
     </div>
   </main>
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="js/craftom-minecraft-challenges.js?v=20260905-agent-lab-1"></script>
-  <script src="js/craftom-minecraft-lesson-page.js?v=20260905-agent-lab-1"></script><script src="js/vendor/blockly/blockly.min.js"></script><script src="js/vendor/blockly/msg/he.js"></script><script src="js/craftom-minecraft-code-builder.js?v=20260905-agent-lab-1"></script><script src="js/craftom-agent-academy.js?v=20260905-agent-lab-1"></script>
+  <script src="js/craftom-minecraft-challenges.js?v=20260905-agent-academy-page-1"></script>
+  <script src="js/craftom-minecraft-lesson-page.js?v=20260905-agent-academy-page-1"></script><script src="js/vendor/blockly/blockly.min.js"></script><script src="js/vendor/blockly/msg/he.js"></script><script src="js/craftom-minecraft-code-builder.js?v=20260905-agent-academy-page-1"></script>
 </body>
 </html>

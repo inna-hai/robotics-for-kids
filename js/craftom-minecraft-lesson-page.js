@@ -10,26 +10,6 @@
     return items.map(item => `<li>${esc(item)}</li>`).join('');
   }
 
-  function academyCards(exercises) {
-    return exercises.map((item, index) => `
-      <article class="academy-step">
-        <span class="academy-step-number">${index + 1}</span>
-        <div>
-          <h3>${esc(item.title)}</h3>
-          <p>${esc(item.mission)}</p>
-          <div class="academy-code-lines" dir="ltr">
-            ${item.blocks.map(block => `<code>${esc(block)}</code>`).join('')}
-          </div>
-          <details>
-            <summary>Python</summary>
-            <pre dir="ltr">${esc(item.python)}</pre>
-          </details>
-          <strong>${esc(item.check)}</strong>
-        </div>
-      </article>
-    `).join('');
-  }
-
   function fileToDataUrl(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -222,42 +202,11 @@ player.onChat("test", function () {
           <article class="detail-box"><h2>ראיות Craftom</h2><ul id="evidence"></ul></article>
           <article class="detail-box"><h2>מה מעלים בסוף</h2><p id="exitUpload"></p></article>
         </section>
-        <section class="agent-academy" id="agentAcademy" style="margin-top:16px" hidden>
-          <div class="academy-intro">
-            <span class="tag">תרגול מדורג</span>
-            <h2 id="academyTitle"></h2>
-            <p id="academyStory"></p>
-          </div>
-          <div class="academy-lab" id="agentAcademyLab">
-            <aside class="academy-exercises">
-              <h3>תרגילים</h3>
-              <div id="academyExerciseList"></div>
-            </aside>
-            <section class="academy-code-panel" aria-label="אזור קוד">
-              <div class="academy-panel-head">
-                <h3>הקוד שלי</h3>
-                <div class="academy-actions">
-                  <button class="btn secondary" id="academyReset" type="button">איפוס</button>
-                  <button class="btn" id="academyRun" type="button">הרצה</button>
-                </div>
-              </div>
-              <textarea id="academyCode" dir="ltr" spellcheck="false"></textarea>
-              <div class="academy-feedback" id="academyFeedback" role="status" aria-live="polite"></div>
-            </section>
-            <section class="academy-sim-panel" aria-label="הדמיית תוצאה">
-              <div class="academy-panel-head">
-                <h3>הדמיית התוצאה</h3>
-                <span id="academyProgress"></span>
-              </div>
-              <canvas id="academyCanvas" width="640" height="420"></canvas>
-              <div class="academy-checks" id="academyChecks"></div>
-            </section>
-          </div>
-          <div class="academy-reference">
-            <h3>דוגמאות בלוקים ו-Python</h3>
-            <p>הכרטיסים האלה הם רמזים. העבודה עצמה היא להריץ את הקוד ולראות את ה-Agent זז בהדמיה.</p>
-            <div class="academy-steps" id="academySteps"></div>
-          </div>
+        <section class="card agent-academy-cta" id="agentAcademyCta" style="margin-top:16px" hidden>
+          <span class="tag">תרגול עצמאי</span>
+          <h2>אקדמיית Agents</h2>
+          <p>עברו למסך תרגול בסגנון Python Turtle: תרגילים, בניית MakeCode בבלוקים, טאב Python והדמיית Agent שבודקת את הפתרון.</p>
+          <a class="btn" id="agentAcademyLink" href="#">כניסה לאקדמיה</a>
         </section>
         <section class="card makecode-workspace" style="margin-top:16px">
           <div>
@@ -343,13 +292,10 @@ player.onChat("test", function () {
   document.getElementById('build').innerHTML = list(lesson.detail.build);
   document.getElementById('code').innerHTML = list(lesson.detail.code);
   document.getElementById('evidence').innerHTML = list(lesson.detail.evidence);
-  const academy = lesson.detail.academy;
-  const academySection = document.getElementById('agentAcademy');
-  if (academy && academySection) {
-    academySection.hidden = false;
-    document.getElementById('academyTitle').textContent = academy.title;
-    document.getElementById('academyStory').textContent = academy.story;
-    document.getElementById('academySteps').innerHTML = academyCards(academy.exercises);
+  const academyCta = document.getElementById('agentAcademyCta');
+  if (lesson.detail.academy && academyCta) {
+    academyCta.hidden = false;
+    document.getElementById('agentAcademyLink').href = `craftom-agent-academy.html?lesson=${lesson.id}`;
   }
   document.getElementById('makeCodeSnippet').textContent = makeCodeSnippets[lesson.id] || makeCodeSnippets[1];
   document.getElementById('exitUpload').textContent = program.exitUpload;

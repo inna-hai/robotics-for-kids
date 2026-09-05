@@ -1,54 +1,202 @@
 (function () {
-  const lesson = window.CRAFTOM_CURRENT_MINECRAFT_LESSON;
+  const params = new URLSearchParams(location.search);
+  const lesson = window.getCraftomMinecraftLesson?.(params.get('lesson') || 1);
   const academy = lesson?.detail?.academy;
+  const blocklyDiv = document.getElementById('academyBlockly');
+  const pythonOutput = document.getElementById('academyPython');
   const canvas = document.getElementById('academyCanvas');
-  const codeInput = document.getElementById('academyCode');
   const exerciseList = document.getElementById('academyExerciseList');
   const checksEl = document.getElementById('academyChecks');
   const feedbackEl = document.getElementById('academyFeedback');
   const progressEl = document.getElementById('academyProgress');
   const runButton = document.getElementById('academyRun');
   const resetButton = document.getElementById('academyReset');
+  const hintButton = document.getElementById('academyHint');
 
-  if (!academy || !canvas || !codeInput || !exerciseList || !checksEl || !feedbackEl || !runButton || !resetButton) return;
+  if (!academy || !window.Blockly || !blocklyDiv || !pythonOutput || !canvas || !exerciseList || !checksEl || !feedbackEl) return;
 
   const ctx = canvas.getContext('2d');
   const start = { x: 112, y: 230 };
   const station = { x: 322, y: 230 };
   const cell = 42;
   let activeExercise = 0;
-  let runState = null;
+  let visibleMode = 'blocks';
 
-  const starters = [
-    `player.onChat("deliver", function () {
-    agent.teleportToPlayer()
-})`,
-    `player.onChat("deliver", function () {
-    agent.teleportToPlayer()
-    agent.move(FORWARD, 3)
-})`,
-    `player.onChat("deliver", function () {
-    agent.teleportToPlayer()
-    agent.move(FORWARD, 5)
-})`,
-    `player.onChat("deliver", function () {
-    agent.teleportToPlayer()
-    agent.move(FORWARD, 5)
-})`,
-    `player.onChat("deliver", function () {
-    agent.teleportToPlayer()
-    agent.move(FORWARD, 5)
-    player.say("delivery arrived")
-})`,
-    `player.onChat("deliver", function () {
-    agent.teleportToPlayer()
-    agent.move(FORWARD, 8)
-    player.say("delivery arrived")
-})`,
-  ];
+  const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+  const commandName = text => String(text || 'run').replace(/[^A-Za-z0-9_]/g, '_') || 'run';
 
-  function esc(value) {
-    return String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+  document.title = `${academy.title} | ${lesson.title}`;
+  document.getElementById('academyKicker').textContent = `שיעור ${lesson.id} - ${lesson.title}`;
+  document.getElementById('academyTitle').textContent = academy.title;
+  document.getElementById('academyStory').textContent = academy.story;
+  document.getElementById('lessonBackLink').href = `craftom-minecraft-lesson-${lesson.id}.html`;
+
+  if (!window.__craftomAcademyBlocksDefined) {
+    window.__craftomAcademyBlocksDefined = true;
+    Blockly.defineBlocksWithJsonArray([
+      {
+        type: 'mc_on_chat',
+        message0: 'on chat command %1',
+        args0: [{ type: 'field_input', name: 'COMMAND', text: 'deliver' }],
+        message1: 'run %1',
+        args1: [{ type: 'input_statement', name: 'DO' }],
+        colour: 215,
+      },
+      {
+        type: 'mc_teleport_agent',
+        message0: 'agent teleport to player',
+        previousStatement: null,
+        nextStatement: null,
+        colour: 35,
+      },
+      {
+        type: 'mc_move_agent',
+        message0: 'agent move %1 by %2',
+        args0: [
+          { type: 'field_dropdown', name: 'DIR', options: [['forward', 'FORWARD'], ['back', 'BACK'], ['left', 'LEFT'], ['right', 'RIGHT']] },
+          { type: 'field_number', name: 'STEPS', value: 5, min: 1, max: 16 }
+        ],
+        previousStatement: null,
+        nextStatement: null,
+        colour: 35,
+      },
+      {
+        type: 'mc_turn_agent',
+        message0: 'agent turn %1',
+        args0: [{ type: 'field_dropdown', name: 'TURN', options: [['left', 'LEFT_TURN'], ['right', 'RIGHT_TURN']] }],
+        previousStatement: null,
+        nextStatement: null,
+        colour: 35,
+      },
+      {
+        type: 'mc_place_agent',
+        message0: 'agent place %1',
+        args0: [{ type: 'field_dropdown', name: 'DIR', options: [['down', 'DOWN'], ['forward', 'FORWARD']] }],
+        previousStatement: null,
+        nextStatement: null,
+        colour: 35,
+      },
+      {
+        type: 'mc_say',
+        message0: 'player say %1',
+        args0: [{ type: 'field_input', name: 'TEXT', text: 'delivery arrived' }],
+        previousStatement: null,
+        nextStatement: null,
+        colour: 290,
+      },
+    ]);
+  }
+
+  function fieldXml(fields = {}) {
+    return Object.entries(fields).map(([name, value]) => `<field name="${name}">${esc(value)}</field>`).join('');
+  }
+
+  function blockXml(type, fields = {}, statements = '', next = '') {
+    return `<block type="${type}">${fieldXml(fields)}${statements}${next}</block>`;
+  }
+
+  function statement(name, xml) {
+    return `<statement name="${name}">${xml}</statement>`;
+  }
+
+  function next(xml) {
+    return `<next>${xml}</next>`;
+  }
+
+  function chain(blocks) {
+    return blocks.reduceRight((tail, block) => block(tail), '');
+  }
+
+  function onChat(blocks, command = 'deliver') {
+    return blockXml('mc_on_chat', { COMMAND: command }, statement('DO', chain(blocks)));
+  }
+
+  function starterXml() {
+    const starts = [
+      onChat([tail => blockXml('mc_teleport_agent', {}, '', next(tail))]),
+      onChat([
+        tail => blockXml('mc_teleport_agent', {}, '', next(tail)),
+        tail => blockXml('mc_move_agent', { DIR: 'FORWARD', STEPS: 3 }, '', next(tail)),
+      ]),
+      onChat([
+        tail => blockXml('mc_teleport_agent', {}, '', next(tail)),
+        tail => blockXml('mc_move_agent', { DIR: 'FORWARD', STEPS: 5 }, '', next(tail)),
+      ]),
+      onChat([
+        tail => blockXml('mc_teleport_agent', {}, '', next(tail)),
+        tail => blockXml('mc_move_agent', { DIR: 'FORWARD', STEPS: 5 }, '', next(tail)),
+      ]),
+      onChat([
+        tail => blockXml('mc_teleport_agent', {}, '', next(tail)),
+        tail => blockXml('mc_move_agent', { DIR: 'FORWARD', STEPS: 5 }, '', next(tail)),
+        tail => blockXml('mc_say', { TEXT: 'delivery arrived' }, '', next(tail)),
+      ]),
+      onChat([
+        tail => blockXml('mc_teleport_agent', {}, '', next(tail)),
+        tail => blockXml('mc_move_agent', { DIR: 'FORWARD', STEPS: 8 }, '', next(tail)),
+        tail => blockXml('mc_say', { TEXT: 'delivery arrived' }, '', next(tail)),
+      ]),
+    ];
+    return `<xml xmlns="https://developers.google.com/blockly/xml">${starts[activeExercise] || starts[0]}</xml>`;
+  }
+
+  function toolboxXml() {
+    return `<xml xmlns="https://developers.google.com/blockly/xml">
+      <category name="Events" colour="215"><block type="mc_on_chat"></block></category>
+      <category name="Agent" colour="35">
+        <block type="mc_teleport_agent"></block>
+        <block type="mc_move_agent"></block>
+        <block type="mc_turn_agent"></block>
+        <block type="mc_place_agent"></block>
+      </category>
+      <category name="Player" colour="290"><block type="mc_say"></block></category>
+    </xml>`;
+  }
+
+  const workspace = Blockly.inject('academyBlockly', {
+    media: 'js/vendor/blockly/media/',
+    rtl: false,
+    trashcan: true,
+    scrollbars: true,
+    toolbox: toolboxXml(),
+    zoom: { controls: true, wheel: true, startScale: .86, maxScale: 1.35, minScale: .45 },
+  });
+
+  function indent(level) {
+    return '    '.repeat(level);
+  }
+
+  function chainCode(block, level = 0) {
+    const lines = [];
+    let current = block;
+    while (current) {
+      lines.push(blockCode(current, level));
+      current = current.getNextBlock();
+    }
+    return lines.filter(Boolean).join('\n');
+  }
+
+  function statementCode(block, level) {
+    return chainCode(block, level + 1) || `${indent(level + 1)}pass`;
+  }
+
+  function blockCode(block, level) {
+    const i = indent(level);
+    if (block.type === 'mc_on_chat') {
+      const command = block.getFieldValue('COMMAND') || 'run';
+      const name = commandName(command);
+      return `${i}def on_chat_${name}():\n${statementCode(block.getInputTargetBlock('DO'), level)}\n${i}player.on_chat("${command}", on_chat_${name})`;
+    }
+    if (block.type === 'mc_teleport_agent') return `${i}agent.teleportToPlayer()`;
+    if (block.type === 'mc_move_agent') return `${i}agent.move(${block.getFieldValue('DIR')}, ${Number(block.getFieldValue('STEPS') || 1)})`;
+    if (block.type === 'mc_turn_agent') return `${i}agent.turn(${block.getFieldValue('TURN')})`;
+    if (block.type === 'mc_place_agent') return `${i}agent.place(${block.getFieldValue('DIR')})`;
+    if (block.type === 'mc_say') return `${i}player.say("${block.getFieldValue('TEXT') || ''}")`;
+    return '';
+  }
+
+  function workspaceCode() {
+    return workspace.getTopBlocks(true).map(block => chainCode(block)).filter(Boolean).join('\n\n');
   }
 
   function defaultState() {
@@ -63,47 +211,7 @@
       sawTeleport: false,
       moves: [],
       turns: [],
-      errors: [],
     };
-  }
-
-  function parseCommands(code) {
-    const lines = String(code || '').split(/\r?\n/).map(line => line.trim()).filter(Boolean);
-    const commands = [];
-    const state = defaultState();
-
-    for (const line of lines) {
-      const chat = line.match(/player\.(?:onChat|on_chat)\(["']([^"']+)["']/);
-      if (chat) {
-        state.sawChat = chat[1] === 'deliver';
-        continue;
-      }
-      if (/agent\.(?:teleportToPlayer|teleport_to_player)\(\)/.test(line)) {
-        commands.push({ type: 'teleport' });
-        continue;
-      }
-      const move = line.match(/agent\.move\(\s*(FORWARD|BACK|LEFT|RIGHT)\s*,\s*(\d+)\s*\)/);
-      if (move) {
-        commands.push({ type: 'move', direction: move[1], steps: Number(move[2]) });
-        continue;
-      }
-      const turn = line.match(/agent\.turn\(\s*(LEFT_TURN|RIGHT_TURN)\s*\)/);
-      if (turn) {
-        commands.push({ type: 'turn', turn: turn[1] });
-        continue;
-      }
-      const place = line.match(/agent\.place\(\s*(DOWN|FORWARD)\s*\)/);
-      if (place) {
-        commands.push({ type: 'place', direction: place[1] });
-        continue;
-      }
-      const say = line.match(/player\.say\(\s*["']([^"']+)["']\s*\)/);
-      if (say) {
-        commands.push({ type: 'say', text: say[1] });
-      }
-    }
-
-    return { commands, state };
   }
 
   function applyMove(state, command) {
@@ -118,26 +226,38 @@
     state.moves.push(command);
   }
 
-  function runProgram(code) {
-    const parsed = parseCommands(code);
-    const state = parsed.state;
-    for (const command of parsed.commands) {
-      if (command.type === 'teleport') {
+  function walkBlocks(block, state) {
+    let current = block;
+    while (current) {
+      if (current.type === 'mc_on_chat') {
+        state.sawChat = current.getFieldValue('COMMAND') === 'deliver';
+        walkBlocks(current.getInputTargetBlock('DO'), state);
+      } else if (current.type === 'mc_teleport_agent') {
         state.x = start.x;
         state.y = start.y;
         state.heading = 0;
         state.sawTeleport = true;
-      } else if (command.type === 'move') {
-        applyMove(state, command);
-      } else if (command.type === 'turn') {
-        state.heading += command.turn === 'LEFT_TURN' ? -90 : 90;
-        state.turns.push(command.turn);
-      } else if (command.type === 'place') {
-        state.packages.push({ x: state.x, y: state.y, direction: command.direction });
-      } else if (command.type === 'say') {
-        state.says.push(command.text);
+      } else if (current.type === 'mc_move_agent') {
+        applyMove(state, {
+          direction: current.getFieldValue('DIR'),
+          steps: Number(current.getFieldValue('STEPS') || 1),
+        });
+      } else if (current.type === 'mc_turn_agent') {
+        const turn = current.getFieldValue('TURN');
+        state.heading += turn === 'LEFT_TURN' ? -90 : 90;
+        state.turns.push(turn);
+      } else if (current.type === 'mc_place_agent') {
+        state.packages.push({ x: state.x, y: state.y, direction: current.getFieldValue('DIR') });
+      } else if (current.type === 'mc_say') {
+        state.says.push(current.getFieldValue('TEXT') || '');
       }
+      current = current.getNextBlock();
     }
+  }
+
+  function runProgram() {
+    const state = defaultState();
+    workspace.getTopBlocks(true).forEach(block => walkBlocks(block, state));
     return state;
   }
 
@@ -167,7 +287,7 @@
         ['המסלול עדיין מתחיל מ-deliver', state.sawChat && state.sawTeleport],
       ],
       [
-        ['יש הודעת player.say', state.says.length > 0],
+        ['יש הודעת player say', state.says.length > 0],
         ['ההודעה מסבירה שהמשלוח הגיע', hasArrivalSay],
       ],
       [
@@ -175,16 +295,15 @@
         ['אחרי התיקון ה-Agent מגיע קרוב לתחנה', reachedStation],
       ],
     ][activeExercise] || [];
-
     return criteria.map(([label, pass]) => ({ label, pass: Boolean(pass) }));
   }
 
   function drawWorld(state = defaultState()) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#eef8f2';
+    ctx.fillStyle = '#eaf7ef';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.strokeStyle = '#d8e8e0';
+    ctx.strokeStyle = '#d6e8dc';
     ctx.lineWidth = 1;
     for (let x = 20; x < canvas.width; x += cell) {
       ctx.beginPath();
@@ -202,7 +321,7 @@
     ctx.fillStyle = '#c7d2fe';
     ctx.fillRect(start.x - 44, start.y - 44, 88, 88);
     ctx.fillStyle = '#1e3a8a';
-    ctx.font = '700 16px Rubik, Arial';
+    ctx.font = '800 16px Rubik, Arial';
     ctx.textAlign = 'center';
     ctx.fillText('מחסן', start.x, start.y + 6);
 
@@ -223,37 +342,50 @@
     ctx.strokeStyle = '#2563eb';
     ctx.lineWidth = 7;
     ctx.lineCap = 'round';
-    for (const segment of state.path) {
+    state.path.forEach(segment => {
       ctx.beginPath();
       ctx.moveTo(segment.x1, segment.y1);
       ctx.lineTo(segment.x2, segment.y2);
       ctx.stroke();
-    }
+    });
 
-    for (const pkg of state.packages) {
+    state.packages.forEach(pkg => {
       ctx.fillStyle = '#f59e0b';
       ctx.fillRect(pkg.x - 12, pkg.y - 12, 24, 24);
       ctx.strokeStyle = '#92400e';
       ctx.lineWidth = 2;
       ctx.strokeRect(pkg.x - 12, pkg.y - 12, 24, 24);
-    }
+    });
 
     ctx.save();
     ctx.translate(state.x, state.y);
     ctx.rotate((state.heading * Math.PI) / 180);
-    ctx.fillStyle = '#0f766e';
+    ctx.fillStyle = 'rgba(15, 23, 42, .18)';
     ctx.beginPath();
-    ctx.moveTo(24, 0);
-    ctx.lineTo(-18, -18);
-    ctx.lineTo(-12, 0);
-    ctx.lineTo(-18, 18);
-    ctx.closePath();
+    ctx.ellipse(0, 21, 28, 8, 0, 0, Math.PI * 2);
     ctx.fill();
+    ctx.fillStyle = '#0f766e';
+    ctx.strokeStyle = '#064e3b';
+    ctx.lineWidth = 2;
+    ctx.fillRect(-19, -15, 38, 32);
+    ctx.strokeRect(-19, -15, 38, 32);
+    ctx.fillStyle = '#14b8a6';
+    ctx.fillRect(-14, -28, 28, 18);
+    ctx.strokeRect(-14, -28, 28, 18);
+    ctx.fillStyle = '#d1fae5';
+    ctx.fillRect(-8, -23, 5, 5);
+    ctx.fillRect(4, -23, 5, 5);
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(18, -5, 12, 10);
+    ctx.strokeRect(18, -5, 12, 10);
+    ctx.fillStyle = '#34d399';
+    ctx.fillRect(-13, 17, 8, 11);
+    ctx.fillRect(5, 17, 8, 11);
     ctx.restore();
 
     if (state.says.length) {
       const text = state.says[state.says.length - 1];
-      ctx.fillStyle = 'rgba(255,255,255,.94)';
+      ctx.fillStyle = 'rgba(255,255,255,.96)';
       ctx.strokeStyle = '#bfdbfe';
       ctx.lineWidth = 2;
       ctx.beginPath();
@@ -261,7 +393,7 @@
       ctx.fill();
       ctx.stroke();
       ctx.fillStyle = '#1d4ed8';
-      ctx.font = '700 15px Rubik, Arial';
+      ctx.font = '800 15px Rubik, Arial';
       ctx.fillText(text, 380, 74);
     }
   }
@@ -285,28 +417,54 @@
   function renderChecks(checks) {
     checksEl.innerHTML = checks.map(check => `<div class="${check.pass ? 'pass' : 'fail'}"><span>${check.pass ? '✓' : '·'}</span>${esc(check.label)}</div>`).join('');
     const passed = checks.length > 0 && checks.every(check => check.pass);
-    feedbackEl.textContent = passed ? 'התרגיל עבר. אפשר לעבור לתרגיל הבא.' : 'הריצו, הסתכלו על ההדמיה, ותקנו דבר אחד בקוד.';
+    feedbackEl.textContent = passed ? 'התרגיל עבר. אפשר להמשיך לתרגיל הבא.' : 'עוד לא. הסתכלו על ההדמיה, תקנו בלוק אחד והריצו שוב.';
     feedbackEl.className = `academy-feedback ${passed ? 'pass' : 'fail'}`;
     progressEl.textContent = `תרגיל ${activeExercise + 1} מתוך ${academy.exercises.length}`;
   }
 
-  function resetExercise() {
-    codeInput.value = starters[activeExercise] || starters[0];
-    renderExercises();
-    runState = runProgram(codeInput.value);
-    drawWorld(runState);
-    renderChecks(evaluate(runState));
+  function updatePython() {
+    pythonOutput.textContent = workspaceCode();
   }
 
-  runButton.addEventListener('click', () => {
-    runState = runProgram(codeInput.value);
-    drawWorld(runState);
-    renderChecks(evaluate(runState));
+  function runAndCheck() {
+    updatePython();
+    const state = runProgram();
+    drawWorld(state);
+    renderChecks(evaluate(state));
+  }
+
+  function resetExercise() {
+    workspace.clear();
+    Blockly.Xml.domToWorkspace(new DOMParser().parseFromString(starterXml(), 'text/xml').documentElement, workspace);
+    renderExercises();
+    setTimeout(() => Blockly.svgResize(workspace), 20);
+    runAndCheck();
+  }
+
+  document.querySelectorAll('[data-academy-mode]').forEach(button => {
+    button.addEventListener('click', () => {
+      visibleMode = button.dataset.academyMode || 'blocks';
+      document.querySelectorAll('[data-academy-mode]').forEach(item => item.classList.toggle('active', item === button));
+      blocklyDiv.hidden = visibleMode !== 'blocks';
+      pythonOutput.hidden = visibleMode !== 'python';
+      updatePython();
+      if (visibleMode === 'blocks') setTimeout(() => Blockly.svgResize(workspace), 20);
+    });
   });
 
+  workspace.addChangeListener(event => {
+    if (!event.isUiEvent) {
+      updatePython();
+      feedbackEl.textContent = 'שיניתם את הבלוקים. לחצו הרצה ובדיקה.';
+      feedbackEl.className = 'academy-feedback';
+    }
+  });
+
+  runButton.addEventListener('click', runAndCheck);
   resetButton.addEventListener('click', resetExercise);
-  codeInput.addEventListener('input', () => {
-    feedbackEl.textContent = 'הקוד השתנה. לחצו הרצה כדי לבדוק.';
+  hintButton.addEventListener('click', () => {
+    const hint = academy.exercises[activeExercise]?.blocks?.join(' → ') || 'התחילו מפקודת chat ואז הוסיפו פקודת Agent אחת.';
+    feedbackEl.textContent = `רמז: ${hint}`;
     feedbackEl.className = 'academy-feedback';
   });
 

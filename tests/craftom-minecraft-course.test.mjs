@@ -79,7 +79,7 @@ assert.ok(preview.includes('programVideo'), 'preview page renders the program vi
 assert.ok(preview.includes('סרטון פתיחת התוכנית'), 'preview page labels the overview video');
 assert.ok(preview.includes('program.overviewVideo'), 'preview page loads video from program data');
 assert.ok(preview.includes('איך עובדים בלומדה'), 'preview explains the self-study mode before teacher materials');
-assert.ok(preview.includes('20260905-agent-lab-1'), 'preview page cache-busts the updated challenge data');
+assert.ok(preview.includes('20260905-agent-academy-page-1'), 'preview page cache-busts the updated challenge data');
 assert.ok(preview.includes('אקדמיית ה-Agent'), 'preview uses the neutral Agent academy name');
 assert.ok(!preview.includes('Craftom Challenges • כיתה ז׳'), 'preview no longer presents the course as grade 7 only');
 
@@ -88,15 +88,18 @@ for (const path of [
   'craftom-minecraft-students.html',
   'craftom-minecraft-slides.html',
   'craftom-minecraft-lesson.html',
+  'craftom-agent-academy.html',
 ]) {
-  assert.ok(read(path).includes('20260905-agent-lab-1'), `${path} loads the updated challenge data`);
+  assert.ok(read(path).includes('20260905-agent-academy-page-1'), `${path} loads the updated challenge data`);
 }
 
 assert.ok(read('craftom-minecraft-challenge.html').includes('רצף עבודה עצמית'), 'challenge page frames the work as self-study');
 assert.ok(read('craftom-minecraft-lesson.html').includes('איך עובדים לבד'), 'lesson page starts lesson detail with self-study steps');
-assert.ok(read('craftom-minecraft-lesson.html').includes('agentAcademy'), 'lesson page has a dedicated gradual exercise section');
-assert.ok(read('craftom-minecraft-lesson.html').includes('academyCanvas'), 'lesson page has a result simulation canvas');
-assert.ok(read('craftom-minecraft-lesson.html').includes('academyCode'), 'lesson page has a dedicated code editor for checked exercises');
+assert.ok(read('craftom-minecraft-lesson.html').includes('agentAcademyCta'), 'lesson page has an academy entry button');
+assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('craftom-agent-academy.html?lesson='), 'lesson page links to the separate Agent academy');
+assert.ok(read('craftom-agent-academy.html').includes('academyCanvas'), 'Agent academy has a result simulation canvas');
+assert.ok(read('craftom-agent-academy.html').includes('academyBlockly'), 'Agent academy has a Blockly MakeCode area');
+assert.ok(read('craftom-agent-academy.html').includes('data-academy-mode="python"'), 'Agent academy has a Python tab');
 assert.ok(read('craftom-minecraft-students.html').includes('דף עבודה עצמית'), 'student worksheet is framed as self-study');
 assert.ok(read('craftom-minecraft-lesson.html').includes('העלאת תמונה'), 'lesson page asks for a photo upload in the exit ticket area');
 assert.ok(read('craftom-minecraft-lesson.html').includes('id="exitTicketForm"'), 'lesson page has a real exit ticket submission form');
@@ -119,6 +122,7 @@ assert.ok(read('js/craftom-minecraft-code-builder.js').includes('Blockly.inject'
 assert.ok(read('js/craftom-agent-academy.js').includes('function runProgram'), 'Agent academy can simulate safe Agent commands');
 assert.ok(read('js/craftom-agent-academy.js').includes('function evaluate'), 'Agent academy checks student code against exercise criteria');
 assert.ok(read('js/craftom-agent-academy.js').includes('agent.move'), 'Agent academy parses Agent movement code');
+assert.ok(read('js/craftom-agent-academy.js').includes("Blockly.inject('academyBlockly'"), 'Agent academy builds MakeCode with Blockly');
 assert.ok(read('js/craftom-minecraft-code-builder.js').includes('data-craftom-code-mode'), 'Craftom Code Builder supports code mode switching');
 assert.ok(read('js/craftom-minecraft-code-builder.js').includes('player.on_chat'), 'Craftom Code Builder can generate Python-style code');
 assert.ok(!read('js/craftom-minecraft-code-builder.js').includes("join('\\\\n"), 'Craftom Code Builder uses real newlines between generated code lines');
