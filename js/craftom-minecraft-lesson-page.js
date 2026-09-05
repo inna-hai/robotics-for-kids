@@ -397,6 +397,15 @@ player.onChat("test", function () {
       if (!response.ok) throw new Error(data.error || 'לא הצלחנו לשמור את ההגשה.');
       form.classList.add('submitted');
       status.textContent = `כרטיס היציאה הוגש ונשמר. מספר הגשה: ${data.id}`;
+      window.dispatchEvent(new CustomEvent('hai:classroom-progress', {
+        detail: {
+          lessonId: String(lesson.id),
+          activityId: 'exit-ticket',
+          status: 'completed',
+          score: 100,
+          metadata: { submissionId: String(data.id || '') }
+        }
+      }));
     } catch (error) {
       status.textContent = error.message || 'לא הצלחנו לשמור את ההגשה.';
     } finally {

@@ -8680,6 +8680,18 @@
     function completedSet(){
       return completedExercises[currentLesson] || new Set();
     }
+    function completeCurrentTurtleExercise(exercise = currentExercises()[currentExerciseIndex]){
+      completedSet().add(currentExerciseIndex);
+      if(!exercise) return;
+      window.dispatchEvent(new CustomEvent('hai:classroom-progress', {
+        detail: {
+          lessonId: String(currentLesson),
+          activityId: `exercise-${exercise.id}`,
+          status: 'completed',
+          score: 100
+        }
+      }));
+    }
     function applyReviewUnlockForCurrentLesson(){
       if(!REVIEW_UNLOCK) return;
       if(!completedExercises[currentLesson]) completedExercises[currentLesson] = new Set();
@@ -9016,7 +9028,7 @@
           event.preventDefault();
           event.stopImmediatePropagation();
           exercisePassed = true;
-          completedSet().add(currentExerciseIndex);
+          completeCurrentTurtleExercise();
           advancePastCurrentExercise();
         }, true);
       }
@@ -9052,7 +9064,7 @@
     }
     function finishLesson13RailExercise(snapshot){
       exercisePassed = true;
-      completedSet().add(currentExerciseIndex);
+      completeCurrentTurtleExercise();
       if(snapshot) rememberLesson13Success(currentExerciseIndex, currentWorkspaceXml(), snapshot);
       renderCurrentExercise('מעולה — הציור הושלם. אפשר להמשיך.', true);
       unlockLesson13RailContinue();
@@ -9073,7 +9085,7 @@
         } catch(error){
           console.error(error);
           exercisePassed = true;
-          completedSet().add(currentExerciseIndex);
+          completeCurrentTurtleExercise();
           setExerciseFeedback('מעולה — הציור הושלם. אפשר להמשיך.', true);
           unlockLesson13RailContinue();
         }
@@ -10774,7 +10786,7 @@
         const writingShapeProblems = (parsed.problems.length || writingCommentProblems.length) ? [] : validateWrittenPythonExercise(ex, parsed.actions);
         const problems = [...parsed.problems, ...writingCommentProblems, ...writingShapeProblems];
         exercisePassed = problems.length === 0;
-        if(exercisePassed) completedSet().add(currentExerciseIndex);
+        if(exercisePassed) completeCurrentTurtleExercise();
         lesson10CurrentRevealKey = '';
         renderCurrentExercise(exercisePassed ? 'מעולה — הקוד שכתבתם מתאים למשימה ויכול לרוץ כמו בלוקים.' : problems[0], exercisePassed);
         return;
@@ -10794,7 +10806,7 @@
       activeValidationSnapshot = null;
       exercisePassed = problems.length === 0;
       if(exercisePassed){
-        completedSet().add(currentExerciseIndex);
+        completeCurrentTurtleExercise();
         rememberLesson12Success(currentExerciseIndex, currentWorkspaceXml(), snapshot);
         rememberLesson13Success(currentExerciseIndex, currentWorkspaceXml(), snapshot);
       }
@@ -11072,10 +11084,11 @@
     document.getElementById('runBtn').addEventListener('click',async ()=>{
       const ex = currentExercises()[currentExerciseIndex];
       if(isRunOnlyExampleExercise(ex)){
-        await run();
+        const runFinished = await run();
+        if(!runFinished) return;
         runOnlyExampleStarted[selectionUnlockKey()] = true;
         exercisePassed = true;
-        completedSet().add(currentExerciseIndex);
+        completeCurrentTurtleExercise();
         renderCurrentExercise('ראיתם? יש קו ראשון, אחר כך מעבר בלי ציור כשהעט מורם, ואז קו נוסף אחרי ״הורד עט״.', true);
         renderExerciseNav();
         saveProgress();
@@ -11116,7 +11129,7 @@
           if(isComplete){
             selectionExerciseUnlocked[key] = true;
             exercisePassed = true;
-            completedSet().add(currentExerciseIndex);
+            completeCurrentTurtleExercise();
           }
           const nextBtn = document.getElementById('nextExerciseBtn');
           if(nextBtn) nextBtn.disabled = REVIEW_UNLOCK ? false : !isComplete;
@@ -11149,7 +11162,7 @@
             const railOk = snapshot.actions.some(a=>a.cmd === 'forward' || a.cmd === 'forwardVar') && snapshot.blockTypes.includes('py_repeat');
             if(railOk){
               exercisePassed = true;
-              completedSet().add(currentExerciseIndex);
+              completeCurrentTurtleExercise();
               rememberLesson13Success(currentExerciseIndex, currentWorkspaceXml(), snapshot);
               const feedback = missionEl.querySelector('.exercise-feedback');
               if(feedback){

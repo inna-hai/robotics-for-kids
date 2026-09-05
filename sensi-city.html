@@ -9178,6 +9178,14 @@
             const nextIndex = Math.min(completedIndex + 1, exercises.length - 1);
             const completedCount = Math.min(completedIndex + 1, exercises.length);
             setExerciseProgress(completedCount);
+            window.dispatchEvent(new CustomEvent('hai:classroom-progress', {
+                detail: {
+                    lessonId: String(currentLesson),
+                    activityId: `exercise-${completedIndex + 1}`,
+                    status: 'completed',
+                    score: 100
+                }
+            }));
             if (nextIndex > completedIndex) setActiveExercise(nextIndex, currentLesson);
             renderExerciseToc(currentLesson);
             const modal = document.getElementById('exerciseModal');
@@ -9452,7 +9460,8 @@
 
         function toggleTask(num) {
             const items = document.querySelectorAll('.task-item');
-            items[num-1].classList.toggle('done');
+            const item = items[num - 1];
+            item.classList.toggle('done');
 
             // Check all done
             if ([...items].every(i => i.classList.contains('done'))) {

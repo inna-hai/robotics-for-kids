@@ -692,6 +692,16 @@
   function renderChecks(checks) {
     checksEl.innerHTML = checks.map(check => `<div class="${check.pass ? 'pass' : 'fail'}"><span>${check.pass ? '✓' : '·'}</span>${esc(check.label)}</div>`).join('');
     const passed = checks.length > 0 && checks.every(check => check.pass);
+    if (passed) {
+      window.dispatchEvent(new CustomEvent('hai:classroom-progress', {
+        detail: {
+          lessonId: String(lesson.id),
+          activityId: `academy-exercise-${activeExercise + 1}`,
+          status: 'completed',
+          score: 100
+        }
+      }));
+    }
     feedbackEl.textContent = passed
       ? 'התרגיל עבר. המשיכו לתרגיל הבא; בסיום האקדמיה חוזרים לשיעור ומיישמים במיינקראפט.'
       : 'עוד לא. הסתכלו על ההדמיה, תקנו בלוק אחד והריצו שוב.';
