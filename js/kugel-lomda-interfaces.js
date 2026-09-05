@@ -139,9 +139,18 @@
     return String(value || '').trim().toLowerCase();
   }
 
+  function isSystemParticipant(name) {
+    const key = normalizeMinecraftName(name);
+    return !key || key === 'server' || key === 'npc' || key === 'clawtest' || key.includes('npc');
+  }
+
+  function currentStudentName() {
+    return qs('[name="studentName"]')?.value?.trim() || 'AmiM';
+  }
+
   function currentStudents() {
     const students = liveSession?.students?.length ? liveSession.students : roster;
-    return students.filter(student => normalizeMinecraftName(student.name) !== 'server');
+    return students.filter(student => !isSystemParticipant(student.name));
   }
 
   function getLesson(value) {
@@ -218,6 +227,8 @@
 
       qs('#ticketStatus').textContent = status === 'הושלם' ? 'הוגש' : 'ממתין להגשה';
       qs('#launchStatus').textContent = getState().launchedLesson === lesson.id ? 'המשימה סומנה כהתחילה בדמו.' : '';
+      const resetButton = qs('#resetOwnMission');
+      if (resetButton) resetButton.hidden = lesson.id !== 0;
     }
 
     function renderList() {
@@ -244,7 +255,7 @@
     });
 
     qs('#launchWorld').addEventListener('click', () => {
-      const studentName = qs('[name="studentName"]')?.value || 'AmiM';
+      const studentName = currentStudentName();
       api(`/api/kugel/students/${encodeURIComponent(studentName)}/start`, { method: 'POST', body: JSON.stringify({ lessonId: activeLessonId }) })
         .then(data => {
           setState({ launchedLesson: activeLessonId });
@@ -258,11 +269,35 @@
         });
     });
 
+    qs('#resetOwnMission')?.addEventListener('click', async () => {
+      const studentName = currentStudentName();
+      qs('#launchStatus').textContent = 'מאפס את התרגול שלך...';
+      try {
+        await api(`/api/kugel/students/${encodeURIComponent(studentName)}/reset`, {
+          method: 'POST',
+          body: JSON.stringify({ lessonId: activeLessonId })
+        });
+        const state = getState();
+        const completedLessons = (state.completedLessons || []).filter(id => Number(id) !== activeLessonId);
+        setState({ completedLessons, launchedLesson: null, activeLessonId });
+        qs('#studentExitForm')?.reset();
+        const nameInput = qs('[name="studentName"]');
+        if (nameInput) nameInput.value = studentName;
+        qs('#ticketStatus').textContent = 'ממתין להגשה';
+        qs('#launchStatus').textContent = 'התרגול אופס. אפשר להתחיל מחדש.';
+        await refreshLiveSession();
+        renderList();
+        renderLesson(activeLessonId);
+      } catch (error) {
+        qs('#launchStatus').textContent = error.message || 'האיפוס נכשל';
+      }
+    });
+
     qs('#studentExitForm').addEventListener('submit', async event => {
       event.preventDefault();
       const formEl = event.currentTarget;
       const statusEl = qs('#ticketStatus');
-      const studentName = qs('[name="studentName"]')?.value || 'AmiM';
+      const studentName = currentStudentName();
       const lesson = getLesson(activeLessonId);
       const answer = new FormData(formEl).get('answer');
       const photoFile = formEl.querySelector('[name="photo"]')?.files?.[0] || null;
@@ -436,7 +471,6 @@
             <button class="secondary-action" type="button" data-message="${esc(student.name)}">שליחה</button>
             <button class="secondary-action danger-action" type="button" data-freeze="${esc(student.name)}">עצירה</button>
             <button class="secondary-action" type="button" data-release="${esc(student.name)}">שחרור</button>
-            <button class="secondary-action" type="button" data-reset-student="${esc(student.name)}">איפוס משימה</button>
             <button class="secondary-action report-action" type="button" data-report="${esc(student.name)}">דוח</button>
           </div>
         </div>
@@ -473,9 +507,6 @@
       });
       qs('#studentMonitor').querySelectorAll('[data-release]').forEach(button => {
         button.addEventListener('click', () => freeze('player', false, button.dataset.release));
-      });
-      qs('#studentMonitor').querySelectorAll('[data-reset-student]').forEach(button => {
-        button.addEventListener('click', () => resetStudentMission(button.dataset.resetStudent));
       });
     }
 
@@ -611,25 +642,6 @@
         })
       }).then(() => setControlStatus(on ? 'נעצר' : 'שוחרר'))
         .catch(error => setControlStatus(error.message || 'הפעולה נכשלה'));
-    }
-
-    function resetStudentMission(name) {
-      if (!name) return;
-      setControlStatus(`מאפס את ${name}...`);
-      api(`/api/kugel/students/${encodeURIComponent(name)}/reset`, {
-        method: 'POST',
-        body: JSON.stringify({ lessonId: activeLessonId })
-      })
-        .then(async () => {
-          studentMessageDrafts.delete(name);
-          selectedStudent = name;
-          await refreshLiveSession();
-          renderMetrics();
-          renderMonitor();
-          renderReport();
-          setControlStatus(`המשימה אופסה עבור ${name}`);
-        })
-        .catch(error => setControlStatus(error.message || 'האיפוס נכשל'));
     }
 
     qs('#freezeAll')?.addEventListener('click', () => freeze('all', true));

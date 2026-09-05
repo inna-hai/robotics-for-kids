@@ -52,6 +52,7 @@ const KUGEL_LESSON_WORLD_CONFIG = {
     completionEvents: ['player_join', 'block_place', 'block_break', 'challenge_report'],
   },
 };
+const DEFAULT_KUGEL_STUDENTS = ['AmiM', 'NoaK', 'ItayB', 'MayaL', 'OriS'];
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -1048,14 +1049,27 @@ function eventMessage(row) {
 
 function isSystemKugelParticipant(name) {
   const key = normalizeMinecraftName(name);
-  if (!key || key === 'server' || key === 'npc') return true;
+  if (!key || key === 'server' || key === 'npc' || key === 'clawtest') return true;
   return key.includes('npc') || key === 'kugelguide' || key === 'kugel guide';
 }
 
 function sanitizeKugelStudents(students = {}) {
-  return Object.fromEntries(
-    Object.entries(students || {}).filter(([name]) => !isSystemKugelParticipant(name))
-  );
+  const clean = {};
+  for (const [name, value] of Object.entries(students || {})) {
+    if (isSystemKugelParticipant(name)) continue;
+    clean[canonicalKugelStudentName(name)] = value;
+  }
+  return clean;
+}
+
+function canonicalKugelStudentName(name) {
+  const key = normalizeMinecraftName(name);
+  return DEFAULT_KUGEL_STUDENTS.find(item => normalizeMinecraftName(item) === key) || cleanText(name, 80);
+}
+
+function savedKugelStudent(students, name) {
+  const key = normalizeMinecraftName(name);
+  return Object.entries(students || {}).find(([studentName]) => normalizeMinecraftName(studentName) === key)?.[1] || {};
 }
 
 function eventCreatedAtMs(row) {
@@ -1245,6 +1259,7 @@ async function kugelSessionView() {
   const lessonTickets = readJsonLines(CRAFTOM_EXIT_TICKETS_FILE)
     .filter(item => String(item.courseId || '') === 'craftom-minecraft-grade7')
     .filter(item => Number(item.lessonId) === Number(session.lessonId))
+    .filter(item => !isSystemKugelParticipant(item.studentName))
     .filter(item => {
       const resetAt = resetByName.get(normalizeMinecraftName(item.studentName)) || 0;
       return !resetAt || (Date.parse(item.createdAt || '') || 0) >= resetAt;
@@ -1265,7 +1280,7 @@ async function kugelSessionView() {
       } : null,
     });
   }
-  const names = new Set(['AmiM', 'NoaK', 'ItayB', 'MayaL', 'OriS', ...Object.keys(savedStudents)]);
+  const names = new Set([...DEFAULT_KUGEL_STUDENTS, ...Object.keys(savedStudents).map(canonicalKugelStudentName)]);
   for (const item of lessonTickets) {
     if (!isSystemKugelParticipant(item.studentName)) names.add(item.studentName);
   }
@@ -1275,7 +1290,7 @@ async function kugelSessionView() {
   const students = [...names]
     .filter(name => !isSystemKugelParticipant(name))
     .map(name => summarizeStudentFromEvents(name, events, {
-      ...(savedStudents[name] || {}),
+      ...savedKugelStudent(savedStudents, name),
       exitTicket: exitTicketByName.get(normalizeMinecraftName(name)) || null,
     }));
   return {
@@ -1348,38 +1363,41 @@ async function handleKugelApi(req, res) {
     }
     const studentStartMatch = pathname.match(/^\/api\/kugel\/students\/([^/]+)\/start$/);
     if (req.method === 'POST' && studentStartMatch) {
-      const name = cleanText(decodeURIComponent(studentStartMatch[1]), 80);
-      if (isSystemKugelParticipant(name)) {
+      const rawName = cleanText(decodeURIComponent(studentStartMatch[1]), 80);
+      if (isSystemKugelParticipant(rawName)) {
         return jsonResponse(res, 200, { ok: true, skipped: true, reason: 'system_participant' });
       }
+      const name = canonicalKugelStudentName(rawName);
       const session = readKugelSession();
       session.students = sanitizeKugelStudents(session.students);
       session.students[name] = { ...(session.students[name] || {}), startedAt: nowIso(), connected: true };
-      writeKugelSession(session);
-      return jsonResponse(res, 200, { ok: true, minecraft: minecraftJoinInfo(), session });
+      const saved = writeKugelSession(session);
+      return jsonResponse(res, 200, { ok: true, minecraft: minecraftJoinInfo(), session: saved });
     }
     const studentFinishMatch = pathname.match(/^\/api\/kugel\/students\/([^/]+)\/finish$/);
     if (req.method === 'POST' && studentFinishMatch) {
-      const name = cleanText(decodeURIComponent(studentFinishMatch[1]), 80);
-      if (isSystemKugelParticipant(name)) {
+      const rawName = cleanText(decodeURIComponent(studentFinishMatch[1]), 80);
+      if (isSystemKugelParticipant(rawName)) {
         return jsonResponse(res, 200, { ok: true, skipped: true, reason: 'system_participant' });
       }
+      const name = canonicalKugelStudentName(rawName);
       const session = readKugelSession();
       session.students = sanitizeKugelStudents(session.students);
       const existing = session.students[name] || {};
       session.students[name] = { ...existing, finishedAt: nowIso(), completed: true, coins: 8 };
-      writeKugelSession(session);
-      return jsonResponse(res, 200, { ok: true, session });
+      const saved = writeKugelSession(session);
+      return jsonResponse(res, 200, { ok: true, session: saved });
     }
     const studentResetMatch = pathname.match(/^\/api\/kugel\/students\/([^/]+)\/reset$/);
     if (req.method === 'POST' && studentResetMatch) {
-      const name = cleanText(decodeURIComponent(studentResetMatch[1]), 80);
-      if (isSystemKugelParticipant(name)) {
+      const rawName = cleanText(decodeURIComponent(studentResetMatch[1]), 80);
+      if (isSystemKugelParticipant(rawName)) {
         const session = readKugelSession();
         session.students = sanitizeKugelStudents(session.students);
         writeKugelSession(session);
         return jsonResponse(res, 200, { ok: true, skipped: true, reason: 'system_participant' });
       }
+      const name = canonicalKugelStudentName(rawName);
       const session = readKugelSession();
       session.students = sanitizeKugelStudents(session.students);
       session.students[name] = {
@@ -1388,8 +1406,8 @@ async function handleKugelApi(req, res) {
         completed: false,
         coins: 0,
       };
-      writeKugelSession(session);
-      return jsonResponse(res, 200, { ok: true, session, student: name });
+      const saved = writeKugelSession(session);
+      return jsonResponse(res, 200, { ok: true, session: saved, student: name });
     }
     if (req.method === 'POST' && pathname === '/api/kugel/live/message') {
       const raw = await readBody(req, 128 * 1024);
