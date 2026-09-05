@@ -1060,16 +1060,18 @@ function positionBucket(payload) {
 }
 
 function carpetCoinEstimate(rows) {
-  const events = new Map();
+  const blocks = new Map();
   for (const row of rows) {
     if (String(row.event_type || '') !== 'agent_break_candidate') continue;
     if (String(row.block_id || '') !== 'minecraft:yellow_carpet') continue;
     const bucket = `${Math.round(Number(row.block_x ?? row.position_x ?? 0))}:${Math.round(Number(row.block_z ?? row.position_z ?? 0))}`;
-    if (!events.has(bucket)) events.set(bucket, row);
+    if (!blocks.has(bucket)) blocks.set(bucket, row);
   }
+  const blockRows = [...blocks.values()].sort((a, b) => (eventCreatedAtMs(a) || 0) - (eventCreatedAtMs(b) || 0));
+  const count = Math.floor(blockRows.length / 4);
   return {
-    count: Math.min(8, events.size),
-    rows: [...events.values()].sort((a, b) => (eventCreatedAtMs(a) || 0) - (eventCreatedAtMs(b) || 0)),
+    count: Math.min(8, count),
+    rows: blockRows,
   };
 }
 
