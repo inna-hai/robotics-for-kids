@@ -514,33 +514,47 @@
     function renderReport() {
       const students = currentStudents();
       ensureSelectedStudent(students);
-      const student = students.find(item => item.name === selectedStudent) || students[0] || roster[0];
       const world = liveSession?.world?.worldId ? liveSession.world : getWorld(activeLessonId);
-      const duration = student.durationSeconds ? `${Math.floor(student.durationSeconds / 60)}:${String(student.durationSeconds % 60).padStart(2, '0')}` : student.duration || '-';
-      const lastSeen = student.lastSeenAt ? new Date(student.lastSeenAt).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '-';
-      const exitTicket = student.exitTicket || null;
-      const ticketTime = exitTicket?.createdAt ? new Date(exitTicket.createdAt).toLocaleString('he-IL', { dateStyle: 'short', timeStyle: 'short' }) : '';
+      const sorted = [...students].sort((a, b) => {
+        const aSelected = a.name === selectedStudent ? 1 : 0;
+        const bSelected = b.name === selectedStudent ? 1 : 0;
+        if (aSelected !== bSelected) return bSelected - aSelected;
+        const aReady = a.completed || a.exitTicket ? 1 : 0;
+        const bReady = b.completed || b.exitTicket ? 1 : 0;
+        if (aReady !== bReady) return bReady - aReady;
+        return latestStudentActivityMs(b) - latestStudentActivityMs(a);
+      });
       qs('#teacherReport').innerHTML = `
-        <article class="report-card">
-          <strong>${esc(student.name)} • שיעור ${activeLessonId}</strong>
-          <p>הדוח נבנה מנתוני session ומאירועים שמגיעים מ-Minecraft Monitor.</p>
-          <div class="report-grid">
-            <div><span>עולם</span><strong>${esc(world.worldName || world.name)}</strong></div>
-            <div><span>חיבור</span><strong>${esc(student.connectionStatus || (student.connected ? 'מחובר' : 'לא מחובר'))}</strong></div>
-            <div><span>מטבעות</span><strong>${student.coins || 0} / 8</strong></div>
-            <div><span>זמן</span><strong>${esc(duration)}</strong></div>
-            <div><span>נראה לאחרונה</span><strong>${esc(lastSeen)}</strong></div>
-          </div>
-          <p><strong>סיכום:</strong> ${esc(student.status)}. ${esc(world.report || world.mission)}.</p>
-          <section class="teacher-exit-ticket">
-            <h4>כרטיס יציאה מהשיעור</h4>
-            ${exitTicket ? `
-              <p class="ticket-meta">הוגש על ידי ${esc(exitTicket.studentName || student.name)}${ticketTime ? ` • ${esc(ticketTime)}` : ''}</p>
-              <p class="ticket-answer">${esc(exitTicket.answer || '')}</p>
-              ${exitTicket.photo?.url ? `<a class="ticket-photo-link" href="${esc(exitTicket.photo.url)}" target="_blank" rel="noopener"><img src="${esc(exitTicket.photo.url)}" alt="צילום שהועלה בכרטיס היציאה"></a>` : '<p class="ticket-empty">לא צורפה תמונה.</p>'}
-            ` : '<p class="ticket-empty">עדיין לא הוגש כרטיס יציאה מהשיעור.</p>'}
-          </section>
-        </article>
+        <div class="report-list">
+          ${sorted.map(student => {
+            const duration = student.durationSeconds ? `${Math.floor(student.durationSeconds / 60)}:${String(student.durationSeconds % 60).padStart(2, '0')}` : student.duration || '-';
+            const lastSeen = student.lastSeenAt ? new Date(student.lastSeenAt).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '-';
+            const exitTicket = student.exitTicket || null;
+            const ticketTime = exitTicket?.createdAt ? new Date(exitTicket.createdAt).toLocaleString('he-IL', { dateStyle: 'short', timeStyle: 'short' }) : '';
+            return `
+              <article class="report-card ${student.name === selectedStudent ? 'is-selected' : ''}">
+                <strong>${esc(student.name)} • שיעור ${activeLessonId}</strong>
+                <p>הדוח נבנה מנתוני session ומאירועים שמגיעים מ-Minecraft Monitor.</p>
+                <div class="report-grid">
+                  <div><span>עולם</span><strong>${esc(world.worldName || world.name)}</strong></div>
+                  <div><span>חיבור</span><strong>${esc(student.connectionStatus || (student.connected ? 'מחובר' : 'לא מחובר'))}</strong></div>
+                  <div><span>מטבעות</span><strong>${student.coins || 0} / 8</strong></div>
+                  <div><span>זמן</span><strong>${esc(duration)}</strong></div>
+                  <div><span>נראה לאחרונה</span><strong>${esc(lastSeen)}</strong></div>
+                </div>
+                <p><strong>סיכום:</strong> ${esc(student.status)}. ${esc(world.report || world.mission)}.</p>
+                <section class="teacher-exit-ticket">
+                  <h4>כרטיס יציאה מהשיעור</h4>
+                  ${exitTicket ? `
+                    <p class="ticket-meta">הוגש על ידי ${esc(exitTicket.studentName || student.name)}${ticketTime ? ` • ${esc(ticketTime)}` : ''}</p>
+                    <p class="ticket-answer">${esc(exitTicket.answer || '')}</p>
+                    ${exitTicket.photo?.url ? `<a class="ticket-photo-link" href="${esc(exitTicket.photo.url)}" target="_blank" rel="noopener"><img src="${esc(exitTicket.photo.url)}" alt="צילום שהועלה בכרטיס היציאה"></a>` : '<p class="ticket-empty">לא צורפה תמונה.</p>'}
+                  ` : '<p class="ticket-empty">עדיין לא הוגש כרטיס יציאה מהשיעור.</p>'}
+                </section>
+              </article>
+            `;
+          }).join('')}
+        </div>
       `;
     }
 

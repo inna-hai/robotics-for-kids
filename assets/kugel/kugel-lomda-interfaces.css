@@ -571,6 +571,11 @@
   background: linear-gradient(90deg, #facc15, #22c55e);
 }
 
+.report-list {
+  display: grid;
+  gap: 12px;
+}
+
 .report-card {
   display: grid;
   gap: 8px;
@@ -578,6 +583,11 @@
   border: 1px solid #dbe8f4;
   border-radius: 12px;
   background: #f8fafc;
+}
+
+.report-card.is-selected {
+  border-color: #8fb7ff;
+  box-shadow: 0 0 0 2px rgba(143, 183, 255, .2);
 }
 
 .report-grid {
