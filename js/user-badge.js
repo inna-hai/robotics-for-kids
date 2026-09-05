@@ -24,6 +24,7 @@
       #${BADGE_ID}{position:fixed;z-index:99999;left:12px;bottom:12px;max-width:min(420px,calc(100vw - 24px));font-family:Rubik,Arial,sans-serif;direction:rtl;color:#0f172a;background:rgba(255,255,255,.96);border:1px solid #dbeafe;border-radius:999px;padding:9px 13px;box-shadow:0 14px 42px rgba(15,23,42,.18);display:flex;align-items:center;gap:8px;font-weight:900;font-size:.92rem;backdrop-filter:blur(14px)}
       #${BADGE_ID} .hai-user-dot{width:10px;height:10px;border-radius:999px;background:#94a3b8;box-shadow:0 0 0 4px #f1f5f9}
       #${BADGE_ID}.child .hai-user-dot{background:#16a34a;box-shadow:0 0 0 4px #dcfce7}
+      #${BADGE_ID}.classroom .hai-user-dot{background:#4f46e5;box-shadow:0 0 0 4px #e0e7ff}
       #${BADGE_ID}.parent .hai-user-dot{background:#f59e0b;box-shadow:0 0 0 4px #fef3c7}
       #${BADGE_ID}.guest .hai-user-dot{background:#64748b;box-shadow:0 0 0 4px #f1f5f9}
       #${BADGE_ID} small{display:block;color:#64748b;font-weight:800;font-size:.78rem;line-height:1.15}
@@ -47,18 +48,48 @@
     badge.innerHTML = `<span class="hai-user-dot" aria-hidden="true"></span><span><b>${escapeHtml(title)}</b><small>${escapeHtml(subtitle)}</small></span>`;
   }
 
+  function setAccessContext(mode, detail = {}) {
+    window.HaiAccessContext = { mode, ...detail };
+    window.dispatchEvent(new CustomEvent('hai:access-context', { detail: window.HaiAccessContext }));
+  }
+
   function escapeHtml(value) {
     return String(value || '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
   }
 
   async function load() {
+    try {
+      const classroomResponse = await fetch('/api/classroom/me', { credentials: 'same-origin' });
+      if (classroomResponse.ok) {
+        const classroomData = await classroomResponse.json();
+        if (classroomData.role === 'student') {
+          setAccessContext('classroom', {
+            studentName: classroomData.student?.name || '',
+            classroomName: classroomData.classroom?.name || '',
+          });
+          setBadge(
+            'classroom',
+            `${classroomData.student?.name || 'תלמיד/ה'} · תלמיד/ת כיתה`,
+            `${classroomData.classroom?.name || 'כיתה'} · ההתקדמות נשלחת למורה`,
+          );
+          return;
+        }
+        if (classroomData.role === 'teacher') {
+          setAccessContext('classroom-teacher', { teacherName: classroomData.teacher?.name || '' });
+          setBadge('classroom teacher', `${classroomData.teacher?.name || 'מורה'} · סביבת מורה`, 'ניהול כיתות ודוחות');
+          return;
+        }
+      }
+    } catch {}
+
     const authToken = token();
     if (!authToken) {
+      setAccessContext('guest');
       if (isQuietGuestPage()) {
         removeBadge();
         return;
       }
-      setBadge('guest', 'לא מחובר/ת', 'התקדמות לא תישמר עד כניסה');
+      setBadge('guest', 'מצב אורח', 'ההתקדמות נשמרת רק במכשיר הזה');
       return;
     }
     try {
@@ -66,12 +97,15 @@
       if (!response.ok) throw new Error('not logged in');
       const data = await response.json();
       if (data.mode === 'child') {
-        setBadge('child', `${data.child?.name || data.user?.studentName || 'ילד/ה'} מבצע/ת שיעורים`, 'התקדמות נשמרת לילד/ה הזה/ו');
+        setAccessContext('subscription', { childName: data.child?.name || data.user?.studentName || '' });
+        setBadge('subscription child', `${data.child?.name || data.user?.studentName || 'ילד/ה'} · מנוי אישי`, 'התקדמות נשמרת לילד/ה הזה/ו');
         return;
       }
-      setBadge('parent', `${data.user?.parentName || 'הורה'} — תצוגת הורה`, 'אפשר לצפות; התקדמות לא נשמרת לילד');
+      setAccessContext('subscription-parent', { parentName: data.user?.parentName || '' });
+      setBadge('subscription parent', `${data.user?.parentName || 'הורה'} — תצוגת הורה`, 'אפשר לצפות; התקדמות לא נשמרת לילד');
     } catch {
-      setBadge('guest', 'לא מחובר/ת', 'התחברו כדי לשמור התקדמות');
+      setAccessContext('guest');
+      setBadge('guest', 'מצב אורח', 'התחברו כדי לשמור התקדמות');
     }
   }
 

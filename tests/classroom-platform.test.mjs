@@ -192,6 +192,19 @@ try {
   assert.equal(studentMeBody.student.name, 'נועה');
   console.log('✓ classroom sessions expose only the correct role and roster data');
 
+  const classroomPersonalProgress = await fetch(`${baseUrl}/api/progress`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: studentCookie },
+    body: JSON.stringify({ courseId: 'python-turtle', lessonId: '1', activityId: 'exercise-1', status: 'completed', score: 100 }),
+  });
+  const classroomPersonalProgressBody = await classroomPersonalProgress.json();
+  assert.equal(classroomPersonalProgress.status, 200);
+  assert.equal(classroomPersonalProgressBody.saved, false);
+  assert.equal(classroomPersonalProgressBody.accessMode, 'classroom');
+  const classroomPersonalList = await fetch(`${baseUrl}/api/progress?courseId=python-turtle`, { headers: { Cookie: studentCookie } });
+  assert.deepEqual(await classroomPersonalList.json(), { ok: true, progress: [], accessMode: 'classroom' });
+  console.log('✓ classroom mode cannot also write to personal subscription progress');
+
   const blockedGuestCourse = await fetch(`${baseUrl}/python-turtle.html`, { redirect: 'manual' });
   assert.equal(blockedGuestCourse.status, 402);
   const classroomCourse = await fetch(`${baseUrl}/python-turtle.html`, { headers: { Cookie: studentCookie }, redirect: 'manual' });

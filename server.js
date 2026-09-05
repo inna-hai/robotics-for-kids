@@ -680,6 +680,23 @@ function summarizeChildProgress(child, rows) {
 }
 
 async function handleStudentProgress(req, res) {
+  const classroomStudent = getClassroomStudentFromRequest(req);
+  if (classroomStudent) {
+    if (req.method === 'GET') {
+      return send(res, 200, JSON.stringify({ ok: true, progress: [], accessMode: 'classroom' }));
+    }
+    if (req.method === 'POST') {
+      req.resume();
+      return send(res, 200, JSON.stringify({
+        ok: true,
+        saved: false,
+        accessMode: 'classroom',
+        message: 'ההתקדמות נשמרת בדוח הכיתה ולא במנוי האישי.',
+      }));
+    }
+    return send(res, 405, JSON.stringify({ error: 'Method not allowed' }));
+  }
+
   const profile = getSummerProfileFromRequest(req);
   const user = profile && profile.user;
   const child = profile && profile.child;
@@ -1861,12 +1878,12 @@ function injectHeadAssets(html) {
 
 function injectUserBadge(html) {
   if (!html.includes('</body>') || html.includes('js/user-badge.js')) return injectHeadAssets(html);
-  return injectHeadAssets(html).replace('</body>', '  <script src="/js/user-badge.js?v=20260728-hide-guest-badge"></script>\n</body>');
+  return injectHeadAssets(html).replace('</body>', '  <script src="/js/user-badge.js?v=20260905-access-modes-1"></script>\n</body>');
 }
 
 function injectClassroomSession(html) {
   if (!html.includes('</body>') || html.includes('js/classroom-session.js') || html.includes('js/classroom-platform.js')) return html;
-  return html.replace('</body>', '  <script src="/js/classroom-session.js?v=20260905-classrooms-1"></script>\n</body>');
+  return html.replace('</body>', '  <script src="/js/classroom-session.js?v=20260905-access-modes-1"></script>\n</body>');
 }
 
 function proxyEnglishBuddy(req, res) {
@@ -1941,7 +1958,7 @@ function serveStatic(req, res) {
     if (ext === '.html') {
       fs.readFile(filePath, 'utf8', (readErr, html) => {
         if (readErr) return send(res, 500, 'Server error', 'text/plain; charset=utf-8');
-        const baseOutput = SUBSCRIPTION_GATE_ENABLED ? injectUserBadge(html) : injectHeadAssets(html);
+        const baseOutput = injectUserBadge(html);
         const output = injectClassroomSession(baseOutput);
         send(res, 200, output, 'text/html; charset=utf-8');
       });
