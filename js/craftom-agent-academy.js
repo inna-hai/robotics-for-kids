@@ -16,8 +16,17 @@
   if (!academy || !window.Blockly || !blocklyDiv || !pythonOutput || !canvas || !exerciseList || !checksEl || !feedbackEl) return;
 
   const ctx = canvas.getContext('2d');
-  const start = { x: 112, y: 230 };
-  const station = { x: 322, y: 230 };
+  const defaultStart = { x: 112, y: 230 };
+  const defaultStation = { x: 322, y: 230 };
+  const start = academy.world?.start || defaultStart;
+  const station = academy.world?.station || defaultStation;
+  const routeTiles = academy.world?.routeTiles || [
+    { x: start.x + 42, y: start.y },
+    { x: start.x + 84, y: start.y },
+    { x: start.x + 126, y: start.y },
+    { x: start.x + 168, y: start.y },
+    { x: station.x - 28, y: station.y },
+  ];
   const cell = 42;
   let activeExercise = 0;
   let visibleMode = 'blocks';
@@ -111,6 +120,15 @@
     return blockXml('mc_on_chat', { COMMAND: command }, statement('DO', chain(blocks)));
   }
 
+  function blockFromSpec(spec = {}) {
+    if (spec.type === 'teleport') return tail => blockXml('mc_teleport_agent', {}, '', next(tail));
+    if (spec.type === 'move') return tail => blockXml('mc_move_agent', { DIR: spec.direction || 'FORWARD', STEPS: spec.steps || 1 }, '', next(tail));
+    if (spec.type === 'turn') return tail => blockXml('mc_turn_agent', { TURN: spec.turn || 'RIGHT_TURN' }, '', next(tail));
+    if (spec.type === 'place') return tail => blockXml('mc_place_agent', { DIR: spec.direction || 'DOWN' }, '', next(tail));
+    if (spec.type === 'say') return tail => blockXml('mc_say', { TEXT: spec.text || '' }, '', next(tail));
+    return null;
+  }
+
   const hints = [
     'פתחו את Agent וחפשו בלוק שמזמן את ה-Agent לנקודת ההתחלה.',
     'חפשו ב-Agent פקודת move. המספר המדויק מופיע במשימה, אבל צריך לגרור את הבלוק לבד.',
@@ -121,6 +139,12 @@
   ];
 
   function starterXml() {
+    const exercise = academy.exercises[activeExercise];
+    if (exercise?.starter?.blocks) {
+      const blocks = exercise.starter.blocks.map(blockFromSpec).filter(Boolean);
+      const command = exercise.starter.command || academy.command || 'deliver';
+      return `<xml xmlns="https://developers.google.com/blockly/xml">${onChat(blocks, command)}</xml>`;
+    }
     const starts = [
       onChat([
         tail => blockXml('mc_move_agent', { DIR: 'FORWARD', STEPS: 1 }, '', next(tail)),
@@ -219,6 +243,7 @@
       says: [],
       sawChat: false,
       sawTeleport: false,
+      actions: [],
       moves: [],
       turns: [],
     };
@@ -256,28 +281,35 @@
     while (current) {
       if (current.type === 'mc_on_chat') {
         state.sawChat = current.getFieldValue('COMMAND') === 'deliver';
+        state.actions.push({ type: 'chat', command: current.getFieldValue('COMMAND') || '' });
         walkBlocks(current.getInputTargetBlock('DO'), state);
       } else if (current.type === 'mc_teleport_agent') {
         state.x = start.x;
         state.y = start.y;
         state.heading = 0;
         state.sawTeleport = true;
+        state.actions.push({ type: 'teleport' });
         state.frames.push(visualSnapshot(state));
       } else if (current.type === 'mc_move_agent') {
-        applyMove(state, {
+        const command = {
           direction: current.getFieldValue('DIR'),
           steps: Number(current.getFieldValue('STEPS') || 1),
-        });
+        };
+        state.actions.push({ type: 'move', ...command });
+        applyMove(state, command);
       } else if (current.type === 'mc_turn_agent') {
         const turn = current.getFieldValue('TURN');
         state.heading += turn === 'LEFT_TURN' ? -90 : 90;
         state.turns.push(turn);
+        state.actions.push({ type: 'turn', turn });
         state.frames.push(visualSnapshot(state));
       } else if (current.type === 'mc_place_agent') {
         state.packages.push({ x: state.x, y: state.y, direction: current.getFieldValue('DIR') });
+        state.actions.push({ type: 'place', direction: current.getFieldValue('DIR') });
         state.frames.push(visualSnapshot(state));
       } else if (current.type === 'mc_say') {
         state.says.push(current.getFieldValue('TEXT') || '');
+        state.actions.push({ type: 'say', text: current.getFieldValue('TEXT') || '' });
         state.frames.push(visualSnapshot(state));
       }
       current = current.getNextBlock();
@@ -294,7 +326,39 @@
     return Math.hypot(point.x - target.x, point.y - target.y) <= radius;
   }
 
+  function criterionPass(state, criterion) {
+    const firstMove = state.moves[0];
+    const secondMove = state.moves[1];
+    const firstMoveAction = state.actions.findIndex(action => action.type === 'move');
+    const firstTurnAction = state.actions.findIndex(action => action.type === 'turn');
+    const reachedStation = isNear(state, station, criterion.radius || 74);
+    const hasArrivalSay = state.says.some(text => /arrived|הגיע|נמסר|delivery/i.test(text));
+
+    if (criterion.type === 'chatDeliver') return state.sawChat;
+    if (criterion.type === 'teleport') return state.sawTeleport;
+    if (criterion.type === 'moveCount') return state.moves.length >= Number(criterion.min || 1);
+    if (criterion.type === 'firstMove') return firstMove?.direction === (criterion.direction || 'FORWARD') && firstMove.steps === Number(criterion.steps);
+    if (criterion.type === 'secondMove') return secondMove?.direction === (criterion.direction || 'FORWARD') && secondMove.steps === Number(criterion.steps);
+    if (criterion.type === 'anyMove') return state.moves.some(move => move.direction === (criterion.direction || 'FORWARD') && move.steps === Number(criterion.steps));
+    if (criterion.type === 'turn') return criterion.turn ? state.turns.includes(criterion.turn) : state.turns.length > 0;
+    if (criterion.type === 'moveBeforeTurn') return firstMoveAction > -1 && firstTurnAction > -1 && firstMoveAction < firstTurnAction;
+    if (criterion.type === 'turnBeforeSecondMove') {
+      const moveActions = state.actions.map((action, index) => action.type === 'move' ? index : -1).filter(index => index > -1);
+      return firstTurnAction > -1 && moveActions.length > 1 && firstTurnAction < moveActions[1];
+    }
+    if (criterion.type === 'reachedStation') return reachedStation;
+    if (criterion.type === 'place') return state.packages.length > 0;
+    if (criterion.type === 'say') return state.says.length > 0;
+    if (criterion.type === 'arrivalSay') return hasArrivalSay;
+    if (criterion.type === 'staysOnStartRow') return Math.abs(state.y - start.y) < Number(criterion.maxDelta || 8);
+    return false;
+  }
+
   function evaluate(state) {
+    const exercise = academy.exercises[activeExercise];
+    if (exercise?.criteria?.length) {
+      return exercise.criteria.map(criterion => ({ label: criterion.label, pass: criterionPass(state, criterion) }));
+    }
     const firstMove = state.moves[0];
     const reachedStation = isNear(state, station, 74);
     const hasArrivalSay = state.says.some(text => /arrived|הגיע|נמסר|delivery/i.test(text));
@@ -451,8 +515,7 @@
     ctx.lineWidth = 2;
     ctx.strokeRect(34, 32, canvas.width - 68, canvas.height - 64);
 
-    for (let step = 1; step <= 4; step += 1) drawCobbleTile(start.x + step * cell, start.y, 34, 28);
-    drawCobbleTile(station.x - 28, station.y, 34, 28);
+    routeTiles.forEach(tile => drawCobbleTile(tile.x, tile.y, tile.w || 34, tile.h || 28));
 
     drawWoodCrate(start.x, start.y + 4, 92, 74);
     ctx.fillStyle = '#fff7ed';
@@ -614,7 +677,7 @@
   runButton.addEventListener('click', runAndCheck);
   resetButton.addEventListener('click', resetExercise);
   hintButton.addEventListener('click', () => {
-    const hint = hints[activeExercise] || academy.exercises[activeExercise]?.hint || 'התחילו מפקודת chat ואז הוסיפו פקודת Agent אחת.';
+    const hint = academy.exercises[activeExercise]?.hint || hints[activeExercise] || 'התחילו מפקודת chat ואז הוסיפו פקודת Agent אחת.';
     feedbackEl.textContent = `רמז: ${hint}`;
     feedbackEl.className = 'academy-feedback';
   });

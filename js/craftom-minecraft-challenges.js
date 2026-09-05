@@ -144,6 +144,92 @@
         exit: 'איזה מספר שיניתם בפקודת move, ומה קרה ל-Agent אחרי השינוי?'
       },
       {
+        academy: {
+          title: 'אקדמיית ה-Agent - מסלול עם פנייה',
+          story: 'ממשיכים מהמשלוח הישר: עכשיו ה-Agent צריך להבין שהסדר משנה. קודם הולכים עד הפנייה, אחר כך פונים, ורק אז ממשיכים לתחנה. כל תרגיל מוסיף פעולה אחת למסלול בצורת ר.',
+          world: {
+            start: { x: 112, y: 146 },
+            station: { x: 280, y: 314 },
+            routeTiles: [
+              { x: 154, y: 146 },
+              { x: 196, y: 146 },
+              { x: 238, y: 146 },
+              { x: 280, y: 146 },
+              { x: 280, y: 188 },
+              { x: 280, y: 230 },
+              { x: 280, y: 272 },
+              { x: 280, y: 314 }
+            ]
+          },
+          exercises: [
+            {
+              title: 'תרגיל 1 - יש פנייה במסלול',
+              mission: 'צרו פקודת deliver שמזמנת את ה-Agent ומוסיפה בלוק turn אחד.',
+              hint: 'חפשו ב-Agent בלוק פנייה. עוד לא צריך להשלים את כל המסלול.',
+              check: 'הקוד כולל פקודת פנייה אחת אחרי שה-Agent מתחיל.',
+              starter: { blocks: [{ type: 'teleport' }] },
+              criteria: [
+                { label: 'פקודת deliver קיימת', type: 'chatDeliver' },
+                { label: 'יש בלוק פנייה במסלול', type: 'turn' }
+              ]
+            },
+            {
+              title: 'תרגיל 2 - קודם הולכים, אחר כך פונים',
+              mission: 'הוסיפו תנועה קדימה של 4 קוביות לפני הפנייה.',
+              hint: 'הפנייה צריכה להגיע אחרי התנועה הראשונה, לא לפניה.',
+              check: 'ה-Agent מגיע לפינה ואז משנה כיוון.',
+              starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 2 }, { type: 'turn', turn: 'RIGHT_TURN' }] },
+              criteria: [
+                { label: 'התנועה הראשונה היא 4 קוביות קדימה', type: 'firstMove', direction: 'FORWARD', steps: 4 },
+                { label: 'התנועה מגיעה לפני הפנייה', type: 'moveBeforeTurn' }
+              ]
+            },
+            {
+              title: 'תרגיל 3 - ממשיכים אחרי הפנייה',
+              mission: 'אחרי הפנייה הוסיפו עוד תנועה קדימה עד התחנה.',
+              hint: 'צריך רצף: move, turn, move. אל תחליפו את ההתחלה.',
+              check: 'יש שתי תנועות והפנייה נמצאת ביניהן.',
+              starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'turn', turn: 'RIGHT_TURN' }] },
+              criteria: [
+                { label: 'יש שתי פקודות move', type: 'moveCount', min: 2 },
+                { label: 'הפנייה נמצאת לפני התנועה השנייה', type: 'turnBeforeSecondMove' }
+              ]
+            },
+            {
+              title: 'תרגיל 4 - סדר פעולות נכון',
+              mission: 'תקנו שלד שבו הפנייה מוקדמת מדי, כך שה-Agent ילך קודם לפינה.',
+              hint: 'אל תוסיפו עוד ועוד בלוקים. גררו את הפנייה למקום הנכון ברצף.',
+              check: 'המסלול מתחיל בתנועה, ממשיך בפנייה, ואז עוד תנועה.',
+              starter: { blocks: [{ type: 'teleport' }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'move', direction: 'FORWARD', steps: 4 }] },
+              criteria: [
+                { label: 'התנועה הראשונה מגיעה לפני הפנייה', type: 'moveBeforeTurn' },
+                { label: 'הפנייה מגיעה לפני התנועה השנייה', type: 'turnBeforeSecondMove' }
+              ]
+            },
+            {
+              title: 'תרגיל 5 - לא עוברים את התחנה',
+              mission: 'שנו רק מספר אחד כדי שה-Agent יעצור בדיוק בתחנת היעד.',
+              hint: 'המסלול כבר כמעט נכון. בדקו את המספר בתנועה השנייה אחרי הפנייה.',
+              check: 'ה-Agent מגיע לתחנה בלי לעבור אותה.',
+              starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 6 }] },
+              criteria: [
+                { label: 'התנועה השנייה תוקנה ל-4 קוביות', type: 'secondMove', direction: 'FORWARD', steps: 4 },
+                { label: 'ה-Agent מגיע לתחנת היעד', type: 'reachedStation' }
+              ]
+            },
+            {
+              title: 'אתגר קטן - מסלול עם אישור',
+              mission: 'השלימו את המסלול והוסיפו הודעת player say בסוף ההגעה.',
+              hint: 'אם ה-Agent כבר מגיע לתחנה, חסרה רק הודעת סיום מקטגוריית Player.',
+              check: 'בסוף ההרצה יש גם הגעה לתחנה וגם הודעת הצלחה.',
+              starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 4 }] },
+              criteria: [
+                { label: 'ה-Agent מגיע לתחנת היעד', type: 'reachedStation' },
+                { label: 'יש הודעת הצלחה בסוף', type: 'arrivalSay' }
+              ]
+            }
+          ]
+        },
         goal: 'להבין שסדר פעולות משנה תוצאה: קדימה, פנייה, קדימה אינו זהה לפנייה לפני תנועה.',
         teacher: ['מציירים על הלוח מסלול בצורת ר בתוך העיר.', 'מריצים בכיתה שתי גרסאות: סדר נכון וסדר שגוי.', 'נותנים לתלמידים לדבג רק פעולה אחת בכל פעם.'],
         build: ['שביל בצורת ר.', 'פנייה אחת מסומנת בצבע אחר.', 'תחנת יעד אחרי הפנייה.'],

@@ -30,7 +30,13 @@ assert.equal(lessonOneDetail.academy.title, 'אקדמיית ה-Agent - מסלו�
 assert.equal(lessonOneDetail.academy.exercises.length, 6, 'lesson 1 has a gradual Agent academy exercise ladder');
 assert.match(lessonOneDetail.academy.story, /Python Turtle/, 'lesson 1 borrows the slow-build Python Turtle pedagogy');
 assert.ok(lessonOneDetail.academy.exercises.every(exercise => exercise.hint && !exercise.python && !exercise.blocks), 'academy gives hints, not ready-made solutions');
-assert.ok(!program.lessons[1].detail.academy, 'academy ladder is currently scoped to challenge 1 lesson 1 only');
+
+const lessonTwoDetail = program.lessons[1].detail;
+assert.equal(lessonTwoDetail.academy.title, 'אקדמיית ה-Agent - מסלול עם פנייה');
+assert.equal(lessonTwoDetail.academy.exercises.length, 6, 'lesson 2 has a gradual Agent academy exercise ladder');
+assert.match(lessonTwoDetail.academy.story, /פנייה/, 'lesson 2 academy focuses on turn order');
+assert.ok(lessonTwoDetail.academy.world.routeTiles.length >= 8, 'lesson 2 academy draws an L-shaped route');
+assert.ok(lessonTwoDetail.academy.exercises.every(exercise => exercise.hint && exercise.starter && exercise.criteria && !exercise.python && !exercise.blocks), 'lesson 2 academy also gives scaffolds, not ready-made solutions');
 
 for (const challenge of program.challenges) {
   assert.equal(challenge.meetings.length, 4, `challenge ${challenge.id} has 4 meetings`);
@@ -89,7 +95,7 @@ for (let id = 1; id <= 16; id += 1) {
   assert.match(lessonPage, /craftom-minecraft-lesson-page\.js/, `lesson ${id} loads shared renderer`);
   assert.match(lessonPage, /js\/vendor\/blockly\/blockly\.min\.js/, `lesson ${id} loads Blockly`);
   assert.match(lessonPage, /craftom-minecraft-code-builder\.js/, `lesson ${id} loads the embedded Code Builder`);
-  assert.match(lessonPage, /20260905-agent-steps-2/, `lesson ${id} cache-busts the updated exit upload renderer`);
+  assert.match(lessonPage, /20260905-agent-lesson2-1/, `lesson ${id} cache-busts the updated exit upload renderer`);
 }
 
 const lessonTemplate = read('craftom-minecraft-lesson.html');
