@@ -338,6 +338,38 @@
       qs('#metricAttention').textContent = metrics.attention ?? roster.filter(item => item.status === 'נדרש טיפול').length;
     }
 
+    function restoreScrollAfterRender(before) {
+      requestAnimationFrame(() => {
+        const active = document.activeElement;
+        const teacherFocused = active?.closest?.('.teacher-board');
+        if (teacherFocused && before.activeName && active.name === before.activeName) return;
+        if (Math.abs(window.scrollY - before.scrollY) > 24) {
+          window.scrollTo({ top: before.scrollY, left: before.scrollX, behavior: 'auto' });
+        }
+      });
+    }
+
+    async function refreshWithStableViewport(renderFn) {
+      const active = document.activeElement;
+      const before = {
+        scrollX: window.scrollX,
+        scrollY: window.scrollY,
+        activeName: active?.name || '',
+        selectionStart: active?.selectionStart,
+        selectionEnd: active?.selectionEnd
+      };
+      await refreshLiveSession();
+      renderFn();
+      const nextActive = before.activeName ? document.querySelector(`[name="${CSS.escape(before.activeName)}"]`) : null;
+      if (nextActive && active?.closest?.('.teacher-board')) {
+        nextActive.focus();
+        try {
+          nextActive.setSelectionRange(before.selectionStart, before.selectionEnd);
+        } catch {}
+      }
+      restoreScrollAfterRender(before);
+    }
+
     function latestStudentActivityMs(student) {
       return Math.max(
         Date.parse(student.exitTicket?.createdAt || '') || 0,
@@ -527,11 +559,12 @@
     }
 
     async function refreshTeacherBoard() {
-      await refreshLiveSession();
-      renderOverview();
-      renderMetrics();
-      renderMonitor();
-      renderReport();
+      await refreshWithStableViewport(() => {
+        renderOverview();
+        renderMetrics();
+        renderMonitor();
+        renderReport();
+      });
     }
 
     function sendTeacherMessage(scope, target, text, inputEl) {
