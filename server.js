@@ -1031,6 +1031,11 @@ function eventMessage(row) {
   return String(payload.message || payload.text || row.message || '');
 }
 
+function isSystemKugelParticipant(name) {
+  const key = normalizeMinecraftName(name);
+  return !key || key === 'server';
+}
+
 function eventCreatedAtMs(row) {
   const value = Number(row && row.created_at || 0);
   if (!value) return null;
@@ -1039,6 +1044,31 @@ function eventCreatedAtMs(row) {
 
 function normalizeMinecraftName(value) {
   return String(value || '').trim().toLowerCase();
+}
+
+function coinProgressFromMessage(message) {
+  const match = String(message || '').match(/(?:מטבע נאסף|coin collected)\s*(\d+)\s*\/\s*8/i);
+  return match ? Number(match[1]) : 0;
+}
+
+function positionBucket(payload) {
+  const pos = payload && (payload.player_position || payload.position || {});
+  const x = Number(pos.x);
+  const z = Number(pos.z);
+  if (!Number.isFinite(x) || !Number.isFinite(z)) return '';
+  return `${Math.round(x / 3) * 3}:${Math.round(z / 3) * 3}`;
+}
+
+function carpetCoinEstimate(rows) {
+  const buckets = new Set();
+  for (const row of rows) {
+    if (String(row.event_type || '') !== 'agent_break_candidate') continue;
+    if (String(row.block_id || '') !== 'minecraft:yellow_carpet') continue;
+    const payload = parseEventPayload(row);
+    const bucket = positionBucket(payload) || String(row.created_at || row.id || '');
+    buckets.add(`${row.created_at || ''}:${bucket}`);
+  }
+  return Math.min(8, buckets.size);
 }
 
 async function fetchJson(url, options = {}, timeoutMs = 10000) {
@@ -1112,10 +1142,11 @@ async function fetchKugelGameEvents(session) {
 function summarizeStudentFromEvents(studentName, rows, fallback = {}) {
   const name = normalizeMinecraftName(studentName);
   const matching = rows.filter(row => normalizeMinecraftName(row.player_name) === name);
-  const coinProgress = matching.map(row => {
-    const match = eventMessage(row).match(/(?:מטבע נאסף|coin collected)\s*(\d+)\s*\/\s*8/i);
-    return match ? Number(match[1]) : 0;
-  });
+  const ordered = [...matching].sort((a, b) => (eventCreatedAtMs(a) || 0) - (eventCreatedAtMs(b) || 0));
+  const lastEvent = ordered.at(-1) || null;
+  const lastEventAt = eventCreatedAtMs(lastEvent);
+  const coinProgress = matching.map(row => coinProgressFromMessage(eventMessage(row)));
+  const estimatedCoins = carpetCoinEstimate(matching);
   const coinEvents = matching.filter(row => {
     const payload = parseEventPayload(row);
     const type = String(row.event_type || '');
@@ -1134,19 +1165,21 @@ function summarizeStudentFromEvents(studentName, rows, fallback = {}) {
       /כל\s*8\s*המטבעות|כפתור הסיום|finish button|all 8/i.test(message);
   });
   const joinEvents = matching.filter(row => ['player_join', 'player_spawn'].includes(String(row.event_type || '')));
-  const ordered = [...matching].sort((a, b) => (eventCreatedAtMs(a) || 0) - (eventCreatedAtMs(b) || 0));
   const startedAt = eventCreatedAtMs(joinEvents[0] || ordered[0]) || fallback.startedAt || null;
   const finishedAt = eventCreatedAtMs(finishEvents.at(-1)) || (Math.max(...coinProgress, 0) >= 8 ? eventCreatedAtMs(ordered.at(-1)) : null) || fallback.finishedAt || null;
-  const coins = Math.min(8, Math.max(Number(fallback.coins || 0), coinEvents.length, ...coinProgress));
+  const coins = Math.min(8, Math.max(Number(fallback.coins || 0), estimatedCoins, coinEvents.length, ...coinProgress));
   const completed = Boolean(finishedAt || fallback.completed || coins >= 8);
   const durationMs = startedAt && finishedAt ? Math.max(0, finishedAt - startedAt) : null;
+  const connected = lastEvent && String(lastEvent.event_type || '') !== 'player_leave';
   return {
     name: studentName,
-    connected: matching.some(row => String(row.event_type || '') !== 'player_leave') || Boolean(fallback.connected),
+    connected: Boolean(connected || fallback.connected && !lastEvent),
+    connectionStatus: connected ? 'מחובר' : 'לא מחובר',
     status: completed ? 'סיים' : matching.length || fallback.startedAt ? 'בתהליך' : 'לא התחיל',
     coins,
     startedAt: startedAt ? new Date(startedAt).toISOString() : fallback.startedAt || null,
     finishedAt: finishedAt ? new Date(finishedAt).toISOString() : fallback.finishedAt || null,
+    lastSeenAt: lastEventAt ? new Date(lastEventAt).toISOString() : null,
     durationSeconds: durationMs === null ? fallback.durationSeconds || null : Math.round(durationMs / 1000),
     eventCount: matching.length,
     completed,
@@ -1172,9 +1205,11 @@ async function kugelSessionView() {
   const savedStudents = session.students || {};
   const names = new Set(['AmiM', 'NoaK', 'ItayB', 'MayaL', 'OriS', ...Object.keys(savedStudents)]);
   for (const row of events) {
-    if (row.player_name) names.add(row.player_name);
+    if (!isSystemKugelParticipant(row.player_name)) names.add(row.player_name);
   }
-  const students = [...names].map(name => summarizeStudentFromEvents(name, events, savedStudents[name] || {}));
+  const students = [...names]
+    .filter(name => !isSystemKugelParticipant(name))
+    .map(name => summarizeStudentFromEvents(name, events, savedStudents[name] || {}));
   return {
     ok: true,
     session,

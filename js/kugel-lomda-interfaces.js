@@ -121,7 +121,8 @@
   }
 
   function currentStudents() {
-    return liveSession?.students?.length ? liveSession.students : roster;
+    const students = liveSession?.students?.length ? liveSession.students : roster;
+    return students.filter(student => normalizeMinecraftName(student.name) !== 'server');
   }
 
   function getLesson(value) {
@@ -299,18 +300,28 @@
         status: item.status,
         coins: item.coins || 0,
         duration: item.durationSeconds ? `${Math.floor(item.durationSeconds / 60)}:${String(item.durationSeconds % 60).padStart(2, '0')}` : '-',
-        connected: item.connected
+        connected: item.connected,
+        connectionStatus: item.connectionStatus || (item.connected ? 'מחובר' : 'לא מחובר')
       }));
       qs('#studentMonitor').innerHTML = students.map(student => `
-        <div class="monitor-row">
-          <strong>${esc(student.name)}</strong>
+        <div class="monitor-row ${student.connected ? 'is-connected' : 'is-offline'}">
+          <div class="student-identity">
+            <strong>${esc(student.name)}</strong>
+            <span class="connection-pill">${esc(student.connectionStatus)}</span>
+          </div>
           <span class="status-pill">${esc(student.status)}</span>
-          <span>
-            ${student.coins} / 8 מטבעות
+          <div class="coin-progress">
+            <strong>${student.coins} / 8 מטבעות</strong>
             <span class="coin-bar"><span style="width:${Math.min(100, (student.coins / 8) * 100)}%"></span></span>
-          </span>
-          <span>זמן: ${esc(student.duration)}</span>
-          <button class="icon-button" type="button" data-report="${esc(student.name)}" title="פתיחת דוח">›</button>
+          </div>
+          <span class="duration-pill">זמן: ${esc(student.duration)}</span>
+          <div class="student-row-actions">
+            <input class="student-message-input" data-message-for="${esc(student.name)}" placeholder="הודעה לתלמיד">
+            <button class="secondary-action" type="button" data-message="${esc(student.name)}">שליחה</button>
+            <button class="secondary-action danger-action" type="button" data-freeze="${esc(student.name)}">עצירה</button>
+            <button class="secondary-action" type="button" data-release="${esc(student.name)}">שחרור</button>
+            <button class="icon-button" type="button" data-report="${esc(student.name)}" title="פתיחת דוח">›</button>
+          </div>
         </div>
       `).join('');
       qs('#studentMonitor').querySelectorAll('[data-report]').forEach(button => {
@@ -319,17 +330,20 @@
           renderReport();
         });
       });
-    }
-
-    function renderControlTargets() {
-      const target = qs('#teacherControlTarget');
-      if (!target) return;
-      const current = target.value;
-      const names = currentStudents()
-        .map(student => student.name)
-        .filter(name => normalizeMinecraftName(name) !== 'server');
-      target.innerHTML = names.map(name => `<option value="${esc(name)}">${esc(name)}</option>`).join('');
-      if (names.includes(current)) target.value = current;
+      qs('#studentMonitor').querySelectorAll('[data-message]').forEach(button => {
+        button.addEventListener('click', () => {
+          const name = button.dataset.message;
+          const input = [...qs('#studentMonitor').querySelectorAll('[data-message-for]')]
+            .find(item => item.dataset.messageFor === name);
+          sendTeacherMessage('player', name, input?.value || '', input);
+        });
+      });
+      qs('#studentMonitor').querySelectorAll('[data-freeze]').forEach(button => {
+        button.addEventListener('click', () => freeze('player', true, button.dataset.freeze));
+      });
+      qs('#studentMonitor').querySelectorAll('[data-release]').forEach(button => {
+        button.addEventListener('click', () => freeze('player', false, button.dataset.release));
+      });
     }
 
     function renderReport() {
@@ -337,15 +351,17 @@
       const student = students.find(item => item.name === selectedStudent) || students[0] || roster[0];
       const world = liveSession?.world?.worldId ? liveSession.world : getWorld(activeLessonId);
       const duration = student.durationSeconds ? `${Math.floor(student.durationSeconds / 60)}:${String(student.durationSeconds % 60).padStart(2, '0')}` : student.duration || '-';
+      const lastSeen = student.lastSeenAt ? new Date(student.lastSeenAt).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '-';
       qs('#teacherReport').innerHTML = `
         <article class="report-card">
           <strong>${esc(student.name)} • שיעור ${activeLessonId}</strong>
           <p>הדוח נבנה מנתוני session ומאירועים שמגיעים מ-Minecraft Monitor.</p>
           <div class="report-grid">
             <div><span>עולם</span><strong>${esc(world.worldName || world.name)}</strong></div>
-            <div><span>מצב</span><strong>${esc(world.mode)}</strong></div>
+            <div><span>חיבור</span><strong>${esc(student.connectionStatus || (student.connected ? 'מחובר' : 'לא מחובר'))}</strong></div>
             <div><span>מטבעות</span><strong>${student.coins || 0} / 8</strong></div>
             <div><span>זמן</span><strong>${esc(duration)}</strong></div>
+            <div><span>נראה לאחרונה</span><strong>${esc(lastSeen)}</strong></div>
           </div>
           <p><strong>סיכום:</strong> ${esc(student.status)}. ${esc(world.report || world.mission)}.</p>
         </article>
@@ -380,7 +396,6 @@
           await refreshLiveSession();
           renderOverview();
           renderMetrics();
-          renderControlTargets();
           renderMonitor();
           renderReport();
         });
@@ -389,7 +404,6 @@
     qs('#simulateProgress').addEventListener('click', () => {
       refreshLiveSession().then(() => {
         renderMetrics();
-        renderControlTargets();
         renderMonitor();
         renderReport();
       });
@@ -404,30 +418,39 @@
       await refreshLiveSession();
       renderOverview();
       renderMetrics();
-      renderControlTargets();
       renderMonitor();
       renderReport();
     }
 
-    qs('#teacherMessageForm')?.addEventListener('submit', event => {
-      event.preventDefault();
-      const form = new FormData(event.currentTarget);
+    function sendTeacherMessage(scope, target, text, inputEl) {
+      const clean = String(text || '').trim();
+      if (!clean) {
+        setControlStatus('נא להזין הודעה');
+        inputEl?.focus?.();
+        return;
+      }
       setControlStatus('שולח...');
       api('/api/kugel/live/message', {
         method: 'POST',
         body: JSON.stringify({
-          scope: form.get('scope'),
-          target: form.get('target'),
-          text: form.get('text')
+          scope,
+          target,
+          text: clean
         })
       }).then(() => {
-        event.currentTarget.reset();
+        if (inputEl) inputEl.value = '';
         setControlStatus('הודעה נשלחה');
       }).catch(error => setControlStatus(error.message || 'שליחה נכשלה'));
+    }
+
+    qs('#teacherClassMessageForm')?.addEventListener('submit', event => {
+      event.preventDefault();
+      const formEl = event.currentTarget;
+      const form = new FormData(formEl);
+      sendTeacherMessage('all', '', form.get('text'), formEl.querySelector('[name="text"]'));
     });
 
-    function freeze(scope, on) {
-      const target = qs('#teacherControlTarget')?.value || '';
+    function freeze(scope, on, target = '') {
       setControlStatus(on ? 'עוצר...' : 'משחרר...');
       api('/api/kugel/live/freeze', {
         method: 'POST',
@@ -444,8 +467,6 @@
 
     qs('#freezeAll')?.addEventListener('click', () => freeze('all', true));
     qs('#releaseAll')?.addEventListener('click', () => freeze('all', false));
-    qs('#freezeSelected')?.addEventListener('click', () => freeze('player', true));
-    qs('#releaseSelected')?.addEventListener('click', () => freeze('player', false));
 
     select.addEventListener('change', () => {
       activeLessonId = Number(select.value ?? 0);
@@ -455,7 +476,6 @@
 
     renderOverview();
     renderMetrics();
-    renderControlTargets();
     renderMonitor();
     renderReport();
     setInterval(refreshTeacherBoard, 5000);

@@ -435,12 +435,12 @@
   gap: 12px;
 }
 
-.teacher-message-form {
-  grid-template-columns: minmax(150px, .7fr) minmax(150px, .8fr) minmax(260px, 1.5fr) auto;
+.teacher-class-message-form {
+  grid-template-columns: minmax(260px, 1fr) auto;
   align-items: end;
 }
 
-.teacher-message-form .message-field {
+.teacher-class-message-form .message-field {
   min-width: 0;
 }
 
@@ -457,12 +457,70 @@
 
 .monitor-row {
   display: grid;
-  grid-template-columns: minmax(140px, 1.3fr) minmax(110px, .8fr) minmax(150px, 1fr) minmax(130px, .8fr) auto;
-  gap: 10px;
+  grid-template-columns: minmax(145px, 1fr) minmax(92px, .6fr) minmax(155px, .8fr) minmax(105px, .6fr) minmax(360px, 1.5fr);
+  gap: 12px;
   align-items: center;
   padding: 10px;
   border: 1px solid #e2e8f0;
   border-radius: 10px;
+  background: #fff;
+}
+
+.monitor-row.is-connected {
+  border-color: #bbf7d0;
+  background: #f7fef9;
+}
+
+.monitor-row.is-offline {
+  opacity: .8;
+}
+
+.student-identity {
+  display: grid;
+  gap: 5px;
+}
+
+.connection-pill {
+  display: inline-flex;
+  width: fit-content;
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: #166534;
+  background: #dcfce7;
+  font-size: .8rem;
+  font-weight: 900;
+}
+
+.is-offline .connection-pill {
+  color: #475569;
+  background: #e2e8f0;
+}
+
+.coin-progress {
+  display: grid;
+  gap: 5px;
+}
+
+.duration-pill {
+  color: var(--muted);
+  font-weight: 900;
+}
+
+.student-row-actions {
+  display: grid;
+  grid-template-columns: minmax(135px, 1fr) auto auto auto auto;
+  gap: 6px;
+  align-items: center;
+}
+
+.student-message-input {
+  min-width: 0;
+  height: 38px;
+  padding: 8px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font: inherit;
+  font-weight: 800;
   background: #fff;
 }
 
@@ -526,7 +584,7 @@
     max-height: none;
   }
 
-  .teacher-message-form {
+  .teacher-class-message-form {
     grid-template-columns: 1fr;
   }
 
@@ -537,6 +595,14 @@
 
   .monitor-row {
     grid-template-columns: 1fr;
+  }
+
+  .student-row-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .student-message-input {
+    grid-column: 1 / -1;
   }
 }
 
