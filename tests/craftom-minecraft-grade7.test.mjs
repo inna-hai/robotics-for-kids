@@ -29,6 +29,7 @@ const lessonOneDetail = program.lessons[0].detail;
 assert.equal(lessonOneDetail.academy.title, 'אקדמיית ה-Agent - מסלול השליחים');
 assert.equal(lessonOneDetail.academy.exercises.length, 6, 'lesson 1 has a gradual Agent academy exercise ladder');
 assert.match(lessonOneDetail.academy.story, /Python Turtle/, 'lesson 1 borrows the slow-build Python Turtle pedagogy');
+assert.ok(lessonOneDetail.academy.exercises.every(exercise => exercise.hint && !exercise.python && !exercise.blocks), 'academy gives hints, not ready-made solutions');
 assert.ok(!program.lessons[1].detail.academy, 'academy ladder is currently scoped to challenge 1 lesson 1 only');
 
 for (const challenge of program.challenges) {
@@ -88,7 +89,7 @@ for (let id = 1; id <= 16; id += 1) {
   assert.match(lessonPage, /craftom-minecraft-lesson-page\.js/, `lesson ${id} loads shared renderer`);
   assert.match(lessonPage, /js\/vendor\/blockly\/blockly\.min\.js/, `lesson ${id} loads Blockly`);
   assert.match(lessonPage, /craftom-minecraft-code-builder\.js/, `lesson ${id} loads the embedded Code Builder`);
-  assert.match(lessonPage, /20260905-agent-academy-page-1/, `lesson ${id} cache-busts the updated exit upload renderer`);
+  assert.match(lessonPage, /20260905-agent-academy-practice-1/, `lesson ${id} cache-busts the updated exit upload renderer`);
 }
 
 const lessonTemplate = read('craftom-minecraft-lesson.html');
@@ -113,5 +114,6 @@ assert.match(lessonRenderer, /לכל האתגרים/, 'lesson renderer links bac
 assert.match(lessonRenderer, /craftom-agent-academy\.html\?lesson=/, 'lesson renderer links to the separate Agent academy');
 assert.match(read('js/craftom-agent-academy.js'), /runProgram/, 'Agent academy simulates code');
 assert.match(read('js/craftom-agent-academy.js'), /evaluate/, 'Agent academy evaluates code');
+assert.doesNotMatch(read('js/craftom-agent-academy.js'), /academy\.exercises\[activeExercise\]\?\.blocks\?\.join/, 'Agent academy hints do not expose exact block chains');
 
 console.log('Craftom grade 7 course restoration checks passed');

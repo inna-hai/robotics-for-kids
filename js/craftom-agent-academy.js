@@ -111,9 +111,27 @@
     return blockXml('mc_on_chat', { COMMAND: command }, statement('DO', chain(blocks)));
   }
 
+  const hints = [
+    'פתחו את Agent וחפשו בלוק שמזמן את ה-Agent לנקודת ההתחלה.',
+    'חפשו ב-Agent פקודת move. המספר המדויק מופיע במשימה, אבל צריך לגרור את הבלוק לבד.',
+    'השלד כבר זז, אבל המרחק קצר מדי. נסו לשנות רק את המספר בתוך move.',
+    'בדקו איפה ה-Agent נעצר ביחס לתחנה ושנו את מספר הצעדים עד שהוא מגיע קרוב.',
+    'המסלול כבר כמעט עובד. חסרה פקודת הודעה מסוף ההרצה באזור Player.',
+    'זו משימת דיבוג: אל תוסיפו רצף חדש, חפשו מספר אחד שגורם ל-Agent לעבור את התחנה.'
+  ];
+
   function starterXml() {
     const starts = [
-      onChat([tail => blockXml('mc_teleport_agent', {}, '', next(tail))]),
+      onChat([
+        tail => blockXml('mc_move_agent', { DIR: 'FORWARD', STEPS: 1 }, '', next(tail)),
+      ]),
+      onChat([
+        tail => blockXml('mc_teleport_agent', {}, '', next(tail)),
+      ]),
+      onChat([
+        tail => blockXml('mc_teleport_agent', {}, '', next(tail)),
+        tail => blockXml('mc_move_agent', { DIR: 'FORWARD', STEPS: 3 }, '', next(tail)),
+      ]),
       onChat([
         tail => blockXml('mc_teleport_agent', {}, '', next(tail)),
         tail => blockXml('mc_move_agent', { DIR: 'FORWARD', STEPS: 3 }, '', next(tail)),
@@ -121,15 +139,6 @@
       onChat([
         tail => blockXml('mc_teleport_agent', {}, '', next(tail)),
         tail => blockXml('mc_move_agent', { DIR: 'FORWARD', STEPS: 5 }, '', next(tail)),
-      ]),
-      onChat([
-        tail => blockXml('mc_teleport_agent', {}, '', next(tail)),
-        tail => blockXml('mc_move_agent', { DIR: 'FORWARD', STEPS: 5 }, '', next(tail)),
-      ]),
-      onChat([
-        tail => blockXml('mc_teleport_agent', {}, '', next(tail)),
-        tail => blockXml('mc_move_agent', { DIR: 'FORWARD', STEPS: 5 }, '', next(tail)),
-        tail => blockXml('mc_say', { TEXT: 'delivery arrived' }, '', next(tail)),
       ]),
       onChat([
         tail => blockXml('mc_teleport_agent', {}, '', next(tail)),
@@ -463,7 +472,7 @@
   runButton.addEventListener('click', runAndCheck);
   resetButton.addEventListener('click', resetExercise);
   hintButton.addEventListener('click', () => {
-    const hint = academy.exercises[activeExercise]?.blocks?.join(' → ') || 'התחילו מפקודת chat ואז הוסיפו פקודת Agent אחת.';
+    const hint = hints[activeExercise] || academy.exercises[activeExercise]?.hint || 'התחילו מפקודת chat ואז הוסיפו פקודת Agent אחת.';
     feedbackEl.textContent = `רמז: ${hint}`;
     feedbackEl.className = 'academy-feedback';
   });

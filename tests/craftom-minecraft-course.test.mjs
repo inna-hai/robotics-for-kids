@@ -32,6 +32,7 @@ const [challenge1, challenge2, challenge3, challenge4] = program.challenges;
 assert.equal(challenge1.title, 'הרובוט השליח', 'challenge 1 keeps the courier foundation');
 assert.equal(challenge1.meetings[0][4].academy.exercises.length, 6, 'challenge 1 lesson 1 has gradual Agent academy exercises');
 assert.ok(challenge1.meetings[0][4].academy.story.includes('Python Turtle'), 'lesson 1 is inspired by Python Turtle slow-build exercises');
+assert.ok(challenge1.meetings[0][4].academy.exercises.every(exercise => exercise.hint && !exercise.python && !exercise.blocks), 'academy exercises guide students without storing full solutions');
 assert.ok(!challenge1.meetings[1][4].academy, 'Agent academy exercises are currently scoped only to lesson 1');
 assert.equal(challenge2.title, 'קו המשלוחים האוטומטי', 'challenge 2 is the automatic delivery line');
 assert.equal(challenge3.title, 'קו משלוחים חכם', 'challenge 3 is the smart delivery line');
@@ -79,7 +80,7 @@ assert.ok(preview.includes('programVideo'), 'preview page renders the program vi
 assert.ok(preview.includes('סרטון פתיחת התוכנית'), 'preview page labels the overview video');
 assert.ok(preview.includes('program.overviewVideo'), 'preview page loads video from program data');
 assert.ok(preview.includes('איך עובדים בלומדה'), 'preview explains the self-study mode before teacher materials');
-assert.ok(preview.includes('20260905-agent-academy-page-1'), 'preview page cache-busts the updated challenge data');
+assert.ok(preview.includes('20260905-agent-academy-practice-1'), 'preview page cache-busts the updated challenge data');
 assert.ok(preview.includes('אקדמיית ה-Agent'), 'preview uses the neutral Agent academy name');
 assert.ok(!preview.includes('Craftom Challenges • כיתה ז׳'), 'preview no longer presents the course as grade 7 only');
 
@@ -90,7 +91,7 @@ for (const path of [
   'craftom-minecraft-lesson.html',
   'craftom-agent-academy.html',
 ]) {
-  assert.ok(read(path).includes('20260905-agent-academy-page-1'), `${path} loads the updated challenge data`);
+  assert.ok(read(path).includes('20260905-agent-academy-practice-1'), `${path} loads the updated challenge data`);
 }
 
 assert.ok(read('craftom-minecraft-challenge.html').includes('רצף עבודה עצמית'), 'challenge page frames the work as self-study');
@@ -123,6 +124,8 @@ assert.ok(read('js/craftom-agent-academy.js').includes('function runProgram'), '
 assert.ok(read('js/craftom-agent-academy.js').includes('function evaluate'), 'Agent academy checks student code against exercise criteria');
 assert.ok(read('js/craftom-agent-academy.js').includes('agent.move'), 'Agent academy parses Agent movement code');
 assert.ok(read('js/craftom-agent-academy.js').includes("Blockly.inject('academyBlockly'"), 'Agent academy builds MakeCode with Blockly');
+assert.ok(read('js/craftom-agent-academy.js').includes('const hints = ['), 'Agent academy uses soft hints instead of exposing a solution chain');
+assert.ok(!read('js/craftom-agent-academy.js').includes("academy.exercises[activeExercise]?.blocks?.join"), 'hint button does not reveal exact solution blocks');
 assert.ok(read('js/craftom-minecraft-code-builder.js').includes('data-craftom-code-mode'), 'Craftom Code Builder supports code mode switching');
 assert.ok(read('js/craftom-minecraft-code-builder.js').includes('player.on_chat'), 'Craftom Code Builder can generate Python-style code');
 assert.ok(!read('js/craftom-minecraft-code-builder.js').includes("join('\\\\n"), 'Craftom Code Builder uses real newlines between generated code lines');
