@@ -594,7 +594,7 @@
         {
           title: 'תרגיל 1 - מזהים פעולה שחוזרת',
           mission: 'צרו פקודת start והוסיפו repeat כדי לסמן שהמשלוח צריך לחזור יותר מפעם אחת.',
-          hint: 'חפשו ב-Loops & Logic בלוק repeat. עוד לא צריך מחזור מלא.',
+          hint: 'חפשו ב-Loops בלוק repeat. עוד לא צריך מחזור מלא.',
           check: 'יש פקודת start ויש בלוק repeat.',
           starter: { command, blocks: [{ type: 'teleport' }] },
           criteria: [
@@ -672,8 +672,8 @@
       exercises: [
         {
           title: 'תרגיל 1 - מצב בעיר',
-          mission: 'צרו פקודת status והוסיפו בלוק if route is כדי שהקוד יבדוק מצב.',
-          hint: 'חפשו ב-Loops & Logic את בלוק התנאי. עוד לא צריך מסלול מלא.',
+          mission: 'צרו פקודת status והוסיפו בלוק if routeOpen כדי שהקוד יבדוק מצב.',
+          hint: 'חפשו ב-Logic את בלוק התנאי. עוד לא צריך מסלול מלא.',
           check: 'יש פקודת status ויש תנאי.',
           starter: { command, blocks: [{ type: 'teleport' }] },
           criteria: [

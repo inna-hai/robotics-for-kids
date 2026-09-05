@@ -105,8 +105,8 @@
       },
       {
         type: 'mc_if_route_open',
-        message0: 'if route is %1',
-        args0: [{ type: 'field_dropdown', name: 'STATE', options: [['open', 'OPEN'], ['blocked', 'BLOCKED']] }],
+        message0: 'if routeOpen is %1',
+        args0: [{ type: 'field_dropdown', name: 'STATE', options: [['true', 'OPEN'], ['false', 'BLOCKED']] }],
         message1: 'then %1',
         args1: [{ type: 'input_statement', name: 'DO' }],
         message2: 'else %1',
@@ -217,8 +217,10 @@
         <block type="mc_turn_agent"></block>
         <block type="mc_place_agent"></block>
       </category>
-      <category name="Loops & Logic" colour="120">
+      <category name="Loops" colour="120">
         <block type="mc_repeat"></block>
+      </category>
+      <category name="Logic" colour="180">
         <block type="mc_if_route_open"></block>
       </category>
       <category name="Player" colour="290"><block type="mc_say"></block></category>
@@ -268,7 +270,8 @@
       return `${i}for count in range(${Number(block.getFieldValue('TIMES') || 2)}):\n${statementCode(block.getInputTargetBlock('DO'), level)}`;
     }
     if (block.type === 'mc_if_route_open') {
-      return `${i}if route_is_${String(block.getFieldValue('STATE') || 'OPEN').toLowerCase()}:\n${statementCode(block.getInputTargetBlock('DO'), level)}\n${i}else:\n${statementCode(block.getInputTargetBlock('ELSE'), level)}`;
+      const value = block.getFieldValue('STATE') === 'BLOCKED' ? 'False' : 'True';
+      return `${i}if routeOpen == ${value}:\n${statementCode(block.getInputTargetBlock('DO'), level)}\n${i}else:\n${statementCode(block.getInputTargetBlock('ELSE'), level)}`;
     }
     return '';
   }
