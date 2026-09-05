@@ -423,6 +423,7 @@ assert.ok(play.includes('lessonToggleIcon') && play.includes('⌃') && play.incl
 assert.ok(play.includes('lesson-collapsed'), 'collapsing instructions reallocates space to Blockly and preview sections');
 assert.ok(play.includes('previewResize') && play.includes('--preview-width'), 'preview panel has a draggable width resizer');
 assert.ok(play.includes('webcodePreviewWidth') && play.includes('pointermove'), 'preview width drag persists and handles pointer movement');
+assert.ok(play.includes('setPointerCapture') && play.includes('lostpointercapture') && play.includes('preview-resizing'), 'preview width drag cannot get stuck when the pointer crosses the preview iframe');
 assert.ok(play.includes('webcodeLessonState:v18') && play.includes('saveLessonState') && play.includes('restoreProgress'), 'lesson progress and code persist across page refreshes');
 assert.ok(play.includes('validExerciseIds') && play.includes('filter(id => validExerciseIds.has(id))'), 'saved completed exercises are pruned when a lesson is shortened');
 assert.ok(play.includes('blocklyXml') && play.includes('workspaceToDom') && play.includes('saved.blocklyXml || webBuilderStarterXml()'), 'real Blockly workspace persists across page refreshes');

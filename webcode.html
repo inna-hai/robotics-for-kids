@@ -23,7 +23,7 @@
         <h1>💻 WebCode Lab</h1>
         <p>לומדת WebCode שמתחילה מבלוקים מחוברים: הילדים גוררים ומחברים בלוקים שבונים עמוד Web חי, ורק אחר כך מציצים לקוד שנוצר מאחור — בלי לזרוק אותם לעורך חופשי מוקדם מדי. המסלול גמיש וניתן להתאמה לפי גיל, רמה והרכב קבוצה.</p>
         <div class="actions">
-          <a class="btn" href="webcode-play.html?lesson=1&v=20">▶️ להתחיל שיעור 1</a>
+          <a class="btn" href="webcode-play.html?lesson=1&v=20260905-resize-fix-1">▶️ להתחיל שיעור 1</a>
           <a class="btn secondary" href="webcode-slides.html?lesson=1">📽️ מצגת מדריך לשיעור 1</a>
           <a class="btn secondary" href="holon-scope-program.html">🔭 תכנית המסלולים</a>
         </div>
@@ -69,10 +69,11 @@
         return lesson.exercises.length > 0 && lesson.exercises.every(ex => done.has(Number(ex.id)));
       } catch (error) { return false; }
     }
+    const webcodePlayVersion = '20260905-resize-fix-1';
     document.getElementById('cards').innerHTML = window.WEBCODE_LESSONS.map(lesson => {
       const completed = isLessonCompleted(lesson);
       return `
-      <a class="card ${completed ? 'completed' : ''}" href="webcode-play.html?lesson=${lesson.id}">
+      <a class="card ${completed ? 'completed' : ''}" href="webcode-play.html?lesson=${lesson.id}&v=${webcodePlayVersion}">
         <div class="top"><span class="emoji">${completed ? '✅' : '💻'}</span><span class="id">שיעור ${lesson.id}</span></div>
         ${completed ? '<div class="complete-badge">✅ השיעור הושלם</div>' : ''}
         <h3>${formatMixedText(lesson.title)}</h3>
