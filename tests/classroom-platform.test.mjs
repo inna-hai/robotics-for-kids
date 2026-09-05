@@ -17,6 +17,7 @@ assert.ok(
 assert.ok(serverJs.includes('function personalLoginCodeExists'), 'student codes must be checked for classroom collisions');
 assert.ok(serverJs.includes('generatePersonalLoginCode(db, classroom.id)'), 'student code generation must use the classroom collision check');
 assert.ok(serverJs.includes('CLASSROOM_LOGIN_MAX_KEYS'), 'login failure tracking must have a hard memory bound');
+assert.ok(serverJs.includes('process.env.ROBOTICS_CLASSROOM_LOGIN_MAX_KEYS'), 'the limiter cap must be testable with an isolated low bound');
 assert.ok(serverJs.includes('function pruneClassroomLoginFailures'), 'expired and excess login failure keys must be pruned');
 
 function freePort() {
@@ -52,6 +53,7 @@ const child = spawn(process.execPath, ['server.js'], {
     ROBOTICS_DB_FILE: join(tempDir, 'classroom.sqlite'),
     ROBOTICS_SUBSCRIPTION_GATE: '1',
     ROBOTICS_TEACHER_INVITE_CODE: 'test-teacher-invite-code',
+    ROBOTICS_CLASSROOM_LOGIN_MAX_KEYS: '8',
     NODE_ENV: 'test',
   },
   stdio: ['ignore', 'pipe', 'pipe'],
@@ -256,6 +258,38 @@ try {
   });
   assert.equal(throttled.status, 429);
   console.log('✓ repeated classroom login failures are rate limited');
+
+  const targetedEmail = 'targeted@example.test';
+  for (let attempt = 0; attempt < 10; attempt += 1) {
+    await fetch(`${baseUrl}/api/classroom/teacher-login`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ email: targetedEmail, password: 'wrong-password' }),
+    });
+  }
+  const targetBeforeFlood = await fetch(`${baseUrl}/api/classroom/teacher-login`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ email: targetedEmail, password: 'wrong-password' }),
+  });
+  assert.equal(targetBeforeFlood.status, 429);
+  const floodStatuses = [];
+  for (let index = 0; index < 20; index += 1) {
+    const floodAttempt = await fetch(`${baseUrl}/api/classroom/teacher-login`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ email: `flood-${index}@example.test`, password: 'wrong-password' }),
+    });
+    floodStatuses.push(floodAttempt.status);
+  }
+  assert.equal(floodStatuses.at(-1), 429, 'unseen identifiers must fail closed after the limiter reaches capacity');
+  const targetAfterFlood = await fetch(`${baseUrl}/api/classroom/teacher-login`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ email: targetedEmail, password: 'wrong-password' }),
+  });
+  assert.equal(targetAfterFlood.status, 429);
+  console.log('✓ flooding new limiter keys cannot evict an active lockout');
 
   const logout = await fetch(`${baseUrl}/api/classroom/logout`, {
     method: 'POST',

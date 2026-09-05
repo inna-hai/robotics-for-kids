@@ -20,7 +20,10 @@ const SUBSCRIPTION_GATE_ENABLED = process.env.ROBOTICS_SUBSCRIPTION_GATE === '1'
 const CLASSROOM_COURSES = new Set(['sensi-city', 'sisi', 'python-turtle', 'webcode', 'minecraft', 'craftom-agent']);
 const CLASSROOM_LOGIN_WINDOW_MS = 10 * 60 * 1000;
 const CLASSROOM_LOGIN_MAX_FAILURES = 10;
-const CLASSROOM_LOGIN_MAX_KEYS = 1000;
+const configuredClassroomLoginMaxKeys = Number(process.env.ROBOTICS_CLASSROOM_LOGIN_MAX_KEYS || 1000);
+const CLASSROOM_LOGIN_MAX_KEYS = Number.isInteger(configuredClassroomLoginMaxKeys) && configuredClassroomLoginMaxKeys >= 8
+  ? Math.min(configuredClassroomLoginMaxKeys, 10000)
+  : 1000;
 const classroomLoginFailures = new Map();
 const CLASSROOM_TEACHER_INVITE_CODE = String(process.env.ROBOTICS_TEACHER_INVITE_CODE || '');
 
@@ -998,12 +1001,9 @@ function classroomLoginKey(req, role, identifier) {
 }
 
 function isClassroomLoginLimited(key) {
+  pruneClassroomLoginFailures();
   const attempt = classroomLoginFailures.get(key);
-  if (!attempt) return false;
-  if (Date.now() - attempt.startedAt >= CLASSROOM_LOGIN_WINDOW_MS) {
-    classroomLoginFailures.delete(key);
-    return false;
-  }
+  if (!attempt) return classroomLoginFailures.size >= CLASSROOM_LOGIN_MAX_KEYS;
   return attempt.failures >= CLASSROOM_LOGIN_MAX_FAILURES;
 }
 
@@ -1012,15 +1012,12 @@ function pruneClassroomLoginFailures() {
   for (const [key, attempt] of classroomLoginFailures) {
     if (now - attempt.startedAt >= CLASSROOM_LOGIN_WINDOW_MS) classroomLoginFailures.delete(key);
   }
-  while (classroomLoginFailures.size >= CLASSROOM_LOGIN_MAX_KEYS) {
-    const oldestKey = classroomLoginFailures.keys().next().value;
-    classroomLoginFailures.delete(oldestKey);
-  }
 }
 
 function recordClassroomLoginFailure(key) {
   pruneClassroomLoginFailures();
   const attempt = classroomLoginFailures.get(key);
+  if (!attempt && classroomLoginFailures.size >= CLASSROOM_LOGIN_MAX_KEYS) return;
   if (!attempt || Date.now() - attempt.startedAt >= CLASSROOM_LOGIN_WINDOW_MS) {
     classroomLoginFailures.set(key, { failures: 1, startedAt: Date.now() });
     return;
