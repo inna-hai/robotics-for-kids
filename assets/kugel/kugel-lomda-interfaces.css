@@ -457,18 +457,27 @@
 
 .monitor-row {
   display: grid;
-  grid-template-columns: minmax(145px, 1fr) minmax(92px, .6fr) minmax(155px, .8fr) minmax(105px, .6fr) minmax(360px, 1.5fr);
-  gap: 12px;
-  align-items: center;
-  padding: 10px;
+  grid-template-columns: minmax(150px, .9fr) minmax(120px, .75fr) minmax(180px, 1fr) minmax(110px, .6fr);
+  gap: 10px 14px;
+  align-items: start;
+  padding: 14px;
   border: 1px solid #e2e8f0;
   border-radius: 10px;
   background: #fff;
 }
 
+.monitor-row.is-selected {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, .08);
+}
+
 .monitor-row.is-connected {
   border-color: #bbf7d0;
   background: #f7fef9;
+}
+
+.monitor-row.is-connected.is-selected {
+  border-color: #2563eb;
 }
 
 .monitor-row.is-offline {
@@ -496,6 +505,23 @@
   background: #e2e8f0;
 }
 
+.student-status-stack {
+  display: grid;
+  justify-items: start;
+  gap: 6px;
+}
+
+.report-ready-pill {
+  display: inline-flex;
+  width: fit-content;
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: #1e3a8a;
+  background: #dbeafe;
+  font-size: .78rem;
+  font-weight: 900;
+}
+
 .coin-progress {
   display: grid;
   gap: 5px;
@@ -508,14 +534,15 @@
 
 .student-row-actions {
   display: grid;
-  grid-template-columns: minmax(180px, 1fr) auto auto auto auto auto;
-  gap: 6px;
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(260px, 1fr) repeat(5, minmax(74px, auto));
+  gap: 8px;
   align-items: stretch;
 }
 
 .student-message-input {
   min-width: 0;
-  min-height: 56px;
+  min-height: 68px;
   resize: vertical;
   padding: 8px 10px;
   border: 1px solid #cbd5e1;
@@ -523,6 +550,12 @@
   font: inherit;
   font-weight: 800;
   background: #fff;
+}
+
+.report-action {
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+  background: #eff6ff;
 }
 
 .coin-bar {

@@ -309,7 +309,7 @@
 
     await refreshLiveSession();
     let activeLessonId = Number(liveSession?.session?.lessonId ?? getState().teacherLessonId ?? 0);
-    let selectedStudent = roster[0].name;
+    let selectedStudent = null;
 
     select.innerHTML = kugelLessons.map(lesson => `<option value="${lesson.id}">שיעור ${lesson.id} - ${esc(lesson.title)}</option>`).join('');
     select.value = String(activeLessonId);
@@ -338,15 +338,45 @@
       qs('#metricAttention').textContent = metrics.attention ?? roster.filter(item => item.status === 'נדרש טיפול').length;
     }
 
+    function latestStudentActivityMs(student) {
+      return Math.max(
+        Date.parse(student.exitTicket?.createdAt || '') || 0,
+        Date.parse(student.finishedAt || '') || 0,
+        Date.parse(student.lastSeenAt || '') || 0,
+        Date.parse(student.startedAt || '') || 0
+      );
+    }
+
+    function ensureSelectedStudent(students) {
+      if (students.some(item => item.name === selectedStudent)) return;
+      const latest = [...students]
+        .filter(item => item.completed || item.exitTicket || item.eventCount > 0)
+        .sort((a, b) => latestStudentActivityMs(b) - latestStudentActivityMs(a))[0];
+      selectedStudent = (latest || students[0] || roster[0]).name;
+    }
+
     function renderMonitor() {
-      const students = currentStudents().map(item => ({
+      const students = currentStudents().map((item, index) => ({
         name: item.name,
         status: item.status,
         coins: item.coins || 0,
         duration: item.durationSeconds ? `${Math.floor(item.durationSeconds / 60)}:${String(item.durationSeconds % 60).padStart(2, '0')}` : '-',
         connected: item.connected,
-        connectionStatus: item.connectionStatus || (item.connected ? 'מחובר' : 'לא מחובר')
-      }));
+        connectionStatus: item.connectionStatus || (item.connected ? 'מחובר' : 'לא מחובר'),
+        completed: Boolean(item.completed),
+        exitTicket: item.exitTicket || null,
+        finishedAt: item.finishedAt,
+        lastSeenAt: item.lastSeenAt,
+        startedAt: item.startedAt,
+        eventCount: item.eventCount || 0,
+        rosterIndex: index
+      })).sort((a, b) => {
+        const aActive = a.completed || a.eventCount > 0 || a.exitTicket ? 1 : 0;
+        const bActive = b.completed || b.eventCount > 0 || b.exitTicket ? 1 : 0;
+        if (aActive !== bActive) return bActive - aActive;
+        return latestStudentActivityMs(b) - latestStudentActivityMs(a) || a.rosterIndex - b.rosterIndex;
+      });
+      ensureSelectedStudent(students);
       const focusedMessageInput = document.activeElement?.matches?.('[data-message-for]')
         ? {
             name: document.activeElement.dataset.messageFor,
@@ -355,12 +385,15 @@
           }
         : null;
       qs('#studentMonitor').innerHTML = students.map(student => `
-        <div class="monitor-row ${student.connected ? 'is-connected' : 'is-offline'}">
+        <div class="monitor-row ${student.connected ? 'is-connected' : 'is-offline'} ${student.name === selectedStudent ? 'is-selected' : ''}">
           <div class="student-identity">
             <strong>${esc(student.name)}</strong>
             <span class="connection-pill">${esc(student.connectionStatus)}</span>
           </div>
-          <span class="status-pill">${esc(student.status)}</span>
+          <div class="student-status-stack">
+            <span class="status-pill">${esc(student.status)}</span>
+            <span class="report-ready-pill">${student.completed || student.exitTicket ? 'דוח זמין' : 'ממתין לדוח'}</span>
+          </div>
           <div class="coin-progress">
             <strong>${student.coins} / 8 מטבעות</strong>
             <span class="coin-bar"><span style="width:${Math.min(100, (student.coins / 8) * 100)}%"></span></span>
@@ -372,7 +405,7 @@
             <button class="secondary-action danger-action" type="button" data-freeze="${esc(student.name)}">עצירה</button>
             <button class="secondary-action" type="button" data-release="${esc(student.name)}">שחרור</button>
             <button class="secondary-action" type="button" data-reset-student="${esc(student.name)}">איפוס משימה</button>
-            <button class="icon-button" type="button" data-report="${esc(student.name)}" title="פתיחת דוח">›</button>
+            <button class="secondary-action report-action" type="button" data-report="${esc(student.name)}">דוח</button>
           </div>
         </div>
       `).join('');
@@ -416,6 +449,7 @@
 
     function renderReport() {
       const students = currentStudents();
+      ensureSelectedStudent(students);
       const student = students.find(item => item.name === selectedStudent) || students[0] || roster[0];
       const world = liveSession?.world?.worldId ? liveSession.world : getWorld(activeLessonId);
       const duration = student.durationSeconds ? `${Math.floor(student.durationSeconds / 60)}:${String(student.durationSeconds % 60).padStart(2, '0')}` : student.duration || '-';
