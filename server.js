@@ -1221,11 +1221,14 @@ function summarizeStudentFromEvents(studentName, rows, fallback = {}) {
   const joinEvents = matching.filter(row => ['player_join', 'player_spawn'].includes(String(row.event_type || '')));
   const fallbackStartedAt = !resetAt || Date.parse(fallback.startedAt || '') >= resetAt ? fallback.startedAt : null;
   const fallbackFinishedAt = !resetAt || Date.parse(fallback.finishedAt || '') >= resetAt ? fallback.finishedAt : null;
-  const startedAt = eventCreatedAtMs(joinEvents[0] || ordered[0]) || fallbackStartedAt || null;
+  const fallbackStartedAtMs = Date.parse(fallbackStartedAt || '') || null;
+  const fallbackFinishedAtMs = Date.parse(fallbackFinishedAt || '') || null;
+  const startedAt = eventCreatedAtMs(joinEvents[0] || ordered[0]) || fallbackStartedAtMs || null;
   const fallbackCoins = fallbackFinishedAt ? Number(fallback.coins || 0) : 0;
   const coins = Math.min(8, Math.max(fallbackCoins, estimatedCoins.count, coinEvents.length, ...coinProgress));
   const lastCoinAt = eventCreatedAtMs(estimatedCoins.rows.at(-1) || coinEvents.at(-1));
-  const finishedAt = eventCreatedAtMs(finishEvents.at(-1)) || fallbackFinishedAt || null;
+  const coinCompletedAt = coins >= 8 ? lastCoinAt : null;
+  const finishedAt = eventCreatedAtMs(finishEvents.at(-1)) || coinCompletedAt || fallbackFinishedAtMs || null;
   const completed = Boolean(finishedAt || (!resetAt && fallback.completed));
   const durationMs = startedAt && finishedAt ? Math.max(0, finishedAt - startedAt) : null;
   const hasLiveConnection = lastEvent && String(lastEvent.event_type || '') !== 'player_leave';
