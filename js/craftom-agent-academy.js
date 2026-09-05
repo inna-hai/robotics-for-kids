@@ -333,6 +333,7 @@
     const firstTurnAction = state.actions.findIndex(action => action.type === 'turn');
     const reachedStation = isNear(state, station, criterion.radius || 74);
     const hasArrivalSay = state.says.some(text => /arrived|הגיע|נמסר|delivery/i.test(text));
+    const hasPackageNearStation = state.packages.some(pkg => isNear(pkg, station, criterion.radius || 52));
 
     if (criterion.type === 'chatDeliver') return state.sawChat;
     if (criterion.type === 'teleport') return state.sawTeleport;
@@ -348,6 +349,8 @@
     }
     if (criterion.type === 'reachedStation') return reachedStation;
     if (criterion.type === 'place') return state.packages.length > 0;
+    if (criterion.type === 'placeDirection') return state.packages.some(pkg => pkg.direction === (criterion.direction || 'DOWN'));
+    if (criterion.type === 'packageNearStation') return hasPackageNearStation;
     if (criterion.type === 'say') return state.says.length > 0;
     if (criterion.type === 'arrivalSay') return hasArrivalSay;
     if (criterion.type === 'staysOnStartRow') return Math.abs(state.y - start.y) < Number(criterion.maxDelta || 8);
