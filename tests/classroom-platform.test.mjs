@@ -14,6 +14,10 @@ assert.ok(
   serverJs.includes('process.env.ROBOTICS_DB_FILE'),
   'The classroom API test must be able to use an isolated SQLite database via ROBOTICS_DB_FILE',
 );
+assert.ok(serverJs.includes('function personalLoginCodeExists'), 'student codes must be checked for classroom collisions');
+assert.ok(serverJs.includes('generatePersonalLoginCode(db, classroom.id)'), 'student code generation must use the classroom collision check');
+assert.ok(serverJs.includes('CLASSROOM_LOGIN_MAX_KEYS'), 'login failure tracking must have a hard memory bound');
+assert.ok(serverJs.includes('function pruneClassroomLoginFailures'), 'expired and excess login failure keys must be pruned');
 
 function freePort() {
   return new Promise((resolve, reject) => {
@@ -190,6 +194,8 @@ try {
   assert.equal(blockedGuestCourse.status, 402);
   const classroomCourse = await fetch(`${baseUrl}/python-turtle.html`, { headers: { Cookie: studentCookie }, redirect: 'manual' });
   assert.equal(classroomCourse.status, 200);
+  const sisiWeatherLesson = await fetch(`${baseUrl}/weather.html`, { headers: { Cookie: studentCookie }, redirect: 'manual' });
+  assert.equal(sisiWeatherLesson.status, 200);
   const unrelatedProtectedPage = await fetch(`${baseUrl}/venture-ai.html`, { headers: { Cookie: studentCookie }, redirect: 'manual' });
   assert.equal(unrelatedProtectedPage.status, 402);
   const teacherMaterials = await fetch(`${baseUrl}/python-turtle-slides.html`, { headers: { Cookie: studentCookie }, redirect: 'manual' });
@@ -215,6 +221,25 @@ try {
   assert.equal(reportBody.classes[0].students[0].progress[0].courseId, 'python-turtle');
   assert.equal(reportBody.classes[0].students[0].progress[0].status, 'started');
   console.log('✓ classroom progress is linked to the signed-in student and visible only to the teacher');
+
+  const completeProgress = await fetch(`${baseUrl}/api/classroom/progress`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: studentCookie },
+    body: JSON.stringify({ courseId: 'python-turtle', lessonId: 'course', activityId: 'course-open', status: 'completed', score: 90 }),
+  });
+  assert.equal(completeProgress.status, 200);
+  const restartCompletedProgress = await fetch(`${baseUrl}/api/classroom/progress`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: studentCookie },
+    body: JSON.stringify({ courseId: 'python-turtle', lessonId: 'course', activityId: 'course-open', status: 'started', score: 10 }),
+  });
+  assert.equal(restartCompletedProgress.status, 200);
+  const monotonicReport = await fetch(`${baseUrl}/api/classroom/classes`, { headers: { Cookie: teacherCookie } });
+  const monotonicBody = await monotonicReport.json();
+  assert.equal(monotonicBody.classes[0].students[0].progress[0].status, 'completed');
+  assert.equal(monotonicBody.classes[0].students[0].progress[0].score, 90);
+  assert.ok(monotonicBody.classes[0].students[0].progress[0].completedAt);
+  console.log('✓ completed classroom progress cannot regress back to started');
 
   for (let attempt = 0; attempt < 10; attempt += 1) {
     const retry = await fetch(`${baseUrl}/api/classroom/student-login`, {

@@ -94,6 +94,9 @@
     completed.add(Number(lesson.id));
     saveCompletedMissions(completed);
     localStorage.setItem(missionProgressKey(), String(getUnlockedMission()));
+    window.dispatchEvent(new CustomEvent('hai:classroom-progress', {
+      detail: { activityId: `mission-${lesson.id}`, status: 'completed', score: 100 },
+    }));
     decorateMissionNav();
     return getUnlockedMission();
   }
