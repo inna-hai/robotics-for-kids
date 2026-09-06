@@ -11,7 +11,9 @@
     "pretest:classroom-e2e": "playwright install chromium",
     "test:classroom-e2e": "node tests/e2e/classroom-teacher-entitlements.e2e.mjs",
     "pretest:kugel-e2e": "playwright install chromium",
-    "test:kugel-e2e": "node tests/e2e/kugel-lesson-zero.e2e.mjs"
+    "test:kugel-e2e": "node tests/e2e/kugel-lesson-zero.e2e.mjs",
+    "pretest:feedback-e2e": "playwright install chromium",
+    "test:feedback-e2e": "node tests/e2e/craftom-classroom-feedback.e2e.mjs"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.3"
