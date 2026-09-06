@@ -73,19 +73,22 @@ fixture.close();
 
 const port = await freePort();
 const baseUrl = `http://127.0.0.1:${port}`;
-const child = spawn(process.execPath, ['server.js'], {
-  cwd: root,
-  env: {
-    ...process.env,
-    PORT: String(port),
-    ROBOTICS_DB_FILE: dbFile,
-    ROBOTICS_SUBSCRIPTION_GATE: '1',
-    ROBOTICS_TEACHER_INVITE_CODE: 'migration-invite',
-    ROBOTICS_CLASSROOM_ADMIN_CODE: 'migration-admin',
-    NODE_ENV: 'test',
-  },
-  stdio: ['ignore', 'pipe', 'pipe'],
-});
+function startServer() {
+  return spawn(process.execPath, ['server.js'], {
+    cwd: root,
+    env: {
+      ...process.env,
+      PORT: String(port),
+      ROBOTICS_DB_FILE: dbFile,
+      ROBOTICS_SUBSCRIPTION_GATE: '1',
+      ROBOTICS_TEACHER_INVITE_CODE: 'migration-invite',
+      ROBOTICS_CLASSROOM_ADMIN_CODE: 'migration-admin',
+      NODE_ENV: 'test',
+    },
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+}
+let child = startServer();
 
 try {
   await waitForServer(baseUrl);
@@ -102,7 +105,32 @@ try {
   assert.deepEqual(coursesFor('teacher-old'), ['craftom-agent', 'minecraft', 'python-turtle', 'sensi-city', 'sisi', 'webcode']);
   assert.deepEqual(coursesFor('teacher-empty'), []);
   migrated.close();
-  console.log('✓ legacy teachers inherit exactly their existing classroom course access');
+
+  const adminCookie = (initialize.headers.get('set-cookie') || '').split(';')[0];
+  const removeAll = await fetch(`${baseUrl}/api/classroom/admin/teachers/teacher-selected/courses`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: adminCookie },
+    body: JSON.stringify({ courses: [] }),
+  });
+  assert.equal(removeAll.status, 200);
+  assert.deepEqual((await removeAll.json()).affectedClasses[0].courses, []);
+
+  child.kill('SIGTERM');
+  await new Promise((resolve) => child.once('exit', resolve));
+  child = startServer();
+  await waitForServer(baseUrl);
+  const restartInitialize = await fetch(`${baseUrl}/api/classroom/admin-login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code: 'migration-admin' }),
+  });
+  assert.equal(restartInitialize.status, 200);
+  const afterRestart = new Database(dbFile, { readonly: true });
+  assert.equal(afterRestart.prepare('SELECT COUNT(*) AS count FROM classroom_migrations').get().count, 2);
+  assert.deepEqual(afterRestart.prepare('SELECT course_id FROM teacher_courses WHERE teacher_id = ?').all('teacher-selected'), []);
+  assert.deepEqual(afterRestart.prepare('SELECT course_id FROM classroom_courses WHERE classroom_id = ?').all('class-selected'), []);
+  afterRestart.close();
+  console.log('✓ legacy entitlements migrate once and intentional zero-course access survives restart');
 } finally {
   if (child.exitCode === null && child.signalCode === null) {
     child.kill('SIGTERM');
