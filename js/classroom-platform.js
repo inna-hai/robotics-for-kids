@@ -185,10 +185,11 @@
     return new FormData(form).getAll('courses');
   }
 
-  function createCoursePicker(selected = []) {
+  function createCoursePicker(selected = [], availableCourseIds = Object.keys(courseLabels)) {
     const fieldset = element('fieldset', undefined, 'course-picker');
     fieldset.append(element('legend', 'לומדות פתוחות לכיתה'));
-    for (const [courseId, labelText] of Object.entries(courseLabels)) {
+    for (const courseId of availableCourseIds) {
+      const labelText = courseLabels[courseId] || courseId;
       const label = element('label');
       const input = document.createElement('input');
       input.type = 'checkbox';
@@ -207,9 +208,33 @@
     const authMessage = document.getElementById('teacher-auth-message');
     const dashboardMessage = document.getElementById('dashboard-message');
     const list = document.getElementById('classes-list');
+    const teacherCourseCatalog = document.getElementById('teacher-course-catalog');
+    const createClassButton = document.querySelector('#create-class-form button[type="submit"]');
+    let availableCourseIds = [];
+
+    function renderTeacherCatalog() {
+      teacherCourseCatalog.replaceChildren();
+      if (!availableCourseIds.length) {
+        teacherCourseCatalog.append(element('p', 'עדיין לא הוקצו לך לומדות. מנהלת המערכת יכולה לפתוח עבורך לומדות.', 'message'));
+        createClassButton.disabled = true;
+        return;
+      }
+      const courseLinks = element('div', undefined, 'course-links');
+      for (const courseId of availableCourseIds) {
+        const link = element('a', `פתיחת הלומדה שלי: ${courseLabels[courseId] || courseId}`, 'button quiet');
+        link.href = courseStarts[courseId];
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        courseLinks.append(link);
+      }
+      teacherCourseCatalog.append(courseLinks, createCoursePicker([], availableCourseIds));
+      createClassButton.disabled = false;
+    }
 
     async function loadClasses() {
       const data = await api('/api/classroom/classes');
+      availableCourseIds = data.teacher?.courses || [];
+      renderTeacherCatalog();
       list.replaceChildren(...data.classes.map(renderClass));
       if (!data.classes.length) list.append(element('p', 'עדיין אין כיתות. צרו את הכיתה הראשונה.', 'card'));
     }
@@ -236,7 +261,7 @@
       courseAccess.append(courseLinks);
 
       const courseForm = element('form', undefined, 'course-access-form');
-      courseForm.append(createCoursePicker(classroom.courses || []));
+      courseForm.append(createCoursePicker(classroom.courses || [], availableCourseIds));
       const saveCourses = element('button', 'שמירת הלומדות', 'button secondary');
       saveCourses.type = 'submit';
       courseForm.append(saveCourses);

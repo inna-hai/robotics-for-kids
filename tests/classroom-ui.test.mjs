@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import vm from 'node:vm';
@@ -7,10 +7,14 @@ import vm from 'node:vm';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
 const read = (path) => readFileSync(join(root, path), 'utf8');
+assert.ok(existsSync(join(root, 'classroom-admin.html')), 'missing secure classroom administrator page');
+assert.ok(existsSync(join(root, 'js/classroom-admin.js')), 'missing classroom administrator client');
 
 const index = read('index.html');
 const entry = read('classroom-entry.html');
 const teacher = read('teacher-classrooms.html');
+const admin = read('classroom-admin.html');
+const adminClient = read('js/classroom-admin.js');
 const client = read('js/classroom-platform.js');
 const sessionClient = read('js/classroom-session.js');
 const styles = read('css/classroom-platform.css');
@@ -44,12 +48,22 @@ assert.ok(teacher.includes('id="teacher-register-form"'));
 assert.ok(teacher.includes('name="inviteCode"'));
 assert.ok(teacher.includes('id="create-class-form"'));
 assert.ok(teacher.includes('id="classes-list"'));
+assert.ok(teacher.includes('id="teacher-course-catalog"'));
 assert.ok(teacher.includes('יצירת כיתה'));
-assert.ok(teacher.includes('name="courses"'));
-for (const courseId of ['sensi-city', 'sisi', 'python-turtle', 'webcode', 'minecraft', 'craftom-agent']) {
-  assert.ok(teacher.includes(`value="${courseId}"`), `Missing teacher course selector for ${courseId}`);
-}
-assert.ok(teacher.includes('בחרו לומדות לכיתה'));
+assert.ok(!teacher.includes('value="minecraft"'), 'teacher HTML must not expose a static unrestricted course picker');
+assert.ok(teacher.includes('בחרו מתוך הלומדות שהוקצו לך'));
+
+assert.ok(admin.includes('id="admin-login-form"'));
+assert.ok(admin.includes('id="admin-dashboard"'));
+assert.ok(admin.includes('id="admin-teachers-list"'));
+assert.ok(admin.includes('ניהול הרשאות מורים'));
+assert.ok(admin.includes('js/classroom-admin.js'));
+assert.ok(adminClient.includes('/api/classroom/admin-login'));
+assert.ok(adminClient.includes('/api/classroom/admin/teachers'));
+assert.ok(adminClient.includes('/courses'));
+assert.ok(adminClient.includes('replaceChildren'));
+assert.ok(!adminClient.includes('innerHTML'), 'administrator UI must render teacher data without innerHTML');
+assert.ok(!adminClient.includes('localStorage'), 'administrator credentials must stay only in the HttpOnly session cookie');
 
 assert.ok(client.includes('/api/classroom/teacher-login'));
 assert.ok(client.includes('/api/classroom/teacher-register'));
@@ -57,6 +71,9 @@ assert.ok(client.includes('/api/classroom/student-login'));
 assert.ok(client.includes('/api/classroom/classes'));
 assert.ok(client.includes("/courses`"));
 assert.ok(client.includes("new FormData(form).getAll('courses')"));
+assert.ok(client.includes('availableCourseIds'));
+assert.ok(client.includes('teacher-course-catalog'));
+assert.ok(client.includes('פתיחת הלומדה שלי'));
 assert.ok(client.includes('פתיחת הלומדה'));
 assert.ok(client.includes('student-course-links'));
 assert.ok(entry.includes('הלומדות הפתוחות לכיתה שלך'));

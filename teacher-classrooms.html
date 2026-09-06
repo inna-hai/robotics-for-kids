@@ -48,15 +48,11 @@
       <form class="card create-class" id="create-class-form">
         <div><h2>יצירת כיתה</h2><p>לאחר היצירה תקבלו קוד כיתה משותף.</p></div>
         <label>שם הכיתה<input name="name" placeholder="למשל כיתה ז׳1" required></label>
-        <fieldset class="course-picker">
-          <legend>בחרו לומדות לכיתה</legend>
-          <label><input type="checkbox" name="courses" value="sensi-city"> סנסי בעיר החכמה</label>
-          <label><input type="checkbox" name="courses" value="sisi"> סיסי</label>
-          <label><input type="checkbox" name="courses" value="python-turtle"> Python Turtle</label>
-          <label><input type="checkbox" name="courses" value="webcode"> Web Code</label>
-          <label><input type="checkbox" name="courses" value="minecraft"> Minecraft</label>
-          <label><input type="checkbox" name="courses" value="craftom-agent"> אקדמיית ה-Agent</label>
-        </fieldset>
+        <div>
+          <h3>הלומדות הזמינות לך</h3>
+          <p>בחרו מתוך הלומדות שהוקצו לך על ידי מנהלת המערכת.</p>
+          <div id="teacher-course-catalog"></div>
+        </div>
         <button class="button primary" type="submit">יצירת כיתה</button>
       </form>
       <p class="message" id="dashboard-message" aria-live="polite"></p>
@@ -64,6 +60,6 @@
     </section>
   </main>
 
-  <script src="js/classroom-platform.js?v=20260905-class-courses-1"></script>
+  <script src="js/classroom-platform.js?v=20260906-teacher-entitlements-1"></script>
 </body>
 </html>

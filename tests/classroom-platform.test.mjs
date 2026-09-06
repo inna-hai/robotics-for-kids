@@ -53,6 +53,7 @@ const child = spawn(process.execPath, ['server.js'], {
     ROBOTICS_DB_FILE: join(tempDir, 'classroom.sqlite'),
     ROBOTICS_SUBSCRIPTION_GATE: '1',
     ROBOTICS_TEACHER_INVITE_CODE: 'test-teacher-invite-code',
+    ROBOTICS_CLASSROOM_ADMIN_CODE: 'test-classroom-admin-code',
     ROBOTICS_CLASSROOM_LOGIN_MAX_KEYS: '8',
     NODE_ENV: 'test',
   },
@@ -115,6 +116,66 @@ try {
   assert.equal(unauthenticatedClass.status, 401);
 
   const teacherCookie = (login.headers.get('set-cookie') || '').split(';')[0];
+  const teacherBeforeAssignment = await fetch(`${baseUrl}/api/classroom/me`, { headers: { Cookie: teacherCookie } });
+  assert.deepEqual((await teacherBeforeAssignment.json()).teacher.courses, []);
+
+  const classBeforeAssignment = await fetch(`${baseUrl}/api/classroom/classes`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: teacherCookie },
+    body: JSON.stringify({ name: 'כיתה חסומה', courses: ['python-turtle'] }),
+  });
+  assert.equal(classBeforeAssignment.status, 403);
+
+  const badAdminLogin = await fetch(`${baseUrl}/api/classroom/admin-login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code: 'wrong-admin-code' }),
+  });
+  assert.equal(badAdminLogin.status, 401);
+
+  const adminLogin = await fetch(`${baseUrl}/api/classroom/admin-login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code: 'test-classroom-admin-code' }),
+  });
+  assert.equal(adminLogin.status, 200);
+  const adminCookie = (adminLogin.headers.get('set-cookie') || '').split(';')[0];
+  assert.match(adminCookie, /^haiTechClassroomAdminToken=/);
+
+  const adminTeachers = await fetch(`${baseUrl}/api/classroom/admin/teachers`, { headers: { Cookie: adminCookie } });
+  const adminTeachersBody = await adminTeachers.json();
+  assert.equal(adminTeachers.status, 200);
+  assert.equal(adminTeachersBody.teachers[0].email, 'teacher@example.test');
+  assert.deepEqual(adminTeachersBody.teachers[0].courses, []);
+
+  const unauthenticatedTeacherAssignment = await fetch(`${baseUrl}/api/classroom/admin/teachers/${body.teacher.id}/courses`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ courses: ['python-turtle'] }),
+  });
+  assert.equal(unauthenticatedTeacherAssignment.status, 401);
+
+  const assignTeacherCourses = await fetch(`${baseUrl}/api/classroom/admin/teachers/${body.teacher.id}/courses`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: adminCookie },
+    body: JSON.stringify({ courses: ['craftom-agent', 'webcode', 'python-turtle', 'sisi', 'sensi-city'] }),
+  });
+  const assignmentBody = await assignTeacherCourses.json();
+  assert.equal(assignTeacherCourses.status, 200);
+  assert.deepEqual(assignmentBody.teacher.courses, ['sensi-city', 'sisi', 'python-turtle', 'webcode', 'craftom-agent']);
+
+  const teacherAfterAssignment = await fetch(`${baseUrl}/api/classroom/me`, { headers: { Cookie: teacherCookie } });
+  assert.deepEqual((await teacherAfterAssignment.json()).teacher.courses, ['sensi-city', 'sisi', 'python-turtle', 'webcode', 'craftom-agent']);
+  const invalidTeacherAssignment = await fetch(`${baseUrl}/api/classroom/admin/teachers/${body.teacher.id}/courses`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: adminCookie },
+    body: JSON.stringify({ courses: ['python-turtle', 'unknown-course'] }),
+  });
+  assert.equal(invalidTeacherAssignment.status, 400);
+  const teacherAfterInvalidAssignment = await fetch(`${baseUrl}/api/classroom/me`, { headers: { Cookie: teacherCookie } });
+  assert.deepEqual((await teacherAfterInvalidAssignment.json()).teacher.courses, ['sensi-city', 'sisi', 'python-turtle', 'webcode', 'craftom-agent']);
+  console.log('✓ an administrator exclusively assigns the teacher course catalog');
+
   const createClass = await fetch(`${baseUrl}/api/classroom/classes`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Cookie: teacherCookie },
@@ -140,8 +201,8 @@ try {
   }
   const assignedTeacherVideo = await fetch(`${baseUrl}/api/sensi/guide-videos/lesson-1`, { headers: { Cookie: teacherCookie } });
   assert.equal(assignedTeacherVideo.status, 404, 'assigned Sensi teacher must pass authorization before the missing test video is checked');
-  const teacherUnassignedCourse = await fetch(`${baseUrl}/minecraft.html`, { headers: { Cookie: teacherCookie }, redirect: 'manual' });
-  assert.equal(teacherUnassignedCourse.status, 402);
+  const teacherCourseOutsideClass = await fetch(`${baseUrl}/craftom-agent-academy.html?lesson=1`, { headers: { Cookie: teacherCookie }, redirect: 'manual' });
+  assert.equal(teacherCourseOutsideClass.status, 200, 'teacher entitlement must not depend on assigning the course to a class');
 
   const personalRegistration = await fetch(`${baseUrl}/api/summer/register`, {
     method: 'POST',
@@ -165,7 +226,8 @@ try {
   const teacherWithSubscription = `${teacherCookie}; ${summerCookie}`;
   const teacherStillRestricted = await fetch(`${baseUrl}/minecraft.html`, { headers: { Cookie: teacherWithSubscription }, redirect: 'manual' });
   assert.equal(teacherStillRestricted.status, 402);
-  console.log('✓ a teacher can open only courses assigned to one of their classes');
+  assert.match(await teacherStillRestricted.text(), /מנהלת המערכת יכולה לפתוח את הלומדה למורה/);
+  console.log('✓ a teacher can open only courses assigned by the administrator');
 
   const addStudent = await fetch(`${baseUrl}/api/classroom/classes/${classBody.classroom.id}/students`, {
     method: 'POST',
@@ -327,6 +389,20 @@ try {
   assert.ok(monotonicBody.classes[0].students[0].progress[0].completedAt);
   console.log('✓ completed classroom progress cannot regress back to started');
 
+  const updateBeyondTeacherCatalog = await fetch(`${baseUrl}/api/classroom/classes/${classBody.classroom.id}/courses`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: teacherCookie },
+    body: JSON.stringify({ courses: ['minecraft'] }),
+  });
+  assert.equal(updateBeyondTeacherCatalog.status, 403);
+
+  const expandTeacherCourses = await fetch(`${baseUrl}/api/classroom/admin/teachers/${body.teacher.id}/courses`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: adminCookie },
+    body: JSON.stringify({ courses: ['craftom-agent', 'minecraft', 'webcode', 'python-turtle', 'sisi', 'sensi-city'] }),
+  });
+  assert.equal(expandTeacherCourses.status, 200);
+
   const updateCourses = await fetch(`${baseUrl}/api/classroom/classes/${classBody.classroom.id}/courses`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Cookie: teacherCookie },
@@ -340,15 +416,44 @@ try {
   const updatedStudentCraftom = await fetch(`${baseUrl}/craftom-agent-academy.html?lesson=1`, { headers: { Cookie: studentCookie }, redirect: 'manual' });
   assert.equal(updatedStudentCraftom.status, 200);
   const updatedTeacherPython = await fetch(`${baseUrl}/python-turtle.html`, { headers: { Cookie: teacherCookie }, redirect: 'manual' });
-  assert.equal(updatedTeacherPython.status, 402);
+  assert.equal(updatedTeacherPython.status, 200, 'teacher retains Python access when no class currently uses it');
   const updatedTeacherCraftom = await fetch(`${baseUrl}/craftom-agent-academy.html?lesson=1`, { headers: { Cookie: teacherCookie }, redirect: 'manual' });
   assert.equal(updatedTeacherCraftom.status, 200);
   for (const teacherResource of ['/minecraft-teachers.html', '/minecraft-slides.html?lesson=1', '/craftom-minecraft-slides.html?challenge=1']) {
     const response = await fetch(`${baseUrl}${teacherResource}`, { headers: { Cookie: teacherCookie }, redirect: 'manual' });
     assert.equal(response.status, 200, `${teacherResource} must open for the teacher when its course is assigned`);
   }
+  const retainedTeacherVideo = await fetch(`${baseUrl}/api/sensi/guide-videos/lesson-1`, { headers: { Cookie: teacherCookie } });
+  assert.equal(retainedTeacherVideo.status, 404, 'teacher keeps Sensi access even after removing it from every class');
+
+  const createSensiOnlyClass = await fetch(`${baseUrl}/api/classroom/classes`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: teacherCookie },
+    body: JSON.stringify({ name: 'כיתת סנסי בלבד', courses: ['sensi-city'] }),
+  });
+  const sensiOnlyClassBody = await createSensiOnlyClass.json();
+  assert.equal(createSensiOnlyClass.status, 201);
+
+  const reduceTeacherCourses = await fetch(`${baseUrl}/api/classroom/admin/teachers/${body.teacher.id}/courses`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: adminCookie },
+    body: JSON.stringify({ courses: ['minecraft'] }),
+  });
+  const reducedTeacherBody = await reduceTeacherCourses.json();
+  assert.equal(reduceTeacherCourses.status, 200);
+  assert.deepEqual(reducedTeacherBody.teacher.courses, ['minecraft']);
+  assert.deepEqual(reducedTeacherBody.affectedClasses.find((item) => item.id === classBody.classroom.id).courses, ['minecraft']);
+  assert.deepEqual(reducedTeacherBody.affectedClasses.find((item) => item.id === sensiOnlyClassBody.classroom.id).courses, []);
+  const persistedAdminTeachers = await fetch(`${baseUrl}/api/classroom/admin/teachers`, { headers: { Cookie: adminCookie } });
+  const persistedAdminTeacher = (await persistedAdminTeachers.json()).teachers.find((item) => item.id === body.teacher.id);
+  assert.deepEqual(persistedAdminTeacher.classes.find((item) => item.id === sensiOnlyClassBody.classroom.id).courses, [], 'an intentionally empty class must not receive the one-time legacy backfill again');
+  const teacherCraftomAfterRemoval = await fetch(`${baseUrl}/craftom-agent-academy.html?lesson=1`, { headers: { Cookie: teacherCookie }, redirect: 'manual' });
+  assert.equal(teacherCraftomAfterRemoval.status, 402);
+  const studentCraftomAfterRemoval = await fetch(`${baseUrl}/craftom-agent-academy.html?lesson=1`, { headers: { Cookie: studentCookie }, redirect: 'manual' });
+  assert.equal(studentCraftomAfterRemoval.status, 402);
   const removedTeacherVideo = await fetch(`${baseUrl}/api/sensi/guide-videos/lesson-1`, { headers: { Cookie: teacherCookie } });
   assert.equal(removedTeacherVideo.status, 403);
+  console.log('✓ removing a teacher entitlement atomically removes it from the teacher’s classes');
   const blockedUnassignedProgress = await fetch(`${baseUrl}/api/classroom/progress`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Cookie: studentCookie },
@@ -404,6 +509,19 @@ try {
   });
   assert.equal(targetAfterFlood.status, 429);
   console.log('✓ flooding new limiter keys cannot evict an active lockout');
+
+  const adminLogout = await fetch(`${baseUrl}/api/classroom/admin-logout`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: adminCookie },
+    body: '{}',
+  });
+  assert.equal(adminLogout.status, 200);
+  assert.match(adminLogout.headers.get('set-cookie') || '', /Max-Age=0/);
+  const adminAfterLogout = await fetch(`${baseUrl}/api/classroom/admin-me`, { headers: { Cookie: adminCookie } });
+  assert.equal((await adminAfterLogout.json()).role, 'guest');
+  const teachersAfterAdminLogout = await fetch(`${baseUrl}/api/classroom/admin/teachers`, { headers: { Cookie: adminCookie } });
+  assert.equal(teachersAfterAdminLogout.status, 401);
+  console.log('✓ administrator logout revokes the separate secure session');
 
   const logout = await fetch(`${baseUrl}/api/classroom/logout`, {
     method: 'POST',

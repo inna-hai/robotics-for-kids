@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ניהול הרשאות מורים | hai.tech</title>
+  <meta name="description" content="מסך מאובטח לניהול הלומדות הזמינות למורים.">
+  <link rel="stylesheet" href="css/classroom-platform.css">
+</head>
+<body data-classroom-page="admin">
+  <header class="topbar">
+    <a class="brand" href="index.html">🌈 hai.tech</a>
+    <a class="text-link" href="teacher-classrooms.html">כניסת מורים</a>
+  </header>
+
+  <main class="shell">
+    <section class="intro">
+      <span class="eyebrow">סביבת מנהלת</span>
+      <h1>ניהול הרשאות מורים</h1>
+      <p>כאן קובעים אילו לומדות זמינות לכל מורה. המורה תוכל לשייך לכיתות רק לומדות מתוך הרשימה שהוגדרה לה.</p>
+    </section>
+
+    <section id="admin-auth">
+      <form class="card" id="admin-login-form">
+        <h2>כניסת מנהלת</h2>
+        <label>קוד מנהלת<input name="code" type="password" autocomplete="current-password" required></label>
+        <button class="button primary" type="submit">כניסה</button>
+      </form>
+      <p class="message" id="admin-auth-message" aria-live="polite"></p>
+    </section>
+
+    <section id="admin-dashboard" hidden>
+      <div class="dashboard-heading">
+        <div><h2>המורות במערכת</h2><p>סמנו לכל מורה את הלומדות שנרכשו או אושרו עבורה.</p></div>
+        <button class="button quiet" id="admin-logout" type="button">התנתקות</button>
+      </div>
+      <p class="message" id="admin-message" aria-live="polite"></p>
+      <div class="classes-list" id="admin-teachers-list"></div>
+    </section>
+  </main>
+
+  <script src="js/classroom-admin.js?v=20260906-teacher-entitlements-1"></script>
+</body>
+</html>
