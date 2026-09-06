@@ -7744,7 +7744,7 @@
     function initialLessonId(){
       const params = new URLSearchParams(location.search);
       const id = Number(params.get('lesson') || params.get('l') || 1);
-      return TURTLE_LESSONS.some(lesson => lesson.id === id) ? id : 1;
+      return TURTLE_LESSONS.some(lesson => lesson.id === id && lesson.id <= 15) ? id : 1;
     }
     function renderInitialLessonSidebar(){
       const id = initialLessonId();
@@ -7760,7 +7760,7 @@
       }
       if(title) title.textContent = `${l.id}. ${l.title}`;
       if(intro) intro.textContent = l.goal;
-      if(list) list.innerHTML = `<label for="lessonPicker"><b>בחירת שיעור:</b></label><select id="lessonPicker" class="lesson-picker">${TURTLE_LESSONS.map(lesson => `<option value="${lesson.id}" ${lesson.id === l.id ? 'selected' : ''}>שיעור ${lesson.id}: ${earlyEscape(lesson.title)}</option>`).join('')}</select>`;
+      if(list) list.innerHTML = `<label for="lessonPicker"><b>בחירת שיעור:</b></label><select id="lessonPicker" class="lesson-picker">${TURTLE_LESSONS.filter(lesson => lesson.id <= 15).map(lesson => `<option value="${lesson.id}" ${lesson.id === l.id ? 'selected' : ''}>שיעור ${lesson.id}: ${earlyEscape(lesson.title)}</option>`).join('')}</select>`;
       if(note) {
         const tasks = (l.exercises || []).map(ex => `<li>${earlyEscape(ex.prompt)}</li>`).join('');
         note.innerHTML = `<b>בשיעור הזה:</b><br>מושג מרכזי: ${earlyEscape(l.concept)}<br>תוצר: ${earlyEscape(l.product || 'ציור עובד')}<br><br><b>משימות לתלמיד:</b>${tasks ? `<ol class="side-task-list">${tasks}</ol>` : '<br>המשימות יופיעו לאחר בחירת שיעור.'}<small>לא מציגים לילדים את כל הסילבוס בבת אחת — מוצגות כאן רק משימות השיעור הנבחר.</small>`;
@@ -8965,7 +8965,7 @@
       ) : '';
       const secretRevealHtml = lesson10SecretRevealHtml(ex);
       updateLesson10CanvasSecret(ex);
-      missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div>${lesson10IntroHtml}${lesson11IntroHtml}${lesson12CumulativeHtml}${lesson13CumulativeHtml}<p><b>${escapeHtml(ex.prompt || '')}</b></p>${exerciseVisualHtml(ex)}${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p>${(isChallengeExercise(ex) || isRunOnlyExampleExercise(ex)) ? '' : `<p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}`}${writingHtml}<div class="exercise-bottom"><div class="exercise-controls">${(isTip || isChallengeExercise(ex) || isSelectionOnly || isRunOnlyExampleExercise(ex)) ? '' : '<button class="btn run" id="checkExerciseBtn">✅ בדוק תרגיל</button>'}${resetButton}<button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${nextButtonLabel}</button></div>${feedbackBelowButtons ? '<br>' : feedbackHtml}</div>${feedbackBelowButtons ? feedbackHtml : ''}${secretRevealHtml}</div>`;
+      missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div>${lesson10IntroHtml}${lesson11IntroHtml}${lesson12CumulativeHtml}${lesson13CumulativeHtml}<p><b>${escapeHtml(ex.prompt || '')}</b></p>${exerciseVisualHtml(ex)}${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p>${(isChallengeExercise(ex) || isRunOnlyExampleExercise(ex)) ? '' : `<p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}`}${writingHtml}<div class="exercise-bottom"><div class="exercise-controls">${resetButton}<button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${nextButtonLabel}</button></div>${feedbackBelowButtons ? '<br>' : feedbackHtml}</div>${feedbackBelowButtons ? feedbackHtml : ''}${secretRevealHtml}</div>`;
       if(feedbackBelowButtons && message){
         requestAnimationFrame(()=>missionEl.scrollTo({top: missionEl.scrollHeight, behavior:'smooth'}));
       }
@@ -10826,7 +10826,7 @@
       renderCurrentExercise();
     }
     function nextLessonAfter(id){
-      const sortedIds = TURTLE_LESSONS.map(lesson=>lesson.id).sort((a,b)=>a-b);
+      const sortedIds = TURTLE_LESSONS.filter(lesson=>lesson.id <= 15).map(lesson=>lesson.id).sort((a,b)=>a-b);
       return sortedIds.find(lessonId=>lessonId > id) || null;
     }
     function canLeaveCheckedExercise(leavingEx){
@@ -10972,7 +10972,7 @@
       return byNumber >= 0 && byNumber < exercises.length ? byNumber : null;
     }
     function startEmptyLesson(id, updateUrl=true){
-      const exists = TURTLE_LESSONS.some(lesson=>lesson.id===id);
+      const exists = TURTLE_LESSONS.some(lesson=>lesson.id===id && lesson.id <= 15);
       setLesson(exists ? id : 1);
       workspace.clear();
       generatePython();
@@ -10987,12 +10987,12 @@
     function initialLessonFromUrl(){
       const params = new URLSearchParams(window.location.search);
       const id = Number(params.get('lesson') || params.get('l') || 1);
-      return TURTLE_LESSONS.some(lesson=>lesson.id===id) ? id : 1;
+      return TURTLE_LESSONS.some(lesson=>lesson.id===id && lesson.id <= 15) ? id : 1;
     }
     // legacy text kept for regression check: href="python-turtle.html?lesson=${l.id}" ${l.id === currentLesson ? 'נוכחי' : 'פתח'}</span>
     function renderLessonPicker(){
       const list = document.getElementById('lessonList');
-      list.innerHTML = `<label for="lessonPicker"><b>בחירת שיעור:</b></label><select id="lessonPicker" class="lesson-picker">${TURTLE_LESSONS.map(l=>`<option value="${l.id}" ${l.id === currentLesson ? 'selected' : ''}>שיעור ${l.id}: ${escapeHtml(l.title)}</option>`).join('')}</select>`;
+      list.innerHTML = `<label for="lessonPicker"><b>בחירת שיעור:</b></label><select id="lessonPicker" class="lesson-picker">${TURTLE_LESSONS.filter(l=>l.id <= 15).map(l=>`<option value="${l.id}" ${l.id === currentLesson ? 'selected' : ''}>שיעור ${l.id}: ${escapeHtml(l.title)}</option>`).join('')}</select>`;
       document.getElementById('lessonPicker').addEventListener('change', e => startEmptyLesson(Number(e.target.value)));
     }
     function initCollapsibleLessonsPanel(){
@@ -11188,7 +11188,7 @@
       if(saved){
         applyCompleted(saved);
         const requestedLessonId = initialLessonFromUrl();
-        const lessonId = REVIEW_UNLOCK ? requestedLessonId : (TURTLE_LESSONS.some(lesson=>lesson.id===Number(saved.lesson)) ? Number(saved.lesson) : requestedLessonId);
+        const lessonId = REVIEW_UNLOCK ? requestedLessonId : (TURTLE_LESSONS.some(lesson=>lesson.id===Number(saved.lesson) && lesson.id <= 15) ? Number(saved.lesson) : requestedLessonId);
         setLesson(lessonId);
         const exercises = currentExercises();
         const requestedExerciseIndex = requestedExerciseIndexFromUrl(exercises);
