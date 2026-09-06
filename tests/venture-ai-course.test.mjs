@@ -66,7 +66,7 @@ assert.ok(page.includes('כלים טכנולוגיים ב־AI'), 'course page fr
 assert.ok(page.includes('תוצר יזמי'), 'course page clarifies the entrepreneurial product outcome');
 assert.ok(page.includes('בשיתוף חברת דרך ההייטק'), 'course page names Derech HaHitech as the delivery partner');
 assert.ok(page.includes('מדריך מטעם ״דרך ההייטק״'), 'course page says Derech HaHitech provides the class instructor');
-assert.ok(page.includes('מדריכים שלנו מגיעים לכיתה'), 'course page explains the school receives Derech HaHitech instructors');
+assert.ok(page.includes('מדריכים מטעם ״דרך ההייטק״ מגיעים לכיתה'), 'course page explains the school receives Derech HaHitech instructors');
 assert.ok(page.includes('venture-visual'), 'course page has a visual hero area');
 assert.ok(page.indexOf('assets/venture-ai/meeting-1-city.webp') < page.indexOf('id="overview"'), 'hero image appears in the top section before Holon AI content');
 assert.ok(page.includes('assets/venture-ai/meeting-3-build.webp'), 'hero includes Opal build image');
@@ -77,8 +77,12 @@ assert.ok(!page.includes('holon-card'), 'Holon top section avoids text-heavy car
 assert.ok(!page.includes('מורה קבוע'), 'course page no longer says fixed teacher');
 assert.ok(!page.includes('BYOD'), 'course page avoids BYOD jargon in the focused overview');
 assert.ok(page.includes('מה מקבל בית הספר?'), 'course page adds the manager-facing value section from the position paper');
-assert.ok(page.includes('אנחנו מביאים תוכנית מוכנה'), 'course page explains what the school receives');
-assert.ok(page.includes('מחזיק את הרצף המקצועי בין המפגשים'), 'course page includes between-meeting support from the position paper');
+assert.ok(page.includes('תוכנית מוכנה להפעלה'), 'course page explains what the school receives');
+assert.ok(page.includes('ליווי מקצועי שמחזיק את התהליך בין המפגשים'), 'course page includes between-meeting support from the position paper');
+assert.ok(page.includes('מה התלמיד/ה יוצא/ת ממנו?'), 'course page explains student outcomes');
+assert.ok(page.includes('יזמות'), 'course page highlights entrepreneurship as a student outcome');
+assert.ok(page.includes('בינה מלאכותית'), 'course page highlights AI as a student outcome');
+assert.ok(page.includes('חשיבה ביקורתית'), 'course page highlights critical thinking as a student outcome');
 assert.ok(page.includes('6.10.2026'), 'course page includes the coordinators Zoom milestone');
 assert.ok(page.includes('עד 8.10.2026'), 'course page includes Holon scheduling deadline');
 assert.ok(page.includes('15.2.2027'), 'course page includes Holon hackathon milestone date');
