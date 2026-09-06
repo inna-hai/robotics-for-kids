@@ -51,13 +51,15 @@
         <p class="message" id="student-login-message" aria-live="polite"></p>
         <div class="signed-in" id="student-session" hidden>
           <strong id="student-welcome"></strong>
-          <a class="button primary" id="student-continue" href="index.html">להמשיך ללומדה</a>
+          <p>הלומדות הפתוחות לכיתה שלך:</p>
+          <div class="course-links" id="student-course-links"></div>
+          <a class="button primary" id="student-continue" href="index.html" hidden>להמשיך ללומדה</a>
           <button class="button quiet" id="student-logout" type="button">החלפת תלמיד/ה</button>
         </div>
       </section>
     </div>
   </main>
 
-  <script src="js/classroom-platform.js?v=20260905-access-modes-1"></script>
+  <script src="js/classroom-platform.js?v=20260905-class-courses-1"></script>
 </body>
 </html>

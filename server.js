@@ -17,7 +17,8 @@ const SUMMER_USERS_FILE = path.join(DATA_DIR, 'summer-users.json');
 const SUMMER_DB_FILE = process.env.ROBOTICS_DB_FILE || path.join(DATA_DIR, 'summer-subscriptions.sqlite');
 const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 30;
 const SUBSCRIPTION_GATE_ENABLED = process.env.ROBOTICS_SUBSCRIPTION_GATE === '1';
-const CLASSROOM_COURSES = new Set(['sensi-city', 'sisi', 'python-turtle', 'webcode', 'minecraft', 'craftom-agent']);
+const CLASSROOM_COURSE_IDS = ['sensi-city', 'sisi', 'python-turtle', 'webcode', 'minecraft', 'craftom-agent'];
+const CLASSROOM_COURSES = new Set(CLASSROOM_COURSE_IDS);
 const CLASSROOM_LOGIN_WINDOW_MS = 10 * 60 * 1000;
 const CLASSROOM_LOGIN_MAX_FAILURES = 10;
 const configuredClassroomLoginMaxKeys = Number(process.env.ROBOTICS_CLASSROOM_LOGIN_MAX_KEYS || 1000);
@@ -222,6 +223,13 @@ function openSummerDb() {
       updated_at TEXT NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS classroom_courses (
+      classroom_id TEXT NOT NULL REFERENCES classrooms(id) ON DELETE CASCADE,
+      course_id TEXT NOT NULL CHECK (course_id IN ('sensi-city', 'sisi', 'python-turtle', 'webcode', 'minecraft', 'craftom-agent')),
+      created_at TEXT NOT NULL,
+      PRIMARY KEY (classroom_id, course_id)
+    );
+
     CREATE TABLE IF NOT EXISTS classroom_students (
       id TEXT PRIMARY KEY,
       classroom_id TEXT NOT NULL REFERENCES classrooms(id) ON DELETE CASCADE,
@@ -262,6 +270,7 @@ function openSummerDb() {
     CREATE INDEX IF NOT EXISTS idx_classroom_teacher_sessions_token ON classroom_teacher_sessions(token_hash);
     CREATE INDEX IF NOT EXISTS idx_classrooms_teacher ON classrooms(teacher_id);
     CREATE INDEX IF NOT EXISTS idx_classrooms_join_code ON classrooms(join_code);
+    CREATE INDEX IF NOT EXISTS idx_classroom_courses_classroom ON classroom_courses(classroom_id);
     CREATE INDEX IF NOT EXISTS idx_classroom_students_classroom ON classroom_students(classroom_id);
     CREATE INDEX IF NOT EXISTS idx_classroom_student_sessions_token ON classroom_student_sessions(token_hash);
     CREATE INDEX IF NOT EXISTS idx_classroom_progress_student ON classroom_progress(student_id);
@@ -276,6 +285,18 @@ function openSummerDb() {
   `);
   try { db.prepare('ALTER TABLE student_progress ADD COLUMN child_id TEXT REFERENCES summer_children(id) ON DELETE CASCADE').run(); } catch {}
   try { db.prepare("ALTER TABLE summer_children ADD COLUMN subscription_status TEXT NOT NULL DEFAULT 'trial' CHECK (subscription_status IN ('trial', 'active', 'past_due', 'cancelled'))").run(); } catch {}
+  const migrateLegacyClassrooms = db.transaction(() => {
+    const legacyClassrooms = db.prepare(`
+      SELECT c.id FROM classrooms c
+      WHERE NOT EXISTS (SELECT 1 FROM classroom_courses cc WHERE cc.classroom_id = c.id)
+    `).all();
+    const addLegacyCourse = db.prepare('INSERT OR IGNORE INTO classroom_courses (classroom_id, course_id, created_at) VALUES (?, ?, ?)');
+    const migrationTime = new Date().toISOString();
+    for (const classroom of legacyClassrooms) {
+      for (const courseId of CLASSROOM_COURSE_IDS) addLegacyCourse.run(classroom.id, courseId, migrationTime);
+    }
+  });
+  migrateLegacyClassrooms();
   migrateStudentProgressUniqueConstraint(db);
   db.prepare('CREATE INDEX IF NOT EXISTS idx_student_progress_child ON student_progress(child_id)').run();
   try { fs.chmodSync(SUMMER_DB_FILE, 0o600); } catch {}
@@ -1116,6 +1137,46 @@ function getClassroomStudentFromRequest(req) {
   });
 }
 
+function cleanClassroomCourses(value) {
+  if (!Array.isArray(value)) return null;
+  const requested = new Set();
+  for (const valueCourseId of value) {
+    const courseId = cleanText(valueCourseId, 80);
+    if (!CLASSROOM_COURSES.has(courseId)) return null;
+    requested.add(courseId);
+  }
+  return CLASSROOM_COURSE_IDS.filter(courseId => requested.has(courseId));
+}
+
+function classroomCourses(db, classroomId) {
+  const assigned = new Set(db.prepare('SELECT course_id FROM classroom_courses WHERE classroom_id = ?')
+    .all(classroomId).map(row => row.course_id));
+  return CLASSROOM_COURSE_IDS.filter(courseId => assigned.has(courseId));
+}
+
+function classroomHasCourse(db, classroomId, courseId) {
+  return Boolean(db.prepare('SELECT 1 FROM classroom_courses WHERE classroom_id = ? AND course_id = ?')
+    .get(classroomId, courseId));
+}
+
+function teacherHasCourse(db, teacherId, courseId) {
+  return Boolean(db.prepare(`
+    SELECT 1
+    FROM classroom_courses cc
+    JOIN classrooms c ON c.id = cc.classroom_id
+    WHERE c.teacher_id = ? AND cc.course_id = ?
+    LIMIT 1
+  `).get(teacherId, courseId));
+}
+
+function replaceClassroomCourses(db, classroomId, courseIds) {
+  const now = new Date().toISOString();
+  db.prepare('DELETE FROM classroom_courses WHERE classroom_id = ?').run(classroomId);
+  const insert = db.prepare('INSERT INTO classroom_courses (classroom_id, course_id, created_at) VALUES (?, ?, ?)');
+  for (const courseId of courseIds) insert.run(classroomId, courseId, now);
+  db.prepare('UPDATE classrooms SET updated_at = ? WHERE id = ?').run(now, classroomId);
+}
+
 function generateClassJoinCode(db) {
   const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   for (let attempt = 0; attempt < 30; attempt += 1) {
@@ -1177,7 +1238,11 @@ async function handleClassroomApi(req, res) {
       ok: true,
       role: 'student',
       student: { id: student.id, name: student.name },
-      classroom: { id: student.classroom_id, name: student.classroom_name },
+      classroom: {
+        id: student.classroom_id,
+        name: student.classroom_name,
+        courses: withSummerDb(db => classroomCourses(db, student.classroom_id)),
+      },
     }));
     return send(res, 200, JSON.stringify({ ok: true, role: 'guest' }));
   }
@@ -1191,6 +1256,7 @@ async function handleClassroomApi(req, res) {
       id: classroom.id,
       name: classroom.name,
       joinCode: classroom.join_code,
+      courses: classroomCourses(db, classroom.id),
       createdAt: classroom.created_at,
       students: db.prepare(`
         SELECT id, name, created_at FROM classroom_students WHERE classroom_id = ? ORDER BY created_at
@@ -1231,6 +1297,9 @@ async function handleClassroomApi(req, res) {
       const status = body.status === 'completed' ? 'completed' : 'started';
       const score = Math.max(0, Math.min(100, Number(body.score || 0)));
       if (!CLASSROOM_COURSES.has(courseId)) return send(res, 400, JSON.stringify({ error: 'הקורס אינו מוכר.' }));
+      if (!withSummerDb(db => classroomHasCourse(db, student.classroom_id, courseId))) {
+        return send(res, 403, JSON.stringify({ error: 'הלומדה אינה פתוחה לכיתה הזו.' }));
+      }
       if (!lessonId || !activityId) return send(res, 400, JSON.stringify({ error: 'חסרים פרטי התקדמות.' }));
       const metadata = body.metadata && typeof body.metadata === 'object' ? body.metadata : {};
       const metadataJson = JSON.stringify(metadata).slice(0, 4000);
@@ -1291,10 +1360,39 @@ async function handleClassroomApi(req, res) {
         ok: true,
         role: 'student',
         student: { id: result.student.id, name: result.student.name },
-        classroom: { id: result.classroom.id, name: result.classroom.name },
+        classroom: {
+          id: result.classroom.id,
+          name: result.classroom.name,
+          courses: withSummerDb(db => classroomCourses(db, result.classroom.id)),
+        },
       }), 'application/json; charset=utf-8', {
         'Set-Cookie': classroomSessionCookie(result.token),
       });
+    }
+
+    if (action === 'classes' && segments[3] && segments[4] === 'courses' && segments.length === 5) {
+      const teacher = getClassroomTeacherFromRequest(req);
+      if (!teacher) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
+      const courses = cleanClassroomCourses(body.courses);
+      if (!courses?.length) return send(res, 400, JSON.stringify({ error: 'בחרו לפחות לומדה אחת תקינה לכיתה.' }));
+      const classroom = withSummerDb(db => {
+        const row = db.prepare('SELECT * FROM classrooms WHERE id = ? AND teacher_id = ?').get(segments[3], teacher.id);
+        if (!row) return null;
+        const updateCourses = db.transaction(() => replaceClassroomCourses(db, row.id, courses));
+        updateCourses();
+        return row;
+      });
+      if (!classroom) return send(res, 404, JSON.stringify({ error: 'הכיתה לא נמצאה.' }));
+      return send(res, 200, JSON.stringify({
+        ok: true,
+        classroom: {
+          id: classroom.id,
+          name: classroom.name,
+          joinCode: classroom.join_code,
+          courses,
+          updatedAt: new Date().toISOString(),
+        },
+      }));
     }
 
     if (action === 'classes' && segments[3] && segments[4] === 'students') {
@@ -1335,25 +1433,37 @@ async function handleClassroomApi(req, res) {
       if (!teacher) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
       const name = cleanText(body.name, 80);
       if (name.length < 2) return send(res, 400, JSON.stringify({ error: 'נא למלא שם כיתה.' }));
+      const courses = cleanClassroomCourses(body.courses);
+      if (!courses?.length) return send(res, 400, JSON.stringify({ error: 'בחרו לפחות לומדה אחת תקינה לכיתה.' }));
       const classroom = withSummerDb(db => {
-        const now = new Date().toISOString();
-        const row = {
-          id: crypto.randomUUID(),
-          teacher_id: teacher.id,
-          name,
-          join_code: generateClassJoinCode(db),
-          created_at: now,
-          updated_at: now,
-        };
-        db.prepare(`
-          INSERT INTO classrooms (id, teacher_id, name, join_code, created_at, updated_at)
-          VALUES (?, ?, ?, ?, ?, ?)
-        `).run(row.id, row.teacher_id, row.name, row.join_code, row.created_at, row.updated_at);
-        return row;
+        const createClassroom = db.transaction(() => {
+          const now = new Date().toISOString();
+          const row = {
+            id: crypto.randomUUID(),
+            teacher_id: teacher.id,
+            name,
+            join_code: generateClassJoinCode(db),
+            created_at: now,
+            updated_at: now,
+          };
+          db.prepare(`
+            INSERT INTO classrooms (id, teacher_id, name, join_code, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?)
+          `).run(row.id, row.teacher_id, row.name, row.join_code, row.created_at, row.updated_at);
+          replaceClassroomCourses(db, row.id, courses);
+          return row;
+        });
+        return createClassroom();
       });
       return send(res, 201, JSON.stringify({
         ok: true,
-        classroom: { id: classroom.id, name: classroom.name, joinCode: classroom.join_code, createdAt: classroom.created_at },
+        classroom: {
+          id: classroom.id,
+          name: classroom.name,
+          joinCode: classroom.join_code,
+          courses,
+          createdAt: classroom.created_at,
+        },
       }));
     }
 
@@ -1750,9 +1860,18 @@ function serveSensiGuideVideo(req, res, lessonId) {
   if (req.method !== 'GET' && req.method !== 'HEAD') {
     return send(res, 405, 'Method not allowed', 'text/plain; charset=utf-8');
   }
-  const profile = getSummerProfileFromRequest(req);
-  if (!profile) return send(res, 401, 'Unauthorized', 'text/plain; charset=utf-8');
-  if (!isPaidProfile(profile, '/sensi-city.html')) return send(res, 403, 'Forbidden', 'text/plain; charset=utf-8');
+  const classroomStudent = getClassroomStudentFromRequest(req);
+  if (classroomStudent) return send(res, 403, 'Forbidden', 'text/plain; charset=utf-8');
+  const classroomTeacher = getClassroomTeacherFromRequest(req);
+  if (classroomTeacher) {
+    if (!withSummerDb(db => teacherHasCourse(db, classroomTeacher.id, 'sensi-city'))) {
+      return send(res, 403, 'Forbidden', 'text/plain; charset=utf-8');
+    }
+  } else {
+    const profile = getSummerProfileFromRequest(req);
+    if (!profile) return send(res, 401, 'Unauthorized', 'text/plain; charset=utf-8');
+    if (!isPaidProfile(profile, '/sensi-city.html')) return send(res, 403, 'Forbidden', 'text/plain; charset=utf-8');
+  }
 
   const videoFiles = {
     1: 'sensi-lesson-01-parent-guide.mp4',
@@ -1808,10 +1927,15 @@ function serveSensiGuideVideo(req, res, lessonId) {
 function lockedPage(pathname, user, options = {}) {
   const loggedIn = Boolean(user);
   const trialOnly = options.trialOnly === true;
-  const title = trialOnly
+  const classroomRestricted = options.classroomRestricted === true;
+  const title = classroomRestricted
+    ? 'הלומדה לא פתוחה לכיתה הזו'
+    : trialOnly
     ? 'נרשמים לפני שמתחילים ללמוד'
     : (loggedIn ? 'התוכן הזה נעול למנויים' : 'צריך להתחבר כדי להמשיך');
-  const subtitle = trialOnly
+  const subtitle = classroomRestricted
+    ? 'המורה בוחר/ת אילו לומדות פתוחות לכל כיתה. אפשר לחזור לרשימת הלומדות שהוגדרה לכיתה.'
+    : trialOnly
     ? 'גם 3 השיעורים החינמיים בסיסי מתחילים אחרי הרשמה קצרה, כדי שנוכל לפתוח ילד/ה, לשמור התקדמות ולתת קוד כניסה אישי.'
     : (loggedIn
       ? 'השיעורים הנעולים נפתחים לפי ילד/ה. לילד/ה שבחרת עדיין אין מנוי פעיל, ולכן 3 שיעורי ההתנסות של חשיבה ותכנות עם סיסי פתוחים כרגע.'
@@ -1832,13 +1956,13 @@ function lockedPage(pathname, user, options = {}) {
     <div class="lock">🔒</div>
     <h1>${title}</h1>
     <p>${subtitle}</p>
-    <div class="locked-label">${trialOnly ? '3 שיעורים חינם אחרי הרשמה' : 'השיעור הזה נפתח אחרי הפעלת מנוי לילד/ה'}</div>
+    <div class="locked-label">${classroomRestricted ? 'גישה לפי הגדרת הכיתה' : (trialOnly ? '3 שיעורים חינם אחרי הרשמה' : 'השיעור הזה נפתח אחרי הפעלת מנוי לילד/ה')}</div>
     <div class="actions">
-      ${trialOnly ? '' : '<a class="btn purchase" href="https://mrng.to/fZiL2SITRp">הפעלת מנוי</a>'}
-      <a class="btn primary" href="register.html">הרשמה</a>
-      <a class="btn alt" href="login.html">כניסה</a>
+      ${classroomRestricted
+        ? `<a class="btn primary" href="${options.teacher ? 'teacher-classrooms.html' : 'classroom-entry.html'}">חזרה ללומדות הכיתה</a>`
+        : `${trialOnly ? '' : '<a class="btn purchase" href="https://mrng.to/fZiL2SITRp">הפעלת מנוי</a>'}<a class="btn primary" href="register.html">הרשמה</a><a class="btn alt" href="login.html">כניסה</a>`}
     </div>
-    <div class="note">${trialOnly ? 'ההרשמה פותחת 3 שיעורי חשיבה ותכנות בחינם עם סיסי ושומרת את ההתקדמות לילד/ה.' : 'כדי לפתוח את כל הלומדות צריך מנוי פעיל לילד/ה הספציפי/ת.'}</div>
+    <div class="note">${classroomRestricted ? 'רק המורה של הכיתה יכול/ה לשנות את רשימת הלומדות.' : (trialOnly ? 'ההרשמה פותחת 3 שיעורי חשיבה ותכנות בחינם עם סיסי ושומרת את ההתקדמות לילד/ה.' : 'כדי לפתוח את כל הלומדות צריך מנוי פעיל לילד/ה הספציפי/ת.')}</div>
   </main>
 </body>
 </html>`;
@@ -1858,12 +1982,25 @@ function classroomCourseForPath(pathname) {
     || ['craftom-agent-academy', 'craftom-minecraft', 'craftom-minecraft-lesson', 'craftom-minecraft-challenge', 'craftom-minecraft-students'].includes(basename)
     || /^craftom-minecraft-lesson-(?:[1-9]|1[0-6])$/.test(basename);
   if (craftomStudentPage) return 'craftom-agent';
-  if (basename === 'python-turtle' || basename.startsWith('python-turtle-play')) return 'python-turtle';
-  if (basename === 'webcode' || basename.startsWith('webcode-play')) return 'webcode';
+  if (basename === 'python-turtle' || basename === 'python-turtle-course' || basename.startsWith('python-turtle-play')) return 'python-turtle';
+  if (basename === 'webcode' || basename === 'webcode-share' || basename.startsWith('webcode-play')) return 'webcode';
   if (basename === 'minecraft' || basename.startsWith('minecraft-play')) return 'minecraft';
-  if (basename === 'sensi-city') return 'sensi-city';
+  if (basename === 'sensi-city' || basename === 'smart-city') return 'sensi-city';
   const sisiLessons = ['sisi', 'space', 'music', 'ocean', 'detective', 'kitchen', 'dino', 'art', 'weather', 'factory', 'garden', 'park', 'mail', 'cinema', 'escape', 'finale'];
   if (sisiLessons.some(name => basename === name || basename === `${name}-play` || basename === `${name}-lab`)) return 'sisi';
+  return null;
+}
+
+function classroomTeacherCourseForPath(pathname) {
+  const studentCourse = classroomCourseForPath(pathname);
+  if (studentCourse) return studentCourse;
+  const normalized = String(pathname || '').toLowerCase();
+  const basename = path.basename(normalized, path.extname(normalized));
+  if (normalized === '/teachers.html' || /^\/slides\/(?:index|lesson(?:[1-9]|1[0-5])?)\.html$/.test(normalized)) return 'sensi-city';
+  if (basename === 'python-turtle-slides' || /^python-turtle-lesson-(?:[1-9]|[12][0-9]|30)-slides$/.test(basename)) return 'python-turtle';
+  if (basename === 'webcode-slides') return 'webcode';
+  if (basename === 'minecraft-teachers' || basename === 'minecraft-slides') return 'minecraft';
+  if (basename === 'craftom-minecraft-slides') return 'craftom-agent';
   return null;
 }
 
@@ -1936,8 +2073,21 @@ function serveStatic(req, res) {
 
   const profile = SUBSCRIPTION_GATE_ENABLED ? getSummerProfileFromRequest(req) : null;
   const classroomStudent = SUBSCRIPTION_GATE_ENABLED ? getClassroomStudentFromRequest(req) : null;
-  const classroomCourse = classroomStudent ? classroomCourseForPath(pathname) : null;
-  const classroomAuthorized = Boolean(classroomCourse && CLASSROOM_COURSES.has(classroomCourse));
+  const classroomTeacher = SUBSCRIPTION_GATE_ENABLED && !classroomStudent ? getClassroomTeacherFromRequest(req) : null;
+  const classroomCourse = classroomStudent
+    ? classroomCourseForPath(pathname)
+    : (classroomTeacher ? classroomTeacherCourseForPath(pathname) : null);
+  const classroomIdentity = Boolean(classroomStudent || classroomTeacher);
+  const classroomAuthorized = Boolean(classroomCourse
+    && CLASSROOM_COURSES.has(classroomCourse)
+    && withSummerDb(db => classroomStudent
+      ? classroomHasCourse(db, classroomStudent.classroom_id, classroomCourse)
+      : teacherHasCourse(db, classroomTeacher.id, classroomCourse)));
+  const personalAuthorized = !classroomIdentity && isPaidProfile(profile, pathname);
+
+  if (SUBSCRIPTION_GATE_ENABLED && ext === '.html' && classroomCourse && classroomIdentity && !classroomAuthorized) {
+    return send(res, 402, lockedPage(pathname, null, { classroomRestricted: true, teacher: Boolean(classroomTeacher) }), 'text/html; charset=utf-8');
+  }
 
   if (SUBSCRIPTION_GATE_ENABLED && ext === '.html' && isFreeTrialLearningHtml(pathname, url) && !profile && !classroomAuthorized) {
     return send(res, 401, lockedPage(pathname, null, { trialOnly: true }), 'text/html; charset=utf-8');
@@ -1948,7 +2098,7 @@ function serveStatic(req, res) {
   }
 
   if (SUBSCRIPTION_GATE_ENABLED && requiresPaidAccess(pathname, ext, url)) {
-    if (!classroomAuthorized && !isPaidProfile(profile, pathname)) {
+    if (!classroomAuthorized && !personalAuthorized) {
       return send(res, 402, lockedPage(pathname, profile && profile.user), 'text/html; charset=utf-8');
     }
   }

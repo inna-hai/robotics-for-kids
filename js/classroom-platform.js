@@ -65,6 +65,7 @@
     const guest = document.getElementById('guest-continue');
     const subscription = document.getElementById('subscription-continue');
     const studentContinue = document.getElementById('student-continue');
+    const studentCourseLinks = document.getElementById('student-course-links');
     if (guest) guest.href = guestNext;
     if (studentContinue) studentContinue.href = next;
 
@@ -113,6 +114,15 @@
       form.hidden = true;
       session.hidden = false;
       welcome.textContent = `שלום ${data.student.name}, נכנסת לכיתה ${data.classroom.name}.`;
+      if (studentCourseLinks) {
+        const links = (data.classroom.courses || []).map((courseId) => {
+          const link = element('a', courseLabels[courseId] || courseId, 'button primary');
+          link.href = courseStarts[courseId] || 'index.html#courses';
+          return link;
+        });
+        studentCourseLinks.replaceChildren(...links);
+      }
+      if (studentContinue) studentContinue.hidden = true;
     }
 
     try {
@@ -162,6 +172,35 @@
     'craftom-agent': 'אקדמיית ה-Agent',
   };
 
+  const courseStarts = {
+    'sensi-city': 'sensi-city.html?lesson=1',
+    sisi: 'sisi.html',
+    'python-turtle': 'python-turtle.html',
+    webcode: 'webcode.html',
+    minecraft: 'minecraft.html',
+    'craftom-agent': 'craftom-school/preview/index.html',
+  };
+
+  function selectedCourses(form) {
+    return new FormData(form).getAll('courses');
+  }
+
+  function createCoursePicker(selected = []) {
+    const fieldset = element('fieldset', undefined, 'course-picker');
+    fieldset.append(element('legend', 'לומדות פתוחות לכיתה'));
+    for (const [courseId, labelText] of Object.entries(courseLabels)) {
+      const label = element('label');
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.name = 'courses';
+      input.value = courseId;
+      input.checked = selected.includes(courseId);
+      label.append(input, ` ${labelText}`);
+      fieldset.append(label);
+    }
+    return fieldset;
+  }
+
   async function initTeacher() {
     const auth = document.getElementById('teacher-auth');
     const dashboard = document.getElementById('teacher-dashboard');
@@ -183,6 +222,38 @@
       titleBox.append(element('h3', classroom.name), element('p', 'קוד הכיתה לתלמידים:'));
       const code = element('strong', classroom.joinCode, 'code');
       top.append(titleBox, code);
+
+      const courseAccess = element('section', undefined, 'class-courses');
+      courseAccess.append(element('h4', 'הלומדות של הכיתה'));
+      const courseLinks = element('div', undefined, 'course-links');
+      for (const courseId of classroom.courses || []) {
+        const link = element('a', `פתיחת הלומדה: ${courseLabels[courseId] || courseId}`, 'button quiet');
+        link.href = courseStarts[courseId];
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        courseLinks.append(link);
+      }
+      courseAccess.append(courseLinks);
+
+      const courseForm = element('form', undefined, 'course-access-form');
+      courseForm.append(createCoursePicker(classroom.courses || []));
+      const saveCourses = element('button', 'שמירת הלומדות', 'button secondary');
+      saveCourses.type = 'submit';
+      courseForm.append(saveCourses);
+      courseForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        setMessage(dashboardMessage, 'שומרים את הלומדות…');
+        try {
+          await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/courses`, {
+            courses: selectedCourses(courseForm),
+          });
+          setMessage(dashboardMessage, 'הלומדות של הכיתה עודכנו.', true);
+          await loadClasses();
+        } catch (error) {
+          setMessage(dashboardMessage, error.message);
+        }
+      });
+      courseAccess.append(courseForm);
 
       const students = element('ul', undefined, 'student-list');
       if (classroom.students.length) {
@@ -232,7 +303,7 @@
           setMessage(dashboardMessage, error.message);
         }
       });
-      card.append(top, students, addForm, oneTime);
+      card.append(top, courseAccess, students, addForm, oneTime);
       return card;
     }
 
@@ -267,7 +338,9 @@
       const classForm = event.currentTarget;
       setMessage(dashboardMessage, 'יוצרים כיתה…');
       try {
-        await api('/api/classroom/classes', formData(classForm));
+        const data = formData(classForm);
+        data.courses = selectedCourses(classForm);
+        await api('/api/classroom/classes', data);
         classForm.reset();
         setMessage(dashboardMessage, 'הכיתה נוצרה.', true);
         await loadClasses();

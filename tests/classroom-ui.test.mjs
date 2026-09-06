@@ -31,6 +31,7 @@ for (const next of [
 assert.ok(entry.includes('id="guest-continue"'));
 assert.ok(entry.includes('id="student-login-form"'));
 assert.ok(entry.includes('id="student-logout"'));
+assert.ok(entry.includes('id="student-course-links"'));
 assert.ok(entry.includes('התנסות כאורח'));
 assert.ok(entry.includes('id="subscription-continue"'));
 assert.ok(entry.includes('מנוי אישי'));
@@ -44,11 +45,21 @@ assert.ok(teacher.includes('name="inviteCode"'));
 assert.ok(teacher.includes('id="create-class-form"'));
 assert.ok(teacher.includes('id="classes-list"'));
 assert.ok(teacher.includes('יצירת כיתה'));
+assert.ok(teacher.includes('name="courses"'));
+for (const courseId of ['sensi-city', 'sisi', 'python-turtle', 'webcode', 'minecraft', 'craftom-agent']) {
+  assert.ok(teacher.includes(`value="${courseId}"`), `Missing teacher course selector for ${courseId}`);
+}
+assert.ok(teacher.includes('בחרו לומדות לכיתה'));
 
 assert.ok(client.includes('/api/classroom/teacher-login'));
 assert.ok(client.includes('/api/classroom/teacher-register'));
 assert.ok(client.includes('/api/classroom/student-login'));
 assert.ok(client.includes('/api/classroom/classes'));
+assert.ok(client.includes("/courses`"));
+assert.ok(client.includes("new FormData(form).getAll('courses')"));
+assert.ok(client.includes('פתיחת הלומדה'));
+assert.ok(client.includes('student-course-links'));
+assert.ok(entry.includes('הלומדות הפתוחות לכיתה שלך'));
 assert.ok(client.includes('/api/classroom/logout'));
 assert.ok(client.includes("guest.addEventListener('click'"));
 assert.ok(client.includes("document.getElementById('student-logout')"));

@@ -118,13 +118,54 @@ try {
   const createClass = await fetch(`${baseUrl}/api/classroom/classes`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Cookie: teacherCookie },
-    body: JSON.stringify({ name: 'כיתה ז1' }),
+    body: JSON.stringify({ name: 'כיתה ז1', courses: ['python-turtle', 'sisi', 'sensi-city', 'webcode'] }),
   });
   const classBody = await createClass.json();
   assert.equal(createClass.status, 201);
   assert.equal(classBody.classroom.name, 'כיתה ז1');
   assert.match(classBody.classroom.joinCode, /^[A-Z0-9]{6}$/);
-  console.log('✓ an authenticated teacher can create a class');
+  assert.deepEqual(classBody.classroom.courses, ['sensi-city', 'sisi', 'python-turtle', 'webcode']);
+  console.log('✓ an authenticated teacher can create a class with selected courses');
+
+  const teacherAssignedCourse = await fetch(`${baseUrl}/python-turtle.html`, { headers: { Cookie: teacherCookie }, redirect: 'manual' });
+  assert.equal(teacherAssignedCourse.status, 200);
+  for (const teacherResource of [
+    '/teachers.html',
+    '/slides/lesson1.html',
+    '/python-turtle-lesson-1-slides.html',
+    '/webcode-slides.html',
+  ]) {
+    const response = await fetch(`${baseUrl}${teacherResource}`, { headers: { Cookie: teacherCookie }, redirect: 'manual' });
+    assert.equal(response.status, 200, `${teacherResource} must open for the teacher when its course is assigned`);
+  }
+  const assignedTeacherVideo = await fetch(`${baseUrl}/api/sensi/guide-videos/lesson-1`, { headers: { Cookie: teacherCookie } });
+  assert.equal(assignedTeacherVideo.status, 404, 'assigned Sensi teacher must pass authorization before the missing test video is checked');
+  const teacherUnassignedCourse = await fetch(`${baseUrl}/minecraft.html`, { headers: { Cookie: teacherCookie }, redirect: 'manual' });
+  assert.equal(teacherUnassignedCourse.status, 402);
+
+  const personalRegistration = await fetch(`${baseUrl}/api/summer/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      parentName: 'הורה מורה',
+      studentName: 'ילד מורה',
+      email: 'teacher-subscription@example.test',
+      password: 'SafePass123!',
+      confirmPassword: 'SafePass123!',
+    }),
+  });
+  assert.equal(personalRegistration.status, 201);
+  const summerCookie = (personalRegistration.headers.get('set-cookie') || '').split(';')[0];
+  const activatePersonal = await fetch(`${baseUrl}/api/summer/activate-subscription`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: summerCookie },
+    body: '{}',
+  });
+  assert.equal(activatePersonal.status, 200);
+  const teacherWithSubscription = `${teacherCookie}; ${summerCookie}`;
+  const teacherStillRestricted = await fetch(`${baseUrl}/minecraft.html`, { headers: { Cookie: teacherWithSubscription }, redirect: 'manual' });
+  assert.equal(teacherStillRestricted.status, 402);
+  console.log('✓ a teacher can open only courses assigned to one of their classes');
 
   const addStudent = await fetch(`${baseUrl}/api/classroom/classes/${classBody.classroom.id}/students`, {
     method: 'POST',
@@ -150,6 +191,12 @@ try {
     body: JSON.stringify({ name: 'תלמיד זר' }),
   });
   assert.equal(forbiddenRosterChange.status, 404);
+  const forbiddenCourseChange = await fetch(`${baseUrl}/api/classroom/classes/${classBody.classroom.id}/courses`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: secondTeacherCookie },
+    body: JSON.stringify({ courses: ['minecraft'] }),
+  });
+  assert.equal(forbiddenCourseChange.status, 404);
   console.log('✓ a teacher cannot access another teacher’s class');
 
   const badStudentLogin = await fetch(`${baseUrl}/api/classroom/student-login`, {
@@ -211,6 +258,18 @@ try {
   assert.equal(classroomCourse.status, 200);
   const sisiWeatherLesson = await fetch(`${baseUrl}/weather.html`, { headers: { Cookie: studentCookie }, redirect: 'manual' });
   assert.equal(sisiWeatherLesson.status, 200);
+  for (const linkedStudentPage of ['/smart-city.html', '/python-turtle-course.html', '/webcode-share.html']) {
+    const response = await fetch(`${baseUrl}${linkedStudentPage}`, { headers: { Cookie: studentCookie }, redirect: 'manual' });
+    assert.equal(response.status, 200, `${linkedStudentPage} must open inside its assigned course`);
+  }
+  const unassignedMinecraft = await fetch(`${baseUrl}/minecraft.html`, { headers: { Cookie: studentCookie }, redirect: 'manual' });
+  assert.equal(unassignedMinecraft.status, 402);
+  assert.match(await unassignedMinecraft.text(), /הלומדה לא פתוחה לכיתה הזו/);
+  const studentWithSubscription = await fetch(`${baseUrl}/minecraft.html`, {
+    headers: { Cookie: `${studentCookie}; ${summerCookie}` },
+    redirect: 'manual',
+  });
+  assert.equal(studentWithSubscription.status, 402, 'classroom identity must not use a personal subscription to bypass class assignments');
   for (const studentPath of [
     '/craftom-school/preview/index.html',
     '/craftom-minecraft-lesson-1.html',
@@ -219,7 +278,7 @@ try {
     '/craftom-minecraft-students.html?challenge=1',
   ]) {
     const craftomStudentPage = await fetch(`${baseUrl}${studentPath}`, { headers: { Cookie: studentCookie }, redirect: 'manual' });
-    assert.equal(craftomStudentPage.status, 200, `${studentPath} must remain available to an authenticated classroom student`);
+    assert.equal(craftomStudentPage.status, 402, `${studentPath} must stay blocked when Craftom is not assigned to the class`);
   }
   const craftomTeacherSlides = await fetch(`${baseUrl}/craftom-minecraft-slides.html?challenge=1`, { headers: { Cookie: studentCookie }, redirect: 'manual' });
   assert.equal(craftomTeacherSlides.status, 402);
@@ -267,6 +326,36 @@ try {
   assert.equal(monotonicBody.classes[0].students[0].progress[0].score, 90);
   assert.ok(monotonicBody.classes[0].students[0].progress[0].completedAt);
   console.log('✓ completed classroom progress cannot regress back to started');
+
+  const updateCourses = await fetch(`${baseUrl}/api/classroom/classes/${classBody.classroom.id}/courses`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: teacherCookie },
+    body: JSON.stringify({ courses: ['craftom-agent', 'minecraft'] }),
+  });
+  const updateCoursesBody = await updateCourses.json();
+  assert.equal(updateCourses.status, 200);
+  assert.deepEqual(updateCoursesBody.classroom.courses, ['minecraft', 'craftom-agent']);
+  const updatedStudentPython = await fetch(`${baseUrl}/python-turtle.html`, { headers: { Cookie: studentCookie }, redirect: 'manual' });
+  assert.equal(updatedStudentPython.status, 402);
+  const updatedStudentCraftom = await fetch(`${baseUrl}/craftom-agent-academy.html?lesson=1`, { headers: { Cookie: studentCookie }, redirect: 'manual' });
+  assert.equal(updatedStudentCraftom.status, 200);
+  const updatedTeacherPython = await fetch(`${baseUrl}/python-turtle.html`, { headers: { Cookie: teacherCookie }, redirect: 'manual' });
+  assert.equal(updatedTeacherPython.status, 402);
+  const updatedTeacherCraftom = await fetch(`${baseUrl}/craftom-agent-academy.html?lesson=1`, { headers: { Cookie: teacherCookie }, redirect: 'manual' });
+  assert.equal(updatedTeacherCraftom.status, 200);
+  for (const teacherResource of ['/minecraft-teachers.html', '/minecraft-slides.html?lesson=1', '/craftom-minecraft-slides.html?challenge=1']) {
+    const response = await fetch(`${baseUrl}${teacherResource}`, { headers: { Cookie: teacherCookie }, redirect: 'manual' });
+    assert.equal(response.status, 200, `${teacherResource} must open for the teacher when its course is assigned`);
+  }
+  const removedTeacherVideo = await fetch(`${baseUrl}/api/sensi/guide-videos/lesson-1`, { headers: { Cookie: teacherCookie } });
+  assert.equal(removedTeacherVideo.status, 403);
+  const blockedUnassignedProgress = await fetch(`${baseUrl}/api/classroom/progress`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: studentCookie },
+    body: JSON.stringify({ courseId: 'python-turtle', lessonId: 'course', activityId: 'blocked-after-update', status: 'started' }),
+  });
+  assert.equal(blockedUnassignedProgress.status, 403);
+  console.log('✓ course changes immediately update teacher, student, and progress permissions');
 
   for (let attempt = 0; attempt < 10; attempt += 1) {
     const retry = await fetch(`${baseUrl}/api/classroom/student-login`, {
