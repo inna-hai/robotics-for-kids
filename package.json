@@ -10,6 +10,6 @@
     "test": "set -e; for f in tests/*.mjs; do node \"$f\"; done"
   },
   "dependencies": {
-    "better-sqlite3": "^11.10.0"
+    "better-sqlite3": "^13.0.3"
   }
 }
