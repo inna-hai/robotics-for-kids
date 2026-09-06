@@ -86,6 +86,8 @@ assert.ok(page.includes('חשיבה ביקורתית'), 'course page highlights 
 assert.ok(page.includes('6.10.2026'), 'course page includes the coordinators Zoom milestone');
 assert.ok(page.includes('עד 8.10.2026'), 'course page includes Holon scheduling deadline');
 assert.ok(page.includes('15.2.2027'), 'course page includes Holon hackathon milestone date');
+assert.ok(page.includes('יתקיים בסוף מרץ 2027 · תאריך מדויק יעודכן'), 'course page keeps the final event date general until it is confirmed');
+assert.ok(!page.includes('5.4.2027'), 'course page avoids an exact final event date before it is confirmed');
 assert.ok(page.includes('4 מפגשים בכל כיתה עם מדריך מטעם ״דרך ההייטק״'), 'course page clarifies each class receives meetings with a Derech HaHitech instructor');
 assert.ok(page.includes('20 צוותים מכל העיר'), 'course page clarifies the hackathon teams advanced from the citywide phase');
 assert.ok(page.includes('שופטים מהעירייה ומהתעשייה'), 'course page explains the final judging audience');
