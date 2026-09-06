@@ -6,10 +6,12 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "check": "node --check server.js && node --check js/classroom-platform.js && node --check js/classroom-admin.js && node --check js/classroom-session.js && node --check js/summer-account.js && node --check js/summer-subscription.js && node --check js/student-progress.js && node --check js/user-badge.js && node --check js/sisi-hub.js && node --check js/space-play.js && node --check js/lumi-play.js",
+    "check": "node --check server.js && node --check js/classroom-platform.js && node --check js/classroom-admin.js && node --check js/classroom-session.js && node --check js/kugel-lesson-zero.js && node --check js/summer-account.js && node --check js/summer-subscription.js && node --check js/student-progress.js && node --check js/user-badge.js && node --check js/sisi-hub.js && node --check js/space-play.js && node --check js/lumi-play.js",
     "test": "set -e; for f in tests/*.mjs; do node \"$f\"; done",
     "pretest:classroom-e2e": "playwright install chromium",
-    "test:classroom-e2e": "node tests/e2e/classroom-teacher-entitlements.e2e.mjs"
+    "test:classroom-e2e": "node tests/e2e/classroom-teacher-entitlements.e2e.mjs",
+    "pretest:kugel-e2e": "playwright install chromium",
+    "test:kugel-e2e": "node tests/e2e/kugel-lesson-zero.e2e.mjs"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.3"

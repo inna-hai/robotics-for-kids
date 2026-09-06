@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ניהול שיעור 0 | hai.tech</title>
+  <meta name="description" content="לוח מורה מאובטח להפעלת מבוך Minecraft ומעקב אחר תלמידי הכיתה.">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260905-agent-blocks-match-1">
+  <link rel="stylesheet" href="assets/kugel/kugel-lomda-interfaces.css?v=20260906-secure-zero-1">
+</head>
+<body class="kugel-app teacher-app" data-kugel-page="teacher">
+  <header class="app-topbar">
+    <a class="brand-link" href="teacher-classrooms.html"><span class="brand-mark teacher-mark">K</span><span><strong>Kugel</strong><small>חזרה לכיתות שלי</small></span></a>
+  </header>
+  <main class="app-shell">
+   <section class="teacher-board">
+    <aside class="teacher-control">
+      <p class="eyebrow">סביבת מורה מאובטחת</p>
+      <h1>ניהול שיעור 0</h1>
+      <p id="teacherClassName">טוען את הכיתה…</p>
+      <section class="panel compact-panel">
+        <h3>פתיחת עולם המבוך</h3>
+        <p>העולם נפתח מחדש עבור הכיתה. ההתקדמות הישנה בשיעור 0 מתאפסת.</p>
+        <button class="primary-action" id="launchLesson" type="button">פתיחת עולם המבוך</button>
+        <button class="secondary-action" id="stopLesson" type="button">סיום השיעור ושחרור השרת</button>
+        <p class="form-status" id="teacherStatus" aria-live="polite"></p>
+      </section>
+      <section class="panel compact-panel">
+        <h3>בקרה כיתתית</h3>
+        <form class="compact-form teacher-class-message-form" id="classMessageForm">
+          <label>הודעה לכל הכיתה<input name="text" maxlength="1000" required></label>
+          <button class="secondary-action" type="submit">שליחת הודעה</button>
+        </form>
+        <div class="action-row">
+          <button class="secondary-action danger-action" id="freezeAll" type="button">עצירת הכיתה</button>
+          <button class="secondary-action" id="releaseAll" type="button">שחרור הכיתה</button>
+        </div>
+      </section>
+    </aside>
+    <section class="teacher-main">
+      <div class="workspace-hero teacher-hero">
+        <div><div class="kicker">שיעור 0 • תרגול פתיחה</div><h2>מבוך המטבעות</h2><p class="goal">תנועה, התמצאות, שמונה מטבעות וכפתור סיום.</p></div>
+        <div><span class="status-dot" id="serverDot"></span><strong id="serverState">שרת מוכן</strong><small id="serverDetail"></small></div>
+      </div>
+      <section class="metrics-grid">
+        <article class="metric"><strong id="metricConnected">0</strong><span>מחוברים</span></article>
+        <article class="metric"><strong id="metricActive">0</strong><span>בתהליך</span></article>
+        <article class="metric"><strong id="metricDone">0</strong><span>סיימו</span></article>
+        <article class="metric"><strong id="metricAttention">0</strong><span>דורשים בדיקה</span></article>
+      </section>
+      <section class="panel">
+        <div class="panel-head"><h3>לוח התלמידים</h3><button class="icon-button" id="refreshBoard" type="button" title="רענון">↻</button></div>
+        <p>המורה משייכת לכל תלמיד/ה את שם השחקן המדויק ב־Minecraft. רק תלמידי הכיתה הזאת מופיעים כאן.</p>
+        <div class="student-monitor" id="studentMonitor"></div>
+      </section>
+    </section>
+   </section>
+  </main>
+  <script src="js/kugel-lesson-zero.js?v=20260906-secure-zero-1"></script>
+</body>
+</html>

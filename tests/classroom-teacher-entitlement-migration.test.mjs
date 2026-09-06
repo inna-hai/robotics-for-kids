@@ -126,7 +126,10 @@ try {
   });
   assert.equal(restartInitialize.status, 200);
   const afterRestart = new Database(dbFile, { readonly: true });
-  assert.equal(afterRestart.prepare('SELECT COUNT(*) AS count FROM classroom_migrations').get().count, 2);
+  assert.deepEqual(
+    afterRestart.prepare('SELECT migration_key FROM classroom_migrations ORDER BY migration_key').all().map(row => row.migration_key),
+    ['classroom-courses-backfill-v1', 'minecraft-player-nocase-index-v1', 'teacher-courses-backfill-v1'],
+  );
   assert.deepEqual(afterRestart.prepare('SELECT course_id FROM teacher_courses WHERE teacher_id = ?').all('teacher-selected'), []);
   assert.deepEqual(afterRestart.prepare('SELECT course_id FROM classroom_courses WHERE classroom_id = ?').all('class-selected'), []);
   afterRestart.close();

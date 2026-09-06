@@ -178,6 +178,11 @@
     'python-turtle': 'python-turtle.html',
     webcode: 'webcode.html',
     minecraft: 'minecraft.html',
+    'craftom-agent': 'kugel-student.html',
+  };
+
+  const teacherCourseStarts = {
+    ...courseStarts,
     'craftom-agent': 'craftom-school/preview/index.html',
   };
 
@@ -222,7 +227,7 @@
       const courseLinks = element('div', undefined, 'course-links');
       for (const courseId of availableCourseIds) {
         const link = element('a', `פתיחת הלומדה שלי: ${courseLabels[courseId] || courseId}`, 'button quiet');
-        link.href = courseStarts[courseId];
+        link.href = teacherCourseStarts[courseId];
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
         courseLinks.append(link);
@@ -253,12 +258,17 @@
       const courseLinks = element('div', undefined, 'course-links');
       for (const courseId of classroom.courses || []) {
         const link = element('a', `פתיחת הלומדה: ${courseLabels[courseId] || courseId}`, 'button quiet');
-        link.href = courseStarts[courseId];
+        link.href = teacherCourseStarts[courseId];
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
         courseLinks.append(link);
       }
       courseAccess.append(courseLinks);
+      if ((classroom.courses || []).includes('craftom-agent')) {
+        const lessonZero = element('a', 'ניהול שיעור 0 ב-Minecraft', 'button primary');
+        lessonZero.href = `kugel-teacher.html?classroomId=${encodeURIComponent(classroom.id)}`;
+        courseAccess.append(lessonZero);
+      }
 
       const courseForm = element('form', undefined, 'course-access-form');
       courseForm.append(createCoursePicker(classroom.courses || [], availableCourseIds));
