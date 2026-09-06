@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Mars Storm Decision Logic - If Else</title>
+  <desc id="desc">תרשים שיעור 6: נקודת החלטה בסימולטור מאדים לפי stormLevel. דרגה 1 טיסה קדימה 150 סנטימטר לסריקת פאנלים, דרגה 2 טיסה ימינה 80 סנטימטר למנחת חירום, דרגה 3 נחיתה מיידית.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#431407"/><stop offset="0.55" stop-color="#9a3412"/><stop offset="1" stop-color="#7f1d1d"/></linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1e3a8a"/><stop offset="1" stop-color="#38bdf8"/></linearGradient>
+    <marker id="greenArrow" markerWidth="14" markerHeight="14" refX="7" refY="7" orient="auto"><path d="M2,2 L12,7 L2,12 Z" fill="#22c55e"/></marker>
+    <marker id="orangeArrow" markerWidth="14" markerHeight="14" refX="7" refY="7" orient="auto"><path d="M2,2 L12,7 L2,12 Z" fill="#f97316"/></marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#020617" flood-opacity="0.38"/></filter>
+  </defs>
+  <rect width="1200" height="760" rx="34" fill="url(#sky)"/>
+  <circle cx="1040" cy="105" r="64" fill="#fde68a" opacity="0.82"/>
+  <path d="M0 585 C140 540 260 605 390 560 C555 505 700 612 850 550 C1010 485 1100 552 1200 518 L1200 760 L0 760 Z" fill="#c2410c"/>
+  <path d="M0 632 C190 585 330 658 505 610 C710 552 835 645 1020 600 C1100 580 1150 585 1200 570" fill="none" stroke="#fed7aa" stroke-width="4" opacity="0.45"/>
+
+  <text x="600" y="54" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="900" fill="#fff7ed">שיעור 6: Mars Mission Logic</text>
+  <text x="600" y="88" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="800" fill="#fed7aa">If / Else If / Else · stormLevel · קבלת החלטות דינמית · סימולטור בלבד</text>
+
+  <g transform="translate(72 122)" filter="url(#shadow)">
+    <rect x="0" y="0" width="1056" height="560" rx="30" fill="#fff7ed" opacity="0.96"/>
+    <rect x="52" y="70" width="660" height="405" rx="26" fill="#ffedd5" stroke="#fb923c" stroke-width="4" stroke-dasharray="13 10"/>
+    <text x="382" y="42" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="900" fill="#7c2d12">זירת החלטה דינמית במאדים</text>
+
+    <g font-family="Arial, sans-serif">
+      <rect x="300" y="348" width="164" height="64" rx="18" fill="#dcfce7" stroke="#22c55e" stroke-width="3"/>
+      <text x="382" y="375" text-anchor="middle" font-size="19" font-weight="900" fill="#166534">מנחת המראה</text>
+      <text x="382" y="398" text-anchor="middle" font-size="14" fill="#166534">takeoff → flyUp(100)</text>
+
+      <polygon points="382,278 500,338 382,398 264,338" fill="#0f172a" stroke="#38bdf8" stroke-width="4"/>
+      <text x="382" y="330" text-anchor="middle" font-size="20" font-weight="900" fill="#e0f2fe">נקודת החלטה</text>
+      <text x="382" y="356" text-anchor="middle" font-size="17" fill="#bae6fd">stormLevel ?</text>
+
+      <path d="M382 278 V145" stroke="#22c55e" stroke-width="10" stroke-linecap="round" marker-end="url(#greenArrow)"/>
+      <path d="M500 338 H638" stroke="#f97316" stroke-width="10" stroke-linecap="round" marker-end="url(#orangeArrow)"/>
+      <path d="M300 382 C222 440 190 430 155 400" stroke="#ef4444" stroke-width="9" stroke-linecap="round" stroke-dasharray="12 10"/>
+
+      <rect x="258" y="92" width="248" height="74" rx="18" fill="#ecfdf5" stroke="#22c55e" stroke-width="3"/>
+      <text x="382" y="121" text-anchor="middle" font-size="20" font-weight="900" fill="#166534">stormLevel == 1</text>
+      <text x="382" y="147" text-anchor="middle" font-size="16" fill="#166534">סריקה רגילה · 150 ס״מ קדימה</text>
+      <g transform="translate(300 178)">
+        <rect x="0" y="0" width="164" height="56" rx="12" fill="#dbeafe" stroke="#2563eb"/>
+        <rect x="18" y="13" width="42" height="30" fill="url(#panel)"/><rect x="68" y="13" width="42" height="30" fill="url(#panel)"/><rect x="118" y="13" width="28" height="30" fill="url(#panel)"/>
+        <text x="82" y="83" text-anchor="middle" font-size="15" font-weight="900" fill="#7c2d12">פאנלים סולאריים</text>
+      </g>
+
+      <rect x="624" y="300" width="248" height="74" rx="18" fill="#fff7ed" stroke="#f97316" stroke-width="3"/>
+      <text x="748" y="329" text-anchor="middle" font-size="20" font-weight="900" fill="#9a3412">stormLevel == 2</text>
+      <text x="748" y="355" text-anchor="middle" font-size="16" fill="#9a3412">מנחת חירום · 80 ס״מ ימינה</text>
+
+      <rect x="78" y="378" width="218" height="74" rx="18" fill="#fef2f2" stroke="#ef4444" stroke-width="3"/>
+      <text x="187" y="407" text-anchor="middle" font-size="20" font-weight="900" fill="#991b1b">else: stormLevel == 3</text>
+      <text x="187" y="433" text-anchor="middle" font-size="16" fill="#991b1b">נחיתה מיידית במקום</text>
+    </g>
+
+    <g font-family="Arial, sans-serif">
+      <rect x="756" y="84" width="246" height="382" rx="24" fill="#0f172a" opacity="0.95"/>
+      <text x="879" y="120" text-anchor="middle" font-size="23" font-weight="900" fill="#bfdbfe">לוגיקת JavaScript</text>
+      <text x="785" y="164" font-size="18" fill="#e0f2fe">let stormLevel = 1;</text>
+      <text x="785" y="200" font-size="18" fill="#e0f2fe">let scanDistance = 150;</text>
+      <text x="785" y="236" font-size="18" fill="#e0f2fe">let emergencyDistance = 80;</text>
+      <line x1="785" y1="262" x2="976" y2="262" stroke="#64748b"/>
+      <text x="785" y="305" font-size="18" fill="#bbf7d0">if (stormLevel == 1) {</text>
+      <text x="815" y="335" font-size="17" fill="#e0f2fe">flyForward(scanDistance)</text>
+      <text x="785" y="371" font-size="18" fill="#fed7aa">} else if (stormLevel == 2) {</text>
+      <text x="815" y="401" font-size="17" fill="#e0f2fe">flyRight(emergencyDistance)</text>
+      <text x="785" y="437" font-size="18" fill="#fecaca">} else { land(); }</text>
+    </g>
+
+    <rect x="115" y="500" width="825" height="38" rx="19" fill="#0f172a" opacity="0.92"/>
+    <text x="528" y="525" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="900" fill="#e0f2fe">Storm Challenge: עדכנו רק stormLevel ל־3 — הרחפן צריך לבחור נחיתה מיידית</text>
+  </g>
+</svg>

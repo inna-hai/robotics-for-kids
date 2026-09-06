@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Red Cross search and rescue obstacle photo mission</title>
+  <desc id="desc">A grade 8 Drone Mission Lab diagram showing a safe fly zone with three physical obstacles of different heights, SOS survivor cards, a Tello launch pad, yaw turns, flyUp calibration, takePhoto points, targetDist and team safety roles.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#111827"/><stop offset="0.5" stop-color="#7f1d1d"/><stop offset="1" stop-color="#0f766e"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#000" flood-opacity=".3"/></filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#fbbf24"/></marker>
+    <style>
+      .h1{font:900 42px system-ui,Segoe UI,Arial;fill:#fff}.sub{font:650 19px system-ui,Segoe UI,Arial;fill:#fee2e2}.panel{fill:#ffffffee;stroke:#fecaca;stroke-width:2;rx:30;filter:url(#shadow)}.h2{font:900 27px system-ui,Segoe UI,Arial;fill:#7f1d1d}.txt{font:750 18px system-ui,Segoe UI,Arial;fill:#164e63}.small{font:650 14px system-ui,Segoe UI,Arial;fill:#155e75}.code{font:800 16px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#fef3c7}.darkcode{font:800 16px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#0f172a}.safe{fill:#ecfeff;stroke:#22c55e;stroke-width:7;stroke-dasharray:18 10}.route{fill:none;stroke:#fbbf24;stroke-width:9;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}.height{fill:none;stroke:#38bdf8;stroke-width:4;stroke-dasharray:8 8}.obstacle{fill:#e5e7eb;stroke:#64748b;stroke-width:4}.card{fill:#fff1f2;stroke:#ef4444;stroke-width:4}.pad{fill:#22c55e;stroke:#f0fdf4;stroke-width:4}.drone{fill:#111827;stroke:#e0f2fe;stroke-width:3}.nose{fill:#fde68a}.role{fill:#dbeafe;stroke:#60a5fa;stroke-width:2}.badge{font:900 15px system-ui,Segoe UI,Arial;fill:#082f49}.warn{font:900 15px system-ui,Segoe UI,Arial;fill:#7f1d1d}.photo{fill:#fee2e2;stroke:#fb7185;stroke-width:3}.cross{fill:#dc2626}
+    </style>
+  </defs>
+  <rect width="1200" height="720" fill="url(#bg)"/>
+  <text x="600" y="55" text-anchor="middle" class="h1">Red Cross Search &amp; Rescue — Obstacle Photo Mission</text>
+  <text x="600" y="90" text-anchor="middle" class="sub">JavaScript · physical safety gate · flyUp + yawRight + takePhoto · SOS data download</text>
+
+  <rect x="55" y="124" width="735" height="505" class="panel"/>
+  <text x="422" y="164" text-anchor="middle" class="h2">Safe Fly Zone — three collapsed buildings</text>
+  <rect x="120" y="200" width="545" height="350" rx="24" class="safe"/>
+
+  <circle cx="195" cy="500" r="24" class="pad"/><text x="195" y="535" text-anchor="middle" class="small">Launch Pad</text>
+  <path d="M195 500 L300 430 L410 338 L535 240 L605 240" class="route"/>
+  <text x="285" y="520" class="darkcode">targetDist</text>
+  <text x="448" y="292" class="darkcode">yawRight(90)</text>
+
+  <g transform="translate(300 430)">
+    <rect x="-42" y="-70" width="84" height="70" rx="12" class="obstacle"/>
+    <rect x="-32" y="-106" width="64" height="44" rx="10" class="card"/><text x="0" y="-77" text-anchor="middle" font-size="30" font-family="system-ui" font-weight="900" fill="#dc2626">S</text>
+    <line x1="58" y1="0" x2="58" y2="-96" class="height"/><text x="70" y="-48" class="small">80 cm</text>
+    <circle cx="0" cy="-128" r="18" class="photo"/><text x="0" y="-122" text-anchor="middle" font-size="18">📸</text>
+  </g>
+  <g transform="translate(410 338)">
+    <rect x="-42" y="-46" width="84" height="46" rx="12" class="obstacle"/>
+    <rect x="-32" y="-82" width="64" height="44" rx="10" class="card"/><text x="0" y="-53" text-anchor="middle" font-size="30" font-family="system-ui" font-weight="900" fill="#dc2626">O</text>
+    <line x1="58" y1="0" x2="58" y2="-72" class="height"/><text x="70" y="-36" class="small">50 cm</text>
+    <circle cx="0" cy="-104" r="18" class="photo"/><text x="0" y="-98" text-anchor="middle" font-size="18">📸</text>
+  </g>
+  <g transform="translate(535 240)">
+    <rect x="-42" y="-92" width="84" height="92" rx="12" class="obstacle"/>
+    <rect x="-32" y="-128" width="64" height="44" rx="10" class="card"/><text x="0" y="-99" text-anchor="middle" font-size="30" font-family="system-ui" font-weight="900" fill="#dc2626">S</text>
+    <line x1="58" y1="0" x2="58" y2="-118" class="height"/><text x="70" y="-58" class="small">100 cm</text>
+    <circle cx="0" cy="-150" r="18" class="photo"/><text x="0" y="-144" text-anchor="middle" font-size="18">📸</text>
+  </g>
+
+  <g transform="translate(195 500)"><rect x="-34" y="-21" width="68" height="42" rx="16" class="drone"/><polygon points="0,-34 14,-18 -14,-18" class="nose"/><circle cx="-21" cy="0" r="7" fill="#67e8f9"/><circle cx="21" cy="0" r="7" fill="#67e8f9"/></g>
+  <text x="393" y="575" text-anchor="middle" class="warn">Keep 50 cm clearance · Abort if the drone drifts toward obstacles</text>
+  <rect x="140" y="590" width="150" height="42" rx="18" class="role"/><text x="215" y="617" text-anchor="middle" class="badge">Driver + Abort</text>
+  <rect x="305" y="590" width="150" height="42" rx="18" class="role"/><text x="380" y="617" text-anchor="middle" class="badge">Navigator + Drift</text>
+  <rect x="470" y="590" width="170" height="42" rx="18" class="role"/><text x="555" y="617" text-anchor="middle" class="badge">Safety Observer + Callout</text>
+
+  <rect x="820" y="124" width="325" height="505" rx="30" fill="#020617" opacity=".88" stroke="#fecaca" stroke-opacity=".55" filter="url(#shadow)"/>
+  <g transform="translate(849 143)"><rect x="0" y="0" width="52" height="52" rx="12" fill="#fff"/><rect x="20" y="8" width="12" height="36" class="cross"/><rect x="8" y="20" width="36" height="12" class="cross"/></g>
+  <text x="982" y="164" text-anchor="middle" fill="#fee2e2" font-size="25" font-family="system-ui" font-weight="900">Meeting8_SearchAndRescue_JS</text>
+  <text x="982" y="211" text-anchor="middle" class="code">let targetDist = 100;</text>
+  <text x="982" y="247" text-anchor="middle" class="code">tello.takeoff();</text>
+  <text x="982" y="286" text-anchor="middle" class="code">tello.sleep(3);</text>
+  <text x="982" y="322" text-anchor="middle" class="code">tello.flyUp(30);</text>
+  <text x="982" y="360" text-anchor="middle" class="code">tello.flyForward(targetDist);</text>
+  <text x="982" y="396" text-anchor="middle" class="code">tello.sleep(2);</text>
+  <text x="982" y="432" text-anchor="middle" class="code">tello.takePhoto();</text>
+  <text x="982" y="468" text-anchor="middle" class="code">tello.flyRight(50);</text>
+  <text x="982" y="504" text-anchor="middle" class="code">tello.yawRight(90);</text>
+  <text x="982" y="540" text-anchor="middle" class="code">// download photos: S O S</text>
+  <text x="982" y="590" text-anchor="middle" fill="#bbf7d0" font-size="18" font-family="system-ui" font-weight="900">Save: Meeting8_RedCross_Success</text>
+</svg>

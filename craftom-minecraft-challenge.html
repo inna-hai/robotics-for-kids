@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>אקדמיית ה-Agent | אתגר</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260905-agent-blocks-match-1">
+  <link rel="stylesheet" href="css/platform-home-link.css">
+  <style>
+    .challenge-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+    .challenge-nav a{display:inline-flex;text-decoration:none;border:1px solid #bdd8f4;background:#fff;color:var(--blue);border-radius:999px;padding:8px 12px;font-weight:900}
+    .challenge-nav a.active{background:var(--blue);color:#fff}
+    .hero-video{overflow:hidden}
+    .challenge-video{display:block;width:100%;aspect-ratio:16/9;border:0;border-radius:16px 16px 0 0;background:#111}
+    .video-caption{margin:0;padding:12px 14px;color:var(--muted);font-weight:800;line-height:1.6;background:#fff}
+    .meeting-card{min-height:0}
+    .meeting-card p{margin:0}
+    .evidence{display:block;margin-top:8px;color:var(--muted);font-weight:800}
+    .lesson-detail{display:grid;gap:12px}
+    .detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .detail-box{border:1px solid var(--line);border-radius:14px;background:#fff;padding:12px}
+    .detail-box h3{margin:0 0 8px;font-size:1rem;color:var(--blue-dark)}
+    .detail-box ul{margin:0;padding-right:18px}
+    .exit-upload{margin:12px 0 6px;padding:10px 12px;border:1px dashed #9cc7e8;border-radius:12px;background:#f7fbff;color:var(--blue-dark);font-weight:800;line-height:1.6}
+    @media(max-width:760px){.detail-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <nav class="challenge-nav" id="challengeNav"></nav>
+    <section class="hero">
+      <div>
+        <div class="kicker" id="kicker"></div>
+        <h1 id="title"></h1>
+        <p class="goal" id="story"></p>
+        <div class="actions" id="actions"></div>
+      </div>
+      <figure class="minecraft-shot hero-video">
+        <video id="video" class="challenge-video" controls preload="metadata" playsinline></video>
+        <figcaption class="video-caption" id="caption"></figcaption>
+      </figure>
+    </section>
+    <section class="grid-4" id="meetingCards"></section>
+    <section class="steps">
+      <article class="card build-first"><h2>מה לומדים בקוד</h2><p id="concept"></p></article>
+      <article class="card build-first"><h2>פקודות מרכזיות</h2><p id="command"></p></article>
+      <article class="card"><h2>בדיקת Craftom</h2><ul id="checks"></ul></article>
+      <article class="card"><h2>רצף עבודה עצמית</h2><ul id="flow"></ul></article>
+    </section>
+    <section class="lesson-detail" id="lessonDetails" style="margin-top:16px"></section>
+  </main>
+  <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
+  <script src="js/craftom-minecraft-challenges.js?v=20260905-agent-blocks-match-1"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const program = window.CRAFTOM_MINECRAFT_PROGRAM;
+    const challenge = window.getCraftomMinecraftChallenge(params.get('challenge') || params.get('lesson'));
+    const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+    document.title = `אקדמיית ה-Agent - ${challenge.title}`;
+    document.getElementById('challengeNav').innerHTML = program.challenges.map(item => `<a class="${item.id === challenge.id ? 'active' : ''}" href="craftom-minecraft-challenge.html?challenge=${item.id}">אתגר ${item.id}</a>`).join('');
+    document.getElementById('kicker').textContent = `${program.grade} • אתגר ${challenge.id} מתוך ${program.totalChallenges} • ${program.plot}`;
+    document.getElementById('title').textContent = challenge.title;
+    document.getElementById('story').textContent = challenge.story;
+    document.getElementById('caption').textContent = challenge.concept;
+    document.getElementById('concept').textContent = challenge.concept;
+    document.getElementById('command').textContent = challenge.command;
+    document.getElementById('video').src = challenge.video;
+    document.getElementById('video').poster = challenge.poster;
+    document.getElementById('actions').innerHTML = `
+      <a class="btn" href="craftom-minecraft-students.html?challenge=${challenge.id}">דף עבודה</a>
+      <a class="btn secondary" href="craftom-minecraft-slides.html?challenge=${challenge.id}">מצגת מדריך</a>
+      <a class="btn secondary" href="craftom-school/preview/index.html">חזרה למפת הקורס</a>
+    `;
+    document.getElementById('meetingCards').innerHTML = challenge.meetings.map((item, index) => `
+      <article class="card lesson-card highlight meeting-card">
+        <span><span class="num">${index + 1}</span><span class="tag">מפגש ${esc(item[0])}</span></span>
+        <h2><a href="craftom-minecraft-lesson-${((challenge.id - 1) * 4) + index + 1}.html">${esc(item[1])}</a></h2>
+        <p>${esc(item[2])}</p>
+        <span class="evidence">תוצר: ${esc(item[3])}</span>
+      </article>
+    `).join('');
+    document.getElementById('checks').innerHTML = challenge.checks.map(item => `<li>${esc(item)}</li>`).join('');
+    document.getElementById('flow').innerHTML = challenge.meetings.map(item => `<li><strong>${esc(item[0])} - ${esc(item[1])}:</strong> ${esc(item[2])} בסוף: ${esc(item[3])}</li>`).join('');
+    document.getElementById('lessonDetails').innerHTML = challenge.meetings.map(item => {
+      const detail = item[4];
+      return `
+        <article class="card">
+          <span class="tag">שיעור מפורט ${esc(item[0])}</span>
+          <h2>${esc(item[1])}</h2>
+          <p class="goal">${esc(detail.goal)}</p>
+          <div class="detail-grid">
+            <div class="detail-box"><h3>איך עובדים לבד</h3><ul><li>פותחים את עמוד השיעור.</li><li>בונים את החלק של היום במיינקראפט.</li><li>כותבים קוד קצר ב-MakeCode, מריצים, בודקים ומתקנים.</li></ul></div>
+            <div class="detail-box"><h3>מה בונים במיינקראפט</h3><ul>${detail.build.map(step => `<li>${esc(step)}</li>`).join('')}</ul></div>
+            <div class="detail-box"><h3>קוד / MakeCode</h3><ul>${detail.code.map(step => `<li>${esc(step)}</li>`).join('')}</ul></div>
+            <div class="detail-box"><h3>ראיות Craftom</h3><ul>${detail.evidence.map(step => `<li>${esc(step)}</li>`).join('')}</ul></div>
+          </div>
+          <p class="exit-upload"><strong>העלאת תמונה:</strong> ${esc(program.exitUpload)}</p>
+          <p><strong>כרטיס יציאה:</strong> ${esc(detail.exit)}</p>
+        </article>
+      `;
+    }).join('');
+  </script>
+</body>
+</html>

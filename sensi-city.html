@@ -7,8 +7,8 @@
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🏙️ סנסי בעיר החכמה - 15 שיעורי רובוטיקה</title>
-    <script src="https://unpkg.com/blockly/blockly.min.js"></script>
-    <script src="https://unpkg.com/blockly/msg/he.js"></script>
+    <script src="js/vendor/blockly/blockly.min.js"></script>
+    <script src="js/vendor/blockly/msg/he.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -6025,8 +6025,8 @@
 
         function initBlockly() {
             defineBlocks();
-
             const injectOptions = {
+                media: 'js/vendor/blockly/media/',
                 toolbox: buildToolbox(),
                 rtl: true,
                 scrollbars: true,
@@ -9178,6 +9178,14 @@
             const nextIndex = Math.min(completedIndex + 1, exercises.length - 1);
             const completedCount = Math.min(completedIndex + 1, exercises.length);
             setExerciseProgress(completedCount);
+            window.dispatchEvent(new CustomEvent('hai:classroom-progress', {
+                detail: {
+                    lessonId: String(currentLesson),
+                    activityId: `exercise-${completedIndex + 1}`,
+                    status: 'completed',
+                    score: 100
+                }
+            }));
             if (nextIndex > completedIndex) setActiveExercise(nextIndex, currentLesson);
             renderExerciseToc(currentLesson);
             const modal = document.getElementById('exerciseModal');
@@ -9452,7 +9460,8 @@
 
         function toggleTask(num) {
             const items = document.querySelectorAll('.task-item');
-            items[num-1].classList.toggle('done');
+            const item = items[num - 1];
+            item.classList.toggle('done');
 
             // Check all done
             if ([...items].every(i => i.classList.contains('done'))) {

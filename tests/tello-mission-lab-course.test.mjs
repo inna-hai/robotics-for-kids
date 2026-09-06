@@ -71,7 +71,10 @@ test('Mission Lab pages are linked and use Blockly connected blocks with simulat
   assertIncludes(playHtml, 'tello_forward');
   assertIncludes(playHtml, 'tello_right');
   assertIncludes(playHtml, 'expectedTypes = (lesson.blocks || [])');
-  assertIncludes(playHtml, 'System Check Alpha');
+  assertIncludes(playHtml, 'renderAppWorkflow');
+  assertIncludes(playHtml, 'externalWorkspaceModes');
+  assertIncludes(playHtml, 'id="workspaceTitle"');
+  assert.ok(!playHtml.includes('אזור עבודה — System Check Alpha'), 'play page should not hard-code the old System Check workspace title');
   assertIncludes(playHtml, 'סימולטור שמיים');
   assertIncludes(slidesHtml, 'System Check Alpha');
   assertIncludes(slidesHtml, 'Ingenuity');

@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Helical 3D Building Scan - סריקה ספירלית</title>
+  <desc id="desc">תרשים שיעור 7: רחפן סורק מגדל בסימולטור עירוני במסלול ספירלי. כל צלע 120 סנטימטר, עליית גובה 30 סנטימטר בכל פינה, 8 צלעות ושני סיבובים מלאים סביב הבניין.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#082f49"/><stop offset="0.55" stop-color="#0f766e"/><stop offset="1" stop-color="#1e3a8a"/></linearGradient>
+    <linearGradient id="tower" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e0f2fe"/><stop offset="1" stop-color="#94a3b8"/></linearGradient>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="7" refY="7" orient="auto"><path d="M2,2 L12,7 L2,12 Z" fill="#22d3ee"/></marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#020617" flood-opacity="0.38"/></filter>
+  </defs>
+  <rect width="1200" height="760" rx="34" fill="url(#sky)"/>
+  <circle cx="1020" cy="115" r="70" fill="#fde68a" opacity="0.88"/>
+  <text x="600" y="54" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="900" fill="#ecfeff">שיעור 7: Helical 3D Scan</text>
+  <text x="600" y="88" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="800" fill="#bae6fd">Digital Twin · City Simulator · 8 צלעות · scanDistance=120 · altitudeStep=30</text>
+
+  <g transform="translate(72 120)" filter="url(#shadow)">
+    <rect x="0" y="0" width="1056" height="570" rx="30" fill="#f8fafc" opacity="0.97"/>
+    <rect x="54" y="64" width="662" height="420" rx="26" fill="#ecfeff" stroke="#0ea5e9" stroke-width="4" stroke-dasharray="12 10"/>
+    <text x="385" y="42" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="900" fill="#075985">מגדל הממשלה — סריקה ספירלית תלת־ממדית</text>
+
+    <g transform="translate(280 155)">
+      <polygon points="95,0 235,50 235,330 95,280" fill="url(#tower)" stroke="#334155" stroke-width="3"/>
+      <polygon points="95,0 0,62 0,342 95,280" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
+      <polygon points="0,62 140,112 235,50 95,0" fill="#f1f5f9" stroke="#334155" stroke-width="3"/>
+      <g stroke="#64748b" stroke-width="2" opacity="0.85">
+        <path d="M30 92 L75 76 M30 132 L75 116 M30 172 L75 156 M30 212 L75 196 M30 252 L75 236"/>
+        <path d="M125 65 L200 92 M125 105 L200 132 M125 145 L200 172 M125 185 L200 212 M125 225 L200 252"/>
+      </g>
+      <text x="118" y="370" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="900" fill="#0f172a">בניין מטרה</text>
+    </g>
+
+    <path d="M270 444 C160 390 178 310 315 292 C474 270 554 315 530 374 C500 448 326 450 285 378 C244 306 358 234 510 246 C650 258 677 340 572 400" fill="none" stroke="#22d3ee" stroke-width="9" stroke-linecap="round" stroke-dasharray="1 18" marker-end="url(#arrow)"/>
+    <path d="M230 420 C230 348 250 288 305 246 C365 200 450 186 535 208 C620 230 650 284 640 338" fill="none" stroke="#0f172a" stroke-width="3" stroke-dasharray="9 8" opacity="0.42"/>
+
+    <g font-family="Arial, sans-serif" font-weight="900">
+      <rect x="88" y="405" width="166" height="48" rx="16" fill="#dcfce7" stroke="#22c55e" stroke-width="3"/>
+      <text x="171" y="435" text-anchor="middle" font-size="17" fill="#166534">התחלה: 100 ס״מ</text>
+      <rect x="118" y="305" width="162" height="42" rx="15" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="3"/>
+      <text x="199" y="332" text-anchor="middle" font-size="16" fill="#075985">גובה 120 ס״מ</text>
+      <rect x="474" y="210" width="162" height="42" rx="15" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="3"/>
+      <text x="555" y="237" text-anchor="middle" font-size="16" fill="#075985">גובה 180 ס״מ</text>
+      <rect x="520" y="108" width="170" height="48" rx="16" fill="#fef3c7" stroke="#f59e0b" stroke-width="3"/>
+      <text x="605" y="138" text-anchor="middle" font-size="17" fill="#92400e">סיום: 240 ס״מ</text>
+    </g>
+
+    <g font-family="Arial, sans-serif">
+      <rect x="760" y="78" width="244" height="388" rx="24" fill="#0f172a" opacity="0.95"/>
+      <text x="882" y="116" text-anchor="middle" font-size="23" font-weight="900" fill="#bfdbfe">קוד הספירלה</text>
+      <text x="786" y="158" font-size="18" fill="#e0f2fe">let scanDistance = 120;</text>
+      <text x="786" y="194" font-size="18" fill="#e0f2fe">let altitudeStep = 30;</text>
+      <text x="786" y="230" font-size="18" fill="#e0f2fe">let startAltitude = 100;</text>
+      <line x1="786" y1="256" x2="980" y2="256" stroke="#64748b"/>
+      <text x="786" y="300" font-size="18" fill="#fef3c7">for (let i = 0; i &lt; 8; i++) {</text>
+      <text x="812" y="334" font-size="17" fill="#bae6fd">flyForward(scanDistance)</text>
+      <text x="812" y="365" font-size="17" fill="#bae6fd">flyUp(altitudeStep)</text>
+      <text x="812" y="396" font-size="17" fill="#bae6fd">yawRight(90)</text>
+      <text x="786" y="430" font-size="18" fill="#fef3c7">}</text>
+    </g>
+
+    <rect x="116" y="508" width="830" height="38" rx="19" fill="#0f172a" opacity="0.92"/>
+    <text x="531" y="533" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="900" fill="#e0f2fe">3D Calibration Challenge: scanDistance=160, altitudeStep=20 — משנים רק משתנים בראש הקוד</text>
+  </g>
+</svg>

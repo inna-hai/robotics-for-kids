@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">SkySpecs geometric scan loops for hexagon and octagon</title>
+  <desc id="desc">A classroom diagram showing a drone scanning a hexagon with six 60 degree yaw turns and an octagon with eight 45 degree yaw turns using JavaScript for loops.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07112f"/>
+      <stop offset="0.58" stop-color="#102a55"/>
+      <stop offset="1" stop-color="#173b3a"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.07"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#000" flood-opacity="0.32"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#67e8f9"/>
+    </marker>
+    <style>
+      .h1{font:800 42px system-ui,Segoe UI,Arial;fill:#fff}.h2{font:800 26px system-ui,Segoe UI,Arial;fill:#e0f2fe}.txt{font:600 20px system-ui,Segoe UI,Arial;fill:#dbeafe}.small{font:600 16px system-ui,Segoe UI,Arial;fill:#bfdbfe}.code{font:700 18px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#fef3c7}.chip{font:800 18px system-ui,Segoe UI,Arial;fill:#082f49}.shape{fill:none;stroke:#fbbf24;stroke-width:8;stroke-linejoin:round}.oct{stroke:#a78bfa}.route{fill:none;stroke:#67e8f9;stroke-width:5;stroke-dasharray:12 10;marker-end:url(#arrow)}.node{fill:#22d3ee;stroke:#ecfeff;stroke-width:4}.building{fill:#f8fafc;opacity:.16;stroke:#e0f2fe;stroke-width:2}.angle{fill:#fde68a;font:800 22px system-ui,Segoe UI,Arial}.panel{fill:url(#panel);stroke:#ffffff33;stroke-width:2;rx:30;filter:url(#shadow)}
+    </style>
+  </defs>
+  <rect width="1200" height="720" fill="url(#bg)"/>
+  <circle cx="1010" cy="85" r="150" fill="#22d3ee" opacity="0.12"/>
+  <circle cx="170" cy="640" r="190" fill="#fbbf24" opacity="0.10"/>
+
+  <text x="600" y="58" class="h1" text-anchor="middle">SkySpecs Tower Scan — Loops in JavaScript</text>
+  <text x="600" y="92" class="txt" text-anchor="middle">אותו דפוס חוזר: קדימה → Yaw → sleep. הלולאה שומרת על קוד קצר, מדויק ובטוח.</text>
+
+  <rect x="55" y="125" width="505" height="430" class="panel"/>
+  <rect x="640" y="125" width="505" height="430" class="panel"/>
+
+  <text x="308" y="166" class="h2" text-anchor="middle">Hexagon Scan</text>
+  <text x="308" y="198" class="txt" text-anchor="middle">6 צלעות · 360÷6 = 60°</text>
+  <polygon points="308,245 430,315 430,455 308,525 186,455 186,315" class="building"/>
+  <polygon points="308,226 448,307 448,469 308,550 168,469 168,307" class="shape"/>
+  <path d="M308 226 L448 307 L448 469 L308 550 L168 469 L168 307 Z" class="route"/>
+  <circle cx="308" cy="226" r="11" class="node"/><circle cx="448" cy="307" r="11" class="node"/><circle cx="448" cy="469" r="11" class="node"/><circle cx="308" cy="550" r="11" class="node"/><circle cx="168" cy="469" r="11" class="node"/><circle cx="168" cy="307" r="11" class="node"/>
+  <text x="308" y="388" class="angle" text-anchor="middle">Yaw 60°</text>
+  <g transform="translate(96 235)">
+    <rect x="0" y="0" width="118" height="44" rx="22" fill="#fbbf24"/>
+    <text x="59" y="29" class="chip" text-anchor="middle">i &lt; 6</text>
+  </g>
+
+  <text x="892" y="166" class="h2" text-anchor="middle">Octagon Upgrade</text>
+  <text x="892" y="198" class="txt" text-anchor="middle">8 צלעות · 360÷8 = 45°</text>
+  <polygon points="892,225 1007,273 1055,388 1007,503 892,551 777,503 729,388 777,273" class="building"/>
+  <polygon points="892,205 1023,259 1077,390 1023,521 892,575 761,521 707,390 761,259" class="shape oct"/>
+  <path d="M892 205 L1023 259 L1077 390 L1023 521 L892 575 L761 521 L707 390 L761 259 Z" class="route"/>
+  <circle cx="892" cy="205" r="10" class="node"/><circle cx="1023" cy="259" r="10" class="node"/><circle cx="1077" cy="390" r="10" class="node"/><circle cx="1023" cy="521" r="10" class="node"/><circle cx="892" cy="575" r="10" class="node"/><circle cx="761" cy="521" r="10" class="node"/><circle cx="707" cy="390" r="10" class="node"/><circle cx="761" cy="259" r="10" class="node"/>
+  <text x="892" y="397" class="angle" text-anchor="middle">Yaw 45°</text>
+  <g transform="translate(682 235)">
+    <rect x="0" y="0" width="118" height="44" rx="22" fill="#a78bfa"/>
+    <text x="59" y="29" class="chip" text-anchor="middle" fill="#1e1b4b">i &lt; 8</text>
+  </g>
+
+  <rect x="175" y="590" width="850" height="88" rx="28" fill="#020617" opacity="0.72" stroke="#38bdf8" stroke-opacity="0.45"/>
+  <text x="600" y="625" class="code" text-anchor="middle">for (var i = 0; i &lt; sides; i++) { tello.moveForward(side_length); tello.yawRight(360 / sides); tello.sleep(2); }</text>
+  <text x="600" y="656" class="small" text-anchor="middle">כל איטרציה היא “תחנת סריקה”: תנועה, פנייה, השהייה לייצוב — ואז חוזרים עד שכל הצורה נסרקה.</text>
+
+  <g transform="translate(575 322)">
+    <rect x="-36" y="-22" width="72" height="44" rx="18" fill="#22d3ee"/>
+    <circle cx="-22" cy="0" r="7" fill="#0f172a"/><circle cx="22" cy="0" r="7" fill="#0f172a"/>
+    <path d="M-58 -30 C-28 -52 28 -52 58 -30" stroke="#e0f2fe" stroke-width="5" fill="none"/>
+    <path d="M-58 30 C-28 52 28 52 58 30" stroke="#e0f2fe" stroke-width="5" fill="none"/>
+  </g>
+</svg>

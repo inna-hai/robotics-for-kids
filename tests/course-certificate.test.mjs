@@ -24,6 +24,12 @@ test('certificate helper ignores empty override values so text never becomes und
   assertIncludes(certificateSource, "value !== undefined && value !== null && value !== ''");
 });
 
+test('completed Sisi missions report real classroom progress', () => {
+  assertIncludes(certificateSource, 'hai:classroom-progress');
+  assertIncludes(certificateSource, 'activityId: `mission-${lesson.id}`');
+  assertIncludes(certificateSource, "status: 'completed'");
+});
+
 test('certificate next buttons follow the Sisi lesson sequence, not optional labs', () => {
   assertIncludes(certificateSource, "'/dino-play.html': { title: 'פארק הדינוזאורים', home: 'dino.html', homeLabel: '🦕 לעמוד הדינוזאורים', next: 'art.html'");
   assertIncludes(certificateSource, "'/factory-play.html': { title: 'מפעל הלולאות', home: 'factory.html', homeLabel: '🏭 לעמוד המפעל', next: 'garden.html'");

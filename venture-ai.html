@@ -1,125 +1,816 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="he" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>מרעיון למיזם עם AI | כיתות ח׳</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260824-omer-style">
   <style>
-    *{box-sizing:border-box}:root{--ink:#102033;--muted:#526070;--blue:#2563eb;--cyan:#06b6d4;--green:#16a34a;--purple:#7c3aed;--pink:#db2777;--line:#e4edf8}html{scroll-behavior:smooth}body{margin:0;font-family:Rubik,Arial,sans-serif;direction:rtl;color:var(--ink);background:linear-gradient(135deg,#eef7ff,#f8fafc 42%,#fff7ed);line-height:1.68}a{color:inherit}.shell{width:min(1180px,calc(100% - 28px));margin:0 auto}.hero{color:white;background:radial-gradient(circle at 12% 12%,rgba(34,211,238,.28),transparent 28%),radial-gradient(circle at 78% 0,rgba(250,204,21,.24),transparent 30%),linear-gradient(135deg,#0f172a,#1e40af 52%,#6d28d9);padding:28px 0 48px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:28px}.brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:1.25rem}.mark{width:54px;height:54px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,#67e8f9,#fde68a);color:#0f172a;font-size:1.7rem}.nav{display:flex;gap:8px;flex-wrap:wrap}.nav a{padding:9px 14px;border-radius:999px;text-decoration:none;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);font-weight:900}.hero-grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(320px,.92fr);gap:24px;align-items:center}.kicker{display:inline-flex;border-radius:999px;padding:8px 13px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);font-weight:900;margin-bottom:14px}h1{font-size:clamp(2.3rem,5.7vw,5.05rem);line-height:1.03;margin:0 0 16px}h2{font-size:clamp(1.85rem,4vw,3rem);line-height:1.12;margin:0 0 10px}.hero p{font-size:clamp(1.08rem,2vw,1.3rem);color:#eaf6ff;margin:0;max-width:860px}.actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:22px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border-radius:999px;padding:12px 18px;text-decoration:none;font-weight:900;background:white;color:#0f172a;box-shadow:0 12px 30px rgba(0,0,0,.18);border:0}.btn.alt{background:rgba(255,255,255,.12);color:white;border:1px solid rgba(255,255,255,.22);box-shadow:none}.hero-card{background:rgba(255,255,255,.96);color:var(--ink);border-radius:30px;padding:22px;box-shadow:0 28px 70px rgba(0,0,0,.25)}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stat{background:linear-gradient(135deg,#eff6ff,#f5f3ff);border:1px solid #dbeafe;border-radius:20px;padding:15px;text-align:center;font-weight:900}.stat b{display:block;font-size:1.9rem;color:var(--blue);line-height:1}.section{padding:50px 0}.lead{font-size:1.14rem;color:var(--muted);max-width:900px;margin:0 0 24px}.outcomes{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.outcome,.lesson,.panel{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:26px;padding:20px;box-shadow:0 16px 40px rgba(15,23,42,.07)}.outcome b{display:block;color:#1d4ed8;margin-bottom:6px}.lessons{display:grid;gap:18px}.lesson{display:grid;grid-template-columns:150px minmax(0,1fr);gap:20px;align-items:start}.badge{background:linear-gradient(135deg,#dbeafe,#f5d0fe);border-radius:22px;padding:16px;text-align:center;font-weight:900}.badge b{display:block;font-size:2.4rem;color:#6d28d9}.lesson h3{font-size:1.55rem;margin:0 0 5px}.subtitle{font-weight:900;color:#1d4ed8;margin-bottom:8px}.meta{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}.chip{background:#f1f5f9;border-radius:999px;padding:7px 10px;font-weight:900;font-size:.83rem;color:#334155}.lesson-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.mini{background:#f8fafc;border-radius:18px;padding:14px;border-right:6px solid #06b6d4}.mini b{display:block;color:#0f766e;margin-bottom:4px}.flow{display:grid;gap:8px;margin-top:14px}.flow-row{display:grid;grid-template-columns:90px 1fr 1fr;gap:10px;background:#f8fafc;border-radius:16px;padding:11px;border:1px solid #e2e8f0}.flow-row b{color:#6d28d9}.tools{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}.list{margin:10px 0 0;padding:0 1.1rem}.list li{margin:5px 0}.prompt{direction:rtl;background:#0f172a;color:#e5f3ff;border-radius:18px;padding:16px;line-height:1.7;white-space:pre-wrap}.safety{background:linear-gradient(135deg,#fff7ed,#eff6ff)}.footer{text-align:center;color:#64748b;font-weight:800;padding:26px 0 42px}@media(max-width:980px){.hero-grid,.outcomes,.tools,.lesson-grid{grid-template-columns:1fr}.lesson{grid-template-columns:1fr}.flow-row{grid-template-columns:1fr}.nav{display:none}.top{align-items:flex-start;flex-direction:column}}@media(max-width:560px){.section{padding:38px 0}.hero-card,.outcome,.lesson,.panel{border-radius:21px;padding:17px}.actions .btn{width:100%}.stats{grid-template-columns:1fr}}
+    .venture-home .hero {
+      grid-template-columns: minmax(0, 1.08fr) minmax(340px, 440px);
+      gap: clamp(28px, 5vw, 68px);
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .venture-home .goal {
+      max-width: 700px;
+    }
+
+    .venture-visual {
+      display: grid;
+      gap: 12px;
+      max-width: 440px;
+      justify-self: start;
+    }
+
+    .venture-image-stack {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .venture-photo {
+      position: relative;
+      min-height: 116px;
+      margin: 0;
+      overflow: hidden;
+      border: 1px solid #dbe8f4;
+      border-radius: 16px;
+      background: #f8fcff;
+      box-shadow: 0 18px 34px rgba(15,23,42,.1);
+    }
+
+    .venture-photo:first-child {
+      min-height: 230px;
+    }
+
+    .venture-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .venture-photo span {
+      position: absolute;
+      inset-inline: 12px;
+      bottom: 12px;
+      width: fit-content;
+      max-width: calc(100% - 24px);
+      padding: 8px 11px;
+      border-radius: 999px;
+      color: #10213f;
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 8px 22px rgba(15,23,42,.12);
+      font-size: .9rem;
+      font-weight: 900;
+    }
+
+    .venture-side-images {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .section-title {
+      margin: 28px 0 12px;
+    }
+
+    .section-title p {
+      max-width: 780px;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .holon-paper {
+      display: grid;
+      gap: 16px;
+      margin: 18px 0 24px;
+      padding: 22px;
+      border: 1px solid #cfe2f3;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #ffffff, #f4fbff);
+      box-shadow: 0 16px 36px rgba(23,32,51,.08);
+    }
+
+    .holon-paper-head {
+      max-width: 900px;
+    }
+
+    .holon-paper-head h2,
+    .holon-paper h3 {
+      margin: 0 0 8px;
+    }
+
+    .holon-paper-head p,
+    .holon-step p,
+    .holon-step li {
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .holon-paper-head p {
+      margin: 0;
+      max-width: 760px;
+      font-weight: 600;
+    }
+
+    .school-needs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .school-need {
+      min-width: 0;
+      padding: 15px 16px;
+      border: 1px solid #dbe8f4;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 10px 22px rgba(23,32,51,.05);
+    }
+
+    .school-need strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--blue-dark);
+      font-size: 1.08rem;
+    }
+
+    .school-need span {
+      color: var(--muted);
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .holon-timeline-wrap {
+      position: relative;
+      overflow: hidden;
+      padding: 22px 20px 24px;
+      border: 1px solid #cfe2f3;
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 12% 28%, rgba(34,211,238,.18), transparent 24%),
+        radial-gradient(circle at 82% 16%, rgba(250,204,21,.22), transparent 22%),
+        linear-gradient(135deg, #ffffff, #f4fbff);
+    }
+
+    .holon-timeline {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 16px;
+      align-items: stretch;
+      padding-top: 50px;
+    }
+
+    .holon-timeline::before {
+      content: "";
+      position: absolute;
+      top: 106px;
+      inset-inline: 12%;
+      height: 7px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--blue), var(--teal), var(--yellow), #ff7a7a);
+      box-shadow: 0 8px 20px rgba(37,99,235,.18);
+    }
+
+    .timeline-phase-label {
+      position: absolute;
+      top: 0;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      padding: 6px 14px;
+      border: 1px solid rgba(37,99,235,.16);
+      border-radius: 999px;
+      background: rgba(255,255,255,.86);
+      color: var(--blue-dark);
+      font-size: 1.08rem;
+      font-weight: 950;
+      box-shadow: 0 10px 24px rgba(37,99,235,.10);
+    }
+
+    .timeline-phase-label.phase-1 {
+      right: 0;
+      width: calc(60% - 8px);
+    }
+
+    .timeline-phase-label.phase-2 {
+      left: 0;
+      width: calc(40% - 8px);
+      border-color: rgba(190,18,60,.14);
+      color: #9f1239;
+    }
+
+    .holon-step {
+      position: relative;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      justify-items: center;
+      min-height: 186px;
+      padding: 0 12px 14px;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      text-align: center;
+    }
+
+    .holon-step p {
+      margin: 0;
+    }
+
+    .holon-icon {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      place-items: center;
+      width: 86px;
+      height: 86px;
+      margin-bottom: 14px;
+      border: 4px solid #fff;
+      border-radius: 50%;
+      background: #eaf4ff;
+      box-shadow: 0 14px 28px rgba(15,23,42,.15);
+    }
+
+    .holon-icon svg {
+      width: 42px;
+      height: 42px;
+      fill: none;
+      stroke: #1d4ed8;
+      stroke-width: 2.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .holon-step:nth-of-type(2) .holon-icon {
+      background: #e7fbf8;
+    }
+
+    .holon-step:nth-of-type(2) .holon-icon svg {
+      stroke: #0f766e;
+    }
+
+    .holon-step:nth-of-type(3) .holon-icon {
+      background: #fff7d6;
+    }
+
+    .holon-step:nth-of-type(3) .holon-icon svg {
+      stroke: #b45309;
+    }
+
+    .holon-step:nth-of-type(4) .holon-icon {
+      background: #fff1f2;
+    }
+
+    .holon-step:nth-of-type(4) .holon-icon svg {
+      stroke: #be123c;
+    }
+
+    .holon-step span {
+      color: var(--blue);
+      font-size: 1.15rem;
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    .holon-step h3 {
+      margin-top: 8px;
+      color: var(--ink);
+      font-size: 1.38rem;
+      font-weight: 950;
+      line-height: 1.2;
+    }
+
+    .program-video {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 380px);
+      gap: 18px;
+      align-items: center;
+      margin: 18px 0;
+      padding: 18px;
+      border: 1px solid #cfe2f3;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #ffffff, #f4fbff);
+      box-shadow: 0 16px 36px rgba(23,32,51,.08);
+    }
+
+    .program-video video {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 1px solid #dbe8f4;
+      border-radius: 14px;
+      background: #0f172a;
+      box-shadow: 0 18px 34px rgba(15,23,42,.12);
+    }
+
+    .program-video-copy {
+      display: grid;
+      gap: 10px;
+    }
+
+    .program-video-copy h2 {
+      margin-bottom: 0;
+    }
+
+    .program-video-copy p {
+      margin: 0;
+    }
+
+    .preview-cta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 16px;
+      padding: 20px;
+      border: 1px solid #cfe2f3;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #ffffff, #f4fbff);
+    }
+
+    .preview-cta p {
+      margin: 0;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .meeting-card {
+      align-content: start;
+    }
+
+    .meeting-image,
+    .meeting-video {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      margin-bottom: 16px;
+      border-radius: 16px;
+      border: 1px solid #dbe8f4;
+      background: #f8fcff;
+      box-shadow: 0 14px 30px rgba(23, 32, 51, .09);
+    }
+
+    .meeting-image {
+      object-fit: cover;
+    }
+
+    .meeting-video {
+      display: block;
+    }
+
+    .meeting-number {
+      display: inline-grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      margin-inline-end: 8px;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--blue);
+      font-weight: 900;
+      font-size: 1.15rem;
+    }
+
+    .meeting-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .meeting-title h2 {
+      margin-bottom: 0;
+    }
+
+    .meeting-outcome {
+      margin: 12px 0;
+      padding: 12px 14px;
+      border-right: 5px solid var(--green);
+      border-radius: 14px;
+      color: #14532d;
+      background: #ecfdf3;
+      font-weight: 800;
+    }
+
+    .meeting-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .meeting-actions .btn {
+      padding: 9px 12px;
+      font-size: .92rem;
+    }
+
+    .deep-dive {
+      margin-top: 14px;
+      border: 1px solid #cfe2f3;
+      border-radius: 14px;
+      background: #f8fcff;
+    }
+
+    .deep-dive summary {
+      cursor: pointer;
+      padding: 12px 14px;
+      color: var(--blue-dark);
+      font-weight: 900;
+      list-style: none;
+    }
+
+    .deep-dive summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .deep-dive summary::before {
+      content: "+";
+      display: inline-grid;
+      place-items: center;
+      width: 22px;
+      height: 22px;
+      margin-inline-end: 8px;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--blue);
+      font-weight: 900;
+    }
+
+    .deep-dive[open] summary::before {
+      content: "-";
+    }
+
+    .deep-content {
+      display: grid;
+      gap: 12px;
+      padding: 0 14px 14px;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .mini-panel {
+      min-width: 0;
+      padding: 12px;
+      border: 1px solid #dbe8f4;
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .mini-panel b {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--teal);
+    }
+
+    .flow-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .flow-list li {
+      display: grid;
+      grid-template-columns: 74px minmax(0, 1fr);
+      gap: 10px;
+      padding: 10px;
+      border: 1px solid #e1edf7;
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .flow-list b {
+      color: var(--blue-dark);
+    }
+
+    .simple-list {
+      margin: 8px 0 0;
+      padding-inline-start: 1.2rem;
+    }
+
+    .simple-list li {
+      margin: 4px 0;
+    }
+
+    .wide-card {
+      grid-column: 1 / -1;
+    }
+
+    .opal-card {
+      border-color: rgba(37,99,235,.28);
+      background: linear-gradient(180deg, #ffffff, #f1f7ff);
+    }
+
+    .team-frame {
+      border-color: rgba(124,58,237,.24);
+      background: linear-gradient(180deg, #ffffff, #f7f3ff);
+    }
+
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .role-item {
+      min-width: 0;
+      padding: 11px;
+      border: 1px solid #e6ddff;
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .role-item b {
+      display: block;
+      margin-bottom: 5px;
+      color: #6d28d9;
+    }
+
+    @media (max-width: 850px) {
+      .venture-home .hero,
+      .program-video,
+      .mini-grid,
+      .role-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .venture-visual {
+        max-width: none;
+        justify-self: stretch;
+      }
+
+      .holon-timeline {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .holon-timeline::before {
+        top: 106px;
+        inset-inline: 18%;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .flow-list li {
+        grid-template-columns: 1fr;
+      }
+
+      .holon-timeline,
+      .school-needs,
+      .venture-side-images {
+        grid-template-columns: 1fr;
+      }
+
+      .holon-timeline-wrap {
+        padding: 14px;
+      }
+
+      .holon-timeline {
+        gap: 10px;
+        padding-top: 0;
+      }
+
+      .holon-timeline::before {
+        display: none;
+      }
+
+      .timeline-phase-label {
+        position: static;
+        width: auto;
+        min-height: 0;
+        padding: 8px 12px;
+        font-size: .95rem;
+        text-align: center;
+      }
+
+      .timeline-phase-label.phase-1,
+      .timeline-phase-label.phase-2 {
+        width: auto;
+      }
+
+      .holon-step {
+        grid-template-columns: 52px minmax(0, 1fr);
+        grid-template-rows: auto auto;
+        column-gap: 10px;
+        align-items: center;
+        justify-items: stretch;
+        min-height: 0;
+        padding: 10px;
+        border: 1px solid rgba(207,226,243,.9);
+        border-radius: 16px;
+        background: rgba(255,255,255,.86);
+        box-shadow: 0 10px 20px rgba(15,23,42,.06);
+        text-align: right;
+      }
+
+      .holon-icon {
+        grid-row: 1 / span 2;
+        width: 52px;
+        height: 52px;
+        margin: 0;
+        border-width: 3px;
+      }
+
+      .holon-icon svg {
+        width: 27px;
+        height: 27px;
+      }
+
+      .holon-step span {
+        font-size: .9rem;
+        line-height: 1.2;
+      }
+
+      .holon-step h3 {
+        margin: 4px 0 0;
+        font-size: .98rem;
+        line-height: 1.25;
+      }
+
+      .venture-photo,
+      .venture-photo:first-child {
+        min-height: 190px;
+      }
+    }
   </style>
-  <link rel="stylesheet" href="css/platform-home-link.css">
 </head>
-<body>
-  <header class="hero">
-    <div class="shell">
-      <div class="top">
-        <div class="brand"><span class="mark">🚀</span><span>hai.tech · יזמות AI</span></div>
-        <nav class="nav"><a href="#overview">מטרה</a><a href="#meetings">4 מפגשים</a><a href="#tools">Opal</a></nav>
+<body class="venture-home">
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <div class="kicker">תוכנית דגל עירונית • חולון • כל כיתות ח׳</div>
+        <h1>Venture AI חולון</h1>
+        <p class="goal">תוכנית דגל עירונית לכל כיתות ח׳ בחולון, בשיתוף חברת דרך ההייטק. המטרה המרכזית היא לתת לכל תלמיד ותלמידה כלים טכנולוגיים ב־AI לבניית תוצר יזמי־טכנולוגי, בעבודה צוותית ובליווי מדריך מטעם ״דרך ההייטק״.</p>
+        <div class="actions">
+          <a class="btn" href="#overview">מה התוכנית כוללת</a>
+          <a class="btn secondary" href="venture-ai-preview.html">הצצה לתוכנית</a>
+        </div>
       </div>
-      <div class="hero-grid">
+      <aside class="venture-visual" aria-label="תמונות מתוך מהלך Venture AI">
+        <div class="venture-image-stack">
+          <figure class="venture-photo">
+            <img src="assets/venture-ai/meeting-1-city.webp" alt="תלמידים ממפים בעיה עירונית בחולון">
+            <span>מתחילים מבעיה עירונית</span>
+          </figure>
+          <div class="venture-side-images">
+            <figure class="venture-photo">
+              <img src="assets/venture-ai/meeting-3-build.webp" alt="צוות תלמידים בונה אבטיפוס באופאל">
+              <span>בונים MVP באופאל</span>
+            </figure>
+            <figure class="venture-photo">
+              <img src="assets/venture-ai/meeting-4-demo.webp" alt="תלמידים מציגים דמו ופיץ׳ סיום">
+              <span>מסיימים בדמו ופיץ׳</span>
+            </figure>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="holon-paper" id="overview" aria-label="HOLON AI">
+      <div class="holon-paper-head">
         <div>
-          <div class="kicker">כיתות ח׳ · יזמות · סוכני AI · Opal · תוצר סיום</div>
-          <h1>מרעיון למיזם עם AI</h1>
-          <p>תוכנית קצרה ומעשית שבה כל צוות לומד להרים מיזם דיגיטלי: מזהים בעיה, מאפיינים פתרון, עובדים עם סוכן AI ב-Opal, ובונים אפליקציה או אתר פשוטים שמלווים את המיזם.</p>
-          <div class="actions">
-            <a class="btn" href="#meetings">ראו את המפגשים</a>
-            <a class="btn alt" href="venture-ai-students.html?lesson=1">דף עבודה לתלמידים</a>
-            <a class="btn alt" href="venture-ai-slides.html?lesson=1">מצגת מדריך - מפגש 1</a>
-            <a class="btn alt" href="venture-ai-improvement.html">בקשת שיפור</a>
-            <a class="btn alt" href="https://opal.hai.tech/">פתחו Opal</a>
-          </div>
+          <span class="tag">HOLON AI</span>
         </div>
-        <aside class="hero-card">
-          <h2>תוצר התוכנית</h2>
-          <div class="stats">
-            <div class="stat"><b>4</b>מפגשים</div>
-            <div class="stat"><b>90</b>דקות</div>
-            <div class="stat"><b>AI</b>עבודה עם סוכן</div>
-            <div class="stat"><b>Demo</b>אפליקציה/אתר</div>
-          </div>
-        </aside>
       </div>
-    </div>
-  </header>
 
-  <main>
-    <section class="section" id="overview">
-      <div class="shell">
-        <h2>מטרת התוכנית</h2>
-        <p class="lead">להקנות לתלמידים יכולת ראשונית להרים מיזם דיגיטלי - מרעיון ועד אבטיפוס - בעזרת סוכני AI. בסיום, לכל צוות יש תוצר דיגיטלי עובד ופיץ׳ קצר להצגת הרעיון.</p>
-        <div class="outcomes" id="outcomes"></div>
+      <div>
+        <h3>מה מקבל בית הספר?</h3>
+        <div class="school-needs" aria-label="מה בית הספר מקבל במסגרת התוכנית">
+          <article class="school-need">
+            <strong>תוכנית מוכנה להפעלה</strong>
+            <span>בית הספר לא צריך לבנות מערכים, ללמוד מערכת חדשה או להפעיל את התהליך בעצמו.</span>
+          </article>
+          <article class="school-need">
+            <strong>מדריכים מטעם ״דרך ההייטק״ מגיעים לכיתה</strong>
+            <span>צוות ״דרך ההייטק״ מנחה את המפגשים ונותן ליווי מקצועי שמחזיק את התהליך בין המפגשים.</span>
+          </article>
+          <article class="school-need">
+            <strong>אופק עירוני ברור</strong>
+            <span>20 צוותים ממשיכים להאקתון וליום שיא עם העירייה, תעשייה ו־HIT.</span>
+          </article>
+        </div>
+      </div>
+
+      <div>
+        <h3>מה התלמיד/ה יוצא/ת ממנו?</h3>
+        <div class="school-needs" aria-label="מיומנויות שהתלמידים מקבלים בתוכנית">
+          <article class="school-need">
+            <strong>יזמות</strong>
+            <span>היכולת לזהות בעיה אמיתית בעיר, להפוך אותה לרעיון, ולבנות פתרון שאפשר להציג דרך עבודה בצוותים.</span>
+          </article>
+          <article class="school-need">
+            <strong>בינה מלאכותית</strong>
+            <span>עבודה מעשית עם כלי AI לתכנון, חידוד רעיונות, בניית אבטיפוס ושיפור התוצר.</span>
+          </article>
+          <article class="school-need">
+            <strong>חשיבה ביקורתית</strong>
+            <span>בדיקת צורך אמיתי, בחירת פתרון מתאים, קבלת משוב ושיפור מבוסס החלטות.</span>
+          </article>
+        </div>
+      </div>
+
+      <div>
+        <h3>מה נדרש מבית הספר?</h3>
+        <div class="school-needs" aria-label="דרישות מבית הספר">
+          <article class="school-need">
+            <strong>שיתוף פעולה</strong>
+            <span>איש קשר בית־ספרי לתיאום בלבד מול צוות התוכנית.</span>
+          </article>
+          <article class="school-need">
+            <strong>שיבוץ במערכת</strong>
+            <span>הקצאת זמן ל־4 מפגשים של שעתיים אקדמיות לכל כיתה בשלב 1.</span>
+          </article>
+          <article class="school-need">
+            <strong>כיתה מתוקשבת</strong>
+            <span>כיתת מחשבים או טאבלטים. ההנחיה, התוכן וההפעלה באחריותנו.</span>
+          </article>
+        </div>
+      </div>
+
+      <div>
+        <h3>לוז</h3>
+        <div class="holon-timeline-wrap" aria-label="ציר זמן מצויר של מהלך HOLON AI">
+        <div class="holon-timeline">
+          <div class="timeline-phase-label phase-1">שלב 1 · כל העיר</div>
+          <article class="holon-step">
+            <div class="holon-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48"><path d="M13 15h22a4 4 0 0 1 4 4v19H9V19a4 4 0 0 1 4-4Z"/><path d="M16 10v8M32 10v8M9 24h30M17 31h3M25 31h3"/></svg>
+            </div>
+            <span>6.10.2026</span>
+            <h3>זום רכזי שכבות</h3>
+          </article>
+          <article class="holon-step">
+            <div class="holon-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48"><path d="M13 15h22a4 4 0 0 1 4 4v19H9V19a4 4 0 0 1 4-4Z"/><path d="M16 10v8M32 10v8M9 24h30M17 31h3M25 31h3"/></svg>
+            </div>
+            <span>עד 8.10.2026</span>
+            <h3>שיבוץ כיתות</h3>
+          </article>
+          <article class="holon-step">
+            <div class="holon-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48"><path d="M8 35c5-7 11-10 18-10s12 3 14 10"/><path d="M16 19a6 6 0 1 0 0-12 6 6 0 0 0 0 12ZM33 21a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"/><path d="M24 35v6M18 41h12"/></svg>
+            </div>
+            <span>1.11.2026 עד 31.1.2027</span>
+            <h3>4 מפגשים בכל כיתה עם מדריך מטעם ״דרך ההייטק״</h3>
+          </article>
+          <div class="timeline-phase-label phase-2">שלב 2 · האקתון ויום שיא</div>
+          <article class="holon-step">
+            <div class="holon-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48"><path d="M9 36h30"/><path d="M13 32V18l11-6 11 6v14"/><path d="M19 32V21h10v11"/><path d="M24 12v20"/></svg>
+            </div>
+            <span>15.2.2027</span>
+            <h3>האקתון מרוכז ל־20 צוותים מכל העיר</h3>
+          </article>
+          <article class="holon-step">
+            <div class="holon-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48"><path d="M14 38h20"/><path d="M18 38l2-8h8l2 8"/><path d="M14 10h20v8a10 10 0 0 1-20 0v-8Z"/><path d="M14 15H8c0 7 4 11 10 12M34 15h6c0 7-4 11-10 12"/></svg>
+            </div>
+            <span>יתקיים בסוף מרץ 2027 · תאריך מדויק יעודכן</span>
+            <h3>יום שיא ב־HIT עם שופטים מהעירייה ומהתעשייה</h3>
+          </article>
+        </div>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="program-video" aria-labelledby="programVideoTitle">
+      <video controls playsinline preload="metadata" poster="assets/venture-ai/meeting-1-city.webp">
+        <source src="marketing/venture-ai-program-explainer.mp4?v=20260825-opal-first" type="video/mp4">
+      </video>
+      <div class="program-video-copy">
+        <span class="tag">סרטון פתיחה</span>
+        <h2 id="programVideoTitle">סרטון היכרות</h2>
+        <p class="goal">הצצה קצרה לאופן שבו תלמידים הופכים בעיה עירונית לרעיון, אבטיפוס ופיץ׳.</p>
       </div>
     </section>
 
-    <section class="section" id="meetings">
-      <div class="shell">
-        <h2>4 מפגשים מפורטים</h2>
-        <p class="lead">כל מפגש בנוי עם פתיחה, הדגמה, עבודה צוותית, תוצר ביניים, הערות מדריך ומצגת מוכנה.</p>
-        <div class="lessons" id="lessons"></div>
+    <section class="preview-cta" aria-label="הצצה לתוכנית">
+      <div>
+        <span class="tag">רוצים לראות את התוכנית מבפנים?</span>
+        <p>הצצה למפגשים, לסרטונים, למצגות ולדפי העבודה שמלווים את הכיתות.</p>
       </div>
-    </section>
-
-    <section class="section" id="tools">
-      <div class="shell">
-        <div class="tools">
-          <article class="panel">
-            <h2>איך עובדים עם Opal</h2>
-            <p class="lead">התלמידים לא מתחילים מקוד ריק. הם לומדים לנסח בריף, להנחות סוכן, לבדוק תוצר, לבקש תיקונים ולשפר גרסה.</p>
-            <ul class="list">
-              <li>נותנים לסוכן בריף ברור: בעיה, קהל יעד, מסכים ופעולה מרכזית.</li>
-              <li>מגבילים את התוצר ל-2-3 מסכים או אזורים.</li>
-              <li>משפרים באיטרציות קטנות ולא בונים מחדש בכל פעם.</li>
-              <li>מתרגלים QA: האם המשתמש מבין מה לעשות והאם יש תוצאה ברורה?</li>
-            </ul>
-          </article>
-          <article class="panel safety">
-            <h2>גבולות בטיחות</h2>
-            <ul class="list" id="safety"></ul>
-          </article>
-        </div>
+      <div class="actions">
+        <a class="btn" href="venture-ai-preview.html">הצצה לתוכנית</a>
       </div>
     </section>
   </main>
 
-  <footer class="footer">מרעיון למיזם עם AI · hai.tech</footer>
-  <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="js/venture-ai-lessons.js?v=20260819-venture-ai"></script>
-  <script>
-    const program = window.VENTURE_AI_PROGRAM;
-    const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
-
-    document.getElementById('outcomes').innerHTML = program.sharedOutcomes.map((item, index) => `<div class="outcome"><b>${index + 1}. יעד למידה</b>${esc(item)}</div>`).join('');
-    document.getElementById('safety').innerHTML = program.safetyRules.map(item => `<li>${esc(item)}</li>`).join('');
-    document.getElementById('lessons').innerHTML = program.lessons.map(lesson => `
-      <article class="lesson">
-        <div class="badge"><b>${lesson.id}</b>מפגש</div>
-        <div>
-          <h3>${esc(lesson.title)}</h3>
-          <div class="subtitle">${esc(lesson.subtitle)}</div>
-          <p>${esc(lesson.teacherGoal)}</p>
-          <div class="meta">
-            <span class="chip">${lesson.durationMinutes} דקות</span>
-            <span class="chip">תוצר: ${esc(lesson.productStage)}</span>
-            <span class="chip">${esc(lesson.bigQuestion)}</span>
-          </div>
-          <div class="lesson-grid">
-            <div class="mini"><b>מה הילדים יוצרים</b>${esc(lesson.studentOutcome)}</div>
-            <div class="mini"><b>פרומפט עבודה</b>${esc(lesson.opalPrompt)}</div>
-          </div>
-          <div class="flow">
-            ${lesson.flow.map(step => `<div class="flow-row"><b>${esc(step.minutes)}</b><div><strong>${esc(step.title)}</strong><br>${esc(step.teacher)}</div><div>${esc(step.students)}</div></div>`).join('')}
-          </div>
-          <div class="actions">
-            <a class="btn" href="venture-ai-slides.html?lesson=${lesson.id}">מצגת מדריך</a>
-            <a class="btn" href="venture-ai-students.html?lesson=${lesson.id}">דף עבודה לתלמידים</a>
-            <a class="btn" href="venture-ai-improvement.html">בקשת שיפור</a>
-            <a class="btn" href="https://opal.hai.tech/">פתחו Opal</a>
-          </div>
-        </div>
-      </article>
-    `).join('');
-  </script>
-  <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
 </body>
 </html>

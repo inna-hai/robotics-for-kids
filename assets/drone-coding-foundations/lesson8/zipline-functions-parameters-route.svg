@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Zipline functions and parameters drone route</title>
+  <desc id="desc">A diagram for grade 7 showing a modular JavaScript function flyRoute distance altitude controlling simulator and physical delivery routes for Zipline.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#06142d"/><stop offset=".55" stop-color="#123b63"/><stop offset="1" stop-color="#0f4f46"/></linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".17"/><stop offset="1" stop-color="#fff" stop-opacity=".07"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#000" flood-opacity=".35"/></filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#38bdf8"/></marker>
+    <style>.h1{font:900 42px system-ui,Segoe UI,Arial;fill:#fff}.h2{font:850 27px system-ui,Segoe UI,Arial;fill:#e0f2fe}.txt{font:650 19px system-ui,Segoe UI,Arial;fill:#dbeafe}.small{font:650 15px system-ui,Segoe UI,Arial;fill:#bfdbfe}.code{font:800 18px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#fef3c7}.panel{fill:url(#card);stroke:#ffffff35;stroke-width:2;rx:30;filter:url(#shadow)}.safe{fill:#064e3b;stroke:#34d399;stroke-width:5;stroke-dasharray:16 10}.route{fill:none;stroke:#38bdf8;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}.route2{stroke:#fbbf24}.station{fill:#f97316;stroke:#ffedd5;stroke-width:4}.hospital{fill:#e0f2fe;opacity:.22;stroke:#e0f2fe;stroke-width:2}.chip{font:900 18px system-ui,Segoe UI,Arial;fill:#052e16}.label{font:850 17px system-ui,Segoe UI,Arial;fill:#fff}</style>
+  </defs>
+  <rect width="1200" height="720" fill="url(#bg)"/>
+  <circle cx="1015" cy="105" r="170" fill="#22c55e" opacity=".12"/><circle cx="170" cy="625" r="190" fill="#38bdf8" opacity=".12"/>
+  <text x="600" y="56" text-anchor="middle" class="h1">Zipline Modular Flight Engine</text>
+  <text x="600" y="91" text-anchor="middle" class="txt">פונקציה אחת · פרמטרים שונים · מסלול בטוח שניתן לכיול בסימולטור ובכיתה</text>
+
+  <rect x="48" y="126" width="510" height="444" class="panel"/>
+  <text x="303" y="170" text-anchor="middle" class="h2">City Simulator</text>
+  <text x="303" y="202" text-anchor="middle" class="txt">inspectBuilding(height, distance)</text>
+  <rect x="118" y="430" width="75" height="90" class="hospital"/><rect x="270" y="350" width="82" height="170" class="hospital"/><rect x="420" y="270" width="82" height="250" class="hospital"/>
+  <text x="155" y="548" text-anchor="middle" class="small">Roof A</text><text x="311" y="548" text-anchor="middle" class="small">Roof B</text><text x="461" y="548" text-anchor="middle" class="small">Roof C</text>
+  <circle cx="88" cy="518" r="15" fill="#34d399"/><text x="88" y="556" text-anchor="middle" class="small">M</text>
+  <path d="M88 518 C130 470 145 430 155 430 S250 365 311 350 S410 295 461 270" class="route"/>
+  <g transform="translate(126 237)"><rect width="355" height="58" rx="22" fill="#020617" opacity=".78"/><text x="177" y="36" text-anchor="middle" class="code">inspectBuilding(100, 80);</text></g>
+
+  <rect x="642" y="126" width="510" height="444" class="panel"/>
+  <text x="897" y="170" text-anchor="middle" class="h2">Physical Calibration Zone</text>
+  <text x="897" y="202" text-anchor="middle" class="txt">flyRoute(dist, alt) — באישור מדריך בלבד</text>
+  <rect x="727" y="250" width="340" height="250" rx="22" class="safe"/>
+  <text x="897" y="235" text-anchor="middle" class="small">Safe Fly Zone 3×3m · no students inside</text>
+  <circle cx="795" cy="455" r="18" fill="#34d399"/><text x="795" y="486" text-anchor="middle" class="small">M</text>
+  <circle cx="860" cy="405" r="17" class="station"/><circle cx="932" cy="350" r="17" class="station"/><circle cx="1008" cy="300" r="17" class="station"/>
+  <path d="M795 455 L860 405 L932 350 L1008 300" class="route route2"/>
+  <text x="860" y="433" text-anchor="middle" class="small">50in</text><text x="932" y="378" text-anchor="middle" class="small">70in</text><text x="1008" y="328" text-anchor="middle" class="small">≤90in*</text>
+  <g transform="translate(703 520)"><rect width="390" height="34" rx="17" fill="#fde68a"/><text x="195" y="23" text-anchor="middle" class="chip">משנים רק Argument — לא נוגעים בגוף הפונקציה</text></g>
+
+  <rect x="130" y="600" width="940" height="82" rx="28" fill="#020617" opacity=".78" stroke="#38bdf8" stroke-opacity=".48"/>
+  <text x="600" y="632" text-anchor="middle" class="code">function flyRoute(dist, alt) { tello.flyUp(alt); tello.moveForward(dist); tello.sleep(2); }</text>
+  <text x="600" y="662" text-anchor="middle" class="small">flyRoute(50, 60) → flyRoute(90, 60): אותה פונקציה, יעד חדש, כיול מהיר ובטוח</text>
+
+  <g transform="translate(590 365)"><rect x="-38" y="-22" width="76" height="44" rx="19" fill="#38bdf8"/><circle cx="-24" cy="0" r="7" fill="#0f172a"/><circle cx="24" cy="0" r="7" fill="#0f172a"/><path d="M-62 -30 C-28 -54 28 -54 62 -30" stroke="#e0f2fe" stroke-width="5" fill="none"/><path d="M-62 30 C-28 54 28 54 62 30" stroke="#e0f2fe" stroke-width="5" fill="none"/></g>
+</svg>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>כניסה ללומדה | hai.tech</title>
+  <meta name="description" content="בחירה בין התנסות כאורח, מנוי אישי וכניסה כתלמיד/ה בכיתה.">
+  <link rel="stylesheet" href="css/classroom-platform.css">
+</head>
+<body data-classroom-page="entry">
+  <header class="topbar">
+    <a class="brand" href="index.html">🌈 hai.tech</a>
+    <a class="text-link" href="teacher-classrooms.html">כניסת מורה</a>
+  </header>
+
+  <main class="shell entry-shell">
+    <section class="intro">
+      <span class="eyebrow">איך רוצים ללמוד היום?</span>
+      <h1>כניסה ללומדה</h1>
+      <p>בחרו אם ללמוד במסגרת כיתה, במנוי אישי או בהתנסות החינמית.</p>
+    </section>
+
+    <div class="choice-grid">
+      <section class="card guest-card">
+        <span class="card-icon" aria-hidden="true">🚀</span>
+        <h2>התנסות כאורח</h2>
+        <p>פותחים את התוכן החינמי של סיסי. ההתקדמות נשארת במכשיר הזה ואינה נשלחת למורה.</p>
+        <a class="button secondary" id="guest-continue" href="sisi.html">להתחיל בהתנסות החינמית</a>
+      </section>
+
+      <section class="card subscription-card">
+        <span class="card-icon" aria-hidden="true">⭐</span>
+        <h2>מנוי אישי</h2>
+        <p>נכנסים לחשבון המשפחתי. ההתקדמות נשמרת לילד או לילדה שנבחרו ואינה מופיעה בדוח כיתה.</p>
+        <a class="button subscription" id="subscription-continue" href="login.html">כניסה למנוי האישי</a>
+      </section>
+
+      <section class="card classroom-card">
+        <span class="card-icon" aria-hidden="true">🏫</span>
+        <h2>אני תלמיד/ה בכיתה</h2>
+        <p>הכניסו את שני הקודים שקיבלתם מהמורה.</p>
+        <form id="student-login-form">
+          <label>קוד כיתה
+            <input name="classCode" inputmode="text" autocomplete="organization" maxlength="6" required>
+          </label>
+          <label>קוד אישי
+            <input name="personalCode" type="password" inputmode="text" autocomplete="current-password" maxlength="6" required>
+          </label>
+          <button class="button primary" type="submit">כניסה לכיתה</button>
+        </form>
+        <p class="message" id="student-login-message" aria-live="polite"></p>
+        <div class="signed-in" id="student-session" hidden>
+          <strong id="student-welcome"></strong>
+          <p>הלומדות הפתוחות לכיתה שלך:</p>
+          <div class="course-links" id="student-course-links"></div>
+          <a class="button primary" id="student-continue" href="index.html" hidden>להמשיך ללומדה</a>
+          <button class="button quiet" id="student-logout" type="button">החלפת תלמיד/ה</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="js/classroom-platform.js?v=20260906-guest-direct-1"></script>
+  <script src="/js/feedback-widget.js?v=20260906-craftom-classrooms-1"></script>
+</body>
+</html>

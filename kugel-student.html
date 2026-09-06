@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>שיעור 0: מבוך המטבעות | hai.tech</title>
+  <meta name="description" content="שיעור פתיחה מאובטח ב-Minecraft לתלמידי הכיתה.">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260905-agent-blocks-match-1">
+  <link rel="stylesheet" href="assets/kugel/kugel-lomda-interfaces.css?v=20260906-secure-zero-1">
+</head>
+<body class="kugel-app student-app" data-kugel-page="student">
+  <header class="app-topbar">
+    <a class="brand-link" href="classroom-entry.html"><span class="brand-mark">K</span><span><strong>Kugel</strong><small>חזרה ללומדות הכיתה</small></span></a>
+  </header>
+  <main class="app-shell">
+   <section class="student-layout">
+    <aside class="lesson-rail">
+      <p class="eyebrow">שיעור פתיחה</p>
+      <h1>שיעור 0</h1>
+      <p>לפני שמתחילים את 16 שיעורי הקורס, לומדים לנוע ולהתמצא בתוך Minecraft.</p>
+      <div class="lesson-button active"><span class="num">0</span><span><strong>מבוך המטבעות</strong><small>תנועה והתמצאות</small></span></div>
+    </aside>
+    <section class="student-workspace">
+      <div class="workspace-hero">
+        <div>
+          <div class="kicker" id="studentKicker">שיעור 0 • תרגול פתיחה</div>
+          <h2>תרגול Minecraft: מבוך המטבעות</h2>
+          <p class="goal">היכנסו למבוך, אספו שמונה מטבעות והגיעו לכפתור הסיום.</p>
+        </div>
+        <span class="status-pill" id="studentSessionStatus">טוען…</span>
+      </div>
+      <section class="panel">
+        <h3>המשימה</h3>
+        <ol>
+          <li>פתחו את Minecraft Education.</li>
+          <li>היכנסו לעולם המבוך במצב Adventure.</li>
+          <li>אספו את כל שמונת המטבעות.</li>
+          <li>לחצו על כפתור הסיום בקצה המבוך.</li>
+        </ol>
+      </section>
+      <section class="panel">
+        <div class="panel-head"><h3>התחברות ל-Minecraft</h3><span class="status-pill" id="playerStatus">ממתין</span></div>
+        <p id="studentIdentity"></p>
+        <p id="minecraftDetails">המורה עדיין לא הפעילה את העולם.</p>
+        <p><strong>קוד גישה:</strong> <span id="minecraftAccessCode">יוצג לאחר הפעלת השיעור</span></p>
+        <div class="action-row">
+          <button class="primary-action" type="button" id="launchWorld">פתחו את Minecraft</button>
+          <button class="secondary-action" type="button" id="resetOwnMission">ניסיון חדש</button>
+        </div>
+        <p class="form-status" id="studentMessage" aria-live="polite"></p>
+      </section>
+      <section class="panel">
+        <div class="panel-head"><h3>ההתקדמות שלי</h3><strong id="coinProgress">0 מתוך 8 מטבעות</strong></div>
+        <div class="student-progress-strip" id="studentProgressStrip"></div>
+        <button class="primary-action" type="button" id="finishLesson">בדיקת סיום</button>
+        <a class="secondary-action link-action" id="continueCourse" href="craftom-minecraft-lesson-1.html" hidden>המשך לשיעור 1</a>
+      </section>
+    </section>
+   </section>
+  </main>
+  <script src="js/kugel-lesson-zero.js?v=20260906-secure-zero-1"></script>
+  <script src="/js/feedback-widget.js?v=20260906-craftom-classrooms-1"></script>
+</body>
+</html>

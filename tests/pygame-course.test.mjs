@@ -20,7 +20,7 @@ assert.doesNotMatch(course, /<nav class=\"nav\">[\s\S]*pygame-lesson-[12]-slides
 assert.doesNotMatch(course, /שיעורי הגרסה הראשונה|מתוך המערך המקורי|מהדרייב|במיפוי|תמונות מסך מהמערכים/);
 
 assert.match(app, /Pygame Lab/);
-assert.match(app, /https:\/\/unpkg\.com\/blockly\/blockly\.min\.js/);
+assert.match(app, /js\/vendor\/blockly\/blockly\.min\.js/);
 assert.match(app, /content\/pygame-lessons\.js/);
 assert.match(app, /const LESSON_PRESETS/);
 assert.match(app, /toolboxForLesson/);

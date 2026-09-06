@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { strict as assert } from 'node:assert';
 import vm from 'node:vm';
 
@@ -15,6 +15,8 @@ assert.equal(program.targetAudience, 'כיתות ח׳', 'program targets grade 8
 assert.equal(program.totalMeetings, 4, 'program has 4 meetings');
 assert.equal(program.toolName, 'Opal', 'program uses Opal');
 assert.equal(program.lessons.length, 4, 'program exposes 4 lessons');
+assert.ok(program.teamFramework.summary.includes('4-5 תלמידים'), 'program defines fixed 4-5 student teams');
+assert.equal(program.teamFramework.roles.length, 5, 'program defines five team roles');
 assert.deepEqual(Array.from(program.lessons, lesson => lesson.id), [1, 2, 3, 4], 'lesson ids are sequential');
 
 for (const lesson of program.lessons) {
@@ -28,31 +30,126 @@ for (const lesson of program.lessons) {
   assert.ok(lesson.studentWorksheet, `lesson ${lesson.id} has student worksheet`);
   assert.ok(lesson.studentWorksheet.fields.length >= 6, `lesson ${lesson.id} has worksheet fields`);
   assert.ok(lesson.studentWorksheet.checklist.length >= 5, `lesson ${lesson.id} has worksheet checklist`);
+  assert.ok(lesson.image, `lesson ${lesson.id} has a visual asset`);
+  assert.ok(existsSync(new URL(lesson.image, root)), `lesson ${lesson.id} image file exists`);
+  if (lesson.video) {
+    assert.ok(existsSync(new URL(lesson.video, root)), `lesson ${lesson.id} video file exists`);
+  }
 }
 
-assert.ok(program.lessons[0].title.includes('מרעיון'), 'lesson 1 starts from idea');
-assert.ok(program.lessons[1].title.includes('מאפיינים'), 'lesson 2 focuses on specification');
-assert.ok(program.lessons[2].title.includes('Opal'), 'lesson 3 builds in Opal');
+assert.ok(program.lessons[0].title.includes('מיזם עירוני'), 'lesson 1 starts from a city venture');
+assert.ok(program.lessons[0].keyConcepts.includes('לאו-טק'), 'lesson 1 introduces high-tech and low-tech framing');
+assert.ok(program.lessons[0].keyConcepts.includes('אופאל כסוכן AI'), 'lesson 1 opens Opal as an AI thinking agent');
+assert.equal(program.lessons[0].video, 'marketing/venture-ai-lesson1-explainer.mp4', 'lesson 1 has embedded explainer video');
+assert.ok(program.lessons[1].keyConcepts.includes('MoSCoW'), 'lesson 2 uses MoSCoW to narrow scope');
+assert.ok(program.lessons[1].opalPrompt.includes('Must'), 'lesson 2 feeds Must scope into the Opal prompt');
+assert.equal(program.lessons[1].video, 'marketing/venture-ai-lesson2-explainer.mp4', 'lesson 2 has embedded explainer video');
+assert.ok(program.lessons[2].title.includes('אופאל'), 'lesson 3 builds in Opal');
+assert.ok(program.lessons[2].keyConcepts.includes('תפקידי צוות'), 'lesson 3 includes team roles');
+assert.equal(program.lessons[2].video, 'marketing/venture-ai-lesson3-explainer.mp4', 'lesson 3 has embedded explainer video');
 assert.ok(program.lessons[3].title.includes('מציגים'), 'lesson 4 closes with demo/pitch');
+assert.ok(program.lessons[3].keyConcepts.includes('ביקורת עמיתים'), 'lesson 4 includes peer critique');
+assert.equal(program.lessons[3].video, 'marketing/venture-ai-lesson4-explainer.mp4', 'lesson 4 has embedded explainer video');
+assert.ok(program.lessons[3].teacherGoal.includes('המפגש האחרון'), 'lesson 4 opens as the final meeting');
+assert.ok(program.lessons[3].studentOutcome.includes('מגיש'), 'lesson 4 ends with submission');
+assert.ok(program.pitchTemplate[0].includes('חולון'), 'pitch template keeps the city context');
 
 const page = read('venture-ai.html');
-assert.ok(page.includes('מרעיון למיזם עם AI'), 'course page has title');
-assert.ok(page.includes('venture-ai-slides.html?lesson=1'), 'course page links instructor slides');
-assert.ok(page.includes('venture-ai-students.html?lesson=1'), 'course page links student worksheet');
-assert.ok(page.includes('venture-ai-improvement.html'), 'course page links improvement request form');
-assert.ok(page.includes('https://opal.hai.tech/'), 'course page links Opal');
+assert.ok(page.includes('Venture AI חולון'), 'course page has title');
+assert.ok(page.includes('HOLON AI'), 'course page includes Holon AI position paper content');
+assert.ok(page.includes('תוכנית דגל עירונית'), 'course page opens with the city flagship framing');
+assert.ok(page.includes('כל כיתות ח׳'), 'course page clarifies the citywide grade 8 audience');
+assert.ok(!page.includes('מה כוללת התוכנית'), 'course page avoids a redundant program contents heading');
+assert.ok(!page.includes('התלמידים לומדים לזהות צורך בעיר, לתכנן פתרון, לבנות אבטיפוס ולהציג פיץ׳ קצר וברור.'), 'course page avoids repeating the main goal below the hero');
+assert.ok(page.includes('לתת לכל תלמיד ותלמידה'), 'course page makes the main student goal clear');
+assert.ok(page.includes('כלים טכנולוגיים ב־AI'), 'course page frames AI as practical technology tools');
+assert.ok(page.includes('תוצר יזמי'), 'course page clarifies the entrepreneurial product outcome');
+assert.ok(page.includes('בשיתוף חברת דרך ההייטק'), 'course page names Derech HaHitech as the delivery partner');
+assert.ok(page.includes('מדריך מטעם ״דרך ההייטק״'), 'course page says Derech HaHitech provides the class instructor');
+assert.ok(page.includes('מדריכים מטעם ״דרך ההייטק״ מגיעים לכיתה'), 'course page explains the school receives Derech HaHitech instructors');
+assert.ok(page.includes('venture-visual'), 'course page has a visual hero area');
+assert.ok(page.indexOf('assets/venture-ai/meeting-1-city.webp') < page.indexOf('id="overview"'), 'hero image appears in the top section before Holon AI content');
+assert.ok(page.includes('assets/venture-ai/meeting-3-build.webp'), 'hero includes Opal build image');
+assert.ok(page.includes('assets/venture-ai/meeting-4-demo.webp'), 'hero includes demo image');
+assert.ok(!page.includes('holon-city-map'), 'course page avoids duplicate phase cards above the illustrated timeline');
+assert.ok(!page.includes('holon-chip-strip'), 'course page avoids duplicate operating-detail chips');
+assert.ok(!page.includes('holon-card'), 'Holon top section avoids text-heavy cards');
+assert.ok(!page.includes('מורה קבוע'), 'course page no longer says fixed teacher');
+assert.ok(!page.includes('BYOD'), 'course page avoids BYOD jargon in the focused overview');
+assert.ok(page.includes('מה מקבל בית הספר?'), 'course page adds the manager-facing value section from the position paper');
+assert.ok(page.includes('תוכנית מוכנה להפעלה'), 'course page explains what the school receives');
+assert.ok(page.includes('ליווי מקצועי שמחזיק את התהליך בין המפגשים'), 'course page includes between-meeting support from the position paper');
+assert.ok(page.includes('מה התלמיד/ה יוצא/ת ממנו?'), 'course page explains student outcomes');
+assert.ok(page.includes('יזמות'), 'course page highlights entrepreneurship as a student outcome');
+assert.ok(page.includes('בינה מלאכותית'), 'course page highlights AI as a student outcome');
+assert.ok(page.includes('חשיבה ביקורתית'), 'course page highlights critical thinking as a student outcome');
+assert.ok(page.includes('6.10.2026'), 'course page includes the coordinators Zoom milestone');
+assert.ok(page.includes('עד 8.10.2026'), 'course page includes Holon scheduling deadline');
+assert.ok(page.includes('15.2.2027'), 'course page includes Holon hackathon milestone date');
+assert.ok(page.includes('יתקיים בסוף מרץ 2027 · תאריך מדויק יעודכן'), 'course page keeps the final event date general until it is confirmed');
+assert.ok(!page.includes('5.4.2027'), 'course page avoids an exact final event date before it is confirmed');
+assert.ok(page.includes('4 מפגשים בכל כיתה עם מדריך מטעם ״דרך ההייטק״'), 'course page clarifies each class receives meetings with a Derech HaHitech instructor');
+assert.ok(page.includes('20 צוותים מכל העיר'), 'course page clarifies the hackathon teams advanced from the citywide phase');
+assert.ok(page.includes('שופטים מהעירייה ומהתעשייה'), 'course page explains the final judging audience');
+assert.ok(page.includes('ב־HIT'), 'course page includes the HIT final event location');
+assert.ok(page.includes('בעבודה צוותית'), 'course page highlights team work inside each class');
+assert.ok(page.includes('holon-timeline-wrap'), 'Holon timeline is rendered as an illustrated timeline');
+assert.ok(page.includes('holon-icon'), 'Holon timeline uses visual icons');
+assert.ok(page.includes('שלב 1 · כל העיר'), 'Holon timeline labels the citywide phase');
+assert.ok(page.includes('שלב 2 · האקתון ויום שיא'), 'Holon timeline labels the hackathon and final event phase');
+assert.ok(page.includes('1.11.2026 עד 31.1.2027'), 'course page formats the school program date range clearly for RTL');
+assert.ok(!page.includes('1.11.2026-31.1.2027'), 'course page avoids a hyphenated RTL date range');
+assert.ok(page.includes('האקתון מרוכז ל־20 צוותים מכל העיר'), 'Holon timeline names the focused hackathon day and advancing teams');
+assert.ok(page.includes('יום שיא ב־HIT עם שופטים'), 'Holon timeline separates the final judging event from the hackathon');
+assert.ok(page.includes('מה נדרש מבית הספר?'), 'course page explains what the school needs to provide');
+assert.ok(page.includes('שיתוף פעולה'), 'course page asks for school cooperation');
+assert.ok(page.includes('4 מפגשים של שעתיים אקדמיות לכל כיתה בשלב 1'), 'course page specifies the school scheduling requirement');
+assert.ok(page.includes('כיתת מחשבים או טאבלטים'), 'course page specifies the school device/classroom requirement');
+assert.ok(page.indexOf('id="overview"') < page.indexOf('aria-labelledby="programVideoTitle"'), 'Holon AI content appears above the original course content');
+assert.ok(page.includes('venture-ai-preview.html'), 'course page links the detailed preview page');
+assert.ok(!page.includes('venture-ai-slides.html?lesson=${lesson.id}'), 'course page keeps slides out of the main overview');
+assert.ok(!page.includes('venture-ai-students.html?lesson=${lesson.id}'), 'course page keeps worksheets out of the main overview');
+assert.ok(!page.includes('https://opal.hai.tech/'), 'course page keeps tool links out of the main overview');
+assert.ok(!page.includes('id="lessonCards"'), 'course page does not render detailed meeting cards');
+assert.ok(!page.includes('teamFrameTitle'), 'course page does not render the detailed team framework');
+assert.ok(page.includes('<video controls playsinline'), 'course page embeds the program explainer video');
+assert.ok(page.includes('marketing/venture-ai-program-explainer.mp4'), 'course page uses internal MP4 explainer video');
+assert.ok(!page.includes('venture-ai-lesson1-explainer.mp4'), 'course page does not embed lesson videos');
+assert.equal([...page.matchAll(/<source src="marketing\/venture-ai-[^"]+\.mp4/g)].length, 1, 'course page embeds only the overview video');
+assert.ok(page.includes('סרטון פתיחה'), 'course page labels the explainer video clearly');
+assert.ok(page.includes('סרטון היכרות'), 'course page uses marketing-friendly video copy');
+assert.ok(!page.includes('פירוט המפגשים, סרטוני המפגשים, מצגות ודפי תלמידים עברו לעמוד נפרד'), 'course page avoids internal change-log copy');
+assert.ok(existsSync(new URL('marketing/venture-ai-program-explainer.mp4', root)), 'explainer video file exists');
+
+const preview = read('venture-ai-preview.html');
+assert.ok(preview.includes('הצצה לתוכנית'), 'preview page has title');
+assert.ok(preview.includes('הצצה לחוויית הלמידה'), 'preview page uses external marketing copy');
+assert.ok(preview.includes('id="lessonCards"'), 'preview page renders meeting cards');
+assert.ok(preview.includes('venture-ai-slides.html?lesson=${lesson.id}'), 'preview page links instructor slides inside each lesson');
+assert.ok(preview.includes('venture-ai-students.html?lesson=${lesson.id}'), 'preview page links student worksheet inside each lesson');
+assert.ok(preview.includes('https://opal.hai.tech/'), 'preview page links Opal');
+assert.ok(preview.includes('lesson.video ? `<video class="meeting-video"'), 'preview page embeds lesson videos inside meeting cards');
+assert.ok(!preview.includes('venture-ai-improvement.html'), 'preview page keeps improvement request out of the top hero actions');
+assert.ok(!preview.includes('עמוד פנימי'), 'preview page avoids internal positioning copy');
+assert.ok(!preview.includes('מצגות המדריך'), 'preview page avoids internal instructor-materials copy in the hero');
+assert.ok(!preview.includes('דפי התלמידים'), 'preview page avoids internal worksheet copy in the hero');
+assert.ok(!preview.includes('מצגת מדריך'), 'preview page avoids internal instructor button label');
+assert.ok(!preview.includes('דף תלמידים'), 'preview page avoids internal student-page button label');
+assert.ok(!preview.includes('מטרת מדריך'), 'preview page avoids internal instructor-detail label');
 
 const slides = read('venture-ai-slides.html');
 assert.ok(slides.includes('מצגת מדריך'), 'slides page is instructor deck');
 assert.ok(slides.includes('lessonPicker'), 'slides page can switch lessons');
 assert.ok(slides.includes('תבנית פיץ׳ סיום'), 'slides include pitch template');
+assert.ok(slides.includes('teamFramework'), 'slides include team framework');
 
 const students = read('venture-ai-students.html');
 assert.ok(students.includes('דף עבודה לתלמידים'), 'students page is a worksheet');
 assert.ok(students.includes('localStorage'), 'students page saves locally');
 assert.ok(students.includes('copySummary'), 'students page can copy submission summary');
 assert.ok(students.includes('markSubmitted'), 'students page can mark submission');
-assert.ok(students.includes('venture-ai-improvement.html'), 'students page links improvement request form');
+assert.ok(!students.includes('venture-ai-improvement.html'), 'students page keeps improvement request out of the top bar actions');
+assert.ok(students.includes('teamRoles'), 'students page renders team roles');
 
 const improvement = read('venture-ai-improvement.html');
 assert.ok(improvement.includes('בקשת שיפור'), 'improvement page has title');
