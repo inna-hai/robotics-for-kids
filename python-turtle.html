@@ -86,7 +86,7 @@
           <button class="btn run" id="runBtn">▶️ הרץ ציור</button>
           <button class="btn reset" id="stopRunBtn" disabled>⏹ עצור</button>
           <button class="btn reset" id="resetBtn">🔄 נקה ציור</button>
-          <button class="btn" id="demoBtn">✨ דוגמת הפעלה</button><span class="demo-note">זו דוגמת הפעלה בלבד — לא הפתרון של המשימה.</span>
+          <button class="btn" id="demoBtn">✨ דוגמת הפעלה</button><span class="demo-note" id="demoNote" hidden>זו דוגמת הפעלה בלבד — לא הפתרון של המשימה.</span>
         </div>
         <div class="mission" id="mission"></div>
       </section>
@@ -11098,7 +11098,7 @@
       }
       saveProgress();
     });
-    document.getElementById('demoBtn').addEventListener('click',()=>{ lesson10CurrentRevealKey = ''; updateLesson10CanvasSecret(); loadDemo(); });
+    document.getElementById('demoBtn').addEventListener('click',()=>{ document.getElementById('demoNote')?.removeAttribute('hidden'); lesson10CurrentRevealKey = ''; updateLesson10CanvasSecret(); loadDemo(); });
     workspace.addChangeListener((event)=>{
       if(event.type === Blockly.Events.SELECTED){
         const selected = event.newElementId ? workspace.getBlockById(event.newElementId) : (Blockly.getSelected ? Blockly.getSelected() : null);
