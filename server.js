@@ -13,6 +13,7 @@ const FEEDBACK_FILE = path.join(DATA_DIR, 'feedback.jsonl');
 const CRAFTOM_EXIT_ATTACHMENTS_DIR = path.join(DATA_DIR, 'craftom-exit-ticket-attachments');
 const CRAFTOM_EXIT_TICKETS_FILE = path.join(DATA_DIR, 'craftom-exit-tickets.jsonl');
 const KUGEL_SESSION_FILE = path.join(DATA_DIR, 'kugel-lomda-session.json');
+const KUGEL_CONNECTED_TTL_MS = Number(process.env.KUGEL_CONNECTED_TTL_MS || 90 * 1000);
 const ADMIN_TOKEN_FILE = path.join(DATA_DIR, 'admin-token.txt');
 const SUMMER_USERS_FILE = path.join(DATA_DIR, 'summer-users.json');
 const SUMMER_DB_FILE = path.join(DATA_DIR, 'summer-subscriptions.sqlite');
@@ -1253,8 +1254,9 @@ function summarizeStudentFromEvents(studentName, rows, fallback = {}) {
   const finishedAt = eventCreatedAtMs(finishEvents.at(-1)) || coinCompletedAt || fallbackFinishedAtMs || null;
   const completed = Boolean(finishedAt || (!resetAt && fallback.completed));
   const durationMs = startedAt && finishedAt ? Math.max(0, finishedAt - startedAt) : null;
-  const hasLiveConnection = lastEvent && String(lastEvent.event_type || '') !== 'player_leave';
-  const connected = Boolean(hasLiveConnection || fallback.connected && !lastEvent);
+  const lastEventType = String(lastEvent?.event_type || '');
+  const hasRecentEvent = lastEventAt && Date.now() - lastEventAt <= KUGEL_CONNECTED_TTL_MS;
+  const connected = Boolean(hasRecentEvent && lastEventType !== 'player_leave');
   return {
     name: studentName,
     connected,
