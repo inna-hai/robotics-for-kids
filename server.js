@@ -2022,7 +2022,7 @@ async function handleClassroomApi(req, res) {
         courses: withSummerDb(db => classroomCourses(db, student.classroom_id)),
       },
     }));
-    return send(res, 200, JSON.stringify({ ok: true, role: 'guest' }));
+    return send(res, 200, JSON.stringify({ ok: true, role: 'guest', subscriptionGateEnabled: SUBSCRIPTION_GATE_ENABLED }));
   }
 
   if (req.method === 'GET' && action === 'admin-me') {

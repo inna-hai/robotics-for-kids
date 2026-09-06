@@ -14,6 +14,11 @@
     return allowedNext.has(requested) ? requested : 'index.html#courses';
   }
 
+  function requestedCourse() {
+    const requested = new URLSearchParams(location.search).get('next') || '';
+    return allowedNext.has(requested) ? requested : '';
+  }
+
   function guestCourse() {
     return 'sisi.html';
   }
@@ -60,7 +65,8 @@
   }
 
   async function initEntry() {
-    const next = nextCourse();
+    const requested = requestedCourse();
+    const next = requested || nextCourse();
     const guestNext = guestCourse();
     const guest = document.getElementById('guest-continue');
     const subscription = document.getElementById('subscription-continue');
@@ -128,6 +134,9 @@
     try {
       const me = await api('/api/classroom/me');
       if (me.role === 'student') showStudent(me);
+      if (me.role === 'guest' && me.subscriptionGateEnabled === false && requested) {
+        location.assign(requested);
+      }
     } catch {}
 
     form.addEventListener('submit', async (event) => {

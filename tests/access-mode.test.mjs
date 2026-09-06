@@ -79,7 +79,7 @@ function badgeHarness({ pathname = '/python-turtle.html', classroomMe, summerTok
   assert.match(badge.innerHTML, /מצב אורח/);
 }
 
-function entryHarness({ classroomLogoutOk = true } = {}) {
+function entryHarness({ classroomLogoutOk = true, classroomMe = { role: 'guest', ok: true, subscriptionGateEnabled: true } } = {}) {
   const listeners = new Map();
   const makeNode = () => ({
     hidden: false, href: '', textContent: '', classList: { toggle() {} },
@@ -106,7 +106,7 @@ function entryHarness({ classroomLogoutOk = true } = {}) {
       fetchCalls.push(path);
       if (path === '/api/classroom/logout' && !classroomLogoutOk) return { ok: false, json: async () => ({ error: 'לא הצלחנו להתנתק מהכיתה.' }) };
       if (path === '/api/summer/me') return { ok: true, json: async () => ({ mode: 'child', child: { name: 'דנה' } }) };
-      return { ok: true, json: async () => ({ role: 'guest', ok: true }) };
+      return { ok: true, json: async () => classroomMe };
     },
   };
   context.window = context;
@@ -123,6 +123,12 @@ function entryHarness({ classroomLogoutOk = true } = {}) {
   assert.equal(harness.localStorage.value, '', 'explicit guest mode must clear the subscription identity');
   assert.ok(harness.fetchCalls.includes('/api/classroom/logout'));
   assert.ok(harness.fetchCalls.includes('/api/summer/logout'));
+}
+
+{
+  const harness = entryHarness({ classroomMe: { role: 'guest', ok: true, subscriptionGateEnabled: false } });
+  await tick();
+  assert.equal(harness.assigned.at(-1), 'python-turtle.html', 'when the subscription gate is off, requested learning pages open directly for guests');
 }
 
 {
@@ -146,8 +152,8 @@ const entryHtml = read('classroom-entry.html');
 assert.match(entryHtml, /id="subscription-continue"/);
 assert.match(entryHtml, /מנוי אישי/);
 assert.match(entryHtml, /התנסות כאורח/);
-assert.match(entryHtml, /classroom-platform\.js\?v=20260906-teacher-entitlements-1/);
-assert.match(read('teacher-classrooms.html'), /classroom-platform\.js\?v=20260906-teacher-entitlements-1/);
+assert.match(entryHtml, /classroom-platform\.js\?v=20260906-guest-direct-1/);
+assert.match(read('teacher-classrooms.html'), /classroom-platform\.js\?v=20260906-guest-direct-1/);
 
 const classroomSession = read('js/classroom-session.js');
 assert.doesNotMatch(classroomSession, /showStudentBadge/, 'the unified access badge must be the only badge');
@@ -159,4 +165,4 @@ assert.match(server, /const baseOutput = injectUserBadge\(html\);/, 'the unified
 assert.doesNotMatch(server, /SUBSCRIPTION_GATE_ENABLED \? injectUserBadge\(html\)/);
 
 console.log('✓ classroom, subscription, and guest access modes stay distinct');
-console.log('✓ guest entry routes only to free content');
+console.log('✓ guest entry respects the subscription gate state');

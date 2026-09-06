@@ -284,7 +284,7 @@ try {
 
   const guestMe = await fetch(`${baseUrl}/api/classroom/me`);
   assert.equal(guestMe.status, 200);
-  assert.deepEqual(await guestMe.json(), { ok: true, role: 'guest' });
+  assert.deepEqual(await guestMe.json(), { ok: true, role: 'guest', subscriptionGateEnabled: true });
 
   const classes = await fetch(`${baseUrl}/api/classroom/classes`, { headers: { Cookie: teacherCookie } });
   const classesBody = await classes.json();
