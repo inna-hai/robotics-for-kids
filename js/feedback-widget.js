@@ -5,6 +5,7 @@
   const style = document.createElement('style');
   style.textContent = `
     .rfw-button{position:fixed;left:16px;bottom:16px;z-index:99999;border:0;border-radius:999px;background:#2563eb;color:#fff;font-family:Heebo,Arial,sans-serif;font-weight:800;font-size:14px;padding:12px 16px;box-shadow:0 10px 24px rgba(37,99,235,.32);cursor:pointer;direction:rtl}.rfw-slide-page .rfw-button{bottom:92px}
+    body:has(#hai-user-badge) .rfw-button{bottom:76px}body.rfw-slide-page:has(#hai-user-badge) .rfw-button{bottom:148px}
     .rfw-button:hover{background:#1d4ed8;transform:translateY(-1px)}
     .rfw-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:100000;display:flex;align-items:center;justify-content:center;padding:18px;direction:rtl;font-family:Heebo,Arial,sans-serif}
     .rfw-modal{width:min(520px,100%);background:#fff;border-radius:22px;box-shadow:0 24px 70px rgba(15,23,42,.28);padding:22px;color:#0f172a}
