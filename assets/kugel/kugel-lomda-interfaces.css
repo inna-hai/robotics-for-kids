@@ -9,8 +9,22 @@
 
 .kugel-app .rfw-button {
   left: 18px !important;
-  bottom: 18px !important;
-  max-width: calc(100vw - 36px);
+  bottom: 72px !important;
+  display: grid !important;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  max-width: none;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  font-size: 0 !important;
+  line-height: 1;
+}
+
+.kugel-app .rfw-button::after {
+  content: 'דיווח';
+  font-size: 12px;
+  font-weight: 900;
 }
 
 .app-topbar {
@@ -920,9 +934,7 @@
   .kugel-app .rfw-button {
     left: 10px !important;
     bottom: 72px !important;
-    max-width: 184px;
-    padding: 9px 11px !important;
-    font-size: 12px !important;
-    line-height: 1.2;
+    width: 52px;
+    height: 52px;
   }
 }
