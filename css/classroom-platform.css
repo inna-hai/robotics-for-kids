@@ -61,6 +61,7 @@ input:focus { outline: 3px solid rgba(79,70,229,.2); border-color: var(--primary
 .signed-in { margin-top: 18px; padding: 16px; border-radius: 14px; background: #ecfdf5; }
 .signed-in strong { display: block; margin-bottom: 12px; }
 .dashboard-heading { display: flex; justify-content: space-between; gap: 18px; align-items: center; margin-bottom: 22px; }
+.heading-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; }
 .create-class { display: grid; grid-template-columns: 1fr; align-items: end; }
 .create-class p { margin-bottom: 0; }
 .course-picker { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; padding: 14px; border: 1px solid var(--line); border-radius: 14px; }
@@ -75,6 +76,10 @@ input:focus { outline: 3px solid rgba(79,70,229,.2); border-color: var(--primary
 .class-card { padding: 22px; border-radius: 20px; background: #fff; border: 1px solid var(--line); }
 .class-top { display: flex; justify-content: space-between; gap: 16px; align-items: start; }
 .code { display: inline-block; padding: 8px 11px; direction: ltr; border-radius: 10px; background: #f1f5f9; font: 800 1rem ui-monospace, monospace; letter-spacing: .08em; }
+.export-box { display: grid; gap: 10px; margin-top: 18px; padding: 16px; border: 1px solid #c7d2fe; border-radius: 14px; background: #f8fafc; }
+.export-box h4 { margin: 0; }
+.export-box p { margin: 0; }
+.export-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .student-list { display: grid; gap: 8px; margin: 16px 0; padding: 0; list-style: none; }
 .student-list li { padding: 10px 12px; border-radius: 10px; background: #f8fafc; }
 .student-list li strong, .student-list li small { display: block; }
@@ -86,6 +91,8 @@ input:focus { outline: 3px solid rgba(79,70,229,.2); border-color: var(--primary
   .shell { width: min(100% - 22px, 1120px); padding-top: 28px; }
   .choice-grid, .auth-grid, .create-class, .course-picker, .flow-card { grid-template-columns: 1fr; }
   .dashboard-heading, .class-top { align-items: stretch; flex-direction: column; }
+  .heading-actions, .export-actions { justify-content: stretch; }
+  .heading-actions .button, .export-actions .button { width: 100%; }
   .add-student-form { grid-template-columns: 1fr; }
   .card { padding: 20px; }
 }

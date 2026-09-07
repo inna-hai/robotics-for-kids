@@ -51,7 +51,10 @@
     <section id="admin-dashboard" hidden>
       <div class="dashboard-heading">
         <div><h2>המורות במערכת</h2><p>סמנו לכל מורה את הלומדות שנרכשו או אושרו עבורה.</p></div>
-        <button class="button quiet" id="admin-logout" type="button">התנתקות</button>
+        <div class="heading-actions">
+          <button class="button quiet" id="admin-export-teachers" type="button">הורדת קובץ מורות</button>
+          <button class="button quiet" id="admin-logout" type="button">התנתקות</button>
+        </div>
       </div>
       <p class="message" id="admin-message" aria-live="polite"></p>
       <div class="classes-list" id="admin-teachers-list"></div>

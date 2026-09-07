@@ -185,6 +185,50 @@
     return node;
   }
 
+  function csvCell(value) {
+    return `"${String(value ?? '').replace(/"/g, '""')}"`;
+  }
+
+  function downloadCsv(filename, headers, rows) {
+    const content = [headers, ...rows]
+      .map(row => row.map(csvCell).join(','))
+      .join('\n');
+    const blob = new Blob([`\uFEFF${content}`], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function safeFilename(value) {
+    return String(value || 'classroom').trim().replace(/[^\w\u0590-\u05ff-]+/g, '-').replace(/-+/g, '-');
+  }
+
+  function exportClassroomStudents(classroom) {
+    const rows = (classroom.students || []).map(student => {
+      const latest = student.progress?.[0];
+      return [
+        classroom.name,
+        classroom.joinCode,
+        student.name,
+        student.minecraftPlayerName || '',
+        latest ? (courseLabels[latest.courseId] || latest.courseId) : '',
+        latest ? (latest.status === 'completed' ? 'הושלם' : 'התחיל/ה') : 'עדיין אין פעילות',
+        student.createdAt || '',
+        'קוד אישי קיים לא מוצג. ליצירת קודים חדשים השתמשו בכפתור יצירת קודי כניסה חדשים.',
+      ];
+    });
+    downloadCsv(
+      `students-${safeFilename(classroom.name)}.csv`,
+      ['כיתה', 'קוד כיתה', 'שם תלמיד/ה', 'שם שחקן Minecraft', 'לומדה אחרונה', 'סטטוס אחרון', 'נוסף בתאריך', 'פרטי גישה'],
+      rows,
+    );
+  }
+
   const courseLabels = {
     'sensi-city': 'סנסי בעיר החכמה',
     sisi: 'סיסי',
@@ -275,6 +319,53 @@
       const code = element('strong', classroom.joinCode, 'code');
       top.append(titleBox, code);
 
+      const exportBox = element('section', undefined, 'export-box');
+      exportBox.append(
+        element('h4', 'קובץ תלמידים ופרטי גישה'),
+        element('p', 'הורידו רשימה מסודרת של תלמידי הכיתה. קודים קיימים לא מוצגים; אפשר ליצור קודי כניסה חדשים שיופיעו בקובץ חד-פעמי.'),
+      );
+      const exportActions = element('div', undefined, 'export-actions');
+      const exportList = element('button', 'הורדת רשימת תלמידים', 'button quiet');
+      exportList.type = 'button';
+      exportList.addEventListener('click', () => {
+        exportClassroomStudents(classroom);
+        setMessage(dashboardMessage, `קובץ התלמידים של ${classroom.name} ירד למחשב.`, true);
+      });
+      const resetCodes = element('button', 'יצירת קודי כניסה חדשים לקובץ', 'button secondary');
+      resetCodes.type = 'button';
+      resetCodes.addEventListener('click', async () => {
+        if (!classroom.students.length) {
+          setMessage(dashboardMessage, 'אין עדיין תלמידים בכיתה הזאת.', false);
+          return;
+        }
+        if (!confirm(`ליצור קודי כניסה חדשים לכל תלמידי ${classroom.name}? הקודים הישנים יפסיקו לעבוד.`)) return;
+        resetCodes.disabled = true;
+        setMessage(dashboardMessage, 'יוצרים קודי כניסה חדשים…');
+        try {
+          const data = await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/students/reset-codes`, {});
+          downloadCsv(
+            `student-login-codes-${safeFilename(classroom.name)}.csv`,
+            ['כיתה', 'קוד כיתה', 'שם תלמיד/ה', 'קוד אישי חדש', 'שם שחקן Minecraft', 'נוצר בתאריך'],
+            (data.students || []).map(student => [
+              data.classroom.name,
+              data.classroom.joinCode,
+              student.name,
+              student.loginCode,
+              student.minecraftPlayerName || '',
+              student.updatedAt || '',
+            ]),
+          );
+          setMessage(dashboardMessage, `נוצר קובץ קודי כניסה חדשים עבור ${classroom.name}.`, true);
+          await loadClasses();
+        } catch (error) {
+          setMessage(dashboardMessage, error.message);
+        } finally {
+          resetCodes.disabled = false;
+        }
+      });
+      exportActions.append(exportList, resetCodes);
+      exportBox.append(exportActions);
+
       const courseAccess = element('section', undefined, 'class-courses');
       courseAccess.append(element('h4', 'הלומדות של הכיתה'));
       const courseLinks = element('div', undefined, 'course-links');
@@ -360,7 +451,7 @@
           setMessage(dashboardMessage, error.message);
         }
       });
-      card.append(top, courseAccess, students, addForm, oneTime);
+      card.append(top, exportBox, courseAccess, students, addForm, oneTime);
       return card;
     }
 

@@ -2301,7 +2301,41 @@ async function handleClassroomApi(req, res) {
       }));
     }
 
-    if (action === 'classes' && segments[3] && segments[4] === 'students') {
+    if (action === 'classes' && segments[3] && segments[4] === 'students' && segments[5] === 'reset-codes' && segments.length === 6) {
+      const teacher = getClassroomTeacherFromRequest(req);
+      if (!teacher) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
+      const result = withSummerDb(db => db.transaction(() => {
+        const classroom = db.prepare('SELECT * FROM classrooms WHERE id = ? AND teacher_id = ?').get(segments[3], teacher.id);
+        if (!classroom) return null;
+        const now = new Date().toISOString();
+        const students = db.prepare('SELECT id, name, minecraft_player_name, created_at FROM classroom_students WHERE classroom_id = ? ORDER BY created_at').all(classroom.id);
+        const rows = students.map(student => {
+          const loginCode = generatePersonalLoginCode(db, classroom.id);
+          const salt = crypto.randomBytes(16).toString('hex');
+          db.prepare(`
+            UPDATE classroom_students
+            SET login_salt = ?, login_hash = ?, updated_at = ?
+            WHERE id = ? AND classroom_id = ?
+          `).run(salt, hashClassroomSecret(loginCode, salt), now, student.id, classroom.id);
+          return {
+            id: student.id,
+            name: student.name,
+            loginCode,
+            minecraftPlayerName: student.minecraft_player_name || '',
+            createdAt: student.created_at,
+            updatedAt: now,
+          };
+        });
+        return {
+          classroom: { id: classroom.id, name: classroom.name, joinCode: classroom.join_code },
+          students: rows,
+        };
+      })());
+      if (!result) return send(res, 404, JSON.stringify({ error: 'הכיתה לא נמצאה.' }));
+      return send(res, 200, JSON.stringify({ ok: true, ...result }));
+    }
+
+    if (action === 'classes' && segments[3] && segments[4] === 'students' && segments.length === 5) {
       const teacher = getClassroomTeacherFromRequest(req);
       if (!teacher) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
       const name = cleanText(body.name, 80);

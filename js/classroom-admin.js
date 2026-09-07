@@ -13,6 +13,8 @@
   const authMessage = document.getElementById('admin-auth-message');
   const message = document.getElementById('admin-message');
   const teachersList = document.getElementById('admin-teachers-list');
+  const exportTeachersButton = document.getElementById('admin-export-teachers');
+  let currentTeachers = [];
 
   function element(tag, text, className) {
     const node = document.createElement(tag);
@@ -24,6 +26,58 @@
   function setMessage(target, text, success = false) {
     target.textContent = text || '';
     target.classList.toggle('success', success);
+  }
+
+  function csvCell(value) {
+    return `"${String(value ?? '').replace(/"/g, '""')}"`;
+  }
+
+  function downloadCsv(filename, headers, rows) {
+    const content = [headers, ...rows]
+      .map(row => row.map(csvCell).join(','))
+      .join('\n');
+    const blob = new Blob([`\uFEFF${content}`], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function exportTeachers() {
+    const rows = currentTeachers.flatMap(teacher => {
+      const teacherCourses = (teacher.courses || []).map(id => courseLabels[id] || id).join(', ');
+      const classes = teacher.classes || [];
+      if (!classes.length) {
+        return [[
+          teacher.name,
+          teacher.email,
+          teacherCourses || 'ללא לומדות',
+          'עדיין אין כיתות',
+          '',
+          teacher.createdAt || '',
+          'סיסמאות וקודי הזמנה לא מוצגים בקובץ.',
+        ]];
+      }
+      return classes.map(classroom => [
+        teacher.name,
+        teacher.email,
+        teacherCourses || 'ללא לומדות',
+        classroom.name,
+        (classroom.courses || []).map(id => courseLabels[id] || id).join(', ') || 'ללא לומדות',
+        teacher.createdAt || '',
+        'סיסמאות וקודי הזמנה לא מוצגים בקובץ.',
+      ]);
+    });
+    downloadCsv(
+      'teachers-access.csv',
+      ['שם מורה', 'מייל כניסה', 'לומדות פתוחות למורה', 'כיתה', 'לומדות פתוחות לכיתה', 'נוצר בתאריך', 'הערת אבטחה'],
+      rows,
+    );
+    setMessage(message, 'קובץ המורות וההרשאות ירד למחשב.', true);
   }
 
   document.querySelectorAll('[data-toggle-password]').forEach((button) => {
@@ -103,8 +157,9 @@
 
   async function loadTeachers() {
     const data = await api('/api/classroom/admin/teachers');
-    teachersList.replaceChildren(...data.teachers.map(renderTeacher));
-    if (!data.teachers.length) teachersList.append(element('p', 'עדיין אין חשבונות מורים.', 'card'));
+    currentTeachers = data.teachers || [];
+    teachersList.replaceChildren(...currentTeachers.map(renderTeacher));
+    if (!currentTeachers.length) teachersList.append(element('p', 'עדיין אין חשבונות מורים.', 'card'));
   }
 
   async function showDashboard() {
@@ -136,6 +191,16 @@
       setMessage(message, error.message);
     }
   });
+
+  if (exportTeachersButton) {
+    exportTeachersButton.addEventListener('click', () => {
+      if (!currentTeachers.length) {
+        setMessage(message, 'אין עדיין מורות לייצוא.');
+        return;
+      }
+      exportTeachers();
+    });
+  }
 
   api('/api/classroom/admin-me')
     .then((data) => data.role === 'admin' && showDashboard())
