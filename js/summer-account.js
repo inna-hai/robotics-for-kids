@@ -1,5 +1,6 @@
 (() => {
   const TOKEN_KEY = 'haiTechSummerToken';
+  const NOTICE_KEY = 'haiTechSummerSuccessNotice';
   const API_PATHS = {
     register: '/api/summer/register',
     login: '/api/summer/login',
@@ -25,6 +26,70 @@
     if (!message) return;
     message.textContent = text || '';
     message.className = `message ${type}`.trim();
+  }
+
+  function clearSuccessNotice() {
+    const existing = document.getElementById('success-notice');
+    if (existing) existing.remove();
+  }
+
+  function showSuccessNotice(options = {}) {
+    clearSuccessNotice();
+    const title = options.title || 'הפעולה הצליחה';
+    const body = options.body || 'אפשר להמשיך לשלב הבא.';
+    const primaryLabel = options.primaryLabel || 'להמשיך ללומדה';
+    const primaryHref = options.primaryHref || 'space.html';
+    const secondaryLabel = options.secondaryLabel || 'האזור שלי';
+    const secondaryHref = options.secondaryHref || 'account.html';
+    const notice = document.createElement('section');
+    notice.id = 'success-notice';
+    notice.className = 'success-notice';
+    notice.setAttribute('role', 'dialog');
+    notice.setAttribute('aria-modal', 'true');
+    notice.setAttribute('aria-labelledby', 'success-notice-title');
+    notice.innerHTML = `
+      <div class="success-notice-card">
+        <span class="success-notice-icon" aria-hidden="true">✓</span>
+        <h2 id="success-notice-title">${escapeHtml(title)}</h2>
+        <p>${escapeHtml(body)}</p>
+        <div class="success-notice-actions">
+          <a class="btn primary" href="${escapeHtml(primaryHref)}">${escapeHtml(primaryLabel)}</a>
+          <a class="btn light" href="${escapeHtml(secondaryHref)}">${escapeHtml(secondaryLabel)}</a>
+          <button class="btn light" type="button" data-close-success-notice>סגירה</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(notice);
+    notice.querySelector('[data-close-success-notice]').addEventListener('click', clearSuccessNotice);
+    notice.addEventListener('click', (event) => {
+      if (event.target === notice) clearSuccessNotice();
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') clearSuccessNotice();
+    }, { once: true });
+    notice.querySelector('.btn.primary')?.focus();
+  }
+
+  function queueSuccessNotice(options) {
+    sessionStorage.setItem(NOTICE_KEY, JSON.stringify(options || {}));
+  }
+
+  function showQueuedSuccessNotice() {
+    const raw = sessionStorage.getItem(NOTICE_KEY);
+    if (!raw) return;
+    sessionStorage.removeItem(NOTICE_KEY);
+    try {
+      showSuccessNotice(JSON.parse(raw));
+    } catch {
+      showSuccessNotice();
+    }
+  }
+
+  function focusDashboard() {
+    if (!dashboard) return;
+    dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    dashboard.setAttribute('tabindex', '-1');
+    window.setTimeout(() => dashboard.focus({ preventScroll: true }), 250);
   }
 
   function saveToken(token) {
@@ -211,6 +276,7 @@
       statusBadge.classList.toggle('active', active);
     }
     renderCourseList(user, options);
+    focusDashboard();
     if (!isChild) {
       renderChildren(options.children || []);
       loadProgressSummary();
@@ -271,21 +337,31 @@
         }
         const data = await api(API_PATHS[action], payload);
         saveToken(data.token);
-        if (shouldGoDirectlyToSensiCity(data.user, data.child)) {
-          setMessage('נכנסת בהצלחה. מעבירים אותך לסנסי בעיר החכמה…', 'ok');
-          location.href = 'smart-city.html';
-          return;
-        }
-        setMessage(action === 'register' ? 'החשבון נוצר. מעבירים אותך לאזור האישי…' : 'נכנסת בהצלחה. מעבירים אותך לאזור האישי…', 'ok');
+        const isRegister = action === 'register';
+        const isChildLogin = action === 'child-login';
+        const sensiOnly = shouldGoDirectlyToSensiCity(data.user, data.child);
+        const notice = {
+          title: isRegister ? 'החשבון נוצר בהצלחה' : 'נכנסת בהצלחה',
+          body: sensiOnly
+            ? 'האזור האישי נפתח עכשיו. הגישה שלך פתוחה לסנסי בעיר החכמה, ואפשר להמשיך לשיעורים מהכפתור כאן.'
+            : isRegister
+              ? 'האזור האישי נפתח עכשיו. אפשר להתחיל בלומדות הפתוחות או לראות את קוד הילד בהמשך הדף.'
+              : isChildLogin
+                ? 'הלומדות הפתוחות עבורך מוצגות עכשיו. אפשר להתחיל ללמוד מיד.'
+                : 'האזור האישי נפתח עכשיו. אפשר לבחור לומדה או לבדוק את התקדמות הילדים.',
+          primaryLabel: sensiOnly ? 'כניסה לסנסי בעיר החכמה' : 'להמשיך ללומדה',
+          primaryHref: sensiOnly ? 'smart-city.html' : 'space.html',
+          secondaryLabel: 'האזור שלי',
+          secondaryHref: 'account.html',
+        };
+        queueSuccessNotice(notice);
+        setMessage(isRegister ? 'החשבון נוצר. מעבירים אותך לאזור האישי…' : 'נכנסת בהצלחה. מעבירים אותך לאזור האישי…', 'ok');
         if (!location.pathname.endsWith('/account.html')) {
-          if (shouldGoDirectlyToSensiCity(data.user, data.child)) {
-            location.href = 'smart-city.html';
-            return;
-          }
           location.href = 'account.html';
           return;
         }
         renderUser(data.user, data);
+        showQueuedSuccessNotice();
       } catch (error) {
         setMessage(error.message, 'error');
       } finally {
@@ -339,6 +415,7 @@
           return;
         }
         renderUser(data.user, data);
+        showQueuedSuccessNotice();
       })
       .catch(() => clearToken());
   }
