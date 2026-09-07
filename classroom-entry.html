@@ -65,6 +65,16 @@
           </label>
           <button class="button primary" type="submit">כניסה לכיתה</button>
         </form>
+        <button class="text-button" type="button" data-toggle-recovery="student-code-request">שכחתי קוד אישי</button>
+        <form class="recovery-form" id="student-code-request" hidden>
+          <label>קוד כיתה
+            <input name="classCode" inputmode="text" autocomplete="organization" maxlength="6" required>
+          </label>
+          <label>שם תלמיד/ה
+            <input name="studentName" autocomplete="name" required>
+          </label>
+          <button class="button quiet" type="submit">שליחת בקשה למורה</button>
+        </form>
         <p class="message" id="student-login-message" aria-live="polite"></p>
         <div class="signed-in" id="student-session" hidden>
           <strong id="student-welcome"></strong>

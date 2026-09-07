@@ -49,6 +49,7 @@ input:focus { outline: 3px solid rgba(79,70,229,.2); border-color: var(--primary
 .eye-icon { width: 22px; height: 22px; display: block; background: currentColor; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E") center/contain no-repeat; }
 .password-toggle[aria-pressed="true"] .eye-icon { mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.7 5.1A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-3.2 4.2'/%3E%3Cpath d='M6.6 6.6C3.6 8.6 2 12 2 12s3.5 7 10 7a10.7 10.7 0 0 0 5.4-1.5'/%3E%3Cpath d='M14.1 14.1A3 3 0 0 1 9.9 9.9'/%3E%3Cpath d='m2 2 20 20'/%3E%3C/svg%3E") center/contain no-repeat; }
 .button { min-height: 46px; padding: 11px 18px; border: 0; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; font: inherit; font-weight: 850; cursor: pointer; }
+.text-button { width: max-content; max-width: 100%; border: 0; background: transparent; color: var(--primary-dark); font: inherit; font-weight: 850; text-decoration: underline; cursor: pointer; padding: 0; }
 .primary { color: #fff; background: var(--primary); }
 .primary:hover { background: var(--primary-dark); }
 .secondary { color: #fff; background: var(--secondary); }
@@ -86,6 +87,9 @@ input:focus { outline: 3px solid rgba(79,70,229,.2); border-color: var(--primary
 .student-list li small { margin-top: 4px; color: var(--muted); }
 .add-student-form { display: grid; grid-template-columns: 1fr auto; align-items: end; }
 .one-time-code { padding: 12px; border: 1px solid #86efac; border-radius: 12px; background: #f0fdf4; color: #14532d; }
+.recovery-panel { max-width: 720px; margin: 0 auto 24px; border-color: #c7d2fe; }
+.recovery-panel p { margin-top: 0; }
+.recovery-form, .recovery-panel form + form { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
 
 @media (max-width: 720px) {
   .shell { width: min(100% - 22px, 1120px); padding-top: 28px; }

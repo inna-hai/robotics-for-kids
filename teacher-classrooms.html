@@ -46,6 +46,7 @@
           </span>
         </label>
         <button class="button primary" type="submit">כניסה</button>
+        <button class="text-button" type="button" data-toggle-recovery="teacher-recovery">שכחתי סיסמה</button>
       </form>
 
       <form class="card" id="teacher-register-form">
@@ -67,6 +68,27 @@
         <button class="button secondary" type="submit">יצירת חשבון</button>
       </form>
       <p class="message wide" id="teacher-auth-message" aria-live="polite"></p>
+    </section>
+
+    <section class="card recovery-panel" id="teacher-recovery" hidden>
+      <h2>איפוס סיסמת מורה</h2>
+      <p>נשלח קוד אימות למייל שאיתו המורה רשומה במערכת. אחרי קבלת הקוד אפשר לבחור סיסמה חדשה.</p>
+      <form id="teacher-forgot-form">
+        <label>מייל מורה<input name="email" type="email" autocomplete="email" required></label>
+        <button class="button quiet" type="submit">שליחת קוד למייל</button>
+      </form>
+      <form id="teacher-reset-form">
+        <label>מייל מורה<input name="email" type="email" autocomplete="email" required></label>
+        <label>קוד אימות<input name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required></label>
+        <label>סיסמה חדשה
+          <span class="password-wrap">
+            <input id="teacher-reset-password" name="password" type="password" autocomplete="new-password" minlength="10" required>
+            <button class="password-toggle" type="button" data-toggle-password="teacher-reset-password" aria-label="הצגת סיסמה"><span class="eye-icon" aria-hidden="true"></span></button>
+          </span>
+        </label>
+        <button class="button secondary" type="submit">עדכון סיסמה</button>
+      </form>
+      <p class="message" id="teacher-recovery-message" aria-live="polite"></p>
     </section>
 
     <section id="teacher-dashboard" hidden>

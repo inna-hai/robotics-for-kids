@@ -44,8 +44,30 @@
           </span>
         </label>
         <button class="button primary" type="submit">כניסה</button>
+        <button class="text-button" type="button" data-toggle-recovery="admin-recovery">שכחתי סיסמה</button>
       </form>
       <p class="message" id="admin-auth-message" aria-live="polite"></p>
+    </section>
+
+    <section class="card recovery-panel" id="admin-recovery" hidden>
+      <h2>איפוס סיסמת מנהלת</h2>
+      <p>נשלח קוד אימות למייל המנהלת שמוגדר במערכת. אחרי קבלת הקוד אפשר לבחור סיסמת כניסה חדשה.</p>
+      <form id="admin-forgot-form">
+        <label>מייל מנהלת<input name="email" type="email" autocomplete="email" required></label>
+        <button class="button quiet" type="submit">שליחת קוד למייל</button>
+      </form>
+      <form id="admin-reset-form">
+        <label>מייל מנהלת<input name="email" type="email" autocomplete="email" required></label>
+        <label>קוד אימות<input name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required></label>
+        <label>סיסמה חדשה
+          <span class="password-wrap">
+            <input id="admin-reset-password" name="password" type="password" autocomplete="new-password" minlength="10" required>
+            <button class="password-toggle" type="button" data-toggle-password="admin-reset-password" aria-label="הצגת סיסמה"><span class="eye-icon" aria-hidden="true"></span></button>
+          </span>
+        </label>
+        <button class="button secondary" type="submit">עדכון סיסמה</button>
+      </form>
+      <p class="message" id="admin-recovery-message" aria-live="polite"></p>
     </section>
 
     <section id="admin-dashboard" hidden>

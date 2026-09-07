@@ -77,6 +77,15 @@
     });
   }
 
+  function initRecoveryToggles() {
+    document.querySelectorAll('[data-toggle-recovery]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const panel = document.getElementById(button.dataset.toggleRecovery);
+        if (panel) panel.hidden = !panel.hidden;
+      });
+    });
+  }
+
   async function initEntry() {
     const requested = requestedCourse();
     const next = requested || nextCourse();
@@ -93,6 +102,7 @@
     const session = document.getElementById('student-session');
     const welcome = document.getElementById('student-welcome');
     const studentLogout = document.getElementById('student-logout');
+    const codeRequestForm = document.getElementById('student-code-request');
 
     guest.addEventListener('click', async (event) => {
       event.preventDefault();
@@ -163,6 +173,20 @@
         setMessage(message, error.message);
       }
     });
+
+    if (codeRequestForm) {
+      codeRequestForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        setMessage(message, 'שולחים בקשה למורה…');
+        try {
+          await api('/api/classroom/student-code-request', formData(codeRequestForm));
+          codeRequestForm.reset();
+          setMessage(message, 'אם הפרטים נמצאו במערכת, נשלחה בקשה למורה לשלוח לך את הקוד.', true);
+        } catch (error) {
+          setMessage(message, error.message);
+        }
+      });
+    }
 
     studentLogout.addEventListener('click', async () => {
       setMessage(message, 'מתנתקים…');
@@ -481,6 +505,29 @@
       event.preventDefault();
       submitAuth(event.currentTarget, '/api/classroom/teacher-register');
     });
+    document.getElementById('teacher-forgot-form')?.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const recoveryMessage = document.getElementById('teacher-recovery-message');
+      setMessage(recoveryMessage, 'שולחים קוד אימות למייל…');
+      try {
+        await api('/api/classroom/forgot-password', { role: 'teacher', ...formData(event.currentTarget) });
+        setMessage(recoveryMessage, 'אם המייל רשום במערכת, נשלח אליו קוד אימות.', true);
+      } catch (error) {
+        setMessage(recoveryMessage, error.message);
+      }
+    });
+    document.getElementById('teacher-reset-form')?.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const recoveryMessage = document.getElementById('teacher-recovery-message');
+      setMessage(recoveryMessage, 'מאמתים קוד ומעדכנים סיסמה…');
+      try {
+        await api('/api/classroom/reset-password', { role: 'teacher', ...formData(event.currentTarget) });
+        event.currentTarget.reset();
+        setMessage(recoveryMessage, 'הסיסמה עודכנה. אפשר להיכנס מחדש עם הסיסמה החדשה.', true);
+      } catch (error) {
+        setMessage(recoveryMessage, error.message);
+      }
+    });
     document.getElementById('create-class-form').addEventListener('submit', async (event) => {
       event.preventDefault();
       const classForm = event.currentTarget;
@@ -510,4 +557,5 @@
   if (page === 'entry') initEntry();
   if (page === 'teacher') initTeacher();
   initPasswordToggles();
+  initRecoveryToggles();
 })();

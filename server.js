@@ -3,6 +3,8 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const net = require('net');
+const tls = require('tls');
 const Database = require('better-sqlite3');
 
 const ROOT = __dirname;
@@ -28,6 +30,14 @@ const CLASSROOM_LOGIN_MAX_KEYS = Number.isInteger(configuredClassroomLoginMaxKey
 const classroomLoginFailures = new Map();
 const CLASSROOM_TEACHER_INVITE_CODE = String(process.env.ROBOTICS_TEACHER_INVITE_CODE || '');
 const CLASSROOM_ADMIN_CODE = String(process.env.ROBOTICS_CLASSROOM_ADMIN_CODE || '');
+const CLASSROOM_ADMIN_EMAIL = cleanEmail(process.env.ROBOTICS_CLASSROOM_ADMIN_EMAIL || process.env.ROBOTICS_ADMIN_EMAIL || '');
+const MAIL_FROM = String(process.env.ROBOTICS_MAIL_FROM || process.env.SMTP_FROM || process.env.GMAIL_USER || process.env.SMTP_USER || '');
+const SMTP_HOST = String(process.env.ROBOTICS_SMTP_HOST || process.env.SMTP_HOST || (process.env.GMAIL_USER ? 'smtp.gmail.com' : ''));
+const SMTP_PORT = Number(process.env.ROBOTICS_SMTP_PORT || process.env.SMTP_PORT || (SMTP_HOST ? 465 : 0));
+const SMTP_USER = String(process.env.ROBOTICS_SMTP_USER || process.env.SMTP_USER || process.env.GMAIL_USER || '');
+const SMTP_PASS = String(process.env.ROBOTICS_SMTP_PASS || process.env.SMTP_PASS || process.env.GMAIL_PASS || '');
+const SMTP_SECURE = String(process.env.ROBOTICS_SMTP_SECURE || process.env.SMTP_SECURE || (SMTP_PORT === 465 ? '1' : '')) !== '0';
+const PASSWORD_RESET_TTL_MS = 15 * 60 * 1000;
 const KUGEL_MONITOR_API_URL = String(process.env.KUGEL_MONITOR_API_URL || '').replace(/\/+$/, '');
 const KUGEL_MONITOR_SERVER_NAME = String(process.env.KUGEL_MONITOR_SERVER_NAME || '');
 const KUGEL_MINECRAFT_INTERNAL_TOKEN = String(process.env.KUGEL_MINECRAFT_INTERNAL_TOKEN || '');
@@ -247,6 +257,24 @@ function openSummerDb() {
       revoked_at TEXT
     );
 
+    CREATE TABLE IF NOT EXISTS classroom_admin_credentials (
+      id TEXT PRIMARY KEY CHECK (id = 'default'),
+      code_salt TEXT NOT NULL,
+      code_hash TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS classroom_password_resets (
+      id TEXT PRIMARY KEY,
+      role TEXT NOT NULL CHECK (role IN ('admin', 'teacher')),
+      identifier TEXT NOT NULL,
+      target_id TEXT NOT NULL,
+      code_hash TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      expires_at TEXT NOT NULL,
+      used_at TEXT
+    );
+
     CREATE TABLE IF NOT EXISTS classroom_migrations (
       migration_key TEXT PRIMARY KEY,
       applied_at TEXT NOT NULL
@@ -338,6 +366,7 @@ function openSummerDb() {
     CREATE INDEX IF NOT EXISTS idx_classroom_teachers_email ON classroom_teachers(email);
     CREATE INDEX IF NOT EXISTS idx_classroom_teacher_sessions_token ON classroom_teacher_sessions(token_hash);
     CREATE INDEX IF NOT EXISTS idx_classroom_admin_sessions_token ON classroom_admin_sessions(token_hash);
+    CREATE INDEX IF NOT EXISTS idx_classroom_password_resets_lookup ON classroom_password_resets(role, identifier, expires_at);
     CREATE INDEX IF NOT EXISTS idx_teacher_courses_teacher ON teacher_courses(teacher_id);
     CREATE INDEX IF NOT EXISTS idx_classrooms_teacher ON classrooms(teacher_id);
     CREATE INDEX IF NOT EXISTS idx_classrooms_join_code ON classrooms(join_code);
@@ -500,6 +529,102 @@ function migrateSummerUsersJson(db) {
 
 function cleanEmail(value) {
   return String(value || '').trim().toLowerCase().slice(0, 180);
+}
+
+function emailLooksValid(value) {
+  return /^\S+@\S+\.\S+$/.test(cleanEmail(value));
+}
+
+function emailDeliveryConfigured() {
+  return Boolean(MAIL_FROM && SMTP_HOST && SMTP_PORT);
+}
+
+function smtpLine(socket, line) {
+  socket.write(`${line}\r\n`);
+}
+
+function readSmtpResponse(socket) {
+  return new Promise((resolve, reject) => {
+    let buffer = '';
+    const timer = setTimeout(() => {
+      cleanup();
+      reject(new Error('SMTP timeout'));
+    }, 15000);
+    function cleanup() {
+      clearTimeout(timer);
+      socket.off('data', onData);
+      socket.off('error', onError);
+    }
+    function onError(error) {
+      cleanup();
+      reject(error);
+    }
+    function onData(chunk) {
+      buffer += chunk.toString('utf8');
+      const lines = buffer.split(/\r?\n/).filter(Boolean);
+      const last = lines[lines.length - 1] || '';
+      if (/^\d{3} /.test(last)) {
+        cleanup();
+        resolve({ code: Number(last.slice(0, 3)), text: buffer });
+      }
+    }
+    socket.on('data', onData);
+    socket.on('error', onError);
+  });
+}
+
+async function expectSmtp(socket, line, acceptedCodes) {
+  if (line) smtpLine(socket, line);
+  const response = await readSmtpResponse(socket);
+  if (!acceptedCodes.includes(response.code)) throw new Error(`SMTP rejected command with ${response.code}`);
+  return response;
+}
+
+async function sendEmail({ to, subject, text }) {
+  const recipient = cleanEmail(to);
+  if (!emailLooksValid(recipient) || !MAIL_FROM || !SMTP_HOST || !SMTP_PORT) {
+    throw new Error('שליחת מייל אינה מוגדרת כרגע.');
+  }
+  const from = MAIL_FROM.includes('<') ? MAIL_FROM : `<${MAIL_FROM}>`;
+  const body = [
+    `From: ${from}`,
+    `To: <${recipient}>`,
+    `Subject: =?UTF-8?B?${Buffer.from(subject, 'utf8').toString('base64')}?=`,
+    'MIME-Version: 1.0',
+    'Content-Type: text/plain; charset=UTF-8',
+    'Content-Transfer-Encoding: 8bit',
+    '',
+    text,
+  ].join('\r\n');
+
+  let socket = await new Promise((resolve, reject) => {
+    const connection = SMTP_SECURE
+      ? tls.connect({ host: SMTP_HOST, port: SMTP_PORT, servername: SMTP_HOST }, () => resolve(connection))
+      : net.connect({ host: SMTP_HOST, port: SMTP_PORT }, () => resolve(connection));
+    connection.setTimeout(20000, () => reject(new Error('SMTP connection timeout')));
+    connection.once('error', reject);
+  });
+  try {
+    await expectSmtp(socket, '', [220]);
+    await expectSmtp(socket, `EHLO ${SMTP_HOST}`, [250]);
+    if (!SMTP_SECURE) {
+      await expectSmtp(socket, 'STARTTLS', [220]);
+      socket = tls.connect({ socket, servername: SMTP_HOST });
+      await expectSmtp(socket, `EHLO ${SMTP_HOST}`, [250]);
+    }
+    if (SMTP_USER && SMTP_PASS) {
+      await expectSmtp(socket, 'AUTH LOGIN', [334]);
+      await expectSmtp(socket, Buffer.from(SMTP_USER).toString('base64'), [334]);
+      await expectSmtp(socket, Buffer.from(SMTP_PASS).toString('base64'), [235]);
+    }
+    await expectSmtp(socket, `MAIL FROM:<${MAIL_FROM.replace(/^.*<|>.*$/g, '')}>`, [250]);
+    await expectSmtp(socket, `RCPT TO:<${recipient}>`, [250, 251]);
+    await expectSmtp(socket, 'DATA', [354]);
+    await expectSmtp(socket, `${body}\r\n.`, [250]);
+    await expectSmtp(socket, 'QUIT', [221]);
+  } finally {
+    socket.destroy();
+  }
 }
 
 function cleanAccessCode(value) {
@@ -1148,10 +1273,59 @@ function classroomInviteMatches(value) {
 }
 
 function classroomAdminCodeMatches(value) {
-  if (!CLASSROOM_ADMIN_CODE) return false;
-  const provided = crypto.createHash('sha256').update(String(value || '')).digest();
-  const expected = crypto.createHash('sha256').update(CLASSROOM_ADMIN_CODE).digest();
-  return crypto.timingSafeEqual(provided, expected);
+  const raw = String(value || '');
+  if (CLASSROOM_ADMIN_CODE) {
+    const provided = crypto.createHash('sha256').update(raw).digest();
+    const expected = crypto.createHash('sha256').update(CLASSROOM_ADMIN_CODE).digest();
+    if (provided.length === expected.length && crypto.timingSafeEqual(provided, expected)) return true;
+  }
+  return withSummerDb(db => {
+    const credential = db.prepare('SELECT code_salt, code_hash FROM classroom_admin_credentials WHERE id = ?').get('default');
+    if (!credential) return false;
+    const provided = Buffer.from(hashClassroomSecret(raw, credential.code_salt), 'hex');
+    const expected = Buffer.from(credential.code_hash, 'hex');
+    return provided.length === expected.length && crypto.timingSafeEqual(provided, expected);
+  });
+}
+
+function createPasswordReset(db, role, identifier, targetId) {
+  const now = new Date();
+  const code = crypto.randomInt(100000, 1000000).toString();
+  db.prepare(`
+    INSERT INTO classroom_password_resets (id, role, identifier, target_id, code_hash, created_at, expires_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    crypto.randomUUID(),
+    role,
+    identifier,
+    targetId,
+    tokenHash(`${role}:${identifier}:${code}`),
+    now.toISOString(),
+    new Date(now.getTime() + PASSWORD_RESET_TTL_MS).toISOString(),
+  );
+  return code;
+}
+
+function consumePasswordReset(db, role, identifier, code) {
+  const now = new Date().toISOString();
+  const reset = db.prepare(`
+    SELECT * FROM classroom_password_resets
+    WHERE role = ? AND identifier = ? AND used_at IS NULL AND expires_at > ?
+    ORDER BY created_at DESC LIMIT 1
+  `).get(role, identifier, now);
+  if (!reset || reset.code_hash !== tokenHash(`${role}:${identifier}:${String(code || '').trim()}`)) return null;
+  db.prepare('UPDATE classroom_password_resets SET used_at = ? WHERE id = ?').run(now, reset.id);
+  return reset;
+}
+
+function setClassroomAdminCredential(db, code) {
+  const now = new Date().toISOString();
+  const salt = crypto.randomBytes(16).toString('hex');
+  db.prepare(`
+    INSERT INTO classroom_admin_credentials (id, code_salt, code_hash, updated_at)
+    VALUES ('default', ?, ?, ?)
+    ON CONFLICT(id) DO UPDATE SET code_salt = excluded.code_salt, code_hash = excluded.code_hash, updated_at = excluded.updated_at
+  `).run(salt, hashClassroomSecret(code, salt), now);
 }
 
 function classroomLoginKey(req, role, identifier) {
@@ -2078,8 +2252,91 @@ async function handleClassroomApi(req, res) {
 
   try {
     const body = JSON.parse(await readBody(req, 64 * 1024) || '{}');
+    if (action === 'forgot-password') {
+      const role = String(body.role || '').trim();
+      const email = cleanEmail(body.email);
+      if (!['admin', 'teacher'].includes(role)) return send(res, 400, JSON.stringify({ error: 'סוג המשתמש אינו תקין.' }));
+      if (!emailLooksValid(email)) return send(res, 400, JSON.stringify({ error: 'כתובת המייל לא תקינה.' }));
+      if (!emailDeliveryConfigured()) return send(res, 503, JSON.stringify({ error: 'שליחת מייל אינה מוגדרת כרגע.' }));
+      if (role === 'admin') {
+        if (!CLASSROOM_ADMIN_EMAIL) return send(res, 503, JSON.stringify({ error: 'איפוס מנהלת לא מוגדר כרגע.' }));
+        if (email === CLASSROOM_ADMIN_EMAIL) {
+          const code = withSummerDb(db => createPasswordReset(db, 'admin', email, 'default'));
+          await sendEmail({
+            to: email,
+            subject: 'קוד איפוס למנהלת hai.tech',
+            text: `קוד האימות שלך לאיפוס כניסת מנהלת הוא: ${code}\n\nהקוד תקף ל-15 דקות. אם לא ביקשת איפוס, אפשר להתעלם מהמייל הזה.`,
+          });
+        }
+        return send(res, 200, JSON.stringify({ ok: true, message: 'אם המייל רשום במערכת, נשלח אליו קוד אימות.' }));
+      }
+      const teacher = withSummerDb(db => db.prepare('SELECT id, name, email FROM classroom_teachers WHERE email = ?').get(email));
+      if (teacher) {
+        const code = withSummerDb(db => createPasswordReset(db, 'teacher', email, teacher.id));
+        await sendEmail({
+          to: teacher.email,
+          subject: 'קוד איפוס סיסמת מורה hai.tech',
+          text: `שלום ${teacher.name},\n\nקוד האימות שלך לאיפוס סיסמת המורה הוא: ${code}\n\nהקוד תקף ל-15 דקות. אם לא ביקשת איפוס, אפשר להתעלם מהמייל הזה.`,
+        });
+      }
+      return send(res, 200, JSON.stringify({ ok: true, message: 'אם המייל רשום במערכת, נשלח אליו קוד אימות.' }));
+    }
+
+    if (action === 'reset-password') {
+      const role = String(body.role || '').trim();
+      const email = cleanEmail(body.email);
+      const code = String(body.code || '').trim();
+      const password = String(body.password || '');
+      if (!['admin', 'teacher'].includes(role)) return send(res, 400, JSON.stringify({ error: 'סוג המשתמש אינו תקין.' }));
+      if (!emailLooksValid(email)) return send(res, 400, JSON.stringify({ error: 'כתובת המייל לא תקינה.' }));
+      if (!/^\d{6}$/.test(code)) return send(res, 400, JSON.stringify({ error: 'קוד האימות צריך להכיל 6 ספרות.' }));
+      if (password.length < 10) return send(res, 400, JSON.stringify({ error: 'הסיסמה החדשה צריכה להכיל לפחות 10 תווים.' }));
+      const result = withSummerDb(db => db.transaction(() => {
+        const reset = consumePasswordReset(db, role, email, code);
+        if (!reset) return null;
+        const now = new Date().toISOString();
+        const salt = crypto.randomBytes(16).toString('hex');
+        if (role === 'admin') {
+          if (reset.target_id !== 'default' || email !== CLASSROOM_ADMIN_EMAIL) return null;
+          setClassroomAdminCredential(db, password);
+          db.prepare('UPDATE classroom_admin_sessions SET revoked_at = ? WHERE revoked_at IS NULL').run(now);
+          return { role };
+        }
+        const teacher = db.prepare('SELECT id, name, email FROM classroom_teachers WHERE id = ? AND email = ?').get(reset.target_id, email);
+        if (!teacher) return null;
+        db.prepare('UPDATE classroom_teachers SET password_salt = ?, password_hash = ?, updated_at = ? WHERE id = ?')
+          .run(salt, hashClassroomSecret(password, salt), now, teacher.id);
+        db.prepare('UPDATE classroom_teacher_sessions SET revoked_at = ? WHERE teacher_id = ? AND revoked_at IS NULL').run(now, teacher.id);
+        return { role, teacher };
+      })());
+      if (!result) return send(res, 400, JSON.stringify({ error: 'קוד האימות לא תקין או שפג תוקפו.' }));
+      return send(res, 200, JSON.stringify({ ok: true, message: 'הסיסמה עודכנה. אפשר להיכנס מחדש.' }));
+    }
+
+    if (action === 'student-code-request') {
+      const classCode = cleanAccessCode(body.classCode);
+      const studentName = cleanText(body.studentName, 80);
+      if (!classCode || studentName.length < 2) return send(res, 400, JSON.stringify({ error: 'נא למלא קוד כיתה ושם תלמיד/ה.' }));
+      if (!emailDeliveryConfigured()) return send(res, 503, JSON.stringify({ error: 'שליחת מייל אינה מוגדרת כרגע.' }));
+      const context = withSummerDb(db => db.prepare(`
+        SELECT s.id, s.name AS student_name, c.name AS classroom_name, c.join_code, t.name AS teacher_name, t.email AS teacher_email
+        FROM classroom_students s
+        JOIN classrooms c ON c.id = s.classroom_id
+        JOIN classroom_teachers t ON t.id = c.teacher_id
+        WHERE c.join_code = ? AND lower(s.name) = lower(?)
+        LIMIT 1
+      `).get(classCode, studentName));
+      if (context) {
+        await sendEmail({
+          to: context.teacher_email,
+          subject: `בקשת קוד כניסה מתלמיד/ה בכיתה ${context.classroom_name}`,
+          text: `שלום ${context.teacher_name},\n\n${context.student_name} ביקש/ה לקבל שוב את קוד הכניסה האישי לכיתה ${context.classroom_name}.\nקוד הכיתה: ${context.join_code}\n\nהקוד האישי הקיים אינו מוצג במערכת מטעמי אבטחה. אם הוא שמור אצלך בקובץ התלמידים, אפשר להעביר אותו לתלמיד/ה. אם לא, אפשר להיכנס למסך המורה וללחוץ על "יצירת קודי כניסה חדשים לקובץ".\n\nהודעה זו נשלחה אוטומטית ממערכת hai.tech.`,
+        });
+      }
+      return send(res, 200, JSON.stringify({ ok: true, message: 'אם נמצאה התאמה במערכת, נשלחה בקשה למורה.' }));
+    }
+
     if (action === 'admin-login') {
-      if (!CLASSROOM_ADMIN_CODE) return send(res, 503, JSON.stringify({ error: 'ניהול הרשאות המורים אינו זמין כרגע.' }));
       const loginKey = classroomLoginKey(req, 'classroom-admin', 'global');
       if (isClassroomLoginLimited(loginKey)) {
         return send(res, 429, JSON.stringify({ error: 'יותר מדי ניסיונות. נסו שוב בעוד כמה דקות.' }));
