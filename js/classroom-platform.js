@@ -385,6 +385,27 @@
       event.preventDefault();
       submitAuth(event.currentTarget, '/api/classroom/teacher-register');
     });
+    const previewDemoTeacher = document.getElementById('preview-demo-teacher');
+    if (previewDemoTeacher) {
+      api('/api/classroom/preview-demo-teacher-enabled')
+        .then((data) => {
+          if (data.enabled) previewDemoTeacher.hidden = false;
+        })
+        .catch(() => {});
+      previewDemoTeacher.addEventListener('click', async () => {
+        setMessage(authMessage, 'פותחים מורה בדיקה…');
+        previewDemoTeacher.disabled = true;
+        try {
+          const data = await api('/api/classroom/preview-demo-teacher-login', {});
+          setMessage(authMessage, '', true);
+          await showDashboard(data);
+        } catch (error) {
+          setMessage(authMessage, error.message);
+        } finally {
+          previewDemoTeacher.disabled = false;
+        }
+      });
+    }
     document.getElementById('create-class-form').addEventListener('submit', async (event) => {
       event.preventDefault();
       const classForm = event.currentTarget;
