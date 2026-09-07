@@ -44,7 +44,10 @@
             <input name="classCode" inputmode="text" autocomplete="organization" maxlength="6" required>
           </label>
           <label>קוד אישי
-            <input name="personalCode" type="password" inputmode="text" autocomplete="current-password" maxlength="6" required>
+            <span class="password-wrap">
+              <input id="student-personal-code" name="personalCode" type="password" inputmode="text" autocomplete="current-password" maxlength="6" required>
+              <button class="password-toggle" type="button" data-toggle-password="student-personal-code" aria-label="הצגת קוד אישי"><span class="eye-icon" aria-hidden="true"></span></button>
+            </span>
           </label>
           <button class="button primary" type="submit">כניסה לכיתה</button>
         </form>

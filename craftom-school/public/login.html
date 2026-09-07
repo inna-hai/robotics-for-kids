@@ -26,7 +26,10 @@
       <label>אימייל</label>
       <input id="email" type="email" autocomplete="username" required>
       <label>סיסמה</label>
-      <input id="password" type="password" autocomplete="current-password" required>
+      <div class="password-wrap">
+        <input id="password" type="password" autocomplete="current-password" required>
+        <button class="password-toggle" type="button" data-toggle-password="password" aria-label="הצגת סיסמה"><span class="eye-icon" aria-hidden="true"></span></button>
+      </div>
       <button class="btn full" id="btn">כניסה</button>
       <div class="msg" id="msg"></div>
       <p class="small">אין חשבון? <a href="/register.html">הרשמה</a></p>

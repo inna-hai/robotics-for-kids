@@ -24,7 +24,12 @@
       <form class="card" id="teacher-login-form">
         <h2>כניסת מורה</h2>
         <label>מייל<input name="email" type="email" autocomplete="email" required></label>
-        <label>סיסמה<input name="password" type="password" autocomplete="current-password" minlength="10" required></label>
+        <label>סיסמה
+          <span class="password-wrap">
+            <input id="teacher-login-password" name="password" type="password" autocomplete="current-password" minlength="10" required>
+            <button class="password-toggle" type="button" data-toggle-password="teacher-login-password" aria-label="הצגת סיסמה"><span class="eye-icon" aria-hidden="true"></span></button>
+          </span>
+        </label>
         <button class="button primary" type="submit">כניסה</button>
       </form>
 
@@ -32,8 +37,18 @@
         <h2>פתיחת חשבון מורה</h2>
         <label>שם מלא<input name="name" autocomplete="name" required></label>
         <label>מייל<input name="email" type="email" autocomplete="email" required></label>
-        <label>סיסמה<input name="password" type="password" autocomplete="new-password" minlength="10" required></label>
-        <label>קוד הזמנה למורה<input name="inviteCode" type="password" autocomplete="off" required></label>
+        <label>סיסמה
+          <span class="password-wrap">
+            <input id="teacher-register-password" name="password" type="password" autocomplete="new-password" minlength="10" required>
+            <button class="password-toggle" type="button" data-toggle-password="teacher-register-password" aria-label="הצגת סיסמה"><span class="eye-icon" aria-hidden="true"></span></button>
+          </span>
+        </label>
+        <label>קוד הזמנה למורה
+          <span class="password-wrap">
+            <input id="teacher-invite-code" name="inviteCode" type="password" autocomplete="off" required>
+            <button class="password-toggle" type="button" data-toggle-password="teacher-invite-code" aria-label="הצגת קוד הזמנה"><span class="eye-icon" aria-hidden="true"></span></button>
+          </span>
+        </label>
         <button class="button secondary" type="submit">יצירת חשבון</button>
       </form>
       <p class="message wide" id="teacher-auth-message" aria-live="polite"></p>

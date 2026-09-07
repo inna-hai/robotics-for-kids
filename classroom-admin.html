@@ -23,7 +23,12 @@
     <section id="admin-auth">
       <form class="card" id="admin-login-form">
         <h2>כניסת מנהלת</h2>
-        <label>קוד מנהלת<input name="code" type="password" autocomplete="current-password" required></label>
+        <label>קוד מנהלת
+          <span class="password-wrap">
+            <input id="admin-code" name="code" type="password" autocomplete="current-password" required>
+            <button class="password-toggle" type="button" data-toggle-password="admin-code" aria-label="הצגת קוד מנהלת"><span class="eye-icon" aria-hidden="true"></span></button>
+          </span>
+        </label>
         <button class="button primary" type="submit">כניסה</button>
       </form>
       <p class="message" id="admin-auth-message" aria-live="polite"></p>
