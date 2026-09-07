@@ -88,7 +88,10 @@ body.classroom-student-signed-in .choice-grid { grid-template-columns: minmax(0,
 .course-access-form { display: grid; gap: 10px; }
 .classes-list { display: grid; gap: 20px; margin-top: 24px; }
 .class-card { padding: 22px; border-radius: 20px; background: #fff; border: 1px solid var(--line); }
-.class-top { display: flex; justify-content: space-between; gap: 16px; align-items: start; }
+.class-top { display: grid; gap: 10px; align-items: start; }
+.class-top h3 { margin-bottom: 6px; }
+.class-code-line { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0; }
+.class-code-line span { color: var(--muted); font-weight: 850; }
 .code { display: inline-block; padding: 8px 11px; direction: ltr; border-radius: 10px; background: #f1f5f9; font: 800 1rem ui-monospace, monospace; letter-spacing: .08em; }
 .student-list { display: grid; gap: 8px; margin: 16px 0; padding: 0; list-style: none; }
 .student-list li { padding: 10px 12px; border-radius: 10px; background: #f8fafc; }

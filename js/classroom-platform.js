@@ -260,9 +260,10 @@
       card.dataset.classId = classroom.id;
       const top = element('div', undefined, 'class-top');
       const titleBox = element('div');
-      titleBox.append(element('h3', classroom.name), element('p', 'קוד הכיתה לתלמידים:'));
-      const code = element('strong', classroom.joinCode, 'code');
-      top.append(titleBox, code);
+      const classCode = element('p', undefined, 'class-code-line');
+      classCode.append(element('span', 'קוד הכיתה לתלמידים:'), element('strong', classroom.joinCode, 'code'));
+      titleBox.append(element('h3', classroom.name), classCode);
+      top.append(titleBox);
 
       const courseAccess = element('section', undefined, 'class-courses');
       courseAccess.append(element('h4', 'הלומדות של הכיתה'));
