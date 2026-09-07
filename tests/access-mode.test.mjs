@@ -153,7 +153,7 @@ assert.match(entryHtml, /id="subscription-continue"/);
 assert.match(entryHtml, /מנוי אישי/);
 assert.match(entryHtml, /התנסות כאורח/);
 assert.match(entryHtml, /classroom-platform\.js\?v=20260907-tehila-fixes-1/);
-assert.match(read('teacher-classrooms.html'), /classroom-platform\.js\?v=20260907-tehila-fixes-1/);
+assert.match(read('teacher-classrooms.html'), /classroom-platform\.js\?v=20260907-tehila-fixes-2/);
 
 const classroomSession = read('js/classroom-session.js');
 assert.doesNotMatch(classroomSession, /showStudentBadge/, 'the unified access badge must be the only badge');

@@ -29,6 +29,7 @@ const classroomLoginFailures = new Map();
 const CLASSROOM_TEACHER_INVITE_CODE = String(process.env.ROBOTICS_TEACHER_INVITE_CODE || '');
 const CLASSROOM_ADMIN_CODE = String(process.env.ROBOTICS_CLASSROOM_ADMIN_CODE || '');
 const CLASSROOM_PREVIEW_DEMO_TEACHER = process.env.ROBOTICS_PREVIEW_DEMO_TEACHER === '1';
+const KUGEL_PREVIEW_MOCK_MINECRAFT = CLASSROOM_PREVIEW_DEMO_TEACHER && process.env.KUGEL_PREVIEW_MOCK_MINECRAFT === '1';
 const KUGEL_MONITOR_API_URL = String(process.env.KUGEL_MONITOR_API_URL || '').replace(/\/+$/, '');
 const KUGEL_MONITOR_SERVER_NAME = String(process.env.KUGEL_MONITOR_SERVER_NAME || '');
 const KUGEL_MINECRAFT_INTERNAL_TOKEN = String(process.env.KUGEL_MINECRAFT_INTERNAL_TOKEN || '');
@@ -1501,7 +1502,7 @@ function consumeKugelActionLimit(key, maxActions) {
 }
 
 function kugelMinecraftConfigured() {
-  return Boolean(
+  return KUGEL_PREVIEW_MOCK_MINECRAFT || Boolean(
     KUGEL_MONITOR_API_URL
     && KUGEL_MONITOR_SERVER_NAME
     && KUGEL_MINECRAFT_INTERNAL_TOKEN
@@ -1513,8 +1514,21 @@ function kugelMinecraftConfigured() {
   );
 }
 
+function kugelMonitorServerName() {
+  return KUGEL_PREVIEW_MOCK_MINECRAFT ? 'preview-mock-minecraft' : KUGEL_MONITOR_SERVER_NAME;
+}
+
 function kugelMinecraftInfo() {
   if (!kugelMinecraftConfigured()) return null;
+  if (KUGEL_PREVIEW_MOCK_MINECRAFT) {
+    return {
+      serverName: 'Preview Minecraft',
+      serverAddress: 'סביבת בדיקה בלבד',
+      serverId: 'preview-demo',
+      accessCode: 'preview-only',
+      launchUrl: '',
+    };
+  }
   return {
     serverName: KUGEL_MINECRAFT_SERVER_NAME,
     serverAddress: `${KUGEL_MINECRAFT_SERVER_HOST}:${KUGEL_MINECRAFT_SERVER_PORT}`,
@@ -1524,7 +1538,20 @@ function kugelMinecraftInfo() {
   };
 }
 
+function kugelMinecraftSetupNote() {
+  if (KUGEL_PREVIEW_MOCK_MINECRAFT) {
+    return 'מצב preview: אפשר לבדוק את זרימת שיעור 0 באתר, בלי להפעיל שרת Minecraft אמיתי.';
+  }
+  return kugelMinecraftConfigured()
+    ? ''
+    : 'חיבור Minecraft אינו מוגדר בשרת. יש להשלים הגדרות KUGEL_MONITOR ופרטי שרת Minecraft לפני הפעלת שיעור 0.';
+}
+
 async function kugelMonitorRequest(pathname, options = {}, timeoutMs = 15000) {
+  if (KUGEL_PREVIEW_MOCK_MINECRAFT) {
+    if (pathname.startsWith('/api/game-events')) return { events: [] };
+    return { ok: true, preview: true };
+  }
   if (!kugelMinecraftConfigured()) {
     const error = new Error('חיבור Minecraft אינו מוגדר בשרת.');
     error.statusCode = 503;
@@ -1566,7 +1593,7 @@ function serializeKugelMonitorMutation(serverName, task) {
 }
 
 function kugelMonitorMutation(pathname, options = {}, timeoutMs = 15000) {
-  return serializeKugelMonitorMutation(KUGEL_MONITOR_SERVER_NAME, () => kugelMonitorRequest(pathname, options, timeoutMs));
+  return serializeKugelMonitorMutation(kugelMonitorServerName(), () => kugelMonitorRequest(pathname, options, timeoutMs));
 }
 
 function kugelEventPayload(row) {
@@ -1753,7 +1780,8 @@ async function kugelClassView(context, role, useEventCache = true) {
       needsHelp: summaries.filter(student => student.startedAt && !student.completed && student.coins <= 1).length,
     },
     minecraftConfigured: kugelMinecraftConfigured(),
-    minecraftSetupNote: kugelMinecraftConfigured() ? '' : 'חיבור Minecraft אינו מוגדר בשרת. יש להשלים הגדרות KUGEL_MONITOR ופרטי שרת Minecraft לפני הפעלת שיעור 0.',
+    minecraftPreviewMode: KUGEL_PREVIEW_MOCK_MINECRAFT,
+    minecraftSetupNote: kugelMinecraftSetupNote(),
     minecraft: ownsRunningWorld ? kugelMinecraftInfo() : null,
   };
 }
@@ -1879,7 +1907,7 @@ async function handleKugelApi(req, res) {
             const activeOwner = db.prepare(`
               SELECT classroom_id FROM kugel_class_sessions
               WHERE active = 1 AND monitor_server_name = ? LIMIT 1
-            `).get(KUGEL_MONITOR_SERVER_NAME);
+            `).get(kugelMonitorServerName());
             if (activeOwner) return false;
             db.prepare(`
               INSERT INTO kugel_class_sessions (
@@ -1890,7 +1918,7 @@ async function handleKugelApi(req, res) {
                 lesson_id = 0, active = 1, monitor_server_name = excluded.monitor_server_name,
                 world_id = excluded.world_id, events_since = excluded.events_since, launch_token = excluded.launch_token,
                 server_state = 'starting', server_detail = excluded.server_detail, updated_at = excluded.updated_at
-            `).run(classroomId, KUGEL_MONITOR_SERVER_NAME, KUGEL_LESSON_ZERO.worldId, eventsSince, launchToken, 'מפעיל את עולם המבוך…', now, now);
+            `).run(classroomId, kugelMonitorServerName(), KUGEL_LESSON_ZERO.worldId, eventsSince, launchToken, 'מפעיל את עולם המבוך…', now, now);
             const students = db.prepare('SELECT id FROM classroom_students WHERE classroom_id = ?').all(classroomId);
             for (const student of students) upsertKugelRun(db, student.id, classroomId, { startedAt: null, resetAt: now, finishedAt: null });
             return true;
@@ -1903,7 +1931,7 @@ async function handleKugelApi(req, res) {
         try {
           await kugelMonitorMutation('/api/internal/craftom-school/world/open', {
             method: 'POST',
-            body: JSON.stringify({ server: KUGEL_MONITOR_SERVER_NAME, world: KUGEL_LESSON_ZERO.worldId, start_mode: 'reset' }),
+            body: JSON.stringify({ server: kugelMonitorServerName(), world: KUGEL_LESSON_ZERO.worldId, start_mode: 'reset' }),
           }, 130000);
           const activated = withSummerDb(db => db.prepare(`
             UPDATE kugel_class_sessions SET server_state = 'running', server_detail = ?, updated_at = ?
@@ -1912,7 +1940,7 @@ async function handleKugelApi(req, res) {
           if (!activated.changes) {
             await kugelMonitorMutation('/api/internal/craftom-school/live/freeze', {
               method: 'POST',
-              body: JSON.stringify({ server: KUGEL_MONITOR_SERVER_NAME, scope: 'all', target: '', on: true, mode: 'full', restore: 'adventure' }),
+              body: JSON.stringify({ server: kugelMonitorServerName(), scope: 'all', target: '', on: true, mode: 'full', restore: 'adventure' }),
             }).catch(error => console.error('kugel_stale_launch_freeze_error', { message: error.message }));
             return send(res, 409, JSON.stringify({ error: 'הפעלת העולם בוטלה משום שהשיעור שוחרר.' }));
           }
@@ -1924,7 +1952,7 @@ async function handleKugelApi(req, res) {
           if (!stopping.changes) return send(res, 409, JSON.stringify({ error: 'הפעלת העולם כבר בוטלה.' }));
           await kugelMonitorMutation('/api/internal/craftom-school/live/freeze', {
             method: 'POST',
-            body: JSON.stringify({ server: KUGEL_MONITOR_SERVER_NAME, scope: 'all', target: '', on: true, mode: 'full', restore: 'adventure' }),
+            body: JSON.stringify({ server: kugelMonitorServerName(), scope: 'all', target: '', on: true, mode: 'full', restore: 'adventure' }),
           });
           const released = withSummerDb(db => db.prepare(`
             UPDATE kugel_class_sessions SET active = 0, server_state = 'idle', server_detail = ?, updated_at = ?
@@ -1949,7 +1977,7 @@ async function handleKugelApi(req, res) {
         if (!stoppingLease) return send(res, 409, JSON.stringify({ error: 'אין שיעור פעיל לשחרור.' }));
         await kugelMonitorMutation('/api/internal/craftom-school/live/freeze', {
           method: 'POST',
-          body: JSON.stringify({ server: KUGEL_MONITOR_SERVER_NAME, scope: 'all', target: '', on: true, mode: 'full', restore: 'adventure' }),
+          body: JSON.stringify({ server: kugelMonitorServerName(), scope: 'all', target: '', on: true, mode: 'full', restore: 'adventure' }),
         });
         const released = withSummerDb(db => db.prepare(`
           UPDATE kugel_class_sessions SET active = 0, server_state = 'idle', server_detail = ?, updated_at = ?
@@ -1975,7 +2003,7 @@ async function handleKugelApi(req, res) {
           if (!linked) return send(res, 404, JSON.stringify({ error: 'השחקן אינו משויך לכיתה הזאת.' }));
         }
         const result = await kugelMonitorMutation('/api/internal/craftom-school/live/message', {
-          method: 'POST', body: JSON.stringify({ server: KUGEL_MONITOR_SERVER_NAME, text, scope, target }),
+          method: 'POST', body: JSON.stringify({ server: kugelMonitorServerName(), text, scope, target }),
         });
         return send(res, 200, JSON.stringify({ ok: true, result }));
       }
@@ -1993,7 +2021,7 @@ async function handleKugelApi(req, res) {
       }
       const result = await kugelMonitorMutation('/api/internal/craftom-school/live/freeze', {
         method: 'POST',
-        body: JSON.stringify({ server: KUGEL_MONITOR_SERVER_NAME, scope, target, on: body.on, mode: 'full', restore: 'adventure' }),
+        body: JSON.stringify({ server: kugelMonitorServerName(), scope, target, on: body.on, mode: 'full', restore: 'adventure' }),
       });
       return send(res, 200, JSON.stringify({ ok: true, result }));
     }

@@ -201,7 +201,12 @@
       className.textContent = data.classroom.name;
       const session = data.session || {};
       document.getElementById('serverState').textContent = session.serverState === 'running' ? 'שרת פעיל' : session.serverState === 'error' ? 'שגיאת הפעלה' : 'שרת מוכן';
-      document.getElementById('serverDetail').textContent = data.minecraftConfigured === false ? data.minecraftSetupNote : (session.serverDetail || '');
+      const previewDetail = data.minecraftPreviewMode && session.active && session.serverDetail
+        ? `${session.serverDetail} ${data.minecraftSetupNote}`
+        : data.minecraftSetupNote;
+      document.getElementById('serverDetail').textContent = data.minecraftConfigured === false || data.minecraftPreviewMode
+        ? previewDetail
+        : (session.serverDetail || '');
       document.getElementById('serverDot').classList.toggle('busy', session.serverState === 'starting');
       document.getElementById('serverDot').classList.toggle('error', data.minecraftConfigured === false || session.serverState === 'error');
       if (launchLesson) {
