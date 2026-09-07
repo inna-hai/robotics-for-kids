@@ -18,7 +18,10 @@ for (let id = 1; id <= 30; id++) {
   const url = new URL(`../python-turtle-lesson-${id}-slides.html`, import.meta.url);
   assert.ok(existsSync(url), `missing separate teacher slides for lesson ${id}`);
   const slides = readFileSync(url, 'utf8');
-  assert.match(slides, new RegExp(`שיעור ${id} מתוך 30`));
+  const expectedLessonNumber = id === 16 ? 1 : id;
+  const expectedLessonCount = id === 16 ? 15 : 30;
+  assert.match(slides, new RegExp(`שיעור ${expectedLessonNumber} מתוך ${expectedLessonCount}`));
+  if (id === 16) assert.match(slides, /פייתון מצייר מתקדם/);
   assert.match(slides, /90 דקות/);
   if (id === 9) {
     assert.match(slides, /תרגולי הכוכב/);
