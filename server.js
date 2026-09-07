@@ -2259,6 +2259,9 @@ async function handleClassroomApi(req, res) {
         return send(res, 403, JSON.stringify({ error: 'הלומדה אינה פתוחה לכיתה הזו.' }));
       }
       if (!lessonId || !activityId) return send(res, 400, JSON.stringify({ error: 'חסרים פרטי התקדמות.' }));
+      if (courseId === KUGEL_COURSE_ID && lessonId === '0' && activityId === 'minecraft-maze' && status === 'completed') {
+        return send(res, 403, JSON.stringify({ error: 'שיעור 0 מושלם רק אחרי בדיקת Minecraft.' }));
+      }
       const metadata = body.metadata && typeof body.metadata === 'object' ? body.metadata : {};
       const metadataJson = JSON.stringify(metadata).slice(0, 4000);
       const row = withSummerDb(db => {
@@ -2950,8 +2953,11 @@ function lockedPage(pathname, user, options = {}) {
   const trialOnly = options.trialOnly === true;
   const classroomRestricted = options.classroomRestricted === true;
   const teacherRestricted = classroomRestricted && options.teacher === true;
+  const lessonZeroRequired = options.lessonZeroRequired === true;
   const title = teacherRestricted
     ? 'הלומדה לא הוקצתה למורה'
+    : lessonZeroRequired
+    ? 'שיעור 1 עדיין נעול'
     : classroomRestricted
     ? 'הלומדה לא פתוחה לכיתה הזו'
     : trialOnly
@@ -2959,6 +2965,8 @@ function lockedPage(pathname, user, options = {}) {
     : (loggedIn ? 'התוכן הזה נעול למנויים' : 'צריך להתחבר כדי להמשיך');
   const subtitle = teacherRestricted
     ? 'מנהלת המערכת יכולה לפתוח את הלומדה למורה. לאחר מכן המורה תוכל לשייך אותה לכיתות לפי הצורך.'
+    : lessonZeroRequired
+    ? 'כדי לעבור לשיעור 1 צריך להשלים קודם את שיעור 0 במיינקראפט. לאחר השלמה מסודרת השיעור הבא ייפתח לתלמיד/ה.'
     : classroomRestricted
     ? 'המורה בוחר/ת אילו לומדות פתוחות לכל כיתה. אפשר לחזור לרשימת הלומדות שהוגדרה לכיתה.'
     : trialOnly
@@ -2982,13 +2990,13 @@ function lockedPage(pathname, user, options = {}) {
     <div class="lock">🔒</div>
     <h1>${title}</h1>
     <p>${subtitle}</p>
-    <div class="locked-label">${teacherRestricted ? 'גישה לפי הרשאת המנהלת' : (classroomRestricted ? 'גישה לפי הגדרת הכיתה' : (trialOnly ? '3 שיעורים חינם אחרי הרשמה' : 'השיעור הזה נפתח אחרי הפעלת מנוי לילד/ה'))}</div>
+    <div class="locked-label">${teacherRestricted ? 'גישה לפי הרשאת המנהלת' : (lessonZeroRequired ? 'נפתח אחרי השלמת שיעור 0' : (classroomRestricted ? 'גישה לפי הגדרת הכיתה' : (trialOnly ? '3 שיעורים חינם אחרי הרשמה' : 'השיעור הזה נפתח אחרי הפעלת מנוי לילד/ה')))}</div>
     <div class="actions">
-      ${classroomRestricted
-        ? `<a class="btn primary" href="${options.teacher ? 'teacher-classrooms.html' : 'classroom-entry.html'}">${teacherRestricted ? 'חזרה ללומדות שלי' : 'חזרה ללומדות הכיתה'}</a>`
+      ${classroomRestricted || lessonZeroRequired
+        ? `<a class="btn primary" href="${lessonZeroRequired ? 'kugel-student.html' : (options.teacher ? 'teacher-classrooms.html' : 'classroom-entry.html')}">${lessonZeroRequired ? 'חזרה לשיעור 0' : (teacherRestricted ? 'חזרה ללומדות שלי' : 'חזרה ללומדות הכיתה')}</a>`
         : `${trialOnly ? '' : '<a class="btn purchase" href="https://mrng.to/fZiL2SITRp">הפעלת מנוי</a>'}<a class="btn primary" href="register.html">הרשמה</a><a class="btn alt" href="login.html">כניסה</a>`}
     </div>
-    <div class="note">${teacherRestricted ? 'רק מנהלת המערכת יכולה לשנות את רשימת הלומדות של המורה.' : (classroomRestricted ? 'רק המורה של הכיתה יכול/ה לשנות את רשימת הלומדות.' : (trialOnly ? 'ההרשמה פותחת 3 שיעורי חשיבה ותכנות בחינם עם סיסי ושומרת את ההתקדמות לילד/ה.' : 'כדי לפתוח את כל הלומדות צריך מנוי פעיל לילד/ה הספציפי/ת.'))}</div>
+    <div class="note">${teacherRestricted ? 'רק מנהלת המערכת יכולה לשנות את רשימת הלומדות של המורה.' : (lessonZeroRequired ? 'המורה יכולה לעקוב אחרי ההתקדמות של שיעור 0 ממסך ניהול הכיתה.' : (classroomRestricted ? 'רק המורה של הכיתה יכול/ה לשנות את רשימת הלומדות.' : (trialOnly ? 'ההרשמה פותחת 3 שיעורי חשיבה ותכנות בחינם עם סיסי ושומרת את ההתקדמות לילד/ה.' : 'כדי לפתוח את כל הלומדות צריך מנוי פעיל לילד/ה הספציפי/ת.')))}</div>
   </main>
 </body>
 </html>`;
@@ -3030,6 +3038,27 @@ function classroomTeacherCourseForPath(pathname) {
   if (basename === 'craftom-minecraft-slides') return 'craftom-agent';
   if (basename === 'kugel-teacher') return 'craftom-agent';
   return null;
+}
+
+function requiresCraftomLessonZeroCompletion(pathname, url) {
+  const normalized = String(pathname || '').toLowerCase();
+  const basename = path.basename(normalized, path.extname(normalized));
+  if (/^craftom-minecraft-lesson-(?:[1-9]|1[0-6])$/.test(basename)) return true;
+  if (basename === 'craftom-agent-academy') return true;
+  if (basename === 'craftom-minecraft-challenge' || basename === 'craftom-minecraft-students') return true;
+  if (basename === 'craftom-minecraft' || basename === 'craftom-minecraft-lesson') return true;
+  if (normalized === '/craftom-school/preview/index.html') return true;
+  const lesson = Number(url.searchParams.get('lesson') || url.searchParams.get('challenge') || url.searchParams.get('mission') || 0);
+  return Number.isInteger(lesson) && lesson >= 1;
+}
+
+function classroomStudentCompletedCraftomLessonZero(studentId) {
+  return Boolean(withSummerDb(db => db.prepare(`
+    SELECT 1 FROM classroom_progress
+    WHERE student_id = ? AND course_id = ? AND lesson_id = '0'
+      AND activity_id = 'minecraft-maze' AND status = 'completed'
+    LIMIT 1
+  `).get(studentId, KUGEL_COURSE_ID)));
 }
 
 function injectHeadAssets(html) {
@@ -3115,6 +3144,18 @@ function serveStatic(req, res) {
 
   if (SUBSCRIPTION_GATE_ENABLED && ext === '.html' && classroomCourse && classroomIdentity && !classroomAuthorized) {
     return send(res, 402, lockedPage(pathname, null, { classroomRestricted: true, teacher: Boolean(classroomTeacher) }), 'text/html; charset=utf-8');
+  }
+
+  if (
+    SUBSCRIPTION_GATE_ENABLED
+    && ext === '.html'
+    && classroomStudent
+    && classroomCourse === KUGEL_COURSE_ID
+    && classroomAuthorized
+    && requiresCraftomLessonZeroCompletion(pathname, url)
+    && !classroomStudentCompletedCraftomLessonZero(classroomStudent.id)
+  ) {
+    return send(res, 423, lockedPage(pathname, null, { lessonZeroRequired: true }), 'text/html; charset=utf-8');
   }
 
   if (SUBSCRIPTION_GATE_ENABLED && ext === '.html' && isFreeTrialLearningHtml(pathname, url) && !profile && !classroomAuthorized) {
