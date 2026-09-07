@@ -1,8 +1,16 @@
 .kugel-app {
   min-height: 100vh;
   background:
+    radial-gradient(circle at 12% 0%, rgba(250, 204, 21, .18), transparent 28%),
+    radial-gradient(circle at 92% 12%, rgba(20, 184, 166, .16), transparent 30%),
     linear-gradient(180deg, rgba(248, 250, 252, .96), rgba(237, 247, 244, .98)),
     #f8fafc;
+}
+
+.kugel-app .rfw-button {
+  left: 18px !important;
+  bottom: 18px !important;
+  max-width: calc(100vw - 36px);
 }
 
 .app-topbar {
@@ -29,17 +37,18 @@
 
 .brand-mark {
   display: grid;
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   place-items: center;
-  border-radius: 10px;
+  border-radius: 12px;
   color: #fff;
-  background: linear-gradient(135deg, #0f766e, #2563eb);
+  background: linear-gradient(135deg, #0f766e, #2563eb 68%, #f59e0b);
+  box-shadow: 0 12px 24px rgba(15, 118, 110, .2);
   font-weight: 900;
 }
 
 .teacher-mark {
-  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  background: linear-gradient(135deg, #2563eb, #0f766e 68%, #f59e0b);
 }
 
 .brand-link strong,
@@ -183,19 +192,97 @@
 
 .workspace-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(270px, 380px);
+  grid-template-columns: minmax(0, 1fr) 152px minmax(250px, 360px);
   gap: 16px;
-  align-items: stretch;
-  padding: 20px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: #fff;
-  box-shadow: 0 12px 30px rgba(23, 32, 51, .08);
+  align-items: center;
+  min-height: 168px;
+  padding: 22px;
+  border: 1px solid rgba(15, 118, 110, .22);
+  border-radius: 16px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, .96), rgba(240, 253, 250, .9)),
+    #fff;
+  box-shadow: 0 18px 42px rgba(23, 32, 51, .1);
+  overflow: hidden;
 }
 
 .workspace-hero h2 {
   margin-bottom: 8px;
   font-size: clamp(1.8rem, 3vw, 3rem);
+}
+
+.hero-copy {
+  display: grid;
+  gap: 6px;
+}
+
+.goal {
+  max-width: 52ch;
+  color: #334155;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.maze-preview {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 4px;
+  min-height: 124px;
+  border: 1px solid rgba(15, 118, 110, .28);
+  border-radius: 16px;
+  background:
+    linear-gradient(90deg, rgba(15, 118, 110, .12) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(15, 118, 110, .12) 1px, transparent 1px),
+    linear-gradient(135deg, #ecfeff, #fefce8);
+  background-size: 26px 26px, 26px 26px, auto;
+  box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .65);
+}
+
+.maze-preview span {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  border-radius: 50%;
+  color: #78350f;
+  background: linear-gradient(135deg, #fde68a, #f59e0b);
+  box-shadow: 0 12px 20px rgba(245, 158, 11, .22);
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.maze-preview small {
+  color: #0f766e;
+  font-weight: 900;
+}
+
+.server-status-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 12px;
+  align-items: center;
+  align-self: stretch;
+  padding: 16px;
+  border: 1px solid #dbe8f4;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .82);
+}
+
+.server-status-card small {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.student-hero {
+  grid-template-columns: minmax(0, 1fr) 152px auto;
+}
+
+.student-hero .status-pill {
+  align-self: start;
+  justify-self: end;
 }
 
 .mission-panel {
@@ -250,6 +337,8 @@
   display: grid;
   gap: 8px;
   align-content: start;
+  position: relative;
+  border-color: rgba(15, 118, 110, .18);
 }
 
 .lesson-step-card p {
@@ -257,6 +346,46 @@
   color: var(--muted);
   font-weight: 750;
   line-height: 1.45;
+}
+
+.lesson-step-card h3 {
+  color: #0f172a;
+}
+
+.mission-card {
+  border-color: rgba(245, 158, 11, .3);
+  background: linear-gradient(135deg, #fffbeb, #fff);
+}
+
+.lesson-zero-checklist {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: mission-step;
+}
+
+.lesson-zero-checklist li {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 10px;
+  align-items: center;
+  color: #334155;
+  font-weight: 850;
+}
+
+.lesson-zero-checklist li::before {
+  counter-increment: mission-step;
+  content: counter(mission-step);
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 9px;
+  color: #78350f;
+  background: #fde68a;
+  font-weight: 900;
 }
 
 .step-num {
@@ -720,6 +849,19 @@
     grid-template-columns: 1fr;
   }
 
+  .workspace-hero,
+  .student-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .maze-preview {
+    min-height: 104px;
+  }
+
+  .student-hero .status-pill {
+    justify-self: start;
+  }
+
   .lesson-rail,
   .teacher-control {
     position: static;
@@ -773,5 +915,14 @@
 
   .academy-panel {
     display: grid;
+  }
+
+  .kugel-app .rfw-button {
+    left: 10px !important;
+    bottom: 10px !important;
+    max-width: 184px;
+    padding: 9px 11px !important;
+    font-size: 12px !important;
+    line-height: 1.2;
   }
 }
