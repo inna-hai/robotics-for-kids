@@ -3,11 +3,15 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const os = require('os');
 const Database = require('better-sqlite3');
 
 const ROOT = __dirname;
 const PORT = Number(process.env.PORT || process.argv[2] || 3032);
-const DATA_DIR = process.env.ROBOTICS_DATA_DIR || path.join(ROOT, 'data');
+const DEFAULT_DATA_DIR = process.env.NODE_ENV === 'test'
+  ? path.join(os.tmpdir(), `robotics-test-data-${process.pid}`)
+  : path.join(ROOT, 'data');
+const DATA_DIR = process.env.ROBOTICS_DATA_DIR || DEFAULT_DATA_DIR;
 const ATTACHMENTS_DIR = path.join(DATA_DIR, 'feedback-attachments');
 const FEEDBACK_FILE = path.join(DATA_DIR, 'feedback.jsonl');
 const CRAFTOM_EXIT_ATTACHMENTS_DIR = path.join(DATA_DIR, 'craftom-exit-ticket-attachments');
