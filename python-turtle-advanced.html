@@ -4121,7 +4121,7 @@
                     ],
                     "practice": [
                               "בנו עלה כותרת פשוט בצורת מעוין.",
-                              "שנו מספר אחד ובדקו איך גודל העלה משתנה.",
+                              "קצרו את הבלוקים של העלה בעזרת `repeat 2`.",
                               "ציירו שני עלים עם פנייה ביניהם.",
                               "בנו פרח שלם מחזרה על אותו עלה.",
                               "בדקו שמספר העלים כפול הזווית משלים 360.",
@@ -4132,7 +4132,7 @@
                     "timing": [
                               "0–10 פתיחה: איך צורה אחת יכולה להפוך לפרח?",
                               "10–18 דוגמת הפעלה קצרה בלי פתרון מלא",
-                              "18–35 עלה אחד ושינוי גודל במספר רגיל",
+                              "18–35 עלה אחד ואז קיצור עם repeat",
                               "35–55 שני עלים ואז פרח שלם",
                               "55–70 ניסוי במספר עלים וזווית",
                               "70–82 צבעים, מרכז ושיפור התוצר",
@@ -4170,7 +4170,7 @@
                                         "minutes": "18–35",
                                         "title": "עלה אחד",
                                         "teacher": "מובילים בניית עלה גיאומטרי פשוט עם forward ופניות.",
-                                        "students": "בונים עלה אחד, מריצים ומשנים מספר אחד כדי לבדוק גודל."
+                                        "students": "בונים עלה אחד, מריצים, ואז מקצרים את הדפוס החוזר בעזרת repeat."
                               },
                               {
                                         "minutes": "35–55",
@@ -4210,11 +4210,11 @@
                               {
                                         "id": 2,
                                         "minutes": "25–32",
-                                        "title": "תרגול 2 — העלה גדל ומתכווץ",
-                                        "prompt": "שנו את המספר בפקודות `forward(60)` והריצו שוב. בדקו שהעלה גדל או קטן.",
-                                        "hint": "שנו את אותו מספר בכל הצלעות, למשל מ־60 ל־45 או 70.",
-                                        "check": "העלה נשאר מעוין סגור, אבל בגודל אחר.",
-                                        "commonMistake": "משנים רק צלע אחת, ואז המעוין מתעוות ולא נסגר יפה."
+                                        "title": "תרגול 2 — עלה בלולאה",
+                                        "prompt": "קצרו את הבלוקים של העלה: השתמשו ב־`repeat 2` כדי לחזור על אותו זוג צלעות ופניות.",
+                                        "hint": "חפשו איזה חלק בבלוקים חוזר פעמיים, והכניסו אותו לתוך `repeat 2`.",
+                                        "check": "העלה עדיין נסגר כמעוין, ויש שימוש ב־`repeat 2` לדפוס החוזר, עם כל אורך צעד שתבחרו.",
+                                        "commonMistake": "שמים את כל ארבע הצלעות בתוך ה־repeat, ואז הצב מצייר את העלה פעמיים במקום לקצר אותו."
                               },
                               {
                                         "id": 3,
@@ -4230,9 +4230,9 @@
                                         "minutes": "40–53",
                                         "title": "תרגול 4 — פרח שלם",
                                         "prompt": "הפכו את שני העלים לפרח שלם: חזרו על אותו עלה כמה פעמים סביב המרכז.",
-                                        "hint": "אפשר להתחיל מ־6 עלים ופנייה של 60 מעלות, כי 6 × 60 = 360.",
+                                        "hint": "כדי שהעלים יפנו החוצה, שמרו על אותו כיוון פנייה בכל התוכנית. בתוך העלה: קודם פנייה 60 ואז 120. בין העלים: פנייה 60, כי 6 × 60 = 360.",
                                         "check": "יש פרח מכמה עלים שחוזרים סביב המרכז ומשלימים סיבוב שלם.",
-                                        "commonMistake": "מוסיפים עוד עלים בלי לחשוב על הזווית, ואז הפרח לא נסגר יפה."
+                                        "commonMistake": "מערבבים ימין ושמאל או הופכים את סדר הפניות בתוך העלה, ואז העלים פונים לכיוון מוזר."
                               },
                               {
                                         "id": 5,
@@ -4300,13 +4300,14 @@
                     ],
                     "assessment": [
                               "העלה הבסיסי נסגר כמעוין.",
+                              "העלה מקוצר בעזרת repeat לפני שבונים את הפרח השלם.",
                               "הפרח בנוי מחזרה על אותו עלה.",
                               "מספר העלים והזווית יכולים להשלים 360.",
                               "התלמיד/ה יודע/ת להסביר איזו לולאה מציירת עלה ואיזו חזרה בונה את הפרח."
                     ],
                     "reflection": [
                               "איזה שילוב של מספר עלים וזווית יצא הכי יפה?",
-                              "מה השתנה כששיניתם את המספר ב־forward?",
+                              "איך repeat 2 קיצר את הקוד של העלה?",
                               "איפה בקוד רואים את העלה, ואיפה רואים את החזרה סביב המרכז?"
                     ],
                     "aiHelper": [
@@ -8059,7 +8060,7 @@
       return out;
     }
     function saveProgress(){
-      if(restoringProgress || REVIEW_UNLOCK) return;
+      if(restoringProgress) return;
       try{
         const xml = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace));
         localStorage.setItem(PROGRESS_KEY, JSON.stringify({
@@ -8174,7 +8175,7 @@
       if(exerciseBaselines[key] === undefined) exerciseBaselines[key] = comparableActions();
     }
     function needsEntryReset(ex){
-      return false;
+      return currentLesson === 18 && Number(ex?.id) === 4;
     }
     function captureExerciseEntry(index=currentExerciseIndex){
       const ex = currentExercises()[index];
@@ -9614,6 +9615,40 @@
       const blockTypes = snapshot ? snapshot.blockTypes : codeBlocks().map(block=>block.type);
       const hasPythonBlock = snapshot ? snapshot.hasPythonBlock : workspace.getAllBlocks(false).some(block=>block.type === 'py_python');
       const hasCodeBlock = snapshot ? snapshot.hasCodeBlock : workspace.getAllBlocks(false).some(block=>block.type !== 'py_python' && !block.outputConnection);
+      if(currentLesson === 18 && String(ex?.id) === '2'){
+        const petalLoop = repeatPatternBlocks().find(({times, body})=>{
+          const forwardCount = body.filter(a=>a.cmd === 'forward' && Number.isFinite(Number(a.v)) && Number(a.v) > 0).length;
+          const turns = body.filter(a=>(a.cmd === 'right' || a.cmd === 'left') && Number.isFinite(Number(a.v)));
+          const turnValues = turns.map(a=>Math.abs(Number(a.v)));
+          const sameDirection = turns.length >= 2 && turns.every(a=>a.cmd === turns[0].cmd);
+          const first60 = turns.findIndex(a=>Math.abs(Number(a.v)) === 60);
+          const first120After60 = turns.findIndex((a,i)=>i > first60 && Math.abs(Number(a.v)) === 120);
+          return times === 2 && forwardCount >= 2 && sameDirection && turnValues.includes(60) && first60 >= 0 && first120After60 > first60;
+        });
+        if(!blockTypes.includes('py_repeat')) return ['כמעט — בתרגיל הזה צריך להשתמש ב־`repeat 2` כדי לקצר את העלה.'];
+        if(!petalLoop) return ['כמעט — זה חשוב להמשך כדי שהעלה יפנה החוצה בפרח השלם. בתוך `repeat 2` צריך שתי תנועות קדימה ושתי פניות באותו כיוון: קודם 60 ואז 120. אורך הצעדים יכול להיות כל מספר.'];
+        return [];
+      }
+      if(currentLesson === 18 && String(ex?.id) === '4'){
+        const baseline = exerciseBaselines[baselineKey()] || [];
+        const current = comparableActions(actions);
+        const addedEnough = !baseline.length || current.length >= baseline.length + 4;
+        const flowerLoop = repeatPatternBlocks().find(({times, body})=>{
+          if(times < 3) return false;
+          const forwardCount = body.filter(a=>a.cmd === 'forward' && Number.isFinite(Number(a.v)) && Number(a.v) > 0).length;
+          const turns = body.filter(a=>(a.cmd === 'right' || a.cmd === 'left') && Number.isFinite(Number(a.v)));
+          const turnValues = turns.map(a=>Math.abs(Number(a.v)));
+          const sameDirection = turns.length >= 3 && turns.every(a=>a.cmd === turns[0].cmd);
+          const first60 = turns.findIndex(a=>Math.abs(Number(a.v)) === 60);
+          const first120After60 = turns.findIndex((a,i)=>i > first60 && Math.abs(Number(a.v)) === 120);
+          const hasPetalTurnsInOrder = first60 >= 0 && first120After60 > first60;
+          const hasClosingOuterTurn = turnValues.some(angle=>angle > 0 && Math.abs(angle * times - 360) < 0.001);
+          return forwardCount >= 2 && sameDirection && hasPetalTurnsInOrder && hasClosingOuterTurn;
+        });
+        if(!addedEnough) return ['כמעט — בתרגיל 4 צריך להוסיף בלוקים חדשים לפרח שלם, לא רק להריץ את העלה או שני העלים מהתרגיל הקודם.'];
+        if(!flowerLoop) return ['כמעט — כדי שהפרח ייפתח יפה, כל הפניות צריכות להיות באותו כיוון. בתוך העלה: קודם 60 ואז 120; בין העלים: פנייה שמשלימה 360, למשל 6×60.'];
+        return [];
+      }
       if(currentLesson === 17 && String(ex?.id) === '1'){
         if(!blockTypes.includes('py_set_length')) return ['כמעט — חסר הבלוק `length =`. גררו אותו וקבעו בו את הערך 35.'];
         if(!actions.some(a=>a.cmd === 'setVar' && a.name === 'length' && Number(a.v) === 35)) return ['כמעט — בבלוק `length =` קבעו את הערך 35.'];
@@ -11295,7 +11330,9 @@
         setLesson(lessonId);
         const exercises = currentExercises();
         const requestedExerciseIndex = requestedExerciseIndexFromUrl(exercises);
-        currentExerciseIndex = REVIEW_UNLOCK ? (requestedExerciseIndex ?? 0) : Math.max(0, Math.min(Number(saved.exercise || 0), exercises.length - 1));
+        const savedExerciseIndex = Math.max(0, Math.min(Number(saved.exercise || 0), exercises.length - 1));
+        const savedMatchesSelectedLesson = savedLessonId === lessonId;
+        currentExerciseIndex = REVIEW_UNLOCK ? (requestedExerciseIndex ?? (savedMatchesSelectedLesson ? savedExerciseIndex : 0)) : savedExerciseIndex;
         exercisePassed = completedSet().has(currentExerciseIndex);
         if(saved.workspaceXml){
           workspace.clear();
