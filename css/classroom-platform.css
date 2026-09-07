@@ -81,10 +81,14 @@ input:focus { outline: 3px solid rgba(79,70,229,.2); border-color: var(--primary
 .export-box h4 { margin: 0; }
 .export-box p { margin: 0; }
 .export-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.student-progress-panel { display: grid; gap: 10px; margin-top: 18px; padding: 16px; border: 1px solid #bbf7d0; border-radius: 14px; background: #f0fdf4; }
+.student-progress-panel h4, .student-progress-panel p { margin: 0; }
 .student-list { display: grid; gap: 8px; margin: 16px 0; padding: 0; list-style: none; }
-.student-list li { padding: 10px 12px; border-radius: 10px; background: #f8fafc; }
+.student-list li { padding: 10px 12px; border-radius: 10px; background: #fff; }
 .student-list li strong, .student-list li small { display: block; }
 .student-list li small { margin-top: 4px; color: var(--muted); }
+.student-progress-stats { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.student-progress-stats span { padding: 5px 8px; border-radius: 999px; background: #ecfeff; color: #0f766e; font-size: .88rem; font-weight: 850; }
 .add-student-form { display: grid; grid-template-columns: 1fr auto; align-items: end; }
 .one-time-code { padding: 12px; border: 1px solid #86efac; border-radius: 12px; background: #f0fdf4; color: #14532d; }
 .recovery-panel { max-width: 720px; margin: 0 auto 24px; border-color: #c7d2fe; }

@@ -950,7 +950,7 @@ async function handleStudentProgress(req, res) {
         ok: true,
         saved: false,
         accessMode: 'classroom',
-        message: 'ההתקדמות נשמרת בדוח הכיתה ולא במנוי האישי.',
+        message: 'ההתקדמות נשמרת בדוח הכיתה והמורה תראה אותה במסך הכיתות שלה.',
       }));
     }
     return send(res, 405, JSON.stringify({ error: 'Method not allowed' }));
