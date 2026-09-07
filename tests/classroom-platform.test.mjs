@@ -14,6 +14,10 @@ assert.ok(
   serverJs.includes('process.env.ROBOTICS_DB_FILE'),
   'The classroom API test must be able to use an isolated SQLite database via ROBOTICS_DB_FILE',
 );
+assert.ok(
+  serverJs.includes('process.env.ROBOTICS_DATA_DIR'),
+  'The classroom API test must be able to use an isolated data directory via ROBOTICS_DATA_DIR',
+);
 assert.ok(serverJs.includes('function personalLoginCodeExists'), 'student codes must be checked for classroom collisions');
 assert.ok(serverJs.includes('generatePersonalLoginCode(db, classroom.id)'), 'student code generation must use the classroom collision check');
 assert.ok(serverJs.includes('CLASSROOM_LOGIN_MAX_KEYS'), 'login failure tracking must have a hard memory bound');
@@ -50,6 +54,7 @@ const child = spawn(process.execPath, ['server.js'], {
   env: {
     ...process.env,
     PORT: String(port),
+    ROBOTICS_DATA_DIR: tempDir,
     ROBOTICS_DB_FILE: join(tempDir, 'classroom.sqlite'),
     ROBOTICS_SUBSCRIPTION_GATE: '1',
     ROBOTICS_TEACHER_INVITE_CODE: 'test-teacher-invite-code',
