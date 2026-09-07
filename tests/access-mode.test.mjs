@@ -79,7 +79,7 @@ function badgeHarness({ pathname = '/python-turtle.html', classroomMe, summerTok
   assert.match(badge.innerHTML, /מצב אורח/);
 }
 
-function entryHarness({ classroomLogoutOk = true, classroomMe = { role: 'guest', ok: true, subscriptionGateEnabled: true } } = {}) {
+function entryHarness({ next = 'python-turtle.html', classroomLogoutOk = true, classroomMe = { role: 'guest', ok: true, subscriptionGateEnabled: true } } = {}) {
   const listeners = new Map();
   const makeNode = () => ({
     hidden: false, href: '', textContent: '', classList: { toggle() {} },
@@ -98,7 +98,7 @@ function entryHarness({ classroomLogoutOk = true, classroomMe = { role: 'guest',
   const context = {
     window: {},
     document: { body: { dataset: { classroomPage: 'entry' } }, getElementById(id) { return nodes[id]; } },
-    location: { search: '?next=python-turtle.html', assign(path) { assigned.push(path); } },
+    location: { search: `?next=${encodeURIComponent(next)}`, assign(path) { assigned.push(path); } },
     localStorage,
     URLSearchParams,
     FormData: class { entries() { return []; } },
@@ -126,9 +126,18 @@ function entryHarness({ classroomLogoutOk = true, classroomMe = { role: 'guest',
 }
 
 {
-  const harness = entryHarness({ classroomMe: { role: 'guest', ok: true, subscriptionGateEnabled: false } });
-  await tick();
-  assert.equal(harness.assigned.at(-1), 'python-turtle.html', 'when the subscription gate is off, requested learning pages open directly for guests');
+  for (const next of [
+    'sensi-city.html?lesson=1',
+    'sisi.html',
+    'python-turtle.html',
+    'webcode.html',
+    'minecraft.html',
+    'craftom-school/preview/index.html',
+  ]) {
+    const harness = entryHarness({ next, classroomMe: { role: 'guest', ok: true, subscriptionGateEnabled: false } });
+    await tick();
+    assert.equal(harness.assigned.at(-1), next, `when the subscription gate is off, ${next} opens directly for guests`);
+  }
 }
 
 {
