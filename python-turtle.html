@@ -21,8 +21,7 @@
     <header class="topbar">
       <div class="brand"><span class="bot">🐢</span><span class="brand-text"><span>פייתון מצייר</span><small>גוררים בלוקים ורואים קוד Python</small></span></div>
       <nav class="nav" aria-label="ניווט">
-        <a class="primary" href="python-turtle.html">🐢 הלומדה</a>
-        <a href="python-turtle-course.html">כל השיעורים (30)</a>
+        <a class="primary" href="python-turtle-course.html" aria-label="עמוד הבית — כל השיעורים">🏠 עמוד הבית</a>
         <a id="teacherSlidesNav" href="python-turtle-lesson-1-slides.html">מצגת מדריך</a><!-- python-turtle-slides.html regression anchor: all slides index exists but lesson nav is specific -->
       </nav>
     </header>
@@ -55,13 +54,30 @@
             <div id="canvasSecretReveal" class="canvas-secret" aria-live="polite"></div>
             <div id="turtle" class="turtle" aria-label="צב מצייר שמצביע לכיוון התנועה">
               <svg viewBox="0 0 64 64" role="img" aria-hidden="true">
-                <ellipse cx="30" cy="32" rx="20" ry="16" fill="#22c55e" stroke="#166534" stroke-width="3"/>
-                <circle cx="51" cy="32" r="9" fill="#86efac" stroke="#166534" stroke-width="3"/>
-                <circle cx="54" cy="29" r="1.8" fill="#052e16"/>
-                <circle cx="54" cy="35" r="1.8" fill="#052e16"/>
-                <path d="M18 21 L10 14 M18 43 L10 50 M34 18 L39 9 M34 46 L39 55" stroke="#166534" stroke-width="5" stroke-linecap="round"/>
-                <path d="M14 32 L5 27 L5 37 Z" fill="#86efac" stroke="#166534" stroke-width="3"/>
-                <path d="M20 32 C25 24 36 24 42 32 C36 40 25 40 20 32Z" fill="none" stroke="#15803d" stroke-width="2" opacity=".65"/>
+                <defs>
+                  <linearGradient id="turtleShell" x1="12" y1="16" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+                    <stop offset="0" stop-color="#86efac"/>
+                    <stop offset="1" stop-color="#16a34a"/>
+                  </linearGradient>
+                  <linearGradient id="turtleSkin" x1="36" y1="18" x2="62" y2="44" gradientUnits="userSpaceOnUse">
+                    <stop offset="0" stop-color="#bbf7d0"/>
+                    <stop offset="1" stop-color="#4ade80"/>
+                  </linearGradient>
+                </defs>
+                <path d="M13 20 Q8 16 6 22 Q9 27 15 25" fill="#86efac" stroke="#166534" stroke-width="2.4" stroke-linecap="round"/>
+                <path d="M14 44 Q8 48 6 42 Q9 37 15 39" fill="#86efac" stroke="#166534" stroke-width="2.4" stroke-linecap="round"/>
+                <path d="M36 18 Q42 12 46 18 Q44 24 38 24" fill="#86efac" stroke="#166534" stroke-width="2.4" stroke-linecap="round"/>
+                <path d="M36 46 Q42 52 46 46 Q44 40 38 40" fill="#86efac" stroke="#166534" stroke-width="2.4" stroke-linecap="round"/>
+                <ellipse cx="30" cy="32" rx="20" ry="16" fill="url(#turtleShell)" stroke="#166534" stroke-width="3"/>
+                <path d="M17 32 C21 22 39 22 43 32 C39 42 21 42 17 32Z" fill="none" stroke="#15803d" stroke-width="2.2" opacity=".75"/>
+                <path d="M30 17 V47 M13 32 H47" stroke="#15803d" stroke-width="1.7" opacity=".55" stroke-linecap="round"/>
+                <circle cx="51" cy="32" r="10" fill="url(#turtleSkin)" stroke="#166534" stroke-width="3"/>
+                <circle cx="54" cy="28.5" r="2" fill="#052e16"/>
+                <circle cx="54" cy="35.5" r="2" fill="#052e16"/>
+                <circle cx="54.7" cy="27.8" r=".65" fill="#fff"/>
+                <circle cx="54.7" cy="34.8" r=".65" fill="#fff"/>
+                <path d="M58 32 Q60 32.8 58 34" fill="none" stroke="#166534" stroke-width="1.7" stroke-linecap="round"/>
+                <path d="M13 32 L5 26 L5 38 Z" fill="#bbf7d0" stroke="#166534" stroke-width="2.6" stroke-linejoin="round"/>
               </svg>
             </div>
           </div>
@@ -70,7 +86,7 @@
           <button class="btn run" id="runBtn">▶️ הרץ ציור</button>
           <button class="btn reset" id="stopRunBtn" disabled>⏹ עצור</button>
           <button class="btn reset" id="resetBtn">🔄 נקה ציור</button>
-          <button class="btn" id="demoBtn">✨ דוגמת הפעלה</button><span class="demo-note">זו דוגמת הפעלה בלבד — לא הפתרון של המשימה.</span>
+          <button class="btn" id="demoBtn">✨ דוגמת הפעלה</button><span class="demo-note" id="demoNote" hidden>זו דוגמת הפעלה בלבד — לא הפתרון של המשימה.</span>
         </div>
         <div class="mission" id="mission"></div>
       </section>
@@ -7728,7 +7744,7 @@
     function initialLessonId(){
       const params = new URLSearchParams(location.search);
       const id = Number(params.get('lesson') || params.get('l') || 1);
-      return TURTLE_LESSONS.some(lesson => lesson.id === id) ? id : 1;
+      return TURTLE_LESSONS.some(lesson => lesson.id === id && lesson.id <= 15) ? id : 1;
     }
     function renderInitialLessonSidebar(){
       const id = initialLessonId();
@@ -7744,7 +7760,7 @@
       }
       if(title) title.textContent = `${l.id}. ${l.title}`;
       if(intro) intro.textContent = l.goal;
-      if(list) list.innerHTML = `<label for="lessonPicker"><b>בחירת שיעור:</b></label><select id="lessonPicker" class="lesson-picker">${TURTLE_LESSONS.map(lesson => `<option value="${lesson.id}" ${lesson.id === l.id ? 'selected' : ''}>שיעור ${lesson.id}: ${earlyEscape(lesson.title)}</option>`).join('')}</select>`;
+      if(list) list.innerHTML = `<label for="lessonPicker"><b>בחירת שיעור:</b></label><select id="lessonPicker" class="lesson-picker">${TURTLE_LESSONS.filter(lesson => lesson.id <= 15).map(lesson => `<option value="${lesson.id}" ${lesson.id === l.id ? 'selected' : ''}>שיעור ${lesson.id}: ${earlyEscape(lesson.title)}</option>`).join('')}</select>`;
       if(note) {
         const tasks = (l.exercises || []).map(ex => `<li>${earlyEscape(ex.prompt)}</li>`).join('');
         note.innerHTML = `<b>בשיעור הזה:</b><br>מושג מרכזי: ${earlyEscape(l.concept)}<br>תוצר: ${earlyEscape(l.product || 'ציור עובד')}<br><br><b>משימות לתלמיד:</b>${tasks ? `<ol class="side-task-list">${tasks}</ol>` : '<br>המשימות יופיעו לאחר בחירת שיעור.'}<small>לא מציגים לילדים את כל הסילבוס בבת אחת — מוצגות כאן רק משימות השיעור הנבחר.</small>`;
@@ -8936,6 +8952,8 @@
       const nextLessonId = nextLessonAfter(currentLesson);
       const nextButtonLabel = isLesson10FinalExercise() ? 'לכספת הסודית' : (isLast ? (nextLessonId ? 'סיימתי — לשיעור הבא' : 'סיימתי את הקורס') : 'המשך');
       const writingExercise = isPythonWritingExercise(ex);
+      const mainRunBtn = document.getElementById('runBtn');
+      if(mainRunBtn) mainRunBtn.style.display = writingExercise ? 'none' : '';
       const writingValue = pythonWritingAnswers[pythonWritingKey()] || '';
       const writingPlaceholder = (()=>{
         if(currentLesson === 12 && ex?.id === 9) return '# קווקו / גלגל / אור ברמזור&#10;color("#facc15")&#10;pensize(14)&#10;forward(1)';
@@ -8960,7 +8978,7 @@
       ) : '';
       const secretRevealHtml = lesson10SecretRevealHtml(ex);
       updateLesson10CanvasSecret(ex);
-      missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div>${lesson10IntroHtml}${lesson11IntroHtml}${lesson12CumulativeHtml}${lesson13CumulativeHtml}<p><b>${escapeHtml(ex.prompt || '')}</b></p>${exerciseVisualHtml(ex)}${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p>${(isChallengeExercise(ex) || isRunOnlyExampleExercise(ex)) ? '' : `<p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}`}${writingHtml}<div class="exercise-bottom"><div class="exercise-controls">${(isTip || isChallengeExercise(ex) || isSelectionOnly || isRunOnlyExampleExercise(ex)) ? '' : '<button class="btn run" id="checkExerciseBtn">✅ בדוק תרגיל</button>'}${resetButton}<button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${nextButtonLabel}</button></div>${feedbackBelowButtons ? '<br>' : feedbackHtml}</div>${feedbackBelowButtons ? feedbackHtml : ''}${secretRevealHtml}</div>`;
+      missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div>${lesson10IntroHtml}${lesson11IntroHtml}${lesson12CumulativeHtml}${lesson13CumulativeHtml}<p><b>${escapeHtml(ex.prompt || '')}</b></p>${exerciseVisualHtml(ex)}${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p>${(isChallengeExercise(ex) || isRunOnlyExampleExercise(ex)) ? '' : `<p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}`}${writingHtml}<div class="exercise-bottom"><div class="exercise-controls">${resetButton}<button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${nextButtonLabel}</button></div>${feedbackBelowButtons ? '<br>' : feedbackHtml}</div>${feedbackBelowButtons ? feedbackHtml : ''}${secretRevealHtml}</div>`;
       if(feedbackBelowButtons && message){
         requestAnimationFrame(()=>missionEl.scrollTo({top: missionEl.scrollHeight, behavior:'smooth'}));
       }
@@ -10821,7 +10839,7 @@
       renderCurrentExercise();
     }
     function nextLessonAfter(id){
-      const sortedIds = TURTLE_LESSONS.map(lesson=>lesson.id).sort((a,b)=>a-b);
+      const sortedIds = TURTLE_LESSONS.filter(lesson=>lesson.id <= 15).map(lesson=>lesson.id).sort((a,b)=>a-b);
       return sortedIds.find(lessonId=>lessonId > id) || null;
     }
     function canLeaveCheckedExercise(leavingEx){
@@ -10969,7 +10987,7 @@
       return byNumber >= 0 && byNumber < exercises.length ? byNumber : null;
     }
     function startEmptyLesson(id, updateUrl=true){
-      const exists = TURTLE_LESSONS.some(lesson=>lesson.id===id);
+      const exists = TURTLE_LESSONS.some(lesson=>lesson.id===id && lesson.id <= 15);
       setLesson(exists ? id : 1);
       workspace.clear();
       generatePython();
@@ -10984,7 +11002,7 @@
     function initialLessonFromUrl(){
       const params = new URLSearchParams(window.location.search);
       const id = Number(params.get('lesson') || params.get('l') || 1);
-      return TURTLE_LESSONS.some(lesson=>lesson.id===id) ? id : 1;
+      return TURTLE_LESSONS.some(lesson=>lesson.id===id && lesson.id <= 15) ? id : 1;
     }
     function requestedLessonFromUrl(){
       const params = new URLSearchParams(window.location.search);
@@ -11005,7 +11023,7 @@
     // legacy text kept for regression check: href="python-turtle.html?lesson=${l.id}" ${l.id === currentLesson ? 'נוכחי' : 'פתח'}</span>
     function renderLessonPicker(){
       const list = document.getElementById('lessonList');
-      list.innerHTML = `<label for="lessonPicker"><b>בחירת שיעור:</b></label><select id="lessonPicker" class="lesson-picker">${TURTLE_LESSONS.map(l=>`<option value="${l.id}" ${l.id === currentLesson ? 'selected' : ''}>שיעור ${l.id}: ${escapeHtml(l.title)}</option>`).join('')}</select>`;
+      list.innerHTML = `<label for="lessonPicker"><b>בחירת שיעור:</b></label><select id="lessonPicker" class="lesson-picker">${TURTLE_LESSONS.filter(l=>l.id <= 15).map(l=>`<option value="${l.id}" ${l.id === currentLesson ? 'selected' : ''}>שיעור ${l.id}: ${escapeHtml(l.title)}</option>`).join('')}</select>`;
       document.getElementById('lessonPicker').addEventListener('change', e => startEmptyLesson(Number(e.target.value)));
     }
     function initCollapsibleLessonsPanel(){
@@ -11112,7 +11130,7 @@
       }
       saveProgress();
     });
-    document.getElementById('demoBtn').addEventListener('click',()=>{ lesson10CurrentRevealKey = ''; updateLesson10CanvasSecret(); loadDemo(); });
+    document.getElementById('demoBtn').addEventListener('click',()=>{ document.getElementById('demoNote')?.removeAttribute('hidden'); lesson10CurrentRevealKey = ''; updateLesson10CanvasSecret(); loadDemo(); });
     workspace.addChangeListener((event)=>{
       if(event.type === Blockly.Events.SELECTED){
         const selected = event.newElementId ? workspace.getBlockById(event.newElementId) : (Blockly.getSelected ? Blockly.getSelected() : null);
@@ -11204,7 +11222,9 @@
         const urlLessonId = requestedLessonFromUrl();
         const requestedLessonId = initialLessonFromUrl();
         const savedLessonId = Number(saved.lesson);
-        const lessonId = urlLessonId || (TURTLE_LESSONS.some(lesson=>lesson.id===savedLessonId) ? savedLessonId : requestedLessonId);
+        const lessonId = REVIEW_UNLOCK
+          ? requestedLessonId
+          : (urlLessonId || (TURTLE_LESSONS.some(lesson=>lesson.id===savedLessonId && lesson.id <= 15) ? savedLessonId : requestedLessonId));
         setLesson(lessonId);
         const exercises = currentExercises();
         const requestedExerciseIndex = requestedExerciseIndexFromUrl(exercises, true);
