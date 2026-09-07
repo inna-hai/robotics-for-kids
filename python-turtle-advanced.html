@@ -3891,10 +3891,10 @@
           },
           {
                     "id": 17,
-                    "title": "אוצר הכוכבים",
-                    "goal": "משנים ציור שלם לקטן/גדול תוך שמירה על הצורה.",
-                    "concept": "יעד ומשימה",
-                    "product": "מסלול לאוצר",
+                    "title": "צמיד החרוזים",
+                    "goal": "משתמשים ב־length כדי לבנות דוגמת חרוזים חוזרת שהגודל שלה משנה את כל המראה.",
+                    "concept": "משתנה שמשפיע על דוגמה שלמה",
+                    "product": "צמיד חרוזים משתנה",
                     "blocks": [
                               "forward",
                               "right",
@@ -3904,16 +3904,16 @@
                               "length"
                     ],
                     "practice": [
-                              "בנו צורה באורך 60.",
-                              "בנו אותה צורה באורך 120.",
-                              "השוו מה השתנה ומה לא.",
-                              "השתמשו במשתנה length.",
-                              "שנו רק את המשתנה.",
+                              "בנו חרוז משושה אחד בעזרת `length = 35`.",
+                              "שנו את `length` ובדקו איך החרוז גדל בלי לשנות כל צלע.",
+                              "בנו שרשרת קצרה של 3 חרוזים.",
+                              "שנו את `length` עד שהחרוזים נוגעים יפה או נראים כמו צמיד.",
+                              "תקנו מצב שבו החרוזים רחוקים מדי, צפופים מדי או יוצאים מהמסך.",
                               "נסו עובי עט שמתאים לגודל.",
                               "מקמו גרסה קטנה ליד גדולה.",
-                              "הסבירו מה נשמר.",
+                              "הסבירו מה נשמר בדוגמה כשהגודל משתנה.",
                               "תקנו ציור שגדול מדי למסך.",
-                              "אתגר: לוגו בשלושה גדלים."
+                              "אתגר: צמיד חרוזים צבעוני בשלושה גדלים."
                     ],
                     "timing": [
                               "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
@@ -3933,9 +3933,9 @@
                     ],
                     "unit": "יחידה 4 — משחקונים ואתגרי רובוט",
                     "level": "קליל וחווייתי לגיל 10–11",
-                    "story": "על הדף מסתתרים כוכבים. הצב צריך להגיע לאוצר ולסמן את הדרך.",
-                    "mission": "לתכנן מסלול שמגיע ליעד ומוסיף סימון או כוכב בסוף.",
-                    "outcome": "מסלול אוצר עם נקודת התחלה, דרך וסיום.",
+                    "story": "הצב מעצב צמיד חרוזים: במקום לשנות כל צלע בנפרד, הוא משתמש ב־`length` כדי לשלוט בגודל של החרוזים ובמרווחים של כל הדוגמה.",
+                    "mission": "לבנות חרוז משושה אחד, להפוך אותו לשרשרת קצרה, ואז למצוא ערך `length` שבו החרוזים מתחברים יפה לצמיד.",
+                    "outcome": "צמיד חרוזים משתנה שבו שינוי אחד ב־`length` משנה את כל הדוגמה.",
                     "approach": "קוראים קוד, מנבאים תוצאה, מתקנים באגים קטנים",
                     "bridge": "מהציור בחזרה לקוד: מאתרים את השורה האחראית",
                     "durationMinutes": 90,
@@ -3943,7 +3943,7 @@
                               {
                                         "minutes": "0–8",
                                         "title": "פתיחת סיפור ומשימה",
-                                        "teacher": "מציגים את התוצר של היום: מסלול לאוצר. שואלים מה הצב צריך לדעת לעשות כדי להגיע לשם.",
+                                        "teacher": "מציגים את התוצר של היום: צמיד חרוזים משתנה. שואלים איך שינוי מספר אחד יכול להפוך דוגמה מדלילה לדוגמה שמתחברת יפה.",
                                         "students": "מנבאים אילו פקודות או בלוקים יעזרו ומנסחים יעד קצר."
                               },
                               {
@@ -3992,129 +3992,75 @@
                     "exercises": [
                               {
                                         "id": 1,
-                                        "minutes": "18–23",
-                                        "title": "תרגול 1 — חימום — מריצים ורואים",
-                                        "prompt": "בנו צורה באורך 60.",
-                                        "hint": "אל תנסו לפתור הכל בבת אחת — גררו בלוק אחד, הריצו, ואז המשיכו.",
-                                        "check": "יש לפחות פקודת תנועה אחת והציור מופיע על המסך.",
-                                        "commonMistake": "מנסים לגרור הרבה בלוקים לפני הרצה ראשונה ואז קשה לדעת מה השפיע."
+                                        "minutes": "18–24",
+                                        "title": "תרגול 1 — חרוז ראשון",
+                                        "prompt": "בנו חרוז משושה בעזרת הבלוק `length =`: קבעו `length = 35`, ואז השתמשו ב־`repeat` וב־`forward(length)` כדי שכל צלעות החרוז יהיו באותו אורך.",
+                                        "hint": "תזכורת: משושה בונים עם `repeat` של 6 חזרות. בכל חזרה משתמשים ב־`forward(length)` ואז פונים 60 מעלות.",
+                                        "check": "יש חרוז משושה שנבנה בעזרת `length =`, `repeat` ו־`forward(length)`.",
+                                        "commonMistake": "משאירים 4 חזרות או פנייה של 90 מעלות, ואז מתקבל ריבוע במקום חרוז משושה."
                               },
                               {
                                         "id": 2,
-                                        "minutes": "23–28",
-                                        "title": "תרגול 2 — קוראים את הבלוקים",
-                                        "prompt": "בנו אותה צורה באורך 120.",
-                                        "hint": "חפשו איפה מופיע הרעיון המרכזי של השיעור: יעד ומשימה.",
-                                        "check": "התלמיד/ה יודע/ת להצביע על הבלוק או השורה שקשורים ל־יעד ומשימה.",
-                                        "commonMistake": "מסתכלים רק על הציור ולא מחברים אותו לקוד שנוצר."
+                                        "minutes": "24–30",
+                                        "title": "תרגול 2 — החרוז גדל בבת אחת",
+                                        "prompt": "קודם הריצו את החרוז כמו שהוא עם `length = 35`, כדי לראות את הגודל המקורי. אחר כך שנו רק את המספר ב־`length =` למספר אחר והריצו שוב. בדקו שכל הצלעות של החרוז השתנו יחד, בלי לשנות את ה־`forward(length)`.",
+                                        "hint": "השוו בין שתי ההרצות: לפני השינוי ואחרי השינוי. זה רגע הפלא — לא מתקנים 6 צלעות אחת־אחת, משנים מספר אחד ב־`length =`, וכל החרוז משתנה. אפשר לנסות למשל 45 או 50.",
+                                        "check": "החרוז נבדק קודם בגודל המקורי ואז גדל בעזרת שינוי אחד ב־`length =`, ועדיין בנוי עם `forward(length)`.",
+                                        "commonMistake": "משנים מספרים בתוך פקודות קדימה במקום לשנות רק את הערך ב־`length =`."
                               },
                               {
                                         "id": 3,
-                                        "minutes": "28–34",
-                                        "title": "תרגול 3 — שינוי קטן ובטוח",
-                                        "prompt": "השוו מה השתנה ומה לא.",
-                                        "hint": "שינוי טוב הוא שינוי קטן: מספר אחד, צבע אחד או פנייה אחת.",
-                                        "check": "אחרי שינוי קטן רואים שינוי ברור בתוצאה, בלי לשבור את כל התוכנית.",
-                                        "commonMistake": "משנים כמה דברים יחד ואז לא יודעים מה גרם לשינוי."
+                                        "minutes": "30–39",
+                                        "title": "תרגול 3 — שרשרת של 3 חרוזים",
+                                        "prompt": "בנו שרשרת קצרה של 3 חרוזים. בין חרוז לחרוז הרימו עט עם `penup`, זוזו קדימה לפי `length`, הורידו עט עם `pendown`, וציירו את החרוז הבא.",
+                                        "hint": "אפשר לחשוב על המעבר בין חרוזים: חרוז משושה → `penup` → `forward(length)` → `pendown` → החרוז הבא. בשרשרת של 3 חרוזים יש 2 מעברים כאלה.",
+                                        "check": "יש לפחות 3 חרוזים, והמרווח ביניהם משתמש גם הוא ב־`forward(length)`.",
+                                        "commonMistake": "עוברים לחרוז הבא כשהעט למטה, ואז נוצרים קווים מחברים מיותרים."
                               },
                               {
                                         "id": 4,
-                                        "minutes": "34–40",
-                                        "title": "תרגול 4 — מחברים בלוק לקוד",
-                                        "prompt": "השתמשו במשתנה length.",
-                                        "hint": "לחצו על בלוק וראו איזו שורת Python נדלקת בקוד.",
-                                        "check": "כאשר בוחרים בלוק, שורת Python המתאימה מודגשת.",
-                                        "commonMistake": "לא שמים לב שהשורה המודגשת בקוד היא חלק מהלמידה, לא קישוט."
+                                        "minutes": "39–47",
+                                        "title": "תרגול 4 — מוצאים את הגודל היפה",
+                                        "prompt": "שחקו רק עם הערך של `length =` עד שהשרשרת נראית יפה: החרוזים לא רחוקים מדי, לא צפופים מדי, ולא יוצאים מהמסך.",
+                                        "hint": "נסו ערכים קרובים, למשל 30, 40, 50. בכל פעם משנים רק את `length =`, מריצים, ומסתכלים אם החרוזים מתחברים יפה יותר.",
+                                        "check": "השרשרת עדיין בנויה מאותו קוד, ורק הערך של `length =` קובע אם החרוזים רחוקים, נוגעים יפה או גדולים מדי.",
+                                        "commonMistake": "מתקנים כל חרוז בנפרד במקום להשתמש ב־`length =` כדי לשלוט בכל הדוגמה."
                               },
                               {
                                         "id": 5,
-                                        "minutes": "40–47",
-                                        "title": "תרגול 5 — בדיקת מהנדסים",
-                                        "prompt": "שנו רק את המשתנה.",
-                                        "hint": "מהנדסים בודקים לפחות שני מצבים, לא רק הרצה אחת שעבדה במקרה.",
-                                        "check": "התלמיד/ה בדק/ה לפחות שתי הרצות והשווה/השוותה ביניהן.",
-                                        "commonMistake": "בודקים רק מצב אחד ולכן חושבים שהפתרון תמיד עובד."
+                                        "minutes": "47–55",
+                                        "title": "תרגול 5 — שרשרת משודרגת",
+                                        "prompt": "שדרגו את השרשרת לתוצר יפה אחד: בחרו ערך `length =` שמתאים, הוסיפו צבעים או עובי עט, אבל השאירו את החרוזים והמרווחים עם `forward(length)`.",
+                                        "hint": "זה תרגיל איחוד: לא משנים כל חרוז בנפרד. `length =` שולט בגודל ובמרווחים, והצבע/עובי רק משדרגים את המראה.",
+                                        "check": "יש שרשרת חרוזים ברורה, עם שימוש ב־`length` בדוגמה החוזרת ועם שדרוג חזותי קטן.",
+                                        "commonMistake": "מוסיפים קישוטים אבל מחליפים את `forward(length)` ב־`forward` רגיל, ואז מאבדים את הפלא של שינוי אחד."
                               },
                               {
                                         "id": 6,
-                                        "minutes": "47–53",
-                                        "title": "תרגול 6 — תרגול דיוק",
-                                        "prompt": "נסו עובי עט שמתאים לגודל.",
-                                        "hint": "נסו לבנות מסלול סגור: בסוף הצב צריך לחזור למקום שממנו התחיל.",
-                                        "check": "נקודת הסיום של הצב חוזרת לנקודת ההתחלה.",
-                                        "commonMistake": "מוחקים את כל הפתרון במקום לתקן בלוק/ערך קטן."
+                                        "minutes": "55–65",
+                                        "title": "תרגול 6 — צמיד מעגלי",
+                                        "prompt": "הפכו את השרשרת לצמיד שלם: נסו מספרים שונים למספר החרוזים ולזווית הפנייה בין חרוזים, עד שהחרוזים משלימים עיגול ונראים כמו צמיד.",
+                                        "hint": "דוגמת ההפעלה מראה רק איך עושים לולאה בתוך לולאה, לא את פתרון הצמיד. לצמיד אפשר להתחיל למשל מ־12 חרוזים ופנייה של 30 מעלות, כי 12 × 30 = 360.",
+                                        "check": "יש צמיד חרוזים שמשלים עיגול, עם מעבר בין חרוזים שתלוי ב־`length` ועם פנייה קבועה בין החרוזים.",
+                                        "commonMistake": "מציירים כמה חרוזים בזווית וזה נראה כמו מנדלה יפה, אבל לא ממשיך עד שהחרוזים משלימים עיגול שלם."
                               },
                               {
                                         "id": 7,
-                                        "minutes": "53–60",
-                                        "title": "תרגול 7 — דיבאג מכוון",
-                                        "prompt": "מקמו גרסה קטנה ליד גדולה.",
-                                        "hint": "שדרוג יצירתי לא חייב להיות מסובך. לפעמים צבע, עובי או חזרה נוספת מספיקים.",
-                                        "check": "התוצר עדיין קשור למשימה: מסלול לאוצר.",
-                                        "commonMistake": "מוסיפים קישוטים אבל מאבדים את מטרת השיעור."
+                                        "minutes": "65–78",
+                                        "title": "תרגול 7 — תליון לצמיד",
+                                        "prompt": "הוסיפו תליון קטן לצמיד במקום שמתאים לכם. אם צריך לעבור למקום חדש — אפשר להשתמש ב־`penup` ו־`pendown`, אבל אם הצב כבר נמצא במקום טוב אפשר לצייר משם. התליון יכול להיות משולש קטן או חרוז קטן נוסף, והוא צריך להשתמש ב־`forward(length)`.",
+                                        "hint": "כדי שהתליון יהיה קטן יותר, קבעו `length =` לערך קטן לפני שמציירים אותו, למשל 15 או 20. גם בתליון אל תעברו ל־`forward` עם מספר רגיל.",
+                                        "check": "יש לצמיד תליון קטן שמצויר בעזרת `length`, בלי לחייב מעבר עם `penup` ו־`pendown`.",
+                                        "commonMistake": "מציירים תליון יפה, אבל עם `forward` רגיל — ואז שינוי `length =` כבר לא משפיע עליו."
                               },
                               {
                                         "id": 8,
-                                        "minutes": "60–66",
-                                        "title": "תרגול 8 — שדרוג יצירתי",
-                                        "prompt": "הסבירו מה נשמר.",
-                                        "hint": "הסבר טוב מתחיל ב: “קודם הצב עושה…, ואז…”.",
-                                        "check": "ההסבר כולל רצף: פקודה → תוצאה → תיקון או שיפור.",
-                                        "commonMistake": "אומרים “זה עובד” בלי להסביר למה."
-                              },
-                              {
-                                        "id": 9,
-                                        "minutes": "66–71",
-                                        "title": "תרגול 9 — קריאת Python בקול",
-                                        "prompt": "תקנו ציור שגדול מדי למסך.",
-                                        "hint": "קראו את הקוד כאילו הוא הוראות לצב, לא כמו טקסט זר.",
-                                        "check": "התלמיד/ה קרא/ה 3 שורות Python והסביר/ה אותן במילים.",
-                                        "commonMistake": "קוראים את הקוד מהר מדי בלי להבין את סדר הפעולות."
-                              },
-                              {
-                                        "id": 10,
-                                        "minutes": "71–76",
-                                        "title": "תרגול 10 — עבודה בזוגות",
-                                        "prompt": "אתגר: לוגו בשלושה גדלים.",
-                                        "hint": "בזוגות — אחד מדבר ואחד נוגע במחשב, ואז מחליפים.",
-                                        "check": "הזוג ביצע ניבוי ואז בדיקה בפועל.",
-                                        "commonMistake": "בן/בת זוג אחד עושה הכל והשני לא מסביר."
-                              },
-                              {
-                                        "id": 11,
-                                        "minutes": "76–81",
-                                        "title": "תרגול 11 — תרגול מתקדם",
-                                        "prompt": "בנו גרסה קצת מורכבת יותר שמשתמשת במושג המרכזי של השיעור לפחות פעמיים.",
-                                        "hint": "התרגול פתוח, אבל עדיין צריך להשתמש במושג של השיעור.",
-                                        "check": "התרגול משתמש במושג המרכזי ולא רק מוסיף קישוט.",
-                                        "commonMistake": "קופצים לפתרון מורכב מדי לפני שהבסיס יציב."
-                              },
-                              {
-                                        "id": 12,
-                                        "minutes": "81–85",
-                                        "title": "תרגול 12 — בדיקת איכות",
-                                        "prompt": "בדקו שהתוכנית עובדת אחרי איפוס והרצה מחדש, לא רק פעם אחת.",
-                                        "hint": "בדיקת איכות טובה מתחילה מאיפוס והרצה נקייה.",
-                                        "check": "התוכנית עובדת גם אחרי איפוס והרצה מחדש.",
-                                        "commonMistake": "לא מאפסים לפני בדיקה ולכן תוצאה ישנה מבלבלת."
-                              },
-                              {
-                                        "id": 13,
-                                        "minutes": "85–88",
-                                        "title": "תרגול 13 — הכנה להצגה",
-                                        "prompt": "הכינו משפט הצגה: מה בניתי, באיזה בלוק השתמשתי, ואיפה רואים את זה בקוד.",
-                                        "hint": "הצגה קצרה עדיפה על הסבר ארוך ומבולבל.",
-                                        "check": "יש משפט הצגה שמחבר תוצר, בלוק וקוד.",
-                                        "commonMistake": "מציגים רק את הציור ולא מסבירים את הקשר לבלוקים ולקוד."
-                              },
-                              {
-                                        "id": 14,
-                                        "minutes": "88–90",
-                                        "title": "תרגול 14 — רפלקציה קצרה",
-                                        "prompt": "השלימו משפט: היום למדתי ש־___, ובפעם הבאה אשפר ___.",
-                                        "hint": "רפלקציה קצרה עוזרת לזכור: מה ניסיתי, מה עבד, ומה תיקנתי?",
-                                        "check": "יש משפט סיכום אישי ומדויק.",
-                                        "commonMistake": "מסיימים בלי לנסח מה למדו ומה ירצו לשפר."
+                                        "minutes": "78–90",
+                                        "title": "אתגר רשות — צמיד אישי",
+                                        "prompt": "אם נשאר זמן, עצבו צמיד אישי: צבעים מתחלפים, תליון נוסף, או ערך `length` אחר שיוצר צמיד צפוף/פתוח יותר.",
+                                        "hint": "אתגר טוב עדיין שומר על הרעיון המרכזי: כמה שיותר חלקים בצמיד נשלטים דרך `length`.",
+                                        "check": "התוצר אישי, אבל עדיין רואים בו צמיד חרוזים שמשתמש ב־`length` בצורה משמעותית.",
+                                        "commonMistake": "מוסיפים הרבה קישוטים ומאבדים את המבנה החוזר של הצמיד."
                               }
                     ],
                     "vocabulary": [
@@ -9726,8 +9672,90 @@
       const text = `${ex.title || ''} ${ex.prompt || ''} ${ex.check || ''}`;
       const snapshot = actionsSnapshot && !Array.isArray(actionsSnapshot) ? actionsSnapshot : null;
       const actions = snapshot ? snapshot.actions : (actionsSnapshot || getActions());
+      const blockTypes = snapshot ? snapshot.blockTypes : codeBlocks().map(block=>block.type);
       const hasPythonBlock = snapshot ? snapshot.hasPythonBlock : workspace.getAllBlocks(false).some(block=>block.type === 'py_python');
       const hasCodeBlock = snapshot ? snapshot.hasCodeBlock : workspace.getAllBlocks(false).some(block=>block.type !== 'py_python' && !block.outputConnection);
+      if(currentLesson === 17 && String(ex?.id) === '1'){
+        if(!blockTypes.includes('py_set_length')) return ['כמעט — חסר הבלוק `length =`. גררו אותו וקבעו בו את הערך 35.'];
+        if(!actions.some(a=>a.cmd === 'setVar' && a.name === 'length' && Number(a.v) === 35)) return ['כמעט — בבלוק `length =` קבעו את הערך 35.'];
+        if(!blockTypes.includes('py_repeat')) return ['כמעט — חסר הבלוק `repeat`. בחרוז משושה משתמשים בו כדי לחזור 6 פעמים.'];
+        if(!blockTypes.includes('py_forward_length')) return ['כמעט — חסר הבלוק `forward(length)`. השתמשו בו בתוך ה־`repeat`, לא ב־`forward` עם מספר רגיל.'];
+        if(!actions.some(a=>(a.cmd === 'right' || a.cmd === 'left') && Number(a.v) === 60)) return ['כמעט — חסרה פנייה של 60 מעלות, למשל `right(60)`, כדי לסגור חרוז משושה.'];
+        if(!repeatShapeMatches(6, 60)) return ['כמעט — החרוז עדיין לא נסגר. בתוך `repeat` צריכים להיות `forward(length)` ואז פנייה של 60 מעלות, וה־`repeat` צריך לחזור 6 פעמים.'];
+        return [];
+      }
+      if(currentLesson === 17 && String(ex?.id) === '2'){
+        const lengthValues = actions.filter(a=>a.cmd === 'setVar' && a.name === 'length' && Number.isFinite(Number(a.v))).map(a=>Number(a.v));
+        const currentLengthValue = lengthValues[lengthValues.length - 1];
+        const key = `${currentLesson}:${ex.id}:length-runs`;
+        exerciseCheckValues[key] = exerciseCheckValues[key] || [];
+        if(!blockTypes.includes('py_set_length')) return ['כמעט — חסר הבלוק `length =`. בתרגיל הזה קודם בודקים 35 ואז משנים רק את המספר שבתוכו.'];
+        if(!blockTypes.includes('py_forward_length')) return ['כמעט — חסר `forward(length)`. החרוז צריך להשתנות דרך length, לא דרך מספרים רגילים.'];
+        if(actions.some(a=>a.cmd === 'forward')) return ['כמעט — אל תשנו פקודות `forward` רגילות. השתמשו ב־`forward(length)` כדי שכל החרוז יגדל יחד.'];
+        if(!repeatShapeMatches(6, 60)) return ['כמעט — שמרו על חרוז משושה סגור עם `repeat` של 6 חזרות ופנייה של 60 מעלות.'];
+        if(currentLengthValue === undefined) return ['כמעט — קודם קבעו ערך ב־`length =`.'];
+        if(!exerciseCheckValues[key].includes(currentLengthValue)) exerciseCheckValues[key].push(currentLengthValue);
+        const checkedOriginal = exerciseCheckValues[key].includes(35);
+        const checkedChanged = exerciseCheckValues[key].some(v=>v !== 35);
+        if(currentLengthValue !== 35 && !checkedOriginal) return ['כמעט — בתרגיל הזה צריך קודם להריץ ולבדוק את החרוז עם `length = 35`, ורק אחר כך לשנות למספר אחר.'];
+        if(!checkedChanged) return ['יופי — החרוז המקורי עם `length = 35` תקין. עכשיו שנו רק את המספר ב־`length =` למספר אחר, הריצו שוב ובדקו שכל החרוז משתנה יחד.'];
+        return [];
+      }
+      if(currentLesson === 17 && String(ex?.id) === '3'){
+        const beadRepeats = repeatPatternBlocks().filter(({times, body})=>times === 6 && body.some(a=>a.cmd === 'forwardVar' && a.name === 'length') && body.some(a=>(a.cmd === 'right' || a.cmd === 'left') && Number(a.v) === 60));
+        const forwardLengthCount = actions.filter(a=>a.cmd === 'forwardVar' && a.name === 'length').length;
+        if(beadRepeats.length < 3) return ['כמעט — שרשרת צריכה לפחות 3 חרוזים. כל חרוז נבנה עם `repeat`, פנייה של 60 מעלות ו־`forward(length)`.'];
+        if(!blockTypes.includes('py_penup')) return ['כמעט — חסר `penup` כדי לעבור לחרוז הבא בלי לצייר קו מחבר.'];
+        if(!blockTypes.includes('py_pendown')) return ['כמעט — חסר `pendown` לפני שמתחילים לצייר את החרוז הבא.'];
+        if(forwardLengthCount < 20) return ['כמעט — גם שני המרווחים בין החרוזים צריכים להשתמש ב־`forward(length)`, לא רק צלעות החרוזים.'];
+        return [];
+      }
+      if(currentLesson === 17 && String(ex?.id) === '4'){
+        if(!blockTypes.includes('py_set_length')) return ['כמעט — חסר `length =`. בתרגיל הזה בודקים ערכים שונים כדי למצוא גודל יפה לצמיד.'];
+        if(!blockTypes.includes('py_forward_length')) return ['כמעט — חסר `forward(length)`. גם החרוזים וגם המרווחים צריכים להיות תלויים ב־length.'];
+        const lengthValues = setLengthValues(actions).map(Number).filter(Number.isFinite);
+        if(!lengthValues.some(v=>v >= 30 && v <= 50)) return ['כמעט — נסו ערך length שמתאים לצמיד, למשל 30, 40 או 50.'];
+        return [];
+      }
+      if(currentLesson === 17 && String(ex?.id) === '5'){
+        if(!blockTypes.includes('py_set_length')) return ['כמעט — חסר הבלוק `length =`. הצמיד צריך להישאר נשלט על ידי שינוי אחד.'];
+        if(!blockTypes.includes('py_forward_length')) return ['כמעט — חסר `forward(length)`. אל תחליפו אותו ב־`forward` עם מספר רגיל.'];
+        if(actions.some(a=>a.cmd === 'forward')) return ['כמעט — כדי שהשינוי ב־`length =` ישפיע על כל הצמיד, השתמשו ב־`forward(length)` במקום `forward` רגיל.'];
+        if(!actions.some(a=>a.cmd === 'color') && !actions.some(a=>a.cmd === 'width')) return ['כמעט — הוסיפו שדרוג חזותי קטן: בלוק צבע או שינוי עובי עט.'];
+        return [];
+      }
+      if(currentLesson === 17 && String(ex?.id) === '6'){
+        const patterns = repeatPatternBlocks();
+        const beadRepeats = patterns.filter(({times, body})=>times === 6 && body.some(a=>a.cmd === 'forwardVar' && a.name === 'length') && body.some(a=>(a.cmd === 'right' || a.cmd === 'left') && Number(a.v) === 60));
+        const outerBeadLoops = patterns.filter(({times, body})=>times >= 8 && body.filter(a=>a.cmd === 'forwardVar' && a.name === 'length').length >= 7 && body.filter(a=>(a.cmd === 'right' || a.cmd === 'left') && Number(a.v) === 60).length >= 6);
+        const inferredBeadCount = Math.max(beadRepeats.length, ...outerBeadLoops.map(({times})=>times), 0);
+        const forwardLengthCount = actions.filter(a=>a.cmd === 'forwardVar' && a.name === 'length').length;
+        const penupCount = actions.filter(a=>a.cmd === 'pen' && a.v === false).length;
+        const pendownCount = actions.filter(a=>a.cmd === 'pen' && a.v === true).length;
+        const transitionTurns = actions.filter(a=>(a.cmd === 'right' || a.cmd === 'left') && Number(a.v) !== 60).map(a=>Number(a.v)).filter(v=>Number.isFinite(v) && v > 0);
+        const turnOptions = [...new Set(transitionTurns)].map(angle=>({angle, count:transitionTurns.filter(v=>v === angle).length}));
+        const completeCircleTurn = turnOptions.find(({angle, count})=>count >= Math.max(8, inferredBeadCount || 8) - 1 && Math.abs(angle * count - 360) <= Math.max(5, angle));
+        if(actions.some(a=>a.cmd === 'forward')) return ['כמעט — הצמיד צריך להישאר מבוסס על `forward(length)`, בלי `forward` רגיל עם מספרים קבועים.'];
+        if(inferredBeadCount < 8) return ['כמעט — לצמיד שלם צריך הרבה חרוזים. אפשר לבנות בהדרגה: קודם 2 חרוזים בזווית, ואז להמשיך עד שהחרוזים משלימים עיגול. כל חרוז צריך להיות משושה עם `repeat`, `forward(length)` ופנייה של 60 מעלות.'];
+        if(penupCount < inferredBeadCount - 1) return ['כמעט — בין החרוזים צריך להשתמש ב־`penup` כדי לעבור בלי לצייר קווי חיבור.'];
+        if(pendownCount < inferredBeadCount - 1) return ['כמעט — אחרי כל מעבר לחרוז הבא צריך להשתמש ב־`pendown` כדי לחזור לצייר.'];
+        if(forwardLengthCount < inferredBeadCount * 7 - 1) return ['כמעט — גם המעברים בין החרוזים צריכים להשתמש ב־`forward(length)`, לא רק צלעות החרוזים.'];
+        if(!completeCircleTurn) return ['כמעט — נסו מספר חרוזים וזווית פנייה שמשלימים עיגול. למשל 12 חרוזים עם פנייה 30, כי 12 × 30 = 360.'];
+        return [];
+      }
+      if(currentLesson === 17 && String(ex?.id) === '7'){
+        if(actions.some(a=>a.cmd === 'forward')) return ['כמעט — גם התליון צריך להשתמש ב־`forward(length)`, בלי `forward` רגיל עם מספר קבוע.'];
+        const beadRepeats = repeatPatternBlocks().filter(({times, body})=>times === 6 && body.some(a=>a.cmd === 'forwardVar' && a.name === 'length') && body.some(a=>(a.cmd === 'right' || a.cmd === 'left') && Number(a.v) === 60));
+        if(beadRepeats.length < 12) return ['כמעט — לפני התליון צריך להישאר צמיד חרוזים שלם עם 12 חרוזים משושים.'];
+        const smallLengthIndex = actions.findIndex(a=>a.cmd === 'setVar' && a.name === 'length' && Number(a.v) >= 10 && Number(a.v) <= 25);
+        if(smallLengthIndex < 0) return ['כמעט — לפני התליון קבעו `length =` לערך קטן, למשל 15 או 20.'];
+        const pendantActions = actions.slice(smallLengthIndex + 1);
+        const pendantForwardLengthCount = pendantActions.filter(a=>a.cmd === 'forwardVar' && a.name === 'length').length;
+        const pendantTurnCount = pendantActions.filter(a=>a.cmd === 'right' || a.cmd === 'left').length;
+        if(pendantForwardLengthCount < 3) return ['כמעט — התליון צריך לכלול צורה קטנה עם לפחות 3 פקודות `forward(length)`.'];
+        if(pendantTurnCount < 2) return ['כמעט — כדי שהתליון יהיה צורה ולא רק קו, הוסיפו פניות בתוך התליון.'];
+        return [];
+      }
       if(!actions.length) return [hasCodeBlock
         ? (hasPythonBlock ? 'חברו את הבלוקים מתחת לבלוק Python — רק מה שמחובר אליו הופך לקוד ונבדק.' : 'הוסיפו בלוק Python וחברו מתחתיו את הבלוקים — רק מה שמחובר אליו הופך לקוד ונבדק.')
         : 'גררו בלוק Python, ואז חברו מתחתיו את הבלוקים של התרגיל — רק מה שמחובר אליו הופך לקוד ונבדק.'];
@@ -11024,7 +11052,7 @@
         14: "<xml><block type=\"py_color\" x=\"40\" y=\"40\"><field name=\"COLOR\">#7c3aed</field><next><block type=\"py_repeat\"><field name=\"TIMES\">5</field><statement name=\"DO\"><block type=\"py_forward\"><field name=\"STEPS\">110</field><next><block type=\"py_right\"><field name=\"ANGLE\">144</field></block></next></block></statement></block></next></block></xml>",
         15: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
         16: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
-        17: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
+        17: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">45</field><next><block type=\"py_repeat\"><field name=\"TIMES\">3</field><statement name=\"DO\"><block type=\"py_repeat\"><field name=\"TIMES\">4</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field></block></next></block></statement><next><block type=\"py_penup\"><next><block type=\"py_forward_length\"><next><block type=\"py_pendown\"></block></next></block></next></block></next></block></statement></block></next></block></xml>",
         18: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
         19: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
         20: "<xml><block type=\"py_set_length\" x=\"40\" y=\"40\"><field name=\"VALUE\">40</field><next><block type=\"py_repeat\"><field name=\"TIMES\">8</field><statement name=\"DO\"><block type=\"py_forward_length\"><next><block type=\"py_right\"><field name=\"ANGLE\">90</field><next><block type=\"py_grow_length\"><field name=\"ADD\">12</field></block></next></block></next></block></statement></block></next></block></xml>",
@@ -11294,7 +11322,10 @@
       if(saved){
         applyCompleted(saved);
         const requestedLessonId = initialLessonFromUrl();
-        const lessonId = REVIEW_UNLOCK ? requestedLessonId : (TURTLE_LESSONS.some(lesson=>lesson.id===Number(saved.lesson)) ? Number(saved.lesson) : requestedLessonId);
+        const params = new URLSearchParams(window.location.search);
+        const hasRequestedLesson = params.has('lesson') || params.has('l');
+        const savedLessonId = Number(saved.lesson);
+        const lessonId = (REVIEW_UNLOCK || hasRequestedLesson) ? requestedLessonId : (TURTLE_LESSONS.some(lesson=>lesson.id===savedLessonId) ? savedLessonId : requestedLessonId);
         setLesson(lessonId);
         const exercises = currentExercises();
         const requestedExerciseIndex = requestedExerciseIndexFromUrl(exercises);
