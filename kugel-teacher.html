@@ -18,6 +18,16 @@
       <p class="eyebrow">סביבת מורה מאובטחת</p>
       <h1>ניהול שיעור 0</h1>
       <p id="teacherClassName">טוען את הכיתה…</p>
+      <section class="panel compact-panel role-task-panel">
+        <h3>מה המורה עושה כאן?</h3>
+        <ol>
+          <li>פותחת את עולם המבוך עבור הכיתה.</li>
+          <li>בודקת מי מחובר ומי התחיל לעבוד.</li>
+          <li>משייכת לכל תלמיד/ה שם שחקן Minecraft מדויק.</li>
+          <li>שולחת הודעה, עוצרת או משחררת את הכיתה לפי הצורך.</li>
+          <li>בודקת מי סיים ומי צריך עזרה לפני מעבר לשיעור 1.</li>
+        </ol>
+      </section>
       <section class="panel compact-panel">
         <h3>פתיחת עולם המבוך</h3>
         <p>העולם נפתח מחדש עבור הכיתה. ההתקדמות הישנה בשיעור 0 מתאפסת.</p>
@@ -51,6 +61,12 @@
       <section class="panel">
         <div class="panel-head"><h3>לוח התלמידים</h3><button class="icon-button" id="refreshBoard" type="button" title="רענון">↻</button></div>
         <p>המורה משייכת לכל תלמיד/ה את שם השחקן המדויק ב־Minecraft. רק תלמידי הכיתה הזאת מופיעים כאן.</p>
+        <div class="teacher-check-grid" aria-label="בדיקת התקדמות שיעור 0">
+          <span><b>לפני השיעור</b>פתיחת עולם המבוך</span>
+          <span><b>בתחילת השיעור</b>וידוא שמות Minecraft</span>
+          <span><b>בזמן עבודה</b>מעקב אחרי מטבעות ותקיעות</span>
+          <span><b>בסיום</b>בדיקת סיום ושחרור השרת</span>
+        </div>
         <div class="student-monitor" id="studentMonitor"></div>
       </section>
     </section>

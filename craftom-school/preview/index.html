@@ -20,7 +20,14 @@
     .meeting-list{display:grid;gap:8px;margin:10px 0 0;padding:0;list-style:none}
     .meeting-list li{border:1px solid #cfe2f3;background:#f8fcff;border-radius:12px;padding:9px 10px}
     .wide-card{grid-column:1/-1}
+    .onboarding-flow{display:grid;gap:12px;margin-top:16px}
+    .flow-track{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+    .flow-track article{border:1px solid #cfe2f3;background:#fff;border-radius:12px;padding:12px;min-height:128px}
+    .flow-track b{display:block;color:#0f766e;margin-bottom:6px}
+    .flow-track p{margin:0;color:#475569;font-size:.95rem;line-height:1.45}
+    .permission-note{border-right:6px solid #0f766e;background:#f0fdfa;border-radius:12px;padding:12px;color:#134e4a;font-weight:800}
     @media(max-width:850px){.preview-home .hero,.program-video-card{grid-template-columns:1fr}}
+    @media(max-width:850px){.flow-track{grid-template-columns:1fr}}
   </style>
 </head>
 <body class="preview-home">
@@ -44,6 +51,23 @@
       <article class="card highlight"><h2>4</h2><b>מפגשים לאתגר</b><p class="muted">בנייה, קוד, בדיקה ושיפור.</p></article>
       <article class="card highlight"><h2>16</h2><b>מפגשים</b><p class="muted">רצף מלא לחטיבת ביניים.</p></article>
       <article class="card highlight"><h2>50x50</h2><b>מגרש אישי</b><p class="muted">כל תלמיד/צוות עובד בחלקה שלו.</p></article>
+    </section>
+
+    <section class="card wide-card onboarding-flow" aria-labelledby="projectFlowTitle">
+      <div>
+        <span class="tag">בדיקת Flow פנימית</span>
+        <h2 id="projectFlowTitle">מה כל אחד עושה בפרויקט?</h2>
+        <p class="goal">כל משתמש רואה רק את הפעולות שמתאימות להרשאה שלו. הרצף המלא הוא מנהלת → מורה → כיתה → תלמיד → שיעור 0 → שיעור 1.</p>
+      </div>
+      <div class="flow-track">
+        <article><b>מנהלת</b><p>פותחת למורה את הלומדה המתאימה ושומרת הרשאות. לא מפעילה שיעור ולא מנהלת תלמידים.</p></article>
+        <article><b>מורה</b><p>יוצרת כיתה, בוחרת לומדות פתוחות, מוסיפה תלמידים ומקבלת קודים אישיים.</p></article>
+        <article><b>כיתה</b><p>מקבלת קוד כיתה משותף ורשימת לומדות שמותרות רק לכיתה הזו.</p></article>
+        <article><b>תלמיד/ה</b><p>נכנס/ת עם קוד כיתה וקוד אישי ורואה רק את הלומדות שהמורה פתחה.</p></article>
+        <article><b>שיעור 0</b><p>המורה מפעילה את עולם Minecraft, התלמידים אוספים מטבעות ומבצעים בדיקת סיום.</p></article>
+        <article><b>שיעור 1</b><p>אחרי שהפתיחה ברורה, ממשיכים למסלול הלמידה הרגיל של אקדמיית ה-Agent.</p></article>
+      </div>
+      <div class="permission-note">אם משתמש לא רואה פעולה מסוימת, בודקים קודם הרשאה: מנהלת פותחת למורה, מורה פותחת לכיתה, תלמיד נכנס רק למה שנפתח לכיתה שלו.</div>
     </section>
 
     <section class="card program-video-card" aria-labelledby="programVideoTitle">

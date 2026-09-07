@@ -29,6 +29,15 @@ p { color: var(--muted); line-height: 1.65; }
 .card { padding: 26px; border: 1px solid var(--line); border-radius: 22px; background: var(--surface); box-shadow: 0 16px 45px rgba(30,41,59,.08); }
 .classroom-card { border-color: #a5b4fc; }
 .card-icon { font-size: 2.2rem; }
+.flow-card { display: grid; grid-template-columns: minmax(240px, .78fr) minmax(0, 1.22fr); gap: 18px; align-items: start; margin-bottom: 22px; border-color: #c7d2fe; background: linear-gradient(135deg, #ffffff, #f8fafc); }
+.student-flow-card { margin-bottom: 22px; }
+.flow-label { display: inline-flex; width: max-content; max-width: 100%; padding: 6px 10px; border-radius: 999px; color: var(--primary-dark); background: var(--soft); font-weight: 900; }
+.flow-card h2 { margin: 8px 0 6px; }
+.flow-card p { margin: 0; }
+.role-flow-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; counter-reset: flow; }
+.role-flow-list li { display: grid; gap: 4px; padding: 12px 14px; border: 1px solid #e2e8f0; border-radius: 14px; background: #fff; }
+.role-flow-list b { color: #1e293b; }
+.role-flow-list span { color: var(--muted); line-height: 1.45; font-weight: 700; }
 form { display: grid; gap: 15px; }
 label { display: grid; gap: 7px; color: #334155; font-weight: 750; }
 input { width: 100%; min-height: 48px; padding: 10px 13px; border: 1px solid #cbd5e1; border-radius: 12px; background: #fff; color: var(--ink); font: inherit; }
@@ -69,7 +78,7 @@ input:focus { outline: 3px solid rgba(79,70,229,.2); border-color: var(--primary
 
 @media (max-width: 720px) {
   .shell { width: min(100% - 22px, 1120px); padding-top: 28px; }
-  .choice-grid, .auth-grid, .create-class, .course-picker { grid-template-columns: 1fr; }
+  .choice-grid, .auth-grid, .create-class, .course-picker, .flow-card { grid-template-columns: 1fr; }
   .dashboard-heading, .class-top { align-items: stretch; flex-direction: column; }
   .add-student-form { grid-template-columns: 1fr; }
   .card { padding: 20px; }
