@@ -103,6 +103,29 @@
   box-shadow: 0 12px 30px rgba(23, 32, 51, .08);
 }
 
+.rail-card {
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.role-task-panel h3,
+.rail-card h3 {
+  margin: 0 0 8px;
+}
+
+.role-task-panel ol,
+.rail-card ol {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding-right: 20px;
+  color: var(--ink);
+  font-weight: 800;
+  line-height: 1.45;
+}
+
 .rail-head h1,
 .teacher-control h1 {
   margin-bottom: 8px;
@@ -218,6 +241,32 @@
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 14px;
+}
+
+.teacher-check-grid,
+.student-check-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0 14px;
+}
+
+.teacher-check-grid span,
+.student-check-grid span {
+  display: grid;
+  gap: 4px;
+  padding: 10px 11px;
+  border: 1px solid #dbe8f4;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: var(--muted);
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.teacher-check-grid b,
+.student-check-grid b {
+  color: var(--ink);
 }
 
 .progress-step {
