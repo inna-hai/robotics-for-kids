@@ -127,6 +127,7 @@
     const monitor = document.getElementById('studentMonitor');
     const className = document.getElementById('teacherClassName');
     const classMessage = document.querySelector('#classMessageForm input[name="text"]');
+    const launchLesson = document.getElementById('launchLesson');
     let current = null;
 
     function scoped(action) {
@@ -200,8 +201,13 @@
       className.textContent = data.classroom.name;
       const session = data.session || {};
       document.getElementById('serverState').textContent = session.serverState === 'running' ? 'שרת פעיל' : session.serverState === 'error' ? 'שגיאת הפעלה' : 'שרת מוכן';
-      document.getElementById('serverDetail').textContent = session.serverDetail || '';
+      document.getElementById('serverDetail').textContent = data.minecraftConfigured === false ? data.minecraftSetupNote : (session.serverDetail || '');
       document.getElementById('serverDot').classList.toggle('busy', session.serverState === 'starting');
+      document.getElementById('serverDot').classList.toggle('error', data.minecraftConfigured === false || session.serverState === 'error');
+      if (launchLesson) {
+        launchLesson.disabled = data.minecraftConfigured === false || session.serverState === 'starting';
+        launchLesson.title = data.minecraftConfigured === false ? data.minecraftSetupNote : '';
+      }
       metric('metricConnected', data.metrics?.connected);
       metric('metricActive', data.metrics?.active);
       metric('metricDone', data.metrics?.completed);
@@ -222,7 +228,7 @@
       }
     }
 
-    document.getElementById('launchLesson').addEventListener('click', () => teacherAction(scoped('/launch'), {}, 'מפעילים את עולם המבוך…', 'עולם המבוך פעיל.'));
+    launchLesson.addEventListener('click', () => teacherAction(scoped('/launch'), {}, 'מפעילים את עולם המבוך…', 'עולם המבוך פעיל.'));
     document.getElementById('stopLesson').addEventListener('click', () => teacherAction(scoped('/stop'), {}, 'מסיימים את השיעור…', 'השיעור הסתיים והשרת שוחרר.'));
     document.getElementById('classMessageForm').addEventListener('submit', async event => {
       event.preventDefault();

@@ -1704,6 +1704,8 @@ async function kugelClassView(context, role, useEventCache = true) {
       completed: summaries.filter(student => student.completed).length,
       needsHelp: summaries.filter(student => student.startedAt && !student.completed && student.coins <= 1).length,
     },
+    minecraftConfigured: kugelMinecraftConfigured(),
+    minecraftSetupNote: kugelMinecraftConfigured() ? '' : 'חיבור Minecraft אינו מוגדר בשרת. יש להשלים הגדרות KUGEL_MONITOR ופרטי שרת Minecraft לפני הפעלת שיעור 0.',
     minecraft: ownsRunningWorld ? kugelMinecraftInfo() : null,
   };
 }

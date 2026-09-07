@@ -117,6 +117,7 @@
     });
 
     function showStudent(data) {
+      document.body.classList.add('classroom-student-signed-in');
       form.hidden = true;
       session.hidden = false;
       welcome.textContent = `שלום ${data.student.name}, נכנסת לכיתה ${data.classroom.name}.`;
@@ -155,6 +156,7 @@
       setMessage(message, 'מתנתקים…');
       try {
         await api('/api/classroom/logout', {});
+        document.body.classList.remove('classroom-student-signed-in');
         session.hidden = true;
         form.hidden = false;
         form.reset();
@@ -274,9 +276,15 @@
       }
       courseAccess.append(courseLinks);
       if ((classroom.courses || []).includes('craftom-agent')) {
-        const lessonZero = element('a', 'ניהול שיעור 0 ב-Minecraft', 'button primary');
+        const lessonZeroPanel = element('div', undefined, 'lesson-zero-panel');
+        lessonZeroPanel.append(
+          element('strong', 'שיעור 0 מוכן להפעלה'),
+          element('span', 'מכאן מתחילים את שיעור הפתיחה ב-Minecraft ומנהלים את תלמידי הכיתה.'),
+        );
+        const lessonZero = element('a', 'התחלת שיעור 0 ב-Minecraft', 'button primary lesson-zero-start');
         lessonZero.href = `kugel-teacher.html?classroomId=${encodeURIComponent(classroom.id)}`;
-        courseAccess.append(lessonZero);
+        lessonZeroPanel.append(lessonZero);
+        courseAccess.append(lessonZeroPanel);
       }
 
       const courseForm = element('form', undefined, 'course-access-form');

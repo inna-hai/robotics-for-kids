@@ -235,10 +235,39 @@
 }
 
 .student-stage-grid,
-.detail-columns {
+.detail-columns,
+.lesson-zero-cards {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
+}
+
+.lesson-zero-cards {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.lesson-step-card {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.lesson-step-card p {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 750;
+  line-height: 1.45;
+}
+
+.step-num {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 10px;
+  color: #fff;
+  background: linear-gradient(135deg, #0f766e, #2563eb);
+  font-weight: 900;
 }
 
 .panel {
@@ -405,7 +434,13 @@
   box-shadow: 0 0 0 5px rgba(245, 158, 11, .16);
 }
 
-.metric-grid {
+.status-dot.error {
+  background: #ef4444;
+  box-shadow: 0 0 0 5px rgba(239, 68, 68, .16);
+}
+
+.metric-grid,
+.metrics-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
@@ -436,7 +471,7 @@
 }
 
 .teacher-class-message-form {
-  grid-template-columns: minmax(260px, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) minmax(150px, auto);
   align-items: end;
 }
 
@@ -535,7 +570,7 @@
 .student-row-actions {
   display: grid;
   grid-column: 1 / -1;
-  grid-template-columns: minmax(260px, 1fr) repeat(5, minmax(74px, auto));
+  grid-template-columns: minmax(260px, 1fr) repeat(3, minmax(74px, auto));
   gap: 8px;
   align-items: stretch;
 }
@@ -556,6 +591,19 @@
   border-color: #bfdbfe;
   color: #1d4ed8;
   background: #eff6ff;
+}
+
+.start-lesson-action {
+  width: 100%;
+  min-height: 52px;
+  font-size: 1.02rem;
+}
+
+.primary-action:disabled,
+.secondary-action:disabled {
+  opacity: .58;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 .coin-bar {
@@ -667,7 +715,8 @@
   .teacher-board,
   .workspace-hero,
   .student-stage-grid,
-  .detail-columns {
+  .detail-columns,
+  .lesson-zero-cards {
     grid-template-columns: 1fr;
   }
 
@@ -682,6 +731,7 @@
   }
 
   .metric-grid,
+  .metrics-grid,
   .report-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -716,6 +766,7 @@
   }
 
   .metric-grid,
+  .metrics-grid,
   .report-grid {
     grid-template-columns: 1fr;
   }
