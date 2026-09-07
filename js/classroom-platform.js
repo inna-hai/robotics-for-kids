@@ -64,6 +64,19 @@
     element.classList.toggle('success', success);
   }
 
+  function initPasswordToggles() {
+    document.querySelectorAll('[data-toggle-password]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const input = document.getElementById(button.dataset.togglePassword);
+        if (!input) return;
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        button.setAttribute('aria-label', show ? 'הסתרה' : 'הצגה');
+        button.setAttribute('aria-pressed', show ? 'true' : 'false');
+      });
+    });
+  }
+
   async function initEntry() {
     const requested = requestedCourse();
     const next = requested || nextCourse();
@@ -405,4 +418,5 @@
 
   if (page === 'entry') initEntry();
   if (page === 'teacher') initTeacher();
+  initPasswordToggles();
 })();
