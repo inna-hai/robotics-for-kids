@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ניהול כיתות למורים | hai.tech</title>
   <meta name="description" content="כניסת מורה, יצירת כיתות והוספת תלמידים ללומדות hai.tech.">
-  <link rel="stylesheet" href="css/classroom-platform.css">
+  <link rel="stylesheet" href="css/classroom-platform.css?v=20260907-class-code-layout-1">
 </head>
 <body data-classroom-page="teacher">
   <header class="topbar">
@@ -26,6 +26,7 @@
         <label>מייל<input name="email" type="email" autocomplete="email" required></label>
         <label>סיסמה<input name="password" type="password" autocomplete="current-password" minlength="10" required></label>
         <button class="button primary" type="submit">כניסה</button>
+        <button class="button secondary preview-demo-teacher" id="preview-demo-teacher" type="button" hidden>כניסה כמורה לבדיקה</button>
       </form>
 
       <form class="card" id="teacher-register-form">
@@ -33,7 +34,10 @@
         <label>שם מלא<input name="name" autocomplete="name" required></label>
         <label>מייל<input name="email" type="email" autocomplete="email" required></label>
         <label>סיסמה<input name="password" type="password" autocomplete="new-password" minlength="10" required></label>
-        <label>קוד הזמנה למורה<input name="inviteCode" type="password" autocomplete="off" required></label>
+        <label>קוד הזמנה למורה
+          <input name="inviteCode" type="password" autocomplete="off" required aria-describedby="teacher-invite-help">
+        </label>
+        <p class="field-help" id="teacher-invite-help">קוד הזמנה למורה מתקבל ממנהלת המערכת. זה לא קוד מנהלת ולא קוד כיתה.</p>
         <button class="button secondary" type="submit">יצירת חשבון</button>
       </form>
       <p class="message wide" id="teacher-auth-message" aria-live="polite"></p>
@@ -60,7 +64,7 @@
     </section>
   </main>
 
-  <script src="js/classroom-platform.js?v=20260906-guest-direct-1"></script>
-  <script src="/js/feedback-widget.js?v=20260906-craftom-classrooms-1"></script>
+  <script src="js/classroom-platform.js?v=20260907-class-code-layout-1"></script>
+  <script src="/js/feedback-widget.js?v=20260907-tehila-fixes-1"></script>
 </body>
 </html>

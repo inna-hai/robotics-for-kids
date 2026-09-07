@@ -91,7 +91,7 @@ try {
   await teacherContext.addCookies([{ name: 'haiTechClassroomToken', value: cookieValue(teacherCookie), url: base }]);
   const teacherPage = await teacherContext.newPage();
   await teacherPage.goto(`${base}/teacher-classrooms.html`);
-  const lessonZeroLink = teacherPage.getByRole('link', { name: /ניהול שיעור 0 ב-Minecraft/ });
+  const lessonZeroLink = teacherPage.getByRole('link', { name: /התחלת שיעור 0 ב-Minecraft/ });
   await lessonZeroLink.waitFor();
   await lessonZeroLink.click();
   await teacherPage.waitForURL(new RegExp(`/kugel-teacher\\.html\\?classroomId=${classroom.id}$`));
@@ -100,7 +100,7 @@ try {
   await playerInput.fill('NoaMaze');
   await playerInput.locator('xpath=..').getByRole('button', { name: 'שמירת שחקן' }).click();
   await teacherPage.getByText('שם השחקן נשמר.').waitFor();
-  await teacherPage.getByRole('button', { name: 'פתיחת עולם המבוך' }).click();
+  await teacherPage.getByRole('button', { name: 'התחלת שיעור 0 ופתיחת עולם Minecraft' }).click();
   await teacherPage.locator('#teacherStatus').getByText('עולם המבוך פעיל.').waitFor();
 
   const now = new Date().toISOString();

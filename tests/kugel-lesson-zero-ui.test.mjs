@@ -29,7 +29,7 @@ assert.doesNotMatch(student, /name="studentName"/, 'student identity must come f
 assert.doesNotMatch(student, /href="kugel-teacher\.html"/, 'students must not receive a shortcut to teacher controls');
 
 assert.match(teacher, /ניהול שיעור 0/);
-assert.match(teacher, /פתיחת עולם המבוך/);
+assert.match(teacher, /התחלת שיעור 0 ופתיחת עולם Minecraft/);
 assert.match(teacher, /לוח התלמידים/);
 assert.match(teacher, /עצירת הכיתה/);
 assert.match(teacher, /שחרור הכיתה/);
