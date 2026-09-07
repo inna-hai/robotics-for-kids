@@ -440,10 +440,10 @@
         event.preventDefault();
         setMessage(dashboardMessage, 'שומרים את הלומדות…');
         try {
-          await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/courses`, {
+          const data = await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/courses`, {
             courses: selectedCourses(courseForm),
           });
-          setMessage(dashboardMessage, 'הלומדות של הכיתה עודכנו.', true);
+          setMessage(dashboardMessage, data.warning || 'הלומדות של הכיתה עודכנו.', true);
           await loadClasses();
         } catch (error) {
           setMessage(dashboardMessage, error.message);

@@ -154,8 +154,8 @@
       setMessage(message, `שומרים הרשאות עבור ${teacher.name}…`);
       try {
         const courses = new FormData(form).getAll('courses');
-        await api(`/api/classroom/admin/teachers/${encodeURIComponent(teacher.id)}/courses`, { courses });
-        setMessage(message, `הרשאות הלומדות של ${teacher.name} נשמרו.`, true);
+        const data = await api(`/api/classroom/admin/teachers/${encodeURIComponent(teacher.id)}/courses`, { courses });
+        setMessage(message, data.warning || `הרשאות הלומדות של ${teacher.name} נשמרו.`, true);
         await loadTeachers();
       } catch (error) {
         setMessage(message, error.message);
