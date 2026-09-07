@@ -9724,32 +9724,59 @@
         if(!actions.some(a=>a.cmd === 'color') && !actions.some(a=>a.cmd === 'width')) return ['כמעט — הוסיפו שדרוג חזותי קטן: בלוק צבע או שינוי עובי עט.'];
         return [];
       }
-      if(currentLesson === 17 && String(ex?.id) === '6'){
+      const lesson17BraceletStatus = ()=>{
         const patterns = repeatPatternBlocks();
         const beadRepeats = patterns.filter(({times, body})=>times === 6 && body.some(a=>a.cmd === 'forwardVar' && a.name === 'length') && body.some(a=>(a.cmd === 'right' || a.cmd === 'left') && Number(a.v) === 60));
-        const outerBeadLoops = patterns.filter(({times, body})=>times >= 8 && body.filter(a=>a.cmd === 'forwardVar' && a.name === 'length').length >= 7 && body.filter(a=>(a.cmd === 'right' || a.cmd === 'left') && Number(a.v) === 60).length >= 6);
+        const transitionAngleAfterMove = (body)=>{
+          for(let i=0; i<body.length - 2; i++){
+            if(body[i].cmd === 'pen' && body[i].v === false && body[i + 1].cmd === 'forwardVar' && body[i + 1].name === 'length'){
+              const turn = body.slice(i + 2).find(a=>a.cmd === 'right' || a.cmd === 'left');
+              if(turn && Number.isFinite(Number(turn.v)) && Number(turn.v) > 0) return Number(turn.v);
+            }
+          }
+          return null;
+        };
+        const outerBeadLoops = patterns.map(({times, body})=>{
+          const beadForwardCount = body.filter(a=>a.cmd === 'forwardVar' && a.name === 'length').length;
+          const beadTurn60Count = body.filter(a=>(a.cmd === 'right' || a.cmd === 'left') && Number(a.v) === 60).length;
+          const transitionAngle = transitionAngleAfterMove(body);
+          return {times, body, beadForwardCount, beadTurn60Count, transitionAngle};
+        }).filter(loop=>loop.times >= 6 && loop.beadForwardCount >= 7 && loop.beadTurn60Count >= 6 && loop.transitionAngle !== null);
+        const completeCircleLoop = outerBeadLoops.find(({times, transitionAngle})=>Math.abs(transitionAngle * times - 360) < 0.001);
         const inferredBeadCount = Math.max(beadRepeats.length, ...outerBeadLoops.map(({times})=>times), 0);
+        const expectedBeadCount = completeCircleLoop ? completeCircleLoop.times : inferredBeadCount;
+        return {patterns, beadRepeats, outerBeadLoops, completeCircleLoop, inferredBeadCount, expectedBeadCount};
+      };
+      if(currentLesson === 17 && String(ex?.id) === '6'){
+        const {completeCircleLoop, inferredBeadCount, expectedBeadCount} = lesson17BraceletStatus();
         const forwardLengthCount = actions.filter(a=>a.cmd === 'forwardVar' && a.name === 'length').length;
         const penupCount = actions.filter(a=>a.cmd === 'pen' && a.v === false).length;
         const pendownCount = actions.filter(a=>a.cmd === 'pen' && a.v === true).length;
-        const transitionTurns = actions.filter(a=>(a.cmd === 'right' || a.cmd === 'left') && Number(a.v) !== 60).map(a=>Number(a.v)).filter(v=>Number.isFinite(v) && v > 0);
-        const turnOptions = [...new Set(transitionTurns)].map(angle=>({angle, count:transitionTurns.filter(v=>v === angle).length}));
-        const completeCircleTurn = turnOptions.find(({angle, count})=>count >= Math.max(8, inferredBeadCount || 8) - 1 && Math.abs(angle * count - 360) <= Math.max(5, angle));
         if(actions.some(a=>a.cmd === 'forward')) return ['כמעט — הצמיד צריך להישאר מבוסס על `forward(length)`, בלי `forward` רגיל עם מספרים קבועים.'];
-        if(inferredBeadCount < 8) return ['כמעט — לצמיד שלם צריך הרבה חרוזים. אפשר לבנות בהדרגה: קודם 2 חרוזים בזווית, ואז להמשיך עד שהחרוזים משלימים עיגול. כל חרוז צריך להיות משושה עם `repeat`, `forward(length)` ופנייה של 60 מעלות.'];
-        if(penupCount < inferredBeadCount - 1) return ['כמעט — בין החרוזים צריך להשתמש ב־`penup` כדי לעבור בלי לצייר קווי חיבור.'];
-        if(pendownCount < inferredBeadCount - 1) return ['כמעט — אחרי כל מעבר לחרוז הבא צריך להשתמש ב־`pendown` כדי לחזור לצייר.'];
-        if(forwardLengthCount < inferredBeadCount * 7 - 1) return ['כמעט — גם המעברים בין החרוזים צריכים להשתמש ב־`forward(length)`, לא רק צלעות החרוזים.'];
-        if(!completeCircleTurn) return ['כמעט — נסו מספר חרוזים וזווית פנייה שמשלימים עיגול. למשל 12 חרוזים עם פנייה 30, כי 12 × 30 = 360.'];
+        if(inferredBeadCount < 6) return ['כמעט — לצמיד שלם צריך כמה חרוזים שחוזרים סביב העיגול. אפשר לבנות בהדרגה: קודם 2 חרוזים בזווית, ואז להמשיך עד שהחרוזים משלימים עיגול. כל חרוז צריך להיות משושה עם `repeat`, `forward(length)` ופנייה של 60 מעלות.'];
+        if(!completeCircleLoop) return ['כמעט — בדקו שהפנייה שאחרי המעבר לחרוז הבא כפול מספר החזרות בלולאה החיצונית יוצאת 360. למשל: 12×30 או 6×60.'];
+        if(penupCount < expectedBeadCount - 1) return ['כמעט — בין החרוזים צריך להשתמש ב־`penup` כדי לעבור בלי לצייר קווי חיבור.'];
+        if(pendownCount < expectedBeadCount - 1) return ['כמעט — אחרי כל מעבר לחרוז הבא צריך להשתמש ב־`pendown` כדי לחזור לצייר.'];
+        if(forwardLengthCount < expectedBeadCount * 7 - 1) return ['כמעט — גם המעברים בין החרוזים צריכים להשתמש ב־`forward(length)`, לא רק צלעות החרוזים.'];
         return [];
       }
       if(currentLesson === 17 && String(ex?.id) === '7'){
         if(actions.some(a=>a.cmd === 'forward')) return ['כמעט — גם התליון צריך להשתמש ב־`forward(length)`, בלי `forward` רגיל עם מספר קבוע.'];
-        const beadRepeats = repeatPatternBlocks().filter(({times, body})=>times === 6 && body.some(a=>a.cmd === 'forwardVar' && a.name === 'length') && body.some(a=>(a.cmd === 'right' || a.cmd === 'left') && Number(a.v) === 60));
-        if(beadRepeats.length < 12) return ['כמעט — לפני התליון צריך להישאר צמיד חרוזים שלם עם 12 חרוזים משושים.'];
-        const smallLengthIndex = actions.findIndex(a=>a.cmd === 'setVar' && a.name === 'length' && Number(a.v) >= 10 && Number(a.v) <= 25);
-        if(smallLengthIndex < 0) return ['כמעט — לפני התליון קבעו `length =` לערך קטן, למשל 15 או 20.'];
-        const pendantActions = actions.slice(smallLengthIndex + 1);
+        const {completeCircleLoop, inferredBeadCount, expectedBeadCount} = lesson17BraceletStatus();
+        if(inferredBeadCount < 6) return ['כמעט — לפני התליון צריך להישאר צמיד חרוזים שלם עם כמה חרוזים משושים.'];
+        if(!completeCircleLoop) return ['כמעט — לפני התליון הצמיד צריך להשלים עיגול: הפנייה בין החרוזים כפול מספר החזרות בלולאה החיצונית צריכה לצאת 360.'];
+        const braceletForwardGoal = expectedBeadCount * 7 - 1;
+        let seenBraceletForwards = 0;
+        let pendantStartIndex = -1;
+        for(let i=0; i<actions.length; i++){
+          if(actions[i].cmd === 'forwardVar' && actions[i].name === 'length') seenBraceletForwards++;
+          if(seenBraceletForwards >= braceletForwardGoal && actions[i].cmd === 'setVar' && actions[i].name === 'length' && Number(actions[i].v) >= 10 && Number(actions[i].v) <= 25){
+            pendantStartIndex = i;
+            break;
+          }
+        }
+        if(pendantStartIndex < 0) return ['כמעט — הוסיפו תליון אחרי הצמיד: קודם קבעו `length =` לערך קטן, למשל 15 או 20, ואז ציירו צורה קטנה.'];
+        const pendantActions = actions.slice(pendantStartIndex + 1);
         const pendantForwardLengthCount = pendantActions.filter(a=>a.cmd === 'forwardVar' && a.name === 'length').length;
         const pendantTurnCount = pendantActions.filter(a=>a.cmd === 'right' || a.cmd === 'left').length;
         if(pendantForwardLengthCount < 3) return ['כמעט — התליון צריך לכלול צורה קטנה עם לפחות 3 פקודות `forward(length)`.'];
