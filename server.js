@@ -1442,15 +1442,19 @@ async function handleKugelApi(req, res) {
       const existing = session.students[name] || {};
       const lessonId = Number(body.lessonId ?? session.lessonId);
       if (lessonId === 0) {
+        const reportData = body.report_data || body.reportData || {};
+        const reportCoins = Number(reportData.coins_collected ?? reportData.coinsCollected ?? 0);
+        const reportCompletedAt = Date.parse(reportData.completed_at_iso || reportData.completedAt || '') || 0;
         const events = await fetchKugelGameEvents(session);
         const summary = summarizeStudentFromEvents(name, events, existing);
-        const completed = summary.coins >= 8;
+        const coins = Math.min(8, Math.max(summary.coins, Number.isFinite(reportCoins) ? reportCoins : 0));
+        const completed = coins >= 8;
         session.students[name] = {
           ...existing,
           connected: summary.connected || existing.connected !== false,
-          coins: summary.coins,
+          coins,
           completed,
-          finishedAt: completed ? nowIso() : null,
+          finishedAt: completed ? (reportCompletedAt ? new Date(reportCompletedAt).toISOString() : nowIso()) : null,
         };
       } else {
         session.students[name] = { ...existing, finishedAt: nowIso(), completed: true, coins: 8 };
