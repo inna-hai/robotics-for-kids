@@ -6,11 +6,11 @@
   <title>ניהול שיעור 0 | hai.tech</title>
   <meta name="description" content="לוח מורה מאובטח להפעלת מבוך Minecraft ומעקב אחר תלמידי הכיתה.">
   <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260905-agent-blocks-match-1">
-  <link rel="stylesheet" href="assets/kugel/kugel-lomda-interfaces.css?v=20260906-secure-zero-1">
+  <link rel="stylesheet" href="assets/kugel/kugel-lomda-interfaces.css?v=20260907-feedback-compact-1">
 </head>
 <body class="kugel-app teacher-app" data-kugel-page="teacher">
   <header class="app-topbar">
-    <a class="brand-link" href="teacher-classrooms.html"><span class="brand-mark teacher-mark">K</span><span><strong>Kugel</strong><small>חזרה לכיתות שלי</small></span></a>
+    <a class="brand-link" href="teacher-classrooms.html"><span class="brand-mark teacher-mark">C</span><span><strong>Craftom</strong><small>חזרה לכיתות שלי</small></span></a>
   </header>
   <main class="app-shell">
    <section class="teacher-board">
@@ -19,9 +19,9 @@
       <h1>ניהול שיעור 0</h1>
       <p id="teacherClassName">טוען את הכיתה…</p>
       <section class="panel compact-panel">
-        <h3>פתיחת עולם המבוך</h3>
-        <p>העולם נפתח מחדש עבור הכיתה. ההתקדמות הישנה בשיעור 0 מתאפסת.</p>
-        <button class="primary-action" id="launchLesson" type="button">פתיחת עולם המבוך</button>
+        <h3>התחלת שיעור 0</h3>
+        <p>זה הכפתור שפותח לתלמידים את עולם המבוך. העולם נפתח מחדש עבור הכיתה וההתקדמות הישנה בשיעור 0 מתאפסת.</p>
+        <button class="primary-action start-lesson-action" id="launchLesson" type="button">התחלת שיעור 0 ופתיחת עולם Minecraft</button>
         <button class="secondary-action" id="stopLesson" type="button">סיום השיעור ושחרור השרת</button>
         <p class="form-status" id="teacherStatus" aria-live="polite"></p>
       </section>
@@ -39,9 +39,27 @@
     </aside>
     <section class="teacher-main">
       <div class="workspace-hero teacher-hero">
-        <div><div class="kicker">שיעור 0 • תרגול פתיחה</div><h2>מבוך המטבעות</h2><p class="goal">תנועה, התמצאות, שמונה מטבעות וכפתור סיום.</p></div>
-        <div><span class="status-dot" id="serverDot"></span><strong id="serverState">שרת מוכן</strong><small id="serverDetail"></small></div>
+        <div class="hero-copy"><div class="kicker">שיעור 0 • תרגול פתיחה</div><h2>מבוך המטבעות</h2><p class="goal">תנועה, התמצאות, שמונה מטבעות וכפתור סיום.</p></div>
+        <div class="maze-preview" aria-hidden="true"><span>8</span><small>מטבעות</small></div>
+        <div class="server-status-card"><span class="status-dot" id="serverDot"></span><strong id="serverState">שרת מוכן</strong><small id="serverDetail"></small></div>
       </div>
+      <section class="lesson-zero-cards teacher-zero-cards" aria-label="שלבי ניהול שיעור 0">
+        <article class="panel lesson-step-card">
+          <span class="step-num">1</span>
+          <h3>משייכים שחקנים</h3>
+          <p>מזינים לכל תלמיד/ה את שם השחקן המדויק ב-Minecraft.</p>
+        </article>
+        <article class="panel lesson-step-card">
+          <span class="step-num">2</span>
+          <h3>מתחילים שיעור</h3>
+          <p>לוחצים על “התחלת שיעור 0” כדי לפתוח לתלמידים את עולם המבוך.</p>
+        </article>
+        <article class="panel lesson-step-card">
+          <span class="step-num">3</span>
+          <h3>עוקבים בלוח</h3>
+          <p>רואים מי התחבר, כמה מטבעות נאספו ומי צריך בדיקה.</p>
+        </article>
+      </section>
       <section class="metrics-grid">
         <article class="metric"><strong id="metricConnected">0</strong><span>מחוברים</span></article>
         <article class="metric"><strong id="metricActive">0</strong><span>בתהליך</span></article>
@@ -56,7 +74,7 @@
     </section>
    </section>
   </main>
-  <script src="js/kugel-lesson-zero.js?v=20260906-secure-zero-1"></script>
-  <script src="/js/feedback-widget.js?v=20260906-craftom-classrooms-1"></script>
+  <script src="js/kugel-lesson-zero.js?v=20260907-tehila-fixes-2"></script>
+  <script src="/js/feedback-widget.js?v=20260907-tehila-fixes-1"></script>
 </body>
 </html>

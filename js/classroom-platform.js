@@ -117,6 +117,7 @@
     });
 
     function showStudent(data) {
+      document.body.classList.add('classroom-student-signed-in');
       form.hidden = true;
       session.hidden = false;
       welcome.textContent = `שלום ${data.student.name}, נכנסת לכיתה ${data.classroom.name}.`;
@@ -155,6 +156,7 @@
       setMessage(message, 'מתנתקים…');
       try {
         await api('/api/classroom/logout', {});
+        document.body.classList.remove('classroom-student-signed-in');
         session.hidden = true;
         form.hidden = false;
         form.reset();
@@ -258,9 +260,10 @@
       card.dataset.classId = classroom.id;
       const top = element('div', undefined, 'class-top');
       const titleBox = element('div');
-      titleBox.append(element('h3', classroom.name), element('p', 'קוד הכיתה לתלמידים:'));
-      const code = element('strong', classroom.joinCode, 'code');
-      top.append(titleBox, code);
+      const classCode = element('p', undefined, 'class-code-line');
+      classCode.append(element('span', 'קוד הכיתה לתלמידים:'), element('strong', classroom.joinCode, 'code'));
+      titleBox.append(element('h3', classroom.name), classCode);
+      top.append(titleBox);
 
       const courseAccess = element('section', undefined, 'class-courses');
       courseAccess.append(element('h4', 'הלומדות של הכיתה'));
@@ -274,9 +277,15 @@
       }
       courseAccess.append(courseLinks);
       if ((classroom.courses || []).includes('craftom-agent')) {
-        const lessonZero = element('a', 'ניהול שיעור 0 ב-Minecraft', 'button primary');
+        const lessonZeroPanel = element('div', undefined, 'lesson-zero-panel');
+        lessonZeroPanel.append(
+          element('strong', 'שיעור 0 מוכן להפעלה'),
+          element('span', 'מכאן מתחילים את שיעור הפתיחה ב-Minecraft ומנהלים את תלמידי הכיתה.'),
+        );
+        const lessonZero = element('a', 'התחלת שיעור 0 ב-Minecraft', 'button primary lesson-zero-start');
         lessonZero.href = `kugel-teacher.html?classroomId=${encodeURIComponent(classroom.id)}`;
-        courseAccess.append(lessonZero);
+        lessonZeroPanel.append(lessonZero);
+        courseAccess.append(lessonZeroPanel);
       }
 
       const courseForm = element('form', undefined, 'course-access-form');
@@ -377,6 +386,27 @@
       event.preventDefault();
       submitAuth(event.currentTarget, '/api/classroom/teacher-register');
     });
+    const previewDemoTeacher = document.getElementById('preview-demo-teacher');
+    if (previewDemoTeacher) {
+      api('/api/classroom/preview-demo-teacher-enabled')
+        .then((data) => {
+          if (data.enabled) previewDemoTeacher.hidden = false;
+        })
+        .catch(() => {});
+      previewDemoTeacher.addEventListener('click', async () => {
+        setMessage(authMessage, 'פותחים מורה בדיקה…');
+        previewDemoTeacher.disabled = true;
+        try {
+          const data = await api('/api/classroom/preview-demo-teacher-login', {});
+          setMessage(authMessage, '', true);
+          await showDashboard(data);
+        } catch (error) {
+          setMessage(authMessage, error.message);
+        } finally {
+          previewDemoTeacher.disabled = false;
+        }
+      });
+    }
     document.getElementById('create-class-form').addEventListener('submit', async (event) => {
       event.preventDefault();
       const classForm = event.currentTarget;

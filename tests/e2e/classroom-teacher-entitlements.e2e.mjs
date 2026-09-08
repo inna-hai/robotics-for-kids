@@ -75,6 +75,7 @@ try {
 
   await page.goto(`${baseUrl}/teacher-classrooms.html`);
   await page.locator('#teacher-dashboard').waitFor({ state: 'visible' });
+  await page.locator('#teacher-course-catalog input[name="courses"]').first().waitFor({ state: 'attached' });
   const teacherValues = await page.locator('#teacher-course-catalog input[name="courses"]').evaluateAll((nodes) => nodes.map((node) => node.value));
   assert.deepEqual(teacherValues, ['sensi-city', 'craftom-agent']);
   assert.equal(await page.locator('#teacher-course-catalog a[href="craftom-school/preview/index.html"]').count(), 1);
@@ -92,6 +93,7 @@ try {
 
   await page.goto(`${baseUrl}/teacher-classrooms.html`);
   await page.locator('#teacher-dashboard').waitFor({ state: 'visible' });
+  await page.locator('#teacher-course-catalog input[name="courses"]').first().waitFor({ state: 'attached' });
   const remainingTeacherValues = await page.locator('#teacher-course-catalog input[name="courses"]').evaluateAll((nodes) => nodes.map((node) => node.value));
   assert.deepEqual(remainingTeacherValues, ['craftom-agent']);
   const classCard = page.locator('.class-card').filter({ hasText: 'כיתת E2E' });

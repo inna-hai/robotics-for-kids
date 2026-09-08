@@ -3,11 +3,15 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const os = require('os');
 const Database = require('better-sqlite3');
 
 const ROOT = __dirname;
 const PORT = Number(process.env.PORT || process.argv[2] || 3032);
-const DATA_DIR = path.join(ROOT, 'data');
+const DEFAULT_DATA_DIR = process.env.NODE_ENV === 'test'
+  ? path.join(os.tmpdir(), `robotics-test-data-${process.pid}`)
+  : path.join(ROOT, 'data');
+const DATA_DIR = process.env.ROBOTICS_DATA_DIR || DEFAULT_DATA_DIR;
 const ATTACHMENTS_DIR = path.join(DATA_DIR, 'feedback-attachments');
 const FEEDBACK_FILE = path.join(DATA_DIR, 'feedback.jsonl');
 const CRAFTOM_EXIT_ATTACHMENTS_DIR = path.join(DATA_DIR, 'craftom-exit-ticket-attachments');
@@ -28,15 +32,18 @@ const CLASSROOM_LOGIN_MAX_KEYS = Number.isInteger(configuredClassroomLoginMaxKey
 const classroomLoginFailures = new Map();
 const CLASSROOM_TEACHER_INVITE_CODE = String(process.env.ROBOTICS_TEACHER_INVITE_CODE || '');
 const CLASSROOM_ADMIN_CODE = String(process.env.ROBOTICS_CLASSROOM_ADMIN_CODE || '');
-const KUGEL_MONITOR_API_URL = String(process.env.KUGEL_MONITOR_API_URL || '').replace(/\/+$/, '');
+const CLASSROOM_PREVIEW_DEMO_TEACHER = process.env.ROBOTICS_PREVIEW_DEMO_TEACHER === '1';
+const KUGEL_PREVIEW_MOCK_MINECRAFT = CLASSROOM_PREVIEW_DEMO_TEACHER && process.env.KUGEL_PREVIEW_MOCK_MINECRAFT === '1';
+const KUGEL_MONITOR_API_URL = String(process.env.KUGEL_MONITOR_API_URL || process.env.MINECRAFT_MONITOR_API_URL || '').replace(/\/+$/, '');
 const KUGEL_MONITOR_SERVER_NAME = String(process.env.KUGEL_MONITOR_SERVER_NAME || '');
-const KUGEL_MINECRAFT_INTERNAL_TOKEN = String(process.env.KUGEL_MINECRAFT_INTERNAL_TOKEN || '');
+const KUGEL_MINECRAFT_INTERNAL_TOKEN = String(process.env.KUGEL_MINECRAFT_INTERNAL_TOKEN || process.env.CRAFTOM_SCHOOL_WORLD_TOKEN || process.env.MINECRAFT_INTERNAL_TOKEN || '');
 const KUGEL_MINECRAFT_SERVER_NAME = String(process.env.KUGEL_MINECRAFT_SERVER_NAME || '');
 const KUGEL_MINECRAFT_SERVER_HOST = String(process.env.KUGEL_MINECRAFT_SERVER_HOST || '');
 const KUGEL_MINECRAFT_SERVER_PORT = String(process.env.KUGEL_MINECRAFT_SERVER_PORT || '');
 const KUGEL_MINECRAFT_SERVER_ID = String(process.env.KUGEL_MINECRAFT_SERVER_ID || '');
 const KUGEL_MINECRAFT_ACCESS_CODE = String(process.env.KUGEL_MINECRAFT_ACCESS_CODE || '');
-const KUGEL_LESSON_ZERO_WORLD_ID = String(process.env.KUGEL_LESSON_ZERO_WORLD_ID || 'kugel-50-safe-compounds-v3-mazes-8-coins-npc-reset-caged-inner-v1-20260905');
+const KUGEL_LESSON_ZERO_WORLD_ID = String(process.env.KUGEL_LESSON_ZERO_WORLD_ID || 'kugel-50-safe-compounds-v3-mazes-8-coins-npc-reset-caged-inner-wood-obstacle-test-v1-20260906');
+const KUGEL_PREVIEW_CLASSROOM_ID = String(process.env.KUGEL_PREVIEW_CLASSROOM_ID || '');
 const KUGEL_COURSE_ID = 'craftom-agent';
 const KUGEL_ACTION_WINDOW_MS = 60 * 1000;
 const KUGEL_EVENTS_CACHE_MS = 1000;
@@ -1385,6 +1392,56 @@ function replaceClassroomCourses(db, classroomId, courseIds) {
   db.prepare('UPDATE classrooms SET updated_at = ? WHERE id = ?').run(now, classroomId);
 }
 
+function previewDemoTeacherLogin() {
+  if (!CLASSROOM_PREVIEW_DEMO_TEACHER) return null;
+  return withSummerDb(db => {
+    const email = 'preview-teacher@hai.tech';
+    const now = new Date().toISOString();
+    const createDemo = db.transaction(() => {
+      let teacher = db.prepare('SELECT * FROM classroom_teachers WHERE email = ?').get(email);
+      if (!teacher) {
+        const salt = crypto.randomBytes(16).toString('hex');
+        teacher = {
+          id: crypto.randomUUID(),
+          name: 'מורה בדיקה',
+          email,
+          password_salt: salt,
+          password_hash: hashClassroomSecret(crypto.randomUUID(), salt),
+          created_at: now,
+          updated_at: now,
+        };
+        db.prepare(`
+          INSERT INTO classroom_teachers (id, name, email, password_salt, password_hash, created_at, updated_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?)
+        `).run(teacher.id, teacher.name, teacher.email, teacher.password_salt, teacher.password_hash, teacher.created_at, teacher.updated_at);
+      }
+      replaceTeacherCourses(db, teacher.id, CLASSROOM_COURSE_IDS);
+      let classroom = KUGEL_PREVIEW_CLASSROOM_ID
+        ? db.prepare('SELECT * FROM classrooms WHERE id = ? AND teacher_id = ?').get(KUGEL_PREVIEW_CLASSROOM_ID, teacher.id)
+        : null;
+      if (!classroom) classroom = db.prepare('SELECT * FROM classrooms WHERE teacher_id = ? ORDER BY created_at LIMIT 1').get(teacher.id);
+      if (!classroom) {
+        classroom = {
+          id: crypto.randomUUID(),
+          teacher_id: teacher.id,
+          name: 'כיתת בדיקה ל-preview',
+          join_code: generateClassJoinCode(db),
+          created_at: now,
+          updated_at: now,
+        };
+        db.prepare(`
+          INSERT INTO classrooms (id, teacher_id, name, join_code, created_at, updated_at)
+          VALUES (?, ?, ?, ?, ?, ?)
+        `).run(classroom.id, classroom.teacher_id, classroom.name, classroom.join_code, classroom.created_at, classroom.updated_at);
+      }
+      replaceClassroomCourses(db, classroom.id, [KUGEL_COURSE_ID]);
+      return teacher;
+    });
+    const teacher = createDemo();
+    return { teacher, token: createClassroomTeacherSession(db, teacher.id) };
+  });
+}
+
 function generateClassJoinCode(db) {
   const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   for (let attempt = 0; attempt < 30; attempt += 1) {
@@ -1453,7 +1510,7 @@ function consumeKugelActionLimit(key, maxActions) {
 }
 
 function kugelMinecraftConfigured() {
-  return Boolean(
+  return KUGEL_PREVIEW_MOCK_MINECRAFT || Boolean(
     KUGEL_MONITOR_API_URL
     && KUGEL_MONITOR_SERVER_NAME
     && KUGEL_MINECRAFT_INTERNAL_TOKEN
@@ -1465,8 +1522,21 @@ function kugelMinecraftConfigured() {
   );
 }
 
+function kugelMonitorServerName() {
+  return KUGEL_PREVIEW_MOCK_MINECRAFT ? 'preview-mock-minecraft' : KUGEL_MONITOR_SERVER_NAME;
+}
+
 function kugelMinecraftInfo() {
   if (!kugelMinecraftConfigured()) return null;
+  if (KUGEL_PREVIEW_MOCK_MINECRAFT) {
+    return {
+      serverName: 'Preview Minecraft',
+      serverAddress: 'סביבת בדיקה בלבד',
+      serverId: 'preview-demo',
+      accessCode: 'preview-only',
+      launchUrl: '',
+    };
+  }
   return {
     serverName: KUGEL_MINECRAFT_SERVER_NAME,
     serverAddress: `${KUGEL_MINECRAFT_SERVER_HOST}:${KUGEL_MINECRAFT_SERVER_PORT}`,
@@ -1476,7 +1546,20 @@ function kugelMinecraftInfo() {
   };
 }
 
+function kugelMinecraftSetupNote() {
+  if (KUGEL_PREVIEW_MOCK_MINECRAFT) {
+    return 'מצב preview: אפשר לבדוק את זרימת שיעור 0 באתר, בלי להפעיל שרת Minecraft אמיתי.';
+  }
+  return kugelMinecraftConfigured()
+    ? ''
+    : 'חיבור Minecraft אינו מוגדר בשרת. יש להשלים הגדרות KUGEL_MONITOR ופרטי שרת Minecraft לפני הפעלת שיעור 0.';
+}
+
 async function kugelMonitorRequest(pathname, options = {}, timeoutMs = 15000) {
+  if (KUGEL_PREVIEW_MOCK_MINECRAFT) {
+    if (pathname.startsWith('/api/game-events')) return { events: [] };
+    return { ok: true, preview: true };
+  }
   if (!kugelMinecraftConfigured()) {
     const error = new Error('חיבור Minecraft אינו מוגדר בשרת.');
     error.statusCode = 503;
@@ -1518,7 +1601,7 @@ function serializeKugelMonitorMutation(serverName, task) {
 }
 
 function kugelMonitorMutation(pathname, options = {}, timeoutMs = 15000) {
-  return serializeKugelMonitorMutation(KUGEL_MONITOR_SERVER_NAME, () => kugelMonitorRequest(pathname, options, timeoutMs));
+  return serializeKugelMonitorMutation(kugelMonitorServerName(), () => kugelMonitorRequest(pathname, options, timeoutMs));
 }
 
 function kugelEventPayload(row) {
@@ -1704,7 +1787,10 @@ async function kugelClassView(context, role, useEventCache = true) {
       completed: summaries.filter(student => student.completed).length,
       needsHelp: summaries.filter(student => student.startedAt && !student.completed && student.coins <= 1).length,
     },
-    minecraft: ownsRunningWorld ? kugelMinecraftInfo() : null,
+    minecraftConfigured: kugelMinecraftConfigured(),
+    minecraftPreviewMode: KUGEL_PREVIEW_MOCK_MINECRAFT,
+    minecraftSetupNote: kugelMinecraftSetupNote(),
+    minecraft: role === 'teacher' ? kugelMinecraftInfo() : (ownsRunningWorld ? kugelMinecraftInfo() : null),
   };
 }
 
@@ -1829,7 +1915,7 @@ async function handleKugelApi(req, res) {
             const activeOwner = db.prepare(`
               SELECT classroom_id FROM kugel_class_sessions
               WHERE active = 1 AND monitor_server_name = ? LIMIT 1
-            `).get(KUGEL_MONITOR_SERVER_NAME);
+            `).get(kugelMonitorServerName());
             if (activeOwner) return false;
             db.prepare(`
               INSERT INTO kugel_class_sessions (
@@ -1840,7 +1926,7 @@ async function handleKugelApi(req, res) {
                 lesson_id = 0, active = 1, monitor_server_name = excluded.monitor_server_name,
                 world_id = excluded.world_id, events_since = excluded.events_since, launch_token = excluded.launch_token,
                 server_state = 'starting', server_detail = excluded.server_detail, updated_at = excluded.updated_at
-            `).run(classroomId, KUGEL_MONITOR_SERVER_NAME, KUGEL_LESSON_ZERO.worldId, eventsSince, launchToken, 'מפעיל את עולם המבוך…', now, now);
+            `).run(classroomId, kugelMonitorServerName(), KUGEL_LESSON_ZERO.worldId, eventsSince, launchToken, 'מפעיל את עולם המבוך…', now, now);
             const students = db.prepare('SELECT id FROM classroom_students WHERE classroom_id = ?').all(classroomId);
             for (const student of students) upsertKugelRun(db, student.id, classroomId, { startedAt: null, resetAt: now, finishedAt: null });
             return true;
@@ -1853,7 +1939,7 @@ async function handleKugelApi(req, res) {
         try {
           await kugelMonitorMutation('/api/internal/craftom-school/world/open', {
             method: 'POST',
-            body: JSON.stringify({ server: KUGEL_MONITOR_SERVER_NAME, world: KUGEL_LESSON_ZERO.worldId, start_mode: 'reset' }),
+            body: JSON.stringify({ server: kugelMonitorServerName(), world: KUGEL_LESSON_ZERO.worldId, start_mode: 'reset' }),
           }, 130000);
           const activated = withSummerDb(db => db.prepare(`
             UPDATE kugel_class_sessions SET server_state = 'running', server_detail = ?, updated_at = ?
@@ -1862,7 +1948,7 @@ async function handleKugelApi(req, res) {
           if (!activated.changes) {
             await kugelMonitorMutation('/api/internal/craftom-school/live/freeze', {
               method: 'POST',
-              body: JSON.stringify({ server: KUGEL_MONITOR_SERVER_NAME, scope: 'all', target: '', on: true, mode: 'full', restore: 'adventure' }),
+              body: JSON.stringify({ server: kugelMonitorServerName(), scope: 'all', target: '', on: true, mode: 'full', restore: 'adventure' }),
             }).catch(error => console.error('kugel_stale_launch_freeze_error', { message: error.message }));
             return send(res, 409, JSON.stringify({ error: 'הפעלת העולם בוטלה משום שהשיעור שוחרר.' }));
           }
@@ -1874,7 +1960,7 @@ async function handleKugelApi(req, res) {
           if (!stopping.changes) return send(res, 409, JSON.stringify({ error: 'הפעלת העולם כבר בוטלה.' }));
           await kugelMonitorMutation('/api/internal/craftom-school/live/freeze', {
             method: 'POST',
-            body: JSON.stringify({ server: KUGEL_MONITOR_SERVER_NAME, scope: 'all', target: '', on: true, mode: 'full', restore: 'adventure' }),
+            body: JSON.stringify({ server: kugelMonitorServerName(), scope: 'all', target: '', on: true, mode: 'full', restore: 'adventure' }),
           });
           const released = withSummerDb(db => db.prepare(`
             UPDATE kugel_class_sessions SET active = 0, server_state = 'idle', server_detail = ?, updated_at = ?
@@ -1899,7 +1985,7 @@ async function handleKugelApi(req, res) {
         if (!stoppingLease) return send(res, 409, JSON.stringify({ error: 'אין שיעור פעיל לשחרור.' }));
         await kugelMonitorMutation('/api/internal/craftom-school/live/freeze', {
           method: 'POST',
-          body: JSON.stringify({ server: KUGEL_MONITOR_SERVER_NAME, scope: 'all', target: '', on: true, mode: 'full', restore: 'adventure' }),
+          body: JSON.stringify({ server: kugelMonitorServerName(), scope: 'all', target: '', on: true, mode: 'full', restore: 'adventure' }),
         });
         const released = withSummerDb(db => db.prepare(`
           UPDATE kugel_class_sessions SET active = 0, server_state = 'idle', server_detail = ?, updated_at = ?
@@ -1925,7 +2011,7 @@ async function handleKugelApi(req, res) {
           if (!linked) return send(res, 404, JSON.stringify({ error: 'השחקן אינו משויך לכיתה הזאת.' }));
         }
         const result = await kugelMonitorMutation('/api/internal/craftom-school/live/message', {
-          method: 'POST', body: JSON.stringify({ server: KUGEL_MONITOR_SERVER_NAME, text, scope, target }),
+          method: 'POST', body: JSON.stringify({ server: kugelMonitorServerName(), text, scope, target }),
         });
         return send(res, 200, JSON.stringify({ ok: true, result }));
       }
@@ -1943,7 +2029,7 @@ async function handleKugelApi(req, res) {
       }
       const result = await kugelMonitorMutation('/api/internal/craftom-school/live/freeze', {
         method: 'POST',
-        body: JSON.stringify({ server: KUGEL_MONITOR_SERVER_NAME, scope, target, on: body.on, mode: 'full', restore: 'adventure' }),
+        body: JSON.stringify({ server: kugelMonitorServerName(), scope, target, on: body.on, mode: 'full', restore: 'adventure' }),
       });
       return send(res, 200, JSON.stringify({ ok: true, result }));
     }
@@ -2029,6 +2115,10 @@ async function handleClassroomApi(req, res) {
     return send(res, 200, JSON.stringify({ ok: true, role: getClassroomAdminFromRequest(req) ? 'admin' : 'guest' }));
   }
 
+  if (req.method === 'GET' && action === 'preview-demo-teacher-enabled') {
+    return send(res, 200, JSON.stringify({ ok: true, enabled: CLASSROOM_PREVIEW_DEMO_TEACHER }));
+  }
+
   if (req.method === 'GET' && action === 'admin' && segments[3] === 'teachers' && segments.length === 4) {
     if (!getClassroomAdminFromRequest(req)) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מנהלת.' }));
     const teachers = withSummerDb(db => db.prepare(`
@@ -2049,8 +2139,10 @@ async function handleClassroomApi(req, res) {
     const teacher = getClassroomTeacherFromRequest(req);
     if (!teacher) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
     const classes = withSummerDb(db => db.prepare(`
-      SELECT * FROM classrooms WHERE teacher_id = ? ORDER BY created_at
-    `).all(teacher.id).map(classroom => ({
+      SELECT * FROM classrooms
+      WHERE teacher_id = ?
+      ORDER BY CASE WHEN id = ? THEN 0 ELSE 1 END, created_at
+    `).all(teacher.id, KUGEL_PREVIEW_CLASSROOM_ID).map(classroom => ({
       id: classroom.id,
       name: classroom.name,
       joinCode: classroom.join_code,
@@ -2177,6 +2269,9 @@ async function handleClassroomApi(req, res) {
         return send(res, 403, JSON.stringify({ error: 'הלומדה אינה פתוחה לכיתה הזו.' }));
       }
       if (!lessonId || !activityId) return send(res, 400, JSON.stringify({ error: 'חסרים פרטי התקדמות.' }));
+      if (courseId === KUGEL_COURSE_ID && lessonId === '0' && activityId === 'minecraft-maze' && status === 'completed') {
+        return send(res, 403, JSON.stringify({ error: 'שיעור 0 מושלם רק אחרי בדיקת Minecraft.' }));
+      }
       const metadata = body.metadata && typeof body.metadata === 'object' ? body.metadata : {};
       const metadataJson = JSON.stringify(metadata).slice(0, 4000);
       const row = withSummerDb(db => {
@@ -2396,6 +2491,23 @@ async function handleClassroomApi(req, res) {
         return send(res, 401, JSON.stringify({ error: 'מייל או סיסמה לא נכונים.' }));
       }
       clearClassroomLoginFailures(loginKey);
+      return sendWithHeaders(res, 200, JSON.stringify({
+        ok: true,
+        role: 'teacher',
+        teacher: {
+          id: result.teacher.id,
+          name: result.teacher.name,
+          email: result.teacher.email,
+          courses: withSummerDb(db => teacherCourses(db, result.teacher.id)),
+        },
+      }), 'application/json; charset=utf-8', {
+        'Set-Cookie': classroomSessionCookie(result.token),
+      });
+    }
+
+    if (action === 'preview-demo-teacher-login') {
+      const result = previewDemoTeacherLogin();
+      if (!result) return send(res, 404, JSON.stringify({ error: 'Preview demo is not enabled.' }));
       return sendWithHeaders(res, 200, JSON.stringify({
         ok: true,
         role: 'teacher',
@@ -2851,8 +2963,11 @@ function lockedPage(pathname, user, options = {}) {
   const trialOnly = options.trialOnly === true;
   const classroomRestricted = options.classroomRestricted === true;
   const teacherRestricted = classroomRestricted && options.teacher === true;
+  const lessonZeroRequired = options.lessonZeroRequired === true;
   const title = teacherRestricted
     ? 'הלומדה לא הוקצתה למורה'
+    : lessonZeroRequired
+    ? 'שיעור 1 עדיין נעול'
     : classroomRestricted
     ? 'הלומדה לא פתוחה לכיתה הזו'
     : trialOnly
@@ -2860,6 +2975,8 @@ function lockedPage(pathname, user, options = {}) {
     : (loggedIn ? 'התוכן הזה נעול למנויים' : 'צריך להתחבר כדי להמשיך');
   const subtitle = teacherRestricted
     ? 'מנהלת המערכת יכולה לפתוח את הלומדה למורה. לאחר מכן המורה תוכל לשייך אותה לכיתות לפי הצורך.'
+    : lessonZeroRequired
+    ? 'כדי לעבור לשיעור 1 צריך להשלים קודם את שיעור 0 במיינקראפט. לאחר השלמה מסודרת השיעור הבא ייפתח לתלמיד/ה.'
     : classroomRestricted
     ? 'המורה בוחר/ת אילו לומדות פתוחות לכל כיתה. אפשר לחזור לרשימת הלומדות שהוגדרה לכיתה.'
     : trialOnly
@@ -2883,13 +3000,13 @@ function lockedPage(pathname, user, options = {}) {
     <div class="lock">🔒</div>
     <h1>${title}</h1>
     <p>${subtitle}</p>
-    <div class="locked-label">${teacherRestricted ? 'גישה לפי הרשאת המנהלת' : (classroomRestricted ? 'גישה לפי הגדרת הכיתה' : (trialOnly ? '3 שיעורים חינם אחרי הרשמה' : 'השיעור הזה נפתח אחרי הפעלת מנוי לילד/ה'))}</div>
+    <div class="locked-label">${teacherRestricted ? 'גישה לפי הרשאת המנהלת' : (lessonZeroRequired ? 'נפתח אחרי השלמת שיעור 0' : (classroomRestricted ? 'גישה לפי הגדרת הכיתה' : (trialOnly ? '3 שיעורים חינם אחרי הרשמה' : 'השיעור הזה נפתח אחרי הפעלת מנוי לילד/ה')))}</div>
     <div class="actions">
-      ${classroomRestricted
-        ? `<a class="btn primary" href="${options.teacher ? 'teacher-classrooms.html' : 'classroom-entry.html'}">${teacherRestricted ? 'חזרה ללומדות שלי' : 'חזרה ללומדות הכיתה'}</a>`
+      ${classroomRestricted || lessonZeroRequired
+        ? `<a class="btn primary" href="${lessonZeroRequired ? 'kugel-student.html' : (options.teacher ? 'teacher-classrooms.html' : 'classroom-entry.html')}">${lessonZeroRequired ? 'חזרה לשיעור 0' : (teacherRestricted ? 'חזרה ללומדות שלי' : 'חזרה ללומדות הכיתה')}</a>`
         : `${trialOnly ? '' : '<a class="btn purchase" href="https://mrng.to/fZiL2SITRp">הפעלת מנוי</a>'}<a class="btn primary" href="register.html">הרשמה</a><a class="btn alt" href="login.html">כניסה</a>`}
     </div>
-    <div class="note">${teacherRestricted ? 'רק מנהלת המערכת יכולה לשנות את רשימת הלומדות של המורה.' : (classroomRestricted ? 'רק המורה של הכיתה יכול/ה לשנות את רשימת הלומדות.' : (trialOnly ? 'ההרשמה פותחת 3 שיעורי חשיבה ותכנות בחינם עם סיסי ושומרת את ההתקדמות לילד/ה.' : 'כדי לפתוח את כל הלומדות צריך מנוי פעיל לילד/ה הספציפי/ת.'))}</div>
+    <div class="note">${teacherRestricted ? 'רק מנהלת המערכת יכולה לשנות את רשימת הלומדות של המורה.' : (lessonZeroRequired ? 'המורה יכולה לעקוב אחרי ההתקדמות של שיעור 0 ממסך ניהול הכיתה.' : (classroomRestricted ? 'רק המורה של הכיתה יכול/ה לשנות את רשימת הלומדות.' : (trialOnly ? 'ההרשמה פותחת 3 שיעורי חשיבה ותכנות בחינם עם סיסי ושומרת את ההתקדמות לילד/ה.' : 'כדי לפתוח את כל הלומדות צריך מנוי פעיל לילד/ה הספציפי/ת.')))}</div>
   </main>
 </body>
 </html>`;
@@ -2933,6 +3050,33 @@ function classroomTeacherCourseForPath(pathname) {
   return null;
 }
 
+function requiresCraftomLessonZeroCompletion(pathname, url) {
+  const normalized = String(pathname || '').toLowerCase();
+  const basename = path.basename(normalized, path.extname(normalized));
+  if (/^craftom-minecraft-lesson-(?:[1-9]|1[0-6])$/.test(basename)) return true;
+  if (basename === 'craftom-agent-academy') return true;
+  if (basename === 'craftom-minecraft-challenge' || basename === 'craftom-minecraft-students') return true;
+  if (basename === 'craftom-minecraft' || basename === 'craftom-minecraft-lesson') return true;
+  if (normalized === '/craftom-school/preview/index.html') return true;
+  const lesson = Number(url.searchParams.get('lesson') || url.searchParams.get('challenge') || url.searchParams.get('mission') || 0);
+  return Number.isInteger(lesson) && lesson >= 1;
+}
+
+function classroomStudentCompletedCraftomLessonZero(studentId) {
+  return Boolean(withSummerDb(db => db.prepare(`
+    SELECT 1 FROM classroom_progress
+    WHERE student_id = ? AND course_id = ? AND lesson_id = '0'
+      AND activity_id = 'minecraft-maze' AND status = 'completed'
+    LIMIT 1
+  `).get(studentId, KUGEL_COURSE_ID)));
+}
+
+function replaceLastHtmlTag(html, tag, replacement) {
+  const index = html.lastIndexOf(tag);
+  if (index === -1) return html;
+  return html.slice(0, index) + replacement + html.slice(index + tag.length);
+}
+
 function injectHeadAssets(html) {
   if (!html.includes('</head>')) return html;
   let output = html;
@@ -2944,12 +3088,12 @@ function injectHeadAssets(html) {
 
 function injectUserBadge(html) {
   if (!html.includes('</body>') || html.includes('js/user-badge.js')) return injectHeadAssets(html);
-  return injectHeadAssets(html).replace('</body>', '  <script src="/js/user-badge.js?v=20260905-access-modes-1"></script>\n</body>');
+  return replaceLastHtmlTag(injectHeadAssets(html), '</body>', '  <script src="/js/user-badge.js?v=20260905-access-modes-1"></script>\n</body>');
 }
 
 function injectClassroomSession(html) {
   if (!html.includes('</body>') || html.includes('js/classroom-session.js') || html.includes('js/classroom-platform.js')) return html;
-  return html.replace('</body>', '  <script src="/js/classroom-session.js?v=20260905-access-modes-1"></script>\n</body>');
+  return replaceLastHtmlTag(html, '</body>', '  <script src="/js/classroom-session.js?v=20260905-access-modes-1"></script>\n</body>');
 }
 
 function proxyEnglishBuddy(req, res) {
@@ -3016,6 +3160,18 @@ function serveStatic(req, res) {
 
   if (SUBSCRIPTION_GATE_ENABLED && ext === '.html' && classroomCourse && classroomIdentity && !classroomAuthorized) {
     return send(res, 402, lockedPage(pathname, null, { classroomRestricted: true, teacher: Boolean(classroomTeacher) }), 'text/html; charset=utf-8');
+  }
+
+  if (
+    SUBSCRIPTION_GATE_ENABLED
+    && ext === '.html'
+    && classroomStudent
+    && classroomCourse === KUGEL_COURSE_ID
+    && classroomAuthorized
+    && requiresCraftomLessonZeroCompletion(pathname, url)
+    && !classroomStudentCompletedCraftomLessonZero(classroomStudent.id)
+  ) {
+    return send(res, 423, lockedPage(pathname, null, { lessonZeroRequired: true }), 'text/html; charset=utf-8');
   }
 
   if (SUBSCRIPTION_GATE_ENABLED && ext === '.html' && isFreeTrialLearningHtml(pathname, url) && !profile && !classroomAuthorized) {
