@@ -97,7 +97,7 @@
           </div>
         </div>
         <div class="actions" aria-label="כפתורי הרצת ציור">
-          <button class="btn run" id="runBtn">▶️ הרץ ציור</button>
+          <button class="btn run" id="runBtn">בדוק ציור</button>
           <button class="btn reset" id="stopRunBtn" disabled>⏹ עצור</button>
           <button class="btn reset" id="resetBtn">🔄 נקה ציור</button>
           <button class="btn" id="demoBtn">✨ דוגמת הפעלה</button><span class="demo-note" id="demoNote" hidden>זו דוגמת הפעלה בלבד — לא הפתרון של המשימה.</span>
@@ -4318,278 +4318,82 @@
           },
           {
                     "id": 19,
-                    "title": "קוד סודי בציור",
-                    "goal": "כותבים הוראות מדויקות שאחרים יכולים לבצע.",
-                    "concept": "סימנים וקוד",
-                    "product": "ציור עם מסר סודי",
-                    "blocks": [
-                              "forward",
-                              "right",
-                              "repeat",
-                              "color",
-                              "pen",
-                              "length"
-                    ],
+                    "title": "מתכננים ציור מורכב בשלבים",
+                    "goal": "פותרים חידה קצרה, ואז בונים ציור מורכב כתוכנית מסודרת: חלקים, לולאות, מעברים ודיבאג.",
+                    "concept": "תכנון אלגוריתמי ופירוק לצעדים",
+                    "product": "מפת מקום מסתור: בית, מפתח ועץ שנבנים בשלבים",
+                    "blocks": ["forward", "right", "left", "repeat", "color", "pen", "width", "comment"],
                     "practice": [
-                              "ילד א׳ מתכנן ציור קטן.",
-                              "כותבים 6–10 הוראות מילוליות.",
-                              "ילד ב׳ בונה בלוקים לפי ההוראות.",
-                              "משווים לתכנון המקורי.",
-                              "מתקנים הוראה לא מדויקת.",
-                              "בודקים שורת קוד מול הוראה.",
-                              "מחליפים תפקידים.",
-                              "משפרים שמות/מספרים.",
-                              "מסכמים איזו הוראה הייתה חסרה.",
-                              "אתגר: הוראות בלי להראות תמונה."
+                              "פותרים חידת פתיחה כדי לדעת מה בונים, אבל לא מסתפקים בניחוש.",
+                              "מפרקים בית לחלקים: גוף, גג ופרטים.",
+                              "משתמשים ב־repeat 4 לגוף מרובע וב־repeat 3 לגג משולש.",
+                              "ממקמים חלק חדש בעזרת penup / pendown בלי קו מחבר.",
+                              "בונים מפתח מקווים באורכים שונים לפי סדר פעולות ברור.",
+                              "בונים עץ מגזע והסתעפות של ענפים/עלים.",
+                              "בודקים ומתקנים חלק אחד בלי למחוק את כל התוכנית.",
+                              "משדרגים את המפה בלי לפגוע בסדר ובקריאות של הקוד."
                     ],
                     "timing": [
-                              "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
-                              "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
-                              "18–35 תרגול מודרך ראשון",
-                              "35–55 עבודה עצמאית על משימת הליבה",
-                              "55–70 אתגר הרחבה או דיבאג",
-                              "70–82 שיתוף בזוגות ושיפור לפי משוב",
-                              "82–90 סיכום, רפלקציה ושמירת תוצר"
+                              "0–8 פתיחה: חידה היא שער למשימת תכנות, לא המטרה עצמה",
+                              "8–15 הדגמה קצרה: מפרקים בית לחלקים לפני גרירת בלוקים",
+                              "15–34 תרגילים 1–2: בית בסיסי שלם ואז שיפור/פרטים ומעבר נקי",
+                              "34–45 תרגילים 3–4: פרטים ומעבר נקי למיקום חדש",
+                              "45–60 תרגילים 5–6: מפתח ועץ — ציור בקווים, גדלים ופניות",
+                              "60–74 תרגיל 7: דיבאג של סדר, מיקום וקווים מחברים",
+                              "74–84 אתגר/שדרוג: מוסיפים פרטים בלי לבלגן את התוכנית",
+                              "84–90 סיכום: איך תכנון הפך לקוד מסודר"
                     ],
                     "teacherTips": [
-                              "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
-                              "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
-                              "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
-                              "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
-                              "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+                              "להדגיש: החידה רק מגלה מה בונים; הלמידה היא איך מתכננים ובונים את זה בקוד.",
+                              "לפני כל בנייה לבקש מהילדים להגיד את שלבי האלגוריתם במילים קצרות.",
+                              "להראות רק התחלה קטנה, לא פתרון מלא של בית/מפתח/עץ.",
+                              "לקבל כמה ציורים נכונים, אבל לדרוש החלטות תכנותיות: לולאה, מעבר נקי, סדר פעולות ודיבאג.",
+                              "בדיבאג מתקנים חלק אחד: גג, מעבר, גודל או כיוון — לא מוחקים הכול."
                     ],
                     "unit": "יחידה 4 — משחקונים ואתגרי רובוט",
-                    "level": "קליל וחווייתי לגיל 10–11",
-                    "story": "הצב מצייר סימנים שמסתירים הודעה. הילדים מחברים בין קוד, צבע וצורה.",
-                    "mission": "לבנות ציור שבו צבעים או צורות מייצגים מסר פשוט.",
-                    "outcome": "מסר סודי מצויר עם מפתח פענוח.",
-                    "approach": "קוראים קוד, מנבאים תוצאה, מתקנים באגים קטנים",
-                    "bridge": "מהציור בחזרה לקוד: מאתרים את השורה האחראית",
+                    "level": "יישום משולב לגיל 11–12",
+                    "story": "הצב בונה מפת מקום מסתור. בכל פעם חידה מגלה מה צריך להוסיף, ואז מתכננים את הציור כשלבים בקוד.",
+                    "mission": "לבנות מפת מקום מסתור מסודרת: בית עם גג, מעבר נקי, מפתח ועץ/צמח — ולדעת להסביר את שלבי הקוד.",
+                    "outcome": "ציור מורכב וברור שנבנה בשלבים: בית, מפתח ועץ/צמח, עם לולאות ומעברים נקיים.",
+                    "approach": "חידה קצרה → תכנון שלבים → קוד בלוקים → הרצה → דיבאג ממוקד",
+                    "bridge": "מהתכנון לקוד: כל חלק בציור מקבל קבוצת בלוקים ותפקיד ברור",
                     "durationMinutes": 90,
                     "lessonFlow": [
-                              {
-                                        "minutes": "0–8",
-                                        "title": "פתיחת סיפור ומשימה",
-                                        "teacher": "מציגים את התוצר של היום: ציור עם מסר סודי. שואלים מה הצב צריך לדעת לעשות כדי להגיע לשם.",
-                                        "students": "מנבאים אילו פקודות או בלוקים יעזרו ומנסחים יעד קצר."
-                              },
-                              {
-                                        "minutes": "8–18",
-                                        "title": "הדגמה קצרה בלי פתרון מלא",
-                                        "teacher": "מדגימים רק התחלה: בלוק אחד או שניים שמראים סימנים וקוד. לא חושפים את כל הפתרון.",
-                                        "students": "עונים מה יקרה בהרצה לפני שלוחצים ▶️."
-                              },
-                              {
-                                        "minutes": "18–34",
-                                        "title": "בנייה מודרכת",
-                                        "teacher": "מובילים את תרגילים 1–4 בקצב כיתה, עם עצירות ניבוי קצרות.",
-                                        "students": "בונים, מריצים אחרי כל שינוי, ומתקנים אם הצב הלך לכיוון לא צפוי."
-                              },
-                              {
-                                        "minutes": "34–48",
-                                        "title": "בלוק → Python",
-                                        "teacher": "מחברים בין הבלוקים לשורות הקוד. מדגישים את הגשר: מהציור בחזרה לקוד: מאתרים את השורה האחראית.",
-                                        "students": "לוחצים על בלוק, מוצאים את השורה המודגשת, ומסבירים אותה במילים."
-                              },
-                              {
-                                        "minutes": "48–64",
-                                        "title": "תרגול עצמאי",
-                                        "teacher": "נותנים לתלמידים לעבוד על תרגילים 5–10 בלי להראות פתרון מלא.",
-                                        "students": "מבצעים שינוי קטן, מריצים, משווים ומתקנים."
-                              },
-                              {
-                                        "minutes": "64–76",
-                                        "title": "דיבאג ושיפור",
-                                        "teacher": "נותנים באג נפוץ אחד ושואלים איך מאתרים אותו בלי למחוק הכל.",
-                                        "students": "מתקנים מספר/זווית/סדר/לולאה ומסבירים מה השתנה."
-                              },
-                              {
-                                        "minutes": "76–84",
-                                        "title": "אתגר יצירתי קצר",
-                                        "teacher": "פותחים בחירה אישית מוגבלת כדי לשמור על הצלחה: צבע, גודל, דפוס או פרט אישי.",
-                                        "students": "משדרגים את התוצר בלי לאבד את מושג השיעור."
-                              },
-                              {
-                                        "minutes": "84–90",
-                                        "title": "שיתוף וסיכום",
-                                        "teacher": "מבקשים 2–3 הצגות קצרות ומסכמים במבנה: רעיון → בלוקים → קוד → ציור.",
-                                        "students": "משלימים משפט: “היום בניתי…, השתמשתי ב־…, ותיקנתי…”."
-                              }
+                              {"minutes":"0–8","title":"פתיחת סיפור ומשימה","teacher":"מציגים: היום לא רק מציירים תשובות — מתכננים תוכנית שמורכבת מכמה חלקים.","students":"אומרים מה ההבדל בין ציור אחד קטן לבין ציור מורכב בכמה שלבים."},
+                              {"minutes":"8–15","title":"הדגמה קצרה בלי פתרון מלא","teacher":"פותרים חידת בית ומדגימים פירוק: גוף מרובע, גג משולש, פרט קטן.","students":"מנבאים איזה חלק מתאים ללולאה ואיזו זווית תידרש."},
+                              {"minutes":"15–34","title":"בית שלם ואז שיפור","teacher":"מובילים: בתרגיל 1 בונים בית בסיסי שלם — גוף ב־repeat 4 וגג ב־repeat 3. בתרגיל 2 מוסיפים פרט ומתכננים מעבר נקי.","students":"בונים בית שלם, מריצים, מתקנים זוויות ומוסיפים פרט."},
+                              {"minutes":"34–45","title":"מיקום נקי לקראת חלק חדש","teacher":"מדגישים סדר פעולות: קודם מסיימים את הבית, אחר כך מרימים עט ועוברים למפתח.","students":"עוברים בלי קו מחבר ומכינים מקום לחלק הבא."},
+                              {"minutes":"45–60","title":"מפתח ועץ","teacher":"מבקשים לחשוב מתי לא צריך לולאה: מפתח מקווים שונים; עץ מהסתעפות.","students":"בונים חלקים חדשים עם גדלים ופניות."},
+                              {"minutes":"60–74","title":"דיבאג","teacher":"שואלים: איזה חלק בעייתי — סדר, זווית, גודל או מעבר? מתקנים רק אותו.","students":"מריצים, מזהים בעיה ומתקנים בלוק אחד או שניים."},
+                              {"minutes":"74–84","title":"שדרוג","teacher":"פותחים בחירה מוגבלת: דלת/חלון, שיניים למפתח, עלים, צבע/עובי.","students":"משדרגים בלי למחוק את המבנה."},
+                              {"minutes":"84–90","title":"סיכום","teacher":"מסכמים איך תכנון הפך לקוד.","students":"משלימים משפט קצר על שלב אחד ותפקידו בקוד."}
                     ],
                     "exercises": [
-                              {
-                                        "id": 1,
-                                        "minutes": "18–23",
-                                        "title": "תרגול 1 — חימום — מריצים ורואים",
-                                        "prompt": "ילד א׳ מתכנן ציור קטן.",
-                                        "hint": "אל תנסו לפתור הכל בבת אחת — גררו בלוק אחד, הריצו, ואז המשיכו.",
-                                        "check": "יש לפחות פקודת תנועה אחת והציור מופיע על המסך.",
-                                        "commonMistake": "מנסים לגרור הרבה בלוקים לפני הרצה ראשונה ואז קשה לדעת מה השפיע."
-                              },
-                              {
-                                        "id": 2,
-                                        "minutes": "23–28",
-                                        "title": "תרגול 2 — קוראים את הבלוקים",
-                                        "prompt": "כותבים 6–10 הוראות מילוליות.",
-                                        "hint": "חפשו איפה מופיע הרעיון המרכזי של השיעור: סימנים וקוד.",
-                                        "check": "התלמיד/ה יודע/ת להצביע על הבלוק או השורה שקשורים ל־סימנים וקוד.",
-                                        "commonMistake": "מסתכלים רק על הציור ולא מחברים אותו לקוד שנוצר."
-                              },
-                              {
-                                        "id": 3,
-                                        "minutes": "28–34",
-                                        "title": "תרגול 3 — שינוי קטן ובטוח",
-                                        "prompt": "ילד ב׳ בונה בלוקים לפי ההוראות.",
-                                        "hint": "שינוי טוב הוא שינוי קטן: מספר אחד, צבע אחד או פנייה אחת.",
-                                        "check": "אחרי שינוי קטן רואים שינוי ברור בתוצאה, בלי לשבור את כל התוכנית.",
-                                        "commonMistake": "משנים כמה דברים יחד ואז לא יודעים מה גרם לשינוי."
-                              },
-                              {
-                                        "id": 4,
-                                        "minutes": "34–40",
-                                        "title": "תרגול 4 — מחברים בלוק לקוד",
-                                        "prompt": "משווים לתכנון המקורי.",
-                                        "hint": "לחצו על בלוק וראו איזו שורת Python נדלקת בקוד.",
-                                        "check": "כאשר בוחרים בלוק, שורת Python המתאימה מודגשת.",
-                                        "commonMistake": "לא שמים לב שהשורה המודגשת בקוד היא חלק מהלמידה, לא קישוט."
-                              },
-                              {
-                                        "id": 5,
-                                        "minutes": "40–47",
-                                        "title": "תרגול 5 — בדיקת מהנדסים",
-                                        "prompt": "מתקנים הוראה לא מדויקת.",
-                                        "hint": "מהנדסים בודקים לפחות שני מצבים, לא רק הרצה אחת שעבדה במקרה.",
-                                        "check": "התלמיד/ה בדק/ה לפחות שתי הרצות והשווה/השוותה ביניהן.",
-                                        "commonMistake": "בודקים רק מצב אחד ולכן חושבים שהפתרון תמיד עובד."
-                              },
-                              {
-                                        "id": 6,
-                                        "minutes": "47–53",
-                                        "title": "תרגול 6 — תרגול דיוק",
-                                        "prompt": "בודקים שורת קוד מול הוראה.",
-                                        "hint": "נסו לבנות מסלול סגור: בסוף הצב צריך לחזור למקום שממנו התחיל.",
-                                        "check": "נקודת הסיום של הצב חוזרת לנקודת ההתחלה.",
-                                        "commonMistake": "מוחקים את כל הפתרון במקום לתקן בלוק/ערך קטן."
-                              },
-                              {
-                                        "id": 7,
-                                        "minutes": "53–60",
-                                        "title": "תרגול 7 — דיבאג מכוון",
-                                        "prompt": "מחליפים תפקידים.",
-                                        "hint": "שדרוג יצירתי לא חייב להיות מסובך. לפעמים צבע, עובי או חזרה נוספת מספיקים.",
-                                        "check": "התוצר עדיין קשור למשימה: ציור עם מסר סודי.",
-                                        "commonMistake": "מוסיפים קישוטים אבל מאבדים את מטרת השיעור."
-                              },
-                              {
-                                        "id": 8,
-                                        "minutes": "60–66",
-                                        "title": "תרגול 8 — שדרוג יצירתי",
-                                        "prompt": "משפרים שמות/מספרים.",
-                                        "hint": "הסבר טוב מתחיל ב: “קודם הצב עושה…, ואז…”.",
-                                        "check": "ההסבר כולל רצף: פקודה → תוצאה → תיקון או שיפור.",
-                                        "commonMistake": "אומרים “זה עובד” בלי להסביר למה."
-                              },
-                              {
-                                        "id": 9,
-                                        "minutes": "66–71",
-                                        "title": "תרגול 9 — קריאת Python בקול",
-                                        "prompt": "מסכמים איזו הוראה הייתה חסרה.",
-                                        "hint": "קראו את הקוד כאילו הוא הוראות לצב, לא כמו טקסט זר.",
-                                        "check": "התלמיד/ה קרא/ה 3 שורות Python והסביר/ה אותן במילים.",
-                                        "commonMistake": "קוראים את הקוד מהר מדי בלי להבין את סדר הפעולות."
-                              },
-                              {
-                                        "id": 10,
-                                        "minutes": "71–76",
-                                        "title": "תרגול 10 — עבודה בזוגות",
-                                        "prompt": "אתגר: הוראות בלי להראות תמונה.",
-                                        "hint": "בזוגות — אחד מדבר ואחד נוגע במחשב, ואז מחליפים.",
-                                        "check": "הזוג ביצע ניבוי ואז בדיקה בפועל.",
-                                        "commonMistake": "בן/בת זוג אחד עושה הכל והשני לא מסביר."
-                              },
-                              {
-                                        "id": 11,
-                                        "minutes": "76–81",
-                                        "title": "תרגול 11 — תרגול מתקדם",
-                                        "prompt": "בנו גרסה קצת מורכבת יותר שמשתמשת במושג המרכזי של השיעור לפחות פעמיים.",
-                                        "hint": "התרגול פתוח, אבל עדיין צריך להשתמש במושג של השיעור.",
-                                        "check": "התרגול משתמש במושג המרכזי ולא רק מוסיף קישוט.",
-                                        "commonMistake": "קופצים לפתרון מורכב מדי לפני שהבסיס יציב."
-                              },
-                              {
-                                        "id": 12,
-                                        "minutes": "81–85",
-                                        "title": "תרגול 12 — בדיקת איכות",
-                                        "prompt": "בדקו שהתוכנית עובדת אחרי איפוס והרצה מחדש, לא רק פעם אחת.",
-                                        "hint": "בדיקת איכות טובה מתחילה מאיפוס והרצה נקייה.",
-                                        "check": "התוכנית עובדת גם אחרי איפוס והרצה מחדש.",
-                                        "commonMistake": "לא מאפסים לפני בדיקה ולכן תוצאה ישנה מבלבלת."
-                              },
-                              {
-                                        "id": 13,
-                                        "minutes": "85–88",
-                                        "title": "תרגול 13 — הכנה להצגה",
-                                        "prompt": "הכינו משפט הצגה: מה בניתי, באיזה בלוק השתמשתי, ואיפה רואים את זה בקוד.",
-                                        "hint": "הצגה קצרה עדיפה על הסבר ארוך ומבולבל.",
-                                        "check": "יש משפט הצגה שמחבר תוצר, בלוק וקוד.",
-                                        "commonMistake": "מציגים רק את הציור ולא מסבירים את הקשר לבלוקים ולקוד."
-                              },
-                              {
-                                        "id": 14,
-                                        "minutes": "88–90",
-                                        "title": "תרגול 14 — רפלקציה קצרה",
-                                        "prompt": "השלימו משפט: היום למדתי ש־___, ובפעם הבאה אשפר ___.",
-                                        "hint": "רפלקציה קצרה עוזרת לזכור: מה ניסיתי, מה עבד, ומה תיקנתי?",
-                                        "check": "יש משפט סיכום אישי ומדויק.",
-                                        "commonMistake": "מסיימים בלי לנסח מה למדו ומה ירצו לשפר."
-                              }
+                              {"id":1,"minutes":"15–28","title":"תרגול 1 — חידה ואז בית בסיסי שלם","prompt":"חידה: יש לי קירות, גג ודלת. לפעמים יש בי חלון, ובסוף היום חוזרים אליי. כתבו את התשובה ולחצו בדוק תשובה. אחרי תשובה נכונה: בנו בית בסיסי שלם — גוף מרובע עם repeat 4 וגג משולש עם repeat 3.","hint":"הבית בנוי משני חלקים: גוף — repeat 4 ופנייה של 90; גג — repeat 3 ופנייה של 120. תכננו איפה הצב צריך להיות לפני שמתחילים את הגג.","check":"התשובה לחידה נכונה, ויש בית בסיסי שלם: גוף מרובע עם repeat 4 וגג משולש עם repeat 3.","commonMistake":"מציירים רק ריבוע או רק משולש, במקום לחבר שני חלקים לבית אחד."},
+                              {"id":2,"minutes":"28–38","title":"תרגול 2 — שני פרטים לבית בלי קווים מיותרים","prompt":"עכשיו שפרו את הבית בשני פרטים ספציפיים: הוסיפו דלת, ואז הוסיפו גם חלון או ארובה. עברו אל הפרטים ואל המקום הבא בעזרת penup / pendown, בלי לצייר קווים מיותרים ביניהם.","hint":"הסדר המומלץ: לצייר דלת → penup → לעבור לחלון/ארובה → pendown → לצייר פרט שני → penup → לעבור למקום הבא → pendown.","check":"הבית נשאר שלם, נוספו לו שני פרטים — דלת וחלון או ארובה — ויש לפחות שני מעברים נקיים בעזרת penup / pendown.","commonMistake":"מציירים דלת וחלון עם קו מחבר ביניהם, או מוסיפים רק פרט אחד."},
+                              {"id":3,"minutes":"38–46","title":"תרגול 3 — בדיקת סדר הפעולות","prompt":"הריצו את הבית מתחילתו ובדקו: האם הגוף נסגר? האם הגג יושב במקום הגיוני? האם המעבר הנקי קורה רק אחרי שהבית מוכן? תקנו את הסדר אם צריך.","hint":"אם הגג יצא בצד או הקו המחבר הופיע מוקדם מדי — אל תמחקו הכול. הזיזו רק את קבוצת הבלוקים הבעייתית או תקנו זווית/עט.","check":"הבית נשאר שלם, ויש סדר ברור: גוף, גג, פרט, ואז מעבר נקי.","commonMistake":"מתקנים בעיה אחת אבל שוברים חלק שכבר עבד."},
+                              {"id":4,"minutes":"46–52","title":"תרגול 4 — הכנת מקום למפתח","prompt":"ודאו שהצב נמצא במקום חדש ונקי, מוכן לצייר את המפתח. אם עדיין יש קו מחבר בין הבית למקום החדש — תקנו את המעבר.","hint":"זה תרגיל קצר של שליטה במיקום: penup, תנועה, pendown, ואז לעצור במקום שממנו המפתח יתחיל.","check":"הצב עבר מהבית למקום חדש בלי קו מחבר, והוא מוכן לצייר שם את הפריט הבא.","commonMistake":"מתחילים את המפתח צמוד מדי לבית או עם קו שמחבר ביניהם."},
+                              {"id":5,"minutes":"50–60","title":"תרגול 5 — חידה ומפתח מקווים","prompt":"חידה: אני קטן, אבל פותח דלת גדולה. לפעמים יש לי שיניים, ואני עובד רק כשמסובבים אותי נכון. כתבו את התשובה ולחצו בדוק תשובה. אחרי תשובה נכונה: ציירו מפתח מקו ארוך ושתי שיניים קצרות.","hint":"כאן לא חייבים לולאה. העיקר הוא סדר פעולות וגדלים: קו ארוך, פנייה, קו קצר, חזרה, ועוד שן.","check":"התשובה לחידה נכונה, ונוסף מפתח ברור: קו ארוך ועוד לפחות שני קווים קצרים/שיניים.","commonMistake":"מציירים רק קו אחד ולכן לא רואים שזה מפתח."},
+                              {"id":6,"minutes":"60–70","title":"תרגול 6 — חידה ועץ מסתעף","prompt":"חידה: אני עומד ליד הבית. יש לי גזע, ולמעלה ענפים או עלים. כתבו את התשובה ולחצו בדוק תשובה. אחרי תשובה נכונה: ציירו עץ או צמח עם גזע והסתעפות.","hint":"ציירו גזע, ואז השתמשו בפניות ימינה/שמאלה כדי ליצור שני ענפים או עלים. כאן מתרגלים הסתעפות של כיוונים, לא צורה סגורה.","check":"התשובה לחידה נכונה, ונוסף עץ/צמח עם גזע ועוד ענפים או עלים בכיוונים שונים.","commonMistake":"מציירים רק קו אחד למעלה וקשה להבין שזה עץ."},
+                              {"id":7,"minutes":"70–78","title":"תרגול 7 — דיבאג של תוכנית שלמה","prompt":"הריצו את כל המפה ובחרו בעיה אחת לתקן: גג בזווית לא נכונה, קו מחבר מיותר, מפתח קטן מדי או עץ בלי ענפים. תקנו רק את החלק הבעייתי.","hint":"אל תמחקו הכול. מצאו את קבוצת הבלוקים של החלק הבעייתי ושנו מספר, זווית, צבע או מעבר אחד.","check":"המפה עדיין כוללת בית, מפתח ועץ/צמח, ויש לפחות מעבר נקי אחד בין חלקים.","commonMistake":"מוחקים את כל העבודה במקום לתקן חלק אחד."},
+                              {"id":8,"minutes":"78–84","title":"אתגר רשות — שדרוג בלי בלגן","prompt":"אם יש זמן: הוסיפו שדרוג קטן שעוזר להבין את המפה — חלון, דלת, שיניים למפתח, עלים, צבע נוסף או עובי עט.","hint":"שדרוג טוב לא מסתיר את המבנה. אם אחרי השדרוג קשה לקרוא את המפה — הקטינו אותו.","check":"נוסף שדרוג חזותי והמבנה של המפה עדיין ברור.","commonMistake":"מוסיפים קישוט גדול שמבלבל את הציור."},
+                              {"id":9,"minutes":"84–88","title":"תרגול 9 — חיבור לקוד","prompt":"בחרו חלק אחד במפה והסבירו: מה היה התכנון שלו, אילו בלוקים בנו אותו, ואיזו שורת Python נוצרה מהם.","hint":"למשל: repeat 4 בנה גוף, repeat 3 בנה גג, penup הזיז בלי ציור.","check":"ההסבר מחבר בין תכנון, בלוק, שורת Python ותוצאה בציור.","commonMistake":"מסבירים רק מה רואים בציור ולא איך הקוד יצר אותו."},
+                              {"id":10,"minutes":"88–90","title":"תרגול 10 — רפלקציה קצרה","prompt":"השלימו משפט: החלק שהכי היה צריך תכנון היה ___, והבלוק שהכי עזר לי היה ___.","hint":"משפט קצר וברור מספיק.","check":"יש משפט סיכום שמחבר בין תכנון לקוד.","commonMistake":"מסיימים בלי לדעת להסביר למה סדר הפעולות היה חשוב."}
                     ],
-                    "vocabulary": [
-                              [
-                                        "לולאה",
-                                        "דרך לבקש מהמחשב לחזור על אותן פקודות כמה פעמים."
-                              ],
-                              [
-                                        "משתנה",
-                                        "שם ששומר ערך, למשל length, כדי להשתמש בו שוב ושוב."
-                              ],
-                              [
-                                        "ניבוי",
-                                        "לפני הרצה אומרים מה לדעתנו יקרה, ואז בודקים."
-                              ],
-                              [
-                                        "פקודה",
-                                        "הוראה אחת שהצב מבצע, למשל לזוז קדימה או להסתובב."
-                              ],
-                              [
-                                        "הרצה",
-                                        "לחיצה על ▶️ כדי לבדוק מה התוכנית עושה באמת."
-                              ],
-                              [
-                                        "דיבאג",
-                                        "למצוא איפה התוכנית לא עשתה מה שרצינו ולתקן צעד־צעד."
-                              ]
-                    ],
+                    "vocabulary": [["חידה","שער קצר שמגלה מה צריך לבנות."],["אלגוריתם","רשימת צעדים מסודרת לפתרון משימה."],["פירוק לצעדים","חלוקה של ציור מורכב לחלקים קטנים: גוף, גג, פרט, מעבר."],["לולאה","דרך לחזור על אותה פעולה כדי לבנות צורה."],["מעבר נקי","הזזת הצב בלי ציור בעזרת הרם עט והורד עט."],["דיבאג ממוקד","לתקן חלק אחד בתוכנית בלי למחוק הכול."]],
                     "successCriteria": [
-                              "התוצר נראה כמו ציור עם מסר סודי או גרסה אישית שלו.",
-                              "נעשה שימוש מודע במושג: סימנים וקוד.",
-                              "התלמיד/ה הריץ/ה יותר מפעם אחת ושיפר/ה אחרי בדיקה.",
-                              "התלמיד/ה יודע/ת להצביע על בלוק אחד ועל שורת Python שנוצרה ממנו."
+                              "הבית כולל גוף מרובע וגג משולש שנבנו בלולאות מתאימות.",
+                              "יש לפחות מעבר נקי אחד בין חלקים בעזרת penup / pendown.",
+                              "המפה כוללת לפחות שלושה חלקים: בית, מפתח ועץ/צמח.",
+                              "התלמיד/ה יודע/ת להסביר שלב אחד בתכנון ואת הבלוקים שבנו אותו."
                     ],
-                    "teacherQuestions": [
-                              "מה לדעתכם יקרה לפני שנריץ?",
-                              "איזה שינוי קטן הכי השפיע על הציור?",
-                              "איפה בקוד רואים את הבלוק שבחרתם?",
-                              "אם זה לא עבד — איך יודעים מה לבדוק קודם?"
-                    ],
-                    "aiHelper": [
-                              "תן/י רעיון לשדרוג קל של ציור עם מסר סודי בלי לפתור במקום התלמיד/ה.",
-                              "הסבר/י לילד/ה בכיתה ה׳ מה זה סימנים וקוד באמצעות הצב המצייר.",
-                              "עזור/עזרי למצוא באג במספר, כיוון, לולאה או סדר פקודות בלי לתת פתרון מלא."
+                    "teacherPrompt": [
+                              "הסבר/הסבירי לכיתה ה׳ איך חידה קצרה הופכת למשימת תכנון בקוד, ולא רק לציור חופשי.",
+                              "עזור/עזרי לתלמיד/ה לפרק בית, מפתח או עץ לשלבים קטנים בלי לתת פתרון מלא.",
+                              "עזור/עזרי למצוא האם הבעיה היא בסדר, בזווית, במעבר נקי או בגודל — ולתקן רק חלק אחד."
                     ]
           },
-          {
-                    "id": 20,
+          {                    "id": 20,
                     "title": "אתגר העיר: כביש, בית, פארק",
                     "goal": "יוצרים דגם שחוזר: כביש, עמודים, חלונות או בניינים.",
                     "concept": "שילוב מערכות",
@@ -7664,6 +7468,7 @@
     const selectionExerciseSelections = {};
     const runOnlyExampleStarted = {};
     const pythonWritingAnswers = {};
+    const lesson19RiddleAnswers = {};
     const lesson12CurrentOnlyXml = {};
     const lesson12CumulativeXml = {};
     const lesson12CumulativeActions = {};
@@ -7931,7 +7736,8 @@
       updateTurtle();
     }
     function setRunControls(isRunning){
-      document.getElementById('runBtn').disabled = isRunning;
+      const runBtn = document.getElementById('runBtn');
+      if(runBtn) runBtn.disabled = isRunning;
       document.getElementById('stopRunBtn').disabled = !isRunning;
       if(isRunning) document.getElementById('checkExerciseBtn')?.setAttribute('disabled','');
       else document.getElementById('checkExerciseBtn')?.removeAttribute('disabled');
@@ -8010,6 +7816,32 @@
     }
     function pythonWritingKey(){
       return `${currentLesson}:${currentExerciseIndex}`;
+    }
+    function lesson19RiddleConfig(ex){
+      if(currentLesson !== 19) return null;
+      const configs = {
+        1: {answers:['בית','הבית'], hint:'רמז: יש לו קירות, גג ודלת.', solved:'נכון — עכשיו בונים בית בסיסי שלם: גוף עם repeat 4 וגג עם repeat 3.'},
+        5: {answers:['מפתח','המפתח'], hint:'רמז: קטן, אבל יכול לפתוח דלת גדולה.', solved:'נכון — עכשיו בונים מפתח מקו ארוך ושיניים קצרות.'},
+        6: {answers:['עץ','העץ','צמח','הצמח'], hint:'רמז: יש לו גזע, ענפים או עלים.', solved:'נכון — עכשיו בונים עץ או צמח מגזע והסתעפות.'}
+      };
+      return configs[Number(ex?.id)] || null;
+    }
+    function normalizeLesson19Answer(value){
+      return String(value || '').trim().replace(/["'״׳]/g,'').replace(/\s+/g,' ').toLowerCase();
+    }
+    function isLesson19RiddleSolved(ex){
+      const cfg = lesson19RiddleConfig(ex);
+      if(!cfg) return true;
+      const value = normalizeLesson19Answer(lesson19RiddleAnswers[`${currentLesson}:${ex.id}`]);
+      return cfg.answers.map(normalizeLesson19Answer).includes(value);
+    }
+    function lesson19RiddleHtml(ex){
+      const cfg = lesson19RiddleConfig(ex);
+      if(!cfg) return '';
+      const key = `${currentLesson}:${ex.id}`;
+      const value = lesson19RiddleAnswers[key] || '';
+      const solved = isLesson19RiddleSolved(ex);
+      return `<div class="secret-reveal" style="background:${solved ? '#f0fdf4' : '#fff7ed'};border-color:${solved ? '#bbf7d0' : '#fed7aa'};color:${solved ? '#166534' : '#7c2d12'}"><label for="lesson19RiddleAnswer"><b>מה התשובה לחידה?</b></label><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"><input id="lesson19RiddleAnswer" value="${escapeHtml(value)}" autocomplete="off" style="flex:1 1 150px;border:2px solid #fed7aa;border-radius:14px;padding:10px 12px;font-family:inherit;font-weight:900;" placeholder="כתבו תשובה"><button class="btn run" id="lesson19CheckAnswerBtn" type="button">בדוק תשובה</button></div><small id="lesson19AnswerFeedback">${solved ? escapeHtml(cfg.solved) : 'קודם פותרים את החידה. תשובה נכונה לא מעבירה תרגיל — היא רק פותחת את שלב הציור.'}</small></div>`;
     }
     function exerciseVisualHtml(ex){
       if(currentLesson === 16){
@@ -8521,6 +8353,7 @@
       return restoreXml(exerciseStartXml[baselineKey(index)]);
     }
     function isTipExercise(ex){
+      if(currentLesson === 19) return false;
       if((currentLesson === 3 && ex?.id === 5) || (currentLesson === 4 && ex?.id === 6) || (currentLesson === 5 && ex?.id === 3) || (currentLesson === 8 && ex?.id === 4)) return false;
       const text = `${ex?.title || ''} ${ex?.prompt || ''}`;
       return /הידעתם|לחצו על בלוק|לוחצים על בלוק|שורת קוד נדלקת|שורת הקוד.*נדלקת|שורת Python/.test(text);
@@ -8825,7 +8658,10 @@
       const nextButtonLabel = isLesson10FinalExercise() ? 'לכספת הסודית' : (isLast ? (nextLessonId ? 'סיימתי — לשיעור הבא' : 'סיימתי את הקורס') : 'המשך');
       const writingExercise = isPythonWritingExercise(ex);
       const mainRunBtn = document.getElementById('runBtn');
-      if(mainRunBtn) mainRunBtn.style.display = writingExercise ? 'none' : '';
+      if(mainRunBtn){
+        mainRunBtn.style.display = '';
+        mainRunBtn.textContent = writingExercise ? 'הרץ את הקוד שכתבתי' : 'בדוק ציור';
+      }
       const writingValue = pythonWritingAnswers[pythonWritingKey()] || '';
       const writingPlaceholder = (()=>{
         if(currentLesson === 12 && ex?.id === 9) return '# קווקו / גלגל / אור ברמזור&#10;color("#facc15")&#10;pensize(14)&#10;forward(1)';
@@ -8851,7 +8687,8 @@
       ) : '';
       const secretRevealHtml = lesson10SecretRevealHtml(ex);
       updateLesson10CanvasSecret(ex);
-      missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div>${lesson10IntroHtml}${lesson11IntroHtml}${lesson16BlocksIntroHtml}${lesson12CumulativeHtml}${lesson13CumulativeHtml}<p><b>${escapeHtml(ex.prompt || '')}</b></p>${exerciseVisualHtml(ex)}${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p>${(isChallengeExercise(ex) || isRunOnlyExampleExercise(ex)) ? '' : `<p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}`}${writingHtml}<div class="exercise-bottom"><div class="exercise-controls">${resetButton}<button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${nextButtonLabel}</button></div>${feedbackBelowButtons ? '<br>' : feedbackHtml}</div>${feedbackBelowButtons ? feedbackHtml : ''}${secretRevealHtml}</div>`;
+      const lesson19RiddleBoxHtml = lesson19RiddleHtml(ex);
+      missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div>${lesson10IntroHtml}${lesson11IntroHtml}${lesson16BlocksIntroHtml}${lesson12CumulativeHtml}${lesson13CumulativeHtml}<p><b>${escapeHtml(ex.prompt || '')}</b></p>${lesson19RiddleBoxHtml}${exerciseVisualHtml(ex)}${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p>${(isChallengeExercise(ex) || isRunOnlyExampleExercise(ex)) ? '' : `<p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}`}${writingHtml}<div class="exercise-bottom"><div class="exercise-controls">${resetButton}<button class="btn run" id="checkExerciseBtn" type="button">בדוק ציור</button><button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${nextButtonLabel}</button></div>${feedbackBelowButtons ? '<br>' : feedbackHtml}</div>${feedbackBelowButtons ? feedbackHtml : ''}${secretRevealHtml}</div>`;
       if(feedbackBelowButtons && message){
         requestAnimationFrame(()=>missionEl.scrollTo({top: missionEl.scrollHeight, behavior:'smooth'}));
       }
@@ -8868,6 +8705,15 @@
         }
         await run(parsed.actions);
         renderCurrentExercise('הרצנו את הקוד שכתבתם — אפשר להוסיף עוד שורות או לבדוק את התרגיל.', true);
+      });
+      const lesson19AnswerBtn = document.getElementById('lesson19CheckAnswerBtn');
+      const lesson19AnswerInput = document.getElementById('lesson19RiddleAnswer');
+      if(lesson19AnswerInput) lesson19AnswerInput.addEventListener('input', ()=>{ lesson19RiddleAnswers[`${currentLesson}:${ex.id}`] = lesson19AnswerInput.value; });
+      if(lesson19AnswerBtn) lesson19AnswerBtn.addEventListener('click', ()=>{
+        lesson19RiddleAnswers[`${currentLesson}:${ex.id}`] = lesson19AnswerInput?.value || '';
+        const cfg = lesson19RiddleConfig(ex);
+        if(isLesson19RiddleSolved(ex)) renderCurrentExercise(cfg?.solved || 'נכון — עכשיו ציירו את התשובה בקוד.', true);
+        else renderCurrentExercise(cfg?.hint || 'עוד לא — נסו לחשוב מה החידה מתארת.', false);
       });
       const showAllBlocksBtn = document.getElementById('lesson12ShowAllBlocksBtn');
       if(showAllBlocksBtn) showAllBlocksBtn.addEventListener('click',()=>{
@@ -8910,7 +8756,7 @@
         renderCurrentExercise(lesson13ToggleMessage, lesson13ShowingPreviousBlocks);
       });
       const checkBtn = document.getElementById('checkExerciseBtn');
-      if(checkBtn) checkBtn.addEventListener('click', checkExercise);
+      if(checkBtn) checkBtn.style.display = 'none';
       const nextExerciseBtn = document.getElementById('nextExerciseBtn');
       if(nextExerciseBtn && currentLesson === 13 && ex?.id === 7){
         nextExerciseBtn.addEventListener('click', event=>{
@@ -9615,6 +9461,61 @@
       const blockTypes = snapshot ? snapshot.blockTypes : codeBlocks().map(block=>block.type);
       const hasPythonBlock = snapshot ? snapshot.hasPythonBlock : workspace.getAllBlocks(false).some(block=>block.type === 'py_python');
       const hasCodeBlock = snapshot ? snapshot.hasCodeBlock : workspace.getAllBlocks(false).some(block=>block.type !== 'py_python' && !block.outputConnection);
+      if(currentLesson === 19){
+        const drawn = drawnSegments(actions);
+        const drawnColors = actionDrawnColors(actions);
+        const repeatShapes = repeatPatternBlocks().filter(({times, body})=>{
+          if(times < 3) return false;
+          const hasForward = body.some(a=>a.cmd === 'forward' || a.cmd === 'forwardVar');
+          const hasTurn = body.some(a=>a.cmd === 'right' || a.cmd === 'left');
+          return hasForward && hasTurn;
+        });
+        const repeat4 = repeatShapes.some(({times, body})=>Number(times) === 4 && body.some(a=>(a.cmd === 'right' || a.cmd === 'left') && Math.abs(Number(a.v)) === 90));
+        const repeat3 = repeatShapes.some(({times, body})=>Number(times) === 3 && body.some(a=>(a.cmd === 'right' || a.cmd === 'left') && Math.abs(Number(a.v)) === 120));
+        const longLines = drawn.filter(s=>s.length >= 10).length;
+        const symbolCount = Math.max(repeatShapes.length, drawnColors.size, Math.floor(longLines / 3));
+        const cleanMoveCount = penUpMoveCount(actions);
+        const hasCleanMove = cleanMoveCount >= 1;
+        if(ex.id === 1){
+          if(!repeat4) return ['כמעט — אחרי התשובה לחידה, בנו גוף בית מרובע עם repeat 4 ופנייה של 90 מעלות.'];
+          if(!repeat3) return ['כמעט — באותו תרגיל צריך גם גג משולש עם repeat 3 ופנייה של 120 מעלות.'];
+          return [];
+        }
+        if(ex.id === 2){
+          if(!repeat4 || !repeat3) return ['כמעט — הבית הבסיסי צריך להישאר שלם: גוף עם repeat 4 וגג עם repeat 3.'];
+          if(cleanMoveCount < 2) return ['כמעט — בתרגיל הזה צריך לפחות שני מעברים נקיים עם penup / pendown: אל הפרט השני וגם לקראת המקום הבא.'];
+          if(longLines < 11) return ['כמעט — צריך להוסיף שני פרטים לבית: דלת, וגם חלון או ארובה.'];
+          return [];
+        }
+        if(ex.id === 3){
+          if(!repeat4 || !repeat3) return ['כמעט — בדיקת הסדר מתחילה מבית שלם: גוף מרובע וגג משולש.'];
+          if(!hasCleanMove) return ['כמעט — סדר הפעולות צריך להסתיים במעבר נקי אחרי שהבית מוכן.'];
+          return [];
+        }
+        if(ex.id === 4){
+          if(!hasCleanMove) return ['כמעט — הכינו מקום למפתח בלי לצייר קו מחבר: penup → תנועה → pendown.'];
+          return [];
+        }
+        if(ex.id === 5){
+          if(!hasCleanMove) return ['כמעט — לפני המפתח צריך מעבר נקי מהמיקום הקודם בלי קו מחבר.'];
+          if(longLines < 8 && symbolCount < 2) return ['כמעט — אחרי התשובה לחידה, ציירו מפתח ברור: קו ארוך ועוד לפחות שתי שיניים קצרות.'];
+          return [];
+        }
+        if(ex.id === 6){
+          if(symbolCount < 2 && longLines < 10) return ['כמעט — אחרי התשובה לחידה, הוסיפו עץ/צמח עם גזע ועוד ענפים או עלים בכיוונים שונים.'];
+          return [];
+        }
+        if(ex.id === 7){
+          if(symbolCount < 2) return ['כמעט — בזמן הדיבאג שמרו על מפה קיימת, אל תמחקו את רוב העבודה.'];
+          if(!hasCleanMove) return ['כמעט — עדיין צריך לפחות מעבר נקי אחד בלי ציור בין חלקים. תקנו רק את המעבר הבעייתי.'];
+          return [];
+        }
+        if(ex.id === 8){
+          if(!actions.some(a=>a.cmd === 'width') && drawnColors.size < 2 && repeatShapes.length < 3) return ['כמעט — הוסיפו שדרוג חזותי ברור: צבע נוסף, עובי עט, גודל אחר או סימן קטן נוסף.'];
+          return [];
+        }
+        if([9,10].includes(Number(ex.id))) return [];
+      }
       if(currentLesson === 18 && String(ex?.id) === '2'){
         const petalLoop = repeatPatternBlocks().find(({times, body})=>{
           const forwardCount = body.filter(a=>a.cmd === 'forward' && Number.isFinite(Number(a.v)) && Number(a.v) > 0).length;
@@ -10997,6 +10898,11 @@
       const checkBtn = document.getElementById('checkExerciseBtn');
       if(checkBtn?.disabled) return;
       const ex = currentExercises()[currentExerciseIndex] || {};
+      const riddleCfg = lesson19RiddleConfig(ex);
+      if(riddleCfg && !isLesson19RiddleSolved(ex)){
+        renderCurrentExercise('קודם כתבו את התשובה לחידה ולחצו “בדוק תשובה”. רק אחרי תשובה נכונה בודקים את הציור.', false);
+        return;
+      }
       if(isPythonWritingExercise(ex)){
         const answer = document.getElementById('pythonWritingAnswer')?.value || '';
         pythonWritingAnswers[pythonWritingKey()] = answer;
