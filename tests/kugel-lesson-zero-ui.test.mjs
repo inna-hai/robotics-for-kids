@@ -28,15 +28,17 @@ assert.match(student, /המשך לשיעור 1/);
 assert.doesNotMatch(student, /name="studentName"/, 'student identity must come from the authenticated classroom session');
 assert.doesNotMatch(student, /href="kugel-teacher\.html"/, 'students must not receive a shortcut to teacher controls');
 
-assert.match(teacher, /ניהול שיעור 0/);
-assert.match(teacher, /התחלת שיעור 0 ופתיחת עולם Minecraft/);
-assert.match(teacher, /התחלת שיעור 1/);
+assert.match(teacher, /ניהול Minecraft לכיתה/);
+assert.match(teacher, /בחירת שיעור Minecraft/);
+assert.match(teacher, /שיעור 0: מבוך המטבעות/);
+assert.match(teacher, /פתיחת Minecraft לשיעור 0/);
+assert.match(teacher, /שיעור 1: תרגול תנועה/);
 assert.match(teacher, /פתיחת Minecraft לשיעור 1/);
 assert.match(teacher, /לוח התלמידים/);
 assert.match(teacher, /עצירת הכיתה/);
 assert.match(teacher, /שחרור הכיתה/);
 assert.match(teacher, /סיום השיעור ושחרור השרת/);
-assert.match(teacher, /מעבר לשיעור 1 באתר/);
+assert.match(teacher, /צפייה בדף שיעור 1/);
 assert.match(teacher, /href="craftom-minecraft-lesson-1\.html"/);
 
 for (const endpoint of [

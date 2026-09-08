@@ -6,7 +6,7 @@
   <title>ניהול Minecraft לכיתה | hai.tech</title>
   <meta name="description" content="לוח מורה מאובטח להפעלת עולמות Minecraft ומעקב אחר תלמידי הכיתה.">
   <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260905-agent-blocks-match-1">
-  <link rel="stylesheet" href="assets/kugel/kugel-lomda-interfaces.css?v=20260908-lesson-one-launch-1">
+  <link rel="stylesheet" href="assets/kugel/kugel-lomda-interfaces.css?v=20260908-lesson-picker-1">
 </head>
 <body class="kugel-app teacher-app" data-kugel-page="teacher">
   <header class="app-topbar">
@@ -18,19 +18,24 @@
       <p class="eyebrow">סביבת מורה מאובטחת</p>
       <h1>ניהול Minecraft לכיתה</h1>
       <p id="teacherClassName">טוען את הכיתה…</p>
-      <section class="panel compact-panel">
-        <h3>התחלת שיעור 0</h3>
-        <p>זה הכפתור שפותח לתלמידים את עולם המבוך. העולם נפתח מחדש עבור הכיתה וההתקדמות הישנה בשיעור 0 מתאפסת.</p>
-        <button class="primary-action start-lesson-action" id="launchLesson" type="button">התחלת שיעור 0 ופתיחת עולם Minecraft</button>
-        <button class="secondary-action" id="stopLesson" type="button">סיום השיעור ושחרור השרת</button>
-        <a class="secondary-action link-action teacher-next-lesson" href="craftom-minecraft-lesson-1.html">מעבר לשיעור 1 באתר</a>
-        <p class="form-status" id="teacherStatus" aria-live="polite"></p>
-      </section>
       <section class="panel compact-panel minecraft-lesson-panel">
-        <h3>התחלת שיעור 1</h3>
-        <p>פותח לכיתה את עולם התרגול של שיעור 1. האקדמיה ו־MakeCode זמינים בדף השיעור, והמורה בוחרת את סדר העבודה.</p>
-        <button class="primary-action start-lesson-action lesson-one-action" id="launchLessonOne" type="button">פתיחת Minecraft לשיעור 1</button>
-        <a class="secondary-action link-action teacher-next-lesson" href="craftom-minecraft-lesson-1.html">צפייה בדף שיעור 1</a>
+        <h3>בחירת שיעור Minecraft</h3>
+        <p>המורה בוחרת איזה עולם לפתוח לכיתה לפי השיעור שבו עובדים היום. האקדמיה ו־Minecraft זמינים במקביל, והמורה קובעת את הסדר.</p>
+        <div class="minecraft-lesson-list">
+          <article class="minecraft-lesson-option">
+            <strong>שיעור 0: מבוך המטבעות</strong>
+            <span>פותח מחדש את עולם המבוך ומאפס את התקדמות שיעור 0.</span>
+            <button class="primary-action start-lesson-action" id="launchLesson" type="button">פתיחת Minecraft לשיעור 0</button>
+          </article>
+          <article class="minecraft-lesson-option">
+            <strong>שיעור 1: תרגול תנועה</strong>
+            <span>פותח לכיתה את עולם התרגול של שיעור 1.</span>
+            <button class="primary-action start-lesson-action lesson-one-action" id="launchLessonOne" type="button">פתיחת Minecraft לשיעור 1</button>
+            <a class="secondary-action link-action teacher-next-lesson" href="craftom-minecraft-lesson-1.html">צפייה בדף שיעור 1</a>
+          </article>
+        </div>
+        <button class="secondary-action" id="stopLesson" type="button">סיום השיעור ושחרור השרת</button>
+        <p class="form-status" id="teacherStatus" aria-live="polite"></p>
       </section>
       <section class="panel compact-panel">
         <h3>בקרה כיתתית</h3>
@@ -81,7 +86,7 @@
     </section>
    </section>
   </main>
-  <script src="js/kugel-lesson-zero.js?v=20260908-lesson-one-launch-1"></script>
+  <script src="js/kugel-lesson-zero.js?v=20260908-lesson-picker-1"></script>
   <script src="/js/feedback-widget.js?v=20260907-tehila-fixes-1"></script>
 </body>
 </html>

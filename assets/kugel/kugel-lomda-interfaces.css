@@ -742,6 +742,31 @@
   font-size: 1.02rem;
 }
 
+.minecraft-lesson-list {
+  display: grid;
+  gap: 12px;
+  margin: 14px 0;
+}
+
+.minecraft-lesson-option {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid #dbe4ef;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.minecraft-lesson-option strong {
+  color: #0f172a;
+}
+
+.minecraft-lesson-option span {
+  color: #475569;
+  font-size: .94rem;
+  line-height: 1.5;
+}
+
 .lesson-one-action {
   background: #0f766e;
   box-shadow: 0 10px 20px rgba(15, 118, 110, .18);
