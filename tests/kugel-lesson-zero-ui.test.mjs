@@ -34,6 +34,8 @@ assert.match(teacher, /לוח התלמידים/);
 assert.match(teacher, /עצירת הכיתה/);
 assert.match(teacher, /שחרור הכיתה/);
 assert.match(teacher, /סיום השיעור ושחרור השרת/);
+assert.match(teacher, /מעבר לשיעור 1 באתר/);
+assert.match(teacher, /href="craftom-minecraft-lesson-1\.html"/);
 
 for (const endpoint of [
   '/api/kugel/session',
