@@ -7837,6 +7837,9 @@
       return `<div class="secret-reveal" style="background:${solved ? '#f0fdf4' : '#fff7ed'};border-color:${solved ? '#bbf7d0' : '#fed7aa'};color:${solved ? '#166534' : '#7c2d12'}"><label for="lesson19RiddleAnswer"><b>מה התשובה לחידה?</b></label><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"><input id="lesson19RiddleAnswer" value="${escapeHtml(value)}" autocomplete="off" style="flex:1 1 150px;border:2px solid #fed7aa;border-radius:14px;padding:10px 12px;font-family:inherit;font-weight:900;" placeholder="כתבו תשובה"><button class="btn run" id="lesson19CheckAnswerBtn" type="button">בדוק תשובה</button></div><small id="lesson19AnswerFeedback">${solved ? escapeHtml(cfg.solved) : 'קודם פותרים את החידה. תשובה נכונה לא מעבירה תרגיל — היא רק פותחת את שלב הציור.'}</small></div>`;
     }
     function exerciseVisualHtml(ex){
+      if(currentLesson === 19 && ex?.id === 1){
+        return `<div class="exercise-visual" style="margin:10px 0;padding:10px;border:1px solid #bae6fd;border-radius:16px;background:#f0f9ff;display:grid;place-items:center;text-align:center;"><div style="font-weight:900;color:#0369a1;margin-bottom:6px;">דוגמה — קו הרים ברקע</div><svg width="260" height="120" viewBox="0 0 260 120" role="img" aria-label="דוגמה לרכס הרים פשוט מקווים אלכסוניים"><rect x="12" y="10" width="236" height="92" rx="14" fill="#ffffff" stroke="#dbeafe" stroke-width="3"/><path d="M32 82 L72 42 L112 82 L148 48 L188 82 L222 54" fill="none" stroke="#475569" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path d="M32 90 L222 90" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" opacity="0.65"/></svg><small style="color:#475569;font-weight:800;line-height:1.35;">השראה בלבד: כמה קווים אלכסוניים שעולים ויורדים. עדיין לא מציירים חלון.</small></div>`;
+      }
       if(currentLesson === 16){
         const notes = {
           1: 'השראה בלבד: בתרגיל 1 מציירים קיר אחד עם פתח באמצע — חלק קיר, דילוג בלי ציור, והמשך קיר.',
