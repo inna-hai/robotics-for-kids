@@ -420,6 +420,27 @@ try {
   assert.equal(restoredView.status, 200);
   assert.equal((await restoredView.json()).session.active, false, 'revocation must destroy the old live Minecraft session');
 
+  const launchBeforeCompoundEntry = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, teacherACookie);
+  assert.equal(launchBeforeCompoundEntry.status, 200);
+  const unauthorizedCompoundSync = await post(baseUrl, '/api/internal/minecraft/compound-assignments', {
+    minecraft_username: 'NoaSecure',
+    compound_id: 5,
+  });
+  assert.equal(unauthorizedCompoundSync.status, 401, 'compound assignment sync requires the Minecraft internal token');
+  const compoundSync = await fetch(`${baseUrl}/api/internal/minecraft/compound-assignments`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer test-monitor-token' },
+    body: JSON.stringify({ minecraft_username: 'NoaSecure', compound_id: 5, x: 10, y: 3, z: 20 }),
+  });
+  assert.equal(compoundSync.status, 200);
+  const compoundEntry = await post(baseUrl, '/api/kugel/compound-entry', { compoundId: 5 }, studentBCookie);
+  assert.equal(compoundEntry.status, 200, 'NPC compound links must resolve to the currently assigned Minecraft student');
+  const compoundEntryBody = await compoundEntry.json();
+  assert.equal(compoundEntryBody.student.id, studentA.id);
+  assert.equal(compoundEntryBody.student.minecraftPlayerName, 'NoaSecure');
+  assert.match(compoundEntry.headers.get('set-cookie') || '', /haiTechClassroomToken=/, 'compound entry must switch the browser to the resolved student session');
+  assert.equal((await post(baseUrl, `/api/kugel/classes/${classroomA.id}/stop`, {}, teacherACookie)).status, 200);
+
   assert.doesNotMatch(source, /KUGEL_MINECRAFT_ACCESS_CODE\s*=.*\|\|\s*'[^']+'/,
     'Minecraft access codes must not have repository defaults');
   assert.doesNotMatch(source, /KUGEL_MINECRAFT_SERVER_HOST\s*=.*\|\|\s*'[^']+'/,
