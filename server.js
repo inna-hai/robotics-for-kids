@@ -1901,14 +1901,17 @@ async function handleKugelApi(req, res) {
         const now = new Date().toISOString();
         const eventsSince = Math.floor(Date.now() / 1000);
         const launchToken = crypto.randomUUID();
+        const monitorServerName = KUGEL_PREVIEW_MOCK_MINECRAFT
+          ? `preview-mock-minecraft-${classroomId}`
+          : kugelMonitorServerName();
         let acquired = false;
         try {
           acquired = withSummerDb(db => db.transaction(() => {
             const activeOwner = db.prepare(`
               SELECT classroom_id FROM kugel_class_sessions
               WHERE active = 1 AND monitor_server_name = ? LIMIT 1
-            `).get(kugelMonitorServerName());
-            if (activeOwner && activeOwner.classroom_id !== classroomId) return false;
+            `).get(monitorServerName);
+            if (!KUGEL_PREVIEW_MOCK_MINECRAFT && activeOwner && activeOwner.classroom_id !== classroomId) return false;
             db.prepare(`
               INSERT INTO kugel_class_sessions (
                 classroom_id, lesson_id, active, monitor_server_name, world_id, events_since, launch_token,
@@ -1918,7 +1921,7 @@ async function handleKugelApi(req, res) {
                 lesson_id = 0, active = 1, monitor_server_name = excluded.monitor_server_name,
                 world_id = excluded.world_id, events_since = excluded.events_since, launch_token = excluded.launch_token,
                 server_state = 'starting', server_detail = excluded.server_detail, updated_at = excluded.updated_at
-            `).run(classroomId, kugelMonitorServerName(), KUGEL_LESSON_ZERO.worldId, eventsSince, launchToken, 'מפעיל את עולם המבוך…', now, now);
+            `).run(classroomId, monitorServerName, KUGEL_LESSON_ZERO.worldId, eventsSince, launchToken, 'מפעיל את עולם המבוך…', now, now);
             const students = db.prepare('SELECT id FROM classroom_students WHERE classroom_id = ?').all(classroomId);
             for (const student of students) upsertKugelRun(db, student.id, classroomId, { startedAt: null, resetAt: now, finishedAt: null });
             return true;
