@@ -209,10 +209,10 @@
       const panel = $('previewPanel');
       const main = document.querySelector('.main');
       if(!handle || !panel || !main) return;
+      const maxWidth = () => Math.min(Math.max(420, window.innerWidth - 520), 880);
       const saved = Number(localStorage.getItem('webcodePreviewWidth'));
       if(saved) setPreviewWidth(saved);
       let startX = 0, startWidth = 0, dragging = false, activePointerId = null;
-      const maxWidth = () => Math.min(Math.max(420, window.innerWidth - 520), 880);
       function resizeBlockly(){ if(window.Blockly && blocklyWorkspace) setTimeout(() => Blockly.svgResize(blocklyWorkspace), 40); }
       function apply(clientX){
         if(!dragging) return;
