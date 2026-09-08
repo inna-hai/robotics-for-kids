@@ -1908,7 +1908,7 @@ async function handleKugelApi(req, res) {
               SELECT classroom_id FROM kugel_class_sessions
               WHERE active = 1 AND monitor_server_name = ? LIMIT 1
             `).get(kugelMonitorServerName());
-            if (activeOwner) return false;
+            if (activeOwner && activeOwner.classroom_id !== classroomId) return false;
             db.prepare(`
               INSERT INTO kugel_class_sessions (
                 classroom_id, lesson_id, active, monitor_server_name, world_id, events_since, launch_token,

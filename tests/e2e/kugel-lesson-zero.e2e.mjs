@@ -102,6 +102,9 @@ try {
   await teacherPage.getByText('שם השחקן נשמר.').waitFor();
   await teacherPage.getByRole('button', { name: 'התחלת שיעור 0 ופתיחת עולם Minecraft' }).click();
   await teacherPage.locator('#teacherStatus').getByText('עולם המבוך פעיל.').waitFor();
+  await teacherPage.getByRole('button', { name: 'התחלת שיעור 0 ופתיחת עולם Minecraft' }).click();
+  await teacherPage.locator('#teacherStatus').getByText('עולם המבוך פעיל.').waitFor();
+  await teacherPage.waitForTimeout(1100);
 
   const now = new Date().toISOString();
   events = [
