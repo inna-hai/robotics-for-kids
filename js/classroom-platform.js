@@ -80,6 +80,7 @@
     const session = document.getElementById('student-session');
     const welcome = document.getElementById('student-welcome');
     const studentLogout = document.getElementById('student-logout');
+    const previewDemoStudent = document.getElementById('preview-demo-student');
 
     guest.addEventListener('click', async (event) => {
       event.preventDefault();
@@ -151,6 +152,27 @@
         setMessage(message, error.message);
       }
     });
+
+    if (previewDemoStudent) {
+      api('/api/classroom/preview-demo-student-enabled')
+        .then((data) => {
+          if (data.enabled) previewDemoStudent.hidden = false;
+        })
+        .catch(() => {});
+      previewDemoStudent.addEventListener('click', async () => {
+        setMessage(message, 'פותחים תלמידת בדיקה…');
+        previewDemoStudent.disabled = true;
+        try {
+          const data = await api('/api/classroom/preview-demo-student-login', {});
+          setMessage(message, '', true);
+          showStudent(data);
+        } catch (error) {
+          setMessage(message, error.message);
+        } finally {
+          previewDemoStudent.disabled = false;
+        }
+      });
+    }
 
     studentLogout.addEventListener('click', async () => {
       setMessage(message, 'מתנתקים…');

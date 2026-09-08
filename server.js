@@ -1473,53 +1473,90 @@ function replaceClassroomCourses(db, classroomId, courseIds) {
   db.prepare('UPDATE classrooms SET updated_at = ? WHERE id = ?').run(now, classroomId);
 }
 
+function ensurePreviewDemoClassroom(db) {
+  const email = 'preview-teacher@hai.tech';
+  const now = new Date().toISOString();
+  let teacher = db.prepare('SELECT * FROM classroom_teachers WHERE email = ?').get(email);
+  if (!teacher) {
+    const salt = crypto.randomBytes(16).toString('hex');
+    teacher = {
+      id: crypto.randomUUID(),
+      name: 'מורה בדיקה',
+      email,
+      password_salt: salt,
+      password_hash: hashClassroomSecret(crypto.randomUUID(), salt),
+      created_at: now,
+      updated_at: now,
+    };
+    db.prepare(`
+      INSERT INTO classroom_teachers (id, name, email, password_salt, password_hash, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(teacher.id, teacher.name, teacher.email, teacher.password_salt, teacher.password_hash, teacher.created_at, teacher.updated_at);
+  }
+  replaceTeacherCourses(db, teacher.id, CLASSROOM_COURSE_IDS);
+  let classroom = KUGEL_PREVIEW_CLASSROOM_ID
+    ? db.prepare('SELECT * FROM classrooms WHERE id = ? AND teacher_id = ?').get(KUGEL_PREVIEW_CLASSROOM_ID, teacher.id)
+    : null;
+  if (!classroom) classroom = db.prepare('SELECT * FROM classrooms WHERE teacher_id = ? ORDER BY created_at LIMIT 1').get(teacher.id);
+  if (!classroom) {
+    classroom = {
+      id: crypto.randomUUID(),
+      teacher_id: teacher.id,
+      name: 'כיתת בדיקה ל-preview',
+      join_code: generateClassJoinCode(db),
+      created_at: now,
+      updated_at: now,
+    };
+    db.prepare(`
+      INSERT INTO classrooms (id, teacher_id, name, join_code, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `).run(classroom.id, classroom.teacher_id, classroom.name, classroom.join_code, classroom.created_at, classroom.updated_at);
+  }
+  replaceClassroomCourses(db, classroom.id, [KUGEL_COURSE_ID]);
+  return { teacher, classroom };
+}
+
 function previewDemoTeacherLogin() {
   if (!CLASSROOM_PREVIEW_DEMO_TEACHER) return null;
   return withSummerDb(db => {
-    const email = 'preview-teacher@hai.tech';
-    const now = new Date().toISOString();
+    const result = db.transaction(() => ensurePreviewDemoClassroom(db))();
+    return { ...result, token: createClassroomTeacherSession(db, result.teacher.id) };
+  });
+}
+
+function previewDemoStudentLogin() {
+  if (!CLASSROOM_PREVIEW_DEMO_TEACHER) return null;
+  return withSummerDb(db => {
     const createDemo = db.transaction(() => {
-      let teacher = db.prepare('SELECT * FROM classroom_teachers WHERE email = ?').get(email);
-      if (!teacher) {
+      const { classroom } = ensurePreviewDemoClassroom(db);
+      const now = new Date().toISOString();
+      let student = db.prepare('SELECT * FROM classroom_students WHERE classroom_id = ? AND name = ?')
+        .get(classroom.id, 'הדסה בדיקה');
+      if (!student) {
         const salt = crypto.randomBytes(16).toString('hex');
-        teacher = {
+        student = {
           id: crypto.randomUUID(),
-          name: 'מורה בדיקה',
-          email,
-          password_salt: salt,
-          password_hash: hashClassroomSecret(crypto.randomUUID(), salt),
+          classroom_id: classroom.id,
+          name: 'הדסה בדיקה',
+          login_salt: salt,
+          login_hash: hashClassroomSecret(crypto.randomUUID(), salt),
+          minecraft_player_name: 'HadasaTest',
           created_at: now,
           updated_at: now,
         };
         db.prepare(`
-          INSERT INTO classroom_teachers (id, name, email, password_salt, password_hash, created_at, updated_at)
-          VALUES (?, ?, ?, ?, ?, ?, ?)
-        `).run(teacher.id, teacher.name, teacher.email, teacher.password_salt, teacher.password_hash, teacher.created_at, teacher.updated_at);
+          INSERT INTO classroom_students (id, classroom_id, name, login_salt, login_hash, minecraft_player_name, created_at, updated_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `).run(student.id, student.classroom_id, student.name, student.login_salt, student.login_hash, student.minecraft_player_name, student.created_at, student.updated_at);
+      } else if (!student.minecraft_player_name) {
+        db.prepare('UPDATE classroom_students SET minecraft_player_name = ?, updated_at = ? WHERE id = ?')
+          .run('HadasaTest', now, student.id);
+        student = db.prepare('SELECT * FROM classroom_students WHERE id = ?').get(student.id);
       }
-      replaceTeacherCourses(db, teacher.id, CLASSROOM_COURSE_IDS);
-      let classroom = KUGEL_PREVIEW_CLASSROOM_ID
-        ? db.prepare('SELECT * FROM classrooms WHERE id = ? AND teacher_id = ?').get(KUGEL_PREVIEW_CLASSROOM_ID, teacher.id)
-        : null;
-      if (!classroom) classroom = db.prepare('SELECT * FROM classrooms WHERE teacher_id = ? ORDER BY created_at LIMIT 1').get(teacher.id);
-      if (!classroom) {
-        classroom = {
-          id: crypto.randomUUID(),
-          teacher_id: teacher.id,
-          name: 'כיתת בדיקה ל-preview',
-          join_code: generateClassJoinCode(db),
-          created_at: now,
-          updated_at: now,
-        };
-        db.prepare(`
-          INSERT INTO classrooms (id, teacher_id, name, join_code, created_at, updated_at)
-          VALUES (?, ?, ?, ?, ?, ?)
-        `).run(classroom.id, classroom.teacher_id, classroom.name, classroom.join_code, classroom.created_at, classroom.updated_at);
-      }
-      replaceClassroomCourses(db, classroom.id, [KUGEL_COURSE_ID]);
-      return teacher;
+      return { classroom, student };
     });
-    const teacher = createDemo();
-    return { teacher, token: createClassroomTeacherSession(db, teacher.id) };
+    const result = createDemo();
+    return { ...result, token: createClassroomStudentSession(db, result.student.id) };
   });
 }
 
@@ -2304,6 +2341,10 @@ async function handleClassroomApi(req, res) {
     return send(res, 200, JSON.stringify({ ok: true, enabled: CLASSROOM_PREVIEW_DEMO_TEACHER }));
   }
 
+  if (req.method === 'GET' && action === 'preview-demo-student-enabled') {
+    return send(res, 200, JSON.stringify({ ok: true, enabled: CLASSROOM_PREVIEW_DEMO_TEACHER }));
+  }
+
   if (req.method === 'GET' && action === 'admin' && segments[3] === 'teachers' && segments.length === 4) {
     if (!getClassroomAdminFromRequest(req)) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מנהלת.' }));
     const teachers = withSummerDb(db => db.prepare(`
@@ -2701,6 +2742,23 @@ async function handleClassroomApi(req, res) {
           name: result.teacher.name,
           email: result.teacher.email,
           courses: withSummerDb(db => teacherCourses(db, result.teacher.id)),
+        },
+      }), 'application/json; charset=utf-8', {
+        'Set-Cookie': classroomSessionCookie(result.token),
+      });
+    }
+
+    if (action === 'preview-demo-student-login') {
+      const result = previewDemoStudentLogin();
+      if (!result) return send(res, 404, JSON.stringify({ error: 'Preview demo is not enabled.' }));
+      return sendWithHeaders(res, 200, JSON.stringify({
+        ok: true,
+        role: 'student',
+        student: { id: result.student.id, name: result.student.name },
+        classroom: {
+          id: result.classroom.id,
+          name: result.classroom.name,
+          courses: withSummerDb(db => classroomCourses(db, result.classroom.id)),
         },
       }), 'application/json; charset=utf-8', {
         'Set-Cookie': classroomSessionCookie(result.token),
