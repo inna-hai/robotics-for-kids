@@ -30,6 +30,8 @@ assert.doesNotMatch(student, /href="kugel-teacher\.html"/, 'students must not re
 
 assert.match(teacher, /ניהול שיעור 0/);
 assert.match(teacher, /התחלת שיעור 0 ופתיחת עולם Minecraft/);
+assert.match(teacher, /התחלת שיעור 1/);
+assert.match(teacher, /פתיחת Minecraft לשיעור 1/);
 assert.match(teacher, /לוח התלמידים/);
 assert.match(teacher, /עצירת הכיתה/);
 assert.match(teacher, /שחרור הכיתה/);
@@ -43,6 +45,7 @@ for (const endpoint of [
   '/api/kugel/student/reset',
   '/api/kugel/student/finish',
   '/launch',
+  '/lessons/1/launch',
   '/stop',
   '/message',
   '/freeze',
@@ -62,5 +65,6 @@ assert.ok(classroomClient.includes("'craftom-agent': 'kugel-student.html'"), 'cl
 assert.match(server, /basename === 'kugel-student'/);
 assert.match(server, /basename === 'kugel-teacher'/);
 assert.match(server, /kugel-50-safe-compounds-v3-mazes-8-coins-npc-reset-caged-inner-wood-obstacle-test-v1-20260906/);
+assert.match(server, /movement-buttons-practice/);
 assert.ok(packageJson.includes('node --check js/kugel-lesson-zero.js'));
 console.log('✓ Kugel UI contains only secure lesson zero and links back to the existing course');

@@ -221,6 +221,12 @@ try {
   assert.equal(monitorCalls.some(call => call.url === '/api/internal/craftom-school/world/open' && call.authorization === 'Bearer test-monitor-token'), true);
   const duplicateLaunch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, teacherACookie);
   assert.equal(duplicateLaunch.status, 200, 'the same class can restart its own active lesson zero');
+  const lessonOneLaunch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/1/launch`, {}, teacherACookie);
+  assert.equal(lessonOneLaunch.status, 200, 'the same class can launch lesson one from the teacher board');
+  const lessonOneLaunchBody = await lessonOneLaunch.json();
+  assert.equal(lessonOneLaunchBody.lesson.id, 1);
+  assert.equal(lessonOneLaunchBody.session.lessonId, 1);
+  assert.equal(monitorCalls.some(call => call.url === '/api/internal/craftom-school/world/open' && call.body.world === 'movement-buttons-practice'), true);
   const conflictingLaunch = await post(baseUrl, `/api/kugel/classes/${classroomB.id}/launch`, {}, teacherBCookie);
   assert.equal(conflictingLaunch.status, 409, 'one Minecraft server must not be controlled by two classrooms at once');
   const foreignPlayerMessage = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/message`, { text: 'אסור', scope: 'player', target: 'OtherSecure' }, teacherACookie);

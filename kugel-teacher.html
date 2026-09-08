@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ניהול שיעור 0 | hai.tech</title>
-  <meta name="description" content="לוח מורה מאובטח להפעלת מבוך Minecraft ומעקב אחר תלמידי הכיתה.">
+  <title>ניהול Minecraft לכיתה | hai.tech</title>
+  <meta name="description" content="לוח מורה מאובטח להפעלת עולמות Minecraft ומעקב אחר תלמידי הכיתה.">
   <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260905-agent-blocks-match-1">
-  <link rel="stylesheet" href="assets/kugel/kugel-lomda-interfaces.css?v=20260907-feedback-compact-1">
+  <link rel="stylesheet" href="assets/kugel/kugel-lomda-interfaces.css?v=20260908-lesson-one-launch-1">
 </head>
 <body class="kugel-app teacher-app" data-kugel-page="teacher">
   <header class="app-topbar">
@@ -16,7 +16,7 @@
    <section class="teacher-board">
     <aside class="teacher-control">
       <p class="eyebrow">סביבת מורה מאובטחת</p>
-      <h1>ניהול שיעור 0</h1>
+      <h1>ניהול Minecraft לכיתה</h1>
       <p id="teacherClassName">טוען את הכיתה…</p>
       <section class="panel compact-panel">
         <h3>התחלת שיעור 0</h3>
@@ -25,6 +25,12 @@
         <button class="secondary-action" id="stopLesson" type="button">סיום השיעור ושחרור השרת</button>
         <a class="secondary-action link-action teacher-next-lesson" href="craftom-minecraft-lesson-1.html">מעבר לשיעור 1 באתר</a>
         <p class="form-status" id="teacherStatus" aria-live="polite"></p>
+      </section>
+      <section class="panel compact-panel minecraft-lesson-panel">
+        <h3>התחלת שיעור 1</h3>
+        <p>פותח לכיתה את עולם התרגול של שיעור 1. האקדמיה ו־MakeCode זמינים בדף השיעור, והמורה בוחרת את סדר העבודה.</p>
+        <button class="primary-action start-lesson-action lesson-one-action" id="launchLessonOne" type="button">פתיחת Minecraft לשיעור 1</button>
+        <a class="secondary-action link-action teacher-next-lesson" href="craftom-minecraft-lesson-1.html">צפייה בדף שיעור 1</a>
       </section>
       <section class="panel compact-panel">
         <h3>בקרה כיתתית</h3>
@@ -75,7 +81,7 @@
     </section>
    </section>
   </main>
-  <script src="js/kugel-lesson-zero.js?v=20260908-kugel-server-live-1"></script>
+  <script src="js/kugel-lesson-zero.js?v=20260908-lesson-one-launch-1"></script>
   <script src="/js/feedback-widget.js?v=20260907-tehila-fixes-1"></script>
 </body>
 </html>

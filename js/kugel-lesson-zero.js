@@ -128,6 +128,7 @@
     const className = document.getElementById('teacherClassName');
     const classMessage = document.querySelector('#classMessageForm input[name="text"]');
     const launchLesson = document.getElementById('launchLesson');
+    const launchLessonOne = document.getElementById('launchLessonOne');
     let current = null;
 
     function scoped(action) {
@@ -200,6 +201,7 @@
       current = data;
       className.textContent = data.classroom.name;
       const session = data.session || {};
+      const activeLessonId = Number(session.lessonId ?? 0);
       document.getElementById('serverState').textContent = session.serverState === 'running' ? 'שרת פעיל' : session.serverState === 'error' ? 'שגיאת הפעלה' : 'שרת מוכן';
       const previewDetail = data.minecraftPreviewMode && session.active && session.serverDetail
         ? `${session.serverDetail} ${data.minecraftSetupNote}`
@@ -212,6 +214,12 @@
       if (launchLesson) {
         launchLesson.disabled = data.minecraftConfigured === false || session.serverState === 'starting';
         launchLesson.title = data.minecraftConfigured === false ? data.minecraftSetupNote : '';
+        launchLesson.classList.toggle('is-active-lesson', session.active && activeLessonId === 0);
+      }
+      if (launchLessonOne) {
+        launchLessonOne.disabled = data.minecraftConfigured === false || session.serverState === 'starting';
+        launchLessonOne.title = data.minecraftConfigured === false ? data.minecraftSetupNote : '';
+        launchLessonOne.classList.toggle('is-active-lesson', session.active && activeLessonId === 1);
       }
       metric('metricConnected', data.metrics?.connected);
       metric('metricActive', data.metrics?.active);
@@ -234,6 +242,9 @@
     }
 
     launchLesson.addEventListener('click', () => teacherAction(scoped('/launch'), {}, 'מפעילים את עולם המבוך…', 'עולם המבוך פעיל.'));
+    if (launchLessonOne) {
+      launchLessonOne.addEventListener('click', () => teacherAction(scoped('/lessons/1/launch'), {}, 'מפעילים את עולם שיעור 1…', 'עולם שיעור 1 פעיל.'));
+    }
     document.getElementById('stopLesson').addEventListener('click', () => teacherAction(scoped('/stop'), {}, 'מסיימים את השיעור…', 'השיעור הסתיים והשרת שוחרר.'));
     document.getElementById('classMessageForm').addEventListener('submit', async event => {
       event.preventDefault();

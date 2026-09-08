@@ -742,6 +742,16 @@
   font-size: 1.02rem;
 }
 
+.lesson-one-action {
+  background: #0f766e;
+  box-shadow: 0 10px 20px rgba(15, 118, 110, .18);
+}
+
+.start-lesson-action.is-active-lesson {
+  outline: 3px solid rgba(245, 158, 11, .38);
+  outline-offset: 2px;
+}
+
 .primary-action:disabled,
 .secondary-action:disabled {
   opacity: .58;
