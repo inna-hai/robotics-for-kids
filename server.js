@@ -3071,6 +3071,12 @@ function classroomStudentCompletedCraftomLessonZero(studentId) {
   `).get(studentId, KUGEL_COURSE_ID)));
 }
 
+function replaceLastHtmlTag(html, tag, replacement) {
+  const index = html.lastIndexOf(tag);
+  if (index === -1) return html;
+  return html.slice(0, index) + replacement + html.slice(index + tag.length);
+}
+
 function injectHeadAssets(html) {
   if (!html.includes('</head>')) return html;
   let output = html;
@@ -3082,12 +3088,12 @@ function injectHeadAssets(html) {
 
 function injectUserBadge(html) {
   if (!html.includes('</body>') || html.includes('js/user-badge.js')) return injectHeadAssets(html);
-  return injectHeadAssets(html).replace('</body>', '  <script src="/js/user-badge.js?v=20260905-access-modes-1"></script>\n</body>');
+  return replaceLastHtmlTag(injectHeadAssets(html), '</body>', '  <script src="/js/user-badge.js?v=20260905-access-modes-1"></script>\n</body>');
 }
 
 function injectClassroomSession(html) {
   if (!html.includes('</body>') || html.includes('js/classroom-session.js') || html.includes('js/classroom-platform.js')) return html;
-  return html.replace('</body>', '  <script src="/js/classroom-session.js?v=20260905-access-modes-1"></script>\n</body>');
+  return replaceLastHtmlTag(html, '</body>', '  <script src="/js/classroom-session.js?v=20260905-access-modes-1"></script>\n</body>');
 }
 
 function proxyEnglishBuddy(req, res) {
