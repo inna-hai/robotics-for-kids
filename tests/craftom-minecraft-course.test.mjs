@@ -106,6 +106,7 @@ assert.ok(read('craftom-minecraft-challenge.html').includes('רצף עבודה �
 assert.ok(read('craftom-minecraft-lesson.html').includes('איך עובדים לבד'), 'lesson page starts lesson detail with self-study steps');
 assert.ok(read('craftom-minecraft-lesson.html').includes('agentAcademyCta'), 'lesson page has an academy entry button');
 assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('craftom-agent-academy.html?lesson='), 'lesson page links to the separate Agent academy');
+assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('craftom-minecraft-slides.html?challenge=${lesson.challengeId}&lesson=${lesson.id}'), 'lesson page opens guide slides with the current lesson id');
 assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('קודם נכנסים לאקדמיה'), 'academy lessons clearly send students to practice before implementation');
 assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('מיישמים את אותו רעיון בתוך Minecraft Education'), 'academy lessons clearly distinguish practice from Minecraft implementation');
 assert.ok(read('craftom-agent-academy.html').includes('academyCanvas'), 'Agent academy has a result simulation canvas');
@@ -157,6 +158,8 @@ assert.ok(read('server.js').includes('handleCraftomExitTicket'), 'server can sav
 assert.ok(read('craftom-minecraft-challenge.html').includes('program.exitUpload'), 'challenge page shows the shared photo upload requirement');
 assert.ok(read('craftom-minecraft-students.html').includes('העלאת תמונה ל-Craftom'), 'student worksheet includes a Craftom photo upload field');
 assert.ok(read('craftom-minecraft-slides.html').includes('program.exitUpload'), 'slides remind instructors that exit tickets include a photo upload');
+assert.ok(read('craftom-minecraft-slides.html').includes('id="backToLesson"'), 'instructor slides include a back-to-lesson button');
+assert.ok(read('craftom-minecraft-slides.html').includes('craftom-minecraft-lesson-${selectedLesson.id}.html'), 'slides back button returns to the selected lesson');
 
 for (const path of [
   'craftom-minecraft-challenge.html',

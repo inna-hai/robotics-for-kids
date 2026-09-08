@@ -17,21 +17,26 @@
     .slide p,.slide li{font-size:clamp(1.1rem,2vw,1.5rem);line-height:1.7}
     .slide .tag{width:max-content;background:#d9f99d;color:#17320b}
     .video{width:min(760px,100%);aspect-ratio:16/9;border:0;border-radius:16px;background:#000}
-    .actions{position:fixed;left:14px;bottom:14px;z-index:3}
+    .actions{position:fixed;left:14px;bottom:14px;z-index:3;display:flex;gap:10px;flex-wrap:wrap}
   </style>
 </head>
 <body>
   <main class="shell">
     <div class="slides" id="slides"></div>
   </main>
-  <div class="actions"><a class="btn secondary" href="craftom-school/preview/index.html">מפת הקורס</a></div>
+  <div class="actions">
+    <a class="btn secondary" id="backToLesson" href="craftom-minecraft-lesson-1.html">חזרה לשיעור</a>
+    <a class="btn secondary" href="craftom-school/preview/index.html">מפת הקורס</a>
+  </div>
   <script src="js/craftom-minecraft-challenges.js?v=20260905-agent-blocks-match-1"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const program = window.CRAFTOM_MINECRAFT_PROGRAM;
-    const challenge = window.getCraftomMinecraftChallenge(params.get('challenge') || params.get('lesson'));
+    const selectedLesson = window.getCraftomMinecraftLesson(params.get('lesson') || 1);
+    const challenge = window.getCraftomMinecraftChallenge(params.get('challenge') || selectedLesson.challengeId);
     const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
     document.title = `מצגת מדריך - ${challenge.title}`;
+    document.getElementById('backToLesson').href = `craftom-minecraft-lesson-${selectedLesson.id}.html`;
     document.getElementById('slides').innerHTML = `
       <section class="slide"><span class="tag">אקדמיית ה-Agent</span><h1>${esc(challenge.title)}</h1><p>${esc(challenge.story)}</p></section>
       <section class="slide"><h2>סרטון פתיחה</h2><video class="video" src="${esc(challenge.video)}" poster="${esc(challenge.poster)}" controls playsinline preload="metadata"></video></section>

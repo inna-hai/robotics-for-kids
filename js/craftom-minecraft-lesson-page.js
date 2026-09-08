@@ -318,8 +318,9 @@ player.onChat("test", function () {
   document.getElementById('challengeLink').href = `craftom-minecraft-challenge.html?challenge=${lesson.challengeId}`;
   document.getElementById('challengeMapLink').href = `craftom-minecraft-challenge.html?challenge=${lesson.challengeId}`;
   document.getElementById('studentLink').href = `craftom-minecraft-students.html?challenge=${lesson.challengeId}`;
-  document.getElementById('slidesLink').href = `craftom-minecraft-slides.html?challenge=${lesson.challengeId}`;
-  document.getElementById('lessonSlidesBoxLink').href = `craftom-minecraft-slides.html?challenge=${lesson.challengeId}`;
+  const slidesHref = `craftom-minecraft-slides.html?challenge=${lesson.challengeId}&lesson=${lesson.id}`;
+  document.getElementById('slidesLink').href = slidesHref;
+  document.getElementById('lessonSlidesBoxLink').href = slidesHref;
   const currentLessonIndex = challengeLessons.findIndex(item => item.id === lesson.id);
   const prevLesson = currentLessonIndex > 0 ? challengeLessons[currentLessonIndex - 1] : null;
   const nextLesson = currentLessonIndex < challengeLessons.length - 1 ? challengeLessons[currentLessonIndex + 1] : null;
