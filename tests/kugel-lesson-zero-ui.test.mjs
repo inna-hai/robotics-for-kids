@@ -30,16 +30,11 @@ assert.doesNotMatch(student, /href="kugel-teacher\.html"/, 'students must not re
 
 assert.match(teacher, /ניהול Minecraft לכיתה/);
 assert.match(teacher, /בחירת שיעור Minecraft/);
-assert.match(teacher, /שיעור 0: מבוך המטבעות/);
-assert.match(teacher, /פתיחת Minecraft לשיעור 0/);
-assert.match(teacher, /שיעור 1: תרגול תנועה/);
-assert.match(teacher, /פתיחת Minecraft לשיעור 1/);
+assert.match(teacher, /minecraftLessonList/);
 assert.match(teacher, /לוח התלמידים/);
 assert.match(teacher, /עצירת הכיתה/);
 assert.match(teacher, /שחרור הכיתה/);
 assert.match(teacher, /סיום השיעור ושחרור השרת/);
-assert.match(teacher, /צפייה בדף שיעור 1/);
-assert.match(teacher, /href="craftom-minecraft-lesson-1\.html"/);
 
 for (const endpoint of [
   '/api/kugel/session',
@@ -47,12 +42,14 @@ for (const endpoint of [
   '/api/kugel/student/reset',
   '/api/kugel/student/finish',
   '/launch',
-  '/lessons/1/launch',
   '/stop',
   '/message',
   '/freeze',
   '/minecraft',
 ]) assert.ok(client.includes(endpoint), `Kugel client missing ${endpoint}`);
+assert.match(client, /lessons\/\$\{encodeURIComponent\(lessonId\)\}\/launch/);
+assert.match(client, /חסר עולם Minecraft/);
+assert.match(client, /craftom-minecraft-lesson-\$\{lesson.id\}\.html/);
 assert.ok(client.includes("page === 'teacher'"));
 assert.ok(client.includes("page === 'student'"));
 assert.ok(client.includes('classroomId'));

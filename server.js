@@ -57,15 +57,48 @@ const KUGEL_LESSON_ZERO = Object.freeze({
 });
 const KUGEL_LESSON_ONE = Object.freeze({
   id: 1,
-  title: 'שיעור 1: תרגול תנועה ב-Minecraft',
-  summary: 'תרגול תנועה בסיסית, כיוונים ושליטה ראשונה ב-Agent בתוך עולם Minecraft אמיתי.',
+  title: 'שיעור 1: משלוח ראשון',
+  summary: 'בונים מחסן, תחנת יעד ושביל ישר, ומפעילים את ה-Agent למסלול ראשון.',
   worldId: KUGEL_LESSON_ONE_WORLD_ID,
   mode: 'Adventure',
 });
-const KUGEL_MINECRAFT_LESSONS = Object.freeze({
-  0: KUGEL_LESSON_ZERO,
-  1: KUGEL_LESSON_ONE,
+const KUGEL_LESSON_TITLES = Object.freeze({
+  2: ['מסלול עם פנייה', 'רצף פקודות עם פנייה אחת במסלול המשלוחים.'],
+  3: ['החבילה מגיעה', 'ה-Agent מגיע לתחנה ומניח או מסמן חבילה.'],
+  4: ['שליח עצמאי', 'מסלול משלוחים אישי עם בדיקה ותיקון.'],
+  5: ['משלוח אחד לא מספיק', 'מתחילים לחשוב על עבודה חוזרת ואוטומציה.'],
+  6: ['הלוך וחזור', 'מחזור פעולה מלא: יציאה, מסירה וחזרה.'],
+  7: ['לולאה עם עצירה', 'לולאה שמופעלת ונעצרת בצורה בטוחה.'],
+  8: ['קו אישי בעיר', 'קו משלוחים מחזורי אישי בעיר של התלמידים.'],
+  9: ['יש מצב בעיר', 'מצב נראה בעולם שהקוד יכול לבדוק או לייצג.'],
+  10: ['אם הדרך פתוחה', 'תנאי if שמחליט לפי מצב הדרך.'],
+  11: ['מחכים או עוקפים', 'תגובה אחרת כשהדרך חסומה או לא מוכנה.'],
+  12: ['חוק חכם אישי', 'כלל אישי של if/else בתוך העיר.'],
+  13: ['ממפים את העיר', 'בחירת מערכות לשדרוג ותכנון אלגוריתם.'],
+  14: ['מוסיפים אוטומציה חדשה', 'בנייה או שדרוג של מערכת עירונית אחת.'],
+  15: ['מחברים ובודקים', 'בדיקה של שתי אוטומציות ותיקון תקלה.'],
+  16: ['דמו עיר חכמה', 'הצגת עיר חכמה עם כמה אוטומציות שעובדות יחד.'],
 });
+function kugelLessonWorldId(lessonId) {
+  if (lessonId === 0) return KUGEL_LESSON_ZERO_WORLD_ID;
+  if (lessonId === 1) return KUGEL_LESSON_ONE_WORLD_ID;
+  return String(process.env[`KUGEL_LESSON_${lessonId}_WORLD_ID`] || '');
+}
+const KUGEL_MINECRAFT_LESSONS = Object.freeze(Object.fromEntries([
+  [0, KUGEL_LESSON_ZERO],
+  [1, KUGEL_LESSON_ONE],
+  ...Array.from({ length: 15 }, (_, index) => {
+    const id = index + 2;
+    const [title, summary] = KUGEL_LESSON_TITLES[id] || [`שיעור ${id}`, 'חיבור Minecraft לשיעור הזה עדיין צריך מיפוי.'];
+    return [id, Object.freeze({
+      id,
+      title: `שיעור ${id}: ${title}`,
+      summary,
+      worldId: kugelLessonWorldId(id),
+      mode: 'Adventure',
+    })];
+  }),
+]));
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -1656,6 +1689,16 @@ function kugelLessonById(lessonId) {
   return KUGEL_MINECRAFT_LESSONS[String(lessonId)] || null;
 }
 
+function kugelLessonPublic(lesson) {
+  return lesson ? {
+    id: lesson.id,
+    title: lesson.title,
+    summary: lesson.summary,
+    mode: lesson.mode,
+    hasWorld: Boolean(lesson.worldId),
+  } : null;
+}
+
 function kugelEventPayload(row) {
   if (!row?.payload) return {};
   if (typeof row.payload === 'object') return row.payload;
@@ -1831,8 +1874,8 @@ async function kugelClassView(context, role, useEventCache = true) {
   return {
     ok: true,
     role,
-    lesson: activeLesson,
-    lessons: Object.values(KUGEL_MINECRAFT_LESSONS),
+    lesson: kugelLessonPublic(activeLesson),
+    lessons: Object.values(KUGEL_MINECRAFT_LESSONS).map(kugelLessonPublic),
     classroom: { id: context.classroom.id, name: context.classroom.name },
     session,
     students: summaries,
@@ -1954,6 +1997,7 @@ async function handleKugelApi(req, res) {
       const classroomId = decodeURIComponent(teacherLessonLaunch[1]);
       const lesson = kugelLessonById(teacherLessonLaunch[2]);
       if (!lesson) return send(res, 404, JSON.stringify({ error: 'שיעור Minecraft לא מוגדר.' }));
+      if (!lesson.worldId) return send(res, 409, JSON.stringify({ error: 'עדיין לא מוגדר עולם Minecraft לשיעור הזה.' }));
       const context = getTeacherKugelClass(req, classroomId);
       if (context.status) return send(res, context.status, JSON.stringify({ error: context.error }));
       if (!consumeKugelActionLimit(`teacher:${context.teacher.id}:${classroomId}:launch:${lesson.id}`, 10)) {

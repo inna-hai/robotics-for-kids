@@ -746,6 +746,9 @@
   display: grid;
   gap: 12px;
   margin: 14px 0;
+  max-height: 520px;
+  overflow: auto;
+  padding-left: 4px;
 }
 
 .minecraft-lesson-option {
@@ -765,6 +768,20 @@
   color: #475569;
   font-size: .94rem;
   line-height: 1.5;
+}
+
+.minecraft-lesson-option.is-missing-world {
+  border-style: dashed;
+  background: #fff7ed;
+}
+
+.minecraft-lesson-option.is-missing-world strong {
+  color: #9a3412;
+}
+
+.minecraft-lesson-actions {
+  display: grid;
+  gap: 8px;
 }
 
 .lesson-one-action {

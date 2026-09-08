@@ -213,6 +213,13 @@ try {
   const oversizedJson = await rawPost(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, JSON.stringify({ padding: 'x'.repeat(70 * 1024) }), teacherACookie);
   assert.equal(oversizedJson.status, 413, 'oversized control bodies must be rejected explicitly');
 
+  const teacherSession = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
+  assert.equal(teacherSession.status, 200);
+  const teacherSessionBody = await teacherSession.json();
+  assert.equal(teacherSessionBody.lessons.length, 17, 'teacher mapping board must list Minecraft lessons 0-16');
+  assert.equal(teacherSessionBody.lessons.find(lesson => lesson.id === 1)?.hasWorld, true);
+  assert.equal(teacherSessionBody.lessons.find(lesson => lesson.id === 2)?.hasWorld, false);
+
   const launch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, teacherACookie);
   assert.equal(launch.status, 200);
   const launchBody = await launch.json();
@@ -227,6 +234,8 @@ try {
   assert.equal(lessonOneLaunchBody.lesson.id, 1);
   assert.equal(lessonOneLaunchBody.session.lessonId, 1);
   assert.equal(monitorCalls.some(call => call.url === '/api/internal/craftom-school/world/open' && call.body.world === 'movement-buttons-practice'), true);
+  const missingWorldLaunch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/2/launch`, {}, teacherACookie);
+  assert.equal(missingWorldLaunch.status, 409, 'lessons without a configured Minecraft world must be mapped before launch');
   const conflictingLaunch = await post(baseUrl, `/api/kugel/classes/${classroomB.id}/launch`, {}, teacherBCookie);
   assert.equal(conflictingLaunch.status, 409, 'one Minecraft server must not be controlled by two classrooms at once');
   const foreignPlayerMessage = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/message`, { text: 'אסור', scope: 'player', target: 'OtherSecure' }, teacherACookie);

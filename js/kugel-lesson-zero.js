@@ -127,12 +127,15 @@
     const monitor = document.getElementById('studentMonitor');
     const className = document.getElementById('teacherClassName');
     const classMessage = document.querySelector('#classMessageForm input[name="text"]');
-    const launchLesson = document.getElementById('launchLesson');
-    const launchLessonOne = document.getElementById('launchLessonOne');
+    const lessonList = document.getElementById('minecraftLessonList');
     let current = null;
 
     function scoped(action) {
       return `/api/kugel/classes/${encodeURIComponent(classroomId)}${action}`;
+    }
+
+    function lessonLaunchPath(lessonId) {
+      return Number(lessonId) === 0 ? scoped('/launch') : scoped(`/lessons/${encodeURIComponent(lessonId)}/launch`);
     }
 
     function metric(id, value) {
@@ -197,11 +200,40 @@
       return card;
     }
 
+    function renderTeacherLesson(lesson, session, activeLessonId, minecraftBlocked) {
+      const card = node('article', undefined, `minecraft-lesson-option${lesson.hasWorld ? '' : ' is-missing-world'}`);
+      card.append(node('strong', lesson.title || `שיעור ${lesson.id}`));
+      card.append(node('span', lesson.summary || 'בודקים האם קיים עולם Minecraft מתאים לשיעור הזה.'));
+      const actionRow = node('div', undefined, 'minecraft-lesson-actions');
+      const launch = node('button', lesson.hasWorld ? `פתיחת Minecraft לשיעור ${lesson.id}` : 'חסר עולם Minecraft', `primary-action start-lesson-action${Number(lesson.id) === 1 ? ' lesson-one-action' : ''}`);
+      launch.type = 'button';
+      launch.disabled = minecraftBlocked || !lesson.hasWorld || session.serverState === 'starting';
+      launch.title = !lesson.hasWorld
+        ? 'צריך להגדיר עולם Minecraft אמיתי לשיעור הזה לפני שאפשר להפעיל אותו.'
+        : (minecraftBlocked ? current?.minecraftSetupNote || '' : '');
+      launch.classList.toggle('is-active-lesson', session.active && activeLessonId === Number(lesson.id));
+      launch.addEventListener('click', () => teacherAction(
+        lessonLaunchPath(lesson.id),
+        {},
+        `מפעילים את עולם שיעור ${lesson.id}…`,
+        `עולם שיעור ${lesson.id} פעיל.`
+      ));
+      actionRow.append(launch);
+      if (Number(lesson.id) >= 1) {
+        const link = node('a', `צפייה בדף שיעור ${lesson.id}`, 'secondary-action link-action teacher-next-lesson');
+        link.href = `craftom-minecraft-lesson-${lesson.id}.html`;
+        actionRow.append(link);
+      }
+      card.append(actionRow);
+      return card;
+    }
+
     function render(data) {
       current = data;
       className.textContent = data.classroom.name;
       const session = data.session || {};
       const activeLessonId = Number(session.lessonId ?? 0);
+      const minecraftBlocked = data.minecraftConfigured === false;
       document.getElementById('serverState').textContent = session.serverState === 'running' ? 'שרת פעיל' : session.serverState === 'error' ? 'שגיאת הפעלה' : 'שרת מוכן';
       const previewDetail = data.minecraftPreviewMode && session.active && session.serverDetail
         ? `${session.serverDetail} ${data.minecraftSetupNote}`
@@ -211,16 +243,8 @@
         : (session.serverDetail || '');
       document.getElementById('serverDot').classList.toggle('busy', session.serverState === 'starting');
       document.getElementById('serverDot').classList.toggle('error', data.minecraftConfigured === false || session.serverState === 'error');
-      if (launchLesson) {
-        launchLesson.disabled = data.minecraftConfigured === false || session.serverState === 'starting';
-        launchLesson.title = data.minecraftConfigured === false ? data.minecraftSetupNote : '';
-        launchLesson.classList.toggle('is-active-lesson', session.active && activeLessonId === 0);
-      }
-      if (launchLessonOne) {
-        launchLessonOne.disabled = data.minecraftConfigured === false || session.serverState === 'starting';
-        launchLessonOne.title = data.minecraftConfigured === false ? data.minecraftSetupNote : '';
-        launchLessonOne.classList.toggle('is-active-lesson', session.active && activeLessonId === 1);
-      }
+      const lessons = data.lessons?.length ? data.lessons : [data.lesson].filter(Boolean);
+      lessonList.replaceChildren(...lessons.map(lesson => renderTeacherLesson(lesson, session, activeLessonId, minecraftBlocked)));
       metric('metricConnected', data.metrics?.connected);
       metric('metricActive', data.metrics?.active);
       metric('metricDone', data.metrics?.completed);
@@ -241,10 +265,6 @@
       }
     }
 
-    launchLesson.addEventListener('click', () => teacherAction(scoped('/launch'), {}, 'מפעילים את עולם המבוך…', 'עולם המבוך פעיל.'));
-    if (launchLessonOne) {
-      launchLessonOne.addEventListener('click', () => teacherAction(scoped('/lessons/1/launch'), {}, 'מפעילים את עולם שיעור 1…', 'עולם שיעור 1 פעיל.'));
-    }
     document.getElementById('stopLesson').addEventListener('click', () => teacherAction(scoped('/stop'), {}, 'מסיימים את השיעור…', 'השיעור הסתיים והשרת שוחרר.'));
     document.getElementById('classMessageForm').addEventListener('submit', async event => {
       event.preventDefault();

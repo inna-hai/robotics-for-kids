@@ -21,19 +21,7 @@
       <section class="panel compact-panel minecraft-lesson-panel">
         <h3>בחירת שיעור Minecraft</h3>
         <p>המורה בוחרת איזה עולם לפתוח לכיתה לפי השיעור שבו עובדים היום. האקדמיה ו־Minecraft זמינים במקביל, והמורה קובעת את הסדר.</p>
-        <div class="minecraft-lesson-list">
-          <article class="minecraft-lesson-option">
-            <strong>שיעור 0: מבוך המטבעות</strong>
-            <span>פותח מחדש את עולם המבוך ומאפס את התקדמות שיעור 0.</span>
-            <button class="primary-action start-lesson-action" id="launchLesson" type="button">פתיחת Minecraft לשיעור 0</button>
-          </article>
-          <article class="minecraft-lesson-option">
-            <strong>שיעור 1: תרגול תנועה</strong>
-            <span>פותח לכיתה את עולם התרגול של שיעור 1.</span>
-            <button class="primary-action start-lesson-action lesson-one-action" id="launchLessonOne" type="button">פתיחת Minecraft לשיעור 1</button>
-            <a class="secondary-action link-action teacher-next-lesson" href="craftom-minecraft-lesson-1.html">צפייה בדף שיעור 1</a>
-          </article>
-        </div>
+        <div class="minecraft-lesson-list" id="minecraftLessonList"></div>
         <button class="secondary-action" id="stopLesson" type="button">סיום השיעור ושחרור השרת</button>
         <p class="form-status" id="teacherStatus" aria-live="polite"></p>
       </section>
