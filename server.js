@@ -34,15 +34,16 @@ const CLASSROOM_TEACHER_INVITE_CODE = String(process.env.ROBOTICS_TEACHER_INVITE
 const CLASSROOM_ADMIN_CODE = String(process.env.ROBOTICS_CLASSROOM_ADMIN_CODE || '');
 const CLASSROOM_PREVIEW_DEMO_TEACHER = process.env.ROBOTICS_PREVIEW_DEMO_TEACHER === '1';
 const KUGEL_PREVIEW_MOCK_MINECRAFT = CLASSROOM_PREVIEW_DEMO_TEACHER && process.env.KUGEL_PREVIEW_MOCK_MINECRAFT === '1';
-const KUGEL_MONITOR_API_URL = String(process.env.KUGEL_MONITOR_API_URL || '').replace(/\/+$/, '');
+const KUGEL_MONITOR_API_URL = String(process.env.KUGEL_MONITOR_API_URL || process.env.MINECRAFT_MONITOR_API_URL || '').replace(/\/+$/, '');
 const KUGEL_MONITOR_SERVER_NAME = String(process.env.KUGEL_MONITOR_SERVER_NAME || '');
-const KUGEL_MINECRAFT_INTERNAL_TOKEN = String(process.env.KUGEL_MINECRAFT_INTERNAL_TOKEN || '');
+const KUGEL_MINECRAFT_INTERNAL_TOKEN = String(process.env.KUGEL_MINECRAFT_INTERNAL_TOKEN || process.env.CRAFTOM_SCHOOL_WORLD_TOKEN || process.env.MINECRAFT_INTERNAL_TOKEN || '');
 const KUGEL_MINECRAFT_SERVER_NAME = String(process.env.KUGEL_MINECRAFT_SERVER_NAME || '');
 const KUGEL_MINECRAFT_SERVER_HOST = String(process.env.KUGEL_MINECRAFT_SERVER_HOST || '');
 const KUGEL_MINECRAFT_SERVER_PORT = String(process.env.KUGEL_MINECRAFT_SERVER_PORT || '');
 const KUGEL_MINECRAFT_SERVER_ID = String(process.env.KUGEL_MINECRAFT_SERVER_ID || '');
 const KUGEL_MINECRAFT_ACCESS_CODE = String(process.env.KUGEL_MINECRAFT_ACCESS_CODE || '');
-const KUGEL_LESSON_ZERO_WORLD_ID = String(process.env.KUGEL_LESSON_ZERO_WORLD_ID || 'kugel-50-safe-compounds-v3-mazes-8-coins-npc-reset-caged-inner-v1-20260905');
+const KUGEL_LESSON_ZERO_WORLD_ID = String(process.env.KUGEL_LESSON_ZERO_WORLD_ID || 'kugel-50-safe-compounds-v3-mazes-8-coins-npc-reset-caged-inner-wood-obstacle-test-v1-20260906');
+const KUGEL_PREVIEW_CLASSROOM_ID = String(process.env.KUGEL_PREVIEW_CLASSROOM_ID || '');
 const KUGEL_COURSE_ID = 'craftom-agent';
 const KUGEL_ACTION_WINDOW_MS = 60 * 1000;
 const KUGEL_EVENTS_CACHE_MS = 1000;
@@ -1415,7 +1416,10 @@ function previewDemoTeacherLogin() {
         `).run(teacher.id, teacher.name, teacher.email, teacher.password_salt, teacher.password_hash, teacher.created_at, teacher.updated_at);
       }
       replaceTeacherCourses(db, teacher.id, CLASSROOM_COURSE_IDS);
-      let classroom = db.prepare('SELECT * FROM classrooms WHERE teacher_id = ? ORDER BY created_at LIMIT 1').get(teacher.id);
+      let classroom = KUGEL_PREVIEW_CLASSROOM_ID
+        ? db.prepare('SELECT * FROM classrooms WHERE id = ? AND teacher_id = ?').get(KUGEL_PREVIEW_CLASSROOM_ID, teacher.id)
+        : null;
+      if (!classroom) classroom = db.prepare('SELECT * FROM classrooms WHERE teacher_id = ? ORDER BY created_at LIMIT 1').get(teacher.id);
       if (!classroom) {
         classroom = {
           id: crypto.randomUUID(),
@@ -1786,7 +1790,7 @@ async function kugelClassView(context, role, useEventCache = true) {
     minecraftConfigured: kugelMinecraftConfigured(),
     minecraftPreviewMode: KUGEL_PREVIEW_MOCK_MINECRAFT,
     minecraftSetupNote: kugelMinecraftSetupNote(),
-    minecraft: ownsRunningWorld ? kugelMinecraftInfo() : null,
+    minecraft: role === 'teacher' ? kugelMinecraftInfo() : (ownsRunningWorld ? kugelMinecraftInfo() : null),
   };
 }
 
@@ -2135,8 +2139,10 @@ async function handleClassroomApi(req, res) {
     const teacher = getClassroomTeacherFromRequest(req);
     if (!teacher) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
     const classes = withSummerDb(db => db.prepare(`
-      SELECT * FROM classrooms WHERE teacher_id = ? ORDER BY created_at
-    `).all(teacher.id).map(classroom => ({
+      SELECT * FROM classrooms
+      WHERE teacher_id = ?
+      ORDER BY CASE WHEN id = ? THEN 0 ELSE 1 END, created_at
+    `).all(teacher.id, KUGEL_PREVIEW_CLASSROOM_ID).map(classroom => ({
       id: classroom.id,
       name: classroom.name,
       joinCode: classroom.join_code,
