@@ -12,7 +12,6 @@
   const runButton = document.getElementById('academyRun');
   const resetButton = document.getElementById('academyReset');
   const hintButton = document.getElementById('academyHint');
-  const nextButton = document.getElementById('academyNext');
   const completeEl = document.getElementById('academyComplete');
   const completeBackLink = document.getElementById('academyCompleteBackLink');
 
@@ -689,7 +688,8 @@
     `).join('');
     exerciseList.querySelectorAll('[data-academy-exercise]').forEach(button => {
       button.addEventListener('click', () => {
-        goToExercise(Number(button.dataset.academyExercise || 0));
+        activeExercise = Number(button.dataset.academyExercise || 0);
+        resetExercise();
       });
     });
   }
@@ -728,13 +728,10 @@
       reportProgress(`academy-exercise-${activeExercise + 1}`, { completedExercises: completedExercises.size, totalExercises: academy.exercises.length });
     }
     const allDone = academy.exercises.length > 0 && completedExercises.size >= academy.exercises.length;
-    if (nextButton) {
-      nextButton.hidden = !passed || allDone || activeExercise >= academy.exercises.length - 1;
-    }
     feedbackEl.textContent = passed && allDone
       ? 'כל תרגילי האקדמיה הושלמו וההתקדמות נשמרה. אפשר לחזור לשיעור.'
       : passed
-        ? 'התרגיל עבר וההצלחה נשמרה. לחצו תרגיל הבא כדי להתחיל עם בלוקים נקיים של התרגיל הבא.'
+        ? 'התרגיל עבר וההצלחה נשמרה. בחרו את התרגיל הבא משמאל; הוא ייפתח עם בלוקים נקיים.'
         : 'עוד לא. הסתכלו על ההדמיה, תקנו בלוק אחד והריצו שוב.';
     feedbackEl.className = `academy-feedback ${passed ? 'pass' : 'fail'}`;
     renderAcademyCompletion();
@@ -783,18 +780,11 @@
   }
 
   function resetExercise() {
-    if (nextButton) nextButton.hidden = true;
     workspace.clear();
     Blockly.Xml.domToWorkspace(new DOMParser().parseFromString(starterXml(), 'text/xml').documentElement, workspace);
     renderExercises();
     setTimeout(() => Blockly.svgResize(workspace), 20);
     runAndCheck({ animate: false });
-  }
-
-  function goToExercise(index) {
-    const nextIndex = Math.max(0, Math.min(Number(index) || 0, academy.exercises.length - 1));
-    activeExercise = nextIndex;
-    resetExercise();
   }
 
   document.querySelectorAll('[data-academy-mode]').forEach(button => {
@@ -818,7 +808,6 @@
 
   runButton.addEventListener('click', runAndCheck);
   resetButton.addEventListener('click', resetExercise);
-  nextButton?.addEventListener('click', () => goToExercise(activeExercise + 1));
   hintButton.addEventListener('click', () => {
     const hint = academy.exercises[activeExercise]?.hint || hints[activeExercise] || 'התחילו מפקודת chat ואז הוסיפו פקודת Agent אחת.';
     feedbackEl.textContent = `רמז: ${hint}`;

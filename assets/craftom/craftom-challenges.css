@@ -512,13 +512,20 @@ h2 {
 .academy-complete {
   display: grid;
   gap: 8px;
-  margin-top: 12px;
-  padding: 14px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 1000;
+  width: min(92vw, 560px);
+  padding: 28px;
   border: 2px solid rgba(34, 197, 94, .42);
-  border-radius: 10px;
+  border-radius: 14px;
   background: linear-gradient(135deg, #f0fdf4, #eff6ff);
+  box-shadow: 0 24px 80px rgba(15, 23, 42, .28);
   color: #14532d;
   font-weight: 850;
+  text-align: center;
+  transform: translate(-50%, -50%);
 }
 
 .academy-complete[hidden] {
@@ -526,15 +533,19 @@ h2 {
 }
 
 .academy-complete strong {
-  font-size: 1.08rem;
+  font-size: 1.45rem;
 }
 
 .academy-complete span {
+  font-size: 1.08rem;
+  line-height: 1.55;
   color: #334155;
 }
 
 .academy-complete .btn {
+  justify-self: center;
   width: fit-content;
+  margin-top: 8px;
 }
 
 #academyCanvas {
