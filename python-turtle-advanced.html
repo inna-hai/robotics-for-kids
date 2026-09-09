@@ -7901,7 +7901,10 @@
           lesson: currentLesson,
           exercise: currentExerciseIndex,
           completed: serializeCompleted(),
-          workspaceXml: xml
+          workspaceXml: xml,
+          lessonWorkspaceXml,
+          exerciseWorkspaceXml,
+          exerciseStartXml
         }));
       } catch {}
     }
@@ -11327,6 +11330,9 @@
       restoringProgress = true;
       if(saved){
         applyCompleted(saved);
+        if(saved.lessonWorkspaceXml && typeof saved.lessonWorkspaceXml === 'object') Object.assign(lessonWorkspaceXml, saved.lessonWorkspaceXml);
+        if(saved.exerciseWorkspaceXml && typeof saved.exerciseWorkspaceXml === 'object') Object.assign(exerciseWorkspaceXml, saved.exerciseWorkspaceXml);
+        if(saved.exerciseStartXml && typeof saved.exerciseStartXml === 'object') Object.assign(exerciseStartXml, saved.exerciseStartXml);
         const requestedLessonId = initialLessonFromUrl();
         const params = new URLSearchParams(window.location.search);
         const hasRequestedLesson = params.has('lesson') || params.has('l');
