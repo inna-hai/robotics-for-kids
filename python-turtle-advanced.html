@@ -9546,6 +9546,9 @@
           return [];
         }
         if(ex.id === 6){
+          const baseline = exerciseBaselines[baselineKey()] || [];
+          const currentActionCount = comparableActions(actions).length;
+          if(currentActionCount <= baseline.length) return ['כמעט — צריך להוסיף בלוקים חדשים לידית, לא רק להריץ שוב את הציור הקודם.'];
           if(!hasFrameAndInnerLines) return ['כמעט — הידית צריכה להיות על חלון ברור עם מסגרת וקווים פנימיים.'];
           if(!hasCleanMove) return ['כמעט — עברו למקום של הידית עם penup / pendown.'];
           if(!hasWideLine && !actionDrawsWithColor(actions, '#111827')) return ['כמעט — הידית צריכה לבלוט בצבע כהה או בעובי גדול.'];
