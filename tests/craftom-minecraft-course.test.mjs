@@ -91,6 +91,11 @@ assert.ok(preview.includes('איך עובדים בלומדה'), 'preview explain
 assert.ok(preview.includes('20260905-agent-blocks-match-1'), 'preview page cache-busts the updated challenge data');
 assert.ok(preview.includes('אקדמיית ה-Agent'), 'preview uses the neutral Agent academy name');
 assert.ok(!preview.includes('Craftom Challenges • כיתה ז׳'), 'preview no longer presents the course as grade 7 only');
+assert.ok(preview.includes('id="courseHeaderNav"'), 'preview home has a course navigation header');
+assert.ok(preview.includes('השיעור הנוכחי'), 'preview home header links to the current lesson');
+assert.ok(preview.includes('/api/kugel/session'), 'preview home can resolve the teacher-opened current lesson');
+assert.ok(preview.includes('craftom-minecraft-lesson-${lessonId}.html'), 'preview home current lesson link points to a lesson page');
+assert.ok(preview.includes('craftom-minecraft-challenge.html?challenge=${challenge.id}'), 'preview home challenge links point to challenge pages');
 
 for (const path of [
   'craftom-minecraft-challenge.html',
