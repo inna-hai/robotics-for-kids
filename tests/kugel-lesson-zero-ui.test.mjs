@@ -64,6 +64,6 @@ assert.ok(classroomClient.includes("'craftom-agent': 'kugel-student.html'"), 'cl
 assert.match(server, /basename === 'kugel-student'/);
 assert.match(server, /basename === 'kugel-teacher'/);
 assert.match(server, /kugel-50-safe-compounds-v3-mazes-8-coins-npc-reset-caged-inner-wood-obstacle-test-v1-20260906/);
-assert.match(server, /movement-buttons-practice/);
+assert.match(server, /kugel-50-safe-compounds-v3-20260824/);
 assert.ok(packageJson.includes('node --check js/kugel-lesson-zero.js'));
 console.log('✓ Kugel UI contains only secure lesson zero and links back to the existing course');

@@ -39,7 +39,8 @@ const KUGEL_MINECRAFT_SERVER_PORT = String(process.env.KUGEL_MINECRAFT_SERVER_PO
 const KUGEL_MINECRAFT_SERVER_ID = String(process.env.KUGEL_MINECRAFT_SERVER_ID || '');
 const KUGEL_MINECRAFT_ACCESS_CODE = String(process.env.KUGEL_MINECRAFT_ACCESS_CODE || '');
 const KUGEL_LESSON_ZERO_WORLD_ID = String(process.env.KUGEL_LESSON_ZERO_WORLD_ID || 'kugel-50-safe-compounds-v3-mazes-8-coins-npc-reset-caged-inner-wood-obstacle-test-v1-20260906');
-const KUGEL_LESSON_ONE_WORLD_ID = String(process.env.KUGEL_LESSON_ONE_WORLD_ID || 'movement-buttons-practice');
+const KUGEL_AGENT_ACADEMY_WORLD_ID = String(process.env.KUGEL_AGENT_ACADEMY_WORLD_ID || 'kugel-50-safe-compounds-v3-20260824');
+const KUGEL_LESSON_ONE_WORLD_ID = String(process.env.KUGEL_LESSON_ONE_WORLD_ID || KUGEL_AGENT_ACADEMY_WORLD_ID);
 const KUGEL_PREVIEW_CLASSROOM_ID = String(process.env.KUGEL_PREVIEW_CLASSROOM_ID || '');
 const KUGEL_COURSE_ID = 'craftom-agent';
 const KUGEL_ACTION_WINDOW_MS = 60 * 1000;
@@ -82,7 +83,7 @@ const KUGEL_LESSON_TITLES = Object.freeze({
 function kugelLessonWorldId(lessonId) {
   if (lessonId === 0) return KUGEL_LESSON_ZERO_WORLD_ID;
   if (lessonId === 1) return KUGEL_LESSON_ONE_WORLD_ID;
-  return String(process.env[`KUGEL_LESSON_${lessonId}_WORLD_ID`] || '');
+  return String(process.env[`KUGEL_LESSON_${lessonId}_WORLD_ID`] || KUGEL_AGENT_ACADEMY_WORLD_ID);
 }
 const KUGEL_MINECRAFT_LESSONS = Object.freeze(Object.fromEntries([
   [0, KUGEL_LESSON_ZERO],
