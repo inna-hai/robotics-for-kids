@@ -9,8 +9,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260909-academy-complete-modal-1">
   <link rel="stylesheet" href="css/platform-home-link.css">
+  <style>
+    .course-header{position:sticky;top:0;z-index:20;background:rgba(247,251,255,.94);border-bottom:1px solid #d7e7f5;backdrop-filter:blur(12px)}
+    .course-header-inner{width:min(1180px,calc(100% - 28px));margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0}
+    .course-brand{color:#0b2342;font-weight:900;text-decoration:none;white-space:nowrap}
+    .course-nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .course-nav a{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:8px 12px;border:1px solid #bdd8f4;border-radius:999px;background:#fff;color:#075985;font-weight:900;text-decoration:none}
+    .course-nav a.primary{color:#fff;background:#0b75b7;border-color:#0b75b7}
+    .course-nav a:hover{border-color:#0b75b7}
+    @media(max-width:850px){.course-header-inner{align-items:flex-start;flex-direction:column}.course-nav{justify-content:flex-start}}
+  </style>
 </head>
 <body class="agent-academy-page">
+  <header class="course-header" aria-label="ניווט אקדמיית ה-Agent">
+    <div class="course-header-inner">
+      <a class="course-brand" href="craftom-school/preview/index.html">אקדמיית ה-Agent</a>
+      <nav class="course-nav" id="courseHeaderNav" aria-label="מעבר מהיר"></nav>
+    </div>
+  </header>
   <main class="shell academy-shell">
     <header class="academy-top">
       <div>
@@ -69,6 +85,20 @@
   </main>
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
   <script src="js/craftom-minecraft-challenges.js?v=20260909-adjacent-academy-1"></script>
+  <script>
+    (() => {
+      const program = window.CRAFTOM_MINECRAFT_PROGRAM;
+      const nav = document.getElementById('courseHeaderNav');
+      if (!program || !nav) return;
+      const params = new URLSearchParams(location.search);
+      const lessonId = Math.min(Math.max(Number(params.get('lesson')) || 1, 1), program.totalMeetings || 16);
+      nav.innerHTML = `
+        <a href="craftom-school/preview/index.html">דף הבית</a>
+        <a class="primary" href="craftom-minecraft-lesson-${lessonId}.html">השיעור הנוכחי</a>
+        ${program.challenges.map(challenge => `<a href="craftom-minecraft-challenge.html?challenge=${challenge.id}">אתגר ${challenge.id}</a>`).join('')}
+      `;
+    })();
+  </script>
   <script src="js/vendor/blockly/blockly.min.js"></script>
   <script src="js/vendor/blockly/msg/he.js"></script>
   <script src="js/craftom-agent-academy.js?v=20260909-academy-complete-modal-2"></script>

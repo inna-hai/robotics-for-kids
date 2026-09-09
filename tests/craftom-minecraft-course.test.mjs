@@ -105,6 +105,7 @@ assert.ok(!serialized.includes('מעבר חציה חכם'), 'old disconnected cr
 assert.equal(challenge2.command, 'start / stop', 'old bridge command was replaced with start/stop');
 
 const preview = read('craftom-school/preview/index.html');
+const academyPage = read('craftom-agent-academy.html');
 assert.ok(preview.includes('programVideo'), 'preview page renders the program video element');
 assert.ok(preview.includes('סרטון פתיחת התוכנית'), 'preview page labels the overview video');
 assert.ok(preview.includes('program.overviewVideo'), 'preview page loads video from program data');
@@ -118,6 +119,9 @@ assert.ok(!preview.includes('href="./"'), 'preview home header does not link bac
 assert.ok(preview.includes('/api/kugel/session'), 'preview home can resolve the teacher-opened current lesson');
 assert.ok(preview.includes('craftom-minecraft-lesson-${lessonId}.html'), 'preview home current lesson link points to a lesson page');
 assert.ok(preview.includes('craftom-minecraft-challenge.html?challenge=${challenge.id}'), 'preview home challenge links point to challenge pages');
+assert.ok(academyPage.includes('id="courseHeaderNav"'), 'Agent academy page keeps the course navigation header visible');
+assert.ok(academyPage.includes('craftom-minecraft-lesson-${lessonId}.html'), 'Agent academy current lesson link returns to the matching lesson');
+assert.ok(academyPage.includes('craftom-minecraft-challenge.html?challenge=${challenge.id}'), 'Agent academy header links to all challenges');
 
 for (const path of [
   'craftom-minecraft-challenge.html',
