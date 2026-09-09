@@ -6,6 +6,22 @@
   const challengeLessons = program.lessons.filter(item => item.challengeId === lesson.challengeId);
   const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 
+  function renderCourseHeader() {
+    document.getElementById('courseHeader')?.remove();
+    document.body.insertAdjacentHTML('afterbegin', `
+      <header class="course-header" id="courseHeader" aria-label="ניווט אקדמיית ה-Agent">
+        <div class="course-header-inner">
+          <a class="course-brand" href="craftom-school/preview/index.html">אקדמיית ה-Agent</a>
+          <nav class="course-nav" id="courseHeaderNav" aria-label="מעבר מהיר">
+            <a href="craftom-school/preview/index.html">דף הבית</a>
+            <a class="primary" href="craftom-minecraft-lesson-${lesson.id}.html">השיעור הנוכחי</a>
+            ${program.challenges.map(challenge => `<a href="craftom-minecraft-challenge.html?challenge=${challenge.id}">אתגר ${challenge.id}</a>`).join('')}
+          </nav>
+        </div>
+      </header>
+    `);
+  }
+
   function list(items) {
     return items.map(item => `<li>${esc(item)}</li>`).join('');
   }
@@ -428,6 +444,7 @@ player.onChat("test", function () {
       <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
     `;
   }
+  renderCourseHeader();
   renderQaCourseSwitcher();
 
   document.title = `שיעור ${lesson.id} - ${lesson.title} | ${program.title}`;

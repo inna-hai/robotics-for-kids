@@ -106,6 +106,7 @@ assert.equal(challenge2.command, 'start / stop', 'old bridge command was replace
 
 const preview = read('craftom-school/preview/index.html');
 const academyPage = read('craftom-agent-academy.html');
+const lessonPageScript = read('js/craftom-minecraft-lesson-page.js');
 assert.ok(preview.includes('programVideo'), 'preview page renders the program video element');
 assert.ok(preview.includes('סרטון פתיחת התוכנית'), 'preview page labels the overview video');
 assert.ok(preview.includes('program.overviewVideo'), 'preview page loads video from program data');
@@ -122,6 +123,13 @@ assert.ok(preview.includes('craftom-minecraft-challenge.html?challenge=${challen
 assert.ok(academyPage.includes('id="courseHeaderNav"'), 'Agent academy page keeps the course navigation header visible');
 assert.ok(academyPage.includes('craftom-minecraft-lesson-${lessonId}.html'), 'Agent academy current lesson link returns to the matching lesson');
 assert.ok(academyPage.includes('craftom-minecraft-challenge.html?challenge=${challenge.id}'), 'Agent academy header links to all challenges');
+assert.ok(lessonPageScript.includes('id="courseHeader"'), 'lesson pages render the course header before lesson content');
+assert.ok(lessonPageScript.indexOf('renderCourseHeader();') < lessonPageScript.indexOf('renderQaCourseSwitcher();'), 'lesson page header appears before the QA lesson switcher');
+for (const path of ['craftom-minecraft-challenge.html', 'craftom-minecraft-students.html', 'craftom-minecraft-slides.html']) {
+  const html = read(path);
+  assert.ok(html.includes('id="courseHeaderNav"'), `${path} keeps the course navigation header visible`);
+  assert.ok(html.includes('craftom-minecraft-challenge.html?challenge=${item.id}'), `${path} header links to all challenges`);
+}
 
 for (const path of [
   'craftom-minecraft-challenge.html',
