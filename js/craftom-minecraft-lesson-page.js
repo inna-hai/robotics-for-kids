@@ -354,7 +354,6 @@ player.onChat("test", function () {
           <article class="detail-box"><h2>איך עובדים לבד</h2><ul id="selfStudy"></ul></article>
           <article class="detail-box"><h2>מה בונים במיינקראפט</h2><ul id="build"></ul></article>
           <article class="detail-box"><h2>קוד / MakeCode</h2><ul id="code"></ul></article>
-          <article class="detail-box"><h2>ראיות Craftom</h2><ul id="evidence"></ul></article>
           <article class="detail-box"><h2>מה מעלים בסוף</h2><p id="exitUpload"></p></article>
         </section>
         <section class="card agent-academy-cta" id="agentAcademyCta" style="margin-top:16px" hidden>
@@ -422,6 +421,7 @@ player.onChat("test", function () {
         <div class="actions">
           <a class="btn secondary" id="prevLink" href="#">שיעור קודם</a>
           <a class="btn" id="nextLink" href="#">שיעור הבא</a>
+          <a class="btn" id="nextChallengeLink" href="#" hidden>לאתגר הבא</a>
           <a class="btn secondary" href="craftom-school/preview/index.html">מפת הקורס</a>
         </div>
       </main>
@@ -457,7 +457,6 @@ player.onChat("test", function () {
   document.getElementById('selfStudy').innerHTML = list(selfStudySteps);
   document.getElementById('build').innerHTML = list(lesson.detail.build);
   document.getElementById('code').innerHTML = list(lesson.detail.code);
-  document.getElementById('evidence').innerHTML = list(lesson.detail.evidence);
   const academyCta = document.getElementById('agentAcademyCta');
   const makeCodeWorkspace = document.getElementById('makeCodeWorkspace');
   if (lesson.detail.academy && academyCta) {
@@ -481,12 +480,20 @@ player.onChat("test", function () {
   const currentLessonIndex = challengeLessons.findIndex(item => item.id === lesson.id);
   const prevLesson = currentLessonIndex > 0 ? challengeLessons[currentLessonIndex - 1] : null;
   const nextLesson = currentLessonIndex < challengeLessons.length - 1 ? challengeLessons[currentLessonIndex + 1] : null;
+  const nextChallenge = program.challenges.find(item => item.id === lesson.challengeId + 1);
+  const nextChallengeFirstLesson = nextChallenge
+    ? program.lessons.find(item => item.challengeId === nextChallenge.id)
+    : null;
   const prevLink = document.getElementById('prevLink');
   const nextLink = document.getElementById('nextLink');
+  const nextChallengeLink = document.getElementById('nextChallengeLink');
   prevLink.style.display = prevLesson ? '' : 'none';
   nextLink.style.display = nextLesson ? '' : 'none';
   if (prevLesson) prevLink.href = `craftom-minecraft-lesson-${prevLesson.id}.html`;
   if (nextLesson) nextLink.href = `craftom-minecraft-lesson-${nextLesson.id}.html`;
+  if (nextChallengeLink && nextChallengeFirstLesson) {
+    nextChallengeLink.href = `craftom-minecraft-lesson-${nextChallengeFirstLesson.id}.html`;
+  }
   document.getElementById('lessonNav').innerHTML = challengeLessons.map(item => `<a class="${item.id === lesson.id ? 'active' : ''}" href="craftom-minecraft-lesson-${item.id}.html">${item.id}</a>`).join('');
   document.getElementById('challengeMapTitle').textContent = `אתגר ${lesson.challengeId}: ${lesson.challengeTitle}`;
   document.getElementById('challengeLessonMap').innerHTML = challengeLessons.map(item => `
@@ -555,6 +562,9 @@ player.onChat("test", function () {
       if (!response.ok) throw new Error(data.error || 'לא הצלחנו לשמור את ההגשה.');
       form.classList.add('submitted');
       status.textContent = `כרטיס היציאה הוגש ונשמר. מספר הגשה: ${data.id}`;
+      if (!nextLesson && nextChallengeLink) {
+        nextChallengeLink.hidden = !nextChallengeFirstLesson;
+      }
       window.dispatchEvent(new CustomEvent('hai:classroom-progress', {
         detail: {
           lessonId: String(lesson.id),
