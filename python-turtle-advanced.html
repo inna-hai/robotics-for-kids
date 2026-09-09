@@ -4393,10 +4393,10 @@
                     ]
           },
           {                    "id": 20,
-                    "title": "אתגר העיר: כביש, בית, פארק",
-                    "goal": "יוצרים דגם שחוזר: כביש, עמודים, חלונות או בניינים.",
-                    "concept": "שילוב מערכות",
-                    "product": "מיני־עיר",
+                    "title": "רחוב בתים: לולאה בתוך לולאה",
+                    "goal": "בונים בית בעזרת length ולולאות, ואז יוצרים רחוב של בתים חוזרים.",
+                    "concept": "לולאות מקוננות ומשתנה אורך",
+                    "product": "רחוב בתים בקוד",
                     "blocks": [
                               "forward",
                               "right",
@@ -4406,261 +4406,199 @@
                               "length"
                     ],
                     "practice": [
-                              "בחרו אלמנט חוזר בעיר.",
-                              "בנו אלמנט אחד.",
-                              "חזרו עליו עם repeat או ידנית.",
-                              "השתמשו ב־penup למרווחים.",
-                              "הוסיפו צבעים לעיר.",
-                              "שנו גודל בין אלמנטים.",
-                              "בדקו שהרחוב לא יוצא מהמסך.",
-                              "הוסיפו סימון מיוחד לרמזור/חיישן.",
-                              "הסבירו מה חוזר ומה משתנה.",
-                              "אתגר: רחוב עם 5 חלונות זהים."
+                              "קבעו אורך בסיס לבית עם length.",
+                              "ציירו גוף בית עם repeat של 4 חזרות.",
+                              "הוסיפו גג משולש עם repeat של 3 חזרות.",
+                              "השתמשו ב־penup ו־pendown כדי לעבור בלי קו מיותר.",
+                              "צרו שורת חלונות בעזרת לולאה פנימית.",
+                              "בנו רחוב של כמה בתים בעזרת לולאה חיצונית.",
+                              "שנו את length כדי שכל הבית ישתנה יחד.",
+                              "אתגר: רחוב שבו כל בית קצת גדול יותר מהקודם."
                     ],
                     "timing": [
-                              "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
-                              "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
-                              "18–35 תרגול מודרך ראשון",
-                              "35–55 עבודה עצמאית על משימת הליבה",
-                              "55–70 אתגר הרחבה או דיבאג",
-                              "70–82 שיתוף בזוגות ושיפור לפי משוב",
-                              "82–90 סיכום, רפלקציה ושמירת תוצר"
+                              "0–8 פתיחה: מה חוזר בבית ומה משתנה ברחוב",
+                              "8–18 הדגמה קצרה: length + ריבוע עם repeat",
+                              "18–36 תרגילים 1–3: בית אחד עם משתנה ולולאות",
+                              "36–52 תרגילים 4–5: מיקום וחלונות חוזרים",
+                              "52–70 תרגיל 6: רחוב עם לולאה חיצונית ופנימית",
+                              "70–82 תרגיל 7: שינוי גודל עם length",
+                              "82–90 תרגיל 8: בדיקת מבנה וסיכום"
                     ],
                     "teacherTips": [
-                              "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
-                              "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
-                              "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
-                              "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
-                              "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+                              "להדגיש: קודם בונים יחידה אחת שעובדת, ורק אחר כך חוזרים עליה.",
+                              "בכל מעבר לבית הבא לעצור ולשאול: למה צריך penup?",
+                              "לא לפתור את הלולאה המקוננת בבת אחת — קודם גוף בית, אחר כך חלונות, ורק בסוף רחוב.",
+                              "להראות שהחלפת מספר אחד ב־length משנה הרבה פקודות יחד.",
+                              "אם הרחוב נשבר, מתקנים את היחידה הקטנה ולא מוחקים הכול."
                     ],
                     "unit": "יחידה 4 — משחקונים ואתגרי רובוט",
-                    "level": "קליל וחווייתי לגיל 10–11",
-                    "story": "הילדים מחברים את מה שלמדו לעיר קטנה: כביש, בית, פארק וסימן אישי.",
-                    "mission": "לבנות מיני־עיר בקוד עם כמה חלקים נפרדים.",
-                    "outcome": "מיני־עיר עם לפחות 5 רכיבים.",
-                    "approach": "קוראים קוד, מנבאים תוצאה, מתקנים באגים קטנים",
-                    "bridge": "מהציור בחזרה לקוד: מאתרים את השורה האחראית",
+                    "level": "מתקדם אבל מדורג לגיל 10–11",
+                    "story": "הצב הוא אדריכל קטן: הוא יודע לבנות בית אחד, ואז משתמש בלולאות כדי לבנות רחוב שלם.",
+                    "mission": "לבנות רחוב בתים שבו יש בית שחוזר, חלונות שחוזרים בתוך הבית, וגודל שנשלט על ידי length.",
+                    "outcome": "רחוב עם כמה בתים, חלונות חוזרים, ושימוש ברור בלולאה בתוך לולאה.",
+                    "approach": "בונים יחידה קטנה, מריצים, ואז עוטפים אותה בלולאה גדולה יותר",
+                    "bridge": "מהציור לקוד: מזהים איזו לולאה בונה בית ואיזו לולאה בונה רחוב",
                     "durationMinutes": 90,
                     "lessonFlow": [
                               {
                                         "minutes": "0–8",
-                                        "title": "פתיחת סיפור ומשימה",
-                                        "teacher": "מציגים את התוצר של היום: מיני־עיר. שואלים מה הצב צריך לדעת לעשות כדי להגיע לשם.",
-                                        "students": "מנבאים אילו פקודות או בלוקים יעזרו ומנסחים יעד קצר."
+                                        "title": "פתיחה — מה חוזר ברחוב?",
+                                        "teacher": "מציגים רחוב בתים ושואלים: מה חוזר בכל בית? מה משתנה בין הבתים?",
+                                        "students": "מזהים: גוף בית, גג, חלונות, מעבר לבית הבא, וגודל."
                               },
                               {
                                         "minutes": "8–18",
-                                        "title": "הדגמה קצרה בלי פתרון מלא",
-                                        "teacher": "מדגימים רק התחלה: בלוק אחד או שניים שמראים שילוב מערכות. לא חושפים את כל הפתרון.",
-                                        "students": "עונים מה יקרה בהרצה לפני שלוחצים ▶️."
+                                        "title": "הדגמה קצרה — length וריבוע",
+                                        "teacher": "מדגימים רק קביעת length ו־repeat של 4 לציור ריבוע. לא מציירים רחוב שלם.",
+                                        "students": "מנבאים מה יקרה אם נשנה את length לפני שמריצים."
                               },
                               {
-                                        "minutes": "18–34",
-                                        "title": "בנייה מודרכת",
-                                        "teacher": "מובילים את תרגילים 1–4 בקצב כיתה, עם עצירות ניבוי קצרות.",
-                                        "students": "בונים, מריצים אחרי כל שינוי, ומתקנים אם הצב הלך לכיוון לא צפוי."
+                                        "minutes": "18–36",
+                                        "title": "בית אחד יציב",
+                                        "teacher": "מובילים את תרגילים 1–3: אורך, גוף בית, גג. עוצרים אחרי כל הרצה.",
+                                        "students": "בונים בית אחד ומוודאים שכל חלק עובד לפני שממשיכים."
                               },
                               {
-                                        "minutes": "34–48",
-                                        "title": "בלוק → Python",
-                                        "teacher": "מחברים בין הבלוקים לשורות הקוד. מדגישים את הגשר: מהציור בחזרה לקוד: מאתרים את השורה האחראית.",
-                                        "students": "לוחצים על בלוק, מוצאים את השורה המודגשת, ומסבירים אותה במילים."
+                                        "minutes": "36–52",
+                                        "title": "מיקום וחלונות חוזרים",
+                                        "teacher": "מדגישים penup/pendown למעבר נקי, ואז לולאה קטנה לחלונות.",
+                                        "students": "מוסיפים דלת/חלון, ואז שורת חלונות שחוזרת."
                               },
                               {
-                                        "minutes": "48–64",
-                                        "title": "תרגול עצמאי",
-                                        "teacher": "נותנים לתלמידים לעבוד על תרגילים 5–10 בלי להראות פתרון מלא.",
-                                        "students": "מבצעים שינוי קטן, מריצים, משווים ומתקנים."
+                                        "minutes": "52–70",
+                                        "title": "לולאה בתוך לולאה — רחוב",
+                                        "teacher": "מסבירים: הלולאה החיצונית חוזרת על בית; הלולאה הפנימית חוזרת על חלונות או צלעות.",
+                                        "students": "עוטפים את יחידת הבית בלולאה חיצונית ומוסיפים מעבר לבית הבא."
                               },
                               {
-                                        "minutes": "64–76",
-                                        "title": "דיבאג ושיפור",
-                                        "teacher": "נותנים באג נפוץ אחד ושואלים איך מאתרים אותו בלי למחוק הכל.",
-                                        "students": "מתקנים מספר/זווית/סדר/לולאה ומסבירים מה השתנה."
+                                        "minutes": "70–82",
+                                        "title": "רחוב משתנה",
+                                        "teacher": "מראים איך שינוי ב־length משפיע על כל הבית, ואיך grow length יוצר בתים בגדלים שונים.",
+                                        "students": "משנים את length ובודקים שהרחוב עדיין נראה מסודר."
                               },
                               {
-                                        "minutes": "76–84",
-                                        "title": "אתגר יצירתי קצר",
-                                        "teacher": "פותחים בחירה אישית מוגבלת כדי לשמור על הצלחה: צבע, גודל, דפוס או פרט אישי.",
-                                        "students": "משדרגים את התוצר בלי לאבד את מושג השיעור."
-                              },
-                              {
-                                        "minutes": "84–90",
-                                        "title": "שיתוף וסיכום",
-                                        "teacher": "מבקשים 2–3 הצגות קצרות ומסכמים במבנה: רעיון → בלוקים → קוד → ציור.",
-                                        "students": "משלימים משפט: “היום בניתי…, השתמשתי ב־…, ותיקנתי…”."
+                                        "minutes": "82–90",
+                                        "title": "בדיקת מבנה וסיכום",
+                                        "teacher": "מבקשים מהילדים להצביע בקוד: איפה הבית? איפה החלונות? איפה הרחוב?",
+                                        "students": "מסכמים: לולאה פנימית בונה פרט קטן, לולאה חיצונית חוזרת על בית שלם."
                               }
                     ],
                     "exercises": [
                               {
                                         "id": 1,
-                                        "minutes": "18–23",
-                                        "title": "תרגול 1 — חימום — מריצים ורואים",
-                                        "prompt": "בחרו אלמנט חוזר בעיר.",
-                                        "hint": "אל תנסו לפתור הכל בבת אחת — גררו בלוק אחד, הריצו, ואז המשיכו.",
-                                        "check": "יש לפחות פקודת תנועה אחת והציור מופיע על המסך.",
-                                        "commonMistake": "מנסים לגרור הרבה בלוקים לפני הרצה ראשונה ואז קשה לדעת מה השפיע."
+                                        "minutes": "18–24",
+                                        "title": "תרגול 1 — קובעים אורך לבית",
+                                        "prompt": "גררו `length =` וקבעו אורך לבית, למשל 50. אחר כך ציירו קו אחד עם `forward(length)`.",
+                                        "hint": "המטרה היא לראות שהצב משתמש בערך ששמור ב־length, לא במספר רגיל.",
+                                        "check": "יש `length =` ויש `forward(length)` שמופיע אחריו.",
+                                        "commonMistake": "משתמשים ב־forward רגיל עם מספר, ואז שינוי length לא משפיע."
                               },
                               {
                                         "id": 2,
-                                        "minutes": "23–28",
-                                        "title": "תרגול 2 — קוראים את הבלוקים",
-                                        "prompt": "בנו אלמנט אחד.",
-                                        "hint": "חפשו איפה מופיע הרעיון המרכזי של השיעור: שילוב מערכות.",
-                                        "check": "התלמיד/ה יודע/ת להצביע על הבלוק או השורה שקשורים ל־שילוב מערכות.",
-                                        "commonMistake": "מסתכלים רק על הציור ולא מחברים אותו לקוד שנוצר."
+                                        "minutes": "24–32",
+                                        "title": "תרגול 2 — גוף בית בלולאה",
+                                        "prompt": "ציירו גוף בית מרובע בעזרת `repeat 4`: בכל חזרה `forward(length)` ואז פנייה של 90 מעלות.",
+                                        "hint": "אל תכתבו ארבעה קירות ידנית — תנו ללולאה לחזור על אותו קיר.",
+                                        "check": "יש לולאת `repeat 4` עם `forward(length)` ופנייה של 90 מעלות.",
+                                        "commonMistake": "שמים את הפנייה מחוץ ללולאה ואז הבית לא נסגר."
                               },
                               {
                                         "id": 3,
-                                        "minutes": "28–34",
-                                        "title": "תרגול 3 — שינוי קטן ובטוח",
-                                        "prompt": "חזרו עליו עם repeat או ידנית.",
-                                        "hint": "שינוי טוב הוא שינוי קטן: מספר אחד, צבע אחד או פנייה אחת.",
-                                        "check": "אחרי שינוי קטן רואים שינוי ברור בתוצאה, בלי לשבור את כל התוכנית.",
-                                        "commonMistake": "משנים כמה דברים יחד ואז לא יודעים מה גרם לשינוי."
+                                        "minutes": "32–40",
+                                        "title": "תרגול 3 — מוסיפים גג משולש",
+                                        "prompt": "הוסיפו גג מעל הבית בעזרת `repeat 3`. השתמשו בצבע אחר לגג.",
+                                        "hint": "משולש נסגר עם 3 חזרות. בדרך כלל משתמשים בפנייה של 120 מעלות.",
+                                        "check": "יש בית מרובע בלולאה וגם גג משולש בלולאה של 3 חזרות.",
+                                        "commonMistake": "מציירים גג בלי לולאה, ואז מפספסים את רעיון החזרה."
                               },
                               {
                                         "id": 4,
-                                        "minutes": "34–40",
-                                        "title": "תרגול 4 — מחברים בלוק לקוד",
-                                        "prompt": "השתמשו ב־penup למרווחים.",
-                                        "hint": "לחצו על בלוק וראו איזו שורת Python נדלקת בקוד.",
-                                        "check": "כאשר בוחרים בלוק, שורת Python המתאימה מודגשת.",
-                                        "commonMistake": "לא שמים לב שהשורה המודגשת בקוד היא חלק מהלמידה, לא קישוט."
+                                        "minutes": "40–48",
+                                        "title": "תרגול 4 — עוברים למקום של הדלת",
+                                        "prompt": "השתמשו ב־`penup`, זוזו למקום מתאים בתוך הבית, ואז `pendown` וציירו דלת קטנה.",
+                                        "hint": "מעבר בלי ציור הוא חלק חשוב בתכנות ציור: מרימים עט, עוברים, מורידים עט.",
+                                        "check": "יש מעבר נקי עם `penup` ו־`pendown`, ואז ציור קטן לדלת או חלון.",
+                                        "commonMistake": "שוכחים להרים עט ונוצר קו מוזר באמצע הבית."
                               },
                               {
                                         "id": 5,
-                                        "minutes": "40–47",
-                                        "title": "תרגול 5 — בדיקת מהנדסים",
-                                        "prompt": "הוסיפו צבעים לעיר.",
-                                        "hint": "מהנדסים בודקים לפחות שני מצבים, לא רק הרצה אחת שעבדה במקרה.",
-                                        "check": "התלמיד/ה בדק/ה לפחות שתי הרצות והשווה/השוותה ביניהן.",
-                                        "commonMistake": "בודקים רק מצב אחד ולכן חושבים שהפתרון תמיד עובד."
+                                        "minutes": "48–58",
+                                        "title": "תרגול 5 — שורת חלונות בלולאה פנימית",
+                                        "prompt": "צרו כמה חלונות קטנים שחוזרים בתוך הבית. השתמשו בלולאה כדי לא לצייר כל חלון מהתחלה.",
+                                        "hint": "אפשר לחשוב על חלון כיחידה קטנה: צייר חלון → הרם עט → עבור לחלון הבא → הורד עט.",
+                                        "check": "יש לולאה שמציירת חלונות או פרטים חוזרים בתוך הבית, עם מעבר נקי ביניהם.",
+                                        "commonMistake": "מציירים כל חלון ידנית במקום להשתמש בלולאה חוזרת."
                               },
                               {
                                         "id": 6,
-                                        "minutes": "47–53",
-                                        "title": "תרגול 6 — תרגול דיוק",
-                                        "prompt": "שנו גודל בין אלמנטים.",
-                                        "hint": "נסו לבנות מסלול סגור: בסוף הצב צריך לחזור למקום שממנו התחיל.",
-                                        "check": "נקודת הסיום של הצב חוזרת לנקודת ההתחלה.",
-                                        "commonMistake": "מוחקים את כל הפתרון במקום לתקן בלוק/ערך קטן."
+                                        "minutes": "58–72",
+                                        "title": "תרגול 6 — רחוב עם לולאה בתוך לולאה",
+                                        "prompt": "עטפו את בית שלם בלולאה חיצונית כדי ליצור כמה בתים. בתוך הבית השאירו לולאה פנימית לחלונות או לצורת הבית.",
+                                        "hint": "הבית יכול להיות בנוי מכמה לולאות קטנות: גוף, גג וחלונות. הלולאה החיצונית צריכה לחזור על כל קבוצת הבלוקים של בית אחד כמה פעמים, וכך יוצאת שורת בתים.",
+                                        "check": "יש לפחות שתי לולאות, ואחת מהן נמצאת בתוך לולאה אחרת.",
+                                        "commonMistake": "שמים את המעבר לבית הבא במקום לא נכון, ואז הבתים מצוירים אחד על השני."
                               },
                               {
                                         "id": 7,
-                                        "minutes": "53–60",
-                                        "title": "תרגול 7 — דיבאג מכוון",
-                                        "prompt": "בדקו שהרחוב לא יוצא מהמסך.",
-                                        "hint": "שדרוג יצירתי לא חייב להיות מסובך. לפעמים צבע, עובי או חזרה נוספת מספיקים.",
-                                        "check": "התוצר עדיין קשור למשימה: מיני־עיר.",
-                                        "commonMistake": "מוסיפים קישוטים אבל מאבדים את מטרת השיעור."
+                                        "minutes": "72–82",
+                                        "title": "תרגול 7 — רחוב שגדל עם length",
+                                        "prompt": "שנו את הרחוב כך ש־`length` ישפיע על גודל הבתים. אחרי כל בית הגדילו את `length` קצת.",
+                                        "hint": "קבעו את `length =` לפני הלולאה החיצונית של הרחוב. בתוך הלולאה הגדילו את length בסוף הבית, כדי שהבית הבא יתחיל גדול יותר ולא יחזור לגודל הראשון.",
+                                        "check": "הרחוב משתמש ב־`length`, ויש שינוי גודל בעזרת `length =` נוסף או `length +=`.",
+                                        "commonMistake": "משנים רק קו אחד במספר רגיל, ואז רק חלק קטן מהבית משתנה."
                               },
                               {
                                         "id": 8,
-                                        "minutes": "60–66",
-                                        "title": "תרגול 8 — שדרוג יצירתי",
-                                        "prompt": "הוסיפו סימון מיוחד לרמזור/חיישן.",
-                                        "hint": "הסבר טוב מתחיל ב: “קודם הצב עושה…, ואז…”.",
-                                        "check": "ההסבר כולל רצף: פקודה → תוצאה → תיקון או שיפור.",
-                                        "commonMistake": "אומרים “זה עובד” בלי להסביר למה."
-                              },
-                              {
-                                        "id": 9,
-                                        "minutes": "66–71",
-                                        "title": "תרגול 9 — קריאת Python בקול",
-                                        "prompt": "הסבירו מה חוזר ומה משתנה.",
-                                        "hint": "קראו את הקוד כאילו הוא הוראות לצב, לא כמו טקסט זר.",
-                                        "check": "התלמיד/ה קרא/ה 3 שורות Python והסביר/ה אותן במילים.",
-                                        "commonMistake": "קוראים את הקוד מהר מדי בלי להבין את סדר הפעולות."
-                              },
-                              {
-                                        "id": 10,
-                                        "minutes": "71–76",
-                                        "title": "תרגול 10 — עבודה בזוגות",
-                                        "prompt": "אתגר: רחוב עם 5 חלונות זהים.",
-                                        "hint": "בזוגות — אחד מדבר ואחד נוגע במחשב, ואז מחליפים.",
-                                        "check": "הזוג ביצע ניבוי ואז בדיקה בפועל.",
-                                        "commonMistake": "בן/בת זוג אחד עושה הכל והשני לא מסביר."
-                              },
-                              {
-                                        "id": 11,
-                                        "minutes": "76–81",
-                                        "title": "תרגול 11 — תרגול מתקדם",
-                                        "prompt": "בנו גרסה קצת מורכבת יותר שמשתמשת במושג המרכזי של השיעור לפחות פעמיים.",
-                                        "hint": "התרגול פתוח, אבל עדיין צריך להשתמש במושג של השיעור.",
-                                        "check": "התרגול משתמש במושג המרכזי ולא רק מוסיף קישוט.",
-                                        "commonMistake": "קופצים לפתרון מורכב מדי לפני שהבסיס יציב."
-                              },
-                              {
-                                        "id": 12,
-                                        "minutes": "81–85",
-                                        "title": "תרגול 12 — בדיקת איכות",
-                                        "prompt": "בדקו שהתוכנית עובדת אחרי איפוס והרצה מחדש, לא רק פעם אחת.",
-                                        "hint": "בדיקת איכות טובה מתחילה מאיפוס והרצה נקייה.",
-                                        "check": "התוכנית עובדת גם אחרי איפוס והרצה מחדש.",
-                                        "commonMistake": "לא מאפסים לפני בדיקה ולכן תוצאה ישנה מבלבלת."
-                              },
-                              {
-                                        "id": 13,
-                                        "minutes": "85–88",
-                                        "title": "תרגול 13 — הכנה להצגה",
-                                        "prompt": "הכינו משפט הצגה: מה בניתי, באיזה בלוק השתמשתי, ואיפה רואים את זה בקוד.",
-                                        "hint": "הצגה קצרה עדיפה על הסבר ארוך ומבולבל.",
-                                        "check": "יש משפט הצגה שמחבר תוצר, בלוק וקוד.",
-                                        "commonMistake": "מציגים רק את הציור ולא מסבירים את הקשר לבלוקים ולקוד."
-                              },
-                              {
-                                        "id": 14,
-                                        "minutes": "88–90",
-                                        "title": "תרגול 14 — רפלקציה קצרה",
-                                        "prompt": "השלימו משפט: היום למדתי ש־___, ובפעם הבאה אשפר ___.",
-                                        "hint": "רפלקציה קצרה עוזרת לזכור: מה ניסיתי, מה עבד, ומה תיקנתי?",
-                                        "check": "יש משפט סיכום אישי ומדויק.",
-                                        "commonMistake": "מסיימים בלי לנסח מה למדו ומה ירצו לשפר."
+                                        "minutes": "82–90",
+                                        "title": "תרגול 8 — בדיקת מתכנתים",
+                                        "prompt": "הצביעו בקוד: איזו לולאה בונה בית או חלונות? איזו לולאה חוזרת על כל הרחוב?",
+                                        "hint": "לולאה פנימית נמצאת בתוך לולאה אחרת. היא עושה עבודה קטנה שחוזרת בכל בית.",
+                                        "check": "אפשר להסביר במילים מה חוזר בלולאה הפנימית ומה חוזר בלולאה החיצונית.",
+                                        "commonMistake": "רואים שתי לולאות אבל לא יודעים מי חוזרת על מה."
                               }
                     ],
                     "vocabulary": [
                               [
-                                        "לולאה",
-                                        "דרך לבקש מהמחשב לחזור על אותן פקודות כמה פעמים."
+                                        "לולאה פנימית",
+                                        "לולאה שנמצאת בתוך לולאה אחרת, למשל חלונות בתוך כל בית."
                               ],
                               [
-                                        "משתנה",
-                                        "שם ששומר ערך, למשל length, כדי להשתמש בו שוב ושוב."
+                                        "לולאה חיצונית",
+                                        "לולאה גדולה שחוזרת על יחידה שלמה, למשל כמה בתים ברחוב."
                               ],
                               [
-                                        "ניבוי",
-                                        "לפני הרצה אומרים מה לדעתנו יקרה, ואז בודקים."
+                                        "משתנה length",
+                                        "שם ששומר את גודל הבית, כדי לשנות הרבה קווים יחד."
                               ],
                               [
-                                        "פקודה",
-                                        "הוראה אחת שהצב מבצע, למשל לזוז קדימה או להסתובב."
+                                        "יחידה חוזרת",
+                                        "חלק קטן שבונים פעם אחת ואז חוזרים עליו, למשל בית או חלון."
                               ],
                               [
-                                        "הרצה",
-                                        "לחיצה על ▶️ כדי לבדוק מה התוכנית עושה באמת."
+                                        "מעבר נקי",
+                                        "שימוש ב־penup ו־pendown כדי לזוז בלי להשאיר קו."
                               ],
                               [
                                         "דיבאג",
-                                        "למצוא איפה התוכנית לא עשתה מה שרצינו ולתקן צעד־צעד."
+                                        "למצוא איפה הרחוב נשבר ולתקן בלוק קטן במקום למחוק הכול."
                               ]
                     ],
                     "successCriteria": [
-                              "התוצר נראה כמו מיני־עיר או גרסה אישית שלו.",
-                              "נעשה שימוש מודע במושג: שילוב מערכות.",
-                              "התלמיד/ה הריץ/ה יותר מפעם אחת ושיפר/ה אחרי בדיקה.",
-                              "התלמיד/ה יודע/ת להצביע על בלוק אחד ועל שורת Python שנוצרה ממנו."
+                              "יש בית אחד שנבנה בעזרת `length` ולולאה.",
+                              "יש לפחות לולאה אחת בתוך לולאה אחרת.",
+                              "הרחוב כולל כמה בתים או כמה חזרות של אותה יחידה.",
+                              "התלמיד/ה יודע/ת להסביר מה עושה הלולאה הפנימית ומה עושה הלולאה החיצונית."
                     ],
                     "teacherQuestions": [
-                              "מה לדעתכם יקרה לפני שנריץ?",
-                              "איזה שינוי קטן הכי השפיע על הציור?",
-                              "איפה בקוד רואים את הבלוק שבחרתם?",
-                              "אם זה לא עבד — איך יודעים מה לבדוק קודם?"
+                              "מה היחידה הקטנה שאנחנו רוצים לחזור עליה?",
+                              "איזו לולאה בונה בית או חלונות, ואיזו לולאה בונה רחוב?",
+                              "מה יקרה אם נשנה את length לפני ההרצה?",
+                              "איפה צריך להרים עט כדי לעבור לבית הבא בלי קו?"
                     ],
                     "aiHelper": [
-                              "תן/י רעיון לשדרוג קל של מיני־עיר בלי לפתור במקום התלמיד/ה.",
-                              "הסבר/י לילד/ה בכיתה ה׳ מה זה שילוב מערכות באמצעות הצב המצייר.",
-                              "עזור/עזרי למצוא באג במספר, כיוון, לולאה או סדר פקודות בלי לתת פתרון מלא."
+                              "עזור/עזרי לילד/ה למצוא איזו לולאה היא פנימית ואיזו חיצונית בלי לתת פתרון מלא.",
+                              "הסבר/י בפשטות איך length משנה את גודל הבית כולו.",
+                              "תן/י רמז לדיבאג רחוב שבו הבתים נדבקו או יצאו אחד על השני."
                     ]
           },
           {
@@ -7654,12 +7592,24 @@
         body:actionsFrom(block.getInputTargetBlock('DO'), []),
         repeated:actionsFrom(block, [])
       }));
+      const containsBlockType = (block, type, depth=0)=>{
+        if(!block || depth > 100) return false;
+        let current = block;
+        while(current){
+          if(current.type === type) return true;
+          if(current.getInputTargetBlock && containsBlockType(current.getInputTargetBlock('DO'), type, depth + 1)) return true;
+          current = current.getNextBlock ? current.getNextBlock() : null;
+        }
+        return false;
+      };
+      const repeatResetsLength = repeatBlocks().some(block=>containsBlockType(block.getInputTargetBlock('DO'), 'py_set_length'));
       return {
         actions:getActions().map(action=>({...action})),
         blockTypes:connectedBlocks.map(block=>block.type),
         hasPythonBlock:allBlocks.some(block=>block.type === 'py_python'),
         hasCodeBlock:allBlocks.some(block=>block.type !== 'py_python' && !block.outputConnection),
-        repeatPatterns
+        repeatPatterns,
+        repeatResetsLength
       };
     }
     function simulatePath(actions){
@@ -8887,6 +8837,19 @@
     function repeatBlocks(){
       return codeBlocks().filter(block=>block.type === 'py_repeat');
     }
+    function hasNestedRepeatBlock(){
+      const containsRepeat = (block, depth=0)=>{
+        if(!block || depth > 50) return false;
+        let current = block;
+        while(current){
+          if(current.type === 'py_repeat') return true;
+          if(current.getInputTargetBlock && containsRepeat(current.getInputTargetBlock('DO'), depth + 1)) return true;
+          current = current.getNextBlock ? current.getNextBlock() : null;
+        }
+        return false;
+      };
+      return repeatBlocks().some(block=>containsRepeat(block.getInputTargetBlock('DO')));
+    }
     function repeatShapeMatches(sides, angle){
       return repeatPatternBlocks().some(({times, body, repeated})=>{
         if(times !== sides) return false;
@@ -9342,6 +9305,21 @@
         }
       }
       return segments;
+    }
+    function hasHouseBodyAndRoofDifferentColors(actions){
+      const segments = drawnSegments(actions).filter(s=>Number(s.length) > 0);
+      for(let i=0; i<=segments.length - 7; i++){
+        const body = segments.slice(i, i + 4);
+        const roof = segments.slice(i + 4, i + 7);
+        const bodyColors = new Set(body.map(s=>String(s.color || '').toLowerCase()));
+        const roofColors = new Set(roof.map(s=>String(s.color || '').toLowerCase()));
+        if(bodyColors.size === 1 && roofColors.size === 1){
+          const bodyColor = [...bodyColors][0];
+          const roofColor = [...roofColors][0];
+          if(bodyColor && roofColor && bodyColor !== roofColor) return true;
+        }
+      }
+      return false;
     }
     function hasTrainCarriageUnit(actionList){
       const segments = drawnSegments(actionList);
@@ -9810,6 +9788,91 @@
         if(pendantForwardLengthCount < 3) return ['כמעט — התליון צריך לכלול צורה קטנה עם לפחות 3 פקודות `forward(length)`.'];
         if(pendantTurnCount < 2) return ['כמעט — כדי שהתליון יהיה צורה ולא רק קו, הוסיפו פניות בתוך התליון.'];
         return [];
+      }
+      if(currentLesson === 20){
+        const lengthValues = setLengthValues(actions).map(Number).filter(Number.isFinite);
+        const hasLength = actions.some(a=>a.cmd === 'setVar' && a.name === 'length');
+        const hasForwardLength = actions.some(a=>a.cmd === 'forwardVar' && a.name === 'length');
+        const hasPenup = actions.some(a=>a.cmd === 'pen' && a.v === false);
+        const hasPendown = actions.some(a=>a.cmd === 'pen' && a.v === true);
+        const cleanMoveBeforePendown = actions.some((a, i)=>{
+          if(!(a.cmd === 'pen' && a.v === true)) return false;
+          const beforePendown = actions.slice(0, i);
+          const penupIndex = beforePendown.map(prev=>prev.cmd === 'pen' && prev.v === false).lastIndexOf(true);
+          if(penupIndex < 0) return false;
+          return beforePendown.slice(penupIndex + 1).some(prev=>prev.cmd === 'forward' || prev.cmd === 'forwardVar');
+        });
+        const drawsAfterCleanPendown = actions.some((a, i)=>{
+          if(!(a.cmd === 'pen' && a.v === true)) return false;
+          const hadPenupBefore = actions.slice(0, i).some(prev=>prev.cmd === 'pen' && prev.v === false);
+          const drawsAfter = actions.slice(i + 1).some(next=>next.cmd === 'forward' || next.cmd === 'forwardVar');
+          return hadPenupBefore && drawsAfter;
+        });
+        const repeatCount = repeatPatternBlocks().length;
+        const hasNonBlueColorBlock = actions.some(a=>a.cmd === 'color' && String(a.v || '').toLowerCase() !== '#2563eb');
+        const hasSquareLoop = repeatPatternBlocks().some(({times, body})=>{
+          if(Number(times) !== 4) return false;
+          const hasForwardLengthInBody = body.some(a=>a.cmd === 'forwardVar' && a.name === 'length');
+          const hasTurn90InBody = body.some(a=>(a.cmd === 'right' || a.cmd === 'left') && Math.abs(Number(a.v)) === 90);
+          return hasForwardLengthInBody && hasTurn90InBody;
+        });
+        const hasTriangleLoop = repeatPatternBlocks().some(({times, body})=>{
+          if(Number(times) !== 3) return false;
+          const hasForwardInBody = body.some(a=>a.cmd === 'forward' || a.cmd === 'forwardVar');
+          const hasTurn120InBody = body.some(a=>(a.cmd === 'right' || a.cmd === 'left') && Math.abs(Number(a.v)) === 120);
+          return hasForwardInBody && hasTurn120InBody;
+        });
+        const nestedRepeat = hasNestedRepeatBlock();
+        const resetsLengthInsideRepeat = !!snapshot?.repeatResetsLength || repeatPatternBlocks().some(({times, body})=>Number(times) >= 2 && body.some(a=>a.cmd === 'setVar' && a.name === 'length'));
+        if(String(ex?.id) === '1'){
+          if(!hasLength) return ['כמעט — התחילו עם בלוק `length =`, למשל 50.'];
+          if(!hasForwardLength) return ['כמעט — השתמשו ב־`forward(length)`, כדי שהקו ייקח את האורך מהמשתנה.'];
+          if(actions.findIndex(a=>a.cmd === 'forwardVar') < actions.findIndex(a=>a.cmd === 'setVar')) return ['כמעט — קודם קובעים `length =`, ורק אחר כך משתמשים ב־`forward(length)`.'];
+          return [];
+        }
+        if(String(ex?.id) === '2'){
+          if(!hasLength || !hasForwardLength) return ['כמעט — גוף הבית צריך להשתמש ב־`length` וב־`forward(length)`.'];
+          if(!hasSquareLoop) return ['כמעט — גוף בית מרובע צריך `repeat 4` עם `forward(length)` ופנייה של 90 מעלות.'];
+          return [];
+        }
+        if(String(ex?.id) === '3'){
+          if(!hasSquareLoop) return ['כמעט — השאירו את גוף הבית המרובע עם `repeat 4`.'];
+          if(!hasTriangleLoop) return ['כמעט — הוסיפו גג משולש עם `repeat 3`, בדרך כלל עם פנייה של 120 מעלות.'];
+          if(!hasNonBlueColorBlock) return ['כמעט — הגג צריך להיות בצבע אחר מהבית. בחרו בבלוק color צבע שאינו כחול לפני לולאת הגג.'];
+          return [];
+        }
+        if(String(ex?.id) === '4'){
+          if(!hasSquareLoop) return ['כמעט — קודם צריך להישאר בית בסיסי עם לולאת ריבוע.'];
+          if(!hasPenup || !hasPendown) return ['כמעט — כדי לעבור לדלת בלי קו מיותר השתמשו ב־`penup` ואז `pendown`.'];
+          if(!drawsAfterCleanPendown) return ['כמעט — אחרי `pendown` צריך לצייר דלת — מלבן קטן בתוך הבית.'];
+          return [];
+        }
+        if(String(ex?.id) === '5'){
+          const baseline = exerciseBaselines[baselineKey()] || [];
+          const currentActionCount = comparableActions(actions).length;
+          if(baseline.length && currentActionCount <= baseline.length) return ['כמעט — צריך להוסיף בלוקים חדשים לחלונות, לא רק להריץ שוב את הבית הקודם.'];
+          if(repeatCount < 2) return ['כמעט — בתרגיל הזה צריכים לפחות שתי לולאות: אחת לבית ואחת לחלונות/פרטים חוזרים.'];
+          if(!hasPenup || !hasPendown) return ['כמעט — בין חלונות או פרטים חוזרים צריך מעבר נקי עם `penup` ו־`pendown`.'];
+          return [];
+        }
+        if(String(ex?.id) === '6'){
+          if(!nestedRepeat) return ['כמעט — כאן צריך לולאה בתוך לולאה: לולאה חיצונית לרחוב ולולאה פנימית לבית/חלונות.'];
+          if(!hasPenup || !hasPendown) return ['כמעט — בתוך הרחוב צריך מעבר נקי לבית הבא עם `penup` ו־`pendown`.'];
+          if(!cleanMoveBeforePendown) return ['כמעט — בין הבתים צריך מעבר נקי: `penup`, תנועה לבית הבא, ואז `pendown`.'];
+          return [];
+        }
+        if(String(ex?.id) === '7'){
+          if(!nestedRepeat) return ['כמעט — שמרו על הרחוב עם לולאה בתוך לולאה.'];
+          if(!hasForwardLength) return ['כמעט — השתמשו ב־`forward(length)` כך ש־length ישפיע על גודל הבתים.'];
+          if(resetsLengthInsideRepeat) return ['כמעט — אל תשימו `length =` בתוך הלולאה החיצונית של הבתים, כי בכל חזרה הוא יחזור לגודל הראשון. קבעו את האורך לפני הלולאה, ובסוף כל בית הגדילו את length.'];
+          if(lengthValues.length < 2 && !actions.some(a=>a.cmd === 'growVar' && a.name === 'length')) return ['כמעט — הוסיפו שינוי גודל: `length =` נוסף או `length +=` אחרי בית.'];
+          return [];
+        }
+        if(String(ex?.id) === '8'){
+          if(!nestedRepeat) return ['כמעט — לפני הסיכום ודאו שיש לולאה פנימית בתוך לולאה חיצונית.'];
+          if(!hasForwardLength) return ['כמעט — הרחוב צריך עדיין להשתמש ב־`forward(length)`.'];
+          return [];
+        }
       }
       if(!actions.length) return [hasCodeBlock
         ? (hasPythonBlock ? 'חברו את הבלוקים מתחת לבלוק Python — רק מה שמחובר אליו הופך לקוד ונבדק.' : 'הוסיפו בלוק Python וחברו מתחתיו את הבלוקים — רק מה שמחובר אליו הופך לקוד ונבדק.')
@@ -11007,6 +11070,8 @@
         rememberLesson12Success(currentExerciseIndex, currentWorkspaceXml(), snapshot);
         rememberLesson13Success(currentExerciseIndex, currentWorkspaceXml(), snapshot);
       } else if(currentLesson === 16 && String(ex?.id) === '8'){
+        completedSet().delete(currentExerciseIndex);
+      } else if(currentLesson === 20){
         completedSet().delete(currentExerciseIndex);
       }
       lesson10CurrentRevealKey = (currentLesson === 10 && exercisePassed) ? `${currentLesson}:${currentExerciseIndex}:${currentWorkspaceXml()}` : '';
