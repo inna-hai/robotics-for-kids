@@ -97,7 +97,7 @@
           </div>
         </div>
         <div class="actions" aria-label="כפתורי הרצת ציור">
-          <button class="btn run" id="runBtn">בדוק ציור</button>
+          <button class="btn run" id="runBtn">הרץ ציור</button>
           <button class="btn reset" id="stopRunBtn" disabled>⏹ עצור</button>
           <button class="btn reset" id="resetBtn">🔄 נקה ציור</button>
           <button class="btn" id="demoBtn">✨ דוגמת הפעלה</button><span class="demo-note" id="demoNote" hidden>זו דוגמת הפעלה בלבד — לא הפתרון של המשימה.</span>
@@ -8656,7 +8656,7 @@
       const mainRunBtn = document.getElementById('runBtn');
       if(mainRunBtn){
         mainRunBtn.style.display = '';
-        mainRunBtn.textContent = writingExercise ? 'הרץ את הקוד שכתבתי' : 'בדוק ציור';
+        mainRunBtn.textContent = writingExercise ? 'הרץ את הקוד שכתבתי' : 'הרץ ציור';
       }
       const writingValue = pythonWritingAnswers[pythonWritingKey()] || '';
       const writingPlaceholder = (()=>{
@@ -8684,7 +8684,7 @@
       const secretRevealHtml = lesson10SecretRevealHtml(ex);
       updateLesson10CanvasSecret(ex);
       const lesson19RiddleBoxHtml = lesson19RiddleHtml(ex);
-      missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div>${lesson10IntroHtml}${lesson11IntroHtml}${lesson16BlocksIntroHtml}${lesson12CumulativeHtml}${lesson13CumulativeHtml}<p><b>${escapeHtml(ex.prompt || '')}</b></p>${lesson19RiddleBoxHtml}${exerciseVisualHtml(ex)}${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p>${(isChallengeExercise(ex) || isRunOnlyExampleExercise(ex)) ? '' : `<p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}`}${writingHtml}<div class="exercise-bottom"><div class="exercise-controls">${resetButton}<button class="btn run" id="checkExerciseBtn" type="button">בדוק ציור</button><button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${nextButtonLabel}</button></div>${feedbackBelowButtons ? '<br>' : feedbackHtml}</div>${feedbackBelowButtons ? feedbackHtml : ''}${secretRevealHtml}</div>`;
+      missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div>${lesson10IntroHtml}${lesson11IntroHtml}${lesson16BlocksIntroHtml}${lesson12CumulativeHtml}${lesson13CumulativeHtml}<p><b>${escapeHtml(ex.prompt || '')}</b></p>${lesson19RiddleBoxHtml}${exerciseVisualHtml(ex)}${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p>${(isChallengeExercise(ex) || isRunOnlyExampleExercise(ex)) ? '' : `<p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}`}${writingHtml}<div class="exercise-bottom"><div class="exercise-controls">${resetButton}<button class="btn run" id="checkExerciseBtn" type="button">הרץ ציור</button><button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${nextButtonLabel}</button></div>${feedbackBelowButtons ? '<br>' : feedbackHtml}</div>${feedbackBelowButtons ? feedbackHtml : ''}${secretRevealHtml}</div>`;
       if(feedbackBelowButtons && message){
         requestAnimationFrame(()=>missionEl.scrollTo({top: missionEl.scrollHeight, behavior:'smooth'}));
       }
