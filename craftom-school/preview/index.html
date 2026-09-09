@@ -33,7 +33,7 @@
 <body class="preview-home">
   <header class="course-header" aria-label="ניווט אקדמיית ה-Agent">
     <div class="course-header-inner">
-      <a class="course-brand" href="./">אקדמיית ה-Agent</a>
+      <a class="course-brand" href="index.html">אקדמיית ה-Agent</a>
       <nav class="course-nav" id="courseHeaderNav" aria-label="מעבר מהיר"></nav>
     </div>
   </header>
@@ -87,7 +87,7 @@
     function renderCourseHeader(currentLessonId = 1) {
       const normalizedLessonId = Math.min(Math.max(Number(currentLessonId) || 1, 1), program.totalMeetings);
       document.getElementById('courseHeaderNav').innerHTML = `
-        <a href="./">דף הבית</a>
+        <a href="index.html">דף הבית</a>
         <a class="primary" id="currentLessonLink" href="${lessonHref(normalizedLessonId)}">השיעור הנוכחי</a>
         ${program.challenges.map(challenge => `<a href="../../craftom-minecraft-challenge.html?challenge=${challenge.id}">אתגר ${challenge.id}</a>`).join('')}
       `;

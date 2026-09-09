@@ -93,6 +93,7 @@ assert.ok(preview.includes('אקדמיית ה-Agent'), 'preview uses the neutral
 assert.ok(!preview.includes('Craftom Challenges • כיתה ז׳'), 'preview no longer presents the course as grade 7 only');
 assert.ok(preview.includes('id="courseHeaderNav"'), 'preview home has a course navigation header');
 assert.ok(preview.includes('השיעור הנוכחי'), 'preview home header links to the current lesson');
+assert.ok(!preview.includes('href="./"'), 'preview home header does not link back to the unsupported directory URL');
 assert.ok(preview.includes('/api/kugel/session'), 'preview home can resolve the teacher-opened current lesson');
 assert.ok(preview.includes('craftom-minecraft-lesson-${lessonId}.html'), 'preview home current lesson link points to a lesson page');
 assert.ok(preview.includes('craftom-minecraft-challenge.html?challenge=${challenge.id}'), 'preview home challenge links point to challenge pages');
