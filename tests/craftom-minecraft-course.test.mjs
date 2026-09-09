@@ -105,6 +105,8 @@ for (const path of [
 assert.ok(read('craftom-minecraft-challenge.html').includes('רצף עבודה עצמית'), 'challenge page frames the work as self-study');
 assert.ok(read('craftom-minecraft-lesson.html').includes('איך עובדים לבד'), 'lesson page starts lesson detail with self-study steps');
 assert.ok(read('craftom-minecraft-lesson.html').includes('agentAcademyCta'), 'lesson page has an academy entry button');
+assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('minecraftEntryCard'), 'lesson pages show students a Minecraft entry card');
+assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('/api/kugel/student/start'), 'lesson pages let students enter the teacher-opened Minecraft world');
 assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('craftom-agent-academy.html?lesson='), 'lesson page links to the separate Agent academy');
 assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('craftom-minecraft-slides.html?challenge=${lesson.challengeId}&lesson=${lesson.id}'), 'lesson page opens guide slides with the current lesson id');
 assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('קודם נכנסים לאקדמיה'), 'academy lessons clearly send students to practice before implementation');

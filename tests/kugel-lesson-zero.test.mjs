@@ -248,6 +248,8 @@ try {
   const studentStart = await post(baseUrl, '/api/kugel/student/start', {}, studentACookie);
   assert.equal(studentStart.status, 200);
   const studentStartBody = await studentStart.json();
+  assert.equal(studentStartBody.lesson.id, 2, 'student start should use the teacher-opened Minecraft lesson');
+  assert.equal(studentStartBody.student.lessonId, 2, 'student run should be recorded against the active Minecraft lesson');
   assert.equal(studentStartBody.student.id, studentA.id);
   assert.equal(studentStartBody.student.minecraftPlayerName, 'NoaSecure');
   assert.ok(studentStartBody.minecraft.launchUrl.startsWith('minecraftedu://'));

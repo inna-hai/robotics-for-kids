@@ -19,6 +19,122 @@
     });
   }
 
+  async function api(path, payload) {
+    const response = await fetch(path, {
+      method: payload === undefined ? 'GET' : 'POST',
+      credentials: 'same-origin',
+      headers: payload === undefined ? {} : { 'Content-Type': 'application/json' },
+      body: payload === undefined ? undefined : JSON.stringify(payload),
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const error = new Error(data.error || 'הפעולה לא הצליחה.');
+      error.status = response.status;
+      throw error;
+    }
+    return data;
+  }
+
+  function ensureMinecraftEntryCard() {
+    let card = document.getElementById('minecraftEntryCard');
+    if (card) return card;
+    card = document.createElement('section');
+    card.className = 'card minecraft-entry-card';
+    card.id = 'minecraftEntryCard';
+    card.innerHTML = `
+      <div class="minecraft-entry-copy">
+        <span class="tag">Minecraft Education</span>
+        <h2>כניסה לעולם Minecraft של השיעור</h2>
+        <p id="minecraftEntryStatus">בודקים אם המורה הפעילה את העולם…</p>
+        <p class="minecraft-entry-details" id="minecraftEntryDetails"></p>
+      </div>
+      <div class="minecraft-entry-actions">
+        <button class="btn" id="minecraftEntryLaunch" type="button" disabled>פתיחת Minecraft</button>
+        <button class="btn secondary" id="minecraftEntryRefresh" type="button">רענון</button>
+      </div>
+      <p class="submit-status" id="minecraftEntryMessage" role="status" aria-live="polite"></p>
+    `;
+    const anchor = document.getElementById('agentAcademyCta') || document.getElementById('makeCodeWorkspace') || document.querySelector('.detail-grid');
+    anchor?.insertAdjacentElement('afterend', card);
+    return card;
+  }
+
+  async function initMinecraftEntry() {
+    let me = null;
+    try {
+      me = await api('/api/classroom/me');
+    } catch {
+      return;
+    }
+    if (!me || me.role !== 'student') return;
+
+    const card = ensureMinecraftEntryCard();
+    const status = card.querySelector('#minecraftEntryStatus');
+    const details = card.querySelector('#minecraftEntryDetails');
+    const message = card.querySelector('#minecraftEntryMessage');
+    const launch = card.querySelector('#minecraftEntryLaunch');
+    const refreshButton = card.querySelector('#minecraftEntryRefresh');
+    let currentSession = null;
+
+    function setMessage(text, failed = false) {
+      message.textContent = text || '';
+      message.classList.toggle('error', failed);
+    }
+
+    function render(data) {
+      currentSession = data;
+      const activeLessonId = Number(data.session?.lessonId ?? 0);
+      const currentLessonId = Number(lesson.id);
+      const activeForThisLesson = Boolean(data.session?.active && activeLessonId === currentLessonId);
+      const minecraft = data.minecraft;
+      const student = data.student || {};
+
+      if (!data.session?.active) {
+        status.textContent = `המורה עדיין לא פתחה את שיעור ${currentLessonId} ב-Minecraft.`;
+        details.textContent = '';
+      } else if (!activeForThisLesson) {
+        status.textContent = `המורה פתחה כרגע את שיעור ${activeLessonId}. כדי להיכנס לשיעור הזה צריך לפתוח את שיעור ${currentLessonId}.`;
+        details.textContent = '';
+      } else if (!student.minecraftPlayerName) {
+        status.textContent = 'המורה עדיין לא שייכה לך שם שחקן Minecraft.';
+        details.textContent = '';
+      } else {
+        status.textContent = `שיעור ${currentLessonId} פעיל. אפשר לפתוח את Minecraft ולהיכנס לעולם.`;
+        details.textContent = minecraft
+          ? `שרת: ${minecraft.serverName} • כתובת: ${minecraft.serverAddress} • Server ID: ${minecraft.serverId}`
+          : 'פרטי השרת יוצגו לאחר שהעולם יהיה זמין.';
+      }
+
+      launch.disabled = !(activeForThisLesson && student.minecraftPlayerName && minecraft);
+    }
+
+    async function refresh() {
+      try {
+        render(await api('/api/kugel/session'));
+      } catch (error) {
+        status.textContent = error.message || 'לא ניתן לבדוק כרגע את מצב Minecraft.';
+        details.textContent = '';
+        launch.disabled = true;
+      }
+    }
+
+    launch.addEventListener('click', async () => {
+      setMessage('פותחים את Minecraft…');
+      try {
+        const data = await api('/api/kugel/student/start', {});
+        setMessage('Minecraft נפתח. אם האפליקציה לא נפתחה, השתמשו בפרטי השרת שמופיעים כאן.');
+        if (data.minecraft?.launchUrl) location.href = data.minecraft.launchUrl;
+        await refresh();
+      } catch (error) {
+        setMessage(error.message, true);
+      }
+    });
+
+    refreshButton.addEventListener('click', refresh);
+    await refresh();
+    setInterval(refresh, 5000);
+  }
+
   const makeCodeSnippets = {
     1: `player.onChat("deliver", function () {
     agent.teleportToPlayer()
@@ -336,6 +452,7 @@ player.onChat("test", function () {
     document.getElementById('agentAcademyLink').href = `craftom-agent-academy.html?lesson=${lesson.id}`;
     if (makeCodeWorkspace) makeCodeWorkspace.hidden = true;
   }
+  initMinecraftEntry();
   document.getElementById('makeCodeSnippet').textContent = makeCodeSnippets[lesson.id] || makeCodeSnippets[1];
   document.getElementById('exitUpload').textContent = program.exitUpload;
   document.getElementById('exitUploadInline').textContent = program.exitUpload;

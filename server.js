@@ -377,7 +377,7 @@ function openSummerDb() {
     CREATE TABLE IF NOT EXISTS kugel_student_runs (
       student_id TEXT PRIMARY KEY REFERENCES classroom_students(id) ON DELETE CASCADE,
       classroom_id TEXT NOT NULL REFERENCES classrooms(id) ON DELETE CASCADE,
-      lesson_id INTEGER NOT NULL DEFAULT 0 CHECK (lesson_id = 0),
+      lesson_id INTEGER NOT NULL DEFAULT 0 CHECK (lesson_id BETWEEN 0 AND 16),
       started_at TEXT,
       reset_at TEXT,
       finished_at TEXT,
@@ -450,6 +450,37 @@ function openSummerDb() {
     db.prepare('INSERT INTO classroom_migrations (migration_key, applied_at) VALUES (?, ?)').run(migrationKey, new Date().toISOString());
   });
   migrateKugelSessionLessons();
+  const migrateKugelStudentRunLessons = db.transaction(() => {
+    const migrationKey = 'kugel-student-runs-lesson-range-v1';
+    if (db.prepare('SELECT 1 FROM classroom_migrations WHERE migration_key = ?').get(migrationKey)) return;
+    const table = db.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'kugel_student_runs'").get();
+    if (table && String(table.sql || '').includes('CHECK (lesson_id = 0)')) {
+      db.prepare('DROP INDEX IF EXISTS idx_kugel_student_runs_classroom').run();
+      db.prepare('ALTER TABLE kugel_student_runs RENAME TO kugel_student_runs_lesson_zero_old').run();
+      db.prepare(`
+        CREATE TABLE kugel_student_runs (
+          student_id TEXT PRIMARY KEY REFERENCES classroom_students(id) ON DELETE CASCADE,
+          classroom_id TEXT NOT NULL REFERENCES classrooms(id) ON DELETE CASCADE,
+          lesson_id INTEGER NOT NULL DEFAULT 0 CHECK (lesson_id BETWEEN 0 AND 16),
+          started_at TEXT,
+          reset_at TEXT,
+          finished_at TEXT,
+          updated_at TEXT NOT NULL
+        )
+      `).run();
+      db.prepare(`
+        INSERT INTO kugel_student_runs (
+          student_id, classroom_id, lesson_id, started_at, reset_at, finished_at, updated_at
+        )
+        SELECT student_id, classroom_id, lesson_id, started_at, reset_at, finished_at, updated_at
+        FROM kugel_student_runs_lesson_zero_old
+      `).run();
+      db.prepare('DROP TABLE kugel_student_runs_lesson_zero_old').run();
+      db.prepare('CREATE INDEX IF NOT EXISTS idx_kugel_student_runs_classroom ON kugel_student_runs(classroom_id)').run();
+    }
+    db.prepare('INSERT INTO classroom_migrations (migration_key, applied_at) VALUES (?, ?)').run(migrationKey, new Date().toISOString());
+  });
+  migrateKugelStudentRunLessons();
   const migrateLegacyClassrooms = db.transaction(() => {
     const migrationKey = 'classroom-courses-backfill-v1';
     if (db.prepare('SELECT 1 FROM classroom_migrations WHERE migration_key = ?').get(migrationKey)) return;
@@ -1824,6 +1855,7 @@ function summarizeKugelStudent(student, run, session, events) {
     id: student.id,
     name: student.name,
     minecraftPlayerName: student.minecraft_player_name || '',
+    lessonId: Number(run?.lesson_id ?? session?.lesson_id ?? 0),
     connected,
     coins,
     completed,
@@ -1945,6 +1977,7 @@ async function kugelClassView(context, role, useEventCache = true) {
 function upsertKugelRun(db, studentId, classroomId, patch) {
   const existing = db.prepare('SELECT * FROM kugel_student_runs WHERE student_id = ?').get(studentId);
   const now = new Date().toISOString();
+  const lessonId = Number.isInteger(Number(patch.lessonId)) ? Number(patch.lessonId) : Number(existing?.lesson_id || 0);
   const next = {
     started_at: patch.startedAt === undefined ? existing?.started_at || null : patch.startedAt,
     reset_at: patch.resetAt === undefined ? existing?.reset_at || null : patch.resetAt,
@@ -1952,15 +1985,15 @@ function upsertKugelRun(db, studentId, classroomId, patch) {
   };
   db.prepare(`
     INSERT INTO kugel_student_runs (student_id, classroom_id, lesson_id, started_at, reset_at, finished_at, updated_at)
-    VALUES (?, ?, 0, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT(student_id) DO UPDATE SET
       classroom_id = excluded.classroom_id,
-      lesson_id = 0,
+      lesson_id = excluded.lesson_id,
       started_at = excluded.started_at,
       reset_at = excluded.reset_at,
       finished_at = excluded.finished_at,
       updated_at = excluded.updated_at
-  `).run(studentId, classroomId, next.started_at, next.reset_at, next.finished_at, now);
+  `).run(studentId, classroomId, lessonId, next.started_at, next.reset_at, next.finished_at, now);
   return db.prepare('SELECT * FROM kugel_student_runs WHERE student_id = ?').get(studentId);
 }
 
@@ -2282,20 +2315,22 @@ async function handleKugelApi(req, res) {
       student: db.prepare('SELECT * FROM classroom_students WHERE id = ? AND classroom_id = ?').get(studentContext.student.id, studentContext.classroom.id),
       run: db.prepare('SELECT * FROM kugel_student_runs WHERE student_id = ?').get(studentContext.student.id),
     }));
-    if (!state.session?.active || state.session.server_state !== 'running') return send(res, 409, JSON.stringify({ error: 'המורה עדיין לא הפעילה את שיעור 0.' }));
+    const activeLesson = kugelLessonById(state.session?.lesson_id) || KUGEL_LESSON_ZERO;
+    const activeLessonLabel = activeLesson.id === 0 ? 'שיעור 0' : `שיעור ${activeLesson.id}`;
+    if (!state.session?.active || state.session.server_state !== 'running') return send(res, 409, JSON.stringify({ error: `המורה עדיין לא הפעילה את ${activeLessonLabel}.` }));
     if (!state.student.minecraft_player_name) return send(res, 409, JSON.stringify({ error: 'המורה עדיין לא שייכה את שם השחקן שלך ב-Minecraft.' }));
     if (pathname === '/api/kugel/student/start') {
-      const run = withSummerDb(db => upsertKugelRun(db, state.student.id, studentContext.classroom.id, { startedAt: new Date().toISOString(), finishedAt: null }));
+      const run = withSummerDb(db => upsertKugelRun(db, state.student.id, studentContext.classroom.id, { lessonId: activeLesson.id, startedAt: new Date().toISOString(), finishedAt: null }));
       return send(res, 200, JSON.stringify({
         ok: true,
-        lesson: KUGEL_LESSON_ZERO,
+        lesson: kugelLessonPublic(activeLesson),
         student: summarizeKugelStudent(state.student, run, state.session, []),
         minecraft: kugelMinecraftInfo(),
       }));
     }
     if (pathname === '/api/kugel/student/reset') {
       const now = new Date().toISOString();
-      const run = withSummerDb(db => upsertKugelRun(db, state.student.id, studentContext.classroom.id, { startedAt: null, resetAt: now, finishedAt: null }));
+      const run = withSummerDb(db => upsertKugelRun(db, state.student.id, studentContext.classroom.id, { lessonId: activeLesson.id, startedAt: null, resetAt: now, finishedAt: null }));
       return send(res, 200, JSON.stringify({ ok: true, student: summarizeKugelStudent(state.student, run, state.session, []) }));
     }
     const events = await kugelGameEvents(state.session);

@@ -246,6 +246,44 @@ h2 {
   margin-top: 8px;
 }
 
+.minecraft-entry-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  border: 2px solid rgba(34, 197, 94, .42);
+  background:
+    linear-gradient(135deg, rgba(240, 253, 244, .95), rgba(239, 246, 255, .92)),
+    #ffffff;
+}
+
+.minecraft-entry-card h2 {
+  margin-bottom: 8px;
+  font-size: 1.35rem;
+}
+
+.minecraft-entry-card p {
+  margin: 0;
+  font-weight: 750;
+}
+
+.minecraft-entry-details {
+  margin-top: 8px !important;
+  color: #1e3a8a !important;
+}
+
+.minecraft-entry-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.minecraft-entry-actions .btn:disabled {
+  cursor: not-allowed;
+  opacity: .58;
+}
+
 .agent-academy {
   overflow: hidden;
   border: 1px solid rgba(15, 118, 110, .26);
@@ -965,6 +1003,18 @@ h2 {
   .academy-lab,
   .challenge-lesson-map {
     grid-template-columns: 1fr;
+  }
+
+  .minecraft-entry-card {
+    grid-template-columns: 1fr;
+  }
+
+  .minecraft-entry-actions {
+    justify-content: stretch;
+  }
+
+  .minecraft-entry-actions .btn {
+    flex: 1;
   }
 
   .academy-exercises,
