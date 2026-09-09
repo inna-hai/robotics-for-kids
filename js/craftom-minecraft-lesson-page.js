@@ -170,6 +170,32 @@ player.onChat("test", function () {
 })`
   };
 
+  async function renderQaCourseSwitcher() {
+    let me = null;
+    try {
+      const response = await fetch('/api/classroom/me', { credentials: 'same-origin' });
+      me = await response.json();
+    } catch {
+      return;
+    }
+    if (!me || me.role !== 'student' || !me.student?.qaLessonMapping) return;
+    const switcher = document.createElement('section');
+    switcher.className = 'qa-course-switcher';
+    switcher.innerHTML = `
+      <strong>בדיקת שיעורים</strong>
+      <small>פתוח רק לתלמידת בדיקה לצורך מיפוי.</small>
+      <nav aria-label="מעבר מהיר בין שיעורי Craftom">
+        <a href="kugel-student.html">0</a>
+        ${Array.from({ length: 16 }, (_, index) => {
+          const id = index + 1;
+          return `<a class="${id === Number(lesson.id) ? 'active' : ''}" href="craftom-minecraft-lesson-${id}.html">${id}</a>`;
+        }).join('')}
+      </nav>
+    `;
+    const target = document.getElementById('lessonNav') || document.querySelector('.hero') || document.querySelector('main');
+    target?.insertAdjacentElement('beforebegin', switcher);
+  }
+
   if (!document.getElementById('lessonNav')) {
     document.body.innerHTML = `
       <main class="shell">
@@ -273,6 +299,7 @@ player.onChat("test", function () {
       <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
     `;
   }
+  renderQaCourseSwitcher();
 
   document.title = `שיעור ${lesson.id} - ${lesson.title} | ${program.title}`;
   document.getElementById('kicker').textContent = `${program.grade} • שיעור ${lesson.id} מתוך ${program.totalMeetings} • אתגר ${lesson.challengeId}: ${lesson.challengeTitle}`;

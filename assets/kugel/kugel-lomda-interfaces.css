@@ -186,6 +186,58 @@
   font-weight: 800;
 }
 
+.qa-lesson-switcher {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  background: #eff6ff;
+}
+
+.qa-lesson-switcher[hidden] {
+  display: none;
+}
+
+.qa-lesson-switcher strong,
+.qa-lesson-switcher small {
+  display: block;
+}
+
+.qa-lesson-switcher small {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.qa-lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.qa-lesson-link {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #bdd8f4;
+  border-radius: 9px;
+  background: #fff;
+  color: var(--blue);
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.qa-lesson-link.active {
+  background: var(--blue);
+  color: #fff;
+}
+
+.qa-lesson-link.missing-world {
+  border-style: dashed;
+  color: #64748b;
+}
+
 .tiny-status {
   min-width: 64px;
   padding: 5px 7px;

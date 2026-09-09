@@ -831,6 +831,52 @@ h2 {
   background: var(--blue);
 }
 
+.qa-course-switcher {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 12px;
+  border: 1px solid #bfdbfe;
+  border-radius: 14px;
+  background: #eff6ff;
+  color: var(--ink);
+}
+
+.qa-course-switcher strong,
+.qa-course-switcher small {
+  display: block;
+}
+
+.qa-course-switcher small {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.qa-course-switcher nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.qa-course-switcher a {
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #bdd8f4;
+  border-radius: 9px;
+  background: #fff;
+  color: var(--blue);
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.qa-course-switcher a.active {
+  background: var(--blue);
+  color: #fff;
+}
+
 .detail-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

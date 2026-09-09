@@ -45,13 +45,36 @@
     const continueCourse = document.getElementById('continueCourse');
     const coinProgress = document.getElementById('coinProgress');
     const progressStrip = document.getElementById('studentProgressStrip');
+    const qaLessonSwitcher = document.getElementById('qaLessonSwitcher');
+    const qaLessonGrid = document.getElementById('qaLessonGrid');
     let current = null;
+
+    function renderQaLessonSwitcher(data) {
+      if (!qaLessonSwitcher || !qaLessonGrid) return;
+      const enabled = Boolean(data.qaLessonMapping && Array.isArray(data.lessons) && data.lessons.length);
+      qaLessonSwitcher.hidden = !enabled;
+      if (!enabled) {
+        qaLessonGrid.replaceChildren();
+        return;
+      }
+      const links = data.lessons.map(lesson => {
+        const lessonId = Number(lesson.id);
+        const link = node('a', String(lessonId), `qa-lesson-link${lessonId === Number(data.lesson?.id || 0) ? ' active' : ''}${lesson.hasWorld === false ? ' missing-world' : ''}`);
+        link.href = lessonId === 0 ? 'kugel-student.html' : `craftom-minecraft-lesson-${lessonId}.html`;
+        link.title = lessonId === 0
+          ? 'שיעור 0 - מבוך המטבעות'
+          : `${lesson.title || `שיעור ${lessonId}`}${lesson.hasWorld === false ? ' - חסר עולם Minecraft' : ''}`;
+        return link;
+      });
+      qaLessonGrid.replaceChildren(...links);
+    }
 
     function render(data) {
       current = data;
       const student = data.student || {};
       const session = data.session || {};
       const minecraft = data.minecraft;
+      renderQaLessonSwitcher(data);
       sessionStatus.textContent = session.active ? 'השיעור פעיל' : 'ממתין להפעלת המורה';
       playerStatus.textContent = student.connected ? 'מחובר/ת' : 'לא מחובר/ת';
       identity.textContent = student.minecraftPlayerName

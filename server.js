@@ -1383,6 +1383,15 @@ function getClassroomStudentFromRequest(req) {
   });
 }
 
+function isPreviewDemoStudent(student) {
+  return Boolean(
+    CLASSROOM_PREVIEW_DEMO_TEACHER
+    && student
+    && student.name === 'הדסה בדיקה'
+    && (!KUGEL_PREVIEW_CLASSROOM_ID || student.classroom_id === KUGEL_PREVIEW_CLASSROOM_ID)
+  );
+}
+
 function cleanClassroomCourses(value) {
   if (!Array.isArray(value)) return null;
   const requested = new Set();
@@ -1898,10 +1907,13 @@ async function kugelClassView(context, role, useEventCache = true) {
   const activeLesson = kugelLessonById(session.lessonId) || KUGEL_LESSON_ZERO;
   if (role === 'student') {
     const own = summaries.find(student => student.id === context.student.id);
+    const qaLessonMapping = isPreviewDemoStudent(context.student);
     return {
       ok: true,
       role,
       lesson: activeLesson,
+      lessons: qaLessonMapping ? Object.values(KUGEL_MINECRAFT_LESSONS).map(kugelLessonPublic) : [],
+      qaLessonMapping,
       classroom: context.classroom,
       session,
       student: own,
@@ -2323,7 +2335,7 @@ async function handleClassroomApi(req, res) {
     if (student) return send(res, 200, JSON.stringify({
       ok: true,
       role: 'student',
-      student: { id: student.id, name: student.name },
+      student: { id: student.id, name: student.name, qaLessonMapping: isPreviewDemoStudent(student) },
       classroom: {
         id: student.classroom_id,
         name: student.classroom_name,
@@ -3406,6 +3418,7 @@ function serveStatic(req, res) {
     && classroomCourse === KUGEL_COURSE_ID
     && classroomAuthorized
     && requiresCraftomLessonZeroCompletion(pathname, url)
+    && !isPreviewDemoStudent(classroomStudent)
     && !classroomStudentCompletedCraftomLessonZero(classroomStudent.id)
   ) {
     return send(res, 423, lockedPage(pathname, null, { lessonZeroRequired: true }), 'text/html; charset=utf-8');
