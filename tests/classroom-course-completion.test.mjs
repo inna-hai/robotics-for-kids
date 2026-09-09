@@ -62,9 +62,11 @@ const academyChecksStart = academy.indexOf('function renderChecks(checks)');
 const academyChecksEnd = academy.indexOf('\n  function updatePython()', academyChecksStart);
 assert.notEqual(academyChecksStart, -1, 'Agent Academy result renderer exists');
 const academyChecks = academy.slice(academyChecksStart, academyChecksEnd);
-assert.match(academyChecks, /const passed = checks\.length > 0 && checks\.every\(check => check\.pass\)[\s\S]*if \(passed\)[\s\S]*hai:classroom-progress/, 'Agent Academy reports only when every real criterion passes');
-assert.match(academyChecks, /lessonId:\s*String\(lesson\.id\)/, 'Agent Academy reports the current lesson');
-assert.match(academyChecks, /activityId:\s*`academy-exercise-\$\{activeExercise \+ 1\}`/, 'Agent Academy reports the completed exercise');
+assert.match(academyChecks, /const passed = checks\.length > 0 && checks\.every\(check => check\.pass\)[\s\S]*if \(passed\)[\s\S]*reportProgress\(`academy-exercise-\$\{activeExercise \+ 1\}`/, 'Agent Academy reports only when every real criterion passes');
+assert.match(academy, /new CustomEvent\('hai:classroom-progress'/, 'Agent Academy progress reports use the classroom progress event');
+assert.match(academy, /lessonId:\s*String\(lesson\.id\)/, 'Agent Academy reports the current lesson');
+assert.match(academyChecks, /reportProgress\(`academy-exercise-\$\{activeExercise \+ 1\}`/, 'Agent Academy reports the completed exercise');
+assert.match(academy, /reportProgress\('academy-complete'/, 'Agent Academy reports full lesson-academy completion after all exercises pass');
 
 const craftomLesson = read('js/craftom-minecraft-lesson-page.js');
 const exitSuccessStart = craftomLesson.indexOf("form.classList.add('submitted')");

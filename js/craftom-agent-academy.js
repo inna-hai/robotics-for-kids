@@ -12,6 +12,8 @@
   const runButton = document.getElementById('academyRun');
   const resetButton = document.getElementById('academyReset');
   const hintButton = document.getElementById('academyHint');
+  const completeEl = document.getElementById('academyComplete');
+  const completeBackLink = document.getElementById('academyCompleteBackLink');
 
   if (!academy || !window.Blockly || !blocklyDiv || !pythonOutput || !canvas || !exerciseList || !checksEl || !feedbackEl) return;
 
@@ -30,6 +32,8 @@
   const cell = 42;
   let activeExercise = 0;
   let visibleMode = 'blocks';
+  const completedExercises = new Set();
+  let academyCompletionReported = false;
 
   const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
   const commandName = text => String(text || 'run').replace(/[^A-Za-z0-9_]/g, '_') || 'run';
@@ -39,6 +43,7 @@
   document.getElementById('academyTitle').textContent = academy.title;
   document.getElementById('academyStory').textContent = academy.story;
   document.getElementById('lessonBackLink').href = `craftom-minecraft-lesson-${lesson.id}.html`;
+  if (completeBackLink) completeBackLink.href = `craftom-minecraft-lesson-${lesson.id}.html`;
 
   if (!window.__craftomAcademyBlocksDefined) {
     window.__craftomAcademyBlocksDefined = true;
@@ -675,7 +680,7 @@
 
   function renderExercises() {
     exerciseList.innerHTML = academy.exercises.map((exercise, index) => `
-      <button type="button" class="${index === activeExercise ? 'active' : ''}" data-academy-exercise="${index}">
+      <button type="button" class="${index === activeExercise ? 'active' : ''}${completedExercises.has(index) ? ' done' : ''}" data-academy-exercise="${index}">
         <span>${index + 1}</span>
         <strong>${esc(exercise.title)}</strong>
         <small>${esc(exercise.mission)}</small>
@@ -689,24 +694,47 @@
     });
   }
 
+  function reportProgress(activityId, metadata = {}) {
+    window.dispatchEvent(new CustomEvent('hai:classroom-progress', {
+      detail: {
+        lessonId: String(lesson.id),
+        activityId,
+        status: 'completed',
+        score: 100,
+        metadata
+      }
+    }));
+  }
+
+  function renderAcademyCompletion() {
+    const doneCount = completedExercises.size;
+    const total = academy.exercises.length;
+    progressEl.textContent = `הושלמו ${doneCount} מתוך ${total} תרגילים`;
+    if (!completeEl) return;
+    const allDone = total > 0 && doneCount >= total;
+    completeEl.hidden = !allDone;
+    if (allDone && !academyCompletionReported) {
+      academyCompletionReported = true;
+      reportProgress('academy-complete', { completedExercises: doneCount, totalExercises: total });
+    }
+  }
+
   function renderChecks(checks) {
     checksEl.innerHTML = checks.map(check => `<div class="${check.pass ? 'pass' : 'fail'}"><span>${check.pass ? '✓' : '·'}</span>${esc(check.label)}</div>`).join('');
     const passed = checks.length > 0 && checks.every(check => check.pass);
     if (passed) {
-      window.dispatchEvent(new CustomEvent('hai:classroom-progress', {
-        detail: {
-          lessonId: String(lesson.id),
-          activityId: `academy-exercise-${activeExercise + 1}`,
-          status: 'completed',
-          score: 100
-        }
-      }));
+      completedExercises.add(activeExercise);
+      renderExercises();
+      reportProgress(`academy-exercise-${activeExercise + 1}`, { completedExercises: completedExercises.size, totalExercises: academy.exercises.length });
     }
-    feedbackEl.textContent = passed
-      ? 'התרגיל עבר. המשיכו לתרגיל הבא; בסיום האקדמיה חוזרים לשיעור ומיישמים במיינקראפט.'
-      : 'עוד לא. הסתכלו על ההדמיה, תקנו בלוק אחד והריצו שוב.';
+    const allDone = academy.exercises.length > 0 && completedExercises.size >= academy.exercises.length;
+    feedbackEl.textContent = passed && allDone
+      ? 'כל תרגילי האקדמיה הושלמו וההתקדמות נשמרה. אפשר לחזור לשיעור.'
+      : passed
+        ? 'התרגיל עבר. המשיכו לתרגיל הבא; בסיום האקדמיה חוזרים לשיעור ומיישמים במיינקראפט.'
+        : 'עוד לא. הסתכלו על ההדמיה, תקנו בלוק אחד והריצו שוב.';
     feedbackEl.className = `academy-feedback ${passed ? 'pass' : 'fail'}`;
-    progressEl.textContent = `תרגיל ${activeExercise + 1} מתוך ${academy.exercises.length}`;
+    renderAcademyCompletion();
   }
 
   function updatePython() {

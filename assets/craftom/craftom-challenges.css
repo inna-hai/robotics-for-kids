@@ -375,6 +375,15 @@ h2 {
   box-shadow: 0 10px 20px rgba(37,99,235,.12);
 }
 
+#academyExerciseList button.done {
+  border-color: #86efac;
+  background: #f0fdf4;
+}
+
+#academyExerciseList button.done span {
+  background: #16a34a;
+}
+
 #academyExerciseList span {
   display: inline-flex;
   width: 28px;
@@ -498,6 +507,34 @@ h2 {
   border-color: #fed7aa;
   background: #fff7ed;
   color: #9a3412;
+}
+
+.academy-complete {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 14px;
+  border: 2px solid rgba(34, 197, 94, .42);
+  border-radius: 10px;
+  background: linear-gradient(135deg, #f0fdf4, #eff6ff);
+  color: #14532d;
+  font-weight: 850;
+}
+
+.academy-complete[hidden] {
+  display: none;
+}
+
+.academy-complete strong {
+  font-size: 1.08rem;
+}
+
+.academy-complete span {
+  color: #334155;
+}
+
+.academy-complete .btn {
+  width: fit-content;
 }
 
 #academyCanvas {

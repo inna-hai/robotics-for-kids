@@ -114,6 +114,8 @@ assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('מיישמים �
 assert.ok(read('craftom-agent-academy.html').includes('academyCanvas'), 'Agent academy has a result simulation canvas');
 assert.ok(read('craftom-agent-academy.html').includes('academyBlockly'), 'Agent academy has a Blockly MakeCode area');
 assert.ok(read('craftom-agent-academy.html').includes('data-academy-mode="python"'), 'Agent academy has a Python tab');
+assert.ok(read('craftom-agent-academy.html').includes('academyComplete'), 'Agent academy has a full-completion message');
+assert.ok(read('craftom-agent-academy.html').includes('academyCompleteBackLink'), 'Agent academy completion lets students return to the lesson');
 assert.ok(read('craftom-agent-academy.html').includes('זו סביבת תרגול'), 'Agent academy tells students it is a practice environment');
 assert.ok(read('craftom-minecraft-students.html').includes('דף עבודה עצמית'), 'student worksheet is framed as self-study');
 assert.ok(read('craftom-minecraft-lesson.html').includes('העלאת תמונה'), 'lesson page asks for a photo upload in the exit ticket area');
@@ -144,6 +146,8 @@ assert.ok(read('js/craftom-agent-academy.js').includes("message0: 'if routeOpen 
 assert.ok(read('js/craftom-agent-academy.js').includes('if routeOpen =='), 'Agent academy Python preview maps the condition to a boolean routeOpen check');
 assert.ok(!read('js/craftom-agent-academy.js').includes('category name="Loops & Logic"'), 'Agent academy does not merge MakeCode Loops and Logic into one category');
 assert.ok(read('js/craftom-agent-academy.js').includes('const hints = ['), 'Agent academy uses soft hints instead of exposing a solution chain');
+assert.ok(read('js/craftom-agent-academy.js').includes("reportProgress('academy-complete'"), 'Agent academy reports full academy completion');
+assert.ok(read('js/craftom-agent-academy.js').includes('completedExercises'), 'Agent academy tracks completed exercises across the lesson');
 assert.ok(!read('js/craftom-agent-academy.js').includes("academy.exercises[activeExercise]?.blocks?.join"), 'hint button does not reveal exact solution blocks');
 assert.ok(read('js/craftom-minecraft-code-builder.js').includes('data-craftom-code-mode'), 'Craftom Code Builder supports code mode switching');
 assert.ok(read('js/craftom-minecraft-code-builder.js').includes('player.on_chat'), 'Craftom Code Builder can generate Python-style code');
