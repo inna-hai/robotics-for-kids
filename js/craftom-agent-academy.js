@@ -731,7 +731,7 @@
     feedbackEl.textContent = passed && allDone
       ? 'כל תרגילי האקדמיה הושלמו וההתקדמות נשמרה. אפשר לחזור לשיעור.'
       : passed
-        ? 'התרגיל עבר וההצלחה נשמרה. בחרו את התרגיל הבא משמאל; הוא ייפתח עם בלוקים נקיים.'
+        ? 'התרגיל עבר וההצלחה נשמרה.'
         : 'עוד לא. הסתכלו על ההדמיה, תקנו בלוק אחד והריצו שוב.';
     feedbackEl.className = `academy-feedback ${passed ? 'pass' : 'fail'}`;
     renderAcademyCompletion();
