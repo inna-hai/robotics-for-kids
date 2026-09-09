@@ -846,6 +846,11 @@
   outline-offset: 2px;
 }
 
+.start-lesson-action.end-lesson-action {
+  background: #b91c1c;
+  box-shadow: 0 10px 20px rgba(185, 28, 28, .18);
+}
+
 .primary-action:disabled,
 .secondary-action:disabled {
   opacity: .58;

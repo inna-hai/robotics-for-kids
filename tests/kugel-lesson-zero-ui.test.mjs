@@ -61,6 +61,8 @@ assert.ok(!client.includes('DEFAULT_KUGEL_STUDENTS'), 'the live roster must come
 
 assert.ok(classroomClient.includes('kugel-teacher.html?classroomId='), 'teacher class cards must link to their scoped lesson-zero board');
 assert.ok(classroomClient.includes("'craftom-agent': 'kugel-student.html'"), 'classroom students should enter lesson zero before the existing course');
+assert.ok(client.includes('סיום שיעור'), 'active teacher Minecraft lesson button should become an end-lesson action');
+assert.ok(client.includes("scoped('/stop')"), 'active teacher lesson button should release the Minecraft server');
 assert.match(server, /basename === 'kugel-student'/);
 assert.match(server, /basename === 'kugel-teacher'/);
 assert.match(server, /kugel-50-safe-compounds-v3-mazes-8-coins-npc-reset-caged-inner-wood-obstacle-test-v1-20260906/);

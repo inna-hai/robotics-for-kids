@@ -228,18 +228,20 @@
       card.append(node('strong', lesson.title || `שיעור ${lesson.id}`));
       card.append(node('span', lesson.summary || 'בודקים האם קיים עולם Minecraft מתאים לשיעור הזה.'));
       const actionRow = node('div', undefined, 'minecraft-lesson-actions');
-      const launch = node('button', lesson.hasWorld ? `פתיחת Minecraft לשיעור ${lesson.id}` : 'חסר עולם Minecraft', `primary-action start-lesson-action${Number(lesson.id) === 1 ? ' lesson-one-action' : ''}`);
+      const isActiveLesson = Boolean(session.active && activeLessonId === Number(lesson.id));
+      const actionLabel = isActiveLesson ? `סיום שיעור ${lesson.id}` : (lesson.hasWorld ? `פתיחת Minecraft לשיעור ${lesson.id}` : 'חסר עולם Minecraft');
+      const launch = node('button', actionLabel, `primary-action start-lesson-action${isActiveLesson ? ' end-lesson-action' : ''}${Number(lesson.id) === 1 ? ' lesson-one-action' : ''}`);
       launch.type = 'button';
       launch.disabled = minecraftBlocked || !lesson.hasWorld || session.serverState === 'starting';
       launch.title = !lesson.hasWorld
         ? 'צריך להגדיר עולם Minecraft אמיתי לשיעור הזה לפני שאפשר להפעיל אותו.'
         : (minecraftBlocked ? current?.minecraftSetupNote || '' : '');
-      launch.classList.toggle('is-active-lesson', session.active && activeLessonId === Number(lesson.id));
+      launch.classList.toggle('is-active-lesson', isActiveLesson);
       launch.addEventListener('click', () => teacherAction(
-        lessonLaunchPath(lesson.id),
+        isActiveLesson ? scoped('/stop') : lessonLaunchPath(lesson.id),
         {},
-        `מפעילים את עולם שיעור ${lesson.id}…`,
-        `עולם שיעור ${lesson.id} פעיל.`
+        isActiveLesson ? `מסיימים את שיעור ${lesson.id}…` : `מפעילים את עולם שיעור ${lesson.id}…`,
+        isActiveLesson ? 'השיעור הסתיים והשרת שוחרר.' : `עולם שיעור ${lesson.id} פעיל.`
       ));
       actionRow.append(launch);
       if (Number(lesson.id) >= 1) {
