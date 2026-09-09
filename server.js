@@ -8,6 +8,25 @@ const tls = require('tls');
 const Database = require('better-sqlite3');
 
 const ROOT = __dirname;
+
+function loadLocalEnvFile(filename) {
+  const envPath = path.join(ROOT, filename);
+  if (!fs.existsSync(envPath)) return;
+  const content = fs.readFileSync(envPath, 'utf8');
+  for (const line of content.split(/\r?\n/)) {
+    const match = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)\s*$/);
+    if (!match || process.env[match[1]] !== undefined) continue;
+    let value = match[2].trim();
+    if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+      value = value.slice(1, -1);
+    }
+    process.env[match[1]] = value;
+  }
+}
+
+loadLocalEnvFile('.env');
+loadLocalEnvFile('.env.local');
+
 const PORT = Number(process.env.PORT || process.argv[2] || 3032);
 const DATA_DIR = path.join(ROOT, 'data');
 const ATTACHMENTS_DIR = path.join(DATA_DIR, 'feedback-attachments');
