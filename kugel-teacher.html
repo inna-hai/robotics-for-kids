@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ניהול שיעור 0 | hai.tech</title>
-  <meta name="description" content="לוח מורה מאובטח להפעלת מבוך Minecraft ומעקב אחר תלמידי הכיתה.">
+  <title>ניהול Minecraft לכיתה | hai.tech</title>
+  <meta name="description" content="לוח מורה מאובטח להפעלת עולמות Minecraft ומעקב אחר תלמידי הכיתה.">
   <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260905-agent-blocks-match-1">
-  <link rel="stylesheet" href="assets/kugel/kugel-lomda-interfaces.css?v=20260907-feedback-compact-1">
+  <link rel="stylesheet" href="assets/kugel/kugel-lomda-interfaces.css?v=20260909-teacher-end-lesson-1">
 </head>
 <body class="kugel-app teacher-app" data-kugel-page="teacher">
   <header class="app-topbar">
@@ -16,12 +16,12 @@
    <section class="teacher-board">
     <aside class="teacher-control">
       <p class="eyebrow">סביבת מורה מאובטחת</p>
-      <h1>ניהול שיעור 0</h1>
+      <h1>ניהול Minecraft לכיתה</h1>
       <p id="teacherClassName">טוען את הכיתה…</p>
-      <section class="panel compact-panel">
-        <h3>התחלת שיעור 0</h3>
-        <p>זה הכפתור שפותח לתלמידים את עולם המבוך. העולם נפתח מחדש עבור הכיתה וההתקדמות הישנה בשיעור 0 מתאפסת.</p>
-        <button class="primary-action start-lesson-action" id="launchLesson" type="button">התחלת שיעור 0 ופתיחת עולם Minecraft</button>
+      <section class="panel compact-panel minecraft-lesson-panel">
+        <h3>בחירת שיעור Minecraft</h3>
+        <p>המורה בוחרת איזה עולם לפתוח לכיתה לפי השיעור שבו עובדים היום. האקדמיה ו־Minecraft זמינים במקביל, והמורה קובעת את הסדר.</p>
+        <div class="minecraft-lesson-list" id="minecraftLessonList"></div>
         <button class="secondary-action" id="stopLesson" type="button">סיום השיעור ושחרור השרת</button>
         <p class="form-status" id="teacherStatus" aria-live="polite"></p>
       </section>
@@ -74,7 +74,7 @@
     </section>
    </section>
   </main>
-  <script src="js/kugel-lesson-zero.js?v=20260907-tehila-fixes-2"></script>
+  <script src="js/kugel-lesson-zero.js?v=20260909-teacher-end-lesson-1"></script>
   <script src="/js/feedback-widget.js?v=20260907-tehila-fixes-1"></script>
 </body>
 </html>

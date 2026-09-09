@@ -28,8 +28,9 @@ assert.match(student, /המשך לשיעור 1/);
 assert.doesNotMatch(student, /name="studentName"/, 'student identity must come from the authenticated classroom session');
 assert.doesNotMatch(student, /href="kugel-teacher\.html"/, 'students must not receive a shortcut to teacher controls');
 
-assert.match(teacher, /ניהול שיעור 0/);
-assert.match(teacher, /התחלת שיעור 0 ופתיחת עולם Minecraft/);
+assert.match(teacher, /ניהול Minecraft לכיתה/);
+assert.match(teacher, /בחירת שיעור Minecraft/);
+assert.match(teacher, /minecraftLessonList/);
 assert.match(teacher, /לוח התלמידים/);
 assert.match(teacher, /עצירת הכיתה/);
 assert.match(teacher, /שחרור הכיתה/);
@@ -46,6 +47,9 @@ for (const endpoint of [
   '/freeze',
   '/minecraft',
 ]) assert.ok(client.includes(endpoint), `Kugel client missing ${endpoint}`);
+assert.match(client, /lessons\/\$\{encodeURIComponent\(lessonId\)\}\/launch/);
+assert.match(client, /חסר עולם Minecraft/);
+assert.match(client, /craftom-minecraft-lesson-\$\{lesson.id\}\.html/);
 assert.ok(client.includes("page === 'teacher'"));
 assert.ok(client.includes("page === 'student'"));
 assert.ok(client.includes('classroomId'));
@@ -57,7 +61,11 @@ assert.ok(!client.includes('DEFAULT_KUGEL_STUDENTS'), 'the live roster must come
 
 assert.ok(classroomClient.includes('kugel-teacher.html?classroomId='), 'teacher class cards must link to their scoped lesson-zero board');
 assert.ok(classroomClient.includes("'craftom-agent': 'kugel-student.html'"), 'classroom students should enter lesson zero before the existing course');
+assert.ok(client.includes('סיום שיעור'), 'active teacher Minecraft lesson button should become an end-lesson action');
+assert.ok(client.includes("scoped('/stop')"), 'active teacher lesson button should release the Minecraft server');
 assert.match(server, /basename === 'kugel-student'/);
 assert.match(server, /basename === 'kugel-teacher'/);
+assert.match(server, /kugel-50-safe-compounds-v3-mazes-8-coins-npc-reset-caged-inner-wood-obstacle-test-v1-20260906/);
+assert.match(server, /kugel-50-safe-compounds-v3-20260824/);
 assert.ok(packageJson.includes('node --check js/kugel-lesson-zero.js'));
 console.log('✓ Kugel UI contains only secure lesson zero and links back to the existing course');

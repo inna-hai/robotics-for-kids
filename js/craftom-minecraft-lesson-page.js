@@ -6,6 +6,22 @@
   const challengeLessons = program.lessons.filter(item => item.challengeId === lesson.challengeId);
   const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 
+  function renderCourseHeader() {
+    document.getElementById('courseHeader')?.remove();
+    document.body.insertAdjacentHTML('afterbegin', `
+      <header class="course-header" id="courseHeader" aria-label="ניווט אקדמיית ה-Agent">
+        <div class="course-header-inner">
+          <a class="course-brand" href="craftom-school/preview/index.html">אקדמיית ה-Agent</a>
+          <nav class="course-nav" id="courseHeaderNav" aria-label="מעבר מהיר">
+            <a href="craftom-school/preview/index.html">דף הבית</a>
+            <a class="primary" href="craftom-minecraft-lesson-${lesson.id}.html">השיעור הנוכחי</a>
+            ${program.challenges.map(challenge => `<a href="craftom-minecraft-challenge.html?challenge=${challenge.id}">אתגר ${challenge.id}</a>`).join('')}
+          </nav>
+        </div>
+      </header>
+    `);
+  }
+
   function list(items) {
     return items.map(item => `<li>${esc(item)}</li>`).join('');
   }
@@ -17,6 +33,135 @@
       reader.onerror = () => reject(new Error('file_read_failed'));
       reader.readAsDataURL(file);
     });
+  }
+
+  async function api(path, payload) {
+    const response = await fetch(path, {
+      method: payload === undefined ? 'GET' : 'POST',
+      credentials: 'same-origin',
+      headers: payload === undefined ? {} : { 'Content-Type': 'application/json' },
+      body: payload === undefined ? undefined : JSON.stringify(payload),
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const error = new Error(data.error || 'הפעולה לא הצליחה.');
+      error.status = response.status;
+      throw error;
+    }
+    return data;
+  }
+
+  function ensureMinecraftEntryCard() {
+    let card = document.getElementById('minecraftEntryCard');
+    if (card) return card;
+    card = document.createElement('section');
+    card.className = 'card minecraft-entry-card';
+    card.id = 'minecraftEntryCard';
+    card.innerHTML = `
+      <div class="minecraft-entry-copy">
+        <span class="tag">Minecraft Education</span>
+        <h2>כניסה לעולם Minecraft של השיעור</h2>
+        <p id="minecraftEntryStatus">בודקים אם המורה הפעילה את העולם…</p>
+        <p class="minecraft-entry-details" id="minecraftEntryDetails"></p>
+      </div>
+      <div class="minecraft-entry-actions">
+        <button class="btn" id="minecraftEntryLaunch" type="button" disabled>פתיחת Minecraft</button>
+        <button class="btn secondary" id="minecraftEntryRefresh" type="button">רענון</button>
+      </div>
+      <p class="submit-status" id="minecraftEntryMessage" role="status" aria-live="polite"></p>
+    `;
+    const anchor = document.querySelector('.hero') || document.getElementById('agentAcademyCta') || document.getElementById('makeCodeWorkspace') || document.querySelector('.detail-grid');
+    anchor?.insertAdjacentElement('afterend', card);
+    return card;
+  }
+
+  function ensureMinecraftTopLink() {
+    if (document.getElementById('minecraftEntryTopLink')) return;
+    const actions = document.querySelector('.hero .actions');
+    if (!actions) return;
+    const link = document.createElement('a');
+    link.className = 'btn minecraft-entry-top-link';
+    link.id = 'minecraftEntryTopLink';
+    link.href = '#minecraftEntryCard';
+    link.textContent = 'כניסה ל-Minecraft';
+    actions.insertBefore(link, actions.firstChild);
+  }
+
+  async function initMinecraftEntry() {
+    let me = null;
+    try {
+      me = await api('/api/classroom/me');
+    } catch {
+      return;
+    }
+    if (!me || me.role !== 'student') return;
+
+    const card = ensureMinecraftEntryCard();
+    ensureMinecraftTopLink();
+    const status = card.querySelector('#minecraftEntryStatus');
+    const details = card.querySelector('#minecraftEntryDetails');
+    const message = card.querySelector('#minecraftEntryMessage');
+    const launch = card.querySelector('#minecraftEntryLaunch');
+    const refreshButton = card.querySelector('#minecraftEntryRefresh');
+    let currentSession = null;
+
+    function setMessage(text, failed = false) {
+      message.textContent = text || '';
+      message.classList.toggle('error', failed);
+    }
+
+    function render(data) {
+      currentSession = data;
+      const activeLessonId = Number(data.session?.lessonId ?? 0);
+      const currentLessonId = Number(lesson.id);
+      const activeForThisLesson = Boolean(data.session?.active && activeLessonId === currentLessonId);
+      const minecraft = data.minecraft;
+      const student = data.student || {};
+
+      if (!data.session?.active) {
+        status.textContent = `המורה עדיין לא פתחה את שיעור ${currentLessonId} ב-Minecraft.`;
+        details.textContent = '';
+      } else if (!activeForThisLesson) {
+        status.textContent = `המורה פתחה כרגע את שיעור ${activeLessonId}. כדי להיכנס לשיעור הזה צריך לפתוח את שיעור ${currentLessonId}.`;
+        details.textContent = '';
+      } else if (!student.minecraftPlayerName) {
+        status.textContent = 'המורה עדיין לא שייכה לך שם שחקן Minecraft.';
+        details.textContent = '';
+      } else {
+        status.textContent = `שיעור ${currentLessonId} פעיל. אפשר לפתוח את Minecraft ולהיכנס לעולם.`;
+        details.textContent = minecraft
+          ? `שרת: ${minecraft.serverName} • כתובת: ${minecraft.serverAddress} • Server ID: ${minecraft.serverId}`
+          : 'פרטי השרת יוצגו לאחר שהעולם יהיה זמין.';
+      }
+
+      launch.disabled = !(activeForThisLesson && student.minecraftPlayerName && minecraft);
+    }
+
+    async function refresh() {
+      try {
+        render(await api('/api/kugel/session'));
+      } catch (error) {
+        status.textContent = error.message || 'לא ניתן לבדוק כרגע את מצב Minecraft.';
+        details.textContent = '';
+        launch.disabled = true;
+      }
+    }
+
+    launch.addEventListener('click', async () => {
+      setMessage('פותחים את Minecraft…');
+      try {
+        const data = await api('/api/kugel/student/start', {});
+        setMessage('Minecraft נפתח. אם האפליקציה לא נפתחה, השתמשו בפרטי השרת שמופיעים כאן.');
+        if (data.minecraft?.launchUrl) location.href = data.minecraft.launchUrl;
+        await refresh();
+      } catch (error) {
+        setMessage(error.message, true);
+      }
+    });
+
+    refreshButton.addEventListener('click', refresh);
+    await refresh();
+    setInterval(refresh, 5000);
   }
 
   const makeCodeSnippets = {
@@ -170,6 +315,32 @@ player.onChat("test", function () {
 })`
   };
 
+  async function renderQaCourseSwitcher() {
+    let me = null;
+    try {
+      const response = await fetch('/api/classroom/me', { credentials: 'same-origin' });
+      me = await response.json();
+    } catch {
+      return;
+    }
+    if (!me || me.role !== 'student' || !me.student?.qaLessonMapping) return;
+    const switcher = document.createElement('section');
+    switcher.className = 'qa-course-switcher';
+    switcher.innerHTML = `
+      <strong>בדיקת שיעורים</strong>
+      <small>פתוח רק לתלמידת בדיקה לצורך מיפוי.</small>
+      <nav aria-label="מעבר מהיר בין שיעורי Craftom">
+        <a href="kugel-student.html">0</a>
+        ${Array.from({ length: 16 }, (_, index) => {
+          const id = index + 1;
+          return `<a class="${id === Number(lesson.id) ? 'active' : ''}" href="craftom-minecraft-lesson-${id}.html">${id}</a>`;
+        }).join('')}
+      </nav>
+    `;
+    const target = document.getElementById('lessonNav') || document.querySelector('.hero') || document.querySelector('main');
+    target?.insertAdjacentElement('beforebegin', switcher);
+  }
+
   if (!document.getElementById('lessonNav')) {
     document.body.innerHTML = `
       <main class="shell">
@@ -199,7 +370,6 @@ player.onChat("test", function () {
           <article class="detail-box"><h2>איך עובדים לבד</h2><ul id="selfStudy"></ul></article>
           <article class="detail-box"><h2>מה בונים במיינקראפט</h2><ul id="build"></ul></article>
           <article class="detail-box"><h2>קוד / MakeCode</h2><ul id="code"></ul></article>
-          <article class="detail-box"><h2>ראיות Craftom</h2><ul id="evidence"></ul></article>
           <article class="detail-box"><h2>מה מעלים בסוף</h2><p id="exitUpload"></p></article>
         </section>
         <section class="card agent-academy-cta" id="agentAcademyCta" style="margin-top:16px" hidden>
@@ -267,12 +437,15 @@ player.onChat("test", function () {
         <div class="actions">
           <a class="btn secondary" id="prevLink" href="#">שיעור קודם</a>
           <a class="btn" id="nextLink" href="#">שיעור הבא</a>
+          <a class="btn" id="nextChallengeLink" href="#" hidden>לאתגר הבא</a>
           <a class="btn secondary" href="craftom-school/preview/index.html">מפת הקורס</a>
         </div>
       </main>
       <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
     `;
   }
+  renderCourseHeader();
+  renderQaCourseSwitcher();
 
   document.title = `שיעור ${lesson.id} - ${lesson.title} | ${program.title}`;
   document.getElementById('kicker').textContent = `${program.grade} • שיעור ${lesson.id} מתוך ${program.totalMeetings} • אתגר ${lesson.challengeId}: ${lesson.challengeTitle}`;
@@ -301,7 +474,6 @@ player.onChat("test", function () {
   document.getElementById('selfStudy').innerHTML = list(selfStudySteps);
   document.getElementById('build').innerHTML = list(lesson.detail.build);
   document.getElementById('code').innerHTML = list(lesson.detail.code);
-  document.getElementById('evidence').innerHTML = list(lesson.detail.evidence);
   const academyCta = document.getElementById('agentAcademyCta');
   const makeCodeWorkspace = document.getElementById('makeCodeWorkspace');
   if (lesson.detail.academy && academyCta) {
@@ -309,6 +481,7 @@ player.onChat("test", function () {
     document.getElementById('agentAcademyLink').href = `craftom-agent-academy.html?lesson=${lesson.id}`;
     if (makeCodeWorkspace) makeCodeWorkspace.hidden = true;
   }
+  initMinecraftEntry();
   document.getElementById('makeCodeSnippet').textContent = makeCodeSnippets[lesson.id] || makeCodeSnippets[1];
   document.getElementById('exitUpload').textContent = program.exitUpload;
   document.getElementById('exitUploadInline').textContent = program.exitUpload;
@@ -318,17 +491,26 @@ player.onChat("test", function () {
   document.getElementById('challengeLink').href = `craftom-minecraft-challenge.html?challenge=${lesson.challengeId}`;
   document.getElementById('challengeMapLink').href = `craftom-minecraft-challenge.html?challenge=${lesson.challengeId}`;
   document.getElementById('studentLink').href = `craftom-minecraft-students.html?challenge=${lesson.challengeId}`;
-  document.getElementById('slidesLink').href = `craftom-minecraft-slides.html?challenge=${lesson.challengeId}`;
-  document.getElementById('lessonSlidesBoxLink').href = `craftom-minecraft-slides.html?challenge=${lesson.challengeId}`;
+  const slidesHref = `craftom-minecraft-slides.html?challenge=${lesson.challengeId}&lesson=${lesson.id}`;
+  document.getElementById('slidesLink').href = slidesHref;
+  document.getElementById('lessonSlidesBoxLink').href = slidesHref;
   const currentLessonIndex = challengeLessons.findIndex(item => item.id === lesson.id);
   const prevLesson = currentLessonIndex > 0 ? challengeLessons[currentLessonIndex - 1] : null;
   const nextLesson = currentLessonIndex < challengeLessons.length - 1 ? challengeLessons[currentLessonIndex + 1] : null;
+  const nextChallenge = program.challenges.find(item => item.id === lesson.challengeId + 1);
+  const nextChallengeFirstLesson = nextChallenge
+    ? program.lessons.find(item => item.challengeId === nextChallenge.id)
+    : null;
   const prevLink = document.getElementById('prevLink');
   const nextLink = document.getElementById('nextLink');
+  const nextChallengeLink = document.getElementById('nextChallengeLink');
   prevLink.style.display = prevLesson ? '' : 'none';
   nextLink.style.display = nextLesson ? '' : 'none';
   if (prevLesson) prevLink.href = `craftom-minecraft-lesson-${prevLesson.id}.html`;
   if (nextLesson) nextLink.href = `craftom-minecraft-lesson-${nextLesson.id}.html`;
+  if (nextChallengeLink && nextChallengeFirstLesson) {
+    nextChallengeLink.href = `craftom-minecraft-lesson-${nextChallengeFirstLesson.id}.html`;
+  }
   document.getElementById('lessonNav').innerHTML = challengeLessons.map(item => `<a class="${item.id === lesson.id ? 'active' : ''}" href="craftom-minecraft-lesson-${item.id}.html">${item.id}</a>`).join('');
   document.getElementById('challengeMapTitle').textContent = `אתגר ${lesson.challengeId}: ${lesson.challengeTitle}`;
   document.getElementById('challengeLessonMap').innerHTML = challengeLessons.map(item => `
@@ -397,6 +579,9 @@ player.onChat("test", function () {
       if (!response.ok) throw new Error(data.error || 'לא הצלחנו לשמור את ההגשה.');
       form.classList.add('submitted');
       status.textContent = `כרטיס היציאה הוגש ונשמר. מספר הגשה: ${data.id}`;
+      if (!nextLesson && nextChallengeLink) {
+        nextChallengeLink.hidden = !nextChallengeFirstLesson;
+      }
       window.dispatchEvent(new CustomEvent('hai:classroom-progress', {
         detail: {
           lessonId: String(lesson.id),

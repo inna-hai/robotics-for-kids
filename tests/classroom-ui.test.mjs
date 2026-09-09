@@ -34,6 +34,7 @@ for (const next of [
 
 assert.ok(entry.includes('id="guest-continue"'));
 assert.ok(entry.includes('id="student-login-form"'));
+assert.ok(entry.includes('id="preview-demo-student"'));
 assert.ok(entry.includes('id="student-logout"'));
 assert.ok(entry.includes('id="student-course-links"'));
 assert.ok(entry.includes('התנסות כאורח'));
@@ -68,6 +69,8 @@ assert.ok(!adminClient.includes('localStorage'), 'administrator credentials must
 assert.ok(client.includes('/api/classroom/teacher-login'));
 assert.ok(client.includes('/api/classroom/teacher-register'));
 assert.ok(client.includes('/api/classroom/student-login'));
+assert.ok(client.includes('/api/classroom/preview-demo-student-enabled'));
+assert.ok(client.includes('/api/classroom/preview-demo-student-login'));
 assert.ok(client.includes('/api/classroom/classes'));
 assert.ok(client.includes("/courses`"));
 assert.ok(client.includes("new FormData(form).getAll('courses')"));
@@ -89,6 +92,7 @@ assert.ok(sessionClient.includes('|weather|'), 'Sisi weather lesson must be mapp
 assert.ok(sessionClient.includes('/api/classroom/progress'));
 assert.ok(sessionClient.includes('hai:classroom-progress'));
 assert.ok(server.includes('injectClassroomSession'));
+assert.ok(server.includes('function previewDemoStudentLogin'));
 assert.ok(server.includes("'/classroom-entry.html'"));
 assert.ok(server.includes("'/teacher-classrooms.html'"));
 assert.ok(packageJson.includes('node --check js/classroom-platform.js'));

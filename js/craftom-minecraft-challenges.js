@@ -401,7 +401,7 @@
         goal: 'לתכנן קו משלוחים אישי בעיר, לבדוק מחזור פעולה ולתקן אותו.',
         teacher: ['כל תלמיד בוחר מחסן ותחנה בעיר שלו.', 'דורשים מסלול שחוזר להתחלה, לא רק הלוך.', 'בודקים עם שותף שני סיבובים ברצף.'],
         build: ['מחסן אישי.', 'תחנת יעד אישית.', 'מסלול מחזורי עם סימון התחלה וסיום.'],
-        code: ['פקודות start/stop.', 'מחזור משלוח בתוך לולאה.', 'שינוי מרחק/כיוון/המתנה לפי בדיקה.'],
+        code: ['פקודת cycle אישית.', 'מחזור משלוח בתוך לולאה של 3 חזרות.', 'פנייה אחת במסלול ושינוי מרחק/כיוון לפי בדיקה.'],
         evidence: ['הקו אישי ולא מועתק אחד לאחד.', 'ה-Agent משלים לפחות שני סיבובים.', 'יש עצירה בטוחה.', 'יש תיקון אחד מתועד.'],
         exit: 'איזה חלק במחזור היה צריך תיקון: הלוך, מסירה, חזרה או עצירה?'
       }
@@ -663,6 +663,243 @@
     };
   }
 
+  function repeatIntroAcademy() {
+    return {
+      title: 'אקדמיית ה-Agent - למה צריך לולאה',
+      story: 'מפגש 5 הוא שער הכניסה ללולאות: התלמידים רואים שמשלוח אחד עובד, אבל חזרה ידנית על אותם בלוקים יוצרת קוד ארוך ומבלבל. כאן מתרגלים להחליף שכפול ב-repeat קטן וברור.',
+      command: 'start',
+      world: straightWorld,
+      exercises: [
+        {
+          title: 'תרגיל 1 - מוצאים פעולה שחוזרת',
+          mission: 'צרו פקודת start עם תנועה והנחת חבילה אחת, ואז סמנו שזו פעולה שיכולה לחזור.',
+          hint: 'התחילו מרצף קצר מאוד: teleport, move, place.',
+          check: 'יש התחלה, תנועה והנחת חבילה אחת.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }] },
+          criteria: [
+            { label: 'פקודת start קיימת', type: 'command', command: 'start' },
+            { label: 'יש פעולה שנראית בעולם', type: 'place' }
+          ]
+        },
+        {
+          title: 'תרגיל 2 - לא משכפלים בלוקים',
+          mission: 'הכניסו את פעולת המשלוח לתוך repeat במקום להעתיק אותה פעמיים.',
+          hint: 'חפשו בלוק repeat וגררו לתוכו את הפעולות שחוזרות.',
+          check: 'יש repeat ויש בתוכו פעולת משלוח.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }] },
+          criteria: [
+            { label: 'יש בלוק repeat', type: 'repeat' },
+            { label: 'יש לפחות שתי הנחות חבילה', type: 'placeCount', min: 2 }
+          ]
+        },
+        {
+          title: 'תרגיל 3 - בוחרים כמה פעמים',
+          mission: 'שנו את מספר החזרות ל-3 כדי לראות שהמספר שולט בכמות העבודה.',
+          hint: 'משנים רק את המספר בתוך repeat, לא מוסיפים עוד בלוקים זהים.',
+          check: 'ה-repeat מוגדר ל-3.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [{ type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }] }] },
+          criteria: [
+            { label: 'ה-repeat מוגדר ל-3', type: 'repeatTimes', times: 3 },
+            { label: 'יש לפחות שלוש הנחות חבילה', type: 'placeCount', min: 3 }
+          ]
+        },
+        {
+          title: 'תרגיל 4 - פעולה קצרה וברורה',
+          mission: 'שמרו בתוך הלולאה רק את הפעולות שחוזרות: תנועה והנחת חבילה.',
+          hint: 'teleport שייך להתחלה. הלולאה צריכה להכיל את הפעולה החוזרת.',
+          check: 'יש repeat, תנועה וחבילות חוזרות.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 3, blocks: [{ type: 'move', direction: 'FORWARD', steps: 5 }] }] },
+          criteria: [
+            { label: 'יש בלוק repeat', type: 'repeat' },
+            { label: 'יש לפחות שלוש הנחות חבילה', type: 'placeCount', min: 3 }
+          ]
+        },
+        {
+          title: 'תרגיל 5 - הודעה אחרי הלולאה',
+          mission: 'הוסיפו הודעה שמסבירה שכל המשלוחים החוזרים הסתיימו.',
+          hint: 'ההודעה יכולה להיות אחרי repeat, כסיכום של כל הפעולה.',
+          check: 'יש לולאה והודעת סיום.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 3, blocks: [{ type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }] }] },
+          criteria: [
+            { label: 'ה-repeat מוגדר ל-3', type: 'repeatTimes', times: 3 },
+            { label: 'יש הודעת סיום', type: 'say' }
+          ]
+        },
+        {
+          title: 'אתגר קטן - מקוד ארוך לקוד קצר',
+          mission: 'תקנו שלד ארוך ומבולגן כך שישתמש ב-repeat אחד של 3 חזרות.',
+          hint: 'המטרה היא פחות שכפול ויותר שליטה במספר החזרות.',
+          check: 'יש repeat אחד שמייצג 3 משלוחים חוזרים והודעת סיום.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }, { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }] },
+          criteria: [
+            { label: 'יש בלוק repeat', type: 'repeat' },
+            { label: 'ה-repeat מוגדר ל-3', type: 'repeatTimes', times: 3 },
+            { label: 'יש הודעת סיום', type: 'say' }
+          ]
+        }
+      ]
+    };
+  }
+
+  function returnCycleAcademy() {
+    return {
+      title: 'אקדמיית ה-Agent - הלוך וחזור',
+      story: 'מפגש 6 כבר לא שואל למה צריך לולאה, אלא איך בונים מחזור פעולה יציב: יציאה מהמחסן, מסירה, וחזרה להתחלה. רק אחרי שהמחזור חוזר לנקודת פתיחה אפשר להפוך אותו לקו אוטומטי.',
+      command: 'start',
+      world: straightWorld,
+      exercises: [
+        {
+          title: 'תרגיל 1 - יוצאים מהמחסן',
+          mission: 'צרו פקודת start שמזמנת את ה-Agent ומזיזה אותו 5 קוביות קדימה לתחנה.',
+          hint: 'במפגש הזה מתרגלים מסלול הלוך-חזור. מתחילים רק מההלוך.',
+          check: 'ה-Agent יוצא מהמחסן ומגיע לתחנה.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }] },
+          criteria: [
+            { label: 'פקודת start קיימת', type: 'command', command: 'start' },
+            { label: 'התנועה הראשונה היא 5 קוביות קדימה', type: 'firstMove', direction: 'FORWARD', steps: 5 }
+          ]
+        },
+        {
+          title: 'תרגיל 2 - מסירה בתחנה',
+          mission: 'הוסיפו place בסוף הדרך כדי לסמן שהחבילה נמסרה.',
+          hint: 'קודם מגיעים לתחנה, אחר כך מניחים סימון.',
+          check: 'החבילה מונחת ליד התחנה.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 5 }] },
+          criteria: [
+            { label: 'ה-Agent מגיע לתחנת היעד', type: 'reachedStation' },
+            { label: 'החבילה נמצאת ליד התחנה', type: 'packageNearStation' }
+          ]
+        },
+        {
+          title: 'תרגיל 3 - חוזרים למחסן',
+          mission: 'הוסיפו תנועה BACK של 5 קוביות אחרי המסירה.',
+          hint: 'חזרה להתחלה היא פעולה אחרת מהמשך קדימה.',
+          check: 'בסוף ההרצה ה-Agent חוזר לנקודת ההתחלה.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }] },
+          criteria: [
+            { label: 'התנועה השנייה היא חזרה 5 קוביות', type: 'secondMove', direction: 'BACK', steps: 5 },
+            { label: 'ה-Agent חוזר לנקודת ההתחלה', type: 'returnToStart' }
+          ]
+        },
+        {
+          title: 'תרגיל 4 - מתקנים חזרה קצרה מדי',
+          mission: 'תקנו שלד שבו ה-Agent חוזר רק 3 קוביות, כך שיחזור למחסן.',
+          hint: 'אל תשנו את ההלוך. חפשו את המספר בתנועת BACK.',
+          check: 'ה-Agent מסיים קרוב למחסן.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }, { type: 'move', direction: 'BACK', steps: 3 }] },
+          criteria: [
+            { label: 'תנועת החזרה תוקנה ל-5', type: 'secondMove', direction: 'BACK', steps: 5 },
+            { label: 'ה-Agent חוזר לנקודת ההתחלה', type: 'returnToStart' }
+          ]
+        },
+        {
+          title: 'תרגיל 5 - מחזור מוכן ללולאה',
+          mission: 'עטפו את המחזור המלא ב-repeat של 2 חזרות.',
+          hint: 'רק אחרי שיש הלוך, מסירה וחזור מכניסים את הכול ללולאה.',
+          check: 'יש שני מחזורים שחוזרים לנקודת התחלה.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }, { type: 'move', direction: 'BACK', steps: 5 }] },
+          criteria: [
+            { label: 'ה-repeat מוגדר ל-2', type: 'repeatTimes', times: 2 },
+            { label: 'ה-Agent חוזר לנקודת ההתחלה', type: 'returnToStart' }
+          ]
+        },
+        {
+          title: 'אתגר קטן - מחזור יציב',
+          mission: 'השלימו מחזור לולאה מלא: יציאה, מסירה, חזרה והודעת סיום.',
+          hint: 'בדקו שה-Agent לא נשאר בתחנה אחרי הסיבוב האחרון.',
+          check: 'יש repeat, חבילות, חזרה להתחלה והודעה.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [{ type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }] }] },
+          criteria: [
+            { label: 'ה-repeat מוגדר ל-2', type: 'repeatTimes', times: 2 },
+            { label: 'יש לפחות שתי הנחות חבילה', type: 'placeCount', min: 2 },
+            { label: 'ה-Agent חוזר לנקודת ההתחלה', type: 'returnToStart' },
+            { label: 'יש הודעת סיום', type: 'say' }
+          ]
+        }
+      ]
+    };
+  }
+
+  function personalLoopAcademy() {
+    const academy = loopAcademy(
+      'אקדמיית ה-Agent - קו אישי בעיר',
+      'במפגש 8 התלמיד כבר מכיר מחזור ולולאה. עכשיו הוא משנה את הקו כך שיהיה אישי: מספר סיבובים אחר, פנייה אחת במסלול, וחזרה מסודרת לנקודת ההתחלה.',
+      'cycle'
+    );
+    academy.world = turnWorld;
+    academy.exercises = [
+      {
+        title: 'תרגיל 1 - פקודת cycle אישית',
+        mission: 'צרו פקודת cycle שמזמנת את ה-Agent ומתחילה מסלול עם תנועה ופנייה אחת.',
+        hint: 'בקו אישי לא חייבים להישאר במסלול ישר. התחילו מ-teleport, move ואז turn.',
+        check: 'יש פקודת cycle ויש פנייה במסלול.',
+        starter: { command: 'cycle', blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 4 }] },
+        criteria: [
+          { label: 'פקודת cycle קיימת', type: 'command', command: 'cycle' },
+          { label: 'יש פנייה במסלול', type: 'turn' }
+        ]
+      },
+      {
+        title: 'תרגיל 2 - שני קטעי מסלול',
+        mission: 'הוסיפו תנועה אחרי הפנייה, כך שהקו יהיה בנוי משני קטעים ולא רק הלוך וחזור ישר.',
+        hint: 'חפשו רצף קצר: move, turn, move.',
+        check: 'יש שתי תנועות ופנייה ביניהן.',
+        starter: { command: 'cycle', blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'turn', turn: 'RIGHT_TURN' }] },
+        criteria: [
+          { label: 'יש שתי תנועות במסלול', type: 'moveCount', min: 2 },
+          { label: 'הפנייה לפני התנועה השנייה', type: 'turnBeforeSecondMove' }
+        ]
+      },
+      {
+        title: 'תרגיל 3 - לולאה של שלושה סיבובים',
+        mission: 'עטפו את הקו האישי ב-repeat של 3 חזרות.',
+        hint: 'השינוי כאן הוא מספר החזרות והמסלול האישי, לא רק אותו מחזור משיעור קודם.',
+        check: 'ה-repeat מוגדר ל-3 ויש פנייה במסלול.',
+        starter: { command: 'cycle', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [{ type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 3 }] }] },
+        criteria: [
+          { label: 'ה-repeat מוגדר ל-3', type: 'repeatTimes', times: 3 },
+          { label: 'יש פנייה במסלול האישי', type: 'turn' }
+        ]
+      },
+      {
+        title: 'תרגיל 4 - סימון בכל סיבוב',
+        mission: 'הוסיפו place בתוך הלולאה כדי שכל סיבוב יסמן תחנה אישית.',
+        hint: 'ה-place צריך להיות בתוך repeat, לא רק בסוף.',
+        check: 'יש לפחות שלושה סימונים.',
+        starter: { command: 'cycle', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 3, blocks: [{ type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 3 }] }] },
+        criteria: [
+          { label: 'ה-repeat מוגדר ל-3', type: 'repeatTimes', times: 3 },
+          { label: 'יש לפחות שלוש הנחות חבילה', type: 'placeCount', min: 3 }
+        ]
+      },
+      {
+        title: 'תרגיל 5 - מסבירים קו אישי',
+        mission: 'הוסיפו הודעת player say שמסבירה שזה הקו האישי שלכם.',
+        hint: 'ההודעה צריכה לעזור למי שבודק להבין מה הקו עושה.',
+        check: 'יש לולאה, פנייה והודעה.',
+        starter: { command: 'cycle', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 3, blocks: [{ type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'place', direction: 'DOWN' }] }] },
+        criteria: [
+          { label: 'יש פנייה במסלול', type: 'turn' },
+          { label: 'יש הודעת הסבר', type: 'say' }
+        ]
+      },
+      {
+        title: 'אתגר קטן - שינוי אישי אחד',
+        mission: 'תקנו מסלול אישי שבו חסרה פנייה או שמספר החזרות לא מתאים.',
+        hint: 'בחרו תיקון אחד: פנייה, מספר חזרות או מקום ההנחה.',
+        check: 'יש cycle, repeat של 3, פנייה, סימון והודעה.',
+        starter: { command: 'cycle', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [{ type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'place', direction: 'DOWN' }] }] },
+        criteria: [
+          { label: 'פקודת cycle קיימת', type: 'command', command: 'cycle' },
+          { label: 'ה-repeat מוגדר ל-3', type: 'repeatTimes', times: 3 },
+          { label: 'יש פנייה במסלול', type: 'turn' },
+          { label: 'יש הודעת הסבר', type: 'say' }
+        ]
+      }
+    ];
+    return academy;
+  }
+
   function conditionAcademy(title, story, command = 'status') {
     return {
       title,
@@ -672,12 +909,12 @@
       exercises: [
         {
           title: 'תרגיל 1 - מצב בעיר',
-          mission: 'צרו פקודת status והוסיפו בלוק if routeOpen כדי שהקוד יבדוק מצב.',
+          mission: `צרו פקודת ${command} והוסיפו בלוק if routeOpen כדי שהקוד יבדוק מצב.`,
           hint: 'חפשו ב-Logic את בלוק התנאי. עוד לא צריך מסלול מלא.',
-          check: 'יש פקודת status ויש תנאי.',
+          check: `יש פקודת ${command} ויש תנאי.`,
           starter: { command, blocks: [{ type: 'teleport' }] },
           criteria: [
-            { label: 'פקודת status קיימת', type: 'command', command },
+            { label: `פקודת ${command} קיימת`, type: 'command', command },
             { label: 'יש בלוק תנאי', type: 'condition' }
           ]
         },
@@ -740,6 +977,88 @@
         }
       ]
     };
+  }
+
+  function signalConditionAcademy() {
+    const academy = conditionAcademy('אקדמיית ה-Agent - מצב בעיר', 'מפגש 9 מתמקד בעצם הסימון: לפני שה-Agent מחליט, העיר צריכה להראות מצב ברור כמו פתוח/חסום. לכן התרגול כאן קצר ומדגיש דיווח מצב, לא משלוח מלא.', 'status');
+    academy.exercises[1].title = 'תרגיל 2 - מדווחים כשהדרך פתוחה';
+    academy.exercises[1].mission = 'בתוך then הוסיפו הודעה שמדווחת שהדרך פתוחה, בלי להפעיל עדיין משלוח מלא.';
+    academy.exercises[1].starter = { command: 'status', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [], else: [] }] };
+    academy.exercises[1].criteria = [
+      { label: 'התנאי בודק דרך פתוחה', type: 'conditionState', state: 'OPEN' },
+      { label: 'יש הודעת מצב', type: 'say' }
+    ];
+    academy.exercises[4].title = 'תרגיל 5 - שני מצבים בשלט';
+    academy.exercises[4].mission = 'הוסיפו else כך שהקוד יוכל לדווח גם כשפתוח וגם כשחסום.';
+    academy.exercises[4].criteria = [
+      { label: 'יש בלוק תנאי', type: 'condition' },
+      { label: 'יש ענף else', type: 'elseBranch' },
+      { label: 'יש הודעת מצב', type: 'say' }
+    ];
+    return academy;
+  }
+
+  function openGateAcademy() {
+    const academy = conditionAcademy('אקדמיית ה-Agent - אם הדרך פתוחה', 'מפגש 10 עובר מדיווח למעבר בשער: אם הדרך פתוחה ה-Agent נוסע ומניח סימון, ואם לא הוא עוצר ומודיע. זה תרגול של החלטה לפני תנועה.', 'start');
+    academy.exercises[0].title = 'תרגיל 1 - תנאי לפני נסיעה';
+    academy.exercises[0].mission = 'צרו פקודת start עם if routeOpen לפני כל תנועה.';
+    academy.exercises[1].title = 'תרגיל 2 - עוברים רק כשפתוח';
+    academy.exercises[1].mission = 'בתוך then הוסיפו תנועה של 5 צעדים קדימה, ורק שם.';
+    academy.exercises[2].title = 'תרגיל 3 - ממתינים כשהשער סגור';
+    academy.exercises[2].mission = 'ב-else הוסיפו הודעה קצרה: ממתינים לפתיחת הדרך.';
+    academy.exercises[3].title = 'תרגיל 4 - לא שוברים שער סגור';
+    academy.exercises[4].title = 'תרגיל 5 - סימון מעבר מוצלח';
+    academy.exercises[4].mission = 'במצב OPEN הוסיפו גם place בסוף המעבר כדי לסמן שהשער עבר בהצלחה.';
+    academy.exercises[5].title = 'אתגר קטן - שער פתוח וסגור';
+    return academy;
+  }
+
+  function blockedRouteAcademy() {
+    const academy = conditionAcademy('אקדמיית ה-Agent - מחכים או עוקפים', 'מפגש 11 מתמקד בצד השני של התנאי: מה עושים כשהדרך חסומה. כאן התלמידים לא רק כותבים else, אלא מוסיפים תגובת עצירה/דיווח ואפשרות פנייה למסלול חלופי.', 'test');
+    academy.exercises[0].title = 'תרגיל 1 - בדיקת חסימה';
+    academy.exercises[0].mission = 'צרו פקודת test שבודקת מצב חסום בעזרת if routeOpen.';
+    academy.exercises[0].criteria = [
+      { label: 'פקודת test קיימת', type: 'command', command: 'test' },
+      { label: 'יש בלוק תנאי', type: 'condition' }
+    ];
+    academy.exercises[1].title = 'תרגיל 2 - לא נוסעים כשחסום';
+    academy.exercises[1].mission = 'הגדירו את התנאי על BLOCKED והוסיפו הודעה במקום תנועה קדימה.';
+    academy.exercises[1].starter = { command: 'test', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'BLOCKED', then: [{ type: 'move', direction: 'FORWARD', steps: 5 }], else: [] }] };
+    academy.exercises[1].criteria = [
+      { label: 'התנאי בודק מצב חסום', type: 'conditionState', state: 'BLOCKED' },
+      { label: 'יש הודעה על חסימה', type: 'say' }
+    ];
+    academy.exercises[2].title = 'תרגיל 3 - הודעת חסימה ברורה';
+    academy.exercises[2].mission = 'ב-else כתבו הודעה שמסבירה למה ה-Agent לא ממשיך.';
+    academy.exercises[3].title = 'תרגיל 4 - מתקנים נסיעה לתוך חסימה';
+    academy.exercises[4].title = 'תרגיל 5 - מסלול חלופי קטן';
+    academy.exercises[4].mission = 'הוסיפו פנייה אחת כדי לסמן בחירה במסלול חלופי בזמן חסימה.';
+    academy.exercises[4].criteria = [
+      { label: 'התנאי בודק מצב חסום', type: 'conditionState', state: 'BLOCKED' },
+      { label: 'יש פנייה למסלול חלופי', type: 'turn' },
+      { label: 'יש הודעת דיווח', type: 'say' }
+    ];
+    academy.exercises[5].title = 'אתגר קטן - חסימה ותגובה';
+    return academy;
+  }
+
+  function personalRuleAcademy() {
+    const academy = conditionAcademy('אקדמיית ה-Agent - חוק חכם אישי', 'מפגש 12 מסכם תנאים דרך חוק אישי: התלמיד בוחר פעולה אחת למצב פתוח ותגובה אחרת למצב חסום. הדגש הוא בדיקת שני מצבים ושינוי קטן לפי החוק שלו.', 'rule');
+    academy.exercises[0].title = 'תרגיל 1 - פקודת rule';
+    academy.exercises[0].mission = 'צרו פקודת rule עם תנאי if routeOpen.';
+    academy.exercises[0].criteria = [
+      { label: 'פקודת rule קיימת', type: 'command', command: 'rule' },
+      { label: 'יש בלוק תנאי', type: 'condition' }
+    ];
+    academy.exercises[1].title = 'תרגיל 2 - פעולה כשהחוק מתקיים';
+    academy.exercises[2].title = 'תרגיל 3 - תגובה אישית אחרת';
+    academy.exercises[2].mission = 'ב-else כתבו הודעה אישית שמסבירה מה עושים כשהחוק לא מתקיים.';
+    academy.exercises[3].title = 'תרגיל 4 - בדיקת שני מצבים';
+    academy.exercises[4].title = 'תרגיל 5 - פעולה וסימון';
+    academy.exercises[4].mission = 'במצב פתוח הוסיפו גם נסיעה וגם place כדי שהחוק ישאיר סימן בעולם.';
+    academy.exercises[5].title = 'אתגר קטן - החוק שלי';
+    academy.exercises[5].mission = 'השלימו חוק אישי מלא: אם פתוח נוסעים ומסמנים, אחרת כותבים הודעה אחרת.';
+    return academy;
   }
 
   function projectAcademy(title, story, command = 'demo') {
@@ -820,19 +1139,98 @@
     };
   }
 
+  function cityMapAcademy() {
+    const academy = projectAcademy('אקדמיית ה-Agent - ממפים את העיר', 'מפגש 13 הוא תכנון לפני בנייה: התלמיד מסמן שתי מערכות בעיר ומכין פקודת plan שמסבירה מה ייבדק, בלי להפוך את זה עדיין לדמו מלא.', 'plan');
+    academy.exercises[0].title = 'תרגיל 1 - פקודת plan';
+    academy.exercises[0].mission = 'צרו פקודת plan שמתחילה בהודעה על מערכת אחת בעיר.';
+    academy.exercises[0].criteria = [
+      { label: 'פקודת plan קיימת', type: 'command', command: 'plan' },
+      { label: 'יש הודעת תכנון', type: 'say' }
+    ];
+    academy.exercises[1].title = 'תרגיל 2 - מסמנים מערכת ראשונה';
+    academy.exercises[1].mission = 'הוסיפו תנועה קצרה ו-place כדי לסמן איפה מערכת אחת נמצאת.';
+    academy.exercises[2].title = 'תרגיל 3 - מוסיפים רעיון לשדרוג';
+    academy.exercises[2].mission = 'הוסיפו repeat או if רק כדי לסמן איזה רעיון תכנותי מתאים למערכת.';
+    academy.exercises[5].title = 'אתגר קטן - תוכנית לשתי מערכות';
+    academy.exercises[5].mission = 'צרו תכנון קצר עם הודעה, סימון מערכת, ורעיון מתקדם אחד לשדרוג.';
+    return academy;
+  }
+
+  function newAutomationAcademy() {
+    const academy = projectAcademy('אקדמיית ה-Agent - אוטומציה חדשה', 'מפגש 14 כבר בונה אוטומציה אחת חדשה: פעולה שנראית בעולם, פקודת start, וסימון ברור שהתלמיד יכול להעביר למיינקראפט.', 'start');
+    academy.exercises[0].title = 'תרגיל 1 - פקודת start למערכת חדשה';
+    academy.exercises[0].mission = 'צרו פקודת start שמזיזה את ה-Agent 4 צעדים למערכת החדשה.';
+    academy.exercises[0].criteria = [
+      { label: 'פקודת start קיימת', type: 'command', command: 'start' },
+      { label: 'התנועה הראשונה היא 4 קוביות', type: 'firstMove', direction: 'FORWARD', steps: 4 }
+    ];
+    academy.exercises[1].title = 'תרגיל 2 - סימון קדימה';
+    academy.exercises[1].mission = 'הוסיפו place FORWARD כדי שהאוטומציה תשאיר סימון מול ה-Agent.';
+    academy.exercises[1].criteria = [
+      { label: 'יש הנחה קדימה', type: 'placeDirection', direction: 'FORWARD' }
+    ];
+    academy.exercises[2].title = 'תרגיל 3 - שדרוג בלולאה או תנאי';
+    academy.exercises[3].title = 'תרגיל 4 - הודעת מערכת חדשה';
+    academy.exercises[4].title = 'תרגיל 5 - מתקנים מרחק למערכת';
+    academy.exercises[4].mission = 'תקנו מספר שגורם ל-Agent לעבור את המערכת החדשה במקום לעצור לידה.';
+    academy.exercises[5].title = 'אתגר קטן - אוטומציה חדשה עובדת';
+    return academy;
+  }
+
+  function debugAutomationAcademy() {
+    const academy = projectAcademy('אקדמיית ה-Agent - בדיקה ותיקון', 'מפגש 15 מתמקד בבדיקה: מריצים test, מוצאים מספר או סדר שגוי, ומתקנים רק דבר אחד. לכן התרגילים מתחילים משגיאה קטנה ולא מבנייה נקייה.', 'test');
+    academy.exercises[0].title = 'תרגיל 1 - פקודת test';
+    academy.exercises[0].mission = 'צרו פקודת test שמריצה בדיקה קצרה ומודיעה מה נבדק.';
+    academy.exercises[0].criteria = [
+      { label: 'פקודת test קיימת', type: 'command', command: 'test' },
+      { label: 'יש הודעת בדיקה', type: 'say' }
+    ];
+    academy.exercises[1].title = 'תרגיל 2 - מזהים מספר שגוי';
+    academy.exercises[1].mission = 'תקנו תנועה של 3 צעדים ל-5 כדי שה-Agent יגיע לתחנה.';
+    academy.exercises[1].starter = { command: 'test', blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'place', direction: 'DOWN' }] };
+    academy.exercises[1].criteria = [
+      { label: 'התנועה הראשונה תוקנה ל-5', type: 'firstMove', direction: 'FORWARD', steps: 5 },
+      { label: 'החבילה נמצאת ליד התחנה', type: 'packageNearStation' }
+    ];
+    academy.exercises[2].title = 'תרגיל 3 - בדיקת רעיון מתקדם';
+    academy.exercises[3].title = 'תרגיל 4 - הודעת תוצאה';
+    academy.exercises[4].title = 'תרגיל 5 - מתקנים רק דבר אחד';
+    academy.exercises[4].mission = 'השאירו את רוב הרצף כמו שהוא ותקנו רק מספר אחד כדי שהבדיקה תעבור.';
+    academy.exercises[5].title = 'אתגר קטן - לפני ואחרי תיקון';
+    return academy;
+  }
+
+  function demoCityAcademy() {
+    const academy = projectAcademy('אקדמיית ה-Agent - דמו עיר חכמה', 'מפגש 16 הוא הצגה: פקודת demo צריכה להראות פעולה, רעיון תכנותי אחד והודעת סיום. זה לא עוד test, אלא רצף קצר שמסביר למבקר מה עובד בעיר.', 'demo');
+    academy.exercises[0].title = 'תרגיל 1 - פקודת demo';
+    academy.exercises[0].mission = 'צרו פקודת demo עם הודעת פתיחה קצרה.';
+    academy.exercises[0].criteria = [
+      { label: 'פקודת demo קיימת', type: 'command', command: 'demo' },
+      { label: 'יש הודעת פתיחה', type: 'say' }
+    ];
+    academy.exercises[1].title = 'תרגיל 2 - פעולה שרואים בדמו';
+    academy.exercises[2].title = 'תרגיל 3 - רעיון תכנותי בדמו';
+    academy.exercises[2].mission = 'הוסיפו repeat או if כדי שהדמו יראה רעיון תכנותי אחד שלמדתם.';
+    academy.exercises[3].title = 'תרגיל 4 - הודעת סיום לדמו';
+    academy.exercises[3].mission = 'הוסיפו player say בסוף שמסביר מה הצופה ראה.';
+    academy.exercises[5].title = 'אתגר קטן - דמו עם פתיחה וסיום';
+    academy.exercises[5].mission = 'השלימו דמו קצר עם הודעת פתיחה, פעולה בעולם, רעיון מתקדם והודעת סיום.';
+    return academy;
+  }
+
   setAcademy(1, 3, personalCourierAcademy());
-  setAcademy(2, 0, loopAcademy('אקדמיית ה-Agent - למה צריך לולאה', 'פותחים את אתגר 2 בהבנה מוצרית: משלוח אחד עובד, אבל עיר צריכה פעולה שחוזרת. כאן מתרגלים לזהות פעולה חוזרת ולהכניס אותה ל-repeat במקום לשכפל בלוקים.', 'start'));
-  setAcademy(2, 1, loopAcademy('אקדמיית ה-Agent - הלוך וחזור', 'לפני שמריצים קו אוטומטי, בונים מחזור אחד יציב: יציאה מהמחסן, מסירה בתחנה וחזרה להתחלה. רק מחזור שחוזר לנקודת פתיחה יכול להפוך ללולאה טובה.', 'start'));
+  setAcademy(2, 0, repeatIntroAcademy());
+  setAcademy(2, 1, returnCycleAcademy());
   setAcademy(2, 2, loopAcademy('אקדמיית ה-Agent - קו אוטומטי', 'עכשיו מחברים את המחזור ללולאה: repeat מייצג עבודה חוזרת, הודעה מסבירה מה קרה, והבדיקה מוודאת שה-Agent לא נתקע רחוק מהמחסן.', 'start'));
-  setAcademy(2, 3, loopAcademy('אקדמיית ה-Agent - קו אישי בעיר', 'כל תלמיד מתרגל קו אישי קטן לפני היישום במיינקראפט: כמה סיבובים, חבילות, חזרה להתחלה והסבר קצר. המטרה היא תכנון אישי עם בדיקה, לא העתקה.', 'start'));
-  setAcademy(3, 0, conditionAcademy('אקדמיית ה-Agent - מצב בעיר', 'אתגר 3 מתחיל במצב שהעיר מציגה: פתוח, חסום, מלא או פנוי. באקדמיה מתרגלים איך קוד בודק מצב לפני שהוא מחליט מה לעשות.', 'status'));
-  setAcademy(3, 1, conditionAcademy('אקדמיית ה-Agent - אם הדרך פתוחה', 'עכשיו ה-Agent לא נוסע תמיד. הוא בודק תנאי: אם הדרך פתוחה, ממשיכים; אם לא, לא שוברים את המסלול.', 'status'));
-  setAcademy(3, 2, conditionAcademy('אקדמיית ה-Agent - מחכים או עוקפים', 'מוסיפים התנהגות ל-else: בזמן חסימה ה-Agent יכול לדווח, לחכות או לבחור מסלול אחר. מתחילים מדיווח פשוט וברור.', 'status'));
-  setAcademy(3, 3, conditionAcademy('אקדמיית ה-Agent - חוק חכם אישי', 'בסוף אתגר התנאים התלמיד בונה חוק אישי קצר: אם מצב אחד מתקיים אז עושים פעולה, אחרת מגיבים אחרת. הדגש הוא בדיקת שני מצבים והסבר במילים.', 'status'));
-  setAcademy(4, 0, projectAcademy('אקדמיית ה-Agent - ממפים את העיר', 'באתגר 4 לא מתחילים מאפס. מסתכלים על העיר שכבר נבנתה, בוחרים מערכת אחת לבדיקה, ומכינים פקודת פרויקט קצרה לפני היישום במיינקראפט.', 'test'));
-  setAcademy(4, 1, projectAcademy('אקדמיית ה-Agent - אוטומציה חדשה', 'מתרגלים הוספת אוטומציה אחת שנראית בעולם: פעולה ברורה, סימון או מסירה, ואז בדיקה קצרה שהרעיון באמת עובד.', 'start'));
-  setAcademy(4, 2, projectAcademy('אקדמיית ה-Agent - בדיקה ותיקון', 'כאן מתרגלים test: מריצים מערכת, מזהים מספר או סדר שגוי, ומתקנים דבר אחד בלי לפרק את כל העיר.', 'test'));
-  setAcademy(4, 3, projectAcademy('אקדמיית ה-Agent - דמו עיר חכמה', 'מסיימים בדמו קצר: פעולה שנראית בעולם, רעיון תכנותי מתקדם אחד והודעת הסבר. זה אימון להצגה הסופית במיינקראפט.', 'demo'));
+  setAcademy(2, 3, personalLoopAcademy());
+  setAcademy(3, 0, signalConditionAcademy());
+  setAcademy(3, 1, openGateAcademy());
+  setAcademy(3, 2, blockedRouteAcademy());
+  setAcademy(3, 3, personalRuleAcademy());
+  setAcademy(4, 0, cityMapAcademy());
+  setAcademy(4, 1, newAutomationAcademy());
+  setAcademy(4, 2, debugAutomationAcademy());
+  setAcademy(4, 3, demoCityAcademy());
 
   challenges.forEach(challenge => {
     challenge.meetings = challenge.meetings.map((meeting, index) => [
