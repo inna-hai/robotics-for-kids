@@ -54,9 +54,21 @@
       </div>
       <p class="submit-status" id="minecraftEntryMessage" role="status" aria-live="polite"></p>
     `;
-    const anchor = document.getElementById('agentAcademyCta') || document.getElementById('makeCodeWorkspace') || document.querySelector('.detail-grid');
+    const anchor = document.querySelector('.hero') || document.getElementById('agentAcademyCta') || document.getElementById('makeCodeWorkspace') || document.querySelector('.detail-grid');
     anchor?.insertAdjacentElement('afterend', card);
     return card;
+  }
+
+  function ensureMinecraftTopLink() {
+    if (document.getElementById('minecraftEntryTopLink')) return;
+    const actions = document.querySelector('.hero .actions');
+    if (!actions) return;
+    const link = document.createElement('a');
+    link.className = 'btn minecraft-entry-top-link';
+    link.id = 'minecraftEntryTopLink';
+    link.href = '#minecraftEntryCard';
+    link.textContent = 'כניסה ל-Minecraft';
+    actions.insertBefore(link, actions.firstChild);
   }
 
   async function initMinecraftEntry() {
@@ -69,6 +81,7 @@
     if (!me || me.role !== 'student') return;
 
     const card = ensureMinecraftEntryCard();
+    ensureMinecraftTopLink();
     const status = card.querySelector('#minecraftEntryStatus');
     const details = card.querySelector('#minecraftEntryDetails');
     const message = card.querySelector('#minecraftEntryMessage');
