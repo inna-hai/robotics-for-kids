@@ -3423,6 +3423,7 @@ function serveStatic(req, res) {
   const url = requestUrl(req);
   let pathname = decodeURIComponent(url.pathname);
   if (pathname === '/') pathname = '/index.html';
+  if (pathname === '/craftom-school/preview/') pathname = '/craftom-school/preview/index.html';
   if (pathname === '/thankyou') pathname = '/thankyou.html';
   const filePath = path.normalize(path.join(ROOT, pathname));
   if (!filePath.startsWith(ROOT + path.sep)) return send(res, 403, 'Forbidden', 'text/plain; charset=utf-8');

@@ -173,6 +173,7 @@ assert.ok(!read('js/craftom-minecraft-code-builder.js').includes('message0: \'Ag
 assert.ok(!read('js/craftom-minecraft-code-builder.js').includes('category name="לולאות ותנאים"'), 'old Hebrew logic category label is removed');
 assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('/api/craftom/exit-ticket'), 'lesson renderer posts exit tickets to the server');
 assert.ok(read('server.js').includes('handleCraftomExitTicket'), 'server can save Craftom exit ticket submissions');
+assert.ok(read('server.js').includes("pathname === '/craftom-school/preview/'"), 'server resolves Craftom preview directory URL to the home page');
 assert.ok(read('craftom-minecraft-challenge.html').includes('program.exitUpload'), 'challenge page shows the shared photo upload requirement');
 assert.ok(read('craftom-minecraft-students.html').includes('העלאת תמונה ל-Craftom'), 'student worksheet includes a Craftom photo upload field');
 assert.ok(read('craftom-minecraft-slides.html').includes('program.exitUpload'), 'slides remind instructors that exit tickets include a photo upload');
