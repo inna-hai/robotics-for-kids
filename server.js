@@ -3255,6 +3255,26 @@ function lockedPage(pathname, user, options = {}) {
   const classroomRestricted = options.classroomRestricted === true;
   const teacherRestricted = classroomRestricted && options.teacher === true;
   const lessonZeroRequired = options.lessonZeroRequired === true;
+  const craftomLockedPage = /(?:craftom|kugel)/i.test(String(pathname || ''));
+  const currentCraftomLesson = (() => {
+    const match = String(pathname || '').match(/craftom-minecraft-lesson-(\d+)\.html/i);
+    const lessonId = match ? Number(match[1]) : 1;
+    return Number.isInteger(lessonId) && lessonId >= 1 && lessonId <= 16 ? lessonId : 1;
+  })();
+  const craftomHeader = craftomLockedPage ? `
+  <header class="course-header" aria-label="ניווט אקדמיית ה-Agent">
+    <div class="course-header-inner">
+      <a class="course-brand" href="/craftom-school/preview/index.html">אקדמיית ה-Agent</a>
+      <nav class="course-nav" aria-label="מעבר מהיר">
+        <a href="/craftom-school/preview/index.html">דף הבית</a>
+        <a class="primary" href="/craftom-minecraft-lesson-${currentCraftomLesson}.html">השיעור הנוכחי</a>
+        <a href="/craftom-minecraft-challenge.html?challenge=1">אתגר 1</a>
+        <a href="/craftom-minecraft-challenge.html?challenge=2">אתגר 2</a>
+        <a href="/craftom-minecraft-challenge.html?challenge=3">אתגר 3</a>
+        <a href="/craftom-minecraft-challenge.html?challenge=4">אתגר 4</a>
+      </nav>
+    </div>
+  </header>` : '';
   const title = teacherRestricted
     ? 'הלומדה לא הוקצתה למורה'
     : lessonZeroRequired
@@ -3283,10 +3303,12 @@ function lockedPage(pathname, user, options = {}) {
   <title>${title} | hai.tech</title>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <style>
-    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:Rubik,Arial,sans-serif;direction:rtl;color:#102033;background:radial-gradient(circle at 15% 10%,#dbeafe,transparent 28%),radial-gradient(circle at 85% 8%,#fef3c7,transparent 28%),linear-gradient(135deg,#f8fafc,#eef2ff)}.card{width:min(620px,calc(100% - 28px));background:rgba(255,255,255,.96);border:1px solid #e6edf7;border-radius:34px;padding:34px;box-shadow:0 28px 90px rgba(15,23,42,.16);text-align:center}.lock{width:96px;height:96px;margin:0 auto 18px;border-radius:32px;display:grid;place-items:center;font-size:3rem;background:linear-gradient(135deg,#2563eb,#7c3aed);box-shadow:0 18px 44px rgba(37,99,235,.28)}h1{font-size:clamp(2rem,5vw,3.2rem);line-height:1.05;margin:0 0 12px;letter-spacing:-.04em}p{margin:0;color:#526070;font-size:1.12rem}.locked-label{margin:18px auto 0;padding:10px 14px;border-radius:999px;background:#f1f5f9;color:#475569;display:inline-block;font-weight:900}.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:26px}.btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:14px 22px;text-decoration:none;font-weight:900}.primary{background:#0f172a;color:#fff}.purchase{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;box-shadow:0 16px 36px rgba(22,163,74,.24)}.alt{background:#fff;color:#0f172a;border:1px solid #dbe3ef}.note{margin-top:18px;border:1px solid #bbf7d0;background:#f0fdf4;color:#166534;border-radius:18px;padding:12px 14px;font-weight:800}@media(max-width:560px){.card{padding:26px 20px}.actions .btn{width:100%}}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:Rubik,Arial,sans-serif;direction:rtl;color:#102033;background:radial-gradient(circle at 15% 10%,#dbeafe,transparent 28%),radial-gradient(circle at 85% 8%,#fef3c7,transparent 28%),linear-gradient(135deg,#f8fafc,#eef2ff)}body.has-course-header{display:block}.locked-wrap{min-height:100vh;display:grid;place-items:center;padding:28px 0}body.has-course-header .locked-wrap{min-height:calc(100vh - 58px)}.course-header{position:sticky;top:0;z-index:20;background:rgba(247,251,255,.94);border-bottom:1px solid #d7e7f5;backdrop-filter:blur(12px)}.course-header-inner{width:min(1180px,calc(100% - 28px));margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0}.course-brand{color:#0b2342;font-weight:900;text-decoration:none;white-space:nowrap}.course-nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.course-nav a{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:8px 12px;border:1px solid #bdd8f4;border-radius:999px;background:#fff;color:#075985;font-weight:900;text-decoration:none}.course-nav a.primary{color:#fff;background:#0b75b7;border-color:#0b75b7}.card{width:min(620px,calc(100% - 28px));background:rgba(255,255,255,.96);border:1px solid #e6edf7;border-radius:34px;padding:34px;box-shadow:0 28px 90px rgba(15,23,42,.16);text-align:center}.lock{width:96px;height:96px;margin:0 auto 18px;border-radius:32px;display:grid;place-items:center;font-size:3rem;background:linear-gradient(135deg,#2563eb,#7c3aed);box-shadow:0 18px 44px rgba(37,99,235,.28)}h1{font-size:clamp(2rem,5vw,3.2rem);line-height:1.05;margin:0 0 12px;letter-spacing:-.04em}p{margin:0;color:#526070;font-size:1.12rem}.locked-label{margin:18px auto 0;padding:10px 14px;border-radius:999px;background:#f1f5f9;color:#475569;display:inline-block;font-weight:900}.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:26px}.btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:14px 22px;text-decoration:none;font-weight:900}.primary{background:#0f172a;color:#fff}.purchase{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;box-shadow:0 16px 36px rgba(22,163,74,.24)}.alt{background:#fff;color:#0f172a;border:1px solid #dbe3ef}.note{margin-top:18px;border:1px solid #bbf7d0;background:#f0fdf4;color:#166534;border-radius:18px;padding:12px 14px;font-weight:800}@media(max-width:760px){.course-header-inner{align-items:flex-start;flex-direction:column}.course-nav{justify-content:flex-start}}@media(max-width:560px){.card{padding:26px 20px}.actions .btn{width:100%}}
   </style>
 </head>
-<body>
+<body${craftomLockedPage ? ' class="has-course-header"' : ''}>
+  ${craftomHeader}
+  <div class="locked-wrap">
   <main class="card">
     <div class="lock">🔒</div>
     <h1>${title}</h1>
@@ -3299,6 +3321,7 @@ function lockedPage(pathname, user, options = {}) {
     </div>
     <div class="note">${teacherRestricted ? 'רק מנהלת המערכת יכולה לשנות את רשימת הלומדות של המורה.' : (lessonZeroRequired ? 'המורה יכולה לעקוב אחרי ההתקדמות של שיעור 0 ממסך ניהול הכיתה.' : (classroomRestricted ? 'רק המורה של הכיתה יכול/ה לשנות את רשימת הלומדות.' : (trialOnly ? 'ההרשמה פותחת 3 שיעורי חשיבה ותכנות בחינם עם סיסי ושומרת את ההתקדמות לילד/ה.' : 'כדי לפתוח את כל הלומדות צריך מנוי פעיל לילד/ה הספציפי/ת.')))}</div>
   </main>
+  </div>
 </body>
 </html>`;
 }

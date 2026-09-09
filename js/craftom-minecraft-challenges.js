@@ -663,6 +663,163 @@
     };
   }
 
+  function repeatIntroAcademy() {
+    return {
+      title: 'אקדמיית ה-Agent - למה צריך לולאה',
+      story: 'מפגש 5 הוא שער הכניסה ללולאות: התלמידים רואים שמשלוח אחד עובד, אבל חזרה ידנית על אותם בלוקים יוצרת קוד ארוך ומבלבל. כאן מתרגלים להחליף שכפול ב-repeat קטן וברור.',
+      command: 'start',
+      world: straightWorld,
+      exercises: [
+        {
+          title: 'תרגיל 1 - מוצאים פעולה שחוזרת',
+          mission: 'צרו פקודת start עם תנועה והנחת חבילה אחת, ואז סמנו שזו פעולה שיכולה לחזור.',
+          hint: 'התחילו מרצף קצר מאוד: teleport, move, place.',
+          check: 'יש התחלה, תנועה והנחת חבילה אחת.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }] },
+          criteria: [
+            { label: 'פקודת start קיימת', type: 'command', command: 'start' },
+            { label: 'יש פעולה שנראית בעולם', type: 'place' }
+          ]
+        },
+        {
+          title: 'תרגיל 2 - לא משכפלים בלוקים',
+          mission: 'הכניסו את פעולת המשלוח לתוך repeat במקום להעתיק אותה פעמיים.',
+          hint: 'חפשו בלוק repeat וגררו לתוכו את הפעולות שחוזרות.',
+          check: 'יש repeat ויש בתוכו פעולת משלוח.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }] },
+          criteria: [
+            { label: 'יש בלוק repeat', type: 'repeat' },
+            { label: 'יש לפחות שתי הנחות חבילה', type: 'placeCount', min: 2 }
+          ]
+        },
+        {
+          title: 'תרגיל 3 - בוחרים כמה פעמים',
+          mission: 'שנו את מספר החזרות ל-3 כדי לראות שהמספר שולט בכמות העבודה.',
+          hint: 'משנים רק את המספר בתוך repeat, לא מוסיפים עוד בלוקים זהים.',
+          check: 'ה-repeat מוגדר ל-3.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [{ type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }] }] },
+          criteria: [
+            { label: 'ה-repeat מוגדר ל-3', type: 'repeatTimes', times: 3 },
+            { label: 'יש לפחות שלוש הנחות חבילה', type: 'placeCount', min: 3 }
+          ]
+        },
+        {
+          title: 'תרגיל 4 - פעולה קצרה וברורה',
+          mission: 'שמרו בתוך הלולאה רק את הפעולות שחוזרות: תנועה והנחת חבילה.',
+          hint: 'teleport שייך להתחלה. הלולאה צריכה להכיל את הפעולה החוזרת.',
+          check: 'יש repeat, תנועה וחבילות חוזרות.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 3, blocks: [{ type: 'move', direction: 'FORWARD', steps: 5 }] }] },
+          criteria: [
+            { label: 'יש בלוק repeat', type: 'repeat' },
+            { label: 'יש לפחות שלוש הנחות חבילה', type: 'placeCount', min: 3 }
+          ]
+        },
+        {
+          title: 'תרגיל 5 - הודעה אחרי הלולאה',
+          mission: 'הוסיפו הודעה שמסבירה שכל המשלוחים החוזרים הסתיימו.',
+          hint: 'ההודעה יכולה להיות אחרי repeat, כסיכום של כל הפעולה.',
+          check: 'יש לולאה והודעת סיום.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 3, blocks: [{ type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }] }] },
+          criteria: [
+            { label: 'ה-repeat מוגדר ל-3', type: 'repeatTimes', times: 3 },
+            { label: 'יש הודעת סיום', type: 'say' }
+          ]
+        },
+        {
+          title: 'אתגר קטן - מקוד ארוך לקוד קצר',
+          mission: 'תקנו שלד ארוך ומבולגן כך שישתמש ב-repeat אחד של 3 חזרות.',
+          hint: 'המטרה היא פחות שכפול ויותר שליטה במספר החזרות.',
+          check: 'יש repeat אחד שמייצג 3 משלוחים חוזרים והודעת סיום.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }, { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }] },
+          criteria: [
+            { label: 'יש בלוק repeat', type: 'repeat' },
+            { label: 'ה-repeat מוגדר ל-3', type: 'repeatTimes', times: 3 },
+            { label: 'יש הודעת סיום', type: 'say' }
+          ]
+        }
+      ]
+    };
+  }
+
+  function returnCycleAcademy() {
+    return {
+      title: 'אקדמיית ה-Agent - הלוך וחזור',
+      story: 'מפגש 6 כבר לא שואל למה צריך לולאה, אלא איך בונים מחזור פעולה יציב: יציאה מהמחסן, מסירה, וחזרה להתחלה. רק אחרי שהמחזור חוזר לנקודת פתיחה אפשר להפוך אותו לקו אוטומטי.',
+      command: 'start',
+      world: straightWorld,
+      exercises: [
+        {
+          title: 'תרגיל 1 - יוצאים מהמחסן',
+          mission: 'צרו פקודת start שמזמנת את ה-Agent ומזיזה אותו 5 קוביות קדימה לתחנה.',
+          hint: 'במפגש הזה מתרגלים מסלול הלוך-חזור. מתחילים רק מההלוך.',
+          check: 'ה-Agent יוצא מהמחסן ומגיע לתחנה.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }] },
+          criteria: [
+            { label: 'פקודת start קיימת', type: 'command', command: 'start' },
+            { label: 'התנועה הראשונה היא 5 קוביות קדימה', type: 'firstMove', direction: 'FORWARD', steps: 5 }
+          ]
+        },
+        {
+          title: 'תרגיל 2 - מסירה בתחנה',
+          mission: 'הוסיפו place בסוף הדרך כדי לסמן שהחבילה נמסרה.',
+          hint: 'קודם מגיעים לתחנה, אחר כך מניחים סימון.',
+          check: 'החבילה מונחת ליד התחנה.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 5 }] },
+          criteria: [
+            { label: 'ה-Agent מגיע לתחנת היעד', type: 'reachedStation' },
+            { label: 'החבילה נמצאת ליד התחנה', type: 'packageNearStation' }
+          ]
+        },
+        {
+          title: 'תרגיל 3 - חוזרים למחסן',
+          mission: 'הוסיפו תנועה BACK של 5 קוביות אחרי המסירה.',
+          hint: 'חזרה להתחלה היא פעולה אחרת מהמשך קדימה.',
+          check: 'בסוף ההרצה ה-Agent חוזר לנקודת ההתחלה.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }] },
+          criteria: [
+            { label: 'התנועה השנייה היא חזרה 5 קוביות', type: 'secondMove', direction: 'BACK', steps: 5 },
+            { label: 'ה-Agent חוזר לנקודת ההתחלה', type: 'returnToStart' }
+          ]
+        },
+        {
+          title: 'תרגיל 4 - מתקנים חזרה קצרה מדי',
+          mission: 'תקנו שלד שבו ה-Agent חוזר רק 3 קוביות, כך שיחזור למחסן.',
+          hint: 'אל תשנו את ההלוך. חפשו את המספר בתנועת BACK.',
+          check: 'ה-Agent מסיים קרוב למחסן.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }, { type: 'move', direction: 'BACK', steps: 3 }] },
+          criteria: [
+            { label: 'תנועת החזרה תוקנה ל-5', type: 'secondMove', direction: 'BACK', steps: 5 },
+            { label: 'ה-Agent חוזר לנקודת ההתחלה', type: 'returnToStart' }
+          ]
+        },
+        {
+          title: 'תרגיל 5 - מחזור מוכן ללולאה',
+          mission: 'עטפו את המחזור המלא ב-repeat של 2 חזרות.',
+          hint: 'רק אחרי שיש הלוך, מסירה וחזור מכניסים את הכול ללולאה.',
+          check: 'יש שני מחזורים שחוזרים לנקודת התחלה.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }, { type: 'move', direction: 'BACK', steps: 5 }] },
+          criteria: [
+            { label: 'ה-repeat מוגדר ל-2', type: 'repeatTimes', times: 2 },
+            { label: 'ה-Agent חוזר לנקודת ההתחלה', type: 'returnToStart' }
+          ]
+        },
+        {
+          title: 'אתגר קטן - מחזור יציב',
+          mission: 'השלימו מחזור לולאה מלא: יציאה, מסירה, חזרה והודעת סיום.',
+          hint: 'בדקו שה-Agent לא נשאר בתחנה אחרי הסיבוב האחרון.',
+          check: 'יש repeat, חבילות, חזרה להתחלה והודעה.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [{ type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }] }] },
+          criteria: [
+            { label: 'ה-repeat מוגדר ל-2', type: 'repeatTimes', times: 2 },
+            { label: 'יש לפחות שתי הנחות חבילה', type: 'placeCount', min: 2 },
+            { label: 'ה-Agent חוזר לנקודת ההתחלה', type: 'returnToStart' },
+            { label: 'יש הודעת סיום', type: 'say' }
+          ]
+        }
+      ]
+    };
+  }
+
   function conditionAcademy(title, story, command = 'status') {
     return {
       title,
@@ -821,8 +978,8 @@
   }
 
   setAcademy(1, 3, personalCourierAcademy());
-  setAcademy(2, 0, loopAcademy('אקדמיית ה-Agent - למה צריך לולאה', 'פותחים את אתגר 2 בהבנה מוצרית: משלוח אחד עובד, אבל עיר צריכה פעולה שחוזרת. כאן מתרגלים לזהות פעולה חוזרת ולהכניס אותה ל-repeat במקום לשכפל בלוקים.', 'start'));
-  setAcademy(2, 1, loopAcademy('אקדמיית ה-Agent - הלוך וחזור', 'לפני שמריצים קו אוטומטי, בונים מחזור אחד יציב: יציאה מהמחסן, מסירה בתחנה וחזרה להתחלה. רק מחזור שחוזר לנקודת פתיחה יכול להפוך ללולאה טובה.', 'start'));
+  setAcademy(2, 0, repeatIntroAcademy());
+  setAcademy(2, 1, returnCycleAcademy());
   setAcademy(2, 2, loopAcademy('אקדמיית ה-Agent - קו אוטומטי', 'עכשיו מחברים את המחזור ללולאה: repeat מייצג עבודה חוזרת, הודעה מסבירה מה קרה, והבדיקה מוודאת שה-Agent לא נתקע רחוק מהמחסן.', 'start'));
   setAcademy(2, 3, loopAcademy('אקדמיית ה-Agent - קו אישי בעיר', 'כל תלמיד מתרגל קו אישי קטן לפני היישום במיינקראפט: כמה סיבובים, חבילות, חזרה להתחלה והסבר קצר. המטרה היא תכנון אישי עם בדיקה, לא העתקה.', 'start'));
   setAcademy(3, 0, conditionAcademy('אקדמיית ה-Agent - מצב בעיר', 'אתגר 3 מתחיל במצב שהעיר מציגה: פתוח, חסום, מלא או פנוי. באקדמיה מתרגלים איך קוד בודק מצב לפני שהוא מחליט מה לעשות.', 'status'));
