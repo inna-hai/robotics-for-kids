@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260909-course-header-all-1">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260910-direct-student-copy-1">
   <link rel="stylesheet" href="css/platform-home-link.css">
   <style>
     .challenge-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
@@ -59,7 +59,7 @@
     <section class="lesson-detail" id="lessonDetails" style="margin-top:16px"></section>
   </main>
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="js/craftom-minecraft-challenges.js?v=20260909-adjacent-academy-1"></script>
+  <script src="js/craftom-minecraft-challenges.js?v=20260910-direct-student-copy-1"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const program = window.CRAFTOM_MINECRAFT_PROGRAM;
@@ -68,8 +68,8 @@
     const currentLesson = window.getCraftomMinecraftLesson(params.get('lesson') || ((challenge.id - 1) * 4) + 1);
     document.getElementById('courseHeaderNav').innerHTML = `
       <a href="craftom-school/preview/index.html">דף הבית</a>
-      <a class="primary" href="craftom-minecraft-lesson-${currentLesson.id}.html">השיעור הנוכחי</a>
-      ${program.challenges.map(item => `<a href="craftom-minecraft-challenge.html?challenge=${item.id}">אתגר ${item.id}</a>`).join('')}
+      <a href="craftom-minecraft-lesson-${currentLesson.id}.html">השיעור הנוכחי</a>
+      ${program.challenges.map(item => `<a class="${item.id === challenge.id ? 'primary' : ''}" href="craftom-minecraft-challenge.html?challenge=${item.id}">אתגר ${item.id}</a>`).join('')}
     `;
     document.title = `אקדמיית ה-Agent - ${challenge.title}`;
     document.getElementById('challengeNav').innerHTML = program.challenges.map(item => `<a class="${item.id === challenge.id ? 'active' : ''}" href="craftom-minecraft-challenge.html?challenge=${item.id}">אתגר ${item.id}</a>`).join('');
@@ -83,7 +83,6 @@
     document.getElementById('video').poster = challenge.poster;
     document.getElementById('actions').innerHTML = `
       <a class="btn" href="craftom-minecraft-students.html?challenge=${challenge.id}">דף עבודה</a>
-      <a class="btn secondary" href="craftom-minecraft-slides.html?challenge=${challenge.id}">מצגת מדריך</a>
       <a class="btn secondary" href="craftom-school/preview/index.html">חזרה למפת הקורס</a>
     `;
     document.getElementById('meetingCards').innerHTML = challenge.meetings.map((item, index) => `

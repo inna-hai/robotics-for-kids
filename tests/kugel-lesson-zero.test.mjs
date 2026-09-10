@@ -254,6 +254,80 @@ try {
   assert.equal(studentStartBody.student.minecraftPlayerName, 'NoaSecure');
   assert.ok(studentStartBody.minecraft.launchUrl.startsWith('minecraftedu://'));
 
+  const pngDataUrl = `data:image/png;base64,${Buffer.from('craftom-test-image').toString('base64')}`;
+  const invalidCraftomSubmission = await post(baseUrl, '/api/craftom/exit-ticket', {
+    lessonId: 1,
+    challengeId: 1,
+    lessonTitle: 'שיעור בדיקה',
+    challengeTitle: 'אתגר בדיקה',
+    exitQuestion: 'מה בנית?',
+    answer: 'בדקתי העלאה',
+    photo: { name: 'bad.svg', dataUrl: 'data:image/svg+xml;base64,PHN2Zy8+' },
+  }, studentACookie);
+  assert.equal(invalidCraftomSubmission.status, 400, 'Craftom submissions must reject SVG uploads');
+
+  const craftomSubmission = await post(baseUrl, '/api/craftom/exit-ticket', {
+    lessonId: 1,
+    challengeId: 1,
+    lessonTitle: 'שיעור בדיקה',
+    challengeTitle: 'אתגר בדיקה',
+    exitQuestion: 'מה בנית?',
+    answer: 'בנינו מסלול קטן ובדקנו שה-Agent מתקדם',
+    photo: { name: 'work.png', dataUrl: pngDataUrl },
+  }, studentACookie);
+  assert.equal(craftomSubmission.status, 201);
+  const craftomSubmissionBody = await craftomSubmission.json();
+  assert.equal(craftomSubmissionBody.submission.lessonId, 1);
+  assert.equal(craftomSubmissionBody.submission.courseId, 'craftom-agent');
+  assert.equal(craftomSubmissionBody.submission.studentId, undefined, 'student submission response must not echo trusted identity fields');
+  assert.equal(craftomSubmissionBody.submission.classroomId, undefined, 'student submission response must not echo trusted classroom fields');
+  assert.equal(craftomSubmissionBody.submission.replaced, false);
+
+  const studentOwnSubmissions = await fetch(`${baseUrl}/api/craftom/submissions?lessonId=1`, { headers: { Cookie: studentACookie } });
+  assert.equal(studentOwnSubmissions.status, 200);
+  const studentOwnSubmissionsBody = await studentOwnSubmissions.json();
+  assert.equal(studentOwnSubmissionsBody.role, 'student');
+  assert.equal(studentOwnSubmissionsBody.submissions.length, 1);
+  assert.equal(studentOwnSubmissionsBody.submissions[0].id, craftomSubmissionBody.submission.id);
+
+  const teacherSubmissions = await fetch(`${baseUrl}/api/craftom/submissions?classroomId=${classroomA.id}&lessonId=1`, { headers: { Cookie: teacherACookie } });
+  assert.equal(teacherSubmissions.status, 200);
+  const teacherSubmissionsBody = await teacherSubmissions.json();
+  assert.equal(teacherSubmissionsBody.role, 'teacher');
+  assert.equal(teacherSubmissionsBody.submissions.length, 1);
+  assert.equal(teacherSubmissionsBody.submissions[0].studentId, studentA.id);
+  assert.equal(teacherSubmissionsBody.submissions[0].studentName, 'נועה מאובטחת');
+
+  const foreignTeacherSubmissions = await fetch(`${baseUrl}/api/craftom/submissions?classroomId=${classroomA.id}&lessonId=1`, { headers: { Cookie: teacherBCookie } });
+  assert.equal(foreignTeacherSubmissions.status, 404, 'a teacher must not read Craftom submissions from another class');
+  const missingTeacherClassroom = await fetch(`${baseUrl}/api/craftom/submissions?lessonId=1`, { headers: { Cookie: teacherACookie } });
+  assert.equal(missingTeacherClassroom.status, 400, 'teacher Craftom submission reads must name an owned classroom');
+
+  const submissionPhotoUrl = craftomSubmissionBody.submission.photo.url;
+  const studentPhoto = await fetch(`${baseUrl}${submissionPhotoUrl}`, { headers: { Cookie: studentACookie } });
+  assert.equal(studentPhoto.status, 200);
+  assert.equal(studentPhoto.headers.get('content-type'), 'image/png');
+  assert.equal(await studentPhoto.text(), 'craftom-test-image');
+  const otherStudentPhoto = await fetch(`${baseUrl}${submissionPhotoUrl}`, { headers: { Cookie: studentBCookie } });
+  assert.equal(otherStudentPhoto.status, 404, 'a student must not read another student Craftom photo');
+  const otherTeacherPhoto = await fetch(`${baseUrl}${submissionPhotoUrl}`, { headers: { Cookie: teacherBCookie } });
+  assert.equal(otherTeacherPhoto.status, 404, 'a teacher must not read another class Craftom photo');
+
+  const replacementSubmission = await post(baseUrl, '/api/craftom/exit-ticket', {
+    lessonId: 1,
+    challengeId: 1,
+    lessonTitle: 'שיעור בדיקה',
+    challengeTitle: 'אתגר בדיקה',
+    exitQuestion: 'מה בנית?',
+    answer: 'החלפתי תמונה אחרי תיקון קטן',
+    photo: { name: 'work-fixed.webp', dataUrl: `data:image/webp;base64,${Buffer.from('replacement-image').toString('base64')}` },
+  }, studentACookie);
+  assert.equal(replacementSubmission.status, 201);
+  const replacementSubmissionBody = await replacementSubmission.json();
+  assert.equal(replacementSubmissionBody.submission.id, craftomSubmissionBody.submission.id);
+  assert.equal(replacementSubmissionBody.submission.replaced, true);
+  assert.equal(replacementSubmissionBody.submission.replacementCount, 1);
+
   gameEvents = [
     { id: 40, event_type: 'chat_message', player_name: 'NoaSecure', created_at: new Date().toISOString(), payload: JSON.stringify({ coin_index: 1, coins: 8, finish: true, completed: true }) },
   ];
