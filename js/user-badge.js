@@ -25,11 +25,14 @@
       #${BADGE_ID} .hai-user-dot{width:10px;height:10px;border-radius:999px;background:#94a3b8;box-shadow:0 0 0 4px #f1f5f9}
       #${BADGE_ID}.child .hai-user-dot{background:#16a34a;box-shadow:0 0 0 4px #dcfce7}
       #${BADGE_ID}.classroom .hai-user-dot{background:#4f46e5;box-shadow:0 0 0 4px #e0e7ff}
+      #${BADGE_ID}.teacher{left:auto;right:12px;bottom:12px;max-width:min(260px,calc(100vw - 24px));padding:7px 10px;border-radius:14px;font-size:.78rem;box-shadow:0 10px 26px rgba(15,23,42,.12)}
+      #${BADGE_ID}.teacher small{font-size:.68rem}
+      #${BADGE_ID}.teacher b{max-width:205px}
       #${BADGE_ID}.parent .hai-user-dot{background:#f59e0b;box-shadow:0 0 0 4px #fef3c7}
       #${BADGE_ID}.guest .hai-user-dot{background:#64748b;box-shadow:0 0 0 4px #f1f5f9}
       #${BADGE_ID} small{display:block;color:#64748b;font-weight:800;font-size:.78rem;line-height:1.15}
       #${BADGE_ID} b{display:block;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:330px}
-      @media(max-width:560px){#${BADGE_ID}{left:8px;right:8px;bottom:8px;border-radius:18px;justify-content:flex-start;font-size:.86rem}#${BADGE_ID} b{max-width:calc(100vw - 90px)}}
+      @media(max-width:560px){#${BADGE_ID}{left:8px;right:8px;bottom:8px;border-radius:18px;justify-content:flex-start;font-size:.86rem}#${BADGE_ID} b{max-width:calc(100vw - 90px)}#${BADGE_ID}.teacher{left:auto;right:8px;max-width:min(230px,calc(100vw - 16px));font-size:.74rem}#${BADGE_ID}.teacher b{max-width:175px}}
     `;
     document.head.appendChild(style);
   }

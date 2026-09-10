@@ -216,8 +216,13 @@
 
   const teacherCourseStarts = {
     ...courseStarts,
-    'craftom-agent': 'craftom-school/preview/index.html',
+    'craftom-agent': 'kugel-teacher.html',
   };
+
+  function teacherCourseHref(courseId, classroomId = '') {
+    if (courseId === 'craftom-agent' && classroomId) return `kugel-teacher.html?classroomId=${encodeURIComponent(classroomId)}`;
+    return teacherCourseStarts[courseId] || courseStarts[courseId] || 'index.html#courses';
+  }
 
   function selectedCourses(form) {
     return new FormData(form).getAll('courses');
@@ -259,10 +264,20 @@
       }
       const courseLinks = element('div', undefined, 'course-links');
       for (const courseId of availableCourseIds) {
-        const link = element('a', `פתיחת הלומדה שלי: ${courseLabels[courseId] || courseId}`, 'button quiet');
-        link.href = teacherCourseStarts[courseId];
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
+        const linkLabel = courseId === 'craftom-agent'
+          ? 'ניהול אקדמיית ה-Agent לפי כיתה'
+          : `פתיחת הלומדה שלי: ${courseLabels[courseId] || courseId}`;
+        const link = element('a', linkLabel, 'button quiet');
+        if (courseId === 'craftom-agent') {
+          link.href = '#classes-list';
+          link.addEventListener('click', () => {
+            setMessage(dashboardMessage, 'בחרי כיתה עם אקדמיית ה-Agent ולחצי על "ניהול הלומדה".', true);
+          });
+        } else {
+          link.href = teacherCourseHref(courseId);
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+        }
         courseLinks.append(link);
       }
       teacherCourseCatalog.append(courseLinks, createCoursePicker([], availableCourseIds));
@@ -291,8 +306,11 @@
       courseAccess.append(element('h4', 'הלומדות של הכיתה'));
       const courseLinks = element('div', undefined, 'course-links');
       for (const courseId of classroom.courses || []) {
-        const link = element('a', `פתיחת הלומדה: ${courseLabels[courseId] || courseId}`, 'button quiet');
-        link.href = teacherCourseStarts[courseId];
+        const linkText = courseId === 'craftom-agent'
+          ? `ניהול הלומדה: ${courseLabels[courseId] || courseId}`
+          : `פתיחת הלומדה: ${courseLabels[courseId] || courseId}`;
+        const link = element('a', linkText, 'button quiet');
+        link.href = teacherCourseHref(courseId, classroom.id);
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
         courseLinks.append(link);

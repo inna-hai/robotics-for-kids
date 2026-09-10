@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/craftom/craftom-challenges.css?v=20260909-course-header-all-1">
+  <link rel="stylesheet" href="../../assets/craftom/craftom-challenges.css?v=20260910-direct-student-copy-1">
   <link rel="stylesheet" href="../../css/platform-home-link.css">
   <style>
     .course-header{position:sticky;top:0;z-index:1000;background:rgba(247,251,255,.94);border-bottom:1px solid #d7e7f5;backdrop-filter:blur(12px)}
@@ -78,7 +78,7 @@
     </section>
   </main>
   <a class="platform-home-link" href="../../index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="../../js/craftom-minecraft-challenges.js?v=20260909-adjacent-academy-1"></script>
+  <script src="../../js/craftom-minecraft-challenges.js?v=20260910-direct-student-copy-1"></script>
   <script>
     const program = window.CRAFTOM_MINECRAFT_PROGRAM;
     const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
@@ -87,8 +87,8 @@
     function renderCourseHeader(currentLessonId = 1) {
       const normalizedLessonId = Math.min(Math.max(Number(currentLessonId) || 1, 1), program.totalMeetings);
       document.getElementById('courseHeaderNav').innerHTML = `
-        <a href="index.html">דף הבית</a>
-        <a class="primary" id="currentLessonLink" href="${lessonHref(normalizedLessonId)}">השיעור הנוכחי</a>
+        <a class="primary" href="index.html">דף הבית</a>
+        <a id="currentLessonLink" href="${lessonHref(normalizedLessonId)}">השיעור הנוכחי</a>
         ${program.challenges.map(challenge => `<a href="../../craftom-minecraft-challenge.html?challenge=${challenge.id}">אתגר ${challenge.id}</a>`).join('')}
       `;
     }
@@ -130,7 +130,6 @@
         <div class="challenge-actions">
           <a class="btn" href="../../craftom-minecraft-challenge.html?challenge=${challenge.id}">כניסה לאתגר</a>
           <a class="btn" href="../../craftom-minecraft-students.html?challenge=${challenge.id}">דף עבודה</a>
-          <a class="btn secondary" href="../../craftom-minecraft-slides.html?challenge=${challenge.id}">מצגת מדריך</a>
           <a class="btn secondary" href="../../${esc(challenge.video)}">פתחו סרטון</a>
         </div>
       </article>
