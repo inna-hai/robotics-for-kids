@@ -41,6 +41,26 @@
   backdrop-filter: blur(18px);
 }
 
+.teacher-app .app-topbar {
+  position: static;
+}
+
+.teacher-classrooms-button {
+  width: fit-content;
+}
+
+.teacher-course-header .course-header-inner {
+  width: min(1380px, calc(100% - 28px));
+}
+
+.teacher-course-header .course-nav {
+  min-width: 0;
+}
+
+.teacher-course-header .course-nav a {
+  white-space: nowrap;
+}
+
 .brand-link {
   display: inline-flex;
   align-items: center;
@@ -103,16 +123,21 @@
   padding: 18px 0 44px;
 }
 
-.student-layout,
-.teacher-board {
+.student-layout {
   display: grid;
   grid-template-columns: 330px minmax(0, 1fr);
   gap: 16px;
   align-items: start;
 }
 
-.lesson-rail,
-.teacher-control {
+.teacher-board {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.lesson-rail {
   position: sticky;
   top: 84px;
   display: grid;
@@ -124,6 +149,81 @@
   border-radius: 14px;
   background: rgba(255, 255, 255, .95);
   box-shadow: 0 12px 30px rgba(23, 32, 51, .08);
+}
+
+.teacher-control {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .95);
+  box-shadow: 0 12px 30px rgba(23, 32, 51, .08);
+}
+
+.teacher-app.is-teacher-lesson .teacher-board {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
+}
+
+.teacher-app.is-teacher-lesson .teacher-hero {
+  grid-column: 1 / -1;
+}
+
+.teacher-app.is-teacher-lesson .teacher-main {
+  grid-column: 1 / -1;
+}
+
+.teacher-app.is-teacher-lesson .teacher-control {
+  align-content: start;
+  gap: 8px;
+  padding: 12px;
+}
+
+.teacher-app.is-teacher-lesson .teacher-control h1 {
+  margin-bottom: 2px;
+  font-size: 1.12rem;
+}
+
+.teacher-app.is-teacher-lesson .teacher-control p {
+  margin: 0;
+  line-height: 1.35;
+}
+
+.teacher-app.is-teacher-lesson .teacher-live-controls {
+  gap: 8px;
+  padding: 10px;
+}
+
+.teacher-app.is-teacher-lesson .teacher-live-controls h3 {
+  margin-bottom: 0;
+  font-size: 1rem;
+}
+
+.teacher-app.is-teacher-lesson .teacher-class-message-form {
+  gap: 8px;
+}
+
+.teacher-app.is-teacher-lesson .compact-form input {
+  padding-block: 8px;
+}
+
+.teacher-app.is-teacher-lesson .teacher-control .primary-action,
+.teacher-app.is-teacher-lesson .teacher-control .secondary-action {
+  min-height: 36px;
+  padding-block: 7px;
+}
+
+.teacher-app.is-teacher-lesson .teacher-selected-lesson {
+  align-content: start;
+  gap: 8px;
+  padding: 12px;
+}
+
+.teacher-app.is-teacher-lesson .selected-lesson-actions {
+  grid-template-columns: minmax(180px, 1fr) repeat(2, minmax(120px, auto));
+  gap: 8px;
 }
 
 .rail-head h1,
@@ -687,7 +787,7 @@
 
 .monitor-row {
   display: grid;
-  grid-template-columns: minmax(150px, .9fr) minmax(120px, .75fr) minmax(180px, 1fr) minmax(110px, .6fr);
+  grid-template-columns: minmax(150px, .8fr) minmax(120px, .6fr) minmax(190px, .9fr) minmax(220px, 1.1fr);
   gap: 10px 14px;
   align-items: start;
   padding: 14px;
@@ -757,6 +857,77 @@
   gap: 5px;
 }
 
+.student-learning-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.learning-pill {
+  display: inline-flex;
+  width: fit-content;
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: #475569;
+  background: #e2e8f0;
+  font-size: .78rem;
+  font-weight: 900;
+}
+
+.learning-pill.done {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.learning-pill.started {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.learning-pill.missing {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.student-submission {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.student-submission.has-submission {
+  grid-template-columns: 86px minmax(0, 1fr);
+  align-items: start;
+}
+
+.student-submission img {
+  display: block;
+  width: 86px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.student-submission p {
+  margin: 4px 0;
+  color: var(--ink);
+}
+
+.student-submission small {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.student-submission.is-missing {
+  padding: 10px;
+  border: 1px dashed #fca5a5;
+  border-radius: 10px;
+  background: #fff7f7;
+  color: #991b1b;
+}
+
 .duration-pill {
   color: var(--muted);
   font-weight: 900;
@@ -810,6 +981,202 @@
   border: 1px solid #dbe4ef;
   border-radius: 8px;
   background: #f8fafc;
+}
+
+.teacher-selected-lesson {
+  display: grid;
+  gap: 12px;
+  border-color: rgba(37, 99, 235, .28);
+  background: linear-gradient(135deg, #ffffff, #f8fbff);
+}
+
+.teacher-live-controls[hidden],
+.teacher-zero-cards[hidden],
+.metrics-grid[hidden],
+#teacherStudentBoard[hidden],
+.teacher-home-overview[hidden],
+.teacher-selected-lesson[hidden],
+.teacher-challenge-overview[hidden] {
+  display: none;
+}
+
+.teacher-student-board-panel {
+  padding: 0;
+  overflow: hidden;
+}
+
+.teacher-student-board-details summary {
+  display: flex;
+  min-height: 56px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+  color: #0f172a;
+  font-size: 1.16rem;
+  font-weight: 900;
+  cursor: pointer;
+  list-style: none;
+}
+
+.teacher-student-board-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.teacher-student-board-details summary::after {
+  content: 'פתח';
+  min-width: 72px;
+  padding: 7px 10px;
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+  color: #1d4ed8;
+  background: #eff6ff;
+  font-size: .82rem;
+  text-align: center;
+}
+
+.teacher-student-board-details[open] summary {
+  border-bottom: 1px solid var(--line);
+}
+
+.teacher-student-board-details[open] summary::after {
+  content: 'סגור';
+}
+
+.teacher-student-board-content {
+  padding: 16px;
+}
+
+.teacher-selected-lesson .panel-head {
+  align-items: start;
+}
+
+.selected-lesson-actions {
+  grid-template-columns: minmax(220px, 1fr) repeat(2, minmax(150px, auto));
+  align-items: stretch;
+}
+
+.minecraft-lesson-title-link {
+  color: #0f172a;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.minecraft-lesson-title-link:hover {
+  color: var(--blue-dark);
+}
+
+.minecraft-lesson-option.is-selected-lesson {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, .08);
+}
+
+.teacher-challenge-overview {
+  display: grid;
+  gap: 12px;
+  border-color: rgba(15, 118, 110, .24);
+  background: linear-gradient(135deg, #ffffff, #f0fdfa);
+}
+
+.teacher-challenge-lessons {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.teacher-challenge-lesson {
+  align-content: start;
+  min-height: 168px;
+}
+
+.teacher-home-overview {
+  display: grid;
+  gap: 12px;
+  border-color: rgba(37, 99, 235, .24);
+  background: linear-gradient(135deg, #ffffff, #eff6ff);
+}
+
+.teacher-home-status {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.teacher-home-status article {
+  padding: 14px;
+  border: 1px solid #dbe8f4;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.teacher-home-status span {
+  display: block;
+  color: var(--muted);
+  font-size: .84rem;
+  font-weight: 900;
+}
+
+.teacher-home-status strong {
+  display: block;
+  margin-top: 4px;
+  color: #172033;
+  font-size: 1.08rem;
+  line-height: 1.35;
+  font-weight: 800;
+}
+
+.teacher-home-section-title {
+  margin: 4px 0 0;
+  font-size: 1.16rem;
+}
+
+.teacher-home-intro {
+  max-width: 78ch;
+  color: #334155;
+  font-weight: 750;
+}
+
+.teacher-home-challenges {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.teacher-home-challenge {
+  align-content: start;
+  min-height: 184px;
+}
+
+.teacher-home-challenge small {
+  color: var(--muted);
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.teacher-home-lesson-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.teacher-home-lesson-links a {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  color: #1e3a8a;
+  background: #fff;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.teacher-home-lesson-links a.active {
+  color: #fff;
+  border-color: var(--blue);
+  background: var(--blue);
 }
 
 .minecraft-lesson-option strong {
@@ -965,6 +1332,7 @@
 @media (max-width: 980px) {
   .student-layout,
   .teacher-board,
+  .teacher-app.is-teacher-lesson .teacher-board,
   .workspace-hero,
   .student-stage-grid,
   .detail-columns,
@@ -995,9 +1363,16 @@
     grid-template-columns: 1fr;
   }
 
+  .selected-lesson-actions {
+    grid-template-columns: 1fr;
+  }
+
   .metric-grid,
   .metrics-grid,
-  .report-grid {
+  .report-grid,
+  .teacher-home-status,
+  .teacher-home-challenges,
+  .teacher-challenge-lessons {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -1032,7 +1407,10 @@
 
   .metric-grid,
   .metrics-grid,
-  .report-grid {
+  .report-grid,
+  .teacher-home-status,
+  .teacher-home-challenges,
+  .teacher-challenge-lessons {
     grid-template-columns: 1fr;
   }
 

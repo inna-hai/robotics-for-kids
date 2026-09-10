@@ -353,7 +353,6 @@ player.onChat("test", function () {
             <p><strong>תוצר:</strong> <span id="deliverable"></span></p>
             <div class="actions">
               <a class="btn" id="studentLink" href="#">דף עבודה</a>
-              <a class="btn secondary" id="slidesLink" href="#">מצגת מדריך</a>
               <a class="btn secondary" id="challengeLink" href="#">דף האתגר</a>
             </div>
           </div>
@@ -400,27 +399,9 @@ player.onChat("test", function () {
           </div>
         </section>
         <section class="card" style="margin-top:16px">
-          <h2>מצגת מדריך</h2>
-          <p>קישור למדריך/ה בלבד. העבודה של התלמיד נמצאת בעמוד הזה ובדף העבודה.</p>
-          <a class="btn secondary" id="lessonSlidesBoxLink" href="#">פתיחת המצגת</a>
-        </section>
-        <section class="card" style="margin-top:16px">
-          <span class="tag" id="challengeMapTitle"></span>
-          <h2>מפת שיעורי האתגר</h2>
-          <div class="challenge-lesson-map" id="challengeLessonMap"></div>
-          <div class="actions">
-            <a class="btn" id="challengeMapLink" href="#">למפת האתגר</a>
-            <a class="btn secondary" href="craftom-school/preview/index.html">לכל האתגרים</a>
-          </div>
-        </section>
-        <section class="card" style="margin-top:16px">
           <h2>כרטיס יציאה</h2>
           <p><strong>העלאת תמונה:</strong> <span id="exitUploadInline"></span></p>
           <form class="exit-ticket-form" id="exitTicketForm">
-            <label>
-              <span>שם / צוות</span>
-              <input id="exitStudentName" name="studentName" autocomplete="name" placeholder="כתבו שם או שם צוות">
-            </label>
             <label>
               <span>שאלת כרטיס היציאה</span>
               <strong id="exitTicket" class="exit-ticket-question"></strong>
@@ -433,6 +414,7 @@ player.onChat("test", function () {
             <button class="btn" id="exitSubmit" type="submit">הגשת כרטיס יציאה</button>
             <p class="submit-status" id="exitSubmitStatus" role="status" aria-live="polite"></p>
           </form>
+          <div class="existing-submission" id="existingSubmission" hidden></div>
         </section>
         <div class="actions">
           <a class="btn secondary" id="prevLink" href="#">שיעור קודם</a>
@@ -489,11 +471,7 @@ player.onChat("test", function () {
   document.getElementById('video').src = lesson.video;
   document.getElementById('video').poster = lesson.poster;
   document.getElementById('challengeLink').href = `craftom-minecraft-challenge.html?challenge=${lesson.challengeId}`;
-  document.getElementById('challengeMapLink').href = `craftom-minecraft-challenge.html?challenge=${lesson.challengeId}`;
   document.getElementById('studentLink').href = `craftom-minecraft-students.html?challenge=${lesson.challengeId}`;
-  const slidesHref = `craftom-minecraft-slides.html?challenge=${lesson.challengeId}&lesson=${lesson.id}`;
-  document.getElementById('slidesLink').href = slidesHref;
-  document.getElementById('lessonSlidesBoxLink').href = slidesHref;
   const currentLessonIndex = challengeLessons.findIndex(item => item.id === lesson.id);
   const prevLesson = currentLessonIndex > 0 ? challengeLessons[currentLessonIndex - 1] : null;
   const nextLesson = currentLessonIndex < challengeLessons.length - 1 ? challengeLessons[currentLessonIndex + 1] : null;
@@ -512,14 +490,6 @@ player.onChat("test", function () {
     nextChallengeLink.href = `craftom-minecraft-lesson-${nextChallengeFirstLesson.id}.html`;
   }
   document.getElementById('lessonNav').innerHTML = challengeLessons.map(item => `<a class="${item.id === lesson.id ? 'active' : ''}" href="craftom-minecraft-lesson-${item.id}.html">${item.id}</a>`).join('');
-  document.getElementById('challengeMapTitle').textContent = `אתגר ${lesson.challengeId}: ${lesson.challengeTitle}`;
-  document.getElementById('challengeLessonMap').innerHTML = challengeLessons.map(item => `
-      <a class="${item.id === lesson.id ? 'active' : ''}" href="craftom-minecraft-lesson-${item.id}.html">
-        <span>שיעור ${item.id}</span>
-        <strong>${esc(item.title)}</strong>
-        <small>${esc(item.deliverable)}</small>
-      </a>
-    `).join('');
 
   const copyMakeCodeButton = document.getElementById('copyMakeCode');
   copyMakeCodeButton.addEventListener('click', async () => {
@@ -538,12 +508,47 @@ player.onChat("test", function () {
   const form = document.getElementById('exitTicketForm');
   const status = document.getElementById('exitSubmitStatus');
   const submitButton = document.getElementById('exitSubmit');
+  const existingSubmission = document.getElementById('existingSubmission');
+
+  function renderSubmission(submission) {
+    if (!existingSubmission) return;
+    if (!submission) {
+      existingSubmission.hidden = true;
+      existingSubmission.innerHTML = '';
+      return;
+    }
+    existingSubmission.hidden = false;
+    existingSubmission.innerHTML = `
+      <h3>ההגשה השמורה שלי</h3>
+      <div class="submission-preview">
+        <a href="${esc(submission.photo.url)}" target="_blank" rel="noopener">
+          <img src="${esc(submission.photo.url)}" alt="תמונת העבודה שהוגשה">
+        </a>
+        <div>
+          <p><strong>עודכן:</strong> ${esc(new Date(submission.updatedAt).toLocaleString('he-IL'))}</p>
+          <p><strong>תשובה:</strong> ${esc(submission.exitAnswer)}</p>
+          <p>${submission.replaced ? 'התמונה הוחלפה לאחר ההגשה הראשונה.' : 'זו ההגשה הראשונה לשיעור הזה.'}</p>
+        </div>
+      </div>
+    `;
+  }
+
+  async function loadOwnSubmission() {
+    try {
+      const response = await fetch(`/api/craftom/submissions?lessonId=${encodeURIComponent(String(lesson.id))}`, { credentials: 'same-origin' });
+      const data = await response.json().catch(() => ({}));
+      if (response.ok) renderSubmission(data.submissions?.[0] || null);
+    } catch {
+      renderSubmission(null);
+    }
+  }
+
+  loadOwnSubmission();
   form.addEventListener('submit', async event => {
     event.preventDefault();
     status.textContent = '';
     const photo = document.getElementById('exitPhoto').files[0];
     const answer = document.getElementById('exitAnswer').value.trim();
-    const studentName = document.getElementById('exitStudentName').value.trim();
 
     if (!answer) {
       status.textContent = 'כתבו תשובה קצרה לפני ההגשה.';
@@ -564,13 +569,14 @@ player.onChat("test", function () {
       const photoDataUrl = await fileToDataUrl(photo);
       const response = await fetch('/api/craftom/exit-ticket', {
         method: 'POST',
+        credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           lessonId: String(lesson.id),
           lessonTitle: lesson.title,
           challengeId: String(lesson.challengeId),
           challengeTitle: lesson.challengeTitle,
-          studentName,
+          exitQuestion: lesson.detail.exit,
           answer,
           photo: { name: photo.name, dataUrl: photoDataUrl },
         }),
@@ -578,7 +584,10 @@ player.onChat("test", function () {
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.error || 'לא הצלחנו לשמור את ההגשה.');
       form.classList.add('submitted');
-      status.textContent = `כרטיס היציאה הוגש ונשמר. מספר הגשה: ${data.id}`;
+      renderSubmission(data.submission || null);
+      status.textContent = data.submission?.replaced
+        ? 'כרטיס היציאה והתמונה הוחלפו ונשמרו.'
+        : `כרטיס היציאה הוגש ונשמר. מספר הגשה: ${data.id}`;
       if (!nextLesson && nextChallengeLink) {
         nextChallengeLink.hidden = !nextChallengeFirstLesson;
       }

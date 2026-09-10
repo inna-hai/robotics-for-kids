@@ -104,13 +104,14 @@ for (let id = 1; id <= 16; id += 1) {
   assert.match(lessonPage, /craftom-minecraft-lesson-page\.js/, `lesson ${id} loads shared renderer`);
   assert.match(lessonPage, /js\/vendor\/blockly\/blockly\.min\.js/, `lesson ${id} loads Blockly`);
   assert.match(lessonPage, /craftom-minecraft-code-builder\.js/, `lesson ${id} loads the embedded Code Builder`);
-  assert.match(lessonPage, /20260905-agent-blocks-match-1/, `lesson ${id} cache-busts the updated exit upload renderer`);
+  assert.match(lessonPage, /20260910-no-challenge-map-1/, `lesson ${id} cache-busts the lesson renderer without the old challenge map`);
 }
 
 const lessonTemplate = read('craftom-minecraft-lesson.html');
 const lessonRenderer = read('js/craftom-minecraft-lesson-page.js');
 const academyPage = read('craftom-agent-academy.html');
-assert.match(lessonTemplate, /challengeLessonMap/, 'lesson template has a map for lessons in the current challenge');
+assert.doesNotMatch(lessonTemplate, /challengeLessonMap/, 'student lesson pages should not show the challenge lesson map inside the lesson');
+assert.doesNotMatch(lessonTemplate, /מפת שיעורי האתגר/, 'student lesson pages should not duplicate the challenge map below the lesson content');
 assert.match(lessonTemplate, /agentAcademyCta/, 'lesson template has an Agent academy entry point');
 assert.match(lessonTemplate, /בחירת שיעור באתגר הנוכחי/, 'lesson top nav is scoped to the current challenge');
 assert.match(lessonTemplate, /exitTicketForm/, 'lesson template has a real exit ticket form');
@@ -124,8 +125,8 @@ assert.doesNotMatch(lessonRenderer, /lessonNav'\)\.innerHTML = program\.lessons\
 assert.match(lessonRenderer, /prevLink\.style\.display = prevLesson/, 'previous lesson button stays inside the current challenge');
 assert.match(lessonRenderer, /nextLink\.style\.display = nextLesson/, 'next lesson button stays inside the current challenge');
 assert.match(lessonRenderer, /filter\(item => item\.challengeId === lesson\.challengeId\)/, 'lesson renderer filters the current challenge lesson map');
-assert.match(lessonRenderer, /challengeMapLink/, 'lesson renderer links back to the current challenge map');
-assert.match(lessonRenderer, /לכל האתגרים/, 'lesson renderer links back up to all challenges');
+assert.doesNotMatch(lessonRenderer, /challengeMapLink/, 'student lesson renderer should not render the challenge map actions inside lessons');
+assert.doesNotMatch(lessonRenderer, /מפת שיעורי האתגר/, 'student lesson renderer should not render a challenge map inside lessons');
 assert.match(lessonRenderer, /craftom-agent-academy\.html\?lesson=/, 'lesson renderer links to the separate Agent academy');
 assert.match(read('js/craftom-agent-academy.js'), /runProgram/, 'Agent academy simulates code');
 assert.match(read('js/craftom-agent-academy.js'), /evaluate/, 'Agent academy evaluates code');
