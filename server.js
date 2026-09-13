@@ -2379,16 +2379,17 @@ async function handleClassroomApi(req, res) {
         WHERE c.join_code = ? AND lower(s.name) = lower(?)
         LIMIT 1
       `).get(classCode, studentName));
-      if (context) {
-        await sendEmail({
-          to: context.teacher_email,
-          subject: `בקשת קוד כניסה מתלמיד/ה בכיתה ${context.classroom_name}`,
-          text: context.login_code_export
-            ? `שלום ${context.teacher_name},\n\n${context.student_name} ביקש/ה לקבל שוב את פרטי הכניסה לכיתה ${context.classroom_name}.\nשם משתמש: ${context.login_username || context.join_code}\nסיסמה: ${context.login_code_export}\n\nאפשר להעביר את הפרטים לתלמיד/ה.\n\nהודעה זו נשלחה אוטומטית ממערכת hai.tech.`
-            : `שלום ${context.teacher_name},\n\n${context.student_name} ביקש/ה לקבל שוב את פרטי הכניסה לכיתה ${context.classroom_name}.\nשם משתמש: ${context.login_username || context.join_code}\n\nלתלמיד/ה הזה אין סיסמה שמורה להצגה כי הוא/היא נוצר/ה לפני עדכון המערכת. אפשר להיכנס למסך המורה וללחוץ על "חידוש סיסמאות לתלמידים".\n\nהודעה זו נשלחה אוטומטית ממערכת hai.tech.`,
-        });
+      if (!context) {
+        return send(res, 404, JSON.stringify({ error: 'לא נמצאה התאמה לקוד הכיתה ולשם התלמיד/ה. בדקו שהשם נכתב בדיוק כמו אצל המורה או פנו למורה.' }));
       }
-      return send(res, 200, JSON.stringify({ ok: true, message: 'אם נמצאה התאמה במערכת, נשלחה בקשה למורה.' }));
+      await sendEmail({
+        to: context.teacher_email,
+        subject: `בקשת קוד כניסה מתלמיד/ה בכיתה ${context.classroom_name}`,
+        text: context.login_code_export
+          ? `שלום ${context.teacher_name},\n\n${context.student_name} ביקש/ה לקבל שוב את פרטי הכניסה לכיתה ${context.classroom_name}.\nשם משתמש: ${context.login_username || context.join_code}\nסיסמה: ${context.login_code_export}\n\nאפשר להעביר את הפרטים לתלמיד/ה.\n\nהודעה זו נשלחה אוטומטית ממערכת hai.tech.`
+          : `שלום ${context.teacher_name},\n\n${context.student_name} ביקש/ה לקבל שוב את פרטי הכניסה לכיתה ${context.classroom_name}.\nשם משתמש: ${context.login_username || context.join_code}\n\nלתלמיד/ה הזה אין סיסמה שמורה להצגה כי הוא/היא נוצר/ה לפני עדכון המערכת. אפשר להיכנס למסך המורה וללחוץ על "חידוש סיסמאות לתלמידים".\n\nהודעה זו נשלחה אוטומטית ממערכת hai.tech.`,
+      });
+      return send(res, 200, JSON.stringify({ ok: true, sent: true, message: 'נשלח עכשיו מייל למורה עם בקשת פרטי הכניסה.' }));
     }
 
     if (action === 'admin-login') {

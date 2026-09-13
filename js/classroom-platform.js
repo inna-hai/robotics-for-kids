@@ -202,11 +202,11 @@
     if (codeRequestForm) {
       codeRequestForm.addEventListener('submit', async (event) => {
         event.preventDefault();
-        setMessage(message, 'שולחים בקשה למורה…');
+        setMessage(entryMessage, 'שולחים בקשה למורה…');
         try {
-          await api('/api/classroom/student-code-request', formData(codeRequestForm));
+          const data = await api('/api/classroom/student-code-request', formData(codeRequestForm));
           codeRequestForm.reset();
-          setMessage(entryMessage, 'אם הפרטים נמצאו במערכת, נשלחה בקשה למורה לשלוח לך את פרטי הכניסה.', true);
+          setMessage(entryMessage, data.message || 'נשלח עכשיו מייל למורה עם בקשת פרטי הכניסה.', true);
         } catch (error) {
           setMessage(entryMessage, error.message);
         }
