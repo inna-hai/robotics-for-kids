@@ -2641,11 +2641,11 @@ async function handleClassroomApi(req, res) {
       const teacher = getClassroomTeacherFromRequest(req);
       if (!teacher) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
       const courses = cleanClassroomCourses(body.courses);
-      if (!courses?.length) return send(res, 400, JSON.stringify({ error: 'בחרו לפחות לומדה אחת תקינה לכיתה.' }));
+      if (!courses) return send(res, 400, JSON.stringify({ error: 'רשימת הלומדות אינה תקינה.' }));
       const result = withSummerDb(db => {
         const row = db.prepare('SELECT * FROM classrooms WHERE id = ? AND teacher_id = ?').get(segments[3], teacher.id);
         if (!row) return null;
-        if (!teacherCanAssignCourses(db, teacher.id, courses)) return { forbidden: true };
+        if (courses.length && !teacherCanAssignCourses(db, teacher.id, courses)) return { forbidden: true };
         const updateCourses = db.transaction(() => {
           const releasedLease = courses.includes(KUGEL_COURSE_ID) ? null : db.prepare(`
             SELECT classroom_id, monitor_server_name, launch_token
@@ -2772,9 +2772,9 @@ async function handleClassroomApi(req, res) {
       const name = cleanText(body.name, 80);
       if (name.length < 2) return send(res, 400, JSON.stringify({ error: 'נא למלא שם כיתה.' }));
       const courses = cleanClassroomCourses(body.courses);
-      if (!courses?.length) return send(res, 400, JSON.stringify({ error: 'בחרו לפחות לומדה אחת תקינה לכיתה.' }));
+      if (!courses) return send(res, 400, JSON.stringify({ error: 'רשימת הלומדות אינה תקינה.' }));
       const result = withSummerDb(db => {
-        if (!teacherCanAssignCourses(db, teacher.id, courses)) return { forbidden: true };
+        if (courses.length && !teacherCanAssignCourses(db, teacher.id, courses)) return { forbidden: true };
         const createClassroom = db.transaction(() => {
           const now = new Date().toISOString();
           const row = {
@@ -2789,7 +2789,7 @@ async function handleClassroomApi(req, res) {
             INSERT INTO classrooms (id, teacher_id, name, join_code, created_at, updated_at)
             VALUES (?, ?, ?, ?, ?, ?)
           `).run(row.id, row.teacher_id, row.name, row.join_code, row.created_at, row.updated_at);
-          replaceClassroomCourses(db, row.id, courses);
+          if (courses.length) replaceClassroomCourses(db, row.id, courses);
           return row;
         });
         return { classroom: createClassroom() };

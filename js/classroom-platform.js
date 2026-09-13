@@ -362,8 +362,8 @@
     function renderTeacherCatalog() {
       teacherCourseCatalog.replaceChildren();
       if (!availableCourseIds.length) {
-        teacherCourseCatalog.append(element('p', 'עדיין לא הוקצו לך לומדות. מנהלת המערכת יכולה לפתוח עבורך לומדות.', 'message'));
-        createClassButton.disabled = true;
+        teacherCourseCatalog.append(element('p', 'עדיין לא הוקצו לך לומדות. אפשר ליצור כיתה עכשיו ולהוסיף לה לומדות אחרי שמנהלת המערכת תפתח עבורך הרשאות.', 'message'));
+        createClassButton.disabled = false;
         return;
       }
       const courseLinks = element('div', undefined, 'course-links');
@@ -461,23 +461,27 @@
       }
 
       const courseForm = element('form', undefined, 'course-access-form');
-      courseForm.append(createCoursePicker(classroom.courses || [], availableCourseIds));
-      const saveCourses = element('button', 'שמירת הלומדות', 'button secondary');
-      saveCourses.type = 'submit';
-      courseForm.append(saveCourses);
-      courseForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        setMessage(dashboardMessage, 'שומרים את הלומדות…');
-        try {
-          const data = await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/courses`, {
-            courses: selectedCourses(courseForm),
-          });
-          setMessage(dashboardMessage, data.warning || 'הלומדות של הכיתה עודכנו.', true);
-          await loadClasses();
-        } catch (error) {
-          setMessage(dashboardMessage, error.message);
-        }
-      });
+      if (availableCourseIds.length) {
+        courseForm.append(createCoursePicker(classroom.courses || [], availableCourseIds));
+        const saveCourses = element('button', 'שמירת הלומדות', 'button secondary');
+        saveCourses.type = 'submit';
+        courseForm.append(saveCourses);
+        courseForm.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          setMessage(dashboardMessage, 'שומרים את הלומדות…');
+          try {
+            const data = await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/courses`, {
+              courses: selectedCourses(courseForm),
+            });
+            setMessage(dashboardMessage, data.warning || 'הלומדות של הכיתה עודכנו.', true);
+            await loadClasses();
+          } catch (error) {
+            setMessage(dashboardMessage, error.message);
+          }
+        });
+      } else {
+        courseForm.append(element('p', 'אין עדיין לומדות זמינות למורה הזאת. הכיתה יכולה להישאר קיימת, ומנהלת תפתח הרשאות בהמשך.', 'message'));
+      }
       courseAccess.append(courseForm);
 
       const progressSection = element('section', undefined, 'student-progress-panel');
@@ -598,7 +602,7 @@
         data.courses = selectedCourses(classForm);
         await api('/api/classroom/classes', data);
         classForm.reset();
-        setMessage(dashboardMessage, 'הכיתה נוצרה.', true);
+        setMessage(dashboardMessage, data.courses.length ? 'הכיתה נוצרה עם הלומדות שנבחרו.' : 'הכיתה נוצרה. אפשר להוסיף לומדות אחרי שמנהלת תפתח הרשאות.', true);
         await loadClasses();
       } catch (error) {
         setMessage(dashboardMessage, error.message);
