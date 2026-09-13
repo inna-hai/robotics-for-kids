@@ -95,13 +95,6 @@
     });
   });
 
-  document.querySelectorAll('[data-toggle-recovery]').forEach((button) => {
-    button.addEventListener('click', () => {
-      const panel = document.getElementById(button.dataset.toggleRecovery);
-      if (panel) panel.hidden = !panel.hidden;
-    });
-  });
-
   async function api(path, payload) {
     const response = await fetch(path, {
       method: payload === undefined ? 'GET' : 'POST',
@@ -191,33 +184,6 @@
       await showDashboard();
     } catch (error) {
       setMessage(authMessage, error.message);
-    }
-  });
-
-  document.getElementById('admin-forgot-form')?.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const recoveryMessage = document.getElementById('admin-recovery-message');
-    setMessage(recoveryMessage, 'שולחים קוד אימות למייל…');
-    try {
-      await api('/api/classroom/forgot-password', { role: 'admin', ...formData(form) });
-      setMessage(recoveryMessage, 'אם המייל מוגדר במערכת, נשלח אליו קוד אימות.', true);
-    } catch (error) {
-      setMessage(recoveryMessage, error.message);
-    }
-  });
-
-  document.getElementById('admin-reset-form')?.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const recoveryMessage = document.getElementById('admin-recovery-message');
-    setMessage(recoveryMessage, 'מאמתים קוד ומעדכנים סיסמה…');
-    try {
-      await api('/api/classroom/reset-password', { role: 'admin', ...formData(form) });
-      form.reset();
-      setMessage(recoveryMessage, 'הסיסמה עודכנה. אפשר להיכנס מחדש עם הסיסמה החדשה.', true);
-    } catch (error) {
-      setMessage(recoveryMessage, error.message);
     }
   });
 

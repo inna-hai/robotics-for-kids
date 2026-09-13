@@ -2274,21 +2274,12 @@ async function handleClassroomApi(req, res) {
     if (action === 'forgot-password') {
       const role = String(body.role || '').trim();
       const email = cleanEmail(body.email);
-      if (!['admin', 'teacher'].includes(role)) return send(res, 400, JSON.stringify({ error: 'סוג המשתמש אינו תקין.' }));
+      if (role === 'admin') {
+        return send(res, 403, JSON.stringify({ error: 'שחזור קוד מנהלת אינו פעיל כרגע. יש להשתמש בקוד הפיתוח שהוגדר בסביבה.' }));
+      }
+      if (role !== 'teacher') return send(res, 400, JSON.stringify({ error: 'סוג המשתמש אינו תקין.' }));
       if (!emailLooksValid(email)) return send(res, 400, JSON.stringify({ error: 'כתובת המייל לא תקינה.' }));
       if (!emailDeliveryConfigured()) return send(res, 503, JSON.stringify({ error: 'שליחת מייל אינה מוגדרת כרגע.' }));
-      if (role === 'admin') {
-        if (!CLASSROOM_ADMIN_EMAIL) return send(res, 503, JSON.stringify({ error: 'איפוס מנהלת לא מוגדר כרגע.' }));
-        if (email === CLASSROOM_ADMIN_EMAIL) {
-          const code = withSummerDb(db => createPasswordReset(db, 'admin', email, 'default'));
-          await sendEmail({
-            to: email,
-            subject: 'קוד איפוס למנהלת hai.tech',
-            text: `קוד האימות שלך לאיפוס כניסת מנהלת הוא: ${code}\n\nהקוד תקף ל-15 דקות. אם לא ביקשת איפוס, אפשר להתעלם מהמייל הזה.`,
-          });
-        }
-        return send(res, 200, JSON.stringify({ ok: true, message: 'אם המייל רשום במערכת, נשלח אליו קוד אימות.' }));
-      }
       const teacher = withSummerDb(db => db.prepare('SELECT id, name, email FROM classroom_teachers WHERE email = ?').get(email));
       if (teacher) {
         const code = withSummerDb(db => createPasswordReset(db, 'teacher', email, teacher.id));
@@ -2306,7 +2297,10 @@ async function handleClassroomApi(req, res) {
       const email = cleanEmail(body.email);
       const code = String(body.code || '').trim();
       const password = String(body.password || '');
-      if (!['admin', 'teacher'].includes(role)) return send(res, 400, JSON.stringify({ error: 'סוג המשתמש אינו תקין.' }));
+      if (role === 'admin') {
+        return send(res, 403, JSON.stringify({ error: 'שחזור קוד מנהלת אינו פעיל כרגע. יש להשתמש בקוד הפיתוח שהוגדר בסביבה.' }));
+      }
+      if (role !== 'teacher') return send(res, 400, JSON.stringify({ error: 'סוג המשתמש אינו תקין.' }));
       if (!emailLooksValid(email)) return send(res, 400, JSON.stringify({ error: 'כתובת המייל לא תקינה.' }));
       if (!/^\d{6}$/.test(code)) return send(res, 400, JSON.stringify({ error: 'קוד האימות צריך להכיל 6 ספרות.' }));
       if (password.length < 10) return send(res, 400, JSON.stringify({ error: 'הסיסמה החדשה צריכה להכיל לפחות 10 תווים.' }));
@@ -2315,12 +2309,6 @@ async function handleClassroomApi(req, res) {
         if (!reset) return null;
         const now = new Date().toISOString();
         const salt = crypto.randomBytes(16).toString('hex');
-        if (role === 'admin') {
-          if (reset.target_id !== 'default' || email !== CLASSROOM_ADMIN_EMAIL) return null;
-          setClassroomAdminCredential(db, password);
-          db.prepare('UPDATE classroom_admin_sessions SET revoked_at = ? WHERE revoked_at IS NULL').run(now);
-          return { role };
-        }
         const teacher = db.prepare('SELECT id, name, email FROM classroom_teachers WHERE id = ? AND email = ?').get(reset.target_id, email);
         if (!teacher) return null;
         db.prepare('UPDATE classroom_teachers SET password_salt = ?, password_hash = ?, updated_at = ? WHERE id = ?')
