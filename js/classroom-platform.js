@@ -101,31 +101,32 @@
     const message = document.getElementById('student-login-message');
     const unifiedForm = document.getElementById('classroom-unified-login-form');
     const unifiedMessage = document.getElementById('classroom-unified-message');
+    const entryMessage = message || unifiedMessage;
     const session = document.getElementById('student-session');
     const welcome = document.getElementById('student-welcome');
     const studentLogout = document.getElementById('student-logout');
     const codeRequestForm = document.getElementById('student-code-request');
 
-    guest.addEventListener('click', async (event) => {
+    guest?.addEventListener('click', async (event) => {
       event.preventDefault();
-      setMessage(message, 'עוברים למצב אורח…');
+      setMessage(entryMessage, 'עוברים למצב אורח…');
       try {
         await api('/api/classroom/logout', {});
         await summerRequest('/api/summer/logout');
         localStorage.removeItem('haiTechSummerToken');
         location.assign(guestNext);
       } catch (error) {
-        setMessage(message, error.message);
+        setMessage(entryMessage, error.message);
       }
     });
 
-    subscription.addEventListener('click', async (event) => {
+    subscription?.addEventListener('click', async (event) => {
       event.preventDefault();
-      setMessage(message, 'עוברים למנוי האישי…');
+      setMessage(entryMessage, 'עוברים למנוי האישי…');
       try {
         await api('/api/classroom/logout', {});
       } catch (error) {
-        setMessage(message, error.message);
+        setMessage(entryMessage, error.message);
         return;
       }
       if (!summerToken()) {
@@ -143,7 +144,7 @@
 
     function showStudent(data) {
       if (unifiedForm) unifiedForm.hidden = true;
-      form.hidden = true;
+      if (form) form.hidden = true;
       session.hidden = false;
       welcome.textContent = `שלום ${data.student.name}, נכנסת לכיתה ${data.classroom.name}.`;
       if (studentCourseLinks) {
@@ -186,15 +187,15 @@
       }
     });
 
-    form.addEventListener('submit', async (event) => {
+    form?.addEventListener('submit', async (event) => {
       event.preventDefault();
-      setMessage(message, 'נכנסים…');
+      setMessage(entryMessage, 'נכנסים…');
       try {
         const data = await api('/api/classroom/student-login', formData(form));
-        setMessage(message, '', true);
+        setMessage(entryMessage, '', true);
         showStudent(data);
       } catch (error) {
-        setMessage(message, error.message);
+        setMessage(entryMessage, error.message);
       }
     });
 
@@ -205,25 +206,25 @@
         try {
           await api('/api/classroom/student-code-request', formData(codeRequestForm));
           codeRequestForm.reset();
-          setMessage(message, 'אם הפרטים נמצאו במערכת, נשלחה בקשה למורה לשלוח לך את הקוד.', true);
+          setMessage(entryMessage, 'אם הפרטים נמצאו במערכת, נשלחה בקשה למורה לשלוח לך את פרטי הכניסה.', true);
         } catch (error) {
-          setMessage(message, error.message);
+          setMessage(entryMessage, error.message);
         }
       });
     }
 
-    studentLogout.addEventListener('click', async () => {
-      setMessage(message, 'מתנתקים…');
+    studentLogout?.addEventListener('click', async () => {
+      setMessage(entryMessage, 'מתנתקים…');
       try {
         await api('/api/classroom/logout', {});
         session.hidden = true;
-        form.hidden = false;
+        if (form) form.hidden = false;
         if (unifiedForm) unifiedForm.hidden = false;
-        form.reset();
+        form?.reset();
         unifiedForm?.reset();
-        setMessage(message, 'אפשר להיכנס עכשיו כתלמיד/ה אחר/ת.', true);
+        setMessage(entryMessage, 'אפשר להיכנס עכשיו עם משתמש אחר.', true);
       } catch (error) {
-        setMessage(message, error.message);
+        setMessage(entryMessage, error.message);
       }
     });
   }

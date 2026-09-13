@@ -13,99 +13,54 @@
     <span class="topbar-note">כניסה לפי משתמש והרשאה</span>
   </header>
 
-  <main class="shell entry-shell">
-    <section class="intro">
-      <span class="eyebrow">איך רוצים ללמוד היום?</span>
-      <h1>כניסה ללומדה</h1>
-      <p>בחרו אם ללמוד במסגרת כיתה, במנוי אישי או בהתנסות החינמית.</p>
-    </section>
-
-    <section class="card unified-login-card" aria-labelledby="unifiedLoginTitle">
-      <div>
-        <span class="flow-label">כניסה למערכת</span>
-        <h2 id="unifiedLoginTitle">שם משתמש וסיסמה</h2>
-        <p>מורה נכנסת עם המייל והסיסמה שלה. תלמיד/ה נכנסים עם שם המשתמש שקיבלו מהמורה והקוד האישי כסיסמה. ההרשאה נקבעת אוטומטית לפי המשתמש.</p>
+  <main class="login-shell">
+    <section class="card login-card" aria-labelledby="unifiedLoginTitle">
+      <div class="login-brand">
+        <span>hai.tech</span>
+        <i aria-hidden="true"></i>
       </div>
+      <h1 id="unifiedLoginTitle">נכנסים ללומדה</h1>
+      <p class="login-subtitle">מורים ותלמידים נכנסים מאותו מקום. ההרשאה נקבעת אוטומטית לפי המשתמש.</p>
       <form id="classroom-unified-login-form">
-        <label>שם משתמש או מייל
+        <label>שם משתמש או מייל מורה
           <input name="username" autocomplete="username" required>
         </label>
-        <label>סיסמה או קוד אישי
+        <label>סיסמה
           <span class="password-wrap">
             <input id="classroom-unified-password" name="password" type="password" autocomplete="current-password" required>
             <button class="password-toggle" type="button" data-toggle-password="classroom-unified-password" aria-label="הצגת סיסמה"><span class="eye-icon" aria-hidden="true"></span></button>
           </span>
         </label>
-        <button class="button primary" type="submit">כניסה והמשך לפי הרשאה</button>
+        <button class="button primary" type="submit">כניסה</button>
       </form>
       <p class="message" id="classroom-unified-message" aria-live="polite"></p>
-    </section>
 
-    <section class="card flow-card student-flow-card" aria-labelledby="studentFlowTitle">
-      <div>
-        <span class="flow-label">משימות תלמיד/ה</span>
-        <h2 id="studentFlowTitle">מה עושים אחרי הכניסה?</h2>
-        <p>תלמיד/ה רואים רק את הלומדות שהמורה פתחה לכיתה ואת הפעולות שצריך לבצע כדי להתחיל.</p>
+      <div class="login-actions">
+        <button class="text-button" type="button" data-toggle-recovery="student-code-request">אין לי משתמש / שכחתי קוד</button>
+        <a class="text-button" href="teacher-classrooms.html">הרשמת מורה חדשה</a>
+        <a class="text-button" href="teacher-classrooms.html">שכחתי סיסמה</a>
       </div>
-      <ol class="role-flow-list">
-        <li><b>1. מכניסים קוד כיתה</b><span>זה הקוד המשותף שקיבלתם מהמורה.</span></li>
-        <li><b>2. מכניסים קוד אישי</b><span>זה הקוד הפרטי של התלמיד/ה. לא משתמשים בקוד של חבר/ה.</span></li>
-        <li><b>3. בוחרים לומדה פתוחה</b><span>יופיעו רק לומדות שהמורה פתחה לכיתה שלכם.</span></li>
-        <li><b>4. מתחילים שיעור</b><span>בשיעור 0 נכנסים ל-Minecraft, משלימים את המשימה ואז ממשיכים לשיעור הבא.</span></li>
-      </ol>
+
+      <form class="recovery-form request-teacher-form" id="student-code-request" hidden>
+        <p>תלמיד/ה בלי פרטי כניסה מבקש/ת מהמורה ליצור או לשלוח משתמש. אי אפשר לפתוח משתמש תלמיד לבד.</p>
+        <label>קוד כיתה
+          <input name="classCode" inputmode="text" autocomplete="organization" maxlength="6" required>
+        </label>
+        <label>שם תלמיד/ה
+          <input name="studentName" autocomplete="name" required>
+        </label>
+        <button class="button quiet" type="submit">שליחת בקשה למורה</button>
+      </form>
+      <p class="message" id="student-login-message" aria-live="polite"></p>
+
+      <div class="signed-in" id="student-session" hidden>
+        <strong id="student-welcome"></strong>
+        <p>הלומדות הפתוחות לכיתה שלך:</p>
+        <div class="course-links" id="student-course-links"></div>
+        <a class="button primary" id="student-continue" href="index.html" hidden>להמשיך ללומדה</a>
+        <button class="button quiet" id="student-logout" type="button">החלפת תלמיד/ה</button>
+      </div>
     </section>
-
-    <div class="choice-grid">
-      <section class="card guest-card">
-        <span class="card-icon" aria-hidden="true">🚀</span>
-        <h2>התנסות כאורח</h2>
-        <p>פותחים את התוכן החינמי של סיסי. ההתקדמות נשארת במכשיר הזה ואינה נשלחת למורה.</p>
-        <a class="button secondary" id="guest-continue" href="sisi.html">להתחיל בהתנסות החינמית</a>
-      </section>
-
-      <section class="card subscription-card">
-        <span class="card-icon" aria-hidden="true">⭐</span>
-        <h2>מנוי אישי</h2>
-        <p>נכנסים לחשבון המשפחתי. ההתקדמות נשמרת לילד או לילדה שנבחרו ואינה מופיעה בדוח כיתה.</p>
-        <a class="button subscription" id="subscription-continue" href="login.html">כניסה למנוי האישי</a>
-      </section>
-
-      <section class="card classroom-card">
-        <span class="card-icon" aria-hidden="true">🏫</span>
-        <h2>כניסת תלמיד/ה בקודים קיימים</h2>
-        <p>אם עדיין קיבלתם מהמורה קוד כיתה וקוד אישי, אפשר להיכנס גם כאן. ההתקדמות נשמרת בדוח הכיתה והמורה תראה אותה במסך הכיתות שלה.</p>
-        <form id="student-login-form">
-          <label>קוד כיתה
-            <input name="classCode" inputmode="text" autocomplete="organization" maxlength="6" required>
-          </label>
-          <label>קוד אישי
-            <span class="password-wrap">
-              <input id="student-personal-code" name="personalCode" type="password" inputmode="text" autocomplete="current-password" maxlength="6" required>
-              <button class="password-toggle" type="button" data-toggle-password="student-personal-code" aria-label="הצגת קוד אישי"><span class="eye-icon" aria-hidden="true"></span></button>
-            </span>
-          </label>
-          <button class="button primary" type="submit">כניסה לכיתה</button>
-        </form>
-        <button class="text-button" type="button" data-toggle-recovery="student-code-request">שכחתי קוד אישי</button>
-        <form class="recovery-form" id="student-code-request" hidden>
-          <label>קוד כיתה
-            <input name="classCode" inputmode="text" autocomplete="organization" maxlength="6" required>
-          </label>
-          <label>שם תלמיד/ה
-            <input name="studentName" autocomplete="name" required>
-          </label>
-          <button class="button quiet" type="submit">שליחת בקשה למורה</button>
-        </form>
-        <p class="message" id="student-login-message" aria-live="polite"></p>
-        <div class="signed-in" id="student-session" hidden>
-          <strong id="student-welcome"></strong>
-          <p>הלומדות הפתוחות לכיתה שלך:</p>
-          <div class="course-links" id="student-course-links"></div>
-          <a class="button primary" id="student-continue" href="index.html" hidden>להמשיך ללומדה</a>
-          <button class="button quiet" id="student-logout" type="button">החלפת תלמיד/ה</button>
-        </div>
-      </section>
-    </div>
   </main>
 
   <script src="js/classroom-platform.js?v=20260906-guest-direct-1"></script>
