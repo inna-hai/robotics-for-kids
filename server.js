@@ -2593,7 +2593,7 @@ async function handleClassroomApi(req, res) {
       return sendWithHeaders(res, 200, JSON.stringify({
         ok: true,
         role: 'student',
-        nextUrl: 'classroom-entry.html',
+        nextUrl: 'classroom-student.html',
         student: {
           id: result.student.id,
           name: result.student.name,

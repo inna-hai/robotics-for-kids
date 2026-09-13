@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>הלומדות שלי | hai.tech</title>
+  <meta name="description" content="מסך תלמיד/ה לאחר כניסה לכיתה.">
+  <link rel="stylesheet" href="css/classroom-platform.css">
+</head>
+<body data-classroom-page="student-home">
+  <main class="student-home-shell">
+    <section class="student-home-card" aria-labelledby="studentHomeTitle">
+      <div class="student-home-success">
+        <h1 id="studentHomeTitle">נכנסת בהצלחה</h1>
+        <p id="student-home-welcome">טוענים את הלומדות הפתוחות לכיתה שלך...</p>
+      </div>
+      <div class="student-home-courses">
+        <h2>הלומדות הפתוחות בשבילך</h2>
+        <div class="course-links" id="student-home-course-links"></div>
+        <p class="message" id="student-home-message" aria-live="polite"></p>
+      </div>
+      <button class="button quiet" id="student-home-logout" type="button">החלפת תלמיד/ה</button>
+    </section>
+  </main>
+
+  <script src="js/classroom-platform.js?v=20260906-guest-direct-1"></script>
+</body>
+</html>

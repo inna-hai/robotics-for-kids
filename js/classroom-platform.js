@@ -102,9 +102,6 @@
     const unifiedForm = document.getElementById('classroom-unified-login-form');
     const unifiedMessage = document.getElementById('classroom-unified-message');
     const entryMessage = message || unifiedMessage;
-    const session = document.getElementById('student-session');
-    const welcome = document.getElementById('student-welcome');
-    const studentLogout = document.getElementById('student-logout');
     const codeRequestForm = document.getElementById('student-code-request');
 
     guest?.addEventListener('click', async (event) => {
@@ -143,19 +140,7 @@
     });
 
     function showStudent(data) {
-      if (unifiedForm) unifiedForm.hidden = true;
-      if (form) form.hidden = true;
-      session.hidden = false;
-      welcome.textContent = `שלום ${data.student.name}, נכנסת לכיתה ${data.classroom.name}.`;
-      if (studentCourseLinks) {
-        const links = (data.classroom.courses || []).map((courseId) => {
-          const link = element('a', courseLabels[courseId] || courseId, 'button primary');
-          link.href = courseStarts[courseId] || 'index.html#courses';
-          return link;
-        });
-        studentCourseLinks.replaceChildren(...links);
-      }
-      if (studentContinue) studentContinue.hidden = true;
+      location.assign(data.nextUrl || 'classroom-student.html');
     }
 
     try {
@@ -164,7 +149,10 @@
         location.assign('teacher-classrooms.html');
         return;
       }
-      if (me.role === 'student') showStudent(me);
+      if (me.role === 'student') {
+        location.assign('classroom-student.html');
+        return;
+      }
       if (me.role === 'guest' && me.subscriptionGateEnabled === false && requested) {
         location.assign(requested);
       }
@@ -181,7 +169,7 @@
           return;
         }
         setMessage(unifiedMessage, '', true);
-        showStudent(data);
+        location.assign(data.nextUrl || 'classroom-student.html');
       } catch (error) {
         setMessage(unifiedMessage, error.message);
       }
@@ -193,7 +181,7 @@
       try {
         const data = await api('/api/classroom/student-login', formData(form));
         setMessage(entryMessage, '', true);
-        showStudent(data);
+        location.assign('classroom-student.html');
       } catch (error) {
         setMessage(entryMessage, error.message);
       }
@@ -213,20 +201,6 @@
       });
     }
 
-    studentLogout?.addEventListener('click', async () => {
-      setMessage(entryMessage, 'מתנתקים…');
-      try {
-        await api('/api/classroom/logout', {});
-        session.hidden = true;
-        if (form) form.hidden = false;
-        if (unifiedForm) unifiedForm.hidden = false;
-        form?.reset();
-        unifiedForm?.reset();
-        setMessage(entryMessage, 'אפשר להיכנס עכשיו עם משתמש אחר.', true);
-      } catch (error) {
-        setMessage(entryMessage, error.message);
-      }
-    });
   }
 
   function element(tag, text, className) {
@@ -357,6 +331,41 @@
     ...courseStarts,
     'craftom-agent': 'craftom-school/preview/index.html',
   };
+
+  async function initStudentHome() {
+    const welcome = document.getElementById('student-home-welcome');
+    const linksBox = document.getElementById('student-home-course-links');
+    const message = document.getElementById('student-home-message');
+    const logout = document.getElementById('student-home-logout');
+
+    try {
+      const data = await api('/api/classroom/me');
+      if (data.role !== 'student') {
+        location.assign('classroom-entry.html');
+        return;
+      }
+      welcome.textContent = `שלום ${data.student.name}, נכנסת לכיתה ${data.classroom.name}.`;
+      const links = (data.classroom.courses || []).map((courseId) => {
+        const link = element('a', courseLabels[courseId] || courseId, 'button primary');
+        link.href = courseStarts[courseId] || 'index.html#courses';
+        return link;
+      });
+      linksBox.replaceChildren(...links);
+      if (!links.length) setMessage(message, 'עדיין אין לומדות פתוחות לכיתה שלך. המורה תפתח לומדות בהמשך.', false);
+    } catch (error) {
+      setMessage(message, error.message);
+      setTimeout(() => location.assign('classroom-entry.html'), 1200);
+    }
+
+    logout?.addEventListener('click', async () => {
+      setMessage(message, 'מתנתקים...');
+      try {
+        await api('/api/classroom/logout', {});
+      } finally {
+        location.assign('classroom-entry.html');
+      }
+    });
+  }
 
   function selectedCourses(form) {
     return new FormData(form).getAll('courses');
@@ -651,6 +660,7 @@
   }
 
   if (page === 'entry') initEntry();
+  if (page === 'student-home') initStudentHome();
   if (page === 'teacher') initTeacher();
   initPasswordToggles();
   initRecoveryToggles();
