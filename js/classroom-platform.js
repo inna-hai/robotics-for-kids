@@ -81,7 +81,13 @@
     document.querySelectorAll('[data-toggle-recovery]').forEach((button) => {
       button.addEventListener('click', () => {
         const panel = document.getElementById(button.dataset.toggleRecovery);
-        if (panel) panel.hidden = !panel.hidden;
+        if (!panel) return;
+        const isOpening = panel.hidden;
+        panel.hidden = !isOpening;
+        if (isOpening) {
+          const message = document.getElementById('student-login-message') || document.getElementById('classroom-unified-message');
+          setMessage(message, '');
+        }
       });
     });
   }
@@ -103,6 +109,7 @@
     const unifiedMessage = document.getElementById('classroom-unified-message');
     const entryMessage = message || unifiedMessage;
     const codeRequestForm = document.getElementById('student-code-request');
+    if (codeRequestForm) codeRequestForm.hidden = true;
 
     guest?.addEventListener('click', async (event) => {
       event.preventDefault();
@@ -194,6 +201,7 @@
         try {
           const data = await api('/api/classroom/student-code-request', formData(codeRequestForm));
           codeRequestForm.reset();
+          codeRequestForm.hidden = true;
           setMessage(entryMessage, data.message || 'נשלח עכשיו מייל למורה עם בקשת פרטי הכניסה.', true);
         } catch (error) {
           setMessage(entryMessage, error.message);
