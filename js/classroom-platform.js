@@ -99,6 +99,8 @@
 
     const form = document.getElementById('student-login-form');
     const message = document.getElementById('student-login-message');
+    const unifiedForm = document.getElementById('classroom-unified-login-form');
+    const unifiedMessage = document.getElementById('classroom-unified-message');
     const session = document.getElementById('student-session');
     const welcome = document.getElementById('student-welcome');
     const studentLogout = document.getElementById('student-logout');
@@ -140,6 +142,7 @@
     });
 
     function showStudent(data) {
+      if (unifiedForm) unifiedForm.hidden = true;
       form.hidden = true;
       session.hidden = false;
       welcome.textContent = `שלום ${data.student.name}, נכנסת לכיתה ${data.classroom.name}.`;
@@ -156,11 +159,32 @@
 
     try {
       const me = await api('/api/classroom/me');
+      if (me.role === 'teacher') {
+        location.assign('teacher-classrooms.html');
+        return;
+      }
       if (me.role === 'student') showStudent(me);
       if (me.role === 'guest' && me.subscriptionGateEnabled === false && requested) {
         location.assign(requested);
       }
     } catch {}
+
+    unifiedForm?.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      setMessage(unifiedMessage, 'בודקים הרשאות ונכנסים…');
+      try {
+        const data = await api('/api/classroom/login', formData(unifiedForm));
+        if (data.role === 'teacher') {
+          setMessage(unifiedMessage, 'זוהתה כניסת מורה. עוברים למסך הכיתות…', true);
+          location.assign(data.nextUrl || 'teacher-classrooms.html');
+          return;
+        }
+        setMessage(unifiedMessage, '', true);
+        showStudent(data);
+      } catch (error) {
+        setMessage(unifiedMessage, error.message);
+      }
+    });
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -194,7 +218,9 @@
         await api('/api/classroom/logout', {});
         session.hidden = true;
         form.hidden = false;
+        if (unifiedForm) unifiedForm.hidden = false;
         form.reset();
+        unifiedForm?.reset();
         setMessage(message, 'אפשר להיכנס עכשיו כתלמיד/ה אחר/ת.', true);
       } catch (error) {
         setMessage(message, error.message);
@@ -239,6 +265,7 @@
         classroom.name,
         classroom.joinCode,
         student.name,
+        student.username || '',
         student.minecraftPlayerName || '',
         latest ? (courseLabels[latest.courseId] || latest.courseId) : '',
         latest ? (latest.status === 'completed' ? 'הושלם' : 'התחיל/ה') : 'עדיין אין פעילות',
@@ -248,7 +275,7 @@
     });
     downloadCsv(
       `students-${safeFilename(classroom.name)}.csv`,
-      ['כיתה', 'קוד כיתה', 'שם תלמיד/ה', 'שם שחקן Minecraft', 'לומדה אחרונה', 'סטטוס אחרון', 'נוסף בתאריך', 'פרטי גישה'],
+      ['כיתה', 'קוד כיתה', 'שם תלמיד/ה', 'שם משתמש לכניסה', 'שם שחקן Minecraft', 'לומדה אחרונה', 'סטטוס אחרון', 'נוסף בתאריך', 'פרטי גישה'],
       rows,
     );
   }
@@ -393,11 +420,12 @@
           const data = await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/students/reset-codes`, {});
           downloadCsv(
             `student-login-codes-${safeFilename(classroom.name)}.csv`,
-            ['כיתה', 'קוד כיתה', 'שם תלמיד/ה', 'קוד אישי חדש', 'שם שחקן Minecraft', 'נוצר בתאריך'],
+            ['כיתה', 'קוד כיתה', 'שם תלמיד/ה', 'שם משתמש לכניסה', 'סיסמה / קוד אישי חדש', 'שם שחקן Minecraft', 'נוצר בתאריך'],
             (data.students || []).map(student => [
               data.classroom.name,
               data.classroom.joinCode,
               student.name,
+              student.username || '',
               student.loginCode,
               student.minecraftPlayerName || '',
               student.updatedAt || '',
@@ -464,6 +492,7 @@
           const name = element('strong', student.name);
           const stats = element('div', undefined, 'student-progress-stats');
           stats.append(
+            element('span', `משתמש: ${student.username || classroom.joinCode}`),
             element('span', `${summary.completed} הושלמו`),
             element('span', `${summary.started} התחילו`),
             element('span', summary.updatedAt ? `פעילות אחרונה: ${summary.updatedAt}` : 'אין פעילות אחרונה'),
@@ -498,10 +527,10 @@
           const refreshedCard = [...list.children].find((item) => item.dataset.classId === classroom.id);
           const refreshedNotice = refreshedCard?.querySelector('.one-time-code');
           if (refreshedNotice) {
-            refreshedNotice.textContent = `הקוד האישי של ${data.student.name}: ${data.student.loginCode} — הקוד מוצג עכשיו בלבד.`;
+            refreshedNotice.textContent = `פרטי הכניסה של ${data.student.name}: שם משתמש ${data.student.username}, סיסמה/קוד אישי ${data.student.loginCode} — הקוד האישי מוצג עכשיו בלבד.`;
             refreshedNotice.hidden = false;
           }
-          setMessage(dashboardMessage, 'התלמיד/ה נוסף/ה. שמרו את הקוד האישי שמופיע בכרטיס הכיתה.', true);
+          setMessage(dashboardMessage, 'התלמיד/ה נוסף/ה. שמרו את שם המשתמש והקוד האישי שמופיעים בכרטיס הכיתה.', true);
         } catch (error) {
           setMessage(dashboardMessage, error.message);
         }

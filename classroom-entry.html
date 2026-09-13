@@ -10,7 +10,7 @@
 <body data-classroom-page="entry">
   <header class="topbar">
     <a class="brand" href="index.html">🌈 hai.tech</a>
-    <a class="text-link" href="teacher-classrooms.html">כניסת מורה</a>
+    <span class="topbar-note">כניסה לפי משתמש והרשאה</span>
   </header>
 
   <main class="shell entry-shell">
@@ -18,6 +18,27 @@
       <span class="eyebrow">איך רוצים ללמוד היום?</span>
       <h1>כניסה ללומדה</h1>
       <p>בחרו אם ללמוד במסגרת כיתה, במנוי אישי או בהתנסות החינמית.</p>
+    </section>
+
+    <section class="card unified-login-card" aria-labelledby="unifiedLoginTitle">
+      <div>
+        <span class="flow-label">כניסה למערכת</span>
+        <h2 id="unifiedLoginTitle">שם משתמש וסיסמה</h2>
+        <p>מורה נכנסת עם המייל והסיסמה שלה. תלמיד/ה נכנסים עם שם המשתמש שקיבלו מהמורה והקוד האישי כסיסמה. ההרשאה נקבעת אוטומטית לפי המשתמש.</p>
+      </div>
+      <form id="classroom-unified-login-form">
+        <label>שם משתמש או מייל
+          <input name="username" autocomplete="username" required>
+        </label>
+        <label>סיסמה או קוד אישי
+          <span class="password-wrap">
+            <input id="classroom-unified-password" name="password" type="password" autocomplete="current-password" required>
+            <button class="password-toggle" type="button" data-toggle-password="classroom-unified-password" aria-label="הצגת סיסמה"><span class="eye-icon" aria-hidden="true"></span></button>
+          </span>
+        </label>
+        <button class="button primary" type="submit">כניסה והמשך לפי הרשאה</button>
+      </form>
+      <p class="message" id="classroom-unified-message" aria-live="polite"></p>
     </section>
 
     <section class="card flow-card student-flow-card" aria-labelledby="studentFlowTitle">
@@ -51,8 +72,8 @@
 
       <section class="card classroom-card">
         <span class="card-icon" aria-hidden="true">🏫</span>
-        <h2>אני תלמיד/ה בכיתה</h2>
-        <p>הכניסו את שני הקודים שקיבלתם מהמורה. ההתקדמות נשמרת בדוח הכיתה והמורה תראה אותה במסך הכיתות שלה.</p>
+        <h2>כניסת תלמיד/ה בקודים קיימים</h2>
+        <p>אם עדיין קיבלתם מהמורה קוד כיתה וקוד אישי, אפשר להיכנס גם כאן. ההתקדמות נשמרת בדוח הכיתה והמורה תראה אותה במסך הכיתות שלה.</p>
         <form id="student-login-form">
           <label>קוד כיתה
             <input name="classCode" inputmode="text" autocomplete="organization" maxlength="6" required>

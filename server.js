@@ -326,6 +326,7 @@ function openSummerDb() {
       id TEXT PRIMARY KEY,
       classroom_id TEXT NOT NULL REFERENCES classrooms(id) ON DELETE CASCADE,
       name TEXT NOT NULL,
+      login_username TEXT UNIQUE,
       login_salt TEXT NOT NULL,
       login_hash TEXT NOT NULL,
       created_at TEXT NOT NULL,
@@ -407,6 +408,8 @@ function openSummerDb() {
   `);
   try { db.prepare('ALTER TABLE student_progress ADD COLUMN child_id TEXT REFERENCES summer_children(id) ON DELETE CASCADE').run(); } catch {}
   try { db.prepare('ALTER TABLE classroom_students ADD COLUMN minecraft_player_name TEXT').run(); } catch {}
+  try { db.prepare('ALTER TABLE classroom_students ADD COLUMN login_username TEXT').run(); } catch {}
+  try { db.prepare('CREATE UNIQUE INDEX IF NOT EXISTS idx_classroom_students_login_username_unique ON classroom_students(login_username)').run(); } catch {}
   try { db.prepare('ALTER TABLE kugel_class_sessions ADD COLUMN launch_token TEXT').run(); } catch {}
   try { db.prepare("ALTER TABLE summer_children ADD COLUMN subscription_status TEXT NOT NULL DEFAULT 'trial' CHECK (subscription_status IN ('trial', 'active', 'past_due', 'cancelled'))").run(); } catch {}
   const migrateLegacyClassrooms = db.transaction(() => {
@@ -445,6 +448,25 @@ function openSummerDb() {
     db.prepare('INSERT INTO classroom_migrations (migration_key, applied_at) VALUES (?, ?)').run(migrationKey, migrationTime);
   });
   migrateLegacyTeacherCourses();
+  const migrateStudentUsernames = db.transaction(() => {
+    const migrationKey = 'student-login-usernames-v1';
+    if (db.prepare('SELECT 1 FROM classroom_migrations WHERE migration_key = ?').get(migrationKey)) return;
+    const classrooms = db.prepare('SELECT id FROM classrooms ORDER BY created_at').all();
+    const students = db.prepare(`
+      SELECT id FROM classroom_students
+      WHERE classroom_id = ? AND (login_username IS NULL OR login_username = '')
+      ORDER BY created_at
+    `);
+    const update = db.prepare('UPDATE classroom_students SET login_username = ?, updated_at = ? WHERE id = ?');
+    const migrationTime = new Date().toISOString();
+    for (const classroom of classrooms) {
+      for (const student of students.all(classroom.id)) {
+        update.run(generateStudentLoginUsername(db, classroom.id), migrationTime, student.id);
+      }
+    }
+    db.prepare('INSERT INTO classroom_migrations (migration_key, applied_at) VALUES (?, ?)').run(migrationKey, migrationTime);
+  });
+  migrateStudentUsernames();
   const migrateMinecraftPlayerIndex = db.transaction(() => {
     const migrationKey = 'minecraft-player-nocase-index-v1';
     if (db.prepare('SELECT 1 FROM classroom_migrations WHERE migration_key = ?').get(migrationKey)) return;
@@ -1284,6 +1306,12 @@ function hashClassroomSecret(secret, salt) {
   return crypto.scryptSync(String(secret || ''), salt, 64).toString('hex');
 }
 
+function classroomSecretMatches(secret, salt, hash) {
+  const provided = Buffer.from(hashClassroomSecret(secret, salt), 'hex');
+  const expected = Buffer.from(hash || '', 'hex');
+  return provided.length === expected.length && crypto.timingSafeEqual(provided, expected);
+}
+
 function classroomInviteMatches(value) {
   if (!CLASSROOM_TEACHER_INVITE_CODE) return false;
   const provided = crypto.createHash('sha256').update(String(value || '')).digest();
@@ -1591,11 +1619,7 @@ function generateClassJoinCode(db) {
 function personalLoginCodeExists(db, classroomId, code) {
   return db.prepare('SELECT login_salt, login_hash FROM classroom_students WHERE classroom_id = ?')
     .all(classroomId)
-    .some(student => {
-      const provided = Buffer.from(hashClassroomSecret(code, student.login_salt), 'hex');
-      const expected = Buffer.from(student.login_hash, 'hex');
-      return provided.length === expected.length && crypto.timingSafeEqual(provided, expected);
-    });
+    .some(student => classroomSecretMatches(code, student.login_salt, student.login_hash));
 }
 
 function generatePersonalLoginCode(db, classroomId) {
@@ -1606,6 +1630,24 @@ function generatePersonalLoginCode(db, classroomId) {
     if (!personalLoginCodeExists(db, classroomId, code)) return code;
   }
   throw new Error('student_code_generation_failed');
+}
+
+function cleanLoginIdentifier(value) {
+  return cleanText(value, 180).toLowerCase();
+}
+
+function generateStudentLoginUsername(db, classroomId) {
+  const classroom = db.prepare('SELECT join_code FROM classrooms WHERE id = ?').get(classroomId);
+  const prefix = cleanAccessCode(classroom?.join_code || 'CLASS') || 'CLASS';
+  for (let index = 1; index <= 999; index += 1) {
+    const username = `${prefix}-${String(index).padStart(2, '0')}`.toLowerCase();
+    if (!db.prepare('SELECT id FROM classroom_students WHERE login_username = ?').get(username)) return username;
+  }
+  for (let attempt = 0; attempt < 30; attempt += 1) {
+    const username = `${prefix}-${crypto.randomBytes(3).toString('hex')}`.toLowerCase();
+    if (!db.prepare('SELECT id FROM classroom_students WHERE login_username = ?').get(username)) return username;
+  }
+  throw new Error('student_username_generation_failed');
 }
 
 function classroomProgressPublic(row) {
@@ -2208,7 +2250,7 @@ async function handleClassroomApi(req, res) {
     if (student) return send(res, 200, JSON.stringify({
       ok: true,
       role: 'student',
-      student: { id: student.id, name: student.name },
+      student: { id: student.id, name: student.name, username: student.login_username || '' },
       classroom: {
         id: student.classroom_id,
         name: student.classroom_name,
@@ -2250,10 +2292,11 @@ async function handleClassroomApi(req, res) {
       courses: classroomCourses(db, classroom.id),
       createdAt: classroom.created_at,
       students: db.prepare(`
-        SELECT id, name, minecraft_player_name, created_at FROM classroom_students WHERE classroom_id = ? ORDER BY created_at
+        SELECT id, name, login_username, minecraft_player_name, created_at FROM classroom_students WHERE classroom_id = ? ORDER BY created_at
       `).all(classroom.id).map(student => ({
         id: student.id,
         name: student.name,
+        username: student.login_username || '',
         minecraftPlayerName: student.minecraft_player_name || '',
         createdAt: student.created_at,
         progress: db.prepare('SELECT * FROM classroom_progress WHERE student_id = ? ORDER BY updated_at DESC')
@@ -2326,7 +2369,7 @@ async function handleClassroomApi(req, res) {
       if (!classCode || studentName.length < 2) return send(res, 400, JSON.stringify({ error: 'נא למלא קוד כיתה ושם תלמיד/ה.' }));
       if (!emailDeliveryConfigured()) return send(res, 503, JSON.stringify({ error: 'שליחת מייל אינה מוגדרת כרגע.' }));
       const context = withSummerDb(db => db.prepare(`
-        SELECT s.id, s.name AS student_name, c.name AS classroom_name, c.join_code, t.name AS teacher_name, t.email AS teacher_email
+        SELECT s.id, s.name AS student_name, s.login_username, c.name AS classroom_name, c.join_code, t.name AS teacher_name, t.email AS teacher_email
         FROM classroom_students s
         JOIN classrooms c ON c.id = s.classroom_id
         JOIN classroom_teachers t ON t.id = c.teacher_id
@@ -2337,7 +2380,7 @@ async function handleClassroomApi(req, res) {
         await sendEmail({
           to: context.teacher_email,
           subject: `בקשת קוד כניסה מתלמיד/ה בכיתה ${context.classroom_name}`,
-          text: `שלום ${context.teacher_name},\n\n${context.student_name} ביקש/ה לקבל שוב את קוד הכניסה האישי לכיתה ${context.classroom_name}.\nקוד הכיתה: ${context.join_code}\n\nהקוד האישי הקיים אינו מוצג במערכת מטעמי אבטחה. אם הוא שמור אצלך בקובץ התלמידים, אפשר להעביר אותו לתלמיד/ה. אם לא, אפשר להיכנס למסך המורה וללחוץ על "יצירת קודי כניסה חדשים לקובץ".\n\nהודעה זו נשלחה אוטומטית ממערכת hai.tech.`,
+          text: `שלום ${context.teacher_name},\n\n${context.student_name} ביקש/ה לקבל שוב את פרטי הכניסה לכיתה ${context.classroom_name}.\nשם משתמש: ${context.login_username || context.join_code}\n\nהקוד האישי הקיים אינו מוצג במערכת מטעמי אבטחה. אם הוא שמור אצלך בקובץ התלמידים, אפשר להעביר אותו לתלמיד/ה כסיסמה. אם לא, אפשר להיכנס למסך המורה וללחוץ על "יצירת קודי כניסה חדשים לקובץ".\n\nהודעה זו נשלחה אוטומטית ממערכת hai.tech.`,
         });
       }
       return send(res, 200, JSON.stringify({ ok: true, message: 'אם נמצאה התאמה במערכת, נשלחה בקשה למורה.' }));
@@ -2477,6 +2520,89 @@ async function handleClassroomApi(req, res) {
       return send(res, 200, JSON.stringify({ ok: true, progress: classroomProgressPublic(row) }));
     }
 
+    if (action === 'login') {
+      const username = cleanLoginIdentifier(body.username || body.identifier || body.email);
+      const password = String(body.password || body.personalCode || '');
+      const studentPassword = cleanAccessCode(password);
+      const loginKey = classroomLoginKey(req, 'unified', username);
+      if (isClassroomLoginLimited(loginKey)) {
+        return send(res, 429, JSON.stringify({ error: 'יותר מדי ניסיונות. נסו שוב בעוד כמה דקות.' }));
+      }
+      const result = withSummerDb(db => {
+        if (emailLooksValid(username)) {
+          const teacher = db.prepare('SELECT * FROM classroom_teachers WHERE email = ?').get(username);
+          if (teacher && classroomSecretMatches(password, teacher.password_salt, teacher.password_hash)) {
+            return { role: 'teacher', teacher, token: createClassroomTeacherSession(db, teacher.id) };
+          }
+        }
+
+        const student = db.prepare(`
+          SELECT s.*, c.name AS classroom_name, c.join_code
+          FROM classroom_students s
+          JOIN classrooms c ON c.id = s.classroom_id
+          WHERE lower(s.login_username) = ?
+          LIMIT 1
+        `).get(username);
+        if (student && studentPassword && classroomSecretMatches(studentPassword, student.login_salt, student.login_hash)) {
+          return { role: 'student', student, token: createClassroomStudentSession(db, student.id) };
+        }
+
+        const legacyClassCode = cleanAccessCode(username);
+        if (legacyClassCode) {
+          const classroom = db.prepare('SELECT * FROM classrooms WHERE join_code = ?').get(legacyClassCode);
+          if (classroom) {
+            const students = db.prepare('SELECT * FROM classroom_students WHERE classroom_id = ?').all(classroom.id);
+            const legacyStudent = students.find(candidate => classroomSecretMatches(studentPassword, candidate.login_salt, candidate.login_hash));
+            if (legacyStudent) {
+              return {
+                role: 'student',
+                student: { ...legacyStudent, classroom_name: classroom.name, join_code: classroom.join_code },
+                token: createClassroomStudentSession(db, legacyStudent.id),
+              };
+            }
+          }
+        }
+        return null;
+      });
+      if (!result) {
+        recordClassroomLoginFailure(loginKey);
+        return send(res, 401, JSON.stringify({ error: 'שם המשתמש או הסיסמה אינם נכונים.' }));
+      }
+      clearClassroomLoginFailures(loginKey);
+      if (result.role === 'teacher') {
+        return sendWithHeaders(res, 200, JSON.stringify({
+          ok: true,
+          role: 'teacher',
+          nextUrl: 'teacher-classrooms.html',
+          teacher: {
+            id: result.teacher.id,
+            name: result.teacher.name,
+            email: result.teacher.email,
+            courses: withSummerDb(db => teacherCourses(db, result.teacher.id)),
+          },
+        }), 'application/json; charset=utf-8', {
+          'Set-Cookie': classroomSessionCookie(result.token),
+        });
+      }
+      return sendWithHeaders(res, 200, JSON.stringify({
+        ok: true,
+        role: 'student',
+        nextUrl: 'classroom-entry.html',
+        student: {
+          id: result.student.id,
+          name: result.student.name,
+          username: result.student.login_username || result.student.join_code,
+        },
+        classroom: {
+          id: result.student.classroom_id,
+          name: result.student.classroom_name,
+          courses: withSummerDb(db => classroomCourses(db, result.student.classroom_id)),
+        },
+      }), 'application/json; charset=utf-8', {
+        'Set-Cookie': classroomSessionCookie(result.token),
+      });
+    }
+
     if (action === 'student-login') {
       const classCode = cleanAccessCode(body.classCode);
       const personalCode = cleanAccessCode(body.personalCode);
@@ -2488,11 +2614,7 @@ async function handleClassroomApi(req, res) {
         const classroom = db.prepare('SELECT * FROM classrooms WHERE join_code = ?').get(classCode);
         if (!classroom || !personalCode) return null;
         const students = db.prepare('SELECT * FROM classroom_students WHERE classroom_id = ?').all(classroom.id);
-        const student = students.find(candidate => {
-          const provided = Buffer.from(hashClassroomSecret(personalCode, candidate.login_salt), 'hex');
-          const expected = Buffer.from(candidate.login_hash, 'hex');
-          return provided.length === expected.length && crypto.timingSafeEqual(provided, expected);
-        });
+        const student = students.find(candidate => classroomSecretMatches(personalCode, candidate.login_salt, candidate.login_hash));
         if (!student) return null;
         return { classroom, student, token: createClassroomStudentSession(db, student.id) };
       });
@@ -2504,7 +2626,7 @@ async function handleClassroomApi(req, res) {
       return sendWithHeaders(res, 200, JSON.stringify({
         ok: true,
         role: 'student',
-        student: { id: result.student.id, name: result.student.name },
+        student: { id: result.student.id, name: result.student.name, username: result.student.login_username || '' },
         classroom: {
           id: result.classroom.id,
           name: result.classroom.name,
@@ -2580,18 +2702,20 @@ async function handleClassroomApi(req, res) {
         const classroom = db.prepare('SELECT * FROM classrooms WHERE id = ? AND teacher_id = ?').get(segments[3], teacher.id);
         if (!classroom) return null;
         const now = new Date().toISOString();
-        const students = db.prepare('SELECT id, name, minecraft_player_name, created_at FROM classroom_students WHERE classroom_id = ? ORDER BY created_at').all(classroom.id);
+        const students = db.prepare('SELECT id, name, login_username, minecraft_player_name, created_at FROM classroom_students WHERE classroom_id = ? ORDER BY created_at').all(classroom.id);
         const rows = students.map(student => {
           const loginCode = generatePersonalLoginCode(db, classroom.id);
           const salt = crypto.randomBytes(16).toString('hex');
+          const username = student.login_username || generateStudentLoginUsername(db, classroom.id);
           db.prepare(`
             UPDATE classroom_students
-            SET login_salt = ?, login_hash = ?, updated_at = ?
+            SET login_username = ?, login_salt = ?, login_hash = ?, updated_at = ?
             WHERE id = ? AND classroom_id = ?
-          `).run(salt, hashClassroomSecret(loginCode, salt), now, student.id, classroom.id);
+          `).run(username, salt, hashClassroomSecret(loginCode, salt), now, student.id, classroom.id);
           return {
             id: student.id,
             name: student.name,
+            username,
             loginCode,
             minecraftPlayerName: student.minecraft_player_name || '',
             createdAt: student.created_at,
@@ -2617,26 +2741,28 @@ async function handleClassroomApi(req, res) {
         if (!classroom) return null;
         const now = new Date().toISOString();
         const loginCode = generatePersonalLoginCode(db, classroom.id);
+        const username = generateStudentLoginUsername(db, classroom.id);
         const salt = crypto.randomBytes(16).toString('hex');
         const student = {
           id: crypto.randomUUID(),
           classroom_id: classroom.id,
           name,
+          login_username: username,
           login_salt: salt,
           login_hash: hashClassroomSecret(loginCode, salt),
           created_at: now,
           updated_at: now,
         };
         db.prepare(`
-          INSERT INTO classroom_students (id, classroom_id, name, login_salt, login_hash, created_at, updated_at)
-          VALUES (?, ?, ?, ?, ?, ?, ?)
-        `).run(student.id, student.classroom_id, student.name, student.login_salt, student.login_hash, student.created_at, student.updated_at);
+          INSERT INTO classroom_students (id, classroom_id, name, login_username, login_salt, login_hash, created_at, updated_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `).run(student.id, student.classroom_id, student.name, student.login_username, student.login_salt, student.login_hash, student.created_at, student.updated_at);
         return { student, loginCode };
       });
       if (!result) return send(res, 404, JSON.stringify({ error: 'הכיתה לא נמצאה.' }));
       return send(res, 201, JSON.stringify({
         ok: true,
-        student: { id: result.student.id, name: result.student.name, loginCode: result.loginCode, createdAt: result.student.created_at },
+        student: { id: result.student.id, name: result.student.name, username: result.student.login_username, loginCode: result.loginCode, createdAt: result.student.created_at },
       }));
     }
 
@@ -2692,9 +2818,7 @@ async function handleClassroomApi(req, res) {
       const result = withSummerDb(db => {
         const teacher = db.prepare('SELECT * FROM classroom_teachers WHERE email = ?').get(email);
         if (!teacher) return null;
-        const provided = Buffer.from(hashClassroomSecret(password, teacher.password_salt), 'hex');
-        const expected = Buffer.from(teacher.password_hash, 'hex');
-        if (provided.length !== expected.length || !crypto.timingSafeEqual(provided, expected)) return null;
+        if (!classroomSecretMatches(password, teacher.password_salt, teacher.password_hash)) return null;
         return { teacher, token: createClassroomTeacherSession(db, teacher.id) };
       });
       if (!result) {
