@@ -260,25 +260,55 @@
   }
 
   function exportClassroomStudents(classroom) {
-    const rows = (classroom.students || []).map(student => {
-      const latest = student.progress?.[0];
-      return [
-        classroom.name,
-        classroom.joinCode,
-        student.name,
-        student.username || '',
-        student.minecraftPlayerName || '',
-        latest ? (courseLabels[latest.courseId] || latest.courseId) : '',
-        latest ? (latest.status === 'completed' ? 'הושלם' : 'התחיל/ה') : 'עדיין אין פעילות',
-        student.createdAt || '',
-        'קוד אישי קיים לא מוצג. ליצירת קודים חדשים השתמשו בכפתור יצירת קודי כניסה חדשים.',
-      ];
-    });
+    const rows = (classroom.students || []).map(student => [
+      student.name,
+      student.username || '',
+      classroom.name,
+      classroom.joinCode,
+      student.password || '',
+      student.minecraftPlayerName || '',
+      student.createdAt || '',
+    ]);
     downloadCsv(
       `students-${safeFilename(classroom.name)}.csv`,
-      ['כיתה', 'קוד כיתה', 'שם תלמיד/ה', 'שם משתמש לכניסה', 'שם שחקן Minecraft', 'לומדה אחרונה', 'סטטוס אחרון', 'נוסף בתאריך', 'פרטי גישה'],
+      ['שם תלמיד/ה', 'שם משתמש לתלמיד', 'כיתה', 'קוד כיתה', 'סיסמה', 'שם משתמש למיינקראפט', 'תאריך יצירת שם המשתמש לתלמיד'],
       rows,
     );
+  }
+
+  function renderStudentCredentialsTable(classroom) {
+    const wrapper = element('div', undefined, 'student-credentials-table');
+    const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    ['שם תלמיד/ה', 'שם משתמש לתלמיד', 'כיתה', 'קוד כיתה', 'סיסמה', 'שם משתמש למיינקראפט', 'תאריך יצירת שם המשתמש לתלמיד']
+      .forEach(title => headerRow.append(element('th', title)));
+    thead.append(headerRow);
+    const tbody = document.createElement('tbody');
+    if ((classroom.students || []).length) {
+      classroom.students.forEach((student) => {
+        const row = document.createElement('tr');
+        [
+          student.name,
+          student.username || '',
+          classroom.name,
+          classroom.joinCode,
+          student.password || 'לא נשמר לתלמיד קיים',
+          student.minecraftPlayerName || '',
+          formatDateTime(student.createdAt) || student.createdAt || '',
+        ].forEach(value => row.append(element('td', value)));
+        tbody.append(row);
+      });
+    } else {
+      const row = document.createElement('tr');
+      const cell = element('td', 'עדיין לא נוספו תלמידים לכיתה הזאת.');
+      cell.colSpan = 7;
+      row.append(cell);
+      tbody.append(row);
+    }
+    table.append(thead, tbody);
+    wrapper.append(table);
+    return wrapper;
   }
 
   function formatDateTime(value) {
@@ -397,9 +427,10 @@
 
       const exportBox = element('section', undefined, 'export-box');
       exportBox.append(
-        element('h4', 'קובץ תלמידים ופרטי גישה'),
-        element('p', 'הורידו רשימה מסודרת של תלמידי הכיתה. קודים קיימים לא מוצגים; אפשר ליצור קודי כניסה חדשים שיופיעו בקובץ חד-פעמי.'),
+        element('h4', 'טבלת תלמידים ופרטי כניסה'),
+        element('p', 'הטבלה מציגה רק תלמידים בכיתה הזאת. תלמידים חדשים יופיעו עם שם משתמש וסיסמה קבועים לייצוא.'),
       );
+      exportBox.append(renderStudentCredentialsTable(classroom));
       const exportActions = element('div', undefined, 'export-actions');
       const exportList = element('button', 'הורדת רשימת תלמידים', 'button quiet');
       exportList.type = 'button';
@@ -407,14 +438,14 @@
         exportClassroomStudents(classroom);
         setMessage(dashboardMessage, `קובץ התלמידים של ${classroom.name} ירד למחשב.`, true);
       });
-      const resetCodes = element('button', 'יצירת קודי כניסה חדשים לקובץ', 'button secondary');
+      const resetCodes = element('button', 'חידוש סיסמאות לתלמידים', 'button secondary');
       resetCodes.type = 'button';
       resetCodes.addEventListener('click', async () => {
         if (!classroom.students.length) {
           setMessage(dashboardMessage, 'אין עדיין תלמידים בכיתה הזאת.', false);
           return;
         }
-        if (!confirm(`ליצור קודי כניסה חדשים לכל תלמידי ${classroom.name}? הקודים הישנים יפסיקו לעבוד.`)) return;
+        if (!confirm(`לחדש סיסמאות לכל תלמידי ${classroom.name}? הסיסמאות הישנות יפסיקו לעבוד.`)) return;
         resetCodes.disabled = true;
         setMessage(dashboardMessage, 'יוצרים קודי כניסה חדשים…');
         try {
@@ -427,7 +458,7 @@
               data.classroom.joinCode,
               student.name,
               student.username || '',
-              student.loginCode,
+              student.password || student.loginCode,
               student.minecraftPlayerName || '',
               student.updatedAt || '',
             ]),
@@ -487,7 +518,7 @@
       const progressSection = element('section', undefined, 'student-progress-panel');
       progressSection.append(
         element('h4', 'התקדמות תלמידים'),
-        element('p', 'כאן מופיעה התקדמות שנשמרה מתלמידים שנכנסו דרך קוד הכיתה והקוד האישי שלהם.'),
+        element('p', 'כאן מופיעה התקדמות שנשמרה מתלמידים שנכנסו עם שם המשתמש והסיסמה שלהם.'),
       );
       const students = element('ul', undefined, 'student-list');
       if (classroom.students.length) {
@@ -532,10 +563,10 @@
           const refreshedCard = [...list.children].find((item) => item.dataset.classId === classroom.id);
           const refreshedNotice = refreshedCard?.querySelector('.one-time-code');
           if (refreshedNotice) {
-            refreshedNotice.textContent = `פרטי הכניסה של ${data.student.name}: שם משתמש ${data.student.username}, סיסמה/קוד אישי ${data.student.loginCode} — הקוד האישי מוצג עכשיו בלבד.`;
+            refreshedNotice.textContent = `פרטי הכניסה של ${data.student.name}: שם משתמש ${data.student.username}, סיסמה ${data.student.password || data.student.loginCode}. הפרטים נשמרו בטבלת הכיתה ובקובץ הייצוא.`;
             refreshedNotice.hidden = false;
           }
-          setMessage(dashboardMessage, 'התלמיד/ה נוסף/ה. שמרו את שם המשתמש והקוד האישי שמופיעים בכרטיס הכיתה.', true);
+          setMessage(dashboardMessage, 'התלמיד/ה נוסף/ה. פרטי הכניסה נשמרו בטבלת הכיתה ובקובץ הייצוא.', true);
         } catch (error) {
           setMessage(dashboardMessage, error.message);
         }

@@ -327,6 +327,7 @@ function openSummerDb() {
       classroom_id TEXT NOT NULL REFERENCES classrooms(id) ON DELETE CASCADE,
       name TEXT NOT NULL,
       login_username TEXT UNIQUE,
+      login_code_export TEXT,
       login_salt TEXT NOT NULL,
       login_hash TEXT NOT NULL,
       created_at TEXT NOT NULL,
@@ -409,6 +410,7 @@ function openSummerDb() {
   try { db.prepare('ALTER TABLE student_progress ADD COLUMN child_id TEXT REFERENCES summer_children(id) ON DELETE CASCADE').run(); } catch {}
   try { db.prepare('ALTER TABLE classroom_students ADD COLUMN minecraft_player_name TEXT').run(); } catch {}
   try { db.prepare('ALTER TABLE classroom_students ADD COLUMN login_username TEXT').run(); } catch {}
+  try { db.prepare('ALTER TABLE classroom_students ADD COLUMN login_code_export TEXT').run(); } catch {}
   try { db.prepare('CREATE UNIQUE INDEX IF NOT EXISTS idx_classroom_students_login_username_unique ON classroom_students(login_username)').run(); } catch {}
   try { db.prepare('ALTER TABLE kugel_class_sessions ADD COLUMN launch_token TEXT').run(); } catch {}
   try { db.prepare("ALTER TABLE summer_children ADD COLUMN subscription_status TEXT NOT NULL DEFAULT 'trial' CHECK (subscription_status IN ('trial', 'active', 'past_due', 'cancelled'))").run(); } catch {}
@@ -2292,11 +2294,12 @@ async function handleClassroomApi(req, res) {
       courses: classroomCourses(db, classroom.id),
       createdAt: classroom.created_at,
       students: db.prepare(`
-        SELECT id, name, login_username, minecraft_player_name, created_at FROM classroom_students WHERE classroom_id = ? ORDER BY created_at
+        SELECT id, name, login_username, login_code_export, minecraft_player_name, created_at FROM classroom_students WHERE classroom_id = ? ORDER BY created_at
       `).all(classroom.id).map(student => ({
         id: student.id,
         name: student.name,
         username: student.login_username || '',
+        password: student.login_code_export || '',
         minecraftPlayerName: student.minecraft_player_name || '',
         createdAt: student.created_at,
         progress: db.prepare('SELECT * FROM classroom_progress WHERE student_id = ? ORDER BY updated_at DESC')
@@ -2369,7 +2372,7 @@ async function handleClassroomApi(req, res) {
       if (!classCode || studentName.length < 2) return send(res, 400, JSON.stringify({ error: 'נא למלא קוד כיתה ושם תלמיד/ה.' }));
       if (!emailDeliveryConfigured()) return send(res, 503, JSON.stringify({ error: 'שליחת מייל אינה מוגדרת כרגע.' }));
       const context = withSummerDb(db => db.prepare(`
-        SELECT s.id, s.name AS student_name, s.login_username, c.name AS classroom_name, c.join_code, t.name AS teacher_name, t.email AS teacher_email
+        SELECT s.id, s.name AS student_name, s.login_username, s.login_code_export, c.name AS classroom_name, c.join_code, t.name AS teacher_name, t.email AS teacher_email
         FROM classroom_students s
         JOIN classrooms c ON c.id = s.classroom_id
         JOIN classroom_teachers t ON t.id = c.teacher_id
@@ -2380,7 +2383,9 @@ async function handleClassroomApi(req, res) {
         await sendEmail({
           to: context.teacher_email,
           subject: `בקשת קוד כניסה מתלמיד/ה בכיתה ${context.classroom_name}`,
-          text: `שלום ${context.teacher_name},\n\n${context.student_name} ביקש/ה לקבל שוב את פרטי הכניסה לכיתה ${context.classroom_name}.\nשם משתמש: ${context.login_username || context.join_code}\n\nהקוד האישי הקיים אינו מוצג במערכת מטעמי אבטחה. אם הוא שמור אצלך בקובץ התלמידים, אפשר להעביר אותו לתלמיד/ה כסיסמה. אם לא, אפשר להיכנס למסך המורה וללחוץ על "יצירת קודי כניסה חדשים לקובץ".\n\nהודעה זו נשלחה אוטומטית ממערכת hai.tech.`,
+          text: context.login_code_export
+            ? `שלום ${context.teacher_name},\n\n${context.student_name} ביקש/ה לקבל שוב את פרטי הכניסה לכיתה ${context.classroom_name}.\nשם משתמש: ${context.login_username || context.join_code}\nסיסמה: ${context.login_code_export}\n\nאפשר להעביר את הפרטים לתלמיד/ה.\n\nהודעה זו נשלחה אוטומטית ממערכת hai.tech.`
+            : `שלום ${context.teacher_name},\n\n${context.student_name} ביקש/ה לקבל שוב את פרטי הכניסה לכיתה ${context.classroom_name}.\nשם משתמש: ${context.login_username || context.join_code}\n\nלתלמיד/ה הזה אין סיסמה שמורה להצגה כי הוא/היא נוצר/ה לפני עדכון המערכת. אפשר להיכנס למסך המורה וללחוץ על "חידוש סיסמאות לתלמידים".\n\nהודעה זו נשלחה אוטומטית ממערכת hai.tech.`,
         });
       }
       return send(res, 200, JSON.stringify({ ok: true, message: 'אם נמצאה התאמה במערכת, נשלחה בקשה למורה.' }));
@@ -2709,13 +2714,14 @@ async function handleClassroomApi(req, res) {
           const username = student.login_username || generateStudentLoginUsername(db, classroom.id);
           db.prepare(`
             UPDATE classroom_students
-            SET login_username = ?, login_salt = ?, login_hash = ?, updated_at = ?
+            SET login_username = ?, login_code_export = ?, login_salt = ?, login_hash = ?, updated_at = ?
             WHERE id = ? AND classroom_id = ?
-          `).run(username, salt, hashClassroomSecret(loginCode, salt), now, student.id, classroom.id);
+          `).run(username, loginCode, salt, hashClassroomSecret(loginCode, salt), now, student.id, classroom.id);
           return {
             id: student.id,
             name: student.name,
             username,
+            password: loginCode,
             loginCode,
             minecraftPlayerName: student.minecraft_player_name || '',
             createdAt: student.created_at,
@@ -2748,21 +2754,22 @@ async function handleClassroomApi(req, res) {
           classroom_id: classroom.id,
           name,
           login_username: username,
+          login_code_export: loginCode,
           login_salt: salt,
           login_hash: hashClassroomSecret(loginCode, salt),
           created_at: now,
           updated_at: now,
         };
         db.prepare(`
-          INSERT INTO classroom_students (id, classroom_id, name, login_username, login_salt, login_hash, created_at, updated_at)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        `).run(student.id, student.classroom_id, student.name, student.login_username, student.login_salt, student.login_hash, student.created_at, student.updated_at);
+          INSERT INTO classroom_students (id, classroom_id, name, login_username, login_code_export, login_salt, login_hash, created_at, updated_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `).run(student.id, student.classroom_id, student.name, student.login_username, student.login_code_export, student.login_salt, student.login_hash, student.created_at, student.updated_at);
         return { student, loginCode };
       });
       if (!result) return send(res, 404, JSON.stringify({ error: 'הכיתה לא נמצאה.' }));
       return send(res, 201, JSON.stringify({
         ok: true,
-        student: { id: result.student.id, name: result.student.name, username: result.student.login_username, loginCode: result.loginCode, createdAt: result.student.created_at },
+        student: { id: result.student.id, name: result.student.name, username: result.student.login_username, password: result.loginCode, loginCode: result.loginCode, createdAt: result.student.created_at },
       }));
     }
 
