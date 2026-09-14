@@ -18,8 +18,9 @@
     body.lesson23-code-pilot .work-head{background:#f8fafc;color:#0f172a;border-bottom-color:#dbeafe}
     body.lesson23-code-pilot .work-head h2::before{content:'🐍 ';}
     body.lesson23-code-pilot .work-head .hint{color:#2563eb}
-    body.lesson23-code-pilot .blockly-area{background:linear-gradient(180deg,#f8fafc,#eef6ff);border-top:1px solid #dbeafe;box-shadow:inset 0 0 0 2px rgba(37,99,235,.10)}
-    body.lesson23-code-pilot .BlocklyMainBackground{fill:#fbfdff!important;stroke:#bfdbfe!important;stroke-width:2px!important}
+    body.lesson23-code-pilot .blockly-area{position:relative;background:#fff;border-top:1px solid #dbeafe;box-shadow:inset 0 0 0 1px rgba(37,99,235,.08);overflow:hidden}
+    body.lesson23-code-pilot .BlocklyMainBackground{fill:#fff!important;stroke:transparent!important}
+    body.lesson23-code-pilot .blocklyBubbleCanvas,body.lesson23-code-pilot .blocklyScrollbarVertical,body.lesson23-code-pilot .blocklyScrollbarHorizontal,body.lesson23-code-pilot .blocklyZoom,body.lesson23-code-pilot .blocklyTrash{opacity:0!important;pointer-events:none!important}
     body.lesson23-code-pilot .blocklyToolboxDiv{background:#f8fafc!important;color:#0f172a!important;border-left:1px solid #dbeafe!important}
     body.lesson23-code-pilot .blocklyFlyoutBackground{fill:#ffffff!important;fill-opacity:.98!important;stroke:#dbeafe!important}
     body.lesson23-code-pilot .blocklyText{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;font-weight:800!important}
@@ -30,21 +31,27 @@
     body.lesson23-code-pilot .code{background:#ffffff;color:#0f172a;border-top:0;font-size:.88rem;line-height:1.45}
     body.lesson23-code-pilot .code-line.active-code-line{background:#dbeafe;border-right-color:#2563eb;color:#1e3a8a}
     body.lesson23-code-pilot .mission{background:#ecfeff;border-top-color:#67e8f9;color:#164e63}
-    .code-pilot-banner{margin:0 0 10px;padding:10px 12px;border-radius:14px;background:#e0f2fe;border:1px solid #67e8f9;color:#164e63;font-weight:900;line-height:1.45}
 
     body.lesson23-code-pilot #blocklyDiv{position:relative}
-    body.lesson23-code-pilot .lesson23-code-overlay{position:absolute;inset:46px 190px 14px 14px;z-index:20;pointer-events:auto;direction:ltr;text-align:left;background:rgba(255,255,255,.72);border:0;border-radius:0;padding:14px 16px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:1rem;line-height:1.7;color:#0f172a;box-shadow:none;overflow:auto;white-space:pre-wrap}
+    body.lesson23-code-pilot .lesson23-code-overlay{position:absolute;inset:0 190px 0 0;z-index:20;pointer-events:auto;direction:ltr;text-align:left;background:#fff;border:0;border-radius:0;padding:14px 18px 18px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:1rem;line-height:1.7;color:#0f172a;box-shadow:none;overflow:auto;white-space:pre-wrap}
+    body.lesson23-code-pilot .lesson23-code-panel-title{direction:rtl;text-align:right;font-family:Rubik,Arial,sans-serif;font-weight:900;color:#1e3a8a;margin:0 0 10px;padding-bottom:9px;border-bottom:1px solid #dbeafe}
     body.lesson23-code-pilot .lesson23-code-overlay .placeholder{color:#64748b;direction:rtl;text-align:right;font-family:Rubik,Arial,sans-serif;font-weight:900}
     body.lesson23-code-pilot .lesson23-code-overlay .line{display:block;border-right:0;padding:1px 4px;border-radius:0;min-height:1.65em;cursor:pointer;position:relative;pointer-events:auto}
     body.lesson23-code-pilot .lesson23-code-overlay .line:hover{background:transparent}
     body.lesson23-code-pilot .lesson23-code-overlay .line.comment{color:#64748b;direction:rtl;text-align:right;font-family:Rubik,Arial,sans-serif}
     body.lesson23-code-pilot .lesson23-code-overlay .line.active{background:rgba(219,234,254,.55);color:#1e3a8a}
+    body.lesson23-code-pilot .lesson23-code-overlay .line.indented{background:rgba(254,243,199,.45);border-radius:6px}
+    body.lesson23-code-pilot .lesson23-code-overlay .line.indented.active{background:rgba(219,234,254,.55);color:#1e3a8a}
     body.lesson23-code-pilot .blocklyToolboxDiv,body.lesson23-code-pilot .blocklyFlyout{z-index:80!important}
     body.lesson23-code-pilot .blocklyFlyoutBackground{pointer-events:auto}
     body.lesson23-code-pilot .lesson23-drag-handle{display:inline-block;width:1.4em;margin-right:6px;text-align:center;color:#94a3b8;cursor:grab;user-select:none;touch-action:none;font-family:Rubik,Arial,sans-serif;font-weight:900}
     body.lesson23-code-pilot .lesson23-drag-handle:active{cursor:grabbing}
     body.lesson23-code-pilot .lesson23-code-text{display:inline-block;min-width:7ch;border-radius:4px;padding:0 2px;outline:none;cursor:text}
     body.lesson23-code-pilot .lesson23-code-text:focus{background:transparent;border-bottom:2px solid #60a5fa;box-shadow:none}
+    .code-pilot-banner{margin:0 0 10px;padding:10px 12px;border-radius:14px;background:#e0f2fe;border:1px solid #67e8f9;color:#164e63;font-weight:900;line-height:1.45}
+    .code-pilot-help{margin:0 0 10px;padding:9px 11px;border-radius:14px;background:#f0f9ff;border:1px solid #bae6fd;color:#164e63}
+    .code-pilot-help summary{cursor:pointer;font-weight:900}
+    .code-pilot-help div{margin-top:7px;line-height:1.55;font-weight:800}
         body.lesson23-code-pilot .lesson23-code-overlay .line.lesson23-dragging-line{opacity:.45}
     body.lesson23-code-pilot .lesson23-code-overlay .line.lesson23-drop-before{box-shadow:inset 0 2px 0 #2563eb}
     body.lesson23-code-pilot .lesson23-code-overlay .line.lesson23-drop-after{box-shadow:inset 0 -2px 0 #2563eb}
@@ -4915,89 +4922,95 @@
           },
           {
                     "id": 23,
-                    "title": "סיפור בשלושה פריימים",
-                    "goal": "פיילוט מעבר ל־Python: גוררים פקודות שנראות כמו שורות קוד ובונים סיפור קצר.",
+                    "title": "מפת טיול בקוד",
+                    "goal": "פיילוט מעבר ל־Python: גוררים פקודות שהופכות לשורות קוד ובונים מפת טיול קטנה.",
                     "concept": "קוד כשורות פעולה",
-                    "product": "קומיקס קוד קצר",
+                    "product": "מפת טיול קטנה עם שביל, תחנות וסימנים",
                     "blocks": ["forward", "right", "repeat", "color", "pen", "comment"],
                     "practice": [
-                              "גררו שורות קוד ראשונות וציירו פריים ראשון.",
-                              "השתמשו ב־repeat כדי לצייר צורה בסיסית.",
-                              "עברו לפריים שני בלי קו מחבר.",
-                              "שנו מספר או צבע בתוך שורת קוד.",
+                              "גררו פקודות ראשונות וראו אותן הופכות לשורות Python.",
+                              "ציירו שביל ראשון במפה ושנו את האורך מתוך שורת הקוד.",
+                              "שנו צבעים במילים כמו blue או red.",
                               "בדקו איך סדר השורות משפיע על הציור.",
-                              "תקנו מעבר שמצייר קו מיותר.",
-                              "בנו סיפור קצר בשלושה פריימים.",
-                              "אתגר רשות: הוסיפו סוף קטן לסיפור."
+                              "הוסיפו פנייה וסימן דרך ראשון: שלט כיוון קטן.",
+                              "תקנו מעבר שמצייר קו מיותר בעזרת penup / pendown.",
+                              "הוסיפו תחנה שנייה: בית קטן או ריבוע קטן עם repeat.",
+                              "אתגר רשות: הוסיפו יעד אישי למפה — ים, גינה, הר או מערה."
                     ],
                     "timing": [
-                              "0–8 פתיחה: היום הבלוקים נראים ומתנהגים כמו שורות Python",
-                              "8–18 הדגמה קצרה: גוררים שורה, רואים שורת קוד, מריצים",
-                              "18–35 פריים ראשון ושימוש ב־repeat",
-                              "35–52 פריים שני ומעבר נקי עם penup / pendown",
-                              "52–68 דיבאג ושינוי מספרים/צבעים בתוך שורות הקוד",
-                              "68–82 בניית שלושה פריימים קצרים",
-                              "82–90 שיתוף: קוראים 3 שורות קוד ומסבירים מה הן עושות"
+                              "0–8 פתיחה: היום עובדים עם שורות Python שנוצרות מגרירה",
+                              "8–18 הדגמה קצרה: גוררים, עורכים מספר/צבע, מוחקים ומסדרים שורות",
+                              "18–30 שביל ראשון במפה ועריכת אורך",
+                              "30–42 צבעים וסדר שורות: color לפני forward",
+                              "42–55 פנייה בשביל וסימן דרך ראשון — שלט כיוון",
+                              "55–68 דיבאג מעבר: penup / pendown כדי לא לצייר קו מיותר",
+                              "68–82 תחנה שנייה וסיום אישי למפת הטיול",
+                              "82–90 שיתוף: קוראים 3 שורות קוד ומסבירים מה הן עושות במפה"
                     ],
                     "teacherTips": [
                               "להציג את זה כפיילוט מעבר לקוד: עדיין גוררים, אבל חושבים בשורות Python.",
-                              "לא לתת כתיבה חופשית מלאה; הילדים משנים מספרים, צבעים וסדר שורות.",
+                              "להחזיק את הסיפור פשוט: הצב יוצא לטיול ומסמן תחנות בדרך.",
+                              "לא לתת דף ריק: להציע יעדים מוכנים כמו בית, ים, גינה, הר או מערה.",
                               "לעצור אחרי כל שינוי ולשאול: איזו שורה גרמה למה שראינו?",
-                              "להקפיד על סיפור קצר מאוד כדי שהממשק החדש לא יעמיס.",
-                              "אם תלמיד נתקע, לבקש ממנו לקרוא בקול רק את 2–3 השורות האחרונות."
+                              "להקפיד שהילדים משנים מספרים, צבעים וסדר שורות — לא כותבים קוד חופשי מלא.",
+                              "אם תלמיד נתקע, לבקש ממנו לבנות רק שביל + סימן קטן אחד."
                     ],
                     "unit": "יחידה 5 — אנימציה וסיפור בתנועה",
                     "level": "מעבר מודרך מבלוקים ל־Python",
-                    "story": "הילדים יוצרים קומיקס קצר בשלושה פריימים, ובכל פעם גוררים פקודות שנראות כמו שורות קוד אמיתיות.",
-                    "mission": "לבנות סיפור קצר בשלושה פריימים בעזרת שורות קוד שנגררות לאזור העבודה.",
-                    "outcome": "קומיקס קוד עם 3 פריימים ושורות Python ברורות.",
+                    "story": "הצב יוצא לטיול, מצייר שביל, פונה בדרך ומסמן תחנות קטנות כמו שלט כיוון, בית, ים או גינה.",
+                    "mission": "לבנות מפת טיול קטנה בעזרת שורות קוד: שביל, פנייה, תחנה וסימן אישי.",
+                    "outcome": "מפת טיול צבעונית עם 2–3 תחנות ושורות Python ברורות.",
                     "approach": "בלוקים שנראים כמו קוד → שינוי בטוח בשורה → הרצה → הסבר",
-                    "bridge": "גוררים שורת קוד → קוראים אותה → משנים מספר/צבע",
+                    "bridge": "גוררים שורת קוד → קוראים אותה → משנים מספר/צבע/סדר",
                     "durationMinutes": 90,
                     "lessonFlow": [
-                              {"minutes":"0–8","title":"פתיחה: היום עובדים כמו מתכנתים","teacher":"מסבירים שהבלוקים הם בעצם שורות Python שאפשר לגרור ולסדר.","students":"מסתכלים על הפקודות וקוראים בקול forward, right, color."},
-                              {"minutes":"8–18","title":"הדגמה קצרה","teacher":"גוררים 2–3 שורות, מריצים, ומראים שכל שורה משפיעה על הציור.","students":"מנבאים מה תעשה השורה הבאה לפני הרצה."},
-                              {"minutes":"18–35","title":"פריים ראשון","teacher":"מובילים פריים פשוט עם צבע, קו ו־repeat קטן.","students":"בונים ציור ראשון קצר ומריצים אחרי כל שינוי."},
-                              {"minutes":"35–52","title":"פריים שני ומעבר נקי","teacher":"מדגימים penup / pendown כמעבר בין פריימים בלי קו מחבר.","students":"מוסיפים פריים שני במקום אחר."},
-                              {"minutes":"52–68","title":"דיבאג ושינוי שורות","teacher":"נותנים באג קטן של מעבר ומכוונים לקריאת השורות לפי הסדר.","students":"מתקנים שורה אחת או מוסיפים penup/pendown."},
-                              {"minutes":"68–82","title":"שלושה פריימים","teacher":"נותנים בחירה מוגבלת: התחלה, שינוי, סוף.","students":"משלימים קומיקס קצר בשלושה אזורים."},
-                              {"minutes":"82–90","title":"שיתוף וסיכום","teacher":"מבקשים לקרוא 3 שורות Python ולהסביר מה כל אחת עושה.","students":"מציגים: קודם..., אחר כך..., ואז..."}
+                              {"minutes":"0–8","title":"פתיחה: הטיול הראשון בקוד","teacher":"מסבירים שהיום בונים מפת טיול קטנה: שביל, פנייה ותחנות. כל פקודה שנגררת הופכת לשורת Python.","students":"מסתכלים על הפקודות וקוראים בקול forward, right, color."},
+                              {"minutes":"8–18","title":"הדגמה קצרה של צורת העבודה","teacher":"גוררים 2–3 שורות, עורכים מספר וצבע, מוחקים עם Delete ומסדרים מהידית ⋮⋮.","students":"מנבאים מה תעשה השורה הבאה לפני הרצה."},
+                              {"minutes":"18–30","title":"שביל ראשון","teacher":"מובילים התחלה פשוטה: צבע ואז קו קדימה, ומשנים את האורך בתוך שורת הקוד.","students":"בונים שביל ראשון ומריצים אחרי שינוי מספר."},
+                              {"minutes":"30–42","title":"צבעים וסדר שורות","teacher":"מדגימים ש־color חייב לבוא לפני הקו שאמור להיצבע.","students":"משנים צבע בשם באנגלית ומסדרים שורה במקום הנכון."},
+                              {"minutes":"42–55","title":"פנייה וסימן דרך ראשון","teacher":"מוסיפים פנייה ויוצרים סימן קטן שמתאים לצומת: שלט כיוון.","students":"בונים שלט קטן ליד הצומת."},
+                              {"minutes":"55–68","title":"דיבאג מעבר נקי","teacher":"נותנים מעבר שמצייר קו מיותר ומכוונים ל־penup / pendown.","students":"מתקנים את המעבר בלי למחוק את כל המפה."},
+                              {"minutes":"68–82","title":"תחנה שנייה וסיום אישי","teacher":"מציעים בחירה: בית קטן, ים, גינה, הר או מערה.","students":"מוסיפים תחנה שנייה או יעד אישי בעזרת 3–6 שורות."},
+                              {"minutes":"82–90","title":"שיתוף וסיכום","teacher":"מבקשים לקרוא 3 שורות Python ולהסביר מה הן עושות במפה.","students":"מציגים: קודם הצב..., אחר כך..., ואז..."}
                     ],
                     "exercises": [
-                              {"id":1,"minutes":"18–24","title":"תרגול 1 — שורת קוד ראשונה","prompt":"גררו שורות קוד לפריים הראשון: בחרו צבע וציירו קו ראשון.","hint":"התחילו ב־color ואז forward. כל בלוק שאתם גוררים הוא שורת Python.","check":"יש צבע ופקודת forward שמציירת קו ראשון.","commonMistake":"גוררים הרבה שורות לפני הרצה ולא יודעים איזו שורה השפיעה."},
-                              {"id":2,"minutes":"24–32","title":"תרגול 2 — צורה עם repeat","prompt":"הוסיפו בפריים הראשון צורה פשוטה בעזרת repeat, למשל ריבוע קטן.","hint":"שימו בתוך repeat שתי שורות: forward ואז right.","check":"יש לולאת repeat שמציירת צורה סגורה או כמעט סגורה.","commonMistake":"שמים את הפנייה מחוץ ל־repeat ולכן הצורה לא נסגרת."},
-                              {"id":3,"minutes":"32–40","title":"תרגול 3 — מעבר לפריים שני","prompt":"עברו למקום חדש בלי לצייר קו מחבר, ואז התחילו פריים שני.","hint":"הסדר הוא penup → forward → pendown → ציור חדש.","check":"יש מעבר נקי עם penup ו־pendown, ואז ציור נוסף.","commonMistake":"שוכחים pendown ולכן הפריים השני לא מצויר."},
-                              {"id":4,"minutes":"40–49","title":"תרגול 4 — משנים שורת קוד","prompt":"שנו מספר או צבע בתוך אחת השורות כדי שהפריים השני יהיה שונה מהראשון.","hint":"נסו לשנות מספר ב־forward או צבע ב־color, ואז להריץ שוב.","check":"יש שינוי ברור בצבע או באורך לעומת ההרצה הקודמת.","commonMistake":"משנים כמה דברים יחד ואז קשה להבין מה השפיע."},
-                              {"id":5,"minutes":"49–58","title":"תרגול 5 — סדר השורות","prompt":"הוסיפו פרט קטן ובדקו שהשורה של הצבע נמצאת לפני הקו שאמור לקבל אותו.","hint":"בקוד, הסדר חשוב: color משפיע רק על מה שמגיע אחריו.","check":"יש לפחות שני צבעים שמופיעים בציור בסדר נכון.","commonMistake":"שמים color אחרי forward ואז הצבע לא משפיע על הקו שכבר צויר."},
-                              {"id":6,"minutes":"58–67","title":"תרגול 6 — דיבאג: קו מיותר","prompt":"תקנו את הקוד המוכן כך שהמעבר לפריים הבא לא יצייר קו מיותר.","hint":"חפשו את המעבר בין הפריימים והוסיפו penup לפניו ו־pendown לפני הציור הבא.","check":"הקו המיותר נעלם, אבל שני הפריימים עדיין מצוירים.","commonMistake":"מוחקים את הציור במקום לתקן רק את המעבר."},
-                              {"id":7,"minutes":"67–78","title":"תרגול 7 — סיפור בשלושה פריימים","prompt":"בנו שלושה פריימים קצרים: התחלה, שינוי וסוף. כל פריים יכול להיות צורה או סימן קטן.","hint":"עברו בין פריימים עם penup / pendown. שמרו על ציורים קטנים ופשוטים.","check":"יש שלושה חלקים נפרדים בציור ושימוש ברור בשורות Python.","commonMistake":"מנסים לצייר סיפור גדול מדי ומאבדים את הרצף."},
-                              {"id":8,"minutes":"78–84","title":"אתגר רשות — סוף קטן לסיפור","prompt":"אם נשאר זמן, הוסיפו פרט קטן לסוף הסיפור: שמש, חץ, צבע אחר או סימן הפתעה.","hint":"אתגר רשות קצר — מספיק להוסיף 2–3 שורות קוד.","check":"נוספה תוספת קטנה וברורה בלי לשבור את שלושת הפריימים.","commonMistake":"מוסיפים הרבה מדי ושוכחים לבדוק בהרצה."}
+                              {"id":1,"minutes":"18–24","title":"תרגול 1 — השביל הראשון","prompt":"התחילו את מפת הטיול: גררו color ו־forward. שנו את הצבע בשורת color לצבע שאינו blue, ואז הריצו.","hint":"צבעים כותבים במילים כמו red, green או purple. לא זוכרים איזה צבעים יש? פתחו את התפריט בבלוק color שבמחסן.","check":"יש color ו־forward, והשביל הראשון מצויר בצבע שאינו כחול.","commonMistake":"שוכחים לשנות את blue בתוך שורת color לפני ההרצה."},
+                              {"id":2,"minutes":"24–32","title":"תרגול 2 — משנים את אורך השביל","prompt":"ערכו את המספר בתוך forward כדי שהשביל יהיה ארוך או קצר יותר.","hint":"לחצו בתוך השורה forward(100), שנו את המספר והריצו שוב.","check":"האורך של השביל משתנה אחרי עריכת המספר.","commonMistake":"מוחקים בטעות סוגריים או מרכאות במקום לשנות רק את המספר."},
+                              {"id":3,"minutes":"32–40","title":"תרגול 3 — קטע שני בצבע אחר","prompt":"הוסיפו לשביל קטע שני בצבע אחר: גררו color נוסף לפני forward נוסף, ובחרו צבע שונה מהקטע הראשון.","hint":"הסדר חשוב: color צריך להיות לפני הקו שאמור לקבל את הצבע החדש.","check":"יש במפה לפחות שני קטעי שביל בשני צבעים שונים.","commonMistake":"שמים color אחרי forward ולכן הצבע לא משפיע על הקו שכבר צויר."},
+                              {"id":4,"minutes":"40–48","title":"תרגול 4 — צומת ראשון במפה","prompt":"הוסיפו למפה שביל צדדי שיוצא מהשביל הראשי. עברו לנקודת הצומת בלי לצייר קו מיותר, ואז ציירו שביל קצר לכיוון חדש.","hint":"השתמשו ב־penup ו־pendown למעבר נקי, ואז הוסיפו right או left ו־forward לשביל הצדדי.","check":"יש שביל ראשי ושביל צדדי שיוצא ממנו, עם מעבר נקי ולפחות פנייה אחת.","commonMistake":"מציירים קו מעבר מיותר במקום להרים עט לפני המעבר לנקודת הצומת."},
+                              {"id":5,"minutes":"48–58","title":"תרגול 5 — שלט כיוון בצומת","prompt":"צרו ליד הצומת שלט כיוון: מקל קצר ושלט קטן שמראה לאן ממשיכים. אפשר להיעזר בדגם שמופיע כאן, או לעצב שלט משלכם.","hint":"אפשר לעשות שלט מלבני, או שלט עם קצה משולש כמו בדגם. את צורת השלט אפשר לבנות מארבעה קווים או עם repeat.","check":"יש שלט כיוון ליד הצומת: מקל וצורת שלט קטנה וברורה. פס פנימי או קצה משולש הם רשות.","commonMistake":"מציירים רק קו אחד, בלי צורת שלט ברורה."},
+                              {"id":6,"minutes":"58–68","title":"תרגול 6 — דיבאג: קו מיותר במפה","prompt":"תקנו את הקוד המוכן כך שהצב יעבור לתחנה חדשה בלי לצייר קו מיותר.","hint":"חפשו את המעבר בין המקומות. לפני מעבר משתמשים ב־penup, ולפני ציור חדש pendown.","check":"הקו המיותר נעלם, אבל השביל והתחנה עדיין מצוירים.","commonMistake":"מוחקים את הציור במקום לתקן רק את המעבר."},
+                              {"id":7,"minutes":"68–78","title":"תרגול 7 — תחנה שנייה: בית קטן","prompt":"הוסיפו תחנה שנייה למפה: בית קטן או ריבוע קטן בעזרת repeat.","hint":"ריבוע קטן: repeat עם forward ו־right. שמרו אותו קטן וברור.","check":"יש תחנה שנייה שנראית כמו צורה קטנה, לא רק קו נוסף.","commonMistake":"עושים צורה גדולה מדי והיא משתלטת על כל המפה."},
+                              {"id":8,"minutes":"78–84","title":"אתגר רשות — יעד אישי","prompt":"בחרו יעד לסוף הטיול: ים, גינה, הר או מערה. הוסיפו לו סימן קטן ב־2–4 שורות.","hint":"אפשר להוסיף צבע חדש, פנייה קצרה וקו או צורה קטנה.","check":"נוסף יעד אישי קטן וברור בלי לשבור את מפת הטיול.","commonMistake":"מוסיפים הרבה מדי ושוכחים להריץ ולבדוק."}
                     ],
                     "vocabulary": [
                               ["שורת קוד", "פקודה אחת שהמחשב מבצע, למשל forward(80)."],
                               ["סדר", "המחשב מבצע את השורות מלמעלה למטה."],
-                              ["פריים", "חלק אחד קטן בסיפור המצוי באזור משלו בציור."],
+                              ["מפת טיול", "ציור קטן שיש בו שביל ותחנות בדרך."],
+                              ["תחנה", "סימן קטן במפה, למשל שלט כיוון, בית, ים או גינה."],
                               ["דיבאג", "למצוא שורה שמקלקלת ולתקן אותה בלי למחוק הכול."],
                               ["repeat", "שורת קוד שחוזרת על כמה שורות פנימיות."],
-                              ["penup / pendown", "מעבר בלי ציור ואז חזרה לציור."
-                              ]
+                              ["penup / pendown", "מעבר בלי ציור ואז חזרה לציור."]
                     ],
                     "successCriteria": [
                               "התלמיד/ה מבין/ה שכל בלוק שנגרר הוא שורת Python.",
-                              "יש קומיקס קצר עם לפחות שניים–שלושה פריימים.",
-                              "יש שימוש ב־repeat או במעבר נקי עם penup / pendown.",
-                              "התלמיד/ה יודע/ת לקרוא 3 שורות קוד ולהסביר מה הן עושות."
+                              "יש מפת טיול קטנה עם שביל ולפחות שתי תחנות או סימנים.",
+                              "יש שינוי של מספר או צבע בתוך שורת קוד.",
+                              "יש שימוש בסדר שורות נכון: color לפני הקו המתאים.",
+                              "התלמיד/ה יודע/ת לקרוא 3 שורות קוד ולהסביר מה הן עושות במפה."
                     ],
                     "teacherQuestions": [
-                              "איזו שורת קוד גרמה לקו הזה להופיע?",
+                              "איזו שורת קוד ציירה את השביל הזה?",
                               "מה יקרה אם נשנה את המספר בתוך forward?",
-                              "למה צריך penup לפני מעבר לפריים אחר?",
+                              "למה color צריך לבוא לפני forward?",
+                              "איפה במפה יש תחנה, ואילו שורות יצרו אותה?",
                               "באיזה סדר המחשב קורא את השורות?"
                     ],
                     "aiHelper": [
-                              "תן/י רמז איך להפוך בלוקים לשורות קוד בלי לפתור במקום התלמיד/ה.",
-                              "עזור/עזרי לילד/ה לקרוא 3 שורות Python פשוטות ולהסביר אותן.",
-                              "עזור/עזרי למצוא איפה חסר penup או pendown במעבר בין פריימים."
+                              "תן/י רמז איך להפוך פקודות לשורות קוד בלי לפתור במקום התלמיד/ה.",
+                              "עזור/עזרי לילד/ה לבחור יעד קטן למפת הטיול: בית, ים, גינה, הר או מערה.",
+                              "עזור/עזרי למצוא איפה color צריך להיות כדי להשפיע על הקו הנכון.",
+                              "עזור/עזרי למצוא איפה חסר penup או pendown במעבר בין תחנות."
                     ]
           },
           {
@@ -6971,6 +6984,7 @@
     let lesson23CodeOverlay = null;
     let lesson23SelectedBlockId = null;
     let lesson23ManualDrag = null;
+    let lesson23ScrollToBottomPending = false;
     const statusEl = document.getElementById('status');
     const missionEl = document.getElementById('mission');
     let turtle = {x:canvas.width/2,y:canvas.height/2,heading:0,pen:true,color:'#2563eb',width:4};
@@ -7068,7 +7082,7 @@
         const times=Number(block.getFieldValue('TIMES'));
         const inner=stackToPythonLines(block.getInputTargetBlock('DO'), indent+'    ');
         return [
-          {text:`${indent}for i in range(${times}):`, id},
+          {text: currentLesson === 23 ? `${indent}repeat(${times}):` : `${indent}for i in range(${times}):`, id},
           ...(inner.length ? inner : [{text:`${indent}    pass`, id}])
         ];
       }
@@ -7113,6 +7127,7 @@
       });
     }
     function lesson23TopCodeBlocks(){
+      stripLesson23PythonWrappers();
       return workspace.getTopBlocks(false)
         .filter(block=>block.type !== 'py_python' && !block.outputConnection)
         .sort((a,b)=>{
@@ -7158,23 +7173,38 @@
       lesson23CodeOverlay.style.display = currentLesson === 23 ? 'block' : 'none';
       return lesson23CodeOverlay;
     }
+    function scrollLesson23CodeToBottom(){
+      const overlay = ensureLesson23CodeOverlay();
+      if(!overlay) return;
+      requestAnimationFrame(()=>{ overlay.scrollTop = overlay.scrollHeight; });
+    }
     function renderLesson23CodeOverlay(bodyLines){
       const overlay = ensureLesson23CodeOverlay();
       if(!overlay || currentLesson !== 23) return;
+      const previousScrollTop = overlay.scrollTop;
+      const wasNearBottom = overlay.scrollHeight - overlay.scrollTop - overlay.clientHeight < 48;
       if(!bodyLines.length){
         lesson23SelectedBlockId = null;
-        overlay.innerHTML = '<div class="placeholder">גררו פקודה מהסרגל והניחו כאן — היא תהפוך לשורת Python.</div>';
+        overlay.innerHTML = '<div class="lesson23-code-panel-title">הקוד שלי</div><div class="placeholder">גררו פקודה מהמחסן והניחו באזור העבודה — היא תופיע כאן כשורת Python.</div>';
         return;
       }
       const ids = new Set(bodyLines.map(line=>line.id).filter(Boolean));
       if(lesson23SelectedBlockId && !ids.has(lesson23SelectedBlockId)) lesson23SelectedBlockId = null;
-      overlay.innerHTML = bodyLines.map(line=>{
+      overlay.innerHTML = '<div class="lesson23-code-panel-title">הקוד שלי</div>' + bodyLines.map((line,index)=>{
         const active = line.id && line.id === lesson23SelectedBlockId ? ' active' : '';
         const isComment = /^\s*#/.test(line.text || '');
+        const isIndented = /^\s+\S/.test(line.text || '');
         const editable = line.id ? ' contenteditable="true" spellcheck="false" role="textbox" aria-label="עריכת שורת קוד"' : '';
-        const dragHandle = line.id ? `<span class="lesson23-drag-handle" data-block-id="${escapeHtml(line.id)}" title="גררו כדי לשנות סדר">⋮⋮</span>` : '';
-        return `<span class="line${isComment ? ' comment' : ''}${active}" data-block-id="${escapeHtml(line.id || '')}" tabindex="0">${dragHandle}<span class="lesson23-code-text" data-block-id="${escapeHtml(line.id || '')}"${editable}>${escapeHtml(line.text || '')}</span></span>`;
+        const lineNumber = index + 1;
+        const dragHandle = line.id ? `<span class="lesson23-drag-handle" data-block-id="${escapeHtml(line.id)}" title="גררו את מספר השורה כדי לשנות סדר">${lineNumber}</span>` : '';
+        return `<span class="line${isComment ? ' comment' : ''}${isIndented ? ' indented' : ''}${active}" data-block-id="${escapeHtml(line.id || '')}" tabindex="0">${dragHandle}<span class="lesson23-code-text" data-block-id="${escapeHtml(line.id || '')}"${editable}>${escapeHtml(line.text || '')}</span></span>`;
       }).join('');
+      if(lesson23ScrollToBottomPending || wasNearBottom){
+        lesson23ScrollToBottomPending = false;
+        scrollLesson23CodeToBottom();
+      } else {
+        overlay.scrollTop = previousScrollTop;
+      }
     }
     function selectLesson23CodeLine(blockId){
       if(currentLesson !== 23 || !blockId) return;
@@ -7203,23 +7233,28 @@
       saveProgress();
       return true;
     }
-    function lesson23LineAncestorIds(block){
-      const ids = new Set();
-      let parent = block?.getParent?.();
-      while(parent){ ids.add(parent.id); parent = parent.getParent?.(); }
-      return ids;
+    function lesson23IsInsideRepeatBody(block, repeatBlock){
+      if(!block || !repeatBlock || repeatBlock.type !== 'py_repeat') return false;
+      let child = repeatBlock.getInputTargetBlock('DO');
+      while(child){
+        if(child.id === block.id) return true;
+        child = child.getNextBlock?.() || null;
+      }
+      return false;
     }
     function detachLesson23SingleBlock(block){
+      const prevConn = block.previousConnection?.targetConnection || null;
+      const nextConn = block.nextConnection?.targetConnection || null;
       const prev = block.getPreviousBlock?.() || null;
       const next = block.getNextBlock?.() || null;
-      if(next){
-        try{ next.unplug(false); }catch{}
+      if(block.nextConnection?.isConnected()){
+        try{ block.nextConnection.disconnect(); }catch{}
       }
       if(block.previousConnection?.isConnected()){
         try{ block.previousConnection.disconnect(); }catch{}
       }
-      if(prev && next && prev.nextConnection && next.previousConnection){
-        try{ prev.nextConnection.connect(next.previousConnection); }catch{}
+      if(prevConn && nextConn){
+        try{ prevConn.connect(nextConn); }catch{}
       }
       return {prev,next};
     }
@@ -7228,30 +7263,44 @@
       const dragged = workspace.getBlockById(dragId);
       const target = workspace.getBlockById(targetId);
       if(!dragged || !target || dragged.outputConnection || target.outputConnection) return false;
-      if(lesson23LineAncestorIds(target).has(dragged.id)) return false;
+      if(lesson23IsInsideRepeatBody(target, dragged)) return false;
       const draggedXY = dragged.getRelativeToSurfaceXY?.() || {x:40,y:40};
       detachLesson23SingleBlock(dragged);
       if(dragged.nextConnection?.isConnected()){
         try{ dragged.nextConnection.disconnect(); }catch{}
       }
-      if(placeAfter){
-        const targetNext = target.getNextBlock?.() || null;
-        if(targetNext){
-          try{ targetNext.unplug(false); }catch{}
+      if(placeAfter && target.type === 'py_repeat'){
+        const inputConn = target.getInput('DO')?.connection;
+        const firstInner = target.getInputTargetBlock('DO');
+        if(!firstInner){
+          if(inputConn && dragged.previousConnection){
+            try{ inputConn.connect(dragged.previousConnection); }catch{}
+          }
+        } else {
+          let lastInner = firstInner;
+          while(lastInner.getNextBlock?.()) lastInner = lastInner.getNextBlock();
+          if(lastInner.nextConnection && dragged.previousConnection){
+            try{ lastInner.nextConnection.connect(dragged.previousConnection); }catch{}
+          }
+        }
+      } else if(placeAfter){
+        const targetNextConn = target.nextConnection?.targetConnection || null;
+        if(target.nextConnection?.isConnected()){
+          try{ target.nextConnection.disconnect(); }catch{}
         }
         if(target.nextConnection && dragged.previousConnection){
           try{ target.nextConnection.connect(dragged.previousConnection); }catch{}
         }
-        if(targetNext && dragged.nextConnection && targetNext.previousConnection){
-          try{ dragged.nextConnection.connect(targetNext.previousConnection); }catch{}
+        if(targetNextConn && dragged.nextConnection){
+          try{ dragged.nextConnection.connect(targetNextConn); }catch{}
         }
       } else {
-        const targetPrev = target.getPreviousBlock?.() || null;
+        const targetPrevConn = target.previousConnection?.targetConnection || null;
         if(target.previousConnection?.isConnected()){
           try{ target.previousConnection.disconnect(); }catch{}
         }
-        if(targetPrev && targetPrev.nextConnection && dragged.previousConnection){
-          try{ targetPrev.nextConnection.connect(dragged.previousConnection); }catch{}
+        if(targetPrevConn && dragged.previousConnection){
+          try{ targetPrevConn.connect(dragged.previousConnection); }catch{}
         }
         if(dragged.nextConnection && target.previousConnection){
           try{ dragged.nextConnection.connect(target.previousConnection); }catch{}
@@ -7278,10 +7327,41 @@
       if(!lesson23ManualDrag) return;
       clearLesson23DropMarks();
       lesson23ManualDrag.sourceLine?.classList.add('lesson23-dragging-line');
-      const line = lesson23LineFromPoint(x, y);
+      let line = lesson23LineFromPoint(x, y);
+      let after = false;
+      if(!line || !line.dataset.blockId || line.dataset.blockId === lesson23ManualDrag.blockId){
+        const lines = [...(lesson23CodeOverlay?.querySelectorAll('.line[data-block-id]') || [])]
+          .filter(el=>el.dataset.blockId && el.dataset.blockId !== lesson23ManualDrag.blockId);
+        if(!lines.length) return;
+        const first = lines[0];
+        const last = lines[lines.length - 1];
+        const firstRect = first.getBoundingClientRect();
+        const lastRect = last.getBoundingClientRect();
+        if(y <= firstRect.top){
+          line = first;
+          after = false;
+        } else if(y >= lastRect.bottom){
+          line = last;
+          after = true;
+        } else {
+          let best = null;
+          let bestDistance = Infinity;
+          for(const candidate of lines){
+            const rect = candidate.getBoundingClientRect();
+            const center = rect.top + rect.height / 2;
+            const distance = Math.abs(y - center);
+            if(distance < bestDistance){ best = candidate; bestDistance = distance; }
+          }
+          line = best;
+          if(!line) return;
+          const rect = line.getBoundingClientRect();
+          after = y > rect.top + rect.height / 2;
+        }
+      } else {
+        const rect = line.getBoundingClientRect();
+        after = y > rect.top + rect.height / 2;
+      }
       if(!line || !line.dataset.blockId || line.dataset.blockId === lesson23ManualDrag.blockId) return;
-      const rect = line.getBoundingClientRect();
-      const after = y > rect.top + rect.height / 2;
       line.classList.add(after ? 'lesson23-drop-after' : 'lesson23-drop-before');
       lesson23ManualDrag.targetId = line.dataset.blockId;
       lesson23ManualDrag.after = after;
@@ -7312,7 +7392,7 @@
       else if(block.type === 'py_right' && (m = text.match(/^right\s*\(\s*(-?\d+(?:\.\d+)?)\s*\)$/))) changed = setNum('ANGLE', m[1], 0, 360);
       else if(block.type === 'py_left' && (m = text.match(/^left\s*\(\s*(-?\d+(?:\.\d+)?)\s*\)$/))) changed = setNum('ANGLE', m[1], 0, 360);
       else if(block.type === 'py_width' && (m = text.match(/^pensize\s*\(\s*(-?\d+(?:\.\d+)?)\s*\)$/))) changed = setNum('WIDTH', m[1], 1, 30);
-      else if(block.type === 'py_repeat' && (m = text.match(/^for\s+i\s+in\s+range\s*\(\s*(-?\d+(?:\.\d+)?)\s*\)\s*:\s*$/))) changed = setNum('TIMES', m[1], 1, 50);
+      else if(block.type === 'py_repeat' && (m = text.match(/^(?:repeat\s*\(\s*(-?\d+(?:\.\d+)?)\s*\)|for\s+i\s+in\s+range\s*\(\s*(-?\d+(?:\.\d+)?)\s*\))\s*:\s*$/))) changed = setNum('TIMES', m[1] || m[2], 1, 50);
       else if(block.type === 'py_set_length' && (m = text.match(/^length\s*=\s*(-?\d+(?:\.\d+)?)$/))) changed = setNum('VALUE', m[1], 1, 500);
       else if(block.type === 'py_grow_length' && (m = text.match(/^length\s*=\s*length\s*\+\s*(-?\d+(?:\.\d+)?)$/))) changed = setNum('ADD', m[1], -200, 200);
       else if(block.type === 'py_color' && (m = text.match(/^color\s*\(\s*["']([^"']+)["']\s*\)$/))){
@@ -7330,8 +7410,24 @@
       }
       return changed;
     }
+    function stripLesson23PythonWrappers(){
+      if(currentLesson !== 23 || typeof workspace === 'undefined') return;
+      workspace.getAllBlocks(false).filter(block=>block.type === 'py_python').forEach(block=>{
+        const next = block.getNextBlock?.() || null;
+        const xy = block.getRelativeToSurfaceXY?.() || {x:20,y:20};
+        if(next){
+          try{
+            next.unplug(false);
+            const nextXy = next.getRelativeToSurfaceXY?.() || {x:xy.x,y:xy.y};
+            next.moveBy?.(xy.x - nextXy.x, xy.y - nextXy.y);
+          }catch{}
+        }
+        try{ block.dispose(false); }catch{}
+      });
+    }
     function updateLesson23BlockVisibility(){
       if(typeof workspace === 'undefined') return;
+      if(currentLesson === 23) stripLesson23PythonWrappers();
       workspace.getAllBlocks(false).forEach(block=>{
         const root = block.getSvgRoot && block.getSvgRoot();
         if(!root) return;
@@ -7628,6 +7724,9 @@
       return `<div class="secret-reveal" style="background:#f8fafc;border-color:#cbd5e1;color:#0f172a"><div style="font-weight:900;margin-bottom:8px;">🔮 לפני הרצה: ${escapeHtml(cfg.question)}</div><div style="display:grid;gap:8px;">${cfg.options.map(([value,label])=>{ const isSelected = selected === value; const selectedStyle = isSelected ? 'border:3px solid #2563eb;background:#dbeafe;color:#1e3a8a;box-shadow:0 0 0 3px rgba(37,99,235,.16);' : ''; return `<button class="btn reset lesson21-prediction-choice" type="button" data-prediction="${value}" style="text-align:right;justify-content:flex-start;font-weight:900;transition:.15s ease;${selectedStyle}">${escapeHtml(label)}</button>`; }).join('')}</div><small style="display:block;margin-top:8px;">בחרו תשובה לפני שאתם בודקים את התרגיל.</small></div>`;
     }
     function exerciseVisualHtml(ex){
+      if(currentLesson === 23 && ex?.id === 5){
+        return `<div class="exercise-visual" style="margin:10px 0;padding:10px;border:1px solid #bae6fd;border-radius:16px;background:#f0f9ff;display:grid;place-items:center;text-align:center;"><div style="font-weight:900;color:#0369a1;margin-bottom:6px;">דגם שלט כיוון לדוגמה</div><svg width="250" height="145" viewBox="0 0 250 145" role="img" aria-label="דגם שלט כיוון בקווי מתאר עם מקל, מלבן, פס וקצה משולש"><rect x="12" y="10" width="226" height="118" rx="14" fill="#ffffff" stroke="#dbeafe" stroke-width="3"/><g fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="76" y1="112" x2="76" y2="36" stroke="#475569" stroke-width="7"/><path d="M76 36 H162 V82 H76 Z" stroke="#ef4444" stroke-width="5"/><line x1="84" y1="59" x2="154" y2="59" stroke="#ef4444" stroke-width="4"/><path d="M162 36 L194 59 L162 82" stroke="#ef4444" stroke-width="5"/></g></svg><small style="color:#475569;font-weight:800;line-height:1.35;">דוגמה בלבד: שלט כיוון יכול להיות מלבן פשוט או צורה עם קצה משולש. פס פנימי הוא רשות.</small></div>`;
+      }
       if(currentLesson === 21 && ex?.id === 3){
         return `<div class="exercise-visual" style="margin:10px 0;padding:10px;border:1px solid #bae6fd;border-radius:16px;background:#f0f9ff;display:grid;place-items:center;text-align:center;"><div style="font-weight:900;color:#0369a1;margin-bottom:6px;">דוגמה למבנה בלבד</div><svg width="260" height="130" viewBox="0 0 260 130" role="img" aria-label="דוגמה פשוטה לקו אופק ושני קווים קצרים מתחתיו"><rect x="12" y="10" width="236" height="102" rx="14" fill="#ffffff" stroke="#dbeafe" stroke-width="3"/><line x1="35" y1="62" x2="225" y2="62" stroke="#475569" stroke-width="6" stroke-linecap="round"/><line x1="58" y1="84" x2="130" y2="84" stroke="#38bdf8" stroke-width="5" stroke-linecap="round"/><line x1="150" y1="96" x2="210" y2="96" stroke="#38bdf8" stroke-width="5" stroke-linecap="round"/></svg><small style="color:#475569;font-weight:800;line-height:1.35;">דוגמה למבנה בלבד — אפשר לבחור ים, אדמה או שביל ולעצב אחרת. עדיין לא מציירים שמש.</small></div>`;
       }
@@ -8146,6 +8245,7 @@
     }
     function isIsolatedExercise(ex){
       if(isLesson22CumulativeExercise(ex)) return false;
+      if(currentLesson === 23 && ex?.id !== 6) return false;
       return !!starterXmlForExercise(ex);
     }
     function saveActiveWorkspace(index=currentExerciseIndex){
@@ -8170,6 +8270,7 @@
       if(currentLesson === 19) return false;
       if((currentLesson === 3 && ex?.id === 5) || (currentLesson === 4 && ex?.id === 6) || (currentLesson === 5 && ex?.id === 3) || (currentLesson === 8 && ex?.id === 4)) return false;
       const text = `${ex?.title || ''} ${ex?.prompt || ''}`;
+      if(currentLesson === 23) return false;
       return /הידעתם|לחצו על בלוק|לוחצים על בלוק|שורת קוד נדלקת|שורת הקוד.*נדלקת|שורת Python/.test(text);
     }
     function isChallengeExercise(ex){
@@ -8297,7 +8398,7 @@
       return '';
     }
     function ensureStarterHasPythonBlock(xml){
-      if(!xml || /type="py_python"/.test(xml)) return xml;
+      if(!xml || /type="py_python"/.test(xml) || currentLesson === 23) return xml;
       return xml
         .replace(/^<xml>/, '<xml><block type="py_python" x="20" y="20"><next>')
         .replace(/<\/xml>$/, '</next></block></xml>');
@@ -8540,8 +8641,8 @@
       const lesson19RiddleBoxHtml = lesson19RiddleHtml(ex);
       const lesson19OrderCheckBoxHtml = lesson19OrderCheckHtml(ex);
       const lesson21PredictionBoxHtml = lesson21PredictionHtml(ex);
-      const lesson23CodePilotHtml = currentLesson === 23 ? '<div class="code-pilot-banner">פיילוט Python: גוררים פקודה — והיא הופכת לשורת קוד. עורכים בתוך השורה, מוחקים עם Delete, ומשנים סדר מהידית ⋮⋮.<br>צבעים כותבים במילים כמו blue או red. לא זוכרים איזה צבעים יש? פותחים את התפריט בבלוק color שבמחסן.</div>' : '';
-      missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div>${lesson10IntroHtml}${lesson11IntroHtml}${lesson16BlocksIntroHtml}${lesson12CumulativeHtml}${lesson13CumulativeHtml}${lesson23CodePilotHtml}<p><b>${escapeHtml(ex.prompt || '')}</b></p>${lesson19RiddleBoxHtml}${lesson19OrderCheckBoxHtml}${lesson21PredictionBoxHtml}${exerciseVisualHtml(ex)}${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p>${(isChallengeExercise(ex) || isRunOnlyExampleExercise(ex)) ? '' : `<p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}`}${writingHtml}<div class="exercise-bottom"><div class="exercise-controls">${resetButton}<button class="btn run" id="checkExerciseBtn" type="button">הרץ ציור</button><button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${nextButtonLabel}</button></div>${feedbackBelowButtons ? '<br>' : feedbackHtml}</div>${feedbackBelowButtons ? feedbackHtml : ''}${secretRevealHtml}</div>`;
+      const lesson23CodePilotHtml = currentLesson === 23 ? (ex?.id === 1 ? '<div class="code-pilot-banner">איך עובדים היום: גוררים פקודה מהמחסן לאזור העבודה — וכשמניחים אותה היא הופכת לשורת Python. עורכים מספרים וצבעים בתוך השורה, מוחקים עם Delete, ומשנים סדר מגרירת מספר השורה.<br>בלולאה: גררו מספרי שורות אל מתחת לשורת repeat כדי להכניס פקודות פנימה. אפשר להכניס כמה שורות — כל שורה עם הזחה היא בתוך הלולאה. צבעים כותבים במילים כמו blue או red; את האפשרויות רואים בתפריט של בלוק color במחסן.</div>' : '<details class="code-pilot-help"><summary>צריכים תזכורת לעבודה עם שורות קוד?</summary><div>גוררים פקודה והיא הופכת לשורת Python. עורכים בתוך השורה, מוחקים עם Delete, ומשנים סדר מגרירת מספר השורה.<br>בלולאה: גררו מספרי שורות אל מתחת לשורת repeat כדי להכניס פקודות פנימה. אפשר להכניס כמה שורות — כל שורה עם הזחה היא בתוך הלולאה. צבעים כותבים במילים כמו blue או red; את האפשרויות רואים בתפריט של בלוק color במחסן.</div></details>') : '';
+      missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div>${lesson10IntroHtml}${lesson11IntroHtml}${lesson16BlocksIntroHtml}${lesson12CumulativeHtml}${lesson13CumulativeHtml}<p><b>${escapeHtml(ex.prompt || '')}</b></p>${lesson23CodePilotHtml}${lesson19RiddleBoxHtml}${lesson19OrderCheckBoxHtml}${lesson21PredictionBoxHtml}${exerciseVisualHtml(ex)}${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p>${(isChallengeExercise(ex) || isRunOnlyExampleExercise(ex)) ? '' : `<p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}`}${writingHtml}<div class="exercise-bottom"><div class="exercise-controls">${resetButton}<button class="btn run" id="checkExerciseBtn" type="button">הרץ ציור</button><button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${nextButtonLabel}</button></div>${feedbackBelowButtons ? '<br>' : feedbackHtml}</div>${feedbackBelowButtons ? feedbackHtml : ''}${secretRevealHtml}</div>`;
       if(feedbackBelowButtons && message){
         requestAnimationFrame(()=>missionEl.scrollTo({top: missionEl.scrollHeight, behavior:'smooth'}));
       }
@@ -10556,43 +10657,52 @@
         const colorCount = actionDrawnColors(actions).size;
         const cleanMoves = cleanTransitionCount(actions);
         const drawnCount = drawnSegments(actions).filter(s=>s.length >= 5).length;
+        const baselineActions = exerciseBaselines[baselineKey()] || [];
+        const addedActions = comparableActions(actions).length - baselineActions.length;
         if(ex.id === 1){
-          if(!actions.some(a=>a.cmd === 'color')) return ['כמעט — התחילו בשורת color כדי לבחור צבע לפריים הראשון.'];
-          if(moveCount < 1) return ['כמעט — גררו שורת forward כדי לצייר את הקו הראשון.'];
+          if(!actions.some(a=>a.cmd === 'color')) return ['כמעט — התחילו בשורת color כדי לבחור צבע לשביל הראשון.'];
+          if(moveCount < 1) return ['כמעט — גררו שורת repeatward כדי לצייר את השביל הראשון.'];
+          if(![...actionDrawnColors(actions)].some(color=>color !== '#2563eb')) return ['כמעט — שנו את הצבע בשורת color לצבע שאינו blue, ואז הריצו שוב.'];
           return [];
         }
         if(ex.id === 2){
-          if(!repeatBlocks().some(block=>numericField(block, 'TIMES', 0) >= 3)) return ['כמעט — השתמשו ב־repeat כדי ליצור צורה מחזרת, לא רק קווים בודדים.'];
-          if(moveCount < 1 || turnCount < 1) return ['כמעט — בתוך הצורה צריך להיות forward וגם פנייה.'];
+          if(moveCount < 1) return ['כמעט — צריך להשאיר את השביל הראשון עם forward.'];
+          if(!forwardStepsChangedFromBaseline(actions)) return ['כמעט — ערכו את המספר בתוך forward כדי שהשביל יהיה ארוך או קצר יותר.'];
           return [];
         }
         if(ex.id === 3){
-          if(cleanMoves < 1) return ['כמעט — כדי לעבור לפריים שני בלי קו מחבר צריך penup, תזוזה, ואז pendown.'];
-          if(drawnCount < 2) return ['כמעט — אחרי המעבר הנקי צריך להתחיל לצייר משהו בפריים השני.'];
+          if(addedActions < 1) return ['כמעט — הוסיפו בתרגיל הזה forward חדש לקטע השני של השביל.'];
+          if(moveCount < 2) return ['כמעט — הוסיפו forward נוסף כדי שיהיו שני קטעים בשביל.'];
+          if(colorCount < 2) return ['כמעט — הוסיפו color נוסף ובחרו צבע אחר לקטע השני.'];
           return [];
         }
         if(ex.id === 4){
-          if(colorCount < 2 && !forwardStepsChangedFromBaseline(actions)) return ['כמעט — שנו צבע או מספר בתוך שורת קוד כדי שיראו שינוי ברור.'];
+          if(addedActions < 3) return ['כמעט — בתרגיל הזה צריך להוסיף שביל צדדי חדש, לא רק להשתמש במה שכבר היה.'];
+          if(cleanMoves < 1) return ['כמעט — עברו לנקודת הצומת עם penup ואז חזרו לצייר עם pendown, בלי קו מעבר מיותר.'];
+          if(turnCount < 1) return ['כמעט — שביל צדדי צריך לפנות לכיוון חדש בעזרת right או left.'];
+          if(drawnCount < 3) return ['כמעט — הוסיפו שביל צדדי קצר, לא רק מעבר בלי ציור.'];
           return [];
         }
         if(ex.id === 5){
-          if(colorCount < 2) return ['כמעט — השתמשו לפחות בשני צבעים שמופיעים בציור. שימו לב ש־color צריך לבוא לפני הקו.'];
+          const hasRectangleLikeFlag = repeatBlocks().some(block=>numericField(block, 'TIMES', 0) >= 4) || addedActions >= 8 || turnCount >= 4;
+          if(addedActions < 5) return ['כמעט — בתרגיל הזה צריך להוסיף שלט כיוון חדש: מקל וצורת שלט קטנה, לא רק להשתמש במה שכבר היה.'];
+          if(!hasRectangleLikeFlag) return ['כמעט — לשלט צריכה להיות צורה ברורה: מלבן קטן מארבעה קווים, או repeat של 4.'];
+          if(colorCount < 3) return ['כמעט — תנו לשלט צבע חדש משלו, שונה מצבעי השבילים.'];
           return [];
         }
         if(ex.id === 6){
-          if(colorCount < 2 || moveCount < 2) return ['כמעט — אל תמחקו את שני הפריימים המוכנים; תקנו רק את המעבר ביניהם.'];
-          if(cleanMoves < 1) return ['כמעט — עדיין יש קו מעבר מיותר. הוסיפו penup לפני המעבר ו־pendown לפני הפריים הבא.'];
+          if(colorCount < 2 || moveCount < 2) return ['כמעט — אל תמחקו את חלקי המפה המוכנים; תקנו רק את המעבר ביניהם.'];
+          if(cleanMoves < 1) return ['כמעט — עדיין יש קו מעבר מיותר. הוסיפו penup לפני המעבר ו־pendown לפני הציור הבא.'];
           return [];
         }
         if(ex.id === 7){
-          if(cleanMoves < 2) return ['כמעט — לסיפור בשלושה פריימים צריך לפחות שני מעברים נקיים בין אזורים.'];
-          if(colorCount < 2 || drawnCount < 3) return ['כמעט — צריך לראות שלושה חלקים קטנים בסיפור, לא רק ציור אחד.'];
+          if(addedActions < 3) return ['כמעט — בתרגיל הזה צריך להוסיף תחנה שנייה חדשה, לא רק להשתמש בשלט שכבר ציירתם.'];
+          if(!repeatBlocks().some(block=>numericField(block, 'TIMES', 0) >= 3)) return ['כמעט — התחנה השנייה צריכה להשתמש ב־repeat כדי ליצור בית קטן או ריבוע קטן.'];
+          if(moveCount < 2 || turnCount < 1) return ['כמעט — בתוך התחנה צריך להיות forward וגם פנייה.'];
           return [];
         }
         if(ex.id === 8){
-          const baseline = exerciseBaselines[baselineKey()] || [];
-          const addedBlocks = comparableActions(actions).length - baseline.length;
-          if(addedBlocks < 2) return ['כמעט — זה אתגר רשות, אבל אם בודקים אותו צריך להוסיף לפחות 2–3 שורות קוד חדשות.'];
+          if(addedActions < 2) return ['כמעט — זה אתגר רשות, אבל אם בודקים אותו צריך להוסיף לפחות 2–3 שורות קוד חדשות בתרגיל הזה.'];
           return [];
         }
       }
@@ -10976,7 +11086,7 @@
             body.push(action);
           }
           if(times < 2) problems.push('ב־for צריך לחזור יותר מפעם אחת, למשל range(4).');
-          if(body.length < 1) problems.push('אחרי שורת for צריך להזיח פנימה פקודות שחוזרות בכל פעם.');
+          if(body.length < 1) problems.push('אחרי שורת repeat צריך להזיח פנימה פקודות שחוזרות בכל פעם.');
           actions.push({cmd:'for', times, body});
           for(let t=0;t<times;t++) actions.push(...body);
           if(problems.length) break;
@@ -11239,9 +11349,9 @@
       const title = document.getElementById('workspaceTitle');
       const hint = document.getElementById('workspaceHint');
       const codeTitle = document.getElementById('codeBoxTitle');
-      if(title) title.textContent = isPilot ? '1. קוד Python — גוררים פקודות לכאן' : '1. גוררים בלוקים באנגלית';
-      if(hint) hint.textContent = isPilot ? 'אין בלוק Python פתיחה — כל פקודה שמניחים כאן היא שורת קוד' : 'הקוד מתעדכן אוטומטית למטה';
-      if(codeTitle) codeTitle.textContent = isPilot ? '2. מסך עזר: הקוד שנוצר' : '2. קוד Python שנוצר';
+      if(title) title.textContent = isPilot ? '1. מחסן פקודות + הקוד שלי' : '1. גוררים בלוקים באנגלית';
+      if(hint) hint.textContent = isPilot ? 'בצד בוחרים פקודות; באזור העבודה רואים רק שורות Python' : 'הקוד מתעדכן אוטומטית למטה';
+      if(codeTitle) codeTitle.textContent = isPilot ? '2. קוד Python שנוצר' : '2. קוד Python שנוצר';
       const toolbox = document.getElementById('toolbox');
       if(toolbox && typeof workspace !== 'undefined'){
         if(!toolbox.dataset.defaultHtml) toolbox.dataset.defaultHtml = toolbox.innerHTML;
@@ -11254,7 +11364,7 @@
         }
       }
       if(isPilot && typeof workspace !== 'undefined'){
-        workspace.getAllBlocks(false).filter(block=>block.type === 'py_python').forEach(block=>block.dispose(false));
+        stripLesson23PythonWrappers();
       }
       try{ generatePython(); updateLesson23BlockVisibility(); setTimeout(()=>Blockly.svgResize(workspace), 60); }catch{}
     }
@@ -11490,9 +11600,12 @@
       const isDragEvent = event.type === Blockly.Events.BLOCK_DRAG || event.type === 'drag';
       if(currentLesson === 23 && isDragEvent){
         if(event.isStart){
+          lesson23ScrollToBottomPending = true;
           updateLesson23BlockVisibility();
+          scrollLesson23CodeToBottom();
         } else {
-          setTimeout(()=>{ generatePython(); updateLesson23BlockVisibility(); }, 30);
+          lesson23ScrollToBottomPending = true;
+          setTimeout(()=>{ generatePython(); updateLesson23BlockVisibility(); scrollLesson23CodeToBottom(); }, 30);
         }
         return;
       }
