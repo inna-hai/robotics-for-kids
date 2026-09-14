@@ -15,7 +15,7 @@ assert.equal(Array.isArray(lessons), true, 'lessons array exists');
 assert.equal(lessons.length, 30, 'WebCode course includes thirty lessons');
 assert.deepEqual(Array.from(lessons, l => l.id), Array.from({ length: 30 }, (_, i) => i + 1), 'lesson ids are sequential 1-30');
 lessons.forEach(lessonItem => {
-  assert.ok(lessonItem.durationMinutes >= 132, `lesson ${lessonItem.id} is framed as at least 132 minutes after the challenge-depth upgrade`);
+  assert.equal(lessonItem.durationMinutes, 90, `lesson ${lessonItem.id} is framed as a 90-minute lesson`);
   assert.ok(lessonItem.starter?.html?.includes('<main'), `lesson ${lessonItem.id} has starter HTML`);
   assert.ok(lessonItem.starter?.css?.includes('background'), `lesson ${lessonItem.id} has starter CSS`);
   assert.ok(lessonItem.starter?.js?.includes('function'), `lesson ${lessonItem.id} has starter JavaScript`);
@@ -26,7 +26,7 @@ lessons.forEach(lessonItem => {
 });
 
 const lesson = lessons[0];
-assert.equal(lesson.durationMinutes, 170, 'lesson 1 is framed as 170 minutes after adding extra code-understanding exercises');
+assert.equal(lesson.durationMinutes, 90, 'lesson 1 is framed as 90 minutes with optional code-understanding extensions');
 assert.ok(lesson.title.includes('עמוד אמיתי') && lesson.title.includes('Blockly'), 'lesson has concise real Blockly page-builder title');
 assert.ok(lesson.starter.html.includes('<button onclick="sayHello()">'), 'starter has working button');
 assert.ok(lesson.starter.css.includes('border-radius'), 'starter includes visible styling');
@@ -41,7 +41,7 @@ assert.equal(lesson.realBlocklyBuilder, true, 'lesson 1 enables real Blockly wor
 assert.ok(lesson.exercises.some(ex => ex.prompt.includes('גררו')), 'lesson 1 exercises require dragging blocks');
 
 const lesson2 = lessons[1];
-assert.equal(lesson2.durationMinutes, 170, 'lesson 2 is framed as 170 minutes with deeper code practice');
+assert.equal(lesson2.durationMinutes, 90, 'lesson 2 is framed as 90 minutes with optional deeper code practice');
 assert.ok(lesson2.title.includes('סטודיו עיצוב'), 'lesson 2 focuses on real Blockly design studio');
 assert.equal(lesson2.mode, 'Real Blockly design studio', 'lesson 2 uses real Blockly design studio mode');
 assert.equal(lesson2.realBlocklyBuilder, true, 'lesson 2 enables real Blockly workspace');
@@ -51,7 +51,7 @@ assert.ok(lesson2.exercises.length >= 9, 'lesson 2 includes the reviewed design 
 assert.ok(lesson2.vocabulary.some(v => v[0] === 'hover'), 'lesson 2 vocabulary includes hover');
 
 const lesson3 = lessons[2];
-assert.equal(lesson3.durationMinutes, 170, 'lesson 3 is framed as 170 minutes with deeper code practice');
+assert.equal(lesson3.durationMinutes, 90, 'lesson 3 is framed as 90 minutes with optional deeper code practice');
 assert.equal(lesson3.title, 'כפתורים ופעולות קסם עם Blockly', 'lesson 3 title is clear and natural Hebrew');
 assert.ok(lesson3.starter.html.includes('onclick="makeHappy()"'), 'lesson 3 has onclick event');
 assert.ok(lesson3.starter.js.includes('classList.toggle("magic")'), 'lesson 3 includes classList toggle');
@@ -118,7 +118,7 @@ lessons4to24.forEach(lessonItem => {
 });
 
 const lesson4 = lessons[3];
-assert.equal(lesson4.durationMinutes, 170, 'lesson 4 is framed as 170 minutes with deeper code practice');
+assert.equal(lesson4.durationMinutes, 90, 'lesson 4 is framed as 90 minutes with optional deeper code practice');
 assert.ok(lesson4.title.includes('קלט'), 'lesson 4 focuses on user input');
 assert.ok(lesson4.title.includes('אתר אישי'), 'lesson 4 is framed as a neutral personal site, not locked to blessings');
 assert.ok(lesson4.exercises[0].prompt.includes('נושא אחר') && lesson4.exercises[0].prompt.includes('אל תשאירו את נושא הברכות'), 'lesson 4 title task explicitly asks learners to move away from the starter blessings topic');
@@ -163,7 +163,7 @@ assert.ok(lesson4.exercises[11].title.includes('השלימו את החסר') && 
 assert.ok(lesson4.vocabulary.some(v => v[0] === 'input'), 'lesson 4 vocabulary includes input');
 
 const lesson5 = lessons[4];
-assert.equal(lesson5.durationMinutes, 170, 'lesson 5 is framed as 170 minutes with deeper code practice');
+assert.equal(lesson5.durationMinutes, 90, 'lesson 5 is framed as 90 minutes with optional deeper code practice');
 assert.ok(lesson5.title.includes('חידון'), 'lesson 5 focuses on quiz building');
 assert.ok(lesson5.starter.html.includes('answerInput'), 'lesson 5 uses a text input so quizzes are not limited to yes/no choices');
 assert.ok(!lesson5.starter.html.includes("chooseAnswer('yes')"), 'lesson 5 no longer uses fixed yes/no choices');
@@ -195,7 +195,7 @@ assert.ok(lesson5.vocabulary.some(v => v[0] === 'if'), 'lesson 5 vocabulary incl
 assert.ok(lesson5.vocabulary.some(v => v[0] === 'answer'), 'lesson 5 vocabulary names the typed answer');
 
 const lesson6 = lessons[5];
-assert.equal(lesson6.durationMinutes, 170, 'lesson 6 is framed as 170 minutes with deeper code practice');
+assert.equal(lesson6.durationMinutes, 90, 'lesson 6 is framed as 90 minutes with optional deeper code practice');
 assert.ok(lesson6.title.includes('ניקוד') || lesson6.title.includes('score'), 'lesson 6 focuses on scoring');
 assert.ok(lesson6.starter.html.includes("chooseAnswer('yes')"), 'lesson 6 keeps scoring on fixed choices');
 assert.ok(!lesson6.starter.html.includes('answerInput'), 'lesson 6 avoids typed-answer matching while teaching score');
@@ -271,7 +271,7 @@ for (const lesson of lessons.slice(3, 15)) {
 }
 
 const lesson9 = lessons[8];
-assert.equal(lesson9.durationMinutes, 170, 'lesson 9 is framed as 170 minutes with deeper code practice');
+assert.equal(lesson9.durationMinutes, 90, 'lesson 9 is framed as 90 minutes with optional deeper code practice');
 assert.ok(lesson9.title.includes('מכשולים'), 'lesson 9 focuses on obstacles');
 assert.ok(lesson9.starter.js.includes('const startLives = 3') && lesson9.starter.js.includes('let lives = startLives'), 'lesson 9 initializes lives from one configurable source');
 assert.ok(lesson9.starter.js.includes('lives <= 0'), 'lesson 9 checks game over');
@@ -303,7 +303,7 @@ assert.equal(lesson9.exercises.find(ex => ex.title.includes('בלוק הופך �
 assert.ok(lesson9.exercises.find(ex => ex.title.includes('בלוק הופך לקוד') || ex.title.includes('בלוק הופך למילת קוד'))?.check.requiresCodeSelectionBlockTypes?.includes('lesson_9_obstacle'), 'lesson 9 generated-code check targets risk/lives JavaScript blocks');
 
 const lesson10 = lessons[9];
-assert.equal(lesson10.durationMinutes, 170, 'lesson 10 is framed as 170 minutes with deeper code practice');
+assert.equal(lesson10.durationMinutes, 90, 'lesson 10 is framed as 90 minutes with optional deeper code practice');
 assert.ok(lesson10.title.includes('כוח מיוחד'), 'lesson 10 focuses on special power');
 assert.ok(lesson10.starter.js.includes('let powerReady = true'), 'lesson 10 initializes power state');
 assert.ok(lesson10.starter.js.includes('if (powerReady)'), 'lesson 10 checks power availability');
@@ -311,7 +311,7 @@ assert.ok(lesson10.exercises.length >= 8, 'lesson 10 includes many exercises');
 assert.ok(lesson10.vocabulary.some(v => v[0] === 'powerReady'), 'lesson 10 vocabulary includes powerReady');
 
 const lesson11 = lessons[10];
-assert.equal(lesson11.durationMinutes, 170, 'lesson 11 is framed as 170 minutes with deeper code practice');
+assert.equal(lesson11.durationMinutes, 90, 'lesson 11 is framed as 90 minutes with optional deeper code practice');
 assert.ok(lesson11.title.includes('הרפתקה') && lesson11.concept.includes('מסכים'), 'lesson 11 focuses on adventure screens');
 assert.ok(lesson11.starter.js.includes('function showScreen'), 'lesson 11 includes screen switching');
 assert.ok(lesson11.starter.html.includes('id="startScreen"'), 'lesson 11 has start screen');
@@ -319,7 +319,7 @@ assert.ok(lesson11.exercises.length >= 8, 'lesson 11 includes many exercises');
 assert.ok(lesson11.vocabulary.some(v => v[0] === 'screen'), 'lesson 11 vocabulary includes screen');
 
 const lesson12 = lessons[11];
-assert.equal(lesson12.durationMinutes, 170, 'lesson 12 is framed as 170 minutes with deeper code practice');
+assert.equal(lesson12.durationMinutes, 90, 'lesson 12 is framed as 90 minutes with optional deeper code practice');
 assert.ok(lesson12.title.includes('מיני־פרויקט'), 'lesson 12 is a mini project');
 assert.ok(lesson12.starter.js.includes('function updateScreen'), 'lesson 12 consolidates screen updates');
 assert.ok(lesson12.starter.js.includes('const target = 5'), 'lesson 12 has project target');
@@ -503,9 +503,9 @@ assert.ok(loadedLessons[0].exercises.some(ex => ex.title.includes('הבלוק ה
 const lesson1TagExercise = loadedLessons[0].exercises.find(ex => ex.title.includes('הבלוק הופך לתגית HTML'));
 assert.ok(lesson1TagExercise && !`${lesson1TagExercise.prompt} ${lesson1TagExercise.answerBox?.placeholder} ${lesson1TagExercise.answerBox?.note}`.includes('שלוש נקודות') && !/placeholder:\s*['"]<h1>/.test(loadedLessonsCode), 'lesson 1 tag-structure challenge should not give away the exact placeholder answer or exact ellipsis format');
 const lesson1Summary = loadedLessons[0].exercises.find(ex => ex.title === 'משימת סיכום — מתאימים קוד לתפקיד');
-assert.ok(lesson1Summary && loadedLessons[0].durationMinutes >= 145, 'lesson 1 includes a code-role matching summary task');
+assert.ok(lesson1Summary && lesson1Summary.optional && lesson1Summary.extension, 'lesson 1 preserves its code-role matching summary as an optional extension');
 assert.ok(lesson1Summary.matchBox?.items?.length >= 6 && lesson1Summary.check.matchAnswers?.textContent === 'text' && lesson1Summary.check.matchAnswers?.onclick === 'click', 'lesson 1 summary matches code tags/words to roles, including beginner-friendly JS concepts');
-assert.ok(loadedLessons[0].exercises.length >= 15 && loadedLessons[0].durationMinutes >= 170, 'lesson 1 has additional code-understanding exercises after the first matching task');
+assert.ok(loadedLessons[0].exercises.length >= 15 && loadedLessons[0].durationMinutes === 90, 'lesson 1 keeps additional code-understanding exercises as optional material beyond the 90-minute core');
 assert.ok(['תרגול הרחבה — איזה בלוק יצר את הקוד?','תרגול הרחבה — לאיזו משפחת קוד זה שייך?'].every(title => loadedLessons[0].exercises.some(ex => ex.title === title && ex.matchBox?.items?.length >= 4)), 'lesson 1 includes varied matching exercises for block source and code family');
 const lesson1SourceMatch = loadedLessons[0].exercises.find(ex => ex.title === 'תרגול הרחבה — איזה בלוק יצר את הקוד?');
 assert.ok(lesson1SourceMatch?.check?.matchAnswers?.['background-source'] === 'theme-block' && lesson1SourceMatch?.check?.matchAnswers?.['columns-source'] === 'columns-block', 'lesson 1 exercise 13 maps code back to Blockly block source instead of repeating code-role matching');
@@ -515,7 +515,7 @@ assert.ok(lesson1FinalChoice.check.choiceAnswer?.exact?.['problem-title'] === 'h
 assert.ok(lesson1FinalChoice.choiceBox.groups.every(group => group.options.map(option => option.label).join('|') === 'HTML|CSS|JavaScript'), 'lesson 1 exercise 15 choice labels are only HTML/CSS/JavaScript without giving away what to do');
 assert.ok(lesson1FinalChoice.prompt.includes('אין פירוט באפשרויות'), 'lesson 1 exercise 15 prompt makes students infer which code family handles each situation');
 assert.ok(lesson1FinalChoice.title.includes('איפה צריך לשנות') && lesson1FinalChoice.choiceBox.groups.every(group => group.label.includes('איפה צריך לשנות?')) && !lesson1FinalChoice.choiceBox.groups.some(group => group.label.includes('מה כדאי לשנות') || group.label.includes('איפה נטפל') || group.label.includes('מה מתאים')), 'lesson 1 exercise 15 asks where to change, not what to change');
-assert.ok(loadedLessons.slice(1).every(lesson => lesson.durationMinutes >= 170), 'lessons 2-30 are extended to at least 170 minutes with deeper code practice');
+assert.ok(loadedLessons.slice(1).every(lesson => lesson.durationMinutes === 90 && lesson.exercises.some(exercise => exercise.optional && exercise.extension)), 'lessons 2-30 keep a 90-minute core and optional deeper-code extensions');
 assert.ok(loadedLessons.slice(1).every(lesson => lesson.exercises.filter(ex => ex.upgradeTag === 'deep-code-v137').length === 3), 'each lesson after lesson 1 gets exactly three v137 deeper-code exercises');
 assert.ok(loadedLessons.slice(1).every(lesson => lesson.exercises.some(ex => ex.upgradeTag === 'deep-code-v137' && ex.matchBox) && lesson.exercises.some(ex => ex.upgradeTag === 'deep-code-v137' && ex.choiceBox) && lesson.exercises.some(ex => ex.upgradeTag === 'deep-code-v137' && ex.debugCode)), 'deeper-code upgrades include concept matching, scenario choices, and bug fixing instead of repeating lesson 1 tasks');
 assert.ok(loadedLessons.find(lesson => lesson.id === 2).exercises.some(ex => ex.upgradeTag === 'deep-code-v137' && ex.title.includes('CSS')) && loadedLessons.find(lesson => lesson.id === 16).exercises.some(ex => ex.upgradeTag === 'deep-code-v137' && ex.title.includes('JavaScript')), 'deeper-code upgrades are themed to each lesson focus');

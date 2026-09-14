@@ -7697,6 +7697,40 @@ function resetAdventure() {
   }
   refreshLesson2CodeExercisesV227();
 
+  function normalizeNinetyMinuteLessonsV228(){
+    const parseRange = value => {
+      const match = String(value || '').match(/^\s*(\d+)\s*[–-]\s*(\d+)\s*$/);
+      return match ? { start:Number(match[1]), end:Number(match[2]) } : null;
+    };
+    lessons.forEach(lesson => {
+      lesson.durationMinutes = 90;
+      lesson.lessonFlow = (lesson.lessonFlow || []).filter(step => {
+        const range = parseRange(step.minutes);
+        if(!range) return true;
+        if(range.start >= 90) return false;
+        if(range.end > 90) step.minutes = `${range.start}–90`;
+        return true;
+      });
+      (lesson.exercises || []).forEach(exercise => {
+        if(exercise.optional){
+          exercise.extension = true;
+          exercise.minutes = 'הרחבה לפי זמן';
+          return;
+        }
+        const range = parseRange(exercise.minutes);
+        if(!range) return;
+        if(range.start >= 90){
+          exercise.optional = true;
+          exercise.extension = true;
+          exercise.minutes = 'הרחבה לפי זמן';
+          return;
+        }
+        if(range.end > 90) exercise.minutes = `${range.start}–90`;
+      });
+    });
+  }
+  normalizeNinetyMinuteLessonsV228();
+
   function sanitizeAnswerGuidanceV227(){
     const genericCodePlaceholder = 'כתבו כאן מילה קצרה מהקוד';
     const genericAnswerPlaceholder = 'כתבו כאן תשובה קצרה';

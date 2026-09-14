@@ -20,8 +20,8 @@ assert.match(play, /if\s*\(ok\)[\s\S]*hai:classroom-progress/, 'successful WebCo
 assert.match(play, /function jsLiteral\s*\(/, 'generated JavaScript must use a dedicated string-literal encoder');
 assert.match(play, /jsLiteral\(buttonMessage\)/, 'editable button messages must be encoded as JavaScript string literals');
 assert.match(play, /try\s*\{\s*init\(\);\s*\}\s*catch\s*\(error\)/, 'WebCode startup must retain its visible error fallback');
-assert.match(hub, /170 דקות לשיעור/, 'WebCode hub must advertise the configured 170-minute lesson duration');
-assert.doesNotMatch(hub, /90 דקות לשיעור|<b>90<\/b>דק׳ לשיעור/, 'WebCode hub must not advertise a stale 90-minute duration');
+assert.match(hub, /90 דקות לשיעור/, 'WebCode hub must advertise the configured 90-minute lesson duration');
+assert.doesNotMatch(hub, /170 דקות לשיעור|<b>170<\/b>דק׳ לשיעור/, 'WebCode hub must not advertise a stale 170-minute duration');
 assert.match(slides, /מהלך שיעור \$\{lesson\.durationMinutes\} דקות/, 'guide slides must display each lesson\'s configured duration');
 
 const activeAsset = (play.match(/<script src="(js\/webcode-lessons\.js\?v=[^"]+)"/) || [])[1];
