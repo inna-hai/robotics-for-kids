@@ -65,6 +65,21 @@ try {
   assert.equal(runtime.progressEvents.length, 1);
   assert.deepEqual(runtime.progressEvents[0], { lessonId: '1', activityId: 'exercise-1', status: 'completed', score: 100 });
 
+  const coreCompletion = await page.evaluate(() => {
+    const required = lesson.exercises.filter(exercise => !exercise.optional);
+    required.forEach(exercise => done.add(Number(exercise.id)));
+    highestUnlockedExercise = Math.max(...lesson.exercises.map(exercise => Number(exercise.id) || 1));
+    selectExercise(required.at(-1).id);
+    renderCurrentExercise();
+    return {
+      progress: document.getElementById('progress').textContent,
+      buttons: [...document.querySelectorAll('#exercises button')].map(button => ({ text: button.textContent.trim(), disabled: button.disabled })),
+    };
+  });
+  assert.match(coreCompletion.progress, /^8\/8 תרגילי ליבה הושלמו$/);
+  assert.ok(coreCompletion.buttons.some(button => button.text === 'לשיעור הבא ←' && !button.disabled), 'core completion must offer the next lesson immediately');
+  assert.ok(coreCompletion.buttons.some(button => button.text === 'להרחבה אופציונלית' && !button.disabled), 'core completion must offer optional extensions separately');
+
   await page.goto(`http://127.0.0.1:${port}/webcode-play.html?lesson=2&exercise=9`, { waitUntil: 'networkidle' });
   await page.waitForFunction(() => window.WEBCODE_LESSONS?.length === 30 && typeof window.Blockly === 'object');
   const manualSelection = await page.evaluate(() => {

@@ -97,10 +97,10 @@
       });
     })();
   </script>
-  <script src="js/webcode-lessons.js?v=20260914-pr92-safe-1"></script>
+  <script src="js/webcode-lessons.js?v=20260914-webcode-90-1"></script>
   <script>
     if(!window.getWebCodeLesson){
-      window.WEBCODE_LESSONS = [{ id:1, title:'בונים עמוד אמיתי עם Blockly', concept:'בלוקים שבונים אתר', durationMinutes:170, realBlocklyBuilder:true, story:'בונים אתר בעזרת בלוקים ורואים את התוצאה מיד.', mission:'גררו בלוקים לשרשרת כדי לבנות עמוד אישי.', starter:{ html:'', css:'', js:'' }, exercises:[
+      window.WEBCODE_LESSONS = [{ id:1, title:'בונים עמוד אמיתי עם Blockly', concept:'בלוקים שבונים אתר', durationMinutes:90, realBlocklyBuilder:true, story:'בונים אתר בעזרת בלוקים ורואים את התוצאה מיד.', mission:'גררו בלוקים לשרשרת כדי לבנות עמוד אישי.', starter:{ html:'', css:'', js:'' }, exercises:[
         { id:1, title:'תרגיל 1 — מבנה עמוד', prompt:'חברו בלוק כותרת מתחת לעמוד האתר.', hint:'התחילו מהבלוק “עמוד האתר שלי”.', check:{ blockTypes:['web_title'] } },
         { id:2, title:'תרגיל 2 — פסקה', prompt:'הוסיפו פסקה לעמוד.', hint:'חברו בלוק פסקה מתחת לכותרת.', check:{ blockTypes:['web_paragraph'] } },
         { id:3, title:'תרגיל 3 — סמל', prompt:'הוסיפו סמל גדול שמתאים לאתר.', hint:'בחרו סמל מהרשימה.', check:{ blockTypes:['web_emoji'] } },
@@ -2140,11 +2140,15 @@ ${block.replace}`; changed = true; }
       const isLast = displayNumber >= lesson.exercises.length;
       const nextExercise = nextExerciseAfter(ex.id);
       const nextUnlocked = nextExercise ? canOpenExercise(nextExercise.id) : false;
+      const currentIndex = exerciseIndexById(ex.id);
+      const isLastRequired = !ex.optional && currentIndex >= 0 && !lesson.exercises.slice(currentIndex + 1).some(exercise => !exercise.optional);
       const canLeaveLesson = isDone || ex.optional || ex.noCheck;
       const nextLessonExists = lesson.id < courseLessonCount();
       const lastButtonLabel = ex.optional && !isDone ? (nextLessonExists ? 'דלגו לשיעור הבא ←' : 'דלגו וסיימו ←') : ex.noCheck && !isDone ? (nextLessonExists ? 'לשיעור הבא ←' : 'סיימו ←') : nextLessonExists ? 'לשיעור הבא ←' : 'חזרה לעמוד הקורס ←';
       const nextButton = isLast
         ? `<button class="btn run" type="button" onclick="${nextLessonExists ? 'goNextLesson()' : 'goCourseHome()'}" ${canLeaveLesson ? '' : 'disabled'}>${lastButtonLabel}</button>`
+        : isLastRequired
+        ? `<button class="btn run" type="button" onclick="${nextLessonExists ? 'goNextLesson()' : 'goCourseHome()'}" ${isDone ? '' : 'disabled'}>${nextLessonExists ? 'לשיעור הבא ←' : 'סיימו ועברו לעמוד הקורס ←'}</button>${nextExercise?.optional ? `<button class="btn link" type="button" onclick="continueExercise()" ${isDone ? '' : 'disabled'}>להרחבה אופציונלית</button>` : ''}`
         : `<button class="btn run" type="button" onclick="continueExercise()" ${(!isDone && !nextUnlocked && !ex.optional && !ex.noCheck) ? 'disabled' : ''}>לתרגיל הבא ←</button>`;
       const courseButton = isLast && nextLessonExists ? `<button class="btn link" type="button" onclick="goCourseHome()">עמוד הקורס</button>` : '';
       const starterResetButton = ((lesson.id === 3 && (ex.id === 2 || ex.id === 6)) || (lesson.id === 4 && ex.optional)) ? `<button class="btn reset" type="button" onclick="${ex.debugCode ? 'resetExerciseDebugCode()' : 'resetStarterBlocksOnly()'}">${esc(ex.debugCode?.resetLabel || '↺ קוד התחלה')}</button>` : '';
@@ -2161,7 +2165,10 @@ ${block.replace}`; changed = true; }
       const hintHtml = hintWasRevealed(ex.id) ? `<div class="hint">💡 ${esc(ex.hint)}</div>` : `<div class="hint"><button class="btn link" type="button" onclick="revealHint(${ex.id})">💡 הצג רמז</button> <small>פתיחת רמז מורידה את בונוס “בלי רמזים”.</small></div>`;
       backfillCompletedScores();
       const earned = scoreState().awarded[ex.id] ? `<div class="hint">⭐ ניקוד לתרגיל: ${formatScore(scoreState().awarded[ex.id])} נק׳ · ${esc(scoreSummaryFor(ex.id))}</div>` : '';
-      $('exercises').innerHTML = `<article class="exercise active ${isDone ? 'done' : ''}" id="ex-${ex.id}"><div class="exercise-top"><div><b>${esc(displayTitle)}</b></div><span class="exercise-status">${displayNumber}/${lesson.exercises.length}</span></div><p>${esc(ex.prompt)}</p>${debugBox}${answerBox}${choiceBox}${matchBox}${hintHtml}${earned}<div class="hint">➡️ עוברים תרגיל רק אחרי בדיקה מוצלחת: לוחצים על “לתרגיל הבא”.</div><div class="exercise-bottom">${controls}<div class="feedback exercise-feedback" id="feedback">גררו בלוק, בדקו את התצוגה ולחצו בדיקה.</div></div></article>`;
+      const navigationHint = isLastRequired
+        ? '➡️ אחרי בדיקה מוצלחת אפשר לעבור לשיעור הבא או לבחור הרחבה אופציונלית.'
+        : '➡️ עוברים תרגיל רק אחרי בדיקה מוצלחת: לוחצים על “לתרגיל הבא”.';
+      $('exercises').innerHTML = `<article class="exercise active ${isDone ? 'done' : ''}" id="ex-${ex.id}"><div class="exercise-top"><div><b>${esc(displayTitle)}</b></div><span class="exercise-status">${displayNumber}/${lesson.exercises.length}</span></div><p>${esc(ex.prompt)}</p>${debugBox}${answerBox}${choiceBox}${matchBox}${hintHtml}${earned}<div class="hint">${navigationHint}</div><div class="exercise-bottom">${controls}<div class="feedback exercise-feedback" id="feedback">גררו בלוק, בדקו את התצוגה ולחצו בדיקה.</div></div></article>`;
     }
     function goPreviousExercise(){ if(activeExercise > 1) selectExercise(activeExercise - 1); }
     function continueExercise(){
@@ -2227,7 +2234,9 @@ ${block.replace}`; changed = true; }
       saveLessonState();
     }
     function renderProgress(){
-      $('progress').textContent = `${done.size}/${lesson.exercises.length} הושלמו`;
+      const required = lesson.exercises.filter(exercise => !exercise.optional);
+      const completed = required.filter(exercise => done.has(Number(exercise.id))).length;
+      $('progress').textContent = `${completed}/${required.length} תרגילי ליבה הושלמו`;
       const score = $('score');
       if(score) score.textContent = `⭐ שיעור: ${formatScore(currentScoreTotal())} נק׳`;
       const courseScore = $('courseScore');
