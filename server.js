@@ -1806,7 +1806,7 @@ async function kugelClassView(context, role, useEventCache = true) {
     minecraftConfigured: kugelMinecraftConfigured(),
     minecraftPreviewMode: KUGEL_PREVIEW_MOCK_MINECRAFT,
     minecraftSetupNote: kugelMinecraftSetupNote(),
-    minecraft: role === 'teacher' ? kugelMinecraftInfo() : (ownsRunningWorld ? kugelMinecraftInfo() : null),
+    minecraft: ownsRunningWorld ? kugelMinecraftInfo() : null,
   };
 }
 
