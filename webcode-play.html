@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WebCode Lab — שיעור</title>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/blockly/blockly.min.js"></script>
-  <script src="https://unpkg.com/blockly/msg/he.js"></script>
+  <script src="js/vendor/blockly/blockly.min.js"></script>
+  <script src="js/vendor/blockly/msg/he.js"></script>
   <style>
     *{box-sizing:border-box}:root{--ink:#0f172a;--blue:#2563eb;--orange:#f97316;--green:#22c55e;--red:#ef4444}body{margin:0;height:100vh;overflow:hidden;font-family:Rubik,Arial,sans-serif;direction:rtl;background:linear-gradient(135deg,#0f172a,#1e3a8a 55%,#7c2d12);color:var(--ink);display:flex;flex-direction:column}.topbar{background:rgba(255,255,255,.97);box-shadow:0 5px 22px rgba(0,0,0,.18);padding:.65rem .9rem;display:grid;grid-template-columns:auto 1fr auto;gap:.75rem;align-items:center;z-index:5}.brand{font-weight:900;font-size:1.08rem;white-space:nowrap}.lesson-title{text-align:center;font-weight:900;color:#1e3a8a}.lesson-outline{background:rgba(255,255,255,.94);border-bottom:1px solid rgba(226,232,240,.9);padding:.45rem .9rem;display:flex;align-items:center;gap:.55rem;overflow-x:auto;box-shadow:0 4px 14px rgba(15,23,42,.12);z-index:4}.lesson-outline-title{font-weight:900;color:#1e3a8a;white-space:nowrap}.lesson-outline-items{display:flex;gap:.32rem;align-items:center;min-width:max-content}.lesson-outline-chip{border:1px solid #bfdbfe;background:#eff6ff;color:#1e3a8a;border-radius:999px;min-width:34px;height:32px;padding:0 .45rem;font-size:.82rem;font-weight:900;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.lesson-outline-chip:hover{border-color:#2563eb;background:#dbeafe}.lesson-outline-chip.current{border-color:#fb923c;background:#fff7ed;color:#9a3412;box-shadow:0 0 0 3px rgba(251,146,60,.22)}.actions{display:flex;gap:.45rem;flex-wrap:wrap}.btn{border:0;border-radius:999px;padding:.62rem .95rem;font-family:inherit;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.32rem}.btn:disabled{background:#e5e7eb!important;color:#94a3b8!important;cursor:not-allowed;filter:grayscale(1);opacity:.72;box-shadow:none}.run{background:#00e096;color:#052e16}.check{background:#facc15;color:#422006}.reset{background:#fb7185;color:white}.share{background:#38bdf8;color:#082f49}.link{background:#eef2ff;color:#3730a3}.main{flex:1;min-height:0;display:grid;grid-template-columns:360px minmax(0,1fr) var(--preview-width,420px);gap:1rem;padding:1rem}.panel{background:rgba(255,255,255,.96);border-radius:26px;box-shadow:0 18px 48px rgba(0,0,0,.2);min-height:0;overflow:hidden;display:flex;flex-direction:column}.lesson-toggle{border:0;background:linear-gradient(135deg,#fff7ed,#eff6ff);padding:.9rem 1rem;font-family:inherit;font-weight:900;color:#1e3a8a;display:flex;align-items:center;justify-content:space-between;gap:.8rem;cursor:pointer;text-align:right;border-bottom:1px solid #fed7aa}.lesson-toggle span:first-child{display:flex;align-items:center;gap:.45rem}.lesson-toggle-icon{background:#1e3a8a;color:white;border-radius:999px;min-width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center}.lesson-collapsible{display:flex;flex-direction:column;min-height:0;overflow:hidden}.main.lesson-collapsed{grid-template-columns:74px minmax(0,1.35fr) var(--preview-width,460px)}.lesson-panel.collapsed{min-height:0}.lesson-panel.collapsed .lesson-collapsible{display:none}.lesson-panel.collapsed .lesson-toggle{height:100%;min-height:360px;writing-mode:vertical-rl;text-orientation:mixed;justify-content:center;border-bottom:0}.lesson-panel.collapsed .lesson-toggle span:first-child{flex-direction:column}.lesson-panel.collapsed .lesson-toggle-icon{writing-mode:horizontal-tb}.info{padding:1rem;border-bottom:1px solid #e5e7eb}.info h1{font-size:1.35rem;margin:.2rem 0}.info p{margin:.25rem 0;line-height:1.55}.compact-info{padding:.8rem 1rem}.compact-info h1{font-size:1.05rem}.compact-info p{font-size:.9rem;color:#475569}.hidden-chip{display:none!important}.chip{display:inline-flex;background:#fff7ed;color:#9a3412;border-radius:999px;padding:.32rem .65rem;font-weight:900;font-size:.78rem;margin:.12rem}.score-chip{background:#ecfeff;color:#155e75;border:1px solid #67e8f9}.total-score-chip{background:#fef3c7;color:#92400e;border-color:#fbbf24}.exercise-list{overflow:auto;padding:1rem;display:grid;gap:.65rem}.exercise{background:#f8fafc;border:2px solid #e5e7eb;border-radius:18px;padding:.75rem;line-height:1.45;cursor:pointer;min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}.exercise.active{border-color:#f97316;background:#fff7ed}.exercise.done{border-color:#22c55e;background:#f0fdf4}.exercise.locked{opacity:.58;cursor:not-allowed}.exercise b{display:block;color:#1e3a8a}.hint{font-size:.88rem;color:#64748b;margin-top:.35rem}.exercise-top{display:flex;align-items:start;justify-content:space-between;gap:.75rem;min-width:0}.exercise-top>div{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}.exercise-bottom{display:grid;gap:.65rem;margin-top:.8rem;min-width:0;max-width:100%}.exercise-controls{display:flex;gap:.55rem;flex-wrap:wrap}.exercise-controls.special-message-controls{display:grid;gap:.55rem}.exercise-actions-main{display:flex;gap:.55rem;flex-wrap:wrap}.starter-reset-row{display:flex;justify-content:flex-start}.exercise-controls .btn{box-shadow:none}.exercise-feedback{background:white;border:2px solid #fed7aa;border-radius:18px;color:#7c2d12;padding:.7rem .85rem;font-weight:900;line-height:1.45}.exercise-feedback.good{border-color:#86efac;background:#f0fdf4;color:#15803d}.exercise-feedback.bad{border-color:#fecaca;background:#fff1f2;color:#b91c1c}.code-answer-box{min-width:0;max-width:100%}.code-answer-box input{max-width:100%;min-width:0}.code-answer-box small{display:block;margin-top:.45rem;color:#64748b;font-weight:800;overflow-wrap:anywhere;word-break:break-word}.choice-box{display:grid;gap:.7rem}.choice-group{border:2px solid #bfdbfe;border-radius:18px;padding:.72rem;margin:0;background:rgba(255,255,255,.75)}.choice-group legend{font-weight:900;color:#1d4ed8;padding:0 .35rem}.choice-option{display:flex;align-items:center;gap:.45rem;margin:.42rem 0;font-weight:900;color:#334155}.choice-option input{width:1.05rem;height:1.05rem;accent-color:#2563eb}.match-box{display:grid;gap:.7rem;min-width:0;max-width:100%;overflow:hidden}.match-rows{display:grid;gap:.55rem;min-width:0;max-width:100%}.match-row{display:grid;grid-template-columns:minmax(0,1fr) 18px minmax(96px,.9fr);align-items:center;gap:.38rem;min-width:0;max-width:100%}.match-code{background:#07111f;color:#e5f3ff;border-radius:12px;padding:.5rem .58rem;font:900 .82rem/1.25 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-align:left;white-space:normal;overflow-wrap:anywhere;word-break:break-word;max-width:100%;min-width:0}.match-arrow{font-weight:900;color:#1d4ed8;text-align:center}.match-row select{width:100%;min-width:0;max-width:100%;border:1px solid #93c5fd;border-radius:12px;padding:.52rem .46rem;font-family:inherit;font-weight:900;background:white;color:#1e3a8a;overflow-wrap:anywhere}.selected-code-line{margin-top:.65rem;padding:.62rem .7rem;border-radius:14px;background:#f8fafc;border:1px solid #bfdbfe;color:#1e3a8a;font-weight:900}.selected-code-line code{display:block;direction:ltr;text-align:left;margin-top:.25rem;color:#0f172a;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:nowrap;overflow:auto}.exercise-meta{color:#64748b;font-weight:900}.exercise-status{background:#eef2ff;color:#3730a3;border-radius:999px;padding:.3rem .65rem;font-size:.78rem;font-weight:900;white-space:nowrap}.editor-panel{background:linear-gradient(135deg,#fff7ed,#eff6ff)}.blocks-stage{flex:1;min-height:0;overflow:auto;padding:1rem;display:flex;flex-direction:column;gap:.75rem}.blocks-intro{background:white;border:2px dashed #fb923c;border-radius:22px;padding:.85rem;line-height:1.5;font-weight:800;color:#7c2d12}.blocks-intro small{display:block;color:#475569;font-weight:700;margin-top:.25rem}.blocks-stage.real-blockly-stage{padding:0;gap:0}.real-blockly{display:none;flex:1;min-height:430px;background:white;border:0;border-radius:0;overflow:hidden;box-shadow:none}.real-blockly.active{display:flex;flex-direction:column;min-height:100%}.blockly-top{display:flex;align-items:center;justify-content:space-between;gap:.7rem;padding:.65rem .85rem;background:#fff7ed;border-bottom:1px solid #fed7aa;font-weight:900;color:#7c2d12}.blockly-top small{font-weight:800;color:#475569}.blockly-live{background:#dcfce7;color:#166534;border-radius:999px;padding:.25rem .6rem;font-size:.82rem}#blocklyDiv{flex:1;min-height:0;width:100%;direction:ltr}.blocklyDropDownDiv,.blocklyWidgetDiv,.blocklyTooltipDiv{z-index:99999!important;direction:rtl}.blocklyToolboxDiv{direction:rtl}.blocklyTreeLabel{font-family:Rubik,Arial,sans-serif}.blocklyFlyoutLabelText{font-family:Rubik,Arial,sans-serif;font-weight:900;fill:#7c2d12}.blocklyFlyoutBackground{fill:#f8fafc;fill-opacity:1}.code-peek:not([open]){flex:0 0 auto}.code-peek{border-top:1px solid #fed7aa;background:#0f172a;color:white}.code-peek summary{cursor:pointer;padding:.75rem 1rem;font-weight:900;background:#1e293b;color:#ffedd5}.code-peek[open]{max-height:44%;display:flex;flex-direction:column}.code-peek[open] .code-box{display:flex;flex:1;min-height:260px;flex-direction:column}.code-peek-actions{display:flex;align-items:center;justify-content:space-between;gap:.6rem;background:#1e293b;color:#ffedd5;padding:.55rem .8rem;font-weight:900}.code-peek-actions button{border:0;border-radius:999px;background:#fb7185;color:white;padding:.42rem .75rem;font-family:inherit;font-weight:900;cursor:pointer}.editor-tabs{display:flex;background:#0f172a;padding:.45rem;gap:.4rem}.editor-tabs button{flex:1;border:0;border-radius:12px;padding:.6rem;font-weight:900;cursor:pointer;background:#334155;color:white}.editor-tabs button.active{background:#fb923c;color:#111827}.editor{flex:1;min-height:0;display:none}.editor.active{display:block}textarea{width:100%;height:100%;min-height:260px;resize:none;border:0;outline:0;padding:1rem;font:600 15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;direction:ltr;text-align:left;background:#07111f;color:#e5f3ff}.preview-panel{position:relative}.preview-resize{position:absolute;top:0;right:-.68rem;bottom:0;width:1.36rem;z-index:4;cursor:col-resize;display:flex;align-items:center;justify-content:center;touch-action:none}.preview-resize::before{content:"";width:7px;height:86px;border-radius:999px;background:linear-gradient(180deg,#fb923c,#2563eb);box-shadow:0 0 0 4px rgba(255,255,255,.88),0 8px 22px rgba(15,23,42,.22)}.preview-resize:hover::before,.preview-resize.dragging::before{background:linear-gradient(180deg,#f97316,#1d4ed8);width:9px}.preview-resize-hint{font-size:.78rem;color:#64748b;font-weight:800}.preview-head{padding:.8rem 1rem;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;gap:.5rem;align-items:center;font-weight:900}.preview-wrap{flex:1;min-height:0;background:white}iframe{width:100%;height:100%;border:0;background:white}.feedback{background:white;border:2px solid #fed7aa;border-radius:18px;color:#7c2d12;padding:.7rem .85rem;font-weight:900;line-height:1.45}.feedback.good{border-color:#86efac;background:#f0fdf4;color:#15803d}.feedback.bad{border-color:#fecaca;background:#fff1f2;color:#b91c1c}.score-modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.58);z-index:999999;display:flex;align-items:center;justify-content:center;padding:1rem}.score-modal{width:min(440px,100%);background:white;border-radius:28px;box-shadow:0 28px 80px rgba(15,23,42,.35);padding:1.15rem;direction:rtl;border:3px solid #67e8f9}.score-modal h2{margin:.1rem 0 .35rem;color:#155e75;font-size:1.35rem}.score-modal-total{font-size:2.15rem;font-weight:900;color:#0f766e;margin:.35rem 0 .65rem}.score-row{display:flex;justify-content:space-between;gap:.75rem;border-top:1px solid #e2e8f0;padding:.52rem 0;font-weight:900}.score-row span:first-child{color:#334155}.score-row span:last-child{direction:ltr;color:#1d4ed8;white-space:nowrap}.score-modal-note{background:#f0fdfa;border-radius:16px;padding:.65rem;color:#115e59;font-weight:800;line-height:1.45;margin-top:.45rem}.score-modal-actions{display:flex;justify-content:flex-start;margin-top:.9rem}.helper{background:linear-gradient(135deg,#eff6ff,#fff7ed);border-radius:18px;padding:.8rem;margin-top:.7rem;line-height:1.5;min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}.helper b{color:#1d4ed8}.bridge{margin-top:.8rem;display:grid;gap:.5rem}.bridge-title{font-weight:900;color:#7c2d12}.bridge-block{border:0;border-radius:16px;background:linear-gradient(135deg,#ffedd5,#dbeafe);padding:.7rem;text-align:right;font-family:inherit;font-weight:900;cursor:pointer;box-shadow:0 5px 0 rgba(15,23,42,.08)}.bridge-block small{display:block;font-weight:700;color:#475569;margin-top:.22rem;line-height:1.35}.bridge-empty{display:none}@media(max-width:1100px){.lesson-outline{align-items:flex-start}.lesson-outline-items{overflow-x:auto}.preview-resize{display:none}body{height:auto;min-height:100vh;overflow:auto}.topbar{grid-template-columns:1fr}.lesson-title{text-align:right}.main,.main.lesson-collapsed{display:flex;flex-direction:column;padding:.75rem}.panel{min-height:360px}.lesson-panel.collapsed{min-height:58px}.lesson-panel.collapsed .lesson-toggle{height:auto;min-height:58px;writing-mode:horizontal-tb;justify-content:space-between}.lesson-panel.collapsed .lesson-toggle span:first-child{flex-direction:row}.panel.editor-panel{min-height:620px}.main.lesson-collapsed .panel.editor-panel{min-height:72vh}.panel.preview-panel{min-height:420px}.main.lesson-collapsed .panel.preview-panel{min-height:58vh}.actions .btn{flex:1}}@media(max-width:560px){.match-row{grid-template-columns:minmax(0,1fr) 16px minmax(82px,.82fr);gap:.3rem}.match-code{font-size:.76rem;padding:.45rem .5rem}.match-row select{font-size:.82rem;padding:.48rem .38rem}.match-arrow{font-size:.8rem}.main{padding:.55rem}.topbar{padding:.55rem}.btn{font-size:.86rem;padding:.55rem .7rem}.panel{border-radius:20px}textarea{font-size:13px}}
   </style>
@@ -57,10 +57,50 @@
       <div class="preview-wrap"><iframe id="preview" title="תצוגת התוצר"></iframe></div>
     </section>
   </main>
-  <script src="js/webcode-lessons-code-bridge-v226.js"></script>
+  <script>
+    (function(){
+      if(!String.prototype.replaceAll){
+        String.prototype.replaceAll = function(search, replacement){
+          var source = String(this);
+          if(search instanceof RegExp) return source.replace(search, replacement);
+          return source.split(String(search)).join(String(replacement));
+        };
+      }
+      if(!Array.prototype.at){
+        Array.prototype.at = function(index){
+          var length = this.length >>> 0;
+          var offset = Number(index) || 0;
+          if(offset < 0) offset += length;
+          return this[offset];
+        };
+      }
+      window.showWebCodeStartupError = function(error){
+        var message = error && error.message ? error.message : String(error || 'שגיאה לא ידועה');
+        var exercises = document.getElementById('exercises');
+        var progress = document.getElementById('progress');
+        var realBlockly = document.getElementById('realBlockly');
+        var blocksIntro = document.getElementById('blocksIntro');
+        var safeMessage = message.replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; });
+        if(progress) progress.textContent = 'טעינת WebCode נכשלה';
+        if(realBlockly) realBlockly.classList.remove('active');
+        if(blocksIntro){
+          blocksIntro.style.display = '';
+          blocksIntro.innerHTML = '⚠️ WebCode לא נטען במחשב הזה<small>נסו רענון חזק Ctrl+F5 או דפדפן מעודכן. אם זה מחשב בית ספרי, שלחו צילום של Console.</small>';
+        }
+        if(exercises){
+          exercises.innerHTML = '<article class="exercise active"><b>הדף נטען חלקית</b><p>התרגילים לא נטענו בגלל שגיאת דפדפן/תאימות.</p><div class="hint">שגיאה טכנית: ' + safeMessage + '</div></article>';
+        }
+      };
+      window.addEventListener('error', function(event){
+        if(event && event.filename && !/webcode|blockly/i.test(event.filename)) return;
+        window.showWebCodeStartupError(event.error || event.message);
+      });
+    })();
+  </script>
+  <script src="js/webcode-lessons.js?v=20260914-pr92-safe-1"></script>
   <script>
     if(!window.getWebCodeLesson){
-      window.WEBCODE_LESSONS = [{ id:1, title:'בונים עמוד אמיתי עם Blockly', concept:'בלוקים שבונים אתר', durationMinutes:90, realBlocklyBuilder:true, story:'בונים אתר בעזרת בלוקים ורואים את התוצאה מיד.', mission:'גררו בלוקים לשרשרת כדי לבנות עמוד אישי.', starter:{ html:'', css:'', js:'' }, exercises:[
+      window.WEBCODE_LESSONS = [{ id:1, title:'בונים עמוד אמיתי עם Blockly', concept:'בלוקים שבונים אתר', durationMinutes:170, realBlocklyBuilder:true, story:'בונים אתר בעזרת בלוקים ורואים את התוצאה מיד.', mission:'גררו בלוקים לשרשרת כדי לבנות עמוד אישי.', starter:{ html:'', css:'', js:'' }, exercises:[
         { id:1, title:'תרגיל 1 — מבנה עמוד', prompt:'חברו בלוק כותרת מתחת לעמוד האתר.', hint:'התחילו מהבלוק “עמוד האתר שלי”.', check:{ blockTypes:['web_title'] } },
         { id:2, title:'תרגיל 2 — פסקה', prompt:'הוסיפו פסקה לעמוד.', hint:'חברו בלוק פסקה מתחת לכותרת.', check:{ blockTypes:['web_paragraph'] } },
         { id:3, title:'תרגיל 3 — סמל', prompt:'הוסיפו סמל גדול שמתאים לאתר.', hint:'בחרו סמל מהרשימה.', check:{ blockTypes:['web_emoji'] } },
@@ -1322,9 +1362,9 @@ button:hover {
       $('cssCode').value = cssParts.filter(Boolean).join('\n\n');
       const bgMap = { night:'#172554', pink:'#fce7f3', forest:'#dcfce7', sun:'#ffedd5' };
       const jsLines = ['function showMessage() {'];
-      if(hasButton) jsLines.push(`  const message = document.getElementById("message");`, `  let liveMessage = window.__webcodeButtonMessage || "${String(buttonMessage).replaceAll('"','\"')}";`, `  try { liveMessage = window.parent?.webcodeCurrentButtonMessage?.() || liveMessage; } catch(error) {}`, `  message.textContent = liveMessage;`);
-      if(actionEmoji && hasEmoji) jsLines.push(`  const heroEmoji = document.getElementById("heroEmoji");`, `  heroEmoji.textContent = "${String(actionEmoji).replaceAll('"','\\"')}";`);
-      if(actionBackground) jsLines.push(`  const bgMap = { night:'#172554', pink:'#fce7f3', forest:'#dcfce7', sun:'#ffedd5' };`, `  let liveBackground = "${String(actionBackground).replaceAll('"','\"')}";`, `  try { liveBackground = window.parent?.webcodeCurrentActionBackground?.() || liveBackground; } catch(error) {}`, `  document.body.style.background = bgMap[liveBackground] || "${bgMap[actionBackground] || '#dbeafe'}";`);
+      if(hasButton) jsLines.push(`  const message = document.getElementById("message");`, `  let liveMessage = window.__webcodeButtonMessage || ${jsLiteral(buttonMessage)};`, `  try { liveMessage = window.parent?.webcodeCurrentButtonMessage?.() || liveMessage; } catch(error) {}`, `  message.textContent = liveMessage;`);
+      if(actionEmoji && hasEmoji) jsLines.push(`  const heroEmoji = document.getElementById("heroEmoji");`, `  heroEmoji.textContent = ${jsLiteral(actionEmoji)};`);
+      if(actionBackground) jsLines.push(`  const bgMap = { night:'#172554', pink:'#fce7f3', forest:'#dcfce7', sun:'#ffedd5' };`, `  let liveBackground = ${jsLiteral(actionBackground)};`, `  try { liveBackground = window.parent?.webcodeCurrentActionBackground?.() || liveBackground; } catch(error) {}`, `  document.body.style.background = bgMap[liveBackground] || ${jsLiteral(bgMap[actionBackground] || '#dbeafe')};`);
       if(magicToggle) jsLines.push(`  document.querySelector(".page-card").classList.toggle("magic");`);
       jsLines.push('}');
       $('jsCode').value = jsLines.join('\n');
@@ -1365,6 +1405,7 @@ ${block.replace}`; changed = true; }
       $('feedback').textContent = changed ? `כלי העזר הופעל: ${block.label}. הקוד עודכן. אם רוצים, פתחו הצצה לקוד כדי לראות מה השתנה.` : `כלי העזר לא מצא את הטקסט שצריך לשנות. לחצו “איפוס קוד” ונסו שוב.`;
     }
     function debugHint(message){ const text=String(message||''); if(/Unexpected end|missing|Unexpected token/.test(text)) return 'בדקו סוגריים, גרשיים, פסיקים או סוגר מסולסל חסר.'; if(/is not defined/.test(text)) return 'יש שם שהקוד לא מכיר. בדקו ששם הפונקציה או המשתנה כתוב אותו דבר בדיוק.'; if(/Cannot set properties|null/.test(text)) return 'כנראה שה־id ב־HTML לא תואם למה ש־JavaScript מחפש.'; return 'עברו על השורה האחרונה ששיניתם וחפשו טעות קטנה בסינטקס.'; }
+    function jsLiteral(value){ return JSON.stringify(String(value ?? '')); }
     function safeScript(code){ return String(code).replaceAll('<' + '/script>', '<\\/script>'); }
     function encodeSharePayload(payload){
       const json = JSON.stringify(payload);
@@ -1509,7 +1550,7 @@ ${block.replace}`; changed = true; }
       const lineAnswer = ex?.check?.requiresCodeLineAnswer;
       const isManualCodeLine = lastGeneratedCodeSelection.blockType === 'manual_code_line';
       if(lineAnswer && exerciseOk && tabOk) return true;
-      if(isManualCodeLine && ex?.choiceBox && exerciseOk && tabOk) return true;
+      if(isManualCodeLine && ex?.choiceBox && exerciseOk && tabOk && !blockTypes?.length) return true;
       return exerciseOk && tabOk && blockOk;
     }
     function hasRequiredCodeSelection(c){
@@ -1627,14 +1668,14 @@ ${block.replace}`; changed = true; }
       ensureCurrentCodeSelection();
       const choices = checkMemory.exerciseChoices?.[activeExercise] || {};
       if(rule.languageFromSelectedTab){
-        const selectedTab = lastGeneratedCodeSelection?.tab || activeCodeTabName();
+        const selectedTab = lastGeneratedCodeSelection?.tab || '';
         if(!selectedTab) return false;
         const language = String(choices[rule.languageFromSelectedTab] || '').toLowerCase();
         const expected = selectedTab === 'js' ? 'js' : selectedTab;
         if(language !== expected) return false;
       }
       if(rule.purposeFromSelectedTab){
-        const selectedTab = lastGeneratedCodeSelection?.tab || activeCodeTabName();
+        const selectedTab = lastGeneratedCodeSelection?.tab || '';
         if(!selectedTab) return false;
         const purpose = String(choices[rule.purposeFromSelectedTab] || '').toLowerCase();
         const expected = selectedTab === 'html' ? 'structure' : selectedTab === 'css' ? 'style' : 'action';
@@ -2170,6 +2211,7 @@ ${block.replace}`; changed = true; }
       if(ok){
         const earned = alreadyDone ? 0 : awardExerciseScore(ex.id);
         done.add(ex.id);
+        window.dispatchEvent(new CustomEvent('hai:classroom-progress', { detail: { lessonId: String(lesson.id), activityId: `exercise-${ex.id}`, status: 'completed', score: 100 } }));
         highestUnlockedExercise = Math.max(highestUnlockedExercise, Math.min(lesson.exercises.length, ex.id + 1));
         renderCurrentExercise();
         $('feedback').className='feedback good';
@@ -2191,7 +2233,12 @@ ${block.replace}`; changed = true; }
       const courseScore = $('courseScore');
       if(courseScore) courseScore.textContent = `🏆 סה״כ: ${formatScore(courseScoreTotal())} נק׳`;
     }
-    init();
+    try {
+      init();
+    } catch (error) {
+      console.error('WebCode startup failed:', error);
+      window.showWebCodeStartupError(error);
+    }
   </script>
   <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
 

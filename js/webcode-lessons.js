@@ -180,7 +180,7 @@
       ],
       vocabulary: [
         ['input', 'שדה שבו המשתמש מקליד משהו'],
-        
+
         ['const', 'שם קטן שבו שומרים מידע שהקוד קרא'],
         ['placeholder', 'טקסט עזרה שמופיע בתוך שדה ריק'],
         ['שרשור', 'חיבור חלקי טקסט בעזרת +']
@@ -776,7 +776,7 @@
     ],
     exercises: [
       { id: 1, minutes: '8–16', title: 'תרגיל 1 — מחברים בלוק כותרת', prompt: 'גררו בלוק “כותרת” וחברו אותו מתחת ל“עמוד האתר שלי”. שנו את הטקסט בתוך הבלוק.', hint: 'הבלוק חייב להיצמד לבלוק שמעליו, כמו פאזל.', check: { htmlIncludes: ['<h1>'], blockTypes: ['web_title'], nonEmptyBlocklyFields: [{ type: 'web_title', field: 'TEXT' }], changedBlocklyFields: [{ type: 'web_title', field: 'TEXT', defaultValue: 'האתר הראשון שלי' }], qualityBlocklyFields: [{ type: 'web_title', field: 'TEXT', minChars: 3, minWords: 1 }], emptyFeedback: 'כמעט. הכותרת מחוברת, אבל היא לא יכולה להיות ריקה.', fieldFeedback: 'כמעט. הכותרת מחוברת, עכשיו שנו את הטקסט שבתוך בלוק הכותרת.', qualityFeedback: 'כמעט. שנו את הכותרת לטקסט קצר משלכם.' } },
-      { id: 2, minutes: '16–24', title: 'תרגיל 2 — מוסיפים פסקה', prompt: 'גררו בלוק “פסקה”, חברו אותו מתחת לכותרת, וכתבו משפט על העמוד שלכם.', hint: 'הפסקה צריכה להיות מחוברת מתחת לכותרת, לא מעליה.', check: { htmlIncludes: ['<p>'], blockTypes: ['web_paragraph'], orderedBlockTypes: ['web_title', 'web_paragraph'], nonEmptyBlocklyFields: [{ type: 'web_paragraph', field: 'TEXT' }], changedBlocklyFields: [{ type: 'web_paragraph', field: 'TEXT', defaultValue: 'אני בונה עמוד עם בלוקלי אמיתי' }], qualityBlocklyFields: [{ type: 'web_paragraph', field: 'TEXT', minChars: 3, minWords: 1 }], orderFeedback: 'כמעט. הפסקה צריכה להיות מחוברת מתחת לכותרת.', emptyFeedback: 'כמעט. הפסקה במקום הנכון, אבל היא לא יכולה להיות ריקה.', fieldFeedback: 'כמעט. הפסקה במקום הנכון, עכשיו שנו את הטקסט שבתוך בלוק הפסקה.', qualityFeedback: 'כמעט. שנו את הפסקה לטקסט קצר משלכם.' } },
+      { id: 2, minutes: '16–24', title: 'תרגיל 2 — מוסיפים פסקה', prompt: 'גררו בלוק “פסקה”, חברו אותו מתחת לכותרת, וכתבו משפט על העמוד שלכם.', hint: 'הפסקה צריכה להיות מחוברת מתחת לכותרת, לא מעליה.', check: { htmlIncludes: ['<p>'], blockTypes: ['web_paragraph'], orderedBlockTypes: ['web_title', 'web_paragraph'], nonEmptyBlocklyFields: [{ type: 'web_paragraph', field: 'TEXT' }], changedBlocklyFields: [{ type: 'web_paragraph', field: 'TEXT', defaultValue: 'אני בונה עמוד עם בלוקלי אמיתי' }], qualityBlocklyFields: [{ type: 'web_paragraph', field: 'TEXT', minChars: 12, minWords: 3 }], fieldFeedback: 'כמעט. הפסקה במקום הנכון; עכשיו כתבו בה משפט משלכם של לפחות שלוש מילים.' } },
       { id: 3, minutes: '24–32', title: 'תרגיל 3 — בוחרים סמל גדול', prompt: 'גררו בלוק “סמל גדול”, חברו אותו לעמוד, ובחרו אימוג׳י שמתאים לעמוד.', hint: 'זה בלוק תוכן ויזואלי, לא קוד.', check: { htmlIncludes: ['hero-emoji'], blockTypes: ['web_emoji'] } },
       { id: 4, minutes: '32–42', title: 'תרגיל 4 — מחליפים עיצוב', prompt: 'גררו בלוק “עיצוב עמוד” ובחרו פלטה שאינה ברירת המחדל.', hint: 'פתחו את התפריט בתוך בלוק העיצוב ובחרו אפשרות אחרת.', check: { cssIncludes: ['background:'], blockTypes: ['web_theme'], changedBlocklyFields: [{ type: 'web_theme', field: 'THEME', defaultValue: 'sky' }], fieldFeedback: 'כמעט. בלוק העיצוב מחובר, עכשיו בחרו פלטה אחרת מתוך התפריט שבתוכו.' } },
       { id: 5, minutes: '42–54', title: 'תרגיל 5 — כפתור עם טקסט', prompt: 'חברו בלוק “כפתור” ושנו את הטקסט שמופיע עליו.', hint: 'אחרי הרצה, תראו את הכפתור בתצוגה החיה.', check: { htmlIncludes: ['onclick="showMessage()"'], jsIncludes: ['function showMessage'], blockTypes: ['web_button'], nonEmptyBlocklyFields: [{ type: 'web_button', field: 'LABEL' }], changedBlocklyFields: [{ type: 'web_button', field: 'LABEL', defaultValue: 'לחצו להפתעה' }], qualityBlocklyFields: [{ type: 'web_button', field: 'LABEL', minChars: 3, minWords: 1 }], emptyFeedback: 'כמעט. הכפתור מחובר, אבל הטקסט עליו לא יכול להיות ריק.', fieldFeedback: 'כמעט. הכפתור מחובר, עכשיו שנו את הטקסט שבתוך בלוק הכפתור.', qualityFeedback: 'כמעט. שנו את טקסט הכפתור לטקסט קצר משלכם.' } },
@@ -6962,7 +6962,7 @@ function resetAdventure() {
         return {
           minutes:'120–132',
           title:'אתגר חיזוי — איזו שפה משנה פעולה?',
-          prompt:'קראו את השורה: button.onclick = runProject. איזו שפת קוד אחראית כאן על פעולה בלחיצה? כתבו HTML, CSS או JavaScript.',
+          prompt:'בשורת ה־HTML מופיע onclick="runProject()" על הכפתור. איזו שפת קוד מפעילה את הפעולה אחרי הלחיצה? כתבו HTML, CSS או JavaScript.',
           hint:'HTML בונה מבנה, CSS מעצב, JavaScript מפעיל התנהגות ופעולות.',
           answerBox:{ label:'איזו שפה אחראית על הפעולה?', placeholder:'HTML / CSS / JavaScript', note:'כתבו את שם השפה, לא מילה מהשורה.' },
           check:{ answerIncludes:{ includesAny:['javascript','js','JavaScript'] }, answerFeedback:'כמעט. פעולה בלחיצה שייכת ל־JavaScript.' }
@@ -7066,12 +7066,13 @@ function resetAdventure() {
     ex.prompt = 'פתחו “לראות קוד שנוצר”, לחצו על בלוק שמחובר בתוך השרשרת של התוכנית, ומצאו את השורה שהוא יצר. סמנו איזו שפת קוד זו ומה התפקיד של השורה.';
     ex.hint = 'HTML בונה את מבנה העמוד, CSS מעצב איך הוא נראה, ו־JavaScript מפעיל פעולה או שינוי אחרי לחיצה.';
     ex.choiceBox = { groups:[
-      { id:'language', label:'איזו שפת קוד מופיעה בשורה שסומנה?', type:'checkbox', options:[{value:'html', label:'HTML'}, {value:'css', label:'CSS'}, {value:'js', label:'JS'}] },
-      { id:'purpose', label:'מה הקוד בשורה עושה?', type:'checkbox', options:[{value:'structure', label:'בונה חלק בעמוד'}, {value:'style', label:'מעצב צבעים/צורה/מראה'}, {value:'action', label:'מפעיל פעולה או שינוי'}] }
+      { id:'language', label:'איזו שפת קוד מופיעה בשורה שסומנה?', type:'radio', options:[{value:'html', label:'HTML'}, {value:'css', label:'CSS'}, {value:'js', label:'JS'}] },
+      { id:'purpose', label:'מה הקוד בשורה עושה?', type:'radio', options:[{value:'structure', label:'בונה חלק בעמוד'}, {value:'style', label:'מעצב צבעים/צורה/מראה'}, {value:'action', label:'מפעיל פעולה או שינוי'}] }
     ] };
     ex.check.requiresCodePeek = true;
     ex.check.requiresCodeSelectionBlockTypes = ['web_title','web_paragraph','web_emoji','web_button','web_columns','web_footer','web_theme','web_card_shape','web_shadow','web_title_color','web_button_style','web_hover','web_action_message','web_action_emoji','web_action_background','web_action_magic'];
     ex.check.choiceAnswer = { languageFromSelectedTab:'language', purposeFromSelectedTab:'purpose' };
+    ex.versionNote = 'v227-safe-code-selection';
     ex.check.codeSelectionFeedback = 'כמעט. פתחו את הצצת הקוד, לחצו על בלוק שמחובר בתוך שרשרת התוכנית, וחכו ששורת הקוד שלו תסומן.';
     ex.check.choiceFeedback = 'כמעט. סמנו גם את שפת הקוד וגם מה השורה עושה.';
   }
@@ -7194,10 +7195,10 @@ function resetAdventure() {
             { id:'color-family', code:'color', answer:'css' },
             { id:'radius-family', code:'border-radius', answer:'css' },
             { id:'onclick-family', code:'onclick', answer:'js' },
-            { id:'alert-family', code:'alert', answer:'js' }
+            { id:'textcontent-family', code:'textContent', answer:'js' }
           ]
         },
-        check:{ matchAnswers:{ 'p-family':'html', 'footer-family':'html', 'color-family':'css', 'radius-family':'css', 'onclick-family':'js', 'alert-family':'js' }, matchFeedback:'כמעט. HTML בונה, CSS מעצב, JavaScript מפעיל פעולה או שינוי.' }
+        check:{ matchAnswers:{ 'p-family':'html', 'footer-family':'html', 'color-family':'css', 'radius-family':'css', 'onclick-family':'js', 'textcontent-family':'js' }, matchFeedback:'כמעט. HTML בונה, CSS מעצב, JavaScript מפעיל פעולה או שינוי.' }
       },
       {
         id: nextId + 2,
@@ -7239,7 +7240,7 @@ function resetAdventure() {
     ex.id = 13;
     ex.minutes = '145–153';
     ex.title = 'תרגול הרחבה — איזה בלוק יצר את הקוד?';
-    ex.prompt = 'התאימו כל תגית או מילת קוד לבלוק ב־Blockly שיכול ליצור אותה. כאן לא שואלים מה התפקיד של הקוד, אלא מאיזה בלוק באתר הוא הגיע.';
+    ex.prompt = 'התאימו כל תגית או מילת קוד לבלוק ב־Blockly שיכול ליצור אותה.';
     ex.hint = 'חפשו קשר פשוט: <h1> מגיע מבלוק כותרת, <p> מבלוק פסקה, background מבלוק עיצוב עמוד, ו־<button> מבלוק כפתור.';
     ex.matchBox = {
       title:'מאיזה בלוק זה הגיע?',
@@ -7511,14 +7512,17 @@ function resetAdventure() {
         const role = inferRole(lesson, ex);
         const roleText = roleLabel(role);
         ex.title = (ex.title || '').replace('מסבירים מה הבלוק יצר', 'עונים מה הבלוק יצר').replace('מוצאים שורה חשובה', 'מוצאים ומבינים שורה חשובה');
-        ex.prompt = `${ex.prompt || 'פתחו “לראות קוד שנוצר” ומצאו את השורה שהבלוק יצר.'}`;
+        ex.prompt = 'פתחו “לראות קוד שנוצר”, לחצו על בלוק מחובר, וסמנו מה השורה המסומנת עושה בעמוד.';
         ex.choiceBox = { groups:[{ id:'code_role', label:'מה השורה המסומנת יוצרת או משנה בעמוד?', options:[
           { value:'structure', label:'מבנה/תוכן — כותרת, פסקה, כפתור או חלק בעמוד' },
           { value:'style', label:'עיצוב — צבע, רקע, גודל, צורה או צל' },
           { value:'action', label:'פעולה/תגובה — מה קורה בלחיצה או אחרי פעולה' }
         ] }] };
-        ex.check.choiceAnswer = { exact:{ code_role:role } };
-        ex.check.choiceFeedback = `כמעט. הסתכלו בשורה המסומנת ובחרו מה היא עושה: ${roleText}.` ;
+        ex.check.choiceAnswer = { purposeFromSelectedTab:'code_role' };
+        ex.check.choiceFeedback = 'כמעט. בחרו לפי השורה שסומנה: HTML = מבנה/תוכן, CSS = עיצוב, JavaScript = פעולה/תגובה.';
+        if(!ex.check.requiresCodeSelectionBlockTypes?.length && !ex.check.requiresCodeSelectionTab && !ex.check.requiresCodeSelectionTabs?.length){
+          ex.check.requiresCodeSelectionTab = role === 'action' ? 'js' : role === 'style' ? 'css' : 'html';
+        }
         if(!ex.check.codeSelectionFeedback) ex.check.codeSelectionFeedback = 'כמעט. קודם פתחו את הקוד שנוצר ולחצו על בלוק מחובר כדי לראות איזו שורה הוא יצר.';
       });
     });
@@ -7624,6 +7628,107 @@ function resetAdventure() {
     };
   }
   deepenLesson4FinalTasksV225();
+
+  function requireAdvancedCodeInteractionV227(){
+    lessons.slice(12).forEach(lesson => {
+      (lesson.exercises || []).forEach(exercise => {
+        if(Number(exercise.id) < 2) return;
+        if(!exercise.check) exercise.check = {};
+        if(exercise.check.blockTypes?.length || exercise.check.requiresCodePeek) return;
+        exercise.check.requiresCodePeek = true;
+        if(!exercise.check.codePeekFeedback) exercise.check.codePeekFeedback = 'כמעט. פתחו את “לראות קוד שנוצר” ובדקו את הקוד לפני שממשיכים.';
+      });
+    });
+  }
+  requireAdvancedCodeInteractionV227();
+
+  function stabilizeLesson3PreviewActionsV227(){
+    const lesson = lessons.find(item => Number(item.id) === 3);
+    if(!lesson) return;
+    for(const id of [2, 4, 5, 6, 7]){
+      const exercise = lesson.exercises?.find(item => Number(item.id) === id);
+      if(!exercise?.check) continue;
+      delete exercise.check.requiresPreviewButtonText;
+      exercise.check.requiresPreviewButtonClick = true;
+    }
+    const emojiExercise = lesson.exercises?.find(item => Number(item.id) === 5);
+    if(emojiExercise){
+      emojiExercise.title = 'תרגיל 5 — הכפתור משנה את הסמל';
+      emojiExercise.prompt = 'גררו בלוק “בלחיצה שנה סמל ל־”. בחרו בו אימוג׳י חדש. אחר כך לחצו על הכפתור בתצוגה החיה ובדקו שהסמל הגדול בעמוד השתנה.';
+      emojiExercise.hint = 'הכפתור מפעיל את בלוקי הפעולה שמחוברים מתחתיו. הבלוק הזה לא מוסיף סמל לכפתור — הוא משנה את הסמל הגדול שמופיע בעמוד.';
+    }
+  }
+  stabilizeLesson3PreviewActionsV227();
+
+  function refreshLesson2CodeExercisesV227(){
+    const lesson = lessons.find(item => Number(item.id) === 2);
+    if(!lesson) return;
+    const vocabularyExercise = lesson.exercises?.find(item => Number(item.id) === 11 && item.matchBox);
+    if(vocabularyExercise){
+      vocabularyExercise.prompt = 'פתחו את CSS שנוצר מהבלוקים בשיעור הזה, ומצאו מילים שלא היו בתרגיל הקודם. התאימו כל שורה לתפקיד שלה.';
+      vocabularyExercise.hint = 'השתמשו רק במה שמופיע במסך: בלוק צל כרטיס יוצר box-shadow, בלוק צבע כותרת יוצר h1 { color, ובלוק Hover יוצר button:hover.';
+      vocabularyExercise.matchBox = {
+        title:'מילות CSS מתוך הבלוקים שבמסך',
+        note:'בחרו לפי השורה שמופיעה בקוד שנוצר מהבלוקים.',
+        options:[
+          { value:'shadow', label:'צל של הכרטיס' },
+          { value:'title-color', label:'צבע הכותרת' },
+          { value:'hover', label:'עיצוב שקורה במעבר עכבר' }
+        ],
+        items:[
+          { id:'2-deep-shadow', code:'box-shadow', answer:'shadow' },
+          { id:'2-deep-title-color', code:'h1 { color', answer:'title-color' },
+          { id:'2-deep-hover', code:'button:hover', answer:'hover' }
+        ]
+      };
+      vocabularyExercise.check.matchAnswers = { '2-deep-shadow':'shadow', '2-deep-title-color':'title-color', '2-deep-hover':'hover' };
+      vocabularyExercise.check.matchFeedback = 'כמעט. הסתכלו בקוד שנוצר מהבלוקים שעל המסך והתאימו לפי התפקיד.';
+    }
+    const debugExercise = lesson.exercises?.find(item => Number(item.id) === 13 && item.debugCode?.language === 'CSS');
+    if(debugExercise){
+      debugExercise.title = 'העמקת קוד — מתקנים selector של CSS';
+      debugExercise.prompt = 'בתיבת הקוד חסרה נקודה לפני שם class. תקנו רק את הסימן החסר, בלי למחוק את הקוד.';
+      debugExercise.hint = 'ב־CSS, כשמעצבים class כמו profile-card, כותבים נקודה לפני השם: .profile-card';
+      debugExercise.debugCode = { language:'CSS', starter:'profile-card {\n  box-shadow: 0 16px 35px #bfdbfe;\n  border-radius: 28px;\n}', resetLabel:'↺ קוד התחלה' };
+      debugExercise.check.debugCodeIncludes = ['.profile-card','box-shadow','border-radius'];
+      delete debugExercise.check.debugCodeExcludes;
+      debugExercise.check.debugCodeFeedback = 'כמעט. לפני שם ה־class צריך להוסיף נקודה: .profile-card';
+    }
+  }
+  refreshLesson2CodeExercisesV227();
+
+  function sanitizeAnswerGuidanceV227(){
+    const genericCodePlaceholder = 'כתבו כאן מילה קצרה מהקוד';
+    const genericAnswerPlaceholder = 'כתבו כאן תשובה קצרה';
+    lessons.forEach(lesson => {
+      (lesson.exercises || []).forEach(exercise => {
+        const box = exercise.answerBox;
+        if(box?.placeholder){
+          if(/לדוגמה|<[^>]+>|button|onclick|showMessage|background|class|function/.test(box.placeholder)) box.placeholder = genericCodePlaceholder;
+          else if(/HTML\s*\/\s*CSS\s*\/\s*JavaScript/.test(box.placeholder)) box.placeholder = genericAnswerPlaceholder;
+        }
+        if(box?.note && /button|<button>|background|botton/.test(box.note)) box.note = 'אפשר לכתוב מילה אחת מהשורה המסומנת או תגית קצרה שמופיעה בה.';
+        if(exercise.check?.codeLineAnswerFeedback && /button|<button>|background|botton/.test(exercise.check.codeLineAnswerFeedback)) exercise.check.codeLineAnswerFeedback = 'כמעט. כתבו מילה או תגית אמיתית מתוך השורה המסומנת שבחרתם.';
+        if(exercise.check?.answerFeedback && /button|<button>|background|botton/.test(exercise.check.answerFeedback)) exercise.check.answerFeedback = 'כמעט. כתבו מילה או תגית אמיתית מתוך הקוד שבחרתם.';
+      });
+    });
+  }
+  sanitizeAnswerGuidanceV227();
+
+  function stabilizeLesson1CodeWordExerciseV227(){
+    const lesson = lessons.find(item => Number(item.id) === 1);
+    const exercise = lesson?.exercises?.find(item => Number(item.id) === 8);
+    if(!exercise?.check?.requiresCodeLineAnswer) return;
+    delete exercise.check.jsIncludes;
+    delete exercise.check.blockTypes;
+    delete exercise.check.nonEmptyBlocklyFields;
+    exercise.prompt = 'פתחו למטה במסך את “הצצה לקוד שנוצר”, לחצו על בלוק מחובר כדי לסמן את השורה שלו, וכתבו בתיבה מילה או תגית קצרה שראיתם בשורה המסומנת.';
+    exercise.hint = 'בדקו איזו שורה מסומנת באזור הקוד, ואז כתבו מילה או תגית שמופיעה בה.';
+    exercise.check.codeSelectionFeedback = 'כמעט. פתחו את הקוד שנוצר, לחצו על בלוק מחובר, וודאו ששורת HTML או CSS מופיעה באזור הקוד.';
+    exercise.check.codeLineAnswerFeedback = 'כמעט. כתבו מילה או תגית אמיתית מתוך השורה המסומנת באזור הקוד.';
+    exercise.answerBox = { ...(exercise.answerBox || {}), placeholder:'כתבו כאן מילה קצרה מהקוד', note:'אחרי הלחיצה על בלוק, הסתכלו בשורה המסומנת באזור הקוד וכתבו מילה שמופיעה בה.' };
+  }
+  stabilizeLesson1CodeWordExerciseV227();
 
 
   window.WEBCODE_LESSONS = lessons;

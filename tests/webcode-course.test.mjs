@@ -70,7 +70,7 @@ assert.deepEqual(Array.from(lesson3.exercises[2].check.requiresCodeSelectionBloc
 assert.ok(lesson3.exercises[2].answerBox?.label.includes('מילת קוד') && lesson3.exercises[2].check.requiresCodeLineAnswer?.requiredSnippets?.includes('button') && lesson3.exercises[2].check.requiresCodeLineAnswer?.requiredSnippets?.includes('id') && lesson3.exercises[2].check.requiresCodeLineAnswer?.requiredSnippets?.includes('onclick'), 'lesson 3 exercise 3 accepts short code words actually visible in the selected HTML button line, including button, id, and onclick');
 assert.equal(JSON.stringify(lesson3.exercises[3].check.changedBlocklyFields), JSON.stringify([{ type: 'web_action_message', field: 'TEXT', defaultValue: 'הודעה חדשה מהפעולה ✨' }]), 'lesson 3 exercise 4 requires changing the action-message text, separately from the button label');
 assert.ok(lesson3.exercises[3].hint.includes('בלוק פעולה') && lesson3.exercises[3].hint.includes('message.textContent'), 'lesson 3 exercise 4 explains that click-message behavior belongs to the action block');
-assert.equal(lesson3.exercises[3].check.requiresPreviewButtonText, 'הפעילו קסם', 'lesson 3 exercise 4 requires pressing the preview button after changing message');
+assert.ok(lesson3.exercises[3].check.requiresPreviewButtonClick && !lesson3.exercises[3].check.requiresPreviewButtonText, 'lesson 3 exercise 4 requires pressing the preview button even after its label changes');
 assert.equal(lesson3.exercises[3].check.requiresPreviewMessageChangedFrom, 'כאן תופיע הודעה מהכפתור...', 'lesson 3 exercise 4 requires visible preview message change');
 assert.ok(lesson3.exercises[3].check.blockFeedback.includes('חסר בלוק'), 'lesson 3 exercise 4 gives specific missing-action-block feedback');
 assert.ok(lesson3.exercises[4].check.changedBlocklyFields?.some(rule => rule.type === 'web_action_emoji' && rule.field === 'EMOJI' && rule.defaultValue === '🤖'), 'lesson 3 exercise 5 requires changing the action emoji from default');
@@ -79,7 +79,7 @@ assert.ok(lesson3.exercises[5].check.changedBlocklyFieldsFromBaseline?.some(rule
 assert.equal(lesson3.exercises[5].check.ensureStarterBlocks?.[0]?.type, 'web_action_background', 'lesson 3 exercise 6 auto-adds the required background action block when missing');
 assert.equal(lesson3.exercises[5].check.ensureStarterBlocks?.[0]?.after, 'web_button', 'lesson 3 exercise 6 inserts the background action after the button');
 assert.equal(lesson3.exercises[5].check.exactBlockTypeCounts?.web_action_background, 1, 'lesson 3 exercise 6 rejects adding a second background action block');
-assert.equal(lesson3.exercises[5].check.requiresPreviewButtonText, 'הפעילו קסם', 'lesson 3 exercise 6 requires pressing the preview button');
+assert.ok(lesson3.exercises[5].check.requiresPreviewButtonClick && !lesson3.exercises[5].check.requiresPreviewButtonText, 'lesson 3 exercise 6 requires pressing the current preview button regardless of its edited label');
 assert.equal(lesson3.exercises[6].check.requiresPreviewCardClass, 'magic', 'lesson 3 exercise 7 requires the preview card to enter magic mode');
 assert.equal(lesson3.exercises[7].check.requiresCodeSelectionTab, 'js', 'lesson 3 exercise 8 requires selecting generated JavaScript');
 assert.ok(lesson3.exercises[7].check.requiresCodeSelectionBlockTypes?.includes('web_action_emoji'), 'lesson 3 exercise 8 requires selecting an action block');
@@ -370,14 +370,14 @@ assert.ok(hub.includes('webcode-play.html?lesson=1'), 'hub links to lesson 1');
 assert.ok(hub.includes('webcode-slides.html?lesson=1'), 'hub links to guide slides');
 assert.ok(hub.includes('25–30'), 'hub explains gradual move to real coding');
 assert.ok(hub.includes('formatMixedText') && hub.includes('tech-term'), 'hub isolates English tech terms so RTL lesson cards do not flip mixed text');
-assert.ok(hub.includes('js/webcode-lessons-code-bridge-v226.js'), 'hub loads a cache-busted lesson-data asset to avoid stale course cards');
+assert.ok(/js\/webcode-lessons\.js\?v=[^"']+/.test(hub) && !hub.includes('webcode-lessons-code-bridge'), 'hub loads the single canonical lesson-data asset with cache busting');
 assert.ok(!hub.includes('Blockly אמיתי'), 'course-page hero avoids unclear “Blockly אמיתי” phrasing');
 assert.ok(!JSON.stringify(lessons.slice(0, 3).map(lesson => lesson.concept)).includes('Blockly אמיתי'), 'visible course-card concepts avoid unclear “Blockly אמיתי” phrasing');
 
 const play = read('webcode-play.html');
-const loadedLessonAsset = (play.match(/<script src="(js\/webcode-lessons-[^"]+)"/) || [])[1];
+const loadedLessonAsset = (play.match(/<script src="(js\/webcode-lessons\.js\?v=[^"]+)"/) || [])[1];
 assert.ok(loadedLessonAsset, 'play page should load a versioned WebCode lesson asset');
-const loadedLessonsCode = read(loadedLessonAsset);
+const loadedLessonsCode = read(loadedLessonAsset.split('?')[0]);
 const loadedSandbox = { window: {} };
 vm.createContext(loadedSandbox);
 vm.runInContext(loadedLessonsCode, loadedSandbox);
@@ -399,7 +399,7 @@ assert.ok(play.includes('webcodeLessonState:v176') && play.includes('resetReques
 assert.ok(play.includes('<block type="lesson_8_time"><field name="N">15</field>') && play.includes('<block type="lesson_8_windows"><field name="N">10</field>'), 'lesson 8 starter XML defaults to 15 seconds and 10 windows');
 assert.ok(play.includes('block.toolboxFields') && play.includes('<field name="${name}">'), 'toolbox blocks can display explicit default field values');
 assert.ok(play.includes('defineLessonBlocklyBlocks'), 'play page defines dynamic draggable lesson blocks');
-assert.ok(play.includes('js/webcode-lessons-code-bridge-v226.js'), 'play page loads a cache-busted lesson data asset for refreshed WebCode lessons');
+assert.ok(/js\/webcode-lessons\.js\?v=[^"']+/.test(play) && !play.includes('webcode-lessons-code-bridge'), 'play page loads the single canonical lesson data asset with cache busting');
 assert.ok(play.includes('.match-box{display:grid;gap:.7rem;min-width:0;max-width:100%;overflow:hidden}') && play.includes('grid-template-columns:minmax(0,1fr) 18px minmax(96px,.9fr)') && play.includes('@media(max-width:560px){.match-row') && play.includes('.match-row select{width:100%;min-width:0;max-width:100%'), 'code matching rows stay contained inside the exercise card without horizontal overflow');
 const lesson1FamilyTask = loadedLessons.find(lesson => lesson.id === 1).exercises.find(exercise => exercise.title === 'תרגול הרחבה — לאיזו משפחת קוד זה שייך?');
 assert.ok(lesson1FamilyTask && !JSON.stringify(lesson1FamilyTask.matchBox?.items || []).includes('alert') && JSON.stringify(lesson1FamilyTask.matchBox?.items || []).includes('textContent'), 'lesson 1 code-family task uses JS terms visible in the generated code instead of unsupported alert');
@@ -471,10 +471,10 @@ assert.ok(play.includes('.exercise{background:#f8fafc') && play.includes('overfl
 assert.ok(!play.includes('const selectedLine = selected.line') && !play.includes('${selectedLine}</div>') && play.includes('עכשיו כתבו בתיבה מילה או תגית שראיתם באזור הקוד'), 'selected code status does not copy the generated code line into the exercise card');
 assert.ok(play.includes('if(lineAnswer && exerciseOk && tabOk) return true') && play.includes('עכשיו כתבו בתיבה מילה או תגית שראיתם באזור הקוד') && play.indexOf('selectedCodeTokens(lastGeneratedCodeSelection.line') < play.indexOf('if(rule.blockTypes?.length'), 'code-line word tasks accept code words from the selected tab even when the selected block is outside a narrow block list');
 assert.ok(play.includes("isManualCodeLine && ex?.choiceBox && exerciseOk && tabOk") && !play.includes('showTab(name, btn){ activateCodeTab(name); lastGeneratedCodeSelection = null;'), 'code-reading choice tasks accept manually selected code lines and tab switching does not erase the selected line');
-const lesson1CodeReadingNoBlockGate = loadedLessons.find(lesson => lesson.id === 1).exercises.find(exercise => exercise.title === 'אתגר קריאת קוד — מסבירים מה הבלוק יצר');
-assert.ok(lesson1CodeReadingNoBlockGate?.check?.requiresCodePeek && !lesson1CodeReadingNoBlockGate.check.requiresCodeSelectionBlockTypes && lesson1CodeReadingNoBlockGate.check.choiceAnswer?.languageFromSelectedTab === 'language' && lesson1CodeReadingNoBlockGate.check.choiceAnswer?.purposeFromSelectedTab === 'purpose', 'lesson 1 code-reading exercise validates language and role dynamically from the selected/visible code tab');
-assert.equal(lesson1CodeReadingNoBlockGate.versionNote, 'v219-score-task-and-no-hints-3', 'lesson 1 code-reading exercise carries the v212 no white workspace overlay marker');
-assert.ok(play.includes('lastGeneratedCodeSelection?.tab || activeCodeTabName()'), 'dynamic code-reading choice validation can fall back to the visible active code tab');
+const lesson1CodeReadingSelection = loadedLessons.find(lesson => lesson.id === 1).exercises.find(exercise => exercise.title === 'אתגר קריאת קוד — מסבירים מה הבלוק יצר');
+assert.ok(lesson1CodeReadingSelection?.check?.requiresCodePeek && lesson1CodeReadingSelection.check.requiresCodeSelectionBlockTypes?.length && lesson1CodeReadingSelection.check.choiceAnswer?.languageFromSelectedTab === 'language' && lesson1CodeReadingSelection.check.choiceAnswer?.purposeFromSelectedTab === 'purpose', 'lesson 1 code-reading exercise validates language and role only after selecting generated code');
+assert.equal(lesson1CodeReadingSelection.versionNote, 'v227-safe-code-selection', 'lesson 1 code-reading exercise carries the safe-selection marker');
+assert.ok(!play.includes('lastGeneratedCodeSelection?.tab || activeCodeTabName()') && play.includes("lastGeneratedCodeSelection?.tab || ''"), 'dynamic code-reading validation does not fall back to an unselected visible tab');
 assert.ok(play.includes('scoreStorageKey') && play.includes('function loadStoredScore') && play.includes('function saveScoreState') && play.includes('localStorage.setItem(scoreStorageKey'), 'score state is saved separately so points survive page refreshes');
 assert.ok(play.includes('webcodeLastLocation:stable') && play.includes('function saveLastLocation') && play.includes('return Number(state?.savedAt || 0)'), 'player restores the most recently saved lesson/exercise instead of older richer states');
 assert.ok(hub.includes('continueWebCode') && hub.includes('readLastWebCodeLocation') && hub.includes('webcodeLastLocation:stable'), 'WebCode home continue button opens the last saved lesson location');
@@ -493,7 +493,7 @@ assert.ok(play.includes('purposeByBlockType'), 'choice validation supports futur
 const lesson1CodeReading = loadedLessons[0].exercises.find(ex => ex.title === 'אתגר קריאת קוד — מסבירים מה הבלוק יצר');
 assert.ok(lesson1CodeReading?.choiceBox?.groups?.some(group => group.id === 'language' && group.options.some(option => option.label === 'HTML') && group.options.some(option => option.label === 'CSS') && group.options.some(option => option.label === 'JS')), 'lesson 1 code-reading challenge asks learners to choose HTML/CSS/JS');
 assert.ok(lesson1CodeReading?.choiceBox?.groups?.some(group => group.id === 'purpose' && group.options.some(option => option.value === 'structure') && group.options.some(option => option.value === 'style') && group.options.some(option => option.value === 'action')), 'lesson 1 code-reading challenge asks what the selected code does');
-assert.ok(lesson1CodeReading?.check?.choiceAnswer?.languageFromSelectedTab === 'language' && lesson1CodeReading?.check?.choiceAnswer?.purposeFromSelectedTab === 'purpose' && !lesson1CodeReading?.check?.requiresCodeSelectionBlockTypes, 'lesson 1 code-reading challenge accepts HTML/structure, CSS/style, or JS/action according to the selected code tab');
+assert.ok(lesson1CodeReading?.check?.choiceAnswer?.languageFromSelectedTab === 'language' && lesson1CodeReading?.check?.choiceAnswer?.purposeFromSelectedTab === 'purpose' && lesson1CodeReading?.check?.requiresCodeSelectionBlockTypes?.length, 'lesson 1 code-reading challenge accepts answers according to the explicitly selected generated-code block');
 assert.ok(play.includes('function captureManualCodeSelection') && play.includes('manual_code_line') && play.includes('ensureCurrentCodeSelection'), 'choice/code-line checks can use a manually selected highlighted code line if no Blockly block selection was captured');
 assert.ok(play.includes('rule.tabs?.length') && play.includes('selectedCodeTokens(lastGeneratedCodeSelection.line'), 'code-line answer validation supports HTML or CSS selected lines');
 assert.ok(play.includes('function answerHasAllowedCodeSnippet') && play.includes('allowKnownCodeWordsWithoutSelection') && play.includes('selectedCodeTokens') && !play.includes('נראה שהתכוונת ל־button'), 'code-line answer validation accepts known snippets/tags without stale button-only typo feedback');
@@ -532,14 +532,14 @@ assert.ok(play.includes('lesson-collapsed'), 'collapsing instructions reallocate
 assert.ok(play.includes('previewResize') && play.includes('--preview-width'), 'preview panel has a draggable width resizer');
 assert.ok(play.includes('webcodePreviewWidth') && play.includes('pointermove'), 'preview width drag persists and handles pointer movement');
 assert.ok(play.includes('webcodeLessonState:v176') && play.includes('saveLessonState') && play.includes('restoreProgress'), 'lesson progress and code persist across page refreshes');
-assert.ok(loadedLessonsCode.includes("purposeFromSelectedTab:'code_role'") && loadedLessonsCode.includes('HTML = מבנה/תוכן, CSS = עיצוב, JavaScript = פעולה/תגובה'), 'passive code-reading role tasks validate according to the selected/active code tab instead of a fixed inferred role');
+assert.ok(loadedLessonsCode.includes("purposeFromSelectedTab:'code_role'") && loadedLessonsCode.includes('HTML = מבנה/תוכן, CSS = עיצוב, JavaScript = פעולה/תגובה') && loadedLessonsCode.includes('requiresCodeSelectionTab'), 'passive code-reading role tasks validate according to an explicitly selected generated-code tab');
 assert.ok(loadedLessonsCode.includes("languageFromSelectedTab:'language'") && loadedLessonsCode.includes("purposeFromSelectedTab:'purpose'") && !loadedLessonsCode.includes('סמנו JS וגם'), 'lesson 1 language/purpose choices no longer force JS/action when the selected generated line is HTML or CSS');
 const lesson3RoleTask = loadedLessons.find(lesson => lesson.id === 3).exercises.find(ex => ex.id === 8);
-assert.ok(lesson3RoleTask?.check?.choiceAnswer?.purposeFromSelectedTab === 'code_role' && !lesson3RoleTask.check.requiresCodeSelectionBlockTypes && !lesson3RoleTask.check.requiresCodeSelectionTab, 'lesson 3 generic code-role task accepts the selected code line/tab instead of requiring hidden JS action-block selection');
+assert.ok(lesson3RoleTask?.check?.choiceAnswer?.purposeFromSelectedTab === 'code_role' && lesson3RoleTask.check.requiresCodeSelectionBlockTypes?.length && lesson3RoleTask.check.requiresCodeSelectionTab === 'js', 'lesson 3 generic code-role task requires selecting its generated JavaScript before answering');
 const answerPlaceholders = loadedLessons.flatMap(lesson => (lesson.exercises || []).map(ex => ex.answerBox?.placeholder).filter(Boolean));
 assert.ok(answerPlaceholders.length > 0 && answerPlaceholders.every(placeholder => !/לדוגמה|<[^>]+>|button|onclick|showMessage|HTML\s*\/\s*CSS\s*\/\s*JavaScript/.test(placeholder)), 'answer placeholders stay generic and do not reveal possible answers');
 assert.ok(play.includes("if(tab === 'html')") && play.includes('typed.length >= 1') && !play.includes('נראה שהתכוונת ל־button'), 'code-line answers accept real one-letter HTML tags like p from the selected line without stale button-only typo feedback');
-assert.ok(loadedLessonsCode.includes('cleanAnswerExampleFeedbackV219'), 'lesson data includes current feedback cleanup');
+assert.ok(loadedLessonsCode.includes('sanitizeAnswerGuidanceV227'), 'lesson data includes current answer-guidance cleanup');
 const childFacingNotes = loadedLessons.flatMap(lesson => (lesson.exercises || []).flatMap(ex => [ex.answerBox?.note, ex.check?.codeLineAnswerFeedback, ex.check?.answerFeedback].filter(Boolean)));
 assert.ok(childFacingNotes.every(text => !/button ולא botton|לדוגמה: button|אפשר לכתוב button או <button>/.test(text)), 'runtime child-facing answer notes avoid stale button-only examples');
 const lesson1AnyCodeWord = loadedLessons[0].exercises.find(ex => ex.id === 8);
@@ -657,7 +657,7 @@ assert.ok(shared.includes('sandbox="allow-scripts"'), 'shared project viewer iso
 assert.ok(shared.includes('לבנות עמוד משלי'), 'shared project viewer invites friends to build their own page');
 
 const slides = read('webcode-slides.html');
-assert.ok(slides.includes('מהלך שיעור 90 דקות'), 'slides include 90-minute flow');
+assert.ok(slides.includes('מהלך שיעור ${lesson.durationMinutes} דקות'), 'slides display each lesson’s configured duration');
 assert.ok(slides.includes('רצף תרגילים לשיעור'), 'slides include exercise sequence');
 assert.ok(slides.includes('שימוש נכון ב־AI'), 'slides include AI guidance');
 
