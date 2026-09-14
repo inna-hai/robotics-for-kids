@@ -152,10 +152,6 @@
 
     try {
       const me = await api('/api/classroom/me');
-      if (me.role === 'teacher') {
-        location.assign('teacher-classrooms.html');
-        return;
-      }
       if (me.role === 'student') {
         location.assign('classroom-student.html');
         return;
@@ -405,11 +401,13 @@
     const teacherCourseCatalog = document.getElementById('teacher-course-catalog');
     const createClassButton = document.querySelector('#create-class-form button[type="submit"]');
     let availableCourseIds = [];
+    let currentClasses = [];
+    let selectedClassId = '';
 
     function renderTeacherCatalog() {
       teacherCourseCatalog.replaceChildren();
       if (!availableCourseIds.length) {
-        teacherCourseCatalog.append(element('p', 'עדיין לא הוקצו לך לומדות. אפשר ליצור כיתה עכשיו ולהוסיף לה לומדות אחרי שמנהלת המערכת תפתח עבורך הרשאות.', 'message'));
+        teacherCourseCatalog.append(element('p', 'עדיין לא אושרו לך הרשאות ללומדות. אפשר ליצור כיתה עכשיו, אבל יש להמתין לאישור מנהלת לפני פתיחת לומדות לכיתה.', 'message'));
         createClassButton.disabled = false;
         return;
       }
@@ -428,9 +426,44 @@
     async function loadClasses() {
       const data = await api('/api/classroom/classes');
       availableCourseIds = data.teacher?.courses || [];
+      currentClasses = data.classes || [];
+      if (selectedClassId && !currentClasses.some(classroom => classroom.id === selectedClassId)) selectedClassId = '';
       renderTeacherCatalog();
-      list.replaceChildren(...data.classes.map(renderClass));
-      if (!data.classes.length) list.append(element('p', 'עדיין אין כיתות. צרו את הכיתה הראשונה.', 'card'));
+      renderClasses();
+    }
+
+    function renderClassSelector(classes) {
+      const selector = element('section', undefined, 'selector-panel');
+      selector.append(element('h3', 'בחירת כיתה לניהול'));
+      const buttons = element('div', undefined, 'selector-list');
+      classes.forEach((classroom) => {
+        const button = element('button', classroom.name, `selector-button ${classroom.id === selectedClassId ? 'active' : ''}`);
+        button.type = 'button';
+        const courses = (classroom.courses || []).map(id => courseLabels[id] || id).join(', ') || 'ללא לומדות פתוחות';
+        button.append(element('small', `קוד כיתה: ${classroom.joinCode} · ${classroom.students?.length || 0} תלמידים · ${courses}`));
+        button.addEventListener('click', () => {
+          selectedClassId = classroom.id;
+          renderClasses();
+        });
+        buttons.append(button);
+      });
+      selector.append(buttons);
+      return selector;
+    }
+
+    function renderClasses() {
+      list.replaceChildren();
+      if (!currentClasses.length) {
+        list.append(element('p', 'עדיין אין כיתות. צרו את הכיתה הראשונה.', 'card'));
+        return;
+      }
+      list.append(renderClassSelector(currentClasses));
+      const selected = currentClasses.find(classroom => classroom.id === selectedClassId);
+      if (!selected) {
+        list.append(element('p', 'בחרו כיתה מהרשימה כדי לנהל תלמידים, לומדות והתקדמות.', 'card'));
+        return;
+      }
+      list.append(renderClass(selected));
     }
 
     function renderClass(classroom) {
@@ -528,7 +561,7 @@
           }
         });
       } else {
-        courseForm.append(element('p', 'אין עדיין לומדות זמינות למורה הזאת. הכיתה יכולה להישאר קיימת, ומנהלת תפתח הרשאות בהמשך.', 'message'));
+        courseForm.append(element('p', 'אין עדיין לומדות זמינות למורה הזאת. הכיתה נשמרת, ויש להמתין לאישור מנהלת לפני פתיחת לומדות לכיתה.', 'message'));
       }
       courseAccess.append(courseForm);
 
@@ -648,9 +681,10 @@
       try {
         const data = formData(classForm);
         data.courses = selectedCourses(classForm);
-        await api('/api/classroom/classes', data);
+        const result = await api('/api/classroom/classes', data);
+        selectedClassId = result.classroom?.id || selectedClassId;
         classForm.reset();
-        setMessage(dashboardMessage, data.courses.length ? 'הכיתה נוצרה עם הלומדות שנבחרו.' : 'הכיתה נוצרה. אפשר להוסיף לומדות אחרי שמנהלת תפתח הרשאות.', true);
+        setMessage(dashboardMessage, data.courses.length ? 'הכיתה נוצרה עם הלומדות שנבחרו.' : 'הכיתה נוצרה. יש להמתין לאישור מנהלת לפני פתיחת לומדות לכיתה.', true);
         await loadClasses();
       } catch (error) {
         setMessage(dashboardMessage, error.message);

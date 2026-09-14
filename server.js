@@ -2746,6 +2746,11 @@ async function handleClassroomApi(req, res) {
       const result = withSummerDb(db => {
         const classroom = db.prepare('SELECT * FROM classrooms WHERE id = ? AND teacher_id = ?').get(segments[3], teacher.id);
         if (!classroom) return null;
+        const existingStudent = db.prepare(`
+          SELECT id FROM classroom_students
+          WHERE classroom_id = ? AND lower(name) = lower(?)
+        `).get(classroom.id, name);
+        if (existingStudent) return { duplicateName: true };
         const now = new Date().toISOString();
         const loginCode = generatePersonalLoginCode(db, classroom.id);
         const username = generateStudentLoginUsername(db, classroom.id);
@@ -2768,6 +2773,7 @@ async function handleClassroomApi(req, res) {
         return { student, loginCode };
       });
       if (!result) return send(res, 404, JSON.stringify({ error: 'הכיתה לא נמצאה.' }));
+      if (result.duplicateName) return send(res, 409, JSON.stringify({ error: 'כבר קיים/ת תלמיד/ה בשם הזה בכיתה הזאת. אפשר להשתמש בשם מלא או להוסיף סימון מזהה.' }));
       return send(res, 201, JSON.stringify({
         ok: true,
         student: { id: result.student.id, name: result.student.name, username: result.student.login_username, password: result.loginCode, loginCode: result.loginCode, createdAt: result.student.created_at },

@@ -15,6 +15,7 @@
   const teachersList = document.getElementById('admin-teachers-list');
   const exportTeachersButton = document.getElementById('admin-export-teachers');
   let currentTeachers = [];
+  let selectedTeacherId = '';
 
   function element(tag, text, className) {
     const node = document.createElement(tag);
@@ -124,7 +125,30 @@
     return fieldset;
   }
 
-  function renderTeacher(teacher) {
+  function renderTeacherSelector(teachers) {
+    const selector = element('section', undefined, 'selector-panel');
+    selector.append(element('h3', 'בחירת מורה'));
+    const pending = teachers.filter(teacher => !(teacher.courses || []).length);
+    if (pending.length) {
+      selector.append(element('p', `יש ${pending.length} מורה/ות שממתינות להרשאות לומדות: ${pending.map(teacher => teacher.name).join(', ')}`, 'message'));
+    }
+    const buttons = element('div', undefined, 'selector-list');
+    teachers.forEach((teacher) => {
+      const button = element('button', teacher.name, `selector-button ${teacher.id === selectedTeacherId ? 'active' : ''}`);
+      button.type = 'button';
+      const details = element('small', `${teacher.email} · ${(teacher.classes || []).length} כיתות · ${(teacher.courses || []).length ? 'יש הרשאות' : 'ממתינה להרשאות'}`);
+      button.append(details);
+      button.addEventListener('click', () => {
+        selectedTeacherId = teacher.id;
+        renderTeachers();
+      });
+      buttons.append(button);
+    });
+    selector.append(buttons);
+    return selector;
+  }
+
+  function renderTeacherDetails(teacher) {
     const card = element('article', undefined, 'class-card');
     const heading = element('div', undefined, 'class-top');
     const identity = element('div');
@@ -148,22 +172,38 @@
       try {
         const courses = new FormData(form).getAll('courses');
         const data = await api(`/api/classroom/admin/teachers/${encodeURIComponent(teacher.id)}/courses`, { courses });
-        setMessage(message, data.warning || `הרשאות הלומדות של ${teacher.name} נשמרו.`, true);
         await loadTeachers();
+        setMessage(message, data.warning || `הרשאות הלומדות של ${teacher.name} נשמרו בהצלחה.`, true);
       } catch (error) {
         setMessage(message, error.message);
       }
     });
 
-    card.append(heading, classText, form);
+    const courseSummary = (teacher.courses || []).map(id => courseLabels[id] || id).join(', ') || 'עדיין לא אושרו לומדות למורה הזאת.';
+    card.append(heading, element('p', `לומדות מאושרות למורה: ${courseSummary}`), classText, form);
     return card;
+  }
+
+  function renderTeachers() {
+    teachersList.replaceChildren();
+    if (!currentTeachers.length) {
+      teachersList.append(element('p', 'עדיין אין חשבונות מורים.', 'card'));
+      return;
+    }
+    teachersList.append(renderTeacherSelector(currentTeachers));
+    const selected = currentTeachers.find(teacher => teacher.id === selectedTeacherId);
+    if (!selected) {
+      teachersList.append(element('p', 'בחרו מורה מהרשימה כדי לראות כיתות, לומדות מאושרות והרשאות.', 'card'));
+      return;
+    }
+    teachersList.append(renderTeacherDetails(selected));
   }
 
   async function loadTeachers() {
     const data = await api('/api/classroom/admin/teachers');
     currentTeachers = data.teachers || [];
-    teachersList.replaceChildren(...currentTeachers.map(renderTeacher));
-    if (!currentTeachers.length) teachersList.append(element('p', 'עדיין אין חשבונות מורים.', 'card'));
+    if (selectedTeacherId && !currentTeachers.some(teacher => teacher.id === selectedTeacherId)) selectedTeacherId = '';
+    renderTeachers();
   }
 
   async function showDashboard() {

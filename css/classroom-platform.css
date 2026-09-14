@@ -98,6 +98,12 @@ input:focus { outline: 3px solid rgba(79,70,229,.2); border-color: var(--primary
 .course-links { display: flex; flex-wrap: wrap; gap: 8px; }
 .course-access-form { display: grid; gap: 10px; }
 .classes-list { display: grid; gap: 20px; margin-top: 24px; }
+.selector-panel { display: grid; gap: 12px; padding: 18px; border: 1px solid var(--line); border-radius: 16px; background: #fff; }
+.selector-panel h3 { margin: 0; }
+.selector-list { display: grid; gap: 10px; }
+.selector-button { width: 100%; display: grid; gap: 4px; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 12px; background: #f8fafc; color: var(--ink); text-align: right; font: inherit; font-weight: 900; cursor: pointer; }
+.selector-button small { color: var(--muted); font-weight: 750; line-height: 1.45; }
+.selector-button.active { border-color: var(--primary); background: var(--soft); color: var(--primary-dark); }
 .class-card { padding: 22px; border-radius: 20px; background: #fff; border: 1px solid var(--line); }
 .class-top { display: flex; justify-content: space-between; gap: 16px; align-items: start; }
 .code { display: inline-block; padding: 8px 11px; direction: ltr; border-radius: 10px; background: #f1f5f9; font: 800 1rem ui-monospace, monospace; letter-spacing: .08em; }
