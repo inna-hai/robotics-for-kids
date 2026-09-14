@@ -13,7 +13,42 @@
     .lessons-toggle{position:fixed;right:0;top:98px;z-index:60;display:inline-flex;align-items:center;justify-content:center;gap:.45rem;width:46px;min-height:46px;overflow:hidden;border:1px solid rgba(23,32,51,.14);border-right:0;border-radius:999px 0 0 999px;padding:0;font-family:inherit;font-size:.9rem;font-weight:900;line-height:1;white-space:nowrap;cursor:pointer;background:rgba(255,255,255,.94);color:#172033;box-shadow:0 10px 26px rgba(15,23,42,.14);backdrop-filter:blur(12px);transition:width .18s ease,transform .18s ease,box-shadow .18s ease,background .18s ease}.lessons-toggle:hover,.lessons-toggle:focus-visible{width:142px;justify-content:flex-start;padding:0 .72rem;background:#fff;box-shadow:0 14px 34px rgba(15,23,42,.18);outline:none}.lessons-toggle:hover .open-text,.lessons-toggle:focus-visible .open-text,.lessons-toggle:hover .closed-text,.lessons-toggle:focus-visible .closed-text{justify-content:flex-start}.lessons-toggle .open-text,.lessons-toggle .closed-text{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;direction:rtl;width:100%}.lessons-toggle [aria-hidden="true"]{flex:0 0 auto;font-size:1.15rem;line-height:1}.lessons-toggle .open-text span:not([aria-hidden]),.lessons-toggle .closed-text span:not([aria-hidden]){display:none;opacity:0;transform:translateX(4px);transition:opacity .16s ease,transform .16s ease}.lessons-toggle:hover .open-text span:not([aria-hidden]),.lessons-toggle:focus-visible .open-text span:not([aria-hidden]),.lessons-toggle:hover .closed-text span:not([aria-hidden]),.lessons-toggle:focus-visible .closed-text span:not([aria-hidden]){display:inline;opacity:1;transform:translateX(0)}.lessons-toggle .closed-text{display:none}.layout.lessons-collapsed+.lessons-toggle .open-text{display:none}.layout.lessons-collapsed+.lessons-toggle .closed-text{display:inline-flex}.lessons{position:relative}.lessons-tools{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}.lessons-collapse-btn{border:1px solid #e2e8f0;border-radius:999px;background:#fff;color:#0f172a;font-family:inherit;font-weight:900;padding:8px 12px;cursor:pointer;box-shadow:0 5px 14px rgba(15,23,42,.07)}.lessons-resizer{position:absolute;left:-8px;top:18px;bottom:18px;width:16px;cursor:col-resize;z-index:3;display:flex;align-items:center;justify-content:center}.lessons-resizer::before{content:'';width:5px;height:72px;border-radius:999px;background:linear-gradient(180deg,#22d3ee,#a78bfa);box-shadow:0 0 0 3px rgba(255,255,255,.75)}.layout{--lessons-width:360px;grid-template-columns:minmax(420px,1.08fr) minmax(430px,1fr) minmax(280px,var(--lessons-width))}.layout.lessons-collapsed{grid-template-columns:minmax(420px,var(--canvas-width,1.08fr)) minmax(470px,1fr) 0px}.layout.lessons-collapsed .lessons{padding:0;border:0;opacity:0;pointer-events:none;overflow:hidden}.layout.is-resizing,.layout.is-resizing *{cursor:col-resize!important;user-select:none}@media(min-width:1151px){.layout:not(.lessons-collapsed)+.lessons-toggle{opacity:0;pointer-events:none}.layout.lessons-collapsed+.lessons-toggle{opacity:1;pointer-events:auto}.layout.lessons-collapsed{grid-template-areas:'canvas workspace lessons'}}@media(min-width:1400px){.layout{--lessons-width:420px}}@media(min-width:1680px){.layout{--lessons-width:480px}}@media(max-width:1150px){.layout{grid-template-columns:1fr!important;grid-template-areas:'canvas' 'workspace';height:auto}.lessons{position:fixed;right:12px;top:84px;bottom:12px;width:min(88vw,var(--lessons-width,360px));max-height:none!important;z-index:55;transform:translateX(0);transition:transform .22s ease,opacity .18s ease;padding:18px}.layout.lessons-collapsed .lessons{padding:18px;border:1px solid rgba(15,23,42,.1);opacity:0;transform:translateX(calc(100% + 24px));pointer-events:none}.lessons-resizer{left:-10px;top:22px;bottom:22px}.lessons-toggle{top:auto;right:max(10px,env(safe-area-inset-right));bottom:18px;width:auto;min-height:38px;border-radius:999px;border-right:1px solid rgba(23,32,51,.14);padding:0 .7rem}.lessons-toggle .open-text span:not([aria-hidden]),.lessons-toggle .closed-text span:not([aria-hidden]){opacity:1;transform:none}.lessons-toggle:hover,.lessons-toggle:focus-visible{width:auto;transform:translateY(-1px)}.layout:not(.lessons-collapsed)::before{content:'';position:fixed;inset:0;background:rgba(15,23,42,.18);z-index:50}.canvas-panel{min-height:650px}.workspace-wrap{min-height:680px}}@media(max-width:600px){.lessons{right:8px;left:8px;width:auto}.lessons-toggle{right:10px;bottom:12px}.layout:not(.lessons-collapsed)::before{background:rgba(15,23,42,.24)}}
 
 
-  </style>
+
+    body.lesson23-code-pilot .workspace-wrap{grid-template-rows:auto minmax(420px,1fr) 190px}
+    body.lesson23-code-pilot .work-head{background:#f8fafc;color:#0f172a;border-bottom-color:#dbeafe}
+    body.lesson23-code-pilot .work-head h2::before{content:'🐍 ';}
+    body.lesson23-code-pilot .work-head .hint{color:#2563eb}
+    body.lesson23-code-pilot .blockly-area{background:linear-gradient(180deg,#f8fafc,#eef6ff);border-top:1px solid #dbeafe;box-shadow:inset 0 0 0 2px rgba(37,99,235,.10)}
+    body.lesson23-code-pilot .BlocklyMainBackground{fill:#fbfdff!important;stroke:#bfdbfe!important;stroke-width:2px!important}
+    body.lesson23-code-pilot .blocklyToolboxDiv{background:#f8fafc!important;color:#0f172a!important;border-left:1px solid #dbeafe!important}
+    body.lesson23-code-pilot .blocklyFlyoutBackground{fill:#ffffff!important;fill-opacity:.98!important;stroke:#dbeafe!important}
+    body.lesson23-code-pilot .blocklyText{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;font-weight:800!important}
+    body.lesson23-code-pilot .blocklySelected>.blocklyPath{stroke:#2563eb!important;stroke-width:3px!important}
+    body.lesson23-code-pilot .code-box{background:#f8fafc;color:#0f172a;border-top:1px solid #dbeafe}
+    body.lesson23-code-pilot .code-title{color:#2563eb;background:#eff6ff;border-bottom:1px solid #dbeafe}
+    body.lesson23-code-pilot .code-title::after{content:'עזר בלבד — לא גוררים לכאן';color:#64748b;font-size:.82rem;font-weight:900}
+    body.lesson23-code-pilot .code{background:#ffffff;color:#0f172a;border-top:0;font-size:.88rem;line-height:1.45}
+    body.lesson23-code-pilot .code-line.active-code-line{background:#dbeafe;border-right-color:#2563eb;color:#1e3a8a}
+    body.lesson23-code-pilot .mission{background:#ecfeff;border-top-color:#67e8f9;color:#164e63}
+    .code-pilot-banner{margin:0 0 10px;padding:10px 12px;border-radius:14px;background:#e0f2fe;border:1px solid #67e8f9;color:#164e63;font-weight:900;line-height:1.45}
+
+    body.lesson23-code-pilot #blocklyDiv{position:relative}
+    body.lesson23-code-pilot .lesson23-code-overlay{position:absolute;inset:46px 190px 14px 14px;z-index:20;pointer-events:auto;direction:ltr;text-align:left;background:rgba(255,255,255,.72);border:0;border-radius:0;padding:14px 16px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:1rem;line-height:1.7;color:#0f172a;box-shadow:none;overflow:auto;white-space:pre-wrap}
+    body.lesson23-code-pilot .lesson23-code-overlay .placeholder{color:#64748b;direction:rtl;text-align:right;font-family:Rubik,Arial,sans-serif;font-weight:900}
+    body.lesson23-code-pilot .lesson23-code-overlay .line{display:block;border-right:0;padding:1px 4px;border-radius:0;min-height:1.65em;cursor:pointer;position:relative;pointer-events:auto}
+    body.lesson23-code-pilot .lesson23-code-overlay .line:hover{background:transparent}
+    body.lesson23-code-pilot .lesson23-code-overlay .line.comment{color:#64748b;direction:rtl;text-align:right;font-family:Rubik,Arial,sans-serif}
+    body.lesson23-code-pilot .lesson23-code-overlay .line.active{background:rgba(219,234,254,.55);color:#1e3a8a}
+    body.lesson23-code-pilot .blocklyToolboxDiv,body.lesson23-code-pilot .blocklyFlyout{z-index:80!important}
+    body.lesson23-code-pilot .blocklyFlyoutBackground{pointer-events:auto}
+    body.lesson23-code-pilot .lesson23-drag-handle{display:inline-block;width:1.4em;margin-right:6px;text-align:center;color:#94a3b8;cursor:grab;user-select:none;touch-action:none;font-family:Rubik,Arial,sans-serif;font-weight:900}
+    body.lesson23-code-pilot .lesson23-drag-handle:active{cursor:grabbing}
+    body.lesson23-code-pilot .lesson23-code-text{display:inline-block;min-width:7ch;border-radius:4px;padding:0 2px;outline:none;cursor:text}
+    body.lesson23-code-pilot .lesson23-code-text:focus{background:transparent;border-bottom:2px solid #60a5fa;box-shadow:none}
+        body.lesson23-code-pilot .lesson23-code-overlay .line.lesson23-dragging-line{opacity:.45}
+    body.lesson23-code-pilot .lesson23-code-overlay .line.lesson23-drop-before{box-shadow:inset 0 2px 0 #2563eb}
+    body.lesson23-code-pilot .lesson23-code-overlay .line.lesson23-drop-after{box-shadow:inset 0 -2px 0 #2563eb}
+</style>
   <link rel="stylesheet" href="css/platform-home-link.css">
 </head>
 <body>
@@ -50,10 +85,10 @@
       </aside>
 
       <section class="panel workspace-wrap">
-        <div class="work-head"><h2>1. גוררים בלוקים באנגלית</h2><span class="hint">הקוד מתעדכן אוטומטית למטה</span></div>
+        <div class="work-head"><h2 id="workspaceTitle">1. גוררים בלוקים באנגלית</h2><span id="workspaceHint" class="hint">הקוד מתעדכן אוטומטית למטה</span></div>
         <div id="blocklyDiv" class="blockly-area"></div>
         <section class="code-box" aria-label="קוד פייתון שנוצר מהבלוקים">
-          <div class="code-title">2. קוד Python שנוצר</div>
+          <div id="codeBoxTitle" class="code-title">2. קוד Python שנוצר</div>
           <pre id="pythonCode" class="code"></pre>
         </section>
       </section>
@@ -4189,7 +4224,7 @@
                                         "title": "מרכז ושיפור התוצר",
                                         "teacher": "מוסיפים מרכז קטן ומדגישים שהשדרוגים באים אחרי שהמבנה הבסיסי עובד.",
                                         "students": "מוסיפים מרכז קטן לפרח ומשפרים פרטים בלי למחוק את הפרח החוזר."
-                              }, 
+                              },
                               {
                                         "minutes": "82–90",
                                         "title": "שיתוף וסיכום",
@@ -4881,273 +4916,88 @@
           {
                     "id": 23,
                     "title": "סיפור בשלושה פריימים",
-                    "goal": "בונים רקע, אובייקטים ופרטים בסדר נכון.",
-                    "concept": "רצף",
+                    "goal": "פיילוט מעבר ל־Python: גוררים פקודות שנראות כמו שורות קוד ובונים סיפור קצר.",
+                    "concept": "קוד כשורות פעולה",
                     "product": "קומיקס קוד קצר",
-                    "blocks": [
-                              "forward",
-                              "right",
-                              "repeat",
-                              "color",
-                              "pen",
-                              "length"
-                    ],
+                    "blocks": ["forward", "right", "repeat", "color", "pen", "comment"],
                     "practice": [
-                              "ציירו רקע פשוט ראשון.",
-                              "עברו לצייר אובייקט מרכזי.",
-                              "הוסיפו פרט קטן מעליו.",
-                              "בדקו למה סדר הציור חשוב.",
-                              "שנו סדר וראו מה מסתיר מה.",
-                              "השתמשו בצבעים שונים לשכבות.",
-                              "הפרידו עם penup.",
-                              "צרו סצנת יום/לילה.",
-                              "הסבירו איזו שכבה באה קודם.",
-                              "אתגר: פארק קטן עם שמש ושביל."
+                              "גררו שורות קוד ראשונות וציירו פריים ראשון.",
+                              "השתמשו ב־repeat כדי לצייר צורה בסיסית.",
+                              "עברו לפריים שני בלי קו מחבר.",
+                              "שנו מספר או צבע בתוך שורת קוד.",
+                              "בדקו איך סדר השורות משפיע על הציור.",
+                              "תקנו מעבר שמצייר קו מיותר.",
+                              "בנו סיפור קצר בשלושה פריימים.",
+                              "אתגר רשות: הוסיפו סוף קטן לסיפור."
                     ],
                     "timing": [
-                              "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
-                              "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
-                              "18–35 תרגול מודרך ראשון",
-                              "35–55 עבודה עצמאית על משימת הליבה",
-                              "55–70 אתגר הרחבה או דיבאג",
-                              "70–82 שיתוף בזוגות ושיפור לפי משוב",
-                              "82–90 סיכום, רפלקציה ושמירת תוצר"
+                              "0–8 פתיחה: היום הבלוקים נראים ומתנהגים כמו שורות Python",
+                              "8–18 הדגמה קצרה: גוררים שורה, רואים שורת קוד, מריצים",
+                              "18–35 פריים ראשון ושימוש ב־repeat",
+                              "35–52 פריים שני ומעבר נקי עם penup / pendown",
+                              "52–68 דיבאג ושינוי מספרים/צבעים בתוך שורות הקוד",
+                              "68–82 בניית שלושה פריימים קצרים",
+                              "82–90 שיתוף: קוראים 3 שורות קוד ומסבירים מה הן עושות"
                     ],
                     "teacherTips": [
-                              "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
-                              "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
-                              "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
-                              "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
-                              "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+                              "להציג את זה כפיילוט מעבר לקוד: עדיין גוררים, אבל חושבים בשורות Python.",
+                              "לא לתת כתיבה חופשית מלאה; הילדים משנים מספרים, צבעים וסדר שורות.",
+                              "לעצור אחרי כל שינוי ולשאול: איזו שורה גרמה למה שראינו?",
+                              "להקפיד על סיפור קצר מאוד כדי שהממשק החדש לא יעמיס.",
+                              "אם תלמיד נתקע, לבקש ממנו לקרוא בקול רק את 2–3 השורות האחרונות."
                     ],
                     "unit": "יחידה 5 — אנימציה וסיפור בתנועה",
-                    "level": "קליל וחווייתי לגיל 10–11",
-                    "story": "הילדים בונים קומיקס קטן: התחלה, אמצע וסוף — כל פריים הוא ציור בקוד.",
-                    "mission": "ליצור שלושה אזורים או פריימים שמספרים סיפור קצר.",
-                    "outcome": "קומיקס קוד עם 3 פריימים.",
-                    "approach": "מרכיבים פתרון מבלוקים ומ־snippets קצרים של Python",
-                    "bridge": "כרטיס קוד אמיתי → שינוי בטוח → הרצה",
+                    "level": "מעבר מודרך מבלוקים ל־Python",
+                    "story": "הילדים יוצרים קומיקס קצר בשלושה פריימים, ובכל פעם גוררים פקודות שנראות כמו שורות קוד אמיתיות.",
+                    "mission": "לבנות סיפור קצר בשלושה פריימים בעזרת שורות קוד שנגררות לאזור העבודה.",
+                    "outcome": "קומיקס קוד עם 3 פריימים ושורות Python ברורות.",
+                    "approach": "בלוקים שנראים כמו קוד → שינוי בטוח בשורה → הרצה → הסבר",
+                    "bridge": "גוררים שורת קוד → קוראים אותה → משנים מספר/צבע",
                     "durationMinutes": 90,
                     "lessonFlow": [
-                              {
-                                        "minutes": "0–8",
-                                        "title": "פתיחת סיפור ומשימה",
-                                        "teacher": "מציגים את התוצר של היום: קומיקס קוד קצר. שואלים מה הצב צריך לדעת לעשות כדי להגיע לשם.",
-                                        "students": "מנבאים אילו פקודות או בלוקים יעזרו ומנסחים יעד קצר."
-                              },
-                              {
-                                        "minutes": "8–18",
-                                        "title": "הדגמה קצרה בלי פתרון מלא",
-                                        "teacher": "מדגימים רק התחלה: בלוק אחד או שניים שמראים רצף. לא חושפים את כל הפתרון.",
-                                        "students": "עונים מה יקרה בהרצה לפני שלוחצים ▶️."
-                              },
-                              {
-                                        "minutes": "18–34",
-                                        "title": "בנייה מודרכת",
-                                        "teacher": "מובילים את תרגילים 1–4 בקצב כיתה, עם עצירות ניבוי קצרות.",
-                                        "students": "בונים, מריצים אחרי כל שינוי, ומתקנים אם הצב הלך לכיוון לא צפוי."
-                              },
-                              {
-                                        "minutes": "34–48",
-                                        "title": "בלוק → Python",
-                                        "teacher": "מחברים בין הבלוקים לשורות הקוד. מדגישים את הגשר: כרטיס קוד אמיתי → שינוי בטוח → הרצה.",
-                                        "students": "לוחצים על בלוק, מוצאים את השורה המודגשת, ומסבירים אותה במילים."
-                              },
-                              {
-                                        "minutes": "48–64",
-                                        "title": "תרגול עצמאי",
-                                        "teacher": "נותנים לתלמידים לעבוד על תרגילים 5–10 בלי להראות פתרון מלא.",
-                                        "students": "מבצעים שינוי קטן, מריצים, משווים ומתקנים."
-                              },
-                              {
-                                        "minutes": "64–76",
-                                        "title": "דיבאג ושיפור",
-                                        "teacher": "נותנים באג נפוץ אחד ושואלים איך מאתרים אותו בלי למחוק הכל.",
-                                        "students": "מתקנים מספר/זווית/סדר/לולאה ומסבירים מה השתנה."
-                              },
-                              {
-                                        "minutes": "76–84",
-                                        "title": "אתגר יצירתי קצר",
-                                        "teacher": "פותחים בחירה אישית מוגבלת כדי לשמור על הצלחה: צבע, גודל, דפוס או פרט אישי.",
-                                        "students": "משדרגים את התוצר בלי לאבד את מושג השיעור."
-                              },
-                              {
-                                        "minutes": "84–90",
-                                        "title": "שיתוף וסיכום",
-                                        "teacher": "מבקשים 2–3 הצגות קצרות ומסכמים במבנה: רעיון → בלוקים → קוד → ציור.",
-                                        "students": "משלימים משפט: “היום בניתי…, השתמשתי ב־…, ותיקנתי…”."
-                              }
+                              {"minutes":"0–8","title":"פתיחה: היום עובדים כמו מתכנתים","teacher":"מסבירים שהבלוקים הם בעצם שורות Python שאפשר לגרור ולסדר.","students":"מסתכלים על הפקודות וקוראים בקול forward, right, color."},
+                              {"minutes":"8–18","title":"הדגמה קצרה","teacher":"גוררים 2–3 שורות, מריצים, ומראים שכל שורה משפיעה על הציור.","students":"מנבאים מה תעשה השורה הבאה לפני הרצה."},
+                              {"minutes":"18–35","title":"פריים ראשון","teacher":"מובילים פריים פשוט עם צבע, קו ו־repeat קטן.","students":"בונים ציור ראשון קצר ומריצים אחרי כל שינוי."},
+                              {"minutes":"35–52","title":"פריים שני ומעבר נקי","teacher":"מדגימים penup / pendown כמעבר בין פריימים בלי קו מחבר.","students":"מוסיפים פריים שני במקום אחר."},
+                              {"minutes":"52–68","title":"דיבאג ושינוי שורות","teacher":"נותנים באג קטן של מעבר ומכוונים לקריאת השורות לפי הסדר.","students":"מתקנים שורה אחת או מוסיפים penup/pendown."},
+                              {"minutes":"68–82","title":"שלושה פריימים","teacher":"נותנים בחירה מוגבלת: התחלה, שינוי, סוף.","students":"משלימים קומיקס קצר בשלושה אזורים."},
+                              {"minutes":"82–90","title":"שיתוף וסיכום","teacher":"מבקשים לקרוא 3 שורות Python ולהסביר מה כל אחת עושה.","students":"מציגים: קודם..., אחר כך..., ואז..."}
                     ],
                     "exercises": [
-                              {
-                                        "id": 1,
-                                        "minutes": "18–23",
-                                        "title": "תרגול 1 — חימום — מריצים ורואים",
-                                        "prompt": "ציירו רקע פשוט ראשון.",
-                                        "hint": "אל תנסו לפתור הכל בבת אחת — גררו בלוק אחד, הריצו, ואז המשיכו.",
-                                        "check": "יש לפחות פקודת תנועה אחת והציור מופיע על המסך.",
-                                        "commonMistake": "מנסים לגרור הרבה בלוקים לפני הרצה ראשונה ואז קשה לדעת מה השפיע."
-                              },
-                              {
-                                        "id": 2,
-                                        "minutes": "23–28",
-                                        "title": "תרגול 2 — קוראים את הבלוקים",
-                                        "prompt": "עברו לצייר אובייקט מרכזי.",
-                                        "hint": "חפשו איפה מופיע הרעיון המרכזי של השיעור: רצף.",
-                                        "check": "התלמיד/ה יודע/ת להצביע על הבלוק או השורה שקשורים ל־רצף.",
-                                        "commonMistake": "מסתכלים רק על הציור ולא מחברים אותו לקוד שנוצר."
-                              },
-                              {
-                                        "id": 3,
-                                        "minutes": "28–34",
-                                        "title": "תרגול 3 — שינוי קטן ובטוח",
-                                        "prompt": "הוסיפו פרט קטן מעליו.",
-                                        "hint": "שינוי טוב הוא שינוי קטן: מספר אחד, צבע אחד או פנייה אחת.",
-                                        "check": "אחרי שינוי קטן רואים שינוי ברור בתוצאה, בלי לשבור את כל התוכנית.",
-                                        "commonMistake": "משנים כמה דברים יחד ואז לא יודעים מה גרם לשינוי."
-                              },
-                              {
-                                        "id": 4,
-                                        "minutes": "34–40",
-                                        "title": "תרגול 4 — מחברים בלוק לקוד",
-                                        "prompt": "בדקו למה סדר הציור חשוב.",
-                                        "hint": "לחצו על בלוק וראו איזו שורת Python נדלקת בקוד.",
-                                        "check": "כאשר בוחרים בלוק, שורת Python המתאימה מודגשת.",
-                                        "commonMistake": "לא שמים לב שהשורה המודגשת בקוד היא חלק מהלמידה, לא קישוט."
-                              },
-                              {
-                                        "id": 5,
-                                        "minutes": "40–47",
-                                        "title": "תרגול 5 — בדיקת מהנדסים",
-                                        "prompt": "שנו סדר וראו מה מסתיר מה.",
-                                        "hint": "מהנדסים בודקים לפחות שני מצבים, לא רק הרצה אחת שעבדה במקרה.",
-                                        "check": "התלמיד/ה בדק/ה לפחות שתי הרצות והשווה/השוותה ביניהן.",
-                                        "commonMistake": "בודקים רק מצב אחד ולכן חושבים שהפתרון תמיד עובד."
-                              },
-                              {
-                                        "id": 6,
-                                        "minutes": "47–53",
-                                        "title": "תרגול 6 — תרגול דיוק",
-                                        "prompt": "השתמשו בצבעים שונים לשכבות.",
-                                        "hint": "נסו לבנות מסלול סגור: בסוף הצב צריך לחזור למקום שממנו התחיל.",
-                                        "check": "נקודת הסיום של הצב חוזרת לנקודת ההתחלה.",
-                                        "commonMistake": "מוחקים את כל הפתרון במקום לתקן בלוק/ערך קטן."
-                              },
-                              {
-                                        "id": 7,
-                                        "minutes": "53–60",
-                                        "title": "תרגול 7 — דיבאג מכוון",
-                                        "prompt": "הפרידו עם penup.",
-                                        "hint": "שדרוג יצירתי לא חייב להיות מסובך. לפעמים צבע, עובי או חזרה נוספת מספיקים.",
-                                        "check": "התוצר עדיין קשור למשימה: קומיקס קוד קצר.",
-                                        "commonMistake": "מוסיפים קישוטים אבל מאבדים את מטרת השיעור."
-                              },
-                              {
-                                        "id": 8,
-                                        "minutes": "60–66",
-                                        "title": "תרגול 8 — שדרוג יצירתי",
-                                        "prompt": "צרו סצנת יום/לילה.",
-                                        "hint": "הסבר טוב מתחיל ב: “קודם הצב עושה…, ואז…”.",
-                                        "check": "ההסבר כולל רצף: פקודה → תוצאה → תיקון או שיפור.",
-                                        "commonMistake": "אומרים “זה עובד” בלי להסביר למה."
-                              },
-                              {
-                                        "id": 9,
-                                        "minutes": "66–71",
-                                        "title": "תרגול 9 — קריאת Python בקול",
-                                        "prompt": "הסבירו איזו שכבה באה קודם.",
-                                        "hint": "קראו את הקוד כאילו הוא הוראות לצב, לא כמו טקסט זר.",
-                                        "check": "התלמיד/ה קרא/ה 3 שורות Python והסביר/ה אותן במילים.",
-                                        "commonMistake": "קוראים את הקוד מהר מדי בלי להבין את סדר הפעולות."
-                              },
-                              {
-                                        "id": 10,
-                                        "minutes": "71–76",
-                                        "title": "תרגול 10 — עבודה בזוגות",
-                                        "prompt": "אתגר: פארק קטן עם שמש ושביל.",
-                                        "hint": "בזוגות — אחד מדבר ואחד נוגע במחשב, ואז מחליפים.",
-                                        "check": "הזוג ביצע ניבוי ואז בדיקה בפועל.",
-                                        "commonMistake": "בן/בת זוג אחד עושה הכל והשני לא מסביר."
-                              },
-                              {
-                                        "id": 11,
-                                        "minutes": "76–81",
-                                        "title": "תרגול 11 — תרגול מתקדם",
-                                        "prompt": "בנו גרסה קצת מורכבת יותר שמשתמשת במושג המרכזי של השיעור לפחות פעמיים.",
-                                        "hint": "התרגול פתוח, אבל עדיין צריך להשתמש במושג של השיעור.",
-                                        "check": "התרגול משתמש במושג המרכזי ולא רק מוסיף קישוט.",
-                                        "commonMistake": "קופצים לפתרון מורכב מדי לפני שהבסיס יציב."
-                              },
-                              {
-                                        "id": 12,
-                                        "minutes": "81–85",
-                                        "title": "תרגול 12 — בדיקת איכות",
-                                        "prompt": "בדקו שהתוכנית עובדת אחרי איפוס והרצה מחדש, לא רק פעם אחת.",
-                                        "hint": "בדיקת איכות טובה מתחילה מאיפוס והרצה נקייה.",
-                                        "check": "התוכנית עובדת גם אחרי איפוס והרצה מחדש.",
-                                        "commonMistake": "לא מאפסים לפני בדיקה ולכן תוצאה ישנה מבלבלת."
-                              },
-                              {
-                                        "id": 13,
-                                        "minutes": "85–88",
-                                        "title": "תרגול 13 — הכנה להצגה",
-                                        "prompt": "הכינו משפט הצגה: מה בניתי, באיזה בלוק השתמשתי, ואיפה רואים את זה בקוד.",
-                                        "hint": "הצגה קצרה עדיפה על הסבר ארוך ומבולבל.",
-                                        "check": "יש משפט הצגה שמחבר תוצר, בלוק וקוד.",
-                                        "commonMistake": "מציגים רק את הציור ולא מסבירים את הקשר לבלוקים ולקוד."
-                              },
-                              {
-                                        "id": 14,
-                                        "minutes": "88–90",
-                                        "title": "תרגול 14 — רפלקציה קצרה",
-                                        "prompt": "השלימו משפט: היום למדתי ש־___, ובפעם הבאה אשפר ___.",
-                                        "hint": "רפלקציה קצרה עוזרת לזכור: מה ניסיתי, מה עבד, ומה תיקנתי?",
-                                        "check": "יש משפט סיכום אישי ומדויק.",
-                                        "commonMistake": "מסיימים בלי לנסח מה למדו ומה ירצו לשפר."
-                              }
+                              {"id":1,"minutes":"18–24","title":"תרגול 1 — שורת קוד ראשונה","prompt":"גררו שורות קוד לפריים הראשון: בחרו צבע וציירו קו ראשון.","hint":"התחילו ב־color ואז forward. כל בלוק שאתם גוררים הוא שורת Python.","check":"יש צבע ופקודת forward שמציירת קו ראשון.","commonMistake":"גוררים הרבה שורות לפני הרצה ולא יודעים איזו שורה השפיעה."},
+                              {"id":2,"minutes":"24–32","title":"תרגול 2 — צורה עם repeat","prompt":"הוסיפו בפריים הראשון צורה פשוטה בעזרת repeat, למשל ריבוע קטן.","hint":"שימו בתוך repeat שתי שורות: forward ואז right.","check":"יש לולאת repeat שמציירת צורה סגורה או כמעט סגורה.","commonMistake":"שמים את הפנייה מחוץ ל־repeat ולכן הצורה לא נסגרת."},
+                              {"id":3,"minutes":"32–40","title":"תרגול 3 — מעבר לפריים שני","prompt":"עברו למקום חדש בלי לצייר קו מחבר, ואז התחילו פריים שני.","hint":"הסדר הוא penup → forward → pendown → ציור חדש.","check":"יש מעבר נקי עם penup ו־pendown, ואז ציור נוסף.","commonMistake":"שוכחים pendown ולכן הפריים השני לא מצויר."},
+                              {"id":4,"minutes":"40–49","title":"תרגול 4 — משנים שורת קוד","prompt":"שנו מספר או צבע בתוך אחת השורות כדי שהפריים השני יהיה שונה מהראשון.","hint":"נסו לשנות מספר ב־forward או צבע ב־color, ואז להריץ שוב.","check":"יש שינוי ברור בצבע או באורך לעומת ההרצה הקודמת.","commonMistake":"משנים כמה דברים יחד ואז קשה להבין מה השפיע."},
+                              {"id":5,"minutes":"49–58","title":"תרגול 5 — סדר השורות","prompt":"הוסיפו פרט קטן ובדקו שהשורה של הצבע נמצאת לפני הקו שאמור לקבל אותו.","hint":"בקוד, הסדר חשוב: color משפיע רק על מה שמגיע אחריו.","check":"יש לפחות שני צבעים שמופיעים בציור בסדר נכון.","commonMistake":"שמים color אחרי forward ואז הצבע לא משפיע על הקו שכבר צויר."},
+                              {"id":6,"minutes":"58–67","title":"תרגול 6 — דיבאג: קו מיותר","prompt":"תקנו את הקוד המוכן כך שהמעבר לפריים הבא לא יצייר קו מיותר.","hint":"חפשו את המעבר בין הפריימים והוסיפו penup לפניו ו־pendown לפני הציור הבא.","check":"הקו המיותר נעלם, אבל שני הפריימים עדיין מצוירים.","commonMistake":"מוחקים את הציור במקום לתקן רק את המעבר."},
+                              {"id":7,"minutes":"67–78","title":"תרגול 7 — סיפור בשלושה פריימים","prompt":"בנו שלושה פריימים קצרים: התחלה, שינוי וסוף. כל פריים יכול להיות צורה או סימן קטן.","hint":"עברו בין פריימים עם penup / pendown. שמרו על ציורים קטנים ופשוטים.","check":"יש שלושה חלקים נפרדים בציור ושימוש ברור בשורות Python.","commonMistake":"מנסים לצייר סיפור גדול מדי ומאבדים את הרצף."},
+                              {"id":8,"minutes":"78–84","title":"אתגר רשות — סוף קטן לסיפור","prompt":"אם נשאר זמן, הוסיפו פרט קטן לסוף הסיפור: שמש, חץ, צבע אחר או סימן הפתעה.","hint":"אתגר רשות קצר — מספיק להוסיף 2–3 שורות קוד.","check":"נוספה תוספת קטנה וברורה בלי לשבור את שלושת הפריימים.","commonMistake":"מוסיפים הרבה מדי ושוכחים לבדוק בהרצה."}
                     ],
                     "vocabulary": [
-                              [
-                                        "לולאה",
-                                        "דרך לבקש מהמחשב לחזור על אותן פקודות כמה פעמים."
-                              ],
-                              [
-                                        "משתנה",
-                                        "שם ששומר ערך, למשל length, כדי להשתמש בו שוב ושוב."
-                              ],
-                              [
-                                        "ניבוי",
-                                        "לפני הרצה אומרים מה לדעתנו יקרה, ואז בודקים."
-                              ],
-                              [
-                                        "snippet",
-                                        "חתיכת קוד קצרה שמותר להעתיק, לשנות ולהריץ בביטחון."
-                              ],
-                              [
-                                        "פקודה",
-                                        "הוראה אחת שהצב מבצע, למשל לזוז קדימה או להסתובב."
-                              ],
-                              [
-                                        "הרצה",
-                                        "לחיצה על ▶️ כדי לבדוק מה התוכנית עושה באמת."
+                              ["שורת קוד", "פקודה אחת שהמחשב מבצע, למשל forward(80)."],
+                              ["סדר", "המחשב מבצע את השורות מלמעלה למטה."],
+                              ["פריים", "חלק אחד קטן בסיפור המצוי באזור משלו בציור."],
+                              ["דיבאג", "למצוא שורה שמקלקלת ולתקן אותה בלי למחוק הכול."],
+                              ["repeat", "שורת קוד שחוזרת על כמה שורות פנימיות."],
+                              ["penup / pendown", "מעבר בלי ציור ואז חזרה לציור."
                               ]
                     ],
                     "successCriteria": [
-                              "התוצר נראה כמו קומיקס קוד קצר או גרסה אישית שלו.",
-                              "נעשה שימוש מודע במושג: רצף.",
-                              "התלמיד/ה הריץ/ה יותר מפעם אחת ושיפר/ה אחרי בדיקה.",
-                              "התלמיד/ה יודע/ת להצביע על בלוק אחד ועל שורת Python שנוצרה ממנו."
+                              "התלמיד/ה מבין/ה שכל בלוק שנגרר הוא שורת Python.",
+                              "יש קומיקס קצר עם לפחות שניים–שלושה פריימים.",
+                              "יש שימוש ב־repeat או במעבר נקי עם penup / pendown.",
+                              "התלמיד/ה יודע/ת לקרוא 3 שורות קוד ולהסביר מה הן עושות."
                     ],
                     "teacherQuestions": [
-                              "מה לדעתכם יקרה לפני שנריץ?",
-                              "איזה שינוי קטן הכי השפיע על הציור?",
-                              "איפה בקוד רואים את הבלוק שבחרתם?",
-                              "אם זה לא עבד — איך יודעים מה לבדוק קודם?"
+                              "איזו שורת קוד גרמה לקו הזה להופיע?",
+                              "מה יקרה אם נשנה את המספר בתוך forward?",
+                              "למה צריך penup לפני מעבר לפריים אחר?",
+                              "באיזה סדר המחשב קורא את השורות?"
                     ],
                     "aiHelper": [
-                              "תן/י רעיון לשדרוג קל של קומיקס קוד קצר בלי לפתור במקום התלמיד/ה.",
-                              "הסבר/י לילד/ה בכיתה ה׳ מה זה רצף באמצעות הצב המצייר.",
-                              "עזור/עזרי למצוא באג במספר, כיוון, לולאה או סדר פקודות בלי לתת פתרון מלא."
+                              "תן/י רמז איך להפוך בלוקים לשורות קוד בלי לפתור במקום התלמיד/ה.",
+                              "עזור/עזרי לילד/ה לקרוא 3 שורות Python פשוטות ולהסביר אותן.",
+                              "עזור/עזרי למצוא איפה חסר penup או pendown במעבר בין פריימים."
                     ]
           },
           {
@@ -7118,6 +6968,9 @@
     const ctx = canvas.getContext('2d');
     const turtleEl = document.getElementById('turtle');
     const codeEl = document.getElementById('pythonCode');
+    let lesson23CodeOverlay = null;
+    let lesson23SelectedBlockId = null;
+    let lesson23ManualDrag = null;
     const statusEl = document.getElementById('status');
     const missionEl = document.getElementById('mission');
     let turtle = {x:canvas.width/2,y:canvas.height/2,heading:0,pen:true,color:'#2563eb',width:4};
@@ -7181,6 +7034,17 @@
       const value = Number(raw);
       return Number.isFinite(value) ? value : fallback;
     }
+    const SIMPLE_COLOR_OPTIONS = [['blue','#2563eb'],['green','#16a34a'],['yellow','#facc15'],['red','#ef4444'],['purple','#7c3aed'],['pink','#ec4899'],['black','#111827']];
+    function simpleColorName(value){
+      const raw = String(value || '').trim().toLowerCase();
+      const found = SIMPLE_COLOR_OPTIONS.find(([name,hex])=>name === raw || hex.toLowerCase() === raw);
+      return found ? found[0] : raw.replace(/^#/, '') || 'blue';
+    }
+    function simpleColorHex(value){
+      const raw = String(value || '').trim().toLowerCase();
+      const found = SIMPLE_COLOR_OPTIONS.find(([name,hex])=>name === raw || hex.toLowerCase() === raw);
+      return found ? found[1] : null;
+    }
     function escapeHtml(text){
       return String(text).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
     }
@@ -7192,7 +7056,7 @@
       if(t==='py_forward') return [{text:`${indent}forward(${numericField(block,'STEPS')})`, id}];
       if(t==='py_right') return [{text:`${indent}right(${numericField(block,'ANGLE',90)})`, id}];
       if(t==='py_left') return [{text:`${indent}left(${numericField(block,'ANGLE',90)})`, id}];
-      if(t==='py_color') return [{text:`${indent}color("${block.getFieldValue('COLOR')}")`, id}];
+      if(t==='py_color') return [{text:`${indent}color("${simpleColorName(block.getFieldValue('COLOR'))}")`, id}];
       if(t==='py_width') return [{text:`${indent}pensize(${Number(block.getFieldValue('WIDTH'))})`, id}];
       if(t==='py_penup') return [{text:`${indent}penup()`, id}];
       if(t==='py_pendown') return [{text:`${indent}pendown()`, id}];
@@ -7248,7 +7112,20 @@
         if(field) field.setValue(blocks.length > 1 ? String(index + 1) : '');
       });
     }
+    function lesson23TopCodeBlocks(){
+      return workspace.getTopBlocks(false)
+        .filter(block=>block.type !== 'py_python' && !block.outputConnection)
+        .sort((a,b)=>{
+          const ay = a.getRelativeToSurfaceXY?.().y ?? 0;
+          const by = b.getRelativeToSurfaceXY?.().y ?? 0;
+          if(Math.abs(ay - by) > 12) return ay - by;
+          const ax = a.getRelativeToSurfaceXY?.().x ?? 0;
+          const bx = b.getRelativeToSurfaceXY?.().x ?? 0;
+          return ax - bx;
+        });
+    }
     function codeTopBlocks(){
+      if(currentLesson === 23) return lesson23TopCodeBlocks();
       updatePythonBlockNumbers();
       return orderedPythonBlocks()
         .map(block=>block.getNextBlock())
@@ -7269,12 +7146,214 @@
       });
       return out;
     }
+    function ensureLesson23CodeOverlay(){
+      const host = document.getElementById('blocklyDiv');
+      if(!host) return null;
+      if(!lesson23CodeOverlay){
+        lesson23CodeOverlay = document.createElement('div');
+        lesson23CodeOverlay.className = 'lesson23-code-overlay';
+        lesson23CodeOverlay.setAttribute('aria-label', 'קוד Python שנבנה מהפקודות');
+        host.appendChild(lesson23CodeOverlay);
+      }
+      lesson23CodeOverlay.style.display = currentLesson === 23 ? 'block' : 'none';
+      return lesson23CodeOverlay;
+    }
+    function renderLesson23CodeOverlay(bodyLines){
+      const overlay = ensureLesson23CodeOverlay();
+      if(!overlay || currentLesson !== 23) return;
+      if(!bodyLines.length){
+        lesson23SelectedBlockId = null;
+        overlay.innerHTML = '<div class="placeholder">גררו פקודה מהסרגל והניחו כאן — היא תהפוך לשורת Python.</div>';
+        return;
+      }
+      const ids = new Set(bodyLines.map(line=>line.id).filter(Boolean));
+      if(lesson23SelectedBlockId && !ids.has(lesson23SelectedBlockId)) lesson23SelectedBlockId = null;
+      overlay.innerHTML = bodyLines.map(line=>{
+        const active = line.id && line.id === lesson23SelectedBlockId ? ' active' : '';
+        const isComment = /^\s*#/.test(line.text || '');
+        const editable = line.id ? ' contenteditable="true" spellcheck="false" role="textbox" aria-label="עריכת שורת קוד"' : '';
+        const dragHandle = line.id ? `<span class="lesson23-drag-handle" data-block-id="${escapeHtml(line.id)}" title="גררו כדי לשנות סדר">⋮⋮</span>` : '';
+        return `<span class="line${isComment ? ' comment' : ''}${active}" data-block-id="${escapeHtml(line.id || '')}" tabindex="0">${dragHandle}<span class="lesson23-code-text" data-block-id="${escapeHtml(line.id || '')}"${editable}>${escapeHtml(line.text || '')}</span></span>`;
+      }).join('');
+    }
+    function selectLesson23CodeLine(blockId){
+      if(currentLesson !== 23 || !blockId) return;
+      lesson23SelectedBlockId = blockId;
+      lastSelectedBlockId = blockId;
+      try{ workspace.getBlockById(blockId)?.select(); }catch{}
+      renderLesson23CodeOverlay(codeTopBlocks().flatMap(b=>stackToPythonLines(b)));
+    }
+    function deleteLesson23SelectedLine(){
+      if(currentLesson !== 23 || !lesson23SelectedBlockId) return false;
+      const block = workspace.getBlockById(lesson23SelectedBlockId);
+      if(!block) return false;
+      const next = block.getNextBlock?.() || null;
+      const prev = block.getPreviousBlock?.() || null;
+      if(next){
+        try{ next.unplug(false); }catch{}
+      }
+      try{ block.dispose(false); }catch{}
+      if(prev && next && prev.nextConnection && next.previousConnection){
+        try{ prev.nextConnection.connect(next.previousConnection); }catch{}
+      }
+      lesson23SelectedBlockId = next?.id || prev?.id || null;
+      lastSelectedBlockId = lesson23SelectedBlockId;
+      generatePython();
+      saveActiveWorkspace();
+      saveProgress();
+      return true;
+    }
+    function lesson23LineAncestorIds(block){
+      const ids = new Set();
+      let parent = block?.getParent?.();
+      while(parent){ ids.add(parent.id); parent = parent.getParent?.(); }
+      return ids;
+    }
+    function detachLesson23SingleBlock(block){
+      const prev = block.getPreviousBlock?.() || null;
+      const next = block.getNextBlock?.() || null;
+      if(next){
+        try{ next.unplug(false); }catch{}
+      }
+      if(block.previousConnection?.isConnected()){
+        try{ block.previousConnection.disconnect(); }catch{}
+      }
+      if(prev && next && prev.nextConnection && next.previousConnection){
+        try{ prev.nextConnection.connect(next.previousConnection); }catch{}
+      }
+      return {prev,next};
+    }
+    function moveLesson23CodeLine(dragId, targetId, placeAfter=false){
+      if(currentLesson !== 23 || !dragId || !targetId || dragId === targetId) return false;
+      const dragged = workspace.getBlockById(dragId);
+      const target = workspace.getBlockById(targetId);
+      if(!dragged || !target || dragged.outputConnection || target.outputConnection) return false;
+      if(lesson23LineAncestorIds(target).has(dragged.id)) return false;
+      const draggedXY = dragged.getRelativeToSurfaceXY?.() || {x:40,y:40};
+      detachLesson23SingleBlock(dragged);
+      if(dragged.nextConnection?.isConnected()){
+        try{ dragged.nextConnection.disconnect(); }catch{}
+      }
+      if(placeAfter){
+        const targetNext = target.getNextBlock?.() || null;
+        if(targetNext){
+          try{ targetNext.unplug(false); }catch{}
+        }
+        if(target.nextConnection && dragged.previousConnection){
+          try{ target.nextConnection.connect(dragged.previousConnection); }catch{}
+        }
+        if(targetNext && dragged.nextConnection && targetNext.previousConnection){
+          try{ dragged.nextConnection.connect(targetNext.previousConnection); }catch{}
+        }
+      } else {
+        const targetPrev = target.getPreviousBlock?.() || null;
+        if(target.previousConnection?.isConnected()){
+          try{ target.previousConnection.disconnect(); }catch{}
+        }
+        if(targetPrev && targetPrev.nextConnection && dragged.previousConnection){
+          try{ targetPrev.nextConnection.connect(dragged.previousConnection); }catch{}
+        }
+        if(dragged.nextConnection && target.previousConnection){
+          try{ dragged.nextConnection.connect(target.previousConnection); }catch{}
+        }
+      }
+      const targetXY = target.getRelativeToSurfaceXY?.() || draggedXY;
+      try{ dragged.moveBy((targetXY.x || 40) - (draggedXY.x || 40), ((targetXY.y || 40) + (placeAfter ? 28 : -28)) - (draggedXY.y || 40)); }catch{}
+      lesson23SelectedBlockId = dragged.id;
+      generatePython();
+      saveActiveWorkspace();
+      saveProgress();
+      return true;
+    }
+    function clearLesson23DropMarks(){
+      lesson23CodeOverlay?.querySelectorAll('.lesson23-drop-before,.lesson23-drop-after,.lesson23-dragging-line').forEach(el=>{
+        el.classList.remove('lesson23-drop-before','lesson23-drop-after','lesson23-dragging-line');
+      });
+    }
+    function lesson23LineFromPoint(x, y){
+      const elements = document.elementsFromPoint ? document.elementsFromPoint(x, y) : [document.elementFromPoint(x, y)].filter(Boolean);
+      return elements.map(el=>el.closest?.('.lesson23-code-overlay .line[data-block-id]')).find(Boolean) || null;
+    }
+    function updateLesson23ManualDragTarget(x, y){
+      if(!lesson23ManualDrag) return;
+      clearLesson23DropMarks();
+      lesson23ManualDrag.sourceLine?.classList.add('lesson23-dragging-line');
+      const line = lesson23LineFromPoint(x, y);
+      if(!line || !line.dataset.blockId || line.dataset.blockId === lesson23ManualDrag.blockId) return;
+      const rect = line.getBoundingClientRect();
+      const after = y > rect.top + rect.height / 2;
+      line.classList.add(after ? 'lesson23-drop-after' : 'lesson23-drop-before');
+      lesson23ManualDrag.targetId = line.dataset.blockId;
+      lesson23ManualDrag.after = after;
+    }
+    function finishLesson23ManualDrag(){
+      if(!lesson23ManualDrag) return;
+      const drag = lesson23ManualDrag;
+      lesson23ManualDrag = null;
+      clearLesson23DropMarks();
+      if(drag.targetId && drag.targetId !== drag.blockId){
+        moveLesson23CodeLine(drag.blockId, drag.targetId, !!drag.after);
+      }
+    }
+    function applyLesson23EditedCodeLine(blockId, rawText){
+      if(currentLesson !== 23 || !blockId) return false;
+      const block = workspace.getBlockById(blockId);
+      if(!block) return false;
+      const text = String(rawText || '').trim();
+      const setNum = (field, value, min=null, max=null)=>{
+        const n = Number(value);
+        if(!Number.isFinite(n)) return false;
+        const clamped = Math.max(min ?? n, Math.min(max ?? n, n));
+        block.setFieldValue(String(clamped), field);
+        return true;
+      };
+      let m, changed = false;
+      if(block.type === 'py_forward' && (m = text.match(/^forward\s*\(\s*(-?\d+(?:\.\d+)?)\s*\)$/))) changed = setNum('STEPS', m[1], 1, 500);
+      else if(block.type === 'py_right' && (m = text.match(/^right\s*\(\s*(-?\d+(?:\.\d+)?)\s*\)$/))) changed = setNum('ANGLE', m[1], 0, 360);
+      else if(block.type === 'py_left' && (m = text.match(/^left\s*\(\s*(-?\d+(?:\.\d+)?)\s*\)$/))) changed = setNum('ANGLE', m[1], 0, 360);
+      else if(block.type === 'py_width' && (m = text.match(/^pensize\s*\(\s*(-?\d+(?:\.\d+)?)\s*\)$/))) changed = setNum('WIDTH', m[1], 1, 30);
+      else if(block.type === 'py_repeat' && (m = text.match(/^for\s+i\s+in\s+range\s*\(\s*(-?\d+(?:\.\d+)?)\s*\)\s*:\s*$/))) changed = setNum('TIMES', m[1], 1, 50);
+      else if(block.type === 'py_set_length' && (m = text.match(/^length\s*=\s*(-?\d+(?:\.\d+)?)$/))) changed = setNum('VALUE', m[1], 1, 500);
+      else if(block.type === 'py_grow_length' && (m = text.match(/^length\s*=\s*length\s*\+\s*(-?\d+(?:\.\d+)?)$/))) changed = setNum('ADD', m[1], -200, 200);
+      else if(block.type === 'py_color' && (m = text.match(/^color\s*\(\s*["']([^"']+)["']\s*\)$/))){
+        const hex = simpleColorHex(m[1]);
+        if(hex){ block.setFieldValue(hex, 'COLOR'); changed = true; }
+      }
+      else if(block.type === 'py_comment' && (m = text.match(/^#\s?(.*)$/))){ block.setFieldValue(m[1], 'TEXT'); changed = true; }
+      if(changed){
+        lesson23SelectedBlockId = block.id;
+          generatePython();
+        saveActiveWorkspace();
+        saveProgress();
+      } else {
+          generatePython();
+      }
+      return changed;
+    }
+    function updateLesson23BlockVisibility(){
+      if(typeof workspace === 'undefined') return;
+      workspace.getAllBlocks(false).forEach(block=>{
+        const root = block.getSvgRoot && block.getSvgRoot();
+        if(!root) return;
+        const dragging = (typeof block.isDragging === 'function' && block.isDragging()) || root.classList.contains('blocklyDragging');
+        if(currentLesson === 23 && block.type !== 'py_python' && !dragging){
+          root.style.opacity = '0';
+          root.style.pointerEvents = 'none';
+        } else {
+          root.style.opacity = '';
+          root.style.pointerEvents = '';
+        }
+      });
+      ensureLesson23CodeOverlay();
+    }
     function generatePython(){
       const body = codeTopBlocks().flatMap(b=>stackToPythonLines(b));
       const lines = [{text:'from turtle import *', id:null},{text:'', id:null}];
-      lines.push(...(body.length ? body : [{text:'# \u202Bחברו בלוקים מתחת ל־\u2066Python\u2069 כדי ליצור קוד\u202C', id:null}]));
+      lines.push(...(body.length ? body : [{text: currentLesson === 23 ? '# גררו פקודות לאזור העליון — כל פקודה היא שורת Python' : '# \u202Bחברו בלוקים מתחת ל־\u2066Python\u2069 כדי ליצור קוד\u202C', id:null}]));
       lines.push({text:'', id:null},{text:'done()', id:null});
       renderCode(lines);
+      renderLesson23CodeOverlay(body);
+      updateLesson23BlockVisibility();
       return lines.map(line=>line.text).join('\n');
     }
     function highlightSelectedCode(){
@@ -7284,6 +7363,7 @@
       if(!selectedId) return [];
       const activeLines = [...codeEl.querySelectorAll(`[data-block-id="${CSS.escape(selectedId)}"]`)];
       activeLines.forEach(el=>el.classList.add('active-code-line'));
+      if(currentLesson === 23){ lesson23SelectedBlockId = selectedId || lesson23SelectedBlockId; renderLesson23CodeOverlay(codeTopBlocks().flatMap(b=>stackToPythonLines(b))); }
       activeLines[0]?.scrollIntoView({block:'nearest', behavior:'smooth'});
       return activeLines;
     }
@@ -8181,6 +8261,8 @@
       }));
     }
     function starterXmlForExercise(ex){
+      if(currentLesson === 23 && ex?.id === 1) return '<xml></xml>';
+      if(currentLesson === 23 && ex?.id === 6) return '<xml><block type="py_comment" x="20" y="20"><field name="TEXT">פריים ראשון</field><next><block type="py_color"><field name="COLOR">#2563eb</field><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">50</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_comment"><field name="TEXT">מעבר לפריים שני</field><next><block type="py_color"><field name="COLOR">#ef4444</field><next><block type="py_forward"><field name="STEPS">120</field><next><block type="py_color"><field name="COLOR">#16a34a</field><next><block type="py_repeat"><field name="TIMES">3</field><statement name="DO"><block type="py_forward"><field name="STEPS">55</field><next><block type="py_left"><field name="ANGLE">120</field></block></next></block></statement></block></next></block></next></block></next></block></next></block></next></block></xml>';
       if(currentLesson === 22 && ex?.id === 1) return '<xml><block type="py_python" x="20" y="20"></block></xml>';
       if(currentLesson === 22 && ex?.id === 7) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_comment"><field name="TEXT">כביש ראשי</field><next><block type="py_color"><field name="COLOR">#111827</field><next><block type="py_width"><field name="WIDTH">8</field><next><block type="py_forward"><field name="STEPS">170</field><next><block type="py_comment"><field name="TEXT">מעבר לבית</field><next><block type="py_color"><field name="COLOR">#ef4444</field><next><block type="py_width"><field name="WIDTH">3</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">65</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_comment"><field name="TEXT">בית ירוק</field><next><block type="py_color"><field name="COLOR">#16a34a</field><next><block type="py_width"><field name="WIDTH">4</field><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">38</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_color"><field name="COLOR">#7c3aed</field><next><block type="py_repeat"><field name="TIMES">3</field><statement name="DO"><block type="py_forward"><field name="STEPS">42</field><next><block type="py_left"><field name="ANGLE">120</field></block></next></block></statement></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
       if(currentLesson === 21 && ex?.id === 1) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_forward"><field name="STEPS">80</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">60</field></block></next></block></next></block></xml>';
@@ -8458,7 +8540,8 @@
       const lesson19RiddleBoxHtml = lesson19RiddleHtml(ex);
       const lesson19OrderCheckBoxHtml = lesson19OrderCheckHtml(ex);
       const lesson21PredictionBoxHtml = lesson21PredictionHtml(ex);
-      missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div>${lesson10IntroHtml}${lesson11IntroHtml}${lesson16BlocksIntroHtml}${lesson12CumulativeHtml}${lesson13CumulativeHtml}<p><b>${escapeHtml(ex.prompt || '')}</b></p>${lesson19RiddleBoxHtml}${lesson19OrderCheckBoxHtml}${lesson21PredictionBoxHtml}${exerciseVisualHtml(ex)}${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p>${(isChallengeExercise(ex) || isRunOnlyExampleExercise(ex)) ? '' : `<p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}`}${writingHtml}<div class="exercise-bottom"><div class="exercise-controls">${resetButton}<button class="btn run" id="checkExerciseBtn" type="button">הרץ ציור</button><button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${nextButtonLabel}</button></div>${feedbackBelowButtons ? '<br>' : feedbackHtml}</div>${feedbackBelowButtons ? feedbackHtml : ''}${secretRevealHtml}</div>`;
+      const lesson23CodePilotHtml = currentLesson === 23 ? '<div class="code-pilot-banner">פיילוט Python: גוררים פקודה — והיא הופכת לשורת קוד. עורכים בתוך השורה, מוחקים עם Delete, ומשנים סדר מהידית ⋮⋮.<br>צבעים כותבים במילים כמו blue או red. לא זוכרים איזה צבעים יש? פותחים את התפריט בבלוק color שבמחסן.</div>' : '';
+      missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div>${lesson10IntroHtml}${lesson11IntroHtml}${lesson16BlocksIntroHtml}${lesson12CumulativeHtml}${lesson13CumulativeHtml}${lesson23CodePilotHtml}<p><b>${escapeHtml(ex.prompt || '')}</b></p>${lesson19RiddleBoxHtml}${lesson19OrderCheckBoxHtml}${lesson21PredictionBoxHtml}${exerciseVisualHtml(ex)}${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p>${(isChallengeExercise(ex) || isRunOnlyExampleExercise(ex)) ? '' : `<p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}`}${writingHtml}<div class="exercise-bottom"><div class="exercise-controls">${resetButton}<button class="btn run" id="checkExerciseBtn" type="button">הרץ ציור</button><button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${nextButtonLabel}</button></div>${feedbackBelowButtons ? '<br>' : feedbackHtml}</div>${feedbackBelowButtons ? feedbackHtml : ''}${secretRevealHtml}</div>`;
       if(feedbackBelowButtons && message){
         requestAnimationFrame(()=>missionEl.scrollTo({top: missionEl.scrollHeight, behavior:'smooth'}));
       }
@@ -10467,6 +10550,52 @@
           return [];
         }
       }
+      if(currentLesson === 23){
+        const moveCount = actions.filter(a=>a.cmd === 'forward' || a.cmd === 'forwardVar').length;
+        const turnCount = actions.filter(a=>(a.cmd === 'right' || a.cmd === 'left') && Math.abs(Number(a.v)) > 0).length;
+        const colorCount = actionDrawnColors(actions).size;
+        const cleanMoves = cleanTransitionCount(actions);
+        const drawnCount = drawnSegments(actions).filter(s=>s.length >= 5).length;
+        if(ex.id === 1){
+          if(!actions.some(a=>a.cmd === 'color')) return ['כמעט — התחילו בשורת color כדי לבחור צבע לפריים הראשון.'];
+          if(moveCount < 1) return ['כמעט — גררו שורת forward כדי לצייר את הקו הראשון.'];
+          return [];
+        }
+        if(ex.id === 2){
+          if(!repeatBlocks().some(block=>numericField(block, 'TIMES', 0) >= 3)) return ['כמעט — השתמשו ב־repeat כדי ליצור צורה מחזרת, לא רק קווים בודדים.'];
+          if(moveCount < 1 || turnCount < 1) return ['כמעט — בתוך הצורה צריך להיות forward וגם פנייה.'];
+          return [];
+        }
+        if(ex.id === 3){
+          if(cleanMoves < 1) return ['כמעט — כדי לעבור לפריים שני בלי קו מחבר צריך penup, תזוזה, ואז pendown.'];
+          if(drawnCount < 2) return ['כמעט — אחרי המעבר הנקי צריך להתחיל לצייר משהו בפריים השני.'];
+          return [];
+        }
+        if(ex.id === 4){
+          if(colorCount < 2 && !forwardStepsChangedFromBaseline(actions)) return ['כמעט — שנו צבע או מספר בתוך שורת קוד כדי שיראו שינוי ברור.'];
+          return [];
+        }
+        if(ex.id === 5){
+          if(colorCount < 2) return ['כמעט — השתמשו לפחות בשני צבעים שמופיעים בציור. שימו לב ש־color צריך לבוא לפני הקו.'];
+          return [];
+        }
+        if(ex.id === 6){
+          if(colorCount < 2 || moveCount < 2) return ['כמעט — אל תמחקו את שני הפריימים המוכנים; תקנו רק את המעבר ביניהם.'];
+          if(cleanMoves < 1) return ['כמעט — עדיין יש קו מעבר מיותר. הוסיפו penup לפני המעבר ו־pendown לפני הפריים הבא.'];
+          return [];
+        }
+        if(ex.id === 7){
+          if(cleanMoves < 2) return ['כמעט — לסיפור בשלושה פריימים צריך לפחות שני מעברים נקיים בין אזורים.'];
+          if(colorCount < 2 || drawnCount < 3) return ['כמעט — צריך לראות שלושה חלקים קטנים בסיפור, לא רק ציור אחד.'];
+          return [];
+        }
+        if(ex.id === 8){
+          const baseline = exerciseBaselines[baselineKey()] || [];
+          const addedBlocks = comparableActions(actions).length - baseline.length;
+          if(addedBlocks < 2) return ['כמעט — זה אתגר רשות, אבל אם בודקים אותו צריך להוסיף לפחות 2–3 שורות קוד חדשות.'];
+          return [];
+        }
+      }
       if(currentLesson === 22){
         const moveCount = actions.filter(a=>a.cmd === 'forward' || a.cmd === 'forwardVar').length;
         const turnCount = actions.filter(a=>(a.cmd === 'right' || a.cmd === 'left') && Math.abs(Number(a.v)) > 0).length;
@@ -11104,9 +11233,35 @@
       if(!REVIEW_UNLOCK && requiresCheckedContinue(leavingEx) && !canLeaveCheckedExercise(leavingEx)) return;
       advancePastCurrentExercise();
     }
+    function updateLesson23PilotUi(){
+      const isPilot = currentLesson === 23;
+      document.body.classList.toggle('lesson23-code-pilot', isPilot);
+      const title = document.getElementById('workspaceTitle');
+      const hint = document.getElementById('workspaceHint');
+      const codeTitle = document.getElementById('codeBoxTitle');
+      if(title) title.textContent = isPilot ? '1. קוד Python — גוררים פקודות לכאן' : '1. גוררים בלוקים באנגלית';
+      if(hint) hint.textContent = isPilot ? 'אין בלוק Python פתיחה — כל פקודה שמניחים כאן היא שורת קוד' : 'הקוד מתעדכן אוטומטית למטה';
+      if(codeTitle) codeTitle.textContent = isPilot ? '2. מסך עזר: הקוד שנוצר' : '2. קוד Python שנוצר';
+      const toolbox = document.getElementById('toolbox');
+      if(toolbox && typeof workspace !== 'undefined'){
+        if(!toolbox.dataset.defaultHtml) toolbox.dataset.defaultHtml = toolbox.innerHTML;
+        const defaultHtml = toolbox.dataset.defaultHtml;
+        const pilotHtml = defaultHtml.replace(/\s*<label text="התחלת Python"><\/label>\s*<block type="py_python"><\/block>\s*<sep gap="14"><\/sep>/, '');
+        const nextHtml = isPilot ? pilotHtml : defaultHtml;
+        if(toolbox.innerHTML !== nextHtml){
+          toolbox.innerHTML = nextHtml;
+          try{ workspace.updateToolbox(toolbox); }catch{}
+        }
+      }
+      if(isPilot && typeof workspace !== 'undefined'){
+        workspace.getAllBlocks(false).filter(block=>block.type === 'py_python').forEach(block=>block.dispose(false));
+      }
+      try{ generatePython(); updateLesson23BlockVisibility(); setTimeout(()=>Blockly.svgResize(workspace), 60); }catch{}
+    }
     function setLesson(id){
       currentLesson=id;
       const l=TURTLE_LESSONS.find(x=>x.id===id);
+      updateLesson23PilotUi();
       document.querySelectorAll('.lesson').forEach(el=>{
         const isActive = Number(el.dataset.id)===id;
         el.classList.toggle('active', isActive);
@@ -11332,6 +11487,15 @@
     });
     document.getElementById('demoBtn').addEventListener('click',()=>{ document.getElementById('demoNote')?.removeAttribute('hidden'); lesson10CurrentRevealKey = ''; updateLesson10CanvasSecret(); loadDemo(); });
     workspace.addChangeListener((event)=>{
+      const isDragEvent = event.type === Blockly.Events.BLOCK_DRAG || event.type === 'drag';
+      if(currentLesson === 23 && isDragEvent){
+        if(event.isStart){
+          updateLesson23BlockVisibility();
+        } else {
+          setTimeout(()=>{ generatePython(); updateLesson23BlockVisibility(); }, 30);
+        }
+        return;
+      }
       if(event.type === Blockly.Events.SELECTED){
         const selected = event.newElementId ? workspace.getBlockById(event.newElementId) : (Blockly.getSelected ? Blockly.getSelected() : null);
         if(selected) lastSelectedBlockId = selected.id;
@@ -11412,6 +11576,86 @@
         nextBtn.disabled = REVIEW_UNLOCK ? false : (stillCompleted ? false : (isSelectionOnlyExercise(ex) ? !selectionExerciseUnlocked[selectionUnlockKey()] : (isRunOnlyExampleExercise(ex) ? !runOnlyExampleStarted[selectionUnlockKey()] : (requiresCheckedContinue(ex) ? !exercisePassed : !(isTipExercise(ex) || isChallengeExercise(ex) || isOptionalChallengeExercise(ex))))));
       }
       saveProgress();
+    });
+    document.addEventListener('pointerdown', event=>{
+      if(currentLesson !== 23) return;
+      const handle = event.target.closest?.('.lesson23-drag-handle[data-block-id]');
+      if(handle){
+        event.preventDefault();
+        event.stopPropagation();
+        const line = handle.closest('.lesson23-code-overlay .line[data-block-id]');
+        const active = document.activeElement;
+        if(active?.classList?.contains('lesson23-code-text')) active.blur();
+        lesson23ManualDrag = {blockId:handle.dataset.blockId, sourceLine:line, targetId:null, after:false};
+        try{ handle.setPointerCapture?.(event.pointerId); }catch{}
+        selectLesson23CodeLine(handle.dataset.blockId);
+        line?.classList.add('lesson23-dragging-line');
+        return;
+      }
+      const target = event.target.closest?.('.lesson23-code-overlay .line[data-block-id], .lesson23-code-text[data-block-id]');
+      if(!target) return;
+      event.stopPropagation();
+    }, true);
+    document.addEventListener('pointermove', event=>{
+      if(currentLesson !== 23 || !lesson23ManualDrag) return;
+      event.preventDefault();
+      event.stopPropagation();
+      updateLesson23ManualDragTarget(event.clientX, event.clientY);
+    }, true);
+    document.addEventListener('pointerup', event=>{
+      if(currentLesson !== 23 || !lesson23ManualDrag) return;
+      event.preventDefault();
+      event.stopPropagation();
+      updateLesson23ManualDragTarget(event.clientX, event.clientY);
+      finishLesson23ManualDrag();
+    }, true);
+    document.addEventListener('pointercancel', ()=>{ lesson23ManualDrag = null; clearLesson23DropMarks(); }, true);
+    document.addEventListener('focusin', event=>{
+      const codeText = event.target.closest?.('.lesson23-code-text[data-block-id]');
+      if(!codeText || currentLesson !== 23) return;
+      lesson23SelectedBlockId = codeText.dataset.blockId;
+      lastSelectedBlockId = codeText.dataset.blockId;
+      lesson23CodeOverlay?.querySelectorAll('.line.active').forEach(el=>el.classList.remove('active'));
+      codeText.closest('.line')?.classList.add('active');
+    });
+    document.addEventListener('click', event=>{
+      const codeText = event.target.closest?.('.lesson23-code-text[data-block-id]');
+      if(codeText && currentLesson === 23){
+        event.stopPropagation();
+          lesson23SelectedBlockId = codeText.dataset.blockId;
+        codeText.focus();
+        return;
+      }
+      const line = event.target.closest?.('.lesson23-code-overlay .line[data-block-id]');
+      if(line && currentLesson === 23){
+        event.stopPropagation();
+        lesson23SelectedBlockId = line.dataset.blockId;
+        line.querySelector('.lesson23-code-text')?.focus();
+      }
+    }, true);
+    document.addEventListener('focusout', event=>{
+      const codeText = event.target.closest?.('.lesson23-code-text[data-block-id]');
+      if(!codeText || currentLesson !== 23) return;
+      applyLesson23EditedCodeLine(codeText.dataset.blockId, codeText.textContent);
+    });
+    document.addEventListener('keydown', event=>{
+      if(currentLesson !== 23) return;
+      const active = document.activeElement;
+      const editingCode = active?.classList?.contains('lesson23-code-text');
+      if(editingCode){
+        if(event.key === 'Enter'){
+          event.preventDefault();
+          applyLesson23EditedCodeLine(active.dataset.blockId, active.textContent);
+          active.blur();
+        } else if(event.key === 'Escape'){
+          event.preventDefault();
+              generatePython();
+        }
+        return;
+      }
+      if(event.key !== 'Delete' && event.key !== 'Backspace') return;
+      if(active && ['INPUT','TEXTAREA'].includes(active.tagName)) return;
+      if(deleteLesson23SelectedLine()) event.preventDefault();
     });
     window.addEventListener('resize',()=>resetDrawing(true));
     function restoreOrStart(){
