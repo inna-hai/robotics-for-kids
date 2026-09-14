@@ -4932,9 +4932,10 @@
                               "ציירו שביל ראשון במפה ושנו את האורך מתוך שורת הקוד.",
                               "שנו צבעים במילים כמו blue או red.",
                               "בדקו איך סדר השורות משפיע על הציור.",
-                              "הוסיפו פנייה וסימן דרך ראשון: שלט כיוון קטן.",
+                              "הוסיפו צומת ושביל צדדי במפה.",
+                              "למדו repeat מוקדם: בנו ריבוע קטן והכניסו forward ו־right לתוך הלולאה.",
+                              "הוסיפו סימן דרך: שלט כיוון קטן ליד הצומת.",
                               "תקנו מעבר שמצייר קו מיותר בעזרת penup / pendown.",
-                              "הוסיפו תחנה שנייה: בית קטן או ריבוע קטן עם repeat.",
                               "אתגר רשות: הוסיפו יעד אישי למפה — ים, גינה, הר או מערה."
                     ],
                     "timing": [
@@ -4942,9 +4943,11 @@
                               "8–18 הדגמה קצרה: גוררים, עורכים מספר/צבע, מוחקים ומסדרים שורות",
                               "18–30 שביל ראשון במפה ועריכת אורך",
                               "30–42 צבעים וסדר שורות: color לפני forward",
-                              "42–55 פנייה בשביל וסימן דרך ראשון — שלט כיוון",
-                              "55–68 דיבאג מעבר: penup / pendown כדי לא לצייר קו מיותר",
-                              "68–82 תחנה שנייה וסיום אישי למפת הטיול",
+                              "42–48 צומת ושביל צדדי",
+                              "48–58 ריבוע קטן עם repeat: מכניסים forward ו־right לתוך הלולאה",
+                              "58–68 שלט כיוון ליד הצומת",
+                              "68–78 דיבאג מעבר: penup / pendown כדי לא לצייר קו מיותר",
+                              "78–82 יעד אישי קצר למפת הטיול",
                               "82–90 שיתוף: קוראים 3 שורות קוד ומסבירים מה הן עושות במפה"
                     ],
                     "teacherTips": [
@@ -4952,8 +4955,9 @@
                               "להחזיק את הסיפור פשוט: הצב יוצא לטיול ומסמן תחנות בדרך.",
                               "לא לתת דף ריק: להציע יעדים מוכנים כמו בית, ים, גינה, הר או מערה.",
                               "לעצור אחרי כל שינוי ולשאול: איזו שורה גרמה למה שראינו?",
-                              "להקפיד שהילדים משנים מספרים, צבעים וסדר שורות — לא כותבים קוד חופשי מלא.",
-                              "אם תלמיד נתקע, לבקש ממנו לבנות רק שביל + סימן קטן אחד."
+                              "להקפיד שהילדים משנים מספרים, צבעים וסדר שורות — לוחצים בתוך שורה כדי לערוך, וגוררים את מספר השורה כדי לשנות סדר.",
+                              "בתרגיל repeat להדגים במפורש: גוררים את מספר השורה מתחת ל־repeat עד שהשורה מוזחת ומקבלת רקע קרמי.",
+                              "אם תלמיד נתקע, לבקש ממנו לבנות רק שביל + ריבוע קטן או סימן קטן אחד."
                     ],
                     "unit": "יחידה 5 — אנימציה וסיפור בתנועה",
                     "level": "מעבר מודרך מבלוקים ל־Python",
@@ -4965,23 +4969,25 @@
                     "durationMinutes": 90,
                     "lessonFlow": [
                               {"minutes":"0–8","title":"פתיחה: הטיול הראשון בקוד","teacher":"מסבירים שהיום בונים מפת טיול קטנה: שביל, פנייה ותחנות. כל פקודה שנגררת הופכת לשורת Python.","students":"מסתכלים על הפקודות וקוראים בקול forward, right, color."},
-                              {"minutes":"8–18","title":"הדגמה קצרה של צורת העבודה","teacher":"גוררים 2–3 שורות, עורכים מספר וצבע, מוחקים עם Delete ומסדרים מהידית ⋮⋮.","students":"מנבאים מה תעשה השורה הבאה לפני הרצה."},
+                              {"minutes":"8–18","title":"הדגמה קצרה של צורת העבודה","teacher":"גוררים 2–3 שורות, עורכים מספר וצבע, מוחקים עם Delete ומסדרים בעזרת גרירת מספרי השורות.","students":"מנבאים מה תעשה השורה הבאה לפני הרצה."},
                               {"minutes":"18–30","title":"שביל ראשון","teacher":"מובילים התחלה פשוטה: צבע ואז קו קדימה, ומשנים את האורך בתוך שורת הקוד.","students":"בונים שביל ראשון ומריצים אחרי שינוי מספר."},
                               {"minutes":"30–42","title":"צבעים וסדר שורות","teacher":"מדגימים ש־color חייב לבוא לפני הקו שאמור להיצבע.","students":"משנים צבע בשם באנגלית ומסדרים שורה במקום הנכון."},
-                              {"minutes":"42–55","title":"פנייה וסימן דרך ראשון","teacher":"מוסיפים פנייה ויוצרים סימן קטן שמתאים לצומת: שלט כיוון.","students":"בונים שלט קטן ליד הצומת."},
-                              {"minutes":"55–68","title":"דיבאג מעבר נקי","teacher":"נותנים מעבר שמצייר קו מיותר ומכוונים ל־penup / pendown.","students":"מתקנים את המעבר בלי למחוק את כל המפה."},
-                              {"minutes":"68–82","title":"תחנה שנייה וסיום אישי","teacher":"מציעים בחירה: בית קטן, ים, גינה, הר או מערה.","students":"מוסיפים תחנה שנייה או יעד אישי בעזרת 3–6 שורות."},
+                              {"minutes":"42–48","title":"צומת ושביל צדדי","teacher":"מוסיפים פנייה ושביל צדדי קצר, עם מעבר נקי בעזרת penup / pendown לפי הצורך.","students":"יוצרים צומת קטן במפה."},
+                              {"minutes":"48–58","title":"ריבוע קטן עם repeat","teacher":"מדגימים לאט: גוררים repeat, גוררים forward ו־right, ואז גוררים את מספרי השורות אל מתחת ל־repeat עד שהן מוזחות ומקבלות רקע קרמי.","students":"בונים ריבוע קטן בלולאה."},
+                              {"minutes":"58–68","title":"שלט כיוון בצומת","teacher":"מוסיפים סימן קטן שמתאים לצומת: שלט כיוון, עם דגם לדוגמה אבל בלי לחייב עיצוב מסוים.","students":"בונים שלט קטן ליד הצומת."},
+                              {"minutes":"68–78","title":"דיבאג מעבר נקי","teacher":"נותנים מעבר שמצייר קו מיותר ומכוונים ל־penup / pendown.","students":"מתקנים את המעבר בלי למחוק את כל המפה."},
+                              {"minutes":"78–82","title":"יעד אישי קצר","teacher":"מציעים בחירה: ים, גינה, הר או מערה.","students":"מוסיפים יעד אישי קטן בעזרת 2–4 שורות."},
                               {"minutes":"82–90","title":"שיתוף וסיכום","teacher":"מבקשים לקרוא 3 שורות Python ולהסביר מה הן עושות במפה.","students":"מציגים: קודם הצב..., אחר כך..., ואז..."}
                     ],
                     "exercises": [
                               {"id":1,"minutes":"18–24","title":"תרגול 1 — השביל הראשון","prompt":"התחילו את מפת הטיול: גררו color ו־forward. שנו את הצבע בשורת color לצבע שאינו blue, ואז הריצו.","hint":"צבעים כותבים במילים כמו red, green או purple. לא זוכרים איזה צבעים יש? פתחו את התפריט בבלוק color שבמחסן.","check":"יש color ו־forward, והשביל הראשון מצויר בצבע שאינו כחול.","commonMistake":"שוכחים לשנות את blue בתוך שורת color לפני ההרצה."},
                               {"id":2,"minutes":"24–32","title":"תרגול 2 — משנים את אורך השביל","prompt":"ערכו את המספר בתוך forward כדי שהשביל יהיה ארוך או קצר יותר.","hint":"לחצו בתוך השורה forward(100), שנו את המספר והריצו שוב.","check":"האורך של השביל משתנה אחרי עריכת המספר.","commonMistake":"מוחקים בטעות סוגריים או מרכאות במקום לשנות רק את המספר."},
                               {"id":3,"minutes":"32–40","title":"תרגול 3 — קטע שני בצבע אחר","prompt":"הוסיפו לשביל קטע שני בצבע אחר: גררו color נוסף לפני forward נוסף, ובחרו צבע שונה מהקטע הראשון.","hint":"הסדר חשוב: color צריך להיות לפני הקו שאמור לקבל את הצבע החדש.","check":"יש במפה לפחות שני קטעי שביל בשני צבעים שונים.","commonMistake":"שמים color אחרי forward ולכן הצבע לא משפיע על הקו שכבר צויר."},
-                              {"id":4,"minutes":"40–48","title":"תרגול 4 — צומת ראשון במפה","prompt":"הוסיפו למפה שביל צדדי שיוצא מהשביל הראשי. עברו לנקודת הצומת בלי לצייר קו מיותר, ואז ציירו שביל קצר לכיוון חדש.","hint":"השתמשו ב־penup ו־pendown למעבר נקי, ואז הוסיפו right או left ו־forward לשביל הצדדי.","check":"יש שביל ראשי ושביל צדדי שיוצא ממנו, עם מעבר נקי ולפחות פנייה אחת.","commonMistake":"מציירים קו מעבר מיותר במקום להרים עט לפני המעבר לנקודת הצומת."},
-                              {"id":5,"minutes":"48–58","title":"תרגול 5 — שלט כיוון בצומת","prompt":"צרו ליד הצומת שלט כיוון: מקל קצר ושלט קטן שמראה לאן ממשיכים. אפשר להיעזר בדגם שמופיע כאן, או לעצב שלט משלכם.","hint":"אפשר לעשות שלט מלבני, או שלט עם קצה משולש כמו בדגם. את צורת השלט אפשר לבנות מארבעה קווים או עם repeat.","check":"יש שלט כיוון ליד הצומת: מקל וצורת שלט קטנה וברורה. פס פנימי או קצה משולש הם רשות.","commonMistake":"מציירים רק קו אחד, בלי צורת שלט ברורה."},
-                              {"id":6,"minutes":"58–68","title":"תרגול 6 — דיבאג: קו מיותר במפה","prompt":"תקנו את הקוד המוכן כך שהצב יעבור לתחנה חדשה בלי לצייר קו מיותר.","hint":"חפשו את המעבר בין המקומות. לפני מעבר משתמשים ב־penup, ולפני ציור חדש pendown.","check":"הקו המיותר נעלם, אבל השביל והתחנה עדיין מצוירים.","commonMistake":"מוחקים את הציור במקום לתקן רק את המעבר."},
-                              {"id":7,"minutes":"68–78","title":"תרגול 7 — תחנה שנייה: בית קטן","prompt":"הוסיפו תחנה שנייה למפה: בית קטן או ריבוע קטן בעזרת repeat.","hint":"ריבוע קטן: repeat עם forward ו־right. שמרו אותו קטן וברור.","check":"יש תחנה שנייה שנראית כמו צורה קטנה, לא רק קו נוסף.","commonMistake":"עושים צורה גדולה מדי והיא משתלטת על כל המפה."},
-                              {"id":8,"minutes":"78–84","title":"אתגר רשות — יעד אישי","prompt":"בחרו יעד לסוף הטיול: ים, גינה, הר או מערה. הוסיפו לו סימן קטן ב־2–4 שורות.","hint":"אפשר להוסיף צבע חדש, פנייה קצרה וקו או צורה קטנה.","check":"נוסף יעד אישי קטן וברור בלי לשבור את מפת הטיול.","commonMistake":"מוסיפים הרבה מדי ושוכחים להריץ ולבדוק."}
+                              {"id":4,"minutes":"40–48","title":"תרגול 4 — פנייה מהכביש","prompt":"הוסיפו מהכביש הראשי כביש צדדי שפונה בזווית שאינה 90 מעלות.","hint":"השתמשו ב־right או left עם זווית כמו 60 או 120, ואז הוסיפו forward. הסדר: קודם פנייה, אחר כך כביש צדדי.","check":"יש כביש ראשי, פנייה ברורה שאינה 90 מעלות, ואז כביש צדדי קצר.","commonMistake":"משאירים את הפנייה על 90 מעלות, ואז הצומת נראה רגיל מדי ולא כמו פנייה מיוחדת במפה."},
+                              {"id":5,"minutes":"48–58","title":"תרגול 5 — ריבוע קטן עם repeat","prompt":"הוסיפו למפה תחנה קטנה בצורת ריבוע: גררו repeat, ואז גררו forward ו־right. כדי להכניס שורה לתוך הלולאה — גררו את מספר השורה שלה אל מתחת לשורת repeat, עד שהיא מוזחת ומקבלת רקע קרמי.","hint":"ריבוע קטן: repeat(4): ובתוכו forward קטן ו־right(90). אם שתי השורות מוזחות — הן בתוך הלולאה.","check":"יש repeat עם forward ו־right בתוך הלולאה, ונוצר ריבוע קטן וברור במפה.","commonMistake":"גוררים forward ו־right אחרי repeat אבל לא מכניסים אותן פנימה, שורות בתוך הלולאה צריכות להיות מוזחות."},
+                              {"id":6,"minutes":"58–68","title":"תרגול 6 — שלט כיוון בצומת","prompt":"צרו ליד הצומת שלט כיוון: מקל קצר ושלט קטן שמראה לאן ממשיכים. אפשר להיעזר בדגם שמופיע כאן, או לעצב שלט משלכם.","hint":"אפשר לעשות שלט מלבני, או שלט עם קצה משולש כמו בדגם. אם נוח לכם, אפשר להשתמש ב־repeat כדי לבנות חלק מהצורה.","check":"יש שלט כיוון ליד הצומת: מקל וצורת שלט קטנה וברורה. פס פנימי או קצה משולש הם רשות.","commonMistake":"מציירים רק קו אחד, בלי צורת שלט ברורה."},
+                              {"id":7,"minutes":"68–78","title":"תרגול 7 — דיבאג: קו מיותר במפה","prompt":"תקנו את הקוד המוכן כך שהצב יעבור לתחנה חדשה בלי לצייר קו מיותר.","hint":"חפשו את המעבר בין המקומות. לפני מעבר משתמשים ב־penup, ולפני ציור חדש pendown.","check":"הקו המיותר נעלם, אבל השביל והתחנה עדיין מצוירים.","commonMistake":"מוחקים את הציור במקום לתקן רק את המעבר."},
+                              {"id":8,"minutes":"78–84","title":"אתגר רשות — יעד אישי","prompt":"בחרו יעד לסוף הטיול: ים, גינה, הר או מערה. הוסיפו לו סימן קטן ב־2–4 שורות. אפשר להשתמש שוב ב־repeat אם זה עוזר לצורה שלכם.","hint":"אפשר להוסיף צבע חדש, פנייה קצרה וקו או צורה קטנה. שמרו על יעד קטן שלא משתלט על המפה.","check":"נוסף יעד אישי קטן וברור בלי לשבור את מפת הטיול.","commonMistake":"מוסיפים הרבה מדי ושוכחים להריץ ולבדוק."}
                     ],
                     "vocabulary": [
                               ["שורת קוד", "פקודה אחת שהמחשב מבצע, למשל forward(80)."],
@@ -7615,7 +7621,7 @@
       if(useReadyBase) restoreCumulativeReadyBase();
       else resetDrawing(true);
       const actions=actionsSnapshot || getActions();
-      if(!actions.length){statusEl.textContent='גררו בלוקים קודם 🙂';setRunControls(false);return true;}
+      if(!actions.length){statusEl.textContent=currentLesson === 23 ? 'גררו פקודה מהמחסן לאזור "הקוד שלי" 🙂' : 'גררו בלוקים קודם 🙂';setRunControls(false);return true;}
       statusEl.textContent=useReadyBase ? 'משאירים את הציור הקודם ומריצים רק את התוספת...' : 'מאפסים את הציור...';
       await sleep(450);
       if(token !== runToken) return false;
@@ -7724,7 +7730,7 @@
       return `<div class="secret-reveal" style="background:#f8fafc;border-color:#cbd5e1;color:#0f172a"><div style="font-weight:900;margin-bottom:8px;">🔮 לפני הרצה: ${escapeHtml(cfg.question)}</div><div style="display:grid;gap:8px;">${cfg.options.map(([value,label])=>{ const isSelected = selected === value; const selectedStyle = isSelected ? 'border:3px solid #2563eb;background:#dbeafe;color:#1e3a8a;box-shadow:0 0 0 3px rgba(37,99,235,.16);' : ''; return `<button class="btn reset lesson21-prediction-choice" type="button" data-prediction="${value}" style="text-align:right;justify-content:flex-start;font-weight:900;transition:.15s ease;${selectedStyle}">${escapeHtml(label)}</button>`; }).join('')}</div><small style="display:block;margin-top:8px;">בחרו תשובה לפני שאתם בודקים את התרגיל.</small></div>`;
     }
     function exerciseVisualHtml(ex){
-      if(currentLesson === 23 && ex?.id === 5){
+      if(currentLesson === 23 && ex?.id === 6){
         return `<div class="exercise-visual" style="margin:10px 0;padding:10px;border:1px solid #bae6fd;border-radius:16px;background:#f0f9ff;display:grid;place-items:center;text-align:center;"><div style="font-weight:900;color:#0369a1;margin-bottom:6px;">דגם שלט כיוון לדוגמה</div><svg width="250" height="145" viewBox="0 0 250 145" role="img" aria-label="דגם שלט כיוון בקווי מתאר עם מקל, מלבן, פס וקצה משולש"><rect x="12" y="10" width="226" height="118" rx="14" fill="#ffffff" stroke="#dbeafe" stroke-width="3"/><g fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="76" y1="112" x2="76" y2="36" stroke="#475569" stroke-width="7"/><path d="M76 36 H162 V82 H76 Z" stroke="#ef4444" stroke-width="5"/><line x1="84" y1="59" x2="154" y2="59" stroke="#ef4444" stroke-width="4"/><path d="M162 36 L194 59 L162 82" stroke="#ef4444" stroke-width="5"/></g></svg><small style="color:#475569;font-weight:800;line-height:1.35;">דוגמה בלבד: שלט כיוון יכול להיות מלבן פשוט או צורה עם קצה משולש. פס פנימי הוא רשות.</small></div>`;
       }
       if(currentLesson === 21 && ex?.id === 3){
@@ -8245,7 +8251,7 @@
     }
     function isIsolatedExercise(ex){
       if(isLesson22CumulativeExercise(ex)) return false;
-      if(currentLesson === 23 && ex?.id !== 6) return false;
+      if(currentLesson === 23 && ex?.id !== 7) return false;
       return !!starterXmlForExercise(ex);
     }
     function saveActiveWorkspace(index=currentExerciseIndex){
@@ -8363,7 +8369,7 @@
     }
     function starterXmlForExercise(ex){
       if(currentLesson === 23 && ex?.id === 1) return '<xml></xml>';
-      if(currentLesson === 23 && ex?.id === 6) return '<xml><block type="py_comment" x="20" y="20"><field name="TEXT">פריים ראשון</field><next><block type="py_color"><field name="COLOR">#2563eb</field><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">50</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_comment"><field name="TEXT">מעבר לפריים שני</field><next><block type="py_color"><field name="COLOR">#ef4444</field><next><block type="py_forward"><field name="STEPS">120</field><next><block type="py_color"><field name="COLOR">#16a34a</field><next><block type="py_repeat"><field name="TIMES">3</field><statement name="DO"><block type="py_forward"><field name="STEPS">55</field><next><block type="py_left"><field name="ANGLE">120</field></block></next></block></statement></block></next></block></next></block></next></block></next></block></next></block></xml>';
+      if(currentLesson === 23 && ex?.id === 7) return '<xml><block type="py_comment" x="20" y="20"><field name="TEXT">פריים ראשון</field><next><block type="py_color"><field name="COLOR">#2563eb</field><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">50</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_comment"><field name="TEXT">מעבר לפריים שני</field><next><block type="py_color"><field name="COLOR">#ef4444</field><next><block type="py_forward"><field name="STEPS">120</field><next><block type="py_color"><field name="COLOR">#16a34a</field><next><block type="py_repeat"><field name="TIMES">3</field><statement name="DO"><block type="py_forward"><field name="STEPS">55</field><next><block type="py_left"><field name="ANGLE">120</field></block></next></block></statement></block></next></block></next></block></next></block></next></block></next></block></xml>';
       if(currentLesson === 22 && ex?.id === 1) return '<xml><block type="py_python" x="20" y="20"></block></xml>';
       if(currentLesson === 22 && ex?.id === 7) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_comment"><field name="TEXT">כביש ראשי</field><next><block type="py_color"><field name="COLOR">#111827</field><next><block type="py_width"><field name="WIDTH">8</field><next><block type="py_forward"><field name="STEPS">170</field><next><block type="py_comment"><field name="TEXT">מעבר לבית</field><next><block type="py_color"><field name="COLOR">#ef4444</field><next><block type="py_width"><field name="WIDTH">3</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">65</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_comment"><field name="TEXT">בית ירוק</field><next><block type="py_color"><field name="COLOR">#16a34a</field><next><block type="py_width"><field name="WIDTH">4</field><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">38</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_color"><field name="COLOR">#7c3aed</field><next><block type="py_repeat"><field name="TIMES">3</field><statement name="DO"><block type="py_forward"><field name="STEPS">42</field><next><block type="py_left"><field name="ANGLE">120</field></block></next></block></statement></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
       if(currentLesson === 21 && ex?.id === 1) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_forward"><field name="STEPS">80</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">60</field></block></next></block></next></block></xml>';
@@ -8641,7 +8647,7 @@
       const lesson19RiddleBoxHtml = lesson19RiddleHtml(ex);
       const lesson19OrderCheckBoxHtml = lesson19OrderCheckHtml(ex);
       const lesson21PredictionBoxHtml = lesson21PredictionHtml(ex);
-      const lesson23CodePilotHtml = currentLesson === 23 ? (ex?.id === 1 ? '<div class="code-pilot-banner">איך עובדים היום: גוררים פקודה מהמחסן לאזור העבודה — וכשמניחים אותה היא הופכת לשורת Python. עורכים מספרים וצבעים בתוך השורה, מוחקים עם Delete, ומשנים סדר מגרירת מספר השורה.<br>בלולאה: גררו מספרי שורות אל מתחת לשורת repeat כדי להכניס פקודות פנימה. אפשר להכניס כמה שורות — כל שורה עם הזחה היא בתוך הלולאה. צבעים כותבים במילים כמו blue או red; את האפשרויות רואים בתפריט של בלוק color במחסן.</div>' : '<details class="code-pilot-help"><summary>צריכים תזכורת לעבודה עם שורות קוד?</summary><div>גוררים פקודה והיא הופכת לשורת Python. עורכים בתוך השורה, מוחקים עם Delete, ומשנים סדר מגרירת מספר השורה.<br>בלולאה: גררו מספרי שורות אל מתחת לשורת repeat כדי להכניס פקודות פנימה. אפשר להכניס כמה שורות — כל שורה עם הזחה היא בתוך הלולאה. צבעים כותבים במילים כמו blue או red; את האפשרויות רואים בתפריט של בלוק color במחסן.</div></details>') : '';
+      const lesson23CodePilotHtml = currentLesson === 23 ? (ex?.id === 1 ? '<div class="code-pilot-banner">איך עובדים היום: גוררים פקודה מהמחסן לאזור העבודה — וכשמניחים אותה היא הופכת לשורת Python.<br><br>כדי לשנות מספר או צבע — לוחצים בתוך השורה ועורכים.<br>כדי למחוק — בוחרים שורה ולוחצים Delete.<br>כדי לשנות סדר — גוררים את מספר השורה למקום החדש.<br><br>בלולאה: גררו מספרי שורות אל מתחת לשורת repeat כדי להכניס פקודות פנימה. אפשר להכניס כמה שורות — כל שורה עם הזחה היא בתוך הלולאה. צבעים כותבים במילים כמו blue או red, את האפשרויות רואים בתפריט של בלוק color במחסן.</div>' : '<details class="code-pilot-help"><summary>צריכים תזכורת לעבודה עם שורות קוד?</summary><div>גוררים פקודה והיא הופכת לשורת Python.<br><br>כדי לשנות מספר או צבע — לוחצים בתוך השורה ועורכים.<br>כדי למחוק — בוחרים שורה ולוחצים Delete.<br>כדי לשנות סדר — גוררים את מספר השורה למקום החדש.<br><br>בלולאה: גררו מספרי שורות אל מתחת לשורת repeat כדי להכניס פקודות פנימה. אפשר להכניס כמה שורות — כל שורה עם הזחה היא בתוך הלולאה. צבעים כותבים במילים כמו blue או red, את האפשרויות רואים בתפריט של בלוק color במחסן.</div></details>') : '';
       missionEl.innerHTML = `<div class="exercise-focus"><div class="exercise-top"><h3>${exerciseLabel(currentExerciseIndex)}</h3><button class="exercise-back" id="prevExerciseBtn" type="button" ${currentExerciseIndex <= 0 ? 'disabled' : ''}>↩ תרגיל קודם</button></div>${lesson10IntroHtml}${lesson11IntroHtml}${lesson16BlocksIntroHtml}${lesson12CumulativeHtml}${lesson13CumulativeHtml}<p><b>${escapeHtml(ex.prompt || '')}</b></p>${lesson23CodePilotHtml}${lesson19RiddleBoxHtml}${lesson19OrderCheckBoxHtml}${lesson21PredictionBoxHtml}${exerciseVisualHtml(ex)}${isTip ? '' : `<p class="muted">רמז: ${escapeHtml(ex.hint || 'נסו, הריצו, ואז תקנו.')}</p>${(isChallengeExercise(ex) || isRunOnlyExampleExercise(ex)) ? '' : `<p class="muted">בדיקה: ${escapeHtml(ex.check || 'הציור מתאים למשימה.')}</p>`}`}${writingHtml}<div class="exercise-bottom"><div class="exercise-controls">${resetButton}<button class="btn run" id="checkExerciseBtn" type="button">הרץ ציור</button><button class="btn next" id="nextExerciseBtn" ${canContinue ? '' : 'disabled'}>${nextButtonLabel}</button></div>${feedbackBelowButtons ? '<br>' : feedbackHtml}</div>${feedbackBelowButtons ? feedbackHtml : ''}${secretRevealHtml}</div>`;
       if(feedbackBelowButtons && message){
         requestAnimationFrame(()=>missionEl.scrollTo({top: missionEl.scrollHeight, behavior:'smooth'}));
@@ -9940,9 +9946,12 @@
           return [];
         }
       }
-      if(!actions.length) return [hasCodeBlock
-        ? (hasPythonBlock ? 'חברו את הבלוקים מתחת לבלוק Python — רק מה שמחובר אליו הופך לקוד ונבדק.' : 'הוסיפו בלוק Python וחברו מתחתיו את הבלוקים — רק מה שמחובר אליו הופך לקוד ונבדק.')
-        : 'גררו בלוק Python, ואז חברו מתחתיו את הבלוקים של התרגיל — רק מה שמחובר אליו הופך לקוד ונבדק.'];
+      if(!actions.length){
+        if(currentLesson === 23) return ['כמעט — גררו פקודה מהמחסן לאזור "הקוד שלי". בשיעור הזה אין צורך בבלוק Python: כל פקודה שתגררו תהפוך לשורת קוד.'];
+        return [hasCodeBlock
+          ? (hasPythonBlock ? 'חברו את הבלוקים מתחת לבלוק Python — רק מה שמחובר אליו הופך לקוד ונבדק.' : 'הוסיפו בלוק Python וחברו מתחתיו את הבלוקים — רק מה שמחובר אליו הופך לקוד ונבדק.')
+          : 'גררו בלוק Python, ואז חברו מתחתיו את הבלוקים של התרגיל — רק מה שמחובר אליו הופך לקוד ונבדק.'];
+      }
       const problems = [];
       if(currentLesson === 12 && ex?.id === 1 && !actions.some(a=>a.cmd==='forward' || a.cmd==='forwardVar')){
         return ['כמעט — צריך קודם לצייר ריבוע לקירות הבית. השתמשו בלולאה של 4 חזרות עם זוז קדימה לפי אורך ופנייה של 90 מעלות.'];
@@ -10661,7 +10670,7 @@
         const addedActions = comparableActions(actions).length - baselineActions.length;
         if(ex.id === 1){
           if(!actions.some(a=>a.cmd === 'color')) return ['כמעט — התחילו בשורת color כדי לבחור צבע לשביל הראשון.'];
-          if(moveCount < 1) return ['כמעט — גררו שורת repeatward כדי לצייר את השביל הראשון.'];
+          if(moveCount < 1) return ['כמעט — גררו שורת forward כדי לצייר את השביל הראשון.'];
           if(![...actionDrawnColors(actions)].some(color=>color !== '#2563eb')) return ['כמעט — שנו את הצבע בשורת color לצבע שאינו blue, ואז הריצו שוב.'];
           return [];
         }
@@ -10671,34 +10680,45 @@
           return [];
         }
         if(ex.id === 3){
-          if(addedActions < 1) return ['כמעט — הוסיפו בתרגיל הזה forward חדש לקטע השני של השביל.'];
           if(moveCount < 2) return ['כמעט — הוסיפו forward נוסף כדי שיהיו שני קטעים בשביל.'];
           if(colorCount < 2) return ['כמעט — הוסיפו color נוסף ובחרו צבע אחר לקטע השני.'];
           return [];
         }
         if(ex.id === 4){
-          if(addedActions < 3) return ['כמעט — בתרגיל הזה צריך להוסיף שביל צדדי חדש, לא רק להשתמש במה שכבר היה.'];
-          if(cleanMoves < 1) return ['כמעט — עברו לנקודת הצומת עם penup ואז חזרו לצייר עם pendown, בלי קו מעבר מיותר.'];
-          if(turnCount < 1) return ['כמעט — שביל צדדי צריך לפנות לכיוון חדש בעזרת right או left.'];
-          if(drawnCount < 3) return ['כמעט — הוסיפו שביל צדדי קצר, לא רק מעבר בלי ציור.'];
+          const currentComparable = comparableActions(actions);
+          const baselineComparable = baselineActions || [];
+          const newComparable = baselineComparable.length && currentComparable.length > baselineComparable.length
+            ? currentComparable.slice(baselineComparable.length)
+            : currentComparable;
+          const newTurnCount = newComparable.filter(a=>a.cmd === 'right' || a.cmd === 'left').length;
+          const nonRightAngleTurnIndexes = newComparable.map((a,index)=>{
+            if(!(a.cmd === 'right' || a.cmd === 'left')) return -1;
+            const angle = Math.abs(Number(a.v));
+            return Number.isFinite(angle) && angle > 0 && Math.round(angle) !== 90 ? index : -1;
+          }).filter(index=>index >= 0);
+          const hasForwardAfterNonRightTurn = nonRightAngleTurnIndexes.some(index=>newComparable.slice(index + 1).some(a=>a.cmd === 'forward' || a.cmd === 'forwardVar'));
+          if(baselineComparable.length && currentComparable.length <= baselineComparable.length) return ['כמעט — הוסיפו בלוקים חדשים בתרגיל הזה: פנייה ואז forward לכביש הצדדי.'];
+          if(newTurnCount < 1) return ['כמעט — הוסיפו בתרגיל הזה right או left כדי לצאת מהכביש הראשי.'];
+          if(nonRightAngleTurnIndexes.length < 1) return ['כמעט — שנו את הזווית של הפנייה החדשה לכל זווית שאינה 90, למשל 60, 100 או 120 מעלות.'];
+          if(!hasForwardAfterNonRightTurn) return ['כמעט — אחרי הפנייה החדשה הוסיפו forward שמצייר את הכביש הצדדי.'];
           return [];
         }
         if(ex.id === 5){
-          const hasRectangleLikeFlag = repeatBlocks().some(block=>numericField(block, 'TIMES', 0) >= 4) || addedActions >= 8 || turnCount >= 4;
-          if(addedActions < 5) return ['כמעט — בתרגיל הזה צריך להוסיף שלט כיוון חדש: מקל וצורת שלט קטנה, לא רק להשתמש במה שכבר היה.'];
-          if(!hasRectangleLikeFlag) return ['כמעט — לשלט צריכה להיות צורה ברורה: מלבן קטן מארבעה קווים, או repeat של 4.'];
-          if(colorCount < 3) return ['כמעט — תנו לשלט צבע חדש משלו, שונה מצבעי השבילים.'];
+          if(addedActions < 3) return ['כמעט — בתרגיל הזה צריך להוסיף תחנה קטנה חדשה עם repeat, לא רק להריץ את המפה הקיימת.'];
+          if(!hasBlock('py_repeat')) return ['כמעט — גררו repeat כדי לבנות ריבוע קטן.'];
+          if(!repeatShapeMatches(4, 90)) return ['כמעט — הריבוע צריך להיות repeat(4): ובתוכו forward ו־right(90). גררו את מספרי השורות של forward ו־right אל מתחת ל־repeat עד שהן מוזחות.'];
           return [];
         }
         if(ex.id === 6){
-          if(colorCount < 2 || moveCount < 2) return ['כמעט — אל תמחקו את חלקי המפה המוכנים; תקנו רק את המעבר ביניהם.'];
-          if(cleanMoves < 1) return ['כמעט — עדיין יש קו מעבר מיותר. הוסיפו penup לפני המעבר ו־pendown לפני הציור הבא.'];
+          const hasRectangleLikeSign = addedActions >= 8 || turnCount >= 5;
+          if(addedActions < 5) return ['כמעט — בתרגיל הזה צריך להוסיף שלט כיוון חדש: מקל וצורת שלט קטנה, לא רק להשתמש במה שכבר היה.'];
+          if(!hasRectangleLikeSign) return ['כמעט — לשלט צריכה להיות צורה ברורה: מלבן קטן מארבעה קווים, קצה משולש, או שימוש נוסף ב־repeat.'];
+          if(colorCount < 3) return ['כמעט — תנו לשלט צבע חדש משלו, שונה מצבעי השבילים.'];
           return [];
         }
         if(ex.id === 7){
-          if(addedActions < 3) return ['כמעט — בתרגיל הזה צריך להוסיף תחנה שנייה חדשה, לא רק להשתמש בשלט שכבר ציירתם.'];
-          if(!repeatBlocks().some(block=>numericField(block, 'TIMES', 0) >= 3)) return ['כמעט — התחנה השנייה צריכה להשתמש ב־repeat כדי ליצור בית קטן או ריבוע קטן.'];
-          if(moveCount < 2 || turnCount < 1) return ['כמעט — בתוך התחנה צריך להיות forward וגם פנייה.'];
+          if(colorCount < 2 || moveCount < 2) return ['כמעט — אל תמחקו את חלקי המפה המוכנים; תקנו רק את המעבר ביניהם.'];
+          if(cleanMoves < 1) return ['כמעט — עדיין יש קו מעבר מיותר. הוסיפו penup לפני המעבר ו־pendown לפני הציור הבא.'];
           return [];
         }
         if(ex.id === 8){
