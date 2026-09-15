@@ -26,6 +26,19 @@
         <label>קוד מנהלת<input name="code" type="password" autocomplete="current-password" required></label>
         <button class="button primary" type="submit">כניסה</button>
       </form>
+      <form class="card" id="admin-email-login-form">
+        <h2>כניסת אדמין לפי אימייל</h2>
+        <label>אימייל<input name="email" type="email" autocomplete="username" required></label>
+        <label>סיסמה<input name="password" type="password" autocomplete="current-password" required></label>
+        <button class="button primary" type="submit">כניסה לאדמין</button>
+      </form>
+      <form class="card" id="admin-setup-form">
+        <h2>הגדרת אדמין ראשונה</h2>
+        <label>שם<input name="name" value="עמי" required></label>
+        <label>אימייל מורשה<input name="email" type="email" autocomplete="username" required></label>
+        <label>בחירת סיסמה<input name="password" type="password" minlength="10" autocomplete="new-password" required></label>
+        <button class="button secondary" type="submit">יצירת כניסת אדמין</button>
+      </form>
       <p class="message" id="admin-auth-message" aria-live="polite"></p>
     </section>
 
@@ -35,11 +48,38 @@
         <button class="button quiet" id="admin-logout" type="button">התנתקות</button>
       </div>
       <p class="message" id="admin-message" aria-live="polite"></p>
+      <form class="card course-access-form" id="create-teacher-form">
+        <h3>יצירת מורה חדשה</h3>
+        <label>שם מורה<input name="name" required></label>
+        <label>אימייל כניסה<input name="email" type="email" autocomplete="off" required></label>
+        <label>סיסמה זמנית<input name="password" type="text" minlength="10" autocomplete="off" required></label>
+        <fieldset class="course-picker">
+          <legend>לומדות למורה</legend>
+          <label><input type="checkbox" name="courses" value="craftom-agent" checked> אקדמיית ה-Agent</label>
+          <label><input type="checkbox" name="courses" value="minecraft"> Minecraft</label>
+          <label><input type="checkbox" name="courses" value="sensi-city"> סנסי בעיר החכמה</label>
+          <label><input type="checkbox" name="courses" value="sisi"> סיסי</label>
+          <label><input type="checkbox" name="courses" value="python-turtle"> Python Turtle</label>
+          <label><input type="checkbox" name="courses" value="webcode"> Web Code</label>
+        </fieldset>
+        <fieldset class="course-picker" id="create-teacher-minecraft-fields">
+          <legend>רישיון Minecraft למורה</legend>
+          <label><input type="checkbox" name="createMinecraftLicense" value="1"> יצירת רישיון חדש דרך מערכת hai.tech</label>
+          <div id="create-teacher-new-minecraft-fields" hidden>
+            <label>שם משתמש לרישיון החדש<input name="licenseHandle" maxlength="48" autocomplete="off" placeholder="לדוגמה: michal.albaz"></label>
+          </div>
+          <div id="create-teacher-existing-minecraft-fields">
+            <label>שם שחקן Minecraft<input name="playerName" maxlength="32" autocomplete="off"></label>
+            <label>רישיון / UPN קיים בטננט hai.tech<input name="eduUpn" type="email" placeholder="teacher@hai.tech"></label>
+          </div>
+        </fieldset>
+        <button class="button primary" type="submit">יצירת מורה</button>
+      </form>
       <div class="classes-list" id="admin-teachers-list"></div>
     </section>
   </main>
 
-  <script src="js/classroom-admin.js?v=20260906-teacher-entitlements-1"></script>
+  <script src="js/classroom-admin.js?v=20260910-admin-minecraft-license-8"></script>
   <script src="/js/feedback-widget.js?v=20260907-tehila-fixes-1"></script>
 </body>
 </html>

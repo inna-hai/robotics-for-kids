@@ -228,6 +228,15 @@
     return new FormData(form).getAll('courses');
   }
 
+  function minecraftHandleFromName(name) {
+    return String(name || '')
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9._-]+/g, '.')
+      .replace(/^[._-]+|[._-]+$/g, '')
+      .slice(0, 48);
+  }
+
   function createCoursePicker(selected = [], availableCourseIds = Object.keys(courseLabels)) {
     const fieldset = element('fieldset', undefined, 'course-picker');
     fieldset.append(element('legend', 'לומדות פתוחות לכיתה'));
@@ -282,7 +291,8 @@
         }
         courseLinks.append(link);
       }
-      teacherCourseCatalog.append(courseLinks, createCoursePicker([], availableCourseIds));
+      if (courseLinks.children.length) teacherCourseCatalog.append(courseLinks);
+      teacherCourseCatalog.append(createCoursePicker([], availableCourseIds));
       createClassButton.disabled = false;
     }
 
@@ -295,6 +305,7 @@
     }
 
     function renderClass(classroom) {
+      const isMinecraftClass = (classroom.courses || []).includes('craftom-agent') || (classroom.courses || []).includes('minecraft');
       const card = element('article', undefined, 'class-card');
       card.dataset.classId = classroom.id;
       const top = element('div', undefined, 'class-top');
@@ -317,7 +328,7 @@
         link.rel = 'noopener noreferrer';
         courseLinks.append(link);
       }
-      courseAccess.append(courseLinks);
+      if (courseLinks.children.length) courseAccess.append(courseLinks);
       if ((classroom.courses || []).includes('craftom-agent')) {
         const lessonZeroPanel = element('div', undefined, 'lesson-zero-panel');
         lessonZeroPanel.append(
@@ -355,6 +366,27 @@
         classroom.students.forEach((student) => {
           const item = element('li');
           item.append(element('strong', student.name));
+          item.append(element('small', student.loginCode ? `קוד כניסה ללומדה: ${student.loginCode}` : 'קוד כניסה ללומדה לא שמור - אפשר ללחוץ איפוס קוד כניסה'));
+          const studentActions = element('div', undefined, 'student-actions');
+          const editButton = element('button', 'עריכה', 'button quiet small-button');
+          editButton.type = 'button';
+          const resetCodeButton = element('button', 'איפוס קוד כניסה', 'button quiet small-button');
+          resetCodeButton.type = 'button';
+          const deleteButton = element('button', 'מחיקה', 'button quiet small-button danger-button');
+          deleteButton.type = 'button';
+          studentActions.append(editButton, resetCodeButton, deleteButton);
+          if (isMinecraftClass) {
+            const license = student.minecraftLicense || {};
+            item.append(element(
+              'small',
+              license.approved
+                ? `Minecraft: ${student.minecraftPlayerName || license.playerName} · ${license.eduUpn}`
+                : 'חסר רישיון Minecraft Education מאושר',
+            ));
+            if (student.minecraftPassword) {
+              item.append(element('small', `סיסמת Minecraft: ${student.minecraftPassword}`));
+            }
+          }
           const latest = student.progress?.[0];
           item.append(element(
             'small',
@@ -362,6 +394,86 @@
               ? `${courseLabels[latest.courseId] || latest.courseId} · ${latest.status === 'completed' ? 'הושלם' : 'התחיל/ה'}`
               : 'עדיין אין פעילות שמורה',
           ));
+          const editForm = element('form', undefined, 'student-edit-form');
+          editForm.hidden = true;
+          const nameLabel = element('label', 'שם תלמיד/ה');
+          const nameInput = document.createElement('input');
+          nameInput.name = 'name';
+          nameInput.required = true;
+          nameInput.value = student.name;
+          nameLabel.append(nameInput);
+          editForm.append(nameLabel);
+          if (isMinecraftClass) {
+            const license = student.minecraftLicense || {};
+            const playerLabel = element('label', 'שם שחקן Minecraft');
+            const playerInput = document.createElement('input');
+            playerInput.name = 'playerName';
+            playerInput.required = true;
+            playerInput.maxLength = 32;
+            playerInput.autocomplete = 'off';
+            playerInput.value = student.minecraftPlayerName || license.playerName || '';
+            playerLabel.append(playerInput);
+            const upnLabel = element('label', 'רישיון Minecraft Education / UPN');
+            const upnInput = document.createElement('input');
+            upnInput.name = 'eduUpn';
+            upnInput.type = 'email';
+            upnInput.required = true;
+            upnInput.value = license.eduUpn || '';
+            upnInput.placeholder = 'student@hai.tech';
+            upnLabel.append(upnInput);
+            editForm.append(playerLabel, upnLabel, element('p', 'UPN קיים ייבדק מול הטננט hai.tech לפני שמירה.', 'field-help'));
+          }
+          const editSave = element('button', 'שמירת תלמיד/ה', 'button secondary small-button');
+          editSave.type = 'submit';
+          const editCancel = element('button', 'ביטול', 'button quiet small-button');
+          editCancel.type = 'button';
+          const editButtons = element('div', undefined, 'student-actions');
+          editButtons.append(editSave, editCancel);
+          editForm.append(editButtons);
+          editButton.addEventListener('click', () => { editForm.hidden = false; });
+          editCancel.addEventListener('click', () => { editForm.hidden = true; });
+          editForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            setMessage(dashboardMessage, `שומרים את ${student.name}…`);
+            try {
+              await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/students/${encodeURIComponent(student.id)}/update`, formData(editForm));
+              setMessage(dashboardMessage, 'פרטי התלמיד/ה נשמרו.', true);
+              await loadClasses();
+            } catch (error) {
+              setMessage(dashboardMessage, error.message);
+            }
+          });
+          resetCodeButton.addEventListener('click', async () => {
+            const approved = window.confirm(`לאפס קוד כניסה ללומדה עבור ${student.name}?`);
+            if (!approved) return;
+            setMessage(dashboardMessage, `מאפסים קוד כניסה עבור ${student.name}…`);
+            try {
+              const data = await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/students/${encodeURIComponent(student.id)}/reset-code`, {});
+              await loadClasses();
+              const refreshedCard = [...list.children].find((cardItem) => cardItem.dataset.classId === classroom.id);
+              const refreshedNotice = refreshedCard?.querySelector('.one-time-code');
+              if (refreshedNotice) {
+                refreshedNotice.textContent = `קוד הכניסה החדש של ${data.student.name}: ${data.student.loginCode} - הקוד נשמר ומוצג גם בכרטיס התלמיד.`;
+                refreshedNotice.hidden = false;
+              }
+              setMessage(dashboardMessage, 'קוד הכניסה אופס. שמרו את הקוד החדש שמופיע בכרטיס הכיתה.', true);
+            } catch (error) {
+              setMessage(dashboardMessage, error.message);
+            }
+          });
+          deleteButton.addEventListener('click', async () => {
+            const approved = window.confirm(`למחוק את ${student.name} מהכיתה?\nהפעולה תמחק גם התקדמות וקוד כניסה של התלמיד/ה.`);
+            if (!approved) return;
+            setMessage(dashboardMessage, `מוחקים את ${student.name}…`);
+            try {
+              await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/students/${encodeURIComponent(student.id)}/delete`, {});
+              setMessage(dashboardMessage, 'התלמיד/ה נמחק/ה מהכיתה.', true);
+              await loadClasses();
+            } catch (error) {
+              setMessage(dashboardMessage, error.message);
+            }
+          });
+          item.append(studentActions, editForm);
           students.append(item);
         });
       } else {
@@ -377,6 +489,76 @@
       const button = element('button', 'הוספת תלמיד/ה', 'button secondary');
       button.type = 'submit';
       addForm.append(label, button);
+      if (isMinecraftClass) {
+        const minecraftBox = element('section', undefined, 'minecraft-license-box');
+        minecraftBox.append(element('strong', 'רישיון Minecraft לתלמיד/ה'));
+
+        const modeGrid = element('div', undefined, 'license-mode-grid');
+        const createModeLabel = element('label', undefined, 'license-mode-option');
+        const createLicenseInput = document.createElement('input');
+        createLicenseInput.type = 'radio';
+        createLicenseInput.name = 'createMinecraftLicense';
+        createLicenseInput.value = '1';
+        createLicenseInput.checked = true;
+        createModeLabel.append(createLicenseInput, element('span', 'ליצור רישיון חדש'));
+        const existingModeLabel = element('label', undefined, 'license-mode-option');
+        const existingLicenseInput = document.createElement('input');
+        existingLicenseInput.type = 'radio';
+        existingLicenseInput.name = 'createMinecraftLicense';
+        existingLicenseInput.value = '0';
+        existingModeLabel.append(existingLicenseInput, element('span', 'יש לילד רישיון קיים'));
+        modeGrid.append(createModeLabel, existingModeLabel);
+
+        const newLicenseFields = element('div', undefined, 'minecraft-license-fields');
+        const handleLabel = element('label', 'שם משתמש לרישיון החדש');
+        const handleInput = document.createElement('input');
+        handleInput.name = 'licenseHandle';
+        handleInput.required = true;
+        handleInput.maxLength = 48;
+        handleInput.autocomplete = 'off';
+        handleInput.placeholder = 'לדוגמה: noam.cohen';
+        handleLabel.append(handleInput);
+        newLicenseFields.append(handleLabel, element('p', 'אם השם תפוס בטננט hai.tech תופיע הודעה ותוכלו לבחור שם אחר.', 'field-help'));
+
+        const existingLicenseFields = element('div', undefined, 'minecraft-license-fields two-columns');
+        const minecraftPlayerLabel = element('label', 'שם שחקן Minecraft');
+        const minecraftPlayerInput = document.createElement('input');
+        minecraftPlayerInput.name = 'playerName';
+        minecraftPlayerInput.maxLength = 32;
+        minecraftPlayerInput.autocomplete = 'off';
+        minecraftPlayerLabel.append(minecraftPlayerInput);
+        const minecraftLicenseLabel = element('label', 'רישיון Minecraft Education / UPN');
+        const minecraftLicenseInput = document.createElement('input');
+        minecraftLicenseInput.name = 'eduUpn';
+        minecraftLicenseInput.type = 'email';
+        minecraftLicenseInput.placeholder = 'student@hai.tech';
+        minecraftLicenseLabel.append(minecraftLicenseInput);
+        existingLicenseFields.append(minecraftPlayerLabel, minecraftLicenseLabel, element('p', 'הרישיון ייבדק מול הטננט hai.tech לפני שמירת התלמיד.', 'field-help wide-field'));
+
+        let handleTouched = false;
+        handleInput.addEventListener('input', () => { handleTouched = true; });
+        input.addEventListener('input', () => {
+          if (!createLicenseInput.checked || handleTouched) return;
+          handleInput.value = minecraftHandleFromName(input.value);
+        });
+        const updateMinecraftMode = () => {
+          const createNew = createLicenseInput.checked;
+          newLicenseFields.hidden = !createNew;
+          existingLicenseFields.hidden = createNew;
+          handleInput.required = createNew;
+          handleInput.disabled = !createNew;
+          minecraftPlayerInput.required = !createNew;
+          minecraftPlayerInput.disabled = createNew;
+          minecraftLicenseInput.required = !createNew;
+          minecraftLicenseInput.disabled = createNew;
+          if (createNew && !handleTouched) handleInput.value = minecraftHandleFromName(input.value);
+        };
+        createLicenseInput.addEventListener('change', updateMinecraftMode);
+        existingLicenseInput.addEventListener('change', updateMinecraftMode);
+        updateMinecraftMode();
+        minecraftBox.append(modeGrid, newLicenseFields, existingLicenseFields);
+        addForm.insertBefore(minecraftBox, button);
+      }
 
       const oneTime = element('p', '', 'one-time-code');
       oneTime.hidden = true;
@@ -386,14 +568,16 @@
         try {
           const data = await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/students`, formData(addForm));
           addForm.reset();
+          const createLicenseInput = addForm.querySelector('input[name="createMinecraftLicense"]');
+          if (createLicenseInput) createLicenseInput.checked = true;
           await loadClasses();
           const refreshedCard = [...list.children].find((item) => item.dataset.classId === classroom.id);
           const refreshedNotice = refreshedCard?.querySelector('.one-time-code');
           if (refreshedNotice) {
-            refreshedNotice.textContent = `הקוד האישי של ${data.student.name}: ${data.student.loginCode} — הקוד מוצג עכשיו בלבד.`;
+            refreshedNotice.textContent = `קוד הכניסה ללומדה של ${data.student.name}: ${data.student.loginCode} - הקוד נשמר ומוצג גם בכרטיס התלמיד.`;
             refreshedNotice.hidden = false;
           }
-          setMessage(dashboardMessage, 'התלמיד/ה נוסף/ה. שמרו את הקוד האישי שמופיע בכרטיס הכיתה.', true);
+          setMessage(dashboardMessage, 'התלמיד/ה נוסף/ה. שמרו את קוד הכניסה שמופיע בכרטיס הכיתה.', true);
         } catch (error) {
           setMessage(dashboardMessage, error.message);
         }

@@ -28,7 +28,7 @@ assert.match(student, /מבוך המטבעות/);
 assert.match(student, /פתחו את Minecraft/);
 assert.match(student, /minecraftAccessCode/);
 assert.match(student, /המשך לשיעור 1/);
-assert.match(student, /20260914-teacher-home-like-student-19/, 'lesson zero should load the teacher-return aware student script');
+assert.match(student, /20260915-lesson0-merged-1/, 'lesson zero should load the teacher-return aware student script');
 assert.doesNotMatch(student, /name="studentName"/, 'student identity must come from the authenticated classroom session');
 assert.doesNotMatch(student, /href="kugel-teacher\.html"/, 'students must not receive a shortcut to teacher controls');
 
@@ -75,7 +75,7 @@ assert.doesNotMatch(teacher, /teacherHomeMinecraftActions/);
 assert.doesNotMatch(teacher, /teacherLessonPickerForm/);
 assert.doesNotMatch(teacher, /teacherLessonSelect/);
 assert.match(teacher, /20260914-video-first-frames-1/, 'teacher board cache-busts the challenge data posters');
-assert.match(teacher, /20260914-teacher-home-like-student-19/, 'teacher board cache-busts the student-like teacher home');
+assert.match(teacher, /20260915-lesson0-merged-1/, 'teacher board cache-busts the student-like teacher home');
 assert.match(teacher, /rel="preload" as="image" href="assets\/craftom\/challenges\/craftom-program-real-minecraft-gemini-live-1x-first-frame\.webp"/, 'teacher home should preload the first visible video poster');
 assert.match(teacher, /craftom-challenge4-smart-city-automations-gemini-live-1x-first-frame\.webp" type="image\/webp"/, 'teacher home should preload challenge video posters');
 assert.ok(teacher.indexOf('hero teacher-hero') < teacher.indexOf('teacher-control'), 'teacher hero should be the first panel in the teacher board');
@@ -220,7 +220,7 @@ for (const poster of [
   assert.match(challengeData, new RegExp(poster.replace(/[.]/g, '\\.')), `Craftom challenge data should use first-frame poster: ${poster}`);
   assert.ok(existsSync(join(root, 'assets/craftom/challenges', poster)), `missing generated first-frame poster: ${poster}`);
 }
-assert.match(server, /kugel-50-safe-compounds-v3-mazes-8-coins-npc-reset-caged-inner-wood-obstacle-test-v1-20260906/);
+assert.match(server, /Kugel-lesson-0/);
 assert.match(server, /kugel-50-safe-compounds-v3-20260824/);
 assert.match(server, /trackedLessonId === 0[\s\S]{0,140}summary\.completionRecorded/, 'lesson-zero tracking must use persisted lesson-zero completion, not another lesson’s run state');
 assert.ok(packageJson.includes('node --check js/kugel-lesson-zero.js'));

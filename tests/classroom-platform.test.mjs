@@ -362,7 +362,7 @@ try {
   const addCraftomStudent = await fetch(`${baseUrl}/api/classroom/classes/${craftomClass.id}/students`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Cookie: teacherCookie },
-    body: JSON.stringify({ name: 'תלמיד קראפטום' }),
+    body: JSON.stringify({ name: 'תלמיד קראפטום', playerName: 'CraftomKid1', eduUpn: 'craftom-kid-1@hai.tech' }),
   });
   const craftomStudent = (await addCraftomStudent.json()).student;
   assert.equal(addCraftomStudent.status, 201);
