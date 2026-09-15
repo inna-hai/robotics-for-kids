@@ -47,6 +47,7 @@
     const progressStrip = document.getElementById('studentProgressStrip');
     const qaLessonSwitcher = document.getElementById('qaLessonSwitcher');
     const qaLessonGrid = document.getElementById('qaLessonGrid');
+    const compoundEntryId = query.get('c') || query.get('compound') || '';
     let current = null;
 
     function renderQaLessonSwitcher(data) {
@@ -110,6 +111,26 @@
       }
     }
 
+    async function enterFromCompoundLink() {
+      if (!compoundEntryId) return false;
+      setStatus(message, 'מזהים את התלמיד/ה לפי החלקה במשחק…');
+      try {
+        render(await api('/api/kugel/compound-entry', { compoundId: compoundEntryId }));
+        setStatus(message, '');
+        const cleanUrl = new URL(location.href);
+        cleanUrl.searchParams.delete('c');
+        cleanUrl.searchParams.delete('compound');
+        history.replaceState(null, '', cleanUrl);
+        return true;
+      } catch (error) {
+        setStatus(message, error.message, true);
+        launch.disabled = true;
+        reset.disabled = true;
+        finish.disabled = true;
+        return true;
+      }
+    }
+
     launch.addEventListener('click', async () => {
       setStatus(message, 'פותחים את Minecraft…');
       try {
@@ -141,7 +162,7 @@
       }
     });
 
-    await refresh();
+    if (!await enterFromCompoundLink()) await refresh();
     setInterval(refresh, 5000);
   }
 

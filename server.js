@@ -3,11 +3,15 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const os = require('os');
 const Database = require('better-sqlite3');
 
 const ROOT = __dirname;
 const PORT = Number(process.env.PORT || process.argv[2] || 3032);
-const DATA_DIR = path.join(ROOT, 'data');
+const DEFAULT_DATA_DIR = process.env.NODE_ENV === 'test'
+  ? path.join(os.tmpdir(), `robotics-test-data-${process.pid}`)
+  : path.join(ROOT, 'data');
+const DATA_DIR = process.env.ROBOTICS_DATA_DIR || DEFAULT_DATA_DIR;
 const ATTACHMENTS_DIR = path.join(DATA_DIR, 'feedback-attachments');
 const FEEDBACK_FILE = path.join(DATA_DIR, 'feedback.jsonl');
 const CRAFTOM_EXIT_ATTACHMENTS_DIR = path.join(DATA_DIR, 'craftom-exit-ticket-attachments');
@@ -384,6 +388,20 @@ function openSummerDb() {
       updated_at TEXT NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS kugel_minecraft_compound_assignments (
+      id TEXT PRIMARY KEY,
+      monitor_server_name TEXT NOT NULL,
+      minecraft_username TEXT NOT NULL,
+      compound_id INTEGER NOT NULL,
+      x INTEGER,
+      y INTEGER,
+      z INTEGER,
+      last_seen_at TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      UNIQUE(monitor_server_name, compound_id)
+    );
+
     CREATE INDEX IF NOT EXISTS idx_classroom_teachers_email ON classroom_teachers(email);
     CREATE INDEX IF NOT EXISTS idx_classroom_teacher_sessions_token ON classroom_teacher_sessions(token_hash);
     CREATE INDEX IF NOT EXISTS idx_classroom_admin_sessions_token ON classroom_admin_sessions(token_hash);
@@ -395,6 +413,8 @@ function openSummerDb() {
     CREATE INDEX IF NOT EXISTS idx_classroom_student_sessions_token ON classroom_student_sessions(token_hash);
     CREATE INDEX IF NOT EXISTS idx_classroom_progress_student ON classroom_progress(student_id);
     CREATE INDEX IF NOT EXISTS idx_kugel_student_runs_classroom ON kugel_student_runs(classroom_id);
+    CREATE INDEX IF NOT EXISTS idx_kugel_compound_assignments_player
+      ON kugel_minecraft_compound_assignments(monitor_server_name, minecraft_username COLLATE NOCASE);
     CREATE UNIQUE INDEX IF NOT EXISTS idx_kugel_active_monitor_server
       ON kugel_class_sessions(monitor_server_name) WHERE active = 1;
     CREATE INDEX IF NOT EXISTS idx_summer_users_email ON summer_users(email);
@@ -2021,6 +2041,109 @@ function completeKugelClassroomProgress(db, studentId, summary) {
   return db.prepare('SELECT * FROM classroom_progress WHERE id = ?').get(id);
 }
 
+function cleanKugelCompoundId(value) {
+  const id = Number(String(value || '').trim());
+  return Number.isInteger(id) && id >= 1 && id <= 500 ? id : null;
+}
+
+function isKugelInternalRequest(req) {
+  if (!KUGEL_MINECRAFT_INTERNAL_TOKEN) return false;
+  const raw = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '').trim();
+  if (!raw) return false;
+  const provided = Buffer.from(raw);
+  const expected = Buffer.from(KUGEL_MINECRAFT_INTERNAL_TOKEN);
+  return provided.length === expected.length && crypto.timingSafeEqual(provided, expected);
+}
+
+function upsertKugelCompoundAssignment(db, assignment) {
+  const now = new Date().toISOString();
+  const serverName = cleanText(assignment.monitor_server_name || assignment.server_name || kugelMonitorServerName(), 80);
+  const playerName = cleanMinecraftPlayerName(assignment.minecraft_username || assignment.player_name || assignment.player);
+  const compoundId = cleanKugelCompoundId(assignment.compound_id || assignment.compoundId || assignment.compound);
+  if (!serverName || !playerName || !compoundId) return null;
+  const lastSeenAt = (() => {
+    const numeric = Number(assignment.last_seen_at);
+    if (Number.isFinite(numeric) && numeric > 0) return new Date(numeric > 1e12 ? numeric : numeric * 1000).toISOString();
+    const parsed = Date.parse(String(assignment.last_seen_at || ''));
+    return Number.isFinite(parsed) ? new Date(parsed).toISOString() : now;
+  })();
+  db.prepare(`
+    DELETE FROM kugel_minecraft_compound_assignments
+    WHERE monitor_server_name = ? AND lower(minecraft_username) = lower(?) AND compound_id != ?
+  `).run(serverName, playerName, compoundId);
+  db.prepare(`
+    INSERT INTO kugel_minecraft_compound_assignments (
+      id, monitor_server_name, minecraft_username, compound_id, x, y, z,
+      last_seen_at, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ON CONFLICT(monitor_server_name, compound_id) DO UPDATE SET
+      minecraft_username = excluded.minecraft_username,
+      x = excluded.x,
+      y = excluded.y,
+      z = excluded.z,
+      last_seen_at = excluded.last_seen_at,
+      updated_at = excluded.updated_at
+  `).run(
+    crypto.randomUUID(),
+    serverName,
+    playerName,
+    compoundId,
+    Number.isFinite(Number(assignment.x)) ? Number(assignment.x) : null,
+    Number.isFinite(Number(assignment.y)) ? Number(assignment.y) : null,
+    Number.isFinite(Number(assignment.z)) ? Number(assignment.z) : null,
+    lastSeenAt,
+    now,
+    now,
+  );
+  return db.prepare(`
+    SELECT * FROM kugel_minecraft_compound_assignments
+    WHERE monitor_server_name = ? AND compound_id = ?
+  `).get(serverName, compoundId);
+}
+
+function resolveKugelCompoundStudent(db, compoundId) {
+  return db.prepare(`
+    SELECT
+      a.monitor_server_name, a.minecraft_username, a.compound_id, a.last_seen_at,
+      s.id AS student_id, s.name AS student_name, s.classroom_id,
+      k.world_id, k.server_state
+    FROM kugel_minecraft_compound_assignments a
+    JOIN kugel_class_sessions k
+      ON k.monitor_server_name = a.monitor_server_name
+     AND k.active = 1
+     AND k.server_state = 'running'
+    JOIN classroom_students s
+      ON s.classroom_id = k.classroom_id
+     AND lower(s.minecraft_player_name) = lower(a.minecraft_username)
+    WHERE a.monitor_server_name = ? AND a.compound_id = ?
+    ORDER BY a.last_seen_at DESC
+    LIMIT 1
+  `).get(kugelMonitorServerName(), compoundId);
+}
+
+async function handleKugelInternalMinecraftApi(req, res) {
+  const url = requestUrl(req);
+  if (req.method !== 'POST' || url.pathname !== '/api/internal/minecraft/compound-assignments') {
+    return send(res, 404, JSON.stringify({ error: 'Not found' }));
+  }
+  if (!isKugelInternalRequest(req)) return send(res, 401, JSON.stringify({ error: 'Unauthorized' }));
+  try {
+    const body = JSON.parse(await readBody(req, 64 * 1024) || '{}');
+    const row = withSummerDb(db => upsertKugelCompoundAssignment(db, body));
+    if (!row) return send(res, 400, JSON.stringify({ error: 'compound assignment payload is invalid' }));
+    return send(res, 200, JSON.stringify({ ok: true, assignment: {
+      monitorServerName: row.monitor_server_name,
+      minecraftUsername: row.minecraft_username,
+      compoundId: row.compound_id,
+      lastSeenAt: row.last_seen_at,
+    } }));
+  } catch (error) {
+    if (error instanceof SyntaxError) return send(res, 400, JSON.stringify({ error: 'גוף הבקשה אינו JSON תקין.' }));
+    console.error('kugel_internal_minecraft_error', { path: url.pathname, message: error.message });
+    return send(res, 500, JSON.stringify({ error: 'Minecraft sync failed' }));
+  }
+}
+
 async function handleKugelApi(req, res) {
   const url = requestUrl(req);
   const pathname = url.pathname;
@@ -2047,6 +2170,43 @@ async function handleKugelApi(req, res) {
 
     if (req.method !== 'POST') return send(res, 405, JSON.stringify({ error: 'Method not allowed' }));
     const body = JSON.parse(await readBody(req, 64 * 1024) || '{}');
+
+    if (pathname === '/api/kugel/compound-entry') {
+      if (!consumeKugelActionLimit(`compound-entry:${req.socket.remoteAddress || 'unknown'}`, 120)) {
+        return send(res, 429, JSON.stringify({ error: 'יותר מדי רענונים. נסו שוב בעוד דקה.' }));
+      }
+      const compoundId = cleanKugelCompoundId(body.compoundId || url.searchParams.get('c') || url.searchParams.get('compound'));
+      if (!compoundId) return send(res, 400, JSON.stringify({ error: 'מספר החלקה אינו תקין.' }));
+      const result = withSummerDb(db => {
+        const match = resolveKugelCompoundStudent(db, compoundId);
+        if (!match) return null;
+        const token = createClassroomStudentSession(db, match.student_id);
+        return { match, token };
+      });
+      if (!result) {
+        return send(res, 404, JSON.stringify({ error: 'לא נמצא תלמיד פעיל שמשויך לחלקה הזו כרגע.' }));
+      }
+      const context = getStudentKugelClass({
+        ...req,
+        headers: {
+          ...req.headers,
+          cookie: `haiTechClassroomToken=${encodeURIComponent(result.token)}`,
+        },
+      });
+      if (context.status) return send(res, context.status, JSON.stringify({ error: context.error }));
+      const view = await kugelClassView(context, 'student', false);
+      return sendWithHeaders(res, 200, JSON.stringify({
+        ...view,
+        compound: {
+          id: result.match.compound_id,
+          minecraftUsername: result.match.minecraft_username,
+          lastSeenAt: result.match.last_seen_at,
+        },
+      }), 'application/json; charset=utf-8', {
+        'Set-Cookie': classroomSessionCookie(result.token),
+      });
+    }
+
     const linkMatch = pathname.match(/^\/api\/kugel\/classes\/([^/]+)\/students\/([^/]+)\/minecraft$/);
     if (linkMatch) {
       const context = getTeacherKugelClass(req, decodeURIComponent(linkMatch[1]));
@@ -3385,6 +3545,12 @@ function classroomStudentCompletedCraftomLessonZero(studentId) {
   `).get(studentId, KUGEL_COURSE_ID)));
 }
 
+function replaceLastHtmlTag(html, tag, replacement) {
+  const index = html.lastIndexOf(tag);
+  if (index === -1) return html;
+  return html.slice(0, index) + replacement + html.slice(index + tag.length);
+}
+
 function injectHeadAssets(html) {
   if (!html.includes('</head>')) return html;
   let output = html;
@@ -3396,12 +3562,12 @@ function injectHeadAssets(html) {
 
 function injectUserBadge(html) {
   if (!html.includes('</body>') || html.includes('js/user-badge.js')) return injectHeadAssets(html);
-  return injectHeadAssets(html).replace('</body>', '  <script src="/js/user-badge.js?v=20260905-access-modes-1"></script>\n</body>');
+  return replaceLastHtmlTag(injectHeadAssets(html), '</body>', '  <script src="/js/user-badge.js?v=20260905-access-modes-1"></script>\n</body>');
 }
 
 function injectClassroomSession(html) {
   if (!html.includes('</body>') || html.includes('js/classroom-session.js') || html.includes('js/classroom-platform.js')) return html;
-  return html.replace('</body>', '  <script src="/js/classroom-session.js?v=20260905-access-modes-1"></script>\n</body>');
+  return replaceLastHtmlTag(html, '</body>', '  <script src="/js/classroom-session.js?v=20260905-access-modes-1"></script>\n</body>');
 }
 
 function proxyEnglishBuddy(req, res) {
@@ -3552,6 +3718,7 @@ const server = http.createServer((req, res) => {
   if (req.url.startsWith('/api/feedback')) return handleFeedback(req, res);
   if (req.url.startsWith('/api/summer/')) return handleSummerAuth(req, res);
   if (req.url.startsWith('/api/classroom/')) return handleClassroomApi(req, res);
+  if (req.url.startsWith('/api/internal/minecraft/')) return handleKugelInternalMinecraftApi(req, res);
   if (req.url.startsWith('/api/kugel/')) return handleKugelApi(req, res);
   if (req.url.startsWith('/api/progress')) return handleStudentProgress(req, res);
   return serveStatic(req, res);

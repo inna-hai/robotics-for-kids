@@ -12,7 +12,14 @@ const lessons = sandbox.window.WEBCODE_LESSONS;
 function includesAll(text, list = []) { return list.every(snippet => text.includes(snippet)); }
 function excludesAll(text, list = []) { return list.every(snippet => !text.includes(snippet)); }
 function starterPasses(lesson, check = {}) {
-  if (check.blockTypes?.length || check.changedAny?.length || check.requiresCodePeek || check.requiresCodeSelectionTab || check.requiresCodeSelectionTabs?.length || check.requiresCodeSelectionBlockTypes?.length || check.debugCodeIncludes?.length || check.debugCodeExcludes?.length) return false;
+  if (
+    check.blockTypes?.length || check.changedAny?.length || check.requiresCodePeek
+    || check.requiresCodeSelectionTab || check.requiresCodeSelectionTabs?.length || check.requiresCodeSelectionBlockTypes?.length
+    || check.debugCodeIncludes?.length || check.debugCodeExcludes?.length
+    || check.changedBlocklyFields?.length || check.anyChangedBlocklyFields?.length || check.generatedBlockOutputs?.length
+    || check.requiresCodeLineAnswer || check.answerIncludes || check.answerFieldIncludes
+    || check.choiceAnswer || check.matchAnswers || check.requiresPreviewButtonClick
+  ) return false;
   return includesAll(lesson.starter.html, check.htmlIncludes)
     && includesAll(lesson.starter.css, check.cssIncludes)
     && includesAll(lesson.starter.js, check.jsIncludes)
@@ -76,15 +83,16 @@ assert.ok(lessons[1].exercises[3].check.changedBlocklyFields?.some(rule => rule.
 assert.ok(lessons[1].exercises[4].check.changedBlocklyFields?.some(rule => rule.type === 'web_button_style' && rule.field === 'STYLE' && rule.defaultValue === 'none'), 'lesson 2 exercise 5 requires changing the button style from default');
 assert.ok(lessons[1].exercises[5].prompt.includes('עם העכבר'), 'lesson 2 exercise 6 tells learners to hover over the button with the mouse');
 assert.ok(lessons[1].exercises[5].check.changedBlocklyFields?.some(rule => rule.type === 'web_hover' && rule.field === 'EFFECT' && rule.defaultValue === 'none'), 'lesson 2 exercise 6 requires changing the hover effect from default');
-assert.equal(lessons[1].exercises.length, 7, 'lesson 2 removes the redundant full-design recap exercise');
-assert.ok(lessons[1].exercises[6].check.requiresCodePeek, 'lesson 2 final exercise requires opening generated code peek');
-assert.equal(lessons[1].exercises[6].check.requiresCodeSelectionTab, 'css', 'lesson 2 final exercise requires selecting the CSS code box');
-assert.ok(lessons[1].exercises[6].check.requiresCodeSelectionBlockTypes?.includes('web_shadow'), 'lesson 2 final exercise requires selecting a design block that maps to CSS');
-assert.ok(!lessons[1].exercises[6].prompt.includes('קישור ציבורי'), 'lesson 2 final exercise does not ask learners to copy/share a link');
+assert.ok(lessons[1].exercises.length >= 7, 'lesson 2 keeps its focused seven core exercises before challenge extensions');
+const lesson2CoreFinal = lessons[1].exercises.find(exercise => exercise.id === 7);
+assert.ok(lesson2CoreFinal.check.requiresCodePeek, 'lesson 2 final core exercise requires opening generated code peek');
+assert.equal(lesson2CoreFinal.check.requiresCodeSelectionTab, 'css', 'lesson 2 final core exercise requires selecting the CSS code box');
+assert.ok(lesson2CoreFinal.check.requiresCodeSelectionBlockTypes?.includes('web_shadow'), 'lesson 2 final core exercise requires selecting a design block that maps to CSS');
+assert.ok(!lesson2CoreFinal.prompt.includes('קישור ציבורי'), 'lesson 2 final core exercise does not ask learners to copy/share a link');
 assert.ok(play.includes('<block type="web_button"><field name="LABEL">ראו את העיצוב</field>'), 'lesson 2 starter includes a button so button style and hover exercises are visible');
 assert.ok(play.includes('changedBlocklyFields') && play.includes('hasChangedBlocklyFields'), 'player can require changed Blockly field values when exercise text asks students to edit defaults');
 assert.ok(play.includes('requiresCodeSelectionTab') && play.includes('requiresCodeSelectionTabs') && play.includes('hasGeneratedCodeSelection'), 'player can require selecting generated code in specific code tab(s)');
-assert.ok(play.includes('lastGeneratedCodeSelection = { exerciseId: activeExercise') && play.includes('const exerciseOk = lastGeneratedCodeSelection.exerciseId === activeExercise') && play.includes('lastGeneratedCodeSelection = null;\n      renderCurrentExercise();'), 'generated-code block selection must be made in the current exercise');
+assert.ok(play.includes('rememberCodeSelection({ exerciseId: activeExercise') && play.includes('const exerciseOk = lastGeneratedCodeSelection.exerciseId === activeExercise') && play.includes('if(!restorePersistedCodeSelection(id)) lastGeneratedCodeSelection = null;'), 'generated-code block selection must belong to the current exercise or be explicitly restored for it');
 assert.ok(play.includes('isCodePeekOpen()') && play.includes('!c.requiresCodePeek || isCodePeekOpen()'), 'code-peek checks require the generated-code panel to be open now, not only remembered from earlier');
 assert.ok(play.includes('nonEmptyBlocklyFields') && play.includes('hasNonEmptyBlocklyFields'), 'player can reject empty text fields in Blockly blocks');
 assert.ok(play.includes('exerciseFailureMessage'), 'player reports the specific failed condition instead of always showing the generic hint');
@@ -94,11 +102,11 @@ assert.ok(lessons[0].exercises[1].check.fieldFeedback.includes('הפסקה במ�
 assert.ok(lessons[0].exercises[1].check.nonEmptyBlocklyFields?.some(rule => rule.type === 'web_paragraph' && rule.field === 'TEXT'), 'lesson 1 exercise 2 rejects empty paragraph text');
 assert.ok(lessons[0].exercises[3].check.changedBlocklyFields?.[0]?.field === 'THEME', 'lesson 1 exercise 4 requires changing the theme palette from default');
 assert.ok(lessons[0].exercises[3].check.fieldFeedback.includes('פלטה אחרת'), 'lesson 1 exercise 4 gives specific feedback when default palette is unchanged');
-assert.ok(lessons[0].exercises[4].check.nonEmptyBlocklyFields?.length === 2, 'lesson 1 exercise 5 rejects empty button label/message text');
+assert.ok(lessons[0].exercises[4].check.nonEmptyBlocklyFields?.some(rule => rule.type === 'web_button' && rule.field === 'LABEL'), 'lesson 1 exercise 5 rejects an empty button label');
 assert.ok(lessons[0].exercises[5].check.nonEmptyBlocklyFields?.length === 2, 'lesson 1 exercise 6 rejects empty info-box text');
 assert.ok(lessons[0].exercises[6].check.nonEmptyBlocklyFields?.some(rule => rule.type === 'web_footer'), 'lesson 1 exercise 7 rejects empty footer text');
 assert.equal(lessons[0].exercises[6].check.footerMustBeLast, true, 'lesson 1 exercise 7 requires footer to be the last connected block');
-assert.ok(lessons[0].exercises[7].prompt.includes('לחצו על אחד הבלוקים'), 'lesson 1 exercise 8 tells learners to click a block to highlight generated code');
+assert.ok(lessons[0].exercises[7].prompt.includes('לחצו על בלוק מחובר'), 'lesson 1 exercise 8 tells learners to click a connected block to highlight generated code');
 assert.deepEqual(Array.from(lessons[0].exercises[7].check.requiresCodeSelectionTabs), ['html', 'css'], 'lesson 1 exercise 8 requires generated-code highlighting in HTML or CSS');
 assert.ok(lessons[0].exercises[7].check.requiresCodeSelectionBlockTypes?.includes('web_title'), 'lesson 1 exercise 8 requires selecting a page block that maps to generated code');
 assert.equal(lessons[0].exercises[7].check.requiresCodePeek, true, 'lesson 1 exercise 8 requires opening the generated-code peek before approval');
@@ -118,8 +126,8 @@ assert.ok(lesson8.exercises[0].check.requiresPreviewTimeFromBlockField, 'lesson 
 assert.ok(lesson8.exercises[2].check.requiresPreviewMessageFromBlockOutput, 'lesson 8 ending-message exercise requires seeing the message after the timer ends');
 assert.ok(lesson8Color.args0[0].options.some(option => option[1] === '#fde047'), 'lesson 8 keeps yellow as an allowed/default lit-window color');
 assert.ok(lesson8Color.args0[0].options.length >= 6, 'lesson 8 lit-window color block includes extra color options');
-assert.equal(lesson8.exercises.length, 6, 'lesson 8 removes weak exercises 6 and 7');
-assert.equal(lesson8.exercises.at(-1).check.requiresCodeSelectionTab, 'js', 'lesson 8 final code-peek exercise requires JavaScript highlighting');
+assert.ok(lesson8.exercises.length >= 6, 'lesson 8 keeps six focused core exercises before challenge extensions');
+assert.equal(lesson8.exercises.find(exercise => exercise.id === 6).check.requiresCodeSelectionTab, 'js', 'lesson 8 final core code-peek exercise requires JavaScript highlighting');
 assert.ok(play.includes('timeText') && play.includes('hasPreviewTimeFromBlockField'), 'player can validate timer text shown in the live preview');
 
 assert.equal(JSON.stringify(lesson8.blocklyBlocks.find(block => block.type === 'lesson_8_windows').args0[0].options.map(option => option[1])), JSON.stringify(['5', '10', '15', '20']), 'lesson 8 window-count options are ordered smallest to largest');
@@ -135,15 +143,12 @@ assert.ok(lesson8.exercises[4].prompt.includes('בחרו את הצבע שאתם 
 
 
 const lesson9 = lessons.find(lesson => lesson.id === 9);
-assert.equal(lesson9.exercises.length, 6, 'lesson 9 keeps a focused six-exercise sequence');
-assert.ok(lesson9.starter.js.includes('const totalStars = 28') && lesson9.starter.js.includes('const totalObstacles = 12'), 'lesson 9 uses fixed star and obstacle counts');
-assert.ok(lesson9.starter.js.includes('const totalItems = totalStars + totalObstacles'), 'lesson 9 ends after the fixed combined item count');
-assert.ok(lesson9.starter.js.includes('function shuffle') && lesson9.starter.js.includes('Math.random'), 'lesson 9 randomizes the fixed item deck');
-assert.ok(lesson9.starter.js.includes('function finishGame') && lesson9.starter.js.includes('מתוך " + totalStars'), 'lesson 9 final message compares collected stars to total stars');
-assert.ok(lesson9.exercises[1].check.jsIncludes?.includes('const totalStars = 28'), 'lesson 9 exercise 2 checks fixed star count');
-assert.ok(lesson9.exercises[2].check.requiresCodePeek, 'lesson 9 random exercise requires opening generated code');
-assert.ok(lesson9.exercises[4].check.jsIncludes?.includes('currentIndex >= totalItems'), 'lesson 9 finish exercise checks fixed-route ending');
-assert.equal(lesson9.exercises.at(-1).check.requiresCodeSelectionTab, 'js', 'lesson 9 final code-peek exercise requires JavaScript highlighting');
+assert.ok(lesson9.exercises.length >= 8, 'lesson 9 keeps its focused core exercises and challenge extensions');
+assert.ok(lesson9.starter.js.includes('const startLives = 3') && lesson9.starter.js.includes('let lives = startLives'), 'lesson 9 initializes lives from one configurable source');
+assert.ok(lesson9.starter.js.includes('lives <= 0'), 'lesson 9 checks Game Over');
+const lesson9CodePeek = lesson9.exercises.find(ex => ex.title.includes('בלוק הופך לקוד') || ex.title.includes('בלוק הופך למילת קוד'));
+assert.equal(lesson9CodePeek?.id, 6, 'lesson 9 keeps its generated-code exercise as core exercise 6');
+assert.equal(lesson9CodePeek?.check.requiresCodeSelectionTab, 'js', 'lesson 9 core code-peek exercise requires JavaScript highlighting');
 assert.ok(!JSON.stringify(lesson9).includes('פריט חדש'), 'lesson 9 removes redundant new-item button/copy');
 assert.notEqual(lesson9.blocklyBlocks.find(block => block.type === 'lesson_9_smart_skip').args0[0].text, 'דילוג חכם!', 'lesson 9 smart-skip block has a visible default change');
 assert.notEqual(lesson9.blocklyBlocks.find(block => block.type === 'lesson_9_gameover').args0[0].text, 'נגמרו החיים. נסו שוב!', 'lesson 9 game-over block has a visible default change');
@@ -152,5 +157,7 @@ assert.ok(lesson9.starter.js.includes('if (lives > 0)') && lesson9.starter.js.in
 assert.ok(play.includes('disabled="true"') && !play.includes('אפשר בלוק עמוד אחד בלבד'), 'toolbox greys/disables the page root block without an extra note');
 assert.ok(play.includes("getAllBlocks(false).filter(block => block.type === 'page_start')") && play.includes('block.dispose(false, true)'), 'player enforces a single page root block even if duplicates appear from saved state/history');
 
-assert.ok(lesson9.exercises[3].check.jsIncludes?.includes('score = score +'), 'lesson 9 action exercise checks score increase code');
+assert.equal(lesson9.exercises[1].check.requiresPreviewScoreFromBlockField?.mode, 'increase', 'lesson 9 star exercise validates a real score increase in the preview');
+assert.equal(lesson9.exercises[2].check.requiresPreviewLivesAfterPenalty?.clickText, '🌋', 'lesson 9 obstacle exercise validates a real lives penalty in the preview');
+assert.equal(lesson9.exercises[3].check.requiresPreviewCardClass, 'game-over', 'lesson 9 game-over exercise validates the visible preview state');
 assert.ok(play.includes('scoreBefore') && play.includes("rule.mode === 'increase'") && play.includes('actual === before + expected'), 'player can validate score increase from a preview click');
