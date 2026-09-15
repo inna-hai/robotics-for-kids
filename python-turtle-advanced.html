@@ -55,6 +55,7 @@
         body.lesson23-code-pilot .lesson23-code-overlay .line.lesson23-dragging-line{opacity:.45}
     body.lesson23-code-pilot .lesson23-code-overlay .line.lesson23-drop-before{box-shadow:inset 0 2px 0 #2563eb}
     body.lesson23-code-pilot .lesson23-code-overlay .line.lesson23-drop-after{box-shadow:inset 0 -2px 0 #2563eb}
+    body.lesson23-code-pilot .lesson23-code-overlay.lesson23-append-drop-mark::after{content:'יתווסף לסוף';display:block;direction:rtl;text-align:center;margin:10px 0 0;border-top:4px solid #2563eb;padding-top:6px;color:#1e40af;font-family:Rubik,Arial,sans-serif;font-weight:900;background:linear-gradient(180deg,rgba(219,234,254,.75),transparent);border-radius:6px}
 </style>
   <link rel="stylesheet" href="css/platform-home-link.css">
 </head>
@@ -6994,6 +6995,7 @@
     let lesson23SelectedBlockId = null;
     let lesson23ManualDrag = null;
     let lesson23ScrollToBottomPending = false;
+    let lesson23PendingAppendBlockIds = new Set();
     const statusEl = document.getElementById('status');
     const missionEl = document.getElementById('mission');
     let turtle = {x:canvas.width/2,y:canvas.height/2,heading:0,pen:true,color:'#2563eb',width:4};
@@ -7187,6 +7189,12 @@
       if(!overlay) return;
       requestAnimationFrame(()=>{ overlay.scrollTop = overlay.scrollHeight; });
     }
+    function setLesson23AppendDropMark(show){
+      const overlay = ensureLesson23CodeOverlay();
+      if(!overlay) return;
+      overlay.classList.toggle('lesson23-append-drop-mark', !!show);
+      if(show) scrollLesson23CodeToBottom();
+    }
     function renderLesson23CodeOverlay(bodyLines){
       const overlay = ensureLesson23CodeOverlay();
       if(!overlay || currentLesson !== 23) return;
@@ -7279,6 +7287,43 @@
       }
       return {prev,next};
     }
+    function lesson23IsInAnyRepeatBody(block){
+      if(currentLesson !== 23 || !block) return false;
+      return workspace.getAllBlocks(false).some(candidate=>candidate.type === 'py_repeat' && lesson23IsInsideRepeatBody(block, candidate));
+    }
+    function appendLesson23NewBlockToEnd(blockId){
+      if(currentLesson !== 23 || !blockId) return false;
+      const block = workspace.getBlockById(blockId);
+      if(!block || block.outputConnection || block.type === 'py_python') return false;
+      if(lesson23IsInAnyRepeatBody(block)) return false;
+      const xy = block.getRelativeToSurfaceXY?.() || {x:40,y:40};
+      detachLesson23SingleBlock(block);
+      const tops = lesson23TopCodeBlocks().filter(top=>top.id !== block.id);
+      if(tops.length){
+        let last = tops[tops.length - 1];
+        while(last.getNextBlock?.()) last = last.getNextBlock();
+        if(last.nextConnection && block.previousConnection){
+          try{ last.nextConnection.connect(block.previousConnection); }catch{}
+        }
+        const lastXY = last.getRelativeToSurfaceXY?.() || xy;
+        try{ block.moveBy((lastXY.x || 40) - (xy.x || 40), ((lastXY.y || 40) + 34) - (xy.y || 40)); }catch{}
+      }
+      lesson23SelectedBlockId = block.id;
+      lastSelectedBlockId = block.id;
+      generatePython();
+      saveActiveWorkspace();
+      saveProgress();
+      return true;
+    }
+    function flushLesson23PendingAppendBlocks(){
+      if(currentLesson !== 23 || !lesson23PendingAppendBlockIds.size) return false;
+      const ids = [...lesson23PendingAppendBlockIds];
+      lesson23PendingAppendBlockIds.clear();
+      let changed = false;
+      ids.forEach(id=>{ changed = appendLesson23NewBlockToEnd(id) || changed; });
+      if(changed) scrollLesson23CodeToBottom();
+      return changed;
+    }
     function moveLesson23CodeLine(dragId, targetId, placeAfter=false){
       if(currentLesson !== 23 || !dragId || !targetId || dragId === targetId) return false;
       const dragged = workspace.getBlockById(dragId);
@@ -7336,6 +7381,7 @@
       return true;
     }
     function clearLesson23DropMarks(){
+      lesson23CodeOverlay?.classList.remove('lesson23-append-drop-mark');
       lesson23CodeOverlay?.querySelectorAll('.lesson23-drop-before,.lesson23-drop-after,.lesson23-dragging-line').forEach(el=>{
         el.classList.remove('lesson23-drop-before','lesson23-drop-after','lesson23-dragging-line');
       });
@@ -11668,14 +11714,22 @@
     document.getElementById('demoBtn').addEventListener('click',()=>{ document.getElementById('demoNote')?.removeAttribute('hidden'); lesson10CurrentRevealKey = ''; updateLesson10CanvasSecret(); loadDemo(); });
     workspace.addChangeListener((event)=>{
       const isDragEvent = event.type === Blockly.Events.BLOCK_DRAG || event.type === 'drag';
+      if(currentLesson === 23 && !restoringProgress && event.type === Blockly.Events.BLOCK_CREATE && Array.isArray(event.ids)){
+        event.ids.forEach(id=>lesson23PendingAppendBlockIds.add(id));
+        return;
+      }
       if(currentLesson === 23 && isDragEvent){
         if(event.isStart){
           lesson23ScrollToBottomPending = true;
           updateLesson23BlockVisibility();
-          scrollLesson23CodeToBottom();
+          setLesson23AppendDropMark(true);
         } else {
           lesson23ScrollToBottomPending = true;
-          setTimeout(()=>{ generatePython(); updateLesson23BlockVisibility(); scrollLesson23CodeToBottom(); }, 30);
+          setTimeout(()=>{
+            const appended = flushLesson23PendingAppendBlocks();
+            setLesson23AppendDropMark(false);
+            if(!appended){ generatePython(); updateLesson23BlockVisibility(); scrollLesson23CodeToBottom(); }
+          }, 30);
         }
         return;
       }
