@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:net';
+import Database from 'better-sqlite3';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
@@ -43,6 +44,7 @@ async function waitForServer(baseUrl) {
 }
 
 const tempDir = mkdtempSync(join(tmpdir(), 'robotics-classroom-test-'));
+const dbFile = join(tempDir, 'classroom.sqlite');
 const port = await freePort();
 const baseUrl = `http://127.0.0.1:${port}`;
 const child = spawn(process.execPath, ['server.js'], {
@@ -50,7 +52,7 @@ const child = spawn(process.execPath, ['server.js'], {
   env: {
     ...process.env,
     PORT: String(port),
-    ROBOTICS_DB_FILE: join(tempDir, 'classroom.sqlite'),
+    ROBOTICS_DB_FILE: dbFile,
     ROBOTICS_SUBSCRIPTION_GATE: '1',
     ROBOTICS_TEACHER_INVITE_CODE: 'test-teacher-invite-code',
     ROBOTICS_CLASSROOM_ADMIN_CODE: 'test-classroom-admin-code',
@@ -350,6 +352,48 @@ try {
   assert.equal(teacherMaterials.status, 402);
   console.log('✓ subscription gate admits classroom students without admitting unauthenticated guests');
 
+  const createCraftomClass = await fetch(`${baseUrl}/api/classroom/classes`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: teacherCookie },
+    body: JSON.stringify({ name: 'כיתת קראפטום', courses: ['craftom-agent'] }),
+  });
+  const craftomClass = (await createCraftomClass.json()).classroom;
+  assert.equal(createCraftomClass.status, 201);
+  const addCraftomStudent = await fetch(`${baseUrl}/api/classroom/classes/${craftomClass.id}/students`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: teacherCookie },
+    body: JSON.stringify({ name: 'תלמיד קראפטום' }),
+  });
+  const craftomStudent = (await addCraftomStudent.json()).student;
+  assert.equal(addCraftomStudent.status, 201);
+  const craftomStudentLogin = await fetch(`${baseUrl}/api/classroom/student-login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ classCode: craftomClass.joinCode, personalCode: craftomStudent.loginCode }),
+  });
+  assert.equal(craftomStudentLogin.status, 200);
+  const craftomStudentCookie = (craftomStudentLogin.headers.get('set-cookie') || '').split(';')[0];
+  const blockedCraftomLessonOne = await fetch(`${baseUrl}/craftom-minecraft-lesson-1.html`, { headers: { Cookie: craftomStudentCookie }, redirect: 'manual' });
+  assert.equal(blockedCraftomLessonOne.status, 423);
+  assert.match(await blockedCraftomLessonOne.text(), /כדי לעבור לשיעור 1 צריך להשלים קודם את שיעור 0/);
+  const forgedLessonZeroCompletion = await fetch(`${baseUrl}/api/classroom/progress`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: craftomStudentCookie },
+    body: JSON.stringify({ courseId: 'craftom-agent', lessonId: '0', activityId: 'minecraft-maze', status: 'completed', score: 100 }),
+  });
+  assert.equal(forgedLessonZeroCompletion.status, 403, 'generic classroom progress must not unlock Kugel lesson zero');
+  const testDb = new Database(dbFile);
+  testDb.prepare(`
+    INSERT INTO classroom_progress (
+      id, student_id, course_id, lesson_id, activity_id, status, score, attempts,
+      metadata_json, started_at, completed_at, updated_at
+    ) VALUES (?, ?, 'craftom-agent', '0', 'minecraft-maze', 'completed', 100, 1, '{}', ?, ?, ?)
+  `).run('test-craftom-zero-complete', craftomStudent.id, new Date().toISOString(), new Date().toISOString(), new Date().toISOString());
+  testDb.close();
+  const unlockedCraftomLessonOne = await fetch(`${baseUrl}/craftom-minecraft-lesson-1.html`, { headers: { Cookie: craftomStudentCookie }, redirect: 'manual' });
+  assert.equal(unlockedCraftomLessonOne.status, 200);
+  console.log('✓ Craftom lesson 1 requires verified lesson 0 completion for classroom students');
+
   const guestProgress = await fetch(`${baseUrl}/api/classroom/progress`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -414,7 +458,7 @@ try {
   const updatedStudentPython = await fetch(`${baseUrl}/python-turtle.html`, { headers: { Cookie: studentCookie }, redirect: 'manual' });
   assert.equal(updatedStudentPython.status, 402);
   const updatedStudentCraftom = await fetch(`${baseUrl}/craftom-agent-academy.html?lesson=1`, { headers: { Cookie: studentCookie }, redirect: 'manual' });
-  assert.equal(updatedStudentCraftom.status, 200);
+  assert.equal(updatedStudentCraftom.status, 423, 'adding Craftom to a class must still require lesson zero before lesson one');
   const updatedTeacherPython = await fetch(`${baseUrl}/python-turtle.html`, { headers: { Cookie: teacherCookie }, redirect: 'manual' });
   assert.equal(updatedTeacherPython.status, 200, 'teacher retains Python access when no class currently uses it');
   const updatedTeacherCraftom = await fetch(`${baseUrl}/craftom-agent-academy.html?lesson=1`, { headers: { Cookie: teacherCookie }, redirect: 'manual' });

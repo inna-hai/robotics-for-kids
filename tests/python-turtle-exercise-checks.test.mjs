@@ -77,11 +77,11 @@ assert.match(html, /netTurn = bodyActions\.reduce/, 'shape validator rejects loo
 assert.match(html, /closesShape = simulatePath\(repeatedActions\)\.distanceFromStart <= 25/, 'shape validator checks that the repeated loop actually closes into a polygon');
 assert.match(html, /currentLesson === 3/, 'lesson 3 has specific validators instead of only generic checks');
 assert.match(html, /if\(isTipExercise\(ex\) \|\| isChallengeExercise\(ex\)\) return \[\]/, 'challenge exercises are not forced through hard validators');
-assert.match(html, /isTip \|\| isChallengeExercise\(ex\) \|\| isSelectionOnly/, 'challenge exercises do not show a dedicated check button');
+assert.doesNotMatch(html, /<button class="btn run" id="checkExerciseBtn">/, 'challenge exercises do not show a dedicated check button');
 assert.match(html, /if\(isChallengeExercise\(ex\)\) run\(\);/, 'running challenge code runs the turtle without falsely rendering exercise success');
 assert.match(html, /let lastSelectedBlockId = null/, 'selection-only checks remember the last selected block before the check button steals focus');
 assert.match(html, /function isSelectionOnlyExercise\(ex\)/, 'lesson 3 for-highlight exercise is a selection-only step');
-assert.match(html, /isTip \|\| isChallengeExercise\(ex\) \|\| isSelectionOnly/, 'selection-only exercise and challenges have no check button');
+assert.doesNotMatch(html, /<button class="btn run" id="checkExerciseBtn">/, 'selection-only exercise, challenges, and regular exercises have no separate check button');
 assert.doesNotMatch(html, /completedSet\(\)\.delete\(index\)/, 'selection-only revisits do not clear an exercise that was already unlocked');
 assert.match(html, /const canContinue = REVIEW_UNLOCK \|\| alreadyCompleted \|\| \(isSelectionOnly \? !!selectionExerciseUnlocked\[selectionUnlockKey\(\)\]/, 'selection-only exercise keeps continue unlocked after completion and also unlocks from an explicit saved unlock flag');
 assert.match(html, /const REVIEW_UNLOCK = new URLSearchParams\(location\.search\)\.get\('unlock'\) === '1'/, 'temporary review links can unlock all exercises with unlock=1 without changing the default flow');

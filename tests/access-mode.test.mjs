@@ -79,7 +79,7 @@ function badgeHarness({ pathname = '/python-turtle.html', classroomMe, summerTok
   assert.match(badge.innerHTML, /מצב אורח/);
 }
 
-function entryHarness({ classroomLogoutOk = true, classroomMe = { role: 'guest', ok: true, subscriptionGateEnabled: true } } = {}) {
+function entryHarness({ next = 'python-turtle.html', classroomLogoutOk = true, classroomMe = { role: 'guest', ok: true, subscriptionGateEnabled: true } } = {}) {
   const listeners = new Map();
   const makeNode = () => ({
     hidden: false, href: '', textContent: '', classList: { toggle() {} },
@@ -98,7 +98,7 @@ function entryHarness({ classroomLogoutOk = true, classroomMe = { role: 'guest',
   const context = {
     window: {},
     document: { body: { dataset: { classroomPage: 'entry' } }, getElementById(id) { return nodes[id]; } },
-    location: { search: '?next=python-turtle.html', assign(path) { assigned.push(path); } },
+    location: { search: `?next=${encodeURIComponent(next)}`, assign(path) { assigned.push(path); } },
     localStorage,
     URLSearchParams,
     FormData: class { entries() { return []; } },
@@ -126,9 +126,18 @@ function entryHarness({ classroomLogoutOk = true, classroomMe = { role: 'guest',
 }
 
 {
-  const harness = entryHarness({ classroomMe: { role: 'guest', ok: true, subscriptionGateEnabled: false } });
-  await tick();
-  assert.equal(harness.assigned.at(-1), 'python-turtle.html', 'when the subscription gate is off, requested learning pages open directly for guests');
+  for (const next of [
+    'sensi-city.html?lesson=1',
+    'sisi.html',
+    'python-turtle.html',
+    'webcode.html',
+    'minecraft.html',
+    'craftom-school/preview/index.html',
+  ]) {
+    const harness = entryHarness({ next, classroomMe: { role: 'guest', ok: true, subscriptionGateEnabled: false } });
+    await tick();
+    assert.equal(harness.assigned.at(-1), next, `when the subscription gate is off, ${next} opens directly for guests`);
+  }
 }
 
 {
@@ -152,14 +161,16 @@ const entryHtml = read('classroom-entry.html');
 assert.match(entryHtml, /id="subscription-continue"/);
 assert.match(entryHtml, /מנוי אישי/);
 assert.match(entryHtml, /התנסות כאורח/);
-assert.match(entryHtml, /classroom-platform\.js\?v=20260906-guest-direct-1/);
-assert.match(read('teacher-classrooms.html'), /classroom-platform\.js\?v=20260906-guest-direct-1/);
+assert.match(entryHtml, /classroom-platform\.js\?v=20260908-preview-student-1/);
+assert.match(read('teacher-classrooms.html'), /classroom-platform\.js\?v=20260910-craftom-teacher-link-1/);
 
 const classroomSession = read('js/classroom-session.js');
 assert.doesNotMatch(classroomSession, /showStudentBadge/, 'the unified access badge must be the only badge');
 assert.match(read('js/user-badge.js'), /\.classroom \.hai-user-dot/, 'classroom mode needs its own visual badge state');
+assert.match(read('js/user-badge.js'), /#\$\{BADGE_ID\}\.teacher\{[^}]*left:auto;right:12px;bottom:12px/, 'teacher badge should move away from the left-side report button');
+assert.match(read('js/user-badge.js'), /#\$\{BADGE_ID\}\.teacher\{[^}]*max-width:min\(260px/, 'teacher badge should stay compact');
 const server = read('server.js');
-assert.match(server, /user-badge\.js\?v=20260905-access-modes-1/);
+assert.match(server, /user-badge\.js\?v=20260910-compact-teacher-badge-1/);
 assert.match(server, /classroom-session\.js\?v=20260905-access-modes-1/);
 assert.match(server, /const baseOutput = injectUserBadge\(html\);/, 'the unified badge must load even when the subscription gate is disabled');
 assert.doesNotMatch(server, /SUBSCRIPTION_GATE_ENABLED \? injectUserBadge\(html\)/);

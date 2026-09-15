@@ -20,7 +20,7 @@
   const button = document.createElement('button');
   button.className = 'rfw-button';
   button.type = 'button';
-  button.textContent = '🐞 דיווח / רעיון';
+  button.textContent = 'דיווח תקלה / הצעת שיפור';
   button.setAttribute('aria-label', 'דיווח באג או הצעה לשיפור');
   document.body.appendChild(button);
 

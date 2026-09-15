@@ -120,7 +120,7 @@ try {
     const page = await context.newPage();
     await page.goto(`${base}/${pathname}`, { waitUntil: 'domcontentloaded' });
     await page.locator('.rfw-button').waitFor({ state: 'visible' });
-    assert.equal(await page.locator('.rfw-button').textContent(), '🐞 דיווח / רעיון', `${pathname} must render the report button`);
+    assert.equal(await page.locator('.rfw-button').textContent(), 'דיווח תקלה / הצעת שיפור', `${pathname} must render the report button`);
     await page.close();
   }
 

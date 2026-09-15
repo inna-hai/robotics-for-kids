@@ -4,7 +4,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const feedbackScript = '<script src="/js/feedback-widget.js?v=20260906-craftom-classrooms-1"></script>';
+const feedbackScript = '<script src="/js/feedback-widget.js?v=20260907-tehila-fixes-1"></script>';
 const requiredPages = [
   'classroom-admin.html',
   'teacher-classrooms.html',
@@ -23,7 +23,7 @@ for (const page of requiredPages) {
 }
 
 const widget = readFileSync(join(root, 'js', 'feedback-widget.js'), 'utf8');
-assert.match(widget, /🐞 דיווח \/ רעיון/, 'the connected widget must expose the report button');
+assert.match(widget, /דיווח תקלה \/ הצעת שיפור/, 'the connected widget must expose the report button');
 assert.match(widget, /fetch\('\/api\/feedback'/, 'the connected widget must submit through the existing feedback API');
 assert.match(widget, /window\.location\.pathname \+ window\.location\.search/, 'reports must identify the current classroom or Craftom page');
 assert.match(widget, /body:has\(#hai-user-badge\) \.rfw-button\{bottom:/, 'the report button must stay above the persistent user badge');

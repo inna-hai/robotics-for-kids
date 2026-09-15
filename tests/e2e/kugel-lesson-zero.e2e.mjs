@@ -89,19 +89,32 @@ try {
   browser = await chromium.launch({ headless: true });
   const teacherContext = await browser.newContext({ locale: 'he-IL' });
   await teacherContext.addCookies([{ name: 'haiTechClassroomToken', value: cookieValue(teacherCookie), url: base }]);
-  const teacherPage = await teacherContext.newPage();
-  await teacherPage.goto(`${base}/teacher-classrooms.html`);
-  const lessonZeroLink = teacherPage.getByRole('link', { name: /ניהול שיעור 0 ב-Minecraft/ });
+  const teacherClassroomsPage = await teacherContext.newPage();
+  await teacherClassroomsPage.goto(`${base}/teacher-classrooms.html`);
+  const lessonZeroLink = teacherClassroomsPage.getByRole('link', { name: /ניהול הלומדה:.*Agent/ });
   await lessonZeroLink.waitFor();
-  await lessonZeroLink.click();
+  const [teacherPage] = await Promise.all([
+    teacherContext.waitForEvent('page'),
+    lessonZeroLink.click(),
+  ]);
+  await teacherPage.waitForLoadState();
   await teacherPage.waitForURL(new RegExp(`/kugel-teacher\\.html\\?classroomId=${classroom.id}$`));
+  await teacherPage.getByRole('link', { name: 'השיעור הנוכחי' }).click();
+  await teacherPage.waitForURL(new RegExp(`/kugel-teacher\\.html\\?classroomId=${classroom.id}&lesson=0$`));
+  await teacherPage.locator('.teacher-student-board-details summary').click();
   await teacherPage.getByText('נועה מבוך').waitFor();
   const playerInput = teacherPage.locator('input[name="playerName"]');
   await playerInput.fill('NoaMaze');
   await playerInput.locator('xpath=..').getByRole('button', { name: 'שמירת שחקן' }).click();
   await teacherPage.getByText('שם השחקן נשמר.').waitFor();
-  await teacherPage.getByRole('button', { name: 'פתיחת עולם המבוך' }).click();
-  await teacherPage.locator('#teacherStatus').getByText('עולם המבוך פעיל.').waitFor();
+  await teacherPage.getByRole('button', { name: /פתיחת Minecraft לשיעור 0/ }).click();
+  await teacherPage.locator('#teacherStatus').getByText(/עולם (המבוך|שיעור 0) פעיל/).waitFor();
+  await teacherPage.getByRole('button', { name: /סיום שיעור 0/ }).waitFor();
+  await teacherPage.getByRole('button', { name: /סיום שיעור 0/ }).click();
+  await teacherPage.locator('#teacherStatus').getByText(/השיעור הסתיים והשרת שוחרר/).waitFor();
+  await teacherPage.getByRole('button', { name: /פתיחת Minecraft לשיעור 0/ }).click();
+  await teacherPage.locator('#teacherStatus').getByText(/עולם (המבוך|שיעור 0) פעיל/).waitFor();
+  await teacherPage.waitForTimeout(1100);
 
   const now = new Date().toISOString();
   events = [
