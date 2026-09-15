@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ניהול הרשאות מורים | hai.tech</title>
   <meta name="description" content="מסך מאובטח לניהול הלומדות הזמינות למורים.">
-  <link rel="stylesheet" href="css/classroom-platform.css">
+  <link rel="stylesheet" href="css/classroom-platform.css?v=20260915-reversible-management-1">
 </head>
 <body data-classroom-page="admin">
   <header class="topbar">
@@ -35,11 +35,20 @@
         <button class="button quiet" id="admin-logout" type="button">התנתקות</button>
       </div>
       <p class="message" id="admin-message" aria-live="polite"></p>
+      <form class="card management-form" id="create-teacher-form">
+        <h3>יצירת חשבון מורה</h3>
+        <label>שם מלא<input name="name" autocomplete="name" required></label>
+        <label>מייל<input name="email" type="email" autocomplete="email" required></label>
+        <p class="field-help">סיסמה זמנית חזקה תיווצר בשרת ותוצג פעם אחת בלבד.</p>
+        <button class="button primary" type="submit" data-action="create-teacher">יצירת מורה</button>
+      </form>
+      <p class="one-time-code" id="admin-one-time-password" data-role="teacher-password-notice" aria-live="polite" hidden></p>
+      <label class="archive-toggle"><input id="show-archived-teachers" type="checkbox"> הצגת מורות בארכיון</label>
       <div class="classes-list" id="admin-teachers-list"></div>
     </section>
   </main>
 
-  <script src="js/classroom-admin.js?v=20260906-teacher-entitlements-1"></script>
+  <script src="js/classroom-admin.js?v=20260915-reversible-management-1"></script>
   <script src="/js/feedback-widget.js?v=20260907-tehila-fixes-1"></script>
 </body>
 </html>

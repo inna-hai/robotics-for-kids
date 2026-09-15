@@ -70,7 +70,7 @@ try {
   await page.locator('#admin-dashboard').waitFor({ state: 'visible' });
   await page.locator('.class-card input[value="sensi-city"]').check();
   await page.locator('.class-card input[value="craftom-agent"]').check();
-  await page.locator('.class-card button[type="submit"]').click();
+  await page.locator('.class-card [data-action="save-teacher-courses"]').click();
   await page.getByText('הרשאות הלומדות של מורת E2E נשמרו.').waitFor();
 
   await page.goto(`${baseUrl}/teacher-classrooms.html`);
@@ -88,7 +88,7 @@ try {
   await page.goto(`${baseUrl}/classroom-admin.html`);
   await page.locator('#admin-dashboard').waitFor({ state: 'visible' });
   await page.locator('.class-card input[value="sensi-city"]').uncheck();
-  await page.locator('.class-card button[type="submit"]').click();
+  await page.locator('.class-card [data-action="save-teacher-courses"]').click();
   await page.getByText('הרשאות הלומדות של מורת E2E נשמרו.').waitFor();
 
   await page.goto(`${baseUrl}/teacher-classrooms.html`);
@@ -101,6 +101,67 @@ try {
   const classPickerValues = await classCard.locator('.course-access-form input[name="courses"]').evaluateAll((nodes) => nodes.map((node) => node.value));
   assert.deepEqual(classPickerValues, ['craftom-agent']);
   console.log('✓ administrator entitlements control teacher links and class assignments in a real browser');
+
+  await classCard.locator('[data-action="add-student"] input[name="name"]').fill('תלמידת E2E');
+  const addStudentResponse = page.waitForResponse((response) => response.url().includes('/students') && response.request().method() === 'POST');
+  await classCard.locator('button[data-action="add-student"]').click();
+  assert.equal((await addStudentResponse).status(), 201);
+  let studentRow = classCard.locator('[data-student-id]');
+  await studentRow.waitFor();
+  await studentRow.locator('input[name="name"]').fill('תלמידת E2E מעודכנת');
+  await studentRow.locator('button[data-action="save-student"]').click();
+  studentRow = classCard.locator('[data-student-id]');
+  await studentRow.waitFor();
+  assert.equal(await studentRow.locator('input[name="name"]').inputValue(), 'תלמידת E2E מעודכנת');
+  await studentRow.locator('button[data-action="reset-student-code"]').click();
+  const codeNotice = classCard.locator('[data-role="student-code-notice"]');
+  await codeNotice.waitFor({ state: 'visible' });
+  assert.match(await codeNotice.textContent(), /[A-Z0-9]{6}/);
+  await studentRow.locator('button[data-action="archive-student"]').click();
+  await studentRow.waitFor({ state: 'detached' });
+  await classCard.locator('button[data-action="show-archived-students"]').click();
+  let ownerArchivedStudent = classCard.locator('.archived-students [data-student-id]');
+  await ownerArchivedStudent.waitFor();
+  await ownerArchivedStudent.locator('button[data-action="restore-student"]').click();
+  studentRow = classCard.locator('.student-row[data-student-id]');
+  await studentRow.waitFor();
+  await studentRow.locator('button[data-action="archive-student"]').click();
+  await studentRow.waitFor({ state: 'detached' });
+
+  await page.goto(`${baseUrl}/classroom-admin.html`);
+  await page.locator('#admin-dashboard').waitFor({ state: 'visible' });
+  await page.locator('#show-archived-teachers').check();
+  const archivedStudent = page.locator('[data-student-id]').filter({ hasText: 'תלמידת E2E מעודכנת' });
+  await archivedStudent.waitFor();
+  await archivedStudent.locator('button[data-action="restore-student"]').click();
+  await archivedStudent.waitFor({ state: 'detached' });
+
+  await page.locator('#create-teacher-form input[name="name"]').fill('מורה שנוצרה בניהול');
+  await page.locator('#create-teacher-form input[name="email"]').fill('managed-teacher@example.test');
+  await page.locator('#create-teacher-form button[data-action="create-teacher"]').click();
+  const passwordNotice = page.locator('#admin-one-time-password');
+  await passwordNotice.waitFor({ state: 'visible' });
+  const passwordText = await passwordNotice.textContent();
+  const temporaryPassword = passwordText.match(/: ([A-Za-z0-9_-]{16,}) /)?.[1];
+  assert.ok(temporaryPassword, 'administrator UI must show the generated temporary password once');
+  let managedTeacherCard = page.locator('[data-teacher-id]').filter({ hasText: 'מורה שנוצרה בניהול' });
+  await managedTeacherCard.locator('input[name="name"]').fill('מורה מנוהלת מעודכנת');
+  await managedTeacherCard.locator('button[data-action="save-teacher"]').click();
+  managedTeacherCard = page.locator('[data-teacher-id]').filter({ hasText: 'מורה מנוהלת מעודכנת' });
+  await managedTeacherCard.locator('button[data-action="archive-teacher"]').click();
+  await managedTeacherCard.locator('.archive-state').waitFor();
+  await managedTeacherCard.locator('button[data-action="restore-teacher"]').click();
+  await managedTeacherCard.locator('button[data-action="save-teacher"]').waitFor();
+
+  await page.goto(`${baseUrl}/teacher-classrooms.html`);
+  await page.locator('#teacher-dashboard').waitFor({ state: 'visible' });
+  await page.locator('#teacher-logout').click();
+  await page.locator('#teacher-login-form').waitFor({ state: 'visible' });
+  await page.locator('#teacher-login-form input[name="email"]').fill('managed-teacher@example.test');
+  await page.locator('#teacher-login-form input[name="password"]').fill(temporaryPassword);
+  await page.locator('#teacher-login-form button[type="submit"]').click();
+  await page.locator('#teacher-dashboard').waitFor({ state: 'visible' });
+  console.log('✓ management UI creates/edits/archives/restores teachers and edits/resets/archives/restores students');
 } finally {
   if (browser) await browser.close();
   if (child.exitCode === null && child.signalCode === null) {

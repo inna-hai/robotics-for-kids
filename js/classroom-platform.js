@@ -256,6 +256,24 @@
     const teacherCourseCatalog = document.getElementById('teacher-course-catalog');
     const createClassButton = document.querySelector('#create-class-form button[type="submit"]');
     let availableCourseIds = [];
+    const oneTimeStudentCodes = new Map();
+
+    function clearOneTimeStudentCodes() {
+      oneTimeStudentCodes.clear();
+      for (const notice of document.querySelectorAll?.('[data-role="student-code-notice"]') || []) {
+        notice.textContent = '';
+        notice.hidden = true;
+      }
+    }
+
+    async function refreshAfterMutation(successText) {
+      setMessage(dashboardMessage, successText, true);
+      try {
+        await loadClasses();
+      } catch (error) {
+        setMessage(dashboardMessage, `${successText} עם זאת, רענון רשימת הכיתות נכשל: ${error.message}`, true);
+      }
+    }
 
     function renderTeacherCatalog() {
       teacherCourseCatalog.replaceChildren();
@@ -297,6 +315,7 @@
     function renderClass(classroom) {
       const card = element('article', undefined, 'class-card');
       card.dataset.classId = classroom.id;
+      card.setAttribute('data-class-id', classroom.id);
       const top = element('div', undefined, 'class-top');
       const titleBox = element('div');
       const classCode = element('p', undefined, 'class-code-line');
@@ -334,6 +353,7 @@
       courseForm.append(createCoursePicker(classroom.courses || [], availableCourseIds));
       const saveCourses = element('button', 'שמירת הלומדות', 'button secondary');
       saveCourses.type = 'submit';
+      saveCourses.setAttribute('data-action', 'save-class-courses');
       courseForm.append(saveCourses);
       courseForm.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -342,26 +362,69 @@
           await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/courses`, {
             courses: selectedCourses(courseForm),
           });
-          setMessage(dashboardMessage, 'הלומדות של הכיתה עודכנו.', true);
-          await loadClasses();
+          await refreshAfterMutation('הלומדות של הכיתה עודכנו.');
         } catch (error) {
           setMessage(dashboardMessage, error.message);
         }
       });
       courseAccess.append(courseForm);
 
+      const oneTime = element('p', oneTimeStudentCodes.get(classroom.id) || '', 'one-time-code');
+      oneTime.hidden = !oneTimeStudentCodes.has(classroom.id);
+      oneTime.setAttribute('data-role', 'student-code-notice');
       const students = element('ul', undefined, 'student-list');
       if (classroom.students.length) {
         classroom.students.forEach((student) => {
-          const item = element('li');
-          item.append(element('strong', student.name));
+          const item = element('li', undefined, 'student-row');
+          item.setAttribute('data-student-id', student.id);
+          const editForm = element('form', undefined, 'student-edit-form');
+          editForm.setAttribute('data-action', 'edit-student');
+          const nameLabel = element('label', 'שם תלמיד/ה');
+          const nameInput = document.createElement('input');
+          nameInput.name = 'name'; nameInput.required = true; nameInput.value = student.name;
+          nameLabel.append(nameInput);
+          const saveName = element('button', 'שמירת שם', 'button quiet');
+          saveName.type = 'submit'; saveName.setAttribute('data-action', 'save-student');
+          editForm.append(nameLabel, saveName);
+          editForm.addEventListener('submit', async (event) => {
+            event.preventDefault(); setMessage(dashboardMessage, 'שומרים את שם התלמיד/ה…');
+            try {
+              await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/students/${encodeURIComponent(student.id)}`, formData(editForm));
+              await refreshAfterMutation('שם התלמיד/ה נשמר.');
+            } catch (error) { setMessage(dashboardMessage, error.message); }
+          });
           const latest = student.progress?.[0];
-          item.append(element(
-            'small',
-            latest
-              ? `${courseLabels[latest.courseId] || latest.courseId} · ${latest.status === 'completed' ? 'הושלם' : 'התחיל/ה'}`
-              : 'עדיין אין פעילות שמורה',
-          ));
+          const progress = element('small', latest
+            ? `${courseLabels[latest.courseId] || latest.courseId} · ${latest.status === 'completed' ? 'הושלם' : 'התחיל/ה'}`
+            : 'עדיין אין פעילות שמורה');
+          const actions = element('div', undefined, 'student-actions');
+          const reset = element('button', 'איפוס קוד אישי', 'button quiet');
+          reset.type = 'button'; reset.setAttribute('data-action', 'reset-student-code');
+          reset.addEventListener('click', async () => {
+            clearOneTimeStudentCodes();
+            oneTime.textContent = '';
+            oneTime.hidden = true;
+            setMessage(dashboardMessage, 'מאפסים את הקוד האישי…');
+            try {
+              const data = await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/students/${encodeURIComponent(student.id)}/reset`, {});
+              const codeNotice = `הקוד האישי החדש של ${data.student.name}: ${data.student.loginCode} — הקוד מוצג עכשיו בלבד.`;
+              oneTimeStudentCodes.set(classroom.id, codeNotice);
+              oneTime.textContent = codeNotice;
+              oneTime.hidden = false;
+              await refreshAfterMutation('הקוד אופס וכל החיבורים הקודמים נותקו.');
+            } catch (error) { setMessage(dashboardMessage, error.message); }
+          });
+          const archive = element('button', 'העברה לארכיון', 'button quiet');
+          archive.type = 'button'; archive.setAttribute('data-action', 'archive-student');
+          archive.addEventListener('click', async () => {
+            setMessage(dashboardMessage, 'מעבירים את התלמיד/ה לארכיון…');
+            try {
+              await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/students/${encodeURIComponent(student.id)}/archive`, {});
+              await refreshAfterMutation('התלמיד/ה הועבר/ה לארכיון וכל החיבורים נותקו.');
+            } catch (error) { setMessage(dashboardMessage, error.message); }
+          });
+          actions.append(reset, archive);
+          item.append(editForm, progress, actions);
           students.append(item);
         });
       } else {
@@ -369,6 +432,7 @@
       }
 
       const addForm = element('form', undefined, 'add-student-form');
+      addForm.setAttribute('data-action', 'add-student');
       const label = element('label', 'שם תלמיד/ה');
       const input = document.createElement('input');
       input.name = 'name';
@@ -376,29 +440,58 @@
       label.append(input);
       const button = element('button', 'הוספת תלמיד/ה', 'button secondary');
       button.type = 'submit';
+      button.setAttribute('data-action', 'add-student');
       addForm.append(label, button);
 
-      const oneTime = element('p', '', 'one-time-code');
-      oneTime.hidden = true;
       addForm.addEventListener('submit', async (event) => {
         event.preventDefault();
+        clearOneTimeStudentCodes();
+        oneTime.textContent = '';
+        oneTime.hidden = true;
         setMessage(dashboardMessage, 'מוסיפים תלמיד/ה…');
         try {
           const data = await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/students`, formData(addForm));
+          const codeNotice = `הקוד האישי של ${data.student.name}: ${data.student.loginCode} — הקוד מוצג עכשיו בלבד.`;
+          oneTimeStudentCodes.set(classroom.id, codeNotice);
+          oneTime.textContent = codeNotice;
+          oneTime.hidden = false;
           addForm.reset();
-          await loadClasses();
-          const refreshedCard = [...list.children].find((item) => item.dataset.classId === classroom.id);
-          const refreshedNotice = refreshedCard?.querySelector('.one-time-code');
-          if (refreshedNotice) {
-            refreshedNotice.textContent = `הקוד האישי של ${data.student.name}: ${data.student.loginCode} — הקוד מוצג עכשיו בלבד.`;
-            refreshedNotice.hidden = false;
-          }
-          setMessage(dashboardMessage, 'התלמיד/ה נוסף/ה. שמרו את הקוד האישי שמופיע בכרטיס הכיתה.', true);
+          await refreshAfterMutation('התלמיד/ה נוסף/ה. שמרו את הקוד האישי שמופיע בכרטיס הכיתה.');
         } catch (error) {
           setMessage(dashboardMessage, error.message);
         }
       });
-      card.append(top, courseAccess, students, addForm, oneTime);
+      const archivedSection = element('section', undefined, 'archived-students-section');
+      const showArchivedStudents = element('button', 'הצגת תלמידים בארכיון', 'button quiet');
+      showArchivedStudents.type = 'button'; showArchivedStudents.setAttribute('data-action', 'show-archived-students');
+      const archivedList = element('ul', undefined, 'student-list archived-students');
+      archivedList.hidden = true;
+      showArchivedStudents.addEventListener('click', async () => {
+        setMessage(dashboardMessage, 'טוענים תלמידים מהארכיון…');
+        try {
+          const data = await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/students/archived`);
+          const rows = data.students.map((student) => {
+            const item = element('li'); item.setAttribute('data-student-id', student.id);
+            item.append(element('span', student.name));
+            const restore = element('button', 'שחזור תלמיד/ה', 'button secondary');
+            restore.type = 'button'; restore.setAttribute('data-action', 'restore-student');
+            restore.addEventListener('click', async () => {
+              setMessage(dashboardMessage, 'משחזרים את התלמיד/ה…');
+              try {
+                await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/students/${encodeURIComponent(student.id)}/restore`, {});
+                await refreshAfterMutation('התלמיד/ה שוחזר/ה לכיתה. הקוד האישי לא הוצג או שונה.');
+              } catch (error) { setMessage(dashboardMessage, error.message); }
+            });
+            item.append(restore); return item;
+          });
+          archivedList.replaceChildren(...rows);
+          if (!rows.length) archivedList.append(element('li', 'אין תלמידים בארכיון בכיתה הזו.'));
+          archivedList.hidden = false;
+          setMessage(dashboardMessage, '', true);
+        } catch (error) { setMessage(dashboardMessage, error.message); }
+      });
+      archivedSection.append(showArchivedStudents, archivedList);
+      card.append(top, courseAccess, students, addForm, oneTime, archivedSection);
       return card;
     }
 
@@ -467,13 +560,13 @@
         data.courses = selectedCourses(classForm);
         await api('/api/classroom/classes', data);
         classForm.reset();
-        setMessage(dashboardMessage, 'הכיתה נוצרה.', true);
-        await loadClasses();
+        await refreshAfterMutation('הכיתה נוצרה.');
       } catch (error) {
         setMessage(dashboardMessage, error.message);
       }
     });
     document.getElementById('teacher-logout').addEventListener('click', async () => {
+      clearOneTimeStudentCodes();
       await api('/api/classroom/logout', {});
       location.reload();
     });
