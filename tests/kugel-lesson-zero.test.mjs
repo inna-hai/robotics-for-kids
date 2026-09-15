@@ -52,6 +52,20 @@ async function rawPost(baseUrl, path, body, sessionCookie = '') {
   });
 }
 
+async function internalGet(baseUrl, path) {
+  return fetch(`${baseUrl}${path}`, {
+    headers: { Authorization: 'Bearer test-monitor-token' },
+  });
+}
+
+async function internalPost(baseUrl, path, payload) {
+  return fetch(`${baseUrl}${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer test-monitor-token' },
+    body: JSON.stringify(payload),
+  });
+}
+
 let gameEvents = [];
 let worldOpenDelayMs = 0;
 let worldOpenFailuresRemaining = 0;
@@ -89,6 +103,15 @@ const monitor = createServer(async (req, res) => {
       freezeFailuresRemaining -= 1;
       res.statusCode = 503;
       res.end(JSON.stringify({ error: 'temporary_freeze_failure' }));
+      return;
+    }
+  }
+  if (req.url === '/api/internal/craftom-school/world/close') {
+    if (freezeDelayMs) await new Promise((resolve) => setTimeout(resolve, freezeDelayMs));
+    if (freezeFailuresRemaining > 0) {
+      freezeFailuresRemaining -= 1;
+      res.statusCode = 503;
+      res.end(JSON.stringify({ error: 'temporary_close_failure' }));
       return;
     }
   }
@@ -167,6 +190,18 @@ try {
     const assignment = await post(baseUrl, `/api/classroom/admin/teachers/${teacher.id}/courses`, { courses: ['sisi', 'craftom-agent'] }, adminCookie);
     assert.equal(assignment.status, 200);
   }
+  const teacherALicense = await post(baseUrl, `/api/classroom/admin/teachers/${teacherA.id}/minecraft-license`, {
+    playerName: 'TeacherSecureA',
+    eduUpn: 'teacher-secure-a@hai.tech',
+    status: 'approved',
+  }, adminCookie);
+  assert.equal(teacherALicense.status, 200);
+  const teacherBLicense = await post(baseUrl, `/api/classroom/admin/teachers/${teacherB.id}/minecraft-license`, {
+    playerName: 'TeacherSecureB',
+    eduUpn: 'teacher-secure-b@hai.tech',
+    status: 'approved',
+  }, adminCookie);
+  assert.equal(teacherBLicense.status, 200);
 
   const createA = await post(baseUrl, '/api/classroom/classes', { name: 'כיתת קוגל א', courses: ['craftom-agent'] }, teacherACookie);
   assert.equal(createA.status, 201);
@@ -178,13 +213,13 @@ try {
   assert.equal(createNonKugel.status, 201);
   const nonKugelClassroom = (await createNonKugel.json()).classroom;
 
-  const addA = await post(baseUrl, `/api/classroom/classes/${classroomA.id}/students`, { name: 'נועה מאובטחת' }, teacherACookie);
+  const addA = await post(baseUrl, `/api/classroom/classes/${classroomA.id}/students`, { name: 'נועה מאובטחת', playerName: 'NoaSecure1', eduUpn: 'noa-secure-1@hai.tech' }, teacherACookie);
   assert.equal(addA.status, 201);
   const studentA = (await addA.json()).student;
-  const addASecond = await post(baseUrl, `/api/classroom/classes/${classroomA.id}/students`, { name: 'תלמיד נוסף' }, teacherACookie);
+  const addASecond = await post(baseUrl, `/api/classroom/classes/${classroomA.id}/students`, { name: 'תלמיד נוסף', playerName: 'NoaSecure2', eduUpn: 'noa-secure-2@hai.tech' }, teacherACookie);
   assert.equal(addASecond.status, 201);
   const studentASecond = (await addASecond.json()).student;
-  const addB = await post(baseUrl, `/api/classroom/classes/${classroomB.id}/students`, { name: 'תלמיד כיתה אחרת' }, teacherBCookie);
+  const addB = await post(baseUrl, `/api/classroom/classes/${classroomB.id}/students`, { name: 'תלמיד כיתה אחרת', playerName: 'OtherClass1', eduUpn: 'other-class-1@hai.tech' }, teacherBCookie);
   assert.equal(addB.status, 201);
   const studentB = (await addB.json()).student;
 
@@ -447,6 +482,35 @@ try {
   const finishBeforeCoins = await post(baseUrl, '/api/kugel/student/finish', {}, studentACookie);
   assert.equal(finishBeforeCoins.status, 409, 'the finish button must be pressed after the eighth distinct coin');
 
+  const reportStartedAt = new Date(Date.now() - 957000).toISOString();
+  const reportFinishedAt = new Date().toISOString();
+  gameEvents = Array.from({ length: 8 }, (_, index) => ({
+    id: 70 + index,
+    event_type: 'coin_collected',
+    player_name: 'NoaSecure',
+    created_at: reportFinishedAt,
+    payload: JSON.stringify({ coin_index: index + 1 }),
+  }));
+  const officialFinish = await fetch(`${baseUrl}/api/kugel/students/NoaSecure/finish`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer test-monitor-token' },
+    body: JSON.stringify({
+      report_data: {
+        source: 'kugel_maze_static_finish',
+        started_at_iso: reportStartedAt,
+        completed_at_iso: reportFinishedAt,
+        duration_seconds: 957,
+        coins_collected: 8,
+        total_coins: 8,
+      },
+    }),
+  });
+  assert.equal(officialFinish.status, 200, 'official Minecraft finish reports should complete even without a monitor finish event');
+  const officialFinishBody = await officialFinish.json();
+  assert.equal(officialFinishBody.student.completed, true);
+  assert.equal(officialFinishBody.student.lastDurationMs, 957000);
+  assert.equal(officialFinishBody.student.bestTimeMs, 957000);
+
   gameEvents = [
     { id: 11, event_type: 'player_join', player_name: 'NoaSecure', created_at: now, payload: '{}' },
     ...Array.from({ length: 8 }, (_, index) => ({ id: index + 12, event_type: 'coin_collected', player_name: 'NoaSecure', created_at: now, block_id: 'gold_block', payload: JSON.stringify({ coin_index: index + 1 }) })),
@@ -462,6 +526,7 @@ try {
   const teacherStudentA = teacherViewBody.students.find(item => item.id === studentA.id);
   assert.equal(teacherStudentA.coins, 8);
   assert.equal(teacherStudentA.completed, true);
+  assert.ok(teacherStudentA.startedAt, 'Minecraft activity should mark the student as started even without a lomda start click');
 
   const studentView = await fetch(`${baseUrl}/api/kugel/session`, { headers: { Cookie: studentACookie } });
   assert.equal(studentView.status, 200);
@@ -470,7 +535,7 @@ try {
   assert.equal(studentViewBody.student.id, studentA.id);
   assert.equal('students' in studentViewBody, false, 'students receive only their own Kugel state');
   assert.equal(JSON.stringify(studentViewBody).includes(studentB.id), false);
-  assert.equal(studentViewBody.student.completionRecorded, false, 'verified game events alone must not unlock lesson 1 before progress is persisted');
+  assert.equal(studentViewBody.student.completionRecorded, true, 'official Minecraft finish reports should persist progress and unlock lesson 1');
   const monitorReadsAfterViews = monitorCalls.filter(call => call.method === 'GET' && call.url.startsWith('/api/game-events')).length;
   assert.equal(monitorReadsAfterViews - monitorReadsBeforeViews, 1, 'teacher and student polling must share a short monitor-event cache');
 
@@ -489,21 +554,44 @@ try {
   assert.equal(malformedFreeze.status, 400, 'freeze state must be an actual boolean');
   const message = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/message`, { text: 'כל הכבוד', scope: 'all' }, teacherACookie);
   assert.equal(message.status, 200);
+  const messageActionResponse = await internalGet(baseUrl, '/api/internal/minecraft/actions/next');
+  assert.equal(messageActionResponse.status, 200);
+  const messageActionBody = await messageActionResponse.json();
+  assert.equal(messageActionBody.action.type, 'teacher_message');
+  assert.match(messageActionBody.action.payload.command, /^tellraw @a /);
+  const messageActionStatus = await internalPost(baseUrl, `/api/internal/minecraft/actions/${messageActionBody.action.id}/status`, { status: 'completed', result: 'ok' });
+  assert.equal(messageActionStatus.status, 200);
+  const messageOverlayActionResponse = await internalGet(baseUrl, '/api/internal/minecraft/actions/next');
+  assert.equal(messageOverlayActionResponse.status, 200);
+  const messageOverlayActionBody = await messageOverlayActionResponse.json();
+  assert.equal(messageOverlayActionBody.action.type, 'teacher_message_overlay');
+  assert.match(messageOverlayActionBody.action.payload.command, /^title @a actionbar /);
+  const messageOverlayActionStatus = await internalPost(baseUrl, `/api/internal/minecraft/actions/${messageOverlayActionBody.action.id}/status`, { status: 'completed', result: 'ok' });
+  assert.equal(messageOverlayActionStatus.status, 200);
   const freeze = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/freeze`, { on: true, scope: 'all' }, teacherACookie);
   assert.equal(freeze.status, 200);
-  assert.equal(monitorCalls.some(call => call.url === '/api/internal/craftom-school/live/message'), true);
-  assert.equal(monitorCalls.some(call => call.url === '/api/internal/craftom-school/live/freeze'), true);
+  const freezeActionResponse = await internalGet(baseUrl, '/api/internal/minecraft/actions/next');
+  assert.equal(freezeActionResponse.status, 200);
+  const freezeActionBody = await freezeActionResponse.json();
+  assert.equal(freezeActionBody.action.type, 'teacher_freeze');
+  assert.match(freezeActionBody.action.payload.command, /^(effect|ability) "/);
   for (let index = 1; index < 28; index += 1) {
     const repeatedMessage = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/message`, { text: `בדיקה ${index}`, scope: 'all' }, teacherACookie);
     assert.equal(repeatedMessage.status, 200);
   }
   const rateLimitedMessage = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/message`, { text: 'יותר מדי', scope: 'all' }, teacherACookie);
   assert.equal(rateLimitedMessage.status, 429, 'Minecraft control endpoints must be rate limited per teacher and class');
+  gameEvents = [
+    { id: 400, event_type: 'player_join', player_name: 'NoaSecure', created_at: new Date(Date.now() + 1000).toISOString(), payload: '{}' },
+    { id: 401, event_type: 'coin_collected', player_name: 'NoaSecure', created_at: new Date(Date.now() + 2000).toISOString(), payload: JSON.stringify({ coin_index: 1 }) },
+  ];
   const reset = await post(baseUrl, '/api/kugel/student/reset', {}, studentACookie);
   assert.equal(reset.status, 200);
   const afterReset = await fetch(`${baseUrl}/api/kugel/session`, { headers: { Cookie: studentACookie } });
   assert.equal(afterReset.status, 200);
-  assert.equal((await afterReset.json()).student.coins, 0, 'events before reset must not count again');
+  const afterResetBody = await afterReset.json();
+  assert.equal(afterResetBody.student.coins, 0, 'events before reset must not count again');
+  assert.equal(afterResetBody.student.connected, true, 'resetting progress must not hide a still-connected player');
 
   const tamperDb = new Database(dbFile);
   tamperDb.prepare('DELETE FROM teacher_courses WHERE teacher_id = ? AND course_id = ?').run(teacherA.id, 'craftom-agent');
@@ -566,14 +654,14 @@ try {
   assert.equal(relaunchForFailedStop.status, 200);
   freezeFailuresRemaining = 1;
   const failedStop = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/stop`, {}, teacherACookie);
-  assert.equal(failedStop.status, 502, 'a failed external freeze must keep a retriable lease');
+  assert.equal(failedStop.status, 502, 'a failed external close must keep a retriable lease');
   const blockedAfterFailedStop = await post(baseUrl, `/api/kugel/classes/${classroomB.id}/launch`, {}, teacherBCookie);
   assert.equal(blockedAfterFailedStop.status, 409, 'another class must remain blocked while cleanup needs retry');
   const retryStop = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/stop`, {}, teacherACookie);
   assert.equal(retryStop.status, 200, 'the same teacher must be able to retry failed cleanup');
   const relaunchBeforeRevoke = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, teacherACookie);
   assert.equal(relaunchBeforeRevoke.status, 200);
-  const freezesBeforeRevoke = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/live/freeze').length;
+  const closesBeforeRevoke = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/world/close').length;
   freezeDelayMs = 120;
   const revokeKugelPromise = post(baseUrl, `/api/classroom/admin/teachers/${teacherA.id}/courses`, { courses: ['sisi'] }, adminCookie);
   await new Promise((resolve) => setTimeout(resolve, 30));
@@ -581,8 +669,8 @@ try {
   assert.equal(launchDuringRevoke.status, 409, 'a class must not acquire the lease while revocation cleanup is running');
   const revokeKugel = await revokeKugelPromise;
   assert.equal(revokeKugel.status, 200);
-  const freezesAfterRevoke = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/live/freeze').length;
-  assert.equal(freezesAfterRevoke, freezesBeforeRevoke + 1, 'entitlement revocation must freeze the externally running world');
+  const closesAfterRevoke = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/world/close').length;
+  assert.equal(closesAfterRevoke, closesBeforeRevoke + 1, 'entitlement revocation must close the externally running world');
   freezeDelayMs = 0;
   const launchAfterRevokeCleanup = await post(baseUrl, `/api/kugel/classes/${classroomB.id}/launch`, {}, teacherBCookie);
   assert.equal(launchAfterRevokeCleanup.status, 200, 'the next class may launch after revocation cleanup finishes');
@@ -600,7 +688,7 @@ try {
   const classRevokePromise = post(baseUrl, `/api/classroom/classes/${classroomA.id}/courses`, { courses: ['sisi'] }, teacherACookie);
   await new Promise((resolve) => setTimeout(resolve, 30));
   const launchDuringClassRevoke = await post(baseUrl, `/api/kugel/classes/${classroomB.id}/launch`, {}, teacherBCookie);
-  assert.equal(launchDuringClassRevoke.status, 409, 'class-course revocation must retain the lease until freeze completes');
+  assert.equal(launchDuringClassRevoke.status, 409, 'class-course revocation must retain the lease until close completes');
   const classRevoke = await classRevokePromise;
   assert.equal(classRevoke.status, 200);
   freezeDelayMs = 0;

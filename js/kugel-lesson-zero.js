@@ -59,6 +59,15 @@
     return date.toLocaleString('he-IL');
   }
 
+  function formatDuration(ms) {
+    const value = Number(ms);
+    if (!Number.isFinite(value) || value < 0) return 'אין עדיין';
+    const totalSeconds = Math.round(value / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}:${String(seconds).padStart(2, '0')}`;
+  }
+
   async function initStudent() {
     const sessionStatus = document.getElementById('studentSessionStatus');
     const playerStatus = document.getElementById('playerStatus');
@@ -132,7 +141,7 @@
         ['הושלם', Boolean(student.completed)],
       ].map(([label, done]) => node('span', label, `progress-step${done ? ' done' : ''}`));
       progressStrip.replaceChildren(...steps);
-      const canStart = Boolean(session.active && student.minecraftPlayerName && minecraft);
+      const canStart = Boolean(session.active && student.minecraftPlayerName && student.minecraftLicense?.approved && minecraft);
       launch.disabled = !canStart;
       reset.disabled = !canStart;
       finish.disabled = !canStart;
@@ -335,12 +344,21 @@
       document.getElementById(id).textContent = String(value || 0);
     }
 
-    async function teacherAction(path, payload, pendingText, doneText) {
+    function teacherIsEditingMessage() {
+      const active = document.activeElement;
+      if (!active || !['INPUT', 'TEXTAREA'].includes(active.tagName)) return false;
+      return Boolean(
+        active.closest('.student-row-actions')
+        || active.closest('#classMessageForm')
+      );
+    }
+
+    async function teacherAction(path, payload, pendingText, doneText, options = {}) {
       setStatus(status, pendingText);
       try {
         await api(path, payload);
         setStatus(status, doneText);
-        await refresh();
+        if (options.refresh !== false) await refresh();
       } catch (error) {
         setStatus(status, error.message, true);
       }
@@ -348,15 +366,33 @@
 
     function renderStudent(student) {
       const card = node('article', undefined, `monitor-row ${student.connected ? 'is-connected' : 'is-offline'}`);
+      const coins = Math.max(0, Math.min(8, Number(student.coins || 0)));
       const identity = node('div', undefined, 'student-identity');
       identity.append(node('strong', student.name), node('span', student.connected ? 'מחובר/ת' : 'לא מחובר/ת', 'connection-pill'));
+      const license = student.minecraftLicense || {};
+      identity.append(node('small', license.approved
+        ? `Minecraft: ${student.minecraftPlayerName || license.playerName} · ${license.eduUpn}`
+        : 'חסר רישיון Minecraft Education מאושר'));
 
       const progress = node('div', undefined, 'coin-progress');
       const lessonId = Number(current?.trackedLessonId ?? current?.session?.lessonId ?? 0);
-      const minecraftLabel = lessonId === 0
-        ? `${student.coins || 0} / 8 מטבעות`
-        : (student.minecraftStatus === 'completed' ? 'משימת Minecraft הושלמה' : (student.minecraftStatus === 'started' ? 'Minecraft בתהליך' : 'Minecraft לא התחיל'));
-      progress.append(node('strong', minecraftLabel), node('span', student.minecraftStatus === 'completed' ? 'הושלם' : (student.minecraftStatus === 'started' ? 'בתהליך' : 'לא התחיל')));
+      if (lessonId === 0) {
+        const coinBar = node('div', undefined, 'coin-bar');
+        const coinFill = node('span');
+        coinFill.style.width = `${(coins / 8) * 100}%`;
+        coinBar.append(coinFill);
+        progress.append(
+          node('strong', `${coins} / 8 מטבעות`),
+          coinBar,
+          node('span', student.completed ? 'הושלם' : (student.startedAt ? 'בתהליך' : 'לא התחיל')),
+          node('span', `שיא: ${formatDuration(student.bestTimeMs)}`),
+        );
+      } else {
+        const minecraftLabel = student.minecraftStatus === 'completed'
+          ? 'משימת Minecraft הושלמה'
+          : (student.minecraftStatus === 'started' ? 'Minecraft בתהליך' : 'Minecraft לא התחיל');
+        progress.append(node('strong', minecraftLabel), node('span', student.minecraftStatus === 'completed' ? 'הושלם' : (student.minecraftStatus === 'started' ? 'בתהליך' : 'לא התחיל')));
+      }
 
       const learning = node('div', undefined, 'student-learning-status');
       const academyStatus = node('span', student.academyStatus === 'completed' ? 'אקדמיה הושלמה' : 'חסרה אקדמיה', `learning-pill ${student.academyStatus === 'completed' ? 'done' : 'missing'}`);
@@ -372,10 +408,18 @@
       playerInput.maxLength = 32;
       const savePlayer = node('button', 'שמירת שחקן', 'secondary-action');
       savePlayer.type = 'submit';
-      playerForm.append(playerInput, savePlayer);
+      const eduInput = document.createElement('input');
+      eduInput.name = 'eduUpn';
+      eduInput.type = 'email';
+      eduInput.placeholder = 'student@hai.tech';
+      eduInput.value = license.eduUpn || '';
+      playerForm.append(playerInput, eduInput, savePlayer);
       playerForm.addEventListener('submit', async event => {
         event.preventDefault();
-        await teacherAction(scoped(`/students/${encodeURIComponent(student.id)}/minecraft`), { playerName: playerInput.value }, 'שומרים את שם השחקן…', 'שם השחקן נשמר.');
+        await teacherAction(scoped(`/students/${encodeURIComponent(student.id)}/minecraft`), {
+          playerName: playerInput.value,
+          eduUpn: eduInput.value,
+        }, 'שומרים את פרטי Minecraft…', 'פרטי Minecraft נשמרו.');
       });
 
       const actions = node('div', undefined, 'student-row-actions');
@@ -387,8 +431,9 @@
       send.type = 'button';
       send.disabled = !student.minecraftPlayerName;
       send.addEventListener('click', async () => {
-        await teacherAction(scoped('/message'), { scope: 'player', target: student.minecraftPlayerName, text: messageInput.value }, 'שולחים הודעה…', 'ההודעה נשלחה.');
-        drafts.delete(student.id);
+        await teacherAction(scoped('/message'), { scope: 'player', target: student.minecraftPlayerName, text: messageInput.value }, 'שולחים הודעה…', 'ההודעה נשלחה.', { refresh: false });
+        drafts.set(student.id, messageInput.value);
+        messageInput.focus();
       });
       const freeze = node('button', 'עצירה', 'secondary-action danger-action');
       freeze.type = 'button';
@@ -660,9 +705,13 @@
       const previewDetail = data.minecraftPreviewMode && session.active && session.serverDetail
         ? `${session.serverDetail} ${data.minecraftSetupNote}`
         : data.minecraftSetupNote;
+      const teacherLicenseApproved = Boolean(data.teacher?.minecraftLicense?.approved);
+      const missingStudentLicenses = (data.students || []).filter(student => !student.minecraftLicense?.approved).length;
       document.getElementById('serverDetail').textContent = data.minecraftConfigured === false || data.minecraftPreviewMode
         ? previewDetail
-        : (session.serverDetail || '');
+        : (!teacherLicenseApproved
+          ? 'צריך אישור רישיון Minecraft למורה לפני פתיחה.'
+          : (missingStudentLicenses ? `יש ${missingStudentLicenses} תלמידים בלי רישיון Minecraft מאושר.` : (session.serverDetail || '')));
       document.getElementById('serverDot').classList.toggle('busy', session.serverState === 'starting');
       document.getElementById('serverDot').classList.toggle('error', data.minecraftConfigured === false || session.serverState === 'error');
       if (lessonList) lessonList.replaceChildren(...lessons.map(lesson => renderTeacherLessonPicker(lesson, selectedLessonId)));
@@ -689,6 +738,7 @@
         return;
       }
       try {
+        if (teacherIsEditingMessage()) return;
         const lessonFilter = hasRequestedLesson ? `&lessonId=${encodeURIComponent(String(requestedLessonId))}` : '';
         render(await api(`/api/kugel/session?classroomId=${encodeURIComponent(classroomId)}${lessonFilter}`));
       } catch (error) {
@@ -708,8 +758,8 @@
     document.getElementById('stopLesson')?.addEventListener('click', () => teacherAction(scoped('/stop'), {}, 'מסיימים את השיעור…', 'השיעור הסתיים והשרת שוחרר.'));
     document.getElementById('classMessageForm').addEventListener('submit', async event => {
       event.preventDefault();
-      await teacherAction(scoped('/message'), { scope: 'all', text: classMessage.value }, 'שולחים לכיתה…', 'ההודעה נשלחה לכיתה.');
-      classMessage.value = '';
+      await teacherAction(scoped('/message'), { scope: 'all', text: classMessage.value }, 'שולחים לכיתה…', 'ההודעה נשלחה לכיתה.', { refresh: false });
+      classMessage.focus();
     });
     document.getElementById('freezeAll').addEventListener('click', () => teacherAction(scoped('/freeze'), { scope: 'all', on: true }, 'עוצרים את הכיתה…', 'הכיתה נעצרה.'));
     document.getElementById('releaseAll').addEventListener('click', () => teacherAction(scoped('/freeze'), { scope: 'all', on: false }, 'משחררים את הכיתה…', 'הכיתה שוחררה.'));
