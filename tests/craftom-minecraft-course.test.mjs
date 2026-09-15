@@ -153,6 +153,9 @@ assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('/api/kugel/stude
 assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('craftom-agent-academy.html?lesson='), 'lesson page links to the separate Agent academy');
 assert.ok(!read('js/craftom-minecraft-lesson-page.js').includes('ראיות Craftom'), 'rendered student lessons hide the Craftom evidence checklist');
 assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('nextChallengeLink'), 'final challenge meetings can reveal a next challenge button');
+assert.match(read('js/craftom-minecraft-lesson-page.js'), /if \(submission && !nextLesson && nextChallengeLink\) \{\s*nextChallengeLink\.hidden = !nextChallengeFirstLesson;/, 'a saved submission must restore next-challenge navigation after refresh');
+assert.doesNotMatch(read('js/craftom-minecraft-lesson-page.js'), /\$\{submission\.(?:exitAnswer|imageName)/, 'stored student submission text must not be interpolated into innerHTML');
+assert.doesNotMatch(read('js/craftom-minecraft-lesson-page.js'), /hai:classroom-progress[\s\S]{0,400}activityId: 'exit-ticket'/, 'the accepted exit-ticket must record progress only once on the server');
 assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('לאתגר הבא'), 'next challenge button uses student-facing wording');
 assert.ok(!read('js/craftom-minecraft-lesson-page.js').includes('craftom-minecraft-slides.html?challenge=${lesson.challengeId}&lesson=${lesson.id}'), 'student lesson page does not link to instructor slides');
 assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('קודם נכנסים לאקדמיה'), 'academy lessons clearly send students to practice before implementation');

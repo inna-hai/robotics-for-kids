@@ -517,6 +517,9 @@ player.onChat("test", function () {
       existingSubmission.innerHTML = '';
       return;
     }
+    if (submission && !nextLesson && nextChallengeLink) {
+      nextChallengeLink.hidden = !nextChallengeFirstLesson;
+    }
     existingSubmission.hidden = false;
     existingSubmission.innerHTML = `
       <h3>ההגשה השמורה שלי</h3>
@@ -591,15 +594,6 @@ player.onChat("test", function () {
       if (!nextLesson && nextChallengeLink) {
         nextChallengeLink.hidden = !nextChallengeFirstLesson;
       }
-      window.dispatchEvent(new CustomEvent('hai:classroom-progress', {
-        detail: {
-          lessonId: String(lesson.id),
-          activityId: 'exit-ticket',
-          status: 'completed',
-          score: 100,
-          metadata: { submissionId: String(data.id || '') }
-        }
-      }));
     } catch (error) {
       status.textContent = error.message || 'לא הצלחנו לשמור את ההגשה.';
     } finally {
