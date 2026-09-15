@@ -993,7 +993,7 @@ async function handleStudentProgress(req, res) {
         ok: true,
         saved: false,
         accessMode: 'classroom',
-        message: 'ההתקדמות נשמרת בדוח הכיתה והמורה תראה אותה במסך הכיתות שלה.',
+        message: 'ההתקדמות נשמרת בדוח הכיתה ולא במנוי האישי.',
       }));
     }
     return send(res, 405, JSON.stringify({ error: 'Method not allowed' }));
@@ -2446,7 +2446,6 @@ async function handleClassroomApi(req, res) {
       });
       if (!result) return send(res, 404, JSON.stringify({ error: 'המורה לא נמצאה.' }));
       const { releasedLeases, ...publicResult } = result;
-      const freezeFailures = [];
       for (const lease of releasedLeases) {
         try {
           await kugelMonitorMutation('/api/internal/craftom-school/live/freeze', {
@@ -2459,14 +2458,10 @@ async function handleClassroomApi(req, res) {
           `).run(lease.classroom_id, lease.launch_token));
         } catch (error) {
           console.error('kugel_entitlement_revoke_freeze_error', { teacherId: segments[4], message: error.message });
-          freezeFailures.push(lease.classroom_id);
+          return send(res, 502, JSON.stringify({ error: 'ההרשאה הוסרה, אך עצירת עולם Minecraft נכשלה.' }));
         }
       }
-      return send(res, 200, JSON.stringify({
-        ok: true,
-        ...publicResult,
-        warning: freezeFailures.length ? 'ההרשאה הוסרה. עצירת עולם Minecraft לא הושלמה אוטומטית, אבל הגישה ללומדה חסומה לפי ההרשאות החדשות.' : '',
-      }));
+      return send(res, 200, JSON.stringify({ ok: true, ...publicResult }));
     }
 
     if (action === 'logout') {
@@ -2671,7 +2666,6 @@ async function handleClassroomApi(req, res) {
       if (!result) return send(res, 404, JSON.stringify({ error: 'הכיתה לא נמצאה.' }));
       if (result.forbidden) return send(res, 403, JSON.stringify({ error: 'אפשר לשייך לכיתה רק לומדות שהוקצו לך.' }));
       if (result.releasedLease) {
-        let freezeWarning = '';
         try {
           await kugelMonitorMutation('/api/internal/craftom-school/live/freeze', {
             method: 'POST',
@@ -2683,14 +2677,12 @@ async function handleClassroomApi(req, res) {
           `).run(result.releasedLease.classroom_id, result.releasedLease.launch_token));
         } catch (error) {
           console.error('kugel_class_course_revoke_freeze_error', { classroomId: segments[3], message: error.message });
-          freezeWarning = 'ההרשאה הוסרה. עצירת עולם Minecraft לא הושלמה אוטומטית, אבל הגישה ללומדה חסומה לפי ההרשאות החדשות.';
+          return send(res, 502, JSON.stringify({ error: 'ההרשאה הוסרה, אך עצירת עולם Minecraft נכשלה.' }));
         }
-        result.freezeWarning = freezeWarning;
       }
       const classroom = result.classroom;
       return send(res, 200, JSON.stringify({
         ok: true,
-        warning: result.freezeWarning || '',
         classroom: {
           id: classroom.id,
           name: classroom.name,

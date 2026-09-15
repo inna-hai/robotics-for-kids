@@ -171,9 +171,9 @@
       setMessage(message, `שומרים הרשאות עבור ${teacher.name}…`);
       try {
         const courses = new FormData(form).getAll('courses');
-        const data = await api(`/api/classroom/admin/teachers/${encodeURIComponent(teacher.id)}/courses`, { courses });
+        await api(`/api/classroom/admin/teachers/${encodeURIComponent(teacher.id)}/courses`, { courses });
         await loadTeachers();
-        setMessage(message, data.warning || `הרשאות הלומדות של ${teacher.name} נשמרו בהצלחה.`, true);
+        setMessage(message, `הרשאות הלומדות של ${teacher.name} נשמרו בהצלחה.`, true);
       } catch (error) {
         setMessage(message, error.message);
       }

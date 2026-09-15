@@ -296,23 +296,6 @@
     return date.toLocaleString('he-IL', { dateStyle: 'short', timeStyle: 'short' });
   }
 
-  function studentProgressSummary(student) {
-    const rows = Array.isArray(student.progress) ? student.progress : [];
-    const completed = rows.filter(row => row.status === 'completed').length;
-    const started = rows.length - completed;
-    const latest = rows[0];
-    const latestLabel = latest
-      ? `${courseLabels[latest.courseId] || latest.courseId} · שיעור ${latest.lessonId || 'כללי'} · ${latest.status === 'completed' ? 'הושלם' : 'התחיל/ה'}`
-      : 'עדיין אין פעילות שמורה';
-    return {
-      total: rows.length,
-      completed,
-      started,
-      latestLabel,
-      updatedAt: formatDateTime(latest?.updatedAt || latest?.completedAt || latest?.startedAt),
-    };
-  }
-
   const courseLabels = {
     'sensi-city': 'סנסי בעיר החכמה',
     sisi: 'סיסי',
@@ -551,10 +534,10 @@
           event.preventDefault();
           setMessage(dashboardMessage, 'שומרים את הלומדות…');
           try {
-            const data = await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/courses`, {
+            await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/courses`, {
               courses: selectedCourses(courseForm),
             });
-            setMessage(dashboardMessage, data.warning || 'הלומדות של הכיתה עודכנו.', true);
+            setMessage(dashboardMessage, 'הלומדות של הכיתה עודכנו.', true);
             await loadClasses();
           } catch (error) {
             setMessage(dashboardMessage, error.message);
@@ -565,31 +548,23 @@
       }
       courseAccess.append(courseForm);
 
-      const progressSection = element('section', undefined, 'student-progress-panel');
-      progressSection.append(
-        element('h4', 'התקדמות תלמידים'),
-        element('p', 'כאן מופיעה התקדמות שנשמרה מתלמידים שנכנסו עם שם המשתמש והסיסמה שלהם.'),
-      );
       const students = element('ul', undefined, 'student-list');
       if (classroom.students.length) {
         classroom.students.forEach((student) => {
-          const summary = studentProgressSummary(student);
           const item = element('li');
-          const name = element('strong', student.name);
-          const stats = element('div', undefined, 'student-progress-stats');
-          stats.append(
-            element('span', `משתמש: ${student.username || classroom.joinCode}`),
-            element('span', `${summary.completed} הושלמו`),
-            element('span', `${summary.started} התחילו`),
-            element('span', summary.updatedAt ? `פעילות אחרונה: ${summary.updatedAt}` : 'אין פעילות אחרונה'),
-          );
-          item.append(name, stats, element('small', summary.latestLabel));
+          item.append(element('strong', student.name));
+          const latest = student.progress?.[0];
+          item.append(element(
+            'small',
+            latest
+              ? `${courseLabels[latest.courseId] || latest.courseId} · ${latest.status === 'completed' ? 'הושלם' : 'התחיל/ה'}`
+              : 'עדיין אין פעילות שמורה',
+          ));
           students.append(item);
         });
       } else {
         students.append(element('li', 'עדיין לא נוספו תלמידים.'));
       }
-      progressSection.append(students);
 
       const addForm = element('form', undefined, 'add-student-form');
       const label = element('label', 'שם תלמיד/ה');
@@ -621,7 +596,7 @@
           setMessage(dashboardMessage, error.message);
         }
       });
-      card.append(top, exportBox, courseAccess, progressSection, addForm, oneTime);
+      card.append(top, exportBox, courseAccess, students, addForm, oneTime);
       return card;
     }
 
