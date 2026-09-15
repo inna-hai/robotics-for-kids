@@ -5,27 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ניהול Minecraft לכיתה | hai.tech</title>
   <meta name="description" content="לוח מורה מאובטח להפעלת עולמות Minecraft ומעקב אחר תלמידי הכיתה.">
-  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260905-agent-blocks-match-1">
-  <link rel="stylesheet" href="assets/kugel/kugel-lomda-interfaces.css?v=20260909-teacher-end-lesson-1">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260910-direct-student-copy-1">
+  <link rel="stylesheet" href="assets/kugel/kugel-lomda-interfaces.css?v=20260910-collapsible-student-board-1">
 </head>
 <body class="kugel-app teacher-app" data-kugel-page="teacher">
-  <header class="app-topbar">
-    <a class="brand-link" href="teacher-classrooms.html"><span class="brand-mark teacher-mark">C</span><span><strong>Craftom</strong><small>חזרה לכיתות שלי</small></span></a>
+  <header class="course-header teacher-course-header" id="teacherCourseHeader" aria-label="ניווט מורה אקדמיית ה-Agent">
+    <div class="course-header-inner">
+      <a class="course-brand" id="teacherCourseHome" href="teacher-classrooms.html">אקדמיית ה-Agent</a>
+      <nav class="course-nav" id="teacherCourseHeaderNav" aria-label="מעבר מהיר למורה">
+        <a class="primary" href="kugel-teacher.html">דף הבית</a>
+        <a href="kugel-teacher.html">השיעור הנוכחי</a>
+        <a href="kugel-teacher.html?challenge=1">אתגר 1</a>
+        <a href="kugel-teacher.html?challenge=2">אתגר 2</a>
+        <a href="kugel-teacher.html?challenge=3">אתגר 3</a>
+        <a href="kugel-teacher.html?challenge=4">אתגר 4</a>
+      </nav>
+    </div>
   </header>
   <main class="app-shell">
    <section class="teacher-board">
+    <div class="workspace-hero teacher-hero">
+      <div class="hero-copy"><div class="kicker" id="teacherLessonKicker">דף הבית • ניהול אקדמיית ה-Agent</div><h2 id="teacherLessonTitle">ניהול אקדמיית ה-Agent לכיתה</h2><p class="goal" id="teacherLessonGoal">בחרו שיעור לפתיחה. הניהול המלא מופיע רק בתוך מסך השיעור.</p><a class="secondary-action link-action teacher-classrooms-button" href="teacher-classrooms.html">חזרה לכיתות שלי</a></div>
+      <div class="maze-preview" aria-hidden="true"><span>8</span><small>מטבעות</small></div>
+      <div class="server-status-card"><span class="status-dot" id="serverDot"></span><strong id="serverState">שרת מוכן</strong><small id="serverDetail"></small></div>
+    </div>
     <aside class="teacher-control">
       <p class="eyebrow">סביבת מורה מאובטחת</p>
       <h1>ניהול Minecraft לכיתה</h1>
       <p id="teacherClassName">טוען את הכיתה…</p>
-      <section class="panel compact-panel minecraft-lesson-panel">
-        <h3>בחירת שיעור Minecraft</h3>
-        <p>המורה בוחרת איזה עולם לפתוח לכיתה לפי השיעור שבו עובדים היום. האקדמיה ו־Minecraft זמינים במקביל, והמורה קובעת את הסדר.</p>
-        <div class="minecraft-lesson-list" id="minecraftLessonList"></div>
-        <button class="secondary-action" id="stopLesson" type="button">סיום השיעור ושחרור השרת</button>
-        <p class="form-status" id="teacherStatus" aria-live="polite"></p>
-      </section>
-      <section class="panel compact-panel">
+      <a class="primary-action link-action" id="studentPreviewLink" href="craftom-minecraft-lesson-1.html">תצוגה מקדימה כתלמידה</a>
+      <p class="form-status" id="teacherStatus" aria-live="polite"></p>
+      <section class="panel compact-panel teacher-live-controls" id="teacherLiveControls" hidden>
         <h3>בקרה כיתתית</h3>
         <form class="compact-form teacher-class-message-form" id="classMessageForm">
           <label>הודעה לכל הכיתה<input name="text" maxlength="1000" required></label>
@@ -37,13 +47,42 @@
         </div>
       </section>
     </aside>
-    <section class="teacher-main">
-      <div class="workspace-hero teacher-hero">
-        <div class="hero-copy"><div class="kicker">שיעור 0 • תרגול פתיחה</div><h2>מבוך המטבעות</h2><p class="goal">תנועה, התמצאות, שמונה מטבעות וכפתור סיום.</p></div>
-        <div class="maze-preview" aria-hidden="true"><span>8</span><small>מטבעות</small></div>
-        <div class="server-status-card"><span class="status-dot" id="serverDot"></span><strong id="serverState">שרת מוכן</strong><small id="serverDetail"></small></div>
+    <section class="panel teacher-selected-lesson" id="selectedTeacherLesson" aria-label="השיעור שנבחר" hidden>
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow" id="selectedLessonEyebrow">שיעור נבחר</p>
+          <h3 id="selectedLessonTitle">טוען שיעור…</h3>
+        </div>
+        <a class="secondary-action link-action" id="selectedLessonPreviewLink" href="craftom-minecraft-lesson-1.html">תצוגה מקדימה כתלמידה</a>
       </div>
-      <section class="lesson-zero-cards teacher-zero-cards" aria-label="שלבי ניהול שיעור 0">
+      <p id="selectedLessonSummary">כאן יופיעו פעולות Minecraft והמעקב החי של השיעור.</p>
+      <div class="minecraft-lesson-actions selected-lesson-actions" id="selectedLessonActions"></div>
+    </section>
+    <section class="teacher-main">
+      <section class="panel teacher-home-overview" id="teacherHomeOverview">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">דף הבית של המורה</p>
+            <h3 id="teacherHomeWelcome">ברוך הבא</h3>
+          </div>
+          <a class="secondary-action link-action" id="teacherHomeCurrentLesson" href="kugel-teacher.html">השיעור הפעיל</a>
+        </div>
+        <p class="teacher-home-intro">התלמידים לומדים את תוכן השיעור, מתרגלים באקדמיית ה-Agent ועובדים ב-Minecraft. תפקיד המורה הוא לבחור את השיעור, לפתוח את Minecraft לכיתה ולעקוב אחרי ההתקדמות וההגשות.</p>
+        <div class="teacher-home-status">
+          <article><span>כיתה</span><strong id="teacherHomeClassName">טוען…</strong></article>
+          <article><span>שיעור פעיל</span><strong id="teacherHomeActiveLesson">אין שיעור פעיל</strong></article>
+          <article><span>מצב Minecraft</span><strong id="teacherHomeMinecraftState">ממתין</strong></article>
+        </div>
+        <h3 class="teacher-home-section-title">בחירת שיעור</h3>
+        <div class="teacher-home-challenges" id="teacherHomeChallenges"></div>
+      </section>
+      <section class="panel teacher-challenge-overview" id="teacherChallengeOverview" hidden>
+        <p class="eyebrow" id="teacherChallengeEyebrow">אתגר</p>
+        <h3 id="teacherChallengeTitle">טוען אתגר…</h3>
+        <p id="teacherChallengeStory"></p>
+        <div class="teacher-challenge-lessons" id="teacherChallengeLessons"></div>
+      </section>
+      <section class="lesson-zero-cards teacher-zero-cards" id="teacherLessonSteps" aria-label="שלבי ניהול שיעור 0" hidden>
         <article class="panel lesson-step-card">
           <span class="step-num">1</span>
           <h3>משייכים שחקנים</h3>
@@ -60,21 +99,27 @@
           <p>רואים מי התחבר, כמה מטבעות נאספו ומי צריך בדיקה.</p>
         </article>
       </section>
-      <section class="metrics-grid">
+      <section class="metrics-grid" id="teacherMetrics" hidden>
         <article class="metric"><strong id="metricConnected">0</strong><span>מחוברים</span></article>
         <article class="metric"><strong id="metricActive">0</strong><span>בתהליך</span></article>
         <article class="metric"><strong id="metricDone">0</strong><span>סיימו</span></article>
         <article class="metric"><strong id="metricAttention">0</strong><span>דורשים בדיקה</span></article>
       </section>
-      <section class="panel">
-        <div class="panel-head"><h3>לוח התלמידים</h3><button class="icon-button" id="refreshBoard" type="button" title="רענון">↻</button></div>
-        <p>המורה משייכת לכל תלמיד/ה את שם השחקן המדויק ב־Minecraft. רק תלמידי הכיתה הזאת מופיעים כאן.</p>
-        <div class="student-monitor" id="studentMonitor"></div>
+      <section class="panel teacher-student-board-panel" id="teacherStudentBoard" hidden>
+        <details class="teacher-student-board-details">
+          <summary>לוח התלמידים</summary>
+          <div class="teacher-student-board-content">
+            <div class="panel-head"><h3>מעקב תלמידות</h3><button class="icon-button" id="refreshBoard" type="button" title="רענון">↻</button></div>
+            <p>המורה משייכת לכל תלמיד/ה את שם השחקן המדויק ב־Minecraft. רק תלמידי הכיתה הזאת מופיעים כאן.</p>
+            <div class="student-monitor" id="studentMonitor"></div>
+          </div>
+        </details>
       </section>
     </section>
    </section>
   </main>
-  <script src="js/kugel-lesson-zero.js?v=20260909-teacher-end-lesson-1"></script>
+  <script src="js/craftom-minecraft-challenges.js?v=20260910-direct-student-copy-1"></script>
+  <script src="js/kugel-lesson-zero.js?v=20260910-collapsible-student-board-1"></script>
   <script src="/js/feedback-widget.js?v=20260907-tehila-fixes-1"></script>
 </body>
 </html>

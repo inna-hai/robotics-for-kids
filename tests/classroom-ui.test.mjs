@@ -51,6 +51,7 @@ assert.ok(teacher.includes('id="create-class-form"'));
 assert.ok(teacher.includes('id="classes-list"'));
 assert.ok(teacher.includes('id="teacher-course-catalog"'));
 assert.ok(teacher.includes('יצירת כיתה'));
+assert.ok(teacher.includes('js/classroom-platform.js?v=20260910-craftom-teacher-link-1'));
 assert.ok(!teacher.includes('value="minecraft"'), 'teacher HTML must not expose a static unrestricted course picker');
 assert.ok(teacher.includes('בחרו מתוך הלומדות שהוקצו לך'));
 
@@ -78,6 +79,9 @@ assert.ok(client.includes('availableCourseIds'));
 assert.ok(client.includes('teacher-course-catalog'));
 assert.ok(client.includes('פתיחת הלומדה שלי'));
 assert.ok(client.includes('פתיחת הלומדה'));
+assert.ok(client.includes('ניהול הלומדה:'));
+assert.ok(client.includes('teacherCourseHref(courseId, classroom.id)'));
+assert.ok(client.includes('ניהול אקדמיית ה-Agent לפי כיתה'));
 assert.ok(client.includes('student-course-links'));
 assert.ok(entry.includes('הלומדות הפתוחות לכיתה שלך'));
 assert.ok(client.includes('/api/classroom/logout'));
