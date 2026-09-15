@@ -36,16 +36,24 @@
     body.lesson23-code-pilot .lesson23-code-overlay{position:absolute;inset:0;z-index:20;pointer-events:auto;direction:ltr;text-align:left;background:#fff;border:0;border-radius:0;padding:14px 210px 18px 18px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:1rem;line-height:1.7;color:#0f172a;box-shadow:none;overflow:auto;white-space:pre-wrap}
     body.lesson23-code-pilot .lesson23-code-panel-title{direction:rtl;text-align:right;font-family:Rubik,Arial,sans-serif;font-weight:900;color:#1e3a8a;margin:0 0 10px;padding-bottom:9px;border-bottom:1px solid #dbeafe}
     body.lesson23-code-pilot .lesson23-code-overlay .placeholder{color:#64748b;direction:rtl;text-align:right;font-family:Rubik,Arial,sans-serif;font-weight:900}
-    body.lesson23-code-pilot .lesson23-code-overlay .line{display:block;border-right:0;padding:1px 4px;border-radius:0;min-height:1.65em;cursor:pointer;position:relative;pointer-events:auto}
-    body.lesson23-code-pilot .lesson23-code-overlay .line:hover{background:transparent}
-    body.lesson23-code-pilot .lesson23-code-overlay .line.comment{color:#64748b;direction:rtl;text-align:right;font-family:Rubik,Arial,sans-serif}
-    body.lesson23-code-pilot .lesson23-code-overlay .line.active{background:rgba(219,234,254,.55);color:#1e3a8a}
-    body.lesson23-code-pilot .lesson23-code-overlay .line.indented{background:rgba(254,243,199,.45);border-radius:6px}
-    body.lesson23-code-pilot .lesson23-code-overlay .line.indented.active{background:rgba(219,234,254,.55);color:#1e3a8a}
+    body.lesson23-code-pilot .lesson23-code-overlay .line{display:block;border-right:0;padding:1px 8px;border-radius:7px;min-height:1.65em;cursor:pointer;position:relative;pointer-events:auto;margin:1px 0;color:#0f172a}
+    body.lesson23-code-pilot .lesson23-code-overlay .line.code-motion{background:#dff1e6;color:#14532d}
+    body.lesson23-code-pilot .lesson23-code-overlay .line.code-turn{background:#dff1e6;color:#14532d}
+    body.lesson23-code-pilot .lesson23-code-overlay .line.code-pen{background:#f2e4dc;color:#7c2d12}
+    body.lesson23-code-pilot .lesson23-code-overlay .line.code-color{background:#f2e4dc;color:#7c2d12}
+    body.lesson23-code-pilot .lesson23-code-overlay .line.code-loop{background:#eadff4;color:#581c87}
+    body.lesson23-code-pilot .lesson23-code-overlay .line.code-var{background:#dcecf2;color:#164e63}
+    body.lesson23-code-pilot .lesson23-code-overlay .line.code-comment{background:#e2eaf2;color:#334155}
+    body.lesson23-code-pilot .lesson23-code-overlay .line:hover{filter:brightness(.98)}
+    body.lesson23-code-pilot .lesson23-code-overlay .line.comment{direction:rtl;text-align:right;font-family:Rubik,Arial,sans-serif}
+    body.lesson23-code-pilot .lesson23-code-overlay .line.active{outline:3px solid #2563eb;outline-offset:1px}
+    body.lesson23-code-pilot .lesson23-code-overlay .line.indented{border-radius:7px;margin-left:2.1em}
+    body.lesson23-code-pilot .lesson23-code-overlay .line.indented.active{outline:3px solid #2563eb;outline-offset:1px}
     body.lesson23-code-pilot .blocklyFlyout{z-index:80!important}
     body.lesson23-code-pilot .blocklyToolboxDiv{opacity:0!important;width:0!important;min-width:0!important;max-width:0!important;overflow:hidden!important;pointer-events:none!important;border:0!important;padding:0!important}
     body.lesson23-code-pilot .blocklyFlyoutBackground{pointer-events:auto}
-    body.lesson23-code-pilot .lesson23-drag-handle{display:inline-block;width:2.4em;margin-right:6px;text-align:center;color:#94a3b8;cursor:grab;user-select:none;touch-action:none;font-family:Rubik,Arial,sans-serif;font-weight:900}
+    body.lesson23-code-pilot .lesson23-drag-handle{display:inline-block;width:2.4em;margin-right:6px;text-align:center;color:rgba(15,23,42,.5);cursor:grab;user-select:none;touch-action:none;font-family:Rubik,Arial,sans-serif;font-weight:900}
+    body.lesson23-code-pilot .lesson23-code-overlay .line:not(.code-motion):not(.code-turn):not(.code-pen):not(.code-color):not(.code-loop):not(.code-var):not(.code-comment) .lesson23-drag-handle{color:#94a3b8}
     body.lesson23-code-pilot .lesson23-drag-handle:active{cursor:grabbing}
     body.lesson23-code-pilot .lesson23-code-text{display:inline-block;min-width:7ch;border-radius:4px;padding:0 2px;outline:none;cursor:text}
     body.lesson23-code-pilot .lesson23-code-text:focus{background:transparent;border-bottom:2px solid #60a5fa;box-shadow:none}
@@ -5032,9 +5040,9 @@
           {
                     "id": 24,
                     "title": "רובוט בשליטה: מציירים עם length",
-                    "goal": "בונים רובוט קטן שנשלט דרך `length`: שינוי ערך אחד בתחילת הקוד משנה חלקים שלמים בציור בלי לתקן כל פקודה בנפרד.",
+                    "goal": "בונים רובוט במעבדת טעינה שנשלט דרך `length`: גוף, אנטנה, פרטים ולוח בקרה שמגיבים לשינוי ערך אחד בקוד.",
                     "concept": "משתנה אחד ככפתור שליטה בציור",
-                    "product": "רובוט שנבנה בשלבים ונשלט על ידי length",
+                    "product": "רובוט במעבדת טעינה עם גוף, אנטנה, פרטים ולוח בקרה",
                     "blocks": [
                               "forward",
                               "right",
@@ -5046,14 +5054,14 @@
                     "practice": [
                               "קבעו בתחילת הקוד `length = 80` וציירו קו בדיקה שהוא בסיס הרובוט.",
                               "הפכו את קו הבדיקה לגוף רובוט מרובע בעזרת `forward(length)` ו־`repeat`.",
-                              "הוסיפו ראש/אנטנה/עיניים כך שהרובוט נראה כמו דמות ולא רק ריבוע.",
-                              "עברו למקום חדש עם `penup`/`pendown` כדי להפריד בין הגוף לפרטים בלי קווים מיותרים.",
-                              "שנו את `length` ובדקו שכל החלקים החשובים של הרובוט גדלים או קטנים יחד.",
-                              "תקנו חלק אחד שנשאר עם מספר קבוע והחליפו אותו ל־`length`.",
-                              "הוסיפו תוספת קטנה ליד הרובוט — שלט טעינה, כפתורים או חללית — שגם היא משתמשת ב־`length`.",
-                              "הוסיפו תוספת קטנה ליד הרובוט — שלט טעינה, כפתורים או חללית — שגם היא משתמשת ב־`length`.",
-                              "הסבירו אילו חלקים ברובוט נשלטים על ידי `length`.",
-                              "אתגר: הוסיפו עוד מצב או קישוט שמגיב לשינוי `length`."
+                              "הוסיפו אנטנה קצרה שמתחילה רק אחרי שינוי `length` אחרי הלולאה.",
+                              "הוסיפו ידיים או רגליים בעזרת מעברים נקיים, כדי שהרובוט ייראה כמו דמות מלאה.",
+                              "הוסיפו ליד הרובוט לוח בקרה/טעינה עם כפתורים חוזרים בלולאה.",
+                              "בדקו מצב קטן וגדול, ותקנו חלק אחד שנשאר עם מספר קבוע במקום `length`.",
+                              "שדרגו את הרובוט למצב אישי: צבע, ידיים ארוכות, אנטנה גבוהה או רגליים מיוחדות.",
+                              "אתגר: הוסיפו תחנת טעינה, קרני אנרגיה או חללית קטנה שמשתמשת גם היא ב־`length`.",
+                              "הסבירו אילו חלקים בתוצר נשלטים על ידי `length`.",
+                              "אתגר: הפכו את המעבדה לסצנה קטנה עם לפחות שתי לולאות."
                     ],
                     "timing": [
                               "0–8 פתיחה: למה כדאי לשלוט בציור ממקום אחד",
@@ -5075,8 +5083,8 @@
                     "unit": "יחידה 5 — אנימציה וסיפור בתנועה",
                     "level": "מתקדם לגיל 10–11",
                     "story": "הצב הוא מהנדס רובוטים. במקום לצייר רובוט שכל חלק בו בנוי ממספרים מפוזרים, הוא שם בתחילת הקוד ערך שליטה אחד: `length`.",
-                    "mission": "לבנות רובוט שגדל או קטן בעיקר דרך `length` בתחילת הקוד — בלי לרדוף אחרי כל פקודת `forward` בנפרד.",
-                    "outcome": "רובוט קוד עם לוח שליטה פשוט: שינוי `length` משנה חלקים ברורים בציור.",
+                    "mission": "לבנות תוצר רובוטי עשיר — רובוט, אנטנה, פרטים ולוח בקרה — שגדל או קטן בעיקר דרך `length` בתחילת הקוד.",
+                    "outcome": "רובוט במעבדת טעינה: שינוי `length` משנה חלקים ברורים בגוף, באנטנה ובפרטים סביבו.",
                     "approach": "משתמשים ב־`length` בכמה מקומות, מריצים לפני/אחרי ומתקנים מספרים קבועים",
                     "bridge": "מהציור בחזרה לקוד: איפה `length` שולט בציור?",
                     "durationMinutes": 90,
@@ -5161,47 +5169,47 @@
                               {
                                         "id": 4,
                                         "minutes": "40–48",
-                                        "title": "תרגול 4 — עוברים בלי קווים מיותרים",
-                                        "prompt": "נקו את המעבר בין הגוף לפרט: השתמשו ב־`penup`, `forward(length)` ו־`pendown` כדי להגיע למקום חדש בלי להשאיר קו מיותר. אחרי המעבר ציירו עוד פרט קטן.",
-                                        "hint": "מעבר נקי נראה כך: מרימים עט → זזים לפי `length` → מורידים עט → מציירים את החלק הבא.",
-                                        "check": "יש מעבר נקי אחד לפחות בין חלקי הרובוט, ואחריו נוסף פרט מצויר במקום החדש.",
-                                        "commonMistake": "שוכחים להרים עט, ואז מופיע קו שמחבר בין הגוף לפרט קטן."
+                                        "title": "תרגול 4 — ידיים ורגליים בלי קווים מיותרים",
+                                        "prompt": "הוסיפו לרובוט ידיים או רגליים בעזרת מעברים נקיים, כך שהוא כבר לא נראה רק כמו ריבוע עם אנטנה.",
+                                        "hint": "השתמשו ב־`penup` כדי לעבור לצד או לתחתית הגוף בלי לצייר קו מחבר. אחר כך שימו `pendown`, ומיד אחריו קו `forward` כדי לצייר יד או רגל.",
+                                        "check": "יש מעבר נקי, ואחרי `pendown` מופיע קו `forward` שמצייר יד או רגל.",
+                                        "commonMistake": "מציירים ידיים יפות, אבל משאירים קו ארוך שמחבר אותן מהמקום הקודם."
                               },
                               {
                                         "id": 5,
                                         "minutes": "48–58",
-                                        "title": "תרגול 5 — מצב קטן ומצב ענק",
-                                        "prompt": "בדקו שהרובוט באמת בשליטה: שנו רק את `length` בתחילת הקוד ל־60 ואז ל־110. הגוף ועוד פרט אחד לפחות צריכים להשתנות בלי לערוך את שורות הציור.",
-                                        "hint": "בדיקה טובה: משנים את `length`, מריצים, ומשווים מה גדל או קטן.",
-                                        "check": "שינוי `length` בתחילת הקוד משנה לפחות שני חלקים ברורים ברובוט, בלי לשנות את פקודות הציור בהמשך.",
-                                        "commonMistake": "משנים גם את הערכים וגם פקודות באמצע הקוד, ואז לא יודעים מה באמת השפיע."
+                                        "title": "תרגול 5 — לוח בקרה עם כפתורים",
+                                        "prompt": "הוסיפו ליד הרובוט לוח בקרה או תחנת טעינה עם 3 כפתורים חוזרים בלולאה.",
+                                        "hint": "עברו הצידה עם `penup` ו־`pendown`, ואז צרו כפתורים או קווי טעינה בעזרת `repeat(3)`. אפשר להשתמש בקווים קצרים, צבעים או שינוי עובי.",
+                                        "check": "יש מעבר נקי מהגוף לאזור חדש, ויש לולאה של 3 חזרות שמוסיפה כפתורים/קווי טעינה ליד הרובוט.",
+                                        "commonMistake": "מציירים עוד קווים על הגוף עצמו במקום ליצור לוח בקרה נפרד ליד הרובוט."
                               },
                               {
                                         "id": 6,
                                         "minutes": "58–68",
-                                        "title": "תרגול 6 — דיבאג: מי לא מקשיב למשתנה?",
-                                        "prompt": "דיבאג: חפשו ברובוט חלק שנשאר עם מספר קבוע, למשל `forward(40)`. החליפו לפחות שורה אחת כזאת ל־`forward(length)` והריצו שוב.",
-                                        "hint": "סימן לבאג: משנים את `length`, אבל חלק אחד נשאר בדיוק אותו דבר. חפשו שם מספר רגיל.",
-                                        "check": "לפחות קו אחד שהיה מספר קבוע הוחלף ל־`forward(length)`, ועכשיו עוד חלק ברובוט מגיב לשינוי `length`.",
-                                        "commonMistake": "מוחקים את כל החלק במקום להחליף רק את המספר הקבוע במשתנה."
+                                        "title": "תרגול 6 — בדיקת שליטה ודיבאג",
+                                        "prompt": "שנו את `length` למצב קטן ואז למצב גדול. מצאו חלק אחד שלא משתנה מספיק, ותקנו אותו כך שישתמש ב־`forward(length)`.",
+                                        "hint": "אל תשנו הרבה דברים יחד. קודם שנו רק את `length`, הריצו, ואז חפשו קו עם מספר קבוע שמתאים להחלפה ב־`forward(length)`.",
+                                        "check": "הרובוט כולל כמה חלקים, ויש לפחות שימוש אחד נוסף ב־`forward(length)` במקום מספר קבוע.",
+                                        "commonMistake": "משנים את כל המספרים ביד במקום לבדוק מה באמת נשלט על ידי `length`."
                               },
                               {
                                         "id": 7,
                                         "minutes": "68–78",
                                         "title": "תרגול 7 — מצב רובוט אישי",
-                                        "prompt": "בחרו מצב לרובוט: ענק, זעיר, רחב, צפוף או עם אנטנה ארוכה. הוסיפו/התאימו 2–3 שורות כך שהמצב נראה בציור, ורוב השינוי נעשה דרך `length`.",
-                                        "hint": "מצב טוב הוא כזה שאפשר להסביר: “שיניתי את `___`, ולכן ___ השתנה בציור”.",
-                                        "check": "יש גרסת רובוט אישית, ולפחות שני חלקים בה נשלטים דרך `length`.",
-                                        "commonMistake": "מוסיפים הרבה קישוטים ידניים, אבל מאבדים את הרעיון של שליטה דרך ערכים."
+                                        "prompt": "בחרו מצב לרובוט: רובוט חילוץ, רובוט חלל, רובוט זעיר או רובוט ענק. הוסיפו צבע ו־2–3 פרטים שמראים את המצב.",
+                                        "hint": "דוגמאות: צבע אחר לגוף, אנטנה גבוהה, רגליים ארוכות, זרוע חילוץ או קווי אנרגיה. לפחות שני חלקים עדיין צריכים להשתמש ב־`length`.",
+                                        "check": "יש גרסת רובוט אישית עם צבע או שינוי סגנון, ולפחות שני חלקים בה נשלטים דרך `length`.",
+                                        "commonMistake": "מוסיפים קישוטים חופשיים, אבל שוכחים להשאיר את `length` ככפתור שליטה מרכזי."
                               },
                               {
                                         "id": 8,
                                         "minutes": "78–90",
-                                        "title": "אתגר רשות — תוספת שנשלטת בקוד",
-                                        "prompt": "אם נשאר זמן, הוסיפו ליד הרובוט תוספת קטנה: חללית, שלט טעינה או כפתורי בקרה. התוספת צריכה להיראות בנפרד מהרובוט, ולפחות חלק אחד בה חייב להשתמש ב־`length`.",
-                                        "hint": "רעיונות: שלט טעינה עם קווים קצרים, חללית משולשת קטנה, או כפתורים שמופרדים לפי `length`.",
-                                        "check": "התוספת יצירתית, אבל עדיין מחוברת לרעיון השיעור: שינוי ערך בתחילת הקוד משפיע על הציור.",
-                                        "commonMistake": "האתגר הופך לציור חופשי בלי קשר ל־`length`."
+                                        "title": "אתגר רשות — מעבדת טעינה לרובוט",
+                                        "prompt": "אם נשאר זמן, הפכו את הציור לסצנה: הוסיפו תחנת טעינה, קרני אנרגיה או חללית קטנה ליד הרובוט.",
+                                        "hint": "נסו להשתמש בעוד לולאה בשביל קרני אנרגיה או כפתורים חוזרים. התוספת צריכה להיות נפרדת מהרובוט ולפחות חלק אחד בה צריך להשתמש ב־`length`.",
+                                        "check": "נוספה סצנה סביב הרובוט — תחנה, קרני אנרגיה או חללית — ויש בה שימוש ב־`length` או בלולאה נוספת.",
+                                        "commonMistake": "האתגר הופך לציור חופשי בלי קשר ל־`length` או ללולאות."
                               }
                     ],
                     "vocabulary": [
@@ -6948,6 +6956,9 @@
     let lesson23ManualDrag = null;
     let lesson23ScrollToBottomPending = false;
     let lesson23PendingAppendBlockIds = new Set();
+    let lesson23NewlyCreatedBlockIds = new Set();
+    let lesson23CurrentDragCreateIds = new Set();
+    let lesson23DragActive = false;
     let lesson23NewBlockDropTarget = null;
     let lesson23Pointer = {x:0,y:0};
     function isCodePilotLesson(){ return currentLesson === 23 || currentLesson === 24; }
@@ -7150,6 +7161,19 @@
       overlay.classList.toggle('lesson23-append-drop-mark', !!show);
       if(show) scrollLesson23CodeToBottom();
     }
+    function lesson23CodeLineColorClass(line){
+      const text = String(line?.text || '').trim();
+      if(/^#/.test(text)) return ' code-comment';
+      const block = line?.id ? workspace.getBlockById(line.id) : null;
+      const type = block?.type || '';
+      if(type === 'py_repeat') return ' code-loop';
+      if(type === 'py_forward' || type === 'py_forward_length') return ' code-motion';
+      if(type === 'py_left' || type === 'py_right') return ' code-turn';
+      if(type === 'py_penup' || type === 'py_pendown' || type === 'py_width') return ' code-pen';
+      if(type === 'py_color') return ' code-color';
+      if(type === 'py_set_length' || type === 'py_grow_length') return ' code-var';
+      return '';
+    }
     function renderLesson23CodeOverlay(bodyLines){
       const overlay = ensureLesson23CodeOverlay();
       if(!overlay || !isCodePilotLesson()) return;
@@ -7166,6 +7190,7 @@
       let lesson23ChildLineNumber = 0;
       overlay.innerHTML = '<div class="lesson23-code-panel-title">הקוד שלי</div>' + bodyLines.map(line=>{
         const active = line.id && line.id === lesson23SelectedBlockId ? ' active' : '';
+        const colorClass = lesson23CodeLineColorClass(line);
         const isComment = /^\s*#/.test(line.text || '');
         const isIndented = /^\s+\S/.test(line.text || '');
         const editable = line.id ? ' contenteditable="true" spellcheck="false" role="textbox" aria-label="עריכת שורת קוד"' : '';
@@ -7179,7 +7204,7 @@
           lineNumber = String(lesson23TopLineNumber);
         }
         const dragHandle = line.id ? `<span class="lesson23-drag-handle" data-block-id="${escapeHtml(line.id)}" title="גררו את מספר השורה כדי לשנות סדר">${lineNumber}</span>` : '';
-        return `<span class="line${isComment ? ' comment' : ''}${isIndented ? ' indented' : ''}${active}" data-block-id="${escapeHtml(line.id || '')}" tabindex="0">${dragHandle}<span class="lesson23-code-text" data-block-id="${escapeHtml(line.id || '')}"${editable}>${escapeHtml(line.text || '')}</span></span>`;
+        return `<span class="line${isComment ? ' comment' : ''}${isIndented ? ' indented' : ''}${colorClass}${active}" data-block-id="${escapeHtml(line.id || '')}" tabindex="0">${dragHandle}<span class="lesson23-code-text" data-block-id="${escapeHtml(line.id || '')}"${editable}>${escapeHtml(line.text || '')}</span></span>`;
       }).join('');
       if(lesson23ScrollToBottomPending || wasNearBottom){
         lesson23ScrollToBottomPending = false;
@@ -7293,13 +7318,15 @@
       const ids = [...lesson23PendingAppendBlockIds].filter(id=>{
         const block = workspace.getBlockById(id);
         if(!block) return false;
-        const alreadyRenderedLine = !!lesson23CodeOverlay?.querySelector(`.line[data-block-id="${CSS.escape(id)}"]`);
-        // Safety: blocks that already existed inside a repeat body must never be treated as newly dragged toolbox blocks.
-        // Otherwise the first added block in a new exercise can accidentally pull the loop body out.
-        if(alreadyRenderedLine && lesson23IsInAnyRepeatBody(block)) return false;
-        return true;
+        // Only blocks actually created by this toolbox drag should be repositioned.
+        // If Blockly temporarily connected the new block in the wrong place, still move it to the blue-line target.
+        // Existing lines from restored/cumulative code are never in lesson23NewlyCreatedBlockIds, so they won't jump.
+        return lesson23NewlyCreatedBlockIds.has(id) && (!lesson23CurrentDragCreateIds.size || lesson23CurrentDragCreateIds.has(id));
       });
       lesson23PendingAppendBlockIds.clear();
+      lesson23NewlyCreatedBlockIds.clear();
+      lesson23CurrentDragCreateIds.clear();
+      lesson23DragActive = false;
       let changed = false;
       ids.forEach(id=>{ changed = insertLesson23NewBlockAtMarkedTarget(id) || changed; });
       lesson23NewBlockDropTarget = null;
@@ -7307,6 +7334,9 @@
     }
     function clearLesson23PendingNewBlocks(){
       lesson23PendingAppendBlockIds.clear();
+      lesson23NewlyCreatedBlockIds.clear();
+      lesson23CurrentDragCreateIds.clear();
+      lesson23DragActive = false;
       lesson23NewBlockDropTarget = null;
       clearLesson23DropMarks();
     }
@@ -7324,16 +7354,16 @@
       if(placeAfter && target.type === 'py_repeat'){
         const inputConn = target.getInput('DO')?.connection;
         const firstInner = target.getInputTargetBlock('DO');
-        if(!firstInner){
-          if(inputConn && dragged.previousConnection){
-            try{ inputConn.connect(dragged.previousConnection); }catch{}
-          }
-        } else {
-          let lastInner = firstInner;
-          while(lastInner.getNextBlock?.()) lastInner = lastInner.getNextBlock();
-          if(lastInner.nextConnection && dragged.previousConnection){
-            try{ lastInner.nextConnection.connect(dragged.previousConnection); }catch{}
-          }
+        // The blue line immediately after a repeat line visually means: insert as the first indented line.
+        // Do not append to the end of the loop body, because that makes the block appear to jump elsewhere.
+        if(firstInner && inputConn?.isConnected()){
+          try{ inputConn.disconnect(); }catch{}
+        }
+        if(inputConn && dragged.previousConnection){
+          try{ inputConn.connect(dragged.previousConnection); }catch{}
+        }
+        if(firstInner && dragged.nextConnection && firstInner.previousConnection){
+          try{ dragged.nextConnection.connect(firstInner.previousConnection); }catch{}
         }
       } else if(placeAfter){
         const targetNextConn = target.nextConnection?.targetConnection || null;
@@ -7361,6 +7391,7 @@
       const targetXY = target.getRelativeToSurfaceXY?.() || draggedXY;
       try{ dragged.moveBy((targetXY.x || 40) - (draggedXY.x || 40), ((targetXY.y || 40) + (placeAfter ? 28 : -28)) - (draggedXY.y || 40)); }catch{}
       lesson23SelectedBlockId = dragged.id;
+      lastSelectedBlockId = dragged.id;
       generatePython();
       saveActiveWorkspace();
       saveProgress();
@@ -7396,7 +7427,7 @@
         if(y <= firstRect.top){
           line = first;
           after = false;
-        } else if(y >= lastRect.bottom){
+        } else if(y >= lastRect.bottom - 6){
           line = last;
           after = true;
         } else {
@@ -7438,7 +7469,7 @@
         if(y <= firstRect.top){
           line = first;
           after = false;
-        } else if(y >= lastRect.bottom){
+        } else if(y >= lastRect.bottom - 6){
           line = last;
           after = true;
         } else {
@@ -7824,6 +7855,19 @@
       return `<div class="secret-reveal" style="background:#f8fafc;border-color:#cbd5e1;color:#0f172a"><div style="font-weight:900;margin-bottom:8px;">🔮 לפני הרצה: ${escapeHtml(cfg.question)}</div><div style="display:grid;gap:8px;">${cfg.options.map(([value,label])=>{ const isSelected = selected === value; const selectedStyle = isSelected ? 'border:3px solid #2563eb;background:#dbeafe;color:#1e3a8a;box-shadow:0 0 0 3px rgba(37,99,235,.16);' : ''; return `<button class="btn reset lesson21-prediction-choice" type="button" data-prediction="${value}" style="text-align:right;justify-content:flex-start;font-weight:900;transition:.15s ease;${selectedStyle}">${escapeHtml(label)}</button>`; }).join('')}</div><small style="display:block;margin-top:8px;">בחרו תשובה לפני שאתם בודקים את התרגיל.</small></div>`;
     }
     function exerciseVisualHtml(ex){
+      if(currentLesson === 24){
+        const stageNotes = {
+          1: 'דגם יעד לסוף השיעור — בתרגיל 1 מתחילים רק מקו שנשלט על ידי length.',
+          2: 'בתרגיל 2 בונים את גוף הרובוט בלולאה. עדיין לא צריך את כל המעבדה.',
+          3: 'בתרגיל 3 מוסיפים אנטנה קצרה: משאירים את length של הגוף, ורק אחרי הלולאה משנים אותו.',
+          4: 'בתרגיל 4 מוסיפים ידיים או רגליים בעזרת מעברים נקיים, בלי קווים מחברים.',
+          5: 'בתרגיל 5 מוסיפים ליד הרובוט לוח בקרה או תחנת טעינה עם כפתורים חוזרים.',
+          6: 'בתרגיל 6 בודקים מה באמת נשלט על ידי length ומתקנים קווים שנשארו מספרים קבועים.',
+          7: 'בתרגיל 7 הופכים את הרובוט לאישי: צבע, זרוע, רגליים, אנטנה או מצב מיוחד.',
+          8: 'אתגר: להפוך את זה לסצנה — רובוט, לוח בקרה, קרני אנרגיה או תחנת טעינה.'
+        };
+        return `<div class="exercise-visual" style="margin:10px 0;padding:12px;border:1px solid #c4b5fd;border-radius:16px;background:#f5f3ff;text-align:center;"><div style="font-weight:900;color:#5b21b6;margin-bottom:8px;">דגם השראה — רובוט במעבדת טעינה</div><svg width="300" height="190" viewBox="0 0 300 190" role="img" aria-label="דגם קווי לרובוט במעבדת טעינה שאפשר לצייר עם הצב"><rect x="10" y="10" width="280" height="164" rx="16" fill="#ffffff" stroke="#ddd6fe" stroke-width="3"/><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M94 58 H166 V130 H94 V58" stroke="#2563eb" stroke-width="6"/><line x1="130" y1="58" x2="130" y2="28" stroke="#f59e0b" stroke-width="5"/><line x1="130" y1="28" x2="130" y2="18" stroke="#f59e0b" stroke-width="4"/><line x1="94" y1="82" x2="62" y2="66" stroke="#22c55e" stroke-width="5"/><line x1="166" y1="82" x2="198" y2="66" stroke="#22c55e" stroke-width="5"/><line x1="112" y1="130" x2="102" y2="156" stroke="#0f172a" stroke-width="5"/><line x1="148" y1="130" x2="158" y2="156" stroke="#0f172a" stroke-width="5"/><path d="M109 78 H121 V90 H109 V78" stroke="#2563eb" stroke-width="4"/><path d="M139 78 H151 V90 H139 V78" stroke="#2563eb" stroke-width="4"/><line x1="113" y1="106" x2="148" y2="106" stroke="#ef4444" stroke-width="5"/><path d="M210 74 H258 V144 H210 V74" stroke="#7c3aed" stroke-width="5"/><path d="M228 84 H240 V96 H228 V84" stroke="#7c3aed" stroke-width="4"/><path d="M228 104 H240 V116 H228 V104" stroke="#7c3aed" stroke-width="4"/><path d="M228 124 H240 V136 H228 V124" stroke="#7c3aed" stroke-width="4"/><polyline points="184,112 194,102 198,92 194,82 184,72" stroke="#facc15" stroke-width="4"/><polyline points="196,126 210,108 214,92 210,74 196,56" stroke="#facc15" stroke-width="4"/><line x1="45" y1="158" x2="266" y2="158" stroke="#cbd5e1" stroke-width="5"/></g><g fill="#475569" font-family="Rubik,Arial" font-size="12" font-weight="900" text-anchor="middle"><text x="130" y="178">רובוט</text><text x="235" y="162">לוח בקרה</text><text x="200" y="46">קרני טעינה</text></g></svg><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;text-align:right;margin-top:8px;"><div style="background:white;border:1px solid #ddd6fe;border-radius:12px;padding:8px;"><b>חלקי חובה:</b><br>גוף בלולאה, אנטנה קצרה, ידיים/רגליים, ולפחות פרט אחד שנשלט על ידי <code>length</code>.</div><div style="background:white;border:1px solid #ddd6fe;border-radius:12px;padding:8px;"><b>שדרוג מתקדם:</b><br>לוח בקרה עם <code>repeat(3)</code>, צבעים, קרני טעינה או מצב רובוט אישי.</div></div><small style="display:block;margin-top:8px;color:#475569;font-weight:800;line-height:1.35;">${stageNotes[ex?.id] || 'הדגם הוא השראה בלבד — לא חייבים להעתיק בדיוק, אבל כדאי להגיע לתוצר עשיר ומעניין.'}</small></div>`;
+      }
       if(currentLesson === 23 && ex?.id === 8){
         return `<div class="exercise-visual" style="margin:10px 0;padding:12px;border:1px solid #bae6fd;border-radius:16px;background:#f0f9ff;text-align:center;"><div style="font-weight:900;color:#0369a1;margin-bottom:8px;">דגם לבחירה: יעד קטן לסוף הטיול</div><svg width="280" height="130" viewBox="0 0 280 130" role="img" aria-label="דגם יעד אישי עם גל קטן והר קטן שצוירו בקווי צב"><rect x="10" y="10" width="260" height="104" rx="14" fill="#ffffff" stroke="#dbeafe" stroke-width="3"/><g fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="38,62 44,58 50,54 57,51 64,49 71,48 78,48 85,49 92,51 99,54 105,58 111,62" stroke="#2563eb" stroke-width="5"/><polyline points="111,62 117,66 124,69 131,71 138,72 145,72 152,71 159,69 166,66 172,62" stroke="#2563eb" stroke-width="5"/><polyline points="184,84 210,40 236,84 184,84" stroke="#475569" stroke-width="6"/></g><g fill="#475569" font-family="Rubik,Arial" font-size="13" font-weight="900" text-anchor="middle"><text x="105" y="99">גל קטן</text><text x="210" y="99">הר קטן</text></g></svg><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;text-align:right;margin-top:6px;"><div style="background:white;border-radius:12px;padding:8px;border:1px solid #dbeafe;"><b>ים קטן:</b><br>בחרו color כחול. לגל יפה: קודם repeat(9) עם forward קטן ו־right(10), ואז repeat(9) עם forward קטן ו־left(10), כדי שהגל יחזור לצד השני. לגל נוסף — עברו קצת עם penup / pendown וחזרו על אותו רעיון.</div><div style="background:white;border-radius:12px;padding:8px;border:1px solid #dbeafe;"><b>הר קטן:</b><br>בחרו color כהה, גררו repeat(3), והכניסו לתוכו forward קטן ו־right(120).</div></div><small style="color:#475569;font-weight:800;line-height:1.35;display:block;margin-top:8px;">עוד רעיונות למי שמספיק: גינה קטנה, מערה, בית קטן או עץ קטן.</small></div>`;
       }
@@ -10825,23 +10869,32 @@
         }
         if(ex.id === 4){
           if(cleanMoves < 1) return ['כמעט — עברו בין חלקים עם `penup`, תנועה, ואז `pendown`, כדי שלא יהיו קווים מיותרים.'];
+          const hasForwardAfterPendown = actions.some((a,i)=>a.cmd === 'pen' && a.v === true && actions.slice(i + 1).some(b=>b.cmd === 'forward' || b.cmd === 'forwardVar'));
+          if(!hasForwardAfterPendown) return ['כמעט — אחרי `pendown` הוסיפו קו `forward` כדי לצייר יד או רגל במקום החדש.'];
+          if(moveCount < 4) return ['יופי — יש מעבר נקי וקו אחרי `pendown`. עכשיו הוסיפו עוד קו אחד לפחות לידיים או רגליים.'];
           return [];
         }
         if(ex.id === 5){
-          if(!hasForwardLength) return ['כמעט — כדי לבדוק מצב קטן/ענק, חלק ברור מהרובוט צריך להשתמש ב־`forward(length)`.'];
+          if(cleanMoves < 1) return ['כמעט — לוח הבקרה צריך להיות באזור נפרד, אז עברו אליו עם `penup` ו־`pendown`.'];
+          const hasThreeRepeat = repeatPatternBlocks().some(({times, body})=>Number(times) === 3 && body.some(a=>a.cmd === 'forward' || a.cmd === 'forwardVar'));
+          if(!hasThreeRepeat) return ['כמעט — צרו 3 כפתורים או קווי טעינה בעזרת `repeat(3)`.'];
           return [];
         }
         if(ex.id === 6){
-          if(moveCount < 3) return ['כמעט — צריך מספיק חלקים ברובוט כדי למצוא מספר קבוע ולתקן אותו.'];
-          if(!hasForwardLength) return ['כמעט — החליפו לפחות מספר קבוע אחד ל־`length`.'];
+          if(moveCount < 5) return ['כמעט — צריך רובוט עם מספיק חלקים לפני בדיקת השליטה והדיבאג.'];
+          const lengthForwardCount = actions.filter(a=>a.cmd === 'forwardVar' && a.name === 'length').length;
+          if(lengthForwardCount < 3) return ['כמעט — החליפו עוד קו אחד ל־`forward(length)`, כדי שיותר חלקים יקשיבו למשתנה.'];
           return [];
         }
         if(ex.id === 7){
-          if(moveCount < 4 || !hasForwardLength) return ['כמעט — מצב רובוט אישי צריך עדיין להשתמש ב־`length` בחלקים של הציור.'];
+          if(moveCount < 6 || !hasForwardLength) return ['כמעט — מצב רובוט אישי צריך להוסיף 2–3 פרטים ועדיין להשתמש ב־`length`.'];
+          if(!actions.some(a=>a.cmd === 'color')) return ['כמעט — הוסיפו צבע כדי שהמצב האישי יהיה ברור יותר בציור.'];
           return [];
         }
         if(ex.id === 8){
-          if(!hasForwardLength) return ['כמעט — גם התוספת צריכה להיות נשלטת בקוד, בעזרת `length`.'];
+          const repeatCount = repeatPatternBlocks().length;
+          if(moveCount < 7) return ['כמעט — הוסיפו עוד חלק נראה לסצנה, למשל תחנת טעינה או קרני אנרגיה.'];
+          if(!hasForwardLength && repeatCount < 2) return ['כמעט — גם התוספת צריכה להתחבר לרעיון השיעור: השתמשו ב־`length` או בלולאה נוספת.'];
           return [];
         }
       }
@@ -11815,25 +11868,58 @@
       const isDragEvent = event.type === Blockly.Events.BLOCK_DRAG || event.type === 'drag';
       if(isCodePilotLesson() && !restoringProgress && event.type === Blockly.Events.BLOCK_CREATE && Array.isArray(event.ids)){
         if(event.recordUndo === false) return;
-        event.ids.forEach(id=>lesson23PendingAppendBlockIds.add(id));
+        event.ids.forEach(id=>{
+          lesson23PendingAppendBlockIds.add(id);
+          lesson23NewlyCreatedBlockIds.add(id);
+          if(lesson23DragActive) lesson23CurrentDragCreateIds.add(id);
+        });
         setTimeout(()=>{
           updateLesson23NewBlockDropTarget(lesson23Pointer.x, lesson23Pointer.y);
           clearLesson23NewBlockPreviewSelection();
         }, 0);
+        setTimeout(()=>{
+          updateLesson23NewBlockDropTarget(lesson23Pointer.x, lesson23Pointer.y);
+          clearLesson23NewBlockPreviewSelection();
+        }, 30);
         return;
       }
       if(isCodePilotLesson() && isDragEvent){
         if(event.isStart){
+          // A hard refresh can leave late Blockly CREATE events from restored blocks in the "new block" queue.
+          // Do not clear the whole queue here: in some browsers Blockly fires CREATE before DRAG start,
+          // and clearing everything hides the blue line. Instead, prune only blocks that are already rendered
+          // as existing code lines, and keep the new toolbox block for this drag.
+          for(const id of [...lesson23PendingAppendBlockIds]){
+            const alreadyRenderedLine = !!lesson23CodeOverlay?.querySelector(`.line[data-block-id="${CSS.escape(id)}"]`);
+            if(alreadyRenderedLine){
+              lesson23PendingAppendBlockIds.delete(id);
+              lesson23NewlyCreatedBlockIds.delete(id);
+              lesson23CurrentDragCreateIds.delete(id);
+            }
+          }
+          lesson23CurrentDragCreateIds.clear();
+          for(const id of lesson23PendingAppendBlockIds){
+            if(lesson23NewlyCreatedBlockIds.has(id)) lesson23CurrentDragCreateIds.add(id);
+          }
+          lesson23DragActive = true;
+          lesson23NewBlockDropTarget = null;
+          clearLesson23DropMarks();
           updateLesson23BlockVisibility();
-          setTimeout(()=>{
-            updateLesson23NewBlockDropTarget(lesson23Pointer.x, lesson23Pointer.y);
-            clearLesson23NewBlockPreviewSelection();
-          }, 30);
+          if(lesson23PendingAppendBlockIds.size){
+            setTimeout(()=>{
+              updateLesson23NewBlockDropTarget(lesson23Pointer.x, lesson23Pointer.y);
+              clearLesson23NewBlockPreviewSelection();
+            }, 0);
+          }
         } else {
+          // On drop, trust the blue-line target that was calculated while dragging.
+          // Blockly may temporarily snap/connect the block somewhere else during mouseup;
+          // recalculating here can accidentally use that wrong temporary position.
           setTimeout(()=>{
-            updateLesson23NewBlockDropTarget(lesson23Pointer.x, lesson23Pointer.y);
             const inserted = flushLesson23PendingAppendBlocks();
             clearLesson23DropMarks();
+            lesson23DragActive = false;
+            lesson23CurrentDragCreateIds.clear();
             if(!inserted){ generatePython(); updateLesson23BlockVisibility(); }
           }, 30);
         }
