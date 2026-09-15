@@ -45,13 +45,14 @@ assert.ok(entry.includes('קוד אישי'));
 assert.ok(entry.includes('teacher-classrooms.html'));
 
 assert.ok(teacher.includes('id="teacher-login-form"'));
+assert.ok(teacher.includes('id="preview-demo-teacher"'));
 assert.ok(teacher.includes('id="teacher-register-form"'));
 assert.ok(teacher.includes('name="inviteCode"'));
 assert.ok(teacher.includes('id="create-class-form"'));
 assert.ok(teacher.includes('id="classes-list"'));
 assert.ok(teacher.includes('id="teacher-course-catalog"'));
 assert.ok(teacher.includes('יצירת כיתה'));
-assert.ok(teacher.includes('js/classroom-platform.js?v=20260910-craftom-teacher-link-1'));
+assert.ok(teacher.includes('js/classroom-platform.js?v=20260914-teacher-board-return-1'));
 assert.ok(!teacher.includes('value="minecraft"'), 'teacher HTML must not expose a static unrestricted course picker');
 assert.ok(teacher.includes('בחרו מתוך הלומדות שהוקצו לך'));
 
@@ -68,6 +69,10 @@ assert.ok(!adminClient.includes('innerHTML'), 'administrator UI must render teac
 assert.ok(!adminClient.includes('localStorage'), 'administrator credentials must stay only in the HttpOnly session cookie');
 
 assert.ok(client.includes('/api/classroom/teacher-login'));
+assert.ok(client.includes('/api/classroom/preview-demo-teacher-enabled'));
+assert.ok(client.includes('/api/classroom/preview-demo-teacher-login'));
+assert.ok(client.includes('fromTeacherBoard'), 'teacher board return should open the class list instead of leaving preview users at the login form');
+assert.ok(client.includes("history.replaceState(null, '', 'teacher-classrooms.html')"));
 assert.ok(client.includes('/api/classroom/teacher-register'));
 assert.ok(client.includes('/api/classroom/student-login'));
 assert.ok(client.includes('/api/classroom/preview-demo-student-enabled'));
@@ -97,6 +102,10 @@ assert.ok(sessionClient.includes('/api/classroom/progress'));
 assert.ok(sessionClient.includes('hai:classroom-progress'));
 assert.ok(server.includes('injectClassroomSession'));
 assert.ok(server.includes('function previewDemoStudentLogin'));
+assert.ok(server.includes('craftom-tehila-preview.orma-ai.com'), 'Tehila preview should expose demo teacher login');
+assert.ok(server.includes('canUseClassroomPreviewDemo(req)'));
+assert.ok(server.includes('tehilaPreviewCraftomPage'), 'Tehila Craftom preview should bypass the generic subscription lock screen');
+assert.ok(server.includes('!tehilaPreviewCraftomPage'), 'subscription gates must explicitly keep production locked while allowing Tehila preview');
 assert.ok(server.includes("'/classroom-entry.html'"));
 assert.ok(server.includes("'/teacher-classrooms.html'"));
 assert.ok(packageJson.includes('node --check js/classroom-platform.js'));

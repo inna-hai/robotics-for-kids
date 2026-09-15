@@ -7,12 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260910-direct-student-copy-1">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260914-teacher-return-1">
   <link rel="stylesheet" href="css/platform-home-link.css">
   <style>
-    .challenge-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-    .challenge-nav a{display:inline-flex;text-decoration:none;border:1px solid #bdd8f4;background:#fff;color:var(--blue);border-radius:999px;padding:8px 12px;font-weight:900}
-    .challenge-nav a.active{background:var(--blue);color:#fff}
     .hero-video{overflow:hidden}
     .challenge-video{display:block;width:100%;aspect-ratio:16/9;border:0;border-radius:16px 16px 0 0;background:#111}
     .video-caption{margin:0;padding:12px 14px;color:var(--muted);font-weight:800;line-height:1.6;background:#fff}
@@ -36,7 +33,6 @@
     </div>
   </header>
   <main class="shell">
-    <nav class="challenge-nav" id="challengeNav"></nav>
     <section class="hero">
       <div>
         <div class="kicker" id="kicker"></div>
@@ -59,12 +55,18 @@
     <section class="lesson-detail" id="lessonDetails" style="margin-top:16px"></section>
   </main>
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="js/craftom-minecraft-challenges.js?v=20260910-direct-student-copy-1"></script>
+  <script src="js/craftom-minecraft-challenges.js?v=20260914-video-first-frames-1"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const program = window.CRAFTOM_MINECRAFT_PROGRAM;
     const challenge = window.getCraftomMinecraftChallenge(params.get('challenge') || params.get('lesson'));
     const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+    const rootAssetPath = path => !path || /^(?:https?:|data:|blob:|\/)/.test(path) ? path || '' : `/${path}`;
+    const craftomPosterPath = path => {
+      const filename = String(path || '').split('/').pop();
+      if (!filename || !filename.endsWith('.webp')) return rootAssetPath(path);
+      return `/api/craftom/challenge-posters/${encodeURIComponent(filename)}`;
+    };
     const currentLesson = window.getCraftomMinecraftLesson(params.get('lesson') || ((challenge.id - 1) * 4) + 1);
     document.getElementById('courseHeaderNav').innerHTML = `
       <a href="craftom-school/preview/index.html">דף הבית</a>
@@ -72,17 +74,17 @@
       ${program.challenges.map(item => `<a class="${item.id === challenge.id ? 'primary' : ''}" href="craftom-minecraft-challenge.html?challenge=${item.id}">אתגר ${item.id}</a>`).join('')}
     `;
     document.title = `אקדמיית ה-Agent - ${challenge.title}`;
-    document.getElementById('challengeNav').innerHTML = program.challenges.map(item => `<a class="${item.id === challenge.id ? 'active' : ''}" href="craftom-minecraft-challenge.html?challenge=${item.id}">אתגר ${item.id}</a>`).join('');
     document.getElementById('kicker').textContent = `${program.grade} • אתגר ${challenge.id} מתוך ${program.totalChallenges} • ${program.plot}`;
     document.getElementById('title').textContent = challenge.title;
     document.getElementById('story').textContent = challenge.story;
     document.getElementById('caption').textContent = challenge.concept;
     document.getElementById('concept').textContent = challenge.concept;
     document.getElementById('command').textContent = challenge.command;
-    document.getElementById('video').src = challenge.video;
-    document.getElementById('video').poster = challenge.poster;
+    const video = document.getElementById('video');
+    video.src = rootAssetPath(challenge.video);
+    video.poster = craftomPosterPath(challenge.poster);
+    video.load();
     document.getElementById('actions').innerHTML = `
-      <a class="btn" href="craftom-minecraft-students.html?challenge=${challenge.id}">דף עבודה</a>
       <a class="btn secondary" href="craftom-school/preview/index.html">חזרה למפת הקורס</a>
     `;
     document.getElementById('meetingCards').innerHTML = challenge.meetings.map((item, index) => `

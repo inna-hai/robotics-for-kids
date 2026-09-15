@@ -89,19 +89,12 @@ try {
   browser = await chromium.launch({ headless: true });
   const teacherContext = await browser.newContext({ locale: 'he-IL' });
   await teacherContext.addCookies([{ name: 'haiTechClassroomToken', value: cookieValue(teacherCookie), url: base }]);
-  const teacherClassroomsPage = await teacherContext.newPage();
-  await teacherClassroomsPage.goto(`${base}/teacher-classrooms.html`);
-  const lessonZeroLink = teacherClassroomsPage.getByRole('link', { name: /ניהול הלומדה:.*Agent/ });
+  const teacherPage = await teacherContext.newPage();
+  await teacherPage.goto(`${base}/teacher-classrooms.html`);
+  const lessonZeroLink = teacherPage.getByRole('link', { name: /התחלת שיעור 0 ב-Minecraft/ });
   await lessonZeroLink.waitFor();
-  const [teacherPage] = await Promise.all([
-    teacherContext.waitForEvent('page'),
-    lessonZeroLink.click(),
-  ]);
-  await teacherPage.waitForLoadState();
+  await lessonZeroLink.click();
   await teacherPage.waitForURL(new RegExp(`/kugel-teacher\\.html\\?classroomId=${classroom.id}$`));
-  await teacherPage.getByRole('link', { name: 'השיעור הנוכחי' }).click();
-  await teacherPage.waitForURL(new RegExp(`/kugel-teacher\\.html\\?classroomId=${classroom.id}&lesson=0$`));
-  await teacherPage.locator('.teacher-student-board-details summary').click();
   await teacherPage.getByText('נועה מבוך').waitFor();
   const playerInput = teacherPage.locator('input[name="playerName"]');
   await playerInput.fill('NoaMaze');

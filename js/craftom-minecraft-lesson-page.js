@@ -5,6 +5,25 @@
   const program = window.CRAFTOM_MINECRAFT_PROGRAM;
   const challengeLessons = program.lessons.filter(item => item.challengeId === lesson.challengeId);
   const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+  const fallbackReflectionQuestion = 'מה הדבר המרכזי שלמדתם במפגש הזה, ואיך השתמשתם בו בבנייה או בקוד?';
+
+  function teacherManagementUrl() {
+    const next = new URLSearchParams();
+    const classroomId = params.get('classroomId');
+    if (classroomId) next.set('classroomId', classroomId);
+    next.set('lesson', String(lesson.id));
+    return `kugel-teacher.html?${next.toString()}`;
+  }
+
+  function renderTeacherReturnAction() {
+    if (params.get('teacherReturn') !== '1') return;
+    document.getElementById('teacherReturnAction')?.remove();
+    document.body.insertAdjacentHTML('afterbegin', `
+      <div class="teacher-return-action" id="teacherReturnAction">
+        <a class="btn secondary" href="${teacherManagementUrl()}">חזרה לניהול שיעור מורה</a>
+      </div>
+    `);
+  }
 
   function renderCourseHeader() {
     document.getElementById('courseHeader')?.remove();
@@ -24,6 +43,46 @@
 
   function list(items) {
     return items.map(item => `<li>${esc(item)}</li>`).join('');
+  }
+
+  function explainCommand(command) {
+    const text = String(command || '').trim();
+    if (!text) return '';
+    let explanation = 'פקודה שתשתמשו בה כדי לבנות את רצף הפעולות של ה-Agent.';
+    if (/on chat command/i.test(text) || /^פקודת/.test(text)) {
+      explanation = 'פקודה שמפעילה את הקוד כשכותבים את השם שלה בצ׳אט של Minecraft.';
+    } else if (/teleportToPlayer/i.test(text)) {
+      explanation = 'מזמנת את ה-Agent אליכם, כדי להתחיל מנקודת מוצא ברורה.';
+    } else if (/agent\.move/i.test(text) || /תנועה/.test(text)) {
+      explanation = 'מזיזה את ה-Agent בכיוון ובמספר צעדים שתבחרו. שינוי המספר משנה את המרחק.';
+    } else if (/agent\.turn/i.test(text) || /פנייה/.test(text)) {
+      explanation = 'מסובבת את ה-Agent ימינה או שמאלה כדי להמשיך במסלול אחר.';
+    } else if (/agent\.place|agent\.drop|הנחת|מסירה/i.test(text)) {
+      explanation = 'גורמת ל-Agent להניח או למסור משהו בעולם, כדי שהפעולה תהיה נראית במיינקראפט.';
+    } else if (/player\.say|הודעת|מדווח|אומר/i.test(text)) {
+      explanation = 'מציגה הודעה שמסבירה מה קרה בהרצה.';
+    } else if (/running|start|stop/i.test(text)) {
+      explanation = 'עוזרת לשלוט מתי האוטומציה מתחילה ומתי היא נעצרת.';
+    } else if (/forever|repeat|לולאה|חזרות/i.test(text)) {
+      explanation = 'חוזרת על אותה פעולה כמה פעמים, כדי שלא תצטרכו לשכפל את אותם בלוקים.';
+    } else if (/pause/i.test(text)) {
+      explanation = 'יוצרת המתנה קצרה בין פעולות, כדי שההרצה תהיה ברורה ולא מהירה מדי.';
+    } else if (/if|else|תנאי|שני מצבים/i.test(text)) {
+      explanation = 'מאפשרת ל-Agent לבחור פעולה לפי מצב בעולם: אם משהו נכון עושים פעולה אחת, אחרת עושים פעולה אחרת.';
+    } else if (/detect|routeOpen|פתוחה|חסומה|סימון|ערך/i.test(text)) {
+      explanation = 'בודקת או מייצגת מצב בעולם, למשל דרך פתוחה או חסומה.';
+    } else if (/אלגוריתם|תכנון|בחירה|החלטה/i.test(text)) {
+      explanation = 'עוזרת לכם לתכנן מראש מה ה-Agent צריך לעשות לפני שכותבים בלוקים.';
+    } else if (/test|בדיקה|תיקון/i.test(text)) {
+      explanation = 'משמשת להרצה שמטרתה לבדוק מה עובד ומה צריך לתקן.';
+    } else if (/demo|הצגה|סיום/i.test(text)) {
+      explanation = 'משמשת להצגת התוצר הסופי בצורה מסודרת.';
+    }
+    return `<li><strong>${esc(text)}</strong><span>${esc(explanation)}</span></li>`;
+  }
+
+  function commandList(items) {
+    return items.map(explainCommand).join('');
   }
 
   function fileToDataUrl(file) {
@@ -70,7 +129,13 @@
       </div>
       <p class="submit-status" id="minecraftEntryMessage" role="status" aria-live="polite"></p>
     `;
-    const anchor = document.querySelector('.hero') || document.getElementById('agentAcademyCta') || document.getElementById('makeCodeWorkspace') || document.querySelector('.detail-grid');
+    const academyCard = document.getElementById('agentAcademyCta');
+    const makeCodeWorkspace = document.getElementById('makeCodeWorkspace');
+    const detailGrid = document.querySelector('.detail-grid');
+    const hero = document.querySelector('.hero');
+    const anchor = academyCard && !academyCard.hidden
+      ? academyCard
+      : (makeCodeWorkspace && !makeCodeWorkspace.hidden ? makeCodeWorkspace : detailGrid || hero);
     anchor?.insertAdjacentElement('afterend', card);
     return card;
   }
@@ -128,7 +193,7 @@
         status.textContent = 'המורה עדיין לא שייכה לך שם שחקן Minecraft.';
         details.textContent = '';
       } else {
-        status.textContent = `שיעור ${currentLessonId} פעיל. אפשר לפתוח את Minecraft ולהיכנס לעולם.`;
+        status.textContent = `עולם Minecraft נפתח לשיעור ${currentLessonId}. אפשר לפתוח את Minecraft ולהיכנס לעולם.`;
         details.textContent = minecraft
           ? `שרת: ${minecraft.serverName} • כתובת: ${minecraft.serverAddress} • Server ID: ${minecraft.serverId}`
           : 'פרטי השרת יוצגו לאחר שהעולם יהיה זמין.';
@@ -352,7 +417,6 @@ player.onChat("test", function () {
             <p class="goal" id="summary"></p>
             <p><strong>תוצר:</strong> <span id="deliverable"></span></p>
             <div class="actions">
-              <a class="btn" id="studentLink" href="#">דף עבודה</a>
               <a class="btn secondary" id="challengeLink" href="#">דף האתגר</a>
             </div>
           </div>
@@ -362,8 +426,8 @@ player.onChat("test", function () {
           </figure>
         </section>
         <section class="grid" style="margin-top:16px">
-          <article class="card build-first"><h2>יעד השיעור</h2><p id="goal"></p></article>
-          <article class="card build-first"><h2>פקודות מרכזיות</h2><p id="command"></p></article>
+          <article class="card build-first"><h2>מה תלמדו בשיעור</h2><p id="goal"></p></article>
+          <article class="card build-first"><h2>פקודות מרכזיות</h2><ul id="command" class="command-explain-list"></ul></article>
         </section>
         <section class="detail-grid" style="margin-top:16px">
           <article class="detail-box"><h2>איך עובדים לבד</h2><ul id="selfStudy"></ul></article>
@@ -408,6 +472,11 @@ player.onChat("test", function () {
               <textarea id="exitAnswer" name="answer" required rows="4" placeholder="כתבו כאן את התשובה הקצרה שלכם"></textarea>
             </label>
             <label>
+              <span>שאלת חשיבה נוספת</span>
+              <strong id="exitReflectionQuestion" class="exit-ticket-question">${fallbackReflectionQuestion}</strong>
+              <textarea id="exitReflection" name="reflection" required rows="4" placeholder="כתבו תשובה שמתייחסת למה שלמדתם במפגש הזה"></textarea>
+            </label>
+            <label>
               <span>תמונה של מה שבניתם במיינקראפט</span>
               <input id="exitPhoto" name="photo" type="file" accept="image/png,image/jpeg,image/webp" required>
             </label>
@@ -427,6 +496,7 @@ player.onChat("test", function () {
     `;
   }
   renderCourseHeader();
+  renderTeacherReturnAction();
   renderQaCourseSwitcher();
 
   document.title = `שיעור ${lesson.id} - ${lesson.title} | ${program.title}`;
@@ -436,8 +506,8 @@ player.onChat("test", function () {
   document.getElementById('summary').textContent = lesson.summary;
   document.getElementById('deliverable').textContent = lesson.deliverable;
   document.getElementById('concept').textContent = lesson.concept;
-  document.getElementById('command').textContent = lesson.command;
   document.getElementById('goal').textContent = lesson.detail.goal;
+  document.getElementById('command').innerHTML = commandList(lesson.detail.code || [lesson.command]);
   const selfStudySteps = lesson.detail.academy
     ? [
         'צפו בסרטון והבינו מה צריך לקרות בעיר.',
@@ -468,10 +538,12 @@ player.onChat("test", function () {
   document.getElementById('exitUpload').textContent = program.exitUpload;
   document.getElementById('exitUploadInline').textContent = program.exitUpload;
   document.getElementById('exitTicket').textContent = lesson.detail.exit;
+  const reflectionQuestion = lesson.detail.reflection || fallbackReflectionQuestion;
+  const reflectionQuestionNode = document.getElementById('exitReflectionQuestion');
+  if (reflectionQuestionNode) reflectionQuestionNode.textContent = reflectionQuestion;
   document.getElementById('video').src = lesson.video;
   document.getElementById('video').poster = lesson.poster;
   document.getElementById('challengeLink').href = `craftom-minecraft-challenge.html?challenge=${lesson.challengeId}`;
-  document.getElementById('studentLink').href = `craftom-minecraft-students.html?challenge=${lesson.challengeId}`;
   const currentLessonIndex = challengeLessons.findIndex(item => item.id === lesson.id);
   const prevLesson = currentLessonIndex > 0 ? challengeLessons[currentLessonIndex - 1] : null;
   const nextLesson = currentLessonIndex < challengeLessons.length - 1 ? challengeLessons[currentLessonIndex + 1] : null;
@@ -517,9 +589,6 @@ player.onChat("test", function () {
       existingSubmission.innerHTML = '';
       return;
     }
-    if (submission && !nextLesson && nextChallengeLink) {
-      nextChallengeLink.hidden = !nextChallengeFirstLesson;
-    }
     existingSubmission.hidden = false;
     existingSubmission.innerHTML = `
       <h3>ההגשה השמורה שלי</h3>
@@ -552,9 +621,14 @@ player.onChat("test", function () {
     status.textContent = '';
     const photo = document.getElementById('exitPhoto').files[0];
     const answer = document.getElementById('exitAnswer').value.trim();
+    const reflection = document.getElementById('exitReflection')?.value.trim() || '';
 
     if (!answer) {
       status.textContent = 'כתבו תשובה קצרה לפני ההגשה.';
+      return;
+    }
+    if (!reflection) {
+      status.textContent = 'כתבו תשובה לשאלת החשיבה הנוספת לפני ההגשה.';
       return;
     }
     if (!photo) {
@@ -579,8 +653,8 @@ player.onChat("test", function () {
           lessonTitle: lesson.title,
           challengeId: String(lesson.challengeId),
           challengeTitle: lesson.challengeTitle,
-          exitQuestion: lesson.detail.exit,
-          answer,
+          exitQuestion: `${lesson.detail.exit}\n${reflectionQuestion}`,
+          answer: `שאלת כרטיס היציאה: ${answer}\n\nשאלת חשיבה נוספת: ${reflection}`,
           photo: { name: photo.name, dataUrl: photoDataUrl },
         }),
       });
@@ -594,6 +668,15 @@ player.onChat("test", function () {
       if (!nextLesson && nextChallengeLink) {
         nextChallengeLink.hidden = !nextChallengeFirstLesson;
       }
+      window.dispatchEvent(new CustomEvent('hai:classroom-progress', {
+        detail: {
+          lessonId: String(lesson.id),
+          activityId: 'exit-ticket',
+          status: 'completed',
+          score: 100,
+          metadata: { submissionId: String(data.id || '') }
+        }
+      }));
     } catch (error) {
       status.textContent = error.message || 'לא הצלחנו לשמור את ההגשה.';
     } finally {

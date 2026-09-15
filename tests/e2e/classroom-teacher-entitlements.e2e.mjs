@@ -78,12 +78,12 @@ try {
   await page.locator('#teacher-course-catalog input[name="courses"]').first().waitFor({ state: 'attached' });
   const teacherValues = await page.locator('#teacher-course-catalog input[name="courses"]').evaluateAll((nodes) => nodes.map((node) => node.value));
   assert.deepEqual(teacherValues, ['sensi-city', 'craftom-agent']);
-  assert.equal(await page.locator('#teacher-course-catalog a[href="#classes-list"]').count(), 1);
+  assert.equal(await page.locator('#teacher-course-catalog a[href="craftom-school/preview/index.html"]').count(), 1);
   await page.locator('#create-class-form input[name="name"]').fill('כיתת E2E');
   await page.locator('#teacher-course-catalog input[value="sensi-city"]').check();
   await page.locator('#create-class-form button[type="submit"]').click();
   await page.getByRole('heading', { name: 'כיתת E2E', exact: true }).waitFor();
-  assert.equal(await page.locator('#teacher-course-catalog a[href="#classes-list"]').count(), 1, 'teacher must keep an assigned course link even when no class uses it');
+  assert.equal(await page.locator('#teacher-course-catalog a[href="craftom-school/preview/index.html"]').count(), 1, 'teacher must keep an assigned course link even when no class uses it');
 
   await page.goto(`${baseUrl}/classroom-admin.html`);
   await page.locator('#admin-dashboard').waitFor({ state: 'visible' });
