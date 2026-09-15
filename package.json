@@ -15,7 +15,9 @@
     "pretest:feedback-e2e": "playwright install chromium",
     "test:feedback-e2e": "node tests/e2e/craftom-classroom-feedback.e2e.mjs",
     "pretest:webcode-e2e": "playwright install chromium",
-    "test:webcode-e2e": "node tests/e2e/webcode-pr92-safe.e2e.mjs"
+    "test:webcode-e2e": "node tests/e2e/webcode-pr92-safe.e2e.mjs",
+    "pretest:python-turtle-e2e": "playwright install chromium",
+    "test:python-turtle-e2e": "node tests/e2e/python-turtle-pr96.e2e.mjs"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.3"
