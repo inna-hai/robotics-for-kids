@@ -33,7 +33,7 @@
     body.lesson23-code-pilot .mission{background:#ecfeff;border-top-color:#67e8f9;color:#164e63}
 
     body.lesson23-code-pilot #blocklyDiv{position:relative}
-    body.lesson23-code-pilot .lesson23-code-overlay{position:absolute;inset:0 190px 0 0;z-index:20;pointer-events:auto;direction:ltr;text-align:left;background:#fff;border:0;border-radius:0;padding:14px 18px 18px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:1rem;line-height:1.7;color:#0f172a;box-shadow:none;overflow:auto;white-space:pre-wrap}
+    body.lesson23-code-pilot .lesson23-code-overlay{position:absolute;inset:0;z-index:20;pointer-events:auto;direction:ltr;text-align:left;background:#fff;border:0;border-radius:0;padding:14px 210px 18px 18px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:1rem;line-height:1.7;color:#0f172a;box-shadow:none;overflow:auto;white-space:pre-wrap}
     body.lesson23-code-pilot .lesson23-code-panel-title{direction:rtl;text-align:right;font-family:Rubik,Arial,sans-serif;font-weight:900;color:#1e3a8a;margin:0 0 10px;padding-bottom:9px;border-bottom:1px solid #dbeafe}
     body.lesson23-code-pilot .lesson23-code-overlay .placeholder{color:#64748b;direction:rtl;text-align:right;font-family:Rubik,Arial,sans-serif;font-weight:900}
     body.lesson23-code-pilot .lesson23-code-overlay .line{display:block;border-right:0;padding:1px 4px;border-radius:0;min-height:1.65em;cursor:pointer;position:relative;pointer-events:auto}
@@ -42,7 +42,8 @@
     body.lesson23-code-pilot .lesson23-code-overlay .line.active{background:rgba(219,234,254,.55);color:#1e3a8a}
     body.lesson23-code-pilot .lesson23-code-overlay .line.indented{background:rgba(254,243,199,.45);border-radius:6px}
     body.lesson23-code-pilot .lesson23-code-overlay .line.indented.active{background:rgba(219,234,254,.55);color:#1e3a8a}
-    body.lesson23-code-pilot .blocklyToolboxDiv,body.lesson23-code-pilot .blocklyFlyout{z-index:80!important}
+    body.lesson23-code-pilot .blocklyFlyout{z-index:80!important}
+    body.lesson23-code-pilot .blocklyToolboxDiv{opacity:0!important;width:0!important;min-width:0!important;max-width:0!important;overflow:hidden!important;pointer-events:none!important;border:0!important;padding:0!important}
     body.lesson23-code-pilot .blocklyFlyoutBackground{pointer-events:auto}
     body.lesson23-code-pilot .lesson23-drag-handle{display:inline-block;width:2.4em;margin-right:6px;text-align:center;color:#94a3b8;cursor:grab;user-select:none;touch-action:none;font-family:Rubik,Arial,sans-serif;font-weight:900}
     body.lesson23-code-pilot .lesson23-drag-handle:active{cursor:grabbing}
@@ -55,7 +56,7 @@
         body.lesson23-code-pilot .lesson23-code-overlay .line.lesson23-dragging-line{opacity:.45}
     body.lesson23-code-pilot .lesson23-code-overlay .line.lesson23-drop-before{box-shadow:inset 0 2px 0 #2563eb}
     body.lesson23-code-pilot .lesson23-code-overlay .line.lesson23-drop-after{box-shadow:inset 0 -2px 0 #2563eb}
-    body.lesson23-code-pilot .lesson23-code-overlay.lesson23-append-drop-mark::after{content:'יתווסף לסוף';display:block;direction:rtl;text-align:center;margin:10px 0 0;border-top:4px solid #2563eb;padding-top:6px;color:#1e40af;font-family:Rubik,Arial,sans-serif;font-weight:900;background:linear-gradient(180deg,rgba(219,234,254,.75),transparent);border-radius:6px}
+    body.lesson23-code-pilot .lesson23-code-overlay.lesson23-append-drop-mark::after{content:'';display:block;margin:10px 0 0;border-top:4px solid #2563eb;height:0;background:transparent;border-radius:6px}
 </style>
   <link rel="stylesheet" href="css/platform-home-link.css">
 </head>
@@ -2734,7 +2735,7 @@
                                         "minutes": "86–90",
                                         "title": "אתגר רשות — כותבים Python קצר למפת רחובות",
                                         "prompt": "אתגר רשות למי שסיים: כתבו Python קצר שמצייר מפת רחובות קטנה: הערת # אחת, length, רחוב ראשי, פנייה, רחוב צדדי, ושינוי צבע או עובי עט לפני אחד הרחובות.",
-                                        "hint": "אפשר להתחיל מ־length = 50. כתבו forward(length), פנייה של 90 מעלות, ואז עוד forward(length). הוסיפו color(...) או pensize(...) לפני אחד הרחובות.",
+                                        "hint": "אפשר להתחיל מ־length = 50. כתבו forward(length), פנייה של 90 מעלות, ואז עוד forward(length). הוסיפו color(...) או penlength(...) לפני אחד הרחובות.",
                                         "check": "זה אתגר רשות: אפשר להריץ ולבדוק בעצמכם. נסו לכלול length, שני רחובות, פנייה של 90 מעלות, ושינוי צבע או עובי עט.",
                                         "commonMistake": "כותבים רק forward אחד, ואז אין מפה עם רחוב ראשי ורחוב צדדי."
                               }
@@ -3187,7 +3188,7 @@
                                         "minutes": "84–88",
                                         "title": "אתגר רשות — כותבים Python קצר",
                                         "prompt": "כתבו Python קצר בתיבה: ציירו קרון אחד פשוט — גוף הקרון ושני גלגלים.",
-                                        "hint": "אפשר להשתמש ב־color, pensize, forward, right וגם penup/pendown כדי לעבור מהגוף אל הגלגלים.",
+                                        "hint": "אפשר להשתמש ב־color, penlength, forward, right וגם penup/pendown כדי לעבור מהגוף אל הגלגלים.",
                                         "check": "הקוד כולל לפחות 5 שורות Python ומצייר קרון ברור אחד עם גוף ושני גלגלים.",
                                         "commonMistake": "מציירים רק גלגל או חלון. כאן צריך קרון אחד שלם: גוף ושני גלגלים."
                               },
@@ -5025,10 +5026,10 @@
           },
           {
                     "id": 24,
-                    "title": "פוסטר אירוע",
-                    "goal": "מסדרים בלוקים כך שיהיה קל לקרוא ולתקן.",
-                    "concept": "עיצוב בקוד",
-                    "product": "פוסטר",
+                    "title": "רובוט בשליטה: מציירים עם length",
+                    "goal": "בונים רובוט קטן שנשלט דרך `length`: שינוי ערך אחד בתחילת הקוד משנה חלקים שלמים בציור בלי לתקן כל פקודה בנפרד.",
+                    "concept": "משתנה אחד ככפתור שליטה בציור",
+                    "product": "רובוט משתנה לפי ערכים",
                     "blocks": [
                               "forward",
                               "right",
@@ -5038,261 +5039,207 @@
                               "length"
                     ],
                     "practice": [
-                              "מצאו קוד בלוקים מבולגן.",
-                              "סדרו לפי שלבים.",
-                              "הפרידו בין צבע, צורה ומעבר.",
-                              "הסירו בלוק מיותר.",
-                              "שנו מספרים לשיטה עקבית.",
-                              "השתמשו במשתנה לאורכים חוזרים.",
-                              "בדקו שהציור לא השתנה.",
-                              "תנו כותרת מילולית לכל חלק.",
-                              "הסבירו למה קוד נקי עוזר.",
-                              "אתגר: לשפר ציור של חבר בלי לשנות רעיון."
+                              "קבעו בתחילת הקוד `length = 80`.",
+                              "ציירו גוף רובוט מרובע בעזרת `forward(length)` ו־`repeat`.",
+                              "שנו את `length` ובדקו שהגוף גדל או קטן בבת אחת.",
+                              "הוסיפו ראש או פרט קטן בעזרת אותו `length`, ואז התאימו את הערך.",
+                              "עברו בין חלקים עם `penup` ו־`pendown` כדי שלא יהיו קווים מיותרים.",
+                              "בדקו מצב קטן ומצב ענק על ידי שינוי `length` בלבד.",
+                              "תקנו באג שבו חלק מהרובוט מצויר עם מספר קבוע ולא עם `length`.",
+                              "בחרו מצב רובוט אישי: גבוה, קטן, רחב או עם אנטנה.",
+                              "הסבירו אילו חלקים ברובוט נשלטים על ידי `length`.",
+                              "אתגר: הוסיפו חללית/שלט טעינה שמשתמשים גם הם ב־`length`."
                     ],
                     "timing": [
-                              "0–10 פתיחה קצרה וחיבור לשיעור הקודם",
-                              "10–18 הדגמת מדריך ממוקדת בלי פתרון מלא",
-                              "18–35 תרגול מודרך ראשון",
-                              "35–55 עבודה עצמאית על משימת הליבה",
-                              "55–70 אתגר הרחבה או דיבאג",
-                              "70–82 שיתוף בזוגות ושיפור לפי משוב",
-                              "82–90 סיכום, רפלקציה ושמירת תוצר"
+                              "0–8 פתיחה: למה כדאי לשלוט בציור ממקום אחד",
+                              "8–18 הדגמה קצרה של length ו־forward(length) בלי פתרון מלא",
+                              "18–34 בניית גוף וראש רובוט בעזרת משתנים",
+                              "34–48 הוספת פרטים קטנים ומעברים נקיים",
+                              "48–64 שינוי ערכים והשוואת לפני/אחרי",
+                              "64–76 דיבאג: מספר קבוע שמסרב להשתנות",
+                              "76–84 אתגר יצירתי עם מצב רובוט אישי",
+                              "84–90 שיתוף וסיכום: איזה משתנה שלט במה"
                     ],
                     "teacherTips": [
-                              "לא להראות פתרון מלא בתחילת השיעור — רק התחלה קטנה ואז עבודה.",
-                              "לעצור כל 10–15 דקות לשאלת ניבוי: מה יקרה בהרצה?",
-                              "לחבר בלוק אחד לפחות לשורת Python שהילדים רואים.",
-                              "לתלמידים מתקדמים לתת וריאציה פתוחה, לא עוד פתרון מוכן.",
-                              "לשמור על שיח של ניסוי ותיקון: מריצים, רואים, מתקנים."
+                              "להדגיש שהקסם הוא לא הציור עצמו, אלא זה ששינוי ערך אחד משפיע על כמה פקודות.",
+                              "בכל שלב לשאול: האם המספר הזה צריך להיות קבוע, או שהוא צריך להיות משתנה?",
+                              "לעודד בדיקות לפני/אחרי: משנים רק את `length`, מריצים, ואז מחזירים או משפרים.",
+                              "בדיבאג לא למחוק הכל — לחפש את המספר הקבוע שלא משתמש ב־`length`.",
+                              "לתלמידים מתקדמים לתת להוסיף מצב רובוט, אבל לדרוש שהשינוי ייעשה מהערכים בתחילת הקוד."
                     ],
                     "unit": "יחידה 5 — אנימציה וסיפור בתנועה",
-                    "level": "קליל וחווייתי לגיל 10–11",
-                    "story": "הצב הופך למעצב גרפי: כותרת דמיונית, מסגרת, סמלים וצבעים.",
-                    "mission": "לעצב פוסטר לאירוע דמיוני בעזרת צורות, מסגרות וצבעים.",
-                    "outcome": "פוסטר קוד לאירוע בכיתה, בעיר או בחלל.",
-                    "approach": "מרכיבים פתרון מבלוקים ומ־snippets קצרים של Python",
-                    "bridge": "כרטיס קוד אמיתי → שינוי בטוח → הרצה",
+                    "level": "מתקדם לגיל 10–11",
+                    "story": "הצב הוא מהנדס רובוטים. במקום לצייר רובוט שכל חלק בו בנוי ממספרים מפוזרים, הוא שם בתחילת הקוד ערך שליטה אחד: `length`.",
+                    "mission": "לבנות רובוט שגדל או קטן בעיקר דרך `length` בתחילת הקוד — בלי לרדוף אחרי כל פקודת `forward` בנפרד.",
+                    "outcome": "רובוט קוד עם לוח שליטה פשוט: שינוי `length` משנה חלקים ברורים בציור.",
+                    "approach": "משתמשים ב־`length` בכמה מקומות, מריצים לפני/אחרי ומתקנים מספרים קבועים",
+                    "bridge": "מהציור בחזרה לקוד: איפה `length` שולט בציור?",
                     "durationMinutes": 90,
                     "lessonFlow": [
                               {
                                         "minutes": "0–8",
-                                        "title": "פתיחת סיפור ומשימה",
-                                        "teacher": "מציגים את התוצר של היום: פוסטר. שואלים מה הצב צריך לדעת לעשות כדי להגיע לשם.",
-                                        "students": "מנבאים אילו פקודות או בלוקים יעזרו ומנסחים יעד קצר."
+                                        "title": "פתיחה — לוח בקרה לרובוט",
+                                        "teacher": "מציגים רעיון: במקום לשנות 10 מספרים ביד, שמים ערך שליטה אחד בראש הקוד. שואלים מה כדאי לשלוט בו: גודל ופרטים שחוזרים בציור.",
+                                        "students": "מנבאים מה יקרה אם נשנה רק את `length`, ומה יקרה אם נשנה רק את `length`."
                               },
                               {
                                         "minutes": "8–18",
-                                        "title": "הדגמה קצרה בלי פתרון מלא",
-                                        "teacher": "מדגימים רק התחלה: בלוק אחד או שניים שמראים עיצוב בקוד. לא חושפים את כל הפתרון.",
-                                        "students": "עונים מה יקרה בהרצה לפני שלוחצים ▶️."
+                                        "title": "הדגמה קצרה — לא פתרון מלא",
+                                        "teacher": "מדגימים קוד קצר עם `length = 80` ואז `forward(length)`. משנים את `length` פעם אחת ומראים את ההשפעה.",
+                                        "students": "מצביעים על המקום שבו הערך נקבע ועל הפקודות שמשתמשות בו."
                               },
                               {
                                         "minutes": "18–34",
-                                        "title": "בנייה מודרכת",
-                                        "teacher": "מובילים את תרגילים 1–4 בקצב כיתה, עם עצירות ניבוי קצרות.",
-                                        "students": "בונים, מריצים אחרי כל שינוי, ומתקנים אם הצב הלך לכיוון לא צפוי."
+                                        "title": "בונים גוף וראש",
+                                        "teacher": "מובילים גוף מרובע וראש קטן יותר. עוצרים לשאלת דיוק: איפה נכון להשתמש ב־`length` במקום מספר רגיל?",
+                                        "students": "בונים, מריצים אחרי כל חלק, ומתקנים כיוון/גודל בלי להחליף את כל התוכנית."
                               },
                               {
                                         "minutes": "34–48",
-                                        "title": "בלוק → Python",
-                                        "teacher": "מחברים בין הבלוקים לשורות הקוד. מדגישים את הגשר: כרטיס קוד אמיתי → שינוי בטוח → הרצה.",
-                                        "students": "לוחצים על בלוק, מוצאים את השורה המודגשת, ומסבירים אותה במילים."
+                                        "title": "פרטים ומעברים נקיים",
+                                        "teacher": "מדגישים שימוש ב־`penup`, `pendown` ו־`forward(length)` כדי לעבור בין חלקים בלי קווים מיותרים.",
+                                        "students": "מוסיפים עיניים, אנטנה או רגליים קטנות ומשתמשים ב־`length` לפחות במקום אחד."
                               },
                               {
                                         "minutes": "48–64",
-                                        "title": "תרגול עצמאי",
-                                        "teacher": "נותנים לתלמידים לעבוד על תרגילים 5–10 בלי להראות פתרון מלא.",
-                                        "students": "מבצעים שינוי קטן, מריצים, משווים ומתקנים."
+                                        "title": "בדיקת שליטה",
+                                        "teacher": "מבקשים לשנות רק ערכים בתחילת הקוד ולבדוק מה זז, מה גדל ומה נשאר קבוע.",
+                                        "students": "מנסים מצב קטן ומצב גדול, ומשווים בין שתי הרצות."
                               },
                               {
                                         "minutes": "64–76",
-                                        "title": "דיבאג ושיפור",
-                                        "teacher": "נותנים באג נפוץ אחד ושואלים איך מאתרים אותו בלי למחוק הכל.",
-                                        "students": "מתקנים מספר/זווית/סדר/לולאה ומסבירים מה השתנה."
+                                        "title": "דיבאג — החלק שלא נשמע ללוח הבקרה",
+                                        "teacher": "נותנים באג: חלק אחד מצויר עם `forward(40)` במקום משתנה. שואלים איך מזהים אותו בציור ובקוד.",
+                                        "students": "מוצאים מספר קבוע, מחליפים למשתנה מתאים, ומריצים שוב."
                               },
                               {
                                         "minutes": "76–84",
                                         "title": "אתגר יצירתי קצר",
-                                        "teacher": "פותחים בחירה אישית מוגבלת כדי לשמור על הצלחה: צבע, גודל, דפוס או פרט אישי.",
-                                        "students": "משדרגים את התוצר בלי לאבד את מושג השיעור."
+                                        "teacher": "פותחים בחירה: רובוט ענק, רובוט זעיר, רובוט עם אנטנה, או חללית קטנה לידו — אבל לפחות פרט אחד חייב להישלט במשתנה.",
+                                        "students": "משדרגים תוך שמירה על לוח השליטה בתחילת הקוד."
                               },
                               {
                                         "minutes": "84–90",
                                         "title": "שיתוף וסיכום",
-                                        "teacher": "מבקשים 2–3 הצגות קצרות ומסכמים במבנה: רעיון → בלוקים → קוד → ציור.",
-                                        "students": "משלימים משפט: “היום בניתי…, השתמשתי ב־…, ותיקנתי…”."
+                                        "teacher": "מבקשים 2–3 הצגות קצרות: איזה ערך שיניתם ומה קרה לרובוט?",
+                                        "students": "משלימים משפט: “כשהחלפתי את ___, הרובוט ___, כי בקוד השתמשתי ב־___.”"
                               }
                     ],
                     "exercises": [
                               {
                                         "id": 1,
-                                        "minutes": "18–23",
-                                        "title": "תרגול 1 — חימום — מריצים ורואים",
-                                        "prompt": "מצאו קוד בלוקים מבולגן.",
-                                        "hint": "אל תנסו לפתור הכל בבת אחת — גררו בלוק אחד, הריצו, ואז המשיכו.",
-                                        "check": "יש לפחות פקודת תנועה אחת והציור מופיע על המסך.",
-                                        "commonMistake": "מנסים לגרור הרבה בלוקים לפני הרצה ראשונה ואז קשה לדעת מה השפיע."
+                                        "minutes": "18–24",
+                                        "title": "תרגול 1 — לוח השליטה של הרובוט",
+                                        "prompt": "גררו מאזור המשתנים שורת קוד של משתנה ושנו אותה ל־`length = 80`. גררו גם שורת `forward(length)`, הריצו, ואז ערכו את השורה הראשונה ל־`length = 100` והריצו שוב. מה השתנה בקו?",
+                                        "hint": "המטרה היא לראות שהשם `length` מחליף מספר. אם `forward(length)` נהיה ארוך יותר אחרי שינוי `length`, לוח השליטה עובד.",
+                                        "check": "יש בקוד שורת `length = ...` ושורת `forward(length)`, ושינוי הערך של `length` משנה את אורך הקו.",
+                                        "commonMistake": "כותבים את המשתנים, אבל ממשיכים לצייר עם `forward(80)` במקום `forward(length)`, ואז השינוי לא משפיע."
                               },
                               {
                                         "id": 2,
-                                        "minutes": "23–28",
-                                        "title": "תרגול 2 — קוראים את הבלוקים",
-                                        "prompt": "סדרו לפי שלבים.",
-                                        "hint": "חפשו איפה מופיע הרעיון המרכזי של השיעור: עיצוב בקוד.",
-                                        "check": "התלמיד/ה יודע/ת להצביע על הבלוק או השורה שקשורים ל־עיצוב בקוד.",
-                                        "commonMistake": "מסתכלים רק על הציור ולא מחברים אותו לקוד שנוצר."
+                                        "minutes": "24–32",
+                                        "title": "תרגול 2 — גוף לפי `length`",
+                                        "prompt": "ציירו גוף רובוט מרובע בעזרת `repeat(4)`: בכל חזרה צועדים `forward(length)` ופונים 90 מעלות.",
+                                        "hint": "אם הגוף לא נסגר, בדקו שיש 4 חזרות ופנייה של 90 מעלות. הצלע צריכה להיות `length`, לא מספר רגיל.",
+                                        "check": "גוף הרובוט הוא ריבוע או מסגרת סגורה שמשתמשת ב־`forward(length)` בתוך `repeat`.",
+                                        "commonMistake": "כותבים `forward(80)` במקום `forward(length)`, ואז שינוי `length` לא משפיע על הגוף."
                               },
                               {
                                         "id": 3,
-                                        "minutes": "28–34",
-                                        "title": "תרגול 3 — שינוי קטן ובטוח",
-                                        "prompt": "הפרידו בין צבע, צורה ומעבר.",
-                                        "hint": "שינוי טוב הוא שינוי קטן: מספר אחד, צבע אחד או פנייה אחת.",
-                                        "check": "אחרי שינוי קטן רואים שינוי ברור בתוצאה, בלי לשבור את כל התוכנית.",
-                                        "commonMistake": "משנים כמה דברים יחד ואז לא יודעים מה גרם לשינוי."
+                                        "minutes": "32–40",
+                                        "title": "תרגול 3 — ראש ופרטים קטנים",
+                                        "prompt": "הוסיפו ראש או חלון פנים קטן לרובוט בעזרת `length`. אפשר לצייר ריבוע קטן, עיניים קצרות או אנטנה קטנה.",
+                                        "hint": "הפרטים לא חייבים להיות מושלמים. העיקר שלפחות חלק קטן אחד משתמש ב־`forward(length)`.",
+                                        "check": "נוסף פרט קטן לרובוט שמשתמש ב־`length` ולא רק במספר קבוע.",
+                                        "commonMistake": "מציירים פרט יפה, אבל עם מספר רגיל — ואז הוא לא משתנה כשמשנים את `length`."
                               },
                               {
                                         "id": 4,
-                                        "minutes": "34–40",
-                                        "title": "תרגול 4 — מחברים בלוק לקוד",
-                                        "prompt": "הסירו בלוק מיותר.",
-                                        "hint": "לחצו על בלוק וראו איזו שורת Python נדלקת בקוד.",
-                                        "check": "כאשר בוחרים בלוק, שורת Python המתאימה מודגשת.",
-                                        "commonMistake": "לא שמים לב שהשורה המודגשת בקוד היא חלק מהלמידה, לא קישוט."
+                                        "minutes": "40–48",
+                                        "title": "תרגול 4 — עוברים בלי קווים מיותרים",
+                                        "prompt": "השתמשו ב־`penup`, `forward(length)` ו־`pendown` כדי לעבור בין חלקים של הרובוט בלי להשאיר קו מעבר מיותר.",
+                                        "hint": "מעבר נקי נראה כך: מרימים עט → זזים לפי `length` → מורידים עט → מציירים את החלק הבא.",
+                                        "check": "יש לפחות מעבר אחד בין חלקי הרובוט שמשתמש ב־`length` ושומר על ציור נקי.",
+                                        "commonMistake": "שוכחים להרים עט, ואז מופיע קו שמחבר בין הגוף לפרט קטן."
                               },
                               {
                                         "id": 5,
-                                        "minutes": "40–47",
-                                        "title": "תרגול 5 — בדיקת מהנדסים",
-                                        "prompt": "שנו מספרים לשיטה עקבית.",
-                                        "hint": "מהנדסים בודקים לפחות שני מצבים, לא רק הרצה אחת שעבדה במקרה.",
-                                        "check": "התלמיד/ה בדק/ה לפחות שתי הרצות והשווה/השוותה ביניהן.",
-                                        "commonMistake": "בודקים רק מצב אחד ולכן חושבים שהפתרון תמיד עובד."
+                                        "minutes": "48–58",
+                                        "title": "תרגול 5 — מצב קטן ומצב ענק",
+                                        "prompt": "שנו רק את `length` בתחילת הקוד: נסו רובוט קטן ואז רובוט ענק. אל תשנו את פקודות הציור עצמן.",
+                                        "hint": "בדיקה טובה: משנים את `length`, מריצים, ומשווים מה גדל או קטן.",
+                                        "check": "לפחות שינוי אחד בתחילת הקוד משנה חלק ברור מהרובוט בלי לשנות את פקודות הציור בהמשך.",
+                                        "commonMistake": "משנים גם את הערכים וגם פקודות באמצע הקוד, ואז לא יודעים מה באמת השפיע."
                               },
                               {
                                         "id": 6,
-                                        "minutes": "47–53",
-                                        "title": "תרגול 6 — תרגול דיוק",
-                                        "prompt": "השתמשו במשתנה לאורכים חוזרים.",
-                                        "hint": "נסו לבנות מסלול סגור: בסוף הצב צריך לחזור למקום שממנו התחיל.",
-                                        "check": "נקודת הסיום של הצב חוזרת לנקודת ההתחלה.",
-                                        "commonMistake": "מוחקים את כל הפתרון במקום לתקן בלוק/ערך קטן."
+                                        "minutes": "58–68",
+                                        "title": "תרגול 6 — דיבאג: מי לא מקשיב למשתנה?",
+                                        "prompt": "חפשו חלק ברובוט שעדיין מצויר עם מספר קבוע, למשל `forward(40)`. החליפו אותו למשתנה מתאים: `length`.",
+                                        "hint": "סימן לבאג: משנים את `length`, אבל חלק אחד נשאר בדיוק אותו דבר. חפשו שם מספר רגיל.",
+                                        "check": "לפחות מספר קבוע אחד הוחלף במשתנה מתאים, והציור מגיב טוב יותר לשינוי הערכים.",
+                                        "commonMistake": "מוחקים את כל החלק במקום להחליף רק את המספר הקבוע במשתנה."
                               },
                               {
                                         "id": 7,
-                                        "minutes": "53–60",
-                                        "title": "תרגול 7 — דיבאג מכוון",
-                                        "prompt": "בדקו שהציור לא השתנה.",
-                                        "hint": "שדרוג יצירתי לא חייב להיות מסובך. לפעמים צבע, עובי או חזרה נוספת מספיקים.",
-                                        "check": "התוצר עדיין קשור למשימה: פוסטר.",
-                                        "commonMistake": "מוסיפים קישוטים אבל מאבדים את מטרת השיעור."
+                                        "minutes": "68–78",
+                                        "title": "תרגול 7 — מצב רובוט אישי",
+                                        "prompt": "בחרו מצב לרובוט: ענק, זעיר, רחב, צפוף או עם אנטנה ארוכה. נסו להשיג את המצב בעיקר דרך שינוי `length`.",
+                                        "hint": "מצב טוב הוא כזה שאפשר להסביר: “שיניתי את `___`, ולכן ___ השתנה בציור”.",
+                                        "check": "יש גרסת רובוט אישית, ולפחות שני חלקים בה נשלטים דרך `length`.",
+                                        "commonMistake": "מוסיפים הרבה קישוטים ידניים, אבל מאבדים את הרעיון של שליטה דרך ערכים."
                               },
                               {
                                         "id": 8,
-                                        "minutes": "60–66",
-                                        "title": "תרגול 8 — שדרוג יצירתי",
-                                        "prompt": "תנו כותרת מילולית לכל חלק.",
-                                        "hint": "הסבר טוב מתחיל ב: “קודם הצב עושה…, ואז…”.",
-                                        "check": "ההסבר כולל רצף: פקודה → תוצאה → תיקון או שיפור.",
-                                        "commonMistake": "אומרים “זה עובד” בלי להסביר למה."
-                              },
-                              {
-                                        "id": 9,
-                                        "minutes": "66–71",
-                                        "title": "תרגול 9 — קריאת Python בקול",
-                                        "prompt": "הסבירו למה קוד נקי עוזר.",
-                                        "hint": "קראו את הקוד כאילו הוא הוראות לצב, לא כמו טקסט זר.",
-                                        "check": "התלמיד/ה קרא/ה 3 שורות Python והסביר/ה אותן במילים.",
-                                        "commonMistake": "קוראים את הקוד מהר מדי בלי להבין את סדר הפעולות."
-                              },
-                              {
-                                        "id": 10,
-                                        "minutes": "71–76",
-                                        "title": "תרגול 10 — עבודה בזוגות",
-                                        "prompt": "אתגר: לשפר ציור של חבר בלי לשנות רעיון.",
-                                        "hint": "בזוגות — אחד מדבר ואחד נוגע במחשב, ואז מחליפים.",
-                                        "check": "הזוג ביצע ניבוי ואז בדיקה בפועל.",
-                                        "commonMistake": "בן/בת זוג אחד עושה הכל והשני לא מסביר."
-                              },
-                              {
-                                        "id": 11,
-                                        "minutes": "76–81",
-                                        "title": "תרגול 11 — תרגול מתקדם",
-                                        "prompt": "בנו גרסה קצת מורכבת יותר שמשתמשת במושג המרכזי של השיעור לפחות פעמיים.",
-                                        "hint": "התרגול פתוח, אבל עדיין צריך להשתמש במושג של השיעור.",
-                                        "check": "התרגול משתמש במושג המרכזי ולא רק מוסיף קישוט.",
-                                        "commonMistake": "קופצים לפתרון מורכב מדי לפני שהבסיס יציב."
-                              },
-                              {
-                                        "id": 12,
-                                        "minutes": "81–85",
-                                        "title": "תרגול 12 — בדיקת איכות",
-                                        "prompt": "בדקו שהתוכנית עובדת אחרי איפוס והרצה מחדש, לא רק פעם אחת.",
-                                        "hint": "בדיקת איכות טובה מתחילה מאיפוס והרצה נקייה.",
-                                        "check": "התוכנית עובדת גם אחרי איפוס והרצה מחדש.",
-                                        "commonMistake": "לא מאפסים לפני בדיקה ולכן תוצאה ישנה מבלבלת."
-                              },
-                              {
-                                        "id": 13,
-                                        "minutes": "85–88",
-                                        "title": "תרגול 13 — הכנה להצגה",
-                                        "prompt": "הכינו משפט הצגה: מה בניתי, באיזה בלוק השתמשתי, ואיפה רואים את זה בקוד.",
-                                        "hint": "הצגה קצרה עדיפה על הסבר ארוך ומבולבל.",
-                                        "check": "יש משפט הצגה שמחבר תוצר, בלוק וקוד.",
-                                        "commonMistake": "מציגים רק את הציור ולא מסבירים את הקשר לבלוקים ולקוד."
-                              },
-                              {
-                                        "id": 14,
-                                        "minutes": "88–90",
-                                        "title": "תרגול 14 — רפלקציה קצרה",
-                                        "prompt": "השלימו משפט: היום למדתי ש־___, ובפעם הבאה אשפר ___.",
-                                        "hint": "רפלקציה קצרה עוזרת לזכור: מה ניסיתי, מה עבד, ומה תיקנתי?",
-                                        "check": "יש משפט סיכום אישי ומדויק.",
-                                        "commonMistake": "מסיימים בלי לנסח מה למדו ומה ירצו לשפר."
+                                        "minutes": "78–90",
+                                        "title": "אתגר רשות — תוספת שנשלטת בקוד",
+                                        "prompt": "אם נשאר זמן, הוסיפו ליד הרובוט חללית קטנה, שלט טעינה או כפתורי בקרה. לפחות חלק אחד בתוספת חייב להשתמש ב־`length`.",
+                                        "hint": "רעיונות: שלט טעינה עם קווים קצרים, חללית משולשת קטנה, או כפתורים שמופרדים לפי `length`.",
+                                        "check": "התוספת יצירתית, אבל עדיין מחוברת לרעיון השיעור: שינוי ערך בתחילת הקוד משפיע על הציור.",
+                                        "commonMistake": "האתגר הופך לציור חופשי בלי קשר למשתנים."
                               }
                     ],
                     "vocabulary": [
                               [
-                                        "לולאה",
-                                        "דרך לבקש מהמחשב לחזור על אותן פקודות כמה פעמים."
-                              ],
-                              [
                                         "משתנה",
-                                        "שם ששומר ערך, למשל length, כדי להשתמש בו שוב ושוב."
+                                        "שם ששומר ערך, למשל `length`, כדי להשתמש בו בכמה מקומות בקוד."
                               ],
                               [
-                                        "ניבוי",
-                                        "לפני הרצה אומרים מה לדעתנו יקרה, ואז בודקים."
+                                        "ערך שליטה",
+                                        "מספר בתחילת הקוד שמשפיע על חלקים רבים בציור."
                               ],
                               [
-                                        "snippet",
-                                        "חתיכת קוד קצרה שמותר להעתיק, לשנות ולהריץ בביטחון."
+                                        "מספר קבוע",
+                                        "מספר שנכתב ישירות בפקודה, למשל `forward(40)`, ולא משתנה כשמשנים את `length`."
                               ],
                               [
-                                        "פקודה",
-                                        "הוראה אחת שהצב מבצע, למשל לזוז קדימה או להסתובב."
+                                        "דיבאג",
+                                        "חיפוש ותיקון חלק בקוד שלא מתנהג כמו שהתכוונו."
                               ],
                               [
-                                        "הרצה",
-                                        "לחיצה על ▶️ כדי לבדוק מה התוכנית עושה באמת."
+                                        "לפני/אחרי",
+                                        "דרך לבדוק השפעה: מריצים, משנים ערך אחד, ומריצים שוב."
                               ]
                     ],
                     "successCriteria": [
-                              "התוצר נראה כמו פוסטר או גרסה אישית שלו.",
-                              "נעשה שימוש מודע במושג: עיצוב בקוד.",
-                              "התלמיד/ה הריץ/ה יותר מפעם אחת ושיפר/ה אחרי בדיקה.",
-                              "התלמיד/ה יודע/ת להצביע על בלוק אחד ועל שורת Python שנוצרה ממנו."
+                              "הרובוט כולל לפחות שני חלקים שמשתמשים ב`length`.",
+                              "שינוי ערך בתחילת הקוד משנה חלק ברור בציור.",
+                              "התלמיד/ה יודע/ת לזהות מספר קבוע שלא מגיב לשינוי ולהחליף אותו במשתנה מתאים.",
+                              "יש שימוש נקי ב־`penup`/`pendown` למעבר בין חלקים בלי קווים מיותרים.",
+                              "התלמיד/ה יודע/ת להסביר איפה `length` שולט בציור."
                     ],
                     "teacherQuestions": [
-                              "מה לדעתכם יקרה לפני שנריץ?",
-                              "איזה שינוי קטן הכי השפיע על הציור?",
-                              "איפה בקוד רואים את הבלוק שבחרתם?",
-                              "אם זה לא עבד — איך יודעים מה לבדוק קודם?"
+                              "איזה חלק ברובוט צריך לגדול כשמשנים את `length`?",
+                              "איזה חלק עדיין משתמש במספר קבוע במקום `length`?",
+                              "מה השתנה אחרי ההרצה השנייה, ומה נשאר אותו דבר?",
+                              "איפה בקוד יש מספר קבוע שכדאי להפוך למשתנה?",
+                              "איך יודעים שהמעבר בין חלקים נקי ולא השאיר קו מיותר?"
                     ],
                     "aiHelper": [
-                              "תן/י רעיון לשדרוג קל של פוסטר בלי לפתור במקום התלמיד/ה.",
-                              "הסבר/י לילד/ה בכיתה ה׳ מה זה עיצוב בקוד באמצעות הצב המצייר.",
-                              "עזור/עזרי למצוא באג במספר, כיוון, לולאה או סדר פקודות בלי לתת פתרון מלא."
+                              "תן/י רעיון לפרט קטן ברובוט שמשתמש ב־`length`, בלי לתת פתרון מלא.",
+                              "הסבר/י לילד/ה בכיתה ה׳ למה משתנה בתחילת הקוד עוזר לשנות ציור שלם.",
+                              "עזור/עזרי למצוא מספר קבוע בקוד שצריך להפוך ל־`length`.",
+                              "הצע/הציעי דרך לבדוק לפני/אחרי: לשנות ערך אחד בלבד ואז להריץ שוב."
                     ]
           },
           {
@@ -6943,7 +6890,7 @@
       {type:'py_right',message0:'right( %1 )',args0:[{type:'field_number',name:'ANGLE',value:90,min:0,max:360}],previousStatement:null,nextStatement:null,colour:145,tooltip:'right = פנייה ימינה במספר מעלות.'},
       {type:'py_left',message0:'left( %1 )',args0:[{type:'field_number',name:'ANGLE',value:90,min:0,max:360}],previousStatement:null,nextStatement:null,colour:145,tooltip:'left = פנייה שמאלה במספר מעלות.'},
       {type:'py_color',message0:'color( %1 )',args0:[{type:'field_dropdown',name:'COLOR',options:[['blue','#2563eb'],['green','#16a34a'],['yellow','#facc15'],['red','#ef4444'],['purple','#7c3aed'],['pink','#ec4899'],['black','#111827']]}],previousStatement:null,nextStatement:null,colour:28,tooltip:'color = בחירת צבע עט.'},
-      {type:'py_width',message0:'pensize( %1 )',args0:[{type:'field_number',name:'WIDTH',value:4,min:1,max:30}],previousStatement:null,nextStatement:null,colour:28,tooltip:'pensize = עובי עט.'},
+      {type:'py_width',message0:'penlength( %1 )',args0:[{type:'field_number',name:'WIDTH',value:4,min:1,max:30}],previousStatement:null,nextStatement:null,colour:28,tooltip:'penlength = עובי עט.'},
       {type:'py_penup',message0:'penup()',previousStatement:null,nextStatement:null,colour:28,tooltip:'penup = מרימים עט כדי לזוז בלי לצייר.'},
       {type:'py_pendown',message0:'pendown()',previousStatement:null,nextStatement:null,colour:28,tooltip:'pendown = מורידים עט כדי לחזור לצייר.'},
       {type:'py_repeat',message0:'repeat %1 times %2 %3',args0:[{type:'field_number',name:'TIMES',value:4,min:1,max:50},{type:'input_dummy'},{type:'input_statement',name:'DO'}],previousStatement:null,nextStatement:null,colour:270,tooltip:'repeat = חזרה על קבוצת פקודות כמה פעמים.'},
@@ -6996,6 +6943,9 @@
     let lesson23ManualDrag = null;
     let lesson23ScrollToBottomPending = false;
     let lesson23PendingAppendBlockIds = new Set();
+    let lesson23NewBlockDropTarget = null;
+    let lesson23Pointer = {x:0,y:0};
+    function isCodePilotLesson(){ return currentLesson === 23 || currentLesson === 24; }
     const statusEl = document.getElementById('status');
     const missionEl = document.getElementById('mission');
     let turtle = {x:canvas.width/2,y:canvas.height/2,heading:0,pen:true,color:'#2563eb',width:4};
@@ -7082,7 +7032,7 @@
       if(t==='py_right') return [{text:`${indent}right(${numericField(block,'ANGLE',90)})`, id}];
       if(t==='py_left') return [{text:`${indent}left(${numericField(block,'ANGLE',90)})`, id}];
       if(t==='py_color') return [{text:`${indent}color("${simpleColorName(block.getFieldValue('COLOR'))}")`, id}];
-      if(t==='py_width') return [{text:`${indent}pensize(${Number(block.getFieldValue('WIDTH'))})`, id}];
+      if(t==='py_width') return [{text:`${indent}penlength(${Number(block.getFieldValue('WIDTH'))})`, id}];
       if(t==='py_penup') return [{text:`${indent}penup()`, id}];
       if(t==='py_pendown') return [{text:`${indent}pendown()`, id}];
       if(t==='py_set_length') return [{text:`${indent}length = ${numericField(block,'VALUE',100)}`, id}];
@@ -7151,7 +7101,7 @@
         });
     }
     function codeTopBlocks(){
-      if(currentLesson === 23) return lesson23TopCodeBlocks();
+      if(isCodePilotLesson()) return lesson23TopCodeBlocks();
       updatePythonBlockNumbers();
       return orderedPythonBlocks()
         .map(block=>block.getNextBlock())
@@ -7181,7 +7131,7 @@
         lesson23CodeOverlay.setAttribute('aria-label', 'קוד Python שנבנה מהפקודות');
         host.appendChild(lesson23CodeOverlay);
       }
-      lesson23CodeOverlay.style.display = currentLesson === 23 ? 'block' : 'none';
+      lesson23CodeOverlay.style.display = isCodePilotLesson() ? 'block' : 'none';
       return lesson23CodeOverlay;
     }
     function scrollLesson23CodeToBottom(){
@@ -7197,7 +7147,7 @@
     }
     function renderLesson23CodeOverlay(bodyLines){
       const overlay = ensureLesson23CodeOverlay();
-      if(!overlay || currentLesson !== 23) return;
+      if(!overlay || !isCodePilotLesson()) return;
       const previousScrollTop = overlay.scrollTop;
       const wasNearBottom = overlay.scrollHeight - overlay.scrollTop - overlay.clientHeight < 48;
       if(!bodyLines.length){
@@ -7234,14 +7184,14 @@
       }
     }
     function selectLesson23CodeLine(blockId){
-      if(currentLesson !== 23 || !blockId) return;
+      if(!isCodePilotLesson() || !blockId) return;
       lesson23SelectedBlockId = blockId;
       lastSelectedBlockId = blockId;
       try{ workspace.getBlockById(blockId)?.select(); }catch{}
       renderLesson23CodeOverlay(codeTopBlocks().flatMap(b=>stackToPythonLines(b)));
     }
     function deleteLesson23SelectedLine(){
-      if(currentLesson !== 23 || !lesson23SelectedBlockId) return false;
+      if(!isCodePilotLesson() || !lesson23SelectedBlockId) return false;
       const block = workspace.getBlockById(lesson23SelectedBlockId);
       if(!block) return false;
       const next = block.getNextBlock?.() || null;
@@ -7288,14 +7238,13 @@
       return {prev,next};
     }
     function lesson23IsInAnyRepeatBody(block){
-      if(currentLesson !== 23 || !block) return false;
+      if(!isCodePilotLesson() || !block) return false;
       return workspace.getAllBlocks(false).some(candidate=>candidate.type === 'py_repeat' && lesson23IsInsideRepeatBody(block, candidate));
     }
     function appendLesson23NewBlockToEnd(blockId){
-      if(currentLesson !== 23 || !blockId) return false;
+      if(!isCodePilotLesson() || !blockId) return false;
       const block = workspace.getBlockById(blockId);
       if(!block || block.outputConnection || block.type === 'py_python') return false;
-      if(lesson23IsInAnyRepeatBody(block)) return false;
       const xy = block.getRelativeToSurfaceXY?.() || {x:40,y:40};
       detachLesson23SingleBlock(block);
       const tops = lesson23TopCodeBlocks().filter(top=>top.id !== block.id);
@@ -7315,17 +7264,36 @@
       saveProgress();
       return true;
     }
+    function clearLesson23NewBlockPreviewSelection(){
+      if(!isCodePilotLesson() || !lesson23PendingAppendBlockIds.size) return;
+      for(const id of lesson23PendingAppendBlockIds){
+        if(lesson23SelectedBlockId === id) lesson23SelectedBlockId = null;
+        if(lastSelectedBlockId === id) lastSelectedBlockId = null;
+      }
+      lesson23CodeOverlay?.querySelectorAll('.line.active').forEach(el=>el.classList.remove('active'));
+      codeEl.querySelectorAll('.active-code-line').forEach(el=>el.classList.remove('active-code-line'));
+    }
+    function insertLesson23NewBlockAtMarkedTarget(blockId){
+      if(!isCodePilotLesson() || !blockId) return false;
+      const target = lesson23NewBlockDropTarget;
+      const block = workspace.getBlockById(blockId);
+      if(!block || block.outputConnection || block.type === 'py_python') return false;
+      if(target?.targetId && target.targetId !== block.id){
+        return moveLesson23CodeLine(block.id, target.targetId, !!target.after);
+      }
+      return appendLesson23NewBlockToEnd(block.id);
+    }
     function flushLesson23PendingAppendBlocks(){
-      if(currentLesson !== 23 || !lesson23PendingAppendBlockIds.size) return false;
+      if(!isCodePilotLesson() || !lesson23PendingAppendBlockIds.size) return false;
       const ids = [...lesson23PendingAppendBlockIds];
       lesson23PendingAppendBlockIds.clear();
       let changed = false;
-      ids.forEach(id=>{ changed = appendLesson23NewBlockToEnd(id) || changed; });
-      if(changed) scrollLesson23CodeToBottom();
+      ids.forEach(id=>{ changed = insertLesson23NewBlockAtMarkedTarget(id) || changed; });
+      lesson23NewBlockDropTarget = null;
       return changed;
     }
     function moveLesson23CodeLine(dragId, targetId, placeAfter=false){
-      if(currentLesson !== 23 || !dragId || !targetId || dragId === targetId) return false;
+      if(!isCodePilotLesson() || !dragId || !targetId || dragId === targetId) return false;
       const dragged = workspace.getBlockById(dragId);
       const target = workspace.getBlockById(targetId);
       if(!dragged || !target || dragged.outputConnection || target.outputConnection) return false;
@@ -7390,6 +7358,51 @@
       const elements = document.elementsFromPoint ? document.elementsFromPoint(x, y) : [document.elementFromPoint(x, y)].filter(Boolean);
       return elements.map(el=>el.closest?.('.lesson23-code-overlay .line[data-block-id]')).find(Boolean) || null;
     }
+    function updateLesson23NewBlockDropTarget(x, y){
+      if(!isCodePilotLesson() || !lesson23PendingAppendBlockIds.size) return;
+      clearLesson23DropMarks();
+      const lines = [...(lesson23CodeOverlay?.querySelectorAll('.line[data-block-id]') || [])]
+        .filter(el=>el.dataset.blockId && !lesson23PendingAppendBlockIds.has(el.dataset.blockId));
+      if(!lines.length){
+        lesson23NewBlockDropTarget = null;
+        setLesson23AppendDropMark(true);
+        return;
+      }
+      let line = lesson23LineFromPoint(x, y);
+      let after = false;
+      if(!line || !line.dataset.blockId || lesson23PendingAppendBlockIds.has(line.dataset.blockId)){
+        const first = lines[0];
+        const last = lines[lines.length - 1];
+        const firstRect = first.getBoundingClientRect();
+        const lastRect = last.getBoundingClientRect();
+        if(y <= firstRect.top){
+          line = first;
+          after = false;
+        } else if(y >= lastRect.bottom){
+          line = last;
+          after = true;
+        } else {
+          let best = null;
+          let bestDistance = Infinity;
+          for(const candidate of lines){
+            const rect = candidate.getBoundingClientRect();
+            const center = rect.top + rect.height / 2;
+            const distance = Math.abs(y - center);
+            if(distance < bestDistance){ best = candidate; bestDistance = distance; }
+          }
+          line = best;
+          if(!line) return;
+          const rect = line.getBoundingClientRect();
+          after = y > rect.top + rect.height / 2;
+        }
+      } else {
+        const rect = line.getBoundingClientRect();
+        after = y > rect.top + rect.height / 2;
+      }
+      if(!line || !line.dataset.blockId) return;
+      line.classList.add(after ? 'lesson23-drop-after' : 'lesson23-drop-before');
+      lesson23NewBlockDropTarget = {targetId: line.dataset.blockId, after};
+    }
     function updateLesson23ManualDragTarget(x, y){
       if(!lesson23ManualDrag) return;
       clearLesson23DropMarks();
@@ -7443,7 +7456,7 @@
       }
     }
     function applyLesson23EditedCodeLine(blockId, rawText){
-      if(currentLesson !== 23 || !blockId) return false;
+      if(!isCodePilotLesson() || !blockId) return false;
       const block = workspace.getBlockById(blockId);
       if(!block) return false;
       const text = String(rawText || '').trim();
@@ -7458,7 +7471,7 @@
       if(block.type === 'py_forward' && (m = text.match(/^forward\s*\(\s*(-?\d+(?:\.\d+)?)\s*\)$/))) changed = setNum('STEPS', m[1], 1, 500);
       else if(block.type === 'py_right' && (m = text.match(/^right\s*\(\s*(-?\d+(?:\.\d+)?)\s*\)$/))) changed = setNum('ANGLE', m[1], 0, 360);
       else if(block.type === 'py_left' && (m = text.match(/^left\s*\(\s*(-?\d+(?:\.\d+)?)\s*\)$/))) changed = setNum('ANGLE', m[1], 0, 360);
-      else if(block.type === 'py_width' && (m = text.match(/^pensize\s*\(\s*(-?\d+(?:\.\d+)?)\s*\)$/))) changed = setNum('WIDTH', m[1], 1, 30);
+      else if(block.type === 'py_width' && (m = text.match(/^penlength\s*\(\s*(-?\d+(?:\.\d+)?)\s*\)$/))) changed = setNum('WIDTH', m[1], 1, 30);
       else if(block.type === 'py_repeat' && (m = text.match(/^(?:repeat\s*\(\s*(-?\d+(?:\.\d+)?)\s*\)|for\s+i\s+in\s+range\s*\(\s*(-?\d+(?:\.\d+)?)\s*\))\s*:\s*$/))) changed = setNum('TIMES', m[1] || m[2], 1, 50);
       else if(block.type === 'py_set_length' && (m = text.match(/^length\s*=\s*(-?\d+(?:\.\d+)?)$/))) changed = setNum('VALUE', m[1], 1, 500);
       else if(block.type === 'py_grow_length' && (m = text.match(/^length\s*=\s*length\s*\+\s*(-?\d+(?:\.\d+)?)$/))) changed = setNum('ADD', m[1], -200, 200);
@@ -7478,7 +7491,7 @@
       return changed;
     }
     function stripLesson23PythonWrappers(){
-      if(currentLesson !== 23 || typeof workspace === 'undefined') return;
+      if(!isCodePilotLesson() || typeof workspace === 'undefined') return;
       workspace.getAllBlocks(false).filter(block=>block.type === 'py_python').forEach(block=>{
         const next = block.getNextBlock?.() || null;
         const xy = block.getRelativeToSurfaceXY?.() || {x:20,y:20};
@@ -7494,12 +7507,12 @@
     }
     function updateLesson23BlockVisibility(){
       if(typeof workspace === 'undefined') return;
-      if(currentLesson === 23) stripLesson23PythonWrappers();
+      if(isCodePilotLesson()) stripLesson23PythonWrappers();
       workspace.getAllBlocks(false).forEach(block=>{
         const root = block.getSvgRoot && block.getSvgRoot();
         if(!root) return;
         const dragging = (typeof block.isDragging === 'function' && block.isDragging()) || root.classList.contains('blocklyDragging');
-        if(currentLesson === 23 && block.type !== 'py_python' && !dragging){
+        if(isCodePilotLesson() && block.type !== 'py_python' && !dragging){
           root.style.opacity = '0';
           root.style.pointerEvents = 'none';
         } else {
@@ -7512,7 +7525,7 @@
     function generatePython(){
       const body = codeTopBlocks().flatMap(b=>stackToPythonLines(b));
       const lines = [{text:'from turtle import *', id:null},{text:'', id:null}];
-      lines.push(...(body.length ? body : [{text: currentLesson === 23 ? '# גררו פקודות לאזור העליון — כל פקודה היא שורת Python' : '# \u202Bחברו בלוקים מתחת ל־\u2066Python\u2069 כדי ליצור קוד\u202C', id:null}]));
+      lines.push(...(body.length ? body : [{text: isCodePilotLesson() ? '# גררו פקודות לאזור העליון — כל פקודה היא שורת Python' : '# \u202Bחברו בלוקים מתחת ל־\u2066Python\u2069 כדי ליצור קוד\u202C', id:null}]));
       lines.push({text:'', id:null},{text:'done()', id:null});
       renderCode(lines);
       renderLesson23CodeOverlay(body);
@@ -7523,10 +7536,11 @@
       const selected = Blockly.getSelected ? Blockly.getSelected() : null;
       const selectedId = selected?.id;
       codeEl.querySelectorAll('.active-code-line').forEach(el=>el.classList.remove('active-code-line'));
+      if(isCodePilotLesson() && selectedId && lesson23PendingAppendBlockIds.has(selectedId)) return [];
       if(!selectedId) return [];
       const activeLines = [...codeEl.querySelectorAll(`[data-block-id="${CSS.escape(selectedId)}"]`)];
       activeLines.forEach(el=>el.classList.add('active-code-line'));
-      if(currentLesson === 23){ lesson23SelectedBlockId = selectedId || lesson23SelectedBlockId; renderLesson23CodeOverlay(codeTopBlocks().flatMap(b=>stackToPythonLines(b))); }
+      if(isCodePilotLesson()){ lesson23SelectedBlockId = selectedId || lesson23SelectedBlockId; renderLesson23CodeOverlay(codeTopBlocks().flatMap(b=>stackToPythonLines(b))); }
       activeLines[0]?.scrollIntoView({block:'nearest', behavior:'smooth'});
       return activeLines;
     }
@@ -7593,7 +7607,7 @@
     function simulatePath(actions){
       const start = {x:canvas.width/2,y:canvas.height/2};
       const pos = {x:start.x,y:start.y,heading:0};
-      const vars = {length:100};
+      const vars = {gap:100};
       let minX = pos.x, maxX = pos.x, minY = pos.y, maxY = pos.y;
       for(const a of actions){
         if(a.cmd==='setVar') vars[a.name] = a.v;
@@ -7660,7 +7674,7 @@
     }
     function drawActionsInstant(actions, clear=true){
       resetDrawing(clear);
-      const vars = {length:100};
+      const vars = {gap:100};
       actions.forEach(action=>applyTurtleAction(action, vars));
       updateTurtle();
     }
@@ -7683,12 +7697,12 @@
       if(useReadyBase) restoreCumulativeReadyBase();
       else resetDrawing(true);
       const actions=actionsSnapshot || getActions();
-      if(!actions.length){statusEl.textContent=currentLesson === 23 ? 'גררו פקודה מהמחסן לאזור "הקוד שלי" 🙂' : 'גררו בלוקים קודם 🙂';setRunControls(false);return true;}
+      if(!actions.length){statusEl.textContent=isCodePilotLesson() ? 'גררו פקודה מהמחסן לאזור "הקוד שלי" 🙂' : 'גררו בלוקים קודם 🙂';setRunControls(false);return true;}
       statusEl.textContent=useReadyBase ? 'משאירים את הציור הקודם ומריצים רק את התוספת...' : 'מאפסים את הציור...';
       await sleep(450);
       if(token !== runToken) return false;
       statusEl.textContent=`מריץ ${actions.length} פקודות...`;
-      const vars = {length:100};
+      const vars = {gap:100};
       for(const a of actions){
         if(token !== runToken) return false;
         applyTurtleAction(a, vars);
@@ -8247,22 +8261,22 @@
       const y = start.y - 58;
       const bodyW = 70;
       const bodyH = 40;
-      const gap = 82;
-      const trainW = 78 + (gap * 2) + bodyW;
+      const length = 82;
+      const trainW = 78 + (length * 2) + bodyW;
       const carriageStartX = Math.max(8, (canvas.width - trainW) / 2 + 78);
       ctx.save();
       ctx.lineCap = 'round';
       ctx.strokeStyle = '#2563eb';
       ctx.lineWidth = 3;
       for(let i=0;i<3;i++){
-        const x = carriageStartX + i * gap;
+        const x = carriageStartX + i * length;
         ctx.strokeRect(x, y, bodyW, bodyH);
         ctx.lineWidth = 12;
         ctx.beginPath(); ctx.moveTo(x + 14, y + bodyH); ctx.lineTo(x + 17, y + bodyH); ctx.stroke();
         ctx.beginPath(); ctx.moveTo(x + 52, y + bodyH); ctx.lineTo(x + 55, y + bodyH); ctx.stroke();
         ctx.lineWidth = 3;
         ctx.strokeRect(x + 22, y + 10, 16, 14);
-        if(i < 2){ ctx.beginPath(); ctx.moveTo(x + bodyW, y + bodyH - 10); ctx.lineTo(x + gap, y + bodyH - 10); ctx.stroke(); }
+        if(i < 2){ ctx.beginPath(); ctx.moveTo(x + bodyW, y + bodyH - 10); ctx.lineTo(x + length, y + bodyH - 10); ctx.stroke(); }
       }
       const engineX = carriageStartX - 78;
       ctx.strokeRect(engineX, y + 5, 64, 35);
@@ -8436,6 +8450,7 @@
     }
     function starterXmlForExercise(ex){
       if(currentLesson === 23 && ex?.id === 1) return '<xml></xml>';
+      if(currentLesson === 24 && ex?.id === 1) return '<xml></xml>';
       if(currentLesson === 23 && ex?.id === 7) return '<xml><block type="py_comment" x="20" y="20"><field name="TEXT">פריים ראשון</field><next><block type="py_color"><field name="COLOR">#2563eb</field><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">50</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_comment"><field name="TEXT">מעבר לפריים שני</field><next><block type="py_color"><field name="COLOR">#ef4444</field><next><block type="py_forward"><field name="STEPS">120</field><next><block type="py_color"><field name="COLOR">#16a34a</field><next><block type="py_repeat"><field name="TIMES">3</field><statement name="DO"><block type="py_forward"><field name="STEPS">55</field><next><block type="py_left"><field name="ANGLE">120</field></block></next></block></statement></block></next></block></next></block></next></block></next></block></next></block></xml>';
       if(currentLesson === 22 && ex?.id === 1) return '<xml><block type="py_python" x="20" y="20"></block></xml>';
       if(currentLesson === 22 && ex?.id === 7) return '<xml><block type="py_python" x="20" y="20"><next><block type="py_comment"><field name="TEXT">כביש ראשי</field><next><block type="py_color"><field name="COLOR">#111827</field><next><block type="py_width"><field name="WIDTH">8</field><next><block type="py_forward"><field name="STEPS">170</field><next><block type="py_comment"><field name="TEXT">מעבר לבית</field><next><block type="py_color"><field name="COLOR">#ef4444</field><next><block type="py_width"><field name="WIDTH">3</field><next><block type="py_right"><field name="ANGLE">90</field><next><block type="py_forward"><field name="STEPS">65</field><next><block type="py_left"><field name="ANGLE">90</field><next><block type="py_comment"><field name="TEXT">בית ירוק</field><next><block type="py_color"><field name="COLOR">#16a34a</field><next><block type="py_width"><field name="WIDTH">4</field><next><block type="py_repeat"><field name="TIMES">4</field><statement name="DO"><block type="py_forward"><field name="STEPS">38</field><next><block type="py_right"><field name="ANGLE">90</field></block></next></block></statement><next><block type="py_color"><field name="COLOR">#7c3aed</field><next><block type="py_repeat"><field name="TIMES">3</field><statement name="DO"><block type="py_forward"><field name="STEPS">42</field><next><block type="py_left"><field name="ANGLE">120</field></block></next></block></statement></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>';
@@ -8471,7 +8486,7 @@
       return '';
     }
     function ensureStarterHasPythonBlock(xml){
-      if(!xml || /type="py_python"/.test(xml) || currentLesson === 23) return xml;
+      if(!xml || /type="py_python"/.test(xml) || isCodePilotLesson()) return xml;
       return xml
         .replace(/^<xml>/, '<xml><block type="py_python" x="20" y="20"><next>')
         .replace(/<\/xml>$/, '</next></block></xml>');
@@ -8688,9 +8703,9 @@
       }
       const writingValue = pythonWritingAnswers[pythonWritingKey()] || '';
       const writingPlaceholder = (()=>{
-        if(currentLesson === 12 && ex?.id === 9) return '# קווקו / גלגל / אור ברמזור&#10;color("#facc15")&#10;pensize(14)&#10;forward(1)';
+        if(currentLesson === 12 && ex?.id === 9) return '# קווקו / גלגל / אור ברמזור&#10;color("#facc15")&#10;penlength(14)&#10;forward(1)';
         if(currentLesson === 13 && ex?.id === 9) return '# קרון אחד פשוט&#10;color("#2563eb")&#10;forward(80)&#10;right(90)&#10;forward(35)&#10;right(90)';
-        if(currentLesson === 11 && ex?.id === 8) return '# רחוב ראשי&#10;length = 50&#10;pensize(8)&#10;forward(length)&#10;right(90)&#10;pensize(3)&#10;forward(length)';
+        if(currentLesson === 11 && ex?.id === 8) return '# רחוב ראשי&#10;length = 50&#10;penlength(8)&#10;forward(length)&#10;right(90)&#10;penlength(3)&#10;forward(length)';
         if(currentLesson === 9 && ex?.id === 9) return 'for i in range(3):&#10;    forward(___)&#10;    right(120)';
         if(currentLesson === 8 && ex?.id === 9) return 'length = ___&#10;for i in range(___):&#10;    forward(length)&#10;    right(___)&#10;    length = length + ___';
         if(currentLesson === 6 && ex?.id === 8) return 'length = 30&#10;forward(length)&#10;length = length + 20&#10;forward(length)';
@@ -8714,7 +8729,7 @@
       const lesson19RiddleBoxHtml = lesson19RiddleHtml(ex);
       const lesson19OrderCheckBoxHtml = lesson19OrderCheckHtml(ex);
       const lesson21PredictionBoxHtml = lesson21PredictionHtml(ex);
-      const lesson23CodePilotHtml = currentLesson === 23 && ex?.id !== 'loop-did-you-know' ? (ex?.id === 1 ? '<div class="code-pilot-banner">איך עובדים היום: גוררים פקודה מהמחסן לאזור העבודה — וכשמניחים אותה היא הופכת לשורת Python.<br><br>כדי לשנות מספר או צבע — לוחצים בתוך השורה ועורכים.<br>כדי למחוק — בוחרים שורה ולוחצים Delete.<br>כדי לשנות סדר — גוררים את מספר השורה למקום החדש.<br><br>בלולאה: גררו מספרי שורות אל מתחת לשורת repeat כדי להכניס פקודות פנימה. אפשר להכניס כמה שורות — כל שורה עם הזחה היא בתוך הלולאה. צבעים כותבים במילים כמו blue או red, את האפשרויות רואים בתפריט של בלוק color במחסן.</div>' : '<details class="code-pilot-help"><summary>צריכים תזכורת לעבודה עם שורות קוד?</summary><div>גוררים פקודה והיא הופכת לשורת Python.<br><br>כדי לשנות מספר או צבע — לוחצים בתוך השורה ועורכים.<br>כדי למחוק — בוחרים שורה ולוחצים Delete.<br>כדי לשנות סדר — גוררים את מספר השורה למקום החדש.<br><br>בלולאה: גררו מספרי שורות אל מתחת לשורת repeat כדי להכניס פקודות פנימה. אפשר להכניס כמה שורות — כל שורה עם הזחה היא בתוך הלולאה. צבעים כותבים במילים כמו blue או red, את האפשרויות רואים בתפריט של בלוק color במחסן.</div></details>') : '';
+      const lesson23CodePilotHtml = isCodePilotLesson() && ex?.id !== 'loop-did-you-know' ? (ex?.id === 1 ? '<div class="code-pilot-banner">איך עובדים היום: גוררים פקודה מהמחסן לאזור העבודה — וכשמניחים אותה היא הופכת לשורת Python.<br><br>כדי לשנות מספר או צבע — לוחצים בתוך השורה ועורכים.<br>כדי למחוק — בוחרים שורה ולוחצים Delete.<br>כדי לשנות סדר — גוררים את מספר השורה למקום החדש.<br><br>בלולאה: גררו מספרי שורות אל מתחת לשורת repeat כדי להכניס פקודות פנימה. אפשר להכניס כמה שורות — כל שורה עם הזחה היא בתוך הלולאה. צבעים כותבים במילים כמו blue או red, את האפשרויות רואים בתפריט של בלוק color במחסן.</div>' : '<details class="code-pilot-help"><summary>צריכים תזכורת לעבודה עם שורות קוד?</summary><div>גוררים פקודה והיא הופכת לשורת Python.<br><br>כדי לשנות מספר או צבע — לוחצים בתוך השורה ועורכים.<br>כדי למחוק — בוחרים שורה ולוחצים Delete.<br>כדי לשנות סדר — גוררים את מספר השורה למקום החדש.<br><br>בלולאה: גררו מספרי שורות אל מתחת לשורת repeat כדי להכניס פקודות פנימה. אפשר להכניס כמה שורות — כל שורה עם הזחה היא בתוך הלולאה. צבעים כותבים במילים כמו blue או red, את האפשרויות רואים בתפריט של בלוק color במחסן.</div></details>') : '';
       const promptHtml = currentLesson === 23 && ex?.id === 'loop-did-you-know'
         ? '<p><b>כשגוררים repeat, בשורות הקוד הוא נכתב בשפת Python כך:</b></p><pre class="code" style="margin:8px 0;padding:10px;border-radius:12px;direction:ltr;text-align:left;">for i in range(4):</pre><p><b>זה אומר: חזרו 4 פעמים. השורות המוזחות מתחתיו, כמו 5.1 ו־5.2, הן הפקודות שחוזרות.</b></p>'
         : `<p><b>${escapeHtml(ex.prompt || '')}</b></p>`;
@@ -9160,14 +9175,14 @@
       if(comments.length < 3) return false;
       if(!lengthSetBeforeFirstUse(actions, null) || forwardVarCount(actions) < 3) return false;
       if(penUpMoveCount(actions) < 1) return false;
-      if(actionDrawnColors(actions).size < 2) return false;
+      if(actionDrawnColors(actions).length < 2) return false;
       return true;
     }
 
     function hasAdvancedDocumentedMap(actions){
       const comments = commentTexts(actions);
       if(comments.length < 3) return false;
-      if(actionDrawnColors(actions).size < 3) return false;
+      if(actionDrawnColors(actions).length < 3) return false;
       if(penUpMoveCount(actions) < 2) return false;
       if(!lengthSetBeforeFirstUse(actions, null) || forwardVarCount(actions) < 4) return false;
       if(!repeatUsesLengthShape(4, 90)) return false;
@@ -9183,7 +9198,7 @@
       ].sort((a,b)=>a.start-b.start);
       if(shapeStarts.length < 3) return false;
       const drawnColors = [...actionDrawnColors(actions)];
-      if(new Set(drawnColors).size < 3) return false;
+      if(new Set(drawnColors).length < 3) return false;
       for(let i=0;i<=shapeStarts.length-3;i++){
         const trio = shapeStarts.slice(i, i+3);
         let separated = true;
@@ -9201,7 +9216,7 @@
 
     function advancedDebugLockIssues(actions){
       const issues = [];
-      if(actionDrawnColors(actions).size < 3) issues.push('color');
+      if(actionDrawnColors(actions).length < 3) issues.push('color');
       if(penUpMoveCount(actions) < 2) issues.push('separation');
       if(repeatedShapeSequenceStarts(actions, 4, 90).length < 1) issues.push('square');
       if(repeatedStarSequenceStarts(actions, 144).length < 1) issues.push('star');
@@ -9389,7 +9404,7 @@
         else if(a.cmd === 'width') width = a.v;
         else if(a.cmd === 'pen') pen = a.v;
         else if((a.cmd === 'forward' || a.cmd === 'forwardVar') && pen){
-          segments.push({color, width, length: a.cmd === 'forwardVar' ? 100 : a.v});
+          segments.push({color, width, gap: a.cmd === 'forwardVar' ? 100 : a.v});
         }
       }
       return segments;
@@ -9401,7 +9416,7 @@
         const roof = segments.slice(i + 4, i + 7);
         const bodyColors = new Set(body.map(s=>String(s.color || '').toLowerCase()));
         const roofColors = new Set(roof.map(s=>String(s.color || '').toLowerCase()));
-        if(bodyColors.size === 1 && roofColors.size === 1){
+        if(bodyColors.length === 1 && roofColors.length === 1){
           const bodyColor = [...bodyColors][0];
           const roofColor = [...roofColors][0];
           if(bodyColor && roofColor && bodyColor !== roofColor) return true;
@@ -9455,14 +9470,14 @@
       if(!squarePattern || !optionalFinalTurn) return false;
       const colors = new Set(firstFourSegments.map(s=>s.color));
       const widths = new Set(firstFourSegments.map(s=>s.width));
-      return colors.size === 4 && widths.size === 4;
+      return colors.length === 4 && widths.length === 4;
     }
     function actionDrawsDifferentColorLengths(actions){
       const segments = drawnSegments(actions);
       if(segments.length !== 2) return false;
       const colors = new Set(segments.map(s=>s.color));
       const lengths = new Set(segments.map(s=>s.length));
-      return colors.size === 2 && lengths.size === 2;
+      return colors.length === 2 && lengths.length === 2;
     }
     function firstDrawUsesNonDefaultColor(actions){
       const defaultBlue = '#2563eb';
@@ -9589,7 +9604,7 @@
         const longLines = drawn.filter(s=>s.length >= 10).length;
         const cleanMoveCount = penUpMoveCount(actions);
         const hasCleanMove = cleanMoveCount >= 1;
-        const colorCount = drawnColors.size;
+        const colorCount = drawnColors.length;
         const hasWideLine = actions.some(a=>a.cmd === 'width' && Number(a.v) >= 3);
         const hasFrameAndInnerLines = hasWindowFrameLoop && longLines >= 7;
         const shapeCount = Math.max(repeatShapes.length, Math.floor(longLines / 3), colorCount);
@@ -9911,7 +9926,7 @@
           );
           return Number(times) >= 6 && turn90s >= 2 && hasSunAngleTurn && hasForwardRightAfter180;
         });
-        const colorCount = actionDrawnColors(actions).size;
+        const colorCount = actionDrawnColors(actions).length;
         if(predictionCfg && prediction !== predictionCfg.correct) return ['התשובה לא נכונה עדיין — קראו שוב את הבלוקים מלמעלה למטה ובחרו תשובה אחרת.'];
         if(String(ex?.id) === '1'){
           if(actions.length < 3 || longLines < 2) return ['כמעט — אל תמחקו את הבלוקים המוכנים. צריך להשאיר את המסלול, להריץ, ואז לבדוק אם הניבוי נכון.'];
@@ -10040,7 +10055,7 @@
         }
       }
       if(!actions.length){
-        if(currentLesson === 23) return ['כמעט — גררו פקודה מהמחסן לאזור "הקוד שלי". בשיעור הזה אין צורך בבלוק Python: כל פקודה שתגררו תהפוך לשורת קוד.'];
+        if(isCodePilotLesson()) return ['כמעט — גררו פקודה מהמחסן לאזור "הקוד שלי". בשיעור הזה אין צורך בבלוק Python: כל פקודה שתגררו תהפוך לשורת קוד.'];
         return [hasCodeBlock
           ? (hasPythonBlock ? 'חברו את הבלוקים מתחת לבלוק Python — רק מה שמחובר אליו הופך לקוד ונבדק.' : 'הוסיפו בלוק Python וחברו מתחתיו את הבלוקים — רק מה שמחובר אליו הופך לקוד ונבדק.')
           : 'גררו בלוק Python, ואז חברו מתחתיו את הבלוקים של התרגיל — רק מה שמחובר אליו הופך לקוד ונבדק.'];
@@ -10060,10 +10075,10 @@
         const pendownIndex = actions.findIndex((a,i)=>i > penupIndex && a.cmd === 'pen' && a.v === true);
         if(penupIndex < 0 || pendownIndex < 0) return ['כמעט — הסדר צריך להיות penup ואז pendown, כדי לפתוח פתח באמצע הקיר.'];
         const beforeGap = actions.slice(0, penupIndex).some(a=>a.cmd === 'forward' || a.cmd === 'forwardVar');
-        const gapMove = actions.slice(penupIndex + 1, pendownIndex).some(a=>a.cmd === 'forward' || a.cmd === 'forwardVar');
+        const lengthMove = actions.slice(penupIndex + 1, pendownIndex).some(a=>a.cmd === 'forward' || a.cmd === 'forwardVar');
         const afterGap = actions.slice(pendownIndex + 1).some(a=>a.cmd === 'forward' || a.cmd === 'forwardVar');
         if(!beforeGap) return ['כמעט — לפני penup צריך לצייר את החלק הראשון של הקיר עם forward.'];
-        if(!gapMove) return ['כמעט — אחרי penup צריך להשתמש ב־forward כדי לדלג על הפתח בלי לצייר.'];
+        if(!lengthMove) return ['כמעט — אחרי penup צריך להשתמש ב־forward כדי לדלג על הפתח בלי לצייר.'];
         if(!afterGap) return ['כמעט — אחרי pendown צריך להוסיף forward כדי לצייר את המשך הקיר.'];
         return [];
       }
@@ -10245,7 +10260,7 @@
       if(currentLesson === 2 && ex.id === 7){
         const current = comparableActions(actions);
         if(!hasDescendingStairSequence(current, 3)) return ['המדרגות צריכות להישאר תקינות: בכל מדרגה יש קטע ישר, ירידה קצרה, ואז המשך ישר.'];
-        if(actionDrawnColors(actions).size < 2) return ['צריך לצייר את המדרגות בפועל לפחות בשני צבעים שונים. שימו צבע אחד בהתחלה וצבע נוסף לפני אחת המדרגות הבאות.'];
+        if(actionDrawnColors(actions).length < 2) return ['צריך לצייר את המדרגות בפועל לפחות בשני צבעים שונים. שימו צבע אחד בהתחלה וצבע נוסף לפני אחת המדרגות הבאות.'];
         return [];
       }
       if(currentLesson === 4){
@@ -10263,7 +10278,7 @@
           return [];
         }
         if(ex.id === 8){
-          if(actionDrawnColors(actions).size < 3) return ['הלוגו צריך לכלול לפחות 3 צבעים שונים שמצוירים בפועל. הוסיפו בלוק צבע לפני חלקים שונים של הלוגו.'];
+          if(actionDrawnColors(actions).length < 3) return ['הלוגו צריך לכלול לפחות 3 צבעים שונים שמצוירים בפועל. הוסיפו בלוק צבע לפני חלקים שונים של הלוגו.'];
           if(actions.filter(a=>a.cmd === 'forward' || a.cmd === 'forwardVar').length < 3) return ['צריך לצייר לוגו קטן עם כמה חלקים, לא רק קו אחד.'];
           return [];
         }
@@ -10299,7 +10314,7 @@
           return [];
         }
         if(ex.id === 8){
-          if(actionDrawnColors(actions).size < 2) return ['צריך שהצב יצייר בפועל לפחות בשני צבעים שונים.'];
+          if(actionDrawnColors(actions).length < 2) return ['צריך שהצב יצייר בפועל לפחות בשני צבעים שונים.'];
           return [];
         }
         if(ex.id === 9){
@@ -10333,7 +10348,7 @@
         }
         if(ex.id === 4){
           const uniqueValues = new Set(values);
-          if(uniqueValues.size < 2) return ['צריך להשתמש בשני ערכי אורך שונים.'];
+          if(uniqueValues.length < 2) return ['צריך להשתמש בשני ערכי אורך שונים.'];
           if(repeatBlocks().filter(block=>{
             if(numericField(block, 'TIMES', 0) !== 4) return false;
             const bodyActions = actionsFrom(block.getInputTargetBlock('DO'), []);
@@ -10385,7 +10400,7 @@
         }
         if(ex.id === 5){
           if(!hasBlock('py_repeat') || !repeatHasFencePlankPatternAtLeast(4, true)) return ['כמעט — שמרו על שורת גדר חוזרת: בתוך בלוק ״חזור״ צריך להיות קרש גדר שלם וגם קו קטן שמוביל לקרש הבא. אפשר להשתמש ב־4 חזרות או יותר.'];
-          if(actionDrawnColors(actions).size < 2) return ['כמעט — כל קרש צריך להיות דו־צבעי: שימו צבע אחד לפני הקו שעולה וצבע אחר לפני הקו שיורד, כך ששני הצבעים יופיעו על הקרש עצמו.'];
+          if(actionDrawnColors(actions).length < 2) return ['כמעט — כל קרש צריך להיות דו־צבעי: שימו צבע אחד לפני הקו שעולה וצבע אחר לפני הקו שיורד, כך ששני הצבעים יופיעו על הקרש עצמו.'];
           return [];
         }
         if(ex.id === 6){
@@ -10439,7 +10454,7 @@
         }
         if(ex.id === 8){
           const defaultBlue = '#2563eb';
-          const smallInitialLength = actions.some(a=>a.cmd === 'setVar' && a.name === 'length' && a.v > 0 && a.v <= 10);
+          const lengthInitialLength = actions.some(a=>a.cmd === 'setVar' && a.name === 'length' && a.v > 0 && a.v <= 10);
           const spiralLoops = repeatPatternBlocks().filter(({body})=>{
             const forwardIndex = body.findIndex(a=>a.cmd === 'forwardVar' && a.name === 'length');
             const turnIndex = body.findIndex((a, i)=>i > forwardIndex && (a.cmd === 'right' || a.cmd === 'left'));
@@ -10455,7 +10470,7 @@
             const growIndex = body.findIndex((a, i)=>i > turnIndex && a.cmd === 'growVar' && a.name === 'length' && a.v > 0 && a.v <= 3);
             return forwardIndex >= 0 && turnIndex > forwardIndex && growIndex > turnIndex;
           });
-          if(!smallInitialLength) return ['כמעט — התחילו מאורך קטן, למשל 5 או 10, כדי שהספירלה תישאר במסך.'];
+          if(!lengthInitialLength) return ['כמעט — התחילו מאורך קטן, למשל 5 או 10, כדי שהספירלה תישאר במסך.'];
           if(!bestLoop) return ['כמעט — בתוך הלולאה צריכים להיות: קדימה לפי האורך, פנייה, ואז הגדלת אורך.'];
           if(bestLoop.body.some(a=>a.cmd === 'setVar' && a.name === 'length')) return ['כמעט — אל תקבעו את האורך מחדש בתוך הלולאה; בתוך הלולאה רק מגדילים אותו.'];
           if(bestLoop.times < 30) return ['כמעט — כדי שהספירלה תיראה צפופה וחלקה יותר, השתמשו בהרבה חזרות: לפחות 30.'];
@@ -10486,25 +10501,25 @@
         }
         if(ex.id === 4){
           if(!repeatStarPattern(5, 144, null)) return ['כמעט — שמרו על דפוס הכוכב החוזר.'];
-          if(actionDrawnColors(actions).size < 2) return ['כמעט — צריך לראות לפחות שני צבעים שונים בקווי הכוכב.'];
+          if(actionDrawnColors(actions).length < 2) return ['כמעט — צריך לראות לפחות שני צבעים שונים בקווי הכוכב.'];
           return [];
         }
         if(ex.id === 5){
           const drawnColors = [...actionDrawnColors(actions)];
           if(starRepeatCount(5, 144, 1, 999) < 2) return ['כמעט — צריך לצייר שני כוכבים בעזרת אותו דפוס חוזר.'];
-          if(new Set(drawnColors).size < 2) return ['כמעט — שני הכוכבים צריכים להיות בצבעים שונים.'];
+          if(new Set(drawnColors).length < 2) return ['כמעט — שני הכוכבים צריכים להיות בצבעים שונים.'];
           if(!hasSeparatedColoredStars(actions)) return ['כמעט — השתמשו בהרם עט, מעבר למקום חדש, ואז הורד עט לפני הכוכב השני.'];
           return [];
         }
         if(ex.id === 6){
           const drawnColors = [...actionDrawnColors(actions)];
           if(starRepeatCount(5, 144, 1, 999) < 2) return ['כמעט — עדיין לא שני הכוכבים נסגרים. בדקו את ערכי הסיבוב בתוך החזרות.'];
-          if(new Set(drawnColors).size < 2 || !hasSeparatedColoredStars(actions)) return ['כמעט — שמרו על שני כוכבים נפרדים בצבעים שונים בזמן התיקון.'];
+          if(new Set(drawnColors).length < 2 || !hasSeparatedColoredStars(actions)) return ['כמעט — שמרו על שני כוכבים נפרדים בצבעים שונים בזמן התיקון.'];
           return [];
         }
         if(ex.id === 7){
           if(!repeatStarPattern(5, 144, null)) return ['כמעט — שמרו על כוכב סגור בעזרת דפוס חוזר.'];
-          if(actionDrawnColors(actions).size < 2) return ['כמעט — הוסיפו לפחות שני צבעים שונים לציור.'];
+          if(actionDrawnColors(actions).length < 2) return ['כמעט — הוסיפו לפחות שני צבעים שונים לציור.'];
           return [];
         }
       }
@@ -10533,7 +10548,7 @@
           const key = `${currentLesson}:${ex.id}`;
           exerciseCheckValues[key] = exerciseCheckValues[key] || [];
           if(!exerciseCheckValues[key].includes(currentLength)) exerciseCheckValues[key].push(currentLength);
-          if(new Set(exerciseCheckValues[key]).size < 2) return [`יופי — המבנה נכון. עכשיו שנו את length לערך אחר, הריצו ובדקו שוב ששני הרחובות משתנים יחד.`];
+          if(new Set(exerciseCheckValues[key]).length < 2) return [`יופי — המבנה נכון. עכשיו שנו את length לערך אחר, הריצו ובדקו שוב ששני הרחובות משתנים יחד.`];
           return [];
         }
         if(ex.id === 4){
@@ -10547,7 +10562,7 @@
         }
         if(ex.id === 5){
           if(!hasSeparatedSquareAndTriangle(actions)) return ['כמעט — צריך להוסיף שני סמלי מפה פשוטים: ריבוע קטן לבית ומשולש קטן לפארק.'];
-          if(actionDrawnColors(actions).size < 2) return ['כמעט — שני סמלי המפה צריכים להצטייר בצבעים שונים.'];
+          if(actionDrawnColors(actions).length < 2) return ['כמעט — שני סמלי המפה צריכים להצטייר בצבעים שונים.'];
           if(penUpMoveCount(actions) < 1) return ['כמעט — צריך מעבר אחד בלי ציור: הרם עט, זוזו, ואז הורד עט.'];
           return [];
         }
@@ -10564,7 +10579,7 @@
           }
           if(!actions.some(a=>a.cmd==='width' && Number(a.v) <= 4)) return ['כמעט — לפני הרחובות הצדדיים צריך לשנות לעובי עט דק.'];
           if(actions.some(a=>(a.cmd==='right' || a.cmd==='left') && ![90,180].includes(Number(a.v)))) return ['כמעט — יש רחוב צדדי אלכסוני. שנו את זווית הפנייה כך שהרחוב יהיה ישר.'];
-          if(actionDrawnColors(actions).size < 2) return ['כמעט — הרחובות צריכים להצטייר לפחות בשני צבעים שונים.'];
+          if(actionDrawnColors(actions).length < 2) return ['כמעט — הרחובות צריכים להצטייר לפחות בשני צבעים שונים.'];
           return [];
         }
         if(ex.id === 7){
@@ -10601,7 +10616,7 @@
         }
         if(ex.id === 5){
           if(needsNewAddition && (!currentActions.some(a=>a.cmd === 'color') || !currentActions.some(a=>a.cmd === 'width'))) return ['כמעט — בתרגיל הזה צריך להוסיף שינוי צבע וגם שינוי עובי חדשים, לא רק להריץ את הבלוקים הקודמים.'];
-          if(actionDrawnColors(actions).size < 2) return ['כמעט — הרכבת צריכה לכלול לפחות שני צבעים שמצוירים בפועל.'];
+          if(actionDrawnColors(actions).length < 2) return ['כמעט — הרכבת צריכה לכלול לפחות שני צבעים שמצוירים בפועל.'];
           if(trainWheelCount(actions) < 2) return ['כמעט — הגלגלים צריכים להיות קווים קצרים עם עט עבה מאוד.'];
           return [];
         }
@@ -10641,7 +10656,7 @@
           if(!repeatUsesLengthShape(3, 120)) return ['כמעט — בתוך המשולש השתמשו ב״זוז קדימה לפי האורך״ ופנייה של 120 מעלות.'];
           const key = currentLesson + ':' + ex.id;
           exerciseRunValues[key] = exerciseRunValues[key] || [];
-          if(new Set(exerciseRunValues[key]).size < 2) return ['יופי — המשולש לפי אורך עובד. עכשיו שנו רק את הערך ב״קבע אורך״, הריצו שוב, ואז לחצו בדיקה.'];
+          if(new Set(exerciseRunValues[key]).length < 2) return ['יופי — המשולש לפי אורך עובד. עכשיו שנו רק את הערך ב״קבע אורך״, הריצו שוב, ואז לחצו בדיקה.'];
           return [];
         }
         if(ex.id === 3){
@@ -10741,8 +10756,8 @@
         if(ex.id === 8){
           if(!hasLogoCore) return ['כמעט — לפני קווי האור ודאו שיש מגדל, 3 חלונות, צבע, length ופרט עם penup.'];
           if(!hasBlock('py_repeat')) return ['כמעט — קווי האור צריכים להופיע בעזרת לולאה.'];
-          const smallLightLines = drawnSegments(actions).filter(s=>s.length >= 5 && s.length <= 45).length;
-          if(smallLightLines < 4) return ['כמעט — הוסיפו 3–4 קווי אור או ניצוצות קטנים סביב הלוגו.'];
+          const lengthLightLines = drawnSegments(actions).filter(s=>s.length >= 5 && s.length <= 45).length;
+          if(lengthLightLines < 4) return ['כמעט — הוסיפו 3–4 קווי אור או ניצוצות קטנים סביב הלוגו.'];
           return [];
         }
         if(ex.id === 9){
@@ -10753,10 +10768,52 @@
           return [];
         }
       }
+      if(currentLesson === 24){
+        const hasLengthSet = actions.some(a=>a.cmd === 'setVar' && a.name === 'length');
+        const hasForwardLength = actions.some(a=>a.cmd === 'forwardVar' && a.name === 'length');
+        const moveCount = actions.filter(a=>a.cmd === 'forward' || a.cmd === 'forwardVar').length;
+        const cleanMoves = cleanTransitionCount(actions);
+        if(ex.id === 1){
+          if(!hasLengthSet) return ['כמעט — גררו שורת `length =` וקבעו אותה ל־80.'];
+          if(!hasForwardLength) return ['כמעט — גררו שורת `forward(length)` כדי לבדוק ש־length באמת משפיע על הקו.'];
+          return [];
+        }
+        if(ex.id === 2){
+          if(!hasLengthSet) return ['כמעט — הגוף צריך להתחיל מערך `length = ...`.'];
+          const squareRepeat = repeatPatternBlocks().some(({times, body})=>Number(times) === 4 && body.some(a=>a.cmd === 'forwardVar' && a.name === 'length') && body.some(a=>(a.cmd === 'right' || a.cmd === 'left') && Math.abs(Number(a.v)) === 90));
+          if(!squareRepeat) return ['כמעט — גוף הרובוט צריך להיות ריבוע עם `repeat(4)`, `forward(length)` ופנייה של 90 מעלות.'];
+          return [];
+        }
+        if(ex.id === 3){
+          if(!hasForwardLength || moveCount < 2) return ['כמעט — הוסיפו ראש או פרט קטן שמשתמש גם הוא ב־`forward(length)`.'];
+          return [];
+        }
+        if(ex.id === 4){
+          if(cleanMoves < 1) return ['כמעט — עברו בין חלקים עם `penup`, תנועה, ואז `pendown`, כדי שלא יהיו קווים מיותרים.'];
+          return [];
+        }
+        if(ex.id === 5){
+          if(!hasForwardLength) return ['כמעט — כדי לבדוק מצב קטן/ענק, חלק ברור מהרובוט צריך להשתמש ב־`forward(length)`.'];
+          return [];
+        }
+        if(ex.id === 6){
+          if(moveCount < 3) return ['כמעט — צריך מספיק חלקים ברובוט כדי למצוא מספר קבוע ולתקן אותו.'];
+          if(!hasForwardLength) return ['כמעט — החליפו לפחות מספר קבוע אחד ל־`length`.'];
+          return [];
+        }
+        if(ex.id === 7){
+          if(moveCount < 4 || !hasForwardLength) return ['כמעט — מצב רובוט אישי צריך עדיין להשתמש ב־`length` בחלקים של הציור.'];
+          return [];
+        }
+        if(ex.id === 8){
+          if(!hasForwardLength) return ['כמעט — גם התוספת צריכה להיות נשלטת בקוד, בעזרת `length`.'];
+          return [];
+        }
+      }
       if(currentLesson === 23){
         const moveCount = actions.filter(a=>a.cmd === 'forward' || a.cmd === 'forwardVar').length;
         const turnCount = actions.filter(a=>(a.cmd === 'right' || a.cmd === 'left') && Math.abs(Number(a.v)) > 0).length;
-        const colorCount = actionDrawnColors(actions).size;
+        const colorCount = actionDrawnColors(actions).length;
         const cleanMoves = cleanTransitionCount(actions);
         const drawnCount = drawnSegments(actions).filter(s=>s.length >= 5).length;
         const baselineActions = exerciseBaselines[baselineKey()] || [];
@@ -10829,7 +10886,7 @@
         const hasWideRoad = actionDrawsWithMinWidth(actions, 6);
         const lengthOk = lengthSetBeforeFirstUse(actions, null);
         const lengthMoves = forwardVarCount(actions);
-        const colorsCount = actionDrawnColors(actions).size;
+        const colorsCount = actionDrawnColors(actions).length;
         const cleanMoves = cleanTransitionCount(actions);
         if(ex.id === 1){
           if(moveCount < 1) return ['כמעט — ציירו כביש ראשי ארוך בעזרת forward.'];
@@ -10878,7 +10935,7 @@
           const baselineSegments = drawnSegments(baseline).filter(s=>s.length >= 4).length;
           const currentSegments = drawnSegments(actions).filter(s=>s.length >= 4).length;
           const addedSegments = currentSegments - baselineSegments;
-          const baselineColors = actionDrawnColors(baseline).size;
+          const baselineColors = actionDrawnColors(baseline).length;
           const baselineWide = actionDrawsWithMinWidth(baseline, 6);
           const addedColor = colorsCount > baselineColors;
           const addedWide = actionDrawsWithMinWidth(actions, 6) && !baselineWide;
@@ -10914,7 +10971,7 @@
           if(!repeatUsesLengthShape(4, 90)) return ['כמעט — צריך קודם לצייר ריבוע לקירות הבית. השתמשו בלולאה של 4 חזרות עם זוז קדימה לפי אורך ופנייה של 90 מעלות.'];
           if(!repeatShapeMatches(3, 120)) return ['כמעט — הגג צריך להיות משולש בלולאה של 3 ופנייה של 120 מעלות.'];
           if(!drawingExtendsBeyondLengthSquare(actions)) return ['כמעט — נראה שהגג צויר בתוך הריבוע. ציירו את הגג המשולש על הריבוע למעלה, כמו שגג נמצא על הבית ולא בתוך הבית.'];
-          if(actionDrawnColors(actions).size < 2) return ['כמעט — הקירות והגג צריכים להצטייר לפחות בשני צבעים שונים.'];
+          if(actionDrawnColors(actions).length < 2) return ['כמעט — הקירות והגג צריכים להצטייר לפחות בשני צבעים שונים.'];
           return [];
         }
         if(ex.id === 2){
@@ -11063,7 +11120,7 @@
       if(currentLesson === 5 && ex.id === 7){
         const segments = drawnSegments(actions);
         if(segments.length < 9) return ['צריך לצייר שלוש צורות — לא רק קווים בודדים. נסו לבנות כמה צלעות לכל צורה.'];
-        if(actionDrawnColors(actions).size < 3) return ['צריך לצייר בפועל בשלושה צבעים שונים. שימו צבע חדש לפני כל צורה.'];
+        if(actionDrawnColors(actions).length < 3) return ['צריך לצייר בפועל בשלושה צבעים שונים. שימו צבע חדש לפני כל צורה.'];
         const penUpCount = actions.filter(a=>a.cmd==='pen' && a.v===false).length;
         const penDownCount = actions.filter(a=>a.cmd==='pen' && a.v===true).length;
         if(penUpCount < 2 || penDownCount < 2) return ['בין שלוש הצורות צריכים להיות לפחות שני מעברים בלי ציור: הרם עט, מעבר, ואז הורד עט.'];
@@ -11131,7 +11188,7 @@
           else if(a.cmd==='pen') pen = a.v;
           else if((a.cmd==='forward' || a.cmd==='forwardVar') && pen) drawnColors.add(color);
         }
-        if(drawnColors.size < 2) problems.push('צריך שהצב יצייר בפועל בשני צבעים באותה הרצה — למשל כחול בהתחלה ואז צבע נוסף אחרי שינוי צבע.');
+        if(drawnColors.length < 2) problems.push('צריך שהצב יצייר בפועל בשני צבעים באותה הרצה — למשל כחול בהתחלה ואז צבע נוסף אחרי שינוי צבע.');
       } else if(/צבע/.test(text)){
         const defaultBlue = '#2563eb';
         const needsNonBlue = /שונה מהכחול|אינו הכחול|לא הכחול|צבע חדש|צבע אחר|צבע שונה/.test(text);
@@ -11168,7 +11225,7 @@
         if(colorMatch) return {cmd:'color', v:colorMatch[1].toLowerCase()};
         const penMatch = cleaned.match(/^(penup|pendown)\s*\(\s*\)\s*$/i);
         if(penMatch) return {cmd:'pen', v: penMatch[1].toLowerCase() === 'pendown'};
-        const widthMatch = cleaned.match(/^(?:pensize|width)\s*\(\s*(\d+)\s*\)\s*$/i);
+        const widthMatch = cleaned.match(/^(?:penlength|width)\s*\(\s*(\d+)\s*\)\s*$/i);
         if(widthMatch) return {cmd:'width', v:Number(widthMatch[1])};
         const setLengthMatch = cleaned.match(/^length\s*=\s*(\d+)\s*$/i);
         if(setLengthMatch) return {cmd:'setVar', name:'length', v:Number(setLengthMatch[1])};
@@ -11291,7 +11348,7 @@
           problems.push('כתבו לפי הסדר: length = מספר, forward(length), פנייה של 90 מעלות, ואז forward(length) נוסף לרחוב צדדי.');
         }
         if(!hasStyleChange){
-          problems.push('הוסיפו שינוי צבע או עובי עט, למשל color(...) או pensize(...), כדי להראות הבדל בין רחובות.');
+          problems.push('הוסיפו שינוי צבע או עובי עט, למשל color(...) או penlength(...), כדי להראות הבדל בין רחובות.');
         }
       }
       if(currentLesson === 13 && ex?.id === 9){
@@ -11303,7 +11360,7 @@
           problems.push('ציירו גוף קרון פשוט: כמה קווי forward עם פניות של 90 מעלות.');
         }
         if(thickWheelMarks < 1 && !hasPenMove){
-          problems.push('הוסיפו שני גלגלים לקרון — אפשר עם pensize עבה וקווים קצרים, או מעבר עם penup/pendown.');
+          problems.push('הוסיפו שני גלגלים לקרון — אפשר עם penlength עבה וקווים קצרים, או מעבר עם penup/pendown.');
         }
       }
       if(currentLesson === 14 && ex?.id === 10){
@@ -11460,7 +11517,7 @@
       advancePastCurrentExercise();
     }
     function updateLesson23PilotUi(){
-      const isPilot = currentLesson === 23;
+      const isPilot = isCodePilotLesson();
       document.body.classList.toggle('lesson23-code-pilot', isPilot);
       const title = document.getElementById('workspaceTitle');
       const hint = document.getElementById('workspaceHint');
@@ -11712,23 +11769,32 @@
       saveProgress();
     });
     document.getElementById('demoBtn').addEventListener('click',()=>{ document.getElementById('demoNote')?.removeAttribute('hidden'); lesson10CurrentRevealKey = ''; updateLesson10CanvasSecret(); loadDemo(); });
+    document.addEventListener('pointermove', event=>{
+      lesson23Pointer = {x:event.clientX, y:event.clientY};
+      if(isCodePilotLesson() && lesson23PendingAppendBlockIds.size){
+        updateLesson23NewBlockDropTarget(event.clientX, event.clientY);
+        clearLesson23NewBlockPreviewSelection();
+      }
+    }, {passive:true});
     workspace.addChangeListener((event)=>{
       const isDragEvent = event.type === Blockly.Events.BLOCK_DRAG || event.type === 'drag';
-      if(currentLesson === 23 && !restoringProgress && event.type === Blockly.Events.BLOCK_CREATE && Array.isArray(event.ids)){
+      if(isCodePilotLesson() && !restoringProgress && event.type === Blockly.Events.BLOCK_CREATE && Array.isArray(event.ids)){
         event.ids.forEach(id=>lesson23PendingAppendBlockIds.add(id));
         return;
       }
-      if(currentLesson === 23 && isDragEvent){
+      if(isCodePilotLesson() && isDragEvent){
         if(event.isStart){
-          lesson23ScrollToBottomPending = true;
           updateLesson23BlockVisibility();
-          setLesson23AppendDropMark(true);
-        } else {
-          lesson23ScrollToBottomPending = true;
           setTimeout(()=>{
-            const appended = flushLesson23PendingAppendBlocks();
-            setLesson23AppendDropMark(false);
-            if(!appended){ generatePython(); updateLesson23BlockVisibility(); scrollLesson23CodeToBottom(); }
+            updateLesson23NewBlockDropTarget(lesson23Pointer.x, lesson23Pointer.y);
+            clearLesson23NewBlockPreviewSelection();
+          }, 30);
+        } else {
+          setTimeout(()=>{
+            updateLesson23NewBlockDropTarget(lesson23Pointer.x, lesson23Pointer.y);
+            const inserted = flushLesson23PendingAppendBlocks();
+            clearLesson23DropMarks();
+            if(!inserted){ generatePython(); updateLesson23BlockVisibility(); }
           }, 30);
         }
         return;
@@ -11815,7 +11881,7 @@
       saveProgress();
     });
     document.addEventListener('pointerdown', event=>{
-      if(currentLesson !== 23) return;
+      if(!isCodePilotLesson()) return;
       const handle = event.target.closest?.('.lesson23-drag-handle[data-block-id]');
       if(handle){
         event.preventDefault();
@@ -11834,13 +11900,13 @@
       event.stopPropagation();
     }, true);
     document.addEventListener('pointermove', event=>{
-      if(currentLesson !== 23 || !lesson23ManualDrag) return;
+      if(!isCodePilotLesson() || !lesson23ManualDrag) return;
       event.preventDefault();
       event.stopPropagation();
       updateLesson23ManualDragTarget(event.clientX, event.clientY);
     }, true);
     document.addEventListener('pointerup', event=>{
-      if(currentLesson !== 23 || !lesson23ManualDrag) return;
+      if(!isCodePilotLesson() || !lesson23ManualDrag) return;
       event.preventDefault();
       event.stopPropagation();
       updateLesson23ManualDragTarget(event.clientX, event.clientY);
@@ -11849,7 +11915,7 @@
     document.addEventListener('pointercancel', ()=>{ lesson23ManualDrag = null; clearLesson23DropMarks(); }, true);
     document.addEventListener('focusin', event=>{
       const codeText = event.target.closest?.('.lesson23-code-text[data-block-id]');
-      if(!codeText || currentLesson !== 23) return;
+      if(!codeText || !isCodePilotLesson()) return;
       lesson23SelectedBlockId = codeText.dataset.blockId;
       lastSelectedBlockId = codeText.dataset.blockId;
       lesson23CodeOverlay?.querySelectorAll('.line.active').forEach(el=>el.classList.remove('active'));
@@ -11857,14 +11923,14 @@
     });
     document.addEventListener('click', event=>{
       const codeText = event.target.closest?.('.lesson23-code-text[data-block-id]');
-      if(codeText && currentLesson === 23){
+      if(codeText && isCodePilotLesson()){
         event.stopPropagation();
           lesson23SelectedBlockId = codeText.dataset.blockId;
         codeText.focus();
         return;
       }
       const line = event.target.closest?.('.lesson23-code-overlay .line[data-block-id]');
-      if(line && currentLesson === 23){
+      if(line && isCodePilotLesson()){
         event.stopPropagation();
         lesson23SelectedBlockId = line.dataset.blockId;
         line.querySelector('.lesson23-code-text')?.focus();
@@ -11872,11 +11938,11 @@
     }, true);
     document.addEventListener('focusout', event=>{
       const codeText = event.target.closest?.('.lesson23-code-text[data-block-id]');
-      if(!codeText || currentLesson !== 23) return;
+      if(!codeText || !isCodePilotLesson()) return;
       applyLesson23EditedCodeLine(codeText.dataset.blockId, codeText.textContent);
     });
     document.addEventListener('keydown', event=>{
-      if(currentLesson !== 23) return;
+      if(!isCodePilotLesson()) return;
       const active = document.activeElement;
       const editingCode = active?.classList?.contains('lesson23-code-text');
       if(editingCode){
