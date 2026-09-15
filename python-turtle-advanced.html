@@ -47,13 +47,16 @@
     body.lesson23-code-pilot .lesson23-code-overlay .line:hover{filter:brightness(.98)}
     body.lesson23-code-pilot .lesson23-code-overlay .line.comment{direction:rtl;text-align:right;font-family:Rubik,Arial,sans-serif}
     body.lesson23-code-pilot .lesson23-code-overlay .line.active{outline:3px solid #2563eb;outline-offset:1px}
-    body.lesson23-code-pilot .lesson23-code-overlay .line.indented{border-radius:7px;margin-left:2.1em}
+    body.lesson23-code-pilot .lesson23-code-overlay .line.indented{border-radius:7px;margin-left:2.1em;border-left:3px solid rgba(15,23,42,.18);padding-left:8px}
+    body.lesson23-code-pilot .lesson23-code-overlay .line.indent-depth-2{margin-left:4.2em;border-left-color:rgba(88,28,135,.22)}
+    body.lesson23-code-pilot .lesson23-code-overlay .line.indent-depth-3{margin-left:6.3em;border-left-color:rgba(88,28,135,.30)}
     body.lesson23-code-pilot .lesson23-code-overlay .line.indented.active{outline:3px solid #2563eb;outline-offset:1px}
     body.lesson23-code-pilot .blocklyFlyout{z-index:80!important}
     body.lesson23-code-pilot .blocklyToolboxDiv{opacity:0!important;width:0!important;min-width:0!important;max-width:0!important;overflow:hidden!important;pointer-events:none!important;border:0!important;padding:0!important}
     body.lesson23-code-pilot .blocklyFlyoutBackground{pointer-events:auto}
     body.lesson23-code-pilot .lesson23-drag-handle{display:inline-block;width:2.4em;margin-right:6px;text-align:center;color:rgba(15,23,42,.5);cursor:grab;user-select:none;touch-action:none;font-family:Rubik,Arial,sans-serif;font-weight:900}
     body.lesson23-code-pilot .lesson23-code-overlay .line:not(.code-motion):not(.code-turn):not(.code-pen):not(.code-color):not(.code-loop):not(.code-var):not(.code-comment) .lesson23-drag-handle{color:#94a3b8}
+    body.lesson23-code-pilot .lesson23-code-overlay .line.indented .lesson23-drag-handle{width:1.15em;margin-right:8px;color:rgba(15,23,42,.42)}
     body.lesson23-code-pilot .lesson23-drag-handle:active{cursor:grabbing}
     body.lesson23-code-pilot .lesson23-code-text{display:inline-block;min-width:7ch;border-radius:4px;padding:0 2px;outline:none;cursor:text}
     body.lesson23-code-pilot .lesson23-code-text:focus{background:transparent;border-bottom:2px solid #60a5fa;box-shadow:none}
@@ -5057,7 +5060,7 @@
                               "הוסיפו אנטנה קצרה שמתחילה רק אחרי שינוי `length` אחרי הלולאה.",
                               "הוסיפו ידיים או רגליים בעזרת מעברים נקיים, כדי שהרובוט ייראה כמו דמות מלאה.",
                               "הוסיפו ליד הרובוט לוח בקרה/טעינה עם כפתורים חוזרים בלולאה.",
-                              "בדקו מצב קטן וגדול, ותקנו חלק אחד שנשאר עם מספר קבוע במקום `length`.",
+                              "אם הרובוט עדיין חד־צבעי, הוסיפו צבעים לחלקים שונים: גוף, אנטנה, ידיים או לוח בקרה.",
                               "שדרגו את הרובוט למצב אישי: צבע, ידיים ארוכות, אנטנה גבוהה או רגליים מיוחדות.",
                               "אתגר: הוסיפו תחנת טעינה, קרני אנרגיה או חללית קטנה שמשתמשת גם היא ב־`length`.",
                               "הסבירו אילו חלקים בתוצר נשלטים על ידי `length`.",
@@ -5180,18 +5183,18 @@
                                         "minutes": "48–58",
                                         "title": "תרגול 5 — לוח בקרה עם כפתורים",
                                         "prompt": "הוסיפו ליד הרובוט לוח בקרה או תחנת טעינה עם 3 כפתורים חוזרים בלולאה.",
-                                        "hint": "עברו הצידה עם `penup` ו־`pendown`, ואז צרו כפתורים או קווי טעינה בעזרת `repeat(3)`. אפשר להשתמש בקווים קצרים, צבעים או שינוי עובי.",
+                                        "hint": "עברו הצידה עם `penup` ו־`pendown`, ואז צרו כפתורים בעזרת `repeat(3)`. אם רוצים כפתורים מרובעים קטנים, אפשר להשתמש בלולאה בתוך לולאה: לולאה חיצונית שחוזרת על 3 כפתורים, ובתוכה לולאה קטנה שמציירת ריבוע.",
                                         "check": "יש מעבר נקי מהגוף לאזור חדש, ויש לולאה של 3 חזרות שמוסיפה כפתורים/קווי טעינה ליד הרובוט.",
                                         "commonMistake": "מציירים עוד קווים על הגוף עצמו במקום ליצור לוח בקרה נפרד ליד הרובוט."
                               },
                               {
                                         "id": 6,
                                         "minutes": "58–68",
-                                        "title": "תרגול 6 — בדיקת שליטה ודיבאג",
-                                        "prompt": "שנו את `length` למצב קטן ואז למצב גדול. מצאו חלק אחד שלא משתנה מספיק, ותקנו אותו כך שישתמש ב־`forward(length)`.",
-                                        "hint": "אל תשנו הרבה דברים יחד. קודם שנו רק את `length`, הריצו, ואז חפשו קו עם מספר קבוע שמתאים להחלפה ב־`forward(length)`.",
-                                        "check": "הרובוט כולל כמה חלקים, ויש לפחות שימוש אחד נוסף ב־`forward(length)` במקום מספר קבוע.",
-                                        "commonMistake": "משנים את כל המספרים ביד במקום לבדוק מה באמת נשלט על ידי `length`."
+                                        "title": "תרגול 6 — צבעים לחלקי הרובוט",
+                                        "prompt": "אם הרובוט עדיין בצבע אחד, הוסיפו צבעים לחלקים שונים שלו — למשל גוף, אנטנה, ידיים או לוח בקרה.",
+                                        "hint": "שימו בלוק `color` לפני החלק שצריך להיצבע. למשל: צבע אחד לפני גוף הרובוט, צבע אחר לפני אנטנה או לוח הבקרה. אל תשנו את סדר הלולאות והמעברים שכבר עובדים.",
+                                        "check": "יש לפחות שימוש אחד בבלוק `color` לאורך הקוד.",
+                                        "commonMistake": "שמים את הצבע אחרי שכבר צויר החלק, ואז הוא משפיע רק על הפקודות הבאות."
                               },
                               {
                                         "id": 7,
@@ -7192,19 +7195,22 @@
         const active = line.id && line.id === lesson23SelectedBlockId ? ' active' : '';
         const colorClass = lesson23CodeLineColorClass(line);
         const isComment = /^\s*#/.test(line.text || '');
-        const isIndented = /^\s+\S/.test(line.text || '');
+        const indentMatch = String(line.text || '').match(/^(\s*)\S/);
+        const indentDepth = indentMatch ? Math.floor((indentMatch[1] || '').length / 4) : 0;
+        const isIndented = indentDepth > 0;
+        const indentClass = indentDepth > 0 ? ` indent-depth-${Math.min(indentDepth, 3)}` : '';
         const editable = line.id ? ' contenteditable="true" spellcheck="false" role="textbox" aria-label="עריכת שורת קוד"' : '';
         let lineNumber;
         if(isIndented && lesson23TopLineNumber){
           lesson23ChildLineNumber += 1;
-          lineNumber = `${lesson23TopLineNumber}.${lesson23ChildLineNumber}`;
+          lineNumber = '⋮';
         } else {
           lesson23TopLineNumber += 1;
           lesson23ChildLineNumber = 0;
           lineNumber = String(lesson23TopLineNumber);
         }
-        const dragHandle = line.id ? `<span class="lesson23-drag-handle" data-block-id="${escapeHtml(line.id)}" title="גררו את מספר השורה כדי לשנות סדר">${lineNumber}</span>` : '';
-        return `<span class="line${isComment ? ' comment' : ''}${isIndented ? ' indented' : ''}${colorClass}${active}" data-block-id="${escapeHtml(line.id || '')}" tabindex="0">${dragHandle}<span class="lesson23-code-text" data-block-id="${escapeHtml(line.id || '')}"${editable}>${escapeHtml(line.text || '')}</span></span>`;
+        const dragHandle = line.id ? `<span class="lesson23-drag-handle" data-block-id="${escapeHtml(line.id)}" title="גררו כדי לשנות סדר">${lineNumber}</span>` : '';
+        return `<span class="line${isComment ? ' comment' : ''}${isIndented ? ' indented' : ''}${indentClass}${colorClass}${active}" data-block-id="${escapeHtml(line.id || '')}" tabindex="0">${dragHandle}<span class="lesson23-code-text" data-block-id="${escapeHtml(line.id || '')}"${editable}>${escapeHtml(line.text || '')}</span></span>`;
       }).join('');
       if(lesson23ScrollToBottomPending || wasNearBottom){
         lesson23ScrollToBottomPending = false;
@@ -10881,9 +10887,9 @@
           return [];
         }
         if(ex.id === 6){
-          if(moveCount < 5) return ['כמעט — צריך רובוט עם מספיק חלקים לפני בדיקת השליטה והדיבאג.'];
-          const lengthForwardCount = actions.filter(a=>a.cmd === 'forwardVar' && a.name === 'length').length;
-          if(lengthForwardCount < 3) return ['כמעט — החליפו עוד קו אחד ל־`forward(length)`, כדי שיותר חלקים יקשיבו למשתנה.'];
+          if(moveCount < 5) return ['כמעט — קודם צריך רובוט עם גוף, אנטנה ועוד חלק אחד לפחות.'];
+          if(!actions.some(a=>a.cmd === 'color')) return ['כמעט — הוסיפו לפחות בלוק `color` אחד לאורך הקוד.'];
+          if(cleanMoves < 1) return ['יופי — יש צבע. עכשיו ודאו שהמעבר לחלק נפרד נשאר נקי עם `penup` ו־`pendown`.'];
           return [];
         }
         if(ex.id === 7){
