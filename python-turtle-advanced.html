@@ -57,6 +57,11 @@
     body.lesson23-code-pilot .lesson23-code-overlay .line.lesson23-drop-before{box-shadow:inset 0 2px 0 #2563eb}
     body.lesson23-code-pilot .lesson23-code-overlay .line.lesson23-drop-after{box-shadow:inset 0 -2px 0 #2563eb}
     body.lesson23-code-pilot .lesson23-code-overlay.lesson23-append-drop-mark::after{content:'';display:block;margin:10px 0 0;border-top:4px solid #2563eb;height:0;background:transparent;border-radius:6px}
+
+    @media(min-width:1151px){html,body{height:100%;overflow:hidden}.app{height:100vh;min-height:0}.layout{min-height:0}}
+
+    .lessons,.mission,.exercise-nav{overflow-x:hidden}
+    .exercise-nav button,.lesson{max-width:100%;min-width:0}
 </style>
   <link rel="stylesheet" href="css/platform-home-link.css">
 </head>
@@ -5029,7 +5034,7 @@
                     "title": "רובוט בשליטה: מציירים עם length",
                     "goal": "בונים רובוט קטן שנשלט דרך `length`: שינוי ערך אחד בתחילת הקוד משנה חלקים שלמים בציור בלי לתקן כל פקודה בנפרד.",
                     "concept": "משתנה אחד ככפתור שליטה בציור",
-                    "product": "רובוט משתנה לפי ערכים",
+                    "product": "רובוט שנבנה בשלבים ונשלט על ידי length",
                     "blocks": [
                               "forward",
                               "right",
@@ -5039,33 +5044,33 @@
                               "length"
                     ],
                     "practice": [
-                              "קבעו בתחילת הקוד `length = 80`.",
-                              "ציירו גוף רובוט מרובע בעזרת `forward(length)` ו־`repeat`.",
-                              "שנו את `length` ובדקו שהגוף גדל או קטן בבת אחת.",
-                              "הוסיפו ראש או פרט קטן בעזרת אותו `length`, ואז התאימו את הערך.",
-                              "עברו בין חלקים עם `penup` ו־`pendown` כדי שלא יהיו קווים מיותרים.",
-                              "בדקו מצב קטן ומצב ענק על ידי שינוי `length` בלבד.",
-                              "תקנו באג שבו חלק מהרובוט מצויר עם מספר קבוע ולא עם `length`.",
-                              "בחרו מצב רובוט אישי: גבוה, קטן, רחב או עם אנטנה.",
+                              "קבעו בתחילת הקוד `length = 80` וציירו קו בדיקה שהוא בסיס הרובוט.",
+                              "הפכו את קו הבדיקה לגוף רובוט מרובע בעזרת `forward(length)` ו־`repeat`.",
+                              "הוסיפו ראש/אנטנה/עיניים כך שהרובוט נראה כמו דמות ולא רק ריבוע.",
+                              "עברו למקום חדש עם `penup`/`pendown` כדי להפריד בין הגוף לפרטים בלי קווים מיותרים.",
+                              "שנו את `length` ובדקו שכל החלקים החשובים של הרובוט גדלים או קטנים יחד.",
+                              "תקנו חלק אחד שנשאר עם מספר קבוע והחליפו אותו ל־`length`.",
+                              "הוסיפו תוספת קטנה ליד הרובוט — שלט טעינה, כפתורים או חללית — שגם היא משתמשת ב־`length`.",
+                              "הוסיפו תוספת קטנה ליד הרובוט — שלט טעינה, כפתורים או חללית — שגם היא משתמשת ב־`length`.",
                               "הסבירו אילו חלקים ברובוט נשלטים על ידי `length`.",
-                              "אתגר: הוסיפו חללית/שלט טעינה שמשתמשים גם הם ב־`length`."
+                              "אתגר: הוסיפו עוד מצב או קישוט שמגיב לשינוי `length`."
                     ],
                     "timing": [
                               "0–8 פתיחה: למה כדאי לשלוט בציור ממקום אחד",
                               "8–18 הדגמה קצרה של length ו־forward(length) בלי פתרון מלא",
-                              "18–34 בניית גוף וראש רובוט בעזרת משתנים",
+                              "18–34 בניית גוף וראש רובוט בעזרת length",
                               "34–48 הוספת פרטים קטנים ומעברים נקיים",
                               "48–64 שינוי ערכים והשוואת לפני/אחרי",
                               "64–76 דיבאג: מספר קבוע שמסרב להשתנות",
                               "76–84 אתגר יצירתי עם מצב רובוט אישי",
-                              "84–90 שיתוף וסיכום: איזה משתנה שלט במה"
+                              "84–90 שיתוף וסיכום: איפה length שלט בציור"
                     ],
                     "teacherTips": [
                               "להדגיש שהקסם הוא לא הציור עצמו, אלא זה ששינוי ערך אחד משפיע על כמה פקודות.",
                               "בכל שלב לשאול: האם המספר הזה צריך להיות קבוע, או שהוא צריך להיות משתנה?",
                               "לעודד בדיקות לפני/אחרי: משנים רק את `length`, מריצים, ואז מחזירים או משפרים.",
                               "בדיבאג לא למחוק הכל — לחפש את המספר הקבוע שלא משתמש ב־`length`.",
-                              "לתלמידים מתקדמים לתת להוסיף מצב רובוט, אבל לדרוש שהשינוי ייעשה מהערכים בתחילת הקוד."
+                              "לתלמידים מתקדמים לתת להוסיף מצב רובוט, אבל לדרוש שהשינוי ייעשה דרך `length` בתחילת הקוד."
                     ],
                     "unit": "יחידה 5 — אנימציה וסיפור בתנועה",
                     "level": "מתקדם לגיל 10–11",
@@ -5080,7 +5085,7 @@
                                         "minutes": "0–8",
                                         "title": "פתיחה — לוח בקרה לרובוט",
                                         "teacher": "מציגים רעיון: במקום לשנות 10 מספרים ביד, שמים ערך שליטה אחד בראש הקוד. שואלים מה כדאי לשלוט בו: גודל ופרטים שחוזרים בציור.",
-                                        "students": "מנבאים מה יקרה אם נשנה רק את `length`, ומה יקרה אם נשנה רק את `length`."
+                                        "students": "מנבאים מה יקרה לגוף, לראש ולפרטים אם נשנה רק את `length`."
                               },
                               {
                                         "minutes": "8–18",
@@ -5091,19 +5096,19 @@
                               {
                                         "minutes": "18–34",
                                         "title": "בונים גוף וראש",
-                                        "teacher": "מובילים גוף מרובע וראש קטן יותר. עוצרים לשאלת דיוק: איפה נכון להשתמש ב־`length` במקום מספר רגיל?",
+                                        "teacher": "מובילים גוף מרובע ואז מוסיפים ראש/אנטנה/עיניים. עוצרים לשאלת דיוק: איפה נכון להשתמש ב־`length` במקום מספר רגיל?",
                                         "students": "בונים, מריצים אחרי כל חלק, ומתקנים כיוון/גודל בלי להחליף את כל התוכנית."
                               },
                               {
                                         "minutes": "34–48",
                                         "title": "פרטים ומעברים נקיים",
                                         "teacher": "מדגישים שימוש ב־`penup`, `pendown` ו־`forward(length)` כדי לעבור בין חלקים בלי קווים מיותרים.",
-                                        "students": "מוסיפים עיניים, אנטנה או רגליים קטנות ומשתמשים ב־`length` לפחות במקום אחד."
+                                        "students": "מוסיפים עיניים, אנטנה או רגליים, ומשתמשים ב־`length` לפחות במקום אחד כדי שהפרט יהיה חלק מלוח השליטה."
                               },
                               {
                                         "minutes": "48–64",
                                         "title": "בדיקת שליטה",
-                                        "teacher": "מבקשים לשנות רק ערכים בתחילת הקוד ולבדוק מה זז, מה גדל ומה נשאר קבוע.",
+                                        "teacher": "מבקשים לשנות רק את `length` בתחילת הקוד ולבדוק מה זז, מה גדל ומה נשאר קבוע.",
                                         "students": "מנסים מצב קטן ומצב גדול, ומשווים בין שתי הרצות."
                               },
                               {
@@ -5115,7 +5120,7 @@
                               {
                                         "minutes": "76–84",
                                         "title": "אתגר יצירתי קצר",
-                                        "teacher": "פותחים בחירה: רובוט ענק, רובוט זעיר, רובוט עם אנטנה, או חללית קטנה לידו — אבל לפחות פרט אחד חייב להישלט במשתנה.",
+                                        "teacher": "פותחים בחירה: רובוט ענק, רובוט זעיר, רובוט עם אנטנה, או חללית קטנה לידו — אבל לפחות פרט אחד חייב להשתמש ב־`length`.",
                                         "students": "משדרגים תוך שמירה על לוח השליטה בתחילת הקוד."
                               },
                               {
@@ -5129,62 +5134,62 @@
                               {
                                         "id": 1,
                                         "minutes": "18–24",
-                                        "title": "תרגול 1 — לוח השליטה של הרובוט",
-                                        "prompt": "גררו מאזור המשתנים שורת קוד של משתנה ושנו אותה ל־`length = 80`. גררו גם שורת `forward(length)`, הריצו, ואז ערכו את השורה הראשונה ל־`length = 100` והריצו שוב. מה השתנה בקו?",
-                                        "hint": "המטרה היא לראות שהשם `length` מחליף מספר. אם `forward(length)` נהיה ארוך יותר אחרי שינוי `length`, לוח השליטה עובד.",
-                                        "check": "יש בקוד שורת `length = ...` ושורת `forward(length)`, ושינוי הערך של `length` משנה את אורך הקו.",
-                                        "commonMistake": "כותבים את המשתנים, אבל ממשיכים לצייר עם `forward(80)` במקום `forward(length)`, ואז השינוי לא משפיע."
+                                        "title": "תרגול 1 — קו בסיס שנשלט מ־length",
+                                        "prompt": "ציירו קו בעזרת משתנה אורך בשם `length`, ואז שנו את הערך של `length` כדי לראות שהקו משתנה.",
+                                        "hint": "בנו שתי שורות: `length = 80` ואז `forward(length)`. הריצו. אחר כך שנו רק את השורה הראשונה ל־`length = 100` והריצו שוב. בשורת התנועה לא כותבים מספר — כותבים `forward(length)`.",
+                                        "check": "יש שתי שורות בסיס: `length = ...` ואז `forward(length)`, ונעשו שתי הרצות עם שני ערכי `length` שונים.",
+                                        "commonMistake": "כותבים `forward(80)` במקום `forward(length)`, ואז שינוי `length` לא משפיע."
                               },
                               {
                                         "id": 2,
                                         "minutes": "24–32",
-                                        "title": "תרגול 2 — גוף לפי `length`",
-                                        "prompt": "ציירו גוף רובוט מרובע בעזרת `repeat(4)`: בכל חזרה צועדים `forward(length)` ופונים 90 מעלות.",
-                                        "hint": "אם הגוף לא נסגר, בדקו שיש 4 חזרות ופנייה של 90 מעלות. הצלע צריכה להיות `length`, לא מספר רגיל.",
-                                        "check": "גוף הרובוט הוא ריבוע או מסגרת סגורה שמשתמשת ב־`forward(length)` בתוך `repeat`.",
+                                        "title": "תרגול 2 — גוף רובוט בלולאה",
+                                        "prompt": "בעזרת לולאה, הפכו את הקו לגוף רובוט מרובע.",
+                                        "hint": "צרו גוף עם `repeat(4)`: בתוך הלולאה שימו `forward(length)` ופנייה של 90 מעלות. בשלב הזה לא צריך עדיין אנטנה.",
+                                        "check": "יש גוף סגור עם `repeat(4)` ו־`forward(length)` בתוך הלולאה.",
                                         "commonMistake": "כותבים `forward(80)` במקום `forward(length)`, ואז שינוי `length` לא משפיע על הגוף."
                               },
                               {
                                         "id": 3,
                                         "minutes": "32–40",
-                                        "title": "תרגול 3 — ראש ופרטים קטנים",
-                                        "prompt": "הוסיפו ראש או חלון פנים קטן לרובוט בעזרת `length`. אפשר לצייר ריבוע קטן, עיניים קצרות או אנטנה קטנה.",
-                                        "hint": "הפרטים לא חייבים להיות מושלמים. העיקר שלפחות חלק קטן אחד משתמש ב־`forward(length)`.",
-                                        "check": "נוסף פרט קטן לרובוט שמשתמש ב־`length` ולא רק במספר קבוע.",
+                                        "title": "תרגול 3 — אנטנה באורך קצר",
+                                        "prompt": "השאירו את `length` הראשון כמו שהוא בשביל הגוף. רק אחרי הלולאה שנו את `length` לאורך קצר, וציירו אנטנה עם `forward(length)`.",
+                                        "hint": "הסדר חשוב: בהתחלה נשאר `length` של הגוף. אחרי `repeat(4)` הוסיפו למשל `length = 30`, ואז `forward(length)` בשביל אנטנה קצרה.",
+                                        "check": "אחרי לולאת הגוף יש שינוי `length` לאורך קצר, ואחריו `forward(length)` שמצייר אנטנה.",
                                         "commonMistake": "מציירים פרט יפה, אבל עם מספר רגיל — ואז הוא לא משתנה כשמשנים את `length`."
                               },
                               {
                                         "id": 4,
                                         "minutes": "40–48",
                                         "title": "תרגול 4 — עוברים בלי קווים מיותרים",
-                                        "prompt": "השתמשו ב־`penup`, `forward(length)` ו־`pendown` כדי לעבור בין חלקים של הרובוט בלי להשאיר קו מעבר מיותר.",
+                                        "prompt": "נקו את המעבר בין הגוף לפרט: השתמשו ב־`penup`, `forward(length)` ו־`pendown` כדי להגיע למקום חדש בלי להשאיר קו מיותר. אחרי המעבר ציירו עוד פרט קטן.",
                                         "hint": "מעבר נקי נראה כך: מרימים עט → זזים לפי `length` → מורידים עט → מציירים את החלק הבא.",
-                                        "check": "יש לפחות מעבר אחד בין חלקי הרובוט שמשתמש ב־`length` ושומר על ציור נקי.",
+                                        "check": "יש מעבר נקי אחד לפחות בין חלקי הרובוט, ואחריו נוסף פרט מצויר במקום החדש.",
                                         "commonMistake": "שוכחים להרים עט, ואז מופיע קו שמחבר בין הגוף לפרט קטן."
                               },
                               {
                                         "id": 5,
                                         "minutes": "48–58",
                                         "title": "תרגול 5 — מצב קטן ומצב ענק",
-                                        "prompt": "שנו רק את `length` בתחילת הקוד: נסו רובוט קטן ואז רובוט ענק. אל תשנו את פקודות הציור עצמן.",
+                                        "prompt": "בדקו שהרובוט באמת בשליטה: שנו רק את `length` בתחילת הקוד ל־60 ואז ל־110. הגוף ועוד פרט אחד לפחות צריכים להשתנות בלי לערוך את שורות הציור.",
                                         "hint": "בדיקה טובה: משנים את `length`, מריצים, ומשווים מה גדל או קטן.",
-                                        "check": "לפחות שינוי אחד בתחילת הקוד משנה חלק ברור מהרובוט בלי לשנות את פקודות הציור בהמשך.",
+                                        "check": "שינוי `length` בתחילת הקוד משנה לפחות שני חלקים ברורים ברובוט, בלי לשנות את פקודות הציור בהמשך.",
                                         "commonMistake": "משנים גם את הערכים וגם פקודות באמצע הקוד, ואז לא יודעים מה באמת השפיע."
                               },
                               {
                                         "id": 6,
                                         "minutes": "58–68",
                                         "title": "תרגול 6 — דיבאג: מי לא מקשיב למשתנה?",
-                                        "prompt": "חפשו חלק ברובוט שעדיין מצויר עם מספר קבוע, למשל `forward(40)`. החליפו אותו למשתנה מתאים: `length`.",
+                                        "prompt": "דיבאג: חפשו ברובוט חלק שנשאר עם מספר קבוע, למשל `forward(40)`. החליפו לפחות שורה אחת כזאת ל־`forward(length)` והריצו שוב.",
                                         "hint": "סימן לבאג: משנים את `length`, אבל חלק אחד נשאר בדיוק אותו דבר. חפשו שם מספר רגיל.",
-                                        "check": "לפחות מספר קבוע אחד הוחלף במשתנה מתאים, והציור מגיב טוב יותר לשינוי הערכים.",
+                                        "check": "לפחות קו אחד שהיה מספר קבוע הוחלף ל־`forward(length)`, ועכשיו עוד חלק ברובוט מגיב לשינוי `length`.",
                                         "commonMistake": "מוחקים את כל החלק במקום להחליף רק את המספר הקבוע במשתנה."
                               },
                               {
                                         "id": 7,
                                         "minutes": "68–78",
                                         "title": "תרגול 7 — מצב רובוט אישי",
-                                        "prompt": "בחרו מצב לרובוט: ענק, זעיר, רחב, צפוף או עם אנטנה ארוכה. נסו להשיג את המצב בעיקר דרך שינוי `length`.",
+                                        "prompt": "בחרו מצב לרובוט: ענק, זעיר, רחב, צפוף או עם אנטנה ארוכה. הוסיפו/התאימו 2–3 שורות כך שהמצב נראה בציור, ורוב השינוי נעשה דרך `length`.",
                                         "hint": "מצב טוב הוא כזה שאפשר להסביר: “שיניתי את `___`, ולכן ___ השתנה בציור”.",
                                         "check": "יש גרסת רובוט אישית, ולפחות שני חלקים בה נשלטים דרך `length`.",
                                         "commonMistake": "מוסיפים הרבה קישוטים ידניים, אבל מאבדים את הרעיון של שליטה דרך ערכים."
@@ -5193,10 +5198,10 @@
                                         "id": 8,
                                         "minutes": "78–90",
                                         "title": "אתגר רשות — תוספת שנשלטת בקוד",
-                                        "prompt": "אם נשאר זמן, הוסיפו ליד הרובוט חללית קטנה, שלט טעינה או כפתורי בקרה. לפחות חלק אחד בתוספת חייב להשתמש ב־`length`.",
+                                        "prompt": "אם נשאר זמן, הוסיפו ליד הרובוט תוספת קטנה: חללית, שלט טעינה או כפתורי בקרה. התוספת צריכה להיראות בנפרד מהרובוט, ולפחות חלק אחד בה חייב להשתמש ב־`length`.",
                                         "hint": "רעיונות: שלט טעינה עם קווים קצרים, חללית משולשת קטנה, או כפתורים שמופרדים לפי `length`.",
                                         "check": "התוספת יצירתית, אבל עדיין מחוברת לרעיון השיעור: שינוי ערך בתחילת הקוד משפיע על הציור.",
-                                        "commonMistake": "האתגר הופך לציור חופשי בלי קשר למשתנים."
+                                        "commonMistake": "האתגר הופך לציור חופשי בלי קשר ל־`length`."
                               }
                     ],
                     "vocabulary": [
@@ -5222,7 +5227,7 @@
                               ]
                     ],
                     "successCriteria": [
-                              "הרובוט כולל לפחות שני חלקים שמשתמשים ב`length`.",
+                              "הרובוט כולל לפחות שני חלקים שמשתמשים ב־`length`.",
                               "שינוי ערך בתחילת הקוד משנה חלק ברור בציור.",
                               "התלמיד/ה יודע/ת לזהות מספר קבוע שלא מגיב לשינוי ולהחליף אותו במשתנה מתאים.",
                               "יש שימוש נקי ב־`penup`/`pendown` למעבר בין חלקים בלי קווים מיותרים.",
@@ -7285,12 +7290,25 @@
     }
     function flushLesson23PendingAppendBlocks(){
       if(!isCodePilotLesson() || !lesson23PendingAppendBlockIds.size) return false;
-      const ids = [...lesson23PendingAppendBlockIds];
+      const ids = [...lesson23PendingAppendBlockIds].filter(id=>{
+        const block = workspace.getBlockById(id);
+        if(!block) return false;
+        const alreadyRenderedLine = !!lesson23CodeOverlay?.querySelector(`.line[data-block-id="${CSS.escape(id)}"]`);
+        // Safety: blocks that already existed inside a repeat body must never be treated as newly dragged toolbox blocks.
+        // Otherwise the first added block in a new exercise can accidentally pull the loop body out.
+        if(alreadyRenderedLine && lesson23IsInAnyRepeatBody(block)) return false;
+        return true;
+      });
       lesson23PendingAppendBlockIds.clear();
       let changed = false;
       ids.forEach(id=>{ changed = insertLesson23NewBlockAtMarkedTarget(id) || changed; });
       lesson23NewBlockDropTarget = null;
       return changed;
+    }
+    function clearLesson23PendingNewBlocks(){
+      lesson23PendingAppendBlockIds.clear();
+      lesson23NewBlockDropTarget = null;
+      clearLesson23DropMarks();
     }
     function moveLesson23CodeLine(dragId, targetId, placeAfter=false){
       if(!isCodePilotLesson() || !dragId || !targetId || dragId === targetId) return false;
@@ -8331,6 +8349,7 @@
     function isIsolatedExercise(ex){
       if(isLesson22CumulativeExercise(ex)) return false;
       if(currentLesson === 23 && ex?.id !== 7) return false;
+      if(currentLesson === 24) return false;
       return !!starterXmlForExercise(ex);
     }
     function saveActiveWorkspace(index=currentExerciseIndex){
@@ -8569,6 +8588,10 @@
         captureExerciseEntry(index);
       } finally {
         restoringProgress = false;
+        clearLesson23PendingNewBlocks();
+        setTimeout(clearLesson23PendingNewBlocks, 0);
+        setTimeout(clearLesson23PendingNewBlocks, 80);
+        setTimeout(clearLesson23PendingNewBlocks, 250);
       }
     }
     function maybeAddLesson22DashStarter(index=currentExerciseIndex){
@@ -8729,7 +8752,7 @@
       const lesson19RiddleBoxHtml = lesson19RiddleHtml(ex);
       const lesson19OrderCheckBoxHtml = lesson19OrderCheckHtml(ex);
       const lesson21PredictionBoxHtml = lesson21PredictionHtml(ex);
-      const lesson23CodePilotHtml = isCodePilotLesson() && ex?.id !== 'loop-did-you-know' ? (ex?.id === 1 ? '<div class="code-pilot-banner">איך עובדים היום: גוררים פקודה מהמחסן לאזור העבודה — וכשמניחים אותה היא הופכת לשורת Python.<br><br>כדי לשנות מספר או צבע — לוחצים בתוך השורה ועורכים.<br>כדי למחוק — בוחרים שורה ולוחצים Delete.<br>כדי לשנות סדר — גוררים את מספר השורה למקום החדש.<br><br>בלולאה: גררו מספרי שורות אל מתחת לשורת repeat כדי להכניס פקודות פנימה. אפשר להכניס כמה שורות — כל שורה עם הזחה היא בתוך הלולאה. צבעים כותבים במילים כמו blue או red, את האפשרויות רואים בתפריט של בלוק color במחסן.</div>' : '<details class="code-pilot-help"><summary>צריכים תזכורת לעבודה עם שורות קוד?</summary><div>גוררים פקודה והיא הופכת לשורת Python.<br><br>כדי לשנות מספר או צבע — לוחצים בתוך השורה ועורכים.<br>כדי למחוק — בוחרים שורה ולוחצים Delete.<br>כדי לשנות סדר — גוררים את מספר השורה למקום החדש.<br><br>בלולאה: גררו מספרי שורות אל מתחת לשורת repeat כדי להכניס פקודות פנימה. אפשר להכניס כמה שורות — כל שורה עם הזחה היא בתוך הלולאה. צבעים כותבים במילים כמו blue או red, את האפשרויות רואים בתפריט של בלוק color במחסן.</div></details>') : '';
+      const lesson23CodePilotHtml = isCodePilotLesson() && ex?.id !== 'loop-did-you-know' ? (ex?.id === 1 && currentLesson === 23 ? '<div class="code-pilot-banner">איך עובדים היום: גוררים פקודה מהמחסן לאזור העבודה — וכשמניחים אותה היא הופכת לשורת Python.<br><br>כדי לשנות מספר או צבע — לוחצים בתוך השורה ועורכים.<br>כדי למחוק — בוחרים שורה ולוחצים Delete.<br>כדי לשנות סדר — גוררים את מספר השורה למקום החדש.<br><br>בלולאה: גררו מספרי שורות אל מתחת לשורת repeat כדי להכניס פקודות פנימה. אפשר להכניס כמה שורות — כל שורה עם הזחה היא בתוך הלולאה. צבעים כותבים במילים כמו blue או red, את האפשרויות רואים בתפריט של בלוק color במחסן.</div>' : '<details class="code-pilot-help"><summary>צריכים תזכורת לעבודה עם שורות קוד?</summary><div>גוררים פקודה והיא הופכת לשורת Python.<br><br>כדי לשנות מספר או צבע — לוחצים בתוך השורה ועורכים.<br>כדי למחוק — בוחרים שורה ולוחצים Delete.<br>כדי לשנות סדר — גוררים את מספר השורה למקום החדש.<br><br>בלולאה: גררו מספרי שורות אל מתחת לשורת repeat כדי להכניס פקודות פנימה. אפשר להכניס כמה שורות — כל שורה עם הזחה היא בתוך הלולאה. צבעים כותבים במילים כמו blue או red, את האפשרויות רואים בתפריט של בלוק color במחסן.</div></details>') : '';
       const promptHtml = currentLesson === 23 && ex?.id === 'loop-did-you-know'
         ? '<p><b>כשגוררים repeat, בשורות הקוד הוא נכתב בשפת Python כך:</b></p><pre class="code" style="margin:8px 0;padding:10px;border-radius:12px;direction:ltr;text-align:left;">for i in range(4):</pre><p><b>זה אומר: חזרו 4 פעמים. השורות המוזחות מתחתיו, כמו 5.1 ו־5.2, הן הפקודות שחוזרות.</b></p>'
         : `<p><b>${escapeHtml(ex.prompt || '')}</b></p>`;
@@ -10774,18 +10797,30 @@
         const moveCount = actions.filter(a=>a.cmd === 'forward' || a.cmd === 'forwardVar').length;
         const cleanMoves = cleanTransitionCount(actions);
         if(ex.id === 1){
-          if(!hasLengthSet) return ['כמעט — גררו שורת `length =` וקבעו אותה ל־80.'];
-          if(!hasForwardLength) return ['כמעט — גררו שורת `forward(length)` כדי לבדוק ש־length באמת משפיע על הקו.'];
+          if(!hasLengthSet) return ['כמעט — גררו שורת `length =` וקבעו בה ערך, למשל 80.'];
+          if(!hasForwardLength) return ['כמעט — גררו שורת `forward(length)` כדי לצייר קו בעזרת משתנה האורך.'];
+          const currentLength = actions.find(a=>a.cmd === 'setVar' && a.name === 'length' && Number.isFinite(Number(a.v)))?.v;
+          const key = `${currentLesson}:${ex.id}`;
+          exerciseCheckValues[key] = exerciseCheckValues[key] || [];
+          if(Number.isFinite(Number(currentLength)) && !exerciseCheckValues[key].includes(Number(currentLength))) exerciseCheckValues[key].push(Number(currentLength));
+          if(new Set(exerciseCheckValues[key]).size < 2) return ['יופי — הקו עובד. עכשיו שנו רק את הערך של `length`, הריצו שוב, ובדקו שהקו משתנה.'];
           return [];
         }
         if(ex.id === 2){
           if(!hasLengthSet) return ['כמעט — הגוף צריך להתחיל מערך `length = ...`.'];
-          const squareRepeat = repeatPatternBlocks().some(({times, body})=>Number(times) === 4 && body.some(a=>a.cmd === 'forwardVar' && a.name === 'length') && body.some(a=>(a.cmd === 'right' || a.cmd === 'left') && Math.abs(Number(a.v)) === 90));
+          const squareRepeat = repeatPatternBlocks().find(({times, body})=>Number(times) === 4 && body.some(a=>a.cmd === 'forwardVar' && a.name === 'length') && body.some(a=>(a.cmd === 'right' || a.cmd === 'left') && Math.abs(Number(a.v)) === 90));
           if(!squareRepeat) return ['כמעט — גוף הרובוט צריך להיות ריבוע עם `repeat(4)`, `forward(length)` ופנייה של 90 מעלות.'];
           return [];
         }
         if(ex.id === 3){
-          if(!hasForwardLength || moveCount < 2) return ['כמעט — הוסיפו ראש או פרט קטן שמשתמש גם הוא ב־`forward(length)`.'];
+          const squareRepeat = repeatPatternBlocks().find(({times, body})=>Number(times) === 4 && body.some(a=>a.cmd === 'forwardVar' && a.name === 'length') && body.some(a=>(a.cmd === 'right' || a.cmd === 'left') && Math.abs(Number(a.v)) === 90));
+          if(!squareRepeat) return ['כמעט — קודם צריך להשאיר גוף רובוט עם `repeat(4)` ו־`forward(length)`.'];
+          const repeatIndex = actions.findIndex(a=>a.cmd === 'repeat' && Number(a.times) === 4 && (a.body || []).some(b=>b.cmd === 'forwardVar' && b.name === 'length'));
+          const searchFrom = repeatIndex >= 0 ? repeatIndex + 1 : 0;
+          const shortLengthIndex = actions.findIndex((a,i)=>i >= searchFrom && a.cmd === 'setVar' && a.name === 'length' && Number(a.v) > 0 && Number(a.v) <= 60);
+          const antennaForwardIndex = actions.findIndex((a,i)=>shortLengthIndex >= 0 && i > shortLengthIndex && a.cmd === 'forwardVar' && a.name === 'length');
+          if(shortLengthIndex < 0) return ['כמעט — אל תשנו את `length` בהתחלה. אחרי הלולאה שנו אותו לאורך קצר, למשל `length = 30`.'];
+          if(antennaForwardIndex < 0) return ['כמעט — אחרי שינוי האורך, ציירו את האנטנה עם `forward(length)`.'];
           return [];
         }
         if(ex.id === 4){
@@ -11779,7 +11814,12 @@
     workspace.addChangeListener((event)=>{
       const isDragEvent = event.type === Blockly.Events.BLOCK_DRAG || event.type === 'drag';
       if(isCodePilotLesson() && !restoringProgress && event.type === Blockly.Events.BLOCK_CREATE && Array.isArray(event.ids)){
+        if(event.recordUndo === false) return;
         event.ids.forEach(id=>lesson23PendingAppendBlockIds.add(id));
+        setTimeout(()=>{
+          updateLesson23NewBlockDropTarget(lesson23Pointer.x, lesson23Pointer.y);
+          clearLesson23NewBlockPreviewSelection();
+        }, 0);
         return;
       }
       if(isCodePilotLesson() && isDragEvent){
@@ -12001,6 +12041,8 @@
         startEmptyLesson(initialLessonFromUrl(), false);
       }
       restoringProgress = false;
+      clearLesson23PendingNewBlocks();
+      setTimeout(clearLesson23PendingNewBlocks, 0);
       saveProgress();
     }
     restoreOrStart();
