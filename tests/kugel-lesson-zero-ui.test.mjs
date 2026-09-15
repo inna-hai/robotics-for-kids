@@ -16,6 +16,7 @@ for (const path of [
 const student = read('kugel-student.html');
 const teacher = read('kugel-teacher.html');
 const client = read('js/kugel-lesson-zero.js');
+const teacherClient = client.slice(client.indexOf('async function initTeacher'));
 const classroomClient = read('js/classroom-platform.js');
 const challengeData = read('js/craftom-minecraft-challenges.js');
 const interfacesCss = read('assets/kugel/kugel-lomda-interfaces.css');
@@ -114,6 +115,7 @@ assert.doesNotMatch(client, /teacherLessonPickerForm/);
 assert.match(client, /renderTeacherHome\(lessons, session, activeLessonId, data\)/);
 assert.match(client, /function teacherProgramLessons\(\)/, 'teacher home should have fallback lesson data before a classroom session loads');
 assert.match(client, /render\(\{\s*classroom: \{ name: 'כיתה' \},\s*session: \{\},\s*lessons: teacherProgramLessons\(\)/s, 'teacher home and challenge views should render fallback program data without a classroom id');
+assert.match(client, /const selectedId = hasRequestedLesson \? requested : \(fallback \|\| 0\)/, 'an explicit lesson=0 must not fall back to a different active lesson');
 assert.match(client, /document\.body\.classList\.toggle\('is-teacher-lesson'/);
 assert.match(client, /document\.body\.classList\.toggle\('is-lesson-zero'[^)]*selectedLessonId === 0\)/s, 'teacher maze illustration should be scoped to lesson zero');
 assert.match(client, /teacherProgramVideoPreview/);
@@ -154,9 +156,10 @@ assert.match(client, /חזרה לניהול שיעור מורה/, 'teacher-launc
 assert.match(client, /שיעור \$\{lesson\.id\}/, 'teacher home lesson buttons should use clear lesson labels');
 assert.match(client, /בחר שיעור כדי לפתוח את מסך הניהול המלא שלו/);
 assert.match(client, /עוצרים את התלמיד/);
-assert.doesNotMatch(client, /בחרי שיעור|התלמיד\/ה/, 'teacher screen copy should use masculine wording');
+assert.doesNotMatch(teacherClient, /בחרי שיעור|התלמיד\/ה/, 'teacher screen copy should use masculine wording');
 assert.doesNotMatch(client, /teacherLessonMenuOptions/);
 assert.match(client, /teacherPageUrl\(\{ lesson: lesson\.id \}\)/);
+assert.match(client, /progress\.append\([\s\S]{0,300}student\.minecraftStatus === 'started' \? 'בתהליך' : 'לא התחיל'/, 'historical lesson tracking must not reuse a different lesson’s startedAt timestamp');
 assert.match(client, /renderTeacherHeader\(selectedLesson, activeLessonId\)/);
 assert.match(client, /חסר מזהה כיתה\. יש לפתוח את הלוח מתוך כרטיס הכיתה\./);
 assert.match(client, /renderSelectedLesson\(selectedLesson, session, activeLessonId, minecraftBlocked\)/);
@@ -219,5 +222,6 @@ for (const poster of [
 }
 assert.match(server, /kugel-50-safe-compounds-v3-mazes-8-coins-npc-reset-caged-inner-wood-obstacle-test-v1-20260906/);
 assert.match(server, /kugel-50-safe-compounds-v3-20260824/);
+assert.match(server, /trackedLessonId === 0[\s\S]{0,140}summary\.completionRecorded/, 'lesson-zero tracking must use persisted lesson-zero completion, not another lesson’s run state');
 assert.ok(packageJson.includes('node --check js/kugel-lesson-zero.js'));
 console.log('✓ Kugel UI contains only secure lesson zero and links back to the existing course');

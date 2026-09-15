@@ -305,7 +305,7 @@
         ? requestedLessonId
         : 0;
       const fallback = activeLessonId >= 0 ? activeLessonId : 0;
-      const selectedId = requested || fallback || 0;
+      const selectedId = hasRequestedLesson ? requested : (fallback || 0);
       return lessons.find(lesson => Number(lesson.id) === selectedId) || lessons.find(lesson => Number(lesson.id) === 0) || lessons[0];
     }
 
@@ -352,11 +352,11 @@
       identity.append(node('strong', student.name), node('span', student.connected ? 'מחובר/ת' : 'לא מחובר/ת', 'connection-pill'));
 
       const progress = node('div', undefined, 'coin-progress');
-      const lessonId = Number(current?.session?.lessonId || 0);
+      const lessonId = Number(current?.trackedLessonId ?? current?.session?.lessonId ?? 0);
       const minecraftLabel = lessonId === 0
         ? `${student.coins || 0} / 8 מטבעות`
         : (student.minecraftStatus === 'completed' ? 'משימת Minecraft הושלמה' : (student.minecraftStatus === 'started' ? 'Minecraft בתהליך' : 'Minecraft לא התחיל'));
-      progress.append(node('strong', minecraftLabel), node('span', student.minecraftStatus === 'completed' ? 'הושלם' : (student.startedAt ? 'בתהליך' : 'לא התחיל')));
+      progress.append(node('strong', minecraftLabel), node('span', student.minecraftStatus === 'completed' ? 'הושלם' : (student.minecraftStatus === 'started' ? 'בתהליך' : 'לא התחיל')));
 
       const learning = node('div', undefined, 'student-learning-status');
       const academyStatus = node('span', student.academyStatus === 'completed' ? 'אקדמיה הושלמה' : 'חסרה אקדמיה', `learning-pill ${student.academyStatus === 'completed' ? 'done' : 'missing'}`);
@@ -689,7 +689,8 @@
         return;
       }
       try {
-        render(await api(`/api/kugel/session?classroomId=${encodeURIComponent(classroomId)}`));
+        const lessonFilter = hasRequestedLesson ? `&lessonId=${encodeURIComponent(String(requestedLessonId))}` : '';
+        render(await api(`/api/kugel/session?classroomId=${encodeURIComponent(classroomId)}${lessonFilter}`));
       } catch (error) {
         setStatus(status, error.message, true);
         render({
