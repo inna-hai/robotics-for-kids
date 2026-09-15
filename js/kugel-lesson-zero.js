@@ -59,6 +59,16 @@
     return date.toLocaleString('he-IL');
   }
 
+  function formatDuration(ms) {
+    if (ms === null || ms === undefined) return 'אין עדיין';
+    const value = Number(ms);
+    if (!Number.isFinite(value) || value < 0) return 'אין עדיין';
+    const totalSeconds = Math.round(value / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}:${String(seconds).padStart(2, '0')}`;
+  }
+
   async function initStudent() {
     const sessionStatus = document.getElementById('studentSessionStatus');
     const playerStatus = document.getElementById('playerStatus');
@@ -124,7 +134,7 @@
         ? `שרת: ${minecraft.serverName} • כתובת: ${minecraft.serverAddress} • Server ID: ${minecraft.serverId}`
         : 'פרטי החיבור יוצגו לאחר שהמורה תפעיל את העולם ותשייך את שם השחקן.';
       document.getElementById('minecraftAccessCode').textContent = minecraft?.accessCode || 'יוצג לאחר הפעלת השיעור';
-      coinProgress.textContent = `${student.coins || 0} מתוך 8 מטבעות`;
+      coinProgress.textContent = `${student.coins || 0} מתוך 8 מטבעות · ניסיונות: ${Number(student.attemptCount || 0)} · זמן אחרון: ${formatDuration(student.lastDurationMs)} · שיא: ${formatDuration(student.bestTimeMs)}`;
       const steps = [
         ['העולם הופעל', session.active],
         ['Minecraft נפתח', Boolean(student.startedAt)],
@@ -353,10 +363,18 @@
 
       const progress = node('div', undefined, 'coin-progress');
       const lessonId = Number(current?.trackedLessonId ?? current?.session?.lessonId ?? 0);
-      const minecraftLabel = lessonId === 0
-        ? `${student.coins || 0} / 8 מטבעות`
-        : (student.minecraftStatus === 'completed' ? 'משימת Minecraft הושלמה' : (student.minecraftStatus === 'started' ? 'Minecraft בתהליך' : 'Minecraft לא התחיל'));
-      progress.append(node('strong', minecraftLabel), node('span', student.minecraftStatus === 'completed' ? 'הושלם' : (student.minecraftStatus === 'started' ? 'בתהליך' : 'לא התחיל')));
+      if (lessonId === 0) {
+        progress.append(
+          node('strong', `${student.coins || 0} / 8 מטבעות`),
+          node('span', student.minecraftStatus === 'completed' ? 'הושלם' : (student.minecraftStatus === 'started' ? 'בתהליך' : 'לא התחיל')),
+          node('span', `ניסיונות: ${Number(student.attemptCount || 0)}`),
+          node('span', `משך אחרון: ${formatDuration(student.lastDurationMs)}`),
+          node('span', `שיא: ${formatDuration(student.bestTimeMs)}`),
+        );
+      } else {
+        const minecraftLabel = student.minecraftStatus === 'completed' ? 'משימת Minecraft הושלמה' : (student.minecraftStatus === 'started' ? 'Minecraft בתהליך' : 'Minecraft לא התחיל');
+        progress.append(node('strong', minecraftLabel), node('span', student.minecraftStatus === 'completed' ? 'הושלם' : (student.minecraftStatus === 'started' ? 'בתהליך' : 'לא התחיל')));
+      }
 
       const learning = node('div', undefined, 'student-learning-status');
       const academyStatus = node('span', student.academyStatus === 'completed' ? 'אקדמיה הושלמה' : 'חסרה אקדמיה', `learning-pill ${student.academyStatus === 'completed' ? 'done' : 'missing'}`);
