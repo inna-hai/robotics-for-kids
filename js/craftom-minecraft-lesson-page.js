@@ -48,13 +48,13 @@
   function explainCommand(command) {
     const text = String(command || '').trim();
     if (!text) return '';
-    let explanation = 'פקודה שתשתמשו בה כדי לבנות את רצף הפעולות של ה-Agent.';
+    let explanation = 'פקודה שתשתמש בה כדי לבנות את רצף הפעולות של ה-Agent.';
     if (/on chat command/i.test(text) || /^פקודת/.test(text)) {
       explanation = 'פקודה שמפעילה את הקוד כשכותבים את השם שלה בצ׳אט של Minecraft.';
     } else if (/teleportToPlayer/i.test(text)) {
-      explanation = 'מזמנת את ה-Agent אליכם, כדי להתחיל מנקודת מוצא ברורה.';
+      explanation = 'מזמנת את ה-Agent אליך, כדי להתחיל מנקודת מוצא ברורה.';
     } else if (/agent\.move/i.test(text) || /תנועה/.test(text)) {
-      explanation = 'מזיזה את ה-Agent בכיוון ובמספר צעדים שתבחרו. שינוי המספר משנה את המרחק.';
+      explanation = 'מזיזה את ה-Agent בכיוון ובמספר צעדים שתבחר. שינוי המספר משנה את המרחק.';
     } else if (/agent\.turn/i.test(text) || /פנייה/.test(text)) {
       explanation = 'מסובבת את ה-Agent ימינה או שמאלה כדי להמשיך במסלול אחר.';
     } else if (/agent\.place|agent\.drop|הנחת|מסירה/i.test(text)) {
@@ -64,7 +64,7 @@
     } else if (/running|start|stop/i.test(text)) {
       explanation = 'עוזרת לשלוט מתי האוטומציה מתחילה ומתי היא נעצרת.';
     } else if (/forever|repeat|לולאה|חזרות/i.test(text)) {
-      explanation = 'חוזרת על אותה פעולה כמה פעמים, כדי שלא תצטרכו לשכפל את אותם בלוקים.';
+      explanation = 'חוזרת על אותה פעולה כמה פעמים, כדי שלא תצטרך לשכפל את אותם בלוקים.';
     } else if (/pause/i.test(text)) {
       explanation = 'יוצרת המתנה קצרה בין פעולות, כדי שההרצה תהיה ברורה ולא מהירה מדי.';
     } else if (/if|else|תנאי|שני מצבים/i.test(text)) {
@@ -72,7 +72,7 @@
     } else if (/detect|routeOpen|פתוחה|חסומה|סימון|ערך/i.test(text)) {
       explanation = 'בודקת או מייצגת מצב בעולם, למשל דרך פתוחה או חסומה.';
     } else if (/אלגוריתם|תכנון|בחירה|החלטה/i.test(text)) {
-      explanation = 'עוזרת לכם לתכנן מראש מה ה-Agent צריך לעשות לפני שכותבים בלוקים.';
+      explanation = 'עוזרת לך לתכנן מראש מה ה-Agent צריך לעשות לפני שכותבים בלוקים.';
     } else if (/test|בדיקה|תיקון/i.test(text)) {
       explanation = 'משמשת להרצה שמטרתה לבדוק מה עובד ומה צריך לתקן.';
     } else if (/demo|הצגה|סיום/i.test(text)) {
@@ -150,6 +150,30 @@
     link.href = '#minecraftEntryCard';
     link.textContent = 'כניסה ל-Minecraft';
     actions.insertBefore(link, actions.firstChild);
+  }
+
+  function ensureAgentAcademyTopLink() {
+    let link = document.getElementById('agentAcademyTopLink');
+    const actions = document.querySelector('.hero .actions');
+    if (!actions) return null;
+    if (link) return link;
+    link = document.createElement('a');
+    link.className = 'btn secondary agent-academy-top-link';
+    link.id = 'agentAcademyTopLink';
+    link.textContent = 'פתיחת אקדמיית Agent';
+    actions.appendChild(link);
+    return link;
+  }
+
+  function agentAcademyUrl() {
+    const next = new URLSearchParams();
+    next.set('lesson', String(lesson.id));
+    if (params.get('teacherReturn') === '1') {
+      next.set('teacherReturn', '1');
+      const classroomId = params.get('classroomId');
+      if (classroomId) next.set('classroomId', classroomId);
+    }
+    return `craftom-agent-academy.html?${next.toString()}`;
   }
 
   async function initMinecraftEntry() {
@@ -410,15 +434,22 @@ player.onChat("test", function () {
     document.body.innerHTML = `
       <main class="shell">
         <nav class="lesson-nav" id="lessonNav" aria-label="בחירת שיעור באתגר הנוכחי"></nav>
-        <section class="hero">
+        <nav class="lesson-progress-nav" aria-label="שלבי המפגש">
+          <a href="#lessonIntro">פתיחה</a>
+          <span aria-hidden="true">←</span>
+          <a href="#agentAcademyCta">אקדמיית Agent</a>
+          <span aria-hidden="true">←</span>
+          <a href="#minecraftEntryCard">Minecraft</a>
+          <span aria-hidden="true">←</span>
+          <a href="#exitTicketSection">כרטיס יציאה</a>
+        </nav>
+        <section class="hero" id="lessonIntro">
           <div>
             <div class="kicker" id="kicker"></div>
             <h1 id="title"></h1>
             <p class="goal" id="summary"></p>
             <p><strong>תוצר:</strong> <span id="deliverable"></span></p>
-            <div class="actions">
-              <a class="btn secondary" id="challengeLink" href="#">דף האתגר</a>
-            </div>
+            <div class="actions"></div>
           </div>
           <figure class="minecraft-shot">
             <video id="video" class="lesson-video" controls preload="metadata" playsinline></video>
@@ -426,7 +457,7 @@ player.onChat("test", function () {
           </figure>
         </section>
         <section class="grid" style="margin-top:16px">
-          <article class="card build-first"><h2>מה תלמדו בשיעור</h2><p id="goal"></p></article>
+          <article class="card build-first"><h2>מה תלמד בשיעור</h2><p id="goal"></p></article>
           <article class="card build-first"><h2>פקודות מרכזיות</h2><ul id="command" class="command-explain-list"></ul></article>
         </section>
         <section class="detail-grid" style="margin-top:16px">
@@ -462,19 +493,19 @@ player.onChat("test", function () {
             <a class="btn secondary" href="https://minecraft.makecode.com/" target="_blank" rel="noopener">פתיחת MakeCode</a>
           </div>
         </section>
-        <section class="card" style="margin-top:16px">
+        <section class="card" id="exitTicketSection" style="margin-top:16px">
           <h2>כרטיס יציאה</h2>
           <p><strong>העלאת תמונה:</strong> <span id="exitUploadInline"></span></p>
           <form class="exit-ticket-form" id="exitTicketForm">
             <label>
               <span>שאלת כרטיס היציאה</span>
               <strong id="exitTicket" class="exit-ticket-question"></strong>
-              <textarea id="exitAnswer" name="answer" required rows="4" placeholder="כתבו כאן את התשובה הקצרה שלכם"></textarea>
+              <textarea id="exitAnswer" name="answer" required rows="4" placeholder="כתוב כאן את התשובה הקצרה שלך"></textarea>
             </label>
             <label>
               <span>שאלת חשיבה נוספת</span>
               <strong id="exitReflectionQuestion" class="exit-ticket-question">${fallbackReflectionQuestion}</strong>
-              <textarea id="exitReflection" name="reflection" required rows="4" placeholder="כתבו תשובה שמתייחסת למה שלמדתם במפגש הזה"></textarea>
+              <textarea id="exitReflection" name="reflection" required rows="4" placeholder="כתוב תשובה שמתייחסת למה שלמדת במפגש הזה"></textarea>
             </label>
             <label>
               <span>תמונה של מה שבניתם במיינקראפט</span>
@@ -506,22 +537,22 @@ player.onChat("test", function () {
   document.getElementById('summary').textContent = lesson.summary;
   document.getElementById('deliverable').textContent = lesson.deliverable;
   document.getElementById('concept').textContent = lesson.concept;
-  document.getElementById('goal').textContent = lesson.detail.goal;
+  document.getElementById('goal').textContent = lesson.detail.learn || lesson.detail.goal;
   document.getElementById('command').innerHTML = commandList(lesson.detail.code || [lesson.command]);
   const selfStudySteps = lesson.detail.academy
     ? [
-        'צפו בסרטון והבינו מה צריך לקרות בעיר.',
-        'היכנסו לאקדמיית Agents ותרגלו שם את קוד ה-MakeCode בבלוקים.',
-        'הריצו את ה-Agent בהדמיה עד שהבדיקה באקדמיה עוברת.',
-        'חזרו לשיעור ויישמו את אותו רעיון בתוך Minecraft Education.',
-        'העלו צילום של מה שבניתם במיינקראפט ומלאו את כרטיס היציאה במילים שלכם.'
+        'צפה בסרטון והבן מה צריך לקרות בעיר.',
+        'היכנס לאקדמיית Agents ותרגל שם את קוד ה-MakeCode בבלוקים.',
+        'הרץ את ה-Agent בהדמיה עד שהבדיקה באקדמיה עוברת.',
+        'חזור לשיעור ויישם את אותו רעיון בתוך Minecraft Education.',
+        'העלה צילום של מה שבנית במיינקראפט ומלא את כרטיס היציאה במילים שלך.'
       ]
     : [
-        'צפו בסרטון של האתגר והבינו מה צריך לקרות בעיר.',
-        'בנו במיינקראפט את החלק הקטן של היום.',
-        'פתחו MakeCode וכתבו רק את הקוד שמפעיל את ה-Agent.',
-        'הריצו, בדקו מה קרה בעולם, תקנו דבר אחד והריצו שוב.',
-        'העלו צילום של מה שבניתם ומלאו את כרטיס היציאה במילים שלכם.'
+        'צפה בסרטון של האתגר והבן מה צריך לקרות בעיר.',
+        'בנה במיינקראפט את החלק הקטן של היום.',
+        'פתח MakeCode וכתוב רק את הקוד שמפעיל את ה-Agent.',
+        'הרץ, בדוק מה קרה בעולם, תקן דבר אחד והריץ שוב.',
+        'העלה צילום של מה שבנית ומלא את כרטיס היציאה במילים שלך.'
       ];
   document.getElementById('selfStudy').innerHTML = list(selfStudySteps);
   document.getElementById('build').innerHTML = list(lesson.detail.build);
@@ -530,7 +561,10 @@ player.onChat("test", function () {
   const makeCodeWorkspace = document.getElementById('makeCodeWorkspace');
   if (lesson.detail.academy && academyCta) {
     academyCta.hidden = false;
-    document.getElementById('agentAcademyLink').href = `craftom-agent-academy.html?lesson=${lesson.id}`;
+    const academyHref = agentAcademyUrl();
+    document.getElementById('agentAcademyLink').href = academyHref;
+    const academyTopLink = ensureAgentAcademyTopLink();
+    if (academyTopLink) academyTopLink.href = academyHref;
     if (makeCodeWorkspace) makeCodeWorkspace.hidden = true;
   }
   initMinecraftEntry();
@@ -543,7 +577,6 @@ player.onChat("test", function () {
   if (reflectionQuestionNode) reflectionQuestionNode.textContent = reflectionQuestion;
   document.getElementById('video').src = lesson.video;
   document.getElementById('video').poster = lesson.poster;
-  document.getElementById('challengeLink').href = `craftom-minecraft-challenge.html?challenge=${lesson.challengeId}`;
   const currentLessonIndex = challengeLessons.findIndex(item => item.id === lesson.id);
   const prevLesson = currentLessonIndex > 0 ? challengeLessons[currentLessonIndex - 1] : null;
   const nextLesson = currentLessonIndex < challengeLessons.length - 1 ? challengeLessons[currentLessonIndex + 1] : null;
@@ -627,11 +660,11 @@ player.onChat("test", function () {
     const reflection = document.getElementById('exitReflection')?.value.trim() || '';
 
     if (!answer) {
-      status.textContent = 'כתבו תשובה קצרה לפני ההגשה.';
+      status.textContent = 'כתוב תשובה קצרה לפני ההגשה.';
       return;
     }
     if (!reflection) {
-      status.textContent = 'כתבו תשובה לשאלת החשיבה הנוספת לפני ההגשה.';
+      status.textContent = 'כתוב תשובה לשאלת החשיבה הנוספת לפני ההגשה.';
       return;
     }
     if (!photo) {
