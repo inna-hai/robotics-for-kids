@@ -51,14 +51,25 @@
 
 .teacher-course-header .course-header-inner {
   width: min(1380px, calc(100% - 28px));
+  justify-content: space-between;
+  align-items: center;
 }
 
 .teacher-course-header .course-nav {
   min-width: 0;
+  flex: 1;
+  justify-content: flex-end;
 }
 
 .teacher-course-header .course-nav a {
+  flex: 0 0 auto;
+  min-width: 112px;
+  padding-inline: 14px;
   white-space: nowrap;
+}
+
+.teacher-app.is-teacher-home .teacher-course-header .course-header-inner {
+  width: min(1180px, calc(100% - 28px));
 }
 
 .brand-link {
@@ -123,6 +134,10 @@
   padding: 18px 0 44px;
 }
 
+.teacher-app.is-teacher-home .teacher-shell {
+  width: min(1180px, calc(100% - 28px));
+}
+
 .student-layout {
   display: grid;
   grid-template-columns: 330px minmax(0, 1fr);
@@ -161,6 +176,11 @@
   box-shadow: 0 12px 30px rgba(23, 32, 51, .08);
 }
 
+.teacher-app.is-teacher-home .teacher-control,
+.teacher-app.is-teacher-challenge .teacher-control {
+  display: none;
+}
+
 .teacher-app.is-teacher-lesson .teacher-board {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
@@ -177,18 +197,23 @@
 
 .teacher-app.is-teacher-lesson .teacher-control {
   align-content: start;
+  align-self: start;
   gap: 8px;
-  padding: 12px;
+  padding: 10px 12px;
 }
 
 .teacher-app.is-teacher-lesson .teacher-control h1 {
-  margin-bottom: 2px;
-  font-size: 1.12rem;
+  margin: 0;
+  font-size: 1.02rem;
 }
 
 .teacher-app.is-teacher-lesson .teacher-control p {
   margin: 0;
-  line-height: 1.35;
+  line-height: 1.25;
+}
+
+.teacher-app.is-teacher-lesson .teacher-control .eyebrow {
+  font-size: .72rem;
 }
 
 .teacher-app.is-teacher-lesson .teacher-live-controls {
@@ -211,8 +236,8 @@
 
 .teacher-app.is-teacher-lesson .teacher-control .primary-action,
 .teacher-app.is-teacher-lesson .teacher-control .secondary-action {
-  min-height: 36px;
-  padding-block: 7px;
+  min-height: 32px;
+  padding-block: 6px;
 }
 
 .teacher-app.is-teacher-lesson .teacher-selected-lesson {
@@ -377,6 +402,57 @@
   font-size: clamp(1.8rem, 3vw, 3rem);
 }
 
+.teacher-hero-summary-card {
+  display: none;
+}
+
+.teacher-app.is-teacher-home .teacher-hero {
+  grid-template-columns: minmax(0, 1fr) 420px;
+}
+
+.teacher-app.is-teacher-home .teacher-hero-summary-card {
+  display: block;
+}
+
+.teacher-app.is-teacher-home .teacher-hero-summary-card p {
+  color: #334155;
+}
+
+.teacher-app.is-teacher-home .maze-preview,
+.teacher-app.is-teacher-home .server-status-card {
+  display: none;
+}
+
+.teacher-app .teacher-hero .maze-preview {
+  display: none;
+}
+
+.teacher-app.is-teacher-lesson.is-lesson-zero .teacher-hero .maze-preview {
+  display: grid;
+}
+
+.teacher-app.is-teacher-home .teacher-hero .goal {
+  max-width: none;
+}
+
+.teacher-app.is-teacher-home .teacher-hero .teacher-classrooms-button {
+  justify-self: start;
+  min-height: 34px;
+  padding-block: 7px;
+}
+
+.teacher-hero-summary-card h2,
+.teacher-hero-summary-card p {
+  margin: 0;
+}
+
+.teacher-hero-summary-card p {
+  color: #334155;
+  font-size: 1rem;
+  font-weight: 750;
+  line-height: 1.55;
+}
+
 .hero-copy {
   display: grid;
   gap: 6px;
@@ -421,6 +497,22 @@
 .maze-preview small {
   color: #0f766e;
   font-weight: 900;
+}
+
+.teacher-app.is-teacher-home .maze-preview {
+  min-height: 96px;
+  border-radius: 14px;
+  background-size: 22px 22px, 22px 22px, auto;
+}
+
+.teacher-app.is-teacher-home .maze-preview span {
+  width: 48px;
+  height: 48px;
+  font-size: 1.65rem;
+}
+
+.teacher-app.is-teacher-home .server-status-card {
+  padding: 14px;
 }
 
 .server-status-card {
@@ -1073,9 +1165,23 @@
 
 .teacher-challenge-overview {
   display: grid;
-  gap: 12px;
-  border-color: rgba(15, 118, 110, .24);
-  background: linear-gradient(135deg, #ffffff, #f0fdfa);
+  gap: 18px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.teacher-challenge-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, .9fr);
+  gap: 16px;
+  align-items: center;
+  margin: 0;
+  padding: 18px;
+  border: 1px solid #cfe2f3;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 12px 26px rgba(23, 32, 51, .08);
 }
 
 .teacher-challenge-lessons {
@@ -1086,97 +1192,127 @@
 
 .teacher-challenge-lesson {
   align-content: start;
-  min-height: 168px;
+  min-height: 0;
+}
+
+.teacher-challenge-lesson .minecraft-lesson-title-link {
+  color: #10233f;
+  text-decoration: none;
+}
+
+.teacher-challenge-lesson .minecraft-lesson-title-link:hover {
+  color: var(--blue);
 }
 
 .teacher-home-overview {
   display: grid;
-  gap: 12px;
-  border-color: rgba(37, 99, 235, .24);
-  background: linear-gradient(135deg, #ffffff, #eff6ff);
+  gap: 18px;
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 
-.teacher-home-status {
+.teacher-home-overview h3 {
+  margin: 0;
+}
+
+.teacher-home-summary-card {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-content: center;
+  gap: 8px;
+  padding: 18px;
+  border: 1px solid #bfdbfe;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #eff6ff, #ecfeff);
+  box-shadow: 0 12px 26px rgba(20, 50, 80, .1);
+}
+
+.teacher-home-summary-card p {
+  margin: 0;
+  color: #334155;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.teacher-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
   gap: 10px;
-}
-
-.teacher-home-status article {
-  padding: 14px;
-  border: 1px solid #dbe8f4;
-  border-radius: 10px;
-  background: #fff;
-}
-
-.teacher-home-status span {
-  display: block;
-  color: var(--muted);
-  font-size: .84rem;
-  font-weight: 900;
-}
-
-.teacher-home-status strong {
-  display: block;
-  margin-top: 4px;
-  color: #172033;
-  font-size: 1.08rem;
-  line-height: 1.35;
-  font-weight: 800;
+  margin-top: 16px;
 }
 
 .teacher-home-section-title {
-  margin: 4px 0 0;
-  font-size: 1.16rem;
+  margin: 2px 0 0;
+  font-size: 1.35rem;
 }
 
-.teacher-home-intro {
-  max-width: 78ch;
-  color: #334155;
-  font-weight: 750;
+.teacher-program-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, .9fr);
+  gap: 16px;
+  align-items: center;
+  margin: 18px 0;
+  padding: 18px;
+  border: 1px solid #cfe2f3;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 12px 26px rgba(23, 32, 51, .08);
+}
+
+.teacher-app.is-teacher-home .challenge-video,
+.teacher-app.is-teacher-home .teacher-video-preview,
+.teacher-app.is-teacher-challenge .challenge-video,
+.teacher-app.is-teacher-challenge .teacher-video-preview {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  position: relative;
+  overflow: hidden;
+  border: 0;
+  border-radius: 14px;
+  background: #dfeef8;
+  box-shadow: 0 10px 24px rgba(20, 50, 80, .14);
 }
 
 .teacher-home-challenges {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
+  margin-top: 0;
 }
 
 .teacher-home-challenge {
   align-content: start;
-  min-height: 184px;
 }
 
-.teacher-home-challenge small {
-  color: var(--muted);
-  font-weight: 800;
-  line-height: 1.45;
-}
-
-.teacher-home-lesson-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 6px;
-}
-
-.teacher-home-lesson-links a {
+.teacher-home-challenge .meeting-list {
   display: grid;
-  width: 34px;
-  height: 34px;
-  place-items: center;
-  border: 1px solid #cbd5e1;
-  border-radius: 999px;
+  gap: 8px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.teacher-home-challenge .meeting-list li {
+  border: 1px solid #cfe2f3;
+  background: #f8fcff;
+  border-radius: 12px;
+  padding: 9px 10px;
+  color: #334155;
+}
+
+.teacher-home-challenge .meeting-list a {
   color: #1e3a8a;
-  background: #fff;
   font-weight: 900;
   text-decoration: none;
 }
 
-.teacher-home-lesson-links a.active {
-  color: #fff;
-  border-color: var(--blue);
-  background: var(--blue);
+.teacher-home-challenge .meeting-list a.active {
+  color: var(--blue);
+}
+
+.teacher-home-challenge .challenge-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
 }
 
 .minecraft-lesson-option strong {
@@ -1371,6 +1507,8 @@
   .metrics-grid,
   .report-grid,
   .teacher-home-status,
+  .teacher-program-card,
+  .teacher-challenge-intro,
   .teacher-home-challenges,
   .teacher-challenge-lessons {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1409,6 +1547,8 @@
   .metrics-grid,
   .report-grid,
   .teacher-home-status,
+  .teacher-program-card,
+  .teacher-challenge-intro,
   .teacher-home-challenges,
   .teacher-challenge-lessons {
     grid-template-columns: 1fr;
@@ -1423,5 +1563,22 @@
     bottom: 72px !important;
     width: 52px;
     height: 52px;
+  }
+}
+
+@media (max-width: 980px) {
+  .teacher-app.is-teacher-home .teacher-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(260px, .85fr);
+    grid-template-areas:
+      "copy summary";
+  }
+}
+
+@media (max-width: 620px) {
+  .teacher-app.is-teacher-home .teacher-hero {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "copy"
+      "summary";
   }
 }

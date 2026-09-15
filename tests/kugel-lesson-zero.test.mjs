@@ -135,6 +135,17 @@ child.stderr.on('data', chunk => { serverOutput += chunk.toString(); });
 try {
   await waitForServer(baseUrl);
 
+  const spoofedPreviewEnabled = await fetch(`${baseUrl}/api/classroom/preview-demo-student-enabled`, {
+    headers: { 'X-Forwarded-Host': 'craftom-tehila-preview.orma-ai.com' },
+  });
+  assert.equal(spoofedPreviewEnabled.status, 200);
+  assert.equal((await spoofedPreviewEnabled.json()).enabled, false, 'an untrusted forwarded host must not enable preview demo authentication');
+  const spoofedProtectedPage = await fetch(`${baseUrl}/craftom-school/preview/index.html`, {
+    headers: { 'X-Forwarded-Host': 'craftom-tehila-preview.orma-ai.com' },
+    redirect: 'manual',
+  });
+  assert.notEqual(spoofedProtectedPage.status, 200, 'an untrusted forwarded host must not bypass the Craftom subscription gate');
+
   const registerA = await post(baseUrl, '/api/classroom/teacher-register', {
     name: 'מורת קוגל א', email: 'kugel-a@example.test', password: 'SafePass123!', inviteCode: 'kugel-test-invite',
   });

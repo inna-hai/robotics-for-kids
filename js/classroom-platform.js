@@ -211,7 +211,7 @@
     'python-turtle': 'python-turtle.html',
     webcode: 'webcode.html',
     minecraft: 'minecraft.html',
-    'craftom-agent': 'kugel-student.html',
+    'craftom-agent': 'craftom-school/preview/index.html',
   };
 
   const teacherCourseStarts = {
@@ -246,6 +246,8 @@
   }
 
   async function initTeacher() {
+    const teacherParams = new URLSearchParams(location.search);
+    const shouldOpenClassList = teacherParams.get('fromTeacherBoard') === '1';
     const auth = document.getElementById('teacher-auth');
     const dashboard = document.getElementById('teacher-dashboard');
     const authMessage = document.getElementById('teacher-auth-message');
@@ -426,6 +428,20 @@
       event.preventDefault();
       submitAuth(event.currentTarget, '/api/classroom/teacher-register');
     });
+    async function openPreviewDemoTeacher() {
+      setMessage(authMessage, 'פותחים מורה בדיקה…');
+      try {
+        const data = await api('/api/classroom/preview-demo-teacher-login', {});
+        setMessage(authMessage, '', true);
+        await showDashboard(data);
+        if (shouldOpenClassList) history.replaceState(null, '', 'teacher-classrooms.html');
+        return true;
+      } catch (error) {
+        setMessage(authMessage, error.message);
+        return false;
+      }
+    }
+
     const previewDemoTeacher = document.getElementById('preview-demo-teacher');
     if (previewDemoTeacher) {
       api('/api/classroom/preview-demo-teacher-enabled')
@@ -434,14 +450,9 @@
         })
         .catch(() => {});
       previewDemoTeacher.addEventListener('click', async () => {
-        setMessage(authMessage, 'פותחים מורה בדיקה…');
         previewDemoTeacher.disabled = true;
         try {
-          const data = await api('/api/classroom/preview-demo-teacher-login', {});
-          setMessage(authMessage, '', true);
-          await showDashboard(data);
-        } catch (error) {
-          setMessage(authMessage, error.message);
+          await openPreviewDemoTeacher();
         } finally {
           previewDemoTeacher.disabled = false;
         }
@@ -469,7 +480,13 @@
 
     try {
       const me = await api('/api/classroom/me');
-      if (me.role === 'teacher') await showDashboard(me);
+      if (me.role === 'teacher') {
+        await showDashboard(me);
+        if (shouldOpenClassList) history.replaceState(null, '', 'teacher-classrooms.html');
+      } else if (shouldOpenClassList && previewDemoTeacher) {
+        const demo = await api('/api/classroom/preview-demo-teacher-enabled').catch(() => ({ enabled: false }));
+        if (demo.enabled) await openPreviewDemoTeacher();
+      }
     } catch {}
   }
 
