@@ -75,7 +75,7 @@ assert.doesNotMatch(teacher, /teacherHomeMinecraftActions/);
 assert.doesNotMatch(teacher, /teacherLessonPickerForm/);
 assert.doesNotMatch(teacher, /teacherLessonSelect/);
 assert.match(teacher, /20260914-video-first-frames-1/, 'teacher board cache-busts the challenge data posters');
-assert.match(teacher, /20260914-teacher-home-like-student-19/, 'teacher board cache-busts the student-like teacher home');
+assert.match(teacher, /20260915-teacher-lesson-zero-steps-1/, 'teacher board cache-busts the lesson-zero steps visibility fix');
 assert.match(teacher, /rel="preload" as="image" href="assets\/craftom\/challenges\/craftom-program-real-minecraft-gemini-live-1x-first-frame\.webp"/, 'teacher home should preload the first visible video poster');
 assert.match(teacher, /craftom-challenge4-smart-city-automations-gemini-live-1x-first-frame\.webp" type="image\/webp"/, 'teacher home should preload challenge video posters');
 assert.ok(teacher.indexOf('hero teacher-hero') < teacher.indexOf('teacher-control'), 'teacher hero should be the first panel in the teacher board');
@@ -118,6 +118,7 @@ assert.match(client, /render\(\{\s*classroom: \{ name: 'כיתה' \},\s*session:
 assert.match(client, /const selectedId = hasRequestedLesson \? requested : \(fallback \|\| 0\)/, 'an explicit lesson=0 must not fall back to a different active lesson');
 assert.match(client, /document\.body\.classList\.toggle\('is-teacher-lesson'/);
 assert.match(client, /document\.body\.classList\.toggle\('is-lesson-zero'[^)]*selectedLessonId === 0\)/s, 'teacher maze illustration should be scoped to lesson zero');
+assert.match(client, /teacherLessonSteps\) teacherLessonSteps\.hidden = !showingLessonManagement \|\| selectedLessonId !== 0/, 'lesson-zero management steps should only appear for lesson zero');
 assert.match(client, /teacherProgramVideoPreview/);
 assert.match(client, /program\?\.overviewVideo/);
 assert.match(client, /video:\s*challenge\?\.video \|\| ''/, 'teacher challenge pages should pass the actual challenge video to the player');
@@ -156,7 +157,7 @@ assert.match(client, /חזרה לניהול שיעור מורה/, 'teacher-launc
 assert.match(client, /שיעור \$\{lesson\.id\}/, 'teacher home lesson buttons should use clear lesson labels');
 assert.match(client, /בחר שיעור כדי לפתוח את מסך הניהול המלא שלו/);
 assert.match(client, /עוצרים את התלמיד/);
-assert.doesNotMatch(teacherClient, /בחרי שיעור|התלמיד\/ה/, 'teacher screen copy should use masculine wording');
+assert.doesNotMatch(client, /בחרי שיעור|התלמיד\/ה|תלמיד\/ה|מחובר\/ת|שייכה/, 'teacher and lesson-zero copy should use masculine wording');
 assert.doesNotMatch(client, /teacherLessonMenuOptions/);
 assert.match(client, /teacherPageUrl\(\{ lesson: lesson\.id \}\)/);
 assert.match(client, /progress\.append\([\s\S]{0,300}student\.minecraftStatus === 'started' \? 'בתהליך' : 'לא התחיל'/, 'historical lesson tracking must not reuse a different lesson’s startedAt timestamp');

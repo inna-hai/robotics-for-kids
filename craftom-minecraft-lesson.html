@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260914-meeting-reflection-1">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260915-direct-student-copy-1">
   <link rel="stylesheet" href="css/platform-home-link.css">
   <style>
     .lesson-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
@@ -25,15 +25,22 @@
 <body data-lesson="1">
   <main class="shell">
     <nav class="lesson-nav" id="lessonNav" aria-label="בחירת שיעור באתגר הנוכחי"></nav>
-    <section class="hero">
+    <nav class="lesson-progress-nav" aria-label="שלבי המפגש">
+      <a href="#lessonIntro">פתיחה</a>
+      <span aria-hidden="true">←</span>
+      <a href="#agentAcademyCta">אקדמיית Agent</a>
+      <span aria-hidden="true">←</span>
+      <a href="#minecraftEntryCard">Minecraft</a>
+      <span aria-hidden="true">←</span>
+      <a href="#exitTicketSection">כרטיס יציאה</a>
+    </nav>
+    <section class="hero" id="lessonIntro">
       <div>
         <div class="kicker" id="kicker"></div>
         <h1 id="title"></h1>
         <p class="goal" id="summary"></p>
         <p><strong>תוצר:</strong> <span id="deliverable"></span></p>
-        <div class="actions">
-          <a class="btn secondary" id="challengeLink" href="#">דף האתגר</a>
-        </div>
+        <div class="actions"></div>
       </div>
       <figure class="minecraft-shot">
         <video id="video" class="lesson-video" controls preload="metadata" playsinline></video>
@@ -42,7 +49,7 @@
     </section>
 
     <section class="grid" style="margin-top:16px">
-      <article class="card build-first"><h2>יעד השיעור</h2><p id="goal"></p></article>
+      <article class="card build-first"><h2>מה תלמד בשיעור</h2><p id="goal"></p></article>
       <article class="card build-first"><h2>פקודות מרכזיות</h2><p id="command"></p></article>
     </section>
 
@@ -81,19 +88,19 @@
       </div>
     </section>
 
-    <section class="card" style="margin-top:16px">
+    <section class="card" id="exitTicketSection" style="margin-top:16px">
       <h2>כרטיס יציאה</h2>
       <p><strong>העלאת תמונה:</strong> <span id="exitUploadInline"></span></p>
       <form class="exit-ticket-form" id="exitTicketForm">
         <label>
           <span>שאלת כרטיס היציאה</span>
           <strong id="exitTicket" class="exit-ticket-question"></strong>
-          <textarea id="exitAnswer" name="answer" required rows="4" placeholder="כתבו כאן את התשובה הקצרה שלכם"></textarea>
+          <textarea id="exitAnswer" name="answer" required rows="4" placeholder="כתוב כאן את התשובה הקצרה שלך"></textarea>
         </label>
         <label>
           <span>שאלת חשיבה נוספת</span>
           <strong id="exitReflectionQuestion" class="exit-ticket-question">מה הדבר המרכזי שלמדתם במפגש הזה, ואיך השתמשתם בו בבנייה או בקוד?</strong>
-          <textarea id="exitReflection" name="reflection" required rows="4" placeholder="כתבו תשובה שמתייחסת למה שלמדתם במפגש הזה"></textarea>
+          <textarea id="exitReflection" name="reflection" required rows="4" placeholder="כתוב תשובה שמתייחסת למה שלמדת במפגש הזה"></textarea>
         </label>
         <label>
           <span>תמונה של מה שבניתם במיינקראפט</span>
@@ -112,7 +119,7 @@
     </div>
   </main>
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="js/craftom-minecraft-challenges.js?v=20260914-meeting-reflection-1"></script>
-  <script src="js/craftom-minecraft-lesson-page.js?v=20260914-meeting-reflection-1"></script><script src="js/vendor/blockly/blockly.min.js"></script><script src="js/vendor/blockly/msg/he.js"></script><script src="js/craftom-minecraft-code-builder.js?v=20260910-direct-student-copy-1"></script>
+  <script src="js/craftom-minecraft-challenges.js?v=20260915-direct-student-copy-1"></script>
+  <script src="js/craftom-minecraft-lesson-page.js?v=20260915-teacher-return-1"></script><script src="js/vendor/blockly/blockly.min.js"></script><script src="js/vendor/blockly/msg/he.js"></script><script src="js/craftom-minecraft-code-builder.js?v=20260910-direct-student-copy-1"></script>
 </body>
 </html>

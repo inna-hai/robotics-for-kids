@@ -116,10 +116,10 @@
       const minecraft = data.minecraft;
       renderQaLessonSwitcher(data);
       sessionStatus.textContent = session.active ? 'השיעור פעיל' : 'ממתין להפעלת המורה';
-      playerStatus.textContent = student.connected ? 'מחובר/ת' : 'לא מחובר/ת';
+      playerStatus.textContent = student.connected ? 'מחובר' : 'לא מחובר';
       identity.textContent = student.minecraftPlayerName
         ? `${student.name} • שחקן Minecraft: ${student.minecraftPlayerName}`
-        : `${student.name || 'תלמיד/ה'} • המורה עדיין לא שייכה לך שם שחקן ב-Minecraft.`;
+        : `${student.name || 'תלמיד'} • המורה עדיין לא שייך לך שם שחקן ב-Minecraft.`;
       minecraftDetails.textContent = minecraft && session.active
         ? `שרת: ${minecraft.serverName} • כתובת: ${minecraft.serverAddress} • Server ID: ${minecraft.serverId}`
         : 'פרטי החיבור יוצגו לאחר שהמורה תפעיל את העולם ותשייך את שם השחקן.';
@@ -152,7 +152,7 @@
 
     async function enterFromCompoundLink() {
       if (!compoundEntryId) return false;
-      setStatus(message, 'מזהים את התלמיד/ה לפי החלקה במשחק…');
+      setStatus(message, 'מזהים את התלמיד לפי החלקה במשחק…');
       try {
         render(await api('/api/kugel/compound-entry', { compoundId: compoundEntryId }));
         setStatus(message, '');
@@ -349,7 +349,7 @@
     function renderStudent(student) {
       const card = node('article', undefined, `monitor-row ${student.connected ? 'is-connected' : 'is-offline'}`);
       const identity = node('div', undefined, 'student-identity');
-      identity.append(node('strong', student.name), node('span', student.connected ? 'מחובר/ת' : 'לא מחובר/ת', 'connection-pill'));
+      identity.append(node('strong', student.name), node('span', student.connected ? 'מחובר' : 'לא מחובר', 'connection-pill'));
 
       const progress = node('div', undefined, 'coin-progress');
       const lessonId = Number(current?.trackedLessonId ?? current?.session?.lessonId ?? 0);
@@ -653,9 +653,10 @@
       if (selectedTeacherLesson) selectedTeacherLesson.hidden = showingChallengeOverview || showingTeacherHome;
       if (selectedTeacherLesson && !showingChallengeOverview && !showingTeacherHome) selectedTeacherLesson.hidden = false;
       if (!showingChallengeOverview && !showingTeacherHome) renderSelectedLesson(selectedLesson, session, activeLessonId, minecraftBlocked);
-      [teacherLiveControls, teacherLessonSteps, teacherMetrics, teacherStudentBoard].forEach(section => {
+      [teacherLiveControls, teacherMetrics, teacherStudentBoard].forEach(section => {
         if (section) section.hidden = !showingLessonManagement;
       });
+      if (teacherLessonSteps) teacherLessonSteps.hidden = !showingLessonManagement || selectedLessonId !== 0;
       document.getElementById('serverState').textContent = session.serverState === 'running' ? 'שרת פעיל' : session.serverState === 'error' ? 'שגיאת הפעלה' : 'שרת מוכן';
       const previewDetail = data.minecraftPreviewMode && session.active && session.serverDetail
         ? `${session.serverDetail} ${data.minecraftSetupNote}`
