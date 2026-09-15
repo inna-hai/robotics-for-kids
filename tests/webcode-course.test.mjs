@@ -370,7 +370,7 @@ assert.ok(hub.includes('webcode-play.html?lesson=1'), 'hub links to lesson 1');
 assert.ok(hub.includes('webcode-slides.html?lesson=1'), 'hub links to guide slides');
 assert.ok(hub.includes('25–30'), 'hub explains gradual move to real coding');
 assert.ok(hub.includes('formatMixedText') && hub.includes('tech-term'), 'hub isolates English tech terms so RTL lesson cards do not flip mixed text');
-assert.ok(hub.includes('js/webcode-lessons-code-bridge-v254.js'), 'hub loads a cache-busted lesson-data asset to avoid stale course cards');
+assert.ok(hub.includes('js/webcode-lessons-code-bridge-v255.js'), 'hub loads a cache-busted lesson-data asset to avoid stale course cards');
 assert.ok(!hub.includes('Blockly אמיתי'), 'course-page hero avoids unclear “Blockly אמיתי” phrasing');
 assert.ok(!JSON.stringify(lessons.slice(0, 3).map(lesson => lesson.concept)).includes('Blockly אמיתי'), 'visible course-card concepts avoid unclear “Blockly אמיתי” phrasing');
 
@@ -399,7 +399,7 @@ assert.ok(play.includes('webcodeLessonState:v176') && play.includes('resetReques
 assert.ok(play.includes('<block type="lesson_8_time"><field name="N">15</field>') && play.includes('<block type="lesson_8_windows"><field name="N">10</field>'), 'lesson 8 starter XML defaults to 15 seconds and 10 windows');
 assert.ok(play.includes('block.toolboxFields') && play.includes('<field name="${name}">'), 'toolbox blocks can display explicit default field values');
 assert.ok(play.includes('defineLessonBlocklyBlocks'), 'play page defines dynamic draggable lesson blocks');
-assert.ok(play.includes('js/webcode-lessons-code-bridge-v254.js'), 'play page loads a cache-busted lesson data asset for refreshed WebCode lessons');
+assert.ok(play.includes('js/webcode-lessons-code-bridge-v255.js'), 'play page loads a cache-busted lesson data asset for refreshed WebCode lessons');
 assert.ok(play.includes('.match-box{display:grid;gap:.7rem;min-width:0;max-width:none;width:calc(100% + .5rem)') && play.includes('grid-template-columns:minmax(190px,1.8fr) 16px minmax(76px,.58fr)') && play.includes('@media(max-width:560px){.match-row{grid-template-columns:minmax(160px,1.55fr)') && play.includes('.match-row select{width:100%;min-width:0;max-width:100%'), 'code matching rows use the wider lesson-4 matching layout while selects stay contained');
 const lesson1FamilyTask = loadedLessons.find(lesson => lesson.id === 1).exercises.find(exercise => exercise.title === 'תרגול הרחבה — לאיזו משפחת קוד זה שייך?');
 assert.ok(lesson1FamilyTask && !JSON.stringify(lesson1FamilyTask.matchBox?.items || []).includes('alert') && JSON.stringify(lesson1FamilyTask.matchBox?.items || []).includes('textContent'), 'lesson 1 code-family task uses JS terms visible in the generated code instead of unsupported alert');
@@ -515,7 +515,7 @@ assert.ok(lesson1FinalChoice.check.choiceAnswer?.exact?.['problem-title'] === 'h
 assert.ok(lesson1FinalChoice.choiceBox.groups.every(group => group.options.map(option => option.label).join('|') === 'HTML|CSS|JavaScript'), 'lesson 1 exercise 15 choice labels are only HTML/CSS/JavaScript without giving away what to do');
 assert.ok(lesson1FinalChoice.prompt.includes('אין פירוט באפשרויות'), 'lesson 1 exercise 15 prompt makes students infer which code family handles each situation');
 assert.ok(lesson1FinalChoice.title.includes('איפה צריך לשנות') && lesson1FinalChoice.choiceBox.groups.every(group => group.label.includes('איפה צריך לשנות?')) && !lesson1FinalChoice.choiceBox.groups.some(group => group.label.includes('מה כדאי לשנות') || group.label.includes('איפה נטפל') || group.label.includes('מה מתאים')), 'lesson 1 exercise 15 asks where to change, not what to change');
-assert.ok(loadedLessons.slice(1).every(lesson => lesson.id === 4 ? lesson.durationMinutes === 60 : lesson.durationMinutes >= 170), 'lessons 2-30 are extended to deeper code practice, with lesson 4 finalized as a 60-minute classroom lesson');
+assert.ok(loadedLessons.slice(1).every(lesson => lesson.id === 4 ? lesson.durationMinutes === 90 : lesson.durationMinutes >= 170), 'lessons 2-30 are extended to deeper code practice, with lesson 4 finalized as a 90-minute classroom lesson');
 assert.ok(loadedLessons.slice(1).every(lesson => lesson.exercises.filter(ex => ex.upgradeTag === 'deep-code-v137').length === 3), 'each lesson after lesson 1 gets exactly three v137 deeper-code exercises');
 assert.ok(loadedLessons.slice(1).every(lesson => lesson.exercises.some(ex => ex.upgradeTag === 'deep-code-v137' && ex.matchBox) && lesson.exercises.some(ex => ex.upgradeTag === 'deep-code-v137' && ex.choiceBox) && lesson.exercises.some(ex => ex.upgradeTag === 'deep-code-v137' && ex.debugCode)), 'deeper-code upgrades include concept matching, scenario choices, and bug fixing instead of repeating lesson 1 tasks');
 assert.ok(loadedLessons.find(lesson => lesson.id === 2).exercises.some(ex => ex.upgradeTag === 'deep-code-v137' && ex.title.includes('CSS')) && loadedLessons.find(lesson => lesson.id === 16).exercises.some(ex => ex.upgradeTag === 'deep-code-v137' && ex.title.includes('JavaScript')), 'deeper-code upgrades are themed to each lesson focus');
