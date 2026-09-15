@@ -80,6 +80,7 @@
     const session = document.getElementById('student-session');
     const welcome = document.getElementById('student-welcome');
     const studentLogout = document.getElementById('student-logout');
+    const previewDemoStudent = document.getElementById('preview-demo-student');
 
     guest.addEventListener('click', async (event) => {
       event.preventDefault();
@@ -152,6 +153,27 @@
       }
     });
 
+    if (previewDemoStudent) {
+      api('/api/classroom/preview-demo-student-enabled')
+        .then((data) => {
+          if (data.enabled) previewDemoStudent.hidden = false;
+        })
+        .catch(() => {});
+      previewDemoStudent.addEventListener('click', async () => {
+        setMessage(message, 'פותחים תלמידת בדיקה…');
+        previewDemoStudent.disabled = true;
+        try {
+          const data = await api('/api/classroom/preview-demo-student-login', {});
+          setMessage(message, '', true);
+          showStudent(data);
+        } catch (error) {
+          setMessage(message, error.message);
+        } finally {
+          previewDemoStudent.disabled = false;
+        }
+      });
+    }
+
     studentLogout.addEventListener('click', async () => {
       setMessage(message, 'מתנתקים…');
       try {
@@ -189,13 +211,18 @@
     'python-turtle': 'python-turtle.html',
     webcode: 'webcode.html',
     minecraft: 'minecraft.html',
-    'craftom-agent': 'kugel-student.html',
+    'craftom-agent': 'craftom-school/preview/index.html',
   };
 
   const teacherCourseStarts = {
     ...courseStarts,
-    'craftom-agent': 'craftom-school/preview/index.html',
+    'craftom-agent': 'kugel-teacher.html',
   };
+
+  function teacherCourseHref(courseId, classroomId = '') {
+    if (courseId === 'craftom-agent' && classroomId) return `kugel-teacher.html?classroomId=${encodeURIComponent(classroomId)}`;
+    return teacherCourseStarts[courseId] || courseStarts[courseId] || 'index.html#courses';
+  }
 
   function selectedCourses(form) {
     return new FormData(form).getAll('courses');
@@ -219,6 +246,8 @@
   }
 
   async function initTeacher() {
+    const teacherParams = new URLSearchParams(location.search);
+    const shouldOpenClassList = teacherParams.get('fromTeacherBoard') === '1';
     const auth = document.getElementById('teacher-auth');
     const dashboard = document.getElementById('teacher-dashboard');
     const authMessage = document.getElementById('teacher-auth-message');
@@ -237,10 +266,20 @@
       }
       const courseLinks = element('div', undefined, 'course-links');
       for (const courseId of availableCourseIds) {
-        const link = element('a', `פתיחת הלומדה שלי: ${courseLabels[courseId] || courseId}`, 'button quiet');
-        link.href = teacherCourseStarts[courseId];
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
+        const linkLabel = courseId === 'craftom-agent'
+          ? 'ניהול אקדמיית ה-Agent לפי כיתה'
+          : `פתיחת הלומדה שלי: ${courseLabels[courseId] || courseId}`;
+        const link = element('a', linkLabel, 'button quiet');
+        if (courseId === 'craftom-agent') {
+          link.href = '#classes-list';
+          link.addEventListener('click', () => {
+            setMessage(dashboardMessage, 'בחרי כיתה עם אקדמיית ה-Agent ולחצי על "ניהול הלומדה".', true);
+          });
+        } else {
+          link.href = teacherCourseHref(courseId);
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+        }
         courseLinks.append(link);
       }
       teacherCourseCatalog.append(courseLinks, createCoursePicker([], availableCourseIds));
@@ -269,8 +308,11 @@
       courseAccess.append(element('h4', 'הלומדות של הכיתה'));
       const courseLinks = element('div', undefined, 'course-links');
       for (const courseId of classroom.courses || []) {
-        const link = element('a', `פתיחת הלומדה: ${courseLabels[courseId] || courseId}`, 'button quiet');
-        link.href = teacherCourseStarts[courseId];
+        const linkText = courseId === 'craftom-agent'
+          ? `ניהול הלומדה: ${courseLabels[courseId] || courseId}`
+          : `פתיחת הלומדה: ${courseLabels[courseId] || courseId}`;
+        const link = element('a', linkText, 'button quiet');
+        link.href = teacherCourseHref(courseId, classroom.id);
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
         courseLinks.append(link);
@@ -386,6 +428,20 @@
       event.preventDefault();
       submitAuth(event.currentTarget, '/api/classroom/teacher-register');
     });
+    async function openPreviewDemoTeacher() {
+      setMessage(authMessage, 'פותחים מורה בדיקה…');
+      try {
+        const data = await api('/api/classroom/preview-demo-teacher-login', {});
+        setMessage(authMessage, '', true);
+        await showDashboard(data);
+        if (shouldOpenClassList) history.replaceState(null, '', 'teacher-classrooms.html');
+        return true;
+      } catch (error) {
+        setMessage(authMessage, error.message);
+        return false;
+      }
+    }
+
     const previewDemoTeacher = document.getElementById('preview-demo-teacher');
     if (previewDemoTeacher) {
       api('/api/classroom/preview-demo-teacher-enabled')
@@ -394,14 +450,9 @@
         })
         .catch(() => {});
       previewDemoTeacher.addEventListener('click', async () => {
-        setMessage(authMessage, 'פותחים מורה בדיקה…');
         previewDemoTeacher.disabled = true;
         try {
-          const data = await api('/api/classroom/preview-demo-teacher-login', {});
-          setMessage(authMessage, '', true);
-          await showDashboard(data);
-        } catch (error) {
-          setMessage(authMessage, error.message);
+          await openPreviewDemoTeacher();
         } finally {
           previewDemoTeacher.disabled = false;
         }
@@ -429,7 +480,13 @@
 
     try {
       const me = await api('/api/classroom/me');
-      if (me.role === 'teacher') await showDashboard(me);
+      if (me.role === 'teacher') {
+        await showDashboard(me);
+        if (shouldOpenClassList) history.replaceState(null, '', 'teacher-classrooms.html');
+      } else if (shouldOpenClassList && previewDemoTeacher) {
+        const demo = await api('/api/classroom/preview-demo-teacher-enabled').catch(() => ({ enabled: false }));
+        if (demo.enabled) await openPreviewDemoTeacher();
+      }
     } catch {}
   }
 

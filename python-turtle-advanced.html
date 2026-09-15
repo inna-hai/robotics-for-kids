@@ -9248,14 +9248,14 @@
       if(comments.length < 3) return false;
       if(!lengthSetBeforeFirstUse(actions, null) || forwardVarCount(actions) < 3) return false;
       if(penUpMoveCount(actions) < 1) return false;
-      if(actionDrawnColors(actions).length < 2) return false;
+      if(actionDrawnColors(actions).size < 2) return false;
       return true;
     }
 
     function hasAdvancedDocumentedMap(actions){
       const comments = commentTexts(actions);
       if(comments.length < 3) return false;
-      if(actionDrawnColors(actions).length < 3) return false;
+      if(actionDrawnColors(actions).size < 3) return false;
       if(penUpMoveCount(actions) < 2) return false;
       if(!lengthSetBeforeFirstUse(actions, null) || forwardVarCount(actions) < 4) return false;
       if(!repeatUsesLengthShape(4, 90)) return false;
@@ -9289,7 +9289,7 @@
 
     function advancedDebugLockIssues(actions){
       const issues = [];
-      if(actionDrawnColors(actions).length < 3) issues.push('color');
+      if(actionDrawnColors(actions).size < 3) issues.push('color');
       if(penUpMoveCount(actions) < 2) issues.push('separation');
       if(repeatedShapeSequenceStarts(actions, 4, 90).length < 1) issues.push('square');
       if(repeatedStarSequenceStarts(actions, 144).length < 1) issues.push('star');
@@ -9999,7 +9999,7 @@
           );
           return Number(times) >= 6 && turn90s >= 2 && hasSunAngleTurn && hasForwardRightAfter180;
         });
-        const colorCount = actionDrawnColors(actions).length;
+        const colorCount = actionDrawnColors(actions).size;
         if(predictionCfg && prediction !== predictionCfg.correct) return ['התשובה לא נכונה עדיין — קראו שוב את הבלוקים מלמעלה למטה ובחרו תשובה אחרת.'];
         if(String(ex?.id) === '1'){
           if(actions.length < 3 || longLines < 2) return ['כמעט — אל תמחקו את הבלוקים המוכנים. צריך להשאיר את המסלול, להריץ, ואז לבדוק אם הניבוי נכון.'];
@@ -10333,7 +10333,7 @@
       if(currentLesson === 2 && ex.id === 7){
         const current = comparableActions(actions);
         if(!hasDescendingStairSequence(current, 3)) return ['המדרגות צריכות להישאר תקינות: בכל מדרגה יש קטע ישר, ירידה קצרה, ואז המשך ישר.'];
-        if(actionDrawnColors(actions).length < 2) return ['צריך לצייר את המדרגות בפועל לפחות בשני צבעים שונים. שימו צבע אחד בהתחלה וצבע נוסף לפני אחת המדרגות הבאות.'];
+        if(actionDrawnColors(actions).size < 2) return ['צריך לצייר את המדרגות בפועל לפחות בשני צבעים שונים. שימו צבע אחד בהתחלה וצבע נוסף לפני אחת המדרגות הבאות.'];
         return [];
       }
       if(currentLesson === 4){
@@ -10351,7 +10351,7 @@
           return [];
         }
         if(ex.id === 8){
-          if(actionDrawnColors(actions).length < 3) return ['הלוגו צריך לכלול לפחות 3 צבעים שונים שמצוירים בפועל. הוסיפו בלוק צבע לפני חלקים שונים של הלוגו.'];
+          if(actionDrawnColors(actions).size < 3) return ['הלוגו צריך לכלול לפחות 3 צבעים שונים שמצוירים בפועל. הוסיפו בלוק צבע לפני חלקים שונים של הלוגו.'];
           if(actions.filter(a=>a.cmd === 'forward' || a.cmd === 'forwardVar').length < 3) return ['צריך לצייר לוגו קטן עם כמה חלקים, לא רק קו אחד.'];
           return [];
         }
@@ -10387,7 +10387,7 @@
           return [];
         }
         if(ex.id === 8){
-          if(actionDrawnColors(actions).length < 2) return ['צריך שהצב יצייר בפועל לפחות בשני צבעים שונים.'];
+          if(actionDrawnColors(actions).size < 2) return ['צריך שהצב יצייר בפועל לפחות בשני צבעים שונים.'];
           return [];
         }
         if(ex.id === 9){
@@ -10473,7 +10473,7 @@
         }
         if(ex.id === 5){
           if(!hasBlock('py_repeat') || !repeatHasFencePlankPatternAtLeast(4, true)) return ['כמעט — שמרו על שורת גדר חוזרת: בתוך בלוק ״חזור״ צריך להיות קרש גדר שלם וגם קו קטן שמוביל לקרש הבא. אפשר להשתמש ב־4 חזרות או יותר.'];
-          if(actionDrawnColors(actions).length < 2) return ['כמעט — כל קרש צריך להיות דו־צבעי: שימו צבע אחד לפני הקו שעולה וצבע אחר לפני הקו שיורד, כך ששני הצבעים יופיעו על הקרש עצמו.'];
+          if(actionDrawnColors(actions).size < 2) return ['כמעט — כל קרש צריך להיות דו־צבעי: שימו צבע אחד לפני הקו שעולה וצבע אחר לפני הקו שיורד, כך ששני הצבעים יופיעו על הקרש עצמו.'];
           return [];
         }
         if(ex.id === 6){
@@ -10574,7 +10574,7 @@
         }
         if(ex.id === 4){
           if(!repeatStarPattern(5, 144, null)) return ['כמעט — שמרו על דפוס הכוכב החוזר.'];
-          if(actionDrawnColors(actions).length < 2) return ['כמעט — צריך לראות לפחות שני צבעים שונים בקווי הכוכב.'];
+          if(actionDrawnColors(actions).size < 2) return ['כמעט — צריך לראות לפחות שני צבעים שונים בקווי הכוכב.'];
           return [];
         }
         if(ex.id === 5){
@@ -10592,7 +10592,7 @@
         }
         if(ex.id === 7){
           if(!repeatStarPattern(5, 144, null)) return ['כמעט — שמרו על כוכב סגור בעזרת דפוס חוזר.'];
-          if(actionDrawnColors(actions).length < 2) return ['כמעט — הוסיפו לפחות שני צבעים שונים לציור.'];
+          if(actionDrawnColors(actions).size < 2) return ['כמעט — הוסיפו לפחות שני צבעים שונים לציור.'];
           return [];
         }
       }
@@ -10635,7 +10635,7 @@
         }
         if(ex.id === 5){
           if(!hasSeparatedSquareAndTriangle(actions)) return ['כמעט — צריך להוסיף שני סמלי מפה פשוטים: ריבוע קטן לבית ומשולש קטן לפארק.'];
-          if(actionDrawnColors(actions).length < 2) return ['כמעט — שני סמלי המפה צריכים להצטייר בצבעים שונים.'];
+          if(actionDrawnColors(actions).size < 2) return ['כמעט — שני סמלי המפה צריכים להצטייר בצבעים שונים.'];
           if(penUpMoveCount(actions) < 1) return ['כמעט — צריך מעבר אחד בלי ציור: הרם עט, זוזו, ואז הורד עט.'];
           return [];
         }
@@ -10652,7 +10652,7 @@
           }
           if(!actions.some(a=>a.cmd==='width' && Number(a.v) <= 4)) return ['כמעט — לפני הרחובות הצדדיים צריך לשנות לעובי עט דק.'];
           if(actions.some(a=>(a.cmd==='right' || a.cmd==='left') && ![90,180].includes(Number(a.v)))) return ['כמעט — יש רחוב צדדי אלכסוני. שנו את זווית הפנייה כך שהרחוב יהיה ישר.'];
-          if(actionDrawnColors(actions).length < 2) return ['כמעט — הרחובות צריכים להצטייר לפחות בשני צבעים שונים.'];
+          if(actionDrawnColors(actions).size < 2) return ['כמעט — הרחובות צריכים להצטייר לפחות בשני צבעים שונים.'];
           return [];
         }
         if(ex.id === 7){
@@ -10689,7 +10689,7 @@
         }
         if(ex.id === 5){
           if(needsNewAddition && (!currentActions.some(a=>a.cmd === 'color') || !currentActions.some(a=>a.cmd === 'width'))) return ['כמעט — בתרגיל הזה צריך להוסיף שינוי צבע וגם שינוי עובי חדשים, לא רק להריץ את הבלוקים הקודמים.'];
-          if(actionDrawnColors(actions).length < 2) return ['כמעט — הרכבת צריכה לכלול לפחות שני צבעים שמצוירים בפועל.'];
+          if(actionDrawnColors(actions).size < 2) return ['כמעט — הרכבת צריכה לכלול לפחות שני צבעים שמצוירים בפועל.'];
           if(trainWheelCount(actions) < 2) return ['כמעט — הגלגלים צריכים להיות קווים קצרים עם עט עבה מאוד.'];
           return [];
         }
@@ -10907,7 +10907,7 @@
       if(currentLesson === 23){
         const moveCount = actions.filter(a=>a.cmd === 'forward' || a.cmd === 'forwardVar').length;
         const turnCount = actions.filter(a=>(a.cmd === 'right' || a.cmd === 'left') && Math.abs(Number(a.v)) > 0).length;
-        const colorCount = actionDrawnColors(actions).length;
+        const colorCount = actionDrawnColors(actions).size;
         const cleanMoves = cleanTransitionCount(actions);
         const drawnCount = drawnSegments(actions).filter(s=>s.length >= 5).length;
         const baselineActions = exerciseBaselines[baselineKey()] || [];
@@ -10980,7 +10980,7 @@
         const hasWideRoad = actionDrawsWithMinWidth(actions, 6);
         const lengthOk = lengthSetBeforeFirstUse(actions, null);
         const lengthMoves = forwardVarCount(actions);
-        const colorsCount = actionDrawnColors(actions).length;
+        const colorsCount = actionDrawnColors(actions).size;
         const cleanMoves = cleanTransitionCount(actions);
         if(ex.id === 1){
           if(moveCount < 1) return ['כמעט — ציירו כביש ראשי ארוך בעזרת forward.'];
@@ -11029,7 +11029,7 @@
           const baselineSegments = drawnSegments(baseline).filter(s=>s.length >= 4).length;
           const currentSegments = drawnSegments(actions).filter(s=>s.length >= 4).length;
           const addedSegments = currentSegments - baselineSegments;
-          const baselineColors = actionDrawnColors(baseline).length;
+          const baselineColors = actionDrawnColors(baseline).size;
           const baselineWide = actionDrawsWithMinWidth(baseline, 6);
           const addedColor = colorsCount > baselineColors;
           const addedWide = actionDrawsWithMinWidth(actions, 6) && !baselineWide;
@@ -11065,7 +11065,7 @@
           if(!repeatUsesLengthShape(4, 90)) return ['כמעט — צריך קודם לצייר ריבוע לקירות הבית. השתמשו בלולאה של 4 חזרות עם זוז קדימה לפי אורך ופנייה של 90 מעלות.'];
           if(!repeatShapeMatches(3, 120)) return ['כמעט — הגג צריך להיות משולש בלולאה של 3 ופנייה של 120 מעלות.'];
           if(!drawingExtendsBeyondLengthSquare(actions)) return ['כמעט — נראה שהגג צויר בתוך הריבוע. ציירו את הגג המשולש על הריבוע למעלה, כמו שגג נמצא על הבית ולא בתוך הבית.'];
-          if(actionDrawnColors(actions).length < 2) return ['כמעט — הקירות והגג צריכים להצטייר לפחות בשני צבעים שונים.'];
+          if(actionDrawnColors(actions).size < 2) return ['כמעט — הקירות והגג צריכים להצטייר לפחות בשני צבעים שונים.'];
           return [];
         }
         if(ex.id === 2){
@@ -11214,7 +11214,7 @@
       if(currentLesson === 5 && ex.id === 7){
         const segments = drawnSegments(actions);
         if(segments.length < 9) return ['צריך לצייר שלוש צורות — לא רק קווים בודדים. נסו לבנות כמה צלעות לכל צורה.'];
-        if(actionDrawnColors(actions).length < 3) return ['צריך לצייר בפועל בשלושה צבעים שונים. שימו צבע חדש לפני כל צורה.'];
+        if(actionDrawnColors(actions).size < 3) return ['צריך לצייר בפועל בשלושה צבעים שונים. שימו צבע חדש לפני כל צורה.'];
         const penUpCount = actions.filter(a=>a.cmd==='pen' && a.v===false).length;
         const penDownCount = actions.filter(a=>a.cmd==='pen' && a.v===true).length;
         if(penUpCount < 2 || penDownCount < 2) return ['בין שלוש הצורות צריכים להיות לפחות שני מעברים בלי ציור: הרם עט, מעבר, ואז הורד עט.'];

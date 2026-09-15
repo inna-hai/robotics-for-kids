@@ -18,6 +18,9 @@ assert.equal(program.totalChallenges, 4, 'program has 4 challenges');
 assert.equal(program.totalMeetings, 16, 'program has 16 meetings');
 assert.ok(program.subtitle.includes('עבודה עצמית'), 'program frames the course as a self-study lomda');
 assert.ok(program.subtitle.includes('בהמשכים'), 'program frames the course as one continuing city');
+assert.ok(program.outcomes.some(item => item.includes('אתם רואים')), 'student-facing outcomes use direct wording');
+assert.ok(program.outcomes.some(item => item.includes('אתם יודעים')), 'student-facing outcomes speak directly to students');
+assert.ok(!program.outcomes.some(item => item.includes('התלמידים')), 'student-facing outcomes avoid third-person student wording');
 assert.equal(
   program.overviewVideo,
   'marketing/craftom-program-real-minecraft-gemini-live-1x.mp4',
@@ -31,7 +34,8 @@ assert.ok(program.exitUpload.includes('כרטיס היציאה'), 'photo upload 
 const [challenge1, challenge2, challenge3, challenge4] = program.challenges;
 assert.equal(challenge1.title, 'הרובוט השליח', 'challenge 1 keeps the courier foundation');
 assert.equal(challenge1.meetings[0][4].academy.exercises.length, 6, 'challenge 1 lesson 1 has gradual Agent academy exercises');
-assert.ok(challenge1.meetings[0][4].academy.story.includes('Python Turtle'), 'lesson 1 is inspired by Python Turtle slow-build exercises');
+assert.ok(!challenge1.meetings[0][4].academy.story.includes('Python Turtle'), 'lesson 1 explains gradual work without assuming a previous Python Turtle course');
+assert.ok(challenge1.meetings[0][4].goal.startsWith('בשיעור הזה'), 'lesson 1 goal speaks directly to students');
 assert.ok(challenge1.meetings[0][4].academy.exercises.every(exercise => exercise.hint && !exercise.python && !exercise.blocks), 'academy exercises guide students without storing full solutions');
 assert.equal(challenge1.meetings[1][4].academy.exercises.length, 6, 'challenge 1 lesson 2 has gradual Agent academy exercises');
 assert.ok(challenge1.meetings[1][4].academy.story.includes('פנייה'), 'lesson 2 academy matches the turn lesson');
@@ -42,6 +46,8 @@ assert.ok(challenge1.meetings[2][4].academy.exercises.some(exercise => exercise.
 assert.ok(challenge1.meetings[2][4].academy.exercises.every(exercise => exercise.hint && exercise.starter && exercise.criteria && !exercise.python && !exercise.blocks), 'lesson 3 academy also gives scaffolds, not ready-made solutions');
 assert.ok(program.lessons.every(lesson => lesson.detail.academy?.exercises?.length === 6), 'every Craftom lesson now has a 6-step Agent academy');
 assert.ok(program.lessons.every(lesson => lesson.detail.academy.exercises.every(exercise => exercise.hint && exercise.starter && exercise.criteria && !exercise.python && !exercise.blocks)), 'all academies stay scaffolded without ready-made solution snippets');
+assert.ok(program.lessons.every(lesson => lesson.detail.reflection), 'every lesson has a meeting-specific additional reflection question');
+assert.ok(!program.lessons.some(lesson => lesson.detail.reflection.includes('אחרי הבדיקה')), 'additional reflection questions focus on the current meeting instead of a generic after-test prompt');
 assert.equal(challenge2.title, 'קו המשלוחים האוטומטי', 'challenge 2 is the automatic delivery line');
 assert.equal(challenge3.title, 'קו משלוחים חכם', 'challenge 3 is the smart delivery line');
 assert.equal(challenge4.title, 'העיר החכמה שלי', 'challenge 4 is the personal smart city project');
@@ -56,6 +62,30 @@ assert.equal(
 assert.ok(exists(challenge4.video), 'challenge 4 updated video file exists');
 assert.ok(exists(challenge4.poster), 'challenge 4 updated poster exists');
 assert.ok(challenge2.concept.includes('start/stop'), 'challenge 2 teaches safe loop controls');
+assert.ok(challenge2.meetings[0][4].academy.story.includes('להחליף שכפול ב-repeat'), 'lesson 5 academy focuses on replacing duplicated blocks with repeat');
+assert.ok(challenge2.meetings[1][4].academy.story.includes('מחזור פעולה יציב'), 'lesson 6 academy focuses on a stable out-and-back cycle');
+assert.ok(challenge2.meetings[2][4].academy.story.includes('start') && challenge2.meetings[2][4].academy.story.includes('stop') && challenge2.meetings[2][4].academy.story.includes('pause'), 'lesson 7 academy aligns with the Minecraft start/stop/pause task');
+assert.ok(challenge2.meetings[2][4].build.some(item => item.includes('START') && item.includes('STOP')), 'lesson 7 Minecraft task adds a visible start/stop control station');
+assert.ok(challenge2.meetings[2][4].evidence.some(item => item.includes('פעיל') || item.includes('עצור')), 'lesson 7 Minecraft evidence checks active/stopped state instead of only a return cycle');
+assert.notDeepEqual(
+  challenge2.meetings[0][4].academy.exercises.map(exercise => exercise.title),
+  challenge2.meetings[1][4].academy.exercises.map(exercise => exercise.title),
+  'lesson 5 and 6 academy exercises are distinct'
+);
+for (let lessonId = 6; lessonId < 16; lessonId += 1) {
+  const current = program.lessons.find(lesson => lesson.id === lessonId);
+  const next = program.lessons.find(lesson => lesson.id === lessonId + 1);
+  assert.notDeepEqual(
+    current.detail.academy.exercises.map(exercise => exercise.title),
+    next.detail.academy.exercises.map(exercise => exercise.title),
+    `lesson ${lessonId} and ${lessonId + 1} academy exercise titles are not identical`
+  );
+  assert.notEqual(
+    current.detail.code.join(' | '),
+    next.detail.code.join(' | '),
+    `lesson ${lessonId} and ${lessonId + 1} Minecraft code prompts are not identical`
+  );
+}
 assert.ok(challenge2.meetings[2][4].code.some(item => item.includes('running')), 'challenge 2 includes running variable details');
 assert.equal(
   challenge2.video,
@@ -84,38 +114,82 @@ assert.ok(!serialized.includes('מעבר חציה חכם'), 'old disconnected cr
 assert.equal(challenge2.command, 'start / stop', 'old bridge command was replaced with start/stop');
 
 const preview = read('craftom-school/preview/index.html');
+const academyPage = read('craftom-agent-academy.html');
+const challengePage = read('craftom-minecraft-challenge.html');
+const lessonPageScript = read('js/craftom-minecraft-lesson-page.js');
 assert.ok(preview.includes('programVideo'), 'preview page renders the program video element');
 assert.ok(preview.includes('סרטון פתיחת התוכנית'), 'preview page labels the overview video');
 assert.ok(preview.includes('program.overviewVideo'), 'preview page loads video from program data');
 assert.ok(preview.includes('איך עובדים בלומדה'), 'preview explains the self-study mode before teacher materials');
-assert.ok(preview.includes('20260905-agent-blocks-match-1'), 'preview page cache-busts the updated challenge data');
+assert.ok(preview.includes('20260914-teacher-return-1'), 'preview page cache-busts the direct student wording');
 assert.ok(preview.includes('אקדמיית ה-Agent'), 'preview uses the neutral Agent academy name');
 assert.ok(!preview.includes('Craftom Challenges • כיתה ז׳'), 'preview no longer presents the course as grade 7 only');
+assert.ok(preview.includes('id="courseHeaderNav"'), 'preview home has a course navigation header');
+assert.ok(preview.includes('השיעור הנוכחי'), 'preview home header links to the current lesson');
+assert.ok(!preview.includes('href="./"'), 'preview home header does not link back to the unsupported directory URL');
+assert.ok(preview.includes('/api/kugel/session'), 'preview home can resolve the teacher-opened current lesson');
+assert.ok(preview.includes('craftom-minecraft-lesson-${lessonId}.html'), 'preview home current lesson link points to a lesson page');
+assert.ok(preview.includes('craftom-minecraft-challenge.html?challenge=${challenge.id}'), 'preview home challenge links point to challenge pages');
+assert.ok(academyPage.includes('id="courseHeaderNav"'), 'Agent academy page keeps the course navigation header visible');
+assert.ok(academyPage.includes('craftom-minecraft-lesson-${lessonId}.html'), 'Agent academy current lesson link returns to the matching lesson');
+assert.ok(academyPage.includes('craftom-minecraft-challenge.html?challenge=${challenge.id}'), 'Agent academy header links to all challenges');
+assert.ok(challengePage.includes('20260914-video-first-frames-1'), 'challenge pages should load the latest first-frame challenge data');
+assert.ok(challengePage.includes('rootAssetPath(challenge.video)'), 'challenge pages should connect the actual mp4 video source');
+assert.ok(challengePage.includes('craftomPosterPath(challenge.poster)'), 'challenge pages should load posters through the MIME-safe endpoint');
+assert.ok(challengePage.includes('video.load()'), 'challenge pages should reload the video element after assigning the source');
+assert.ok(lessonPageScript.includes('id="courseHeader"'), 'lesson pages render the course header before lesson content');
+assert.ok(lessonPageScript.indexOf('renderCourseHeader();') < lessonPageScript.indexOf('renderQaCourseSwitcher();'), 'lesson page header appears before the QA lesson switcher');
+for (const path of ['craftom-minecraft-challenge.html', 'craftom-minecraft-students.html', 'craftom-minecraft-slides.html']) {
+  const html = read(path);
+  assert.ok(html.includes('id="courseHeaderNav"'), `${path} keeps the course navigation header visible`);
+  assert.ok(html.includes('craftom-minecraft-challenge.html?challenge=${item.id}'), `${path} header links to all challenges`);
+}
 
 for (const path of [
   'craftom-minecraft-challenge.html',
   'craftom-minecraft-students.html',
   'craftom-minecraft-slides.html',
-  'craftom-minecraft-lesson.html',
   'craftom-agent-academy.html',
 ]) {
-  assert.ok(read(path).includes('20260905-agent-blocks-match-1'), `${path} loads the updated challenge data`);
+  assert.ok(read(path).includes('20260914-teacher-return-1'), `${path} loads the updated challenge data`);
 }
+assert.ok(read('craftom-minecraft-lesson.html').includes('20260914-meeting-reflection-1'), 'lesson template cache-busts the exit reflection renderer');
 
 assert.ok(read('craftom-minecraft-challenge.html').includes('רצף עבודה עצמית'), 'challenge page frames the work as self-study');
 assert.ok(read('craftom-minecraft-lesson.html').includes('איך עובדים לבד'), 'lesson page starts lesson detail with self-study steps');
 assert.ok(read('craftom-minecraft-lesson.html').includes('agentAcademyCta'), 'lesson page has an academy entry button');
+assert.ok(!read('craftom-minecraft-lesson.html').includes('ראיות Craftom'), 'student lesson page does not expose Craftom evidence checklist');
+assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('minecraftEntryCard'), 'lesson pages show students a Minecraft entry card');
+assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('/api/kugel/student/start'), 'lesson pages let students enter the teacher-opened Minecraft world');
 assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('craftom-agent-academy.html?lesson='), 'lesson page links to the separate Agent academy');
+assert.ok(!read('js/craftom-minecraft-lesson-page.js').includes('ראיות Craftom'), 'rendered student lessons hide the Craftom evidence checklist');
+assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('nextChallengeLink'), 'final challenge meetings can reveal a next challenge button');
+assert.match(read('js/craftom-minecraft-lesson-page.js'), /if \(submission && !nextLesson && nextChallengeLink\) \{\s*nextChallengeLink\.hidden = !nextChallengeFirstLesson;/, 'a saved submission must restore next-challenge navigation after refresh');
+assert.doesNotMatch(read('js/craftom-minecraft-lesson-page.js'), /\$\{submission\.(?:exitAnswer|imageName)/, 'stored student submission text must not be interpolated into innerHTML');
+assert.doesNotMatch(read('js/craftom-minecraft-lesson-page.js'), /hai:classroom-progress[\s\S]{0,400}activityId: 'exit-ticket'/, 'the accepted exit-ticket must record progress only once on the server');
+assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('לאתגר הבא'), 'next challenge button uses student-facing wording');
+assert.ok(!read('js/craftom-minecraft-lesson-page.js').includes('craftom-minecraft-slides.html?challenge=${lesson.challengeId}&lesson=${lesson.id}'), 'student lesson page does not link to instructor slides');
+assert.ok(!read('js/craftom-minecraft-lesson-page.js').includes('id="studentLink"'), 'student lesson renderer removes the worksheet shortcut');
 assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('קודם נכנסים לאקדמיה'), 'academy lessons clearly send students to practice before implementation');
 assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('מיישמים את אותו רעיון בתוך Minecraft Education'), 'academy lessons clearly distinguish practice from Minecraft implementation');
 assert.ok(read('craftom-agent-academy.html').includes('academyCanvas'), 'Agent academy has a result simulation canvas');
 assert.ok(read('craftom-agent-academy.html').includes('academyBlockly'), 'Agent academy has a Blockly MakeCode area');
 assert.ok(read('craftom-agent-academy.html').includes('data-academy-mode="python"'), 'Agent academy has a Python tab');
+assert.ok(read('craftom-agent-academy.html').includes('academyComplete'), 'Agent academy has a full-completion message');
+assert.ok(read('craftom-agent-academy.html').includes('academyCompleteBackLink'), 'Agent academy completion lets students return to the lesson');
 assert.ok(read('craftom-agent-academy.html').includes('זו סביבת תרגול'), 'Agent academy tells students it is a practice environment');
 assert.ok(read('craftom-minecraft-students.html').includes('דף עבודה עצמית'), 'student worksheet is framed as self-study');
+assert.ok(!preview.includes('דף עבודה עצמית לתלמיד'), 'preview removes worksheet shortcut buttons from the course flow');
+assert.ok(!read('craftom-minecraft-challenge.html').includes('craftom-minecraft-students.html?challenge=${challenge.id}'), 'challenge page removes the worksheet shortcut button');
+assert.ok(!read('craftom-minecraft-lesson.html').includes('id="studentLink"'), 'lesson page removes the worksheet shortcut button');
 assert.ok(read('craftom-minecraft-lesson.html').includes('העלאת תמונה'), 'lesson page asks for a photo upload in the exit ticket area');
 assert.ok(read('craftom-minecraft-lesson.html').includes('id="exitTicketForm"'), 'lesson page has a real exit ticket submission form');
 assert.ok(read('craftom-minecraft-lesson.html').includes('type="file"'), 'lesson page has a real photo file input');
+assert.ok(read('craftom-minecraft-lesson.html').includes('id="exitReflection"'), 'lesson page adds a second meaningful exit-ticket question');
+assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('שאלת חשיבה נוספת'), 'lesson renderer labels the additional exit-ticket question');
+assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('lesson.detail.reflection || fallbackReflectionQuestion'), 'lesson renderer uses the meeting-specific reflection question');
+assert.ok(!read('js/craftom-minecraft-lesson-page.js').includes('מה שיניתם או שיפרתם אחרי הבדיקה'), 'lesson renderer removes the generic after-test reflection question');
+assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('כתבו תשובה לשאלת החשיבה הנוספת'), 'lesson renderer requires the additional reflection answer');
 assert.ok(
   read('craftom-minecraft-lesson.html').indexOf('id="exitTicket"') < read('craftom-minecraft-lesson.html').indexOf('id="exitAnswer"'),
   'exit ticket question appears directly above the answer field'
@@ -141,6 +215,10 @@ assert.ok(read('js/craftom-agent-academy.js').includes("message0: 'if routeOpen 
 assert.ok(read('js/craftom-agent-academy.js').includes('if routeOpen =='), 'Agent academy Python preview maps the condition to a boolean routeOpen check');
 assert.ok(!read('js/craftom-agent-academy.js').includes('category name="Loops & Logic"'), 'Agent academy does not merge MakeCode Loops and Logic into one category');
 assert.ok(read('js/craftom-agent-academy.js').includes('const hints = ['), 'Agent academy uses soft hints instead of exposing a solution chain');
+assert.ok(read('js/craftom-agent-academy.js').includes("reportProgress('academy-complete'"), 'Agent academy reports full academy completion');
+assert.ok(read('js/craftom-agent-academy.js').includes('completedExercises'), 'Agent academy tracks completed exercises across the lesson');
+assert.ok(read('js/craftom-agent-academy.js').includes('workspace.clear();'), 'Agent academy clears old blocks before loading each exercise starter');
+assert.ok(read('assets/craftom/craftom-challenges.css').includes('position: fixed'), 'Agent academy completion appears as a centered overlay');
 assert.ok(!read('js/craftom-agent-academy.js').includes("academy.exercises[activeExercise]?.blocks?.join"), 'hint button does not reveal exact solution blocks');
 assert.ok(read('js/craftom-minecraft-code-builder.js').includes('data-craftom-code-mode'), 'Craftom Code Builder supports code mode switching');
 assert.ok(read('js/craftom-minecraft-code-builder.js').includes('player.on_chat'), 'Craftom Code Builder can generate Python-style code');
@@ -153,10 +231,18 @@ assert.ok(!read('js/craftom-minecraft-code-builder.js').includes('const [first, 
 assert.ok(!read('js/craftom-minecraft-code-builder.js').includes('message0: \'Agent זז'), 'old Hebrew movement command label is removed');
 assert.ok(!read('js/craftom-minecraft-code-builder.js').includes('category name="לולאות ותנאים"'), 'old Hebrew logic category label is removed');
 assert.ok(read('js/craftom-minecraft-lesson-page.js').includes('/api/craftom/exit-ticket'), 'lesson renderer posts exit tickets to the server');
-assert.ok(read('server.js').includes('handleCraftomExitTicket'), 'server can save Craftom exit ticket submissions');
+assert.ok(read('server.js').includes('craftom_lesson_submissions'), 'server stores Craftom exit ticket submissions in the classroom database');
+assert.ok(read('server.js').includes('getClassroomStudentFromRequest(req)'), 'server resolves Craftom submissions from the authenticated classroom session');
+assert.ok(read('server.js').includes('/api/craftom/submissions'), 'server exposes authorized Craftom submission reads');
+assert.ok(read('server.js').includes("pathname === '/craftom-school/preview/'"), 'server resolves Craftom preview directory URL to the home page');
+assert.ok(!read('server.js').includes('craftomHeader'), 'locked Craftom pages should not include the course navigation header');
+assert.ok(!read('server.js').includes('body.has-course-header'), 'locked Craftom pages should keep the login card centered without a course header');
+assert.ok(read('server.js').includes("'/craftom-school/docs/craftom-submissions-summary-2026-09-10.html'"), 'Craftom change summary HTML is publicly readable');
 assert.ok(read('craftom-minecraft-challenge.html').includes('program.exitUpload'), 'challenge page shows the shared photo upload requirement');
 assert.ok(read('craftom-minecraft-students.html').includes('העלאת תמונה ל-Craftom'), 'student worksheet includes a Craftom photo upload field');
 assert.ok(read('craftom-minecraft-slides.html').includes('program.exitUpload'), 'slides remind instructors that exit tickets include a photo upload');
+assert.ok(read('craftom-minecraft-slides.html').includes('id="backToLesson"'), 'instructor slides include a back-to-lesson button');
+assert.ok(read('craftom-minecraft-slides.html').includes('craftom-minecraft-lesson-${selectedLesson.id}.html'), 'slides back button returns to the selected lesson');
 
 for (const path of [
   'craftom-minecraft-challenge.html',
@@ -165,7 +251,8 @@ for (const path of [
 ]) {
   const content = read(path);
   assert.ok(!content.includes('מה המורה עושה'), `${path} does not show teacher instructions in student-facing material`);
-  assert.ok(content.includes('מצגת מדריך'), `${path} links to the instructor slides instead`);
+  assert.ok(!content.includes('מצגת מדריך'), `${path} does not expose instructor slides to students`);
 }
+assert.ok(read('js/kugel-lesson-zero.js').includes('מצגת מדריך'), 'teacher management page keeps access to instructor slides');
 
 console.log('craftom-minecraft-course tests passed');

@@ -34,6 +34,7 @@ for (const next of [
 
 assert.ok(entry.includes('id="guest-continue"'));
 assert.ok(entry.includes('id="student-login-form"'));
+assert.ok(entry.includes('id="preview-demo-student"'));
 assert.ok(entry.includes('id="student-logout"'));
 assert.ok(entry.includes('id="student-course-links"'));
 assert.ok(entry.includes('התנסות כאורח'));
@@ -44,12 +45,14 @@ assert.ok(entry.includes('קוד אישי'));
 assert.ok(entry.includes('teacher-classrooms.html'));
 
 assert.ok(teacher.includes('id="teacher-login-form"'));
+assert.ok(teacher.includes('id="preview-demo-teacher"'));
 assert.ok(teacher.includes('id="teacher-register-form"'));
 assert.ok(teacher.includes('name="inviteCode"'));
 assert.ok(teacher.includes('id="create-class-form"'));
 assert.ok(teacher.includes('id="classes-list"'));
 assert.ok(teacher.includes('id="teacher-course-catalog"'));
 assert.ok(teacher.includes('יצירת כיתה'));
+assert.ok(teacher.includes('js/classroom-platform.js?v=20260914-teacher-board-return-1'));
 assert.ok(!teacher.includes('value="minecraft"'), 'teacher HTML must not expose a static unrestricted course picker');
 assert.ok(teacher.includes('בחרו מתוך הלומדות שהוקצו לך'));
 
@@ -66,8 +69,14 @@ assert.ok(!adminClient.includes('innerHTML'), 'administrator UI must render teac
 assert.ok(!adminClient.includes('localStorage'), 'administrator credentials must stay only in the HttpOnly session cookie');
 
 assert.ok(client.includes('/api/classroom/teacher-login'));
+assert.ok(client.includes('/api/classroom/preview-demo-teacher-enabled'));
+assert.ok(client.includes('/api/classroom/preview-demo-teacher-login'));
+assert.ok(client.includes('fromTeacherBoard'), 'teacher board return should open the class list instead of leaving preview users at the login form');
+assert.ok(client.includes("history.replaceState(null, '', 'teacher-classrooms.html')"));
 assert.ok(client.includes('/api/classroom/teacher-register'));
 assert.ok(client.includes('/api/classroom/student-login'));
+assert.ok(client.includes('/api/classroom/preview-demo-student-enabled'));
+assert.ok(client.includes('/api/classroom/preview-demo-student-login'));
 assert.ok(client.includes('/api/classroom/classes'));
 assert.ok(client.includes("/courses`"));
 assert.ok(client.includes("new FormData(form).getAll('courses')"));
@@ -75,6 +84,9 @@ assert.ok(client.includes('availableCourseIds'));
 assert.ok(client.includes('teacher-course-catalog'));
 assert.ok(client.includes('פתיחת הלומדה שלי'));
 assert.ok(client.includes('פתיחת הלומדה'));
+assert.ok(client.includes('ניהול הלומדה:'));
+assert.ok(client.includes('teacherCourseHref(courseId, classroom.id)'));
+assert.ok(client.includes('ניהול אקדמיית ה-Agent לפי כיתה'));
 assert.ok(client.includes('student-course-links'));
 assert.ok(entry.includes('הלומדות הפתוחות לכיתה שלך'));
 assert.ok(client.includes('/api/classroom/logout'));
@@ -89,6 +101,10 @@ assert.ok(sessionClient.includes('|weather|'), 'Sisi weather lesson must be mapp
 assert.ok(sessionClient.includes('/api/classroom/progress'));
 assert.ok(sessionClient.includes('hai:classroom-progress'));
 assert.ok(server.includes('injectClassroomSession'));
+assert.ok(server.includes('function previewDemoStudentLogin'));
+assert.ok(server.includes("const CLASSROOM_PREVIEW_DEMO_TEACHER = process.env.ROBOTICS_PREVIEW_DEMO_TEACHER === '1'"), 'preview login must require explicit server configuration');
+assert.ok(!server.includes('craftom-tehila-preview.orma-ai.com'), 'a client-controlled Host header must not enable preview authentication');
+assert.ok(!server.includes("headers?.['x-forwarded-host']"), 'a client-controlled forwarded host must not bypass authentication');
 assert.ok(server.includes("'/classroom-entry.html'"));
 assert.ok(server.includes("'/teacher-classrooms.html'"));
 assert.ok(packageJson.includes('node --check js/classroom-platform.js'));

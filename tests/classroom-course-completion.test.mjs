@@ -62,18 +62,19 @@ const academyChecksStart = academy.indexOf('function renderChecks(checks)');
 const academyChecksEnd = academy.indexOf('\n  function updatePython()', academyChecksStart);
 assert.notEqual(academyChecksStart, -1, 'Agent Academy result renderer exists');
 const academyChecks = academy.slice(academyChecksStart, academyChecksEnd);
-assert.match(academyChecks, /const passed = checks\.length > 0 && checks\.every\(check => check\.pass\)[\s\S]*if \(passed\)[\s\S]*hai:classroom-progress/, 'Agent Academy reports only when every real criterion passes');
-assert.match(academyChecks, /lessonId:\s*String\(lesson\.id\)/, 'Agent Academy reports the current lesson');
-assert.match(academyChecks, /activityId:\s*`academy-exercise-\$\{activeExercise \+ 1\}`/, 'Agent Academy reports the completed exercise');
+assert.match(academyChecks, /const passed = checks\.length > 0 && checks\.every\(check => check\.pass\)[\s\S]*if \(passed\)[\s\S]*reportProgress\(`academy-exercise-\$\{activeExercise \+ 1\}`/, 'Agent Academy reports only when every real criterion passes');
+assert.match(academy, /new CustomEvent\('hai:classroom-progress'/, 'Agent Academy progress reports use the classroom progress event');
+assert.match(academy, /lessonId:\s*String\(lesson\.id\)/, 'Agent Academy reports the current lesson');
+assert.match(academyChecks, /reportProgress\(`academy-exercise-\$\{activeExercise \+ 1\}`/, 'Agent Academy reports the completed exercise');
+assert.match(academy, /reportProgress\('academy-complete'/, 'Agent Academy reports full lesson-academy completion after all exercises pass');
 
 const craftomLesson = read('js/craftom-minecraft-lesson-page.js');
+const craftomServer = read('server.js');
 const exitSuccessStart = craftomLesson.indexOf("form.classList.add('submitted')");
 assert.notEqual(exitSuccessStart, -1, 'Craftom exit-ticket success path exists');
 const exitSuccess = craftomLesson.slice(exitSuccessStart, exitSuccessStart + 700);
-assert.match(exitSuccess, /hai:classroom-progress/, 'accepted Craftom exit tickets emit classroom progress');
-assert.match(exitSuccess, /lessonId:\s*String\(lesson\.id\)/, 'Craftom exit tickets report the lesson');
-assert.match(exitSuccess, /activityId:\s*'exit-ticket'/, 'Craftom reports the accepted exit ticket');
-assert.match(exitSuccess, /status:\s*'completed'/, 'Craftom reports completed status');
+assert.doesNotMatch(exitSuccess, /hai:classroom-progress/, 'the browser must not duplicate server-authoritative Craftom progress');
+assert.match(craftomServer, /recordClassroomProgress\(db, studentContext\.student\.id, KUGEL_COURSE_ID, lessonId, 'exit-ticket', 'completed', 100/, 'accepted Craftom exit tickets record classroom progress atomically on the server');
 
 const sessionClient = read('js/classroom-session.js');
 const sessionListeners = new Map();

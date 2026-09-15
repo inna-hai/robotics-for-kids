@@ -15,7 +15,6 @@ const DATA_DIR = process.env.ROBOTICS_DATA_DIR || DEFAULT_DATA_DIR;
 const ATTACHMENTS_DIR = path.join(DATA_DIR, 'feedback-attachments');
 const FEEDBACK_FILE = path.join(DATA_DIR, 'feedback.jsonl');
 const CRAFTOM_EXIT_ATTACHMENTS_DIR = path.join(DATA_DIR, 'craftom-exit-ticket-attachments');
-const CRAFTOM_EXIT_TICKETS_FILE = path.join(DATA_DIR, 'craftom-exit-tickets.jsonl');
 const ADMIN_TOKEN_FILE = path.join(DATA_DIR, 'admin-token.txt');
 const SUMMER_USERS_FILE = path.join(DATA_DIR, 'summer-users.json');
 const SUMMER_DB_FILE = process.env.ROBOTICS_DB_FILE || path.join(DATA_DIR, 'summer-subscriptions.sqlite');
@@ -41,8 +40,11 @@ const KUGEL_MINECRAFT_SERVER_NAME = String(process.env.KUGEL_MINECRAFT_SERVER_NA
 const KUGEL_MINECRAFT_SERVER_HOST = String(process.env.KUGEL_MINECRAFT_SERVER_HOST || '');
 const KUGEL_MINECRAFT_SERVER_PORT = String(process.env.KUGEL_MINECRAFT_SERVER_PORT || '');
 const KUGEL_MINECRAFT_SERVER_ID = String(process.env.KUGEL_MINECRAFT_SERVER_ID || '');
+
 const KUGEL_MINECRAFT_ACCESS_CODE = String(process.env.KUGEL_MINECRAFT_ACCESS_CODE || '');
 const KUGEL_LESSON_ZERO_WORLD_ID = String(process.env.KUGEL_LESSON_ZERO_WORLD_ID || 'kugel-50-safe-compounds-v3-mazes-8-coins-npc-reset-caged-inner-wood-obstacle-test-v1-20260906');
+const KUGEL_AGENT_ACADEMY_WORLD_ID = String(process.env.KUGEL_AGENT_ACADEMY_WORLD_ID || 'kugel-50-safe-compounds-v3-20260824');
+const KUGEL_LESSON_ONE_WORLD_ID = String(process.env.KUGEL_LESSON_ONE_WORLD_ID || KUGEL_AGENT_ACADEMY_WORLD_ID);
 const KUGEL_PREVIEW_CLASSROOM_ID = String(process.env.KUGEL_PREVIEW_CLASSROOM_ID || '');
 const KUGEL_COURSE_ID = 'craftom-agent';
 const KUGEL_ACTION_WINDOW_MS = 60 * 1000;
@@ -58,6 +60,50 @@ const KUGEL_LESSON_ZERO = Object.freeze({
   worldId: KUGEL_LESSON_ZERO_WORLD_ID,
   mode: 'Adventure',
 });
+const KUGEL_LESSON_ONE = Object.freeze({
+  id: 1,
+  title: 'שיעור 1: משלוח ראשון',
+  summary: 'בונים מחסן, תחנת יעד ושביל ישר, ומפעילים את ה-Agent למסלול ראשון.',
+  worldId: KUGEL_LESSON_ONE_WORLD_ID,
+  mode: 'Adventure',
+});
+const KUGEL_LESSON_TITLES = Object.freeze({
+  2: ['מסלול עם פנייה', 'רצף פקודות עם פנייה אחת במסלול המשלוחים.'],
+  3: ['החבילה מגיעה', 'ה-Agent מגיע לתחנה ומניח או מסמן חבילה.'],
+  4: ['שליח עצמאי', 'מסלול משלוחים אישי עם בדיקה ותיקון.'],
+  5: ['משלוח אחד לא מספיק', 'מתחילים לחשוב על עבודה חוזרת ואוטומציה.'],
+  6: ['הלוך וחזור', 'מחזור פעולה מלא: יציאה, מסירה וחזרה.'],
+  7: ['לולאה עם עצירה', 'לולאה שמופעלת ונעצרת בצורה בטוחה.'],
+  8: ['קו אישי בעיר', 'קו משלוחים מחזורי אישי בעיר של התלמידים.'],
+  9: ['יש מצב בעיר', 'מצב נראה בעולם שהקוד יכול לבדוק או לייצג.'],
+  10: ['אם הדרך פתוחה', 'תנאי if שמחליט לפי מצב הדרך.'],
+  11: ['מחכים או עוקפים', 'תגובה אחרת כשהדרך חסומה או לא מוכנה.'],
+  12: ['חוק חכם אישי', 'כלל אישי של if/else בתוך העיר.'],
+  13: ['ממפים את העיר', 'בחירת מערכות לשדרוג ותכנון אלגוריתם.'],
+  14: ['מוסיפים אוטומציה חדשה', 'בנייה או שדרוג של מערכת עירונית אחת.'],
+  15: ['מחברים ובודקים', 'בדיקה של שתי אוטומציות ותיקון תקלה.'],
+  16: ['דמו עיר חכמה', 'הצגת עיר חכמה עם כמה אוטומציות שעובדות יחד.'],
+});
+function kugelLessonWorldId(lessonId) {
+  if (lessonId === 0) return KUGEL_LESSON_ZERO_WORLD_ID;
+  if (lessonId === 1) return KUGEL_LESSON_ONE_WORLD_ID;
+  return String(process.env[`KUGEL_LESSON_${lessonId}_WORLD_ID`] || KUGEL_AGENT_ACADEMY_WORLD_ID);
+}
+const KUGEL_MINECRAFT_LESSONS = Object.freeze(Object.fromEntries([
+  [0, KUGEL_LESSON_ZERO],
+  [1, KUGEL_LESSON_ONE],
+  ...Array.from({ length: 15 }, (_, index) => {
+    const id = index + 2;
+    const [title, summary] = KUGEL_LESSON_TITLES[id] || [`שיעור ${id}`, 'חיבור Minecraft לשיעור הזה עדיין צריך מיפוי.'];
+    return [id, Object.freeze({
+      id,
+      title: `שיעור ${id}: ${title}`,
+      summary,
+      worldId: kugelLessonWorldId(id),
+      mode: 'Adventure',
+    })];
+  }),
+]));
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -67,6 +113,7 @@ const MIME = {
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
+  '.webp': 'image/webp',
   '.svg': 'image/svg+xml; charset=utf-8',
   '.ico': 'image/x-icon',
   '.txt': 'text/plain; charset=utf-8',
@@ -142,6 +189,16 @@ function requireAdmin(req, res) {
   if (isAuthorized(req)) return true;
   send(res, 401, JSON.stringify({ error: 'Unauthorized' }));
   return false;
+}
+
+function addSqliteColumn(db, sql) {
+  try {
+    db.prepare(sql).run();
+  } catch (error) {
+    const duplicateColumn = error?.code === 'SQLITE_ERROR'
+      && /^duplicate column name:/i.test(String(error.message || ''));
+    if (!duplicateColumn) throw error;
+  }
 }
 
 function openSummerDb() {
@@ -320,7 +377,7 @@ function openSummerDb() {
 
     CREATE TABLE IF NOT EXISTS kugel_class_sessions (
       classroom_id TEXT PRIMARY KEY REFERENCES classrooms(id) ON DELETE CASCADE,
-      lesson_id INTEGER NOT NULL DEFAULT 0 CHECK (lesson_id = 0),
+      lesson_id INTEGER NOT NULL DEFAULT 0 CHECK (lesson_id BETWEEN 0 AND 16),
       active INTEGER NOT NULL DEFAULT 0 CHECK (active IN (0, 1)),
       monitor_server_name TEXT NOT NULL,
       world_id TEXT NOT NULL,
@@ -335,11 +392,36 @@ function openSummerDb() {
     CREATE TABLE IF NOT EXISTS kugel_student_runs (
       student_id TEXT PRIMARY KEY REFERENCES classroom_students(id) ON DELETE CASCADE,
       classroom_id TEXT NOT NULL REFERENCES classrooms(id) ON DELETE CASCADE,
-      lesson_id INTEGER NOT NULL DEFAULT 0 CHECK (lesson_id = 0),
+      lesson_id INTEGER NOT NULL DEFAULT 0 CHECK (lesson_id BETWEEN 0 AND 16),
       started_at TEXT,
       reset_at TEXT,
       finished_at TEXT,
+      attempt_count INTEGER NOT NULL DEFAULT 0,
+      best_time_ms INTEGER,
+      best_finished_at TEXT,
+      last_duration_ms INTEGER,
       updated_at TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS craftom_lesson_submissions (
+      id TEXT PRIMARY KEY,
+      classroom_id TEXT NOT NULL REFERENCES classrooms(id) ON DELETE CASCADE,
+      student_id TEXT NOT NULL REFERENCES classroom_students(id) ON DELETE CASCADE,
+      course_id TEXT NOT NULL DEFAULT 'craftom-agent',
+      lesson_id INTEGER NOT NULL CHECK (lesson_id BETWEEN 0 AND 16),
+      challenge_id INTEGER,
+      lesson_title TEXT NOT NULL DEFAULT '',
+      challenge_title TEXT NOT NULL DEFAULT '',
+      exit_question TEXT NOT NULL DEFAULT '',
+      exit_answer TEXT NOT NULL,
+      image_path TEXT NOT NULL,
+      image_name TEXT NOT NULL,
+      image_mime TEXT NOT NULL CHECK (image_mime IN ('image/png', 'image/jpeg', 'image/webp')),
+      image_size INTEGER NOT NULL,
+      replacement_count INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      UNIQUE(student_id, course_id, lesson_id)
     );
 
     CREATE TABLE IF NOT EXISTS kugel_minecraft_compound_assignments (
@@ -367,6 +449,8 @@ function openSummerDb() {
     CREATE INDEX IF NOT EXISTS idx_classroom_student_sessions_token ON classroom_student_sessions(token_hash);
     CREATE INDEX IF NOT EXISTS idx_classroom_progress_student ON classroom_progress(student_id);
     CREATE INDEX IF NOT EXISTS idx_kugel_student_runs_classroom ON kugel_student_runs(classroom_id);
+    CREATE INDEX IF NOT EXISTS idx_craftom_submissions_class_lesson ON craftom_lesson_submissions(classroom_id, lesson_id);
+    CREATE INDEX IF NOT EXISTS idx_craftom_submissions_student ON craftom_lesson_submissions(student_id);
     CREATE INDEX IF NOT EXISTS idx_kugel_compound_assignments_player
       ON kugel_minecraft_compound_assignments(monitor_server_name, minecraft_username COLLATE NOCASE);
     CREATE UNIQUE INDEX IF NOT EXISTS idx_kugel_active_monitor_server
@@ -383,7 +467,88 @@ function openSummerDb() {
   try { db.prepare('ALTER TABLE student_progress ADD COLUMN child_id TEXT REFERENCES summer_children(id) ON DELETE CASCADE').run(); } catch {}
   try { db.prepare('ALTER TABLE classroom_students ADD COLUMN minecraft_player_name TEXT').run(); } catch {}
   try { db.prepare('ALTER TABLE kugel_class_sessions ADD COLUMN launch_token TEXT').run(); } catch {}
+  addSqliteColumn(db, 'ALTER TABLE kugel_student_runs ADD COLUMN attempt_count INTEGER NOT NULL DEFAULT 0');
+  addSqliteColumn(db, 'ALTER TABLE kugel_student_runs ADD COLUMN best_time_ms INTEGER');
+  addSqliteColumn(db, 'ALTER TABLE kugel_student_runs ADD COLUMN best_finished_at TEXT');
+  addSqliteColumn(db, 'ALTER TABLE kugel_student_runs ADD COLUMN last_duration_ms INTEGER');
   try { db.prepare("ALTER TABLE summer_children ADD COLUMN subscription_status TEXT NOT NULL DEFAULT 'trial' CHECK (subscription_status IN ('trial', 'active', 'past_due', 'cancelled'))").run(); } catch {}
+  const migrateKugelSessionLessons = db.transaction(() => {
+    const migrationKey = 'kugel-class-sessions-lesson-range-v1';
+    if (db.prepare('SELECT 1 FROM classroom_migrations WHERE migration_key = ?').get(migrationKey)) return;
+    const table = db.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'kugel_class_sessions'").get();
+    if (table && String(table.sql || '').includes('CHECK (lesson_id = 0)')) {
+      db.prepare('DROP INDEX IF EXISTS idx_kugel_active_monitor_server').run();
+      db.prepare('ALTER TABLE kugel_class_sessions RENAME TO kugel_class_sessions_lesson_zero_old').run();
+      db.prepare(`
+        CREATE TABLE kugel_class_sessions (
+          classroom_id TEXT PRIMARY KEY REFERENCES classrooms(id) ON DELETE CASCADE,
+          lesson_id INTEGER NOT NULL DEFAULT 0 CHECK (lesson_id BETWEEN 0 AND 16),
+          active INTEGER NOT NULL DEFAULT 0 CHECK (active IN (0, 1)),
+          monitor_server_name TEXT NOT NULL,
+          world_id TEXT NOT NULL,
+          events_since INTEGER NOT NULL,
+          launch_token TEXT,
+          server_state TEXT NOT NULL DEFAULT 'idle' CHECK (server_state IN ('idle', 'starting', 'running', 'stopping', 'error')),
+          server_detail TEXT NOT NULL DEFAULT '',
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL
+        )
+      `).run();
+      db.prepare(`
+        INSERT INTO kugel_class_sessions (
+          classroom_id, lesson_id, active, monitor_server_name, world_id, events_since, launch_token,
+          server_state, server_detail, created_at, updated_at
+        )
+        SELECT classroom_id, lesson_id, active, monitor_server_name, world_id, events_since, launch_token,
+          server_state, server_detail, created_at, updated_at
+        FROM kugel_class_sessions_lesson_zero_old
+      `).run();
+      db.prepare('DROP TABLE kugel_class_sessions_lesson_zero_old').run();
+      db.prepare(`
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_kugel_active_monitor_server
+        ON kugel_class_sessions(monitor_server_name) WHERE active = 1
+      `).run();
+    }
+    db.prepare('INSERT INTO classroom_migrations (migration_key, applied_at) VALUES (?, ?)').run(migrationKey, new Date().toISOString());
+  });
+  migrateKugelSessionLessons();
+  const migrateKugelStudentRunLessons = db.transaction(() => {
+    const migrationKey = 'kugel-student-runs-lesson-range-v1';
+    if (db.prepare('SELECT 1 FROM classroom_migrations WHERE migration_key = ?').get(migrationKey)) return;
+    const table = db.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'kugel_student_runs'").get();
+    if (table && String(table.sql || '').includes('CHECK (lesson_id = 0)')) {
+      db.prepare('DROP INDEX IF EXISTS idx_kugel_student_runs_classroom').run();
+      db.prepare('ALTER TABLE kugel_student_runs RENAME TO kugel_student_runs_lesson_zero_old').run();
+      db.prepare(`
+        CREATE TABLE kugel_student_runs (
+          student_id TEXT PRIMARY KEY REFERENCES classroom_students(id) ON DELETE CASCADE,
+          classroom_id TEXT NOT NULL REFERENCES classrooms(id) ON DELETE CASCADE,
+          lesson_id INTEGER NOT NULL DEFAULT 0 CHECK (lesson_id BETWEEN 0 AND 16),
+          started_at TEXT,
+          reset_at TEXT,
+          finished_at TEXT,
+          attempt_count INTEGER NOT NULL DEFAULT 0,
+          best_time_ms INTEGER,
+          best_finished_at TEXT,
+          last_duration_ms INTEGER,
+          updated_at TEXT NOT NULL
+        )
+      `).run();
+      db.prepare(`
+        INSERT INTO kugel_student_runs (
+          student_id, classroom_id, lesson_id, started_at, reset_at, finished_at,
+          attempt_count, best_time_ms, best_finished_at, last_duration_ms, updated_at
+        )
+        SELECT student_id, classroom_id, lesson_id, started_at, reset_at, finished_at,
+          attempt_count, best_time_ms, best_finished_at, last_duration_ms, updated_at
+        FROM kugel_student_runs_lesson_zero_old
+      `).run();
+      db.prepare('DROP TABLE kugel_student_runs_lesson_zero_old').run();
+      db.prepare('CREATE INDEX IF NOT EXISTS idx_kugel_student_runs_classroom ON kugel_student_runs(classroom_id)').run();
+    }
+    db.prepare('INSERT INTO classroom_migrations (migration_key, applied_at) VALUES (?, ?)').run(migrationKey, new Date().toISOString());
+  });
+  migrateKugelStudentRunLessons();
   const migrateLegacyClassrooms = db.transaction(() => {
     const migrationKey = 'classroom-courses-backfill-v1';
     if (db.prepare('SELECT 1 FROM classroom_migrations WHERE migration_key = ?').get(migrationKey)) return;
@@ -435,6 +600,12 @@ function openSummerDb() {
   migrateMinecraftPlayerIndex();
   migrateStudentProgressUniqueConstraint(db);
   db.prepare('CREATE INDEX IF NOT EXISTS idx_student_progress_child ON student_progress(child_id)').run();
+  const kugelRunColumns = new Set(db.prepare("PRAGMA table_info('kugel_student_runs')").all().map(column => column.name));
+  const missingKugelMetricColumns = ['attempt_count', 'best_time_ms', 'best_finished_at', 'last_duration_ms']
+    .filter(column => !kugelRunColumns.has(column));
+  if (missingKugelMetricColumns.length > 0) {
+    throw new Error(`kugel_student_runs metrics migration incomplete: missing ${missingKugelMetricColumns.join(', ')}`);
+  }
   try { fs.chmodSync(SUMMER_DB_FILE, 0o600); } catch {}
   return db;
 }
@@ -1318,6 +1489,15 @@ function getClassroomStudentFromRequest(req) {
   });
 }
 
+function isPreviewDemoStudent(student) {
+  return Boolean(
+    CLASSROOM_PREVIEW_DEMO_TEACHER
+    && student
+    && student.name === 'הדסה בדיקה'
+    && (!KUGEL_PREVIEW_CLASSROOM_ID || student.classroom_id === KUGEL_PREVIEW_CLASSROOM_ID)
+  );
+}
+
 function cleanClassroomCourses(value) {
   if (!Array.isArray(value)) return null;
   const requested = new Set();
@@ -1408,53 +1588,90 @@ function replaceClassroomCourses(db, classroomId, courseIds) {
   db.prepare('UPDATE classrooms SET updated_at = ? WHERE id = ?').run(now, classroomId);
 }
 
+function ensurePreviewDemoClassroom(db) {
+  const email = 'preview-teacher@hai.tech';
+  const now = new Date().toISOString();
+  let teacher = db.prepare('SELECT * FROM classroom_teachers WHERE email = ?').get(email);
+  if (!teacher) {
+    const salt = crypto.randomBytes(16).toString('hex');
+    teacher = {
+      id: crypto.randomUUID(),
+      name: 'מורה בדיקה',
+      email,
+      password_salt: salt,
+      password_hash: hashClassroomSecret(crypto.randomUUID(), salt),
+      created_at: now,
+      updated_at: now,
+    };
+    db.prepare(`
+      INSERT INTO classroom_teachers (id, name, email, password_salt, password_hash, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(teacher.id, teacher.name, teacher.email, teacher.password_salt, teacher.password_hash, teacher.created_at, teacher.updated_at);
+  }
+  replaceTeacherCourses(db, teacher.id, CLASSROOM_COURSE_IDS);
+  let classroom = KUGEL_PREVIEW_CLASSROOM_ID
+    ? db.prepare('SELECT * FROM classrooms WHERE id = ? AND teacher_id = ?').get(KUGEL_PREVIEW_CLASSROOM_ID, teacher.id)
+    : null;
+  if (!classroom) classroom = db.prepare('SELECT * FROM classrooms WHERE teacher_id = ? ORDER BY created_at LIMIT 1').get(teacher.id);
+  if (!classroom) {
+    classroom = {
+      id: crypto.randomUUID(),
+      teacher_id: teacher.id,
+      name: 'כיתת בדיקה ל-preview',
+      join_code: generateClassJoinCode(db),
+      created_at: now,
+      updated_at: now,
+    };
+    db.prepare(`
+      INSERT INTO classrooms (id, teacher_id, name, join_code, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `).run(classroom.id, classroom.teacher_id, classroom.name, classroom.join_code, classroom.created_at, classroom.updated_at);
+  }
+  replaceClassroomCourses(db, classroom.id, [KUGEL_COURSE_ID]);
+  return { teacher, classroom };
+}
+
 function previewDemoTeacherLogin() {
   if (!CLASSROOM_PREVIEW_DEMO_TEACHER) return null;
   return withSummerDb(db => {
-    const email = 'preview-teacher@hai.tech';
-    const now = new Date().toISOString();
+    const result = db.transaction(() => ensurePreviewDemoClassroom(db))();
+    return { ...result, token: createClassroomTeacherSession(db, result.teacher.id) };
+  });
+}
+
+function previewDemoStudentLogin() {
+  if (!CLASSROOM_PREVIEW_DEMO_TEACHER) return null;
+  return withSummerDb(db => {
     const createDemo = db.transaction(() => {
-      let teacher = db.prepare('SELECT * FROM classroom_teachers WHERE email = ?').get(email);
-      if (!teacher) {
+      const { classroom } = ensurePreviewDemoClassroom(db);
+      const now = new Date().toISOString();
+      let student = db.prepare('SELECT * FROM classroom_students WHERE classroom_id = ? AND name = ?')
+        .get(classroom.id, 'הדסה בדיקה');
+      if (!student) {
         const salt = crypto.randomBytes(16).toString('hex');
-        teacher = {
+        student = {
           id: crypto.randomUUID(),
-          name: 'מורה בדיקה',
-          email,
-          password_salt: salt,
-          password_hash: hashClassroomSecret(crypto.randomUUID(), salt),
+          classroom_id: classroom.id,
+          name: 'הדסה בדיקה',
+          login_salt: salt,
+          login_hash: hashClassroomSecret(crypto.randomUUID(), salt),
+          minecraft_player_name: 'HadasaTest',
           created_at: now,
           updated_at: now,
         };
         db.prepare(`
-          INSERT INTO classroom_teachers (id, name, email, password_salt, password_hash, created_at, updated_at)
-          VALUES (?, ?, ?, ?, ?, ?, ?)
-        `).run(teacher.id, teacher.name, teacher.email, teacher.password_salt, teacher.password_hash, teacher.created_at, teacher.updated_at);
+          INSERT INTO classroom_students (id, classroom_id, name, login_salt, login_hash, minecraft_player_name, created_at, updated_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `).run(student.id, student.classroom_id, student.name, student.login_salt, student.login_hash, student.minecraft_player_name, student.created_at, student.updated_at);
+      } else if (!student.minecraft_player_name) {
+        db.prepare('UPDATE classroom_students SET minecraft_player_name = ?, updated_at = ? WHERE id = ?')
+          .run('HadasaTest', now, student.id);
+        student = db.prepare('SELECT * FROM classroom_students WHERE id = ?').get(student.id);
       }
-      replaceTeacherCourses(db, teacher.id, CLASSROOM_COURSE_IDS);
-      let classroom = KUGEL_PREVIEW_CLASSROOM_ID
-        ? db.prepare('SELECT * FROM classrooms WHERE id = ? AND teacher_id = ?').get(KUGEL_PREVIEW_CLASSROOM_ID, teacher.id)
-        : null;
-      if (!classroom) classroom = db.prepare('SELECT * FROM classrooms WHERE teacher_id = ? ORDER BY created_at LIMIT 1').get(teacher.id);
-      if (!classroom) {
-        classroom = {
-          id: crypto.randomUUID(),
-          teacher_id: teacher.id,
-          name: 'כיתת בדיקה ל-preview',
-          join_code: generateClassJoinCode(db),
-          created_at: now,
-          updated_at: now,
-        };
-        db.prepare(`
-          INSERT INTO classrooms (id, teacher_id, name, join_code, created_at, updated_at)
-          VALUES (?, ?, ?, ?, ?, ?)
-        `).run(classroom.id, classroom.teacher_id, classroom.name, classroom.join_code, classroom.created_at, classroom.updated_at);
-      }
-      replaceClassroomCourses(db, classroom.id, [KUGEL_COURSE_ID]);
-      return teacher;
+      return { classroom, student };
     });
-    const teacher = createDemo();
-    return { teacher, token: createClassroomTeacherSession(db, teacher.id) };
+    const result = createDemo();
+    return { ...result, token: createClassroomStudentSession(db, result.student.id) };
   });
 }
 
@@ -1564,11 +1781,11 @@ function kugelMinecraftInfo() {
 
 function kugelMinecraftSetupNote() {
   if (KUGEL_PREVIEW_MOCK_MINECRAFT) {
-    return 'מצב preview: אפשר לבדוק את זרימת שיעור 0 באתר, בלי להפעיל שרת Minecraft אמיתי.';
+    return 'מצב preview: אפשר לבדוק את זרימת הפעלת Minecraft באתר, בלי להפעיל שרת Minecraft אמיתי.';
   }
   return kugelMinecraftConfigured()
     ? ''
-    : 'חיבור Minecraft אינו מוגדר בשרת. יש להשלים הגדרות KUGEL_MONITOR ופרטי שרת Minecraft לפני הפעלת שיעור 0.';
+    : 'חיבור Minecraft אינו מוגדר בשרת. יש להשלים הגדרות KUGEL_MONITOR ופרטי שרת Minecraft לפני הפעלת שיעור.';
 }
 
 async function kugelMonitorRequest(pathname, options = {}, timeoutMs = 15000) {
@@ -1618,6 +1835,20 @@ function serializeKugelMonitorMutation(serverName, task) {
 
 function kugelMonitorMutation(pathname, options = {}, timeoutMs = 15000) {
   return serializeKugelMonitorMutation(kugelMonitorServerName(), () => kugelMonitorRequest(pathname, options, timeoutMs));
+}
+
+function kugelLessonById(lessonId) {
+  return KUGEL_MINECRAFT_LESSONS[String(lessonId)] || null;
+}
+
+function kugelLessonPublic(lesson) {
+  return lesson ? {
+    id: lesson.id,
+    title: lesson.title,
+    summary: lesson.summary,
+    mode: lesson.mode,
+    hasWorld: Boolean(lesson.worldId),
+  } : null;
 }
 
 function kugelEventPayload(row) {
@@ -1698,12 +1929,19 @@ function summarizeKugelStudent(student, run, session, events) {
     id: student.id,
     name: student.name,
     minecraftPlayerName: student.minecraft_player_name || '',
+    lessonId: Number(run?.lesson_id ?? session?.lesson_id ?? 0),
     connected,
     coins,
     completed,
     startedAt: run?.started_at || null,
     resetAt: run?.reset_at || null,
     finishedAt: completed ? (run?.finished_at || (finishEvent ? new Date(kugelEventTime(finishEvent)).toISOString() : null)) : null,
+    attemptCount: Number.isInteger(Number(run?.attempt_count)) ? Number(run.attempt_count) : 0,
+    bestTimeMs: run?.best_time_ms !== null && run?.best_time_ms !== undefined
+      && Number.isInteger(Number(run.best_time_ms)) && Number(run.best_time_ms) >= 0 ? Number(run.best_time_ms) : null,
+    bestFinishedAt: run?.best_finished_at || null,
+    lastDurationMs: run?.last_duration_ms !== null && run?.last_duration_ms !== undefined
+      && Number.isInteger(Number(run.last_duration_ms)) && Number(run.last_duration_ms) >= 0 ? Number(run.last_duration_ms) : null,
     lastSeenAt: last ? new Date(kugelEventTime(last)).toISOString() : null,
   };
 }
@@ -1738,6 +1976,7 @@ function getStudentKugelClass(req) {
 }
 
 function kugelSessionPublic(row) {
+  const lesson = kugelLessonById(row?.lesson_id) || KUGEL_LESSON_ZERO;
   return row ? {
     classroomId: row.classroom_id,
     lessonId: row.lesson_id,
@@ -1750,14 +1989,16 @@ function kugelSessionPublic(row) {
     lessonId: 0,
     active: false,
     serverState: 'idle',
-    serverDetail: 'המורה עדיין לא הפעילה את שיעור 0.',
+    serverDetail: `המורה עדיין לא הפעילה את ${lesson.id === 0 ? 'שיעור 0' : `שיעור ${lesson.id}`}.`,
     updatedAt: null,
   };
 }
 
-async function kugelClassView(context, role, useEventCache = true) {
+async function kugelClassView(context, role, useEventCache = true, requestedLessonId = null) {
   const data = withSummerDb(db => {
     const session = db.prepare('SELECT * FROM kugel_class_sessions WHERE classroom_id = ?').get(context.classroom.id);
+    const activeLessonId = Number(session?.lesson_id ?? 0);
+    const trackedLessonId = Number.isInteger(requestedLessonId) ? requestedLessonId : activeLessonId;
     const students = db.prepare(`
       SELECT id, classroom_id, name, minecraft_player_name
       FROM classroom_students WHERE classroom_id = ? ORDER BY created_at
@@ -1767,23 +2008,67 @@ async function kugelClassView(context, role, useEventCache = true) {
     const completedStudentIds = new Set(db.prepare(`
       SELECT student_id FROM classroom_progress
       WHERE course_id = ? AND lesson_id = '0' AND activity_id = 'minecraft-maze' AND status = 'completed'
-        AND student_id IN (SELECT id FROM classroom_students WHERE classroom_id = ?)
+      AND student_id IN (SELECT id FROM classroom_students WHERE classroom_id = ?)
     `).all(KUGEL_COURSE_ID, context.classroom.id).map(row => row.student_id));
-    return { session, students, runs, completedStudentIds };
+    const progressRows = db.prepare(`
+      SELECT * FROM classroom_progress
+      WHERE course_id = ? AND lesson_id = ?
+        AND student_id IN (SELECT id FROM classroom_students WHERE classroom_id = ?)
+    `).all(KUGEL_COURSE_ID, String(trackedLessonId), context.classroom.id);
+    const progressByStudent = new Map();
+    for (const row of progressRows) {
+      if (!progressByStudent.has(row.student_id)) progressByStudent.set(row.student_id, new Map());
+      progressByStudent.get(row.student_id).set(row.activity_id, row);
+    }
+    const submissionRows = db.prepare(`
+      SELECT s.*, cs.name AS student_name
+      FROM craftom_lesson_submissions s
+      JOIN classroom_students cs ON cs.id = s.student_id
+      WHERE s.classroom_id = ? AND s.course_id = ? AND s.lesson_id = ?
+    `).all(context.classroom.id, KUGEL_COURSE_ID, trackedLessonId);
+    const submissions = new Map(submissionRows.map(row => [row.student_id, row]));
+    return { session, students, runs, completedStudentIds, progressByStudent, submissions, trackedLessonId };
   });
-  const ownsRunningWorld = Boolean(data.session?.active && data.session.server_state === 'running');
+  const ownsRunningWorld = Boolean(
+    data.session?.active
+    && data.session.server_state === 'running'
+    && data.trackedLessonId === Number(data.session.lesson_id),
+  );
   const events = ownsRunningWorld ? await kugelGameEvents(data.session, useEventCache) : [];
   const summaries = data.students.map(student => ({
     ...summarizeKugelStudent(student, data.runs.get(student.id), data.session, events),
     completionRecorded: data.completedStudentIds.has(student.id),
-  }));
+  })).map(summary => {
+    const progress = data.progressByStudent.get(summary.id) || new Map();
+    const academy = progress.get('academy-complete');
+    const exitTicket = progress.get('exit-ticket');
+    const minecraftActivity = progress.get('minecraft-maze');
+    const run = data.runs.get(summary.id);
+    const trackedLessonId = data.trackedLessonId;
+    const runMatchesTrackedLesson = Boolean(run && Number(run.lesson_id) === trackedLessonId);
+    const minecraftCompleted = trackedLessonId === 0
+      ? Boolean(minecraftActivity?.status === 'completed' || summary.completionRecorded)
+      : Boolean(runMatchesTrackedLesson && run.finished_at);
+    return {
+      ...summary,
+      academyStatus: academy?.status || 'missing',
+      academyCompletedAt: academy?.completed_at || null,
+      minecraftStatus: minecraftCompleted ? 'completed' : (runMatchesTrackedLesson && summary.startedAt ? 'started' : 'missing'),
+      exitTicketStatus: exitTicket?.status || 'missing',
+      submission: craftomSubmissionPublic(data.submissions.get(summary.id), 'teacher'),
+    };
+  });
   const session = { ...kugelSessionPublic(data.session), classroomId: context.classroom.id };
+  const activeLesson = kugelLessonById(session.lessonId) || KUGEL_LESSON_ZERO;
   if (role === 'student') {
     const own = summaries.find(student => student.id === context.student.id);
+    const qaLessonMapping = isPreviewDemoStudent(context.student);
     return {
       ok: true,
       role,
-      lesson: KUGEL_LESSON_ZERO,
+      lesson: activeLesson,
+      lessons: qaLessonMapping ? Object.values(KUGEL_MINECRAFT_LESSONS).map(kugelLessonPublic) : [],
+      qaLessonMapping,
       classroom: context.classroom,
       session,
       student: own,
@@ -1793,15 +2078,18 @@ async function kugelClassView(context, role, useEventCache = true) {
   return {
     ok: true,
     role,
-    lesson: KUGEL_LESSON_ZERO,
+    lesson: kugelLessonPublic(activeLesson),
+    lessons: Object.values(KUGEL_MINECRAFT_LESSONS).map(kugelLessonPublic),
+    teacher: { id: context.teacher.id, name: context.teacher.name },
     classroom: { id: context.classroom.id, name: context.classroom.name },
+    trackedLessonId: data.trackedLessonId,
     session,
     students: summaries,
     metrics: {
       connected: summaries.filter(student => student.connected).length,
-      active: summaries.filter(student => student.startedAt && !student.completed).length,
-      completed: summaries.filter(student => student.completed).length,
-      needsHelp: summaries.filter(student => student.startedAt && !student.completed && student.coins <= 1).length,
+      active: summaries.filter(student => student.minecraftStatus === 'started').length,
+      completed: summaries.filter(student => student.minecraftStatus === 'completed').length,
+      needsHelp: summaries.filter(student => student.minecraftStatus === 'started' && data.trackedLessonId === 0 && student.coins <= 1).length,
     },
     minecraftConfigured: kugelMinecraftConfigured(),
     minecraftPreviewMode: KUGEL_PREVIEW_MOCK_MINECRAFT,
@@ -1813,22 +2101,54 @@ async function kugelClassView(context, role, useEventCache = true) {
 function upsertKugelRun(db, studentId, classroomId, patch) {
   const existing = db.prepare('SELECT * FROM kugel_student_runs WHERE student_id = ?').get(studentId);
   const now = new Date().toISOString();
+  const lessonId = Number.isInteger(Number(patch.lessonId)) ? Number(patch.lessonId) : Number(existing?.lesson_id || 0);
+  const startedAt = patch.startedAt === undefined ? existing?.started_at || null : patch.startedAt;
+  const resetAt = patch.resetAt === undefined ? existing?.reset_at || null : patch.resetAt;
+  const finishedAt = patch.finishedAt === undefined ? existing?.finished_at || null : patch.finishedAt;
+  const previousAttempts = Number.isInteger(Number(existing?.attempt_count)) ? Number(existing.attempt_count) : 0;
+  const previousBest = existing?.best_time_ms !== null && existing?.best_time_ms !== undefined
+    && Number.isInteger(Number(existing.best_time_ms)) && Number(existing.best_time_ms) >= 0
+    ? Number(existing.best_time_ms)
+    : null;
+  let completedDurationMs = null;
+  if (patch.incrementAttempt) {
+    const startMs = Date.parse(startedAt || resetAt || '');
+    const finishMs = Date.parse(finishedAt || '');
+    if (Number.isFinite(startMs) && Number.isFinite(finishMs) && finishMs >= startMs) {
+      completedDurationMs = finishMs - startMs;
+    }
+  }
+  const improvedBest = completedDurationMs !== null && (previousBest === null || completedDurationMs < previousBest);
   const next = {
-    started_at: patch.startedAt === undefined ? existing?.started_at || null : patch.startedAt,
-    reset_at: patch.resetAt === undefined ? existing?.reset_at || null : patch.resetAt,
-    finished_at: patch.finishedAt === undefined ? existing?.finished_at || null : patch.finishedAt,
+    started_at: startedAt,
+    reset_at: resetAt,
+    finished_at: finishedAt,
+    attempt_count: previousAttempts + (patch.incrementAttempt ? 1 : 0),
+    best_time_ms: improvedBest ? completedDurationMs : previousBest,
+    best_finished_at: improvedBest ? finishedAt : existing?.best_finished_at || null,
+    last_duration_ms: completedDurationMs === null ? existing?.last_duration_ms ?? null : completedDurationMs,
   };
   db.prepare(`
-    INSERT INTO kugel_student_runs (student_id, classroom_id, lesson_id, started_at, reset_at, finished_at, updated_at)
-    VALUES (?, ?, 0, ?, ?, ?, ?)
+    INSERT INTO kugel_student_runs (
+      student_id, classroom_id, lesson_id, started_at, reset_at, finished_at,
+      attempt_count, best_time_ms, best_finished_at, last_duration_ms, updated_at
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT(student_id) DO UPDATE SET
       classroom_id = excluded.classroom_id,
-      lesson_id = 0,
+      lesson_id = excluded.lesson_id,
       started_at = excluded.started_at,
       reset_at = excluded.reset_at,
       finished_at = excluded.finished_at,
+      attempt_count = excluded.attempt_count,
+      best_time_ms = excluded.best_time_ms,
+      best_finished_at = excluded.best_finished_at,
+      last_duration_ms = excluded.last_duration_ms,
       updated_at = excluded.updated_at
-  `).run(studentId, classroomId, next.started_at, next.reset_at, next.finished_at, now);
+  `).run(
+    studentId, classroomId, lessonId, next.started_at, next.reset_at, next.finished_at,
+    next.attempt_count, next.best_time_ms, next.best_finished_at, next.last_duration_ms, now,
+  );
   return db.prepare('SELECT * FROM kugel_student_runs WHERE student_id = ?').get(studentId);
 }
 
@@ -1967,13 +2287,18 @@ async function handleKugelApi(req, res) {
       const teacher = getClassroomTeacherFromRequest(req);
       if (teacher) {
         const classroomId = cleanText(url.searchParams.get('classroomId'), 80);
+        const lessonParam = url.searchParams.get('lessonId');
+        const requestedLessonId = lessonParam === null || lessonParam === '' ? null : Number(lessonParam);
         if (!classroomId) return send(res, 400, JSON.stringify({ error: 'חסר מזהה כיתה.' }));
+        if (requestedLessonId !== null && (!Number.isInteger(requestedLessonId) || requestedLessonId < 0 || requestedLessonId > 16)) {
+          return send(res, 400, JSON.stringify({ error: 'מספר השיעור אינו תקין.' }));
+        }
         const context = getTeacherKugelClass(req, classroomId);
         if (context.status) return send(res, context.status, JSON.stringify({ error: context.error }));
         if (!consumeKugelActionLimit(`teacher:${context.teacher.id}:${classroomId}:read`, 120)) {
           return send(res, 429, JSON.stringify({ error: 'יותר מדי רענונים. נסו שוב בעוד דקה.' }));
         }
-        return send(res, 200, JSON.stringify(await kugelClassView(context, 'teacher')));
+        return send(res, 200, JSON.stringify(await kugelClassView(context, 'teacher', true, requestedLessonId)));
       }
       const context = getStudentKugelClass(req);
       if (context.status) return send(res, context.status, JSON.stringify({ error: context.error }));
@@ -1987,39 +2312,28 @@ async function handleKugelApi(req, res) {
     const body = JSON.parse(await readBody(req, 64 * 1024) || '{}');
 
     if (pathname === '/api/kugel/compound-entry') {
-      if (!consumeKugelActionLimit(`compound-entry:${req.socket.remoteAddress || 'unknown'}`, 120)) {
+      const caller = getClassroomStudentFromRequest(req);
+      if (!caller) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת תלמיד/ה.' }));
+      if (!consumeKugelActionLimit(`compound-entry:${caller.id}`, 30)) {
         return send(res, 429, JSON.stringify({ error: 'יותר מדי רענונים. נסו שוב בעוד דקה.' }));
       }
       const compoundId = cleanKugelCompoundId(body.compoundId || url.searchParams.get('c') || url.searchParams.get('compound'));
       if (!compoundId) return send(res, 400, JSON.stringify({ error: 'מספר החלקה אינו תקין.' }));
-      const result = withSummerDb(db => {
-        const match = resolveKugelCompoundStudent(db, compoundId);
-        if (!match) return null;
-        const token = createClassroomStudentSession(db, match.student_id);
-        return { match, token };
-      });
-      if (!result) {
-        return send(res, 404, JSON.stringify({ error: 'לא נמצא תלמיד פעיל שמשויך לחלקה הזו כרגע.' }));
+      const match = withSummerDb(db => resolveKugelCompoundStudent(db, compoundId));
+      if (!match || match.student_id !== caller.id) {
+        return send(res, 404, JSON.stringify({ error: 'לא נמצאה חלקה פעילה שמשויכת לתלמיד/ה המחובר/ת.' }));
       }
-      const context = getStudentKugelClass({
-        ...req,
-        headers: {
-          ...req.headers,
-          cookie: `haiTechClassroomToken=${encodeURIComponent(result.token)}`,
-        },
-      });
+      const context = getStudentKugelClass(req);
       if (context.status) return send(res, context.status, JSON.stringify({ error: context.error }));
       const view = await kugelClassView(context, 'student', false);
-      return sendWithHeaders(res, 200, JSON.stringify({
+      return send(res, 200, JSON.stringify({
         ...view,
         compound: {
-          id: result.match.compound_id,
-          minecraftUsername: result.match.minecraft_username,
-          lastSeenAt: result.match.last_seen_at,
+          id: match.compound_id,
+          minecraftUsername: match.minecraft_username,
+          lastSeenAt: match.last_seen_at,
         },
-      }), 'application/json; charset=utf-8', {
-        'Set-Cookie': classroomSessionCookie(result.token),
-      });
+      }));
     }
 
     const linkMatch = pathname.match(/^\/api\/kugel\/classes\/([^/]+)\/students\/([^/]+)\/minecraft$/);
@@ -2050,6 +2364,86 @@ async function handleKugelApi(req, res) {
       }
     }
 
+    const teacherLessonLaunch = pathname.match(/^\/api\/kugel\/classes\/([^/]+)\/lessons\/([0-9]+)\/launch$/);
+    if (teacherLessonLaunch) {
+      const classroomId = decodeURIComponent(teacherLessonLaunch[1]);
+      const lesson = kugelLessonById(teacherLessonLaunch[2]);
+      if (!lesson) return send(res, 404, JSON.stringify({ error: 'שיעור Minecraft לא מוגדר.' }));
+      if (!lesson.worldId) return send(res, 409, JSON.stringify({ error: 'עדיין לא מוגדר עולם Minecraft לשיעור הזה.' }));
+      const context = getTeacherKugelClass(req, classroomId);
+      if (context.status) return send(res, context.status, JSON.stringify({ error: context.error }));
+      if (!consumeKugelActionLimit(`teacher:${context.teacher.id}:${classroomId}:launch:${lesson.id}`, 10)) {
+        return send(res, 429, JSON.stringify({ error: 'יותר מדי פעולות. נסו שוב בעוד דקה.' }));
+      }
+      if (!kugelMinecraftConfigured()) return send(res, 503, JSON.stringify({ error: 'חיבור Minecraft אינו מוגדר בשרת.' }));
+      const now = new Date().toISOString();
+      const eventsSince = Math.floor(Date.now() / 1000);
+      const launchToken = crypto.randomUUID();
+      const monitorServerName = KUGEL_PREVIEW_MOCK_MINECRAFT
+        ? `preview-mock-minecraft-${classroomId}`
+        : kugelMonitorServerName();
+      let acquired = false;
+      try {
+        acquired = withSummerDb(db => db.transaction(() => {
+          const activeOwner = db.prepare(`
+            SELECT classroom_id FROM kugel_class_sessions
+            WHERE active = 1 AND monitor_server_name = ? LIMIT 1
+          `).get(monitorServerName);
+          if (!KUGEL_PREVIEW_MOCK_MINECRAFT && activeOwner && activeOwner.classroom_id !== classroomId) return false;
+          db.prepare(`
+            INSERT INTO kugel_class_sessions (
+              classroom_id, lesson_id, active, monitor_server_name, world_id, events_since, launch_token,
+              server_state, server_detail, created_at, updated_at
+            ) VALUES (?, ?, 1, ?, ?, ?, ?, 'starting', ?, ?, ?)
+            ON CONFLICT(classroom_id) DO UPDATE SET
+              lesson_id = excluded.lesson_id, active = 1, monitor_server_name = excluded.monitor_server_name,
+              world_id = excluded.world_id, events_since = excluded.events_since, launch_token = excluded.launch_token,
+              server_state = 'starting', server_detail = excluded.server_detail, updated_at = excluded.updated_at
+          `).run(classroomId, lesson.id, monitorServerName, lesson.worldId, eventsSince, launchToken, `מפעיל את עולם שיעור ${lesson.id}…`, now, now);
+          return true;
+        })());
+      } catch (error) {
+        if (String(error.code || '').startsWith('SQLITE_CONSTRAINT')) acquired = false;
+        else throw error;
+      }
+      if (!acquired) return send(res, 409, JSON.stringify({ error: 'שרת Minecraft נמצא כעת בשימוש של כיתה אחרת.' }));
+      try {
+        await kugelMonitorMutation('/api/internal/craftom-school/world/open', {
+          method: 'POST',
+          body: JSON.stringify({ server: kugelMonitorServerName(), world: lesson.worldId, start_mode: 'reset' }),
+        }, 130000);
+        const activated = withSummerDb(db => db.prepare(`
+          UPDATE kugel_class_sessions SET server_state = 'running', server_detail = ?, updated_at = ?
+          WHERE classroom_id = ? AND launch_token = ? AND active = 1 AND server_state = 'starting'
+        `).run(`עולם שיעור ${lesson.id} פעיל.`, new Date().toISOString(), classroomId, launchToken));
+        if (!activated.changes) {
+          await kugelMonitorMutation('/api/internal/craftom-school/live/freeze', {
+            method: 'POST',
+            body: JSON.stringify({ server: kugelMonitorServerName(), scope: 'all', target: '', on: true, mode: 'full', restore: 'adventure' }),
+          }).catch(error => console.error('kugel_stale_launch_freeze_error', { message: error.message }));
+          return send(res, 409, JSON.stringify({ error: 'הפעלת העולם בוטלה משום שהשיעור שוחרר.' }));
+        }
+      } catch (error) {
+        const stopping = withSummerDb(db => db.prepare(`
+          UPDATE kugel_class_sessions SET server_state = 'stopping', server_detail = ?, updated_at = ?
+          WHERE classroom_id = ? AND launch_token = ? AND active = 1 AND server_state = 'starting'
+        `).run('פתיחת העולם לא אושרה; מקפיא את השרת לפני שחרור…', new Date().toISOString(), classroomId, launchToken));
+        if (!stopping.changes) return send(res, 409, JSON.stringify({ error: 'הפעלת העולם כבר בוטלה.' }));
+        await kugelMonitorMutation('/api/internal/craftom-school/live/freeze', {
+          method: 'POST',
+          body: JSON.stringify({ server: kugelMonitorServerName(), scope: 'all', target: '', on: true, mode: 'full', restore: 'adventure' }),
+        });
+        const released = withSummerDb(db => db.prepare(`
+          UPDATE kugel_class_sessions SET active = 0, server_state = 'idle', server_detail = ?, updated_at = ?
+          WHERE classroom_id = ? AND launch_token = ? AND active = 1 AND server_state = 'stopping'
+        `).run('פתיחת העולם נכשלה והשרת הוקפא ושוחרר.', new Date().toISOString(), classroomId, launchToken));
+        if (!released.changes) return send(res, 409, JSON.stringify({ error: 'מצב השרת השתנה בזמן ניקוי פתיחה שנכשלה.' }));
+        throw error;
+      }
+      const view = await kugelClassView(context, 'teacher', false);
+      return send(res, 200, JSON.stringify(view));
+    }
+
     const teacherAction = pathname.match(/^\/api\/kugel\/classes\/([^/]+)\/(launch|stop|message|freeze)$/);
     if (teacherAction) {
       const classroomId = decodeURIComponent(teacherAction[1]);
@@ -2065,14 +2459,17 @@ async function handleKugelApi(req, res) {
         const now = new Date().toISOString();
         const eventsSince = Math.floor(Date.now() / 1000);
         const launchToken = crypto.randomUUID();
+        const monitorServerName = KUGEL_PREVIEW_MOCK_MINECRAFT
+          ? `preview-mock-minecraft-${classroomId}`
+          : kugelMonitorServerName();
         let acquired = false;
         try {
           acquired = withSummerDb(db => db.transaction(() => {
             const activeOwner = db.prepare(`
               SELECT classroom_id FROM kugel_class_sessions
               WHERE active = 1 AND monitor_server_name = ? LIMIT 1
-            `).get(kugelMonitorServerName());
-            if (activeOwner) return false;
+            `).get(monitorServerName);
+            if (!KUGEL_PREVIEW_MOCK_MINECRAFT && activeOwner && activeOwner.classroom_id !== classroomId) return false;
             db.prepare(`
               INSERT INTO kugel_class_sessions (
                 classroom_id, lesson_id, active, monitor_server_name, world_id, events_since, launch_token,
@@ -2082,9 +2479,7 @@ async function handleKugelApi(req, res) {
                 lesson_id = 0, active = 1, monitor_server_name = excluded.monitor_server_name,
                 world_id = excluded.world_id, events_since = excluded.events_since, launch_token = excluded.launch_token,
                 server_state = 'starting', server_detail = excluded.server_detail, updated_at = excluded.updated_at
-            `).run(classroomId, kugelMonitorServerName(), KUGEL_LESSON_ZERO.worldId, eventsSince, launchToken, 'מפעיל את עולם המבוך…', now, now);
-            const students = db.prepare('SELECT id FROM classroom_students WHERE classroom_id = ?').all(classroomId);
-            for (const student of students) upsertKugelRun(db, student.id, classroomId, { startedAt: null, resetAt: now, finishedAt: null });
+            `).run(classroomId, monitorServerName, KUGEL_LESSON_ZERO.worldId, eventsSince, launchToken, 'מפעיל את עולם המבוך…', now, now);
             return true;
           })());
         } catch (error) {
@@ -2203,30 +2598,77 @@ async function handleKugelApi(req, res) {
       student: db.prepare('SELECT * FROM classroom_students WHERE id = ? AND classroom_id = ?').get(studentContext.student.id, studentContext.classroom.id),
       run: db.prepare('SELECT * FROM kugel_student_runs WHERE student_id = ?').get(studentContext.student.id),
     }));
-    if (!state.session?.active || state.session.server_state !== 'running') return send(res, 409, JSON.stringify({ error: 'המורה עדיין לא הפעילה את שיעור 0.' }));
+    const activeLesson = kugelLessonById(state.session?.lesson_id) || KUGEL_LESSON_ZERO;
+    const activeLessonLabel = activeLesson.id === 0 ? 'שיעור 0' : `שיעור ${activeLesson.id}`;
+    if (!state.session?.active || state.session.server_state !== 'running') return send(res, 409, JSON.stringify({ error: `המורה עדיין לא הפעילה את ${activeLessonLabel}.` }));
     if (!state.student.minecraft_player_name) return send(res, 409, JSON.stringify({ error: 'המורה עדיין לא שייכה את שם השחקן שלך ב-Minecraft.' }));
     if (pathname === '/api/kugel/student/start') {
-      const run = withSummerDb(db => upsertKugelRun(db, state.student.id, studentContext.classroom.id, { startedAt: new Date().toISOString(), finishedAt: null }));
+      const run = withSummerDb(db => db.transaction(() => {
+        const currentRun = db.prepare('SELECT * FROM kugel_student_runs WHERE student_id = ?').get(state.student.id);
+        const continuingActiveLesson = Number(currentRun?.lesson_id) === activeLesson.id;
+        return upsertKugelRun(db, state.student.id, studentContext.classroom.id, {
+          lessonId: activeLesson.id,
+          startedAt: continuingActiveLesson ? currentRun?.started_at || new Date().toISOString() : new Date().toISOString(),
+          resetAt: continuingActiveLesson ? undefined : null,
+          finishedAt: continuingActiveLesson ? currentRun?.finished_at || null : null,
+        });
+      }).immediate());
       return send(res, 200, JSON.stringify({
         ok: true,
-        lesson: KUGEL_LESSON_ZERO,
+        lesson: kugelLessonPublic(activeLesson),
         student: summarizeKugelStudent(state.student, run, state.session, []),
         minecraft: kugelMinecraftInfo(),
       }));
     }
     if (pathname === '/api/kugel/student/reset') {
-      const now = new Date().toISOString();
-      const run = withSummerDb(db => upsertKugelRun(db, state.student.id, studentContext.classroom.id, { startedAt: null, resetAt: now, finishedAt: null }));
+      const run = withSummerDb(db => db.transaction(() => {
+        const currentRun = db.prepare('SELECT * FROM kugel_student_runs WHERE student_id = ?').get(state.student.id);
+        const previousFinishMs = Date.parse(currentRun?.finished_at || '');
+        const resetMs = Math.max(Date.now(), Number.isFinite(previousFinishMs) ? previousFinishMs + 1 : 0);
+        return upsertKugelRun(db, state.student.id, studentContext.classroom.id, {
+          lessonId: activeLesson.id,
+          startedAt: null,
+          resetAt: new Date(resetMs).toISOString(),
+          finishedAt: null,
+        });
+      }).immediate());
       return send(res, 200, JSON.stringify({ ok: true, student: summarizeKugelStudent(state.student, run, state.session, []) }));
     }
     const events = await kugelGameEvents(state.session);
     const summary = summarizeKugelStudent(state.student, state.run, state.session, events);
     if (!summary.completed) return send(res, 409, JSON.stringify({ error: 'כדי לסיים צריך לאסוף שמונה מטבעות וללחוץ על כפתור הסיום.' }));
-    const progress = withSummerDb(db => db.transaction(() => {
-      upsertKugelRun(db, state.student.id, studentContext.classroom.id, { finishedAt: summary.finishedAt || new Date().toISOString() });
-      return completeKugelClassroomProgress(db, state.student.id, summary);
+    const result = withSummerDb(db => db.transaction(() => {
+      const currentSession = db.prepare('SELECT * FROM kugel_class_sessions WHERE classroom_id = ?').get(studentContext.classroom.id);
+      const sameSessionGeneration = currentSession
+        && Number(currentSession.lesson_id) === Number(state.session.lesson_id)
+        && Number(currentSession.active) === 1
+        && currentSession.server_state === 'running'
+        && (currentSession.launch_token || null) === (state.session.launch_token || null)
+        && Number(currentSession.events_since) === Number(state.session.events_since);
+      if (!sameSessionGeneration) {
+        const error = new Error('השיעור הוחלף או הופסק בזמן בדיקת הסיום. נסו שוב.');
+        error.statusCode = 409;
+        throw error;
+      }
+      const currentRun = db.prepare('SELECT * FROM kugel_student_runs WHERE student_id = ?').get(state.student.id);
+      const sameAttemptBoundary = (currentRun?.reset_at || null) === (state.run?.reset_at || null)
+        && Number(currentRun?.lesson_id ?? activeLesson.id) === Number(state.run?.lesson_id ?? activeLesson.id);
+      if (!sameAttemptBoundary) {
+        const error = new Error('הניסיון אופס או הוחלף בזמן בדיקת הסיום. נסו שוב.');
+        error.statusCode = 409;
+        throw error;
+      }
+      const run = upsertKugelRun(db, state.student.id, studentContext.classroom.id, {
+        finishedAt: summary.finishedAt || new Date().toISOString(),
+        incrementAttempt: activeLesson.id === 0
+          && (!currentRun || Number(currentRun.lesson_id) === 0)
+          && !Boolean(currentRun?.finished_at),
+      });
+      const savedSummary = summarizeKugelStudent(state.student, run, state.session, events);
+      const progress = completeKugelClassroomProgress(db, state.student.id, savedSummary);
+      return { progress, student: savedSummary };
     })());
-    return send(res, 200, JSON.stringify({ ok: true, progress: classroomProgressPublic(progress), student: summary }));
+    return send(res, 200, JSON.stringify({ ok: true, progress: classroomProgressPublic(result.progress), student: result.student }));
   } catch (error) {
     console.error('kugel_api_error', { path: pathname, message: error.message, code: error.code || null });
     if (error instanceof SyntaxError) return send(res, 400, JSON.stringify({ error: 'גוף הבקשה אינו JSON תקין.' }));
@@ -2257,7 +2699,7 @@ async function handleClassroomApi(req, res) {
     if (student) return send(res, 200, JSON.stringify({
       ok: true,
       role: 'student',
-      student: { id: student.id, name: student.name },
+      student: { id: student.id, name: student.name, qaLessonMapping: isPreviewDemoStudent(student) },
       classroom: {
         id: student.classroom_id,
         name: student.classroom_name,
@@ -2272,6 +2714,10 @@ async function handleClassroomApi(req, res) {
   }
 
   if (req.method === 'GET' && action === 'preview-demo-teacher-enabled') {
+    return send(res, 200, JSON.stringify({ ok: true, enabled: CLASSROOM_PREVIEW_DEMO_TEACHER }));
+  }
+
+  if (req.method === 'GET' && action === 'preview-demo-student-enabled') {
     return send(res, 200, JSON.stringify({ ok: true, enabled: CLASSROOM_PREVIEW_DEMO_TEACHER }));
   }
 
@@ -2678,6 +3124,23 @@ async function handleClassroomApi(req, res) {
       });
     }
 
+    if (action === 'preview-demo-student-login') {
+      const result = previewDemoStudentLogin();
+      if (!result) return send(res, 404, JSON.stringify({ error: 'Preview demo is not enabled.' }));
+      return sendWithHeaders(res, 200, JSON.stringify({
+        ok: true,
+        role: 'student',
+        student: { id: result.student.id, name: result.student.name },
+        classroom: {
+          id: result.classroom.id,
+          name: result.classroom.name,
+          courses: withSummerDb(db => classroomCourses(db, result.classroom.id)),
+        },
+      }), 'application/json; charset=utf-8', {
+        'Set-Cookie': classroomSessionCookie(result.token),
+      });
+    }
+
     if (action === 'teacher-register') {
       const name = cleanText(body.name, 80);
       const email = cleanEmail(body.email);
@@ -2800,61 +3263,277 @@ function saveImageAttachment(feedbackId, attachment) {
   };
 }
 
+function matchesCraftomImageSignature(buffer, mime) {
+  if (mime === 'image/png') {
+    return buffer.length >= 8 && buffer.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+  }
+  if (mime === 'image/jpeg') {
+    return buffer.length >= 3 && buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff;
+  }
+  if (mime === 'image/webp') {
+    return buffer.length >= 12 && buffer.subarray(0, 4).toString('ascii') === 'RIFF' && buffer.subarray(8, 12).toString('ascii') === 'WEBP';
+  }
+  return false;
+}
+
 function saveCraftomExitTicketImage(submissionId, attachment) {
   if (!attachment || !attachment.dataUrl) throw new Error('missing_photo');
   const match = String(attachment.dataUrl).match(/^data:(image\/(png|jpeg|jpg|webp));base64,([A-Za-z0-9+/=]+)$/);
   if (!match) throw new Error('invalid_attachment');
-  const mime = match[1];
+  const mime = match[1] === 'image/jpg' ? 'image/jpeg' : match[1];
   const subtype = match[2] === 'jpeg' ? 'jpg' : match[2];
   const buffer = Buffer.from(match[3], 'base64');
   if (!buffer.length || buffer.length > 5 * 1024 * 1024) throw new Error('attachment_too_large');
-  fs.mkdirSync(CRAFTOM_EXIT_ATTACHMENTS_DIR, { recursive: true });
+  if (!matchesCraftomImageSignature(buffer, mime)) throw new Error('invalid_attachment');
+  fs.mkdirSync(CRAFTOM_EXIT_ATTACHMENTS_DIR, { recursive: true, mode: 0o700 });
+  fs.chmodSync(CRAFTOM_EXIT_ATTACHMENTS_DIR, 0o700);
   const safeName = cleanText(attachment.name, 80).replace(/[^\w.א-ת-]+/g, '_') || `craftom.${subtype}`;
   const filename = `${submissionId}-${Date.now()}.${subtype}`;
   const fullPath = path.join(CRAFTOM_EXIT_ATTACHMENTS_DIR, filename);
-  fs.writeFileSync(fullPath, buffer);
+  fs.writeFileSync(fullPath, buffer, { mode: 0o600 });
   return {
-    path: path.relative(ROOT, fullPath),
+    path: filename,
     name: safeName,
     mime,
     size: buffer.length,
   };
 }
 
-async function handleCraftomExitTicket(req, res) {
-  if (req.method !== 'POST') return send(res, 405, JSON.stringify({ error: 'Method not allowed' }));
+function craftomSubmissionPublic(row, viewer = 'student') {
+  if (!row) return null;
+  return {
+    id: row.id,
+    courseId: row.course_id,
+    classroomId: viewer === 'teacher' ? row.classroom_id : undefined,
+    studentId: viewer === 'teacher' ? row.student_id : undefined,
+    studentName: viewer === 'teacher' ? row.student_name : undefined,
+    lessonId: Number(row.lesson_id),
+    challengeId: row.challenge_id === null || row.challenge_id === undefined ? null : Number(row.challenge_id),
+    lessonTitle: row.lesson_title,
+    challengeTitle: row.challenge_title,
+    exitQuestion: row.exit_question,
+    exitAnswer: row.exit_answer,
+    photo: {
+      url: `/api/craftom/submissions/${encodeURIComponent(row.id)}/photo`,
+      name: row.image_name,
+      mime: row.image_mime,
+      size: row.image_size,
+    },
+    replaced: Number(row.replacement_count || 0) > 0,
+    replacementCount: Number(row.replacement_count || 0),
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+function getCraftomSubmissionPhotoPath(row) {
+  const filename = path.basename(String(row?.image_path || ''));
+  if (!filename || filename !== row.image_path) return null;
+  const fullPath = path.join(CRAFTOM_EXIT_ATTACHMENTS_DIR, filename);
+  if (!fullPath.startsWith(CRAFTOM_EXIT_ATTACHMENTS_DIR + path.sep)) return null;
+  return fullPath;
+}
+
+function recordClassroomProgress(db, studentId, courseId, lessonId, activityId, status, score, metadata = {}) {
+  const now = new Date().toISOString();
+  const existing = db.prepare(`
+    SELECT * FROM classroom_progress
+    WHERE student_id = ? AND course_id = ? AND lesson_id = ? AND activity_id = ?
+  `).get(studentId, courseId, String(lessonId), activityId);
+  const metadataJson = JSON.stringify(metadata).slice(0, 4000);
+  if (existing) {
+    db.prepare(`
+      UPDATE classroom_progress SET
+        status = ?, score = ?, attempts = attempts + 1, metadata_json = ?,
+        completed_at = CASE WHEN ? = 'completed' THEN COALESCE(completed_at, ?) ELSE completed_at END,
+        updated_at = ?
+      WHERE id = ?
+    `).run(status, score, metadataJson, status, now, now, existing.id);
+    return db.prepare('SELECT * FROM classroom_progress WHERE id = ?').get(existing.id);
+  }
+  const id = crypto.randomUUID();
+  db.prepare(`
+    INSERT INTO classroom_progress (
+      id, student_id, course_id, lesson_id, activity_id, status, score, attempts,
+      metadata_json, started_at, completed_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?)
+  `).run(id, studentId, courseId, String(lessonId), activityId, status, score, metadataJson, now, status === 'completed' ? now : null, now);
+  return db.prepare('SELECT * FROM classroom_progress WHERE id = ?').get(id);
+}
+
+async function handleCraftomApi(req, res) {
+  const url = requestUrl(req);
+  const pathname = url.pathname;
   try {
-    const raw = await readBody(req, 7 * 1024 * 1024);
-    const body = JSON.parse(raw || '{}');
-    const lessonId = cleanText(body.lessonId, 30);
-    const challengeId = cleanText(body.challengeId, 30);
-    const lessonTitle = cleanText(body.lessonTitle, 180);
-    const challengeTitle = cleanText(body.challengeTitle, 180);
-    const studentName = cleanText(body.studentName, 160);
-    const answer = cleanText(body.answer, 3000);
+    const posterMatch = pathname.match(/^\/api\/craftom\/challenge-posters\/([^/]+\.webp)$/);
+    if ((req.method === 'GET' || req.method === 'HEAD') && posterMatch) {
+      const filename = path.basename(decodeURIComponent(posterMatch[1]));
+      if (filename !== decodeURIComponent(posterMatch[1])) return send(res, 400, JSON.stringify({ error: 'Invalid poster.' }));
+      const fullPath = path.join(ROOT, 'assets', 'craftom', 'challenges', filename);
+      const allowedDir = path.join(ROOT, 'assets', 'craftom', 'challenges');
+      if (!fullPath.startsWith(allowedDir + path.sep) || !fs.existsSync(fullPath)) return send(res, 404, JSON.stringify({ error: 'Poster not found.' }));
+      const stat = fs.statSync(fullPath);
+      res.writeHead(200, {
+        'Content-Type': 'image/webp',
+        'Content-Length': stat.size,
+        'Cache-Control': 'public, max-age=14400',
+        'X-Content-Type-Options': 'nosniff',
+      });
+      if (req.method === 'HEAD') return res.end();
+      return fs.createReadStream(fullPath).pipe(res);
+    }
 
-    if (!lessonId || !challengeId) return send(res, 400, JSON.stringify({ error: 'חסרים פרטי שיעור.' }));
-    if (answer.length < 3) return send(res, 400, JSON.stringify({ error: 'נא לכתוב תשובה קצרה לכרטיס היציאה.' }));
+    const photoMatch = pathname.match(/^\/api\/craftom\/submissions\/([^/]+)\/photo$/);
+    if ((req.method === 'GET' || req.method === 'HEAD') && photoMatch) {
+      const id = decodeURIComponent(photoMatch[1]);
+      const student = getClassroomStudentFromRequest(req);
+      const teacher = getClassroomTeacherFromRequest(req);
+      if (!student && !teacher) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסה.' }));
+      const row = withSummerDb(db => {
+        if (student) {
+          return db.prepare('SELECT * FROM craftom_lesson_submissions WHERE id = ? AND student_id = ?').get(id, student.id);
+        }
+        return db.prepare(`
+          SELECT s.* FROM craftom_lesson_submissions s
+          JOIN classrooms c ON c.id = s.classroom_id
+          WHERE s.id = ? AND c.teacher_id = ?
+        `).get(id, teacher.id);
+      });
+      if (!row) return send(res, 404, JSON.stringify({ error: 'התמונה לא נמצאה.' }));
+      if (student) {
+        const context = getStudentKugelClass(req);
+        if (context.status) return send(res, context.status, JSON.stringify({ error: context.error }));
+      } else {
+        const context = getTeacherKugelClass(req, row.classroom_id);
+        if (context.status) return send(res, context.status, JSON.stringify({ error: context.error }));
+      }
+      const fullPath = getCraftomSubmissionPhotoPath(row);
+      if (!fullPath || !fs.existsSync(fullPath)) return send(res, 404, JSON.stringify({ error: 'קובץ התמונה לא נמצא.' }));
+      res.writeHead(200, {
+        'Content-Type': row.image_mime,
+        'Content-Length': fs.statSync(fullPath).size,
+        'Cache-Control': 'private, no-store',
+        'X-Content-Type-Options': 'nosniff',
+        'Content-Disposition': `inline; filename="${encodeURIComponent(row.image_name || 'craftom-work')}"`,
+      });
+      if (req.method === 'HEAD') return res.end();
+      return fs.createReadStream(fullPath).pipe(res);
+    }
 
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-    const id = crypto.randomUUID();
-    const photo = saveCraftomExitTicketImage(id, body.photo);
-    const item = {
-      id,
-      courseId: 'craftom-minecraft-grade7',
-      lessonId,
-      challengeId,
-      lessonTitle,
-      challengeTitle,
-      studentName,
-      answer,
-      photo,
-      userAgent: cleanText(req.headers['user-agent'], 500),
-      ip: cleanText(req.headers['x-forwarded-for'] || req.socket.remoteAddress, 120),
-      createdAt: new Date().toISOString(),
-    };
-    fs.appendFileSync(CRAFTOM_EXIT_TICKETS_FILE, JSON.stringify(item) + '\n', 'utf8');
-    return send(res, 201, JSON.stringify({ ok: true, id }));
+    if (req.method === 'GET' && pathname === '/api/craftom/submissions') {
+      const lessonId = cleanText(url.searchParams.get('lessonId'), 10);
+      const classroomId = cleanText(url.searchParams.get('classroomId'), 80);
+      const student = getClassroomStudentFromRequest(req);
+      const teacher = getClassroomTeacherFromRequest(req);
+      if (!student && !teacher) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסה.' }));
+      const lessonNumber = lessonId === '' ? null : Number(lessonId);
+      if (lessonNumber !== null && (!Number.isInteger(lessonNumber) || lessonNumber < 0 || lessonNumber > 16)) {
+        return send(res, 400, JSON.stringify({ error: 'מספר השיעור אינו תקין.' }));
+      }
+      if (student) {
+        const context = getStudentKugelClass(req);
+        if (context.status) return send(res, context.status, JSON.stringify({ error: context.error }));
+        const rows = withSummerDb(db => db.prepare(`
+          SELECT s.* FROM craftom_lesson_submissions s
+          WHERE s.student_id = ? AND (? = '' OR s.lesson_id = ?)
+          ORDER BY s.lesson_id, s.updated_at DESC
+        `).all(context.student.id, lessonId, lessonNumber));
+        return send(res, 200, JSON.stringify({ ok: true, role: 'student', submissions: rows.map(row => craftomSubmissionPublic(row, 'student')) }));
+      }
+      if (teacher) {
+        if (!classroomId) return send(res, 400, JSON.stringify({ error: 'חסר מזהה כיתה.' }));
+        const context = getTeacherKugelClass(req, classroomId);
+        if (context.status) return send(res, context.status, JSON.stringify({ error: context.error }));
+        const rows = withSummerDb(db => db.prepare(`
+          SELECT s.*, cs.name AS student_name
+          FROM craftom_lesson_submissions s
+          JOIN classroom_students cs ON cs.id = s.student_id
+          WHERE s.classroom_id = ? AND (? = '' OR s.lesson_id = ?)
+          ORDER BY s.lesson_id, cs.created_at, s.updated_at DESC
+        `).all(context.classroom.id, lessonId, lessonNumber));
+        return send(res, 200, JSON.stringify({ ok: true, role: 'teacher', submissions: rows.map(row => craftomSubmissionPublic(row, 'teacher')) }));
+      }
+    }
+
+    if (req.method === 'POST' && pathname === '/api/craftom/exit-ticket') {
+      const studentContext = getStudentKugelClass(req);
+      if (studentContext.status) return send(res, studentContext.status, JSON.stringify({ error: studentContext.error }));
+      const raw = await readBody(req, 7 * 1024 * 1024);
+      const body = JSON.parse(raw || '{}');
+      const lessonId = Number(cleanText(body.lessonId, 10));
+      const challengeId = Number(cleanText(body.challengeId, 10));
+      const lessonTitle = cleanText(body.lessonTitle, 180);
+      const challengeTitle = cleanText(body.challengeTitle, 180);
+      const exitQuestion = cleanText(body.exitQuestion, 1000);
+      const answer = cleanText(body.answer, 3000);
+
+      if (!Number.isInteger(lessonId) || lessonId < 0 || lessonId > 16) return send(res, 400, JSON.stringify({ error: 'מספר השיעור אינו תקין.' }));
+      if (body.challengeId !== undefined && (!Number.isInteger(challengeId) || challengeId < 1 || challengeId > 4)) return send(res, 400, JSON.stringify({ error: 'מספר האתגר אינו תקין.' }));
+      if (answer.length < 3) return send(res, 400, JSON.stringify({ error: 'נא לכתוב תשובה קצרה לכרטיס היציאה.' }));
+      if (lessonId > 0 && !isPreviewDemoStudent(studentContext.student) && !classroomStudentCompletedCraftomLessonZero(studentContext.student.id)) {
+        return send(res, 423, JSON.stringify({ error: 'יש להשלים תחילה את שיעור 0.' }));
+      }
+
+      const id = crypto.randomUUID();
+      const photo = saveCraftomExitTicketImage(id, body.photo);
+      const now = new Date().toISOString();
+      let previousPhotoPath = null;
+      let saved;
+      try {
+        saved = withSummerDb(db => db.transaction(() => {
+          const existing = db.prepare(`
+            SELECT * FROM craftom_lesson_submissions
+            WHERE student_id = ? AND course_id = ? AND lesson_id = ?
+          `).get(studentContext.student.id, KUGEL_COURSE_ID, lessonId);
+          if (existing) {
+            previousPhotoPath = getCraftomSubmissionPhotoPath(existing);
+            db.prepare(`
+              UPDATE craftom_lesson_submissions SET
+                classroom_id = ?, challenge_id = ?, lesson_title = ?, challenge_title = ?,
+                exit_question = ?, exit_answer = ?, image_path = ?, image_name = ?,
+                image_mime = ?, image_size = ?, replacement_count = replacement_count + 1,
+                updated_at = ?
+              WHERE id = ?
+            `).run(
+              studentContext.classroom.id, Number.isInteger(challengeId) ? challengeId : null,
+              lessonTitle, challengeTitle, exitQuestion, answer, photo.path, photo.name,
+              photo.mime, photo.size, now, existing.id,
+            );
+            recordClassroomProgress(db, studentContext.student.id, KUGEL_COURSE_ID, lessonId, 'exit-ticket', 'completed', 100, { submissionId: existing.id });
+            return db.prepare('SELECT * FROM craftom_lesson_submissions WHERE id = ?').get(existing.id);
+          }
+          db.prepare(`
+            INSERT INTO craftom_lesson_submissions (
+              id, classroom_id, student_id, course_id, lesson_id, challenge_id,
+              lesson_title, challenge_title, exit_question, exit_answer,
+              image_path, image_name, image_mime, image_size, replacement_count,
+              created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)
+          `).run(
+            id, studentContext.classroom.id, studentContext.student.id, KUGEL_COURSE_ID, lessonId,
+            Number.isInteger(challengeId) ? challengeId : null, lessonTitle, challengeTitle,
+            exitQuestion, answer, photo.path, photo.name, photo.mime, photo.size, now, now,
+          );
+          recordClassroomProgress(db, studentContext.student.id, KUGEL_COURSE_ID, lessonId, 'exit-ticket', 'completed', 100, { submissionId: id });
+          return db.prepare('SELECT * FROM craftom_lesson_submissions WHERE id = ?').get(id);
+        })());
+      } catch (error) {
+        const unsavedPhotoPath = getCraftomSubmissionPhotoPath({ image_path: photo.path });
+        if (unsavedPhotoPath) fs.rmSync(unsavedPhotoPath, { force: true });
+        throw error;
+      }
+      const savedPhotoPath = getCraftomSubmissionPhotoPath(saved);
+      if (previousPhotoPath && previousPhotoPath !== savedPhotoPath) {
+        try {
+          fs.rmSync(previousPhotoPath, { force: true });
+        } catch (error) {
+          console.error('craftom_submission_old_photo_cleanup_error', error);
+        }
+      }
+      return send(res, 201, JSON.stringify({ ok: true, id: saved.id, submission: craftomSubmissionPublic(saved, 'student') }));
+    }
+
+    return send(res, 404, JSON.stringify({ error: 'Not found' }));
   } catch (error) {
     const status = error.message === 'payload_too_large' || error.message === 'attachment_too_large' ? 413 : 400;
     const messages = {
@@ -2979,6 +3658,7 @@ const PUBLIC_HTML_PATHS = new Set([
   '/classroom-admin.html',
   '/thankyou.html',
   '/about.html',
+  '/craftom-school/docs/craftom-submissions-summary-2026-09-10.html',
   '/sisi.html',
   '/lumi.html',
   '/lumi-play.html',
@@ -3148,10 +3828,11 @@ function lockedPage(pathname, user, options = {}) {
   <title>${title} | hai.tech</title>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <style>
-    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:Rubik,Arial,sans-serif;direction:rtl;color:#102033;background:radial-gradient(circle at 15% 10%,#dbeafe,transparent 28%),radial-gradient(circle at 85% 8%,#fef3c7,transparent 28%),linear-gradient(135deg,#f8fafc,#eef2ff)}.card{width:min(620px,calc(100% - 28px));background:rgba(255,255,255,.96);border:1px solid #e6edf7;border-radius:34px;padding:34px;box-shadow:0 28px 90px rgba(15,23,42,.16);text-align:center}.lock{width:96px;height:96px;margin:0 auto 18px;border-radius:32px;display:grid;place-items:center;font-size:3rem;background:linear-gradient(135deg,#2563eb,#7c3aed);box-shadow:0 18px 44px rgba(37,99,235,.28)}h1{font-size:clamp(2rem,5vw,3.2rem);line-height:1.05;margin:0 0 12px;letter-spacing:-.04em}p{margin:0;color:#526070;font-size:1.12rem}.locked-label{margin:18px auto 0;padding:10px 14px;border-radius:999px;background:#f1f5f9;color:#475569;display:inline-block;font-weight:900}.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:26px}.btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:14px 22px;text-decoration:none;font-weight:900}.primary{background:#0f172a;color:#fff}.purchase{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;box-shadow:0 16px 36px rgba(22,163,74,.24)}.alt{background:#fff;color:#0f172a;border:1px solid #dbe3ef}.note{margin-top:18px;border:1px solid #bbf7d0;background:#f0fdf4;color:#166534;border-radius:18px;padding:12px 14px;font-weight:800}@media(max-width:560px){.card{padding:26px 20px}.actions .btn{width:100%}}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:Rubik,Arial,sans-serif;direction:rtl;color:#102033;background:radial-gradient(circle at 15% 10%,#dbeafe,transparent 28%),radial-gradient(circle at 85% 8%,#fef3c7,transparent 28%),linear-gradient(135deg,#f8fafc,#eef2ff)}.locked-wrap{min-height:100vh;display:grid;place-items:center;padding:34px 0}.card{width:min(620px,calc(100% - 28px));background:rgba(255,255,255,.96);border:1px solid #e6edf7;border-radius:34px;padding:34px;box-shadow:0 28px 90px rgba(15,23,42,.16);text-align:center}.lock{width:96px;height:96px;margin:0 auto 18px;border-radius:32px;display:grid;place-items:center;font-size:3rem;background:linear-gradient(135deg,#2563eb,#7c3aed);box-shadow:0 18px 44px rgba(37,99,235,.28)}h1{font-size:clamp(2rem,5vw,3.2rem);line-height:1.05;margin:0 0 12px;letter-spacing:-.04em}p{margin:0;color:#526070;font-size:1.12rem}.locked-label{margin:18px auto 0;padding:10px 14px;border-radius:999px;background:#f1f5f9;color:#475569;display:inline-block;font-weight:900}.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:26px}.btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:14px 22px;text-decoration:none;font-weight:900}.primary{background:#0f172a;color:#fff}.purchase{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;box-shadow:0 16px 36px rgba(22,163,74,.24)}.alt{background:#fff;color:#0f172a;border:1px solid #dbe3ef}.note{margin-top:18px;border:1px solid #bbf7d0;background:#f0fdf4;color:#166534;border-radius:18px;padding:12px 14px;font-weight:800}@media(max-width:560px){.card{padding:26px 20px}.actions .btn{width:100%}}
   </style>
 </head>
 <body>
+  <div class="locked-wrap">
   <main class="card">
     <div class="lock">🔒</div>
     <h1>${title}</h1>
@@ -3164,6 +3845,7 @@ function lockedPage(pathname, user, options = {}) {
     </div>
     <div class="note">${teacherRestricted ? 'רק מנהלת המערכת יכולה לשנות את רשימת הלומדות של המורה.' : (lessonZeroRequired ? 'המורה יכולה לעקוב אחרי ההתקדמות של שיעור 0 ממסך ניהול הכיתה.' : (classroomRestricted ? 'רק המורה של הכיתה יכול/ה לשנות את רשימת הלומדות.' : (trialOnly ? 'ההרשמה פותחת 3 שיעורי חשיבה ותכנות בחינם עם סיסי ושומרת את ההתקדמות לילד/ה.' : 'כדי לפתוח את כל הלומדות צריך מנוי פעיל לילד/ה הספציפי/ת.')))}</div>
   </main>
+  </div>
 </body>
 </html>`;
 }
@@ -3244,7 +3926,7 @@ function injectHeadAssets(html) {
 
 function injectUserBadge(html) {
   if (!html.includes('</body>') || html.includes('js/user-badge.js')) return injectHeadAssets(html);
-  return replaceLastHtmlTag(injectHeadAssets(html), '</body>', '  <script src="/js/user-badge.js?v=20260905-access-modes-1"></script>\n</body>');
+  return replaceLastHtmlTag(injectHeadAssets(html), '</body>', '  <script src="/js/user-badge.js?v=20260910-compact-teacher-badge-1"></script>\n</body>');
 }
 
 function injectClassroomSession(html) {
@@ -3294,6 +3976,7 @@ function serveStatic(req, res) {
   const url = requestUrl(req);
   let pathname = decodeURIComponent(url.pathname);
   if (pathname === '/') pathname = '/index.html';
+  if (pathname === '/craftom-school/preview/') pathname = '/craftom-school/preview/index.html';
   if (pathname === '/thankyou') pathname = '/thankyou.html';
   const filePath = path.normalize(path.join(ROOT, pathname));
   if (!filePath.startsWith(ROOT + path.sep)) return send(res, 403, 'Forbidden', 'text/plain; charset=utf-8');
@@ -3325,8 +4008,17 @@ function serveStatic(req, res) {
     && classroomCourse === KUGEL_COURSE_ID
     && classroomAuthorized
     && requiresCraftomLessonZeroCompletion(pathname, url)
+    && !isPreviewDemoStudent(classroomStudent)
     && !classroomStudentCompletedCraftomLessonZero(classroomStudent.id)
   ) {
+    if (String(pathname || '').toLowerCase() === '/craftom-school/preview/index.html') {
+      res.writeHead(302, {
+        Location: '/kugel-student.html',
+        'Cache-Control': 'no-store',
+      });
+      res.end();
+      return;
+    }
     return send(res, 423, lockedPage(pathname, null, { lessonZeroRequired: true }), 'text/html; charset=utf-8');
   }
 
@@ -3394,7 +4086,7 @@ const server = http.createServer((req, res) => {
   const guideVideoMatch = requestUrl(req).pathname.match(/^\/api\/sensi\/guide-videos\/lesson-(\d+)$/);
   if (guideVideoMatch) return serveSensiGuideVideo(req, res, Number(guideVideoMatch[1]));
   if (req.url.startsWith('/api/admin/feedback')) return handleAdminFeedback(req, res);
-  if (req.url.startsWith('/api/craftom/exit-ticket')) return handleCraftomExitTicket(req, res);
+  if (req.url.startsWith('/api/craftom/')) return handleCraftomApi(req, res);
   if (req.url.startsWith('/api/feedback')) return handleFeedback(req, res);
   if (req.url.startsWith('/api/summer/')) return handleSummerAuth(req, res);
   if (req.url.startsWith('/api/classroom/')) return handleClassroomApi(req, res);

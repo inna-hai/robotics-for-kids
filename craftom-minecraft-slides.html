@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260905-agent-blocks-match-1">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260914-teacher-return-1">
   <style>
     body{background:#071528;color:#fff}
     .shell{width:min(1180px,calc(100% - 28px));padding:20px 0}
@@ -17,21 +17,50 @@
     .slide p,.slide li{font-size:clamp(1.1rem,2vw,1.5rem);line-height:1.7}
     .slide .tag{width:max-content;background:#d9f99d;color:#17320b}
     .video{width:min(760px,100%);aspect-ratio:16/9;border:0;border-radius:16px;background:#000}
-    .actions{position:fixed;left:14px;bottom:14px;z-index:3}
+    .actions{position:fixed;left:14px;bottom:14px;z-index:3;display:flex;gap:10px;flex-wrap:wrap}
   </style>
 </head>
 <body>
+  <header class="course-header" aria-label="ניווט אקדמיית ה-Agent">
+    <div class="course-header-inner">
+      <a class="course-brand" href="craftom-school/preview/index.html">אקדמיית ה-Agent</a>
+      <nav class="course-nav" id="courseHeaderNav" aria-label="מעבר מהיר"></nav>
+    </div>
+  </header>
   <main class="shell">
     <div class="slides" id="slides"></div>
   </main>
-  <div class="actions"><a class="btn secondary" href="craftom-school/preview/index.html">מפת הקורס</a></div>
-  <script src="js/craftom-minecraft-challenges.js?v=20260905-agent-blocks-match-1"></script>
+  <div class="actions">
+    <a class="btn" id="backToTeacher" href="kugel-teacher.html?lesson=1" hidden>חזרה לניהול שיעור מורה</a>
+    <a class="btn secondary" id="backToLesson" href="craftom-minecraft-lesson-1.html">חזרה לשיעור</a>
+    <a class="btn secondary" href="craftom-school/preview/index.html">מפת הקורס</a>
+  </div>
+  <script src="js/craftom-minecraft-challenges.js?v=20260914-teacher-return-1"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const program = window.CRAFTOM_MINECRAFT_PROGRAM;
-    const challenge = window.getCraftomMinecraftChallenge(params.get('challenge') || params.get('lesson'));
+    const selectedLesson = window.getCraftomMinecraftLesson(params.get('lesson') || 1);
+    const challenge = window.getCraftomMinecraftChallenge(params.get('challenge') || selectedLesson.challengeId);
     const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+    const teacherManagementUrl = () => {
+      const next = new URLSearchParams();
+      const classroomId = params.get('classroomId');
+      if (classroomId) next.set('classroomId', classroomId);
+      next.set('lesson', String(selectedLesson.id));
+      return `kugel-teacher.html?${next.toString()}`;
+    };
+    document.getElementById('courseHeaderNav').innerHTML = `
+      <a href="craftom-school/preview/index.html">דף הבית</a>
+      <a href="craftom-minecraft-lesson-${selectedLesson.id}.html">השיעור הנוכחי</a>
+      ${program.challenges.map(item => `<a class="${item.id === challenge.id ? 'primary' : ''}" href="craftom-minecraft-challenge.html?challenge=${item.id}">אתגר ${item.id}</a>`).join('')}
+    `;
     document.title = `מצגת מדריך - ${challenge.title}`;
+    document.getElementById('backToLesson').href = `craftom-minecraft-lesson-${selectedLesson.id}.html`;
+    const backToTeacher = document.getElementById('backToTeacher');
+    if (params.get('teacherReturn') === '1') {
+      backToTeacher.hidden = false;
+      backToTeacher.href = teacherManagementUrl();
+    }
     document.getElementById('slides').innerHTML = `
       <section class="slide"><span class="tag">אקדמיית ה-Agent</span><h1>${esc(challenge.title)}</h1><p>${esc(challenge.story)}</p></section>
       <section class="slide"><h2>סרטון פתיחה</h2><video class="video" src="${esc(challenge.video)}" poster="${esc(challenge.poster)}" controls playsinline preload="metadata"></video></section>

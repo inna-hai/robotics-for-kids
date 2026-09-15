@@ -28,7 +28,8 @@ assert.deepEqual(Array.from(program.challenges, challenge => challenge.title), [
 const lessonOneDetail = program.lessons[0].detail;
 assert.equal(lessonOneDetail.academy.title, 'אקדמיית ה-Agent - מסלול השליחים');
 assert.equal(lessonOneDetail.academy.exercises.length, 6, 'lesson 1 has a gradual Agent academy exercise ladder');
-assert.match(lessonOneDetail.academy.story, /Python Turtle/, 'lesson 1 borrows the slow-build Python Turtle pedagogy');
+assert.doesNotMatch(lessonOneDetail.academy.story, /Python Turtle/, 'lesson 1 does not assume students took another course');
+assert.match(lessonOneDetail.goal, /^בשיעור הזה/, 'lesson 1 goal speaks directly to students');
 assert.ok(lessonOneDetail.academy.exercises.every(exercise => exercise.hint && !exercise.python && !exercise.blocks), 'academy gives hints, not ready-made solutions');
 
 const lessonTwoDetail = program.lessons[1].detail;
@@ -57,6 +58,8 @@ for (const challenge of program.challenges) {
     assert.ok(detail.code.length >= 3, `meeting ${meeting[0]} has MakeCode steps`);
     assert.ok(detail.evidence.length >= 4, `meeting ${meeting[0]} has Craftom evidence checks`);
     assert.ok(detail.exit, `meeting ${meeting[0]} has an exit ticket`);
+    assert.ok(detail.reflection, `meeting ${meeting[0]} has a meeting-specific reflection question`);
+    assert.doesNotMatch(detail.reflection, /אחרי הבדיקה/, `meeting ${meeting[0]} reflection focuses on the current lesson`);
   }
   assert.ok(challenge.video.startsWith('marketing/craftom-challenge'), `challenge ${challenge.id} uses recovered Craftom video`);
   assert.ok(existsSync(challenge.video), `video exists for challenge ${challenge.id}`);
@@ -74,7 +77,7 @@ assert.doesNotMatch(hub, /כיתה ד׳ 1|עומר העתידית|15 מפגשי�
 const challengePage = read('craftom-minecraft-challenge.html');
 assert.match(challengePage, /window\.getCraftomMinecraftChallenge/);
 assert.match(challengePage, /challenge\.video/);
-assert.match(challengePage, /craftom-minecraft-students\.html/);
+assert.doesNotMatch(challengePage, /craftom-minecraft-students\.html/);
 assert.match(challengePage, /שיעור מפורט/);
 assert.match(challengePage, /רצף עבודה עצמית/);
 assert.doesNotMatch(challengePage, /מה המורה עושה/);
@@ -104,16 +107,18 @@ for (let id = 1; id <= 16; id += 1) {
   assert.match(lessonPage, /craftom-minecraft-lesson-page\.js/, `lesson ${id} loads shared renderer`);
   assert.match(lessonPage, /js\/vendor\/blockly\/blockly\.min\.js/, `lesson ${id} loads Blockly`);
   assert.match(lessonPage, /craftom-minecraft-code-builder\.js/, `lesson ${id} loads the embedded Code Builder`);
-  assert.match(lessonPage, /20260905-agent-blocks-match-1/, `lesson ${id} cache-busts the updated exit upload renderer`);
+  assert.match(lessonPage, /20260914-meeting-reflection-1/, `lesson ${id} cache-busts the direct student copy renderer`);
 }
 
 const lessonTemplate = read('craftom-minecraft-lesson.html');
 const lessonRenderer = read('js/craftom-minecraft-lesson-page.js');
 const academyPage = read('craftom-agent-academy.html');
-assert.match(lessonTemplate, /challengeLessonMap/, 'lesson template has a map for lessons in the current challenge');
+assert.doesNotMatch(lessonTemplate, /challengeLessonMap/, 'student lesson pages should not show the challenge lesson map inside the lesson');
+assert.doesNotMatch(lessonTemplate, /מפת שיעורי האתגר/, 'student lesson pages should not duplicate the challenge map below the lesson content');
 assert.match(lessonTemplate, /agentAcademyCta/, 'lesson template has an Agent academy entry point');
 assert.match(lessonTemplate, /בחירת שיעור באתגר הנוכחי/, 'lesson top nav is scoped to the current challenge');
 assert.match(lessonTemplate, /exitTicketForm/, 'lesson template has a real exit ticket form');
+assert.match(lessonTemplate, /exitReflection/, 'lesson template has a second exit-ticket question');
 assert.match(lessonTemplate, /type="file"/, 'lesson template has a real image upload input');
 assert.match(academyPage, /academyBlockly/, 'academy page has a Blockly MakeCode work area');
 assert.match(academyPage, /data-academy-mode="python"/, 'academy page has a Python tab');
@@ -124,8 +129,8 @@ assert.doesNotMatch(lessonRenderer, /lessonNav'\)\.innerHTML = program\.lessons\
 assert.match(lessonRenderer, /prevLink\.style\.display = prevLesson/, 'previous lesson button stays inside the current challenge');
 assert.match(lessonRenderer, /nextLink\.style\.display = nextLesson/, 'next lesson button stays inside the current challenge');
 assert.match(lessonRenderer, /filter\(item => item\.challengeId === lesson\.challengeId\)/, 'lesson renderer filters the current challenge lesson map');
-assert.match(lessonRenderer, /challengeMapLink/, 'lesson renderer links back to the current challenge map');
-assert.match(lessonRenderer, /לכל האתגרים/, 'lesson renderer links back up to all challenges');
+assert.doesNotMatch(lessonRenderer, /challengeMapLink/, 'student lesson renderer should not render the challenge map actions inside lessons');
+assert.doesNotMatch(lessonRenderer, /מפת שיעורי האתגר/, 'student lesson renderer should not render a challenge map inside lessons');
 assert.match(lessonRenderer, /craftom-agent-academy\.html\?lesson=/, 'lesson renderer links to the separate Agent academy');
 assert.match(read('js/craftom-agent-academy.js'), /runProgram/, 'Agent academy simulates code');
 assert.match(read('js/craftom-agent-academy.js'), /evaluate/, 'Agent academy evaluates code');
