@@ -138,6 +138,9 @@ try {
   assert.equal(startStatus, 200);
   await studentPage.getByRole('button', { name: 'בדיקת סיום' }).click();
   await studentPage.getByText('שיעור 0 הושלם. אפשר להמשיך לשיעור 1.').waitFor();
+  await studentPage.locator('#coinProgress').filter({ hasText: 'ניסיונות: 1' }).waitFor();
+  await studentPage.locator('#coinProgress').filter({ hasText: 'זמן אחרון:' }).waitFor();
+  await studentPage.locator('#coinProgress').filter({ hasText: 'שיא:' }).waitFor();
   await studentPage.getByRole('link', { name: 'המשך לשיעור 1' }).waitFor({ state: 'visible' });
   console.log('✓ teacher and student complete secure Kugel lesson zero in a real browser');
 } finally {

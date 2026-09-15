@@ -191,6 +191,16 @@ function requireAdmin(req, res) {
   return false;
 }
 
+function addSqliteColumn(db, sql) {
+  try {
+    db.prepare(sql).run();
+  } catch (error) {
+    const duplicateColumn = error?.code === 'SQLITE_ERROR'
+      && /^duplicate column name:/i.test(String(error.message || ''));
+    if (!duplicateColumn) throw error;
+  }
+}
+
 function openSummerDb() {
   fs.mkdirSync(DATA_DIR, { recursive: true });
   const db = new Database(SUMMER_DB_FILE);
@@ -386,6 +396,10 @@ function openSummerDb() {
       started_at TEXT,
       reset_at TEXT,
       finished_at TEXT,
+      attempt_count INTEGER NOT NULL DEFAULT 0,
+      best_time_ms INTEGER,
+      best_finished_at TEXT,
+      last_duration_ms INTEGER,
       updated_at TEXT NOT NULL
     );
 
@@ -453,6 +467,10 @@ function openSummerDb() {
   try { db.prepare('ALTER TABLE student_progress ADD COLUMN child_id TEXT REFERENCES summer_children(id) ON DELETE CASCADE').run(); } catch {}
   try { db.prepare('ALTER TABLE classroom_students ADD COLUMN minecraft_player_name TEXT').run(); } catch {}
   try { db.prepare('ALTER TABLE kugel_class_sessions ADD COLUMN launch_token TEXT').run(); } catch {}
+  addSqliteColumn(db, 'ALTER TABLE kugel_student_runs ADD COLUMN attempt_count INTEGER NOT NULL DEFAULT 0');
+  addSqliteColumn(db, 'ALTER TABLE kugel_student_runs ADD COLUMN best_time_ms INTEGER');
+  addSqliteColumn(db, 'ALTER TABLE kugel_student_runs ADD COLUMN best_finished_at TEXT');
+  addSqliteColumn(db, 'ALTER TABLE kugel_student_runs ADD COLUMN last_duration_ms INTEGER');
   try { db.prepare("ALTER TABLE summer_children ADD COLUMN subscription_status TEXT NOT NULL DEFAULT 'trial' CHECK (subscription_status IN ('trial', 'active', 'past_due', 'cancelled'))").run(); } catch {}
   const migrateKugelSessionLessons = db.transaction(() => {
     const migrationKey = 'kugel-class-sessions-lesson-range-v1';
@@ -509,14 +527,20 @@ function openSummerDb() {
           started_at TEXT,
           reset_at TEXT,
           finished_at TEXT,
+          attempt_count INTEGER NOT NULL DEFAULT 0,
+          best_time_ms INTEGER,
+          best_finished_at TEXT,
+          last_duration_ms INTEGER,
           updated_at TEXT NOT NULL
         )
       `).run();
       db.prepare(`
         INSERT INTO kugel_student_runs (
-          student_id, classroom_id, lesson_id, started_at, reset_at, finished_at, updated_at
+          student_id, classroom_id, lesson_id, started_at, reset_at, finished_at,
+          attempt_count, best_time_ms, best_finished_at, last_duration_ms, updated_at
         )
-        SELECT student_id, classroom_id, lesson_id, started_at, reset_at, finished_at, updated_at
+        SELECT student_id, classroom_id, lesson_id, started_at, reset_at, finished_at,
+          attempt_count, best_time_ms, best_finished_at, last_duration_ms, updated_at
         FROM kugel_student_runs_lesson_zero_old
       `).run();
       db.prepare('DROP TABLE kugel_student_runs_lesson_zero_old').run();
@@ -576,6 +600,12 @@ function openSummerDb() {
   migrateMinecraftPlayerIndex();
   migrateStudentProgressUniqueConstraint(db);
   db.prepare('CREATE INDEX IF NOT EXISTS idx_student_progress_child ON student_progress(child_id)').run();
+  const kugelRunColumns = new Set(db.prepare("PRAGMA table_info('kugel_student_runs')").all().map(column => column.name));
+  const missingKugelMetricColumns = ['attempt_count', 'best_time_ms', 'best_finished_at', 'last_duration_ms']
+    .filter(column => !kugelRunColumns.has(column));
+  if (missingKugelMetricColumns.length > 0) {
+    throw new Error(`kugel_student_runs metrics migration incomplete: missing ${missingKugelMetricColumns.join(', ')}`);
+  }
   try { fs.chmodSync(SUMMER_DB_FILE, 0o600); } catch {}
   return db;
 }
@@ -1906,6 +1936,12 @@ function summarizeKugelStudent(student, run, session, events) {
     startedAt: run?.started_at || null,
     resetAt: run?.reset_at || null,
     finishedAt: completed ? (run?.finished_at || (finishEvent ? new Date(kugelEventTime(finishEvent)).toISOString() : null)) : null,
+    attemptCount: Number.isInteger(Number(run?.attempt_count)) ? Number(run.attempt_count) : 0,
+    bestTimeMs: run?.best_time_ms !== null && run?.best_time_ms !== undefined
+      && Number.isInteger(Number(run.best_time_ms)) && Number(run.best_time_ms) >= 0 ? Number(run.best_time_ms) : null,
+    bestFinishedAt: run?.best_finished_at || null,
+    lastDurationMs: run?.last_duration_ms !== null && run?.last_duration_ms !== undefined
+      && Number.isInteger(Number(run.last_duration_ms)) && Number(run.last_duration_ms) >= 0 ? Number(run.last_duration_ms) : null,
     lastSeenAt: last ? new Date(kugelEventTime(last)).toISOString() : null,
   };
 }
@@ -2066,22 +2102,53 @@ function upsertKugelRun(db, studentId, classroomId, patch) {
   const existing = db.prepare('SELECT * FROM kugel_student_runs WHERE student_id = ?').get(studentId);
   const now = new Date().toISOString();
   const lessonId = Number.isInteger(Number(patch.lessonId)) ? Number(patch.lessonId) : Number(existing?.lesson_id || 0);
+  const startedAt = patch.startedAt === undefined ? existing?.started_at || null : patch.startedAt;
+  const resetAt = patch.resetAt === undefined ? existing?.reset_at || null : patch.resetAt;
+  const finishedAt = patch.finishedAt === undefined ? existing?.finished_at || null : patch.finishedAt;
+  const previousAttempts = Number.isInteger(Number(existing?.attempt_count)) ? Number(existing.attempt_count) : 0;
+  const previousBest = existing?.best_time_ms !== null && existing?.best_time_ms !== undefined
+    && Number.isInteger(Number(existing.best_time_ms)) && Number(existing.best_time_ms) >= 0
+    ? Number(existing.best_time_ms)
+    : null;
+  let completedDurationMs = null;
+  if (patch.incrementAttempt) {
+    const startMs = Date.parse(startedAt || resetAt || '');
+    const finishMs = Date.parse(finishedAt || '');
+    if (Number.isFinite(startMs) && Number.isFinite(finishMs) && finishMs >= startMs) {
+      completedDurationMs = finishMs - startMs;
+    }
+  }
+  const improvedBest = completedDurationMs !== null && (previousBest === null || completedDurationMs < previousBest);
   const next = {
-    started_at: patch.startedAt === undefined ? existing?.started_at || null : patch.startedAt,
-    reset_at: patch.resetAt === undefined ? existing?.reset_at || null : patch.resetAt,
-    finished_at: patch.finishedAt === undefined ? existing?.finished_at || null : patch.finishedAt,
+    started_at: startedAt,
+    reset_at: resetAt,
+    finished_at: finishedAt,
+    attempt_count: previousAttempts + (patch.incrementAttempt ? 1 : 0),
+    best_time_ms: improvedBest ? completedDurationMs : previousBest,
+    best_finished_at: improvedBest ? finishedAt : existing?.best_finished_at || null,
+    last_duration_ms: completedDurationMs === null ? existing?.last_duration_ms ?? null : completedDurationMs,
   };
   db.prepare(`
-    INSERT INTO kugel_student_runs (student_id, classroom_id, lesson_id, started_at, reset_at, finished_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO kugel_student_runs (
+      student_id, classroom_id, lesson_id, started_at, reset_at, finished_at,
+      attempt_count, best_time_ms, best_finished_at, last_duration_ms, updated_at
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT(student_id) DO UPDATE SET
       classroom_id = excluded.classroom_id,
       lesson_id = excluded.lesson_id,
       started_at = excluded.started_at,
       reset_at = excluded.reset_at,
       finished_at = excluded.finished_at,
+      attempt_count = excluded.attempt_count,
+      best_time_ms = excluded.best_time_ms,
+      best_finished_at = excluded.best_finished_at,
+      last_duration_ms = excluded.last_duration_ms,
       updated_at = excluded.updated_at
-  `).run(studentId, classroomId, lessonId, next.started_at, next.reset_at, next.finished_at, now);
+  `).run(
+    studentId, classroomId, lessonId, next.started_at, next.reset_at, next.finished_at,
+    next.attempt_count, next.best_time_ms, next.best_finished_at, next.last_duration_ms, now,
+  );
   return db.prepare('SELECT * FROM kugel_student_runs WHERE student_id = ?').get(studentId);
 }
 
@@ -2333,10 +2400,6 @@ async function handleKugelApi(req, res) {
               world_id = excluded.world_id, events_since = excluded.events_since, launch_token = excluded.launch_token,
               server_state = 'starting', server_detail = excluded.server_detail, updated_at = excluded.updated_at
           `).run(classroomId, lesson.id, monitorServerName, lesson.worldId, eventsSince, launchToken, `מפעיל את עולם שיעור ${lesson.id}…`, now, now);
-          if (lesson.id === 0) {
-            const students = db.prepare('SELECT id FROM classroom_students WHERE classroom_id = ?').all(classroomId);
-            for (const student of students) upsertKugelRun(db, student.id, classroomId, { startedAt: null, resetAt: now, finishedAt: null });
-          }
           return true;
         })());
       } catch (error) {
@@ -2417,8 +2480,6 @@ async function handleKugelApi(req, res) {
                 world_id = excluded.world_id, events_since = excluded.events_since, launch_token = excluded.launch_token,
                 server_state = 'starting', server_detail = excluded.server_detail, updated_at = excluded.updated_at
             `).run(classroomId, monitorServerName, KUGEL_LESSON_ZERO.worldId, eventsSince, launchToken, 'מפעיל את עולם המבוך…', now, now);
-            const students = db.prepare('SELECT id FROM classroom_students WHERE classroom_id = ?').all(classroomId);
-            for (const student of students) upsertKugelRun(db, student.id, classroomId, { startedAt: null, resetAt: now, finishedAt: null });
             return true;
           })());
         } catch (error) {
@@ -2542,7 +2603,16 @@ async function handleKugelApi(req, res) {
     if (!state.session?.active || state.session.server_state !== 'running') return send(res, 409, JSON.stringify({ error: `המורה עדיין לא הפעילה את ${activeLessonLabel}.` }));
     if (!state.student.minecraft_player_name) return send(res, 409, JSON.stringify({ error: 'המורה עדיין לא שייכה את שם השחקן שלך ב-Minecraft.' }));
     if (pathname === '/api/kugel/student/start') {
-      const run = withSummerDb(db => upsertKugelRun(db, state.student.id, studentContext.classroom.id, { lessonId: activeLesson.id, startedAt: new Date().toISOString(), finishedAt: null }));
+      const run = withSummerDb(db => db.transaction(() => {
+        const currentRun = db.prepare('SELECT * FROM kugel_student_runs WHERE student_id = ?').get(state.student.id);
+        const continuingActiveLesson = Number(currentRun?.lesson_id) === activeLesson.id;
+        return upsertKugelRun(db, state.student.id, studentContext.classroom.id, {
+          lessonId: activeLesson.id,
+          startedAt: continuingActiveLesson ? currentRun?.started_at || new Date().toISOString() : new Date().toISOString(),
+          resetAt: continuingActiveLesson ? undefined : null,
+          finishedAt: continuingActiveLesson ? currentRun?.finished_at || null : null,
+        });
+      }).immediate());
       return send(res, 200, JSON.stringify({
         ok: true,
         lesson: kugelLessonPublic(activeLesson),
@@ -2551,18 +2621,54 @@ async function handleKugelApi(req, res) {
       }));
     }
     if (pathname === '/api/kugel/student/reset') {
-      const now = new Date().toISOString();
-      const run = withSummerDb(db => upsertKugelRun(db, state.student.id, studentContext.classroom.id, { lessonId: activeLesson.id, startedAt: null, resetAt: now, finishedAt: null }));
+      const run = withSummerDb(db => db.transaction(() => {
+        const currentRun = db.prepare('SELECT * FROM kugel_student_runs WHERE student_id = ?').get(state.student.id);
+        const previousFinishMs = Date.parse(currentRun?.finished_at || '');
+        const resetMs = Math.max(Date.now(), Number.isFinite(previousFinishMs) ? previousFinishMs + 1 : 0);
+        return upsertKugelRun(db, state.student.id, studentContext.classroom.id, {
+          lessonId: activeLesson.id,
+          startedAt: null,
+          resetAt: new Date(resetMs).toISOString(),
+          finishedAt: null,
+        });
+      }).immediate());
       return send(res, 200, JSON.stringify({ ok: true, student: summarizeKugelStudent(state.student, run, state.session, []) }));
     }
     const events = await kugelGameEvents(state.session);
     const summary = summarizeKugelStudent(state.student, state.run, state.session, events);
     if (!summary.completed) return send(res, 409, JSON.stringify({ error: 'כדי לסיים צריך לאסוף שמונה מטבעות וללחוץ על כפתור הסיום.' }));
-    const progress = withSummerDb(db => db.transaction(() => {
-      upsertKugelRun(db, state.student.id, studentContext.classroom.id, { finishedAt: summary.finishedAt || new Date().toISOString() });
-      return completeKugelClassroomProgress(db, state.student.id, summary);
+    const result = withSummerDb(db => db.transaction(() => {
+      const currentSession = db.prepare('SELECT * FROM kugel_class_sessions WHERE classroom_id = ?').get(studentContext.classroom.id);
+      const sameSessionGeneration = currentSession
+        && Number(currentSession.lesson_id) === Number(state.session.lesson_id)
+        && Number(currentSession.active) === 1
+        && currentSession.server_state === 'running'
+        && (currentSession.launch_token || null) === (state.session.launch_token || null)
+        && Number(currentSession.events_since) === Number(state.session.events_since);
+      if (!sameSessionGeneration) {
+        const error = new Error('השיעור הוחלף או הופסק בזמן בדיקת הסיום. נסו שוב.');
+        error.statusCode = 409;
+        throw error;
+      }
+      const currentRun = db.prepare('SELECT * FROM kugel_student_runs WHERE student_id = ?').get(state.student.id);
+      const sameAttemptBoundary = (currentRun?.reset_at || null) === (state.run?.reset_at || null)
+        && Number(currentRun?.lesson_id ?? activeLesson.id) === Number(state.run?.lesson_id ?? activeLesson.id);
+      if (!sameAttemptBoundary) {
+        const error = new Error('הניסיון אופס או הוחלף בזמן בדיקת הסיום. נסו שוב.');
+        error.statusCode = 409;
+        throw error;
+      }
+      const run = upsertKugelRun(db, state.student.id, studentContext.classroom.id, {
+        finishedAt: summary.finishedAt || new Date().toISOString(),
+        incrementAttempt: activeLesson.id === 0
+          && (!currentRun || Number(currentRun.lesson_id) === 0)
+          && !Boolean(currentRun?.finished_at),
+      });
+      const savedSummary = summarizeKugelStudent(state.student, run, state.session, events);
+      const progress = completeKugelClassroomProgress(db, state.student.id, savedSummary);
+      return { progress, student: savedSummary };
     })());
-    return send(res, 200, JSON.stringify({ ok: true, progress: classroomProgressPublic(progress), student: summary }));
+    return send(res, 200, JSON.stringify({ ok: true, progress: classroomProgressPublic(result.progress), student: result.student }));
   } catch (error) {
     console.error('kugel_api_error', { path: pathname, message: error.message, code: error.code || null });
     if (error instanceof SyntaxError) return send(res, 400, JSON.stringify({ error: 'גוף הבקשה אינו JSON תקין.' }));

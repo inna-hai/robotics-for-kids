@@ -53,6 +53,7 @@ async function rawPost(baseUrl, path, body, sessionCookie = '') {
 }
 
 let gameEvents = [];
+let gameEventsDelayMs = 0;
 let worldOpenDelayMs = 0;
 let worldOpenFailuresRemaining = 0;
 let freezeDelayMs = 0;
@@ -66,6 +67,7 @@ const monitor = createServer(async (req, res) => {
   monitorCalls.push({ method: req.method, url: req.url, authorization: req.headers.authorization || '', body });
   res.setHeader('Content-Type', 'application/json');
   if (req.method === 'GET' && req.url.startsWith('/api/game-events')) {
+    if (gameEventsDelayMs) await new Promise((resolve) => setTimeout(resolve, gameEventsDelayMs));
     res.end(JSON.stringify({ events: gameEvents }));
     return;
   }
@@ -420,6 +422,13 @@ try {
   assert.equal(lessonOneStudent.submission.lessonId, 1, 'teacher tracking must use the explicitly selected lesson rather than the active Minecraft lesson');
   assert.equal(lessonOneTeacherViewBody.metrics.active, 0, 'historical lesson metrics must not count a run from another lesson');
 
+  const relaunchLessonZero = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, teacherACookie);
+  assert.equal(relaunchLessonZero.status, 200);
+  assert.equal((await relaunchLessonZero.json()).lesson.id, 0, 'attempt metrics are recorded only while lesson zero is active');
+  const lessonZeroStart = await post(baseUrl, '/api/kugel/student/start', {}, studentACookie);
+  assert.equal(lessonZeroStart.status, 200);
+  assert.equal((await lessonZeroStart.json()).student.lessonId, 0);
+
   gameEvents = [
     { id: 40, event_type: 'chat_message', player_name: 'NoaSecure', created_at: new Date().toISOString(), payload: JSON.stringify({ coin_index: 1, coins: 8, finish: true, completed: true }) },
   ];
@@ -429,7 +438,7 @@ try {
   const otherStudentStart = await post(baseUrl, '/api/kugel/student/start', {}, studentBCookie);
   assert.equal(otherStudentStart.status, 409, 'a student cannot join a class whose teacher has not launched lesson zero');
 
-  const now = new Date().toISOString();
+  const now = new Date(Date.now() + 5000).toISOString();
   gameEvents = [
     { id: 1, event_type: 'player_join', player_name: 'NoaSecure', created_at: now, payload: '{}' },
     ...Array.from({ length: 8 }, (_, index) => ({ id: index + 2, event_type: 'coin_collected', player_name: 'NoaSecure', created_at: now, block_id: 'gold_block', payload: JSON.stringify({ coin_index: 1 }) })),
@@ -474,12 +483,59 @@ try {
   const monitorReadsAfterViews = monitorCalls.filter(call => call.method === 'GET' && call.url.startsWith('/api/game-events')).length;
   assert.equal(monitorReadsAfterViews - monitorReadsBeforeViews, 1, 'teacher and student polling must share a short monitor-event cache');
 
-  const finish = await post(baseUrl, '/api/kugel/student/finish', {}, studentACookie);
+  const metricsSchemaDb = new Database(dbFile);
+  const runColumns = new Set(metricsSchemaDb.prepare("PRAGMA table_info('kugel_student_runs')").all().map(column => column.name));
+  metricsSchemaDb.close();
+  assert.deepEqual(
+    ['attempt_count', 'best_time_ms', 'best_finished_at', 'last_duration_ms'].filter(column => !runColumns.has(column)),
+    [],
+    'lesson-zero run metrics must migrate additively on an existing classroom database',
+  );
+
+  const firstAttemptDb = new Database(dbFile);
+  firstAttemptDb.prepare('UPDATE kugel_student_runs SET started_at = ? WHERE student_id = ?')
+    .run(new Date(Date.now() - 2000).toISOString(), studentA.id);
+  firstAttemptDb.close();
+
+  const [finish, concurrentFinish] = await Promise.all([
+    post(baseUrl, '/api/kugel/student/finish', {}, studentACookie),
+    post(baseUrl, '/api/kugel/student/finish', {}, studentACookie),
+  ]);
   assert.equal(finish.status, 200);
-  assert.equal((await finish.json()).progress.status, 'completed');
+  assert.equal(concurrentFinish.status, 200);
+  const finishBody = await finish.json();
+  const concurrentFinishBody = await concurrentFinish.json();
+  assert.equal(finishBody.progress.status, 'completed');
+  assert.equal(finishBody.student.attemptCount, 1, 'the first valid finish records exactly one completed attempt');
+  assert.equal(concurrentFinishBody.student.attemptCount, 1, 'concurrent duplicate finishes remain idempotent');
+  assert.equal(Number.isInteger(finishBody.student.lastDurationMs), true, 'a valid finish records its duration');
+  assert.equal(finishBody.student.lastDurationMs >= 0, true);
+  assert.equal(finishBody.student.bestTimeMs, finishBody.student.lastDurationMs, 'the first duration becomes the personal best');
+  assert.equal(Boolean(finishBody.student.bestFinishedAt), true, 'the best attempt records when it finished');
   const finishAgain = await post(baseUrl, '/api/kugel/student/finish', {}, studentACookie);
   assert.equal(finishAgain.status, 200);
-  assert.equal((await finishAgain.json()).progress.attempts, 1, 'repeating finish must be idempotent');
+  const finishAgainBody = await finishAgain.json();
+  assert.equal(finishAgainBody.progress.attempts, 1, 'repeating finish must be idempotent');
+  assert.equal(finishAgainBody.student.attemptCount, 1, 'repeating finish must not create another completed attempt');
+  const restartAfterFinish = await post(baseUrl, '/api/kugel/student/start', {}, studentACookie);
+  assert.equal(restartAfterFinish.status, 200);
+  const staleFinishAfterRestart = await post(baseUrl, '/api/kugel/student/finish', {}, studentACookie);
+  assert.equal(staleFinishAfterRestart.status, 200, 'opening Minecraft again after completion remains idempotent');
+  assert.equal((await staleFinishAfterRestart.json()).student.attemptCount, 1, 'opening Minecraft again must not reuse old events as another attempt');
+
+  const completedAttemptBoundary = finishBody.student.resetAt;
+  const completedAttemptFinishedAt = finishBody.student.finishedAt;
+  const teacherRelaunchAfterFinish = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, teacherACookie);
+  assert.equal(teacherRelaunchAfterFinish.status, 200);
+  const relaunchedAttemptDb = new Database(dbFile);
+  const relaunchedAttempt = relaunchedAttemptDb.prepare(`
+    SELECT reset_at, finished_at, attempt_count FROM kugel_student_runs WHERE student_id = ?
+  `).get(studentA.id);
+  relaunchedAttemptDb.close();
+  assert.equal(relaunchedAttempt.reset_at, completedAttemptBoundary, 'teacher relaunch must not create a new attempt boundary');
+  assert.equal(relaunchedAttempt.finished_at, completedAttemptFinishedAt, 'teacher relaunch must preserve the completed attempt');
+  assert.equal(relaunchedAttempt.attempt_count, 1);
+
   const recordedView = await fetch(`${baseUrl}/api/kugel/session`, { headers: { Cookie: studentACookie } });
   assert.equal((await recordedView.json()).student.completionRecorded, true);
 
@@ -501,9 +557,78 @@ try {
   assert.equal(rateLimitedMessage.status, 429, 'Minecraft control endpoints must be rate limited per teacher and class');
   const reset = await post(baseUrl, '/api/kugel/student/reset', {}, studentACookie);
   assert.equal(reset.status, 200);
+  const resetBody = await reset.json();
+  assert.equal(resetBody.student.attemptCount, 1, 'reset preserves completed-attempt history');
+  assert.equal(resetBody.student.bestTimeMs, finishBody.student.bestTimeMs, 'reset preserves the personal best');
+  assert.equal(resetBody.student.lastDurationMs, finishBody.student.lastDurationMs, 'reset preserves the last completed duration');
+  assert.equal(Date.parse(resetBody.student.resetAt) > Date.parse(finishBody.student.finishedAt), true,
+    'reset boundary must be strictly later than a consumed completion event within the allowed clock skew');
+  assert.equal(resetBody.student.startedAt, null, 'reset opens a fresh attempt boundary');
+  assert.equal(resetBody.student.completed, false, 'reset clears current-attempt completion');
+  const [concurrentStartA, concurrentStartB] = await Promise.all([
+    post(baseUrl, '/api/kugel/student/start', {}, studentACookie),
+    post(baseUrl, '/api/kugel/student/start', {}, studentACookie),
+  ]);
+  assert.equal(concurrentStartA.status, 200);
+  assert.equal(concurrentStartB.status, 200);
+  const concurrentStartABody = await concurrentStartA.json();
+  const concurrentStartBBody = await concurrentStartB.json();
+  assert.equal(concurrentStartABody.student.startedAt, concurrentStartBBody.student.startedAt,
+    'concurrent starts in one reset boundary must keep one attempt start');
   const afterReset = await fetch(`${baseUrl}/api/kugel/session`, { headers: { Cookie: studentACookie } });
   assert.equal(afterReset.status, 200);
-  assert.equal((await afterReset.json()).student.coins, 0, 'events before reset must not count again');
+  const afterResetBody = await afterReset.json();
+  assert.equal(afterResetBody.student.coins, 0, 'events before reset must not count again');
+  assert.equal(afterResetBody.student.attemptCount, 1);
+
+  const slowerFinishAtMs = Date.parse(resetBody.student.resetAt) + Math.max(finishBody.student.bestTimeMs + 1000, 5000);
+  const slowerFinishAt = new Date(slowerFinishAtMs).toISOString();
+  gameEvents = [
+    { id: 200, event_type: 'player_join', player_name: 'NoaSecure', created_at: resetBody.student.resetAt, payload: '{}' },
+    ...Array.from({ length: 8 }, (_, index) => ({ id: 201 + index, event_type: 'coin_collected', player_name: 'NoaSecure', created_at: slowerFinishAt, block_id: 'gold_block', payload: JSON.stringify({ coin_index: index + 1 }) })),
+    { id: 210, event_type: 'finish_button_pressed', player_name: 'NoaSecure', created_at: slowerFinishAt, payload: JSON.stringify({ completed: true }) },
+  ];
+  await new Promise(resolve => setTimeout(resolve, 1100));
+  gameEventsDelayMs = 150;
+  const staleFinishDuringResetPromise = post(baseUrl, '/api/kugel/student/finish', {}, studentACookie);
+  await new Promise(resolve => setTimeout(resolve, 30));
+  const resetDuringFinish = await post(baseUrl, '/api/kugel/student/reset', {}, studentACookie);
+  const staleFinishDuringReset = await staleFinishDuringResetPromise;
+  gameEventsDelayMs = 0;
+  assert.equal(resetDuringFinish.status, 200);
+  assert.equal(staleFinishDuringReset.status, 409, 'a finish racing with reset must not complete or count the reset attempt');
+  assert.equal((await resetDuringFinish.json()).student.attemptCount, 1);
+  const slowerFinish = await post(baseUrl, '/api/kugel/student/finish', {}, studentACookie);
+  assert.equal(slowerFinish.status, 200);
+  const slowerFinishBody = await slowerFinish.json();
+  assert.equal(slowerFinishBody.student.attemptCount, 2, 'a valid finish after reset records a new attempt');
+  assert.equal(slowerFinishBody.student.lastDurationMs > finishBody.student.lastDurationMs, true, 'last duration reflects the newest completed attempt');
+  assert.equal(slowerFinishBody.student.bestTimeMs, finishBody.student.bestTimeMs, 'a slower attempt cannot regress the personal best');
+  assert.equal(slowerFinishBody.student.bestFinishedAt, finishBody.student.bestFinishedAt, 'a slower attempt cannot replace the best timestamp');
+
+  const resetBeforeLessonSwitchRace = await post(baseUrl, '/api/kugel/student/reset', {}, studentACookie);
+  assert.equal(resetBeforeLessonSwitchRace.status, 200);
+  const lessonSwitchBoundary = (await resetBeforeLessonSwitchRace.json()).student.resetAt;
+  const lessonSwitchFinishAt = new Date(Date.parse(lessonSwitchBoundary) + 1000).toISOString();
+  gameEvents = [
+    ...Array.from({ length: 8 }, (_, index) => ({ id: 301 + index, event_type: 'coin_collected', player_name: 'NoaSecure', created_at: lessonSwitchFinishAt, block_id: 'gold_block', payload: JSON.stringify({ coin_index: index + 1 }) })),
+    { id: 310, event_type: 'finish_button_pressed', player_name: 'NoaSecure', created_at: lessonSwitchFinishAt, payload: JSON.stringify({ completed: true }) },
+  ];
+  await new Promise(resolve => setTimeout(resolve, 1100));
+  gameEventsDelayMs = 150;
+  const finishDuringLessonSwitchPromise = post(baseUrl, '/api/kugel/student/finish', {}, studentACookie);
+  await new Promise(resolve => setTimeout(resolve, 30));
+  const switchToLessonOne = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/1/launch`, {}, teacherACookie);
+  const finishDuringLessonSwitch = await finishDuringLessonSwitchPromise;
+  gameEventsDelayMs = 0;
+  assert.equal(switchToLessonOne.status, 200);
+  assert.equal(finishDuringLessonSwitch.status, 409, 'a finish racing with a teacher lesson switch must not persist');
+  const lessonSwitchRaceDb = new Database(dbFile);
+  const attemptsAfterLessonSwitch = lessonSwitchRaceDb.prepare('SELECT attempt_count FROM kugel_student_runs WHERE student_id = ?').get(studentA.id).attempt_count;
+  lessonSwitchRaceDb.close();
+  assert.equal(attemptsAfterLessonSwitch, 2, 'a stale lesson-zero finish must not increment attempts');
+  const restoreLessonZeroAfterRace = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/0/launch`, {}, teacherACookie);
+  assert.equal(restoreLessonZeroAfterRace.status, 200);
 
   const tamperDb = new Database(dbFile);
   tamperDb.prepare('DELETE FROM teacher_courses WHERE teacher_id = ? AND course_id = ?').run(teacherA.id, 'craftom-agent');
@@ -639,6 +764,10 @@ try {
   assert.equal(compoundEntry.headers.get('set-cookie'), null, 'compound entry must preserve the authenticated student session instead of minting a new one');
   assert.equal((await post(baseUrl, `/api/kugel/classes/${classroomA.id}/stop`, {}, teacherACookie)).status, 200);
 
+  assert.doesNotMatch(source, /startedAt:\s*continuingActiveLesson\s*\?\s*state\.run/,
+    'student start must not derive its write from a run row read outside the write transaction');
+  assert.match(source, /incrementAttempt:\s*activeLesson\.id === 0[\s\S]{0,140}!Boolean\(currentRun\?\.finished_at\)/,
+    'lesson-zero attempts must use the current transactional row and must not be incremented by another lesson');
   assert.doesNotMatch(source, /KUGEL_MINECRAFT_ACCESS_CODE\s*=.*\|\|\s*'[^']+'/,
     'Minecraft access codes must not have repository defaults');
   assert.doesNotMatch(source, /KUGEL_MINECRAFT_SERVER_HOST\s*=.*\|\|\s*'[^']+'/,
