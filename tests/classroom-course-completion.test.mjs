@@ -94,7 +94,7 @@ vm.runInNewContext(sessionClient, {
   fetch: async (path, options = {}) => {
     if (path === '/api/classroom/me') {
       return new Promise(resolve => {
-        resolveClassroomMe = () => resolve({ ok: true, json: async () => ({ role: 'student', student: { name: 'דנה' }, classroom: { name: 'כיתה' } }) });
+        resolveClassroomMe = () => resolve({ ok: true, json: async () => ({ role: 'student', student: { name: 'דנה' }, classroom: { name: 'כיתה', courses: ['webcode'] } }) });
       });
     }
     queuedProgress.push(JSON.parse(options.body));

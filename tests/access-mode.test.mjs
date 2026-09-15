@@ -97,7 +97,7 @@ function entryHarness({ next = 'python-turtle.html', classroomLogoutOk = true, c
   };
   const context = {
     window: {},
-    document: { body: { dataset: { classroomPage: 'entry' } }, getElementById(id) { return nodes[id]; } },
+    document: { body: { dataset: { classroomPage: 'entry' } }, getElementById(id) { return nodes[id]; }, querySelectorAll() { return []; } },
     location: { search: `?next=${encodeURIComponent(next)}`, assign(path) { assigned.push(path); } },
     localStorage,
     URLSearchParams,
@@ -158,11 +158,11 @@ function entryHarness({ next = 'python-turtle.html', classroomLogoutOk = true, c
 }
 
 const entryHtml = read('classroom-entry.html');
-assert.match(entryHtml, /id="subscription-continue"/);
-assert.match(entryHtml, /מנוי אישי/);
-assert.match(entryHtml, /התנסות כאורח/);
-assert.match(entryHtml, /classroom-platform\.js\?v=20260908-preview-student-1/);
-assert.match(read('teacher-classrooms.html'), /classroom-platform\.js\?v=20260910-craftom-teacher-link-1/);
+assert.match(entryHtml, /id="classroom-unified-login-form"/);
+assert.match(entryHtml, /אין לי משתמש \/ שכחתי קוד/);
+assert.match(entryHtml, /הרשמת מורה חדשה/);
+assert.match(entryHtml, /classroom-platform\.js\?v=20260915-hadasa-structured-sync-1/);
+assert.match(read('teacher-classrooms.html'), /classroom-platform\.js\?v=20260915-hadasa-structured-sync-1/);
 
 const classroomSession = read('js/classroom-session.js');
 assert.doesNotMatch(classroomSession, /showStudentBadge/, 'the unified access badge must be the only badge');
