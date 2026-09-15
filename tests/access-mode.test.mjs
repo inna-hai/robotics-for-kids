@@ -161,7 +161,7 @@ const entryHtml = read('classroom-entry.html');
 assert.match(entryHtml, /id="subscription-continue"/);
 assert.match(entryHtml, /מנוי אישי/);
 assert.match(entryHtml, /התנסות כאורח/);
-assert.match(entryHtml, /classroom-platform\.js\?v=20260907-tehila-fixes-1/);
+assert.match(entryHtml, /classroom-platform\.js\?v=20260908-preview-student-1/);
 assert.match(read('teacher-classrooms.html'), /classroom-platform\.js\?v=20260908-kugel-classroom-live-1/);
 
 const classroomSession = read('js/classroom-session.js');
