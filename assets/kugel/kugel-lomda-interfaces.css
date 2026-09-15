@@ -186,6 +186,58 @@
   font-weight: 800;
 }
 
+.qa-lesson-switcher {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  background: #eff6ff;
+}
+
+.qa-lesson-switcher[hidden] {
+  display: none;
+}
+
+.qa-lesson-switcher strong,
+.qa-lesson-switcher small {
+  display: block;
+}
+
+.qa-lesson-switcher small {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.qa-lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.qa-lesson-link {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #bdd8f4;
+  border-radius: 9px;
+  background: #fff;
+  color: var(--blue);
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.qa-lesson-link.active {
+  background: var(--blue);
+  color: #fff;
+}
+
+.qa-lesson-link.missing-world {
+  border-style: dashed;
+  color: #64748b;
+}
+
 .tiny-status {
   min-width: 64px;
   padding: 5px 7px;
@@ -740,6 +792,63 @@
   width: 100%;
   min-height: 52px;
   font-size: 1.02rem;
+}
+
+.minecraft-lesson-list {
+  display: grid;
+  gap: 12px;
+  margin: 14px 0;
+  max-height: 520px;
+  overflow: auto;
+  padding-left: 4px;
+}
+
+.minecraft-lesson-option {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid #dbe4ef;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.minecraft-lesson-option strong {
+  color: #0f172a;
+}
+
+.minecraft-lesson-option span {
+  color: #475569;
+  font-size: .94rem;
+  line-height: 1.5;
+}
+
+.minecraft-lesson-option.is-missing-world {
+  border-style: dashed;
+  background: #fff7ed;
+}
+
+.minecraft-lesson-option.is-missing-world strong {
+  color: #9a3412;
+}
+
+.minecraft-lesson-actions {
+  display: grid;
+  gap: 8px;
+}
+
+.lesson-one-action {
+  background: #0f766e;
+  box-shadow: 0 10px 20px rgba(15, 118, 110, .18);
+}
+
+.start-lesson-action.is-active-lesson {
+  outline: 3px solid rgba(245, 158, 11, .38);
+  outline-offset: 2px;
+}
+
+.start-lesson-action.end-lesson-action {
+  background: #b91c1c;
+  box-shadow: 0 10px 20px rgba(185, 28, 28, .18);
 }
 
 .primary-action:disabled,

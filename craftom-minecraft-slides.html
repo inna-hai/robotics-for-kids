@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260905-agent-blocks-match-1">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260909-course-header-all-1">
   <style>
     body{background:#071528;color:#fff}
     .shell{width:min(1180px,calc(100% - 28px));padding:20px 0}
@@ -17,21 +17,37 @@
     .slide p,.slide li{font-size:clamp(1.1rem,2vw,1.5rem);line-height:1.7}
     .slide .tag{width:max-content;background:#d9f99d;color:#17320b}
     .video{width:min(760px,100%);aspect-ratio:16/9;border:0;border-radius:16px;background:#000}
-    .actions{position:fixed;left:14px;bottom:14px;z-index:3}
+    .actions{position:fixed;left:14px;bottom:14px;z-index:3;display:flex;gap:10px;flex-wrap:wrap}
   </style>
 </head>
 <body>
+  <header class="course-header" aria-label="ניווט אקדמיית ה-Agent">
+    <div class="course-header-inner">
+      <a class="course-brand" href="craftom-school/preview/index.html">אקדמיית ה-Agent</a>
+      <nav class="course-nav" id="courseHeaderNav" aria-label="מעבר מהיר"></nav>
+    </div>
+  </header>
   <main class="shell">
     <div class="slides" id="slides"></div>
   </main>
-  <div class="actions"><a class="btn secondary" href="craftom-school/preview/index.html">מפת הקורס</a></div>
-  <script src="js/craftom-minecraft-challenges.js?v=20260905-agent-blocks-match-1"></script>
+  <div class="actions">
+    <a class="btn secondary" id="backToLesson" href="craftom-minecraft-lesson-1.html">חזרה לשיעור</a>
+    <a class="btn secondary" href="craftom-school/preview/index.html">מפת הקורס</a>
+  </div>
+  <script src="js/craftom-minecraft-challenges.js?v=20260909-adjacent-academy-1"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const program = window.CRAFTOM_MINECRAFT_PROGRAM;
-    const challenge = window.getCraftomMinecraftChallenge(params.get('challenge') || params.get('lesson'));
+    const selectedLesson = window.getCraftomMinecraftLesson(params.get('lesson') || 1);
+    const challenge = window.getCraftomMinecraftChallenge(params.get('challenge') || selectedLesson.challengeId);
     const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+    document.getElementById('courseHeaderNav').innerHTML = `
+      <a href="craftom-school/preview/index.html">דף הבית</a>
+      <a class="primary" href="craftom-minecraft-lesson-${selectedLesson.id}.html">השיעור הנוכחי</a>
+      ${program.challenges.map(item => `<a href="craftom-minecraft-challenge.html?challenge=${item.id}">אתגר ${item.id}</a>`).join('')}
+    `;
     document.title = `מצגת מדריך - ${challenge.title}`;
+    document.getElementById('backToLesson').href = `craftom-minecraft-lesson-${selectedLesson.id}.html`;
     document.getElementById('slides').innerHTML = `
       <section class="slide"><span class="tag">אקדמיית ה-Agent</span><h1>${esc(challenge.title)}</h1><p>${esc(challenge.story)}</p></section>
       <section class="slide"><h2>סרטון פתיחה</h2><video class="video" src="${esc(challenge.video)}" poster="${esc(challenge.poster)}" controls playsinline preload="metadata"></video></section>

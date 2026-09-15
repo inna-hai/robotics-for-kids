@@ -8,9 +8,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/craftom/craftom-challenges.css?v=20260905-agent-blocks-match-1">
+  <link rel="stylesheet" href="../../assets/craftom/craftom-challenges.css?v=20260909-course-header-all-1">
   <link rel="stylesheet" href="../../css/platform-home-link.css">
   <style>
+    .course-header{position:sticky;top:0;z-index:1000;background:rgba(247,251,255,.94);border-bottom:1px solid #d7e7f5;backdrop-filter:blur(12px)}
+    .course-header-inner{width:min(1180px,calc(100% - 28px));margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0}
+    .course-brand{color:#0b2342;font-weight:900;text-decoration:none;white-space:nowrap}
+    .course-nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .course-nav a{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:8px 12px;border:1px solid #bdd8f4;border-radius:999px;background:#fff;color:#075985;font-weight:900;text-decoration:none}
+    .course-nav a.primary{color:#fff;background:#0b75b7;border-color:#0b75b7}
+    .course-nav a:hover{border-color:#0b75b7}
     .preview-home .hero{grid-template-columns:minmax(0,1fr) 420px}
     .program-video-card{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:16px;align-items:center;margin:18px 0}
     .program-video-card .challenge-video{border-radius:14px}
@@ -20,10 +27,16 @@
     .meeting-list{display:grid;gap:8px;margin:10px 0 0;padding:0;list-style:none}
     .meeting-list li{border:1px solid #cfe2f3;background:#f8fcff;border-radius:12px;padding:9px 10px}
     .wide-card{grid-column:1/-1}
-    @media(max-width:850px){.preview-home .hero,.program-video-card{grid-template-columns:1fr}}
+    @media(max-width:850px){.course-header-inner{align-items:flex-start;flex-direction:column}.course-nav{justify-content:flex-start}.preview-home .hero,.program-video-card{grid-template-columns:1fr}}
   </style>
 </head>
 <body class="preview-home">
+  <header class="course-header" aria-label="ניווט אקדמיית ה-Agent">
+    <div class="course-header-inner">
+      <a class="course-brand" href="index.html">אקדמיית ה-Agent</a>
+      <nav class="course-nav" id="courseHeaderNav" aria-label="מעבר מהיר"></nav>
+    </div>
+  </header>
   <main class="shell">
     <section class="hero">
       <div>
@@ -65,10 +78,36 @@
     </section>
   </main>
   <a class="platform-home-link" href="../../index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="../../js/craftom-minecraft-challenges.js?v=20260905-agent-blocks-match-1"></script>
+  <script src="../../js/craftom-minecraft-challenges.js?v=20260909-adjacent-academy-1"></script>
   <script>
     const program = window.CRAFTOM_MINECRAFT_PROGRAM;
     const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+    const lessonHref = lessonId => `../../craftom-minecraft-lesson-${lessonId}.html`;
+
+    function renderCourseHeader(currentLessonId = 1) {
+      const normalizedLessonId = Math.min(Math.max(Number(currentLessonId) || 1, 1), program.totalMeetings);
+      document.getElementById('courseHeaderNav').innerHTML = `
+        <a href="index.html">דף הבית</a>
+        <a class="primary" id="currentLessonLink" href="${lessonHref(normalizedLessonId)}">השיעור הנוכחי</a>
+        ${program.challenges.map(challenge => `<a href="../../craftom-minecraft-challenge.html?challenge=${challenge.id}">אתגר ${challenge.id}</a>`).join('')}
+      `;
+    }
+
+    async function updateCurrentLessonLink() {
+      try {
+        const response = await fetch('/api/kugel/session', { credentials: 'same-origin' });
+        const data = await response.json();
+        const activeLessonId = Number(data?.session?.lessonId);
+        if (response.ok && activeLessonId >= 1 && activeLessonId <= program.totalMeetings) {
+          renderCourseHeader(activeLessonId);
+        }
+      } catch {
+        // The home page still works for public preview users without a classroom session.
+      }
+    }
+
+    renderCourseHeader();
+    updateCurrentLessonLink();
     document.getElementById('subtitle').textContent = program.subtitle;
     document.getElementById('courseShape').textContent = `${program.totalChallenges} אתגרים, ${program.meetingsPerChallenge} מפגשים לכל אתגר, ${program.totalMeetings} מפגשים סך הכול. ${program.plot}.`;
     document.getElementById('outcomes').innerHTML = program.outcomes.map(item => `<li>${esc(item)}</li>`).join('');

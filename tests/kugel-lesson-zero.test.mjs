@@ -213,6 +213,14 @@ try {
   const oversizedJson = await rawPost(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, JSON.stringify({ padding: 'x'.repeat(70 * 1024) }), teacherACookie);
   assert.equal(oversizedJson.status, 413, 'oversized control bodies must be rejected explicitly');
 
+  const teacherSession = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
+  assert.equal(teacherSession.status, 200);
+  const teacherSessionBody = await teacherSession.json();
+  assert.equal(teacherSessionBody.lessons.length, 17, 'teacher mapping board must list Minecraft lessons 0-16');
+  for (const lessonId of Array.from({ length: 16 }, (_, index) => index + 1)) {
+    assert.equal(teacherSessionBody.lessons.find(lesson => lesson.id === lessonId)?.hasWorld, true, `lesson ${lessonId} must have the shared Agent Academy world`);
+  }
+
   const launch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, teacherACookie);
   assert.equal(launch.status, 200);
   const launchBody = await launch.json();
@@ -220,7 +228,18 @@ try {
   assert.equal(launchBody.session.classroomId, classroomA.id);
   assert.equal(monitorCalls.some(call => call.url === '/api/internal/craftom-school/world/open' && call.authorization === 'Bearer test-monitor-token'), true);
   const duplicateLaunch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, teacherACookie);
-  assert.equal(duplicateLaunch.status, 409, 'the same class cannot start a second active lease');
+  assert.equal(duplicateLaunch.status, 200, 'the same class can restart its own active lesson zero');
+  const lessonOneLaunch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/1/launch`, {}, teacherACookie);
+  assert.equal(lessonOneLaunch.status, 200, 'the same class can launch lesson one from the teacher board');
+  const lessonOneLaunchBody = await lessonOneLaunch.json();
+  assert.equal(lessonOneLaunchBody.lesson.id, 1);
+  assert.equal(lessonOneLaunchBody.session.lessonId, 1);
+  assert.equal(monitorCalls.some(call => call.url === '/api/internal/craftom-school/world/open' && call.body.world === 'kugel-50-safe-compounds-v3-20260824'), true);
+  const lessonTwoLaunch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/2/launch`, {}, teacherACookie);
+  assert.equal(lessonTwoLaunch.status, 200, 'the same class can launch lesson two with the shared Agent Academy world');
+  const lessonTwoLaunchBody = await lessonTwoLaunch.json();
+  assert.equal(lessonTwoLaunchBody.lesson.id, 2);
+  assert.equal(lessonTwoLaunchBody.session.lessonId, 2);
   const conflictingLaunch = await post(baseUrl, `/api/kugel/classes/${classroomB.id}/launch`, {}, teacherBCookie);
   assert.equal(conflictingLaunch.status, 409, 'one Minecraft server must not be controlled by two classrooms at once');
   const foreignPlayerMessage = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/message`, { text: 'אסור', scope: 'player', target: 'OtherSecure' }, teacherACookie);
@@ -229,6 +248,8 @@ try {
   const studentStart = await post(baseUrl, '/api/kugel/student/start', {}, studentACookie);
   assert.equal(studentStart.status, 200);
   const studentStartBody = await studentStart.json();
+  assert.equal(studentStartBody.lesson.id, 2, 'student start should use the teacher-opened Minecraft lesson');
+  assert.equal(studentStartBody.student.lessonId, 2, 'student run should be recorded against the active Minecraft lesson');
   assert.equal(studentStartBody.student.id, studentA.id);
   assert.equal(studentStartBody.student.minecraftPlayerName, 'NoaSecure');
   assert.ok(studentStartBody.minecraft.launchUrl.startsWith('minecraftedu://'));

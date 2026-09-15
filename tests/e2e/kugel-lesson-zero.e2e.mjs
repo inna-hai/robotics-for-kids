@@ -100,8 +100,14 @@ try {
   await playerInput.fill('NoaMaze');
   await playerInput.locator('xpath=..').getByRole('button', { name: 'שמירת שחקן' }).click();
   await teacherPage.getByText('שם השחקן נשמר.').waitFor();
-  await teacherPage.getByRole('button', { name: 'התחלת שיעור 0 ופתיחת עולם Minecraft' }).click();
-  await teacherPage.locator('#teacherStatus').getByText('עולם המבוך פעיל.').waitFor();
+  await teacherPage.getByRole('button', { name: /פתיחת Minecraft לשיעור 0/ }).click();
+  await teacherPage.locator('#teacherStatus').getByText(/עולם (המבוך|שיעור 0) פעיל/).waitFor();
+  await teacherPage.getByRole('button', { name: /סיום שיעור 0/ }).waitFor();
+  await teacherPage.getByRole('button', { name: /סיום שיעור 0/ }).click();
+  await teacherPage.locator('#teacherStatus').getByText(/השיעור הסתיים והשרת שוחרר/).waitFor();
+  await teacherPage.getByRole('button', { name: /פתיחת Minecraft לשיעור 0/ }).click();
+  await teacherPage.locator('#teacherStatus').getByText(/עולם (המבוך|שיעור 0) פעיל/).waitFor();
+  await teacherPage.waitForTimeout(1100);
 
   const now = new Date().toISOString();
   events = [
