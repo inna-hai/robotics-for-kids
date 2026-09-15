@@ -8,7 +8,7 @@
   <script>
     (function(){
       const params = new URLSearchParams(window.location.search);
-      const lesson = Number(params.get('lesson'));
+      const lesson = Number(params.get('lesson') || params.get('l'));
       if(Number.isFinite(lesson) && lesson >= 16){
         window.location.replace('python-turtle-advanced.html' + window.location.search + window.location.hash);
       }
