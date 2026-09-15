@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
-import { createServer } from 'node:http';
+import { createServer, request as httpRequest } from 'node:http';
 import { mkdtempSync, readFileSync, readdirSync, rmSync, statSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
@@ -52,12 +52,37 @@ async function rawPost(baseUrl, path, body, sessionCookie = '') {
   });
 }
 
+function slowPost(baseUrl, requestPath, payload, sessionCookie = '') {
+  const url = new URL(requestPath, baseUrl);
+  const raw = JSON.stringify(payload);
+  let resolveResponse;
+  const response = new Promise(resolve => { resolveResponse = resolve; });
+  const req = httpRequest(url, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: sessionCookie },
+  }, res => {
+    const chunks = [];
+    res.on('data', chunk => chunks.push(chunk));
+    res.on('end', () => resolveResponse({ status: res.statusCode, body: Buffer.concat(chunks).toString('utf8') }));
+  });
+  const split = Math.max(1, raw.length - 1);
+  req.write(raw.slice(0, split));
+  return { response, finish: () => req.end(raw.slice(split)) };
+}
+
+function countSubmissionFiles(directory) {
+  try { return readdirSync(directory, { recursive: true, withFileTypes: true }).filter(entry => entry.isFile()).length; }
+  catch { return 0; }
+}
+
 let gameEvents = [];
 let gameEventsDelayMs = 0;
+let gameEventsStartedResolve = null;
 let worldOpenDelayMs = 0;
 let worldOpenFailuresRemaining = 0;
 let freezeDelayMs = 0;
 let freezeFailuresRemaining = 0;
+let freezeStartedResolve = null;
+let freezeGate = null;
 const monitorCalls = [];
 const monitor = createServer(async (req, res) => {
   const chunks = [];
@@ -67,6 +92,7 @@ const monitor = createServer(async (req, res) => {
   monitorCalls.push({ method: req.method, url: req.url, authorization: req.headers.authorization || '', body });
   res.setHeader('Content-Type', 'application/json');
   if (req.method === 'GET' && req.url.startsWith('/api/game-events')) {
+    if (gameEventsStartedResolve) { gameEventsStartedResolve(); gameEventsStartedResolve = null; }
     if (gameEventsDelayMs) await new Promise((resolve) => setTimeout(resolve, gameEventsDelayMs));
     res.end(JSON.stringify({ events: gameEvents }));
     return;
@@ -86,6 +112,8 @@ const monitor = createServer(async (req, res) => {
     return;
   }
   if (req.url === '/api/internal/craftom-school/live/freeze') {
+    if (freezeStartedResolve) { freezeStartedResolve(); freezeStartedResolve = null; }
+    if (freezeGate) await freezeGate;
     if (freezeDelayMs) await new Promise((resolve) => setTimeout(resolve, freezeDelayMs));
     if (freezeFailuresRemaining > 0) {
       freezeFailuresRemaining -= 1;
@@ -192,10 +220,10 @@ try {
 
   const loginA = await post(baseUrl, '/api/classroom/student-login', { classCode: classroomA.joinCode, personalCode: studentA.loginCode });
   assert.equal(loginA.status, 200);
-  const studentACookie = cookie(loginA);
+  let studentACookie = cookie(loginA);
   const loginASecond = await post(baseUrl, '/api/classroom/student-login', { classCode: classroomA.joinCode, personalCode: studentASecond.loginCode });
   assert.equal(loginASecond.status, 200);
-  const submissionStudentCookie = cookie(loginASecond);
+  let submissionStudentCookie = cookie(loginASecond);
   const loginB = await post(baseUrl, '/api/classroom/student-login', { classCode: classroomB.joinCode, personalCode: studentB.loginCode });
   assert.equal(loginB.status, 200);
   const studentBCookie = cookie(loginB);
@@ -414,6 +442,27 @@ try {
     photo: { name: 'lesson-two.png', dataUrl: pngDataUrl },
   }, submissionStudentCookie);
   assert.equal(lessonTwoSubmission.status, 201);
+  const filesBeforeSlowArchive = new Set(readdirSync(attachmentDir));
+  const slowSubmission = slowPost(baseUrl, '/api/craftom/exit-ticket', {
+    lessonId: 3, challengeId: 1, lessonTitle: 'מירוץ גוף איטי', challengeTitle: 'אתגר',
+    exitQuestion: 'מה בניתם?', answer: 'הגשה שחייבת להתבטל אחרי ארכוב',
+    photo: { name: 'slow-race.png', dataUrl: pngDataUrl },
+  }, submissionStudentCookie);
+  await new Promise(resolve => setTimeout(resolve, 30));
+  const archiveDuringSlowBody = await post(baseUrl, `/api/classroom/classes/${classroomA.id}/students/${studentASecond.id}/archive`, {}, teacherACookie);
+  assert.equal(archiveDuringSlowBody.status, 200);
+  slowSubmission.finish();
+  const rejectedSlowSubmission = await slowSubmission.response;
+  assert.ok([401, 409].includes(rejectedSlowSubmission.status), `slow exit ticket must reject after archive: ${rejectedSlowSubmission.status} ${rejectedSlowSubmission.body}`);
+  const slowRaceDb = new Database(dbFile);
+  assert.equal(slowRaceDb.prepare('SELECT COUNT(*) count FROM craftom_lesson_submissions WHERE student_id = ? AND lesson_id = 3').get(studentASecond.id).count, 0);
+  assert.equal(slowRaceDb.prepare("SELECT COUNT(*) count FROM classroom_progress WHERE student_id = ? AND course_id = 'craftom-agent' AND lesson_id = '3' AND activity_id = 'exit-ticket'").get(studentASecond.id).count, 0);
+  slowRaceDb.close();
+  assert.deepEqual(new Set(readdirSync(attachmentDir)), filesBeforeSlowArchive, 'rejected slow exit ticket must clean its newly written file');
+  assert.equal((await post(baseUrl, `/api/classroom/classes/${classroomA.id}/students/${studentASecond.id}/restore`, {}, teacherACookie)).status, 200);
+  const reloginSubmissionStudent = await post(baseUrl, '/api/classroom/student-login', { classCode: classroomA.joinCode, personalCode: studentASecond.loginCode });
+  assert.equal(reloginSubmissionStudent.status, 200);
+  submissionStudentCookie = cookie(reloginSubmissionStudent);
   const lessonOneTeacherView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}&lessonId=1`, { headers: { Cookie: teacherACookie } });
   assert.equal(lessonOneTeacherView.status, 200);
   const lessonOneTeacherViewBody = await lessonOneTeacherView.json();
@@ -581,7 +630,7 @@ try {
   assert.equal(afterResetBody.student.coins, 0, 'events before reset must not count again');
   assert.equal(afterResetBody.student.attemptCount, 1);
 
-  const slowerFinishAtMs = Date.parse(resetBody.student.resetAt) + Math.max(finishBody.student.bestTimeMs + 1000, 5000);
+  const slowerFinishAtMs = Date.parse(resetBody.student.resetAt) + Math.max(finishBody.student.bestTimeMs + 5000, 10000);
   const slowerFinishAt = new Date(slowerFinishAtMs).toISOString();
   gameEvents = [
     { id: 200, event_type: 'player_join', player_name: 'NoaSecure', created_at: resetBody.student.resetAt, payload: '{}' },
@@ -629,6 +678,179 @@ try {
   assert.equal(attemptsAfterLessonSwitch, 2, 'a stale lesson-zero finish must not increment attempts');
   const restoreLessonZeroAfterRace = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/0/launch`, {}, teacherACookie);
   assert.equal(restoreLessonZeroAfterRace.status, 200);
+
+  const resetBeforeArchiveRace = await post(baseUrl, '/api/kugel/student/reset', {}, studentACookie);
+  assert.equal(resetBeforeArchiveRace.status, 200);
+  const archiveRaceBoundary = (await resetBeforeArchiveRace.json()).student.resetAt;
+  assert.equal((await post(baseUrl, '/api/kugel/student/start', {}, studentACookie)).status, 200);
+  const archiveRaceFinishAt = new Date(Date.parse(archiveRaceBoundary) + 1000).toISOString();
+  gameEvents = [
+    ...Array.from({ length: 8 }, (_, index) => ({ id: 401 + index, event_type: 'coin_collected', player_name: 'NoaSecure', created_at: archiveRaceFinishAt, block_id: 'gold_block', payload: JSON.stringify({ coin_index: index + 1 }) })),
+    { id: 410, event_type: 'finish_button_pressed', player_name: 'NoaSecure', created_at: archiveRaceFinishAt, payload: JSON.stringify({ completed: true }) },
+  ];
+  const beforeArchiveRaceDb = new Database(dbFile);
+  const runBeforeArchiveRace = beforeArchiveRaceDb.prepare('SELECT * FROM kugel_student_runs WHERE student_id = ?').get(studentA.id);
+  const progressBeforeArchiveRace = beforeArchiveRaceDb.prepare('SELECT * FROM classroom_progress WHERE student_id = ? AND course_id = ?').all(studentA.id, 'craftom-agent');
+  beforeArchiveRaceDb.close();
+  gameEventsDelayMs = 150;
+  const gameEventsStarted = new Promise(resolve => { gameEventsStartedResolve = resolve; });
+  const finishDuringArchivePromise = post(baseUrl, '/api/kugel/student/finish', {}, studentACookie);
+  await gameEventsStarted;
+  const archiveDuringFinish = await post(baseUrl, `/api/classroom/classes/${classroomA.id}/students/${studentA.id}/archive`, {}, teacherACookie);
+  assert.equal(archiveDuringFinish.status, 200);
+  const finishDuringArchive = await finishDuringArchivePromise;
+  gameEventsDelayMs = 0;
+  assert.ok([401, 409].includes(finishDuringArchive.status), 'finish must reject an identity archived while monitor events are delayed');
+  const afterArchiveRaceDb = new Database(dbFile);
+  assert.deepEqual(afterArchiveRaceDb.prepare('SELECT * FROM kugel_student_runs WHERE student_id = ?').get(studentA.id), runBeforeArchiveRace);
+  assert.deepEqual(afterArchiveRaceDb.prepare('SELECT * FROM classroom_progress WHERE student_id = ? AND course_id = ?').all(studentA.id, 'craftom-agent'), progressBeforeArchiveRace);
+  afterArchiveRaceDb.close();
+  assert.equal((await post(baseUrl, `/api/classroom/classes/${classroomA.id}/students/${studentA.id}/restore`, {}, teacherACookie)).status, 200);
+  const reloginAfterArchiveRace = await post(baseUrl, '/api/classroom/student-login', { classCode: classroomA.joinCode, personalCode: studentA.loginCode });
+  assert.equal(reloginAfterArchiveRace.status, 200);
+  studentACookie = cookie(reloginAfterArchiveRace);
+
+  const resetBeforeRelinkRace = await post(baseUrl, '/api/kugel/student/reset', {}, studentACookie);
+  assert.equal(resetBeforeRelinkRace.status, 200);
+  const relinkRaceBoundary = (await resetBeforeRelinkRace.json()).student.resetAt;
+  assert.equal((await post(baseUrl, '/api/kugel/student/start', {}, studentACookie)).status, 200);
+  const relinkRaceFinishAt = new Date(Date.parse(relinkRaceBoundary) + 1000).toISOString();
+  gameEvents = [
+    ...Array.from({ length: 8 }, (_, index) => ({ id: 421 + index, event_type: 'coin_collected', player_name: 'NoaSecure', created_at: relinkRaceFinishAt, block_id: 'gold_block', payload: JSON.stringify({ coin_index: index + 1 }) })),
+    { id: 430, event_type: 'finish_button_pressed', player_name: 'NoaSecure', created_at: relinkRaceFinishAt, payload: JSON.stringify({ completed: true }) },
+  ];
+  const beforeRelinkRaceDb = new Database(dbFile);
+  const runBeforeRelinkRace = beforeRelinkRaceDb.prepare('SELECT * FROM kugel_student_runs WHERE student_id = ?').get(studentA.id);
+  const progressBeforeRelinkRace = beforeRelinkRaceDb.prepare('SELECT * FROM classroom_progress WHERE student_id = ? AND course_id = ?').all(studentA.id, 'craftom-agent');
+  beforeRelinkRaceDb.close();
+  gameEventsDelayMs = 150;
+  const relinkEventsStarted = new Promise(resolve => { gameEventsStartedResolve = resolve; });
+  const finishDuringRelinkPromise = post(baseUrl, '/api/kugel/student/finish', {}, studentACookie);
+  await relinkEventsStarted;
+  const relinkDuringFinish = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/students/${studentA.id}/minecraft`, { playerName: 'RelinkSecure' }, teacherACookie);
+  assert.equal(relinkDuringFinish.status, 200);
+  const finishDuringRelink = await finishDuringRelinkPromise;
+  gameEventsDelayMs = 0;
+  assert.equal(finishDuringRelink.status, 409, 'finish must reject when the Minecraft player binding changes during monitor delay');
+  const afterRelinkRaceDb = new Database(dbFile);
+  assert.deepEqual(afterRelinkRaceDb.prepare('SELECT * FROM kugel_student_runs WHERE student_id = ?').get(studentA.id), runBeforeRelinkRace);
+  assert.deepEqual(afterRelinkRaceDb.prepare('SELECT * FROM classroom_progress WHERE student_id = ? AND course_id = ?').all(studentA.id, 'craftom-agent'), progressBeforeRelinkRace);
+  afterRelinkRaceDb.close();
+  assert.equal((await post(baseUrl, `/api/kugel/classes/${classroomA.id}/students/${studentA.id}/minecraft`, { playerName: 'NoaSecure' }, teacherACookie)).status, 200);
+
+  assert.equal((await post(baseUrl, `/api/kugel/classes/${classroomA.id}/stop`, {}, teacherACookie)).status, 200);
+  const raceClassResponse = await post(baseUrl, '/api/classroom/classes', { name: 'כיתת תור פקודות', courses: ['craftom-agent'] }, teacherACookie);
+  assert.equal(raceClassResponse.status, 201);
+  const raceClass = (await raceClassResponse.json()).classroom;
+  const raceStudentResponse = await post(baseUrl, `/api/classroom/classes/${raceClass.id}/students`, { name: 'תלמיד תור' }, teacherACookie);
+  const raceStudent = (await raceStudentResponse.json()).student;
+  assert.equal((await post(baseUrl, `/api/kugel/classes/${raceClass.id}/students/${raceStudent.id}/minecraft`, { playerName: 'RaceSecure' }, teacherACookie)).status, 200);
+  assert.equal((await post(baseUrl, `/api/kugel/classes/${raceClass.id}/launch`, {}, teacherACookie)).status, 200);
+  for (const queuedAction of ['message', 'freeze']) {
+    let releaseFreeze;
+    freezeGate = new Promise(resolve => { releaseFreeze = resolve; });
+    const freezeStarted = new Promise(resolve => { freezeStartedResolve = resolve; });
+    const blocker = post(baseUrl, `/api/kugel/classes/${raceClass.id}/freeze`, { scope: 'all', target: '', on: true }, teacherACookie);
+    await freezeStarted;
+    const allCallsBefore = monitorCalls.filter(call => call.url === `/api/internal/craftom-school/live/${queuedAction}` && call.body.scope === 'all').length;
+    const queued = queuedAction === 'message'
+      ? post(baseUrl, `/api/kugel/classes/${raceClass.id}/message`, { text: 'לא יישלח לכל הכיתה', scope: 'all' }, teacherACookie)
+      : post(baseUrl, `/api/kugel/classes/${raceClass.id}/freeze`, { scope: 'all', target: '', on: false }, teacherACookie);
+    await new Promise(resolve => setTimeout(resolve, 30));
+    const revokeQueuedTeacherDb = new Database(dbFile);
+    revokeQueuedTeacherDb.prepare('DELETE FROM teacher_courses WHERE teacher_id = ? AND course_id = ?').run(teacherA.id, 'craftom-agent');
+    revokeQueuedTeacherDb.close();
+    releaseFreeze(); freezeGate = null;
+    assert.equal((await blocker).status, 200);
+    const queuedResponse = await queued;
+    const queuedBody = await queuedResponse.json();
+    assert.ok([403, 409].includes(queuedResponse.status), `queued all-scope ${queuedAction} must be cancelled after entitlement revocation: ${queuedResponse.status} ${JSON.stringify(queuedBody)}`);
+    const allCallsAfter = monitorCalls.filter(call => call.url === `/api/internal/craftom-school/live/${queuedAction}` && call.body.scope === 'all').length;
+    assert.equal(allCallsAfter, allCallsBefore, `cancelled all-scope ${queuedAction} must not reach the monitor`);
+    const restoreQueuedTeacherDb = new Database(dbFile);
+    restoreQueuedTeacherDb.prepare('INSERT INTO teacher_courses (teacher_id, course_id, created_at) VALUES (?, ?, ?)').run(teacherA.id, 'craftom-agent', new Date().toISOString());
+    restoreQueuedTeacherDb.close();
+  }
+  for (const queuedAction of ['message', 'freeze']) {
+    let releaseFreeze;
+    freezeGate = new Promise(resolve => { releaseFreeze = resolve; });
+    const freezeStarted = new Promise(resolve => { freezeStartedResolve = resolve; });
+    const blocker = post(baseUrl, `/api/kugel/classes/${raceClass.id}/freeze`, { scope: 'all', target: '', on: true }, teacherACookie);
+    await freezeStarted;
+    const targetCallsBefore = monitorCalls.filter(call => call.url === `/api/internal/craftom-school/live/${queuedAction}` && call.body.scope === 'player').length;
+    const queued = queuedAction === 'message'
+      ? post(baseUrl, `/api/kugel/classes/${raceClass.id}/message`, { text: 'לא יישלח', scope: 'player', target: 'RaceSecure' }, teacherACookie)
+      : post(baseUrl, `/api/kugel/classes/${raceClass.id}/freeze`, { scope: 'player', target: 'RaceSecure', on: true }, teacherACookie);
+    await new Promise(resolve => setTimeout(resolve, 30));
+    assert.equal((await post(baseUrl, `/api/classroom/classes/${raceClass.id}/students/${raceStudent.id}/archive`, {}, teacherACookie)).status, 200);
+    releaseFreeze(); freezeGate = null;
+    assert.equal((await blocker).status, 200);
+    const queuedResponse = await queued;
+    const queuedBody = await queuedResponse.json();
+    assert.ok([401, 404, 409].includes(queuedResponse.status), `queued player ${queuedAction} must be cancelled after archive: ${queuedResponse.status} ${JSON.stringify(queuedBody)}`);
+    const targetCallsAfter = monitorCalls.filter(call => call.url === `/api/internal/craftom-school/live/${queuedAction}` && call.body.scope === 'player').length;
+    assert.equal(targetCallsAfter, targetCallsBefore, `cancelled player ${queuedAction} must not reach the monitor`);
+    assert.equal((await post(baseUrl, `/api/classroom/classes/${raceClass.id}/students/${raceStudent.id}/restore`, {}, teacherACookie)).status, 200);
+  }
+
+  const raceStudentLogin = await post(baseUrl, '/api/classroom/student-login', {
+    classCode: raceClass.joinCode, personalCode: raceStudent.loginCode,
+  });
+  assert.equal(raceStudentLogin.status, 200);
+  let raceStudentCookie = cookie(raceStudentLogin);
+  const raceSubmissionDb = new Database(dbFile);
+  const submissionsBeforeSlowRace = raceSubmissionDb.prepare('SELECT * FROM craftom_lesson_submissions WHERE student_id = ?').all(raceStudent.id);
+  const progressBeforeSlowRace = raceSubmissionDb.prepare('SELECT * FROM classroom_progress WHERE student_id = ?').all(raceStudent.id);
+  raceSubmissionDb.close();
+  const attachmentDirectory = join(tempDir, 'craftom-exit-ticket-attachments');
+  const filesBeforeSlowRace = countSubmissionFiles(attachmentDirectory);
+  const slowTicket = slowPost(baseUrl, '/api/craftom/exit-ticket', {
+    lessonId: 0, challengeId: 1, lessonTitle: 'מרוץ ארכיון', challengeTitle: 'בדיקה',
+    exitQuestion: 'מה בנית?', answer: 'תשובת בדיקת מרוץ',
+    photo: { name: 'race.png', dataUrl: pngDataUrl },
+  }, raceStudentCookie);
+  await new Promise(resolve => setTimeout(resolve, 50));
+  assert.equal((await post(baseUrl, `/api/classroom/classes/${raceClass.id}/students/${raceStudent.id}/archive`, {}, teacherACookie)).status, 200);
+  slowTicket.finish();
+  const rejectedSlowTicket = await slowTicket.response;
+  assert.ok([401, 409].includes(rejectedSlowTicket.status), `slow exit ticket must reject archive race: ${rejectedSlowTicket.status} ${rejectedSlowTicket.body}`);
+  const afterSlowRaceDb = new Database(dbFile);
+  assert.deepEqual(afterSlowRaceDb.prepare('SELECT * FROM craftom_lesson_submissions WHERE student_id = ?').all(raceStudent.id), submissionsBeforeSlowRace);
+  assert.deepEqual(afterSlowRaceDb.prepare('SELECT * FROM classroom_progress WHERE student_id = ?').all(raceStudent.id), progressBeforeSlowRace);
+  afterSlowRaceDb.close();
+  assert.equal(countSubmissionFiles(attachmentDirectory), filesBeforeSlowRace, 'rejected slow submission must remove its newly written file');
+  assert.equal((await post(baseUrl, `/api/classroom/classes/${raceClass.id}/students/${raceStudent.id}/restore`, {}, teacherACookie)).status, 200);
+  const restoredRaceStudentLogin = await post(baseUrl, '/api/classroom/student-login', {
+    classCode: raceClass.joinCode, personalCode: raceStudent.loginCode,
+  });
+  assert.equal(restoredRaceStudentLogin.status, 200);
+  raceStudentCookie = cookie(restoredRaceStudentLogin);
+
+  const teacherEntitlementTicket = slowPost(baseUrl, '/api/craftom/exit-ticket', {
+    lessonId: 0, challengeId: 1, lessonTitle: 'מרוץ הרשאת מורה', challengeTitle: 'בדיקה',
+    exitQuestion: 'מה בנית?', answer: 'תשובת בדיקת הרשאה',
+    photo: { name: 'teacher-entitlement-race.png', dataUrl: pngDataUrl },
+  }, raceStudentCookie);
+  await new Promise(resolve => setTimeout(resolve, 50));
+  const revokeTeacherEntitlementDb = new Database(dbFile);
+  revokeTeacherEntitlementDb.prepare('DELETE FROM teacher_courses WHERE teacher_id = ? AND course_id = ?').run(teacherA.id, 'craftom-agent');
+  revokeTeacherEntitlementDb.close();
+  teacherEntitlementTicket.finish();
+  const rejectedTeacherEntitlementTicket = await teacherEntitlementTicket.response;
+  assert.equal(rejectedTeacherEntitlementTicket.status, 409, `slow exit ticket must reject teacher entitlement revocation: ${rejectedTeacherEntitlementTicket.status} ${rejectedTeacherEntitlementTicket.body}`);
+  const afterTeacherEntitlementRaceDb = new Database(dbFile);
+  assert.deepEqual(afterTeacherEntitlementRaceDb.prepare('SELECT * FROM craftom_lesson_submissions WHERE student_id = ?').all(raceStudent.id), submissionsBeforeSlowRace);
+  assert.deepEqual(afterTeacherEntitlementRaceDb.prepare('SELECT * FROM classroom_progress WHERE student_id = ?').all(raceStudent.id), progressBeforeSlowRace);
+  afterTeacherEntitlementRaceDb.prepare('INSERT INTO teacher_courses (teacher_id, course_id, created_at) VALUES (?, ?, ?)').run(teacherA.id, 'craftom-agent', new Date().toISOString());
+  afterTeacherEntitlementRaceDb.close();
+  assert.equal(countSubmissionFiles(attachmentDirectory), filesBeforeSlowRace, 'rejected teacher entitlement race must remove its newly written file');
+
+  const restoreRaceLeaseDb = new Database(dbFile);
+  restoreRaceLeaseDb.transaction(() => {
+    restoreRaceLeaseDb.prepare('UPDATE kugel_class_sessions SET active = 0, server_state = ? WHERE classroom_id = ?').run('idle', raceClass.id);
+    restoreRaceLeaseDb.prepare("UPDATE kugel_class_sessions SET active = 1, server_state = 'running' WHERE classroom_id = ?").run(classroomA.id);
+  })();
+  restoreRaceLeaseDb.close();
 
   const tamperDb = new Database(dbFile);
   tamperDb.prepare('DELETE FROM teacher_courses WHERE teacher_id = ? AND course_id = ?').run(teacherA.id, 'craftom-agent');

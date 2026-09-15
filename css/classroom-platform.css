@@ -98,12 +98,23 @@ body.classroom-student-signed-in .choice-grid { grid-template-columns: minmax(0,
 .student-list li strong, .student-list li small { display: block; }
 .student-list li small { margin-top: 4px; color: var(--muted); }
 .add-student-form { display: grid; grid-template-columns: 1fr auto; align-items: end; }
+.management-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: end; margin-top: 16px; }
+.management-form h3, .management-form .field-help { grid-column: 1 / -1; }
+.teacher-identity-form { margin: 16px 0; }
+.student-edit-form { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
+.student-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.archive-toggle { display: flex; align-items: center; gap: 8px; width: fit-content; margin-top: 20px; }
+.archive-toggle input { width: auto; min-height: auto; }
+.archive-state { width: fit-content; padding: 4px 9px; border-radius: 999px; color: #92400e; background: #fef3c7; font-weight: 800; }
+.class-card.archived { border-style: dashed; background: #fffbeb; }
+.archived-students li { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .one-time-code { padding: 12px; border: 1px solid #86efac; border-radius: 12px; background: #f0fdf4; color: #14532d; }
 
 @media (max-width: 720px) {
   .shell { width: min(100% - 22px, 1120px); padding-top: 28px; }
-  .choice-grid, .auth-grid, .create-class, .course-picker { grid-template-columns: 1fr; }
+  .choice-grid, .auth-grid, .create-class, .course-picker, .management-form, .student-edit-form { grid-template-columns: 1fr; }
   .dashboard-heading, .class-top { align-items: stretch; flex-direction: column; }
   .add-student-form { grid-template-columns: 1fr; }
+  .archived-students li { align-items: stretch; flex-direction: column; }
   .card { padding: 20px; }
 }
