@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>הכיתה שלי | hai.tech</title>
+  <meta name="description" content="הלומדות הפתוחות לתלמיד או לתלמידה במסגרת הכיתה.">
+  <link rel="stylesheet" href="css/classroom-platform.css">
+</head>
+<body data-classroom-page="student">
+  <header class="topbar">
+    <a class="brand" href="index.html">🌈 hai.tech</a>
+    <button class="button quiet" id="classroom-student-logout" type="button">יציאה</button>
+  </header>
+
+  <main class="shell student-shell">
+    <section class="intro">
+      <span class="eyebrow">הכיתה שלי</span>
+      <h1>שלום <span id="classroom-student-name"></span></h1>
+      <p>כיתה: <strong id="classroom-name"></strong></p>
+    </section>
+
+    <section class="card student-courses-card">
+      <h2>הלומדות הפתוחות לכיתה שלך</h2>
+      <div class="course-links" id="classroom-student-courses"></div>
+      <p class="message" id="classroom-student-message" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <script src="js/classroom-student.js?v=20260915-student-page-1"></script>
+  <script src="/js/feedback-widget.js?v=20260907-tehila-fixes-1"></script>
+</body>
+</html>

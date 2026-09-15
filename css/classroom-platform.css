@@ -34,6 +34,8 @@ form { display: grid; gap: 15px; }
 label { display: grid; gap: 7px; color: #334155; font-weight: 750; }
 input { width: 100%; min-height: 48px; padding: 10px 13px; border: 1px solid #cbd5e1; border-radius: 12px; background: #fff; color: var(--ink); font: inherit; }
 input:focus { outline: 3px solid rgba(79,70,229,.2); border-color: var(--primary); }
+.password-field { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; }
+.password-toggle { min-height: 48px; white-space: nowrap; }
 .field-help { margin: -6px 0 0; color: #475569; font-size: .92rem; line-height: 1.45; }
 .button { min-height: 46px; padding: 11px 18px; border: 0; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; font: inherit; font-weight: 850; cursor: pointer; }
 .primary { color: #fff; background: var(--primary); }
@@ -85,6 +87,8 @@ body.classroom-student-signed-in .choice-grid { grid-template-columns: minmax(0,
   width: fit-content;
 }
 .course-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.student-shell { max-width: 760px; }
+.student-courses-card { min-height: 180px; }
 .course-access-form { display: grid; gap: 10px; }
 .classes-list { display: grid; gap: 20px; margin-top: 24px; }
 .class-card { padding: 22px; border-radius: 20px; background: #fff; border: 1px solid var(--line); }
@@ -112,7 +116,7 @@ body.classroom-student-signed-in .choice-grid { grid-template-columns: minmax(0,
 
 @media (max-width: 720px) {
   .shell { width: min(100% - 22px, 1120px); padding-top: 28px; }
-  .choice-grid, .auth-grid, .create-class, .course-picker, .management-form, .student-edit-form { grid-template-columns: 1fr; }
+  .choice-grid, .auth-grid, .create-class, .course-picker, .management-form, .student-edit-form, .password-field { grid-template-columns: 1fr; }
   .dashboard-heading, .class-top { align-items: stretch; flex-direction: column; }
   .add-student-form { grid-template-columns: 1fr; }
   .archived-students li { align-items: stretch; flex-direction: column; }

@@ -4230,6 +4230,7 @@ const PUBLIC_HTML_PATHS = new Set([
   '/register.html',
   '/login.html',
   '/classroom-entry.html',
+  '/classroom-student.html',
   '/teacher-classrooms.html',
   '/classroom-admin.html',
   '/thankyou.html',

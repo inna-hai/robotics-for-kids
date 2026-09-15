@@ -82,11 +82,12 @@ function badgeHarness({ pathname = '/python-turtle.html', classroomMe, summerTok
 function entryHarness({ next = 'python-turtle.html', classroomLogoutOk = true, classroomMe = { role: 'guest', ok: true, subscriptionGateEnabled: true } } = {}) {
   const listeners = new Map();
   const makeNode = () => ({
-    hidden: false, href: '', textContent: '', classList: { toggle() {} },
+    hidden: false, href: '', textContent: '', type: 'button', classList: { toggle() {} },
     addEventListener(type, handler) { listeners.set(`${this.id}:${type}`, handler); },
+    setAttribute() {},
     reset() {},
   });
-  const ids = ['guest-continue', 'subscription-continue', 'student-continue', 'student-login-form', 'student-login-message', 'student-session', 'student-welcome', 'student-logout'];
+  const ids = ['guest-continue', 'subscription-continue', 'classroom-login-form', 'classroom-login-message', 'classroom-password', 'classroom-password-toggle', 'preview-demo-student'];
   const nodes = Object.fromEntries(ids.map(id => [id, Object.assign(makeNode(), { id })]));
   const assigned = [];
   const fetchCalls = [];
@@ -110,7 +111,7 @@ function entryHarness({ next = 'python-turtle.html', classroomLogoutOk = true, c
     },
   };
   context.window = context;
-  vm.runInNewContext(read('js/classroom-platform.js'), context);
+  vm.runInNewContext(read('js/classroom-entry.js'), context);
   return { nodes, listeners, assigned, fetchCalls, localStorage };
 }
 
@@ -161,7 +162,7 @@ const entryHtml = read('classroom-entry.html');
 assert.match(entryHtml, /id="subscription-continue"/);
 assert.match(entryHtml, /מנוי אישי/);
 assert.match(entryHtml, /התנסות כאורח/);
-assert.match(entryHtml, /classroom-platform\.js\?v=20260908-preview-student-1/);
+assert.match(entryHtml, /classroom-entry\.js\?v=20260915-unified-login-1/);
 assert.match(read('teacher-classrooms.html'), /classroom-platform\.js\?v=20260914-teacher-board-return-1/);
 
 const classroomSession = read('js/classroom-session.js');
