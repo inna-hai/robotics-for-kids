@@ -94,6 +94,7 @@
       const lessonId = Math.min(Math.max(Number(params.get('lesson')) || 1, 1), program.totalMeetings || 16);
       nav.innerHTML = `
         <a href="craftom-school/preview/index.html">דף הבית</a>
+        <a href="kugel-student.html">שיעור 0 - מבוך המטבעות</a>
         <a class="primary" href="craftom-minecraft-lesson-${lessonId}.html">השיעור הנוכחי</a>
         ${program.challenges.map(challenge => `<a href="craftom-minecraft-challenge.html?challenge=${challenge.id}">אתגר ${challenge.id}</a>`).join('')}
       `;
