@@ -88,7 +88,7 @@
       const normalizedLessonId = Math.min(Math.max(Number(currentLessonId) || 1, 1), program.totalMeetings);
       document.getElementById('courseHeaderNav').innerHTML = `
         <a class="primary" href="index.html">דף הבית</a>
-        <a id="currentLessonLink" href="${lessonHref(normalizedLessonId)}">השיעור הנוכחי</a>
+        <a id="currentLessonLink" href="${lessonHref(normalizedLessonId)}">השיעור הנוכחי - שיעור ${normalizedLessonId}</a>
         ${program.challenges.map(challenge => `<a href="../../craftom-minecraft-challenge.html?challenge=${challenge.id}">אתגר ${challenge.id}</a>`).join('')}
       `;
     }

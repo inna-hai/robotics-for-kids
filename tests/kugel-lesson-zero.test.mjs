@@ -79,6 +79,8 @@ let gameEventsDelayMs = 0;
 let gameEventsStartedResolve = null;
 let worldOpenDelayMs = 0;
 let worldOpenFailuresRemaining = 0;
+let worldCloseDelayMs = 0;
+let worldCloseFailuresRemaining = 0;
 let freezeDelayMs = 0;
 let freezeFailuresRemaining = 0;
 let freezeStartedResolve = null;
@@ -109,6 +111,15 @@ const monitor = createServer(async (req, res) => {
     worldOpenFailuresRemaining -= 1;
     res.statusCode = 503;
     res.end(JSON.stringify({ error: 'ambiguous_open_failure' }));
+    return;
+  }
+  if (req.url === '/api/internal/craftom-school/world/close' && worldCloseDelayMs) {
+    await new Promise((resolve) => setTimeout(resolve, worldCloseDelayMs));
+  }
+  if (req.url === '/api/internal/craftom-school/world/close' && worldCloseFailuresRemaining > 0) {
+    worldCloseFailuresRemaining -= 1;
+    res.statusCode = 503;
+    res.end(JSON.stringify({ error: 'temporary_close_failure' }));
     return;
   }
   if (req.url === '/api/internal/craftom-school/live/freeze') {
@@ -297,6 +308,8 @@ try {
   assert.equal(launchBody.lesson.id, 0);
   assert.equal(launchBody.session.classroomId, classroomA.id);
   assert.equal(monitorCalls.some(call => call.url === '/api/internal/craftom-school/world/open' && call.authorization === 'Bearer test-monitor-token'), true);
+  const lessonZeroOpenCall = monitorCalls.find(call => call.url === '/api/internal/craftom-school/world/open' && call.body.start_mode === 'reset');
+  assert.deepEqual(lessonZeroOpenCall?.body.allowlist_names, ['NoaSecure'], 'lesson launch must invite active class Minecraft players');
   const duplicateLaunch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, teacherACookie);
   assert.equal(duplicateLaunch.status, 200, 'the same class can restart its own active lesson zero');
   const lessonOneLaunch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/1/launch`, {}, teacherACookie);
@@ -305,11 +318,19 @@ try {
   assert.equal(lessonOneLaunchBody.lesson.id, 1);
   assert.equal(lessonOneLaunchBody.session.lessonId, 1);
   assert.equal(monitorCalls.some(call => call.url === '/api/internal/craftom-school/world/open' && call.body.world === 'kugel-50-safe-compounds-v3-20260824'), true);
+  const lessonOneOpenCall = monitorCalls.find(call => call.url === '/api/internal/craftom-school/world/open' && call.body.world === 'kugel-50-safe-compounds-v3-20260824');
+  assert.deepEqual(lessonOneOpenCall?.body.allowlist_names, ['NoaSecure'], 'lesson one launch must invite active class Minecraft players');
   const lessonTwoLaunch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/2/launch`, {}, teacherACookie);
   assert.equal(lessonTwoLaunch.status, 200, 'the same class can launch lesson two with the shared Agent Academy world');
   const lessonTwoLaunchBody = await lessonTwoLaunch.json();
   assert.equal(lessonTwoLaunchBody.lesson.id, 2);
   assert.equal(lessonTwoLaunchBody.session.lessonId, 2);
+  const teacherPreviewStart = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/2/preview-start`, {}, teacherACookie);
+  assert.equal(teacherPreviewStart.status, 200, 'teacher-opened student preview can refresh Minecraft access before launching');
+  const teacherPreviewStartBody = await teacherPreviewStart.json();
+  assert.ok(teacherPreviewStartBody.minecraft.launchUrl.startsWith('minecraftedu://'));
+  const teacherPreviewAccessSync = monitorCalls.find(call => call.url === '/api/internal/craftom-school/world/open' && call.body.start_mode === 'continue' && call.body.world === 'kugel-50-safe-compounds-v3-20260824');
+  assert.deepEqual(teacherPreviewAccessSync?.body.allowlist_names, ['NoaSecure'], 'teacher preview launch must refresh Minecraft access for the active class');
   const conflictingLaunch = await post(baseUrl, `/api/kugel/classes/${classroomB.id}/launch`, {}, teacherBCookie);
   assert.equal(conflictingLaunch.status, 409, 'one Minecraft server must not be controlled by two classrooms at once');
   const foreignPlayerMessage = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/message`, { text: 'אסור', scope: 'player', target: 'OtherSecure' }, teacherACookie);
@@ -323,6 +344,8 @@ try {
   assert.equal(studentStartBody.student.id, studentA.id);
   assert.equal(studentStartBody.student.minecraftPlayerName, 'NoaSecure');
   assert.ok(studentStartBody.minecraft.launchUrl.startsWith('minecraftedu://'));
+  const studentStartAccessSync = monitorCalls.find(call => call.url === '/api/internal/craftom-school/world/open' && call.body.start_mode === 'continue' && call.body.world === 'kugel-50-safe-compounds-v3-20260824');
+  assert.deepEqual(studentStartAccessSync?.body.allowlist_names, ['NoaSecure'], 'student start must refresh Minecraft access for the active class');
 
   const pngBytes = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=', 'base64');
   const pngDataUrl = `data:image/png;base64,${pngBytes.toString('base64')}`;
@@ -918,6 +941,7 @@ try {
   const stop = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/stop`, {}, teacherACookie);
   const stopBody = await stop.json();
   assert.equal(stop.status, 200, `${JSON.stringify(stopBody)}\n${serverOutput}`);
+  assert.equal(monitorCalls.some(call => call.url === '/api/internal/craftom-school/world/close' && call.body.server === 'test-kugel-monitor'), true, 'stopping a class must close the Minecraft server instead of only freezing students');
   const launchOtherAfterStop = await post(baseUrl, `/api/kugel/classes/${classroomB.id}/launch`, {}, teacherBCookie);
   assert.equal(launchOtherAfterStop.status, 200, 'another class may launch only after the active class releases the server');
   gameEvents = [{ id: 999, event_type: 'coin_collected', player_name: 'NoaSecure', created_at: new Date().toISOString(), payload: JSON.stringify({ coin_index: 1 }) }];
@@ -942,7 +966,7 @@ try {
   assert.equal((await post(baseUrl, `/api/kugel/classes/${classroomB.id}/stop`, {}, teacherBCookie)).status, 200);
 
   worldOpenDelayMs = 120;
-  freezeDelayMs = 120;
+  worldCloseDelayMs = 120;
   const staleLaunchPromise = post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, teacherACookie);
   await new Promise((resolve) => setTimeout(resolve, 30));
   const stopDuringLaunchPromise = post(baseUrl, `/api/kugel/classes/${classroomA.id}/stop`, {}, teacherACookie);
@@ -954,15 +978,15 @@ try {
   const staleLaunch = await staleLaunchPromise;
   assert.equal(staleLaunch.status, 409, 'a completed stale monitor request must not reclaim a released lease');
   worldOpenDelayMs = 0;
-  freezeDelayMs = 0;
+  worldCloseDelayMs = 0;
   const afterStaleLaunch = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
   assert.equal((await afterStaleLaunch.json()).session.active, false);
 
   const relaunchForFailedStop = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, teacherACookie);
   assert.equal(relaunchForFailedStop.status, 200);
-  freezeFailuresRemaining = 1;
+  worldCloseFailuresRemaining = 1;
   const failedStop = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/stop`, {}, teacherACookie);
-  assert.equal(failedStop.status, 502, 'a failed external freeze must keep a retriable lease');
+  assert.equal(failedStop.status, 502, 'a failed external close must keep a retriable lease');
   const blockedAfterFailedStop = await post(baseUrl, `/api/kugel/classes/${classroomB.id}/launch`, {}, teacherBCookie);
   assert.equal(blockedAfterFailedStop.status, 409, 'another class must remain blocked while cleanup needs retry');
   const retryStop = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/stop`, {}, teacherACookie);

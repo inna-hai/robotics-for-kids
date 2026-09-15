@@ -32,7 +32,6 @@
   </main>
   <div class="actions">
     <a class="btn" id="backToTeacher" href="kugel-teacher.html?lesson=1" hidden>חזרה לניהול שיעור מורה</a>
-    <a class="btn secondary" id="backToLesson" href="craftom-minecraft-lesson-1.html">חזרה לשיעור</a>
     <a class="btn secondary" href="craftom-school/preview/index.html">מפת הקורס</a>
   </div>
   <script src="js/craftom-minecraft-challenges.js?v=20260914-teacher-return-1"></script>
@@ -51,11 +50,10 @@
     };
     document.getElementById('courseHeaderNav').innerHTML = `
       <a href="craftom-school/preview/index.html">דף הבית</a>
-      <a href="craftom-minecraft-lesson-${selectedLesson.id}.html">השיעור הנוכחי</a>
+      <a href="craftom-minecraft-lesson-${selectedLesson.id}.html">השיעור הנוכחי - שיעור ${selectedLesson.id}</a>
       ${program.challenges.map(item => `<a class="${item.id === challenge.id ? 'primary' : ''}" href="craftom-minecraft-challenge.html?challenge=${item.id}">אתגר ${item.id}</a>`).join('')}
     `;
     document.title = `מצגת מדריך - ${challenge.title}`;
-    document.getElementById('backToLesson').href = `craftom-minecraft-lesson-${selectedLesson.id}.html`;
     const backToTeacher = document.getElementById('backToTeacher');
     if (params.get('teacherReturn') === '1') {
       backToTeacher.hidden = false;

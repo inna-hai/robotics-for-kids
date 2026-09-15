@@ -73,7 +73,7 @@
     const currentLesson = window.getCraftomMinecraftLesson(params.get('lesson') || ((challenge.id - 1) * 4) + 1);
     document.getElementById('courseHeaderNav').innerHTML = `
       <a href="craftom-school/preview/index.html">דף הבית</a>
-      <a href="craftom-minecraft-lesson-${currentLesson.id}.html">השיעור הנוכחי</a>
+      <a href="craftom-minecraft-lesson-${currentLesson.id}.html">השיעור הנוכחי - שיעור ${currentLesson.id}</a>
       ${program.challenges.map(item => `<a class="${item.id === challenge.id ? 'primary' : ''}" href="craftom-minecraft-challenge.html?challenge=${item.id}">אתגר ${item.id}</a>`).join('')}
     `;
     document.title = `דף עבודה עצמית - ${challenge.title}`;

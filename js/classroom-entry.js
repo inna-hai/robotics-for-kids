@@ -8,7 +8,10 @@
     'craftom-school/preview/index.html',
   ]);
 
-  const requested = new URLSearchParams(location.search).get('next') || '';
+  const query = new URLSearchParams(location.search);
+  const requested = query.get('next') || '';
+  const autoDemoStudent = query.get('demoStudent') === '1';
+  const switchToStudent = query.get('switchRole') === 'student';
   const next = allowedNext.has(requested) ? requested : 'index.html#courses';
   const guestNext = 'sisi.html';
   const guest = document.getElementById('guest-continue');
@@ -55,9 +58,23 @@
     message.classList.toggle('success', success);
   }
 
-  function redirectForRole(role) {
+  function redirectForRole(role, targetNext = '') {
     if (role === 'teacher') location.assign('teacher-classrooms.html');
-    if (role === 'student') location.assign('classroom-student.html');
+    if (role === 'student') location.assign(targetNext && allowedNext.has(targetNext) ? targetNext : 'classroom-student.html');
+  }
+
+  async function openPreviewDemoStudent() {
+    setMessage('פותחים תלמידת בדיקה…');
+    if (previewDemoStudent) previewDemoStudent.disabled = true;
+    try {
+      await request('/api/classroom/logout', {}).catch(() => {});
+      const data = await request('/api/classroom/preview-demo-student-login', {});
+      redirectForRole(data.role, autoDemoStudent ? next : '');
+    } catch (error) {
+      setMessage(error.message);
+    } finally {
+      if (previewDemoStudent) previewDemoStudent.disabled = false;
+    }
   }
 
   guest.href = guestNext;
@@ -126,23 +143,24 @@
       .then((data) => { if (data.enabled) previewDemoStudent.hidden = false; })
       .catch(() => {});
     previewDemoStudent.addEventListener('click', async () => {
-      setMessage('פותחים תלמידת בדיקה…');
-      previewDemoStudent.disabled = true;
-      try {
-        const data = await request('/api/classroom/preview-demo-student-login', {});
-        redirectForRole(data.role);
-      } catch (error) {
-        setMessage(error.message);
-      } finally {
-        previewDemoStudent.disabled = false;
-      }
+      await openPreviewDemoStudent();
     });
   }
 
-  request('/api/classroom/me')
-    .then((me) => {
-      if (me.role === 'teacher' || me.role === 'student') redirectForRole(me.role);
-      else if (me.subscriptionGateEnabled === false && allowedNext.has(requested)) location.assign(requested);
-    })
-    .catch(() => {});
+  if (autoDemoStudent) {
+    openPreviewDemoStudent();
+  } else if (switchToStudent) {
+    request('/api/classroom/logout', {})
+      .catch(() => {})
+      .finally(() => {
+        history.replaceState(null, '', 'classroom-entry.html');
+      });
+  } else {
+    request('/api/classroom/me')
+      .then((me) => {
+        if (me.role === 'teacher' || me.role === 'student') redirectForRole(me.role);
+        else if (me.subscriptionGateEnabled === false && allowedNext.has(requested)) location.assign(requested);
+      })
+      .catch(() => {});
+  }
 })();

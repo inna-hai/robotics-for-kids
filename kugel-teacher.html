@@ -11,7 +11,7 @@
   <link rel="preload" as="image" href="assets/craftom/challenges/craftom-challenge3-smart-delivery-line-gemini-live-1x-first-frame.webp" type="image/webp">
   <link rel="preload" as="image" href="assets/craftom/challenges/craftom-challenge4-smart-city-automations-gemini-live-1x-first-frame.webp" type="image/webp">
   <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260910-direct-student-copy-1">
-  <link rel="stylesheet" href="assets/kugel/kugel-lomda-interfaces.css?v=20260914-teacher-home-like-student-19">
+  <link rel="stylesheet" href="assets/kugel/kugel-lomda-interfaces.css?v=20260916-teacher-metrics-2x2-1">
 </head>
 <body class="kugel-app teacher-app preview-home" data-kugel-page="teacher">
   <header class="course-header teacher-course-header" id="teacherCourseHeader" aria-label="ניווט מורה אקדמיית ה-Agent">
@@ -33,12 +33,13 @@
       <div>
         <div class="kicker" id="teacherLessonKicker">אקדמיית ה-Agent • מסך מורה</div>
         <h1 id="teacherLessonTitle">ניהול אקדמיית ה-Agent לכיתה</h1>
-        <p class="goal" id="teacherLessonGoal">בחרו שיעור לפתיחה. הניהול המלא מופיע רק בתוך מסך השיעור.</p>
+        <p class="goal" id="teacherLessonGoal">בחרו שיעור לניהול מורה. תצוגת תלמיד זמינה בנפרד כבדיקה מקדימה.</p>
         <div class="actions teacher-hero-actions">
-          <a class="btn" href="#teacherHomeChallenges">בחירת שיעור לפתיחה</a>
           <a class="btn secondary" id="teacherHomeCurrentLesson" href="kugel-teacher.html">השיעור הפעיל</a>
-          <a class="btn secondary" id="teacherHomeStudentPreview" href="craftom-school/preview/index.html">תצוגה מקדימה כתלמיד</a>
+          <a class="btn secondary" id="teacherHomeStudentPreview" href="craftom-school/preview/index.html" target="_blank" rel="noopener">תצוגה מקדימה כתלמיד</a>
+          <a class="btn secondary" id="teacherHomeSlides" href="craftom-minecraft-slides.html?challenge=1">מצגת מדריך</a>
           <a class="btn secondary teacher-classrooms-button" href="teacher-classrooms.html?fromTeacherBoard=1">חזרה לכיתות שלי</a>
+          <button class="btn secondary" id="teacherLogout" type="button">יציאה מהחשבון</button>
         </div>
       </div>
       <article class="card build-first teacher-hero-summary-card">
@@ -46,13 +47,12 @@
         <p>בוחרים שיעור, פותחים Minecraft לכיתה, צופים בתצוגה מקדימה כתלמיד, ואז עוקבים אחרי התקדמות, תמונות וכרטיסי יציאה.</p>
       </article>
       <div class="maze-preview" aria-hidden="true"><span>8</span><small>מטבעות</small></div>
-      <div class="server-status-card"><span class="status-dot" id="serverDot"></span><strong id="serverState">שרת מוכן</strong><small id="serverDetail"></small></div>
+      <div class="server-status-card"><span class="status-dot" id="serverDot"></span><strong id="serverState">שרת מוכן</strong><small id="serverDetail"></small><div class="server-lesson-actions" id="serverLessonActions"></div></div>
     </section>
     <aside class="teacher-control">
       <p class="eyebrow">סביבת מורה מאובטחת</p>
       <h1>ניהול Minecraft לכיתה</h1>
       <p id="teacherClassName">טוען את הכיתה…</p>
-      <a class="primary-action link-action" id="studentPreviewLink" href="craftom-minecraft-lesson-1.html">תצוגה מקדימה כתלמיד</a>
       <p class="form-status" id="teacherStatus" aria-live="polite"></p>
       <section class="panel compact-panel teacher-live-controls" id="teacherLiveControls" hidden>
         <h3>בקרה כיתתית</h3>
@@ -66,17 +66,6 @@
         </div>
       </section>
     </aside>
-    <section class="panel teacher-selected-lesson" id="selectedTeacherLesson" aria-label="השיעור שנבחר" hidden>
-      <div class="panel-head">
-        <div>
-          <p class="eyebrow" id="selectedLessonEyebrow">שיעור נבחר</p>
-          <h3 id="selectedLessonTitle">טוען שיעור…</h3>
-        </div>
-        <a class="secondary-action link-action" id="selectedLessonPreviewLink" href="craftom-minecraft-lesson-1.html">תצוגה מקדימה כתלמיד</a>
-      </div>
-      <p id="selectedLessonSummary">כאן יופיעו פעולות Minecraft והמעקב החי של השיעור.</p>
-      <div class="minecraft-lesson-actions selected-lesson-actions" id="selectedLessonActions"></div>
-    </section>
     <section class="teacher-main">
       <section class="teacher-home-overview" id="teacherHomeOverview">
         <section class="grid-4 teacher-home-status">
@@ -111,7 +100,7 @@
         <article class="panel lesson-step-card">
           <span class="step-num">1</span>
           <h3>משייכים שחקנים</h3>
-          <p>מזינים לכל תלמיד/ה את שם השחקן המדויק ב-Minecraft.</p>
+          <p>מזינים לכל תלמיד את שם השחקן המדויק ב-Minecraft.</p>
         </article>
         <article class="panel lesson-step-card">
           <span class="step-num">2</span>
@@ -141,10 +130,10 @@
         </details>
       </section>
     </section>
-   </section>
-  </main>
+  </section>
+ </main>
   <script src="js/craftom-minecraft-challenges.js?v=20260914-video-first-frames-1"></script>
-  <script src="js/kugel-lesson-zero.js?v=20260915-attempt-metrics-1"></script>
+  <script src="js/kugel-lesson-zero.js?v=20260916-teacher-lesson-actions-1"></script>
   <script src="/js/feedback-widget.js?v=20260907-tehila-fixes-1"></script>
 </body>
 </html>

@@ -69,6 +69,17 @@
     return `${minutes}:${String(seconds).padStart(2, '0')}`;
   }
 
+  function minecraftServerDetails(minecraft) {
+    if (!minecraft) return 'פרטי החיבור יוצגו לאחר שהמורה תפעיל את העולם ותשייך את שם השחקן.';
+    const serverCode = minecraft.accessCode || minecraft.serverId || '';
+    return [
+      `שרת: ${minecraft.serverName}`,
+      serverCode ? `קוד שרת: ${serverCode}` : '',
+      `כתובת: ${minecraft.serverAddress}`,
+      `מזהה שרת (Server ID): ${minecraft.serverId}`,
+    ].filter(Boolean).join(' • ');
+  }
+
   async function initStudent() {
     const sessionStatus = document.getElementById('studentSessionStatus');
     const playerStatus = document.getElementById('playerStatus');
@@ -126,12 +137,12 @@
       const minecraft = data.minecraft;
       renderQaLessonSwitcher(data);
       sessionStatus.textContent = session.active ? 'השיעור פעיל' : 'ממתין להפעלת המורה';
-      playerStatus.textContent = student.connected ? 'מחובר/ת' : 'לא מחובר/ת';
+      playerStatus.textContent = student.connected ? 'זוהה ב-Minecraft' : 'לא זוהה ב-Minecraft';
       identity.textContent = student.minecraftPlayerName
         ? `${student.name} • שחקן Minecraft: ${student.minecraftPlayerName}`
-        : `${student.name || 'תלמיד/ה'} • המורה עדיין לא שייכה לך שם שחקן ב-Minecraft.`;
+        : `${student.name || 'תלמיד'} • המורה עדיין לא שייך לך שם שחקן ב-Minecraft.`;
       minecraftDetails.textContent = minecraft && session.active
-        ? `שרת: ${minecraft.serverName} • כתובת: ${minecraft.serverAddress} • Server ID: ${minecraft.serverId}`
+        ? minecraftServerDetails(minecraft)
         : 'פרטי החיבור יוצגו לאחר שהמורה תפעיל את העולם ותשייך את שם השחקן.';
       document.getElementById('minecraftAccessCode').textContent = minecraft?.accessCode || 'יוצג לאחר הפעלת השיעור';
       coinProgress.textContent = `${student.coins || 0} מתוך 8 מטבעות · ניסיונות: ${Number(student.attemptCount || 0)} · זמן אחרון: ${formatDuration(student.lastDurationMs)} · שיא: ${formatDuration(student.bestTimeMs)}`;
@@ -162,7 +173,7 @@
 
     async function enterFromCompoundLink() {
       if (!compoundEntryId) return false;
-      setStatus(message, 'מזהים את התלמיד/ה לפי החלקה במשחק…');
+      setStatus(message, 'מזהים את התלמיד לפי החלקה במשחק…');
       try {
         render(await api('/api/kugel/compound-entry', { compoundId: compoundEntryId }));
         setStatus(message, '');
@@ -222,14 +233,8 @@
     const className = document.getElementById('teacherClassName');
     const classMessage = document.querySelector('#classMessageForm input[name="text"]');
     const lessonList = document.getElementById('minecraftLessonList');
-    const studentPreviewLink = document.getElementById('studentPreviewLink');
     const teacherCourseHeaderNav = document.getElementById('teacherCourseHeaderNav');
-    const selectedTeacherLesson = document.getElementById('selectedTeacherLesson');
-    const selectedLessonTitle = document.getElementById('selectedLessonTitle');
-    const selectedLessonSummary = document.getElementById('selectedLessonSummary');
-    const selectedLessonEyebrow = document.getElementById('selectedLessonEyebrow');
-    const selectedLessonActions = document.getElementById('selectedLessonActions');
-    const selectedLessonPreviewLink = document.getElementById('selectedLessonPreviewLink');
+    const serverLessonActions = document.getElementById('serverLessonActions');
     const teacherLessonKicker = document.getElementById('teacherLessonKicker');
     const teacherLessonTitle = document.getElementById('teacherLessonTitle');
     const teacherLessonGoal = document.getElementById('teacherLessonGoal');
@@ -241,6 +246,8 @@
     const teacherHomeChallenges = document.getElementById('teacherHomeChallenges');
     const teacherHomeCurrentLesson = document.getElementById('teacherHomeCurrentLesson');
     const teacherHomeStudentPreview = document.getElementById('teacherHomeStudentPreview');
+    const teacherHomeSlides = document.getElementById('teacherHomeSlides');
+    const teacherLogout = document.getElementById('teacherLogout');
     const teacherHomeClassName = document.getElementById('teacherHomeClassName');
     const teacherHomeActiveLesson = document.getElementById('teacherHomeActiveLesson');
     const teacherHomeMinecraftState = document.getElementById('teacherHomeMinecraftState');
@@ -281,6 +288,20 @@
     function studentPreviewUrl(lessonId) {
       const suffix = teacherReturnQuery(lessonId);
       return Number(lessonId) === 0 ? `kugel-student.html?${suffix}` : `craftom-minecraft-lesson-${lessonId}.html?${suffix}`;
+    }
+
+    function configureStudentPreviewLink(link, lessonId) {
+      if (!link) return;
+      link.href = lessonId === null || lessonId === undefined ? 'craftom-school/preview/index.html' : studentPreviewUrl(lessonId);
+      link.target = '_blank';
+      link.rel = 'noopener';
+    }
+
+    function configureSlidesLink(link, lessonId) {
+      if (!link) return;
+      const id = Number(lessonId || 1);
+      const challengeId = lessonChallengeId(id) || 1;
+      link.href = `craftom-minecraft-slides.html?challenge=${challengeId}&${teacherReturnQuery(id)}`;
     }
 
     function lessonChallengeId(lessonId) {
@@ -345,7 +366,14 @@
       document.getElementById(id).textContent = String(value || 0);
     }
 
-    async function teacherAction(path, payload, pendingText, doneText) {
+    let teacherActionInFlight = false;
+    async function teacherAction(path, payload, pendingText, doneText, actionButton = null) {
+      if (teacherActionInFlight) return;
+      teacherActionInFlight = true;
+      if (actionButton) {
+        actionButton.disabled = true;
+        actionButton.setAttribute('aria-busy', 'true');
+      }
       setStatus(status, pendingText);
       try {
         await api(path, payload);
@@ -353,13 +381,19 @@
         await refresh();
       } catch (error) {
         setStatus(status, error.message, true);
+      } finally {
+        teacherActionInFlight = false;
+        if (actionButton && actionButton.isConnected) {
+          actionButton.disabled = false;
+          actionButton.removeAttribute('aria-busy');
+        }
       }
     }
 
     function renderStudent(student) {
       const card = node('article', undefined, `monitor-row ${student.connected ? 'is-connected' : 'is-offline'}`);
       const identity = node('div', undefined, 'student-identity');
-      identity.append(node('strong', student.name), node('span', student.connected ? 'מחובר/ת' : 'לא מחובר/ת', 'connection-pill'));
+      identity.append(node('strong', student.name), node('span', student.connected ? 'זוהה ב-Minecraft' : 'לא זוהה ב-Minecraft', 'connection-pill'));
 
       const progress = node('div', undefined, 'coin-progress');
       const lessonId = Number(current?.trackedLessonId ?? current?.session?.lessonId ?? 0);
@@ -398,7 +432,7 @@
 
       const actions = node('div', undefined, 'student-row-actions');
       const messageInput = document.createElement('input');
-      messageInput.placeholder = 'הודעה אישית';
+      messageInput.placeholder = 'הודעה אישית למיינקראפט';
       messageInput.value = drafts.get(student.id) || '';
       messageInput.addEventListener('input', () => drafts.set(student.id, messageInput.value));
       const send = node('button', 'שליחה', 'secondary-action');
@@ -533,13 +567,12 @@
       if (teacherHomeMinecraftState) teacherHomeMinecraftState.textContent = minecraftStateLabel(session);
       if (teacherHomeCurrentLesson) {
         teacherHomeCurrentLesson.href = activeLesson ? teacherPageUrl({ lesson: activeLesson.id }) : '#teacherHomeChallenges';
-        teacherHomeCurrentLesson.textContent = activeLesson ? `כניסה לשיעור ${activeLesson.id}` : 'בחירת שיעור';
+        teacherHomeCurrentLesson.textContent = activeLesson ? `ניהול שיעור ${activeLesson.id}` : 'בחירת שיעור לניהול';
       }
       if (teacherHomeStudentPreview) {
-        teacherHomeStudentPreview.href = activeLesson
-          ? studentPreviewUrl(activeLesson.id)
-          : 'craftom-school/preview/index.html';
+        configureStudentPreviewLink(teacherHomeStudentPreview, activeLesson ? activeLesson.id : null);
       }
+      configureSlidesLink(teacherHomeSlides, activeLesson ? activeLesson.id : 1);
       if (teacherProgramVideoPreview && program?.overviewVideo && !teacherProgramVideoPreview.dataset.rendered) {
         renderTeacherVideoPreview(
           program.overviewVideo,
@@ -551,7 +584,7 @@
       }
       teacherLessonKicker.textContent = 'אקדמיית ה-Agent • מסך מורה';
       teacherLessonTitle.textContent = 'ניהול אקדמיית ה-Agent';
-      teacherLessonGoal.textContent = 'בחרו שיעור לפתיחה. הניהול המלא נמצא בתוך דף השיעור.';
+      teacherLessonGoal.textContent = 'בחרו שיעור לניהול מורה. תצוגת תלמיד זמינה בנפרד כבדיקה מקדימה.';
     }
 
     function renderTeacherLessonActions(lesson, session, activeLessonId, minecraftBlocked) {
@@ -569,35 +602,24 @@
         isActiveLesson ? scoped('/stop') : lessonLaunchPath(lesson.id),
         {},
         isActiveLesson ? `מסיימים את שיעור ${lesson.id}…` : `מפעילים את עולם שיעור ${lesson.id}…`,
-        isActiveLesson ? 'השיעור הסתיים והשרת שוחרר.' : `עולם שיעור ${lesson.id} פעיל.`
+        isActiveLesson ? 'השיעור הסתיים והשרת שוחרר.' : `עולם שיעור ${lesson.id} פעיל.`,
+        launch
       ));
       actionRow.append(launch);
-      if (Number(lesson.id) >= 1) {
-        const link = node('a', `צפייה בדף שיעור ${lesson.id}`, 'secondary-action link-action teacher-next-lesson');
-        link.href = studentPreviewUrl(lesson.id);
-        actionRow.append(link);
-        const slides = node('a', 'מצגת מדריך', 'secondary-action link-action');
-        slides.href = `craftom-minecraft-slides.html?challenge=${lesson.challengeId || Math.ceil(Number(lesson.id) / 4)}&${teacherReturnQuery(lesson.id)}`;
-        actionRow.append(slides);
-      }
       return actionRow;
     }
 
     function renderSelectedLesson(lesson, session, activeLessonId, minecraftBlocked) {
-      if (!lesson || !selectedLessonActions) return;
+      if (!lesson) return;
       const lessonId = Number(lesson.id);
       const challengeId = lessonChallengeId(lessonId);
-      selectedLessonEyebrow.textContent = lessonId === 0 ? 'שיעור פתיחה' : `אתגר ${challengeId} • שיעור ${lessonId}`;
-      selectedLessonTitle.textContent = lesson.title || `שיעור ${lessonId}`;
-      selectedLessonSummary.textContent = lesson.summary || 'בודקים האם קיים עולם Minecraft מתאים לשיעור הזה.';
       teacherLessonKicker.textContent = lessonId === 0 ? 'שיעור 0 • תרגול פתיחה' : `אתגר ${challengeId} • שיעור ${lessonId}`;
       teacherLessonTitle.textContent = lesson.title || `שיעור ${lessonId}`;
       teacherLessonGoal.textContent = lesson.summary || 'האקדמיה ו־Minecraft זמינים במקביל לפי בחירת המורה.';
-      if (selectedLessonPreviewLink) {
-        selectedLessonPreviewLink.href = studentPreviewUrl(lessonId);
-      }
+      configureStudentPreviewLink(teacherHomeStudentPreview, lessonId);
+      configureSlidesLink(teacherHomeSlides, lessonId || 1);
       const actions = renderTeacherLessonActions(lesson, session, activeLessonId, minecraftBlocked);
-      selectedLessonActions.replaceChildren(...actions.childNodes);
+      if (serverLessonActions) serverLessonActions.replaceChildren(...actions.childNodes);
     }
 
     function renderTeacherLessonPicker(lesson, selectedLessonId) {
@@ -611,10 +633,10 @@
       card.append(heading);
       card.append(node('p', lesson.summary || 'בודקים האם קיים עולם Minecraft מתאים לשיעור הזה.'));
       const actions = node('div', undefined, 'challenge-actions');
-      const choose = node('a', 'כניסה לשיעור', 'btn');
+      const choose = node('a', 'ניהול שיעור מורה', 'btn');
       choose.href = teacherPageUrl({ lesson: lesson.id });
-      const preview = node('a', 'צפייה כשיעור תלמיד', 'btn secondary');
-      preview.href = studentPreviewUrl(lesson.id);
+      const preview = node('a', 'תצוגה מקדימה כתלמיד', 'btn secondary');
+      configureStudentPreviewLink(preview, lesson.id);
       actions.append(choose, preview);
       card.append(actions);
       return card;
@@ -650,9 +672,6 @@
       className.textContent = data.classroom.name;
       const session = data.session || {};
       const activeLessonId = Number(session.lessonId ?? 0);
-      if (studentPreviewLink) {
-        studentPreviewLink.href = studentPreviewUrl(activeLessonId);
-      }
       const minecraftBlocked = data.minecraftConfigured === false;
       const lessons = data.lessons?.length ? data.lessons : [data.lesson].filter(Boolean);
       const selectedLesson = resolveSelectedLesson(lessons, activeLessonId);
@@ -668,12 +687,12 @@
       renderTeacherHome(lessons, session, activeLessonId, data);
       renderTeacherChallenge(challenge, lessons, selectedLessonId);
       const showingLessonManagement = !showingChallengeOverview && !showingTeacherHome;
-      if (selectedTeacherLesson) selectedTeacherLesson.hidden = showingChallengeOverview || showingTeacherHome;
-      if (selectedTeacherLesson && !showingChallengeOverview && !showingTeacherHome) selectedTeacherLesson.hidden = false;
       if (!showingChallengeOverview && !showingTeacherHome) renderSelectedLesson(selectedLesson, session, activeLessonId, minecraftBlocked);
-      [teacherLiveControls, teacherLessonSteps, teacherMetrics, teacherStudentBoard].forEach(section => {
+      if (serverLessonActions && (showingChallengeOverview || showingTeacherHome)) serverLessonActions.replaceChildren();
+      [teacherLiveControls, teacherMetrics, teacherStudentBoard].forEach(section => {
         if (section) section.hidden = !showingLessonManagement;
       });
+      if (teacherLessonSteps) teacherLessonSteps.hidden = !showingLessonManagement || selectedLessonId !== 0;
       document.getElementById('serverState').textContent = session.serverState === 'running' ? 'שרת פעיל' : session.serverState === 'error' ? 'שגיאת הפעלה' : 'שרת מוכן';
       const previewDetail = data.minecraftPreviewMode && session.active && session.serverDetail
         ? `${session.serverDetail} ${data.minecraftSetupNote}`
@@ -732,6 +751,17 @@
     document.getElementById('freezeAll').addEventListener('click', () => teacherAction(scoped('/freeze'), { scope: 'all', on: true }, 'עוצרים את הכיתה…', 'הכיתה נעצרה.'));
     document.getElementById('releaseAll').addEventListener('click', () => teacherAction(scoped('/freeze'), { scope: 'all', on: false }, 'משחררים את הכיתה…', 'הכיתה שוחררה.'));
     document.getElementById('refreshBoard').addEventListener('click', refresh);
+    teacherLogout?.addEventListener('click', async () => {
+      teacherLogout.disabled = true;
+      setStatus(status, 'יוצאים מהחשבון…');
+      try {
+        await api('/api/classroom/logout', {});
+        location.assign('classroom-entry.html');
+      } catch (error) {
+        teacherLogout.disabled = false;
+        setStatus(status, error.message, true);
+      }
+    });
     await refresh();
     setInterval(refresh, 5000);
   }
