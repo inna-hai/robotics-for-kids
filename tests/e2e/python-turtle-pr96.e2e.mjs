@@ -51,12 +51,42 @@ try {
   assert.match(result.code, /for i in range\(4\):\n\s{4}right\(90\)/);
   console.log('✓ deleting the first repeat-body line preserves loop structure');
 
+  await page.goto(`http://127.0.0.1:${port}/python-turtle-advanced.html?lesson=21`, { waitUntil: 'networkidle' });
+  const optionalChallengeUi = await page.evaluate(() => {
+    currentExerciseIndex = currentExercises().findIndex(ex => Number(ex?.id) === 8);
+    completedSet().delete(currentExerciseIndex);
+    exercisePassed = false;
+    workspace.clear();
+    renderCurrentExercise();
+    const ex = currentExercises()[currentExerciseIndex];
+    return {
+      continueDisabled: document.getElementById('nextExerciseBtn')?.disabled,
+      requiresCheck: requiresCheckedContinue(ex),
+      challenge: isChallengeExercise(ex),
+      optionalChallenge: isOptionalChallengeExercise(ex),
+    };
+  });
+  assert.deepEqual(optionalChallengeUi, {
+    continueDisabled: true,
+    requiresCheck: true,
+    challenge: false,
+    optionalChallenge: false,
+  }, 'lesson 21 exercise 8 must follow the checked exercise UI path');
+  console.log('✓ lesson 21 exercise 8 keeps Continue locked until validation passes');
+  await page.click('#runBtn');
+  await page.waitForFunction(() => document.querySelector('.exercise-feedback')?.textContent?.trim().length > 0);
+  assert.equal(await page.locator('#nextExerciseBtn').isDisabled(), true, 'invalid exercise 8 work must keep Continue locked after Run');
+  console.log('✓ lesson 21 exercise 8 Run uses validation before unlocking Continue');
+
   await page.goto(`http://127.0.0.1:${port}/python-turtle-advanced.html?lesson=21&exercise=4&unlock=1`, { waitUntil: 'networkidle' });
   const unrelatedLoopErrors = await page.evaluate(() => {
     workspace.clear();
     const xml = '<xml><block type="py_python"><next><block type="py_repeat"><field name="TIMES">6</field><statement name="DO"><block type="py_forward"><field name="STEPS">30</field><next><block type="py_right"><field name="ANGLE">60</field></block></next></block></statement></block></next></block></xml>';
     Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(xml), workspace);
-    return validateExercise();
+    const snapshot = createCodeSnapshot();
+    activeValidationSnapshot = snapshot;
+    try { return validateExercise(snapshot); }
+    finally { activeValidationSnapshot = null; }
   });
   assert.ok(unrelatedLoopErrors.length > 0, 'lesson 21 exercise 4 must reject an unrelated generic loop');
   console.log('✓ lesson 21 exercise 4 rejects unrelated loops');
@@ -65,17 +95,47 @@ try {
     workspace.clear();
     const xml = '<xml><block type="py_python"><next><block type="py_repeat"><field name="TIMES">18</field><statement name="DO"><block type="py_forward"><field name="STEPS">5</field><next><block type="py_right"><field name="ANGLE">10</field></block></next></block></statement></block></next></block></xml>';
     Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(xml), workspace);
-    return validateExercise();
+    const snapshot = createCodeSnapshot();
+    activeValidationSnapshot = snapshot;
+    try { return validateExercise(snapshot); }
+    finally { activeValidationSnapshot = null; }
   });
   assert.ok(missingSunColorErrors.length > 0, 'lesson 21 exercise 4 must require an explicit sun color');
   console.log('✓ lesson 21 exercise 4 requires an explicit sun color');
+
+  const postLoopColorErrors = await page.evaluate(() => {
+    workspace.clear();
+    const xml = '<xml><block type="py_python"><next><block type="py_repeat"><field name="TIMES">18</field><statement name="DO"><block type="py_forward"><field name="STEPS">5</field><next><block type="py_right"><field name="ANGLE">10</field></block></next></block></statement><next><block type="py_color"><field name="COLOR">#facc15</field></block></next></block></next></block></xml>';
+    Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(xml), workspace);
+    const snapshot = createCodeSnapshot();
+    activeValidationSnapshot = snapshot;
+    try { return validateExercise(snapshot); }
+    finally { activeValidationSnapshot = null; }
+  });
+  assert.ok(postLoopColorErrors.length > 0, 'lesson 21 exercise 4 must reject a sun color selected only after the sun loop');
+  console.log('✓ lesson 21 exercise 4 requires color before the sun loop');
+
+  const validSunErrors = await page.evaluate(() => {
+    workspace.clear();
+    const xml = '<xml><block type="py_python"><next><block type="py_color"><field name="COLOR">#facc15</field><next><block type="py_repeat"><field name="TIMES">18</field><statement name="DO"><block type="py_forward"><field name="STEPS">5</field><next><block type="py_right"><field name="ANGLE">10</field></block></next></block></statement></block></next></block></next></block></xml>';
+    Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(xml), workspace);
+    const snapshot = createCodeSnapshot();
+    activeValidationSnapshot = snapshot;
+    try { return validateExercise(snapshot); }
+    finally { activeValidationSnapshot = null; }
+  });
+  assert.deepEqual(validSunErrors, [], 'lesson 21 exercise 4 must accept a correctly colored sun loop');
+  console.log('✓ lesson 21 exercise 4 accepts color before the sun loop');
 
   await page.goto(`http://127.0.0.1:${port}/python-turtle-advanced.html?lesson=21&exercise=5&unlock=1`, { waitUntil: 'networkidle' });
   const unrelatedRayErrors = await page.evaluate(() => {
     workspace.clear();
     const xml = '<xml><block type="py_python"><next><block type="py_repeat"><field name="TIMES">6</field><statement name="DO"><block type="py_forward"><field name="STEPS">30</field><next><block type="py_right"><field name="ANGLE">60</field></block></next></block></statement></block></next></block></xml>';
     Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(xml), workspace);
-    return validateExercise();
+    const snapshot = createCodeSnapshot();
+    activeValidationSnapshot = snapshot;
+    try { return validateExercise(snapshot); }
+    finally { activeValidationSnapshot = null; }
   });
   assert.ok(unrelatedRayErrors.length > 0, 'lesson 21 exercise 5 must reject a generic hexagon loop');
   console.log('✓ lesson 21 exercise 5 rejects a generic hexagon');
@@ -83,12 +143,27 @@ try {
   await page.goto(`http://127.0.0.1:${port}/python-turtle-advanced.html?lesson=21&exercise=8&unlock=1`, { waitUntil: 'networkidle' });
   const missingDetailErrors = await page.evaluate(() => {
     workspace.clear();
-    const xml = '<xml><block type="py_python"><next><block type="py_repeat"><field name="TIMES">18</field><statement name="DO"><block type="py_forward"><field name="STEPS">5</field><next><block type="py_right"><field name="ANGLE">10</field></block></next></block></statement></block></next></block></xml>';
+    const xml = '<xml><block type="py_python"><next><block type="py_color"><field name="COLOR">#facc15</field><next><block type="py_repeat"><field name="TIMES">18</field><statement name="DO"><block type="py_forward"><field name="STEPS">5</field><next><block type="py_right"><field name="ANGLE">10</field></block></next></block></statement></block></next></block></next></block></xml>';
     Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(xml), workspace);
-    return validateExercise();
+    const snapshot = createCodeSnapshot();
+    activeValidationSnapshot = snapshot;
+    try { return validateExercise(snapshot); }
+    finally { activeValidationSnapshot = null; }
   });
   assert.ok(missingDetailErrors.length > 0, 'lesson 21 exercise 8 must require a separate repeated detail');
   console.log('✓ lesson 21 exercise 8 requires a repeated detail');
+
+  const validDetailErrors = await page.evaluate(() => {
+    workspace.clear();
+    const xml = '<xml><block type="py_python"><next><block type="py_color"><field name="COLOR">#facc15</field><next><block type="py_repeat"><field name="TIMES">18</field><statement name="DO"><block type="py_forward"><field name="STEPS">5</field><next><block type="py_right"><field name="ANGLE">10</field></block></next></block></statement><next><block type="py_repeat"><field name="TIMES">3</field><statement name="DO"><block type="py_forward"><field name="STEPS">20</field><next><block type="py_right"><field name="ANGLE">120</field></block></next></block></statement></block></next></block></next></block></next></block></xml>';
+    Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(xml), workspace);
+    const snapshot = createCodeSnapshot();
+    activeValidationSnapshot = snapshot;
+    try { return validateExercise(snapshot); }
+    finally { activeValidationSnapshot = null; }
+  });
+  assert.deepEqual(validDetailErrors, [], 'lesson 21 exercise 8 must accept a colored sun plus a separate repeated detail');
+  console.log('✓ lesson 21 exercise 8 accepts a valid repeated detail');
 
   await page.goto(`http://127.0.0.1:${port}/python-turtle.html?l=23`, { waitUntil: 'networkidle' });
   assert.equal(

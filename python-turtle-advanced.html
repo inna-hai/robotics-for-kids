@@ -7510,7 +7510,8 @@
       const repeatPatterns = repeatBlocks().map(block=>({
         times:numericField(block, 'TIMES', 0),
         body:actionsFrom(block.getInputTargetBlock('DO'), []),
-        repeated:actionsFrom(block, [])
+        repeated:actionsFrom(block, []),
+        activeColorBefore:activeColorBeforeBlock(block)
       }));
       const containsBlockType = (block, type, depth=0)=>{
         if(!block || depth > 100) return false;
@@ -8284,6 +8285,7 @@
       return /הידעתם|לחצו על בלוק|לוחצים על בלוק|שורת קוד נדלקת|שורת הקוד.*נדלקת|שורת Python/.test(text);
     }
     function isChallengeExercise(ex){
+      if(currentLesson === 21 && Number(ex?.id) === 8) return false;
       const text = `${ex?.title || ''} ${ex?.prompt || ''}`;
       if(currentLesson === 11 && ex?.id === 8 && /אתגר רשות/.test(text)) return true;
       return /אתגר/.test(text) && !isPythonWritingExercise(ex);
@@ -8295,6 +8297,7 @@
       return (currentLesson === 5 && ex?.id === 6) || (currentLesson === 8 && ex?.id === 7) || (currentLesson === 9 && ex?.id === 6) || (currentLesson === 10 && [1,2,3,4,5,6,7].includes(ex?.id)) || (currentLesson === 11 && ex?.id === 6) || (currentLesson === 12 && ex?.id === 6) || (currentLesson === 13 && ex?.id === 6);
     }
     function isOptionalChallengeExercise(ex){
+      if(currentLesson === 21 && Number(ex?.id) === 8) return false;
       const text = `${ex?.title || ''} ${ex?.prompt || ''}`;
       return /אתגר רשות/.test(text);
     }
@@ -9148,9 +9151,22 @@
       return advancedDebugLockIssues(actions).length === 0;
     }
 
+    function activeColorBeforeBlock(block){
+      const predecessors = [];
+      let cursor = block?.getPreviousBlock?.() || null;
+      while(cursor && cursor.type !== 'py_python'){
+        predecessors.unshift(cursor);
+        cursor = cursor.getPreviousBlock?.() || null;
+      }
+      let color = '#2563eb';
+      for(const predecessor of predecessors){
+        if(predecessor.type === 'py_color') color = String(predecessor.getFieldValue('COLOR') || '').toLowerCase();
+      }
+      return color;
+    }
     function repeatPatternBlocks(){
       if(activeValidationSnapshot) return activeValidationSnapshot.repeatPatterns;
-      return repeatBlocks().map(block=>({block, times:numericField(block, 'TIMES', 0), body:actionsFrom(block.getInputTargetBlock('DO'), []), repeated:actionsFrom(block, [])}));
+      return repeatBlocks().map(block=>({block, times:numericField(block, 'TIMES', 0), body:actionsFrom(block.getInputTargetBlock('DO'), []), repeated:actionsFrom(block, []), activeColorBefore:activeColorBeforeBlock(block)}));
     }
     function repeatSpiralPattern(times=null, angle=null, growAmount=null){
       return repeatPatternBlocks().some(({times: t, body})=>{
@@ -9480,7 +9496,7 @@
     }
     function validateExercise(actionsSnapshot=null){
       const ex = currentExercises()[currentExerciseIndex] || {};
-      if(isTipExercise(ex) || (isChallengeExercise(ex) && !(currentLesson === 21 && Number(ex?.id) === 8))) return [];
+      if(isTipExercise(ex) || isChallengeExercise(ex)) return [];
       const text = `${ex.title || ''} ${ex.prompt || ''} ${ex.check || ''}`;
       const snapshot = actionsSnapshot && !Array.isArray(actionsSnapshot) ? actionsSnapshot : null;
       const actions = snapshot ? snapshot.actions : (actionsSnapshot || getActions());
@@ -9808,7 +9824,9 @@
         const hasPendown = actions.some(a=>a.cmd === 'pen' && a.v === true);
         const repeatPatterns = repeatPatternBlocks();
         const repeat5Pentagon = repeatPatterns.some(({times, body})=>Number(times) === 5 && body.some(a=>a.cmd === 'forward' || a.cmd === 'forwardVar') && body.some(a=>(a.cmd === 'right' || a.cmd === 'left') && Math.abs(Number(a.v)) === 72));
-        const sunLoop = repeatPatterns.some(({times, body})=>Number(times) === 18 && body.some(a=>(a.cmd === 'forward' && Math.abs(Number(a.v) - 5) <= 1) || a.cmd === 'forwardVar') && body.some(a=>(a.cmd === 'right' || a.cmd === 'left') && Math.abs(Number(a.v)) === 10));
+        const isSunArcLoop = ({times, body})=>Number(times) === 18 && body.some(a=>(a.cmd === 'forward' && Math.abs(Number(a.v) - 5) <= 1) || a.cmd === 'forwardVar') && body.some(a=>(a.cmd === 'right' || a.cmd === 'left') && Math.abs(Number(a.v)) === 10);
+        const sunArcLoop = repeatPatterns.some(isSunArcLoop);
+        const sunLoop = repeatPatterns.some(pattern=>isSunArcLoop(pattern) && pattern.activeColorBefore && pattern.activeColorBefore !== '#2563eb');
         const rayLoop = repeatPatterns.some(({times, body})=>{
           const forward35s = body.filter(a=>(a.cmd === 'forward' && Math.abs(Number(a.v) - 35) <= 5) || a.cmd === 'forwardVar').length;
           const turn90s = body.filter(a=>(a.cmd === 'right' || a.cmd === 'left') && Math.abs(Number(a.v)) === 90).length;
@@ -9830,7 +9848,6 @@
           return Number(times) >= 6 && turn90s >= 2 && hasSunAngleTurn && hasForwardRightAfter180;
         });
         const colorCount = actionDrawnColors(actions).size;
-        const hasSunColor = actions.some(a=>a.cmd === 'color' && String(a.v || '').toLowerCase() !== '#2563eb');
         if(predictionCfg && prediction !== predictionCfg.correct) return ['התשובה לא נכונה עדיין — קראו שוב את הבלוקים מלמעלה למטה ובחרו תשובה אחרת.'];
         if(String(ex?.id) === '1') return [];
         if(String(ex?.id) === '2'){
@@ -9844,8 +9861,8 @@
           return [];
         }
         if(String(ex?.id) === '4'){
-          if(!sunLoop) return ['כמעט — ציירו חצי שמש בעזרת לולאה, למשל repeat 18 עם forward קטן ופנייה של 10 מעלות.'];
-          if(!hasSunColor) return ['כמעט — בחרו צבע צהוב או צבע שמש אחר לפני שמציירים אותה.'];
+          if(!sunArcLoop) return ['כמעט — ציירו חצי שמש בעזרת לולאה, למשל repeat 18 עם forward קטן ופנייה של 10 מעלות.'];
+          if(!sunLoop) return ['כמעט — בחרו צבע צהוב או צבע שמש אחר לפני שמציירים אותה.'];
           return [];
         }
         if(String(ex?.id) === '5'){
