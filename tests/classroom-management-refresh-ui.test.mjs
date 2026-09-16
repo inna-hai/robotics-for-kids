@@ -6,16 +6,17 @@ const source = readFileSync(new URL('../js/classroom-platform.js', import.meta.u
 const adminSource = readFileSync(new URL('../js/classroom-admin.js', import.meta.url), 'utf8');
 assert.equal((source.match(/await loadClasses\(\)/g) || []).length, 2,
   'teacher mutations must refresh only through the guarded refresh helper');
-assert.equal((adminSource.match(/await loadTeachers\(\)/g) || []).length, 3,
-  'admin mutations must refresh only through guarded helper/create flow, never a mutation catch');
+assert.equal((adminSource.match(/await loadTeachers\(\)/g) || []).length, 1,
+  'teacher mutations must refresh through the guarded helper');
+assert.ok(adminSource.includes('await loadInvitations()'), 'invitation mutations must use a guarded refresh');
 assert.ok(!readFileSync(new URL('../classroom-admin.html', import.meta.url), 'utf8').includes('name="password"'),
   'administrator teacher-create UI must not send a password field');
 assert.ok(source.includes('function clearOneTimeStudentCodes()'),
   'teacher UI must centralize removal of one-time credentials from state and every rendered classroom card');
 assert.ok((source.match(/clearOneTimeStudentCodes\(\)/g) || []).length >= 4,
   'teacher UI must clear prior credentials before create/reset and on logout');
-assert.ok((adminSource.match(/oneTimePassword\.textContent = ''/g) || []).length >= 2,
-  'administrator UI must clear stale one-time passwords before another create attempt and on logout');
+assert.ok((adminSource.match(/oneTimeCredential\.textContent = ''/g) || []).length >= 2,
+  'administrator UI must clear stale one-time credentials before another create attempt and on logout');
 
 class FakeElement {
   constructor(tag = 'div', id = '') {
@@ -43,7 +44,7 @@ async function runCase(kind) {
   const created = [];
   const ids = Object.fromEntries([
     'teacher-auth', 'teacher-dashboard', 'teacher-auth-message', 'dashboard-message', 'classes-list',
-    'teacher-course-catalog', 'teacher-welcome', 'teacher-login-form', 'teacher-register-form',
+    'teacher-course-catalog', 'teacher-welcome', 'teacher-login-form', 'teacher-invitation-form', 'teacher-one-time-password',
     'preview-demo-teacher', 'create-class-form', 'teacher-logout',
   ].map(id => [id, new FakeElement('div', id)]));
   ids['create-class-form'].values = { name: 'כיתה', courses: ['craftom-agent'] };

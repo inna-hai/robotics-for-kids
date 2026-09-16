@@ -517,9 +517,21 @@
       event.preventDefault();
       submitAuth(event.currentTarget, '/api/classroom/teacher-login');
     });
-    document.getElementById('teacher-register-form').addEventListener('submit', (event) => {
+    document.getElementById('teacher-invitation-form').addEventListener('submit', async (event) => {
       event.preventDefault();
-      submitAuth(event.currentTarget, '/api/classroom/teacher-register');
+      const form = event.currentTarget;
+      const notice = document.getElementById('teacher-one-time-password');
+      notice.textContent = ''; notice.hidden = true;
+      setMessage(authMessage, 'מממשים את ההזמנה…');
+      try {
+        const data = await api('/api/classroom/teacher-invitations/redeem', formData(form));
+        notice.textContent = `הסיסמה הזמנית שלך: ${data.temporaryPassword} — מוצגת עכשיו בלבד. העתיקו אותה ואז התחברו.`;
+        notice.hidden = false;
+        const loginEmail = document.querySelector('#teacher-login-form input[name="email"]');
+        if (loginEmail) loginEmail.value = data.teacher.email;
+        form.reset();
+        setMessage(authMessage, 'החשבון נוצר. הסיסמה הזמנית נשמרה בתצוגה עד שתעתיקו אותה.', true);
+      } catch (error) { setMessage(authMessage, error.message); }
     });
     async function openPreviewDemoTeacher() {
       setMessage(authMessage, 'פותחים מורה בדיקה…');

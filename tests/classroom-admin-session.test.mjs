@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { chmodSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -8,6 +8,10 @@ import { spawn } from 'node:child_process';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const tempDir = mkdtempSync(join(tmpdir(), 'classroom-admin-session-'));
+const deliveredMail = join(tempDir, 'delivered-mail.json');
+const mailer = join(tempDir, 'capture-mailer');
+writeFileSync(mailer, `#!/bin/sh\ncat > '${deliveredMail}'\n`, { mode: 0o700 });
+chmodSync(mailer, 0o700);
 
 function freePort() {
   return new Promise((resolve, reject) => {
@@ -39,9 +43,11 @@ const child = spawn(process.execPath, ['server.js'], {
     ...process.env,
     PORT: String(port),
     ROBOTICS_DB_FILE: join(tempDir, 'admin-session.sqlite'),
-    ROBOTICS_CLASSROOM_ADMIN_CODE: 'production-cookie-admin-code',
-    ROBOTICS_TEACHER_INVITE_CODE: 'production-cookie-invite',
+    ROBOTICS_CLASSROOM_ADMIN_EMAIL: 'owner@example.test',
+    ROBOTICS_TEACHER_INVITE_CODE: '',
+    ROBOTICS_CLASSROOM_ADMIN_CODE: '',
     ROBOTICS_SUBSCRIPTION_GATE: '1',
+    ROBOTICS_CREDENTIAL_MAILER: mailer,
     NODE_ENV: 'production',
   },
   stdio: ['ignore', 'pipe', 'pipe'],
@@ -49,40 +55,34 @@ const child = spawn(process.execPath, ['server.js'], {
 
 try {
   await waitForServer(baseUrl);
-  const validLogin = await fetch(`${baseUrl}/api/classroom/admin-login`, {
+  const retiredLogin = await fetch(`${baseUrl}/api/classroom/admin-login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ code: 'production-cookie-admin-code' }),
   });
-  assert.equal(validLogin.status, 200);
-  const cookie = validLogin.headers.get('set-cookie') || '';
-  assert.match(cookie, /^haiTechClassroomAdminToken=/);
-  assert.match(cookie, /; HttpOnly/i);
-  assert.match(cookie, /; SameSite=Strict/i);
-  assert.match(cookie, /; Secure/i);
-  assert.doesNotMatch(cookie, /haiTechClassroomToken=/);
+  assert.equal(retiredLogin.status, 410);
+  assert.equal(retiredLogin.headers.get('set-cookie'), null);
 
-  for (let attempt = 0; attempt < 10; attempt += 1) {
-    const wrong = await fetch(`${baseUrl}/api/classroom/admin-login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: 'wrong-code' }),
-    });
-    assert.equal(wrong.status, 401);
+  const accessRequest = await fetch(`${baseUrl}/api/classroom/admin-access/request`, {
+    method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: 'owner@example.test' }),
+  });
+  assert.equal(accessRequest.status, 202);
+  for (let attempt = 0; attempt < 100 && !existsSync(deliveredMail); attempt += 1) {
+    await new Promise(resolve => setTimeout(resolve, 20));
   }
-  const lockedWrong = await fetch(`${baseUrl}/api/classroom/admin-login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ code: 'wrong-code' }),
+  assert.equal(existsSync(deliveredMail), true, 'production mailer must receive the administrator challenge');
+  const delivered = JSON.parse(readFileSync(deliveredMail, 'utf8'));
+  const redemption = await fetch(`${baseUrl}/api/classroom/admin-access/redeem`, {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ email: 'owner@example.test', code: delivered.code }),
   });
-  assert.equal(lockedWrong.status, 429);
-  const lockedCorrect = await fetch(`${baseUrl}/api/classroom/admin-login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ code: 'production-cookie-admin-code' }),
-  });
-  assert.equal(lockedCorrect.status, 429, 'a correct code must not bypass an active administrator lockout');
-  console.log('✓ administrator login lockout and production cookie attributes are enforced');
+  assert.equal(redemption.status, 200);
+  const cookie = redemption.headers.get('set-cookie') || '';
+  assert.match(cookie, /HttpOnly/);
+  assert.match(cookie, /SameSite=Strict/);
+  assert.match(cookie, /; Secure/);
+  console.log('✓ production administrator redemption issues a Secure HttpOnly strict cookie');
+  console.log('✓ production starts with one configured identity and legacy shared login cannot issue a cookie');
 } finally {
   if (child.exitCode === null && child.signalCode === null) {
     child.kill('SIGTERM');

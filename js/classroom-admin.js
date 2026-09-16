@@ -8,8 +8,9 @@
   const authMessage = document.getElementById('admin-auth-message');
   const message = document.getElementById('admin-message');
   const teachersList = document.getElementById('admin-teachers-list');
-  const createTeacherForm = document.getElementById('create-teacher-form');
-  const oneTimePassword = document.getElementById('admin-one-time-password');
+  const createInvitationForm = document.getElementById('create-invitation-form');
+  const oneTimeCredential = document.getElementById('admin-one-time-credential');
+  const invitationsList = document.getElementById('admin-invitations-list');
   const showArchived = document.getElementById('show-archived-teachers');
 
   function element(tag, text, className) {
@@ -39,7 +40,11 @@
     });
     let data = {};
     try { data = await response.json(); } catch {}
-    if (!response.ok) throw new Error(data.error || 'הפעולה לא הצליחה.');
+    if (!response.ok) {
+      const error = new Error(data.error || 'הפעולה לא הצליחה.');
+      error.data = data;
+      throw error;
+    }
     return data;
   }
   function coursePicker(selectedCourses) {
@@ -147,40 +152,94 @@
     teachersList.replaceChildren(...data.teachers.map(renderTeacher));
     if (!data.teachers.length) teachersList.append(element('p', 'עדיין אין חשבונות מורים.', 'card'));
   }
-  async function showDashboard() { auth.hidden = true; dashboard.hidden = false; await loadTeachers(); }
+  function renderInvitation(invitation) {
+    const card = setHook(element('article', undefined, 'class-card'), 'data-invitation-id', invitation.id);
+    card.append(element('h3', invitation.name), element('p', invitation.email),
+      element('p', `מצב: ${invitation.status} · משלוח: ${invitation.deliveryStatus}`));
+    if (['pending', 'sent', 'failed', 'unknown'].includes(invitation.status)) {
+      for (const [label, action] of [['שליחה מחדש', 'resend'], ['ביטול הזמנה', 'revoke']]) {
+        const button = actionButton(label, `${action}-invitation`, 'button secondary');
+        button.addEventListener('click', async () => {
+          try {
+            const data = await api(`/api/classroom/admin/invitations/${encodeURIComponent(invitation.id)}/${action}`, {});
+            if (data.testCode) {
+              oneTimeCredential.textContent = `קוד ההזמנה החדש: ${data.testCode} — מוצג עכשיו בלבד.`;
+              oneTimeCredential.hidden = false;
+            }
+            await refreshInvitations(action === 'resend' ? 'ההזמנה נשלחה מחדש.' : 'ההזמנה בוטלה.');
+          } catch (error) { setMessage(message, error.message); }
+        });
+        card.append(button);
+      }
+    }
+    return card;
+  }
+  async function loadInvitations() {
+    const data = await api('/api/classroom/admin/invitations');
+    invitationsList.replaceChildren(...data.invitations.map(renderInvitation));
+  }
+  async function refreshInvitations(successText) {
+    setMessage(message, successText, true);
+    try { await loadInvitations(); }
+    catch (error) { setMessage(message, `${successText} רענון ההזמנות נכשל: ${error.message}`, true); }
+  }
+  async function showDashboard() {
+    auth.hidden = true; dashboard.hidden = false;
+    await Promise.all([loadTeachers(), loadInvitations()]);
+  }
 
-  document.getElementById('admin-login-form').addEventListener('submit', async (event) => {
+  document.getElementById('admin-access-request-form').addEventListener('submit', async (event) => {
+    event.preventDefault(); const form = event.currentTarget;
+    try {
+      const email = new FormData(form).get('email');
+      await api('/api/classroom/admin-access/request', { email });
+      document.querySelector('#admin-access-redeem-form input[name="email"]').value = email;
+      setMessage(authMessage, 'בקשת הגישה התקבלה. אם הכתובת מורשית, הקוד יישלח אליה לאחר השלמת המשלוח.', true);
+    } catch (error) { setMessage(authMessage, error.message); }
+  });
+  document.getElementById('admin-access-redeem-form').addEventListener('submit', async (event) => {
     event.preventDefault(); const form = event.currentTarget; setMessage(authMessage, 'מתחברים…');
-    try { await api('/api/classroom/admin-login', { code: new FormData(form).get('code') }); form.reset(); setMessage(authMessage, '', true); await showDashboard(); }
+    try { await api('/api/classroom/admin-access/redeem', Object.fromEntries(new FormData(form).entries())); form.reset(); await showDashboard(); }
     catch (error) { setMessage(authMessage, error.message); }
   });
-  createTeacherForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    oneTimePassword.textContent = '';
-    oneTimePassword.hidden = true;
-    setMessage(message, 'יוצרים חשבון מורה…');
+  createInvitationForm.addEventListener('submit', async (event) => {
+    event.preventDefault(); oneTimeCredential.textContent = ''; oneTimeCredential.hidden = true;
     let data;
-    try {
-      data = await api('/api/classroom/admin/teachers', Object.fromEntries(new FormData(createTeacherForm).entries()));
-    } catch (error) {
-      setMessage(message, error.message);
-      return;
+    try { data = await api('/api/classroom/admin/invitations', Object.fromEntries(new FormData(createInvitationForm).entries())); }
+    catch (error) { setMessage(message, error.message); return; }
+    createInvitationForm.reset();
+    if (data.testCode) {
+      oneTimeCredential.textContent = `קוד ההזמנה של ${data.invitation.name}: ${data.testCode} — מוצג עכשיו בלבד.`;
+      oneTimeCredential.hidden = false;
     }
-    createTeacherForm.reset();
-    oneTimePassword.textContent = `הסיסמה הזמנית של ${data.teacher.name}: ${data.temporaryPassword} — מוצגת עכשיו בלבד.`;
-    oneTimePassword.hidden = false;
-    setMessage(message, 'חשבון המורה נוצר. שמרו ומסרו את הסיסמה הזמנית באופן מאובטח.', true);
-    try {
-      await loadTeachers();
-    } catch (error) {
-      setMessage(message, `חשבון המורה נוצר והסיסמה הזמנית נשמרה בתצוגה, אך רענון הרשימה נכשל: ${error.message}`, true);
-    }
+    setMessage(message, `ההזמנה נשמרה. מצב המשלוח: ${data.invitation.deliveryStatus}.`, data.invitation.deliveryStatus === 'sent');
+    try { await loadInvitations(); }
+    catch (error) { setMessage(message, `ההזמנה נשמרה והקוד נשאר בתצוגה, אך הרענון נכשל: ${error.message}`, true); }
   });
   showArchived.addEventListener('change', () => loadTeachers().catch((error) => setMessage(message, error.message)));
   document.getElementById('admin-logout').addEventListener('click', async () => {
-    oneTimePassword.textContent = '';
-    oneTimePassword.hidden = true;
+    oneTimeCredential.textContent = ''; oneTimeCredential.hidden = true;
     try { await api('/api/classroom/admin-logout', {}); location.reload(); } catch (error) { setMessage(message, error.message); }
+  });
+  document.getElementById('admin-rotate').addEventListener('click', async () => {
+    try {
+      const data = await api('/api/classroom/admin/rotate', {});
+      if (data.deliveryStatus === 'unknown') {
+        oneTimeCredential.textContent = 'מצב משלוח קוד הגישה החדש לא ידוע. הגישה הקודמת בוטלה; המתינו למייל או בקשו קוד חדש.';
+      } else if (data.testCode) {
+        oneTimeCredential.textContent = `קוד הגישה החלופי: ${data.testCode} — מוצג עכשיו בלבד.`;
+      } else {
+        oneTimeCredential.textContent = 'קוד גישה חלופי נשלח למייל המנהלת.';
+      }
+      oneTimeCredential.hidden = false; auth.hidden = false; dashboard.hidden = true;
+    } catch (error) {
+      if (error.data?.deliveryStatus === 'failed') {
+        oneTimeCredential.textContent = 'שליחת קוד הגישה החדש נכשלה. הגישה הקודמת בוטלה; בקשו קוד חדש כדי להתחבר שוב.';
+        oneTimeCredential.hidden = false; auth.hidden = false; dashboard.hidden = true;
+      } else {
+        setMessage(message, error.message);
+      }
+    }
   });
   api('/api/classroom/admin-me').then((data) => data.role === 'admin' && showDashboard()).catch(() => {});
 })();

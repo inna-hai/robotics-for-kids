@@ -47,13 +47,20 @@ const port = await freePort();
 const baseUrl = `http://127.0.0.1:${port}`;
 const child = spawn(process.execPath, ['server.js'], {
   cwd: root,
-  env: { ...process.env, PORT: String(port), ROBOTICS_DB_FILE: dbFile, ROBOTICS_CLASSROOM_ADMIN_CODE: 'management-admin-code', ROBOTICS_TEACHER_INVITE_CODE: 'management-invite', NODE_ENV: 'test' },
+  env: { ...process.env, PORT: String(port), ROBOTICS_DB_FILE: dbFile,
+    ROBOTICS_CLASSROOM_ADMIN_EMAIL: 'owner@example.test', ROBOTICS_CLASSROOM_ADMIN_CODE: '',
+    ROBOTICS_TEACHER_INVITE_CODE: '', NODE_ENV: 'test' },
   stdio: ['ignore', 'pipe', 'pipe'],
 });
 
 try {
   await waitForServer(baseUrl);
-  const adminLogin = await jsonRequest(baseUrl, '/api/classroom/admin-login', { body: { code: 'management-admin-code' } });
+  const adminAccess = await jsonRequest(baseUrl, '/api/classroom/admin-access/request', { body: { email: 'owner@example.test' } });
+  assert.equal(adminAccess.response.status, 202);
+  const adminLogin = await jsonRequest(baseUrl, '/api/classroom/admin-access/redeem', {
+    body: { email: 'owner@example.test', code: adminAccess.data.testCode },
+  });
+  assert.equal(adminLogin.response.status, 200);
   const adminCookie = cookieOf(adminLogin.response);
   const db = new Database(dbFile);
   const teacherColumns = db.prepare("PRAGMA table_info('classroom_teachers')").all().map((row) => row.name);
@@ -70,7 +77,13 @@ try {
   const suppliedPasswordCreate = await jsonRequest(baseUrl, '/api/classroom/admin/teachers', { cookie: adminCookie, body: { name: 'מורה', email: 'short@example.test', password: 'short' } });
   assert.equal(suppliedPasswordCreate.response.status, 400);
   assert.match(suppliedPasswordCreate.data.error, /סיסמה/);
-  const created = await jsonRequest(baseUrl, '/api/classroom/admin/teachers', { cookie: adminCookie, body: { name: 'מורה מנהלת', email: 'admin-created@example.test' } });
+  const invitation = await jsonRequest(baseUrl, '/api/classroom/admin/invitations', {
+    cookie: adminCookie, body: { name: 'מורה מנהלת', email: 'admin-created@example.test' },
+  });
+  assert.equal(invitation.response.status, 201);
+  const created = await jsonRequest(baseUrl, '/api/classroom/teacher-invitations/redeem', {
+    body: { email: 'admin-created@example.test', code: invitation.data.testCode },
+  });
   assert.equal(created.response.status, 201);
   assert.equal(created.data.oneTime, true);
   assert.match(created.data.temporaryPassword, /^[A-Za-z0-9_-]{16,}$/);
@@ -129,8 +142,18 @@ try {
   assert.equal(studentLogin.response.status, 200);
   const originalStudentCookie = cookieOf(studentLogin.response);
 
-  const secondTeacher = await jsonRequest(baseUrl, '/api/classroom/teacher-register', { body: { name: 'מורה שנייה', email: 'second@example.test', password: 'SecondPass123!', inviteCode: 'management-invite' } });
-  assert.equal(secondTeacher.response.status, 201);
+  const secondInvite = await jsonRequest(baseUrl, '/api/classroom/admin/invitations', {
+    cookie: adminCookie, body: { name: 'מורה שנייה', email: 'second@example.test' },
+  });
+  assert.equal(secondInvite.response.status, 201);
+  const secondRedeem = await jsonRequest(baseUrl, '/api/classroom/teacher-invitations/redeem', {
+    body: { email: 'second@example.test', code: secondInvite.data.testCode },
+  });
+  assert.equal(secondRedeem.response.status, 201);
+  const secondTeacher = await jsonRequest(baseUrl, '/api/classroom/teacher-login', {
+    body: { email: 'second@example.test', password: secondRedeem.data.temporaryPassword },
+  });
+  assert.equal(secondTeacher.response.status, 200);
   const secondTeacherCookie = cookieOf(secondTeacher.response);
   for (const path of [
     `/api/classroom/classes/${classId}/students/${studentId}`,

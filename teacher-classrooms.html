@@ -29,17 +29,16 @@
         <button class="button secondary preview-demo-teacher" id="preview-demo-teacher" type="button" hidden>כניסה כמורה לבדיקה</button>
       </form>
 
-      <form class="card" id="teacher-register-form">
-        <h2>פתיחת חשבון מורה</h2>
-        <label>שם מלא<input name="name" autocomplete="name" required></label>
+      <form class="card" id="teacher-invitation-form">
+        <h2>מימוש הזמנה למורה</h2>
         <label>מייל<input name="email" type="email" autocomplete="email" required></label>
-        <label>סיסמה<input name="password" type="password" autocomplete="new-password" minlength="10" required></label>
-        <label>קוד הזמנה למורה
-          <input name="inviteCode" type="password" autocomplete="off" required aria-describedby="teacher-invite-help">
+        <label>קוד הזמנה חד־פעמי
+          <input name="code" type="password" autocomplete="one-time-code" required aria-describedby="teacher-invite-help">
         </label>
-        <p class="field-help" id="teacher-invite-help">קוד הזמנה למורה מתקבל ממנהלת המערכת. זה לא קוד מנהלת ולא קוד כיתה.</p>
-        <button class="button secondary" type="submit">יצירת חשבון</button>
+        <p class="field-help" id="teacher-invite-help">לאחר המימוש תוצג סיסמה זמנית פעם אחת. שמרו אותה לפני רענון.</p>
+        <button class="button secondary" type="submit">מימוש הזמנה</button>
       </form>
+      <p class="one-time-code wide" id="teacher-one-time-password" data-role="one-time-code-notice" aria-live="polite" hidden></p>
       <p class="message wide" id="teacher-auth-message" aria-live="polite"></p>
     </section>
 

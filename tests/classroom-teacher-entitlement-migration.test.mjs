@@ -81,8 +81,9 @@ function startServer() {
       PORT: String(port),
       ROBOTICS_DB_FILE: dbFile,
       ROBOTICS_SUBSCRIPTION_GATE: '1',
-      ROBOTICS_TEACHER_INVITE_CODE: 'migration-invite',
-      ROBOTICS_CLASSROOM_ADMIN_CODE: 'migration-admin',
+      ROBOTICS_CLASSROOM_ADMIN_EMAIL: 'owner@example.test',
+      ROBOTICS_TEACHER_INVITE_CODE: '',
+      ROBOTICS_CLASSROOM_ADMIN_CODE: '',
       NODE_ENV: 'test',
     },
     stdio: ['ignore', 'pipe', 'pipe'],
@@ -90,13 +91,21 @@ function startServer() {
 }
 let child = startServer();
 
+async function loginAdmin() {
+  const requested = await fetch(`${baseUrl}/api/classroom/admin-access/request`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: 'owner@example.test' }),
+  });
+  const requestBody = await requested.json();
+  return fetch(`${baseUrl}/api/classroom/admin-access/redeem`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: 'owner@example.test', code: requestBody.testCode }),
+  });
+}
+
 try {
   await waitForServer(baseUrl);
-  const initialize = await fetch(`${baseUrl}/api/classroom/admin-login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ code: 'migration-admin' }),
-  });
+  const initialize = await loginAdmin();
   assert.equal(initialize.status, 200);
   const migrated = new Database(dbFile, { readonly: true });
   const coursesFor = (teacherId) => migrated.prepare('SELECT course_id FROM teacher_courses WHERE teacher_id = ? ORDER BY course_id')
@@ -119,11 +128,7 @@ try {
   await new Promise((resolve) => child.once('exit', resolve));
   child = startServer();
   await waitForServer(baseUrl);
-  const restartInitialize = await fetch(`${baseUrl}/api/classroom/admin-login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ code: 'migration-admin' }),
-  });
+  const restartInitialize = await loginAdmin();
   assert.equal(restartInitialize.status, 200);
   const afterRestart = new Database(dbFile, { readonly: true });
   assert.deepEqual(
