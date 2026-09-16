@@ -21,10 +21,16 @@
     </section>
 
     <section id="admin-auth">
-      <form class="card" id="admin-login-form">
-        <h2>כניסת מנהלת</h2>
-        <label>קוד מנהלת<input name="code" type="password" autocomplete="current-password" required></label>
-        <button class="button primary" type="submit">כניסה</button>
+      <form class="card" id="admin-access-request-form">
+        <h2>בקשת קוד גישה פרטי</h2>
+        <label>מייל מנהלת<input name="email" type="email" autocomplete="email" required></label>
+        <button class="button primary" type="submit">שליחת קוד חד־פעמי</button>
+      </form>
+      <form class="card" id="admin-access-redeem-form">
+        <h2>השלמת כניסה</h2>
+        <label>מייל מנהלת<input name="email" type="email" autocomplete="email" required></label>
+        <label>קוד חד־פעמי<input name="code" type="password" autocomplete="one-time-code" required></label>
+        <button class="button primary" type="submit">כניסה מאובטחת</button>
       </form>
       <p class="message" id="admin-auth-message" aria-live="polite"></p>
     </section>
@@ -32,17 +38,19 @@
     <section id="admin-dashboard" hidden>
       <div class="dashboard-heading">
         <div><h2>המורות במערכת</h2><p>סמנו לכל מורה את הלומדות שנרכשו או אושרו עבורה.</p></div>
-        <button class="button quiet" id="admin-logout" type="button">התנתקות</button>
+        <div><button class="button quiet" id="admin-rotate" type="button">החלפת גישת מנהלת</button>
+        <button class="button quiet" id="admin-logout" type="button">התנתקות</button></div>
       </div>
       <p class="message" id="admin-message" aria-live="polite"></p>
-      <form class="card management-form" id="create-teacher-form">
-        <h3>יצירת חשבון מורה</h3>
+      <form class="card management-form" id="create-invitation-form">
+        <h3>הזמנת מורה במייל</h3>
         <label>שם מלא<input name="name" autocomplete="name" required></label>
         <label>מייל<input name="email" type="email" autocomplete="email" required></label>
-        <p class="field-help">סיסמה זמנית חזקה תיווצר בשרת ותוצג פעם אחת בלבד.</p>
-        <button class="button primary" type="submit" data-action="create-teacher">יצירת מורה</button>
+        <p class="field-help">ההזמנה קשורה לכתובת הזו וניתנת למימוש פעם אחת בלבד.</p>
+        <button class="button primary" type="submit" data-action="create-invitation">שליחת הזמנה</button>
       </form>
-      <p class="one-time-code" id="admin-one-time-password" data-role="teacher-password-notice" aria-live="polite" hidden></p>
+      <p class="one-time-code" id="admin-one-time-credential" data-role="one-time-code-notice" aria-live="polite" hidden></p>
+      <div class="classes-list" id="admin-invitations-list"></div>
       <label class="archive-toggle"><input id="show-archived-teachers" type="checkbox"> הצגת מורות בארכיון</label>
       <div class="classes-list" id="admin-teachers-list"></div>
     </section>

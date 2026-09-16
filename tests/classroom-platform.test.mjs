@@ -54,8 +54,9 @@ const child = spawn(process.execPath, ['server.js'], {
     PORT: String(port),
     ROBOTICS_DB_FILE: dbFile,
     ROBOTICS_SUBSCRIPTION_GATE: '1',
-    ROBOTICS_TEACHER_INVITE_CODE: 'test-teacher-invite-code',
-    ROBOTICS_CLASSROOM_ADMIN_CODE: 'test-classroom-admin-code',
+    ROBOTICS_CLASSROOM_ADMIN_EMAIL: 'owner@example.test',
+    ROBOTICS_TEACHER_INVITE_CODE: '',
+    ROBOTICS_CLASSROOM_ADMIN_CODE: '',
     ROBOTICS_CLASSROOM_LOGIN_MAX_KEYS: '8',
     NODE_ENV: 'test',
   },
@@ -69,27 +70,37 @@ try {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name: 'מורה בדיקה', email: 'blocked@example.test', password: 'SafePass123!' }),
   });
-  assert.equal(registrationWithoutInvite.status, 403);
+  assert.equal(registrationWithoutInvite.status, 410);
 
-  const response = await fetch(`${baseUrl}/api/classroom/teacher-register`, {
+  const adminAccess = await fetch(`${baseUrl}/api/classroom/admin-access/request`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: 'owner@example.test' }),
+  });
+  const adminAccessBody = await adminAccess.json();
+  const adminLogin = await fetch(`${baseUrl}/api/classroom/admin-access/redeem`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: 'owner@example.test', code: adminAccessBody.testCode }),
+  });
+  assert.equal(adminLogin.status, 200);
+  const adminCookie = (adminLogin.headers.get('set-cookie') || '').split(';')[0];
+
+  const invitation = await fetch(`${baseUrl}/api/classroom/admin/invitations`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      name: 'מורה בדיקה',
-      email: 'teacher@example.test',
-      password: 'SafePass123!',
-      inviteCode: 'test-teacher-invite-code',
-    }),
+    headers: { 'Content-Type': 'application/json', Cookie: adminCookie },
+    body: JSON.stringify({ name: 'מורה בדיקה', email: 'teacher@example.test' }),
+  });
+  const invitationBody = await invitation.json();
+  const response = await fetch(`${baseUrl}/api/classroom/teacher-invitations/redeem`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: 'teacher@example.test', code: invitationBody.testCode }),
   });
   const body = await response.json();
-
+  const teacherPassword = body.temporaryPassword;
   assert.equal(response.status, 201);
   assert.equal(body.ok, true);
-  assert.equal(body.role, 'teacher');
   assert.equal(body.teacher.email, 'teacher@example.test');
   assert.equal('token' in body, false, 'teacher session token must not be exposed in JSON');
-  assert.match(response.headers.get('set-cookie') || '', /haiTechClassroomToken=/);
-  console.log('✓ teacher can create a protected classroom account');
+  console.log('✓ teacher can redeem an email-bound invitation');
 
   const wrongLogin = await fetch(`${baseUrl}/api/classroom/teacher-login`, {
     method: 'POST',
@@ -101,7 +112,7 @@ try {
   const login = await fetch(`${baseUrl}/api/classroom/teacher-login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: 'teacher@example.test', password: 'SafePass123!' }),
+    body: JSON.stringify({ email: 'teacher@example.test', password: teacherPassword }),
   });
   const loginBody = await login.json();
   assert.equal(login.status, 200);
@@ -133,15 +144,7 @@ try {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ code: 'wrong-admin-code' }),
   });
-  assert.equal(badAdminLogin.status, 401);
-
-  const adminLogin = await fetch(`${baseUrl}/api/classroom/admin-login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ code: 'test-classroom-admin-code' }),
-  });
-  assert.equal(adminLogin.status, 200);
-  const adminCookie = (adminLogin.headers.get('set-cookie') || '').split(';')[0];
+  assert.equal(badAdminLogin.status, 410);
   assert.match(adminCookie, /^haiTechClassroomAdminToken=/);
 
   const adminTeachers = await fetch(`${baseUrl}/api/classroom/admin/teachers`, { headers: { Cookie: adminCookie } });
@@ -243,10 +246,19 @@ try {
   assert.equal('loginCodeHash' in studentBody.student, false);
   console.log('✓ a teacher can add a student and receive a one-time personal code');
 
-  const secondTeacher = await fetch(`${baseUrl}/api/classroom/teacher-register`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name: 'מורה אחרת', email: 'other@example.test', password: 'OtherSafePass123!', inviteCode: 'test-teacher-invite-code' }),
+  const secondInvitation = await fetch(`${baseUrl}/api/classroom/admin/invitations`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: adminCookie },
+    body: JSON.stringify({ name: 'מורה אחרת', email: 'other@example.test' }),
+  });
+  const secondInvitationBody = await secondInvitation.json();
+  const secondRedeem = await fetch(`${baseUrl}/api/classroom/teacher-invitations/redeem`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: 'other@example.test', code: secondInvitationBody.testCode }),
+  });
+  const secondRedeemBody = await secondRedeem.json();
+  const secondTeacher = await fetch(`${baseUrl}/api/classroom/teacher-login`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: 'other@example.test', password: secondRedeemBody.temporaryPassword }),
   });
   const secondTeacherCookie = (secondTeacher.headers.get('set-cookie') || '').split(';')[0];
   const forbiddenRosterChange = await fetch(`${baseUrl}/api/classroom/classes/${classBody.classroom.id}/students`, {

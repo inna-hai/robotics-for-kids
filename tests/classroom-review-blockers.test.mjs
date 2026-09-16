@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -8,6 +8,25 @@ import { spawn } from 'node:child_process';
 import Database from 'better-sqlite3';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const serverSource = readFileSync(join(root, 'server.js'), 'utf8');
+const adminTeachersGet = serverSource.slice(
+  serverSource.indexOf("if (req.method === 'GET' && action === 'admin' && segments[3] === 'teachers' && segments.length === 4)"),
+  serverSource.indexOf("if (req.method === 'GET' && action === 'classes' && segments.length === 3)"),
+);
+assert.match(adminTeachersGet, /withSummerDb\(db => db\.transaction\([\s\S]*requireCurrentClassroomAdmin[\s\S]*\)\.immediate\(\)\)/,
+  'administrator teacher-list authorization and data reads must share one immediate transaction');
+const teacherClassesGet = serverSource.slice(
+  serverSource.indexOf("if (req.method === 'GET' && action === 'classes' && segments.length === 3)"),
+  serverSource.indexOf("if (req.method === 'GET' && action === 'classes' && segments[3]", serverSource.indexOf("if (req.method === 'GET' && action === 'classes' && segments.length === 3)")),
+);
+assert.match(teacherClassesGet, /withSummerDb\(db => db\.transaction\([\s\S]*requireCurrentClassroomTeacher[\s\S]*\)\.immediate\(\)\)/,
+  'teacher class authorization and data reads must share one immediate transaction');
+const archivedStudentsGet = serverSource.slice(
+  serverSource.indexOf("if (req.method === 'GET' && action === 'classes' && segments[3]"),
+  serverSource.indexOf("if (req.method === 'GET' && action === 'admin' && segments[3] === 'invitations'"),
+);
+assert.match(archivedStudentsGet, /withSummerDb\(db => db\.transaction\([\s\S]*requireCurrentClassroomTeacher[\s\S]*\)\.immediate\(\)\)/,
+  'teacher archived-student authorization and data reads must share one immediate transaction');
 const tempDir = mkdtempSync(join(tmpdir(), 'classroom-review-blockers-'));
 const dbFile = join(tempDir, 'review.sqlite');
 const freePort = () => new Promise((resolve, reject) => {
@@ -30,7 +49,8 @@ const child = spawn(process.execPath, ['server.js'], {
   cwd: root,
   env: {
     ...process.env, PORT: String(port), ROBOTICS_DB_FILE: dbFile, NODE_ENV: 'test',
-    ROBOTICS_CLASSROOM_ADMIN_CODE: 'review-admin', ROBOTICS_TEACHER_INVITE_CODE: 'review-invite',
+    ROBOTICS_CLASSROOM_ADMIN_EMAIL: 'owner@example.test',
+    ROBOTICS_CLASSROOM_ADMIN_CODE: '', ROBOTICS_TEACHER_INVITE_CODE: '',
     ROBOTICS_PREVIEW_DEMO_TEACHER: '1', KUGEL_PREVIEW_MOCK_MINECRAFT: '1',
     KUGEL_MINECRAFT_INTERNAL_TOKEN: 'review-internal-token',
   },
@@ -42,7 +62,10 @@ try {
     if (i === 79) throw new Error('server did not start');
     await new Promise(resolve => setTimeout(resolve, 50));
   }
-  const adminLogin = await request(base, '/api/classroom/admin-login', { body: { code: 'review-admin' } });
+  const adminAccess = await request(base, '/api/classroom/admin-access/request', { body: { email: 'owner@example.test' } });
+  const adminLogin = await request(base, '/api/classroom/admin-access/redeem', {
+    body: { email: 'owner@example.test', code: adminAccess.data.testCode },
+  });
   const adminCookie = cookieOf(adminLogin.response);
 
   // Supplied admin-create passwords are rejected rather than silently ignored.
@@ -51,8 +74,11 @@ try {
   });
   assert.equal(rejectedPassword.response.status, 400);
   assert.match(rejectedPassword.data.error, /סיסמה/);
-  const create = await request(base, '/api/classroom/admin/teachers', {
+  const invitation = await request(base, '/api/classroom/admin/invitations', {
     cookie: adminCookie, body: { name: 'מורת בדיקה', email: 'review@example.test' },
+  });
+  const create = await request(base, '/api/classroom/teacher-invitations/redeem', {
+    body: { email: 'review@example.test', code: invitation.data.testCode },
   });
   assert.equal(create.response.status, 201);
   assert.equal((await request(base, '/api/classroom/teacher-login', { body: { email: 'review@example.test', password: 'short' } })).response.status, 401);

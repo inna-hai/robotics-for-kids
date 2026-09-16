@@ -50,8 +50,9 @@ assert.ok(read('classroom-student.html').includes('id="classroom-student-courses
 
 assert.ok(teacher.includes('id="teacher-login-form"'));
 assert.ok(teacher.includes('id="preview-demo-teacher"'));
-assert.ok(teacher.includes('id="teacher-register-form"'));
-assert.ok(teacher.includes('name="inviteCode"'));
+assert.ok(teacher.includes('id="teacher-invitation-form"'));
+assert.ok(teacher.includes('name="code"'));
+assert.ok(teacher.includes('id="teacher-one-time-password"'));
 assert.ok(teacher.includes('id="create-class-form"'));
 assert.ok(teacher.includes('id="classes-list"'));
 assert.ok(teacher.includes('id="teacher-course-catalog"'));
@@ -60,16 +61,22 @@ assert.ok(teacher.includes('js/classroom-platform.js?v=20260914-teacher-board-re
 assert.ok(!teacher.includes('value="minecraft"'), 'teacher HTML must not expose a static unrestricted course picker');
 assert.ok(teacher.includes('בחרו מתוך הלומדות שהוקצו לך'));
 
-assert.ok(admin.includes('id="admin-login-form"'));
+assert.ok(admin.includes('id="admin-access-request-form"'));
+assert.ok(admin.includes('id="admin-access-redeem-form"'));
 assert.ok(admin.includes('id="admin-dashboard"'));
 assert.ok(admin.includes('id="admin-teachers-list"'));
-assert.ok(admin.includes('id="create-teacher-form"'));
+assert.ok(admin.includes('id="create-invitation-form"'));
+assert.ok(admin.includes('id="admin-invitations-list"'));
 assert.ok(admin.includes('id="show-archived-teachers"'));
-assert.ok(admin.includes('id="admin-one-time-password"'));
+assert.ok(admin.includes('id="admin-one-time-credential"'));
 assert.ok(admin.includes('ניהול הרשאות מורים'));
 assert.ok(admin.includes('js/classroom-admin.js'));
-assert.ok(adminClient.includes('/api/classroom/admin-login'));
+assert.ok(adminClient.includes('/api/classroom/admin-access/request'));
+assert.ok(adminClient.includes('/api/classroom/admin-access/redeem'));
+assert.ok(adminClient.includes('/api/classroom/admin/invitations'));
 assert.ok(adminClient.includes('/api/classroom/admin/teachers'));
+assert.match(adminClient, /בקשת הגישה התקבלה/);
+assert.doesNotMatch(adminClient, /קוד גישה נשלח אליה/, 'asynchronous access delivery must not be presented as already sent');
 assert.ok(adminClient.includes('/courses'));
 assert.ok(adminClient.includes('/archive'));
 assert.ok(adminClient.includes('/restore'));
@@ -91,7 +98,7 @@ assert.ok(client.includes('/api/classroom/preview-demo-teacher-enabled'));
 assert.ok(client.includes('/api/classroom/preview-demo-teacher-login'));
 assert.ok(client.includes('fromTeacherBoard'), 'teacher board return should open the class list instead of leaving preview users at the login form');
 assert.ok(client.includes("history.replaceState(null, '', 'teacher-classrooms.html')"));
-assert.ok(client.includes('/api/classroom/teacher-register'));
+assert.ok(client.includes('/api/classroom/teacher-invitations/redeem'));
 assert.ok(entryClient.includes('/api/classroom/teacher-login'));
 assert.ok(entryClient.includes('/api/classroom/student-login'));
 assert.ok(!entryClient.includes('/api/classroom/login'), 'unified UI must not duplicate server-side authentication');

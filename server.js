@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const os = require('os');
+const { spawn } = require('child_process');
 const Database = require('better-sqlite3');
 
 const ROOT = __dirname;
@@ -28,9 +29,17 @@ const configuredClassroomLoginMaxKeys = Number(process.env.ROBOTICS_CLASSROOM_LO
 const CLASSROOM_LOGIN_MAX_KEYS = Number.isInteger(configuredClassroomLoginMaxKeys) && configuredClassroomLoginMaxKeys >= 8
   ? Math.min(configuredClassroomLoginMaxKeys, 10000)
   : 1000;
-const classroomLoginFailures = new Map();
 const CLASSROOM_TEACHER_INVITE_CODE = String(process.env.ROBOTICS_TEACHER_INVITE_CODE || '');
 const CLASSROOM_ADMIN_CODE = String(process.env.ROBOTICS_CLASSROOM_ADMIN_CODE || '');
+const CLASSROOM_ADMIN_EMAIL = String(process.env.ROBOTICS_CLASSROOM_ADMIN_EMAIL || '').trim().toLowerCase();
+const CLASSROOM_CHALLENGE_TTL_MS = 15 * 60 * 1000;
+function verifyClassroomCredentialConfiguration() {
+  if (process.env.NODE_ENV !== 'production') return;
+  const validPrivateIdentity = /^\S+@\S+\.\S+$/.test(CLASSROOM_ADMIN_EMAIL);
+  if (!validPrivateIdentity || CLASSROOM_ADMIN_CODE || CLASSROOM_TEACHER_INVITE_CODE) {
+    throw new Error('classroom credential configuration invalid: configure one administrator email and remove legacy shared secrets');
+  }
+}
 const CLASSROOM_PREVIEW_DEMO_TEACHER = process.env.ROBOTICS_PREVIEW_DEMO_TEACHER === '1';
 const KUGEL_PREVIEW_MOCK_MINECRAFT = CLASSROOM_PREVIEW_DEMO_TEACHER && process.env.KUGEL_PREVIEW_MOCK_MINECRAFT === '1';
 const KUGEL_MONITOR_API_URL = String(process.env.KUGEL_MONITOR_API_URL || process.env.MINECRAFT_MONITOR_API_URL || '').replace(/\/+$/, '');
@@ -201,6 +210,192 @@ function addSqliteColumn(db, sql) {
   }
 }
 
+function migrateAndVerifyClassroomAdminSessions(db) {
+  const columns = db.prepare("PRAGMA table_info('classroom_admin_sessions')").all();
+  const canonical = ['id', 'admin_id', 'token_hash', 'credential_version', 'created_at', 'expires_at', 'last_seen_at', 'revoked_at'];
+  if (columns.map(column => column.name).join(',') !== canonical.join(',')) {
+    const names = new Set(columns.map(column => column.name));
+    const requiredLegacy = ['id', 'token_hash', 'created_at', 'expires_at', 'last_seen_at', 'revoked_at'];
+    if (columns.length !== requiredLegacy.length || !requiredLegacy.every(name => names.has(name))) {
+      throw new Error('classroom_admin_sessions schema incompatible: unexpected legacy columns');
+    }
+    const identity = db.prepare('SELECT id, credential_version FROM classroom_admin_identity').get();
+    const count = db.prepare('SELECT COUNT(*) AS count FROM classroom_admin_sessions').get().count;
+    if (count && !identity) return false;
+    db.transaction(() => {
+      db.prepare('DROP INDEX IF EXISTS idx_classroom_admin_sessions_token').run();
+      db.prepare('DROP INDEX IF EXISTS idx_classroom_admin_sessions_identity').run();
+      db.prepare('ALTER TABLE classroom_admin_sessions RENAME TO classroom_admin_sessions_legacy_v3').run();
+      db.prepare(`CREATE TABLE classroom_admin_sessions (
+        id TEXT PRIMARY KEY NOT NULL,
+        admin_id TEXT NOT NULL REFERENCES classroom_admin_identity(id) ON DELETE RESTRICT,
+        token_hash TEXT NOT NULL UNIQUE,
+        credential_version INTEGER NOT NULL CHECK (credential_version >= 0),
+        created_at TEXT NOT NULL,
+        expires_at TEXT NOT NULL,
+        last_seen_at TEXT,
+        revoked_at TEXT
+      )`).run();
+      if (count) {
+        db.prepare(`INSERT INTO classroom_admin_sessions
+          (id, admin_id, token_hash, credential_version, created_at, expires_at, last_seen_at, revoked_at)
+          SELECT id, ?, token_hash, 0, created_at, expires_at, last_seen_at, revoked_at
+          FROM classroom_admin_sessions_legacy_v3`).run(identity.id);
+      }
+      db.prepare('DROP TABLE classroom_admin_sessions_legacy_v3').run();
+      db.prepare('CREATE UNIQUE INDEX idx_classroom_admin_sessions_token ON classroom_admin_sessions(token_hash)').run();
+      db.prepare('CREATE INDEX idx_classroom_admin_sessions_identity ON classroom_admin_sessions(admin_id, credential_version)').run();
+    }).immediate();
+  }
+  const verified = db.prepare("PRAGMA table_info('classroom_admin_sessions')").all();
+  if (verified.map(column => column.name).join(',') !== canonical.join(',')) throw new Error('classroom_admin_sessions schema incompatible: non-canonical columns');
+  const expectedTypes = ['TEXT','TEXT','TEXT','INTEGER','TEXT','TEXT','TEXT','TEXT'];
+  if (verified.map(column => String(column.type || '').toUpperCase()).join(',') !== expectedTypes.join(',')) {
+    throw new Error('classroom_admin_sessions schema incompatible: unexpected column affinities');
+  }
+  if (verified.some(column => column.dflt_value !== null)) throw new Error('classroom_admin_sessions schema incompatible: unexpected defaults');
+  for (const name of ['id', 'admin_id', 'token_hash', 'credential_version', 'created_at', 'expires_at']) {
+    if (!verified.find(column => column.name === name)?.notnull) throw new Error(`classroom_admin_sessions schema incompatible: ${name} must be NOT NULL`);
+  }
+  if (verified[0].pk !== 1) throw new Error('classroom_admin_sessions schema incompatible: id must be primary key');
+  const unique = db.prepare("SELECT name FROM pragma_index_list('classroom_admin_sessions') WHERE origin = 'u'").all()
+    .map(index => db.prepare('SELECT name FROM pragma_index_info(?) ORDER BY seqno').all(index.name).map(column => column.name));
+  if (JSON.stringify(unique) !== JSON.stringify([['token_hash']])) throw new Error('classroom_admin_sessions schema incompatible: token_hash must be UNIQUE');
+  const tableSql = normalizedSql(db.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'classroom_admin_sessions'").get()?.sql);
+  assertNoUnexpectedChecks('classroom_admin_sessions', tableSql, ['check(credential_version>=0)']);
+  const foreignKeys = db.prepare("PRAGMA foreign_key_list('classroom_admin_sessions')").all();
+  if (foreignKeys.length !== 1 || foreignKeys[0].from !== 'admin_id' || foreignKeys[0].table !== 'classroom_admin_identity'
+    || foreignKeys[0].to !== 'id' || foreignKeys[0].on_delete !== 'RESTRICT') {
+    throw new Error('classroom_admin_sessions schema incompatible: missing administrator foreign key');
+  }
+  return true;
+}
+
+function verifyClassroomCredentialSchema(db, { includeAdminSessions = true, allowMissing = false, skipTables = new Set() } = {}) {
+  const specifications = {
+    classroom_auth_rate_limits: {
+      columns: ['limit_key','failures','started_at','updated_at'],
+      types: ['TEXT','INTEGER','INTEGER','INTEGER'],
+      defaults: [null,null,null,null],
+      required: ['limit_key','failures','started_at','updated_at'],
+      unique: [],
+      foreignKeys: [],
+      checks: ['check(failures>=1)'],
+    },
+    classroom_admin_identity: {
+      columns: ['id','email','credential_version','bootstrapped_at','created_at','updated_at'],
+      types: ['TEXT','TEXT','INTEGER','TEXT','TEXT','TEXT'],
+      defaults: [null,null,'1',null,null,null],
+      required: ['id','email','credential_version','created_at','updated_at'],
+      unique: [['email']],
+      foreignKeys: [],
+      checks: ['check(credential_version>=1)'],
+    },
+    classroom_admin_challenges: {
+      columns: ['id','admin_id','purpose','code_hash','credential_version','attempts','max_attempts','expires_at','used_at','revoked_at','created_at'],
+      types: ['TEXT','TEXT','TEXT','TEXT','INTEGER','INTEGER','INTEGER','TEXT','TEXT','TEXT','TEXT'],
+      defaults: [null,null,null,null,null,'0','5',null,null,null,null],
+      required: ['id','admin_id','purpose','code_hash','credential_version','attempts','max_attempts','expires_at','created_at'],
+      unique: [['code_hash']],
+      foreignKeys: ['admin_id->classroom_admin_identity.id:RESTRICT'],
+      checks: ["check(purposein('access','rotation'))",'check(attempts>=0)','check(max_attemptsbetween1and10)'],
+    },
+    classroom_teacher_invitations: {
+      columns: ['id','email','name','code_hash','attempts','max_attempts','status','delivery_status','expires_at','created_by','teacher_id','created_at','updated_at','redeemed_at','revoked_at','delivery_generation'],
+      types: ['TEXT','TEXT','TEXT','TEXT','INTEGER','INTEGER','TEXT','TEXT','TEXT','TEXT','TEXT','TEXT','TEXT','TEXT','TEXT','INTEGER'],
+      defaults: [null,null,null,null,'0','5',"'pending'","'pending'",null,null,null,null,null,null,null,'1'],
+      required: ['id','email','name','code_hash','attempts','max_attempts','status','delivery_status','delivery_generation','expires_at','created_by','created_at','updated_at'],
+      unique: [['code_hash']],
+      foreignKeys: ['created_by->classroom_admin_identity.id:RESTRICT','teacher_id->classroom_teachers.id:RESTRICT'],
+      checks: ["check(statusin('pending','sent','failed','unknown','redeemed','revoked','expired','exhausted'))", "check(delivery_statusin('pending','sent','failed','unknown'))", 'check(delivery_generation>=1)', 'check(attempts>=0)', 'check(max_attemptsbetween1and10)'],
+    },
+    classroom_credential_audit: {
+      columns: ['id','actor_type','actor_id','action','target_type','target_id','outcome','occurred_at'],
+      types: ['TEXT','TEXT','TEXT','TEXT','TEXT','TEXT','TEXT','TEXT'],
+      defaults: [null,null,null,null,null,null,null,null],
+      required: ['id','actor_type','actor_id','action','target_type','target_id','outcome','occurred_at'],
+      unique: [],
+      foreignKeys: [],
+      checks: ["check(actor_typein('system','admin','teacher'))", "check(actionin('issuance','delivery','redeem','bootstrap','login','logout','rotation','invitation_create','invitation_list','invitation_resend','invitation_revoke','invitation_redeem'))", "check(target_typein('admin','invitation','teacher','session','challenge'))", "check(outcomein('success','denied','invalid','throttled','replayed','exhausted','expired','failed','unknown'))"],
+    },
+  };
+  for (const [tableName, specification] of Object.entries(specifications)) {
+    if (skipTables.has(tableName)) continue;
+    const table = db.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = ?").get(tableName);
+    if (!table) {
+      if (allowMissing) continue;
+      throw new Error(`${tableName} schema incompatible: missing table`);
+    }
+    const columns = db.prepare(`PRAGMA table_info('${tableName}')`).all();
+    if (columns.map(column => column.name).join(',') !== specification.columns.join(',')) {
+      throw new Error(`${tableName} schema incompatible: unexpected columns`);
+    }
+    if (columns.map(column => String(column.type || '').toUpperCase()).join(',') !== specification.types.join(',')) {
+      throw new Error(`${tableName} schema incompatible: unexpected column affinities`);
+    }
+    if (columns.some((column, index) => column.dflt_value !== specification.defaults[index])) {
+      throw new Error(`${tableName} schema incompatible: unexpected column defaults`);
+    }
+    for (const name of specification.required) {
+      if (!columns.find(column => column.name === name)?.notnull) throw new Error(`${tableName} schema incompatible: ${name} must be NOT NULL`);
+    }
+    if (columns[0].pk !== 1) throw new Error(`${tableName} schema incompatible: id must be primary key`);
+    const unique = db.prepare(`SELECT name, origin FROM pragma_index_list(?) WHERE origin = 'u'`).all(tableName)
+      .map(index => db.prepare('SELECT name FROM pragma_index_info(?) ORDER BY seqno').all(index.name).map(column => column.name));
+    if (JSON.stringify(unique.sort()) !== JSON.stringify(specification.unique.sort())) {
+      throw new Error(`${tableName} schema incompatible: unexpected UNIQUE constraints`);
+    }
+    const foreignKeys = db.prepare(`PRAGMA foreign_key_list('${tableName}')`).all()
+      .map(key => `${key.from}->${key.table}.${key.to}:${key.on_delete}`).sort();
+    if (JSON.stringify(foreignKeys) !== JSON.stringify([...specification.foreignKeys].sort())) {
+      throw new Error(`${tableName} schema incompatible: unexpected foreign keys`);
+    }
+    assertNoUnexpectedChecks(tableName, table.sql, specification.checks);
+  }
+  const triggers = db.prepare(`SELECT name FROM sqlite_master WHERE type = 'trigger' AND tbl_name IN
+    ('classroom_auth_rate_limits','classroom_admin_identity','classroom_admin_challenges','classroom_teacher_invitations','classroom_credential_audit','classroom_admin_sessions')`).all();
+  if (triggers.length) throw new Error(`classroom credential schema incompatible: unexpected trigger ${triggers[0].name}`);
+  const expectedIndexes = new Map([
+    ['idx_classroom_admin_sessions_token', 'createuniqueindexidx_classroom_admin_sessions_tokenonclassroom_admin_sessions(token_hash)'],
+    ['idx_classroom_admin_sessions_identity', 'createindexidx_classroom_admin_sessions_identityonclassroom_admin_sessions(admin_id,credential_version)'],
+    ['idx_classroom_admin_identity_singleton', 'createuniqueindexidx_classroom_admin_identity_singletononclassroom_admin_identity((1))'],
+    ['idx_classroom_admin_challenges_admin', 'createindexidx_classroom_admin_challenges_adminonclassroom_admin_challenges(admin_id,purpose,created_at)'],
+    ['idx_classroom_teacher_invitations_email', 'createindexidx_classroom_teacher_invitations_emailonclassroom_teacher_invitations(email,created_at)'],
+    ['idx_classroom_teacher_invitations_status', 'createindexidx_classroom_teacher_invitations_statusonclassroom_teacher_invitations(status,expires_at)'],
+    ['idx_classroom_credential_audit_target', 'createindexidx_classroom_credential_audit_targetonclassroom_credential_audit(target_type,target_id,occurred_at)'],
+  ]);
+  const indexTables = new Map([
+    ['idx_classroom_admin_sessions_token', 'classroom_admin_sessions'],
+    ['idx_classroom_admin_sessions_identity', 'classroom_admin_sessions'],
+    ['idx_classroom_admin_identity_singleton', 'classroom_admin_identity'],
+    ['idx_classroom_admin_challenges_admin', 'classroom_admin_challenges'],
+    ['idx_classroom_teacher_invitations_email', 'classroom_teacher_invitations'],
+    ['idx_classroom_teacher_invitations_status', 'classroom_teacher_invitations'],
+    ['idx_classroom_credential_audit_target', 'classroom_credential_audit'],
+  ]);
+  for (const name of [...expectedIndexes.keys()]) {
+    const tableName = indexTables.get(name);
+    if ((!includeAdminSessions && tableName === 'classroom_admin_sessions') || skipTables.has(tableName)
+      || (allowMissing && !db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?").get(tableName))) {
+      expectedIndexes.delete(name);
+    }
+  }
+  for (const [name, expected] of expectedIndexes) {
+    const row = db.prepare("SELECT sql FROM sqlite_master WHERE type = 'index' AND name = ?").get(name);
+    if (!row || normalizedSql(row.sql) !== expected) throw new Error(`classroom credential schema incompatible: index ${name}`);
+  }
+  const credentialTables = ['classroom_auth_rate_limits','classroom_admin_identity','classroom_admin_challenges','classroom_teacher_invitations','classroom_credential_audit'];
+  if (includeAdminSessions) credentialTables.push('classroom_admin_sessions');
+  const inspectedTables = credentialTables.filter(tableName => !skipTables.has(tableName)
+    && (!allowMissing || db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?").get(tableName)));
+  const actualNamedIndexes = inspectedTables.length ? db.prepare(`SELECT name FROM sqlite_master WHERE type = 'index' AND sql IS NOT NULL
+    AND tbl_name IN (${inspectedTables.map(() => '?').join(',')})`).all(...inspectedTables).map(row => row.name).sort() : [];
+  const allowedNamedIndexes = [...expectedIndexes.keys()].sort();
+  if (JSON.stringify(actualNamedIndexes) !== JSON.stringify(allowedNamedIndexes)) {
+    throw new Error('classroom credential schema incompatible: unexpected named index');
+  }
+}
+
 const CLASSROOM_AUDIT_COLUMNS = ['id', 'actor_type', 'actor_id', 'action', 'target_type', 'target_id', 'occurred_at', 'outcome'];
 const normalizedSql = sql => String(sql || '').toLowerCase().replace(/\s+/g, '').replace(/"/g, "'");
 
@@ -222,8 +417,8 @@ function verifyClassroomManagementAuditSchema(db) {
   }
   const sql = normalizedSql(table.sql);
   for (const check of [
-    "check(actor_typein('admin','teacher'))",
-    "check(target_typein('teacher','student'))",
+    "check(actor_typein('admin','teacher','student'))",
+    "check(target_typein('teacher','student','classroom','progress'))",
     "check(outcomein('success','denied','not_found','invalid'))",
   ]) {
     if (!sql.includes(check)) throw new Error(`classroom_management_audit schema incompatible: missing canonical ${check}`);
@@ -234,15 +429,15 @@ function verifyClassroomManagementAuditSchema(db) {
   db.prepare('SAVEPOINT classroom_audit_schema_check').run();
   try {
     const verificationId = crypto.randomUUID();
-    for (const actorType of ['admin', 'teacher']) {
-      for (const targetType of ['teacher', 'student']) {
+    for (const actorType of ['admin', 'teacher', 'student']) {
+      for (const targetType of ['teacher', 'student', 'classroom', 'progress']) {
         for (const outcome of ['success', 'denied', 'not_found', 'invalid']) {
           insert.run(`${verificationId}-${actorType}-${targetType}-${outcome}`, actorType, targetType, outcome);
         }
       }
     }
     for (const [actorType, targetType, outcome] of [
-      ['root', 'teacher', 'success'], ['admin', 'classroom', 'success'], ['admin', 'teacher', 'other'],
+      ['root', 'teacher', 'success'], ['admin', 'unknown', 'success'], ['admin', 'teacher', 'other'],
     ]) {
       let rejected = false;
       try { insert.run(crypto.randomUUID(), actorType, targetType, outcome); }
@@ -262,7 +457,7 @@ function migrateAndVerifyClassroomManagementAudit(db) {
   const sql = normalizedSql(table.sql);
   const id = columns.find(column => column.name === 'id');
   const legacy = columns.map(column => column.name).join(',') === CLASSROOM_AUDIT_COLUMNS.join(',')
-    && id?.pk === 1 && id.notnull === 0
+    && id?.pk === 1
     && columns.every(column => String(column.type || '').toUpperCase() === 'TEXT')
     && columns.filter(column => column.name !== 'id').every(column => column.notnull === 1)
     && sql.includes("check(actor_typein('admin','teacher'))")
@@ -273,10 +468,10 @@ function migrateAndVerifyClassroomManagementAudit(db) {
       db.prepare('ALTER TABLE classroom_management_audit RENAME TO classroom_management_audit_legacy').run();
       db.prepare(`CREATE TABLE classroom_management_audit (
         id TEXT PRIMARY KEY NOT NULL,
-        actor_type TEXT NOT NULL CHECK (actor_type IN ('admin', 'teacher')),
+        actor_type TEXT NOT NULL CHECK (actor_type IN ('admin', 'teacher', 'student')),
         actor_id TEXT NOT NULL,
         action TEXT NOT NULL,
-        target_type TEXT NOT NULL CHECK (target_type IN ('teacher', 'student')),
+        target_type TEXT NOT NULL CHECK (target_type IN ('teacher', 'student', 'classroom', 'progress')),
         target_id TEXT NOT NULL,
         occurred_at TEXT NOT NULL,
         outcome TEXT NOT NULL CHECK (outcome IN ('success', 'denied', 'not_found', 'invalid'))
@@ -289,11 +484,102 @@ function migrateAndVerifyClassroomManagementAudit(db) {
   verifyClassroomManagementAuditSchema(db);
 }
 
+function assertNoUnexpectedChecks(tableName, sql, expectedChecks) {
+  const normalized = normalizedSql(sql);
+  for (const check of expectedChecks) {
+    if (!normalized.includes(check)) throw new Error(`${tableName} schema incompatible: missing ${check}`);
+  }
+  if ((normalized.match(/check\(/g) || []).length !== expectedChecks.length) {
+    throw new Error(`${tableName} schema incompatible: unexpected CHECK constraint`);
+  }
+}
+
+function preflightCredentialMigrationSources(db) {
+  const legacyCredentialTables = new Set();
+  const sessionTable = db.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'classroom_admin_sessions'").get();
+  if (sessionTable) {
+    const columns = db.prepare("PRAGMA table_info('classroom_admin_sessions')").all();
+    const names = columns.map(column => column.name);
+    const legacyNames = ['id', 'token_hash', 'created_at', 'expires_at', 'last_seen_at', 'revoked_at'];
+    const canonicalNames = ['id', 'admin_id', 'token_hash', 'credential_version', 'created_at', 'expires_at', 'last_seen_at', 'revoked_at'];
+    if (names.join(',') !== canonicalNames.join(',') && names.join(',') !== legacyNames.join(',')) {
+      throw new Error('classroom_admin_sessions schema incompatible: unexpected legacy columns');
+    }
+    if (names.join(',') === legacyNames.join(',')) {
+      legacyCredentialTables.add('classroom_admin_sessions');
+      const types = columns.map(column => String(column.type || '').toUpperCase());
+      if (types.some(type => type !== 'TEXT') || columns.some(column => column.dflt_value !== null)
+        || columns[0].pk !== 1 || columns[0].notnull !== 0
+        || columns.slice(1, 4).some(column => !column.notnull)
+        || columns.slice(4).some(column => column.notnull)) {
+        throw new Error('classroom_admin_sessions schema incompatible: invalid legacy column contract');
+      }
+      const unique = db.prepare("SELECT name FROM pragma_index_list('classroom_admin_sessions') WHERE origin = 'u'").all()
+        .map(index => db.prepare('SELECT name FROM pragma_index_info(?) ORDER BY seqno').all(index.name).map(column => column.name));
+      if (JSON.stringify(unique) !== JSON.stringify([['token_hash']])) throw new Error('classroom_admin_sessions schema incompatible: invalid legacy UNIQUE contract');
+      assertNoUnexpectedChecks('classroom_admin_sessions', sessionTable.sql, []);
+      const triggers = db.prepare("SELECT name FROM sqlite_master WHERE type = 'trigger' AND tbl_name = 'classroom_admin_sessions'").all();
+      if (triggers.length) throw new Error('classroom_admin_sessions schema incompatible: unexpected legacy trigger');
+      const indexes = db.prepare("SELECT name, sql FROM sqlite_master WHERE type = 'index' AND tbl_name = 'classroom_admin_sessions' AND sql IS NOT NULL").all();
+      for (const index of indexes) {
+        if (index.name !== 'idx_classroom_admin_sessions_token'
+          || normalizedSql(index.sql) !== 'createindexidx_classroom_admin_sessions_tokenonclassroom_admin_sessions(token_hash)') {
+          throw new Error('classroom_admin_sessions schema incompatible: unexpected legacy index');
+        }
+      }
+    } else {
+      migrateAndVerifyClassroomAdminSessions(db);
+    }
+  }
+
+  const invitations = db.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'classroom_teacher_invitations'").get();
+  if (invitations) {
+    const columns = db.prepare("PRAGMA table_info('classroom_teacher_invitations')").all();
+    if (!columns.some(column => column.name === 'delivery_generation')) {
+      legacyCredentialTables.add('classroom_teacher_invitations');
+      const expected = ['id','email','name','code_hash','attempts','max_attempts','status','delivery_status','expires_at','created_by','teacher_id','created_at','updated_at','redeemed_at','revoked_at'];
+      if (columns.map(column => column.name).join(',') !== expected.join(',')) throw new Error('classroom_teacher_invitations schema incompatible before delivery migration');
+      const expectedTypes = ['TEXT','TEXT','TEXT','TEXT','INTEGER','INTEGER','TEXT','TEXT','TEXT','TEXT','TEXT','TEXT','TEXT','TEXT','TEXT'];
+      const expectedDefaults = [null,null,null,null,'0','5',"'pending'","'pending'",null,null,null,null,null,null,null];
+      const required = new Set(['id','email','name','code_hash','attempts','max_attempts','status','delivery_status','expires_at','created_by','created_at','updated_at']);
+      if (columns.map(column => String(column.type || '').toUpperCase()).join(',') !== expectedTypes.join(',')
+        || columns.some((column, index) => column.dflt_value !== expectedDefaults[index])
+        || columns.some(column => Boolean(column.notnull) !== required.has(column.name))
+        || columns[0].pk !== 1) {
+        throw new Error('classroom_teacher_invitations schema incompatible: invalid columns before delivery migration');
+      }
+      const unique = db.prepare("SELECT name FROM pragma_index_list('classroom_teacher_invitations') WHERE origin = 'u'").all()
+        .map(index => db.prepare('SELECT name FROM pragma_index_info(?) ORDER BY seqno').all(index.name).map(column => column.name));
+      if (JSON.stringify(unique) !== JSON.stringify([['code_hash']])) throw new Error('classroom_teacher_invitations schema incompatible: invalid UNIQUE before delivery migration');
+      const foreignKeys = db.prepare("PRAGMA foreign_key_list('classroom_teacher_invitations')").all()
+        .map(key => `${key.from}->${key.table}.${key.to}:${key.on_delete}`).sort();
+      if (JSON.stringify(foreignKeys) !== JSON.stringify(['created_by->classroom_admin_identity.id:RESTRICT','teacher_id->classroom_teachers.id:RESTRICT'])) {
+        throw new Error('classroom_teacher_invitations schema incompatible: invalid foreign keys before delivery migration');
+      }
+      const checks = ["check(statusin('pending','sent','failed','unknown','redeemed','revoked','expired','exhausted'))", "check(delivery_statusin('pending','sent','failed','unknown'))", 'check(attempts>=0)', 'check(max_attemptsbetween1and10)'];
+      assertNoUnexpectedChecks('classroom_teacher_invitations', invitations.sql, checks);
+      const triggers = db.prepare("SELECT name FROM sqlite_master WHERE type = 'trigger' AND tbl_name = 'classroom_teacher_invitations'").all();
+      if (triggers.length) throw new Error('classroom_teacher_invitations schema incompatible: unexpected trigger before delivery migration');
+      const namedIndexes = db.prepare("SELECT name, sql FROM sqlite_master WHERE type = 'index' AND tbl_name = 'classroom_teacher_invitations' AND sql IS NOT NULL").all();
+      const expectedIndexes = new Map([
+        ['idx_classroom_teacher_invitations_email', 'createindexidx_classroom_teacher_invitations_emailonclassroom_teacher_invitations(email,created_at)'],
+        ['idx_classroom_teacher_invitations_status', 'createindexidx_classroom_teacher_invitations_statusonclassroom_teacher_invitations(status,expires_at)'],
+      ]);
+      if (namedIndexes.length !== expectedIndexes.size || namedIndexes.some(index => normalizedSql(index.sql) !== expectedIndexes.get(index.name))) {
+        throw new Error('classroom_teacher_invitations schema incompatible: invalid indexes before delivery migration');
+      }
+    }
+  }
+  verifyClassroomCredentialSchema(db, { allowMissing: true, skipTables: legacyCredentialTables });
+}
+
 function openSummerDb() {
   fs.mkdirSync(DATA_DIR, { recursive: true });
   const db = new Database(SUMMER_DB_FILE);
+  preflightCredentialMigrationSources(db);
   db.pragma('journal_mode = WAL');
   db.pragma('foreign_keys = ON');
+  const migrateCredentialSchema = db.transaction(() => {
   db.exec(`
     CREATE TABLE IF NOT EXISTS summer_users (
       id TEXT PRIMARY KEY,
@@ -401,6 +687,66 @@ function openSummerDb() {
       revoked_at TEXT
     );
 
+    CREATE TABLE IF NOT EXISTS classroom_auth_rate_limits (
+      limit_key TEXT PRIMARY KEY NOT NULL,
+      failures INTEGER NOT NULL CHECK (failures >= 1),
+      started_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS classroom_admin_identity (
+      id TEXT PRIMARY KEY NOT NULL,
+      email TEXT NOT NULL UNIQUE,
+      credential_version INTEGER NOT NULL DEFAULT 1 CHECK (credential_version >= 1),
+      bootstrapped_at TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS classroom_admin_challenges (
+      id TEXT PRIMARY KEY NOT NULL,
+      admin_id TEXT NOT NULL REFERENCES classroom_admin_identity(id) ON DELETE RESTRICT,
+      purpose TEXT NOT NULL CHECK (purpose IN ('access', 'rotation')),
+      code_hash TEXT NOT NULL UNIQUE,
+      credential_version INTEGER NOT NULL,
+      attempts INTEGER NOT NULL DEFAULT 0 CHECK (attempts >= 0),
+      max_attempts INTEGER NOT NULL DEFAULT 5 CHECK (max_attempts BETWEEN 1 AND 10),
+      expires_at TEXT NOT NULL,
+      used_at TEXT,
+      revoked_at TEXT,
+      created_at TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS classroom_teacher_invitations (
+      id TEXT PRIMARY KEY NOT NULL,
+      email TEXT NOT NULL,
+      name TEXT NOT NULL,
+      code_hash TEXT NOT NULL UNIQUE,
+      attempts INTEGER NOT NULL DEFAULT 0 CHECK (attempts >= 0),
+      max_attempts INTEGER NOT NULL DEFAULT 5 CHECK (max_attempts BETWEEN 1 AND 10),
+      status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','sent','failed','unknown','redeemed','revoked','expired','exhausted')),
+      delivery_status TEXT NOT NULL DEFAULT 'pending' CHECK (delivery_status IN ('pending','sent','failed','unknown')),
+      expires_at TEXT NOT NULL,
+      created_by TEXT NOT NULL REFERENCES classroom_admin_identity(id) ON DELETE RESTRICT,
+      teacher_id TEXT REFERENCES classroom_teachers(id) ON DELETE RESTRICT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      redeemed_at TEXT,
+      revoked_at TEXT,
+      delivery_generation INTEGER NOT NULL DEFAULT 1 CHECK (delivery_generation >= 1)
+    );
+
+    CREATE TABLE IF NOT EXISTS classroom_credential_audit (
+      id TEXT PRIMARY KEY NOT NULL,
+      actor_type TEXT NOT NULL CHECK (actor_type IN ('system','admin','teacher')),
+      actor_id TEXT NOT NULL,
+      action TEXT NOT NULL CHECK (action IN ('issuance','delivery','redeem','bootstrap','login','logout','rotation','invitation_create','invitation_list','invitation_resend','invitation_revoke','invitation_redeem')),
+      target_type TEXT NOT NULL CHECK (target_type IN ('admin','invitation','teacher','session','challenge')),
+      target_id TEXT NOT NULL,
+      outcome TEXT NOT NULL CHECK (outcome IN ('success','denied','invalid','throttled','replayed','exhausted','expired','failed','unknown')),
+      occurred_at TEXT NOT NULL
+    );
+
     CREATE TABLE IF NOT EXISTS classroom_migrations (
       migration_key TEXT PRIMARY KEY,
       applied_at TEXT NOT NULL
@@ -453,10 +799,10 @@ function openSummerDb() {
 
     CREATE TABLE IF NOT EXISTS classroom_management_audit (
       id TEXT PRIMARY KEY NOT NULL,
-      actor_type TEXT NOT NULL CHECK (actor_type IN ('admin', 'teacher')),
+      actor_type TEXT NOT NULL CHECK (actor_type IN ('admin', 'teacher', 'student')),
       actor_id TEXT NOT NULL,
       action TEXT NOT NULL,
-      target_type TEXT NOT NULL CHECK (target_type IN ('teacher', 'student')),
+      target_type TEXT NOT NULL CHECK (target_type IN ('teacher', 'student', 'classroom', 'progress')),
       target_id TEXT NOT NULL,
       occurred_at TEXT NOT NULL,
       outcome TEXT NOT NULL CHECK (outcome IN ('success', 'denied', 'not_found', 'invalid'))
@@ -544,6 +890,11 @@ function openSummerDb() {
     CREATE INDEX IF NOT EXISTS idx_classroom_teachers_email ON classroom_teachers(email);
     CREATE INDEX IF NOT EXISTS idx_classroom_teacher_sessions_token ON classroom_teacher_sessions(token_hash);
     CREATE INDEX IF NOT EXISTS idx_classroom_admin_sessions_token ON classroom_admin_sessions(token_hash);
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_classroom_admin_identity_singleton ON classroom_admin_identity((1));
+    CREATE INDEX IF NOT EXISTS idx_classroom_admin_challenges_admin ON classroom_admin_challenges(admin_id, purpose, created_at);
+    CREATE INDEX IF NOT EXISTS idx_classroom_teacher_invitations_email ON classroom_teacher_invitations(email, created_at);
+    CREATE INDEX IF NOT EXISTS idx_classroom_teacher_invitations_status ON classroom_teacher_invitations(status, expires_at);
+    CREATE INDEX IF NOT EXISTS idx_classroom_credential_audit_target ON classroom_credential_audit(target_type, target_id, occurred_at);
     CREATE INDEX IF NOT EXISTS idx_teacher_courses_teacher ON teacher_courses(teacher_id);
     CREATE INDEX IF NOT EXISTS idx_classrooms_teacher ON classrooms(teacher_id);
     CREATE INDEX IF NOT EXISTS idx_classrooms_join_code ON classrooms(join_code);
@@ -567,7 +918,34 @@ function openSummerDb() {
     CREATE INDEX IF NOT EXISTS idx_student_progress_user ON student_progress(user_id);
     CREATE INDEX IF NOT EXISTS idx_student_progress_scope ON student_progress(user_id, course_id, lesson_id);
   `);
+  addSqliteColumn(db, 'ALTER TABLE classroom_teacher_invitations ADD COLUMN delivery_generation INTEGER NOT NULL DEFAULT 1 CHECK (delivery_generation >= 1)');
   migrateAndVerifyClassroomManagementAudit(db);
+  const adminSessionsReady = migrateAndVerifyClassroomAdminSessions(db);
+  verifyClassroomCredentialSchema(db, { includeAdminSessions: adminSessionsReady });
+  if (CLASSROOM_ADMIN_EMAIL) {
+    const administrators = db.prepare('SELECT id, email FROM classroom_admin_identity ORDER BY created_at').all();
+    if (administrators.length > 1 || (administrators[0] && administrators[0].email !== CLASSROOM_ADMIN_EMAIL)) {
+      throw new Error('classroom credential configuration invalid: administrator identity drift');
+    }
+    if (!administrators.length) {
+      const now = new Date().toISOString();
+      const adminId = crypto.randomUUID();
+      db.transaction(() => {
+        db.prepare(`INSERT INTO classroom_admin_identity
+          (id, email, credential_version, bootstrapped_at, created_at, updated_at)
+          VALUES (?, ?, 1, ?, ?, ?)`)
+          .run(adminId, CLASSROOM_ADMIN_EMAIL, now, now, now);
+        db.prepare(`INSERT INTO classroom_credential_audit
+          (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+          VALUES (?, 'system', 'startup', 'bootstrap', 'admin', ?, 'success', ?)`)
+          .run(crypto.randomUUID(), adminId, now);
+      }).immediate();
+    }
+  }
+  if (!adminSessionsReady) migrateAndVerifyClassroomAdminSessions(db);
+  verifyClassroomCredentialSchema(db);
+  });
+  migrateCredentialSchema.immediate();
   try { db.prepare('ALTER TABLE student_progress ADD COLUMN child_id TEXT REFERENCES summer_children(id) ON DELETE CASCADE').run(); } catch {}
   try { db.prepare('ALTER TABLE classroom_students ADD COLUMN minecraft_player_name TEXT').run(); } catch {}
   try { db.prepare('ALTER TABLE kugel_class_sessions ADD COLUMN launch_token TEXT').run(); } catch {}
@@ -1451,6 +1829,24 @@ function hashClassroomSecret(secret, salt) {
   return crypto.scryptSync(String(secret || ''), salt, 64).toString('hex');
 }
 
+const DUMMY_CLASSROOM_TEACHER_SALT = '00000000000000000000000000000000';
+const DUMMY_CLASSROOM_TEACHER_HASH = hashClassroomSecret('credential-dummy-teacher', DUMMY_CLASSROOM_TEACHER_SALT);
+const DUMMY_CLASSROOM_STUDENT_SALT = '11111111111111111111111111111111';
+const DUMMY_CLASSROOM_STUDENT_HASH = hashClassroomSecret('credential-dummy-student', DUMMY_CLASSROOM_STUDENT_SALT);
+
+function createOneTimeCredentialHash(value) {
+  const salt = crypto.randomBytes(16).toString('hex');
+  return `${salt}:${hashClassroomSecret(value, salt)}`;
+}
+
+function oneTimeCredentialMatches(value, encodedHash) {
+  const [salt, expectedHex] = String(encodedHash || '').split(':');
+  const effectiveSalt = /^[a-f0-9]{32}$/.test(salt || '') ? salt : '00000000000000000000000000000000';
+  const expected = /^[a-f0-9]{128}$/.test(expectedHex || '') ? expectedHex : '0'.repeat(128);
+  const provided = hashClassroomSecret(value, effectiveSalt);
+  return crypto.timingSafeEqual(Buffer.from(provided, 'hex'), Buffer.from(expected, 'hex'));
+}
+
 function classroomInviteMatches(value) {
   if (!CLASSROOM_TEACHER_INVITE_CODE) return false;
   const provided = crypto.createHash('sha256').update(String(value || '')).digest();
@@ -1469,33 +1865,52 @@ function classroomLoginKey(req, role, identifier) {
   return `${role}:${req.socket.remoteAddress || 'unknown'}:${String(identifier || '').toLowerCase()}`;
 }
 
-function isClassroomLoginLimited(key) {
-  pruneClassroomLoginFailures();
-  const attempt = classroomLoginFailures.get(key);
-  if (!attempt) return classroomLoginFailures.size >= CLASSROOM_LOGIN_MAX_KEYS;
-  return attempt.failures >= CLASSROOM_LOGIN_MAX_FAILURES;
+function classroomSourceKey(req, role) {
+  return `${role}:source:${req.socket.remoteAddress || 'unknown'}`;
 }
 
-function pruneClassroomLoginFailures() {
-  const now = Date.now();
-  for (const [key, attempt] of classroomLoginFailures) {
-    if (now - attempt.startedAt >= CLASSROOM_LOGIN_WINDOW_MS) classroomLoginFailures.delete(key);
-  }
+function classroomIdentityKey(role, identifier) {
+  return `${role}:identity:${String(identifier || '').toLowerCase()}`;
+}
+
+function pruneClassroomLoginFailures(db, now = Date.now()) {
+  db.prepare('DELETE FROM classroom_auth_rate_limits WHERE started_at <= ?').run(now - CLASSROOM_LOGIN_WINDOW_MS);
+}
+
+function consumeClassroomLoginAttempts(keys) {
+  const normalizedKeys = [...new Set(keys.filter(Boolean))];
+  return withSummerDb(db => db.transaction(() => {
+    const now = Date.now();
+    pruneClassroomLoginFailures(db, now);
+    const select = db.prepare('SELECT failures FROM classroom_auth_rate_limits WHERE limit_key = ?');
+    const rows = normalizedKeys.map(key => ({ key, row: select.get(key) }));
+    if (rows.some(({ row }) => row && row.failures >= CLASSROOM_LOGIN_MAX_FAILURES)) return true;
+    const existingCount = db.prepare('SELECT COUNT(*) AS count FROM classroom_auth_rate_limits').get().count;
+    const missingCount = rows.filter(({ row }) => !row).length;
+    if (existingCount + missingCount > CLASSROOM_LOGIN_MAX_KEYS) return true;
+    const upsert = db.prepare(`INSERT INTO classroom_auth_rate_limits (limit_key, failures, started_at, updated_at)
+      VALUES (?, 1, ?, ?)
+      ON CONFLICT(limit_key) DO UPDATE SET failures = failures + 1, updated_at = excluded.updated_at`);
+    for (const { key } of rows) upsert.run(key, now, now);
+    return false;
+  }).immediate());
+}
+
+function isClassroomLoginLimited(key) {
+  return withSummerDb(db => db.transaction(() => {
+    pruneClassroomLoginFailures(db);
+    const attempt = db.prepare('SELECT failures FROM classroom_auth_rate_limits WHERE limit_key = ?').get(key);
+    if (attempt) return attempt.failures >= CLASSROOM_LOGIN_MAX_FAILURES;
+    return db.prepare('SELECT COUNT(*) AS count FROM classroom_auth_rate_limits').get().count >= CLASSROOM_LOGIN_MAX_KEYS;
+  }).immediate());
 }
 
 function recordClassroomLoginFailure(key) {
-  pruneClassroomLoginFailures();
-  const attempt = classroomLoginFailures.get(key);
-  if (!attempt && classroomLoginFailures.size >= CLASSROOM_LOGIN_MAX_KEYS) return;
-  if (!attempt || Date.now() - attempt.startedAt >= CLASSROOM_LOGIN_WINDOW_MS) {
-    classroomLoginFailures.set(key, { failures: 1, startedAt: Date.now() });
-    return;
-  }
-  attempt.failures += 1;
+  consumeClassroomLoginAttempts([key]);
 }
 
 function clearClassroomLoginFailures(key) {
-  classroomLoginFailures.delete(key);
+  withSummerDb(db => db.prepare('DELETE FROM classroom_auth_rate_limits WHERE limit_key = ?').run(key));
 }
 
 function createClassroomTeacherSession(db, teacherId) {
@@ -1509,14 +1924,15 @@ function createClassroomTeacherSession(db, teacherId) {
   return token;
 }
 
-function createClassroomAdminSession(db) {
+function createClassroomAdminSession(db, adminId, credentialVersion) {
   const token = crypto.randomBytes(32).toString('base64url');
   const now = new Date();
   const expiresAt = new Date(now.getTime() + SESSION_TTL_MS).toISOString();
   db.prepare(`
-    INSERT INTO classroom_admin_sessions (id, token_hash, created_at, expires_at)
-    VALUES (?, ?, ?, ?)
-  `).run(crypto.randomUUID(), tokenHash(token), now.toISOString(), expiresAt);
+    INSERT INTO classroom_admin_sessions
+      (id, token_hash, created_at, expires_at, admin_id, credential_version)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `).run(crypto.randomUUID(), tokenHash(token), now.toISOString(), expiresAt, adminId, credentialVersion);
   return token;
 }
 
@@ -1557,16 +1973,56 @@ function getClassroomAdminFromRequest(req) {
   const token = parseCookies(req).haiTechClassroomAdminToken || '';
   if (!token) return false;
   return withSummerDb(db => {
-    const hash = tokenHash(token);
-    const session = db.prepare(`
-      SELECT id FROM classroom_admin_sessions
-      WHERE token_hash = ? AND revoked_at IS NULL AND expires_at > ?
-    `).get(hash, new Date().toISOString());
+    const session = requireCurrentClassroomAdmin(db, req);
     if (!session) return false;
+    const hash = tokenHash(token);
     db.prepare('UPDATE classroom_admin_sessions SET last_seen_at = ? WHERE token_hash = ?')
       .run(new Date().toISOString(), hash);
     return session;
   });
+}
+
+function requireCurrentClassroomAdmin(db, req) {
+  const token = parseCookies(req).haiTechClassroomAdminToken || '';
+  if (!token) return null;
+  return db.prepare(`
+    SELECT s.id, s.admin_id, s.credential_version
+    FROM classroom_admin_sessions s
+    JOIN classroom_admin_identity a ON a.id = s.admin_id AND a.credential_version = s.credential_version
+    WHERE s.token_hash = ? AND s.revoked_at IS NULL AND s.expires_at > ?
+  `).get(tokenHash(token), new Date().toISOString()) || null;
+}
+
+function requireCurrentClassroomTeacher(db, req) {
+  const token = parseCookies(req).haiTechClassroomToken || '';
+  if (!token) return null;
+  const hash = tokenHash(token);
+  const now = new Date().toISOString();
+  const teacher = db.prepare(`
+    SELECT t.* FROM classroom_teacher_sessions s
+    JOIN classroom_teachers t ON t.id = s.teacher_id
+    WHERE s.token_hash = ? AND s.revoked_at IS NULL AND s.expires_at > ?
+      AND t.archived_at IS NULL AND t.disabled_at IS NULL
+  `).get(hash, now);
+  if (teacher) db.prepare('UPDATE classroom_teacher_sessions SET last_seen_at = ? WHERE token_hash = ?').run(now, hash);
+  return teacher || null;
+}
+
+function requireCurrentClassroomStudent(db, req) {
+  const token = parseCookies(req).haiTechClassroomToken || '';
+  if (!token) return null;
+  const hash = tokenHash(token);
+  const now = new Date().toISOString();
+  const student = db.prepare(`SELECT s.*, c.name AS classroom_name
+    FROM classroom_student_sessions css
+    JOIN classroom_students s ON s.id = css.student_id
+    JOIN classrooms c ON c.id = s.classroom_id
+    JOIN classroom_teachers t ON t.id = c.teacher_id
+    WHERE css.token_hash = ? AND css.revoked_at IS NULL AND css.expires_at > ?
+      AND s.archived_at IS NULL AND s.disabled_at IS NULL
+      AND t.archived_at IS NULL AND t.disabled_at IS NULL`).get(hash, now);
+  if (student) db.prepare('UPDATE classroom_student_sessions SET last_seen_at = ? WHERE token_hash = ?').run(now, hash);
+  return student || null;
 }
 
 function recordClassroomManagementAudit(db, actorType, actorId, action, targetType, targetId, outcome) {
@@ -1580,8 +2036,86 @@ function recordClassroomManagementAudit(db, actorType, actorId, action, targetTy
   );
 }
 
+function auditInvitationFailure(req, action, targetId, outcome = 'invalid') {
+  return withSummerDb(db => db.transaction(() => {
+    const admin = requireCurrentClassroomAdmin(db, req);
+    if (!admin) return false;
+    db.prepare(`INSERT INTO classroom_credential_audit
+      (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+      VALUES (?, 'admin', ?, ?, 'invitation', ?, ?, ?)`)
+      .run(crypto.randomUUID(), admin.admin_id, action, targetId || 'unknown', outcome, new Date().toISOString());
+    return true;
+  }).immediate());
+}
+
 function generateTemporaryTeacherPassword() {
   return crypto.randomBytes(18).toString('base64url');
+}
+
+async function deliverClassroomCredentialEmail(recipient, subject, code) {
+  const allowedSubjects = new Set(['הזמנה להוראה ב־HaiTech', 'קוד גישה לניהול HaiTech']);
+  if (!allowedSubjects.has(subject)) return 'failed';
+  const command = String(process.env.ROBOTICS_CREDENTIAL_MAILER || '').trim();
+  if (process.env.NODE_ENV === 'test' && !command) return 'sent';
+  if (!command || command.includes('\0')) return 'failed';
+  const payload = JSON.stringify({ recipient, subject, code });
+  return new Promise(resolve => {
+    let settled = false;
+    let timedOut = false;
+    const finish = outcome => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(outcome);
+    };
+    let child;
+    try {
+      child = spawn(command, [], {
+        shell: false,
+        stdio: ['pipe', 'ignore', 'ignore'],
+        env: { PATH: '/usr/bin:/bin', LANG: 'C.UTF-8' },
+      });
+    } catch {
+      resolve('failed');
+      return;
+    }
+    const timer = setTimeout(() => {
+      timedOut = true;
+      child.kill('SIGKILL');
+    }, 10000);
+    child.once('error', error => finish(error?.code === 'ETIMEDOUT' ? 'unknown' : 'failed'));
+    child.once('close', status => finish(timedOut || status === 75 ? 'unknown' : status === 0 ? 'sent' : 'failed'));
+    child.stdin.on('error', () => {});
+    child.stdin.end(payload);
+  });
+}
+
+function reconcileAdminChallengeDelivery(challengeId, credentialVersion, delivery) {
+  return withSummerDb(db => db.transaction(() => {
+    const deliveredAt = new Date().toISOString();
+    const current = db.prepare(`UPDATE classroom_admin_challenges SET attempts = attempts
+      WHERE id = ? AND credential_version = ? AND used_at IS NULL AND revoked_at IS NULL
+        AND EXISTS (SELECT 1 FROM classroom_admin_identity a
+          WHERE a.id = classroom_admin_challenges.admin_id AND a.credential_version = ?)`)
+      .run(challengeId, credentialVersion, credentialVersion);
+    if (current.changes !== 1) return { stale: true };
+    if (delivery === 'failed') {
+      const revoked = db.prepare(`UPDATE classroom_admin_challenges SET revoked_at = ?
+        WHERE id = ? AND credential_version = ? AND used_at IS NULL AND revoked_at IS NULL`)
+        .run(deliveredAt, challengeId, credentialVersion);
+      if (revoked.changes !== 1) return { stale: true };
+    }
+    db.prepare(`INSERT INTO classroom_credential_audit
+      (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+      VALUES (?, 'system', 'mailer', 'delivery', 'challenge', ?, ?, ?)`)
+      .run(crypto.randomUUID(), challengeId, delivery === 'sent' ? 'success' : delivery, deliveredAt);
+    return { stale: false };
+  }).immediate());
+}
+
+async function reconcileAdminAccessDelivery(challengeId, credentialVersion, email, code) {
+  const delivery = await deliverClassroomCredentialEmail(email, 'קוד גישה לניהול HaiTech', code);
+  return reconcileAdminChallengeDelivery(challengeId, credentialVersion, delivery);
 }
 
 function getClassroomTeacherFromRequest(req) {
@@ -2958,6 +3492,12 @@ async function handleClassroomApi(req, res) {
   const segments = url.pathname.split('/').filter(Boolean);
   const action = segments[2];
 
+  // v3 permanently retires the shared administrator and invitation secrets.
+  // Keep explicit tombstones so stale clients cannot fall through to another handler.
+  if (req.method === 'POST' && ['admin-login', 'teacher-register'].includes(action)) {
+    return send(res, 410, JSON.stringify({ error: 'מסלול הכניסה המשותף הוצא משימוש לצמיתות.' }));
+  }
+
   if (req.method === 'GET' && action === 'me') {
     const teacher = getClassroomTeacherFromRequest(req);
     if (teacher) return send(res, 200, JSON.stringify({
@@ -2997,87 +3537,316 @@ async function handleClassroomApi(req, res) {
   }
 
   if (req.method === 'GET' && action === 'admin' && segments[3] === 'teachers' && segments.length === 4) {
-    if (!getClassroomAdminFromRequest(req)) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מנהלת.' }));
     const includeArchived = url.searchParams.get('includeArchived') === '1';
-    const teachers = withSummerDb(db => db.prepare(`
-      SELECT id, name, email, archived_at, disabled_at, created_at FROM classroom_teachers
-      WHERE (archived_at IS NULL AND disabled_at IS NULL) OR ? = 1
-      ORDER BY created_at
-    `).all(includeArchived ? 1 : 0).map(teacher => ({
-      id: teacher.id,
-      name: teacher.name,
-      email: teacher.email,
-      archivedAt: teacher.archived_at || teacher.disabled_at,
-      courses: teacherCourses(db, teacher.id),
-      createdAt: teacher.created_at,
-      classes: db.prepare('SELECT id, name FROM classrooms WHERE teacher_id = ? ORDER BY created_at').all(teacher.id)
-        .map(classroom => ({
-          id: classroom.id,
-          name: classroom.name,
-          courses: classroomCourses(db, classroom.id),
-          students: db.prepare(`
-            SELECT id, name, archived_at, disabled_at FROM classroom_students
-            WHERE classroom_id = ? AND ((archived_at IS NULL AND disabled_at IS NULL) OR ? = 1) ORDER BY created_at
-          `).all(classroom.id, includeArchived ? 1 : 0).map(student => ({
-            id: student.id, name: student.name, archivedAt: student.archived_at || student.disabled_at,
+    const teachers = withSummerDb(db => db.transaction(() => {
+      const admin = requireCurrentClassroomAdmin(db, req);
+      if (!admin) return null;
+      return db.prepare(`
+        SELECT id, name, email, archived_at, disabled_at, created_at FROM classroom_teachers
+        WHERE (archived_at IS NULL AND disabled_at IS NULL) OR ? = 1
+        ORDER BY created_at
+      `).all(includeArchived ? 1 : 0).map(teacher => ({
+        id: teacher.id,
+        name: teacher.name,
+        email: teacher.email,
+        archivedAt: teacher.archived_at || teacher.disabled_at,
+        courses: teacherCourses(db, teacher.id),
+        createdAt: teacher.created_at,
+        classes: db.prepare('SELECT id, name FROM classrooms WHERE teacher_id = ? ORDER BY created_at').all(teacher.id)
+          .map(classroom => ({
+            id: classroom.id,
+            name: classroom.name,
+            courses: classroomCourses(db, classroom.id),
+            students: db.prepare(`
+              SELECT id, name, archived_at, disabled_at FROM classroom_students
+              WHERE classroom_id = ? AND ((archived_at IS NULL AND disabled_at IS NULL) OR ? = 1) ORDER BY created_at
+            `).all(classroom.id, includeArchived ? 1 : 0).map(student => ({
+              id: student.id, name: student.name, archivedAt: student.archived_at || student.disabled_at,
+            })),
           })),
-        })),
-    })));
+      }));
+    }).immediate());
+    if (!teachers) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מנהלת.' }));
     return send(res, 200, JSON.stringify({ ok: true, teachers }));
   }
 
   if (req.method === 'GET' && action === 'classes' && segments.length === 3) {
-    const teacher = getClassroomTeacherFromRequest(req);
-    if (!teacher) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
-    const classes = withSummerDb(db => db.prepare(`
-      SELECT * FROM classrooms
-      WHERE teacher_id = ?
-      ORDER BY CASE WHEN id = ? THEN 0 ELSE 1 END, created_at
-    `).all(teacher.id, KUGEL_PREVIEW_CLASSROOM_ID).map(classroom => ({
-      id: classroom.id,
-      name: classroom.name,
-      joinCode: classroom.join_code,
-      courses: classroomCourses(db, classroom.id),
-      createdAt: classroom.created_at,
-      students: db.prepare(`
-        SELECT id, name, minecraft_player_name, created_at FROM classroom_students
-        WHERE classroom_id = ? AND archived_at IS NULL AND disabled_at IS NULL ORDER BY created_at
-      `).all(classroom.id).map(student => ({
-        id: student.id,
-        name: student.name,
-        minecraftPlayerName: student.minecraft_player_name || '',
-        createdAt: student.created_at,
-        progress: db.prepare('SELECT * FROM classroom_progress WHERE student_id = ? ORDER BY updated_at DESC')
-          .all(student.id).map(classroomProgressPublic),
-      })),
-    })));
+    const result = withSummerDb(db => db.transaction(() => {
+      const teacher = requireCurrentClassroomTeacher(db, req);
+      if (!teacher) return null;
+      const classes = db.prepare(`
+        SELECT * FROM classrooms
+        WHERE teacher_id = ?
+        ORDER BY CASE WHEN id = ? THEN 0 ELSE 1 END, created_at
+      `).all(teacher.id, KUGEL_PREVIEW_CLASSROOM_ID).map(classroom => ({
+        id: classroom.id,
+        name: classroom.name,
+        joinCode: classroom.join_code,
+        courses: classroomCourses(db, classroom.id),
+        createdAt: classroom.created_at,
+        students: db.prepare(`
+          SELECT id, name, minecraft_player_name, created_at FROM classroom_students
+          WHERE classroom_id = ? AND archived_at IS NULL AND disabled_at IS NULL ORDER BY created_at
+        `).all(classroom.id).map(student => ({
+          id: student.id,
+          name: student.name,
+          minecraftPlayerName: student.minecraft_player_name || '',
+          createdAt: student.created_at,
+          progress: db.prepare('SELECT * FROM classroom_progress WHERE student_id = ? ORDER BY updated_at DESC')
+            .all(student.id).map(classroomProgressPublic),
+        })),
+      }));
+      return { teacher, courses: teacherCourses(db, teacher.id), classes };
+    }).immediate());
+    if (!result) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
     return send(res, 200, JSON.stringify({
       ok: true,
-      teacher: { id: teacher.id, name: teacher.name, email: teacher.email, courses: withSummerDb(db => teacherCourses(db, teacher.id)) },
-      classes,
+      teacher: { id: result.teacher.id, name: result.teacher.name, email: result.teacher.email, courses: result.courses },
+      classes: result.classes,
     }));
   }
 
   if (req.method === 'GET' && action === 'classes' && segments[3] && segments[4] === 'students' && segments[5] === 'archived' && segments.length === 6) {
-    const teacher = getClassroomTeacherFromRequest(req);
-    if (!teacher) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
-    const result = withSummerDb(db => {
+    const result = withSummerDb(db => db.transaction(() => {
+      const teacher = requireCurrentClassroomTeacher(db, req);
+      if (!teacher) return { denied: true };
       const classroom = db.prepare('SELECT id FROM classrooms WHERE id = ? AND teacher_id = ?').get(segments[3], teacher.id);
-      if (!classroom) return null;
-      return db.prepare(`
+      if (!classroom) return { notFound: true };
+      const students = db.prepare(`
         SELECT id, name, archived_at, disabled_at FROM classroom_students
         WHERE classroom_id = ? AND (archived_at IS NOT NULL OR disabled_at IS NOT NULL)
         ORDER BY COALESCE(archived_at, disabled_at) DESC
       `).all(classroom.id).map(student => ({ id: student.id, name: student.name, archivedAt: student.archived_at || student.disabled_at }));
-    });
-    if (!result) return send(res, 404, JSON.stringify({ error: 'הכיתה לא נמצאה.' }));
-    return send(res, 200, JSON.stringify({ ok: true, students: result }));
+      return { students };
+    }).immediate());
+    if (result.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
+    if (result.notFound) return send(res, 404, JSON.stringify({ error: 'הכיתה לא נמצאה.' }));
+    return send(res, 200, JSON.stringify({ ok: true, students: result.students }));
+  }
+
+  if (req.method === 'GET' && action === 'admin' && segments[3] === 'invitations' && segments.length === 4) {
+    const result = withSummerDb(db => db.transaction(() => {
+      const admin = requireCurrentClassroomAdmin(db, req);
+      if (!admin) return null;
+      const invitations = db.prepare(`SELECT id, email, name, status, delivery_status, delivery_generation, expires_at,
+        created_at, updated_at, redeemed_at, revoked_at
+        FROM classroom_teacher_invitations ORDER BY created_at DESC`).all().map(row => ({
+        id: row.id, email: row.email, name: row.name, status: row.status,
+        deliveryStatus: row.delivery_status, deliveryGeneration: row.delivery_generation,
+        expiresAt: row.expires_at, createdAt: row.created_at,
+        updatedAt: row.updated_at, redeemedAt: row.redeemed_at, revokedAt: row.revoked_at,
+      }));
+      const now = new Date().toISOString();
+      db.prepare(`INSERT INTO classroom_credential_audit
+        (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+        VALUES (?, 'admin', ?, 'invitation_list', 'invitation', 'collection', 'success', ?)`)
+        .run(crypto.randomUUID(), admin.admin_id, now);
+      return invitations;
+    }).immediate());
+    if (!result) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מנהלת.' }));
+    return send(res, 200, JSON.stringify({ ok: true, invitations: result }));
   }
 
   if (req.method !== 'POST') return send(res, 405, JSON.stringify({ error: 'Method not allowed' }));
 
   try {
     const body = JSON.parse(await readBody(req, 64 * 1024) || '{}');
+    if (action === 'admin-access' && segments[3] === 'request' && segments.length === 4) {
+      const email = cleanEmail(body.email);
+      const sourceLimitKey = classroomSourceKey(req, 'admin-access-request');
+      const identityLimitKey = classroomIdentityKey('admin-access-request', email);
+      if (consumeClassroomLoginAttempts([sourceLimitKey, identityLimitKey])) {
+        withSummerDb(db => db.transaction(() => {
+          const identity = db.prepare('SELECT id FROM classroom_admin_identity WHERE email = ?').get(email);
+          db.prepare(`INSERT INTO classroom_credential_audit
+            (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+            VALUES (?, 'system', 'access-request', 'issuance', 'challenge', ?, 'throttled', ?)`)
+            .run(crypto.randomUUID(), identity?.id || 'unknown', new Date().toISOString());
+        }).immediate());
+        return send(res, 429, JSON.stringify({ error: 'יותר מדי ניסיונות. נסו שוב מאוחר יותר.' }));
+      }
+      const code = crypto.randomBytes(24).toString('base64url');
+      const codeHash = createOneTimeCredentialHash(code);
+      // Always perform the same hash operation and return the same public response.
+      const issued = withSummerDb(db => db.transaction(() => {
+        const identity = db.prepare('SELECT id, credential_version FROM classroom_admin_identity WHERE email = ?').get(email);
+        if (!identity) {
+          db.prepare(`INSERT INTO classroom_credential_audit
+            (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+            VALUES (?, 'system', 'access-request', 'issuance', 'challenge', 'unknown', 'denied', ?)`)
+            .run(crypto.randomUUID(), new Date().toISOString());
+          return false;
+        }
+        const now = new Date();
+        db.prepare(`UPDATE classroom_admin_challenges SET revoked_at = ?
+          WHERE admin_id = ? AND purpose = 'access' AND used_at IS NULL AND revoked_at IS NULL`)
+          .run(now.toISOString(), identity.id);
+        const challengeId = crypto.randomUUID();
+        db.prepare(`INSERT INTO classroom_admin_challenges
+          (id, admin_id, purpose, code_hash, credential_version, attempts, max_attempts, expires_at, created_at)
+          VALUES (?, ?, 'access', ?, ?, 0, 5, ?, ?)`)
+          .run(challengeId, identity.id, codeHash, identity.credential_version,
+            new Date(now.getTime() + 15 * 60 * 1000).toISOString(), now.toISOString());
+        db.prepare(`INSERT INTO classroom_credential_audit
+          (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+          VALUES (?, 'system', 'access-request', 'issuance', 'challenge', ?, 'success', ?)`)
+          .run(crypto.randomUUID(), challengeId, now.toISOString());
+        return { challengeId, credentialVersion: identity.credential_version };
+      }).immediate());
+      if (issued) {
+        if (process.env.NODE_ENV === 'test') {
+          await reconcileAdminAccessDelivery(issued.challengeId, issued.credentialVersion, email, code);
+        } else {
+          setImmediate(() => {
+            reconcileAdminAccessDelivery(issued.challengeId, issued.credentialVersion, email, code)
+              .catch(error => console.error('classroom_admin_access_delivery_error', error));
+          });
+        }
+      }
+      const response = { ok: true };
+      if (process.env.NODE_ENV === 'test' && issued) response.testCode = code;
+      if (process.env.NODE_ENV === 'test') response.testWorkFactor = 1;
+      return send(res, 202, JSON.stringify(response));
+    }
+    if (action === 'admin-access' && segments[3] === 'redeem' && segments.length === 4) {
+      const email = cleanEmail(body.email);
+      const sourceLimitKey = classroomSourceKey(req, 'admin-access-redeem');
+      const identityLimitKey = classroomIdentityKey('admin-access-redeem', email);
+      if (consumeClassroomLoginAttempts([sourceLimitKey, identityLimitKey])) {
+        withSummerDb(db => db.transaction(() => {
+          const identity = db.prepare('SELECT id FROM classroom_admin_identity WHERE email = ?').get(email);
+          const challenge = identity && db.prepare(`SELECT id FROM classroom_admin_challenges
+            WHERE admin_id = ? ORDER BY created_at DESC LIMIT 1`).get(identity.id);
+          db.prepare(`INSERT INTO classroom_credential_audit
+            (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+            VALUES (?, 'admin', ?, 'redeem', 'challenge', ?, 'throttled', ?)`)
+            .run(crypto.randomUUID(), identity?.id || email || 'unknown', challenge?.id || 'unknown', new Date().toISOString());
+        }).immediate());
+        return send(res, 429, JSON.stringify({ error: 'יותר מדי ניסיונות. נסו שוב מאוחר יותר.' }));
+      }
+      const providedCode = String(body.code || '');
+      const now = new Date().toISOString();
+      const result = withSummerDb(db => db.transaction(() => {
+        const identity = db.prepare('SELECT id, credential_version FROM classroom_admin_identity WHERE email = ?').get(email);
+        const challenge = identity ? db.prepare(`SELECT * FROM classroom_admin_challenges
+          WHERE admin_id = ? AND purpose IN ('access','rotation')
+          ORDER BY created_at DESC LIMIT 1`).get(identity.id) : null;
+        const matches = oneTimeCredentialMatches(providedCode, challenge?.code_hash || '');
+        const valid = identity && challenge && !challenge.used_at && !challenge.revoked_at
+          && challenge.expires_at > now && challenge.attempts < challenge.max_attempts
+          && challenge.credential_version === identity.credential_version && matches;
+        if (!valid) {
+          const replayed = Boolean(challenge && matches && challenge.used_at);
+          let exhausted = Boolean(challenge && challenge.attempts >= challenge.max_attempts);
+          if (challenge && !challenge.used_at && !challenge.revoked_at && challenge.expires_at > now
+            && challenge.attempts < challenge.max_attempts && !matches) {
+            const attempts = challenge.attempts + 1;
+            db.prepare(`UPDATE classroom_admin_challenges SET attempts = ?,
+              revoked_at = CASE WHEN ? >= max_attempts THEN ? ELSE revoked_at END WHERE id = ?`)
+              .run(attempts, attempts, now, challenge.id);
+            exhausted = attempts >= challenge.max_attempts;
+          }
+          if (replayed) {
+            db.prepare(`INSERT INTO classroom_credential_audit
+              (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+              VALUES (?, 'admin', ?, 'redeem', 'challenge', ?, 'replayed', ?)`)
+              .run(crypto.randomUUID(), identity.id, challenge.id, now);
+          } else {
+            const outcome = challenge && challenge.expires_at <= now ? 'expired' : exhausted ? 'exhausted' : 'invalid';
+            db.prepare(`INSERT INTO classroom_credential_audit
+              (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+              VALUES (?, 'admin', ?, 'redeem', 'challenge', ?, ?, ?)`)
+              .run(crypto.randomUUID(), identity?.id || email || 'unknown', challenge?.id || 'unknown', outcome, now);
+          }
+          return null;
+        }
+        const consumed = db.prepare(`UPDATE classroom_admin_challenges SET used_at = ?
+          WHERE id = ? AND used_at IS NULL AND revoked_at IS NULL`).run(now, challenge.id);
+        if (consumed.changes !== 1) return null;
+        const token = createClassroomAdminSession(db, identity.id, identity.credential_version);
+        db.prepare(`INSERT INTO classroom_credential_audit
+          (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+          VALUES (?, 'admin', ?, 'redeem', 'challenge', ?, 'success', ?)`)
+          .run(crypto.randomUUID(), identity.id, challenge.id, now);
+        return { token };
+      }).immediate());
+      if (!result) return send(res, 401, JSON.stringify({ error: 'פרטי הגישה אינם תקינים או שפג תוקפם.' }));
+      return sendWithHeaders(res, 200, JSON.stringify({ ok: true, role: 'admin' }), 'application/json; charset=utf-8', {
+        'Set-Cookie': classroomAdminSessionCookie(result.token),
+      });
+    }
+    if (action === 'teacher-invitations' && segments[3] === 'redeem' && segments.length === 4) {
+      const email = cleanEmail(body.email);
+      const sourceLimitKey = classroomSourceKey(req, 'teacher-invitation-redeem');
+      const identityLimitKey = classroomIdentityKey('teacher-invitation-redeem', email);
+      if (consumeClassroomLoginAttempts([sourceLimitKey, identityLimitKey])) {
+        withSummerDb(db => db.transaction(() => {
+          const invitation = db.prepare(`SELECT id FROM classroom_teacher_invitations
+            WHERE email = ? ORDER BY created_at DESC LIMIT 1`).get(email);
+          if (invitation) {
+            db.prepare(`INSERT INTO classroom_credential_audit
+              (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+              VALUES (?, 'teacher', 'anonymous', 'invitation_redeem', 'invitation', ?, 'throttled', ?)`)
+              .run(crypto.randomUUID(), invitation.id, new Date().toISOString());
+          }
+        }).immediate());
+        return send(res, 429, JSON.stringify({ error: 'יותר מדי ניסיונות. נסו שוב מאוחר יותר.' }));
+      }
+      const providedHash = tokenHash(String(body.code || ''));
+      const temporaryPassword = generateTemporaryTeacherPassword();
+      const result = withSummerDb(db => db.transaction(() => {
+        const now = new Date().toISOString();
+        const invitation = db.prepare(`SELECT * FROM classroom_teacher_invitations
+          WHERE email = ? ORDER BY created_at DESC LIMIT 1`).get(email);
+        const expectedHash = invitation?.code_hash || tokenHash('credential-dummy-invitation');
+        const matches = crypto.timingSafeEqual(Buffer.from(providedHash, 'hex'), Buffer.from(expectedHash, 'hex'));
+        let outcome = 'invalid';
+        if (invitation?.status === 'redeemed' && matches) outcome = 'replayed';
+        else if (invitation?.status === 'expired' || (invitation && invitation.expires_at <= now)) outcome = 'expired';
+        else if (invitation?.status === 'exhausted' || (invitation && invitation.attempts >= invitation.max_attempts)) outcome = 'exhausted';
+        else if (invitation?.status === 'revoked') outcome = 'denied';
+        const redeemable = invitation && matches && ['sent', 'unknown'].includes(invitation.status)
+          && invitation.expires_at > now && invitation.attempts < invitation.max_attempts;
+        if (!redeemable) {
+          if (invitation && !matches && ['sent', 'unknown'].includes(invitation.status)) {
+            const attempts = invitation.attempts + 1;
+            db.prepare(`UPDATE classroom_teacher_invitations SET attempts = ?,
+              status = CASE WHEN ? >= max_attempts THEN 'exhausted' ELSE status END, updated_at = ? WHERE id = ?`)
+              .run(attempts, attempts, now, invitation.id);
+            if (attempts >= invitation.max_attempts) outcome = 'exhausted';
+          }
+          db.prepare(`INSERT INTO classroom_credential_audit
+            (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+            VALUES (?, 'teacher', ?, 'invitation_redeem', 'invitation', ?, ?, ?)`)
+            .run(crypto.randomUUID(), email || 'unknown', invitation?.id || 'unknown', outcome, now);
+          return null;
+        }
+        if (db.prepare('SELECT id FROM classroom_teachers WHERE email = ?').get(email)) return null;
+        const teacherId = crypto.randomUUID();
+        const salt = crypto.randomBytes(16).toString('hex');
+        db.prepare(`INSERT INTO classroom_teachers
+          (id, name, email, password_salt, password_hash, created_at, updated_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?)`)
+          .run(teacherId, invitation.name, email, salt, hashClassroomSecret(temporaryPassword, salt), now, now);
+        const consumed = db.prepare(`UPDATE classroom_teacher_invitations
+          SET status = 'redeemed', teacher_id = ?, redeemed_at = ?, updated_at = ?
+          WHERE id = ? AND status IN ('sent','unknown') AND redeemed_at IS NULL`)
+          .run(teacherId, now, now, invitation.id);
+        if (consumed.changes !== 1) throw new Error('invitation_concurrent_redemption');
+        db.prepare(`INSERT INTO classroom_credential_audit
+          (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+          VALUES (?, 'teacher', ?, 'invitation_redeem', 'invitation', ?, 'success', ?)`)
+          .run(crypto.randomUUID(), teacherId, invitation.id, now);
+        return { teacherId };
+      }).immediate());
+      if (!result) {
+        return send(res, 401, JSON.stringify({ error: 'פרטי ההזמנה אינם תקינים או שפג תוקפם.' }));
+      }
+      clearClassroomLoginFailures(sourceLimitKey);
+      clearClassroomLoginFailures(identityLimitKey);
+      return send(res, 201, JSON.stringify({ ok: true, oneTime: true, temporaryPassword,
+        teacher: { id: result.teacherId, email } }));
+    }
     if (action === 'admin-login') {
       if (!CLASSROOM_ADMIN_CODE) return send(res, 503, JSON.stringify({ error: 'ניהול הרשאות המורים אינו זמין כרגע.' }));
       const loginKey = classroomLoginKey(req, 'classroom-admin', 'global');
@@ -3096,23 +3865,231 @@ async function handleClassroomApi(req, res) {
     }
 
     if (action === 'admin-logout') {
-      const token = parseCookies(req).haiTechClassroomAdminToken || '';
-      if (token) withSummerDb(db => db.prepare('UPDATE classroom_admin_sessions SET revoked_at = ? WHERE token_hash = ?')
-        .run(new Date().toISOString(), tokenHash(token)));
-      return sendWithHeaders(res, 200, JSON.stringify({ ok: true }), 'application/json; charset=utf-8', {
+      const result = withSummerDb(db => db.transaction(() => {
+        const admin = requireCurrentClassroomAdmin(db, req);
+        if (!admin) return { denied: true };
+        const now = new Date().toISOString();
+        const revoked = db.prepare(`UPDATE classroom_admin_sessions SET revoked_at = ?
+          WHERE id = ? AND admin_id = ? AND credential_version = ? AND revoked_at IS NULL`)
+          .run(now, admin.id, admin.admin_id, admin.credential_version);
+        if (revoked.changes !== 1) return { denied: true };
+        db.prepare(`INSERT INTO classroom_credential_audit
+          (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+          VALUES (?, 'admin', ?, 'logout', 'session', ?, 'success', ?)`)
+          .run(crypto.randomUUID(), admin.admin_id, admin.id, now);
+        return { ok: true };
+      }).immediate());
+      return sendWithHeaders(res, result.ok ? 200 : 401,
+        JSON.stringify(result.ok ? { ok: true } : { error: 'נדרשת כניסת מנהלת עדכנית.' }),
+        'application/json; charset=utf-8', { 'Set-Cookie': clearClassroomAdminSessionCookie() });
+    }
+
+    if (action === 'admin' && segments[3] === 'invitations' && segments[4]
+      && segments[5] === 'revoke' && segments.length === 6) {
+      const invitationId = segments[4];
+      const result = withSummerDb(db => db.transaction(() => {
+        const admin = requireCurrentClassroomAdmin(db, req);
+        if (!admin) return { denied: true };
+        const now = new Date().toISOString();
+        const updated = db.prepare(`UPDATE classroom_teacher_invitations
+          SET status = 'revoked', revoked_at = ?, updated_at = ?
+          WHERE id = ? AND status IN ('pending','sent','failed','unknown')
+            AND redeemed_at IS NULL AND revoked_at IS NULL`).run(now, now, invitationId);
+        if (updated.changes !== 1) {
+          db.prepare(`INSERT INTO classroom_credential_audit
+            (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+            VALUES (?, 'admin', ?, 'invitation_revoke', 'invitation', ?, 'invalid', ?)`)
+            .run(crypto.randomUUID(), admin.admin_id, invitationId, now);
+          return { notFound: true };
+        }
+        db.prepare(`INSERT INTO classroom_credential_audit
+          (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+          VALUES (?, 'admin', ?, 'invitation_revoke', 'invitation', ?, 'success', ?)`)
+          .run(crypto.randomUUID(), admin.admin_id, invitationId, now);
+        return { ok: true };
+      }).immediate());
+      if (result.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מנהלת עדכנית.' }));
+      if (result.notFound) return send(res, 404, JSON.stringify({ error: 'ההזמנה אינה זמינה לביטול.' }));
+      return send(res, 200, JSON.stringify({ ok: true, invitation: { id: invitationId, status: 'revoked' } }));
+    }
+
+    if (action === 'admin' && segments[3] === 'invitations' && segments[4]
+      && segments[5] === 'resend' && segments.length === 6) {
+      const invitationId = segments[4];
+      const code = crypto.randomBytes(24).toString('base64url');
+      const invitation = withSummerDb(db => db.transaction(() => {
+        const admin = requireCurrentClassroomAdmin(db, req);
+        if (!admin) return { denied: true };
+        const row = db.prepare(`SELECT id, email, name, status, expires_at, delivery_generation FROM classroom_teacher_invitations
+          WHERE id = ? AND status IN ('pending','sent','failed','unknown') AND redeemed_at IS NULL AND revoked_at IS NULL`).get(invitationId);
+        if (!row) {
+          db.prepare(`INSERT INTO classroom_credential_audit
+            (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+            VALUES (?, 'admin', ?, 'invitation_resend', 'invitation', ?, 'invalid', ?)`)
+            .run(crypto.randomUUID(), admin.admin_id, invitationId, new Date().toISOString());
+          return { notFound: true };
+        }
+        const now = new Date();
+        const expiresAt = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
+        const deliveryGeneration = row.delivery_generation + 1;
+        db.prepare(`UPDATE classroom_teacher_invitations SET code_hash = ?, attempts = 0,
+          status = 'pending', delivery_status = 'pending', delivery_generation = ?, expires_at = ?, updated_at = ? WHERE id = ?`)
+          .run(tokenHash(code), deliveryGeneration, expiresAt, now.toISOString(), invitationId);
+        db.prepare(`INSERT INTO classroom_credential_audit
+          (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+          VALUES (?, 'admin', ?, 'invitation_resend', 'invitation', ?, 'success', ?)`)
+          .run(crypto.randomUUID(), admin.admin_id, invitationId, now.toISOString());
+        return { ...row, expires_at: expiresAt, delivery_generation: deliveryGeneration };
+      }).immediate());
+      if (invitation.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מנהלת עדכנית.' }));
+      if (invitation.notFound) return send(res, 404, JSON.stringify({ error: 'ההזמנה אינה זמינה לשליחה מחדש.' }));
+      const deliveryStatus = await deliverClassroomCredentialEmail(invitation.email, 'הזמנה להוראה ב־HaiTech', code);
+      const reconciliation = withSummerDb(db => db.transaction(() => {
+        const now = new Date().toISOString();
+        const reconciled = db.prepare(`UPDATE classroom_teacher_invitations SET status = ?, delivery_status = ?, updated_at = ?
+          WHERE id = ? AND status = 'pending' AND delivery_generation = ?`)
+          .run(deliveryStatus, deliveryStatus, now, invitationId, invitation.delivery_generation);
+        if (reconciled.changes !== 1) return { stale: true };
+        db.prepare(`INSERT INTO classroom_credential_audit
+          (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+          VALUES (?, 'system', 'mailer', 'delivery', 'invitation', ?, ?, ?)`)
+          .run(crypto.randomUUID(), invitationId, deliveryStatus === 'sent' ? 'success' : deliveryStatus, now);
+        return { stale: false };
+      }).immediate());
+      if (reconciliation.stale) return send(res, 409, JSON.stringify({ error: 'תוצאת המשלוח התיישנה; מצב ההזמנה השתנה.' }));
+      const payload = { ok: deliveryStatus === 'sent', invitation: {
+        id: invitation.id, email: invitation.email, name: invitation.name,
+        status: deliveryStatus, deliveryStatus, deliveryGeneration: invitation.delivery_generation,
+        expiresAt: invitation.expires_at,
+      } };
+      if (process.env.NODE_ENV === 'test') payload.testCode = code;
+      return send(res, deliveryStatus === 'failed' ? 502 : 200, JSON.stringify(payload));
+    }
+
+    if (action === 'admin' && segments[3] === 'invitations' && segments.length === 4) {
+      if (Object.prototype.hasOwnProperty.call(body, 'password')) {
+        auditInvitationFailure(req, 'invitation_create', 'new');
+        return send(res, 400, JSON.stringify({ error: 'אין לשלוח סיסמה בהזמנה.' }));
+      }
+      const name = cleanText(body.name, 80);
+      const email = cleanEmail(body.email);
+      if (name.length < 2 || !/^\S+@\S+\.\S+$/.test(email)) {
+        auditInvitationFailure(req, 'invitation_create', 'new');
+        return send(res, 400, JSON.stringify({ error: 'פרטי ההזמנה אינם תקינים.' }));
+      }
+      const code = crypto.randomBytes(24).toString('base64url');
+      const invitation = withSummerDb(db => db.transaction(() => {
+        const now = new Date();
+        const administrator = requireCurrentClassroomAdmin(db, req);
+        if (!administrator) return null;
+        const existingTeacher = db.prepare('SELECT id FROM classroom_teachers WHERE email = ?').get(email);
+        if (existingTeacher) {
+          db.prepare(`INSERT INTO classroom_credential_audit
+            (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+            VALUES (?, 'admin', ?, 'invitation_create', 'teacher', ?, 'invalid', ?)`)
+            .run(crypto.randomUUID(), administrator.admin_id, existingTeacher.id, now.toISOString());
+          return { conflict: true };
+        }
+        db.prepare(`UPDATE classroom_teacher_invitations
+          SET status = 'revoked', revoked_at = ?, updated_at = ?
+          WHERE email = ? AND status IN ('pending','sent','failed','unknown')
+            AND redeemed_at IS NULL AND revoked_at IS NULL`)
+          .run(now.toISOString(), now.toISOString(), email);
+        const id = crypto.randomUUID();
+        db.prepare(`INSERT INTO classroom_teacher_invitations
+          (id, email, name, code_hash, attempts, max_attempts, status, delivery_status,
+           expires_at, created_by, created_at, updated_at)
+          VALUES (?, ?, ?, ?, 0, 5, 'pending', 'pending', ?, ?, ?, ?)`)
+          .run(id, email, name, tokenHash(code),
+            new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+            administrator.admin_id, now.toISOString(), now.toISOString());
+        db.prepare(`INSERT INTO classroom_credential_audit
+          (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+          VALUES (?, 'admin', ?, 'invitation_create', 'invitation', ?, 'success', ?)`)
+          .run(crypto.randomUUID(), administrator.admin_id, id, now.toISOString());
+        return { id, email, name, expiresAt: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString() };
+      }).immediate());
+      if (!invitation) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מנהלת עדכנית.' }));
+      if (invitation.conflict) return send(res, 409, JSON.stringify({ error: 'כבר קיים חשבון מורה עם המייל הזה.' }));
+      const deliveryStatus = await deliverClassroomCredentialEmail(email, 'הזמנה להוראה ב־HaiTech', code);
+      const status = deliveryStatus;
+      const reconciliation = withSummerDb(db => db.transaction(() => {
+        const reconciledAt = new Date().toISOString();
+        const reconciled = db.prepare(`UPDATE classroom_teacher_invitations SET status = ?, delivery_status = ?, updated_at = ?
+          WHERE id = ? AND status = 'pending' AND delivery_status = 'pending' AND delivery_generation = 1`)
+          .run(status, deliveryStatus, reconciledAt, invitation.id);
+        if (reconciled.changes !== 1) return { stale: true };
+        db.prepare(`INSERT INTO classroom_credential_audit
+          (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+          VALUES (?, 'system', 'mailer', 'delivery', 'invitation', ?, ?, ?)`)
+          .run(crypto.randomUUID(), invitation.id, deliveryStatus === 'sent' ? 'success' : deliveryStatus, reconciledAt);
+        return { stale: false };
+      }).immediate());
+      if (reconciliation.stale) return send(res, 409, JSON.stringify({ error: 'תוצאת המשלוח התיישנה; מצב ההזמנה השתנה.' }));
+      const response = { ok: true, invitation: {
+        id: invitation.id, email, name, status, deliveryStatus, deliveryGeneration: 1, expiresAt: invitation.expiresAt,
+      } };
+      if (process.env.NODE_ENV === 'test') response.testCode = code;
+      return send(res, 201, JSON.stringify(response));
+    }
+
+    if (action === 'admin' && segments[3] === 'rotate' && segments.length === 4) {
+      const rawToken = parseCookies(req).haiTechClassroomAdminToken || '';
+      const replacementCode = crypto.randomBytes(24).toString('base64url');
+      const replacementHash = createOneTimeCredentialHash(replacementCode);
+      const result = withSummerDb(db => db.transaction(() => {
+        const now = new Date();
+        const session = db.prepare(`SELECT s.id AS session_id, a.id AS admin_id, a.email, a.credential_version
+          FROM classroom_admin_sessions s JOIN classroom_admin_identity a ON a.id = s.admin_id
+          WHERE s.token_hash = ? AND s.revoked_at IS NULL AND s.expires_at > ?
+            AND s.credential_version = a.credential_version`).get(tokenHash(rawToken), now.toISOString());
+        if (!session) return null;
+        const nextVersion = session.credential_version + 1;
+        db.prepare('UPDATE classroom_admin_identity SET credential_version = ?, updated_at = ? WHERE id = ? AND credential_version = ?')
+          .run(nextVersion, now.toISOString(), session.admin_id, session.credential_version);
+        db.prepare('UPDATE classroom_admin_sessions SET revoked_at = ? WHERE admin_id = ? AND revoked_at IS NULL')
+          .run(now.toISOString(), session.admin_id);
+        db.prepare('UPDATE classroom_admin_challenges SET revoked_at = ? WHERE admin_id = ? AND revoked_at IS NULL AND used_at IS NULL')
+          .run(now.toISOString(), session.admin_id);
+        const challengeId = crypto.randomUUID();
+        db.prepare(`INSERT INTO classroom_admin_challenges
+          (id, admin_id, purpose, code_hash, credential_version, attempts, max_attempts, expires_at, created_at)
+          VALUES (?, ?, 'rotation', ?, ?, 0, 5, ?, ?)`)
+          .run(challengeId, session.admin_id, replacementHash, nextVersion,
+            new Date(now.getTime() + CLASSROOM_CHALLENGE_TTL_MS).toISOString(), now.toISOString());
+        db.prepare(`INSERT INTO classroom_credential_audit
+          (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+          VALUES (?, 'admin', ?, 'rotation', 'admin', ?, 'success', ?)`)
+          .run(crypto.randomUUID(), session.admin_id, session.admin_id, now.toISOString());
+        return { challengeId, credentialVersion: nextVersion, email: session.email };
+      }).immediate());
+      if (!result) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מנהלת עדכנית.' }));
+      const deliveryStatus = await deliverClassroomCredentialEmail(result.email, 'קוד גישה לניהול HaiTech', replacementCode);
+      const reconciliation = reconcileAdminChallengeDelivery(result.challengeId, result.credentialVersion, deliveryStatus);
+      if (reconciliation.stale) {
+        return sendWithHeaders(res, 409, JSON.stringify({ error: 'תוצאת המשלוח התיישנה; אתגר הגישה הוחלף או בוטל.' }),
+          'application/json; charset=utf-8', { 'Set-Cookie': clearClassroomAdminSessionCookie() });
+      }
+      const response = { ok: deliveryStatus !== 'failed', oneTime: true, deliveryStatus };
+      if (process.env.NODE_ENV === 'test') response.testCode = replacementCode;
+      return sendWithHeaders(res, deliveryStatus === 'failed' ? 502 : 200, JSON.stringify(response), 'application/json; charset=utf-8', {
         'Set-Cookie': clearClassroomAdminSessionCookie(),
       });
     }
 
     if (action === 'admin' && segments[3] === 'teachers' && segments.length === 4) {
-      const admin = getClassroomAdminFromRequest(req);
-      if (!admin) {
-        return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מנהלת.' }));
+      const deprecatedCreate = withSummerDb(db => db.transaction(() => {
+        const admin = requireCurrentClassroomAdmin(db, req);
+        if (!admin) return { denied: true };
+        recordClassroomManagementAudit(db, 'admin', admin.admin_id, 'teacher.create', 'teacher', 'new', 'invalid');
+        return { passwordSupplied: Object.prototype.hasOwnProperty.call(body, 'password') };
+      }).immediate());
+      if (deprecatedCreate.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מנהלת.' }));
+      if (deprecatedCreate.passwordSupplied) {
+        return send(res, 400, JSON.stringify({ error: 'אין לשלוח סיסמה ביצירת מורה; יש ליצור הזמנה הקשורה למייל.' }));
       }
-      if (Object.prototype.hasOwnProperty.call(body, 'password')) {
-        withSummerDb(db => recordClassroomManagementAudit(db, 'admin', admin.id, 'teacher.create', 'teacher', 'new', 'invalid'));
-        return send(res, 400, JSON.stringify({ error: 'אין לשלוח סיסמה ביצירת מורה; המערכת מפיקה סיסמה זמנית חד-פעמית.' }));
-      }
+      return send(res, 410, JSON.stringify({ error: 'יצירת חשבון ישירה הוצאה משימוש; יש לשלוח הזמנה למורה.' }));
+      /* Legacy implementation remains unreachable during the migration window. */
       const name = cleanText(body.name, 80);
       const email = cleanEmail(body.email);
       if (name.length < 2 || !/^\S+@\S+\.\S+$/.test(email)) {
@@ -3121,6 +4098,8 @@ async function handleClassroomApi(req, res) {
       }
       const temporaryPassword = generateTemporaryTeacherPassword();
       const result = withSummerDb(db => db.transaction(() => {
+        const currentAdmin = requireCurrentClassroomAdmin(db, req);
+        if (!currentAdmin) return { denied: true };
         if (db.prepare('SELECT id FROM classroom_teachers WHERE email = ?').get(email)) return { conflict: true };
         const now = new Date().toISOString();
         const salt = crypto.randomBytes(16).toString('hex');
@@ -3129,9 +4108,10 @@ async function handleClassroomApi(req, res) {
           INSERT INTO classroom_teachers (id, name, email, password_salt, password_hash, created_at, updated_at)
           VALUES (?, ?, ?, ?, ?, ?, ?)
         `).run(teacher.id, name, email, salt, hashClassroomSecret(temporaryPassword, salt), now, now);
-        recordClassroomManagementAudit(db, 'admin', admin.id, 'teacher.create', 'teacher', teacher.id, 'success');
+        recordClassroomManagementAudit(db, 'admin', currentAdmin.admin_id, 'teacher.create', 'teacher', teacher.id, 'success');
         return { teacher };
-      })());
+      }).immediate());
+      if (result.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מנהלת עדכנית.' }));
       if (result.conflict) {
         withSummerDb(db => recordClassroomManagementAudit(db, 'admin', admin.id, 'teacher.create', 'teacher', 'new', 'invalid'));
         return send(res, 409, JSON.stringify({ error: 'כבר קיים חשבון מורה עם המייל הזה.' }));
@@ -3143,33 +4123,33 @@ async function handleClassroomApi(req, res) {
     }
 
     if (action === 'admin' && segments[3] === 'teachers' && segments[4] && segments.length === 5) {
-      const admin = getClassroomAdminFromRequest(req);
       const teacherId = segments[4];
-      if (!admin) {
-        return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מנהלת.' }));
-      }
       const name = cleanText(body.name, 80);
       const email = cleanEmail(body.email);
-      if (name.length < 2 || !/^\S+@\S+\.\S+$/.test(email)) {
-        withSummerDb(db => recordClassroomManagementAudit(db, 'admin', admin.id, 'teacher.update', 'teacher', teacherId, 'invalid'));
-        return send(res, 400, JSON.stringify({ error: 'פרטי המורה אינם תקינים.' }));
-      }
       const result = withSummerDb(db => db.transaction(() => {
+        const currentAdmin = requireCurrentClassroomAdmin(db, req);
+        if (!currentAdmin) return { denied: true };
+        if (name.length < 2 || !/^\S+@\S+\.\S+$/.test(email)) {
+          recordClassroomManagementAudit(db, 'admin', currentAdmin.admin_id, 'teacher.update', 'teacher', teacherId, 'invalid');
+          return { invalid: true };
+        }
         const teacher = db.prepare(`SELECT id FROM classroom_teachers
           WHERE id = ? AND archived_at IS NULL AND disabled_at IS NULL`).get(teacherId);
         if (!teacher) {
-          recordClassroomManagementAudit(db, 'admin', admin.id, 'teacher.update', 'teacher', teacherId, 'not_found');
+          recordClassroomManagementAudit(db, 'admin', currentAdmin.admin_id, 'teacher.update', 'teacher', teacherId, 'not_found');
           return { notFound: true };
         }
         if (db.prepare('SELECT id FROM classroom_teachers WHERE email = ? AND id <> ?').get(email, teacherId)) {
-          recordClassroomManagementAudit(db, 'admin', admin.id, 'teacher.update', 'teacher', teacherId, 'invalid');
+          recordClassroomManagementAudit(db, 'admin', currentAdmin.admin_id, 'teacher.update', 'teacher', teacherId, 'invalid');
           return { conflict: true };
         }
         const now = new Date().toISOString();
         db.prepare('UPDATE classroom_teachers SET name = ?, email = ?, updated_at = ? WHERE id = ?').run(name, email, now, teacherId);
-        recordClassroomManagementAudit(db, 'admin', admin.id, 'teacher.update', 'teacher', teacherId, 'success');
+        recordClassroomManagementAudit(db, 'admin', currentAdmin.admin_id, 'teacher.update', 'teacher', teacherId, 'success');
         return { teacher: { id: teacherId, name, email, courses: teacherCourses(db, teacherId), archivedAt: null } };
-      })());
+      }).immediate());
+      if (result.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מנהלת עדכנית.' }));
+      if (result.invalid) return send(res, 400, JSON.stringify({ error: 'פרטי המורה אינם תקינים.' }));
       if (result.notFound) return send(res, 404, JSON.stringify({ error: 'המורה לא נמצאה.' }));
       if (result.conflict) return send(res, 409, JSON.stringify({ error: 'כבר קיים חשבון מורה עם המייל הזה.' }));
       return send(res, 200, JSON.stringify({ ok: true, teacher: result.teacher }));
@@ -3184,10 +4164,12 @@ async function handleClassroomApi(req, res) {
         return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מנהלת.' }));
       }
       const result = withSummerDb(db => db.transaction(() => {
+        const currentAdmin = requireCurrentClassroomAdmin(db, req);
+        if (!currentAdmin) return { denied: true };
         const teacher = db.prepare('SELECT id, name, email, archived_at, disabled_at FROM classroom_teachers WHERE id = ?').get(teacherId);
         const inactive = Boolean(teacher && (teacher.archived_at || teacher.disabled_at));
         if (!teacher || (operation === 'archive' ? inactive : !inactive)) {
-          recordClassroomManagementAudit(db, 'admin', admin.id, auditAction, 'teacher', teacherId, 'not_found');
+          recordClassroomManagementAudit(db, 'admin', currentAdmin.admin_id, auditAction, 'teacher', teacherId, 'not_found');
           return null;
         }
         const now = new Date().toISOString();
@@ -3198,7 +4180,7 @@ async function handleClassroomApi(req, res) {
             WHERE c.teacher_id = ? AND ks.active = 1 LIMIT 1
           `).get(teacherId);
           if (activeLease) {
-            recordClassroomManagementAudit(db, 'admin', admin.id, auditAction, 'teacher', teacherId, 'denied');
+            recordClassroomManagementAudit(db, 'admin', currentAdmin.admin_id, auditAction, 'teacher', teacherId, 'denied');
             return { conflict: true };
           }
           db.prepare('UPDATE classroom_teachers SET archived_at = ?, disabled_at = ?, updated_at = ? WHERE id = ?')
@@ -3219,9 +4201,10 @@ async function handleClassroomApi(req, res) {
           teacher.archived_at = null;
           teacher.disabled_at = null;
         }
-        recordClassroomManagementAudit(db, 'admin', admin.id, auditAction, 'teacher', teacherId, 'success');
+        recordClassroomManagementAudit(db, 'admin', currentAdmin.admin_id, auditAction, 'teacher', teacherId, 'success');
         return teacher;
       }).immediate());
+      if (result?.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מנהלת עדכנית.' }));
       if (result?.conflict) return send(res, 409, JSON.stringify({ error: 'יש לעצור את שיעור Minecraft הפעיל לפני העברת המורה לארכיון.' }));
       if (!result) return send(res, 404, JSON.stringify({ error: 'המורה לא נמצאה במצב המתאים.' }));
       return send(res, 200, JSON.stringify({ ok: true, teacher: { id: result.id, name: result.name, email: result.email, archivedAt: result.archived_at } }));
@@ -3234,6 +4217,8 @@ async function handleClassroomApi(req, res) {
         return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מנהלת.' }));
       }
       const student = withSummerDb(db => db.transaction(() => {
+        const currentAdmin = requireCurrentClassroomAdmin(db, req);
+        if (!currentAdmin) return { denied: true };
         const row = db.prepare(`
           SELECT s.id, s.name, s.archived_at, s.disabled_at,
             t.archived_at AS teacher_archived_at, t.disabled_at AS teacher_disabled_at
@@ -3243,17 +4228,18 @@ async function handleClassroomApi(req, res) {
           WHERE s.id = ? AND (s.archived_at IS NOT NULL OR s.disabled_at IS NOT NULL)
         `).get(studentId);
         if (!row) {
-          recordClassroomManagementAudit(db, 'admin', admin.id, 'student.restore', 'student', studentId, 'not_found');
+          recordClassroomManagementAudit(db, 'admin', currentAdmin.admin_id, 'student.restore', 'student', studentId, 'not_found');
           return null;
         }
         if (row.teacher_archived_at || row.teacher_disabled_at) {
-          recordClassroomManagementAudit(db, 'admin', admin.id, 'student.restore', 'student', studentId, 'denied');
+          recordClassroomManagementAudit(db, 'admin', currentAdmin.admin_id, 'student.restore', 'student', studentId, 'denied');
           return { ownerInactive: true };
         }
         db.prepare('UPDATE classroom_students SET archived_at = NULL, disabled_at = NULL, updated_at = ? WHERE id = ?').run(new Date().toISOString(), studentId);
-        recordClassroomManagementAudit(db, 'admin', admin.id, 'student.restore', 'student', studentId, 'success');
+        recordClassroomManagementAudit(db, 'admin', currentAdmin.admin_id, 'student.restore', 'student', studentId, 'success');
         return row;
-      })());
+      }).immediate());
+      if (student?.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מנהלת עדכנית.' }));
       if (student?.ownerInactive) return send(res, 409, JSON.stringify({ error: 'יש לשחזר ולהפעיל את המורה לפני שחזור התלמיד/ה.' }));
       if (!student) return send(res, 404, JSON.stringify({ error: 'התלמיד/ה לא נמצא/ה בארכיון.' }));
       return send(res, 200, JSON.stringify({ ok: true, student: { id: student.id, name: student.name, archivedAt: null } }));
@@ -3263,30 +4249,31 @@ async function handleClassroomApi(req, res) {
       if (!getClassroomAdminFromRequest(req)) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מנהלת.' }));
       const courses = cleanClassroomCourses(body.courses);
       if (!courses) return send(res, 400, JSON.stringify({ error: 'רשימת הלומדות אינה תקינה.' }));
-      const result = withSummerDb(db => {
+      const result = withSummerDb(db => db.transaction(() => {
+        const currentAdmin = requireCurrentClassroomAdmin(db, req);
+        if (!currentAdmin) return { denied: true };
         const teacher = db.prepare('SELECT id, name, email FROM classroom_teachers WHERE id = ? AND archived_at IS NULL AND disabled_at IS NULL').get(segments[4]);
-        if (!teacher) return null;
-        const update = db.transaction(() => {
-          const releasedLeases = courses.includes(KUGEL_COURSE_ID) ? [] : db.prepare(`
-            SELECT kms.classroom_id, kms.monitor_server_name, kms.launch_token
-            FROM kugel_class_sessions kms
-            JOIN classrooms c ON c.id = kms.classroom_id
-            WHERE c.teacher_id = ? AND kms.active = 1
-          `).all(teacher.id);
-          for (const lease of releasedLeases) {
-            db.prepare(`
-              UPDATE kugel_class_sessions SET server_state = 'stopping', server_detail = ?, updated_at = ?
-              WHERE classroom_id = ? AND launch_token = ? AND active = 1
-            `).run('ההרשאה הוסרה; עולם המבוך בתהליך עצירה…', new Date().toISOString(), lease.classroom_id, lease.launch_token);
-          }
-          replaceTeacherCourses(db, teacher.id, courses);
-          const affectedClasses = db.prepare('SELECT id, name FROM classrooms WHERE teacher_id = ? ORDER BY created_at').all(teacher.id)
-            .map(classroom => ({ id: classroom.id, name: classroom.name, courses: classroomCourses(db, classroom.id) }));
-          return { teacher: { ...teacher, courses: teacherCourses(db, teacher.id) }, affectedClasses, releasedLeases };
-        });
-        return update();
-      });
-      if (!result) return send(res, 404, JSON.stringify({ error: 'המורה לא נמצאה.' }));
+        if (!teacher) return { notFound: true };
+        const releasedLeases = courses.includes(KUGEL_COURSE_ID) ? [] : db.prepare(`
+          SELECT kms.classroom_id, kms.monitor_server_name, kms.launch_token
+          FROM kugel_class_sessions kms
+          JOIN classrooms c ON c.id = kms.classroom_id
+          WHERE c.teacher_id = ? AND kms.active = 1
+        `).all(teacher.id);
+        for (const lease of releasedLeases) {
+          db.prepare(`
+            UPDATE kugel_class_sessions SET server_state = 'stopping', server_detail = ?, updated_at = ?
+            WHERE classroom_id = ? AND launch_token = ? AND active = 1
+          `).run('ההרשאה הוסרה; עולם המבוך בתהליך עצירה…', new Date().toISOString(), lease.classroom_id, lease.launch_token);
+        }
+        replaceTeacherCourses(db, teacher.id, courses);
+        const affectedClasses = db.prepare('SELECT id, name FROM classrooms WHERE teacher_id = ? ORDER BY created_at').all(teacher.id)
+          .map(classroom => ({ id: classroom.id, name: classroom.name, courses: classroomCourses(db, classroom.id) }));
+        recordClassroomManagementAudit(db, 'admin', currentAdmin.admin_id, 'teacher.courses', 'teacher', teacher.id, 'success');
+        return { teacher: { ...teacher, courses: teacherCourses(db, teacher.id) }, affectedClasses, releasedLeases };
+      }).immediate());
+      if (result.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מנהלת עדכנית.' }));
+      if (result.notFound) return send(res, 404, JSON.stringify({ error: 'המורה לא נמצאה.' }));
       const { releasedLeases, ...publicResult } = result;
       for (const lease of releasedLeases) {
         try {
@@ -3320,80 +4307,94 @@ async function handleClassroomApi(req, res) {
     }
 
     if (action === 'progress') {
-      const student = getClassroomStudentFromRequest(req);
-      if (!student) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת תלמיד/ה לכיתה.' }));
       const courseId = cleanText(body.courseId, 80);
       const lessonId = cleanText(body.lessonId, 80);
       const activityId = cleanText(body.activityId, 80);
       const status = body.status === 'completed' ? 'completed' : 'started';
       const score = Math.max(0, Math.min(100, Number(body.score || 0)));
-      if (!CLASSROOM_COURSES.has(courseId)) return send(res, 400, JSON.stringify({ error: 'הקורס אינו מוכר.' }));
-      if (!withSummerDb(db => classroomHasCourse(db, student.classroom_id, courseId))) {
-        return send(res, 403, JSON.stringify({ error: 'הלומדה אינה פתוחה לכיתה הזו.' }));
-      }
-      if (!lessonId || !activityId) return send(res, 400, JSON.stringify({ error: 'חסרים פרטי התקדמות.' }));
-      if (courseId === KUGEL_COURSE_ID && lessonId === '0' && activityId === 'minecraft-maze' && status === 'completed') {
-        return send(res, 403, JSON.stringify({ error: 'שיעור 0 מושלם רק אחרי בדיקת Minecraft.' }));
-      }
       const metadata = body.metadata && typeof body.metadata === 'object' ? body.metadata : {};
       const metadataJson = JSON.stringify(metadata).slice(0, 4000);
-      const row = withSummerDb(db => {
+      const result = withSummerDb(db => db.transaction(() => {
+        const student = requireCurrentClassroomStudent(db, req);
+        if (!student) return { denied: true };
+        if (!CLASSROOM_COURSES.has(courseId) || !lessonId || !activityId) {
+          recordClassroomManagementAudit(db, 'student', student.id, 'progress.record', 'progress', student.id, 'invalid');
+          return { invalid: true, invalidCourse: !CLASSROOM_COURSES.has(courseId) };
+        }
+        if (courseId === KUGEL_COURSE_ID && lessonId === '0' && activityId === 'minecraft-maze' && status === 'completed') {
+          recordClassroomManagementAudit(db, 'student', student.id, 'progress.record', 'progress', student.id, 'denied');
+          return { kugelDenied: true };
+        }
+        if (!classroomHasCourse(db, student.classroom_id, courseId)) {
+          recordClassroomManagementAudit(db, 'student', student.id, 'progress.record', 'progress', student.id, 'denied');
+          return { forbidden: true };
+        }
         const now = new Date().toISOString();
-        const existing = db.prepare(`
-          SELECT * FROM classroom_progress
-          WHERE student_id = ? AND course_id = ? AND lesson_id = ? AND activity_id = ?
-        `).get(student.id, courseId, lessonId, activityId);
+        const existing = db.prepare(`SELECT * FROM classroom_progress
+          WHERE student_id = ? AND course_id = ? AND lesson_id = ? AND activity_id = ?`)
+          .get(student.id, courseId, lessonId, activityId);
         if (existing) {
           const effectiveStatus = existing.status === 'completed' ? 'completed' : status;
           const completedAt = effectiveStatus === 'completed' ? (existing.completed_at || now) : null;
-          db.prepare(`
-            UPDATE classroom_progress
-            SET status = ?, score = MAX(score, ?), attempts = attempts + 1,
-                metadata_json = ?, completed_at = ?, updated_at = ?
-            WHERE id = ?
-          `).run(effectiveStatus, score, metadataJson, completedAt, now, existing.id);
-          return db.prepare('SELECT * FROM classroom_progress WHERE id = ?').get(existing.id);
+          db.prepare(`UPDATE classroom_progress SET status = ?, score = MAX(score, ?), attempts = attempts + 1,
+            metadata_json = ?, completed_at = ?, updated_at = ? WHERE id = ?`)
+            .run(effectiveStatus, score, metadataJson, completedAt, now, existing.id);
+          recordClassroomManagementAudit(db, 'student', student.id, 'progress.record', 'progress', student.id, 'success');
+          return { row: db.prepare('SELECT * FROM classroom_progress WHERE id = ?').get(existing.id) };
         }
         const id = crypto.randomUUID();
-        db.prepare(`
-          INSERT INTO classroom_progress (
-            id, student_id, course_id, lesson_id, activity_id, status, score, attempts,
-            metadata_json, started_at, completed_at, updated_at
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?)
-        `).run(id, student.id, courseId, lessonId, activityId, status, score, metadataJson, now, status === 'completed' ? now : null, now);
-        return db.prepare('SELECT * FROM classroom_progress WHERE id = ?').get(id);
-      });
-      return send(res, 200, JSON.stringify({ ok: true, progress: classroomProgressPublic(row) }));
+        db.prepare(`INSERT INTO classroom_progress
+          (id, student_id, course_id, lesson_id, activity_id, status, score, attempts,
+           metadata_json, started_at, completed_at, updated_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?)`)
+          .run(id, student.id, courseId, lessonId, activityId, status, score, metadataJson, now, status === 'completed' ? now : null, now);
+        recordClassroomManagementAudit(db, 'student', student.id, 'progress.record', 'progress', student.id, 'success');
+        return { row: db.prepare('SELECT * FROM classroom_progress WHERE id = ?').get(id) };
+      }).immediate());
+      if (result.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת תלמיד/ה לכיתה.' }));
+      if (result.invalid) return send(res, 400, JSON.stringify({ error: result.invalidCourse ? 'הקורס אינו מוכר.' : 'חסרים פרטי התקדמות.' }));
+      if (result.kugelDenied) return send(res, 403, JSON.stringify({ error: 'שיעור 0 מושלם רק אחרי בדיקת Minecraft.' }));
+      if (result.forbidden) return send(res, 403, JSON.stringify({ error: 'הלומדה אינה פתוחה לכיתה הזו.' }));
+      return send(res, 200, JSON.stringify({ ok: true, progress: classroomProgressPublic(result.row) }));
     }
 
     if (action === 'student-login') {
       const classCode = cleanAccessCode(body.classCode);
       const personalCode = cleanAccessCode(body.personalCode);
-      const loginKey = classroomLoginKey(req, 'student', classCode);
-      if (isClassroomLoginLimited(loginKey)) {
+      const sourceLimitKey = classroomSourceKey(req, 'student-login');
+      const identityLimitKey = classroomIdentityKey('student-login', classCode);
+      if (consumeClassroomLoginAttempts([sourceLimitKey, identityLimitKey])) {
         return send(res, 429, JSON.stringify({ error: 'יותר מדי ניסיונות. נסו שוב בעוד כמה דקות.' }));
       }
-      const result = withSummerDb(db => {
+      const result = withSummerDb(db => db.transaction(() => {
         const classroom = db.prepare(`
           SELECT c.* FROM classrooms c
           JOIN classroom_teachers t ON t.id = c.teacher_id
           WHERE c.join_code = ? AND t.archived_at IS NULL AND t.disabled_at IS NULL
         `).get(classCode);
-        if (!classroom || !personalCode) return null;
-        const students = db.prepare('SELECT * FROM classroom_students WHERE classroom_id = ? AND archived_at IS NULL AND disabled_at IS NULL').all(classroom.id);
-        const student = students.find(candidate => {
+        const students = classroom && personalCode
+          ? db.prepare('SELECT * FROM classroom_students WHERE classroom_id = ? AND archived_at IS NULL AND disabled_at IS NULL').all(classroom.id)
+          : [];
+        const candidates = students.length ? students : [{
+          login_salt: DUMMY_CLASSROOM_STUDENT_SALT,
+          login_hash: DUMMY_CLASSROOM_STUDENT_HASH,
+        }];
+        let student = null;
+        for (const candidate of candidates) {
           const provided = Buffer.from(hashClassroomSecret(personalCode, candidate.login_salt), 'hex');
           const expected = Buffer.from(candidate.login_hash, 'hex');
-          return provided.length === expected.length && crypto.timingSafeEqual(provided, expected);
-        });
-        if (!student) return null;
-        return { classroom, student, token: createClassroomStudentSession(db, student.id) };
-      });
-      if (!result) {
-        recordClassroomLoginFailure(loginKey);
-        return send(res, 401, JSON.stringify({ error: 'קוד כיתה או קוד אישי אינם נכונים.' }));
+          if (provided.length === expected.length && crypto.timingSafeEqual(provided, expected) && students.length) student = candidate;
+        }
+        if (!classroom || !student) return { failed: true, workFactor: candidates.length };
+        return { classroom, student, token: createClassroomStudentSession(db, student.id), workFactor: candidates.length };
+      }).immediate());
+      if (result.failed) {
+        const response = { error: 'קוד כיתה או קוד אישי אינם נכונים.' };
+        if (process.env.NODE_ENV === 'test') response.testWorkFactor = result.workFactor;
+        return send(res, 401, JSON.stringify(response));
       }
-      clearClassroomLoginFailures(loginKey);
+      clearClassroomLoginFailures(sourceLimitKey);
+      clearClassroomLoginFailures(identityLimitKey);
       return sendWithHeaders(res, 200, JSON.stringify({
         ok: true,
         role: 'student',
@@ -3409,31 +4410,36 @@ async function handleClassroomApi(req, res) {
     }
 
     if (action === 'classes' && segments[3] && segments[4] === 'courses' && segments.length === 5) {
-      const teacher = getClassroomTeacherFromRequest(req);
-      if (!teacher) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
       const courses = cleanClassroomCourses(body.courses);
-      if (!courses?.length) return send(res, 400, JSON.stringify({ error: 'בחרו לפחות לומדה אחת תקינה לכיתה.' }));
-      const result = withSummerDb(db => {
+      const result = withSummerDb(db => db.transaction(() => {
+        const teacher = requireCurrentClassroomTeacher(db, req);
+        if (!teacher) return { denied: true };
+        if (!courses?.length) {
+          recordClassroomManagementAudit(db, 'teacher', teacher.id, 'classroom.courses', 'classroom', segments[3], 'invalid');
+          return { invalid: true };
+        }
         const row = db.prepare('SELECT * FROM classrooms WHERE id = ? AND teacher_id = ?').get(segments[3], teacher.id);
-        if (!row) return null;
-        if (!teacherCanAssignCourses(db, teacher.id, courses)) return { forbidden: true };
-        const updateCourses = db.transaction(() => {
-          const releasedLease = courses.includes(KUGEL_COURSE_ID) ? null : db.prepare(`
-            SELECT classroom_id, monitor_server_name, launch_token
-            FROM kugel_class_sessions WHERE classroom_id = ? AND active = 1
-          `).get(row.id) || null;
-          if (releasedLease) {
-            db.prepare(`
-              UPDATE kugel_class_sessions SET server_state = 'stopping', server_detail = ?, updated_at = ?
-              WHERE classroom_id = ? AND launch_token = ? AND active = 1
-            `).run('הרשאת הכיתה הוסרה; עולם המבוך בתהליך עצירה…', new Date().toISOString(), row.id, releasedLease.launch_token);
-          }
-          replaceClassroomCourses(db, row.id, courses);
-          return releasedLease;
-        });
-        return { classroom: row, releasedLease: updateCourses() };
-      });
-      if (!result) return send(res, 404, JSON.stringify({ error: 'הכיתה לא נמצאה.' }));
+        if (!row) {
+          recordClassroomManagementAudit(db, 'teacher', teacher.id, 'classroom.courses', 'classroom', segments[3], 'not_found');
+          return { notFound: true };
+        }
+        if (!teacherCanAssignCourses(db, teacher.id, courses)) {
+          recordClassroomManagementAudit(db, 'teacher', teacher.id, 'classroom.courses', 'classroom', row.id, 'denied');
+          return { forbidden: true };
+        }
+        const releasedLease = courses.includes(KUGEL_COURSE_ID) ? null : db.prepare(`
+          SELECT classroom_id, monitor_server_name, launch_token FROM kugel_class_sessions
+          WHERE classroom_id = ? AND active = 1`).get(row.id) || null;
+        if (releasedLease) db.prepare(`UPDATE kugel_class_sessions SET server_state = 'stopping', server_detail = ?, updated_at = ?
+          WHERE classroom_id = ? AND launch_token = ? AND active = 1`)
+          .run('הרשאת הכיתה הוסרה; עולם המבוך בתהליך עצירה…', new Date().toISOString(), row.id, releasedLease.launch_token);
+        replaceClassroomCourses(db, row.id, courses);
+        recordClassroomManagementAudit(db, 'teacher', teacher.id, 'classroom.courses', 'classroom', row.id, 'success');
+        return { classroom: row, releasedLease };
+      }).immediate());
+      if (result.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
+      if (result.invalid) return send(res, 400, JSON.stringify({ error: 'בחרו לפחות לומדה אחת תקינה לכיתה.' }));
+      if (result.notFound) return send(res, 404, JSON.stringify({ error: 'הכיתה לא נמצאה.' }));
       if (result.forbidden) return send(res, 403, JSON.stringify({ error: 'אפשר לשייך לכיתה רק לומדות שהוקצו לך.' }));
       if (result.releasedLease) {
         try {
@@ -3464,16 +4470,16 @@ async function handleClassroomApi(req, res) {
     }
 
     if (action === 'classes' && segments[3] && segments[4] === 'students' && segments[5] && segments.length === 6) {
-      const teacher = getClassroomTeacherFromRequest(req);
       const classroomId = segments[3];
       const studentId = segments[5];
-      if (!teacher) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
       const name = cleanText(body.name, 80);
-      if (name.length < 2) {
-        withSummerDb(db => recordClassroomManagementAudit(db, 'teacher', teacher.id, 'student.update', 'student', studentId, 'invalid'));
-        return send(res, 400, JSON.stringify({ error: 'נא למלא שם תלמיד/ה.' }));
-      }
       const student = withSummerDb(db => db.transaction(() => {
+        const teacher = requireCurrentClassroomTeacher(db, req);
+        if (!teacher) return { denied: true };
+        if (name.length < 2) {
+          recordClassroomManagementAudit(db, 'teacher', teacher.id, 'student.update', 'student', studentId, 'invalid');
+          return { invalid: true };
+        }
         const authorization = requireCurrentTeacherClassroom(db, req, teacher.id, classroomId);
         if (authorization.status) return { authorization };
         const row = db.prepare(`
@@ -3490,19 +4496,21 @@ async function handleClassroomApi(req, res) {
         recordClassroomManagementAudit(db, 'teacher', teacher.id, 'student.update', 'student', studentId, 'success');
         return { id: studentId, name };
       }).immediate());
+      if (student?.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
+      if (student?.invalid) return send(res, 400, JSON.stringify({ error: 'נא למלא שם תלמיד/ה.' }));
       if (student?.authorization) return send(res, student.authorization.status, JSON.stringify({ error: student.authorization.error }));
       if (!student) return send(res, 404, JSON.stringify({ error: 'התלמיד/ה לא נמצא/ה בכיתה שלך.' }));
       return send(res, 200, JSON.stringify({ ok: true, student }));
     }
 
     if (action === 'classes' && segments[3] && segments[4] === 'students' && segments[5] && ['reset', 'archive', 'restore'].includes(segments[6]) && segments.length === 7) {
-      const teacher = getClassroomTeacherFromRequest(req);
       const classroomId = segments[3];
       const studentId = segments[5];
       const operation = segments[6];
       const auditAction = operation === 'reset' ? 'student.reset_code' : `student.${operation}`;
-      if (!teacher) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
       const result = withSummerDb(db => db.transaction(() => {
+        const teacher = requireCurrentClassroomTeacher(db, req);
+        if (!teacher) return { denied: true };
         const authorization = requireCurrentTeacherClassroom(db, req, teacher.id, classroomId);
         if (authorization.status) {
           recordClassroomManagementAudit(db, 'teacher', teacher.id, auditAction, 'student', studentId, 'denied');
@@ -3545,6 +4553,7 @@ async function handleClassroomApi(req, res) {
         recordClassroomManagementAudit(db, 'teacher', teacher.id, auditAction, 'student', studentId, 'success');
         return { student, loginCode, archivedAt: operation === 'archive' ? now : null };
       }).immediate());
+      if (result?.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
       if (result?.authorization) return send(res, result.authorization.status, JSON.stringify({ error: result.authorization.error }));
       if (!result) return send(res, 404, JSON.stringify({ error: 'התלמיד/ה לא נמצא/ה בכיתה שלך.' }));
       if (operation === 'reset') {
@@ -3554,12 +4563,15 @@ async function handleClassroomApi(req, res) {
     }
 
     if (action === 'classes' && segments[3] && segments[4] === 'students' && segments.length === 5) {
-      const teacher = getClassroomTeacherFromRequest(req);
-      if (!teacher) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
       const name = cleanText(body.name, 80);
-      if (name.length < 2) return send(res, 400, JSON.stringify({ error: 'נא למלא שם תלמיד/ה.' }));
       const classroomId = segments[3];
       const result = withSummerDb(db => db.transaction(() => {
+        const teacher = requireCurrentClassroomTeacher(db, req);
+        if (!teacher) return { denied: true };
+        if (name.length < 2) {
+          recordClassroomManagementAudit(db, 'teacher', teacher.id, 'student.create', 'student', 'new', 'invalid');
+          return { invalid: true };
+        }
         const authorization = requireCurrentTeacherClassroom(db, req, teacher.id, classroomId);
         if (authorization.status) return { authorization };
         const classroom = db.prepare('SELECT * FROM classrooms WHERE id = ? AND teacher_id = ?').get(classroomId, teacher.id);
@@ -3580,8 +4592,11 @@ async function handleClassroomApi(req, res) {
           INSERT INTO classroom_students (id, classroom_id, name, login_salt, login_hash, created_at, updated_at)
           VALUES (?, ?, ?, ?, ?, ?, ?)
         `).run(student.id, student.classroom_id, student.name, student.login_salt, student.login_hash, student.created_at, student.updated_at);
+        recordClassroomManagementAudit(db, 'teacher', teacher.id, 'student.create', 'student', student.id, 'success');
         return { student, loginCode };
       }).immediate());
+      if (result?.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
+      if (result?.invalid) return send(res, 400, JSON.stringify({ error: 'נא למלא שם תלמיד/ה.' }));
       if (result?.authorization) return send(res, result.authorization.status, JSON.stringify({ error: result.authorization.error }));
       if (!result) return send(res, 404, JSON.stringify({ error: 'הכיתה לא נמצאה.' }));
       return send(res, 201, JSON.stringify({
@@ -3591,33 +4606,38 @@ async function handleClassroomApi(req, res) {
     }
 
     if (action === 'classes' && segments.length === 3) {
-      const teacher = getClassroomTeacherFromRequest(req);
-      if (!teacher) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
       const name = cleanText(body.name, 80);
-      if (name.length < 2) return send(res, 400, JSON.stringify({ error: 'נא למלא שם כיתה.' }));
       const courses = cleanClassroomCourses(body.courses);
-      if (!courses?.length) return send(res, 400, JSON.stringify({ error: 'בחרו לפחות לומדה אחת תקינה לכיתה.' }));
-      const result = withSummerDb(db => {
-        if (!teacherCanAssignCourses(db, teacher.id, courses)) return { forbidden: true };
-        const createClassroom = db.transaction(() => {
-          const now = new Date().toISOString();
-          const row = {
-            id: crypto.randomUUID(),
-            teacher_id: teacher.id,
-            name,
-            join_code: generateClassJoinCode(db),
-            created_at: now,
-            updated_at: now,
-          };
-          db.prepare(`
-            INSERT INTO classrooms (id, teacher_id, name, join_code, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?)
-          `).run(row.id, row.teacher_id, row.name, row.join_code, row.created_at, row.updated_at);
-          replaceClassroomCourses(db, row.id, courses);
-          return row;
-        });
-        return { classroom: createClassroom() };
-      });
+      const result = withSummerDb(db => db.transaction(() => {
+        const teacher = requireCurrentClassroomTeacher(db, req);
+        if (!teacher) return { denied: true };
+        if (name.length < 2) {
+          recordClassroomManagementAudit(db, 'teacher', teacher.id, 'classroom.create', 'classroom', 'new', 'invalid');
+          return { invalidName: true };
+        }
+        if (!courses?.length) {
+          recordClassroomManagementAudit(db, 'teacher', teacher.id, 'classroom.create', 'classroom', 'new', 'invalid');
+          return { invalidCourses: true };
+        }
+        if (!teacherCanAssignCourses(db, teacher.id, courses)) {
+          recordClassroomManagementAudit(db, 'teacher', teacher.id, 'classroom.create', 'classroom', 'new', 'denied');
+          return { forbidden: true };
+        }
+        const now = new Date().toISOString();
+        const row = {
+          id: crypto.randomUUID(), teacher_id: teacher.id, name,
+          join_code: generateClassJoinCode(db), created_at: now, updated_at: now,
+        };
+        db.prepare(`INSERT INTO classrooms (id, teacher_id, name, join_code, created_at, updated_at)
+          VALUES (?, ?, ?, ?, ?, ?)`)
+          .run(row.id, row.teacher_id, row.name, row.join_code, row.created_at, row.updated_at);
+        replaceClassroomCourses(db, row.id, courses);
+        recordClassroomManagementAudit(db, 'teacher', teacher.id, 'classroom.create', 'classroom', row.id, 'success');
+        return { classroom: row };
+      }).immediate());
+      if (result.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
+      if (result.invalidName) return send(res, 400, JSON.stringify({ error: 'נא למלא שם כיתה.' }));
+      if (result.invalidCourses) return send(res, 400, JSON.stringify({ error: 'בחרו לפחות לומדה אחת תקינה לכיתה.' }));
       if (result.forbidden) return send(res, 403, JSON.stringify({ error: 'אפשר לשייך לכיתה רק לומדות שהוקצו לך.' }));
       const classroom = result.classroom;
       return send(res, 201, JSON.stringify({
@@ -3635,23 +4655,50 @@ async function handleClassroomApi(req, res) {
     if (action === 'teacher-login') {
       const email = cleanEmail(body.email);
       const password = String(body.password || '');
-      const loginKey = classroomLoginKey(req, 'teacher', email);
-      if (isClassroomLoginLimited(loginKey)) {
+      const sourceLimitKey = classroomSourceKey(req, 'teacher-login');
+      const identityLimitKey = classroomIdentityKey('teacher-login', email);
+      if (consumeClassroomLoginAttempts([sourceLimitKey, identityLimitKey])) {
+        withSummerDb(db => db.transaction(() => {
+          const teacher = db.prepare('SELECT id FROM classroom_teachers WHERE email = ?').get(email);
+          db.prepare(`INSERT INTO classroom_credential_audit
+            (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+            VALUES (?, 'teacher', ?, 'login', 'teacher', ?, 'throttled', ?)`)
+            .run(crypto.randomUUID(), teacher?.id || email || 'unknown', teacher?.id || 'unknown', new Date().toISOString());
+        }).immediate());
         return send(res, 429, JSON.stringify({ error: 'יותר מדי ניסיונות. נסו שוב בעוד כמה דקות.' }));
       }
-      const result = withSummerDb(db => {
+      const result = withSummerDb(db => db.transaction(() => {
         const teacher = db.prepare('SELECT * FROM classroom_teachers WHERE email = ? AND archived_at IS NULL AND disabled_at IS NULL').get(email);
-        if (!teacher) return null;
-        const provided = Buffer.from(hashClassroomSecret(password, teacher.password_salt), 'hex');
-        const expected = Buffer.from(teacher.password_hash, 'hex');
-        if (provided.length !== expected.length || !crypto.timingSafeEqual(provided, expected)) return null;
-        return { teacher, token: createClassroomTeacherSession(db, teacher.id) };
-      });
+        const provided = Buffer.from(hashClassroomSecret(password, teacher?.password_salt || DUMMY_CLASSROOM_TEACHER_SALT), 'hex');
+        const expected = Buffer.from(teacher?.password_hash || DUMMY_CLASSROOM_TEACHER_HASH, 'hex');
+        if (!teacher) {
+          db.prepare(`INSERT INTO classroom_credential_audit
+            (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+            VALUES (?, 'teacher', ?, 'login', 'teacher', 'unknown', 'invalid', ?)`)
+            .run(crypto.randomUUID(), email || 'unknown', new Date().toISOString());
+          return null;
+        }
+        if (provided.length !== expected.length || !crypto.timingSafeEqual(provided, expected)) {
+          db.prepare(`INSERT INTO classroom_credential_audit
+            (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+            VALUES (?, 'teacher', ?, 'login', 'teacher', ?, 'invalid', ?)`)
+            .run(crypto.randomUUID(), teacher.id, teacher.id, new Date().toISOString());
+          return null;
+        }
+        const token = createClassroomTeacherSession(db, teacher.id);
+        db.prepare(`INSERT INTO classroom_credential_audit
+          (id, actor_type, actor_id, action, target_type, target_id, outcome, occurred_at)
+          VALUES (?, 'teacher', ?, 'login', 'teacher', ?, 'success', ?)`)
+          .run(crypto.randomUUID(), teacher.id, teacher.id, new Date().toISOString());
+        return { teacher, token };
+      }).immediate());
       if (!result) {
-        recordClassroomLoginFailure(loginKey);
-        return send(res, 401, JSON.stringify({ error: 'מייל או סיסמה לא נכונים.' }));
+        const response = { error: 'מייל או סיסמה לא נכונים.' };
+        if (process.env.NODE_ENV === 'test') response.testWorkFactor = 1;
+        return send(res, 401, JSON.stringify(response));
       }
-      clearClassroomLoginFailures(loginKey);
+      clearClassroomLoginFailures(sourceLimitKey);
+      clearClassroomLoginFailures(identityLimitKey);
       return sendWithHeaders(res, 200, JSON.stringify({
         ok: true,
         role: 'teacher',
@@ -3756,7 +4803,13 @@ async function handleClassroomApi(req, res) {
     }
     return send(res, 404, JSON.stringify({ error: 'Not found' }));
   } catch (error) {
-    console.error('classroom_api_error', error);
+    console.error('classroom_api_error', {
+      name: cleanText(error?.name || 'Error', 40),
+      code: cleanText(error?.code || '', 60),
+      message: cleanText(error?.message || 'request_failed', 160),
+    });
+    if (error instanceof SyntaxError) return send(res, 400, JSON.stringify({ error: 'גוף הבקשה אינו JSON תקין.' }));
+    if (error?.message === 'payload_too_large') return send(res, 413, JSON.stringify({ error: 'גוף הבקשה גדול מדי.' }));
     return send(res, 400, JSON.stringify({ error: 'לא הצלחנו לטפל בבקשה.' }));
   }
 }
@@ -4658,6 +5711,8 @@ function serveStatic(req, res) {
   });
 }
 
+// Fail before schema access or HTTP readiness when production identity configuration drifts.
+verifyClassroomCredentialConfiguration();
 // Run all schema creation, migrations, and integrity checks before accepting traffic.
 withSummerDb(() => {});
 

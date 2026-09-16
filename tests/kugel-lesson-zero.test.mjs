@@ -144,8 +144,9 @@ const child = spawn(process.execPath, ['server.js'], {
     ROBOTICS_DATA_DIR: tempDir,
     ROBOTICS_DB_FILE: dbFile,
     ROBOTICS_SUBSCRIPTION_GATE: '1',
-    ROBOTICS_TEACHER_INVITE_CODE: 'kugel-test-invite',
-    ROBOTICS_CLASSROOM_ADMIN_CODE: 'kugel-test-admin',
+    ROBOTICS_CLASSROOM_ADMIN_EMAIL: 'owner@example.test',
+    ROBOTICS_TEACHER_INVITE_CODE: '',
+    ROBOTICS_CLASSROOM_ADMIN_CODE: '',
     KUGEL_MONITOR_API_URL: `http://127.0.0.1:${monitorPort}`,
     KUGEL_MONITOR_SERVER_NAME: 'test-kugel-monitor',
     KUGEL_MINECRAFT_INTERNAL_TOKEN: 'test-monitor-token',
@@ -176,23 +177,35 @@ try {
   });
   assert.notEqual(spoofedProtectedPage.status, 200, 'an untrusted forwarded host must not bypass the Craftom subscription gate');
 
-  const registerA = await post(baseUrl, '/api/classroom/teacher-register', {
-    name: 'מורת קוגל א', email: 'kugel-a@example.test', password: 'SafePass123!', inviteCode: 'kugel-test-invite',
+  const adminAccess = await post(baseUrl, '/api/classroom/admin-access/request', { email: 'owner@example.test' });
+  const adminAccessBody = await adminAccess.json();
+  const adminLogin = await post(baseUrl, '/api/classroom/admin-access/redeem', {
+    email: 'owner@example.test', code: adminAccessBody.testCode,
   });
-  assert.equal(registerA.status, 201);
-  const teacherA = (await registerA.json()).teacher;
-  const teacherACookie = cookie(registerA);
-
-  const registerB = await post(baseUrl, '/api/classroom/teacher-register', {
-    name: 'מורת קוגל ב', email: 'kugel-b@example.test', password: 'SafePass123!', inviteCode: 'kugel-test-invite',
-  });
-  assert.equal(registerB.status, 201);
-  const teacherB = (await registerB.json()).teacher;
-  const teacherBCookie = cookie(registerB);
-
-  const adminLogin = await post(baseUrl, '/api/classroom/admin-login', { code: 'kugel-test-admin' });
   assert.equal(adminLogin.status, 200);
   const adminCookie = cookie(adminLogin);
+
+  async function inviteTeacher(name, email) {
+    const invitation = await post(baseUrl, '/api/classroom/admin/invitations', { name, email }, adminCookie);
+    assert.equal(invitation.status, 201);
+    const invitationBody = await invitation.json();
+    const redemption = await post(baseUrl, '/api/classroom/teacher-invitations/redeem', {
+      email, code: invitationBody.testCode,
+    });
+    assert.equal(redemption.status, 201);
+    const redemptionBody = await redemption.json();
+    const login = await post(baseUrl, '/api/classroom/teacher-login', {
+      email, password: redemptionBody.temporaryPassword,
+    });
+    assert.equal(login.status, 200);
+    return { teacher: redemptionBody.teacher, cookie: cookie(login) };
+  }
+  const registeredA = await inviteTeacher('מורת קוגל א', 'kugel-a@example.test');
+  const teacherA = registeredA.teacher;
+  const teacherACookie = registeredA.cookie;
+  const registeredB = await inviteTeacher('מורת קוגל ב', 'kugel-b@example.test');
+  const teacherB = registeredB.teacher;
+  const teacherBCookie = registeredB.cookie;
   for (const teacher of [teacherA, teacherB]) {
     const assignment = await post(baseUrl, `/api/classroom/admin/teachers/${teacher.id}/courses`, { courses: ['sisi', 'craftom-agent'] }, adminCookie);
     assert.equal(assignment.status, 200);
