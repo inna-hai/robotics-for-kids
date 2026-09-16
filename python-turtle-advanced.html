@@ -5200,19 +5200,19 @@
                                         "id": 7,
                                         "minutes": "68–78",
                                         "title": "תרגול 7 — מצב רובוט אישי",
-                                        "prompt": "בחרו מצב לרובוט: רובוט חילוץ, רובוט חלל, רובוט זעיר או רובוט ענק. הוסיפו צבע ו־2–3 פרטים שמראים את המצב.",
-                                        "hint": "דוגמאות: צבע אחר לגוף, אנטנה גבוהה, רגליים ארוכות, זרוע חילוץ או קווי אנרגיה. לפחות שני חלקים עדיין צריכים להשתמש ב־`length`.",
-                                        "check": "יש גרסת רובוט אישית עם צבע או שינוי סגנון, ולפחות שני חלקים בה נשלטים דרך `length`.",
-                                        "commonMistake": "מוסיפים קישוטים חופשיים, אבל שוכחים להשאיר את `length` ככפתור שליטה מרכזי."
+                                        "prompt": "בחרו מצב לרובוט: רובוט חילוץ, רובוט חלל, רובוט זעיר, רובוט ענק — או רעיון משלכם. הוסיפו הערה שמתארת את הרובוט, למשל `# רובוט רופא`, ומתחתיה צבע ו־2–3 פרטים שמראים את הרעיון.",
+                                        "hint": "גם אם לא השתמשתם בהערות עד עכשיו, כאן ההערה עוזרת לסמן איפה מתחיל מצב הרובוט האישי. כתבו בה את המילה רובוט ורעיון משלכם, ואז הוסיפו `color` ו־2–3 פקודות ציור, למשל אנטנה גבוהה, רגליים ארוכות, זרוע חילוץ או קווי אנרגיה.",
+                                        "check": "יש הערה עם המילה רובוט, ואחריה צבע ולפחות שתי פקודות ציור.",
+                                        "commonMistake": "רק מריצים את הרובוט מהתרגיל הקודם, או כותבים הערה בלי להוסיף אחריה פרטים מצוירים."
                               },
                               {
                                         "id": 8,
                                         "minutes": "78–90",
-                                        "title": "אתגר רשות — מעבדת טעינה לרובוט",
-                                        "prompt": "אם נשאר זמן, הפכו את הציור לסצנה: הוסיפו תחנת טעינה, קרני אנרגיה או חללית קטנה ליד הרובוט.",
-                                        "hint": "נסו להשתמש בעוד לולאה בשביל קרני אנרגיה או כפתורים חוזרים. התוספת צריכה להיות נפרדת מהרובוט ולפחות חלק אחד בה צריך להשתמש ב־`length`.",
-                                        "check": "נוספה סצנה סביב הרובוט — תחנה, קרני אנרגיה או חללית — ויש בה שימוש ב־`length` או בלולאה נוספת.",
-                                        "commonMistake": "האתגר הופך לציור חופשי בלי קשר ל־`length` או ללולאות."
+                                        "title": "אתגר רשות — פרט קטן לסצנה",
+                                        "prompt": "אם נשאר זמן, הוסיפו פרט קטן שהופך את הציור למעניין יותר: קרני אנרגיה, כוכב או כבל טעינה. בחרו פרט אחד בלבד, כדי שהקוד לא יהיה ארוך מדי.",
+                                        "hint": "עברו למקום חדש עם `penup` ו־`pendown`, בחרו צבע אם צריך, והוסיפו פרט קצר. אם מתאים, אפשר להשתמש בלולאה קצרה — אבל לא חייבים.",
+                                        "check": "זה אתגר רשות פתוח — אפשר להוסיף פרט קטן אם נשאר זמן, אבל לא חייבים כדי להתקדם.",
+                                        "commonMistake": "מנסים לבנות עוד מערכת גדולה, ואז הקוד נהיה ארוך ומבלבל. כאן מספיק פרט קטן אחד."
                               }
                     ],
                     "vocabulary": [
@@ -7872,7 +7872,7 @@
           7: 'בתרגיל 7 הופכים את הרובוט לאישי: צבע, זרוע, רגליים, אנטנה או מצב מיוחד.',
           8: 'אתגר: להפוך את זה לסצנה — רובוט, לוח בקרה, קרני אנרגיה או תחנת טעינה.'
         };
-        return `<div class="exercise-visual" style="margin:10px 0;padding:12px;border:1px solid #c4b5fd;border-radius:16px;background:#f5f3ff;text-align:center;"><div style="font-weight:900;color:#5b21b6;margin-bottom:8px;">דגם השראה — רובוט במעבדת טעינה</div><svg width="300" height="190" viewBox="0 0 300 190" role="img" aria-label="דגם קווי לרובוט במעבדת טעינה שאפשר לצייר עם הצב"><rect x="10" y="10" width="280" height="164" rx="16" fill="#ffffff" stroke="#ddd6fe" stroke-width="3"/><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M94 58 H166 V130 H94 V58" stroke="#2563eb" stroke-width="6"/><line x1="130" y1="58" x2="130" y2="28" stroke="#f59e0b" stroke-width="5"/><line x1="130" y1="28" x2="130" y2="18" stroke="#f59e0b" stroke-width="4"/><line x1="94" y1="82" x2="62" y2="66" stroke="#22c55e" stroke-width="5"/><line x1="166" y1="82" x2="198" y2="66" stroke="#22c55e" stroke-width="5"/><line x1="112" y1="130" x2="102" y2="156" stroke="#0f172a" stroke-width="5"/><line x1="148" y1="130" x2="158" y2="156" stroke="#0f172a" stroke-width="5"/><path d="M109 78 H121 V90 H109 V78" stroke="#2563eb" stroke-width="4"/><path d="M139 78 H151 V90 H139 V78" stroke="#2563eb" stroke-width="4"/><line x1="113" y1="106" x2="148" y2="106" stroke="#ef4444" stroke-width="5"/><path d="M210 74 H258 V144 H210 V74" stroke="#7c3aed" stroke-width="5"/><path d="M228 84 H240 V96 H228 V84" stroke="#7c3aed" stroke-width="4"/><path d="M228 104 H240 V116 H228 V104" stroke="#7c3aed" stroke-width="4"/><path d="M228 124 H240 V136 H228 V124" stroke="#7c3aed" stroke-width="4"/><polyline points="184,112 194,102 198,92 194,82 184,72" stroke="#facc15" stroke-width="4"/><polyline points="196,126 210,108 214,92 210,74 196,56" stroke="#facc15" stroke-width="4"/><line x1="45" y1="158" x2="266" y2="158" stroke="#cbd5e1" stroke-width="5"/></g><g fill="#475569" font-family="Rubik,Arial" font-size="12" font-weight="900" text-anchor="middle"><text x="130" y="178">רובוט</text><text x="235" y="162">לוח בקרה</text><text x="200" y="46">קרני טעינה</text></g></svg><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;text-align:right;margin-top:8px;"><div style="background:white;border:1px solid #ddd6fe;border-radius:12px;padding:8px;"><b>חלקי חובה:</b><br>גוף בלולאה, אנטנה קצרה, ידיים/רגליים, ולפחות פרט אחד שנשלט על ידי <code>length</code>.</div><div style="background:white;border:1px solid #ddd6fe;border-radius:12px;padding:8px;"><b>שדרוג מתקדם:</b><br>לוח בקרה עם <code>repeat(3)</code>, צבעים, קרני טעינה או מצב רובוט אישי.</div></div><small style="display:block;margin-top:8px;color:#475569;font-weight:800;line-height:1.35;">${stageNotes[ex?.id] || 'הדגם הוא השראה בלבד — לא חייבים להעתיק בדיוק, אבל כדאי להגיע לתוצר עשיר ומעניין.'}</small></div>`;
+        return `<div class="exercise-visual" style="margin:10px 0;padding:12px;border:1px solid #c4b5fd;border-radius:16px;background:#f5f3ff;text-align:center;"><div style="font-weight:900;color:#5b21b6;margin-bottom:8px;">דגם השראה — רובוט במעבדת טעינה</div><svg width="300" height="190" viewBox="0 0 300 190" role="img" aria-label="דגם קווי לרובוט במעבדת טעינה שאפשר לצייר עם הצב"><rect x="10" y="10" width="280" height="164" rx="16" fill="#ffffff" stroke="#ddd6fe" stroke-width="3"/><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M94 58 H166 V130 H94 V58" stroke="#2563eb" stroke-width="6"/><line x1="130" y1="58" x2="130" y2="28" stroke="#f59e0b" stroke-width="5"/><line x1="130" y1="28" x2="130" y2="18" stroke="#f59e0b" stroke-width="4"/><line x1="94" y1="82" x2="62" y2="66" stroke="#22c55e" stroke-width="5"/><line x1="166" y1="82" x2="198" y2="66" stroke="#22c55e" stroke-width="5"/><line x1="112" y1="130" x2="102" y2="156" stroke="#0f172a" stroke-width="5"/><line x1="148" y1="130" x2="158" y2="156" stroke="#0f172a" stroke-width="5"/><path d="M109 78 H121 V90 H109 V78" stroke="#2563eb" stroke-width="4"/><path d="M139 78 H151 V90 H139 V78" stroke="#2563eb" stroke-width="4"/><line x1="113" y1="106" x2="148" y2="106" stroke="#ef4444" stroke-width="5"/><path d="M210 74 H258 V144 H210 V74" stroke="#7c3aed" stroke-width="5"/><path d="M228 84 H240 V96 H228 V84" stroke="#7c3aed" stroke-width="4"/><path d="M228 104 H240 V116 H228 V104" stroke="#7c3aed" stroke-width="4"/><path d="M228 124 H240 V136 H228 V124" stroke="#7c3aed" stroke-width="4"/><polyline points="184,112 194,102 198,92 194,82 184,72" stroke="#facc15" stroke-width="4"/><polyline points="196,126 210,108 214,92 210,74 196,56" stroke="#facc15" stroke-width="4"/><line x1="45" y1="158" x2="266" y2="158" stroke="#cbd5e1" stroke-width="5"/></g><g fill="#475569" font-family="Rubik,Arial" font-size="12" font-weight="900" text-anchor="middle"><text x="130" y="178">רובוט</text><text x="235" y="162">לוח בקרה</text><text x="200" y="46">קרני טעינה</text></g></svg><small style="display:block;margin-top:8px;color:#475569;font-weight:800;line-height:1.35;">${stageNotes[ex?.id] || 'הדגם הוא השראה בלבד — לא חייבים להעתיק בדיוק, אבל כדאי להגיע לתוצר עשיר ומעניין.'}</small></div>`;
       }
       if(currentLesson === 23 && ex?.id === 8){
         return `<div class="exercise-visual" style="margin:10px 0;padding:12px;border:1px solid #bae6fd;border-radius:16px;background:#f0f9ff;text-align:center;"><div style="font-weight:900;color:#0369a1;margin-bottom:8px;">דגם לבחירה: יעד קטן לסוף הטיול</div><svg width="280" height="130" viewBox="0 0 280 130" role="img" aria-label="דגם יעד אישי עם גל קטן והר קטן שצוירו בקווי צב"><rect x="10" y="10" width="260" height="104" rx="14" fill="#ffffff" stroke="#dbeafe" stroke-width="3"/><g fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="38,62 44,58 50,54 57,51 64,49 71,48 78,48 85,49 92,51 99,54 105,58 111,62" stroke="#2563eb" stroke-width="5"/><polyline points="111,62 117,66 124,69 131,71 138,72 145,72 152,71 159,69 166,66 172,62" stroke="#2563eb" stroke-width="5"/><polyline points="184,84 210,40 236,84 184,84" stroke="#475569" stroke-width="6"/></g><g fill="#475569" font-family="Rubik,Arial" font-size="13" font-weight="900" text-anchor="middle"><text x="105" y="99">גל קטן</text><text x="210" y="99">הר קטן</text></g></svg><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;text-align:right;margin-top:6px;"><div style="background:white;border-radius:12px;padding:8px;border:1px solid #dbeafe;"><b>ים קטן:</b><br>בחרו color כחול. לגל יפה: קודם repeat(9) עם forward קטן ו־right(10), ואז repeat(9) עם forward קטן ו־left(10), כדי שהגל יחזור לצד השני. לגל נוסף — עברו קצת עם penup / pendown וחזרו על אותו רעיון.</div><div style="background:white;border-radius:12px;padding:8px;border:1px solid #dbeafe;"><b>הר קטן:</b><br>בחרו color כהה, גררו repeat(3), והכניסו לתוכו forward קטן ו־right(120).</div></div><small style="color:#475569;font-weight:800;line-height:1.35;display:block;margin-top:8px;">עוד רעיונות למי שמספיק: גינה קטנה, מערה, בית קטן או עץ קטן.</small></div>`;
@@ -8763,7 +8763,8 @@
       const hasGeneratedStarter = !!starterXmlForExercise(ex);
       const hasEntryReset = needsEntryReset(ex) && !!exerciseStartXml[baselineKey()];
       const resetButton = (!isRunOnlyExampleExercise(ex) && (hasGeneratedStarter || hasEntryReset)) ? '<button class="btn reset" id="resetExerciseBtn">🔄 החזר לקוד תחילת התרגיל</button>' : '';
-      const alreadyCompleted = completedSet().has(currentExerciseIndex);
+      const ignoreSavedCompletion = currentLesson === 24 && Number(ex?.id) === 7;
+      const alreadyCompleted = completedSet().has(currentExerciseIndex) && !ignoreSavedCompletion;
       const canContinue = REVIEW_UNLOCK || alreadyCompleted || (isSelectionOnly ? !!selectionExerciseUnlocked[selectionUnlockKey()] : (isRunOnlyExampleExercise(ex) ? !!runOnlyExampleStarted[selectionUnlockKey()] : (requiresCheckedContinue(ex) ? exercisePassed : (isTip || isChallengeExercise(ex) || isOptionalChallengeExercise(ex)))));
       const feedbackBelowButtons = true;
       const nextLessonId = nextLessonAfter(currentLesson);
@@ -10893,14 +10894,16 @@
           return [];
         }
         if(ex.id === 7){
-          if(moveCount < 6 || !hasForwardLength) return ['כמעט — מצב רובוט אישי צריך להוסיף 2–3 פרטים ועדיין להשתמש ב־`length`.'];
-          if(!actions.some(a=>a.cmd === 'color')) return ['כמעט — הוסיפו צבע כדי שהמצב האישי יהיה ברור יותר בציור.'];
+          const modeCommentIndex = actions.findIndex(a=>a.cmd === 'comment' && /רובוט/.test(String(a.text || '')));
+          if(modeCommentIndex < 0) return ['כמעט — התחילו את תרגיל 7 בהערה שמתארת את הרובוט, למשל `# רובוט חלל`, `# רובוט רופא` או `# הרובוט שלי`.'];
+          const afterModeComment = actions.slice(modeCommentIndex + 1);
+          const drawsAfterMode = afterModeComment.filter(a=>a.cmd === 'forward' || a.cmd === 'forwardVar').length;
+          if(!afterModeComment.some(a=>a.cmd === 'color')) return ['כמעט — אחרי הערת מצב הרובוט הוסיפו בלוק `color` לצבע של המצב האישי.'];
+          if(drawsAfterMode < 2) return ['כמעט — אחרי הערת מצב הרובוט הוסיפו לפחות שתי פקודות ציור לפרטים של המצב האישי.'];
+          if(!hasForwardLength) return ['כמעט — השאירו לפחות חלק אחד שמצויר עם `forward(length)`, כדי שהרובוט עדיין ישתמש במשתנה.'];
           return [];
         }
         if(ex.id === 8){
-          const repeatCount = repeatPatternBlocks().length;
-          if(moveCount < 7) return ['כמעט — הוסיפו עוד חלק נראה לסצנה, למשל תחנת טעינה או קרני אנרגיה.'];
-          if(!hasForwardLength && repeatCount < 2) return ['כמעט — גם התוספת צריכה להתחבר לרעיון השיעור: השתמשו ב־`length` או בלולאה נוספת.'];
           return [];
         }
       }
