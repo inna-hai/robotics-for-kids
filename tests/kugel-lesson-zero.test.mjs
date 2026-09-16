@@ -255,6 +255,18 @@ try {
 
   const crossTenantLink = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/students/${studentA.id}/minecraft`, { playerName: 'NoaSecure' }, teacherBCookie);
   assert.equal(crossTenantLink.status, 404);
+  const identityDb = new Database(dbFile);
+  const identityNow = new Date().toISOString();
+  const addVerifiedIdentity = identityDb.prepare(`INSERT INTO classroom_minecraft_identities
+    (student_id, upn, player_name, status, graph_object_id, source, verified_at, created_at, updated_at)
+    VALUES (?, ?, ?, 'verified', ?, 'microsoft-graph-via-monitor', ?, ?, ?)`);
+  addVerifiedIdentity.run(studentA.id, 'noa.secure@hai.tech', 'NoaSecure', 'graph-noa-secure', identityNow, identityNow, identityNow);
+  addVerifiedIdentity.run(studentB.id, 'other.secure@hai.tech', 'OtherSecure', 'graph-other-secure', identityNow, identityNow, identityNow);
+  identityDb.prepare('UPDATE classroom_students SET minecraft_player_name = ?, updated_at = ? WHERE id = ?')
+    .run('NoaSecure', identityNow, studentA.id);
+  identityDb.prepare('UPDATE classroom_students SET minecraft_player_name = ?, updated_at = ? WHERE id = ?')
+    .run('OtherSecure', identityNow, studentB.id);
+  identityDb.close();
   const linkPlayer = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/students/${studentA.id}/minecraft`, { playerName: 'NoaSecure' }, teacherACookie);
   assert.equal(linkPlayer.status, 200);
   assert.equal((await linkPlayer.json()).student.minecraftPlayerName, 'NoaSecure');
@@ -740,8 +752,14 @@ try {
   const relinkEventsStarted = new Promise(resolve => { gameEventsStartedResolve = resolve; });
   const finishDuringRelinkPromise = post(baseUrl, '/api/kugel/student/finish', {}, studentACookie);
   await relinkEventsStarted;
-  const relinkDuringFinish = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/students/${studentA.id}/minecraft`, { playerName: 'RelinkSecure' }, teacherACookie);
-  assert.equal(relinkDuringFinish.status, 200);
+  const relinkDuringFinishDb = new Database(dbFile);
+  relinkDuringFinishDb.transaction(() => {
+    relinkDuringFinishDb.prepare('UPDATE classroom_minecraft_identities SET player_name = ?, updated_at = ? WHERE student_id = ?')
+      .run('RelinkSecure', new Date().toISOString(), studentA.id);
+    relinkDuringFinishDb.prepare('UPDATE classroom_students SET minecraft_player_name = ?, updated_at = ? WHERE id = ?')
+      .run('RelinkSecure', new Date().toISOString(), studentA.id);
+  }).immediate();
+  relinkDuringFinishDb.close();
   const finishDuringRelink = await finishDuringRelinkPromise;
   gameEventsDelayMs = 0;
   assert.equal(finishDuringRelink.status, 409, 'finish must reject when the Minecraft player binding changes during monitor delay');
@@ -749,6 +767,14 @@ try {
   assert.deepEqual(afterRelinkRaceDb.prepare('SELECT * FROM kugel_student_runs WHERE student_id = ?').get(studentA.id), runBeforeRelinkRace);
   assert.deepEqual(afterRelinkRaceDb.prepare('SELECT * FROM classroom_progress WHERE student_id = ? AND course_id = ?').all(studentA.id, 'craftom-agent'), progressBeforeRelinkRace);
   afterRelinkRaceDb.close();
+  const restorePlayerDb = new Database(dbFile);
+  restorePlayerDb.transaction(() => {
+    restorePlayerDb.prepare('UPDATE classroom_minecraft_identities SET player_name = ?, updated_at = ? WHERE student_id = ?')
+      .run('NoaSecure', new Date().toISOString(), studentA.id);
+    restorePlayerDb.prepare('UPDATE classroom_students SET minecraft_player_name = ?, updated_at = ? WHERE id = ?')
+      .run('NoaSecure', new Date().toISOString(), studentA.id);
+  }).immediate();
+  restorePlayerDb.close();
   assert.equal((await post(baseUrl, `/api/kugel/classes/${classroomA.id}/students/${studentA.id}/minecraft`, { playerName: 'NoaSecure' }, teacherACookie)).status, 200);
 
   assert.equal((await post(baseUrl, `/api/kugel/classes/${classroomA.id}/stop`, {}, teacherACookie)).status, 200);
@@ -757,6 +783,16 @@ try {
   const raceClass = (await raceClassResponse.json()).classroom;
   const raceStudentResponse = await post(baseUrl, `/api/classroom/classes/${raceClass.id}/students`, { name: 'תלמיד תור' }, teacherACookie);
   const raceStudent = (await raceStudentResponse.json()).student;
+  const raceIdentityDb = new Database(dbFile);
+  const raceIdentityNow = new Date().toISOString();
+  raceIdentityDb.prepare(`INSERT INTO classroom_minecraft_identities
+    (student_id, upn, player_name, status, graph_object_id, source, verified_at, created_at, updated_at)
+    VALUES (?, 'race.secure@hai.tech', 'RaceSecure', 'verified', 'graph-race-secure',
+      'microsoft-graph-via-monitor', ?, ?, ?)`)
+    .run(raceStudent.id, raceIdentityNow, raceIdentityNow, raceIdentityNow);
+  raceIdentityDb.prepare('UPDATE classroom_students SET minecraft_player_name = ?, updated_at = ? WHERE id = ?')
+    .run('RaceSecure', raceIdentityNow, raceStudent.id);
+  raceIdentityDb.close();
   assert.equal((await post(baseUrl, `/api/kugel/classes/${raceClass.id}/students/${raceStudent.id}/minecraft`, { playerName: 'RaceSecure' }, teacherACookie)).status, 200);
   assert.equal((await post(baseUrl, `/api/kugel/classes/${raceClass.id}/launch`, {}, teacherACookie)).status, 200);
   for (const queuedAction of ['message', 'freeze']) {
