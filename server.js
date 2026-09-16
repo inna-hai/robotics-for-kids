@@ -2987,6 +2987,7 @@ const PUBLIC_HTML_PATHS = new Set([
   '/omer-future-craftom-students.html',
   '/omer-future-craftom-slides.html',
   '/omer-future-craftom-improvement.html',
+  '/cyber-city-academy.html',
 ]);
 
 const FREE_SISI_HTML_PATHS = new Set([

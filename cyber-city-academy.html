@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cyber City Academy — משחק אתגרי סייבר</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/cyber-city-academy.css?v=20260916-cyber-city-kids-v5">
+  <link rel="stylesheet" href="css/platform-home-link.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar" aria-label="כותרת הלומדה">
+      <div>
+        <div class="eyebrow">robotics15 · Cyber City Academy</div>
+        <h1>משחק אתגרי סייבר</h1>
+        <p>עזרו לעיר לזהות הודעות חשודות. בכל אתגר יש סיפור קצר, רמזים צבעוניים ושאלה אחת ברורה.</p>
+      </div>
+      <div class="top-actions">
+        <a class="button subtle" href="index.html">חזרה לקטלוג</a>
+        <button class="button" type="button" id="startButton">חזרה לאתגר הנוכחי</button>
+      </div>
+    </header>
+
+    <section class="mode-strip teacher-controls" aria-label="בחירת מצב">
+      <button class="mode-button active" type="button" data-mode="learner">אתגר עצמאי</button>
+      <button class="mode-button" type="button" data-mode="instructor">מדריך</button>
+      <button class="mode-button" type="button" data-mode="projector">הקרנה</button>
+    </section>
+
+    <section class="status-grid" aria-label="מצב השיעור">
+      <article class="status-card">
+        <span>מה לומדים</span>
+        <strong id="lessonTitle">פישינג והגנה על זהות</strong>
+      </article>
+      <article class="status-card">
+        <span>אתגרים</span>
+        <strong id="selectedCount">0/5</strong>
+      </article>
+      <article class="status-card">
+        <span>התקדמות</span>
+        <strong id="progressText">0%</strong>
+      </article>
+      <article class="status-card">
+        <span>איפה אנחנו</span>
+        <strong id="worldState">Mail Station: בהמתנה</strong>
+      </article>
+    </section>
+
+    <section class="layout">
+      <aside class="panel instructor-panel" id="instructorPanel" aria-label="מנוע משימות למדריך">
+        <div class="panel-head">
+          <div>
+            <h2>Mission Engine</h2>
+          <p>מצב מדריך בלבד: בחרו אילו אתגרים יופיעו במסלול העצמי. הלומד רואה אתגר אחד בכל פעם.</p>
+          </div>
+          <button class="icon-button" type="button" id="resetSelection" aria-label="איפוס בחירת משימות">↻</button>
+        </div>
+
+        <label class="field">
+          <span>נושא השיעור</span>
+          <select id="lessonPicker">
+            <option value="lesson-1">מסלול 1 — פישינג: העיר תחת איום</option>
+          </select>
+        </label>
+
+        <div class="mission-toolbar">
+          <button class="button small" type="button" id="autoPick">בחירה מומלצת</button>
+          <button class="button small subtle" type="button" id="clearPick">ניקוי</button>
+        </div>
+
+        <div class="mission-pool" id="missionPool"></div>
+      </aside>
+
+      <section class="workspace" aria-label="אזור הלמידה">
+        <nav class="lesson-rail" id="lessonRail" aria-label="שלבי השיעור"></nav>
+
+        <article class="hero-card" id="introCard">
+          <div class="hero-copy">
+            <div class="eyebrow">מסלול 1 · Self Learning</div>
+            <h2>העיר קיבלה הודעה חשודה</h2>
+            <p>בכל שלב תקבלו הודעה או מצב קצר. התפקיד שלכם: למצוא מה מחשיד ולבחור פעולה בטוחה.</p>
+            <div class="learning-flow" aria-label="איך לומדים כאן">
+              <span>1. קוראים את הסיפור</span>
+              <span>2. מסתכלים על הרמזים</span>
+              <span>3. בוחרים תשובה</span>
+              <span>4. מקבלים משוב</span>
+            </div>
+            <div class="hero-actions">
+              <button class="button" type="button" id="heroStartButton">התחילו את המסלול</button>
+              <button class="button subtle" type="button" id="tourButton">איך זה עובד?</button>
+            </div>
+          </div>
+          <div class="city-map" aria-hidden="true">
+            <div class="city-node active">HQ</div>
+            <div class="city-line"></div>
+            <div class="city-node warning">Mail</div>
+            <div class="city-line"></div>
+            <div class="city-node locked">Vault</div>
+          </div>
+        </article>
+
+        <article class="mission-card" id="missionCard" hidden>
+          <div class="mission-head">
+            <div>
+              <div class="eyebrow" id="missionMeta">אתגר · תחנת הדואר</div>
+              <h2 id="missionTitle"></h2>
+              <p class="challenge-counter" id="challengeCounter"></p>
+            </div>
+            <div class="mission-actions">
+              <button class="button small subtle" type="button" id="hintButton">רמז קטן</button>
+              <button class="button small subtle" type="button" id="nextMissionButton">האתגר הבא</button>
+            </div>
+          </div>
+
+          <section class="learning-card" aria-label="מה עושים עכשיו">
+            <h3>מה עושים עכשיו?</h3>
+            <p id="missionGoal"></p>
+            <div class="do-list" id="missionDoList"></div>
+          </section>
+
+          <section class="quick-tools" aria-label="צק ליסט קצר">
+            <strong>בדיקה מהירה:</strong>
+            <span>מי שלח?</span>
+            <span>מה מבקשים?</span>
+            <span>מלחיצים?</span>
+            <span>יש קישור?</span>
+            <span>זה צפוי?</span>
+          </section>
+
+          <section class="story-card" aria-label="סיפור האתגר">
+            <div class="story-icon" id="storyIcon">MAIL</div>
+            <div>
+              <span class="story-label">סיפור קצר</span>
+              <p class="scenario" id="missionScenario"></p>
+            </div>
+          </section>
+
+          <section class="evidence-board" aria-label="ראיות">
+            <h3>רמזים שכדאי לבדוק</h3>
+            <div class="evidence-list" id="evidenceList"></div>
+          </section>
+
+          <section class="decision-board" aria-label="בחירת החלטה">
+            <h3 id="decisionPrompt">מה עושים?</h3>
+            <p class="decision-help">בחרו תשובה אחת. אם טעיתם, תקבלו רמז ותוכלו לנסות שוב.</p>
+            <div class="choices" id="choices"></div>
+          </section>
+
+          <section class="hint-box" id="hintBox" hidden></section>
+          <section class="feedback-box" id="feedbackBox" role="status" aria-live="polite"></section>
+        </article>
+
+        <article class="summary-card" id="summaryCard" hidden>
+          <div class="eyebrow">Debrief</div>
+          <h2>קיבלתם תג מגן עיר דיגיטלית</h2>
+          <p>סיימתם מסלול אתגרים ראשון ובניתם דרך פעולה ברורה: עוצרים, בודקים ראיות, מזהים לחץ, מאמתים מקור ובוחרים פעולה בטוחה.</p>
+          <div class="checklist" id="summaryChecklist"></div>
+          <button class="button" type="button" id="restartButton">להתחיל מסלול מחדש</button>
+        </article>
+      </section>
+
+      <aside class="panel class-panel" aria-label="לוח כיתה">
+        <div class="panel-head">
+          <div>
+            <h2>ארגז כלים</h2>
+            <p>כלים קצרים שיעזרו לפתור כל אתגר לבד.</p>
+          </div>
+        </div>
+
+        <section class="mini-section">
+          <h3>לפני שלוחצים בודקים</h3>
+          <div class="checklist" id="phishingChecklist"></div>
+        </section>
+
+        <section class="mini-section">
+          <h3>Confidence</h3>
+          <div class="confidence-control" id="confidenceControl">
+            <button type="button" data-confidence="low">נמוך</button>
+            <button type="button" data-confidence="medium" class="active">בינוני</button>
+            <button type="button" data-confidence="high">גבוה</button>
+          </div>
+          <p id="confidenceNote">כשאין מספיק Evidence, “צריך לבדוק” היא החלטה מקצועית.</p>
+        </section>
+
+        <section class="mini-section">
+          <h3>מה לזכור</h3>
+          <p id="instructorNote">בחרו משימות כדי להתחיל.</p>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">⌂</span><span class="platform-home-text">לעמוד הראשי</span></a>
+  <script src="js/cyber-city-missions.js?v=20260916-cyber-city-kids-v5"></script>
+  <script src="/js/feedback-widget.js?v=20260907-tehila-fixes-1"></script>
+</body>
+</html>
