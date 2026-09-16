@@ -130,6 +130,15 @@ try {
   teacherCookie = cookieOf(relogin.response);
 
   // Disabled-only students are hidden from all normal/Kugel views and immutable by management and Minecraft routes.
+  const verifiedDb = new Database(dbFile);
+  verifiedDb.prepare(`INSERT INTO classroom_minecraft_identities
+    (student_id, upn, player_name, status, graph_object_id, source, verified_at, created_at, updated_at)
+    VALUES (?, 'review.student@hai.tech', 'ReviewPlayer', 'verified', 'review-graph-object',
+      'microsoft-graph-via-monitor', ?, ?, ?)`)
+    .run(student.id, now, now, now);
+  verifiedDb.prepare('UPDATE classroom_students SET minecraft_player_name = ?, updated_at = ? WHERE id = ?')
+    .run('ReviewPlayer', now, student.id);
+  verifiedDb.close();
   const link = await request(base, `/api/kugel/classes/${classroom.id}/students/${student.id}/minecraft`, { cookie: teacherCookie, body: { playerName: 'ReviewPlayer' } });
   assert.equal(link.response.status, 200);
   const disabledDb = new Database(dbFile);

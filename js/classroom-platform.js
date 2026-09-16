@@ -397,6 +397,31 @@
           const progress = element('small', latest
             ? `${courseLabels[latest.courseId] || latest.courseId} · ${latest.status === 'completed' ? 'הושלם' : 'התחיל/ה'}`
             : 'עדיין אין פעילות שמורה');
+          const minecraftForm = element('form', undefined, 'minecraft-identity-form');
+          minecraftForm.setAttribute('data-action', 'verify-minecraft-identity');
+          const upnLabel = element('label', 'חשבון Microsoft קיים (@hai.tech)');
+          const upnInput = document.createElement('input');
+          upnInput.name = 'upn'; upnInput.type = 'email'; upnInput.required = true;
+          upnInput.value = student.minecraftIdentity?.upn || '';
+          const playerLabel = element('label', 'שם שחקן Minecraft');
+          const playerInput = document.createElement('input');
+          playerInput.name = 'playerName'; playerInput.required = true; playerInput.pattern = '[A-Za-z0-9_]{2,32}';
+          playerInput.minLength = 2; playerInput.maxLength = 32;
+          playerInput.value = student.minecraftIdentity?.playerName || student.minecraftPlayerName || '';
+          upnLabel.append(upnInput); playerLabel.append(playerInput);
+          const minecraftStatus = element('small', student.minecraftIdentity?.status === 'verified'
+            ? `מאומת: ${student.minecraftIdentity.upn} · ${student.minecraftIdentity.playerName}`
+            : 'טרם אומת משתמש פעיל עם רישיון Minecraft Education.');
+          const verifyMinecraft = element('button', 'אימות וקישור חשבון קיים', 'button quiet');
+          verifyMinecraft.type = 'submit'; verifyMinecraft.setAttribute('data-action', 'verify-minecraft-identity');
+          minecraftForm.append(upnLabel, playerLabel, minecraftStatus, verifyMinecraft);
+          minecraftForm.addEventListener('submit', async (event) => {
+            event.preventDefault(); setMessage(dashboardMessage, 'מאמתים משתמש ורישיון קיימים…');
+            try {
+              await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/students/${encodeURIComponent(student.id)}/minecraft/verify`, formData(minecraftForm));
+              await refreshAfterMutation('חשבון Microsoft הקיים ורישיון Minecraft Education אומתו וקושרו.');
+            } catch (error) { setMessage(dashboardMessage, error.message); }
+          });
           const actions = element('div', undefined, 'student-actions');
           const reset = element('button', 'איפוס קוד אישי', 'button quiet');
           reset.type = 'button'; reset.setAttribute('data-action', 'reset-student-code');
@@ -424,7 +449,11 @@
             } catch (error) { setMessage(dashboardMessage, error.message); }
           });
           actions.append(reset, archive);
-          item.append(editForm, progress, actions);
+          item.append(editForm, progress);
+          if ((classroom.courses || []).some((courseId) => courseId === 'minecraft' || courseId === 'craftom-agent')) {
+            item.append(minecraftForm);
+          }
+          item.append(actions);
           students.append(item);
         });
       } else {
@@ -473,6 +502,9 @@
           const rows = data.students.map((student) => {
             const item = element('li'); item.setAttribute('data-student-id', student.id);
             item.append(element('span', student.name));
+            if (student.minecraftIdentity?.status === 'verified') {
+              item.append(element('small', `חשבון Minecraft מאומת נשמר: ${student.minecraftIdentity.upn} · ${student.minecraftIdentity.playerName}`));
+            }
             const restore = element('button', 'שחזור תלמיד/ה', 'button secondary');
             restore.type = 'button'; restore.setAttribute('data-action', 'restore-student');
             restore.addEventListener('click', async () => {

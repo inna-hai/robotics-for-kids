@@ -33,6 +33,10 @@ const CLASSROOM_TEACHER_INVITE_CODE = String(process.env.ROBOTICS_TEACHER_INVITE
 const CLASSROOM_ADMIN_CODE = String(process.env.ROBOTICS_CLASSROOM_ADMIN_CODE || '');
 const CLASSROOM_ADMIN_EMAIL = String(process.env.ROBOTICS_CLASSROOM_ADMIN_EMAIL || '').trim().toLowerCase();
 const CLASSROOM_CHALLENGE_TTL_MS = 15 * 60 * 1000;
+const MINECRAFT_IDENTITY_VERIFIER_URL = String(process.env.ROBOTICS_MINECRAFT_IDENTITY_VERIFIER_URL || '').replace(/\/+$/, '');
+const MINECRAFT_IDENTITY_VERIFIER_SECRET = String(process.env.ROBOTICS_MINECRAFT_IDENTITY_VERIFIER_SECRET || '');
+const MINECRAFT_IDENTITY_VERIFIER_HOST = String(process.env.ROBOTICS_MINECRAFT_IDENTITY_VERIFIER_HOST || '').trim().toLowerCase();
+const MINECRAFT_IDENTITY_VERIFY_TIMEOUT_MS = 3000;
 function verifyClassroomCredentialConfiguration() {
   if (process.env.NODE_ENV !== 'production') return;
   const validPrivateIdentity = /^\S+@\S+\.\S+$/.test(CLASSROOM_ADMIN_EMAIL);
@@ -573,10 +577,93 @@ function preflightCredentialMigrationSources(db) {
   verifyClassroomCredentialSchema(db, { allowMissing: true, skipTables: legacyCredentialTables });
 }
 
+function verifyClassroomMinecraftIdentitySchema(db, { allowMissing = false } = {}) {
+  const table = db.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'classroom_minecraft_identities'").get();
+  if (!table) {
+    if (allowMissing) return;
+    throw new Error('classroom_minecraft_identities schema incompatible: missing table');
+  }
+  const expectedColumns = ['student_id','upn','player_name','status','graph_object_id','source','verified_at','created_at','updated_at'];
+  const columns = db.prepare("PRAGMA table_info('classroom_minecraft_identities')").all();
+  if (columns.map(column => column.name).join(',') !== expectedColumns.join(',')) {
+    throw new Error('classroom_minecraft_identities schema incompatible: unexpected columns');
+  }
+  if (columns.some(column => String(column.type || '').toUpperCase() !== 'TEXT' || column.notnull !== 1 || column.dflt_value !== null)) {
+    throw new Error('classroom_minecraft_identities schema incompatible: invalid column contract');
+  }
+  if (columns[0].pk !== 1 || columns.slice(1).some(column => column.pk !== 0)) {
+    throw new Error('classroom_minecraft_identities schema incompatible: invalid primary key');
+  }
+  const sql = normalizedSql(table.sql);
+  for (const contract of [
+    "upntextnotnulluniquecollatenocase",
+    "player_nametextnotnulluniquecollatenocase",
+    "check(statusin('verified'))",
+    "graph_object_idtextnotnullunique",
+    "check(sourcein('microsoft-graph-via-monitor'))",
+  ]) {
+    if (!sql.includes(contract)) throw new Error(`classroom_minecraft_identities schema incompatible: missing ${contract}`);
+  }
+  const foreignKeys = db.prepare("PRAGMA foreign_key_list('classroom_minecraft_identities')").all();
+  if (foreignKeys.length !== 1 || foreignKeys[0].from !== 'student_id' || foreignKeys[0].table !== 'classroom_students'
+    || foreignKeys[0].to !== 'id' || foreignKeys[0].on_delete !== 'CASCADE') {
+    throw new Error('classroom_minecraft_identities schema incompatible: invalid student foreign key');
+  }
+  const unique = db.prepare("SELECT name FROM pragma_index_list('classroom_minecraft_identities') WHERE origin = 'u'").all()
+    .map(index => db.prepare('SELECT name FROM pragma_index_info(?) ORDER BY seqno').all(index.name).map(column => column.name).join(','))
+    .sort();
+  if (JSON.stringify(unique) !== JSON.stringify(['graph_object_id','player_name','upn'])) {
+    throw new Error('classroom_minecraft_identities schema incompatible: invalid unique constraints');
+  }
+  const explicitIndexes = db.prepare("SELECT name, sql FROM sqlite_master WHERE type = 'index' AND tbl_name = 'classroom_minecraft_identities' AND sql IS NOT NULL").all();
+  if (explicitIndexes.length !== 1 || explicitIndexes[0].name !== 'idx_classroom_minecraft_identities_status'
+    || normalizedSql(explicitIndexes[0].sql) !== 'createindexidx_classroom_minecraft_identities_statusonclassroom_minecraft_identities(status,verified_at)') {
+    throw new Error('classroom_minecraft_identities schema incompatible: invalid indexes');
+  }
+  const triggers = db.prepare("SELECT name FROM sqlite_master WHERE type = 'trigger' AND tbl_name = 'classroom_minecraft_identities'").all();
+  if (triggers.length) throw new Error('classroom_minecraft_identities schema incompatible: unexpected trigger');
+}
+
+function verifyClassroomMinecraftVerificationRequestSchema(db, { allowMissing = false } = {}) {
+  const table = db.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'classroom_minecraft_verification_requests'").get();
+  if (!table) {
+    if (allowMissing) return;
+    throw new Error('classroom_minecraft_verification_requests schema incompatible: missing table');
+  }
+  const expectedColumns = ['request_id','student_id','actor_type','actor_id','created_at'];
+  const columns = db.prepare("PRAGMA table_info('classroom_minecraft_verification_requests')").all();
+  if (columns.map(column => column.name).join(',') !== expectedColumns.join(',')
+    || columns.some(column => String(column.type || '').toUpperCase() !== 'TEXT' || column.notnull !== 1 || column.dflt_value !== null)
+    || columns[0].pk !== 1 || columns.slice(1).some(column => column.pk !== 0)) {
+    throw new Error('classroom_minecraft_verification_requests schema incompatible: invalid column contract');
+  }
+  const sql = normalizedSql(table.sql);
+  if (!sql.includes("check(actor_typein('admin','teacher'))")) {
+    throw new Error('classroom_minecraft_verification_requests schema incompatible: invalid actor type');
+  }
+  const foreignKeys = db.prepare("PRAGMA foreign_key_list('classroom_minecraft_verification_requests')").all();
+  if (foreignKeys.length !== 1 || foreignKeys[0].from !== 'student_id' || foreignKeys[0].table !== 'classroom_students'
+    || foreignKeys[0].to !== 'id' || foreignKeys[0].on_delete !== 'CASCADE') {
+    throw new Error('classroom_minecraft_verification_requests schema incompatible: invalid student foreign key');
+  }
+  const unique = db.prepare("SELECT name FROM pragma_index_list('classroom_minecraft_verification_requests') WHERE origin = 'u'").all()
+    .map(index => db.prepare('SELECT name FROM pragma_index_info(?) ORDER BY seqno').all(index.name).map(column => column.name).join(','));
+  if (JSON.stringify(unique) !== JSON.stringify(['student_id'])) {
+    throw new Error('classroom_minecraft_verification_requests schema incompatible: invalid unique constraint');
+  }
+  const explicitIndexes = db.prepare("SELECT name FROM sqlite_master WHERE type = 'index' AND tbl_name = 'classroom_minecraft_verification_requests' AND sql IS NOT NULL").all();
+  const triggers = db.prepare("SELECT name FROM sqlite_master WHERE type = 'trigger' AND tbl_name = 'classroom_minecraft_verification_requests'").all();
+  if (explicitIndexes.length || triggers.length) {
+    throw new Error('classroom_minecraft_verification_requests schema incompatible: unexpected database object');
+  }
+}
+
 function openSummerDb() {
   fs.mkdirSync(DATA_DIR, { recursive: true });
   const db = new Database(SUMMER_DB_FILE);
   preflightCredentialMigrationSources(db);
+  verifyClassroomMinecraftIdentitySchema(db, { allowMissing: true });
+  verifyClassroomMinecraftVerificationRequestSchema(db, { allowMissing: true });
   db.pragma('journal_mode = WAL');
   db.pragma('foreign_keys = ON');
   const migrateCredentialSchema = db.transaction(() => {
@@ -787,6 +874,26 @@ function openSummerDb() {
       updated_at TEXT NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS classroom_minecraft_identities (
+      student_id TEXT PRIMARY KEY NOT NULL REFERENCES classroom_students(id) ON DELETE CASCADE,
+      upn TEXT NOT NULL UNIQUE COLLATE NOCASE,
+      player_name TEXT NOT NULL UNIQUE COLLATE NOCASE,
+      status TEXT NOT NULL CHECK (status IN ('verified')),
+      graph_object_id TEXT NOT NULL UNIQUE,
+      source TEXT NOT NULL CHECK (source IN ('microsoft-graph-via-monitor')),
+      verified_at TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS classroom_minecraft_verification_requests (
+      request_id TEXT PRIMARY KEY NOT NULL,
+      student_id TEXT NOT NULL UNIQUE REFERENCES classroom_students(id) ON DELETE CASCADE,
+      actor_type TEXT NOT NULL CHECK (actor_type IN ('admin','teacher')),
+      actor_id TEXT NOT NULL,
+      created_at TEXT NOT NULL
+    );
+
     CREATE TABLE IF NOT EXISTS classroom_student_sessions (
       id TEXT PRIMARY KEY,
       student_id TEXT NOT NULL REFERENCES classroom_students(id) ON DELETE CASCADE,
@@ -900,6 +1007,7 @@ function openSummerDb() {
     CREATE INDEX IF NOT EXISTS idx_classrooms_join_code ON classrooms(join_code);
     CREATE INDEX IF NOT EXISTS idx_classroom_courses_classroom ON classroom_courses(classroom_id);
     CREATE INDEX IF NOT EXISTS idx_classroom_students_classroom ON classroom_students(classroom_id);
+    CREATE INDEX IF NOT EXISTS idx_classroom_minecraft_identities_status ON classroom_minecraft_identities(status, verified_at);
     CREATE INDEX IF NOT EXISTS idx_classroom_student_sessions_token ON classroom_student_sessions(token_hash);
     CREATE INDEX IF NOT EXISTS idx_classroom_progress_student ON classroom_progress(student_id);
     CREATE INDEX IF NOT EXISTS idx_kugel_student_runs_classroom ON kugel_student_runs(classroom_id);
@@ -918,6 +1026,8 @@ function openSummerDb() {
     CREATE INDEX IF NOT EXISTS idx_student_progress_user ON student_progress(user_id);
     CREATE INDEX IF NOT EXISTS idx_student_progress_scope ON student_progress(user_id, course_id, lesson_id);
   `);
+  verifyClassroomMinecraftIdentitySchema(db);
+  verifyClassroomMinecraftVerificationRequestSchema(db);
   addSqliteColumn(db, 'ALTER TABLE classroom_teacher_invitations ADD COLUMN delivery_generation INTEGER NOT NULL DEFAULT 1 CHECK (delivery_generation >= 1)');
   migrateAndVerifyClassroomManagementAudit(db);
   const adminSessionsReady = migrateAndVerifyClassroomAdminSessions(db);
@@ -946,6 +1056,7 @@ function openSummerDb() {
   verifyClassroomCredentialSchema(db);
   });
   migrateCredentialSchema.immediate();
+  db.transaction(() => cleanupExpiredMinecraftVerificationRequests(db)).immediate();
   try { db.prepare('ALTER TABLE student_progress ADD COLUMN child_id TEXT REFERENCES summer_children(id) ON DELETE CASCADE').run(); } catch {}
   try { db.prepare('ALTER TABLE classroom_students ADD COLUMN minecraft_player_name TEXT').run(); } catch {}
   try { db.prepare('ALTER TABLE kugel_class_sessions ADD COLUMN launch_token TEXT').run(); } catch {}
@@ -1877,14 +1988,14 @@ function pruneClassroomLoginFailures(db, now = Date.now()) {
   db.prepare('DELETE FROM classroom_auth_rate_limits WHERE started_at <= ?').run(now - CLASSROOM_LOGIN_WINDOW_MS);
 }
 
-function consumeClassroomLoginAttempts(keys) {
+function consumeClassroomLoginAttempts(keys, maxFailures = CLASSROOM_LOGIN_MAX_FAILURES) {
   const normalizedKeys = [...new Set(keys.filter(Boolean))];
   return withSummerDb(db => db.transaction(() => {
     const now = Date.now();
     pruneClassroomLoginFailures(db, now);
     const select = db.prepare('SELECT failures FROM classroom_auth_rate_limits WHERE limit_key = ?');
     const rows = normalizedKeys.map(key => ({ key, row: select.get(key) }));
-    if (rows.some(({ row }) => row && row.failures >= CLASSROOM_LOGIN_MAX_FAILURES)) return true;
+    if (rows.some(({ row }) => row && row.failures >= maxFailures)) return true;
     const existingCount = db.prepare('SELECT COUNT(*) AS count FROM classroom_auth_rate_limits').get().count;
     const missingCount = rows.filter(({ row }) => !row).length;
     if (existingCount + missingCount > CLASSROOM_LOGIN_MAX_KEYS) return true;
@@ -2034,6 +2145,153 @@ function recordClassroomManagementAudit(db, actorType, actorId, action, targetTy
     crypto.randomUUID(), actorType, String(actorId || 'unknown'), action,
     targetType, String(targetId || 'unknown'), new Date().toISOString(), outcome,
   );
+}
+
+function finalizeStaleMinecraftVerification(db, actorType, actorId, studentId, requestId) {
+  const removed = db.prepare(`DELETE FROM classroom_minecraft_verification_requests
+    WHERE student_id = ? AND request_id = ?`).run(studentId, requestId);
+  if (removed.changes === 1) {
+    recordClassroomManagementAudit(db, actorType, actorId, 'minecraft.identity.verify', 'student', studentId, 'denied');
+  }
+}
+
+const MINECRAFT_VERIFICATION_REQUEST_TTL_MS = 10 * 60 * 1000;
+function cleanupExpiredMinecraftVerificationRequests(db, nowMs = Date.now()) {
+  const cutoff = new Date(nowMs - MINECRAFT_VERIFICATION_REQUEST_TTL_MS).toISOString();
+  const expired = db.prepare(`SELECT request_id, student_id, actor_type, actor_id
+    FROM classroom_minecraft_verification_requests WHERE created_at < ?`).all(cutoff);
+  for (const request of expired) {
+    const removed = db.prepare('DELETE FROM classroom_minecraft_verification_requests WHERE request_id = ?')
+      .run(request.request_id);
+    if (removed.changes === 1) {
+      recordClassroomManagementAudit(db, request.actor_type, request.actor_id,
+        'minecraft.identity.verify', 'student', request.student_id, 'denied');
+    }
+  }
+  return expired.length;
+}
+
+function minecraftIdentityPublic(row) {
+  if (!row) return null;
+  return {
+    upn: row.upn,
+    playerName: row.player_name,
+    status: row.status,
+    graphObjectId: row.graph_object_id,
+    source: row.source,
+    verifiedAt: row.verified_at,
+  };
+}
+
+function classroomStudentMinecraftIdentity(db, studentId) {
+  return minecraftIdentityPublic(db.prepare(`SELECT upn, player_name, status, graph_object_id, source, verified_at
+    FROM classroom_minecraft_identities WHERE student_id = ?`).get(studentId));
+}
+
+function cleanMinecraftUpn(value) {
+  const upn = cleanEmail(value);
+  return /^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@hai\.tech$/.test(upn) ? upn : '';
+}
+
+async function readBoundedJsonResponse(response, maxBytes = 32 * 1024) {
+  if (!response.body) throw new Error('empty_verifier_response');
+  const reader = response.body.getReader();
+  const chunks = [];
+  let total = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      total += value.byteLength;
+      if (total > maxBytes) throw new Error('verifier_response_too_large');
+      chunks.push(Buffer.from(value));
+    }
+  } finally {
+    reader.releaseLock();
+  }
+  return JSON.parse(Buffer.concat(chunks, total).toString('utf8'));
+}
+
+async function verifyExistingMinecraftIdentity(upn, playerName) {
+  if (!MINECRAFT_IDENTITY_VERIFIER_URL || Buffer.byteLength(MINECRAFT_IDENTITY_VERIFIER_SECRET, 'utf8') < 32) {
+    const error = new Error('minecraft_identity_verifier_unavailable');
+    error.statusCode = 503;
+    throw error;
+  }
+  let base;
+  try { base = new URL(MINECRAFT_IDENTITY_VERIFIER_URL); } catch {
+    const error = new Error('minecraft_identity_verifier_url_invalid');
+    error.statusCode = 503;
+    throw error;
+  }
+  const invalidBase = base.username || base.password || base.search || base.hash || !['', '/'].includes(base.pathname);
+  if (invalidBase || (process.env.NODE_ENV === 'production'
+    && (base.protocol !== 'https:' || !MINECRAFT_IDENTITY_VERIFIER_HOST || base.hostname.toLowerCase() !== MINECRAFT_IDENTITY_VERIFIER_HOST))) {
+    const error = new Error('minecraft_identity_verifier_insecure');
+    error.statusCode = 503;
+    throw error;
+  }
+  if (process.env.NODE_ENV === 'test' && base.protocol === 'http:' && !['127.0.0.1', 'localhost', '::1'].includes(base.hostname)) {
+    const error = new Error('minecraft_identity_verifier_test_host_invalid');
+    error.statusCode = 503;
+    throw error;
+  }
+  const target = new URL('/api/minecraft-identities/verify-existing', `${base.origin}/`);
+  const requestTarget = target.pathname;
+  const requestBody = JSON.stringify({ upn, playerName });
+  const bodyHash = crypto.createHash('sha256').update(requestBody).digest('hex');
+  const timestamp = String(Date.now());
+  const signature = crypto.createHmac('sha256', MINECRAFT_IDENTITY_VERIFIER_SECRET)
+    .update(`${timestamp}\nPOST\n${requestTarget}\n${bodyHash}`).digest('hex');
+  let response;
+  try {
+    response = await fetch(target, {
+      method: 'POST',
+      redirect: 'manual',
+      signal: AbortSignal.timeout(MINECRAFT_IDENTITY_VERIFY_TIMEOUT_MS),
+      body: requestBody,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Hai-Timestamp': timestamp,
+        'X-Hai-Signature': `sha256=${signature}`,
+      },
+    });
+  } catch {
+    const error = new Error('minecraft_identity_verifier_failed');
+    error.statusCode = 502;
+    throw error;
+  }
+  let payload = null;
+  try { payload = await readBoundedJsonResponse(response); } catch {
+    const error = new Error('minecraft_identity_verifier_invalid_response');
+    error.statusCode = 502;
+    throw error;
+  }
+  if (!response.ok) {
+    const error = new Error('minecraft_identity_not_verified');
+    error.statusCode = response.status === 404 ? 422 : 502;
+    throw error;
+  }
+  const user = payload?.user;
+  const payloadShapeValid = payload && typeof payload === 'object' && !Array.isArray(payload)
+    && user && typeof user === 'object' && !Array.isArray(user)
+    && typeof user.id === 'string' && typeof user.userPrincipalName === 'string'
+    && typeof user.accountEnabled === 'boolean'
+    && typeof payload.minecraftEducationLicensed === 'boolean';
+  const canonicalUpn = payloadShapeValid ? cleanMinecraftUpn(user.userPrincipalName) : '';
+  const graphObjectId = payloadShapeValid ? cleanText(user.id, 128) : '';
+  if (!payloadShapeValid || !graphObjectId || graphObjectId !== user.id || canonicalUpn !== upn) {
+    const error = new Error('minecraft_identity_verifier_invalid_response');
+    error.statusCode = 502;
+    throw error;
+  }
+  if (user.accountEnabled !== true || payload.minecraftEducationLicensed !== true) {
+    const error = new Error('minecraft_identity_not_verified');
+    error.statusCode = 422;
+    throw error;
+  }
+  return { graphObjectId };
 }
 
 function auditInvitationFailure(req, action, targetId, outcome = 'invalid') {
@@ -2215,10 +2473,12 @@ function requireCurrentPlayerTarget(db, req, teacherId, classroomId, target) {
   const student = db.prepare(`SELECT s.id FROM classroom_students s
     JOIN classrooms c ON c.id = s.classroom_id
     JOIN classroom_teachers t ON t.id = c.teacher_id
+    JOIN classroom_minecraft_identities i ON i.student_id = s.id AND i.status = 'verified'
+      AND lower(i.player_name) = lower(s.minecraft_player_name)
     WHERE s.classroom_id = ? AND c.teacher_id = ?
       AND s.archived_at IS NULL AND s.disabled_at IS NULL
       AND t.archived_at IS NULL AND t.disabled_at IS NULL
-      AND lower(s.minecraft_player_name) = lower(?)`).get(classroomId, teacherId, target);
+      AND lower(i.player_name) = lower(?)`).get(classroomId, teacherId, target);
   return student ? { student } : { status: 409, error: 'השחקן, ההרשאה או השיעור הפעיל השתנו בזמן ההמתנה.' };
 }
 
@@ -2738,10 +2998,18 @@ function getStudentKugelClass(req) {
       && classroomHasCourse(db, classroom.id, KUGEL_COURSE_ID)
       && teacherHasCourse(db, classroom.teacher_id, KUGEL_COURSE_ID),
     );
-    return { classroom, allowed };
+    const identity = db.prepare(`SELECT player_name FROM classroom_minecraft_identities
+      WHERE student_id = ? AND status = 'verified'`).get(student.id);
+    const identityAllowed = Boolean(identity?.player_name && student.minecraft_player_name
+      && identity.player_name.toLowerCase() === student.minecraft_player_name.toLowerCase());
+    return { classroom, allowed, identityAllowed };
   });
   if (!context.allowed) return { status: 403, error: 'שיעור Minecraft אינו פתוח לכיתה הזו.' };
-  return { student, classroom: { id: context.classroom.id, name: context.classroom.name } };
+  return {
+    student,
+    classroom: { id: context.classroom.id, name: context.classroom.name },
+    minecraftIdentityVerified: context.identityAllowed,
+  };
 }
 
 function kugelSessionPublic(row) {
@@ -3030,6 +3298,9 @@ function resolveKugelCompoundStudent(db, compoundId) {
      AND lower(s.minecraft_player_name) = lower(a.minecraft_username)
      AND s.archived_at IS NULL
      AND s.disabled_at IS NULL
+    JOIN classroom_minecraft_identities i
+      ON i.student_id = s.id AND i.status = 'verified'
+     AND lower(i.player_name) = lower(s.minecraft_player_name)
     WHERE a.monitor_server_name = ? AND a.compound_id = ?
     ORDER BY a.last_seen_at DESC
     LIMIT 1
@@ -3082,6 +3353,9 @@ async function handleKugelApi(req, res) {
       }
       const context = getStudentKugelClass(req);
       if (context.status) return send(res, context.status, JSON.stringify({ error: context.error }));
+      if (!context.minecraftIdentityVerified) {
+        return send(res, 409, JSON.stringify({ error: 'נדרש חשבון Microsoft קיים ומאומת עם רישיון Minecraft Education.' }));
+      }
       if (!consumeKugelActionLimit(`student:${context.student.id}:read`, 120)) {
         return send(res, 429, JSON.stringify({ error: 'יותר מדי רענונים. נסו שוב בעוד דקה.' }));
       }
@@ -3127,15 +3401,23 @@ async function handleKugelApi(req, res) {
       if (playerName === null) return send(res, 400, JSON.stringify({ error: 'שם השחקן ב-Minecraft אינו תקין.' }));
       try {
         const student = withSummerDb(db => {
-          const row = db.prepare(`SELECT id, name FROM classroom_students
-            WHERE id = ? AND classroom_id = ? AND archived_at IS NULL AND disabled_at IS NULL`)
+          const row = db.prepare(`SELECT s.id, s.name, s.minecraft_player_name,
+              i.player_name AS verified_player_name
+            FROM classroom_students s
+            LEFT JOIN classroom_minecraft_identities i
+              ON i.student_id = s.id AND i.status = 'verified'
+            WHERE s.id = ? AND s.classroom_id = ?
+              AND s.archived_at IS NULL AND s.disabled_at IS NULL`)
             .get(decodeURIComponent(linkMatch[2]), context.classroom.id);
           if (!row) return null;
-          db.prepare('UPDATE classroom_students SET minecraft_player_name = ?, updated_at = ? WHERE id = ?')
-            .run(playerName || null, new Date().toISOString(), row.id);
-          return { ...row, minecraftPlayerName: playerName };
+          if (!row.verified_player_name
+            || row.verified_player_name.toLowerCase() !== String(playerName || '').toLowerCase()) {
+            return { unverified: true };
+          }
+          return { id: row.id, name: row.name, minecraftPlayerName: row.minecraft_player_name };
         });
         if (!student) return send(res, 404, JSON.stringify({ error: 'התלמיד/ה לא נמצא/ה.' }));
+        if (student.unverified) return send(res, 409, JSON.stringify({ error: 'יש לאמת ולקשר חשבון Microsoft מורשה לפני שיוך שחקן Minecraft.' }));
         return send(res, 200, JSON.stringify({ ok: true, student }));
       } catch (error) {
         if (String(error.code || '').startsWith('SQLITE_CONSTRAINT')) {
@@ -3382,6 +3664,9 @@ async function handleKugelApi(req, res) {
     if (!['/api/kugel/student/start', '/api/kugel/student/reset', '/api/kugel/student/finish'].includes(pathname)) {
       return send(res, 404, JSON.stringify({ error: 'Not found' }));
     }
+    if (!studentContext.minecraftIdentityVerified) {
+      return send(res, 409, JSON.stringify({ error: 'נדרש חשבון Microsoft קיים ומאומת עם רישיון Minecraft Education.' }));
+    }
     if (!consumeKugelActionLimit(`student:${studentContext.student.id}:lesson-zero`, 30)) {
       return send(res, 429, JSON.stringify({ error: 'יותר מדי פעולות. נסו שוב בעוד דקה.' }));
     }
@@ -3562,6 +3847,7 @@ async function handleClassroomApi(req, res) {
               WHERE classroom_id = ? AND ((archived_at IS NULL AND disabled_at IS NULL) OR ? = 1) ORDER BY created_at
             `).all(classroom.id, includeArchived ? 1 : 0).map(student => ({
               id: student.id, name: student.name, archivedAt: student.archived_at || student.disabled_at,
+              minecraftIdentity: classroomStudentMinecraftIdentity(db, student.id),
             })),
           })),
       }));
@@ -3594,6 +3880,7 @@ async function handleClassroomApi(req, res) {
           createdAt: student.created_at,
           progress: db.prepare('SELECT * FROM classroom_progress WHERE student_id = ? ORDER BY updated_at DESC')
             .all(student.id).map(classroomProgressPublic),
+          minecraftIdentity: classroomStudentMinecraftIdentity(db, student.id),
         })),
       }));
       return { teacher, courses: teacherCourses(db, teacher.id), classes };
@@ -3613,10 +3900,18 @@ async function handleClassroomApi(req, res) {
       const classroom = db.prepare('SELECT id FROM classrooms WHERE id = ? AND teacher_id = ?').get(segments[3], teacher.id);
       if (!classroom) return { notFound: true };
       const students = db.prepare(`
-        SELECT id, name, archived_at, disabled_at FROM classroom_students
-        WHERE classroom_id = ? AND (archived_at IS NOT NULL OR disabled_at IS NOT NULL)
-        ORDER BY COALESCE(archived_at, disabled_at) DESC
-      `).all(classroom.id).map(student => ({ id: student.id, name: student.name, archivedAt: student.archived_at || student.disabled_at }));
+        SELECT s.id, s.name, s.archived_at, s.disabled_at,
+          i.upn, i.player_name, i.status, i.graph_object_id, i.source, i.verified_at
+        FROM classroom_students s
+        LEFT JOIN classroom_minecraft_identities i ON i.student_id = s.id
+        WHERE s.classroom_id = ? AND (s.archived_at IS NOT NULL OR s.disabled_at IS NOT NULL)
+        ORDER BY COALESCE(s.archived_at, s.disabled_at) DESC
+      `).all(classroom.id).map(student => ({
+        id: student.id,
+        name: student.name,
+        archivedAt: student.archived_at || student.disabled_at,
+        minecraftIdentity: minecraftIdentityPublic(student),
+      }));
       return { students };
     }).immediate());
     if (result.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
@@ -4467,6 +4762,264 @@ async function handleClassroomApi(req, res) {
           updatedAt: new Date().toISOString(),
         },
       }));
+    }
+
+    if (action === 'admin' && segments[3] === 'students' && segments[4]
+      && segments[5] === 'minecraft' && segments[6] === 'verify' && segments.length === 7) {
+      const studentId = segments[4];
+      const upn = cleanMinecraftUpn(body.upn);
+      const playerName = cleanMinecraftPlayerName(body.playerName);
+      const requestId = crypto.randomUUID();
+      const authorization = withSummerDb(db => db.transaction(() => {
+        const admin = requireCurrentClassroomAdmin(db, req);
+        if (!admin) return { denied: true };
+        if (!upn || !playerName) {
+          recordClassroomManagementAudit(db, 'admin', admin.admin_id, 'minecraft.identity.verify', 'student', studentId, 'invalid');
+          return { invalid: true };
+        }
+        const student = db.prepare(`SELECT s.id FROM classroom_students s
+          JOIN classrooms c ON c.id = s.classroom_id
+          JOIN classroom_teachers t ON t.id = c.teacher_id
+          WHERE s.id = ? AND s.archived_at IS NULL AND s.disabled_at IS NULL
+            AND t.archived_at IS NULL AND t.disabled_at IS NULL
+            AND (EXISTS (SELECT 1 FROM classroom_courses cc WHERE cc.classroom_id = c.id AND cc.course_id = 'minecraft')
+              OR EXISTS (SELECT 1 FROM classroom_courses cc WHERE cc.classroom_id = c.id AND cc.course_id = ?))`)
+          .get(studentId, KUGEL_COURSE_ID);
+        if (!student) {
+          recordClassroomManagementAudit(db, 'admin', admin.admin_id, 'minecraft.identity.verify', 'student', studentId, 'not_found');
+          return { notFound: true };
+        }
+        cleanupExpiredMinecraftVerificationRequests(db);
+        db.prepare(`INSERT INTO classroom_minecraft_verification_requests
+          (request_id, student_id, actor_type, actor_id, created_at)
+          VALUES (?, ?, 'admin', ?, ?)
+          ON CONFLICT(student_id) DO UPDATE SET request_id = excluded.request_id,
+            actor_type = excluded.actor_type, actor_id = excluded.actor_id,
+            created_at = excluded.created_at`)
+          .run(requestId, studentId, admin.admin_id, new Date().toISOString());
+        return { adminId: admin.admin_id, requestId };
+      }).immediate());
+      if (authorization.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מנהלת עדכנית.' }));
+      if (authorization.invalid) return send(res, 400, JSON.stringify({ error: 'יש להזין כתובת hai.tech ושם שחקן תקינים.' }));
+      if (authorization.notFound) return send(res, 404, JSON.stringify({ error: 'התלמיד/ה לא נמצא/ה בכיתה פעילה עם Minecraft.' }));
+      const sourceLimitKey = classroomSourceKey(req, 'minecraft-identity-verify');
+      const identityLimitKey = classroomIdentityKey('minecraft-identity-verify', `${authorization.adminId}:${studentId}`);
+      if (consumeClassroomLoginAttempts([sourceLimitKey, identityLimitKey], 24)) {
+        withSummerDb(db => db.transaction(() => {
+          db.prepare('DELETE FROM classroom_minecraft_verification_requests WHERE student_id = ? AND request_id = ?')
+            .run(studentId, authorization.requestId);
+          recordClassroomManagementAudit(db, 'admin', authorization.adminId, 'minecraft.identity.verify', 'student', studentId, 'denied');
+        }).immediate());
+        return send(res, 429, JSON.stringify({ error: 'יותר מדי בקשות אימות. נסו שוב מאוחר יותר.' }));
+      }
+
+      let external;
+      try {
+        external = await verifyExistingMinecraftIdentity(upn, playerName);
+      } catch (error) {
+        const status = Number(error.statusCode) || 502;
+        const failure = withSummerDb(db => db.transaction(() => {
+          const current = db.prepare(`DELETE FROM classroom_minecraft_verification_requests
+            WHERE student_id = ? AND request_id = ?`).run(studentId, authorization.requestId);
+          if (current.changes !== 1) return { stale: true };
+          const admin = requireCurrentClassroomAdmin(db, req);
+          if (admin?.admin_id === authorization.adminId) {
+            recordClassroomManagementAudit(db, 'admin', admin.admin_id, 'minecraft.identity.verify', 'student', studentId, 'denied');
+          }
+          return { stale: false };
+        }).immediate());
+        if (failure.stale) return send(res, 409, JSON.stringify({ error: 'תוצאת האימות התיישנה; בקשה חדשה יותר כבר נשמרה.' }));
+        return send(res, status, JSON.stringify({ error: status === 503
+          ? 'אימות חשבון Minecraft אינו זמין כרגע.'
+          : status === 422 ? 'לא נמצא חשבון Microsoft פעיל עם רישיון Minecraft Education.'
+            : 'אימות חשבון Minecraft נכשל.' }));
+      }
+
+      const result = withSummerDb(db => db.transaction(() => {
+        const admin = requireCurrentClassroomAdmin(db, req);
+        if (!admin || admin.admin_id !== authorization.adminId) return { stale: true };
+        const currentRequest = db.prepare(`SELECT request_id FROM classroom_minecraft_verification_requests
+          WHERE student_id = ? AND request_id = ?`).get(studentId, authorization.requestId);
+        if (!currentRequest) return { stale: true };
+        const student = db.prepare(`SELECT s.id, c.id AS classroom_id, c.teacher_id FROM classroom_students s
+          JOIN classrooms c ON c.id = s.classroom_id
+          JOIN classroom_teachers t ON t.id = c.teacher_id
+          WHERE s.id = ? AND s.archived_at IS NULL AND s.disabled_at IS NULL
+            AND t.archived_at IS NULL AND t.disabled_at IS NULL`).get(studentId);
+        if (!student) return { stale: true };
+        const classroomEntitled = classroomHasCourse(db, student.classroom_id, 'minecraft')
+          || classroomHasCourse(db, student.classroom_id, KUGEL_COURSE_ID);
+        const teacherEntitled = teacherHasCourse(db, student.teacher_id, 'minecraft')
+          || teacherHasCourse(db, student.teacher_id, KUGEL_COURSE_ID);
+        if (!classroomEntitled || !teacherEntitled) return { stale: true };
+        const now = new Date().toISOString();
+        try {
+          db.transaction(() => {
+            db.prepare(`INSERT INTO classroom_minecraft_identities
+            (student_id, upn, player_name, status, graph_object_id, source, verified_at, created_at, updated_at)
+            VALUES (?, ?, ?, 'verified', ?, 'microsoft-graph-via-monitor', ?, ?, ?)
+            ON CONFLICT(student_id) DO UPDATE SET upn = excluded.upn, player_name = excluded.player_name,
+              status = excluded.status, graph_object_id = excluded.graph_object_id, source = excluded.source,
+              verified_at = excluded.verified_at, updated_at = excluded.updated_at`)
+            .run(studentId, upn, playerName, external.graphObjectId, now, now, now);
+            db.prepare('UPDATE classroom_students SET minecraft_player_name = ?, updated_at = ? WHERE id = ?')
+              .run(playerName, now, studentId);
+          })();
+        } catch (error) {
+          if (String(error.code || '').startsWith('SQLITE_CONSTRAINT')) {
+            db.prepare('DELETE FROM classroom_minecraft_verification_requests WHERE student_id = ? AND request_id = ?')
+              .run(studentId, authorization.requestId);
+            recordClassroomManagementAudit(db, 'admin', admin.admin_id, 'minecraft.identity.verify', 'student', studentId, 'denied');
+            return { conflict: true };
+          }
+          throw error;
+        }
+        db.prepare('DELETE FROM classroom_minecraft_verification_requests WHERE student_id = ? AND request_id = ?')
+          .run(studentId, authorization.requestId);
+        recordClassroomManagementAudit(db, 'admin', admin.admin_id, 'minecraft.identity.verify', 'student', studentId, 'success');
+        return { identity: classroomStudentMinecraftIdentity(db, studentId) };
+      }).immediate());
+      if (result.stale) {
+        withSummerDb(db => db.transaction(() => {
+          finalizeStaleMinecraftVerification(db, 'admin', authorization.adminId, studentId, authorization.requestId);
+        }).immediate());
+        return send(res, 409, JSON.stringify({ error: 'התלמיד/ה השתנו בזמן האימות.' }));
+      }
+      if (result.conflict) return send(res, 409, JSON.stringify({ error: 'החשבון או שם השחקן כבר מקושרים לתלמיד/ה אחר/ת.' }));
+      return send(res, 200, JSON.stringify({ ok: true, minecraftIdentity: result.identity }));
+    }
+
+    if (action === 'classes' && segments[3] && segments[4] === 'students' && segments[5]
+      && segments[6] === 'minecraft' && segments[7] === 'verify' && segments.length === 8) {
+      const classroomId = segments[3];
+      const studentId = segments[5];
+      const upn = cleanMinecraftUpn(body.upn);
+      const playerName = cleanMinecraftPlayerName(body.playerName);
+      const requestId = crypto.randomUUID();
+      const authorization = withSummerDb(db => db.transaction(() => {
+        const teacher = requireCurrentClassroomTeacher(db, req);
+        if (!teacher) return { denied: true };
+        if (!upn || !playerName) {
+          recordClassroomManagementAudit(db, 'teacher', teacher.id, 'minecraft.identity.verify', 'student', studentId, 'invalid');
+          return { invalid: true };
+        }
+        const classroom = requireCurrentTeacherClassroom(db, req, teacher.id, classroomId);
+        if (classroom.status) {
+          recordClassroomManagementAudit(db, 'teacher', teacher.id, 'minecraft.identity.verify', 'student', studentId, 'denied');
+          return { authorization: classroom };
+        }
+        if (!classroomHasCourse(db, classroomId, 'minecraft') && !classroomHasCourse(db, classroomId, KUGEL_COURSE_ID)) {
+          recordClassroomManagementAudit(db, 'teacher', teacher.id, 'minecraft.identity.verify', 'student', studentId, 'denied');
+          return { forbidden: true };
+        }
+        const student = db.prepare(`SELECT s.id FROM classroom_students s
+          JOIN classrooms c ON c.id = s.classroom_id
+          WHERE s.id = ? AND s.classroom_id = ? AND c.teacher_id = ?
+            AND s.archived_at IS NULL AND s.disabled_at IS NULL`).get(studentId, classroomId, teacher.id);
+        if (!student) {
+          recordClassroomManagementAudit(db, 'teacher', teacher.id, 'minecraft.identity.verify', 'student', studentId, 'denied');
+          return { notFound: true };
+        }
+        cleanupExpiredMinecraftVerificationRequests(db);
+        db.prepare(`INSERT INTO classroom_minecraft_verification_requests
+          (request_id, student_id, actor_type, actor_id, created_at)
+          VALUES (?, ?, 'teacher', ?, ?)
+          ON CONFLICT(student_id) DO UPDATE SET request_id = excluded.request_id,
+            actor_type = excluded.actor_type, actor_id = excluded.actor_id,
+            created_at = excluded.created_at`)
+          .run(requestId, studentId, teacher.id, new Date().toISOString());
+        return { teacherId: teacher.id, requestId };
+      }).immediate());
+      if (authorization.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
+      if (authorization.invalid) return send(res, 400, JSON.stringify({ error: 'יש להזין כתובת hai.tech ושם שחקן תקינים.' }));
+      if (authorization.authorization) return send(res, authorization.authorization.status, JSON.stringify({ error: authorization.authorization.error }));
+      if (authorization.forbidden) return send(res, 403, JSON.stringify({ error: 'Minecraft אינו פתוח לכיתה הזו.' }));
+      if (authorization.notFound) return send(res, 404, JSON.stringify({ error: 'התלמיד/ה לא נמצא/ה בכיתה שלך.' }));
+      const sourceLimitKey = classroomSourceKey(req, 'minecraft-identity-verify');
+      const identityLimitKey = classroomIdentityKey('minecraft-identity-verify', `${authorization.teacherId}:${studentId}`);
+      if (consumeClassroomLoginAttempts([sourceLimitKey, identityLimitKey], 24)) {
+        withSummerDb(db => db.transaction(() => {
+          db.prepare('DELETE FROM classroom_minecraft_verification_requests WHERE student_id = ? AND request_id = ?')
+            .run(studentId, authorization.requestId);
+          recordClassroomManagementAudit(db, 'teacher', authorization.teacherId, 'minecraft.identity.verify', 'student', studentId, 'denied');
+        }).immediate());
+        return send(res, 429, JSON.stringify({ error: 'יותר מדי בקשות אימות. נסו שוב מאוחר יותר.' }));
+      }
+
+      let external;
+      try {
+        external = await verifyExistingMinecraftIdentity(upn, playerName);
+      } catch (error) {
+        const status = Number(error.statusCode) || 502;
+        const failure = withSummerDb(db => db.transaction(() => {
+          const current = db.prepare(`DELETE FROM classroom_minecraft_verification_requests
+            WHERE student_id = ? AND request_id = ?`).run(studentId, authorization.requestId);
+          if (current.changes !== 1) return { stale: true };
+          const teacher = requireCurrentClassroomTeacher(db, req);
+          const owned = teacher && db.prepare(`SELECT s.id FROM classroom_students s
+            JOIN classrooms c ON c.id = s.classroom_id
+            WHERE s.id = ? AND s.classroom_id = ? AND c.teacher_id = ?`).get(studentId, classroomId, teacher.id);
+          if (owned) recordClassroomManagementAudit(db, 'teacher', teacher.id, 'minecraft.identity.verify', 'student', studentId, 'denied');
+          return { stale: false };
+        }).immediate());
+        if (failure.stale) return send(res, 409, JSON.stringify({ error: 'תוצאת האימות התיישנה; בקשה חדשה יותר כבר נשמרה.' }));
+        return send(res, status, JSON.stringify({ error: status === 503
+          ? 'אימות חשבון Minecraft אינו זמין כרגע.'
+          : status === 422 ? 'לא נמצא חשבון Microsoft פעיל עם רישיון Minecraft Education.'
+            : 'אימות חשבון Minecraft נכשל.' }));
+      }
+
+      const result = withSummerDb(db => db.transaction(() => {
+        const teacher = requireCurrentClassroomTeacher(db, req);
+        if (!teacher || teacher.id !== authorization.teacherId) return { stale: true };
+        const currentRequest = db.prepare(`SELECT request_id FROM classroom_minecraft_verification_requests
+          WHERE student_id = ? AND request_id = ?`).get(studentId, authorization.requestId);
+        if (!currentRequest) return { stale: true };
+        const student = db.prepare(`SELECT s.id FROM classroom_students s
+          JOIN classrooms c ON c.id = s.classroom_id
+          WHERE s.id = ? AND s.classroom_id = ? AND c.teacher_id = ?
+            AND s.archived_at IS NULL AND s.disabled_at IS NULL`).get(studentId, classroomId, teacher.id);
+        if (!student) return { stale: true };
+        const classroomEntitled = classroomHasCourse(db, classroomId, 'minecraft')
+          || classroomHasCourse(db, classroomId, KUGEL_COURSE_ID);
+        const teacherEntitled = teacherHasCourse(db, teacher.id, 'minecraft')
+          || teacherHasCourse(db, teacher.id, KUGEL_COURSE_ID);
+        if (!classroomEntitled || !teacherEntitled) return { stale: true };
+        const now = new Date().toISOString();
+        try {
+          db.transaction(() => {
+            db.prepare(`INSERT INTO classroom_minecraft_identities
+            (student_id, upn, player_name, status, graph_object_id, source, verified_at, created_at, updated_at)
+            VALUES (?, ?, ?, 'verified', ?, 'microsoft-graph-via-monitor', ?, ?, ?)
+            ON CONFLICT(student_id) DO UPDATE SET upn = excluded.upn, player_name = excluded.player_name,
+              status = excluded.status, graph_object_id = excluded.graph_object_id, source = excluded.source,
+              verified_at = excluded.verified_at, updated_at = excluded.updated_at`)
+            .run(studentId, upn, playerName, external.graphObjectId, now, now, now);
+            db.prepare('UPDATE classroom_students SET minecraft_player_name = ?, updated_at = ? WHERE id = ?')
+              .run(playerName, now, studentId);
+          })();
+        } catch (error) {
+          if (String(error.code || '').startsWith('SQLITE_CONSTRAINT')) {
+            db.prepare('DELETE FROM classroom_minecraft_verification_requests WHERE student_id = ? AND request_id = ?')
+              .run(studentId, authorization.requestId);
+            recordClassroomManagementAudit(db, 'teacher', teacher.id, 'minecraft.identity.verify', 'student', studentId, 'denied');
+            return { conflict: true };
+          }
+          throw error;
+        }
+        db.prepare('DELETE FROM classroom_minecraft_verification_requests WHERE student_id = ? AND request_id = ?')
+          .run(studentId, authorization.requestId);
+        recordClassroomManagementAudit(db, 'teacher', teacher.id, 'minecraft.identity.verify', 'student', studentId, 'success');
+        return { identity: classroomStudentMinecraftIdentity(db, studentId) };
+      }).immediate());
+      if (result.stale) {
+        withSummerDb(db => db.transaction(() => {
+          finalizeStaleMinecraftVerification(db, 'teacher', authorization.teacherId, studentId, authorization.requestId);
+        }).immediate());
+        return send(res, 409, JSON.stringify({ error: 'הכיתה או התלמיד/ה השתנו בזמן האימות.' }));
+      }
+      if (result.conflict) return send(res, 409, JSON.stringify({ error: 'החשבון או שם השחקן כבר מקושרים לתלמיד/ה אחר/ת.' }));
+      return send(res, 200, JSON.stringify({ ok: true, minecraftIdentity: result.identity }));
     }
 
     if (action === 'classes' && segments[3] && segments[4] === 'students' && segments[5] && segments.length === 6) {

@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { randomBytes } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
 import { mkdtempSync, rmSync } from 'node:fs';
@@ -6,6 +7,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
+import { startFakeMinecraftIdentityVerifier } from '../helpers/fake-minecraft-identity-verifier.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const tempDir = mkdtempSync(join(tmpdir(), 'kugel-zero-e2e-'));
@@ -39,6 +41,17 @@ const probe = createServer();
 const appPort = await listen(probe);
 await new Promise(resolve => probe.close(resolve));
 const base = `http://127.0.0.1:${appPort}`;
+const verifierSecret = randomBytes(32).toString('hex');
+const verifier = await startFakeMinecraftIdentityVerifier({
+  secret: verifierSecret,
+  responses: new Map([['noa.maze@hai.tech', {
+    status: 200,
+    body: {
+      user: { id: 'e2e-graph-noa', userPrincipalName: 'noa.maze@hai.tech', accountEnabled: true },
+      minecraftEducationLicensed: true,
+    },
+  }]]),
+});
 const app = spawn(process.execPath, ['server.js'], {
   cwd: root,
   env: {
@@ -46,8 +59,11 @@ const app = spawn(process.execPath, ['server.js'], {
     PORT: String(appPort),
     ROBOTICS_DB_FILE: join(tempDir, 'e2e.sqlite'),
     ROBOTICS_SUBSCRIPTION_GATE: '1',
-    ROBOTICS_TEACHER_INVITE_CODE: 'e2e-invite',
-    ROBOTICS_CLASSROOM_ADMIN_CODE: 'e2e-admin',
+    ROBOTICS_CLASSROOM_ADMIN_EMAIL: 'owner@example.test',
+    ROBOTICS_TEACHER_INVITE_CODE: '',
+    ROBOTICS_CLASSROOM_ADMIN_CODE: '',
+    ROBOTICS_MINECRAFT_IDENTITY_VERIFIER_URL: verifier.baseUrl,
+    ROBOTICS_MINECRAFT_IDENTITY_VERIFIER_SECRET: verifierSecret,
     KUGEL_MONITOR_API_URL: `http://127.0.0.1:${monitorPort}`,
     KUGEL_MONITOR_SERVER_NAME: 'e2e-monitor',
     KUGEL_MINECRAFT_INTERNAL_TOKEN: 'e2e-monitor-token',
@@ -72,14 +88,26 @@ async function waitForApp() {
 let browser;
 try {
   await waitForApp();
-  const registration = await post(base, '/api/classroom/teacher-register', {
-    name: 'מורת מבוך', email: 'maze@example.test', password: 'SafePass123!', inviteCode: 'e2e-invite',
-  });
-  assert.equal(registration.status, 201);
-  const teacherBody = await registration.json();
-  const teacherCookie = cookies(registration);
-  const admin = await post(base, '/api/classroom/admin-login', { code: 'e2e-admin' });
+  const adminRequest = await post(base, '/api/classroom/admin-access/request', { email: 'owner@example.test' });
+  const adminCode = (await adminRequest.json()).testCode;
+  const admin = await post(base, '/api/classroom/admin-access/redeem', { email: 'owner@example.test', code: adminCode });
   const adminCookie = cookies(admin);
+  const invitation = await post(base, '/api/classroom/admin/invitations', {
+    name: 'מורת מבוך', email: 'maze@example.test',
+  }, adminCookie);
+  assert.equal(invitation.status, 201);
+  const invitationBody = await invitation.json();
+  const redemption = await post(base, '/api/classroom/teacher-invitations/redeem', {
+    email: 'maze@example.test', code: invitationBody.testCode,
+  });
+  assert.equal(redemption.status, 201);
+  const redemptionBody = await redemption.json();
+  const teacherLogin = await post(base, '/api/classroom/teacher-login', {
+    email: 'maze@example.test', password: redemptionBody.temporaryPassword,
+  });
+  assert.equal(teacherLogin.status, 200);
+  const teacherBody = await teacherLogin.json();
+  const teacherCookie = cookies(teacherLogin);
   assert.equal((await post(base, `/api/classroom/admin/teachers/${teacherBody.teacher.id}/courses`, { courses: ['craftom-agent'] }, adminCookie)).status, 200);
   const classroomResponse = await post(base, '/api/classroom/classes', { name: 'כיתת המבוך', courses: ['craftom-agent'] }, teacherCookie);
   const classroom = (await classroomResponse.json()).classroom;
@@ -91,6 +119,11 @@ try {
   await teacherContext.addCookies([{ name: 'haiTechClassroomToken', value: cookieValue(teacherCookie), url: base }]);
   const teacherClassroomsPage = await teacherContext.newPage();
   await teacherClassroomsPage.goto(`${base}/teacher-classrooms.html`);
+  const identityForm = teacherClassroomsPage.locator('.minecraft-identity-form').first();
+  await identityForm.locator('input[name="upn"]').fill('noa.maze@hai.tech');
+  await identityForm.locator('input[name="playerName"]').fill('NoaMaze');
+  await identityForm.getByRole('button', { name: 'אימות וקישור' }).click();
+  await identityForm.getByText(/אומת: noa\.maze@hai\.tech/).waitFor();
   const lessonZeroLink = teacherClassroomsPage.getByRole('link', { name: /ניהול הלומדה:.*Agent/ });
   await lessonZeroLink.waitFor();
   const [teacherPage] = await Promise.all([
@@ -99,6 +132,10 @@ try {
   ]);
   await teacherPage.waitForLoadState();
   await teacherPage.waitForURL(new RegExp(`/kugel-teacher\\.html\\?classroomId=${classroom.id}$`));
+  await teacherPage.waitForFunction((classroomId) => {
+    const current = [...document.querySelectorAll('a')].find((link) => link.textContent?.trim() === 'השיעור הנוכחי');
+    return current?.href.includes(`classroomId=${classroomId}`) && current.href.includes('lesson=0');
+  }, classroom.id);
   await teacherPage.getByRole('link', { name: 'השיעור הנוכחי' }).click();
   await teacherPage.waitForURL(new RegExp(`/kugel-teacher\\.html\\?classroomId=${classroom.id}&lesson=0$`));
   await teacherPage.locator('.teacher-student-board-details summary').click();
@@ -150,5 +187,6 @@ try {
     await new Promise(resolve => app.once('exit', resolve));
   }
   await new Promise(resolve => monitor.close(resolve));
+  await verifier.close();
   rmSync(tempDir, { recursive: true, force: true });
 }
