@@ -11,6 +11,7 @@
     *{box-sizing:border-box}:root{--ink:#0f172a;--blue:#2563eb;--orange:#f97316;--green:#22c55e;--red:#ef4444}body{margin:0;height:100vh;overflow:hidden;font-family:Rubik,Arial,sans-serif;direction:rtl;background:linear-gradient(135deg,#0f172a,#1e3a8a 55%,#7c2d12);color:var(--ink);display:flex;flex-direction:column}.topbar{background:rgba(255,255,255,.97);box-shadow:0 5px 22px rgba(0,0,0,.18);padding:.65rem .9rem;display:grid;grid-template-columns:auto 1fr auto;gap:.75rem;align-items:center;z-index:5}.brand{font-weight:900;font-size:1.08rem;white-space:nowrap}.lesson-title{text-align:center;font-weight:900;color:#1e3a8a}.lesson-outline{background:rgba(255,255,255,.94);border-bottom:1px solid rgba(226,232,240,.9);padding:.45rem .9rem;display:flex;align-items:center;gap:.55rem;overflow-x:auto;box-shadow:0 4px 14px rgba(15,23,42,.12);z-index:4}.lesson-outline-title{font-weight:900;color:#1e3a8a;white-space:nowrap}.lesson-outline-items{display:flex;gap:.32rem;align-items:center;min-width:max-content}.lesson-outline-chip{border:1px solid #bfdbfe;background:#eff6ff;color:#1e3a8a;border-radius:999px;min-width:34px;height:32px;padding:0 .45rem;font-size:.82rem;font-weight:900;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.lesson-outline-chip:hover{border-color:#2563eb;background:#dbeafe}.lesson-outline-chip.current{border-color:#fb923c;background:#fff7ed;color:#9a3412;box-shadow:0 0 0 3px rgba(251,146,60,.22)}.actions{display:flex;gap:.45rem;flex-wrap:wrap}.btn{border:0;border-radius:999px;padding:.62rem .95rem;font-family:inherit;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.32rem}.btn:disabled{background:#e5e7eb!important;color:#94a3b8!important;cursor:not-allowed;filter:grayscale(1);opacity:.72;box-shadow:none}.run{background:#00e096;color:#052e16}.check{background:#facc15;color:#422006}.reset{background:#fb7185;color:white}.share{background:#38bdf8;color:#082f49}.link{background:#eef2ff;color:#3730a3}.main{flex:1;min-height:0;display:grid;grid-template-columns:360px minmax(0,1fr) var(--preview-width,420px);gap:1rem;padding:1rem}.panel{background:rgba(255,255,255,.96);border-radius:26px;box-shadow:0 18px 48px rgba(0,0,0,.2);min-height:0;overflow:hidden;display:flex;flex-direction:column}.lesson-toggle{border:0;background:linear-gradient(135deg,#fff7ed,#eff6ff);padding:.9rem 1rem;font-family:inherit;font-weight:900;color:#1e3a8a;display:flex;align-items:center;justify-content:space-between;gap:.8rem;cursor:pointer;text-align:right;border-bottom:1px solid #fed7aa}.lesson-toggle span:first-child{display:flex;align-items:center;gap:.45rem}.lesson-toggle-icon{background:#1e3a8a;color:white;border-radius:999px;min-width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center}.lesson-collapsible{display:flex;flex-direction:column;min-height:0;overflow:hidden}.main.lesson-collapsed{grid-template-columns:74px minmax(0,1.35fr) var(--preview-width,460px)}.lesson-panel.collapsed{min-height:0}.lesson-panel.collapsed .lesson-collapsible{display:none}.lesson-panel.collapsed .lesson-toggle{height:100%;min-height:360px;writing-mode:vertical-rl;text-orientation:mixed;justify-content:center;border-bottom:0}.lesson-panel.collapsed .lesson-toggle span:first-child{flex-direction:column}.lesson-panel.collapsed .lesson-toggle-icon{writing-mode:horizontal-tb}.info{padding:1rem;border-bottom:1px solid #e5e7eb}.info h1{font-size:1.35rem;margin:.2rem 0}.info p{margin:.25rem 0;line-height:1.55}.compact-info{padding:.8rem 1rem}.compact-info h1{font-size:1.05rem}.compact-info p{font-size:.9rem;color:#475569}.hidden-chip{display:none!important}.chip{display:inline-flex;background:#fff7ed;color:#9a3412;border-radius:999px;padding:.32rem .65rem;font-weight:900;font-size:.78rem;margin:.12rem}.score-chip{background:#ecfeff;color:#155e75;border:1px solid #67e8f9}.total-score-chip{background:#fef3c7;color:#92400e;border-color:#fbbf24}.exercise-list{overflow:auto;padding:.75rem;display:grid;gap:.65rem}.exercise{background:#f8fafc;border:2px solid #e5e7eb;border-radius:18px;padding:.68rem;line-height:1.45;cursor:pointer;min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}.exercise.active{border-color:#f97316;background:#fff7ed}.exercise.done{border-color:#22c55e;background:#f0fdf4}.exercise.locked{opacity:.58;cursor:not-allowed}.exercise b{display:block;color:#1e3a8a}.hint{font-size:.88rem;color:#64748b;margin-top:.35rem}.exercise-top{display:flex;align-items:start;justify-content:space-between;gap:.75rem;min-width:0}.exercise-top>div{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}.exercise-bottom{display:grid;gap:.65rem;margin-top:.8rem;min-width:0;max-width:100%}.exercise-controls{display:flex;gap:.55rem;flex-wrap:wrap}.exercise-controls.special-message-controls{display:grid;gap:.55rem}.exercise-actions-main{display:flex;gap:.55rem;flex-wrap:wrap}.starter-reset-row{display:flex;justify-content:flex-start}.exercise-controls .btn{box-shadow:none}.exercise-feedback{background:white;border:2px solid #fed7aa;border-radius:18px;color:#7c2d12;padding:.7rem .85rem;font-weight:900;line-height:1.45}.exercise-feedback.good{border-color:#86efac;background:#f0fdf4;color:#15803d}.exercise-feedback.bad{border-color:#fecaca;background:#fff1f2;color:#b91c1c}.code-answer-box{min-width:0;max-width:100%}.code-answer-box input{max-width:100%;min-width:0}.code-answer-box small{display:block;margin-top:.45rem;color:#64748b;font-weight:800;overflow-wrap:anywhere;word-break:break-word}.choice-box{display:grid;gap:.7rem}.choice-group{border:2px solid #bfdbfe;border-radius:18px;padding:.72rem;margin:0;background:rgba(255,255,255,.75)}.choice-group legend{font-weight:900;color:#1d4ed8;padding:0 .35rem}.choice-option{display:flex;align-items:center;gap:.45rem;margin:.42rem 0;font-weight:900;color:#334155}.choice-option input{width:1.05rem;height:1.05rem;accent-color:#2563eb}.match-box{display:grid;gap:.7rem;min-width:0;max-width:none;width:calc(100% + .5rem);margin-left:-.25rem;margin-right:-.25rem;overflow:visible;padding:.62rem}.match-rows{display:grid;gap:.55rem;min-width:0;max-width:100%}.match-row{display:grid;grid-template-columns:minmax(190px,1.8fr) 16px minmax(76px,.58fr);align-items:center;gap:.38rem;min-width:0;max-width:100%}.match-code{background:#07111f;color:#e5f3ff;border-radius:12px;padding:.52rem .62rem;font:900 .78rem/1.22 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-align:left;white-space:normal;overflow-wrap:anywhere;word-break:break-word;max-width:100%;min-width:0}.match-arrow{font-weight:900;color:#1d4ed8;text-align:center}.match-row select{width:100%;min-width:0;max-width:100%;border:1px solid #93c5fd;border-radius:12px;padding:.52rem .46rem;font-family:inherit;font-weight:900;background:white;color:#1e3a8a;overflow-wrap:anywhere}.selected-code-line{margin-top:.65rem;padding:.62rem .7rem;border-radius:14px;background:#f8fafc;border:1px solid #bfdbfe;color:#1e3a8a;font-weight:900}.selected-code-line code{display:block;direction:ltr;text-align:left;margin-top:.25rem;color:#0f172a;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:nowrap;overflow:auto}.exercise-meta{color:#64748b;font-weight:900}.exercise-status{background:#eef2ff;color:#3730a3;border-radius:999px;padding:.3rem .65rem;font-size:.78rem;font-weight:900;white-space:nowrap}.editor-panel{background:linear-gradient(135deg,#fff7ed,#eff6ff)}.blocks-stage{flex:1;min-height:0;overflow:auto;padding:1rem;display:flex;flex-direction:column;gap:.75rem}.blocks-intro{background:white;border:2px dashed #fb923c;border-radius:22px;padding:.85rem;line-height:1.5;font-weight:800;color:#7c2d12}.blocks-intro small{display:block;color:#475569;font-weight:700;margin-top:.25rem}.blocks-stage.real-blockly-stage{padding:0;gap:0}.real-blockly{display:none;flex:1;min-height:430px;background:white;border:0;border-radius:0;overflow:hidden;box-shadow:none}.real-blockly.active{display:flex;flex-direction:column;min-height:100%}.blockly-top{display:flex;align-items:center;justify-content:space-between;gap:.7rem;padding:.65rem .85rem;background:#fff7ed;border-bottom:1px solid #fed7aa;font-weight:900;color:#7c2d12}.blockly-top small{font-weight:800;color:#475569}.blockly-live{background:#dcfce7;color:#166534;border-radius:999px;padding:.25rem .6rem;font-size:.82rem}#blocklyDiv{flex:1;min-height:0;width:100%;direction:ltr}.blocklyDropDownDiv,.blocklyWidgetDiv,.blocklyTooltipDiv{z-index:99999!important;direction:rtl}.blocklyToolboxDiv{direction:rtl}.blocklyTreeLabel{font-family:Rubik,Arial,sans-serif}.blocklyFlyoutLabelText{font-family:Rubik,Arial,sans-serif;font-weight:900;fill:#7c2d12}.blocklyFlyoutBackground{fill:#f8fafc;fill-opacity:1}.code-peek:not([open]){flex:0 0 auto}.code-peek{border-top:1px solid #fed7aa;background:#0f172a;color:white}.code-peek summary{cursor:pointer;padding:.75rem 1rem;font-weight:900;background:#1e293b;color:#ffedd5}.code-peek[open]{max-height:44%;display:flex;flex-direction:column}.code-peek[open] .code-box{display:flex;flex:1;min-height:260px;flex-direction:column}.code-peek-actions{display:flex;align-items:center;justify-content:space-between;gap:.6rem;background:#1e293b;color:#ffedd5;padding:.55rem .8rem;font-weight:900}.code-peek-actions button{border:0;border-radius:999px;background:#fb7185;color:white;padding:.42rem .75rem;font-family:inherit;font-weight:900;cursor:pointer}.editor-tabs{display:flex;background:#0f172a;padding:.45rem;gap:.4rem}.editor-tabs button{flex:1;border:0;border-radius:12px;padding:.6rem;font-weight:900;cursor:pointer;background:#334155;color:white}.editor-tabs button.active{background:#fb923c;color:#111827}.editor{flex:1;min-height:0;display:none}.editor.active{display:block}textarea{width:100%;height:100%;min-height:260px;resize:none;border:0;outline:0;padding:1rem;font:600 15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;direction:ltr;text-align:left;background:#07111f;color:#e5f3ff}.preview-panel{position:relative}.preview-resize{position:absolute;top:0;right:-.68rem;bottom:0;width:1.36rem;z-index:4;cursor:col-resize;display:flex;align-items:center;justify-content:center;touch-action:none}.preview-resize::before{content:"";width:7px;height:86px;border-radius:999px;background:linear-gradient(180deg,#fb923c,#2563eb);box-shadow:0 0 0 4px rgba(255,255,255,.88),0 8px 22px rgba(15,23,42,.22)}.preview-resize:hover::before,.preview-resize.dragging::before{background:linear-gradient(180deg,#f97316,#1d4ed8);width:9px}.preview-resize-hint{font-size:.78rem;color:#64748b;font-weight:800}.preview-head{padding:.8rem 1rem;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;gap:.5rem;align-items:center;font-weight:900}.preview-wrap{flex:1;min-height:0;background:white}iframe{width:100%;height:100%;border:0;background:white}.feedback{background:white;border:2px solid #fed7aa;border-radius:18px;color:#7c2d12;padding:.7rem .85rem;font-weight:900;line-height:1.45}.feedback.good{border-color:#86efac;background:#f0fdf4;color:#15803d}.feedback.bad{border-color:#fecaca;background:#fff1f2;color:#b91c1c}.score-modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.58);z-index:999999;display:flex;align-items:center;justify-content:center;padding:1rem}.score-modal{width:min(440px,100%);background:white;border-radius:28px;box-shadow:0 28px 80px rgba(15,23,42,.35);padding:1.15rem;direction:rtl;border:3px solid #67e8f9}.score-modal h2{margin:.1rem 0 .35rem;color:#155e75;font-size:1.35rem}.score-modal-total{font-size:2.15rem;font-weight:900;color:#0f766e;margin:.35rem 0 .65rem}.score-row{display:flex;justify-content:space-between;gap:.75rem;border-top:1px solid #e2e8f0;padding:.52rem 0;font-weight:900}.score-row span:first-child{color:#334155}.score-row span:last-child{direction:ltr;color:#1d4ed8;white-space:nowrap}.score-modal-note{background:#f0fdfa;border-radius:16px;padding:.65rem;color:#115e59;font-weight:800;line-height:1.45;margin-top:.45rem}.score-modal-actions{display:flex;justify-content:flex-start;margin-top:.9rem}.helper{background:linear-gradient(135deg,#eff6ff,#fff7ed);border-radius:18px;padding:.8rem;margin-top:.7rem;line-height:1.5;min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}.helper b{color:#1d4ed8}.bridge{margin-top:.8rem;display:grid;gap:.5rem}.bridge-title{font-weight:900;color:#7c2d12}.bridge-block{border:0;border-radius:16px;background:linear-gradient(135deg,#ffedd5,#dbeafe);padding:.7rem;text-align:right;font-family:inherit;font-weight:900;cursor:pointer;box-shadow:0 5px 0 rgba(15,23,42,.08)}.bridge-block small{display:block;font-weight:700;color:#475569;margin-top:.22rem;line-height:1.35}.bridge-empty{display:none}@media(max-width:1100px){.lesson-outline{align-items:flex-start}.lesson-outline-items{overflow-x:auto}.preview-resize{display:none}body{height:auto;min-height:100vh;overflow:auto}.topbar{grid-template-columns:1fr}.lesson-title{text-align:right}.main,.main.lesson-collapsed{display:flex;flex-direction:column;padding:.75rem}.panel{min-height:360px}.lesson-panel.collapsed{min-height:58px}.lesson-panel.collapsed .lesson-toggle{height:auto;min-height:58px;writing-mode:horizontal-tb;justify-content:space-between}.lesson-panel.collapsed .lesson-toggle span:first-child{flex-direction:row}.panel.editor-panel{min-height:620px}.main.lesson-collapsed .panel.editor-panel{min-height:72vh}.panel.preview-panel{min-height:420px}.main.lesson-collapsed .panel.preview-panel{min-height:58vh}.actions .btn{flex:1}}@media(max-width:560px){.match-row{grid-template-columns:minmax(160px,1.55fr) 14px minmax(68px,.52fr);gap:.26rem}.match-code{font-size:.7rem;padding:.42rem .46rem}.match-row select{font-size:.82rem;padding:.48rem .38rem}.match-arrow{font-size:.8rem}.main{padding:.55rem}.topbar{padding:.55rem}.btn{font-size:.86rem;padding:.55rem .7rem}.panel{border-radius:20px}textarea{font-size:13px}}
   </style>
   <link rel="stylesheet" href="css/platform-home-link.css">
+<meta name="webcode-fix" content="webcode-lesson6-ex7-code-type-v287-20260916" />
 </head>
 <body>
   <header class="topbar">
@@ -57,7 +58,7 @@
       <div class="preview-wrap"><iframe id="preview" title="תצוגת התוצר"></iframe></div>
     </section>
   </main>
-  <script src="js/webcode-lessons-code-bridge-v255.js"></script>
+  <script src="js/webcode-lessons-code-bridge-v293.js"></script>
   <script>
     if(!window.getWebCodeLesson){
       window.WEBCODE_LESSONS = [{ id:1, title:'בונים עמוד אמיתי עם Blockly', concept:'בלוקים שבונים אתר', durationMinutes:90, realBlocklyBuilder:true, story:'בונים אתר בעזרת בלוקים ורואים את התוצאה מיד.', mission:'גררו בלוקים לשרשרת כדי לבנות עמוד אישי.', starter:{ html:'', css:'', js:'' }, exercises:[
@@ -294,6 +295,7 @@
         $('jsCode').value = saved.js || lesson.starter.js;
       }
       ['htmlCode','cssCode','jsCode'].forEach(id => $(id).addEventListener('input', saveLessonState));
+      installCodeToBlockSelectionSync();
       $('codePeek').addEventListener('toggle', () => { codePeekOpened = Boolean($('codePeek').open); saveLessonState(); });
       initPreviewResize();
       try { renderBridgeBlocks(); }
@@ -494,6 +496,155 @@
       if(!$('codePeek').open) return;
       const highlighted = selectSnippetInEditor(target.tab, target.snippets);
       if(highlighted?.ok){ rememberCodeSelection({ exerciseId: activeExercise, tab: target.tab, blockType: block.type, label: target.label, line: highlighted.line }); if(currentExercise()?.check?.requiresCodeLineAnswer){ if(!checkMemory.exerciseAnswers) checkMemory.exerciseAnswers = {}; delete checkMemory.exerciseAnswers[activeExercise]; const answer = $('exerciseAnswer'); if(answer) answer.value = ''; } refreshCodeSelectionStatus(); }
+    }
+    function clearAllBlocklySelections(){
+      if(!blocklyWorkspace || !window.Blockly) return;
+      try { Blockly.common?.setSelected?.(null); } catch(error) {}
+      try { (Blockly.common?.getSelected?.() || Blockly.getSelected?.())?.unselect?.(); } catch(error) {}
+      try { (blocklyWorkspace.getAllBlocks(false) || []).forEach(block => block.unselect?.()); } catch(error) {}
+      try { document.querySelectorAll('#blocklyDiv .blocklySelected').forEach(el => el.classList.remove('blocklySelected')); } catch(error) {}
+    }
+    function clearBlocklyCodeAssociation(message='לא נמצא בלוק מתאים לשורה שסומנה. נסו לסמן מילה מתוך שורה שנוצרה מבלוק בשיעור.'){
+      clearAllBlocklySelections();
+      lastGeneratedCodeSelection = null;
+      if(checkMemory.codeSelections) delete checkMemory.codeSelections[activeExercise];
+      refreshCodeSelectionStatus();
+      const fb = $('feedback');
+      if(fb){ fb.className='feedback bad'; fb.textContent = message; }
+      saveLessonState();
+    }
+    function selectBlocklyBlock(block, label, tab, line){
+      if(!blocklyWorkspace || !block) return false;
+      clearAllBlocklySelections();
+      setTimeout(() => {
+        try { block.select?.(); } catch(error) {}
+        try { blocklyWorkspace.centerOnBlock?.(block.id); } catch(error) {}
+      }, 0);
+      rememberCodeSelection({ exerciseId: activeExercise, tab: tab || codeTargetForBlock(block)?.tab || 'code', blockType: block.type, label: label || codeTargetForBlock(block)?.label || block.type, line: line || '' });
+      refreshCodeSelectionStatus();
+      const fb = $('feedback');
+      if(fb){ fb.className='feedback good'; fb.textContent = `מצאתי את הבלוק שקשור לשורה הזו: ${label || block.type}`; }
+      return true;
+    }
+    function highlightBlockByType(blockType, label='', tab='', line=''){
+      if(!blockType || !blocklyWorkspace) return false;
+      const block = collectPageBlocks().find(item => item.type === blockType) || (blocklyWorkspace.getAllBlocks(false) || []).find(item => item.type === blockType);
+      return selectBlocklyBlock(block, label, tab, line);
+    }
+    function normalizeCodeLookupText(value){
+      return String(value || '').replace(/…|\.\.\./g, '').replace(/\{\{\w+\}\}/g, '').replace(/\s+/g, ' ').trim();
+    }
+    function codeTokenIsTooGeneric(value){
+      const token = normalizeCodeLookupText(value).replace(/[^a-z0-9_$-]/gi, '').toLowerCase();
+      return ['const','let','var','function','return','document','getelementbyid','value','trim','class','id'].includes(token);
+    }
+    function lineMatchesBlockSnippet(line, needle, snippets){
+      const cleanLine = normalizeCodeLookupText(line);
+      const cleanNeedle = normalizeCodeLookupText(needle);
+      if(!cleanLine || !cleanNeedle) return false;
+      return (snippets || []).some(snippet => {
+        const cleanSnippet = normalizeCodeLookupText(snippet);
+        if(!cleanSnippet) return false;
+        // Strong match: the selected line contains the block-generated snippet.
+        // This lets selecting a whole line beat vague single words like "const".
+        if(cleanLine.includes(cleanSnippet) || cleanSnippet.includes(cleanLine)) return true;
+        if(codeTokenIsTooGeneric(cleanNeedle)) return false;
+        // Weaker match for meaningful tokens only, and only when the line also
+        // contains nearby context from the snippet.
+        if(cleanLine.includes(cleanNeedle) && cleanSnippet.includes(cleanNeedle)){
+          const [before='', after=''] = cleanSnippet.split(cleanNeedle);
+          const anchorBefore = before.trim();
+          const anchorAfter = after.trim();
+          return Boolean((anchorBefore && cleanLine.includes(anchorBefore)) || (anchorAfter && cleanLine.includes(anchorAfter)));
+        }
+        return false;
+      });
+    }
+    function blockConceptMatchesNeedle(target, needle){
+      const cleanNeedle = normalizeCodeLookupText(needle).toLowerCase();
+      if(!cleanNeedle || codeTokenIsTooGeneric(cleanNeedle)) return false;
+      const haystack = normalizeCodeLookupText([target?.label, ...(target?.snippets || [])].join(' ')).toLowerCase();
+      if(!haystack) return false;
+      const conceptMap = {
+        background:['background','רקע','צבע'],
+        color:['color','צבע'],
+        textcontent:['textcontent','טקסט','כתוב'],
+        correctfeedback:['correctfeedback','נכון'],
+        wrongfeedback:['wrongfeedback','אחרת'],
+        answer:['answer','תשובה'],
+        if:['if','נכון','תשובה'],
+        else:['else','אחרת']
+      };
+      const compact = cleanNeedle.replace(/[^a-z0-9א-ת]/gi,'').toLowerCase();
+      const concepts = conceptMap[compact] || [];
+      if(!concepts.length && haystack.includes(cleanNeedle)) return true;
+      return concepts.some(word => haystack.includes(word));
+    }
+    function highlightBlockForCodeText(codeText, preferredTab='', selectedLine=''){
+      if(!blocklyWorkspace || !codeText) return false;
+      const needle = normalizeCodeLookupText(codeText);
+      if(!needle) return false;
+      generateCodeFromBlockly({ save:false });
+      const blocks = collectPageBlocks();
+      const tabs = preferredTab ? [preferredTab] : ['html','css','js'];
+      for(const tab of tabs){
+        const text = tab === 'css' ? $('cssCode').value : tab === 'js' ? $('jsCode').value : $('htmlCode').value;
+        const candidateLines = selectedLine ? [selectedLine] : text.split('\n').filter(row => normalizeCodeLookupText(row).includes(needle));
+        for(const line of candidateLines){
+          for(const block of blocks){
+            const target = codeTargetForBlock(block);
+            if(!target || target.tab !== tab) continue;
+            const snippets = (target.snippets || []).filter(Boolean);
+            if(lineMatchesBlockSnippet(line, needle, snippets)) return selectBlocklyBlock(block, target.label, target.tab, String(line || '').trim());
+          }
+        }
+      }
+      for(const block of blocks){
+        const target = codeTargetForBlock(block);
+        if(!target || (preferredTab && target.tab !== preferredTab)) continue;
+        if(blockConceptMatchesNeedle(target, needle)) return selectBlocklyBlock(block, `${target.label} (שיוך מושגי)`, target.tab, String(selectedLine || needle || '').trim());
+      }
+      return false;
+    }
+    function highlightBlockForMatchItem(exId, itemId){
+      const ex = lesson.exercises?.find(row => Number(row.id) === Number(exId));
+      const item = ex?.matchBox?.items?.find(row => String(row.id) === String(itemId));
+      if(!item) return false;
+      if(item.blockType && highlightBlockByType(item.blockType, item.blockLabel || item.code, item.tab || '', item.code || '')) return false;
+      if(highlightBlockForCodeText(item.code, item.tab || '')) return false;
+      const fb = $('feedback');
+      if(fb){ fb.className='feedback bad'; fb.textContent='לא מצאתי בלוק ישיר למילה הזו. ייתכן שזו מילת תשתית בקוד ולא בלוק שהתלמיד גרר.'; }
+      return false;
+    }
+    function captureCodeEditorSelectionToBlock(event){
+      if(!blocklyWorkspace || !event?.target?.id?.endsWith('Code')) return;
+      const editor = event.target;
+      const tab = editor.id.replace('Code','');
+      const start = Math.min(editor.selectionStart || 0, editor.selectionEnd || 0);
+      const end = Math.max(editor.selectionStart || 0, editor.selectionEnd || 0);
+      if(end <= start) return;
+      const text = editor.value || '';
+      const selected = text.slice(start, end).trim();
+      const lineStart = text.lastIndexOf('\n', start) + 1;
+      let lineEnd = text.indexOf('\n', end);
+      if(lineEnd < 0) lineEnd = text.length;
+      const line = text.slice(lineStart, lineEnd).trim();
+      const found = highlightBlockForCodeText(selected || line, tab, line);
+      if(!found) clearBlocklyCodeAssociation(`לא מצאתי בלוק מתאים למילה/שורה שסומנה: ${selected || line}. ייתכן שזו שורת תשתית שלא שייכת לבלוק בשיעור.`);
+    }
+    function queueCodeEditorSelectionToBlock(event){
+      const target = event?.target;
+      if(!target?.id?.endsWith('Code')) return;
+      setTimeout(() => captureCodeEditorSelectionToBlock({ target }), 0);
+    }
+    function installCodeToBlockSelectionSync(){
+      if(document.__webcodeCodeToBlockSelectionSync) return;
+      document.__webcodeCodeToBlockSelectionSync = true;
+      ['htmlCode','cssCode','jsCode'].forEach(id => {
+        const editor = $(id);
+        if(!editor) return;
+        ['select','mouseup','keyup','touchend'].forEach(type => editor.addEventListener(type, queueCodeEditorSelectionToBlock));
+      });
     }
 
     let blocklyWorkspace = null;
@@ -717,6 +868,7 @@
         if(!isBlocklyTextEditorElement(event.target)) return;
         commitOpenBlocklyTextEditor();
         activeBlocklyTextEdit = null;
+        if(pendingBlocklyFieldUpdate) setTimeout(() => flushBlocklyFieldUpdate({ preservePreviewClicks: true }), 0);
       }, true);
     }
     function updatePreviewTextFromBlocklyEdit(blockId, fieldName, value){
@@ -734,6 +886,9 @@
       if(block?.type === 'lesson_4_title' && fieldName === 'TEXT') setText('h1', value);
       if(block?.type === 'lesson_4_name_label' && fieldName === 'TEXT') nth('label', 0, value);
       if(block?.type === 'lesson_4_topic_label' && fieldName === 'TEXT') nth('label', 1, value);
+      if(block?.type === 'lesson_5_question' && fieldName === 'TEXT') setText('h1', value);
+      if(block?.type === 'lesson_5_success' && fieldName === 'TEXT') { const feedback = doc.querySelector('#feedback.correct, .correct#feedback'); if(feedback) feedback.textContent = String(value || ''); }
+      if(block?.type === 'lesson_5_wrong' && fieldName === 'TEXT') { const feedback = doc.querySelector('#feedback.wrong, .wrong#feedback'); if(feedback) feedback.textContent = String(value || ''); }
       if(block?.type === 'web_emoji' && fieldName === 'EMOJI') setText('#heroEmoji', value);
       if(block?.type === 'web_columns' && fieldName === 'A') nth('.columns div', 0, value);
       if(block?.type === 'web_columns' && fieldName === 'B') nth('.columns div', 1, value);
@@ -1547,8 +1702,16 @@ ${block.replace}`; changed = true; }
     }
     function hasRequiredCodeSelection(c){
       if(!c?.requiresCodeSelectionTab && !c?.requiresCodeSelectionTabs?.length && !c?.requiresCodeSelectionBlockTypes?.length) return true;
-      if(c.codeSelectionOptionalIfAnswerMatches && hasAnswerIncludes(c.answerIncludes)) return true;
+      if(c.codeSelectionOptionalIfAnswerMatches && (hasAnswerIncludes(c.answerIncludes) || hasAnswerFieldIncludes(c.answerFieldIncludes))) return true;
       return hasGeneratedCodeSelection(c.requiresCodeSelectionTab, c.requiresCodeSelectionBlockTypes, c.requiresCodeSelectionTabs);
+    }
+    function hasDifferentCodeSelectionFromExercise(previousExerciseId){
+      if(!previousExerciseId) return true;
+      ensureCurrentCodeSelection();
+      const previous = checkMemory.codeSelections?.[previousExerciseId];
+      const current = lastGeneratedCodeSelection;
+      if(!previous || !current || current.exerciseId !== activeExercise) return true;
+      return String(previous.blockType || '') !== String(current.blockType || '');
     }
     function normalizeCodeAnswer(value){ return String(value || '').replace(/\s+/g, ' ').replace(/;?\s*$/, ';').trim().toLowerCase(); }
     function codeOnlyLineText(line, tab){
@@ -1622,7 +1785,8 @@ ${block.replace}`; changed = true; }
         const current = String(answers[item.id] || '');
         const rowOptions = stableShuffledOptions(ex.matchBox.options || [], `${lesson.id}-${ex.id}-${item.id}`)
           .map(option => `<option value="${esc(option.value)}" ${String(option.value) === current ? 'selected' : ''}>${esc(option.label)}</option>`).join('');
-        return `<div class="match-row"><span class="match-code" dir="ltr">${esc(item.code)}</span><span class="match-arrow">←</span><select onchange="saveMatchAnswer(${ex.id}, '${esc(item.id)}', this.value)"><option value="">בחרו תפקיד...</option>${rowOptions}</select></div>`;
+        const codeCell = item.blockType || item.tab ? `<button type="button" class="match-code" dir="ltr" title="לחצו כדי לסמן את הבלוק שיצר את השורה" onclick="return highlightBlockForMatchItem(${ex.id}, '${esc(item.id)}')">${esc(item.code)}</button>` : `<span class="match-code" dir="ltr">${esc(item.code)}</span>`;
+        return `<div class="match-row">${codeCell}<span class="match-arrow">←</span><select onchange="saveMatchAnswer(${ex.id}, '${esc(item.id)}', this.value)"><option value="">בחרו תפקיד...</option>${rowOptions}</select></div>`;
       }).join('');
       return `<div class="helper match-box"><b>${esc(ex.matchBox.title || 'התאימו קוד לתפקיד')}</b><div class="match-rows">${rows}</div><small>${esc(ex.matchBox.note || 'בחרו לכל תגית או מילת קוד את התפקיד המתאים.')}</small></div>`;
     }
@@ -1710,10 +1874,27 @@ ${block.replace}`; changed = true; }
         return compact.includes(clean) || (bare.length >= 2 && text.split(/\s+/).includes(bare));
       });
     }
+    function codeLineAnswerValue(rule){
+      return rule?.answerField ? exerciseAnswerFieldValue(activeExercise, rule.answerField) : exerciseAnswerValue();
+    }
+    function normalizeCodeTypeAnswer(value){
+      const text = String(value || '').trim().toLowerCase().replace(/\s+/g, '');
+      if(['html','אייץטי-אם-אל','אייץטי אמ אל','מבנה','תוכן'].includes(text)) return 'html';
+      if(['css','סי-אס-אס','סי אס אס','עיצוב'].includes(text)) return 'css';
+      if(['js','javascript','java-script','ג׳אווהסקריפט','גאווהסקריפט','פעולה'].includes(text)) return 'js';
+      return text;
+    }
+    function hasSelectedCodeTypeField(fieldId){
+      if(!fieldId) return true;
+      ensureCurrentCodeSelection();
+      if(!lastGeneratedCodeSelection || lastGeneratedCodeSelection.exerciseId !== activeExercise) return false;
+      const typed = normalizeCodeTypeAnswer(exerciseAnswerFieldValue(activeExercise, fieldId));
+      return typed && typed === String(lastGeneratedCodeSelection.tab || '').toLowerCase();
+    }
     function hasCodeLineAnswer(rule){
       if(!rule) return true;
       ensureCurrentCodeSelection();
-      const answer = normalizeCodeAnswer(exerciseAnswerValue());
+      const answer = normalizeCodeAnswer(codeLineAnswerValue(rule));
       if(!answer) return false;
       if(!lastGeneratedCodeSelection || lastGeneratedCodeSelection.exerciseId !== activeExercise) return Boolean(rule.allowKnownCodeWordsWithoutSelection && answerHasAllowedCodeSnippet(answer, rule));
       if(rule.tabs?.length ? !rule.tabs.includes(lastGeneratedCodeSelection.tab) : (rule.tab && lastGeneratedCodeSelection.tab !== rule.tab)) return false;
@@ -1891,6 +2072,18 @@ ${block.replace}`; changed = true; }
       if(!text) return true;
       return previewClicks.some(click => click.exerciseId === activeExercise && click.tag === 'button' && String(click.feedbackText || '').includes(text));
     }
+    function hasPreviewFeedbackFromBlockOutput(rules){
+      if(!rules?.length) return true;
+      const blocks = collectPageBlocks();
+      return rules.every(rule => {
+        const block = blocks.find(item => item.type === rule.type);
+        const spec = lessonBlocklyBlockSpec(rule.type);
+        if(!block || !spec) return false;
+        const expected = lessonBlockText(spec, block, 'replace').replace(/^const\s+\w+\s*=\s*/, '').replace(/;$/, '').replace(/^['"]|['"]$/g, '').trim();
+        if(!expected) return false;
+        return previewClicks.some(click => click.exerciseId === activeExercise && click.tag === 'button' && (!rule.clickText || String(click.text || '').includes(rule.clickText)) && String(click.feedbackText || '').includes(expected));
+      });
+    }
     function hasPreviewItemTextFromBlockOutput(rules){
       if(!rules?.length) return true;
       const blocks = collectPageBlocks();
@@ -2016,8 +2209,21 @@ ${block.replace}`; changed = true; }
       return { ok:true };
     }
     function debugCodeValue(){ return $('exerciseDebugCode')?.value || ''; }
-    function hasDebugCodeIncludes(list){ return !list?.length || includesAll(debugCodeValue(), list); }
-    function hasDebugCodeExcludes(list){ return !list?.length || excludesAll(debugCodeValue(), list); }
+    function normalizeDebugCodeForCheck(value){ return String(value || '').replace(/\s*([=+\-*/:;{}()])\s*/g, ' $1 ').replace(/\s+/g, ' ').trim(); }
+    function debugIncludesAllFlexible(list){
+      if(!list?.length) return true;
+      const raw = debugCodeValue();
+      const normalized = normalizeDebugCodeForCheck(raw);
+      return list.every(item => raw.includes(item) || normalized.includes(normalizeDebugCodeForCheck(item)));
+    }
+    function debugExcludesAllFlexible(list){
+      if(!list?.length) return true;
+      const raw = debugCodeValue();
+      const normalized = normalizeDebugCodeForCheck(raw);
+      return list.every(item => !raw.includes(item) && !normalized.includes(normalizeDebugCodeForCheck(item)));
+    }
+    function hasDebugCodeIncludes(list){ return debugIncludesAllFlexible(list); }
+    function hasDebugCodeExcludes(list){ return debugExcludesAllFlexible(list); }
     function resetExerciseDebugCode(){
       const ex = currentExercise();
       if(!ex.debugCode || !$('exerciseDebugCode')) return;
@@ -2026,7 +2232,35 @@ ${block.replace}`; changed = true; }
       $('feedback').textContent = 'קוד ההתחלה של האתגר חזר. עכשיו נסו לתקן רק את הטעות הקטנה.';
     }
     function scoreState(){ checkMemory.score = normalizeStoredScore(checkMemory.score); return checkMemory.score; }
-    function exerciseMetric(id = activeExercise){ const state = scoreState(); if(!state.exercises[id] || typeof state.exercises[id] !== 'object') state.exercises[id] = { startedAt: Date.now(), attempts: 0, failures: 0, hints: 0 }; return state.exercises[id]; }
+    function exerciseScoreVersionKey(id = activeExercise){
+      const ex = lesson.exercises?.find(item => Number(item.id) === Number(id));
+      if(!ex) return `lesson-${lesson.id}-exercise-${id}`;
+      return [lesson.id, ex.id, ex.versionNote || '', ex.title || '', ex.debugCode?.starter || ''].join('|');
+    }
+    function exerciseMetric(id = activeExercise){
+      const state = scoreState();
+      const key = exerciseScoreVersionKey(id);
+      if(!state.exercises[id] || typeof state.exercises[id] !== 'object') state.exercises[id] = { startedAt: Date.now(), attempts: 0, failures: 0, hints: 0, versionKey:key };
+      const metric = state.exercises[id];
+      if(metric.versionKey && metric.versionKey !== key){
+        state.exercises[id] = { startedAt: Date.now(), attempts: 0, failures: 0, hints: 0, versionKey:key };
+        if(state.awarded) delete state.awarded[id];
+        state.total = Object.values(state.awarded || {}).reduce((sum, value) => sum + Number(value || 0), 0);
+        saveScoreState();
+        return state.exercises[id];
+      }
+      if(!metric.versionKey && (exHasVersionedContent(id) || Number(metric.hints || 0) > 0)){
+        metric.versionKey = key;
+        metric.hints = 0;
+        metric.attempts = Math.max(0, Number(metric.attempts || 0));
+        saveScoreState();
+      }
+      return metric;
+    }
+    function exHasVersionedContent(id){
+      const ex = lesson.exercises?.find(item => Number(item.id) === Number(id));
+      return Boolean(ex?.versionNote || ex?.debugCode);
+    }
     function hintWasRevealed(id = activeExercise){ return Boolean(checkMemory.revealedHints?.[id]); }
     function revealHint(id = activeExercise){ const metric = exerciseMetric(id); if(!hintWasRevealed(id)) metric.hints += 1; if(!checkMemory.revealedHints) checkMemory.revealedHints = {}; checkMemory.revealedHints[id] = true; saveScoreState(); renderCurrentExercise(); const feedback = $('feedback'); if(feedback){ feedback.className='feedback'; feedback.textContent='הרמז נפתח. עדיין אפשר לקבל נקודות, אבל בלי בונוס “בלי רמזים”.'; } renderProgress(); saveLessonState(); }
     function attemptBonus(attempts){ const count = Math.max(1, Number(attempts) || 1); if(count === 1) return 2; if(count === 2) return 1; if(count === 3) return .5; return 0; }
@@ -2081,10 +2315,12 @@ ${block.replace}`; changed = true; }
       if(!hasChangedBlocklyFieldsFromBaseline(c.changedBlocklyFieldsFromBaseline)) return c.fieldFeedback || 'כמעט. הבלוק מחובר, עכשיו שנו את הטקסט או הבחירה שבתוכו לפי התרגיל.';
       if(c.requiresCodePeek && !isCodePeekOpen()) return c.codePeekFeedback || 'כמעט. קודם פתחו את ההצצה לקוד שנוצר.';
       if(!hasRequiredCodeSelection(c)) return c.codeSelectionFeedback || 'כמעט. פתחו את הצצת הקוד, לחצו על בלוק מתאים, וודאו שהשורה המסומנת נמצאת בלשונית הנכונה.';
+      if(!hasDifferentCodeSelectionFromExercise(c.requiresDifferentCodeSelectionFromExercise)) return c.differentCodeSelectionFeedback || 'כמעט. הפעם בחרו בלוק נוסף, שונה מהבלוק שבחרתם בתרגיל הקודם.';
       if(!hasCodeLineAnswer(c.requiresCodeLineAnswer)){
-        const answer = normalizeCodeAnswer(exerciseAnswerValue());
+        const answer = normalizeCodeAnswer(codeLineAnswerValue(c.requiresCodeLineAnswer));
         return c.codeLineAnswerFeedback || 'כמעט. כתבו מילה או תגית אמיתית מתוך השורה המסומנת שבחרתם.';
       }
+      if(!hasSelectedCodeTypeField(c.requiresSelectedCodeTypeField)) return c.codeTypeFeedback || 'כמעט. בדקו באיזו לשונית הקוד סומן: HTML, CSS או JavaScript, וכתבו את סוג הקוד המתאים.';
       if(!hasAnswerIncludes(c.answerIncludes)) return c.answerFeedback || 'כמעט. כתבו בתיבה תשובה קצרה שמתאימה לשאלה.';
       if(!hasAnswerFieldIncludes(c.answerFieldIncludes)) return c.answerFeedback || 'כמעט. מלאו את כל התיבות לפי ההנחיה.';
       if(!hasChoiceAnswer(c.choiceAnswer)) return c.choiceFeedback || 'כמעט. סמנו את האפשרות המתאימה לפני הבדיקה.';
@@ -2107,6 +2343,7 @@ ${block.replace}`; changed = true; }
       if(!hasPreviewLivesAfterPenalty(c.requiresPreviewLivesAfterPenalty)) return c.previewLivesFeedback || 'כמעט. לחצו על מכשול ובדקו שהחיים ירדו לפי הבלוק.';
       if(!hasPreviewTimeFromBlockField(c.requiresPreviewTimeFromBlockField)) return c.previewTimeFeedback || 'כמעט. לחצו בתצוגה ובדקו שהזמן מוצג לפי הבלוק שבחרתם.';
       if(!hasPreviewFeedbackText(c.requiresPreviewFeedbackText)) return c.previewFeedbackTextFeedback || 'כמעט. לחצו בתצוגה ובדקו שהמשוב המתאים מופיע.';
+      if(!hasPreviewFeedbackFromBlockOutput(c.requiresPreviewFeedbackFromBlockOutput)) return c.previewFeedbackFromBlockFeedback || 'כמעט. לחצו על התשובה הנכונה בתצוגה ובדקו שהמשוב החדש מהבלוק באמת מופיע.';
       if(!hasPreviewItemTextFromBlockOutput(c.requiresPreviewItemTextFromBlockOutput)) return c.previewItemTextFeedback || 'כמעט. לחצו בתצוגה עד שהפריט מציג את הבחירה מהבלוק.';
       if(!hasDebugCodeIncludes(c.debugCodeIncludes) || !hasDebugCodeExcludes(c.debugCodeExcludes)) return c.debugCodeFeedback || 'כמעט. תקנו את קוד האתגר לפי ההוראה.';
       if(c.changedAny && !hasChanged(c.changedAny)) return c.changeFeedback || 'כמעט. צריך לבצע שינוי אמיתי בקוד לפני הבדיקה.';
@@ -2199,7 +2436,7 @@ ${block.replace}`; changed = true; }
       const completedTitle = ex.title;
       const c = ex.check || {};
       const special = c.footerMustBeLast ? checkFooterAtEndExercise(ex, c) : null;
-      const ok = special ? special.ok : includesAll($('htmlCode').value,c.htmlIncludes) && includesAll($('cssCode').value,c.cssIncludes) && excludesAll($('htmlCode').value,c.htmlExcludes) && excludesAll($('cssCode').value,c.cssExcludes) && excludesAll($('jsCode').value,c.jsExcludes) && hasBlockTypes(c.blockTypes) && hasExactBlockTypeCounts(c.exactBlockTypeCounts) && hasOrderedBlockTypes(c.orderedBlockTypes) && hasNonEmptyBlocklyFields(c.nonEmptyBlocklyFields) && hasQualityBlocklyFields(c.qualityBlocklyFields) && hasRelatedBlocklyTextGroups(c.relatedBlocklyTextGroups) && hasUnchangedBlocklyFields(c.unchangedBlocklyFields) && hasExactBlocklyFields(c.exactBlocklyFields) && hasChangedBlocklyFields(c.changedBlocklyFields) && hasBlocklyFieldsContaining(c.blocklyFieldsContaining) && hasAnyChangedBlocklyField(c.anyChangedBlocklyFields) && hasGeneratedBlockOutputs(c.generatedBlockOutputs) && hasChangedBlocklyFieldsFromBaseline(c.changedBlocklyFieldsFromBaseline) && (!c.requiresCodePeek || isCodePeekOpen()) && hasRequiredCodeSelection(c) && hasCodeLineAnswer(c.requiresCodeLineAnswer) && hasAnswerIncludes(c.answerIncludes) && hasAnswerFieldIncludes(c.answerFieldIncludes) && hasChoiceAnswer(c.choiceAnswer) && hasMatchAnswers(c.matchAnswers) && hasPreviewButtonClick(c.requiresPreviewButtonClick) && hasPreviewClickText(c.requiresPreviewButtonText) && hasPreviewResultFromBlockOutput(c.requiresPreviewResultFromBlockOutput) && hasPreviewMessageFromBlockOutput(c.requiresPreviewMessageFromBlockOutput) && hasPreviewMessageChanged(c.requiresPreviewMessageChangedFrom) && hasPreviewEmojiChanged(c.requiresPreviewEmojiChangedFrom) && hasPreviewCardClass(c.requiresPreviewCardClass) && hasPreviewFilledInputs(c.requiresPreviewFilledInputs) && hasPreviewResultFromInputs(c.requiresPreviewResultFromInputs) && hasPreviewInputMatchesBlockFields(c.requiresPreviewInputMatchesBlockFields) && hasPreviewInputDiffersFromBlockFields(c.requiresPreviewInputDiffersFromBlockFields) && hasPreviewFeedbackClass(c.requiresPreviewFeedbackClass) && hasPreviewScoreSum(c.requiresPreviewScoreSum) && hasPreviewScoreFromBlockField(c.requiresPreviewScoreFromBlockField) && hasPreviewLivesFromBlockField(c.requiresPreviewLivesFromBlockField) && hasPreviewLivesAfterPenalty(c.requiresPreviewLivesAfterPenalty) && hasPreviewTimeFromBlockField(c.requiresPreviewTimeFromBlockField) && hasPreviewFeedbackText(c.requiresPreviewFeedbackText) && hasPreviewItemTextFromBlockOutput(c.requiresPreviewItemTextFromBlockOutput) && hasDebugCodeIncludes(c.debugCodeIncludes) && hasDebugCodeExcludes(c.debugCodeExcludes) && includesAll($('jsCode').value,c.jsIncludes) && (!c.changedAny || hasChanged(c.changedAny));
+      const ok = special ? special.ok : includesAll($('htmlCode').value,c.htmlIncludes) && includesAll($('cssCode').value,c.cssIncludes) && excludesAll($('htmlCode').value,c.htmlExcludes) && excludesAll($('cssCode').value,c.cssExcludes) && excludesAll($('jsCode').value,c.jsExcludes) && hasBlockTypes(c.blockTypes) && hasExactBlockTypeCounts(c.exactBlockTypeCounts) && hasOrderedBlockTypes(c.orderedBlockTypes) && hasNonEmptyBlocklyFields(c.nonEmptyBlocklyFields) && hasQualityBlocklyFields(c.qualityBlocklyFields) && hasRelatedBlocklyTextGroups(c.relatedBlocklyTextGroups) && hasUnchangedBlocklyFields(c.unchangedBlocklyFields) && hasExactBlocklyFields(c.exactBlocklyFields) && hasChangedBlocklyFields(c.changedBlocklyFields) && hasBlocklyFieldsContaining(c.blocklyFieldsContaining) && hasAnyChangedBlocklyField(c.anyChangedBlocklyFields) && hasGeneratedBlockOutputs(c.generatedBlockOutputs) && hasChangedBlocklyFieldsFromBaseline(c.changedBlocklyFieldsFromBaseline) && (!c.requiresCodePeek || isCodePeekOpen()) && hasRequiredCodeSelection(c) && hasDifferentCodeSelectionFromExercise(c.requiresDifferentCodeSelectionFromExercise) && hasCodeLineAnswer(c.requiresCodeLineAnswer) && hasSelectedCodeTypeField(c.requiresSelectedCodeTypeField) && hasAnswerIncludes(c.answerIncludes) && hasAnswerFieldIncludes(c.answerFieldIncludes) && hasChoiceAnswer(c.choiceAnswer) && hasMatchAnswers(c.matchAnswers) && hasPreviewButtonClick(c.requiresPreviewButtonClick) && hasPreviewClickText(c.requiresPreviewButtonText) && hasPreviewResultFromBlockOutput(c.requiresPreviewResultFromBlockOutput) && hasPreviewMessageFromBlockOutput(c.requiresPreviewMessageFromBlockOutput) && hasPreviewMessageChanged(c.requiresPreviewMessageChangedFrom) && hasPreviewEmojiChanged(c.requiresPreviewEmojiChangedFrom) && hasPreviewCardClass(c.requiresPreviewCardClass) && hasPreviewFilledInputs(c.requiresPreviewFilledInputs) && hasPreviewResultFromInputs(c.requiresPreviewResultFromInputs) && hasPreviewInputMatchesBlockFields(c.requiresPreviewInputMatchesBlockFields) && hasPreviewInputDiffersFromBlockFields(c.requiresPreviewInputDiffersFromBlockFields) && hasPreviewFeedbackClass(c.requiresPreviewFeedbackClass) && hasPreviewScoreSum(c.requiresPreviewScoreSum) && hasPreviewScoreFromBlockField(c.requiresPreviewScoreFromBlockField) && hasPreviewLivesFromBlockField(c.requiresPreviewLivesFromBlockField) && hasPreviewLivesAfterPenalty(c.requiresPreviewLivesAfterPenalty) && hasPreviewTimeFromBlockField(c.requiresPreviewTimeFromBlockField) && hasPreviewFeedbackText(c.requiresPreviewFeedbackText) && hasPreviewFeedbackFromBlockOutput(c.requiresPreviewFeedbackFromBlockOutput) && hasPreviewItemTextFromBlockOutput(c.requiresPreviewItemTextFromBlockOutput) && hasDebugCodeIncludes(c.debugCodeIncludes) && hasDebugCodeExcludes(c.debugCodeExcludes) && includesAll($('jsCode').value,c.jsIncludes) && (!c.changedAny || hasChanged(c.changedAny));
       if(ok){
         const earned = alreadyDone ? 0 : awardExerciseScore(ex.id);
         done.add(ex.id);
@@ -2233,4 +2470,4 @@ ${block.replace}`; changed = true; }
 </body>
 </html>
 
-<!-- lesson4-90min-depth-v255-20260915 -->
+<!-- lesson5-ex6-if-else-v256-20260915 -->
