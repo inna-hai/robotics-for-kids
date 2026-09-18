@@ -1,737 +1,787 @@
 (function () {
-  const checklistItems = ['מקור', 'בקשה', 'לחץ', 'קישור', 'הקשר', 'אימות'];
-  const lessonSteps = ['מתחילים', 'בודקים ראיות', 'בוחרים תשובה', 'מקבלים משוב', 'מתקדמים', 'תג סיום'];
-  const challengeGoals = {
-    classify: 'מצאו את הדבר החשוב בסיפור ובחרו תשובה אחת.',
-    safety: 'בחרו פעולה בטוחה. לא לוחצים, לא מוסרים פרטים, ולא ממשיכים לבד.',
-    evidence: 'הסתכלו על הרמזים. מה באמת יודעים? מה רק חשד?',
-    decision: 'בחרו מה הכי בטוח לעשות עכשיו.',
-    confidence: 'שימו לב אם ההודעה מלחיצה אתכם. לחץ הוא רמז חשוב.'
-  };
-  const learnerChecklist = {
-    classify: ['1. קראו', '2. מצאו רמז', '3. בחרו'],
-    safety: ['1. עצרו', '2. אל תלחצו', '3. דווחו'],
-    evidence: ['1. קראו רמזים', '2. חשבו', '3. בחרו'],
-    decision: ['1. בדקו שולח', '2. בדקו בקשה', '3. בחרו בטוח'],
-    confidence: ['1. יש לחץ?', '2. חסר מידע?', '3. צריך לבדוק?']
-  };
-
-  const missions = [
+  const stations = [
     {
-      id: 'intro-assets',
-      title: 'מה אנחנו מגינים עליו?',
-      level: 'Warm-up',
-      type: 'classify',
-      district: 'HQ',
-      recommended: true,
-      scenario: 'מרכז המבצעים פותח את שיעור הסייבר הראשון. לפני שמגיבים לאיום צריך להבין מה נחשב נכס דיגיטלי בעיר.',
-      evidence: [
-        ['נכס', 'תיבת ההודעות של העיר משמשת לקבלת עדכונים ודיווחים.'],
-        ['נכס', 'קוד אימות מאפשר להוכיח שזה באמת בעל החשבון.'],
-        ['לא נכס', 'צבע הרקע של המסך לא משנה את רמת הסיכון.']
-      ],
-      prompt: 'איזה פריט הכי חשוב להגן עליו כרגע?',
-      choices: [
-        { text: 'תיבת ההודעות וקוד האימות', correct: true },
-        { text: 'רק הצבע של מסך הכניסה', correct: false },
-        { text: 'רק שם המשימה', correct: false }
-      ],
-      hints: ['חפשו משהו שאם ייחשף או ייפגע יכול לגרום נזק אמיתי בעיר.', 'קוד אימות ותיבת הודעות קשורים לזהות ולגישה.'],
-      feedback: 'נכון. נכסים דיגיטליים הם דברים שיש להם ערך וצריך להגן עליהם: חשבונות, הודעות, קודים ומידע.',
-      instructorNote: 'לחבר למפגש 1: נכס, איום, מגן ותוקף.',
-      tags: ['נכסים', 'פתיחה']
+      id: 'brief',
+      short: 'פתיחה',
+      title: 'פתיחת משימה: אנליסטים צעירים',
+      time: '10 דקות',
+      goal: 'מבינים את הסיפור: העיר קיבלה התרעות בתיבת הדואר, והמטרה היא לבנות כלי שמחליט מה מסוכן.',
+      type: 'brief'
     },
     {
-      id: 'city-rules',
-      title: 'חוקי העיר לפני פעולה',
-      level: 'Warm-up',
-      type: 'safety',
-      district: 'HQ',
-      recommended: true,
-      scenario: 'הכיתה עומדת לפתוח אירוע בתחנת הדואר. לפני החקירה המדריך מזכיר: עובדים רק בסביבה המדומה.',
-      evidence: [
-        ['כלל', 'לא לוחצים על קישור חשוד.'],
-        ['כלל', 'לא מוסרים סיסמה או קוד אימות.'],
-        ['כלל', 'כשמשהו לא ברור - עוצרים ושואלים.']
-      ],
-      prompt: 'מה עושים אם מופיע מסך שלא ציפינו לראות?',
-      choices: [
-        { text: 'עוצרים, לא מרחיבים את הבדיקה, מתעדים ומדווחים למדריך', correct: true },
-        { text: 'מנסים לבדוק לבד עוד כמה מסכים כדי להבין', correct: false },
-        { text: 'משתפים את המסך בקבוצה אחרת כדי לקבל עזרה', correct: false }
-      ],
-      hints: ['יכולת טכנית אינה הרשאה.', 'הפעולה הבטוחה היא לעצור ולדווח, לא להמשיך לבד.'],
-      feedback: 'מעולה. זה כלל הבטיחות המרכזי: אם אין אישור ברור, עוצרים ושואלים.',
-      instructorNote: 'לחבר למפגש 3: יכולת טכנית אינה הרשאה.',
-      tags: ['בטיחות', 'אתיקה']
+      id: 'inbox',
+      short: 'Inbox',
+      title: 'Inbox Simulator',
+      time: '20 דקות',
+      goal: 'פותחים הודעות מדומות, מסמנים ראיות, ומבדילים בין בטוח, חשוד וצריך לבדוק.',
+      type: 'inbox'
     },
     {
-      id: 'urgent-mail',
-      title: 'הודעה דחופה בתחנת הדואר',
-      level: 'Core',
-      type: 'evidence',
-      district: 'Mail Station',
-      recommended: true,
-      scenario: 'לתיבת ההודעות העירונית הגיעה הודעה: “זוהתה פעילות חריגה. אשרו מיד את הסיסמה וקוד האימות כדי למנוע חסימה”.',
-      evidence: [
-        ['מקור', 'כתובת השולח דומה לשירות מוכר, אבל כוללת סיומת מוזרה.'],
-        ['בקשה', 'ההודעה מבקשת סיסמה וקוד אימות.'],
-        ['לחץ', 'המילים “מיד” ו“חסימה” דוחפות לפעולה מהירה.']
-      ],
-      prompt: 'מהי ההחלטה הבטוחה?',
-      choices: [
-        { text: 'לא ללחוץ, לדווח, ולהגביל זמנית את החשבון עד בדיקת מקור', correct: true },
-        { text: 'ללחוץ מהר כדי למנוע חסימה', correct: false },
-        { text: 'למחוק את ההודעה בלי לדווח', correct: false }
-      ],
-      hints: ['בדקו מה ההודעה מבקשת מכם למסור.', 'סיסמה וקוד אימות לא מוסרים דרך קישור בהודעה.'],
-      feedback: 'נכון. כשמבקשים סיסמה וקוד אימות עם לחץ זמן, עוצרים ומאמתים דרך ערוץ בטוח.',
-      instructorNote: 'זו משימת הליבה של מפגש 5: מקור, בקשה, לחץ ואימות.',
-      tags: ['פישינג', 'Mail Station']
+      id: 'url',
+      short: 'URL',
+      title: 'URL Lab',
+      time: '15 דקות',
+      goal: 'מפרקים קישורים לחלקים: פרוטוקול, דומיין ונתיב. מזהים דומיין מתחזה.',
+      type: 'url'
     },
     {
-      id: 'sender-check',
-      title: 'השולח נראה מוכר מדי',
-      level: 'Core',
-      type: 'decision',
-      district: 'Mail Station',
-      recommended: true,
-      scenario: 'הודעה נראית כאילו הגיעה מצוות התמיכה. הלוגו נכון, הטון מקצועי, אבל הכתובת אינה הכתובת הרשמית של המערכת.',
-      evidence: [
-        ['מראה', 'הלוגו והעיצוב נראים מקצועיים.'],
-        ['מקור', 'כתובת השולח לא תואמת לכתובת הרשמית.'],
-        ['הקשר', 'לא ציפינו לבקשת אימות היום.']
-      ],
-      prompt: 'איזו מחשבה הכי מדויקת?',
-      choices: [
-        { text: 'מראה מקצועי הוא סימן אחד בלבד; צריך לבדוק מקור והקשר', correct: true },
-        { text: 'אם יש לוגו נכון, ההודעה אמיתית', correct: false },
-        { text: 'אם אין שגיאות כתיב, אין סיבה לחשוד', correct: false }
-      ],
-      hints: ['האם אפשר לזייף לוגו או ניסוח?', 'אמינות בודקים לפי כמה סימנים יחד.'],
-      feedback: 'בדיוק. הודעות מזויפות יכולות להיראות מצוין, במיוחד בעידן AI.',
-      instructorNote: 'נגיעה ממפגש 7: ניסוח מקצועי אינו הוכחה.',
-      tags: ['AI', 'אימות מקור']
+      id: 'otp',
+      short: 'קוד אימות',
+      title: 'OTP & Password Trap',
+      time: '10 דקות',
+      goal: 'מתרגלים מה עושים כשמישהו מבקש קוד אימות או סיסמה.',
+      type: 'otp'
     },
     {
-      id: 'login-log',
-      title: 'יומן כניסות כושלות',
-      level: 'Core',
-      type: 'evidence',
-      district: 'Identity Vault',
-      recommended: true,
-      scenario: 'בזמן בדיקת הודעת הפישינג, יומן המערכת מציג שלושה ניסיונות כניסה כושלים לחשבון העירוני.',
-      evidence: [
-        ['Log', 'שלושה ניסיונות כניסה נכשלו בתוך 4 דקות.'],
-        ['זמן', 'הניסיונות הופיעו אחרי שנשלחה ההודעה החשודה.'],
-        ['גבול', 'אין Evidence שמראה כניסה מוצלחת.']
-      ],
-      prompt: 'מה יודעים בוודאות?',
-      choices: [
-        { text: 'יש ניסיונות כניסה כושלים, אבל אין הוכחה שנכנסו לחשבון', correct: true },
-        { text: 'בטוח שפרצו לחשבון', correct: false },
-        { text: 'אין שום סיבה לחשוד', correct: false }
-      ],
-      hints: ['הפרידו בין חשד לבין עובדה.', 'כניסה כושלת אינה כניסה מוצלחת.'],
-      feedback: 'נכון. Evidence טוב עוזר להיזהר בלי לקפוץ למסקנות שאין להן הוכחה.',
-      instructorNote: 'לחבר למודל 4 השאלות ממפגש 4.',
-      tags: ['Evidence', 'לוגים']
+      id: 'builder',
+      short: 'סורק',
+      title: 'Build Your Scanner',
+      time: '15 דקות',
+      goal: 'בונים כלל סורק: אילו סימנים מעלים Risk ואיזו פעולה בטוחה לבחור.',
+      type: 'builder'
     },
     {
-      id: 'emotion-pressure',
-      title: 'מה ההודעה מנסה לגרום לנו להרגיש?',
-      level: 'Upgrade',
-      type: 'confidence',
-      district: 'Human Layer',
-      recommended: true,
-      scenario: 'הודעה חדשה טוענת: “אם לא תאשרו עכשיו, כל אנשי הקשר בעיר יימחקו”.',
-      evidence: [
-        ['רגש', 'ההודעה מנסה להפעיל פחד.'],
-        ['לחץ', 'יש דרישה לפעולה מיידית.'],
-        ['בקשה', 'הפעולה המבוקשת היא אישור דרך קישור.']
-      ],
-      prompt: 'איזו שאלה כדאי לשאול לפני פעולה?',
-      choices: [
-        { text: 'מה רוצים שאאמין, מה רוצים שארגיש, ומה רוצים שאעשה?', correct: true },
-        { text: 'איך אפשר ללחוץ מהר לפני שהזמן ייגמר?', correct: false },
-        { text: 'איך אפשר לבדוק את הקישור מתוך אותה הודעה?', correct: false }
-      ],
-      hints: ['הרגש הוא Signal, לא הוכחה.', 'הנדסה חברתית מנסה לקצר את זמן החשיבה.'],
-      feedback: 'מעולה. קודם מזהים את הלחץ והרגש, ואז מאמתים מקור בערוץ בטוח.',
-      instructorNote: 'נגיעה ממפגש 6: מאמין-מרגיש-עושה.',
-      tags: ['הנדסה חברתית', 'רגש']
+      id: 'ai',
+      short: 'AI',
+      title: 'AI Safety Lab',
+      time: '10 דקות',
+      goal: 'לומדים איך להשתמש ב־AI בזהירות: מה מותר לשאול ומה אסור להעלות.',
+      type: 'ai'
     },
     {
-      id: 'verify-source',
-      title: 'איך מאמתים מקור?',
-      level: 'Upgrade',
-      type: 'decision',
-      district: 'Mail Station',
-      recommended: false,
-      scenario: 'ההודעה כוללת כפתור “אימות חשבון”. התלמידים שואלים אם אפשר ללחוץ עליו רק כדי לבדוק.',
-      evidence: [
-        ['קישור', 'הכפתור מוביל לכתובת לא מוכרת.'],
-        ['בקשה', 'הטופס מבקש פרטים רגישים.'],
-        ['אימות', 'יש אתר רשמי שאפשר להגיע אליו בלי הקישור.']
-      ],
-      prompt: 'מהי דרך אימות בטוחה?',
-      choices: [
-        { text: 'להיכנס לשירות דרך הכתובת הרשמית או לשאול את הגורם המוכר בערוץ אחר', correct: true },
-        { text: 'ללחוץ על הכפתור ולראות אם הדף נראה אמין', correct: false },
-        { text: 'לענות להודעה ולשאול אם היא אמיתית', correct: false }
-      ],
-      hints: ['לא מאמתים דרך אותו ערוץ שעליו חושדים.', 'חפשו דרך שכבר הייתה מוכרת לפני ההודעה.'],
-      feedback: 'נכון. אימות מקור עושים בערוץ נפרד ובטוח.',
-      instructorNote: 'להדגיש: לא שואלים את ההודעה אם היא אמיתית.',
-      tags: ['אימות', 'קישור']
+      id: 'ctf',
+      short: 'אתגר',
+      title: 'אתגר מסכם: מפעילים את הסורק שבניתם',
+      time: '10 דקות',
+      goal: 'פותרים אירוע משולב: משתמשים ב־URL Lab, OTP, Risk Scanner ו־AI Safety כדי לבחור תגובה בטוחה.',
+      type: 'ctf'
     },
     {
-      id: 'trust-classification',
-      title: 'אמינה יחסית, חשודה או צריך לבדוק?',
-      level: 'Upgrade',
-      type: 'classify',
-      district: 'Projector Arena',
-      recommended: true,
-      scenario: 'הודעה מספריית בית הספר מזכירה להחזיר ספר, אבל לא כוללת קישור ולא מבקשת מידע אישי.',
-      evidence: [
-        ['הקשר', 'התלמיד באמת שאל ספר בשבוע שעבר.'],
-        ['בקשה', 'אין בקשה לסיסמה או קוד.'],
-        ['אימות', 'אפשר לבדוק דרך אתר הספרייה בלי ללחוץ על קישור.']
-      ],
-      prompt: 'איך נסווג את ההודעה?',
-      choices: [
-        { text: 'אמינה יחסית, ועדיין אפשר לבדוק בערוץ רשמי', correct: true },
-        { text: 'פישינג ודאי', correct: false },
-        { text: 'מסוכנת כי כל הודעה היא מלכודת', correct: false }
-      ],
-      hints: ['לא כל הודעה היא מלכודת.', 'החלוקה אינה רק כן/לא: יש גם אמינה יחסית וצריך לבדוק.'],
-      feedback: 'נכון. המטרה אינה לחשוד בכל דבר, אלא להפעיל שיקול דעת לפי Evidence.',
-      instructorNote: 'נגיעה ממפגש 8: אמינה יחסית / חשודה / צריך לבדוק.',
-      tags: ['סיכום', 'Confidence']
-    },
-    {
-      id: 'ai-polished',
-      title: 'הודעה בלי שגיאות',
-      level: 'Challenge',
-      type: 'decision',
-      district: 'AI Hub',
-      recommended: true,
-      scenario: 'הודעה חשודה נראית כאילו נכתבה על ידי גורם מקצועי: בלי שגיאות, עם ניסוח מנומס ועם חתימה יפה.',
-      evidence: [
-        ['ניסוח', 'הטקסט מקצועי וברור.'],
-        ['בקשה', 'עדיין מבקשים קוד אימות.'],
-        ['מקור', 'הכתובת אינה מאומתת.']
-      ],
-      prompt: 'מה השתנה בעידן AI?',
-      choices: [
-        { text: 'אי אפשר להסתמך על שגיאות כתיב; בודקים מקור, בקשה, לחץ, הקשר ואימות', correct: true },
-        { text: 'אם AI כתב את זה יפה, ההודעה אמינה', correct: false },
-        { text: 'כל תוכן שנראה מקצועי חייב להיות אמיתי', correct: false }
-      ],
-      hints: ['AI יכול לשפר ניסוח בלי לשנות את הכוונה של ההודעה.', 'הבקשה לקוד אימות עדיין חשודה.'],
-      feedback: 'בדיוק. ניסוח יפה אינו Evidence לאמינות.',
-      instructorNote: 'נגיעה ממפגש 7: לא סומכים רק על ניסוח יפה.',
-      tags: ['AI', 'פישינג']
-    },
-    {
-      id: 'privacy-ai',
-      title: 'האם לשאול AI על הודעה אמיתית?',
-      level: 'Challenge',
-      type: 'safety',
-      district: 'AI Hub',
-      recommended: false,
-      scenario: 'תלמיד מציע להעתיק הודעה אמיתית שקיבל לטלפון לתוך כלי AI ולשאול אם היא פישינג.',
-      evidence: [
-        ['פרטיות', 'ההודעה עשויה להכיל שם, מספר או פרטים אישיים.'],
-        ['גבול', 'התרגול עובד רק עם תוכן מדומה.'],
-        ['כלל', 'לא מעלים מידע פרטי לכלי חיצוני.']
-      ],
-      prompt: 'מה ההחלטה הבטוחה?',
-      choices: [
-        { text: 'לא מעלים הודעה אמיתית. משתמשים בדוגמה מדומה או מוחקים פרטים מזהים באישור מדריך', correct: true },
-        { text: 'מעלים הכול כי AI יודע לשמור סוד', correct: false },
-        { text: 'שולחים את ההודעה לכל הכיתה כדי לקבל חוות דעת', correct: false }
-      ],
-      hints: ['כלי חכם לא צריך לקבל כל מידע שיש לנו.', 'התרגול בכיתה משתמש בדוגמאות מדומות בלבד.'],
-      feedback: 'נכון. פרטיות היא חלק מההגנה הדיגיטלית.',
-      instructorNote: 'להדגיש: אין הודעות אמיתיות, תמונות תלמידים או קודים.',
-      tags: ['פרטיות', 'AI']
-    },
-    {
-      id: 'safe-response',
-      title: 'בחירת תגובה בטוחה',
-      level: 'Challenge',
-      type: 'decision',
-      district: 'HQ',
-      recommended: true,
-      scenario: 'הכיתה אספה Evidence: כתובת שולח חריגה, בקשה לקוד אימות, לחץ זמן וניסיונות כניסה כושלים.',
-      evidence: [
-        ['Evidence 1', 'כתובת שולח חריגה.'],
-        ['Evidence 2', 'בקשה לסיסמה וקוד אימות.'],
-        ['Evidence 3', 'ניסיונות כניסה כושלים סמוך לזמן ההודעה.']
-      ],
-      prompt: 'מהי תגובת ההגנה המלאה ביותר?',
-      choices: [
-        { text: 'לדווח, לא ללחוץ, להגביל זמנית את החשבון, ולאמת מקור בערוץ רשמי', correct: true },
-        { text: 'למחוק את ההודעה ולהמשיך כרגיל', correct: false },
-        { text: 'ללחוץ כדי לאסוף עוד Evidence', correct: false }
-      ],
-      hints: ['תגובה טובה מצמצמת סיכון וגם משאירה מקום לבדיקה.', 'לא אוספים Evidence על ידי לחיצה על קישור חשוד.'],
-      feedback: 'מעולה. זו תגובה הגנתית שלמה: דיווח, צמצום סיכון ואימות.',
-      instructorNote: 'משימה מסכמת לפני Debrief.',
-      tags: ['תגובה', 'סיכום']
-    },
-    {
-      id: 'exit-ticket',
-      title: 'כלל אחד שניקח איתנו',
-      level: 'Debrief',
-      type: 'confidence',
-      district: 'HQ',
-      recommended: false,
-      scenario: 'לפני סיום השיעור הכיתה בוחרת כלל אחד שישמש אותה בכל הודעה דיגיטלית בעתיד.',
-      evidence: [
-        ['כלל', 'מראה מקצועי אינו מספיק.'],
-        ['כלל', 'לא מוסרים סיסמה או קוד.'],
-        ['כלל', 'כשאין מספיק מידע - צריך לבדוק.']
-      ],
-      prompt: 'איזה כלל הכי מתאים לסיכום?',
-      choices: [
-        { text: 'לפני פעולה רגישה עוצרים, בודקים Evidence ומאמתים מקור בערוץ בטוח', correct: true },
-        { text: 'אם ההודעה יפה, אפשר לסמוך עליה', correct: false },
-        { text: 'אם יש לחץ זמן, לוחצים מהר', correct: false }
-      ],
-      hints: ['הכלל צריך לעבוד גם בפישינג, גם בהנדסה חברתית וגם ב-AI.', 'חפשו כלל שמתחיל בעצירה ובדיקה.'],
-      feedback: 'יפה. זהו הכלל המרכזי של מגן דיגיטלי.',
-      instructorNote: 'סיום עם תג מגן עיר דיגיטלית.',
-      tags: ['Debrief', 'תג']
+      id: 'report',
+      short: 'דוח',
+      title: 'דוח בדיקת אירוע ותוצר סיום',
+      time: '10 דקות',
+      goal: 'מסכמים את האירוע המסכם שבדקתם: מה נמצא, למה זה מסוכן, ומה עושים עכשיו.',
+      type: 'report'
     }
   ];
 
-  const kidCopy = {
-    'intro-assets': {
-      title: 'מה חשוב להגן עליו?',
-      scenario: 'בעיר הסייבר יש תיבת הודעות, קוד אימות וצבע רקע למסך. לא כל דבר חשוב באותה מידה.',
-      evidence: [
-        ['חשוב', 'תיבת הודעות יכולה להכיל מידע אישי.'],
-        ['חשוב מאוד', 'קוד אימות יכול לפתוח חשבון.'],
-        ['לא חשוב כרגע', 'צבע הרקע לא מסכן את החשבון.']
-      ],
-      prompt: 'על מה הכי חשוב לשמור?',
-      choices: [
-        { text: 'תיבת ההודעות וקוד האימות', correct: true },
-        { text: 'רק צבע הרקע', correct: false },
-        { text: 'רק שם המשחק', correct: false }
-      ],
-      hints: ['חפשו משהו שאם מישהו זר יקבל אותו, זה עלול להזיק.', 'קוד אימות הוא כמו מפתח קטן לחשבון.'],
-      feedback: 'נכון. מגינים קודם על דברים שיכולים לפתוח חשבון או לחשוף מידע.'
+  const messages = [
+    {
+      id: 'library',
+      from: 'ספריית בית הספר',
+      subject: 'תזכורת החזרת ספר',
+      body: 'שלום, הספר שהשאלת מוכן להחזרה השבוע. אפשר לבדוק פרטים באזור האישי באתר הספרייה.',
+      verdict: 'safe',
+      evidence: ['מקור צפוי', 'לא מבקש סיסמה', 'אין לחץ זמן'],
+      attackerGoal: 'אין כאן תוקף ברור. זו הודעה צפויה שמבקשת רק לקרוא מידע.',
+      attackerMove: 'כשאין בקשה רגישה ואין לחץ זמן, הסיכון נמוך יותר.',
+      risk: 15
     },
-    'city-rules': {
-      title: 'כלל הזהב של העיר',
-      scenario: 'באמצע המשחק מופיע מסך שלא ציפיתם לראות. הוא נראה מסקרן, אבל לא ברור אם מותר להיכנס אליו.',
-      evidence: [
-        ['כלל', 'אם לא בטוחים שמותר - עוצרים.'],
-        ['כלל', 'לא בודקים לבד מערכת לא מוכרת.'],
-        ['כלל', 'מדווחים למדריך או למבוגר אחראי.']
-      ],
-      prompt: 'מה עושים?',
-      choices: [
-        { text: 'עוצרים ומדווחים', correct: true },
-        { text: 'נכנסים לבד כדי לבדוק', correct: false },
-        { text: 'שולחים לחברים שינסו גם', correct: false }
-      ],
-      hints: ['בסייבר, סקרנות בלי אישור יכולה להיות בעיה.', 'הבחירה הבטוחה מתחילה בעצירה.'],
-      feedback: 'בול. אם לא בטוחים שמותר - עוצרים ושואלים.'
+    {
+      id: 'otp',
+      from: 'City Auth Support',
+      subject: 'דחוף: אשרו קוד אימות',
+      body: 'החשבון ייחסם עוד 5 דקות. שלחו כאן את קוד האימות שקיבלתם כדי להציל את החשבון.',
+      verdict: 'danger',
+      evidence: ['מבקש קוד אימות', 'לחץ זמן', 'מקור לא מאומת'],
+      attackerGoal: 'להשיג קוד אימות כדי להיכנס לחשבון כאילו הוא המשתמש האמיתי.',
+      attackerMove: 'יוצר לחץ זמן כדי שהילד ישלח קוד לפני שהוא חושב או שואל מבוגר.',
+      risk: 95
     },
-    'urgent-mail': {
-      title: 'הודעה מלחיצה',
-      scenario: 'הגיעה הודעה: “החשבון שלך ייחסם עוד 5 דקות! לחץ כאן והכנס סיסמה וקוד אימות”.',
-      evidence: [
-        ['לחץ', 'יש איום של חסימה עוד 5 דקות.'],
-        ['בקשה מסוכנת', 'מבקשים סיסמה וקוד אימות.'],
-        ['קישור', 'מבקשים ללחוץ על קישור מתוך ההודעה.']
-      ],
-      prompt: 'מה הכי בטוח לעשות?',
-      choices: [
-        { text: 'לא ללחוץ. לדווח ולבדוק דרך אתר רשמי', correct: true },
-        { text: 'ללחוץ מהר לפני שהחשבון ייחסם', correct: false },
-        { text: 'לשלוח את הסיסמה כדי לסיים עם זה', correct: false }
-      ],
-      hints: ['כשמלחיצים אתכם לפעול מהר - זה רמז לעצור.', 'לא מוסרים סיסמה או קוד מתוך הודעה.'],
-      feedback: 'נכון. לחץ + בקשת סיסמה הם סימנים חזקים להודעה חשודה.'
+    {
+      id: 'reset',
+      from: 'support@school-secure-login.example',
+      subject: 'איפוס חשבון',
+      body: 'לחצו על הקישור כדי לאמת את הסיסמה שלכם: https://school-login-secure.example/verify',
+      verdict: 'check',
+      evidence: ['דומיין חשוד', 'בקשת סיסמה', 'קישור מתוך הודעה'],
+      attackerGoal: 'לקבל סיסמה דרך דף שנראה כמו התחברות רשמית.',
+      attackerMove: 'משתמש בדומיין עם מילים כמו school, login ו־secure כדי להיראות אמין.',
+      risk: 82
     },
-    'sender-check': {
-      title: 'הלוגו נראה אמיתי',
-      scenario: 'הודעה נראית מקצועית ויש בה לוגו יפה. אבל כתובת השולח נראית קצת מוזרה.',
-      evidence: [
-        ['מראה', 'הלוגו נראה אמיתי.'],
-        ['שולח', 'כתובת השולח לא נראית רשמית.'],
-        ['הקשר', 'לא ביקשתם שום איפוס חשבון.']
-      ],
-      prompt: 'מה נכון לחשוב?',
-      choices: [
-        { text: 'לוגו יפה לא מספיק. צריך לבדוק שולח והקשר', correct: true },
-        { text: 'אם יש לוגו, בטוח שזה אמיתי', correct: false },
-        { text: 'אם הטקסט יפה, אין מה לבדוק', correct: false }
-      ],
-      hints: ['קל להעתיק לוגו.', 'הדבר החשוב הוא לא רק איך זה נראה, אלא מי שלח ומה מבקשים.'],
-      feedback: 'נכון. הודעה יכולה להיראות יפה ועדיין להיות חשודה.'
+    {
+      id: 'club',
+      from: 'מועדון רובוטיקה',
+      subject: 'עדכון שיעור',
+      body: 'השיעור מחר יתחיל ב־16:00. אין צורך להיכנס לקישור או לשלוח פרטים.',
+      verdict: 'safe',
+      evidence: ['הקשר צפוי', 'לא מבקש מידע', 'אין קישור'],
+      attackerGoal: 'אין כאן יעד תקיפה: לא מבקשים כסף, סיסמה, קוד או לחיצה.',
+      attackerMove: 'הודעה רגילה נותנת מידע ולא דוחפת לפעולה מסוכנת.',
+      risk: 10
     },
-    'login-log': {
-      title: 'ניסו להיכנס לחשבון',
-      scenario: 'המערכת מראה 3 ניסיונות כניסה שנכשלו. זה קרה ליד הזמן שבו הגיעה הודעה חשודה.',
-      evidence: [
-        ['עובדה', 'היו 3 ניסיונות כניסה.'],
-        ['עובדה', 'כולם נכשלו.'],
-        ['חשוב', 'אין סימן שמישהו הצליח להיכנס.']
-      ],
-      prompt: 'מה אנחנו יודעים באמת?',
-      choices: [
-        { text: 'ניסו להיכנס, אבל לא רואים כניסה מוצלחת', correct: true },
-        { text: 'בטוח שפרצו לחשבון', correct: false },
-        { text: 'אין שום דבר חשוד', correct: false }
-      ],
-      hints: ['שימו לב להבדל בין ניסיון לבין הצלחה.', 'לא קופצים למסקנה בלי רמז ברור.'],
-      feedback: 'יפה. מגינים טובים מפרידים בין עובדה לבין ניחוש.'
-    },
-    'emotion-pressure': {
-      title: 'הודעה שמנסה להפחיד',
-      scenario: 'הודעה אומרת: “אם לא תאשרו עכשיו, כל אנשי הקשר יימחקו”.',
-      evidence: [
-        ['רגש', 'ההודעה מנסה להפחיד.'],
-        ['לחץ', 'מבקשים פעולה עכשיו.'],
-        ['קישור', 'מבקשים ללחוץ על קישור.']
-      ],
-      prompt: 'איזו שאלה הכי עוזרת?',
-      choices: [
-        { text: 'מה רוצים שארגיש ומה רוצים שאעשה?', correct: true },
-        { text: 'איך אלחץ הכי מהר?', correct: false },
-        { text: 'איך אשלח את זה לעוד ילדים?', correct: false }
-      ],
-      hints: ['פחד ולחץ הם רמזים חשובים.', 'כשמנסים להבהיל - מאיטים.'],
-      feedback: 'נכון. קודם מזהים לחץ, ואז בודקים בשקט.'
-    },
-    'trust-classification': {
-      title: 'אמיתי או צריך לבדוק?',
-      scenario: 'הספרייה שולחת הודעה: “הספר שהשאלת מוכן להחזרה”. אין קישור ואין בקשה לסיסמה.',
-      evidence: [
-        ['הקשר', 'באמת השאלתם ספר.'],
-        ['בקשה', 'לא מבקשים סיסמה או קוד.'],
-        ['בדיקה', 'אפשר לבדוק באתר הספרייה לבד.']
-      ],
-      prompt: 'איך נסווג את ההודעה?',
-      choices: [
-        { text: 'נראית בסדר, אבל אפשר לבדוק באתר הרשמי', correct: true },
-        { text: 'בטוח פישינג', correct: false },
-        { text: 'כל הודעה היא מסוכנת', correct: false }
-      ],
-      hints: ['לא כל הודעה היא מלכודת.', 'לפעמים התשובה היא: נראה בסדר, אבל בודקים בדרך בטוחה.'],
-      feedback: 'נכון. לא צריך להיבהל מכל הודעה, צריך לבדוק חכם.'
-    },
-    'ai-polished': {
-      title: 'הודעה כתובה מושלם',
-      scenario: 'הודעה נראית ממש מקצועית: בלי שגיאות, עם ניסוח יפה וחתימה מסודרת. אבל היא מבקשת קוד אימות.',
-      evidence: [
-        ['נראה טוב', 'הטקסט כתוב יפה.'],
-        ['מסוכן', 'מבקשים קוד אימות.'],
-        ['חסר', 'לא ברור מי באמת שלח.']
-      ],
-      prompt: 'מה הכי נכון?',
-      choices: [
-        { text: 'ניסוח יפה לא מוכיח שההודעה אמיתית', correct: true },
-        { text: 'אם זה כתוב יפה, זה בטוח אמיתי', correct: false },
-        { text: 'אם אין שגיאות כתיב, לוחצים', correct: false }
-      ],
-      hints: ['גם הודעה מזויפת יכולה להיות כתובה יפה.', 'קוד אימות הוא רמז מסוכן.'],
-      feedback: 'נכון. היום גם הודעה מזויפת יכולה להיראות מקצועית.'
-    },
-    'safe-response': {
-      title: 'החלטת מגן',
-      scenario: 'אספתם רמזים: שולח מוזר, בקשת סיסמה, לחץ זמן וניסיונות כניסה שנכשלו.',
-      evidence: [
-        ['רמז 1', 'השולח נראה מוזר.'],
-        ['רמז 2', 'מבקשים סיסמה וקוד.'],
-        ['רמז 3', 'מנסים להלחיץ.']
-      ],
-      prompt: 'מה עושים עכשיו?',
-      choices: [
-        { text: 'לא לוחצים, מדווחים ובודקים דרך אתר רשמי', correct: true },
-        { text: 'לוחצים כדי לראות מה יקרה', correct: false },
-        { text: 'מוחקים ושוכחים בלי לדווח', correct: false }
-      ],
-      hints: ['פעולה טובה גם שומרת וגם מדווחת.', 'לא בודקים קישור חשוד על ידי לחיצה עליו.'],
-      feedback: 'מעולה. זו החלטה של מגן סייבר.'
+    {
+      id: 'prize',
+      from: 'Game Rewards',
+      subject: 'זכית בפרס!',
+      body: 'זכיתם בסקין נדיר. הכניסו שם משתמש וסיסמה כדי לקבל אותו עכשיו.',
+      verdict: 'danger',
+      evidence: ['פרס מפתה', 'מבקש סיסמה', 'לחץ לפעולה'],
+      attackerGoal: 'לגנוב חשבון משחק או פריטים דיגיטליים דרך שם משתמש וסיסמה.',
+      attackerMove: 'משתמש בפרס מפתה כדי לגרום לילד להתלהב ולפעול מהר.',
+      risk: 90
     }
-  };
+  ];
 
-  missions.forEach(mission => {
-    if (kidCopy[mission.id]) Object.assign(mission, kidCopy[mission.id]);
-  });
+  const urlChallenges = [
+    {
+      url: 'https://school.edu/login',
+      domain: 'school.edu',
+      answer: 'school.edu',
+      note: 'דומיין קצר וברור של בית הספר.'
+    },
+    {
+      url: 'https://school-login-secure.example/verify',
+      domain: 'school-login-secure.example',
+      answer: 'school-login-secure.example',
+      note: 'הדומיין משתמש במילים login ו־secure כדי להיראות אמין.'
+    },
+    {
+      url: 'https://accounts.google.com.example-reset.net/check',
+      domain: 'accounts.google.com.example-reset.net',
+      answer: 'example-reset.net',
+      note: 'המותג מופיע בהתחלה, אבל הדומיין האמיתי בסוף הוא example-reset.net.'
+    },
+    {
+      url: 'https://library.school.edu/books',
+      domain: 'library.school.edu',
+      answer: 'school.edu',
+      note: 'תת־דומיין של school.edu. עדיין בודקים הקשר, אבל זה נראה סביר.'
+    }
+  ];
+
+  const aiCards = [
+    { text: 'להדביק הודעה אמיתית עם מספר טלפון ושם מלא', safe: false },
+    { text: 'לשאול AI להסביר מה זה דומיין בדוגמה מדומה', safe: true },
+    { text: 'להעלות צילום מסך עם קוד אימות', safe: false },
+    { text: 'לבקש מ־AI משוב על דוח בלי פרטים אישיים', safe: true }
+  ];
 
   const state = {
-    mode: 'learner',
-    selectedIds: new Set(missions.filter(m => m.recommended).slice(0, 6).map(m => m.id)),
-    activeIndex: 0,
-    completedIds: new Set(),
-    hintIndex: 0,
-    answered: false,
-    confidence: 'medium'
+    station: 0,
+    xp: 0,
+    risk: 0,
+    caseFile: [],
+    completed: new Set(),
+    inboxEvidence: new Set(),
+    urlAnswers: {},
+    otpChoice: '',
+    scannerRules: new Set(),
+    aiAnswers: {},
+    ctfEvidence: new Set(),
+    ctfChoice: '',
+    report: {
+      found: '',
+      risk: '',
+      action: ''
+    }
   };
 
   const $ = id => document.getElementById(id);
-  const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
-  const selectedMissions = () => missions.filter(m => state.selectedIds.has(m.id));
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[char]));
 
-  function renderChecklist(targetId) {
-    const el = $(targetId);
-    if (!el) return;
-    el.innerHTML = checklistItems.map(item => `<span class="check-item">${esc(item)}</span>`).join('');
+  function addCase(item) {
+    if (!state.caseFile.includes(item)) state.caseFile.push(item);
   }
 
-  function renderRail() {
-    const active = state.activeIndex < 0 ? 0 : Math.min(lessonSteps.length - 1, state.completedIds.size);
-    $('lessonRail').innerHTML = lessonSteps.map((step, index) => {
-      const cls = index < active ? 'done' : index === active ? 'active' : '';
-      return `<span class="rail-step ${cls}">${esc(step)}</span>`;
-    }).join('');
+  function addXp(amount) {
+    state.xp = Math.max(0, Math.min(100, state.xp + amount));
   }
 
-  function renderPool() {
-    $('missionPool').innerHTML = missions.map(mission => {
-      const checked = state.selectedIds.has(mission.id);
-      const tagHtml = mission.tags.map(tag => `<span class="tag">${esc(tag)}</span>`).join('');
-      return `
-        <label class="pool-item ${checked ? 'selected' : ''}">
-          <span class="pool-top">
-            <input type="checkbox" data-mission-id="${esc(mission.id)}" ${checked ? 'checked' : ''}>
-            <span>
-              <b>${esc(mission.title)}</b>
-              <small>${esc(mission.level)} · ${esc(mission.district)}</small>
-            </span>
-          </span>
-          <span class="tag-row">${tagHtml}</span>
-        </label>
-      `;
-    }).join('');
-
-    $('missionPool').querySelectorAll('input[type="checkbox"]').forEach(input => {
-      input.addEventListener('change', () => {
-        const id = input.dataset.missionId;
-        if (input.checked) {
-          if (state.selectedIds.size >= 8) {
-            input.checked = false;
-            return;
-          }
-          state.selectedIds.add(id);
-        } else {
-          state.selectedIds.delete(id);
-        }
-        state.activeIndex = state.selectedIds.size > 0 ? 0 : -1;
-        state.completedIds.clear();
-        update();
-      });
-    });
+  function setRisk(value, text) {
+    state.risk = Math.max(0, Math.min(100, value));
+    $('riskScore').textContent = `${state.risk}%`;
+    $('riskFill').style.width = `${state.risk}%`;
+    $('riskFill').className = state.risk >= 75 ? 'high' : state.risk >= 45 ? 'medium' : 'low';
+    $('riskText').textContent = text || 'הסיכון מתעדכן לפי הסימנים שנמצאו.';
   }
 
-  function currentMission() {
-    const picked = selectedMissions();
-    return picked[state.activeIndex] || null;
+  function say(text) {
+    $('assistantText').textContent = text;
   }
 
-  function renderLearningGuide(mission) {
-    const goal = challengeGoals[mission.type] || 'לפתור את האתגר לפי הראיות שעל המסך.';
-    const items = learnerChecklist[mission.type] || ['קראו את האירוע', 'בדקו את הראיות', 'בחרו החלטה בטוחה'];
-    $('missionGoal').textContent = goal;
-    $('missionDoList').innerHTML = items.map(item => `<span>${esc(item)}</span>`).join('');
+  function complete(stationId) {
+    if (!state.completed.has(stationId)) {
+      state.completed.add(stationId);
+      addXp(12);
+    }
   }
 
-  function renderMission() {
-    const mission = currentMission();
-    const hasMission = Boolean(mission);
-    $('introCard').hidden = hasMission || state.completedIds.size > 0;
-    $('missionCard').hidden = !hasMission;
-    $('summaryCard').hidden = hasMission || state.completedIds.size === 0 || state.completedIds.size < selectedMissions().length;
+  function progress() {
+    return Math.round((state.completed.size / stations.length) * 100);
+  }
 
-    if (!mission) return;
-
-    $('missionMeta').textContent = `${mission.level} · ${mission.district}`;
-    $('missionTitle').textContent = mission.title;
-    $('challengeCounter').textContent = `אתגר ${state.activeIndex + 1} מתוך ${selectedMissions().length}`;
-    $('storyIcon').textContent = mission.district === 'HQ' ? 'HQ' : mission.district === 'Identity Vault' ? 'ID' : mission.district === 'AI Hub' ? 'AI' : 'MAIL';
-    $('missionScenario').textContent = mission.scenario;
-    $('decisionPrompt').textContent = mission.prompt;
-    $('instructorNote').textContent = mission.instructorNote;
-    renderLearningGuide(mission);
-
-    $('evidenceList').innerHTML = mission.evidence.map(item => `
-      <article class="evidence-card">
-        <span>${esc(item[0])}</span>
-        <p>${esc(item[1])}</p>
-      </article>
+  function renderShell() {
+    const station = stations[state.station];
+    const nextStation = stations[state.station + 1];
+    $('stationTime').textContent = station.time;
+    $('stationTitle').textContent = station.title;
+    $('stationGoal').textContent = station.goal;
+    $('currentStepLabel').textContent = `משימה ${state.station + 1} מתוך ${stations.length}`;
+    $('currentStepName').textContent = station.short;
+    $('xpLabel').textContent = state.xp;
+    $('progressLabel').textContent = `${progress()}%`;
+    $('prevStation').disabled = state.station === 0;
+    $('nextStation').textContent = state.station === stations.length - 1 ? 'סיום' : `הבא: ${nextStation.short}`;
+    $('stationNav').innerHTML = stations.map((item, index) => `
+      <button class="station-tab ${index === state.station ? 'active' : ''} ${state.completed.has(item.id) ? 'done' : ''}" type="button" data-station="${index}" aria-label="מעבר אל משימה ${index + 1}: ${esc(item.title)}">
+        <em>${index + 1}</em>
+        <strong>${esc(item.short)}</strong>
+        <span>${esc(item.time)}</span>
+      </button>
     `).join('');
-
-    $('choices').innerHTML = mission.choices.map((choice, index) => `
-      <button class="choice" type="button" data-choice-index="${index}">${esc(choice.text)}</button>
-    `).join('');
-
-    $('choices').querySelectorAll('.choice').forEach(button => {
-      button.addEventListener('click', () => chooseAnswer(Number(button.dataset.choiceIndex)));
-    });
-
-    $('hintBox').hidden = true;
-    $('hintBox').textContent = '';
-    $('feedbackBox').className = 'feedback-box';
-    $('feedbackBox').innerHTML = '<strong>כדי לפתור:</strong> קראו את הסיפור, בדקו את הרמזים, ואז בחרו תשובה אחת.';
-    $('nextMissionButton').disabled = true;
-    $('nextMissionButton').classList.add('subtle');
-    $('nextMissionButton').textContent = state.activeIndex >= selectedMissions().length - 1 ? 'סיום וקבלת תג' : 'המשך לאתגר הבא';
-  }
-
-  function chooseAnswer(index) {
-    const mission = currentMission();
-    if (!mission || state.answered) return;
-    const choice = mission.choices[index];
-    $('choices').querySelectorAll('.choice').forEach((button, buttonIndex) => {
-      const isCorrect = mission.choices[buttonIndex].correct;
-      button.classList.toggle('correct', choice.correct && isCorrect);
-      button.classList.toggle('wrong', buttonIndex === index && !isCorrect);
-    });
-    const feedback = $('feedbackBox');
-    feedback.className = `feedback-box ${choice.correct ? 'good' : 'bad'}`;
-    feedback.textContent = choice.correct ? `נכון. ${mission.feedback} עכשיו אפשר להתקדם לאתגר הבא.` : 'עדיין לא. חזרו לרמזים למעלה, בדקו מי שלח / מה מבקשים / האם מלחיצים, ואז נסו שוב.';
-    if (choice.correct) {
-      state.answered = true;
-      state.completedIds.add(mission.id);
-      $('nextMissionButton').disabled = false;
-      $('nextMissionButton').classList.remove('subtle');
-      renderStatus();
-    } else {
-      state.answered = false;
-    }
-  }
-
-  function showHint() {
-    const mission = currentMission();
-    if (!mission) return;
-    const hint = mission.hints[Math.min(state.hintIndex, mission.hints.length - 1)];
-    $('hintBox').hidden = false;
-    $('hintBox').textContent = hint;
-    state.hintIndex += 1;
-  }
-
-  function nextMission() {
-    const picked = selectedMissions();
-    if (picked.length === 0) return;
-    const mission = currentMission();
-    if (mission && !state.completedIds.has(mission.id)) {
-      $('feedbackBox').className = 'feedback-box bad';
-      $('feedbackBox').textContent = 'כדי להתקדם צריך לפתור את האתגר. אפשר לקחת רמז קטן או לבחור תשובה אחרת.';
-      return;
-    }
-    state.activeIndex += 1;
-    if (state.activeIndex >= picked.length) {
-      state.activeIndex = picked.length;
-      $('introCard').hidden = true;
-      $('missionCard').hidden = true;
-      $('summaryCard').hidden = false;
-      $('worldState').textContent = 'Mail Station: Phishing Checklist Installed';
-    }
-    state.hintIndex = 0;
-    state.answered = false;
-    update();
-  }
-
-  function startLesson() {
-    if (selectedMissions().length === 0) return;
-    if (state.activeIndex < 0 || state.activeIndex >= selectedMissions().length) {
-      state.activeIndex = 0;
-      state.completedIds.clear();
-      state.hintIndex = 0;
-      state.answered = false;
-    }
-    update();
-    $('missionCard')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  function renderStatus() {
-    const picked = selectedMissions();
-    const count = picked.length;
-    const done = state.completedIds.size;
-    const percent = count ? Math.round((done / count) * 100) : 0;
-    $('selectedCount').textContent = `${count}`;
-    $('progressText').textContent = `${percent}%`;
-    if (done >= count && count > 0) {
-      $('worldState').textContent = 'המסלול הושלם';
-    } else if (state.activeIndex >= 0) {
-      $('worldState').textContent = `אתגר ${Math.min(state.activeIndex + 1, count)} פעיל`;
-    } else {
-      $('worldState').textContent = 'מוכן להתחלה';
-    }
-  }
-
-  function setMode(mode) {
-    state.mode = mode;
-    document.body.classList.remove('mode-learner', 'mode-instructor', 'mode-class', 'mode-projector');
-    document.body.classList.add(`mode-${mode}`);
-    document.querySelectorAll('.mode-button').forEach(button => {
-      button.classList.toggle('active', button.dataset.mode === mode);
-    });
-  }
-
-  function update() {
-    renderStatus();
-    renderRail();
-    renderPool();
-    renderMission();
-    renderChecklist('phishingChecklist');
-    renderChecklist('summaryChecklist');
-  }
-
-  function bindEvents() {
-    $('startButton').addEventListener('click', startLesson);
-    $('heroStartButton').addEventListener('click', startLesson);
-    $('tourButton').addEventListener('click', () => {
-      $('instructorNote').textContent = 'בכל אתגר: קוראים את האירוע, בודקים Evidence, בוחרים פעולה, ואם טועים מקבלים משוב ומנסים שוב.';
-      $('introCard').classList.add('pulse');
-      window.setTimeout(() => $('introCard').classList.remove('pulse'), 900);
-    });
-    $('nextMissionButton').addEventListener('click', nextMission);
-    $('hintButton').addEventListener('click', showHint);
-    $('restartButton').addEventListener('click', () => {
-      state.activeIndex = 0;
-      state.completedIds.clear();
-      state.answered = false;
-      update();
-    });
-    $('autoPick').addEventListener('click', () => {
-      state.selectedIds = new Set(missions.filter(m => m.recommended).slice(0, 6).map(m => m.id));
-      state.activeIndex = 0;
-      state.completedIds.clear();
-      update();
-    });
-    $('clearPick').addEventListener('click', () => {
-      state.selectedIds.clear();
-      state.activeIndex = -1;
-      state.completedIds.clear();
-      update();
-    });
-    $('resetSelection').addEventListener('click', () => {
-      state.selectedIds = new Set(missions.filter(m => m.recommended).slice(0, 6).map(m => m.id));
-      state.activeIndex = 0;
-      state.completedIds.clear();
-      update();
-    });
-    document.querySelectorAll('.mode-button').forEach(button => {
-      button.addEventListener('click', () => setMode(button.dataset.mode));
-    });
-    document.querySelectorAll('#confidenceControl button').forEach(button => {
+    $('stationNav').querySelectorAll('[data-station]').forEach(button => {
       button.addEventListener('click', () => {
-        state.confidence = button.dataset.confidence;
-        document.querySelectorAll('#confidenceControl button').forEach(item => item.classList.toggle('active', item === button));
+        state.station = Number(button.dataset.station);
+        render();
       });
+    });
+    $('caseFile').innerHTML = state.caseFile.length
+      ? state.caseFile.map(item => `<span>${esc(item)}</span>`).join('')
+      : '<em>עדיין אין ראיות בתיק.</em>';
+  }
+
+  function renderBrief() {
+    return `
+      <section class="brief-grid">
+        <article class="big-card">
+          <span class="card-kicker">הסיפור</span>
+          <img class="lab-visual" src="assets/cyber-city/soc-lab.svg" alt="עמדת מעבדת סייבר עם מסכים וסורק">
+          <h3>תיבת הדואר של עיר הסייבר מקבלת התרעות.</h3>
+          <p>אתם צוות SOC צעיר. במקום לקרוא הרצאה, אתם תפעילו סימולטורים ותבנו כלי קטן שמחשב Risk.</p>
+        </article>
+        <article class="tool-card">
+          <span>למה בכלל יש פישינג?</span>
+          <h3>התוקף לא רוצה “להציק”. הוא רוצה לגרום לנו לבצע פעולה.</h3>
+          <div class="attacker-map">
+            <div><strong>המטרה</strong><span>חשבון, סיסמה, קוד אימות, פריטים במשחק או מידע אישי.</span></div>
+            <div><strong>הטריק</strong><span>לחץ זמן, פרס, התחזות לתמיכה, או קישור שנראה רשמי.</span></div>
+            <div><strong>ההגנה</strong><span>עוצרים, בודקים מקור, לא מוסרים קוד, ונכנסים רק דרך אתר רשמי.</span></div>
+          </div>
+        </article>
+        <article class="tool-card">
+          <span>מה עושים היום?</span>
+          <ol>
+            <li>חוקרים הודעות בתיבת דואר.</li>
+            <li>מפרקים URL לדומיין אמיתי.</li>
+            <li>מתרגלים מלכודת קוד אימות.</li>
+            <li>בונים Risk Scanner בבלוקים.</li>
+            <li>מסיימים אתגר מסכם ודוח חוקר.</li>
+          </ol>
+        </article>
+      </section>
+    `;
+  }
+
+  function renderInbox() {
+    const active = messages.find(message => state.activeMessage === message.id) || messages[0];
+    state.activeMessage = active.id;
+    const riskLabel = active.risk >= 80 ? 'חשוד מאוד' : active.risk >= 50 ? 'צריך לבדוק' : 'נראה רגוע';
+    return `
+      <section class="sim-grid">
+        <div class="inbox-list">
+          ${messages.map(message => `
+            <button class="mail-item ${active.id === message.id ? 'active' : ''}" type="button" data-message="${esc(message.id)}">
+              <span>${esc(message.from)}</span>
+              <strong>${esc(message.subject)}</strong>
+              <small>${message.risk >= 80 ? 'חשוד מאוד' : message.risk >= 50 ? 'צריך לבדוק' : 'נראה רגוע'}</small>
+            </button>
+          `).join('')}
+        </div>
+        <article class="phone-card inbox-simulator">
+          <span class="card-kicker">סימולטור הודעות</span>
+          <img class="station-visual" src="assets/cyber-city/inbox-sim.svg" alt="תיבת הודעות מדומה עם סימני ראיות">
+          <div class="mail-window">
+            <div class="mail-window-head">
+              <strong>${esc(active.subject)}</strong>
+              <span>${riskLabel}</span>
+            </div>
+            <button class="inspect-row ${state.inboxEvidence.has(active.id + 'from') ? 'selected' : ''}" type="button" data-inbox-evidence="${esc(active.id + 'from')}" data-risk="${active.risk}">
+              <span>שולח</span>
+              <strong>${esc(active.from)}</strong>
+            </button>
+            <button class="inspect-row ${state.inboxEvidence.has(active.id + 'request') ? 'selected' : ''}" type="button" data-inbox-evidence="${esc(active.id + 'request')}" data-risk="${active.risk}">
+              <span>מה מבקשים ממני?</span>
+              <strong>${esc(active.body)}</strong>
+            </button>
+            <div class="attacker-note">
+              <span>מפת תוקף</span>
+              <strong>מה הוא רוצה להשיג?</strong>
+              <p>${esc(active.attackerGoal)}</p>
+              <strong>איך הוא מנסה לגרום לנו לפעול?</strong>
+              <p>${esc(active.attackerMove)}</p>
+            </div>
+            <div class="tap-hints">
+              <span>לחצו על החלקים בהודעה כדי להכניס אותם לתיק הראיות.</span>
+            </div>
+          </div>
+          <div class="evidence-actions compact">
+            ${active.evidence.map(item => `
+              <button class="evidence-pill ${state.inboxEvidence.has(active.id + item) ? 'selected' : ''}" type="button" data-inbox-evidence="${esc(active.id + item)}" data-risk="${active.risk}">
+                ${esc(item)}
+              </button>
+            `).join('')}
+          </div>
+        </article>
+        <article class="tool-card">
+          <span>תיק ראיות</span>
+          <h3>פתחו הודעות ואספו לפחות 7 ראיות.</h3>
+          <p>הילד לא מנחש תשובה. הוא בודק חלקים בהודעה: מי שלח, מה מבקשים, האם יש לחץ, והאם מבקשים מידע רגיש.</p>
+          <strong>${state.inboxEvidence.size}/7 ראיות</strong>
+          <button class="button" type="button" data-check-inbox>בדוק תיק Inbox</button>
+        </article>
+      </section>
+    `;
+  }
+
+  function renderUrlLab() {
+    return `
+      <section class="url-lab">
+        ${urlChallenges.map((item, index) => {
+          const breakdown = parseUrl(item.url);
+          const parts = breakdown.options;
+          const selected = state.urlAnswers[index];
+          return `
+            <article class="url-card">
+              <span class="card-kicker">URL ${index + 1}</span>
+              ${index === 0 ? '<img class="station-visual" src="assets/cyber-city/url-lab.svg" alt="פירוק כתובת URL לפרוטוקול דומיין ונתיב">' : ''}
+              <code>${esc(item.url)}</code>
+              <div class="url-breakdown">
+                <div><span>פרוטוקול</span><strong>${esc(breakdown.protocol)}</strong></div>
+                <div><span>שם מלא</span><strong>${esc(breakdown.host)}</strong></div>
+                <div><span>נתיב</span><strong>${esc(breakdown.path || '/')}</strong></div>
+              </div>
+              <h3>מי שולט בכתובת?</h3>
+              <div class="url-parts">
+                ${parts.map(part => `
+                  <button class="${selected === part ? 'selected' : ''}" type="button" data-url-index="${index}" data-url-answer="${esc(part)}">${esc(part)}</button>
+                `).join('')}
+              </div>
+              <p>${selected ? (selected === item.answer ? 'נכון: ' + item.note : 'לא בדיוק. חפשו את הדומיין ששולט בכתובת.') : 'לחצו על הדומיין האמיתי.'}</p>
+            </article>
+          `;
+        }).join('')}
+      </section>
+      <button class="button" type="button" data-check-url>בדוק URL Lab</button>
+    `;
+  }
+
+  function parseUrl(url) {
+    const protocol = url.startsWith('https://') ? 'https' : 'http';
+    const clean = url.replace(/^https?:\/\//, '');
+    const pieces = clean.split('/');
+    const host = pieces[0];
+    const path = '/' + pieces.slice(1).join('/');
+    const hostParts = host.split('.');
+    const domain = hostParts.length > 2 ? hostParts.slice(-2).join('.') : host;
+    const options = [protocol, host, domain, path].filter(Boolean);
+    return {
+      protocol,
+      host,
+      path,
+      options: Array.from(new Set(options))
+    };
+  }
+
+  function renderOtp() {
+    return `
+      <section class="chat-lab">
+        <article class="chat-phone">
+          <div class="chat-line them">קיבלת קוד אימות: 482911</div>
+          <div class="chat-line them danger">היי, זה צוות התמיכה. שלחי לי את הקוד כדי שלא נחסום את החשבון.</div>
+          <div class="chat-options">
+            <button class="${state.otpChoice === 'send' ? 'selected' : ''}" data-otp-choice="send">לשלוח את הקוד</button>
+            <button class="${state.otpChoice === 'ignore' ? 'selected' : ''}" data-otp-choice="ignore">לא לשלוח, לדווח ולבדוק דרך מקור רשמי</button>
+            <button class="${state.otpChoice === 'ask' ? 'selected' : ''}" data-otp-choice="ask">לשאול אותם למה הם צריכים</button>
+          </div>
+        </article>
+        <article class="tool-card">
+          <span>כלל זהב</span>
+          <h3>קוד אימות לא מוסרים לאף אחד.</h3>
+          <p>גם אם זה נראה כמו תמיכה, גם אם מלחיצים, גם אם אומרים שזה דחוף.</p>
+          <button class="button" type="button" data-check-otp>בדוק החלטה</button>
+        </article>
+      </section>
+    `;
+  }
+
+  function renderBuilder() {
+    const blocks = [
+      ['unknownSender', 'שולח לא מוכר', 'אם לא יודעים מי שלח, חייבים לבדוק לפני פעולה.', 20],
+      ['weirdDomain', 'דומיין מתחזה', 'כתובת שנראית דומה למותג, אבל היא לא האתר הרשמי.', 30],
+      ['pressure', 'לחץ זמן', 'משפטים כמו "עכשיו" או "החשבון ייחסם" גורמים לנו למהר.', 20],
+      ['password', 'בקשת סיסמה', 'שום הודעה לא אמורה לבקש סיסמה בתוך קישור.', 35],
+      ['otp', 'בקשת קוד אימות', 'קוד אימות לא מוסרים לאף אחד, גם לא ל"תמיכה".', 40]
+    ];
+    const score = blocks.reduce((sum, block) => state.scannerRules.has(block[0]) ? sum + block[3] : sum, 0);
+    const capped = Math.min(100, score);
+    return `
+      <section class="builder-grid">
+        <article class="tool-card">
+          <span>בנו כלל לסורק</span>
+          <h3>אילו סימנים צריכים להדליק נורה אדומה?</h3>
+          <p class="builder-help">לחצו על כל סימן שהסורק שלכם צריך לזהות. ככל שיש יותר סימנים מסוכנים, מד הסיכון עולה.</p>
+          <div class="block-list">
+            ${blocks.map(block => `
+              <button class="rule-block ${state.scannerRules.has(block[0]) ? 'selected' : ''}" type="button" data-rule="${block[0]}">
+                <span>
+                  <strong>${esc(block[1])}</strong>
+                  <small>${esc(block[2])}</small>
+                </span>
+                <em>מוסיף ${block[3]}%</em>
+              </button>
+            `).join('')}
+          </div>
+        </article>
+        <article class="scanner-preview">
+          <span>Cyber Safety Scanner v1</span>
+          <img class="station-visual" src="assets/cyber-city/scanner-flow.svg" alt="סורק סייבר עם שלבי בדיקה ותגובה בטוחה">
+          <strong>${capped}%</strong>
+          <div class="risk-track"><div class="${capped >= 75 ? 'high' : capped >= 45 ? 'medium' : 'low'}" style="width:${capped}%"></div></div>
+          <div class="scanner-flow">
+            <div class="${state.scannerRules.has('weirdDomain') ? 'active' : ''}">URL</div>
+            <div class="${state.scannerRules.has('password') || state.scannerRules.has('otp') ? 'active' : ''}">מידע רגיש</div>
+            <div class="${state.scannerRules.has('pressure') ? 'active' : ''}">לחץ זמן</div>
+            <div class="${capped >= 75 ? 'active danger' : ''}">תגובה בטוחה</div>
+          </div>
+          <p>${capped >= 75 ? 'הסורק שלכם מזהה מצב מסוכן: לא לוחצים, מדווחים ובודקים מקור רשמי.' : capped >= 45 ? 'הסורק שלכם מזהה מצב שדורש בדיקה נוספת לפני פעולה.' : 'הסורק שלכם מזהה מעט סימנים. עדיין בודקים הקשר לפני שלוחצים.'}</p>
+          <button class="button" type="button" data-check-builder>שמור את הסורק</button>
+        </article>
+      </section>
+    `;
+  }
+
+  function renderAiLab() {
+    return `
+      <section class="sort-grid">
+        ${aiCards.map((card, index) => `
+          <article class="sort-card">
+            <p>${esc(card.text)}</p>
+            <div>
+              <button class="${state.aiAnswers[index] === true ? 'selected' : ''}" data-ai-index="${index}" data-ai-safe="true">מותר</button>
+              <button class="${state.aiAnswers[index] === false ? 'selected' : ''}" data-ai-index="${index}" data-ai-safe="false">אסור</button>
+            </div>
+          </article>
+        `).join('')}
+      </section>
+      <button class="button" type="button" data-check-ai>בדוק AI Safety</button>
+    `;
+  }
+
+  function renderCtf() {
+    const capstoneSignals = [
+      'ה־URL נראה כמו school אבל הדומיין האמיתי הוא school-login-secure.example',
+      'ההודעה מבקשת סיסמה דרך קישור',
+      'יש לחץ זמן: "החשבון ייחסם עוד 5 דקות"',
+      'בצ׳אט מבקשים קוד אימות — קוד לא מוסרים',
+      'אסור להעלות צילום עם קוד אימות ל־AI'
+    ];
+    const capstoneActions = [
+      {
+        id: 'click',
+        title: 'ללחוץ מהר כדי להציל את החשבון',
+        text: 'פעולה מסוכנת: ההודעה בדיוק מנסה לגרום לנו למהר.'
+      },
+      {
+        id: 'ask-ai',
+        title: 'להעלות צילום מסך מלא ל־AI',
+        text: 'לא בטוח: צילום יכול לכלול קוד, שם משתמש או פרטים אישיים.'
+      },
+      {
+        id: 'safe-plan',
+        title: 'לא ללחוץ, לא למסור קוד, לדווח ולאמת באתר הרשמי',
+        text: 'פעולה בטוחה: משתמשים בכל הראיות ומוודאים בערוץ אחר.'
+      }
+    ];
+    return `
+      <section class="ctf-grid">
+        <article class="tool-card">
+          <span>אתגר סיכום</span>
+          <h3>אירוע משולב: מפעילים את הסורק שבניתם</h3>
+          <p>זה לא עוד תרגיל קישור. כאן מחברים את כל הכלים מהשיעור כדי לסגור אירוע.</p>
+          <ol class="task-steps">
+            <li>קראו את חבילת האירוע.</li>
+            <li>סמנו לפחות 4 ראיות מסוגים שונים.</li>
+            <li>בחרו את פעולת התגובה הבטוחה ביותר.</li>
+          </ol>
+          <div class="event-packet">
+            <strong>חבילת אירוע</strong>
+            <p>הגיעה הודעת איפוס חשבון עם הקישור <code>https://school-login-secure.example/verify</code>. במקביל התקבל צ׳אט מ“תמיכה” שמבקש קוד אימות, ויש אזהרה שהחשבון ייחסם תוך 5 דקות.</p>
+          </div>
+        </article>
+        <article class="tool-card">
+          <span>שלב 1: בוחרים ראיות</span>
+          <h3>אילו סימנים הסורק צריך לסמן?</h3>
+          <p>סמנו ראיות שמגיעות מתחנות שונות: URL, OTP, לחץ, סיסמה ו־AI Safety.</p>
+          <div class="evidence-actions">
+            ${capstoneSignals.map(item => `
+              <button class="${state.ctfEvidence.has(item) ? 'selected' : ''}" data-ctf-evidence="${esc(item)}">${esc(item)}</button>
+            `).join('')}
+          </div>
+        </article>
+        <article class="tool-card">
+          <span>שלב 2: פעולת תגובה</span>
+          <h3>מה עושים עכשיו?</h3>
+          <p>בחרו פעולה לפי הראיות שאספתם. המטרה היא לא “לנצח מהר”, אלא לא לסכן חשבון אמיתי.</p>
+          <div class="mini-options">
+            ${capstoneActions.map(action => `
+              <button class="${state.ctfChoice === action.id ? 'selected' : ''}" data-ctf-choice="${action.id}">
+                <strong>${esc(action.title)}</strong>
+                <small>${esc(action.text)}</small>
+              </button>
+            `).join('')}
+          </div>
+        </article>
+        <article class="tool-card">
+          <span>שלב 3: בדיקת הסורק</span>
+          <h3>האם הסורק מוכן לפתוח תג?</h3>
+          <p>צריך לפחות 4 ראיות ופעולת תגובה בטוחה. אם חסר משהו, חוזרים ומוסיפים.</p>
+          <button class="button" type="button" data-check-ctf>בדקו את הסורק שלי</button>
+        </article>
+      </section>
+    `;
+  }
+
+  function renderReport() {
+    const collectedEvidence = Array.from(state.ctfEvidence);
+    const hasSafePlan = state.ctfChoice === 'safe-plan';
+    return `
+      <section class="report-grid">
+        <article class="tool-card">
+          <span>דוח בדיקת אירוע</span>
+          <h3>על מה הדוח?</h3>
+          <p>הדוח הוא לא חיבור. זה סיכום קצר של האירוע המסכם שבדקתם עכשיו: הודעה עם קישור חשוד, בקשת סיסמה, קוד אימות ולחץ זמן.</p>
+          <div class="report-case">
+            <strong>הראיות שאספתם:</strong>
+            <div class="signal-list">
+              ${collectedEvidence.length ? collectedEvidence.map(item => `<span>${esc(item)}</span>`).join('') : '<span>עדיין אין ראיות מהאתגר המסכם</span>'}
+            </div>
+            <strong>התגובה שבחרתם:</strong>
+            <p>${hasSafePlan ? 'לא ללחוץ, לא למסור קוד, לדווח ולאמת באתר הרשמי.' : 'עוד לא נבחרה תגובה בטוחה באתגר המסכם.'}</p>
+          </div>
+        </article>
+        <article class="tool-card">
+          <span>ממלאים 3 שורות קצרות</span>
+          <h3>הסבירו למנהל העיר מה קרה ומה עושים.</h3>
+          <label>1. אילו סימנים מסוכנים מצאתי?<textarea data-report-field="found" placeholder="לדוגמה: מצאתי דומיין מתחזה, לחץ זמן ובקשה לקוד אימות">${esc(state.report.found)}</textarea></label>
+          <label>2. למה זה מסוכן?<textarea data-report-field="risk" placeholder="לדוגמה: מישהו יכול לגנוב חשבון אם נמסור סיסמה או קוד">${esc(state.report.risk)}</textarea></label>
+          <label>3. מה הפעולה הבטוחה עכשיו?<textarea data-report-field="action" placeholder="לדוגמה: לא ללחוץ, לא למסור קוד, לדווח ולבדוק באתר הרשמי">${esc(state.report.action)}</textarea></label>
+          <button class="button" type="button" data-check-report>בדקו את הדוח וקבלו תג</button>
+        </article>
+        <article class="badge-card">
+          <span>תוצר סיום</span>
+          <strong>Cyber Safety Scanner v1</strong>
+          <p>התוצר הוא שיטת עבודה: מפרקים URL, מזהים בקשת מידע רגישה, בודקים לחץ זמן, שומרים על פרטיות מול AI, ומסכמים החלטת הגנה בדוח קצר.</p>
+        </article>
+      </section>
+    `;
+  }
+
+  function renderContent() {
+    const type = stations[state.station].type;
+    if (type === 'brief') return renderBrief();
+    if (type === 'inbox') return renderInbox();
+    if (type === 'url') return renderUrlLab();
+    if (type === 'otp') return renderOtp();
+    if (type === 'builder') return renderBuilder();
+    if (type === 'ai') return renderAiLab();
+    if (type === 'ctf') return renderCtf();
+    return renderReport();
+  }
+
+  function bindDynamicEvents() {
+    document.querySelectorAll('[data-complete]').forEach(button => {
+      button.addEventListener('click', () => {
+        complete(button.dataset.complete);
+        addCase('המשימה התקבלה: בונים סורק סייבר ראשון');
+        say('מעולה. עכשיו עוברים מסיפור לפעולה: פותחים Inbox ומתחילים לחקור.');
+        render();
+      });
+    });
+    document.querySelectorAll('[data-message]').forEach(button => {
+      button.addEventListener('click', () => {
+        state.activeMessage = button.dataset.message;
+        const msg = messages.find(item => item.id === state.activeMessage);
+        setRisk(msg.risk, `Risk לפי ההודעה שנפתחה: ${msg.subject}`);
+        render();
+      });
+    });
+    document.querySelectorAll('[data-inbox-evidence]').forEach(button => {
+      button.addEventListener('click', () => {
+        state.inboxEvidence.add(button.dataset.inboxEvidence);
+        addCase(button.textContent.trim());
+        setRisk(Number(button.dataset.risk), 'כל ראיה מוסיפה תמונה טובה יותר של הסיכון.');
+        say('יפה. זו ראיה. עכשיו שאלו: האם זו עובדה, או רק סימן שצריך לבדוק?');
+        render();
+      });
+    });
+    document.querySelector('[data-check-inbox]')?.addEventListener('click', () => {
+      if (state.inboxEvidence.size >= 7) {
+        complete('inbox');
+        say('Inbox הושלם. ראיתם שיש הודעות בטוחות, מסוכנות ומבלבלות.');
+        addCase('Inbox: נאספו מספיק ראיות');
+      } else {
+        say('צריך עוד ראיות. פתחו עוד הודעות וסמנו סימנים שונים.');
+      }
+      render();
+    });
+    document.querySelectorAll('[data-url-answer]').forEach(button => {
+      button.addEventListener('click', () => {
+        state.urlAnswers[button.dataset.urlIndex] = button.dataset.urlAnswer;
+        say('בדיקת URL: חפשו מי הדומיין ששולט בכתובת, לא רק איזו מילה מופיעה בה.');
+        render();
+      });
+    });
+    document.querySelector('[data-check-url]')?.addEventListener('click', () => {
+      const ok = urlChallenges.every((item, index) => state.urlAnswers[index] === item.answer);
+      if (ok) {
+        complete('url');
+        addCase('URL Lab: זוהו דומיינים אמיתיים');
+        say('מצוין. פירוק URL הוא מיומנות פרקטית: פרוטוקול, דומיין, נתיב.');
+      } else {
+        say('עוד לא. בדומיינים מתחזים, המותג יכול להופיע בהתחלה אבל השליטה נמצאת בסוף הדומיין.');
+      }
+      render();
+    });
+    document.querySelectorAll('[data-otp-choice]').forEach(button => {
+      button.addEventListener('click', () => {
+        state.otpChoice = button.dataset.otpChoice;
+        render();
+      });
+    });
+    document.querySelector('[data-check-otp]')?.addEventListener('click', () => {
+      if (state.otpChoice === 'ignore') {
+        complete('otp');
+        addCase('OTP: לא מוסרים קוד אימות');
+        setRisk(95, 'בקשת קוד אימות היא סיכון גבוה.');
+        say('נכון. קוד אימות לא מוסרים לאף אחד.');
+      } else {
+        say('לא. גם לשאול את מי שמבקש את הקוד זה עדיין להישאר בערוץ החשוד. עוצרים ומדווחים.');
+      }
+      render();
+    });
+    document.querySelectorAll('[data-rule]').forEach(button => {
+      button.addEventListener('click', () => {
+        const rule = button.dataset.rule;
+        if (state.scannerRules.has(rule)) state.scannerRules.delete(rule);
+        else state.scannerRules.add(rule);
+        say('בונים לוגיקה: כל סימן מוסיף Risk. הסורק לא מנחש, הוא מחשב לפי כללים.');
+        render();
+      });
+    });
+    document.querySelector('[data-check-builder]')?.addEventListener('click', () => {
+      if (state.scannerRules.size >= 4) {
+        complete('builder');
+        addCase('Scanner v1: נשמרו כללי Risk');
+        say('סורק ראשון נבנה. עכשיו אפשר להסביר למה החלטה מסוימת בטוחה או מסוכנת.');
+      } else {
+        say('בחרו לפחות 4 בלוקים כדי שהסורק יהיה שימושי.');
+      }
+      render();
+    });
+    document.querySelectorAll('[data-ai-index]').forEach(button => {
+      button.addEventListener('click', () => {
+        state.aiAnswers[button.dataset.aiIndex] = button.dataset.aiSafe === 'true';
+        render();
+      });
+    });
+    document.querySelector('[data-check-ai]')?.addEventListener('click', () => {
+      const ok = aiCards.every((card, index) => state.aiAnswers[index] === card.safe);
+      if (ok) {
+        complete('ai');
+        addCase('AI Safety: לא מעלים מידע אישי');
+        say('נכון. AI יכול לעזור ללמוד, אבל לא מקבל סיסמאות, קודים או פרטים אישיים.');
+      } else {
+        say('בדקו שוב: האם יש כאן מידע אישי, קוד אימות או צילום מסך פרטי?');
+      }
+      render();
+    });
+    document.querySelectorAll('[data-ctf-choice]').forEach(button => {
+      button.addEventListener('click', () => {
+        state.ctfChoice = button.dataset.ctfChoice;
+        render();
+      });
+    });
+    document.querySelectorAll('[data-ctf-evidence]').forEach(button => {
+      button.addEventListener('click', () => {
+        const evidence = button.dataset.ctfEvidence;
+        if (state.ctfEvidence.has(evidence)) state.ctfEvidence.delete(evidence);
+        else state.ctfEvidence.add(evidence);
+        render();
+      });
+    });
+    document.querySelector('[data-check-ctf]')?.addEventListener('click', () => {
+      if (state.ctfChoice === 'safe-plan' && state.ctfEvidence.size >= 4) {
+        complete('ctf');
+        addCase('אתגר מסכם: הסורק הפעיל תגובה בטוחה');
+        say('תג נפתח. חיברתם URL, קוד אימות, לחץ זמן ו־AI Safety להחלטה אחת בטוחה.');
+      } else {
+        say('עוד לא. צריך לפחות 4 ראיות ופעולה שלא לוחצת, לא מוסרת קוד, ומאמתת מקור.');
+      }
+      render();
+    });
+    document.querySelectorAll('[data-report-field]').forEach(field => {
+      field.addEventListener('input', () => {
+        state.report[field.dataset.reportField] = field.value;
+      });
+    });
+    document.querySelector('[data-check-report]')?.addEventListener('click', () => {
+      const ok = Object.values(state.report).every(value => value.trim().length >= 12);
+      if (ok) {
+        complete('report');
+        addCase('דוח בדיקת אירוע: הוגש');
+        say('שיעור הושלם. הגשתם דוח אירוע ברור וקיבלתם תוצר: Cyber Safety Scanner v1.');
+      } else {
+        say('הדוח עדיין קצר מדי. כתבו משפט אחד בכל שדה: מה מצאתם, למה זה מסוכן, ומה עושים עכשיו.');
+      }
+      render();
     });
   }
 
-  bindEvents();
-  setMode('learner');
-  update();
+  function render() {
+    renderShell();
+    $('stationContent').innerHTML = renderContent();
+    bindDynamicEvents();
+  }
+
+  $('nextStation').addEventListener('click', () => {
+    if (state.station === 0) {
+      complete('brief');
+      addCase('פתיחה: המשימה הוצגה');
+    }
+    if (state.station < stations.length - 1) state.station += 1;
+    render();
+  });
+  $('prevStation').addEventListener('click', () => {
+    if (state.station > 0) state.station -= 1;
+    render();
+  });
+  $('resetLab').addEventListener('click', () => {
+    state.station = 0;
+    state.xp = 0;
+    state.risk = 0;
+    state.caseFile = [];
+    state.completed.clear();
+    state.inboxEvidence.clear();
+    state.urlAnswers = {};
+    state.otpChoice = '';
+    state.scannerRules.clear();
+    state.aiAnswers = {};
+    state.ctfEvidence.clear();
+    state.ctfChoice = '';
+    state.report = { found: '', risk: '', action: '' };
+    say('התחלנו מחדש. המטרה: לבנות סורק סייבר ראשון.');
+    setRisk(0, 'הסיכון יעלה כשתמצאו סיגנלים.');
+    render();
+  });
+
+  setRisk(0, 'הסיכון יעלה כשתמצאו קישור, לחץ, בקשת סיסמה או מקור לא מוכר.');
+  render();
 })();

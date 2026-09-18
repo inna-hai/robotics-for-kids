@@ -1,0 +1,7 @@
+TTS in fluent natural Israeli Hebrew.
+Character: a serious but approachable Israeli cyber instructor speaking to children age 12.
+Style: professional cyber language, confident, investigative, classroom instruction. Avoid words that sound childish or watered down. Read only the Hebrew lines. Do not read bracket labels.
+
+[friendly] בשלב הזה מפרקים אתר חשוד לרכיבים שחוקר סייבר בודק.
+[clear] מסתכלים על הכתובת, הכותרת, השדות בטופס, והכפתור שמבקש מאיתנו לעשות משהו.
+[practical] כל חלק כזה יכול להיות סימן שעוזר להחליט אם להמשיך או לעצור.

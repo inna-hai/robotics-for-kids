@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" role="img" aria-labelledby="title desc">
+  <title id="title">Cyber lab workstation</title>
+  <desc id="desc">A clean educational cyber lab illustration with screens, alerts, and a shield scanner.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#eaf3ff"/>
+      <stop offset="1" stop-color="#effcf6"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="0" x2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#1e3a8a"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="420" rx="32" fill="url(#bg)"/>
+  <circle cx="610" cy="72" r="46" fill="#dbeafe"/>
+  <circle cx="94" cy="338" r="62" fill="#dcfce7"/>
+  <rect x="86" y="96" width="548" height="250" rx="24" fill="#fff" stroke="#cbd5e1" stroke-width="3"/>
+  <rect x="122" y="128" width="298" height="174" rx="16" fill="url(#screen)"/>
+  <rect x="450" y="128" width="142" height="34" rx="9" fill="#eff6ff"/>
+  <rect x="450" y="176" width="142" height="34" rx="9" fill="#fef3c7"/>
+  <rect x="450" y="224" width="142" height="34" rx="9" fill="#fee2e2"/>
+  <path d="M272 164l58 24v38c0 42-27 68-58 80-31-12-58-38-58-80v-38l58-24z" fill="#22c55e"/>
+  <path d="M247 230l18 18 42-54" fill="none" stroke="#fff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M142 270h248" stroke="#60a5fa" stroke-width="10" stroke-linecap="round"/>
+  <path d="M142 246h132" stroke="#93c5fd" stroke-width="8" stroke-linecap="round"/>
+  <path d="M142 222h78" stroke="#bfdbfe" stroke-width="8" stroke-linecap="round"/>
+  <g fill="#2563eb">
+    <circle cx="475" cy="145" r="7"/>
+    <circle cx="475" cy="193" r="7"/>
+    <circle cx="475" cy="241" r="7"/>
+  </g>
+  <path d="M148 346h424" stroke="#94a3b8" stroke-width="8" stroke-linecap="round"/>
+</svg>

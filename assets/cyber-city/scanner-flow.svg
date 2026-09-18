@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" role="img" aria-labelledby="title desc">
+  <title id="title">Cyber scanner flow</title>
+  <desc id="desc">A cyber scanner pipeline showing URL, sensitive data, pressure, and safe response.</desc>
+  <rect width="720" height="420" rx="32" fill="#f0fdf4"/>
+  <path d="M96 210h528" stroke="#bbf7d0" stroke-width="26" stroke-linecap="round"/>
+  <g fill="#fff" stroke="#86efac" stroke-width="3">
+    <rect x="74" y="144" width="132" height="132" rx="26"/>
+    <rect x="220" y="144" width="132" height="132" rx="26"/>
+    <rect x="366" y="144" width="132" height="132" rx="26"/>
+    <rect x="512" y="144" width="132" height="132" rx="26"/>
+  </g>
+  <path d="M138 188h44M138 210h62M138 232h32" stroke="#2563eb" stroke-width="10" stroke-linecap="round"/>
+  <path d="M272 180h28a20 20 0 0120 20v48h-68v-48a20 20 0 0120-20z" fill="#fbbf24"/>
+  <circle cx="286" cy="222" r="8" fill="#92400e"/>
+  <path d="M430 178l44 78h-88l44-78z" fill="#f97316"/>
+  <rect x="425" y="204" width="10" height="28" rx="5" fill="#fff"/>
+  <circle cx="430" cy="242" r="6" fill="#fff"/>
+  <path d="M552 218l24 24 48-68" fill="none" stroke="#16a34a" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+  <g stroke="#64748b" stroke-width="8" stroke-linecap="round">
+    <path d="M207 210h18"/>
+    <path d="M353 210h18"/>
+    <path d="M499 210h18"/>
+  </g>
+</svg>

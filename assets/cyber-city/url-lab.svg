@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" role="img" aria-labelledby="title desc">
+  <title id="title">URL lab</title>
+  <desc id="desc">A URL broken into protocol, domain, and path blocks.</desc>
+  <rect width="720" height="420" rx="32" fill="#eef6ff"/>
+  <rect x="70" y="88" width="580" height="244" rx="28" fill="#fff" stroke="#bfdbfe" stroke-width="3"/>
+  <rect x="112" y="128" width="496" height="54" rx="16" fill="#0f172a"/>
+  <rect x="136" y="146" width="68" height="18" rx="9" fill="#60a5fa"/>
+  <rect x="218" y="146" width="210" height="18" rx="9" fill="#34d399"/>
+  <rect x="442" y="146" width="116" height="18" rx="9" fill="#fbbf24"/>
+  <g>
+    <rect x="112" y="224" width="136" height="62" rx="16" fill="#dbeafe"/>
+    <rect x="292" y="224" width="136" height="62" rx="16" fill="#dcfce7"/>
+    <rect x="472" y="224" width="136" height="62" rx="16" fill="#fef3c7"/>
+  </g>
+  <path d="M180 190v28M360 190v28M540 190v28" stroke="#64748b" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="360" cy="338" r="34" fill="#2563eb"/>
+  <path d="M344 339l12 12 24-32" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

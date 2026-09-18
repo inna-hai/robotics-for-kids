@@ -3,51 +3,53 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Cyber AI Builders — משימת סייבר ראשונה</title>
+  <title>Cyber AI Builders — שיעור 3</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/cyber-city-academy.css?v=20260917-no-brief-button-v32">
+  <link rel="stylesheet" href="css/cyber-city-academy.css?v=20260917-lesson3-full-v39">
   <link rel="stylesheet" href="css/platform-home-link.css">
 </head>
 <body>
   <main class="lab-shell">
     <header class="lab-header">
       <div>
-        <div class="eyebrow">robotics15 · Cyber AI Builders</div>
-        <h1>בונים סורק סייבר ראשון</h1>
-        <p>שיעור מעבדה לבני 12–15: חוקרים הודעות, מפרקים קישורים, בונים מד סיכון, משתמשים ב־AI בזהירות ומסיימים עם כלי קטן שעובד.</p>
+        <div class="eyebrow">robotics15 · Cyber AI Builders · Mission 03</div>
+        <h1>URL Detective</h1>
+        <p>שיעור 90 דקות לילדים בני 12: בודקים קישורים לפני שלוחצים, מפרקים URL, ובונים Link Checker קטן עם Python.</p>
       </div>
       <div class="header-actions">
         <a class="button ghost" href="cyber-city-lesson-2.html">שיעור 2</a>
+        <a class="button ghost" href="cyber-city-lesson-4.html">שיעור 4</a>
+        <a class="button ghost" href="cyber-city-course.html">דף קורס</a>
         <a class="button ghost" href="index.html">קטלוג</a>
         <button class="button" type="button" id="resetLab">התחלה מחדש</button>
       </div>
     </header>
 
-    <section class="lesson-video-card" aria-label="סרטון פתיחה לשיעור הראשון">
+    <section class="lesson-video-card" aria-label="סרטון פתיחה לשיעור השלישי">
       <div class="lesson-video-copy">
-        <span class="card-kicker">סרטון פתיחה</span>
-        <h2>לפני שמתחילים: למה מגנים ואיך עובדים בלומדה</h2>
-        <p>צפו בסרטון קצר שמסביר מה התוקף מנסה להשיג, איך מזהים ראיות, ומה עושים בשיעור הראשון בתוך הסימולטור.</p>
+        <span>סרטון שיעור</span>
+        <h2>URL Detective</h2>
+        <p>פותחים את השיעור עם הסבר קצר: מה לומדים, למה בודקים קישורים, ואיך עובדים בתוך הלומדה.</p>
       </div>
-      <video controls preload="metadata" playsinline>
-        <source src="marketing/cyber-city-lesson1-explainer.mp4" type="video/mp4">
+      <video controls preload="metadata" playsinline poster="marketing/cyber-city-lesson3-overview-poster.jpg">
+        <source src="marketing/cyber-city-lesson3-overview.mp4" type="video/mp4">
       </video>
     </section>
 
-    <section class="mission-brief" aria-label="תקציר משימת 90 דקות">
+    <section class="mission-brief" aria-label="תקציר שיעור 3">
       <article>
         <span>משך שיעור</span>
         <strong>90 דקות</strong>
       </article>
       <article>
         <span>תוצר</span>
-        <strong>Cyber Safety Scanner</strong>
+        <strong>Python Link Checker</strong>
       </article>
       <article>
-        <span>שיטת למידה</span>
-        <strong>סימולטור + בנייה</strong>
+        <span>מיומנות</span>
+        <strong>strings · in · startswith</strong>
       </article>
       <article>
         <span>התקדמות</span>
@@ -55,9 +57,9 @@
       </article>
     </section>
 
-    <section class="student-nav-panel" aria-label="ניווט משימות">
+    <section class="student-nav-panel" aria-label="ניווט משימות שיעור 3">
       <div class="map-title">
-        <span id="currentStepLabel">משימה 1 מתוך 8</span>
+        <span id="currentStepLabel">משימה 1 מתוך 6</span>
         <strong id="currentStepName">פתיחה</strong>
       </div>
       <div class="student-nav-body">
@@ -71,10 +73,10 @@
           <div>
             <span class="station-time" id="stationTime">10 דקות</span>
             <h2 id="stationTitle">פתיחת משימה</h2>
-            <p id="stationGoal">נכנסים לתפקיד אנליסטים צעירים ומתחילים לבנות כלי הגנה.</p>
+            <p id="stationGoal">מבינים למה קישור יכול להיראות נכון אבל עדיין להיות מסוכן.</p>
           </div>
           <div class="xp-meter">
-            <span>Lab XP</span>
+            <span>Link XP</span>
             <strong id="xpLabel">0</strong>
           </div>
         </div>
@@ -87,30 +89,30 @@
         </footer>
       </section>
 
-      <aside class="lab-console" aria-label="קונסולת AI ועבודה">
+      <aside class="lab-console" aria-label="קונסולת שיעור 3">
         <section class="assistant-card">
           <div class="assistant-head">
             <span>AI</span>
-            <strong>עוזר מעבדה</strong>
+            <strong>עוזר בדיקה</strong>
           </div>
-          <p id="assistantText">אני לא פותר במקומכם. אני מסביר מה מצאתם ומזכיר מה לבדוק.</p>
+          <p id="assistantText">אני עוזר לפרק קישורים ולנסח בדיקה בטוחה. אני לא מחליף שיקול דעת.</p>
         </section>
 
         <section class="scanner-card">
-          <span>Risk Scanner</span>
+          <span>Link Risk</span>
           <strong id="riskScore">0%</strong>
           <div class="risk-track"><div id="riskFill"></div></div>
-          <p id="riskText">הסיכון יעלה כשתמצאו קישור, לחץ, בקשת סיסמה או מקור לא מוכר.</p>
+          <p id="riskText">הסיכון יתעדכן אחרי בדיקת קישור.</p>
         </section>
 
         <section class="case-card">
-          <span>תיק עבודה</span>
+          <span>תיק קישורים</span>
           <div id="caseFile"></div>
         </section>
       </aside>
     </section>
   </main>
 
-  <script src="js/cyber-city-missions.js?v=20260917-no-brief-button-v32"></script>
+  <script src="js/cyber-city-lesson-3.js?v=20260917-lesson3-full-v39"></script>
 </body>
 </html>

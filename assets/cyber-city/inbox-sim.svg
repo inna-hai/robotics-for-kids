@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" role="img" aria-labelledby="title desc">
+  <title id="title">Inbox simulator</title>
+  <desc id="desc">A visual inbox simulator with selected email evidence cards.</desc>
+  <rect width="720" height="420" rx="32" fill="#f8fafc"/>
+  <rect x="72" y="72" width="576" height="276" rx="28" fill="#fff" stroke="#cbd5e1" stroke-width="3"/>
+  <rect x="96" y="104" width="184" height="212" rx="18" fill="#eef2ff"/>
+  <rect x="116" y="126" width="142" height="34" rx="10" fill="#fff"/>
+  <rect x="116" y="174" width="142" height="34" rx="10" fill="#dbeafe"/>
+  <rect x="116" y="222" width="142" height="34" rx="10" fill="#fff"/>
+  <rect x="116" y="270" width="142" height="24" rx="8" fill="#fee2e2"/>
+  <rect x="310" y="104" width="292" height="212" rx="18" fill="#fff" stroke="#dbeafe" stroke-width="3"/>
+  <rect x="334" y="132" width="132" height="18" rx="9" fill="#64748b"/>
+  <rect x="334" y="168" width="230" height="16" rx="8" fill="#cbd5e1"/>
+  <rect x="334" y="198" width="194" height="16" rx="8" fill="#cbd5e1"/>
+  <rect x="334" y="236" width="102" height="34" rx="12" fill="#fef3c7" stroke="#f59e0b" stroke-width="3"/>
+  <rect x="454" y="236" width="110" height="34" rx="12" fill="#fee2e2" stroke="#ef4444" stroke-width="3"/>
+  <path d="M514 286l32 32m0-32l-32 32" stroke="#ef4444" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="600" cy="104" r="28" fill="#dcfce7"/>
+  <path d="M588 105l9 9 16-22" fill="none" stroke="#16a34a" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
