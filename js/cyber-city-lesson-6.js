@@ -175,7 +175,7 @@
     report: { seen: '', signals: '', action: '' }
   };
 
-  const mediaVersion = '20260918-packet-v62';
+  const mediaVersion = '20260918-packet-v63';
   const mediaUrl = path => `${path}?v=${mediaVersion}`;
   let routeDrag = null;
   let ignoreRouteClick = false;
@@ -290,6 +290,13 @@
   }
   function packetInvestigationComplete(caseId = state.activeCase) {
     return packetInvestigationCorrectCount(caseId) === packetInvestigationQuestions.length;
+  }
+  function activePacketQuestion(caseId = state.activeCase) {
+    const answers = state.packetInvestigation[caseId] || {};
+    return packetInvestigationQuestions.find(question => {
+      const option = packetQuestionChoice(question, answers[question.id]);
+      return !isPacketAnswerCorrect(question, option, caseId);
+    }) || packetInvestigationQuestions.at(-1);
   }
   function analyzePacket(text) {
     const lower = text.toLowerCase();
@@ -487,13 +494,18 @@
     const active = packetCases.find(item => item.id === state.activeCase) || packetCases[1];
     const answers = activeInvestigationAnswers();
     const correctCount = packetInvestigationCorrectCount(active.id);
+    const currentQuestion = activePacketQuestion(active.id);
+    const selectedId = answers[currentQuestion.id];
+    const selectedOption = packetQuestionChoice(currentQuestion, selectedId);
+    const selectedCorrect = isPacketAnswerCorrect(currentQuestion, selectedOption, active.id);
+    const completeInvestigation = packetInvestigationComplete(active.id);
     return `
       <section class="packet-investigation">
-        <article class="tool-card">
+        <article class="tool-card packet-brief-card">
           <span>מיני־חקירה</span>
-          <h3>${esc(active.title)}</h3>
-          <p>Packet Log הוא כמו שורת תצפית: מי שלח, לאן זה הולך, באיזה פרוטוקול, והאם התוכן מוצפן. כדי לפתור את התקלה בשער העיר, צריך לענות על שלוש שאלות חקירה.</p>
-          <div class="mini-options compact">
+          <h3>בחרו רשומה אחת וחקרו אותה צעד־צעד</h3>
+          <p>Packet Log הוא שורת תצפית קצרה: מקור, יעד, פרוטוקול והאם התוכן מוצפן. עכשיו עונים על שאלה אחת בכל פעם.</p>
+          <div class="packet-case-tabs">
             ${packetCases.map(item => `
               <button class="${state.activeCase === item.id ? 'selected' : ''}" type="button" data-investigation-case="${item.id}">
                 <strong>${esc(item.title)}</strong>
@@ -501,39 +513,46 @@
               </button>
             `).join('')}
           </div>
-          <div class="site-preview" dir="ltr">
-            <small>src ${esc(active.src)} -> dst ${esc(active.dst)}</small>
-            <strong>${esc(active.proto)} · encrypted=${esc(active.encrypted)}</strong>
-            <p>${esc(active.dns)}</p>
-            <button type="button">${esc(active.path)}</button>
-          </div>
         </article>
-        <article class="code-panel">
-          <span>רשומת תעבורה מסומלצת</span>
-          <pre><code>${esc(active.log)}</code></pre>
+        <article class="tool-card packet-log-card">
+          <span>הרשומה שבודקים עכשיו</span>
+          <h3>${esc(active.title)}</h3>
+          <div class="packet-log-pills" dir="ltr">
+            <b>${esc(active.proto)}</b>
+            <small>encrypted=${esc(active.encrypted)}</small>
+          </div>
+          <dl class="packet-log-facts" dir="ltr">
+            <div><dt>src</dt><dd>${esc(active.src)}</dd></div>
+            <div><dt>dst</dt><dd>${esc(active.dst)}</dd></div>
+            <div><dt>dns</dt><dd>${esc(active.dns)}</dd></div>
+            <div><dt>path</dt><dd>${esc(active.path)}</dd></div>
+          </dl>
+          <details>
+            <summary>הצג שורת לוג מלאה</summary>
+            <pre><code>${esc(active.log)}</code></pre>
+          </details>
         </article>
         <article class="tool-card packet-question-card">
-          <span>שאלות חקירה</span>
+          <span>שאלת חקירה</span>
           <h3>${correctCount}/${packetInvestigationQuestions.length} תשובות נכונות</h3>
-          ${packetInvestigationQuestions.map(question => {
-            const selectedId = answers[question.id];
-            const selectedOption = packetQuestionChoice(question, selectedId);
-            const correct = isPacketAnswerCorrect(question, selectedOption, active.id);
-            return `
-              <div class="packet-question ${selectedId ? correct ? 'correct' : 'wrong' : ''}">
-                <b>${esc(question.title)}</b>
-                <div>
-                  ${question.options.map(option => `
-                    <button class="${selectedId === option.id ? 'selected' : ''}" type="button" data-packet-answer="${esc(question.id)}" data-answer="${esc(option.id)}">
-                      ${esc(option.text)}
-                    </button>
-                  `).join('')}
-                </div>
-                ${selectedId ? `<small>${esc(selectedOption.feedback)}</small>` : '<small>בחרו תשובה לפי הפרוטוקול, היעד והתוכן.</small>'}
-              </div>
-            `;
-          }).join('')}
-          <button class="button" type="button" data-save-packet>${packetInvestigationComplete(active.id) ? 'שמור חקירה והמשך לפייתון' : 'פתרו את שלוש שאלות החקירה'}</button>
+          <div class="packet-progress-dots" aria-label="התקדמות שאלות">
+            ${packetInvestigationQuestions.map(question => {
+              const option = packetQuestionChoice(question, answers[question.id]);
+              return `<i class="${isPacketAnswerCorrect(question, option, active.id) ? 'done' : question.id === currentQuestion.id ? 'active' : ''}"></i>`;
+            }).join('')}
+          </div>
+          <div class="packet-question ${selectedId ? selectedCorrect ? 'correct' : 'wrong' : ''}">
+            <b>${esc(currentQuestion.title)}</b>
+            <div>
+              ${currentQuestion.options.map(option => `
+                <button class="${selectedId === option.id ? 'selected' : ''}" type="button" data-packet-answer="${esc(currentQuestion.id)}" data-answer="${esc(option.id)}">
+                  ${esc(option.text)}
+                </button>
+              `).join('')}
+            </div>
+            ${selectedId ? `<small>${esc(selectedOption.feedback)}${selectedCorrect && !completeInvestigation ? ' עברו לשאלה הבאה.' : ''}</small>` : '<small>בחרו תשובה לפי הפרוטוקול, היעד והתוכן.</small>'}
+          </div>
+          <button class="button" type="button" data-save-packet>${completeInvestigation ? 'שמור חקירה והמשך לפייתון' : 'ענו נכון על כל השאלות'}</button>
         </article>
       </section>
     `;

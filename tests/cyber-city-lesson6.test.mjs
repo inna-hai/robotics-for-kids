@@ -20,7 +20,7 @@ test('Lesson 6 page exists and loads its overview video', () => {
   includes(page, 'Mission 06');
   includes(page, 'Packet Patrol');
   includes(page, 'שער העיר לא נפתח');
-  includes(page, '20260918-packet-v62');
+  includes(page, '20260918-packet-v63');
   includes(page, 'marketing/cyber-city-lesson6-overview.mp4');
   includes(page, 'marketing/cyber-city-lesson6-overview-poster.jpg');
   includes(page, 'js/cyber-city-lesson-6.js');
@@ -53,7 +53,9 @@ test('Lesson 6 teaches packet logs in a controlled training lab', () => {
   includes(js, 'if "password" in pkt:');
   includes(js, 'packetInvestigationQuestions');
   includes(js, 'data-packet-answer');
-  includes(js, 'שאלות חקירה');
+  includes(js, 'שאלת חקירה');
+  includes(js, 'activePacketQuestion');
+  includes(js, 'packet-case-tabs');
   includes(js, 'Python יעשה את אותה בדיקה מהר יותר');
   includes(js, 'Packet Inspector');
   includes(js, 'NETWORK DEFENDER');
