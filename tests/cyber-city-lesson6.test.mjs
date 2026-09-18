@@ -19,6 +19,8 @@ test('Lesson 6 page exists and loads its overview video', () => {
   includes(page, '<title>Cyber AI Builders — שיעור 6 Packet Patrol</title>');
   includes(page, 'Mission 06');
   includes(page, 'Packet Patrol');
+  includes(page, 'שער העיר לא נפתח');
+  includes(page, '20260918-packet-v62');
   includes(page, 'marketing/cyber-city-lesson6-overview.mp4');
   includes(page, 'marketing/cyber-city-lesson6-overview-poster.jpg');
   includes(page, 'js/cyber-city-lesson-6.js');
@@ -38,8 +40,10 @@ test('Lesson 6 teaches packet logs in a controlled training lab', () => {
   includes(js, 'assets/cyber-city/packet-lab.svg');
   includes(js, 'Computer -> DNS -> IP -> Server -> HTTPS');
   includes(js, 'Route Builder: בונים מסלול אינטרנט');
+  includes(js, 'תקלה בשער העיר');
   includes(js, 'DNS הוא כמו איש קשר של האינטרנט');
   includes(js, 'IP הוא מספר כתובת של מחשב או שרת ברשת');
+  includes(js, 'explainRoutePlacement');
   includes(js, 'data-route-piece');
   includes(js, 'data-route-slot');
   includes(js, 'draggable="true"');
@@ -47,7 +51,13 @@ test('Lesson 6 teaches packet logs in a controlled training lab', () => {
   includes(js, 'routeIsComplete()');
   includes(js, 'pkt = input("packet log: ")');
   includes(js, 'if "password" in pkt:');
+  includes(js, 'packetInvestigationQuestions');
+  includes(js, 'data-packet-answer');
+  includes(js, 'שאלות חקירה');
+  includes(js, 'Python יעשה את אותה בדיקה מהר יותר');
   includes(js, 'Packet Inspector');
+  includes(js, 'NETWORK DEFENDER');
+  includes(js, 'מה אני יודע עכשיו?');
   includes(js, 'לוגים מסומלצים');
   assert.ok(!js.includes('fetch('), 'Lesson 6 should not fetch live websites');
   assert.ok(!js.includes('XMLHttpRequest'), 'Lesson 6 should not open network requests');

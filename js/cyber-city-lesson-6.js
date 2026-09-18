@@ -1,6 +1,6 @@
 (function () {
   const stations = [
-    { id: 'brief', short: 'פתיחה', title: 'פתיחת משימה: חדר בקרה של רשת', time: '10 דקות', goal: 'מבינים שמידע לא קופץ באוויר: הוא יוצא מהמחשב, עובר DNS, מגיע לשרת וחוזר כתשובה.', type: 'brief' },
+    { id: 'brief', short: 'פתיחה', title: 'פתיחת משימה: תקלה בשער העיר', time: '10 דקות', goal: 'מקבלים קריאת חירום: שער העיר לא נפתח, וצריך להבין איפה בקשת הרשת נתקעת או נחשפת.', type: 'brief' },
     { id: 'map', short: 'מפה', title: 'Route Builder: בונים מסלול אינטרנט', time: '15 דקות', goal: 'מסדרים משחק מסלול שמראה איך שם אתר הופך לכתובת IP ואיך בקשה חוזרת מהשרת.', type: 'map' },
     { id: 'packet', short: 'Packet', title: 'Packet Log: מה רואים בלוג תעבורה?', time: '20 דקות', goal: 'קוראים רשומת תעבורה ומזהים source, destination, protocol, path ו־encrypted.', type: 'packet' },
     { id: 'python', short: 'Python', title: 'Python Packet Inspector', time: '20 דקות', goal: 'בונים בדיקת Python שמזהה HTTP גלוי, התחברות, סיסמה ויעד חשוד בתוך לוג מסומלץ.', type: 'python' },
@@ -71,6 +71,37 @@
     }
   ];
 
+  const packetInvestigationQuestions = [
+    {
+      id: 'protocol',
+      title: 'מה הפרוטוקול אומר לנו?',
+      options: [
+        { id: 'secure', text: 'HTTPS אומר שהתוכן מוצפן בדרך', correctFor: ['portal'], feedback: 'נכון. HTTPS מצפין את התוכן בדרך, אבל עדיין בודקים שהיעד מוכר.' },
+        { id: 'open', text: 'HTTP אומר שהתוכן עלול להיות גלוי בדרך', correctFor: ['coins', 'download'], feedback: 'נכון. HTTP בלי הצפנה הוא סימן שצריך להיזהר, במיוחד כשיש התחברות או הורדה.' },
+        { id: 'lookup', text: 'DNS הוא רק תרגום שם אתר לכתובת', correctFor: ['dns'], feedback: 'נכון. DNS לא מחזיר דף אתר, הוא עוזר למצוא את כתובת ה־IP.' }
+      ]
+    },
+    {
+      id: 'risk',
+      title: 'מה הסימן הכי חשוב לבדוק?',
+      options: [
+        { id: 'password', text: 'סיסמה או login בתוך HTTP', correctFor: ['coins'], feedback: 'בול. סיסמה ב־HTTP גלוי היא סימן עצירה ברור.' },
+        { id: 'unknown', text: 'יעד לא מוכר או הורדה חשודה', correctFor: ['download'], feedback: 'נכון. כשיעד לא מוכר שולח הורדה ב־HTTP, עוצרים ובודקים מקור.' },
+        { id: 'known', text: 'יעד מוכר עם HTTPS', correctFor: ['portal'], feedback: 'נכון. זה נראה נמוך סיכון, אבל עדיין מאמתים שהכתובת מוכרת.' },
+        { id: 'dns-only', text: 'שאלת DNS רגילה', correctFor: ['dns'], feedback: 'נכון. זו רשומת תרגום, לא שליחת סיסמה ולא הורדה.' }
+      ]
+    },
+    {
+      id: 'action',
+      title: 'מה החלטת ההגנה?',
+      options: [
+        { id: 'allow', text: 'ממשיכים בזהירות אחרי אימות כתובת', correctFor: ['portal', 'dns'], feedback: 'נכון. אין סימן חירום, אבל Network Defender תמיד מאמת יעד.' },
+        { id: 'stop', text: 'עוצרים, לא שולחים פרטים ומדווחים', correctFor: ['coins', 'download'], feedback: 'נכון. כשיש HTTP גלוי עם סיסמה/יעד לא מוכר, לא ממשיכים.' },
+        { id: 'ignore', text: 'מתעלמים כי כל Packet בטוח', correctFor: [], feedback: 'לא. Packet יכול להיות רגיל או מסוכן; בודקים מקור, יעד, פרוטוקול ותוכן.' }
+      ]
+    }
+  ];
+
   const routePieces = [
     {
       id: 'https',
@@ -78,7 +109,8 @@
       icon: '🔒',
       code: 'encrypted=true',
       simple: 'שומר על התוכן בדרך.',
-      explain: 'HTTPS אומר שהתוכן מוצפן בדרך. עדיין בודקים יעד, אבל פחות קל לקרוא את המידע באמצע.'
+      explain: 'HTTPS אומר שהתוכן מוצפן בדרך. עדיין בודקים יעד, אבל פחות קל לקרוא את המידע באמצע.',
+      wrong: 'HTTPS לא מתחיל את המסלול ולא מתרגם כתובת. הוא שכבת הגנה שמוסיפים כשכבר שולחים מידע בדרך.'
     },
     {
       id: 'device',
@@ -86,7 +118,8 @@
       icon: '💻',
       code: 'source',
       simple: 'כאן מתחילה הבקשה.',
-      explain: 'המחשב של התלמיד הוא נקודת ההתחלה. בלוג רשת קוראים לזה source.'
+      explain: 'המחשב של התלמיד הוא נקודת ההתחלה. בלוג רשת קוראים לזה source.',
+      wrong: 'המחשב הוא נקודת ההתחלה של הבקשה. הוא לא השרת שמחזיר תשובה ולא הכתובת של היעד.'
     },
     {
       id: 'server',
@@ -94,7 +127,8 @@
       icon: '🖥️',
       code: 'destination',
       simple: 'המקום שמחזיר את האתר או התשובה.',
-      explain: 'השרת הוא היעד. הוא מקבל בקשה ומחזיר תגובה, למשל דף התחברות או קובץ.'
+      explain: 'השרת הוא היעד. הוא מקבל בקשה ומחזיר תגובה, למשל דף התחברות או קובץ.',
+      wrong: 'שרת לא מתרגם שם אתר. הוא היעד שאליו מגיעים אחרי שכבר יודעים את כתובת ה־IP.'
     },
     {
       id: 'dns',
@@ -102,7 +136,8 @@
       icon: '🔎',
       code: 'name -> IP',
       simple: 'מתרגם שם אתר לכתובת.',
-      explain: 'DNS הוא כמו איש קשר של האינטרנט: נותנים לו שם אתר, והוא מחזיר כתובת IP.'
+      explain: 'DNS הוא כמו איש קשר של האינטרנט: נותנים לו שם אתר, והוא מחזיר כתובת IP.',
+      wrong: 'DNS לא מחזיר את דף האתר עצמו. התפקיד שלו הוא לתרגם שם אתר לכתובת IP.'
     },
     {
       id: 'ip',
@@ -110,7 +145,8 @@
       icon: '📍',
       code: '203.0.113.24',
       simple: 'הכתובת שאליה הרשת יודעת להגיע.',
-      explain: 'IP הוא מספר כתובת של מחשב או שרת ברשת. בלי IP, המידע לא יודע לאן ללכת.'
+      explain: 'IP הוא מספר כתובת של מחשב או שרת ברשת. בלי IP, המידע לא יודע לאן ללכת.',
+      wrong: 'IP היא הכתובת. היא לא מי שמתרגם את שם האתר, ולא מי שמחזיר את הדף.'
     }
   ];
 
@@ -133,12 +169,13 @@
     selectedRoutePiece: '',
     route: {},
     activeCase: 'coins',
+    packetInvestigation: {},
     packetText: 'src=10.0.0.23 dns=free-coins.example dst=198.51.100.77 proto=http path=/login?password= encrypted=false unknown=true',
     pythonRan: false,
     report: { seen: '', signals: '', action: '' }
   };
 
-  const mediaVersion = '20260918-packet-v61';
+  const mediaVersion = '20260918-packet-v62';
   const mediaUrl = path => `${path}?v=${mediaVersion}`;
   let routeDrag = null;
   let ignoreRouteClick = false;
@@ -220,7 +257,11 @@
     const filled = routeSlots.filter(slot => state.route[slot.id]).length;
     if (!filled) return 'בחרו חלק מהרשימה ואז שימו אותו במקום הנכון במסלול מלמעלה למטה.';
     if (routeIsComplete()) return 'המסלול נכון: מחשב -> DNS -> IP -> שרת -> HTTPS.';
-    return `${routeCorrectCount()} מתוך ${routeSlots.length} חלקים במקום הנכון. אפשר להחליף חלקים ולנסות שוב.`;
+    return `${routeCorrectCount()} מתוך ${routeSlots.length} חלקים במקום הנכון. לחצו על חלק שגוי כדי להחזיר אותו ליד ולנסות שוב.`;
+  }
+  function explainRoutePlacement(slot, piece, isCorrect) {
+    if (isCorrect) return `נכון: ${piece.label} מתאים ל־"${slot.label}". ${piece.explain}`;
+    return `לא בדיוק: ${piece.label} לא מתאים ל־"${slot.label}". ${piece.wrong}`;
   }
   function placeRoutePiece(slotId, pieceId) {
     const slot = routeSlots.find(item => item.id === slotId);
@@ -228,7 +269,27 @@
     if (!slot || !piece) return;
     state.route[slot.id] = piece.id;
     state.selectedRoutePiece = '';
-    say(state.route[slot.id] === slot.expected ? `נכון: ${piece.label} במקום המתאים במסלול.` : `שמנו את ${piece.label}. בדקו אם הוא מתאים לשאלה: ${slot.label}`);
+    say(explainRoutePlacement(slot, piece, state.route[slot.id] === slot.expected));
+  }
+  function activeInvestigationAnswers() {
+    if (!state.packetInvestigation[state.activeCase]) state.packetInvestigation[state.activeCase] = {};
+    return state.packetInvestigation[state.activeCase];
+  }
+  function packetQuestionChoice(question, optionId) {
+    return question.options.find(option => option.id === optionId);
+  }
+  function isPacketAnswerCorrect(question, option, caseId = state.activeCase) {
+    return Boolean(option?.correctFor?.includes(caseId));
+  }
+  function packetInvestigationCorrectCount(caseId = state.activeCase) {
+    const answers = state.packetInvestigation[caseId] || {};
+    return packetInvestigationQuestions.filter(question => {
+      const option = packetQuestionChoice(question, answers[question.id]);
+      return isPacketAnswerCorrect(question, option, caseId);
+    }).length;
+  }
+  function packetInvestigationComplete(caseId = state.activeCase) {
+    return packetInvestigationCorrectCount(caseId) === packetInvestigationQuestions.length;
   }
   function analyzePacket(text) {
     const lower = text.toLowerCase();
@@ -303,8 +364,14 @@
         <article class="big-card">
           <span class="card-kicker">Packet Patrol</span>
           <img class="lab-visual" src="assets/cyber-city/packet-lab.svg" alt="חדר בקרה של תעבורת רשת">
-          <h3>היום עובדים כמו צוות הגנת רשת: לא מנחשים, קוראים תעבורה.</h3>
+          <h3>קריאת חירום: שער העיר לא נפתח.</h3>
+          <p>תושבים מנסים להיכנס לפורטל העיר, אבל חלק מהבקשות נראות חשודות. צוות Network Defender צריך להבין אם הבקשה נתקעה ב־DNS, הגיעה לשרת הנכון, או חשפה מידע בדרך.</p>
           <p>Packet הוא חבילת מידע קטנה שעוברת ברשת. במקום לשלוח הכול כגוש אחד, האינטרנט מעביר חבילות קטנות עם פרטים כמו מקור, יעד ופרוטוקול. בשיעור עובדים רק על לוגים מסומלצים שנבנו ללומדה.</p>
+        </article>
+        <article class="tool-card">
+          <span>המשימה שלכם</span>
+          <h3>למצוא איזו תעבורה בטוחה ואיזו דורשת עצירה.</h3>
+          <p>קודם בונים את המסלול, אחר כך חוקרים Packet Log, ואז נותנים ל־Python לבדוק הרבה רשומות מהר יותר.</p>
         </article>
         <article class="tool-card">
           <span>מה לומדים בפועל?</span>
@@ -418,12 +485,22 @@
 
   function renderPacket() {
     const active = packetCases.find(item => item.id === state.activeCase) || packetCases[1];
+    const answers = activeInvestigationAnswers();
+    const correctCount = packetInvestigationCorrectCount(active.id);
     return `
-      <section class="builder-grid">
+      <section class="packet-investigation">
         <article class="tool-card">
-          <span>Packet Log</span>
+          <span>מיני־חקירה</span>
           <h3>${esc(active.title)}</h3>
-          <p>Packet הוא חבילת מידע קטנה שעוברת ברשת. לוג תעבורה הוא כמו שורת תצפית על חבילה כזאת: מי שלח, לאן היא הולכת, באיזה פרוטוקול, והאם התוכן מוצפן. מבינים בזה כדי לדעת מתי מידע חשוף ומתי צריך לעצור.</p>
+          <p>Packet Log הוא כמו שורת תצפית: מי שלח, לאן זה הולך, באיזה פרוטוקול, והאם התוכן מוצפן. כדי לפתור את התקלה בשער העיר, צריך לענות על שלוש שאלות חקירה.</p>
+          <div class="mini-options compact">
+            ${packetCases.map(item => `
+              <button class="${state.activeCase === item.id ? 'selected' : ''}" type="button" data-investigation-case="${item.id}">
+                <strong>${esc(item.title)}</strong>
+                <small dir="ltr">${esc(item.proto)} · encrypted=${esc(item.encrypted)}</small>
+              </button>
+            `).join('')}
+          </div>
           <div class="site-preview" dir="ltr">
             <small>src ${esc(active.src)} -> dst ${esc(active.dst)}</small>
             <strong>${esc(active.proto)} · encrypted=${esc(active.encrypted)}</strong>
@@ -434,7 +511,29 @@
         <article class="code-panel">
           <span>רשומת תעבורה מסומלצת</span>
           <pre><code>${esc(active.log)}</code></pre>
-          <button class="button" type="button" data-save-packet>הבנתי איך קוראים לוג תעבורה</button>
+        </article>
+        <article class="tool-card packet-question-card">
+          <span>שאלות חקירה</span>
+          <h3>${correctCount}/${packetInvestigationQuestions.length} תשובות נכונות</h3>
+          ${packetInvestigationQuestions.map(question => {
+            const selectedId = answers[question.id];
+            const selectedOption = packetQuestionChoice(question, selectedId);
+            const correct = isPacketAnswerCorrect(question, selectedOption, active.id);
+            return `
+              <div class="packet-question ${selectedId ? correct ? 'correct' : 'wrong' : ''}">
+                <b>${esc(question.title)}</b>
+                <div>
+                  ${question.options.map(option => `
+                    <button class="${selectedId === option.id ? 'selected' : ''}" type="button" data-packet-answer="${esc(question.id)}" data-answer="${esc(option.id)}">
+                      ${esc(option.text)}
+                    </button>
+                  `).join('')}
+                </div>
+                ${selectedId ? `<small>${esc(selectedOption.feedback)}</small>` : '<small>בחרו תשובה לפי הפרוטוקול, היעד והתוכן.</small>'}
+              </div>
+            `;
+          }).join('')}
+          <button class="button" type="button" data-save-packet>${packetInvestigationComplete(active.id) ? 'שמור חקירה והמשך לפייתון' : 'פתרו את שלוש שאלות החקירה'}</button>
         </article>
       </section>
     `;
@@ -549,6 +648,22 @@ print("Risk:", risk)</code></pre>
           <span>תוצר שיעור 6</span>
           <strong>Packet Inspector</strong>
           <p>התלמיד יצא עם כלי שבודק לוג תעבורה, מזהה HTTP גלוי, התחברות, סיסמה ויעד חשוד, ומסביר החלטת הגנה.</p>
+          <div class="defender-summary">
+            <b>מה אני יודע עכשיו?</b>
+            <ul>
+              <li><strong>Packet</strong> הוא חבילת מידע קטנה עם מקור, יעד ופרוטוקול.</li>
+              <li><strong>DNS</strong> מתרגם שם אתר לכתובת IP.</li>
+              <li><strong>IP</strong> הוא הכתובת שאליה שולחים מידע.</li>
+              <li><strong>Server</strong> מקבל בקשה ומחזיר תשובה.</li>
+              <li><strong>HTTPS</strong> מצפין את התוכן בדרך.</li>
+              <li><strong>Python</strong> עוזר לבדוק הרבה Packets מהר.</li>
+            </ul>
+          </div>
+          <div class="network-defender-badge" aria-label="תג Network Defender">
+            <span>NETWORK DEFENDER</span>
+            <strong>Packet Patrol</strong>
+            <small>יודע לקרוא תעבורה, לזהות סיכון, ולהסביר החלטת הגנה</small>
+          </div>
         </article>
       </section>
     `;
@@ -688,10 +803,41 @@ print("Risk:", risk)</code></pre>
       render({ preserveScroll: !movedToNextStation });
     });
     document.querySelector('[data-save-packet]')?.addEventListener('click', () => {
+      const active = packetCases.find(item => item.id === state.activeCase) || packetCases[0];
+      if (!packetInvestigationComplete(active.id)) {
+        say(`עוד לא. יש ${packetInvestigationCorrectCount(active.id)}/${packetInvestigationQuestions.length} תשובות נכונות בחקירה.`);
+        render({ preserveScroll: true });
+        return;
+      }
       complete('packet');
-      addCase('Packet Log: נקראה רשומת תעבורה מסומלצת');
-      say('מעולה. עכשיו אפשר לקרוא לוג כמו צוות הגנה: source, destination, protocol ו־encrypted.');
+      addCase(`Packet Log: נחקרה רשומת "${active.title}" והתקבלה החלטת הגנה`);
+      state.packetText = active.log;
+      say('מעולה. עכשיו יש לכם חקירה ידנית. בתחנה הבאה Python יעשה את אותה בדיקה מהר יותר.');
+      const pythonStationIndex = stations.findIndex(station => station.id === 'python');
+      if (pythonStationIndex !== -1) state.station = pythonStationIndex;
       render();
+    });
+    document.querySelectorAll('[data-investigation-case]').forEach(button => {
+      button.addEventListener('click', () => {
+        state.activeCase = button.dataset.investigationCase;
+        const active = packetCases.find(item => item.id === state.activeCase);
+        const risk = calcRisk(new Set(active?.signals || []));
+        state.packetText = active?.log || state.packetText;
+        setRisk(risk, active?.action || recommendation(risk));
+        say('בחרתם רשומת תעבורה אחרת. עכשיו ענו על שאלות החקירה שלה.');
+        render({ preserveScroll: true });
+      });
+    });
+    document.querySelectorAll('[data-packet-answer]').forEach(button => {
+      button.addEventListener('click', () => {
+        const questionId = button.dataset.packetAnswer;
+        const question = packetInvestigationQuestions.find(item => item.id === questionId);
+        const option = packetQuestionChoice(question, button.dataset.answer);
+        activeInvestigationAnswers()[questionId] = button.dataset.answer;
+        const correct = isPacketAnswerCorrect(question, option);
+        say(correct ? option.feedback : `${option.feedback} בדקו שוב את ה־protocol, היעד וה־path.`);
+        render({ preserveScroll: true });
+      });
     });
     document.querySelector('[data-packet-text]')?.addEventListener('input', event => {
       state.packetText = event.target.value;
@@ -849,6 +995,7 @@ print("Risk:", risk)</code></pre>
     state.selectedRoutePiece = '';
     state.route = {};
     state.activeCase = 'coins';
+    state.packetInvestigation = {};
     state.packetText = 'src=10.0.0.23 dns=free-coins.example dst=198.51.100.77 proto=http path=/login?password= encrypted=false unknown=true';
     state.pythonRan = false;
     state.report = { seen: '', signals: '', action: '' };

@@ -462,6 +462,7 @@ p {
 .sim-grid,
 .chat-lab,
 .builder-grid,
+.packet-investigation,
 .ctf-grid,
 .report-grid {
   display: grid;
@@ -1513,6 +1514,79 @@ p {
   color: var(--red);
 }
 
+.packet-investigation {
+  grid-template-columns: minmax(260px, .9fr) minmax(260px, .9fr) minmax(300px, 1.2fr);
+  align-items: start;
+}
+
+.mini-options.compact {
+  grid-template-columns: 1fr;
+  margin: 12px 0;
+}
+
+.packet-question-card {
+  display: grid;
+  gap: 12px;
+}
+
+.packet-question-card h3 {
+  margin: 0;
+  color: var(--blue);
+}
+
+.packet-question {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.packet-question.correct {
+  border-color: rgba(22, 163, 74, .35);
+  background: #f0fdf4;
+}
+
+.packet-question.wrong {
+  border-color: rgba(194, 65, 65, .35);
+  background: #fef2f2;
+}
+
+.packet-question b,
+.packet-question small {
+  display: block;
+}
+
+.packet-question small {
+  color: var(--muted);
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.packet-question div {
+  display: grid;
+  gap: 8px;
+}
+
+.packet-question button {
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 9px 10px;
+  background: #fff;
+  color: var(--ink);
+  text-align: right;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.packet-question button.selected {
+  border-color: rgba(37, 99, 235, .45);
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
 .scanner-flow {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1572,6 +1646,49 @@ p {
   border: 1px solid var(--line);
   border-radius: 10px;
   background: #f8fafc;
+}
+
+.defender-summary {
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid #dbeafe;
+  border-radius: 8px;
+  background: #eff6ff;
+}
+
+.defender-summary b {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.defender-summary ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0 18px 0 0;
+  color: #334155;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.network-defender-badge {
+  display: grid;
+  gap: 7px;
+  margin-top: 14px;
+  padding: 16px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #0f172a, #1d4ed8);
+  color: #fff;
+}
+
+.network-defender-badge span,
+.network-defender-badge small {
+  color: rgba(255, 255, 255, .78);
+  font-weight: 900;
+}
+
+.network-defender-badge strong {
+  font-size: 1.55rem;
 }
 
 .signal-list {
@@ -1694,6 +1811,7 @@ textarea {
   .sim-grid,
   .chat-lab,
   .builder-grid,
+  .packet-investigation,
   .ctf-grid,
   .report-grid,
   .route-game,
