@@ -1,129 +1,128 @@
 (function () {
   const stations = [
-    { id: 'brief', short: 'פתיחה', title: 'פתיחת חקירה: מי פתח את השער?', time: '8 דקות', goal: 'מבינים מהו אירוע סייבר, מהי פורנזיקה דיגיטלית, ולמה חוקרים ראיות בלי לפגוע במערכות.', type: 'brief' },
-    { id: 'concepts', short: 'מושגים', title: 'סרטוני מושגים: שפת חדר החקירה', time: '18 דקות', goal: 'לומדים Digital Forensics, Log, Timeline, IOC, Terminal ו־CTF Flag דרך סרטונים ותרגול קצר.', type: 'concepts' },
-    { id: 'evidence', short: 'ראיות', title: 'Evidence Board: פותחים תיק ראיות', time: '15 דקות', goal: 'פותחים ראיות נעולות ומזהים איזה סוג מידע כל ראיה נותנת לחקירה.', type: 'evidence' },
-    { id: 'timeline', short: 'ציר זמן', title: 'Timeline Builder: מסדרים מה קרה', time: '14 דקות', goal: 'מסדרים אירועי לוג לפי זמן ומגלים את רצף התקיפה.', type: 'timeline' },
-    { id: 'terminal', short: 'טרמינל', title: 'Forensics Terminal: מחפשים סימני חשד', time: '15 דקות', goal: 'משתמשים ב־cat, grep ו־wc בסימולציה סגורה כדי למצוא IOC ו־flag.', type: 'terminal' },
-    { id: 'python', short: 'Python', title: 'Python Evidence Counter', time: '12 דקות', goal: 'מריצים בודק Python שסופר כשלונות, מוצא כניסה מוצלחת ומחשב חשד.', type: 'python' },
-    { id: 'report', short: 'דוח', title: 'Incident Report: מסקנת צוות חקירה', time: '8 דקות', goal: 'מסכמים מי נכנס, איך הוכחנו, ואיזה תיקון מגן על העיר.', type: 'report' }
+    { id: 'brief', short: 'פתיחה', title: 'פתיחת משימה: מעבדת האקר אתי', time: '10 דקות', goal: 'מבינים למה חושבים כמו תוקף רק בתוך מערכת צעצוע, כדי ללמוד להגן טוב יותר.', type: 'brief' },
+    { id: 'concepts', short: 'מושגים', title: 'סרטונים ומשימות: שפת האקר אתי', time: '20 דקות', goal: 'לומדים Target, Vulnerability, Exploit, Fix וטרמינל דרך סרטון אנימציה ותרגול קצר לכל מושג.', type: 'concepts' },
+    { id: 'login', short: 'Login', title: 'Login Toy: מוצאים חולשה ומתקנים', time: '20 דקות', goal: 'בודקים מערכת התחברות צעצוע, מגלים למה היא חלשה, ומוסיפים הגנות פשוטות.', type: 'login' },
+    { id: 'terminal', short: 'טרמינל', title: 'Evidence Terminal: חוקרים תיק ראיות', time: '15 דקות', goal: 'משתמשים בפקודות לינוקס בסיסיות בתוך סימולציה: ls, cat ו־grep.', type: 'terminal' },
+    { id: 'python', short: 'Python', title: 'Python Defense Checker', time: '15 דקות', goal: 'בונים בודק קטן שמזהה סיסמה קצרה מדי, רמז גלוי וחוסר הגבלת ניסיונות.', type: 'python' },
+    { id: 'report', short: 'דוח', title: 'דוח Ethical Hacker', time: '10 דקות', goal: 'מסכמים איזו חולשה נמצאה, איך הוכחנו אותה בסביבה בטוחה, ומה תיקנו.', type: 'report' }
   ];
 
-  const mediaVersion = '20260919-mystery-room-v2';
+  const mediaVersion = '20260919-ethical-hacker-v1';
   const mediaUrl = path => `${path}?v=${mediaVersion}`;
 
   const stationVideos = {
-    brief: { title: 'סרטון פתיחה', text: 'שער העיר נפתח בלילה. עכשיו בונים תיק ראיות ולא מנחשים.', src: 'marketing/cyber-city-lesson8-overview.mp4', poster: 'marketing/cyber-city-lesson8-overview-poster.jpg' },
-    concepts: { title: 'סרטון מושגים', text: 'Forensics, Logs, Timeline, IOC, Terminal ו־CTF Flag בשפה פשוטה.', src: 'marketing/cyber-city-lesson8-concepts.mp4', poster: 'marketing/cyber-city-lesson8-concepts-poster.jpg' },
-    evidence: { title: 'סרטון Evidence Board', text: 'איך ראיה דיגיטלית עוזרת לענות מה קרה ומתי.', src: 'marketing/cyber-city-lesson8-evidence.mp4', poster: 'marketing/cyber-city-lesson8-evidence-poster.jpg' },
-    timeline: { title: 'סרטון Timeline', text: 'למה סדר האירועים חשוב יותר מניחוש מהיר.', src: 'marketing/cyber-city-lesson8-timeline.mp4', poster: 'marketing/cyber-city-lesson8-timeline-poster.jpg' },
-    terminal: { title: 'סרטון טרמינל חקירה', text: 'איך cat, grep ו־wc עוזרים למצוא סימני חשד.', src: 'marketing/cyber-city-lesson8-terminal.mp4', poster: 'marketing/cyber-city-lesson8-terminal-poster.jpg' },
-    python: { title: 'סרטון Python Counter', text: 'איך Python סופר אירועים ומחזק מסקנה.', src: 'marketing/cyber-city-lesson8-python.mp4', poster: 'marketing/cyber-city-lesson8-python-poster.jpg' },
-    report: { title: 'סרטון דוח אירוע', text: 'איך כותבים מסקנה קצרה לפי ראיות.', src: 'marketing/cyber-city-lesson8-report.mp4', poster: 'marketing/cyber-city-lesson8-report-poster.jpg' }
+    brief: { title: 'סרטון פתיחה', text: 'איך חוקרים חולשה בלי לפגוע במערכות אמיתיות.', src: 'marketing/cyber-city-lesson7-overview.mp4', poster: 'marketing/cyber-city-lesson7-overview-poster.jpg' },
+    concepts: { title: 'סרטון מושגים', text: 'Target, Vulnerability, Exploit ו־Fix בשפה פשוטה.', src: 'marketing/cyber-city-lesson7-concepts.mp4', poster: 'marketing/cyber-city-lesson7-concepts-poster.jpg' },
+    login: { title: 'סרטון Login Toy', text: 'איך סיסמה חלשה ורמז גלוי הופכים מערכת לפגיעה.', src: 'marketing/cyber-city-lesson7-login.mp4', poster: 'marketing/cyber-city-lesson7-login-poster.jpg' },
+    terminal: { title: 'סרטון טרמינל', text: 'איך ls, cat ו־grep עוזרים לחקור קבצי ראיות בסביבה סגורה.', src: 'marketing/cyber-city-lesson7-terminal.mp4', poster: 'marketing/cyber-city-lesson7-terminal-poster.jpg' },
+    python: { title: 'סרטון Python Defender', text: 'איך Python בודק אם מערכת התחברות מוגנת מספיק.', src: 'marketing/cyber-city-lesson7-python.mp4', poster: 'marketing/cyber-city-lesson7-python-poster.jpg' },
+    report: { title: 'סרטון דוח סיום', text: 'איך מדווחים כמו האקר אתי: חולשה, הוכחה בטוחה ותיקון.', src: 'marketing/cyber-city-lesson7-report.mp4', poster: 'marketing/cyber-city-lesson7-report-poster.jpg' }
   };
 
   const conceptVideos = [
     {
-      id: 'forensics',
-      title: 'Digital Forensics',
-      text: 'חקירת אירוע אחרי שהוא קרה, לפי ראיות.',
-      src: 'marketing/cyber-city-lesson8-concept-forensics.mp4',
-      poster: 'marketing/cyber-city-lesson8-concept-forensics-poster.jpg',
-      task: 'מה עושה חוקר פורנזיקה דיגיטלית?',
-      options: ['בונה מסקנה לפי ראיות', 'מנחש מי אשם', 'בודק אתר אמיתי בלי אישור'],
-      answer: 'בונה מסקנה לפי ראיות'
+      id: 'ethics',
+      title: 'Ethical Hacker',
+      text: 'בודקים רק באישור ורק כדי לתקן.',
+      src: 'marketing/cyber-city-lesson7-concept-ethics.mp4',
+      poster: 'marketing/cyber-city-lesson7-concept-ethics-poster.jpg',
+      task: 'מה מותר להאקר אתי לעשות?',
+      options: ['לבדוק מערכת אימון שקיבלנו אישור לבדוק', 'לנסות סיסמאות באתר אמיתי', 'לשלוח קישור חשוד לחבר'],
+      answer: 'לבדוק מערכת אימון שקיבלנו אישור לבדוק'
     },
     {
-      id: 'logs',
-      title: 'Logs',
-      text: 'רשומות קצרות של פעולות שקרו במערכת.',
-      src: 'marketing/cyber-city-lesson8-concept-logs.mp4',
-      poster: 'marketing/cyber-city-lesson8-concept-logs-poster.jpg',
-      task: 'מה אפשר למצוא בלוג?',
-      options: ['שעה, משתמש, פעולה ותוצאה', 'ציור של האתר', 'סיסמה של תלמיד אחר'],
-      answer: 'שעה, משתמש, פעולה ותוצאה'
+      id: 'target',
+      title: 'Target',
+      text: 'המערכת שאותה בודקים בסביבת אימון.',
+      src: 'marketing/cyber-city-lesson7-concept-target.mp4',
+      poster: 'marketing/cyber-city-lesson7-concept-target-poster.jpg',
+      task: 'מהו Target בשיעור שלנו?',
+      options: ['מערכת צעצוע שמותר לבדוק', 'כל אתר באינטרנט', 'הטלפון של תלמיד אחר'],
+      answer: 'מערכת צעצוע שמותר לבדוק'
     },
     {
-      id: 'timeline',
-      title: 'Timeline',
-      text: 'סידור האירועים לפי זמן כדי להבין רצף.',
-      src: 'marketing/cyber-city-lesson8-concept-timeline.mp4',
-      poster: 'marketing/cyber-city-lesson8-concept-timeline-poster.jpg',
-      task: 'למה בונים ציר זמן?',
-      options: ['כדי להבין מה קרה קודם ומה אחר כך', 'כדי למחוק ראיות', 'כדי להחליף סיסמה מיד'],
-      answer: 'כדי להבין מה קרה קודם ומה אחר כך'
+      id: 'vulnerability',
+      title: 'Vulnerability',
+      text: 'חולשה שמישהו יכול לנצל.',
+      src: 'marketing/cyber-city-lesson7-concept-vulnerability.mp4',
+      poster: 'marketing/cyber-city-lesson7-concept-vulnerability-poster.jpg',
+      task: 'איזו דוגמה היא חולשה?',
+      options: ['סיסמה קצרה עם רמז גלוי', 'כפתור כניסה יפה', 'שם משתמש בעברית'],
+      answer: 'סיסמה קצרה עם רמז גלוי'
     },
     {
-      id: 'ioc',
-      title: 'IOC',
-      text: 'Indicators of Compromise: סימנים קטנים שמשהו חשוד קרה.',
-      src: 'marketing/cyber-city-lesson8-concept-ioc.mp4',
-      poster: 'marketing/cyber-city-lesson8-concept-ioc-poster.jpg',
-      task: 'איזה פריט הוא IOC טוב?',
-      options: ['הרבה failed ואז success מאותו IP', 'כותרת יפה באתר', 'שם בית הספר'],
-      answer: 'הרבה failed ואז success מאותו IP'
+      id: 'exploit',
+      title: 'Exploit',
+      text: 'שימוש בחולשה כדי להראות מה עלול לקרות.',
+      src: 'marketing/cyber-city-lesson7-concept-exploit.mp4',
+      poster: 'marketing/cyber-city-lesson7-concept-exploit-poster.jpg',
+      task: 'מה עושים עם Exploit בשיעור?',
+      options: ['מוכיחים חולשה בצעצוע ואז מתקנים', 'פורצים למערכת אמיתית', 'מוחקים קבצים'],
+      answer: 'מוכיחים חולשה בצעצוע ואז מתקנים'
+    },
+    {
+      id: 'fix',
+      title: 'Fix',
+      text: 'תיקון שמקטין את הסיכון.',
+      src: 'marketing/cyber-city-lesson7-concept-fix.mp4',
+      poster: 'marketing/cyber-city-lesson7-concept-fix-poster.jpg',
+      task: 'איזה Fix הכי מתאים ל־Login חלש?',
+      options: ['סיסמה חזקה והגבלת ניסיונות', 'להגדיל את הלוגו', 'להסתיר את כפתור הכניסה'],
+      answer: 'סיסמה חזקה והגבלת ניסיונות'
     },
     {
       id: 'terminal',
-      title: 'Forensics Terminal',
-      text: 'כלי חיפוש בטוח בקבצי ראיות מדומים.',
-      src: 'marketing/cyber-city-lesson8-concept-terminal.mp4',
-      poster: 'marketing/cyber-city-lesson8-concept-terminal-poster.jpg',
+      title: 'Linux Terminal',
+      text: 'כלי חקירה קצר: מציגים קבצים ומחפשים מילים.',
+      src: 'marketing/cyber-city-lesson7-concept-terminal.mp4',
+      poster: 'marketing/cyber-city-lesson7-concept-terminal-poster.jpg',
       task: 'איזו פקודה מחפשת מילה בקובץ?',
-      options: ['grep failed auth.log', 'paint failed', 'open internet'],
-      answer: 'grep failed auth.log'
-    },
-    {
-      id: 'ctf',
-      title: 'CTF Flag',
-      text: 'דגל הוא הוכחת פתרון באתגר סייבר.',
-      src: 'marketing/cyber-city-lesson8-concept-ctf.mp4',
-      poster: 'marketing/cyber-city-lesson8-concept-ctf-poster.jpg',
-      task: 'מה אומר flag בשיעור הזה?',
-      options: ['מצאנו את הראיה המרכזית', 'פרצנו למערכת אמיתית', 'סיימנו לקרוא טקסט'],
-      answer: 'מצאנו את הראיה המרכזית'
+      options: ['grep', 'paint', 'send'],
+      answer: 'grep'
     }
   ];
 
-  const evidenceItems = [
-    { id: 'auth', title: 'auth.log', type: 'Log', clue: '22:03 user=demo failed מ־10.0.0.44 ואז 22:07 success.', question: 'איזה סימן חשוד מופיע?', options: ['הרבה כשלונות ואז הצלחה', 'אין שום שעה', 'אין שם משתמש'], answer: 'הרבה כשלונות ואז הצלחה' },
-    { id: 'packet', title: 'packet.log', type: 'Network', clue: 'src=10.0.0.44 dst=gate proto=https path=/login encrypted=true.', question: 'מה ה־IP החשוד?', options: ['10.0.0.44', '203.0.113.88', '8.8.8.8'], answer: '10.0.0.44' },
-    { id: 'door', title: 'door_event.log', type: 'Access', clue: '22:08 gate=open reason=remote_login user=demo.', question: 'מה קרה אחרי ה־login?', options: ['השער נפתח מרחוק', 'המחשב נכבה', 'DNS תרגם אתר'], answer: 'השער נפתח מרחוק' },
-    { id: 'hint', title: 'hint_note.txt', type: 'File', clue: 'old hint: city + one digit. This hint must be removed.', question: 'איזה תיקון נלמד כאן?', options: ['לא מציגים רמז שמגלה סיסמה', 'מגדילים לוגו', 'מוחקים לוגים'], answer: 'לא מציגים רמז שמגלה סיסמה' },
-    { id: 'message', title: 'encoded_message.txt', type: 'Mini Crypto', clue: 'base64: RkxBR3tnYXRlX3RpbWVsaW5lfQ==', question: 'מה סוג הראיה?', options: ['הודעה מקודדת קצרה', 'סיסמה אמיתית', 'אתר ציבורי'], answer: 'הודעה מקודדת קצרה' },
-    { id: 'flag', title: 'flag.txt', type: 'CTF', clue: 'הדגל יפתח רק אחרי ציר זמן נכון וטרמינל.', question: 'מתי פותחים flag?', options: ['אחרי שהוכחנו את רצף האירועים', 'לפני שקוראים ראיות', 'כשמנחשים מהר'], answer: 'אחרי שהוכחנו את רצף האירועים' }
+  const loginAttempts = [
+    { id: 'admin', value: 'admin', result: 'נכשל: זו לא הסיסמה, אבל היא קצרה מדי ומראה למה אסור לבחור מילים נפוצות.', weak: true },
+    { id: 'city', value: 'city7', result: 'הצליח במערכת הצעצוע: הרמז “עיר + מספר” חשף סיסמה חלשה.', weak: true },
+    { id: 'strong', value: 'River-92-Cloud', result: 'חזק יותר: ארוך, מגוון, ולא מופיע ברמז גלוי.', weak: false }
   ];
 
-  const timelineEvents = [
-    { id: 'fail1', time: '22:03', label: 'ניסיון כניסה נכשל', detail: 'user=demo failed src=10.0.0.44' },
-    { id: 'fail2', time: '22:04', label: 'עוד ניסיון נכשל', detail: 'user=demo failed src=10.0.0.44' },
-    { id: 'success', time: '22:07', label: 'כניסה הצליחה', detail: 'user=demo success src=10.0.0.44' },
-    { id: 'gate', time: '22:08', label: 'שער נפתח', detail: 'gate=open reason=remote_login' },
-    { id: 'fix', time: '22:15', label: 'תיקון מומלץ', detail: 'reset password, remove hint, enable lockout' }
+  const fixOptions = [
+    { id: 'long', label: 'דרישת סיסמה ארוכה', value: 25 },
+    { id: 'lockout', label: 'נעילה אחרי 3 ניסיונות', value: 30 },
+    { id: 'hide-hint', label: 'לא מציגים רמז שמגלה את הסיסמה', value: 25 },
+    { id: 'generic-error', label: 'שגיאת כניסה כללית', value: 20 }
   ];
 
   const terminalFileSystem = {
     '/': {
       type: 'dir',
       children: {
-        case: {
+        evidence: {
           type: 'dir',
           children: {
-            'auth.log': {
+            'login_policy.txt': {
               type: 'file',
-              content: '22:03 user=demo src=10.0.0.44 failed\n22:04 user=demo src=10.0.0.44 failed\n22:05 user=demo src=10.0.0.44 failed\n22:07 user=demo src=10.0.0.44 success'
+              content: 'password_min_length=4\nmax_attempts=unlimited\nhint=city + one digit\nerror_message=Wrong password for demo'
             },
-            'packet.log': {
+            'attempts.log': {
               type: 'file',
-              content: '22:07 src=10.0.0.44 dst=203.0.113.88 proto=https path=/login encrypted=true'
+              content: '09:10 user=demo pass=admin failed\n09:11 user=demo pass=city7 success\n09:12 user=demo pass=city8 failed\n09:13 user=demo pass=city9 failed'
             },
-            'door_event.log': {
+            'notes.txt': {
               type: 'file',
-              content: '22:08 gate=open reason=remote_login user=demo src=10.0.0.44'
-            },
-            'encoded_message.txt': {
+              content: 'Training lab only.\nLook for weak policy clues.\nNever test real systems without permission.'
+            }
+          }
+        },
+        report: {
+          type: 'dir',
+          children: {
+            'todo.txt': {
               type: 'file',
-              content: 'base64=RkxBR3tnYXRlX3RpbWVsaW5lfQ==\ndecoded_hint=FLAG{gate_timeline}'
+              content: '1. Find the weak login rule\n2. Prove it safely\n3. Suggest a fix'
             }
           }
         }
@@ -132,35 +131,86 @@
   };
 
   const terminalTasks = [
-    { id: 'pwd', title: '1. מיקום', prompt: 'גלו איפה אתם נמצאים.', accepts: ['pwd'], hint: 'pwd' },
-    { id: 'ls', title: '2. תיקיות', prompt: 'הציגו את התיקיות.', accepts: ['ls'], hint: 'ls' },
-    { id: 'cd', title: '3. תיק חקירה', prompt: 'עברו לתיקיית case.', accepts: ['cd case'], hint: 'cd case' },
-    { id: 'read', title: '4. קוראים auth', prompt: 'פתחו את auth.log.', accepts: ['cat auth.log', 'cat case/auth.log'], hint: 'cat auth.log' },
-    { id: 'failed', title: '5. כשלונות', prompt: 'מצאו נסיונות failed.', accepts: ['grep failed auth.log', 'grep failed case/auth.log'], hint: 'grep failed auth.log' },
-    { id: 'success', title: '6. הצלחה', prompt: 'מצאו success.', accepts: ['grep success auth.log', 'grep success case/auth.log'], hint: 'grep success auth.log' },
-    { id: 'count', title: '7. ספירה', prompt: 'ספרו כמה שורות יש בלוג.', accepts: ['wc auth.log', 'wc case/auth.log'], hint: 'wc auth.log' },
-    { id: 'flag', title: '8. דגל', prompt: 'מצאו את ה־flag בקובץ ההודעה.', accepts: ['grep flag encoded_message.txt', 'grep flag case/encoded_message.txt', 'cat encoded_message.txt', 'cat case/encoded_message.txt'], hint: 'grep flag encoded_message.txt' }
+    {
+      id: 'map',
+      title: '1. מפה ראשונה',
+      prompt: 'גלו באיזו תיקייה אתם נמצאים.',
+      accepts: ['pwd'],
+      hint: 'נסו pwd.'
+    },
+    {
+      id: 'list-root',
+      title: '2. רואים תיקיות',
+      prompt: 'הציגו את התיקיות וקבצי השורש.',
+      accepts: ['ls'],
+      hint: 'נסו ls.'
+    },
+    {
+      id: 'open-evidence',
+      title: '3. נכנסים לראיות',
+      prompt: 'עברו לתיקיית evidence.',
+      accepts: ['cd evidence'],
+      hint: 'נסו cd evidence.'
+    },
+    {
+      id: 'read-policy',
+      title: '4. קוראים מדיניות',
+      prompt: 'פתחו את קובץ מדיניות ההתחברות.',
+      accepts: ['cat login_policy.txt', 'cat evidence/login_policy.txt'],
+      hint: 'cat מציגה תוכן של קובץ.'
+    },
+    {
+      id: 'find-unlimited',
+      title: '5. מחפשים חולשת ניסיונות',
+      prompt: 'מצאו את השורה שמראה שאין הגבלת ניסיונות.',
+      accepts: ['grep unlimited login_policy.txt', 'grep unlimited evidence/login_policy.txt'],
+      hint: 'grep unlimited login_policy.txt'
+    },
+    {
+      id: 'find-hint',
+      title: '6. מחפשים רמז מסוכן',
+      prompt: 'מצאו את השורה שבה הרמז חושף את מבנה הסיסמה.',
+      accepts: ['grep hint login_policy.txt', 'grep hint evidence/login_policy.txt'],
+      hint: 'grep hint login_policy.txt'
+    },
+    {
+      id: 'check-attempts',
+      title: '7. בודקים לוג ניסיונות',
+      prompt: 'מצאו בלוג ניסיון כניסה שהצליח בסיסמה החלשה.',
+      accepts: ['grep success attempts.log', 'grep success evidence/attempts.log', 'cat attempts.log', 'cat evidence/attempts.log'],
+      hint: 'grep success attempts.log'
+    }
+  ];
+
+  const terminalQuickCommands = [
+    { command: 'pwd', label: 'איפה אני?' },
+    { command: 'ls', label: 'מה יש פה?' },
+    { command: 'cd evidence', label: 'כניסה לראיות' },
+    { command: 'cat login_policy.txt', label: 'קריאת מדיניות' },
+    { command: 'grep unlimited login_policy.txt', label: 'חיפוש ניסיונות' },
+    { command: 'grep hint login_policy.txt', label: 'חיפוש רמז' },
+    { command: 'grep success attempts.log', label: 'חיפוש הצלחה' }
   ];
 
   const state = {
     station: 0,
     xp: 0,
-    confidence: 0,
+    defense: 0,
     caseFile: [],
     completed: new Set(),
     watchedConcepts: new Set(),
     conceptTasks: {},
-    openedEvidence: new Set(),
-    evidenceAnswers: {},
-    timelineOrder: [],
+    selectedAttempt: '',
+    selectedFixes: new Set(),
     terminalInput: 'help',
+    terminalOutput: '',
+    terminalFeedback: 'התחילו ב־pwd. אחרי כל פקודה תקבלו פלט, הסבר קצר וסימון התקדמות.',
     terminalCwd: '/',
     terminalHistory: [],
     completedTerminalTasks: new Set(),
-    foundSignals: new Set(),
-    terminalFeedback: 'התחילו ב־pwd ואז ls. כל הפקודות רצות רק בסביבת אימון בדפדפן.',
+    foundEvidence: new Set(),
     pythonRan: false,
-    report: { suspect: '', proof: '', fix: '' }
+    report: { weakness: '', proof: '', fix: '' }
   };
 
   const $ = id => document.getElementById(id);
@@ -176,12 +226,12 @@
       addXp(Math.ceil(100 / stations.length));
     }
   }
-  function setConfidence(value, text) {
-    state.confidence = Math.max(0, Math.min(100, value));
-    $('riskScore').textContent = `${state.confidence}%`;
-    $('riskFill').style.width = `${state.confidence}%`;
-    $('riskFill').className = state.confidence >= 75 ? 'low' : state.confidence >= 45 ? 'medium' : 'high';
-    $('riskText').textContent = text || 'Case Confidence התעדכן לפי הראיות.';
+  function setDefense(value, text) {
+    state.defense = Math.max(0, Math.min(100, value));
+    $('riskScore').textContent = `${state.defense}%`;
+    $('riskFill').style.width = `${state.defense}%`;
+    $('riskFill').className = state.defense >= 75 ? 'low' : state.defense >= 45 ? 'medium' : 'high';
+    $('riskText').textContent = text || 'Defense Score התעדכן לפי התיקונים.';
   }
   function progress() { return Math.round((state.completed.size / stations.length) * 100); }
   function conceptTaskStatus(video) {
@@ -193,13 +243,20 @@
     return conceptVideos.filter(video => state.watchedConcepts.has(video.id) && state.conceptTasks[video.id] === video.answer).length;
   }
   function conceptsAreComplete() { return conceptsCompleteCount() === conceptVideos.length; }
-  function evidenceSolvedCount() {
-    return evidenceItems.filter(item => state.openedEvidence.has(item.id) && state.evidenceAnswers[item.id] === item.answer).length;
+  function selectedFixScore() {
+    return fixOptions.filter(option => state.selectedFixes.has(option.id)).reduce((sum, option) => sum + option.value, 0);
   }
-  function timelineComplete() {
-    return timelineEvents.every((item, index) => state.timelineOrder[index] === item.id);
+  function pythonScore() {
+    const minLength = state.selectedFixes.has('long') ? 10 : 4;
+    const lockout = state.selectedFixes.has('lockout');
+    const noHint = state.selectedFixes.has('hide-hint');
+    return [
+      `min_length >= 10: ${minLength >= 10 ? 'true' : 'false'}`,
+      `lockout_enabled: ${lockout ? 'true' : 'false'}`,
+      `hint_is_safe: ${noHint ? 'true' : 'false'}`,
+      `defense_score: ${selectedFixScore()}`
+    ].join('\n');
   }
-  function pathLabel(path) { return path === '/' ? '/' : path.replace(/^\//, ''); }
   function terminalNode(path) {
     const parts = path.split('/').filter(Boolean);
     let node = terminalFileSystem['/'];
@@ -219,11 +276,28 @@
     });
     return `/${base.join('/')}`;
   }
+  function pathLabel(path) {
+    return path === '/' ? '/' : path.replace(/^\//, '');
+  }
   function runTerminalCommand(rawCommand) {
     const command = normalizeCommand(rawCommand);
-    if (!command) return { ok: false, output: 'type a command first' };
+    if (!command) return { output: 'type a command first', ok: false };
     if (command === 'help') {
-      return { ok: true, output: ['Available commands:', 'pwd', 'ls', 'cd case', 'cat auth.log', 'grep failed auth.log', 'grep success auth.log', 'wc auth.log', 'grep flag encoded_message.txt', 'clear'].join('\n') };
+      return {
+        ok: true,
+        output: [
+          'Available commands:',
+          'pwd',
+          'ls',
+          'cd evidence',
+          'cat login_policy.txt',
+          'cat attempts.log',
+          'grep unlimited login_policy.txt',
+          'grep hint login_policy.txt',
+          'grep success attempts.log',
+          'clear'
+        ].join('\n')
+      };
     }
     if (command === 'clear') {
       state.terminalHistory = [];
@@ -263,52 +337,67 @@
       const matches = target.content.split('\n').filter(line => line.toLowerCase().includes(word));
       return { ok: true, output: matches.length ? matches.join('\n') : 'no matches' };
     }
-    if (command.startsWith('wc ')) {
-      const target = terminalNode(resolvePath(command.slice(3)));
-      if (!target || target.type !== 'file') return { ok: false, output: 'wc: file not found' };
-      return { ok: true, output: `${target.content.split('\n').length} ${pathLabel(resolvePath(command.slice(3)))}` };
+    const lowercaseCommand = command.toLowerCase();
+    if (lowercaseCommand !== command && terminalTasks.some(task => task.accepts.includes(lowercaseCommand))) {
+      return {
+        ok: false,
+        output: `bash: ${command}: command not found\nLinux is case-sensitive. Try: ${lowercaseCommand}`
+      };
     }
+    if (command === 'dir') return { ok: false, output: 'dir is not part of this lab. In Linux practice, use: ls' };
+    if (command.startsWith('type ')) return { ok: false, output: 'type is not part of this lab. To read a file, use: cat FILE' };
+    if (command.startsWith('find ')) return { ok: false, output: 'find is not part of this lab. To search inside a file, use: grep WORD FILE' };
     return { ok: false, output: 'command not available in this training lab' };
   }
   function updateTerminalProgress(command, output) {
     const normalized = normalizeCommand(command);
-    const beforeTasks = new Set(state.completedTerminalTasks);
-    const beforeSignals = new Set(state.foundSignals);
+    const completedBefore = new Set(state.completedTerminalTasks);
+    const evidenceBefore = new Set(state.foundEvidence);
     terminalTasks.forEach(task => {
       if (task.accepts.includes(normalized)) state.completedTerminalTasks.add(task.id);
     });
-    if (output.includes('failed')) state.foundSignals.add('failed');
-    if (output.includes('success')) state.foundSignals.add('success');
-    if (output.includes('10.0.0.44')) state.foundSignals.add('ip');
-    if (output.includes('FLAG{gate_timeline}')) state.foundSignals.add('flag');
+    if (output.includes('max_attempts=unlimited')) state.foundEvidence.add('unlimited');
+    if (output.includes('hint=city + one digit')) state.foundEvidence.add('hint');
+    if (output.includes('city7 success')) state.foundEvidence.add('success');
     return {
-      tasks: [...state.completedTerminalTasks].filter(id => !beforeTasks.has(id)),
-      signals: [...state.foundSignals].filter(id => !beforeSignals.has(id))
+      tasks: [...state.completedTerminalTasks].filter(id => !completedBefore.has(id)),
+      evidence: [...state.foundEvidence].filter(id => !evidenceBefore.has(id))
     };
   }
   function activeTerminalTaskIndex() {
     const index = terminalTasks.findIndex(task => !state.completedTerminalTasks.has(task.id));
     return index === -1 ? terminalTasks.length - 1 : index;
   }
-  function terminalProgressText() { return `${state.completedTerminalTasks.size}/${terminalTasks.length}`; }
-  function terminalFeedback(result, changes) {
-    if (!result.ok) return terminalTasks[activeTerminalTaskIndex()]?.hint || 'נסו את הרמז של המשימה הפעילה.';
-    if (changes.signals.length) return `סימן חשד נמצא: ${changes.signals.join(', ')}. זה מחזק את תיק החקירה.`;
-    if (changes.tasks.length) return `בוצע: ${changes.tasks.join(', ')}. ממשיכים לחפש ראיות לפי המשימה הבאה.`;
-    return 'הפקודה רצה. בדקו את הפלט והמשיכו לפי המשימה הפעילה.';
+  function terminalProgressText() {
+    return `${state.completedTerminalTasks.size}/${terminalTasks.length}`;
   }
-  function pythonScore() {
-    const failed = 3;
-    const success = true;
-    const sameIp = true;
-    const risk = failed * 20 + (success ? 25 : 0) + (sameIp ? 15 : 0);
-    return [
-      `failed_attempts = ${failed}`,
-      `success_after_failures = ${success}`,
-      `same_source_ip = ${sameIp}`,
-      `case_risk = ${risk}`,
-      'conclusion = suspicious_login_before_gate_open'
-    ].join('\n');
+  function terminalEvidenceLabel(id) {
+    return {
+      unlimited: 'אין הגבלת ניסיונות',
+      hint: 'הרמז מגלה את מבנה הסיסמה',
+      success: 'כניסה הצליחה עם הסיסמה החלשה'
+    }[id] || id;
+  }
+  function terminalTaskTitle(id) {
+    return terminalTasks.find(task => task.id === id)?.title || id;
+  }
+  function commandCoaching(command, result, changes) {
+    if (!result.ok) {
+      if (result.output.includes('case-sensitive')) return 'כמעט. בלינוקס אות גדולה ואות קטנה הן לא אותו דבר. נסו את הפקודה באותיות קטנות.';
+      if (result.output.includes('use: ls')) return 'במעבדה הזו מתרגלים לינוקס: כדי לראות מה יש בתיקייה כותבים ls.';
+      if (result.output.includes('use: cat')) return 'כדי לקרוא קובץ בלינוקס משתמשים ב־cat ואז שם הקובץ.';
+      if (result.output.includes('use: grep')) return 'כדי למצוא מילה בתוך קובץ משתמשים ב־grep, למשל grep hint login_policy.txt.';
+      return terminalTasks[activeTerminalTaskIndex()]?.hint || 'נסו את הרמז של המשימה הפעילה.';
+    }
+    if (changes.evidence.length) {
+      return `ראיה נמצאה: ${changes.evidence.map(terminalEvidenceLabel).join(' + ')}. עכשיו יש לכם הוכחה אמיתית לתיק.`;
+    }
+    if (changes.tasks.length) {
+      return `בוצע: ${changes.tasks.map(terminalTaskTitle).join(' + ')}. הפקודה עזרה להתקדם בחקירה.`;
+    }
+    if (command === 'help') return 'פתחתם את רשימת הפקודות. עכשיו מתחילים בחקירה עם pwd ואז ls.';
+    if (command === 'clear') return 'ניקיתם את המסך. ההתקדמות והראיות נשמרו בתיק החקירה.';
+    return 'הפקודה רצה בהצלחה. בדקו את הפלט והמשיכו לפי המשימה הפעילה.';
   }
 
   function renderShell() {
@@ -344,13 +433,14 @@
     const video = stationVideos[stations[state.station].id];
     if (!video) return '';
     return `
-      <section class="stage-video-card mystery-stage-video">
-        <div>
-          <span>${esc(video.title)}</span>
+      <section class="stage-video-card" aria-label="${esc(video.title)}">
+        <div class="stage-video-copy">
+          <span>לפני שמתחילים</span>
+          <h3>${esc(video.title)}</h3>
           <p>${esc(video.text)}</p>
         </div>
-        <video controls preload="metadata" playsinline poster="${mediaUrl(video.poster)}">
-          <source src="${mediaUrl(video.src)}" type="video/mp4">
+        <video controls preload="metadata" playsinline poster="${esc(mediaUrl(video.poster))}">
+          <source src="${esc(mediaUrl(video.src))}" type="video/mp4">
         </video>
       </section>
     `;
@@ -359,61 +449,72 @@
   function renderBrief() {
     return `
       <section class="brief-grid">
-        <article class="tool-card">
-          <span>Cyber Mystery Room</span>
-          <h3>שער העיר נפתח בשעה 22:08.</h3>
-          <p>התפקיד שלכם הוא לא לנחש מי אשם. אתם צוות חקירה: אוספים ראיות, בונים ציר זמן, מחפשים IOC, ואז כותבים מסקנה.</p>
-          <div class="signal-list">
-            <span>Digital Forensics</span><span>Logs</span><span>Timeline</span><span>IOC</span><span>CTF Flag</span>
+        <article class="big-card">
+          <span class="card-kicker">Safe Attack Story</span>
+          <div class="hacker-visual" aria-hidden="true">
+            <b>TRAINING LOGIN</b>
+            <span>hint: city + one digit</span>
+            <strong>city7</strong>
           </div>
-          <button class="button" type="button" data-complete-brief>קיבלתי את תיק החקירה</button>
+          <h3>מערכת האימון נפתחת מהר מדי.</h3>
+          <p>מישהו הצליח להיכנס למערכת צעצוע כי הסיסמה הייתה קצרה, היה רמז גלוי, ולא הייתה הגבלת ניסיונות. התפקיד שלכם: להוכיח את החולשה בסביבה בטוחה, ואז לסגור אותה.</p>
+          <p>לא נוגעים באתרים אמיתיים, לא מנסים סיסמאות של אנשים, ולא שולחים בקשות החוצה. הכול קורה בתוך הלומדה.</p>
         </article>
-        <article class="tool-card mystery-case-visual">
-          <span>Case ID: GATE-2208</span>
-          <h3>מטרה: להוכיח מה קרה</h3>
+        <article class="tool-card">
+          <span>רצף השיעור</span>
           <ol>
-            <li>פותחים ראיות נעולות.</li>
-            <li>מסדרים אירועים בציר זמן.</li>
-            <li>מחפשים סימני חשד בטרמינל.</li>
-            <li>מריצים Python ומגישים דוח.</li>
+            <li>לומדים מושג בסרטון אנימציה.</li>
+            <li>פותרים משימה קצרה על אותו מושג.</li>
+            <li>בודקים Login Toy ומגלים חולשה.</li>
+            <li>משתמשים במיני־טרמינל כדי למצוא ראיה.</li>
+            <li>מריצים Python שמחשב כמה ההגנה חזקה.</li>
           </ol>
+        </article>
+        <article class="tool-card">
+          <span>כלל אתי</span>
+          <h3>קודם אישור, אחר כך בדיקה, בסוף תיקון.</h3>
+          <p>זה ההבדל בין האקר שפוגע לבין האקר אתי: האקר אתי עובד עם רשות, בתוך גבולות, ומסיים בהמלצת הגנה.</p>
         </article>
       </section>
     `;
   }
 
   function renderConcepts() {
-    const count = conceptsCompleteCount();
     return `
-      <section class="concept-gate mystery-concepts" aria-label="סרטוני מושגים ותרגולים לשיעור 8">
-        <article class="tool-card">
-          <span>Concept Videos</span>
-          <h3>לפני החקירה שומעים שישה מושגים אמיתיים.</h3>
-          <p>כל מושג מקבל סרטון קצר ותרגול בחירה. רק אחרי כל המושגים אפשר לשמור ולהמשיך.</p>
-          <div class="terminal-progress"><strong>${count}/${conceptVideos.length}</strong><span>מושגים אושרו</span></div>
-          <button class="button" type="button" data-save-concepts>${conceptsAreComplete() ? 'שמור מושגים והמשך לראיות' : 'השלימו את כל הסרטונים והתרגולים'}</button>
+      <section class="concept-gate hacker-concepts" aria-label="סרטוני מושגים ותרגולים לשיעור 8">
+        <article class="tool-card concept-gate-intro">
+          <span>שער מושגים</span>
+          <h3>כל מושג מקבל סרטון אנימציה ומשימה קצרה.</h3>
+          <p>המעבדה נפתחת רק אחרי שמאשרים צפייה ופותרים את התרגול לכל ששת המושגים.</p>
+          <strong>${conceptsCompleteCount()}/${conceptVideos.length}</strong>
         </article>
         <div class="concept-video-grid">
           ${conceptVideos.map(video => {
             const watched = state.watchedConcepts.has(video.id);
-            const status = conceptTaskStatus(video);
+            const taskStatus = conceptTaskStatus(video);
+            const done = watched && taskStatus === 'correct';
             return `
-              <article class="concept-video-card ${watched ? 'watched' : ''} ${status}">
-                <video controls preload="metadata" playsinline poster="${mediaUrl(video.poster)}">
-                  <source src="${mediaUrl(video.src)}" type="video/mp4">
-                </video>
-                <div class="concept-video-body">
-                  <span>${watched ? 'אושר' : 'ממתין לאישור'}</span>
+              <article class="concept-video-card ${done ? 'done' : ''} ${taskStatus === 'wrong' ? 'needs-fix' : ''}">
+                <div>
+                  <span>${done ? 'הושלם' : watched ? 'סרטון אושר' : 'ממתין לאישור'}</span>
                   <h4>${esc(video.title)}</h4>
                   <p>${esc(video.text)}</p>
-                  <button class="button ghost" type="button" data-watch-concept="${video.id}">${watched ? 'צפיתי' : 'סיימתי לראות'}</button>
-                  <div class="concept-mini-task">
-                    <strong>${esc(video.task)}</strong>
+                </div>
+                <video controls preload="metadata" playsinline poster="${esc(mediaUrl(video.poster))}">
+                  <source src="${esc(mediaUrl(video.src))}" type="video/mp4">
+                </video>
+                <button class="button concept-done-button" type="button" data-confirm-concept="${esc(video.id)}" ${watched ? 'disabled' : ''}>
+                  ${watched ? 'אושר' : 'סיימתי לראות'}
+                </button>
+                <div class="concept-mini-task ${taskStatus}" aria-label="תרגול קצר: ${esc(video.title)}">
+                  <b>משימה קטנה</b>
+                  <p>${esc(video.task)}</p>
+                  <div>
                     ${video.options.map(option => `
-                      <button class="${state.conceptTasks[video.id] === option ? 'selected' : ''}" type="button" data-concept-answer="${video.id}" data-answer="${esc(option)}">${esc(option)}</button>
+                      <button class="${state.conceptTasks[video.id] === option ? 'selected' : ''}" type="button" data-concept-answer="${esc(video.id)}" data-answer="${esc(option)}">${esc(option)}</button>
                     `).join('')}
-                    <small>${status === 'correct' ? 'נכון. המושג נכנס לתיק.' : status === 'wrong' ? 'כמעט. נסו תשובה שמבוססת על ראיות ובטיחות.' : 'בחרו תשובה אחרי הסרטון.'}</small>
                   </div>
+                  ${taskStatus === 'correct' ? '<small>נכון. אפשר להמשיך.</small>' : taskStatus === 'wrong' ? '<small>כמעט. נסו שוב לפי הסרטון.</small>' : '<small>בחרו תשובה אחת.</small>'}
                 </div>
               </article>
             `;
@@ -423,69 +524,46 @@
     `;
   }
 
-  function renderEvidence() {
-    const solved = evidenceSolvedCount();
+  function renderLogin() {
+    const attempt = loginAttempts.find(item => item.id === state.selectedAttempt);
+    const score = selectedFixScore();
     return `
-      <section class="mystery-grid">
-        <article class="tool-card">
-          <span>Evidence Board</span>
-          <h3>פותחים ראיות כמו צוות SOC קטן.</h3>
-          <p>כל ראיה מגלה חלק אחר מהתמונה: לוג התחברות, תעבורה, אירוע שער, רמז מסוכן, הודעה מקודדת ו־flag.</p>
-          <div class="terminal-progress"><strong>${solved}/${evidenceItems.length}</strong><span>ראיות נותחו</span></div>
-          <button class="button" type="button" data-save-evidence>${solved === evidenceItems.length ? 'שמור ראיות והמשך לציר זמן' : 'נתחו את כל הראיות'}</button>
-        </article>
-        <div class="evidence-board">
-          ${evidenceItems.map(item => {
-            const open = state.openedEvidence.has(item.id);
-            const selected = state.evidenceAnswers[item.id];
-            const correct = selected === item.answer;
-            return `
-              <article class="evidence-card ${open ? 'open' : ''} ${correct ? 'solved' : ''}">
-                <div>
-                  <span>${esc(item.type)}</span>
-                  <strong>${esc(item.title)}</strong>
-                </div>
-                ${open ? `
-                  <p>${esc(item.clue)}</p>
-                  <div class="evidence-question">
-                    <b>${esc(item.question)}</b>
-                    ${item.options.map(option => `<button class="${selected === option ? 'selected' : ''}" type="button" data-evidence-answer="${item.id}" data-answer="${esc(option)}">${esc(option)}</button>`).join('')}
-                    <small>${correct ? 'נכון. הראיה נוספה לתיק.' : selected ? 'לא בדיוק. חפשו את הסימן הכי חשוב.' : 'בחרו מה הראיה מלמדת.'}</small>
-                  </div>
-                ` : `<button class="button ghost" type="button" data-open-evidence="${item.id}">פתח ראיה</button>`}
-              </article>
-            `;
-          }).join('')}
-        </div>
-      </section>
-    `;
-  }
-
-  function renderTimeline() {
-    const pool = timelineEvents.filter(item => !state.timelineOrder.includes(item.id));
-    return `
-      <section class="mystery-grid">
-        <article class="tool-card">
-          <span>Timeline Builder</span>
-          <h3>מסדרים את האירועים לפי זמן.</h3>
-          <p>ציר זמן הוא לא קישוט. הוא מוכיח מה קרה קודם: כשלונות, הצלחה, ואז פתיחת שער.</p>
-          <div class="terminal-progress"><strong>${state.timelineOrder.length}/${timelineEvents.length}</strong><span>אירועים בציר</span></div>
-          <button class="button ghost" type="button" data-reset-timeline>אפס ציר זמן</button>
-          <button class="button" type="button" data-save-timeline>${timelineComplete() ? 'שמור ציר זמן והמשך לטרמינל' : 'סדרו את האירועים נכון'}</button>
-        </article>
-        <article class="timeline-builder">
-          <div class="timeline-pool">
-            <strong>אירועים זמינים</strong>
-            ${pool.map(item => `<button type="button" data-add-event="${item.id}"><b>${esc(item.label)}</b><span>${esc(item.detail)}</span></button>`).join('') || '<em>כל האירועים בציר.</em>'}
+      <section class="hacker-lab-grid">
+        <article class="tool-card login-toy">
+          <span>Login Toy</span>
+          <h3>נסו להבין למה מערכת הצעצוע חלשה.</h3>
+          <div class="toy-login-box">
+            <label>user<input value="demo" readonly></label>
+            <label>password<input value="${esc(attempt?.value || '')}" readonly placeholder="בחרו ניסיון בדיקה"></label>
+            <small>hint: city + one digit</small>
           </div>
-          <div class="timeline-slots">
-            <strong>ציר זמן</strong>
-            ${state.timelineOrder.map((id, index) => {
-              const item = timelineEvents.find(event => event.id === id);
-              const correct = timelineEvents[index]?.id === id;
-              return `<button class="${correct ? 'correct' : 'wrong'}" type="button" data-remove-event="${id}"><b>${esc(item.time)} · ${esc(item.label)}</b><span>${esc(item.detail)}</span></button>`;
-            }).join('') || '<em>הוסיפו אירועים לפי הסדר.</em>'}
+          <div class="mini-options compact">
+            ${loginAttempts.map(item => `
+              <button class="${state.selectedAttempt === item.id ? 'selected' : ''}" type="button" data-login-attempt="${item.id}">
+                <strong>${esc(item.value)}</strong>
+                <span>${item.weak ? 'ניסיון שמראה חולשה' : 'דוגמה חזקה יותר'}</span>
+              </button>
+            `).join('')}
           </div>
+          <p class="lab-feedback">${attempt ? esc(attempt.result) : 'בחרו ניסיון בדיקה. הכול קורה רק בתוך מערכת הצעצוע.'}</p>
+        </article>
+        <article class="tool-card">
+          <span>Fix It</span>
+          <h3>בחרו תיקונים שמעלים את ההגנה.</h3>
+          <div class="fix-list">
+            ${fixOptions.map(option => `
+              <label class="${state.selectedFixes.has(option.id) ? 'selected' : ''}">
+                <input type="checkbox" data-fix-option="${option.id}" ${state.selectedFixes.has(option.id) ? 'checked' : ''}>
+                <span>${esc(option.label)}</span>
+                <b>+${option.value}</b>
+              </label>
+            `).join('')}
+          </div>
+          <div class="run-summary">
+            <b>Defense Score</b>
+            <small>${score}/100</small>
+          </div>
+          <button class="button" type="button" data-save-login>${score >= 75 ? 'שמור והמשך לטרמינל' : 'בחרו מספיק תיקונים'}</button>
         </article>
       </section>
     `;
@@ -493,41 +571,69 @@
 
   function renderTerminal() {
     const activeIndex = activeTerminalTaskIndex();
-    const terminalPrompt = `student@forensics-lab:${state.terminalCwd === '/' ? '~' : `~${state.terminalCwd}`}$`;
-    const terminalComplete = state.completedTerminalTasks.size === terminalTasks.length && state.foundSignals.has('flag');
+    const activeTask = terminalTasks[activeIndex];
+    const terminalPrompt = `student@hacker-lab:${state.terminalCwd === '/' ? '~' : `~${state.terminalCwd}`}$`;
+    const terminalComplete = state.completedTerminalTasks.size === terminalTasks.length && state.foundEvidence.size >= 3;
     return `
       <section class="linux-lab">
         <article class="tool-card terminal-mission-card">
-          <span>Forensics Terminal</span>
-          <h3>מחפשים IOC בקבצי ראיות.</h3>
-          <p>זה טרמינל מדומה וסגור. הפקודות מלמדות Linux אמיתי אבל לא נוגעות במחשב אמיתי.</p>
-          <div class="terminal-progress"><strong>${terminalProgressText()}</strong><span>משימות טרמינל</span></div>
+          <span>Linux Terminal Missions</span>
+          <h3>חוקרים תיק ראיות ממש בתוך טרמינל אימון.</h3>
+          <p>זה טרמינל מדומה וסגור. הוא מלמד פקודות אמיתיות של לינוקס, אבל לא נוגע במחשב אמיתי ולא יוצא לאינטרנט.</p>
+          <div class="terminal-mini-demo" aria-label="מיני הדגמת טרמינל">
+            <strong>איך זה עובד?</strong>
+            <div dir="ltr"><b>student@hacker-lab:~$ pwd</b><code>/</code></div>
+            <p>כותבים פקודה, לוחצים Enter או הרץ, קוראים את הפלט, ואז המשימה מתקדמת.</p>
+          </div>
+          <div class="terminal-progress">
+            <strong>${terminalProgressText()}</strong>
+            <span>משימות לינוקס הושלמו</span>
+          </div>
           <ol class="terminal-task-list">
             ${terminalTasks.map((task, index) => {
               const done = state.completedTerminalTasks.has(task.id);
               const active = index === activeIndex && !done;
-              return `<li class="${done ? 'done' : ''} ${active ? 'active' : ''}"><b>${esc(task.title)}</b><span>${esc(task.prompt)}</span><small>${done ? 'בוצע' : active ? esc(task.hint) : 'נפתח עוד רגע'}</small></li>`;
+              return `
+                <li class="${done ? 'done' : ''} ${active ? 'active' : ''}">
+                  <b>${esc(task.title)}</b>
+                  <span>${esc(task.prompt)}</span>
+                  <small>${done ? 'בוצע' : active ? esc(task.hint) : 'נפתח עוד רגע'}</small>
+                </li>
+              `;
             }).join('')}
           </ol>
+          <div class="terminal-command-bank">
+            <strong>בנק פקודות עזר</strong>
+            <p>אפשר ללחוץ על פקודה כדי להכניס אותה לשורת הטרמינל, ואז להריץ.</p>
+            <div>
+              ${terminalQuickCommands.map(item => `
+                <button class="terminal-command-chip" type="button" data-terminal-command="${esc(item.command)}">
+                  <b dir="ltr">${esc(item.command)}</b>
+                  <span>${esc(item.label)}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
         </article>
         <article class="code-panel linux-terminal-panel">
           <div class="code-panel-toolbar"><span>Training Terminal</span><small dir="ltr">${esc(terminalPrompt)}</small></div>
-          <div class="terminal-live-feedback ${state.foundSignals.size ? 'has-evidence' : ''}">
-            <strong>${state.foundSignals.size ? 'IOC פעיל' : 'המשימה הפעילה'}</strong>
+          <div class="terminal-live-feedback ${state.foundEvidence.size ? 'has-evidence' : ''}">
+            <strong>${state.foundEvidence.size ? 'תיק ראיות פעיל' : 'המשימה הפעילה'}</strong>
             <span>${esc(state.terminalFeedback)}</span>
           </div>
-          <div class="terminal-screen" dir="ltr" lang="en" aria-label="טרמינל פורנזיקה מדומה">
-            ${state.terminalHistory.length ? state.terminalHistory.slice(-9).map(item => `
+          <div class="terminal-screen" dir="ltr" lang="en" aria-label="טרמינל לינוקס מדומה">
+            ${state.terminalHistory.length ? state.terminalHistory.slice(-8).map(item => `
               <div class="terminal-history-item ${item.ok === false ? 'error' : 'ok'}">
                 <b>${esc(item.prompt)} ${esc(item.command)}</b>
                 <pre>${esc(item.output)}</pre>
                 ${item.feedback ? `<small dir="rtl">${esc(item.feedback)}</small>` : ''}
+                ${item.evidence?.length ? `<div class="terminal-found-badges" dir="rtl">${item.evidence.map(id => `<span>ראיה: ${esc(terminalEvidenceLabel(id))}</span>`).join('')}</div>` : ''}
               </div>
             `).join('') : `
               <div class="terminal-history-item">
                 <b>${esc(terminalPrompt)} help</b>
-                <pre>Type help to see commands. Start with pwd, ls, cd case.</pre>
-                <small dir="rtl">אחרי כל פקודה מחפשים סימן חשד, לא סתם פלט.</small>
+                <pre>Type help to see commands. Start with pwd and ls.</pre>
+                <small dir="rtl">אחרי כל Enter תקבלו פלט, הסבר קצר וסימון בתיק.</small>
               </div>
             `}
           </div>
@@ -535,16 +641,21 @@
             <label class="sr-only" for="terminalCommand">פקודת טרמינל</label>
             <span dir="ltr">${esc(terminalPrompt)}</span>
             <input id="terminalCommand" class="lab-input" type="text" data-terminal-input value="${esc(state.terminalInput)}" dir="ltr" lang="en" autocomplete="off" spellcheck="false">
-            <button class="button" type="submit">הרץ</button>
+            <button class="button" type="submit" data-run-terminal>הרץ</button>
           </form>
           <div class="terminal-evidence">
-            <span class="${state.foundSignals.has('failed') ? 'found' : ''}"><b>${state.foundSignals.has('failed') ? 'נמצא' : 'נעול'}</b> IOC: failed attempts</span>
-            <span class="${state.foundSignals.has('success') ? 'found' : ''}"><b>${state.foundSignals.has('success') ? 'נמצא' : 'נעול'}</b> IOC: success after failures</span>
-            <span class="${state.foundSignals.has('ip') ? 'found' : ''}"><b>${state.foundSignals.has('ip') ? 'נמצא' : 'נעול'}</b> IOC: source IP 10.0.0.44</span>
-            <span class="${state.foundSignals.has('flag') ? 'found' : ''}"><b>${state.foundSignals.has('flag') ? 'נמצא' : 'נעול'}</b> CTF: FLAG{gate_timeline}</span>
+            <span class="${state.foundEvidence.has('unlimited') ? 'found' : ''}"><b>${state.foundEvidence.has('unlimited') ? 'נמצאה' : 'נעולה'}</b> ראיה 1: אין הגבלת ניסיונות</span>
+            <span class="${state.foundEvidence.has('hint') ? 'found' : ''}"><b>${state.foundEvidence.has('hint') ? 'נמצאה' : 'נעולה'}</b> ראיה 2: הרמז מגלה את הסיסמה</span>
+            <span class="${state.foundEvidence.has('success') ? 'found' : ''}"><b>${state.foundEvidence.has('success') ? 'נמצאה' : 'נעולה'}</b> ראיה 3: כניסה הצליחה עם הסיסמה החלשה</span>
           </div>
-          ${terminalComplete ? `<div class="terminal-victory"><strong>הדגל נמצא</strong><p>מצאתם את FLAG{gate_timeline}. עכשיו Python יחזק את המסקנה במספרים.</p></div>` : ''}
-          <button class="button" type="button" data-save-terminal>${terminalComplete ? 'שמור והמשך ל־Python' : 'מצאו את כל סימני החשד וה־flag'}</button>
+          ${terminalComplete ? `
+            <div class="terminal-victory">
+              <strong>תיק הראיות נפתר</strong>
+              <p>מצאתם שלוש הוכחות למדיניות חלשה: אין הגבלת ניסיונות, הרמז חושף את מבנה הסיסמה, והייתה כניסה מוצלחת עם סיסמה חלשה.</p>
+              <small>בטרמינל מצאנו ראיות ידנית. עכשיו Python יבדוק את אותה מדיניות מהר ובאופן מסודר.</small>
+            </div>
+          ` : ''}
+          <button class="button" type="button" data-save-terminal>${terminalComplete ? 'שמור ראיות והמשך לפייתון' : 'השלימו את משימות הטרמינל'}</button>
         </article>
       </section>
     `;
@@ -555,69 +666,73 @@
     return `
       <section class="builder-grid console-lab">
         <article class="tool-card">
-          <span>Python Evidence Counter</span>
-          <h3>אותה חקירה, אבל עם ספירה אוטומטית.</h3>
-          <p>הקוד סופר כשלונות, בודק אם הגיעה הצלחה מאותו IP, ומחזיר מסקנת חשד.</p>
-          <button class="button run-console-button" type="button" data-run-python><span class="play-icon" aria-hidden="true"></span><span>הרץ בדיקה</span></button>
+          <span>Python Defense Checker</span>
+          <h3>אותה בדיקה, אבל עכשיו Python מחשב מהר.</h3>
+          <p>הקוד בודק אם למדיניות יש אורך מינימלי, הגבלת ניסיונות, ורמז שלא חושף את הסיסמה.</p>
+          <button class="button run-console-button" type="button" data-run-python>
+            <span class="play-icon" aria-hidden="true"></span>
+            <span>הרץ בדיקה</span>
+          </button>
         </article>
         <article class="code-panel">
-          <div class="code-panel-toolbar"><span>Python</span><small>forensics_counter.py</small></div>
-          <pre><code>events = [
-  "22:03 demo 10.0.0.44 failed",
-  "22:04 demo 10.0.0.44 failed",
-  "22:05 demo 10.0.0.44 failed",
-  "22:07 demo 10.0.0.44 success"
-]
+          <div class="code-panel-toolbar"><span>Python</span></div>
+          <pre><code>min_length = 10
+lockout_enabled = True
+hint_is_safe = True
 
-failed = 0
-success = False
-
-for event in events:
-    if "failed" in event:
-        failed = failed + 1
-    if "success" in event:
-        success = True
-
-print("failed_attempts =", failed)
-print("success_after_failures =", success)</code></pre>
-          <div class="terminal-output ${state.pythonRan ? 'has-output' : ''}"><pre>${esc(output)}</pre></div>
+score = 0
+if min_length >= 10:
+    score += 25
+if lockout_enabled:
+    score += 30
+if hint_is_safe:
+    score += 25
+print("Defense:", score)</code></pre>
+          <div class="terminal-output ${state.pythonRan ? 'has-output' : ''}">
+            <strong>פלט</strong>
+            <p ${state.pythonRan ? 'dir="ltr" lang="en"' : 'dir="rtl" lang="he"'}>${esc(output)}</p>
+          </div>
         </article>
       </section>
     `;
   }
 
   function renderReport() {
-    const ready = timelineComplete() && state.pythonRan && state.foundSignals.has('flag');
     return `
       <section class="report-grid">
         <article class="tool-card">
-          <span>Incident Report</span>
-          <h3>כותבים מסקנה לפי ראיות.</h3>
-          <label>מי/מה החשוד המרכזי?
-            <textarea data-report-field="suspect" placeholder="למשל: כניסה חשודה של demo מ־10.0.0.44">${esc(state.report.suspect)}</textarea>
+          <span>Ethical Hacker Report</span>
+          <h3>מסכמים חולשה, הוכחה בטוחה ותיקון.</h3>
+          <label>1. איזו חולשה מצאתם?
+            <textarea data-report-field="weakness" placeholder="לדוגמה: סיסמה קצרה ורמז גלוי">${esc(state.report.weakness)}</textarea>
           </label>
-          <label>איזו ראיה מוכיחה?
-            <textarea data-report-field="proof" placeholder="למשל: failed attempts ואז success לפני gate=open">${esc(state.report.proof)}</textarea>
+          <label>2. איך הוכחתם אותה בלי לפגוע?
+            <textarea data-report-field="proof" placeholder="לדוגמה: בדקנו רק Login Toy בתוך הלומדה">${esc(state.report.proof)}</textarea>
           </label>
-          <label>מה התיקון?
-            <textarea data-report-field="fix" placeholder="למשל: לנעול אחרי 3 ניסיונות, להסיר רמז, להחליף סיסמה">${esc(state.report.fix)}</textarea>
+          <label>3. איזה תיקון בחרתם?
+            <textarea data-report-field="fix" placeholder="לדוגמה: סיסמה ארוכה, נעילה אחרי 3 ניסיונות, בלי רמז גלוי">${esc(state.report.fix)}</textarea>
           </label>
-          <button class="button" type="button" data-submit-report>${ready ? 'הגש דוח חקירה' : 'השלימו ציר זמן, טרמינל ו־Python'}</button>
+          <button class="button" type="button" data-check-report>בדוק וקבל תג</button>
         </article>
-        <article class="tool-card defender-summary">
+        <article class="badge-card">
           <span>תוצר שיעור 8</span>
-          <h3>Incident Case File</h3>
-          <ul>
-            <li><strong>Digital Forensics</strong> חוקרת אירוע לפי ראיות.</li>
-            <li><strong>Logs</strong> מספרים זמן, משתמש, פעולה ותוצאה.</li>
-            <li><strong>Timeline</strong> מוכיח רצף: failed, success, gate open.</li>
-            <li><strong>IOC</strong> הוא סימן חשד קטן שמחזק את התיק.</li>
-            <li><strong>CTF Flag</strong> הוא הוכחת פתרון באתגר.</li>
-          </ul>
-          <div class="network-defender-badge" aria-label="תג חוקר סייבר">
-            <span>Badge</span>
-            <strong>Cyber Investigator</strong>
-            <small>מוכיחים לפי ראיות, לא לפי ניחוש.</small>
+          <strong>Login Defense Kit</strong>
+          <p>התלמיד למד למצוא חולשה במערכת צעצוע, להשתמש במיני־טרמינל לראיות, ולהציע תיקון הגנתי.</p>
+          <div class="defender-summary">
+            <b>מה אני יודע עכשיו?</b>
+            <ul>
+              <li><strong>Ethical Hacker</strong> בודק רק באישור ורק כדי לתקן.</li>
+              <li><strong>Target</strong> הוא מערכת אימון שמותר לבדוק.</li>
+              <li><strong>Vulnerability</strong> היא חולשה שאפשר לנצל.</li>
+              <li><strong>Exploit</strong> מוכיח חולשה בסביבה בטוחה.</li>
+              <li><strong>Fix</strong> סוגר את החולשה ומעלה הגנה.</li>
+              <li><strong>Linux Terminal</strong> עוזר לנווט תיקיות, לקרוא קבצים ולחפש ראיות עם pwd, ls, cd, cat ו־grep.</li>
+            </ul>
+          </div>
+          <div class="network-defender-badge" aria-label="תג Ethical Hacker">
+            <span>ETHICAL HACKER</span>
+            <strong>Safe Attack Lab</strong>
+            <small>יודע לבדוק חולשה, להוכיח אותה בבטחה, ולהציע תיקון</small>
           </div>
         </article>
       </section>
@@ -628,165 +743,127 @@ print("success_after_failures =", success)</code></pre>
     const type = stations[state.station].type;
     if (type === 'brief') return renderBrief();
     if (type === 'concepts') return renderConcepts();
-    if (type === 'evidence') return renderEvidence();
-    if (type === 'timeline') return renderTimeline();
+    if (type === 'login') return renderLogin();
     if (type === 'terminal') return renderTerminal();
     if (type === 'python') return renderPython();
     return renderReport();
   }
 
   function bindDynamicEvents() {
-    document.querySelector('[data-complete-brief]')?.addEventListener('click', () => {
-      complete('brief');
-      addCase('פתיחה: הוגדר אירוע GATE-2208 וגבולות חקירה בטוחים');
-      say('מעולה. עכשיו נלמד את מושגי החקירה לפני שנפתח ראיות.');
-      state.station = stations.findIndex(station => station.id === 'concepts');
-      render();
-    });
-    document.querySelectorAll('[data-watch-concept]').forEach(button => {
+    document.querySelectorAll('[data-confirm-concept]').forEach(button => {
       button.addEventListener('click', () => {
-        state.watchedConcepts.add(button.dataset.watchConcept);
-        say('הסרטון אושר. עכשיו ענו על התרגול הקטן של המושג.');
+        state.watchedConcepts.add(button.dataset.confirmConcept);
+        say('הסרטון אושר. עכשיו ודאו שגם המשימה הקטנה נכונה.');
         render({ preserveScroll: true });
       });
     });
     document.querySelectorAll('[data-concept-answer]').forEach(button => {
       button.addEventListener('click', () => {
-        state.conceptTasks[button.dataset.conceptAnswer] = button.dataset.answer;
         const video = conceptVideos.find(item => item.id === button.dataset.conceptAnswer);
-        say(button.dataset.answer === video.answer ? 'נכון. המושג נכנס לתיק החקירה.' : 'כמעט. בחרו תשובה שמבוססת על ראיות ובטיחות.');
+        state.conceptTasks[video.id] = button.dataset.answer;
+        const correct = state.conceptTasks[video.id] === video.answer;
+        say(correct ? `נכון. הושלמו ${conceptsCompleteCount()}/${conceptVideos.length} מושגים.` : 'כמעט. נסו שוב לפי הסרטון.');
+        if (conceptsAreComplete()) {
+          complete('concepts');
+          addCase('מושגים: הושלמו Ethical Hacker, Target, Vulnerability, Exploit, Fix וטרמינל');
+        }
         render({ preserveScroll: true });
       });
     });
-    document.querySelector('[data-save-concepts]')?.addEventListener('click', () => {
+    document.querySelectorAll('[data-login-attempt]').forEach(button => {
+      button.addEventListener('click', () => {
+        state.selectedAttempt = button.dataset.loginAttempt;
+        const attempt = loginAttempts.find(item => item.id === state.selectedAttempt);
+        say(attempt.result);
+        render({ preserveScroll: true });
+      });
+    });
+    document.querySelectorAll('[data-fix-option]').forEach(input => {
+      input.addEventListener('change', () => {
+        if (input.checked) state.selectedFixes.add(input.dataset.fixOption);
+        else state.selectedFixes.delete(input.dataset.fixOption);
+        setDefense(selectedFixScore(), 'בחרתם תיקונים שמקטינים את הסיכון במערכת הצעצוע.');
+        render({ preserveScroll: true });
+      });
+    });
+    document.querySelector('[data-save-login]')?.addEventListener('click', () => {
       if (!conceptsAreComplete()) {
-        say('עוד לא. צריך לאשר כל סרטון מושג ולענות נכון על התרגול שלו.');
+        say('לפני המעבדה משלימים את סרטוני המושגים והמשימות.');
+        return;
+      }
+      if (selectedFixScore() < 75 || !state.selectedAttempt) {
+        say('בחרו ניסיון בדיקה וגם מספיק תיקונים כדי להגיע להגנה טובה.');
         render({ preserveScroll: true });
         return;
       }
-      complete('concepts');
-      addCase('מושגים: הושלמו Forensics, Logs, Timeline, IOC, Terminal ו־CTF Flag');
-      say('יפה. עכשיו פותחים ראיות ונזהרים לא לקפוץ למסקנה לפני ההוכחות.');
-      state.station = stations.findIndex(station => station.id === 'evidence');
-      render();
-    });
-    document.querySelectorAll('[data-open-evidence]').forEach(button => {
-      button.addEventListener('click', () => {
-        state.openedEvidence.add(button.dataset.openEvidence);
-        say('ראיה נפתחה. עכשיו בחרו מה היא מלמדת את צוות החקירה.');
-        render({ preserveScroll: true });
-      });
-    });
-    document.querySelectorAll('[data-evidence-answer]').forEach(button => {
-      button.addEventListener('click', () => {
-        state.evidenceAnswers[button.dataset.evidenceAnswer] = button.dataset.answer;
-        const item = evidenceItems.find(evidence => evidence.id === button.dataset.evidenceAnswer);
-        say(button.dataset.answer === item.answer ? 'נכון. הראיה נוספה לתיק.' : 'לא בדיוק. קראו שוב את הראיה וחפשו את הסימן המרכזי.');
-        render({ preserveScroll: true });
-      });
-    });
-    document.querySelector('[data-save-evidence]')?.addEventListener('click', () => {
-      if (evidenceSolvedCount() < evidenceItems.length) {
-        say('עוד לא. צריך לפתוח ולנתח את כל הראיות.');
-        render({ preserveScroll: true });
-        return;
-      }
-      complete('evidence');
-      addCase('ראיות: נותחו auth.log, packet.log, door_event, hint note, encoded message ו־flag gate');
-      setConfidence(30, 'נמצאו כל הראיות הראשוניות. עכשיו צריך להוכיח רצף.');
-      say('מעולה. עכשיו נסדר את האירועים לפי זמן כדי להוכיח מה קרה קודם.');
-      state.station = stations.findIndex(station => station.id === 'timeline');
-      render();
-    });
-    document.querySelectorAll('[data-add-event]').forEach(button => {
-      button.addEventListener('click', () => {
-        state.timelineOrder.push(button.dataset.addEvent);
-        say('האירוע נוסף לציר. בדקו אם הסדר נכון לפי השעות.');
-        render({ preserveScroll: true });
-      });
-    });
-    document.querySelectorAll('[data-remove-event]').forEach(button => {
-      button.addEventListener('click', () => {
-        state.timelineOrder = state.timelineOrder.filter(id => id !== button.dataset.removeEvent);
-        say('האירוע הוסר מהציר. אפשר לסדר מחדש.');
-        render({ preserveScroll: true });
-      });
-    });
-    document.querySelector('[data-reset-timeline]')?.addEventListener('click', () => {
-      state.timelineOrder = [];
-      say('ציר הזמן אופס.');
-      render({ preserveScroll: true });
-    });
-    document.querySelector('[data-save-timeline]')?.addEventListener('click', () => {
-      if (!timelineComplete()) {
-        say('עוד לא. ציר הזמן צריך להראות: failed, failed, success, gate open, fix.');
-        render({ preserveScroll: true });
-        return;
-      }
-      complete('timeline');
-      addCase('ציר זמן: 22:03 failed, 22:04 failed, 22:07 success, 22:08 gate open');
-      setConfidence(50, 'ציר הזמן מוכיח שהכניסה הצליחה לפני פתיחת השער.');
-      say('מצוין. עכשיו נחפש את אותם סימנים בתוך קבצי הראיות בטרמינל.');
+      complete('login');
+      addCase('Login Toy: נמצאה חולשה ותוקנה בסיסמה חזקה, נעילה ורמז בטוח');
+      say('מעולה. עכשיו נשתמש בטרמינל כדי למצוא ראיות למדיניות החלשה.');
       state.station = stations.findIndex(station => station.id === 'terminal');
       render();
     });
     document.querySelector('[data-terminal-input]')?.addEventListener('input', event => {
       state.terminalInput = event.target.value.trim();
     });
+    document.querySelectorAll('[data-terminal-command]').forEach(button => {
+      button.addEventListener('click', () => {
+        state.terminalInput = button.dataset.terminalCommand;
+        const input = document.querySelector('[data-terminal-input]');
+        if (input) {
+          input.value = state.terminalInput;
+          input.focus();
+        }
+        say(`שמתי את הפקודה ${state.terminalInput} בשורת הטרמינל. עכשיו לחצו Enter או הרץ.`);
+      });
+    });
     document.querySelector('[data-terminal-form]')?.addEventListener('submit', event => {
       event.preventDefault();
       const command = normalizeCommand(state.terminalInput);
-      const prompt = `student@forensics-lab:${state.terminalCwd === '/' ? '~' : `~${state.terminalCwd}`}$`;
+      const prompt = `student@hacker-lab:${state.terminalCwd === '/' ? '~' : `~${state.terminalCwd}`}$`;
       const result = runTerminalCommand(command);
+      state.terminalOutput = result.output;
       const changes = updateTerminalProgress(command, result.output);
-      const feedback = terminalFeedback(result, changes);
+      const feedback = commandCoaching(command, result, changes);
       state.terminalFeedback = feedback;
-      if (command !== 'clear') state.terminalHistory.push({ prompt, command, output: result.output, ok: result.ok, feedback });
+      if (command !== 'clear') state.terminalHistory.push({ prompt, command, output: result.output, ok: result.ok, feedback, evidence: changes.evidence, tasks: changes.tasks });
       state.terminalInput = '';
       say(result.ok ? `${feedback} התקדמות טרמינל: ${terminalProgressText()}.` : feedback);
       render({ preserveScroll: true });
     });
     document.querySelector('[data-save-terminal]')?.addEventListener('click', () => {
-      if (state.completedTerminalTasks.size < terminalTasks.length || !state.foundSignals.has('flag')) {
-        say('עוד לא. צריך להשלים את משימות הטרמינל ולמצוא את ה־flag.');
+      if (state.completedTerminalTasks.size < terminalTasks.length || state.foundEvidence.size < 3) {
+        say('עוד לא. צריך להשלים את משימות הטרמינל ולמצוא שלוש ראיות: unlimited, hint ו־success.');
         render({ preserveScroll: true });
         return;
       }
       complete('terminal');
-      addCase('טרמינל: נמצאו failed, success, source IP ו־FLAG{gate_timeline}');
-      setConfidence(70, 'הטרמינל מצא IOC ו־flag. עכשיו Python יחזק במספרים.');
-      say('מצוין. עכשיו Python יספור את האירועים ויחזק את המסקנה.');
+      addCase('Terminal: הושלמו pwd, ls, cd, cat ו־grep ונמצאו שלוש ראיות למדיניות חלשה');
+      say('מצוין. בטרמינל מצאתם ראיות ידנית; עכשיו Python יבדוק את אותה מדיניות מהר ובצורה מסודרת.');
       state.station = stations.findIndex(station => station.id === 'python');
       render();
     });
     document.querySelector('[data-run-python]')?.addEventListener('click', () => {
       state.pythonRan = true;
       complete('python');
-      setConfidence(90, 'Python אישר: שלושה כשלונות ואז הצלחה מאותו IP לפני פתיחת השער.');
-      addCase('Python: נספרו 3 failed ואז success מאותו IP');
-      say('יפה. עכשיו יש גם ראיות וגם חישוב. אפשר להגיש דוח אירוע.');
-      render({ preserveScroll: true });
+      setDefense(selectedFixScore(), 'Python אישר את מדדי ההגנה לפי התיקונים שבחרתם.');
+      addCase('Python: הורץ Defense Checker למדיניות ההתחברות');
+      say('יפה. Python עזר לבדוק את מדיניות ההתחברות כמו בודק הגנה.');
+      render();
     });
-    document.querySelectorAll('[data-report-field]').forEach(input => {
-      input.addEventListener('input', event => {
-        state.report[event.target.dataset.reportField] = event.target.value;
+    document.querySelectorAll('[data-report-field]').forEach(field => {
+      field.addEventListener('input', () => {
+        state.report[field.dataset.reportField] = field.value;
       });
     });
-    document.querySelector('[data-submit-report]')?.addEventListener('click', () => {
-      const ready = timelineComplete() && state.pythonRan && state.foundSignals.has('flag');
-      const filled = state.report.suspect.trim() && state.report.proof.trim() && state.report.fix.trim();
-      if (!ready) {
-        say('לפני הדוח צריך להשלים ציר זמן, טרמינל ו־Python.');
-        return;
+    document.querySelector('[data-check-report]')?.addEventListener('click', () => {
+      const ok = Object.values(state.report).every(value => value.trim().length >= 10);
+      if (ok) {
+        complete('report');
+        addCase('Ethical Hacker Report: הוגש דוח חולשה ותיקון');
+        say('שיעור 8 הושלם. בדקתם חולשה בצורה אתית וסגרתם אותה.');
+      } else {
+        say('כתבו משפט קצר בכל שדה: חולשה, הוכחה בטוחה ותיקון.');
       }
-      if (!filled) {
-        say('כתבו משפט קצר בכל שדה: חשוד, ראיה ותיקון.');
-        return;
-      }
-      complete('report');
-      addCase('Incident Report: הוגש דוח חקירה מלא ל־GATE-2208');
-      setConfidence(100, 'התיק הושלם: ראיות, ציר זמן, IOC, Python ודוח תיקון.');
-      say('שיעור 8 הושלם. פתרתם חדר חקירה אמיתי בסביבת אימון בטוחה.');
       render();
     });
   }
@@ -809,42 +886,38 @@ print("success_after_failures =", success)</code></pre>
   $('nextStation').addEventListener('click', () => {
     if (state.station === 0) {
       complete('brief');
-      addCase('פתיחה: נפתח תיק חקירה GATE-2208');
+      addCase('פתיחה: הוגדרו גבולות האקר אתי ומערכת צעצוע');
     }
-    if (state.station < stations.length - 1) {
-      state.station += 1;
-      render();
-    } else {
-      say('אם הדוח מלא, שיעור 8 הושלם. אפשר לחזור ולשפר את תיק החקירה.');
-    }
+    if (state.station < stations.length - 1) state.station += 1;
+    render();
   });
   $('prevStation').addEventListener('click', () => {
-    state.station = Math.max(0, state.station - 1);
+    if (state.station > 0) state.station -= 1;
     render();
   });
   $('resetLab').addEventListener('click', () => {
     state.station = 0;
     state.xp = 0;
-    state.confidence = 0;
+    state.defense = 0;
     state.caseFile = [];
     state.completed.clear();
     state.watchedConcepts.clear();
     state.conceptTasks = {};
-    state.openedEvidence.clear();
-    state.evidenceAnswers = {};
-    state.timelineOrder = [];
+    state.selectedAttempt = '';
+    state.selectedFixes.clear();
     state.terminalInput = 'help';
+    state.terminalOutput = '';
+    state.terminalFeedback = 'התחילו ב־pwd. אחרי כל פקודה תקבלו פלט, הסבר קצר וסימון התקדמות.';
     state.terminalCwd = '/';
     state.terminalHistory = [];
     state.completedTerminalTasks.clear();
-    state.foundSignals.clear();
-    state.terminalFeedback = 'התחילו ב־pwd ואז ls. כל הפקודות רצות רק בסביבת אימון בדפדפן.';
+    state.foundEvidence.clear();
     state.pythonRan = false;
-    state.report = { suspect: '', proof: '', fix: '' };
-    setConfidence(0, 'האמון בתיק יעלה כשתמצאו ראיות, תבנו ציר זמן ותריצו בדיקת Python.');
-    say('החקירה אופסה. מתחילים מחדש את Cyber Mystery Room.');
+    state.report = { weakness: '', proof: '', fix: '' };
+    setDefense(0, 'הציון יתעדכן אחרי שתתקנו חולשות.');
+    say('התחלנו מחדש. נבדוק רק מערכת צעצוע ונלמד איך להגן עליה.');
     render();
   });
 
   render();
-})();
+}());

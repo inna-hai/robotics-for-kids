@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Cyber AI Builders — שיעור 8 Cyber Mystery Room</title>
+  <title>Cyber AI Builders — שיעור 8 Ethical Hacker Lab</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/cyber-city-academy.css?v=20260919-mystery-room-v2">
+  <link rel="stylesheet" href="css/cyber-city-academy.css?v=20260919-ethical-hacker-v1">
   <link rel="stylesheet" href="css/platform-home-link.css">
 </head>
 <body>
@@ -15,11 +15,12 @@
     <header class="lab-header">
       <div>
         <div class="eyebrow">robotics15 · Cyber AI Builders · Mission 08</div>
-        <h1>Cyber Mystery Room</h1>
-        <p>שיעור 90 דקות לילדים בני 12: חוקרים מי פתח את שער העיר הדיגיטלית, לומדים פורנזיקה, לוגים, ציר זמן, IOC, טרמינל, Python ו־CTF flag בתוך חדר חקירה סגור ובטוח.</p>
+        <h1>Ethical Hacker Lab</h1>
+        <p>שיעור 90 דקות לילדים בני 12: חושבים כמו תוקף בסביבת צעצוע סגורה, מוצאים חולשה, מתקנים אותה, ומשתמשים במיני־טרמינל וב־Python כדי להגן טוב יותר.</p>
       </div>
       <div class="header-actions">
         <a class="button ghost" href="cyber-city-lesson-7.html">שיעור 7</a>
+        <a class="button ghost" href="cyber-city-lesson-9.html">שיעור 9</a>
         <a class="button ghost" href="cyber-city-course.html">דף קורס</a>
         <a class="button ghost" href="index.html">קטלוג</a>
         <button class="button" type="button" id="resetLab">התחלה מחדש</button>
@@ -29,11 +30,11 @@
     <section class="lesson-video-card" aria-label="סרטון פתיחה לשיעור השמיני">
       <div class="lesson-video-copy">
         <span>סרטון שיעור</span>
-        <h2>Cyber Mystery Room</h2>
-        <p>פותחים את השיעור עם מקרה חקירה: שער העיר נפתח בלילה, והצוות צריך להוכיח מה קרה לפי ראיות דיגיטליות.</p>
+        <h2>Ethical Hacker Lab</h2>
+        <p>פותחים את השיעור עם סיפור משימה: שער מערכת האימון נפרץ בקלות, והילדים צריכים להבין איך מצאו את החולשה ואיך סוגרים אותה.</p>
       </div>
-      <video controls preload="metadata" playsinline poster="marketing/cyber-city-lesson8-overview-poster.jpg?v=20260919-mystery-room-v2">
-        <source src="marketing/cyber-city-lesson8-overview.mp4?v=20260919-mystery-room-v2" type="video/mp4">
+      <video controls preload="metadata" playsinline poster="marketing/cyber-city-lesson7-overview-poster.jpg?v=20260919-ethical-hacker-v1">
+        <source src="marketing/cyber-city-lesson7-overview.mp4?v=20260919-ethical-hacker-v1" type="video/mp4">
       </video>
     </section>
 
@@ -44,11 +45,11 @@
       </article>
       <article>
         <span>תוצר</span>
-        <strong>Incident Case File</strong>
+        <strong>Login Defense Kit</strong>
       </article>
       <article>
         <span>מיומנות</span>
-        <strong>Forensics · Logs · CTF</strong>
+        <strong>Ethics · Linux · Python</strong>
       </article>
       <article>
         <span>התקדמות</span>
@@ -58,7 +59,7 @@
 
     <section class="student-nav-panel" aria-label="ניווט משימות שיעור 8">
       <div class="map-title">
-        <span id="currentStepLabel">משימה 1 מתוך 7</span>
+        <span id="currentStepLabel">משימה 1 מתוך 6</span>
         <strong id="currentStepName">פתיחה</strong>
       </div>
       <div class="student-nav-body">
@@ -70,12 +71,12 @@
       <section class="station-stage" aria-live="polite">
         <div class="station-head">
           <div>
-            <span class="station-time" id="stationTime">8 דקות</span>
-            <h2 id="stationTitle">פתיחת חקירה</h2>
-            <p id="stationGoal">מבינים מהו אירוע סייבר, למה חוקרים ראיות, ואיך עושים זאת רק בסביבת אימון.</p>
+            <span class="station-time" id="stationTime">10 דקות</span>
+            <h2 id="stationTitle">פתיחת משימה</h2>
+            <p id="stationGoal">מבינים למה לומדים התקפה רק כדי לדעת להגן, ובודקים מערכת צעצוע שלא מחוברת לעולם האמיתי.</p>
           </div>
           <div class="xp-meter">
-            <span>Investigator XP</span>
+            <span>Hacker XP</span>
             <strong id="xpLabel">0</strong>
           </div>
         </div>
@@ -92,26 +93,26 @@
         <section class="assistant-card">
           <div class="assistant-head">
             <span>AI</span>
-            <strong>מדריך חקירה</strong>
+            <strong>עוזר אתיקה</strong>
           </div>
-          <p id="assistantText">היום לא מנחשים. בונים תיק ראיות: מה קרה, מתי, ואיזו הוכחה תומכת במסקנה.</p>
+          <p id="assistantText">נבדוק רק מערכת אימון צעצוע. המטרה היא להבין חולשה ולתקן אותה, לא לפגוע באף מערכת אמיתית.</p>
         </section>
 
         <section class="scanner-card">
-          <span>Case Confidence</span>
+          <span>Defense Score</span>
           <strong id="riskScore">0%</strong>
           <div class="risk-track"><div id="riskFill"></div></div>
-          <p id="riskText">האמון בתיק יעלה כשתמצאו ראיות, תבנו ציר זמן ותריצו בדיקת Python.</p>
+          <p id="riskText">הציון יתעדכן אחרי שתתקנו חולשות.</p>
         </section>
 
         <section class="case-card">
-          <span>תיק חקירה</span>
+          <span>תיק בדיקה</span>
           <div id="caseFile"></div>
         </section>
       </aside>
     </section>
   </main>
 
-  <script src="js/cyber-city-lesson-8.js?v=20260919-mystery-room-v2"></script>
+  <script src="js/cyber-city-lesson-8.js?v=20260919-ethical-hacker-v1"></script>
 </body>
 </html>
