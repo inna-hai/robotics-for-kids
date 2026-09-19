@@ -8,7 +8,7 @@
     { id: 'report', short: 'דוח', title: 'דוח Ethical Hacker', time: '10 דקות', goal: 'מסכמים איזו חולשה נמצאה, איך הוכחנו אותה בסביבה בטוחה, ומה תיקנו.', type: 'report' }
   ];
 
-  const mediaVersion = '20260918-hacker-v1';
+  const mediaVersion = '20260919-hacker-terminal-v2';
   const mediaUrl = path => `${path}?v=${mediaVersion}`;
 
   const stationVideos = {
@@ -96,13 +96,91 @@
     { id: 'generic-error', label: 'שגיאת כניסה כללית', value: 20 }
   ];
 
-  const terminalCommands = {
-    ls: 'login_policy.txt\nattempts.log\nnotes.txt',
-    'cat login_policy.txt': 'password_min_length=4\nmax_attempts=unlimited\nhint=city + one digit',
-    'cat attempts.log': '09:10 user=demo pass=admin failed\n09:11 user=demo pass=city7 success\n09:12 user=demo pass=city8 failed',
-    'grep unlimited login_policy.txt': 'max_attempts=unlimited',
-    'grep hint login_policy.txt': 'hint=city + one digit'
+  const terminalFileSystem = {
+    '/': {
+      type: 'dir',
+      children: {
+        evidence: {
+          type: 'dir',
+          children: {
+            'login_policy.txt': {
+              type: 'file',
+              content: 'password_min_length=4\nmax_attempts=unlimited\nhint=city + one digit\nerror_message=Wrong password for demo'
+            },
+            'attempts.log': {
+              type: 'file',
+              content: '09:10 user=demo pass=admin failed\n09:11 user=demo pass=city7 success\n09:12 user=demo pass=city8 failed\n09:13 user=demo pass=city9 failed'
+            },
+            'notes.txt': {
+              type: 'file',
+              content: 'Training lab only.\nLook for weak policy clues.\nNever test real systems without permission.'
+            }
+          }
+        },
+        report: {
+          type: 'dir',
+          children: {
+            'todo.txt': {
+              type: 'file',
+              content: '1. Find the weak login rule\n2. Prove it safely\n3. Suggest a fix'
+            }
+          }
+        }
+      }
+    }
   };
+
+  const terminalTasks = [
+    {
+      id: 'map',
+      title: '1. מפה ראשונה',
+      prompt: 'גלו באיזו תיקייה אתם נמצאים.',
+      accepts: ['pwd'],
+      hint: 'נסו pwd.'
+    },
+    {
+      id: 'list-root',
+      title: '2. רואים תיקיות',
+      prompt: 'הציגו את התיקיות וקבצי השורש.',
+      accepts: ['ls'],
+      hint: 'נסו ls.'
+    },
+    {
+      id: 'open-evidence',
+      title: '3. נכנסים לראיות',
+      prompt: 'עברו לתיקיית evidence.',
+      accepts: ['cd evidence'],
+      hint: 'נסו cd evidence.'
+    },
+    {
+      id: 'read-policy',
+      title: '4. קוראים מדיניות',
+      prompt: 'פתחו את קובץ מדיניות ההתחברות.',
+      accepts: ['cat login_policy.txt', 'cat evidence/login_policy.txt'],
+      hint: 'cat מציגה תוכן של קובץ.'
+    },
+    {
+      id: 'find-unlimited',
+      title: '5. מחפשים חולשת ניסיונות',
+      prompt: 'מצאו את השורה שמראה שאין הגבלת ניסיונות.',
+      accepts: ['grep unlimited login_policy.txt', 'grep unlimited evidence/login_policy.txt'],
+      hint: 'grep unlimited login_policy.txt'
+    },
+    {
+      id: 'find-hint',
+      title: '6. מחפשים רמז מסוכן',
+      prompt: 'מצאו את השורה שבה הרמז חושף את מבנה הסיסמה.',
+      accepts: ['grep hint login_policy.txt', 'grep hint evidence/login_policy.txt'],
+      hint: 'grep hint login_policy.txt'
+    },
+    {
+      id: 'check-attempts',
+      title: '7. בודקים לוג ניסיונות',
+      prompt: 'מצאו בלוג ניסיון כניסה שהצליח בסיסמה החלשה.',
+      accepts: ['grep success attempts.log', 'grep success evidence/attempts.log', 'cat attempts.log', 'cat evidence/attempts.log'],
+      hint: 'grep success attempts.log'
+    }
+  ];
 
   const state = {
     station: 0,
@@ -114,8 +192,11 @@
     conceptTasks: {},
     selectedAttempt: '',
     selectedFixes: new Set(),
-    terminalInput: 'ls',
+    terminalInput: 'help',
     terminalOutput: '',
+    terminalCwd: '/',
+    terminalHistory: [],
+    completedTerminalTasks: new Set(),
     foundEvidence: new Set(),
     pythonRan: false,
     report: { weakness: '', proof: '', fix: '' }
@@ -123,6 +204,7 @@
 
   const $ = id => document.getElementById(id);
   const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+  const normalizeCommand = command => command.trim().replace(/\s+/g, ' ');
 
   function say(text) { $('assistantText').textContent = text; }
   function addCase(item) { if (!state.caseFile.includes(item)) state.caseFile.push(item); }
@@ -163,6 +245,104 @@
       `hint_is_safe: ${noHint ? 'true' : 'false'}`,
       `defense_score: ${selectedFixScore()}`
     ].join('\n');
+  }
+  function terminalNode(path) {
+    const parts = path.split('/').filter(Boolean);
+    let node = terminalFileSystem['/'];
+    for (const part of parts) {
+      if (!node || node.type !== 'dir') return null;
+      node = node.children[part];
+    }
+    return node || null;
+  }
+  function resolvePath(path) {
+    if (!path || path === '.') return state.terminalCwd;
+    const base = path.startsWith('/') ? [] : state.terminalCwd.split('/').filter(Boolean);
+    path.split('/').filter(Boolean).forEach(part => {
+      if (part === '.') return;
+      if (part === '..') base.pop();
+      else base.push(part);
+    });
+    return `/${base.join('/')}`;
+  }
+  function pathLabel(path) {
+    return path === '/' ? '/' : path.replace(/^\//, '');
+  }
+  function runTerminalCommand(rawCommand) {
+    const command = normalizeCommand(rawCommand);
+    if (!command) return { output: 'type a command first', ok: false };
+    if (command === 'help') {
+      return {
+        ok: true,
+        output: [
+          'Available commands:',
+          'pwd',
+          'ls',
+          'cd evidence',
+          'cat login_policy.txt',
+          'cat attempts.log',
+          'grep unlimited login_policy.txt',
+          'grep hint login_policy.txt',
+          'grep success attempts.log',
+          'clear'
+        ].join('\n')
+      };
+    }
+    if (command === 'clear') {
+      state.terminalHistory = [];
+      return { ok: true, output: 'terminal cleared' };
+    }
+    if (command === 'pwd') return { ok: true, output: state.terminalCwd };
+    if (command === 'ls') {
+      const node = terminalNode(state.terminalCwd);
+      return { ok: true, output: Object.keys(node.children).join('\n') };
+    }
+    if (command.startsWith('ls ')) {
+      const target = terminalNode(resolvePath(command.slice(3)));
+      if (!target) return { ok: false, output: 'ls: cannot access path' };
+      if (target.type === 'file') return { ok: true, output: pathLabel(resolvePath(command.slice(3))) };
+      return { ok: true, output: Object.keys(target.children).join('\n') };
+    }
+    if (command.startsWith('cd ')) {
+      const nextPath = resolvePath(command.slice(3));
+      const target = terminalNode(nextPath);
+      if (!target || target.type !== 'dir') return { ok: false, output: 'cd: directory not found' };
+      state.terminalCwd = nextPath;
+      return { ok: true, output: state.terminalCwd };
+    }
+    if (command.startsWith('cat ')) {
+      const target = terminalNode(resolvePath(command.slice(4)));
+      if (!target) return { ok: false, output: 'cat: file not found' };
+      if (target.type !== 'file') return { ok: false, output: 'cat: this is a directory' };
+      return { ok: true, output: target.content };
+    }
+    if (command.startsWith('grep ')) {
+      const parts = command.split(' ');
+      if (parts.length < 3) return { ok: false, output: 'usage: grep WORD FILE' };
+      const word = parts[1].toLowerCase();
+      const filePath = parts.slice(2).join(' ');
+      const target = terminalNode(resolvePath(filePath));
+      if (!target || target.type !== 'file') return { ok: false, output: 'grep: file not found' };
+      const matches = target.content.split('\n').filter(line => line.toLowerCase().includes(word));
+      return { ok: true, output: matches.length ? matches.join('\n') : 'no matches' };
+    }
+    return { ok: false, output: 'command not available in this training lab' };
+  }
+  function updateTerminalProgress(command, output) {
+    const normalized = normalizeCommand(command);
+    terminalTasks.forEach(task => {
+      if (task.accepts.includes(normalized)) state.completedTerminalTasks.add(task.id);
+    });
+    if (output.includes('max_attempts=unlimited')) state.foundEvidence.add('unlimited');
+    if (output.includes('hint=city + one digit')) state.foundEvidence.add('hint');
+    if (output.includes('city7 success')) state.foundEvidence.add('success');
+  }
+  function activeTerminalTaskIndex() {
+    const index = terminalTasks.findIndex(task => !state.completedTerminalTasks.has(task.id));
+    return index === -1 ? terminalTasks.length - 1 : index;
+  }
+  function terminalProgressText() {
+    return `${state.completedTerminalTasks.size}/${terminalTasks.length}`;
   }
 
   function renderShell() {
@@ -335,29 +515,60 @@
   }
 
   function renderTerminal() {
+    const activeIndex = activeTerminalTaskIndex();
+    const activeTask = terminalTasks[activeIndex];
+    const terminalPrompt = `student@hacker-lab:${state.terminalCwd === '/' ? '~' : `~${state.terminalCwd}`}$`;
     return `
-      <section class="hacker-lab-grid">
-        <article class="tool-card">
-          <span>Mini Linux Terminal</span>
-          <h3>חוקרים קבצי ראיות בלי לצאת מהלומדה.</h3>
-          <p>הפקודות המותרות כאן הן סימולציה בלבד: <span dir="ltr">ls</span>, <span dir="ltr">cat login_policy.txt</span>, <span dir="ltr">cat attempts.log</span>, <span dir="ltr">grep unlimited login_policy.txt</span>, <span dir="ltr">grep hint login_policy.txt</span>.</p>
-          <label>פקודה
-            <input class="lab-input" type="text" data-terminal-input value="${esc(state.terminalInput)}" dir="ltr" lang="en">
-          </label>
-          <button class="button" type="button" data-run-terminal>הרץ פקודה</button>
-        </article>
-        <article class="code-panel">
-          <div class="code-panel-toolbar"><span>Terminal</span></div>
-          <pre><code>$ ${esc(state.terminalInput)}</code></pre>
-          <div class="terminal-output has-output">
-            <strong>פלט</strong>
-            <p dir="ltr" lang="en">${esc(state.terminalOutput || 'הפלט יופיע כאן אחרי הרצה.')}</p>
+      <section class="linux-lab">
+        <article class="tool-card terminal-mission-card">
+          <span>Linux Terminal Missions</span>
+          <h3>חוקרים תיק ראיות ממש בתוך טרמינל אימון.</h3>
+          <p>זה טרמינל מדומה וסגור. הוא מלמד פקודות אמיתיות של לינוקס, אבל לא נוגע במחשב אמיתי ולא יוצא לאינטרנט.</p>
+          <div class="terminal-progress">
+            <strong>${terminalProgressText()}</strong>
+            <span>משימות לינוקס הושלמו</span>
           </div>
+          <ol class="terminal-task-list">
+            ${terminalTasks.map((task, index) => {
+              const done = state.completedTerminalTasks.has(task.id);
+              const active = index === activeIndex && !done;
+              return `
+                <li class="${done ? 'done' : ''} ${active ? 'active' : ''}">
+                  <b>${esc(task.title)}</b>
+                  <span>${esc(task.prompt)}</span>
+                  <small>${done ? 'בוצע' : active ? esc(task.hint) : 'נפתח עוד רגע'}</small>
+                </li>
+              `;
+            }).join('')}
+          </ol>
+        </article>
+        <article class="code-panel linux-terminal-panel">
+          <div class="code-panel-toolbar"><span>Training Terminal</span><small dir="ltr">${esc(terminalPrompt)}</small></div>
+          <div class="terminal-screen" dir="ltr" lang="en" aria-label="טרמינל לינוקס מדומה">
+            ${state.terminalHistory.length ? state.terminalHistory.slice(-8).map(item => `
+              <div class="terminal-history-item">
+                <b>${esc(item.prompt)} ${esc(item.command)}</b>
+                <pre>${esc(item.output)}</pre>
+              </div>
+            `).join('') : `
+              <div class="terminal-history-item">
+                <b>${esc(terminalPrompt)} help</b>
+                <pre>Type help to see commands. Start with pwd and ls.</pre>
+              </div>
+            `}
+          </div>
+          <form class="terminal-command-row" data-terminal-form>
+            <label class="sr-only" for="terminalCommand">פקודת טרמינל</label>
+            <span dir="ltr">${esc(terminalPrompt)}</span>
+            <input id="terminalCommand" class="lab-input" type="text" data-terminal-input value="${esc(state.terminalInput)}" dir="ltr" lang="en" autocomplete="off" spellcheck="false">
+            <button class="button" type="submit" data-run-terminal>הרץ</button>
+          </form>
           <div class="terminal-evidence">
             <span class="${state.foundEvidence.has('unlimited') ? 'found' : ''}">ראיה 1: אין הגבלת ניסיונות</span>
             <span class="${state.foundEvidence.has('hint') ? 'found' : ''}">ראיה 2: הרמז מגלה את הסיסמה</span>
+            <span class="${state.foundEvidence.has('success') ? 'found' : ''}">ראיה 3: כניסה הצליחה עם הסיסמה החלשה</span>
           </div>
-          <button class="button" type="button" data-save-terminal>${state.foundEvidence.size >= 2 ? 'שמור ראיות והמשך לפייתון' : 'מצאו 2 ראיות'}</button>
+          <button class="button" type="button" data-save-terminal>${state.completedTerminalTasks.size === terminalTasks.length && state.foundEvidence.size >= 3 ? 'שמור ראיות והמשך לפייתון' : 'השלימו את משימות הטרמינל'}</button>
         </article>
       </section>
     `;
@@ -428,7 +639,7 @@ print("Defense:", score)</code></pre>
               <li><strong>Vulnerability</strong> היא חולשה שאפשר לנצל.</li>
               <li><strong>Exploit</strong> מוכיח חולשה בסביבה בטוחה.</li>
               <li><strong>Fix</strong> סוגר את החולשה ומעלה הגנה.</li>
-              <li><strong>Linux Terminal</strong> עוזר לקרוא קבצי ראיות.</li>
+              <li><strong>Linux Terminal</strong> עוזר לנווט תיקיות, לקרוא קבצים ולחפש ראיות עם pwd, ls, cd, cat ו־grep.</li>
             </ul>
           </div>
           <div class="network-defender-badge" aria-label="תג Ethical Hacker">
@@ -507,22 +718,26 @@ print("Defense:", score)</code></pre>
     document.querySelector('[data-terminal-input]')?.addEventListener('input', event => {
       state.terminalInput = event.target.value.trim();
     });
-    document.querySelector('[data-run-terminal]')?.addEventListener('click', () => {
-      const command = state.terminalInput.trim();
-      state.terminalOutput = terminalCommands[command] || 'command not available in this training lab';
-      if (command === 'grep unlimited login_policy.txt') state.foundEvidence.add('unlimited');
-      if (command === 'grep hint login_policy.txt') state.foundEvidence.add('hint');
-      say(terminalCommands[command] ? 'הפקודה רצה בתוך סימולציה. חפשו ראיות למדיניות חלשה.' : 'הפקודה הזו לא זמינה במעבדת הצעצוע.');
+    document.querySelector('[data-terminal-form]')?.addEventListener('submit', event => {
+      event.preventDefault();
+      const command = normalizeCommand(state.terminalInput);
+      const prompt = `student@hacker-lab:${state.terminalCwd === '/' ? '~' : `~${state.terminalCwd}`}$`;
+      const result = runTerminalCommand(command);
+      state.terminalOutput = result.output;
+      updateTerminalProgress(command, result.output);
+      if (command !== 'clear') state.terminalHistory.push({ prompt, command, output: result.output });
+      state.terminalInput = '';
+      say(result.ok ? `פקודת לינוקס רצה בסימולציה. התקדמות טרמינל: ${terminalProgressText()}.` : 'הפקודה הזו לא זמינה כאן. נסו את הרמז במשימה הפעילה.');
       render({ preserveScroll: true });
     });
     document.querySelector('[data-save-terminal]')?.addEventListener('click', () => {
-      if (state.foundEvidence.size < 2) {
-        say('עוד לא. צריך למצוא שתי ראיות: unlimited וגם hint.');
+      if (state.completedTerminalTasks.size < terminalTasks.length || state.foundEvidence.size < 3) {
+        say('עוד לא. צריך להשלים את משימות הטרמינל ולמצוא שלוש ראיות: unlimited, hint ו־success.');
         render({ preserveScroll: true });
         return;
       }
       complete('terminal');
-      addCase('Terminal: נמצאו ראיות למדיניות חלשה בקובץ login_policy.txt');
+      addCase('Terminal: הושלמו pwd, ls, cd, cat ו־grep ונמצאו שלוש ראיות למדיניות חלשה');
       say('מצוין. עכשיו Python יבדוק את ההגנות שבחרתם.');
       state.station = stations.findIndex(station => station.id === 'python');
       render();
@@ -590,8 +805,11 @@ print("Defense:", score)</code></pre>
     state.conceptTasks = {};
     state.selectedAttempt = '';
     state.selectedFixes.clear();
-    state.terminalInput = 'ls';
+    state.terminalInput = 'help';
     state.terminalOutput = '';
+    state.terminalCwd = '/';
+    state.terminalHistory = [];
+    state.completedTerminalTasks.clear();
     state.foundEvidence.clear();
     state.pythonRan = false;
     state.report = { weakness: '', proof: '', fix: '' };

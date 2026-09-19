@@ -1823,6 +1823,25 @@ p {
   align-items: start;
 }
 
+.linux-lab {
+  display: grid;
+  grid-template-columns: minmax(280px, .82fr) minmax(360px, 1.18fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .toy-login-box {
   display: grid;
   gap: 10px;
@@ -1904,6 +1923,134 @@ p {
 
 .fix-list b {
   color: var(--green);
+}
+
+.terminal-mission-card {
+  display: grid;
+  gap: 12px;
+}
+
+.terminal-progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid rgba(17, 150, 110, .28);
+  border-radius: 8px;
+  padding: 11px 12px;
+  background: #ecfdf5;
+  color: #065f46;
+  font-weight: 900;
+}
+
+.terminal-progress strong {
+  direction: ltr;
+  font-size: 1.5rem;
+}
+
+.terminal-task-list {
+  display: grid;
+  gap: 9px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.terminal-task-list li {
+  display: grid;
+  gap: 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+  background: #fff;
+}
+
+.terminal-task-list li.active {
+  border-color: rgba(37, 99, 235, .35);
+  background: #eff6ff;
+}
+
+.terminal-task-list li.done {
+  border-color: rgba(17, 150, 110, .36);
+  background: #ecfdf5;
+}
+
+.terminal-task-list b {
+  color: var(--ink);
+}
+
+.terminal-task-list span,
+.terminal-task-list small {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.terminal-task-list small {
+  direction: ltr;
+  unicode-bidi: plaintext;
+}
+
+.linux-terminal-panel {
+  gap: 12px;
+}
+
+.code-panel-toolbar small {
+  color: #94a3b8;
+  font-weight: 800;
+  direction: ltr;
+  unicode-bidi: plaintext;
+}
+
+.terminal-screen {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-height: 320px;
+  max-height: 480px;
+  overflow: auto;
+  border: 1px solid rgba(148, 163, 184, .22);
+  border-radius: 8px;
+  padding: 14px;
+  background: #020617;
+  color: #d1fae5;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: .92rem;
+  line-height: 1.45;
+}
+
+.terminal-history-item {
+  display: grid;
+  gap: 4px;
+}
+
+.terminal-history-item b {
+  color: #67e8f9;
+  overflow-wrap: anywhere;
+}
+
+.terminal-history-item pre {
+  margin: 0;
+  white-space: pre-wrap;
+  color: #d1fae5;
+}
+
+.terminal-command-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  direction: ltr;
+}
+
+.terminal-command-row span {
+  color: #475569;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.terminal-command-row .lab-input {
+  min-height: 44px;
+  direction: ltr;
 }
 
 .terminal-evidence {
@@ -2119,6 +2266,7 @@ textarea {
   .builder-grid,
   .packet-investigation,
   .hacker-lab-grid,
+  .linux-lab,
   .ctf-grid,
   .report-grid,
   .route-game,
@@ -2127,6 +2275,14 @@ textarea {
   .url-breakdown,
   .scanner-flow {
     grid-template-columns: 1fr;
+  }
+
+  .terminal-command-row {
+    grid-template-columns: 1fr;
+  }
+
+  .terminal-command-row span {
+    white-space: normal;
   }
 
   .route-game-board {
