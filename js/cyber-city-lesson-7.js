@@ -6,7 +6,7 @@
     { id: 'report', short: 'סיכום', title: 'Linux Evidence Card', time: '15 דקות', goal: 'מסכמים אילו פקודות למדנו, איזו ראיה מצאנו, ומה נעשה בשיעור הבא.', type: 'report' }
   ];
 
-  const mediaVersion = '20260919-linux-basics-v2';
+  const mediaVersion = '20260919-linux-basics-v3';
   const mediaUrl = path => `${path}?v=${mediaVersion}`;
 
   const commandCards = [

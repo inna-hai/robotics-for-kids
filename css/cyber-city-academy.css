@@ -97,22 +97,25 @@ button {
 
 .lesson-video-card video {
   width: 100%;
+  max-width: 100%;
   aspect-ratio: 16 / 9;
   display: block;
   border: 1px solid var(--line);
   border-radius: 10px;
   background: #0f172a;
+  object-fit: contain;
 }
 
 .command-card-video {
   width: 100%;
+  max-width: 100%;
   aspect-ratio: 16 / 9;
   display: block;
   margin: 10px 0 12px;
   border: 1px solid rgba(15, 23, 42, .12);
   border-radius: 8px;
   background: #07111f;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .eyebrow,
@@ -2385,7 +2388,31 @@ p {
 }
 
 .mystery-stage-video {
-  border-color: rgba(15, 118, 110, .22);
+  display: grid;
+  grid-template-columns: minmax(220px, .8fr) minmax(0, 1.2fr);
+  gap: 14px;
+  align-items: center;
+  min-width: 0;
+  margin-bottom: 16px;
+  padding: 14px;
+  border: 1px solid rgba(15, 118, 110, .22);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.mystery-stage-video > * {
+  min-width: 0;
+}
+
+.mystery-stage-video video {
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  display: block;
+  border: 1px solid rgba(15, 23, 42, .12);
+  border-radius: 8px;
+  background: #07111f;
+  object-fit: contain;
 }
 
 .mystery-concepts .concept-video-card h4 {
@@ -2628,7 +2655,8 @@ textarea {
   }
 
   .lesson-video-card,
-  .stage-video-card {
+  .stage-video-card,
+  .mystery-stage-video {
     grid-template-columns: 1fr;
     padding: 14px;
   }

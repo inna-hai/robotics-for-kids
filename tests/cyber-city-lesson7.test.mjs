@@ -9,6 +9,7 @@ const root = new URL('../', import.meta.url);
 const read = file => readFileSync(new URL(file, root), 'utf8');
 const page = read('cyber-city-lesson-7.html');
 const js = read('js/cyber-city-lesson-7.js');
+const css = read('css/cyber-city-academy.css');
 const course = read('cyber-city-course.html');
 const homepage = read('index.html');
 const lesson6 = read('cyber-city-lesson-6.html');
@@ -23,7 +24,7 @@ test('Lesson 7 is a lighter Linux Evidence Basics lesson', () => {
   includes(page, 'Mission 07');
   includes(page, 'Linux Evidence Basics');
   includes(page, 'Linux Evidence Card');
-  includes(page, '20260919-linux-basics-v2');
+  includes(page, '20260919-linux-basics-v3');
   includes(page, 'marketing/cyber-city-lesson7-linux-flow.mp4');
   includes(page, 'js/cyber-city-lesson-7.js');
 });
@@ -80,6 +81,13 @@ test('Lesson 7 uses short narrated animations for Linux basics', () => {
       `lesson 7 visual video should include narration audio: ${video}`,
     );
   }
+});
+
+test('Lesson 7 videos stay inside the mobile lesson card', () => {
+  includes(css, '.mystery-stage-video video');
+  includes(css, 'object-fit: contain');
+  assert.match(css, /\.mystery-stage-video video\s*{[\s\S]*?max-width:\s*100%;/);
+  assert.match(css, /@media \(max-width: 720px\)[\s\S]*?\.mystery-stage-video\s*{[\s\S]*?grid-template-columns:\s*1fr;/);
 });
 
 test('Lesson 7 is linked from the course, catalog and lesson 6', () => {
