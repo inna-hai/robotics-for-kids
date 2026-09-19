@@ -1015,6 +1015,34 @@ h2 {
   background: var(--blue);
 }
 
+.lesson-progress-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 0;
+}
+
+.lesson-progress-nav a {
+  display: inline;
+  padding: 0;
+  color: #18324a;
+  font-weight: 800;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+.lesson-progress-nav a:hover,
+.lesson-progress-nav a:focus-visible {
+  color: var(--blue);
+}
+
+.lesson-progress-nav span {
+  color: #7a8aa1;
+  font-weight: 800;
+}
+
 .qa-course-switcher {
   display: grid;
   gap: 8px;
@@ -1242,7 +1270,8 @@ h2 {
   }
 
   .actions,
-  .challenge-actions {
+  .challenge-actions,
+  .lesson-progress-nav {
     gap: 8px;
   }
 

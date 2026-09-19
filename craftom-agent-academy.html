@@ -92,17 +92,28 @@
       if (!program || !nav) return;
       const params = new URLSearchParams(location.search);
       const lessonId = Math.min(Math.max(Number(params.get('lesson')) || 1, 1), program.totalMeetings || 16);
+      const teacherReturnQuery = () => {
+        if (params.get('teacherReturn') !== '1') return '';
+        const next = new URLSearchParams();
+        next.set('teacherReturn', '1');
+        next.set('lesson', String(lessonId));
+        const classroomId = params.get('classroomId');
+        if (classroomId) next.set('classroomId', classroomId);
+        return next.toString();
+      };
+      const lessonSuffix = teacherReturnQuery();
+      const lessonHref = `craftom-minecraft-lesson-${lessonId}.html${lessonSuffix ? `?${lessonSuffix}` : ''}`;
+      const currentLessonLabel = `השיעור הנוכחי - שיעור ${lessonId}`;
       nav.innerHTML = `
         <a href="craftom-school/preview/index.html">דף הבית</a>
-        <a href="kugel-student.html">שיעור 0 - מבוך המטבעות</a>
-        <a class="primary" href="craftom-minecraft-lesson-${lessonId}.html">השיעור הנוכחי</a>
+        <a class="primary" href="${lessonHref}">${currentLessonLabel}</a>
         ${program.challenges.map(challenge => `<a href="craftom-minecraft-challenge.html?challenge=${challenge.id}">אתגר ${challenge.id}</a>`).join('')}
       `;
     })();
   </script>
   <script src="js/vendor/blockly/blockly.min.js"></script>
   <script src="js/vendor/blockly/msg/he.js"></script>
-  <script src="js/craftom-agent-academy.js?v=20260909-academy-complete-modal-2"></script>
+  <script src="js/craftom-agent-academy.js?v=20260915-teacher-return-1"></script>
   <script src="/js/feedback-widget.js?v=20260907-tehila-fixes-1"></script>
 </body>
 </html>

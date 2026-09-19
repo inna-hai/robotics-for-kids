@@ -131,7 +131,7 @@
 .app-shell {
   width: min(1380px, calc(100% - 28px));
   margin: 0 auto;
-  padding: 18px 0 44px;
+  padding: 22px 0 48px;
 }
 
 .teacher-app.is-teacher-home .teacher-shell {
@@ -182,29 +182,42 @@
 }
 
 .teacher-app.is-teacher-lesson .teacher-board {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  align-items: stretch;
+  grid-template-columns: minmax(320px, .78fr) minmax(0, 1.22fr);
+  gap: 16px;
+  align-items: start;
 }
 
 .teacher-app.is-teacher-lesson .teacher-hero {
   grid-column: 1 / -1;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+  align-items: start;
+  gap: 18px;
+  padding: 24px;
+  border-color: rgba(37, 99, 235, .2);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, .98), rgba(240, 253, 250, .94)),
+    #fff;
 }
 
 .teacher-app.is-teacher-lesson .teacher-main {
-  grid-column: 1 / -1;
+  display: contents;
 }
 
 .teacher-app.is-teacher-lesson .teacher-control {
+  grid-column: 1;
   align-content: start;
   align-self: start;
-  gap: 8px;
-  padding: 10px 12px;
+  min-height: 100%;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  padding: 16px;
+  border-color: #dbe8f4;
+  box-shadow: 0 8px 22px rgba(23, 32, 51, .055);
 }
 
 .teacher-app.is-teacher-lesson .teacher-control h1 {
   margin: 0;
-  font-size: 1.02rem;
+  font-size: 1.08rem;
 }
 
 .teacher-app.is-teacher-lesson .teacher-control p {
@@ -217,27 +230,77 @@
 }
 
 .teacher-app.is-teacher-lesson .teacher-live-controls {
-  gap: 8px;
-  padding: 10px;
+  grid-column: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: stretch;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ffffff, #f8fcff);
 }
 
 .teacher-app.is-teacher-lesson .teacher-live-controls h3 {
-  margin-bottom: 0;
+  align-self: start;
+  margin: 0;
   font-size: 1rem;
+  white-space: nowrap;
 }
 
 .teacher-app.is-teacher-lesson .teacher-class-message-form {
+  grid-template-columns: 1fr;
   gap: 8px;
 }
 
+.teacher-app.is-teacher-lesson .teacher-class-message-form label {
+  font-size: .82rem;
+}
+
 .teacher-app.is-teacher-lesson .compact-form input {
-  padding-block: 8px;
+  min-height: 36px;
+  padding-block: 7px;
 }
 
 .teacher-app.is-teacher-lesson .teacher-control .primary-action,
 .teacher-app.is-teacher-lesson .teacher-control .secondary-action {
-  min-height: 32px;
-  padding-block: 6px;
+  min-height: 36px;
+  padding-block: 7px;
+}
+
+.teacher-app.is-teacher-lesson .teacher-live-controls .action-row {
+  display: flex;
+  gap: 8px;
+  justify-content: stretch;
+}
+
+.teacher-app.is-teacher-lesson .teacher-live-controls .action-row .secondary-action {
+  flex: 1;
+}
+
+.teacher-app.is-teacher-lesson .metrics-grid {
+  grid-column: 2;
+  align-self: stretch;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.teacher-app.is-teacher-lesson .metric {
+  display: grid;
+  align-content: center;
+  min-height: 112px;
+  padding: 16px;
+  border-color: #dbe8f4;
+  background: linear-gradient(135deg, #ffffff, #f8fcff);
+  box-shadow: 0 8px 22px rgba(23, 32, 51, .055);
+}
+
+.teacher-app.is-teacher-lesson .metric strong {
+  font-size: 2.15rem;
+}
+
+.teacher-app.is-teacher-lesson .lesson-zero-cards,
+.teacher-app.is-teacher-lesson .teacher-student-board-panel {
+  grid-column: 1 / -1;
 }
 
 .teacher-app.is-teacher-lesson .teacher-selected-lesson {
@@ -518,20 +581,44 @@
 .server-status-card {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 6px 12px;
+  gap: 8px 12px;
   align-items: center;
   align-self: stretch;
+  min-width: 0;
   padding: 16px;
-  border: 1px solid #dbe8f4;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, .82);
+  border: 1px solid #cfe2f3;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ffffff, #f7fbff);
+  box-shadow: 0 12px 26px rgba(20, 50, 80, .09);
+}
+
+.server-status-card strong {
+  color: #0f172a;
+  font-size: 1.02rem;
+  line-height: 1.25;
 }
 
 .server-status-card small {
   grid-column: 1 / -1;
   color: var(--muted);
   font-weight: 800;
-  line-height: 1.45;
+  line-height: 1.5;
+}
+
+.server-lesson-actions {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.server-lesson-actions:empty {
+  display: none;
+}
+
+.server-lesson-actions .minecraft-lesson-actions {
+  display: grid;
+  gap: 8px;
 }
 
 .student-hero {
@@ -1237,8 +1324,26 @@
 .teacher-hero-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 16px;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.teacher-hero-actions .btn {
+  min-height: 38px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, .08);
+}
+
+.teacher-hero-actions .btn.secondary {
+  border-color: #dbe8f4;
+  background: rgba(255, 255, 255, .9);
+}
+
+.teacher-app.is-teacher-lesson .teacher-hero-actions .btn:first-child {
+  color: #fff;
+  border-color: #0f766e;
+  background: #0f766e;
 }
 
 .teacher-home-section-title {
@@ -1337,6 +1442,13 @@
 .minecraft-lesson-actions {
   display: grid;
   gap: 8px;
+}
+
+.server-lesson-actions .start-lesson-action {
+  width: 100%;
+  min-height: 48px;
+  border-radius: 12px;
+  font-size: 1rem;
 }
 
 .lesson-one-action {
@@ -1495,8 +1607,30 @@
     max-height: none;
   }
 
+  .teacher-app.is-teacher-lesson .teacher-control,
+  .teacher-app.is-teacher-lesson .metrics-grid,
+  .teacher-app.is-teacher-lesson .lesson-zero-cards,
+  .teacher-app.is-teacher-lesson .teacher-student-board-panel {
+    grid-column: 1;
+  }
+
+  .teacher-app.is-teacher-lesson .teacher-main {
+    display: grid;
+    grid-column: 1;
+  }
+
+  .teacher-app.is-teacher-lesson .teacher-control,
+  .teacher-app.is-teacher-lesson .teacher-live-controls,
   .teacher-class-message-form {
     grid-template-columns: 1fr;
+  }
+
+  .teacher-app.is-teacher-lesson .teacher-live-controls .action-row {
+    justify-content: stretch;
+  }
+
+  .teacher-app.is-teacher-lesson .teacher-live-controls .action-row .secondary-action {
+    flex: 1;
   }
 
   .selected-lesson-actions {

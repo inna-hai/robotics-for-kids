@@ -37,13 +37,43 @@
 
   const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
   const commandName = text => String(text || 'run').replace(/[^A-Za-z0-9_]/g, '_') || 'run';
+  const teacherReturnQuery = () => {
+    if (params.get('teacherReturn') !== '1') return '';
+    const next = new URLSearchParams();
+    next.set('teacherReturn', '1');
+    next.set('lesson', String(lesson.id));
+    const classroomId = params.get('classroomId');
+    if (classroomId) next.set('classroomId', classroomId);
+    return next.toString();
+  };
+  const lessonUrl = () => {
+    const suffix = teacherReturnQuery();
+    return `craftom-minecraft-lesson-${lesson.id}.html${suffix ? `?${suffix}` : ''}`;
+  };
+  const teacherManagementUrl = () => {
+    const next = new URLSearchParams();
+    const classroomId = params.get('classroomId');
+    if (classroomId) next.set('classroomId', classroomId);
+    next.set('lesson', String(lesson.id));
+    return `kugel-teacher.html?${next.toString()}`;
+  };
+  const renderTeacherReturnAction = () => {
+    if (params.get('teacherReturn') !== '1') return;
+    document.getElementById('teacherReturnAction')?.remove();
+    document.body.insertAdjacentHTML('afterbegin', `
+      <div class="teacher-return-action" id="teacherReturnAction">
+        <a class="btn secondary" href="${teacherManagementUrl()}">חזרה לניהול שיעור מורה</a>
+      </div>
+    `);
+  };
 
   document.title = `${academy.title} | ${lesson.title}`;
   document.getElementById('academyKicker').textContent = `שיעור ${lesson.id} - ${lesson.title}`;
   document.getElementById('academyTitle').textContent = academy.title;
   document.getElementById('academyStory').textContent = academy.story;
-  document.getElementById('lessonBackLink').href = `craftom-minecraft-lesson-${lesson.id}.html`;
-  if (completeBackLink) completeBackLink.href = `craftom-minecraft-lesson-${lesson.id}.html`;
+  document.getElementById('lessonBackLink').href = lessonUrl();
+  if (completeBackLink) completeBackLink.href = lessonUrl();
+  renderTeacherReturnAction();
 
   if (!window.__craftomAcademyBlocksDefined) {
     window.__craftomAcademyBlocksDefined = true;

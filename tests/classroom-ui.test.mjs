@@ -46,6 +46,7 @@ assert.ok(entry.includes('מנוי אישי'));
 assert.ok(entry.includes('מייל או קוד כיתה'));
 assert.ok(entry.includes('סיסמה או קוד אישי'));
 assert.ok(entry.includes('teacher-classrooms.html'));
+assert.ok(teacher.includes('href="classroom-entry.html?switchRole=student"'), 'teacher-to-student link should intentionally switch roles');
 assert.ok(read('classroom-student.html').includes('id="classroom-student-courses"'));
 
 assert.ok(teacher.includes('id="teacher-login-form"'));
@@ -104,6 +105,7 @@ assert.ok(entryClient.includes('/api/classroom/student-login'));
 assert.ok(!entryClient.includes('/api/classroom/login'), 'unified UI must not duplicate server-side authentication');
 assert.ok(entryClient.includes('/api/classroom/preview-demo-student-enabled'));
 assert.ok(entryClient.includes('/api/classroom/preview-demo-student-login'));
+assert.ok(entryClient.includes("query.get('switchRole') === 'student'"));
 assert.ok(client.includes('/api/classroom/classes'));
 assert.ok(client.includes("/courses`"));
 assert.ok(client.includes("new FormData(form).getAll('courses')"));

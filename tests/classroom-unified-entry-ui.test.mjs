@@ -30,7 +30,8 @@ assert.ok(entryClient.includes('/api/classroom/student-login'));
 assert.equal(entryClient.includes('/api/classroom/login'), false, 'unified UI must reuse the hardened legacy authentication endpoints');
 assert.equal(classroomApiSource.includes("if (action === 'login')"), false, 'unified UI must not add a duplicate classroom authentication implementation');
 assert.ok(entryClient.includes("location.assign('teacher-classrooms.html')"));
-assert.ok(entryClient.includes("location.assign('classroom-student.html')"));
+assert.ok(entryClient.includes("'classroom-student.html'"));
+assert.ok(entryClient.includes('targetNext && allowedNext.has(targetNext)'), 'student redirects may use an allowed requested course target only');
 assert.equal(entryClient.includes('data.nextUrl'), false, 'client redirects must not trust a server-controlled URL');
 assert.equal(entryClient.includes('innerHTML'), false);
 assert.equal(studentClient.includes('innerHTML'), false, 'student data must never be rendered with innerHTML');
@@ -60,7 +61,7 @@ class FakeElement {
   reset() {}
 }
 
-function entryVm(loginData, identifier = 'person@example.test') {
+function entryVm(loginData, identifier = 'person@example.test', config = {}) {
   const ids = ['guest-continue', 'subscription-continue', 'classroom-login-form', 'classroom-login-message', 'classroom-password', 'classroom-password-toggle', 'preview-demo-student'];
   const elements = Object.fromEntries(ids.map((id) => [id, new FakeElement(id)]));
   elements['classroom-password'].type = 'password';
@@ -68,13 +69,14 @@ function entryVm(loginData, identifier = 'person@example.test') {
   const assignments = [];
   const context = {
     document: { body: { dataset: { classroomPage: 'entry' } }, getElementById: (id) => elements[id] || null },
-    location: { search: '?next=python-turtle.html', assign: (url) => assignments.push(url) },
+    location: { search: config.search || '?next=python-turtle.html', assign: (url) => assignments.push(url) },
+    history: { replaceState() {} },
     URLSearchParams,
     FormData: class { entries() { return [['identifier', identifier], ['password', 'SecretPass123!']]; } },
     localStorage: { getItem: () => '', removeItem() {} },
     fetch: async (path, options = {}) => {
       requests.push({ path, options });
-      if (path === '/api/classroom/me') return { ok: true, json: async () => ({ role: 'guest', subscriptionGateEnabled: true }) };
+      if (path === '/api/classroom/me') return { ok: true, json: async () => (config.me || { role: 'guest', subscriptionGateEnabled: true }) };
       if (path === '/api/classroom/preview-demo-student-enabled') return { ok: true, json: async () => ({ enabled: true }) };
       if (path === '/api/classroom/teacher-login' || path === '/api/classroom/student-login') return { ok: true, json: async () => loginData };
       if (path === '/api/classroom/preview-demo-student-login') return { ok: true, json: async () => ({ role: 'student' }) };
@@ -110,6 +112,27 @@ assert.deepEqual(JSON.parse(studentLoginRequest.options.body), { classCode: 'CLA
 studentEntry.assignments.length = 0;
 await studentEntry.elements['preview-demo-student'].listeners.click();
 assert.deepEqual(studentEntry.assignments, ['classroom-student.html'], 'preview students must use the dedicated landing page');
+assert.ok(studentEntry.requests.some((request) => request.path === '/api/classroom/logout'), 'manual preview student login should clear any previous classroom session');
+
+const directDemoStudent = entryVm(
+  { role: 'student' },
+  'CLASS42',
+  { search: '?next=craftom-school%2Fpreview%2Findex.html&demoStudent=1', me: { role: 'teacher' } },
+);
+await new Promise((resolve) => setTimeout(resolve, 0));
+assert.deepEqual(directDemoStudent.assignments, ['craftom-school/preview/index.html'], 'direct demo-student links should open the requested academy page');
+assert.ok(!directDemoStudent.requests.some((request) => request.path === '/api/classroom/me'), 'direct demo-student links should skip the existing-session redirect check');
+assert.ok(directDemoStudent.requests.some((request) => request.path === '/api/classroom/logout'), 'direct demo-student links should clear the previous teacher session');
+assert.ok(directDemoStudent.requests.some((request) => request.path === '/api/classroom/preview-demo-student-login'), 'direct demo-student links should create the preview student session');
+const switchToStudent = entryVm(
+  { role: 'student' },
+  'CLASS42',
+  { search: '?switchRole=student', me: { role: 'teacher' } },
+);
+await new Promise((resolve) => setTimeout(resolve, 0));
+assert.deepEqual(switchToStudent.assignments, [], 'switching from teacher to student should stay on the student entry page');
+assert.ok(switchToStudent.requests.some((request) => request.path === '/api/classroom/logout'), 'switching from teacher to student should clear the teacher session');
+assert.ok(!switchToStudent.requests.some((request) => request.path === '/api/classroom/me'), 'switching from teacher to student should skip the existing teacher session redirect');
 console.log('✓ unified classroom entry keeps safe choices, password toggle, and role redirects');
 
 function studentVm(me) {

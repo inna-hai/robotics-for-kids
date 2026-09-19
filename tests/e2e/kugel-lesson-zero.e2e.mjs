@@ -133,10 +133,10 @@ try {
   await teacherPage.waitForLoadState();
   await teacherPage.waitForURL(new RegExp(`/kugel-teacher\\.html\\?classroomId=${classroom.id}$`));
   await teacherPage.waitForFunction((classroomId) => {
-    const current = [...document.querySelectorAll('a')].find((link) => link.textContent?.trim() === 'השיעור הנוכחי');
+    const current = [...document.querySelectorAll('a')].find((link) => link.textContent?.trim() === 'השיעור הנוכחי - שיעור 0');
     return current?.href.includes(`classroomId=${classroomId}`) && current.href.includes('lesson=0');
   }, classroom.id);
-  await teacherPage.getByRole('link', { name: 'השיעור הנוכחי' }).click();
+  await teacherPage.getByRole('link', { name: /השיעור הנוכחי - שיעור/ }).click();
   await teacherPage.waitForURL(new RegExp(`/kugel-teacher\\.html\\?classroomId=${classroom.id}&lesson=0$`));
   await teacherPage.locator('.teacher-student-board-details summary').click();
   await teacherPage.getByText('נועה מבוך').waitFor();
