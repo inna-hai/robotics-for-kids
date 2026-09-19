@@ -8,7 +8,7 @@
     { id: 'report', short: 'דוח', title: 'דוח Ethical Hacker', time: '10 דקות', goal: 'מסכמים איזו חולשה נמצאה, איך הוכחנו אותה בסביבה בטוחה, ומה תיקנו.', type: 'report' }
   ];
 
-  const mediaVersion = '20260919-hacker-terminal-v3';
+  const mediaVersion = '20260919-hacker-terminal-v4';
   const mediaUrl = path => `${path}?v=${mediaVersion}`;
 
   const stationVideos = {
@@ -180,6 +180,16 @@
       accepts: ['grep success attempts.log', 'grep success evidence/attempts.log', 'cat attempts.log', 'cat evidence/attempts.log'],
       hint: 'grep success attempts.log'
     }
+  ];
+
+  const terminalQuickCommands = [
+    { command: 'pwd', label: 'איפה אני?' },
+    { command: 'ls', label: 'מה יש פה?' },
+    { command: 'cd evidence', label: 'כניסה לראיות' },
+    { command: 'cat login_policy.txt', label: 'קריאת מדיניות' },
+    { command: 'grep unlimited login_policy.txt', label: 'חיפוש ניסיונות' },
+    { command: 'grep hint login_policy.txt', label: 'חיפוש רמז' },
+    { command: 'grep success attempts.log', label: 'חיפוש הצלחה' }
   ];
 
   const state = {
@@ -563,12 +573,18 @@
     const activeIndex = activeTerminalTaskIndex();
     const activeTask = terminalTasks[activeIndex];
     const terminalPrompt = `student@hacker-lab:${state.terminalCwd === '/' ? '~' : `~${state.terminalCwd}`}$`;
+    const terminalComplete = state.completedTerminalTasks.size === terminalTasks.length && state.foundEvidence.size >= 3;
     return `
       <section class="linux-lab">
         <article class="tool-card terminal-mission-card">
           <span>Linux Terminal Missions</span>
           <h3>חוקרים תיק ראיות ממש בתוך טרמינל אימון.</h3>
           <p>זה טרמינל מדומה וסגור. הוא מלמד פקודות אמיתיות של לינוקס, אבל לא נוגע במחשב אמיתי ולא יוצא לאינטרנט.</p>
+          <div class="terminal-mini-demo" aria-label="מיני הדגמת טרמינל">
+            <strong>איך זה עובד?</strong>
+            <div dir="ltr"><b>student@hacker-lab:~$ pwd</b><code>/</code></div>
+            <p>כותבים פקודה, לוחצים Enter או הרץ, קוראים את הפלט, ואז המשימה מתקדמת.</p>
+          </div>
           <div class="terminal-progress">
             <strong>${terminalProgressText()}</strong>
             <span>משימות לינוקס הושלמו</span>
@@ -586,6 +602,18 @@
               `;
             }).join('')}
           </ol>
+          <div class="terminal-command-bank">
+            <strong>בנק פקודות עזר</strong>
+            <p>אפשר ללחוץ על פקודה כדי להכניס אותה לשורת הטרמינל, ואז להריץ.</p>
+            <div>
+              ${terminalQuickCommands.map(item => `
+                <button class="terminal-command-chip" type="button" data-terminal-command="${esc(item.command)}">
+                  <b dir="ltr">${esc(item.command)}</b>
+                  <span>${esc(item.label)}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
         </article>
         <article class="code-panel linux-terminal-panel">
           <div class="code-panel-toolbar"><span>Training Terminal</span><small dir="ltr">${esc(terminalPrompt)}</small></div>
@@ -620,7 +648,14 @@
             <span class="${state.foundEvidence.has('hint') ? 'found' : ''}"><b>${state.foundEvidence.has('hint') ? 'נמצאה' : 'נעולה'}</b> ראיה 2: הרמז מגלה את הסיסמה</span>
             <span class="${state.foundEvidence.has('success') ? 'found' : ''}"><b>${state.foundEvidence.has('success') ? 'נמצאה' : 'נעולה'}</b> ראיה 3: כניסה הצליחה עם הסיסמה החלשה</span>
           </div>
-          <button class="button" type="button" data-save-terminal>${state.completedTerminalTasks.size === terminalTasks.length && state.foundEvidence.size >= 3 ? 'שמור ראיות והמשך לפייתון' : 'השלימו את משימות הטרמינל'}</button>
+          ${terminalComplete ? `
+            <div class="terminal-victory">
+              <strong>תיק הראיות נפתר</strong>
+              <p>מצאתם שלוש הוכחות למדיניות חלשה: אין הגבלת ניסיונות, הרמז חושף את מבנה הסיסמה, והייתה כניסה מוצלחת עם סיסמה חלשה.</p>
+              <small>בטרמינל מצאנו ראיות ידנית. עכשיו Python יבדוק את אותה מדיניות מהר ובאופן מסודר.</small>
+            </div>
+          ` : ''}
+          <button class="button" type="button" data-save-terminal>${terminalComplete ? 'שמור ראיות והמשך לפייתון' : 'השלימו את משימות הטרמינל'}</button>
         </article>
       </section>
     `;
@@ -770,6 +805,17 @@ print("Defense:", score)</code></pre>
     document.querySelector('[data-terminal-input]')?.addEventListener('input', event => {
       state.terminalInput = event.target.value.trim();
     });
+    document.querySelectorAll('[data-terminal-command]').forEach(button => {
+      button.addEventListener('click', () => {
+        state.terminalInput = button.dataset.terminalCommand;
+        const input = document.querySelector('[data-terminal-input]');
+        if (input) {
+          input.value = state.terminalInput;
+          input.focus();
+        }
+        say(`שמתי את הפקודה ${state.terminalInput} בשורת הטרמינל. עכשיו לחצו Enter או הרץ.`);
+      });
+    });
     document.querySelector('[data-terminal-form]')?.addEventListener('submit', event => {
       event.preventDefault();
       const command = normalizeCommand(state.terminalInput);
@@ -792,7 +838,7 @@ print("Defense:", score)</code></pre>
       }
       complete('terminal');
       addCase('Terminal: הושלמו pwd, ls, cd, cat ו־grep ונמצאו שלוש ראיות למדיניות חלשה');
-      say('מצוין. עכשיו Python יבדוק את ההגנות שבחרתם.');
+      say('מצוין. בטרמינל מצאתם ראיות ידנית; עכשיו Python יבדוק את אותה מדיניות מהר ובצורה מסודרת.');
       state.station = stations.findIndex(station => station.id === 'python');
       render();
     });

@@ -7,7 +7,7 @@ const html = readFileSync(join(root.pathname, 'cyber-city-lesson-7.html'), 'utf8
 const js = readFileSync(join(root.pathname, 'js', 'cyber-city-lesson-7.js'), 'utf8');
 const css = readFileSync(join(root.pathname, 'css', 'cyber-city-academy.css'), 'utf8');
 
-assert.ok(html.includes('20260919-hacker-terminal-v3'), 'lesson 7 cache key should include the upgraded terminal version');
+assert.ok(html.includes('20260919-hacker-terminal-v4'), 'lesson 7 cache key should include the upgraded terminal version');
 assert.ok(js.includes('terminalFileSystem'), 'lesson 7 should use a simulated terminal filesystem');
 assert.ok(js.includes('terminalTasks'), 'lesson 7 should define concrete Linux terminal tasks');
 assert.ok(js.includes("accepts: ['pwd']"), 'terminal practice should include pwd');
@@ -22,8 +22,14 @@ assert.ok(js.includes('command not available in this training lab'), 'terminal m
 assert.ok(js.includes('terminalFeedback'), 'terminal should give a learning reaction after commands');
 assert.ok(js.includes('Linux is case-sensitive'), 'terminal should teach case-sensitive command mistakes');
 assert.ok(js.includes('terminal-found-badges'), 'terminal should celebrate newly found evidence');
+assert.ok(js.includes('terminalQuickCommands'), 'terminal should expose command helper buttons for students');
+assert.ok(js.includes('תיק הראיות נפתר'), 'terminal should show a clear victory moment after evidence is complete');
+assert.ok(js.includes('בטרמינל מצאנו ראיות ידנית. עכשיו Python'), 'terminal should bridge manual evidence work to Python');
 assert.ok(css.includes('.linux-lab'), 'upgraded Linux lab should have dedicated layout styles');
 assert.ok(css.includes('.terminal-task-list'), 'terminal tasks should have visible checklist styling');
 assert.ok(css.includes('.terminal-screen'), 'terminal should render like a real command screen');
 assert.ok(css.includes('.terminal-live-feedback'), 'terminal should have a prominent live feedback panel');
 assert.ok(css.includes('.terminal-found-badges'), 'terminal evidence discoveries should have badge styling');
+assert.ok(css.includes('.terminal-mini-demo'), 'terminal should have a short pre-command demo');
+assert.ok(css.includes('.terminal-command-bank'), 'terminal should style command helper buttons');
+assert.ok(css.includes('.terminal-victory'), 'terminal should style the evidence-complete victory state');
