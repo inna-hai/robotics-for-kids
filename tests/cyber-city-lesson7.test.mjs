@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
 
 const root = new URL('../', import.meta.url);
 const read = file => readFileSync(new URL(file, root), 'utf8');
@@ -20,8 +23,8 @@ test('Lesson 7 is a lighter Linux Evidence Basics lesson', () => {
   includes(page, 'Mission 07');
   includes(page, 'Linux Evidence Basics');
   includes(page, 'Linux Evidence Card');
-  includes(page, '20260919-linux-basics-v1');
-  includes(page, 'marketing/cyber-city-lesson7-terminal.mp4');
+  includes(page, '20260919-linux-basics-v2');
+  includes(page, 'marketing/cyber-city-lesson7-linux-flow.mp4');
   includes(page, 'js/cyber-city-lesson-7.js');
 });
 
@@ -40,6 +43,43 @@ test('Lesson 7 focuses only on basic terminal evidence commands', () => {
   assert.ok(!js.includes("title: 'Python Defense Checker'"), 'Lesson 7 should not include the advanced Python station');
   assert.ok(!js.includes('selectedFixes'), 'Lesson 7 should not include the password policy fix system');
   assert.ok(!js.includes('fetch('), 'Lesson 7 should not fetch live websites');
+});
+
+test('Lesson 7 uses short narrated animations for Linux basics', () => {
+  const requiredVideos = [
+    'linux-flow',
+    'cmd-pwd',
+    'cmd-ls',
+    'cmd-cd',
+    'cmd-cat',
+    'cmd-grep',
+  ];
+
+  includes(js, 'command-card-video');
+  includes(js, 'marketing/cyber-city-lesson7-cmd-pwd.mp4');
+  includes(js, 'marketing/cyber-city-lesson7-cmd-grep.mp4');
+
+  for (const video of requiredVideos) {
+    assert.ok(
+      existsSync(new URL(`marketing/cyber-city-lesson7-${video}.mp4`, root)),
+      `missing lesson 7 visual video: ${video}`,
+    );
+    assert.ok(
+      existsSync(new URL(`marketing/cyber-city-lesson7-${video}-poster.jpg`, root)),
+      `missing lesson 7 visual poster: ${video}`,
+    );
+
+    const probe = spawnSync(ffmpegInstaller.path, [
+      '-hide_banner',
+      '-i',
+      join(root.pathname, 'marketing', `cyber-city-lesson7-${video}.mp4`),
+    ], { encoding: 'utf8' });
+    assert.match(
+      `${probe.stdout}${probe.stderr}`,
+      /Audio:/,
+      `lesson 7 visual video should include narration audio: ${video}`,
+    );
+  }
 });
 
 test('Lesson 7 is linked from the course, catalog and lesson 6', () => {

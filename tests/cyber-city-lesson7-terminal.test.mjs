@@ -7,7 +7,7 @@ const html = readFileSync(join(root.pathname, 'cyber-city-lesson-7.html'), 'utf8
 const js = readFileSync(join(root.pathname, 'js', 'cyber-city-lesson-7.js'), 'utf8');
 const css = readFileSync(join(root.pathname, 'css', 'cyber-city-academy.css'), 'utf8');
 
-assert.ok(html.includes('20260919-linux-basics-v1'), 'lesson 7 cache key should include the Linux basics version');
+assert.ok(html.includes('20260919-linux-basics-v2'), 'lesson 7 cache key should include the Linux basics version');
 assert.ok(js.includes('terminalFileSystem'), 'lesson 7 should use a simulated terminal filesystem');
 assert.ok(js.includes('terminalTasks'), 'lesson 7 should define concrete Linux terminal tasks');
 assert.ok(js.includes("accepts: ['pwd']"), 'terminal practice should include pwd');
@@ -33,3 +33,4 @@ assert.ok(css.includes('.terminal-found-badges'), 'terminal evidence discoveries
 assert.ok(css.includes('.terminal-mini-demo'), 'terminal should have a short pre-command demo');
 assert.ok(css.includes('.terminal-command-bank'), 'terminal should style command helper buttons');
 assert.ok(css.includes('.terminal-victory'), 'terminal should style the evidence-complete victory state');
+assert.ok(css.includes('.command-card-video'), 'command concept cards should style the new short animations');

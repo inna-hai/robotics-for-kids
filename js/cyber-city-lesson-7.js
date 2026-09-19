@@ -6,15 +6,15 @@
     { id: 'report', short: 'סיכום', title: 'Linux Evidence Card', time: '15 דקות', goal: 'מסכמים אילו פקודות למדנו, איזו ראיה מצאנו, ומה נעשה בשיעור הבא.', type: 'report' }
   ];
 
-  const mediaVersion = '20260919-linux-basics-v1';
+  const mediaVersion = '20260919-linux-basics-v2';
   const mediaUrl = path => `${path}?v=${mediaVersion}`;
 
   const commandCards = [
-    { command: 'pwd', name: 'Where am I?', text: 'מראה באיזו תיקייה אנחנו נמצאים עכשיו.', example: 'pwd -> /' },
-    { command: 'ls', name: 'List', text: 'מראה מה יש בתוך התיקייה הנוכחית.', example: 'ls -> evidence report' },
-    { command: 'cd', name: 'Change Directory', text: 'עובר לתיקייה אחרת בתוך המעבדה.', example: 'cd evidence' },
-    { command: 'cat', name: 'Read File', text: 'מציג תוכן של קובץ טקסט.', example: 'cat login_policy.txt' },
-    { command: 'grep', name: 'Search Text', text: 'מחפש מילה בתוך קובץ ומחזיר רק שורות מתאימות.', example: 'grep hint login_policy.txt' }
+    { command: 'pwd', name: 'Where am I?', text: 'מראה באיזו תיקייה אנחנו נמצאים עכשיו.', example: 'pwd -> /', src: 'marketing/cyber-city-lesson7-cmd-pwd.mp4', poster: 'marketing/cyber-city-lesson7-cmd-pwd-poster.jpg' },
+    { command: 'ls', name: 'List', text: 'מראה מה יש בתוך התיקייה הנוכחית.', example: 'ls -> evidence report', src: 'marketing/cyber-city-lesson7-cmd-ls.mp4', poster: 'marketing/cyber-city-lesson7-cmd-ls-poster.jpg' },
+    { command: 'cd', name: 'Change Directory', text: 'עובר לתיקייה אחרת בתוך המעבדה.', example: 'cd evidence', src: 'marketing/cyber-city-lesson7-cmd-cd.mp4', poster: 'marketing/cyber-city-lesson7-cmd-cd-poster.jpg' },
+    { command: 'cat', name: 'Read File', text: 'מציג תוכן של קובץ טקסט.', example: 'cat login_policy.txt', src: 'marketing/cyber-city-lesson7-cmd-cat.mp4', poster: 'marketing/cyber-city-lesson7-cmd-cat-poster.jpg' },
+    { command: 'grep', name: 'Search Text', text: 'מחפש מילה בתוך קובץ ומחזיר רק שורות מתאימות.', example: 'grep hint login_policy.txt', src: 'marketing/cyber-city-lesson7-cmd-grep.mp4', poster: 'marketing/cyber-city-lesson7-cmd-grep-poster.jpg' }
   ];
 
   const terminalFileSystem = {
@@ -312,7 +312,7 @@
 
   function renderBrief() {
     return `
-      ${renderStationVideo('marketing/cyber-city-lesson7-concept-terminal.mp4', 'marketing/cyber-city-lesson7-concept-terminal-poster.jpg', 'טרמינל הוא כלי שיחה עם המחשב', 'בשיעור הזה לא מריצים פקודות אמיתיות על המחשב. הכול מעבדה סגורה שמלמדת את דפוס החשיבה.')}
+      ${renderStationVideo('marketing/cyber-city-lesson7-linux-flow.mp4', 'marketing/cyber-city-lesson7-linux-flow-poster.jpg', 'פקודה, פלט, ראיה', 'בטרמינל לא מנחשים: כותבים פקודה קצרה, קוראים את התשובה, ומחליטים איזו ראיה נמצאה.')}
       <section class="tool-grid">
         <article class="tool-card">
           <span>המטרה</span>
@@ -336,6 +336,9 @@
           <article class="tool-card ${state.selectedCommand === card.command ? 'selected' : ''}">
             <span dir="ltr">${esc(card.command)}</span>
             <h3>${esc(card.name)}</h3>
+            <video class="command-card-video" controls preload="metadata" playsinline poster="${esc(mediaUrl(card.poster))}">
+              <source src="${esc(mediaUrl(card.src))}" type="video/mp4">
+            </video>
             <p>${esc(card.text)}</p>
             <code dir="ltr">${esc(card.example)}</code>
             <button class="button ghost" type="button" data-command-card="${esc(card.command)}">הבנתי את הפקודה</button>

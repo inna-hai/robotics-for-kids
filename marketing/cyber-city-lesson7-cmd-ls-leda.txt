@@ -1,0 +1,7 @@
+TTS in fluent natural Israeli Hebrew.
+Character: a serious but approachable Israeli cyber instructor speaking to children age 12.
+Style: investigative, energetic, clear, and professional. Do not sound childish. Read only the Hebrew lines. Do not read bracket labels.
+
+[curious] הפקודה ls מציגה קבצים ותיקיות.
+[clear] כך רואים שיש תיקיית evidence ותיקיית report.
+[confident closing] זו מפת הכניסה לתיק החקירה.
