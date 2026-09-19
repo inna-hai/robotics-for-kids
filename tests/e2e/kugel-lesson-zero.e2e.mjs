@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { randomBytes } from 'node:crypto';
+import { createHash, createHmac, randomBytes } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
 import { mkdtempSync, rmSync } from 'node:fs';
@@ -30,11 +30,44 @@ async function post(base, path, body, cookie = '') {
 }
 
 let events = [];
+const lifecycleSecret = 'e2e-monitor-token-at-least-32-bytes';
+let monitorLease = null;
 const monitor = createServer(async (req, res) => {
-  for await (const _chunk of req) { /* consume body */ }
+  const chunks = [];
+  for await (const chunk of req) chunks.push(chunk);
+  const raw = Buffer.concat(chunks);
+  const body = raw.length ? JSON.parse(raw.toString('utf8')) : {};
   res.setHeader('Content-Type', 'application/json');
-  if (req.method === 'GET') res.end(JSON.stringify({ events }));
-  else res.end(JSON.stringify({ ok: true }));
+  if (req.url.startsWith('/api/internal/craftom-school/v2/')) {
+    const timestamp = String(req.headers['x-hai-timestamp'] || '');
+    const requestId = String(req.headers['x-hai-request-id'] || '');
+    const canonical = `${timestamp}\nPOST\n${req.url}\n${createHash('sha256').update(raw).digest('hex')}\n${requestId}`;
+    const expected = createHmac('sha256', lifecycleSecret).update(canonical).digest('hex');
+    if (!/^\d{10}$/.test(timestamp) || requestId !== body.request_id || req.headers['x-hai-signature'] !== expected) {
+      res.statusCode = 403;
+      return res.end(JSON.stringify({ error: 'forbidden' }));
+    }
+    if (req.url.endsWith('/world/open')) {
+      monitorLease = { server: body.server, lease_id: body.lease_id, generation: body.generation,
+        owner_id: body.owner_id, state: 'running', active: true, world: body.world, last_error: null };
+    } else if (req.url.endsWith('/world/close')) {
+      monitorLease = null;
+    } else if (req.url.endsWith('/world/state')) {
+      const { owner_id: _ownerId, ...publicLease } = monitorLease || {};
+      return res.end(JSON.stringify(monitorLease ? publicLease : {
+        server: body.server, lease_id: null, generation: 0, state: 'idle', active: false, world: null, last_error: null,
+      }));
+    } else if (req.url.endsWith('/world/events')) {
+      assert.deepEqual(
+        { server: body.server, owner_id: body.owner_id, lease_id: body.lease_id, generation: body.generation, world: body.world },
+        { server: monitorLease.server, owner_id: monitorLease.owner_id, lease_id: monitorLease.lease_id,
+          generation: monitorLease.generation, world: monitorLease.world },
+      );
+      return res.end(JSON.stringify({ events }));
+    }
+    return res.end(JSON.stringify({ ok: true, server: body.server, lease_id: body.lease_id, generation: body.generation }));
+  }
+  return res.end(JSON.stringify({ ok: true }));
 });
 const monitorPort = await listen(monitor);
 const probe = createServer();
@@ -66,7 +99,7 @@ const app = spawn(process.execPath, ['server.js'], {
     ROBOTICS_MINECRAFT_IDENTITY_VERIFIER_SECRET: verifierSecret,
     KUGEL_MONITOR_API_URL: `http://127.0.0.1:${monitorPort}`,
     KUGEL_MONITOR_SERVER_NAME: 'e2e-monitor',
-    KUGEL_MINECRAFT_INTERNAL_TOKEN: 'e2e-monitor-token',
+    KUGEL_MINECRAFT_INTERNAL_TOKEN: lifecycleSecret,
     KUGEL_MINECRAFT_SERVER_NAME: 'E2E Minecraft',
     KUGEL_MINECRAFT_SERVER_HOST: '127.0.0.1',
     KUGEL_MINECRAFT_SERVER_PORT: '19132',
@@ -158,7 +191,8 @@ try {
     { id: 1, event_type: 'player_join', player_name: 'NoaMaze', created_at: now, payload: '{}' },
     ...Array.from({ length: 8 }, (_, index) => ({ id: index + 2, event_type: 'coin_collected', player_name: 'NoaMaze', created_at: now, block_id: 'gold_block', payload: JSON.stringify({ coin_index: index + 1 }) })),
     { id: 10, event_type: 'finish_button_pressed', player_name: 'NoaMaze', created_at: now, payload: JSON.stringify({ completed: true }) },
-  ];
+  ].map(event => ({ ...event, server: monitorLease.server, owner_id: monitorLease.owner_id, lease_id: monitorLease.lease_id,
+    generation: monitorLease.generation, world: monitorLease.world }));
   await teacherPage.locator('#refreshBoard').click();
   await teacherPage.getByText('8 / 8 מטבעות').waitFor();
 

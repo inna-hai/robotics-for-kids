@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
+import { createHash, createHmac } from 'node:crypto';
 import { createServer, request as httpRequest } from 'node:http';
 import { mkdtempSync, readFileSync, readdirSync, rmSync, statSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -77,41 +78,174 @@ function countSubmissionFiles(directory) {
 let gameEvents = [];
 let gameEventsDelayMs = 0;
 let gameEventsStartedResolve = null;
+let gameEventsGate = null;
 let worldOpenDelayMs = 0;
+let worldOpenStartedResolve = null;
 let worldOpenFailuresRemaining = 0;
+let worldOpenPreAdoptFailuresRemaining = 0;
+let worldOpenAdoptState = 'running';
+let worldCloseDelayMs = 0;
+let worldCloseFailuresRemaining = 0;
 let freezeDelayMs = 0;
 let freezeFailuresRemaining = 0;
 let freezeStartedResolve = null;
 let freezeGate = null;
 const monitorCalls = [];
+const lifecycleSecret = 'test-monitor-token-at-least-32-bytes';
+let monitorWorldLease = null;
+let nextMonitorError = null;
+let nextMonitorRedirect = false;
+const queuedStateResponses = [];
+function expectedLifecycleSignature(timestamp, pathname, raw, requestId) {
+  const bodyHash = createHash('sha256').update(raw).digest('hex');
+  return createHmac('sha256', lifecycleSecret)
+    .update(`${timestamp}\nPOST\n${pathname}\n${bodyHash}\n${requestId}`)
+    .digest('hex');
+}
+function forLease(rows, lease = monitorWorldLease) {
+  assert.ok(lease, 'a monitor lease is required to tag game events');
+  return rows.map(row => ({
+    ...row,
+    server: 'test-kugel-monitor',
+    owner_id: lease.owner_id,
+    lease_id: lease.lease_id,
+    generation: lease.generation,
+    world: lease.world,
+  }));
+}
 const monitor = createServer(async (req, res) => {
   const chunks = [];
   for await (const chunk of req) chunks.push(chunk);
   const raw = Buffer.concat(chunks).toString('utf8');
   const body = raw ? JSON.parse(raw) : {};
-  monitorCalls.push({ method: req.method, url: req.url, authorization: req.headers.authorization || '', body });
+  monitorCalls.push({ method: req.method, url: req.url, headers: req.headers, authorization: req.headers.authorization || '', body, raw });
   res.setHeader('Content-Type', 'application/json');
   if (req.method === 'GET' && req.url.startsWith('/api/game-events')) {
-    if (gameEventsStartedResolve) { gameEventsStartedResolve(); gameEventsStartedResolve = null; }
-    if (gameEventsDelayMs) await new Promise((resolve) => setTimeout(resolve, gameEventsDelayMs));
     res.end(JSON.stringify({ events: gameEvents }));
     return;
   }
-  if (req.headers.authorization !== 'Bearer test-monitor-token') {
+  const signedMutationPath = ['/api/internal/craftom-school/v2/world/open', '/api/internal/craftom-school/v2/world/close',
+    '/api/internal/craftom-school/v2/world/state', '/api/internal/craftom-school/v2/world/events',
+    '/api/internal/craftom-school/v2/live/message',
+    '/api/internal/craftom-school/v2/live/freeze'].includes(req.url);
+  if (signedMutationPath) {
+    const timestamp = req.headers['x-hai-timestamp'];
+    const requestId = req.headers['x-hai-request-id'];
+    const signature = req.headers['x-hai-signature'];
+    const expected = expectedLifecycleSignature(timestamp, req.url, raw, requestId);
+    assert.match(timestamp || '', /^\d{10}$/,
+      'lifecycle timestamps must use Unix seconds accepted by the real monitor contract');
+    if (req.method !== 'POST' || !timestamp || !requestId || !signature || signature !== expected) {
+      res.statusCode = 401;
+      res.end(JSON.stringify({ error: 'invalid_lifecycle_signature' }));
+      return;
+    }
+    assert.equal(req.headers.authorization, undefined, 'lifecycle requests use HMAC headers instead of Bearer authentication');
+    assert.equal(body.request_id, requestId, 'the signed request ID must also be bound inside the JSON body');
+    const expectedKeys = req.url.endsWith('/open')
+      ? ['generation', 'lease_id', 'owner_id', 'request_id', 'server', 'start_mode', 'world']
+      : req.url.endsWith('/close')
+        ? ['generation', 'lease_id', 'owner_id', 'request_id', 'server']
+        : req.url.endsWith('/state')
+          ? ['request_id', 'server']
+          : req.url.endsWith('/events')
+            ? ['generation', 'lease_id', 'owner_id', 'request_id', 'server', 'world']
+          : req.url.endsWith('/message')
+            ? ['generation', 'lease_id', 'owner_id', 'request_id', 'scope', 'server', 'target', 'text']
+            : ['generation', 'lease_id', 'mode', 'on', 'owner_id', 'request_id', 'restore', 'scope', 'server', 'target'];
+    assert.deepEqual(Object.keys(body).sort(), expectedKeys);
+    if (!req.url.endsWith('/state')) {
+      assert.equal(typeof body.lease_id, 'string');
+      assert.ok(body.lease_id.length > 0);
+      assert.equal(Number.isInteger(body.generation), true);
+      assert.ok(body.generation > 0);
+      assert.equal(typeof body.owner_id, 'string');
+      assert.ok(body.owner_id.length > 0);
+    }
+  } else if (req.headers.authorization !== `Bearer ${lifecycleSecret}`) {
     res.statusCode = 401;
     res.end(JSON.stringify({ error: 'unauthorized' }));
     return;
   }
-  if (req.url === '/api/internal/craftom-school/world/open' && worldOpenDelayMs) {
+  if (nextMonitorError) {
+    const { status, payload } = nextMonitorError;
+    nextMonitorError = null;
+    res.statusCode = status;
+    res.end(JSON.stringify(payload));
+    return;
+  }
+  if (nextMonitorRedirect) {
+    nextMonitorRedirect = false;
+    res.statusCode = 302;
+    res.setHeader('Location', '/redirect-target');
+    res.end();
+    return;
+  }
+  if (req.url === '/api/internal/craftom-school/v2/world/events') {
+    if (gameEventsStartedResolve) { gameEventsStartedResolve(); gameEventsStartedResolve = null; }
+    if (gameEventsGate) await gameEventsGate;
+    if (gameEventsDelayMs) await new Promise((resolve) => setTimeout(resolve, gameEventsDelayMs));
+    res.end(JSON.stringify({ events: gameEvents }));
+    return;
+  }
+  if (req.url === '/api/internal/craftom-school/v2/world/state') {
+    if (queuedStateResponses.length) {
+      const queued = queuedStateResponses.shift();
+      res.end(typeof queued === 'string' ? queued : JSON.stringify(queued));
+      return;
+    }
+    res.end(JSON.stringify(monitorWorldLease
+      ? { active: true, state: monitorWorldLease.state || 'running', server: body.server, lease_id: monitorWorldLease.lease_id,
+          generation: monitorWorldLease.generation, world: monitorWorldLease.world, last_error: null }
+      : { active: false, state: 'idle', server: body.server, lease_id: null, generation: 0, world: null, last_error: null }));
+    return;
+  }
+  if (req.url === '/api/internal/craftom-school/v2/world/open' && worldOpenDelayMs) {
+    if (worldOpenStartedResolve) { worldOpenStartedResolve(); worldOpenStartedResolve = null; }
     await new Promise((resolve) => setTimeout(resolve, worldOpenDelayMs));
   }
-  if (req.url === '/api/internal/craftom-school/world/open' && worldOpenFailuresRemaining > 0) {
+  if (req.url === '/api/internal/craftom-school/v2/world/open' && worldOpenFailuresRemaining > 0) {
+    monitorWorldLease = { lease_id: body.lease_id, owner_id: body.owner_id, generation: body.generation, world: body.world, state: 'error' };
     worldOpenFailuresRemaining -= 1;
     res.statusCode = 503;
     res.end(JSON.stringify({ error: 'ambiguous_open_failure' }));
     return;
   }
-  if (req.url === '/api/internal/craftom-school/live/freeze') {
+  if (req.url === '/api/internal/craftom-school/v2/world/open' && worldOpenPreAdoptFailuresRemaining > 0) {
+    if (monitorWorldLease) monitorWorldLease = { ...monitorWorldLease, state: 'running' };
+    worldOpenPreAdoptFailuresRemaining -= 1;
+    res.statusCode = 503;
+    res.end(JSON.stringify({ error: 'open_failed_before_adoption' }));
+    return;
+  }
+  if (req.url === '/api/internal/craftom-school/v2/world/open') {
+    if (monitorWorldLease
+      && (monitorWorldLease.lease_id !== body.lease_id || monitorWorldLease.owner_id !== body.owner_id
+        || body.generation < monitorWorldLease.generation)) {
+      res.statusCode = 409;
+      res.end(JSON.stringify({ error: 'world_already_leased' }));
+      return;
+    }
+    monitorWorldLease = { lease_id: body.lease_id, owner_id: body.owner_id, generation: body.generation, world: body.world, state: worldOpenAdoptState };
+  }
+  if (req.url === '/api/internal/craftom-school/v2/world/close') {
+    if (worldCloseDelayMs) await new Promise((resolve) => setTimeout(resolve, worldCloseDelayMs));
+    if (worldCloseFailuresRemaining > 0) {
+      worldCloseFailuresRemaining -= 1;
+      res.statusCode = 503;
+      res.end(JSON.stringify({ error: 'temporary_close_failure' }));
+      return;
+    }
+    if (monitorWorldLease
+      && (monitorWorldLease.lease_id !== body.lease_id || monitorWorldLease.owner_id !== body.owner_id
+        || monitorWorldLease.generation !== body.generation)) {
+      res.statusCode = 409;
+      res.end(JSON.stringify({ error: 'stale_world_lease' }));
+      return;
+    }
+    monitorWorldLease = null;
+  }
+  if (req.url === '/api/internal/craftom-school/v2/live/freeze') {
     if (freezeStartedResolve) { freezeStartedResolve(); freezeStartedResolve = null; }
     if (freezeGate) await freezeGate;
     if (freezeDelayMs) await new Promise((resolve) => setTimeout(resolve, freezeDelayMs));
@@ -136,29 +270,34 @@ const appPort = await new Promise((resolve, reject) => {
 });
 const baseUrl = `http://127.0.0.1:${appPort}`;
 const dbFile = join(tempDir, 'classroom.sqlite');
+const appEnv = {
+  ...process.env,
+  PORT: String(appPort),
+  ROBOTICS_DATA_DIR: tempDir,
+  ROBOTICS_DB_FILE: dbFile,
+  ROBOTICS_SUBSCRIPTION_GATE: '1',
+  ROBOTICS_CLASSROOM_ADMIN_EMAIL: 'owner@example.test',
+  ROBOTICS_TEACHER_INVITE_CODE: '',
+  ROBOTICS_CLASSROOM_ADMIN_CODE: '',
+  KUGEL_MONITOR_API_URL: `http://127.0.0.1:${monitorPort}`,
+  KUGEL_MONITOR_SERVER_NAME: 'test-kugel-monitor',
+  KUGEL_MINECRAFT_INTERNAL_TOKEN: lifecycleSecret,
+  KUGEL_MINECRAFT_SERVER_NAME: 'Test Minecraft',
+  KUGEL_MINECRAFT_SERVER_HOST: '127.0.0.1',
+  KUGEL_MINECRAFT_SERVER_PORT: '19132',
+  KUGEL_MINECRAFT_SERVER_ID: 'test-server-id',
+  KUGEL_MINECRAFT_ACCESS_CODE: 'test-access-code',
+  KUGEL_TEST_WORLD_OPEN_TIMEOUT_MS: '1000',
+  KUGEL_TEST_RECONCILE_GRACE_MS: '600',
+  KUGEL_TEST_RECONCILE_INTERVAL_MS: '100',
+  NODE_ENV: 'test',
+};
 const child = spawn(process.execPath, ['server.js'], {
   cwd: root,
-  env: {
-    ...process.env,
-    PORT: String(appPort),
-    ROBOTICS_DATA_DIR: tempDir,
-    ROBOTICS_DB_FILE: dbFile,
-    ROBOTICS_SUBSCRIPTION_GATE: '1',
-    ROBOTICS_CLASSROOM_ADMIN_EMAIL: 'owner@example.test',
-    ROBOTICS_TEACHER_INVITE_CODE: '',
-    ROBOTICS_CLASSROOM_ADMIN_CODE: '',
-    KUGEL_MONITOR_API_URL: `http://127.0.0.1:${monitorPort}`,
-    KUGEL_MONITOR_SERVER_NAME: 'test-kugel-monitor',
-    KUGEL_MINECRAFT_INTERNAL_TOKEN: 'test-monitor-token',
-    KUGEL_MINECRAFT_SERVER_NAME: 'Test Minecraft',
-    KUGEL_MINECRAFT_SERVER_HOST: '127.0.0.1',
-    KUGEL_MINECRAFT_SERVER_PORT: '19132',
-    KUGEL_MINECRAFT_SERVER_ID: 'test-server-id',
-    KUGEL_MINECRAFT_ACCESS_CODE: 'test-access-code',
-    NODE_ENV: 'test',
-  },
+  env: appEnv,
   stdio: ['ignore', 'pipe', 'pipe'],
 });
+let restartedChild = null;
 let serverOutput = '';
 child.stdout.on('data', chunk => { serverOutput += chunk.toString(); });
 child.stderr.on('data', chunk => { serverOutput += chunk.toString(); });
@@ -198,11 +337,11 @@ try {
       email, password: redemptionBody.temporaryPassword,
     });
     assert.equal(login.status, 200);
-    return { teacher: redemptionBody.teacher, cookie: cookie(login) };
+    return { teacher: redemptionBody.teacher, cookie: cookie(login), password: redemptionBody.temporaryPassword };
   }
   const registeredA = await inviteTeacher('מורת קוגל א', 'kugel-a@example.test');
   const teacherA = registeredA.teacher;
-  const teacherACookie = registeredA.cookie;
+  let teacherACookie = registeredA.cookie;
   const registeredB = await inviteTeacher('מורת קוגל ב', 'kugel-b@example.test');
   const teacherB = registeredB.teacher;
   const teacherBCookie = registeredB.cookie;
@@ -296,7 +435,11 @@ try {
   const launchBody = await launch.json();
   assert.equal(launchBody.lesson.id, 0);
   assert.equal(launchBody.session.classroomId, classroomA.id);
-  assert.equal(monitorCalls.some(call => call.url === '/api/internal/craftom-school/world/open' && call.authorization === 'Bearer test-monitor-token'), true);
+  const firstOpenCall = monitorCalls.find(call => call.url === '/api/internal/craftom-school/v2/world/open');
+  assert.ok(firstOpenCall, 'launch must open the world through the monitor');
+  assert.equal(firstOpenCall.body.owner_id, classroomA.id);
+  const stableLeaseId = firstOpenCall.body.lease_id;
+  const firstGeneration = firstOpenCall.body.generation;
   const duplicateLaunch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, teacherACookie);
   assert.equal(duplicateLaunch.status, 200, 'the same class can restart its own active lesson zero');
   const lessonOneLaunch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/1/launch`, {}, teacherACookie);
@@ -304,7 +447,71 @@ try {
   const lessonOneLaunchBody = await lessonOneLaunch.json();
   assert.equal(lessonOneLaunchBody.lesson.id, 1);
   assert.equal(lessonOneLaunchBody.session.lessonId, 1);
-  assert.equal(monitorCalls.some(call => call.url === '/api/internal/craftom-school/world/open' && call.body.world === 'kugel-50-safe-compounds-v3-20260824'), true);
+  assert.equal(monitorCalls.some(call => call.url === '/api/internal/craftom-school/v2/world/open' && call.body.world === 'kugel-50-safe-compounds-v3-20260824'), true);
+  const latestSequentialOpen = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/v2/world/open').at(-1);
+  assert.equal(latestSequentialOpen.body.lease_id, stableLeaseId,
+    'same-class sequential lesson switches must reuse the stable lease ID');
+  assert.ok(latestSequentialOpen.body.generation > firstGeneration,
+    'each same-class world switch must increment the persisted generation');
+  worldOpenPreAdoptFailuresRemaining = 1;
+  const failedPreAdoptSwitch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/2/launch`, {}, teacherACookie);
+  assert.equal(failedPreAdoptSwitch.status, 503, 'a switch that fails before adoption preserves the safe Monitor status');
+  const afterPreAdoptSwitch = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
+  const afterPreAdoptSwitchBody = await afterPreAdoptSwitch.json();
+  assert.equal(afterPreAdoptSwitchBody.session.lessonId, 1,
+    'the previous lesson must remain active when the monitor stayed on its generation');
+  assert.equal(afterPreAdoptSwitchBody.session.serverState, 'running');
+  assert.equal(monitorWorldLease.generation, latestSequentialOpen.body.generation,
+    'the app must not close the proposed generation when the monitor still runs the previous one');
+
+  worldOpenPreAdoptFailuresRemaining = 1;
+  queuedStateResponses.push({
+    active: true, state: 'starting', server: 'test-kugel-monitor', lease_id: monitorWorldLease.lease_id,
+    generation: monitorWorldLease.generation, world: monitorWorldLease.world, last_error: null,
+  });
+  const unconfirmedRollbackSwitch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/2/launch`, {}, teacherACookie);
+  assert.equal(unconfirmedRollbackSwitch.status, 503);
+  const unconfirmedRollbackView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, {
+    headers: { Cookie: teacherACookie },
+  });
+  const unconfirmedRollbackBody = await unconfirmedRollbackView.json();
+  assert.equal(unconfirmedRollbackBody.session.serverState, 'stopping',
+    'a failed switch must stay blocked unless provider state explicitly confirms the previous generation is running');
+  assert.equal(unconfirmedRollbackBody.session.lessonId, 2,
+    'an unconfirmed provider rollback must not restore the previous lesson locally');
+  await new Promise(resolve => setTimeout(resolve, 900));
+  const confirmedRollbackView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, {
+    headers: { Cookie: teacherACookie },
+  });
+  const confirmedRollbackBody = await confirmedRollbackView.json();
+  assert.equal(confirmedRollbackBody.session.serverState, 'running');
+  assert.equal(confirmedRollbackBody.session.lessonId, 1,
+    'reconciliation may restore only after provider state explicitly reports the previous generation running');
+
+  worldOpenDelayMs = 1500;
+  worldOpenPreAdoptFailuresRemaining = 1;
+  const timedOutUnadoptedSwitch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/2/launch`, {}, teacherACookie);
+  assert.equal(timedOutUnadoptedSwitch.status, 504,
+    'a same-class switch that exceeds the client deadline remains ambiguous initially');
+  await new Promise(resolve => setTimeout(resolve, 900));
+  worldOpenDelayMs = 0;
+  const automaticallyRestoredPrevious = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, {
+    headers: { Cookie: teacherACookie },
+  });
+  const automaticallyRestoredPreviousBody = await automaticallyRestoredPrevious.json();
+  assert.equal(automaticallyRestoredPreviousBody.session.lessonId, 1,
+    'automatic reconciliation must restore the exact previous generation when the late open was never adopted');
+  assert.equal(automaticallyRestoredPreviousBody.session.serverState, 'running',
+    'automatic reconciliation must clear the stopping wedge without restart or another teacher action');
+
+  worldOpenAdoptState = 'starting';
+  const nonRunningAdoption = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/2/launch`, {}, teacherACookie);
+  assert.equal(nonRunningAdoption.status, 502, 'an open response is insufficient without exact remote running state');
+  const afterNonRunningAdoption = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
+  const afterNonRunningAdoptionBody = await afterNonRunningAdoption.json();
+  assert.equal(afterNonRunningAdoptionBody.minecraft, null, 'non-running matching state must never expose Minecraft');
+  assert.equal(afterNonRunningAdoptionBody.session.active, false, 'non-running adoption must be guarded-closed and confirmed');
+  worldOpenAdoptState = 'running';
   const lessonTwoLaunch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/2/launch`, {}, teacherACookie);
   assert.equal(lessonTwoLaunch.status, 200, 'the same class can launch lesson two with the shared Agent Academy world');
   const lessonTwoLaunchBody = await lessonTwoLaunch.json();
@@ -314,6 +521,22 @@ try {
   assert.equal(conflictingLaunch.status, 409, 'one Minecraft server must not be controlled by two classrooms at once');
   const foreignPlayerMessage = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/message`, { text: 'אסור', scope: 'player', target: 'OtherSecure' }, teacherACookie);
   assert.equal(foreignPlayerMessage.status, 404, 'a teacher must not control a Minecraft player from another class');
+  nextMonitorError = { status: 503, payload: { error: 'monitor_busy', retryable: true } };
+  const unavailableMessage = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/freeze`, {
+    on: true, scope: 'all',
+  }, teacherACookie);
+  assert.equal(unavailableMessage.status, 503, 'safe Monitor statuses must survive for recovery and HTTP retry semantics');
+  const unavailableMessageBody = await unavailableMessage.text();
+  assert.doesNotMatch(unavailableMessageBody, /monitor_busy|retryable/,
+    'raw Monitor codes and retry metadata must not be exposed to browsers');
+  const redirectTargetsBefore = monitorCalls.filter(call => call.url === '/redirect-target').length;
+  nextMonitorRedirect = true;
+  const redirectedFreeze = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/freeze`, {
+    on: false, scope: 'all',
+  }, teacherACookie);
+  assert.equal(redirectedFreeze.status, 502, 'a rejected Monitor redirect is reported as a generic upstream failure');
+  assert.equal(monitorCalls.filter(call => call.url === '/redirect-target').length, redirectTargetsBefore,
+    'lifecycle signatures and credentials must never be forwarded to a redirect target');
 
   const studentStart = await post(baseUrl, '/api/kugel/student/start', {}, studentACookie);
   assert.equal(studentStart.status, 200);
@@ -503,9 +726,9 @@ try {
   assert.equal(lessonZeroStart.status, 200);
   assert.equal((await lessonZeroStart.json()).student.lessonId, 0);
 
-  gameEvents = [
+  gameEvents = forLease([
     { id: 40, event_type: 'chat_message', player_name: 'NoaSecure', created_at: new Date().toISOString(), payload: JSON.stringify({ coin_index: 1, coins: 8, finish: true, completed: true }) },
-  ];
+  ]);
   const forgedPayloadFinish = await post(baseUrl, '/api/kugel/student/finish', {}, studentACookie);
   assert.equal(forgedPayloadFinish.status, 409, 'unrelated events with forged progress fields must not complete the lesson');
 
@@ -513,30 +736,175 @@ try {
   assert.equal(otherStudentStart.status, 409, 'a student cannot join a class whose teacher has not launched lesson zero');
 
   const now = new Date(Date.now() + 5000).toISOString();
-  gameEvents = [
+  const successfulEventRows = [
+    { id: 11, event_type: 'player_join', player_name: 'NoaSecure', created_at: now, payload: '{}' },
+    ...Array.from({ length: 8 }, (_, index) => ({ id: index + 12, event_type: 'coin_collected', player_name: 'NoaSecure', created_at: now, block_id: 'gold_block', payload: JSON.stringify({ coin_index: index + 1 }) })),
+    { id: 20, event_type: 'finish_button_pressed', player_name: 'NoaSecure', created_at: now, payload: JSON.stringify({ completed: true }) },
+  ];
+  gameEvents = successfulEventRows;
+  const untaggedEventsFinish = await post(baseUrl, '/api/kugel/student/finish', {}, studentACookie);
+  assert.equal(untaggedEventsFinish.status, 409, 'provider events without exact lease generation and world tags must be rejected');
+  gameEvents = forLease(successfulEventRows).map(row => ({ ...row, generation: row.generation - 1 }));
+  const mismatchedGenerationFinish = await post(baseUrl, '/api/kugel/student/finish', {}, studentACookie);
+  assert.equal(mismatchedGenerationFinish.status, 409, 'successful events from another generation must be rejected');
+
+  gameEvents = forLease([
     { id: 1, event_type: 'player_join', player_name: 'NoaSecure', created_at: now, payload: '{}' },
     ...Array.from({ length: 8 }, (_, index) => ({ id: index + 2, event_type: 'coin_collected', player_name: 'NoaSecure', created_at: now, block_id: 'gold_block', payload: JSON.stringify({ coin_index: 1 }) })),
     { id: 10, event_type: 'finish_button_pressed', player_name: 'NoaSecure', created_at: now, payload: JSON.stringify({ completed: true }) },
-  ];
+  ]);
   const duplicateCoinsFinish = await post(baseUrl, '/api/kugel/student/finish', {}, studentACookie);
   assert.equal(duplicateCoinsFinish.status, 409, 'repeated reports for one coin must not complete lesson zero');
 
   const earlyFinishAt = new Date(Date.now() - 100).toISOString();
   const laterCoinAt = new Date().toISOString();
-  gameEvents = [
+  gameEvents = forLease([
     { id: 50, event_type: 'finish_button_pressed', player_name: 'NoaSecure', created_at: earlyFinishAt, payload: JSON.stringify({ completed: true }) },
     ...Array.from({ length: 8 }, (_, index) => ({ id: 60 + index, event_type: 'coin_collected', player_name: 'NoaSecure', created_at: laterCoinAt, payload: JSON.stringify({ coin_index: index + 1 }) })),
-  ];
+  ]);
   const finishBeforeCoins = await post(baseUrl, '/api/kugel/student/finish', {}, studentACookie);
   assert.equal(finishBeforeCoins.status, 409, 'the finish button must be pressed after the eighth distinct coin');
 
-  gameEvents = [
-    { id: 11, event_type: 'player_join', player_name: 'NoaSecure', created_at: now, payload: '{}' },
-    ...Array.from({ length: 8 }, (_, index) => ({ id: index + 12, event_type: 'coin_collected', player_name: 'NoaSecure', created_at: now, block_id: 'gold_block', payload: JSON.stringify({ coin_index: index + 1 }) })),
-    { id: 20, event_type: 'finish_button_pressed', player_name: 'NoaSecure', created_at: now, payload: JSON.stringify({ completed: true }) },
-  ];
+  gameEvents = forLease(successfulEventRows);
 
-  const monitorReadsBeforeViews = monitorCalls.filter(call => call.method === 'GET' && call.url.startsWith('/api/game-events')).length;
+  await new Promise(resolve => setTimeout(resolve, 1100));
+  let releaseTeacherViewEvents;
+  gameEventsGate = new Promise(resolve => { releaseTeacherViewEvents = resolve; });
+  const teacherViewEventsStarted = new Promise(resolve => { gameEventsStartedResolve = resolve; });
+  const delayedTeacherView = fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, {
+    headers: { Cookie: teacherACookie },
+  });
+  await teacherViewEventsStarted;
+  const revokeTeacherViewDb = new Database(dbFile);
+  revokeTeacherViewDb.prepare('DELETE FROM teacher_courses WHERE teacher_id = ? AND course_id = ?')
+    .run(teacherA.id, 'craftom-agent');
+  revokeTeacherViewDb.close();
+  releaseTeacherViewEvents(); gameEventsGate = null;
+  const revokedTeacherView = await delayedTeacherView;
+  const revokedTeacherViewBody = await revokedTeacherView.text();
+  assert.equal(revokedTeacherView.status, 409,
+    'teacher session view must reject entitlement revocation while game events are awaited');
+  assert.doesNotMatch(revokedTeacherViewBody, /test-access-code|NoaSecure/,
+    'rejected teacher view must not return Minecraft credentials or protected class data');
+  const restoreTeacherViewDb = new Database(dbFile);
+  restoreTeacherViewDb.prepare('INSERT INTO teacher_courses (teacher_id, course_id, created_at) VALUES (?, ?, ?)')
+    .run(teacherA.id, 'craftom-agent', new Date().toISOString());
+  restoreTeacherViewDb.close();
+
+  await new Promise(resolve => setTimeout(resolve, 1100));
+  let releaseStudentViewEvents;
+  gameEventsGate = new Promise(resolve => { releaseStudentViewEvents = resolve; });
+  const studentViewEventsStarted = new Promise(resolve => { gameEventsStartedResolve = resolve; });
+  const delayedStudentView = fetch(`${baseUrl}/api/kugel/session`, { headers: { Cookie: studentACookie } });
+  await studentViewEventsStarted;
+  const revokeStudentViewDb = new Database(dbFile);
+  revokeStudentViewDb.prepare(`UPDATE classroom_student_sessions SET revoked_at = ?
+    WHERE student_id = ? AND revoked_at IS NULL`).run(new Date().toISOString(), studentA.id);
+  revokeStudentViewDb.close();
+  releaseStudentViewEvents(); gameEventsGate = null;
+  const revokedStudentView = await delayedStudentView;
+  const revokedStudentViewBody = await revokedStudentView.text();
+  assert.equal(revokedStudentView.status, 401,
+    'student session view must reject session revocation while game events are awaited');
+  assert.doesNotMatch(revokedStudentViewBody, /test-access-code|NoaSecure/,
+    'rejected student view must not return Minecraft credentials or protected event data');
+  const reloginAfterViewRevocation = await post(baseUrl, '/api/classroom/student-login', {
+    classCode: classroomA.joinCode, personalCode: studentA.loginCode,
+  });
+  assert.equal(reloginAfterViewRevocation.status, 200);
+  studentACookie = cookie(reloginAfterViewRevocation);
+
+  await new Promise(resolve => setTimeout(resolve, 1100));
+  let releaseLeaseChangeViewEvents;
+  gameEventsGate = new Promise(resolve => { releaseLeaseChangeViewEvents = resolve; });
+  const leaseChangeViewEventsStarted = new Promise(resolve => { gameEventsStartedResolve = resolve; });
+  const delayedLeaseChangeView = fetch(`${baseUrl}/api/kugel/session`, { headers: { Cookie: studentACookie } });
+  await leaseChangeViewEventsStarted;
+  const leaseChangeViewDb = new Database(dbFile);
+  const leaseBeforeViewChange = leaseChangeViewDb.prepare(`
+    SELECT generation, world_id FROM kugel_class_sessions WHERE classroom_id = ?
+  `).get(classroomA.id);
+  leaseChangeViewDb.prepare(`UPDATE kugel_class_sessions
+    SET generation = generation + 1, world_id = ? WHERE classroom_id = ?`)
+    .run('lease-race-world', classroomA.id);
+  leaseChangeViewDb.close();
+  releaseLeaseChangeViewEvents(); gameEventsGate = null;
+  const staleLeaseStudentView = await delayedLeaseChangeView;
+  const staleLeaseStudentViewBody = await staleLeaseStudentView.text();
+  assert.equal(staleLeaseStudentView.status, 409,
+    'student session view must reject an exact lease generation/world change while events are awaited');
+  assert.doesNotMatch(staleLeaseStudentViewBody, /test-access-code|NoaSecure/,
+    'stale lease view must not return Minecraft credentials or protected event data');
+  const restoreLeaseChangeViewDb = new Database(dbFile);
+  restoreLeaseChangeViewDb.prepare(`UPDATE kugel_class_sessions SET generation = ?, world_id = ? WHERE classroom_id = ?`)
+    .run(leaseBeforeViewChange.generation, leaseBeforeViewChange.world_id, classroomA.id);
+  restoreLeaseChangeViewDb.close();
+
+  while (Date.now() % 1000 > 100) await new Promise(resolve => setTimeout(resolve, 10));
+  const sameSecondBaselineLaunch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/0/launch`, {}, teacherACookie);
+  assert.equal(sameSecondBaselineLaunch.status, 200);
+  const beforeSameSecondRelaunchDb = new Database(dbFile, { readonly: true });
+  const beforeSameSecondRelaunch = beforeSameSecondRelaunchDb.prepare(`
+    SELECT launch_token, generation, world_id, events_since FROM kugel_class_sessions WHERE classroom_id = ?
+  `).get(classroomA.id);
+  beforeSameSecondRelaunchDb.close();
+  const sameSecondSuccessRows = successfulEventRows.map(row => ({ ...row, created_at: new Date().toISOString() }));
+  gameEvents = forLease(sameSecondSuccessRows);
+  const oldGenerationEvents = gameEvents;
+  let releaseFinishEvents;
+  gameEventsGate = new Promise(resolve => { releaseFinishEvents = resolve; });
+  const finishEventsStarted = new Promise(resolve => { gameEventsStartedResolve = resolve; });
+  const delayedFinishBeforeSameLessonRelaunch = post(baseUrl, '/api/kugel/student/finish', {}, studentACookie);
+  await finishEventsStarted;
+  const sameLessonRelaunchPromise = post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/0/launch`, {}, teacherACookie);
+  let relaunchedGeneration;
+  for (let attempt = 0; attempt < 100; attempt += 1) {
+    const pollDb = new Database(dbFile, { readonly: true });
+    relaunchedGeneration = pollDb.prepare(`
+      SELECT generation, world_id, events_since, server_state FROM kugel_class_sessions WHERE classroom_id = ?
+    `).get(classroomA.id);
+    pollDb.close();
+    if (relaunchedGeneration.generation > beforeSameSecondRelaunch.generation
+      && relaunchedGeneration.server_state === 'running') break;
+    await new Promise(resolve => setTimeout(resolve, 10));
+  }
+  assert.ok(relaunchedGeneration.generation > beforeSameSecondRelaunch.generation,
+    'same-lesson relaunch must advance the persisted generation while finish is delayed');
+  assert.equal(relaunchedGeneration.world_id, beforeSameSecondRelaunch.world_id);
+  assert.equal(relaunchedGeneration.events_since, beforeSameSecondRelaunch.events_since,
+    'the deterministic race must relaunch the same lesson within the same event timestamp second');
+  assert.equal(gameEvents, oldGenerationEvents,
+    'the provider keeps the old generation successful events visible during the same-second relaunch');
+  releaseFinishEvents(); gameEventsGate = null;
+  const staleSameLessonFinish = await delayedFinishBeforeSameLessonRelaunch;
+  assert.equal(staleSameLessonFinish.status, 409,
+    'a finish delayed across a same-lesson same-second relaunch must reject the stale generation');
+  assert.equal((await sameLessonRelaunchPromise).status, 200);
+  const afterStaleSameLessonFinishDb = new Database(dbFile, { readonly: true });
+  const afterStaleSameLessonFinishRun = afterStaleSameLessonFinishDb.prepare(`
+    SELECT attempt_count, finished_at FROM kugel_student_runs WHERE student_id = ?
+  `).get(studentA.id);
+  const afterStaleSameLessonFinishProgress = afterStaleSameLessonFinishDb.prepare(`
+    SELECT COUNT(*) count FROM classroom_progress
+    WHERE student_id = ? AND course_id = 'craftom-agent' AND lesson_id = '0' AND activity_id = 'minecraft-maze'
+  `).get(studentA.id);
+  afterStaleSameLessonFinishDb.close();
+  assert.deepEqual(afterStaleSameLessonFinishRun, { attempt_count: 0, finished_at: null },
+    'stale same-lesson finish must not complete or increment the attempt');
+  assert.equal(afterStaleSameLessonFinishProgress.count, 0,
+    'stale same-lesson finish must not persist lesson completion');
+
+  const staleEventRead = monitorCalls.findLast(call => call.url === '/api/internal/craftom-school/v2/world/events'
+    && call.body.generation === beforeSameSecondRelaunch.generation);
+  assert.deepEqual(
+    { server: staleEventRead.body.server, owner_id: staleEventRead.body.owner_id, lease_id: staleEventRead.body.lease_id,
+      generation: staleEventRead.body.generation, world: staleEventRead.body.world },
+    { server: 'test-kugel-monitor', owner_id: classroomA.id, lease_id: beforeSameSecondRelaunch.launch_token,
+      generation: beforeSameSecondRelaunch.generation, world: beforeSameSecondRelaunch.world_id },
+    'event reads must bind the exact owner, lease, generation, and world in the signed POST body',
+  );
+  gameEvents = forLease(sameSecondSuccessRows);
+  const monitorReadsBeforeViews = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/v2/world/events').length;
   const teacherView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
   assert.equal(teacherView.status, 200);
   const teacherViewBody = await teacherView.json();
@@ -554,7 +922,7 @@ try {
   assert.equal('students' in studentViewBody, false, 'students receive only their own Kugel state');
   assert.equal(JSON.stringify(studentViewBody).includes(studentB.id), false);
   assert.equal(studentViewBody.student.completionRecorded, false, 'verified game events alone must not unlock lesson 1 before progress is persisted');
-  const monitorReadsAfterViews = monitorCalls.filter(call => call.method === 'GET' && call.url.startsWith('/api/game-events')).length;
+  const monitorReadsAfterViews = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/v2/world/events').length;
   assert.equal(monitorReadsAfterViews - monitorReadsBeforeViews, 1, 'teacher and student polling must share a short monitor-event cache');
 
   const metricsSchemaDb = new Database(dbFile);
@@ -621,8 +989,8 @@ try {
   assert.equal(message.status, 200);
   const freeze = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/freeze`, { on: true, scope: 'all' }, teacherACookie);
   assert.equal(freeze.status, 200);
-  assert.equal(monitorCalls.some(call => call.url === '/api/internal/craftom-school/live/message'), true);
-  assert.equal(monitorCalls.some(call => call.url === '/api/internal/craftom-school/live/freeze'), true);
+  assert.equal(monitorCalls.some(call => call.url === '/api/internal/craftom-school/v2/live/message'), true);
+  assert.equal(monitorCalls.some(call => call.url === '/api/internal/craftom-school/v2/live/freeze'), true);
   for (let index = 1; index < 28; index += 1) {
     const repeatedMessage = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/message`, { text: `בדיקה ${index}`, scope: 'all' }, teacherACookie);
     assert.equal(repeatedMessage.status, 200);
@@ -657,11 +1025,11 @@ try {
 
   const slowerFinishAtMs = Date.parse(resetBody.student.resetAt) + Math.max(finishBody.student.bestTimeMs + 5000, 10000);
   const slowerFinishAt = new Date(slowerFinishAtMs).toISOString();
-  gameEvents = [
+  gameEvents = forLease([
     { id: 200, event_type: 'player_join', player_name: 'NoaSecure', created_at: resetBody.student.resetAt, payload: '{}' },
     ...Array.from({ length: 8 }, (_, index) => ({ id: 201 + index, event_type: 'coin_collected', player_name: 'NoaSecure', created_at: slowerFinishAt, block_id: 'gold_block', payload: JSON.stringify({ coin_index: index + 1 }) })),
     { id: 210, event_type: 'finish_button_pressed', player_name: 'NoaSecure', created_at: slowerFinishAt, payload: JSON.stringify({ completed: true }) },
-  ];
+  ]);
   await new Promise(resolve => setTimeout(resolve, 1100));
   gameEventsDelayMs = 150;
   const staleFinishDuringResetPromise = post(baseUrl, '/api/kugel/student/finish', {}, studentACookie);
@@ -684,10 +1052,10 @@ try {
   assert.equal(resetBeforeLessonSwitchRace.status, 200);
   const lessonSwitchBoundary = (await resetBeforeLessonSwitchRace.json()).student.resetAt;
   const lessonSwitchFinishAt = new Date(Date.parse(lessonSwitchBoundary) + 1000).toISOString();
-  gameEvents = [
+  gameEvents = forLease([
     ...Array.from({ length: 8 }, (_, index) => ({ id: 301 + index, event_type: 'coin_collected', player_name: 'NoaSecure', created_at: lessonSwitchFinishAt, block_id: 'gold_block', payload: JSON.stringify({ coin_index: index + 1 }) })),
     { id: 310, event_type: 'finish_button_pressed', player_name: 'NoaSecure', created_at: lessonSwitchFinishAt, payload: JSON.stringify({ completed: true }) },
-  ];
+  ]);
   await new Promise(resolve => setTimeout(resolve, 1100));
   gameEventsDelayMs = 150;
   const finishDuringLessonSwitchPromise = post(baseUrl, '/api/kugel/student/finish', {}, studentACookie);
@@ -709,10 +1077,10 @@ try {
   const archiveRaceBoundary = (await resetBeforeArchiveRace.json()).student.resetAt;
   assert.equal((await post(baseUrl, '/api/kugel/student/start', {}, studentACookie)).status, 200);
   const archiveRaceFinishAt = new Date(Date.parse(archiveRaceBoundary) + 1000).toISOString();
-  gameEvents = [
+  gameEvents = forLease([
     ...Array.from({ length: 8 }, (_, index) => ({ id: 401 + index, event_type: 'coin_collected', player_name: 'NoaSecure', created_at: archiveRaceFinishAt, block_id: 'gold_block', payload: JSON.stringify({ coin_index: index + 1 }) })),
     { id: 410, event_type: 'finish_button_pressed', player_name: 'NoaSecure', created_at: archiveRaceFinishAt, payload: JSON.stringify({ completed: true }) },
-  ];
+  ]);
   const beforeArchiveRaceDb = new Database(dbFile);
   const runBeforeArchiveRace = beforeArchiveRaceDb.prepare('SELECT * FROM kugel_student_runs WHERE student_id = ?').get(studentA.id);
   const progressBeforeArchiveRace = beforeArchiveRaceDb.prepare('SELECT * FROM classroom_progress WHERE student_id = ? AND course_id = ?').all(studentA.id, 'craftom-agent');
@@ -740,10 +1108,10 @@ try {
   const relinkRaceBoundary = (await resetBeforeRelinkRace.json()).student.resetAt;
   assert.equal((await post(baseUrl, '/api/kugel/student/start', {}, studentACookie)).status, 200);
   const relinkRaceFinishAt = new Date(Date.parse(relinkRaceBoundary) + 1000).toISOString();
-  gameEvents = [
+  gameEvents = forLease([
     ...Array.from({ length: 8 }, (_, index) => ({ id: 421 + index, event_type: 'coin_collected', player_name: 'NoaSecure', created_at: relinkRaceFinishAt, block_id: 'gold_block', payload: JSON.stringify({ coin_index: index + 1 }) })),
     { id: 430, event_type: 'finish_button_pressed', player_name: 'NoaSecure', created_at: relinkRaceFinishAt, payload: JSON.stringify({ completed: true }) },
-  ];
+  ]);
   const beforeRelinkRaceDb = new Database(dbFile);
   const runBeforeRelinkRace = beforeRelinkRaceDb.prepare('SELECT * FROM kugel_student_runs WHERE student_id = ?').get(studentA.id);
   const progressBeforeRelinkRace = beforeRelinkRaceDb.prepare('SELECT * FROM classroom_progress WHERE student_id = ? AND course_id = ?').all(studentA.id, 'craftom-agent');
@@ -795,13 +1163,29 @@ try {
   raceIdentityDb.close();
   assert.equal((await post(baseUrl, `/api/kugel/classes/${raceClass.id}/students/${raceStudent.id}/minecraft`, { playerName: 'RaceSecure' }, teacherACookie)).status, 200);
   assert.equal((await post(baseUrl, `/api/kugel/classes/${raceClass.id}/launch`, {}, teacherACookie)).status, 200);
+  let releaseSigningBlocker;
+  freezeGate = new Promise(resolve => { releaseSigningBlocker = resolve; });
+  const signingBlockerStarted = new Promise(resolve => { freezeStartedResolve = resolve; });
+  const signingBlocker = post(baseUrl, `/api/kugel/classes/${raceClass.id}/freeze`, { scope: 'all', target: '', on: true }, teacherACookie);
+  await signingBlockerStarted;
+  const queuedSignedMessage = post(baseUrl, `/api/kugel/classes/${raceClass.id}/message`,
+    { text: 'חתימה טרייה', scope: 'all' }, teacherACookie);
+  await new Promise(resolve => setTimeout(resolve, 1100));
+  const releaseSecond = Math.floor(Date.now() / 1000);
+  releaseSigningBlocker(); freezeGate = null;
+  assert.equal((await signingBlocker).status, 200);
+  assert.equal((await queuedSignedMessage).status, 200);
+  const freshSignedCall = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/v2/live/message'
+    && call.body.text === 'חתימה טרייה').at(-1);
+  assert.ok(Number(freshSignedCall.headers['x-hai-timestamp']) >= releaseSecond,
+    'request_id, body, timestamp, hash, and HMAC must be created only after the per-server queue releases');
   for (const queuedAction of ['message', 'freeze']) {
     let releaseFreeze;
     freezeGate = new Promise(resolve => { releaseFreeze = resolve; });
     const freezeStarted = new Promise(resolve => { freezeStartedResolve = resolve; });
     const blocker = post(baseUrl, `/api/kugel/classes/${raceClass.id}/freeze`, { scope: 'all', target: '', on: true }, teacherACookie);
     await freezeStarted;
-    const allCallsBefore = monitorCalls.filter(call => call.url === `/api/internal/craftom-school/live/${queuedAction}` && call.body.scope === 'all').length;
+    const allCallsBefore = monitorCalls.filter(call => call.url === `/api/internal/craftom-school/v2/live/${queuedAction}` && call.body.scope === 'all').length;
     const queued = queuedAction === 'message'
       ? post(baseUrl, `/api/kugel/classes/${raceClass.id}/message`, { text: 'לא יישלח לכל הכיתה', scope: 'all' }, teacherACookie)
       : post(baseUrl, `/api/kugel/classes/${raceClass.id}/freeze`, { scope: 'all', target: '', on: false }, teacherACookie);
@@ -814,7 +1198,7 @@ try {
     const queuedResponse = await queued;
     const queuedBody = await queuedResponse.json();
     assert.ok([403, 409].includes(queuedResponse.status), `queued all-scope ${queuedAction} must be cancelled after entitlement revocation: ${queuedResponse.status} ${JSON.stringify(queuedBody)}`);
-    const allCallsAfter = monitorCalls.filter(call => call.url === `/api/internal/craftom-school/live/${queuedAction}` && call.body.scope === 'all').length;
+    const allCallsAfter = monitorCalls.filter(call => call.url === `/api/internal/craftom-school/v2/live/${queuedAction}` && call.body.scope === 'all').length;
     assert.equal(allCallsAfter, allCallsBefore, `cancelled all-scope ${queuedAction} must not reach the monitor`);
     const restoreQueuedTeacherDb = new Database(dbFile);
     restoreQueuedTeacherDb.prepare('INSERT INTO teacher_courses (teacher_id, course_id, created_at) VALUES (?, ?, ?)').run(teacherA.id, 'craftom-agent', new Date().toISOString());
@@ -826,7 +1210,7 @@ try {
     const freezeStarted = new Promise(resolve => { freezeStartedResolve = resolve; });
     const blocker = post(baseUrl, `/api/kugel/classes/${raceClass.id}/freeze`, { scope: 'all', target: '', on: true }, teacherACookie);
     await freezeStarted;
-    const targetCallsBefore = monitorCalls.filter(call => call.url === `/api/internal/craftom-school/live/${queuedAction}` && call.body.scope === 'player').length;
+    const targetCallsBefore = monitorCalls.filter(call => call.url === `/api/internal/craftom-school/v2/live/${queuedAction}` && call.body.scope === 'player').length;
     const queued = queuedAction === 'message'
       ? post(baseUrl, `/api/kugel/classes/${raceClass.id}/message`, { text: 'לא יישלח', scope: 'player', target: 'RaceSecure' }, teacherACookie)
       : post(baseUrl, `/api/kugel/classes/${raceClass.id}/freeze`, { scope: 'player', target: 'RaceSecure', on: true }, teacherACookie);
@@ -837,7 +1221,7 @@ try {
     const queuedResponse = await queued;
     const queuedBody = await queuedResponse.json();
     assert.ok([401, 404, 409].includes(queuedResponse.status), `queued player ${queuedAction} must be cancelled after archive: ${queuedResponse.status} ${JSON.stringify(queuedBody)}`);
-    const targetCallsAfter = monitorCalls.filter(call => call.url === `/api/internal/craftom-school/live/${queuedAction}` && call.body.scope === 'player').length;
+    const targetCallsAfter = monitorCalls.filter(call => call.url === `/api/internal/craftom-school/v2/live/${queuedAction}` && call.body.scope === 'player').length;
     assert.equal(targetCallsAfter, targetCallsBefore, `cancelled player ${queuedAction} must not reach the monitor`);
     assert.equal((await post(baseUrl, `/api/classroom/classes/${raceClass.id}/students/${raceStudent.id}/restore`, {}, teacherACookie)).status, 200);
   }
@@ -886,7 +1270,8 @@ try {
   revokeTeacherEntitlementDb.close();
   teacherEntitlementTicket.finish();
   const rejectedTeacherEntitlementTicket = await teacherEntitlementTicket.response;
-  assert.equal(rejectedTeacherEntitlementTicket.status, 409, `slow exit ticket must reject teacher entitlement revocation: ${rejectedTeacherEntitlementTicket.status} ${rejectedTeacherEntitlementTicket.body}`);
+  assert.ok([403, 409].includes(rejectedTeacherEntitlementTicket.status),
+    `slow exit ticket must reject teacher entitlement revocation: ${rejectedTeacherEntitlementTicket.status} ${rejectedTeacherEntitlementTicket.body}`);
   const afterTeacherEntitlementRaceDb = new Database(dbFile);
   assert.deepEqual(afterTeacherEntitlementRaceDb.prepare('SELECT * FROM craftom_lesson_submissions WHERE student_id = ?').all(raceStudent.id), submissionsBeforeSlowRace);
   assert.deepEqual(afterTeacherEntitlementRaceDb.prepare('SELECT * FROM classroom_progress WHERE student_id = ?').all(raceStudent.id), progressBeforeSlowRace);
@@ -900,6 +1285,17 @@ try {
     restoreRaceLeaseDb.prepare("UPDATE kugel_class_sessions SET active = 1, server_state = 'running' WHERE classroom_id = ?").run(classroomA.id);
   })();
   restoreRaceLeaseDb.close();
+  const restoredLeaseDb = new Database(dbFile, { readonly: true });
+  const restoredLease = restoredLeaseDb.prepare(`
+    SELECT launch_token, generation FROM kugel_class_sessions WHERE classroom_id = ?
+  `).get(classroomA.id);
+  restoredLeaseDb.close();
+  monitorWorldLease = {
+    lease_id: restoredLease.launch_token,
+    owner_id: classroomA.id,
+    generation: restoredLease.generation,
+    world: 'restored-test-world',
+  };
 
   const tamperDb = new Database(dbFile);
   tamperDb.prepare('DELETE FROM teacher_courses WHERE teacher_id = ? AND course_id = ?').run(teacherA.id, 'craftom-agent');
@@ -920,7 +1316,7 @@ try {
   assert.equal(stop.status, 200, `${JSON.stringify(stopBody)}\n${serverOutput}`);
   const launchOtherAfterStop = await post(baseUrl, `/api/kugel/classes/${classroomB.id}/launch`, {}, teacherBCookie);
   assert.equal(launchOtherAfterStop.status, 200, 'another class may launch only after the active class releases the server');
-  gameEvents = [{ id: 999, event_type: 'coin_collected', player_name: 'NoaSecure', created_at: new Date().toISOString(), payload: JSON.stringify({ coin_index: 1 }) }];
+  gameEvents = forLease([{ id: 999, event_type: 'coin_collected', player_name: 'NoaSecure', created_at: new Date().toISOString(), payload: JSON.stringify({ coin_index: 1 }) }]);
   const stoppedClassView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
   const stoppedClassBody = await stoppedClassView.json();
   assert.equal(stoppedClassBody.minecraft, null, 'inactive classes must not receive current server connection credentials');
@@ -929,10 +1325,68 @@ try {
   const stopOther = await post(baseUrl, `/api/kugel/classes/${classroomB.id}/stop`, {}, teacherBCookie);
   assert.equal(stopOther.status, 200);
 
+  worldOpenDelayMs = 120;
+  const delayedOpenStarted = new Promise(resolve => { worldOpenStartedResolve = resolve; });
+  const launchDuringSessionRevocationPromise = post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/16/launch`, {}, teacherACookie);
+  await delayedOpenStarted;
+  const revocationRaceDb = new Database(dbFile);
+  const proposedRevokedLease = revocationRaceDb.prepare(`
+    SELECT launch_token, generation, world_id FROM kugel_class_sessions WHERE classroom_id = ?
+  `).get(classroomA.id);
+  revocationRaceDb.prepare(`UPDATE classroom_teacher_sessions SET revoked_at = ?
+    WHERE teacher_id = ? AND revoked_at IS NULL`).run(new Date().toISOString(), teacherA.id);
+  revocationRaceDb.close();
+  const launchDuringSessionRevocation = await launchDuringSessionRevocationPromise.catch(error => {
+    throw new Error(`delayed launch request failed: ${error.message}\n${serverOutput}`);
+  });
+  worldOpenDelayMs = 0;
+  assert.ok([401, 409].includes(launchDuringSessionRevocation.status),
+    'a launch must reject when its initiating teacher session is revoked while world open is awaited');
+  const revokedLaunchStateDb = new Database(dbFile, { readonly: true });
+  const revokedLaunchState = revokedLaunchStateDb.prepare(`
+    SELECT active, server_state FROM kugel_class_sessions WHERE classroom_id = ?
+  `).get(classroomA.id);
+  revokedLaunchStateDb.close();
+  assert.deepEqual(revokedLaunchState, { active: 0, server_state: 'idle' },
+    'a stale activation must release locally only after closing the proposed generation');
+  assert.equal(monitorWorldLease, null, 'the proposed world generation must be confirmed closed after session revocation');
+  const revokedLaunchClose = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/v2/world/close').at(-1);
+  assert.deepEqual(
+    { lease_id: revokedLaunchClose.body.lease_id, generation: revokedLaunchClose.body.generation },
+    { lease_id: proposedRevokedLease.launch_token, generation: proposedRevokedLease.generation },
+    'session-revocation cleanup must guarded-close the exact proposed lease generation',
+  );
+  const reloginTeacherA = await post(baseUrl, '/api/classroom/teacher-login', {
+    email: 'kugel-a@example.test', password: registeredA.password,
+  });
+  assert.equal(reloginTeacherA.status, 200);
+  teacherACookie = cookie(reloginTeacherA);
+
+  worldOpenDelayMs = 1500;
+  const timedOutLaunch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, teacherACookie);
+  assert.equal(timedOutLaunch.status, 504, 'a real monitor timeout must fail the launch');
+  const timedOutLeaseDb = new Database(dbFile, { readonly: true });
+  const timedOutLease = timedOutLeaseDb.prepare('SELECT active, server_state FROM kugel_class_sessions WHERE classroom_id = ?').get(classroomA.id);
+  timedOutLeaseDb.close();
+  assert.deepEqual(timedOutLease, { active: 1, server_state: 'stopping' },
+    'an ambiguous timeout must retain the stopping lease instead of releasing the server');
+  assert.equal((await post(baseUrl, `/api/kugel/classes/${classroomB.id}/lessons/2/launch`, {}, teacherBCookie)).status, 409,
+    'a competing class stays blocked while timeout cleanup is ambiguous');
+  await new Promise(resolve => setTimeout(resolve, 900));
+  worldOpenDelayMs = 0;
+  const automaticallyCleanedTimeout = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, {
+    headers: { Cookie: teacherACookie },
+  });
+  assert.equal((await automaticallyCleanedTimeout.json()).session.active, false,
+    'a timed-out fresh open must be reconciled and released automatically after the late request settles');
+  assert.equal((await post(baseUrl, `/api/kugel/classes/${classroomB.id}/lessons/2/launch`, {}, teacherBCookie)).status, 200,
+    'a competing class may proceed after automatic timeout reconciliation');
+  assert.equal((await post(baseUrl, `/api/kugel/classes/${classroomB.id}/stop`, {}, teacherBCookie)).status, 200);
+
   worldOpenFailuresRemaining = 1;
-  freezeFailuresRemaining = 1;
+  worldCloseFailuresRemaining = 1;
   const ambiguousLaunch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, teacherACookie);
-  assert.equal(ambiguousLaunch.status, 502, 'an ambiguous open failure must report unavailable cleanup');
+  assert.equal(ambiguousLaunch.status, 503, 'an ambiguous open failure must preserve unavailable cleanup status');
   const blockedAfterAmbiguousOpen = await post(baseUrl, `/api/kugel/classes/${classroomB.id}/launch`, {}, teacherBCookie);
   assert.equal(blockedAfterAmbiguousOpen.status, 409, 'an ambiguous open plus failed freeze must retain the lease');
   const retryAmbiguousCleanup = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/stop`, {}, teacherACookie);
@@ -941,8 +1395,8 @@ try {
   assert.equal(launchAfterAmbiguousCleanup.status, 200);
   assert.equal((await post(baseUrl, `/api/kugel/classes/${classroomB.id}/stop`, {}, teacherBCookie)).status, 200);
 
-  worldOpenDelayMs = 120;
-  freezeDelayMs = 120;
+  worldOpenDelayMs = 50;
+  worldCloseDelayMs = 120;
   const staleLaunchPromise = post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, teacherACookie);
   await new Promise((resolve) => setTimeout(resolve, 30));
   const stopDuringLaunchPromise = post(baseUrl, `/api/kugel/classes/${classroomA.id}/stop`, {}, teacherACookie);
@@ -954,32 +1408,32 @@ try {
   const staleLaunch = await staleLaunchPromise;
   assert.equal(staleLaunch.status, 409, 'a completed stale monitor request must not reclaim a released lease');
   worldOpenDelayMs = 0;
-  freezeDelayMs = 0;
+  worldCloseDelayMs = 0;
   const afterStaleLaunch = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
   assert.equal((await afterStaleLaunch.json()).session.active, false);
 
   const relaunchForFailedStop = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, teacherACookie);
   assert.equal(relaunchForFailedStop.status, 200);
-  freezeFailuresRemaining = 1;
+  worldCloseFailuresRemaining = 1;
   const failedStop = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/stop`, {}, teacherACookie);
-  assert.equal(failedStop.status, 502, 'a failed external freeze must keep a retriable lease');
+  assert.equal(failedStop.status, 503, 'a failed guarded close must keep its retriable status and lease');
   const blockedAfterFailedStop = await post(baseUrl, `/api/kugel/classes/${classroomB.id}/launch`, {}, teacherBCookie);
   assert.equal(blockedAfterFailedStop.status, 409, 'another class must remain blocked while cleanup needs retry');
   const retryStop = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/stop`, {}, teacherACookie);
   assert.equal(retryStop.status, 200, 'the same teacher must be able to retry failed cleanup');
   const relaunchBeforeRevoke = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, teacherACookie);
   assert.equal(relaunchBeforeRevoke.status, 200);
-  const freezesBeforeRevoke = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/live/freeze').length;
-  freezeDelayMs = 120;
+  const closesBeforeRevoke = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/v2/world/close').length;
+  worldCloseDelayMs = 120;
   const revokeKugelPromise = post(baseUrl, `/api/classroom/admin/teachers/${teacherA.id}/courses`, { courses: ['sisi'] }, adminCookie);
   await new Promise((resolve) => setTimeout(resolve, 30));
   const launchDuringRevoke = await post(baseUrl, `/api/kugel/classes/${classroomB.id}/launch`, {}, teacherBCookie);
   assert.equal(launchDuringRevoke.status, 409, 'a class must not acquire the lease while revocation cleanup is running');
   const revokeKugel = await revokeKugelPromise;
   assert.equal(revokeKugel.status, 200);
-  const freezesAfterRevoke = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/live/freeze').length;
-  assert.equal(freezesAfterRevoke, freezesBeforeRevoke + 1, 'entitlement revocation must freeze the externally running world');
-  freezeDelayMs = 0;
+  const closesAfterRevoke = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/v2/world/close').length;
+  assert.equal(closesAfterRevoke, closesBeforeRevoke + 1, 'entitlement revocation must guarded-close the externally running world');
+  worldCloseDelayMs = 0;
   const launchAfterRevokeCleanup = await post(baseUrl, `/api/kugel/classes/${classroomB.id}/launch`, {}, teacherBCookie);
   assert.equal(launchAfterRevokeCleanup.status, 200, 'the next class may launch after revocation cleanup finishes');
   const stopAfterRevokeCleanup = await post(baseUrl, `/api/kugel/classes/${classroomB.id}/stop`, {}, teacherBCookie);
@@ -992,14 +1446,14 @@ try {
   assert.equal(restoredClass.status, 200);
   const launchBeforeClassRevoke = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, teacherACookie);
   assert.equal(launchBeforeClassRevoke.status, 200);
-  freezeDelayMs = 120;
+  worldCloseDelayMs = 120;
   const classRevokePromise = post(baseUrl, `/api/classroom/classes/${classroomA.id}/courses`, { courses: ['sisi'] }, teacherACookie);
   await new Promise((resolve) => setTimeout(resolve, 30));
   const launchDuringClassRevoke = await post(baseUrl, `/api/kugel/classes/${classroomB.id}/launch`, {}, teacherBCookie);
   assert.equal(launchDuringClassRevoke.status, 409, 'class-course revocation must retain the lease until freeze completes');
   const classRevoke = await classRevokePromise;
   assert.equal(classRevoke.status, 200);
-  freezeDelayMs = 0;
+  worldCloseDelayMs = 0;
   const launchAfterClassRevoke = await post(baseUrl, `/api/kugel/classes/${classroomB.id}/launch`, {}, teacherBCookie);
   assert.equal(launchAfterClassRevoke.status, 200);
   assert.equal((await post(baseUrl, `/api/kugel/classes/${classroomB.id}/stop`, {}, teacherBCookie)).status, 200);
@@ -1009,8 +1463,134 @@ try {
   assert.equal(restoredView.status, 200);
   assert.equal((await restoredView.json()).session.active, false, 'revocation must destroy the old live Minecraft session');
 
-  const launchBeforeCompoundEntry = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, teacherACookie);
+  worldOpenDelayMs = 50;
+  const concurrentSameClassLaunches = await Promise.all([
+    post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/3/launch`, {}, teacherACookie),
+    post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/4/launch`, {}, teacherACookie),
+  ]);
+  worldOpenDelayMs = 0;
+  assert.deepEqual(concurrentSameClassLaunches.map(response => response.status).sort(), [200, 409],
+    'concurrent same-class opens must not create overlapping generations');
+  const storedServerDb = new Database(dbFile);
+  storedServerDb.prepare(`UPDATE kugel_class_sessions SET monitor_server_name = ?
+    WHERE classroom_id = ? AND active = 1 AND server_state = 'running'`)
+    .run('stored-monitor-name', classroomA.id);
+  storedServerDb.close();
+  const closeCountBeforeStoredName = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/v2/world/close').length;
+  assert.equal((await post(baseUrl, `/api/kugel/classes/${classroomA.id}/stop`, {}, teacherACookie)).status, 200);
+  const storedNameClose = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/v2/world/close').slice(closeCountBeforeStoredName).at(-1);
+  assert.equal(storedNameClose.body.server, 'stored-monitor-name', 'stop must target the server name persisted with the lease');
+
+  const launchBeforeCompoundEntry = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/5/launch`, {}, teacherACookie);
   assert.equal(launchBeforeCompoundEntry.status, 200);
+  const beforeRestartMismatchDb = new Database(dbFile);
+  const beforeRestartMismatch = beforeRestartMismatchDb.prepare('SELECT * FROM kugel_class_sessions WHERE classroom_id = ?').get(classroomA.id);
+  beforeRestartMismatchDb.prepare(`UPDATE kugel_class_sessions SET
+    previous_lesson_id = lesson_id, previous_world_id = world_id,
+    previous_events_since = events_since, previous_generation = generation,
+    lesson_id = 2, world_id = 'pending-restart-world', generation = generation + 1, server_state = 'starting'
+    WHERE classroom_id = ?`).run(classroomA.id);
+  beforeRestartMismatchDb.close();
+  child.kill('SIGTERM');
+  await new Promise(resolve => child.once('exit', resolve));
+  const stateReadsBeforeRestart = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/v2/world/state').length;
+  restartedChild = spawn(process.execPath, ['server.js'], { cwd: root, env: appEnv, stdio: ['ignore', 'pipe', 'pipe'] });
+  restartedChild.stdout.on('data', chunk => { serverOutput += chunk.toString(); });
+  restartedChild.stderr.on('data', chunk => { serverOutput += chunk.toString(); });
+  await waitForServer(baseUrl);
+  assert.ok(monitorCalls.filter(call => call.url === '/api/internal/craftom-school/v2/world/state').length > stateReadsBeforeRestart,
+    'restart must reconcile persisted active leases through the signed monitor state endpoint');
+  const recoveredAfterRestart = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
+  assert.equal(recoveredAfterRestart.status, 200);
+  const recoveredAfterRestartBody = await recoveredAfterRestart.json();
+  assert.ok(recoveredAfterRestartBody.minecraft, 'a matching entitled monitor lease must recover to running after restart');
+  assert.equal(recoveredAfterRestartBody.session.lessonId, beforeRestartMismatch.lesson_id,
+    'restart reconciliation must restore the previous generation when the monitor never adopted the proposed switch');
+  assert.equal(recoveredAfterRestartBody.session.serverState, 'running');
+
+  restartedChild.kill('SIGTERM');
+  await new Promise(resolve => restartedChild.once('exit', resolve));
+  const revokedPreviousDb = new Database(dbFile);
+  const revokedPrevious = revokedPreviousDb.prepare('SELECT * FROM kugel_class_sessions WHERE classroom_id = ?').get(classroomA.id);
+  revokedPreviousDb.prepare(`UPDATE kugel_class_sessions SET
+    previous_lesson_id = lesson_id, previous_world_id = world_id,
+    previous_events_since = events_since, previous_generation = generation,
+    lesson_id = 6, world_id = 'pending-revoked-world', generation = generation + 1, server_state = 'error'
+    WHERE classroom_id = ?`).run(classroomA.id);
+  revokedPreviousDb.prepare('DELETE FROM classroom_courses WHERE classroom_id = ? AND course_id = ?')
+    .run(classroomA.id, 'craftom-agent');
+  revokedPreviousDb.close();
+  const closesBeforeRevokedPrevious = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/v2/world/close').length;
+  restartedChild = spawn(process.execPath, ['server.js'], { cwd: root, env: appEnv, stdio: ['ignore', 'pipe', 'pipe'] });
+  restartedChild.stdout.on('data', chunk => { serverOutput += chunk.toString(); });
+  restartedChild.stderr.on('data', chunk => { serverOutput += chunk.toString(); });
+  await waitForServer(baseUrl);
+  const revokedPreviousClose = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/v2/world/close')
+    .slice(closesBeforeRevokedPrevious).at(-1);
+  assert.equal(revokedPreviousClose?.body.generation, revokedPrevious.generation,
+    'revoked restoration must guarded-close the exact remotely running previous generation');
+  const revokedPreviousStateDb = new Database(dbFile);
+  assert.equal(revokedPreviousStateDb.prepare('SELECT active FROM kugel_class_sessions WHERE classroom_id = ?').get(classroomA.id).active, 0,
+    'revoked restoration must release locally only after the previous generation is confirmed closed');
+  revokedPreviousStateDb.prepare('INSERT INTO classroom_courses (classroom_id, course_id, created_at) VALUES (?, ?, ?)')
+    .run(classroomA.id, 'craftom-agent', new Date().toISOString());
+  revokedPreviousStateDb.close();
+  assert.equal((await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/6/launch`, {}, teacherACookie)).status, 200);
+  monitorWorldLease.state = 'starting';
+  restartedChild.kill('SIGTERM');
+  await new Promise(resolve => restartedChild.once('exit', resolve));
+  restartedChild = spawn(process.execPath, ['server.js'], { cwd: root, env: appEnv, stdio: ['ignore', 'pipe', 'pipe'] });
+  restartedChild.stdout.on('data', chunk => { serverOutput += chunk.toString(); });
+  restartedChild.stderr.on('data', chunk => { serverOutput += chunk.toString(); });
+  await waitForServer(baseUrl);
+  const nonRunningStateView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
+  const nonRunningStateBody = await nonRunningStateView.json();
+  assert.equal(nonRunningStateBody.minecraft, null, 'a matching but non-running monitor state must never expose Minecraft');
+  assert.equal(nonRunningStateBody.session.active, false, 'a matching non-running state must be guarded-closed before release');
+  assert.equal((await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/6/launch`, {}, teacherACookie)).status, 200);
+  restartedChild.kill('SIGTERM');
+  await new Promise(resolve => restartedChild.once('exit', resolve));
+  queuedStateResponses.push({
+    active: true, state: 'running', server: 'test-kugel-monitor', lease_id: monitorWorldLease.lease_id,
+    generation: monitorWorldLease.generation, world: monitorWorldLease.world, last_error: null, unexpected: true,
+  });
+  restartedChild = spawn(process.execPath, ['server.js'], { cwd: root, env: appEnv, stdio: ['ignore', 'pipe', 'pipe'] });
+  restartedChild.stdout.on('data', chunk => { serverOutput += chunk.toString(); });
+  restartedChild.stderr.on('data', chunk => { serverOutput += chunk.toString(); });
+  await waitForServer(baseUrl);
+  const invalidStateView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
+  const invalidStateBody = await invalidStateView.json();
+  assert.equal(invalidStateBody.minecraft, null, 'an invalid state schema must never expose Minecraft connection details');
+  assert.equal(invalidStateBody.session.serverState, 'error');
+  restartedChild.kill('SIGTERM');
+  await new Promise(resolve => restartedChild.once('exit', resolve));
+  queuedStateResponses.push('{');
+  restartedChild = spawn(process.execPath, ['server.js'], { cwd: root, env: appEnv, stdio: ['ignore', 'pipe', 'pipe'] });
+  restartedChild.stdout.on('data', chunk => { serverOutput += chunk.toString(); });
+  restartedChild.stderr.on('data', chunk => { serverOutput += chunk.toString(); });
+  await waitForServer(baseUrl);
+  const malformedStateView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
+  assert.equal((await malformedStateView.json()).minecraft, null,
+    'malformed lifecycle JSON must fail closed without exposing Minecraft details');
+  restartedChild.kill('SIGTERM');
+  await new Promise(resolve => restartedChild.once('exit', resolve));
+  queuedStateResponses.push(JSON.stringify({ oversized: 'x'.repeat(33 * 1024) }));
+  restartedChild = spawn(process.execPath, ['server.js'], { cwd: root, env: appEnv, stdio: ['ignore', 'pipe', 'pipe'] });
+  restartedChild.stdout.on('data', chunk => { serverOutput += chunk.toString(); });
+  restartedChild.stderr.on('data', chunk => { serverOutput += chunk.toString(); });
+  await waitForServer(baseUrl);
+  const oversizedStateView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
+  assert.equal((await oversizedStateView.json()).minecraft, null,
+    'an oversized lifecycle response must fail closed without exposing Minecraft details');
+  restartedChild.kill('SIGTERM');
+  await new Promise(resolve => restartedChild.once('exit', resolve));
+  restartedChild = spawn(process.execPath, ['server.js'], { cwd: root, env: appEnv, stdio: ['ignore', 'pipe', 'pipe'] });
+  restartedChild.stdout.on('data', chunk => { serverOutput += chunk.toString(); });
+  restartedChild.stderr.on('data', chunk => { serverOutput += chunk.toString(); });
+  await waitForServer(baseUrl);
+  const recoveredAfterInvalidStates = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
+  assert.ok((await recoveredAfterInvalidStates.json()).minecraft,
+    'a later exact running state may safely recover a retained lease');
   const unauthorizedCompoundSync = await post(baseUrl, '/api/internal/minecraft/compound-assignments', {
     minecraft_username: 'NoaSecure',
     compound_id: 5,
@@ -1018,7 +1598,7 @@ try {
   assert.equal(unauthorizedCompoundSync.status, 401, 'compound assignment sync requires the Minecraft internal token');
   const compoundSync = await fetch(`${baseUrl}/api/internal/minecraft/compound-assignments`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer test-monitor-token' },
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${lifecycleSecret}` },
     body: JSON.stringify({ minecraft_username: 'NoaSecure', compound_id: 5, x: 10, y: 3, z: 20 }),
   });
   assert.equal(compoundSync.status, 200);
@@ -1043,11 +1623,88 @@ try {
     'Minecraft access codes must not have repository defaults');
   assert.doesNotMatch(source, /KUGEL_MINECRAFT_SERVER_HOST\s*=.*\|\|\s*'[^']+'/,
     'Minecraft hosts must not have repository defaults');
+  const configuredSource = source.slice(source.indexOf('function kugelMinecraftConfigured()'),
+    source.indexOf('function kugelMonitorTransportConfigured()'));
+  const transportSource = source.slice(source.indexOf('function kugelMonitorTransportConfigured()'),
+    source.indexOf('function kugelMonitorServerName()'));
+  const evaluateConfiguration = new Function('url', 'expectedHost', 'secret', 'nodeEnv', `
+    const KUGEL_PREVIEW_MOCK_MINECRAFT = false;
+    const KUGEL_MONITOR_API_URL = url;
+    const KUGEL_MONITOR_EXPECTED_HOST = expectedHost;
+    const KUGEL_MONITOR_SERVER_NAME = 'configured-server';
+    const KUGEL_MINECRAFT_INTERNAL_TOKEN = secret;
+    const KUGEL_MINECRAFT_SERVER_NAME = 'Minecraft';
+    const KUGEL_MINECRAFT_SERVER_HOST = 'minecraft.example';
+    const KUGEL_MINECRAFT_SERVER_PORT = '19132';
+    const KUGEL_MINECRAFT_SERVER_ID = 'server-id';
+    const KUGEL_MINECRAFT_ACCESS_CODE = 'access-code';
+    const process = { env: { NODE_ENV: nodeEnv } };
+    ${configuredSource}
+    ${transportSource}
+    return kugelMinecraftConfigured();
+  `);
+  assert.equal(evaluateConfiguration('https://monitor.example', 'monitor.example', 'short', 'production'), false,
+    'production configuration must reject a weak lifecycle secret');
+  assert.equal(evaluateConfiguration('http://monitor.example', 'monitor.example', lifecycleSecret, 'production'), false,
+    'production configuration must reject non-HTTPS monitor transport');
+  assert.equal(evaluateConfiguration('https://other.example', 'monitor.example', lifecycleSecret, 'production'), false,
+    'production configuration must reject an expected-host mismatch');
+  assert.equal(evaluateConfiguration('https://monitor.example', '', lifecycleSecret, 'production'), false,
+    'production configuration must fail closed when the normalized monitor host pin is absent');
+  assert.equal(evaluateConfiguration('https://monitor.example', 'MONITOR.EXAMPLE.', lifecycleSecret, 'production'), true,
+    'production host pins must normalize case and one trailing DNS dot');
+  assert.equal(evaluateConfiguration('https://monitor.example', 'monitor.example', lifecycleSecret, 'production'), true,
+    'production configuration accepts HTTPS with a strong secret and matching pinned host');
+  const monitorRequestSource = source.slice(source.indexOf('async function kugelMonitorRequest('),
+    source.indexOf('function serializeKugelMonitorMutation('));
+  assert.match(monitorRequestSource, /redirect:\s*'error'/,
+    'signed monitor fetches must reject redirects rather than forwarding lifecycle credentials');
+  assert.match(monitorRequestSource, /monitorStatus\s*=\s*response\.status/,
+    'Monitor failures must preserve the safe upstream HTTP status for internal recovery');
+  assert.match(monitorRequestSource, /monitorCode\s*=\s*safeMonitorErrorCode/,
+    'Monitor failures must preserve a bounded error code for internal recovery');
+  assert.match(monitorRequestSource, /monitorRetryable\s*=/,
+    'Monitor failures must preserve explicit retryability for internal recovery');
+  const deadlineSource = source.slice(source.indexOf('const KUGEL_ACTION_WINDOW_MS'),
+    source.indexOf('const kugelActionWindows'));
+  const evaluateDeadlines = new Function('process', `${deadlineSource}; return {
+    overhead: KUGEL_MONITOR_TIMEOUT_OVERHEAD_MS,
+    openMax: KUGEL_MONITOR_PROVIDER_OPEN_MAX_MS, open: KUGEL_WORLD_OPEN_TIMEOUT_MS,
+    closeMax: KUGEL_MONITOR_PROVIDER_CLOSE_MAX_MS, close: KUGEL_WORLD_CLOSE_TIMEOUT_MS,
+    liveMax: KUGEL_MONITOR_PROVIDER_LIVE_MAX_MS, live: KUGEL_LIVE_COMMAND_TIMEOUT_MS,
+    stateMax: KUGEL_MONITOR_PROVIDER_STATE_MAX_MS, state: KUGEL_WORLD_STATE_TIMEOUT_MS,
+  };`);
+  const productionDeadlines = evaluateDeadlines({ env: { NODE_ENV: 'production' } });
+  assert.ok(productionDeadlines.openMax >= 180_000,
+    'Monitor open contract budget must be at least 180 seconds');
+  assert.ok(productionDeadlines.closeMax >= 180_000,
+    'Monitor close contract budget must be at least 180 seconds');
+  assert.ok(productionDeadlines.open >= 180_000 + productionDeadlines.overhead,
+    'open client deadline must preserve explicit overhead beyond the 180-second Monitor contract');
+  assert.ok(productionDeadlines.close >= 180_000 + productionDeadlines.overhead,
+    'close client deadline must preserve explicit overhead beyond the 180-second Monitor contract');
+  for (const operation of ['open', 'close', 'live', 'state']) {
+    assert.ok(productionDeadlines[operation] > productionDeadlines[`${operation}Max`],
+      `${operation} client deadline must exceed the Monitor provider maximum plus transport overhead`);
+  }
+  const deterministicDeadlines = evaluateDeadlines({ env: {
+    NODE_ENV: 'test', KUGEL_TEST_WORLD_OPEN_TIMEOUT_MS: '75', KUGEL_TEST_WORLD_CLOSE_TIMEOUT_MS: '76',
+    KUGEL_TEST_LIVE_COMMAND_TIMEOUT_MS: '77', KUGEL_TEST_WORLD_STATE_TIMEOUT_MS: '78',
+  } });
+  assert.deepEqual(
+    [deterministicDeadlines.open, deterministicDeadlines.close, deterministicDeadlines.live, deterministicDeadlines.state],
+    [75, 76, 77, 78],
+    'tests may override operation deadlines deterministically without weakening production budgets',
+  );
   console.log('✓ secure classroom identities scope Kugel lesson zero and Minecraft controls');
 } finally {
   if (child.exitCode === null && child.signalCode === null) {
     child.kill('SIGTERM');
     await new Promise((resolve) => child.once('exit', resolve));
+  }
+  if (restartedChild && restartedChild.exitCode === null && restartedChild.signalCode === null) {
+    restartedChild.kill('SIGTERM');
+    await new Promise((resolve) => restartedChild.once('exit', resolve));
   }
   await new Promise((resolve) => monitor.close(resolve));
   rmSync(tempDir, { recursive: true, force: true });
