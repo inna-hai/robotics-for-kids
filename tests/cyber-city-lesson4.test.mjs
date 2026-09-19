@@ -45,7 +45,7 @@ test('Lesson 4 deepens if and in without introducing loops or lists', () => {
 test('Lesson 4 is linked from the course, catalog and lesson 3', () => {
   includes(course, 'href="cyber-city-lesson-4.html"');
   includes(course, 'Message Detective');
-  includes(course, '<b>6</b>שיעורים בנויים כרגע');
+  includes(course, '<b>7</b>שיעורים בנויים כרגע');
   includes(homepage, 'href="cyber-city-lesson-4.html"');
   includes(lesson3, 'href="cyber-city-lesson-4.html"');
 });

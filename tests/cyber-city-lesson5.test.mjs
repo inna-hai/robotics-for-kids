@@ -47,7 +47,7 @@ test('Lesson 5 teaches len and if without introducing loops or lists', () => {
 test('Lesson 5 is linked from the course, catalog and lesson 4', () => {
   includes(course, 'href="cyber-city-lesson-5.html"');
   includes(course, 'Password Lab');
-  includes(course, '<b>6</b>שיעורים בנויים כרגע');
+  includes(course, '<b>7</b>שיעורים בנויים כרגע');
   includes(homepage, 'href="cyber-city-lesson-5.html"');
   includes(lesson4, 'href="cyber-city-lesson-5.html"');
 });

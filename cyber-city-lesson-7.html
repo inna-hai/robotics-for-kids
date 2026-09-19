@@ -3,53 +3,52 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Cyber AI Builders — שיעור 6 Packet Patrol</title>
+  <title>Cyber AI Builders — שיעור 7 Ethical Hacker Lab</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/cyber-city-academy.css?v=20260918-packet-v63">
+  <link rel="stylesheet" href="css/cyber-city-academy.css?v=20260918-hacker-v1">
   <link rel="stylesheet" href="css/platform-home-link.css">
 </head>
 <body>
   <main class="lab-shell">
     <header class="lab-header">
       <div>
-        <div class="eyebrow">robotics15 · Cyber AI Builders · Mission 06</div>
-        <h1>Packet Patrol</h1>
-        <p>שיעור 90 דקות לילדים בני 12: מקבלים קריאת חירום על תקלה בשער העיר, מבינים איך מידע זז בין מחשב, DNS ושרת, וחוקרים Packet Logs בסביבת אימון בטוחה.</p>
+        <div class="eyebrow">robotics15 · Cyber AI Builders · Mission 07</div>
+        <h1>Ethical Hacker Lab</h1>
+        <p>שיעור 90 דקות לילדים בני 12: חושבים כמו תוקף בסביבת צעצוע סגורה, מוצאים חולשה, מתקנים אותה, ומשתמשים במיני־טרמינל וב־Python כדי להגן טוב יותר.</p>
       </div>
       <div class="header-actions">
-        <a class="button ghost" href="cyber-city-lesson-5.html">שיעור 5</a>
-        <a class="button ghost" href="cyber-city-lesson-7.html">שיעור 7</a>
+        <a class="button ghost" href="cyber-city-lesson-6.html">שיעור 6</a>
         <a class="button ghost" href="cyber-city-course.html">דף קורס</a>
         <a class="button ghost" href="index.html">קטלוג</a>
         <button class="button" type="button" id="resetLab">התחלה מחדש</button>
       </div>
     </header>
 
-    <section class="lesson-video-card" aria-label="סרטון פתיחה לשיעור השישי">
+    <section class="lesson-video-card" aria-label="סרטון פתיחה לשיעור השביעי">
       <div class="lesson-video-copy">
         <span>סרטון שיעור</span>
-        <h2>Packet Patrol</h2>
-        <p>פותחים את השיעור עם סיפור משימה: שער העיר לא נפתח, וצוות Network Defender צריך להבין איזו תעבורה בטוחה ואיזו דורשת עצירה.</p>
+        <h2>Ethical Hacker Lab</h2>
+        <p>פותחים את השיעור עם סיפור משימה: שער מערכת האימון נפרץ בקלות, והילדים צריכים להבין איך מצאו את החולשה ואיך סוגרים אותה.</p>
       </div>
-      <video controls preload="metadata" playsinline poster="marketing/cyber-city-lesson6-overview-poster.jpg?v=20260918-packet-v63">
-        <source src="marketing/cyber-city-lesson6-overview.mp4?v=20260918-packet-v63" type="video/mp4">
+      <video controls preload="metadata" playsinline poster="marketing/cyber-city-lesson7-overview-poster.jpg?v=20260918-hacker-v1">
+        <source src="marketing/cyber-city-lesson7-overview.mp4?v=20260918-hacker-v1" type="video/mp4">
       </video>
     </section>
 
-    <section class="mission-brief" aria-label="תקציר שיעור 6">
+    <section class="mission-brief" aria-label="תקציר שיעור 7">
       <article>
         <span>משך שיעור</span>
         <strong>90 דקות</strong>
       </article>
       <article>
         <span>תוצר</span>
-        <strong>Packet Inspector</strong>
+        <strong>Login Defense Kit</strong>
       </article>
       <article>
         <span>מיומנות</span>
-        <strong>IP · DNS · HTTPS</strong>
+        <strong>Ethics · Linux · Python</strong>
       </article>
       <article>
         <span>התקדמות</span>
@@ -57,7 +56,7 @@
       </article>
     </section>
 
-    <section class="student-nav-panel" aria-label="ניווט משימות שיעור 6">
+    <section class="student-nav-panel" aria-label="ניווט משימות שיעור 7">
       <div class="map-title">
         <span id="currentStepLabel">משימה 1 מתוך 6</span>
         <strong id="currentStepName">פתיחה</strong>
@@ -72,11 +71,11 @@
         <div class="station-head">
           <div>
             <span class="station-time" id="stationTime">10 דקות</span>
-          <h2 id="stationTitle">פתיחת משימה</h2>
-          <p id="stationGoal">מבינים איך חוקר רשת מסתכל על תעבורה לפני שמחליטים אם היא בטוחה.</p>
+            <h2 id="stationTitle">פתיחת משימה</h2>
+            <p id="stationGoal">מבינים למה לומדים התקפה רק כדי לדעת להגן, ובודקים מערכת צעצוע שלא מחוברת לעולם האמיתי.</p>
           </div>
           <div class="xp-meter">
-            <span>Network XP</span>
+            <span>Hacker XP</span>
             <strong id="xpLabel">0</strong>
           </div>
         </div>
@@ -89,30 +88,30 @@
         </footer>
       </section>
 
-      <aside class="lab-console" aria-label="קונסולת שיעור 6">
+      <aside class="lab-console" aria-label="קונסולת שיעור 7">
         <section class="assistant-card">
           <div class="assistant-head">
             <span>AI</span>
-          <strong>עוזר רשת</strong>
+            <strong>עוזר אתיקה</strong>
           </div>
-          <p id="assistantText">אני עוזר לחקור תעבורת רשת בסביבת אימון סגורה. לא סורקים אתרים אמיתיים ולא מתחברים לרשת אמיתית.</p>
+          <p id="assistantText">נבדוק רק מערכת אימון צעצוע. המטרה היא להבין חולשה ולתקן אותה, לא לפגוע באף מערכת אמיתית.</p>
         </section>
 
         <section class="scanner-card">
-          <span>Packet Risk</span>
+          <span>Defense Score</span>
           <strong id="riskScore">0%</strong>
           <div class="risk-track"><div id="riskFill"></div></div>
-          <p id="riskText">הסיכון יתעדכן אחרי בדיקת לוג תעבורה.</p>
+          <p id="riskText">הציון יתעדכן אחרי שתתקנו חולשות.</p>
         </section>
 
         <section class="case-card">
-          <span>תיק רשת</span>
+          <span>תיק בדיקה</span>
           <div id="caseFile"></div>
         </section>
       </aside>
     </section>
   </main>
 
-  <script src="js/cyber-city-lesson-6.js?v=20260918-packet-v63"></script>
+  <script src="js/cyber-city-lesson-7.js?v=20260918-hacker-v1"></script>
 </body>
 </html>

@@ -19,6 +19,7 @@ test('Cyber City course page is linked from the all-courses catalog', () => {
   includes(homepage, 'href="cyber-city-lesson-4.html"');
   includes(homepage, 'href="cyber-city-lesson-5.html"');
   includes(homepage, 'href="cyber-city-lesson-6.html"');
+  includes(homepage, 'href="cyber-city-lesson-7.html"');
   assert.ok(existsSync(new URL('cyber-city-course.html', root)), 'Cyber City course page should exist');
 });
 
@@ -34,7 +35,7 @@ test('Cyber City course page follows the course overview pattern', () => {
   includes(course, 'Message Detective');
   includes(course, 'Password Lab');
   includes(course, 'Packet Patrol');
-  includes(course, 'Crypto Lab');
+  includes(course, 'Ethical Hacker Lab');
   includes(course, 'Digital Forensics / CTF');
   includes(course, 'href="cyber-city-academy.html"');
   includes(course, 'href="cyber-city-lesson-2.html"');
@@ -42,6 +43,7 @@ test('Cyber City course page follows the course overview pattern', () => {
   includes(course, 'href="cyber-city-lesson-4.html"');
   includes(course, 'href="cyber-city-lesson-5.html"');
   includes(course, 'href="cyber-city-lesson-6.html"');
+  includes(course, 'href="cyber-city-lesson-7.html"');
   includes(course, 'href="index.html"');
 });
 
