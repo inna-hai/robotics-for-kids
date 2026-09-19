@@ -24,7 +24,7 @@ test('Lesson 7 is a lighter Linux Evidence Basics lesson', () => {
   includes(page, 'Mission 07');
   includes(page, 'Linux Evidence Basics');
   includes(page, 'Linux Evidence Card');
-  includes(page, '20260919-linux-basics-v5');
+  includes(page, '20260919-linux-basics-v6');
   includes(page, 'marketing/cyber-city-lesson7-linux-flow.mp4');
   includes(page, 'js/cyber-city-lesson-7.js');
 });
@@ -40,6 +40,10 @@ test('Lesson 7 focuses only on basic terminal evidence commands', () => {
   includes(js, 'terminalFileSystem');
   includes(js, 'terminalTasks');
   includes(js, 'Linux Evidence Card');
+  includes(js, 'מה זה Linux?');
+  includes(js, 'מה זה Terminal?');
+  includes(js, 'למה זה קשור לסייבר?');
+  includes(js, 'חוקרי סייבר מחפשים ראיות בתוך קבצים ולוגים');
   includes(js, 'בשיעור הבא ניקח את הראיות האלה ונבדוק אותן עם Python Defense Checker');
   includes(js, 'אתגר בונוס למי שסיים מהר');
   includes(js, 'next=python_defense_checker');

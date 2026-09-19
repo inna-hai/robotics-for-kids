@@ -1,12 +1,12 @@
 (function () {
   const stations = [
-    { id: 'brief', short: 'פתיחה', title: 'פתיחת משימה: מה זה טרמינל?', time: '10 דקות', goal: 'מבינים את דפוס העבודה: פקודה קצרה, פלט, ואז מסקנה.', type: 'brief' },
+    { id: 'brief', short: 'פתיחה', title: 'מה זה Linux Terminal ולמה זה סייבר?', time: '15 דקות', goal: 'מבינים מה זה Linux, מה זה טרמינל, ולמה חוקרי סייבר משתמשים בפקודות קצרות כדי למצוא ראיות.', type: 'brief' },
     { id: 'commands', short: 'פקודות', title: 'חמש פקודות בסיס', time: '20 דקות', goal: 'מכירים את pwd, ls, cd, cat ו־grep דרך כרטיסי תרגול קצרים.', type: 'commands' },
-    { id: 'terminal', short: 'מעבדה', title: 'Linux Evidence Terminal', time: '45 דקות', goal: 'משתמשים בפקודות הבסיס כדי לפתוח תיק ראיות ולמצוא שלוש הוכחות.', type: 'terminal' },
+    { id: 'terminal', short: 'מעבדה', title: 'Linux Evidence Terminal', time: '40 דקות', goal: 'משתמשים בפקודות הבסיס כדי לפתוח תיק ראיות ולמצוא שלוש הוכחות.', type: 'terminal' },
     { id: 'report', short: 'סיכום', title: 'Linux Evidence Card', time: '15 דקות', goal: 'מסכמים אילו פקודות למדנו, איזו ראיה מצאנו, ומה נעשה בשיעור הבא.', type: 'report' }
   ];
 
-  const mediaVersion = '20260919-linux-basics-v5';
+  const mediaVersion = '20260919-linux-basics-v6';
   const mediaUrl = path => `${path}?v=${mediaVersion}`;
 
   const commandCards = [
@@ -321,9 +321,19 @@
     return `
       <section class="tool-grid">
         <article class="tool-card">
-          <span>המטרה</span>
-          <h3>לקרוא ראיות, לא לנחש.</h3>
-          <p>הילדים לומדים פקודות בסיס שמופיעות בהרבה קורסי סייבר: איפה אני, מה יש פה, איך נכנסים לתיקייה, איך קוראים קובץ, ואיך מחפשים מילה.</p>
+          <span>מה זה Linux?</span>
+          <h3>מערכת הפעלה שעובדת בהרבה שרתים וכלי סייבר.</h3>
+          <p>Linux היא כמו “מערכת הבית” של הרבה מחשבים שמריצים אתרים, שרתים וכלי אבטחה. בשיעור הזה אנחנו לא מתקינים Linux אמיתי, אלא מתאמנים בסביבה סגורה שמרגישה כמוהו.</p>
+        </article>
+        <article class="tool-card">
+          <span>מה זה Terminal?</span>
+          <h3>חלון שבו כותבים פקודות קצרות במקום ללחוץ על כפתורים.</h3>
+          <p>בטרמינל כותבים הוראה כמו <span dir="ltr">ls</span>, מקבלים תשובה, ואז מבינים מה הצעד הבא. זה מהיר, מדויק, ועוזר לראות דברים שלא תמיד רואים במסך רגיל.</p>
+        </article>
+        <article class="tool-card">
+          <span>למה זה קשור לסייבר?</span>
+          <h3>חוקרי סייבר מחפשים ראיות בתוך קבצים ולוגים.</h3>
+          <p>כשבודקים אירוע אבטחה, לא מנחשים. קוראים קבצים, מחפשים שורות חשודות, ומוכיחים מה קרה. לכן היום נשתמש ב־<span dir="ltr">pwd</span>, <span dir="ltr">ls</span>, <span dir="ltr">cd</span>, <span dir="ltr">cat</span> ו־<span dir="ltr">grep</span>.</p>
           <button class="button" type="button" data-complete-brief>הבנתי וממשיכים לפקודות</button>
         </article>
         <article class="tool-card">
