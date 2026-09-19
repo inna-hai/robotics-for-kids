@@ -69,7 +69,7 @@ test('Lesson 6 teaches packet logs in a controlled training lab', () => {
 test('Lesson 6 is linked from the course, catalog and lesson 5', () => {
   includes(course, 'href="cyber-city-lesson-6.html"');
   includes(course, 'Packet Patrol');
-  includes(course, '<b>7</b>שיעורים בנויים כרגע');
+  includes(course, '<b>8</b>שיעורים בנויים כרגע');
   includes(homepage, 'href="cyber-city-lesson-6.html"');
   includes(lesson5, 'href="cyber-city-lesson-6.html"');
 });

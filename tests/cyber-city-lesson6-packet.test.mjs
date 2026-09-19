@@ -51,7 +51,7 @@ for (const slug of ['packet', 'device', 'dns', 'ip', 'server', 'https']) {
 assert.ok(!js.includes('fetch('), 'lesson must not scan or fetch real network targets');
 assert.ok(!js.includes('XMLHttpRequest'), 'lesson must not use browser network scanning');
 assert.ok(course.includes('Ethical Hacker Lab'), 'course roadmap follows with Ethical Hacker Lab');
-assert.ok(course.includes('Digital Forensics / CTF'), 'course roadmap follows with forensics/CTF');
+assert.ok(course.includes('Cyber Mystery Room'), 'course roadmap follows with the forensics mystery room lesson');
 assert.ok(existsSync(join(root, 'assets', 'cyber-city', 'packet-lab.svg')), 'packet lab visual exists');
 
 console.log('cyber city lesson 6 packet tests passed.');

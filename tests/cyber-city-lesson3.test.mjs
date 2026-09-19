@@ -45,7 +45,7 @@ test('Lesson 3 teaches URL checking with short English code names', () => {
 test('Lesson 3 is linked from the course, catalog and lesson 2', () => {
   includes(course, 'href="cyber-city-lesson-3.html"');
   includes(course, 'URL Detective');
-  includes(course, '<b>7</b>שיעורים בנויים כרגע');
+  includes(course, '<b>8</b>שיעורים בנויים כרגע');
   includes(homepage, 'href="cyber-city-lesson-3.html"');
   includes(lesson2, 'href="cyber-city-lesson-3.html"');
 });

@@ -20,7 +20,7 @@ test('Lesson 7 page exists and loads its overview video', () => {
   includes(page, 'Mission 07');
   includes(page, 'Ethical Hacker Lab');
   includes(page, 'Login Defense Kit');
-  includes(page, '20260918-hacker-v1');
+  includes(page, '20260919-hacker-terminal-v4');
   includes(page, 'marketing/cyber-city-lesson7-overview.mp4');
   includes(page, 'marketing/cyber-city-lesson7-overview-poster.jpg');
   includes(page, 'js/cyber-city-lesson-7.js');
@@ -48,7 +48,7 @@ test('Lesson 7 teaches ethical attack only inside a toy lab', () => {
   includes(js, 'Exploit');
   includes(js, 'Fix');
   includes(js, 'Login Toy');
-  includes(js, 'Mini Linux Terminal');
+  includes(js, 'Linux Terminal Missions');
   includes(js, 'ls');
   includes(js, 'cat login_policy.txt');
   includes(js, 'grep unlimited login_policy.txt');
@@ -62,7 +62,7 @@ test('Lesson 7 teaches ethical attack only inside a toy lab', () => {
 test('Lesson 7 is linked from the course, catalog and lesson 6', () => {
   includes(course, 'href="cyber-city-lesson-7.html"');
   includes(course, 'Ethical Hacker Lab');
-  includes(course, '<b>7</b>שיעורים בנויים כרגע');
+  includes(course, '<b>8</b>שיעורים בנויים כרגע');
   includes(homepage, 'href="cyber-city-lesson-7.html"');
   includes(lesson6, 'href="cyber-city-lesson-7.html"');
 });
