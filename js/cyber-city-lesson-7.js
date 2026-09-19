@@ -6,7 +6,7 @@
     { id: 'report', short: 'סיכום', title: 'Linux Evidence Card', time: '15 דקות', goal: 'מסכמים אילו פקודות למדנו, איזו ראיה מצאנו, ומה נעשה בשיעור הבא.', type: 'report' }
   ];
 
-  const mediaVersion = '20260919-linux-basics-v3';
+  const mediaVersion = '20260919-linux-basics-v4';
   const mediaUrl = path => `${path}?v=${mediaVersion}`;
 
   const commandCards = [
@@ -312,7 +312,6 @@
 
   function renderBrief() {
     return `
-      ${renderStationVideo('marketing/cyber-city-lesson7-linux-flow.mp4', 'marketing/cyber-city-lesson7-linux-flow-poster.jpg', 'פקודה, פלט, ראיה', 'בטרמינל לא מנחשים: כותבים פקודה קצרה, קוראים את התשובה, ומחליטים איזו ראיה נמצאה.')}
       <section class="tool-grid">
         <article class="tool-card">
           <span>המטרה</span>

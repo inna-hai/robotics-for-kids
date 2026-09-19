@@ -24,7 +24,7 @@ test('Lesson 7 is a lighter Linux Evidence Basics lesson', () => {
   includes(page, 'Mission 07');
   includes(page, 'Linux Evidence Basics');
   includes(page, 'Linux Evidence Card');
-  includes(page, '20260919-linux-basics-v3');
+  includes(page, '20260919-linux-basics-v4');
   includes(page, 'marketing/cyber-city-lesson7-linux-flow.mp4');
   includes(page, 'js/cyber-city-lesson-7.js');
 });
