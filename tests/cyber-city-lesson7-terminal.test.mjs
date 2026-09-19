@@ -7,7 +7,7 @@ const html = readFileSync(join(root.pathname, 'cyber-city-lesson-7.html'), 'utf8
 const js = readFileSync(join(root.pathname, 'js', 'cyber-city-lesson-7.js'), 'utf8');
 const css = readFileSync(join(root.pathname, 'css', 'cyber-city-academy.css'), 'utf8');
 
-assert.ok(html.includes('20260919-linux-basics-v4'), 'lesson 7 cache key should include the Linux basics version');
+assert.ok(html.includes('20260919-linux-basics-v5'), 'lesson 7 cache key should include the Linux basics version');
 assert.ok(js.includes('terminalFileSystem'), 'lesson 7 should use a simulated terminal filesystem');
 assert.ok(js.includes('terminalTasks'), 'lesson 7 should define concrete Linux terminal tasks');
 assert.ok(js.includes("accepts: ['pwd']"), 'terminal practice should include pwd');
@@ -25,6 +25,9 @@ assert.ok(js.includes('terminal-found-badges'), 'terminal should celebrate newly
 assert.ok(js.includes('terminalQuickCommands'), 'terminal should expose command helper buttons for students');
 assert.ok(js.includes('תיק הראיות נפתר'), 'terminal should show a clear victory moment after evidence is complete');
 assert.ok(js.includes('בשיעור הבא ניקח את הראיות האלה ונבדוק אותן עם Python Defense Checker'), 'terminal should bridge Linux evidence work to the next Python lesson');
+assert.ok(js.includes('אתגר בונוס למי שסיים מהר'), 'terminal should offer an optional bonus challenge');
+assert.ok(js.includes('next=python_defense_checker'), 'bonus challenge should hide a next-step clue in the report folder');
+assert.ok(js.includes('bonusFound'), 'bonus challenge should be tracked without blocking the main lesson');
 assert.ok(css.includes('.linux-lab'), 'upgraded Linux lab should have dedicated layout styles');
 assert.ok(css.includes('.terminal-task-list'), 'terminal tasks should have visible checklist styling');
 assert.ok(css.includes('.terminal-screen'), 'terminal should render like a real command screen');

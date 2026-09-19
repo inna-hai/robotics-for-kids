@@ -6,7 +6,7 @@
     { id: 'report', short: 'סיכום', title: 'Linux Evidence Card', time: '15 דקות', goal: 'מסכמים אילו פקודות למדנו, איזו ראיה מצאנו, ומה נעשה בשיעור הבא.', type: 'report' }
   ];
 
-  const mediaVersion = '20260919-linux-basics-v4';
+  const mediaVersion = '20260919-linux-basics-v5';
   const mediaUrl = path => `${path}?v=${mediaVersion}`;
 
   const commandCards = [
@@ -43,7 +43,7 @@
           children: {
             'todo.txt': {
               type: 'file',
-              content: '1. Learn basic Linux commands\n2. Find three evidence lines\n3. Explain what each command did'
+              content: '1. Learn basic Linux commands\n2. Find three evidence lines\n3. Explain what each command did\nnext=python_defense_checker'
             }
           }
         }
@@ -133,6 +133,7 @@
     terminalHistory: [],
     completedTerminalTasks: new Set(),
     foundEvidence: new Set(),
+    bonusFound: false,
     terminalFeedback: 'התחילו ב־pwd. אחרי כל פקודה תקבלו פלט והסבר קצר.',
     report: { command: '', evidence: '', next: '' }
   };
@@ -256,15 +257,20 @@
   function applyTerminalProgress(command, result) {
     const beforeTasks = new Set(state.completedTerminalTasks);
     const beforeEvidence = new Set(state.foundEvidence);
+    const beforeBonus = state.bonusFound;
     terminalTasks.forEach(task => {
       if (task.accepts.includes(command) && result.ok) {
         state.completedTerminalTasks.add(task.id);
         if (task.evidence) state.foundEvidence.add(task.evidence);
       }
     });
+    if (result.ok && ['cat /report/todo.txt', 'cat ../report/todo.txt', 'grep next /report/todo.txt', 'grep next ../report/todo.txt'].includes(command)) {
+      state.bonusFound = true;
+    }
     return {
       tasks: [...state.completedTerminalTasks].filter(id => !beforeTasks.has(id)),
-      evidence: [...state.foundEvidence].filter(id => !beforeEvidence.has(id))
+      evidence: [...state.foundEvidence].filter(id => !beforeEvidence.has(id)),
+      bonus: !beforeBonus && state.bonusFound
     };
   }
 
@@ -289,6 +295,7 @@
       if (result.output.includes('use: grep')) return 'כדי לחפש מילה בתוך קובץ משתמשים ב־grep.';
       return terminalTasks[activeTerminalTaskIndex()]?.hint || 'נסו את הרמז של המשימה הפעילה.';
     }
+    if (changes.bonus) return 'אתגר בונוס נפתר: מצאתם את הרמז לשיעור הבא בתיקיית report.';
     if (changes.evidence.length) return `ראיה נמצאה: ${changes.evidence.map(evidenceLabel).join(' + ')}.`;
     if (changes.tasks.length) return terminalTasks.find(task => task.id === changes.tasks.at(-1))?.success || 'הפקודה רצה בהצלחה.';
     if (command === 'help') return 'פתחתם את רשימת הפקודות. התחילו עם pwd ואז ls.';
@@ -427,6 +434,11 @@
               <strong>תיק הראיות נפתר</strong>
               <p>מצאתם שלוש ראיות בעזרת פקודות Linux בסיסיות.</p>
               <small>בשיעור הבא ניקח את הראיות האלה ונבדוק אותן עם Python Defense Checker.</small>
+            </div>
+            <div class="terminal-victory ${state.bonusFound ? 'bonus-complete' : ''}">
+              <strong>${state.bonusFound ? 'אתגר הבונוס נפתר' : 'אתגר בונוס למי שסיים מהר'}</strong>
+              <p>${state.bonusFound ? 'מצאתם לבד את קובץ ההמשך בתיקיית report.' : 'נסו למצוא בתיקיית report רמז שמספר מה נעשה בשיעור הבא.'}</p>
+              <small>${state.bonusFound ? 'יפה. זו כבר עבודה של חוקר שממשיך לבד אחרי הראיות הראשונות.' : 'רמז עדין: אפשר להשתמש ב־cd /report ואז cat todo.txt, או לחפש next עם grep.'}</small>
             </div>
           ` : ''}
           <button class="button" type="button" data-save-terminal ${terminalComplete ? '' : 'disabled'}>שמור ראיות ועבור לסיכום</button>
@@ -612,6 +624,7 @@
     state.terminalHistory = [];
     state.completedTerminalTasks = new Set();
     state.foundEvidence = new Set();
+    state.bonusFound = false;
     state.terminalFeedback = 'התחילו ב־pwd. אחרי כל פקודה תקבלו פלט והסבר קצר.';
     state.report = { command: '', evidence: '', next: '' };
     say('המעבדה אופסה. מתחילים מחדש עם בסיס Linux נקי.');
