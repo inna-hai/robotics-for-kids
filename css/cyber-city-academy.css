@@ -1994,6 +1994,35 @@ p {
   gap: 12px;
 }
 
+.terminal-live-feedback {
+  display: grid;
+  gap: 4px;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  padding: 11px 12px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-weight: 900;
+}
+
+.terminal-live-feedback strong {
+  color: #1d4ed8;
+}
+
+.terminal-live-feedback span {
+  line-height: 1.45;
+}
+
+.terminal-live-feedback.has-evidence {
+  border-color: rgba(17, 150, 110, .35);
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.terminal-live-feedback.has-evidence strong {
+  color: #047857;
+}
+
 .code-panel-toolbar small {
   color: #94a3b8;
   font-weight: 800;
@@ -2021,6 +2050,8 @@ p {
 .terminal-history-item {
   display: grid;
   gap: 4px;
+  border-inline-start: 3px solid rgba(103, 232, 249, .3);
+  padding-inline-start: 10px;
 }
 
 .terminal-history-item b {
@@ -2028,10 +2059,46 @@ p {
   overflow-wrap: anywhere;
 }
 
+.terminal-history-item.error {
+  border-inline-start-color: #fb7185;
+}
+
+.terminal-history-item.error b {
+  color: #fda4af;
+}
+
 .terminal-history-item pre {
   margin: 0;
   white-space: pre-wrap;
   color: #d1fae5;
+}
+
+.terminal-history-item small {
+  width: fit-content;
+  max-width: 100%;
+  border-radius: 8px;
+  padding: 7px 9px;
+  background: rgba(30, 41, 59, .92);
+  color: #bfdbfe;
+  font-family: "Rubik", system-ui, sans-serif;
+  font-weight: 850;
+  line-height: 1.45;
+}
+
+.terminal-found-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-family: "Rubik", system-ui, sans-serif;
+}
+
+.terminal-found-badges span {
+  border: 1px solid rgba(52, 211, 153, .5);
+  border-radius: 999px;
+  padding: 6px 9px;
+  background: rgba(6, 95, 70, .72);
+  color: #bbf7d0;
+  font-weight: 900;
 }
 
 .terminal-command-row {
@@ -2060,6 +2127,9 @@ p {
 }
 
 .terminal-evidence span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 9px 10px;
@@ -2068,10 +2138,25 @@ p {
   font-weight: 900;
 }
 
+.terminal-evidence span b {
+  min-width: 58px;
+  border-radius: 999px;
+  padding: 4px 8px;
+  background: #e2e8f0;
+  color: #475569;
+  text-align: center;
+  font-size: .82rem;
+}
+
 .terminal-evidence span.found {
   border-color: rgba(17, 150, 110, .4);
   background: #ecfdf5;
   color: #047857;
+}
+
+.terminal-evidence span.found b {
+  background: #047857;
+  color: #fff;
 }
 
 .sort-grid {

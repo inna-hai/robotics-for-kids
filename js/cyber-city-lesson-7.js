@@ -8,7 +8,7 @@
     { id: 'report', short: 'דוח', title: 'דוח Ethical Hacker', time: '10 דקות', goal: 'מסכמים איזו חולשה נמצאה, איך הוכחנו אותה בסביבה בטוחה, ומה תיקנו.', type: 'report' }
   ];
 
-  const mediaVersion = '20260919-hacker-terminal-v2';
+  const mediaVersion = '20260919-hacker-terminal-v3';
   const mediaUrl = path => `${path}?v=${mediaVersion}`;
 
   const stationVideos = {
@@ -194,6 +194,7 @@
     selectedFixes: new Set(),
     terminalInput: 'help',
     terminalOutput: '',
+    terminalFeedback: 'התחילו ב־pwd. אחרי כל פקודה תקבלו פלט, הסבר קצר וסימון התקדמות.',
     terminalCwd: '/',
     terminalHistory: [],
     completedTerminalTasks: new Set(),
@@ -326,16 +327,32 @@
       const matches = target.content.split('\n').filter(line => line.toLowerCase().includes(word));
       return { ok: true, output: matches.length ? matches.join('\n') : 'no matches' };
     }
+    const lowercaseCommand = command.toLowerCase();
+    if (lowercaseCommand !== command && terminalTasks.some(task => task.accepts.includes(lowercaseCommand))) {
+      return {
+        ok: false,
+        output: `bash: ${command}: command not found\nLinux is case-sensitive. Try: ${lowercaseCommand}`
+      };
+    }
+    if (command === 'dir') return { ok: false, output: 'dir is not part of this lab. In Linux practice, use: ls' };
+    if (command.startsWith('type ')) return { ok: false, output: 'type is not part of this lab. To read a file, use: cat FILE' };
+    if (command.startsWith('find ')) return { ok: false, output: 'find is not part of this lab. To search inside a file, use: grep WORD FILE' };
     return { ok: false, output: 'command not available in this training lab' };
   }
   function updateTerminalProgress(command, output) {
     const normalized = normalizeCommand(command);
+    const completedBefore = new Set(state.completedTerminalTasks);
+    const evidenceBefore = new Set(state.foundEvidence);
     terminalTasks.forEach(task => {
       if (task.accepts.includes(normalized)) state.completedTerminalTasks.add(task.id);
     });
     if (output.includes('max_attempts=unlimited')) state.foundEvidence.add('unlimited');
     if (output.includes('hint=city + one digit')) state.foundEvidence.add('hint');
     if (output.includes('city7 success')) state.foundEvidence.add('success');
+    return {
+      tasks: [...state.completedTerminalTasks].filter(id => !completedBefore.has(id)),
+      evidence: [...state.foundEvidence].filter(id => !evidenceBefore.has(id))
+    };
   }
   function activeTerminalTaskIndex() {
     const index = terminalTasks.findIndex(task => !state.completedTerminalTasks.has(task.id));
@@ -343,6 +360,34 @@
   }
   function terminalProgressText() {
     return `${state.completedTerminalTasks.size}/${terminalTasks.length}`;
+  }
+  function terminalEvidenceLabel(id) {
+    return {
+      unlimited: 'אין הגבלת ניסיונות',
+      hint: 'הרמז מגלה את מבנה הסיסמה',
+      success: 'כניסה הצליחה עם הסיסמה החלשה'
+    }[id] || id;
+  }
+  function terminalTaskTitle(id) {
+    return terminalTasks.find(task => task.id === id)?.title || id;
+  }
+  function commandCoaching(command, result, changes) {
+    if (!result.ok) {
+      if (result.output.includes('case-sensitive')) return 'כמעט. בלינוקס אות גדולה ואות קטנה הן לא אותו דבר. נסו את הפקודה באותיות קטנות.';
+      if (result.output.includes('use: ls')) return 'במעבדה הזו מתרגלים לינוקס: כדי לראות מה יש בתיקייה כותבים ls.';
+      if (result.output.includes('use: cat')) return 'כדי לקרוא קובץ בלינוקס משתמשים ב־cat ואז שם הקובץ.';
+      if (result.output.includes('use: grep')) return 'כדי למצוא מילה בתוך קובץ משתמשים ב־grep, למשל grep hint login_policy.txt.';
+      return terminalTasks[activeTerminalTaskIndex()]?.hint || 'נסו את הרמז של המשימה הפעילה.';
+    }
+    if (changes.evidence.length) {
+      return `ראיה נמצאה: ${changes.evidence.map(terminalEvidenceLabel).join(' + ')}. עכשיו יש לכם הוכחה אמיתית לתיק.`;
+    }
+    if (changes.tasks.length) {
+      return `בוצע: ${changes.tasks.map(terminalTaskTitle).join(' + ')}. הפקודה עזרה להתקדם בחקירה.`;
+    }
+    if (command === 'help') return 'פתחתם את רשימת הפקודות. עכשיו מתחילים בחקירה עם pwd ואז ls.';
+    if (command === 'clear') return 'ניקיתם את המסך. ההתקדמות והראיות נשמרו בתיק החקירה.';
+    return 'הפקודה רצה בהצלחה. בדקו את הפלט והמשיכו לפי המשימה הפעילה.';
   }
 
   function renderShell() {
@@ -544,16 +589,23 @@
         </article>
         <article class="code-panel linux-terminal-panel">
           <div class="code-panel-toolbar"><span>Training Terminal</span><small dir="ltr">${esc(terminalPrompt)}</small></div>
+          <div class="terminal-live-feedback ${state.foundEvidence.size ? 'has-evidence' : ''}">
+            <strong>${state.foundEvidence.size ? 'תיק ראיות פעיל' : 'המשימה הפעילה'}</strong>
+            <span>${esc(state.terminalFeedback)}</span>
+          </div>
           <div class="terminal-screen" dir="ltr" lang="en" aria-label="טרמינל לינוקס מדומה">
             ${state.terminalHistory.length ? state.terminalHistory.slice(-8).map(item => `
-              <div class="terminal-history-item">
+              <div class="terminal-history-item ${item.ok === false ? 'error' : 'ok'}">
                 <b>${esc(item.prompt)} ${esc(item.command)}</b>
                 <pre>${esc(item.output)}</pre>
+                ${item.feedback ? `<small dir="rtl">${esc(item.feedback)}</small>` : ''}
+                ${item.evidence?.length ? `<div class="terminal-found-badges" dir="rtl">${item.evidence.map(id => `<span>ראיה: ${esc(terminalEvidenceLabel(id))}</span>`).join('')}</div>` : ''}
               </div>
             `).join('') : `
               <div class="terminal-history-item">
                 <b>${esc(terminalPrompt)} help</b>
                 <pre>Type help to see commands. Start with pwd and ls.</pre>
+                <small dir="rtl">אחרי כל Enter תקבלו פלט, הסבר קצר וסימון בתיק.</small>
               </div>
             `}
           </div>
@@ -564,9 +616,9 @@
             <button class="button" type="submit" data-run-terminal>הרץ</button>
           </form>
           <div class="terminal-evidence">
-            <span class="${state.foundEvidence.has('unlimited') ? 'found' : ''}">ראיה 1: אין הגבלת ניסיונות</span>
-            <span class="${state.foundEvidence.has('hint') ? 'found' : ''}">ראיה 2: הרמז מגלה את הסיסמה</span>
-            <span class="${state.foundEvidence.has('success') ? 'found' : ''}">ראיה 3: כניסה הצליחה עם הסיסמה החלשה</span>
+            <span class="${state.foundEvidence.has('unlimited') ? 'found' : ''}"><b>${state.foundEvidence.has('unlimited') ? 'נמצאה' : 'נעולה'}</b> ראיה 1: אין הגבלת ניסיונות</span>
+            <span class="${state.foundEvidence.has('hint') ? 'found' : ''}"><b>${state.foundEvidence.has('hint') ? 'נמצאה' : 'נעולה'}</b> ראיה 2: הרמז מגלה את הסיסמה</span>
+            <span class="${state.foundEvidence.has('success') ? 'found' : ''}"><b>${state.foundEvidence.has('success') ? 'נמצאה' : 'נעולה'}</b> ראיה 3: כניסה הצליחה עם הסיסמה החלשה</span>
           </div>
           <button class="button" type="button" data-save-terminal>${state.completedTerminalTasks.size === terminalTasks.length && state.foundEvidence.size >= 3 ? 'שמור ראיות והמשך לפייתון' : 'השלימו את משימות הטרמינל'}</button>
         </article>
@@ -724,10 +776,12 @@ print("Defense:", score)</code></pre>
       const prompt = `student@hacker-lab:${state.terminalCwd === '/' ? '~' : `~${state.terminalCwd}`}$`;
       const result = runTerminalCommand(command);
       state.terminalOutput = result.output;
-      updateTerminalProgress(command, result.output);
-      if (command !== 'clear') state.terminalHistory.push({ prompt, command, output: result.output });
+      const changes = updateTerminalProgress(command, result.output);
+      const feedback = commandCoaching(command, result, changes);
+      state.terminalFeedback = feedback;
+      if (command !== 'clear') state.terminalHistory.push({ prompt, command, output: result.output, ok: result.ok, feedback, evidence: changes.evidence, tasks: changes.tasks });
       state.terminalInput = '';
-      say(result.ok ? `פקודת לינוקס רצה בסימולציה. התקדמות טרמינל: ${terminalProgressText()}.` : 'הפקודה הזו לא זמינה כאן. נסו את הרמז במשימה הפעילה.');
+      say(result.ok ? `${feedback} התקדמות טרמינל: ${terminalProgressText()}.` : feedback);
       render({ preserveScroll: true });
     });
     document.querySelector('[data-save-terminal]')?.addEventListener('click', () => {
@@ -807,6 +861,7 @@ print("Defense:", score)</code></pre>
     state.selectedFixes.clear();
     state.terminalInput = 'help';
     state.terminalOutput = '';
+    state.terminalFeedback = 'התחילו ב־pwd. אחרי כל פקודה תקבלו פלט, הסבר קצר וסימון התקדמות.';
     state.terminalCwd = '/';
     state.terminalHistory = [];
     state.completedTerminalTasks.clear();
