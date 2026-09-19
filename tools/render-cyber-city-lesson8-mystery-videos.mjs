@@ -1,12 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
+import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
 
 const ROOT = path.resolve(new URL('..', import.meta.url).pathname);
 const MARKETING = path.join(ROOT, 'marketing');
 const FRAME_ROOT = process.env.FRAME_ROOT || '/home/igrois/snap/chromium/common/cyber-city-lesson8-mystery-frames';
 const CHROMIUM = process.env.CHROMIUM || '/snap/bin/chromium';
-const FFMPEG = process.env.FFMPEG || '/home/igrois/.openclaw/workspace/robotics-for-kids/node_modules/@ffmpeg-installer/linux-x64/ffmpeg';
+const FFMPEG = process.env.FFMPEG || ffmpegInstaller.path;
 const WIDTH = 1280;
 const HEIGHT = 720;
 
@@ -31,6 +32,123 @@ function run(command, args, options = {}) {
   if (result.status !== 0) throw new Error(`${command} failed with ${result.status}`);
 }
 
+function runCapture(command, args, options = {}) {
+  const result = spawnSync(command, args, { encoding: 'utf8', ...options });
+  if (result.status !== 0) throw new Error(`${command} failed with ${result.status}: ${args.join(' ')}`);
+  return `${result.stdout || ''}${result.stderr || ''}`;
+}
+
+function extractGoogleAiKeys() {
+  const keys = new Set();
+  for (const key of [process.env.GOOGLE_AI_API_KEY, process.env.GEMINI_API_KEY, process.env.GOOGLE_API_KEY]) {
+    if (key) keys.add(key.trim());
+  }
+  for (const file of [
+    '/home/igrois/.openclaw/workspace/TOOLS.md',
+    '/home/igrois/.openclaw/workspace/geoscale/backend/.env',
+  ]) {
+    if (!fs.existsSync(file)) continue;
+    const text = fs.readFileSync(file, 'utf8');
+    for (const match of text.matchAll(/^(?:GOOGLE_AI_API_KEY|GEMINI_API_KEY|GOOGLE_API_KEY)\s*=\s*['"]?([^'"\s]+)['"]?/gm)) {
+      if (match[1]) keys.add(match[1].trim());
+    }
+    for (const match of text.matchAll(/\bAIza[0-9A-Za-z_-]{30,}\b/g)) {
+      keys.add(match[0].trim());
+    }
+  }
+  return Array.from(keys);
+}
+
+function wavFromPcm16(pcm, sampleRate = 24000) {
+  const header = Buffer.alloc(44);
+  header.write('RIFF', 0);
+  header.writeUInt32LE(36 + pcm.length, 4);
+  header.write('WAVE', 8);
+  header.write('fmt ', 12);
+  header.writeUInt32LE(16, 16);
+  header.writeUInt16LE(1, 20);
+  header.writeUInt16LE(1, 22);
+  header.writeUInt32LE(sampleRate, 24);
+  header.writeUInt32LE(sampleRate * 2, 28);
+  header.writeUInt16LE(2, 32);
+  header.writeUInt16LE(16, 34);
+  header.write('data', 36);
+  header.writeUInt32LE(pcm.length, 40);
+  return Buffer.concat([header, pcm]);
+}
+
+function narrationText(video) {
+  return `TTS in fluent natural Israeli Hebrew.
+Character: a serious but approachable Israeli cyber instructor speaking to children age 12.
+Style: investigative, energetic, clear, and professional. Do not sound childish. Read only the Hebrew lines. Do not read bracket labels.
+
+${video.script.map((line, index) => {
+  const tone = index === 0 ? '[curious]' : index === video.script.length - 1 ? '[confident closing]' : '[clear]';
+  return `${tone} ${line}`;
+}).join('\n')}`;
+}
+
+async function createGeminiAudio(video) {
+  const base = path.join(MARKETING, `cyber-city-lesson8-${video.slug}-leda`);
+  const scriptPath = `${base}.txt`;
+  const audioPath = `${base}.mp3`;
+  const text = narrationText(video);
+  const previous = fs.existsSync(scriptPath) ? fs.readFileSync(scriptPath, 'utf8') : null;
+  fs.writeFileSync(scriptPath, text);
+  if (fs.existsSync(audioPath) && previous === text) return audioPath;
+
+  const keys = extractGoogleAiKeys();
+  if (!keys.length) throw new Error('Missing Google AI API key');
+
+  const body = {
+    contents: [{ parts: [{ text }] }],
+    generationConfig: {
+      responseModalities: ['AUDIO'],
+      speechConfig: {
+        voiceConfig: {
+          prebuiltVoiceConfig: { voiceName: process.env.CYBER_CITY_TTS_VOICE || 'Leda' },
+        },
+      },
+    },
+  };
+
+  let lastError = null;
+  for (let index = 0; index < keys.length; index += 1) {
+    try {
+      console.log(`Creating audio for lesson8 ${video.slug} (${index + 1}/${keys.length})`);
+      const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-preview-tts:generateContent', {
+        method: 'POST',
+        headers: { 'x-goog-api-key': keys[index], 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const json = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(`${response.status} ${JSON.stringify(json).slice(0, 800)}`);
+      const data = json?.candidates?.[0]?.content?.parts?.find(part => part.inlineData)?.inlineData?.data;
+      if (!data) throw new Error(`No audio data: ${JSON.stringify(json).slice(0, 800)}`);
+      const pcm = Buffer.from(data, 'base64');
+      const pcmPath = `${base}.pcm`;
+      const wavPath = `${base}.wav`;
+      fs.writeFileSync(pcmPath, pcm);
+      fs.writeFileSync(wavPath, wavFromPcm16(pcm, 24000));
+      run(FFMPEG, ['-y', '-i', wavPath, '-b:a', '160k', audioPath]);
+      fs.rmSync(pcmPath, { force: true });
+      fs.rmSync(wavPath, { force: true });
+      return audioPath;
+    } catch (error) {
+      lastError = error;
+      console.warn(`Gemini TTS key ${index + 1} failed for ${video.slug}: ${error.message}`);
+    }
+  }
+  throw lastError;
+}
+
+function audioDuration(file) {
+  const output = runCapture(FFMPEG, ['-hide_banner', '-i', file, '-f', 'null', '-']);
+  const match = output.match(/Duration:\s*(\d+):(\d+):(\d+(?:\.\d+)?)/);
+  if (!match) return 14;
+  return Number(match[1]) * 3600 + Number(match[2]) * 60 + Number(match[3]);
+}
+
 function esc(value) {
   return String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
 }
@@ -52,6 +170,9 @@ fs.mkdirSync(MARKETING, { recursive: true });
 fs.mkdirSync(FRAME_ROOT, { recursive: true });
 
 for (const video of videos) {
+  const audioPath = await createGeminiAudio(video);
+  const duration = audioDuration(audioPath);
+  const perFrameDuration = Math.max(2.8, (duration + 0.8) / video.script.length);
   const dir = path.join(FRAME_ROOT, video.slug);
   fs.rmSync(dir, { recursive: true, force: true });
   fs.mkdirSync(dir, { recursive: true });
@@ -64,9 +185,12 @@ for (const video of videos) {
     list.push(pngFile);
   }
   const concat = path.join(dir, 'frames.txt');
-  fs.writeFileSync(concat, `${list.map(file => `file '${file.replaceAll("'", "'\\''")}'\nduration 2.8`).join('\n')}\nfile '${list.at(-1).replaceAll("'", "'\\''")}'\n`);
+  fs.writeFileSync(concat, `${list.map(file => `file '${file.replaceAll("'", "'\\''")}'\nduration ${perFrameDuration.toFixed(3)}`).join('\n')}\nfile '${list.at(-1).replaceAll("'", "'\\''")}'\n`);
   const mp4 = path.join(MARKETING, `cyber-city-lesson8-${video.slug}.mp4`);
+  const silentMp4 = path.join(MARKETING, `cyber-city-lesson8-${video.slug}-silent.mp4`);
   const poster = path.join(MARKETING, `cyber-city-lesson8-${video.slug}-poster.jpg`);
-  run(FFMPEG, ['-y', '-f', 'concat', '-safe', '0', '-i', concat, '-vf', 'format=yuv420p', '-r', '30', '-c:v', 'libx264', '-movflags', '+faststart', mp4]);
+  run(FFMPEG, ['-y', '-f', 'concat', '-safe', '0', '-i', concat, '-vf', 'format=yuv420p', '-r', '30', '-c:v', 'libx264', '-movflags', '+faststart', silentMp4]);
+  run(FFMPEG, ['-y', '-i', silentMp4, '-i', audioPath, '-c:v', 'copy', '-c:a', 'aac', '-b:a', '160k', '-shortest', '-movflags', '+faststart', mp4]);
+  fs.rmSync(silentMp4, { force: true });
   run(FFMPEG, ['-y', '-i', list[0], '-frames:v', '1', '-q:v', '2', poster]);
 }

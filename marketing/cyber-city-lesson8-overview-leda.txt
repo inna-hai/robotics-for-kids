@@ -1,0 +1,8 @@
+TTS in fluent natural Israeli Hebrew.
+Character: a serious but approachable Israeli cyber instructor speaking to children age 12.
+Style: investigative, energetic, clear, and professional. Do not sound childish. Read only the Hebrew lines. Do not read bracket labels.
+
+[curious] שער העיר נפתח בלילה.
+[clear] אנחנו לא מנחשים - אנחנו אוספים ראיות.
+[clear] לומדים לוגים, ציר זמן, IOC, טרמינל, Python ו-CTF Flag.
+[confident closing] בסוף מגישים Incident Report קצר.

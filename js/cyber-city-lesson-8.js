@@ -9,7 +9,7 @@
     { id: 'report', short: 'דוח', title: 'Incident Report: מסקנת צוות חקירה', time: '8 דקות', goal: 'מסכמים מי נכנס, איך הוכחנו, ואיזה תיקון מגן על העיר.', type: 'report' }
   ];
 
-  const mediaVersion = '20260919-mystery-room-v1';
+  const mediaVersion = '20260919-mystery-room-v2';
   const mediaUrl = path => `${path}?v=${mediaVersion}`;
 
   const stationVideos = {

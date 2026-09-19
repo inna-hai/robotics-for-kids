@@ -1,0 +1,8 @@
+TTS in fluent natural Israeli Hebrew.
+Character: a serious but approachable Israeli cyber instructor speaking to children age 12.
+Style: investigative, energetic, clear, and professional. Do not sound childish. Read only the Hebrew lines. Do not read bracket labels.
+
+[curious] ציר זמן מסדר אירועים לפי שעה.
+[clear] הוא מראה קשר בין פעולה לתוצאה.
+[clear] כשלונות לפני הצלחה הם סימן חשוב.
+[confident closing] שער שנפתח אחרי login מחזק חשד.

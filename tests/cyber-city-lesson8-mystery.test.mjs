@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
 
 const root = new URL('..', import.meta.url);
 const html = readFileSync(join(root.pathname, 'cyber-city-lesson-8.html'), 'utf8');
@@ -9,7 +11,7 @@ const css = readFileSync(join(root.pathname, 'css', 'cyber-city-academy.css'), '
 const course = readFileSync(join(root.pathname, 'cyber-city-course.html'), 'utf8');
 const index = readFileSync(join(root.pathname, 'index.html'), 'utf8');
 
-assert.ok(html.includes('20260919-mystery-room-v1'), 'lesson 8 should use the mystery room cache key');
+assert.ok(html.includes('20260919-mystery-room-v2'), 'lesson 8 should use the mystery room cache key');
 assert.ok(html.includes('Cyber Mystery Room'), 'lesson 8 should present the mystery room mission');
 assert.ok(html.includes('cyber-city-lesson8-overview.mp4'), 'lesson 8 should open with a video brief');
 assert.ok(html.includes('js/cyber-city-lesson-8.js'), 'lesson 8 should load its interactive script');
@@ -60,5 +62,16 @@ for (const video of requiredVideos) {
   assert.ok(
     existsSync(join(root.pathname, 'marketing', `cyber-city-lesson8-${video}-poster.jpg`)),
     `missing lesson 8 poster: ${video}`,
+  );
+
+  const probe = spawnSync(ffmpegInstaller.path, [
+    '-hide_banner',
+    '-i',
+    join(root.pathname, 'marketing', `cyber-city-lesson8-${video}.mp4`),
+  ], { encoding: 'utf8' });
+  assert.match(
+    `${probe.stdout}${probe.stderr}`,
+    /Audio:/,
+    `lesson 8 video should include narration audio: ${video}`,
   );
 }

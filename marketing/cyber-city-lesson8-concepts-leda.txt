@@ -1,0 +1,8 @@
+TTS in fluent natural Israeli Hebrew.
+Character: a serious but approachable Israeli cyber instructor speaking to children age 12.
+Style: investigative, energetic, clear, and professional. Do not sound childish. Read only the Hebrew lines. Do not read bracket labels.
+
+[curious] Digital Forensics חוקרת לפי ראיות.
+[clear] Log מספר מה קרה במערכת.
+[clear] Timeline מסדר אירועים בזמן.
+[confident closing] IOC הוא סימן חשד קטן שמחזק מסקנה.

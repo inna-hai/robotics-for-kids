@@ -1,0 +1,8 @@
+TTS in fluent natural Israeli Hebrew.
+Character: a serious but approachable Israeli cyber instructor speaking to children age 12.
+Style: investigative, energetic, clear, and professional. Do not sound childish. Read only the Hebrew lines. Do not read bracket labels.
+
+[curious] הטרמינל כאן הוא סימולציה סגורה.
+[clear] cat קוראת קובץ.
+[clear] grep מחפשת מילה.
+[confident closing] wc סופרת שורות.
