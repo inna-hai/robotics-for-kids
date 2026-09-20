@@ -6,7 +6,7 @@
     { id: 'report', short: 'סיכום', title: 'Linux Evidence Card', time: '15 דקות', goal: 'מסכמים אילו פקודות למדנו, איזו ראיה מצאנו, ומה נעשה בשיעור הבא.', type: 'report' }
   ];
 
-  const mediaVersion = '20260919-linux-basics-v6';
+  const mediaVersion = '20260920-linux-basics-v7';
   const mediaUrl = path => `${path}?v=${mediaVersion}`;
 
   const commandCards = [
@@ -127,7 +127,7 @@
     station: 0,
     xp: 0,
     completed: new Set(),
-    selectedCommand: '',
+    viewedCommands: new Set(),
     terminalInput: 'help',
     terminalCwd: '/',
     terminalHistory: [],
@@ -264,7 +264,14 @@
         if (task.evidence) state.foundEvidence.add(task.evidence);
       }
     });
-    if (result.ok && ['cat /report/todo.txt', 'cat ../report/todo.txt', 'grep next /report/todo.txt', 'grep next ../report/todo.txt'].includes(command)) {
+    if (result.ok && [
+      'cat /report/todo.txt',
+      'cat ../report/todo.txt',
+      'cat todo.txt',
+      'grep next /report/todo.txt',
+      'grep next ../report/todo.txt',
+      'grep next todo.txt'
+    ].includes(command)) {
       state.bonusFound = true;
     }
     return {
@@ -346,10 +353,11 @@
   }
 
   function renderCommands() {
+    const allCommandsViewed = commandCards.every(card => state.viewedCommands.has(card.command));
     return `
       <section class="tool-grid">
         ${commandCards.map(card => `
-          <article class="tool-card ${state.selectedCommand === card.command ? 'selected' : ''}">
+          <article class="tool-card ${state.viewedCommands.has(card.command) ? 'selected' : ''}">
             <span dir="ltr">${esc(card.command)}</span>
             <h3>${esc(card.name)}</h3>
             <video class="command-card-video" controls preload="metadata" playsinline poster="${esc(mediaUrl(card.poster))}">
@@ -357,15 +365,15 @@
             </video>
             <p>${esc(card.text)}</p>
             <code dir="ltr">${esc(card.example)}</code>
-            <button class="button ghost" type="button" data-command-card="${esc(card.command)}">הבנתי את הפקודה</button>
+            <button class="button ghost" type="button" data-command-card="${esc(card.command)}">${state.viewedCommands.has(card.command) ? 'נלמדה' : 'הבנתי את הפקודה'}</button>
           </article>
         `).join('')}
       </section>
       <article class="tool-card">
         <span>בדיקת מוכנות</span>
-        <h3>${state.selectedCommand ? `בחרתם את ${esc(state.selectedCommand)}` : 'בחרו לפחות כרטיס פקודה אחד'}</h3>
-        <p>אחרי ההיכרות, נכנסים לטרמינל ומתרגלים את כולן ברצף.</p>
-        <button class="button" type="button" data-complete-commands ${state.selectedCommand ? '' : 'disabled'}>אני מוכן למעבדה</button>
+        <h3>${allCommandsViewed ? 'כל חמש הפקודות מוכנות לתרגול' : `סומנו ${state.viewedCommands.size}/5 פקודות`}</h3>
+        <p>אחרי שמסמנים את כל חמש הפקודות, נכנסים לטרמינל ומתרגלים אותן ברצף.</p>
+        <button class="button" type="button" data-complete-commands ${allCommandsViewed ? '' : 'disabled'}>אני מוכן למעבדה</button>
       </article>
     `;
   }
@@ -539,14 +547,14 @@
 
     document.querySelectorAll('[data-command-card]').forEach(button => {
       button.addEventListener('click', () => {
-        state.selectedCommand = button.dataset.commandCard;
-        say(`הפקודה ${state.selectedCommand} נכנסה לארגז הכלים שלכם.`);
+        state.viewedCommands.add(button.dataset.commandCard);
+        say(`הפקודה ${button.dataset.commandCard} נכנסה לארגז הכלים שלכם. סומנו ${state.viewedCommands.size}/5 פקודות.`);
         render();
       });
     });
 
     document.querySelector('[data-complete-commands]')?.addEventListener('click', () => {
-      if (!state.selectedCommand) return;
+      if (!commandCards.every(card => state.viewedCommands.has(card.command))) return;
       complete('commands');
       say('יפה. עכשיו מתרגלים את הפקודות על תיק ראיות אמיתי בתוך סימולציה.');
       state.station = 2;
@@ -628,7 +636,7 @@
     state.station = 0;
     state.xp = 0;
     state.completed = new Set();
-    state.selectedCommand = '';
+    state.viewedCommands = new Set();
     state.terminalInput = 'help';
     state.terminalCwd = '/';
     state.terminalHistory = [];

@@ -24,7 +24,7 @@ test('Lesson 7 is a lighter Linux Evidence Basics lesson', () => {
   includes(page, 'Mission 07');
   includes(page, 'Linux Evidence Basics');
   includes(page, 'Linux Evidence Card');
-  includes(page, '20260919-linux-basics-v6');
+  includes(page, '20260920-linux-basics-v7');
   includes(page, 'marketing/cyber-city-lesson7-linux-flow.mp4');
   includes(page, 'js/cyber-city-lesson-7.js');
 });
@@ -47,6 +47,10 @@ test('Lesson 7 focuses only on basic terminal evidence commands', () => {
   includes(js, 'בשיעור הבא ניקח את הראיות האלה ונבדוק אותן עם Python Defense Checker');
   includes(js, 'אתגר בונוס למי שסיים מהר');
   includes(js, 'next=python_defense_checker');
+  includes(js, 'cat todo.txt');
+  includes(js, 'grep next todo.txt');
+  includes(js, 'viewedCommands');
+  includes(js, 'סומנו ${state.viewedCommands.size}/5 פקודות');
   assert.ok(!js.includes("title: 'Python Defense Checker'"), 'Lesson 7 should not include the advanced Python station');
   assert.ok(!js.includes('selectedFixes'), 'Lesson 7 should not include the password policy fix system');
   assert.ok(!js.includes('fetch('), 'Lesson 7 should not fetch live websites');

@@ -7,7 +7,7 @@ const html = readFileSync(join(root.pathname, 'cyber-city-lesson-7.html'), 'utf8
 const js = readFileSync(join(root.pathname, 'js', 'cyber-city-lesson-7.js'), 'utf8');
 const css = readFileSync(join(root.pathname, 'css', 'cyber-city-academy.css'), 'utf8');
 
-assert.ok(html.includes('20260919-linux-basics-v6'), 'lesson 7 cache key should include the Linux basics version');
+assert.ok(html.includes('20260920-linux-basics-v7'), 'lesson 7 cache key should include the Linux basics version');
 assert.ok(js.includes('מה זה Linux?'), 'lesson 7 should explain Linux before terminal commands');
 assert.ok(js.includes('מה זה Terminal?'), 'lesson 7 should explain the terminal before terminal commands');
 assert.ok(js.includes('למה זה קשור לסייבר?'), 'lesson 7 should explain why terminal work matters in cyber');
@@ -31,6 +31,9 @@ assert.ok(js.includes('בשיעור הבא ניקח את הראיות האלה �
 assert.ok(js.includes('אתגר בונוס למי שסיים מהר'), 'terminal should offer an optional bonus challenge');
 assert.ok(js.includes('next=python_defense_checker'), 'bonus challenge should hide a next-step clue in the report folder');
 assert.ok(js.includes('bonusFound'), 'bonus challenge should be tracked without blocking the main lesson');
+assert.ok(js.includes('cat todo.txt'), 'bonus challenge should accept cat todo.txt after cd /report');
+assert.ok(js.includes('grep next todo.txt'), 'bonus challenge should accept grep next todo.txt after cd /report');
+assert.ok(js.includes('viewedCommands'), 'command intro should require all five commands before the terminal lab');
 assert.ok(css.includes('.linux-lab'), 'upgraded Linux lab should have dedicated layout styles');
 assert.ok(css.includes('.terminal-task-list'), 'terminal tasks should have visible checklist styling');
 assert.ok(css.includes('.terminal-screen'), 'terminal should render like a real command screen');
