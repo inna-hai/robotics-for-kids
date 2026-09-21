@@ -1,2 +1,31 @@
 data/
 node_modules/
+.venv-tts/
+tmp/
+scripts/__pycache__/
+
+# Generated video/audio working files. Final referenced media can still be
+# tracked explicitly when a lesson page uses it.
+marketing/**/*-silent.mp4
+marketing/**/*.mp3
+marketing/**/*.txt
+marketing/**/*.json
+marketing/**/*.pcm
+marketing/**/*.wav
+marketing/**/*-check*.png
+marketing/**/*-sync*.png
+marketing/**/*-manual*.png
+marketing/**/*-final-*.png
+marketing/explore-*.png
+marketing/sisi-marketing-demo*.mp4
+marketing/sisi-marketing-demo-thumb.png
+marketing/**/*-frames/
+marketing/active-course-preview-frames/
+marketing/real-active-course-preview-frames/
+marketing/silent-motion-course-preview-frames/
+marketing/expressive-audio/
+
+# Local scratch captures.
+tmp-*.mjs
+sisi-course-video-live-local.png
+venture-ai-video-*.png
