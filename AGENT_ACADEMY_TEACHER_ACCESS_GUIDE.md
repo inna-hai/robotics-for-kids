@@ -126,6 +126,8 @@
 
 המערכת שומרת הזמנה בטבלת `classroom_teacher_invitations`. הקוד עצמו נשמר כ-hash, לא כטקסט גלוי.
 
+![מסך מנהלת: הזמנת מורה ושליחת קוד חד-פעמי](docs/screenshots/agent-academy-access/01-admin-invite-teacher.png)
+
 ### 2. המורה מממשת הזמנה
 
 1. המורה נכנסת אל `teacher-classrooms.html`.
@@ -138,6 +140,8 @@
    - מייל.
    - סיסמה.
 
+![מסך מורה: מימוש הזמנה וקבלת סיסמה זמנית](docs/screenshots/agent-academy-access/03-teacher-redeem-invitation.png)
+
 ### 3. המנהלת מקצה למורה את אקדמיית ה-Agent
 
 במסך `classroom-admin.html`, בכרטיס המורה:
@@ -146,6 +150,8 @@
 2. שומרים הרשאות מורה.
 
 ללא הרשאה זו המורה לא תוכל לפתוח כיתה עם אקדמיית ה-Agent.
+
+![מסך מנהלת: הקצאת אקדמיית ה-Agent למורה](docs/screenshots/agent-academy-access/02-admin-assign-agent-academy.png)
 
 ## יצירת כיתה והוספת תלמידים
 
@@ -168,6 +174,8 @@
 
 `קוד הכיתה לתלמידים`
 
+![מסך מורה: יצירת כיתה עם אקדמיית ה-Agent וקוד כיתה](docs/screenshots/agent-academy-access/04-teacher-create-class.png)
+
 ### הוספת תלמידים
 
 בכרטיס הכיתה:
@@ -179,6 +187,8 @@
 הקוד האישי מוצג פעם אחת בלבד. צריך למסור אותו לתלמיד/ה יחד עם קוד הכיתה.
 
 המערכת שומרת hash של הקוד האישי, לא את הקוד הגלוי.
+
+![מסך מורה: הוספת תלמיד וקבלת קוד אישי חד-פעמי](docs/screenshots/agent-academy-access/05-teacher-student-code.png)
 
 ### מה התלמידים מקבלים
 
@@ -194,6 +204,8 @@
 
 אם הכניסה מצליחה, נוצרת session של תלמיד ונפתח `classroom-student.html`.
 
+![מסך כניסת תלמיד: קוד כיתה וקוד אישי](docs/screenshots/agent-academy-access/07-student-entry-form.png)
+
 ## איך התלמיד נכנס ללומדה
 
 1. התלמיד נכנס אל `classroom-entry.html`.
@@ -203,6 +215,8 @@
 5. מגיע אל דף הקורס:
 
 `craftom-school/preview/index.html`
+
+![מסך תלמיד: הלומדות שהוקצו לכיתה וכפתור אקדמיית ה-Agent](docs/screenshots/agent-academy-access/08-student-course-access.png)
 
 משם יש שני סוגי כניסה עיקריים:
 
@@ -216,6 +230,8 @@
 בתוך כל שיעור יש גם כניסה לתרגול הפנימי:
 
 `craftom-agent-academy.html?lesson=<lesson-id>`
+
+![מפת הקורס: אקדמיית ה-Agent ואתגרי Minecraft](docs/screenshots/agent-academy-access/09-agent-academy-course-map.png)
 
 ## מהי אקדמיית ה-Agent בתוך השיעור
 
@@ -307,6 +323,8 @@
 
 `POST /api/classroom/classes/:classroomId/students/:studentId/minecraft/verify`
 
+![מסך מורה: אימות וקישור חשבון Microsoft עם שם שחקן Minecraft](docs/screenshots/agent-academy-access/06-teacher-minecraft-license-link.png)
+
 ### מנהלת
 
 במסך `classroom-admin.html`, בכרטיס תלמיד:
@@ -351,6 +369,8 @@
 - לשלוח הודעה לכיתה.
 - לעצור/לשחרר את הכיתה.
 - לראות לוח תלמידים ומדדים.
+
+![מסך מורה: פתיחת עולם Minecraft לשיעור 0 ופרטי שרת](docs/screenshots/agent-academy-access/10-teacher-minecraft-world-open.png)
 
 הפעלת שיעור 0:
 
@@ -434,6 +454,8 @@
 `POST /api/kugel/student/start`
 
 ומחזיר פרטי Minecraft כולל launch URL אם יש.
+
+![מסך תלמיד: כניסה ל-Minecraft, קוד גישה ופרטי שרת](docs/screenshots/agent-academy-access/11-student-minecraft-access.png)
 
 ## למה יש שיעור 0
 
@@ -651,4 +673,3 @@
 ### מה קורה אם נפתח שיעור אחר?
 
 דף התלמיד בודק את `lessonId`. אם המורה פתחה שיעור 3 והתלמיד נמצא בדף שיעור 2, המערכת תגיד שנפתח שיעור אחר וצריך לעבור לשיעור הפעיל או לפתוח את השיעור הנכון.
-
