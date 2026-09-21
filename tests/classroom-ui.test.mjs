@@ -57,7 +57,7 @@ assert.ok(teacher.includes('id="create-class-form"'));
 assert.ok(teacher.includes('id="classes-list"'));
 assert.ok(teacher.includes('id="teacher-course-catalog"'));
 assert.ok(teacher.includes('יצירת כיתה'));
-assert.ok(teacher.includes('js/classroom-platform.js?v=20260914-teacher-board-return-1'));
+assert.ok(teacher.includes('js/classroom-platform.js?v=20260921-teacher-progress-dashboard-1'));
 assert.ok(!teacher.includes('value="minecraft"'), 'teacher HTML must not expose a static unrestricted course picker');
 assert.ok(teacher.includes('בחרו מתוך הלומדות שהוקצו לך'));
 

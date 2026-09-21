@@ -301,21 +301,19 @@
     return detail;
   }
 
-  function renderProgressDashboard(container, dashboard) {
-    container.replaceChildren();
-    const summary = element('div', undefined, 'progress-summary-grid');
-    [
-      ['תלמידים', dashboard.totals.students],
-      ['התחילו', dashboard.totals.startedStudents],
-      ['השלימו לפחות שיעור', dashboard.totals.completedStudents],
-      ['הגשות', dashboard.totals.submissions],
-      ['צריכים תשומת לב', dashboard.totals.needsAttention],
-    ].forEach(([label, value]) => {
-      const card = element('div', undefined, 'progress-summary-card');
-      card.append(element('strong', String(value || 0)), element('span', label));
-      summary.append(card);
-    });
+  function lessonProgressCounts(students, lessonIndex) {
+    return students.reduce((counts, student) => {
+      const lesson = student.lessons[lessonIndex];
+      if (!lesson) return counts;
+      if (lesson.overallStatus === 'started' || lesson.overallStatus === 'completed') counts.started += 1;
+      if (lesson.overallStatus === 'completed') counts.completed += 1;
+      if (lesson.submission) counts.submissions += 1;
+      if (lesson.overallStatus !== 'completed' && (lesson.academyStatus === 'started' || lesson.minecraftStatus === 'started')) counts.needsAttention += 1;
+      return counts;
+    }, { started: 0, completed: 0, submissions: 0, needsAttention: 0 });
+  }
 
+  function createFullProgressTable(dashboard) {
     const tableWrap = element('div', undefined, 'progress-table-wrap');
     const table = element('table', undefined, 'progress-table');
     const thead = element('thead');
@@ -349,8 +347,105 @@
     });
     table.append(thead, tbody);
     tableWrap.append(table);
+    return [tableWrap, details];
+  }
 
-    container.append(summary, tableWrap, details);
+  function renderProgressDashboard(container, dashboard) {
+    container.replaceChildren();
+    const summary = element('div', undefined, 'progress-summary-grid');
+    [
+      ['תלמידים', dashboard.totals.students],
+      ['התחילו', dashboard.totals.startedStudents],
+      ['השלימו לפחות שיעור', dashboard.totals.completedStudents],
+      ['הגשות', dashboard.totals.submissions],
+      ['צריכים תשומת לב', dashboard.totals.needsAttention],
+    ].forEach(([label, value]) => {
+      const card = element('div', undefined, 'progress-summary-card');
+      card.append(element('strong', String(value || 0)), element('span', label));
+      summary.append(card);
+    });
+
+    let selectedLessonIndex = 0;
+    const lessonFocus = element('section', undefined, 'lesson-progress-focus');
+    const lessonTop = element('div', undefined, 'lesson-progress-top');
+    const lessonCopy = element('div');
+    lessonCopy.append(
+      element('strong', 'בדיקת שיעור אחד'),
+      element('span', 'בחרי שיעור, ותראי רק את התלמידים והסטטוס שלהם באותו שיעור.'),
+    );
+    const lessonSelect = document.createElement('select');
+    lessonSelect.setAttribute('aria-label', 'בחירת שיעור לדוח התקדמות');
+    dashboard.lessons.forEach((lesson, index) => {
+      const option = document.createElement('option');
+      option.value = String(index);
+      option.textContent = `שיעור ${lesson.id}: ${lesson.title}`;
+      lessonSelect.append(option);
+    });
+    lessonTop.append(lessonCopy, lessonSelect);
+    const lessonBody = element('div', undefined, 'lesson-progress-body');
+    const detail = element('div', 'בחרי תלמיד כדי לראות פירוט של השיעור.', 'progress-detail lesson-detail-panel');
+
+    function renderSelectedLesson() {
+      const lesson = dashboard.lessons[selectedLessonIndex];
+      const counts = lessonProgressCounts(dashboard.students, selectedLessonIndex);
+      const lessonCards = element('div', undefined, 'lesson-summary-grid');
+      [
+        ['התחילו', counts.started],
+        ['השלימו', counts.completed],
+        ['הגישו', counts.submissions],
+        ['צריכים עזרה', counts.needsAttention],
+      ].forEach(([label, value]) => {
+        const card = element('div', undefined, 'progress-summary-card compact');
+        card.append(element('strong', String(value || 0)), element('span', label));
+        lessonCards.append(card);
+      });
+
+      const studentList = element('div', undefined, 'lesson-student-list');
+      dashboard.students.forEach((student) => {
+        const studentLesson = student.lessons[selectedLessonIndex];
+        const item = element('article', undefined, `lesson-student-row ${studentLesson.overallStatus}`);
+        const name = element('div', undefined, 'lesson-student-name');
+        name.append(element('strong', student.name), element('span', studentLesson.submission ? 'יש הגשה' : 'אין הגשה'));
+        const status = element('div', undefined, 'lesson-student-status');
+        [
+          ['כללי', progressLabel(studentLesson.overallStatus), studentLesson.overallStatus],
+          ['Agent', learningLabel(studentLesson.academyStatus, 'הושלם', 'בתהליך', 'חסר'), studentLesson.academyStatus],
+          ['Minecraft', learningLabel(studentLesson.minecraftStatus, 'הושלם', 'בתהליך', 'לא התחיל'), studentLesson.minecraftStatus],
+          ['כרטיס', learningLabel(studentLesson.exitTicketStatus, 'הוגש', 'בתהליך', 'חסר'), studentLesson.exitTicketStatus],
+        ].forEach(([label, value, state]) => {
+          const pill = element('span', undefined, `mini-status ${state}`);
+          pill.append(element('strong', label), document.createTextNode(value));
+          status.append(pill);
+        });
+        const open = element('button', 'פירוט', 'button quiet lesson-detail-button');
+        open.type = 'button';
+        open.addEventListener('click', () => {
+          detail.replaceChildren(renderLessonDetail(student, studentLesson));
+        });
+        item.append(name, status, open);
+        studentList.append(item);
+      });
+
+      lessonBody.replaceChildren(
+        element('h4', `שיעור ${lesson.id}: ${lesson.title}`),
+        lessonCards,
+        studentList,
+      );
+      detail.replaceChildren(document.createTextNode('בחרי תלמיד כדי לראות פירוט של השיעור.'));
+    }
+
+    lessonSelect.addEventListener('change', () => {
+      selectedLessonIndex = Number(lessonSelect.value) || 0;
+      renderSelectedLesson();
+    });
+    renderSelectedLesson();
+    lessonFocus.append(lessonTop, lessonBody, detail);
+
+    const advanced = element('details', undefined, 'progress-advanced');
+    advanced.append(element('summary', 'תצוגה מלאה של כל השיעורים'));
+    advanced.append(...createFullProgressTable(dashboard));
+
+    container.append(summary, lessonFocus, advanced);
   }
 
   function selectedCourses(form) {
@@ -486,7 +581,7 @@
         const copy = element('div');
         copy.append(
           element('strong', 'דוח התקדמות אקדמיית ה-Agent'),
-          element('span', 'מבט מרוכז על כל תלמיד מול שיעורים 0–16, כולל הגשות וכרטיסי יציאה.'),
+          element('span', 'בחרי שיעור וקבלי מבט פשוט על התלמידים, ההגשות וכרטיסי היציאה.'),
         );
         const loadDashboard = element('button', 'פתיחת דוח התקדמות', 'button secondary');
         loadDashboard.type = 'button';
