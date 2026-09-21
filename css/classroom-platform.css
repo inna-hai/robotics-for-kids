@@ -19,7 +19,7 @@ a { color: inherit; }
 .brand { font-size: 1.2rem; font-weight: 900; text-decoration: none; }
 .text-link { color: var(--primary-dark); font-weight: 700; }
 .shell { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 46px 0 70px; }
-body[data-classroom-page="teacher"] .shell { width: min(1440px, calc(100% - 32px)); }
+body[data-classroom-page="teacher"] .shell { width: min(1760px, calc(100% - 32px)); }
 .entry-shell { max-width: 940px; }
 .intro { text-align: center; margin-bottom: 28px; }
 .eyebrow { display: inline-block; padding: 7px 12px; border-radius: 999px; background: var(--soft); color: var(--primary-dark); font-weight: 800; }
