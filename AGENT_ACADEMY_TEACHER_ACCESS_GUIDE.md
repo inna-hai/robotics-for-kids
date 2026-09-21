@@ -233,6 +233,16 @@
 
 ![מפת הקורס: אקדמיית ה-Agent ואתגרי Minecraft](docs/screenshots/agent-academy-access/09-agent-academy-course-map.png)
 
+חשוב: שיעור 0 הוא רק שער הכניסה הטכני ל-Minecraft. אחרי שהתלמיד משלים אותו, נפתחים שיעורי הקורס 1-16. בכל שיעור כזה יש:
+
+- דף שיעור עם סיפור משימה, מטרות, MakeCode/Agent וכרטיס יציאה.
+- כרטיס "כניסה לעולם Minecraft של השיעור", שמופעל רק כשהמורה פתחה את העולם של אותו שיעור.
+- קישור לאקדמיית ה-Agent לתרגול Blockly/Python לפני היישום בעולם Minecraft.
+
+![דף שיעור 1: כניסה לעולם Minecraft של השיעור אחרי השלמת שיעור 0](docs/screenshots/agent-academy-access/12-student-lesson-1-minecraft-entry.png)
+
+![אקדמיית ה-Agent בתוך שיעור 1: תרגול Blockly, Python וסימולציה](docs/screenshots/agent-academy-access/13-agent-academy-lesson-1-practice.png)
+
 ## מהי אקדמיית ה-Agent בתוך השיעור
 
 `craftom-agent-academy.html` היא סביבת תרגול עצמאית בתוך הדפדפן.
