@@ -378,6 +378,22 @@ try {
   });
   const craftomStudent = (await addCraftomStudent.json()).student;
   assert.equal(addCraftomStudent.status, 201);
+  const blockedProgressDashboard = await fetch(`${baseUrl}/api/classroom/classes/${classBody.classroom.id}/progress-dashboard`, {
+    headers: { Cookie: teacherCookie },
+  });
+  assert.equal(blockedProgressDashboard.status, 403);
+  const craftomProgressDashboard = await fetch(`${baseUrl}/api/classroom/classes/${craftomClass.id}/progress-dashboard`, {
+    headers: { Cookie: teacherCookie },
+  });
+  const craftomProgressDashboardBody = await craftomProgressDashboard.json();
+  assert.equal(craftomProgressDashboard.status, 200);
+  assert.equal(craftomProgressDashboardBody.dashboard.courseId, 'craftom-agent');
+  assert.equal(craftomProgressDashboardBody.dashboard.lessons.length, 17);
+  assert.equal(craftomProgressDashboardBody.dashboard.students.length, 1);
+  assert.equal(craftomProgressDashboardBody.dashboard.students[0].lessons.length, 17);
+  assert.equal(craftomProgressDashboardBody.dashboard.students[0].lessons[0].overallStatus, 'missing');
+  assert.equal(craftomProgressDashboardBody.dashboard.totals.students, 1);
+  console.log('✓ Craftom progress dashboard is read-only and limited to Craftom classes');
   const craftomStudentLogin = await fetch(`${baseUrl}/api/classroom/student-login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

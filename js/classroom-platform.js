@@ -224,6 +224,135 @@
     return teacherCourseStarts[courseId] || courseStarts[courseId] || 'index.html#courses';
   }
 
+  function progressLabel(status) {
+    return {
+      completed: 'הושלם',
+      started: 'בתהליך',
+      missing: 'לא התחיל',
+    }[status] || 'לא התחיל';
+  }
+
+  function learningLabel(status, completeText, startedText, missingText) {
+    if (status === 'completed') return completeText;
+    if (status === 'started') return startedText;
+    return missingText;
+  }
+
+  function formatDashboardDate(value) {
+    if (!value) return 'אין עדיין';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return 'אין עדיין';
+    return date.toLocaleString('he-IL');
+  }
+
+  function formatDashboardDuration(value) {
+    const ms = Number(value);
+    if (!Number.isFinite(ms) || ms < 0) return 'אין';
+    const seconds = Math.round(ms / 1000);
+    return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+  }
+
+  function renderLessonDetail(student, lesson) {
+    const detail = element('div', undefined, 'progress-detail-card');
+    detail.append(element('h4', `${student.name} · שיעור ${lesson.lessonId}`));
+    detail.append(element('p', lesson.title || 'שיעור'));
+    const statuses = element('div', undefined, 'progress-detail-statuses');
+    [
+      ['אקדמיית Agent', learningLabel(lesson.academyStatus, 'הושלמה', 'בתהליך', 'חסרה'), lesson.academyStatus],
+      ['Minecraft', learningLabel(lesson.minecraftStatus, 'הושלם', 'בתהליך', 'לא התחיל'), lesson.minecraftStatus],
+      ['כרטיס יציאה', learningLabel(lesson.exitTicketStatus, 'הוגש', 'בתהליך', 'חסר'), lesson.exitTicketStatus],
+    ].forEach(([label, text, status]) => {
+      const item = element('span', undefined, `progress-pill ${status}`);
+      item.append(element('strong', label), document.createTextNode(text));
+      statuses.append(item);
+    });
+    detail.append(statuses);
+    const meta = element('dl', undefined, 'progress-detail-meta');
+    [
+      ['ניסיונות', String(lesson.attempts || 0)],
+      ['זמן אחרון', formatDashboardDuration(lesson.lastDurationMs)],
+      ['שיא', formatDashboardDuration(lesson.bestTimeMs)],
+      ['עודכן', formatDashboardDate(lesson.updatedAt)],
+    ].forEach(([term, value]) => {
+      meta.append(element('dt', term), element('dd', value));
+    });
+    detail.append(meta);
+    if (lesson.submission) {
+      const submission = element('div', undefined, 'progress-submission');
+      const imageLink = element('a');
+      imageLink.href = lesson.submission.photo.url;
+      imageLink.target = '_blank';
+      imageLink.rel = 'noopener';
+      const image = document.createElement('img');
+      image.src = lesson.submission.photo.url;
+      image.alt = `תמונת הגשה של ${student.name}`;
+      imageLink.append(image);
+      const info = element('div');
+      info.append(
+        element('strong', lesson.submission.lessonTitle || `הגשה לשיעור ${lesson.lessonId}`),
+        element('p', lesson.submission.exitAnswer || 'אין תשובה כתובה.'),
+        element('small', `עודכן: ${formatDashboardDate(lesson.submission.updatedAt)}`),
+      );
+      submission.append(imageLink, info);
+      detail.append(submission);
+    } else {
+      detail.append(element('p', 'אין עדיין תמונה או כרטיס יציאה לשיעור הזה.', 'progress-empty-note'));
+    }
+    return detail;
+  }
+
+  function renderProgressDashboard(container, dashboard) {
+    container.replaceChildren();
+    const summary = element('div', undefined, 'progress-summary-grid');
+    [
+      ['תלמידים', dashboard.totals.students],
+      ['התחילו', dashboard.totals.startedStudents],
+      ['השלימו לפחות שיעור', dashboard.totals.completedStudents],
+      ['הגשות', dashboard.totals.submissions],
+      ['צריכים תשומת לב', dashboard.totals.needsAttention],
+    ].forEach(([label, value]) => {
+      const card = element('div', undefined, 'progress-summary-card');
+      card.append(element('strong', String(value || 0)), element('span', label));
+      summary.append(card);
+    });
+
+    const tableWrap = element('div', undefined, 'progress-table-wrap');
+    const table = element('table', undefined, 'progress-table');
+    const thead = element('thead');
+    const headRow = element('tr');
+    headRow.append(element('th', 'תלמיד/ה'));
+    dashboard.lessons.forEach((lesson) => {
+      const th = element('th', lesson.id === 0 ? '0' : String(lesson.id));
+      th.title = lesson.title;
+      headRow.append(th);
+    });
+    thead.append(headRow);
+    const tbody = element('tbody');
+    const details = element('div', 'בחרו תא בטבלה כדי לראות פירוט תלמיד ושיעור.', 'progress-detail');
+    dashboard.students.forEach((student) => {
+      const row = element('tr');
+      const name = element('th', undefined, 'progress-student-name');
+      name.append(element('strong', student.name), element('small', `${student.totals.completed} הושלמו · ${student.totals.submissions} הגשות`));
+      row.append(name);
+      student.lessons.forEach((lesson) => {
+        const cell = element('td');
+        const button = element('button', progressLabel(lesson.overallStatus), `progress-cell ${lesson.overallStatus}`);
+        button.type = 'button';
+        button.title = `${student.name} · ${lesson.title}`;
+        button.addEventListener('click', () => {
+          details.replaceChildren(renderLessonDetail(student, lesson));
+        });
+        cell.append(button);
+        row.append(cell);
+      });
+      tbody.append(row);
+    });
+    table.append(thead, tbody);
+    tableWrap.append(table);
+
+    container.append(summary, tableWrap, details);
+  }
+
   function selectedCourses(form) {
     return new FormData(form).getAll('courses');
   }
@@ -347,6 +476,42 @@
         lessonZero.href = `kugel-teacher.html?classroomId=${encodeURIComponent(classroom.id)}`;
         lessonZeroPanel.append(lessonZero);
         courseAccess.append(lessonZeroPanel);
+      }
+
+      let progressDashboardSection = null;
+      let progressDashboardContent = null;
+      if ((classroom.courses || []).includes('craftom-agent')) {
+        progressDashboardSection = element('section', undefined, 'progress-dashboard-section');
+        const dashboardTop = element('div', undefined, 'progress-dashboard-top');
+        const copy = element('div');
+        copy.append(
+          element('strong', 'דוח התקדמות אקדמיית ה-Agent'),
+          element('span', 'מבט מרוכז על כל תלמיד מול שיעורים 0–16, כולל הגשות וכרטיסי יציאה.'),
+        );
+        const loadDashboard = element('button', 'פתיחת דוח התקדמות', 'button secondary');
+        loadDashboard.type = 'button';
+        progressDashboardContent = element('div', undefined, 'progress-dashboard-content');
+        progressDashboardContent.hidden = true;
+        loadDashboard.addEventListener('click', async () => {
+          const opened = !progressDashboardContent.hidden;
+          if (opened) {
+            progressDashboardContent.hidden = true;
+            loadDashboard.textContent = 'פתיחת דוח התקדמות';
+            return;
+          }
+          progressDashboardContent.hidden = false;
+          loadDashboard.textContent = 'רענון דוח';
+          progressDashboardContent.replaceChildren(element('p', 'טוענים דוח התקדמות…', 'progress-empty-note'));
+          try {
+            const data = await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/progress-dashboard`);
+            renderProgressDashboard(progressDashboardContent, data.dashboard);
+            setMessage(dashboardMessage, '', true);
+          } catch (error) {
+            progressDashboardContent.replaceChildren(element('p', error.message, 'message'));
+          }
+        });
+        dashboardTop.append(copy, loadDashboard);
+        progressDashboardSection.append(dashboardTop, progressDashboardContent);
       }
 
       const courseForm = element('form', undefined, 'course-access-form');
@@ -524,6 +689,7 @@
       });
       archivedSection.append(showArchivedStudents, archivedList);
       card.append(top, courseAccess, students, addForm, oneTime, archivedSection);
+      if (progressDashboardSection) card.insertBefore(progressDashboardSection, students);
       return card;
     }
 

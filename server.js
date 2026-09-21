@@ -2783,6 +2783,170 @@ function classroomProgressPublic(row) {
   };
 }
 
+function statusRank(status) {
+  return { missing: 0, started: 1, completed: 2 }[status] || 0;
+}
+
+function betterLearningStatus(current, next) {
+  return statusRank(next) > statusRank(current) ? next : current;
+}
+
+function buildCraftomProgressDashboard(db, classroom) {
+  const students = db.prepare(`
+    SELECT id, name, minecraft_player_name, created_at
+    FROM classroom_students
+    WHERE classroom_id = ? AND archived_at IS NULL AND disabled_at IS NULL
+    ORDER BY created_at
+  `).all(classroom.id);
+  const lessons = Object.values(KUGEL_MINECRAFT_LESSONS).map(kugelLessonPublic);
+  const studentIds = students.map(student => student.id);
+  const lessonIds = lessons.map(lesson => String(lesson.id));
+
+  const blankLesson = lesson => ({
+    lessonId: lesson.id,
+    title: lesson.title,
+    academyStatus: 'missing',
+    minecraftStatus: 'missing',
+    exitTicketStatus: 'missing',
+    overallStatus: 'missing',
+    attempts: 0,
+    bestTimeMs: null,
+    lastDurationMs: null,
+    updatedAt: null,
+    submission: null,
+  });
+
+  const byStudent = new Map(students.map(student => [
+    student.id,
+    {
+      id: student.id,
+      name: student.name,
+      minecraftPlayerName: student.minecraft_player_name || '',
+      lessons: Object.fromEntries(lessons.map(lesson => [String(lesson.id), blankLesson(lesson)])),
+      totals: { started: 0, completed: 0, submissions: 0, needsAttention: 0 },
+    },
+  ]));
+
+  if (studentIds.length) {
+    const progressRows = db.prepare(`
+      SELECT p.*
+      FROM classroom_progress p
+      JOIN classroom_students s ON s.id = p.student_id
+      WHERE s.classroom_id = ? AND p.course_id = ?
+        AND s.archived_at IS NULL AND s.disabled_at IS NULL
+    `).all(classroom.id, KUGEL_COURSE_ID);
+    for (const row of progressRows) {
+      if (!lessonIds.includes(String(row.lesson_id))) continue;
+      const student = byStudent.get(row.student_id);
+      if (!student) continue;
+      const lesson = student.lessons[String(row.lesson_id)];
+      const completed = row.status === 'completed';
+      if (row.activity_id === 'academy-complete') {
+        lesson.academyStatus = betterLearningStatus(lesson.academyStatus, completed ? 'completed' : 'started');
+      } else if (row.activity_id === 'minecraft-maze' || row.activity_id === 'minecraft') {
+        lesson.minecraftStatus = betterLearningStatus(lesson.minecraftStatus, completed ? 'completed' : 'started');
+      } else if (row.activity_id === 'exit-ticket') {
+        lesson.exitTicketStatus = betterLearningStatus(lesson.exitTicketStatus, completed ? 'completed' : 'started');
+      }
+      lesson.attempts = Math.max(lesson.attempts, Number(row.attempts || 0));
+      lesson.updatedAt = !lesson.updatedAt || String(row.updated_at || '') > lesson.updatedAt
+        ? row.updated_at || lesson.updatedAt
+        : lesson.updatedAt;
+    }
+
+    const runRows = db.prepare(`
+      SELECT r.*
+      FROM kugel_student_runs r
+      JOIN classroom_students s ON s.id = r.student_id
+      WHERE r.classroom_id = ? AND s.archived_at IS NULL AND s.disabled_at IS NULL
+    `).all(classroom.id);
+    for (const run of runRows) {
+      if (!lessonIds.includes(String(run.lesson_id))) continue;
+      const student = byStudent.get(run.student_id);
+      if (!student) continue;
+      const lesson = student.lessons[String(run.lesson_id)];
+      if (run.started_at) lesson.minecraftStatus = betterLearningStatus(lesson.minecraftStatus, 'started');
+      if (run.finished_at) lesson.minecraftStatus = betterLearningStatus(lesson.minecraftStatus, 'completed');
+      lesson.attempts = Math.max(lesson.attempts, Number(run.attempt_count || 0));
+      lesson.bestTimeMs = run.best_time_ms ?? lesson.bestTimeMs;
+      lesson.lastDurationMs = run.last_duration_ms ?? lesson.lastDurationMs;
+      lesson.updatedAt = !lesson.updatedAt || String(run.updated_at || '') > lesson.updatedAt
+        ? run.updated_at || lesson.updatedAt
+        : lesson.updatedAt;
+    }
+
+    const submissionRows = db.prepare(`
+      SELECT s.*, cs.name AS student_name
+      FROM craftom_lesson_submissions s
+      JOIN classroom_students cs ON cs.id = s.student_id
+      WHERE s.classroom_id = ? AND s.course_id = ?
+        AND cs.archived_at IS NULL AND cs.disabled_at IS NULL
+    `).all(classroom.id, KUGEL_COURSE_ID);
+    for (const row of submissionRows) {
+      if (!lessonIds.includes(String(row.lesson_id))) continue;
+      const student = byStudent.get(row.student_id);
+      if (!student) continue;
+      const lesson = student.lessons[String(row.lesson_id)];
+      lesson.exitTicketStatus = 'completed';
+      lesson.submission = craftomSubmissionPublic(row, 'teacher');
+      lesson.updatedAt = !lesson.updatedAt || String(row.updated_at || '') > lesson.updatedAt
+        ? row.updated_at || lesson.updatedAt
+        : lesson.updatedAt;
+    }
+  }
+
+  const totals = {
+    students: students.length,
+    lessons: lessons.length,
+    startedStudents: 0,
+    completedStudents: 0,
+    submissions: 0,
+    needsAttention: 0,
+  };
+  for (const student of byStudent.values()) {
+    let studentStarted = false;
+    let studentCompleted = false;
+    for (const lesson of Object.values(student.lessons)) {
+      const started = ['started', 'completed'].includes(lesson.academyStatus)
+        || ['started', 'completed'].includes(lesson.minecraftStatus)
+        || ['started', 'completed'].includes(lesson.exitTicketStatus)
+        || Boolean(lesson.submission);
+      const completed = lesson.exitTicketStatus === 'completed'
+        || (lesson.lessonId === 0 && lesson.minecraftStatus === 'completed');
+      if (started) studentStarted = true;
+      if (completed) studentCompleted = true;
+      if (lesson.submission) {
+        student.totals.submissions += 1;
+        totals.submissions += 1;
+      }
+      lesson.overallStatus = completed ? 'completed' : (started ? 'started' : 'missing');
+      if (lesson.overallStatus === 'started') student.totals.started += 1;
+      if (lesson.overallStatus === 'completed') student.totals.completed += 1;
+      if (lesson.overallStatus !== 'completed' && (lesson.academyStatus === 'started' || lesson.minecraftStatus === 'started')) {
+        student.totals.needsAttention += 1;
+      }
+    }
+    if (studentStarted) totals.startedStudents += 1;
+    if (studentCompleted) totals.completedStudents += 1;
+    if (student.totals.needsAttention > 0) totals.needsAttention += 1;
+  }
+
+  return {
+    classroom: {
+      id: classroom.id,
+      name: classroom.name,
+      joinCode: classroom.join_code,
+    },
+    courseId: KUGEL_COURSE_ID,
+    lessons,
+    totals,
+    students: [...byStudent.values()].map(student => ({
+      ...student,
+      lessons: lessonIds.map(lessonId => student.lessons[lessonId]),
+    })),
+  };
+}
+
 function cleanMinecraftPlayerName(value) {
   const name = String(value || '').trim();
   if (!name) return '';
@@ -4343,6 +4507,23 @@ async function handleClassroomApi(req, res) {
       teacher: { id: result.teacher.id, name: result.teacher.name, email: result.teacher.email, courses: result.courses },
       classes: result.classes,
     }));
+  }
+
+  if (req.method === 'GET' && action === 'classes' && segments[3] && segments[4] === 'progress-dashboard' && segments.length === 5) {
+    const result = withSummerDb(db => db.transaction(() => {
+      const teacher = requireCurrentClassroomTeacher(db, req);
+      if (!teacher) return { denied: true };
+      const classroom = db.prepare('SELECT * FROM classrooms WHERE id = ? AND teacher_id = ?').get(segments[3], teacher.id);
+      if (!classroom) return { notFound: true };
+      if (!teacherHasCourse(db, teacher.id, KUGEL_COURSE_ID) || !classroomHasCourse(db, classroom.id, KUGEL_COURSE_ID)) {
+        return { forbidden: true };
+      }
+      return { dashboard: buildCraftomProgressDashboard(db, classroom) };
+    }).immediate());
+    if (result.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
+    if (result.notFound) return send(res, 404, JSON.stringify({ error: 'הכיתה לא נמצאה.' }));
+    if (result.forbidden) return send(res, 403, JSON.stringify({ error: 'אקדמיית ה-Agent אינה פתוחה לכיתה הזו.' }));
+    return send(res, 200, JSON.stringify({ ok: true, dashboard: result.dashboard }));
   }
 
   if (req.method === 'GET' && action === 'classes' && segments[3] && segments[4] === 'students' && segments[5] === 'archived' && segments.length === 6) {
