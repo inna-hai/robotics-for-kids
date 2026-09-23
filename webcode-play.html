@@ -5,12 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WebCode Lab — שיעור</title>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <script src="js/vendor/blockly/blockly.min.js"></script>
-  <script src="js/vendor/blockly/msg/he.js"></script>
+  <script src="js/blockly.min.js"></script>
+  <script src="js/msg/he.js"></script>
   <style>
-    *{box-sizing:border-box}:root{--ink:#0f172a;--blue:#2563eb;--orange:#f97316;--green:#22c55e;--red:#ef4444}body{margin:0;height:100vh;overflow:hidden;font-family:Rubik,Arial,sans-serif;direction:rtl;background:linear-gradient(135deg,#0f172a,#1e3a8a 55%,#7c2d12);color:var(--ink);display:flex;flex-direction:column}.topbar{background:rgba(255,255,255,.97);box-shadow:0 5px 22px rgba(0,0,0,.18);padding:.65rem .9rem;display:grid;grid-template-columns:auto 1fr auto;gap:.75rem;align-items:center;z-index:5}.brand{font-weight:900;font-size:1.08rem;white-space:nowrap}.lesson-title{text-align:center;font-weight:900;color:#1e3a8a}.lesson-outline{background:rgba(255,255,255,.94);border-bottom:1px solid rgba(226,232,240,.9);padding:.45rem .9rem;display:flex;align-items:center;gap:.55rem;overflow-x:auto;box-shadow:0 4px 14px rgba(15,23,42,.12);z-index:4}.lesson-outline-title{font-weight:900;color:#1e3a8a;white-space:nowrap}.lesson-outline-items{display:flex;gap:.32rem;align-items:center;min-width:max-content}.lesson-outline-chip{border:1px solid #bfdbfe;background:#eff6ff;color:#1e3a8a;border-radius:999px;min-width:34px;height:32px;padding:0 .45rem;font-size:.82rem;font-weight:900;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.lesson-outline-chip:hover{border-color:#2563eb;background:#dbeafe}.lesson-outline-chip.current{border-color:#fb923c;background:#fff7ed;color:#9a3412;box-shadow:0 0 0 3px rgba(251,146,60,.22)}.actions{display:flex;gap:.45rem;flex-wrap:wrap}.btn{border:0;border-radius:999px;padding:.62rem .95rem;font-family:inherit;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.32rem}.btn:disabled{background:#e5e7eb!important;color:#94a3b8!important;cursor:not-allowed;filter:grayscale(1);opacity:.72;box-shadow:none}.run{background:#00e096;color:#052e16}.check{background:#facc15;color:#422006}.reset{background:#fb7185;color:white}.share{background:#38bdf8;color:#082f49}.link{background:#eef2ff;color:#3730a3}.main{flex:1;min-height:0;display:grid;grid-template-columns:360px minmax(0,1fr) var(--preview-width,420px);gap:1rem;padding:1rem}.panel{background:rgba(255,255,255,.96);border-radius:26px;box-shadow:0 18px 48px rgba(0,0,0,.2);min-height:0;overflow:hidden;display:flex;flex-direction:column}.lesson-toggle{border:0;background:linear-gradient(135deg,#fff7ed,#eff6ff);padding:.9rem 1rem;font-family:inherit;font-weight:900;color:#1e3a8a;display:flex;align-items:center;justify-content:space-between;gap:.8rem;cursor:pointer;text-align:right;border-bottom:1px solid #fed7aa}.lesson-toggle span:first-child{display:flex;align-items:center;gap:.45rem}.lesson-toggle-icon{background:#1e3a8a;color:white;border-radius:999px;min-width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center}.lesson-collapsible{display:flex;flex-direction:column;min-height:0;overflow:hidden}.main.lesson-collapsed{grid-template-columns:74px minmax(0,1.35fr) var(--preview-width,460px)}.lesson-panel.collapsed{min-height:0}.lesson-panel.collapsed .lesson-collapsible{display:none}.lesson-panel.collapsed .lesson-toggle{height:100%;min-height:360px;writing-mode:vertical-rl;text-orientation:mixed;justify-content:center;border-bottom:0}.lesson-panel.collapsed .lesson-toggle span:first-child{flex-direction:column}.lesson-panel.collapsed .lesson-toggle-icon{writing-mode:horizontal-tb}.info{padding:1rem;border-bottom:1px solid #e5e7eb}.info h1{font-size:1.35rem;margin:.2rem 0}.info p{margin:.25rem 0;line-height:1.55}.compact-info{padding:.8rem 1rem}.compact-info h1{font-size:1.05rem}.compact-info p{font-size:.9rem;color:#475569}.hidden-chip{display:none!important}.chip{display:inline-flex;background:#fff7ed;color:#9a3412;border-radius:999px;padding:.32rem .65rem;font-weight:900;font-size:.78rem;margin:.12rem}.score-chip{background:#ecfeff;color:#155e75;border:1px solid #67e8f9}.total-score-chip{background:#fef3c7;color:#92400e;border-color:#fbbf24}.exercise-list{overflow:auto;padding:1rem;display:grid;gap:.65rem}.exercise{background:#f8fafc;border:2px solid #e5e7eb;border-radius:18px;padding:.75rem;line-height:1.45;cursor:pointer;min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}.exercise.active{border-color:#f97316;background:#fff7ed}.exercise.done{border-color:#22c55e;background:#f0fdf4}.exercise.locked{opacity:.58;cursor:not-allowed}.exercise b{display:block;color:#1e3a8a}.hint{font-size:.88rem;color:#64748b;margin-top:.35rem}.exercise-top{display:flex;align-items:start;justify-content:space-between;gap:.75rem;min-width:0}.exercise-top>div{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}.exercise-bottom{display:grid;gap:.65rem;margin-top:.8rem;min-width:0;max-width:100%}.exercise-controls{display:flex;gap:.55rem;flex-wrap:wrap}.exercise-controls.special-message-controls{display:grid;gap:.55rem}.exercise-actions-main{display:flex;gap:.55rem;flex-wrap:wrap}.starter-reset-row{display:flex;justify-content:flex-start}.exercise-controls .btn{box-shadow:none}.exercise-feedback{background:white;border:2px solid #fed7aa;border-radius:18px;color:#7c2d12;padding:.7rem .85rem;font-weight:900;line-height:1.45}.exercise-feedback.good{border-color:#86efac;background:#f0fdf4;color:#15803d}.exercise-feedback.bad{border-color:#fecaca;background:#fff1f2;color:#b91c1c}.code-answer-box{min-width:0;max-width:100%}.code-answer-box input{max-width:100%;min-width:0}.code-answer-box small{display:block;margin-top:.45rem;color:#64748b;font-weight:800;overflow-wrap:anywhere;word-break:break-word}.choice-box{display:grid;gap:.7rem}.choice-group{border:2px solid #bfdbfe;border-radius:18px;padding:.72rem;margin:0;background:rgba(255,255,255,.75)}.choice-group legend{font-weight:900;color:#1d4ed8;padding:0 .35rem}.choice-option{display:flex;align-items:center;gap:.45rem;margin:.42rem 0;font-weight:900;color:#334155}.choice-option input{width:1.05rem;height:1.05rem;accent-color:#2563eb}.match-box{display:grid;gap:.7rem;min-width:0;max-width:100%;overflow:hidden}.match-rows{display:grid;gap:.55rem;min-width:0;max-width:100%}.match-row{display:grid;grid-template-columns:minmax(0,1fr) 18px minmax(96px,.9fr);align-items:center;gap:.38rem;min-width:0;max-width:100%}.match-code{background:#07111f;color:#e5f3ff;border-radius:12px;padding:.5rem .58rem;font:900 .82rem/1.25 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-align:left;white-space:normal;overflow-wrap:anywhere;word-break:break-word;max-width:100%;min-width:0}.match-arrow{font-weight:900;color:#1d4ed8;text-align:center}.match-row select{width:100%;min-width:0;max-width:100%;border:1px solid #93c5fd;border-radius:12px;padding:.52rem .46rem;font-family:inherit;font-weight:900;background:white;color:#1e3a8a;overflow-wrap:anywhere}.selected-code-line{margin-top:.65rem;padding:.62rem .7rem;border-radius:14px;background:#f8fafc;border:1px solid #bfdbfe;color:#1e3a8a;font-weight:900}.selected-code-line code{display:block;direction:ltr;text-align:left;margin-top:.25rem;color:#0f172a;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:nowrap;overflow:auto}.exercise-meta{color:#64748b;font-weight:900}.exercise-status{background:#eef2ff;color:#3730a3;border-radius:999px;padding:.3rem .65rem;font-size:.78rem;font-weight:900;white-space:nowrap}.editor-panel{background:linear-gradient(135deg,#fff7ed,#eff6ff)}.blocks-stage{flex:1;min-height:0;overflow:auto;padding:1rem;display:flex;flex-direction:column;gap:.75rem}.blocks-intro{background:white;border:2px dashed #fb923c;border-radius:22px;padding:.85rem;line-height:1.5;font-weight:800;color:#7c2d12}.blocks-intro small{display:block;color:#475569;font-weight:700;margin-top:.25rem}.blocks-stage.real-blockly-stage{padding:0;gap:0}.real-blockly{display:none;flex:1;min-height:430px;background:white;border:0;border-radius:0;overflow:hidden;box-shadow:none}.real-blockly.active{display:flex;flex-direction:column;min-height:100%}.blockly-top{display:flex;align-items:center;justify-content:space-between;gap:.7rem;padding:.65rem .85rem;background:#fff7ed;border-bottom:1px solid #fed7aa;font-weight:900;color:#7c2d12}.blockly-top small{font-weight:800;color:#475569}.blockly-live{background:#dcfce7;color:#166534;border-radius:999px;padding:.25rem .6rem;font-size:.82rem}#blocklyDiv{flex:1;min-height:0;width:100%;direction:ltr}.blocklyDropDownDiv,.blocklyWidgetDiv,.blocklyTooltipDiv{z-index:99999!important;direction:rtl}.blocklyToolboxDiv{direction:rtl}.blocklyTreeLabel{font-family:Rubik,Arial,sans-serif}.blocklyFlyoutLabelText{font-family:Rubik,Arial,sans-serif;font-weight:900;fill:#7c2d12}.blocklyFlyoutBackground{fill:#f8fafc;fill-opacity:1}.code-peek:not([open]){flex:0 0 auto}.code-peek{border-top:1px solid #fed7aa;background:#0f172a;color:white}.code-peek summary{cursor:pointer;padding:.75rem 1rem;font-weight:900;background:#1e293b;color:#ffedd5}.code-peek[open]{max-height:44%;display:flex;flex-direction:column}.code-peek[open] .code-box{display:flex;flex:1;min-height:260px;flex-direction:column}.code-peek-actions{display:flex;align-items:center;justify-content:space-between;gap:.6rem;background:#1e293b;color:#ffedd5;padding:.55rem .8rem;font-weight:900}.code-peek-actions button{border:0;border-radius:999px;background:#fb7185;color:white;padding:.42rem .75rem;font-family:inherit;font-weight:900;cursor:pointer}.editor-tabs{display:flex;background:#0f172a;padding:.45rem;gap:.4rem}.editor-tabs button{flex:1;border:0;border-radius:12px;padding:.6rem;font-weight:900;cursor:pointer;background:#334155;color:white}.editor-tabs button.active{background:#fb923c;color:#111827}.editor{flex:1;min-height:0;display:none}.editor.active{display:block}textarea{width:100%;height:100%;min-height:260px;resize:none;border:0;outline:0;padding:1rem;font:600 15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;direction:ltr;text-align:left;background:#07111f;color:#e5f3ff}.preview-panel{position:relative}.preview-resize{position:absolute;top:0;right:-.68rem;bottom:0;width:1.36rem;z-index:4;cursor:col-resize;display:flex;align-items:center;justify-content:center;touch-action:none}.preview-resize::before{content:"";width:7px;height:86px;border-radius:999px;background:linear-gradient(180deg,#fb923c,#2563eb);box-shadow:0 0 0 4px rgba(255,255,255,.88),0 8px 22px rgba(15,23,42,.22)}.preview-resize:hover::before,.preview-resize.dragging::before{background:linear-gradient(180deg,#f97316,#1d4ed8);width:9px}.preview-resize-hint{font-size:.78rem;color:#64748b;font-weight:800}.preview-head{padding:.8rem 1rem;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;gap:.5rem;align-items:center;font-weight:900}.preview-wrap{flex:1;min-height:0;background:white}iframe{width:100%;height:100%;border:0;background:white}.feedback{background:white;border:2px solid #fed7aa;border-radius:18px;color:#7c2d12;padding:.7rem .85rem;font-weight:900;line-height:1.45}.feedback.good{border-color:#86efac;background:#f0fdf4;color:#15803d}.feedback.bad{border-color:#fecaca;background:#fff1f2;color:#b91c1c}.score-modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.58);z-index:999999;display:flex;align-items:center;justify-content:center;padding:1rem}.score-modal{width:min(440px,100%);background:white;border-radius:28px;box-shadow:0 28px 80px rgba(15,23,42,.35);padding:1.15rem;direction:rtl;border:3px solid #67e8f9}.score-modal h2{margin:.1rem 0 .35rem;color:#155e75;font-size:1.35rem}.score-modal-total{font-size:2.15rem;font-weight:900;color:#0f766e;margin:.35rem 0 .65rem}.score-row{display:flex;justify-content:space-between;gap:.75rem;border-top:1px solid #e2e8f0;padding:.52rem 0;font-weight:900}.score-row span:first-child{color:#334155}.score-row span:last-child{direction:ltr;color:#1d4ed8;white-space:nowrap}.score-modal-note{background:#f0fdfa;border-radius:16px;padding:.65rem;color:#115e59;font-weight:800;line-height:1.45;margin-top:.45rem}.score-modal-actions{display:flex;justify-content:flex-start;margin-top:.9rem}.helper{background:linear-gradient(135deg,#eff6ff,#fff7ed);border-radius:18px;padding:.8rem;margin-top:.7rem;line-height:1.5;min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}.helper b{color:#1d4ed8}.bridge{margin-top:.8rem;display:grid;gap:.5rem}.bridge-title{font-weight:900;color:#7c2d12}.bridge-block{border:0;border-radius:16px;background:linear-gradient(135deg,#ffedd5,#dbeafe);padding:.7rem;text-align:right;font-family:inherit;font-weight:900;cursor:pointer;box-shadow:0 5px 0 rgba(15,23,42,.08)}.bridge-block small{display:block;font-weight:700;color:#475569;margin-top:.22rem;line-height:1.35}.bridge-empty{display:none}@media(max-width:1100px){.lesson-outline{align-items:flex-start}.lesson-outline-items{overflow-x:auto}.preview-resize{display:none}body{height:auto;min-height:100vh;overflow:auto}.topbar{grid-template-columns:1fr}.lesson-title{text-align:right}.main,.main.lesson-collapsed{display:flex;flex-direction:column;padding:.75rem}.panel{min-height:360px}.lesson-panel.collapsed{min-height:58px}.lesson-panel.collapsed .lesson-toggle{height:auto;min-height:58px;writing-mode:horizontal-tb;justify-content:space-between}.lesson-panel.collapsed .lesson-toggle span:first-child{flex-direction:row}.panel.editor-panel{min-height:620px}.main.lesson-collapsed .panel.editor-panel{min-height:72vh}.panel.preview-panel{min-height:420px}.main.lesson-collapsed .panel.preview-panel{min-height:58vh}.actions .btn{flex:1}}@media(max-width:560px){.match-row{grid-template-columns:minmax(0,1fr) 16px minmax(82px,.82fr);gap:.3rem}.match-code{font-size:.76rem;padding:.45rem .5rem}.match-row select{font-size:.82rem;padding:.48rem .38rem}.match-arrow{font-size:.8rem}.main{padding:.55rem}.topbar{padding:.55rem}.btn{font-size:.86rem;padding:.55rem .7rem}.panel{border-radius:20px}textarea{font-size:13px}}
-  </style>
+    *{box-sizing:border-box}:root{--ink:#0f172a;--blue:#2563eb;--orange:#f97316;--green:#22c55e;--red:#ef4444}body{margin:0;height:100vh;overflow:hidden;font-family:Rubik,Arial,sans-serif;direction:rtl;background:linear-gradient(135deg,#0f172a,#1e3a8a 55%,#7c2d12);color:var(--ink);display:flex;flex-direction:column}.topbar{background:rgba(255,255,255,.97);box-shadow:0 5px 22px rgba(0,0,0,.18);padding:.65rem .9rem;display:grid;grid-template-columns:auto 1fr auto;gap:.75rem;align-items:center;z-index:5}.brand{font-weight:900;font-size:1.08rem;white-space:nowrap}.lesson-title{text-align:center;font-weight:900;color:#1e3a8a}.lesson-outline{background:rgba(255,255,255,.94);border-bottom:1px solid rgba(226,232,240,.9);padding:.45rem .9rem;display:flex;align-items:center;gap:.55rem;overflow-x:auto;box-shadow:0 4px 14px rgba(15,23,42,.12);z-index:4}.lesson-outline-title{font-weight:900;color:#1e3a8a;white-space:nowrap}.lesson-outline-items{display:flex;gap:.32rem;align-items:center;min-width:max-content}.lesson-outline-chip{border:1px solid #bfdbfe;background:#eff6ff;color:#1e3a8a;border-radius:999px;min-width:34px;height:32px;padding:0 .45rem;font-size:.82rem;font-weight:900;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.lesson-outline-chip:hover{border-color:#2563eb;background:#dbeafe}.lesson-outline-chip.current{border-color:#fb923c;background:#fff7ed;color:#9a3412;box-shadow:0 0 0 3px rgba(251,146,60,.22)}.actions{display:flex;gap:.45rem;flex-wrap:wrap}.btn{border:0;border-radius:999px;padding:.62rem .95rem;font-family:inherit;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.32rem}.btn:disabled{background:#e5e7eb!important;color:#94a3b8!important;cursor:not-allowed;filter:grayscale(1);opacity:.72;box-shadow:none}.run{background:#00e096;color:#052e16}.check{background:#facc15;color:#422006}.reset{background:#fb7185;color:white}.share{background:#38bdf8;color:#082f49}.link{background:#eef2ff;color:#3730a3}.main{flex:1;min-height:0;display:grid;grid-template-columns:360px minmax(0,1fr) var(--preview-width,420px);gap:1rem;padding:1rem}.panel{background:rgba(255,255,255,.96);border-radius:26px;box-shadow:0 18px 48px rgba(0,0,0,.2);min-height:0;overflow:hidden;display:flex;flex-direction:column}.lesson-toggle{border:0;background:linear-gradient(135deg,#fff7ed,#eff6ff);padding:.9rem 1rem;font-family:inherit;font-weight:900;color:#1e3a8a;display:flex;align-items:center;justify-content:space-between;gap:.8rem;cursor:pointer;text-align:right;border-bottom:1px solid #fed7aa}.lesson-toggle span:first-child{display:flex;align-items:center;gap:.45rem}.lesson-toggle-icon{background:#1e3a8a;color:white;border-radius:999px;min-width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center}.lesson-collapsible{display:flex;flex-direction:column;min-height:0;overflow:hidden}.main.lesson-collapsed{grid-template-columns:74px minmax(0,1.35fr) var(--preview-width,460px)}.lesson-panel.collapsed{min-height:0}.lesson-panel.collapsed .lesson-collapsible{display:none}.lesson-panel.collapsed .lesson-toggle{height:100%;min-height:360px;writing-mode:vertical-rl;text-orientation:mixed;justify-content:center;border-bottom:0}.lesson-panel.collapsed .lesson-toggle span:first-child{flex-direction:column}.lesson-panel.collapsed .lesson-toggle-icon{writing-mode:horizontal-tb}.info{padding:1rem;border-bottom:1px solid #e5e7eb}.info h1{font-size:1.35rem;margin:.2rem 0}.info p{margin:.25rem 0;line-height:1.55}.compact-info{padding:.8rem 1rem}.compact-info h1{font-size:1.05rem}.compact-info p{font-size:.9rem;color:#475569}.hidden-chip{display:none!important}.chip{display:inline-flex;background:#fff7ed;color:#9a3412;border-radius:999px;padding:.32rem .65rem;font-weight:900;font-size:.78rem;margin:.12rem}.score-chip{background:#ecfeff;color:#155e75;border:1px solid #67e8f9}.total-score-chip{background:#fef3c7;color:#92400e;border-color:#fbbf24}.exercise-list{overflow:auto;padding:.75rem;display:grid;gap:.65rem}.exercise{background:#f8fafc;border:2px solid #e5e7eb;border-radius:18px;padding:.68rem;line-height:1.45;cursor:pointer;min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}.exercise.active{border-color:#f97316;background:#fff7ed}.exercise.done{border-color:#22c55e;background:#f0fdf4}.exercise.locked{opacity:.58;cursor:not-allowed}.exercise b{display:block;color:#1e3a8a}.hint{font-size:.88rem;color:#64748b;margin-top:.35rem}.exercise-top{display:flex;align-items:start;justify-content:space-between;gap:.75rem;min-width:0}.exercise-top>div{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}.exercise-bottom{display:grid;gap:.65rem;margin-top:.8rem;min-width:0;max-width:100%}.exercise-controls{display:flex;gap:.55rem;flex-wrap:wrap}.exercise-controls.special-message-controls{display:grid;gap:.55rem}.exercise-actions-main{display:flex;gap:.55rem;flex-wrap:wrap}.starter-reset-row{display:flex;justify-content:flex-start}.exercise-controls .btn{box-shadow:none}.exercise-feedback{background:white;border:2px solid #fed7aa;border-radius:18px;color:#7c2d12;padding:.7rem .85rem;font-weight:900;line-height:1.45}.exercise-feedback.good{border-color:#86efac;background:#f0fdf4;color:#15803d}.exercise-feedback.bad{border-color:#fecaca;background:#fff1f2;color:#b91c1c}.code-answer-box{min-width:0;max-width:100%}.code-answer-box input{max-width:100%;min-width:0}.code-answer-box small{display:block;margin-top:.45rem;color:#64748b;font-weight:800;overflow-wrap:anywhere;word-break:break-word}.choice-box{display:grid;gap:.7rem}.choice-group{border:2px solid #bfdbfe;border-radius:18px;padding:.72rem;margin:0;background:rgba(255,255,255,.75)}.choice-group legend{font-weight:900;color:#1d4ed8;padding:0 .35rem}.choice-option{display:flex;align-items:center;gap:.45rem;margin:.42rem 0;font-weight:900;color:#334155}.choice-option input{width:1.05rem;height:1.05rem;accent-color:#2563eb}.match-box{display:grid;gap:.7rem;min-width:0;max-width:none;width:calc(100% + .5rem);margin-left:-.25rem;margin-right:-.25rem;overflow:visible;padding:.62rem}.match-rows{display:grid;gap:.55rem;min-width:0;max-width:100%}.match-row{display:grid;grid-template-columns:minmax(190px,1.8fr) 16px minmax(76px,.58fr);align-items:center;gap:.38rem;min-width:0;max-width:100%}.match-code{background:#07111f;color:#e5f3ff;border-radius:12px;padding:.52rem .62rem;font:900 .78rem/1.22 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-align:left;white-space:normal;overflow-wrap:anywhere;word-break:break-word;max-width:100%;min-width:0}.match-arrow{font-weight:900;color:#1d4ed8;text-align:center}.match-row select{width:100%;min-width:0;max-width:100%;border:1px solid #93c5fd;border-radius:12px;padding:.52rem .46rem;font-family:inherit;font-weight:900;background:white;color:#1e3a8a;overflow-wrap:anywhere}.selected-code-line{margin-top:.65rem;padding:.62rem .7rem;border-radius:14px;background:#f8fafc;border:1px solid #bfdbfe;color:#1e3a8a;font-weight:900}.selected-code-line code{display:block;direction:ltr;text-align:left;margin-top:.25rem;color:#0f172a;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:nowrap;overflow:auto}.exercise-meta{color:#64748b;font-weight:900}.exercise-status{background:#eef2ff;color:#3730a3;border-radius:999px;padding:.3rem .65rem;font-size:.78rem;font-weight:900;white-space:nowrap}.editor-panel{background:linear-gradient(135deg,#fff7ed,#eff6ff)}.blocks-stage{flex:1;min-height:0;overflow:auto;padding:1rem;display:flex;flex-direction:column;gap:.75rem}.blocks-intro{background:white;border:2px dashed #fb923c;border-radius:22px;padding:.85rem;line-height:1.5;font-weight:800;color:#7c2d12}.blocks-intro small{display:block;color:#475569;font-weight:700;margin-top:.25rem}.blocks-stage.real-blockly-stage{padding:0;gap:0}.real-blockly{display:none;flex:1;min-height:430px;background:white;border:0;border-radius:0;overflow:hidden;box-shadow:none}.real-blockly.active{display:flex;flex-direction:column;min-height:100%}.blockly-top{display:flex;align-items:center;justify-content:space-between;gap:.7rem;padding:.65rem .85rem;background:#fff7ed;border-bottom:1px solid #fed7aa;font-weight:900;color:#7c2d12}.blockly-top small{font-weight:800;color:#475569}.blockly-live{background:#dcfce7;color:#166534;border-radius:999px;padding:.25rem .6rem;font-size:.82rem}#blocklyDiv{flex:1;min-height:0;width:100%;direction:ltr}.blocklyDropDownDiv,.blocklyWidgetDiv,.blocklyTooltipDiv{z-index:99999!important;direction:rtl}.blocklyToolboxDiv{direction:rtl}.blocklyTreeLabel{font-family:Rubik,Arial,sans-serif}.blocklyFlyoutLabelText{font-family:Rubik,Arial,sans-serif;font-weight:900;fill:#7c2d12}.blocklyFlyoutBackground{fill:#f8fafc;fill-opacity:1}.code-peek:not([open]){flex:0 0 auto}.code-peek{border-top:1px solid #fed7aa;background:#0f172a;color:white;position:relative}.code-peek summary{cursor:pointer;padding:.75rem 1rem;font-weight:900;background:#1e293b;color:#ffedd5}.code-peek[open] summary{display:none}.code-peek-resize{display:none;height:16px;background:#1e293b;cursor:ns-resize;touch-action:none;align-items:center;justify-content:center;border-top:1px solid rgba(251,146,60,.35);border-bottom:1px solid rgba(251,146,60,.35)}.code-peek-resize::before{content:"";width:86px;height:5px;border-radius:999px;background:linear-gradient(90deg,#fb923c,#38bdf8);box-shadow:0 0 0 3px rgba(255,255,255,.08)}.code-peek-resize:hover::before,.code-peek-resize.dragging::before{height:7px;background:linear-gradient(90deg,#f97316,#67e8f9)}.code-peek[open]{flex:0 0 var(--code-peek-height,clamp(260px,44%,390px));max-height:min(78%,var(--code-peek-height,390px));min-height:260px;display:flex;flex-direction:column;overflow:hidden}.code-peek[open] .code-peek-resize{display:flex}.code-peek[open] .code-box{display:grid;grid-template-rows:auto auto minmax(0,1fr);flex:1;min-height:0;min-width:0;width:100%;overflow:hidden}.code-peek-actions{grid-row:1;display:flex;align-items:center;justify-content:space-between;gap:.6rem;background:#1e293b;color:#ffedd5;padding:.55rem .8rem;font-weight:900}.code-peek-actions button{border:0;border-radius:999px;background:#fb7185;color:white;padding:.42rem .75rem;font-family:inherit;font-weight:900;cursor:pointer}.editor-tabs{display:flex;background:#0f172a;padding:.45rem;gap:.4rem;width:100%;min-width:0;grid-row:2;flex:0 0 auto}.editor-tabs button{flex:1;border:0;border-radius:12px;padding:.6rem;font-weight:900;cursor:pointer;background:#334155;color:white}.editor-tabs button.active{background:#fb923c;color:#111827}.editor{grid-row:3;min-height:0;min-width:0;width:100%;height:var(--measured-editor-height,100%);display:none;overflow:hidden;background:#07111f}.editor.active{display:block}.code-box .editor textarea{display:block;width:100%;max-width:100%;min-width:0;min-height:0!important;height:var(--measured-editor-height,100%);overflow-y:auto;overflow-x:hidden;resize:none;scroll-behavior:smooth;box-shadow:none;background:#07111f!important;color:#e5f3ff!important;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;direction:ltr;text-align:left}.code-box .editor textarea::-webkit-scrollbar{width:12px;height:12px}.code-box .editor textarea::-webkit-scrollbar-thumb{background:#94a3b8;border-radius:999px;border:3px solid #07111f}textarea{width:100%;height:100%;min-height:260px;resize:none;border:0;outline:0;padding:1rem;display:block;font:600 15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;direction:ltr;text-align:left;background:#07111f;color:#e5f3ff}.preview-panel{position:relative}.preview-resize{position:absolute;top:0;right:-.68rem;bottom:0;width:1.36rem;z-index:4;cursor:col-resize;display:flex;align-items:center;justify-content:center;touch-action:none}.preview-resize::before{content:"";width:7px;height:86px;border-radius:999px;background:linear-gradient(180deg,#fb923c,#2563eb);box-shadow:0 0 0 4px rgba(255,255,255,.88),0 8px 22px rgba(15,23,42,.22)}.preview-resize:hover::before,.preview-resize.dragging::before{background:linear-gradient(180deg,#f97316,#1d4ed8);width:9px}.preview-resize-hint{font-size:.78rem;color:#64748b;font-weight:800}.preview-head{padding:.8rem 1rem;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;gap:.5rem;align-items:center;font-weight:900}.preview-wrap{flex:1;min-height:0;background:white}iframe{width:100%;height:100%;border:0;background:white}.feedback{background:white;border:2px solid #fed7aa;border-radius:18px;color:#7c2d12;padding:.7rem .85rem;font-weight:900;line-height:1.45}.feedback.good{border-color:#86efac;background:#f0fdf4;color:#15803d}.feedback.bad{border-color:#fecaca;background:#fff1f2;color:#b91c1c}.score-modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.58);z-index:999999;display:flex;align-items:center;justify-content:center;padding:1rem}.score-modal{width:min(440px,100%);background:white;border-radius:28px;box-shadow:0 28px 80px rgba(15,23,42,.35);padding:1.15rem;direction:rtl;border:3px solid #67e8f9}.score-modal h2{margin:.1rem 0 .35rem;color:#155e75;font-size:1.35rem}.score-modal-total{font-size:2.15rem;font-weight:900;color:#0f766e;margin:.35rem 0 .65rem}.score-row{display:flex;justify-content:space-between;gap:.75rem;border-top:1px solid #e2e8f0;padding:.52rem 0;font-weight:900}.score-row span:first-child{color:#334155}.score-row span:last-child{direction:ltr;color:#1d4ed8;white-space:nowrap}.score-modal-note{background:#f0fdfa;border-radius:16px;padding:.65rem;color:#115e59;font-weight:800;line-height:1.45;margin-top:.45rem}.score-modal-actions{display:flex;justify-content:flex-start;margin-top:.9rem}.helper{background:linear-gradient(135deg,#eff6ff,#fff7ed);border-radius:18px;padding:.8rem;margin-top:.7rem;line-height:1.5;min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}.helper b{color:#1d4ed8}.bridge{margin-top:.8rem;display:grid;gap:.5rem}.bridge-title{font-weight:900;color:#7c2d12}.bridge-block{border:0;border-radius:16px;background:linear-gradient(135deg,#ffedd5,#dbeafe);padding:.7rem;text-align:right;font-family:inherit;font-weight:900;cursor:pointer;box-shadow:0 5px 0 rgba(15,23,42,.08)}.bridge-block small{display:block;font-weight:700;color:#475569;margin-top:.22rem;line-height:1.35}.bridge-empty{display:none}@media(max-width:1100px){.lesson-outline{align-items:flex-start}.lesson-outline-items{overflow-x:auto}.preview-resize{display:none}body{height:auto;min-height:100vh;overflow:auto}.topbar{grid-template-columns:1fr}.lesson-title{text-align:right}.main,.main.lesson-collapsed{display:flex;flex-direction:column;padding:.75rem}.panel{min-height:360px}.lesson-panel.collapsed{min-height:58px}.lesson-panel.collapsed .lesson-toggle{height:auto;min-height:58px;writing-mode:horizontal-tb;justify-content:space-between}.lesson-panel.collapsed .lesson-toggle span:first-child{flex-direction:row}.panel.editor-panel{min-height:620px}.main.lesson-collapsed .panel.editor-panel{min-height:72vh}.panel.preview-panel{min-height:420px}.main.lesson-collapsed .panel.preview-panel{min-height:58vh}.actions .btn{flex:1}}@media(max-width:560px){.match-row{grid-template-columns:minmax(160px,1.55fr) 14px minmax(68px,.52fr);gap:.26rem}.match-code{font-size:.7rem;padding:.42rem .46rem}.match-row select{font-size:.82rem;padding:.48rem .38rem}.match-arrow{font-size:.8rem}.main{padding:.55rem}.topbar{padding:.55rem}.btn{font-size:.86rem;padding:.55rem .7rem}.panel{border-radius:20px}textarea{font-size:13px}}
+  
+/* v348: make generated-code editor fill the whole visible pane so no dark overlay hides lines */
+.code-peek[open] .code-box{display:flex!important;flex-direction:column!important;}
+.code-peek[open] .editor-tabs,.code-peek[open] .code-peek-actions{flex:0 0 auto!important;}
+.code-peek[open] .editor{flex:1 1 auto!important;height:auto!important;min-height:0!important;overflow:hidden!important;}
+.code-peek[open] .editor.active{display:flex!important;flex-direction:column!important;}
+.code-peek[open] .code-box .editor textarea{flex:1 1 auto!important;height:100%!important;min-height:0!important;max-height:none!important;}
+
+/* v349: force the active generated-code textarea to cover the full editor pane */
+.code-peek[open] .code-box{display:flex!important;flex-direction:column!important;height:100%!important;min-height:0!important;}
+.code-peek[open] .code-peek-actions,.code-peek[open] .editor-tabs{flex:0 0 auto!important;}
+.code-peek[open] .editor{position:relative!important;flex:1 1 auto!important;height:auto!important;min-height:0!important;background:#07111f!important;overflow:hidden!important;}
+.code-peek[open] .editor.active{display:block!important;}
+.code-peek[open] .editor.active textarea{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;margin:0!important;display:block!important;overflow:auto!important;background:#07111f!important;}
+
+/* v350: restore generated-code textarea visibility; override v349 absolute layout */
+.code-peek[open] .code-box{display:grid!important;grid-template-rows:auto auto minmax(220px,1fr)!important;height:100%!important;min-height:0!important;overflow:hidden!important;}
+.code-peek[open] .code-peek-actions{grid-row:1!important;}
+.code-peek[open] .editor-tabs{grid-row:2!important;}
+.code-peek[open] .editor{grid-row:3!important;position:static!important;display:none!important;height:100%!important;min-height:220px!important;overflow:hidden!important;background:#07111f!important;}
+.code-peek[open] .editor.active{display:block!important;}
+.code-peek[open] .editor.active textarea{position:static!important;inset:auto!important;display:block!important;width:100%!important;height:100%!important;min-height:220px!important;max-height:none!important;margin:0!important;overflow:auto!important;background:#07111f!important;color:#e5f3ff!important;opacity:1!important;visibility:visible!important;z-index:auto!important;}
+</style>
   <link rel="stylesheet" href="css/platform-home-link.css">
+<meta name="webcode-fix" content="webcode-lesson10-ex12-remove-helper-line-v376-20260923" />
 </head>
 <body>
   <header class="topbar">
@@ -42,12 +65,13 @@
       </div>
       <details class="code-peek" id="codePeek">
         <summary>👀 הצצה לקוד שנוצר — לא חובה לפתוח בהתחלה</summary>
+        <div class="code-peek-resize" id="codePeekResize" role="separator" aria-orientation="horizontal" aria-label="גררו למעלה כדי להגדיל את אזור הקוד"></div>
         <div class="code-box">
           <div class="code-peek-actions"><span id="codePeekTitle">קוד האתר</span><button type="button" onclick="closeCodePeek()">סגור קוד ✕</button></div>
           <div class="editor-tabs"><button class="active" onclick="showTab('html', this)">HTML</button><button onclick="showTab('css', this)">CSS</button><button onclick="showTab('js', this)">JavaScript</button></div>
-          <div class="editor active" id="tab-html"><textarea id="htmlCode" spellcheck="false"></textarea></div>
-          <div class="editor" id="tab-css"><textarea id="cssCode" spellcheck="false"></textarea></div>
-          <div class="editor" id="tab-js"><textarea id="jsCode" spellcheck="false"></textarea></div>
+          <div class="editor active" id="tab-html"><textarea id="htmlCode" spellcheck="false" wrap="soft"></textarea></div>
+          <div class="editor" id="tab-css"><textarea id="cssCode" spellcheck="false" wrap="soft"></textarea></div>
+          <div class="editor" id="tab-js"><textarea id="jsCode" spellcheck="false" wrap="soft"></textarea></div>
         </div>
       </details>
     </section>
@@ -57,47 +81,7 @@
       <div class="preview-wrap"><iframe id="preview" title="תצוגת התוצר"></iframe></div>
     </section>
   </main>
-  <script>
-    (function(){
-      if(!String.prototype.replaceAll){
-        String.prototype.replaceAll = function(search, replacement){
-          var source = String(this);
-          if(search instanceof RegExp) return source.replace(search, replacement);
-          return source.split(String(search)).join(String(replacement));
-        };
-      }
-      if(!Array.prototype.at){
-        Array.prototype.at = function(index){
-          var length = this.length >>> 0;
-          var offset = Number(index) || 0;
-          if(offset < 0) offset += length;
-          return this[offset];
-        };
-      }
-      window.showWebCodeStartupError = function(error){
-        var message = error && error.message ? error.message : String(error || 'שגיאה לא ידועה');
-        var exercises = document.getElementById('exercises');
-        var progress = document.getElementById('progress');
-        var realBlockly = document.getElementById('realBlockly');
-        var blocksIntro = document.getElementById('blocksIntro');
-        var safeMessage = message.replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; });
-        if(progress) progress.textContent = 'טעינת WebCode נכשלה';
-        if(realBlockly) realBlockly.classList.remove('active');
-        if(blocksIntro){
-          blocksIntro.style.display = '';
-          blocksIntro.innerHTML = '⚠️ WebCode לא נטען במחשב הזה<small>נסו רענון חזק Ctrl+F5 או דפדפן מעודכן. אם זה מחשב בית ספרי, שלחו צילום של Console.</small>';
-        }
-        if(exercises){
-          exercises.innerHTML = '<article class="exercise active"><b>הדף נטען חלקית</b><p>התרגילים לא נטענו בגלל שגיאת דפדפן/תאימות.</p><div class="hint">שגיאה טכנית: ' + safeMessage + '</div></article>';
-        }
-      };
-      window.addEventListener('error', function(event){
-        if(event && event.filename && !/webcode|blockly/i.test(event.filename)) return;
-        window.showWebCodeStartupError(event.error || event.message);
-      });
-    })();
-  </script>
-  <script src="js/webcode-lessons.js?v=20260914-webcode-90-1"></script>
+  <script src="js/webcode-lessons-code-bridge-v376.js"></script>
   <script>
     if(!window.getWebCodeLesson){
       window.WEBCODE_LESSONS = [{ id:1, title:'בונים עמוד אמיתי עם Blockly', concept:'בלוקים שבונים אתר', durationMinutes:90, realBlocklyBuilder:true, story:'בונים אתר בעזרת בלוקים ורואים את התוצאה מיד.', mission:'גררו בלוקים לשרשרת כדי לבנות עמוד אישי.', starter:{ html:'', css:'', js:'' }, exercises:[
@@ -121,18 +105,28 @@
     let highestUnlockedExercise = 1;
     const done = new Set();
     const checkMemory = {};
-    const storageKey = `webcodeLessonState:v176:${lesson.id}`;
-    const stableStorageKey = `webcodeLessonState:stable:${lesson.id}`;
+    const lessonStorageVersion = lesson.storageVersion || 'v176';
+    const storageKey = `webcodeLessonState:${lessonStorageVersion}:${lesson.id}`;
+    const stableStorageKey = lesson.storageVersion ? `webcodeLessonState:stable:${lessonStorageVersion}:${lesson.id}` : `webcodeLessonState:stable:${lesson.id}`;
     const storagePrefix = 'webcodeLessonState:';
     const scoreStorageKey = `webcodeScoreState:stable:${lesson.id}`;
     const lastLocationKey = 'webcodeLastLocation:stable';
     let stateReady = false;
     let codePeekOpened = false;
+    let codePeekHeight = 0;
     let lastGeneratedCodeSelection = null;
     let previewClicks = [];
     let pendingBlocklyFieldUpdate = false;
     let activeBlocklyTextEdit = null;
     const $ = id => document.getElementById(id);
+    function showStartupError(error, stage='טעינת העמוד'){
+      const message = String(error?.message || error || 'שגיאה לא ידועה');
+      console.error('WebCode startup error:', stage, error);
+      const intro = $('blocksIntro');
+      if(intro) intro.innerHTML = `⚠️ ${esc(stage)} נכשלה<small>${esc(message)}</small>`;
+      const feedback = $('feedback');
+      if(feedback){ feedback.className = 'feedback bad'; feedback.textContent = `${stage} נכשלה: ${message}`; }
+    }
     function hasSavedBlocklyWork(state){
       const xml = String(state?.blocklyXml || '');
       if(!xml.includes('<block')) return false;
@@ -147,6 +141,16 @@
     }
     function saveLastLocation(){
       try { localStorage.setItem(lastLocationKey, JSON.stringify({ lessonId:Number(lesson.id), activeExercise:Number(activeExercise) || 1, savedAt:Date.now() })); } catch(error) {}
+    }
+
+    function consumeResetQueryParams(){
+      if(!resetRequested || !window.history?.replaceState) return;
+      try {
+        const clean = new URL(window.location.href);
+        clean.searchParams.delete('reset');
+        clean.searchParams.delete('freshState');
+        window.history.replaceState({}, '', clean.pathname + clean.search + clean.hash);
+      } catch(error) {}
     }
     function parseStoredState(key){
       try { return JSON.parse(localStorage.getItem(key) || 'null') || null; }
@@ -187,6 +191,11 @@
       keep.activeExercise = requestedExercise || 1;
       keep.checkMemory = { score: normalizeStoredScore(null) };
       keep.codePeekOpened = false;
+      delete keep.codePeekHeight;
+      delete keep.blocklyXml;
+      keep.html = initialStarter.html;
+      keep.css = initialStarter.css;
+      keep.js = initialStarter.js;
       return keep;
     }
     function loadSavedState(){
@@ -199,6 +208,7 @@
         for(let i = 0; i < localStorage.length; i++){
           const key = localStorage.key(i);
           if(!key || !key.startsWith(storagePrefix) || !key.endsWith(`:${lesson.id}`)) continue;
+          if(lesson.storageVersion && !key.includes(`:${lesson.storageVersion}:`)) continue;
           if(key === storageKey || key === stableStorageKey) continue;
           const state = parseStoredState(key);
           if(state) candidates.push({ key, state });
@@ -224,6 +234,7 @@
     function persistedCheckMemory(){
       persistCurrentCodeSelection();
       const copy = { ...checkMemory };
+      delete copy.revealedHints;
       if(copy.exerciseAnswers){
         copy.exerciseAnswers = { ...copy.exerciseAnswers };
         (lesson.exercises || []).forEach(ex => { if(ex?.check?.requiresCodeLineAnswer) delete copy.exerciseAnswers[ex.id]; });
@@ -241,6 +252,7 @@
         activeExercise,
         highestUnlockedExercise,
         codePeekOpened,
+        codePeekHeight,
         done: [...done],
         checkMemory: persistedCheckMemory(),
         savedAt: Date.now()
@@ -258,6 +270,7 @@
       const validExerciseIds = new Set((lesson.exercises || []).map(ex => Number(ex.id)));
       (saved.done || []).map(Number).filter(id => validExerciseIds.has(id)).forEach(id => done.add(id));
       Object.assign(checkMemory, saved.checkMemory || {});
+      delete checkMemory.revealedHints;
       checkMemory.score = normalizeStoredScore({ ...(checkMemory.score || {}), ...loadStoredScore(), awarded:{ ...((checkMemory.score || {}).awarded || {}), ...(loadStoredScore().awarded || {}) }, exercises:{ ...((checkMemory.score || {}).exercises || {}), ...(loadStoredScore().exercises || {}) } });
       if(checkMemory.exerciseAnswers){ Object.entries(checkMemory.exerciseAnswers).forEach(([key, value]) => { const text = value && typeof value === 'object' ? '' : String(value || '').trim(); if(!text || /object\s*object/i.test(text)) delete checkMemory.exerciseAnswers[key]; }); }
       if(lesson.id === 1 && checkMemory.exerciseAnswers && /^<h1>\s*\.\.\.\s*<\/h1>$/i.test(String(checkMemory.exerciseAnswers[9] || '').trim())) delete checkMemory.exerciseAnswers[9];
@@ -271,6 +284,8 @@
         }
       }
       codePeekOpened = Boolean(saved.codePeekOpened);
+      codePeekHeight = Number(saved.codePeekHeight || 0) || 0;
+      applyCodePeekHeight();
       lastGeneratedCodeSelection = checkMemory.codeSelections?.[activeExercise] || null;
     }
     function repairSavedCodeState(saved){
@@ -324,19 +339,93 @@
         $('jsCode').value = saved.js || lesson.starter.js;
       }
       ['htmlCode','cssCode','jsCode'].forEach(id => $(id).addEventListener('input', saveLessonState));
-      $('codePeek').addEventListener('toggle', () => { codePeekOpened = Boolean($('codePeek').open); saveLessonState(); });
-      initPreviewResize(); selectExercise(activeExercise); renderBridgeBlocks(); if(!lesson.realBlocklyBuilder) runCode(); renderProgress(); stateReady = true; saveLessonState();
+      installCodeToBlockSelectionSync();
+      initCodePeekResize();
+      $('codePeek').addEventListener('toggle', () => { codePeekOpened = Boolean($('codePeek').open); syncCodeEditorHeight(); saveLessonState(); });
+      window.addEventListener('resize', syncCodeEditorHeight);
+      initPreviewResize();
+      try { renderBridgeBlocks(); }
+      catch(error){ console.error('WebCode builder init failed:', error); if($('blocksIntro')) $('blocksIntro').innerHTML = '⚠️ סביבת הבלוקים לא נטענה<small>נסו רענון. שאר התרגיל עדיין זמין בצד.</small>'; }
+      try { selectExercise(activeExercise); }
+      catch(error){ console.error('WebCode exercise init failed:', error); }
+      if(!lesson.realBlocklyBuilder) runCode();
+      renderProgress(); stateReady = true; saveLessonState(); consumeResetQueryParams();
+      setTimeout(() => {
+        const active = $('realBlockly')?.classList.contains('active');
+        const hasBlockly = Boolean(window.Blockly);
+        const blockCount = blocklyWorkspace?.getAllBlocks?.(false)?.length || 0;
+        if(lesson.realBlocklyBuilder && !active) renderBridgeBlocks();
+        setTimeout(() => {
+          const active2 = $('realBlockly')?.classList.contains('active');
+          const count2 = blocklyWorkspace?.getAllBlocks?.(false)?.length || 0;
+          if($('blocksIntro') && (!active2 || !count2)) $('blocksIntro').innerHTML = `🧩 מצב Blockly<small>Blockly נטען: ${hasBlockly ? 'כן' : 'לא'} · סביבת עבודה פעילה: ${active2 ? 'כן' : 'לא'} · בלוקים במשטח: ${count2}</small>`;
+        }, 350);
+      }, 120);
     }
 
+    function syncCodeEditorHeight(){
+      const peek = $('codePeek');
+      const box = document.querySelector('.code-box');
+      if(!peek || !peek.open || !box) return;
+      requestAnimationFrame(() => {
+        const actions = document.querySelector('.code-peek-actions');
+        const tabs = document.querySelector('.editor-tabs');
+        const available = Math.max(96, box.clientHeight - (actions?.offsetHeight || 0) - (tabs?.offsetHeight || 0));
+        box.style.setProperty('--measured-editor-height', `${available}px`);
+        document.querySelectorAll('.code-box .editor').forEach(el => { el.style.height = `${available}px`; });
+        document.querySelectorAll('.code-box .editor textarea').forEach(el => { el.style.height = `${available}px`; });
+      });
+    }
+    function applyCodePeekHeight(){
+      const peek = $('codePeek');
+      if(!peek) return;
+      if(codePeekHeight){ peek.style.setProperty('--code-peek-height', `${codePeekHeight}px`); }
+      else { peek.style.removeProperty('--code-peek-height'); }
+      syncCodeEditorHeight();
+    }
+    function initCodePeekResize(){
+      const handle = $('codePeekResize');
+      const peek = $('codePeek');
+      const panel = document.querySelector('.editor-panel');
+      if(!handle || !peek || !panel) return;
+      applyCodePeekHeight();
+      const resizeTo = (clientY) => {
+        const rect = panel.getBoundingClientRect();
+        const min = 260;
+        const max = Math.max(min, rect.height * 0.82);
+        codePeekHeight = Math.round(Math.min(max, Math.max(min, rect.bottom - clientY)));
+        applyCodePeekHeight();
+        if(window.Blockly && blocklyWorkspace) setTimeout(() => Blockly.svgResize(blocklyWorkspace), 0);
+      };
+      handle.addEventListener('pointerdown', event => {
+        event.preventDefault();
+        peek.open = true;
+        handle.classList.add('dragging');
+        handle.setPointerCapture?.(event.pointerId);
+        resizeTo(event.clientY);
+        const move = moveEvent => resizeTo(moveEvent.clientY);
+        const done = () => {
+          handle.classList.remove('dragging');
+          window.removeEventListener('pointermove', move);
+          window.removeEventListener('pointerup', done);
+          window.removeEventListener('pointercancel', done);
+          saveLessonState();
+        };
+        window.addEventListener('pointermove', move);
+        window.addEventListener('pointerup', done);
+        window.addEventListener('pointercancel', done);
+      });
+      handle.addEventListener('dblclick', () => { codePeekHeight = 0; applyCodePeekHeight(); saveLessonState(); });
+    }
     function initPreviewResize(){
       const handle = $('previewResize');
       const panel = $('previewPanel');
       const main = document.querySelector('.main');
       if(!handle || !panel || !main) return;
       const saved = Number(localStorage.getItem('webcodePreviewWidth'));
-      if(saved) setPreviewWidth(saved);
       let startX = 0, startWidth = 0;
       const maxWidth = () => Math.min(Math.max(420, window.innerWidth - 520), 880);
+      if(saved) setPreviewWidth(saved);
       function resizeBlockly(){ if(window.Blockly && blocklyWorkspace) setTimeout(() => Blockly.svgResize(blocklyWorkspace), 40); }
       function apply(clientX){
         const next = startWidth + (clientX - startX);
@@ -372,7 +461,7 @@
       window.addEventListener('resize', () => setPreviewWidth(getComputedStyle(document.documentElement).getPropertyValue('--preview-width')));
     }
     function activateCodeTab(name){ document.querySelectorAll('.editor').forEach(e=>e.classList.remove('active')); document.querySelectorAll('.editor-tabs button').forEach(b=>b.classList.remove('active')); $(`tab-${name}`).classList.add('active'); const buttons=[...document.querySelectorAll('.editor-tabs button')]; const index={html:0,css:1,js:2}[name]||0; buttons[index]?.classList.add('active'); }
-    function showTab(name, btn){ activateCodeTab(name); ensureCurrentCodeSelection(); refreshCodeSelectionStatus(); if(btn){ document.querySelectorAll('.editor-tabs button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); } }
+    function showTab(name, btn){ activateCodeTab(name); ensureCurrentCodeSelection(); refreshCodeSelectionStatus(); if(btn){ document.querySelectorAll('.editor-tabs button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); } syncCodeEditorHeight(); }
     function activeCodeTabName(){
       const active = document.querySelector('.editor.active');
       if(active?.id === 'tab-css') return 'css';
@@ -426,7 +515,7 @@
     function toggleLessonPanel(){ const panel=$('lessonPanel'); const button=panel.querySelector('.lesson-toggle'); const collapsed=panel.classList.toggle('collapsed'); document.querySelector('.main').classList.toggle('lesson-collapsed', collapsed); button.setAttribute('aria-expanded', String(!collapsed)); $('lessonToggleIcon').textContent = collapsed ? '⌄' : '⌃'; if(window.Blockly && blocklyWorkspace) setTimeout(() => { Blockly.svgResize(blocklyWorkspace); alignBlocklyStarterBlocksRight(); }, 120); }
     function codePeekDescription(){ return lesson.realBlocklyBuilder ? 'זה הקוד שנוצר מהבלוקים שלך: HTML למבנה, CSS לעיצוב, JavaScript לפעולה.' : 'זה קוד האתר שלך: HTML למבנה, CSS לעיצוב, JavaScript לפעולה.'; }
     function updateCodePeekTitle(){ const title = $('codePeekTitle'); if(title) title.textContent = lesson.realBlocklyBuilder ? 'הקוד שנוצר מהבלוקים' : 'קוד האתר'; }
-    function showGeneratedCode(){ flushBlocklyFieldUpdate(); codePeekOpened = true; $('codePeek').open = true; updateCodePeekTitle(); saveLessonState(); $('codePeek').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('feedback').className='feedback good'; $('feedback').textContent=codePeekDescription(); }
+    function showGeneratedCode(){ flushBlocklyFieldUpdate(); codePeekOpened = true; $('codePeek').open = true; updateCodePeekTitle(); saveLessonState(); $('codePeek').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('feedback').className='feedback'; $('feedback').textContent='מחכה לביצוע התרגיל וללחיצה על “בדיקה”.'; }
     function closeCodePeek(){ codePeekOpened = false; $('codePeek').open = false; saveLessonState(); }
     function isCodePeekOpen(){ return Boolean($('codePeek')?.open); }
 
@@ -440,6 +529,18 @@
     function lessonBlockFinds(spec, block){
       const finds = Array.isArray(spec.find) ? spec.find : [spec.find];
       return finds.map(find => String(find || '').replace(/\{\{(\w+)\}\}/g, (_, field) => String(block?.getFieldValue?.(field) ?? ''))).filter(Boolean);
+    }
+    function lessonBlockLineShapeSnippets(spec){
+      const snippets = [];
+      [spec?.highlight, spec?.replace, ...(Array.isArray(spec?.find) ? spec.find : [spec?.find])].forEach(template => {
+        const text = String(template || '');
+        if(!text.includes('{{')) return;
+        text.split(/\{\{\w+\}\}/).forEach(part => {
+          const clean = String(part || '').trim();
+          if(clean.length >= 5) snippets.push(clean);
+        });
+      });
+      return [...new Set(snippets)];
     }
     function codeTargetForBlock(block){
       if(!block) return null;
@@ -455,7 +556,7 @@
       }
       if(lessonSpec){
         const tab = lessonSpec.target === 'css' ? 'css' : lessonSpec.target === 'js' ? 'js' : 'html';
-        const snippets = [lessonBlockText(lessonSpec, block, 'highlight'), lessonBlockText(lessonSpec, block, 'replace')].concat(lessonBlockFinds(lessonSpec, block)).filter(Boolean);
+        const snippets = [lessonBlockText(lessonSpec, block, 'highlight'), lessonBlockText(lessonSpec, block, 'replace')].concat(lessonBlockFinds(lessonSpec, block), lessonBlockLineShapeSnippets(lessonSpec)).filter(Boolean);
         return { tab, snippets, label: lessonSpec.label };
       }
       if(type === 'page_start') return { tab:'html', snippets:['<main class="page-card">', '</main>'], label:'מעטפת העמוד' };
@@ -492,11 +593,18 @@
       const lineStart = text.lastIndexOf('\n', start) + 1;
       let end = text.indexOf('\n', start + snippet.length);
       if(end < 0) end = text.length;
-      editor.focus({ preventScroll: true });
-      editor.setSelectionRange(lineStart, end);
+      const lineText = text.slice(lineStart, end).trim();
       const before = text.slice(0, lineStart).split('\n').length - 1;
-      editor.scrollTop = Math.max(0, before * 23 - 70);
-      return { ok:true, line:text.slice(lineStart, end).trim(), tab };
+      const keepLineVisible = () => {
+        const lineHeight = Number.parseFloat(getComputedStyle(editor).lineHeight) || 23;
+        editor.scrollTop = Math.max(0, before * lineHeight - (editor.clientHeight / 2) + lineHeight);
+        editor.focus({ preventScroll: true });
+        editor.setSelectionRange(lineStart, end);
+      };
+      keepLineVisible();
+      requestAnimationFrame(keepLineVisible);
+      setTimeout(keepLineVisible, 80);
+      return { ok:true, line:lineText, tab };
     }
     function highlightGeneratedCodeForBlock(blockId){
       if(!blocklyWorkspace || !blockId) return;
@@ -507,6 +615,155 @@
       if(!$('codePeek').open) return;
       const highlighted = selectSnippetInEditor(target.tab, target.snippets);
       if(highlighted?.ok){ rememberCodeSelection({ exerciseId: activeExercise, tab: target.tab, blockType: block.type, label: target.label, line: highlighted.line }); if(currentExercise()?.check?.requiresCodeLineAnswer){ if(!checkMemory.exerciseAnswers) checkMemory.exerciseAnswers = {}; delete checkMemory.exerciseAnswers[activeExercise]; const answer = $('exerciseAnswer'); if(answer) answer.value = ''; } refreshCodeSelectionStatus(); }
+    }
+    function clearAllBlocklySelections(){
+      if(!blocklyWorkspace || !window.Blockly) return;
+      try { Blockly.common?.setSelected?.(null); } catch(error) {}
+      try { (Blockly.common?.getSelected?.() || Blockly.getSelected?.())?.unselect?.(); } catch(error) {}
+      try { (blocklyWorkspace.getAllBlocks(false) || []).forEach(block => block.unselect?.()); } catch(error) {}
+      try { document.querySelectorAll('#blocklyDiv .blocklySelected').forEach(el => el.classList.remove('blocklySelected')); } catch(error) {}
+    }
+    function clearBlocklyCodeAssociation(message='לא נמצא בלוק מתאים לשורה שסומנה. נסו לסמן מילה מתוך שורה שנוצרה מבלוק בשיעור.'){
+      clearAllBlocklySelections();
+      lastGeneratedCodeSelection = null;
+      if(checkMemory.codeSelections) delete checkMemory.codeSelections[activeExercise];
+      refreshCodeSelectionStatus();
+      const fb = $('feedback');
+      if(fb){ fb.className='feedback bad'; fb.textContent = message; }
+      saveLessonState();
+    }
+    function selectBlocklyBlock(block, label, tab, line){
+      if(!blocklyWorkspace || !block) return false;
+      clearAllBlocklySelections();
+      setTimeout(() => {
+        try { block.select?.(); } catch(error) {}
+        try { blocklyWorkspace.centerOnBlock?.(block.id); } catch(error) {}
+      }, 0);
+      rememberCodeSelection({ exerciseId: activeExercise, tab: tab || codeTargetForBlock(block)?.tab || 'code', blockType: block.type, label: label || codeTargetForBlock(block)?.label || block.type, line: line || '' });
+      refreshCodeSelectionStatus();
+      const fb = $('feedback');
+      if(fb){ fb.className='feedback good'; fb.textContent = `מצאתי את הבלוק שקשור לשורה הזו: ${label || block.type}`; }
+      return true;
+    }
+    function highlightBlockByType(blockType, label='', tab='', line=''){
+      if(!blockType || !blocklyWorkspace) return false;
+      const block = collectPageBlocks().find(item => item.type === blockType) || (blocklyWorkspace.getAllBlocks(false) || []).find(item => item.type === blockType);
+      return selectBlocklyBlock(block, label, tab, line);
+    }
+    function normalizeCodeLookupText(value){
+      return String(value || '').replace(/…|\.\.\./g, '').replace(/\{\{\w+\}\}/g, '').replace(/\s+/g, ' ').trim();
+    }
+    function codeTokenIsTooGeneric(value){
+      const token = normalizeCodeLookupText(value).replace(/[^a-z0-9_$-]/gi, '').toLowerCase();
+      return ['const','let','var','function','return','document','getelementbyid','value','trim','class','id'].includes(token);
+    }
+    function lineMatchesBlockSnippet(line, needle, snippets){
+      const cleanLine = normalizeCodeLookupText(line);
+      const cleanNeedle = normalizeCodeLookupText(needle);
+      if(!cleanLine || !cleanNeedle) return false;
+      return (snippets || []).some(snippet => {
+        const cleanSnippet = normalizeCodeLookupText(snippet);
+        if(!cleanSnippet) return false;
+        // Strong match: the selected line contains the block-generated snippet.
+        // This lets selecting a whole line beat vague single words like "const".
+        if(cleanLine.includes(cleanSnippet) || cleanSnippet.includes(cleanLine)) return true;
+        if(codeTokenIsTooGeneric(cleanNeedle)) return false;
+        // Weaker match for meaningful tokens only, and only when the line also
+        // contains nearby context from the snippet.
+        if(cleanLine.includes(cleanNeedle) && cleanSnippet.includes(cleanNeedle)){
+          const [before='', after=''] = cleanSnippet.split(cleanNeedle);
+          const anchorBefore = before.trim();
+          const anchorAfter = after.trim();
+          return Boolean((anchorBefore && cleanLine.includes(anchorBefore)) || (anchorAfter && cleanLine.includes(anchorAfter)));
+        }
+        return false;
+      });
+    }
+    function blockConceptMatchesNeedle(target, needle){
+      const cleanNeedle = normalizeCodeLookupText(needle).toLowerCase();
+      if(!cleanNeedle || codeTokenIsTooGeneric(cleanNeedle)) return false;
+      const haystack = normalizeCodeLookupText([target?.label, ...(target?.snippets || [])].join(' ')).toLowerCase();
+      if(!haystack) return false;
+      const conceptMap = {
+        background:['background','רקע','צבע'],
+        color:['color','צבע'],
+        textcontent:['textcontent','טקסט','כתוב'],
+        correctfeedback:['correctfeedback','נכון'],
+        wrongfeedback:['wrongfeedback','אחרת'],
+        answer:['answer','תשובה'],
+        if:['if','נכון','תשובה'],
+        else:['else','אחרת']
+      };
+      const compact = cleanNeedle.replace(/[^a-z0-9א-ת]/gi,'').toLowerCase();
+      const concepts = conceptMap[compact] || [];
+      if(!concepts.length && haystack.includes(cleanNeedle)) return true;
+      return concepts.some(word => haystack.includes(word));
+    }
+    function highlightBlockForCodeText(codeText, preferredTab='', selectedLine=''){
+      if(!blocklyWorkspace || !codeText) return false;
+      const needle = normalizeCodeLookupText(codeText);
+      if(!needle) return false;
+      generateCodeFromBlockly({ save:false });
+      const blocks = collectPageBlocks();
+      const tabs = preferredTab ? [preferredTab] : ['html','css','js'];
+      for(const tab of tabs){
+        const text = tab === 'css' ? $('cssCode').value : tab === 'js' ? $('jsCode').value : $('htmlCode').value;
+        const candidateLines = selectedLine ? [selectedLine] : text.split('\n').filter(row => normalizeCodeLookupText(row).includes(needle));
+        for(const line of candidateLines){
+          for(const block of blocks){
+            const target = codeTargetForBlock(block);
+            if(!target || target.tab !== tab) continue;
+            const snippets = (target.snippets || []).filter(Boolean);
+            if(lineMatchesBlockSnippet(line, needle, snippets)) return selectBlocklyBlock(block, target.label, target.tab, String(line || '').trim());
+          }
+        }
+      }
+      for(const block of blocks){
+        const target = codeTargetForBlock(block);
+        if(!target || (preferredTab && target.tab !== preferredTab)) continue;
+        if(blockConceptMatchesNeedle(target, needle)) return selectBlocklyBlock(block, `${target.label} (שיוך מושגי)`, target.tab, String(selectedLine || needle || '').trim());
+      }
+      return false;
+    }
+    function highlightBlockForMatchItem(exId, itemId){
+      const ex = lesson.exercises?.find(row => Number(row.id) === Number(exId));
+      const item = ex?.matchBox?.items?.find(row => String(row.id) === String(itemId));
+      if(!item) return false;
+      if(item.blockType && highlightBlockByType(item.blockType, item.blockLabel || item.code, item.tab || '', item.code || '')) return false;
+      if(highlightBlockForCodeText(item.code, item.tab || '')) return false;
+      const fb = $('feedback');
+      if(fb){ fb.className='feedback bad'; fb.textContent='לא מצאתי בלוק ישיר למילה הזו. ייתכן שזו מילת תשתית בקוד ולא בלוק שהתלמיד גרר.'; }
+      return false;
+    }
+    function captureCodeEditorSelectionToBlock(event){
+      if(!blocklyWorkspace || !event?.target?.id?.endsWith('Code')) return;
+      const editor = event.target;
+      const tab = editor.id.replace('Code','');
+      const start = Math.min(editor.selectionStart || 0, editor.selectionEnd || 0);
+      const end = Math.max(editor.selectionStart || 0, editor.selectionEnd || 0);
+      if(end <= start) return;
+      const text = editor.value || '';
+      const selected = text.slice(start, end).trim();
+      const lineStart = text.lastIndexOf('\n', start) + 1;
+      let lineEnd = text.indexOf('\n', end);
+      if(lineEnd < 0) lineEnd = text.length;
+      const line = text.slice(lineStart, lineEnd).trim();
+      const found = highlightBlockForCodeText(selected || line, tab, line);
+      if(!found) clearBlocklyCodeAssociation(`לא מצאתי בלוק מתאים למילה/שורה שסומנה: ${selected || line}. ייתכן שזו שורת תשתית שלא שייכת לבלוק בשיעור.`);
+    }
+    function queueCodeEditorSelectionToBlock(event){
+      const target = event?.target;
+      if(!target?.id?.endsWith('Code')) return;
+      setTimeout(() => captureCodeEditorSelectionToBlock({ target }), 0);
+    }
+    function installCodeToBlockSelectionSync(){
+      if(document.__webcodeCodeToBlockSelectionSync) return;
+      document.__webcodeCodeToBlockSelectionSync = true;
+      ['htmlCode','cssCode','jsCode'].forEach(id => {
+        const editor = $(id);
+        if(!editor) return;
+        ['select','mouseup','keyup','touchend'].forEach(type => editor.addEventListener(type, queueCodeEditorSelectionToBlock));
+      });
     }
 
     let blocklyWorkspace = null;
@@ -622,6 +879,18 @@
       blocklyWorkspace.updateToolbox(webBuilderToolbox());
       scheduleFixedFlyoutRefresh();
     }
+
+    function normalizeLesson9NumberPlaceholders(){
+      if(Number(lesson.id) !== 9 || !blocklyWorkspace) return;
+      const numericTypes = new Set(['lesson_9_lives','lesson_9_star','lesson_9_obstacle']);
+      blocklyWorkspace.getAllBlocks(false).forEach(block => {
+        if(!numericTypes.has(block.type)) return;
+        const field = block.getField?.('N');
+        if(!field) return;
+        const value = block.getFieldValue?.('N');
+        if(value === '3' || value === '1' || value === undefined || value === null || value === '') block.setFieldValue('choose', 'N');
+      });
+    }
     function enforceSinglePageStart(){
       if(!blocklyWorkspace) return false;
       const starts = blocklyWorkspace.getAllBlocks(false).filter(block => block.type === 'page_start');
@@ -730,6 +999,7 @@
         if(!isBlocklyTextEditorElement(event.target)) return;
         commitOpenBlocklyTextEditor();
         activeBlocklyTextEdit = null;
+        if(pendingBlocklyFieldUpdate) setTimeout(() => flushBlocklyFieldUpdate({ preservePreviewClicks: true }), 0);
       }, true);
     }
     function updatePreviewTextFromBlocklyEdit(blockId, fieldName, value){
@@ -743,6 +1013,13 @@
       if(block?.type === 'web_title' && fieldName === 'TEXT') setText('h1', value);
       if(block?.type === 'web_paragraph' && fieldName === 'TEXT') setText('p:not(#message)', value);
       if(block?.type === 'web_button' && fieldName === 'LABEL') setText('button', value);
+      if(block?.type === 'lesson_4_button_text' && fieldName === 'TEXT') setText('button', value);
+      if(block?.type === 'lesson_4_title' && fieldName === 'TEXT') setText('h1', value);
+      if(block?.type === 'lesson_4_name_label' && fieldName === 'TEXT') nth('label', 0, value);
+      if(block?.type === 'lesson_4_topic_label' && fieldName === 'TEXT') nth('label', 1, value);
+      if(block?.type === 'lesson_5_question' && fieldName === 'TEXT') setText('h1', value);
+      if(block?.type === 'lesson_5_success' && fieldName === 'TEXT') { const feedback = doc.querySelector('#feedback.correct, .correct#feedback'); if(feedback) feedback.textContent = String(value || ''); }
+      if(block?.type === 'lesson_5_wrong' && fieldName === 'TEXT') { const feedback = doc.querySelector('#feedback.wrong, .wrong#feedback'); if(feedback) feedback.textContent = String(value || ''); }
       if(block?.type === 'web_emoji' && fieldName === 'EMOJI') setText('#heroEmoji', value);
       if(block?.type === 'web_columns' && fieldName === 'A') nth('.columns div', 0, value);
       if(block?.type === 'web_columns' && fieldName === 'B') nth('.columns div', 1, value);
@@ -829,7 +1106,7 @@
     function fixedFlyoutWidthLimit(){
       const area = $('blocklyDiv');
       const areaWidth = Math.max(320, area?.getBoundingClientRect?.().width || 720);
-      return Math.max(220, Math.min(300, Math.round(areaWidth * .31)));
+      return Math.max(260, Math.min(380, Math.round(areaWidth * .37)));
     }
     function fixedFlyoutVisualScale(){
       if(!blocklyWorkspace) return .86;
@@ -842,9 +1119,9 @@
       const widest = widths.length ? Math.max(...widths) : 0;
       const area = $('blocklyDiv');
       const areaWidth = Math.max(320, area?.getBoundingClientRect?.().width || 720);
-      const maxFlyoutBlockWidth = Math.max(210, Math.min(280, areaWidth * .29));
-      const widthScale = widest > maxFlyoutBlockWidth ? Math.max(.78, Math.min(1, maxFlyoutBlockWidth / widest)) : 1;
-      return Math.max(.72, Math.min(fixedBaseScale, fixedBaseScale * widthScale));
+      const maxFlyoutBlockWidth = Math.max(238, Math.min(360, areaWidth * .35));
+      const widthScale = widest > maxFlyoutBlockWidth ? Math.max(.68, Math.min(1, maxFlyoutBlockWidth / widest)) : 1;
+      return Math.max(.64, Math.min(fixedBaseScale, fixedBaseScale * widthScale));
     }
     function forceFlyoutScale(flyout, nextScale = fixedFlyoutVisualScale()){
       const flyoutWorkspace = flyout?.getWorkspace?.();
@@ -944,7 +1221,7 @@
       defineWebBuilderBlocks();
       defineLessonBlocklyBlocks();
       if(blocklyWorkspace) return;
-      blocklyWorkspace = Blockly.inject('blocklyDiv',{rtl:true,trashcan:true,scrollbars:true,toolbox:webBuilderToolbox(),zoom:{controls:true,wheel:true,startScale:.85,maxScale:1.35,minScale:.45}});
+      blocklyWorkspace = Blockly.inject('blocklyDiv',{rtl:true,trashcan:true,scrollbars:true,media:'js/vendor/blockly/media/',toolbox:webBuilderToolbox(),zoom:{controls:true,wheel:true,startScale:.85,maxScale:1.35,minScale:.45}});
       installBlocklyTextEditorInputSync();
       keepBlocklyFlyoutSizeFixed(blocklyWorkspace);
       installFixedFlyoutEventGuards();
@@ -956,16 +1233,18 @@
       try { Blockly.Xml.domToWorkspace(parseBlocklyXml(saved.blocklyXml || webBuilderStarterXml()), blocklyWorkspace); }
       catch(error){ Blockly.Xml.domToWorkspace(parseBlocklyXml(webBuilderStarterXml()), blocklyWorkspace); }
       const repairedLessonStart = ensureLessonPageStart();
+      normalizeLesson9NumberPlaceholders();
       if(repairedLessonStart) normalizeLessonBlocklyStack();
       if(!hasRenderablePageBlocks()){
         blocklyWorkspace.clear();
         Blockly.Xml.domToWorkspace(parseBlocklyXml(webBuilderStarterXml()), blocklyWorkspace);
+        normalizeLesson9NumberPlaceholders();
         if(ensureLessonPageStart()) normalizeLessonBlocklyStack();
       }
       enforceSinglePageStart();
       refreshPageStartToolbox();
-      setTimeout(() => { alignBlocklyStarterBlocksRight(); normalizeLessonBlocklyStack(); }, 80);
-      setTimeout(() => { alignBlocklyStarterBlocksRight(); normalizeLessonBlocklyStack(); }, 300);
+      setTimeout(() => { normalizeLesson9NumberPlaceholders(); alignBlocklyStarterBlocksRight(); normalizeLessonBlocklyStack(); }, 80);
+      setTimeout(() => { normalizeLesson9NumberPlaceholders(); alignBlocklyStarterBlocksRight(); normalizeLessonBlocklyStack(); }, 300);
       blocklyWorkspace.addChangeListener(event => {
         if(!blocklyReady) return;
         if(isBlocklyFieldChangeEvent(event)){
@@ -1186,7 +1465,7 @@
       saveLessonState();
     }
     function generateLessonBlocklyCode(blocks, options={}){
-      if(currentExercise()?.blocklyStarterXml && lesson.id === 4){ generateLesson4ChallengeCode(blocks); return; }
+      if(lesson.id === 4){ generateLesson4ChallengeCode(blocks); return; }
       let html = lesson.starter?.html || '';
       let css = lesson.starter?.css || '';
       let js = lesson.starter?.js || '';
@@ -1202,6 +1481,36 @@
       blocks.forEach(block => {
         const spec = lessonBlocklyBlockSpec(block.type);
         if(!spec) return;
+        if(block.type === 'lesson_10_hero_name'){
+          const name = String(block.getFieldValue?.('TEXT') || '').trim();
+          if(name){
+            html = html.replace(/(<span id="heroName">)[^<]*(<\/span>)/, `$1${esc(name)}$2`);
+            js = js.replace(/document\.getElementById\("heroName"\)\.textContent\s*=\s*"רובוט אור";/, `document.getElementById("heroName").textContent = ${JSON.stringify(name)};`);
+          }
+          return;
+        }
+        if(block.type === 'lesson_10_hero_symbol'){
+          const symbol = String(block.getFieldValue?.('TEXT') || '').trim();
+          if(symbol && symbol !== 'choose'){
+            html = html.replace(/(<div id="heroAvatar" class="hero-avatar">)[^<]*(<\/div>)/, `$1${esc(symbol)}$2`);
+          }
+          return;
+        }
+        if(block.type === 'lesson_10_used'){
+          const state = String(block.getFieldValue?.('VAL') || '').trim();
+          if(state && state !== 'choose'){
+            js = js.replace(/powerReady\s*=\s*false;/, `powerReady = ${state};`);
+          }
+          return;
+        }
+        if(block.type === 'lesson_10_color'){
+          const color = String(block.getFieldValue?.('COLOR') || '').trim();
+          if(color && color !== 'choose'){
+            css = css.replace('#dcfce7', color);
+          }
+          return;
+        }
+        if((spec.args0 || []).some(arg => arg?.name && String(block.getFieldValue?.(arg.name) || '').trim() === 'choose')) return;
         const target = spec.target || 'html';
         let text = getTarget(target);
         const finds = lessonBlockFinds(spec, block);
@@ -1362,9 +1671,9 @@ button:hover {
       $('cssCode').value = cssParts.filter(Boolean).join('\n\n');
       const bgMap = { night:'#172554', pink:'#fce7f3', forest:'#dcfce7', sun:'#ffedd5' };
       const jsLines = ['function showMessage() {'];
-      if(hasButton) jsLines.push(`  const message = document.getElementById("message");`, `  let liveMessage = window.__webcodeButtonMessage || ${jsLiteral(buttonMessage)};`, `  try { liveMessage = window.parent?.webcodeCurrentButtonMessage?.() || liveMessage; } catch(error) {}`, `  message.textContent = liveMessage;`);
-      if(actionEmoji && hasEmoji) jsLines.push(`  const heroEmoji = document.getElementById("heroEmoji");`, `  heroEmoji.textContent = ${jsLiteral(actionEmoji)};`);
-      if(actionBackground) jsLines.push(`  const bgMap = { night:'#172554', pink:'#fce7f3', forest:'#dcfce7', sun:'#ffedd5' };`, `  let liveBackground = ${jsLiteral(actionBackground)};`, `  try { liveBackground = window.parent?.webcodeCurrentActionBackground?.() || liveBackground; } catch(error) {}`, `  document.body.style.background = bgMap[liveBackground] || ${jsLiteral(bgMap[actionBackground] || '#dbeafe')};`);
+      if(hasButton) jsLines.push(`  const message = document.getElementById("message");`, `  let liveMessage = window.__webcodeButtonMessage || "${String(buttonMessage).replaceAll('"','\"')}";`, `  try { liveMessage = window.parent?.webcodeCurrentButtonMessage?.() || liveMessage; } catch(error) {}`, `  message.textContent = liveMessage;`);
+      if(actionEmoji && hasEmoji) jsLines.push(`  const heroEmoji = document.getElementById("heroEmoji");`, `  heroEmoji.textContent = "${String(actionEmoji).replaceAll('"','\\"')}";`);
+      if(actionBackground) jsLines.push(`  const bgMap = { night:'#172554', pink:'#fce7f3', forest:'#dcfce7', sun:'#ffedd5' };`, `  let liveBackground = "${String(actionBackground).replaceAll('"','\"')}";`, `  try { liveBackground = window.parent?.webcodeCurrentActionBackground?.() || liveBackground; } catch(error) {}`, `  document.body.style.background = bgMap[liveBackground] || "${bgMap[actionBackground] || '#dbeafe'}";`);
       if(magicToggle) jsLines.push(`  document.querySelector(".page-card").classList.toggle("magic");`);
       jsLines.push('}');
       $('jsCode').value = jsLines.join('\n');
@@ -1372,13 +1681,15 @@ button:hover {
       if(options.save !== false) saveLessonState();
     }
     function renderBridgeBlocks(){
+      if($('blocksIntro')) $('blocksIntro').innerHTML = '🧩 טוען את סביבת הבלוקים...<small>אם זה נשאר כך — הטעינה נעצרה לפני Blockly.</small>';
       if(lesson.realBlocklyBuilder){
         try { renderRealBlocklyBuilder(); }
         catch(error){
           console.error('WebCode Blockly failed:', error);
           runCode();
-          $('feedback').className='feedback bad';
-          $('feedback').textContent='Blockly לא נטען כרגע. רעננו את הדף ובדקו חיבור אינטרנט.';
+          if($('blocksIntro')) $('blocksIntro').innerHTML = `⚠️ סביבת הבלוקים לא נטענה<small>${esc(error?.message || error || 'שגיאה לא ידועה')}</small>`;
+          const feedback = $('feedback');
+          if(feedback){ feedback.className='feedback bad'; feedback.textContent='Blockly לא נטען כרגע. רעננו את הדף ובדקו חיבור אינטרנט.'; }
         }
         return;
       }
@@ -1405,7 +1716,6 @@ ${block.replace}`; changed = true; }
       $('feedback').textContent = changed ? `כלי העזר הופעל: ${block.label}. הקוד עודכן. אם רוצים, פתחו הצצה לקוד כדי לראות מה השתנה.` : `כלי העזר לא מצא את הטקסט שצריך לשנות. לחצו “איפוס קוד” ונסו שוב.`;
     }
     function debugHint(message){ const text=String(message||''); if(/Unexpected end|missing|Unexpected token/.test(text)) return 'בדקו סוגריים, גרשיים, פסיקים או סוגר מסולסל חסר.'; if(/is not defined/.test(text)) return 'יש שם שהקוד לא מכיר. בדקו ששם הפונקציה או המשתנה כתוב אותו דבר בדיוק.'; if(/Cannot set properties|null/.test(text)) return 'כנראה שה־id ב־HTML לא תואם למה ש־JavaScript מחפש.'; return 'עברו על השורה האחרונה ששיניתם וחפשו טעות קטנה בסינטקס.'; }
-    function jsLiteral(value){ return JSON.stringify(String(value ?? '')); }
     function safeScript(code){ return String(code).replaceAll('<' + '/script>', '<\\/script>'); }
     function encodeSharePayload(payload){
       const json = JSON.stringify(payload);
@@ -1550,13 +1860,21 @@ ${block.replace}`; changed = true; }
       const lineAnswer = ex?.check?.requiresCodeLineAnswer;
       const isManualCodeLine = lastGeneratedCodeSelection.blockType === 'manual_code_line';
       if(lineAnswer && exerciseOk && tabOk) return true;
-      if(isManualCodeLine && ex?.choiceBox && exerciseOk && tabOk && !blockTypes?.length) return true;
+      if(isManualCodeLine && ex?.choiceBox && exerciseOk && tabOk) return true;
       return exerciseOk && tabOk && blockOk;
     }
     function hasRequiredCodeSelection(c){
       if(!c?.requiresCodeSelectionTab && !c?.requiresCodeSelectionTabs?.length && !c?.requiresCodeSelectionBlockTypes?.length) return true;
-      if(c.codeSelectionOptionalIfAnswerMatches && hasAnswerIncludes(c.answerIncludes)) return true;
+      if(c.codeSelectionOptionalIfAnswerMatches && (hasAnswerIncludes(c.answerIncludes) || hasAnswerFieldIncludes(c.answerFieldIncludes))) return true;
       return hasGeneratedCodeSelection(c.requiresCodeSelectionTab, c.requiresCodeSelectionBlockTypes, c.requiresCodeSelectionTabs);
+    }
+    function hasDifferentCodeSelectionFromExercise(previousExerciseId){
+      if(!previousExerciseId) return true;
+      ensureCurrentCodeSelection();
+      const previous = checkMemory.codeSelections?.[previousExerciseId];
+      const current = lastGeneratedCodeSelection;
+      if(!previous || !current || current.exerciseId !== activeExercise) return true;
+      return String(previous.blockType || '') !== String(current.blockType || '');
     }
     function normalizeCodeAnswer(value){ return String(value || '').replace(/\s+/g, ' ').replace(/;?\s*$/, ';').trim().toLowerCase(); }
     function codeOnlyLineText(line, tab){
@@ -1613,6 +1931,11 @@ ${block.replace}`; changed = true; }
       if(!checkMemory.matchAnswers) checkMemory.matchAnswers = {};
       if(!checkMemory.matchAnswers[exerciseId]) checkMemory.matchAnswers[exerciseId] = {};
       checkMemory.matchAnswers[exerciseId][itemId] = value;
+      const ex = lesson.exercises?.find(item => Number(item.id) === Number(exerciseId));
+      if(ex?.versionNote){
+        if(!checkMemory.matchAnswerVersions) checkMemory.matchAnswerVersions = {};
+        checkMemory.matchAnswerVersions[exerciseId] = ex.versionNote;
+      }
       saveLessonState();
     }
     function stableShuffleKey(text){
@@ -1625,12 +1948,22 @@ ${block.replace}`; changed = true; }
     }
     function matchBoxHtml(ex){
       if(!ex.matchBox?.items?.length) return '';
+      if(ex.versionNote){
+        if(!checkMemory.matchAnswerVersions) checkMemory.matchAnswerVersions = {};
+        const savedVersion = checkMemory.matchAnswerVersions[ex.id];
+        const hasSavedAnswers = Boolean(checkMemory.matchAnswers?.[ex.id]);
+        if(hasSavedAnswers && savedVersion !== ex.versionNote){
+          if(checkMemory.matchAnswers) delete checkMemory.matchAnswers[ex.id];
+        }
+        checkMemory.matchAnswerVersions[ex.id] = ex.versionNote;
+      }
       const answers = checkMemory.matchAnswers?.[ex.id] || {};
       const rows = ex.matchBox.items.map(item => {
         const current = String(answers[item.id] || '');
         const rowOptions = stableShuffledOptions(ex.matchBox.options || [], `${lesson.id}-${ex.id}-${item.id}`)
           .map(option => `<option value="${esc(option.value)}" ${String(option.value) === current ? 'selected' : ''}>${esc(option.label)}</option>`).join('');
-        return `<div class="match-row"><span class="match-code" dir="ltr">${esc(item.code)}</span><span class="match-arrow">←</span><select onchange="saveMatchAnswer(${ex.id}, '${esc(item.id)}', this.value)"><option value="">בחרו תפקיד...</option>${rowOptions}</select></div>`;
+        const codeCell = item.blockType || item.tab ? `<button type="button" class="match-code" dir="ltr" title="לחצו כדי לסמן את הבלוק שיצר את השורה" onclick="return highlightBlockForMatchItem(${ex.id}, '${esc(item.id)}')">${esc(item.code)}</button>` : `<span class="match-code" dir="ltr">${esc(item.code)}</span>`;
+        return `<div class="match-row">${codeCell}<span class="match-arrow">←</span><select onchange="saveMatchAnswer(${ex.id}, '${esc(item.id)}', this.value)"><option value="" ${current ? '' : 'selected'}>בחרו בתשובה הנכונה</option>${rowOptions}</select></div>`;
       }).join('');
       return `<div class="helper match-box"><b>${esc(ex.matchBox.title || 'התאימו קוד לתפקיד')}</b><div class="match-rows">${rows}</div><small>${esc(ex.matchBox.note || 'בחרו לכל תגית או מילת קוד את התפקיד המתאים.')}</small></div>`;
     }
@@ -1668,14 +2001,14 @@ ${block.replace}`; changed = true; }
       ensureCurrentCodeSelection();
       const choices = checkMemory.exerciseChoices?.[activeExercise] || {};
       if(rule.languageFromSelectedTab){
-        const selectedTab = lastGeneratedCodeSelection?.tab || '';
+        const selectedTab = lastGeneratedCodeSelection?.tab || activeCodeTabName();
         if(!selectedTab) return false;
         const language = String(choices[rule.languageFromSelectedTab] || '').toLowerCase();
         const expected = selectedTab === 'js' ? 'js' : selectedTab;
         if(language !== expected) return false;
       }
       if(rule.purposeFromSelectedTab){
-        const selectedTab = lastGeneratedCodeSelection?.tab || '';
+        const selectedTab = lastGeneratedCodeSelection?.tab || activeCodeTabName();
         if(!selectedTab) return false;
         const purpose = String(choices[rule.purposeFromSelectedTab] || '').toLowerCase();
         const expected = selectedTab === 'html' ? 'structure' : selectedTab === 'css' ? 'style' : 'action';
@@ -1718,16 +2051,34 @@ ${block.replace}`; changed = true; }
         return compact.includes(clean) || (bare.length >= 2 && text.split(/\s+/).includes(bare));
       });
     }
+    function codeLineAnswerValue(rule){
+      return rule?.answerField ? exerciseAnswerFieldValue(activeExercise, rule.answerField) : exerciseAnswerValue();
+    }
+    function normalizeCodeTypeAnswer(value){
+      const text = String(value || '').trim().toLowerCase().replace(/\s+/g, '');
+      if(['html','אייץטי-אם-אל','אייץטי אמ אל','מבנה','תוכן'].includes(text)) return 'html';
+      if(['css','סי-אס-אס','סי אס אס','עיצוב'].includes(text)) return 'css';
+      if(['js','javascript','java-script','ג׳אווהסקריפט','גאווהסקריפט','פעולה'].includes(text)) return 'js';
+      return text;
+    }
+    function hasSelectedCodeTypeField(fieldId){
+      if(!fieldId) return true;
+      ensureCurrentCodeSelection();
+      if(!lastGeneratedCodeSelection || lastGeneratedCodeSelection.exerciseId !== activeExercise) return false;
+      const typed = normalizeCodeTypeAnswer(exerciseAnswerFieldValue(activeExercise, fieldId));
+      return typed && typed === String(lastGeneratedCodeSelection.tab || '').toLowerCase();
+    }
     function hasCodeLineAnswer(rule){
       if(!rule) return true;
       ensureCurrentCodeSelection();
-      const answer = normalizeCodeAnswer(exerciseAnswerValue());
+      const answer = normalizeCodeAnswer(codeLineAnswerValue(rule));
       if(!answer) return false;
       if(!lastGeneratedCodeSelection || lastGeneratedCodeSelection.exerciseId !== activeExercise) return Boolean(rule.allowKnownCodeWordsWithoutSelection && answerHasAllowedCodeSnippet(answer, rule));
       if(rule.tabs?.length ? !rule.tabs.includes(lastGeneratedCodeSelection.tab) : (rule.tab && lastGeneratedCodeSelection.tab !== rule.tab)) return false;
       const selectedLine = normalizeCodeAnswer(lastGeneratedCodeSelection.line || '');
       if(!selectedLine) return Boolean(rule.allowKnownCodeWordsWithoutSelection && answerHasAllowedCodeSnippet(answer, rule));
       const typed = answer.replace(/;$/, '').replace(/[<>/]/g, '').trim();
+      if(rule.allowAnyWordFromSelectedLine && typed.length >= 2 && selectedLine.includes(typed)) return true;
       if(typed.length >= 1 && selectedLine.includes(typed) && selectedCodeTokens(lastGeneratedCodeSelection.line || '', lastGeneratedCodeSelection.tab || rule.tab).includes(typed)) return true;
       if(rule.blockTypes?.length && !rule.blockTypes.includes(lastGeneratedCodeSelection.blockType)) return false;
       if(answer === selectedLine) return true;
@@ -1899,6 +2250,18 @@ ${block.replace}`; changed = true; }
       if(!text) return true;
       return previewClicks.some(click => click.exerciseId === activeExercise && click.tag === 'button' && String(click.feedbackText || '').includes(text));
     }
+    function hasPreviewFeedbackFromBlockOutput(rules){
+      if(!rules?.length) return true;
+      const blocks = collectPageBlocks();
+      return rules.every(rule => {
+        const block = blocks.find(item => item.type === rule.type);
+        const spec = lessonBlocklyBlockSpec(rule.type);
+        if(!block || !spec) return false;
+        const expected = lessonBlockText(spec, block, 'replace').replace(/^const\s+\w+\s*=\s*/, '').replace(/;$/, '').replace(/^['"]|['"]$/g, '').trim();
+        if(!expected) return false;
+        return previewClicks.some(click => click.exerciseId === activeExercise && click.tag === 'button' && (!rule.clickText || String(click.text || '').includes(rule.clickText)) && String(click.feedbackText || '').includes(expected));
+      });
+    }
     function hasPreviewItemTextFromBlockOutput(rules){
       if(!rules?.length) return true;
       const blocks = collectPageBlocks();
@@ -2024,8 +2387,21 @@ ${block.replace}`; changed = true; }
       return { ok:true };
     }
     function debugCodeValue(){ return $('exerciseDebugCode')?.value || ''; }
-    function hasDebugCodeIncludes(list){ return !list?.length || includesAll(debugCodeValue(), list); }
-    function hasDebugCodeExcludes(list){ return !list?.length || excludesAll(debugCodeValue(), list); }
+    function normalizeDebugCodeForCheck(value){ return String(value || '').replace(/\s*([=+\-*/:;{}()])\s*/g, ' $1 ').replace(/\s+/g, ' ').trim(); }
+    function debugIncludesAllFlexible(list){
+      if(!list?.length) return true;
+      const raw = debugCodeValue();
+      const normalized = normalizeDebugCodeForCheck(raw);
+      return list.every(item => raw.includes(item) || normalized.includes(normalizeDebugCodeForCheck(item)));
+    }
+    function debugExcludesAllFlexible(list){
+      if(!list?.length) return true;
+      const raw = debugCodeValue();
+      const normalized = normalizeDebugCodeForCheck(raw);
+      return list.every(item => !raw.includes(item) && !normalized.includes(normalizeDebugCodeForCheck(item)));
+    }
+    function hasDebugCodeIncludes(list){ return debugIncludesAllFlexible(list); }
+    function hasDebugCodeExcludes(list){ return debugExcludesAllFlexible(list); }
     function resetExerciseDebugCode(){
       const ex = currentExercise();
       if(!ex.debugCode || !$('exerciseDebugCode')) return;
@@ -2034,7 +2410,35 @@ ${block.replace}`; changed = true; }
       $('feedback').textContent = 'קוד ההתחלה של האתגר חזר. עכשיו נסו לתקן רק את הטעות הקטנה.';
     }
     function scoreState(){ checkMemory.score = normalizeStoredScore(checkMemory.score); return checkMemory.score; }
-    function exerciseMetric(id = activeExercise){ const state = scoreState(); if(!state.exercises[id] || typeof state.exercises[id] !== 'object') state.exercises[id] = { startedAt: Date.now(), attempts: 0, failures: 0, hints: 0 }; return state.exercises[id]; }
+    function exerciseScoreVersionKey(id = activeExercise){
+      const ex = lesson.exercises?.find(item => Number(item.id) === Number(id));
+      if(!ex) return `lesson-${lesson.id}-exercise-${id}`;
+      return [lesson.id, ex.id, ex.versionNote || '', ex.title || '', ex.debugCode?.starter || ''].join('|');
+    }
+    function exerciseMetric(id = activeExercise){
+      const state = scoreState();
+      const key = exerciseScoreVersionKey(id);
+      if(!state.exercises[id] || typeof state.exercises[id] !== 'object') state.exercises[id] = { startedAt: Date.now(), attempts: 0, failures: 0, hints: 0, versionKey:key };
+      const metric = state.exercises[id];
+      if(metric.versionKey && metric.versionKey !== key){
+        state.exercises[id] = { startedAt: Date.now(), attempts: 0, failures: 0, hints: 0, versionKey:key };
+        if(state.awarded) delete state.awarded[id];
+        state.total = Object.values(state.awarded || {}).reduce((sum, value) => sum + Number(value || 0), 0);
+        saveScoreState();
+        return state.exercises[id];
+      }
+      if(!metric.versionKey && (exHasVersionedContent(id) || Number(metric.hints || 0) > 0)){
+        metric.versionKey = key;
+        metric.hints = 0;
+        metric.attempts = Math.max(0, Number(metric.attempts || 0));
+        saveScoreState();
+      }
+      return metric;
+    }
+    function exHasVersionedContent(id){
+      const ex = lesson.exercises?.find(item => Number(item.id) === Number(id));
+      return Boolean(ex?.versionNote || ex?.debugCode);
+    }
     function hintWasRevealed(id = activeExercise){ return Boolean(checkMemory.revealedHints?.[id]); }
     function revealHint(id = activeExercise){ const metric = exerciseMetric(id); if(!hintWasRevealed(id)) metric.hints += 1; if(!checkMemory.revealedHints) checkMemory.revealedHints = {}; checkMemory.revealedHints[id] = true; saveScoreState(); renderCurrentExercise(); const feedback = $('feedback'); if(feedback){ feedback.className='feedback'; feedback.textContent='הרמז נפתח. עדיין אפשר לקבל נקודות, אבל בלי בונוס “בלי רמזים”.'; } renderProgress(); saveLessonState(); }
     function attemptBonus(attempts){ const count = Math.max(1, Number(attempts) || 1); if(count === 1) return 2; if(count === 2) return 1; if(count === 3) return .5; return 0; }
@@ -2089,10 +2493,12 @@ ${block.replace}`; changed = true; }
       if(!hasChangedBlocklyFieldsFromBaseline(c.changedBlocklyFieldsFromBaseline)) return c.fieldFeedback || 'כמעט. הבלוק מחובר, עכשיו שנו את הטקסט או הבחירה שבתוכו לפי התרגיל.';
       if(c.requiresCodePeek && !isCodePeekOpen()) return c.codePeekFeedback || 'כמעט. קודם פתחו את ההצצה לקוד שנוצר.';
       if(!hasRequiredCodeSelection(c)) return c.codeSelectionFeedback || 'כמעט. פתחו את הצצת הקוד, לחצו על בלוק מתאים, וודאו שהשורה המסומנת נמצאת בלשונית הנכונה.';
+      if(!hasDifferentCodeSelectionFromExercise(c.requiresDifferentCodeSelectionFromExercise)) return c.differentCodeSelectionFeedback || 'כמעט. הפעם בחרו בלוק נוסף, שונה מהבלוק שבחרתם בתרגיל הקודם.';
       if(!hasCodeLineAnswer(c.requiresCodeLineAnswer)){
-        const answer = normalizeCodeAnswer(exerciseAnswerValue());
+        const answer = normalizeCodeAnswer(codeLineAnswerValue(c.requiresCodeLineAnswer));
         return c.codeLineAnswerFeedback || 'כמעט. כתבו מילה או תגית אמיתית מתוך השורה המסומנת שבחרתם.';
       }
+      if(!hasSelectedCodeTypeField(c.requiresSelectedCodeTypeField)) return c.codeTypeFeedback || 'כמעט. בדקו באיזו לשונית הקוד סומן: HTML, CSS או JavaScript, וכתבו את סוג הקוד המתאים.';
       if(!hasAnswerIncludes(c.answerIncludes)) return c.answerFeedback || 'כמעט. כתבו בתיבה תשובה קצרה שמתאימה לשאלה.';
       if(!hasAnswerFieldIncludes(c.answerFieldIncludes)) return c.answerFeedback || 'כמעט. מלאו את כל התיבות לפי ההנחיה.';
       if(!hasChoiceAnswer(c.choiceAnswer)) return c.choiceFeedback || 'כמעט. סמנו את האפשרות המתאימה לפני הבדיקה.';
@@ -2115,6 +2521,7 @@ ${block.replace}`; changed = true; }
       if(!hasPreviewLivesAfterPenalty(c.requiresPreviewLivesAfterPenalty)) return c.previewLivesFeedback || 'כמעט. לחצו על מכשול ובדקו שהחיים ירדו לפי הבלוק.';
       if(!hasPreviewTimeFromBlockField(c.requiresPreviewTimeFromBlockField)) return c.previewTimeFeedback || 'כמעט. לחצו בתצוגה ובדקו שהזמן מוצג לפי הבלוק שבחרתם.';
       if(!hasPreviewFeedbackText(c.requiresPreviewFeedbackText)) return c.previewFeedbackTextFeedback || 'כמעט. לחצו בתצוגה ובדקו שהמשוב המתאים מופיע.';
+      if(!hasPreviewFeedbackFromBlockOutput(c.requiresPreviewFeedbackFromBlockOutput)) return c.previewFeedbackFromBlockFeedback || 'כמעט. לחצו על התשובה הנכונה בתצוגה ובדקו שהמשוב החדש מהבלוק באמת מופיע.';
       if(!hasPreviewItemTextFromBlockOutput(c.requiresPreviewItemTextFromBlockOutput)) return c.previewItemTextFeedback || 'כמעט. לחצו בתצוגה עד שהפריט מציג את הבחירה מהבלוק.';
       if(!hasDebugCodeIncludes(c.debugCodeIncludes) || !hasDebugCodeExcludes(c.debugCodeExcludes)) return c.debugCodeFeedback || 'כמעט. תקנו את קוד האתגר לפי ההוראה.';
       if(c.changedAny && !hasChanged(c.changedAny)) return c.changeFeedback || 'כמעט. צריך לבצע שינוי אמיתי בקוד לפני הבדיקה.';
@@ -2140,15 +2547,11 @@ ${block.replace}`; changed = true; }
       const isLast = displayNumber >= lesson.exercises.length;
       const nextExercise = nextExerciseAfter(ex.id);
       const nextUnlocked = nextExercise ? canOpenExercise(nextExercise.id) : false;
-      const currentIndex = exerciseIndexById(ex.id);
-      const isLastRequired = !ex.optional && currentIndex >= 0 && !lesson.exercises.slice(currentIndex + 1).some(exercise => !exercise.optional);
       const canLeaveLesson = isDone || ex.optional || ex.noCheck;
       const nextLessonExists = lesson.id < courseLessonCount();
       const lastButtonLabel = ex.optional && !isDone ? (nextLessonExists ? 'דלגו לשיעור הבא ←' : 'דלגו וסיימו ←') : ex.noCheck && !isDone ? (nextLessonExists ? 'לשיעור הבא ←' : 'סיימו ←') : nextLessonExists ? 'לשיעור הבא ←' : 'חזרה לעמוד הקורס ←';
       const nextButton = isLast
         ? `<button class="btn run" type="button" onclick="${nextLessonExists ? 'goNextLesson()' : 'goCourseHome()'}" ${canLeaveLesson ? '' : 'disabled'}>${lastButtonLabel}</button>`
-        : isLastRequired
-        ? `<button class="btn run" type="button" onclick="${nextLessonExists ? 'goNextLesson()' : 'goCourseHome()'}" ${isDone ? '' : 'disabled'}>${nextLessonExists ? 'לשיעור הבא ←' : 'סיימו ועברו לעמוד הקורס ←'}</button>${nextExercise?.optional ? `<button class="btn link" type="button" onclick="continueExercise()" ${isDone ? '' : 'disabled'}>להרחבה אופציונלית</button>` : ''}`
         : `<button class="btn run" type="button" onclick="continueExercise()" ${(!isDone && !nextUnlocked && !ex.optional && !ex.noCheck) ? 'disabled' : ''}>לתרגיל הבא ←</button>`;
       const courseButton = isLast && nextLessonExists ? `<button class="btn link" type="button" onclick="goCourseHome()">עמוד הקורס</button>` : '';
       const starterResetButton = ((lesson.id === 3 && (ex.id === 2 || ex.id === 6)) || (lesson.id === 4 && ex.optional)) ? `<button class="btn reset" type="button" onclick="${ex.debugCode ? 'resetExerciseDebugCode()' : 'resetStarterBlocksOnly()'}">${esc(ex.debugCode?.resetLabel || '↺ קוד התחלה')}</button>` : '';
@@ -2156,19 +2559,16 @@ ${block.replace}`; changed = true; }
         ? `<div class="exercise-controls special-message-controls"><div class="exercise-actions-main"><button class="btn link" type="button" onclick="goPreviousExercise()" ${isFirst ? 'disabled' : ''}>→ הקודם</button><button class="btn check" type="button" onclick="checkExercise()">✅ בדיקה</button>${nextButton}${courseButton}</div><div class="starter-reset-row">${starterResetButton}</div></div>`
         : `<div class="exercise-controls"><button class="btn link" type="button" onclick="goPreviousExercise()" ${isFirst ? 'disabled' : ''}>→ הקודם</button>${ex.noCheck ? '' : '<button class="btn check" type="button" onclick="checkExercise()">✅ בדיקה</button>'}${nextButton}${courseButton}</div>`;
       exerciseMetric(ex.id);
-      const debugBox = ex.debugCode ? `<div class="helper"><b>תיבת קוד התחלה — ${esc(ex.debugCode.language || 'Code')}</b><textarea id="exerciseDebugCode" spellcheck="false" style="height:120px;min-height:120px;margin-top:.55rem;border-radius:14px">${esc(ex.debugCode.starter || '')}</textarea></div>` : '';
+      const debugBox = ex.debugCode ? `<div class="helper"><b>תיבת קוד התחלה — ${esc(ex.debugCode.language || 'Code')}</b><textarea id="exerciseDebugCode" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" data-lpignore="true" data-1p-ignore="true" onpaste="return blockAnswerPaste(event)" ondrop="return blockAnswerPaste(event)" style="height:120px;min-height:120px;margin-top:.55rem;border-radius:14px">${esc(ex.debugCode.starter || '')}</textarea><small>אין הדבקה כאן — מתקנים ומקלידים בעצמכם.</small></div>` : '';
       const answerBox = ex.answerBoxes?.length
-        ? `<div class="helper code-answer-box"><b>${esc(ex.answerBoxTitle || 'כתבו תשובה')}</b>${codeSelectionStatusHtml(ex)}${ex.answerBoxes.map(field => `<label for="exerciseAnswer-${esc(field.id)}" style="display:block;margin-top:.7rem;font-weight:800">${esc(field.label)}</label><textarea id="exerciseAnswer-${esc(field.id)}" dir="ltr" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" data-lpignore="true" data-1p-ignore="true" placeholder="${esc(field.placeholder || '')}" oninput="saveExerciseAnswerField(${ex.id}, '${esc(field.id)}', this.value)" style="width:100%;min-height:4.5rem;margin-top:.35rem;border-radius:14px;border:1px solid #f5b7c8;padding:.75rem;font-family:monospace;font-size:.95rem;resize:vertical">${esc(exerciseAnswerFieldValue(ex.id, field.id))}</textarea>`).join('')}<small>${esc(ex.answerBoxNote || 'מלאו כל תיבה לפי החלק שלה.')}</small></div>`
-        : ex.answerBox ? `<div class="helper code-answer-box"><label for="exerciseAnswer"><b>${esc(ex.answerBox.label || 'כתבו תשובה')}</b></label>${codeSelectionStatusHtml(ex)}<input id="exerciseAnswer" type="text" dir="ltr" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" enterkeyhint="done" data-lpignore="true" data-1p-ignore="true" placeholder="${esc(ex.answerBox.placeholder || 'הקלד כאן את קוד הבלוק')}" value="${esc(exerciseAnswerValue(ex.id))}" onpaste="return blockAnswerPaste(event)" onkeydown="return blockAnswerKeydown(event)" oninput="saveExerciseAnswer(${ex.id}, this.value)" style="width:100%;margin-top:.55rem;border-radius:14px;border:1px solid #f5b7c8;padding:.75rem;font-family:monospace;font-size:.95rem"><small>${esc(ex.answerBox.note || 'אין הדבקה כאן — מקלידים בעצמכם כדי להבין את שורת הקוד.')}</small></div>` : '';
+        ? `<div class="helper code-answer-box"><b>${esc(ex.answerBoxTitle || 'כתבו תשובה')}</b>${codeSelectionStatusHtml(ex)}${ex.answerBoxes.map(field => `<label for="exerciseAnswer-${esc(field.id)}" style="display:block;margin-top:.7rem;font-weight:800">${esc(field.label)}</label><textarea id="exerciseAnswer-${esc(field.id)}" dir="ltr" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" data-lpignore="true" data-1p-ignore="true" placeholder="${esc(field.placeholder || '')}" onpaste="return blockAnswerPaste(event)" ondrop="return blockAnswerPaste(event)" onkeydown="return blockAnswerKeydown(event)" oninput="saveExerciseAnswerField(${ex.id}, '${esc(field.id)}', this.value)" style="width:100%;min-height:4.5rem;margin-top:.35rem;border-radius:14px;border:1px solid #f5b7c8;padding:.75rem;font-family:monospace;font-size:.95rem;resize:vertical">${esc(exerciseAnswerFieldValue(ex.id, field.id))}</textarea>`).join('')}<small>${esc(ex.answerBoxNote || 'מלאו כל תיבה לפי החלק שלה.')}</small></div>`
+        : ex.answerBox ? `<div class="helper code-answer-box"><label for="exerciseAnswer"><b>${esc(ex.answerBox.label || 'כתבו תשובה')}</b></label>${codeSelectionStatusHtml(ex)}<input id="exerciseAnswer" type="text" dir="ltr" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" enterkeyhint="done" data-lpignore="true" data-1p-ignore="true" placeholder="${esc(ex.answerBox.placeholder || 'הקלד כאן את קוד הבלוק')}" value="${esc(exerciseAnswerValue(ex.id))}" onpaste="return blockAnswerPaste(event)" ondrop="return blockAnswerPaste(event)" onkeydown="return blockAnswerKeydown(event)" oninput="saveExerciseAnswer(${ex.id}, this.value)" style="width:100%;margin-top:.55rem;border-radius:14px;border:1px solid #f5b7c8;padding:.75rem;font-family:monospace;font-size:.95rem"><small>${esc(ex.answerBox.note || 'אין הדבקה כאן — מקלידים בעצמכם כדי להבין את שורת הקוד.')}</small></div>` : '';
       const choiceBox = choiceBoxHtml(ex);
       const matchBox = matchBoxHtml(ex);
       const hintHtml = hintWasRevealed(ex.id) ? `<div class="hint">💡 ${esc(ex.hint)}</div>` : `<div class="hint"><button class="btn link" type="button" onclick="revealHint(${ex.id})">💡 הצג רמז</button> <small>פתיחת רמז מורידה את בונוס “בלי רמזים”.</small></div>`;
       backfillCompletedScores();
       const earned = scoreState().awarded[ex.id] ? `<div class="hint">⭐ ניקוד לתרגיל: ${formatScore(scoreState().awarded[ex.id])} נק׳ · ${esc(scoreSummaryFor(ex.id))}</div>` : '';
-      const navigationHint = isLastRequired
-        ? '➡️ אחרי בדיקה מוצלחת אפשר לעבור לשיעור הבא או לבחור הרחבה אופציונלית.'
-        : '➡️ עוברים תרגיל רק אחרי בדיקה מוצלחת: לוחצים על “לתרגיל הבא”.';
-      $('exercises').innerHTML = `<article class="exercise active ${isDone ? 'done' : ''}" id="ex-${ex.id}"><div class="exercise-top"><div><b>${esc(displayTitle)}</b></div><span class="exercise-status">${displayNumber}/${lesson.exercises.length}</span></div><p>${esc(ex.prompt)}</p>${debugBox}${answerBox}${choiceBox}${matchBox}${hintHtml}${earned}<div class="hint">${navigationHint}</div><div class="exercise-bottom">${controls}<div class="feedback exercise-feedback" id="feedback">גררו בלוק, בדקו את התצוגה ולחצו בדיקה.</div></div></article>`;
+      $('exercises').innerHTML = `<article class="exercise active ${isDone ? 'done' : ''}" id="ex-${ex.id}"><div class="exercise-top"><div><b>${esc(displayTitle)}</b></div><span class="exercise-status">${displayNumber}/${lesson.exercises.length}</span></div><p>${esc(ex.prompt)}</p>${debugBox}${answerBox}${choiceBox}${matchBox}${hintHtml}${earned}<div class="hint">➡️ עוברים תרגיל רק אחרי בדיקה מוצלחת: לוחצים על “לתרגיל הבא”.</div><div class="exercise-bottom">${controls}<div class="feedback exercise-feedback" id="feedback">גררו בלוק, בדקו את התצוגה ולחצו בדיקה.</div></div></article>`;
     }
     function goPreviousExercise(){ if(activeExercise > 1) selectExercise(activeExercise - 1); }
     function continueExercise(){
@@ -2199,7 +2599,7 @@ ${block.replace}`; changed = true; }
       renderCurrentExercise();
       const ex=currentExercise();
       $('feedback').className='feedback';
-      $('feedback').textContent = done.has(ex.id) ? `תרגיל ${exerciseDisplayNumber(ex)} כבר הושלם. אפשר ללחוץ “לתרגיל הבא” או לשדרג.` : `עכשיו עובדים על: ${exerciseDisplayTitle(ex)}`;
+      $('feedback').textContent = done.has(ex.id) ? `תרגיל ${exerciseDisplayNumber(ex)} כבר הושלם. אפשר ללחוץ “לתרגיל הבא” או לשדרג.` : 'מחכה לביצוע התרגיל וללחיצה על “בדיקה”.';
       applyStarterExerciseLocks();
       enableEditableWorkspaceFields();
       renderProgress();
@@ -2214,11 +2614,10 @@ ${block.replace}`; changed = true; }
       const completedTitle = ex.title;
       const c = ex.check || {};
       const special = c.footerMustBeLast ? checkFooterAtEndExercise(ex, c) : null;
-      const ok = special ? special.ok : includesAll($('htmlCode').value,c.htmlIncludes) && includesAll($('cssCode').value,c.cssIncludes) && excludesAll($('htmlCode').value,c.htmlExcludes) && excludesAll($('cssCode').value,c.cssExcludes) && excludesAll($('jsCode').value,c.jsExcludes) && hasBlockTypes(c.blockTypes) && hasExactBlockTypeCounts(c.exactBlockTypeCounts) && hasOrderedBlockTypes(c.orderedBlockTypes) && hasNonEmptyBlocklyFields(c.nonEmptyBlocklyFields) && hasQualityBlocklyFields(c.qualityBlocklyFields) && hasRelatedBlocklyTextGroups(c.relatedBlocklyTextGroups) && hasUnchangedBlocklyFields(c.unchangedBlocklyFields) && hasExactBlocklyFields(c.exactBlocklyFields) && hasChangedBlocklyFields(c.changedBlocklyFields) && hasBlocklyFieldsContaining(c.blocklyFieldsContaining) && hasAnyChangedBlocklyField(c.anyChangedBlocklyFields) && hasGeneratedBlockOutputs(c.generatedBlockOutputs) && hasChangedBlocklyFieldsFromBaseline(c.changedBlocklyFieldsFromBaseline) && (!c.requiresCodePeek || isCodePeekOpen()) && hasRequiredCodeSelection(c) && hasCodeLineAnswer(c.requiresCodeLineAnswer) && hasAnswerIncludes(c.answerIncludes) && hasAnswerFieldIncludes(c.answerFieldIncludes) && hasChoiceAnswer(c.choiceAnswer) && hasMatchAnswers(c.matchAnswers) && hasPreviewButtonClick(c.requiresPreviewButtonClick) && hasPreviewClickText(c.requiresPreviewButtonText) && hasPreviewResultFromBlockOutput(c.requiresPreviewResultFromBlockOutput) && hasPreviewMessageFromBlockOutput(c.requiresPreviewMessageFromBlockOutput) && hasPreviewMessageChanged(c.requiresPreviewMessageChangedFrom) && hasPreviewEmojiChanged(c.requiresPreviewEmojiChangedFrom) && hasPreviewCardClass(c.requiresPreviewCardClass) && hasPreviewFilledInputs(c.requiresPreviewFilledInputs) && hasPreviewResultFromInputs(c.requiresPreviewResultFromInputs) && hasPreviewInputMatchesBlockFields(c.requiresPreviewInputMatchesBlockFields) && hasPreviewInputDiffersFromBlockFields(c.requiresPreviewInputDiffersFromBlockFields) && hasPreviewFeedbackClass(c.requiresPreviewFeedbackClass) && hasPreviewScoreSum(c.requiresPreviewScoreSum) && hasPreviewScoreFromBlockField(c.requiresPreviewScoreFromBlockField) && hasPreviewLivesFromBlockField(c.requiresPreviewLivesFromBlockField) && hasPreviewLivesAfterPenalty(c.requiresPreviewLivesAfterPenalty) && hasPreviewTimeFromBlockField(c.requiresPreviewTimeFromBlockField) && hasPreviewFeedbackText(c.requiresPreviewFeedbackText) && hasPreviewItemTextFromBlockOutput(c.requiresPreviewItemTextFromBlockOutput) && hasDebugCodeIncludes(c.debugCodeIncludes) && hasDebugCodeExcludes(c.debugCodeExcludes) && includesAll($('jsCode').value,c.jsIncludes) && (!c.changedAny || hasChanged(c.changedAny));
+      const ok = special ? special.ok : includesAll($('htmlCode').value,c.htmlIncludes) && includesAll($('cssCode').value,c.cssIncludes) && excludesAll($('htmlCode').value,c.htmlExcludes) && excludesAll($('cssCode').value,c.cssExcludes) && excludesAll($('jsCode').value,c.jsExcludes) && hasBlockTypes(c.blockTypes) && hasExactBlockTypeCounts(c.exactBlockTypeCounts) && hasOrderedBlockTypes(c.orderedBlockTypes) && hasNonEmptyBlocklyFields(c.nonEmptyBlocklyFields) && hasQualityBlocklyFields(c.qualityBlocklyFields) && hasRelatedBlocklyTextGroups(c.relatedBlocklyTextGroups) && hasUnchangedBlocklyFields(c.unchangedBlocklyFields) && hasExactBlocklyFields(c.exactBlocklyFields) && hasChangedBlocklyFields(c.changedBlocklyFields) && hasBlocklyFieldsContaining(c.blocklyFieldsContaining) && hasAnyChangedBlocklyField(c.anyChangedBlocklyFields) && hasGeneratedBlockOutputs(c.generatedBlockOutputs) && hasChangedBlocklyFieldsFromBaseline(c.changedBlocklyFieldsFromBaseline) && (!c.requiresCodePeek || isCodePeekOpen()) && hasRequiredCodeSelection(c) && hasDifferentCodeSelectionFromExercise(c.requiresDifferentCodeSelectionFromExercise) && hasCodeLineAnswer(c.requiresCodeLineAnswer) && hasSelectedCodeTypeField(c.requiresSelectedCodeTypeField) && hasAnswerIncludes(c.answerIncludes) && hasAnswerFieldIncludes(c.answerFieldIncludes) && hasChoiceAnswer(c.choiceAnswer) && hasMatchAnswers(c.matchAnswers) && hasPreviewButtonClick(c.requiresPreviewButtonClick) && hasPreviewClickText(c.requiresPreviewButtonText) && hasPreviewResultFromBlockOutput(c.requiresPreviewResultFromBlockOutput) && hasPreviewMessageFromBlockOutput(c.requiresPreviewMessageFromBlockOutput) && hasPreviewMessageChanged(c.requiresPreviewMessageChangedFrom) && hasPreviewEmojiChanged(c.requiresPreviewEmojiChangedFrom) && hasPreviewCardClass(c.requiresPreviewCardClass) && hasPreviewFilledInputs(c.requiresPreviewFilledInputs) && hasPreviewResultFromInputs(c.requiresPreviewResultFromInputs) && hasPreviewInputMatchesBlockFields(c.requiresPreviewInputMatchesBlockFields) && hasPreviewInputDiffersFromBlockFields(c.requiresPreviewInputDiffersFromBlockFields) && hasPreviewFeedbackClass(c.requiresPreviewFeedbackClass) && hasPreviewScoreSum(c.requiresPreviewScoreSum) && hasPreviewScoreFromBlockField(c.requiresPreviewScoreFromBlockField) && hasPreviewLivesFromBlockField(c.requiresPreviewLivesFromBlockField) && hasPreviewLivesAfterPenalty(c.requiresPreviewLivesAfterPenalty) && hasPreviewTimeFromBlockField(c.requiresPreviewTimeFromBlockField) && hasPreviewFeedbackText(c.requiresPreviewFeedbackText) && hasPreviewFeedbackFromBlockOutput(c.requiresPreviewFeedbackFromBlockOutput) && hasPreviewItemTextFromBlockOutput(c.requiresPreviewItemTextFromBlockOutput) && hasDebugCodeIncludes(c.debugCodeIncludes) && hasDebugCodeExcludes(c.debugCodeExcludes) && includesAll($('jsCode').value,c.jsIncludes) && (!c.changedAny || hasChanged(c.changedAny));
       if(ok){
         const earned = alreadyDone ? 0 : awardExerciseScore(ex.id);
         done.add(ex.id);
-        window.dispatchEvent(new CustomEvent('hai:classroom-progress', { detail: { lessonId: String(lesson.id), activityId: `exercise-${ex.id}`, status: 'completed', score: 100 } }));
         highestUnlockedExercise = Math.max(highestUnlockedExercise, Math.min(lesson.exercises.length, ex.id + 1));
         renderCurrentExercise();
         $('feedback').className='feedback good';
@@ -2234,23 +2633,19 @@ ${block.replace}`; changed = true; }
       saveLessonState();
     }
     function renderProgress(){
-      const required = lesson.exercises.filter(exercise => !exercise.optional);
-      const completed = required.filter(exercise => done.has(Number(exercise.id))).length;
-      $('progress').textContent = `${completed}/${required.length} תרגילי ליבה הושלמו`;
+      $('progress').textContent = `${done.size}/${lesson.exercises.length} הושלמו`;
       const score = $('score');
       if(score) score.textContent = `⭐ שיעור: ${formatScore(currentScoreTotal())} נק׳`;
       const courseScore = $('courseScore');
       if(courseScore) courseScore.textContent = `🏆 סה״כ: ${formatScore(courseScoreTotal())} נק׳`;
     }
-    try {
-      init();
-    } catch (error) {
-      console.error('WebCode startup failed:', error);
-      window.showWebCodeStartupError(error);
-    }
+    try { init(); }
+    catch(error){ showStartupError(error, 'אתחול WebCode'); }
   </script>
   <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
 
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
 </body>
 </html>
+
+<!-- lesson5-ex6-if-else-v256-20260915 -->

@@ -39,7 +39,7 @@
     <h2 class="section-title">שיעורים זמינים</h2>
     <section class="cards" id="cards"></section>
   </main>
-  <script src="js/webcode-lessons.js?v=20260914-webcode-90-1"></script>
+  <script src="js/webcode-lessons-code-bridge-v376.js"></script>
   <script>
     function formatMixedText(value){
       return String(value || '')
@@ -63,14 +63,11 @@
       try {
         const saved = JSON.parse(localStorage.getItem(`webcodeLessonState:v2:${lesson.id}`) || 'null');
         const done = new Set((saved?.done || []).map(Number));
-        const required = lesson.exercises.filter(exercise => !exercise.optional);
-        return required.length > 0 && required.every(exercise => done.has(Number(exercise.id)));
+        return lesson.exercises.length > 0 && lesson.exercises.every(ex => done.has(Number(ex.id)));
       } catch (error) { return false; }
     }
     document.getElementById('cards').innerHTML = window.WEBCODE_LESSONS.map(lesson => {
       const completed = isLessonCompleted(lesson);
-      const requiredCount = lesson.exercises.filter(exercise => !exercise.optional).length;
-      const extensionCount = lesson.exercises.filter(exercise => exercise.optional).length;
       return `
       <a class="card ${completed ? 'completed' : ''}" href="webcode-play.html?lesson=${lesson.id}">
         <div class="top"><span class="emoji">${completed ? '✅' : '💻'}</span><span class="id">שיעור ${lesson.id}</span></div>
@@ -78,7 +75,7 @@
         <h3>${formatMixedText(lesson.title)}</h3>
         <div class="concept">${formatMixedText(lesson.concept)}</div>
         <div class="story">${formatMixedText(lesson.story)}</div>
-        <div class="tags"><span class="tag">${lesson.durationMinutes} דק׳</span><span class="tag">${requiredCount} תרגילי ליבה</span>${extensionCount ? `<span class="tag">${extensionCount} הרחבות לבחירה</span>` : ''}<span class="tag">HTML/CSS/JS</span></div>
+        <div class="tags"><span class="tag">${lesson.durationMinutes} דק׳</span><span class="tag">${lesson.exercises.length} תרגילים</span><span class="tag">HTML/CSS/JS</span></div>
         <div class="start">${completed ? 'לפתוח שוב / להמשיך לשיעור הבא ←' : 'לפתוח לומדה ←'}</div>
         <div class="tags"><span class="tag">📽️ <object><a href="webcode-slides.html?lesson=${lesson.id}" onclick="event.stopPropagation()">מצגת מדריך</a></object></span></div>
       </a>`;
