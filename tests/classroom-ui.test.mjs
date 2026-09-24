@@ -58,7 +58,7 @@ assert.ok(teacher.includes('id="create-class-form"'));
 assert.ok(teacher.includes('id="classes-list"'));
 assert.ok(teacher.includes('id="teacher-course-catalog"'));
 assert.ok(teacher.includes('יצירת כיתה'));
-assert.ok(teacher.includes('js/classroom-platform.js?v=20260924-teacher-logout-visible-after-login-1'));
+assert.ok(teacher.includes('js/classroom-platform.js?v=20260924-clean-teacher-url-1'));
 assert.ok(teacher.includes('id="teacher-topbar-logout" type="button" hidden'), 'teacher logout in the topbar should appear only after an authenticated teacher session');
 assert.ok(!teacher.includes('value="minecraft"'), 'teacher HTML must not expose a static unrestricted course picker');
 assert.ok(teacher.includes('בחרו מתוך הלומדות שהוקצו לך'));

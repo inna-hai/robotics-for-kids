@@ -180,13 +180,13 @@ async function renderTeacherDashboard(page) {
   await hold(page, 5.3);
 
   await caption(page, 'ניהול הלומדה', 'מכאן עוברים למסך השיעור של אקדמיית ה-Agent');
-  await spot(page, '.class-courses a[href^="kugel-teacher"]', 'פתחי');
+  await spot(page, '.class-courses a[href^="agent-academy-teacher"]', 'פתחי');
   await hold(page, 2.8);
 }
 
 async function renderKugelTeacher(page) {
   const classId = await page.$eval('.class-card', el => el.getAttribute('data-class-id'));
-  await goto(page, `kugel-teacher.html?classroomId=${encodeURIComponent(classId)}`);
+  await goto(page, `agent-academy-teacher.html?classroomId=${encodeURIComponent(classId)}`);
   await caption(page, 'לוח הסדר של המורה', 'בוחרים שיעור, רואים מצב כיתה, ופותחים Minecraft');
   await spot(page, '#teacherHomeOverview', '3');
   await hold(page, 4.6);

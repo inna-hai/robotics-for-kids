@@ -12,7 +12,7 @@
     const classroomId = params.get('classroomId');
     if (classroomId) next.set('classroomId', classroomId);
     next.set('lesson', String(lesson.id));
-    return `kugel-teacher.html?${next.toString()}`;
+    return `agent-academy-teacher.html?${next.toString()}`;
   }
 
   function renderTeacherReturnAction() {

@@ -6801,7 +6801,7 @@ function classroomTeacherCourseForPath(pathname) {
   if (basename === 'webcode-slides') return 'webcode';
   if (basename === 'minecraft-teachers' || basename === 'minecraft-slides') return 'minecraft';
   if (basename === 'craftom-minecraft-slides') return 'craftom-agent';
-  if (basename === 'kugel-teacher') return 'craftom-agent';
+  if (basename === 'kugel-teacher' || basename === 'agent-academy-teacher') return 'craftom-agent';
   return null;
 }
 
@@ -6953,7 +6953,8 @@ function serveStatic(req, res) {
   if (pathname === '/') pathname = '/index.html';
   if (pathname === '/craftom-school/preview/') pathname = '/craftom-school/preview/index.html';
   if (pathname === '/thankyou') pathname = '/thankyou.html';
-  const filePath = path.normalize(path.join(ROOT, pathname));
+  const staticPathname = pathname === '/agent-academy-teacher.html' ? '/kugel-teacher.html' : pathname;
+  const filePath = path.normalize(path.join(ROOT, staticPathname));
   if (!filePath.startsWith(ROOT + path.sep)) return send(res, 403, 'Forbidden', 'text/plain; charset=utf-8');
   if (filePath === DATA_DIR || filePath.startsWith(DATA_DIR + path.sep)) return send(res, 403, 'Forbidden', 'text/plain; charset=utf-8');
   const ext = path.extname(filePath).toLowerCase();

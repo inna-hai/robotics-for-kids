@@ -216,11 +216,11 @@
 
   const teacherCourseStarts = {
     ...courseStarts,
-    'craftom-agent': 'kugel-teacher.html',
+    'craftom-agent': 'agent-academy-teacher.html',
   };
 
   function teacherCourseHref(courseId, classroomId = '') {
-    if (courseId === 'craftom-agent' && classroomId) return `kugel-teacher.html?classroomId=${encodeURIComponent(classroomId)}`;
+    if (courseId === 'craftom-agent' && classroomId) return `agent-academy-teacher.html?classroomId=${encodeURIComponent(classroomId)}`;
     return teacherCourseStarts[courseId] || courseStarts[courseId] || 'index.html#courses';
   }
 

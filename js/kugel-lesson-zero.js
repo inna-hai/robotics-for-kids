@@ -5,7 +5,13 @@
   const hasRequestedLesson = query.has('lesson');
   const requestedLessonId = Number(query.get('lesson') || '');
   const requestedChallengeId = Number(query.get('challenge') || '');
+  const teacherPagePath = 'agent-academy-teacher.html';
   const drafts = new Map();
+
+  function canonicalizeTeacherUrl() {
+    if (page !== 'teacher' || !location.pathname.endsWith('/kugel-teacher.html')) return;
+    history.replaceState(null, '', `${teacherPagePath}${location.search}${location.hash}`);
+  }
 
   function node(tag, text, className) {
     const element = document.createElement(tag);
@@ -94,7 +100,7 @@
       next.set('lesson', '0');
       document.body.insertAdjacentHTML('afterbegin', `
         <div class="teacher-return-action" id="teacherReturnAction">
-          <a class="btn secondary" href="kugel-teacher.html?${next.toString()}">חזרה לניהול שיעור מורה</a>
+          <a class="btn secondary" href="${teacherPagePath}?${next.toString()}">חזרה לניהול שיעור מורה</a>
         </div>
       `);
     }
@@ -269,7 +275,7 @@
       if (params.lesson !== undefined) next.set('lesson', String(params.lesson));
       if (params.challenge !== undefined) next.set('challenge', String(params.challenge));
       const suffix = next.toString();
-      return `kugel-teacher.html${suffix ? `?${suffix}` : ''}`;
+      return `${teacherPagePath}${suffix ? `?${suffix}` : ''}`;
     }
 
     function teacherReturnQuery(lessonId) {
@@ -861,6 +867,7 @@
     setInterval(refresh, 5000);
   }
 
+  canonicalizeTeacherUrl();
   if (page === 'student') initStudent();
   if (page === 'teacher') initTeacher();
 })();

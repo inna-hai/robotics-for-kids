@@ -31,7 +31,7 @@
     <div class="slides" id="slides"></div>
   </main>
   <div class="actions">
-    <a class="btn" id="backToTeacher" href="kugel-teacher.html?lesson=1" hidden>חזרה לניהול שיעור מורה</a>
+    <a class="btn" id="backToTeacher" href="agent-academy-teacher.html?lesson=1" hidden>חזרה לניהול שיעור מורה</a>
     <a class="btn secondary" id="backToLesson" href="craftom-minecraft-lesson-1.html">חזרה לשיעור</a>
     <a class="btn secondary" href="craftom-school/preview/index.html">מפת הקורס</a>
   </div>
@@ -47,7 +47,7 @@
       const classroomId = params.get('classroomId');
       if (classroomId) next.set('classroomId', classroomId);
       next.set('lesson', String(selectedLesson.id));
-      return `kugel-teacher.html?${next.toString()}`;
+      return `agent-academy-teacher.html?${next.toString()}`;
     };
     document.getElementById('courseHeaderNav').innerHTML = `
       <a href="craftom-school/preview/index.html">דף הבית</a>

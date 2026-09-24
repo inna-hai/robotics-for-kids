@@ -445,7 +445,7 @@ async function renderScene(page, scene, state) {
   if (!state.classId) state.classId = await classId(page);
 
   if (scene.visual === 'management') {
-    await goto(page, `kugel-teacher.html?classroomId=${encodeURIComponent(state.classId)}`);
+    await goto(page, `agent-academy-teacher.html?classroomId=${encodeURIComponent(state.classId)}`);
     await caption(page, scene.caption, scene.sub);
     await spot(page, '#teacherHomeOverview', 'לוח');
     await zoom(page, 'teacherLeft');

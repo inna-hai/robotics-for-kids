@@ -30,7 +30,7 @@ assert.match(student, /minecraftAccessCode/);
 assert.match(student, /המשך לשיעור 1/);
 assert.match(student, /20260924-lesson-zero-in-sequence-1/, 'lesson zero should load the current lesson-access client');
 assert.doesNotMatch(student, /name="studentName"/, 'student identity must come from the authenticated classroom session');
-assert.doesNotMatch(student, /href="kugel-teacher\.html"/, 'students must not receive a shortcut to teacher controls');
+assert.doesNotMatch(student, /href="kugel-teacher\.html"/, 'students must not receive a shortcut to the old teacher controls URL');
 
 assert.match(teacher, /ניהול Minecraft לכיתה/);
 assert.match(teacher, /teacherCourseHeaderNav/);
@@ -81,7 +81,7 @@ assert.doesNotMatch(teacher, /teacherHomeMinecraftActions/);
 assert.doesNotMatch(teacher, /teacherLessonPickerForm/);
 assert.doesNotMatch(teacher, /teacherLessonSelect/);
 assert.match(teacher, /20260914-video-first-frames-1/, 'teacher board cache-busts the challenge data posters');
-assert.match(teacher, /20260924-hide-lesson-picker-button-1/, 'teacher board cache-busts hidden teacher hero actions');
+assert.match(teacher, /20260924-clean-teacher-url-1/, 'teacher board cache-busts the clean teacher URL');
 assert.match(teacher, /rel="preload" as="image" href="assets\/craftom\/challenges\/craftom-program-real-minecraft-gemini-live-1x-first-frame\.webp"/, 'teacher home should preload the first visible video poster');
 assert.match(teacher, /craftom-challenge4-smart-city-automations-gemini-live-1x-first-frame\.webp" type="image\/webp"/, 'teacher home should preload challenge video posters');
 assert.ok(teacher.indexOf('hero teacher-hero') < teacher.indexOf('teacher-control'), 'teacher hero should be the first panel in the teacher board');
@@ -167,6 +167,8 @@ assert.doesNotMatch(client, /teacherHomeCurrentLesson/, 'teacher home top action
 assert.doesNotMatch(client, /teacherHomeStudentPreview/, 'student preview should not appear as a top-level home action');
 assert.match(client, /function teacherReturnQuery\(lessonId\)/, 'teacher links should mark student/slides pages as opened from teacher management');
 assert.match(client, /next\.set\('teacherReturn', '1'\)/, 'teacher return query should be attached to teacher-launched preview pages');
+assert.match(client, /const teacherPagePath = 'agent-academy-teacher\.html'/, 'teacher screen should use a public URL without the internal kugel filename');
+assert.match(client, /history\.replaceState\(null, '', `\$\{teacherPagePath\}\$\{location\.search\}\$\{location\.hash\}`\)/, 'old teacher URLs should be canonicalized without losing query or hash state');
 assert.match(client, /function studentPreviewUrl\(lessonId\)/, 'teacher preview links should route through a shared preview URL helper');
 assert.match(client, /slides\.href = `craftom-minecraft-slides\.html\?challenge=\$\{lesson\.challengeId \|\| Math\.ceil\(Number\(lesson\.id\) \/ 4\)\}&\$\{teacherReturnQuery\(lesson\.id\)\}`/, 'teacher slides should include a return link target');
 assert.match(client, /חזרה לניהול שיעור מורה/, 'teacher-launched lesson-zero preview should include a return action');
@@ -232,13 +234,14 @@ assert.doesNotMatch(interfacesCss, /\.learning-pill\.missing|\.student-submissio
 assert.doesNotMatch(interfacesCss, /\.student-layout,\s*\.teacher-board\s*{[^}]*grid-template-columns:\s*330px/s, 'teacher board must not share the student two-column grid');
 assert.doesNotMatch(interfacesCss, /teacher-lesson-menu/, 'teacher lesson dropdown should be removed from the home page');
 
-assert.ok(classroomClient.includes('kugel-teacher.html?classroomId='), 'teacher class cards must link to their scoped lesson-zero board');
+assert.ok(classroomClient.includes('agent-academy-teacher.html?classroomId='), 'teacher class cards must link to their scoped Agent Academy board');
 assert.ok(classroomClient.includes("'craftom-agent': 'kugel-student.html'"), 'classroom students should enter the open lesson-zero page');
 assert.ok(server.includes("Location: '/kugel-student.html'"), 'unfinished Craftom students should be redirected to lesson zero from the course home');
 assert.ok(client.includes('סגירת עולם Minecraft לשיעור הפתיחה'), 'active teacher lesson-zero button should become an end-lesson action');
 assert.ok(client.includes("scoped('/stop')"), 'active teacher lesson button should release the Minecraft server');
 assert.match(server, /basename === 'kugel-student'/);
-assert.match(server, /basename === 'kugel-teacher'/);
+assert.match(server, /basename === 'kugel-teacher' \|\| basename === 'agent-academy-teacher'/);
+assert.match(server, /staticPathname = pathname === '\/agent-academy-teacher\.html' \? '\/kugel-teacher\.html' : pathname/, 'clean teacher URL should serve the existing teacher HTML for compatibility');
 assert.match(server, /'\.webp': 'image\/webp'/, 'Craftom video posters must be served with a browser-safe WebP MIME type');
 assert.match(server, /\/api\\\/craftom\\\/challenge-posters\\\/\(\[\^\/\]\+\\\.webp\)/, 'teacher home should expose a safe poster endpoint for Craftom WebP previews');
 assert.match(server, /'Content-Type': 'image\/webp'/, 'Craftom poster endpoint must force the WebP MIME type');
