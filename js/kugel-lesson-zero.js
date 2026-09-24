@@ -229,7 +229,6 @@
     const className = document.getElementById('teacherClassName');
     const classMessage = document.querySelector('#classMessageForm input[name="text"]');
     const lessonList = document.getElementById('minecraftLessonList');
-    const studentPreviewLink = document.getElementById('studentPreviewLink');
     const teacherCourseHeaderNav = document.getElementById('teacherCourseHeaderNav');
     const selectedTeacherLesson = document.getElementById('selectedTeacherLesson');
     const selectedLessonTitle = document.getElementById('selectedLessonTitle');
@@ -765,9 +764,6 @@
       className.textContent = data.classroom.name;
       const session = data.session || {};
       const activeLessonId = Number(session.lessonId ?? 0);
-      if (studentPreviewLink) {
-        studentPreviewLink.href = studentPreviewUrl(activeLessonId);
-      }
       const minecraftBlocked = data.minecraftConfigured === false;
       const lessons = withLessonZero(data.lessons?.length ? data.lessons : [data.lesson].filter(Boolean));
       const selectedLesson = resolveSelectedLesson(lessons, activeLessonId);
