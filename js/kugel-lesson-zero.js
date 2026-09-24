@@ -236,7 +236,6 @@
     const selectedLessonSummary = document.getElementById('selectedLessonSummary');
     const selectedLessonEyebrow = document.getElementById('selectedLessonEyebrow');
     const selectedLessonActions = document.getElementById('selectedLessonActions');
-    const selectedLessonPreviewLink = document.getElementById('selectedLessonPreviewLink');
     const teacherLessonKicker = document.getElementById('teacherLessonKicker');
     const teacherLessonTitle = document.getElementById('teacherLessonTitle');
     const teacherLessonGoal = document.getElementById('teacherLessonGoal');
@@ -688,7 +687,7 @@
       ));
       if (liveMinecraftControlsAvailable()) actionRow.append(launch);
       if (Number(lesson.id) >= 1) {
-        const link = node('a', `צפייה בדף שיעור ${lesson.id}`, 'secondary-action link-action teacher-next-lesson');
+        const link = node('a', 'תצוגת תלמיד', 'secondary-action link-action teacher-next-lesson');
         link.href = studentPreviewUrl(lesson.id);
         actionRow.append(link);
         const slides = node('a', 'מצגת מדריך', 'secondary-action link-action');
@@ -708,9 +707,6 @@
       teacherLessonKicker.textContent = lessonId === 0 ? 'שיעור 0 • משימת פתיחה' : `אתגר ${challengeId} • שיעור ${lessonId}`;
       teacherLessonTitle.textContent = lesson.title || `שיעור ${lessonId}`;
       teacherLessonGoal.textContent = lesson.summary || 'מסך ניהול קצר לשיעור: פתיחת גישה, צפייה כתלמיד ומצגת מדריך.';
-      if (selectedLessonPreviewLink) {
-        selectedLessonPreviewLink.href = studentPreviewUrl(lessonId);
-      }
       const actions = renderTeacherLessonActions(lesson, session, activeLessonId, minecraftBlocked);
       const openButton = openLessonButton(lessonId, `פתיחת שיעור ${lessonId} לתלמידים`);
       if (openButton) actions.prepend(openButton);
@@ -731,7 +727,7 @@
       const actions = node('div', undefined, 'challenge-actions');
       const choose = node('a', 'כניסה לשיעור', 'btn');
       choose.href = teacherPageUrl({ lesson: lesson.id });
-      const preview = node('a', 'צפייה כשיעור תלמיד', 'btn secondary');
+      const preview = node('a', 'תצוגת תלמיד', 'btn secondary');
       preview.href = studentPreviewUrl(lesson.id);
       const openButton = openLessonButton(lesson.id, 'פתיחה לתלמידים');
       actions.append(choose, preview, ...(openButton ? [openButton] : []));

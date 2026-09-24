@@ -192,7 +192,8 @@ assert.match(client, /renderSelectedLesson\(selectedLesson, session, activeLesso
 assert.match(client, /renderTeacherChallenge\(challenge, lessons, selectedLessonId\)/);
 assert.match(client, /teacherChallengeVideoPreview/);
 assert.match(client, /card lesson-card teacher-challenge-lesson/, 'teacher challenge lesson cards should match the student challenge card style');
-assert.match(client, /צפייה כשיעור תלמיד/);
+assert.match(client, /תצוגת תלמיד/);
+assert.doesNotMatch(client, /צפייה בדף שיעור|צפייה כשיעור תלמיד/, 'teacher preview actions should use the clear student-preview label');
 assert.match(client, /if \(liveMinecraftControlsAvailable\(\)\) actionRow\.append\(launch\)/, 'teacher lesson page should hide Minecraft launch actions unless live controls are available');
 assert.match(client, /פעולות לשיעור \$\{lessonId\}/, 'teacher lesson page should label the action card instead of repeating the lesson title');
 assert.match(client, /selectedLessonActions\.replaceChildren/);
