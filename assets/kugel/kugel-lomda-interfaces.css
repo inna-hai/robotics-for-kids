@@ -1269,6 +1269,20 @@
   margin: 0;
 }
 
+.teacher-home-status {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.teacher-home-status .card {
+  display: grid;
+  min-height: 132px;
+  align-content: center;
+}
+
+.teacher-home-status h2 {
+  margin: 0;
+}
+
 .teacher-home-summary-card {
   display: grid;
   align-content: center;
