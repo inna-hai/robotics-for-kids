@@ -72,7 +72,7 @@ assert.doesNotMatch(teacher, /teacherHomeCurrentLesson/);
 assert.doesNotMatch(teacher, /תצוגה מקדימה לתלמיד/);
 assert.match(teacher, /מה התלמידים בונים/);
 assert.match(teacher, /מעקב תלמידים/);
-assert.match(teacher, /המורה משייך לכל תלמיד/);
+assert.match(teacher, /כלי Minecraft חיים מוצגים רק כשהשרת מחובר ופעיל/);
 assert.doesNotMatch(teacher, /כתלמידה|התלמידות|תלמידות|את מנהלת|משייכת/);
 assert.match(teacher, /teacher-hero-actions/);
 assert.doesNotMatch(teacher, /teacherLessonMenu/);
@@ -81,7 +81,7 @@ assert.doesNotMatch(teacher, /teacherHomeMinecraftActions/);
 assert.doesNotMatch(teacher, /teacherLessonPickerForm/);
 assert.doesNotMatch(teacher, /teacherLessonSelect/);
 assert.match(teacher, /20260914-video-first-frames-1/, 'teacher board cache-busts the challenge data posters');
-assert.match(teacher, /20260924-home-challenge-dividers-1/, 'teacher board cache-busts the separated home challenge sequence');
+assert.match(teacher, /20260924-hide-inactive-live-tools-1/, 'teacher board cache-busts the inactive live-tool hiding');
 assert.match(teacher, /rel="preload" as="image" href="assets\/craftom\/challenges\/craftom-program-real-minecraft-gemini-live-1x-first-frame\.webp"/, 'teacher home should preload the first visible video poster');
 assert.match(teacher, /craftom-challenge4-smart-city-automations-gemini-live-1x-first-frame\.webp" type="image\/webp"/, 'teacher home should preload challenge video posters');
 assert.ok(teacher.indexOf('hero teacher-hero') < teacher.indexOf('teacher-control'), 'teacher hero should be the first panel in the teacher board');
@@ -114,7 +114,6 @@ for (const endpoint of [
   '/stop',
   '/message',
   '/freeze',
-  '/minecraft',
 ]) assert.ok(client.includes(endpoint), `Agent Academy client missing ${endpoint}`);
 assert.match(client, /lessons\/\$\{encodeURIComponent\(lessonId\)\}\/launch/);
 assert.match(client, /חסר עולם Minecraft/);

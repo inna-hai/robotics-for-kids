@@ -964,6 +964,12 @@
   gap: 5px;
 }
 
+.student-player-name {
+  color: var(--muted);
+  font-size: .86rem;
+  font-weight: 900;
+}
+
 .connection-pill {
   display: inline-flex;
   width: fit-content;
