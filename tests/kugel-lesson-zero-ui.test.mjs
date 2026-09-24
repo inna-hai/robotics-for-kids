@@ -81,7 +81,7 @@ assert.doesNotMatch(teacher, /teacherHomeMinecraftActions/);
 assert.doesNotMatch(teacher, /teacherLessonPickerForm/);
 assert.doesNotMatch(teacher, /teacherLessonSelect/);
 assert.match(teacher, /20260914-video-first-frames-1/, 'teacher board cache-busts the challenge data posters');
-assert.match(teacher, /20260924-clean-teacher-url-1/, 'teacher board cache-busts the clean teacher URL');
+assert.match(teacher, /20260924-lock-open-lessons-1/, 'teacher board cache-busts lesson locking controls');
 assert.match(teacher, /rel="preload" as="image" href="assets\/craftom\/challenges\/craftom-program-real-minecraft-gemini-live-1x-first-frame\.webp"/, 'teacher home should preload the first visible video poster');
 assert.match(teacher, /craftom-challenge4-smart-city-automations-gemini-live-1x-first-frame\.webp" type="image\/webp"/, 'teacher home should preload challenge video posters');
 assert.ok(teacher.indexOf('hero teacher-hero') < teacher.indexOf('teacher-control'), 'teacher hero should be the first panel in the teacher board');
@@ -114,6 +114,7 @@ for (const endpoint of [
   '/stop',
   '/message',
   '/freeze',
+  '/close',
 ]) assert.ok(client.includes(endpoint), `Agent Academy client missing ${endpoint}`);
 assert.match(client, /lessons\/\$\{encodeURIComponent\(lessonId\)\}\/launch/);
 assert.match(client, /חסר עולם Minecraft/);
@@ -175,6 +176,9 @@ assert.match(client, /חזרה לניהול שיעור מורה/, 'teacher-launc
 assert.match(client, /שיעור \$\{lesson\.id\}/, 'teacher home lesson buttons should use clear lesson labels');
 assert.match(client, /בחר שיעור כדי לפתוח את מסך הניהול המלא שלו/);
 assert.match(client, /ניהול שיעור \$\{lesson\.id\}/, 'teacher home should show a management action for each lesson');
+assert.match(client, /function closeLessonButton\(lessonId, label = 'נעילת שיעור'\)/, 'teacher home should expose a lock action for lessons that are already open');
+assert.match(client, /lessons\/\$\{encodeURIComponent\(lessonId\)\}\/close/, 'lesson lock buttons should call the close-access endpoint');
+assert.match(client, /נעילת שיעור \$\{lessonId\}/, 'open lessons should show a clear lock button');
 assert.doesNotMatch(client, /ניהול שיעור ראשון/, 'teacher home should not show a single first-lesson management shortcut');
 assert.match(client, /עוצרים את התלמיד/);
 assert.doesNotMatch(teacherClient, /בחרי שיעור|התלמיד\/ה/, 'teacher screen copy should use masculine wording');
@@ -242,6 +246,8 @@ assert.ok(client.includes("scoped('/stop')"), 'active teacher lesson button shou
 assert.match(server, /basename === 'kugel-student'/);
 assert.match(server, /basename === 'kugel-teacher' \|\| basename === 'agent-academy-teacher'/);
 assert.match(server, /staticPathname = pathname === '\/agent-academy-teacher\.html' \? '\/kugel-teacher\.html' : pathname/, 'clean teacher URL should serve the existing teacher HTML for compatibility');
+assert.match(server, /lessons\\\/\(\[0-9\]\+\)\\\/close/, 'server should expose a teacher endpoint for locking an open lesson');
+assert.match(server, /status = 'closed', closed_at = \?, updated_at = \?/, 'locking a lesson should close access without deleting progress');
 assert.match(server, /'\.webp': 'image\/webp'/, 'Craftom video posters must be served with a browser-safe WebP MIME type');
 assert.match(server, /\/api\\\/craftom\\\/challenge-posters\\\/\(\[\^\/\]\+\\\.webp\)/, 'teacher home should expose a safe poster endpoint for Craftom WebP previews');
 assert.match(server, /'Content-Type': 'image\/webp'/, 'Craftom poster endpoint must force the WebP MIME type');

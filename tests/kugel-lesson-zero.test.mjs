@@ -565,6 +565,28 @@ try {
   assert.equal(openLessonOneForSubmissions.status, 200, 'teacher must open lesson one before students can submit lesson one work');
   assert.deepEqual(openLessonOneForSubmissionsBody.lessonAccess.openedLessonIds, [0, 1]);
 
+  const closeLessonOneForSubmissions = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/1/close`, {}, teacherACookie);
+  const closeLessonOneForSubmissionsBody = await closeLessonOneForSubmissions.json();
+  assert.equal(closeLessonOneForSubmissions.status, 200, 'teacher must be able to lock an open lesson again');
+  assert.deepEqual(closeLessonOneForSubmissionsBody.lessonAccess.openedLessonIds, [0]);
+  assert.equal(closeLessonOneForSubmissionsBody.lessonAccess.lessons.find(lesson => Number(lesson.id) === 1).open, false);
+
+  const blockedAfterLessonLock = await post(baseUrl, '/api/craftom/exit-ticket', {
+    lessonId: 1,
+    challengeId: 1,
+    lessonTitle: 'שיעור נעול',
+    challengeTitle: 'אתגר נעול',
+    exitQuestion: 'מה בנית?',
+    answer: 'ניסיון אחרי נעילה',
+    photo: { name: 'locked.png', dataUrl: pngDataUrl },
+  }, submissionStudentCookie);
+  assert.equal(blockedAfterLessonLock.status, 423, 'locked Craftom lessons should stop accepting new student submissions');
+
+  const reopenLessonOneForSubmissions = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/1/open`, {}, teacherACookie);
+  const reopenLessonOneForSubmissionsBody = await reopenLessonOneForSubmissions.json();
+  assert.equal(reopenLessonOneForSubmissions.status, 200, 'teacher must be able to reopen a locked lesson');
+  assert.deepEqual(reopenLessonOneForSubmissionsBody.lessonAccess.openedLessonIds, [0, 1]);
+
   const anonymousSubmission = await post(baseUrl, '/api/craftom/exit-ticket', {
     lessonId: 1,
     answer: 'ללא כניסה',

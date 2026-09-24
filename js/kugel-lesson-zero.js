@@ -411,6 +411,20 @@
       return button;
     }
 
+    function closeLessonButton(lessonId, label = 'נעילת שיעור') {
+      const access = lessonAccessInfo(lessonId);
+      if (Number(lessonId) === 0 || !access.open) return null;
+      const button = node('button', label, 'btn lock-lesson-action danger-action');
+      button.type = 'button';
+      button.addEventListener('click', () => teacherAction(
+        scoped(`/lessons/${encodeURIComponent(lessonId)}/close`),
+        {},
+        `נועלים את שיעור ${lessonId} לתלמידים…`,
+        `שיעור ${lessonId} נעול עכשיו לתלמידים.`
+      ));
+      return button;
+    }
+
     function liveMinecraftControlsAvailable() {
       const session = current?.session || {};
       return Boolean(current?.minecraftConfigured && session.active && session.serverState === 'running');
@@ -603,8 +617,10 @@
             const manageButton = node('a', `ניהול שיעור ${lesson.id}`, 'btn secondary lesson-manage-action');
             manageButton.href = teacherPageUrl({ lesson: lesson.id });
             const openButton = openLessonButton(lesson.id, `פתיחת שיעור ${lesson.id} לתלמידים`);
+            const closeButton = closeLessonButton(lesson.id, `נעילת שיעור ${lesson.id}`);
             lessonActions.append(manageButton);
             if (openButton) lessonActions.append(openButton);
+            if (closeButton) lessonActions.append(closeButton);
             item.append(
               lead,
               accessBadge,
@@ -649,7 +665,8 @@
         const manageButton = node('a', `ניהול שיעור ${lessonId}`, 'btn secondary lesson-manage-action');
         manageButton.href = teacherPageUrl({ lesson: lessonId });
         const button = openLessonButton(lessonId, `פתיחת שיעור ${lessonId} לתלמידים`);
-        container.replaceChildren(manageButton, ...(button ? [button] : []));
+        const closeButton = closeLessonButton(lessonId, `נעילת שיעור ${lessonId}`);
+        container.replaceChildren(manageButton, ...(button ? [button] : []), ...(closeButton ? [closeButton] : []));
       });
       if (teacherProgramVideoPreview && program?.overviewVideo && !teacherProgramVideoPreview.dataset.rendered) {
         renderTeacherVideoPreview(
@@ -715,6 +732,8 @@
       const actions = renderTeacherLessonActions(lesson, session, activeLessonId, minecraftBlocked);
       const openButton = openLessonButton(lessonId, `פתיחת שיעור ${lessonId} לתלמידים`);
       if (openButton) actions.prepend(openButton);
+      const closeButton = closeLessonButton(lessonId, `נעילת שיעור ${lessonId}`);
+      if (closeButton) actions.prepend(closeButton);
       selectedLessonActions.replaceChildren(...actions.childNodes);
     }
 
@@ -735,7 +754,8 @@
       const preview = node('a', 'תצוגת תלמיד', 'btn secondary');
       preview.href = studentPreviewUrl(lesson.id);
       const openButton = openLessonButton(lesson.id, 'פתיחה לתלמידים');
-      actions.append(choose, preview, ...(openButton ? [openButton] : []));
+      const closeButton = closeLessonButton(lesson.id, `נעילת שיעור ${lesson.id}`);
+      actions.append(choose, preview, ...(openButton ? [openButton] : []), ...(closeButton ? [closeButton] : []));
       card.append(actions);
       return card;
     }

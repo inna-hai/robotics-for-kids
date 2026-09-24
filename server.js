@@ -4224,6 +4224,41 @@ async function handleKugelApi(req, res) {
       return send(res, 200, JSON.stringify({ ok: true, lessonAccess: access }));
     }
 
+    const teacherCloseLesson = pathname.match(/^\/api\/kugel\/classes\/([^/]+)\/lessons\/([0-9]+)\/close$/);
+    if (teacherCloseLesson) {
+      const classroomId = decodeURIComponent(teacherCloseLesson[1]);
+      const lessonId = Number(teacherCloseLesson[2]);
+      if (!Number.isInteger(lessonId) || lessonId < 1 || lessonId > 16) {
+        return send(res, 400, JSON.stringify({ error: 'מספר השיעור אינו תקין.' }));
+      }
+      const context = getTeacherKugelClass(req, classroomId);
+      if (context.status) return send(res, context.status, JSON.stringify({ error: context.error }));
+      if (!consumeKugelActionLimit(`teacher:${context.teacher.id}:${classroomId}:close-lesson`, 30)) {
+        return send(res, 429, JSON.stringify({ error: 'יותר מדי פעולות. נסו שוב בעוד דקה.' }));
+      }
+      const access = withSummerDb(db => db.transaction(() => {
+        const authorization = requireCurrentTeacherKugelEntitlement(db, req, context.teacher.id, classroomId);
+        if (authorization.status) return { authorizationError: authorization };
+        const existing = db.prepare(`
+          SELECT status FROM classroom_lesson_access
+          WHERE classroom_id = ? AND course_id = ? AND lesson_id = ?
+        `).get(classroomId, KUGEL_COURSE_ID, lessonId);
+        if (!existing || existing.status !== 'open') {
+          return { orderError: `שיעור ${lessonId} כבר נעול לתלמידים.` };
+        }
+        const now = new Date().toISOString();
+        db.prepare(`
+          UPDATE classroom_lesson_access
+          SET status = 'closed', closed_at = ?, updated_at = ?
+          WHERE classroom_id = ? AND course_id = ? AND lesson_id = ?
+        `).run(now, now, classroomId, KUGEL_COURSE_ID, lessonId);
+        return buildCraftomLessonAccess(db, classroomId);
+      }).immediate());
+      if (access.authorizationError) return send(res, access.authorizationError.status, JSON.stringify({ error: access.authorizationError.error }));
+      if (access.orderError) return send(res, 409, JSON.stringify({ error: access.orderError }));
+      return send(res, 200, JSON.stringify({ ok: true, lessonAccess: access }));
+    }
+
     const teacherLessonLaunch = pathname.match(/^\/api\/kugel\/classes\/([^/]+)\/lessons\/([0-9]+)\/launch$/);
     if (teacherLessonLaunch) {
       const classroomId = decodeURIComponent(teacherLessonLaunch[1]);

@@ -1420,6 +1420,10 @@
   cursor: pointer;
 }
 
+.lock-lesson-action {
+  cursor: pointer;
+}
+
 .teacher-home-challenge .challenge-actions {
   display: flex;
   gap: 8px;
