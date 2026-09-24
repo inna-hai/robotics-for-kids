@@ -790,7 +790,7 @@
       if (selectedTeacherLesson && !showingChallengeOverview && !showingTeacherHome) selectedTeacherLesson.hidden = false;
       if (!showingChallengeOverview && !showingTeacherHome) renderSelectedLesson(selectedLesson, session, activeLessonId, minecraftBlocked);
       const liveMinecraft = liveMinecraftControlsAvailable();
-      if (teacherLessonSteps) teacherLessonSteps.hidden = !showingLessonManagement;
+      if (teacherLessonSteps) teacherLessonSteps.hidden = !showingLessonManagement || !liveMinecraft;
       if (teacherStudentBoard) teacherStudentBoard.hidden = !showingLessonManagement;
       if (teacherLiveControls) teacherLiveControls.hidden = !showingLessonManagement || !liveMinecraft;
       if (teacherMetrics) teacherMetrics.hidden = !showingLessonManagement || !liveMinecraft;

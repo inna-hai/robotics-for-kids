@@ -81,7 +81,7 @@ assert.doesNotMatch(teacher, /teacherHomeMinecraftActions/);
 assert.doesNotMatch(teacher, /teacherLessonPickerForm/);
 assert.doesNotMatch(teacher, /teacherLessonSelect/);
 assert.match(teacher, /20260914-video-first-frames-1/, 'teacher board cache-busts the challenge data posters');
-assert.match(teacher, /20260924-hide-inactive-live-tools-1/, 'teacher board cache-busts the inactive live-tool hiding');
+assert.match(teacher, /20260924-hide-inactive-live-tools-2/, 'teacher board cache-busts the inactive live-tool hiding');
 assert.match(teacher, /rel="preload" as="image" href="assets\/craftom\/challenges\/craftom-program-real-minecraft-gemini-live-1x-first-frame\.webp"/, 'teacher home should preload the first visible video poster');
 assert.match(teacher, /craftom-challenge4-smart-city-automations-gemini-live-1x-first-frame\.webp" type="image\/webp"/, 'teacher home should preload challenge video posters');
 assert.ok(teacher.indexOf('hero teacher-hero') < teacher.indexOf('teacher-control'), 'teacher hero should be the first panel in the teacher board');
