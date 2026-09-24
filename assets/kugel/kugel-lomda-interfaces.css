@@ -1117,8 +1117,9 @@
 #teacherStudentBoard[hidden],
 .teacher-home-overview[hidden],
 .teacher-selected-lesson[hidden],
-.teacher-challenge-overview[hidden] {
-  display: none;
+.teacher-challenge-overview[hidden],
+.teacher-hero-actions [hidden] {
+  display: none !important;
 }
 
 .teacher-student-board-panel {
