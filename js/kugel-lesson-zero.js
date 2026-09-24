@@ -597,7 +597,10 @@
             accessBadge.dataset.accessLessonId = String(lesson.id);
             const lessonActions = node('div', undefined, 'lesson-access-actions');
             lessonActions.dataset.openActionsLessonId = String(lesson.id);
+            const manageButton = node('a', `ניהול שיעור ${lesson.id}`, 'btn secondary lesson-manage-action');
+            manageButton.href = teacherPageUrl({ lesson: lesson.id });
             const openButton = openLessonButton(lesson.id, `פתיחת שיעור ${lesson.id} לתלמידים`);
+            lessonActions.append(manageButton);
             if (openButton) lessonActions.append(openButton);
             item.append(
               lead,
@@ -611,9 +614,7 @@
           const actions = node('div', undefined, 'challenge-actions');
           const challengeLink = node('a', 'כניסה לאתגר', 'btn');
           challengeLink.href = teacherPageUrl({ challenge: challengeId });
-          const firstLessonLink = node('a', 'ניהול שיעור ראשון', 'btn secondary');
-          firstLessonLink.href = firstLesson ? teacherPageUrl({ lesson: firstLesson }) : teacherPageUrl({ challenge: challengeId });
-          actions.append(challengeLink, firstLessonLink);
+          actions.append(challengeLink);
           card.append(meetingList, actions);
           return card;
         });
@@ -642,8 +643,10 @@
       });
       teacherHomeChallenges.querySelectorAll('[data-open-actions-lesson-id]').forEach(container => {
         const lessonId = Number(container.dataset.openActionsLessonId);
+        const manageButton = node('a', `ניהול שיעור ${lessonId}`, 'btn secondary lesson-manage-action');
+        manageButton.href = teacherPageUrl({ lesson: lessonId });
         const button = openLessonButton(lessonId, `פתיחת שיעור ${lessonId} לתלמידים`);
-        container.replaceChildren(...(button ? [button] : []));
+        container.replaceChildren(manageButton, ...(button ? [button] : []));
       });
       if (teacherProgramVideoPreview && program?.overviewVideo && !teacherProgramVideoPreview.dataset.rendered) {
         renderTeacherVideoPreview(

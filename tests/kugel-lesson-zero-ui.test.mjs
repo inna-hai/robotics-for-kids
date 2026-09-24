@@ -81,7 +81,7 @@ assert.doesNotMatch(teacher, /teacherHomeMinecraftActions/);
 assert.doesNotMatch(teacher, /teacherLessonPickerForm/);
 assert.doesNotMatch(teacher, /teacherLessonSelect/);
 assert.match(teacher, /20260914-video-first-frames-1/, 'teacher board cache-busts the challenge data posters');
-assert.match(teacher, /20260924-hide-inactive-live-tools-2/, 'teacher board cache-busts the inactive live-tool hiding');
+assert.match(teacher, /20260924-lesson-manage-each-lesson-1/, 'teacher board cache-busts the per-lesson management actions');
 assert.match(teacher, /rel="preload" as="image" href="assets\/craftom\/challenges\/craftom-program-real-minecraft-gemini-live-1x-first-frame\.webp"/, 'teacher home should preload the first visible video poster');
 assert.match(teacher, /craftom-challenge4-smart-city-automations-gemini-live-1x-first-frame\.webp" type="image\/webp"/, 'teacher home should preload challenge video posters');
 assert.ok(teacher.indexOf('hero teacher-hero') < teacher.indexOf('teacher-control'), 'teacher hero should be the first panel in the teacher board');
@@ -171,6 +171,8 @@ assert.match(client, /slides\.href = `craftom-minecraft-slides\.html\?challenge=
 assert.match(client, /חזרה לניהול שיעור מורה/, 'teacher-launched lesson-zero preview should include a return action');
 assert.match(client, /שיעור \$\{lesson\.id\}/, 'teacher home lesson buttons should use clear lesson labels');
 assert.match(client, /בחר שיעור כדי לפתוח את מסך הניהול המלא שלו/);
+assert.match(client, /ניהול שיעור \$\{lesson\.id\}/, 'teacher home should show a management action for each lesson');
+assert.doesNotMatch(client, /ניהול שיעור ראשון/, 'teacher home should not show a single first-lesson management shortcut');
 assert.match(client, /עוצרים את התלמיד/);
 assert.doesNotMatch(teacherClient, /בחרי שיעור|התלמיד\/ה/, 'teacher screen copy should use masculine wording');
 assert.doesNotMatch(client, /teacherLessonMenuOptions/);
