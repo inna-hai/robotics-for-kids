@@ -28,7 +28,7 @@ assert.match(student, /מבוך המטבעות/);
 assert.match(student, /פתחו את Minecraft/);
 assert.match(student, /minecraftAccessCode/);
 assert.match(student, /המשך לשיעור 1/);
-assert.match(student, /20260915-attempt-metrics-1/, 'lesson zero should load the attempt-metrics student script');
+assert.match(student, /20260923-lesson-access-1/, 'lesson zero should load the current lesson-access client');
 assert.doesNotMatch(student, /name="studentName"/, 'student identity must come from the authenticated classroom session');
 assert.doesNotMatch(student, /href="kugel-teacher\.html"/, 'students must not receive a shortcut to teacher controls');
 
@@ -60,8 +60,9 @@ assert.doesNotMatch(teacher, /דף הבית של המורה/);
 assert.doesNotMatch(teacher, /מבוא למורה/);
 assert.match(teacher, /בחירת שיעור לפתיחה/);
 assert.match(teacher, /בחירת שיעור לפי אתגרים/);
-assert.match(teacher, /תצוגה מקדימה כתלמיד/);
-assert.match(teacher, /teacherHomeStudentPreview/);
+assert.doesNotMatch(teacher, /תצוגת תלמיד לשיעור פתיחה/);
+assert.doesNotMatch(teacher, /teacherHomeStudentPreview/);
+assert.doesNotMatch(teacher, /teacherHomeCurrentLesson/);
 assert.doesNotMatch(teacher, /תצוגה מקדימה לתלמיד/);
 assert.match(teacher, /הכיתה שאתה מנהל כרגע/);
 assert.match(teacher, /מה התלמידים בונים/);
@@ -75,7 +76,7 @@ assert.doesNotMatch(teacher, /teacherHomeMinecraftActions/);
 assert.doesNotMatch(teacher, /teacherLessonPickerForm/);
 assert.doesNotMatch(teacher, /teacherLessonSelect/);
 assert.match(teacher, /20260914-video-first-frames-1/, 'teacher board cache-busts the challenge data posters');
-assert.match(teacher, /20260915-attempt-metrics-1/, 'teacher board cache-busts the attempt-metrics client');
+assert.match(teacher, /20260924-lesson-zero-home-open-1/, 'teacher board cache-busts the lesson-zero home status update');
 assert.match(teacher, /rel="preload" as="image" href="assets\/craftom\/challenges\/craftom-program-real-minecraft-gemini-live-1x-first-frame\.webp"/, 'teacher home should preload the first visible video poster');
 assert.match(teacher, /craftom-challenge4-smart-city-automations-gemini-live-1x-first-frame\.webp" type="image\/webp"/, 'teacher home should preload challenge video posters');
 assert.ok(teacher.indexOf('hero teacher-hero') < teacher.indexOf('teacher-control'), 'teacher hero should be the first panel in the teacher board');
@@ -94,6 +95,10 @@ assert.match(teacher, /teacher-student-board-details/);
 assert.ok(teacher.indexOf('<summary>לוח התלמידים</summary>') < teacher.indexOf('id="studentMonitor"'), 'student board opens from its summary before the monitor');
 assert.match(teacher, /עצירת הכיתה/);
 assert.match(teacher, /שחרור הכיתה/);
+assert.match(teacher, /details class="panel compact-panel teacher-live-controls teacher-live-controls-bottom"/);
+assert.match(teacher, /בקרה כיתתית ושרת Minecraft/);
+assert.ok(teacher.indexOf('id="teacherLiveControls"') > teacher.indexOf('teacherStudentBoard'), 'live classroom controls should sit folded after the lesson content');
+assert.ok(teacher.indexOf('server-status-card') > teacher.indexOf('id="teacherLiveControls"'), 'server status should live inside the folded bottom controls');
 
 for (const endpoint of [
   '/api/kugel/session',
@@ -105,7 +110,7 @@ for (const endpoint of [
   '/message',
   '/freeze',
   '/minecraft',
-]) assert.ok(client.includes(endpoint), `Kugel client missing ${endpoint}`);
+]) assert.ok(client.includes(endpoint), `Agent Academy client missing ${endpoint}`);
 assert.match(client, /lessons\/\$\{encodeURIComponent\(lessonId\)\}\/launch/);
 assert.match(client, /חסר עולם Minecraft/);
 assert.match(client, /craftom-minecraft-lesson-\$\{lessonId\}\.html\?\$\{suffix\}/, 'teacher student previews should include the return query on lesson pages');
@@ -113,6 +118,8 @@ assert.match(client, /teacherPageUrl\(\{ challenge: challengeId \}\)/);
 assert.doesNotMatch(client, /renderTeacherLessonSelect/);
 assert.doesNotMatch(client, /teacherLessonPickerForm/);
 assert.match(client, /renderTeacherHome\(lessons, session, activeLessonId, data\)/);
+assert.match(client, /teacherHomeLessonPickerLink\.hidden = !showingTeacherHome/, 'lesson picker hero action should only show on the teacher home screen');
+assert.match(client, /session\.active \|\| Number\(activeLessonId\) === 0/, 'teacher home should treat lesson zero as open even when the Minecraft server is idle');
 assert.match(client, /function teacherProgramLessons\(\)/, 'teacher home should have fallback lesson data before a classroom session loads');
 assert.match(client, /render\(\{\s*classroom: \{ name: 'כיתה' \},\s*session: \{\},\s*lessons: teacherProgramLessons\(\)/s, 'teacher home and challenge views should render fallback program data without a classroom id');
 assert.match(client, /const selectedId = hasRequestedLesson \? requested : \(fallback \|\| 0\)/, 'an explicit lesson=0 must not fall back to a different active lesson');
@@ -145,9 +152,8 @@ assert.match(client, /meeting-list/);
 assert.match(client, /challenge-actions/);
 assert.match(client, /minecraftStateLabel\(session\)/);
 assert.match(client, /teacherHomeOverview\.hidden = !onTeacherHome/);
-assert.match(client, /teacherHomeCurrentLesson\.href = activeLesson \? teacherPageUrl\(\{ lesson: activeLesson\.id \}\) : '#teacherHomeChallenges'/);
-assert.match(client, /teacherHomeStudentPreview\.href = activeLesson/s, 'teacher home should expose a student preview button in the top action row');
-assert.match(client, /craftom-school\/preview\/index\.html/, 'teacher home preview should fall back to the student academy home');
+assert.doesNotMatch(client, /teacherHomeCurrentLesson/, 'teacher home top actions should not duplicate the lesson picker');
+assert.doesNotMatch(client, /teacherHomeStudentPreview/, 'student preview should not appear as a top-level home action');
 assert.match(client, /function teacherReturnQuery\(lessonId\)/, 'teacher links should mark student/slides pages as opened from teacher management');
 assert.match(client, /next\.set\('teacherReturn', '1'\)/, 'teacher return query should be attached to teacher-launched preview pages');
 assert.match(client, /function studentPreviewUrl\(lessonId\)/, 'teacher preview links should route through a shared preview URL helper');
@@ -179,7 +185,7 @@ assert.ok(client.includes("page === 'student'"));
 assert.ok(client.includes('classroomId'));
 assert.ok(client.includes('minecraftPlayerName'));
 assert.ok(client.includes('replaceChildren'));
-assert.ok(!client.includes('localStorage'), 'Kugel completion and identity must not trust localStorage');
+assert.ok(!client.includes('localStorage'), 'Agent Academy completion and identity must not trust localStorage');
 assert.ok(!client.includes('program.lessons'), 'the selective integration must not duplicate the existing 16 lessons');
 assert.ok(!client.includes('DEFAULT_KUGEL_STUDENTS'), 'the live roster must come from the authenticated classroom');
 assert.match(interfacesCss, /\.teacher-board\s*{[^}]*grid-template-columns:\s*1fr/s, 'teacher board should be a single vertical column');
@@ -206,9 +212,9 @@ assert.doesNotMatch(interfacesCss, /\.student-layout,\s*\.teacher-board\s*{[^}]*
 assert.doesNotMatch(interfacesCss, /teacher-lesson-menu/, 'teacher lesson dropdown should be removed from the home page');
 
 assert.ok(classroomClient.includes('kugel-teacher.html?classroomId='), 'teacher class cards must link to their scoped lesson-zero board');
-assert.ok(classroomClient.includes("'craftom-agent': 'craftom-school/preview/index.html'"), 'classroom students should enter the Craftom home after lesson zero is completed');
+assert.ok(classroomClient.includes("'craftom-agent': 'kugel-student.html'"), 'classroom students should enter the open lesson-zero page');
 assert.ok(server.includes("Location: '/kugel-student.html'"), 'unfinished Craftom students should be redirected to lesson zero from the course home');
-assert.ok(client.includes('סיום שיעור'), 'active teacher Minecraft lesson button should become an end-lesson action');
+assert.ok(client.includes('סגירת עולם Minecraft לשיעור הפתיחה'), 'active teacher lesson-zero button should become an end-lesson action');
 assert.ok(client.includes("scoped('/stop')"), 'active teacher lesson button should release the Minecraft server');
 assert.match(server, /basename === 'kugel-student'/);
 assert.match(server, /basename === 'kugel-teacher'/);
@@ -230,4 +236,4 @@ assert.match(server, /kugel-50-safe-compounds-v3-mazes-8-coins-npc-reset-caged-i
 assert.match(server, /kugel-50-safe-compounds-v3-20260824/);
 assert.match(server, /trackedLessonId === 0[\s\S]{0,140}summary\.completionRecorded/, 'lesson-zero tracking must use persisted lesson-zero completion, not another lesson’s run state');
 assert.ok(packageJson.includes('node --check js/kugel-lesson-zero.js'));
-console.log('✓ Kugel UI contains only secure lesson zero and links back to the existing course');
+console.log('✓ Agent Academy UI contains only secure lesson zero and links back to the existing course');

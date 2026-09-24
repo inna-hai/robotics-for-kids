@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>כניסה ללומדה | hai.tech</title>
   <meta name="description" content="בחירה בין התנסות כאורח, מנוי אישי וכניסה מאוחדת לכיתה.">
-  <link rel="stylesheet" href="css/classroom-platform.css">
+  <link rel="stylesheet" href="css/classroom-platform.css?v=20260922-password-eye-1">
 </head>
 <body data-classroom-page="entry">
   <header class="topbar">
@@ -46,7 +46,9 @@
           <label>סיסמה או קוד אישי
             <span class="password-field">
               <input id="classroom-password" name="password" type="password" autocomplete="current-password" required>
-              <button class="button quiet password-toggle" id="classroom-password-toggle" type="button" aria-controls="classroom-password" aria-pressed="false">הצגת סיסמה</button>
+              <button class="button quiet password-toggle" id="classroom-password-toggle" type="button" aria-controls="classroom-password" aria-pressed="false" aria-label="הצגת סיסמה">
+                <span class="eye-icon" aria-hidden="true"></span>
+              </button>
             </span>
           </label>
           <button class="button primary" type="submit">כניסה לכיתה</button>
@@ -57,7 +59,7 @@
     </div>
   </main>
 
-  <script src="js/classroom-entry.js?v=20260915-unified-login-1"></script>
+  <script src="js/classroom-entry.js?v=20260922-password-eye-1"></script>
   <script src="/js/feedback-widget.js?v=20260907-tehila-fixes-1"></script>
 </body>
 </html>

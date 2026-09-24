@@ -100,7 +100,7 @@
     const reveal = password.type === 'password';
     password.type = reveal ? 'text' : 'password';
     passwordToggle.setAttribute('aria-pressed', reveal ? 'true' : 'false');
-    passwordToggle.textContent = reveal ? 'הסתרת סיסמה' : 'הצגת סיסמה';
+    passwordToggle.setAttribute('aria-label', reveal ? 'הסתרת סיסמה' : 'הצגת סיסמה');
   });
 
   form.addEventListener('submit', async (event) => {

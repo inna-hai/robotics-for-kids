@@ -144,39 +144,15 @@ try {
   assert.deepEqual(classPickerValues, ['craftom-agent']);
   console.log('✓ administrator entitlements control teacher links and class assignments in a real browser');
 
-  await classCard.locator('[data-action="add-student"] input[name="name"]').fill('תלמידת E2E');
-  const addStudentResponse = page.waitForResponse((response) => response.url().includes('/students') && response.request().method() === 'POST');
-  await classCard.locator('button[data-action="add-student"]').click();
-  assert.equal((await addStudentResponse).status(), 201);
-  let studentRow = classCard.locator('[data-student-id]');
-  await studentRow.waitFor();
-  await studentRow.locator('input[name="name"]').fill('תלמידת E2E מעודכנת');
-  await studentRow.locator('button[data-action="save-student"]').click();
-  studentRow = classCard.locator('[data-student-id]');
-  await studentRow.waitFor();
-  assert.equal(await studentRow.locator('input[name="name"]').inputValue(), 'תלמידת E2E מעודכנת');
-  await studentRow.locator('button[data-action="reset-student-code"]').click();
-  const codeNotice = classCard.locator('[data-role="student-code-notice"]');
-  await codeNotice.waitFor({ state: 'visible' });
-  assert.match(await codeNotice.textContent(), /[A-Z0-9]{6}/);
-  await studentRow.locator('button[data-action="archive-student"]').click();
-  await studentRow.waitFor({ state: 'detached' });
-  await classCard.locator('button[data-action="show-archived-students"]').click();
-  let ownerArchivedStudent = classCard.locator('.archived-students [data-student-id]');
-  await ownerArchivedStudent.waitFor();
-  await ownerArchivedStudent.locator('button[data-action="restore-student"]').click();
-  studentRow = classCard.locator('.student-row[data-student-id]');
-  await studentRow.waitFor();
-  await studentRow.locator('button[data-action="archive-student"]').click();
-  await studentRow.waitFor({ state: 'detached' });
+  await classCard.locator('.students-table-section').waitFor();
+  assert.equal(await classCard.locator('button[data-action="add-student"]').count(), 0);
+  assert.equal(await classCard.locator('button[data-action="reset-student-code"]').count(), 0);
+  assert.equal(await classCard.locator('button[data-action="archive-student"]').count(), 0);
+  assert.equal(await classCard.locator('.student-edit-form').count(), 0);
+  console.log('✓ teacher classroom roster is read-only in a real browser');
 
   await page.goto(`${baseUrl}/classroom-admin.html`);
   await page.locator('#admin-dashboard').waitFor({ state: 'visible' });
-  await page.locator('#show-archived-teachers').check();
-  const archivedStudent = page.locator('[data-student-id]').filter({ hasText: 'תלמידת E2E מעודכנת' });
-  await archivedStudent.waitFor();
-  await archivedStudent.locator('button[data-action="restore-student"]').click();
-  await archivedStudent.waitFor({ state: 'detached' });
 
   await page.locator('#create-invitation-form input[name="name"]').fill('מורה שנוצרה בניהול');
   await page.locator('#create-invitation-form input[name="email"]').fill('managed-teacher@example.test');

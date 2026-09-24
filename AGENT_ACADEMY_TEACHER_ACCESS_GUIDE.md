@@ -618,7 +618,7 @@
 - **Teacher / מורה** - יוצרת כיתות, מוסיפה תלמידים, מפעילה שיעורי Minecraft.
 - **Student / תלמיד** - נכנס עם קוד כיתה וקוד אישי.
 - **craftom-agent** - מזהה הקורס של אקדמיית ה-Agent.
-- **Kugel** - שם פנימי לחיבור Minecraft/live classroom.
+- **Agent Academy live classroom** - שם פנימי לחיבור Minecraft/live classroom.
 - **UPN** - כתובת Microsoft של המשתמש, למשל `student@hai.tech`.
 - **Minecraft identity** - שיוך בין תלמיד במערכת לבין UPN + שם שחקן Minecraft.
 - **Verifier** - שירות חיצוני/פנימי שמוודא שהחשבון קיים, פעיל ובעל רישיון Minecraft Education.

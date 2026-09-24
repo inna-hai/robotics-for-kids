@@ -124,16 +124,21 @@
       const student = data.student || {};
       const session = data.session || {};
       const minecraft = data.minecraft;
+      const isLessonZero = Number(data.lesson?.id ?? session.lessonId ?? 0) === 0;
       renderQaLessonSwitcher(data);
-      sessionStatus.textContent = session.active ? 'השיעור פעיל' : 'ממתין להפעלת המורה';
+      sessionStatus.textContent = session.active
+        ? (isLessonZero ? 'עולם Minecraft פעיל' : 'השיעור פתוח לכיתה')
+        : (isLessonZero ? 'שיעור הפתיחה פתוח לתלמידים' : 'ממתין שהמורה תפתח גישה לשיעור');
       playerStatus.textContent = student.connected ? 'מחובר/ת' : 'לא מחובר/ת';
       identity.textContent = student.minecraftPlayerName
         ? `${student.name} • שחקן Minecraft: ${student.minecraftPlayerName}`
         : `${student.name || 'תלמיד/ה'} • המורה עדיין לא שייכה לך שם שחקן ב-Minecraft.`;
       minecraftDetails.textContent = minecraft && session.active
         ? `שרת: ${minecraft.serverName} • כתובת: ${minecraft.serverAddress} • Server ID: ${minecraft.serverId}`
-        : 'פרטי החיבור יוצגו לאחר שהמורה תפעיל את העולם ותשייך את שם השחקן.';
-      document.getElementById('minecraftAccessCode').textContent = minecraft?.accessCode || 'יוצג לאחר הפעלת השיעור';
+        : (isLessonZero
+          ? 'שיעור הפתיחה פתוח. פרטי Minecraft יוצגו לאחר שהמורה תפעיל את עולם התרגול ותשייך את שם השחקן.'
+          : 'פרטי החיבור יוצגו לאחר שהמורה תפעיל את העולם ותשייך את שם השחקן.');
+      document.getElementById('minecraftAccessCode').textContent = minecraft?.accessCode || 'יוצג לאחר הפעלת עולם Minecraft';
       coinProgress.textContent = `${student.coins || 0} מתוך 8 מטבעות · ניסיונות: ${Number(student.attemptCount || 0)} · זמן אחרון: ${formatDuration(student.lastDurationMs)} · שיא: ${formatDuration(student.bestTimeMs)}`;
       const steps = [
         ['העולם הופעל', session.active],
@@ -146,7 +151,9 @@
       launch.disabled = !canStart;
       reset.disabled = !canStart;
       finish.disabled = !canStart;
-      continueCourse.hidden = !student.completionRecorded;
+      const lessonOneOpen = Boolean(data.lessonAccess?.openedLessonIds?.map(Number).includes(1));
+      continueCourse.hidden = !(student.completionRecorded || lessonOneOpen);
+      continueCourse.textContent = lessonOneOpen ? 'המשך לשיעור 1' : 'המשך לשיעור 1 אחרי בדיקת סיום';
     }
 
     async function refresh() {
@@ -233,14 +240,13 @@
     const teacherLessonKicker = document.getElementById('teacherLessonKicker');
     const teacherLessonTitle = document.getElementById('teacherLessonTitle');
     const teacherLessonGoal = document.getElementById('teacherLessonGoal');
+    const teacherHomeLessonPickerLink = document.getElementById('teacherHomeLessonPickerLink');
     const teacherLiveControls = document.getElementById('teacherLiveControls');
     const teacherLessonSteps = document.getElementById('teacherLessonSteps');
     const teacherMetrics = document.getElementById('teacherMetrics');
     const teacherStudentBoard = document.getElementById('teacherStudentBoard');
     const teacherHomeOverview = document.getElementById('teacherHomeOverview');
     const teacherHomeChallenges = document.getElementById('teacherHomeChallenges');
-    const teacherHomeCurrentLesson = document.getElementById('teacherHomeCurrentLesson');
-    const teacherHomeStudentPreview = document.getElementById('teacherHomeStudentPreview');
     const teacherHomeClassName = document.getElementById('teacherHomeClassName');
     const teacherHomeActiveLesson = document.getElementById('teacherHomeActiveLesson');
     const teacherHomeMinecraftState = document.getElementById('teacherHomeMinecraftState');
@@ -251,6 +257,7 @@
     const teacherChallengeStory = document.getElementById('teacherChallengeStory');
     const teacherChallengeVideoPreview = document.getElementById('teacherChallengeVideoPreview');
     const teacherChallengeLessons = document.getElementById('teacherChallengeLessons');
+    const teacherLogout = document.getElementById('kugel-teacher-logout');
     let current = null;
 
     function scoped(action) {
@@ -329,7 +336,7 @@
         id: challengeId,
         title: challenge?.title || `אתגר ${challengeId}`,
         concept: challenge?.concept || '',
-        story: challenge?.story || 'בחרו את אחד השיעורים באתגר כדי לראות את לוח המורה, ההתקדמות וכפתור פתיחת Minecraft.',
+        story: challenge?.story || 'בחרו את אחד השיעורים באתגר כדי לראות את לוח המורה, ההתקדמות וכפתור פתיחת הגישה לתלמידים.',
         video: challenge?.video || '',
         poster: challenge?.poster || '',
         meetings: challenge?.meetings || fallbackLessons.map(lesson => [
@@ -354,6 +361,36 @@
       } catch (error) {
         setStatus(status, error.message, true);
       }
+    }
+
+    function lessonAccessInfo(lessonId) {
+      return current?.lessonAccess?.lessons?.find(item => Number(item.id) === Number(lessonId)) || {
+        id: Number(lessonId),
+        open: Number(lessonId) === 0,
+        nextToOpen: false,
+      };
+    }
+
+    function lessonAccessText(lessonId) {
+      const access = lessonAccessInfo(lessonId);
+      if (Number(lessonId) === 0) return 'פתוח תמיד';
+      if (access.open) return 'פתוח לתלמידים';
+      if (access.nextToOpen) return 'הבא לפתיחה';
+      return 'נעול לתלמידים';
+    }
+
+    function openLessonButton(lessonId, label = 'פתיחה לתלמידים') {
+      const access = lessonAccessInfo(lessonId);
+      if (Number(lessonId) === 0 || access.open || !access.nextToOpen) return null;
+      const button = node('button', label, 'btn open-next-lesson-action');
+      button.type = 'button';
+      button.addEventListener('click', () => teacherAction(
+        scoped(`/lessons/${encodeURIComponent(lessonId)}/open`),
+        {},
+        `פותחים את שיעור ${lessonId} לתלמידים…`,
+        `שיעור ${lessonId} פתוח עכשיו לתלמידים.`
+      ));
+      return button;
     }
 
     function renderStudent(student) {
@@ -507,7 +544,19 @@
             link.dataset.lessonId = String(lesson.id);
             const lead = node('b');
             lead.append(link);
-            item.append(lead, document.createElement('br'), document.createTextNode(meeting?.[3] || 'כניסה לניהול השיעור, פתיחת Minecraft ומעקב אחרי הכיתה.'));
+            const accessBadge = node('span', lessonAccessText(lesson.id), 'lesson-access-badge');
+            accessBadge.dataset.accessLessonId = String(lesson.id);
+            const lessonActions = node('div', undefined, 'lesson-access-actions');
+            lessonActions.dataset.openActionsLessonId = String(lesson.id);
+            const openButton = openLessonButton(lesson.id, `פתיחת שיעור ${lesson.id} לתלמידים`);
+            if (openButton) lessonActions.append(openButton);
+            item.append(
+              lead,
+              accessBadge,
+              document.createElement('br'),
+              document.createTextNode(meeting?.[3] || 'כניסה לניהול השיעור, תצוגת תלמיד ומעקב אחרי הכיתה.'),
+              lessonActions,
+            );
             return item;
           }));
           const actions = node('div', undefined, 'challenge-actions');
@@ -523,23 +572,30 @@
         teacherHomeChallenges.dataset.rendered = 'true';
       }
       teacherHomeChallenges.querySelectorAll('[data-lesson-id]').forEach(link => {
-        link.classList.toggle('active', Number(link.dataset.lessonId) === Number(activeLessonId));
+        const lessonId = Number(link.dataset.lessonId);
+        link.classList.toggle('active', lessonId === Number(activeLessonId));
+        const access = lessonAccessInfo(lessonId);
+        link.classList.toggle('is-open-to-students', Boolean(access.open));
+        link.classList.toggle('is-next-to-open', Boolean(access.nextToOpen));
       });
-      const activeLesson = session.active
+      teacherHomeChallenges.querySelectorAll('[data-access-lesson-id]').forEach(badge => {
+        const lessonId = Number(badge.dataset.accessLessonId);
+        const access = lessonAccessInfo(lessonId);
+        badge.textContent = lessonAccessText(lessonId);
+        badge.classList.toggle('is-open', Boolean(access.open));
+        badge.classList.toggle('is-next', Boolean(access.nextToOpen));
+      });
+      teacherHomeChallenges.querySelectorAll('[data-open-actions-lesson-id]').forEach(container => {
+        const lessonId = Number(container.dataset.openActionsLessonId);
+        const button = openLessonButton(lessonId, `פתיחת שיעור ${lessonId} לתלמידים`);
+        container.replaceChildren(...(button ? [button] : []));
+      });
+      const activeLesson = session.active || Number(activeLessonId) === 0
         ? lessons.find(lesson => Number(lesson.id) === Number(activeLessonId || 0)) || null
         : null;
       if (teacherHomeClassName) teacherHomeClassName.textContent = data.classroom?.name || 'כיתה';
-      if (teacherHomeActiveLesson) teacherHomeActiveLesson.textContent = activeLesson ? (activeLesson.title || `שיעור ${activeLesson.id}`) : 'אין שיעור פעיל';
+      if (teacherHomeActiveLesson) teacherHomeActiveLesson.textContent = activeLesson ? (activeLesson.title || `שיעור ${activeLesson.id}`) : 'אין שיעור פתוח';
       if (teacherHomeMinecraftState) teacherHomeMinecraftState.textContent = minecraftStateLabel(session);
-      if (teacherHomeCurrentLesson) {
-        teacherHomeCurrentLesson.href = activeLesson ? teacherPageUrl({ lesson: activeLesson.id }) : '#teacherHomeChallenges';
-        teacherHomeCurrentLesson.textContent = activeLesson ? `כניסה לשיעור ${activeLesson.id}` : 'בחירת שיעור';
-      }
-      if (teacherHomeStudentPreview) {
-        teacherHomeStudentPreview.href = activeLesson
-          ? studentPreviewUrl(activeLesson.id)
-          : 'craftom-school/preview/index.html';
-      }
       if (teacherProgramVideoPreview && program?.overviewVideo && !teacherProgramVideoPreview.dataset.rendered) {
         renderTeacherVideoPreview(
           program.overviewVideo,
@@ -551,13 +607,17 @@
       }
       teacherLessonKicker.textContent = 'אקדמיית ה-Agent • מסך מורה';
       teacherLessonTitle.textContent = 'ניהול אקדמיית ה-Agent';
-      teacherLessonGoal.textContent = 'בחרו שיעור לפתיחה. הניהול המלא נמצא בתוך דף השיעור.';
+      teacherLessonGoal.textContent = 'בחרו שיעור לפתיחה מהרשימה למטה.';
     }
 
     function renderTeacherLessonActions(lesson, session, activeLessonId, minecraftBlocked) {
       const actionRow = node('div', undefined, 'minecraft-lesson-actions');
-      const isActiveLesson = Boolean(session.active && activeLessonId === Number(lesson.id));
-      const actionLabel = isActiveLesson ? `סיום שיעור ${lesson.id}` : (lesson.hasWorld ? `פתיחת Minecraft לשיעור ${lesson.id}` : 'חסר עולם Minecraft');
+      const lessonId = Number(lesson.id);
+      const isLessonZero = lessonId === 0;
+      const isActiveLesson = Boolean(session.active && activeLessonId === lessonId);
+      const actionLabel = isActiveLesson
+        ? (isLessonZero ? 'סגירת עולם Minecraft לשיעור הפתיחה' : `סגירת עולם Minecraft לשיעור ${lesson.id}`)
+        : (lesson.hasWorld ? (isLessonZero ? 'הפעלת עולם Minecraft לשיעור הפתיחה' : `הפעלת עולם Minecraft לשיעור ${lesson.id}`) : 'חסר עולם Minecraft');
       const launch = node('button', actionLabel, `primary-action start-lesson-action${isActiveLesson ? ' end-lesson-action' : ''}${Number(lesson.id) === 1 ? ' lesson-one-action' : ''}`);
       launch.type = 'button';
       launch.disabled = minecraftBlocked || !lesson.hasWorld || session.serverState === 'starting';
@@ -568,8 +628,12 @@
       launch.addEventListener('click', () => teacherAction(
         isActiveLesson ? scoped('/stop') : lessonLaunchPath(lesson.id),
         {},
-        isActiveLesson ? `מסיימים את שיעור ${lesson.id}…` : `מפעילים את עולם שיעור ${lesson.id}…`,
-        isActiveLesson ? 'השיעור הסתיים והשרת שוחרר.' : `עולם שיעור ${lesson.id} פעיל.`
+        isActiveLesson
+          ? (isLessonZero ? 'סוגרים את עולם Minecraft לשיעור הפתיחה…' : `סוגרים את עולם Minecraft לשיעור ${lesson.id}…`)
+          : (isLessonZero ? 'מפעילים את עולם Minecraft לשיעור הפתיחה…' : `מפעילים את עולם Minecraft לשיעור ${lesson.id}…`),
+        isActiveLesson
+          ? (isLessonZero ? 'עולם Minecraft לשיעור הפתיחה נסגר.' : `עולם Minecraft לשיעור ${lesson.id} נסגר.`)
+          : (isLessonZero ? 'עולם Minecraft לשיעור הפתיחה פעיל.' : `עולם Minecraft לשיעור ${lesson.id} פעיל.`)
       ));
       actionRow.append(launch);
       if (Number(lesson.id) >= 1) {
@@ -597,6 +661,8 @@
         selectedLessonPreviewLink.href = studentPreviewUrl(lessonId);
       }
       const actions = renderTeacherLessonActions(lesson, session, activeLessonId, minecraftBlocked);
+      const openButton = openLessonButton(lessonId, `פתיחת שיעור ${lessonId} לתלמידים`);
+      if (openButton) actions.prepend(openButton);
       selectedLessonActions.replaceChildren(...actions.childNodes);
     }
 
@@ -609,13 +675,15 @@
       const heading = node('h2');
       heading.append(title);
       card.append(heading);
+      card.append(node('span', lessonAccessText(lesson.id), `lesson-access-badge ${lessonAccessInfo(lesson.id).open ? 'is-open' : ''}${lessonAccessInfo(lesson.id).nextToOpen ? ' is-next' : ''}`));
       card.append(node('p', lesson.summary || 'בודקים האם קיים עולם Minecraft מתאים לשיעור הזה.'));
       const actions = node('div', undefined, 'challenge-actions');
       const choose = node('a', 'כניסה לשיעור', 'btn');
       choose.href = teacherPageUrl({ lesson: lesson.id });
       const preview = node('a', 'צפייה כשיעור תלמיד', 'btn secondary');
       preview.href = studentPreviewUrl(lesson.id);
-      actions.append(choose, preview);
+      const openButton = openLessonButton(lesson.id, 'פתיחה לתלמידים');
+      actions.append(choose, preview, ...(openButton ? [openButton] : []));
       card.append(actions);
       return card;
     }
@@ -664,6 +732,7 @@
       document.body.classList.toggle('is-teacher-home', showingTeacherHome);
       document.body.classList.toggle('is-teacher-challenge', showingChallengeOverview);
       document.body.classList.toggle('is-lesson-zero', !showingChallengeOverview && !showingTeacherHome && selectedLessonId === 0);
+      if (teacherHomeLessonPickerLink) teacherHomeLessonPickerLink.hidden = !showingTeacherHome;
       renderTeacherHeader(selectedLesson, activeLessonId);
       renderTeacherHome(lessons, session, activeLessonId, data);
       renderTeacherChallenge(challenge, lessons, selectedLessonId);
@@ -732,6 +801,17 @@
     document.getElementById('freezeAll').addEventListener('click', () => teacherAction(scoped('/freeze'), { scope: 'all', on: true }, 'עוצרים את הכיתה…', 'הכיתה נעצרה.'));
     document.getElementById('releaseAll').addEventListener('click', () => teacherAction(scoped('/freeze'), { scope: 'all', on: false }, 'משחררים את הכיתה…', 'הכיתה שוחררה.'));
     document.getElementById('refreshBoard').addEventListener('click', refresh);
+    teacherLogout?.addEventListener('click', async () => {
+      teacherLogout.disabled = true;
+      setStatus(status, 'מתנתקים…');
+      try {
+        await api('/api/classroom/logout', {});
+      } catch (error) {
+        // Still leave the local screen; the server may already have cleared the session.
+      } finally {
+        location.href = 'classroom-entry.html';
+      }
+    });
     await refresh();
     setInterval(refresh, 5000);
   }

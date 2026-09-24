@@ -198,7 +198,7 @@ try {
   previewDb2.close();
   assert.equal((await request(base, '/api/classroom/preview-demo-student-login', { body: {} })).response.status, 401);
 
-  console.log('✓ review blockers fail closed for inactivity, descendants, Kugel targets, preview, and generated credentials');
+  console.log('✓ review blockers fail closed for inactivity, descendants, Agent Academy targets, preview, and generated credentials');
 } finally {
   if (child.exitCode === null && child.signalCode === null) {
     child.kill('SIGTERM'); await new Promise(resolve => child.once('exit', resolve));

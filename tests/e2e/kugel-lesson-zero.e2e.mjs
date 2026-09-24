@@ -146,17 +146,18 @@ try {
   const classroom = (await classroomResponse.json()).classroom;
   const studentResponse = await post(base, `/api/classroom/classes/${classroom.id}/students`, { name: 'נועה מבוך' }, teacherCookie);
   const student = (await studentResponse.json()).student;
+  const verifyIdentity = await post(base, `/api/classroom/classes/${classroom.id}/students/${student.id}/minecraft/verify`, {
+    upn: 'noa.maze@hai.tech',
+    playerName: 'NoaMaze',
+  }, teacherCookie);
+  assert.equal(verifyIdentity.status, 200);
 
   browser = await chromium.launch({ headless: true });
   const teacherContext = await browser.newContext({ locale: 'he-IL' });
   await teacherContext.addCookies([{ name: 'haiTechClassroomToken', value: cookieValue(teacherCookie), url: base }]);
   const teacherClassroomsPage = await teacherContext.newPage();
   await teacherClassroomsPage.goto(`${base}/teacher-classrooms.html`);
-  const identityForm = teacherClassroomsPage.locator('.minecraft-identity-form').first();
-  await identityForm.locator('input[name="upn"]').fill('noa.maze@hai.tech');
-  await identityForm.locator('input[name="playerName"]').fill('NoaMaze');
-  await identityForm.getByRole('button', { name: 'אימות וקישור' }).click();
-  await identityForm.getByText(/אומת: noa\.maze@hai\.tech/).waitFor();
+  await teacherClassroomsPage.getByText(/חשבון Minecraft: noa\.maze@hai\.tech/).waitFor();
   const lessonZeroLink = teacherClassroomsPage.getByRole('link', { name: /ניהול הלומדה:.*Agent/ });
   await lessonZeroLink.waitFor();
   const [teacherPage] = await Promise.all([
@@ -213,7 +214,7 @@ try {
   await studentPage.locator('#coinProgress').filter({ hasText: 'זמן אחרון:' }).waitFor();
   await studentPage.locator('#coinProgress').filter({ hasText: 'שיא:' }).waitFor();
   await studentPage.getByRole('link', { name: 'המשך לשיעור 1' }).waitFor({ state: 'visible' });
-  console.log('✓ teacher and student complete secure Kugel lesson zero in a real browser');
+  console.log('✓ teacher and student complete secure Agent Academy lesson zero in a real browser');
 } finally {
   if (browser) await browser.close();
   if (app.exitCode === null && app.signalCode === null) {

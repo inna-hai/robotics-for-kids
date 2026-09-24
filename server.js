@@ -21,6 +21,12 @@ const SUMMER_USERS_FILE = path.join(DATA_DIR, 'summer-users.json');
 const SUMMER_DB_FILE = process.env.ROBOTICS_DB_FILE || path.join(DATA_DIR, 'summer-subscriptions.sqlite');
 const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 30;
 const SUBSCRIPTION_GATE_ENABLED = process.env.ROBOTICS_SUBSCRIPTION_GATE === '1';
+const SUBSCRIPTION_GATE_OPEN_HOSTS = new Set(
+  String(process.env.ROBOTICS_SUBSCRIPTION_GATE_OPEN_HOSTS || 'robotics15.hai.tech')
+    .split(',')
+    .map(host => host.trim().toLowerCase().replace(/\.$/, ''))
+    .filter(Boolean)
+);
 const CLASSROOM_COURSE_IDS = ['sensi-city', 'sisi', 'python-turtle', 'webcode', 'minecraft', 'craftom-agent'];
 const CLASSROOM_COURSES = new Set(CLASSROOM_COURSE_IDS);
 const CLASSROOM_LOGIN_WINDOW_MS = 10 * 60 * 1000;
@@ -167,6 +173,16 @@ function requestUrl(req) {
   const raw = String(req.url || '/');
   const normalized = raw.startsWith('//') ? `/${raw.replace(/^\/+/, '')}` : raw;
   return new URL(normalized || '/', `http://${req.headers.host || 'localhost'}`);
+}
+
+function requestHostname(req) {
+  const forwardedHost = String(req.headers['x-forwarded-host'] || '').split(',')[0].trim();
+  const rawHost = forwardedHost || String(req.headers.host || '');
+  return rawHost.trim().toLowerCase().replace(/:\d+$/, '').replace(/\.$/, '');
+}
+
+function subscriptionGateEnabledForRequest(req) {
+  return SUBSCRIPTION_GATE_ENABLED && !SUBSCRIPTION_GATE_OPEN_HOSTS.has(requestHostname(req));
 }
 
 function sendWithHeaders(res, status, body, type = 'application/json; charset=utf-8', extraHeaders = {}) {
@@ -1005,6 +1021,19 @@ function openSummerDb() {
       UNIQUE(student_id, course_id, lesson_id)
     );
 
+    CREATE TABLE IF NOT EXISTS classroom_lesson_access (
+      classroom_id TEXT NOT NULL REFERENCES classrooms(id) ON DELETE CASCADE,
+      course_id TEXT NOT NULL DEFAULT 'craftom-agent',
+      lesson_id INTEGER NOT NULL CHECK (lesson_id BETWEEN 0 AND 16),
+      status TEXT NOT NULL DEFAULT 'open' CHECK (status IN ('open','closed')),
+      opened_by_teacher_id TEXT REFERENCES classroom_teachers(id) ON DELETE SET NULL,
+      opened_at TEXT,
+      closed_at TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      PRIMARY KEY (classroom_id, course_id, lesson_id)
+    );
+
     CREATE TABLE IF NOT EXISTS kugel_minecraft_compound_assignments (
       id TEXT PRIMARY KEY,
       monitor_server_name TEXT NOT NULL,
@@ -1038,6 +1067,7 @@ function openSummerDb() {
     CREATE INDEX IF NOT EXISTS idx_kugel_student_runs_classroom ON kugel_student_runs(classroom_id);
     CREATE INDEX IF NOT EXISTS idx_craftom_submissions_class_lesson ON craftom_lesson_submissions(classroom_id, lesson_id);
     CREATE INDEX IF NOT EXISTS idx_craftom_submissions_student ON craftom_lesson_submissions(student_id);
+    CREATE INDEX IF NOT EXISTS idx_classroom_lesson_access_course ON classroom_lesson_access(classroom_id, course_id, status);
     CREATE INDEX IF NOT EXISTS idx_kugel_compound_assignments_player
       ON kugel_minecraft_compound_assignments(monitor_server_name, minecraft_username COLLATE NOCASE);
     CREATE UNIQUE INDEX IF NOT EXISTS idx_kugel_active_monitor_server
@@ -3002,10 +3032,10 @@ function kugelMonitorTransportConfigured() {
 function verifyKugelProductionConfiguration() {
   if (process.env.NODE_ENV !== 'production' || !KUGEL_MONITOR_API_URL) return;
   if (!KUGEL_HTTPS_REVERSE_PROXY) {
-    throw new Error('Kugel production configuration requires an HTTPS reverse proxy');
+    throw new Error('Agent Academy production configuration requires an HTTPS reverse proxy');
   }
   if (!kugelMinecraftConfigured()) {
-    throw new Error('Kugel production configuration is incomplete or insecure');
+    throw new Error('Agent Academy production configuration is incomplete or insecure');
   }
 }
 
@@ -3838,14 +3868,17 @@ async function kugelClassView(req, context, role, useEventCache = true, requeste
       classroom: context.classroom,
       session,
       student: own,
+      lessonAccess: withSummerDb(db => buildCraftomLessonAccess(db, context.classroom.id)),
       minecraft: ownsRunningWorld ? kugelMinecraftInfo() : null,
     };
   }
+  const lessonAccess = withSummerDb(db => buildCraftomLessonAccess(db, context.classroom.id));
   return {
     ok: true,
     role,
     lesson: kugelLessonPublic(activeLesson),
     lessons: Object.values(KUGEL_MINECRAFT_LESSONS).map(kugelLessonPublic),
+    lessonAccess,
     teacher: { id: context.teacher.id, name: context.teacher.name },
     classroom: { id: context.classroom.id, name: context.classroom.name },
     trackedLessonId: data.trackedLessonId,
@@ -4147,6 +4180,50 @@ async function handleKugelApi(req, res) {
       }
     }
 
+    const teacherOpenLesson = pathname.match(/^\/api\/kugel\/classes\/([^/]+)\/lessons\/([0-9]+)\/open$/);
+    if (teacherOpenLesson) {
+      const classroomId = decodeURIComponent(teacherOpenLesson[1]);
+      const lessonId = Number(teacherOpenLesson[2]);
+      if (!Number.isInteger(lessonId) || lessonId < 1 || lessonId > 16) {
+        return send(res, 400, JSON.stringify({ error: 'מספר השיעור אינו תקין.' }));
+      }
+      const context = getTeacherKugelClass(req, classroomId);
+      if (context.status) return send(res, context.status, JSON.stringify({ error: context.error }));
+      if (!consumeKugelActionLimit(`teacher:${context.teacher.id}:${classroomId}:open-lesson`, 30)) {
+        return send(res, 429, JSON.stringify({ error: 'יותר מדי פעולות. נסו שוב בעוד דקה.' }));
+      }
+      const access = withSummerDb(db => db.transaction(() => {
+        const authorization = requireCurrentTeacherKugelEntitlement(db, req, context.teacher.id, classroomId);
+        if (authorization.status) return { authorizationError: authorization };
+        const opened = craftomOpenedLessonIds(db, classroomId);
+        const nextLessonId = nextCraftomLessonToOpen(opened);
+        if (lessonId !== nextLessonId) {
+          return {
+            orderError: nextLessonId
+              ? `אפשר לפתוח עכשיו רק את שיעור ${nextLessonId}.`
+              : 'כל השיעורים כבר פתוחים לכיתה.',
+          };
+        }
+        const now = new Date().toISOString();
+        db.prepare(`
+          INSERT INTO classroom_lesson_access (
+            classroom_id, course_id, lesson_id, status, opened_by_teacher_id,
+            opened_at, closed_at, created_at, updated_at
+          ) VALUES (?, ?, ?, 'open', ?, ?, NULL, ?, ?)
+          ON CONFLICT(classroom_id, course_id, lesson_id) DO UPDATE SET
+            status = 'open',
+            opened_by_teacher_id = excluded.opened_by_teacher_id,
+            opened_at = COALESCE(classroom_lesson_access.opened_at, excluded.opened_at),
+            closed_at = NULL,
+            updated_at = excluded.updated_at
+        `).run(classroomId, KUGEL_COURSE_ID, lessonId, context.teacher.id, now, now, now);
+        return buildCraftomLessonAccess(db, classroomId);
+      }).immediate());
+      if (access.authorizationError) return send(res, access.authorizationError.status, JSON.stringify({ error: access.authorizationError.error }));
+      if (access.orderError) return send(res, 409, JSON.stringify({ error: access.orderError }));
+      return send(res, 200, JSON.stringify({ ok: true, lessonAccess: access }));
+    }
+
     const teacherLessonLaunch = pathname.match(/^\/api\/kugel\/classes\/([^/]+)\/lessons\/([0-9]+)\/launch$/);
     if (teacherLessonLaunch) {
       const classroomId = decodeURIComponent(teacherLessonLaunch[1]);
@@ -4422,7 +4499,7 @@ async function handleClassroomApi(req, res) {
         courses: withSummerDb(db => classroomCourses(db, student.classroom_id)),
       },
     }));
-    return send(res, 200, JSON.stringify({ ok: true, role: 'guest', subscriptionGateEnabled: SUBSCRIPTION_GATE_ENABLED }));
+    return send(res, 200, JSON.stringify({ ok: true, role: 'guest', subscriptionGateEnabled: subscriptionGateEnabledForRequest(req) }));
   }
 
   if (req.method === 'GET' && action === 'admin-me') {
@@ -5261,6 +5338,14 @@ async function handleClassroomApi(req, res) {
           recordClassroomManagementAudit(db, 'student', student.id, 'progress.record', 'progress', student.id, 'denied');
           return { forbidden: true };
         }
+        const numericLessonId = Number(lessonId);
+        if (courseId === KUGEL_COURSE_ID
+          && Number.isInteger(numericLessonId)
+          && numericLessonId > 0
+          && !classroomStudentCanAccessCraftomLesson(db, student, numericLessonId)) {
+          recordClassroomManagementAudit(db, 'student', student.id, 'progress.record', 'progress', student.id, 'denied');
+          return { lessonLocked: true };
+        }
         const now = new Date().toISOString();
         const existing = db.prepare(`SELECT * FROM classroom_progress
           WHERE student_id = ? AND course_id = ? AND lesson_id = ? AND activity_id = ?`)
@@ -5286,6 +5371,7 @@ async function handleClassroomApi(req, res) {
       if (result.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת תלמיד/ה לכיתה.' }));
       if (result.invalid) return send(res, 400, JSON.stringify({ error: result.invalidCourse ? 'הקורס אינו מוכר.' : 'חסרים פרטי התקדמות.' }));
       if (result.kugelDenied) return send(res, 403, JSON.stringify({ error: 'שיעור 0 מושלם רק אחרי בדיקת Minecraft.' }));
+      if (result.lessonLocked) return send(res, 423, JSON.stringify({ error: 'השיעור הזה עדיין לא נפתח לכיתה על ידי המורה.' }));
       if (result.forbidden) return send(res, 403, JSON.stringify({ error: 'הלומדה אינה פתוחה לכיתה הזו.' }));
       return send(res, 200, JSON.stringify({ ok: true, progress: classroomProgressPublic(result.row) }));
     }
@@ -6277,8 +6363,8 @@ async function handleCraftomApi(req, res) {
       if (!Number.isInteger(lessonId) || lessonId < 0 || lessonId > 16) return send(res, 400, JSON.stringify({ error: 'מספר השיעור אינו תקין.' }));
       if (body.challengeId !== undefined && (!Number.isInteger(challengeId) || challengeId < 1 || challengeId > 4)) return send(res, 400, JSON.stringify({ error: 'מספר האתגר אינו תקין.' }));
       if (answer.length < 3) return send(res, 400, JSON.stringify({ error: 'נא לכתוב תשובה קצרה לכרטיס היציאה.' }));
-      if (lessonId > 0 && !isPreviewDemoStudent(studentContext.student) && !classroomStudentCompletedCraftomLessonZero(studentContext.student.id)) {
-        return send(res, 423, JSON.stringify({ error: 'יש להשלים תחילה את שיעור 0.' }));
+      if (lessonId > 0 && !withSummerDb(db => classroomStudentCanAccessCraftomLesson(db, studentContext.student, lessonId))) {
+        return send(res, 423, JSON.stringify({ error: 'השיעור הזה עדיין לא נפתח לכיתה על ידי המורה.' }));
       }
 
       const id = crypto.randomUUID();
@@ -6626,8 +6712,11 @@ function lockedPage(pathname, user, options = {}) {
   const classroomRestricted = options.classroomRestricted === true;
   const teacherRestricted = classroomRestricted && options.teacher === true;
   const lessonZeroRequired = options.lessonZeroRequired === true;
+  const lessonAccessRequired = options.lessonAccessRequired === true;
   const title = teacherRestricted
     ? 'הלומדה לא הוקצתה למורה'
+    : lessonAccessRequired
+    ? 'השיעור עדיין לא נפתח לכיתה'
     : lessonZeroRequired
     ? 'שיעור 1 עדיין נעול'
     : classroomRestricted
@@ -6637,6 +6726,8 @@ function lockedPage(pathname, user, options = {}) {
     : (loggedIn ? 'התוכן הזה נעול למנויים' : 'צריך להתחבר כדי להמשיך');
   const subtitle = teacherRestricted
     ? 'מנהלת המערכת יכולה לפתוח את הלומדה למורה. לאחר מכן המורה תוכל לשייך אותה לכיתות לפי הצורך.'
+    : lessonAccessRequired
+    ? 'המורה פותחת את השיעורים לפי הסדר. כשהשיעור הזה ייפתח, הוא יופיע לתלמידים בלומדה.'
     : lessonZeroRequired
     ? 'כדי לעבור לשיעור 1 צריך להשלים קודם את שיעור 0 במיינקראפט. לאחר השלמה מסודרת השיעור הבא ייפתח לתלמיד/ה.'
     : classroomRestricted
@@ -6663,13 +6754,13 @@ function lockedPage(pathname, user, options = {}) {
     <div class="lock">🔒</div>
     <h1>${title}</h1>
     <p>${subtitle}</p>
-    <div class="locked-label">${teacherRestricted ? 'גישה לפי הרשאת המנהלת' : (lessonZeroRequired ? 'נפתח אחרי השלמת שיעור 0' : (classroomRestricted ? 'גישה לפי הגדרת הכיתה' : (trialOnly ? '3 שיעורים חינם אחרי הרשמה' : 'השיעור הזה נפתח אחרי הפעלת מנוי לילד/ה')))}</div>
+    <div class="locked-label">${teacherRestricted ? 'גישה לפי הרשאת המנהלת' : (lessonAccessRequired ? 'ייפתח על ידי המורה' : (lessonZeroRequired ? 'נפתח אחרי השלמת שיעור 0' : (classroomRestricted ? 'גישה לפי הגדרת הכיתה' : (trialOnly ? '3 שיעורים חינם אחרי הרשמה' : 'השיעור הזה נפתח אחרי הפעלת מנוי לילד/ה'))))}</div>
     <div class="actions">
-      ${classroomRestricted || lessonZeroRequired
-        ? `<a class="btn primary" href="${lessonZeroRequired ? 'kugel-student.html' : (options.teacher ? 'teacher-classrooms.html' : 'classroom-entry.html')}">${lessonZeroRequired ? 'חזרה לשיעור 0' : (teacherRestricted ? 'חזרה ללומדות שלי' : 'חזרה ללומדות הכיתה')}</a>`
+      ${classroomRestricted || lessonZeroRequired || lessonAccessRequired
+        ? `<a class="btn primary" href="${lessonZeroRequired || lessonAccessRequired ? 'kugel-student.html' : (options.teacher ? 'teacher-classrooms.html' : 'classroom-entry.html')}">${lessonZeroRequired || lessonAccessRequired ? 'חזרה ללומדה' : (teacherRestricted ? 'חזרה ללומדות שלי' : 'חזרה ללומדות הכיתה')}</a>`
         : `${trialOnly ? '' : '<a class="btn purchase" href="https://mrng.to/fZiL2SITRp">הפעלת מנוי</a>'}<a class="btn primary" href="register.html">הרשמה</a><a class="btn alt" href="login.html">כניסה</a>`}
     </div>
-    <div class="note">${teacherRestricted ? 'רק מנהלת המערכת יכולה לשנות את רשימת הלומדות של המורה.' : (lessonZeroRequired ? 'המורה יכולה לעקוב אחרי ההתקדמות של שיעור 0 ממסך ניהול הכיתה.' : (classroomRestricted ? 'רק המורה של הכיתה יכול/ה לשנות את רשימת הלומדות.' : (trialOnly ? 'ההרשמה פותחת 3 שיעורי חשיבה ותכנות בחינם עם סיסי ושומרת את ההתקדמות לילד/ה.' : 'כדי לפתוח את כל הלומדות צריך מנוי פעיל לילד/ה הספציפי/ת.')))}</div>
+    <div class="note">${teacherRestricted ? 'רק מנהלת המערכת יכולה לשנות את רשימת הלומדות של המורה.' : (lessonAccessRequired ? 'שיעור 0 פתוח תמיד. שאר השיעורים נפתחים לכיתה על ידי המורה לפי סדר.' : (lessonZeroRequired ? 'המורה יכולה לעקוב אחרי ההתקדמות של שיעור 0 ממסך ניהול הכיתה.' : (classroomRestricted ? 'רק המורה של הכיתה יכול/ה לשנות את רשימת הלומדות.' : (trialOnly ? 'ההרשמה פותחת 3 שיעורי חשיבה ותכנות בחינם עם סיסי ושומרת את ההתקדמות לילד/ה.' : 'כדי לפתוח את כל הלומדות צריך מנוי פעיל לילד/ה הספציפי/ת.'))))}</div>
   </main>
   </div>
 </body>
@@ -6724,6 +6815,64 @@ function requiresCraftomLessonZeroCompletion(pathname, url) {
   if (normalized === '/craftom-school/preview/index.html') return true;
   const lesson = Number(url.searchParams.get('lesson') || url.searchParams.get('challenge') || url.searchParams.get('mission') || 0);
   return Number.isInteger(lesson) && lesson >= 1;
+}
+
+function craftomLessonIdForPath(pathname, url) {
+  const normalized = String(pathname || '').toLowerCase();
+  const basename = path.basename(normalized, path.extname(normalized));
+  if (basename === 'kugel-student') return 0;
+  const direct = basename.match(/^craftom-minecraft-lesson-([1-9]|1[0-6])$/);
+  if (direct) return Number(direct[1]);
+  const lesson = Number(url.searchParams.get('lesson') || url.searchParams.get('mission') || 0);
+  if (Number.isInteger(lesson) && lesson >= 1 && lesson <= 16) return lesson;
+  const challenge = Number(url.searchParams.get('challenge') || 0);
+  if (Number.isInteger(challenge) && challenge >= 1 && challenge <= 4) return ((challenge - 1) * 4) + 1;
+  if (basename === 'craftom-agent-academy' || normalized === '/craftom-school/preview/index.html') return 0;
+  if (basename === 'craftom-minecraft' || basename === 'craftom-minecraft-lesson' || basename === 'craftom-minecraft-challenge' || basename === 'craftom-minecraft-students') return 1;
+  return null;
+}
+
+function craftomOpenedLessonIds(db, classroomId) {
+  const rows = db.prepare(`
+    SELECT lesson_id FROM classroom_lesson_access
+    WHERE classroom_id = ? AND course_id = ? AND status = 'open'
+  `).all(classroomId, KUGEL_COURSE_ID);
+  return new Set([0, ...rows.map(row => Number(row.lesson_id)).filter(Number.isInteger)]);
+}
+
+function nextCraftomLessonToOpen(opened) {
+  for (let lessonId = 1; lessonId <= 16; lessonId += 1) {
+    if (!opened.has(lessonId)) return lessonId;
+  }
+  return null;
+}
+
+function buildCraftomLessonAccess(db, classroomId) {
+  const opened = craftomOpenedLessonIds(db, classroomId);
+  const nextLessonId = nextCraftomLessonToOpen(opened);
+  const lessons = Object.values(KUGEL_MINECRAFT_LESSONS).map(lesson => {
+    const lessonId = Number(lesson.id);
+    return {
+      ...kugelLessonPublic(lesson),
+      open: lessonId === 0 || opened.has(lessonId),
+      nextToOpen: lessonId === nextLessonId,
+      teacherOpen: true,
+    };
+  });
+  return {
+    courseId: KUGEL_COURSE_ID,
+    openedLessonIds: [...opened].sort((a, b) => a - b),
+    nextLessonId,
+    allOpen: nextLessonId === null,
+    lessons,
+  };
+}
+
+function classroomStudentCanAccessCraftomLesson(db, student, lessonId) {
+  if (!student || !Number.isInteger(Number(lessonId))) return false;
+  if (Number(lessonId) === 0) return true;
+  if (isPreviewDemoStudent(student)) return true;
+  return craftomOpenedLessonIds(db, student.classroom_id).has(Number(lessonId));
 }
 
 function classroomStudentCompletedCraftomLessonZero(studentId) {
@@ -6809,9 +6958,10 @@ function serveStatic(req, res) {
   if (filePath === DATA_DIR || filePath.startsWith(DATA_DIR + path.sep)) return send(res, 403, 'Forbidden', 'text/plain; charset=utf-8');
   const ext = path.extname(filePath).toLowerCase();
 
-  const profile = SUBSCRIPTION_GATE_ENABLED ? getSummerProfileFromRequest(req) : null;
-  const classroomStudent = SUBSCRIPTION_GATE_ENABLED ? getClassroomStudentFromRequest(req) : null;
-  const classroomTeacher = SUBSCRIPTION_GATE_ENABLED && !classroomStudent ? getClassroomTeacherFromRequest(req) : null;
+  const subscriptionGateEnabled = subscriptionGateEnabledForRequest(req);
+  const profile = subscriptionGateEnabled ? getSummerProfileFromRequest(req) : null;
+  const classroomStudent = subscriptionGateEnabled ? getClassroomStudentFromRequest(req) : null;
+  const classroomTeacher = subscriptionGateEnabled && !classroomStudent ? getClassroomTeacherFromRequest(req) : null;
   const classroomCourse = classroomStudent
     ? classroomCourseForPath(pathname)
     : (classroomTeacher ? classroomTeacherCourseForPath(pathname) : null);
@@ -6823,19 +6973,23 @@ function serveStatic(req, res) {
       : teacherHasCourse(db, classroomTeacher.id, classroomCourse)));
   const personalAuthorized = !classroomIdentity && isPaidProfile(profile, pathname);
 
-  if (SUBSCRIPTION_GATE_ENABLED && ext === '.html' && classroomCourse && classroomIdentity && !classroomAuthorized) {
+  if (subscriptionGateEnabled && ext === '.html' && classroomCourse && classroomIdentity && !classroomAuthorized) {
     return send(res, 402, lockedPage(pathname, null, { classroomRestricted: true, teacher: Boolean(classroomTeacher) }), 'text/html; charset=utf-8');
   }
 
   if (
-    SUBSCRIPTION_GATE_ENABLED
+    subscriptionGateEnabled
     && ext === '.html'
     && classroomStudent
     && classroomCourse === KUGEL_COURSE_ID
     && classroomAuthorized
     && requiresCraftomLessonZeroCompletion(pathname, url)
     && !isPreviewDemoStudent(classroomStudent)
-    && !classroomStudentCompletedCraftomLessonZero(classroomStudent.id)
+    && !withSummerDb(db => classroomStudentCanAccessCraftomLesson(
+      db,
+      classroomStudent,
+      craftomLessonIdForPath(pathname, url) || 1,
+    ))
   ) {
     if (String(pathname || '').toLowerCase() === '/craftom-school/preview/index.html') {
       res.writeHead(302, {
@@ -6845,18 +6999,18 @@ function serveStatic(req, res) {
       res.end();
       return;
     }
-    return send(res, 423, lockedPage(pathname, null, { lessonZeroRequired: true }), 'text/html; charset=utf-8');
+    return send(res, 423, lockedPage(pathname, null, { lessonAccessRequired: true }), 'text/html; charset=utf-8');
   }
 
-  if (SUBSCRIPTION_GATE_ENABLED && ext === '.html' && isFreeTrialLearningHtml(pathname, url) && !profile && !classroomAuthorized) {
+  if (subscriptionGateEnabled && ext === '.html' && isFreeTrialLearningHtml(pathname, url) && !profile && !classroomAuthorized) {
     return send(res, 401, lockedPage(pathname, null, { trialOnly: true }), 'text/html; charset=utf-8');
   }
 
-  if (SUBSCRIPTION_GATE_ENABLED && ext === '.html' && isFreeTrialLearningHtml(pathname, url) && profile && profileAccessList(profile).some(item => item.startsWith('restrict:')) && !isPaidProfile(profile, pathname) && !classroomAuthorized) {
+  if (subscriptionGateEnabled && ext === '.html' && isFreeTrialLearningHtml(pathname, url) && profile && profileAccessList(profile).some(item => item.startsWith('restrict:')) && !isPaidProfile(profile, pathname) && !classroomAuthorized) {
     return send(res, 402, lockedPage(pathname, profile && profile.user), 'text/html; charset=utf-8');
   }
 
-  if (SUBSCRIPTION_GATE_ENABLED && requiresPaidAccess(pathname, ext, url)) {
+  if (subscriptionGateEnabled && requiresPaidAccess(pathname, ext, url)) {
     if (!classroomAuthorized && !personalAuthorized) {
       return send(res, 402, lockedPage(pathname, profile && profile.user), 'text/html; charset=utf-8');
     }

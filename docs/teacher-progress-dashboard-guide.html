@@ -2,9 +2,9 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>דשבורד התקדמות למורה - אקדמיית ה-Agent</title>
+  <title>מסך התקדמות למורה - אקדמיית ה-Agent</title>
   <style>
-    @page { size: A4; margin: 14mm; }
+    @page { size: A4; margin: 13mm; }
     * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -14,9 +14,9 @@
       line-height: 1.55;
     }
     h1, h2, h3, p { margin: 0; }
-    h1 { font-size: 30px; color: #1d1b4f; }
-    h2 { margin-top: 26px; font-size: 22px; color: #0f766e; }
-    h3 { margin-top: 16px; font-size: 18px; color: #312e81; }
+    h1 { font-size: 29px; color: #172554; }
+    h2 { margin-top: 24px; font-size: 21px; color: #0f766e; }
+    h3 { margin-top: 14px; font-size: 17px; color: #312e81; }
     p { margin-top: 8px; font-size: 14px; }
     ul { margin: 8px 0 0; padding: 0 22px 0 0; }
     li { margin: 4px 0; font-size: 14px; }
@@ -49,7 +49,7 @@
     .card {
       padding: 13px 14px;
       border: 1px solid #dbe3ef;
-      border-radius: 14px;
+      border-radius: 12px;
       background: #f8fafc;
     }
     .card strong {
@@ -80,100 +80,90 @@
 </head>
 <body>
   <section class="hero">
-    <h1>דשבורד התקדמות למורה - אקדמיית ה-Agent</h1>
-    <p class="meta">robotics.hai.tech | ממשק מורה | גרסה פרוסה אחרי קומיט dcf3d40</p>
+    <h1>מסך התקדמות למורה - אקדמיית ה-Agent</h1>
+    <p class="meta">robotics.hai.tech | ממשק מורה | גרסה מינימליסטית לפי שיעור</p>
     <p>
-      הדשבורד החדש נותן למורה מבט מרוכז על כל תלמיד בכיתה מול שיעורים 0-16:
-      מי התחיל, מי השלים לפחות שיעור, כמה הגשות קיימות, ומי צריך תשומת לב.
+      המסך החדש נבנה כך שהמורה לא רואה טבלה גדולה ומפחידה. היא בוחרת שיעור אחד,
+      ורואה רק את התלמידים ואת המצב שלהם באותו שיעור.
     </p>
     <p class="note">
-      זהו דשבורד קריאה בלבד. הוא לא משנה ציונים, לא משנה קודי תלמידים ולא נוגע בלומדות אחרות.
-      הוא מופיע רק בכיתות שקיבלו גישה לאקדמיית ה-Agent.
+      זה מסך צפייה בלבד. המורה לא משנה ציונים, לא משנה קודי תלמידים ולא נוגעת בסיסמאות או בלומדות אחרות.
     </p>
   </section>
 
-  <h2>איך המורה מגיעה לדשבורד</h2>
-  <ul>
-    <li>המורה נכנסת ל-<strong>teacher-classrooms.html</strong> עם מייל וסיסמה.</li>
-    <li>בכרטיס הכיתה שלה מופיע אזור בשם <strong>דוח התקדמות אקדמיית ה-Agent</strong>.</li>
-    <li>לחיצה על <strong>פתיחת דוח התקדמות</strong> טוענת את מצב הכיתה.</li>
-  </ul>
-
-  <figure>
-    <img src="screenshots/teacher-progress-dashboard/01-class-card-dashboard-entry.png" alt="כרטיס כיתה עם אזור דוח התקדמות">
-    <figcaption>כרטיס הכיתה בממשק המורה. הדשבורד מופיע בתוך הכיתה, מתחת לניהול הלומדה.</figcaption>
-  </figure>
-
-  <div class="page-break"></div>
-  <h2>מה רואים בדוח המרוכז</h2>
+  <h2>1. איפה המורה פותחת את הדוח</h2>
   <p>
-    בראש הדוח יש סיכום כיתתי מהיר: מספר תלמידים, כמה התחילו לעבוד, כמה השלימו לפחות שיעור,
-    כמה הגשות קיימות, וכמה תלמידים צריכים תשומת לב.
-  </p>
-  <p>
-    מתחת לזה מופיעה טבלת מעקב: שורות הן תלמידים, עמודות הן שיעורים 0-16.
-    כל תא מציג סטטוס קצר: <strong>לא התחיל</strong>, <strong>בתהליך</strong> או <strong>הושלם</strong>.
+    בתוך כרטיס הכיתה מופיע אזור קטן בשם <strong>דוח התקדמות אקדמיית ה-Agent</strong>.
+    הפעולה היחידה שהמורה צריכה לעשות היא ללחוץ על <strong>פתיחת דוח התקדמות</strong>.
   </p>
 
   <figure>
-    <img src="screenshots/teacher-progress-dashboard/02-progress-dashboard-table.png" alt="טבלת תלמידים מול שיעורים 0 עד 16">
-    <figcaption>טבלת תלמידים מול שיעורים. כרגע הכיתות חדשות ולכן רוב התאים מסומנים "לא התחיל".</figcaption>
+    <img src="screenshots/teacher-progress-dashboard/01-class-card-dashboard-entry.png" alt="אזור פתיחת דוח התקדמות בכרטיס הכיתה">
+    <figcaption>הכניסה לדוח בתוך כרטיס הכיתה. אין כאן הגדרות מורכבות או טבלאות גדולות.</figcaption>
   </figure>
 
   <div class="page-break"></div>
-  <h2>מה קורה כשלוחצים על תלמיד ושיעור</h2>
+  <h2>2. מה המורה רואה כברירת מחדל</h2>
   <p>
-    לחיצה על תא בטבלה פותחת פירוט של אותו תלמיד באותו שיעור.
-    הפירוט מחבר את שלושת חלקי הלמידה המרכזיים:
+    אחרי פתיחת הדוח, המורה רואה סיכום קטן ובחירת שיעור. ברגע שנבחר שיעור,
+    כל תלמיד מופיע בשורה פשוטה עם ארבעה סימונים:
   </p>
 
   <div class="grid">
     <div class="card">
-      <strong>אקדמיית Agent</strong>
-      האם התלמיד השלים את פעילות התכנות/Blockly/Python של השיעור.
+      <strong>כללי</strong>
+      לא התחיל / בתהליך / הושלם.
+    </div>
+    <div class="card">
+      <strong>Agent</strong>
+      האם פעילות התכנות של השיעור הושלמה.
     </div>
     <div class="card">
       <strong>Minecraft</strong>
-      האם התלמיד התחיל או השלים את המשימה בעולם Minecraft.
+      האם התלמיד התחיל או השלים את משימת Minecraft.
     </div>
     <div class="card">
       <strong>כרטיס יציאה</strong>
-      האם התלמיד הגיש תשובה או תמונה בסוף השיעור.
-    </div>
-    <div class="card">
-      <strong>נתוני ניסיון וזמן</strong>
-      מספר ניסיונות, זמן אחרון, שיא זמן ותאריך עדכון אחרון.
+      האם יש הגשה בסוף השיעור.
     </div>
   </div>
 
   <figure>
-    <img src="screenshots/teacher-progress-dashboard/03-progress-dashboard-detail.png" alt="פירוט תלמיד ושיעור בדשבורד">
-    <figcaption>פירוט תא: סטטוס Agent, סטטוס Minecraft, כרטיס יציאה, ניסיונות וזמנים.</figcaption>
+    <img src="screenshots/teacher-progress-dashboard/02-lesson-progress-focused.png" alt="דוח התקדמות לפי שיעור אחד">
+    <figcaption>המסך המרכזי: שיעור אחד בלבד, רשימת תלמידים קצרה, וסימונים ברורים בצבעים.</figcaption>
   </figure>
 
   <div class="page-break"></div>
-  <h2>מה המורה יכולה לעשות מהדשבורד</h2>
+  <h2>3. מה קורה בלחיצה על פירוט</h2>
+  <p>
+    אם המורה רוצה להבין תלמיד מסוים, היא לוחצת על <strong>פירוט</strong>.
+    נפתח אזור קטן שמראה את אותו תלמיד באותו שיעור בלבד.
+  </p>
+
+  <figure>
+    <img src="screenshots/teacher-progress-dashboard/03-lesson-progress-detail.png" alt="פירוט תלמיד ושיעור">
+    <figcaption>פירוט לתלמיד אחד: סטטוס Agent, Minecraft, כרטיס יציאה, ניסיונות וזמנים.</figcaption>
+  </figure>
+
+  <h2>מה המורה יכולה לעשות</h2>
   <ul>
-    <li>לראות תוך כמה שניות מי התחיל ומי עדיין לא התחיל.</li>
-    <li>לזהות תלמידים שנתקעו: התחילו פעילות אבל לא השלימו אותה.</li>
-    <li>לפתוח פירוט לתלמיד ספציפי ולשיעור ספציפי.</li>
-    <li>לראות האם קיימת הגשה של כרטיס יציאה או תמונה.</li>
-    <li>לרענן את הדוח בזמן שיעור כדי לראות התקדמות חדשה.</li>
+    <li>לבחור שיעור ולראות מי התחיל, מי השלים ומי צריך עזרה.</li>
+    <li>לזהות מהר תלמידים שנתקעו באמצע.</li>
+    <li>לראות האם תלמיד הגיש כרטיס יציאה.</li>
+    <li>לפתוח פירוט רק כשצריך, בלי עומס קבוע על המסך.</li>
+    <li>לרענן את הדוח בזמן שיעור.</li>
   </ul>
 
-  <h2>מה הדשבורד לא עושה</h2>
-  <ul>
-    <li>הוא לא שומר סיסמאות Minecraft.</li>
-    <li>הוא לא משנה קודי כניסה של תלמידים.</li>
-    <li>הוא לא פותח גישה ללומדות אחרות.</li>
-    <li>הוא לא נועל או משנה את זרימת השיעורים עצמה.</li>
-  </ul>
+  <h2>מה מוסתר בכוונה</h2>
+  <p>
+    קיימת גם תצוגה מלאה של כל השיעורים, אבל היא מוסתרת תחת כפתור מתקדם למטה.
+    היא לא מוצגת למורה כברירת מחדל, כדי שהמסך יישאר רגוע ופשוט.
+  </p>
 
   <p class="note">
-    ההמלצה שלי: להציג את זה למורה כ"מסך בקרה לשיעור".
-    היא לא צריכה להבין API או DB. היא רק צריכה לדעת: פותחים כיתה, לוחצים על דוח התקדמות,
-    ורואים מי עשה מה.
+    ההמלצה שלי להצגה למורות: לקרוא לזה "מסך מצב שיעור".
+    המורה בוחרת שיעור ורואה מי עשה מה. זהו.
   </p>
-  <p class="small">נוצר אוטומטית מתוך האתר החי robotics.hai.tech.</p>
+  <p class="small">צילומי המסך נוצרו מתוך גרסת הדשבורד המעודכנת עם נתוני דמו לצורך המחשה.</p>
 </body>
 </html>

@@ -339,10 +339,10 @@ try {
     assert.equal(login.status, 200);
     return { teacher: redemptionBody.teacher, cookie: cookie(login), password: redemptionBody.temporaryPassword };
   }
-  const registeredA = await inviteTeacher('מורת קוגל א', 'kugel-a@example.test');
+  const registeredA = await inviteTeacher('מורת אקדמיית Agent א', 'agent-a@example.test');
   const teacherA = registeredA.teacher;
   let teacherACookie = registeredA.cookie;
-  const registeredB = await inviteTeacher('מורת קוגל ב', 'kugel-b@example.test');
+  const registeredB = await inviteTeacher('מורת אקדמיית Agent ב', 'agent-b@example.test');
   const teacherB = registeredB.teacher;
   const teacherBCookie = registeredB.cookie;
   for (const teacher of [teacherA, teacherB]) {
@@ -350,10 +350,10 @@ try {
     assert.equal(assignment.status, 200);
   }
 
-  const createA = await post(baseUrl, '/api/classroom/classes', { name: 'כיתת קוגל א', courses: ['craftom-agent'] }, teacherACookie);
+  const createA = await post(baseUrl, '/api/classroom/classes', { name: 'כיתת אקדמיית Agent א', courses: ['craftom-agent'] }, teacherACookie);
   assert.equal(createA.status, 201);
   const classroomA = (await createA.json()).classroom;
-  const createB = await post(baseUrl, '/api/classroom/classes', { name: 'כיתת קוגל ב', courses: ['craftom-agent'] }, teacherBCookie);
+  const createB = await post(baseUrl, '/api/classroom/classes', { name: 'כיתת אקדמיית Agent ב', courses: ['craftom-agent'] }, teacherBCookie);
   assert.equal(createB.status, 201);
   const classroomB = (await createB.json()).classroom;
   const createNonKugel = await post(baseUrl, '/api/classroom/classes', { name: 'כיתת סיסי', courses: ['sisi'] }, teacherACookie);
@@ -381,13 +381,13 @@ try {
   const studentBCookie = cookie(loginB);
 
   const unauthenticated = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`);
-  assert.equal(unauthenticated.status, 401, 'Kugel session data must require a classroom identity');
+  assert.equal(unauthenticated.status, 401, 'Agent Academy session data must require a classroom identity');
 
   const crossTenant = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherBCookie } });
   assert.equal(crossTenant.status, 404, 'a teacher must not read another teacher classroom');
 
   const nonKugel = await fetch(`${baseUrl}/api/kugel/session?classroomId=${nonKugelClassroom.id}`, { headers: { Cookie: teacherACookie } });
-  assert.equal(nonKugel.status, 403, 'Kugel lesson zero requires the course on the class');
+  assert.equal(nonKugel.status, 403, 'Agent Academy lesson zero requires the course on the class');
 
   const studentTeacherAction = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, studentACookie);
   assert.equal(studentTeacherAction.status, 401, 'a student cannot invoke teacher controls');
@@ -558,17 +558,12 @@ try {
     answer: 'ניסיון לפני השלמת שיעור האפס',
     photo: { name: 'blocked.png', dataUrl: pngDataUrl },
   }, submissionStudentCookie);
-  assert.equal(blockedBeforeLessonZero.status, 423, 'Craftom submissions beyond lesson zero require verified lesson-zero completion');
+  assert.equal(blockedBeforeLessonZero.status, 423, 'Craftom submissions beyond lesson zero require teacher lesson access');
 
-  const progressDb = new Database(dbFile);
-  const completedAt = new Date().toISOString();
-  progressDb.prepare(`
-    INSERT INTO classroom_progress (
-      id, student_id, course_id, lesson_id, activity_id, status, score, attempts,
-      metadata_json, started_at, completed_at, updated_at
-    ) VALUES (?, ?, 'craftom-agent', '0', 'minecraft-maze', 'completed', 100, 1, '{}', ?, ?, ?)
-  `).run('test-lesson-zero-completion', studentASecond.id, completedAt, completedAt, completedAt);
-  progressDb.close();
+  const openLessonOneForSubmissions = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/1/open`, {}, teacherACookie);
+  const openLessonOneForSubmissionsBody = await openLessonOneForSubmissions.json();
+  assert.equal(openLessonOneForSubmissions.status, 200, 'teacher must open lesson one before students can submit lesson one work');
+  assert.deepEqual(openLessonOneForSubmissionsBody.lessonAccess.openedLessonIds, [0, 1]);
 
   const anonymousSubmission = await post(baseUrl, '/api/craftom/exit-ticket', {
     lessonId: 1,
@@ -680,6 +675,10 @@ try {
   assert.equal(replacementSubmissionBody.submission.replacementCount, 1);
   assert.equal(readdirSync(join(tempDir, 'craftom-exit-ticket-attachments')).length, 1, 'replacing a Craftom photo must delete the superseded private file');
 
+  const openLessonTwoForSubmissions = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/2/open`, {}, teacherACookie);
+  const openLessonTwoForSubmissionsBody = await openLessonTwoForSubmissions.json();
+  assert.equal(openLessonTwoForSubmissions.status, 200, 'teacher must open lesson two before students can submit lesson two work');
+  assert.deepEqual(openLessonTwoForSubmissionsBody.lessonAccess.openedLessonIds, [0, 1, 2]);
   const lessonTwoSubmission = await post(baseUrl, '/api/craftom/exit-ticket', {
     lessonId: 2,
     challengeId: 1,
@@ -690,6 +689,10 @@ try {
     photo: { name: 'lesson-two.png', dataUrl: pngDataUrl },
   }, submissionStudentCookie);
   assert.equal(lessonTwoSubmission.status, 201);
+  const openLessonThreeForSlowRace = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/3/open`, {}, teacherACookie);
+  const openLessonThreeForSlowRaceBody = await openLessonThreeForSlowRace.json();
+  assert.equal(openLessonThreeForSlowRace.status, 200, 'teacher must open lesson three before students can submit lesson three work');
+  assert.deepEqual(openLessonThreeForSlowRaceBody.lessonAccess.openedLessonIds, [0, 1, 2, 3]);
   const filesBeforeSlowArchive = new Set(readdirSync(attachmentDir));
   const slowSubmission = slowPost(baseUrl, '/api/craftom/exit-ticket', {
     lessonId: 3, challengeId: 1, lessonTitle: 'מירוץ גוף איטי', challengeTitle: 'אתגר',
@@ -919,7 +922,7 @@ try {
   const studentViewBody = await studentView.json();
   assert.equal(studentViewBody.role, 'student');
   assert.equal(studentViewBody.student.id, studentA.id);
-  assert.equal('students' in studentViewBody, false, 'students receive only their own Kugel state');
+  assert.equal('students' in studentViewBody, false, 'students receive only their own Agent Academy state');
   assert.equal(JSON.stringify(studentViewBody).includes(studentB.id), false);
   assert.equal(studentViewBody.student.completionRecorded, false, 'verified game events alone must not unlock lesson 1 before progress is persisted');
   const monitorReadsAfterViews = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/v2/world/events').length;
@@ -1357,7 +1360,7 @@ try {
     'session-revocation cleanup must guarded-close the exact proposed lease generation',
   );
   const reloginTeacherA = await post(baseUrl, '/api/classroom/teacher-login', {
-    email: 'kugel-a@example.test', password: registeredA.password,
+    email: 'agent-a@example.test', password: registeredA.password,
   });
   assert.equal(reloginTeacherA.status, 200);
   teacherACookie = cookie(reloginTeacherA);
@@ -1696,7 +1699,7 @@ try {
     [75, 76, 77, 78],
     'tests may override operation deadlines deterministically without weakening production budgets',
   );
-  console.log('✓ secure classroom identities scope Kugel lesson zero and Minecraft controls');
+  console.log('✓ secure classroom identities scope Agent Academy lesson zero and Minecraft controls');
 } finally {
   if (child.exitCode === null && child.signalCode === null) {
     child.kill('SIGTERM');

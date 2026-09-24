@@ -6,7 +6,7 @@
     'python-turtle.html',
     'webcode.html',
     'minecraft.html',
-    'craftom-school/preview/index.html',
+    'kugel-student.html',
   ]);
 
   function nextCourse() {
@@ -211,7 +211,7 @@
     'python-turtle': 'python-turtle.html',
     webcode: 'webcode.html',
     minecraft: 'minecraft.html',
-    'craftom-agent': 'craftom-school/preview/index.html',
+    'craftom-agent': 'kugel-student.html',
   };
 
   const teacherCourseStarts = {
@@ -477,17 +477,23 @@
     const authMessage = document.getElementById('teacher-auth-message');
     const dashboardMessage = document.getElementById('dashboard-message');
     const list = document.getElementById('classes-list');
+    const courseView = document.getElementById('teacher-course-view');
     const teacherCourseCatalog = document.getElementById('teacher-course-catalog');
+    const teacherTopbarLogout = document.getElementById('teacher-topbar-logout');
     const createClassButton = document.querySelector('#create-class-form button[type="submit"]');
+    const createClassForm = document.getElementById('create-class-form');
+    const createClassToggle = document.getElementById('create-class-toggle');
+    const createClassFields = document.getElementById('create-class-fields');
     let availableCourseIds = [];
-    const oneTimeStudentCodes = new Map();
+    let currentClasses = [];
+    let selectedCourseId = '';
 
-    function clearOneTimeStudentCodes() {
-      oneTimeStudentCodes.clear();
-      for (const notice of document.querySelectorAll?.('[data-role="student-code-notice"]') || []) {
-        notice.textContent = '';
-        notice.hidden = true;
-      }
+    function setCreateClassOpen(isOpen) {
+      if (!createClassForm || !createClassToggle || !createClassFields) return;
+      createClassForm.classList.toggle('is-collapsed', !isOpen);
+      createClassFields.hidden = !isOpen;
+      createClassToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      createClassToggle.textContent = isOpen ? 'סגירה' : 'פתיחה';
     }
 
     async function refreshAfterMutation(successText) {
@@ -528,15 +534,62 @@
       createClassButton.disabled = false;
     }
 
+    function courseClassCount(courseId) {
+      return currentClasses.filter((classroom) => (classroom.courses || []).includes(courseId)).length;
+    }
+
+    function renderCourseView() {
+      courseView.replaceChildren();
+      if (!availableCourseIds.length) {
+        list.replaceChildren(element('p', 'עדיין לא הוקצו לך לומדות. מנהלת המערכת יכולה לפתוח עבורך לומדות.', 'card'));
+        return;
+      }
+
+      if (!selectedCourseId || !availableCourseIds.includes(selectedCourseId)) {
+        selectedCourseId = availableCourseIds.find((courseId) => courseClassCount(courseId) > 0) || availableCourseIds[0];
+      }
+
+      const picker = element('section', undefined, 'teacher-course-selector');
+      const copy = element('div', undefined, 'teacher-course-selector-copy');
+      copy.append(
+        element('h3', 'בחרי לומדה'),
+        element('p', 'לאחר הבחירה יוצגו רק הכיתות שלומדות את הלומדה הזאת.'),
+      );
+      const buttons = element('div', undefined, 'teacher-course-tabs');
+      for (const courseId of availableCourseIds) {
+        const count = courseClassCount(courseId);
+        const button = element('button', undefined, `course-tab${courseId === selectedCourseId ? ' active' : ''}`);
+        button.type = 'button';
+        button.setAttribute('aria-pressed', courseId === selectedCourseId ? 'true' : 'false');
+        button.append(
+          element('strong', courseLabels[courseId] || courseId),
+          element('span', count === 1 ? 'כיתה אחת' : `${count} כיתות`),
+        );
+        button.addEventListener('click', () => {
+          selectedCourseId = courseId;
+          renderCourseView();
+        });
+        buttons.append(button);
+      }
+      picker.append(copy, buttons);
+      courseView.append(picker);
+
+      const filteredClasses = currentClasses.filter((classroom) => (classroom.courses || []).includes(selectedCourseId));
+      list.replaceChildren(...filteredClasses.map((classroom) => renderClass(classroom, selectedCourseId)));
+      if (!filteredClasses.length) {
+        list.replaceChildren(element('p', `עדיין אין כיתות תחת ${courseLabels[selectedCourseId] || selectedCourseId}. אפשר ליצור כיתה חדשה למטה ולשייך אותה ללומדה הזאת.`, 'card'));
+      }
+    }
+
     async function loadClasses() {
       const data = await api('/api/classroom/classes');
       availableCourseIds = data.teacher?.courses || [];
+      currentClasses = data.classes || [];
       renderTeacherCatalog();
-      list.replaceChildren(...data.classes.map(renderClass));
-      if (!data.classes.length) list.append(element('p', 'עדיין אין כיתות. צרו את הכיתה הראשונה.', 'card'));
+      renderCourseView();
     }
 
-    function renderClass(classroom) {
+    function renderClass(classroom, activeCourseId = '') {
       const card = element('article', undefined, 'class-card');
       card.dataset.classId = classroom.id;
       card.setAttribute('data-class-id', classroom.id);
@@ -548,42 +601,41 @@
       top.append(titleBox);
 
       const courseAccess = element('section', undefined, 'class-courses');
-      courseAccess.append(element('h4', 'הלומדות של הכיתה'));
+      const activeCourseLabel = courseLabels[activeCourseId] || activeCourseId || 'הלומדות של הכיתה';
+      courseAccess.append(element('h4', activeCourseId ? activeCourseLabel : 'הלומדות של הכיתה'));
       const courseLinks = element('div', undefined, 'course-links');
-      for (const courseId of classroom.courses || []) {
+      const visibleCourseIds = activeCourseId ? [activeCourseId] : (classroom.courses || []);
+      for (const courseId of visibleCourseIds) {
         const linkText = courseId === 'craftom-agent'
-          ? `ניהול הלומדה: ${courseLabels[courseId] || courseId}`
-          : `פתיחת הלומדה: ${courseLabels[courseId] || courseId}`;
-        const link = element('a', linkText, 'button quiet');
+          ? 'כניסה לכל השיעורים והמצגות'
+          : `כניסה ללומדה: ${courseLabels[courseId] || courseId}`;
+        const link = element('a', undefined, courseId === 'craftom-agent' ? 'course-action-card primary-action' : 'course-action-card');
         link.href = teacherCourseHref(courseId, classroom.id);
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
+        const title = element('strong', linkText);
+        const description = element(
+          'span',
+          courseId === 'craftom-agent'
+            ? 'מסך המורה: צפייה בכל השיעורים, מצגות, תצוגת תלמיד ופתיחת השיעור הבא.'
+            : 'פתיחת סביבת המורה של הלומדה.',
+        );
+        link.append(title, description);
         courseLinks.append(link);
       }
       courseAccess.append(courseLinks);
-      if ((classroom.courses || []).includes('craftom-agent')) {
-        const lessonZeroPanel = element('div', undefined, 'lesson-zero-panel');
-        lessonZeroPanel.append(
-          element('strong', 'שיעור 0 מוכן להפעלה'),
-          element('span', 'מכאן מתחילים את שיעור הפתיחה ב-Minecraft ומנהלים את תלמידי הכיתה.'),
-        );
-        const lessonZero = element('a', 'התחלת שיעור 0 ב-Minecraft', 'button primary lesson-zero-start');
-        lessonZero.href = `kugel-teacher.html?classroomId=${encodeURIComponent(classroom.id)}`;
-        lessonZeroPanel.append(lessonZero);
-        courseAccess.append(lessonZeroPanel);
-      }
 
       let progressDashboardSection = null;
       let progressDashboardContent = null;
-      if ((classroom.courses || []).includes('craftom-agent')) {
+      if (activeCourseId === 'craftom-agent' || (!activeCourseId && (classroom.courses || []).includes('craftom-agent'))) {
         progressDashboardSection = element('section', undefined, 'progress-dashboard-section');
         const dashboardTop = element('div', undefined, 'progress-dashboard-top');
         const copy = element('div');
         copy.append(
-          element('strong', 'דוח התקדמות אקדמיית ה-Agent'),
-          element('span', 'בחרי שיעור וקבלי מבט פשוט על התלמידים, ההגשות וכרטיסי היציאה.'),
+          element('strong', 'דוח התקדמות והגשות'),
+          element('span', 'לראות לפי שיעור מה כל תלמיד התחיל, סיים והגיש.'),
         );
-        const loadDashboard = element('button', 'פתיחת דוח התקדמות', 'button secondary');
+        const loadDashboard = element('button', 'פתיחת דוח', 'button secondary');
         loadDashboard.type = 'button';
         progressDashboardContent = element('div', undefined, 'progress-dashboard-content');
         progressDashboardContent.hidden = true;
@@ -627,163 +679,51 @@
           setMessage(dashboardMessage, error.message);
         }
       });
-      courseAccess.append(courseForm);
+      const courseSettings = element('details', undefined, 'class-course-settings');
+      courseSettings.append(element('summary', 'הגדרות לומדות לכיתה'));
+      courseSettings.append(courseForm);
+      courseAccess.append(courseSettings);
 
-      const oneTime = element('p', oneTimeStudentCodes.get(classroom.id) || '', 'one-time-code');
-      oneTime.hidden = !oneTimeStudentCodes.has(classroom.id);
-      oneTime.setAttribute('data-role', 'student-code-notice');
-      const students = element('ul', undefined, 'student-list');
+      const needsMinecraftIdentity = activeCourseId
+        ? (activeCourseId === 'minecraft' || activeCourseId === 'craftom-agent')
+        : (classroom.courses || []).some((courseId) => courseId === 'minecraft' || courseId === 'craftom-agent');
+      const students = element('section', undefined, 'students-table-section');
+      students.append(element('h4', 'תלמידים בכיתה'));
       if (classroom.students.length) {
+        const table = element('table', undefined, 'students-table');
+        const headRow = element('tr');
+        headRow.append(
+          element('th', 'שם התלמיד/ה'),
+          element('th', needsMinecraftIdentity ? 'שם משתמש Minecraft' : 'פעילות אחרונה'),
+        );
+        const thead = element('thead');
+        thead.append(headRow);
+        const tbody = element('tbody');
         classroom.students.forEach((student) => {
-          const item = element('li', undefined, 'student-row');
-          item.setAttribute('data-student-id', student.id);
-          const editForm = element('form', undefined, 'student-edit-form');
-          editForm.setAttribute('data-action', 'edit-student');
-          const nameLabel = element('label', 'שם תלמיד/ה');
-          const nameInput = document.createElement('input');
-          nameInput.name = 'name'; nameInput.required = true; nameInput.value = student.name;
-          nameLabel.append(nameInput);
-          const saveName = element('button', 'שמירת שם', 'button quiet');
-          saveName.type = 'submit'; saveName.setAttribute('data-action', 'save-student');
-          editForm.append(nameLabel, saveName);
-          editForm.addEventListener('submit', async (event) => {
-            event.preventDefault(); setMessage(dashboardMessage, 'שומרים את שם התלמיד/ה…');
-            try {
-              await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/students/${encodeURIComponent(student.id)}`, formData(editForm));
-              await refreshAfterMutation('שם התלמיד/ה נשמר.');
-            } catch (error) { setMessage(dashboardMessage, error.message); }
-          });
+          const row = element('tr');
+          row.setAttribute('data-student-id', student.id);
           const latest = student.progress?.[0];
-          const progress = element('small', latest
+          const progressText = latest
             ? `${courseLabels[latest.courseId] || latest.courseId} · ${latest.status === 'completed' ? 'הושלם' : 'התחיל/ה'}`
-            : 'עדיין אין פעילות שמורה');
-          const minecraftForm = element('form', undefined, 'minecraft-identity-form');
-          minecraftForm.setAttribute('data-action', 'verify-minecraft-identity');
-          const upnLabel = element('label', 'חשבון Microsoft קיים (@hai.tech)');
-          const upnInput = document.createElement('input');
-          upnInput.name = 'upn'; upnInput.type = 'email'; upnInput.required = true;
-          upnInput.value = student.minecraftIdentity?.upn || '';
-          const playerLabel = element('label', 'שם שחקן Minecraft');
-          const playerInput = document.createElement('input');
-          playerInput.name = 'playerName'; playerInput.required = true; playerInput.pattern = '[A-Za-z0-9_]{2,32}';
-          playerInput.minLength = 2; playerInput.maxLength = 32;
-          playerInput.value = student.minecraftIdentity?.playerName || student.minecraftPlayerName || '';
-          upnLabel.append(upnInput); playerLabel.append(playerInput);
-          const minecraftStatus = element('small', student.minecraftIdentity?.status === 'verified'
-            ? `מאומת: ${student.minecraftIdentity.upn} · ${student.minecraftIdentity.playerName}`
-            : 'טרם אומת משתמש פעיל עם רישיון Minecraft Education.');
-          const verifyMinecraft = element('button', 'אימות וקישור חשבון קיים', 'button quiet');
-          verifyMinecraft.type = 'submit'; verifyMinecraft.setAttribute('data-action', 'verify-minecraft-identity');
-          minecraftForm.append(upnLabel, playerLabel, minecraftStatus, verifyMinecraft);
-          minecraftForm.addEventListener('submit', async (event) => {
-            event.preventDefault(); setMessage(dashboardMessage, 'מאמתים משתמש ורישיון קיימים…');
-            try {
-              await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/students/${encodeURIComponent(student.id)}/minecraft/verify`, formData(minecraftForm));
-              await refreshAfterMutation('חשבון Microsoft הקיים ורישיון Minecraft Education אומתו וקושרו.');
-            } catch (error) { setMessage(dashboardMessage, error.message); }
-          });
-          const actions = element('div', undefined, 'student-actions');
-          const reset = element('button', 'איפוס קוד אישי', 'button quiet');
-          reset.type = 'button'; reset.setAttribute('data-action', 'reset-student-code');
-          reset.addEventListener('click', async () => {
-            clearOneTimeStudentCodes();
-            oneTime.textContent = '';
-            oneTime.hidden = true;
-            setMessage(dashboardMessage, 'מאפסים את הקוד האישי…');
-            try {
-              const data = await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/students/${encodeURIComponent(student.id)}/reset`, {});
-              const codeNotice = `הקוד האישי החדש של ${data.student.name}: ${data.student.loginCode} — הקוד מוצג עכשיו בלבד.`;
-              oneTimeStudentCodes.set(classroom.id, codeNotice);
-              oneTime.textContent = codeNotice;
-              oneTime.hidden = false;
-              await refreshAfterMutation('הקוד אופס וכל החיבורים הקודמים נותקו.');
-            } catch (error) { setMessage(dashboardMessage, error.message); }
-          });
-          const archive = element('button', 'העברה לארכיון', 'button quiet');
-          archive.type = 'button'; archive.setAttribute('data-action', 'archive-student');
-          archive.addEventListener('click', async () => {
-            setMessage(dashboardMessage, 'מעבירים את התלמיד/ה לארכיון…');
-            try {
-              await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/students/${encodeURIComponent(student.id)}/archive`, {});
-              await refreshAfterMutation('התלמיד/ה הועבר/ה לארכיון וכל החיבורים נותקו.');
-            } catch (error) { setMessage(dashboardMessage, error.message); }
-          });
-          actions.append(reset, archive);
-          item.append(editForm, progress);
-          if ((classroom.courses || []).some((courseId) => courseId === 'minecraft' || courseId === 'craftom-agent')) {
-            item.append(minecraftForm);
-          }
-          item.append(actions);
-          students.append(item);
+            : 'אין פעילות שמורה';
+          const minecraftUsername = student.minecraftIdentity?.status === 'verified'
+            ? student.minecraftIdentity.upn
+            : 'לא מקושר';
+          const valueCell = element('td', needsMinecraftIdentity ? minecraftUsername : progressText);
+          if (needsMinecraftIdentity) valueCell.className = 'minecraft-username';
+          row.append(
+            element('td', student.name),
+            valueCell,
+          );
+          tbody.append(row);
         });
+        table.append(thead, tbody);
+        students.append(table);
       } else {
-        students.append(element('li', 'עדיין לא נוספו תלמידים.'));
+        students.append(element('p', 'עדיין לא נוספו תלמידים.', 'progress-empty-note'));
       }
 
-      const addForm = element('form', undefined, 'add-student-form');
-      addForm.setAttribute('data-action', 'add-student');
-      const label = element('label', 'שם תלמיד/ה');
-      const input = document.createElement('input');
-      input.name = 'name';
-      input.required = true;
-      label.append(input);
-      const button = element('button', 'הוספת תלמיד/ה', 'button secondary');
-      button.type = 'submit';
-      button.setAttribute('data-action', 'add-student');
-      addForm.append(label, button);
-
-      addForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        clearOneTimeStudentCodes();
-        oneTime.textContent = '';
-        oneTime.hidden = true;
-        setMessage(dashboardMessage, 'מוסיפים תלמיד/ה…');
-        try {
-          const data = await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/students`, formData(addForm));
-          const codeNotice = `הקוד האישי של ${data.student.name}: ${data.student.loginCode} — הקוד מוצג עכשיו בלבד.`;
-          oneTimeStudentCodes.set(classroom.id, codeNotice);
-          oneTime.textContent = codeNotice;
-          oneTime.hidden = false;
-          addForm.reset();
-          await refreshAfterMutation('התלמיד/ה נוסף/ה. שמרו את הקוד האישי שמופיע בכרטיס הכיתה.');
-        } catch (error) {
-          setMessage(dashboardMessage, error.message);
-        }
-      });
-      const archivedSection = element('section', undefined, 'archived-students-section');
-      const showArchivedStudents = element('button', 'הצגת תלמידים בארכיון', 'button quiet');
-      showArchivedStudents.type = 'button'; showArchivedStudents.setAttribute('data-action', 'show-archived-students');
-      const archivedList = element('ul', undefined, 'student-list archived-students');
-      archivedList.hidden = true;
-      showArchivedStudents.addEventListener('click', async () => {
-        setMessage(dashboardMessage, 'טוענים תלמידים מהארכיון…');
-        try {
-          const data = await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/students/archived`);
-          const rows = data.students.map((student) => {
-            const item = element('li'); item.setAttribute('data-student-id', student.id);
-            item.append(element('span', student.name));
-            if (student.minecraftIdentity?.status === 'verified') {
-              item.append(element('small', `חשבון Minecraft מאומת נשמר: ${student.minecraftIdentity.upn} · ${student.minecraftIdentity.playerName}`));
-            }
-            const restore = element('button', 'שחזור תלמיד/ה', 'button secondary');
-            restore.type = 'button'; restore.setAttribute('data-action', 'restore-student');
-            restore.addEventListener('click', async () => {
-              setMessage(dashboardMessage, 'משחזרים את התלמיד/ה…');
-              try {
-                await api(`/api/classroom/classes/${encodeURIComponent(classroom.id)}/students/${encodeURIComponent(student.id)}/restore`, {});
-                await refreshAfterMutation('התלמיד/ה שוחזר/ה לכיתה. הקוד האישי לא הוצג או שונה.');
-              } catch (error) { setMessage(dashboardMessage, error.message); }
-            });
-            item.append(restore); return item;
-          });
-          archivedList.replaceChildren(...rows);
-          if (!rows.length) archivedList.append(element('li', 'אין תלמידים בארכיון בכיתה הזו.'));
-          archivedList.hidden = false;
-          setMessage(dashboardMessage, '', true);
-        } catch (error) { setMessage(dashboardMessage, error.message); }
-      });
-      archivedSection.append(showArchivedStudents, archivedList);
-      card.append(top, courseAccess, students, addForm, oneTime, archivedSection);
+      card.append(top, courseAccess, students);
       if (progressDashboardSection) card.insertBefore(progressDashboardSection, students);
       return card;
     }
@@ -791,8 +731,14 @@
     async function showDashboard(me) {
       auth.hidden = true;
       dashboard.hidden = false;
+      if (teacherTopbarLogout) teacherTopbarLogout.hidden = false;
       document.getElementById('teacher-welcome').textContent = `שלום ${me.teacher.name}`;
       await loadClasses();
+    }
+
+    async function logoutTeacher() {
+      await api('/api/classroom/logout', {});
+      location.reload();
     }
 
     async function submitAuth(form, endpoint) {
@@ -856,6 +802,13 @@
         }
       });
     }
+    if (createClassToggle) {
+      createClassToggle.addEventListener('click', () => {
+        setCreateClassOpen(createClassFields?.hidden ?? true);
+      });
+    }
+    setCreateClassOpen(false);
+
     document.getElementById('create-class-form').addEventListener('submit', async (event) => {
       event.preventDefault();
       const classForm = event.currentTarget;
@@ -865,16 +818,14 @@
         data.courses = selectedCourses(classForm);
         await api('/api/classroom/classes', data);
         classForm.reset();
+        setCreateClassOpen(false);
         await refreshAfterMutation('הכיתה נוצרה.');
       } catch (error) {
         setMessage(dashboardMessage, error.message);
       }
     });
-    document.getElementById('teacher-logout').addEventListener('click', async () => {
-      clearOneTimeStudentCodes();
-      await api('/api/classroom/logout', {});
-      location.reload();
-    });
+    document.getElementById('teacher-logout').addEventListener('click', logoutTeacher);
+    if (teacherTopbarLogout) teacherTopbarLogout.addEventListener('click', logoutTeacher);
 
     try {
       const me = await api('/api/classroom/me');

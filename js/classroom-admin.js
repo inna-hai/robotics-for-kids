@@ -89,34 +89,15 @@
       .map((student) => ({ ...student, classroomName: classroom.name })));
     if (!teacher.archivedAt && minecraftStudents.length) {
       const identityList = element('div', undefined, 'minecraft-identity-list');
-      identityList.append(element('h4', 'קישור חשבונות Minecraft קיימים'));
+      identityList.append(element('h4', 'חשבונות Minecraft בכיתה'));
       for (const student of minecraftStudents) {
-        const form = element('form', undefined, 'minecraft-identity-form');
-        form.setAttribute('data-student-id', student.id);
-        form.append(element('strong', `${student.name} · ${student.classroomName}`));
-        const upnLabel = element('label', 'חשבון Microsoft קיים (@hai.tech)');
-        const upnInput = document.createElement('input');
-        upnInput.name = 'upn'; upnInput.type = 'email'; upnInput.required = true;
-        upnInput.value = student.minecraftIdentity?.upn || '';
-        const playerLabel = element('label', 'שם שחקן Minecraft');
-        const playerInput = document.createElement('input');
-        playerInput.name = 'playerName'; playerInput.required = true; playerInput.pattern = '[A-Za-z0-9_]{2,32}';
-        playerInput.minLength = 2; playerInput.maxLength = 32;
-        playerInput.value = student.minecraftIdentity?.playerName || '';
-        upnLabel.append(upnInput); playerLabel.append(playerInput);
-        const state = element('small', student.minecraftIdentity?.status === 'verified'
-          ? `מאומת: ${student.minecraftIdentity.upn} · ${student.minecraftIdentity.playerName}`
-          : 'טרם אומת משתמש פעיל עם רישיון Minecraft Education.');
-        const submit = element('button', 'אימות וקישור חשבון קיים', 'button secondary'); submit.type = 'submit';
-        form.append(upnLabel, playerLabel, state, submit);
-        form.addEventListener('submit', async (event) => {
-          event.preventDefault(); setMessage(message, 'מאמתים משתמש ורישיון קיימים…');
-          try {
-            await api(`/api/classroom/admin/students/${encodeURIComponent(student.id)}/minecraft/verify`, Object.fromEntries(new FormData(form).entries()));
-            await refreshAfterMutation('חשבון Microsoft הקיים ורישיון Minecraft Education אומתו וקושרו.');
-          } catch (error) { setMessage(message, error.message); }
-        });
-        identityList.append(form);
+        const item = element('div', undefined, 'minecraft-identity-row');
+        item.setAttribute('data-student-id', student.id);
+        item.append(element('strong', `${student.name} · ${student.classroomName}`));
+        item.append(element('small', student.minecraftIdentity?.status === 'verified'
+          ? `חשבון Minecraft: ${student.minecraftIdentity.upn}`
+          : 'חשבון Minecraft עדיין לא מקושר לתלמיד/ה.'));
+        identityList.append(item);
       }
       card.append(identityList);
     }
@@ -130,7 +111,7 @@
         setHook(item, 'data-student-id', student.id);
         item.append(element('span', `${student.name} · ${student.classroomName}`));
         if (student.minecraftIdentity?.status === 'verified') {
-          item.append(element('small', `חשבון Minecraft מאומת נשמר: ${student.minecraftIdentity.upn} · ${student.minecraftIdentity.playerName}`));
+          item.append(element('small', `חשבון Minecraft: ${student.minecraftIdentity.upn}`));
         }
         const restoreStudent = actionButton('שחזור תלמיד/ה', 'restore-student', 'button secondary');
         restoreStudent.addEventListener('click', async () => {

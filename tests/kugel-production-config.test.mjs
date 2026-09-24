@@ -64,7 +64,7 @@ try {
   const missingResult = await waitForExit(missingProxy);
   if (missingResult.running) missingProxy.kill('SIGTERM');
   assert.notEqual(missingResult.running, true,
-    'production Kugel configuration must fail preflight when the HTTPS reverse proxy dependency is absent');
+    'production Agent Academy configuration must fail preflight when the HTTPS reverse proxy dependency is absent');
   assert.match(missingError, /HTTPS reverse proxy/i);
 
   const configuredPort = await freePort();
@@ -79,7 +79,7 @@ try {
   const direct = await fetch(baseUrl);
   assert.equal(direct.status, 426,
     'the production app behind the proxy must reject direct plaintext requests instead of relaxing HTTPS');
-  console.log('✓ production Kugel preflight requires an HTTPS loopback reverse proxy');
+  console.log('✓ production Agent Academy preflight requires an HTTPS loopback reverse proxy');
 } finally {
   for (const child of [missingProxy, configured]) {
     if (child && child.exitCode === null && child.signalCode === null) {

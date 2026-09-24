@@ -5,19 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ניהול כיתות למורים | hai.tech</title>
   <meta name="description" content="כניסת מורה, יצירת כיתות והוספת תלמידים ללומדות hai.tech.">
-  <link rel="stylesheet" href="css/classroom-platform.css?v=20260921-teacher-progress-dashboard-2">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/classroom-platform.css?v=20260923-teacher-action-ui-2">
 </head>
 <body data-classroom-page="teacher">
   <header class="topbar">
-    <a class="brand" href="index.html">🌈 hai.tech</a>
-    <a class="text-link" href="classroom-entry.html">כניסת תלמידים</a>
+    <a class="brand" href="index.html">
+      <span class="brand-mark" aria-hidden="true">h</span>
+      <span><strong>hai.tech</strong><small>סביבת מורה</small></span>
+    </a>
+    <div class="topbar-actions">
+      <a class="text-link" href="classroom-entry.html">כניסת תלמידים</a>
+      <button class="button quiet topbar-logout" id="teacher-topbar-logout" type="button">התנתקות</button>
+    </div>
   </header>
 
   <main class="shell">
     <section class="intro">
-      <span class="eyebrow">סביבת המורה</span>
-      <h1>הכיתות שלי</h1>
-      <p>יוצרים כיתה, מוסיפים תלמידים ומקבלים עבור כל תלמיד קוד אישי. אפשר לקשר רק חשבון Microsoft קיים שכבר כולל רישיון Minecraft Education — המערכת אינה יוצרת חשבונות ואינה שומרת סיסמאות.</p>
+      <div class="intro-copy">
+        <span class="eyebrow">סביבת המורה</span>
+        <h1>הלומדות והכיתות שלי</h1>
+      </div>
+      <div class="intro-panel" aria-hidden="true">
+        <div class="intro-panel-top">
+          <span class="intro-dot"></span>
+          <span>ניהול שיעור</span>
+        </div>
+        <div class="intro-panel-metric"><strong>Agent</strong><span>גישה לתלמידים</span></div>
+        <div class="intro-panel-row"><span>כיתה</span><b>פעילה</b></div>
+        <div class="intro-panel-row"><span>דוח התקדמות</span><b>מוכן</b></div>
+      </div>
     </section>
 
     <section class="auth-grid" id="teacher-auth">
@@ -44,26 +63,33 @@
 
     <section id="teacher-dashboard" hidden>
       <div class="dashboard-heading">
-        <div><h2 id="teacher-welcome">שלום</h2><p>כאן מנהלים את הכיתות והתלמידים.</p></div>
+        <div><h2 id="teacher-welcome">שלום</h2><p>בחרו לומדה וכיתה כדי להמשיך לניהול הכיתה.</p></div>
         <button class="button quiet" id="teacher-logout" type="button">התנתקות</button>
       </div>
 
-      <form class="card create-class" id="create-class-form">
-        <div><h2>יצירת כיתה</h2><p>לאחר היצירה תקבלו קוד כיתה משותף.</p></div>
-        <label>שם הכיתה<input name="name" placeholder="למשל כיתה ז׳1" required></label>
-        <div>
+      <p class="message" id="dashboard-message" aria-live="polite"></p>
+      <div id="teacher-course-view"></div>
+      <div class="classes-list" id="classes-list"></div>
+
+      <form class="card create-class is-collapsed" id="create-class-form">
+        <div class="create-class-summary">
+          <div><h2>יצירת כיתה חדשה</h2><p>פותחים כיתה רק כשצריך. לאחר היצירה תקבלו קוד כיתה משותף.</p></div>
+          <button class="button quiet" id="create-class-toggle" type="button" aria-expanded="false" aria-controls="create-class-fields">פתיחה</button>
+        </div>
+        <div class="create-class-fields" id="create-class-fields" hidden>
+          <label>שם הכיתה<input name="name" placeholder="למשל כיתה ז׳1" required></label>
+          <div>
           <h3>הלומדות הזמינות לך</h3>
           <p>בחרו מתוך הלומדות שהוקצו לך על ידי מנהלת המערכת.</p>
           <div id="teacher-course-catalog"></div>
+          </div>
+          <button class="button primary" type="submit" data-action="create-class">יצירת כיתה</button>
         </div>
-        <button class="button primary" type="submit" data-action="create-class">יצירת כיתה</button>
       </form>
-      <p class="message" id="dashboard-message" aria-live="polite"></p>
-      <div class="classes-list" id="classes-list"></div>
     </section>
   </main>
 
-  <script src="js/classroom-platform.js?v=20260921-teacher-progress-dashboard-2"></script>
+  <script src="js/classroom-platform.js?v=20260923-teacher-action-ui-2"></script>
   <script src="/js/feedback-widget.js?v=20260907-tehila-fixes-1"></script>
 </body>
 </html>

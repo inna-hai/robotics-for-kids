@@ -5,7 +5,6 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:net';
-import Database from 'better-sqlite3';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
@@ -403,24 +402,28 @@ try {
   const craftomStudentCookie = (craftomStudentLogin.headers.get('set-cookie') || '').split(';')[0];
   const blockedCraftomLessonOne = await fetch(`${baseUrl}/craftom-minecraft-lesson-1.html`, { headers: { Cookie: craftomStudentCookie }, redirect: 'manual' });
   assert.equal(blockedCraftomLessonOne.status, 423);
-  assert.match(await blockedCraftomLessonOne.text(), /כדי לעבור לשיעור 1 צריך להשלים קודם את שיעור 0/);
+  assert.match(await blockedCraftomLessonOne.text(), /השיעור עדיין לא נפתח לכיתה/);
   const forgedLessonZeroCompletion = await fetch(`${baseUrl}/api/classroom/progress`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Cookie: craftomStudentCookie },
     body: JSON.stringify({ courseId: 'craftom-agent', lessonId: '0', activityId: 'minecraft-maze', status: 'completed', score: 100 }),
   });
-  assert.equal(forgedLessonZeroCompletion.status, 403, 'generic classroom progress must not unlock Kugel lesson zero');
-  const testDb = new Database(dbFile);
-  testDb.prepare(`
-    INSERT INTO classroom_progress (
-      id, student_id, course_id, lesson_id, activity_id, status, score, attempts,
-      metadata_json, started_at, completed_at, updated_at
-    ) VALUES (?, ?, 'craftom-agent', '0', 'minecraft-maze', 'completed', 100, 1, '{}', ?, ?, ?)
-  `).run('test-craftom-zero-complete', craftomStudent.id, new Date().toISOString(), new Date().toISOString(), new Date().toISOString());
-  testDb.close();
+  assert.equal(forgedLessonZeroCompletion.status, 403, 'generic classroom progress must not unlock Agent Academy lesson zero');
+  const skippedCraftomLessonThree = await fetch(`${baseUrl}/api/kugel/classes/${craftomClass.id}/lessons/3/open`, {
+    method: 'POST',
+    headers: { Cookie: teacherCookie },
+  });
+  assert.equal(skippedCraftomLessonThree.status, 409, 'teachers must open Craftom lessons in order');
+  const openedCraftomLessonOne = await fetch(`${baseUrl}/api/kugel/classes/${craftomClass.id}/lessons/1/open`, {
+    method: 'POST',
+    headers: { Cookie: teacherCookie },
+  });
+  const openedCraftomLessonOneBody = await openedCraftomLessonOne.json();
+  assert.equal(openedCraftomLessonOne.status, 200);
+  assert.deepEqual(openedCraftomLessonOneBody.lessonAccess.openedLessonIds, [0, 1]);
   const unlockedCraftomLessonOne = await fetch(`${baseUrl}/craftom-minecraft-lesson-1.html`, { headers: { Cookie: craftomStudentCookie }, redirect: 'manual' });
   assert.equal(unlockedCraftomLessonOne.status, 200);
-  console.log('✓ Craftom lesson 1 requires verified lesson 0 completion for classroom students');
+  console.log('✓ Craftom lesson 1 opens only after the teacher opens the next lesson');
 
   const guestProgress = await fetch(`${baseUrl}/api/classroom/progress`, {
     method: 'POST',
