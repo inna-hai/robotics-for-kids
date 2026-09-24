@@ -616,7 +616,13 @@
           card.append(meetingList, actions);
           return card;
         });
-        teacherHomeChallenges.replaceChildren(zeroCard, ...challengeCards);
+        const challengeSequence = [zeroCard];
+        challengeCards.forEach((card, index) => {
+          const divider = node('div', `אתגר ${index + 1}`, 'teacher-home-challenge-divider');
+          divider.setAttribute('aria-hidden', 'true');
+          challengeSequence.push(divider, card);
+        });
+        teacherHomeChallenges.replaceChildren(...challengeSequence);
         teacherHomeChallenges.dataset.rendered = 'true';
       }
       teacherHomeChallenges.querySelectorAll('[data-lesson-id]').forEach(link => {

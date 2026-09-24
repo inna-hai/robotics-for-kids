@@ -1329,10 +1329,37 @@
 
 .teacher-home-challenges {
   margin-top: 0;
+  grid-template-columns: 1fr;
+  gap: 18px;
 }
 
 .teacher-home-challenge {
   align-content: start;
+  grid-column: 1 / -1;
+}
+
+.teacher-home-challenge-divider {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: center;
+  gap: 14px;
+  margin: 6px 0 -2px;
+  color: #0f766e;
+  font-size: 1rem;
+  font-weight: 1000;
+}
+
+.teacher-home-challenge-divider::before,
+.teacher-home-challenge-divider::after {
+  content: "";
+  flex: 1 1 0;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(15, 118, 110, 0), rgba(15, 118, 110, .38), rgba(37, 99, 235, .3));
+}
+
+.teacher-home-challenge-divider::before {
+  background: linear-gradient(90deg, rgba(37, 99, 235, .3), rgba(15, 118, 110, .38), rgba(15, 118, 110, 0));
 }
 
 .teacher-home-challenge > .tag {
@@ -1616,9 +1643,12 @@
   .report-grid,
   .teacher-program-card,
   .teacher-challenge-intro,
-  .teacher-home-challenges,
   .teacher-challenge-lessons {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .teacher-home-challenges {
+    grid-template-columns: 1fr;
   }
 
   .monitor-row {
