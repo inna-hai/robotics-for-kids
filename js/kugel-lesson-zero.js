@@ -518,7 +518,6 @@
       const onTeacherHome = !hasRequestedLesson && !activeChallengeFromUrl;
       const items = [
         ['דף הבית', teacherPageUrl(), onTeacherHome],
-        ['השיעור הנוכחי', teacherPageUrl({ lesson: activeLessonId || selectedLessonId || 0 }), hasRequestedLesson],
         ...[1, 2, 3, 4].map(challengeId => [
           `אתגר ${challengeId}`,
           teacherPageUrl({ challenge: challengeId }),

@@ -166,11 +166,7 @@ try {
   ]);
   await teacherPage.waitForLoadState();
   await teacherPage.waitForURL(new RegExp(`/agent-academy-teacher\\.html\\?classroomId=${classroom.id}$`));
-  await teacherPage.waitForFunction((classroomId) => {
-    const current = [...document.querySelectorAll('a')].find((link) => link.textContent?.trim() === 'השיעור הנוכחי');
-    return current?.href.includes(`classroomId=${classroomId}`) && current.href.includes('lesson=0');
-  }, classroom.id);
-  await teacherPage.getByRole('link', { name: 'השיעור הנוכחי' }).click();
+  await teacherPage.getByRole('link', { name: 'ניהול שיעור 0' }).click();
   await teacherPage.waitForURL(new RegExp(`/agent-academy-teacher\\.html\\?classroomId=${classroom.id}&lesson=0$`));
   await teacherPage.locator('.teacher-student-board-details summary').click();
   await teacherPage.getByText('נועה מבוך').waitFor();
