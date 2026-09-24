@@ -687,7 +687,7 @@
           ? (isLessonZero ? 'עולם Minecraft לשיעור הפתיחה נסגר.' : `עולם Minecraft לשיעור ${lesson.id} נסגר.`)
           : (isLessonZero ? 'עולם Minecraft לשיעור הפתיחה פעיל.' : `עולם Minecraft לשיעור ${lesson.id} פעיל.`)
       ));
-      actionRow.append(launch);
+      if (liveMinecraftControlsAvailable()) actionRow.append(launch);
       if (Number(lesson.id) >= 1) {
         const link = node('a', `צפייה בדף שיעור ${lesson.id}`, 'secondary-action link-action teacher-next-lesson');
         link.href = studentPreviewUrl(lesson.id);
@@ -704,11 +704,11 @@
       const lessonId = Number(lesson.id);
       const challengeId = lessonChallengeId(lessonId);
       selectedLessonEyebrow.textContent = lessonId === 0 ? 'שיעור פתיחה' : `אתגר ${challengeId} • שיעור ${lessonId}`;
-      selectedLessonTitle.textContent = lesson.title || `שיעור ${lessonId}`;
-      selectedLessonSummary.textContent = lesson.summary || 'בודקים האם קיים עולם Minecraft מתאים לשיעור הזה.';
+      selectedLessonTitle.textContent = `פעולות לשיעור ${lessonId}`;
+      selectedLessonSummary.textContent = 'פתחו גישה לתלמידים, בדקו איך השיעור נראה לתלמידים או עברו למצגת המדריך.';
       teacherLessonKicker.textContent = lessonId === 0 ? 'שיעור 0 • משימת פתיחה' : `אתגר ${challengeId} • שיעור ${lessonId}`;
       teacherLessonTitle.textContent = lesson.title || `שיעור ${lessonId}`;
-      teacherLessonGoal.textContent = lesson.summary || 'האקדמיה ו־Minecraft זמינים במקביל לפי בחירת המורה.';
+      teacherLessonGoal.textContent = lesson.summary || 'מסך ניהול קצר לשיעור: פתיחת גישה, צפייה כתלמיד ומצגת מדריך.';
       if (selectedLessonPreviewLink) {
         selectedLessonPreviewLink.href = studentPreviewUrl(lessonId);
       }

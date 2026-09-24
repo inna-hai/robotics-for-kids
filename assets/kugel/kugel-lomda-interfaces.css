@@ -204,7 +204,7 @@
 }
 
 .teacher-app.is-teacher-lesson .teacher-board {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
   align-items: stretch;
 }
@@ -218,24 +218,7 @@
 }
 
 .teacher-app.is-teacher-lesson .teacher-control {
-  align-content: start;
-  align-self: start;
-  gap: 8px;
-  padding: 10px 12px;
-}
-
-.teacher-app.is-teacher-lesson .teacher-control h1 {
-  margin: 0;
-  font-size: 1.02rem;
-}
-
-.teacher-app.is-teacher-lesson .teacher-control p {
-  margin: 0;
-  line-height: 1.25;
-}
-
-.teacher-app.is-teacher-lesson .teacher-control .eyebrow {
-  font-size: .72rem;
+  display: none;
 }
 
 .teacher-app.is-teacher-lesson .teacher-live-controls {
@@ -254,12 +237,6 @@
 
 .teacher-app.is-teacher-lesson .compact-form input {
   padding-block: 8px;
-}
-
-.teacher-app.is-teacher-lesson .teacher-control .primary-action,
-.teacher-app.is-teacher-lesson .teacher-control .secondary-action {
-  min-height: 32px;
-  padding-block: 6px;
 }
 
 .teacher-live-controls-bottom {
@@ -294,13 +271,14 @@
 }
 
 .teacher-app.is-teacher-lesson .teacher-selected-lesson {
+  grid-column: 1 / -1;
   align-content: start;
   gap: 8px;
   padding: 12px;
 }
 
 .teacher-app.is-teacher-lesson .selected-lesson-actions {
-  grid-template-columns: minmax(180px, 1fr) repeat(2, minmax(120px, auto));
+  grid-template-columns: repeat(3, minmax(170px, 1fr));
   gap: 8px;
 }
 
