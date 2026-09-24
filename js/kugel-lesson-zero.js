@@ -247,9 +247,6 @@
     const teacherStudentBoard = document.getElementById('teacherStudentBoard');
     const teacherHomeOverview = document.getElementById('teacherHomeOverview');
     const teacherHomeChallenges = document.getElementById('teacherHomeChallenges');
-    const teacherHomeClassName = document.getElementById('teacherHomeClassName');
-    const teacherHomeActiveLesson = document.getElementById('teacherHomeActiveLesson');
-    const teacherHomeMinecraftState = document.getElementById('teacherHomeMinecraftState');
     const teacherProgramVideoPreview = document.getElementById('teacherProgramVideoPreview');
     const teacherChallengeOverview = document.getElementById('teacherChallengeOverview');
     const teacherChallengeEyebrow = document.getElementById('teacherChallengeEyebrow');
@@ -641,12 +638,6 @@
         const button = openLessonButton(lessonId, `פתיחת שיעור ${lessonId} לתלמידים`);
         container.replaceChildren(...(button ? [button] : []));
       });
-      const activeLesson = session.active || Number(activeLessonId) === 0
-        ? lessons.find(lesson => Number(lesson.id) === Number(activeLessonId || 0)) || null
-        : null;
-      if (teacherHomeClassName) teacherHomeClassName.textContent = data.classroom?.name || 'כיתה';
-      if (teacherHomeActiveLesson) teacherHomeActiveLesson.textContent = activeLesson ? (activeLesson.title || `שיעור ${activeLesson.id}`) : 'אין שיעור פתוח';
-      if (teacherHomeMinecraftState) teacherHomeMinecraftState.textContent = minecraftStateLabel(session);
       if (teacherProgramVideoPreview && program?.overviewVideo && !teacherProgramVideoPreview.dataset.rendered) {
         renderTeacherVideoPreview(
           program.overviewVideo,
