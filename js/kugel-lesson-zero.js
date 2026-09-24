@@ -112,7 +112,7 @@
         const link = node('a', String(lessonId), `qa-lesson-link${lessonId === Number(data.lesson?.id || 0) ? ' active' : ''}${lesson.hasWorld === false ? ' missing-world' : ''}`);
         link.href = lessonId === 0 ? 'kugel-student.html' : `craftom-minecraft-lesson-${lessonId}.html`;
         link.title = lessonId === 0
-          ? 'שיעור 0 - מבוך המטבעות'
+          ? 'שיעור 0 - אוספים 8 מטבעות במבוך'
           : `${lesson.title || `שיעור ${lessonId}`}${lesson.hasWorld === false ? ' - חסר עולם Minecraft' : ''}`;
         return link;
       });
@@ -654,7 +654,7 @@
       selectedLessonEyebrow.textContent = lessonId === 0 ? 'שיעור פתיחה' : `אתגר ${challengeId} • שיעור ${lessonId}`;
       selectedLessonTitle.textContent = lesson.title || `שיעור ${lessonId}`;
       selectedLessonSummary.textContent = lesson.summary || 'בודקים האם קיים עולם Minecraft מתאים לשיעור הזה.';
-      teacherLessonKicker.textContent = lessonId === 0 ? 'שיעור 0 • תרגול פתיחה' : `אתגר ${challengeId} • שיעור ${lessonId}`;
+      teacherLessonKicker.textContent = lessonId === 0 ? 'שיעור 0 • משימת פתיחה' : `אתגר ${challengeId} • שיעור ${lessonId}`;
       teacherLessonTitle.textContent = lesson.title || `שיעור ${lessonId}`;
       teacherLessonGoal.textContent = lesson.summary || 'האקדמיה ו־Minecraft זמינים במקביל לפי בחירת המורה.';
       if (selectedLessonPreviewLink) {
