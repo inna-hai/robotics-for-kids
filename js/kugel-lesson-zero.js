@@ -423,10 +423,11 @@
       }
 
       const learning = node('div', undefined, 'student-learning-status');
-      const academyStatus = node('span', student.academyStatus === 'completed' ? 'אקדמיה הושלמה' : 'חסרה אקדמיה', `learning-pill ${student.academyStatus === 'completed' ? 'done' : 'missing'}`);
-      const minecraftStatus = node('span', student.minecraftStatus === 'completed' ? 'Minecraft הושלם' : student.minecraftStatus === 'started' ? 'Minecraft בתהליך' : 'חסר Minecraft', `learning-pill ${student.minecraftStatus === 'completed' ? 'done' : student.minecraftStatus === 'started' ? 'started' : 'missing'}`);
-      const exitStatus = node('span', student.submission ? 'כרטיס יציאה ותמונה הוגשו' : 'חסרה תמונה/כרטיס יציאה', `learning-pill ${student.submission ? 'done' : 'missing'}`);
-      learning.append(academyStatus, minecraftStatus, exitStatus);
+      if (student.academyStatus === 'completed') learning.append(node('span', 'אקדמיה הושלמה', 'learning-pill done'));
+      if (student.minecraftStatus === 'completed') learning.append(node('span', 'Minecraft הושלם', 'learning-pill done'));
+      if (student.minecraftStatus === 'started') learning.append(node('span', 'Minecraft בתהליך', 'learning-pill started'));
+      if (student.submission) learning.append(node('span', 'כרטיס יציאה ותמונה הוגשו', 'learning-pill done'));
+      if (!learning.childElementCount) learning.append(node('span', 'עוד אין התקדמות לשיעור הזה', 'learning-pill neutral'));
 
       const liveBlocks = [];
       if (liveMinecraft) {
@@ -470,7 +471,7 @@
         liveBlocks.push(actions);
       }
 
-      const submission = node('div', undefined, `student-submission ${student.submission ? 'has-submission' : 'is-missing'}`);
+      const submission = student.submission ? node('div', undefined, 'student-submission has-submission') : null;
       if (student.submission) {
         const image = document.createElement('img');
         image.src = student.submission.photo.url;
@@ -487,10 +488,8 @@
           node('small', `עודכן: ${formatDate(student.submission.updatedAt)}${student.submission.replaced ? ' • הוחלף אחרי ההגשה הראשונה' : ''}`),
         );
         submission.append(imageLink, info);
-      } else {
-        submission.append(node('strong', 'חסרה הגשה'), node('span', 'אין עדיין תמונה וכרטיס יציאה לשיעור הפעיל.'));
       }
-      card.append(identity, ...liveBlocks.slice(0, 1), learning, submission, ...liveBlocks.slice(1));
+      card.append(identity, ...liveBlocks.slice(0, 1), learning, ...(submission ? [submission] : []), ...liveBlocks.slice(1));
       return card;
     }
 

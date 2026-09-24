@@ -81,7 +81,7 @@ assert.doesNotMatch(teacher, /teacherHomeMinecraftActions/);
 assert.doesNotMatch(teacher, /teacherLessonPickerForm/);
 assert.doesNotMatch(teacher, /teacherLessonSelect/);
 assert.match(teacher, /20260914-video-first-frames-1/, 'teacher board cache-busts the challenge data posters');
-assert.match(teacher, /20260924-clean-teacher-lesson-page-1/, 'teacher board cache-busts the cleaned teacher lesson page');
+assert.match(teacher, /20260924-neutral-student-progress-1/, 'teacher board cache-busts the neutral student progress display');
 assert.match(teacher, /rel="preload" as="image" href="assets\/craftom\/challenges\/craftom-program-real-minecraft-gemini-live-1x-first-frame\.webp"/, 'teacher home should preload the first visible video poster');
 assert.match(teacher, /craftom-challenge4-smart-city-automations-gemini-live-1x-first-frame\.webp" type="image\/webp"/, 'teacher home should preload challenge video posters');
 assert.ok(teacher.indexOf('hero teacher-hero') < teacher.indexOf('teacher-control'), 'teacher hero should be the first panel in the teacher board');
@@ -183,6 +183,8 @@ assert.match(client, /coinProgress\.textContent = `[\s\S]*student\.attemptCount[
 assert.match(client, /ניסיונות: \$\{Number\(student\.attemptCount \|\| 0\)\}/, 'teachers should see the completed attempt count');
 assert.match(client, /משך אחרון: \$\{formatDuration\(student\.lastDurationMs\)\}/, 'teachers should see the last completed duration');
 assert.match(client, /שיא: \$\{formatDuration\(student\.bestTimeMs\)\}/, 'teachers should see the personal best');
+assert.match(client, /עוד אין התקדמות לשיעור הזה/, 'teacher board should use neutral copy when a student has no progress yet');
+assert.doesNotMatch(client, /חסרה אקדמיה|חסר Minecraft|חסרה תמונה\/כרטיס יציאה|חסרה הגשה/, 'teacher board should not show alarming red missing-state labels for normal no-progress rows');
 assert.match(client, /progress\.append\([\s\S]{0,300}student\.minecraftStatus === 'started' \? 'בתהליך' : 'לא התחיל'/, 'historical lesson tracking must not reuse a different lesson’s startedAt timestamp');
 assert.match(client, /renderTeacherHeader\(selectedLesson, activeLessonId\)/);
 assert.match(client, /חסר מזהה כיתה\. יש לפתוח את הלוח מתוך כרטיס הכיתה\./);
@@ -223,6 +225,8 @@ assert.match(interfacesCss, /\.teacher-app\.is-teacher-lesson \.teacher-control\
 assert.match(interfacesCss, /\.teacher-app\.is-teacher-lesson \.teacher-selected-lesson\s*{[^}]*grid-column:\s*1 \/ -1/s, 'teacher lesson action card should span the lesson page');
 assert.match(interfacesCss, /\.teacher-app\.is-teacher-lesson \.teacher-main\s*{[^}]*grid-column:\s*1 \/ -1/s, 'teacher lesson follow-up panels should stay below the action card');
 assert.match(interfacesCss, /\.teacher-student-board-details summary\s*{[^}]*cursor:\s*pointer/s, 'student board heading should be clickable');
+assert.match(interfacesCss, /\.learning-pill\.neutral\s*{[^}]*background:\s*#f1f5f9/s, 'empty progress rows should use neutral styling');
+assert.doesNotMatch(interfacesCss, /\.learning-pill\.missing|\.student-submission\.is-missing/, 'student board should not style ordinary missing progress as red errors');
 assert.doesNotMatch(interfacesCss, /\.student-layout,\s*\.teacher-board\s*{[^}]*grid-template-columns:\s*330px/s, 'teacher board must not share the student two-column grid');
 assert.doesNotMatch(interfacesCss, /teacher-lesson-menu/, 'teacher lesson dropdown should be removed from the home page');
 

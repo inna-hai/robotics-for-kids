@@ -1013,9 +1013,9 @@
   background: #fef3c7;
 }
 
-.learning-pill.missing {
-  color: #991b1b;
-  background: #fee2e2;
+.learning-pill.neutral {
+  color: #64748b;
+  background: #f1f5f9;
 }
 
 .student-submission {
@@ -1047,14 +1047,6 @@
 .student-submission small {
   color: var(--muted);
   font-weight: 800;
-}
-
-.student-submission.is-missing {
-  padding: 10px;
-  border: 1px dashed #fca5a5;
-  border-radius: 10px;
-  background: #fff7f7;
-  color: #991b1b;
 }
 
 .duration-pill {
