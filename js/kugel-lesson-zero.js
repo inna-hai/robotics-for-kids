@@ -295,8 +295,25 @@
       return id >= 1 ? Math.ceil(id / 4) : 0;
     }
 
+    function lessonZeroOverview() {
+      return {
+        id: 0,
+        challengeId: 0,
+        title: 'שיעור פתיחה: אוספים 8 מטבעות במבוך',
+        summary: 'משימת פתיחה ב-Minecraft: נכנסים למבוך, אוספים 8 מטבעות ולוחצים על כפתור הסיום.',
+        deliverable: 'איסוף 8 מטבעות וסיום המבוך',
+        hasWorld: true,
+      };
+    }
+
+    function withLessonZero(lessons) {
+      const items = Array.isArray(lessons) ? lessons.filter(Boolean) : [];
+      if (items.some(lesson => Number(lesson.id) === 0)) return items;
+      return [lessonZeroOverview(), ...items];
+    }
+
     function teacherProgramLessons() {
-      return window.CRAFTOM_MINECRAFT_PROGRAM?.lessons || [];
+      return withLessonZero(window.CRAFTOM_MINECRAFT_PROGRAM?.lessons || []);
     }
 
     function renderTeacherVideoPreview(src, poster, label, frame = node('div', undefined, 'teacher-video-preview')) {
@@ -373,7 +390,7 @@
 
     function lessonAccessText(lessonId) {
       const access = lessonAccessInfo(lessonId);
-      if (Number(lessonId) === 0) return 'פתוח תמיד';
+      if (Number(lessonId) === 0) return 'פתוח כברירת מחדל';
       if (access.open) return 'פתוח לתלמידים';
       if (access.nextToOpen) return 'הבא לפתיחה';
       return 'נעול לתלמידים';
@@ -519,6 +536,40 @@
       }
       const program = window.CRAFTOM_MINECRAFT_PROGRAM;
       if (!teacherHomeChallenges.dataset.rendered) {
+        const lessonZero = lessons.find(lesson => Number(lesson.id) === 0) || lessonZeroOverview();
+        const zeroCard = node('article', undefined, 'card lesson-card teacher-home-challenge teacher-home-zero');
+        zeroCard.append(node('span', 'שיעור 0 • לפני אתגר 1', 'tag'));
+        const zeroHeading = node('h2');
+        const zeroLink = node('a', lessonZero.title || 'שיעור פתיחה', 'minecraft-lesson-title-link');
+        zeroLink.href = teacherPageUrl({ lesson: 0 });
+        zeroLink.dataset.lessonId = '0';
+        zeroHeading.append(zeroLink);
+        zeroCard.append(zeroHeading);
+        zeroCard.append(node('span', lessonAccessText(0), 'lesson-access-badge is-open'));
+        zeroCard.append(node('p', lessonZero.summary || 'משימת פתיחה קצרה לפני שיעור 1.'));
+        const zeroList = node('ul', undefined, 'meeting-list');
+        const zeroItem = node('li');
+        const zeroItemLink = node('a', 'שיעור 0: אוספים 8 מטבעות במבוך');
+        zeroItemLink.href = teacherPageUrl({ lesson: 0 });
+        zeroItemLink.dataset.lessonId = '0';
+        const zeroLead = node('b');
+        zeroLead.append(zeroItemLink);
+        const zeroBadge = node('span', lessonAccessText(0), 'lesson-access-badge is-open');
+        zeroBadge.dataset.accessLessonId = '0';
+        zeroItem.append(
+          zeroLead,
+          zeroBadge,
+          document.createElement('br'),
+          document.createTextNode('פתוח כברירת מחדל לתלמידים, כדי להתחיל מהתמצאות קצרה לפני שיעור 1.'),
+        );
+        zeroList.append(zeroItem);
+        const zeroActions = node('div', undefined, 'challenge-actions');
+        const zeroManage = node('a', 'ניהול שיעור 0', 'btn');
+        zeroManage.href = teacherPageUrl({ lesson: 0 });
+        const zeroPreview = node('a', 'צפייה כתלמיד', 'btn secondary');
+        zeroPreview.href = studentPreviewUrl(0);
+        zeroActions.append(zeroManage, zeroPreview);
+        zeroCard.append(zeroList, zeroActions);
         const challengeCards = [1, 2, 3, 4].map(challengeId => {
           const challenge = program?.challenges?.find(item => Number(item.id) === challengeId);
           const challengeLessons = lessons.filter(lesson => lessonChallengeId(lesson.id) === challengeId);
@@ -568,7 +619,7 @@
           card.append(meetingList, actions);
           return card;
         });
-        teacherHomeChallenges.replaceChildren(...challengeCards);
+        teacherHomeChallenges.replaceChildren(zeroCard, ...challengeCards);
         teacherHomeChallenges.dataset.rendered = 'true';
       }
       teacherHomeChallenges.querySelectorAll('[data-lesson-id]').forEach(link => {
@@ -722,7 +773,7 @@
         studentPreviewLink.href = studentPreviewUrl(activeLessonId);
       }
       const minecraftBlocked = data.minecraftConfigured === false;
-      const lessons = data.lessons?.length ? data.lessons : [data.lesson].filter(Boolean);
+      const lessons = withLessonZero(data.lessons?.length ? data.lessons : [data.lesson].filter(Boolean));
       const selectedLesson = resolveSelectedLesson(lessons, activeLessonId);
       const selectedLessonId = Number(selectedLesson?.id ?? activeLessonId ?? 0);
       const challenge = currentChallenge(lessons);
