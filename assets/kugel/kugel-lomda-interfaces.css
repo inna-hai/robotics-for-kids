@@ -1335,6 +1335,24 @@
   align-content: start;
 }
 
+.teacher-home-challenge > .tag {
+  display: flex;
+  width: 100%;
+  min-height: 74px;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 22px;
+  border: 2px solid #b9d6e9;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f8fcff, #eef7fd);
+  color: #0f766e;
+  font-size: 1.65rem;
+  font-weight: 1000;
+  line-height: 1.25;
+  text-align: center;
+  white-space: normal;
+}
+
 .teacher-home-challenge .meeting-list {
   display: grid;
   gap: 8px;
@@ -1640,6 +1658,12 @@
   .teacher-home-challenges,
   .teacher-challenge-lessons {
     grid-template-columns: 1fr;
+  }
+
+  .teacher-home-challenge > .tag {
+    min-height: 62px;
+    padding: 12px 16px;
+    font-size: 1.18rem;
   }
 
   .academy-panel {

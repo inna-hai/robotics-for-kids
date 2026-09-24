@@ -81,7 +81,7 @@ assert.doesNotMatch(teacher, /teacherHomeMinecraftActions/);
 assert.doesNotMatch(teacher, /teacherLessonPickerForm/);
 assert.doesNotMatch(teacher, /teacherLessonSelect/);
 assert.match(teacher, /20260914-video-first-frames-1/, 'teacher board cache-busts the challenge data posters');
-assert.match(teacher, /20260924-teacher-home-no-status-1/, 'teacher board cache-busts the removed teacher home status cards');
+assert.match(teacher, /20260924-challenge-label-emphasis-1/, 'teacher board cache-busts the emphasized home challenge labels');
 assert.match(teacher, /rel="preload" as="image" href="assets\/craftom\/challenges\/craftom-program-real-minecraft-gemini-live-1x-first-frame\.webp"/, 'teacher home should preload the first visible video poster');
 assert.match(teacher, /craftom-challenge4-smart-city-automations-gemini-live-1x-first-frame\.webp" type="image\/webp"/, 'teacher home should preload challenge video posters');
 assert.ok(teacher.indexOf('hero teacher-hero') < teacher.indexOf('teacher-control'), 'teacher hero should be the first panel in the teacher board');
@@ -212,6 +212,7 @@ assert.match(interfacesCss, /\.teacher-program-card\s*{[^}]*grid-template-column
 assert.match(interfacesCss, /\.teacher-challenge-intro\s*{[^}]*grid-template-columns:\s*minmax\(0, 1\.1fr\) minmax\(280px, \.9fr\)/s, 'teacher challenge view should use the student challenge video-card layout');
 assert.match(interfacesCss, /\.teacher-app\.is-teacher-home \.challenge-video,\s*\.teacher-app\.is-teacher-home \.teacher-video-preview,\s*\.teacher-app\.is-teacher-challenge \.challenge-video,\s*\.teacher-app\.is-teacher-challenge \.teacher-video-preview\s*{[^}]*background:\s*#dfeef8/s, 'teacher home and challenge video previews should show poster cards instead of black video blocks');
 assert.doesNotMatch(interfacesCss, /teacher-home-flow/, 'teacher home should not keep the old internal workflow card row');
+assert.match(interfacesCss, /\.teacher-home-challenge > \.tag\s*{[^}]*min-height:\s*74px[\s\S]*font-size:\s*1\.65rem[\s\S]*font-weight:\s*1000/s, 'teacher home challenge label should be large and prominent');
 assert.match(interfacesCss, /\.teacher-home-challenge \.meeting-list\s*{[^}]*list-style:\s*none/s, 'teacher home challenge cards should use the same lesson-list structure as the student cards');
 assert.match(interfacesCss, /\.teacher-app\.is-teacher-lesson \.teacher-board\s*{[^}]*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/s, 'teacher lesson view should show the first two panels as equal compact columns');
 assert.match(interfacesCss, /\.teacher-app\.is-teacher-lesson \.teacher-board\s*{[^}]*align-items:\s*stretch/s, 'parallel teacher lesson panels should share the same visual height');
