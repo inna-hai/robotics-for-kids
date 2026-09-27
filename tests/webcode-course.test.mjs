@@ -301,6 +301,8 @@ assert.equal(lesson9.exercises[4].check.requiresPreviewButtonText, 'דלגו', '
 assert.ok(lesson9.starter.js.includes('if (lives > 0)') && lesson9.starter.js.includes('if (lives <= 0)'), 'lesson 9 keeps Game Over visible and stops actions after lives run out');
 assert.equal(lesson9.exercises.find(ex => ex.title.includes('בלוק הופך לקוד') || ex.title.includes('בלוק הופך למילת קוד'))?.check.requiresCodeSelectionTab, 'js', 'lesson 9 generated-code check requires JavaScript highlighting');
 assert.ok(lesson9.exercises.find(ex => ex.title.includes('בלוק הופך לקוד') || ex.title.includes('בלוק הופך למילת קוד'))?.check.requiresCodeSelectionBlockTypes?.includes('lesson_9_obstacle'), 'lesson 9 generated-code check targets risk/lives JavaScript blocks');
+const lesson9CodeRoleMatch = lesson9.exercises.find(ex => ex.versionNote === 'pr110-lesson9-real-code-role-match-v229');
+assert.ok(lesson9CodeRoleMatch?.matchBox?.items?.some(item => item.code === 'const startLives = 3;' && item.blockType === 'lesson_9_lives'), 'lesson 9 PR110 refinement uses real generated-code lines instead of generic timer words');
 
 const lesson10 = lessons[9];
 assert.equal(lesson10.durationMinutes, 90, 'lesson 10 is framed as 90 minutes with optional deeper code practice');
@@ -309,6 +311,11 @@ assert.ok(lesson10.starter.js.includes('let powerReady = true'), 'lesson 10 init
 assert.ok(lesson10.starter.js.includes('if (powerReady)'), 'lesson 10 checks power availability');
 assert.ok(lesson10.exercises.length >= 8, 'lesson 10 includes many exercises');
 assert.ok(lesson10.vocabulary.some(v => v[0] === 'powerReady'), 'lesson 10 vocabulary includes powerReady');
+const lesson10SymbolBlock = lesson10.blocklyBlocks.find(block => block.type === 'lesson_10_hero_symbol');
+assert.equal(lesson10SymbolBlock.args0.find(arg => arg.name === 'TEXT')?.type, 'field_dropdown', 'lesson 10 PR110 refinement turns the symbol block into a guided dropdown');
+assert.equal(lesson10.blocklyBlocks.find(block => block.type === 'lesson_10_used').toolboxFields?.VAL, 'choose', 'lesson 10 power-state block starts from an explicit choice placeholder');
+const lesson10CodeRoleMatch = lesson10.exercises.find(ex => ex.versionNote === 'pr110-lesson10-real-code-role-match-v229');
+assert.ok(lesson10CodeRoleMatch?.matchBox?.items?.some(item => item.code.includes('powerReady = false') && item.blockType === 'lesson_10_used'), 'lesson 10 PR110 refinement uses real power-state code lines and highlights related blocks');
 
 const lesson11 = lessons[10];
 assert.equal(lesson11.durationMinutes, 90, 'lesson 11 is framed as 90 minutes with optional deeper code practice');

@@ -7764,6 +7764,164 @@ function resetAdventure() {
   }
   stabilizeLesson1CodeWordExerciseV227();
 
+  function integrateWebCodePr110Lesson9And10RefinementsV229(){
+    const lesson9 = lessons.find(item => Number(item.id) === 9);
+    if(lesson9){
+      const codeMatch = lesson9.exercises?.find(exercise => Number(exercise.id) === 10 && exercise.matchBox);
+      if(codeMatch){
+        codeMatch.title = 'העמקת קוד — מחפשים שורות קוד ומתאימים תפקיד';
+        codeMatch.prompt = 'פתחו “לראות קוד שנוצר”. חפשו בקוד את השורות שמופיעות כאן, ואז התאימו לכל שורה את התפקיד שלה במשחק.';
+        codeMatch.hint = 'חפשו מילים מוכרות: startLives קשור לחיים בתחילת המשחק, score קשור לניקוד, lives קשור להורדת חיים, ו־message.textContent קשור להודעה שמופיעה במסך.';
+        codeMatch.matchBox = {
+          title: 'שורות קוד מתוך משחק הכוכבים והמכשולים',
+          note: 'קודם חפשו כל שורה באזור “לראות קוד שנוצר”, ואז בחרו מה התפקיד שלה במשחק.',
+          options: [
+            { value: 'start-lives', label: 'קובע כמה חיים יש לשחקן בתחילת המשחק' },
+            { value: 'star-score', label: 'מוסיף נקודות כשאוספים כוכב' },
+            { value: 'obstacle-penalty', label: 'מוריד חיים כשנוגעים במכשול' },
+            { value: 'screen-message', label: 'משנה הודעה שמופיעה במסך המשחק' }
+          ],
+          items: [
+            { id: 'l9-code-start-lives', code: 'const startLives = 3;', answer: 'start-lives', blockType: 'lesson_9_lives', blockLabel: 'חיים בהתחלה', tab: 'js' },
+            { id: 'l9-code-star-score', code: 'score = score + 1;', answer: 'star-score', blockType: 'lesson_9_star', blockLabel: 'כוכב מוסיף', tab: 'js' },
+            { id: 'l9-code-obstacle-lives', code: 'lives = lives - 1;', answer: 'obstacle-penalty', blockType: 'lesson_9_obstacle', blockLabel: 'מכשול מוריד', tab: 'js' },
+            { id: 'l9-code-message', code: 'document.getElementById("message").textContent = "נגמרו החיים. נסו שוב!";', answer: 'screen-message', blockType: 'lesson_9_gameover', blockLabel: 'הודעת Game Over', tab: 'js' }
+          ]
+        };
+        codeMatch.check = {
+          ...(codeMatch.check || {}),
+          requiresCodePeek: true,
+          matchAnswers: {
+            'l9-code-start-lives': 'start-lives',
+            'l9-code-star-score': 'star-score',
+            'l9-code-obstacle-lives': 'obstacle-penalty',
+            'l9-code-message': 'screen-message'
+          },
+          codePeekFeedback: 'כמעט. קודם פתחו את “לראות קוד שנוצר” וחפשו שם את השורות שמופיעות בתרגיל.',
+          matchFeedback: 'כמעט. לחצו על שורת קוד כדי לסמן בלוק קשור, ואז התאימו לפי התפקיד שלה במשחק: חיים, ניקוד, מכשול או הודעה.'
+        };
+        codeMatch.versionNote = 'pr110-lesson9-real-code-role-match-v229';
+      }
+    }
+
+    const lesson10 = lessons.find(item => Number(item.id) === 10);
+    if(!lesson10) return;
+
+    const symbolBlock = lesson10.blocklyBlocks?.find(block => block.type === 'lesson_10_hero_symbol');
+    if(symbolBlock){
+      symbolBlock.message0 = 'סמל גיבור נוסף %1';
+      symbolBlock.args0 = (symbolBlock.args0 || []).map(arg => arg.name === 'TEXT' ? {
+        type: 'field_dropdown',
+        name: 'TEXT',
+        options: [
+          ['בחרו סמל', 'choose'],
+          ['🦸 גיבור/ה', '🦸'],
+          ['🤖 רובוט', '🤖'],
+          ['👩‍🚀 חלל', '👩‍🚀'],
+          ['🧙 קוסם', '🧙'],
+          ['⭐ כוכב', '⭐'],
+          ['⚡ ברק', '⚡'],
+          ['🔥 אש', '🔥']
+        ]
+      } : arg);
+      symbolBlock.toolboxFields = { ...(symbolBlock.toolboxFields || {}), TEXT: 'choose' };
+      symbolBlock.tooltip = 'בחרו אימוג׳י לדמות נוספת ובדקו שהסמל משתנה במסך.';
+    }
+
+    const usedBlock = lesson10.blocklyBlocks?.find(block => block.type === 'lesson_10_used');
+    if(usedBlock){
+      const field = usedBlock.args0?.find(arg => arg.name === 'VAL' && arg.type === 'field_dropdown');
+      if(field) field.options = [['בחרו מצב', 'choose'], ['נגמר', 'false'], ['נשאר פעיל', 'true']];
+      usedBlock.toolboxFields = { ...(usedBlock.toolboxFields || {}), VAL: 'choose' };
+    }
+
+    const colorBlock = lesson10.blocklyBlocks?.find(block => block.type === 'lesson_10_color');
+    if(colorBlock){
+      const field = colorBlock.args0?.find(arg => arg.name === 'COLOR' && arg.type === 'field_dropdown');
+      if(field) field.options = [['בחרו צבע', 'choose'], ['ירוק', '#bbf7d0'], ['כחול', '#bfdbfe'], ['צהוב', '#fef08a'], ['ורוד', '#fbcfe8']];
+      colorBlock.toolboxFields = { ...(colorBlock.toolboxFields || {}), COLOR: 'choose' };
+    }
+
+    if(lesson10.firstBlockNotes){
+      lesson10.firstBlockNotes.lesson_10_hero_symbol = 'פתחו את “בחרו סמל”, בחרו סמל לדמות, ובדקו שהוא משתנה במסך.';
+      lesson10.firstBlockNotes.lesson_10_used = 'בחרו מצב: האם הכוח ייגמר אחרי שימוש או יישאר פעיל, ואז בדקו בתצוגה.';
+      lesson10.firstBlockNotes.lesson_10_color = 'פתחו את “בחרו צבע”, בחרו צבע למצב כוח פעיל, ואז הפעילו את הכוח ובדקו את התוצאה.';
+    }
+
+    const symbolExercise = lesson10.exercises?.find(exercise => Number(exercise.id) === 2);
+    if(symbolExercise){
+      symbolExercise.title = 'תרגיל 2 — סמל גיבור נוסף';
+      symbolExercise.prompt = 'גררו וחברו את הבלוק “סמל גיבור נוסף”. פתחו את התפריט ובחרו סמל אחר, ואז בדקו שהסמל הגדול בתצוגה השתנה.';
+      symbolExercise.hint = '“בחרו סמל” הוא מצב פתיחה. צריך לבחור סמל אמיתי מהרשימה.';
+      symbolExercise.check = {
+        ...(symbolExercise.check || {}),
+        changedBlocklyFields: [{ type: 'lesson_10_hero_symbol', field: 'TEXT', defaultValue: 'choose' }],
+        fieldFeedback: 'כמעט. פתחו את תפריט הסמל ובחרו סמל מהרשימה.',
+        generatedFeedback: 'כמעט. הסמל שבחרתם עוד לא מופיע בקוד שנוצר.'
+      };
+      symbolExercise.versionNote = 'pr110-lesson10-symbol-dropdown-v229';
+    }
+
+    const usedExercise = lesson10.exercises?.find(exercise => Number(exercise.id) === 4);
+    if(usedExercise){
+      usedExercise.hint = '“בחרו מצב” הוא רק מצב פתיחה. בחרו אם אחרי שימוש הכוח נגמר או נשאר פעיל.';
+      usedExercise.check = {
+        ...(usedExercise.check || {}),
+        changedBlocklyFields: [{ type: 'lesson_10_used', field: 'VAL', defaultValue: 'choose' }],
+        fieldFeedback: 'כמעט. פתחו את תפריט המצב ובחרו אפשרות אמיתית.'
+      };
+      usedExercise.versionNote = 'pr110-lesson10-power-state-placeholder-v229';
+    }
+
+    const colorExercise = lesson10.exercises?.find(exercise => Number(exercise.id) === 5);
+    if(colorExercise){
+      colorExercise.hint = '“בחרו צבע” הוא רק מצב פתיחה. בחרו צבע למצב כוח פעיל ואז הפעילו את הכוח בתצוגה.';
+      colorExercise.check = {
+        ...(colorExercise.check || {}),
+        changedBlocklyFields: [{ type: 'lesson_10_color', field: 'COLOR', defaultValue: 'choose' }],
+        fieldFeedback: 'כמעט. פתחו את תפריט הצבע ובחרו צבע מהרשימה.'
+      };
+      colorExercise.versionNote = 'pr110-lesson10-color-placeholder-v229';
+    }
+
+    const codeMatch = lesson10.exercises?.find(exercise => Number(exercise.id) === 12 && exercise.matchBox);
+    if(codeMatch){
+      codeMatch.title = 'העמקת קוד — מחפשים שורות קוד ומתאימים תפקיד';
+      codeMatch.prompt = 'פתחו “לראות קוד שנוצר”. חפשו בקוד את השורות שמופיעות כאן, ואז התאימו לכל שורה את התפקיד שלה בכוח המיוחד.';
+      codeMatch.hint = 'כל שורה בתרגיל קשורה לבלוק שאפשר לסמן. לחצו על שורה, הסתכלו איזה בלוק סומן, ואז בחרו תשובה.';
+      codeMatch.matchBox = {
+        title: 'שורות קוד מתוך כוח מיוחד לדמות',
+        note: 'לחצו על שורת קוד כדי לסמן את הבלוק שקשור אליה, ואז התאימו את התפקיד שלה.',
+        options: [
+          { value: 'create-power-state', label: 'יוצר משתנה ששומר אם הכוח מוכן' },
+          { value: 'set-power-spent', label: 'משנה את מצב הכוח לנגמר' },
+          { value: 'visual-power', label: 'מוסיף לכרטיס עיצוב של כוח פעיל' },
+          { value: 'screen-text', label: 'משנה את ההודעה שבמסך' }
+        ],
+        items: [
+          { id: 'l10-code-power-ready', code: 'let powerReady = true;', answer: 'create-power-state', blockType: 'lesson_10_used', blockLabel: 'אחרי שימוש הכוח', tab: 'js' },
+          { id: 'l10-code-power-spent', code: 'powerReady = false;', answer: 'set-power-spent', blockType: 'lesson_10_used', blockLabel: 'אחרי שימוש הכוח', tab: 'js' },
+          { id: 'l10-code-classlist', code: 'document.querySelector(".hero-lab").classList.add("power-on");', answer: 'visual-power', blockType: 'lesson_10_color', blockLabel: 'צבע כוח פעיל', tab: 'js' },
+          { id: 'l10-code-textcontent', code: 'document.getElementById("message").textContent = "הכוח נטען מחדש!";', answer: 'screen-text', blockType: 'lesson_10_message', blockLabel: 'הודעת כוח', tab: 'js' }
+        ]
+      };
+      codeMatch.check = {
+        ...(codeMatch.check || {}),
+        requiresCodePeek: true,
+        matchAnswers: {
+          'l10-code-power-ready': 'create-power-state',
+          'l10-code-power-spent': 'set-power-spent',
+          'l10-code-classlist': 'visual-power',
+          'l10-code-textcontent': 'screen-text'
+        },
+        codePeekFeedback: 'כמעט. קודם פתחו את “לראות קוד שנוצר” וחפשו שם את השורות שמופיעות בתרגיל.',
+        matchFeedback: 'כמעט. לחצו על כל שורת קוד, בדקו איזה בלוק מסומן, ואז התאימו את התפקיד.'
+      };
+      codeMatch.versionNote = 'pr110-lesson10-real-code-role-match-v229';
+    }
+  }
+  integrateWebCodePr110Lesson9And10RefinementsV229();
+
 
   window.WEBCODE_LESSONS = lessons;
   window.getWebCodeLesson = function (id) {
