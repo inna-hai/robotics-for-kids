@@ -79,16 +79,25 @@ function badgeHarness({ pathname = '/python-turtle.html', classroomMe, summerTok
   assert.match(badge.innerHTML, /מצב אורח/);
 }
 
-function entryHarness({ next = 'python-turtle.html', classroomLogoutOk = true, classroomMe = { role: 'guest', ok: true, subscriptionGateEnabled: true } } = {}) {
+function entryHarness({ next = 'python-turtle.html', extraSearch = '', classroomLogoutOk = true, classroomMe = { role: 'guest', ok: true, subscriptionGateEnabled: true } } = {}) {
   const listeners = new Map();
   const makeNode = () => ({
     hidden: false, href: '', textContent: '', type: 'button', classList: { toggle() {} },
     addEventListener(type, handler) { listeners.set(`${this.id}:${type}`, handler); },
     setAttribute() {},
+    querySelector() { return { textContent: '' }; },
     reset() {},
   });
-  const ids = ['guest-continue', 'subscription-continue', 'classroom-login-form', 'classroom-login-message', 'classroom-password', 'classroom-password-toggle', 'preview-demo-student'];
+  const ids = [
+    'guest-continue', 'subscription-continue', 'guest-choice-card', 'subscription-choice-card',
+    'classroom-entry-intro', 'classroom-login-title', 'classroom-login-description',
+    'classroom-identifier-label', 'classroom-password-label', 'classroom-login-submit',
+    'classroom-login-form', 'classroom-login-message', 'classroom-password',
+    'classroom-password-toggle', 'preview-demo-student',
+  ];
   const nodes = Object.fromEntries(ids.map(id => [id, Object.assign(makeNode(), { id })]));
+  nodes['classroom-identifier-label'].firstChild = { textContent: '' };
+  nodes['classroom-password-label'].firstChild = { textContent: '' };
   const assigned = [];
   const fetchCalls = [];
   const localStorage = {
@@ -98,10 +107,11 @@ function entryHarness({ next = 'python-turtle.html', classroomLogoutOk = true, c
   };
   const context = {
     window: {},
-    document: { body: { dataset: { classroomPage: 'entry' } }, getElementById(id) { return nodes[id]; } },
-    location: { search: `?next=${encodeURIComponent(next)}`, assign(path) { assigned.push(path); } },
+    document: { body: { dataset: { classroomPage: 'entry' }, classList: { add() {} } }, getElementById(id) { return nodes[id]; } },
+    location: { search: `?next=${encodeURIComponent(next)}${extraSearch}`, origin: 'https://robotics.hai.tech', assign(path) { assigned.push(path); } },
     localStorage,
     URLSearchParams,
+    URL,
     FormData: class { entries() { return []; } },
     fetch: async (path) => {
       fetchCalls.push(path);
@@ -124,6 +134,20 @@ function entryHarness({ next = 'python-turtle.html', classroomLogoutOk = true, c
   assert.equal(harness.localStorage.value, '', 'explicit guest mode must clear the subscription identity');
   assert.ok(harness.fetchCalls.includes('/api/classroom/logout'));
   assert.ok(harness.fetchCalls.includes('/api/summer/logout'));
+}
+
+{
+  const harness = entryHarness({
+    next: 'craftom-school/preview/index.html',
+    extraSearch: '&student_login=1&c=32',
+    classroomMe: { role: 'student' },
+  });
+  await tick();
+  assert.equal(harness.nodes['guest-choice-card'].hidden, true, 'forced student login hides guest mode');
+  assert.equal(harness.nodes['subscription-choice-card'].hidden, true, 'forced student login hides subscription mode');
+  assert.ok(harness.fetchCalls.includes('/api/classroom/logout'), 'forced student login must clear classroom session first');
+  assert.ok(harness.fetchCalls.includes('/api/summer/logout'), 'forced student login must clear summer session first');
+  assert.ok(!harness.fetchCalls.includes('/api/classroom/me'), 'forced student login must not redirect according to an existing role');
 }
 
 {
@@ -162,8 +186,8 @@ const entryHtml = read('classroom-entry.html');
 assert.match(entryHtml, /id="subscription-continue"/);
 assert.match(entryHtml, /מנוי אישי/);
 assert.match(entryHtml, /התנסות כאורח/);
-assert.match(entryHtml, /classroom-entry\.js\?v=20260922-password-eye-1/);
-assert.match(read('teacher-classrooms.html'), /classroom-platform\.js\?v=20260922-students-table-2/);
+assert.match(entryHtml, /classroom-entry\.js\?v=20260927-forced-student-login-1/);
+assert.match(read('teacher-classrooms.html'), /classroom-platform\.js\?v=20260927-student-identity-under-name-1/);
 
 const classroomSession = read('js/classroom-session.js');
 assert.doesNotMatch(classroomSession, /showStudentBadge/, 'the unified access badge must be the only badge');

@@ -45,6 +45,17 @@ async function post(baseUrl, path, payload, sessionCookie = '') {
   });
 }
 
+async function postInternal(baseUrl, path, payload) {
+  return fetch(`${baseUrl}${path}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${lifecycleSecret}`,
+    },
+    body: JSON.stringify(payload),
+  });
+}
+
 async function rawPost(baseUrl, path, body, sessionCookie = '') {
   return fetch(`${baseUrl}${path}`, {
     method: 'POST',
@@ -93,6 +104,7 @@ let freezeGate = null;
 const monitorCalls = [];
 const lifecycleSecret = 'test-monitor-token-at-least-32-bytes';
 let monitorWorldLease = null;
+const legacyMonitorState = new Map();
 let nextMonitorError = null;
 let nextMonitorRedirect = false;
 const queuedStateResponses = [];
@@ -127,7 +139,8 @@ const monitor = createServer(async (req, res) => {
   const signedMutationPath = ['/api/internal/craftom-school/v2/world/open', '/api/internal/craftom-school/v2/world/close',
     '/api/internal/craftom-school/v2/world/state', '/api/internal/craftom-school/v2/world/events',
     '/api/internal/craftom-school/v2/live/message',
-    '/api/internal/craftom-school/v2/live/freeze'].includes(req.url);
+    '/api/internal/craftom-school/v2/live/freeze',
+    '/api/internal/craftom-school/v2/live/teleport'].includes(req.url);
   if (signedMutationPath) {
     const timestamp = req.headers['x-hai-timestamp'];
     const requestId = req.headers['x-hai-request-id'];
@@ -152,10 +165,13 @@ const monitor = createServer(async (req, res) => {
             ? ['generation', 'lease_id', 'owner_id', 'request_id', 'server', 'world']
           : req.url.endsWith('/message')
             ? ['generation', 'lease_id', 'owner_id', 'request_id', 'scope', 'server', 'target', 'text']
+            : req.url.endsWith('/teleport')
+              ? ['generation', 'lease_id', 'owner_id', 'request_id', 'scope', 'server', 'target']
             : ['generation', 'lease_id', 'mode', 'on', 'owner_id', 'request_id', 'restore', 'scope', 'server', 'target'];
     assert.deepEqual(Object.keys(body).sort(), expectedKeys);
-    if (!req.url.endsWith('/state')) {
-      assert.equal(typeof body.lease_id, 'string');
+    const alwaysOnEventsProbe = req.url.endsWith('/events') && body.lease_id === null;
+    if (!req.url.endsWith('/state') && !alwaysOnEventsProbe) {
+      assert.equal(typeof body.lease_id, 'string', `${req.url} must include a concrete lease id, got ${JSON.stringify(body)}`);
       assert.ok(body.lease_id.length > 0);
       assert.equal(Number.isInteger(body.generation), true);
       assert.ok(body.generation > 0);
@@ -182,6 +198,11 @@ const monitor = createServer(async (req, res) => {
     return;
   }
   if (req.url === '/api/internal/craftom-school/v2/world/events') {
+    if (body.lease_id === null) {
+      res.statusCode = 404;
+      res.end(JSON.stringify({ error: 'legacy_monitor_events' }));
+      return;
+    }
     if (gameEventsStartedResolve) { gameEventsStartedResolve(); gameEventsStartedResolve = null; }
     if (gameEventsGate) await gameEventsGate;
     if (gameEventsDelayMs) await new Promise((resolve) => setTimeout(resolve, gameEventsDelayMs));
@@ -198,6 +219,43 @@ const monitor = createServer(async (req, res) => {
       ? { active: true, state: monitorWorldLease.state || 'running', server: body.server, lease_id: monitorWorldLease.lease_id,
           generation: monitorWorldLease.generation, world: monitorWorldLease.world, last_error: null }
       : { active: false, state: 'idle', server: body.server, lease_id: null, generation: 0, world: null, last_error: null }));
+    return;
+  }
+  if (req.url === '/api/internal/craftom-school/server/status') {
+    const legacy = legacyMonitorState.get(body.server);
+    res.end(JSON.stringify({
+      ok: true,
+      running: Boolean(legacy?.running),
+      current_world: legacy?.world || 'Kugel-lesson-0',
+    }));
+    return;
+  }
+  if (req.url === '/api/internal/craftom-school/server/start') {
+    legacyMonitorState.set(body.server, { running: true, world: legacyMonitorState.get(body.server)?.world || 'Kugel-lesson-0' });
+    res.end(JSON.stringify({ ok: true }));
+    return;
+  }
+  if (req.url === '/api/internal/craftom-school/worlds/list') {
+    res.end(JSON.stringify({ worlds: [
+      { name: 'Kugel-lesson-0', kind: 'template', display: 'מבוך שיעור 0' },
+      { name: 'kugel-50-safe-compounds-v3-20260824', kind: 'template', display: 'עולם אקדמיית Agent' },
+      { name: 'Python-lesson-2', kind: 'template', display: 'עולם פייתון' },
+      { name: 'kugel-saved-work', kind: 'work', display: 'שמירה קוגל' },
+    ] }));
+    return;
+  }
+  if (req.url === '/api/internal/craftom-school/world/open') {
+    legacyMonitorState.set(body.server, { running: true, world: body.world });
+    res.end(JSON.stringify({ ok: true }));
+    return;
+  }
+  if (req.url === '/api/internal/craftom-school/world/save') {
+    res.end(JSON.stringify({ ok: true, name: body.name }));
+    return;
+  }
+  if (req.url === '/api/internal/craftom-school/world/close') {
+    legacyMonitorState.set(body.server, { running: false, world: legacyMonitorState.get(body.server)?.world || 'Kugel-lesson-0' });
+    res.end(JSON.stringify({ ok: true }));
     return;
   }
   if (req.url === '/api/internal/craftom-school/v2/world/open' && worldOpenDelayMs) {
@@ -409,6 +467,126 @@ try {
   const linkPlayer = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/students/${studentA.id}/minecraft`, { playerName: 'NoaSecure' }, teacherACookie);
   assert.equal(linkPlayer.status, 200);
   assert.equal((await linkPlayer.json()).student.minecraftPlayerName, 'NoaSecure');
+  const createAlwaysOn = await post(baseUrl, '/api/classroom/classes', { name: 'כיתת קוגל קבועה', courses: ['craftom-agent'] }, teacherACookie);
+  assert.equal(createAlwaysOn.status, 201);
+  const alwaysOnClassroom = (await createAlwaysOn.json()).classroom;
+  const alwaysOnDb = new Database(dbFile);
+  alwaysOnDb.prepare('UPDATE classrooms SET join_code = ? WHERE id = ?').run('J8T82C', alwaysOnClassroom.id);
+  alwaysOnDb.close();
+  const addAlwaysOnStudent = await post(baseUrl, `/api/classroom/classes/${alwaysOnClassroom.id}/students`, { name: 'תלמיד קבוע' }, teacherACookie);
+  assert.equal(addAlwaysOnStudent.status, 201);
+  const alwaysOnStudent = (await addAlwaysOnStudent.json()).student;
+  const alwaysOnIdentityDb = new Database(dbFile);
+  alwaysOnIdentityDb.prepare(`INSERT INTO classroom_minecraft_identities
+    (student_id, upn, player_name, status, graph_object_id, source, verified_at, created_at, updated_at)
+    VALUES (?, ?, ?, 'verified', ?, 'microsoft-graph-via-monitor', ?, ?, ?)`)
+    .run(alwaysOnStudent.id, 'always.secure@hai.tech', 'AlwaysSecure', 'graph-always-secure',
+    identityNow, identityNow, identityNow);
+  alwaysOnIdentityDb.close();
+  assert.equal((await post(baseUrl, `/api/kugel/classes/${alwaysOnClassroom.id}/students/${alwaysOnStudent.id}/minecraft`,
+    { playerName: 'AlwaysSecure' }, teacherACookie)).status, 200);
+  const alwaysOnLinkDb = new Database(dbFile);
+  alwaysOnLinkDb.prepare('UPDATE classroom_students SET minecraft_player_name = ?, updated_at = ? WHERE id = ?')
+    .run('AlwaysSecure', identityNow, alwaysOnStudent.id);
+  alwaysOnLinkDb.close();
+  const alwaysOnPlayerMessage = await post(baseUrl, `/api/kugel/classes/${alwaysOnClassroom.id}/message`,
+    { text: 'בדיקת צאט', scope: 'player', target: 'AlwaysSecure' }, teacherACookie);
+  assert.equal(alwaysOnPlayerMessage.status, 200, 'always-on mapped classes can send player chat without a stored world lease');
+  const alwaysOnLegacyMessage = monitorCalls.find(call => call.url === '/api/internal/craftom-school/live/message'
+    && call.body.target === 'AlwaysSecure');
+  assert.equal(alwaysOnLegacyMessage?.body.server, 'edu-kugel-holon');
+  assert.equal(Object.hasOwn(alwaysOnLegacyMessage.body, 'lease_id'), false, 'always-on live commands use the deployed legacy Monitor contract');
+  const alwaysOnCommandPoll = await postInternal(baseUrl, '/api/internal/minecraft/live-commands', {
+    server: 'edu-kugel-holon',
+  });
+  assert.equal(alwaysOnCommandPoll.status, 200);
+  const alwaysOnCommandBody = await alwaysOnCommandPoll.json();
+  assert.equal(alwaysOnCommandBody.commands.length, 1, 'teacher chat is queued for Minecraft-side polling');
+  assert.equal(alwaysOnCommandBody.commands[0].type, 'message');
+  assert.equal(alwaysOnCommandBody.commands[0].target, 'AlwaysSecure');
+  assert.match(alwaysOnCommandBody.commands[0].commandLine, /tellraw AlwaysSecure/);
+  const alwaysOnCommandAck = await postInternal(baseUrl, '/api/internal/minecraft/live-commands', {
+    server: 'edu-kugel-holon',
+    ackIds: [alwaysOnCommandBody.commands[0].id],
+  });
+  assert.equal(alwaysOnCommandAck.status, 200);
+  assert.equal((await alwaysOnCommandAck.json()).commands.length, 0, 'acked teacher chat is not returned again');
+  const alwaysOnStop = await post(baseUrl, `/api/classroom/classes/${alwaysOnClassroom.id}/kugel-server/stop`, {}, teacherACookie);
+  assert.equal(alwaysOnStop.status, 200);
+  const alwaysOnCloseCall = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/world/close').at(-1);
+  assert.equal(alwaysOnCloseCall?.authorization, `Bearer ${lifecycleSecret}`,
+    'always-on teacher stop should close the class server through the legacy Monitor Bearer contract');
+  assert.equal(alwaysOnCloseCall?.body.server, 'edu-kugel-holon');
+  const stoppedAlwaysOnMessage = await post(baseUrl, `/api/kugel/classes/${alwaysOnClassroom.id}/message`,
+    { text: 'לא אמור להישלח', scope: 'player', target: 'AlwaysSecure' }, teacherACookie);
+  assert.equal(stoppedAlwaysOnMessage.status, 409,
+    'a stopped always-on class must not silently fall back to a virtual running session');
+  const alwaysOnRestart = await post(baseUrl, `/api/classroom/classes/${alwaysOnClassroom.id}/kugel-server/start`, {}, teacherACookie);
+  assert.equal(alwaysOnRestart.status, 200);
+  const alwaysOnStartCall = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/server/start').at(-1);
+  assert.equal(alwaysOnStartCall?.authorization, `Bearer ${lifecycleSecret}`,
+    'always-on teacher start should call the Monitor server/start endpoint');
+  assert.equal(alwaysOnStartCall?.body.server, 'edu-kugel-holon');
+  const alwaysOnStatus = await post(baseUrl, `/api/classroom/classes/${alwaysOnClassroom.id}/kugel-server/status`, {}, teacherACookie);
+  assert.equal(alwaysOnStatus.status, 200);
+  assert.equal((await alwaysOnStatus.json()).monitor.currentWorld, 'Kugel-lesson-0');
+  const alwaysOnWorlds = await post(baseUrl, `/api/classroom/classes/${alwaysOnClassroom.id}/kugel-server/worlds`, {}, teacherACookie);
+  assert.equal(alwaysOnWorlds.status, 200);
+  const alwaysOnWorldsBody = await alwaysOnWorlds.json();
+  assert.deepEqual(alwaysOnWorldsBody.worlds.map(world => world.name), ['Kugel-lesson-0', 'kugel-50-safe-compounds-v3-20260824']);
+  const alwaysOnBlockedWorld = await post(baseUrl, `/api/classroom/classes/${alwaysOnClassroom.id}/kugel-server/open-world`,
+    { world: 'kugel-saved-work', startMode: 'reset' }, teacherACookie);
+  assert.equal(alwaysOnBlockedWorld.status, 400, 'teacher dashboard must not open hidden monitor worlds');
+  const alwaysOnOpenWorld = await post(baseUrl, `/api/classroom/classes/${alwaysOnClassroom.id}/kugel-server/open-world`,
+    { world: 'Kugel-lesson-0', startMode: 'reset' }, teacherACookie);
+  assert.equal(alwaysOnOpenWorld.status, 200);
+  const alwaysOnOpenCall = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/world/open').at(-1);
+  assert.equal(alwaysOnOpenCall?.body.server, 'edu-kugel-holon');
+  assert.equal(alwaysOnOpenCall?.body.world, 'Kugel-lesson-0');
+  assert.equal(alwaysOnOpenCall?.body.start_mode, 'reset');
+  const alwaysOnSaveWorld = await post(baseUrl, `/api/classroom/classes/${alwaysOnClassroom.id}/kugel-server/save-world`,
+    { name: 'kugel-holon-work', display: 'שמירת חולון' }, teacherACookie);
+  assert.equal(alwaysOnSaveWorld.status, 200);
+  const alwaysOnSaveCall = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/world/save').at(-1);
+  assert.equal(alwaysOnSaveCall?.body.server, 'edu-kugel-holon');
+  assert.equal(alwaysOnSaveCall?.body.name, 'kugel-holon-work');
+  const alwaysOnLogin = await post(baseUrl, '/api/classroom/student-login', {
+    classCode: 'J8T82C', personalCode: alwaysOnStudent.loginCode,
+  });
+  assert.equal(alwaysOnLogin.status, 200);
+  const alwaysOnStudentCookie = cookie(alwaysOnLogin);
+  const alwaysOnCompoundSync = await fetch(`${baseUrl}/api/internal/minecraft/compound-assignments`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${lifecycleSecret}` },
+    body: JSON.stringify({
+      monitor_server_name: 'edu-kugel-holon',
+      minecraft_username: 'AlwaysSecure',
+      compound_id: 6,
+    }),
+  });
+  assert.equal(alwaysOnCompoundSync.status, 200);
+  const alwaysOnCompoundEntry = await post(baseUrl, '/api/kugel/compound-entry', { compoundId: 6 }, alwaysOnStudentCookie);
+  assert.equal(alwaysOnCompoundEntry.status, 200, 'Open Lomda compound links resolve the signed-in student in always-on classes without a stored world lease');
+  assert.equal((await alwaysOnCompoundEntry.json()).student.id, alwaysOnStudent.id);
+  gameEvents = [{
+    id: 70,
+    server_name: 'edu-kugel-holon',
+    event_type: 'coin_collected',
+    player_name: 'AlwaysSecure',
+    created_at: new Date().toISOString(),
+    game_timestamp: new Date().toISOString(),
+    payload: JSON.stringify({
+      minecraft_username: 'AlwaysSecure',
+      compound_id: 7,
+      coin_index: 1,
+      collected_count: 1,
+    }),
+  }];
+  await new Promise(resolve => setTimeout(resolve, 1100));
+  const alwaysOnCompoundEventFallback = await post(baseUrl, '/api/kugel/compound-entry', { compoundId: 7 }, alwaysOnStudentCookie);
+  assert.equal(alwaysOnCompoundEventFallback.status, 200,
+    'Open Lomda compound links fall back to recent Monitor events when the behavior pack did not sync a compound assignment');
+  assert.equal((await alwaysOnCompoundEventFallback.json()).student.id, alwaysOnStudent.id);
   const caseCollision = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/students/${studentASecond.id}/minecraft`, { playerName: 'noasecure' }, teacherACookie);
   assert.equal(caseCollision.status, 409, 'Minecraft player names must be unique case-insensitively inside a class');
   const linkOtherPlayer = await post(baseUrl, `/api/kugel/classes/${classroomB.id}/students/${studentB.id}/minecraft`, { playerName: 'OtherSecure' }, teacherBCookie);
@@ -792,7 +970,7 @@ try {
 
   gameEvents = forLease(successfulEventRows);
 
-  await new Promise(resolve => setTimeout(resolve, 1100));
+  await new Promise(resolve => setTimeout(resolve, 2500));
   let releaseTeacherViewEvents;
   gameEventsGate = new Promise(resolve => { releaseTeacherViewEvents = resolve; });
   const teacherViewEventsStarted = new Promise(resolve => { gameEventsStartedResolve = resolve; });
@@ -1014,8 +1192,11 @@ try {
   assert.equal(message.status, 200);
   const freeze = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/freeze`, { on: true, scope: 'all' }, teacherACookie);
   assert.equal(freeze.status, 200);
+  const teleport = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/teleport`, { target: 'NoaSecure' }, teacherACookie);
+  assert.equal(teleport.status, 200);
   assert.equal(monitorCalls.some(call => call.url === '/api/internal/craftom-school/v2/live/message'), true);
   assert.equal(monitorCalls.some(call => call.url === '/api/internal/craftom-school/v2/live/freeze'), true);
+  assert.equal(monitorCalls.some(call => call.url === '/api/internal/craftom-school/v2/live/teleport' && call.body.target === 'NoaSecure'), true);
   for (let index = 1; index < 28; index += 1) {
     const repeatedMessage = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/message`, { text: `בדיקה ${index}`, scope: 'all' }, teacherACookie);
     assert.equal(repeatedMessage.status, 200);
@@ -1027,11 +1208,419 @@ try {
   const resetBody = await reset.json();
   assert.equal(resetBody.student.attemptCount, 1, 'reset preserves completed-attempt history');
   assert.equal(resetBody.student.bestTimeMs, finishBody.student.bestTimeMs, 'reset preserves the personal best');
-  assert.equal(resetBody.student.lastDurationMs, finishBody.student.lastDurationMs, 'reset preserves the last completed duration');
+  assert.equal(resetBody.student.lastDurationMs, null, 'reset clears the current attempt duration shown to teachers and students');
   assert.equal(Date.parse(resetBody.student.resetAt) > Date.parse(finishBody.student.finishedAt), true,
     'reset boundary must be strictly later than a consumed completion event within the allowed clock skew');
   assert.equal(resetBody.student.startedAt, null, 'reset opens a fresh attempt boundary');
   assert.equal(resetBody.student.completed, false, 'reset clears current-attempt completion');
+  const dashboardAfterReset = await fetch(`${baseUrl}/api/classroom/classes/${classroomA.id}/progress-dashboard`, { headers: { Cookie: teacherACookie } });
+  assert.equal(dashboardAfterReset.status, 200);
+  const dashboardAfterResetBody = await dashboardAfterReset.json();
+  const dashboardAfterResetStudent = dashboardAfterResetBody.dashboard.students.find(student => student.id === studentA.id);
+  assert.equal(dashboardAfterResetStudent.minecraftEmail, 'noa.secure@hai.tech', 'teacher dashboard exposes the verified Minecraft/Microsoft email beside the student identity');
+  const resetLessonZero = dashboardAfterResetStudent.lessons.find(lesson => Number(lesson.lessonId) === 0);
+  assert.equal(resetLessonZero.overallStatus, 'started', 'teacher dashboard shows retrying students as active instead of never started');
+  assert.equal(resetLessonZero.retrying, true, 'teacher dashboard marks a reset completed attempt as retrying');
+  assert.equal(resetLessonZero.minecraftStatus, 'started', 'teacher dashboard keeps Minecraft status active after Try Again');
+  assert.equal(resetLessonZero.lastDurationMs, null, 'teacher dashboard clears the last duration for a reset current attempt');
+  assert.equal(resetLessonZero.minecraftConnection.coinProgress, 0, 'teacher dashboard resets the coin progress bar after Try Again');
+  const liveCoinsDb = new Database(dbFile);
+  liveCoinsDb.prepare('UPDATE classroom_students SET minecraft_player_name = ?, updated_at = ? WHERE id = ?')
+    .run('SecondSecure', new Date().toISOString(), studentASecond.id);
+  liveCoinsDb.close();
+  const liveCoinsAfterResetAtMs = Date.now() + 1000;
+  const liveCoinsAfterResetAt = new Date(liveCoinsAfterResetAtMs).toISOString();
+  const liveCoinsFinishedAt = new Date(liveCoinsAfterResetAtMs + 12000).toISOString();
+  gameEvents = forLease([
+    { id: 180, event_type: 'player_join', player_name: 'SecondSecure', created_at: liveCoinsAfterResetAt, payload: '{}' },
+    ...Array.from({ length: 8 }, (_, index) => ({
+      id: 181 + index,
+      event_type: 'coin_collected',
+      player_name: 'SecondSecure',
+      created_at: liveCoinsAfterResetAt,
+      block_id: 'gold_block',
+      payload: JSON.stringify({ coin_index: index + 1 }),
+    })),
+    { id: 190, event_type: 'finish_button_pressed', player_name: 'SecondSecure', created_at: liveCoinsFinishedAt, payload: '{}' },
+  ]);
+  await new Promise(resolve => setTimeout(resolve, 1100));
+  const teacherLiveCoinsView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
+  assert.equal(teacherLiveCoinsView.status, 200);
+  const teacherLiveCoinsStudent = (await teacherLiveCoinsView.json()).students.find(student => student.id === studentASecond.id);
+  assert.equal(teacherLiveCoinsStudent.coins, 8);
+  assert.equal(teacherLiveCoinsStudent.startedAt, null, 'Minecraft events can arrive even if the student did not open Minecraft from the lomda button');
+  assert.equal(teacherLiveCoinsStudent.minecraftStatus, 'completed', 'live Minecraft finish events should mark lesson zero as completed in the teacher monitor');
+  assert.equal(teacherLiveCoinsStudent.lastDurationMs, 12000, 'teacher monitor infers duration from Minecraft events when no lomda run exists');
+  const dashboardLiveCoins = await fetch(`${baseUrl}/api/classroom/classes/${classroomA.id}/progress-dashboard`, { headers: { Cookie: teacherACookie } });
+  assert.equal(dashboardLiveCoins.status, 200);
+  const dashboardLiveCoinsLessonZero = (await dashboardLiveCoins.json()).dashboard.students
+    .find(student => student.id === studentASecond.id).lessons.find(lesson => Number(lesson.lessonId) === 0);
+  assert.equal(dashboardLiveCoinsLessonZero.minecraftStatus, 'completed');
+  assert.equal(dashboardLiveCoinsLessonZero.overallStatus, 'completed');
+  assert.equal(dashboardLiveCoinsLessonZero.minecraftConnection.coins, 8);
+  assert.equal(dashboardLiveCoinsLessonZero.lastDurationMs, 12000, 'progress dashboard shows inferred Minecraft finish duration');
+  assert.equal(dashboardLiveCoinsLessonZero.bestTimeMs, 12000, 'progress dashboard shows inferred Minecraft best time');
+  legacyMonitorState.set('test-kugel-monitor', { running: true, world: 'kugel-50-safe-compounds-v3-20260824' });
+  const dashboardBuildMode = await fetch(`${baseUrl}/api/classroom/classes/${classroomA.id}/progress-dashboard`, { headers: { Cookie: teacherACookie } });
+  assert.equal(dashboardBuildMode.status, 200);
+  const dashboardBuildBody = await dashboardBuildMode.json();
+  assert.equal(dashboardBuildBody.dashboard.worldMode, 'build', 'progress dashboard follows the current Monitor world mode');
+  const dashboardBuildLessonZero = dashboardBuildBody.dashboard.students
+    .find(student => student.id === studentASecond.id).lessons.find(lesson => Number(lesson.lessonId) === 0);
+  assert.equal(dashboardBuildLessonZero.minecraftConnection.coins, 0, 'build mode ignores stray coin events');
+  assert.equal(dashboardBuildLessonZero.lastDurationMs, null, 'build mode hides last maze duration');
+  assert.equal(dashboardBuildLessonZero.bestTimeMs, null, 'build mode hides maze best time');
+  const teacherBuildModeView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
+  assert.equal(teacherBuildModeView.status, 200);
+  const teacherBuildModeBody = await teacherBuildModeView.json();
+  assert.equal(teacherBuildModeBody.worldMode, 'build', 'teacher monitor receives build mode');
+  const teacherBuildModeStudent = teacherBuildModeBody.students.find(student => student.id === studentASecond.id);
+  assert.equal(teacherBuildModeStudent.coins, 0, 'teacher monitor ignores maze coin events in build mode');
+  assert.equal(teacherBuildModeStudent.lastDurationMs, null, 'teacher monitor hides maze finish times in build mode');
+  const teacherLessonZeroHistoryView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}&lessonId=0`, { headers: { Cookie: teacherACookie } });
+  assert.equal(teacherLessonZeroHistoryView.status, 200);
+  const teacherLessonZeroHistoryBody = await teacherLessonZeroHistoryView.json();
+  assert.equal(teacherLessonZeroHistoryBody.worldMode, 'build', 'current world mode still reflects the active Monitor world');
+  assert.equal(teacherLessonZeroHistoryBody.viewMode, 'maze', 'explicit lesson zero teacher view keeps the maze report visible');
+  legacyMonitorState.set('test-kugel-monitor', { running: true, world: 'Kugel-lesson-0' });
+  const teacherLessonOneWhileMazeWorldView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}&lessonId=1`, { headers: { Cookie: teacherACookie } });
+  assert.equal(teacherLessonOneWhileMazeWorldView.status, 200);
+  const teacherLessonOneWhileMazeWorldBody = await teacherLessonOneWhileMazeWorldView.json();
+  assert.equal(teacherLessonOneWhileMazeWorldBody.worldMode, 'maze', 'current world mode can still be the lesson-zero maze');
+  assert.equal(teacherLessonOneWhileMazeWorldBody.viewMode, 'build', 'explicit lesson one teacher view must not inherit maze metrics from the active world');
+  assert.equal(teacherLessonOneWhileMazeWorldBody.lesson.id, 1, 'explicit lesson one teacher view keeps the selected lesson active');
+  const teacherLessonOneWhileMazeWorldStudent = teacherLessonOneWhileMazeWorldBody.students.find(student => student.id === studentASecond.id);
+  assert.equal(teacherLessonOneWhileMazeWorldStudent.coins, 0, 'lesson one view hides lesson-zero coin progress even when the maze world is active');
+  assert.equal(teacherLessonOneWhileMazeWorldStudent.attemptCount, 0, 'lesson one view hides lesson-zero attempts even when the maze world is active');
+  assert.equal(teacherLessonOneWhileMazeWorldStudent.lastDurationMs, null, 'lesson one view hides lesson-zero last duration even when the maze world is active');
+  assert.equal(teacherLessonOneWhileMazeWorldStudent.bestTimeMs, null, 'lesson one view hides lesson-zero best time even when the maze world is active');
+  gameEvents = forLease([
+    { id: 220, event_type: 'player_join', player_name: 'SecondSecure', created_at: liveCoinsAfterResetAt, game_timestamp: liveCoinsAfterResetAt, payload: '{}' },
+    ...Array.from({ length: 8 }, (_, index) => ({
+      id: 221 + index,
+      event_type: 'coin_collected',
+      player_name: 'SecondSecure',
+      created_at: liveCoinsAfterResetAt,
+      game_timestamp: liveCoinsAfterResetAt,
+      block_id: 'gold_block',
+      payload: JSON.stringify({ coin_index: index + 1 }),
+    })),
+    {
+      id: 230,
+      event_type: 'finish_button_pressed',
+      player_name: 'SecondSecure',
+      created_at: liveCoinsFinishedAt,
+      game_timestamp: liveCoinsFinishedAt,
+      payload: JSON.stringify({
+        report_data: {
+          started_at_iso: liveCoinsAfterResetAt,
+          completed_at_iso: liveCoinsFinishedAt,
+          duration_seconds: 45,
+          coins_collected: 8,
+          total_coins: 8,
+        },
+      }),
+    },
+  ]);
+  await new Promise(resolve => setTimeout(resolve, 1100));
+  const teacherMonitorDurationView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
+  assert.equal(teacherMonitorDurationView.status, 200);
+  const teacherMonitorDurationStudent = (await teacherMonitorDurationView.json()).students.find(student => student.id === studentASecond.id);
+  assert.equal(teacherMonitorDurationStudent.lastDurationMs, 45000,
+    'teacher monitor prefers the explicit duration recorded by the Minecraft monitor finish entry');
+  const dashboardMonitorDuration = await fetch(`${baseUrl}/api/classroom/classes/${classroomA.id}/progress-dashboard`, { headers: { Cookie: teacherACookie } });
+  assert.equal(dashboardMonitorDuration.status, 200);
+  const dashboardMonitorDurationLessonZero = (await dashboardMonitorDuration.json()).dashboard.students
+    .find(student => student.id === studentASecond.id).lessons.find(lesson => Number(lesson.lessonId) === 0);
+  assert.equal(dashboardMonitorDurationLessonZero.lastDurationMs, 45000,
+    'progress dashboard prefers monitor report_data.duration_seconds when present');
+  const staleDurationDb = new Database(dbFile);
+  staleDurationDb.prepare(`
+    INSERT INTO kugel_student_runs (
+      student_id, classroom_id, lesson_id, started_at, reset_at, finished_at,
+      attempt_count, best_time_ms, best_finished_at, last_duration_ms, updated_at
+    )
+    VALUES (?, ?, 0, ?, ?, ?, 0, 146000, ?, 797000, ?)
+    ON CONFLICT(student_id) DO UPDATE SET
+      started_at = excluded.started_at,
+      reset_at = excluded.reset_at,
+      finished_at = excluded.finished_at,
+      attempt_count = excluded.attempt_count,
+      best_time_ms = excluded.best_time_ms,
+      best_finished_at = excluded.best_finished_at,
+      last_duration_ms = excluded.last_duration_ms,
+      updated_at = excluded.updated_at
+  `).run(
+    studentASecond.id,
+    classroomA.id,
+    liveCoinsAfterResetAt,
+    liveCoinsAfterResetAt,
+    liveCoinsFinishedAt,
+    liveCoinsFinishedAt,
+    new Date().toISOString(),
+  );
+  staleDurationDb.close();
+  const dashboardFreshMonitorDuration = await fetch(`${baseUrl}/api/classroom/classes/${classroomA.id}/progress-dashboard`, { headers: { Cookie: teacherACookie } });
+  assert.equal(dashboardFreshMonitorDuration.status, 200);
+  const dashboardFreshMonitorDurationLessonZero = (await dashboardFreshMonitorDuration.json()).dashboard.students
+    .find(student => student.id === studentASecond.id).lessons.find(lesson => Number(lesson.lessonId) === 0);
+  assert.equal(dashboardFreshMonitorDurationLessonZero.lastDurationMs, 45000,
+    'progress dashboard must show the latest monitor finish duration instead of a stale stored last duration');
+  assert.equal(dashboardFreshMonitorDurationLessonZero.bestTimeMs, 45000,
+    'progress dashboard must use the best duration across stored and monitor attempts');
+  assert.equal(dashboardFreshMonitorDurationLessonZero.attempts, 1,
+    'a stored best time must imply at least one completed attempt even if an old row missed attempt_count');
+  const secondMonitorAttemptStartedAt = new Date(Date.parse(liveCoinsFinishedAt) + 10000).toISOString();
+  const secondMonitorAttemptFinishedAt = new Date(Date.parse(secondMonitorAttemptStartedAt) + 7000).toISOString();
+  gameEvents = forLease([
+    { id: 300, event_type: 'player_join', player_name: 'SecondSecure', created_at: liveCoinsAfterResetAt, game_timestamp: liveCoinsAfterResetAt, payload: '{}' },
+    ...Array.from({ length: 8 }, (_, index) => ({
+      id: 301 + index,
+      event_type: 'coin_collected',
+      player_name: 'SecondSecure',
+      created_at: liveCoinsAfterResetAt,
+      game_timestamp: liveCoinsAfterResetAt,
+      block_id: 'gold_block',
+      payload: JSON.stringify({ coin_index: index + 1 }),
+    })),
+    {
+      id: 310,
+      event_type: 'finish_button_pressed',
+      player_name: 'SecondSecure',
+      created_at: liveCoinsFinishedAt,
+      game_timestamp: liveCoinsFinishedAt,
+      payload: JSON.stringify({
+        report_data: {
+          started_at_iso: liveCoinsAfterResetAt,
+          completed_at_iso: liveCoinsFinishedAt,
+          duration_seconds: 797,
+          coins_collected: 8,
+          total_coins: 8,
+        },
+      }),
+    },
+    {
+      id: 311,
+      event_type: 'chat',
+      player_name: 'SecondSecure',
+      created_at: secondMonitorAttemptStartedAt,
+      game_timestamp: secondMonitorAttemptStartedAt,
+      payload: JSON.stringify({ message: 'Mission reset. Start the maze again.' }),
+    },
+    ...Array.from({ length: 8 }, (_, index) => ({
+      id: 312 + index,
+      event_type: 'coin_collected',
+      player_name: 'SecondSecure',
+      created_at: secondMonitorAttemptStartedAt,
+      game_timestamp: secondMonitorAttemptStartedAt,
+      block_id: 'gold_block',
+      payload: JSON.stringify({ coin_index: index + 1 }),
+    })),
+    {
+      id: 320,
+      event_type: 'finish_button_pressed',
+      player_name: 'SecondSecure',
+      created_at: secondMonitorAttemptFinishedAt,
+      game_timestamp: secondMonitorAttemptFinishedAt,
+      payload: JSON.stringify({
+        report_data: {
+          started_at_iso: secondMonitorAttemptStartedAt,
+          completed_at_iso: secondMonitorAttemptFinishedAt,
+          duration_seconds: 107,
+          coins_collected: 8,
+          total_coins: 8,
+        },
+      }),
+    },
+  ]);
+  await new Promise(resolve => setTimeout(resolve, 1100));
+  const dashboardLatestMonitorAttempt = await fetch(`${baseUrl}/api/classroom/classes/${classroomA.id}/progress-dashboard`, { headers: { Cookie: teacherACookie } });
+  assert.equal(dashboardLatestMonitorAttempt.status, 200);
+  const dashboardLatestMonitorAttemptLessonZero = (await dashboardLatestMonitorAttempt.json()).dashboard.students
+    .find(student => student.id === studentASecond.id).lessons.find(lesson => Number(lesson.lessonId) === 0);
+  assert.equal(dashboardLatestMonitorAttemptLessonZero.lastDurationMs, 107000,
+    'progress dashboard must show the latest completed monitor attempt after a Minecraft reset');
+  assert.equal(dashboardLatestMonitorAttemptLessonZero.bestTimeMs, 107000,
+    'progress dashboard must keep best time separate from old slower attempts');
+  const minecraftResetAt = new Date(Date.parse(liveCoinsFinishedAt) + 5000).toISOString();
+  gameEvents = forLease([
+    { id: 220, event_type: 'player_join', player_name: 'SecondSecure', created_at: liveCoinsAfterResetAt, game_timestamp: liveCoinsAfterResetAt, payload: '{}' },
+    ...Array.from({ length: 8 }, (_, index) => ({
+      id: 221 + index,
+      event_type: 'coin_collected',
+      player_name: 'SecondSecure',
+      created_at: liveCoinsAfterResetAt,
+      game_timestamp: liveCoinsAfterResetAt,
+      block_id: 'gold_block',
+      payload: JSON.stringify({ coin_index: index + 1 }),
+    })),
+    {
+      id: 230,
+      event_type: 'finish_button_pressed',
+      player_name: 'SecondSecure',
+      created_at: liveCoinsFinishedAt,
+      game_timestamp: liveCoinsFinishedAt,
+      payload: JSON.stringify({
+        report_data: {
+          started_at_iso: liveCoinsAfterResetAt,
+          completed_at_iso: liveCoinsFinishedAt,
+          duration_seconds: 45,
+          coins_collected: 8,
+          total_coins: 8,
+        },
+      }),
+    },
+    {
+      id: 231,
+      event_type: 'maze_reset',
+      player_name: 'SecondSecure',
+      created_at: minecraftResetAt,
+      game_timestamp: minecraftResetAt,
+      payload: JSON.stringify({
+        minecraft_username: 'SecondSecure',
+        compound_id: 32,
+        reset_at_iso: minecraftResetAt,
+        reset_at_ms: Date.parse(minecraftResetAt),
+      }),
+    },
+  ]);
+  await new Promise(resolve => setTimeout(resolve, 1100));
+  const teacherMinecraftResetView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
+  assert.equal(teacherMinecraftResetView.status, 200);
+  const teacherMinecraftResetStudent = (await teacherMinecraftResetView.json()).students.find(student => student.id === studentASecond.id);
+  assert.equal(teacherMinecraftResetStudent.coins, 0,
+    'maze_reset from Minecraft starts a clean current attempt before the next coin arrives');
+  assert.equal(teacherMinecraftResetStudent.completed, false);
+  assert.equal(teacherMinecraftResetStudent.retrying, true);
+  assert.equal(teacherMinecraftResetStudent.lastDurationMs, null);
+  assert.equal(teacherMinecraftResetStudent.bestTimeMs, 45000,
+    'maze_reset keeps the previous best time visible');
+  assert.equal(teacherMinecraftResetStudent.attemptCount, 1,
+    'maze_reset preserves completed-attempt history instead of resetting attempts to zero');
+  const dashboardMinecraftReset = await fetch(`${baseUrl}/api/classroom/classes/${classroomA.id}/progress-dashboard`, { headers: { Cookie: teacherACookie } });
+  assert.equal(dashboardMinecraftReset.status, 200);
+  const dashboardMinecraftResetLessonZero = (await dashboardMinecraftReset.json()).dashboard.students
+    .find(student => student.id === studentASecond.id).lessons.find(lesson => Number(lesson.lessonId) === 0);
+  assert.equal(dashboardMinecraftResetLessonZero.retrying, true);
+  assert.equal(dashboardMinecraftResetLessonZero.attempts, 1,
+    'progress dashboard must keep completed-attempt count after a Minecraft reset');
+  assert.equal(dashboardMinecraftResetLessonZero.minecraftConnection.coins, 0);
+  assert.equal(dashboardMinecraftResetLessonZero.lastDurationMs, null);
+  assert.equal(dashboardMinecraftResetLessonZero.bestTimeMs, 45000);
+  const minecraftChatResetAt = new Date(Date.parse(liveCoinsFinishedAt) + 7000).toISOString();
+  gameEvents = forLease([
+    { id: 240, event_type: 'player_join', player_name: 'SecondSecure', created_at: liveCoinsAfterResetAt, game_timestamp: liveCoinsAfterResetAt, payload: '{}' },
+    ...Array.from({ length: 8 }, (_, index) => ({
+      id: 241 + index,
+      event_type: 'coin_collected',
+      player_name: 'SecondSecure',
+      created_at: liveCoinsAfterResetAt,
+      game_timestamp: liveCoinsAfterResetAt,
+      block_id: 'gold_block',
+      payload: JSON.stringify({ coin_index: index + 1 }),
+    })),
+    {
+      id: 250,
+      event_type: 'finish_button_pressed',
+      player_name: 'SecondSecure',
+      created_at: liveCoinsFinishedAt,
+      game_timestamp: liveCoinsFinishedAt,
+      payload: JSON.stringify({
+        report_data: {
+          started_at_iso: liveCoinsAfterResetAt,
+          completed_at_iso: liveCoinsFinishedAt,
+          duration_seconds: 45,
+          coins_collected: 8,
+          total_coins: 8,
+        },
+      }),
+    },
+    {
+      id: 251,
+      event_type: 'chat',
+      player_name: 'SecondSecure',
+      created_at: minecraftChatResetAt,
+      game_timestamp: minecraftChatResetAt,
+      payload: JSON.stringify({
+        message: 'sent Actionbar message to <SecondSecure>: Mission reset. Start the maze again.',
+        message_type: 'chat',
+      }),
+    },
+  ]);
+  await new Promise(resolve => setTimeout(resolve, 1100));
+  const teacherMinecraftChatResetView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
+  assert.equal(teacherMinecraftChatResetView.status, 200);
+  const teacherMinecraftChatResetStudent = (await teacherMinecraftChatResetView.json()).students.find(student => student.id === studentASecond.id);
+  assert.equal(teacherMinecraftChatResetStudent.coins, 0,
+    'Monitor chat reset messages also start a clean current attempt before the next coin arrives');
+  assert.equal(teacherMinecraftChatResetStudent.completed, false);
+  assert.equal(teacherMinecraftChatResetStudent.retrying, true);
+  assert.equal(teacherMinecraftChatResetStudent.lastDurationMs, null);
+  assert.equal(teacherMinecraftChatResetStudent.attemptCount, 1,
+    'chat reset preserves completed-attempt history instead of resetting attempts to zero');
+  const minecraftRetryCoinAt = new Date(Date.parse(liveCoinsFinishedAt) + 10000).toISOString();
+  gameEvents = forLease([
+    { id: 220, event_type: 'player_join', player_name: 'SecondSecure', created_at: liveCoinsAfterResetAt, game_timestamp: liveCoinsAfterResetAt, payload: '{}' },
+    ...Array.from({ length: 8 }, (_, index) => ({
+      id: 221 + index,
+      event_type: 'coin_collected',
+      player_name: 'SecondSecure',
+      created_at: liveCoinsAfterResetAt,
+      game_timestamp: liveCoinsAfterResetAt,
+      block_id: 'gold_block',
+      payload: JSON.stringify({ coin_index: index + 1 }),
+    })),
+    {
+      id: 230,
+      event_type: 'finish_button_pressed',
+      player_name: 'SecondSecure',
+      created_at: liveCoinsFinishedAt,
+      game_timestamp: liveCoinsFinishedAt,
+      payload: JSON.stringify({
+        report_data: {
+          started_at_iso: liveCoinsAfterResetAt,
+          completed_at_iso: liveCoinsFinishedAt,
+          duration_seconds: 45,
+          coins_collected: 8,
+          total_coins: 8,
+        },
+      }),
+    },
+    { id: 231, event_type: 'player_join', player_name: 'SecondSecure', created_at: minecraftRetryCoinAt, game_timestamp: minecraftRetryCoinAt, payload: '{}' },
+    {
+      id: 232,
+      event_type: 'coin_collected',
+      player_name: 'SecondSecure',
+      created_at: minecraftRetryCoinAt,
+      game_timestamp: minecraftRetryCoinAt,
+      block_id: 'gold_block',
+      payload: JSON.stringify({ coin_index: 4, collected_count: 1 }),
+    },
+  ]);
+  await new Promise(resolve => setTimeout(resolve, 2500));
+  const teacherMinecraftRetryView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
+  assert.equal(teacherMinecraftRetryView.status, 200);
+  const teacherMinecraftRetryStudent = (await teacherMinecraftRetryView.json()).students.find(student => student.id === studentASecond.id);
+  assert.equal(teacherMinecraftRetryStudent.coins, 1,
+    'a new Minecraft attempt after a finish must show the current collected count instead of the previous 8 coins');
+  assert.equal(teacherMinecraftRetryStudent.completed, false);
+  assert.equal(teacherMinecraftRetryStudent.retrying, true);
+  assert.equal(teacherMinecraftRetryStudent.lastDurationMs, null);
+  assert.equal(teacherMinecraftRetryStudent.bestTimeMs, 45000,
+    'a Minecraft-side retry keeps the previous best time visible');
+  assert.equal(teacherMinecraftRetryStudent.attemptCount, 1,
+    'a retry in progress keeps the previous completed-attempt count until the next finish');
+  const dashboardMinecraftRetry = await fetch(`${baseUrl}/api/classroom/classes/${classroomA.id}/progress-dashboard`, { headers: { Cookie: teacherACookie } });
+  assert.equal(dashboardMinecraftRetry.status, 200);
+  const dashboardMinecraftRetryLessonZero = (await dashboardMinecraftRetry.json()).dashboard.students
+    .find(student => student.id === studentASecond.id).lessons.find(lesson => Number(lesson.lessonId) === 0);
+  assert.equal(dashboardMinecraftRetryLessonZero.retrying, true);
+  assert.equal(dashboardMinecraftRetryLessonZero.attempts, 1,
+    'progress dashboard keeps historical attempts while the next attempt is in progress');
+  assert.equal(dashboardMinecraftRetryLessonZero.minecraftConnection.coins, 1);
+  assert.equal(dashboardMinecraftRetryLessonZero.lastDurationMs, null);
+  assert.equal(dashboardMinecraftRetryLessonZero.bestTimeMs, 45000);
+  gameEvents = [];
   const [concurrentStartA, concurrentStartB] = await Promise.all([
     post(baseUrl, '/api/kugel/student/start', {}, studentACookie),
     post(baseUrl, '/api/kugel/student/start', {}, studentACookie),
@@ -1049,10 +1638,11 @@ try {
   assert.equal(afterResetBody.student.attemptCount, 1);
 
   const slowerFinishAtMs = Date.parse(resetBody.student.resetAt) + Math.max(finishBody.student.bestTimeMs + 5000, 10000);
+  const slowerStartAt = new Date(slowerFinishAtMs - 5000).toISOString();
   const slowerFinishAt = new Date(slowerFinishAtMs).toISOString();
   gameEvents = forLease([
     { id: 200, event_type: 'player_join', player_name: 'NoaSecure', created_at: resetBody.student.resetAt, payload: '{}' },
-    ...Array.from({ length: 8 }, (_, index) => ({ id: 201 + index, event_type: 'coin_collected', player_name: 'NoaSecure', created_at: slowerFinishAt, block_id: 'gold_block', payload: JSON.stringify({ coin_index: index + 1 }) })),
+    ...Array.from({ length: 8 }, (_, index) => ({ id: 201 + index, event_type: 'coin_collected', player_name: 'NoaSecure', created_at: slowerStartAt, block_id: 'gold_block', payload: JSON.stringify({ coin_index: index + 1 }) })),
     { id: 210, event_type: 'finish_button_pressed', player_name: 'NoaSecure', created_at: slowerFinishAt, payload: JSON.stringify({ completed: true }) },
   ]);
   await new Promise(resolve => setTimeout(resolve, 1100));
@@ -1064,7 +1654,16 @@ try {
   gameEventsDelayMs = 0;
   assert.equal(resetDuringFinish.status, 200);
   assert.equal(staleFinishDuringReset.status, 409, 'a finish racing with reset must not complete or count the reset attempt');
-  assert.equal((await resetDuringFinish.json()).student.attemptCount, 1);
+  const resetDuringFinishBody = await resetDuringFinish.json();
+  assert.equal(resetDuringFinishBody.student.attemptCount, 1);
+  const postRaceFinishAtMs = Date.parse(resetDuringFinishBody.student.resetAt) + Math.max(finishBody.student.bestTimeMs + 5000, 10000);
+  const postRaceStartAt = new Date(postRaceFinishAtMs - 5000).toISOString();
+  const postRaceFinishAt = new Date(postRaceFinishAtMs).toISOString();
+  gameEvents = forLease([
+    { id: 211, event_type: 'player_join', player_name: 'NoaSecure', created_at: resetDuringFinishBody.student.resetAt, payload: '{}' },
+    ...Array.from({ length: 8 }, (_, index) => ({ id: 212 + index, event_type: 'coin_collected', player_name: 'NoaSecure', created_at: postRaceStartAt, block_id: 'gold_block', payload: JSON.stringify({ coin_index: index + 1 }) })),
+    { id: 221, event_type: 'finish_button_pressed', player_name: 'NoaSecure', created_at: postRaceFinishAt, payload: JSON.stringify({ completed: true }) },
+  ]);
   const slowerFinish = await post(baseUrl, '/api/kugel/student/finish', {}, studentACookie);
   assert.equal(slowerFinish.status, 200);
   const slowerFinishBody = await slowerFinish.json();

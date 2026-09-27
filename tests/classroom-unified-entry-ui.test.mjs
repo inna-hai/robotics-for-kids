@@ -10,6 +10,8 @@ const entryHtml = read('classroom-entry.html');
 
 assert.ok(entryHtml.includes('id="guest-continue"'), 'guest choice must remain');
 assert.ok(entryHtml.includes('id="subscription-continue"'), 'personal subscription choice must remain');
+assert.ok(entryHtml.includes('id="guest-choice-card"'), 'forced Minecraft login needs to hide guest mode');
+assert.ok(entryHtml.includes('id="subscription-choice-card"'), 'forced Minecraft login needs to hide subscription mode');
 assert.ok(entryHtml.includes('id="classroom-login-form"'), 'one unified classroom form is required');
 assert.ok(entryHtml.includes('name="identifier"'));
 assert.match(entryHtml, /name="password"[^>]*type="password"[^>]*autocomplete="current-password"/);
@@ -57,18 +59,27 @@ class FakeElement {
   setAttribute(name, value) { this.attributes[name] = String(value); }
   append(...children) { this.children.push(...children); }
   replaceChildren(...children) { this.children = children; }
+  querySelector() { return new FakeElement(); }
   reset() {}
 }
 
-function entryVm(loginData, identifier = 'person@example.test') {
-  const ids = ['guest-continue', 'subscription-continue', 'classroom-login-form', 'classroom-login-message', 'classroom-password', 'classroom-password-toggle', 'preview-demo-student'];
+function entryVm(loginData, identifier = 'person@example.test', search = '?next=python-turtle.html') {
+  const ids = [
+    'guest-continue', 'subscription-continue', 'guest-choice-card', 'subscription-choice-card',
+    'classroom-entry-intro', 'classroom-login-title', 'classroom-login-description',
+    'classroom-identifier-label', 'classroom-password-label', 'classroom-login-submit',
+    'classroom-login-form', 'classroom-login-message', 'classroom-password',
+    'classroom-password-toggle', 'preview-demo-student',
+  ];
   const elements = Object.fromEntries(ids.map((id) => [id, new FakeElement(id)]));
+  elements['classroom-identifier-label'].firstChild = { textContent: '' };
+  elements['classroom-password-label'].firstChild = { textContent: '' };
   elements['classroom-password'].type = 'password';
   const requests = [];
   const assignments = [];
   const context = {
-    document: { body: { dataset: { classroomPage: 'entry' } }, getElementById: (id) => elements[id] || null },
-    location: { search: '?next=python-turtle.html', assign: (url) => assignments.push(url) },
+    document: { body: { dataset: { classroomPage: 'entry' }, classList: { add() {} } }, getElementById: (id) => elements[id] || null },
+    location: { search, origin: 'https://robotics.hai.tech', assign: (url) => assignments.push(url) },
     URLSearchParams,
     FormData: class { entries() { return [['identifier', identifier], ['password', 'SecretPass123!']]; } },
     localStorage: { getItem: () => '', removeItem() {} },
@@ -81,6 +92,7 @@ function entryVm(loginData, identifier = 'person@example.test') {
       return { ok: true, json: async () => ({ ok: true }) };
     },
     setTimeout,
+    URL,
   };
   vm.runInNewContext(entryClient, context);
   return { elements, requests, assignments };
@@ -110,6 +122,22 @@ assert.deepEqual(JSON.parse(studentLoginRequest.options.body), { classCode: 'CLA
 studentEntry.assignments.length = 0;
 await studentEntry.elements['preview-demo-student'].listeners.click();
 assert.deepEqual(studentEntry.assignments, ['classroom-student.html'], 'preview students must use the dedicated landing page');
+
+const forcedStudentEntry = entryVm(
+  { role: 'student' },
+  'CLASS42',
+  '?student_login=1&next=craftom-school%2Fpreview%2Findex.html&c=32',
+);
+await new Promise((resolve) => setTimeout(resolve, 0));
+assert.equal(forcedStudentEntry.elements['guest-choice-card'].hidden, true);
+assert.equal(forcedStudentEntry.elements['subscription-choice-card'].hidden, true);
+assert.ok(forcedStudentEntry.requests.some((request) => request.path === '/api/classroom/logout'));
+assert.ok(forcedStudentEntry.requests.some((request) => request.path === '/api/summer/logout'));
+assert.ok(!forcedStudentEntry.requests.some((request) => request.path === '/api/classroom/me'), 'forced student login must not inspect an existing role');
+await forcedStudentEntry.elements['classroom-login-form'].listeners.submit({ preventDefault() {}, currentTarget: forcedStudentEntry.elements['classroom-login-form'] });
+assert.deepEqual(forcedStudentEntry.assignments, ['craftom-school/preview/index.html?c=32']);
+const forcedLoginRequest = forcedStudentEntry.requests.find((request) => request.path === '/api/classroom/student-login');
+assert.deepEqual(JSON.parse(forcedLoginRequest.options.body), { classCode: 'CLASS42', personalCode: 'SecretPass123!' });
 console.log('✓ unified classroom entry keeps safe choices, password toggle, and role redirects');
 
 function studentVm(me) {

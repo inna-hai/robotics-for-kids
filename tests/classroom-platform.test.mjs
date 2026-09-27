@@ -388,9 +388,20 @@ try {
   assert.equal(craftomProgressDashboard.status, 200);
   assert.equal(craftomProgressDashboardBody.dashboard.courseId, 'craftom-agent');
   assert.equal(craftomProgressDashboardBody.dashboard.lessons.length, 17);
+  const teacherCraftomClasses = await fetch(`${baseUrl}/api/classroom/classes`, { headers: { Cookie: teacherCookie } });
+  const teacherCraftomClassesBody = await teacherCraftomClasses.json();
+  const listedCraftomClass = teacherCraftomClassesBody.classes.find(item => item.id === craftomClass.id);
+  assert.equal(listedCraftomClass.lessonAccess.lessons.length, 17, 'teacher class list should expose the full Agent Academy lesson map');
+  assert.equal(listedCraftomClass.lessonAccess.lessons[0].open, true, 'lesson zero should show as open in the teacher class hub');
+  assert.equal(listedCraftomClass.lessonAccess.nextLessonId, 1, 'teacher class hub should identify the next Agent Academy lesson to open');
   assert.equal(craftomProgressDashboardBody.dashboard.students.length, 1);
   assert.equal(craftomProgressDashboardBody.dashboard.students[0].lessons.length, 17);
   assert.equal(craftomProgressDashboardBody.dashboard.students[0].lessons[0].overallStatus, 'missing');
+  assert.ok(craftomProgressDashboardBody.dashboard.minecraftConnection, 'progress dashboard should include class Minecraft connection summary');
+  assert.ok(craftomProgressDashboardBody.dashboard.students[0].minecraftConnection, 'progress dashboard should include per-student Minecraft connection status');
+  assert.ok(craftomProgressDashboardBody.dashboard.students[0].lessons[0].minecraftConnection, 'lesson zero should expose Minecraft connection status in the progress dashboard');
+  assert.equal(craftomProgressDashboardBody.dashboard.students[0].lessons[0].minecraftConnection.goalCoins, 8);
+  assert.equal(craftomProgressDashboardBody.dashboard.students[0].lessons[0].minecraftConnection.coinProgress, 0);
   assert.equal(craftomProgressDashboardBody.dashboard.totals.students, 1);
   console.log('✓ Craftom progress dashboard is read-only and limited to Craftom classes');
   const craftomStudentLogin = await fetch(`${baseUrl}/api/classroom/student-login`, {

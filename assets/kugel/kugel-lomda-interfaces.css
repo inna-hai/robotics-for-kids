@@ -646,6 +646,37 @@
   background: linear-gradient(135deg, #fffbeb, #fff);
 }
 
+.lesson-zero-video-card {
+  display: grid;
+  grid-template-columns: minmax(0, .82fr) minmax(320px, 1.18fr);
+  gap: 18px;
+  align-items: center;
+  border-color: rgba(14, 165, 233, .24);
+  background: linear-gradient(135deg, #eff6ff, #fff 58%, #ecfeff);
+}
+
+.lesson-zero-video-copy {
+  display: grid;
+  gap: 8px;
+}
+
+.lesson-zero-video-copy p {
+  margin: 0;
+  color: #334155;
+  font-weight: 800;
+  line-height: 1.55;
+}
+
+.lesson-zero-video-card video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 1px solid rgba(15, 23, 42, .12);
+  border-radius: 12px;
+  background: #dfeef8;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, .12);
+}
+
 .lesson-zero-checklist {
   display: grid;
   gap: 10px;
@@ -903,9 +934,457 @@
   gap: 8px;
 }
 
+.teacher-connection-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin: 12px 0;
+  padding: 12px 14px;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  background: #eff6ff;
+}
+
+.teacher-connection-summary strong {
+  color: #1d4ed8;
+  font-size: 1.08rem;
+  font-weight: 1000;
+}
+
+.teacher-connection-summary span {
+  color: #334155;
+  font-weight: 900;
+}
+
+.teacher-connection-summary.is-live {
+  border-color: #86efac;
+  background: #f0fdf4;
+}
+
+.teacher-connection-summary.is-live strong {
+  color: #166534;
+}
+
+.teacher-connection-summary.is-paused {
+  border-color: #fde68a;
+  background: #fffbeb;
+}
+
+.teacher-connection-summary.is-empty {
+  border-color: #e2e8f0;
+  background: #f8fafc;
+}
+
+.teacher-connection-summary.is-error {
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+.teacher-connection-summary.is-error strong {
+  color: #991b1b;
+}
+
 .student-monitor {
   display: grid;
   gap: 8px;
+}
+
+.teacher-load-error-card {
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  background: #fff7f7;
+  color: #7f1d1d;
+  font-weight: 900;
+}
+
+.teacher-load-error-card span {
+  color: #475569;
+  font-weight: 800;
+}
+
+.teacher-monitor-row.lesson-student-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(0, 2.2fr);
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.teacher-monitor-row.lesson-student-row.started {
+  border-color: #fde68a;
+  background: #fffbeb;
+}
+
+.teacher-monitor-row.lesson-student-row.completed {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+}
+
+.lesson-student-name strong,
+.lesson-student-name span {
+  display: block;
+}
+
+.lesson-student-name span {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: .86rem;
+  font-weight: 750;
+}
+
+.student-minecraft-identity-lines {
+  display: grid;
+  gap: 2px;
+  margin-top: 5px;
+}
+
+.student-minecraft-identity-lines span {
+  display: block;
+  margin-top: 0;
+  color: #475569;
+  font-size: .82rem;
+  font-weight: 850;
+  line-height: 1.35;
+  direction: ltr;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.lesson-student-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.mini-status,
+.minecraft-connection-mini {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 30px;
+  padding: 5px 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  background: #fff;
+  color: #334155;
+  font-size: .82rem;
+  font-weight: 850;
+}
+
+.mini-status strong,
+.minecraft-connection-mini strong {
+  color: inherit;
+  font-size: .75rem;
+}
+
+.mini-status.started {
+  border-color: #fde68a;
+  background: #fffbeb;
+  color: #92400e;
+}
+
+.mini-status.completed {
+  border-color: #86efac;
+  background: #dcfce7;
+  color: #166534;
+}
+
+.minecraft-connection-mini {
+  background: #eef2ff;
+  color: #3730a3;
+  font-weight: 900;
+}
+
+.minecraft-connection-mini.connected {
+  border-color: #86efac;
+  background: #dcfce7;
+  color: #166534;
+}
+
+.minecraft-connection-mini.offline {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.minecraft-connection-mini.last-seen {
+  border-color: #fde68a;
+  background: #fffbeb;
+  color: #92400e;
+}
+
+.minecraft-connection-mini.unassigned {
+  border-color: #fecaca;
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.lesson-student-status .coin-progress {
+  display: grid;
+  grid-template-columns: minmax(86px, auto) minmax(130px, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-width: 220px;
+  padding: 6px 9px;
+  border: 1px solid #fde68a;
+  border-radius: 12px;
+  background: #fff7ed;
+}
+
+.coin-progress-label {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  color: #92400e;
+  font-size: .82rem;
+  font-weight: 900;
+}
+
+.coin-progress-label strong {
+  color: #78350f;
+  font-size: .78rem;
+}
+
+.coin-progress-track {
+  height: 11px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #fed7aa;
+  box-shadow: inset 0 0 0 1px rgba(146, 64, 14, .12);
+}
+
+.coin-progress-track span {
+  display: block;
+  height: 100%;
+  min-width: 5px;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #f59e0b, #22c55e);
+  transition: width .2s ease;
+}
+
+.coin-progress.complete {
+  border-color: #86efac;
+  background: #f0fdf4;
+}
+
+.coin-progress.complete .coin-progress-label {
+  color: #166534;
+}
+
+.teacher-monitor-row.build-mode {
+  grid-template-columns: minmax(240px, .9fr) minmax(0, 2fr);
+  align-items: stretch;
+  padding: 14px;
+  border-color: #dbeafe;
+  background: #fff;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, .05);
+}
+
+.teacher-monitor-row.build-mode .lesson-student-name {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  min-width: 0;
+  padding-inline-start: 12px;
+  border-inline-start: 4px solid #bfdbfe;
+}
+
+.teacher-monitor-row.build-mode .lesson-student-name strong {
+  color: #0f172a;
+  font-size: 1.06rem;
+}
+
+.teacher-monitor-row.build-mode .lesson-student-name span {
+  margin: 0;
+  color: #64748b;
+  font-size: .78rem;
+}
+
+.student-email-line {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: #334155;
+  font-size: .84rem;
+  font-weight: 850;
+}
+
+.teacher-monitor-row.build-mode .lesson-student-status {
+  display: grid;
+  grid-template-columns: minmax(170px, .65fr) minmax(0, 1.45fr) minmax(280px, .95fr);
+  gap: 10px;
+  align-items: stretch;
+}
+
+.minecraft-connection-mini.build-connection {
+  justify-content: center;
+  width: 100%;
+  min-height: 100%;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.build-student-facts {
+  display: grid;
+  grid-template-columns: minmax(88px, .45fr) minmax(140px, .75fr) minmax(190px, 1fr);
+  gap: 8px;
+  min-width: 0;
+}
+
+.build-student-fact {
+  display: grid;
+  align-content: center;
+  gap: 2px;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.build-student-fact span {
+  color: #64748b;
+  font-size: .72rem;
+  font-weight: 900;
+}
+
+.build-student-fact strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: #1e293b;
+  font-size: .9rem;
+}
+
+.teacher-monitor-row.build-mode .minecraft-command-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  align-content: start;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.build-actions-title {
+  grid-column: 1 / -1;
+  color: #475569;
+  font-size: .74rem;
+  font-weight: 950;
+}
+
+.teacher-monitor-row.build-mode .compact-action {
+  justify-content: center;
+  min-height: 34px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: .78rem;
+}
+
+.minecraft-command-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.button.compact-action,
+.lesson-detail-button {
+  min-height: 30px;
+  padding: 5px 9px;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  color: #334155;
+  background: #fff;
+  font: inherit;
+  font-size: .82rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.button.compact-action:hover,
+.lesson-detail-button:hover {
+  border-color: #93c5fd;
+  color: #1d4ed8;
+}
+
+.teacher-monitor-detail {
+  grid-column: 1 / -1;
+}
+
+.progress-detail-card {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.progress-detail-card h4,
+.progress-detail-card p {
+  margin: 0;
+}
+
+.progress-detail-statuses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.progress-detail-meta {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.progress-detail-meta dt,
+.progress-detail-meta dd {
+  margin: 0;
+}
+
+.progress-detail-meta dt {
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 850;
+}
+
+.progress-detail-meta dd {
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.progress-submission {
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+}
+
+.progress-submission img {
+  display: block;
+  width: 86px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.progress-submission p {
+  margin: 4px 0;
+}
+
+.progress-empty-note {
+  color: var(--muted);
+  font-weight: 800;
 }
 
 .monitor-row {
@@ -959,9 +1438,21 @@
   font-weight: 900;
 }
 
+.connection-pill.is-offline,
 .is-offline .connection-pill {
   color: #475569;
   background: #e2e8f0;
+}
+
+.connection-pill.is-last-seen,
+.connection-pill.is-static {
+  color: #854d0e;
+  background: #fef3c7;
+}
+
+.connection-pill.is-unassigned {
+  color: #991b1b;
+  background: #fee2e2;
 }
 
 .student-status-stack {
@@ -1615,6 +2106,10 @@
     grid-template-columns: 1fr;
   }
 
+  .lesson-zero-video-card {
+    grid-template-columns: 1fr;
+  }
+
   .selected-lesson-actions {
     grid-template-columns: 1fr;
   }
@@ -1632,6 +2127,11 @@
     grid-template-columns: 1fr;
   }
 
+  .teacher-connection-summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .monitor-row {
     grid-template-columns: 1fr;
   }
@@ -1646,6 +2146,177 @@
 }
 
 @media (max-width: 620px) {
+  .teacher-course-header {
+    position: sticky;
+    top: 0;
+    z-index: 1001;
+  }
+
+  .teacher-course-header .course-header-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    width: min(100% - 18px, 520px);
+    gap: 8px;
+    padding: 8px 0;
+  }
+
+  .teacher-course-header .course-brand {
+    align-self: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .teacher-course-header .course-nav {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+    justify-content: flex-start;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: thin;
+  }
+
+  .teacher-course-header .course-nav a {
+    min-width: auto;
+    min-height: 34px;
+    padding: 7px 10px;
+    font-size: .86rem;
+  }
+
+  .teacher-course-logout {
+    min-height: 34px;
+    padding: 7px 10px;
+    font-size: .86rem;
+  }
+
+  .app-shell {
+    width: min(100% - 18px, 520px);
+    padding: 10px 0 36px;
+  }
+
+  .teacher-board {
+    gap: 10px;
+  }
+
+  .teacher-hero {
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .teacher-hero h1 {
+    margin-bottom: 8px;
+    font-size: 1.85rem;
+    line-height: 1.12;
+  }
+
+  .teacher-hero .goal {
+    font-size: .96rem;
+  }
+
+  .teacher-hero-actions,
+  .teacher-app.is-teacher-lesson .selected-lesson-actions,
+  .selected-lesson-actions,
+  .minecraft-lesson-actions,
+  .lesson-access-actions,
+  .teacher-home-challenge .challenge-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .teacher-hero-actions .btn,
+  .teacher-app.is-teacher-lesson .selected-lesson-actions > *,
+  .selected-lesson-actions > *,
+  .minecraft-lesson-actions > *,
+  .lesson-access-actions > *,
+  .teacher-home-challenge .challenge-actions > * {
+    width: 100%;
+  }
+
+  .teacher-app.is-teacher-lesson .teacher-selected-lesson,
+  .teacher-student-board-content,
+  .teacher-live-controls-body {
+    padding: 12px;
+  }
+
+  .panel-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .teacher-student-board-details summary,
+  .teacher-live-controls-bottom summary {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 12px;
+  }
+
+  .teacher-student-board-details summary::after {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .teacher-monitor-row.lesson-student-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .teacher-monitor-row.build-mode .lesson-student-status,
+  .build-student-facts,
+  .teacher-monitor-row.build-mode .minecraft-command-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .lesson-student-name,
+  .lesson-student-status,
+  .teacher-monitor-row.lesson-student-row .lesson-detail-button {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .lesson-student-status {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .mini-status,
+  .minecraft-connection-mini,
+  .lesson-detail-button {
+    width: 100%;
+    justify-content: center;
+    border-radius: 10px;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .lesson-student-status .coin-progress {
+    grid-template-columns: 1fr;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .progress-detail-meta,
+  .progress-submission,
+  .student-submission.has-submission {
+    grid-template-columns: 1fr;
+  }
+
+  .student-row-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .teacher-class-message-form,
+  .teacher-live-controls .action-row {
+    grid-template-columns: 1fr;
+  }
+
+  .teacher-live-controls .action-row {
+    display: grid;
+  }
+
   .app-topbar {
     align-items: stretch;
     flex-direction: column;

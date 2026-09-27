@@ -83,11 +83,13 @@
     const program = window.CRAFTOM_MINECRAFT_PROGRAM;
     const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
     const lessonHref = lessonId => `../../craftom-minecraft-lesson-${lessonId}.html`;
+    const lessonZeroHref = '../../kugel-student.html';
 
     function renderCourseHeader(currentLessonId = 1) {
       const normalizedLessonId = Math.min(Math.max(Number(currentLessonId) || 1, 1), program.totalMeetings);
       document.getElementById('courseHeaderNav').innerHTML = `
         <a class="primary" href="index.html">דף הבית</a>
+        <a href="${lessonZeroHref}">שיעור 0</a>
         <a id="currentLessonLink" href="${lessonHref(normalizedLessonId)}">השיעור הנוכחי</a>
         ${program.challenges.map(challenge => `<a href="../../craftom-minecraft-challenge.html?challenge=${challenge.id}">אתגר ${challenge.id}</a>`).join('')}
       `;
@@ -112,10 +114,24 @@
     document.getElementById('courseShape').textContent = `${program.totalChallenges} אתגרים, ${program.meetingsPerChallenge} מפגשים לכל אתגר, ${program.totalMeetings} מפגשים סך הכול. ${program.plot}.`;
     document.getElementById('outcomes').innerHTML = program.outcomes.map(item => `<li>${esc(item)}</li>`).join('');
     document.getElementById('rules').innerHTML = program.rules.map(item => `<li>${esc(item)}</li>`).join('');
-    document.getElementById('heroActions').innerHTML = program.challenges.map(challenge => `<a class="btn" href="../../craftom-minecraft-challenge.html?challenge=${challenge.id}">אתגר ${challenge.id}</a>`).join('');
+    document.getElementById('heroActions').innerHTML = `<a class="btn secondary" href="${lessonZeroHref}">שיעור 0 - מבוך המטבעות</a>`
+      + program.challenges.map(challenge => `<a class="btn" href="../../craftom-minecraft-challenge.html?challenge=${challenge.id}">אתגר ${challenge.id}</a>`).join('');
     document.getElementById('programVideo').src = `../../${program.overviewVideo}`;
     document.getElementById('programVideo').poster = `../../${program.overviewPoster}`;
-    document.getElementById('challengeCards').innerHTML = program.challenges.map(challenge => `
+    const lessonZeroCard = `
+      <article class="card lesson-card wide-card">
+        <span class="tag">שיעור 0 • תרגול כניסה והתארגנות</span>
+        <h2>מבוך המטבעות במיינקראפט</h2>
+        <p>לפני האתגרים, נכנסים לעולם התרגול, בודקים שהשחקן מחובר, אוספים 8 מטבעות ולוחצים על כפתור הסיום.</p>
+        <ul class="meeting-list">
+          <li><b><a href="${lessonZeroHref}">כניסה לשיעור 0</a></b><br>חיבור ל-Minecraft, איסוף מטבעות, זמן ביצוע וכפתור סיום.</li>
+        </ul>
+        <div class="challenge-actions">
+          <a class="btn" href="${lessonZeroHref}">פתיחת שיעור 0</a>
+        </div>
+      </article>
+    `;
+    document.getElementById('challengeCards').innerHTML = lessonZeroCard + program.challenges.map(challenge => `
       <article class="card lesson-card">
         <video class="challenge-video" src="../../${esc(challenge.video)}" poster="../../${esc(challenge.poster)}" controls preload="metadata" playsinline aria-label="סרטון הסבר לאתגר ${challenge.id}: ${esc(challenge.title)}"></video>
         <span class="tag">אתגר ${challenge.id} • ${esc(challenge.concept)}</span>

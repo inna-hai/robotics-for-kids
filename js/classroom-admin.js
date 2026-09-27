@@ -65,6 +65,39 @@
     setHook(button, 'data-action', action);
     return button;
   }
+  function renderKugelServerControls(classroom) {
+    const server = classroom.kugelServer;
+    if (!server?.canControl || !(classroom.courses || []).includes('craftom-agent')) return null;
+    const panel = element('div', undefined, 'kugel-server-panel admin-server-panel');
+    const enabled = Boolean(server.enabled);
+    const copy = element('div', undefined, 'kugel-server-copy');
+    copy.append(
+      element('strong', `שרת Minecraft · ${classroom.name}`),
+      element('span', `${enabled ? 'פעיל לכיתה' : 'כבוי לכיתה'}${server.serverAddress ? ` · ${server.serverAddress}` : ''}`),
+    );
+    const badge = element('span', enabled ? 'פעיל' : 'כבוי', `kugel-server-badge ${enabled ? 'running' : 'idle'}`);
+    const actions = element('div', undefined, 'kugel-server-actions');
+    const start = actionButton('הדלקה', 'admin-kugel-start', 'button secondary');
+    const stop = actionButton('כיבוי', 'admin-kugel-stop', 'button quiet danger');
+    start.disabled = enabled;
+    stop.disabled = !enabled;
+    async function toggle(nextState) {
+      setMessage(message, nextState === 'start' ? 'מדליקים את שרת שיעור 0…' : 'מכבים את שרת שיעור 0…');
+      start.disabled = true; stop.disabled = true;
+      try {
+        await api(`/api/classroom/admin/classes/${encodeURIComponent(classroom.id)}/kugel-server/${nextState}`, {});
+        await refreshAfterMutation(nextState === 'start' ? 'שרת שיעור 0 הודלק.' : 'שרת שיעור 0 כובה.');
+      } catch (error) {
+        setMessage(message, error.message);
+        start.disabled = enabled; stop.disabled = !enabled;
+      }
+    }
+    start.addEventListener('click', () => toggle('start'));
+    stop.addEventListener('click', () => toggle('stop'));
+    actions.append(start, stop);
+    panel.append(copy, badge, actions);
+    return panel;
+  }
   async function runAction(teacher, suffix, progressText, successText) {
     setMessage(message, progressText);
     try {
@@ -84,6 +117,13 @@
       ? classes.map((classroom) => `${classroom.name}: ${(classroom.courses || []).map((id) => courseLabels[id] || id).join(', ') || 'ללא לומדות'}`).join(' · ')
       : 'עדיין אין למורה כיתות.';
     card.append(heading, element('p', classSummary, 'class-summary'));
+    const serverPanels = classes.map(renderKugelServerControls).filter(Boolean);
+    if (!teacher.archivedAt && serverPanels.length) {
+      const serverList = element('div', undefined, 'kugel-server-list');
+      serverList.append(element('h4', 'הפעלה וכיבוי שרתי Minecraft'));
+      serverPanels.forEach((panel) => serverList.append(panel));
+      card.append(serverList);
+    }
     const minecraftStudents = classes.flatMap((classroom) => (classroom.students || [])
       .filter((student) => !student.archivedAt && (classroom.courses || []).some((courseId) => courseId === 'minecraft' || courseId === 'craftom-agent'))
       .map((student) => ({ ...student, classroomName: classroom.name })));

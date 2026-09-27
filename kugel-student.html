@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>שיעור 0: אוספים 8 מטבעות במבוך | hai.tech</title>
-  <meta name="description" content="שיעור פתיחה ב-Minecraft: נכנסים למבוך, אוספים 8 מטבעות ומסיימים את המשימה.">
+  <title>שיעור 0: אוספים 8 מטבעות ומנסים לשבור שיא | hai.tech</title>
+  <meta name="description" content="שיעור פתיחה ב-Minecraft: נכנסים למבוך, אוספים 8 מטבעות, לוחצים על סיום ומנסים לשפר את זמן השיא.">
   <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260914-teacher-return-1">
-  <link rel="stylesheet" href="assets/kugel/kugel-lomda-interfaces.css?v=20260910-submissions-1">
+  <link rel="stylesheet" href="assets/kugel/kugel-lomda-interfaces.css?v=20260927-compound-event-fallback-1">
 </head>
 <body class="kugel-app student-app" data-kugel-page="student">
   <header class="app-topbar">
@@ -17,8 +17,8 @@
     <aside class="lesson-rail">
       <p class="eyebrow">שיעור פתיחה</p>
       <h1>שיעור 0</h1>
-      <p>לפני שמתחילים את 16 שיעורי הקורס, נכנסים למשימת פתיחה קצרה בתוך Minecraft.</p>
-      <div class="lesson-button active"><span class="num">0</span><span><strong>אוספים 8 מטבעות</strong><small>מבוך Minecraft</small></span></div>
+      <p>משימת פתיחה קצרה לפני שיעורי הקורס.</p>
+      <div class="lesson-button active"><span class="num">0</span><span><strong>מבוך המטבעות</strong><small>פתיחה</small></span></div>
       <div class="qa-lesson-switcher" id="qaLessonSwitcher" hidden>
         <strong>בדיקת שיעורים</strong>
         <small>פתוח רק לתלמידת בדיקה לצורך מיפוי.</small>
@@ -29,37 +29,30 @@
       <div class="workspace-hero student-hero">
         <div class="hero-copy">
           <div class="kicker" id="studentKicker">שיעור 0 • משימת פתיחה</div>
-          <h2>שיעור פתיחה: אוספים 8 מטבעות במבוך</h2>
-          <p class="goal">היכנסו לעולם ה-Minecraft, עברו במבוך, אספו שמונה מטבעות והגיעו לכפתור הסיום.</p>
+          <h2>שיעור פתיחה: מבוך המטבעות</h2>
+          <p class="goal">אספו את כל 8 המטבעות, לחצו על סיום, ונסו לשפר את הזמן האישי שלכם.</p>
         </div>
         <div class="maze-preview" aria-hidden="true"><span>8</span><small>מטבעות</small></div>
         <span class="status-pill" id="studentSessionStatus">טוען…</span>
       </div>
       <section class="panel mission-card">
-        <h3>מה עושים בשיעור?</h3>
+        <h3>מה עושים?</h3>
         <ol class="lesson-zero-checklist">
-          <li>פתחו את Minecraft Education.</li>
-          <li>היכנסו לעולם המבוך במצב Adventure.</li>
-          <li>אספו את כל שמונת המטבעות.</li>
-          <li>לחצו על כפתור הסיום בקצה המבוך.</li>
+          <li>פותחים את Minecraft.</li>
+          <li>נכנסים לעולם המבוך.</li>
+          <li>אוספים 8 מטבעות.</li>
+          <li>לוחצים סיום כדי לשמור זמן.</li>
         </ol>
       </section>
-      <section class="lesson-zero-cards" aria-label="שלבי שיעור 0">
-        <article class="panel lesson-step-card">
-          <span class="step-num">1</span>
-          <h3>נכנסים לעולם</h3>
-          <p>מחכים שהמורה תפעיל את שיעור 0, ואז פותחים את Minecraft דרך הכפתור.</p>
-        </article>
-        <article class="panel lesson-step-card">
-          <span class="step-num">2</span>
-          <h3>מבצעים משימה</h3>
-          <p>אוספים שמונה מטבעות ולוחצים על כפתור הסיום בקצה המבוך.</p>
-        </article>
-        <article class="panel lesson-step-card">
-          <span class="step-num">3</span>
-          <h3>ממשיכים לקורס</h3>
-          <p>אחרי שהמערכת מזהה סיום, נפתח כפתור המשך לשיעור 1.</p>
-        </article>
+      <section class="panel lesson-zero-video-card" aria-labelledby="lessonZeroVideoTitle">
+        <div class="lesson-zero-video-copy">
+          <p class="eyebrow">סרטון פתיחה</p>
+          <h3 id="lessonZeroVideoTitle">דוגמה קצרה</h3>
+          <p>צפו איך נראה המעבר מהלומדה אל Minecraft.</p>
+        </div>
+        <video controls preload="metadata" playsinline poster="assets/kugel/videos/agent-academy-lesson0-intro-teen-poster.jpg" aria-label="סרטון פתיחה לשיעור 0: מבוך המטבעות">
+          <source src="assets/kugel/videos/agent-academy-lesson0-intro-teen.mp4" type="video/mp4">
+        </video>
       </section>
       <section class="panel">
         <div class="panel-head"><h3>התחברות ל-Minecraft</h3><span class="status-pill" id="playerStatus">ממתין</span></div>
@@ -81,7 +74,7 @@
     </section>
    </section>
   </main>
-  <script src="js/kugel-lesson-zero.js?v=20260924-lesson-zero-in-sequence-1"></script>
+  <script src="js/kugel-lesson-zero.js?v=20260927-world-mode-split-1"></script>
   <script src="/js/feedback-widget.js?v=20260907-tehila-fixes-1"></script>
 </body>
 </html>

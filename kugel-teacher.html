@@ -11,7 +11,7 @@
   <link rel="preload" as="image" href="assets/craftom/challenges/craftom-challenge3-smart-delivery-line-gemini-live-1x-first-frame.webp" type="image/webp">
   <link rel="preload" as="image" href="assets/craftom/challenges/craftom-challenge4-smart-city-automations-gemini-live-1x-first-frame.webp" type="image/webp">
   <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260910-direct-student-copy-1">
-  <link rel="stylesheet" href="assets/kugel/kugel-lomda-interfaces.css?v=20260924-remove-current-lesson-nav-1">
+  <link rel="stylesheet" href="assets/kugel/kugel-lomda-interfaces.css?v=20260927-student-identity-under-name-1">
 </head>
 <body class="kugel-app teacher-app preview-home" data-kugel-page="teacher">
   <header class="course-header teacher-course-header" id="teacherCourseHeader" aria-label="ניווט מורה אקדמיית ה-Agent">
@@ -85,23 +85,6 @@
         </section>
         <div class="teacher-challenge-lessons" id="teacherChallengeLessons"></div>
       </section>
-      <section class="lesson-zero-cards teacher-zero-cards" id="teacherLessonSteps" aria-label="שלבי ניהול שיעור 0" hidden>
-        <article class="panel lesson-step-card">
-          <span class="step-num">1</span>
-          <h3>משייכים שחקנים</h3>
-          <p>מזינים לכל תלמיד/ה את שם השחקן המדויק ב-Minecraft.</p>
-        </article>
-        <article class="panel lesson-step-card">
-          <span class="step-num">2</span>
-          <h3>מתחילים שיעור</h3>
-          <p>לוחצים על “התחלת שיעור 0” כדי לפתוח לתלמידים את עולם המבוך.</p>
-        </article>
-        <article class="panel lesson-step-card">
-          <span class="step-num">3</span>
-          <h3>עוקבים בלוח</h3>
-          <p>רואים מי התחבר, כמה מטבעות נאספו ומי צריך בדיקה.</p>
-        </article>
-      </section>
       <section class="metrics-grid" id="teacherMetrics" hidden>
         <article class="metric"><strong id="metricConnected">0</strong><span>מחוברים</span></article>
         <article class="metric"><strong id="metricActive">0</strong><span>בתהליך</span></article>
@@ -109,11 +92,15 @@
         <article class="metric"><strong id="metricAttention">0</strong><span>דורשים בדיקה</span></article>
       </section>
       <section class="panel teacher-student-board-panel" id="teacherStudentBoard" hidden>
-        <details class="teacher-student-board-details">
+        <details class="teacher-student-board-details" open>
           <summary>לוח התלמידים</summary>
           <div class="teacher-student-board-content">
             <div class="panel-head"><h3>מעקב תלמידים</h3><button class="icon-button" id="refreshBoard" type="button" title="רענון">↻</button></div>
-            <p>רשימת תלמידי הכיתה והתקדמות שנשמרה במערכת. כלי Minecraft חיים מוצגים רק כשהשרת מחובר ופעיל.</p>
+            <p>רשימת תלמידי הכיתה והתקדמות שנשמרה במערכת. הניטור מתעדכן לפי אירועי Minecraft שמגיעים מהשרת הקבוע של הכיתה.</p>
+            <div class="teacher-connection-summary" id="teacherConnectionSummary" aria-live="polite">
+              <strong>מחוברים עכשיו: 0 מתוך 0</strong>
+              <span>פותחים את עולם Minecraft כדי לראות חיבורים חיים.</span>
+            </div>
             <div class="student-monitor" id="studentMonitor"></div>
           </div>
         </details>
@@ -139,7 +126,7 @@
    </section>
   </main>
   <script src="js/craftom-minecraft-challenges.js?v=20260914-video-first-frames-1"></script>
-  <script src="js/kugel-lesson-zero.js?v=20260924-remove-current-lesson-nav-1"></script>
+  <script src="js/kugel-lesson-zero.js?v=20260927-student-identity-under-name-1"></script>
   <script src="/js/feedback-widget.js?v=20260907-tehila-fixes-1"></script>
 </body>
 </html>
