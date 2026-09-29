@@ -24,6 +24,22 @@ assertIncludes(courseHome, 'VibeCoding + AI');
 assertIncludes(courseHome, 'בניית סוכני AI אישיים');
 
 for (let lesson = 1; lesson <= 8; lesson += 1) {
+  const vibeLessonFile = `ort-vibecoding-lesson-${lesson}.html`;
+  const vibeSlidesFile = `ort-vibecoding-slides-${lesson}.html`;
+  assert.ok(existsSync(join(root, vibeLessonFile)), `${vibeLessonFile} should exist`);
+  assert.ok(existsSync(join(root, vibeSlidesFile)), `${vibeSlidesFile} should exist`);
+  assertIncludes(courseHome, `href="${vibeLessonFile}"`, `ORT hub should link to ${vibeLessonFile}`);
+  const vibeLessonHtml = readFileSync(join(root, vibeLessonFile), 'utf8');
+  assertIncludes(vibeLessonHtml, 'href="ort-courses.html"', `${vibeLessonFile} should link back to the ORT hub`);
+  assertIncludes(vibeLessonHtml, `href="${vibeSlidesFile}"`, `${vibeLessonFile} should link to its instructor slides`);
+  assertIncludes(vibeLessonHtml, '/js/feedback-widget.js', `${vibeLessonFile} should load the shared feedback widget`);
+  const vibeSlidesHtml = readFileSync(join(root, vibeSlidesFile), 'utf8');
+  assertIncludes(vibeSlidesHtml, 'href="ort-courses.html"', `${vibeSlidesFile} should link back to the ORT hub`);
+  assertIncludes(vibeSlidesHtml, `href="${vibeLessonFile}"`, `${vibeSlidesFile} should link to its student lesson`);
+  assertIncludes(vibeSlidesHtml, '/js/feedback-widget.js', `${vibeSlidesFile} should load the shared feedback widget`);
+}
+
+for (let lesson = 1; lesson <= 8; lesson += 1) {
   const lessonFile = `ort-ai-agents-lesson-${lesson}.html`;
   const slidesFile = `ort-ai-agents-slides-${lesson}.html`;
 
