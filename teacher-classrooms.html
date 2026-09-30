@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/classroom-platform.css?v=20260927-student-identity-under-name-1">
+  <link rel="stylesheet" href="css/classroom-platform.css?v=20260930-roster-minecraft-email-1">
 </head>
 <body data-classroom-page="teacher">
   <header class="topbar">
@@ -26,7 +26,8 @@
     <section class="intro">
       <div class="intro-copy">
         <span class="eyebrow">סביבת המורה</span>
-        <h1>הלומדות והכיתות שלי</h1>
+        <h1>כניסת מורה לכל הלומדות</h1>
+        <p>מקום אחד לכניסה כמורה, בחירת לומדה, ניהול שיעורים והרשאות בלי לשנות את הלומדות שכבר עובדות.</p>
       </div>
     </section>
 
@@ -54,7 +55,7 @@
 
     <section id="teacher-dashboard" hidden>
       <div class="dashboard-heading">
-        <div><h2 id="teacher-welcome">שלום</h2><p>בחרו לומדה וכיתה כדי להמשיך לניהול הכיתה.</p></div>
+        <div><h2 id="teacher-welcome">שלום</h2><p>בחרי לומדה, ואז כיתה. כל לומדה נפתחת לפי ההרשאות שלך באותה כניסת מורה.</p></div>
         <button class="button quiet" id="teacher-logout" type="button">התנתקות</button>
       </div>
 
@@ -70,8 +71,8 @@
         <div class="create-class-fields" id="create-class-fields" hidden>
           <label>שם הכיתה<input name="name" placeholder="למשל כיתה ז׳1" required></label>
           <div>
-          <h3>הלומדות הזמינות לך</h3>
-          <p>בחרו מתוך הלומדות שהוקצו לך על ידי מנהלת המערכת.</p>
+          <h3>בחירת לומדות לכיתה</h3>
+          <p>סמני רק את הלומדות שהתלמידים בכיתה הזאת יקבלו.</p>
           <div id="teacher-course-catalog"></div>
           </div>
           <button class="button primary" type="submit" data-action="create-class">יצירת כיתה</button>
@@ -80,7 +81,7 @@
     </section>
   </main>
 
-  <script src="js/classroom-platform.js?v=20260927-student-identity-under-name-1"></script>
+  <script src="js/classroom-platform.js?v=20260930-roster-minecraft-email-1"></script>
   <script src="/js/feedback-widget.js?v=20260907-tehila-fixes-1"></script>
 </body>
 </html>

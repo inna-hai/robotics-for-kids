@@ -293,8 +293,14 @@
     const teacherChallengeStory = document.getElementById('teacherChallengeStory');
     const teacherChallengeVideoPreview = document.getElementById('teacherChallengeVideoPreview');
     const teacherChallengeLessons = document.getElementById('teacherChallengeLessons');
+    const selectedLessonVideoPanel = document.getElementById('selectedLessonVideoPanel');
+    const selectedLessonVideoPreview = document.getElementById('selectedLessonVideoPreview');
+    const selectedLessonVideoEyebrow = document.getElementById('selectedLessonVideoEyebrow');
+    const selectedLessonVideoTitle = document.getElementById('selectedLessonVideoTitle');
+    const selectedLessonVideoSummary = document.getElementById('selectedLessonVideoSummary');
     const teacherLogout = document.getElementById('kugel-teacher-logout');
     let current = null;
+    let activeTeacherStudentModalKey = '';
     const openTeacherStudentIds = new Set();
     function scoped(action) {
       return `/api/kugel/classes/${encodeURIComponent(classroomId)}${action}`;
@@ -392,6 +398,29 @@
       frame.dataset.videoSrc = videoUrl;
       frame.append(video);
       return frame;
+    }
+
+    function selectedLessonVideoInfo(lesson) {
+      const lessonId = Number(lesson?.id ?? 0);
+      if (lessonId === 0) {
+        return {
+          src: 'assets/kugel/videos/agent-academy-lesson0-intro-teen.mp4',
+          poster: 'assets/kugel/videos/agent-academy-lesson0-intro-teen-poster.jpg',
+          eyebrow: 'סרטון פתיחת התוכנית',
+          title: 'שיעור 0: מבוך המטבעות',
+          summary: 'סרטון פתיחה לפני הכניסה למבוך: מה עושים במיינקראפט, איך מתרגלים תנועה, ואיך המורה עוקב אחרי ההתקדמות.',
+        };
+      }
+      if (lesson?.video) {
+        return {
+          src: lesson.video,
+          poster: lesson.poster,
+          eyebrow: `סרטון אתגר ${lesson.challengeId || lessonChallengeId(lessonId)}`,
+          title: lesson.title || `שיעור ${lessonId}`,
+          summary: lesson.summary || 'סרטון קצר לפני פתיחת השיעור לתלמידים.',
+        };
+      }
+      return null;
     }
 
     function resolveSelectedLesson(lessons, activeLessonId) {
@@ -645,6 +674,58 @@
       return lines;
     }
 
+    function commandIcon(name) {
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 0 24 24');
+      svg.setAttribute('aria-hidden', 'true');
+      svg.setAttribute('focusable', 'false');
+      const paths = {
+        chat: [
+          ['path', { d: 'M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z' }],
+          ['path', { d: 'M8 9h8' }],
+          ['path', { d: 'M8 13h5' }],
+        ],
+        freeze: [
+          ['circle', { cx: '12', cy: '12', r: '9' }],
+          ['path', { d: 'M10 8v8' }],
+          ['path', { d: 'M14 8v8' }],
+        ],
+        release: [
+          ['path', { d: 'M8 11V8a4 4 0 0 1 7.5-2' }],
+          ['rect', { x: '6', y: '11', width: '12', height: '9', rx: '2' }],
+          ['path', { d: 'M12 15v2' }],
+        ],
+      };
+      (paths[name] || []).forEach(([tag, attrs]) => {
+        const child = document.createElementNS('http://www.w3.org/2000/svg', tag);
+        Object.entries(attrs).forEach(([key, value]) => child.setAttribute(key, value));
+        svg.append(child);
+      });
+      return svg;
+    }
+
+    function commandButton(label, iconName) {
+      const button = node('button', undefined, 'button quiet compact-action command-action-button');
+      const icon = node('span', undefined, 'command-action-icon');
+      const text = node('span', label, 'command-action-label');
+      icon.append(commandIcon(iconName));
+      button.append(icon, text);
+      button.setAttribute('aria-label', label);
+      return button;
+    }
+
+    function enhanceCommandAction(button, iconName) {
+      if (!button || button.querySelector('.command-action-icon')) return;
+      const label = button.textContent.trim();
+      button.textContent = '';
+      button.classList.add('command-action-button');
+      const icon = node('span', undefined, 'command-action-icon');
+      const text = node('span', label, 'command-action-label');
+      icon.append(commandIcon(iconName));
+      button.append(icon, text);
+      button.setAttribute('aria-label', label);
+    }
+
     function renderTeacherStudentActions(student, liveMinecraft) {
       const actions = node('div', undefined, 'minecraft-command-actions');
       const disabled = !liveMinecraft || !student.minecraftPlayerName;
@@ -661,9 +742,9 @@
           [...actions.querySelectorAll('button')].forEach((button) => { button.disabled = disabled; });
         }
       }
-      const chat = node('button', 'צ׳אט לתלמיד', 'button quiet compact-action');
-      const freeze = node('button', 'עצירה לתלמיד', 'button quiet compact-action');
-      const release = node('button', 'שחרור לתלמיד', 'button quiet compact-action');
+      const chat = commandButton('צ׳אט לתלמיד', 'chat');
+      const freeze = commandButton('עצירה לתלמיד', 'freeze');
+      const release = commandButton('שחרור לתלמיד', 'release');
       [chat, freeze, release].forEach((button) => {
         button.type = 'button';
         button.disabled = disabled;
@@ -876,10 +957,10 @@
 
     function renderTeacherStudentDetail(student) {
       const buildMode = currentTeacherBuildMode();
-      const detail = node('div', undefined, 'progress-detail-card');
-      detail.append(node('h4', `${student.name} · ${buildMode ? 'מצב בנייה' : 'שיעור 0'}`));
+      const detail = node('div', undefined, `progress-detail-card ${buildMode ? 'build-progress-detail-card' : 'lesson-zero-progress-detail-card'}`);
+      detail.append(node('h4', buildMode ? `${student.name} · מצב בנייה` : 'פרטי שיעור 0'));
       detail.append(renderTeacherStudentIdentityLines(student));
-      detail.append(node('p', buildMode ? 'עבודה במתחם האישי ב-Minecraft.' : 'תרגול Minecraft: מבוך המטבעות'));
+      if (buildMode) detail.append(node('p', 'עבודה במתחם האישי ב-Minecraft.'));
       const statuses = node('div', undefined, 'progress-detail-statuses');
       if (buildMode) {
         statuses.append(
@@ -917,6 +998,7 @@
       if (localCodeCheck) detail.append(localCodeCheck);
       const stageReport = renderStageReport(student.stageReport);
       if (stageReport) detail.append(stageReport);
+      const hasBuildReportData = Boolean(chatCodeLink || localCodeCheck || stageReport);
       if (student.submission) {
         const submission = node('div', undefined, 'progress-submission');
         const image = document.createElement('img');
@@ -935,12 +1017,56 @@
         );
         submission.append(imageLink, info);
         detail.append(submission);
-      } else if (buildMode) {
-        detail.append(node('p', 'במצב בנייה אין מטבעות, זמני סיום, שיאים או ניסיונות.', 'progress-empty-note'));
-      } else {
-        detail.append(node('p', 'בשיעור 0 אין כרטיס יציאה רגיל; הסיום נמדד לפי מטבעות, זמן וכפתור הסיום במיינקראפט.', 'progress-empty-note'));
+      } else if (buildMode && !hasBuildReportData) {
+        detail.append(node('p', 'עדיין אין קישור קוד או דוח מוניטור לתלמיד הזה.', 'progress-empty-note'));
       }
       return detail;
+    }
+
+    function ensureTeacherStudentModal() {
+      let dialog = document.getElementById('teacherStudentDetailDialog');
+      if (dialog) return dialog;
+      dialog = document.createElement('dialog');
+      dialog.id = 'teacherStudentDetailDialog';
+      dialog.className = 'teacher-student-detail-dialog';
+      dialog.addEventListener('close', () => {
+        activeTeacherStudentModalKey = '';
+      });
+      document.body.append(dialog);
+      return dialog;
+    }
+
+    function renderTeacherStudentModalContent(student) {
+      const dialog = ensureTeacherStudentModal();
+      const liveMinecraft = liveMinecraftControlsAvailable();
+      const shell = node('div', undefined, 'teacher-student-detail-modal');
+      const header = node('header', undefined, 'teacher-student-detail-modal-head');
+      const titleWrap = node('div');
+      titleWrap.append(
+        node('span', 'פירוט תלמיד', 'teacher-student-detail-modal-kicker'),
+        node('h3', student.name || 'תלמיד'),
+      );
+      const close = node('button', 'סגירה', 'secondary-action teacher-student-detail-modal-close');
+      close.type = 'button';
+      close.addEventListener('click', () => dialog.close());
+      header.append(titleWrap, close);
+
+      const body = node('div', undefined, 'teacher-student-detail-modal-body');
+      body.append(renderTeacherStudentDetail(student));
+      const actions = renderTeacherStudentActions(student, liveMinecraft);
+      actions.insertBefore(node('strong', 'פעולות מורה', 'build-actions-title'), actions.firstChild);
+      body.append(actions);
+      shell.append(header, body);
+      dialog.replaceChildren(shell);
+    }
+
+    function openTeacherStudentDetailModal(student) {
+      const dialog = ensureTeacherStudentModal();
+      activeTeacherStudentModalKey = teacherStudentCardKey(student);
+      renderTeacherStudentModalContent(student);
+      if (dialog.open) return;
+      if (typeof dialog.showModal === 'function') dialog.showModal();
+      else dialog.setAttribute('open', '');
     }
 
     function updateTeacherStudentCardOpenHint(row) {
@@ -949,9 +1075,14 @@
     }
 
     function renderTeacherStudentCardSummary(student, liveMinecraft, buildMode, isOpen = false) {
-      const summary = document.createElement('summary');
+      const summary = document.createElement(buildMode ? 'button' : 'summary');
       summary.className = 'teacher-student-card-summary';
       summary.setAttribute('aria-label', `פתיחת פרטים על ${student.name}`);
+      if (buildMode) {
+        summary.type = 'button';
+        summary.classList.add('teacher-student-card-button');
+        summary.addEventListener('click', () => openTeacherStudentDetailModal(student));
+      }
 
       const header = node('div', undefined, 'teacher-student-card-header');
       const name = node('div', undefined, 'lesson-student-name');
@@ -963,10 +1094,12 @@
       if (buildMode) {
         essentials.append(
           renderBuildFact('מתחם', student.compoundId ? `#${student.compoundId}` : 'אין עדיין'),
-          renderMiniStatus('קישור קוד', student.chatCodeLink ? 'התקבל בצ׳אט' : 'אין עדיין', student.chatCodeLink ? 'completed' : 'not-started'),
-          renderMiniStatus('בדיקת קוד', localCodeCheckStatusText(student.localCodeCheck), student.localCodeCheck?.status === 'passed' ? 'completed' : (student.localCodeCheck ? 'started' : 'not-started')),
-          renderMiniStatus('דוח שלב', stageReportStatusText(student.stageReport), student.stageReport ? 'completed' : 'not-started'),
         );
+        if (student.chatCodeLink) essentials.append(renderMiniStatus('קישור קוד', 'התקבל בצ׳אט', 'completed'));
+        if (student.localCodeCheck) {
+          essentials.append(renderMiniStatus('בדיקת קוד', localCodeCheckStatusText(student.localCodeCheck), student.localCodeCheck.status === 'passed' ? 'completed' : 'started'));
+        }
+        if (student.stageReport) essentials.append(renderMiniStatus('דוח שלב', stageReportStatusText(student.stageReport), 'completed'));
       } else {
         const submission = lessonZeroSubmissionStatus(student);
         essentials.append(
@@ -1084,9 +1217,9 @@
       const liveMinecraft = liveMinecraftControlsAvailable();
       const buildMode = currentTeacherBuildMode();
       const overallStatus = lessonZeroOverallStatus(student);
-      const row = node('details', undefined, `lesson-student-row teacher-monitor-row teacher-student-card ${buildMode ? 'build-mode' : overallStatus}`);
+      const row = node(buildMode ? 'article' : 'details', undefined, `lesson-student-row teacher-monitor-row teacher-student-card ${buildMode ? 'build-mode' : overallStatus}`);
       const cardKey = teacherStudentCardKey(student);
-      if (cardKey) {
+      if (cardKey && !buildMode) {
         row.dataset.studentId = cardKey;
         row.open = openTeacherStudentIds.has(cardKey);
         row.addEventListener('toggle', () => {
@@ -1097,6 +1230,7 @@
       }
       const isOpen = row.open;
       row.append(renderTeacherStudentCardSummary(student, liveMinecraft, buildMode, isOpen));
+      if (buildMode) return row;
 
       const status = node('div', undefined, 'lesson-student-status teacher-student-card-detail');
       const detail = node('div', undefined, 'teacher-monitor-detail');
@@ -1116,6 +1250,7 @@
       const onTeacherHome = !hasRequestedLesson && !activeChallengeFromUrl;
       const items = [
         ['דף הבית', teacherPageUrl(), onTeacherHome],
+        ['שיעור 0', teacherPageUrl({ lesson: 0 }), hasRequestedLesson && requestedLessonId === 0],
         ...[1, 2, 3, 4].map(challengeId => [
           `אתגר ${challengeId}`,
           teacherPageUrl({ challenge: challengeId }),
@@ -1320,6 +1455,7 @@
       if (!lesson || !selectedLessonActions) return;
       const lessonId = Number(lesson.id);
       const challengeId = lessonChallengeId(lessonId);
+      const videoInfo = selectedLessonVideoInfo(lesson);
       selectedLessonEyebrow.textContent = lessonId === 0 ? 'שיעור פתיחה' : `אתגר ${challengeId} • שיעור ${lessonId}`;
       selectedLessonTitle.textContent = `פעולות לשיעור ${lessonId}`;
       selectedLessonSummary.textContent = 'פתחו גישה לתלמידים, בדקו איך השיעור נראה לתלמידים או עברו למצגת המדריך.';
@@ -1332,6 +1468,13 @@
       const closeButton = closeLessonButton(lessonId, `נעילת שיעור ${lessonId}`);
       if (closeButton) actions.prepend(closeButton);
       selectedLessonActions.replaceChildren(...actions.childNodes);
+      if (selectedLessonVideoPanel) selectedLessonVideoPanel.hidden = !videoInfo;
+      if (videoInfo && selectedLessonVideoPreview) {
+        if (selectedLessonVideoEyebrow) selectedLessonVideoEyebrow.textContent = videoInfo.eyebrow;
+        if (selectedLessonVideoTitle) selectedLessonVideoTitle.textContent = videoInfo.title;
+        if (selectedLessonVideoSummary) selectedLessonVideoSummary.textContent = videoInfo.summary;
+        renderTeacherVideoPreview(videoInfo.src, videoInfo.poster, videoInfo.title, selectedLessonVideoPreview);
+      }
     }
 
     function renderTeacherLessonPicker(lesson, selectedLessonId) {
@@ -1404,6 +1547,7 @@
       renderTeacherChallenge(challenge, lessons, selectedLessonId);
       const showingLessonManagement = !showingChallengeOverview && !showingTeacherHome;
       if (selectedTeacherLesson) selectedTeacherLesson.hidden = showingChallengeOverview || showingTeacherHome;
+      if (selectedLessonVideoPanel) selectedLessonVideoPanel.hidden = true;
       if (selectedTeacherLesson && !showingChallengeOverview && !showingTeacherHome) selectedTeacherLesson.hidden = false;
       if (!showingChallengeOverview && !showingTeacherHome) renderSelectedLesson(selectedLesson, session, activeLessonId, minecraftBlocked);
       const liveMinecraft = liveMinecraftControlsAvailable();
@@ -1434,6 +1578,14 @@
       monitorItems.push(...(data.students || []).map(renderStudent));
       monitor.replaceChildren(...monitorItems);
       if (!data.students?.length) monitor.append(node('p', 'עדיין אין תלמידים בכיתה.'));
+      if (activeTeacherStudentModalKey) {
+        const modalStudent = (data.students || []).find(student => teacherStudentCardKey(student) === activeTeacherStudentModalKey);
+        if (modalStudent) renderTeacherStudentModalContent(modalStudent);
+        else {
+          const dialog = ensureTeacherStudentModal();
+          if (dialog.open) dialog.close();
+        }
+      }
     }
 
     async function refresh() {
@@ -1474,6 +1626,10 @@
         renderTeacherLoadFailure(message);
       }
     }
+
+    enhanceCommandAction(document.querySelector('#classMessageForm button[type="submit"]'), 'chat');
+    enhanceCommandAction(document.getElementById('freezeAll'), 'freeze');
+    enhanceCommandAction(document.getElementById('releaseAll'), 'release');
 
     document.getElementById('stopLesson')?.addEventListener('click', () => teacherAction(scoped('/stop'), {}, 'מסיימים את השיעור…', 'השיעור הסתיים והשרת שוחרר.'));
     document.getElementById('classMessageForm').addEventListener('submit', async event => {

@@ -36,8 +36,11 @@ p { color: var(--muted); line-height: 1.65; }
 .card-icon { font-size: 2.2rem; }
 form { display: grid; gap: 15px; }
 label { display: grid; gap: 7px; color: #334155; font-weight: 750; }
-input { width: 100%; min-height: 48px; padding: 10px 13px; border: 1px solid #cbd5e1; border-radius: 12px; background: #fff; color: var(--ink); font: inherit; }
-input:focus { outline: 3px solid rgba(79,70,229,.2); border-color: var(--primary); }
+input,
+textarea { width: 100%; min-height: 48px; padding: 10px 13px; border: 1px solid #cbd5e1; border-radius: 12px; background: #fff; color: var(--ink); font: inherit; }
+textarea { min-height: 140px; resize: vertical; line-height: 1.55; }
+input:focus,
+textarea:focus { outline: 3px solid rgba(79,70,229,.2); border-color: var(--primary); }
 .password-field { position: relative; display: block; }
 .password-field input { padding-left: 58px; }
 .button.password-toggle { position: absolute; left: 6px; top: 50%; transform: translateY(-50%); width: 40px; min-width: 40px; min-height: 40px; height: 40px; padding: 0; border-radius: 12px; color: var(--primary-dark); background: var(--soft); }
@@ -83,6 +86,104 @@ body.forced-student-login .classroom-card { border-color: #0f766e; }
 .course-picker input { width: auto; min-height: auto; margin: 0; accent-color: var(--primary); }
 .class-courses { display: grid; gap: 14px; margin-top: 18px; padding: 16px; border-radius: 14px; background: #f8fafc; }
 .class-courses h4 { margin: 0; color: #0f172a; font-size: 1.15rem; }
+.student-roster-panel {
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #dbeafe;
+  border-radius: 14px;
+  background: #f8fafc;
+}
+.student-roster-top,
+.class-login-summary {
+  display: grid;
+  gap: 4px;
+}
+.student-roster-top strong,
+.class-login-summary strong {
+  color: #0f172a;
+  font-size: 1.08rem;
+  font-weight: 900;
+}
+.student-roster-top span,
+.class-login-summary span,
+.class-login-summary small {
+  color: #475569;
+  font-weight: 750;
+  line-height: 1.45;
+}
+.class-login-summary {
+  padding: 12px;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  background: #fff;
+}
+.student-roster-list {
+  display: grid;
+  gap: 8px;
+}
+.student-roster-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #fff;
+}
+.student-roster-identity {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+.student-roster-row span {
+  color: var(--muted);
+  font-weight: 750;
+}
+.student-roster-email {
+  direction: ltr;
+  text-align: right;
+  overflow-wrap: anywhere;
+  font-size: .86rem;
+}
+.student-import-form {
+  padding-top: 4px;
+}
+.student-import-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.student-code-results {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+  background: #f0fdf4;
+}
+.student-code-results table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #fff;
+}
+.student-code-results th,
+.student-code-results td {
+  padding: 9px 10px;
+  border-bottom: 1px solid #dcfce7;
+  text-align: right;
+}
+.student-code-results tr:last-child td {
+  border-bottom: 0;
+}
+.numeric-login-code {
+  direction: ltr;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
 .lesson-zero-panel {
   display: grid;
   gap: 8px;
@@ -278,6 +379,38 @@ body.forced-student-login .classroom-card { border-color: #0f766e; }
   border-color: var(--primary);
   background: var(--soft);
   box-shadow: inset 0 0 0 2px rgba(79,70,229,.16);
+}
+.teacher-course-hub-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  margin: 12px 0 4px;
+  padding: 16px;
+  border: 1px solid #d7e6f2;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 26px rgba(23, 32, 51, .06);
+}
+.teacher-course-hub-copy strong,
+.teacher-course-hub-copy span {
+  display: block;
+}
+.teacher-course-hub-copy strong {
+  color: #0b2342;
+  font-size: 1.08rem;
+  font-weight: 900;
+}
+.teacher-course-hub-copy span {
+  margin-top: 3px;
+  color: #475569;
+  font-weight: 750;
+}
+.teacher-course-hub-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 8px;
 }
 .class-course-settings {
   border: 1px solid #e2e8f0;
@@ -487,6 +620,75 @@ body.forced-student-login .classroom-card { border-color: #0f766e; }
   border: 1px solid #c7d2fe;
   border-radius: 16px;
   background: linear-gradient(135deg, #f8fafc, #eef2ff);
+}
+.generic-course-progress {
+  display: grid;
+  gap: 14px;
+  margin: 18px 0;
+  padding: 16px;
+  border: 1px solid #dbeafe;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ffffff, #f8fbff);
+}
+.generic-course-progress-top strong,
+.generic-course-progress-top span {
+  display: block;
+}
+.generic-course-progress-top strong {
+  color: #0b2342;
+  font-weight: 900;
+}
+.generic-course-progress-top span {
+  margin-top: 3px;
+  color: #64748b;
+  font-weight: 750;
+  line-height: 1.45;
+}
+.generic-course-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.generic-course-metrics span {
+  min-height: 68px;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #fff;
+  color: #475569;
+  font-weight: 850;
+}
+.generic-course-metrics strong {
+  display: block;
+  color: #2563eb;
+  font-size: 1.7rem;
+  line-height: 1;
+}
+.generic-course-students {
+  display: grid;
+  gap: 8px;
+}
+.generic-course-student {
+  display: grid;
+  grid-template-columns: minmax(140px, .9fr) minmax(160px, 1fr) minmax(190px, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 11px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #fff;
+}
+.generic-course-student.started {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+}
+.generic-course-student strong {
+  color: #0f172a;
+}
+.generic-course-student span,
+.generic-course-student small {
+  color: #475569;
+  font-weight: 800;
 }
 .progress-dashboard-top {
   display: flex;
@@ -985,11 +1187,11 @@ body.forced-student-login .classroom-card { border-color: #0f766e; }
   .shell { width: min(100% - 22px, 1120px); padding-top: 28px; }
   .topbar { align-items: flex-start; gap: 12px; }
   .topbar-actions { align-items: flex-end; flex-direction: column; gap: 8px; }
-  .choice-grid, .auth-grid, .create-class, .course-picker, .teacher-course-tabs, .management-form, .password-field { grid-template-columns: 1fr; }
+  .choice-grid, .auth-grid, .create-class, .course-picker, .teacher-course-tabs, .management-form, .password-field, .teacher-course-hub-card { grid-template-columns: 1fr; }
   .dashboard-heading, .class-top { align-items: stretch; flex-direction: column; }
   .create-class-summary { align-items: stretch; flex-direction: column; }
   .progress-dashboard-top, .lesson-progress-top { align-items: stretch; flex-direction: column; }
-  .progress-summary-grid, .lesson-summary-grid, .progress-detail-meta, .progress-submission, .lesson-student-row { grid-template-columns: 1fr; }
+  .progress-summary-grid, .lesson-summary-grid, .progress-detail-meta, .progress-submission, .lesson-student-row, .generic-course-metrics, .generic-course-student { grid-template-columns: 1fr; }
   .archived-students li { align-items: stretch; flex-direction: column; }
   .card { padding: 20px; }
 }

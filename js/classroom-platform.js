@@ -219,9 +219,35 @@
     'craftom-agent': 'agent-academy-teacher.html',
   };
 
+  const teacherCourseResources = {
+    'sensi-city': [
+      { label: 'עמוד מדריך', href: 'teachers.html' },
+      { label: 'מצגות שיעור', href: 'slides/index.html' },
+    ],
+    sisi: [
+      { label: 'פתיחת הלומדה', href: 'sisi.html' },
+    ],
+    'python-turtle': [
+      { label: 'מצגות מדריך', href: 'python-turtle-slides.html' },
+      { label: 'שיעור 1', href: 'python-turtle.html?lesson=1' },
+    ],
+    webcode: [
+      { label: 'מצגות מדריך', href: 'webcode-slides.html' },
+      { label: 'פתיחת הלומדה', href: 'webcode.html' },
+    ],
+    minecraft: [
+      { label: 'עמוד מדריך', href: 'minecraft-teachers.html' },
+      { label: 'מצגת מדריך', href: 'minecraft-slides.html' },
+    ],
+  };
+
   function teacherCourseHref(courseId, classroomId = '') {
     if (courseId === 'craftom-agent' && classroomId) return `agent-academy-teacher.html?classroomId=${encodeURIComponent(classroomId)}`;
     return teacherCourseStarts[courseId] || courseStarts[courseId] || 'index.html#courses';
+  }
+
+  function teacherCourseGuideLinks(courseId) {
+    return teacherCourseResources[courseId] || [];
   }
 
   function teacherLessonHref(classroomId, lessonId) {
@@ -442,7 +468,7 @@
 
   function renderMinecraftActionButtons(classroomId, scope, target, setStatus, onDone) {
     const actions = element('div', undefined, 'minecraft-command-actions');
-    const label = scope === 'all' ? 'לכולם' : 'לתלמיד/ה';
+    const label = scope === 'all' ? 'לכולם מהמורה' : 'לתלמיד/ה';
     async function command(path, payload, busyText, successText) {
       setStatus(busyText);
       [...actions.querySelectorAll('button')].forEach((button) => { button.disabled = true; });
@@ -456,24 +482,21 @@
         [...actions.querySelectorAll('button')].forEach((button) => { button.disabled = false; });
       }
     }
-    const messageButton = element('button', `צ׳אט ${label}`, 'button quiet compact-action');
+    const messageButton = element('button', `הודעה ${label}`, 'button quiet compact-action');
     const freezeButton = element('button', `עצירה ${label}`, 'button quiet compact-action');
     const releaseButton = element('button', `שחרור ${label}`, 'button quiet compact-action');
-    const teleportButton = element('button', 'שיגור אל התלמיד/ה', 'button quiet compact-action');
-    [messageButton, freezeButton, releaseButton, teleportButton].forEach((button) => { button.type = 'button'; });
+    [messageButton, freezeButton, releaseButton].forEach((button) => { button.type = 'button'; });
     if (scope === 'player' && !target) {
-      [messageButton, freezeButton, releaseButton, teleportButton].forEach((button) => { button.disabled = true; });
+      [messageButton, freezeButton, releaseButton].forEach((button) => { button.disabled = true; });
     }
     messageButton.addEventListener('click', () => {
-      const text = prompt(scope === 'all' ? 'מה לשלוח בצ׳אט לכל הכיתה?' : 'מה לשלוח בצ׳אט לתלמיד/ה?');
+      const text = prompt(scope === 'all' ? 'מה לשלוח לכל הכיתה מהמורה?' : 'מה לשלוח לתלמיד/ה מהמורה?');
       if (!text?.trim()) return;
       command('message', { scope, target, text: text.trim() }, 'שולחים הודעה ל-Minecraft…', 'ההודעה נשלחה.');
     });
     freezeButton.addEventListener('click', () => command('freeze', { scope, target, on: true }, 'עוצרים תנועה ב-Minecraft…', 'העצירה נשלחה.'));
     releaseButton.addEventListener('click', () => command('freeze', { scope, target, on: false }, 'משחררים תנועה ב-Minecraft…', 'השחרור נשלח.'));
-    teleportButton.addEventListener('click', () => command('teleport', { target }, 'משגרים אל התלמיד/ה…', 'השיגור נשלח.'));
     actions.append(messageButton, freezeButton, releaseButton);
-    if (scope === 'player') actions.append(teleportButton);
     return actions;
   }
 
@@ -759,25 +782,7 @@
         createClassButton.disabled = true;
         return;
       }
-      const courseLinks = element('div', undefined, 'course-links');
-      for (const courseId of availableCourseIds) {
-        const linkLabel = courseId === 'craftom-agent'
-          ? 'ניהול אקדמיית ה-Agent לפי כיתה'
-          : `פתיחת הלומדה שלי: ${courseLabels[courseId] || courseId}`;
-        const link = element('a', linkLabel, 'button quiet');
-        if (courseId === 'craftom-agent') {
-          link.href = '#classes-list';
-          link.addEventListener('click', () => {
-            setMessage(dashboardMessage, 'בחרי כיתה עם אקדמיית ה-Agent ולחצי על "ניהול הלומדה".', true);
-          });
-        } else {
-          link.href = teacherCourseHref(courseId);
-          link.target = '_blank';
-          link.rel = 'noopener noreferrer';
-        }
-        courseLinks.append(link);
-      }
-      teacherCourseCatalog.append(courseLinks, createCoursePicker([], availableCourseIds));
+      teacherCourseCatalog.append(createCoursePicker([], availableCourseIds));
       createClassButton.disabled = false;
     }
 
@@ -821,11 +826,210 @@
       picker.append(copy, buttons);
       courseView.append(picker);
 
+      if (selectedCourseId !== 'craftom-agent') {
+        const selectedCoursePanel = element('section', undefined, 'teacher-course-hub-card');
+        const selectedCopy = element('div', undefined, 'teacher-course-hub-copy');
+        selectedCopy.append(
+          element('strong', courseLabels[selectedCourseId] || selectedCourseId),
+          element('span', 'כניסת המורה עובדת דרך אותו session. מכאן פותחים את הלומדה, חומרי המדריך והמעקב הכיתתי.'),
+        );
+        const selectedActions = element('div', undefined, 'teacher-course-hub-actions');
+        const openCourse = element('a', 'פתיחת סביבת המורה', 'button primary');
+        openCourse.href = teacherCourseHref(selectedCourseId);
+        openCourse.target = '_blank';
+        openCourse.rel = 'noopener noreferrer';
+        selectedActions.append(openCourse);
+        teacherCourseGuideLinks(selectedCourseId).forEach((resource) => {
+          const link = element('a', resource.label, 'button quiet');
+          link.href = resource.href;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          selectedActions.append(link);
+        });
+        selectedCoursePanel.append(selectedCopy, selectedActions);
+        courseView.append(selectedCoursePanel);
+      }
+
       const filteredClasses = currentClasses.filter((classroom) => (classroom.courses || []).includes(selectedCourseId));
       list.replaceChildren(...filteredClasses.map((classroom) => renderClass(classroom, selectedCourseId)));
       if (!filteredClasses.length) {
         list.replaceChildren(element('p', `עדיין אין כיתות תחת ${courseLabels[selectedCourseId] || selectedCourseId}. אפשר ליצור כיתה חדשה למטה ולשייך אותה ללומדה הזאת.`, 'card'));
       }
+    }
+
+    function latestCourseProgress(student, courseId) {
+      return (student.progress || [])
+        .filter((row) => row.courseId === courseId)
+        .sort((a, b) => String(b.updatedAt || '').localeCompare(String(a.updatedAt || '')))[0] || null;
+    }
+
+    function courseProgressSummary(student, courseId) {
+      const rows = (student.progress || []).filter((row) => row.courseId === courseId);
+      const completed = rows.filter((row) => row.status === 'completed').length;
+      const started = rows.length;
+      const latest = latestCourseProgress(student, courseId);
+      return { rows, started, completed, latest };
+    }
+
+    function renderGenericCourseProgress(classroom, courseId) {
+      const students = classroom.students || [];
+      const summaries = students.map((student) => ({ student, summary: courseProgressSummary(student, courseId) }));
+      const activeCount = summaries.filter((item) => item.summary.started > 0).length;
+      const completedCount = summaries.filter((item) => item.summary.completed > 0).length;
+      const panel = element('section', undefined, 'generic-course-progress');
+      const top = element('div', undefined, 'generic-course-progress-top');
+      top.append(
+        element('strong', `מעקב ${courseLabels[courseId] || courseId}`),
+        element('span', 'מעקב בסיסי לפי ההתקדמות שהתלמידים שומרים מתוך הלומדה.'),
+      );
+      const metrics = element('div', undefined, 'generic-course-metrics');
+      [
+        ['תלמידים', students.length],
+        ['התחילו', activeCount],
+        ['השלימו פעילות', completedCount],
+      ].forEach(([label, value]) => {
+        const metric = element('span');
+        metric.append(element('strong', String(value || 0)), document.createTextNode(label));
+        metrics.append(metric);
+      });
+      const list = element('div', undefined, 'generic-course-students');
+      summaries.forEach(({ student, summary }) => {
+        const row = element('article', undefined, `generic-course-student ${summary.started ? 'started' : 'missing'}`);
+        const latest = summary.latest;
+        row.append(
+          element('strong', student.name),
+          element('span', summary.started
+            ? `${summary.started} פעילויות · ${summary.completed} הושלמו`
+            : 'עדיין לא התחיל/ה'),
+          element('small', latest ? `עודכן: ${formatDashboardDate(latest.updatedAt)}` : 'אין עדיין התקדמות שמורה'),
+        );
+        list.append(row);
+      });
+      panel.append(top, metrics, list);
+      return panel;
+    }
+
+    function renderStudentCodesTable(students) {
+      const wrap = element('div', undefined, 'student-code-results');
+      wrap.append(element('strong', 'קודים לשליחה לתלמידים'));
+      const table = element('table');
+      const thead = element('thead');
+      const headRow = element('tr');
+      headRow.append(element('th', 'תלמיד/ה'), element('th', 'קוד אישי'));
+      thead.append(headRow);
+      const tbody = element('tbody');
+      students.forEach((student) => {
+        const row = element('tr');
+        row.append(element('td', student.name), element('td', student.loginCode, 'numeric-login-code'));
+        tbody.append(row);
+      });
+      table.append(thead, tbody);
+      wrap.append(table);
+      return wrap;
+    }
+
+    function parseStudentNames(value) {
+      return [...new Set(String(value || '')
+        .split(/\r?\n|,/)
+        .map((name) => name.trim())
+        .filter((name) => name.length >= 2))];
+    }
+
+    function renderStudentRoster(classroom) {
+      const panel = element('section', undefined, 'student-roster-panel');
+      const top = element('div', undefined, 'student-roster-top');
+      top.append(
+        element('strong', 'תלמידים וקודי כניסה'),
+        element('span', 'מדביקים רשימת שמות ומקבלים לכל תלמיד/ה קוד אישי מספרי. הקוד מוצג רק בזמן ההוספה או איפוס הקוד.'),
+      );
+      const loginBox = element('div', undefined, 'class-login-summary');
+      loginBox.append(
+        element('span', 'קוד כיתה משותף'),
+        element('strong', classroom.joinCode, 'code'),
+        element('small', 'התלמידים נכנסים עם קוד הכיתה + הקוד האישי שלהם.'),
+      );
+
+      const students = classroom.students || [];
+      const list = element('div', undefined, 'student-roster-list');
+      if (students.length) {
+        students.forEach((student) => {
+          const row = element('article', undefined, 'student-roster-row');
+          const identity = element('div', undefined, 'student-roster-identity');
+          identity.append(element('strong', student.name));
+          const minecraftEmail = student.minecraftEmail || 'לא אומת עדיין';
+          identity.append(element('span', `מייל Minecraft: ${minecraftEmail}`, 'student-roster-email'));
+          row.append(identity, element('span', 'קיים בכיתה'));
+          list.append(row);
+        });
+      } else {
+        list.append(element('p', 'עדיין אין תלמידים בכיתה הזאת.', 'progress-empty-note'));
+      }
+
+      const form = element('form', undefined, 'student-import-form');
+      const label = element('label', 'רשימת תלמידים');
+      const textarea = document.createElement('textarea');
+      textarea.name = 'students';
+      textarea.rows = 6;
+      textarea.placeholder = 'שם תלמיד/ה בכל שורה\nאפשר גם להדביק שמות מופרדים בפסיקים';
+      label.append(textarea);
+      const actions = element('div', undefined, 'student-import-actions');
+      const importButton = element('button', 'יצירת קודים לרשימה', 'button primary');
+      importButton.type = 'submit';
+      const oneButton = element('button', 'הוספת תלמיד/ה אחת', 'button secondary');
+      oneButton.type = 'button';
+      actions.append(importButton, oneButton);
+      const output = element('div', undefined, 'student-import-output');
+      form.append(label, actions, output);
+
+      async function createStudents(names) {
+        if (!names.length) {
+          output.replaceChildren(element('p', 'נא להזין לפחות שם אחד תקין.', 'message'));
+          return;
+        }
+        output.replaceChildren(element('p', 'יוצרים קודים…', 'progress-empty-note'));
+        const endpoint = names.length === 1
+          ? `/api/classroom/classes/${encodeURIComponent(classroom.id)}/students`
+          : `/api/classroom/classes/${encodeURIComponent(classroom.id)}/students/bulk`;
+        const payload = names.length === 1 ? { name: names[0] } : { names };
+        try {
+          const data = await api(endpoint, payload);
+          const created = data.students || (data.student ? [data.student] : []);
+          output.replaceChildren(renderStudentCodesTable(created));
+          classroom.students = [...(classroom.students || []), ...created.map((student) => ({
+            id: student.id,
+            name: student.name,
+            createdAt: student.createdAt,
+            progress: [],
+          }))];
+          if (!students.length) list.replaceChildren();
+          created.forEach((student) => {
+            const row = element('article', undefined, 'student-roster-row');
+            const identity = element('div', undefined, 'student-roster-identity');
+            identity.append(
+              element('strong', student.name),
+              element('span', 'מייל Minecraft: לא אומת עדיין', 'student-roster-email'),
+            );
+            row.append(identity, element('span', 'נוסף עכשיו'));
+            list.append(row);
+          });
+          textarea.value = '';
+          setMessage(dashboardMessage, `${created.length} תלמידים נוספו. הקודים המספריים מוצגים עכשיו בטבלת הקודים.`, true);
+        } catch (error) {
+          output.replaceChildren(element('p', error.message, 'message'));
+        }
+      }
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        createStudents(parseStudentNames(textarea.value));
+      });
+      oneButton.addEventListener('click', () => {
+        const name = prompt('שם התלמיד/ה');
+        if (name) createStudents(parseStudentNames(name));
+      });
+
+      panel.append(top, loginBox, list, form);
+      return panel;
     }
 
     async function loadClasses() {
@@ -1177,6 +1381,9 @@
       }
       courseAccess.append(courseLinks);
       const craftomLessonControls = activeCourseId === 'craftom-agent' ? renderCraftomLessonControls(classroom) : null;
+      const genericCourseProgress = activeCourseId && activeCourseId !== 'craftom-agent'
+        ? renderGenericCourseProgress(classroom, activeCourseId)
+        : null;
 
       let progressDashboardSection = null;
       let progressDashboardContent = null;
@@ -1253,9 +1460,14 @@
       courseSettings.append(courseForm);
 
       const kugelServerControls = renderKugelServerControls(classroom);
+      const studentRoster = renderStudentRoster(classroom);
+      const progressTab = activeCourseId && activeCourseId !== 'craftom-agent' && genericCourseProgress
+        ? [{ id: 'progress', label: 'מעקב כיתה', nodes: [genericCourseProgress] }]
+        : [];
 
       const tabs = [
-        { id: 'progress', label: 'מעקב כיתה', nodes: [progressDashboardSection].filter(Boolean), onActivate: () => progressDashboardSection?.openProgressDashboard?.() },
+        { id: 'students', label: 'תלמידים וקודים', nodes: [studentRoster] },
+        ...progressTab,
         { id: 'lesson', label: 'ניהול שיעור', nodes: [craftomLessonControls || courseAccess] },
         { id: 'server', label: 'שרת Minecraft', nodes: [kugelServerControls].filter(Boolean) },
         { id: 'settings', label: 'הגדרות', nodes: [courseSettings] },

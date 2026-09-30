@@ -15,7 +15,10 @@ assert.ok(
   'The classroom API test must be able to use an isolated SQLite database via ROBOTICS_DB_FILE',
 );
 assert.ok(serverJs.includes('function personalLoginCodeExists'), 'student codes must be checked for classroom collisions');
-assert.ok(serverJs.includes('generatePersonalLoginCode(db, classroom.id)'), 'student code generation must use the classroom collision check');
+assert.ok(serverJs.includes('generatePersonalLoginCode(db, classroomId)'), 'student code generation must use the classroom collision check');
+assert.ok(serverJs.includes('createClassroomStudentWithLoginCode(db, classroom.id, name)'), 'single student creation should use the shared login-code helper');
+assert.ok(serverJs.includes("String(crypto.randomInt(0, 1000000)).padStart(6, '0')"), 'student login codes must be numeric-only');
+assert.ok(serverJs.includes("segments[4] === 'students' && segments[5] === 'bulk'"), 'teacher API must support bulk student import');
 assert.ok(serverJs.includes('CLASSROOM_LOGIN_MAX_KEYS'), 'login failure tracking must have a hard memory bound');
 assert.ok(serverJs.includes('process.env.ROBOTICS_CLASSROOM_LOGIN_MAX_KEYS'), 'the limiter cap must be testable with an isolated low bound');
 assert.ok(serverJs.includes('function pruneClassroomLoginFailures'), 'expired and excess login failure keys must be pruned');
@@ -241,9 +244,21 @@ try {
   const studentBody = await addStudent.json();
   assert.equal(addStudent.status, 201);
   assert.equal(studentBody.student.name, 'נועה');
-  assert.match(studentBody.student.loginCode, /^[A-Z0-9]{6}$/);
+  assert.match(studentBody.student.loginCode, /^\d{6}$/);
   assert.equal('loginCodeHash' in studentBody.student, false);
   console.log('✓ a teacher can add a student and receive a one-time personal code');
+
+  const bulkStudents = await fetch(`${baseUrl}/api/classroom/classes/${classBody.classroom.id}/students/bulk`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Cookie: teacherCookie },
+    body: JSON.stringify({ names: ['דנה', 'איתי', 'דנה', ' '] }),
+  });
+  const bulkStudentsBody = await bulkStudents.json();
+  assert.equal(bulkStudents.status, 201);
+  assert.deepEqual(bulkStudentsBody.students.map((student) => student.name), ['דנה', 'איתי']);
+  assert.ok(bulkStudentsBody.students.every((student) => /^\d{6}$/.test(student.loginCode)));
+  assert.ok(bulkStudentsBody.students.every((student) => !('loginCodeHash' in student)));
+  console.log('✓ a teacher can import a student list and receive numeric-only login codes');
 
   const secondInvitation = await fetch(`${baseUrl}/api/classroom/admin/invitations`, {
     method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: adminCookie },
@@ -303,7 +318,7 @@ try {
   const classesBody = await classes.json();
   assert.equal(classes.status, 200);
   assert.equal(classesBody.classes.length, 1);
-  assert.equal(classesBody.classes[0].students.length, 1);
+  assert.equal(classesBody.classes[0].students.length, 3);
   assert.equal(classesBody.classes[0].students[0].name, 'נועה');
   assert.equal('loginHash' in classesBody.classes[0].students[0], false);
 

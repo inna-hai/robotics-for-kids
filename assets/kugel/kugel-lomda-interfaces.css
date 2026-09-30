@@ -458,10 +458,6 @@
   display: none;
 }
 
-.teacher-app.is-teacher-lesson.is-lesson-zero .teacher-hero .maze-preview {
-  display: grid;
-}
-
 .teacher-app.is-teacher-home .teacher-hero .goal {
   max-width: none;
 }
@@ -1032,10 +1028,6 @@
   background: #f0fdf4;
 }
 
-.teacher-student-card[open] {
-  grid-column: 1 / -1;
-}
-
 .lesson-student-name strong,
 .lesson-student-name span {
   display: block;
@@ -1052,9 +1044,20 @@
   display: grid;
   gap: 12px;
   min-width: 0;
+  width: 100%;
   padding: 14px;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  text-align: inherit;
   cursor: pointer;
   list-style: none;
+}
+
+.teacher-student-card-button:hover,
+.teacher-student-card-button:focus-visible {
+  background: #f8fbff;
 }
 
 .teacher-student-card-summary::-webkit-details-marker {
@@ -1372,6 +1375,9 @@
 
 .button.compact-action,
 .lesson-detail-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   justify-content: center;
   min-height: 30px;
   padding: 5px 9px;
@@ -1389,6 +1395,132 @@
   min-height: 38px;
   border-radius: 10px;
   white-space: normal;
+}
+
+.command-action-icon {
+  display: inline-grid;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 999px;
+  color: #1d4ed8;
+  background: #eff6ff;
+}
+
+.command-action-icon svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.button.compact-action:disabled .command-action-icon {
+  color: #94a3b8;
+  background: #f1f5f9;
+}
+
+.secondary-action.command-action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.secondary-action.danger-action .command-action-icon {
+  color: #b91c1c;
+  background: #fee2e2;
+}
+
+.command-action-label {
+  min-width: 0;
+}
+
+.teacher-student-card:not(.build-mode) .teacher-student-card-detail {
+  padding: 10px;
+}
+
+.teacher-student-card:not(.build-mode) .minecraft-command-actions {
+  grid-template-columns: 1fr;
+}
+
+.teacher-student-detail-dialog {
+  width: min(920px, calc(100vw - 28px));
+  max-height: min(86vh, 860px);
+  padding: 0;
+  border: 0;
+  border-radius: 16px;
+  background: transparent;
+  color: var(--ink);
+  box-shadow: 0 28px 90px rgba(15, 23, 42, .28);
+}
+
+.teacher-student-detail-dialog::backdrop {
+  background: rgba(15, 23, 42, .48);
+}
+
+.teacher-student-detail-modal {
+  display: grid;
+  max-height: min(86vh, 860px);
+  overflow: hidden;
+  border: 1px solid #dbeafe;
+  border-radius: 16px;
+  background: #f8fafc;
+}
+
+.teacher-student-detail-modal-head {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 18px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #fff;
+}
+
+.teacher-student-detail-modal-head h3 {
+  margin: 2px 0 0;
+  color: #0f172a;
+  font-size: 1.18rem;
+}
+
+.teacher-student-detail-modal-kicker {
+  color: #64748b;
+  font-size: .82rem;
+  font-weight: 950;
+}
+
+.teacher-student-detail-modal-close {
+  min-height: 36px;
+  padding: 7px 12px;
+}
+
+.teacher-student-detail-modal-body {
+  display: grid;
+  gap: 12px;
+  min-height: 0;
+  padding: 14px;
+  overflow: auto;
+}
+
+.teacher-student-detail-modal-body .build-progress-detail-card {
+  padding: 14px;
+}
+
+.teacher-student-detail-modal-body .build-progress-detail-card .progress-detail-statuses,
+.teacher-student-detail-modal-body .build-progress-detail-card .progress-detail-meta {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.teacher-student-detail-modal-body .minecraft-command-actions {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #fff;
 }
 
 .button.compact-action:hover,
@@ -1416,10 +1548,39 @@
   margin: 0;
 }
 
+.lesson-zero-progress-detail-card {
+  gap: 8px;
+  padding: 10px;
+}
+
+.lesson-zero-progress-detail-card h4 {
+  font-size: .95rem;
+}
+
+.lesson-zero-progress-detail-card .student-minecraft-identity-lines span {
+  font-size: .78rem;
+}
+
 .progress-detail-statuses {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+.lesson-zero-progress-detail-card .progress-detail-statuses {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.lesson-zero-progress-detail-card .mini-status {
+  min-width: 0;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+  border-radius: 10px;
+  line-height: 1.25;
+  text-align: center;
+  white-space: normal;
 }
 
 .progress-detail-meta {
@@ -1427,6 +1588,33 @@
   grid-template-columns: repeat(4, minmax(120px, 1fr));
   gap: 8px;
   margin: 0;
+}
+
+.lesson-zero-progress-detail-card .progress-detail-meta {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.build-progress-detail-card {
+  gap: 8px;
+  padding: 10px;
+}
+
+.build-progress-detail-card .progress-detail-statuses,
+.build-progress-detail-card .progress-detail-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.build-progress-detail-card .mini-status,
+.build-progress-detail-card .minecraft-connection-mini {
+  min-width: 0;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+  border-radius: 10px;
+  line-height: 1.25;
+  text-align: center;
+  white-space: normal;
 }
 
 .progress-detail-meta dt,
@@ -2018,10 +2206,31 @@
   box-shadow: 0 12px 26px rgba(23, 32, 51, .08);
 }
 
+.teacher-selected-video-card {
+  grid-template-columns: 1fr;
+  margin: 0 0 16px;
+}
+
+.teacher-selected-video-card > div:not(.teacher-video-preview) {
+  display: none;
+}
+
+.teacher-app.is-teacher-lesson .teacher-selected-lesson .panel-head,
+.teacher-app.is-teacher-lesson .teacher-selected-lesson > p {
+  display: none;
+}
+
+.teacher-app.is-teacher-lesson .teacher-student-board-content > .panel-head h3,
+.teacher-app.is-teacher-lesson .teacher-student-board-content > p {
+  display: none;
+}
+
 .teacher-app.is-teacher-home .challenge-video,
 .teacher-app.is-teacher-home .teacher-video-preview,
 .teacher-app.is-teacher-challenge .challenge-video,
-.teacher-app.is-teacher-challenge .teacher-video-preview {
+.teacher-app.is-teacher-challenge .teacher-video-preview,
+.teacher-app.is-teacher-lesson .teacher-selected-video-card .challenge-video,
+.teacher-app.is-teacher-lesson .teacher-selected-video-card .teacher-video-preview {
   display: block;
   width: 100%;
   aspect-ratio: 16 / 9;
@@ -2332,6 +2541,10 @@
 
   .student-hero .status-pill {
     justify-self: start;
+  }
+
+  .teacher-student-detail-modal-body .minecraft-command-actions {
+    grid-template-columns: 1fr;
   }
 
   .lesson-rail,
