@@ -700,24 +700,81 @@
       container.append(item);
     }
 
+    function appendReportFact(container, label, value) {
+      if (value === null || value === undefined || value === '') return;
+      container.append(node('dt', label), node('dd', String(value)));
+    }
+
+    function renderReportSection(title, ...children) {
+      const section = node('section', undefined, 'stage-report-section');
+      section.append(node('strong', title, 'stage-report-section-title'));
+      children.flat().filter(Boolean).forEach(child => section.append(child));
+      return section.children.length > 1 ? section : null;
+    }
+
+    function reportVerdictState(value) {
+      const text = String(value || '').toLowerCase();
+      if (/good|טוב|עבר|הושלם|מתאים/.test(text)) return 'completed';
+      if (/partial|חלק|דורש|בדיקה/.test(text)) return 'started';
+      return 'not-started';
+    }
+
+    function renderSnapshotFacts(snapshot) {
+      if (!snapshot) return null;
+      const facts = node('dl', undefined, 'stage-report-facts');
+      appendReportFact(facts, 'בלוקים', snapshot.blocksCount);
+      appendReportFact(facts, 'חורים', snapshot.holesCount);
+      appendReportFact(facts, 'גובה מקס׳', snapshot.maxHeight);
+      return facts.children.length ? facts : null;
+    }
+
+    function renderActivityFacts(activity) {
+      if (!activity) return null;
+      const facts = node('dl', undefined, 'stage-report-facts');
+      appendReportFact(facts, 'Agent הניח', activity.agentPlaced);
+      appendReportFact(facts, 'Agent שבר', activity.agentBroken);
+      appendReportFact(facts, 'ידני הניח', activity.manualPlaced);
+      appendReportFact(facts, 'ידני שבר', activity.manualBroken);
+      appendReportFact(facts, 'חסימות שבירה', activity.blockedBreakAttempts);
+      appendReportFact(facts, 'דקות פעילות', activity.activeMinutes);
+      appendReportFact(facts, 'הודעות צ׳אט', activity.chatMessages);
+      appendReportFact(facts, 'התערבויות מורה', activity.teacherInterventions);
+      return facts.children.length ? facts : null;
+    }
+
     function renderStageReport(report, title = 'דוח שלב') {
       if (!report) return null;
       const card = node('article', undefined, 'stage-report-card');
       card.append(node('h5', report.lessonLabel ? `${title} · ${report.lessonLabel}` : title));
       const verdicts = node('div', undefined, 'stage-report-verdicts');
-      if (report.buildVerdict) verdicts.append(renderMiniStatus('בנייה', report.buildVerdict, 'completed'));
-      if (report.codeVerdict) verdicts.append(renderMiniStatus('קוד', report.codeVerdict, 'started'));
+      if (report.buildVerdict) verdicts.append(renderMiniStatus('בנייה', report.buildVerdict, reportVerdictState(report.buildVerdict)));
+      if (report.codeVerdict) verdicts.append(renderMiniStatus('קוד', report.codeVerdict, reportVerdictState(report.codeVerdict)));
       if (report.generatedAt) verdicts.append(renderMiniStatus('עודכן', formatDate(report.generatedAt) || report.generatedAt, 'not-started'));
       if (verdicts.children.length) card.append(verdicts);
-      appendReportField(card, 'סיכום בנייה', report.buildSummary);
-      appendReportField(card, 'סיכום קוד', report.codeSummary);
-      appendReportField(card, 'טיפ למורה', report.teacherTip);
-      appendReportField(card, 'פעילות', report.activitySummary);
-      appendReportField(card, 'תמונת מצב', report.snapshot?.summary);
+
+      const buildSection = renderReportSection(
+        'בנייה במתחם',
+        report.buildSummary ? node('p', report.buildSummary) : null,
+        report.snapshot?.summary ? node('p', report.snapshot.summary, 'stage-report-muted-text') : null,
+        renderSnapshotFacts(report.snapshot),
+      );
+      if (buildSection) card.append(buildSection);
+
+      const activitySection = renderReportSection(
+        'פעילות',
+        report.activitySummary ? node('p', report.activitySummary) : null,
+        renderActivityFacts(report.activity),
+      );
+      if (activitySection) card.append(activitySection);
+
       if (report.snapshotMap) {
         const map = node('pre', report.snapshotMap, 'stage-report-map');
-        card.append(node('strong', 'מפה מלמעלה', 'stage-report-section-title'), map);
+        const mapSection = renderReportSection('מפה מלמעלה', map);
+        if (mapSection) card.append(mapSection);
       }
+
+      const codeChildren = [];
+      if (report.codeSummary) codeChildren.push(node('p', report.codeSummary));
       if (report.code) {
         const codeBox = node('details', undefined, 'stage-report-code');
         const summary = node('summary', report.code.name || 'קוד MakeCode');
@@ -732,7 +789,20 @@
         }
         if (report.code.error) appendReportField(codeBox, 'שגיאת קוד', report.code.error);
         if (report.code.source) codeBox.append(node('pre', report.code.source, 'stage-report-source'));
-        card.append(codeBox);
+        codeChildren.push(codeBox);
+      }
+      const codeSection = renderReportSection('קוד MakeCode', codeChildren);
+      if (codeSection) card.append(codeSection);
+
+      const tipSection = renderReportSection('טיפ למורה', report.teacherTip ? node('p', report.teacherTip) : null);
+      if (tipSection) card.append(tipSection);
+
+      if (!buildSection && !activitySection && !codeSection && !tipSection) {
+        appendReportField(card, 'סיכום בנייה', report.buildSummary);
+        appendReportField(card, 'סיכום קוד', report.codeSummary);
+        appendReportField(card, 'טיפ למורה', report.teacherTip);
+        appendReportField(card, 'פעילות', report.activitySummary);
+        appendReportField(card, 'תמונת מצב', report.snapshot?.summary);
       }
       if (report.reportText) {
         const full = node('details', undefined, 'stage-report-full');
@@ -947,6 +1017,29 @@
       const card = renderStageReport(report, 'דוח סוף שיעור');
       if (!card) return null;
       card.classList.add('class-stage-report-card');
+      const students = Array.isArray(report.students) ? report.students : [];
+      const hasCode = item => Boolean(item?.code?.url || item?.code?.source);
+      const hasScan = item => Boolean(item?.snapshot?.summary || item?.snapshotMap || item?.buildVerdict);
+      const needsAttention = item => {
+        const build = String(item?.buildVerdict || '').toLowerCase();
+        const code = String(item?.codeVerdict || '').toLowerCase();
+        return !hasCode(item)
+          || /partial|empty|unknown|חלק|ריק|לא ידוע|חסר/.test(build)
+          || /missing|error|unknown|partial|אין|חסר|שגיאה|חלק/.test(code);
+      };
+      const submitted = students.filter(hasScan).length;
+      const codeLinks = students.filter(hasCode).length;
+      const attention = students.filter(needsAttention).length;
+      const goodBuild = students.filter(item => /good|טוב|עומד|הושלם/.test(String(item?.buildVerdict || '').toLowerCase())).length;
+      const summary = node('div', undefined, 'class-stage-report-summary');
+      [
+        ['תלמידים בדוח', students.length],
+        ['נסרקו', submitted],
+        ['קישור קוד', codeLinks],
+        ['בנייה טובה', goodBuild],
+        ['דורשים בדיקה', attention],
+      ].forEach(([label, value]) => summary.append(renderMiniStatus(label, String(value), value ? 'started' : 'not-started')));
+      card.insertBefore(summary, card.children[1] || null);
       const meta = node('dl', undefined, 'progress-detail-meta class-stage-report-meta');
       [
         ['התחלה', formatDate(report.startedAt) || report.startedAt || 'אין עדיין'],

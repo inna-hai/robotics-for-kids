@@ -1497,6 +1497,15 @@
   gap: 6px;
 }
 
+.stage-report-section {
+  display: grid;
+  gap: 7px;
+  padding: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .78);
+}
+
 .stage-report-field {
   display: grid;
   gap: 3px;
@@ -1512,6 +1521,37 @@
 .stage-report-field p {
   color: #0f172a;
   line-height: 1.5;
+}
+
+.stage-report-section > p,
+.stage-report-muted-text {
+  margin: 0;
+  color: #0f172a;
+  line-height: 1.5;
+}
+
+.stage-report-muted-text {
+  color: #475569;
+}
+
+.stage-report-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.stage-report-facts dt {
+  color: #64748b;
+  font-size: .76rem;
+  font-weight: 900;
+}
+
+.stage-report-facts dd {
+  margin: 2px 0 0;
+  color: #0f172a;
+  font-size: .95rem;
+  font-weight: 950;
 }
 
 .stage-report-map,
@@ -1573,6 +1613,12 @@
   grid-column: 1 / -1;
   border-color: #c4b5fd;
   background: #fbfaff;
+}
+
+.class-stage-report-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .class-stage-report-meta {

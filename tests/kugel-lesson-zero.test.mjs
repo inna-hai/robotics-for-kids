@@ -1340,9 +1340,19 @@ try {
       code_verdict: 'חסר קישור',
       code_summary: 'לא נשלח קישור MakeCode.',
       teacher_tip: 'לבקש מהילד להסביר את המנגנון.',
-      snapshot: { summary: 'רואים מבנה במתחם 42.' },
+      snapshot: { summary: 'רואים מבנה במתחם 42.', blocks_count: 12, holes_count: 2, max_height: 1 },
       snapshot_map: '###\n#S#\n###',
       activity_summary: 'הילד עבד במתחם.',
+      activity: {
+        agent_placed: 10,
+        agent_broken: 0,
+        manual_placed: 12,
+        manual_broken: 2,
+        blocked_break_attempts: 1,
+        active_minutes: 8,
+        chat_messages: 1,
+        teacher_interventions: 0,
+      },
       code: {
         url: 'https://makecode.com/_abc123',
         name: 'agent-lesson-1',
@@ -1404,6 +1414,14 @@ try {
     'local MakeCode checks should identify the lesson being checked');
   assert.equal(teacherBuildModeStudent.stageReport.buildVerdict, 'טוב',
     'teacher monitor should expose the latest stage_report on the student card');
+  assert.equal(teacherBuildModeStudent.stageReport.snapshot.blocksCount, 12,
+    'teacher monitor should expose structured snapshot block counts for report cards');
+  assert.equal(teacherBuildModeStudent.stageReport.snapshot.holesCount, 2,
+    'teacher monitor should expose structured snapshot hole counts for report cards');
+  assert.equal(teacherBuildModeStudent.stageReport.activity.agentPlaced, 10,
+    'teacher monitor should expose structured Agent activity facts for report cards');
+  assert.equal(teacherBuildModeStudent.stageReport.activity.activeMinutes, 8,
+    'teacher monitor should expose structured active-minute facts for report cards');
   assert.equal(teacherBuildModeStudent.stageReport.snapshotMap, '###\n#S#\n###',
     'teacher monitor should preserve the top-down snapshot map as report text');
   assert.equal(teacherBuildModeStudent.stageReport.code.url, 'https://makecode.com/_abc123',

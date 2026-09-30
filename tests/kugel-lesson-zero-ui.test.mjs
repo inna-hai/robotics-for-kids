@@ -96,7 +96,7 @@ assert.doesNotMatch(teacher, /teacherHomeMinecraftActions/);
 assert.doesNotMatch(teacher, /teacherLessonPickerForm/);
 assert.doesNotMatch(teacher, /teacherLessonSelect/);
 assert.match(teacher, /20260914-video-first-frames-1/, 'teacher board cache-busts the challenge data posters');
-assert.match(teacher, /20260930-stage-reports-1/, 'teacher board cache-busts stage report cards');
+assert.match(teacher, /20260930-stage-reports-2/, 'teacher board cache-busts stage report cards');
 assert.match(teacherClassrooms, /20260929-numeric-student-codes-1/, 'teacher classroom dashboard cache-busts the all-course teacher hub and roster codes');
 assert.match(teacher, /rel="preload" as="image" href="assets\/craftom\/challenges\/craftom-program-real-minecraft-gemini-live-1x-first-frame\.webp"/, 'teacher home should preload the first visible video poster');
 assert.match(teacher, /craftom-challenge4-smart-city-automations-gemini-live-1x-first-frame\.webp" type="image\/webp"/, 'teacher home should preload challenge video posters');
@@ -291,6 +291,9 @@ assert.match(client, /renderTeacherStudentCardSummary\(student, liveMinecraft, b
 assert.match(client, /updateTeacherStudentCardOpenHint\(row\)/, 'student card open-close labels should update on toggle');
 assert.match(client, /detail\.replaceChildren\(renderTeacherStudentDetail\(student\)\)/, 'teacher student details should be available inside the expanded card');
 assert.match(client, /function renderStageReport\(report, title = 'דוח שלב'\)/, 'teacher student details should render Monitor stage reports');
+assert.match(client, /function renderReportSection\(title,[\s\S]*stage-report-section/, 'teacher Monitor reports should render separated report sections');
+assert.match(client, /function renderSnapshotFacts\(snapshot\)/, 'teacher Monitor reports should render structured snapshot facts');
+assert.match(client, /function renderActivityFacts\(activity\)/, 'teacher Monitor reports should render structured activity facts');
 assert.match(client, /function renderChatCodeLink\(codeLink\)/, 'teacher student details should render the latest MakeCode chat link');
 assert.match(client, /renderMiniStatus\('קישור קוד', student\.chatCodeLink \? 'התקבל בצ׳אט'/, 'student summaries should surface whether a MakeCode chat link arrived');
 assert.match(client, /function renderLocalCodeCheck\(check\)/, 'teacher student details should render local lomda code checks');
@@ -316,6 +319,7 @@ for (const phrase of [
   assert.ok(server.includes(phrase), `Monitor build rubric should include "${phrase}"`);
 }
 assert.match(client, /function renderClassStageReport\(report\)/, 'teacher monitor should render class_stage_report summaries');
+assert.match(client, /class-stage-report-summary/, 'class reports should include a smart classroom summary strip');
 assert.match(client, /const classReport = renderClassStageReport\(data\.classStageReport\)/, 'class reports should appear above the student card grid');
 assert.match(client, /const openTeacherStudentIds = new Set\(\)/, 'teacher student cards should remember opened cards across live refreshes');
 assert.match(client, /row\.open = openTeacherStudentIds\.has\(cardKey\)/, 'teacher student cards should not collapse on every polling refresh');

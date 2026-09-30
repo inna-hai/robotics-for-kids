@@ -4434,9 +4434,16 @@ function kugelStageReportPublic(row) {
   const snapshot = payload.snapshot && typeof payload.snapshot === 'object' && !Array.isArray(payload.snapshot)
     ? payload.snapshot
     : {};
+  const activity = payload.activity && typeof payload.activity === 'object' && !Array.isArray(payload.activity)
+    ? payload.activity
+    : {};
   const code = payload.code && typeof payload.code === 'object' && !Array.isArray(payload.code)
     ? payload.code
     : null;
+  const cleanReportNumber = value => {
+    const number = Number(value);
+    return Number.isFinite(number) ? number : null;
+  };
   return {
     eventType: cleanText(row.event_type, 60),
     lessonLabel: cleanKugelReportText(payload.lesson_label || payload.lessonLabel, 240),
@@ -4446,9 +4453,24 @@ function kugelStageReportPublic(row) {
     codeVerdict: cleanKugelReportText(payload.code_verdict || payload.codeVerdict, 120),
     codeSummary: cleanKugelReportText(payload.code_summary || payload.codeSummary, 2000),
     teacherTip: cleanKugelReportText(payload.teacher_tip || payload.teacherTip, 2000),
-    snapshot: { summary: cleanKugelReportText(snapshot.summary, 2000) },
+    snapshot: {
+      summary: cleanKugelReportText(snapshot.summary, 2000),
+      blocksCount: cleanReportNumber(snapshot.blocks_count ?? snapshot.blocksCount),
+      holesCount: cleanReportNumber(snapshot.holes_count ?? snapshot.holesCount),
+      maxHeight: cleanReportNumber(snapshot.max_height ?? snapshot.maxHeight),
+    },
     snapshotMap: cleanKugelReportText(payload.snapshot_map || payload.snapshotMap, 12000, { preserveNewlines: true }),
     activitySummary: cleanKugelReportText(payload.activity_summary || payload.activitySummary, 3000),
+    activity: {
+      agentPlaced: cleanReportNumber(activity.agent_placed ?? activity.agentPlaced),
+      agentBroken: cleanReportNumber(activity.agent_broken ?? activity.agentBroken),
+      manualPlaced: cleanReportNumber(activity.manual_placed ?? activity.manualPlaced),
+      manualBroken: cleanReportNumber(activity.manual_broken ?? activity.manualBroken),
+      blockedBreakAttempts: cleanReportNumber(activity.blocked_break_attempts ?? activity.blockedBreakAttempts),
+      activeMinutes: cleanReportNumber(activity.active_minutes ?? activity.activeMinutes),
+      chatMessages: cleanReportNumber(activity.chat_messages ?? activity.chatMessages),
+      teacherInterventions: cleanReportNumber(activity.teacher_interventions ?? activity.teacherInterventions),
+    },
     reportText: cleanKugelReportText(payload.report_text || payload.reportText, 50000, { preserveNewlines: true }),
     code: code ? {
       url: cleanKugelReportText(code.url, 2000),
