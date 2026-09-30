@@ -88,6 +88,20 @@ const KUGEL_PREVIEW_CLASSROOM_ID = String(process.env.KUGEL_PREVIEW_CLASSROOM_ID
 const KUGEL_COURSE_ID = 'craftom-agent';
 const KUGEL_ACTION_WINDOW_MS = 60 * 1000;
 const KUGEL_EVENTS_CACHE_MS = 1000;
+const KUGEL_MAKECODE_FETCH_TIMEOUT_MS = Number(process.env.KUGEL_MAKECODE_FETCH_TIMEOUT_MS || 8000);
+const KUGEL_MAKECODE_SOURCE_CACHE_MS = 15 * 60 * 1000;
+const kugelMakeCodeSourceCache = new Map();
+const KUGEL_CONNECTED_TTL_MS = Math.max(
+  process.env.NODE_ENV === 'test' ? 25 : 30 * 1000,
+  Number(process.env.KUGEL_CONNECTED_TTL_MS) || 5 * 60 * 1000,
+);
+const KUGEL_STAGE_REPORT_EVENT_TYPES = new Set(['stage_report', 'class_stage_report']);
+const KUGEL_IGNORED_DISPLAY_EVENT_TYPES = new Set([
+  'stage_finish',
+  'compound_scan',
+  'class_scan_done',
+  'teacher_intervention',
+]);
 const KUGEL_MONITOR_PROVIDER_OPEN_MAX_MS = 180 * 1000;
 const KUGEL_MONITOR_PROVIDER_CLOSE_MAX_MS = 180 * 1000;
 const KUGEL_MONITOR_PROVIDER_LIVE_MAX_MS = 30 * 1000;
@@ -2844,13 +2858,31 @@ function personalLoginCodeExists(db, classroomId, code) {
 }
 
 function generatePersonalLoginCode(db, classroomId) {
-  const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   for (let attempt = 0; attempt < 30; attempt += 1) {
-    let code = '';
-    for (let index = 0; index < 6; index += 1) code += alphabet[crypto.randomInt(0, alphabet.length)];
+    const code = String(crypto.randomInt(0, 1000000)).padStart(6, '0');
     if (!personalLoginCodeExists(db, classroomId, code)) return code;
   }
   throw new Error('student_code_generation_failed');
+}
+
+function createClassroomStudentWithLoginCode(db, classroomId, name) {
+  const now = new Date().toISOString();
+  const loginCode = generatePersonalLoginCode(db, classroomId);
+  const salt = crypto.randomBytes(16).toString('hex');
+  const student = {
+    id: crypto.randomUUID(),
+    classroom_id: classroomId,
+    name,
+    login_salt: salt,
+    login_hash: hashClassroomSecret(loginCode, salt),
+    created_at: now,
+    updated_at: now,
+  };
+  db.prepare(`
+    INSERT INTO classroom_students (id, classroom_id, name, login_salt, login_hash, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `).run(student.id, student.classroom_id, student.name, student.login_salt, student.login_hash, student.created_at, student.updated_at);
+  return { student, loginCode };
 }
 
 function classroomProgressPublic(row) {
@@ -3151,8 +3183,10 @@ async function addKugelConnectionStatusToDashboard(dashboard, classroom) {
       ? rawEvents
       : rawEvents.filter(row => !['coin_collected', 'finish_button_pressed'].includes(row?.event_type) && !isKugelResetEvent(row));
     const byStudent = new Map(data.students.map(student => {
-      const summary = summarizeKugelStudent(student, mazeMode ? data.runs.get(student.id) : null, data.session, events);
-      const assignment = data.assignments?.get(String(summary.minecraftPlayerName || student.minecraft_player_name || '').toLowerCase());
+      const rawSummary = summarizeKugelStudent(student, mazeMode ? data.runs.get(student.id) : null, data.session, events);
+      const assignment = data.assignments?.get(String(rawSummary.minecraftPlayerName || student.minecraft_player_name || '').toLowerCase())
+        || findKugelLatestCompoundEventAssignment(events, data.session, student);
+      const summary = applyKugelAssignmentConnection(rawSummary, assignment);
       return [student.id, {
         playerName: summary.minecraftPlayerName,
         compoundId: assignment?.compound_id || null,
@@ -3401,6 +3435,7 @@ function kugelLegacyMonitorMutation(serverName, pathname, payload = {}, timeoutM
   const allowedPaths = new Set([
     '/api/internal/craftom-school/server/status',
     '/api/internal/craftom-school/server/start',
+    '/api/internal/craftom-school/kugel/class-report',
     '/api/internal/craftom-school/world/close',
     '/api/internal/craftom-school/worlds/list',
     '/api/internal/craftom-school/world/open',
@@ -3418,6 +3453,22 @@ function kugelLegacyMonitorMutation(serverName, pathname, payload = {}, timeoutM
     body: JSON.stringify({ server, ...payload }),
     maxResponseBytes: 512 * 1024,
   }, timeoutMs));
+}
+
+async function requestKugelClassStageReport(monitorServerName) {
+  const server = cleanText(monitorServerName, 120);
+  if (!server) return null;
+  try {
+    return await kugelLegacyMonitorMutation(
+      server,
+      '/api/internal/craftom-school/kugel/class-report',
+      {},
+      KUGEL_WORLD_CLOSE_TIMEOUT_MS,
+    );
+  } catch (error) {
+    console.error('kugel_class_stage_report_error', { server, message: error.message });
+    return { ok: false, error: 'class_report_failed' };
+  }
 }
 
 function publicKugelMonitorWorld(world) {
@@ -3766,6 +3817,11 @@ function kugelLeasePayload(lease, classroomId) {
   };
 }
 
+function kugelTeacherEmailById(teacherId) {
+  if (!teacherId) return '';
+  return withSummerDb(db => cleanText(db.prepare('SELECT email FROM classroom_teachers WHERE id = ?').get(teacherId)?.email, 254));
+}
+
 async function startKugelWorld(req, teacherId, classroomId, lesson, monitorServerName, detail, runningDetail) {
   let lease;
   try {
@@ -3782,9 +3838,14 @@ async function startKugelWorld(req, teacherId, classroomId, lesson, monitorServe
   }
   if (!lease) return false;
   const leasePayload = kugelLeasePayload(lease, classroomId);
+  const teacherEmail = kugelTeacherEmailById(teacherId);
   try {
     await kugelWorldLifecycleMutation('/api/internal/craftom-school/v2/world/open', {
-      ...leasePayload, world: lesson.worldId, start_mode: 'reset',
+      ...leasePayload,
+      world: lesson.worldId,
+      start_mode: 'reset',
+      lesson_id: Number(lesson.id),
+      ...(teacherEmail ? { teacher_email: teacherEmail } : {}),
     }, KUGEL_WORLD_OPEN_TIMEOUT_MS);
     const remote = await kugelWorldLifecycleMutation('/api/internal/craftom-school/v2/world/state', {
       server: lease.monitorServerName,
@@ -4086,6 +4147,31 @@ function kugelEventPlayerName(row) {
   return String(row?.player_name || row?.playerName || payload.minecraft_username || payload.minecraftUsername || '');
 }
 
+function kugelAssignmentLastSeenMs(assignment) {
+  if (!assignment) return 0;
+  const numeric = Number(assignment.last_seen_at ?? assignment.lastSeenAt);
+  if (Number.isFinite(numeric) && numeric > 0) return numeric > 1e12 ? numeric : numeric * 1000;
+  return Date.parse(String(assignment.last_seen_at ?? assignment.lastSeenAt ?? '')) || 0;
+}
+
+function applyKugelAssignmentConnection(summary, assignment) {
+  const assignmentSeenAt = kugelAssignmentLastSeenMs(assignment);
+  const summarySeenAt = Date.parse(summary?.lastSeenAt || '') || 0;
+  const lastSeenAtMs = Math.max(summarySeenAt, assignmentSeenAt);
+  return {
+    ...summary,
+    connected: Boolean(
+      summary?.connected
+      || (
+        assignmentSeenAt > 0
+        && assignmentSeenAt >= summarySeenAt
+        && assignmentSeenAt >= Date.now() - KUGEL_CONNECTED_TTL_MS
+      )
+    ),
+    lastSeenAt: lastSeenAtMs > 0 ? new Date(lastSeenAtMs).toISOString() : (summary?.lastSeenAt || null),
+  };
+}
+
 function isKugelResetEvent(row) {
   if (!row) return false;
   if (row.event_type === 'maze_reset') return true;
@@ -4115,6 +4201,416 @@ function kugelFinishReport(row) {
     durationMs: Number.isFinite(durationMs) && durationMs >= 0 ? durationMs : null,
     startedAt,
     completedAt,
+  };
+}
+
+function isKugelIgnoredDisplayEvent(row) {
+  return KUGEL_IGNORED_DISPLAY_EVENT_TYPES.has(String(row?.event_type || ''));
+}
+
+function isKugelStageReportEvent(row) {
+  return KUGEL_STAGE_REPORT_EVENT_TYPES.has(String(row?.event_type || ''));
+}
+
+function cleanKugelReportText(value, max = 12000, { preserveNewlines = false } = {}) {
+  if (!preserveNewlines) return cleanText(value, max);
+  return String(value || '')
+    .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, ' ')
+    .replace(/[ \t]+/g, ' ')
+    .trim()
+    .slice(0, max);
+}
+
+function kugelStageReportPublic(row) {
+  if (!row || typeof row !== 'object') return null;
+  const payload = kugelEventPayload(row);
+  const snapshot = payload.snapshot && typeof payload.snapshot === 'object' && !Array.isArray(payload.snapshot)
+    ? payload.snapshot
+    : {};
+  const code = payload.code && typeof payload.code === 'object' && !Array.isArray(payload.code)
+    ? payload.code
+    : null;
+  return {
+    eventType: cleanText(row.event_type, 60),
+    lessonLabel: cleanKugelReportText(payload.lesson_label || payload.lessonLabel, 240),
+    generatedAt: cleanKugelReportText(payload.generated_at || payload.generatedAt || row.created_at || row.createdAt, 120),
+    buildVerdict: cleanKugelReportText(payload.build_verdict || payload.buildVerdict, 120),
+    buildSummary: cleanKugelReportText(payload.build_summary || payload.buildSummary, 2000),
+    codeVerdict: cleanKugelReportText(payload.code_verdict || payload.codeVerdict, 120),
+    codeSummary: cleanKugelReportText(payload.code_summary || payload.codeSummary, 2000),
+    teacherTip: cleanKugelReportText(payload.teacher_tip || payload.teacherTip, 2000),
+    snapshot: { summary: cleanKugelReportText(snapshot.summary, 2000) },
+    snapshotMap: cleanKugelReportText(payload.snapshot_map || payload.snapshotMap, 12000, { preserveNewlines: true }),
+    activitySummary: cleanKugelReportText(payload.activity_summary || payload.activitySummary, 3000),
+    reportText: cleanKugelReportText(payload.report_text || payload.reportText, 50000, { preserveNewlines: true }),
+    code: code ? {
+      url: cleanKugelReportText(code.url, 2000),
+      name: cleanKugelReportText(code.name, 240),
+      source: cleanKugelReportText(code.source, 80000, { preserveNewlines: true }),
+      error: cleanKugelReportText(code.error, 2000),
+    } : null,
+  };
+}
+
+function latestKugelStageReport(events, student) {
+  const playerKey = String(student?.minecraft_player_name || student?.minecraftPlayerName || '').toLowerCase();
+  if (!playerKey) return null;
+  const latest = events
+    .filter(row => row?.event_type === 'stage_report' && kugelEventPlayerName(row).toLowerCase() === playerKey)
+    .sort((a, b) => kugelEventTime(b) - kugelEventTime(a))[0];
+  return kugelStageReportPublic(latest);
+}
+
+function kugelChatMessageText(row) {
+  if (!row || typeof row !== 'object') return '';
+  const payload = kugelEventPayload(row);
+  const candidates = [
+    payload.message,
+    payload.text,
+    payload.content,
+    payload.chat,
+    payload.body,
+    payload.raw,
+    row.message,
+    row.text,
+  ];
+  const found = candidates.find(value => typeof value === 'string' && value.trim());
+  return found ? cleanKugelReportText(found, 4000, { preserveNewlines: true }) : '';
+}
+
+function extractKugelMakeCodeShareLink(text) {
+  const raw = String(text || '');
+  const fullMatch = raw.match(/https?:\/\/(?:www\.)?(?:minecraft\.)?makecode\.com\/[^\s"'<>]+/i);
+  const stripTrailing = value => String(value || '').replace(/[)\].,;!?]+$/g, '');
+  if (fullMatch) return stripTrailing(fullMatch[0]);
+  const shortMatch = raw.match(/(?:^|[\s"'<>])((?:\/_)[A-Za-z0-9_-]+)/);
+  return shortMatch ? `https://makecode.com${stripTrailing(shortMatch[1])}` : '';
+}
+
+function latestKugelChatCodeLink(events, student) {
+  const playerKey = String(student?.minecraft_player_name || student?.minecraftPlayerName || '').toLowerCase();
+  if (!playerKey) return null;
+  const latest = events
+    .map(row => {
+      const eventType = String(row?.event_type || '').toLowerCase();
+      if (!eventType.includes('chat')) return null;
+      if (kugelEventPlayerName(row).toLowerCase() !== playerKey) return null;
+      const message = kugelChatMessageText(row);
+      const url = extractKugelMakeCodeShareLink(message);
+      return url ? { row, message, url } : null;
+    })
+    .filter(Boolean)
+    .sort((a, b) => kugelEventTime(b.row) - kugelEventTime(a.row))[0];
+  if (!latest) return null;
+  return {
+    url: latest.url,
+    sentAt: cleanKugelReportText(latest.row.game_timestamp || latest.row.gameTimestamp || latest.row.created_at || latest.row.createdAt, 120),
+    message: latest.message,
+  };
+}
+
+function kugelMakeCodeApiTextUrl(shareUrl) {
+  const parsed = new URL(String(shareUrl || ''));
+  const host = parsed.hostname.toLowerCase();
+  if (!['makecode.com', 'www.makecode.com', 'minecraft.makecode.com'].includes(host)) return '';
+  const pathParts = parsed.pathname.split('/').map(part => part.trim()).filter(Boolean);
+  const shareId = pathParts.find(part => /^_?[A-Za-z0-9-]{5,}$/.test(part));
+  if (!shareId) return '';
+  return `https://makecode.com/api/${encodeURIComponent(shareId)}/text`;
+}
+
+function pickKugelMakeCodeSource(files) {
+  if (!files || typeof files !== 'object' || Array.isArray(files)) return '';
+  const preferred = ['main.ts', 'main.py', 'main.blocks', 'main.js'];
+  for (const name of preferred) {
+    if (typeof files[name] === 'string' && files[name].trim()) return files[name];
+  }
+  const first = Object.entries(files)
+    .find(([name, value]) => /\.(ts|js|py|blocks|xml)$/i.test(name) && typeof value === 'string' && value.trim());
+  return first ? first[1] : '';
+}
+
+async function fetchKugelMakeCodeSource(shareUrl) {
+  const apiUrl = kugelMakeCodeApiTextUrl(shareUrl);
+  if (!apiUrl || typeof fetch !== 'function') return { source: '', error: apiUrl ? 'fetch_unavailable' : 'unsupported_link' };
+  const cached = kugelMakeCodeSourceCache.get(apiUrl);
+  if (cached && Date.now() - cached.cachedAt < KUGEL_MAKECODE_SOURCE_CACHE_MS) return cached.result;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), KUGEL_MAKECODE_FETCH_TIMEOUT_MS);
+  try {
+    const response = await fetch(apiUrl, {
+      signal: controller.signal,
+      headers: { Accept: 'application/json' },
+    });
+    if (!response.ok) {
+      const result = { source: '', error: `makecode_http_${response.status}` };
+      kugelMakeCodeSourceCache.set(apiUrl, { cachedAt: Date.now(), result });
+      return result;
+    }
+    const files = await response.json();
+    const source = cleanKugelReportText(pickKugelMakeCodeSource(files), 80000, { preserveNewlines: true });
+    const result = source ? { source, error: '' } : { source: '', error: 'makecode_source_missing' };
+    kugelMakeCodeSourceCache.set(apiUrl, { cachedAt: Date.now(), result });
+    return result;
+  } catch (error) {
+    const result = { source: '', error: error?.name === 'AbortError' ? 'makecode_timeout' : 'makecode_fetch_failed' };
+    kugelMakeCodeSourceCache.set(apiUrl, { cachedAt: Date.now(), result });
+    return result;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function includesAnyText(value, patterns) {
+  const source = String(value || '').toLowerCase();
+  return patterns.some(pattern => source.includes(String(pattern).toLowerCase()));
+}
+
+function regexAnyText(value, patterns) {
+  const source = String(value || '');
+  return patterns.some(pattern => pattern.test(source));
+}
+
+function countKugelCodeMatches(source, patterns) {
+  const text = String(source || '');
+  return patterns.reduce((count, pattern) => count + (text.match(pattern) || []).length, 0);
+}
+
+function orderedKugelCode(source, patterns) {
+  const text = String(source || '');
+  let position = -1;
+  return patterns.every(pattern => {
+    const match = text.slice(position + 1).search(pattern);
+    if (match < 0) return false;
+    position += match + 1;
+    return true;
+  });
+}
+
+function kugelCodeFacts(source) {
+  const text = String(source || '');
+  const lower = text.toLowerCase();
+  const has = patterns => includesAnyText(lower, patterns);
+  const rx = patterns => regexAnyText(text, patterns);
+  const chat = command => command
+    ? rx([new RegExp(`player\\.onChat\\s*\\(\\s*["']${command}["']`, 'i'), new RegExp(`\\b${command}\\b`, 'i')])
+    : rx([/player\.onChat\s*\(/i, /on\s+chat\s+command/i, /type="(?:minecraft_)?on_chat/i]);
+  return {
+    chat,
+    agent: has(['agent.']) || rx([/type="agent_/i]),
+    teleport: has(['agent.teleporttoplayer']) || rx([/type="agent_teleport/i]),
+    move: has(['agent.move']) || rx([/type="agent_move/i]),
+    moveCount: countKugelCodeMatches(text, [/agent\.move\s*\(/gi, /type="agent_move/gi]),
+    turn: has(['agent.turn', 'left_turn', 'right_turn', 'left', 'right']) || rx([/type="agent_turn/i]),
+    place: has(['agent.place', 'agent.drop', 'agent.setitem', 'agent.setslot', 'agent.destroy']) || rx([/type="agent_(place|drop|set|destroy)/i]),
+    say: has(['player.say']) || rx([/type="player_say/i]),
+    repeat: rx([/\bfor\s*\(/i, /\bwhile\s*\(/i, /loops\.repeat/i, /loops\.forever/i, /type="controls_repeat/i, /type="device_forever/i, /\brepeat\b/i]),
+    forever: has(['loops.forever']) || rx([/type="device_forever/i]),
+    pause: has(['loops.pause', 'pause(']) || rx([/type="pause/i]),
+    condition: rx([/\bif\s*\(/i, /logic_compare/i, /type="controls_if/i]) || has(['agent.detect']),
+    elseBranch: rx([/\belse\b/i, /<statement name="else"/i]) || has(['else']),
+    detect: has(['agent.detect']),
+    routeOpen: has(['routeopen', 'route open', 'דרך פתוחה', 'דרך חסומה']),
+    running: has(['running']),
+    stationFull: has(['stationfull', 'station full', 'תחנה מלאה']),
+    statusWord: has(['status', 'מצב']),
+    openClose: has(['open', 'close', 'פתוחה', 'חסומה']),
+    start: chat('start') || has(['start']),
+    stop: chat('stop') || has(['stop']),
+    cycle: chat('cycle') || has(['cycle']),
+    test: chat('test') || has(['test', 'בודקים']),
+    demo: chat('demo') || has(['demo', 'דמו']),
+    plan: chat('plan') || has(['plan', 'מערכת 1', 'מערכת 2']),
+    deliverySay: has(['משלוח', 'delivery', 'הגיע', 'נמסרה', 'החבילה']),
+    automationSay: has(['אוטומציה', 'מערכת', 'עיר חכמה', 'שדרוג']),
+    actionCount: countKugelCodeMatches(text, [/agent\.(move|turn|place|drop|setItem|teleportToPlayer|detect)\s*\(/gi]),
+    twoSystems: countKugelCodeMatches(text, [/מערכת/gi, /automation/gi]) >= 2 || has(['מערכת 1', 'מערכת 2']),
+    moveTurnMove: orderedKugelCode(text, [/agent\.move\s*\(/i, /agent\.turn\s*\(/i, /agent\.move\s*\(/i]),
+  };
+}
+
+function requiredCodeCheck(label, ok, hint) {
+  return { label, ok: Boolean(ok), hint, required: true };
+}
+
+function bonusCodeCheck(label, ok, hint) {
+  return { label: `בונוס: ${label}`, ok: Boolean(ok), hint, required: false };
+}
+
+function kugelCodeLessonChecks(lessonId, source) {
+  const f = kugelCodeFacts(source);
+  const baseChat = requiredCodeCheck('פקודת הפעלה בצ׳אט', f.chat(), 'כל שיעור צריך פקודת צ׳אט שמפעילה את הקוד בצורה ברורה.');
+  const baseAgent = requiredCodeCheck('שימוש ב-Agent', f.agent, 'הקוד צריך להפעיל את ה-Agent או מערכת עירונית שמבוססת עליו.');
+  const rubrics = {
+    1: [
+      requiredCodeCheck('פקודת deliver', f.chat('deliver'), 'בשיעור 1 ההפעלה המרכזית היא deliver.'),
+      requiredCodeCheck('זימון ה-Agent להתחלה', f.teleport, 'ה-Agent צריך להתחיל מנקודת מוצא ברורה ליד התלמיד.'),
+      requiredCodeCheck('תנועה ישרה לתחנת יעד', f.move, 'נדרש agent.move כדי להגיע מהמחסן לתחנה.'),
+      bonusCodeCheck('הודעת הגעה', f.say || f.deliverySay, 'כדאי לסיים בהודעה שמסבירה שהמשלוח הגיע.'),
+    ],
+    2: [
+      baseChat,
+      requiredCodeCheck('שתי תנועות במסלול', f.moveCount >= 2, 'בשיעור 2 מצופה תנועה, פנייה ואז המשך תנועה.'),
+      requiredCodeCheck('פנייה אחת לפחות', f.turn, 'המסלול צריך לכלול agent.turn ימינה או שמאלה.'),
+      requiredCodeCheck('סדר פעולה: תנועה, פנייה, תנועה', f.moveTurnMove || (f.moveCount >= 2 && f.turn), 'הקוד צריך לשמור על סדר מסלול עם פנייה.'),
+    ],
+    3: [
+      baseChat,
+      requiredCodeCheck('ה-Agent מגיע לתחנה', f.move, 'לפני מסירה צריך שה-Agent ינוע לנקודת יעד.'),
+      requiredCodeCheck('מסירה או סימון חבילה', f.place, 'נדרש agent.place / drop / setItem כדי שהקוד ישנה משהו בעולם.'),
+      requiredCodeCheck('הודעת הצלחה', f.say || f.deliverySay, 'כדאי שהקוד יודיע שהמשלוח הגיע.'),
+    ],
+    4: [
+      requiredCodeCheck('פקודת deliver מלאה', f.chat('deliver') || f.chat(), 'שיעור 4 מחבר את המסלול האישי לפקודה אחת.'),
+      requiredCodeCheck('מסלול אישי עם תנועה ופנייה', f.move && f.turn, 'המסלול האישי צריך לכלול תנועה ושינוי כיוון.'),
+      requiredCodeCheck('פעולת מסירה או סימון הצלחה', f.place || f.say, 'צריך לראות שהמשלוח הסתיים בעולם או בהודעה.'),
+      bonusCodeCheck('רצף Agent עשיר', f.actionCount >= 4, 'רצף אישי טוב כולל כמה פעולות Agent, לא רק צעד אחד.'),
+    ],
+    5: [
+      requiredCodeCheck('פקודת deliver חד-פעמית', f.chat('deliver') || f.chat(), 'בשיעור 5 מתחילים מפקודת משלוח קיימת.'),
+      requiredCodeCheck('משלוח נראה בעולם', f.move && (f.place || f.say), 'צריך לראות משלוח אחד עובד לפני שעוברים לאוטומציה.'),
+      requiredCodeCheck('סימון צורך בחזרה', f.say || f.deliverySay, 'הקוד צריך להסביר/לסמן שמשלוח אחד הסתיים ושצריך לחשוב על חזרה.'),
+      bonusCodeCheck('ניסיון ראשון לחזרה', f.repeat, 'אם כבר יש repeat/loop זו התקדמות יפה לקראת שיעור 6-7.'),
+    ],
+    6: [
+      baseChat,
+      requiredCodeCheck('יציאה ומסירה', f.move && f.place, 'מחזור הלוך וחזור מתחיל בתנועה לנקודת מסירה ופעולת מסירה.'),
+      requiredCodeCheck('חזרה לנקודת התחלה', f.moveCount >= 2 && f.turn, 'צריך לראות תנועה נוספת ופנייה/סיבוב שמחזירים את ה-Agent.'),
+      bonusCodeCheck('הודעת סיום מחזור', f.say, 'כדאי לסמן שהמחזור הסתיים.'),
+    ],
+    7: [
+      requiredCodeCheck('משתנה running', f.running, 'שיעור 7 דורש מצב ריצה/עצירה.'),
+      requiredCodeCheck('פקודות start ו-stop', f.start && f.stop, 'צריך לשלוט בקו עם start ו-stop.'),
+      requiredCodeCheck('לולאה שמכבדת running', f.repeat && f.condition, 'הקו צריך לרוץ בלולאה רק כשהמצב פעיל.'),
+      requiredCodeCheck('pause בין סיבובים', f.pause, 'צריך השהייה כדי שהקו לא ירוץ מהר מדי.'),
+    ],
+    8: [
+      requiredCodeCheck('פקודת קו אישי', f.cycle || f.start || f.chat(), 'שיעור 8 צריך פקודה שמפעילה קו אישי בעיר.'),
+      requiredCodeCheck('מחזור חוזר', f.repeat, 'הקו האישי צריך לחזור על משלוח/מסלול.'),
+      requiredCodeCheck('מסלול אישי עם פנייה', f.move && f.turn, 'הקו האישי צריך לכלול שינוי כיוון או מסלול שונה.'),
+      requiredCodeCheck('מסירה או סימון תחנה', f.place || f.say, 'צריך לראות שהקו עושה פעולה בעולם.'),
+    ],
+    9: [
+      requiredCodeCheck('מצב עירוני בקוד', f.routeOpen || f.statusWord || f.detect, 'שיעור 9 מוסיף מצב שהקוד יכול לזכור או לבדוק.'),
+      requiredCodeCheck('פקודת status/open/close', f.statusWord || f.openClose || f.chat('status'), 'צריך דרך להציג או לשנות את מצב העיר.'),
+      requiredCodeCheck('דיווח מצב למשתמש', f.say, 'הקוד צריך לומר האם הדרך פתוחה/חסומה או מה המצב.'),
+      bonusCodeCheck('בדיקה אמיתית בעולם', f.detect, 'agent.detect מחבר את המצב לקלט מהעולם.'),
+    ],
+    10: [
+      baseChat,
+      requiredCodeCheck('תנאי if לפי מצב הדרך', f.condition && (f.routeOpen || f.detect), 'שיעור 10 דורש if שמחליט לפי מצב הדרך.'),
+      requiredCodeCheck('פעולה כשהדרך פתוחה', f.move || f.place, 'במצב פתוח ה-Agent צריך להמשיך או לבצע פעולה.'),
+      requiredCodeCheck('תגובה כשהדרך לא פתוחה', f.elseBranch || f.say, 'במצב סגור צריך לעצור או לדווח.'),
+    ],
+    11: [
+      baseChat,
+      requiredCodeCheck('if/else מלא', f.condition && f.elseBranch, 'שיעור 11 דורש תגובה אחרת בזמן חסימה.'),
+      requiredCodeCheck('המתנה או עקיפה', f.pause || f.turn || f.say, 'ב-else צריך להמתין, לדווח או לפנות למסלול חלופי.'),
+      requiredCodeCheck('המסלול התקין עדיין קיים', f.move || f.place, 'גם במצב פתוח צריך שתהיה פעולה רגילה של הקו.'),
+    ],
+    12: [
+      requiredCodeCheck('כלל if/else אישי', f.condition && f.elseBranch, 'שיעור 12 דורש חוק אישי: אם מצב מסוים אז פעולה, אחרת פעולה אחרת.'),
+      requiredCodeCheck('מצב אישי או תחנה מלאה', f.stationFull || f.routeOpen || f.detect || f.statusWord, 'צריך משתנה/מצב שהחוק בודק.'),
+      requiredCodeCheck('שתי תגובות ברורות', f.say && (f.move || f.place || f.turn), 'צריך לראות תגובה אחת לפחות בעולם והסבר/דיווח.'),
+      bonusCodeCheck('מסירה מותנית', f.place, 'מסירה בתוך תנאי מחזקת את הקשר למשימת המשלוחים.'),
+    ],
+    13: [
+      requiredCodeCheck('פקודת plan או תכנון בקוד', f.plan || f.chat('plan') || f.say, 'שיעור 13 עוסק במיפוי ותכנון שתי מערכות.'),
+      requiredCodeCheck('שתי מערכות בעיר', f.twoSystems, 'צריך להופיע תכנון של לפחות שתי מערכות/אוטומציות.'),
+      requiredCodeCheck('החלטה על רעיונות תכנותיים', f.repeat || f.condition || includesAnyText(source, ['רצף', 'לולאה', 'תנאי']), 'התכנון צריך לציין רצף, לולאה או תנאי.'),
+      bonusCodeCheck('פעולת Agent ראשונה', f.agent && (f.move || f.place), 'אם יש גם התחלת קוד Agent זו הכנה טובה לשיעור 14.'),
+    ],
+    14: [
+      requiredCodeCheck('פקודת start לאוטומציה', f.start || f.chat('start'), 'שיעור 14 מוסיף אוטומציה חדשה שמופעלת ב-start.'),
+      requiredCodeCheck('פעולה אוטומטית בעולם', f.agent && (f.move || f.place || f.turn), 'האוטומציה צריכה לעשות שינוי נראה בעולם.'),
+      requiredCodeCheck('קישור למערכת עירונית', f.say || f.automationSay, 'צריך להסביר איזו מערכת הופעלה או שודרגה.'),
+      bonusCodeCheck('שילוב לולאה או תנאי', f.repeat || f.condition, 'שימוש בלולאה/תנאי מחזק את האוטומציה.'),
+    ],
+    15: [
+      requiredCodeCheck('פקודת test או בדיקה מסודרת', f.test || f.chat('test'), 'שיעור 15 דורש בדיקה מכוונת של אוטומציות.'),
+      requiredCodeCheck('בדיקת שתי אוטומציות', f.twoSystems || countKugelCodeMatches(source, [/בודקים/gi, /test/gi]) >= 2, 'צריך לבדוק מערכת חדשה ומערכת קיימת.'),
+      requiredCodeCheck('פעולות Agent לבדיקה', f.actionCount >= 2, 'הבדיקה צריכה להריץ פעולות בעולם, לא רק להדפיס טקסט.'),
+      bonusCodeCheck('תיקון/שיפור מתועד', includesAnyText(source, ['תיקון', 'שופר', 'fixed', 'debug']), 'אם הקוד מתעד תיקון, זה מחזק את שיעור 15.'),
+    ],
+    16: [
+      requiredCodeCheck('פקודת demo', f.demo || f.chat('demo'), 'שיעור 16 דורש פקודת דמו להצגת העיר.'),
+      requiredCodeCheck('הצגת כמה אוטומציות', f.twoSystems || f.actionCount >= 4, 'הדמו צריך להראות יותר ממערכת אחת או רצף עשיר.'),
+      requiredCodeCheck('פעולת Agent נראית', f.agent && (f.move || f.place || f.turn), 'הדמו צריך להפעיל משהו בעיר מול המורה/הכיתה.'),
+      requiredCodeCheck('הודעות הסבר בדמו', f.say || f.automationSay, 'בדמו חשוב שהקוד יסביר מה עובד ומה השתדרג.'),
+    ],
+  };
+  return rubrics[Number(lessonId)] || [baseChat, baseAgent];
+}
+
+function kugelLocalCodeCheckPublic({ lesson, source, url, error }) {
+  const lessonId = Number(lesson?.id);
+  const lessonLabel = lesson?.title || (Number.isInteger(lessonId) ? `שיעור ${lessonId}` : 'שיעור');
+  if (error && !source) {
+    return {
+      status: 'error',
+      verdict: 'לא ניתן לפתוח קוד',
+      summary: 'הלומדה קיבלה קישור, אבל לא הצליחה לפתוח ממנו את קבצי MakeCode.',
+      lessonLabel,
+      url: cleanKugelReportText(url, 2000),
+      source: '',
+      error: cleanKugelReportText(error, 240),
+      checks: [],
+    };
+  }
+  if (!source) return null;
+  const checks = kugelCodeLessonChecks(lessonId, source);
+  const requiredChecks = checks.filter(check => check.required !== false);
+  const requiredPassed = requiredChecks.filter(check => check.ok).length;
+  const missing = requiredChecks.filter(check => !check.ok);
+  const status = requiredPassed === requiredChecks.length ? 'passed' : (requiredPassed >= Math.max(1, requiredChecks.length - 1) ? 'partial' : 'failed');
+  const verdict = status === 'passed' ? 'נראה מתאים למשימה' : (status === 'partial' ? 'דורש בדיקה קצרה' : 'כנראה חסר חלק מהמשימה');
+  const summary = missing.length
+    ? `הלומדה בדקה את הקוד מול ${lessonLabel}. חסר/לא זוהה: ${missing.map(check => check.label).join(', ')}.`
+    : `הלומדה בדקה את הקוד מול ${lessonLabel} וזיהתה את רכיבי הקוד המרכזיים.`;
+  return {
+    status,
+    verdict,
+    summary,
+    lessonLabel,
+    url: cleanKugelReportText(url, 2000),
+    source: cleanKugelReportText(source, 80000, { preserveNewlines: true }),
+    error: cleanKugelReportText(error, 240),
+    checks: checks.map(check => ({
+      label: cleanKugelReportText(check.label, 120),
+      ok: Boolean(check.ok),
+      hint: cleanKugelReportText(check.hint, 240),
+      required: check.required !== false,
+    })),
+  };
+}
+
+async function kugelLocalCodeCheckForStudent({ chatCodeLink, stageReport, lesson }) {
+  const reportCode = stageReport?.code && typeof stageReport.code === 'object' ? stageReport.code : null;
+  const reportSource = reportCode?.source || '';
+  const reportUrl = reportCode?.url || chatCodeLink?.url || '';
+  if (reportSource) return kugelLocalCodeCheckPublic({ lesson, source: reportSource, url: reportUrl, error: '' });
+  if (!chatCodeLink?.url) return null;
+  const fetched = await fetchKugelMakeCodeSource(chatCodeLink.url);
+  return kugelLocalCodeCheckPublic({ lesson, source: fetched.source, url: chatCodeLink.url, error: fetched.error });
+}
+
+function latestKugelClassStageReport(events) {
+  const latest = events
+    .filter(row => row?.event_type === 'class_stage_report')
+    .sort((a, b) => kugelEventTime(b) - kugelEventTime(a))[0];
+  const report = kugelStageReportPublic(latest);
+  if (!report) return null;
+  const payload = kugelEventPayload(latest);
+  const students = Array.isArray(payload.students) ? payload.students : [];
+  return {
+    ...report,
+    startedAt: cleanKugelReportText(payload.started_at || payload.startedAt, 120),
+    endedAt: cleanKugelReportText(payload.ended_at || payload.endedAt, 120),
+    students: students.map(student => kugelStageReportPublic({
+      event_type: 'stage_report',
+      created_at: payload.generated_at || payload.generatedAt || latest.created_at || latest.createdAt,
+      payload: student,
+    })).filter(Boolean),
   };
 }
 
@@ -4253,7 +4749,12 @@ function summarizeKugelStudent(student, run, session, events) {
   }
   const completed = coins >= KUGEL_LESSON_ZERO.goalCoins && Boolean(finishEvent || run?.finished_at);
   const last = ordered.at(-1);
-  const connected = Boolean(last && last.event_type !== 'player_leave');
+  const lastEventTime = last ? kugelEventTime(last) : 0;
+  const connected = Boolean(
+    last
+    && last.event_type !== 'player_leave'
+    && lastEventTime >= Date.now() - KUGEL_CONNECTED_TTL_MS
+  );
   const eventStartedAtMs = recentCoinSetStartedAt;
   const eventFinishedAtMs = finishEvent ? kugelEventTime(finishEvent) : 0;
   const finishReport = finishEvent ? kugelFinishReport(finishEvent) : null;
@@ -4479,12 +4980,14 @@ async function kugelClassView(req, context, role, useEventCache = true, requeste
   const runtimeWorld = await resolveKugelRuntimeWorld(data.session, context.classroom);
   const viewMode = data.trackedLessonId === 0 ? 'maze' : 'build';
   const mazeMode = viewMode === 'maze';
-  const rawEvents = ownsRunningWorld && runtimeWorld.worldMode === 'maze'
+  const rawEvents = ownsRunningWorld
     ? await kugelGameEvents(data.session, useEventCache)
     : [];
+  const reportEvents = rawEvents;
+  const analysisEvents = rawEvents.filter(row => !isKugelIgnoredDisplayEvent(row) && !isKugelStageReportEvent(row));
   const events = mazeMode
-    ? rawEvents
-    : rawEvents.filter(row => !['coin_collected', 'finish_button_pressed'].includes(row?.event_type) && !isKugelResetEvent(row));
+    ? analysisEvents
+    : analysisEvents.filter(row => !['coin_collected', 'finish_button_pressed'].includes(row?.event_type) && !isKugelResetEvent(row));
   const current = withSummerDb(db => db.transaction(() => (
     requireCurrentKugelView(db, req, context, role, data.session)
   )).immediate());
@@ -4493,10 +4996,28 @@ async function kugelClassView(req, context, role, useEventCache = true, requeste
     error.statusCode = current.status;
     throw error;
   }
-  const summaries = data.students.map(student => ({
-    ...summarizeKugelStudent(student, mazeMode ? data.runs.get(student.id) : null, data.session, events),
-    completionRecorded: data.completedStudentIds.has(student.id),
-  })).map(summary => {
+  const codeCheckLessonId = (viewMode === 'build' || runtimeWorld.worldMode === 'build')
+    ? Math.max(1, Number(data.trackedLessonId || data.session?.lesson_id || 1))
+    : data.trackedLessonId;
+  const codeCheckLesson = kugelLessonById(codeCheckLessonId)
+    || kugelLessonById(Number(data.session?.lesson_id || 0))
+    || KUGEL_LESSON_ONE;
+  const summariesWithReports = await Promise.all(data.students.map(async student => {
+    const rawSummary = summarizeKugelStudent(student, mazeMode ? data.runs.get(student.id) : null, data.session, events);
+    const assignment = data.assignments?.get(String(rawSummary.minecraftPlayerName || student.minecraft_player_name || '').toLowerCase())
+      || findKugelLatestCompoundEventAssignment(events, data.session, student);
+    const stageReport = latestKugelStageReport(reportEvents, student);
+    const chatCodeLink = latestKugelChatCodeLink(reportEvents, student);
+    return {
+      ...applyKugelAssignmentConnection(rawSummary, assignment),
+      compoundId: assignment?.compound_id || null,
+      stageReport,
+      chatCodeLink,
+      localCodeCheck: await kugelLocalCodeCheckForStudent({ chatCodeLink, stageReport, lesson: codeCheckLesson }),
+      completionRecorded: data.completedStudentIds.has(student.id),
+    };
+  }));
+  const summaries = summariesWithReports.map(summary => {
     const progress = data.progressByStudent.get(summary.id) || new Map();
     const academy = progress.get('academy-complete');
     const exitTicket = progress.get('exit-ticket');
@@ -4512,7 +5033,7 @@ async function kugelClassView(req, context, role, useEventCache = true, requeste
       : Boolean(runMatchesTrackedLesson && summary.startedAt);
     return {
       ...summary,
-      compoundId: data.assignments.get(String(summary.minecraftPlayerName || '').toLowerCase())?.compound_id || null,
+      compoundId: summary.compoundId || null,
       coins: mazeMode ? summary.coins : 0,
       completed: mazeMode ? summary.completed : false,
       retrying: mazeMode ? summary.retrying : false,
@@ -4574,6 +5095,7 @@ async function kugelClassView(req, context, role, useEventCache = true, requeste
       completed: summaries.filter(student => student.minecraftStatus === 'completed').length,
       needsHelp: summaries.filter(student => student.minecraftStatus === 'started' && data.trackedLessonId === 0 && student.coins <= 1).length,
     },
+    classStageReport: latestKugelClassStageReport(reportEvents),
     minecraftConfigured: kugelMinecraftConfigured(),
     minecraftPreviewMode: KUGEL_PREVIEW_MOCK_MINECRAFT,
     minecraftSetupNote: kugelMinecraftSetupNote(),
@@ -4860,6 +5382,33 @@ function findKugelCompoundEventAssignment(events, session, student, compoundId) 
     }))[0] || null;
 }
 
+function findKugelLatestCompoundEventAssignment(events, session, student) {
+  const playerName = String(student?.minecraft_player_name || student?.minecraftPlayerName || '').toLowerCase();
+  const serverName = String(session?.monitor_server_name || '');
+  if (!playerName || !serverName) return null;
+  return [...(Array.isArray(events) ? events : [])]
+    .filter(row => {
+      const payload = kugelEventPayload(row);
+      const compoundId = cleanKugelCompoundId(row?.compound_id || row?.compoundId || payload.compound_id || payload.compoundId || payload.compound);
+      return compoundId
+        && kugelEventPlayerName(row).toLowerCase() === playerName
+        && String(row.server_name || row.server || serverName) === serverName;
+    })
+    .sort((a, b) => kugelEventTime(b) - kugelEventTime(a))
+    .map(row => {
+      const payload = kugelEventPayload(row);
+      return {
+        monitor_server_name: serverName,
+        minecraft_username: kugelEventPlayerName(row),
+        compound_id: cleanKugelCompoundId(row?.compound_id || row?.compoundId || payload.compound_id || payload.compoundId || payload.compound),
+        last_seen_at: kugelEventTime(row) || Date.now(),
+        x: row.position_x ?? row.block_x ?? payload.x ?? null,
+        y: row.position_y ?? row.block_y ?? payload.y ?? null,
+        z: row.position_z ?? row.block_z ?? payload.z ?? null,
+      };
+    })[0] || null;
+}
+
 async function handleKugelInternalMinecraftApi(req, res) {
   const url = requestUrl(req);
   const internalPaths = new Set([
@@ -5089,11 +5638,21 @@ async function handleKugelApi(req, res) {
           SET status = 'closed', closed_at = ?, updated_at = ?
           WHERE classroom_id = ? AND course_id = ? AND lesson_id = ?
         `).run(now, now, classroomId, KUGEL_COURSE_ID, lessonId);
-        return buildCraftomLessonAccess(db, classroomId);
+        const session = db.prepare(`
+          SELECT monitor_server_name, lesson_id, active, server_state
+          FROM kugel_class_sessions
+          WHERE classroom_id = ?
+        `).get(classroomId);
+        const reportServer = session?.active && session.server_state === 'running'
+          && Number(session.lesson_id) === Number(lessonId)
+          ? session.monitor_server_name
+          : '';
+        return { lessonAccess: buildCraftomLessonAccess(db, classroomId), reportServer };
       }).immediate());
       if (access.authorizationError) return send(res, access.authorizationError.status, JSON.stringify({ error: access.authorizationError.error }));
       if (access.orderError) return send(res, 409, JSON.stringify({ error: access.orderError }));
-      return send(res, 200, JSON.stringify({ ok: true, lessonAccess: access }));
+      const classReport = access.reportServer ? await requestKugelClassStageReport(access.reportServer) : null;
+      return send(res, 200, JSON.stringify({ ok: true, lessonAccess: access.lessonAccess, classReport }));
     }
 
     const teacherLessonLaunch = pathname.match(/^\/api\/kugel\/classes\/([^/]+)\/lessons\/([0-9]+)\/launch$/);
@@ -5655,8 +6214,14 @@ async function handleClassroomApi(req, res) {
           if (!world) return send(res, 400, JSON.stringify({ error: 'בחרי עולם לפתיחה.' }));
           if (!isAllowedKugelTeacherWorld(world)) return send(res, 400, JSON.stringify({ error: 'העולם הזה לא זמין להפעלה מהדשבורד.' }));
           if (!['reset', 'continue'].includes(startMode)) return send(res, 400, JSON.stringify({ error: 'מצב פתיחת העולם אינו תקין.' }));
+          const lessonId = kugelLessonIdFromWorldName(world);
           await kugelLegacyMonitorMutation(context.monitor.monitorServerName,
-            '/api/internal/craftom-school/world/open', { world, start_mode: startMode }, KUGEL_WORLD_OPEN_TIMEOUT_MS);
+            '/api/internal/craftom-school/world/open', {
+              world,
+              start_mode: startMode,
+              lesson_id: lessonId,
+              ...(context.teacher.email ? { teacher_email: context.teacher.email } : {}),
+            }, KUGEL_WORLD_OPEN_TIMEOUT_MS);
           const changed = withSummerDb(db => updateStoredKugelMonitorState(db, context.classroom, {
             enabled: true,
             worldId: world,
@@ -6802,6 +7367,43 @@ async function handleClassroomApi(req, res) {
       return send(res, 200, JSON.stringify({ ok: true, minecraftIdentity: result.identity }));
     }
 
+    if (action === 'classes' && segments[3] && segments[4] === 'students' && segments[5] === 'bulk' && segments.length === 6) {
+      const rawNames = Array.isArray(body.names)
+        ? body.names
+        : String(body.names || body.students || '').split(/\r?\n|,/);
+      const names = [...new Set(rawNames.map((name) => cleanText(name, 80)).filter((name) => name.length >= 2))].slice(0, 80);
+      const classroomId = segments[3];
+      const result = withSummerDb(db => db.transaction(() => {
+        const teacher = requireCurrentClassroomTeacher(db, req);
+        if (!teacher) return { denied: true };
+        if (!names.length) {
+          recordClassroomManagementAudit(db, 'teacher', teacher.id, 'student.bulk_create', 'student', 'new', 'invalid');
+          return { invalid: true };
+        }
+        const authorization = requireCurrentTeacherClassroom(db, req, teacher.id, classroomId);
+        if (authorization.status) return { authorization };
+        const classroom = db.prepare('SELECT * FROM classrooms WHERE id = ? AND teacher_id = ?').get(classroomId, teacher.id);
+        if (!classroom) return null;
+        const created = names.map((name) => {
+          const item = createClassroomStudentWithLoginCode(db, classroom.id, name);
+          recordClassroomManagementAudit(db, 'teacher', teacher.id, 'student.create', 'student', item.student.id, 'success');
+          return {
+            id: item.student.id,
+            name: item.student.name,
+            loginCode: item.loginCode,
+            createdAt: item.student.created_at,
+          };
+        });
+        recordClassroomManagementAudit(db, 'teacher', teacher.id, 'student.bulk_create', 'classroom', classroom.id, 'success');
+        return { students: created };
+      }).immediate());
+      if (result?.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
+      if (result?.invalid) return send(res, 400, JSON.stringify({ error: 'נא להדביק לפחות שני שמות תקינים.' }));
+      if (result?.authorization) return send(res, result.authorization.status, JSON.stringify({ error: result.authorization.error }));
+      if (!result) return send(res, 404, JSON.stringify({ error: 'הכיתה לא נמצאה.' }));
+      return send(res, 201, JSON.stringify({ ok: true, students: result.students }));
+    }
+
     if (action === 'classes' && segments[3] && segments[4] === 'students' && segments[5] && segments.length === 6) {
       const classroomId = segments[3];
       const studentId = segments[5];
@@ -6909,22 +7511,7 @@ async function handleClassroomApi(req, res) {
         if (authorization.status) return { authorization };
         const classroom = db.prepare('SELECT * FROM classrooms WHERE id = ? AND teacher_id = ?').get(classroomId, teacher.id);
         if (!classroom) return null;
-        const now = new Date().toISOString();
-        const loginCode = generatePersonalLoginCode(db, classroom.id);
-        const salt = crypto.randomBytes(16).toString('hex');
-        const student = {
-          id: crypto.randomUUID(),
-          classroom_id: classroom.id,
-          name,
-          login_salt: salt,
-          login_hash: hashClassroomSecret(loginCode, salt),
-          created_at: now,
-          updated_at: now,
-        };
-        db.prepare(`
-          INSERT INTO classroom_students (id, classroom_id, name, login_salt, login_hash, created_at, updated_at)
-          VALUES (?, ?, ?, ?, ?, ?, ?)
-        `).run(student.id, student.classroom_id, student.name, student.login_salt, student.login_hash, student.created_at, student.updated_at);
+        const { student, loginCode } = createClassroomStudentWithLoginCode(db, classroom.id, name);
         recordClassroomManagementAudit(db, 'teacher', teacher.id, 'student.create', 'student', student.id, 'success');
         return { student, loginCode };
       }).immediate());

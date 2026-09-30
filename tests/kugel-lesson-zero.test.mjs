@@ -156,7 +156,7 @@ const monitor = createServer(async (req, res) => {
     assert.equal(req.headers.authorization, undefined, 'lifecycle requests use HMAC headers instead of Bearer authentication');
     assert.equal(body.request_id, requestId, 'the signed request ID must also be bound inside the JSON body');
     const expectedKeys = req.url.endsWith('/open')
-      ? ['generation', 'lease_id', 'owner_id', 'request_id', 'server', 'start_mode', 'world']
+      ? ['generation', 'lease_id', 'lesson_id', 'owner_id', 'request_id', 'server', 'start_mode', 'teacher_email', 'world']
       : req.url.endsWith('/close')
         ? ['generation', 'lease_id', 'owner_id', 'request_id', 'server']
         : req.url.endsWith('/state')
@@ -345,6 +345,7 @@ const appEnv = {
   KUGEL_MINECRAFT_SERVER_PORT: '19132',
   KUGEL_MINECRAFT_SERVER_ID: 'test-server-id',
   KUGEL_MINECRAFT_ACCESS_CODE: 'test-access-code',
+  KUGEL_CONNECTED_TTL_MS: '1000',
   KUGEL_TEST_WORLD_OPEN_TIMEOUT_MS: '1000',
   KUGEL_TEST_RECONCILE_GRACE_MS: '600',
   KUGEL_TEST_RECONCILE_INTERVAL_MS: '100',
@@ -489,6 +490,24 @@ try {
   alwaysOnLinkDb.prepare('UPDATE classroom_students SET minecraft_player_name = ?, updated_at = ? WHERE id = ?')
     .run('AlwaysSecure', identityNow, alwaysOnStudent.id);
   alwaysOnLinkDb.close();
+  const alwaysOnClassMessage = await post(baseUrl, `/api/kugel/classes/${alwaysOnClassroom.id}/message`,
+    { text: 'הודעת מורה לכולם', scope: 'all' }, teacherACookie);
+  assert.equal(alwaysOnClassMessage.status, 200, 'always-on mapped classes can send class-wide teacher chat');
+  const alwaysOnClassMessageBody = await alwaysOnClassMessage.json();
+  assert.equal(alwaysOnClassMessageBody.queued.scope, 'all');
+  const alwaysOnClassCommandPoll = await postInternal(baseUrl, '/api/internal/minecraft/live-commands', {
+    server: 'edu-kugel-holon',
+  });
+  assert.equal(alwaysOnClassCommandPoll.status, 200);
+  const alwaysOnClassCommandBody = await alwaysOnClassCommandPoll.json();
+  assert.equal(alwaysOnClassCommandBody.commands.length, 1, 'class-wide teacher chat is queued for Minecraft-side polling');
+  assert.equal(alwaysOnClassCommandBody.commands[0].type, 'message');
+  assert.equal(alwaysOnClassCommandBody.commands[0].scope, 'all');
+  assert.match(alwaysOnClassCommandBody.commands[0].commandLine, /tellraw @a/);
+  await postInternal(baseUrl, '/api/internal/minecraft/live-commands', {
+    server: 'edu-kugel-holon',
+    ackIds: [alwaysOnClassCommandBody.commands[0].id],
+  });
   const alwaysOnPlayerMessage = await post(baseUrl, `/api/kugel/classes/${alwaysOnClassroom.id}/message`,
     { text: 'בדיקת צאט', scope: 'player', target: 'AlwaysSecure' }, teacherACookie);
   assert.equal(alwaysOnPlayerMessage.status, 200, 'always-on mapped classes can send player chat without a stored world lease');
@@ -544,6 +563,8 @@ try {
   assert.equal(alwaysOnOpenCall?.body.server, 'edu-kugel-holon');
   assert.equal(alwaysOnOpenCall?.body.world, 'Kugel-lesson-0');
   assert.equal(alwaysOnOpenCall?.body.start_mode, 'reset');
+  assert.equal(alwaysOnOpenCall?.body.lesson_id, 0);
+  assert.equal(alwaysOnOpenCall?.body.teacher_email, 'agent-a@example.test');
   const alwaysOnSaveWorld = await post(baseUrl, `/api/classroom/classes/${alwaysOnClassroom.id}/kugel-server/save-world`,
     { name: 'kugel-holon-work', display: 'שמירת חולון' }, teacherACookie);
   assert.equal(alwaysOnSaveWorld.status, 200);
@@ -616,6 +637,8 @@ try {
   const firstOpenCall = monitorCalls.find(call => call.url === '/api/internal/craftom-school/v2/world/open');
   assert.ok(firstOpenCall, 'launch must open the world through the monitor');
   assert.equal(firstOpenCall.body.owner_id, classroomA.id);
+  assert.equal(firstOpenCall.body.lesson_id, 0, 'world/open must tell the Monitor which lesson was launched');
+  assert.equal(firstOpenCall.body.teacher_email, 'agent-a@example.test', 'world/open may include the launching teacher email for reports');
   const stableLeaseId = firstOpenCall.body.lease_id;
   const firstGeneration = firstOpenCall.body.generation;
   const duplicateLaunch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, teacherACookie);
@@ -627,6 +650,7 @@ try {
   assert.equal(lessonOneLaunchBody.session.lessonId, 1);
   assert.equal(monitorCalls.some(call => call.url === '/api/internal/craftom-school/v2/world/open' && call.body.world === 'kugel-50-safe-compounds-v3-20260824'), true);
   const latestSequentialOpen = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/v2/world/open').at(-1);
+  assert.equal(latestSequentialOpen.body.lesson_id, 1, 'lesson one launches must identify lesson_id for the Monitor report');
   assert.equal(latestSequentialOpen.body.lease_id, stableLeaseId,
     'same-class sequential lesson switches must reuse the stable lease ID');
   assert.ok(latestSequentialOpen.body.generation > firstGeneration,
@@ -1261,6 +1285,66 @@ try {
   assert.equal(dashboardLiveCoinsLessonZero.lastDurationMs, 12000, 'progress dashboard shows inferred Minecraft finish duration');
   assert.equal(dashboardLiveCoinsLessonZero.bestTimeMs, 12000, 'progress dashboard shows inferred Minecraft best time');
   legacyMonitorState.set('test-kugel-monitor', { running: true, world: 'kugel-50-safe-compounds-v3-20260824' });
+  const buildActivityAt = new Date(Date.now() + 1600).toISOString();
+  gameEvents = forLease([{
+    id: 235,
+    event_type: 'player_join',
+    player_name: 'SecondSecure',
+    created_at: buildActivityAt,
+    game_timestamp: buildActivityAt,
+    payload: JSON.stringify({ minecraft_username: 'SecondSecure', compound_id: 42 }),
+  }, {
+    id: 236,
+    event_type: 'chat_message',
+    player_name: 'SecondSecure',
+    created_at: buildActivityAt,
+    game_timestamp: buildActivityAt,
+    payload: JSON.stringify({ message: '/_abc123' }),
+  }, {
+    id: 237,
+    event_type: 'stage_report',
+    player_name: 'SecondSecure',
+    created_at: buildActivityAt,
+    game_timestamp: buildActivityAt,
+    payload: JSON.stringify({
+      lesson_label: 'שיעור 1',
+      build_verdict: 'טוב',
+      build_summary: 'המתחם בנוי ומסודר.',
+      code_verdict: 'חסר קישור',
+      code_summary: 'לא נשלח קישור MakeCode.',
+      teacher_tip: 'לבקש מהילד להסביר את המנגנון.',
+      snapshot: { summary: 'רואים מבנה במתחם 42.' },
+      snapshot_map: '###\n#S#\n###',
+      activity_summary: 'הילד עבד במתחם.',
+      code: {
+        url: 'https://makecode.com/_abc123',
+        name: 'agent-lesson-1',
+        source: 'player.onChat("deliver", function () {\n    agent.teleportToPlayer()\n    agent.move(FORWARD, 5)\n})',
+        error: '',
+      },
+      generated_at: buildActivityAt,
+      report_text: 'דוח מלא לתלמיד.',
+    }),
+  }, {
+    id: 238,
+    event_type: 'class_stage_report',
+    created_at: buildActivityAt,
+    game_timestamp: buildActivityAt,
+    payload: JSON.stringify({
+      lesson_label: 'שיעור 1',
+      started_at: buildActivityAt,
+      ended_at: buildActivityAt,
+      report_text: 'דוח סוף שיעור מלא.',
+      students: [{
+        lesson_label: 'שיעור 1',
+        build_verdict: 'טוב',
+        build_summary: 'נועה סיימה מתחם.',
+        code_verdict: 'חסר קישור',
+        generated_at: buildActivityAt,
+      }],
+    }),
+  }]);
+  await new Promise(resolve => setTimeout(resolve, 1100));
   const dashboardBuildMode = await fetch(`${baseUrl}/api/classroom/classes/${classroomA.id}/progress-dashboard`, { headers: { Cookie: teacherACookie } });
   assert.equal(dashboardBuildMode.status, 200);
   const dashboardBuildBody = await dashboardBuildMode.json();
@@ -1270,6 +1354,10 @@ try {
   assert.equal(dashboardBuildLessonZero.minecraftConnection.coins, 0, 'build mode ignores stray coin events');
   assert.equal(dashboardBuildLessonZero.lastDurationMs, null, 'build mode hides last maze duration');
   assert.equal(dashboardBuildLessonZero.bestTimeMs, null, 'build mode hides maze best time');
+  assert.equal(dashboardBuildLessonZero.minecraftConnection.connected, true,
+    'build mode should still show a fresh Minecraft player event as connected now');
+  assert.equal(dashboardBuildLessonZero.minecraftConnection.compoundId, 42,
+    'build mode should show the compound number reported by Minecraft events');
   const teacherBuildModeView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
   assert.equal(teacherBuildModeView.status, 200);
   const teacherBuildModeBody = await teacherBuildModeView.json();
@@ -1277,6 +1365,28 @@ try {
   const teacherBuildModeStudent = teacherBuildModeBody.students.find(student => student.id === studentASecond.id);
   assert.equal(teacherBuildModeStudent.coins, 0, 'teacher monitor ignores maze coin events in build mode');
   assert.equal(teacherBuildModeStudent.lastDurationMs, null, 'teacher monitor hides maze finish times in build mode');
+  assert.equal(teacherBuildModeStudent.connected, true,
+    'teacher monitor should show build-world player activity as connected now');
+  assert.equal(teacherBuildModeStudent.compoundId, 42,
+    'teacher monitor should show the active build compound beside the student');
+  assert.equal(teacherBuildModeStudent.chatCodeLink.url, 'https://makecode.com/_abc123',
+    'teacher monitor should expose the latest MakeCode link sent in Minecraft chat');
+  assert.equal(teacherBuildModeStudent.localCodeCheck.status, 'passed',
+    'teacher monitor should locally check MakeCode source against the lesson task');
+  assert.match(teacherBuildModeStudent.localCodeCheck.summary, /שיעור 1/,
+    'local MakeCode checks should identify the lesson being checked');
+  assert.equal(teacherBuildModeStudent.stageReport.buildVerdict, 'טוב',
+    'teacher monitor should expose the latest stage_report on the student card');
+  assert.equal(teacherBuildModeStudent.stageReport.snapshotMap, '###\n#S#\n###',
+    'teacher monitor should preserve the top-down snapshot map as report text');
+  assert.equal(teacherBuildModeStudent.stageReport.code.url, 'https://makecode.com/_abc123',
+    'teacher monitor should expose the MakeCode share URL captured from Minecraft chat');
+  assert.match(teacherBuildModeStudent.stageReport.code.source, /agent\.move/,
+    'teacher monitor should expose the MakeCode source captured by the Monitor');
+  assert.equal(teacherBuildModeBody.classStageReport.reportText, 'דוח סוף שיעור מלא.',
+    'teacher monitor should expose the latest class_stage_report for the lesson summary');
+  assert.equal(teacherBuildModeBody.classStageReport.students.length, 1,
+    'class stage reports should expose per-student summaries');
   const teacherLessonZeroHistoryView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}&lessonId=0`, { headers: { Cookie: teacherACookie } });
   assert.equal(teacherLessonZeroHistoryView.status, 200);
   const teacherLessonZeroHistoryBody = await teacherLessonZeroHistoryView.json();
@@ -1620,6 +1730,47 @@ try {
   assert.equal(dashboardMinecraftRetryLessonZero.minecraftConnection.coins, 1);
   assert.equal(dashboardMinecraftRetryLessonZero.lastDurationMs, null);
   assert.equal(dashboardMinecraftRetryLessonZero.bestTimeMs, 45000);
+  const staleConnectionAt = new Date(Date.now() - 1500).toISOString();
+  gameEvents = forLease([
+    { id: 233, event_type: 'player_join', player_name: 'SecondSecure', created_at: staleConnectionAt, game_timestamp: staleConnectionAt, payload: '{}' },
+  ]);
+  await new Promise(resolve => setTimeout(resolve, 1100));
+  const staleConnectionView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
+  assert.equal(staleConnectionView.status, 200);
+  const staleConnectionStudent = (await staleConnectionView.json()).students.find(student => student.id === studentASecond.id);
+  assert.equal(staleConnectionStudent.connected, false, 'old Minecraft activity without a leave event must not stay marked as connected now');
+  assert.ok(staleConnectionStudent.lastSeenAt, 'old Minecraft activity should still be preserved as last seen');
+  const freshAssignmentDb = new Database(dbFile);
+  const freshAssignmentAt = new Date().toISOString();
+  freshAssignmentDb.prepare(`
+    INSERT OR REPLACE INTO kugel_minecraft_compound_assignments (
+      id, monitor_server_name, minecraft_username, compound_id, x, y, z,
+      last_seen_at, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    'fresh-assignment-after-stale-connection',
+    'test-kugel-monitor',
+    'SecondSecure',
+    18,
+    null,
+    null,
+    null,
+    freshAssignmentAt,
+    freshAssignmentAt,
+    freshAssignmentAt,
+  );
+  freshAssignmentDb.close();
+  const resumedConnectionView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
+  assert.equal(resumedConnectionView.status, 200);
+  const resumedConnectionStudent = (await resumedConnectionView.json()).students.find(student => student.id === studentASecond.id);
+  assert.equal(resumedConnectionStudent.connected, true, 'fresh compound activity should return a stale student to connected now');
+  assert.equal(resumedConnectionStudent.lastSeenAt, freshAssignmentAt, 'fresh compound activity should become the visible last-seen timestamp');
+  const resumedDashboard = await fetch(`${baseUrl}/api/classroom/classes/${classroomA.id}/progress-dashboard`, { headers: { Cookie: teacherACookie } });
+  assert.equal(resumedDashboard.status, 200);
+  const resumedDashboardConnection = (await resumedDashboard.json()).dashboard.students
+    .find(student => student.id === studentASecond.id).minecraftConnection;
+  assert.equal(resumedDashboardConnection.connected, true, 'teacher progress dashboard should also return the student to connected now');
+  assert.equal(resumedDashboardConnection.compoundId, 18);
   gameEvents = [];
   const [concurrentStartA, concurrentStartB] = await Promise.all([
     post(baseUrl, '/api/kugel/student/start', {}, studentACookie),

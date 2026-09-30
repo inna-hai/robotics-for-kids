@@ -34,6 +34,7 @@ assert.match(student, /הזמן האישי/);
 assert.match(student, /פתחו את Minecraft/);
 assert.match(student, /minecraftAccessCode/);
 assert.match(student, /המשך לשיעור 1/);
+assert.doesNotMatch(student, /resetOwnMission|ניסיון חדש/, 'student lomda should not expose a reset-maze button; reset lives inside Minecraft');
 assert.match(student, /20260927-compound-event-fallback-1/, 'lesson zero should cache-bust the embedded video styles');
 assert.match(student, /lesson-zero-video-card/, 'lesson zero should embed the intro video card');
 assert.match(student, /assets\/kugel\/videos\/agent-academy-lesson0-intro-teen\.mp4/, 'lesson zero should load the rendered intro video');
@@ -95,8 +96,8 @@ assert.doesNotMatch(teacher, /teacherHomeMinecraftActions/);
 assert.doesNotMatch(teacher, /teacherLessonPickerForm/);
 assert.doesNotMatch(teacher, /teacherLessonSelect/);
 assert.match(teacher, /20260914-video-first-frames-1/, 'teacher board cache-busts the challenge data posters');
-assert.match(teacher, /20260927-student-identity-under-name-1/, 'teacher board cache-busts student identity layout cleanup');
-assert.match(teacherClassrooms, /20260927-student-identity-under-name-1/, 'teacher classroom dashboard cache-busts student identity layout cleanup');
+assert.match(teacher, /20260930-stage-reports-1/, 'teacher board cache-busts stage report cards');
+assert.match(teacherClassrooms, /20260929-numeric-student-codes-1/, 'teacher classroom dashboard cache-busts the all-course teacher hub and roster codes');
 assert.match(teacher, /rel="preload" as="image" href="assets\/craftom\/challenges\/craftom-program-real-minecraft-gemini-live-1x-first-frame\.webp"/, 'teacher home should preload the first visible video poster');
 assert.match(teacher, /craftom-challenge4-smart-city-automations-gemini-live-1x-first-frame\.webp" type="image\/webp"/, 'teacher home should preload challenge video posters');
 assert.ok(teacher.indexOf('hero teacher-hero') < teacher.indexOf('teacher-control'), 'teacher hero should be the first panel in the teacher board');
@@ -117,6 +118,8 @@ assert.match(teacher, /מחוברים עכשיו: 0 מתוך 0/);
 assert.ok(teacher.indexOf('<summary>לוח התלמידים</summary>') < teacher.indexOf('id="studentMonitor"'), 'student board opens from its summary before the monitor');
 assert.match(teacher, /עצירת הכיתה/);
 assert.match(teacher, /שחרור הכיתה/);
+assert.match(teacher, /הודעה לכולם מהמורה/);
+assert.match(teacher, /שליחה לכולם/);
 assert.match(teacher, /details class="panel compact-panel teacher-live-controls teacher-live-controls-bottom"/);
 assert.match(teacher, /בקרה כיתתית ושרת Minecraft/);
 assert.ok(teacher.indexOf('id="teacherLiveControls"') > teacher.indexOf('teacherStudentBoard'), 'live classroom controls should sit folded after the lesson content');
@@ -125,7 +128,6 @@ assert.ok(teacher.indexOf('server-status-card') > teacher.indexOf('id="teacherLi
 for (const endpoint of [
   '/api/kugel/session',
   '/api/kugel/student/start',
-  '/api/kugel/student/reset',
   '/api/kugel/student/finish',
   '/launch',
   '/stop',
@@ -133,6 +135,8 @@ for (const endpoint of [
   '/freeze',
   '/close',
 ]) assert.ok(client.includes(endpoint), `Agent Academy client missing ${endpoint}`);
+assert.doesNotMatch(client, /\/api\/kugel\/student\/reset/, 'student client should not call the manual reset API from the lomda');
+assert.doesNotMatch(client, /שיגור אל התלמיד|משגרים אל התלמיד|run\('teleport'/, 'teacher UI should not expose the unused teleport-to-player action');
 assert.match(client, /lessons\/\$\{encodeURIComponent\(lessonId\)\}\/launch/);
 assert.match(client, /חסר עולם Minecraft/);
 assert.match(client, /craftom-minecraft-lesson-\$\{lessonId\}\.html\?\$\{suffix\}/, 'teacher student previews should include the return query on lesson pages');
@@ -212,7 +216,7 @@ assert.match(client, /coinProgress\.textContent = buildMode[\s\S]*student\.attem
 assert.match(client, /\['ניסיונות שהושלמו', String\(Number\(student\.attemptCount \|\| 0\)\)\]/, 'teachers should see the completed attempt count');
 assert.match(client, /\['זמן אחרון', formatDuration\(student\.lastDurationMs\)\]/, 'teachers should see the last completed duration');
 assert.match(client, /\['שיא', formatDuration\(student\.bestTimeMs\)\]/, 'teachers should see the personal best');
-assert.match(client, /renderTeacherDurationPills\(student\)/, 'teacher lesson-zero rows should show finish durations without opening details');
+assert.match(client, /lessonZeroSubmissionStatus\(student\)/, 'teacher lesson-zero cards should show submission status without opening details');
 assert.match(client, /function hasDurationValue\(value\)[\s\S]*value !== null[\s\S]*Number\.isFinite\(Number\(value\)\)/, 'missing duration values must not render as successful green pills');
 assert.match(client, /renderMiniStatus\('זמן סיום', formatDuration\(student\.lastDurationMs\), 'completed'\)/, 'teacher rows should label the latest finish time');
 assert.match(client, /function studentConnectionBadge\(student, liveMinecraft\)/, 'teacher board should render a connection badge for every student row');
@@ -244,7 +248,7 @@ assert.match(client, /teacherChallengeVideoPreview/);
 assert.match(client, /card lesson-card teacher-challenge-lesson/, 'teacher challenge lesson cards should match the student challenge card style');
 assert.match(client, /תצוגת תלמיד/);
 assert.doesNotMatch(client, /צפייה בדף שיעור|צפייה כשיעור תלמיד/, 'teacher preview actions should use the clear student-preview label');
-assert.match(client, /if \(liveMinecraftActionsAvailable\(\)\) actionRow\.append\(launch\)/, 'teacher lesson page should hide Minecraft launch actions unless live lifecycle actions are available');
+assert.match(client, /if \(liveMinecraftLifecycleActionsAvailable\(\)\) actionRow\.append\(launch\)/, 'teacher lesson page should hide Minecraft launch actions unless live lifecycle actions are available');
 assert.match(client, /פעולות לשיעור \$\{lessonId\}/, 'teacher lesson page should label the action card instead of repeating the lesson title');
 assert.match(client, /selectedLessonActions\.replaceChildren/);
 assert.ok(client.includes("page === 'teacher'"));
@@ -278,16 +282,49 @@ assert.match(interfacesCss, /\.teacher-app\.is-teacher-lesson \.teacher-main\s*{
 assert.match(interfacesCss, /@media \(max-width: 620px\)[\s\S]*\.teacher-course-header \.course-header-inner\s*{[\s\S]*grid-template-columns:\s*minmax\(0, 1fr\) auto/s, 'teacher lesson screen should keep the mobile header compact');
 assert.match(interfacesCss, /@media \(max-width: 620px\)[\s\S]*\.teacher-monitor-row\.lesson-student-row\s*{[\s\S]*grid-template-columns:\s*1fr/s, 'teacher student monitor rows should become single-column cards on mobile');
 assert.match(interfacesCss, /@media \(max-width: 620px\)[\s\S]*\.lesson-student-status\s*{[\s\S]*grid-template-columns:\s*1fr/s, 'teacher student status pills should stack safely on mobile');
-assert.match(client, /teacher-monitor-row \$\{buildMode \? 'build-mode' : overallStatus\}/, 'build-mode rows should not inherit maze progress colors');
+assert.match(client, /teacher-monitor-row teacher-student-card \$\{buildMode \? 'build-mode' : overallStatus\}/, 'build-mode cards should not inherit maze progress colors');
 assert.match(client, /function currentTeacherBuildMode\(\)[\s\S]*current\?\.viewMode/, 'explicit teacher lesson views should use the requested lesson mode instead of only the active world mode');
 assert.match(client, /student\.minecraftEmail \|\| 'מייל Minecraft לא אומת עדיין'/, 'student cards should show the verified Microsoft email under the student name when available');
-assert.match(client, /renderTeacherStudentIdentityLines\(student\)/, 'teacher student rows should render Minecraft username and email under the student name');
-assert.match(client, /if \(!buildMode\) \{[\s\S]*detail\.replaceChildren\(renderTeacherStudentDetail\(student\)\)/, 'teacher student details should stay visible for maze rows without duplicating build-mode facts');
+assert.match(client, /detail\.append\(renderTeacherStudentIdentityLines\(student\)\)/, 'teacher expanded student details should render Minecraft username and email without crowding the closed card');
+assert.match(client, /function updateTeacherStudentCardOpenHint\(row\)[\s\S]*row\.open \? 'סגור' : 'פרטים'/, 'open student cards should change the summary action from details to close');
+assert.match(client, /renderTeacherStudentCardSummary\(student, liveMinecraft, buildMode, isOpen\)/, 'teacher student rows should render compact clickable card summaries with the current open state');
+assert.match(client, /updateTeacherStudentCardOpenHint\(row\)/, 'student card open-close labels should update on toggle');
+assert.match(client, /detail\.replaceChildren\(renderTeacherStudentDetail\(student\)\)/, 'teacher student details should be available inside the expanded card');
+assert.match(client, /function renderStageReport\(report, title = 'דוח שלב'\)/, 'teacher student details should render Monitor stage reports');
+assert.match(client, /function renderChatCodeLink\(codeLink\)/, 'teacher student details should render the latest MakeCode chat link');
+assert.match(client, /renderMiniStatus\('קישור קוד', student\.chatCodeLink \? 'התקבל בצ׳אט'/, 'student summaries should surface whether a MakeCode chat link arrived');
+assert.match(client, /function renderLocalCodeCheck\(check\)/, 'teacher student details should render local lomda code checks');
+assert.match(client, /renderMiniStatus\('בדיקת קוד', localCodeCheckStatusText\(student\.localCodeCheck\)/, 'student summaries should surface the lomda code-check status');
+assert.match(client, /renderMiniStatus\('דוח שלב', stageReportStatusText\(student\.stageReport\)/, 'student summaries should surface whether a stage report exists');
+assert.match(server, /function kugelCodeLessonChecks\(lessonId, source\)[\s\S]*16:\s*\[/, 'local MakeCode checking should define lesson-specific rubrics through lesson 16');
+for (const phrase of [
+  'פקודת deliver',
+  'מסלול אישי עם תנועה ופנייה',
+  'משתנה running',
+  'מצב עירוני בקוד',
+  'פקודת demo',
+]) {
+  assert.ok(server.includes(phrase), `local MakeCode rubric should include "${phrase}"`);
+}
+assert.match(client, /function renderClassStageReport\(report\)/, 'teacher monitor should render class_stage_report summaries');
+assert.match(client, /const classReport = renderClassStageReport\(data\.classStageReport\)/, 'class reports should appear above the student card grid');
+assert.match(client, /const openTeacherStudentIds = new Set\(\)/, 'teacher student cards should remember opened cards across live refreshes');
+assert.match(client, /row\.open = openTeacherStudentIds\.has\(cardKey\)/, 'teacher student cards should not collapse on every polling refresh');
 assert.doesNotMatch(client, /function renderTeacherStudentDetail\(student\)[\s\S]*detail\.append\(renderTeacherCoinProgress\(student\)\)[\s\S]*function renderConnectionSummary/, 'teacher lesson details should not duplicate the lesson-zero coin bar inside each student card');
 assert.doesNotMatch(client, /node\('button', 'פירוט'/, 'teacher student rows should not render a detail toggle button');
-assert.match(interfacesCss, /\.teacher-monitor-row\.build-mode\s*{[^}]*grid-template-columns:\s*minmax\(240px, \.9fr\) minmax\(0, 2fr\)/s, 'build-mode student cards should have a clear name/details layout');
-assert.match(interfacesCss, /\.build-student-facts\s*{[^}]*grid-template-columns:\s*minmax\(88px, \.45fr\) minmax\(140px, \.75fr\) minmax\(190px, 1fr\)/s, 'build-mode facts should be grouped instead of scattered pills');
-assert.match(interfacesCss, /\.teacher-student-board-details summary\s*{[^}]*cursor:\s*pointer/s, 'student board heading should be clickable');
+assert.match(interfacesCss, /\.student-monitor\s*{[^}]*grid-template-columns:\s*repeat\(auto-fill, minmax\(300px, 1fr\)\)/s, 'teacher monitor should render students as scan-friendly cards');
+assert.match(interfacesCss, /\.teacher-student-card-summary\s*{[^}]*cursor:\s*pointer/s, 'student cards should open by clicking the card summary');
+assert.match(interfacesCss, /\.teacher-student-card-essentials\s*{[^}]*grid-template-columns:\s*1fr/s, 'student card summaries should keep only the essential status stack visible');
+assert.match(interfacesCss, /\.minecraft-command-actions\s*{[^}]*grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/s, 'expanded student actions should expose all buttons in an even row');
+assert.match(interfacesCss, /\.teacher-monitor-row\.build-mode\s*{[^}]*grid-template-columns:\s*1fr/s, 'build-mode student cards should use the same compact card layout');
+assert.match(interfacesCss, /\.build-student-facts\s*{[^}]*grid-template-columns:\s*1fr/s, 'build-mode facts should stay compact inside cards');
+assert.match(interfacesCss, /\.teacher-student-board-details > summary\s*{[^}]*cursor:\s*pointer/s, 'student board heading should be clickable');
+assert.match(interfacesCss, /\.teacher-student-board-details > summary::after\s*{[\s\S]*content:\s*'פתח'/, 'student board open-close label should be scoped to the board heading only');
+assert.match(interfacesCss, /\.teacher-student-board-details\[open\] > summary::after\s*{[\s\S]*content:\s*'סגור'/, 'student board close label should not leak into student card summaries');
+assert.match(interfacesCss, /\.stage-report-card\s*{[^}]*display:\s*grid/s, 'stage reports should have a readable card layout');
+assert.match(interfacesCss, /\.chat-code-link-card\s*{[^}]*border-color:\s*#bbf7d0/s, 'MakeCode chat links should be visually distinct from full stage reports');
+assert.match(interfacesCss, /\.local-code-check-card\s*{[^}]*border-color:\s*#fde68a/s, 'local lomda code checks should be visually distinct from Monitor reports');
+assert.match(interfacesCss, /\.class-stage-report-card\s*{[^}]*grid-column:\s*1 \/ -1/s, 'class stage reports should span the student card grid');
 assert.match(interfacesCss, /\.learning-pill\.neutral\s*{[^}]*background:\s*#f1f5f9/s, 'empty progress rows should use neutral styling');
 assert.doesNotMatch(interfacesCss, /\.learning-pill\.missing|\.student-submission\.is-missing/, 'student board should not style ordinary missing progress as red errors');
 assert.doesNotMatch(interfacesCss, /\.student-layout,\s*\.teacher-board\s*{[^}]*grid-template-columns:\s*330px/s, 'teacher board must not share the student two-column grid');
@@ -298,8 +335,10 @@ assert.ok(classroomClient.includes("'craftom-agent': 'craftom-school/preview/ind
 assert.doesNotMatch(server, /Location: '\/kugel-student\.html'/, 'unfinished Craftom students should be able to see the course home before opening locked lessons');
 assert.ok(server.includes("hosts.includes('robotics-for-kids.orma-ai.com')"), 'legacy robotics host should be detected');
 assert.ok(server.includes('https://robotics.hai.tech'), 'legacy robotics host should redirect to the active lomda domain');
-assert.ok(client.includes('liveMinecraftActionsAvailable()'), 'teacher live lifecycle actions should be hidden for always-on class monitors');
+assert.ok(client.includes('liveMinecraftLifecycleActionsAvailable()'), 'teacher live lifecycle actions should be hidden for always-on class monitors');
 assert.ok(client.includes("!current?.session?.alwaysOnMonitor"), 'always-on class monitors should not expose open/close world controls');
+assert.ok(client.includes('teacherLiveControls.hidden = !showingLessonManagement || !liveMinecraft'), 'always-on class monitors should still expose live class message/freeze/release controls');
+assert.ok(client.includes('if (!teacherLiveControls.hidden) teacherLiveControls.open = true'), 'live class controls should open visibly when message/freeze/release actions are available');
 assert.ok(server.includes('KUGEL_ALWAYS_ON_CLASS_MONITORS'), 'server should map fixed Kugel classes to always-on monitor servers');
 assert.ok(server.includes("monitorServerName: 'edu-kugel-holon'"), 'Hani class should use the Holon monitor server');
 assert.ok(server.includes("monitorServerName: 'edu-kugel-sarit'"), 'Sarit class should use the Sarit monitor server');
