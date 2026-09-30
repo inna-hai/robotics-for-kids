@@ -56,6 +56,12 @@ async function postInternal(baseUrl, path, payload) {
   });
 }
 
+async function getInternal(baseUrl, path, authorized = true) {
+  return fetch(`${baseUrl}${path}`, {
+    headers: authorized ? { Authorization: `Bearer ${lifecycleSecret}` } : {},
+  });
+}
+
 async function rawPost(baseUrl, path, body, sessionCookie = '') {
   return fetch(`${baseUrl}${path}`, {
     method: 'POST',
@@ -628,6 +634,27 @@ try {
   for (const lessonId of Array.from({ length: 16 }, (_, index) => index + 1)) {
     assert.equal(teacherSessionBody.lessons.find(lesson => lesson.id === lessonId)?.hasWorld, true, `lesson ${lessonId} must have the shared Agent Academy world`);
   }
+
+  const unauthorizedRubric = await getInternal(baseUrl, '/api/internal/craftom-school/lesson-rubric?lesson_id=1', false);
+  assert.equal(unauthorizedRubric.status, 401, 'lesson rubrics for the Monitor must require the internal Minecraft token');
+  const invalidRubric = await getInternal(baseUrl, '/api/internal/craftom-school/lesson-rubric?lesson_id=99');
+  assert.equal(invalidRubric.status, 400, 'lesson rubric endpoint must reject invalid lesson IDs');
+  const lessonOneRubric = await getInternal(baseUrl, '/api/internal/craftom-school/lesson-rubric?lesson_id=1');
+  assert.equal(lessonOneRubric.status, 200);
+  const lessonOneRubricBody = await lessonOneRubric.json();
+  assert.equal(lessonOneRubricBody.lesson_id, 1);
+  assert.equal(lessonOneRubricBody.monitor_role, 'scan_world_and_return_structured_raw_data');
+  assert.equal(lessonOneRubricBody.code_rubric.owner, 'lomda',
+    'the Monitor rubric should keep MakeCode grading ownership in the Lomda');
+  assert.equal(lessonOneRubricBody.build_rubric.checks.some(check => check.id === 'straight_path'), true,
+    'lesson one build rubric should describe the straight delivery path');
+  assert.equal(lessonOneRubricBody.expected_stage_report_fields.includes('snapshot_map'), true,
+    'Monitor reports should still return the top-down snapshot map');
+  const lessonSixteenRubric = await getInternal(baseUrl, '/api/internal/craftom-school/lesson-rubric?lesson_id=16');
+  assert.equal(lessonSixteenRubric.status, 200);
+  const lessonSixteenRubricBody = await lessonSixteenRubric.json();
+  assert.equal(lessonSixteenRubricBody.build_rubric.checks.some(check => check.id === 'two_or_more_automations'), true,
+    'lesson sixteen build rubric should require multiple marked automations for the demo');
 
   const launch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, teacherACookie);
   assert.equal(launch.status, 200);

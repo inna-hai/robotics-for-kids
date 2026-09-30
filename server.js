@@ -176,6 +176,153 @@ const KUGEL_MINECRAFT_LESSONS = Object.freeze(Object.fromEntries([
   }),
 ]));
 
+const KUGEL_LESSON_BUILD_RUBRICS = Object.freeze({
+  1: {
+    focus: 'משלוח ראשון במסלול ישר',
+    checks: [
+      { id: 'warehouse', label: 'מחסן קטן עם דלת או סימון ברור', evidence: ['blocks', 'signs'], required: true },
+      { id: 'destination_station', label: 'תחנת יעד מול המחסן', evidence: ['blocks', 'signs'], required: true },
+      { id: 'straight_path', label: 'שביל ישר וברור בין המחסן לתחנה', evidence: ['linear_path'], required: true },
+      { id: 'agent_start_space', label: 'מקום ברור שבו ה-Agent יכול להתחיל ולנוע קדימה', evidence: ['free_space'], required: true },
+    ],
+  },
+  2: {
+    focus: 'מסלול משלוחים עם פנייה',
+    checks: [
+      { id: 'corner_path', label: 'שביל בצורת ר או מסלול עם פנייה אחת לפחות', evidence: ['path_turn'], required: true },
+      { id: 'marked_turn', label: 'נקודת הפנייה מסומנת או מובחנת', evidence: ['blocks', 'color_change', 'signs'], required: true },
+      { id: 'destination_after_turn', label: 'תחנת יעד אחרי הפנייה', evidence: ['blocks', 'signs'], required: true },
+      { id: 'safe_path_width', label: 'המסלול פנוי מספיק לתנועת Agent', evidence: ['free_space'], required: false },
+    ],
+  },
+  3: {
+    focus: 'מסירת חבילה בתחנת יעד',
+    checks: [
+      { id: 'drop_zone', label: 'מקום מסומן לפריקת חבילה', evidence: ['blocks', 'marked_area'], required: true },
+      { id: 'destination_label', label: 'שלט יעד או סימון קצר לתחנה', evidence: ['signs', 'blocks'], required: true },
+      { id: 'agent_stand_space', label: 'מרחב מספיק ל-Agent לעמוד ולהניח או להפיל חבילה', evidence: ['free_space'], required: true },
+      { id: 'package_marker', label: 'סימון פיזי שמראה איפה החבילה אמורה להופיע', evidence: ['blocks'], required: false },
+    ],
+  },
+  4: {
+    focus: 'שליח עצמאי במסלול אישי',
+    checks: [
+      { id: 'personal_route', label: 'מסלול אישי עם התחלה ויעד', evidence: ['path', 'blocks'], required: true },
+      { id: 'one_or_more_turns', label: 'לפחות פנייה אחת במסלול', evidence: ['path_turn'], required: true },
+      { id: 'delivery_success_area', label: 'מקום למשלוח או סימון הצלחה בסוף המסלול', evidence: ['blocks', 'signs'], required: true },
+      { id: 'route_debug_marks', label: 'סימוני תיקון או לפני/אחרי במסלול', evidence: ['signs', 'blocks'], required: false },
+    ],
+  },
+  5: {
+    focus: 'משלוח חד-פעמי כהכנה לאוטומציה',
+    checks: [
+      { id: 'existing_warehouse', label: 'מחסן או נקודת התחלה קיימת', evidence: ['blocks', 'signs'], required: true },
+      { id: 'new_destination', label: 'תחנת יעד חדשה או שכונה חדשה', evidence: ['blocks', 'signs'], required: true },
+      { id: 'short_clear_path', label: 'מסלול קצר וברור בין הנקודות', evidence: ['path'], required: true },
+      { id: 'repeat_need_marker', label: 'סימון שמראה למה צריך משלוחים חוזרים', evidence: ['signs', 'multiple_stations'], required: false },
+    ],
+  },
+  6: {
+    focus: 'מחזור הלוך וחזור',
+    checks: [
+      { id: 'round_trip_path', label: 'שביל הלוך ושביל חזור או מסלול דו-כיווני ברור', evidence: ['path', 'path_turn'], required: true },
+      { id: 'drop_station', label: 'נקודת פריקה בתחנה', evidence: ['blocks', 'marked_area'], required: true },
+      { id: 'agent_origin', label: 'סימון נקודת התחלה ל-Agent', evidence: ['blocks', 'signs'], required: true },
+      { id: 'return_area', label: 'אזור שבו ה-Agent חוזר קרוב למחסן', evidence: ['free_space', 'blocks'], required: false },
+    ],
+  },
+  7: {
+    focus: 'קו משלוחים עם התחלה ועצירה',
+    checks: [
+      { id: 'control_station', label: 'עמדת שליטה ליד המחסן', evidence: ['blocks', 'signs'], required: true },
+      { id: 'start_stop_labels', label: 'שני סימונים או שלטים: START ו-STOP', evidence: ['signs'], required: true },
+      { id: 'waiting_zone', label: 'אזור המתנה קטן שבו ה-Agent עוצר בין סיבובים', evidence: ['marked_area'], required: true },
+      { id: 'visible_state', label: 'סימון מצב נראה בעיר: פעיל/עצור, למשל ירוק ואדום', evidence: ['color_blocks', 'blocks'], required: true },
+    ],
+  },
+  8: {
+    focus: 'קו משלוחים אישי ומחזורי',
+    checks: [
+      { id: 'personal_warehouse', label: 'מחסן אישי', evidence: ['blocks', 'signs'], required: true },
+      { id: 'personal_destination', label: 'תחנת יעד אישית', evidence: ['blocks', 'signs'], required: true },
+      { id: 'cyclic_route', label: 'מסלול מחזורי עם סימון התחלה וסיום', evidence: ['path', 'markers'], required: true },
+      { id: 'route_identity', label: 'שלט או צבע שמבדיל את הקו האישי מקווים אחרים', evidence: ['signs', 'color_blocks'], required: false },
+    ],
+  },
+  9: {
+    focus: 'מצב נראה בעיר',
+    checks: [
+      { id: 'existing_delivery_line', label: 'קו משלוחים קיים', evidence: ['path', 'blocks'], required: true },
+      { id: 'visible_status_marker', label: 'סימון מצב נראה ליד הדרך או התחנה', evidence: ['color_blocks', 'blocks'], required: true },
+      { id: 'status_explanation_sign', label: 'שלט שמסביר מה אומר אדום/ירוק או פתוח/סגור', evidence: ['signs'], required: true },
+      { id: 'check_point', label: 'נקודת בדיקה לפני המשך המסלול', evidence: ['marked_area'], required: false },
+    ],
+  },
+  10: {
+    focus: 'תנאי אם הדרך פתוחה',
+    checks: [
+      { id: 'open_closed_marker', label: 'בלוק ירוק/אדום או שער פתוח/סגור', evidence: ['color_blocks', 'gate'], required: true },
+      { id: 'condition_check_point', label: 'נקודת בדיקה לפני המשך המסלול', evidence: ['marked_area'], required: true },
+      { id: 'safe_stop_area', label: 'אזור עצירה בטוח ל-Agent', evidence: ['free_space', 'marked_area'], required: true },
+      { id: 'normal_route_continues', label: 'המסלול התקין ממשיך אחרי מצב פתוח', evidence: ['path'], required: false },
+    ],
+  },
+  11: {
+    focus: 'תגובה אחרת בזמן חסימה',
+    checks: [
+      { id: 'temporary_blockage', label: 'חסימה זמנית או שער', evidence: ['blocks', 'gate'], required: true },
+      { id: 'alternative_or_wait_area', label: 'מסלול חלופי קצר או נקודת המתנה', evidence: ['path', 'marked_area'], required: true },
+      { id: 'problem_marker', label: 'סימון ברור לתקלה או חסימה', evidence: ['signs', 'color_blocks'], required: true },
+      { id: 'safe_rejoin', label: 'חיבור בטוח בחזרה למסלול הרגיל', evidence: ['path'], required: false },
+    ],
+  },
+  12: {
+    focus: 'חוק חכם אישי',
+    checks: [
+      { id: 'personal_line', label: 'קו אישי מאתגר קודם', evidence: ['path', 'blocks'], required: true },
+      { id: 'chosen_visible_state', label: 'מצב נראה אחד שהתלמיד בוחר', evidence: ['color_blocks', 'blocks'], required: true },
+      { id: 'rule_explanation', label: 'שלט או סימון שמסביר את החוק', evidence: ['signs'], required: true },
+      { id: 'two_possible_responses', label: 'שני אזורים או סימונים שמתאימים לשתי תגובות שונות', evidence: ['marked_area', 'blocks'], required: false },
+    ],
+  },
+  13: {
+    focus: 'מיפוי עיר ושתי מערכות',
+    checks: [
+      { id: 'two_systems_marked', label: 'שתי מערכות מסומנות בעיר האישית', evidence: ['marked_area', 'signs'], required: true },
+      { id: 'system_explanation_signs', label: 'שלטים שמסבירים מה כל מערכת אמורה לעשות', evidence: ['signs'], required: true },
+      { id: 'automation_start_end', label: 'סימון התחלה/סיום לכל אוטומציה', evidence: ['markers', 'blocks'], required: true },
+      { id: 'planning_layout', label: 'פריסה מסודרת שמראה תכנון לפני ביצוע', evidence: ['layout', 'signs'], required: false },
+    ],
+  },
+  14: {
+    focus: 'אוטומציה חדשה או שדרוג ראשון',
+    checks: [
+      { id: 'new_or_upgraded_system', label: 'מערכת חדשה או שדרוג ראשון למערכת קיימת', evidence: ['blocks', 'marked_area'], required: true },
+      { id: 'system_name_sign', label: 'שלט שם למערכת', evidence: ['signs'], required: true },
+      { id: 'automation_start_area', label: 'סימון המקום שבו האוטומציה מתחילה ופועלת', evidence: ['markers', 'blocks'], required: true },
+      { id: 'visible_world_change', label: 'שינוי נראה בעולם בעקבות האוטומציה', evidence: ['blocks', 'path', 'markers'], required: false },
+    ],
+  },
+  15: {
+    focus: 'בדיקה וחיבור של שתי אוטומציות',
+    checks: [
+      { id: 'two_active_systems', label: 'שתי מערכות פעילות באותה עיר', evidence: ['marked_area', 'signs'], required: true },
+      { id: 'bug_or_fix_area', label: 'סימון תקלה או אזור תיקון', evidence: ['signs', 'color_blocks'], required: true },
+      { id: 'integration_improvement', label: 'שיפור קטן שמחבר טוב יותר בין המערכות', evidence: ['path', 'blocks', 'markers'], required: true },
+      { id: 'test_evidence', label: 'סימן לכך שהתלמיד בדק לפני ואחרי תיקון', evidence: ['signs', 'layout'], required: false },
+    ],
+  },
+  16: {
+    focus: 'דמו של עיר חכמה',
+    checks: [
+      { id: 'organized_demo_city', label: 'עיר מסודרת להצגה', evidence: ['layout', 'blocks'], required: true },
+      { id: 'two_or_more_automations', label: 'לפחות שתי מערכות או אוטומציות מסומנות', evidence: ['marked_area', 'signs'], required: true },
+      { id: 'visitor_explanation_signs', label: 'שלט שמסביר למבקר מה רואים בכל מערכת', evidence: ['signs'], required: true },
+      { id: 'demo_route', label: 'מסלול או אזור תצוגה שמאפשר למורה לראות את הדמו', evidence: ['path', 'free_space'], required: false },
+    ],
+  },
+});
+
 const MIME = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
@@ -4129,6 +4276,66 @@ function kugelLessonPublic(lesson) {
   } : null;
 }
 
+function kugelLessonBuildRubricPublic(lessonId) {
+  const rubric = KUGEL_LESSON_BUILD_RUBRICS[Number(lessonId)];
+  if (!rubric) return null;
+  return {
+    focus: cleanText(rubric.focus, 240),
+    checks: (Array.isArray(rubric.checks) ? rubric.checks : []).map(check => ({
+      id: cleanText(check.id, 80),
+      label: cleanText(check.label, 240),
+      evidence: Array.isArray(check.evidence)
+        ? check.evidence.map(item => cleanText(item, 80)).filter(Boolean)
+        : [],
+      required: check.required !== false,
+    })).filter(check => check.id && check.label),
+    verdicts: [
+      { id: 'good', label: 'עומד במשימת הבנייה' },
+      { id: 'partial', label: 'חלקי / דורש בדיקה קצרה' },
+      { id: 'empty', label: 'המתחם ריק או כמעט ריק' },
+      { id: 'unknown', label: 'אין מספיק נתוני סריקה' },
+    ],
+  };
+}
+
+function kugelLessonMonitorRubricPublic(lessonId) {
+  const lesson = kugelLessonById(lessonId);
+  if (!lesson) return null;
+  const numericLessonId = Number(lesson.id);
+  return {
+    ok: true,
+    course_id: KUGEL_COURSE_ID,
+    lesson_id: numericLessonId,
+    lesson_label: lesson.title,
+    lesson_summary: lesson.summary,
+    world_id: lesson.worldId,
+    monitor_role: numericLessonId === 0
+      ? 'maze_tracking'
+      : 'scan_world_and_return_structured_raw_data',
+    build_rubric: numericLessonId === 0 ? null : kugelLessonBuildRubricPublic(numericLessonId),
+    code_rubric: {
+      owner: 'lomda',
+      note: 'הלומדה פותחת את קישור MakeCode ובודקת את הקוד מול מחוון השיעור. המוניטור צריך להחזיר code.url ואם יש גם code.source.',
+    },
+    expected_stage_report_fields: [
+      'player_name',
+      'lesson_id',
+      'lesson_label',
+      'compound_id',
+      'build_verdict',
+      'build_summary',
+      'snapshot',
+      'snapshot_map',
+      'activity_summary',
+      'activity',
+      'code',
+      'teacher_tip',
+      'report_text',
+      'generated_at',
+    ],
+  };
+}
+
 function kugelEventPayload(row) {
   if (!row?.payload) return {};
   if (typeof row.payload === 'object') return row.payload;
@@ -5411,6 +5618,16 @@ function findKugelLatestCompoundEventAssignment(events, session, student) {
 
 async function handleKugelInternalMinecraftApi(req, res) {
   const url = requestUrl(req);
+  if (req.method === 'GET' && url.pathname === '/api/internal/craftom-school/lesson-rubric') {
+    if (!isKugelInternalRequest(req)) return send(res, 401, JSON.stringify({ error: 'Unauthorized' }));
+    const lessonId = Number(url.searchParams.get('lesson_id') || url.searchParams.get('lessonId'));
+    if (!Number.isInteger(lessonId) || lessonId < 0 || lessonId > 16) {
+      return send(res, 400, JSON.stringify({ error: 'lesson_id must be an integer between 0 and 16' }));
+    }
+    const rubric = kugelLessonMonitorRubricPublic(lessonId);
+    if (!rubric) return send(res, 404, JSON.stringify({ error: 'lesson_not_found' }));
+    return send(res, 200, JSON.stringify(rubric));
+  }
   const internalPaths = new Set([
     '/api/internal/minecraft/compound-assignments',
     '/api/internal/minecraft/live-commands',
@@ -8716,7 +8933,7 @@ const server = http.createServer((req, res) => {
   if (req.url.startsWith('/api/feedback')) return handleFeedback(req, res);
   if (req.url.startsWith('/api/summer/')) return handleSummerAuth(req, res);
   if (req.url.startsWith('/api/classroom/')) return handleClassroomApi(req, res);
-  if (req.url.startsWith('/api/internal/minecraft/')) return handleKugelInternalMinecraftApi(req, res);
+  if (req.url.startsWith('/api/internal/minecraft/') || req.url.startsWith('/api/internal/craftom-school/')) return handleKugelInternalMinecraftApi(req, res);
   if (req.url.startsWith('/api/kugel/')) return handleKugelApi(req, res);
   if (req.url.startsWith('/api/progress')) return handleStudentProgress(req, res);
   return serveStatic(req, res);

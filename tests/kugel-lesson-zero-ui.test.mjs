@@ -306,6 +306,15 @@ for (const phrase of [
 ]) {
   assert.ok(server.includes(phrase), `local MakeCode rubric should include "${phrase}"`);
 }
+assert.match(server, /const KUGEL_LESSON_BUILD_RUBRICS[\s\S]*16:\s*{/, 'Monitor build rubrics should cover lessons 1-16');
+assert.match(server, /\/api\/internal\/craftom-school\/lesson-rubric/, 'the Lomda should expose an internal lesson-rubric endpoint for the Monitor');
+for (const phrase of [
+  'שביל ישר וברור בין המחסן לתחנה',
+  'שני סימונים או שלטים: START ו-STOP',
+  'לפחות שתי מערכות או אוטומציות מסומנות',
+]) {
+  assert.ok(server.includes(phrase), `Monitor build rubric should include "${phrase}"`);
+}
 assert.match(client, /function renderClassStageReport\(report\)/, 'teacher monitor should render class_stage_report summaries');
 assert.match(client, /const classReport = renderClassStageReport\(data\.classStageReport\)/, 'class reports should appear above the student card grid');
 assert.match(client, /const openTeacherStudentIds = new Set\(\)/, 'teacher student cards should remember opened cards across live refreshes');
