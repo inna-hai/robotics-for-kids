@@ -40,6 +40,22 @@ for (let lesson = 1; lesson <= 8; lesson += 1) {
 }
 
 for (let lesson = 1; lesson <= 8; lesson += 1) {
+  const pythonLessonFile = `ort-python-lesson-${lesson}.html`;
+  const pythonSlidesFile = `ort-python-slides-${lesson}.html`;
+  assert.ok(existsSync(join(root, pythonLessonFile)), `${pythonLessonFile} should exist`);
+  assert.ok(existsSync(join(root, pythonSlidesFile)), `${pythonSlidesFile} should exist`);
+  assertIncludes(courseHome, `href="${pythonLessonFile}"`, `ORT hub should link to ${pythonLessonFile}`);
+  const pythonLessonHtml = readFileSync(join(root, pythonLessonFile), 'utf8');
+  assertIncludes(pythonLessonHtml, 'href="ort-courses.html"', `${pythonLessonFile} should link back to the ORT hub`);
+  assertIncludes(pythonLessonHtml, `href="${pythonSlidesFile}"`, `${pythonLessonFile} should link to its instructor slides`);
+  assertIncludes(pythonLessonHtml, '/js/feedback-widget.js', `${pythonLessonFile} should load the shared feedback widget`);
+  const pythonSlidesHtml = readFileSync(join(root, pythonSlidesFile), 'utf8');
+  assertIncludes(pythonSlidesHtml, 'href="ort-courses.html"', `${pythonSlidesFile} should link back to the ORT hub`);
+  assertIncludes(pythonSlidesHtml, `href="${pythonLessonFile}"`, `${pythonSlidesFile} should link to its student lesson`);
+  assertIncludes(pythonSlidesHtml, '/js/feedback-widget.js', `${pythonSlidesFile} should load the shared feedback widget`);
+}
+
+for (let lesson = 1; lesson <= 8; lesson += 1) {
   const lessonFile = `ort-ai-agents-lesson-${lesson}.html`;
   const slidesFile = `ort-ai-agents-slides-${lesson}.html`;
 
