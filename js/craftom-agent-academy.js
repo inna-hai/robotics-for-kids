@@ -639,28 +639,153 @@
     ctx.fillText('תחנה', x, y - 56);
   }
 
+  function roundedBox(x, y, w, h, r, fill, stroke) {
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, r);
+    ctx.fillStyle = fill;
+    ctx.fill();
+    if (stroke) {
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+  }
+
+  // The courier Agent stays upright; its heading is shown by where the eyes look and an arrow on the ground.
   function drawAgent(state) {
+    const radians = (state.heading * Math.PI) / 180;
+    const lookX = Math.round(Math.cos(radians) * 2);
+    const lookY = Math.round(Math.sin(radians) * 2);
+    const facingLeft = Math.cos(radians) < -0.5;
     ctx.save();
     ctx.translate(state.x, state.y);
-    ctx.rotate((state.heading * Math.PI) / 180);
-    ctx.fillStyle = 'rgba(15, 23, 42, .32)';
-    ctx.fillRect(-27, 25, 58, 11);
-    drawBlock(-20, -14, 40, 36, '#0f9f8f', '#09685e', 7, '#053f39');
-    drawBlock(-15, -38, 30, 24, '#18c7b8', '#0f766e', 6, '#053f39');
-    ctx.fillStyle = '#d9fff3';
-    ctx.fillRect(-9, -31, 7, 7);
-    ctx.fillRect(4, -31, 7, 7);
-    ctx.fillStyle = '#052e2b';
-    ctx.fillRect(-7, -29, 3, 3);
-    ctx.fillRect(6, -29, 3, 3);
-    drawBlock(19, -6, 15, 13, '#fbbf24', '#b45309', 5, '#78350f');
-    ctx.fillStyle = '#34d399';
-    ctx.strokeStyle = '#065f46';
+
+    // ground shadow and heading arrow
+    ctx.fillStyle = 'rgba(15, 23, 42, .28)';
+    ctx.beginPath();
+    ctx.ellipse(0, 31, 24, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.save();
+    ctx.translate(Math.cos(radians) * 30, 31 + Math.sin(radians) * 12);
+    ctx.rotate(radians);
+    ctx.fillStyle = '#facc15';
+    ctx.strokeStyle = '#713f12';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(7, 0);
+    ctx.lineTo(-5, -6);
+    ctx.lineTo(-2, 0);
+    ctx.lineTo(-5, 6);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+
+    if (facingLeft) ctx.scale(-1, 1);
+
+    // parcel on the back
+    roundedBox(-27, -8, 15, 17, 3, '#d97706', '#78350f');
+    ctx.strokeStyle = '#fde68a';
     ctx.lineWidth = 2;
-    ctx.fillRect(-15, 22, 9, 14);
-    ctx.fillRect(6, 22, 9, 14);
-    ctx.strokeRect(-15, 22, 9, 14);
-    ctx.strokeRect(6, 22, 9, 14);
+    ctx.beginPath();
+    ctx.moveTo(-19.5, -8);
+    ctx.lineTo(-19.5, 9);
+    ctx.stroke();
+
+    // legs and shoes
+    roundedBox(-11, 18, 8, 9, 2, '#0e7490', '#164e63');
+    roundedBox(3, 18, 8, 9, 2, '#0e7490', '#164e63');
+    roundedBox(-13, 25, 12, 6, 3, '#1e3a8a', '#172554');
+    roundedBox(1, 25, 12, 6, 3, '#1e3a8a', '#172554');
+
+    // body with courier vest and badge
+    roundedBox(-16, -8, 32, 28, 8, '#14b8a6', '#0f4f4a');
+    roundedBox(-16, 2, 32, 9, 0, '#f97316');
+    ctx.strokeStyle = '#0f4f4a';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(-16, -8, 32, 28, 8);
+    ctx.stroke();
+    ctx.fillStyle = '#fff7ed';
+    ctx.beginPath();
+    ctx.arc(7, 6, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#c2410c';
+    ctx.font = '900 6px Rubik, Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('A', 7, 8.5);
+
+    // strap across the vest
+    ctx.strokeStyle = '#78350f';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(-14, -6);
+    ctx.lineTo(12, 18);
+    ctx.stroke();
+
+    // antenna with glowing light
+    ctx.strokeStyle = '#0f4f4a';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(4, -40);
+    ctx.lineTo(9, -50);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(250, 204, 21, .35)';
+    ctx.beginPath();
+    ctx.arc(9, -51, 7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#facc15';
+    ctx.beginPath();
+    ctx.arc(9, -51, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // head
+    roundedBox(-17, -38, 34, 30, 10, '#5eead4', '#0f4f4a');
+
+    // courier cap with visor
+    ctx.fillStyle = '#dc2626';
+    ctx.strokeStyle = '#7f1d1d';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-17, -29);
+    ctx.quadraticCurveTo(-16, -46, 0, -46);
+    ctx.quadraticCurveTo(16, -46, 17, -29);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    roundedBox(4, -32, 19, 5, 2.5, '#b91c1c', '#7f1d1d');
+    ctx.fillStyle = '#fde047';
+    ctx.beginPath();
+    ctx.arc(-4, -38, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // eyes, cheeks and smile
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.ellipse(-6, -21, 5, 5.5, 0, 0, Math.PI * 2);
+    ctx.ellipse(7, -21, 5, 5.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    const pupilX = facingLeft ? -lookX : lookX;
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.arc(-6 + pupilX, -21 + lookY, 2.6, 0, Math.PI * 2);
+    ctx.arc(7 + pupilX, -21 + lookY, 2.6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(-6 + pupilX, -23 + lookY, 1.5, 1.5);
+    ctx.fillRect(7 + pupilX, -23 + lookY, 1.5, 1.5);
+    ctx.fillStyle = 'rgba(244, 114, 182, .55)';
+    ctx.beginPath();
+    ctx.ellipse(-12, -14, 3, 2, 0, 0, Math.PI * 2);
+    ctx.ellipse(13, -14, 3, 2, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#0f4f4a';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.arc(1, -15, 4, 0.15 * Math.PI, 0.85 * Math.PI);
+    ctx.stroke();
+
     ctx.restore();
   }
 
