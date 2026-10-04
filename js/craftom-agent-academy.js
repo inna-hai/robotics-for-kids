@@ -26,26 +26,12 @@
     }
   });
 
-  // The first exercise explains the lesson's chat command, and how it differs from the previous lesson's command.
+  // Only the switch from deliver to start is explained; other lessons keep their missions short on purpose.
   const chatCommand = academy.command || 'deliver';
-  const chatCommandMeanings = {
-    deliver: 'deliver ("למסור") מפעיל משלוח אחד: השליח יוצא מהמחסן ומוסר חבילה אחת',
-    start: 'start ("התחל") מפעיל את קו המשלוחים האוטומטי, שבו אותה פעולה חוזרת שוב ושוב בעזרת repeat',
-    cycle: 'cycle ("סבב") מריץ סבב מלא של הקו האישי שלכם בעיר: יציאה, מסירה וחזרה',
-    status: 'status ("מצב") בודק את מצב הדרך בעיר ומדווח עליו',
-    test: 'test ("בדיקה") בודק מה קורה כשהדרך חסומה: מחכים או עוקפים',
-    rule: 'rule ("חוק") מפעיל חוק חכם שקבעתם: אם הדרך פתוחה עושים דבר אחד, ואם לא, דבר אחר',
-    plan: 'plan ("תוכנית") מציג את התוכנית למערכת בעיר',
-    demo: 'demo ("הדגמה") מריץ הדגמה של העיר החכמה שבניתם',
-  };
   const previousLesson = Number(lesson.id) > 1 ? window.getCraftomMinecraftLesson?.(Number(lesson.id) - 1) : null;
   const previousCommand = previousLesson ? (previousLesson.detail?.academy?.command || 'deliver') : null;
-  if (chatCommand !== previousCommand && academy.exercises?.[0] && !academy.exercises[0].mission.includes('on chat command')) {
-    const meaning = chatCommandMeanings[chatCommand] ? ` ${chatCommandMeanings[chatCommand]}.` : '';
-    const difference = previousCommand
-      ? ` מה ההבדל מ-${previousCommand}? בשיעור הקודם השתמשנו בפקודה אחרת: ${chatCommandMeanings[previousCommand] || previousCommand}. מבחינת הקוד שתי הפקודות עובדות אותו דבר, ההבדל הוא במה שהקוד שבתוכן עושה, ולכן לכל משימה בוחרים שם שמתאר אותה.`
-      : '';
-    academy.exercises[0].mission += ` מה זו פקודת ${chatCommand}? זו המילה שבבלוק on chat command: כשכותבים ${chatCommand} בצ׳אט של Minecraft, ה-Agent מריץ את כל הבלוקים שבתוכו.${meaning}${difference}`;
+  if (chatCommand === 'start' && previousCommand === 'deliver' && academy.exercises?.[0]) {
+    academy.exercises[0].mission += ' מה זו פקודת start? זו המילה שבבלוק on chat command: כשכותבים start בצ׳אט של Minecraft, ה-Agent מריץ את כל הבלוקים שבתוכו. מה ההבדל מ-deliver? deliver הפעיל משלוח אחד, ו-start מפעיל קו משלוחים שחוזר שוב ושוב בעזרת repeat. מבחינת הקוד שתיהן עובדות אותו דבר, רק השם מתאר מה הקוד עושה.';
   }
 
   const ctx = canvas.getContext('2d');
