@@ -17,6 +17,15 @@
 
   if (!academy || !window.Blockly || !blocklyDiv || !pythonOutput || !canvas || !exerciseList || !checksEl || !feedbackEl) return;
 
+  // Lessons with if routeOpen get a button that switches the road between open and blocked.
+  const conditionCriteria = ['condition', 'conditionState', 'elseBranch', 'elseSay', 'repeatOrCondition', 'thenSay', 'openSays', 'blockedSays', 'openDelivers', 'openArrivalSay', 'blockedStays'];
+  const usesRouteState = (academy.exercises || []).some(exercise => (exercise.criteria || []).some(criterion => conditionCriteria.includes(criterion.type)));
+  let routeToggle = null;
+  if (usesRouteState) {
+    canvas.insertAdjacentHTML('beforebegin', '<button type="button" class="btn secondary academy-route-toggle" id="academyRouteToggle"></button>');
+    routeToggle = document.getElementById('academyRouteToggle');
+  }
+
   // Loop exercises that count packages must place them from inside the repeat, not by copying place blocks after it.
   academy.exercises?.forEach(exercise => {
     const types = (exercise.criteria || []).map(criterion => criterion.type);
@@ -49,7 +58,7 @@
   const cell = 42;
   // Lessons whose exercises never check the station (e.g. loop lessons that drop packages along the line) hide it,
   // so students don't think the courier missed a target.
-  const stationCriteria = ['reachedStation', 'packageNearStation', 'arrivalSayAfterMove'];
+  const stationCriteria = ['reachedStation', 'packageNearStation', 'arrivalSayAfterMove', 'openDelivers'];
   const showStation = (academy.exercises || []).some(exercise => (exercise.criteria || []).some(criterion => stationCriteria.includes(criterion.type)));
   let activeExercise = 0;
   let visibleMode = 'blocks';
@@ -358,8 +367,12 @@
     return workspace.getTopBlocks(true).map(block => chainCode(block)).filter(Boolean).join('\n\n');
   }
 
-  function defaultState() {
+  // The city's road state, switched with the button above the simulation in lessons that use if routeOpen.
+  let worldRouteOpen = true;
+
+  function defaultState(routeOpen = worldRouteOpen) {
     return {
+      routeOpen,
       x: start.x,
       y: start.y,
       heading: 0,
@@ -387,6 +400,7 @@
     state.bubbleTtl = Math.max(0, (state.bubbleTtl || 0) - 1);
     return {
       bubble: state.bubble,
+      routeOpen: state.routeOpen,
       x: state.x,
       y: state.y,
       heading: state.heading,
@@ -481,16 +495,19 @@
         const routeState = current.getFieldValue('STATE') || 'OPEN';
         const hasElse = Boolean(current.getInputTargetBlock('ELSE'));
         const elseHasSay = hasNestedBlock(current.getInputTargetBlock('ELSE'), 'mc_say');
-        state.conditions.push({ state: routeState, hasElse, elseHasSay });
+        const thenHasSay = hasNestedBlock(current.getInputTargetBlock('DO'), 'mc_say');
+        state.conditions.push({ state: routeState, hasElse, elseHasSay, thenHasSay });
         state.actions.push({ type: 'condition', state: routeState, hasElse });
-        walkBlocks(current.getInputTargetBlock(routeState === 'OPEN' ? 'DO' : 'ELSE'), state);
+        // "routeOpen is true" holds when the road is open; "is false" holds when it is blocked.
+        const conditionHolds = (routeState === 'OPEN') === (state.routeOpen !== false);
+        walkBlocks(current.getInputTargetBlock(conditionHolds ? 'DO' : 'ELSE'), state);
       }
       current = current.getNextBlock();
     }
   }
 
-  function runProgram() {
-    const state = defaultState();
+  function runProgram(routeOpen = worldRouteOpen) {
+    const state = defaultState(routeOpen);
     workspace.getTopBlocks(true).forEach(block => walkBlocks(block, state));
     return state;
   }
@@ -563,6 +580,15 @@
     if (criterion.type === 'place') return state.packages.length > 0;
     if (criterion.type === 'placeDirection') return state.packages.some(pkg => pkg.direction === (criterion.direction || 'DOWN'));
     if (criterion.type === 'packageNearStation') return hasPackageNearStation;
+    if (criterion.type === 'thenSay') return state.conditions.some(condition => condition.thenHasSay);
+    if (criterion.type === 'openSays') return runProgram(true).says.some(text => String(text || '').trim());
+    if (criterion.type === 'blockedSays') return runProgram(false).says.some(text => String(text || '').trim());
+    if (criterion.type === 'openArrivalSay') return runProgram(true).says.some(isSuccessMessage);
+    if (criterion.type === 'openDelivers') return runProgram(true).packages.some(pkg => isNear(pkg, station, criterion.radius || 52));
+    if (criterion.type === 'blockedStays') {
+      const blocked = runProgram(false);
+      return isNear(blocked, start, 20) && blocked.packages.length === 0;
+    }
     if (criterion.type === 'onDropPoints') {
       const points = dropPointPositions();
       return points.length > 0 && state.packages.length === points.length
@@ -905,6 +931,24 @@
 
     if (showStation) drawStationBlock(station.x, station.y);
 
+    if (state.routeOpen === false) {
+      const barrierX = start.x + cell * 2.5;
+      ctx.fillStyle = '#7f1d1d';
+      ctx.fillRect(barrierX - 26, start.y - 22, 5, 36);
+      ctx.fillRect(barrierX + 21, start.y - 22, 5, 36);
+      for (let stripe = 0; stripe < 6; stripe += 1) {
+        ctx.fillStyle = stripe % 2 ? '#ffffff' : '#dc2626';
+        ctx.fillRect(barrierX - 26 + stripe * 9, start.y - 20, 9, 10);
+      }
+      ctx.strokeStyle = '#7f1d1d';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(barrierX - 26, start.y - 20, 52, 10);
+      ctx.fillStyle = '#7f1d1d';
+      ctx.font = '900 12px Rubik, Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('דרך חסומה', barrierX, start.y - 28);
+    }
+
     dropPointPositions().forEach((point, index) => {
       ctx.fillStyle = 'rgba(250, 204, 21, .35)';
       ctx.strokeStyle = '#ca8a04';
@@ -1181,6 +1225,23 @@
       feedbackEl.className = 'academy-feedback';
     }
   });
+
+  function renderRouteToggle() {
+    if (!routeToggle) return;
+    routeToggle.textContent = worldRouteOpen ? 'מצב הדרך: פתוחה (true) · לחצו כדי לחסום' : 'מצב הדרך: חסומה (false) · לחצו כדי לפתוח';
+    routeToggle.classList.toggle('blocked', !worldRouteOpen);
+  }
+
+  routeToggle?.addEventListener('click', () => {
+    worldRouteOpen = !worldRouteOpen;
+    renderRouteToggle();
+    animationRunId += 1;
+    runButton.disabled = false;
+    drawWorld();
+    feedbackEl.textContent = worldRouteOpen ? 'הדרך פתוחה עכשיו. לחצו הרצה ובדיקה.' : 'הדרך חסומה עכשיו. לחצו הרצה ובדיקה.';
+    feedbackEl.className = 'academy-feedback';
+  });
+  renderRouteToggle();
 
   runButton.addEventListener('click', runAndCheck);
   resetButton.addEventListener('click', resetExercise);

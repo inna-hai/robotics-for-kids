@@ -1021,20 +1021,85 @@
   }
 
   function signalConditionAcademy() {
-    const academy = conditionAcademy('אקדמיית ה-Agent - מצב בעיר', 'מפגש 9 מתמקד בעצם הסימון: לפני שה-Agent מחליט, העיר צריכה להראות מצב ברור כמו פתוח/חסום. לכן התרגול כאן קצר ומדגיש דיווח מצב, לא משלוח מלא.', 'status');
-    academy.exercises[1].title = 'תרגיל 2 - מדווחים כשהדרך פתוחה';
-    academy.exercises[1].mission = 'בתוך then הוסיפו הודעה שמדווחת שהדרך פתוחה, בלי להפעיל עדיין משלוח מלא.';
-    academy.exercises[1].starter = { command: 'status', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [], else: [] }] };
-    academy.exercises[1].criteria = [
-      { label: 'התנאי בודק דרך פתוחה', type: 'conditionState', state: 'OPEN' },
-      { label: 'יש הודעת מצב', type: 'say' }
-    ];
-    academy.exercises[4].title = 'תרגיל 5 - שני מצבים בשלט';
-    academy.exercises[4].mission = 'הוסיפו else כך שהקוד יוכל לדווח גם כשפתוח וגם כשחסום.';
-    academy.exercises[4].criteria = [
-      { label: 'יש בלוק תנאי', type: 'condition' },
-      { label: 'יש ענף else', type: 'elseBranch' },
-      { label: 'יש הודעת מצב', type: 'say' }
+    const academy = conditionAcademy('אקדמיית ה-Agent - מצב בעיר', 'בשיעור הזה העיר מקבלת מצב: הדרך יכולה להיות פתוחה או חסומה. הקוד בודק את המצב בעזרת if ומגיב בהתאם. את מצב הדרך בהדמיה משנים בכפתור שמעל ההדמיה.', 'status');
+    // Written as one clear progression; the generic refinement sentences are not added to this lesson.
+    academy.skipRefinements = true;
+    const openSay = { type: 'say', text: 'the road is open' };
+    const blockedSay = { type: 'say', text: 'the road is blocked' };
+    const delivery = [{ type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }, { type: 'say', text: 'delivered' }];
+    academy.exercises = [
+      {
+        title: 'תרגיל 1 - מה זה routeOpen?',
+        mission: 'צרו פקודת status והוסיפו מקטגוריית Logic את בלוק if routeOpen. בתוך then הוסיפו player say. מה זה routeOpen? סימון בעיר שאומר אם הדרך פתוחה (true) או חסומה (false). בלוק if בודק אותו: אם התנאי נכון מתבצע מה שבתוך then, ואחרת מה שבתוך else.',
+        hint: 'בלוק if נמצא בקטגוריית Logic. את player say גוררים לתוך החלק של then.',
+        check: 'יש פקודת status, בלוק if והודעה בתוך then.',
+        starter: { command: 'status', blocks: [] },
+        criteria: [
+          { label: 'פקודת הצ׳אט היא status', type: 'command', command: 'status' },
+          { label: 'יש בלוק if', type: 'condition' },
+          { label: 'יש הודעה בתוך then', type: 'thenSay' }
+        ]
+      },
+      {
+        title: 'תרגיל 2 - כשהדרך פתוחה',
+        mission: 'ודאו שבבלוק כתוב routeOpen is true, ושההודעה בתוך then מדווחת שהדרך פתוחה. הריצו כשהדרך פתוחה ובדקו שההודעה מופיעה.',
+        hint: 'true פירושו "הדרך פתוחה". את המצב בבלוק בוחרים בתפריט הקטן שבתוך if.',
+        check: 'כשהדרך פתוחה מופיעה הודעה.',
+        starter: { command: 'status', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [openSay], else: [] }] },
+        criteria: [
+          { label: 'התנאי בודק שהדרך פתוחה (true)', type: 'conditionState', state: 'OPEN' },
+          { label: 'כשהדרך פתוחה מופיעה הודעה', type: 'openSays' }
+        ]
+      },
+      {
+        title: 'תרגיל 3 - כשהדרך חסומה',
+        mission: 'הוסיפו לתוך else הודעה שמדווחת שהדרך חסומה. אחר כך שנו בכפתור את מצב הדרך לחסומה והריצו שוב.',
+        hint: 'else מתבצע רק כשהתנאי לא נכון, כלומר כשהדרך חסומה.',
+        check: 'כשהדרך חסומה מופיעה הודעה אחרת.',
+        starter: { command: 'status', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [openSay], else: [] }] },
+        criteria: [
+          { label: 'יש הודעה בתוך else', type: 'elseSay' },
+          { label: 'כשהדרך חסומה מופיעה הודעה', type: 'blockedSays' }
+        ]
+      },
+      {
+        title: 'תרגיל 4 - נוסעים רק כשפתוח',
+        mission: 'בתוך then הוסיפו נסיעה עד התחנה והנחת חבילה. כשהדרך חסומה השליח לא זז, רק מודיע.',
+        hint: 'move ו-place נכנסים לתוך then, לא אחרי בלוק if.',
+        check: 'כשפתוח החבילה מגיעה לתחנה, וכשחסום השליח נשאר במחסן.',
+        starter: { command: 'status', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [openSay], else: [blockedSay] }] },
+        criteria: [
+          { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
+          { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' }
+        ]
+      },
+      {
+        title: 'תרגיל 5 - דיבוג: נוסעים בזמן חסימה',
+        debugStart: true,
+        freshStartMessage: 'תרגיל דיבוג: השליח נוסע דווקא כשהדרך חסומה. הריצו בשני המצבים ומצאו מה הוחלף.',
+        mission: 'תרגיל דיבוג: קיבלתם קוד שבו השליח נוסע דווקא כשהדרך חסומה. הריצו פעם כשהדרך פתוחה ופעם כשהיא חסומה, תארו מה קרה, מצאו מה הוחלף ותקנו.',
+        hint: 'בדקו מה נמצא בתוך then ומה בתוך else. הנסיעה צריכה לקרות רק כשהדרך פתוחה.',
+        check: 'כשפתוח השליח מוסר, וכשחסום הוא נשאר במקום.',
+        starter: { command: 'status', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [blockedSay], else: delivery }] },
+        criteria: [
+          { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
+          { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' }
+        ]
+      },
+      {
+        title: 'אתגר קטן - חוק שעובד בשני המצבים',
+        mission: 'השלימו חוק מלא: כשהדרך פתוחה נוסעים, מניחים חבילה ומודיעים שהמשלוח הגיע. כשהיא חסומה לא זזים ומודיעים שהדרך חסומה. הבדיקה מריצה את הקוד בשני המצבים.',
+        hint: 'הודעת המסירה נכנסת לתוך then אחרי place, והודעת החסימה לתוך else.',
+        check: 'בשני מצבי הדרך קורה הדבר הנכון.',
+        starter: { command: 'status', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [{ type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }], else: [] }] },
+        criteria: [
+          { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
+          { label: 'כשהדרך פתוחה יש הודעת מסירה', type: 'openArrivalSay' },
+          { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' },
+          { label: 'כשהדרך חסומה מופיעה הודעה', type: 'blockedSays' },
+          { label: 'פקודת הצ׳אט היא status', type: 'command', command: 'status' }
+        ]
+      }
     ];
     return academy;
   }
@@ -1475,7 +1540,7 @@
   Object.entries(agentAcademyExerciseRefinements).forEach(([challengeId, lessonRefinements]) => {
     lessonRefinements.forEach((exerciseRefinements, lessonIndex) => {
       const academy = detailsByChallenge[challengeId]?.[lessonIndex]?.academy;
-      if (!academy?.exercises) return;
+      if (!academy?.exercises || academy.skipRefinements) return;
       exerciseRefinements.forEach((refinement, exerciseIndex) => {
         const exercise = academy.exercises[exerciseIndex];
         if (!exercise) return;
