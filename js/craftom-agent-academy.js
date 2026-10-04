@@ -482,6 +482,10 @@
     if (criterion.type === 'returnToStart') return hasReturnToStart;
     if (criterion.type === 'say') return state.says.length > 0;
     if (criterion.type === 'arrivalSay') return hasArrivalSay;
+    if (criterion.type === 'arrivalSayAfterMove') {
+      const lastMoveAction = state.actions.map(action => action.type).lastIndexOf('move');
+      return lastMoveAction > -1 && state.actions.some((action, index) => index > lastMoveAction && action.type === 'say' && /arrived|הגיע|נמסר|delivery/i.test(action.text));
+    }
     if (criterion.type === 'staysOnStartRow') return Math.abs(state.y - start.y) < Number(criterion.maxDelta || 8);
     return false;
   }

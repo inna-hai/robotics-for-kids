@@ -133,7 +133,7 @@
             },
             {
               title: 'תרגיל 4 - תחנת יעד',
-              mission: 'בנו תחנה קטנה בסוף השביל והריצו שוב את אותה פקודה.',
+              mission: 'התחנה כבר מחכה בסוף השביל. כוונו את מספר הצעדים כך שה-Agent ייעצר ליד התחנה, ואחרי התנועה הוסיפו הודעה.',
               hint: 'ההרצה מראה איפה ה-Agent עוצר. תקנו את המרחק עד שהוא מגיע קרוב לתחנה.',
               check: 'ה-Agent מגיע קרוב לתחנה, לא עוצר באמצע ולא עובר אותה.',
               starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 3 }] },
@@ -1278,7 +1278,7 @@
         { summary: 'המשימה שונתה כך שתכלול הודעת פתיחה שמבהירה שהשליח מוכן לפני הזימון.', prompt: 'הוסף גם player say קצר שמודיע שהשליח מוכן.', check: 'יש גם הודעת פתיחה.', criterion: { label: 'יש הודעת פתיחה', type: 'say' } },
         { summary: 'נדרש להשאיר את פקודת deliver וגם לדייק את הצעד הראשון.', prompt: 'ודא שהקוד עדיין מתחיל מפקודת deliver ולא רק מתנועה בודדת.', check: 'הפקודה deliver עדיין קיימת.', criterion: { label: 'פקודת deliver נשמרה', type: 'chatDeliver' } },
         { summary: 'המשימה שונתה כך שתכלול דרישה להגיע ממש לתחנה אחרי שינוי המרחק ל-5.', prompt: 'בדוק שהשינוי ל-5 מביא את ה-Agent עד התחנה, לא רק קדימה.', check: 'ה-Agent מגיע לתחנה.', criterion: { label: 'ה-Agent מגיע לתחנת היעד', type: 'reachedStation' } },
-        { summary: 'המשימה שונתה כך שתכלול הודעת הגעה אחרי שה-Agent מגיע לתחנה.', prompt: 'הוסף הודעה קצרה בסוף ההגעה לתחנה.', check: 'יש הודעת הגעה.', criterion: { label: 'יש הודעת הגעה', type: 'arrivalSay' } },
+        { summary: 'המשימה שונתה כך שתכלול הודעת הגעה אחרי שה-Agent מגיע לתחנה.', prompt: 'הוסף הודעה קצרה בסוף ההגעה לתחנה.', check: 'הודעת ההגעה מופיעה אחרי שה-Agent זז.', criterion: { label: 'הודעת ההגעה מופיעה אחרי התנועה', type: 'arrivalSayAfterMove' } },
         { summary: 'נדרש להשאיר גם זימון לנקודת התחלה לפני הודעת הסיום.', prompt: 'ודא שהרצף עדיין מזמן את ה-Agent לפני התנועה וההודעה.', check: 'הזימון לנקודת התחלה נשמר.', criterion: { label: 'ה-Agent מזומן לנקודת ההתחלה', type: 'teleport' } },
         { summary: 'המשימה שונתה כך שתכלול דרישה לא לעבור את התחנה אחרי תיקון המספר.', prompt: 'אחרי התיקון בדוק שה-Agent נשאר על השביל ולא עובר את התחנה.', check: 'ה-Agent נשאר על השביל.', criterion: { label: 'ה-Agent נשאר על השביל', type: 'staysOnStartRow' } }
       ],
@@ -1434,7 +1434,7 @@
     if (criterion.type === 'repeat' || criterion.type === 'repeatTimes' || criterion.type === 'returnToStart') return 'הפוך את הרצף למחזור יציב: כל סיבוב צריך להתחיל ולהסתיים במצב שאפשר להריץ שוב.';
     if (criterion.type === 'condition' || criterion.type === 'conditionState' || criterion.type === 'elseBranch' || criterion.type === 'elseSay') return 'בדוק שני מצבים של העיר, ותכנן תגובה שונה וברורה לכל מצב.';
     if (criterion.type === 'repeatOrCondition') return 'בחר רעיון תכנותי מתקדם אחד שמתאים למערכת, והשתמש בו כדי לשפר פעולה קיימת ולא רק להוסיף בלוק.';
-    if (criterion.type === 'say' || criterion.type === 'arrivalSay') return 'נסח הודעה קצרה שמסבירה מה המערכת עשתה ולמה יודעים שההרצה הצליחה.';
+    if (criterion.type === 'say' || criterion.type === 'arrivalSay' || criterion.type === 'arrivalSayAfterMove') return 'נסחו הודעה קצרה שמסבירה מה המערכת עשתה ולמה יודעים שההרצה הצליחה.';
     if (criterion.type === 'staysOnStartRow') return 'בדוק את המסלול אחרי התיקון וודא שה-Agent נשאר בתחום השביל שתכננת.';
     return null;
   }
@@ -1450,7 +1450,7 @@
     if (criterion.type === 'repeat' || criterion.type === 'repeatTimes' || criterion.type === 'returnToStart') return 'התרגיל שונה כך שנדרש מחזור יציב שאפשר להריץ שוב, ולא רק רצף חד-פעמי.';
     if (criterion.type === 'condition' || criterion.type === 'conditionState' || criterion.type === 'elseBranch' || criterion.type === 'elseSay') return 'התרגיל שונה כך שנדרשת בדיקה של שני מצבים ותגובה ברורה לכל מצב.';
     if (criterion.type === 'repeatOrCondition') return 'התרגיל שונה כך שנדרש לבחור רעיון תכנותי מתקדם שמתאים למערכת.';
-    if (criterion.type === 'say' || criterion.type === 'arrivalSay') return 'התרגיל שונה כך שנדרשת הודעת הסבר שמוכיחה הבנה של תוצאת ההרצה.';
+    if (criterion.type === 'say' || criterion.type === 'arrivalSay' || criterion.type === 'arrivalSayAfterMove') return 'התרגיל שונה כך שנדרשת הודעת הסבר שמוכיחה הבנה של תוצאת ההרצה.';
     if (criterion.type === 'staysOnStartRow') return 'התרגיל שונה כך שנדרשת בדיקה שהפתרון נשאר בתחום המסלול שתוכנן.';
     return 'התרגיל שונה כך שנדרשת בדיקה מדויקת יותר של הפתרון.';
   }
