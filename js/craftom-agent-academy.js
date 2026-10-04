@@ -64,25 +64,18 @@
   let visibleMode = 'blocks';
   const completedExercises = new Set();
   let academyCompletionReported = false;
-  // Exercises build on each other: each one continues from the student's own board in the previous exercise.
-  // boards: work in progress per exercise; passed: the last board that passed each exercise;
-  // basis: the starting board each exercise's work in progress was built on.
-  const boardsKey = `craftom-academy-boards-v2:${lesson?.id || 1}`;
-  let boardStore = {};
-  try { boardStore = JSON.parse(localStorage.getItem(boardsKey) || '{}') || {}; } catch (_) { boardStore = {}; }
-  if (!boardStore.boards) {
-    // Bring over boards saved by the earlier storage format, which kept only work in progress.
-    try { boardStore.boards = JSON.parse(localStorage.getItem(`craftom-academy-boards:${lesson?.id || 1}`) || '{}') || {}; } catch (_) { boardStore.boards = {}; }
-  }
-  const savedBoards = boardStore.boards;
-  const passedBoards = boardStore.passed || (boardStore.passed = {});
-  const boardBasis = boardStore.basis || (boardStore.basis = {});
-  // Exercises with a saved correct solution stay marked as done after a refresh.
-  Object.keys(passedBoards).forEach(index => completedExercises.add(Number(index)));
-  if (academy.exercises?.length && completedExercises.size >= academy.exercises.length) academyCompletionReported = true;
+  // Every visit starts fresh: work in progress (boards), correct solutions of this visit (passed) and the board
+  // each exercise started from (basis) live only in memory. Correct solutions are also kept in the browser
+  // (previousSolutions) so the student can look at what they did before, but they are never loaded automatically.
+  const boardsKey = `craftom-academy-solutions:${lesson?.id || 1}`;
+  let previousSolutions = {};
+  try { previousSolutions = JSON.parse(localStorage.getItem(boardsKey) || '{}') || {}; } catch (_) { previousSolutions = {}; }
+  const savedBoards = {};
+  const passedBoards = {};
+  const boardBasis = {};
 
   function persistBoards() {
-    try { localStorage.setItem(boardsKey, JSON.stringify(boardStore)); } catch (_) { /* storage full or blocked */ }
+    try { localStorage.setItem(boardsKey, JSON.stringify(previousSolutions)); } catch (_) { /* storage full or blocked */ }
   }
 
   const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
@@ -1031,6 +1024,7 @@
         <span>${index + 1}</span>
         <strong>${esc(exercise.title)}</strong>
         <small>${esc(exercise.mission)}</small>
+        ${previousSolutions[index] && !completedExercises.has(index) ? '<em class="academy-done-before">✓ בוצע בעבר</em>' : ''}
       </button>
     `).join('');
     exerciseList.querySelectorAll('[data-academy-exercise]').forEach(button => {
@@ -1062,8 +1056,10 @@
     progressEl.textContent = `הושלמו ${doneCount} מתוך ${total} תרגילים`;
     if (!completeEl) return;
     const allDone = total > 0 && doneCount >= total;
-    completeEl.hidden = !allDone;
+    // The completion window opens once, when the last exercise passes; the student can close it and keep practicing.
+    if (!allDone) completeEl.hidden = true;
     if (allDone && !academyCompletionReported) {
+      completeEl.hidden = false;
       academyCompletionReported = true;
       reportProgress('academy-complete', { completedExercises: doneCount, totalExercises: total });
     }
@@ -1075,6 +1071,7 @@
     if (passed) {
       if (boardXml) {
         passedBoards[activeExercise] = boardXml;
+        previousSolutions[activeExercise] = boardXml;
         persistBoards();
       }
       completedExercises.add(activeExercise);
@@ -1144,7 +1141,6 @@
 
   function saveBoard() {
     savedBoards[activeExercise] = currentBoardXml();
-    persistBoards();
   }
 
   // Exercise 1 starts empty; later exercises continue from the last correct solution of the previous exercise,
@@ -1171,6 +1167,7 @@
 
   // Nothing is checked until the student clicks "הרצה ובדיקה".
   function showExercise(message) {
+    renderPreviousButton();
     animationRunId += 1;
     runButton.disabled = false;
     renderExercises();
@@ -1243,19 +1240,27 @@
   });
   renderRouteToggle();
 
-  // Clears this lesson's saved boards and completed marks in this browser, so the lesson starts over from exercise 1.
-  progressEl.insertAdjacentHTML('afterend', '<button type="button" class="academy-restart" id="academyRestart">התחלת השיעור מחדש</button>');
-  document.getElementById('academyRestart')?.addEventListener('click', () => {
-    if (!window.confirm('למחוק את כל הקוד ששמרתם בשיעור הזה ולהתחיל מתרגיל 1?')) return;
-    try {
-      localStorage.removeItem(boardsKey);
-      localStorage.removeItem(`craftom-academy-boards:${lesson?.id || 1}`);
-    } catch (_) { /* storage blocked */ }
-    location.reload();
-  });
 
   runButton.addEventListener('click', runAndCheck);
   resetButton.addEventListener('click', resetExercise);
+  // Shows the correct solution the student saved in an earlier visit, only when they ask for it.
+  hintButton.insertAdjacentHTML('afterend', '<button class="btn secondary" id="academyPrevious" type="button" style="display:none">הפתרון הקודם שלי</button>');
+  const previousButton = document.getElementById('academyPrevious');
+  function renderPreviousButton() {
+    previousButton.style.display = previousSolutions[activeExercise] ? '' : 'none';
+  }
+  previousButton.addEventListener('click', () => {
+    if (!previousSolutions[activeExercise]) return;
+    loadBoard(previousSolutions[activeExercise]);
+    saveBoard();
+    showExercise('זה הפתרון שעבר בפעם הקודמת. אפשר להריץ אותו, לשנות אותו, או ללחוץ איפוס כדי להתחיל שוב.');
+  });
+
+  if (completeEl) {
+    completeEl.insertAdjacentHTML('beforeend', '<button class="btn secondary" id="academyCompleteClose" type="button">להמשיך לתרגל</button>');
+    document.getElementById('academyCompleteClose')?.addEventListener('click', () => { completeEl.hidden = true; });
+  }
+
   hintButton.addEventListener('click', () => {
     const hint = academy.exercises[activeExercise]?.hint || hints[activeExercise] || 'התחילו מפקודת chat ואז הוסיפו פקודת Agent אחת.';
     feedbackEl.textContent = `רמז: ${hint}`;
