@@ -378,8 +378,15 @@
     };
   }
 
+  // A player say message stays on screen for a few frames and then disappears, so a message inside a loop
+  // shows up again in each round instead of staying on forever.
+  const sayBubbleFrames = 3;
+
   function visualSnapshot(state) {
+    state.bubble = state.bubbleTtl > 0 ? state.bubbleText : null;
+    state.bubbleTtl = Math.max(0, (state.bubbleTtl || 0) - 1);
     return {
+      bubble: state.bubble,
       x: state.x,
       y: state.y,
       heading: state.heading,
@@ -457,6 +464,8 @@
         state.frames.push(visualSnapshot(state));
       } else if (current.type === 'mc_say') {
         state.says.push(current.getFieldValue('TEXT') || '');
+        state.bubbleText = current.getFieldValue('TEXT') || '';
+        state.bubbleTtl = sayBubbleFrames;
         state.actions.push({ type: 'say', text: current.getFieldValue('TEXT') || '' });
         state.frames.push(visualSnapshot(state));
       } else if (current.type === 'mc_repeat') {
@@ -957,8 +966,8 @@
       ctx.restore();
     });
 
-    if (state.says.length) {
-      const text = state.says[state.says.length - 1];
+    if (state.bubble) {
+      const text = state.bubble;
       ctx.fillStyle = 'rgba(15, 23, 42, .92)';
       ctx.strokeStyle = '#facc15';
       ctx.lineWidth = 2;
