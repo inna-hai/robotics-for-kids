@@ -57,9 +57,17 @@
   const boardsKey = `craftom-academy-boards-v2:${lesson?.id || 1}`;
   let boardStore = {};
   try { boardStore = JSON.parse(localStorage.getItem(boardsKey) || '{}') || {}; } catch (_) { boardStore = {}; }
-  const savedBoards = boardStore.boards || (boardStore.boards = {});
+  if (!boardStore.boards) {
+    // Bring over boards saved by the earlier storage format, which kept only work in progress.
+    try { boardStore.boards = JSON.parse(localStorage.getItem(`craftom-academy-boards:${lesson?.id || 1}`) || '{}') || {}; } catch (_) { boardStore.boards = {}; }
+  }
+  const savedBoards = boardStore.boards;
   const passedBoards = boardStore.passed || (boardStore.passed = {});
   const boardBasis = boardStore.basis || (boardStore.basis = {});
+  // Exercises with a saved correct solution stay marked as done after a refresh.
+  Object.keys(passedBoards).forEach(index => completedExercises.add(Number(index)));
+  if (academy.exercises?.length && completedExercises.size >= academy.exercises.length) academyCompletionReported = true;
+
   function persistBoards() {
     try { localStorage.setItem(boardsKey, JSON.stringify(boardStore)); } catch (_) { /* storage full or blocked */ }
   }
@@ -1090,7 +1098,7 @@
   // exercise has a newer correct solution, the exercise restarts from it.
   function openExercise() {
     const entry = entryBoardXml(activeExercise);
-    const keepWork = savedBoards[activeExercise] && boardBasis[activeExercise] === entry;
+    const keepWork = savedBoards[activeExercise] && (boardBasis[activeExercise] === undefined || boardBasis[activeExercise] === entry);
     boardBasis[activeExercise] = entry;
     loadBoard(keepWork ? savedBoards[activeExercise] : entry);
     saveBoard();
