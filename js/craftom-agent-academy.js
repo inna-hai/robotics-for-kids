@@ -1243,6 +1243,17 @@
   });
   renderRouteToggle();
 
+  // Clears this lesson's saved boards and completed marks in this browser, so the lesson starts over from exercise 1.
+  progressEl.insertAdjacentHTML('afterend', '<button type="button" class="academy-restart" id="academyRestart">התחלת השיעור מחדש</button>');
+  document.getElementById('academyRestart')?.addEventListener('click', () => {
+    if (!window.confirm('למחוק את כל הקוד ששמרתם בשיעור הזה ולהתחיל מתרגיל 1?')) return;
+    try {
+      localStorage.removeItem(boardsKey);
+      localStorage.removeItem(`craftom-academy-boards:${lesson?.id || 1}`);
+    } catch (_) { /* storage blocked */ }
+    location.reload();
+  });
+
   runButton.addEventListener('click', runAndCheck);
   resetButton.addEventListener('click', resetExercise);
   hintButton.addEventListener('click', () => {
