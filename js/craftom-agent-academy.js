@@ -444,13 +444,22 @@
     return Math.hypot(point.x - target.x, point.y - target.y) <= radius;
   }
 
+  // A success/delivery message is checked by meaning, not exact text: it must say something positive about
+  // arriving, delivering or succeeding, and must not be negative ("לא הצלחתי", "failed").
+  const successWords = /(הגיע|הגעת|הגענו|הגעה|נמסר|מסרתי|מסרנו|מסירה|משלוח|חבילה|הצלח|בהצלחה|הושלם|השלמנו|סיימ|תודה|כל הכבוד|מעולה|יופי|arriv|deliver|success|complete|done|finish|thank|great)/i;
+  const negativeWords = /((^|[\s,.!?])(לא|אין|בלי)(?=[\s,.!?]|$)|נכשל|כישלון|שגיאה|תקלה|נתקע|אבד|הלך לאיבוד|fail|error|not\b|n't|\bno\b|lost|stuck|wrong)/i;
+  function isSuccessMessage(text) {
+    const value = String(text || '').trim();
+    return value.length > 1 && successWords.test(value) && !negativeWords.test(value);
+  }
+
   function criterionPass(state, criterion) {
     const firstMove = state.moves[0];
     const secondMove = state.moves[1];
     const firstMoveAction = state.actions.findIndex(action => action.type === 'move');
     const firstTurnAction = state.actions.findIndex(action => action.type === 'turn');
     const reachedStation = isNear(state, station, criterion.radius || 74);
-    const hasArrivalSay = state.says.some(text => /arrived|הגיע|נמסר|delivery/i.test(text));
+    const hasArrivalSay = state.says.some(isSuccessMessage);
     const hasPackageNearStation = state.packages.some(pkg => isNear(pkg, station, criterion.radius || 52));
     const hasReturnToStart = isNear(state, start, criterion.radius || 52);
 
@@ -480,11 +489,11 @@
     if (criterion.type === 'packageNearStation') return hasPackageNearStation;
     if (criterion.type === 'placeCount') return state.packages.length >= Number(criterion.min || 1);
     if (criterion.type === 'returnToStart') return hasReturnToStart;
-    if (criterion.type === 'say') return state.says.length > 0;
+    if (criterion.type === 'say') return state.says.some(text => String(text || '').trim().length > 0);
     if (criterion.type === 'arrivalSay') return hasArrivalSay;
     if (criterion.type === 'arrivalSayAfterMove') {
       const lastMoveAction = state.actions.map(action => action.type).lastIndexOf('move');
-      return lastMoveAction > -1 && state.actions.some((action, index) => index > lastMoveAction && action.type === 'say' && /arrived|הגיע|נמסר|delivery/i.test(action.text));
+      return lastMoveAction > -1 && state.actions.some((action, index) => index > lastMoveAction && action.type === 'say' && isSuccessMessage(action.text));
     }
     if (criterion.type === 'staysOnStartRow') return Math.abs(state.y - start.y) < Number(criterion.maxDelta || 8);
     return false;
@@ -497,7 +506,7 @@
     }
     const firstMove = state.moves[0];
     const reachedStation = isNear(state, station, 74);
-    const hasArrivalSay = state.says.some(text => /arrived|הגיע|נמסר|delivery/i.test(text));
+    const hasArrivalSay = state.says.some(isSuccessMessage);
     const criteria = [
       [
         ['פקודת deliver קיימת', state.sawChat],

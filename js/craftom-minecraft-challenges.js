@@ -675,7 +675,7 @@
           starter: { command, blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [{ type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }, { type: 'move', direction: 'BACK', steps: 5 }] }] },
           criteria: [
             { label: 'יש בלוק repeat', type: 'repeat' },
-            { label: 'יש הודעת הצלחה', type: 'say' }
+            { label: 'יש הודעת הצלחה', type: 'arrivalSay' }
           ]
         },
         {
@@ -688,7 +688,7 @@
             { label: 'ה-repeat מוגדר ל-2', type: 'repeatTimes', times: 2 },
             { label: 'יש לפחות שתי הנחות חבילה', type: 'placeCount', min: 2 },
             { label: 'ה-Agent חוזר לנקודת ההתחלה', type: 'returnToStart' },
-            { label: 'יש הודעת הצלחה', type: 'say' }
+            { label: 'יש הודעת הצלחה', type: 'arrivalSay' }
           ]
         }
       ]
