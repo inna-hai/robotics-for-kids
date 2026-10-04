@@ -47,6 +47,10 @@
     { x: station.x - 28, y: station.y },
   ];
   const cell = 42;
+  // Lessons whose exercises never check the station (e.g. loop lessons that drop packages along the line) hide it,
+  // so students don't think the courier missed a target.
+  const stationCriteria = ['reachedStation', 'packageNearStation', 'arrivalSayAfterMove'];
+  const showStation = (academy.exercises || []).some(exercise => (exercise.criteria || []).some(criterion => stationCriteria.includes(criterion.type)));
   let activeExercise = 0;
   let visibleMode = 'blocks';
   const completedExercises = new Set();
@@ -878,7 +882,7 @@
     ctx.textAlign = 'center';
     ctx.fillText('מחסן', start.x, start.y - 49);
 
-    drawStationBlock(station.x, station.y);
+    if (showStation) drawStationBlock(station.x, station.y);
 
     ctx.strokeStyle = '#facc15';
     ctx.lineWidth = 6;
