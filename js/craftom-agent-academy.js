@@ -446,8 +446,16 @@
 
   // A success/delivery message is checked by meaning, not exact text: it must say something positive about
   // arriving, delivering or succeeding, and must not be negative ("לא הצלחתי", "failed").
-  const successWords = /(הגיע|הגעת|הגענו|הגעה|נמסר|מסרתי|מסרנו|מסירה|משלוח|חבילה|הצלח|בהצלחה|הושלם|השלמנו|סיימ|תודה|כל הכבוד|מעולה|יופי|arriv|deliver|success|complete|done|finish|thank|great)/i;
-  const negativeWords = /((^|[\s,.!?])(לא|אין|בלי)(?=[\s,.!?]|$)|נכשל|כישלון|שגיאה|תקלה|נתקע|אבד|הלך לאיבוד|fail|error|not\b|n't|\bno\b|lost|stuck|wrong)/i;
+  const successWords = new RegExp([
+    // Hebrew: arrival, delivery, reporting, success, finishing, thanks and positive wishes
+    'הגיע', 'הגעת', 'הגענו', 'הגעה', 'נמסר', 'מסרתי', 'מסרנו', 'מסירה', 'משלוח', 'חבילה', 'נשלח', 'שלחנו',
+    'דווח', 'דיווח', 'הודענו', 'הודעתי', 'הצלח', 'בהצלחה', 'הושלם', 'השלמנו', 'סיימ', 'גמרנו', 'מוכן', 'בוצע', 'עבד',
+    'תודה', 'תהנ', 'בתאבון', 'כל הכבוד', 'מעולה', 'מצוין', 'נהדר', 'יופי', 'אחלה', 'סבבה', 'הידד', 'יש!', 'ניצחנו', 'ברוך הבא', 'ברוכים הבאים',
+    // English
+    'arriv', '\\bhere\\b', 'deliver', 'sent', 'report', 'success', 'succeed', 'complete', 'done', 'finish', 'ready', 'worked',
+    'thank', 'enjoy', 'great', 'good', 'awesome', 'yay', 'hooray', 'welcome', 'well done', 'nice', 'perfect', '\\bok\\b'
+  ].join('|'), 'i');
+  const negativeWords = /((^|[\s,.!?])(לא|אין|בלי)(?=[\s,.!?]|$)|נכשל|כישלון|שגיאה|תקלה|נתקע|אבד|הלך לאיבוד|fail|error|\bnot\b|n't|\bno\b|\bnever\b|lost|stuck|wrong|problem)/i;
   function isSuccessMessage(text) {
     const value = String(text || '').trim();
     return value.length > 1 && successWords.test(value) && !negativeWords.test(value);
