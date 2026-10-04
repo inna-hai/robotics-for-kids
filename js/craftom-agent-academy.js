@@ -1147,8 +1147,9 @@
     boardBasis[activeExercise] = entry;
     loadBoard(keepWork ? savedBoards[activeExercise] : entry);
     saveBoard();
-    showExercise(academy.exercises[activeExercise]?.debugStart
-      ? 'תרגיל דיבוג: הקוד בלוח מכיל באג. הריצו אותו, הסתכלו בהדמיה ומצאו מה לא עובד.'
+    const exercise = academy.exercises[activeExercise];
+    showExercise(exercise?.debugStart
+      ? (exercise.freshStartMessage || 'תרגיל דיבוג: הקוד בלוח מכיל באג. הריצו אותו, הסתכלו בהדמיה ומצאו מה לא עובד.')
       : activeExercise === 0
         ? 'גררו בלוקים ללוח ולחצו הרצה ובדיקה כדי לראות אם צדקתם.'
         : 'ממשיכים מהקוד של התרגיל הקודם. שנו לפי המשימה ולחצו הרצה ובדיקה.');
