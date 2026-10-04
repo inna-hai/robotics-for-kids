@@ -34,6 +34,11 @@
   let visibleMode = 'blocks';
   const completedExercises = new Set();
   let academyCompletionReported = false;
+  // Exercises build on each other: each one continues from the student's own board in the previous exercise.
+  const boardsKey = `craftom-academy-boards:${lesson?.id || 1}`;
+  let savedBoards = {};
+  try { savedBoards = JSON.parse(localStorage.getItem(boardsKey) || '{}') || {}; } catch (_) { savedBoards = {}; }
+  const entryBoards = {};
 
   const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
   const commandName = text => String(text || 'run').replace(/[^A-Za-z0-9_]/g, '_') || 'run';
@@ -718,8 +723,11 @@
     `).join('');
     exerciseList.querySelectorAll('[data-academy-exercise]').forEach(button => {
       button.addEventListener('click', () => {
-        activeExercise = Number(button.dataset.academyExercise || 0);
-        resetExercise();
+        const target = Number(button.dataset.academyExercise || 0);
+        if (target === activeExercise) return;
+        saveBoard();
+        activeExercise = target;
+        openExercise();
       });
     });
   }
@@ -809,12 +817,65 @@
     renderChecks(checks);
   }
 
-  function resetExercise() {
-    workspace.clear();
-    Blockly.Xml.domToWorkspace(new DOMParser().parseFromString(starterXml(), 'text/xml').documentElement, workspace);
+  function emptyBoardXml() {
+    return '<xml xmlns="https://developers.google.com/blockly/xml"></xml>';
+  }
+
+  function currentBoardXml() {
+    return Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace));
+  }
+
+  function saveBoard() {
+    savedBoards[activeExercise] = currentBoardXml();
+    try { localStorage.setItem(boardsKey, JSON.stringify(savedBoards)); } catch (_) { /* storage full or blocked */ }
+  }
+
+  // Exercise 1 starts empty; later exercises continue from the student's previous board.
+  // If the student skipped ahead, fall back to the exercise scaffold so the mission still makes sense.
+  function entryBoardXml(index) {
+    if (index === 0) return emptyBoardXml();
+    if (savedBoards[index - 1]) return savedBoards[index - 1];
+    return starterXml();
+  }
+
+  // Loading a board is not a student edit, so it must not trigger the "you changed the blocks" listener.
+  function loadBoard(xml) {
+    Blockly.Events.disable();
+    try {
+      workspace.clear();
+      Blockly.Xml.domToWorkspace(new DOMParser().parseFromString(xml, 'text/xml').documentElement, workspace);
+    } finally {
+      Blockly.Events.enable();
+    }
+  }
+
+  // Nothing is checked until the student clicks "הרצה ובדיקה".
+  function showExercise(message) {
+    animationRunId += 1;
+    runButton.disabled = false;
     renderExercises();
     setTimeout(() => Blockly.svgResize(workspace), 20);
-    runAndCheck({ animate: false });
+    updatePython();
+    drawWorld();
+    checksEl.innerHTML = evaluate(defaultState()).map(check => `<div class="fail"><span>·</span>${esc(check.label)}</div>`).join('');
+    feedbackEl.textContent = message;
+    feedbackEl.className = 'academy-feedback';
+    renderAcademyCompletion();
+  }
+
+  function openExercise() {
+    if (!entryBoards[activeExercise]) entryBoards[activeExercise] = entryBoardXml(activeExercise);
+    loadBoard(savedBoards[activeExercise] || entryBoards[activeExercise]);
+    showExercise(activeExercise === 0
+      ? 'גררו בלוקים ללוח ולחצו הרצה ובדיקה כדי לראות אם צדקתם.'
+      : 'ממשיכים מהקוד של התרגיל הקודם. שנו לפי המשימה ולחצו הרצה ובדיקה.');
+  }
+
+  function resetExercise() {
+    entryBoards[activeExercise] = entryBoardXml(activeExercise);
+    loadBoard(entryBoards[activeExercise]);
+    saveBoard();
+    showExercise('הלוח חזר לנקודת ההתחלה של התרגיל.');
   }
 
   document.querySelectorAll('[data-academy-mode]').forEach(button => {
@@ -830,6 +891,7 @@
 
   workspace.addChangeListener(event => {
     if (!event.isUiEvent) {
+      saveBoard();
       updatePython();
       feedbackEl.textContent = 'שיניתם את הבלוקים. לחצו הרצה ובדיקה.';
       feedbackEl.className = 'academy-feedback';
@@ -844,5 +906,5 @@
     feedbackEl.className = 'academy-feedback';
   });
 
-  resetExercise();
+  openExercise();
 })();
