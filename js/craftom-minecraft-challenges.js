@@ -634,7 +634,7 @@
           check: 'יש פקודת start ויש בלוק repeat.',
           starter: { command, blocks: [{ type: 'teleport' }] },
           criteria: [
-            { label: 'פקודת start קיימת', type: 'command', command },
+            { label: 'פקודת הצ׳אט היא start', type: 'command', command },
             { label: 'יש בלוק repeat', type: 'repeat' }
           ]
         },
@@ -713,7 +713,7 @@
           check: 'יש התחלה, תנועה והנחת חבילה אחת.',
           starter: { command: 'start', blocks: [{ type: 'teleport' }] },
           criteria: [
-            { label: 'פקודת start קיימת', type: 'command', command: 'start' },
+            { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' },
             { label: 'יש פעולה שנראית בעולם', type: 'place' }
           ]
         },
@@ -791,7 +791,7 @@
           check: 'ה-Agent יוצא מהמחסן ומגיע לתחנה.',
           starter: { command: 'start', blocks: [{ type: 'teleport' }] },
           criteria: [
-            { label: 'פקודת start קיימת', type: 'command', command: 'start' },
+            { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' },
             { label: 'התנועה הראשונה היא 5 קוביות קדימה', type: 'firstMove', direction: 'FORWARD', steps: 5 }
           ]
         },
@@ -1197,13 +1197,13 @@
     academy.exercises[0].title = 'תרגיל 1 - פקודת start למערכת חדשה';
     academy.exercises[0].mission = 'צרו פקודת start שמזיזה את ה-Agent 4 צעדים למערכת החדשה.';
     academy.exercises[0].criteria = [
-      { label: 'פקודת start קיימת', type: 'command', command: 'start' },
+      { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' },
       { label: 'התנועה הראשונה היא 4 קוביות', type: 'firstMove', direction: 'FORWARD', steps: 4 }
     ];
     academy.exercises[1].title = 'תרגיל 2 - סימון קדימה';
     academy.exercises[1].mission = 'הוסיפו place FORWARD כדי שהאוטומציה תשאיר סימון מול ה-Agent.';
     academy.exercises[1].criteria = [
-      { label: 'פקודת start קיימת', type: 'command', command: 'start' },
+      { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' },
       { label: 'יש הנחה קדימה', type: 'placeDirection', direction: 'FORWARD' }
     ];
     academy.exercises[2].title = 'תרגיל 3 - שדרוג בלולאה או תנאי';
@@ -1314,11 +1314,11 @@
     2: [
       [
         { summary: 'המשימה שונתה כך שתכלול דרישה לשתי חזרות כדי שהפעולה לא תהיה חד-פעמית.', prompt: 'כוון את repeat ל-2 כדי להראות שהמשלוח חוזר.', check: 'יש שתי חזרות.', criterion: { label: 'ה-repeat מוגדר ל-2', type: 'repeatTimes', times: 2 } },
-        { summary: 'נדרש לשמור על פקודת start בזמן הכנסת הפעולה לתוך repeat.', prompt: 'ודא שהפתרון עדיין מופעל דרך פקודת start.', check: 'פקודת start נשמרה.', criterion: { label: 'פקודת start קיימת', type: 'command', command: 'start' } },
+        { summary: 'נדרש לשמור על פקודת start בזמן הכנסת הפעולה לתוך repeat.', prompt: 'ודא שהפתרון עדיין מופעל דרך פקודת start.', check: 'פקודת start נשמרה.', criterion: { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' } },
         { summary: 'המשימה שונתה כך שתכלול הודעת סיום אחרי שלוש החזרות.', prompt: 'הוסף הודעה קצרה אחרי repeat שמסכמת את העבודה.', check: 'יש הודעת סיום.', criterion: { label: 'יש הודעת סיום', type: 'say' } },
         { summary: 'נדרש repeat של 3 כדי לחדד את שליטת מספר החזרות.', prompt: 'כוון את repeat ל-3 והשאר את הפעולה החוזרת בתוך הלולאה.', check: 'יש שלוש חזרות.', criterion: { label: 'ה-repeat מוגדר ל-3', type: 'repeatTimes', times: 3 } },
         { summary: 'המשימה שונתה כך שנדרשות שלוש הנחות חבילה בנוסף להודעה.', prompt: 'ודא שהלולאה באמת יוצרת שלוש חבילות לפני הודעת הסיום.', check: 'יש שלוש חבילות.', criterion: { label: 'יש לפחות שלוש הנחות חבילה', type: 'placeCount', min: 3 } },
-        { summary: 'נדרש לוודא שהקוד עדיין מתחיל מפקודת start.', prompt: 'ודא שהפתרון המקוצר עדיין מופעל דרך פקודת start.', check: 'פקודת start נשמרה.', criterion: { label: 'פקודת start קיימת', type: 'command', command: 'start' } }
+        { summary: 'נדרש לוודא שהקוד עדיין מתחיל מפקודת start.', prompt: 'ודא שהפתרון המקוצר עדיין מופעל דרך פקודת start.', check: 'פקודת start נשמרה.', criterion: { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' } }
       ],
       [
         { summary: 'נדרשת הגעה אמיתית לתחנה בצעד הראשון.', prompt: 'בדוק שהתנועה הראשונה מביאה את ה-Agent עד התחנה.', check: 'ה-Agent מגיע לתחנה.', criterion: { label: 'ה-Agent מגיע לתחנת היעד', type: 'reachedStation' } },
@@ -1326,7 +1326,7 @@
         { summary: 'נדרש לשמור על חבילה בתחנה גם אחרי החזרה למחסן.', prompt: 'אל תמחק את place כשאתה מוסיף BACK למחסן.', check: 'החבילה נשארת ליד התחנה.', criterion: { label: 'החבילה נמצאת ליד התחנה', type: 'packageNearStation' } },
         { summary: 'נדרש לשמור על המסירה בזמן תיקון החזרה הקצרה.', prompt: 'תקן רק את מספר החזרה והשאר את המסירה בתחנה.', check: 'החבילה נשארת ליד התחנה.', criterion: { label: 'החבילה נמצאת ליד התחנה', type: 'packageNearStation' } },
         { summary: 'נדרשות שתי הנחות חבילה בשני מחזורים.', prompt: 'ודא שה-place נמצא בתוך repeat כדי שבכל סיבוב תהיה מסירה.', check: 'יש שתי חבילות.', criterion: { label: 'יש לפחות שתי הנחות חבילה', type: 'placeCount', min: 2 } },
-        { summary: 'נדרש לשמור על פקודת start במחזור המלא.', prompt: 'ודא שהמחזור המלא עדיין מופעל דרך start.', check: 'פקודת start קיימת.', criterion: { label: 'פקודת start קיימת', type: 'command', command: 'start' } }
+        { summary: 'נדרש לשמור על פקודת start במחזור המלא.', prompt: 'ודא שהמחזור המלא עדיין מופעל דרך start.', check: 'פקודת start קיימת.', criterion: { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' } }
       ],
       [
         { summary: 'המשימה שונתה כך שתכלול דרישה לשתי חזרות כדי להכין קו אוטומטי.', prompt: 'כוון את repeat ל-2 כדי שהקו יעבוד יותר מסיבוב אחד.', check: 'יש שתי חזרות.', criterion: { label: 'ה-repeat מוגדר ל-2', type: 'repeatTimes', times: 2 } },
@@ -1334,7 +1334,7 @@
         { summary: 'נדרש לחזור להתחלה אחרי כל מחזור.', prompt: 'ודא שהמחזור מסתיים בחזרה לנקודת ההתחלה.', check: 'ה-Agent חוזר להתחלה.', criterion: { label: 'ה-Agent חוזר לנקודת ההתחלה', type: 'returnToStart' } },
         { summary: 'נדרשת הודעת מערכת שמסבירה שהקו סיים מחזור.', prompt: 'הוסף player say קצר אחרי המחזור.', check: 'יש הודעת מערכת.', criterion: { label: 'יש הודעת מערכת', type: 'say' } },
         { summary: 'נדרש לוודא שה-Agent חוזר להתחלה לפני הודעת העצירה.', prompt: 'בדוק שהחזרה למחסן נשארת לפני הודעת הסיום.', check: 'ה-Agent חוזר להתחלה.', criterion: { label: 'ה-Agent חוזר לנקודת ההתחלה', type: 'returnToStart' } },
-        { summary: 'נדרש לשמור על פקודת start בקו שמוכן לעצירה.', prompt: 'ודא שהפתרון עדיין מתחיל מפקודת start.', check: 'פקודת start קיימת.', criterion: { label: 'פקודת start קיימת', type: 'command', command: 'start' } }
+        { summary: 'נדרש לשמור על פקודת start בקו שמוכן לעצירה.', prompt: 'ודא שהפתרון עדיין מתחיל מפקודת start.', check: 'פקודת start קיימת.', criterion: { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' } }
       ],
       [
         { summary: 'נדרש שהפנייה תבוא אחרי התנועה הראשונה.', prompt: 'ודא שה-Agent מתקדם לפני שהוא פונה במסלול האישי.', check: 'התנועה לפני הפנייה.', criterion: { label: 'התנועה מגיעה לפני הפנייה', type: 'moveBeforeTurn' } },

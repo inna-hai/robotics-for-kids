@@ -17,6 +17,12 @@
 
   if (!academy || !window.Blockly || !blocklyDiv || !pythonOutput || !canvas || !exerciseList || !checksEl || !feedbackEl) return;
 
+  // Lessons that switch to a new chat command (e.g. start instead of deliver) explain it in the first exercise.
+  const chatCommand = academy.command || 'deliver';
+  if (chatCommand !== 'deliver' && academy.exercises?.[0] && !academy.exercises[0].mission.includes('on chat command')) {
+    academy.exercises[0].mission += ` מה זו פקודת ${chatCommand}? זו המילה שבבלוק on chat command: כשכותבים ${chatCommand} בצ׳אט של Minecraft, ה-Agent מריץ את כל הבלוקים שבתוכו. בשיעורים הקודמים המילה הייתה deliver, ומעכשיו הקו החדש מופעל עם ${chatCommand}.`;
+  }
+
   const ctx = canvas.getContext('2d');
   const defaultStart = { x: 112, y: 230 };
   const defaultStation = { x: 322, y: 230 };
@@ -90,6 +96,7 @@
         message1: 'run %1',
         args1: [{ type: 'input_statement', name: 'DO' }],
         colour: 215,
+        tooltip: 'המילה שכותבים בצ׳אט של Minecraft כדי להפעיל את הקוד שבתוך הבלוק.',
       },
       {
         type: 'mc_teleport_agent',
@@ -251,7 +258,7 @@
 
   function toolboxXml() {
     return `<xml xmlns="https://developers.google.com/blockly/xml">
-      <category name="Events" colour="215"><block type="mc_on_chat"></block></category>
+      <category name="Events" colour="215"><block type="mc_on_chat"><field name="COMMAND">${esc(academy.command || 'deliver')}</field></block></category>
       <category name="Agent" colour="35">
         <block type="mc_teleport_agent"></block>
         <block type="mc_move_agent"></block>
