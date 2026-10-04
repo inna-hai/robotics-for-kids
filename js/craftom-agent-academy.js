@@ -17,6 +17,15 @@
 
   if (!academy || !window.Blockly || !blocklyDiv || !pythonOutput || !canvas || !exerciseList || !checksEl || !feedbackEl) return;
 
+  // Loop exercises that count packages must place them from inside the repeat, not by copying place blocks after it.
+  academy.exercises?.forEach(exercise => {
+    const types = (exercise.criteria || []).map(criterion => criterion.type);
+    const isLoopExercise = types.some(type => type === 'repeat' || type === 'repeatTimes');
+    if (isLoopExercise && types.includes('placeCount') && !types.includes('placeInRepeat')) {
+      exercise.criteria.push({ label: 'כל הנחות החבילה נמצאות בתוך ה-repeat', type: 'placeInRepeat' });
+    }
+  });
+
   // The first exercise explains the lesson's chat command, and how it differs from the previous lesson's command.
   const chatCommand = academy.command || 'deliver';
   const chatCommandMeanings = {
@@ -437,7 +446,7 @@
         const placeDirection = current.getFieldValue('DIR');
         const placeRadians = (state.heading * Math.PI) / 180;
         const placeOffset = placeDirection === 'FORWARD' ? cell : 0;
-        state.packages.push({ x: state.x + Math.cos(placeRadians) * placeOffset, y: state.y + Math.sin(placeRadians) * placeOffset, direction: placeDirection });
+        state.packages.push({ x: state.x + Math.cos(placeRadians) * placeOffset, y: state.y + Math.sin(placeRadians) * placeOffset, direction: placeDirection, inRepeat: (state.repeatDepth || 0) > 0 });
         state.actions.push({ type: 'place', direction: current.getFieldValue('DIR') });
         state.frames.push(visualSnapshot(state));
       } else if (current.type === 'mc_say') {
@@ -448,9 +457,11 @@
         const times = Math.max(1, Number(current.getFieldValue('TIMES') || 1));
         state.repeats.push(times);
         state.actions.push({ type: 'repeat', times });
+        state.repeatDepth = (state.repeatDepth || 0) + 1;
         for (let index = 0; index < times; index += 1) {
           walkBlocks(current.getInputTargetBlock('DO'), state);
         }
+        state.repeatDepth -= 1;
       } else if (current.type === 'mc_if_route_open') {
         const routeState = current.getFieldValue('STATE') || 'OPEN';
         const hasElse = Boolean(current.getInputTargetBlock('ELSE'));
@@ -532,6 +543,7 @@
     if (criterion.type === 'place') return state.packages.length > 0;
     if (criterion.type === 'placeDirection') return state.packages.some(pkg => pkg.direction === (criterion.direction || 'DOWN'));
     if (criterion.type === 'packageNearStation') return hasPackageNearStation;
+    if (criterion.type === 'placeInRepeat') return state.packages.length > 0 && state.packages.every(pkg => pkg.inRepeat);
     if (criterion.type === 'singlePackage') return state.packages.length === 1;
     if (criterion.type === 'placeCount') return state.packages.length >= Number(criterion.min || 1);
     if (criterion.type === 'returnToStart') return hasReturnToStart;
