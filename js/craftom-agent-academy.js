@@ -52,10 +52,17 @@
   const completedExercises = new Set();
   let academyCompletionReported = false;
   // Exercises build on each other: each one continues from the student's own board in the previous exercise.
-  const boardsKey = `craftom-academy-boards:${lesson?.id || 1}`;
-  let savedBoards = {};
-  try { savedBoards = JSON.parse(localStorage.getItem(boardsKey) || '{}') || {}; } catch (_) { savedBoards = {}; }
-  const entryBoards = {};
+  // boards: work in progress per exercise; passed: the last board that passed each exercise;
+  // basis: the starting board each exercise's work in progress was built on.
+  const boardsKey = `craftom-academy-boards-v2:${lesson?.id || 1}`;
+  let boardStore = {};
+  try { boardStore = JSON.parse(localStorage.getItem(boardsKey) || '{}') || {}; } catch (_) { boardStore = {}; }
+  const savedBoards = boardStore.boards || (boardStore.boards = {});
+  const passedBoards = boardStore.passed || (boardStore.passed = {});
+  const boardBasis = boardStore.basis || (boardStore.basis = {});
+  function persistBoards() {
+    try { localStorage.setItem(boardsKey, JSON.stringify(boardStore)); } catch (_) { /* storage full or blocked */ }
+  }
 
   const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
   const commandName = text => String(text || 'run').replace(/[^A-Za-z0-9_]/g, '_') || 'run';
@@ -967,10 +974,14 @@
     }
   }
 
-  function renderChecks(checks) {
+  function renderChecks(checks, boardXml) {
     checksEl.innerHTML = checks.map(check => `<div class="${check.pass ? 'pass' : 'fail'}"><span>${check.pass ? '✓' : '·'}</span>${esc(check.label)}</div>`).join('');
     const passed = checks.length > 0 && checks.every(check => check.pass);
     if (passed) {
+      if (boardXml) {
+        passedBoards[activeExercise] = boardXml;
+        persistBoards();
+      }
       completedExercises.add(activeExercise);
       renderExercises();
       reportProgress(`academy-exercise-${activeExercise + 1}`, { completedExercises: completedExercises.size, totalExercises: academy.exercises.length });
@@ -991,7 +1002,7 @@
 
   let animationRunId = 0;
 
-  function animateRun(state, checks) {
+  function animateRun(state, checks, boardXml) {
     const frames = state.frames.length ? state.frames : [state];
     const runId = animationRunId;
     let frameIndex = 0;
@@ -1006,7 +1017,7 @@
         return;
       }
       runButton.disabled = false;
-      renderChecks(checks);
+      renderChecks(checks, boardXml);
     }
 
     drawFrame();
@@ -1017,14 +1028,15 @@
     updatePython();
     const state = runProgram();
     const checks = evaluate(state);
+    const boardXml = currentBoardXml();
     animationRunId += 1;
     if (animate) {
-      animateRun(state, checks);
+      animateRun(state, checks, boardXml);
       return;
     }
     runButton.disabled = false;
     drawWorld(state);
-    renderChecks(checks);
+    renderChecks(checks, boardXml);
   }
 
   function emptyBoardXml() {
@@ -1037,13 +1049,14 @@
 
   function saveBoard() {
     savedBoards[activeExercise] = currentBoardXml();
-    try { localStorage.setItem(boardsKey, JSON.stringify(savedBoards)); } catch (_) { /* storage full or blocked */ }
+    persistBoards();
   }
 
-  // Exercise 1 starts empty; later exercises continue from the student's previous board.
-  // If the student skipped ahead, fall back to the exercise scaffold so the mission still makes sense.
+  // Exercise 1 starts empty; later exercises continue from the last correct solution of the previous exercise,
+  // or from the student's latest attempt there. If the student skipped ahead, use the exercise scaffold.
   function entryBoardXml(index) {
     if (index === 0) return emptyBoardXml();
+    if (passedBoards[index - 1]) return passedBoards[index - 1];
     if (savedBoards[index - 1]) return savedBoards[index - 1];
     return starterXml();
   }
@@ -1073,17 +1086,22 @@
     renderAcademyCompletion();
   }
 
+  // Work in progress is kept only while it still builds on the same starting board; once the previous
+  // exercise has a newer correct solution, the exercise restarts from it.
   function openExercise() {
-    if (!entryBoards[activeExercise]) entryBoards[activeExercise] = entryBoardXml(activeExercise);
-    loadBoard(savedBoards[activeExercise] || entryBoards[activeExercise]);
+    const entry = entryBoardXml(activeExercise);
+    const keepWork = savedBoards[activeExercise] && boardBasis[activeExercise] === entry;
+    boardBasis[activeExercise] = entry;
+    loadBoard(keepWork ? savedBoards[activeExercise] : entry);
+    saveBoard();
     showExercise(activeExercise === 0
       ? 'גררו בלוקים ללוח ולחצו הרצה ובדיקה כדי לראות אם צדקתם.'
       : 'ממשיכים מהקוד של התרגיל הקודם. שנו לפי המשימה ולחצו הרצה ובדיקה.');
   }
 
   function resetExercise() {
-    entryBoards[activeExercise] = entryBoardXml(activeExercise);
-    loadBoard(entryBoards[activeExercise]);
+    boardBasis[activeExercise] = entryBoardXml(activeExercise);
+    loadBoard(boardBasis[activeExercise]);
     saveBoard();
     showExercise('הלוח חזר לנקודת ההתחלה של התרגיל.');
   }
