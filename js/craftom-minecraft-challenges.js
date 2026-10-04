@@ -729,25 +729,25 @@
           ]
         },
         {
-          title: 'תרגיל 3 - בוחרים כמה פעמים',
+          title: 'תרגיל 3 - דיבוג: מה לא צריך לחזור?',
+          mission: 'תרגיל דיבוג: קיבלתם קוד עם באג. כך מדבגים: 1. מריצים וצופים בהדמיה. 2. מתארים במילים מה קרה ומה היה צריך לקרות. 3. מחפשים את הבלוק שגורם להבדל. 4. מתקנים דבר אחד בלבד ומריצים שוב. רמז לכיוון: לא כל מה שנמצא בתוך repeat צריך לחזור בכל סיבוב.',
+          hint: 'teleport מחזיר את השליח למחסן. אם הוא בתוך repeat, זה קורה בכל סיבוב, וכל החבילות נערמות באותה נקודה. גררו אותו אל לפני הלולאה.',
+          check: 'teleport קורה פעם אחת בהתחלה, ובכל סיבוב השליח ממשיך הלאה ומניח חבילה במקום חדש.',
+          debugStart: true,
+          starter: { command: 'start', blocks: [{ type: 'repeat', times: 2, blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'place', direction: 'DOWN' }] }] },
+          criteria: [
+            { label: 'ה-teleport נמצא לפני הלולאה, לא בתוכה', type: 'teleportOutsideRepeat' },
+            { label: 'יש לפחות שתי הנחות חבילה', type: 'placeCount', min: 2 }
+          ]
+        },
+        {
+          title: 'תרגיל 4 - בוחרים כמה פעמים',
           mission: 'שנו את מספר החזרות ל-3 כדי לראות שהמספר שולט בכמות העבודה.',
           hint: 'משנים רק את המספר בתוך repeat, לא מוסיפים עוד בלוקים זהים.',
           check: 'ה-repeat מוגדר ל-3.',
           starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [{ type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }] }] },
           criteria: [
             { label: 'ה-repeat מוגדר ל-3', type: 'repeatTimes', times: 3 },
-            { label: 'יש לפחות שלוש הנחות חבילה', type: 'placeCount', min: 3 }
-          ]
-        },
-        {
-          title: 'תרגיל 4 - דיבוג: מה לא צריך לחזור?',
-          mission: 'תרגיל דיבוג: קיבלתם קוד עם באג. כך מדבגים: 1. מריצים וצופים בהדמיה. 2. מתארים במילים מה קרה ומה היה צריך לקרות. 3. מחפשים את הבלוק שגורם להבדל. 4. מתקנים דבר אחד בלבד ומריצים שוב. רמז לכיוון: לא כל מה שנמצא בתוך repeat צריך לחזור בכל סיבוב.',
-          hint: 'teleport מחזיר את השליח למחסן. אם הוא בתוך repeat, זה קורה בכל סיבוב, וכל החבילות נערמות באותה נקודה. גררו אותו אל לפני הלולאה.',
-          check: 'teleport קורה פעם אחת בהתחלה, ובכל סיבוב השליח ממשיך הלאה ומניח חבילה במקום חדש.',
-          debugStart: true,
-          starter: { command: 'start', blocks: [{ type: 'repeat', times: 3, blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'place', direction: 'DOWN' }] }] },
-          criteria: [
-            { label: 'ה-teleport נמצא לפני הלולאה, לא בתוכה', type: 'teleportOutsideRepeat' },
             { label: 'יש לפחות שלוש הנחות חבילה', type: 'placeCount', min: 3 }
           ]
         },
@@ -764,13 +764,16 @@
         },
         {
           title: 'אתגר קטן - מקוד ארוך לקוד קצר',
-          mission: 'תקנו שלד ארוך ומבולגן כך שישתמש ב-repeat אחד של 3 חזרות.',
+          mission: 'תקנו שלד ארוך ומבולגן כך שישתמש ב-repeat אחד של 3 חזרות. בהדמיה מסומנות שלוש נקודות מסירה לאורך הקו: כל חבילה צריכה לנחות על אחת מהן.',
+          debugStart: true,
+          dropPoints: [3, 6, 9],
           hint: 'המטרה היא פחות שכפול ויותר שליטה במספר החזרות.',
           check: 'יש repeat אחד שמייצג 3 משלוחים חוזרים והודעת סיום.',
-          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }, { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }] },
+          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'place', direction: 'DOWN' }, { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'place', direction: 'DOWN' }] },
           criteria: [
             { label: 'יש בלוק repeat', type: 'repeat' },
             { label: 'ה-repeat מוגדר ל-3', type: 'repeatTimes', times: 3 },
+            { label: 'כל חבילה הונחה על נקודת מסירה', type: 'onDropPoints' },
             { label: 'יש הודעת סיום', type: 'say' }
           ]
         }
@@ -1316,8 +1319,8 @@
       [
         { summary: 'המשימה שונתה כך שתכלול דרישה לשתי חזרות כדי שהפעולה לא תהיה חד-פעמית.', prompt: 'כוון את repeat ל-2 כדי להראות שהמשלוח חוזר.', check: 'יש שתי חזרות.', criterion: { label: 'ה-repeat מוגדר ל-2', type: 'repeatTimes', times: 2 } },
         { summary: 'נדרש לשמור על פקודת start בזמן הכנסת הפעולה לתוך repeat.', prompt: 'ודא שהפתרון עדיין מופעל דרך פקודת start.', check: 'פקודת start נשמרה.', criterion: { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' } },
+        { summary: 'נדרש שכל הנחות החבילה יהיו בתוך הלולאה אחרי התיקון.', prompt: 'ודא שרק התנועה והנחת החבילה חוזרות בכל סיבוב.', check: 'הנחות החבילה בתוך הלולאה.', criterion: { label: 'כל הנחות החבילה נמצאות בתוך ה-repeat', type: 'placeInRepeat' } },
         { summary: 'המשימה שונתה כך שתכלול הודעת סיום אחרי שלוש החזרות.', prompt: 'הוסף הודעה קצרה אחרי repeat שמסכמת את העבודה.', check: 'יש הודעת סיום.', criterion: { label: 'יש הודעת סיום', type: 'say' } },
-        { summary: 'נדרש repeat של 3 כדי לחדד את שליטת מספר החזרות.', prompt: 'כוון את repeat ל-3 והשאר את הפעולה החוזרת בתוך הלולאה.', check: 'יש שלוש חזרות.', criterion: { label: 'ה-repeat מוגדר ל-3', type: 'repeatTimes', times: 3 } },
         { summary: 'המשימה שונתה כך שנדרשות שלוש הנחות חבילה בנוסף להודעה.', prompt: 'ודא שהלולאה באמת יוצרת שלוש חבילות לפני הודעת הסיום.', check: 'יש שלוש חבילות.', criterion: { label: 'יש לפחות שלוש הנחות חבילה', type: 'placeCount', min: 3 } },
         { summary: 'נדרש לוודא שהקוד עדיין מתחיל מפקודת start.', prompt: 'ודא שהפתרון המקוצר עדיין מופעל דרך פקודת start.', check: 'פקודת start נשמרה.', criterion: { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' } }
       ],

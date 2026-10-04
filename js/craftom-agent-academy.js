@@ -515,6 +515,11 @@
     return Math.hypot(move.to.x - station.x, move.to.y - station.y) < Math.hypot(move.from.x - station.x, move.from.y - station.y) - 1;
   }
 
+  // Advanced exercises can mark delivery points along the line, given in steps from the warehouse.
+  function dropPointPositions() {
+    return (academy.exercises[activeExercise]?.dropPoints || []).map(steps => ({ x: start.x + steps * cell, y: start.y }));
+  }
+
   function criterionPass(state, criterion) {
     const firstMove = state.moves[0];
     const secondMove = state.moves[1];
@@ -549,6 +554,12 @@
     if (criterion.type === 'place') return state.packages.length > 0;
     if (criterion.type === 'placeDirection') return state.packages.some(pkg => pkg.direction === (criterion.direction || 'DOWN'));
     if (criterion.type === 'packageNearStation') return hasPackageNearStation;
+    if (criterion.type === 'onDropPoints') {
+      const points = dropPointPositions();
+      return points.length > 0 && state.packages.length === points.length
+        && points.every(point => state.packages.some(pkg => isNear(pkg, point, 18)))
+        && state.packages.every(pkg => points.some(point => isNear(pkg, point, 18)));
+    }
     if (criterion.type === 'teleportOutsideRepeat') return state.sawTeleport && !state.teleportInRepeat;
     if (criterion.type === 'placeInRepeat') return state.packages.length > 0 && state.packages.every(pkg => pkg.inRepeat);
     if (criterion.type === 'singlePackage') return state.packages.length === 1;
@@ -883,6 +894,22 @@
     ctx.fillText('מחסן', start.x, start.y - 49);
 
     if (showStation) drawStationBlock(station.x, station.y);
+
+    dropPointPositions().forEach((point, index) => {
+      ctx.fillStyle = 'rgba(250, 204, 21, .35)';
+      ctx.strokeStyle = '#ca8a04';
+      ctx.lineWidth = 3;
+      ctx.setLineDash([6, 4]);
+      ctx.beginPath();
+      ctx.roundRect(point.x - 19, point.y - 19, 38, 38, 8);
+      ctx.fill();
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#713f12';
+      ctx.font = '900 11px Rubik, Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(`מסירה ${index + 1}`, point.x, point.y - 25);
+    });
 
     ctx.strokeStyle = '#facc15';
     ctx.lineWidth = 6;
