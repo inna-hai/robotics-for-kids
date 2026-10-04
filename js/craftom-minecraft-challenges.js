@@ -714,7 +714,7 @@
           starter: { command: 'start', blocks: [{ type: 'teleport' }] },
           criteria: [
             { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' },
-            { label: 'יש פעולה שנראית בעולם', type: 'place' }
+            { label: 'ה-Agent מניח חבילה (agent place)', type: 'place' }
           ]
         },
         {
@@ -1134,7 +1134,7 @@
           starter: { command, blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }] },
           criteria: [
             { label: 'יש לולאה או תנאי', type: 'repeatOrCondition' },
-            { label: 'יש פעולה שנראית בעולם', type: 'place' }
+            { label: 'ה-Agent מניח חבילה (agent place)', type: 'place' }
           ]
         },
         {
@@ -1144,7 +1144,7 @@
           check: 'יש פעולה בעולם ויש הודעת הסבר.',
           starter: { command, blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }] },
           criteria: [
-            { label: 'יש פעולה שנראית בעולם', type: 'place' },
+            { label: 'ה-Agent מניח חבילה (agent place)', type: 'place' },
             { label: 'יש הודעת הסבר', type: 'say' }
           ]
         },
@@ -1166,7 +1166,7 @@
           check: 'יש פעולה, לולאה או תנאי, והודעת סיום.',
           starter: { command, blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }] },
           criteria: [
-            { label: 'יש פעולה שנראית בעולם', type: 'place' },
+            { label: 'ה-Agent מניח חבילה (agent place)', type: 'place' },
             { label: 'יש לולאה או תנאי', type: 'repeatOrCondition' },
             { label: 'יש הודעת סיום', type: 'say' }
           ]
