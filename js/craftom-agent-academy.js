@@ -356,6 +356,7 @@
     const directionOffset = { FORWARD: 0, RIGHT: 90, BACK: 180, LEFT: -90 }[command.direction] || 0;
     const radians = ((state.heading + directionOffset) * Math.PI) / 180;
     const steps = Math.max(1, Number(command.steps || 1));
+    const moveStart = { x: state.x, y: state.y };
     for (let stepIndex = 0; stepIndex < steps; stepIndex += 1) {
       const from = { x: state.x, y: state.y };
       state.x += Math.cos(radians) * cell;
@@ -365,7 +366,7 @@
       state.path.push({ x1: from.x, y1: from.y, x2: state.x, y2: state.y, step: state.path.length + 1 });
       state.frames.push(visualSnapshot(state));
     }
-    state.moves.push(command);
+    state.moves.push({ ...command, from: moveStart, to: { x: state.x, y: state.y } });
   }
 
   function hasNestedBlock(block, type) {
@@ -466,6 +467,14 @@
     return value.length > 1 && successWords.test(value) && !negativeWords.test(value);
   }
 
+  // A move matches when the step count is right and it goes the intended way. Another direction also counts
+  // if it brings the Agent closer to the station (e.g. "turn left" + "move back" instead of "turn right" + "move forward").
+  function moveMatches(move, criterion) {
+    if (!move || move.steps !== Number(criterion.steps)) return false;
+    if (move.direction === (criterion.direction || 'FORWARD')) return true;
+    return Math.hypot(move.to.x - station.x, move.to.y - station.y) < Math.hypot(move.from.x - station.x, move.from.y - station.y) - 1;
+  }
+
   function criterionPass(state, criterion) {
     const firstMove = state.moves[0];
     const secondMove = state.moves[1];
@@ -480,9 +489,9 @@
     if (criterion.type === 'command') return state.commands.includes(criterion.command || academy.command || 'deliver');
     if (criterion.type === 'teleport') return state.sawTeleport;
     if (criterion.type === 'moveCount') return state.moves.length >= Number(criterion.min || 1);
-    if (criterion.type === 'firstMove') return firstMove?.direction === (criterion.direction || 'FORWARD') && firstMove.steps === Number(criterion.steps);
-    if (criterion.type === 'secondMove') return secondMove?.direction === (criterion.direction || 'FORWARD') && secondMove.steps === Number(criterion.steps);
-    if (criterion.type === 'anyMove') return state.moves.some(move => move.direction === (criterion.direction || 'FORWARD') && move.steps === Number(criterion.steps));
+    if (criterion.type === 'firstMove') return moveMatches(firstMove, criterion);
+    if (criterion.type === 'secondMove') return moveMatches(secondMove, criterion);
+    if (criterion.type === 'anyMove') return state.moves.some(move => moveMatches(move, criterion));
     if (criterion.type === 'turn') return criterion.turn ? state.turns.includes(criterion.turn) : state.turns.length > 0;
     if (criterion.type === 'repeat') return state.repeats.length > 0;
     if (criterion.type === 'repeatTimes') return state.repeats.some(times => times === Number(criterion.times || 2));
