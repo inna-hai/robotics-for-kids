@@ -660,7 +660,7 @@
     }
   }
 
-  // The courier Agent stays upright; its heading is shown by where the eyes look and an arrow on the ground.
+  // The courier rides upright on a motorbike; its heading is shown by where it looks and an arrow on the ground.
   function drawAgent(state) {
     const radians = (state.heading * Math.PI) / 180;
     const lookX = Math.round(Math.cos(radians) * 2);
@@ -692,107 +692,125 @@
 
     if (facingLeft) ctx.scale(-1, 1);
 
-    // parcel on the back
-    roundedBox(-27, -8, 15, 17, 3, '#d97706', '#78350f');
-    ctx.strokeStyle = '#fde68a';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(-19.5, -8);
-    ctx.lineTo(-19.5, 9);
-    ctx.stroke();
-
-    // legs and shoes
-    roundedBox(-11, 18, 8, 9, 2, '#0e7490', '#164e63');
-    roundedBox(3, 18, 8, 9, 2, '#0e7490', '#164e63');
-    roundedBox(-13, 25, 12, 6, 3, '#1e3a8a', '#172554');
-    roundedBox(1, 25, 12, 6, 3, '#1e3a8a', '#172554');
-
-    // body with courier vest and badge
-    roundedBox(-16, -8, 32, 28, 8, '#14b8a6', '#0f4f4a');
-    roundedBox(-16, 2, 32, 9, 0, '#f97316');
-    ctx.strokeStyle = '#0f4f4a';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.roundRect(-16, -8, 32, 28, 8);
-    ctx.stroke();
-    ctx.fillStyle = '#fff7ed';
-    ctx.beginPath();
-    ctx.arc(7, 6, 4, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#c2410c';
-    ctx.font = '900 6px Rubik, Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('A', 7, 8.5);
-
-    // strap across the vest
-    ctx.strokeStyle = '#78350f';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(-14, -6);
-    ctx.lineTo(12, 18);
-    ctx.stroke();
-
-    // antenna with glowing light
-    ctx.strokeStyle = '#0f4f4a';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(4, -40);
-    ctx.lineTo(9, -50);
-    ctx.stroke();
-    ctx.fillStyle = 'rgba(250, 204, 21, .35)';
-    ctx.beginPath();
-    ctx.arc(9, -51, 7, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#facc15';
-    ctx.beginPath();
-    ctx.arc(9, -51, 3.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    // head
-    roundedBox(-17, -38, 34, 30, 10, '#5eead4', '#0f4f4a');
-
-    // courier cap with visor
+    // motorbike: wheels, frame, delivery box and headlight (side view, facing right)
+    function wheel(cx) {
+      ctx.fillStyle = '#111827';
+      ctx.beginPath();
+      ctx.arc(cx, 21, 8, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#9ca3af';
+      ctx.beginPath();
+      ctx.arc(cx, 21, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    wheel(-17);
+    wheel(18);
     ctx.fillStyle = '#dc2626';
     ctx.strokeStyle = '#7f1d1d';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(-17, -29);
-    ctx.quadraticCurveTo(-16, -46, 0, -46);
-    ctx.quadraticCurveTo(16, -46, 17, -29);
+    ctx.moveTo(-22, 12);
+    ctx.lineTo(-8, 10);
+    ctx.lineTo(10, 10);
+    ctx.lineTo(19, 0);
+    ctx.lineTo(23, 3);
+    ctx.lineTo(18, 16);
+    ctx.lineTo(-16, 17);
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
-    roundedBox(4, -32, 19, 5, 2.5, '#b91c1c', '#7f1d1d');
-    ctx.fillStyle = '#fde047';
-    ctx.beginPath();
-    ctx.arc(-4, -38, 3, 0, Math.PI * 2);
-    ctx.fill();
-
-    // eyes, cheeks and smile
-    ctx.fillStyle = '#ffffff';
-    ctx.beginPath();
-    ctx.ellipse(-6, -21, 5, 5.5, 0, 0, Math.PI * 2);
-    ctx.ellipse(7, -21, 5, 5.5, 0, 0, Math.PI * 2);
-    ctx.fill();
-    const pupilX = facingLeft ? -lookX : lookX;
-    ctx.fillStyle = '#0f172a';
-    ctx.beginPath();
-    ctx.arc(-6 + pupilX, -21 + lookY, 2.6, 0, Math.PI * 2);
-    ctx.arc(7 + pupilX, -21 + lookY, 2.6, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(-6 + pupilX, -23 + lookY, 1.5, 1.5);
-    ctx.fillRect(7 + pupilX, -23 + lookY, 1.5, 1.5);
-    ctx.fillStyle = 'rgba(244, 114, 182, .55)';
-    ctx.beginPath();
-    ctx.ellipse(-12, -14, 3, 2, 0, 0, Math.PI * 2);
-    ctx.ellipse(13, -14, 3, 2, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = '#0f4f4a';
-    ctx.lineWidth = 2;
+    roundedBox(-12, 4, 18, 6, 3, '#1f2937', '#111827');
+    ctx.strokeStyle = '#374151';
+    ctx.lineWidth = 3;
     ctx.lineCap = 'round';
     ctx.beginPath();
-    ctx.arc(1, -15, 4, 0.15 * Math.PI, 0.85 * Math.PI);
+    ctx.moveTo(19, 0);
+    ctx.lineTo(16, -10);
+    ctx.lineTo(11, -12);
+    ctx.stroke();
+    ctx.fillStyle = '#fef08a';
+    ctx.beginPath();
+    ctx.arc(23, 5, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // delivery box on the back
+    roundedBox(-30, -10, 17, 17, 3, '#f59e0b', '#78350f');
+    ctx.strokeStyle = '#fde68a';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-21.5, -10);
+    ctx.lineTo(-21.5, 7);
+    ctx.stroke();
+
+    // rider: leg, vest, arm to the handlebar
+    ctx.strokeStyle = '#1e3a8a';
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(-3, 6);
+    ctx.lineTo(6, 8);
+    ctx.lineTo(7, 16);
+    ctx.stroke();
+    roundedBox(-11, -16, 17, 23, 6, '#f97316', '#9a3412');
+    ctx.fillStyle = '#fff7ed';
+    ctx.beginPath();
+    ctx.arc(-1, -6, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#c2410c';
+    ctx.font = '900 5px Rubik, Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('A', -1, -4);
+    ctx.strokeStyle = '#f3c69c';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(2, -11);
+    ctx.lineTo(11, -11);
+    ctx.stroke();
+
+    // head with skin-tone face and courier cap
+    ctx.fillStyle = '#f3c69c';
+    ctx.strokeStyle = '#a16207';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(-1, -26, 10, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#e8b083';
+    ctx.beginPath();
+    ctx.arc(-10, -25, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#dc2626';
+    ctx.strokeStyle = '#7f1d1d';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(-11, -28);
+    ctx.quadraticCurveTo(-10, -39, -1, -39);
+    ctx.quadraticCurveTo(9, -39, 9, -28);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    roundedBox(4, -31, 11, 4, 2, '#b91c1c', '#7f1d1d');
+    ctx.fillStyle = '#fde047';
+    ctx.beginPath();
+    ctx.arc(-3, -34, 2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.ellipse(4, -24, 3, 3.3, 0, 0, Math.PI * 2);
+    ctx.fill();
+    const pupilX = facingLeft ? -lookX : lookX;
+    ctx.fillStyle = '#1f2937';
+    ctx.beginPath();
+    ctx.arc(4 + pupilX * 0.6, -24 + lookY * 0.6, 1.7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(244, 114, 182, .5)';
+    ctx.beginPath();
+    ctx.ellipse(3, -19, 2.5, 1.6, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#7c2d12';
+    ctx.lineWidth = 1.5;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.arc(6, -19, 2.5, 0.1 * Math.PI, 0.7 * Math.PI);
     ctx.stroke();
 
     ctx.restore();
