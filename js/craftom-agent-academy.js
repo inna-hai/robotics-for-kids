@@ -124,6 +124,7 @@
         previousStatement: null,
         nextStatement: null,
         colour: 35,
+        tooltip: 'down: מניח את החבילה על הרצפה מתחת ל-Agent. forward: מניח את החבילה במשבצת שמול ה-Agent.',
       },
       {
         type: 'mc_say',
@@ -408,7 +409,11 @@
         state.actions.push({ type: 'turn', turn });
         state.frames.push(visualSnapshot(state));
       } else if (current.type === 'mc_place_agent') {
-        state.packages.push({ x: state.x, y: state.y, direction: current.getFieldValue('DIR') });
+        // forward puts the package one cell in front of the Agent; down leaves it where the Agent stands.
+        const placeDirection = current.getFieldValue('DIR');
+        const placeRadians = (state.heading * Math.PI) / 180;
+        const placeOffset = placeDirection === 'FORWARD' ? cell : 0;
+        state.packages.push({ x: state.x + Math.cos(placeRadians) * placeOffset, y: state.y + Math.sin(placeRadians) * placeOffset, direction: placeDirection });
         state.actions.push({ type: 'place', direction: current.getFieldValue('DIR') });
         state.frames.push(visualSnapshot(state));
       } else if (current.type === 'mc_say') {
@@ -495,6 +500,7 @@
     if (criterion.type === 'place') return state.packages.length > 0;
     if (criterion.type === 'placeDirection') return state.packages.some(pkg => pkg.direction === (criterion.direction || 'DOWN'));
     if (criterion.type === 'packageNearStation') return hasPackageNearStation;
+    if (criterion.type === 'singlePackage') return state.packages.length === 1;
     if (criterion.type === 'placeCount') return state.packages.length >= Number(criterion.min || 1);
     if (criterion.type === 'returnToStart') return hasReturnToStart;
     if (criterion.type === 'say') return state.says.some(text => String(text || '').trim().length > 0);
@@ -706,7 +712,7 @@
       ctx.fillText(String(index + 1), segment.x2, segment.y2 + 4);
     });
 
-    state.packages.forEach(pkg => {
+    function drawPackage(pkg) {
       drawBlock(pkg.x - 14, pkg.y - 18, 28, 26, '#f59e0b', '#92400e', 7, '#78350f');
       ctx.strokeStyle = '#78350f';
       ctx.beginPath();
@@ -715,9 +721,19 @@
       ctx.moveTo(pkg.x - 14, pkg.y - 5);
       ctx.lineTo(pkg.x + 14, pkg.y - 5);
       ctx.stroke();
-    });
+    }
 
+    // forward packages sit on their own cell; packages placed down are drawn small at the Agent's feet
+    // after the Agent, so they stay visible instead of hiding under it.
+    state.packages.filter(pkg => pkg.direction === 'FORWARD').forEach(drawPackage);
     drawAgent(state);
+    state.packages.filter(pkg => pkg.direction !== 'FORWARD').forEach(pkg => {
+      ctx.save();
+      ctx.translate(pkg.x + 14, pkg.y + 16);
+      ctx.scale(0.62, 0.62);
+      drawPackage({ x: 0, y: 0 });
+      ctx.restore();
+    });
 
     if (state.says.length) {
       const text = state.says[state.says.length - 1];

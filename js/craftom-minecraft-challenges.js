@@ -293,7 +293,7 @@
           exercises: [
             {
               title: 'תרגיל 1 - מוסיפים חבילה',
-              mission: 'השלימו את מסלול ההגעה והוסיפו בלוק agent place כדי שה-Agent יניח חבילה.',
+              mission: 'השלימו את מסלול ההגעה והוסיפו בלוק agent place כדי שה-Agent יניח חבילה. בבלוק יש שני כיוונים: down מניח את החבילה על הרצפה מתחת ל-Agent, ו-forward מניח אותה במשבצת שמולו.',
               hint: 'המסלול כבר מוביל לתחנה. חפשו ב-Agent את בלוק place והוסיפו אותו בסוף הרצף.',
               check: 'ה-Agent מגיע לתחנה ומניח חבילה.',
               starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 4 }] },
@@ -304,7 +304,7 @@
             },
             {
               title: 'תרגיל 2 - מניחים למטה',
-              mission: 'שנו את כיוון ההנחה כך שהחבילה תונח על הרצפה בתחנה.',
+              mission: 'שנו את כיוון ההנחה כך שהחבילה תונח על הרצפה בתחנה. forward מניח את החבילה במשבצת שמול ה-Agent, כלומר מחוץ לתחנה. down מניח אותה בדיוק במקום שבו ה-Agent עומד.',
               hint: 'אל תחליפו את כל הבלוק. בדקו את התפריט הקטן בתוך agent place.',
               check: 'החבילה מונחת בכיוון DOWN, במקום להידחף קדימה.',
               starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'place', direction: 'FORWARD' }] },
@@ -320,6 +320,7 @@
               check: 'ה-Agent מגיע עד התחנה ורק שם מניח את החבילה.',
               starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 2 }, { type: 'place', direction: 'DOWN' }] },
               criteria: [
+                { label: 'הונחה חבילה אחת בלבד', type: 'singlePackage' },
                 { label: 'התנועה השנייה תוקנה ל-4 קוביות', type: 'secondMove', direction: 'FORWARD', steps: 4 },
                 { label: 'החבילה נמצאת ליד התחנה', type: 'packageNearStation' }
               ]
@@ -331,6 +332,7 @@
               check: 'החבילה מונחת אחרי שה-Agent הגיע לתחנה.',
               starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'place', direction: 'DOWN' }, { type: 'move', direction: 'FORWARD', steps: 4 }] },
               criteria: [
+                { label: 'הונחה חבילה אחת בלבד', type: 'singlePackage' },
                 { label: 'ה-Agent מגיע לתחנת היעד', type: 'reachedStation' },
                 { label: 'החבילה נמצאת ליד התחנה', type: 'packageNearStation' }
               ]
@@ -342,6 +344,7 @@
               check: 'יש חבילה ליד התחנה וגם הודעת מסירה בסוף.',
               starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'place', direction: 'DOWN' }] },
               criteria: [
+                { label: 'הונחה חבילה אחת בלבד', type: 'singlePackage' },
                 { label: 'החבילה נמצאת ליד התחנה', type: 'packageNearStation' },
                 { label: 'יש הודעת מסירה בסוף', type: 'arrivalSay' }
               ]
@@ -353,6 +356,7 @@
               check: 'ה-Agent מגיע, מניח DOWN ליד התחנה ומודיע שהמשלוח הגיע.',
               starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'place', direction: 'FORWARD' }, { type: 'say', text: 'delivery arrived' }] },
               criteria: [
+                { label: 'הונחה חבילה אחת בלבד', type: 'singlePackage' },
                 { label: 'החבילה מונחת למטה', type: 'placeDirection', direction: 'DOWN' },
                 { label: 'החבילה נמצאת ליד התחנה', type: 'packageNearStation' },
                 { label: 'יש הודעת מסירה בסוף', type: 'arrivalSay' }
