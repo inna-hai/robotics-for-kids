@@ -740,13 +740,14 @@
           ]
         },
         {
-          title: 'תרגיל 4 - פעולה קצרה וברורה',
-          mission: 'שמרו בתוך הלולאה רק את הפעולות שחוזרות: תנועה והנחת חבילה.',
-          hint: 'teleport שייך להתחלה. הלולאה צריכה להכיל את הפעולה החוזרת.',
-          check: 'יש repeat, תנועה וחבילות חוזרות.',
-          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 3, blocks: [{ type: 'move', direction: 'FORWARD', steps: 5 }] }] },
+          title: 'תרגיל 4 - דיבוג: מה לא צריך לחזור?',
+          mission: 'תרגיל דיבוג: קיבלתם קוד עם באג. כך מדבגים: 1. מריצים וצופים בהדמיה. 2. מתארים במילים מה קרה ומה היה צריך לקרות. 3. מחפשים את הבלוק שגורם להבדל. 4. מתקנים דבר אחד בלבד ומריצים שוב. רמז לכיוון: לא כל מה שנמצא בתוך repeat צריך לחזור בכל סיבוב.',
+          hint: 'teleport מחזיר את השליח למחסן. אם הוא בתוך repeat, זה קורה בכל סיבוב, וכל החבילות נערמות באותה נקודה. גררו אותו אל לפני הלולאה.',
+          check: 'teleport קורה פעם אחת בהתחלה, ובכל סיבוב השליח ממשיך הלאה ומניח חבילה במקום חדש.',
+          debugStart: true,
+          starter: { command: 'start', blocks: [{ type: 'repeat', times: 3, blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'place', direction: 'DOWN' }] }] },
           criteria: [
-            { label: 'יש בלוק repeat', type: 'repeat' },
+            { label: 'ה-teleport נמצא לפני הלולאה, לא בתוכה', type: 'teleportOutsideRepeat' },
             { label: 'יש לפחות שלוש הנחות חבילה', type: 'placeCount', min: 3 }
           ]
         },
@@ -1475,7 +1476,8 @@
         const exercise = academy.exercises[exerciseIndex];
         if (!exercise) return;
         exercise.refinementSummary = summarizeHigherLevelChange(refinement.criterion);
-        exercise.mission = appendExerciseSentence(exercise.mission, makeHigherLevelPrompt(refinement.criterion) || refinement.prompt);
+        // Debug exercises keep their step-by-step debugging instructions without an extra sentence.
+        if (!exercise.debugStart) exercise.mission = appendExerciseSentence(exercise.mission, makeHigherLevelPrompt(refinement.criterion) || refinement.prompt);
         exercise.check = appendExerciseSentence(exercise.check, `בנוסף, ${refinement.check}`);
         addExerciseCriterion(exercise, refinement.criterion);
       });

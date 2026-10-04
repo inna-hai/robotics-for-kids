@@ -247,8 +247,8 @@
     'זו משימת דיבוג: אל תוסיפו רצף חדש, חפשו מספר אחד שגורם ל-Agent לעבור את התחנה.'
   ];
 
-  function starterXml() {
-    const exercise = academy.exercises[activeExercise];
+  function starterXml(index = activeExercise) {
+    const exercise = academy.exercises[index];
     if (exercise?.starter?.blocks) {
       const blocks = exercise.starter.blocks.map(blockFromSpec).filter(Boolean);
       const command = exercise.starter.command || academy.command || 'deliver';
@@ -279,7 +279,7 @@
         tail => blockXml('mc_say', { TEXT: 'delivery arrived' }, '', next(tail)),
       ]),
     ];
-    return `<xml xmlns="https://developers.google.com/blockly/xml">${starts[activeExercise] || starts[0]}</xml>`;
+    return `<xml xmlns="https://developers.google.com/blockly/xml">${starts[index] || starts[0]}</xml>`;
   }
 
   function toolboxXml() {
@@ -427,6 +427,7 @@
         state.y = start.y;
         state.heading = 0;
         state.sawTeleport = true;
+        if ((state.repeatDepth || 0) > 0) state.teleportInRepeat = true;
         state.actions.push({ type: 'teleport' });
         state.frames.push(visualSnapshot(state));
       } else if (current.type === 'mc_move_agent') {
@@ -544,6 +545,7 @@
     if (criterion.type === 'place') return state.packages.length > 0;
     if (criterion.type === 'placeDirection') return state.packages.some(pkg => pkg.direction === (criterion.direction || 'DOWN'));
     if (criterion.type === 'packageNearStation') return hasPackageNearStation;
+    if (criterion.type === 'teleportOutsideRepeat') return state.sawTeleport && !state.teleportInRepeat;
     if (criterion.type === 'placeInRepeat') return state.packages.length > 0 && state.packages.every(pkg => pkg.inRepeat);
     if (criterion.type === 'singlePackage') return state.packages.length === 1;
     if (criterion.type === 'placeCount') return state.packages.length >= Number(criterion.min || 1);
@@ -1063,10 +1065,12 @@
   // Exercise 1 starts empty; later exercises continue from the last correct solution of the previous exercise,
   // or from the student's latest attempt there. If the student skipped ahead, use the exercise scaffold.
   function entryBoardXml(index) {
+    // Debug exercises always start from their own broken code instead of the previous solution.
+    if (academy.exercises[index]?.debugStart) return starterXml(index);
     if (index === 0) return emptyBoardXml();
     if (passedBoards[index - 1]) return passedBoards[index - 1];
     if (savedBoards[index - 1]) return savedBoards[index - 1];
-    return starterXml();
+    return starterXml(index);
   }
 
   // Loading a board is not a student edit, so it must not trigger the "you changed the blocks" listener.
@@ -1102,9 +1106,11 @@
     boardBasis[activeExercise] = entry;
     loadBoard(keepWork ? savedBoards[activeExercise] : entry);
     saveBoard();
-    showExercise(activeExercise === 0
-      ? 'גררו בלוקים ללוח ולחצו הרצה ובדיקה כדי לראות אם צדקתם.'
-      : 'ממשיכים מהקוד של התרגיל הקודם. שנו לפי המשימה ולחצו הרצה ובדיקה.');
+    showExercise(academy.exercises[activeExercise]?.debugStart
+      ? 'תרגיל דיבוג: הקוד בלוח מכיל באג. הריצו אותו, הסתכלו בהדמיה ומצאו מה לא עובד.'
+      : activeExercise === 0
+        ? 'גררו בלוקים ללוח ולחצו הרצה ובדיקה כדי לראות אם צדקתם.'
+        : 'ממשיכים מהקוד של התרגיל הקודם. שנו לפי המשימה ולחצו הרצה ובדיקה.');
   }
 
   function resetExercise() {
