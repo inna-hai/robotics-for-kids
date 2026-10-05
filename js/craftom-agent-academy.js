@@ -394,6 +394,7 @@
     const conditionBubble = state.conditionTtl > 0 ? state.conditionBubble : null;
     state.conditionTtl = Math.max(0, (state.conditionTtl || 0) - 1);
     return {
+      blockId: state.currentBlockId || null,
       conditionBubble,
       bubble: state.bubble,
       routeOpen: state.routeOpen,
@@ -438,6 +439,8 @@
   function walkBlocks(block, state) {
     let current = block;
     while (current) {
+      // Frames remember which block was running, so the animation can highlight it.
+      state.currentBlockId = current.id;
       if (current.type === 'mc_on_chat') {
         state.sawChat = current.getFieldValue('COMMAND') === 'deliver';
         state.commands.push(current.getFieldValue('COMMAND') || '');
@@ -484,6 +487,8 @@
         state.actions.push({ type: 'repeat', times });
         state.repeatDepth = (state.repeatDepth || 0) + 1;
         for (let index = 0; index < times; index += 1) {
+          state.currentBlockId = current.id;
+          state.frames.push(visualSnapshot(state));
           walkBlocks(current.getInputTargetBlock('DO'), state);
         }
         state.repeatDepth -= 1;
@@ -1258,13 +1263,20 @@
     runButton.disabled = true;
 
     function drawFrame() {
-      if (runId !== animationRunId) return;
-      drawWorld(frames[Math.min(frameIndex, frames.length - 1)]);
+      if (runId !== animationRunId) {
+        workspace.highlightBlock(null);
+        return;
+      }
+      const frame = frames[Math.min(frameIndex, frames.length - 1)];
+      drawWorld(frame);
+      // Highlight the block that is running right now.
+      workspace.highlightBlock(frame.blockId || null);
       if (frameIndex < frames.length - 1) {
         frameIndex += 1;
         setTimeout(drawFrame, 260);
         return;
       }
+      setTimeout(() => { if (runId === animationRunId) workspace.highlightBlock(null); }, 600);
       runButton.disabled = false;
       renderChecks(checks);
     }
@@ -1324,6 +1336,7 @@
 
   // Nothing is checked until the student clicks "הרצה ובדיקה".
   function showExercise(message) {
+    workspace.highlightBlock(null);
     renderPreviousButton();
     renderBlockCounter();
     animationRunId += 1;
