@@ -1217,7 +1217,11 @@
     }
   }
 
-  function renderChecks(checks, boardXml) {
+  // The board that was run, saved as the exercise's correct solution if every check passes.
+  let lastRunBoardXml = '';
+
+  function renderChecks(checks) {
+    const boardXml = lastRunBoardXml;
     checksEl.innerHTML = checks.map(check => `<div class="${check.pass ? 'pass' : 'fail'}"><span>${check.pass ? '✓' : '·'}</span>${esc(check.label)}</div>`).join('');
     const passed = checks.length > 0 && checks.every(check => check.pass);
     if (passed) {
@@ -1246,7 +1250,7 @@
 
   let animationRunId = 0;
 
-  function animateRun(state, checks, boardXml) {
+  function animateRun(state, checks) {
     const frames = state.frames.length ? state.frames : [state];
     const runId = animationRunId;
     let frameIndex = 0;
@@ -1261,7 +1265,7 @@
         return;
       }
       runButton.disabled = false;
-      renderChecks(checks, boardXml);
+      renderChecks(checks);
     }
 
     drawFrame();
@@ -1272,15 +1276,15 @@
     updatePython();
     const state = runProgram();
     const checks = evaluate(state);
-    const boardXml = currentBoardXml();
+    lastRunBoardXml = currentBoardXml();
     animationRunId += 1;
     if (animate) {
-      animateRun(state, checks, boardXml);
+      animateRun(state, checks);
       return;
     }
     runButton.disabled = false;
     drawWorld(state);
-    renderChecks(checks, boardXml);
+    renderChecks(checks);
   }
 
   function emptyBoardXml() {
