@@ -526,7 +526,7 @@
   ].join('|'), 'iu');
   const negativeWords = /((^|[\s,.!?])(לא|אין|בלי)(?=[\s,.!?]|$)|נכשל|כישלון|שגיאה|תקלה|נתקע|אבד|הלך לאיבוד|fail|error|\bnot\b|n't|\bno\b|\bnever\b|lost|stuck|wrong|problem)/i;
   // A message about the blocked road: it mentions the block, waiting, stopping or taking another way.
-  const blockedWords = /(חסו|חסימ|סגור|נסגר|מחסום|ממתינ|ממתין|מחכ|המתנ|עוקפ|עוקף|עקיפ|דרך אחרת|דרך חלופית|מסלול חלופי|מסלול אחר|אי אפשר|לא ניתן|לא אפשר|לא פתוח|לא פתוחה|תקוע|עוצר|עצירה|block|closed|wait|detour|another way|other way|around|stop|can't|cannot|not open)/i;
+  const blockedWords = /(חסו|חסימ|סגור|נסגר|מחסום|ממתינ|ממתין|מחכ|המתנ|עוקפ|עוקף|עקיפ|דרך אחרת|דרך חלופית|מסלול חלופי|מסלול אחר|חוזר|חוזרים|חזרה|נשאר|נשארים|אי אפשר|לא ניתן|לא אפשר|לא פתוח|לא פתוחה|תקוע|עוצר|עצירה|block|closed|wait|detour|another way|other way|around|stop|go back|return|stay|can't|cannot|not open)/i;
   function isBlockedMessage(text) {
     return blockedWords.test(String(text || '').trim());
   }
@@ -589,7 +589,7 @@
     if (criterion.type === 'thenSay') return state.conditions.some(condition => condition.thenHasSay);
     if (criterion.type === 'openSays') return runProgram(true).says.some(text => String(text || '').trim());
     if (criterion.type === 'blockedSaysAbout') return runProgram(false).says.some(isBlockedMessage);
-    if (criterion.type === 'blockedSays') return runProgram(false).says.some(text => String(text || '').trim());
+    if (criterion.type === 'blockedSays') return runProgram(false).says.some(isBlockedMessage);
     if (criterion.type === 'openArrivalSay') return runProgram(true).says.some(isSuccessMessage);
     if (criterion.type === 'openReaches') return isNear(runProgram(true), station, criterion.radius || 52);
     if (criterion.type === 'blockedReaches') return isNear(runProgram(false), station, criterion.radius || 52);

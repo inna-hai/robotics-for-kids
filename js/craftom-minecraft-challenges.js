@@ -1059,7 +1059,7 @@
         starter: { command: 'status', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [openSay], else: [] }] },
         criteria: [
           { label: 'יש הודעה בתוך else', type: 'elseSay' },
-          { label: 'כשהדרך חסומה מופיעה הודעה', type: 'blockedSays' }
+          { label: 'כשהדרך חסומה מופיעה הודעה על החסימה', type: 'blockedSays' }
         ]
       },
       {
@@ -1096,7 +1096,7 @@
           { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
           { label: 'כשהדרך פתוחה יש הודעת מסירה', type: 'openArrivalSay' },
           { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' },
-          { label: 'כשהדרך חסומה מופיעה הודעה', type: 'blockedSays' },
+          { label: 'כשהדרך חסומה מופיעה הודעה על החסימה', type: 'blockedSays' },
           { label: 'פקודת הצ׳אט היא status', type: 'command', command: 'status' }
         ]
       }
@@ -1482,7 +1482,7 @@
       starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(4)], else: [] }] },
       criteria: [
         { label: 'יש הודעה בתוך else', type: 'elseSay' },
-        { label: 'כשהדרך חסומה מופיעה הודעה', type: 'blockedSays' },
+        { label: 'כשהדרך חסומה מופיעה הודעה על החסימה', type: 'blockedSays' },
         { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' }
       ]
     },
@@ -1520,7 +1520,7 @@
         { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
         { label: 'כשהדרך פתוחה יש הודעת מסירה', type: 'openArrivalSay' },
         { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' },
-        { label: 'כשהדרך חסומה מופיעה הודעה', type: 'blockedSays' },
+        { label: 'כשהדרך חסומה מופיעה הודעה על החסימה', type: 'blockedSays' },
         { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' }
       ]
     }
@@ -1537,7 +1537,7 @@
       criteria: [
         { label: 'פקודת הצ׳אט היא test', type: 'command', command: 'test' },
         { label: 'יש בלוק if', type: 'condition' },
-        { label: 'כשהדרך חסומה מופיעה הודעה', type: 'blockedSays' }
+        { label: 'כשהדרך חסומה מופיעה הודעה על החסימה', type: 'blockedSays' }
       ]
     },
     {
@@ -1632,7 +1632,7 @@
       starter: { command: 'rule', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(6), placeDown], else: [] }] },
       criteria: [
         { label: 'השליח לא עובר דרך המחסום', type: 'blockedAvoidsBarrier' },
-        { label: 'כשהדרך חסומה מופיעה הודעה', type: 'blockedSays' }
+        { label: 'כשהדרך חסומה מופיעה הודעה על החסימה', type: 'blockedSays' }
       ]
     },
     {
@@ -1655,7 +1655,7 @@
       starter: { command: 'rule', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(6), placeDown], else: [say('the road is blocked, waiting')] }] },
       criteria: [
         { label: 'כשהדרך פתוחה יש הודעת מסירה', type: 'openArrivalSay' },
-        { label: 'כשהדרך חסומה מופיעה הודעה', type: 'blockedSays' }
+        { label: 'כשהדרך חסומה מופיעה הודעה על החסימה', type: 'blockedSays' }
       ]
     },
     {
@@ -1668,7 +1668,7 @@
         { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
         { label: 'כשהדרך פתוחה יש הודעת מסירה', type: 'openArrivalSay' },
         { label: 'השליח לא עובר דרך המחסום', type: 'blockedAvoidsBarrier' },
-        { label: 'כשהדרך חסומה מופיעה הודעה', type: 'blockedSays' },
+        { label: 'כשהדרך חסומה מופיעה הודעה על החסימה', type: 'blockedSays' },
         { label: 'פקודת הצ׳אט היא rule', type: 'command', command: 'rule' }
       ]
     }
