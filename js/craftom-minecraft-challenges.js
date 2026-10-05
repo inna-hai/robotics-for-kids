@@ -158,7 +158,7 @@
               mission: 'שברו בכוונה מספר אחד, הריצו, ואז תקנו רק את אותו מספר.',
               hint: 'זו משימת דיבוג: חפשו מספר אחד שמרחיק את ה-Agent יותר מדי ותקנו רק אותו.',
               check: 'יש לכם לפני/אחרי: מה לא עבד, ומה תיקנתם.',
-              starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 8 }, { type: 'say', text: 'delivery arrived' }] },
+              starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 8 }, { type: 'say', text: 'המשלוח הגיע' }] },
               criteria: [
                 { label: 'מספר התנועה תוקן ל-5', type: 'firstMove', direction: 'FORWARD', steps: 5 },
                 { label: 'אחרי התיקון ה-Agent מגיע לתחנה', type: 'reachedStation' },
@@ -354,7 +354,7 @@
               mission: 'תקנו חבילה שנפרקת בכיוון לא נכון, בלי לשנות את כל המסלול.',
               hint: 'המסלול וההודעה כבר כמעט נכונים. חפשו רק את התפריט בתוך בלוק place.',
               check: 'ה-Agent מגיע, מניח DOWN ליד התחנה ומודיע שהמשלוח הגיע.',
-              starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'place', direction: 'FORWARD' }, { type: 'say', text: 'delivery arrived' }] },
+              starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'place', direction: 'FORWARD' }, { type: 'say', text: 'המשלוח הגיע' }] },
               criteria: [
                 { label: 'הונחה חבילה אחת בלבד', type: 'singlePackage' },
                 { label: 'החבילה מונחת למטה', type: 'placeDirection', direction: 'DOWN' },
@@ -609,7 +609,7 @@
           mission: 'תקנו שלד שבו המרחק האחרון שגוי, בלי לשנות את כל המסלול.',
           hint: 'חפשו מספר אחד בתנועה שאחרי הפנייה.',
           check: 'אחרי התיקון ה-Agent מגיע, מניח חבילה ומודיע.',
-          starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 6 }, { type: 'place', direction: 'DOWN' }, { type: 'say', text: 'delivery arrived' }] },
+          starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 6 }, { type: 'place', direction: 'DOWN' }, { type: 'say', text: 'המשלוח הגיע' }] },
           criteria: [
             { label: 'התנועה השנייה תוקנה ל-4 קוביות', type: 'secondMove', direction: 'FORWARD', steps: 4 },
             { label: 'החבילה נמצאת ליד התחנה', type: 'packageNearStation' },
@@ -771,7 +771,7 @@
           maxBlocks: 6,
           hint: 'חפשו את הבלוקים שחוזרים על עצמם. אפשר לכתוב אותם פעם אחת בלבד.',
           check: 'אותה תוצאה, עם 6 בלוקים לכל היותר.',
-          starter: { command: 'start', blocks: [{ type: 'teleport' }, ...[1, 2, 3, 4].flatMap(() => [{ type: 'move', direction: 'FORWARD', steps: 2 }, { type: 'place', direction: 'DOWN' }, { type: 'say', text: 'package delivered' }])] },
+          starter: { command: 'start', blocks: [{ type: 'teleport' }, ...[1, 2, 3, 4].flatMap(() => [{ type: 'move', direction: 'FORWARD', steps: 2 }, { type: 'place', direction: 'DOWN' }, { type: 'say', text: 'החבילה נמסרה' }])] },
           criteria: [
             { label: 'כל חבילה הונחה על נקודת מסירה', type: 'onDropPoints' },
             { label: 'יש הודעת מסירה אחרי כל חבילה', type: 'sayCount', min: 4 },
@@ -997,7 +997,7 @@
           mission: 'בנו בתוך then רצף קצר של נסיעה והנחת חבילה.',
           hint: 'אם הדרך פתוחה, ה-Agent יכול לנסוע ואז place.',
           check: 'במצב פתוח ה-Agent מגיע ומניח חבילה.',
-          starter: { command, blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [{ type: 'move', direction: 'FORWARD', steps: 3 }], else: [{ type: 'say', text: 'blocked' }] }] },
+          starter: { command, blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [{ type: 'move', direction: 'FORWARD', steps: 3 }], else: [{ type: 'say', text: 'חסום' }] }] },
           criteria: [
             { label: 'התנאי בודק דרך פתוחה', type: 'conditionState', state: 'OPEN' },
             { label: 'החבילה נמצאת ליד התחנה', type: 'packageNearStation' }
@@ -1024,9 +1024,9 @@
     const academy = conditionAcademy('אקדמיית ה-Agent - מצב בעיר', 'בשיעור הזה העיר מקבלת מצב: הדרך יכולה להיות פתוחה או חסומה. הקוד בודק את המצב בעזרת if ומגיב בהתאם. את מצב הדרך בהדמיה משנים בכפתור שמעל ההדמיה.', 'status');
     // Written as one clear progression; the generic refinement sentences are not added to this lesson.
     academy.skipRefinements = true;
-    const openSay = { type: 'say', text: 'the road is open' };
-    const blockedSay = { type: 'say', text: 'the road is blocked' };
-    const delivery = [{ type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }, { type: 'say', text: 'delivered' }];
+    const openSay = { type: 'say', text: 'הדרך פתוחה' };
+    const blockedSay = { type: 'say', text: 'הדרך חסומה' };
+    const delivery = [{ type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }, { type: 'say', text: 'המשלוח נמסר' }];
     academy.exercises = [
       {
         title: 'תרגיל 1 - מה זה routeOpen?',
@@ -1223,7 +1223,7 @@
           mission: 'תקנו מספר שגורם ל-Agent לעצור לפני התחנה.',
           hint: 'אל תשנו את כל הקוד. חפשו את מספר הצעדים.',
           check: 'אחרי התיקון ה-Agent מגיע לתחנה ומניח סימון.',
-          starter: { command, blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'place', direction: 'DOWN' }, { type: 'say', text: 'test done' }] },
+          starter: { command, blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'place', direction: 'DOWN' }, { type: 'say', text: 'הבדיקה הסתיימה' }] },
           criteria: [
             { label: 'ה-Agent מגיע לתחנת היעד', type: 'reachedStation' },
             { label: 'החבילה נמצאת ליד התחנה', type: 'packageNearStation' }
@@ -1425,7 +1425,7 @@
         hint: 'מספיק לשנות מספר אחד בקוד.',
         check: 'שלוש חבילות על נקודת המסירה, חזרה למחסן והודעת סיום.',
         dropPoints: point,
-        starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [go, drop, back] }, { type: 'say', text: 'the line finished its work' }] },
+        starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [go, drop, back] }, { type: 'say', text: 'הקו סיים את העבודה' }] },
         criteria: [
           { label: 'ה-repeat מוגדר ל-3', type: 'repeatTimes', times: 3 },
           { label: 'שלוש חבילות על נקודת המסירה', type: 'packagesAtCell', dx: 5, dy: 0, min: 3 },
@@ -1492,7 +1492,7 @@
       mission: 'תרגיל דיבוג: כשהדרך חסומה השליח עדיין נוסע. כך מדבגים: מריצים בשני מצבי הדרך, מתארים מה קרה ומה היה צריך לקרות, מוצאים את הבלוק שגורם להבדל ומתקנים דבר אחד בכל פעם. אם נתקעים, לוחצים רמז.',
       hint: 'בדקו איזה בלוק נמצא מחוץ ל-if. מה שמחוץ לתנאי קורה תמיד.',
       check: 'כשפתוח השליח מגיע לתחנה, וכשחסום הוא נשאר במחסן.',
-      starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [], else: [say('waiting for the road')] }, fwd(4)] },
+      starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [], else: [say('ממתין לפתיחת הדרך')] }, fwd(4)] },
       criteria: [
         { label: 'כשהדרך פתוחה השליח מגיע לתחנה', type: 'openReaches' },
         { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' }
@@ -1503,7 +1503,7 @@
       mission: 'כשהדרך פתוחה, אחרי הנסיעה הניחו חבילה למטה (place down) בתחנה.',
       hint: 'place נכנס לתוך then, אחרי התנועה.',
       check: 'כשפתוח יש חבילה בתחנה.',
-      starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(4)], else: [say('waiting for the road')] }] },
+      starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(4)], else: [say('ממתין לפתיחת הדרך')] }] },
       criteria: [
         { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
         { label: 'החבילה מונחת למטה', type: 'placeDirection', direction: 'DOWN' },
@@ -1545,7 +1545,7 @@
       mission: 'בתוך then הוסיפו נסיעה ישרה עד התחנה. כשהדרך חסומה השליח עדיין רק מודיע ולא זז.',
       hint: 'הנסיעה הישרה נכנסת רק לתוך then.',
       check: 'כשפתוח השליח מגיע לתחנה, וכשחסום הוא נשאר במחסן.',
-      starter: { command: 'test', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [], else: [say('the road is blocked')] }] },
+      starter: { command: 'test', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [], else: [say('הדרך חסומה')] }] },
       criteria: [
         { label: 'כשהדרך פתוחה השליח מגיע לתחנה', type: 'openReaches' },
         { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' }
@@ -1556,7 +1556,7 @@
       mission: 'במקום לחכות, השליח יכול לעקוף: בתוך else בנו מסלול שמגיע לתחנה בלי לעבור דרך המחסום. אפשר להשאיר גם את ההודעה.',
       hint: 'המחסום עומד על השביל. ירדו שורה אחת, נסעו לאורך השורה הזו, ועלו בחזרה ליד התחנה.',
       check: 'כשחסום השליח מגיע לתחנה בדרך עוקפת.',
-      starter: { command: 'test', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(7)], else: [say('the road is blocked')] }] },
+      starter: { command: 'test', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(7)], else: [say('הדרך חסומה')] }] },
       criteria: [
         { label: 'כשהדרך חסומה השליח מגיע לתחנה', type: 'blockedReaches' },
         { label: 'השליח לא עובר דרך המחסום', type: 'blockedAvoidsBarrier' },
@@ -1641,7 +1641,7 @@
       mission: 'תרגיל דיבוג: החוק בקוד הזה לא עובד נכון באף אחד ממצבי הדרך. כך מדבגים: מריצים בשני המצבים, מתארים מה קרה ומה היה צריך לקרות, מוצאים את הבלוק שגורם להבדל ומתקנים דבר אחד בכל פעם. אם נתקעים, לוחצים רמז.',
       hint: 'הסתכלו על הערך שבתוך if: האם then באמת מתבצע כשהדרך פתוחה?',
       check: 'כשפתוח יש מסירה, וכשחסום השליח לא עובר במחסום.',
-      starter: { command: 'rule', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'BLOCKED', then: [fwd(6), placeDown], else: [say('the road is blocked, waiting')] }] },
+      starter: { command: 'rule', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'BLOCKED', then: [fwd(6), placeDown], else: [say('הדרך חסומה, ממתין')] }] },
       criteria: [
         { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
         { label: 'השליח לא עובר דרך המחסום', type: 'blockedAvoidsBarrier' }
@@ -1652,7 +1652,7 @@
       mission: 'הוסיפו הודעה גם למצב פתוח: אחרי המסירה השליח מודיע שהמשלוח הגיע.',
       hint: 'ההודעה נכנסת לתוך then אחרי place.',
       check: 'בשני המצבים יש הודעה מתאימה.',
-      starter: { command: 'rule', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(6), placeDown], else: [say('the road is blocked, waiting')] }] },
+      starter: { command: 'rule', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(6), placeDown], else: [say('הדרך חסומה, ממתין')] }] },
       criteria: [
         { label: 'כשהדרך פתוחה יש הודעת מסירה', type: 'openArrivalSay' },
         { label: 'כשהדרך חסומה מופיעה הודעה על החסימה', type: 'blockedSays' }
