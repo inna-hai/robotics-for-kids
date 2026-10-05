@@ -1821,7 +1821,7 @@
   applyLessonMap(3, 1, { x: 238, y: 330 }, [['E', 4]]);
   applyLessonMap(3, 2, { x: 112, y: 200 }, [['E', 7]]);
   applyLessonMap(3, 3, { x: 112, y: 150 }, [['E', 6]]);
-  applyLessonMap(4, 0, { x: 112, y: 120 }, [['E', 3], ['S', 3]]);
+  applyLessonMap(4, 0, { x: 112, y: 120 }, [['E', 6], ['S', 3]]);
   applyLessonMap(4, 1, { x: 238, y: 340 }, [['E', 4], ['N', 2]]);
   const lesson15Academy = applyLessonMap(4, 2, { x: 112, y: 120 }, [['E', 5], ['S', 2]]);
   lesson15Academy.exercises[1].starter.blocks = [{ type: 'teleport' }, ...legsToBlocks([['E', 3], ['S', 2]]), { type: 'place', direction: 'DOWN' }];
@@ -1832,6 +1832,95 @@
   [[2, 3], [4, 0], [4, 1], [4, 2], [4, 3]].forEach(([challengeId, lessonIndex]) => {
     detailsByChallenge[challengeId][lessonIndex].academy.world.hidePath = true;
   });
+
+  // Lesson 13: mapping the city. Each exercise adds one new, checked step: opening message, reaching the
+  // station, marking three systems on the street, shortening the plan, debugging, and a full plan with a summary.
+  {
+    const academy = detailsByChallenge[4][0].academy;
+    academy.skipRefinements = true;
+    const systemPoints = [[2, 0], [4, 0], [6, 0], [6, 3]];
+    academy.dropPointLabel = 'מערכת';
+    const step = steps => ({ type: 'move', direction: 'FORWARD', steps });
+    const mark = { type: 'place', direction: 'DOWN' };
+    const turnRight = { type: 'turn', turn: 'RIGHT_TURN' };
+    const opening = { type: 'say', text: 'מתחילים לסמן את המערכות בעיר' };
+    const longPlan = [opening, { type: 'teleport' }, step(2), mark, step(2), mark, step(2), mark, turnRight, step(3), mark];
+    academy.exercises = [
+      {
+        title: 'תרגיל 1 - פקודת plan',
+        mission: 'בשיעור הזה מתכננים מפה של מערכות בעיר. צרו פקודת צ׳אט בשם plan (באנגלית: "תוכנית"), שמתחילה בהודעה שמסבירה מה הולכים לעשות.',
+        hint: 'הודעה כותבים עם הבלוק מקטגוריית Player.',
+        check: 'יש פקודת plan והודעת פתיחה.',
+        starter: { command: 'plan', blocks: [] },
+        criteria: [
+          { label: 'פקודת הצ׳אט היא plan', type: 'command', command: 'plan' },
+          { label: 'יש הודעת פתיחה', type: 'say' }
+        ]
+      },
+      {
+        title: 'תרגיל 2 - מסמנים את התחנה',
+        mission: 'אחרי ההודעה, השליח נוסע לתחנה ומסמן אותה: מניח שם סימון.',
+        hint: 'הסתכלו איפה התחנה ביחס למחסן. בדרך צריך לפנות.',
+        check: 'השליח מגיע לתחנה ומסמן אותה.',
+        starter: { command: 'plan', blocks: [opening, { type: 'teleport' }] },
+        criteria: [
+          { label: 'ה-Agent מגיע לתחנת היעד', type: 'reachedStation' },
+          { label: 'יש סימון ליד התחנה', type: 'packageNearStation' }
+        ]
+      },
+      {
+        title: 'תרגיל 3 - שלוש מערכות ברחוב',
+        mission: 'בדרך לתחנה יש שלוש מערכות שמסומנות בהדמיה. סמנו כל אחת מהן, וגם את התחנה.',
+        hint: 'עצרו על כל נקודה מסומנת והניחו סימון, ורק אחר כך המשיכו.',
+        check: 'יש סימון על כל נקודה ועל התחנה.',
+        dropPoints: systemPoints,
+        starter: { command: 'plan', blocks: [opening, { type: 'teleport' }, step(6), turnRight, step(3), mark] },
+        criteria: [
+          { label: 'כל סימון הונח על נקודה מסומנת', type: 'onDropPoints' }
+        ]
+      },
+      {
+        title: 'תרגיל 4 - מקצרים את התוכנית',
+        mission: 'בקוד שלכם יש חלק שחוזר על עצמו. קצרו את הקוד כך שיעשה בדיוק אותו דבר, עם 9 בלוקים לכל היותר (כולל on chat command).',
+        hint: 'חפשו בלוקים שמופיעים כמה פעמים ברצף. אפשר לכתוב אותם פעם אחת.',
+        check: 'אותה מפה, עם 9 בלוקים לכל היותר.',
+        dropPoints: systemPoints,
+        maxBlocks: 9,
+        starter: { command: 'plan', blocks: longPlan },
+        criteria: [
+          { label: 'כל סימון הונח על נקודה מסומנת', type: 'onDropPoints' },
+          { label: 'הקוד משתמש ב-9 בלוקים לכל היותר', type: 'maxBlocks', max: 9 }
+        ]
+      },
+      {
+        title: 'תרגיל 5 - דיבוג: סימונים במקום הלא נכון',
+        debugStart: true,
+        mission: 'תרגיל דיבוג: הסימונים לא נמצאים על המערכות. כך מדבגים: מריצים וצופים בהדמיה, מתארים מה קרה ומה היה צריך לקרות, מוצאים את הבלוק שגורם להבדל ומתקנים דבר אחד בכל פעם. אם נתקעים, לוחצים רמז.',
+        hint: 'בדקו את הסדר בתוך הלולאה: מה קורה קודם, התזוזה או הסימון?',
+        check: 'כל סימון על נקודה מסומנת.',
+        dropPoints: systemPoints,
+        starter: { command: 'plan', blocks: [opening, { type: 'teleport' }, { type: 'repeat', times: 3, blocks: [mark, step(2)] }, turnRight, step(3), mark] },
+        criteria: [
+          { label: 'כל סימון הונח על נקודה מסומנת', type: 'onDropPoints' }
+        ]
+      },
+      {
+        title: 'אתגר קטן - תוכנית מלאה',
+        mission: 'השלימו תוכנית מלאה: הודעת פתיחה, סימון כל המערכות והתחנה בקוד קצר, ובסוף הודעת סיכום שמסבירה מה סומן.',
+        hint: 'הודעת הסיכום היא הבלוק האחרון בקוד.',
+        check: 'מפה מלאה, קוד קצר, הודעת פתיחה והודעת סיכום.',
+        dropPoints: systemPoints,
+        maxBlocks: 10,
+        starter: { command: 'plan', blocks: [opening, { type: 'teleport' }, { type: 'repeat', times: 3, blocks: [step(2), mark] }, turnRight, step(3), mark] },
+        criteria: [
+          { label: 'כל סימון הונח על נקודה מסומנת', type: 'onDropPoints' },
+          { label: 'הקוד משתמש ב-10 בלוקים לכל היותר', type: 'maxBlocks', max: 10 },
+          { label: 'הקוד מסתיים בהודעת סיכום', type: 'endsWithSay' },
+          { label: 'פקודת הצ׳אט היא plan', type: 'command', command: 'plan' }
+        ]
+      }
+    ];
+  }
 
   const agentAcademyExerciseRefinements = {
     1: [

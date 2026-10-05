@@ -653,6 +653,10 @@
       const lastRepeat = state.actions.map(action => action.type).lastIndexOf('repeat');
       return lastRepeat > -1 && state.actions.some((action, index) => index > lastRepeat && action.type === 'say' && !action.inRepeat && isSuccessMessage(action.text));
     }
+    if (criterion.type === 'endsWithSay') {
+      const last = state.actions[state.actions.length - 1];
+      return state.says.length > 1 && last?.type === 'say' && String(last.text || '').trim().length > 0;
+    }
     if (criterion.type === 'maxBlocks') return workspace.getAllBlocks(false).length <= Number(criterion.max);
     if (criterion.type === 'sayCount') return state.says.filter(isSuccessMessage).length >= Number(criterion.min || 1);
     if (criterion.type === 'placeBlockCount') return workspace.getAllBlocks(false).filter(block => block.type === 'mc_place_agent').length <= Number(criterion.max || 1);
@@ -1139,7 +1143,7 @@
       ctx.fillStyle = '#713f12';
       ctx.font = '900 19px Rubik, Arial';
       ctx.textAlign = 'center';
-      if (!(showStation && isNear(point, station, 20))) ctx.fillText(`מסירה ${index + 1}`, point.x, point.y - 25);
+      if (!(showStation && isNear(point, station, 20))) ctx.fillText(`${academy.dropPointLabel || 'מסירה'} ${index + 1}`, point.x, point.y - 25);
     });
 
     ctx.strokeStyle = '#facc15';
