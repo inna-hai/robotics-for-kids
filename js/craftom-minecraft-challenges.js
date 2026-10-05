@@ -2194,6 +2194,21 @@
     command: challenge.command
   })));
 
+  // Lesson 5 exercise 1 places two packages by copying blocks (Loops locked), so exercise 2 is the step that turns
+  // the copied code into a loop. Set after the refinements, which would otherwise add a repeat requirement here too.
+  Object.assign(detailsByChallenge[2][0].academy.exercises[0], {
+    title: 'תרגיל 1 - שתי חבילות',
+    mission: 'צרו פקודת start שבה השליח מניח 2 חבילות בשני מקומות על הדרך: הוא זז קדימה ומניח חבילה, ואז זז שוב קדימה ומניח חבילה נוספת.',
+    hint: 'אחרי ההתחלה צריך פעמיים את אותו זוג בלוקים: move ואחריו place.',
+    check: 'יש פקודת start, והשליח מניח שתי חבילות.',
+    hideLoops: true,
+    criteria: [
+      { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' },
+      { label: 'השליח מניח 2 חבילות', type: 'placeCount', min: 2 }
+    ],
+  });
+  detailsByChallenge[2][0].academy.exercises[1].starter = { command: 'start', blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 2 }, { type: 'place', direction: 'DOWN' }, { type: 'move', direction: 'FORWARD', steps: 2 }, { type: 'place', direction: 'DOWN' }] };
+
   // Lessons 14-16 get detailed missions: what is already on the board, what to add and where, and what to expect in the run.
   // Written after the refinements so each mission covers every check of its exercise.
   const detailedProjectMissions = {
