@@ -2238,11 +2238,21 @@
       ],
     });
     lesson1.exercises[4].starter = { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 7 }, { type: 'say', text: 'המשלוח הגיע' }] };
-    lesson1.exercises[5].starter = { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 10 }, { type: 'say', text: 'המשלוח הגיע' }] };
-    // Exercise 6 continues from the two-move trip of exercise 5, so it checks the exact stop instead of one move's number.
-    lesson1.exercises[5].criteria = lesson1.exercises[5].criteria
-      .filter(criterion => criterion.type !== 'firstMove')
-      .map(criterion => criterion.type === 'reachedStation' ? { ...criterion, label: 'אחרי התיקון השליח עוצר בדיוק בתחנה', radius: 20 } : criterion);
+    // Exercise 6 is a debug exercise: it opens with a two-move trip whose second number overshoots the station.
+    Object.assign(lesson1.exercises[5], {
+      title: 'אתגר קטן - דיבוג: השליח עובר את התחנה',
+      mission: 'תרגיל דיבוג: השליח אמור לעצור בתחנה, אבל הוא ממשיך ועובר אותה. הריצו, הסתכלו בהדמיה איפה הוא עוצר, מצאו את המספר שגורם לזה ותקנו רק אותו.',
+      hint: 'השליח עובר את התחנה בשני צעדים. בדקו את התנועה השנייה.',
+      check: 'אחרי התיקון השליח עוצר בדיוק בתחנה, ושתי התנועות וההודעות נשארו.',
+      debugStart: true,
+      starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'say', text: 'חצי דרך!' }, { type: 'move', direction: 'FORWARD', steps: 6 }, { type: 'say', text: 'המשלוח הגיע' }] },
+      criteria: [
+        { label: 'אחרי התיקון השליח עוצר בדיוק בתחנה', type: 'reachedStation', radius: 20 },
+        { label: 'שתי התנועות נשארו', type: 'moveCount', min: 2 },
+        { label: 'הודעת ההגעה מופיעה אחרי התנועה האחרונה', type: 'arrivalSayAfterMove' },
+        { label: 'השליח נשאר על השביל', type: 'staysOnStartRow' }
+      ],
+    });
   }
 
   // Lesson 5 exercise 1 places two packages by copying blocks (Loops locked), so exercise 2 is the step that turns
