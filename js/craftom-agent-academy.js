@@ -18,7 +18,7 @@
   if (!academy || !window.Blockly || !blocklyDiv || !pythonOutput || !canvas || !exerciseList || !checksEl || !feedbackEl) return;
 
   // Lessons with if routeOpen get a button that switches the road between open and blocked.
-  const conditionCriteria = ['condition', 'conditionState', 'elseBranch', 'elseSay', 'repeatOrCondition', 'thenSay', 'openSays', 'blockedSays', 'openDelivers', 'openArrivalSay', 'blockedStays', 'openReaches', 'blockedReaches', 'blockedDelivers', 'blockedAvoidsBarrier', 'blockedSaysAbout'];
+  const conditionCriteria = ['condition', 'conditionState', 'elseBranch', 'elseSay', 'repeatOrCondition', 'thenSay', 'openSays', 'blockedSays', 'openDelivers', 'openArrivalSay', 'blockedStays', 'openReaches', 'blockedReaches', 'blockedDelivers', 'blockedAvoidsBarrier', 'blockedSaysAbout', 'openReturns', 'openPackagesAtStation'];
   const usesRouteState = (academy.exercises || []).some(exercise => (exercise.criteria || []).some(criterion => conditionCriteria.includes(criterion.type)));
   let routeToggle = null;
   if (usesRouteState) {
@@ -58,7 +58,7 @@
   const cell = 42;
   // Lessons whose exercises never check the station (e.g. loop lessons that drop packages along the line) hide it,
   // so students don't think the courier missed a target.
-  const stationCriteria = ['reachedStation', 'packageNearStation', 'arrivalSayAfterMove', 'openDelivers', 'openReaches', 'blockedReaches', 'blockedDelivers'];
+  const stationCriteria = ['reachedStation', 'packageNearStation', 'arrivalSayAfterMove', 'openDelivers', 'openReaches', 'blockedReaches', 'blockedDelivers', 'openPackagesAtStation'];
   const showStation = (academy.exercises || []).some(exercise => (exercise.criteria || []).some(criterion => stationCriteria.includes(criterion.type)));
   let activeExercise = 0;
   let visibleMode = 'blocks';
@@ -634,6 +634,8 @@
     if (criterion.type === 'blockedSaysAbout') return runProgram(false).says.some(isBlockedMessage);
     if (criterion.type === 'blockedSays') return runProgram(false).says.some(isBlockedMessage);
     if (criterion.type === 'openArrivalSay') return runProgram(true).says.some(isSuccessMessage);
+    if (criterion.type === 'openReturns') return isNear(runProgram(true), start, 20);
+    if (criterion.type === 'openPackagesAtStation') return runProgram(true).packages.filter(pkg => isNear(pkg, station, criterion.radius || 52)).length >= Number(criterion.min || 1);
     if (criterion.type === 'openReaches') return isNear(runProgram(true), station, criterion.radius || 52);
     if (criterion.type === 'blockedReaches') return isNear(runProgram(false), station, criterion.radius || 52);
     if (criterion.type === 'blockedDelivers') return runProgram(false).packages.some(pkg => isNear(pkg, station, criterion.radius || 52));
