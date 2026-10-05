@@ -18,7 +18,7 @@
   if (!academy || !window.Blockly || !blocklyDiv || !pythonOutput || !canvas || !exerciseList || !checksEl || !feedbackEl) return;
 
   // Lessons with if routeOpen get a button that switches the road between open and blocked.
-  const conditionCriteria = ['condition', 'conditionState', 'elseBranch', 'elseSay', 'repeatOrCondition', 'thenSay', 'openSays', 'blockedSays', 'openDelivers', 'openArrivalSay', 'blockedStays', 'openReaches', 'blockedReaches', 'blockedDelivers', 'blockedAvoidsBarrier'];
+  const conditionCriteria = ['condition', 'conditionState', 'elseBranch', 'elseSay', 'repeatOrCondition', 'thenSay', 'openSays', 'blockedSays', 'openDelivers', 'openArrivalSay', 'blockedStays', 'openReaches', 'blockedReaches', 'blockedDelivers', 'blockedAvoidsBarrier', 'blockedSaysAbout'];
   const usesRouteState = (academy.exercises || []).some(exercise => (exercise.criteria || []).some(criterion => conditionCriteria.includes(criterion.type)));
   let routeToggle = null;
   if (usesRouteState) {
@@ -525,6 +525,12 @@
     '✅', '✔', '🎉', '👍', '🥳', '😀', '😃', '😊', '📦', '🚚', '⭐', '🏆'
   ].join('|'), 'iu');
   const negativeWords = /((^|[\s,.!?])(לא|אין|בלי)(?=[\s,.!?]|$)|נכשל|כישלון|שגיאה|תקלה|נתקע|אבד|הלך לאיבוד|fail|error|\bnot\b|n't|\bno\b|\bnever\b|lost|stuck|wrong|problem)/i;
+  // A message about the blocked road: it mentions the block, waiting, stopping or taking another way.
+  const blockedWords = /(חסו|חסימ|סגור|נסגר|מחסום|ממתינ|ממתין|מחכ|המתנ|עוקפ|עוקף|עקיפ|דרך אחרת|דרך חלופית|מסלול חלופי|מסלול אחר|אי אפשר|לא ניתן|לא אפשר|לא פתוח|לא פתוחה|תקוע|עוצר|עצירה|block|closed|wait|detour|another way|other way|around|stop|can't|cannot|not open)/i;
+  function isBlockedMessage(text) {
+    return blockedWords.test(String(text || '').trim());
+  }
+
   function isSuccessMessage(text) {
     const value = String(text || '').trim();
     return value.length > 0 && successWords.test(value) && !negativeWords.test(value);
@@ -582,6 +588,7 @@
     if (criterion.type === 'packageNearStation') return hasPackageNearStation;
     if (criterion.type === 'thenSay') return state.conditions.some(condition => condition.thenHasSay);
     if (criterion.type === 'openSays') return runProgram(true).says.some(text => String(text || '').trim());
+    if (criterion.type === 'blockedSaysAbout') return runProgram(false).says.some(isBlockedMessage);
     if (criterion.type === 'blockedSays') return runProgram(false).says.some(text => String(text || '').trim());
     if (criterion.type === 'openArrivalSay') return runProgram(true).says.some(isSuccessMessage);
     if (criterion.type === 'openReaches') return isNear(runProgram(true), station, criterion.radius || 52);
