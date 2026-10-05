@@ -311,20 +311,20 @@
 
   function toolboxXml() {
     return `<xml xmlns="https://developers.google.com/blockly/xml">
-      <category name="Events · אירועים" colour="215"><block type="mc_on_chat"><field name="COMMAND">${esc(academy.command || 'deliver')}</field></block></category>
-      <category name="Agent · סוכן" colour="35">
+      <category name="Events" colour="215"><block type="mc_on_chat"><field name="COMMAND">${esc(academy.command || 'deliver')}</field></block></category>
+      <category name="Agent" colour="35">
         <block type="mc_teleport_agent"></block>
         <block type="mc_move_agent"></block>
         <block type="mc_turn_agent"></block>
         <block type="mc_place_agent"></block>
       </category>
-      <category name="Loops · לולאות" colour="120">
+      <category name="Loops" colour="120">
         <block type="mc_repeat"></block>
       </category>
-      <category name="Logic · תנאים" colour="180">
+      <category name="Logic" colour="180">
         <block type="mc_if_route_open"></block>
       </category>
-      <category name="Player · שחקן" colour="290"><block type="mc_say"></block></category>
+      <category name="Player" colour="290"><block type="mc_say"></block></category>
     </xml>`;
   }
 
