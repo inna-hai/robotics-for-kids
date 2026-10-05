@@ -309,7 +309,9 @@
     return `<xml xmlns="https://developers.google.com/blockly/xml">${starts[index] || starts[0]}</xml>`;
   }
 
-  function toolboxXml() {
+  // Exercises that will later ask to turn long code into a loop hide the Loops category until then.
+  function toolboxXml(exercise = academy.exercises[activeExercise]) {
+    const showLoops = !exercise?.hideLoops;
     return `<xml xmlns="https://developers.google.com/blockly/xml">
       <category name="Events" colour="215"><block type="mc_on_chat"><field name="COMMAND">${esc(academy.command || 'deliver')}</field></block></category>
       <category name="Agent" colour="35">
@@ -318,9 +320,9 @@
         <block type="mc_turn_agent"></block>
         <block type="mc_place_agent"></block>
       </category>
-      <category name="Loops" colour="120">
+      ${showLoops ? `<category name="Loops" colour="120">
         <block type="mc_repeat"></block>
-      </category>
+      </category>` : ''}
       <category name="Logic" colour="180">
         <block type="mc_if_route_open"></block>
       </category>
@@ -1421,6 +1423,7 @@
   // Work in progress is kept only while it still builds on the same starting board; once the previous
   // exercise has a newer correct solution, the exercise restarts from it.
   function openExercise() {
+    workspace.updateToolbox(toolboxXml());
     // Exercises about getting around the barrier open with the road blocked, so the barrier is visible right away.
     const detourCriteria = ['blockedReaches', 'blockedAvoidsBarrier', 'blockedDelivers'];
     if (routeToggle && (academy.exercises[activeExercise]?.criteria || []).some(criterion => detourCriteria.includes(criterion.type))) {
