@@ -312,6 +312,8 @@
   // Exercises that will later ask to turn long code into a loop hide the Loops category until then.
   function toolboxXml(exercise = academy.exercises[activeExercise]) {
     const showLoops = !exercise?.hideLoops;
+    // Condition blocks appear only in lessons whose exercises use conditions (or that an exercise doesn't hide).
+    const showLogic = usesRouteState && !exercise?.hideLogic;
     return `<xml xmlns="https://developers.google.com/blockly/xml">
       <category name="Events" colour="215"><block type="mc_on_chat"><field name="COMMAND">${esc(academy.command || 'deliver')}</field></block></category>
       <category name="Agent" colour="35">
@@ -323,9 +325,9 @@
       ${showLoops ? `<category name="Loops" colour="120">
         <block type="mc_repeat"></block>
       </category>` : ''}
-      <category name="Logic" colour="180">
+      ${showLogic ? `<category name="Logic" colour="180">
         <block type="mc_if_route_open"></block>
-      </category>
+      </category>` : ''}
       <category name="Player" colour="290"><block type="mc_say"></block></category>
     </xml>`;
   }
