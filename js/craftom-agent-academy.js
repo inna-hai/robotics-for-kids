@@ -1392,7 +1392,16 @@
 
   hintButton.addEventListener('click', () => {
     const hint = academy.exercises[activeExercise]?.hint || hints[activeExercise] || 'התחילו מפקודת chat ואז הוסיפו פקודת Agent אחת.';
-    feedbackEl.textContent = `רמז: ${hint}`;
+    // When a message's content is checked, the hint also suggests a few example messages.
+    const types = (academy.exercises[activeExercise]?.criteria || []).map(criterion => criterion.type);
+    const examples = [];
+    if (types.some(type => ['arrivalSay', 'arrivalSayAfterMove', 'openArrivalSay', 'sayAfterLoop', 'sayCount'].includes(type))) {
+      examples.push('הודעת הצלחה, למשל: "המשלוח הגיע", "החבילה נמסרה", "סיימנו! 🎉"');
+    }
+    if (types.some(type => ['blockedSays', 'blockedSaysAbout'].includes(type))) {
+      examples.push('הודעת חסימה, למשל: "הדרך חסומה", "ממתין לפתיחת הדרך", "עוקף בדרך אחרת"');
+    }
+    feedbackEl.textContent = `רמז: ${hint}${examples.length ? ` דוגמאות: ${examples.join('. ')}.` : ''}`;
     feedbackEl.className = 'academy-feedback';
   });
 
