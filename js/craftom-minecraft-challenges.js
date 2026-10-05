@@ -753,13 +753,13 @@
         },
         {
           title: 'תרגיל 5 - הודעה אחרי הלולאה',
-          mission: 'הוסיפו הודעה שמסבירה שכל המשלוחים החוזרים הסתיימו.',
-          hint: 'ההודעה יכולה להיות אחרי repeat, כסיכום של כל הפעולה.',
-          check: 'יש לולאה והודעת סיום.',
+          mission: 'אחרי הלולאה, ולא בתוכה, הוסיפו הודעה שמסבירה שכל המשלוחים הסתיימו.',
+          hint: 'אם ההודעה בתוך repeat היא תופיע בכל סיבוב. היא צריכה להופיע פעם אחת, בסוף.',
+          check: 'יש לולאה והודעת סיום אחת אחריה.',
           starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 3, blocks: [{ type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }] }] },
           criteria: [
             { label: 'ה-repeat מוגדר ל-3', type: 'repeatTimes', times: 3 },
-            { label: 'יש הודעת סיום', type: 'say' }
+            { label: 'יש הודעת סיום אחרי הלולאה', type: 'sayAfterLoop' }
           ]
         },
         {
@@ -1408,7 +1408,7 @@
       },
       {
         title: 'תרגיל 5 - הודעת סיום',
-        mission: 'אחרי הלולאה הוסיפו player say שמודיע שהקו סיים את העבודה.',
+        mission: 'אחרי הלולאה, ולא בתוכה, הוסיפו player say שמודיע שהקו סיים את העבודה.',
         hint: 'ההודעה נכנסת אחרי repeat, כדי שתופיע פעם אחת בסוף.',
         check: 'הקו עובד, והשליח מודיע בסוף שסיים.',
         dropPoints: point,
@@ -1416,7 +1416,7 @@
         criteria: [
           { label: 'כל החבילות על נקודת המסירה', type: 'packagesAtCell', dx: 5, dy: 0 },
           { label: 'ה-Agent חוזר לנקודת ההתחלה', type: 'returnToStart' },
-          { label: 'יש הודעת סיום', type: 'arrivalSay' }
+          { label: 'יש הודעת סיום אחרי הלולאה', type: 'sayAfterLoop' }
         ]
       },
       {
@@ -1430,7 +1430,7 @@
           { label: 'ה-repeat מוגדר ל-3', type: 'repeatTimes', times: 3 },
           { label: 'שלוש חבילות על נקודת המסירה', type: 'packagesAtCell', dx: 5, dy: 0, min: 3 },
           { label: 'ה-Agent חוזר לנקודת ההתחלה', type: 'returnToStart' },
-          { label: 'יש הודעת סיום', type: 'arrivalSay' },
+          { label: 'יש הודעת סיום אחרי הלולאה', type: 'sayAfterLoop' },
           { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' }
         ]
       }
@@ -1788,7 +1788,7 @@
     },
     {
       title: 'תרגיל 5 - הודעה בסוף הקו',
-      mission: 'אחרי הלולאה הוסיפו player say שמודיע שכל החבילות נמסרו.',
+      mission: 'אחרי הלולאה, ולא בתוכה, הוסיפו player say שמודיע שכל החבילות נמסרו.',
       hint: 'ההודעה נכנסת אחרי repeat, לא בתוכו, כדי שתופיע פעם אחת בסוף.',
       check: 'השליח מגיע לתחנה ומודיע שהמשלוחים הגיעו.',
       dropPoints: stairDropPoints,
@@ -1796,7 +1796,7 @@
       criteria: [
         { label: 'כל חבילה הונחה על נקודת מסירה', type: 'onDropPoints' },
         { label: 'ה-Agent מגיע לתחנת היעד', type: 'reachedStation' },
-        { label: 'יש הודעת מסירה בסוף', type: 'arrivalSayAfterMove' }
+        { label: 'יש הודעת מסירה אחרי הלולאה', type: 'sayAfterLoop' }
       ]
     },
     {
@@ -1812,7 +1812,7 @@
         { label: 'כל הנחות החבילה נמצאות בתוך ה-repeat', type: 'placeInRepeat' },
         { label: 'כל חבילה הונחה על נקודת מסירה', type: 'onDropPoints' },
         { label: 'ה-Agent מגיע לתחנת היעד', type: 'reachedStation' },
-        { label: 'יש הודעת מסירה בסוף', type: 'arrivalSayAfterMove' },
+        { label: 'יש הודעת מסירה אחרי הלולאה', type: 'sayAfterLoop' },
         { label: 'פקודת הצ׳אט היא cycle', type: 'command', command: 'cycle' }
       ]
     }

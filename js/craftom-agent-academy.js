@@ -473,7 +473,7 @@
         state.says.push(current.getFieldValue('TEXT') || '');
         state.bubbleText = current.getFieldValue('TEXT') || '';
         state.bubbleTtl = sayBubbleFrames;
-        state.actions.push({ type: 'say', text: current.getFieldValue('TEXT') || '' });
+        state.actions.push({ type: 'say', text: current.getFieldValue('TEXT') || '', inRepeat: (state.repeatDepth || 0) > 0 });
         state.frames.push(visualSnapshot(state));
       } else if (current.type === 'mc_repeat') {
         const times = Math.max(1, Number(current.getFieldValue('TIMES') || 1));
@@ -597,6 +597,11 @@
     if (criterion.type === 'blockedStays') {
       const blocked = runProgram(false);
       return isNear(blocked, start, 20) && blocked.packages.length === 0;
+    }
+    if (criterion.type === 'sayAfterLoop') {
+      // A success message outside any loop, placed after the last loop has finished.
+      const lastRepeat = state.actions.map(action => action.type).lastIndexOf('repeat');
+      return lastRepeat > -1 && state.actions.some((action, index) => index > lastRepeat && action.type === 'say' && !action.inRepeat && isSuccessMessage(action.text));
     }
     if (criterion.type === 'maxBlocks') return workspace.getAllBlocks(false).length <= Number(criterion.max);
     if (criterion.type === 'sayCount') return state.says.filter(isSuccessMessage).length >= Number(criterion.min || 1);
