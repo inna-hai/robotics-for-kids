@@ -569,7 +569,7 @@
   ].join('|'), 'iu');
   const negativeWords = /((^|[\s,.!?])(לא|אין|בלי)(?=[\s,.!?]|$)|נכשל|כישלון|שגיאה|תקלה|נתקע|אבד|הלך לאיבוד|fail|error|\bnot\b|n't|\bno\b|\bnever\b|lost|stuck|wrong|problem)/i;
   // An opening / planning message: it says what is about to happen (starting, planning, marking, the city, the delivery).
-  const openingWords = /(מתחיל|מתחילים|נתחיל|התחלה|יוצא|יוצאים|נצא|מוכן|מוכנים|תוכנית|מתכנן|מתכננים|נתכנן|תכנון|מסמן|מסמנים|נסמן|סימון|מפה|ממפים|מערכת|מערכות|עיר|בונים|נבנה|בנייה|הולכים|להניח|מניח|מניחים|נניח|חבילה|חבילות|תחנה|לנסוע|נוסע|נוסעים|ניסע|להגיע|נגיע|לסמן|בודק|בודקים|נבדוק|start|begin|plan|ready|map|city|system|build|let'?s|deliver|going to|check)/i;
+  const openingWords = /(מתחיל|מתחילים|נתחיל|התחלה|יוצא|יוצאים|נצא|מוכן|מוכנים|תוכנית|מתכנן|מתכננים|נתכנן|תכנון|מסמן|מסמנים|נסמן|סימון|מפה|ממפים|מערכת|מערכות|עיר|בונים|נבנה|בנייה|הולכים|להניח|מניח|מניחים|נניח|לשלוח|שולח|שולחים|נשלח|להביא|מביא|מביאים|נביא|למסור|מוסר|מוסרים|נמסור|חבילה|חבילות|תחנה|לנסוע|נוסע|נוסעים|ניסע|להגיע|נגיע|לסמן|בודק|בודקים|נבדוק|start|begin|plan|ready|map|city|system|build|let'?s|deliver|going to|check)/i;
   function isOpeningMessage(text) {
     const value = String(text || '').trim();
     // A message that reports the end ("arrived", "delivered") is not an opening.
