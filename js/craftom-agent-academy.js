@@ -772,13 +772,13 @@
     ctx.fillStyle = '#fef3c7';
     ctx.strokeStyle = '#5f3712';
     ctx.lineWidth = 2;
-    ctx.roundRect(x - 32, y - 72, 64, 23, 5);
+    ctx.roundRect(x - 46, y - 84, 92, 36, 7);
     ctx.fill();
     ctx.stroke();
     ctx.fillStyle = '#422006';
-    ctx.font = '900 14px Rubik, Arial';
+    ctx.font = '900 24px Rubik, Arial';
     ctx.textAlign = 'center';
-    ctx.fillText('תחנה', x, y - 56);
+    ctx.fillText('תחנה', x, y - 57);
   }
 
   function roundedBox(x, y, w, h, r, fill, stroke) {
@@ -1006,18 +1006,18 @@
     ctx.fill();
     if (blocked && !gateAnimating) {
       ctx.fillStyle = '#7f1d1d';
-      ctx.font = '900 12px Rubik, Arial';
+      ctx.font = '900 22px Rubik, Arial';
       ctx.textAlign = 'center';
-      ctx.fillText('דרך חסומה', pivotX, start.y + 40);
+      ctx.fillText('דרך חסומה', pivotX, start.y + 48);
     }
   }
 
   // Bubble above the boom gate: what the if read, and which branch it chose.
   function drawConditionBubble(bubble) {
     const x = start.x + cell * 2.5;
-    const y = start.y - 92;
-    const width = 176;
-    const height = 46;
+    const y = Math.max(6, start.y - 168);
+    const width = 310;
+    const height = 78;
     ctx.fillStyle = 'rgba(15, 23, 42, .92)';
     ctx.strokeStyle = bubble.holds ? '#22c55e' : '#f97316';
     ctx.lineWidth = 2;
@@ -1034,13 +1034,13 @@
     ctx.fill();
     ctx.textAlign = 'center';
     ctx.fillStyle = '#e2e8f0';
-    ctx.font = '800 12px ui-monospace, Menlo, monospace';
+    ctx.font = '800 22px ui-monospace, Menlo, monospace';
     ctx.direction = 'ltr';
-    ctx.fillText(bubble.reading, x, y + 18);
+    ctx.fillText(bubble.reading, x, y + 30);
     ctx.direction = 'rtl';
     ctx.fillStyle = bubble.holds ? '#86efac' : '#fdba74';
-    ctx.font = '900 12px Rubik, Arial';
-    ctx.fillText(bubble.decision, x, y + 36);
+    ctx.font = '900 22px Rubik, Arial';
+    ctx.fillText(bubble.decision, x, y + 63);
     ctx.direction = 'inherit';
   }
 
@@ -1079,13 +1079,13 @@
     ctx.fillStyle = '#fff7ed';
     ctx.strokeStyle = '#5f3712';
     ctx.lineWidth = 2;
-    ctx.roundRect(start.x - 34, start.y - 66, 68, 24, 5);
+    ctx.roundRect(start.x - 46, start.y - 80, 92, 36, 7);
     ctx.fill();
     ctx.stroke();
     ctx.fillStyle = '#422006';
-    ctx.font = '900 14px Rubik, Arial';
+    ctx.font = '900 24px Rubik, Arial';
     ctx.textAlign = 'center';
-    ctx.fillText('מחסן', start.x, start.y - 49);
+    ctx.fillText('מחסן', start.x, start.y - 53);
 
     if (showStation) drawStationBlock(station.x, station.y);
 
@@ -1105,7 +1105,7 @@
       ctx.stroke();
       ctx.setLineDash([]);
       ctx.fillStyle = '#713f12';
-      ctx.font = '900 11px Rubik, Arial';
+      ctx.font = '900 19px Rubik, Arial';
       ctx.textAlign = 'center';
       if (!(showStation && isNear(point, station, 20))) ctx.fillText(`מסירה ${index + 1}`, point.x, point.y - 25);
     });
@@ -1120,16 +1120,16 @@
       ctx.stroke();
     });
     state.path.forEach((segment, index) => {
-      const markerSize = 18;
+      const markerSize = 26;
       ctx.fillStyle = '#fde047';
       ctx.strokeStyle = '#713f12';
       ctx.lineWidth = 2;
       ctx.fillRect(segment.x2 - markerSize / 2, segment.y2 - markerSize / 2, markerSize, markerSize);
       ctx.strokeRect(segment.x2 - markerSize / 2, segment.y2 - markerSize / 2, markerSize, markerSize);
       ctx.fillStyle = '#422006';
-      ctx.font = '900 11px Rubik, Arial';
+      ctx.font = '900 18px Rubik, Arial';
       ctx.textAlign = 'center';
-      ctx.fillText(String(index + 1), segment.x2, segment.y2 + 4);
+      ctx.fillText(String(index + 1), segment.x2, segment.y2 + 6);
     });
 
     function drawPackage(pkg) {
@@ -1161,12 +1161,13 @@
       ctx.strokeStyle = '#facc15';
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.roundRect(244, 35, 280, 52, 6);
+      ctx.roundRect(164, 18, 440, 74, 10);
       ctx.fill();
       ctx.stroke();
       ctx.fillStyle = '#f8fafc';
-      ctx.font = '800 15px Rubik, Arial';
-      ctx.fillText(text, 384, 67);
+      ctx.font = '900 27px Rubik, Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(text, 384, 64);
     }
   }
 
