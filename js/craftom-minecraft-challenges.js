@@ -1346,6 +1346,81 @@
   setAcademy(4, 2, debugAutomationAcademy());
   setAcademy(4, 3, demoCityAcademy());
 
+  // From lesson 8 on, each lesson has its own map (warehouse and station in different places), so students
+  // plan a new route every lesson. Legs are [direction, cells]; the Agent always starts facing east (E).
+  function routeWorld(start, legs) {
+    const offsets = { E: [1, 0], W: [-1, 0], S: [0, 1], N: [0, -1] };
+    let { x, y } = start;
+    const routeTiles = [];
+    legs.forEach(([direction, cells]) => {
+      for (let step = 0; step < cells; step += 1) {
+        x += offsets[direction][0] * 42;
+        y += offsets[direction][1] * 42;
+        routeTiles.push({ x, y });
+      }
+    });
+    return { start, station: { x, y }, routeTiles };
+  }
+
+  // Turns between consecutive legs, as agent turn blocks.
+  function legsToBlocks(legs, shortenLastBy = 0) {
+    const headings = { E: 0, S: 90, W: 180, N: 270 };
+    const blocks = [];
+    legs.forEach(([direction, cells], index) => {
+      if (index > 0) {
+        const delta = (headings[direction] - headings[legs[index - 1][0]] + 360) % 360;
+        blocks.push({ type: 'turn', turn: delta === 270 ? 'LEFT_TURN' : 'RIGHT_TURN' });
+      }
+      const steps = index === legs.length - 1 ? Math.max(1, cells - shortenLastBy) : cells;
+      blocks.push({ type: 'move', direction: 'FORWARD', steps });
+    });
+    return blocks;
+  }
+
+  // Scaffolds were written for a 5-step straight road (and 3 steps as the "too short" bug); rewrite them for the new map.
+  function retuneStarterBlocks(blocks, legs) {
+    return (blocks || []).flatMap(block => {
+      if (block.type === 'move' && block.direction === 'FORWARD' && (block.steps === 5 || block.steps === 3)) {
+        return legsToBlocks(legs, block.steps === 3 ? 2 : 0);
+      }
+      if (block.type === 'repeat') return [{ ...block, blocks: retuneStarterBlocks(block.blocks, legs) }];
+      if (block.type === 'ifRoute') return [{ ...block, then: retuneStarterBlocks(block.then, legs), else: retuneStarterBlocks(block.else, legs) }];
+      return [block];
+    });
+  }
+
+  function applyLessonMap(challengeId, lessonIndex, start, legs) {
+    const academy = detailsByChallenge[challengeId][lessonIndex].academy;
+    academy.world = routeWorld(start, legs);
+    academy.exercises.forEach(exercise => {
+      if (exercise.starter?.blocks) exercise.starter.blocks = retuneStarterBlocks(exercise.starter.blocks, legs);
+    });
+    return academy;
+  }
+
+  const lesson8Academy = detailsByChallenge[2][3].academy;
+  lesson8Academy.world = routeWorld({ x: 238, y: 320 }, [['E', 3], ['N', 3]]);
+  lesson8Academy.exercises.forEach(exercise => {
+    const retune = blocks => (blocks || []).map(block => {
+      if (block.type === 'repeat') return { ...block, blocks: retune(block.blocks) };
+      if (block.type === 'turn') return { ...block, turn: 'LEFT_TURN' };
+      if (block.type === 'move' && block.steps === 4) return { ...block, steps: 3 };
+      return block;
+    });
+    if (exercise.starter?.blocks) exercise.starter.blocks = retune(exercise.starter.blocks);
+  });
+  applyLessonMap(3, 0, { x: 112, y: 250 }, [['E', 6]]);
+  const lesson10Academy = applyLessonMap(3, 1, { x: 238, y: 330 }, [['E', 4]]);
+  lesson10Academy.exercises[1].mission = lesson10Academy.exercises[1].mission.replace('תנועה של 5 צעדים קדימה', 'תנועה של 4 צעדים קדימה');
+  applyLessonMap(3, 2, { x: 112, y: 200 }, [['E', 7]]);
+  applyLessonMap(3, 3, { x: 112, y: 150 }, [['E', 6]]);
+  applyLessonMap(4, 0, { x: 112, y: 120 }, [['E', 3], ['S', 3]]);
+  applyLessonMap(4, 1, { x: 238, y: 340 }, [['E', 4], ['N', 2]]);
+  const lesson15Academy = applyLessonMap(4, 2, { x: 112, y: 120 }, [['E', 5], ['S', 2]]);
+  lesson15Academy.exercises[1].starter.blocks = [{ type: 'teleport' }, ...legsToBlocks([['E', 3], ['S', 2]]), { type: 'place', direction: 'DOWN' }];
+  lesson15Academy.exercises[1].mission = lesson15Academy.exercises[1].mission.replace('תקנו תנועה של 3 צעדים ל-5', 'תקנו את התנועה הראשונה מ-3 צעדים ל-5');
+  applyLessonMap(4, 3, { x: 112, y: 120 }, [['E', 2], ['S', 3], ['E', 3]]);
+
   const agentAcademyExerciseRefinements = {
     1: [
       [
