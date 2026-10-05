@@ -1346,6 +1346,97 @@
   setAcademy(4, 2, debugAutomationAcademy());
   setAcademy(4, 3, demoCityAcademy());
 
+  // Lesson 7: a loop that delivers to the same point every round and comes back, then stops.
+  {
+    const academy = detailsByChallenge[2][2].academy;
+    academy.skipRefinements = true;
+    const point = [5];
+    const go = { type: 'move', direction: 'FORWARD', steps: 5 };
+    const back = { type: 'move', direction: 'BACK', steps: 5 };
+    const drop = { type: 'place', direction: 'DOWN' };
+    academy.exercises = [
+      {
+        title: 'תרגיל 1 - מזהים פעולה שחוזרת',
+        mission: 'צרו פקודת start והוסיפו בלוק repeat עם תנועה קדימה בתוכו.',
+        hint: 'בלוק repeat נמצא בקטגוריית Loops. גררו לתוכו move.',
+        check: 'יש פקודת start ולולאה עם תנועה.',
+        starter: { command: 'start', blocks: [] },
+        criteria: [
+          { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' },
+          { label: 'יש בלוק repeat', type: 'repeat' },
+          { label: 'יש פקודת move', type: 'moveCount', min: 1 }
+        ]
+      },
+      {
+        title: 'תרגיל 2 - מסירה בכל סיבוב',
+        mission: 'בכל סיבוב השליח נוסע לנקודת המסירה ומניח שם חבילה. הגדירו 2 סיבובים.',
+        hint: 'place צריך להיות בתוך הלולאה, כדי שיקרה בכל סיבוב.',
+        check: 'בכל סיבוב מונחת חבילה, והראשונה על נקודת המסירה.',
+        dropPoints: point,
+        starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 1, blocks: [go] }] },
+        criteria: [
+          { label: 'ה-repeat מוגדר ל-2', type: 'repeatTimes', times: 2 },
+          { label: 'כל הנחות החבילה נמצאות בתוך ה-repeat', type: 'placeInRepeat' },
+          { label: 'החבילה הראשונה על נקודת המסירה', type: 'packageAtCell', dx: 5, dy: 0 }
+        ]
+      },
+      {
+        title: 'תרגיל 3 - חוזרים להתחלה',
+        mission: 'בסוף כל סיבוב השליח חוזר למחסן, כך שהסיבוב הבא מתחיל מאותו מקום. כל החבילות צריכות להגיע לאותה נקודת מסירה.',
+        hint: 'אחרי place השליח צריך לנסוע אחורה באותו מרחק שהלך.',
+        check: 'כל החבילות על נקודת המסירה, והשליח מסיים במחסן.',
+        dropPoints: point,
+        starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [go, drop] }] },
+        criteria: [
+          { label: 'כל החבילות על נקודת המסירה', type: 'packagesAtCell', dx: 5, dy: 0 },
+          { label: 'יש לפחות שתי הנחות חבילה', type: 'placeCount', min: 2 },
+          { label: 'ה-Agent חוזר לנקודת ההתחלה', type: 'returnToStart' }
+        ]
+      },
+      {
+        title: 'תרגיל 4 - דיבוג: החבילה השנייה בורחת',
+        debugStart: true,
+        mission: 'תרגיל דיבוג: החבילה השנייה לא מגיעה לנקודת המסירה. כך מדבגים: מריצים וצופים בהדמיה, מתארים מה קרה ומה היה צריך לקרות, מוצאים את הבלוק שגורם להבדל ומתקנים דבר אחד בכל פעם. אם נתקעים, לוחצים רמז.',
+        hint: 'בדקו מאיפה השליח יוצא בתחילת הסיבוב השני.',
+        check: 'כל החבילות על נקודת המסירה, והשליח מסיים במחסן.',
+        dropPoints: point,
+        starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [go, drop] }, back] },
+        criteria: [
+          { label: 'כל החבילות על נקודת המסירה', type: 'packagesAtCell', dx: 5, dy: 0 },
+          { label: 'ה-Agent חוזר לנקודת ההתחלה', type: 'returnToStart' }
+        ]
+      },
+      {
+        title: 'תרגיל 5 - הודעת סיום',
+        mission: 'אחרי הלולאה הוסיפו player say שמודיע שהקו סיים את העבודה.',
+        hint: 'ההודעה נכנסת אחרי repeat, כדי שתופיע פעם אחת בסוף.',
+        check: 'הקו עובד, והשליח מודיע בסוף שסיים.',
+        dropPoints: point,
+        starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [go, drop, back] }] },
+        criteria: [
+          { label: 'כל החבילות על נקודת המסירה', type: 'packagesAtCell', dx: 5, dy: 0 },
+          { label: 'ה-Agent חוזר לנקודת ההתחלה', type: 'returnToStart' },
+          { label: 'יש הודעת סיום', type: 'arrivalSay' }
+        ]
+      },
+      {
+        title: 'אתגר קטן - קו של שלושה סיבובים',
+        mission: 'האתגר: הקו צריך לעבוד 3 סיבובים. בכל סיבוב מסירה וחזרה למחסן, ובסוף הודעת סיום.',
+        hint: 'מספיק לשנות מספר אחד בקוד.',
+        check: 'שלוש חבילות על נקודת המסירה, חזרה למחסן והודעת סיום.',
+        dropPoints: point,
+        starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [go, drop, back] }, { type: 'say', text: 'the line finished its work' }] },
+        criteria: [
+          { label: 'ה-repeat מוגדר ל-3', type: 'repeatTimes', times: 3 },
+          { label: 'שלוש חבילות על נקודת המסירה', type: 'packagesAtCell', dx: 5, dy: 0, min: 3 },
+          { label: 'ה-Agent חוזר לנקודת ההתחלה', type: 'returnToStart' },
+          { label: 'יש הודעת סיום', type: 'arrivalSay' },
+          { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' }
+        ]
+      }
+    ];
+  }
+
   // Lessons 10-12 are written like lesson 9: every mission sentence matches a check, and the checks run the code
   // with the road open and with it blocked (the toggle above the simulation).
   function rewriteConditionLesson(challengeId, lessonIndex, exercises) {

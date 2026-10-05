@@ -606,6 +606,10 @@
       return isNear(state, { x: start.x + criterion.dx * cell, y: start.y + criterion.dy * cell }, 12)
         && (criterion.heading === undefined || facing === criterion.heading);
     }
+    if (criterion.type === 'packagesAtCell') {
+      const target = { x: start.x + criterion.dx * cell, y: start.y + criterion.dy * cell };
+      return state.packages.length >= Number(criterion.min || 1) && state.packages.every(pkg => isNear(pkg, target, 18));
+    }
     if (criterion.type === 'packageAtCell') return state.packages.some(pkg => isNear(pkg, { x: start.x + criterion.dx * cell, y: start.y + criterion.dy * cell }, 18));
     if (criterion.type === 'onDropPoints') {
       const points = dropPointPositions();
