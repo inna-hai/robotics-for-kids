@@ -1669,16 +1669,16 @@
     },
     {
       title: 'תרגיל 3 - מקוד ארוך ללולאה',
-      mission: 'הסתכלו על הקוד שכתבתם: איזה חלק בו חוזר על עצמו? הכניסו את החלק הזה ל-repeat, כך שהקוד יהיה קצר יותר ויעשה בדיוק אותו דבר.',
-      hint: 'אם אותם בלוקים מופיעים שלוש פעמים, מספיק לכתוב אותם פעם אחת בתוך repeat של 3.',
-      check: 'אותה תוצאה, עם לולאה ובלוק place אחד בלבד.',
+      mission: 'הסתכלו על הקוד שכתבתם: איזה חלק בו חוזר על עצמו? קצרו את הקוד כך שיעשה בדיוק אותו דבר, עם 8 בלוקים לכל היותר (כולל on chat command). המונה מתחת ללוח מראה כמה בלוקים יש עכשיו.',
+      hint: 'את החלק שחוזר אפשר לכתוב פעם אחת בלבד ולבקש שיחזור כמה פעמים שצריך.',
+      check: 'אותה תוצאה, עם 8 בלוקים לכל היותר.',
       dropPoints: stairDropPoints,
+      maxBlocks: 8,
       starter: { command: 'cycle', blocks: [{ type: 'teleport' }, ...stairStep, { type: 'place', direction: 'DOWN' }, ...stairStep, { type: 'place', direction: 'DOWN' }, ...stairStep, { type: 'place', direction: 'DOWN' }] },
       criteria: [
-        { label: 'ה-repeat מוגדר ל-3', type: 'repeatTimes', times: 3 },
-        { label: 'יש בקוד בלוק place אחד בלבד', type: 'placeBlockCount', max: 1 },
         { label: 'כל חבילה הונחה על נקודת מסירה', type: 'onDropPoints' },
-        { label: 'ה-Agent מגיע לתחנת היעד', type: 'reachedStation' }
+        { label: 'ה-Agent מגיע לתחנת היעד', type: 'reachedStation' },
+        { label: 'הקוד משתמש ב-8 בלוקים לכל היותר', type: 'maxBlocks', max: 8 }
       ]
     },
     {
