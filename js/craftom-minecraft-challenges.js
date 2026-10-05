@@ -2281,6 +2281,24 @@
     });
   }
 
+  // "Fix this code" exercises open with their broken starter, not with the previous exercise's correct solution
+  // (otherwise they pass without any change). [challenge, lesson index, exercise index]
+  [[1, 1, 3], [1, 2, 2], [1, 2, 3], [1, 2, 5], [2, 1, 3], [4, 1, 4], [4, 2, 1], [4, 2, 4], [4, 3, 4]].forEach(([challengeId, lessonIndex, exerciseIndex]) => {
+    detailsByChallenge[challengeId][lessonIndex].academy.exercises[exerciseIndex].debugStart = true;
+  });
+  // Debug check labels describe the result, not the number to type.
+  [[1, 2, 2, 'אחרי התיקון החבילה מונחת בתחנה'], [2, 1, 3, 'אחרי התיקון השליח חוזר עד המחסן']].forEach(([challengeId, lessonIndex, exerciseIndex, label]) => {
+    detailsByChallenge[challengeId][lessonIndex].academy.exercises[exerciseIndex].criteria.forEach(criterion => {
+      if (/תוקנה? ל-\d/.test(criterion.label)) criterion.label = label;
+    });
+  });
+  // In lessons 14-16 the bug leaves the courier one step short, so these debug checks need an exact stop.
+  [[4, 1, 4], [4, 2, 4], [4, 3, 4]].forEach(([challengeId, lessonIndex, exerciseIndex]) => {
+    detailsByChallenge[challengeId][lessonIndex].academy.exercises[exerciseIndex].criteria.forEach(criterion => {
+      if (criterion.type === 'reachedStation' || criterion.type === 'packageNearStation') criterion.radius = 20;
+    });
+  });
+
   // Lesson 5 exercise 1 places two packages by copying blocks (Loops locked), so exercise 2 is the step that turns
   // the copied code into a loop. Set after the refinements, which would otherwise add a repeat requirement here too.
   Object.assign(detailsByChallenge[2][0].academy.exercises[0], {
