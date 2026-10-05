@@ -1421,6 +1421,11 @@
   lesson15Academy.exercises[1].mission = lesson15Academy.exercises[1].mission.replace('תקנו תנועה של 3 צעדים ל-5', 'תקנו את התנועה הראשונה מ-3 צעדים ל-5');
   applyLessonMap(4, 3, { x: 112, y: 120 }, [['E', 2], ['S', 3], ['E', 3]]);
 
+  // Where planning the route is part of the task, no stone path gives the answer away (lessons 9-12 keep it for the road block).
+  [[2, 3], [4, 0], [4, 1], [4, 2], [4, 3]].forEach(([challengeId, lessonIndex]) => {
+    detailsByChallenge[challengeId][lessonIndex].academy.world.hidePath = true;
+  });
+
   const agentAcademyExerciseRefinements = {
     1: [
       [

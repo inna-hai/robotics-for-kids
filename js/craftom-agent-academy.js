@@ -908,7 +908,7 @@
     ctx.strokeRect(34, 32, canvas.width - 68, canvas.height - 64);
 
     // The stone path leads to the station, so it is hidden together with it.
-    if (showStation) routeTiles.forEach(tile => drawCobbleTile(tile.x, tile.y, tile.w || 34, tile.h || 28));
+    if (showStation && !academy.world?.hidePath) routeTiles.forEach(tile => drawCobbleTile(tile.x, tile.y, tile.w || 34, tile.h || 28));
 
     drawWoodCrate(start.x, start.y + 4, 92, 74);
     ctx.fillStyle = '#fff7ed';
