@@ -585,6 +585,7 @@
       const blocked = runProgram(false);
       return isNear(blocked, start, 20) && blocked.packages.length === 0;
     }
+    if (criterion.type === 'placeBlockCount') return workspace.getAllBlocks(false).filter(block => block.type === 'mc_place_agent').length <= Number(criterion.max || 1);
     if (criterion.type === 'endsAtCell') {
       const facing = ((state.heading % 360) + 360) % 360;
       return isNear(state, { x: start.x + criterion.dx * cell, y: start.y + criterion.dy * cell }, 12)

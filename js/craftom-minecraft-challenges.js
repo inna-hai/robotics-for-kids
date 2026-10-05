@@ -1407,38 +1407,40 @@
   const stairStep = [{ type: 'move', direction: 'FORWARD', steps: 2 }, { type: 'turn', turn: 'LEFT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 1 }, { type: 'turn', turn: 'RIGHT_TURN' }];
   lesson8Academy.exercises = [
     {
-      title: 'תרגיל 1 - מדרגה אחת',
-      mission: 'בשיעור הזה השליח עולה במדרגות עד התחנה. צרו פקודת cycle שמעלה אותו מדרגה אחת: 2 צעדים קדימה, פנייה שמאלה, צעד אחד, ופנייה ימינה כדי שיסתכל שוב קדימה.',
-      hint: 'אחרי המדרגה השליח צריך לעמוד על נקודת המסירה הראשונה ולהסתכל ימינה, כמו בהתחלה.',
-      check: 'השליח עומד על המדרגה הראשונה ומסתכל קדימה.',
+      title: 'תרגיל 1 - מסירה ראשונה',
+      mission: 'בשיעור הזה השליח מגיע לתחנה דרך שלוש נקודות מסירה מסומנות. צרו פקודת cycle שמביאה את השליח לנקודת המסירה הראשונה ומניחה שם חבילה.',
+      hint: 'ספרו כמה משבצות הנקודה רחוקה קדימה וכמה למעלה. כדי לעלות, השליח צריך לפנות.',
+      check: 'יש חבילה על נקודת המסירה הראשונה.',
       dropPoints: stairDropPoints,
       starter: { command: 'cycle', blocks: [] },
       criteria: [
         { label: 'פקודת הצ׳אט היא cycle', type: 'command', command: 'cycle' },
-        { label: 'השליח עומד על המדרגה הראשונה ומסתכל קדימה', type: 'endsAtCell', dx: 2, dy: -1, heading: 0 }
-      ]
-    },
-    {
-      title: 'תרגיל 2 - חבילה על המדרגה',
-      mission: 'בסוף המדרגה הוסיפו agent place כדי להניח חבילה על נקודת המסירה הראשונה.',
-      hint: 'place נכנס אחרי הפנייה ימינה, כשהשליח כבר עומד על המדרגה.',
-      check: 'יש חבילה על נקודת המסירה הראשונה.',
-      dropPoints: stairDropPoints,
-      starter: { command: 'cycle', blocks: [{ type: 'teleport' }, ...stairStep] },
-      criteria: [
         { label: 'החבילה על נקודת המסירה הראשונה', type: 'packageAtCell', dx: 2, dy: -1 }
       ]
     },
     {
-      title: 'תרגיל 3 - לולאה של שלוש מדרגות',
-      mission: 'עטפו את המדרגה והנחת החבילה ב-repeat של 3 חזרות, כך שהשליח יעלה שלוש מדרגות ויגיע לתחנה.',
-      hint: 'teleport נשאר לפני הלולאה. בתוך repeat: 2 קדימה, שמאלה, 1, ימינה, place.',
-      check: 'השליח מגיע לתחנה, ובכל מדרגה נשארת חבילה.',
+      title: 'תרגיל 2 - כל נקודות המסירה',
+      mission: 'המשיכו את הקוד כך שהשליח יניח חבילה בכל אחת משלוש נקודות המסירה ויגיע לתחנה.',
+      hint: 'אחרי כל חבילה השליח צריך להסתכל שוב לאותו כיוון שבו התחיל, כדי שאפשר יהיה לחזור על אותם צעדים.',
+      check: 'חבילה על כל נקודת מסירה והגעה לתחנה.',
       dropPoints: stairDropPoints,
       starter: { command: 'cycle', blocks: [{ type: 'teleport' }, ...stairStep, { type: 'place', direction: 'DOWN' }] },
       criteria: [
+        { label: 'כל חבילה הונחה על נקודת מסירה', type: 'onDropPoints' },
+        { label: 'ה-Agent מגיע לתחנת היעד', type: 'reachedStation' }
+      ]
+    },
+    {
+      title: 'תרגיל 3 - מקוד ארוך ללולאה',
+      mission: 'הסתכלו על הקוד שכתבתם: איזה חלק בו חוזר על עצמו? הכניסו את החלק הזה ל-repeat, כך שהקוד יהיה קצר יותר ויעשה בדיוק אותו דבר.',
+      hint: 'אם אותם בלוקים מופיעים שלוש פעמים, מספיק לכתוב אותם פעם אחת בתוך repeat של 3.',
+      check: 'אותה תוצאה, עם לולאה ובלוק place אחד בלבד.',
+      dropPoints: stairDropPoints,
+      starter: { command: 'cycle', blocks: [{ type: 'teleport' }, ...stairStep, { type: 'place', direction: 'DOWN' }, ...stairStep, { type: 'place', direction: 'DOWN' }, ...stairStep, { type: 'place', direction: 'DOWN' }] },
+      criteria: [
         { label: 'ה-repeat מוגדר ל-3', type: 'repeatTimes', times: 3 },
-        { label: 'כל הנחות החבילה נמצאות בתוך ה-repeat', type: 'placeInRepeat' },
+        { label: 'יש בקוד בלוק place אחד בלבד', type: 'placeBlockCount', max: 1 },
+        { label: 'כל חבילה הונחה על נקודת מסירה', type: 'onDropPoints' },
         { label: 'ה-Agent מגיע לתחנת היעד', type: 'reachedStation' }
       ]
     },
