@@ -18,7 +18,7 @@
   if (!academy || !window.Blockly || !blocklyDiv || !pythonOutput || !canvas || !exerciseList || !checksEl || !feedbackEl) return;
 
   // Lessons with if routeOpen get a button that switches the road between open and blocked.
-  const conditionCriteria = ['condition', 'conditionState', 'elseBranch', 'elseSay', 'repeatOrCondition', 'thenSay', 'openSays', 'blockedSays', 'openDelivers', 'openArrivalSay', 'blockedStays'];
+  const conditionCriteria = ['condition', 'conditionState', 'elseBranch', 'elseSay', 'repeatOrCondition', 'thenSay', 'openSays', 'blockedSays', 'openDelivers', 'openArrivalSay', 'blockedStays', 'openReaches', 'blockedReaches', 'blockedDelivers', 'blockedAvoidsBarrier'];
   const usesRouteState = (academy.exercises || []).some(exercise => (exercise.criteria || []).some(criterion => conditionCriteria.includes(criterion.type)));
   let routeToggle = null;
   if (usesRouteState) {
@@ -58,7 +58,7 @@
   const cell = 42;
   // Lessons whose exercises never check the station (e.g. loop lessons that drop packages along the line) hide it,
   // so students don't think the courier missed a target.
-  const stationCriteria = ['reachedStation', 'packageNearStation', 'arrivalSayAfterMove', 'openDelivers'];
+  const stationCriteria = ['reachedStation', 'packageNearStation', 'arrivalSayAfterMove', 'openDelivers', 'openReaches', 'blockedReaches', 'blockedDelivers'];
   const showStation = (academy.exercises || []).some(exercise => (exercise.criteria || []).some(criterion => stationCriteria.includes(criterion.type)));
   let activeExercise = 0;
   let visibleMode = 'blocks';
@@ -580,6 +580,15 @@
     if (criterion.type === 'openSays') return runProgram(true).says.some(text => String(text || '').trim());
     if (criterion.type === 'blockedSays') return runProgram(false).says.some(text => String(text || '').trim());
     if (criterion.type === 'openArrivalSay') return runProgram(true).says.some(isSuccessMessage);
+    if (criterion.type === 'openReaches') return isNear(runProgram(true), station, criterion.radius || 52);
+    if (criterion.type === 'blockedReaches') return isNear(runProgram(false), station, criterion.radius || 52);
+    if (criterion.type === 'blockedDelivers') return runProgram(false).packages.some(pkg => isNear(pkg, station, criterion.radius || 52));
+    if (criterion.type === 'blockedAvoidsBarrier') {
+      // The barrier stands on the road two and a half cells east of the warehouse.
+      const barrierX = start.x + cell * 2.5;
+      return !runProgram(false).path.some(segment => Math.abs(segment.y1 - start.y) < 4 && Math.abs(segment.y2 - start.y) < 4
+        && Math.min(segment.x1, segment.x2) < barrierX && Math.max(segment.x1, segment.x2) > barrierX);
+    }
     if (criterion.type === 'openDelivers') return runProgram(true).packages.some(pkg => isNear(pkg, station, criterion.radius || 52));
     if (criterion.type === 'blockedStays') {
       const blocked = runProgram(false);

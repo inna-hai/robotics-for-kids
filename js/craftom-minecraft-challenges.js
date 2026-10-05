@@ -1346,6 +1346,243 @@
   setAcademy(4, 2, debugAutomationAcademy());
   setAcademy(4, 3, demoCityAcademy());
 
+  // Lessons 10-12 are written like lesson 9: every mission sentence matches a check, and the checks run the code
+  // with the road open and with it blocked (the toggle above the simulation).
+  function rewriteConditionLesson(challengeId, lessonIndex, exercises) {
+    const academy = detailsByChallenge[challengeId][lessonIndex].academy;
+    academy.skipRefinements = true;
+    academy.exercises = exercises;
+  }
+  const say = text => ({ type: 'say', text });
+  const fwd = steps => ({ type: 'move', direction: 'FORWARD', steps });
+  const turnR = { type: 'turn', turn: 'RIGHT_TURN' };
+  const turnL = { type: 'turn', turn: 'LEFT_TURN' };
+  const placeDown = { type: 'place', direction: 'DOWN' };
+
+  rewriteConditionLesson(3, 1, [
+    {
+      title: 'תרגיל 1 - תנאי לפני נסיעה',
+      mission: 'צרו פקודת start והוסיפו בלוק if routeOpen is true. בשיעור הזה השליח מחליט לפני שהוא זז: נוסע רק כשהדרך פתוחה.',
+      hint: 'בלוק if נמצא בקטגוריית Logic. ודאו שבתפריט שלו נבחר true.',
+      check: 'יש פקודת start ובלוק if שבודק שהדרך פתוחה.',
+      starter: { command: 'start', blocks: [] },
+      criteria: [
+        { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' },
+        { label: 'יש בלוק if', type: 'condition' },
+        { label: 'התנאי בודק שהדרך פתוחה (true)', type: 'conditionState', state: 'OPEN' }
+      ]
+    },
+    {
+      title: 'תרגיל 2 - נוסעים רק כשפתוח',
+      mission: 'בתוך then הוסיפו נסיעה עד התחנה. כשהדרך חסומה השליח לא זז.',
+      hint: 'התנועה נכנסת לתוך then. נסו להריץ פעם כשהדרך פתוחה ופעם כשהיא חסומה.',
+      check: 'כשפתוח השליח מגיע לתחנה, וכשחסום הוא נשאר במחסן.',
+      starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [], else: [] }] },
+      criteria: [
+        { label: 'כשהדרך פתוחה השליח מגיע לתחנה', type: 'openReaches' },
+        { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' }
+      ]
+    },
+    {
+      title: 'תרגיל 3 - ממתינים כשסגור',
+      mission: 'בתוך else הוסיפו הודעה שהשליח ממתין לפתיחת הדרך.',
+      hint: 'else מתבצע רק כשהדרך חסומה.',
+      check: 'כשחסום מופיעה הודעת המתנה.',
+      starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(4)], else: [] }] },
+      criteria: [
+        { label: 'יש הודעה בתוך else', type: 'elseSay' },
+        { label: 'כשהדרך חסומה מופיעה הודעה', type: 'blockedSays' },
+        { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' }
+      ]
+    },
+    {
+      title: 'תרגיל 4 - דיבוג: נוסעים דרך המחסום',
+      debugStart: true,
+      mission: 'תרגיל דיבוג: כשהדרך חסומה השליח עדיין נוסע. כך מדבגים: מריצים בשני מצבי הדרך, מתארים מה קרה ומה היה צריך לקרות, מוצאים את הבלוק שגורם להבדל ומתקנים דבר אחד בכל פעם. אם נתקעים, לוחצים רמז.',
+      hint: 'בדקו איזה בלוק נמצא מחוץ ל-if. מה שמחוץ לתנאי קורה תמיד.',
+      check: 'כשפתוח השליח מגיע לתחנה, וכשחסום הוא נשאר במחסן.',
+      starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [], else: [say('waiting for the road')] }, fwd(4)] },
+      criteria: [
+        { label: 'כשהדרך פתוחה השליח מגיע לתחנה', type: 'openReaches' },
+        { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' }
+      ]
+    },
+    {
+      title: 'תרגיל 5 - סימון מעבר מוצלח',
+      mission: 'כשהדרך פתוחה, אחרי הנסיעה הניחו חבילה למטה (place down) בתחנה.',
+      hint: 'place נכנס לתוך then, אחרי התנועה.',
+      check: 'כשפתוח יש חבילה בתחנה.',
+      starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(4)], else: [say('waiting for the road')] }] },
+      criteria: [
+        { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
+        { label: 'החבילה מונחת למטה', type: 'placeDirection', direction: 'DOWN' },
+        { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' }
+      ]
+    },
+    {
+      title: 'אתגר קטן - שער פתוח וסגור',
+      mission: 'השלימו חוק מלא: כשהדרך פתוחה נוסעים, מניחים חבילה ומודיעים שהמשלוח הגיע. כשהיא חסומה לא זזים ומודיעים שממתינים. הבדיקה מריצה את הקוד בשני המצבים.',
+      hint: 'הודעת המסירה נכנסת לתוך then אחרי place, והודעת ההמתנה לתוך else.',
+      check: 'בשני מצבי הדרך קורה הדבר הנכון.',
+      starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(4), placeDown], else: [] }] },
+      criteria: [
+        { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
+        { label: 'כשהדרך פתוחה יש הודעת מסירה', type: 'openArrivalSay' },
+        { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' },
+        { label: 'כשהדרך חסומה מופיעה הודעה', type: 'blockedSays' },
+        { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' }
+      ]
+    }
+  ]);
+
+  const detour = [turnR, fwd(1), turnL, fwd(7), turnL, fwd(1)];
+  rewriteConditionLesson(3, 2, [
+    {
+      title: 'תרגיל 1 - בודקים חסימה',
+      mission: 'צרו פקודת test עם בלוק if routeOpen is true. בתוך else הוסיפו הודעה שהדרך חסומה. בשיעור הזה מתמקדים במה שעושים כשהדרך חסומה.',
+      hint: 'החליפו בכפתור את מצב הדרך לחסומה כדי לראות את ההודעה.',
+      check: 'יש פקודת test, בלוק if והודעה כשהדרך חסומה.',
+      starter: { command: 'test', blocks: [] },
+      criteria: [
+        { label: 'פקודת הצ׳אט היא test', type: 'command', command: 'test' },
+        { label: 'יש בלוק if', type: 'condition' },
+        { label: 'כשהדרך חסומה מופיעה הודעה', type: 'blockedSays' }
+      ]
+    },
+    {
+      title: 'תרגיל 2 - נוסעים רק כשפתוח',
+      mission: 'בתוך then הוסיפו נסיעה ישרה עד התחנה. כשהדרך חסומה השליח עדיין רק מודיע ולא זז.',
+      hint: 'הנסיעה הישרה נכנסת רק לתוך then.',
+      check: 'כשפתוח השליח מגיע לתחנה, וכשחסום הוא נשאר במחסן.',
+      starter: { command: 'test', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [], else: [say('the road is blocked')] }] },
+      criteria: [
+        { label: 'כשהדרך פתוחה השליח מגיע לתחנה', type: 'openReaches' },
+        { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' }
+      ]
+    },
+    {
+      title: 'תרגיל 3 - עוקפים את המחסום',
+      mission: 'במקום לחכות, השליח יכול לעקוף: בתוך else בנו מסלול שמגיע לתחנה בלי לעבור דרך המחסום. אפשר להשאיר גם את ההודעה.',
+      hint: 'המחסום עומד על השביל. ירדו שורה אחת, נסעו לאורך השורה הזו, ועלו בחזרה ליד התחנה.',
+      check: 'כשחסום השליח מגיע לתחנה בדרך עוקפת.',
+      starter: { command: 'test', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(7)], else: [say('the road is blocked')] }] },
+      criteria: [
+        { label: 'כשהדרך חסומה השליח מגיע לתחנה', type: 'blockedReaches' },
+        { label: 'השליח לא עובר דרך המחסום', type: 'blockedAvoidsBarrier' },
+        { label: 'כשהדרך פתוחה השליח מגיע לתחנה', type: 'openReaches' }
+      ]
+    },
+    {
+      title: 'תרגיל 4 - דיבוג: עקיפה שנתקעת',
+      debugStart: true,
+      mission: 'תרגיל דיבוג: כשהדרך חסומה השליח לא מגיע לתחנה. כך מדבגים: מריצים כשהדרך חסומה, עוקבים אחרי המסלול בהדמיה, מוצאים את הבלוק שגורם להבדל ומתקנים דבר אחד בכל פעם. אם נתקעים, לוחצים רמז.',
+      hint: 'בדקו את כיווני הפניות בתוך else. אחרי שיורדים שורה, צריך לפנות כך שהשליח יסתכל שוב לכיוון התחנה.',
+      check: 'כשחסום השליח עוקף ומגיע לתחנה.',
+      starter: { command: 'test', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(7)], else: [turnR, fwd(1), turnR, fwd(7), turnL, fwd(1)] }] },
+      criteria: [
+        { label: 'כשהדרך חסומה השליח מגיע לתחנה', type: 'blockedReaches' },
+        { label: 'השליח לא עובר דרך המחסום', type: 'blockedAvoidsBarrier' }
+      ]
+    },
+    {
+      title: 'תרגיל 5 - מסירה בשני המצבים',
+      mission: 'הוסיפו הנחת חבילה בתחנה בשני הענפים: גם אחרי הנסיעה הישרה וגם אחרי העקיפה.',
+      hint: 'צריך place בסוף then וגם בסוף else.',
+      check: 'בשני מצבי הדרך החבילה מגיעה לתחנה.',
+      starter: { command: 'test', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(7)], else: detour }] },
+      criteria: [
+        { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
+        { label: 'כשהדרך חסומה החבילה מגיעה לתחנה', type: 'blockedDelivers' }
+      ]
+    },
+    {
+      title: 'אתגר קטן - חסימה ותגובה',
+      mission: 'השלימו את החוק: כשהדרך חסומה השליח מודיע שהוא עוקף, עוקף ומוסר את החבילה. כשהיא פתוחה הוא נוסע ישר ומוסר. הבדיקה מריצה את הקוד בשני המצבים.',
+      hint: 'הודעת העקיפה נכנסת בתחילת else, לפני הפנייה הראשונה.',
+      check: 'בשני המצבים יש מסירה, והעקיפה לא עוברת במחסום.',
+      starter: { command: 'test', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(7), placeDown], else: [...detour, placeDown] }] },
+      criteria: [
+        { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
+        { label: 'כשהדרך חסומה החבילה מגיעה לתחנה', type: 'blockedDelivers' },
+        { label: 'השליח לא עובר דרך המחסום', type: 'blockedAvoidsBarrier' },
+        { label: 'כשהדרך חסומה מופיעה הודעה', type: 'blockedSays' },
+        { label: 'פקודת הצ׳אט היא test', type: 'command', command: 'test' }
+      ]
+    }
+  ]);
+
+  rewriteConditionLesson(3, 3, [
+    {
+      title: 'תרגיל 1 - פקודת rule',
+      mission: 'בשיעור הזה אתם ממציאים חוק משלכם למצב הדרך. צרו פקודת rule עם בלוק if routeOpen.',
+      hint: 'החוק יעבוד כמו בשיעורים הקודמים: then למצב אחד, else למצב השני.',
+      check: 'יש פקודת rule ובלוק if.',
+      starter: { command: 'rule', blocks: [] },
+      criteria: [
+        { label: 'פקודת הצ׳אט היא rule', type: 'command', command: 'rule' },
+        { label: 'יש בלוק if', type: 'condition' }
+      ]
+    },
+    {
+      title: 'תרגיל 2 - כשהדרך פתוחה',
+      mission: 'קבעו מה קורה כשהדרך פתוחה: השליח מגיע לתחנה ומניח חבילה.',
+      hint: 'אם התנאי הוא true, הנסיעה נכנסת לתוך then.',
+      check: 'כשפתוח החבילה מגיעה לתחנה.',
+      starter: { command: 'rule', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [], else: [] }] },
+      criteria: [
+        { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' }
+      ]
+    },
+    {
+      title: 'תרגיל 3 - התגובה שלכם כשחסום',
+      mission: 'בחרו לבד מה השליח עושה כשהדרך חסומה: לחכות, לעקוף או לחזור, אבל לא לעבור דרך המחסום. הוסיפו הודעה שמסבירה מה הוא עושה.',
+      hint: 'כל תגובה מתקבלת, כל עוד השליח לא עובר דרך המחסום ויש הודעה.',
+      check: 'כשחסום יש תגובה שלא עוברת במחסום, והודעה שמסבירה אותה.',
+      starter: { command: 'rule', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(6), placeDown], else: [] }] },
+      criteria: [
+        { label: 'השליח לא עובר דרך המחסום', type: 'blockedAvoidsBarrier' },
+        { label: 'כשהדרך חסומה מופיעה הודעה', type: 'blockedSays' }
+      ]
+    },
+    {
+      title: 'תרגיל 4 - דיבוג: החוק הפוך',
+      debugStart: true,
+      mission: 'תרגיל דיבוג: החוק בקוד הזה לא עובד נכון באף אחד ממצבי הדרך. כך מדבגים: מריצים בשני המצבים, מתארים מה קרה ומה היה צריך לקרות, מוצאים את הבלוק שגורם להבדל ומתקנים דבר אחד בכל פעם. אם נתקעים, לוחצים רמז.',
+      hint: 'הסתכלו על הערך שבתוך if: האם then באמת מתבצע כשהדרך פתוחה?',
+      check: 'כשפתוח יש מסירה, וכשחסום השליח לא עובר במחסום.',
+      starter: { command: 'rule', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'BLOCKED', then: [fwd(6), placeDown], else: [say('the road is blocked, waiting')] }] },
+      criteria: [
+        { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
+        { label: 'השליח לא עובר דרך המחסום', type: 'blockedAvoidsBarrier' }
+      ]
+    },
+    {
+      title: 'תרגיל 5 - הודעות לשני המצבים',
+      mission: 'הוסיפו הודעה גם למצב פתוח: אחרי המסירה השליח מודיע שהמשלוח הגיע.',
+      hint: 'ההודעה נכנסת לתוך then אחרי place.',
+      check: 'בשני המצבים יש הודעה מתאימה.',
+      starter: { command: 'rule', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(6), placeDown], else: [say('the road is blocked, waiting')] }] },
+      criteria: [
+        { label: 'כשהדרך פתוחה יש הודעת מסירה', type: 'openArrivalSay' },
+        { label: 'כשהדרך חסומה מופיעה הודעה', type: 'blockedSays' }
+      ]
+    },
+    {
+      title: 'אתגר קטן - החוק שלי',
+      mission: 'השלימו את החוק האישי שלכם: כשפתוח מוסרים ומודיעים, כשחסום מגיבים בדרך שבחרתם ומודיעים, בלי לעבור במחסום. הבדיקה מריצה את הקוד בשני המצבים.',
+      hint: 'בדקו את שני המצבים בכפתור שמעל ההדמיה לפני שמגישים.',
+      check: 'החוק עובד בשני מצבי הדרך.',
+      starter: { command: 'rule', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(6), placeDown], else: [] }] },
+      criteria: [
+        { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
+        { label: 'כשהדרך פתוחה יש הודעת מסירה', type: 'openArrivalSay' },
+        { label: 'השליח לא עובר דרך המחסום', type: 'blockedAvoidsBarrier' },
+        { label: 'כשהדרך חסומה מופיעה הודעה', type: 'blockedSays' },
+        { label: 'פקודת הצ׳אט היא rule', type: 'command', command: 'rule' }
+      ]
+    }
+  ]);
+
   // From lesson 8 on, each lesson has its own map (warehouse and station in different places), so students
   // plan a new route every lesson. Legs are [direction, cells]; the Agent always starts facing east (E).
   function routeWorld(start, legs) {
@@ -1490,8 +1727,7 @@
     }
   ];
   applyLessonMap(3, 0, { x: 112, y: 250 }, [['E', 6]]);
-  const lesson10Academy = applyLessonMap(3, 1, { x: 238, y: 330 }, [['E', 4]]);
-  lesson10Academy.exercises[1].mission = lesson10Academy.exercises[1].mission.replace('תנועה של 5 צעדים קדימה', 'תנועה של 4 צעדים קדימה');
+  applyLessonMap(3, 1, { x: 238, y: 330 }, [['E', 4]]);
   applyLessonMap(3, 2, { x: 112, y: 200 }, [['E', 7]]);
   applyLessonMap(3, 3, { x: 112, y: 150 }, [['E', 6]]);
   applyLessonMap(4, 0, { x: 112, y: 120 }, [['E', 3], ['S', 3]]);
@@ -1657,21 +1893,41 @@
     return `${text} ${sentence}`;
   }
 
+  // The sentence added to a mission must say exactly what its added check requires, so the mission (right)
+  // and the checklist (left) always match.
   function makeHigherLevelPrompt(criterion) {
-    if (criterion.type === 'chatDeliver') return 'שמור על פקודת ההפעלה הנכונה, והראה שהיא מפעילה את כל הרצף ולא רק פעולה אחת.';
-    if (criterion.type === 'command') return `שמור על פקודת ${criterion.command} כנקודת כניסה, והראה שכל הרצף מופעל ממנה.`;
-    if (criterion.type === 'teleport') return 'תכנן את הפתרון כך שכל הרצה מתחילה מאותה נקודת התחלה, גם אחרי שינוי או תיקון.';
-    if (criterion.type === 'firstMove' || criterion.type === 'secondMove' || criterion.type === 'anyMove') return 'מצא את מספר הצעדים המדויק מתוך הרצה ותיקון, בלי להוסיף תנועות מיותרות.';
-    if (criterion.type === 'moveCount') return 'בנה רצף תנועה מלא ומסודר, כך שכל תנועה משרתת חלק אחר במסלול.';
-    if (criterion.type === 'moveBeforeTurn' || criterion.type === 'turnBeforeSecondMove' || criterion.type === 'turn') return 'תכנן את סדר המסלול לפני ההרצה, ובדוק שהפנייה נמצאת בדיוק במקום שבו הכיוון אמור להשתנות.';
-    if (criterion.type === 'reachedStation') return 'כוון את המסלול לפי בדיקה בעולם, כך שה-Agent יסיים ליד היעד ולא רק יזוז בכיוון כללי.';
-    if (criterion.type === 'place' || criterion.type === 'placeDirection' || criterion.type === 'packageNearStation' || criterion.type === 'placeCount') return 'בחר איפה הסימון צריך להופיע בעולם, ובדוק שהוא מוכיח שהפעולה קרתה במקום הנכון.';
-    if (criterion.type === 'repeat' || criterion.type === 'repeatTimes' || criterion.type === 'returnToStart') return 'הפוך את הרצף למחזור יציב: כל סיבוב צריך להתחיל ולהסתיים במצב שאפשר להריץ שוב.';
-    if (criterion.type === 'condition' || criterion.type === 'conditionState' || criterion.type === 'elseBranch' || criterion.type === 'elseSay') return 'בדוק שני מצבים של העיר, ותכנן תגובה שונה וברורה לכל מצב.';
-    if (criterion.type === 'repeatOrCondition') return 'בחר רעיון תכנותי מתקדם אחד שמתאים למערכת, והשתמש בו כדי לשפר פעולה קיימת ולא רק להוסיף בלוק.';
-    if (criterion.type === 'say' || criterion.type === 'arrivalSay' || criterion.type === 'arrivalSayAfterMove') return 'נסחו הודעה קצרה שמסבירה מה המערכת עשתה ולמה יודעים שההרצה הצליחה.';
-    if (criterion.type === 'staysOnStartRow') return 'בדוק את המסלול אחרי התיקון וודא שה-Agent נשאר בתחום השביל שתכננת.';
-    return null;
+    const steps = Number(criterion.steps);
+    const min = Number(criterion.min || 1);
+    const prompts = {
+      chatDeliver: 'ודאו שהקוד מופעל מפקודת deliver.',
+      command: `ודאו שפקודת הצ׳אט היא ${criterion.command}.`,
+      teleport: 'התחילו את הקוד ב-agent teleport to player.',
+      firstMove: `ודאו שהתנועה הראשונה היא ${steps} צעדים.`,
+      secondMove: `ודאו שהתנועה השנייה היא ${steps} צעדים.`,
+      anyMove: `ודאו שיש תנועה של ${steps} צעדים.`,
+      moveCount: min > 1 ? `ודאו שיש לפחות ${min} פקודות move.` : 'ודאו שיש פקודת move.',
+      moveBeforeTurn: 'ודאו שהשליח זז קדימה לפני שהוא פונה.',
+      turnBeforeSecondMove: 'ודאו שהפנייה נמצאת בין התנועה הראשונה לשנייה.',
+      turn: 'ודאו שיש פנייה במסלול.',
+      reachedStation: 'ודאו שהשליח מגיע לתחנה.',
+      place: 'הוסיפו agent place.',
+      placeDirection: `ודאו שהחבילה מונחת ${criterion.direction === 'FORWARD' ? 'קדימה (forward)' : 'למטה (down)'}.`,
+      packageNearStation: 'ודאו שהחבילה מונחת ליד התחנה.',
+      placeCount: `ודאו שמונחות לפחות ${min} חבילות.`,
+      repeat: 'השתמשו בבלוק repeat.',
+      repeatTimes: `הגדירו את repeat ל-${criterion.times || 2} חזרות.`,
+      returnToStart: 'ודאו שבסוף השליח חוזר למחסן.',
+      condition: 'השתמשו בבלוק if.',
+      conditionState: `ודאו שהתנאי בודק שהדרך ${(criterion.state || 'OPEN') === 'OPEN' ? 'פתוחה (true)' : 'חסומה (false)'}.`,
+      elseBranch: 'הוסיפו פעולה בתוך else.',
+      elseSay: 'הוסיפו הודעה בתוך else.',
+      repeatOrCondition: 'הוסיפו repeat או if.',
+      say: 'הוסיפו הודעת player say.',
+      arrivalSay: 'הוסיפו הודעה שמודיעה שהמשלוח הגיע.',
+      arrivalSayAfterMove: 'הוסיפו אחרי התנועה הודעה שמודיעה שהמשלוח הגיע.',
+      staysOnStartRow: 'ודאו שהשליח נשאר על השביל.'
+    };
+    return prompts[criterion.type] || null;
   }
 
   function summarizeHigherLevelChange(criterion) {
