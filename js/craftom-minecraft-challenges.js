@@ -294,7 +294,7 @@
             {
               title: 'תרגיל 1 - מוסיפים חבילה',
               mission: 'השלימו את מסלול ההגעה והוסיפו בלוק agent place כדי שה-Agent יניח חבילה. בבלוק יש שני כיוונים: down מניח את החבילה על הרצפה מתחת ל-Agent, ו-forward מניח אותה במשבצת שמולו.',
-              hint: 'המסלול כבר מוביל לתחנה. חפשו ב-Agent את בלוק place והוסיפו אותו בסוף הרצף.',
+              hint: 'קודם בנו מסלול שמגיע לתחנה, ואז חפשו ב-Agent את בלוק place והוסיפו אותו בסוף הרצף.',
               check: 'ה-Agent מגיע לתחנה ומניח חבילה.',
               starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 4 }] },
               criteria: [
