@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Research Lab · עומר הנביעה</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/platform-home-link.css">
+  <style>
+    :root{--ink:#0f172a;--muted:#526070;--line:rgba(15,23,42,.12);--page:#f7fafc;--card:#fff;--cyan:#0891b2;--blue:#2563eb;--purple:#7c3aed;--green:#16a34a;--orange:#ea580c;--shadow:0 22px 60px rgba(15,23,42,.10)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Rubik,Arial,sans-serif;color:var(--ink);background:linear-gradient(180deg,#f8fbff,#eef6fb 48%,#f8fafc);line-height:1.65}a{color:inherit}.shell{width:min(1180px,calc(100% - 28px));margin:0 auto}.hero{position:relative;overflow:hidden;color:#fff;padding:30px 0 48px;background:radial-gradient(circle at 10% 10%,rgba(34,211,238,.32),transparent 22rem),linear-gradient(135deg,#0f172a,#164e63 54%,#312e81)}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:30px}.brand{display:flex;align-items:center;gap:12px;font-weight:900}.mark{width:58px;height:58px;border-radius:20px;background:linear-gradient(135deg,#22d3ee,#a78bfa);display:grid;place-items:center;color:#fff;font-size:1.6rem;box-shadow:0 18px 40px rgba(34,211,238,.22)}.nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.nav a{text-decoration:none;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 12px;color:#e2e8f0;font-weight:900;font-size:.9rem;background:rgba(255,255,255,.07)}.nav a:hover{background:rgba(255,255,255,.16)}.kicker{display:inline-flex;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);padding:7px 12px;color:#bae6fd;font-weight:900;margin-bottom:13px}h1{font-size:clamp(2.25rem,5.5vw,4.9rem);line-height:1.03;margin:0 0 14px;max-width:980px;letter-spacing:-.035em}.hero p{margin:0;color:#dbeafe;font-size:clamp(1.04rem,2vw,1.24rem);max-width:930px;font-weight:700}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;border-radius:999px;padding:10px 16px;background:#fff;color:#0f172a;text-decoration:none;font-weight:900;border:1px solid transparent;box-shadow:0 12px 28px rgba(15,23,42,.12)}.btn.dark{background:#0f172a;color:#fff}.btn.ghost{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.2);box-shadow:none}.btn.disabled{pointer-events:none;opacity:.62;background:#e2e8f0;color:#475569;box-shadow:none}main{padding:34px 0 64px}.grid{display:grid;gap:20px}.overview{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:28px;padding:22px;box-shadow:var(--shadow)}.card h2{margin:0 0 10px;font-size:clamp(1.45rem,3vw,2.25rem);line-height:1.12}.card p{margin:0;color:var(--muted);font-weight:750}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stat{border-radius:20px;background:#f8fafc;border:1px solid var(--line);padding:15px;text-align:center;font-weight:900}.stat b{display:block;color:var(--cyan);font-size:1.65rem}.section-title{display:flex;align-items:end;justify-content:space-between;gap:14px;margin:16px 0 0}.section-title h2{margin:0;font-size:clamp(1.55rem,3vw,2.35rem)}.section-title p{margin:6px 0 0;color:var(--muted);font-weight:750}.lesson-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.lesson{position:relative;display:flex;flex-direction:column;gap:10px;min-height:238px;background:#fff;border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:0 14px 36px rgba(15,23,42,.06);overflow:hidden}.lesson.ready{background:linear-gradient(135deg,#fff,#ecfeff);border-color:#67e8f9}.lesson:before{content:"";position:absolute;inset:0 0 auto 0;height:7px;background:linear-gradient(90deg,var(--a),var(--b))}.lesson-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.num{width:42px;height:42px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,var(--a),var(--b));color:#fff;font-weight:900;flex:0 0 auto}.tag{border-radius:999px;background:#eef2ff;color:#3730a3;padding:5px 9px;font-size:.76rem;font-weight:900;white-space:nowrap}.lesson h3{font-size:1.2rem;line-height:1.25;margin:0}.lesson p{margin:0;color:#526070;font-weight:700}.deliverable{margin-top:auto;border-radius:18px;background:#f8fafc;border:1px solid var(--line);padding:11px;color:#334155;font-weight:800}.pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.pill{border-radius:999px;background:#ecfeff;color:#155e75;padding:6px 10px;font-size:.8rem;font-weight:900}.source{background:linear-gradient(135deg,#0f172a,#164e63);color:#e2e8f0}.source p{color:#cbd5e1}.source code{direction:ltr;unicode-bidi:plaintext;background:rgba(255,255,255,.10);padding:2px 6px;border-radius:8px}.footer{text-align:center;color:#64748b;font-weight:900;padding:28px 0 38px}@media(max-width:980px){.overview{grid-template-columns:1fr}.lesson-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.nav{display:none}}@media(max-width:650px){.top{align-items:flex-start;flex-direction:column}.lesson-grid,.stats{grid-template-columns:1fr}.card,.lesson{border-radius:22px;padding:16px}.actions .btn{width:100%}}
+  </style>
+</head>
+<body>
+  <a class="platform-home-link" href="omer-courses.html" aria-label="חזרה ללומדות עומר"><span class="platform-home-icon" aria-hidden="true">↩</span><span class="platform-home-text">לומדות עומר</span></a>
+  <header class="hero">
+    <div class="shell">
+      <div class="top">
+        <div class="brand"><span class="mark">AI</span><span>עומר הנביעה · AI Research Lab</span></div>
+        <nav class="nav" aria-label="ניווט בקורס">
+          <a href="omer-courses.html">לומדות עומר</a>
+          <a href="#overview">סקירה</a>
+          <a href="#lessons">15 המפגשים</a>
+          <a href="#sources">חומרי מקור</a>
+        </nav>
+      </div>
+      <div class="kicker">כיתה ט׳ · 15 מפגשים · 90 דקות למפגש</div>
+      <h1>AI Research Lab - חקר, דאטה והצגת מסקנות</h1>
+      <p>לומדה מתוכננת סביב תהליך חקר מלא: שאלה טובה, מקורות אמינים, ארגון מידע, גרף, תובנות, דוח חזותי והצגה מקצועית. AI משמש ככלי עבודה ביקורתי ולא כתחליף לחשיבה.</p>
+      <div class="actions">
+        <a class="btn" href="#lessons">ראו את מבנה המפגשים</a>
+        <a class="btn ghost" href="omer-courses.html">חזרה לעמוד עומר</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="shell grid">
+      <section class="overview" id="overview" aria-label="סקירת הקורס">
+        <article class="card">
+          <h2>מה התלמידים בונים?</h2>
+          <p>לאורך הקורס כל צוות מתקדם משלב הסקרנות הראשונית ועד להצגה מסכמת. בכל מפגש נשמר רכיב קטן שמצטבר לתוצר הסופי: שאלת חקר, תיק מקורות, טבלת מידע, גרף, תובנות, מסקנה, דוח חזותי ומצגת.</p>
+          <div class="pill-row" aria-label="מיומנויות מרכזיות">
+            <span class="pill">חשיבה חקרנית</span>
+            <span class="pill">אוריינות AI</span>
+            <span class="pill">בדיקת מקורות</span>
+            <span class="pill">דאטה וגרפים</span>
+            <span class="pill">הצגה מקצועית</span>
+          </div>
+        </article>
+        <article class="card stats" aria-label="מדדי הקורס">
+          <div class="stat"><b>15</b>מפגשים</div>
+          <div class="stat"><b>90</b>דקות</div>
+          <div class="stat"><b>2-4</b>עמודי דוח</div>
+          <div class="stat"><b>5-7</b>שקפי מצגת</div>
+        </article>
+      </section>
+
+      <section class="card">
+        <h2>תוצר סופי</h2>
+        <p>בסיום המסלול כל צוות מציג דוח חקר חזותי, מצגת נתונים קצרה והצגה בעל פה של 3-5 דקות. התוצר כולל גם גילוי נאות: איך השתמשנו ב־AI, מה בדקנו בעצמנו, ומה שיפרנו בעקבות בדיקה.</p>
+      </section>
+
+      <div class="section-title" id="lessons">
+        <div>
+          <h2>מבנה 15 המפגשים</h2>
+          <p>בשלב הזה אלו כרטיסי תכנון. בשלב הבא נהפוך כל מפגש לדף לומדה/מצגת לפי התוכן המקורי.</p>
+        </div>
+      </div>
+
+      <section class="lesson-grid" aria-label="רשימת המפגשים">
+        <article class="lesson ready" style="--a:#0891b2;--b:#2563eb"><div class="lesson-head"><span class="num">1</span><span class="tag">פתיחה</span></div><h3>מה זה חקר בעידן AI?</h3><p>הבחנה בין תשובה מהירה לבין תהליך חקר מבוסס.</p><div class="deliverable">תוצר: כללי שימוש אחראי ב־AI + נושאי חקר ראשוניים.</div><div class="actions"><a class="btn dark" href="ai-research-lab-lesson-1.html">פתחו לומדה</a><a class="btn" href="ai-research-lab-slides-1.html">מצגת מדריך</a></div></article>
+        <article class="lesson ready" style="--a:#2563eb;--b:#7c3aed"><div class="lesson-head"><span class="num">2</span><span class="tag">שאלה</span></div><h3>מנושא רחב לשאלת חקר טובה</h3><p>צמצום נושא, ניסוח שאלה ושאלות משנה.</p><div class="deliverable">תוצר: שאלת חקר ראשונית + 3 שאלות משנה.</div><div class="actions"><a class="btn dark" href="ai-research-lab-lesson-2.html">פתחו לומדה</a><a class="btn" href="ai-research-lab-slides-2.html">מצגת מדריך</a></div></article>
+        <article class="lesson ready" style="--a:#7c3aed;--b:#0891b2"><div class="lesson-head"><span class="num">3</span><span class="tag">חיפוש</span></div><h3>חיפוש חכם ובניית מפת חיפוש</h3><p>מילות מפתח, שאילתות וכיווני בדיקה בעזרת AI.</p><div class="deliverable">תוצר: מפת חיפוש + רשימת מקורות אפשריים.</div><div class="actions"><a class="btn dark" href="ai-research-lab-lesson-3.html">פתחו לומדה</a><a class="btn" href="ai-research-lab-slides-3.html">מצגת מדריך</a></div></article>
+        <article class="lesson ready" style="--a:#0f766e;--b:#2563eb"><div class="lesson-head"><span class="num">4</span><span class="tag">אמינות</span></div><h3>בדיקת אמינות מקורות</h3><p>זהות כותב, עדכניות, מטרה, ראיות והטיה.</p><div class="deliverable">תוצר: טבלת אמינות לשלושה מקורות לפחות.</div><div class="actions"><a class="btn dark" href="ai-research-lab-lesson-4.html">פתחו לומדה</a><a class="btn" href="ai-research-lab-slides-4.html">מצגת מדריך</a></div></article>
+        <article class="lesson ready" style="--a:#16a34a;--b:#0891b2"><div class="lesson-head"><span class="num">5</span><span class="tag">שער מעבר</span></div><h3>אישור שאלת חקר ותיק מקורות ראשוני</h3><p>בדיקת כיוון החקר, משוב ותיקוף לפני המשך העבודה.</p><div class="deliverable">תוצר: שאלת חקר מאושרת + תיק מקורות ראשוני.</div><div class="actions"><a class="btn dark" href="ai-research-lab-lesson-5.html">פתחו לומדה</a><a class="btn" href="ai-research-lab-slides-5.html">מצגת מדריך</a></div></article>
+        <article class="lesson ready" style="--a:#ea580c;--b:#7c3aed"><div class="lesson-head"><span class="num">6</span><span class="tag">השוואה</span></div><h3>השוואת מקורות וזיהוי פערים</h3><p>הסכמות, סתירות, פערים ומה עוד צריך לבדוק.</p><div class="deliverable">תוצר: טבלת השוואת מקורות.</div><div class="actions"><a class="btn dark" href="ai-research-lab-lesson-6.html">פתחו לומדה</a><a class="btn" href="ai-research-lab-slides-6.html">מצגת מדריך</a></div></article>
+        <article class="lesson ready" style="--a:#0891b2;--b:#16a34a"><div class="lesson-head"><span class="num">7</span><span class="tag">ארגון</span></div><h3>ארגון מידע מטקסט לטבלה</h3><p>המרת מידע חופשי לשדות, קטגוריות וממצאים.</p><div class="deliverable">תוצר: טבלת מידע מסודרת.</div><div class="actions"><a class="btn dark" href="ai-research-lab-lesson-7.html">פתחו לומדה</a><a class="btn" href="ai-research-lab-slides-7.html">מצגת מדריך</a></div></article>
+        <article class="lesson ready" style="--a:#2563eb;--b:#06b6d4"><div class="lesson-head"><span class="num">8</span><span class="tag">דאטה</span></div><h3>נתונים, גרפים והמחשה חזותית</h3><p>בחירת ייצוג חזותי מתאים לממצא מרכזי.</p><div class="deliverable">תוצר: גרף/תרשים עם מקור ומשפט מסקנה.</div><div class="actions"><a class="btn dark" href="ai-research-lab-lesson-8.html">פתחו לומדה</a><a class="btn" href="ai-research-lab-slides-8.html">מצגת מדריך</a></div></article>
+        <article class="lesson ready" style="--a:#7c3aed;--b:#ec4899"><div class="lesson-head"><span class="num">9</span><span class="tag">תובנות</span></div><h3>ממידע לתובנות</h3><p>הבדלה בין מידע, ממצא, תובנה ושאלה פתוחה.</p><div class="deliverable">תוצר: 3 תובנות מבוססות ראיות.</div><div class="actions"><a class="btn dark" href="ai-research-lab-lesson-9.html">פתחו לומדה</a><a class="btn" href="ai-research-lab-slides-9.html">מצגת מדריך</a></div></article>
+        <article class="lesson ready" style="--a:#f97316;--b:#2563eb"><div class="lesson-head"><span class="num">10</span><span class="tag">טיעון</span></div><h3>טענה, מסקנה והמלצה</h3><p>כתיבת טיעון מקצועי שמבוסס על ראיות.</p><div class="deliverable">תוצר: מסקנה והמלצה מנוסחות.</div><div class="actions"><a class="btn dark" href="ai-research-lab-lesson-10.html">פתחו לומדה</a><a class="btn" href="ai-research-lab-slides-10.html">מצגת מדריך</a></div></article>
+        <article class="lesson ready" style="--a:#0f766e;--b:#7c3aed"><div class="lesson-head"><span class="num">11</span><span class="tag">דוח</span></div><h3>בניית דוח חקר חזותי</h3><p>מבנה דוח, סדר מידע והצגת ממצא מרכזי.</p><div class="deliverable">תוצר: טיוטת דוח חקר חזותי.</div><div class="actions"><a class="btn dark" href="ai-research-lab-lesson-11.html">פתחו לומדה</a><a class="btn" href="ai-research-lab-slides-11.html">מצגת מדריך</a></div></article>
+        <article class="lesson ready" style="--a:#14b8a6;--b:#6366f1"><div class="lesson-head"><span class="num">12</span><span class="tag">עיצוב</span></div><h3>עיצוב מידע ושיפור הדוח</h3><p>היררכיה, כותרות, קריאות, הדגשות ושיפור ניסוח.</p><div class="deliverable">תוצר: דוח משופר וברור יותר.</div><div class="actions"><a class="btn dark" href="ai-research-lab-lesson-12.html">פתחו לומדה</a><a class="btn" href="ai-research-lab-slides-12.html">מצגת מדריך</a></div></article>
+        <article class="lesson ready" style="--a:#7c3aed;--b:#2563eb"><div class="lesson-head"><span class="num">13</span><span class="tag">מצגת</span></div><h3>בניית מצגת מסכמת</h3><p>תרגום הדוח לסיפור קצר וברור של 5-7 שקפים.</p><div class="deliverable">תוצר: מצגת נתונים ראשונית.</div><div class="actions"><a class="btn dark" href="ai-research-lab-lesson-13.html">פתחו לומדה</a><a class="btn" href="ai-research-lab-slides-13.html">מצגת מדריך</a></div></article>
+        <article class="lesson ready" style="--a:#ea580c;--b:#db2777"><div class="lesson-head"><span class="num">14</span><span class="tag">חזרה</span></div><h3>חזרת הצגה, משוב ושיפור</h3><p>תרגול פתיחה, מעבר בין שקפים, משוב ושיפור.</p><div class="deliverable">תוצר: גרסה משופרת להצגה.</div><div class="actions"><a class="btn dark" href="ai-research-lab-lesson-14.html">פתחו לומדה</a><a class="btn" href="ai-research-lab-slides-14.html">מצגת מדריך</a></div></article>
+        <article class="lesson ready" style="--a:#111827;--b:#0891b2"><div class="lesson-head"><span class="num">15</span><span class="tag">סיכום</span></div><h3>הצגת תוצרים וסיכום למידה</h3><p>הצגות צוותים, מחוון, רפלקציה וסגירת תהליך.</p><div class="deliverable">תוצר: הצגה מסכמת + רפלקציה.</div><div class="actions"><a class="btn dark" href="ai-research-lab-lesson-15.html">פתחו לומדה</a><a class="btn" href="ai-research-lab-slides-15.html">מצגת מדריך</a></div></article>
+      </section>
+
+      <section class="card source" id="sources">
+        <h2>חומרי מקור שנקלטו</h2>
+        <p>הקורס מבוסס על תיקיית המקור: <code>content/source-materials/omer-hanbia-ai-research-lab/</code>. קיימים מערכי מדריך ומצגות HTML לכל 15 המפגשים, בנוסף לתוכנית הוראה פנימית מלאה.</p>
+        <div class="actions"><a class="btn" href="omer-courses.html">חזרה לעמוד לומדות עומר</a><a class="btn disabled" href="#" aria-disabled="true">דפי מפגשים ייבנו בשלב הבא</a></div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">AI Research Lab · מרכז חדשנות עומר הנביעה · hai.tech</footer>
+  <script src="/js/feedback-widget.js?v=20261004-ai-research-lab-course"></script>
+</body>
+</html>

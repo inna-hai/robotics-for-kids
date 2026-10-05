@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Research Lab - מפגש 1 - מה זה חקר בעידן AI?</title>
+<link rel="stylesheet" href="assets/html-ppt/fonts.css">
+<link rel="stylesheet" href="assets/html-ppt/base.css">
+<link rel="stylesheet" href="assets/html-ppt/animations/animations.css">
+<link rel="stylesheet" href="assets/html-ppt/templates/obsidian-claude-gradient/style.css">
+<style>
+  body.tpl-obsidian-claude-gradient{direction:rtl;font-family:Rubik,Inter,Arial,sans-serif;--oc-bg:#0b1220;--oc-surface:#111827;--oc-surface2:#172033;--oc-border:#263449;--oc-accent:#06b6d4;--oc-accent2:#38bdf8;--oc-accent3:#67e8f9;--oc-blue:#60a5fa;--oc-green:#34d399;--oc-orange:#f59e0b;--oc-text:#e5f0ff;--oc-dim:#9fb0c6;--oc-dimmer:#64748b}
+  .tpl-obsidian-claude-gradient .deck,.tpl-obsidian-claude-gradient .slide{direction:rtl;font-family:Rubik,Inter,Arial,sans-serif;text-align:right}
+  .tpl-obsidian-claude-gradient .deck{transform:scale(calc(var(--deck-scale,1) * .92))!important;border:1px solid rgba(103,232,249,.18);border-radius:24px;box-shadow:0 24px 80px rgba(0,0,0,.34)}
+  .tpl-obsidian-claude-gradient .slide{align-items:center;justify-content:flex-start;padding:74px 82px 58px}
+  .tpl-obsidian-claude-gradient .slide.center{text-align:center;align-items:center;justify-content:center}.tpl-obsidian-claude-gradient .slide.center .oc-sub{margin-inline:auto}.tpl-obsidian-claude-gradient .oc-h1,.tpl-obsidian-claude-gradient .oc-h2{font-family:Rubik,Inter,Arial,sans-serif;letter-spacing:0}.tpl-obsidian-claude-gradient .oc-h1{font-size:68px}.tpl-obsidian-claude-gradient .oc-h2{font-size:43px}.tpl-obsidian-claude-gradient .oc-sub{font-size:20px;max-width:850px}.tpl-obsidian-claude-gradient .oc-card{text-align:right}.tpl-obsidian-claude-gradient bdi,.tpl-obsidian-claude-gradient .ltr{direction:ltr;unicode-bidi:isolate;display:inline-block}.tpl-obsidian-claude-gradient .oc-tag{direction:ltr;text-align:left}.tpl-obsidian-claude-gradient .oc-hl{text-align:right;border-left:0;border-right:4px solid var(--oc-accent2);border-radius:12px 0 0 12px}.tpl-obsidian-claude-gradient .oc-code{direction:rtl;text-align:right;font-family:Rubik,Inter,Arial,sans-serif;font-size:21px;line-height:1.8;white-space:pre-wrap;unicode-bidi:plaintext}.tpl-obsidian-claude-gradient .oc-code .line{display:block;direction:rtl;text-align:right;unicode-bidi:isolate}.tpl-obsidian-claude-gradient .oc-steps{text-align:right;width:100%;max-width:1120px;margin-top:18px}.tpl-obsidian-claude-gradient .oc-step{flex-direction:row;direction:rtl;background:rgba(17,24,39,.72);border:1px solid var(--oc-border);border-radius:14px;margin-bottom:10px;padding:16px 18px}.tpl-obsidian-claude-gradient .oc-sn{order:0}.tpl-obsidian-claude-gradient .oc-sc{order:1;text-align:right}.tpl-obsidian-claude-gradient .oc-sc h4{font-size:22px}.tpl-obsidian-claude-gradient .oc-sc p{font-size:18px;color:#b8c7da}.tpl-obsidian-claude-gradient .course-link{position:fixed;top:16px;right:16px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:8px 13px;border-radius:999px;background:rgba(229,240,255,.10);color:#e5f0ff;border:1px solid rgba(103,232,249,.24);font-family:Rubik,Arial,sans-serif;font-weight:900;text-decoration:none;box-shadow:0 10px 24px rgba(0,0,0,.18)}.tpl-obsidian-claude-gradient .course-link:hover{background:rgba(103,232,249,.18);text-decoration:none}.tpl-obsidian-claude-gradient .notes{display:none}.tpl-obsidian-claude-gradient .media-layout{display:grid;grid-template-columns:1.05fr .95fr;gap:22px;width:100%;max-width:1120px;margin-top:22px;align-items:stretch}.tpl-obsidian-claude-gradient .video-card{display:block;text-decoration:none;color:inherit;min-height:250px}.tpl-obsidian-claude-gradient .video-card:hover{border-color:rgba(103,232,249,.55);text-decoration:none}.tpl-obsidian-claude-gradient .play{width:62px;height:62px;border-radius:999px;background:linear-gradient(135deg,var(--oc-accent),var(--oc-blue));display:grid;place-items:center;color:#00111f;font-size:28px;font-weight:900;margin-bottom:16px}.tpl-obsidian-claude-gradient .he-caption{background:rgba(52,211,153,.10);border:1px solid rgba(52,211,153,.32);border-radius:14px;padding:18px 20px;color:#d1fae5;font-size:19px;line-height:1.65}.tpl-obsidian-claude-gradient .slide-number-local{position:absolute;left:36px;bottom:28px;color:var(--oc-dimmer);font-size:12px;font-weight:800;letter-spacing:.12em}.tpl-obsidian-claude-gradient .tight-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;width:100%;max-width:1060px;margin-top:24px}.tpl-obsidian-claude-gradient .oc-card h3{font-size:22px;color:var(--oc-text);margin:0 0 9px}.tpl-obsidian-claude-gradient .oc-card p,.tpl-obsidian-claude-gradient .oc-card li{color:var(--oc-dim);font-size:17px;line-height:1.6}.tpl-obsidian-claude-gradient ul{margin:0;padding-inline-start:22px}.tpl-obsidian-claude-gradient .oc-snum{direction:ltr;unicode-bidi:isolate;text-align:left}.tpl-obsidian-claude-gradient .slide:not(.center)>.oc-tag,.tpl-obsidian-claude-gradient .slide:not(.center)>.oc-h2,.tpl-obsidian-claude-gradient .slide:not(.center)>.oc-sub,.tpl-obsidian-claude-gradient .slide:not(.center)>.oc-code,.tpl-obsidian-claude-gradient .slide:not(.center)>.oc-hl{width:100%;max-width:1120px}.tpl-obsidian-claude-gradient .slide:not(.center)>.oc-h2{margin-top:8px}.tpl-obsidian-claude-gradient .oc-code{max-width:1120px;background:#020617;border-color:#334155;color:#eaf6ff}.tpl-obsidian-claude-gradient .oc-hl{font-size:18px;color:#dbeafe;background:rgba(6,182,212,.08)}@media(max-width:900px){.tpl-obsidian-claude-gradient .deck{transform:scale(var(--deck-scale,1))!important;border-radius:0}.tpl-obsidian-claude-gradient .slide{padding:52px 28px}.tpl-obsidian-claude-gradient .oc-h1{font-size:46px}.tpl-obsidian-claude-gradient .oc-h2{font-size:34px}.tpl-obsidian-claude-gradient .oc-grid-2,.tpl-obsidian-claude-gradient .oc-grid-3,.tpl-obsidian-claude-gradient .tight-grid,.tpl-obsidian-claude-gradient .media-layout{grid-template-columns:1fr}.tpl-obsidian-claude-gradient .oc-snum{right:auto;left:22px}.tpl-obsidian-claude-gradient .slide-number-local{display:none}}
+</style>
+</head>
+<body class="tpl-obsidian-claude-gradient">
+<a class="course-link" href="ai-research-lab.html">↩ עמוד הקורס</a>
+<div class="deck">
+
+  <section class="slide center" data-title="פתיחה">
+    <div class="oc-cbg"></div><div class="oc-cgrid"></div><div class="oc-snum">01 / 10</div>
+    <div class="oc-tag">AI RESEARCH LAB · OMER</div>
+    <h1 class="oc-h1">מה זה חקר<br><span class="oc-g">בעידן <bdi>AI</bdi>?</span></h1>
+    <p class="oc-sub">מפגש פתיחה לכיתה ט׳: איך משתמשים ב-<bdi>AI</bdi> כדי לפתוח כיווני חקר - בלי להתבלבל ולחשוב שתשובה יפה היא הוכחה.</p>
+    <div class="oc-grid-3"><div class="oc-card"><span class="oc-badge oc-bb">חשיבה</span><h3>תשובה מהירה</h3><p>נשמעת טוב, אבל לא בהכרח מבוססת.</p></div><div class="oc-card"><span class="oc-badge oc-bp">בדיקה</span><h3>חקר מבוסס</h3><p>מקורות, עדכניות, ראיות ודעות נוספות.</p></div><div class="oc-card"><span class="oc-badge oc-bg">תוצר</span><h3>2-3 נושאים</h3><p>נושאי חקר אפשריים להמשך הקורס.</p></div></div>
+    <div class="notes">פתיחה עניינית, פחות צבעונית. המסר: אנחנו במעבדת חקר, לא במופע AI.</div>
+  </section>
+
+  <section class="slide" data-title="שאלת פתיחה">
+    <div class="oc-cbg"></div><div class="oc-cgrid"></div><div class="oc-snum">02 / 10</div>
+    <div class="oc-tag">OPENING QUESTION</div>
+    <h2 class="oc-h2">האם שימוש ב-<bdi>AI</bdi> משפר למידה של תלמידים?</h2>
+    <p class="oc-sub">מתחילים בהצבעה מהירה: כן, לא או תלוי. אחר כך מפרקים מה חסר כדי לענות ברצינות.</p>
+    <div class="oc-grid-3"><div class="oc-card"><span class="oc-badge oc-bg">כן</span><h3><bdi>AI</bdi> יכול לעזור</h3><p>הסברים, תרגול, רעיונות וניסוח.</p></div><div class="oc-card"><span class="oc-badge oc-bo">לא</span><h3><bdi>AI</bdi> יכול להפריע</h3><p>העתקה, שטחיות או הסתמכות יתר.</p></div><div class="oc-card"><span class="oc-badge oc-bp">תלוי</span><h3>השאלה מורכבת</h3><p>גיל, מקצוע, מטרה, זמן שימוש ומדידה.</p></div></div>
+    <div class="oc-hl">שאלת מדריך: איזה מידע חסר לנו כדי להפוך תחושה לתשובה מבוססת?</div>
+    <div class="notes">לא לחפש תשובה נכונה. המטרה היא להרגיש שהשאלה דורשת חקר.</div>
+  </section>
+
+  <section class="slide" data-title="סרטון">
+    <div class="oc-cbg"></div><div class="oc-cgrid"></div><div class="oc-snum">03 / 10</div>
+    <div class="oc-tag">VIDEO EVIDENCE · OPTIONAL</div>
+    <h2 class="oc-h2">סרטון פתיחה: כש-<bdi>AI</bdi> נשמע בטוח מדי</h2>
+    <p class="oc-sub">הסרטון אינו מקור יחיד. הוא טריגר קצר לשיחה על למה צריך לבדוק תשובות של <bdi>AI</bdi>.</p>
+    <div class="media-layout">
+      <a class="oc-card video-card" href="https://www.youtube.com/watch?v=mkbKUJRmnK4" target="_blank" rel="noopener"><div class="play">▶</div><span class="oc-badge oc-bb">סרטון מומלץ</span><h3 class="ltr">CIVIX Explains AI: Hallucinations and Deepfakes</h3><p>מתאים לפתיחה באוריינות מדיה. מומלץ להקרין קטע קצר בלבד ואז לעצור לדיון.</p></a>
+      <div class="he-caption"><b>כתוביות/תיווך בעברית:</b><br>AI יכול לענות בביטחון גם כשאין לו מקור אמיתי. לפעמים הוא מערבב מידע נכון עם מידע מומצא או לא מדויק. לכן תשובה יפה אינה מספיקה לחקר: צריך לבדוק מקור, עדכניות וראיות.<br><br><b>שאלת צפייה:</b> מה גרם לתשובת ה-<bdi>AI</bdi> להישמע אמינה?</div>
+    </div>
+    <div class="notes">שקף מתוקן: אין חפיפה. הסרטון והטקסט נמצאים בשני אזורים נפרדים. להקרין 1-3 דקות בלבד.</div>
+  </section>
+
+  <section class="slide" data-title="הדגמת AI">
+    <div class="oc-cbg"></div><div class="oc-cgrid"></div><div class="oc-snum">04 / 10</div>
+    <div class="oc-tag">LIVE DEMO</div>
+    <h2 class="oc-h2">תשובה משכנעת היא לא סוף החקר</h2>
+    <p class="oc-sub">שואלים <bdi>AI</bdi> את שאלת הפתיחה, ואז מפרקים את התשובה כמו חוקרים: מה נשמע טוב, מה חסר, ומה צריך לבדוק.</p>
+    <div class="oc-code"><span class="line">האם שימוש ב-<bdi>AI</bdi> משפר למידה של תלמידים?</span><span class="line">ענה בצורה ברורה ומנומקת.</span></div>
+    <div class="oc-steps"><div class="oc-step"><div class="oc-sn">1</div><div class="oc-sc"><h4>מה נשמע משכנע?</h4><p>ניסוח, דוגמאות, ביטחון, מבנה.</p></div></div><div class="oc-step"><div class="oc-sn">2</div><div class="oc-sc"><h4>מה חסר?</h4><p>מקורות, עדכניות, נתונים, דעות אחרות.</p></div></div><div class="oc-step"><div class="oc-sn">3</div><div class="oc-sc"><h4>מה צריך לבדוק?</h4><p>מה נוכל לחפש או להשוות בהמשך?</p></div></div></div>
+    <div class="notes">אם אין גישה לכלי AI לכל התלמידים, המדריך מדגים והצוותים ממלאים לפי מה שמוקרן.</div>
+  </section>
+
+  <section class="slide center" data-title="כלל מרכזי">
+    <div class="oc-cbg"></div><div class="oc-cgrid"></div><div class="oc-snum">05 / 10</div>
+    <div class="oc-tag">CORE PRINCIPLE</div>
+    <h1 class="oc-h1">תשובת <bdi>AI</bdi> היא<br><span class="oc-g">התחלה של חקר</span><br>לא סיום של חקר.</h1>
+    <div class="oc-grid-2"><div class="oc-card"><span class="oc-badge oc-bg">כן להשתמש</span><h3>רעיונות, שאלות וכיוונים</h3><p>AI טוב לפתיחה ולחשיבה רחבה.</p></div><div class="oc-card"><span class="oc-badge oc-bo">לא להסתפק</span><h3>בלי מקור אין מסקנה</h3><p>כל טענה חשובה דורשת בדיקה.</p></div></div>
+    <div class="notes">זה המשפט המרכזי של המפגש. לבקש מהתלמידים לכתוב אותו בלומדה.</div>
+  </section>
+
+  <section class="slide" data-title="שאלות בדיקה">
+    <div class="oc-cbg"></div><div class="oc-cgrid"></div><div class="oc-snum">06 / 10</div>
+    <div class="oc-tag">RESEARCH QUALITY CHECK</div>
+    <h2 class="oc-h2">6 שאלות לפני שמאמינים לתשובת <bdi>AI</bdi></h2>
+    <div class="tight-grid"><div class="oc-card"><h3>מקור</h3><p>מאיפה המידע?</p></div><div class="oc-card"><h3>עדכניות</h3><p>האם זה עדיין נכון?</p></div><div class="oc-card"><h3>ראיות</h3><p>יש נתונים או רק ניסוח?</p></div><div class="oc-card"><h3>הטיה</h3><p>איזו נקודת מבט חסרה?</p></div><div class="oc-card"><h3>למי זה נכון?</h3><p>גיל, מקצוע, רמה, צורך.</p></div><div class="oc-card"><h3>מדידה</h3><p>איך יודעים שהיה שיפור?</p></div></div>
+    <div class="oc-hl">משימה קצרה: כל צוות בוחר 3 שאלות בדיקה לתשובת ה-<bdi>AI</bdi>.</div>
+    <div class="notes">לשמור על קצב. לא להפוך את זה להרצאה על אמינות מקורות - זה יגיע בהמשך הקורס.</div>
+  </section>
+
+  <section class="slide" data-title="נושאים">
+    <div class="oc-cbg"></div><div class="oc-cgrid"></div><div class="oc-snum">07 / 10</div>
+    <div class="oc-tag">TEAM WORK</div>
+    <h2 class="oc-h2">בוחרים 3 נושאי חקר אפשריים</h2>
+    <div class="oc-grid-2"><div class="oc-card"><span class="oc-badge oc-bb">רעיונות</span><h3>נקודות פתיחה</h3><ul><li><bdi>AI</bdi> ולמידה</li><li>זמן מסך ושינה</li><li>רשתות חברתיות וריכוז</li><li>פרטיות ברשת</li><li>קיימות בבית הספר</li></ul></div><div class="oc-card"><span class="oc-badge oc-bg">קריטריון</span><h3>נושא טוב לחקר</h3><ul><li>מעניין את הצוות</li><li>אפשר לבדוק אותו</li><li>יש סיכוי למצוא מקורות</li><li>לא רחב מדי</li></ul></div></div>
+    <div class="oc-hl">תוצר: 2-3 נושאים + למה הם מעניינים + מה צריך לבדוק.</div>
+    <div class="notes">אם יש פיזור, להגביל לשני נושאים. חשוב יותר איכות מאשר כמות.</div>
+  </section>
+
+  <section class="slide" data-title="פרומפט">
+    <div class="oc-cbg"></div><div class="oc-cgrid"></div><div class="oc-snum">08 / 10</div>
+    <div class="oc-tag">PROMPT ENGINEERING FOR RESEARCH</div>
+    <h2 class="oc-h2">מבקשים כיווני חקר - לא מסקנה</h2>
+    <div class="oc-code"><span class="line">אנחנו תלמידי כיתה ט׳ ורוצים לבחור נושא חקר קצר.</span><span class="line">הנושא שלנו הוא: ____.</span><span class="line">הצע לנו 5 כיווני חקר מעניינים בנושא.</span><span class="line">לכל כיוון כתוב:</span><span class="line">1. למה הוא מעניין?</span><span class="line">2. מה כדאי לבדוק?</span><span class="line">3. איזה מידע או מקור יכול לעזור לבדוק אותו?</span><span class="line">אל תכתוב מסקנה סופית.</span></div>
+    <div class="oc-hl">המשפט החשוב: “אל תכתוב מסקנה סופית”. אנחנו רוצים כיווני בדיקה, לא תשובה מוכנה.</div>
+    <div class="notes">זה נאמן למערך. להדגיש שהתלמידים לא מבקשים מה-AI לסיים עבורם את החקר.</div>
+  </section>
+
+  <section class="slide" data-title="עצירת איכות">
+    <div class="oc-cbg"></div><div class="oc-cgrid"></div><div class="oc-snum">09 / 10</div>
+    <div class="oc-tag">CHECKPOINT</div>
+    <h2 class="oc-h2">עצירת איכות לפני שממשיכים</h2>
+    <div class="oc-grid-2"><div class="oc-card"><span class="oc-badge oc-bg">⭐ עניין</span><h3>הצוות באמת רוצה לבדוק</h3><p>בלי עניין אישי, החקר לא יחזיק 15 מפגשים.</p></div><div class="oc-card"><span class="oc-badge oc-bb">🔎 בדיקה</span><h3>אפשר להפוך לשאלה</h3><p>אם הנושא רחב מדי, מצמצמים אותו.</p></div><div class="oc-card"><span class="oc-badge oc-bo">⚠️ אימות</span><h3><bdi>AI</bdi> נשמע בטוח מדי</h3><p>מסמנים טענה אחת שדורשת בדיקה.</p></div><div class="oc-card"><span class="oc-badge oc-bp">📚 מקורות</span><h3>יש סיכוי למצוא מידע</h3><p>לפחות 2-3 מקורות בהמשך.</p></div></div>
+    <div class="notes">זה שלב חשוב לפני מפגש 2. עוזר לא להיתקע עם נושא שאי אפשר לחקור.</div>
+  </section>
+
+  <section class="slide center" data-title="סיכום">
+    <div class="oc-cbg"></div><div class="oc-cgrid"></div><div class="oc-snum">10 / 10</div>
+    <div class="oc-tag">EXIT TICKET</div>
+    <h1 class="oc-h1">יוצאים עם<br><span class="oc-g">2-3 נושאי חקר</span></h1>
+    <p class="oc-sub">לכל נושא שומרים: מה הנושא, למה הוא מעניין, ומה צריך לבדוק לפני מסקנה.</p>
+    <div class="oc-grid-3"><div class="oc-card"><h3>נושא</h3><p>מה אנחנו רוצים לבדוק?</p></div><div class="oc-card"><h3>עניין</h3><p>למה זה חשוב או מסקרן?</p></div><div class="oc-card"><h3>בדיקה</h3><p>איזה מידע חסר?</p></div></div>
+    <div class="oc-hl">במפגש הבא: הופכים נושא רחב לשאלת חקר טובה.</div>
+    <div class="notes">לוודא שהתלמידים שמרו את העבודה בלומדה. זה הבסיס למפגש 2.</div>
+  </section>
+
+</div>
+<script src="assets/html-ppt/runtime.js"></script>
+</body></html>
