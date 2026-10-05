@@ -931,6 +931,69 @@
     ctx.restore();
   }
 
+  const gateClosedAngle = 0;
+  const gateOpenAngle = -Math.PI * 0.45;
+  let gateAngle = gateOpenAngle;
+  let gateAnimating = false;
+
+  function drawBoomGate(angle, blocked) {
+    const pivotX = start.x + cell * 2.5 - 28;
+    const pivotY = start.y - 6;
+    // post with a small control box
+    ctx.fillStyle = '#475569';
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(pivotX - 6, pivotY - 4, 12, 26, 3);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = blocked ? '#ef4444' : '#22c55e';
+    ctx.beginPath();
+    ctx.arc(pivotX, pivotY + 4, 3, 0, Math.PI * 2);
+    ctx.fill();
+    // striped arm rotating around the post
+    ctx.save();
+    ctx.translate(pivotX, pivotY);
+    ctx.rotate(angle);
+    const armLength = 58;
+    for (let stripe = 0; stripe < 6; stripe += 1) {
+      ctx.fillStyle = stripe % 2 ? '#ffffff' : '#dc2626';
+      ctx.fillRect(4 + stripe * (armLength / 6), -3.5, armLength / 6, 7);
+    }
+    ctx.strokeStyle = '#7f1d1d';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(4, -3.5, armLength, 7);
+    ctx.restore();
+    ctx.fillStyle = '#334155';
+    ctx.beginPath();
+    ctx.arc(pivotX, pivotY, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+    if (blocked && !gateAnimating) {
+      ctx.fillStyle = '#7f1d1d';
+      ctx.font = '900 12px Rubik, Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('דרך חסומה', pivotX + 30, start.y + 36);
+    }
+  }
+
+  function animateGate(targetAngle) {
+    const from = gateAngle;
+    const startedAt = performance.now();
+    gateAnimating = true;
+    function step(now) {
+      const t = Math.min(1, (now - startedAt) / 500);
+      gateAngle = from + (targetAngle - from) * (1 - Math.pow(1 - t, 3));
+      drawWorld();
+      if (t < 1) {
+        requestAnimationFrame(step);
+        return;
+      }
+      gateAnimating = false;
+      drawWorld();
+    }
+    requestAnimationFrame(step);
+  }
+
   function drawWorld(state = defaultState()) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawPixelGrass();
@@ -958,38 +1021,9 @@
 
     if (showStation) drawStationBlock(station.x, station.y);
 
-    // In road-state lessons the barrier spot is always marked: a full barrier when blocked, a faded one when open.
-    if (usesRouteState && state.routeOpen !== false) {
-      const barrierX = start.x + cell * 2.5;
-      ctx.save();
-      ctx.globalAlpha = 0.6;
-      ctx.setLineDash([5, 4]);
-      ctx.strokeStyle = '#7f1d1d';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(barrierX - 26, start.y - 20, 52, 10);
-      ctx.restore();
-      ctx.fillStyle = 'rgba(127, 29, 29, .7)';
-      ctx.font = '800 11px Rubik, Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText('מחסום אפשרי', barrierX, start.y + 34);
-    }
-    if (state.routeOpen === false) {
-      const barrierX = start.x + cell * 2.5;
-      ctx.fillStyle = '#7f1d1d';
-      ctx.fillRect(barrierX - 26, start.y - 22, 5, 36);
-      ctx.fillRect(barrierX + 21, start.y - 22, 5, 36);
-      for (let stripe = 0; stripe < 6; stripe += 1) {
-        ctx.fillStyle = stripe % 2 ? '#ffffff' : '#dc2626';
-        ctx.fillRect(barrierX - 26 + stripe * 9, start.y - 20, 9, 10);
-      }
-      ctx.strokeStyle = '#7f1d1d';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(barrierX - 26, start.y - 20, 52, 10);
-      ctx.fillStyle = '#7f1d1d';
-      ctx.font = '900 12px Rubik, Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText('דרך חסומה', barrierX, start.y - 28);
-    }
+    // Road-state lessons show an automatic boom gate on the road: the arm lies across the road when blocked and
+    // is raised upright when open. Switching the road animates the arm.
+    if (usesRouteState) drawBoomGate(gateAnimating ? gateAngle : (state.routeOpen === false ? gateClosedAngle : gateOpenAngle), state.routeOpen === false);
 
     dropPointPositions().forEach((point, index) => {
       ctx.fillStyle = 'rgba(250, 204, 21, .35)';
@@ -1237,6 +1271,7 @@
     const detourCriteria = ['blockedReaches', 'blockedAvoidsBarrier', 'blockedDelivers'];
     if (routeToggle && (academy.exercises[activeExercise]?.criteria || []).some(criterion => detourCriteria.includes(criterion.type))) {
       worldRouteOpen = false;
+      gateAngle = gateClosedAngle;
       renderRouteToggle();
     }
     const entry = entryBoardXml(activeExercise);
@@ -1291,7 +1326,7 @@
     renderRouteToggle();
     animationRunId += 1;
     runButton.disabled = false;
-    drawWorld();
+    animateGate(worldRouteOpen ? gateOpenAngle : gateClosedAngle);
     feedbackEl.textContent = worldRouteOpen ? 'הדרך פתוחה עכשיו. לחצו הרצה ובדיקה.' : 'הדרך חסומה עכשיו. לחצו הרצה ובדיקה.';
     feedbackEl.className = 'academy-feedback';
   });
