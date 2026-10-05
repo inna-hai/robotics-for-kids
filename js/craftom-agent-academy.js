@@ -931,44 +931,60 @@
     ctx.restore();
   }
 
-  // The post stands beside the road (north side). Closed: the arm points down across the road.
-  // Open: the arm swings up to lie along the roadside.
-  const gateClosedAngle = Math.PI / 2;
-  const gateOpenAngle = 0;
+  // Aerial (top-down) view of an automatic boom gate. The post stands beside the road (north side).
+  // Closed (lift 0): the arm lies across the road. Open (lift 1): the arm is raised, so from above it looks
+  // short and casts a long shadow on the ground.
+  const gateClosedAngle = 0;
+  const gateOpenAngle = 1;
   let gateAngle = gateOpenAngle;
   let gateAnimating = false;
 
-  function drawBoomGate(angle, blocked) {
+  function drawBoomGate(lift, blocked) {
     const pivotX = start.x + cell * 2.5;
-    const pivotY = start.y - 26;
-    // post with a small control box
-    ctx.fillStyle = '#475569';
+    const pivotY = start.y - 24;
+    const armLength = 50;
+    const raise = lift * Math.PI / 2;
+    const projected = Math.max(8, armLength * Math.cos(raise));
+    const shadowLength = armLength * Math.sin(raise) * 0.75;
+    // shadow of the raised arm, cast toward the bottom right
+    if (shadowLength > 1) {
+      ctx.save();
+      ctx.translate(pivotX + 3, pivotY + 3);
+      ctx.rotate(Math.PI / 4);
+      ctx.fillStyle = 'rgba(15, 23, 42, .25)';
+      ctx.fillRect(0, -3, shadowLength, 6);
+      ctx.restore();
+    }
+    // the arm seen from above
+    ctx.save();
+    ctx.translate(pivotX, pivotY);
+    ctx.rotate(Math.PI / 2);
+    if (projected > 1) {
+      ctx.fillStyle = 'rgba(15, 23, 42, .25)';
+      ctx.fillRect(3, -1, projected, 7);
+      const stripes = 6;
+      for (let stripe = 0; stripe < stripes; stripe += 1) {
+        ctx.fillStyle = stripe % 2 ? '#ffffff' : '#dc2626';
+        ctx.fillRect(stripe * (projected / stripes), -3.5, projected / stripes, 7);
+      }
+      ctx.strokeStyle = '#7f1d1d';
+      ctx.lineWidth = 1.2;
+      ctx.strokeRect(0, -3.5, projected, 7);
+    }
+    ctx.restore();
+    // the post housing seen from above, with its shadow and status light
+    ctx.fillStyle = 'rgba(15, 23, 42, .3)';
+    ctx.fillRect(pivotX - 6, pivotY - 6, 16, 16);
+    ctx.fillStyle = '#64748b';
     ctx.strokeStyle = '#1e293b';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.roundRect(pivotX - 7, pivotY - 20, 14, 22, 3);
+    ctx.roundRect(pivotX - 9, pivotY - 9, 16, 16, 3);
     ctx.fill();
     ctx.stroke();
     ctx.fillStyle = blocked ? '#ef4444' : '#22c55e';
     ctx.beginPath();
-    ctx.arc(pivotX, pivotY - 12, 3, 0, Math.PI * 2);
-    ctx.fill();
-    // striped arm rotating around the post
-    ctx.save();
-    ctx.translate(pivotX, pivotY);
-    ctx.rotate(angle);
-    const armLength = 50;
-    for (let stripe = 0; stripe < 6; stripe += 1) {
-      ctx.fillStyle = stripe % 2 ? '#ffffff' : '#dc2626';
-      ctx.fillRect(4 + stripe * (armLength / 6), -3.5, armLength / 6, 7);
-    }
-    ctx.strokeStyle = '#7f1d1d';
-    ctx.lineWidth = 1.5;
-    ctx.strokeRect(4, -3.5, armLength, 7);
-    ctx.restore();
-    ctx.fillStyle = '#334155';
-    ctx.beginPath();
-    ctx.arc(pivotX, pivotY, 4.5, 0, Math.PI * 2);
+    ctx.arc(pivotX - 1, pivotY - 1, 3.5, 0, Math.PI * 2);
     ctx.fill();
     if (blocked && !gateAnimating) {
       ctx.fillStyle = '#7f1d1d';
