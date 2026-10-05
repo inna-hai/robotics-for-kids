@@ -391,7 +391,10 @@
   function visualSnapshot(state) {
     state.bubble = state.bubbleTtl > 0 ? state.bubbleText : null;
     state.bubbleTtl = Math.max(0, (state.bubbleTtl || 0) - 1);
+    const conditionBubble = state.conditionTtl > 0 ? state.conditionBubble : null;
+    state.conditionTtl = Math.max(0, (state.conditionTtl || 0) - 1);
     return {
+      conditionBubble,
       bubble: state.bubble,
       routeOpen: state.routeOpen,
       x: state.x,
@@ -493,6 +496,14 @@
         state.actions.push({ type: 'condition', state: routeState, hasElse });
         // "routeOpen is true" holds when the road is open; "is false" holds when it is blocked.
         const conditionHolds = (routeState === 'OPEN') === (state.routeOpen !== false);
+        // Pause on the condition with a bubble that shows what it read and which branch runs.
+        state.conditionBubble = {
+          reading: `routeOpen = ${state.routeOpen !== false ? 'true' : 'false'}`,
+          decision: conditionHolds ? 'התנאי נכון ← מתבצע then' : 'התנאי לא נכון ← מתבצע else',
+          holds: conditionHolds,
+        };
+        state.conditionTtl = 4;
+        for (let pause = 0; pause < 3; pause += 1) state.frames.push(visualSnapshot(state));
         walkBlocks(current.getInputTargetBlock(conditionHolds ? 'DO' : 'ELSE'), state);
       }
       current = current.getNextBlock();
@@ -1001,6 +1012,38 @@
     }
   }
 
+  // Bubble above the boom gate: what the if read, and which branch it chose.
+  function drawConditionBubble(bubble) {
+    const x = start.x + cell * 2.5;
+    const y = start.y - 92;
+    const width = 176;
+    const height = 46;
+    ctx.fillStyle = 'rgba(15, 23, 42, .92)';
+    ctx.strokeStyle = bubble.holds ? '#22c55e' : '#f97316';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(x - width / 2, y, width, height, 8);
+    ctx.fill();
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x - 6, y + height);
+    ctx.lineTo(x, y + height + 8);
+    ctx.lineTo(x + 6, y + height);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(15, 23, 42, .92)';
+    ctx.fill();
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#e2e8f0';
+    ctx.font = '800 12px ui-monospace, Menlo, monospace';
+    ctx.direction = 'ltr';
+    ctx.fillText(bubble.reading, x, y + 18);
+    ctx.direction = 'rtl';
+    ctx.fillStyle = bubble.holds ? '#86efac' : '#fdba74';
+    ctx.font = '900 12px Rubik, Arial';
+    ctx.fillText(bubble.decision, x, y + 36);
+    ctx.direction = 'inherit';
+  }
+
   function animateGate(targetAngle) {
     const from = gateAngle;
     const startedAt = performance.now();
@@ -1048,6 +1091,7 @@
 
     // Road-state lessons show an automatic boom gate on the road: the arm lies across the road when blocked and
     // is raised upright when open. Switching the road animates the arm.
+    if (usesRouteState && state.conditionBubble) drawConditionBubble(state.conditionBubble);
     if (usesRouteState) drawBoomGate(gateAnimating ? gateAngle : (state.routeOpen === false ? gateClosedAngle : gateOpenAngle), state.routeOpen === false);
 
     dropPointPositions().forEach((point, index) => {
