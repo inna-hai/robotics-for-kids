@@ -763,6 +763,12 @@
       const lastMoveAction = state.actions.map(action => action.type).lastIndexOf('move');
       return lastMoveAction > -1 && state.actions.some((action, index) => index > lastMoveAction && action.type === 'say' && isSuccessMessage(action.text));
     }
+    // A message in the middle of the trip: there is a move before it and another move after it.
+    if (criterion.type === 'sayBetweenMoves') {
+      const types = state.actions.map(action => action.type);
+      return types.some((type, index) => type === 'say' && String(state.actions[index].text || '').trim()
+        && types.slice(0, index).includes('move') && types.slice(index + 1).includes('move'));
+    }
     if (criterion.type === 'staysOnStartRow') return Math.abs(state.y - start.y) < Number(criterion.maxDelta || 8);
     return false;
   }

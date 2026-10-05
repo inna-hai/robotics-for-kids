@@ -2225,11 +2225,24 @@
       ],
     });
     lesson1.exercises[3].starter = { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 5 }] };
-    lesson1.exercises[4].starter = { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 7 }] };
-    lesson1.exercises[5].starter = { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 10 }, { type: 'say', text: 'המשלוח הגיע' }] };
-    lesson1.exercises[5].criteria.forEach(criterion => {
-      if (criterion.type === 'firstMove') Object.assign(criterion, { steps: 7, label: 'מספר התנועה תוקן ל-7' });
+    Object.assign(lesson1.exercises[4], {
+      title: 'תרגיל 5 - עצירה באמצע הדרך',
+      mission: 'הפעם השליח עוצר באמצע הדרך. חלקו את הנסיעה לשתי תנועות, כך שביחד הן מביאות את השליח בדיוק לתחנה. בין שתי התנועות הוסיפו הודעה שהשליח באמצע הדרך, ובסוף, אחרי ההגעה, השאירו הודעה שהמשלוח הגיע.',
+      hint: 'גררו עוד בלוק תזוזה. כמה צעדים בתנועה הראשונה, וכמה נשארו עד התחנה? ההודעה של אמצע הדרך נכנסת בין שתי התנועות.',
+      check: 'יש שתי תנועות, הודעה ביניהן, הגעה בדיוק לתחנה והודעת הגעה בסוף.',
+      criteria: [
+        { label: 'הנסיעה מחולקת לשתי תנועות', type: 'moveCount', min: 2 },
+        { label: 'יש הודעה באמצע הדרך, בין התנועות', type: 'sayBetweenMoves' },
+        { label: 'השליח עוצר בדיוק בתחנה', type: 'reachedStation', radius: 20 },
+        { label: 'הודעת ההגעה מופיעה אחרי התנועה האחרונה', type: 'arrivalSayAfterMove' }
+      ],
     });
+    lesson1.exercises[4].starter = { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 7 }, { type: 'say', text: 'המשלוח הגיע' }] };
+    lesson1.exercises[5].starter = { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 10 }, { type: 'say', text: 'המשלוח הגיע' }] };
+    // Exercise 6 continues from the two-move trip of exercise 5, so it checks the exact stop instead of one move's number.
+    lesson1.exercises[5].criteria = lesson1.exercises[5].criteria
+      .filter(criterion => criterion.type !== 'firstMove')
+      .map(criterion => criterion.type === 'reachedStation' ? { ...criterion, label: 'אחרי התיקון השליח עוצר בדיוק בתחנה', radius: 20 } : criterion);
   }
 
   // Lesson 5 exercise 1 places two packages by copying blocks (Loops locked), so exercise 2 is the step that turns
