@@ -1843,12 +1843,12 @@
     const step = steps => ({ type: 'move', direction: 'FORWARD', steps });
     const mark = { type: 'place', direction: 'DOWN' };
     const turnRight = { type: 'turn', turn: 'RIGHT_TURN' };
-    const opening = { type: 'say', text: 'מתחילים לסמן את המערכות בעיר' };
+    const opening = { type: 'say', text: 'נניח חבילה על כל מערכת בעיר' };
     const longPlan = [opening, { type: 'teleport' }, step(2), mark, step(2), mark, step(2), mark, turnRight, step(3), mark];
     academy.exercises = [
       {
         title: 'תרגיל 1 - פקודת plan',
-        mission: 'בשיעור הזה מתכננים מפה של מערכות בעיר. צרו פקודת צ׳אט בשם plan (באנגלית: "תוכנית"), שמתחילה בהודעה שמסבירה מה הולכים לעשות.',
+        mission: 'בשיעור הזה מתכננים מפה של מערכות בעיר: השליח יניח חבילה על כל מערכת. צרו פקודת צ׳אט בשם plan (באנגלית: "תוכנית"), שמתחילה בהודעה שמסבירה מה הולכים לעשות.',
         hint: 'הודעה כותבים עם הבלוק מקטגוריית Player.',
         check: 'יש פקודת plan והודעת פתיחה.',
         starter: { command: 'plan', blocks: [] },
