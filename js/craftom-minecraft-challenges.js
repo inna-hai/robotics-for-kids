@@ -1398,17 +1398,95 @@
     return academy;
   }
 
+  // Lesson 8: the loop builds a staircase. Each round climbs one step (2 forward, left, 1 up, right) and drops a
+  // package on the landing; after 3 rounds the courier reaches the station.
   const lesson8Academy = detailsByChallenge[2][3].academy;
-  lesson8Academy.world = routeWorld({ x: 238, y: 320 }, [['E', 3], ['N', 3]]);
-  lesson8Academy.exercises.forEach(exercise => {
-    const retune = blocks => (blocks || []).map(block => {
-      if (block.type === 'repeat') return { ...block, blocks: retune(block.blocks) };
-      if (block.type === 'turn') return { ...block, turn: 'LEFT_TURN' };
-      if (block.type === 'move' && block.steps === 4) return { ...block, steps: 3 };
-      return block;
-    });
-    if (exercise.starter?.blocks) exercise.starter.blocks = retune(exercise.starter.blocks);
-  });
+  lesson8Academy.skipRefinements = true;
+  lesson8Academy.world = routeWorld({ x: 204, y: 300 }, [['E', 2], ['N', 1], ['E', 2], ['N', 1], ['E', 2], ['N', 1]]);
+  const stairDropPoints = [[2, -1], [4, -2], [6, -3]];
+  const stairStep = [{ type: 'move', direction: 'FORWARD', steps: 2 }, { type: 'turn', turn: 'LEFT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 1 }, { type: 'turn', turn: 'RIGHT_TURN' }];
+  lesson8Academy.exercises = [
+    {
+      title: 'תרגיל 1 - מדרגה אחת',
+      mission: 'בשיעור הזה השליח עולה במדרגות עד התחנה. צרו פקודת cycle שמעלה אותו מדרגה אחת: 2 צעדים קדימה, פנייה שמאלה, צעד אחד, ופנייה ימינה כדי שיסתכל שוב קדימה.',
+      hint: 'אחרי המדרגה השליח צריך לעמוד על נקודת המסירה הראשונה ולהסתכל ימינה, כמו בהתחלה.',
+      check: 'השליח עומד על המדרגה הראשונה ומסתכל קדימה.',
+      dropPoints: stairDropPoints,
+      starter: { command: 'cycle', blocks: [] },
+      criteria: [
+        { label: 'פקודת הצ׳אט היא cycle', type: 'command', command: 'cycle' },
+        { label: 'השליח עומד על המדרגה הראשונה ומסתכל קדימה', type: 'endsAtCell', dx: 2, dy: -1, heading: 0 }
+      ]
+    },
+    {
+      title: 'תרגיל 2 - חבילה על המדרגה',
+      mission: 'בסוף המדרגה הוסיפו agent place כדי להניח חבילה על נקודת המסירה הראשונה.',
+      hint: 'place נכנס אחרי הפנייה ימינה, כשהשליח כבר עומד על המדרגה.',
+      check: 'יש חבילה על נקודת המסירה הראשונה.',
+      dropPoints: stairDropPoints,
+      starter: { command: 'cycle', blocks: [{ type: 'teleport' }, ...stairStep] },
+      criteria: [
+        { label: 'החבילה על נקודת המסירה הראשונה', type: 'packageAtCell', dx: 2, dy: -1 }
+      ]
+    },
+    {
+      title: 'תרגיל 3 - לולאה של שלוש מדרגות',
+      mission: 'עטפו את המדרגה והנחת החבילה ב-repeat של 3 חזרות, כך שהשליח יעלה שלוש מדרגות ויגיע לתחנה.',
+      hint: 'teleport נשאר לפני הלולאה. בתוך repeat: 2 קדימה, שמאלה, 1, ימינה, place.',
+      check: 'השליח מגיע לתחנה, ובכל מדרגה נשארת חבילה.',
+      dropPoints: stairDropPoints,
+      starter: { command: 'cycle', blocks: [{ type: 'teleport' }, ...stairStep, { type: 'place', direction: 'DOWN' }] },
+      criteria: [
+        { label: 'ה-repeat מוגדר ל-3', type: 'repeatTimes', times: 3 },
+        { label: 'כל הנחות החבילה נמצאות בתוך ה-repeat', type: 'placeInRepeat' },
+        { label: 'ה-Agent מגיע לתחנת היעד', type: 'reachedStation' }
+      ]
+    },
+    {
+      title: 'תרגיל 4 - דיבוג: מדרגות רחבות מדי',
+      debugStart: true,
+      freshStartMessage: 'תרגיל דיבוג: השליח מפספס את נקודות המסירה ואת התחנה. הריצו, הסתכלו בהדמיה ומצאו את המספר השגוי.',
+      mission: 'תרגיל דיבוג: בקוד הזה המדרגות רחבות מדי, והשליח מפספס את נקודות המסירה ואת התחנה. הריצו, ספרו כמה צעדים יש בין שתי נקודות מסירה, ותקנו מספר אחד.',
+      hint: 'בין נקודת מסירה אחת לבאה יש 2 צעדים קדימה ו-1 למעלה.',
+      check: 'כל חבילה על נקודת מסירה, והשליח מגיע לתחנה.',
+      dropPoints: stairDropPoints,
+      starter: { command: 'cycle', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 3, blocks: [{ type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'turn', turn: 'LEFT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 1 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'place', direction: 'DOWN' }] }] },
+      criteria: [
+        { label: 'כל חבילה הונחה על נקודת מסירה', type: 'onDropPoints' },
+        { label: 'ה-Agent מגיע לתחנת היעד', type: 'reachedStation' }
+      ]
+    },
+    {
+      title: 'תרגיל 5 - הודעה בסוף הקו',
+      mission: 'אחרי הלולאה הוסיפו player say שמודיע שכל החבילות נמסרו.',
+      hint: 'ההודעה נכנסת אחרי repeat, לא בתוכו, כדי שתופיע פעם אחת בסוף.',
+      check: 'השליח מגיע לתחנה ומודיע שהמשלוחים הגיעו.',
+      dropPoints: stairDropPoints,
+      starter: { command: 'cycle', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 3, blocks: [...stairStep, { type: 'place', direction: 'DOWN' }] }] },
+      criteria: [
+        { label: 'כל חבילה הונחה על נקודת מסירה', type: 'onDropPoints' },
+        { label: 'ה-Agent מגיע לתחנת היעד', type: 'reachedStation' },
+        { label: 'יש הודעת מסירה בסוף', type: 'arrivalSayAfterMove' }
+      ]
+    },
+    {
+      title: 'אתגר קטן - שתי טעויות במדרגות',
+      debugStart: true,
+      freshStartMessage: 'אתגר: בקוד הזה יש שתי טעויות. הריצו, הסתכלו לאן השליח הולך ואיפה החבילות, ותקנו את שתיהן.',
+      mission: 'בקוד הזה יש שתי טעויות: השליח יורד במקום לעלות, ויש רק חבילה אחת. מצאו ותקנו את שתיהן, והוסיפו הודעת מסירה בסוף.',
+      hint: 'בדקו את סדר הפניות בתוך הלולאה, ואיפה נמצא בלוק place.',
+      check: 'שלוש מדרגות, חבילה על כל אחת, הגעה לתחנה והודעה בסוף.',
+      dropPoints: stairDropPoints,
+      starter: { command: 'cycle', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 3, blocks: [{ type: 'move', direction: 'FORWARD', steps: 2 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 1 }, { type: 'turn', turn: 'LEFT_TURN' }] }, { type: 'place', direction: 'DOWN' }] },
+      criteria: [
+        { label: 'כל הנחות החבילה נמצאות בתוך ה-repeat', type: 'placeInRepeat' },
+        { label: 'כל חבילה הונחה על נקודת מסירה', type: 'onDropPoints' },
+        { label: 'ה-Agent מגיע לתחנת היעד', type: 'reachedStation' },
+        { label: 'יש הודעת מסירה בסוף', type: 'arrivalSayAfterMove' },
+        { label: 'פקודת הצ׳אט היא cycle', type: 'command', command: 'cycle' }
+      ]
+    }
+  ];
   applyLessonMap(3, 0, { x: 112, y: 250 }, [['E', 6]]);
   const lesson10Academy = applyLessonMap(3, 1, { x: 238, y: 330 }, [['E', 4]]);
   lesson10Academy.exercises[1].mission = lesson10Academy.exercises[1].mission.replace('תנועה של 5 צעדים קדימה', 'תנועה של 4 צעדים קדימה');

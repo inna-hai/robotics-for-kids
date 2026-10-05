@@ -536,7 +536,10 @@
 
   // Advanced exercises can mark delivery points along the line, given in steps from the warehouse.
   function dropPointPositions() {
-    return (academy.exercises[activeExercise]?.dropPoints || []).map(steps => ({ x: start.x + steps * cell, y: start.y }));
+    // A number is steps east of the warehouse; [dx, dy] is a cell offset (negative dy is up).
+    return (academy.exercises[activeExercise]?.dropPoints || []).map(point => Array.isArray(point)
+      ? { x: start.x + point[0] * cell, y: start.y + point[1] * cell }
+      : { x: start.x + point * cell, y: start.y });
   }
 
   function criterionPass(state, criterion) {
@@ -582,6 +585,12 @@
       const blocked = runProgram(false);
       return isNear(blocked, start, 20) && blocked.packages.length === 0;
     }
+    if (criterion.type === 'endsAtCell') {
+      const facing = ((state.heading % 360) + 360) % 360;
+      return isNear(state, { x: start.x + criterion.dx * cell, y: start.y + criterion.dy * cell }, 12)
+        && (criterion.heading === undefined || facing === criterion.heading);
+    }
+    if (criterion.type === 'packageAtCell') return state.packages.some(pkg => isNear(pkg, { x: start.x + criterion.dx * cell, y: start.y + criterion.dy * cell }, 18));
     if (criterion.type === 'onDropPoints') {
       const points = dropPointPositions();
       return points.length > 0 && state.packages.length === points.length
@@ -955,7 +964,7 @@
       ctx.fillStyle = '#713f12';
       ctx.font = '900 11px Rubik, Arial';
       ctx.textAlign = 'center';
-      ctx.fillText(`מסירה ${index + 1}`, point.x, point.y - 25);
+      if (!(showStation && isNear(point, station, 20))) ctx.fillText(`מסירה ${index + 1}`, point.x, point.y - 25);
     });
 
     ctx.strokeStyle = '#facc15';
