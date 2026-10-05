@@ -74,6 +74,27 @@
   const passedBoards = {};
   const boardBasis = {};
 
+  // Each block keeps its English MakeCode text and gets a short Hebrew label at the end, plus a Hebrew tooltip.
+  const hebrewBlockHelp = {
+    mc_on_chat: ['כשכותבים בצ׳אט', 'כשכותבים את המילה הזו בצ׳אט של Minecraft, כל הבלוקים שבתוך run רצים.'],
+    mc_teleport_agent: ['זימון לנקודת ההתחלה', 'מביא את ה-Agent לנקודת ההתחלה, ליד השחקן.'],
+    mc_move_agent: ['תזוזה', 'מזיז את ה-Agent מספר צעדים בכיוון שבחרתם.'],
+    mc_turn_agent: ['פנייה', 'מסובב את ה-Agent ימינה או שמאלה, בלי לזוז מהמקום.'],
+    mc_place_agent: ['הנחת חבילה', 'down: מניח את החבילה על הרצפה מתחת ל-Agent. forward: מניח את החבילה במשבצת שמול ה-Agent.'],
+    mc_say: ['הודעה בצ׳אט', 'כותב הודעה בצ׳אט של המשחק.'],
+    mc_repeat: ['חזרה', 'חוזר על הבלוקים שבתוך do מספר פעמים.'],
+    mc_if_route_open: ['תנאי', 'בודק אם הדרך פתוחה (true) או חסומה (false). אם התנאי נכון רץ then, ואחרת רץ else.'],
+  };
+  function withHebrewLabels(definitions) {
+    return definitions.map(definition => {
+      const help = hebrewBlockHelp[definition.type];
+      if (!help) return definition;
+      const args = [...(definition.args0 || [])];
+      args.push({ type: 'field_label', text: `· ${help[0]}`, class: 'academy-he-label' });
+      return { ...definition, message0: `${definition.message0} %${args.length}`, args0: args, tooltip: help[1] };
+    });
+  }
+
   function persistBoards() {
     try { localStorage.setItem(boardsKey, JSON.stringify(previousSolutions)); } catch (_) { /* storage full or blocked */ }
   }
@@ -120,7 +141,7 @@
 
   if (!window.__craftomAcademyBlocksDefined) {
     window.__craftomAcademyBlocksDefined = true;
-    Blockly.defineBlocksWithJsonArray([
+    Blockly.defineBlocksWithJsonArray(withHebrewLabels([
       {
         type: 'mc_on_chat',
         message0: 'on chat command %1',
@@ -195,7 +216,7 @@
         nextStatement: null,
         colour: 180,
       },
-    ]);
+    ]));
   }
 
   function fieldXml(fields = {}) {
@@ -339,19 +360,25 @@
     if (block.type === 'mc_on_chat') {
       const command = block.getFieldValue('COMMAND') || 'run';
       const name = commandName(command);
-      return `${i}def on_chat_${name}():\n${statementCode(block.getInputTargetBlock('DO'), level)}\n${i}player.on_chat("${command}", on_chat_${name})`;
+      return `${i}# כשכותבים "${command}" בצ׳אט, הקוד שבפנים רץ\n${i}def on_chat_${name}():\n${statementCode(block.getInputTargetBlock('DO'), level)}\n${i}player.on_chat("${command}", on_chat_${name})`;
     }
-    if (block.type === 'mc_teleport_agent') return `${i}agent.teleportToPlayer()`;
-    if (block.type === 'mc_move_agent') return `${i}agent.move(${block.getFieldValue('DIR')}, ${Number(block.getFieldValue('STEPS') || 1)})`;
-    if (block.type === 'mc_turn_agent') return `${i}agent.turn(${block.getFieldValue('TURN')})`;
-    if (block.type === 'mc_place_agent') return `${i}agent.place(${block.getFieldValue('DIR')})`;
-    if (block.type === 'mc_say') return `${i}player.say("${block.getFieldValue('TEXT') || ''}")`;
+    // Each line of Python gets a short Hebrew comment, like comments in real code.
+    const directionHe = { FORWARD: 'קדימה', BACK: 'אחורה', LEFT: 'שמאלה', RIGHT: 'ימינה', DOWN: 'למטה' };
+    if (block.type === 'mc_teleport_agent') return `${i}agent.teleportToPlayer()  # מזמן את ה-Agent אליך`;
+    if (block.type === 'mc_move_agent') {
+      const steps = Number(block.getFieldValue('STEPS') || 1);
+      return `${i}agent.move(${block.getFieldValue('DIR')}, ${steps})  # זז ${steps} צעדים ${directionHe[block.getFieldValue('DIR')] || ''}`;
+    }
+    if (block.type === 'mc_turn_agent') return `${i}agent.turn(${block.getFieldValue('TURN')})  # פונה ${block.getFieldValue('TURN') === 'LEFT_TURN' ? 'שמאלה' : 'ימינה'}`;
+    if (block.type === 'mc_place_agent') return `${i}agent.place(${block.getFieldValue('DIR')})  # מניח חבילה ${directionHe[block.getFieldValue('DIR')] || ''}`;
+    if (block.type === 'mc_say') return `${i}player.say("${block.getFieldValue('TEXT') || ''}")  # הודעה בצ׳אט`;
     if (block.type === 'mc_repeat') {
-      return `${i}for count in range(${Number(block.getFieldValue('TIMES') || 2)}):\n${statementCode(block.getInputTargetBlock('DO'), level)}`;
+      const times = Number(block.getFieldValue('TIMES') || 2);
+      return `${i}for count in range(${times}):  # חוזר ${times} פעמים\n${statementCode(block.getInputTargetBlock('DO'), level)}`;
     }
     if (block.type === 'mc_if_route_open') {
       const value = block.getFieldValue('STATE') === 'BLOCKED' ? 'False' : 'True';
-      return `${i}if routeOpen == ${value}:\n${statementCode(block.getInputTargetBlock('DO'), level)}\n${i}else:\n${statementCode(block.getInputTargetBlock('ELSE'), level)}`;
+      return `${i}if routeOpen == ${value}:  # אם הדרך ${value === 'True' ? 'פתוחה' : 'חסומה'}\n${statementCode(block.getInputTargetBlock('DO'), level)}\n${i}else:  # אחרת\n${statementCode(block.getInputTargetBlock('ELSE'), level)}`;
     }
     return '';
   }
