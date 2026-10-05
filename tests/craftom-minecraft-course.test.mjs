@@ -249,9 +249,9 @@ assert.ok(read('js/craftom-agent-academy.js').includes('function runProgram'), '
 assert.ok(read('js/craftom-agent-academy.js').includes('function evaluate'), 'Agent academy checks student code against exercise criteria');
 assert.ok(read('js/craftom-agent-academy.js').includes('agent.move'), 'Agent academy parses Agent movement code');
 assert.ok(read('js/craftom-agent-academy.js').includes("Blockly.inject('academyBlockly'"), 'Agent academy builds MakeCode with Blockly');
-assert.ok(read('js/craftom-agent-academy.js').includes('category name="לולאות"'), 'Agent academy keeps repeat blocks in their own (Hebrew) Loops category');
-assert.ok(read('js/craftom-agent-academy.js').includes('category name="תנאים"'), 'Agent academy keeps condition blocks in their own (Hebrew) Logic category');
-assert.ok(read('js/craftom-agent-academy.js').includes("message0: 'אם הדרך %1'"), 'Agent academy condition block is framed as a route-state check');
+assert.ok(read('js/craftom-agent-academy.js').includes('category name="Loops"'), 'Agent academy keeps repeat blocks in a MakeCode-style Loops category');
+assert.ok(read('js/craftom-agent-academy.js').includes('category name="Logic"'), 'Agent academy keeps condition blocks in a MakeCode-style Logic category');
+assert.ok(read('js/craftom-agent-academy.js').includes("message0: 'if routeOpen is %1'"), 'Agent academy condition block is framed as a routeOpen boolean check');
 assert.ok(read('js/craftom-agent-academy.js').includes('if routeOpen =='), 'Agent academy Python preview maps the condition to a boolean routeOpen check');
 assert.ok(!read('js/craftom-agent-academy.js').includes('category name="Loops & Logic"'), 'Agent academy does not merge MakeCode Loops and Logic into one category');
 assert.ok(read('js/craftom-agent-academy.js').includes('const hints = ['), 'Agent academy uses soft hints instead of exposing a solution chain');

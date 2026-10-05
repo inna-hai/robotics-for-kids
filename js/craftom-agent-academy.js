@@ -44,43 +44,41 @@
   }
 
   // The lesson data is shared with the Minecraft lesson pages, which use MakeCode's English names.
-  // The academy shows everything in Hebrew, so block and category names in its texts are translated for display.
-  // Chat command words (deliver, start, test...) stay as they are, because that is what students type in Minecraft.
+  // The blocks keep their English MakeCode text with a Hebrew label, and the academy explanations name each block by
+  // that Hebrew label (Agent becomes "השליח"). Category names and chat command words (deliver, start...) stay in English,
+  // because that is what students see in the toolbox and type in Minecraft.
+  const blockLabels = {
+    repeat: '״חזרה״', place: '״הנחת חבילה״', move: '״תזוזה״', turn: '״פנייה״', teleport: '״זימון לנקודת ההתחלה״',
+    if: '״תנאי״', then: '״אז״', else: '״אחרת״', do: '״בצע״', run: '״בצע״',
+  };
+  const categoryRef = '(?<!קטגוריית |פתחו את |חפשו ב-|ב-|מקטגוריית )';
   const hebrewTerms = [
-    [/\bagent teleport to player\b/g, '״זמן את השליח אליי״'],
+    [/\bagent teleport to player\b/g, '״זימון לנקודת ההתחלה״'],
     [/\bon chat command\b/g, '״כשכותבים בצ׳אט״'],
-    [/\bplayer say\b/g, '״אמור בצ׳אט״'],
-    [/\bagent place\b/g, '״הנח חבילה״'],
-    [/\bif routeOpen is true\b/g, '״אם הדרך פתוחה״'],
+    [/הודעת player say\b/g, 'בלוק ״הודעה בצ׳אט״'],
+    [/\bplayer say\b/g, '״הודעה בצ׳אט״'],
+    [/\bagent place\b/g, '״הנחת חבילה״'],
+    [/\bif routeOpen is true\b/g, '״תנאי״ שבודק שהדרך פתוחה'],
     [/\brouteOpen is true\b/g, 'הדרך פתוחה'],
-    [/\bif routeOpen\b/g, '״אם הדרך״'],
+    [/\bif routeOpen\b/g, '״תנאי״'],
     [/\brouteOpen\b/g, 'מצב הדרך'],
-    [/\bplace (down|DOWN)\b/g, '״הנח חבילה למטה״'],
-    [/\bplace (forward|FORWARD)\b/g, '״הנח חבילה קדימה״'],
+    [/\bplace (down|DOWN)\b/g, '״הנחת חבילה״ למטה'],
+    [/\bplace (forward|FORWARD)\b/g, '״הנחת חבילה״ קדימה'],
     [/ \((true|false)\)/g, ''],
-    [/([הלבמושכ])-(Agent|agent)\b/g, '$1שליח'],
-    [/\b(Agent|agent)\b/g, 'שליח'],
-    [/([הלבמושכ])-(repeat|place|move|turn|teleport|if|then|else)\b/g, (_, prefix, word) => `${prefix === 'ה' ? '' : prefix}${hebrewBlockWord(word)}`],
-    [/\b(repeat|place|move|turn|teleport|if|then|else)\b/g, (_, word) => hebrewBlockWord(word)],
-    [/\bLoops\b/g, 'לולאות'],
-    [/\bLogic\b/g, 'תנאים'],
-    [/\bPlayer\b/g, 'שחקן'],
-    [/\bEvents\b/g, 'אירועים'],
+    [new RegExp(`${categoryRef}([הלמושכ])-(Agent|agent)\\b`, 'g'), '$1שליח'],
+    [/(?<!חפשו )ב-agent\b/g, 'בשליח'],
+    [new RegExp(`${categoryRef}\\b(Agent|agent)\\b`, 'g'), 'שליח'],
+    [/([הלבמושכ])-(repeat|place|move|turn|teleport|if|then|else)\b/g, (_, prefix, word) => `${prefix === 'ה' ? '' : prefix}${blockLabels[word]}`],
+    [/\b(repeat|place|move|turn|teleport|if|then|else)\b/g, (_, word) => blockLabels[word]],
     [/\bchat\b/g, 'צ׳אט'],
     [/\b(down|DOWN)\b/g, 'למטה'],
     [/\b(forward|FORWARD)\b/g, 'קדימה'],
     [/\b(back|BACK)\b/g, 'אחורה'],
     [/\btrue\b/g, '״פתוחה״'],
     [/\bfalse\b/g, '״חסומה״'],
-    [/\b(OPEN)\b/g, 'פתוחה'],
-    [/\b(BLOCKED)\b/g, 'חסומה'],
+    [/\bOPEN\b/g, 'פתוחה'],
+    [/\bBLOCKED\b/g, 'חסומה'],
   ];
-  function hebrewBlockWord(word) {
-    return {
-      repeat: '״חזור״', place: '״הנח חבילה״', move: '״זוז״', turn: '״פנה״', teleport: '״זמן את השליח״',
-      if: '״אם״', then: '״אז״', else: '״אחרת״',
-    }[word];
-  }
   function heText(text) {
     if (typeof text !== 'string') return text;
     return hebrewTerms.reduce((value, [pattern, replacement]) => value.replace(pattern, replacement), text);
@@ -124,22 +122,24 @@
   const passedBoards = {};
   const boardBasis = {};
 
-  // Hebrew tooltips for the (Hebrew) academy blocks.
+  // Each block keeps its English MakeCode text and gets a short Hebrew label at the end, plus a Hebrew tooltip.
   const hebrewBlockHelp = {
-    mc_on_chat: ['כשכותבים בצ׳אט', 'כשכותבים את המילה הזו בצ׳אט של Minecraft, כל הבלוקים שבתוך ״בצע״ רצים.'],
+    mc_on_chat: ['כשכותבים בצ׳אט', 'כשכותבים את המילה הזו בצ׳אט של Minecraft, כל הבלוקים שבתוך run רצים.'],
     mc_teleport_agent: ['זימון לנקודת ההתחלה', 'מביא את ה-Agent לנקודת ההתחלה, ליד השחקן.'],
     mc_move_agent: ['תזוזה', 'מזיז את ה-Agent מספר צעדים בכיוון שבחרתם.'],
     mc_turn_agent: ['פנייה', 'מסובב את ה-Agent ימינה או שמאלה, בלי לזוז מהמקום.'],
     mc_place_agent: ['הנחת חבילה', 'down: מניח את החבילה על הרצפה מתחת ל-Agent. forward: מניח את החבילה במשבצת שמול ה-Agent.'],
     mc_say: ['הודעה בצ׳אט', 'כותב הודעה בצ׳אט של המשחק.'],
-    mc_repeat: ['חזרה', 'חוזר על הבלוקים שבתוך ״בצע״ מספר פעמים.'],
+    mc_repeat: ['חזרה', 'חוזר על הבלוקים שבתוך do מספר פעמים.'],
     mc_if_route_open: ['תנאי', 'בודק אם הדרך פתוחה (true) או חסומה (false). אם התנאי נכון רץ then, ואחרת רץ else.'],
   };
   function withHebrewLabels(definitions) {
     return definitions.map(definition => {
       const help = hebrewBlockHelp[definition.type];
       if (!help) return definition;
-      return { ...definition, tooltip: heText(help[1]) };
+      const args = [...(definition.args0 || [])];
+      args.push({ type: 'field_label', text: `· ${help[0]}`, class: 'academy-he-label' });
+      return { ...definition, message0: `${definition.message0} %${args.length}`, args0: args, tooltip: heText(help[1]) };
     });
   }
 
@@ -192,25 +192,25 @@
     Blockly.defineBlocksWithJsonArray(withHebrewLabels([
       {
         type: 'mc_on_chat',
-        message0: 'כשכותבים בצ׳אט %1',
+        message0: 'on chat command %1',
         args0: [{ type: 'field_input', name: 'COMMAND', text: 'deliver' }],
-        message1: 'בצע %1',
+        message1: 'run · בצע %1',
         args1: [{ type: 'input_statement', name: 'DO' }],
         colour: 215,
         tooltip: 'המילה שכותבים בצ׳אט של Minecraft כדי להפעיל את הקוד שבתוך הבלוק.',
       },
       {
         type: 'mc_teleport_agent',
-        message0: 'זמן את השליח אליי',
+        message0: 'agent teleport to player',
         previousStatement: null,
         nextStatement: null,
         colour: 35,
       },
       {
         type: 'mc_move_agent',
-        message0: 'זוז %1 %2 צעדים',
+        message0: 'agent move %1 by %2',
         args0: [
-          { type: 'field_dropdown', name: 'DIR', options: [['קדימה', 'FORWARD'], ['אחורה', 'BACK'], ['שמאלה', 'LEFT'], ['ימינה', 'RIGHT']] },
+          { type: 'field_dropdown', name: 'DIR', options: [['forward · קדימה', 'FORWARD'], ['back · אחורה', 'BACK'], ['left · שמאלה', 'LEFT'], ['right · ימינה', 'RIGHT']] },
           { type: 'field_number', name: 'STEPS', value: 5, min: 1, max: 16 }
         ],
         previousStatement: null,
@@ -219,16 +219,16 @@
       },
       {
         type: 'mc_turn_agent',
-        message0: 'פנה %1',
-        args0: [{ type: 'field_dropdown', name: 'TURN', options: [['שמאלה', 'LEFT_TURN'], ['ימינה', 'RIGHT_TURN']] }],
+        message0: 'agent turn %1',
+        args0: [{ type: 'field_dropdown', name: 'TURN', options: [['left · שמאלה', 'LEFT_TURN'], ['right · ימינה', 'RIGHT_TURN']] }],
         previousStatement: null,
         nextStatement: null,
         colour: 35,
       },
       {
         type: 'mc_place_agent',
-        message0: 'הנח חבילה %1',
-        args0: [{ type: 'field_dropdown', name: 'DIR', options: [['למטה', 'DOWN'], ['קדימה', 'FORWARD']] }],
+        message0: 'agent place %1',
+        args0: [{ type: 'field_dropdown', name: 'DIR', options: [['down · למטה', 'DOWN'], ['forward · קדימה', 'FORWARD']] }],
         previousStatement: null,
         nextStatement: null,
         colour: 35,
@@ -236,7 +236,7 @@
       },
       {
         type: 'mc_say',
-        message0: 'אמור בצ׳אט %1',
+        message0: 'player say %1',
         args0: [{ type: 'field_input', name: 'TEXT', text: 'המשלוח הגיע' }],
         previousStatement: null,
         nextStatement: null,
@@ -244,9 +244,9 @@
       },
       {
         type: 'mc_repeat',
-        message0: 'חזור %1 פעמים',
+        message0: 'repeat %1 times',
         args0: [{ type: 'field_number', name: 'TIMES', value: 2, min: 1, max: 8 }],
-        message1: 'בצע %1',
+        message1: 'do · בצע %1',
         args1: [{ type: 'input_statement', name: 'DO' }],
         previousStatement: null,
         nextStatement: null,
@@ -254,11 +254,11 @@
       },
       {
         type: 'mc_if_route_open',
-        message0: 'אם הדרך %1',
-        args0: [{ type: 'field_dropdown', name: 'STATE', options: [['פתוחה', 'OPEN'], ['חסומה', 'BLOCKED']] }],
-        message1: 'אז %1',
+        message0: 'if routeOpen is %1',
+        args0: [{ type: 'field_dropdown', name: 'STATE', options: [['true · פתוחה', 'OPEN'], ['false · חסומה', 'BLOCKED']] }],
+        message1: 'then · אז %1',
         args1: [{ type: 'input_statement', name: 'DO' }],
-        message2: 'אחרת %1',
+        message2: 'else · אחרת %1',
         args2: [{ type: 'input_statement', name: 'ELSE' }],
         previousStatement: null,
         nextStatement: null,
@@ -364,26 +364,26 @@
     // Condition blocks appear only in lessons whose exercises use conditions (or that an exercise doesn't hide).
     const showLogic = usesRouteState && !exercise?.hideLogic;
     return `<xml xmlns="https://developers.google.com/blockly/xml">
-      <category name="אירועים" colour="215"><block type="mc_on_chat"><field name="COMMAND">${esc(academy.command || 'deliver')}</field></block></category>
-      <category name="שליח" colour="35">
+      <category name="Events" colour="215"><block type="mc_on_chat"><field name="COMMAND">${esc(academy.command || 'deliver')}</field></block></category>
+      <category name="Agent" colour="35">
         <block type="mc_teleport_agent"></block>
         <block type="mc_move_agent"></block>
         <block type="mc_turn_agent"></block>
         <block type="mc_place_agent"></block>
       </category>
-      <category name="לולאות" colour="${showLoops ? '120' : '#cbd5e1'}">
+      <category name="Loops" colour="${showLoops ? '120' : '#cbd5e1'}">
         <block type="mc_repeat"${showLoops ? '' : ' disabled="true"'}></block>
       </category>
-      <category name="תנאים" colour="${showLogic ? '180' : '#cbd5e1'}">
+      <category name="Logic" colour="${showLogic ? '180' : '#cbd5e1'}">
         <block type="mc_if_route_open"${showLogic ? '' : ' disabled="true"'}></block>
       </category>
-      <category name="שחקן" colour="290"><block type="mc_say"></block></category>
+      <category name="Player" colour="290"><block type="mc_say"></block></category>
     </xml>`;
   }
 
   const workspace = Blockly.inject('academyBlockly', {
     media: 'js/vendor/blockly/media/',
-    rtl: true,
+    rtl: false,
     trashcan: true,
     scrollbars: true,
     toolbox: toolboxXml(),
@@ -622,7 +622,7 @@
   ].join('|'), 'iu');
   const negativeWords = /((^|[\s,.!?])(לא|אין|בלי)(?=[\s,.!?]|$)|נכשל|כישלון|שגיאה|תקלה|נתקע|אבד|הלך לאיבוד|fail|error|\bnot\b|n't|\bno\b|\bnever\b|lost|stuck|wrong|problem)/i;
   // An opening / planning message: it says what is about to happen (starting, planning, marking, the city, the delivery).
-  const openingWords = /(מתחיל|מתחילים|נתחיל|התחלה|יוצא|יוצאים|נצא|מוכן|מוכנים|תוכנית|מתכנן|מתכננים|נתכנן|תכנון|מסמן|מסמנים|נסמן|סימון|מפה|ממפים|מערכת|מערכות|עיר|בונים|נבנה|בנייה|הולכים|להניח|מניח|מניחים|נניח|לשלוח|שולח|שולחים|נשלח|להביא|מביא|מביאים|נביא|למסור|מוסר|מוסרים|נמסור|חבילה|חבילות|תחנה|לנסוע|נוסע|נוסעים|ניסע|להגיע|נגיע|לסמן|בודק|בודקים|נבדוק|start|begin|plan|ready|map|city|system|build|let'?s|deliver|going to|check)/i;
+  const openingWords = /(מתחיל|מתחילים|נתחיל|התחלה|יוצא|יוצאים|נצא|מוכן|מוכנים|תוכנית|מתכנן|מתכננים|נתכנן|תכנון|מסמן|מסמנים|נסמן|סימון|מפה|ממפים|מערכת|מערכות|עיר|בונים|נבנה|בנייה|הולכים|להניח|מניח|מניחים|נניח|לשלוח|שולח|שולחים|נשלח|להביא|מביא|מביאים|נביא|למסור|מוסר|מוסרים|נמסור|חבילה|חבילות|תחנה|לנסוע|נוסע|נוסעים|ניסע|להגיע|נגיע|לסמן|בודק|בודקים|נבדוק|צא|יצא|יוצאת|יציאה|לדרך|בדרך|קדימה|זז|זזים|הולך|הולכת|מתחילה|נוסעת|משלוח|משלוחים|שליח|נעים|נזוז|start|begin|plan|ready|map|city|system|build|let'?s|deliver|going to|check|go|leaving|on my way|here we go|move|ride)/i;
   function isOpeningMessage(text) {
     const value = String(text || '').trim();
     // A message that reports the end ("arrived", "delivered") is not an opening.
