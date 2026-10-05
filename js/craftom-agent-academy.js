@@ -958,6 +958,21 @@
 
     if (showStation) drawStationBlock(station.x, station.y);
 
+    // In road-state lessons the barrier spot is always marked: a full barrier when blocked, a faded one when open.
+    if (usesRouteState && state.routeOpen !== false) {
+      const barrierX = start.x + cell * 2.5;
+      ctx.save();
+      ctx.globalAlpha = 0.6;
+      ctx.setLineDash([5, 4]);
+      ctx.strokeStyle = '#7f1d1d';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(barrierX - 26, start.y - 20, 52, 10);
+      ctx.restore();
+      ctx.fillStyle = 'rgba(127, 29, 29, .7)';
+      ctx.font = '800 11px Rubik, Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('מחסום אפשרי', barrierX, start.y + 34);
+    }
     if (state.routeOpen === false) {
       const barrierX = start.x + cell * 2.5;
       ctx.fillStyle = '#7f1d1d';
@@ -1218,6 +1233,12 @@
   // Work in progress is kept only while it still builds on the same starting board; once the previous
   // exercise has a newer correct solution, the exercise restarts from it.
   function openExercise() {
+    // Exercises about getting around the barrier open with the road blocked, so the barrier is visible right away.
+    const detourCriteria = ['blockedReaches', 'blockedAvoidsBarrier', 'blockedDelivers'];
+    if (routeToggle && (academy.exercises[activeExercise]?.criteria || []).some(criterion => detourCriteria.includes(criterion.type))) {
+      worldRouteOpen = false;
+      renderRouteToggle();
+    }
     const entry = entryBoardXml(activeExercise);
     const keepWork = savedBoards[activeExercise] && (boardBasis[activeExercise] === undefined || boardBasis[activeExercise] === entry);
     boardBasis[activeExercise] = entry;
