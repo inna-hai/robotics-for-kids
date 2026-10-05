@@ -309,7 +309,8 @@
     return `<xml xmlns="https://developers.google.com/blockly/xml">${starts[index] || starts[0]}</xml>`;
   }
 
-  // Exercises that will later ask to turn long code into a loop hide the Loops category until then.
+  // Categories that are not available yet stay visible but grey, and their blocks cannot be dragged out.
+  // Exercises that will later ask to turn long code into a loop lock Loops until then.
   function toolboxXml(exercise = academy.exercises[activeExercise]) {
     const showLoops = !exercise?.hideLoops;
     // Condition blocks appear only in lessons whose exercises use conditions (or that an exercise doesn't hide).
@@ -322,12 +323,12 @@
         <block type="mc_turn_agent"></block>
         <block type="mc_place_agent"></block>
       </category>
-      ${showLoops ? `<category name="Loops" colour="120">
-        <block type="mc_repeat"></block>
-      </category>` : ''}
-      ${showLogic ? `<category name="Logic" colour="180">
-        <block type="mc_if_route_open"></block>
-      </category>` : ''}
+      <category name="Loops" colour="${showLoops ? '120' : '#cbd5e1'}">
+        <block type="mc_repeat"${showLoops ? '' : ' disabled="true"'}></block>
+      </category>
+      <category name="Logic" colour="${showLogic ? '180' : '#cbd5e1'}">
+        <block type="mc_if_route_open"${showLogic ? '' : ' disabled="true"'}></block>
+      </category>
       <category name="Player" colour="290"><block type="mc_say"></block></category>
     </xml>`;
   }
