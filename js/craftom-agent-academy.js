@@ -931,31 +931,33 @@
     ctx.restore();
   }
 
-  const gateClosedAngle = 0;
-  const gateOpenAngle = -Math.PI * 0.45;
+  // The post stands beside the road (north side). Closed: the arm points down across the road.
+  // Open: the arm swings up to lie along the roadside.
+  const gateClosedAngle = Math.PI / 2;
+  const gateOpenAngle = 0;
   let gateAngle = gateOpenAngle;
   let gateAnimating = false;
 
   function drawBoomGate(angle, blocked) {
-    const pivotX = start.x + cell * 2.5 - 28;
-    const pivotY = start.y - 6;
+    const pivotX = start.x + cell * 2.5;
+    const pivotY = start.y - 26;
     // post with a small control box
     ctx.fillStyle = '#475569';
     ctx.strokeStyle = '#1e293b';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.roundRect(pivotX - 6, pivotY - 4, 12, 26, 3);
+    ctx.roundRect(pivotX - 7, pivotY - 20, 14, 22, 3);
     ctx.fill();
     ctx.stroke();
     ctx.fillStyle = blocked ? '#ef4444' : '#22c55e';
     ctx.beginPath();
-    ctx.arc(pivotX, pivotY + 4, 3, 0, Math.PI * 2);
+    ctx.arc(pivotX, pivotY - 12, 3, 0, Math.PI * 2);
     ctx.fill();
     // striped arm rotating around the post
     ctx.save();
     ctx.translate(pivotX, pivotY);
     ctx.rotate(angle);
-    const armLength = 58;
+    const armLength = 50;
     for (let stripe = 0; stripe < 6; stripe += 1) {
       ctx.fillStyle = stripe % 2 ? '#ffffff' : '#dc2626';
       ctx.fillRect(4 + stripe * (armLength / 6), -3.5, armLength / 6, 7);
@@ -972,7 +974,7 @@
       ctx.fillStyle = '#7f1d1d';
       ctx.font = '900 12px Rubik, Arial';
       ctx.textAlign = 'center';
-      ctx.fillText('דרך חסומה', pivotX + 30, start.y + 36);
+      ctx.fillText('דרך חסומה', pivotX, start.y + 40);
     }
   }
 
