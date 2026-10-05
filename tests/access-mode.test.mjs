@@ -187,7 +187,7 @@ assert.match(entryHtml, /id="subscription-continue"/);
 assert.match(entryHtml, /מנוי אישי/);
 assert.match(entryHtml, /התנסות כאורח/);
 assert.match(entryHtml, /classroom-entry\.js\?v=20260927-forced-student-login-1/);
-assert.match(read('teacher-classrooms.html'), /classroom-platform\.js\?v=20260927-student-identity-under-name-1/);
+assert.match(read('teacher-classrooms.html'), /classroom-platform\.js\?v=20261001-kugel-server-class-state-1/);
 
 const classroomSession = read('js/classroom-session.js');
 assert.doesNotMatch(classroomSession, /showStudentBadge/, 'the unified access badge must be the only badge');
@@ -196,7 +196,7 @@ assert.match(read('js/user-badge.js'), /#\$\{BADGE_ID\}\.teacher\{[^}]*left:auto
 assert.match(read('js/user-badge.js'), /#\$\{BADGE_ID\}\.teacher\{[^}]*max-width:min\(260px/, 'teacher badge should stay compact');
 const server = read('server.js');
 assert.match(server, /user-badge\.js\?v=20260910-compact-teacher-badge-1/);
-assert.match(server, /classroom-session\.js\?v=20260905-access-modes-1/);
+assert.match(server, /classroom-session\.js\?v=20261001-student-logout-1/);
 assert.match(server, /const baseOutput = injectUserBadge\(html\);/, 'the unified badge must load even when the subscription gate is disabled');
 assert.doesNotMatch(server, /SUBSCRIPTION_GATE_ENABLED \? injectUserBadge\(html\)/);
 

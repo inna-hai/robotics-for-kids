@@ -1743,14 +1743,30 @@
 }
 
 .stage-report-map,
-.stage-report-source,
-.stage-report-full pre {
+.stage-report-source {
   max-height: 260px;
   margin: 0;
   padding: 10px;
   overflow: auto;
   direction: ltr;
   text-align: left;
+  white-space: pre-wrap;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  background: #0f172a;
+  color: #e2e8f0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .82rem;
+}
+
+.stage-report-full pre {
+  max-height: 260px;
+  margin: 0;
+  padding: 10px;
+  overflow: auto;
+  direction: rtl;
+  unicode-bidi: plaintext;
+  text-align: right;
   white-space: pre-wrap;
   border: 1px solid #dbeafe;
   border-radius: 10px;
@@ -2084,6 +2100,68 @@
 
 .teacher-student-board-content {
   padding: 16px;
+}
+
+.lesson-zero-end-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  margin-top: 14px;
+  padding: 14px 16px;
+  border: 1px solid #e2e8f0;
+  border-right: 5px solid #ef4444;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, .06);
+}
+
+.lesson-zero-end-panel[hidden] {
+  display: none !important;
+}
+
+.lesson-zero-end-panel.is-restart {
+  border-right-color: #16a34a;
+}
+
+.lesson-zero-end-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.lesson-zero-end-copy strong {
+  color: #0f172a;
+  font-size: 1rem;
+  font-weight: 1000;
+}
+
+.lesson-zero-end-copy span {
+  color: #475569;
+  font-size: .9rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.lesson-zero-end-panel .lock-lesson-action {
+  justify-self: end;
+  min-width: 230px;
+  min-height: 44px;
+  border-color: #dc2626;
+  background: #dc2626;
+  color: #fff;
+  text-shadow: none;
+  box-shadow: 0 10px 20px rgba(220, 38, 38, .18);
+}
+
+.lesson-zero-end-panel .restart-lesson-zero-action {
+  justify-self: end;
+  min-width: 230px;
+  min-height: 44px;
+  border-color: #16a34a;
+  background: #16a34a;
+  color: #fff;
+  text-shadow: none;
+  box-shadow: 0 10px 20px rgba(22, 163, 74, .18);
 }
 
 .teacher-selected-lesson .panel-head {
@@ -2707,6 +2785,11 @@
   .teacher-student-board-details > summary::after {
     min-width: 0;
     width: 100%;
+  }
+
+  .lesson-zero-end-panel {
+    grid-template-columns: 1fr;
+    padding: 12px;
   }
 
   .teacher-monitor-row.lesson-student-row {

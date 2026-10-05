@@ -54,9 +54,12 @@
       } catch(error) { return { lessonId:1, activeExercise:1 }; }
     }
     const lastWebCodeLocation = readLastWebCodeLocation();
+    function webcodePlayUrl(lessonId){
+      return `webcode-play.html?lesson=${lessonId}&nav=${Date.now()}`;
+    }
     const continueButton = document.getElementById('continueWebCode');
     if(continueButton){
-      continueButton.href = `webcode-play.html?lesson=${lastWebCodeLocation.lessonId}`;
+      continueButton.href = webcodePlayUrl(lastWebCodeLocation.lessonId);
       continueButton.textContent = lastWebCodeLocation.lessonId > 1 || lastWebCodeLocation.activeExercise > 1 ? `▶️ להמשיך משיעור ${lastWebCodeLocation.lessonId}, תרגיל ${lastWebCodeLocation.activeExercise}` : '▶️ להתחיל שיעור 1';
     }
     function isLessonCompleted(lesson){
@@ -72,7 +75,7 @@
       const requiredCount = lesson.exercises.filter(exercise => !exercise.optional).length;
       const extensionCount = lesson.exercises.filter(exercise => exercise.optional).length;
       return `
-      <a class="card ${completed ? 'completed' : ''}" href="webcode-play.html?lesson=${lesson.id}">
+      <a class="card ${completed ? 'completed' : ''}" href="${webcodePlayUrl(lesson.id)}">
         <div class="top"><span class="emoji">${completed ? '✅' : '💻'}</span><span class="id">שיעור ${lesson.id}</span></div>
         ${completed ? '<div class="complete-badge">✅ השיעור הושלם</div>' : ''}
         <h3>${formatMixedText(lesson.title)}</h3>

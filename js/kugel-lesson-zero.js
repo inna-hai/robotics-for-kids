@@ -276,6 +276,7 @@
     const selectedLessonSummary = document.getElementById('selectedLessonSummary');
     const selectedLessonEyebrow = document.getElementById('selectedLessonEyebrow');
     const selectedLessonActions = document.getElementById('selectedLessonActions');
+    const lessonZeroEndPanel = document.getElementById('lessonZeroEndPanel');
     const teacherLessonKicker = document.getElementById('teacherLessonKicker');
     const teacherLessonTitle = document.getElementById('teacherLessonTitle');
     const teacherLessonGoal = document.getElementById('teacherLessonGoal');
@@ -301,7 +302,9 @@
     const teacherLogout = document.getElementById('kugel-teacher-logout');
     let current = null;
     let activeTeacherStudentModalKey = '';
+    let latestClosedClassStageReport = null;
     const openTeacherStudentIds = new Set();
+    const openStageReportFullDetails = new Set();
     function scoped(action) {
       return `/api/kugel/classes/${encodeURIComponent(classroomId)}${action}`;
     }
@@ -461,9 +464,23 @@
     async function teacherAction(path, payload, pendingText, doneText) {
       setStatus(status, pendingText);
       try {
-        await api(path, payload);
+        const result = await api(path, payload);
+        if (result?.classStageReport) latestClosedClassStageReport = result.classStageReport;
         setStatus(status, doneText);
         await refresh();
+      } catch (error) {
+        setStatus(status, error.message, true);
+      }
+    }
+
+    async function restartLessonZeroFromReport() {
+      setStatus(status, 'מפעילים מחדש את שיעור 0, מאפסים את נתוני המבוך ומרימים שרת Minecraft חדש…');
+      try {
+        const result = await api(scoped('/launch'), { resetLessonZero: true });
+        latestClosedClassStageReport = null;
+        openStageReportFullDetails.clear();
+        setStatus(status, 'שיעור 0 הופעל מחדש. הדוח הקודם נשמר אצלנו, והלוח מתחיל מעקב חדש.');
+        render(result);
       } catch (error) {
         setStatus(status, error.message, true);
       }
@@ -501,14 +518,18 @@
 
     function closeLessonButton(lessonId, label = 'נעילת שיעור') {
       const access = lessonAccessInfo(lessonId);
-      if (Number(lessonId) === 0 || !access.open) return null;
+      const isLessonZero = Number(lessonId) === 0;
+      const activeLessonZero = Boolean(current?.session?.active
+        && current?.session?.serverState === 'running'
+        && Number(current?.session?.lessonId) === 0);
+      if ((isLessonZero && !activeLessonZero) || (!isLessonZero && !access.open)) return null;
       const button = node('button', label, 'btn lock-lesson-action danger-action');
       button.type = 'button';
       button.addEventListener('click', () => teacherAction(
         scoped(`/lessons/${encodeURIComponent(lessonId)}/close`),
         {},
-        `נועלים את שיעור ${lessonId} לתלמידים…`,
-        `שיעור ${lessonId} נעול עכשיו לתלמידים.`
+        isLessonZero ? 'מסיימים את שיעור 0, מורידים את השרת ומבקשים דוח…' : `נועלים את שיעור ${lessonId} לתלמידים…`,
+        isLessonZero ? 'שיעור 0 נסגר, השרת ירד והדוח נטען ללומדה.' : `שיעור ${lessonId} נעול עכשיו לתלמידים.`
       ));
       return button;
     }
@@ -774,6 +795,16 @@
       return report.generatedAt ? `עודכן ${formatDate(report.generatedAt) || report.generatedAt}` : 'נוצר דוח';
     }
 
+    function stageReportFullDetailsKey(report, title) {
+      return [
+        title || 'דוח',
+        report?.generatedAt || '',
+        report?.lessonLabel || '',
+        String(report?.reportText || '').slice(0, 80),
+        String(report?.reportText || '').length,
+      ].join('|');
+    }
+
     function appendReportField(container, label, value) {
       if (!value) return;
       const item = node('div', undefined, 'stage-report-field');
@@ -887,6 +918,13 @@
       }
       if (report.reportText) {
         const full = node('details', undefined, 'stage-report-full');
+        const detailsKey = stageReportFullDetailsKey(report, title);
+        full.dataset.reportKey = detailsKey;
+        full.open = openStageReportFullDetails.has(detailsKey);
+        full.addEventListener('toggle', () => {
+          if (full.open) openStageReportFullDetails.add(detailsKey);
+          else openStageReportFullDetails.delete(detailsKey);
+        });
         full.append(node('summary', 'דוח מלא'), node('pre', report.reportText));
         card.append(full);
       }
@@ -969,7 +1007,6 @@
         );
       } else {
         statuses.append(
-          renderMiniStatus('Agent', learningStateLabel(student.academyStatus, 'הושלם', 'בתהליך', 'חסר'), student.academyStatus || 'not-started'),
           renderMiniStatus('Minecraft', lessonZeroMinecraftLabel(student), student.minecraftStatus || 'not-started'),
           renderMiniStatus('סיום', lessonZeroFinishStatus(student).text, lessonZeroFinishStatus(student).state),
         );
@@ -1151,6 +1188,7 @@
       if (!card) return null;
       card.classList.add('class-stage-report-card');
       const students = Array.isArray(report.students) ? report.students : [];
+      const lessonZeroSummary = report.lessonZeroSummary || null;
       const hasCode = item => Boolean(item?.code?.url || item?.code?.source);
       const hasScan = item => Boolean(item?.snapshot?.summary || item?.snapshotMap || item?.buildVerdict);
       const needsAttention = item => {
@@ -1165,19 +1203,27 @@
       const attention = students.filter(needsAttention).length;
       const goodBuild = students.filter(item => /good|טוב|עומד|הושלם/.test(String(item?.buildVerdict || '').toLowerCase())).length;
       const summary = node('div', undefined, 'class-stage-report-summary');
-      [
-        ['תלמידים בדוח', students.length],
-        ['נסרקו', submitted],
-        ['קישור קוד', codeLinks],
-        ['בנייה טובה', goodBuild],
-        ['דורשים בדיקה', attention],
-      ].forEach(([label, value]) => summary.append(renderMiniStatus(label, String(value), value ? 'started' : 'not-started')));
+      const summaryItems = lessonZeroSummary
+        ? [
+          ['תלמידים בדוח', lessonZeroSummary.studentCount ?? students.length],
+          ['נכחו בשרת', lessonZeroSummary.presentCount ?? lessonZeroSummary.studentCount ?? 0],
+          ['סיימו מבוך', lessonZeroSummary.completedCount ?? 0],
+          ['הודעות צ׳אט', lessonZeroSummary.chatMessages ?? 0],
+        ]
+        : [
+          ['תלמידים בדוח', students.length],
+          ['נסרקו', submitted],
+          ['קישור קוד', codeLinks],
+          ['בנייה טובה', goodBuild],
+          ['דורשים בדיקה', attention],
+        ];
+      summaryItems.forEach(([label, value]) => summary.append(renderMiniStatus(label, String(value), value ? 'started' : 'not-started')));
       card.insertBefore(summary, card.children[1] || null);
       const meta = node('dl', undefined, 'progress-detail-meta class-stage-report-meta');
       [
         ['התחלה', formatDate(report.startedAt) || report.startedAt || 'אין עדיין'],
         ['סיום', formatDate(report.endedAt) || report.endedAt || 'אין עדיין'],
-        ['תלמידים בדוח', String((report.students || []).length)],
+        ['תלמידים בדוח', String(lessonZeroSummary?.studentCount ?? (report.students || []).length)],
       ].forEach(([term, value]) => meta.append(node('dt', term), node('dd', value)));
       card.insertBefore(meta, card.children[1] || null);
       return card;
@@ -1315,6 +1361,7 @@
         zeroManage.href = teacherPageUrl({ lesson: 0 });
         const zeroPreview = node('a', 'צפייה כתלמיד', 'btn secondary');
         zeroPreview.href = studentPreviewUrl(0);
+        zeroActions.dataset.openActionsLessonId = '0';
         zeroActions.append(zeroManage, zeroPreview);
         zeroCard.append(zeroList, zeroActions);
         const challengeCards = [1, 2, 3, 4].map(challengeId => {
@@ -1396,9 +1443,11 @@
         const lessonId = Number(container.dataset.openActionsLessonId);
         const manageButton = node('a', `ניהול שיעור ${lessonId}`, 'btn secondary lesson-manage-action');
         manageButton.href = teacherPageUrl({ lesson: lessonId });
+        const previewButton = lessonId === 0 ? node('a', 'צפייה כתלמיד', 'btn secondary') : null;
+        if (previewButton) previewButton.href = studentPreviewUrl(0);
         const button = openLessonButton(lessonId, `פתיחת שיעור ${lessonId} לתלמידים`);
-        const closeButton = closeLessonButton(lessonId, `נעילת שיעור ${lessonId}`);
-        container.replaceChildren(manageButton, ...(button ? [button] : []), ...(closeButton ? [closeButton] : []));
+        const closeButton = closeLessonButton(lessonId, lessonId === 0 ? 'סיום שיעור 0' : `נעילת שיעור ${lessonId}`);
+        container.replaceChildren(manageButton, ...(previewButton ? [previewButton] : []), ...(button ? [button] : []), ...(closeButton ? [closeButton] : []));
       });
       if (teacherProgramVideoPreview && program?.overviewVideo && !teacherProgramVideoPreview.dataset.rendered) {
         renderTeacherVideoPreview(
@@ -1430,16 +1479,16 @@
         : (minecraftBlocked ? current?.minecraftSetupNote || '' : '');
       launch.classList.toggle('is-active-lesson', isActiveLesson);
       launch.addEventListener('click', () => teacherAction(
-        isActiveLesson ? scoped('/stop') : lessonLaunchPath(lesson.id),
+        isActiveLesson && isLessonZero ? scoped('/lessons/0/close') : (isActiveLesson ? scoped('/stop') : lessonLaunchPath(lesson.id)),
         {},
         isActiveLesson
-          ? (isLessonZero ? 'סוגרים את עולם Minecraft לשיעור הפתיחה…' : `סוגרים את עולם Minecraft לשיעור ${lesson.id}…`)
+          ? (isLessonZero ? 'מסיימים את שיעור 0, מורידים את השרת ומבקשים דוח…' : `סוגרים את עולם Minecraft לשיעור ${lesson.id}…`)
           : (isLessonZero ? 'מפעילים את עולם Minecraft לשיעור הפתיחה…' : `מפעילים את עולם Minecraft לשיעור ${lesson.id}…`),
         isActiveLesson
-          ? (isLessonZero ? 'עולם Minecraft לשיעור הפתיחה נסגר.' : `עולם Minecraft לשיעור ${lesson.id} נסגר.`)
+          ? (isLessonZero ? 'שיעור 0 נסגר, השרת ירד והדוח נטען ללומדה.' : `עולם Minecraft לשיעור ${lesson.id} נסגר.`)
           : (isLessonZero ? 'עולם Minecraft לשיעור הפתיחה פעיל.' : `עולם Minecraft לשיעור ${lesson.id} פעיל.`)
       ));
-      if (liveMinecraftLifecycleActionsAvailable()) actionRow.append(launch);
+      if (liveMinecraftLifecycleActionsAvailable() && !(isLessonZero && isActiveLesson)) actionRow.append(launch);
       if (Number(lesson.id) >= 1) {
         const link = node('a', 'תצוגת תלמיד', 'secondary-action link-action teacher-next-lesson');
         link.href = studentPreviewUrl(lesson.id);
@@ -1465,8 +1514,8 @@
       const actions = renderTeacherLessonActions(lesson, session, activeLessonId, minecraftBlocked);
       const openButton = openLessonButton(lessonId, `פתיחת שיעור ${lessonId} לתלמידים`);
       if (openButton) actions.prepend(openButton);
-      const closeButton = closeLessonButton(lessonId, `נעילת שיעור ${lessonId}`);
-      if (closeButton) actions.prepend(closeButton);
+      const closeButton = closeLessonButton(lessonId, lessonId === 0 ? 'סיום שיעור 0' : `נעילת שיעור ${lessonId}`);
+      if (closeButton && lessonId !== 0) actions.prepend(closeButton);
       selectedLessonActions.replaceChildren(...actions.childNodes);
       if (selectedLessonVideoPanel) selectedLessonVideoPanel.hidden = !videoInfo;
       if (videoInfo && selectedLessonVideoPreview) {
@@ -1525,6 +1574,45 @@
       teacherChallengeLessons.replaceChildren(...challengeLessons.map(lesson => renderTeacherLessonPicker(lesson, selectedLessonId)));
     }
 
+    function renderLessonZeroEndPanel(showingLessonManagement, selectedLessonId, activeLessonId, session, hasClassReport) {
+      if (!lessonZeroEndPanel) return;
+      const showEndPanel = Boolean(showingLessonManagement
+        && Number(selectedLessonId) === 0
+        && Number(activeLessonId) === 0
+        && session?.active
+        && session?.serverState === 'running');
+      const showRestartPanel = Boolean(showingLessonManagement
+        && Number(selectedLessonId) === 0
+        && !showEndPanel
+        && hasClassReport);
+      const showPanel = showEndPanel || showRestartPanel;
+      lessonZeroEndPanel.hidden = !showPanel;
+      lessonZeroEndPanel.classList.toggle('is-restart', showRestartPanel);
+      if (!showPanel) {
+        lessonZeroEndPanel.replaceChildren();
+        return;
+      }
+
+      const copy = node('div', undefined, 'lesson-zero-end-copy');
+      const button = showRestartPanel
+        ? node('button', 'הפעלת שיעור 0 מחדש', 'btn restart-lesson-zero-action')
+        : closeLessonButton(0, 'סיום שיעור 0 והפקת דוח');
+      if (showRestartPanel) {
+        copy.append(
+          node('strong', 'הפעלת שיעור 0 מחדש'),
+          node('span', 'מעלה מחדש את שרת Minecraft לשיעור הפתיחה, מאפס את מצב המבוך והמעקב במסך, ומשאיר את הדוח הקודם כסיכום של הסבב שהסתיים.'),
+        );
+        button.type = 'button';
+        button.addEventListener('click', restartLessonZeroFromReport);
+      } else {
+        copy.append(
+          node('strong', 'סיום שיעור 0'),
+          node('span', 'מסיים את שיעור הפתיחה בלבד, מבקש דוח מהמוניטור, מכבה את שרת Minecraft ולא פותח את שיעור 1.'),
+        );
+      }
+      lessonZeroEndPanel.replaceChildren(copy, ...(button ? [button] : []));
+    }
+
     function render(data) {
       current = data;
       className.textContent = data.classroom.name;
@@ -1573,11 +1661,13 @@
       metric('metricAttention', data.metrics?.needsHelp);
       renderConnectionSummary(data.students || [], data.metrics || {}, liveMinecraft, data.minecraftConfigured);
       const monitorItems = [];
-      const classReport = renderClassStageReport(data.classStageReport);
+      if (data.classStageReport) latestClosedClassStageReport = data.classStageReport;
+      const classReport = renderClassStageReport(data.classStageReport || latestClosedClassStageReport);
       if (classReport) monitorItems.push(classReport);
       monitorItems.push(...(data.students || []).map(renderStudent));
       monitor.replaceChildren(...monitorItems);
       if (!data.students?.length) monitor.append(node('p', 'עדיין אין תלמידים בכיתה.'));
+      renderLessonZeroEndPanel(showingLessonManagement, selectedLessonId, activeLessonId, session, Boolean(classReport));
       if (activeTeacherStudentModalKey) {
         const modalStudent = (data.students || []).find(student => teacherStudentCardKey(student) === activeTeacherStudentModalKey);
         if (modalStudent) renderTeacherStudentModalContent(modalStudent);

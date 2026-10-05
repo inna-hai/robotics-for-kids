@@ -142,10 +142,17 @@ body.forced-student-login .classroom-card { border-color: #0f766e; }
   font-weight: 750;
 }
 .student-roster-email {
-  direction: ltr;
+  direction: rtl;
   text-align: right;
   overflow-wrap: anywhere;
   font-size: .86rem;
+}
+.student-roster-email-label {
+  direction: rtl;
+}
+.student-roster-email-value {
+  direction: ltr;
+  unicode-bidi: isolate;
 }
 .student-import-form {
   padding-top: 4px;
@@ -428,7 +435,7 @@ body.forced-student-login .classroom-card { border-color: #0f766e; }
 }
 .kugel-server-panel {
   display: grid;
-  grid-template-columns: minmax(220px, 1fr) auto auto;
+  grid-template-columns: minmax(220px, 1fr) auto auto auto;
   align-items: center;
   gap: 12px;
   margin-top: 16px;
@@ -445,6 +452,29 @@ body.forced-student-login .classroom-card { border-color: #0f766e; }
   margin-top: 3px;
   color: var(--muted);
   font-weight: 800;
+}
+.kugel-server-access-code {
+  min-width: 150px;
+  padding: 8px 12px;
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+  background: #f0fdf4;
+  color: #166534;
+}
+.kugel-server-access-code span,
+.kugel-server-access-code strong {
+  display: block;
+}
+.kugel-server-access-code span {
+  font-size: .78rem;
+  font-weight: 850;
+}
+.kugel-server-access-code strong {
+  direction: ltr;
+  margin-top: 2px;
+  font-size: 1rem;
+  font-weight: 950;
+  letter-spacing: .02em;
 }
 .kugel-server-badge {
   justify-self: start;

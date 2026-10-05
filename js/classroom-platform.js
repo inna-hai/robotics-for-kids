@@ -343,7 +343,7 @@
         ['Minecraft', minecraftLabelForLesson(lesson), lesson.minecraftStatus],
       ]
       : [
-        ['אקדמיית Agent', learningLabel(lesson.academyStatus, 'הושלמה', 'בתהליך', 'חסרה'), lesson.academyStatus],
+        ['תרגול קוד', learningLabel(lesson.academyStatus, 'הושלם', 'בתהליך', 'חסר'), lesson.academyStatus],
         ['Minecraft', minecraftLabelForLesson(lesson), lesson.minecraftStatus],
         (() => {
           const exitStatus = lessonExitStatus(lesson);
@@ -642,7 +642,7 @@
           ]
           : [
             ['כללי', progressLabelForLesson(studentLesson), studentLesson.overallStatus],
-            ['Agent', learningLabel(studentLesson.academyStatus, 'הושלם', 'בתהליך', 'חסר'), studentLesson.academyStatus],
+            ['תרגול קוד', learningLabel(studentLesson.academyStatus, 'הושלם', 'בתהליך', 'חסר'), studentLesson.academyStatus],
             ['Minecraft', minecraftLabelForLesson(studentLesson), studentLesson.minecraftStatus],
             (() => {
               const exitStatus = lessonExitStatus(studentLesson);
@@ -935,6 +935,32 @@
         .filter((name) => name.length >= 2))];
     }
 
+    function rosterMinecraftIdentityText(student) {
+      const email = student.minecraftEmail || student.minecraftIdentity?.upn || '';
+      if (email) return `מייל Minecraft: ${email}`;
+      const playerName = student.minecraftPlayerName || student.minecraftIdentity?.playerName || '';
+      if (playerName) return `משתמש Minecraft: ${playerName}`;
+      return 'משתמש Minecraft: לא שויך עדיין';
+    }
+
+    function renderRosterMinecraftIdentity(student) {
+      const text = rosterMinecraftIdentityText(student);
+      const separator = ': ';
+      const separatorIndex = text.indexOf(separator);
+      const line = element('span', undefined, 'student-roster-email');
+      if (separatorIndex === -1) {
+        line.textContent = text;
+        return line;
+      }
+      const label = text.slice(0, separatorIndex);
+      const value = text.slice(separatorIndex + separator.length);
+      line.append(
+        element('span', `${label}:`, 'student-roster-email-label'),
+        element('bdi', value, 'student-roster-email-value'),
+      );
+      return line;
+    }
+
     function renderStudentRoster(classroom) {
       const panel = element('section', undefined, 'student-roster-panel');
       const top = element('div', undefined, 'student-roster-top');
@@ -956,8 +982,7 @@
           const row = element('article', undefined, 'student-roster-row');
           const identity = element('div', undefined, 'student-roster-identity');
           identity.append(element('strong', student.name));
-          const minecraftEmail = student.minecraftEmail || 'לא אומת עדיין';
-          identity.append(element('span', `מייל Minecraft: ${minecraftEmail}`, 'student-roster-email'));
+          identity.append(renderRosterMinecraftIdentity(student));
           row.append(identity, element('span', 'קיים בכיתה'));
           list.append(row);
         });
@@ -1007,7 +1032,7 @@
             const identity = element('div', undefined, 'student-roster-identity');
             identity.append(
               element('strong', student.name),
-              element('span', 'מייל Minecraft: לא אומת עדיין', 'student-roster-email'),
+              renderRosterMinecraftIdentity(student),
             );
             row.append(identity, element('span', 'נוסף עכשיו'));
             list.append(row);
@@ -1055,6 +1080,11 @@
         element('strong', 'שרת ועולמות Minecraft'),
         element('span', `${statusText}${server.serverAddress ? ` · ${server.serverAddress}` : ''}`),
       );
+      const accessCodeBox = element('div', undefined, 'kugel-server-access-code');
+      accessCodeBox.append(
+        element('span', 'קוד כניסה לשרת'),
+        element('strong', server.accessCode || 'לא מוגדר'),
+      );
       const badge = element('span', statusText, `kugel-server-badge ${enabled ? 'running' : 'idle'}`);
       const controls = element('div', undefined, 'kugel-server-actions');
       const start = element('button', 'הדלקה', 'button secondary');
@@ -1095,11 +1125,12 @@
 
       function setMonitorStatus(data) {
         const monitor = data?.monitor || {};
-        const running = Boolean(monitor.running);
+        const classServer = data?.kugelServer || {};
+        const running = classServer.enabled ?? Boolean(monitor.running);
         const currentWorld = monitor.currentWorld || '';
-        badge.textContent = `${running ? 'פועל' : 'כבוי'}${currentWorld ? ` · ${currentWorld}` : ''}`;
+        badge.textContent = `${running ? 'פעיל לכיתה' : 'כבוי לכיתה'}${running && currentWorld ? ` · ${currentWorld}` : ''}`;
         badge.className = `kugel-server-badge ${running ? 'running' : 'idle'}`;
-        copy.querySelector('span').textContent = `${running ? 'שרת פועל' : 'שרת כבוי'}${currentWorld ? ` · עולם: ${currentWorld}` : ''}${server.serverAddress ? ` · ${server.serverAddress}` : ''}`;
+        copy.querySelector('span').textContent = `${running ? 'שרת פעיל לכיתה' : 'שרת כבוי לכיתה'}${running && currentWorld ? ` · עולם: ${currentWorld}` : ''}${server.serverAddress ? ` · ${server.serverAddress}` : ''}`;
         start.disabled = running;
         stop.disabled = !running;
       }
@@ -1207,7 +1238,7 @@
       continueWorld.addEventListener('click', () => openWorld('continue'));
       saveWorld.addEventListener('click', () => saveCurrentWorld());
       controls.append(start, stop, refresh);
-      panel.append(copy, badge, controls, worlds);
+      panel.append(copy, accessCodeBox, badge, controls, worlds);
       loadWorlds();
       refreshStatus(true);
       kugelServerTimers.set(classroom.id, setInterval(() => refreshStatus(true), 10000));

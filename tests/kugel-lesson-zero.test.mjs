@@ -96,6 +96,8 @@ let gameEvents = [];
 let gameEventsDelayMs = 0;
 let gameEventsStartedResolve = null;
 let gameEventsGate = null;
+let nextClassReportPayload = null;
+let nextCloseClassStageReportPayload = null;
 let worldOpenDelayMs = 0;
 let worldOpenStartedResolve = null;
 let worldOpenFailuresRemaining = 0;
@@ -264,6 +266,26 @@ const monitor = createServer(async (req, res) => {
     res.end(JSON.stringify({ ok: true }));
     return;
   }
+  if (req.url === '/api/internal/craftom-school/kugel/class-report') {
+    if (nextClassReportPayload) {
+      const payload = nextClassReportPayload;
+      nextClassReportPayload = null;
+      res.end(JSON.stringify(payload));
+      return;
+    }
+    res.end(JSON.stringify({
+      ok: true,
+      class_stage_report: {
+        lesson_label: `שיעור ${body.lesson_id ?? 0}`,
+        generated_at: new Date().toISOString(),
+        started_at: new Date(Date.now() - 60000).toISOString(),
+        ended_at: new Date().toISOString(),
+        report_text: 'דוח סוף שיעור 0 ממוניטור הבדיקה',
+        students: [],
+      },
+    }));
+    return;
+  }
   if (req.url === '/api/internal/craftom-school/v2/world/open' && worldOpenDelayMs) {
     if (worldOpenStartedResolve) { worldOpenStartedResolve(); worldOpenStartedResolve = null; }
     await new Promise((resolve) => setTimeout(resolve, worldOpenDelayMs));
@@ -308,6 +330,20 @@ const monitor = createServer(async (req, res) => {
       return;
     }
     monitorWorldLease = null;
+    if (nextCloseClassStageReportPayload) {
+      const payload = nextCloseClassStageReportPayload;
+      nextCloseClassStageReportPayload = null;
+      gameEvents.unshift({
+        id: 900000 + gameEvents.length,
+        server_name: body.server,
+        server: body.server,
+        event_type: 'class_stage_report',
+        player_name: null,
+        created_at: Math.floor(Date.now() / 1000),
+        game_timestamp: new Date().toISOString(),
+        payload: JSON.stringify(payload),
+      });
+    }
   }
   if (req.url === '/api/internal/craftom-school/v2/live/freeze') {
     if (freezeStartedResolve) { freezeStartedResolve(); freezeStartedResolve = null; }
@@ -571,6 +607,13 @@ try {
   assert.equal(alwaysOnOpenCall?.body.start_mode, 'reset');
   assert.equal(alwaysOnOpenCall?.body.lesson_id, 0);
   assert.equal(alwaysOnOpenCall?.body.teacher_email, 'agent-a@example.test');
+  const alwaysOnOpenDb = new Database(dbFile, { readonly: true });
+  const alwaysOnOpenSession = alwaysOnOpenDb.prepare(`
+    SELECT events_since FROM kugel_class_sessions WHERE classroom_id = ?
+  `).get(alwaysOnClassroom.id);
+  alwaysOnOpenDb.close();
+  assert.ok(alwaysOnOpenSession.events_since > 0,
+    'opening a reset lesson zero world from the teacher dashboard starts Monitor event tracking at the new run');
   const alwaysOnSaveWorld = await post(baseUrl, `/api/classroom/classes/${alwaysOnClassroom.id}/kugel-server/save-world`,
     { name: 'kugel-holon-work', display: 'שמירת חולון' }, teacherACookie);
   assert.equal(alwaysOnSaveWorld.status, 200);
@@ -666,8 +709,69 @@ try {
   assert.equal(firstOpenCall.body.owner_id, classroomA.id);
   assert.equal(firstOpenCall.body.lesson_id, 0, 'world/open must tell the Monitor which lesson was launched');
   assert.equal(firstOpenCall.body.teacher_email, 'agent-a@example.test', 'world/open may include the launching teacher email for reports');
-  const stableLeaseId = firstOpenCall.body.lease_id;
-  const firstGeneration = firstOpenCall.body.generation;
+  const closeLessonZero = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/0/close`, {}, teacherACookie);
+  assert.equal(closeLessonZero.status, 200, 'teacher can close lesson zero without opening lesson one');
+  const closeLessonZeroBody = await closeLessonZero.json();
+  assert.equal(closeLessonZeroBody.lessonAccess.openedLessonIds.includes(1), false,
+    'closing lesson zero must not open lesson one');
+  assert.equal(closeLessonZeroBody.classStageReport.reportText, 'דוח סוף שיעור 0 ממוניטור הבדיקה',
+    'closing lesson zero should return the Monitor class report for immediate display');
+  const closeLessonZeroReportCall = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/kugel/class-report').at(-1);
+  assert.equal(closeLessonZeroReportCall?.body.server, 'test-kugel-monitor',
+    'closing lesson zero should ask the Monitor to generate the class report');
+  const closeLessonZeroWorldCall = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/v2/world/close').at(-1);
+  assert.equal(closeLessonZeroWorldCall?.body.lease_id, firstOpenCall.body.lease_id,
+    'closing lesson zero should close the active Minecraft lease');
+  const relaunchAfterLessonZeroClose = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, teacherACookie);
+  assert.equal(relaunchAfterLessonZeroClose.status, 200, 'teacher can start lesson zero again after closing it');
+  nextClassReportPayload = { ok: true, scan: { skipped: 'maze_world' }, lesson: 0 };
+  nextCloseClassStageReportPayload = {
+    lesson_id: 0,
+    lesson_label: 'שיעור 0: מבוך המטבעות',
+    generated_at: new Date().toISOString(),
+    started_at: new Date(Date.now() - 120000).toISOString(),
+    ended_at: new Date().toISOString(),
+    report_text: '🎮 סיכום שיעור 0 (מבוך) — כיתה בדיקה\n🕐 09:58–11:08 | ילדים: 1\n────────────\n🏆 *סיימו את המבוך (לפי הזמן הטוב ביותר)*\n🥇 SecondSecure — 3:11 דק׳ (2 סיומים)\n\n👥 *נוכחות*\n• SecondSecure — נכנס 10:01, מחובר 16:49 דק׳\n\n💬 *תקשורת*\nלא נכתבו הודעות צ׳אט בין הילדים.',
+    students: [],
+  };
+  const closeLessonZeroPostCloseReport = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/0/close`, {}, teacherACookie);
+  assert.equal(closeLessonZeroPostCloseReport.status, 200, 'teacher can close lesson zero when the report is generated by shutdown');
+  const closeLessonZeroPostCloseReportBody = await closeLessonZeroPostCloseReport.json();
+  assert.match(closeLessonZeroPostCloseReportBody.classStageReport.reportText, /סיכום שיעור 0/,
+    'lesson zero close should read the class_stage_report event created after Minecraft shuts down');
+  assert.deepEqual(closeLessonZeroPostCloseReportBody.classStageReport.lessonZeroSummary, {
+    studentCount: 1,
+    completedCount: 1,
+    presentCount: 1,
+    chatMessages: 0,
+  }, 'lesson zero class reports should parse activity counts from report_text when Monitor students is empty');
+  const resetRunDb = new Database(dbFile);
+  resetRunDb.prepare(`
+    INSERT INTO kugel_student_runs (
+      student_id, classroom_id, lesson_id, started_at, reset_at, finished_at,
+      attempt_count, best_time_ms, best_finished_at, last_duration_ms, updated_at
+    ) VALUES (?, ?, 0, ?, NULL, ?, 1, 42000, ?, 42000, ?)
+    ON CONFLICT(student_id) DO UPDATE SET
+      classroom_id = excluded.classroom_id,
+      lesson_id = excluded.lesson_id,
+      started_at = excluded.started_at,
+      finished_at = excluded.finished_at,
+      attempt_count = excluded.attempt_count,
+      best_time_ms = excluded.best_time_ms,
+      best_finished_at = excluded.best_finished_at,
+      last_duration_ms = excluded.last_duration_ms,
+      updated_at = excluded.updated_at
+  `).run(studentA.id, classroomA.id, identityNow, identityNow, identityNow, identityNow);
+  resetRunDb.close();
+  const relaunchAfterPostCloseReport = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, { resetLessonZero: true }, teacherACookie);
+  assert.equal(relaunchAfterPostCloseReport.status, 200, 'teacher can restart lesson zero after a post-close report');
+  const afterResetRunDb = new Database(dbFile);
+  assert.equal(afterResetRunDb.prepare('SELECT COUNT(*) count FROM kugel_student_runs WHERE classroom_id = ? AND lesson_id = 0').get(classroomA.id).count, 0,
+    'restarting lesson zero from a report should reset previous lesson-zero maze run state');
+  afterResetRunDb.close();
+  const stableRelaunchOpen = monitorCalls.filter(call => call.url === '/api/internal/craftom-school/v2/world/open').at(-1);
+  const stableLeaseId = stableRelaunchOpen.body.lease_id;
+  const firstGeneration = stableRelaunchOpen.body.generation;
   const duplicateLaunch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/launch`, {}, teacherACookie);
   assert.equal(duplicateLaunch.status, 200, 'the same class can restart its own active lesson zero');
   const lessonOneLaunch = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/lessons/1/launch`, {}, teacherACookie);
@@ -1643,11 +1747,13 @@ try {
   const teacherMinecraftResetView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
   assert.equal(teacherMinecraftResetView.status, 200);
   const teacherMinecraftResetStudent = (await teacherMinecraftResetView.json()).students.find(student => student.id === studentASecond.id);
-  assert.equal(teacherMinecraftResetStudent.coins, 0,
-    'maze_reset from Minecraft starts a clean current attempt before the next coin arrives');
-  assert.equal(teacherMinecraftResetStudent.completed, false);
+  assert.equal(teacherMinecraftResetStudent.coins, 8,
+    'maze_reset from Minecraft keeps the best lesson result visible after a completed attempt');
+  assert.equal(teacherMinecraftResetStudent.currentCoins, 0,
+    'maze_reset still exposes the clean current attempt separately');
+  assert.equal(teacherMinecraftResetStudent.completed, true);
   assert.equal(teacherMinecraftResetStudent.retrying, true);
-  assert.equal(teacherMinecraftResetStudent.lastDurationMs, null);
+  assert.equal(teacherMinecraftResetStudent.lastDurationMs, 45000);
   assert.equal(teacherMinecraftResetStudent.bestTimeMs, 45000,
     'maze_reset keeps the previous best time visible');
   assert.equal(teacherMinecraftResetStudent.attemptCount, 1,
@@ -1659,8 +1765,8 @@ try {
   assert.equal(dashboardMinecraftResetLessonZero.retrying, true);
   assert.equal(dashboardMinecraftResetLessonZero.attempts, 1,
     'progress dashboard must keep completed-attempt count after a Minecraft reset');
-  assert.equal(dashboardMinecraftResetLessonZero.minecraftConnection.coins, 0);
-  assert.equal(dashboardMinecraftResetLessonZero.lastDurationMs, null);
+  assert.equal(dashboardMinecraftResetLessonZero.minecraftConnection.coins, 8);
+  assert.equal(dashboardMinecraftResetLessonZero.lastDurationMs, 45000);
   assert.equal(dashboardMinecraftResetLessonZero.bestTimeMs, 45000);
   const minecraftChatResetAt = new Date(Date.parse(liveCoinsFinishedAt) + 7000).toISOString();
   gameEvents = forLease([
@@ -1706,11 +1812,13 @@ try {
   const teacherMinecraftChatResetView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
   assert.equal(teacherMinecraftChatResetView.status, 200);
   const teacherMinecraftChatResetStudent = (await teacherMinecraftChatResetView.json()).students.find(student => student.id === studentASecond.id);
-  assert.equal(teacherMinecraftChatResetStudent.coins, 0,
-    'Monitor chat reset messages also start a clean current attempt before the next coin arrives');
-  assert.equal(teacherMinecraftChatResetStudent.completed, false);
+  assert.equal(teacherMinecraftChatResetStudent.coins, 8,
+    'Monitor chat reset messages keep the best lesson result visible after a completed attempt');
+  assert.equal(teacherMinecraftChatResetStudent.currentCoins, 0,
+    'Monitor chat reset messages still expose the clean current attempt separately');
+  assert.equal(teacherMinecraftChatResetStudent.completed, true);
   assert.equal(teacherMinecraftChatResetStudent.retrying, true);
-  assert.equal(teacherMinecraftChatResetStudent.lastDurationMs, null);
+  assert.equal(teacherMinecraftChatResetStudent.lastDurationMs, 45000);
   assert.equal(teacherMinecraftChatResetStudent.attemptCount, 1,
     'chat reset preserves completed-attempt history instead of resetting attempts to zero');
   const minecraftRetryCoinAt = new Date(Date.parse(liveCoinsFinishedAt) + 10000).toISOString();
@@ -1756,11 +1864,13 @@ try {
   const teacherMinecraftRetryView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
   assert.equal(teacherMinecraftRetryView.status, 200);
   const teacherMinecraftRetryStudent = (await teacherMinecraftRetryView.json()).students.find(student => student.id === studentASecond.id);
-  assert.equal(teacherMinecraftRetryStudent.coins, 1,
-    'a new Minecraft attempt after a finish must show the current collected count instead of the previous 8 coins');
-  assert.equal(teacherMinecraftRetryStudent.completed, false);
+  assert.equal(teacherMinecraftRetryStudent.coins, 8,
+    'a new Minecraft attempt after a finish keeps the best lesson result visible');
+  assert.equal(teacherMinecraftRetryStudent.currentCoins, 1,
+    'a new Minecraft attempt after a finish exposes the current collected count separately');
+  assert.equal(teacherMinecraftRetryStudent.completed, true);
   assert.equal(teacherMinecraftRetryStudent.retrying, true);
-  assert.equal(teacherMinecraftRetryStudent.lastDurationMs, null);
+  assert.equal(teacherMinecraftRetryStudent.lastDurationMs, 45000);
   assert.equal(teacherMinecraftRetryStudent.bestTimeMs, 45000,
     'a Minecraft-side retry keeps the previous best time visible');
   assert.equal(teacherMinecraftRetryStudent.attemptCount, 1,
@@ -1772,8 +1882,8 @@ try {
   assert.equal(dashboardMinecraftRetryLessonZero.retrying, true);
   assert.equal(dashboardMinecraftRetryLessonZero.attempts, 1,
     'progress dashboard keeps historical attempts while the next attempt is in progress');
-  assert.equal(dashboardMinecraftRetryLessonZero.minecraftConnection.coins, 1);
-  assert.equal(dashboardMinecraftRetryLessonZero.lastDurationMs, null);
+  assert.equal(dashboardMinecraftRetryLessonZero.minecraftConnection.coins, 8);
+  assert.equal(dashboardMinecraftRetryLessonZero.lastDurationMs, 45000);
   assert.equal(dashboardMinecraftRetryLessonZero.bestTimeMs, 45000);
   const staleConnectionAt = new Date(Date.now() - 1500).toISOString();
   gameEvents = forLease([

@@ -9183,7 +9183,13 @@
                     lessonId: String(currentLesson),
                     activityId: `exercise-${completedIndex + 1}`,
                     status: 'completed',
-                    score: 100
+                    score: 100,
+                    metadata: {
+                        exerciseTitle: exercises[completedIndex]?.title || `תרגיל ${completedIndex + 1}`,
+                        completedCount,
+                        totalExercises: exercises.length,
+                        completionVerb
+                    }
                 }
             }));
             if (nextIndex > completedIndex) setActiveExercise(nextIndex, currentLesson);

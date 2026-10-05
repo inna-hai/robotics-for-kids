@@ -15,6 +15,7 @@
   let classroomStudent = null;
   let classroomIdentityLoaded = false;
   const pendingProgress = [];
+  const logoutButtonId = 'classroom-student-floating-logout';
 
   function currentLessonId() {
     const params = new URLSearchParams(location.search);
@@ -55,6 +56,61 @@
     return request('/api/classroom/progress', payload);
   }
 
+  function ensureStudentLogoutButton() {
+    if (document.getElementById?.(logoutButtonId)) return;
+    const button = document.createElement('button');
+    if (typeof button.addEventListener !== 'function') return;
+    button.id = logoutButtonId;
+    button.type = 'button';
+    button.textContent = 'התנתקות';
+    button.setAttribute('aria-label', 'התנתקות מהכיתה');
+    button.className = 'classroom-student-floating-logout';
+    button.addEventListener('click', async () => {
+      button.disabled = true;
+      button.textContent = 'מתנתקים…';
+      try {
+        await request('/api/classroom/logout', {});
+        location.assign('classroom-entry.html');
+      } catch {
+        button.disabled = false;
+        button.textContent = 'התנתקות';
+      }
+    });
+    if (!document.getElementById?.('classroom-student-floating-logout-style')) {
+      const style = document.createElement('style');
+      style.id = 'classroom-student-floating-logout-style';
+      style.textContent = `
+        .classroom-student-floating-logout {
+          position: fixed;
+          z-index: 2147483000;
+          top: max(12px, env(safe-area-inset-top));
+          left: max(12px, env(safe-area-inset-left));
+          min-height: 40px;
+          padding: 8px 14px;
+          border: 1px solid rgba(15, 23, 42, .14);
+          border-radius: 999px;
+          background: rgba(255, 255, 255, .96);
+          color: #0f172a;
+          box-shadow: 0 12px 28px rgba(15, 23, 42, .14);
+          font: 800 14px/1.2 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          cursor: pointer;
+        }
+        .classroom-student-floating-logout:disabled {
+          cursor: progress;
+          opacity: .72;
+        }
+        @media (max-width: 620px) {
+          .classroom-student-floating-logout {
+            top: auto;
+            bottom: max(12px, env(safe-area-inset-bottom));
+          }
+        }
+      `;
+      (document.head || document.body)?.append(style);
+    }
+    document.body?.append(button);
+  }
+
 
   window.ClassroomProgress = { save, courseId, get lessonId() { return currentLessonId(); } };
   window.addEventListener('hai:classroom-progress', (event) => {
@@ -68,6 +124,7 @@
       return;
     }
     classroomStudent = me.student;
+    ensureStudentLogoutButton();
     const queued = pendingProgress.splice(0);
     queued.forEach((detail) => save(detail).catch(() => {}));
     return save({ activityId: 'page-open', status: 'started', metadata: { path: `${pathname}${location.search}` } });
