@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>מדריך מורה - אקדמיית ה-Agent</title>
+  <style>
+    @page { size: A4; margin: 14mm; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Arial", "Helvetica", sans-serif;
+      color: #172033;
+      background: #fff;
+      line-height: 1.55;
+      font-size: 15px;
+    }
+    .cover {
+      min-height: 250mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 18px;
+      border: 1px solid #d9e3f0;
+      border-radius: 18px;
+      padding: 34px;
+      background: linear-gradient(135deg, #f7fbff 0%, #eef7f2 100%);
+      page-break-after: always;
+    }
+    .eyebrow {
+      color: #2563eb;
+      font-weight: 700;
+      letter-spacing: 0;
+      margin: 0;
+    }
+    h1 {
+      font-size: 42px;
+      line-height: 1.12;
+      margin: 0;
+      color: #102033;
+    }
+    .subtitle {
+      font-size: 19px;
+      max-width: 720px;
+      margin: 0;
+      color: #475569;
+    }
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .meta span {
+      display: block;
+      padding: 12px 14px;
+      border: 1px solid #dbe7f5;
+      border-radius: 12px;
+      background: rgba(255,255,255,.78);
+      font-weight: 700;
+      color: #334155;
+    }
+    h2 {
+      font-size: 24px;
+      margin: 0 0 8px;
+      color: #0f172a;
+      break-after: avoid;
+    }
+    h3 {
+      font-size: 19px;
+      margin: 18px 0 6px;
+      color: #1e3a8a;
+      break-after: avoid;
+    }
+    section {
+      page-break-inside: avoid;
+      margin: 0 0 22px;
+      padding: 18px 0 0;
+      border-top: 1px solid #e5edf7;
+    }
+    p { margin: 0 0 8px; }
+    ul, ol { margin: 8px 0 12px; padding-right: 24px; }
+    li { margin: 4px 0; }
+    .note {
+      margin: 10px 0 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+    }
+    .warning {
+      border-color: #fed7aa;
+      background: #fff7ed;
+    }
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 9px;
+      margin: 12px 0;
+    }
+    .flow div {
+      min-height: 70px;
+      padding: 10px;
+      border: 1px solid #dbe7f5;
+      border-radius: 12px;
+      background: #fbfdff;
+      font-weight: 700;
+      color: #1e293b;
+    }
+    figure {
+      margin: 12px 0 18px;
+      break-inside: avoid;
+    }
+    img {
+      display: block;
+      width: 100%;
+      max-height: 150mm;
+      object-fit: contain;
+      border: 1px solid #d6e0ee;
+      border-radius: 12px;
+      background: #f8fafc;
+    }
+    figcaption {
+      margin-top: 7px;
+      color: #475569;
+      font-size: 13px;
+    }
+    .small-img img { max-height: 105mm; }
+    .page-break { page-break-before: always; }
+    .checklist {
+      columns: 2;
+      column-gap: 22px;
+    }
+    .checklist li { break-inside: avoid; }
+    code {
+      direction: ltr;
+      unicode-bidi: embed;
+      background: #eef2ff;
+      padding: 1px 5px;
+      border-radius: 5px;
+      color: #1e3a8a;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="cover">
+      <p class="eyebrow">דרך ההייטק · לומדת רובוטיקה ומיינקראפט</p>
+      <h1>מדריך מורה<br>אקדמיית ה-Agent</h1>
+      <p class="subtitle">מסמך עבודה קצר וברור למורה: איך נכנסים למערכת, יוצרים כיתה, מוסיפים תלמידים, פותחים את שיעור 0, מנהלים את Minecraft ועוקבים אחרי ההתקדמות.</p>
+      <div class="meta">
+        <span>קהל יעד: מורות ומדריכות</span>
+        <span>מסלול: אקדמיית ה-Agent</span>
+        <span>עודכן: 01.10.2026</span>
+      </div>
+    </div>
+
+    <section>
+      <h2>תמונה כללית</h2>
+      <p>המורה עובדת בעיקר מתוך מסך הכיתות שלה. שם היא יוצרת כיתה, מוסיפה תלמידים, מחלקת קודי כניסה, פותחת את שיעור 0 ואת סביבת Minecraft, ועוקבת אחרי התקדמות התלמידים.</p>
+      <div class="flow">
+        <div>1. כניסת מורה</div>
+        <div>2. יצירת כיתה</div>
+        <div>3. תלמידים וקודים</div>
+        <div>4. שיעור 0 ו-Minecraft</div>
+      </div>
+      <div class="flow">
+        <div>5. מעקב תלמידים</div>
+        <div>6. דוח סוף שיעור</div>
+        <div>7. שיעורי Agent</div>
+        <div>8. התקדמות ודוחות</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>1. כניסת מורה למערכת</h2>
+      <ol>
+        <li>נכנסים למסך המורה: <code>teacher-classrooms.html</code>.</li>
+        <li>אם זו כניסה ראשונה, מממשים הזמנה חד-פעמית עם מייל וקוד הזמנה.</li>
+        <li>לאחר קבלת הסיסמה הזמנית, נכנסים עם מייל וסיסמה.</li>
+      </ol>
+      <p class="note">הסיסמה הזמנית מוצגת פעם אחת בלבד. אם המורה איבדה אותה, צריך להנפיק לה הזמנה/סיסמה חדשה מתוך ניהול המערכת.</p>
+      <figure>
+        <img src="screenshots/agent-academy-access/03-teacher-redeem-invitation.png" alt="מסך מימוש הזמנה למורה">
+        <figcaption>מימוש הזמנה וכניסת מורה למסך הכיתות.</figcaption>
+      </figure>
+    </section>
+
+    <section class="page-break">
+      <h2>2. יצירת כיתה באקדמיית ה-Agent</h2>
+      <ol>
+        <li>במסך המורה מזינים שם כיתה.</li>
+        <li>מסמנים את הלומדה <strong>אקדמיית ה-Agent</strong>.</li>
+        <li>לוחצים יצירת כיתה.</li>
+        <li>המערכת מציגה קוד כיתה לתלמידים.</li>
+      </ol>
+      <p class="note">קוד הכיתה הוא הקוד המשותף לכל תלמידי הכיתה. לכל תלמיד יש בנוסף קוד אישי משלו.</p>
+      <figure>
+        <img src="screenshots/agent-academy-access/04-teacher-create-class.png" alt="יצירת כיתה במסך המורה">
+        <figcaption>יצירת כיתה חדשה ובחירת אקדמיית ה-Agent כהלומדה הפעילה לכיתה.</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>3. הוספת תלמידים וקודי כניסה</h2>
+      <ol>
+        <li>פותחים את כרטיס הכיתה.</li>
+        <li>מזינים שם תלמיד/ה.</li>
+        <li>לוחצים הוספת תלמיד/ה.</li>
+        <li>מעתיקים את הקוד האישי שנוצר לתלמיד.</li>
+      </ol>
+      <p class="warning note">קוד אישי מוצג למורה פעם אחת בלבד. אחרי זה המערכת שומרת רק hash ולא את הקוד הגלוי.</p>
+      <figure>
+        <img src="screenshots/agent-academy-access/05-teacher-student-code.png" alt="הוספת תלמיד וקוד אישי">
+        <figcaption>הוספת תלמידים וקבלת קוד אישי למסירה לתלמיד.</figcaption>
+      </figure>
+    </section>
+
+    <section class="page-break">
+      <h2>4. חיבור Minecraft לתלמיד</h2>
+      <p>כדי שתלמיד יוכל לעבוד עם Minecraft Education, צריך לוודא שיש לו חשבון Microsoft/Minecraft קיים ורישיון תקין.</p>
+      <ol>
+        <li>בכרטיס התלמיד בודקים אם מופיע משתמש Minecraft או מייל Minecraft מאומת.</li>
+        <li>אם צריך, מנהלת/מורה עם הרשאה מאמתת את החשבון לפי מייל ושם שחקן.</li>
+        <li>אחרי אימות, המערכת יודעת לקשר בין התלמיד בלומדה לבין חשבון Minecraft שלו.</li>
+      </ol>
+      <p class="note">המערכת לא יוצרת חשבון Microsoft ולא מאפסת סיסמה לחשבון Microsoft. היא רק מאמתת חשבון קיים ומציגה את שיוך המשתמש.</p>
+      <figure class="small-img">
+        <img src="screenshots/agent-academy-access/06-teacher-minecraft-license-link.png" alt="חיבור חשבון Minecraft לתלמיד">
+        <figcaption>חיבור או אימות חשבון Minecraft לתלמיד מתוך מערכת הכיתה.</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>5. פתיחת שיעור 0 וניהול Minecraft</h2>
+      <p>שיעור 0 הוא שיעור הכניסה לעולם Minecraft. במסך המורה אפשר להפעיל את העולם, לראות סטטוס שרת, לעקוב אחרי תלמידים, ולסיים את השיעור כדי לקבל דוח.</p>
+      <ol>
+        <li>בכרטיס הכיתה נכנסים לניהול אקדמיית ה-Agent.</li>
+        <li>פותחים את שיעור 0.</li>
+        <li>מפעילים את שרת Minecraft/עולם שיעור 0.</li>
+        <li>מוודאים שמופיע קוד כניסה לשרת והוראות לתלמידים.</li>
+      </ol>
+      <figure>
+        <img src="screenshots/agent-academy-access/10-teacher-minecraft-world-open.png" alt="פתיחת עולם Minecraft במסך המורה">
+        <figcaption>מסך המורה לניהול עולם Minecraft ושיעור 0.</figcaption>
+      </figure>
+    </section>
+
+    <section class="page-break">
+      <h2>6. מה המורה אומרת לתלמידים</h2>
+      <p>התלמידים נכנסים עם קוד כיתה וקוד אישי. אחרי הכניסה הם רואים את הלומדות שהוקצו לכיתה ולוחצים על אקדמיית ה-Agent.</p>
+      <ol>
+        <li>לתת לתלמידים את קוד הכיתה.</li>
+        <li>לתת לכל תלמיד את הקוד האישי שלו.</li>
+        <li>להנחות אותם לבחור באקדמיית ה-Agent.</li>
+        <li>בשיעור 0, להנחות אותם להיכנס לעולם Minecraft לפי פרטי השרת שמופיעים אצלם.</li>
+      </ol>
+      <figure class="small-img">
+        <img src="screenshots/agent-academy-access/07-student-entry-form.png" alt="מסך כניסת תלמיד">
+        <figcaption>מסך הכניסה של תלמידים: קוד כיתה וקוד אישי.</figcaption>
+      </figure>
+      <figure class="small-img">
+        <img src="screenshots/agent-academy-access/08-student-course-access.png" alt="בחירת אקדמיית ה-Agent במסך תלמיד">
+        <figcaption>התלמיד רואה את אקדמיית ה-Agent רק אם הלומדה פתוחה לכיתה שלו.</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>7. עבודה בתוך שיעורי Agent</h2>
+      <p>אחרי שיעור 0, התלמידים עובדים לפי שיעורי Agent. בכל שיעור יש משימה, תרגול קוד, MakeCode/Minecraft וכרטיס יציאה.</p>
+      <ol>
+        <li>המורה בוחרת שיעור או מפנה את התלמידים לשיעור הרלוונטי.</li>
+        <li>התלמידים קוראים את המשימה ועובדים על התרגול.</li>
+        <li>במקומות המתאימים הם עוברים ל-Minecraft Education ומיישמים.</li>
+        <li>בסוף מגישים כרטיס יציאה/עדות עבודה.</li>
+      </ol>
+      <figure>
+        <img src="screenshots/agent-academy-access/09-agent-academy-course-map.png" alt="מפת הקורס באקדמיית ה-Agent">
+        <figcaption>מפת הקורס של אקדמיית ה-Agent והמעבר בין שיעורים.</figcaption>
+      </figure>
+      <figure>
+        <img src="screenshots/agent-academy-access/13-agent-academy-lesson-1-practice.png" alt="תרגול שיעור באקדמיית ה-Agent">
+        <figcaption>דוגמה למסך תרגול תלמיד באקדמיית ה-Agent.</figcaption>
+      </figure>
+    </section>
+
+    <section class="page-break">
+      <h2>8. מעקב התקדמות ודוחות</h2>
+      <p>המורה יכולה לעקוב אחרי פעילות הכיתה: מי נכנס, מי התקדם, מי השלים תרגול, ומה מצב התלמידים בשיעור.</p>
+      <ol>
+        <li>פותחים את כרטיס הכיתה במסך המורה.</li>
+        <li>נכנסים לדוח/מעקב התקדמות.</li>
+        <li>מסננים לפי שיעור אם צריך.</li>
+        <li>פותחים תלמיד מסוים כדי לראות פירוט.</li>
+      </ol>
+      <figure>
+        <img src="screenshots/teacher-progress-dashboard/02-progress-dashboard-table.png" alt="דוח התקדמות כיתתי">
+        <figcaption>טבלת התקדמות כיתתית למורה.</figcaption>
+      </figure>
+      <figure>
+        <img src="screenshots/teacher-progress-dashboard/03-progress-dashboard-detail.png" alt="פירוט התקדמות תלמיד">
+        <figcaption>פירוט התקדמות ופעילות לפי תלמיד.</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>9. סיום שיעור 0 ודוח סוף שיעור</h2>
+      <p>בסוף שיעור 0 המורה לוחצת על סיום שיעור. הפעולה אמורה לבקש דוח מהמוניטור, לכבות את שרת Minecraft, ולהציג דוח סוף שיעור במסך המורה.</p>
+      <ol>
+        <li>בודקים שהתלמידים סיימו או שהשיעור נגמר.</li>
+        <li>לוחצים <strong>סיום שיעור 0</strong>.</li>
+        <li>ממתינים עד שהמערכת מאשרת שהשרת ירד.</li>
+        <li>קוראים את דוח סוף השיעור.</li>
+      </ol>
+      <p class="warning note">אם המערכת מציגה שגיאה שהשרת עדיין פעיל, לא להתעלם: צריך לבדוק מול המוניטור או לנסות סגירה מחדש. המערכת לא אמורה לסמן שיעור כסגור אם השרת עדיין למעלה.</p>
+    </section>
+
+    <section>
+      <h2>10. הפעלת שיעור 0 מחדש</h2>
+      <p>אם המורה כבר סיימה את שיעור 0 ויש דוח, אפשר להפעיל את שיעור 0 מחדש לאותה כיתה.</p>
+      <p>הכפתור <strong>הפעלת שיעור 0 מחדש</strong> עושה את הפעולות הבאות:</p>
+      <ul>
+        <li>מעלה מחדש את עולם Minecraft של שיעור 0.</li>
+        <li>מאפס את נתוני הריצה הקודמת במסך שיעור 0.</li>
+        <li>מנקה את הדוח מהמצב החי כדי להתחיל סבב חדש.</li>
+        <li>לא פותח את שיעור 1 ולא מקדם את הכיתה לשיעור הבא.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>צ'קליסט קצר למורה לפני שיעור</h2>
+      <ul class="checklist">
+        <li>נכנסתי למסך המורה.</li>
+        <li>הכיתה קיימת ומסומנת לה אקדמיית ה-Agent.</li>
+        <li>יש לתלמידים קוד כיתה וקוד אישי.</li>
+        <li>משתמשי Minecraft משויכים או מאומתים.</li>
+        <li>שיעור 0 פתוח כשצריך.</li>
+        <li>שרת Minecraft פעיל רק בזמן השיעור.</li>
+        <li>בסוף שיעור 0 לחצתי סיום וקיבלתי דוח.</li>
+        <li>אם צריך סבב חדש, השתמשתי בהפעלת שיעור 0 מחדש.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

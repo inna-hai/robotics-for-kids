@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>מדריך מורה - אקדמיית ה-Agent לפי המסך של חני</title>
+  <style>
+    @page { size: A4; margin: 14mm; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #172033;
+      background: #fff;
+      line-height: 1.55;
+      font-size: 15px;
+    }
+    .cover {
+      min-height: 250mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 18px;
+      border: 1px solid #d9e3f0;
+      border-radius: 18px;
+      padding: 34px;
+      background: linear-gradient(135deg, #f7fbff 0%, #eef7f2 100%);
+      page-break-after: always;
+    }
+    .eyebrow { color: #2563eb; font-weight: 700; margin: 0; }
+    h1 { font-size: 40px; line-height: 1.14; margin: 0; color: #102033; }
+    .subtitle { font-size: 19px; max-width: 760px; margin: 0; color: #475569; }
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .meta span {
+      display: block;
+      padding: 12px 14px;
+      border: 1px solid #dbe7f5;
+      border-radius: 12px;
+      background: rgba(255,255,255,.78);
+      font-weight: 700;
+      color: #334155;
+    }
+    section {
+      page-break-inside: avoid;
+      margin: 0 0 22px;
+      padding: 18px 0 0;
+      border-top: 1px solid #e5edf7;
+    }
+    h2 { font-size: 24px; margin: 0 0 8px; color: #0f172a; break-after: avoid; }
+    p { margin: 0 0 8px; }
+    ul, ol { margin: 8px 0 12px; padding-right: 24px; }
+    li { margin: 4px 0; }
+    .note {
+      margin: 10px 0 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+    }
+    .important { border-color: #bfdbfe; background: #eff6ff; }
+    .warning { border-color: #fed7aa; background: #fff7ed; }
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 9px;
+      margin: 12px 0;
+    }
+    .flow div {
+      min-height: 64px;
+      padding: 10px;
+      border: 1px solid #dbe7f5;
+      border-radius: 12px;
+      background: #fbfdff;
+      font-weight: 700;
+      color: #1e293b;
+    }
+    figure { margin: 12px 0 18px; break-inside: avoid; }
+    img {
+      display: block;
+      width: 100%;
+      max-height: 154mm;
+      object-fit: contain;
+      border: 1px solid #d6e0ee;
+      border-radius: 12px;
+      background: #f8fafc;
+    }
+    figcaption { margin-top: 7px; color: #475569; font-size: 13px; }
+    .page-break { page-break-before: always; }
+    .checklist { columns: 2; column-gap: 22px; }
+    .checklist li { break-inside: avoid; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="cover">
+      <p class="eyebrow">דרך ההייטק · אקדמיית ה-Agent</p>
+      <h1>מדריך שימוש למורה<br>לפי המסך האמיתי של חני</h1>
+      <p class="subtitle">מסמך קצר ללמי ושרית. הכיתה והתלמידים כבר מוכנים, לכן המסמך מתמקד רק בעבודה בשיעור: בחירת הכיתה, פתיחת שיעור 0, מעקב, דוח, הפעלה מחדש ושיעורי Agent.</p>
+      <div class="meta">
+        <span>כיתה לדוגמה: ז3 - חני - קוגל</span>
+        <span>מורה: חני סולימנפור</span>
+        <span>עודכן: 01.10.2026</span>
+      </div>
+    </div>
+
+    <section>
+      <h2>מה המורה עושה בפועל</h2>
+      <p>המורה לא מקימה כיתה ולא יוצרת תלמידים. היא נכנסת למסך המורה, בוחרת את הכיתה המוכנה, מנהלת את שיעור 0 ואת Minecraft, ועוקבת אחרי התלמידים והדוחות.</p>
+      <div class="flow">
+        <div>1. כניסה למסך המורה</div>
+        <div>2. בחירת הכיתה הקיימת</div>
+        <div>3. ניהול שיעור 0</div>
+        <div>4. סיום ודוח</div>
+      </div>
+      <div class="flow">
+        <div>5. הפעלה מחדש אם צריך</div>
+        <div>6. פתיחת שיעורי Agent</div>
+        <div>7. מעקב תלמידים</div>
+        <div>8. תמיכה כשמשהו חסר</div>
+      </div>
+      <p class="note important">אם חסר תלמיד, משתמש Minecraft או הרשאה, זה לא משהו שלמי ושרית צריכות לתקן בזמן שיעור. מעבירים לאחראית המערכת.</p>
+    </section>
+
+    <section>
+      <h2>1. מסך המורה של חני</h2>
+      <p>אחרי כניסה, חני רואה את הלומדה “אקדמיית ה-Agent” ואת הכיתה המוכנה שלה: “ז3 - חני - קוגל”.</p>
+      <figure>
+        <img src="screenshots/hani-agent-academy/01-hani-dashboard-view.png" alt="מסך המורה של חני">
+        <figcaption>מסך המורה כפי שחני רואה אותו בפועל.</figcaption>
+      </figure>
+    </section>
+
+    <section class="page-break">
+      <h2>2. כרטיס הכיתה המוכנה</h2>
+      <p>כרטיס הכיתה כולל את קוד הכיתה, תלמידים, קודי כניסה, ניהול שיעור, שרת Minecraft והגדרות.</p>
+      <p class="note">למי ושרית לא צריכות להשתמש בהוספת תלמידים או יצירת קודים, כי הכיתה כבר מוכנה.</p>
+      <figure>
+        <img src="screenshots/hani-agent-academy/02-hani-class-card.png" alt="כרטיס הכיתה של חני">
+        <figcaption>כרטיס הכיתה “ז3 - חני - קוגל”.</figcaption>
+      </figure>
+    </section>
+
+    <section class="page-break">
+      <h2>3. הלשונית “תלמידים וקודים”</h2>
+      <p>בלשונית הזאת רואים את קוד הכיתה ואת רשימת התלמידים. אצל חני מופיעים שמות התלמידים, מייל Minecraft משויך לכל תלמיד, וסטטוס “קיים בכיתה”.</p>
+      <ul>
+        <li>המורה יכולה לראות שהתלמידים קיימים בכיתה.</li>
+        <li>אפשר לבדוק אם לתלמיד מופיע מייל Minecraft או משתמש Minecraft.</li>
+        <li>למי ושרית לא צריכות ליצור קודים או להוסיף תלמידים במסך הזה.</li>
+      </ul>
+      <p class="note warning">אם תלמיד חסר, או אם אין לו משתמש Minecraft משויך, לא מתקנים את זה בזמן שיעור. מעבירים לאחראית המערכת.</p>
+      <figure>
+        <img src="screenshots/hani-agent-academy/08-hani-tab-students-codes.png" alt="לשונית תלמידים וקודים אצל חני">
+        <figcaption>לשונית תלמידים וקודים במסך המורה של חני.</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>4. הלשונית “ניהול שיעור”</h2>
+      <p>בלשונית הזאת רואים את כל שיעורי אקדמיית ה-Agent. שיעור 0 פתוח תמיד, שיעור 1 הוא הבא לפתיחה, ושאר השיעורים נעולים עד שמגיעים אליהם.</p>
+      <ul>
+        <li>“עמוד כל השיעורים” פותח את מסך הניהול הרחב של אקדמיית ה-Agent.</li>
+        <li>לכל שיעור יש “עמוד השיעור”.</li>
+        <li>בשיעורים 1 והלאה מופיע כפתור “הפעלת שיעור” כשהגיע הזמן לפתוח לתלמידים.</li>
+      </ul>
+      <p class="note important">זו הלשונית המרכזית לפתיחת שיעור חדש לתלמידים.</p>
+      <figure>
+        <img src="screenshots/hani-agent-academy/09-hani-tab-lesson-management.png" alt="לשונית ניהול שיעור אצל חני">
+        <figcaption>לשונית ניהול שיעור והפתיחה של שיעורים לתלמידים.</figcaption>
+      </figure>
+    </section>
+
+    <section class="page-break">
+      <h2>5. הלשונית “שרת Minecraft”</h2>
+      <p>בלשונית הזאת רואים את סטטוס שרת Minecraft של הכיתה, כתובת השרת, קוד הכניסה לשרת, והפעולות להדלקה/כיבוי/רענון.</p>
+      <ul>
+        <li>אצל חני כרגע מופיע: “שרת כבוי לכיתה”.</li>
+        <li>מופיעה כתובת השרת: <strong>187.124.181.225:20203</strong>.</li>
+        <li>מופיע קוד כניסה לשרת: <strong>Kugel2026</strong>.</li>
+        <li>שיעור 0 משתמש בעולם “מבוך המטבעות”.</li>
+        <li>שיעור 1 והלאה משתמשים בעולם 50 המתחמים.</li>
+      </ul>
+      <p class="note warning">כיבוי/הדלקה ידניים עושים רק כשמבינים למה. בזמן שיעור רגיל עדיף לעבוד דרך מסך שיעור 0 או עמוד השיעור.</p>
+      <figure>
+        <img src="screenshots/hani-agent-academy/10-hani-tab-minecraft-server.png" alt="לשונית שרת Minecraft אצל חני">
+        <figcaption>לשונית שרת Minecraft: סטטוס, כתובת, קוד כניסה ופעולות שרת.</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>6. הלשונית “הגדרות”</h2>
+      <p>בלשונית הזאת רואים את הגדרות הלומדות של הכיתה. אצל חני הכיתה כבר מוכנה, ולכן זו לא לשונית של עבודה שוטפת בשיעור.</p>
+      <ul>
+        <li>אפשר לראות אילו לומדות משויכות לכיתה.</li>
+        <li>לא צריך לשנות הרשאות בזמן שיעור.</li>
+        <li>אם חסרה לומדה או הרשאה, מעבירים לאחראית המערכת.</li>
+      </ul>
+      <figure>
+        <img src="screenshots/hani-agent-academy/11-hani-tab-settings.png" alt="לשונית הגדרות אצל חני">
+        <figcaption>לשונית הגדרות במסך המורה של חני.</figcaption>
+      </figure>
+    </section>
+
+    <section class="page-break">
+      <h2>7. מסך כל שיעורי אקדמיית ה-Agent</h2>
+      <p>ממסך הכיתה נכנסים לניהול אקדמיית ה-Agent. כאן רואים את רצף השיעורים ואת הכפתורים לניהול כל שיעור.</p>
+      <ol>
+        <li>שיעור 0 פתוח כברירת מחדל.</li>
+        <li>שיעור 1 הוא השיעור הבא לפתיחה.</li>
+        <li>אפשר לפתוח שיעור לתלמידים כשמגיעים אליו.</li>
+      </ol>
+      <figure>
+        <img src="screenshots/hani-agent-academy/03-hani-lessons-overview-view.png" alt="כל שיעורי אקדמיית ה-Agent">
+        <figcaption>רצף השיעורים והכניסה לניהול שיעור.</figcaption>
+      </figure>
+    </section>
+
+    <section class="page-break">
+      <h2>8. שיעור 0 - מבוך המטבעות</h2>
+      <p>בשיעור 0 התלמידים נכנסים לעולם Minecraft, אוספים 8 מטבעות ולוחצים על כפתור הסיום. במסך העליון רואים את תיאור השיעור, ובהמשך הגלילה מופיע לוח התלמידים של המורה.</p>
+      <figure>
+        <img src="screenshots/hani-agent-academy/04-hani-lesson-zero-view.png" alt="שיעור 0 במסך חני">
+        <figcaption>שיעור 0 כפי שהוא נפתח אצל חני.</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>9. לוח תלמידים ודוח סוף שיעור</h2>
+      <p>אחרי סיום שיעור 0 מופיע דוח סוף שיעור מהמוניטור. אצל חני כבר מופיע דוח: תלמיד אחד נכח וסיים את המבוך, והשרת מוצג כלא פעיל עכשיו.</p>
+      <ul>
+        <li>בודקים ש-Minecraft לא פעיל בסוף השיעור.</li>
+        <li>קוראים את תקציר הדוח.</li>
+        <li>אפשר לפתוח “דוח מלא” לפירוט.</li>
+      </ul>
+      <figure>
+        <img src="screenshots/hani-agent-academy/05-hani-lesson-zero-report-view.png" alt="דוח סוף שיעור אצל חני">
+        <figcaption>דוח סוף שיעור 0 ולוח תלמידים במסך של חני.</figcaption>
+      </figure>
+    </section>
+
+    <section class="page-break">
+      <h2>10. הפעלת שיעור 0 מחדש</h2>
+      <p>אם כבר יש דוח והשרת כבוי, מופיע בתחתית לוח התלמידים כפתור “הפעלת שיעור 0 מחדש”.</p>
+      <p>הכפתור מיועד רק למקרה שרוצים לעשות שוב את שיעור 0 לאותה כיתה.</p>
+      <ul>
+        <li>מעלה מחדש את שרת Minecraft לשיעור 0.</li>
+        <li>מנקה את מצב הסבב הקודם מהלוח החי.</li>
+        <li>לא פותח את שיעור 1.</li>
+      </ul>
+      <figure>
+        <img src="screenshots/hani-agent-academy/06-hani-lesson-zero-restart-view.png" alt="כפתור הפעלת שיעור 0 מחדש">
+        <figcaption>כפתור הפעלת שיעור 0 מחדש בתחתית לוח התלמידים.</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>11. שיעור 1 והמשך אקדמיית ה-Agent</h2>
+      <p>בשיעור 1 והלאה המורה פותחת שיעור לתלמידים, יכולה לפתוח תצוגת תלמיד, מצגת, ולעקוב אחרי לוח התלמידים.</p>
+      <ol>
+        <li>נכנסים לשיעור הרלוונטי.</li>
+        <li>לוחצים פתיחת שיעור לתלמידים אם צריך.</li>
+        <li>מפנים את התלמידים לעבוד בלומדה וב-Minecraft לפי ההוראות.</li>
+        <li>עוקבים אחרי ההתקדמות בלוח התלמידים.</li>
+      </ol>
+      <figure>
+        <img src="screenshots/hani-agent-academy/07-hani-lesson-one-view.png" alt="שיעור 1 במסך חני">
+        <figcaption>שיעור 1 במסך המורה של חני.</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>צ'קליסט קצר ללמי ושרית</h2>
+      <ul class="checklist">
+        <li>נכנסתי למסך המורה.</li>
+        <li>בחרתי את “אקדמיית ה-Agent”.</li>
+        <li>פתחתי את הכיתה הנכונה.</li>
+        <li>בשיעור 0 בדקתי אם Minecraft פעיל או כבוי.</li>
+        <li>בסוף שיעור 0 לחצתי סיום שיעור.</li>
+        <li>וידאתי שהתקבל דוח סוף שיעור.</li>
+        <li>אם צריך סבב נוסף, השתמשתי בהפעלת שיעור 0 מחדש.</li>
+        <li>בשיעורים הבאים פתחתי את השיעור הרלוונטי לתלמידים.</li>
+      </ul>
+      <p class="note warning">לא עורכים תלמידים, לא מנפיקים קודים ולא משנים הרשאות בזמן שיעור. אם משהו חסר, מעבירים לתמיכה.</p>
+    </section>
+  </main>
+</body>
+</html>
