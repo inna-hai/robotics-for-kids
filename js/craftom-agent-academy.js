@@ -48,12 +48,20 @@
   // that Hebrew label (Agent becomes "השליח"). Category names and chat command words (deliver, start...) stay in English,
   // because that is what students see in the toolbox and type in Minecraft.
   const blockLabels = {
-    repeat: '״חזרה״', place: '״הנחת חבילה״', move: '״תזוזה״', turn: '״פנייה״', teleport: '״זימון לנקודת ההתחלה״',
+    repeat: '״לולאה״', place: '״הנחת חבילה״', move: '״תזוזה״', turn: '״פנייה״', teleport: '״זימון לנקודת ההתחלה״',
     if: '״תנאי״', then: '״אז״', else: '״אחרת״', do: '״בצע״', run: '״בצע״',
   };
   const categoryRef = '(?<!קטגוריית |פתחו את |חפשו ב-|ב-|מקטגוריית )';
   const hebrewTerms = [
     [/\bagent teleport to player\b/g, '״זימון לנקודת ההתחלה״'],
+    [/(ה-)?repeat מוגדר/g, 'הלולאה מוגדרת'],
+    [/ב-repeat קטן( וברור)?/g, (_, clear) => `בלולאה קטנה${clear ? ' וברורה' : ''}`],
+    [/את repeat\b/g, 'את הלולאה'],
+    [/בעזרת repeat\b/g, 'בעזרת לולאה'],
+    [/(בתוך|לתוך|אחרי|לפני) (ה-)?repeat\b, לא בתוכו/g, '$1 הלולאה, לא בתוכה'],
+    [/(בתוך|לתוך|אחרי|לפני) (ה-)?repeat\b/g, '$1 הלולאה'],
+    [/([בל])-repeat\b/g, '$1לולאה'],
+    [/ה-repeat\b/g, 'הלולאה'],
     [/\bon chat command\b/g, '״כשכותבים בצ׳אט״'],
     [/הודעת player say\b/g, 'בלוק ״הודעה בצ׳אט״'],
     [/\bplayer say\b/g, '״הודעה בצ׳אט״'],
@@ -130,7 +138,7 @@
     mc_turn_agent: ['פנייה', 'מסובב את ה-Agent ימינה או שמאלה, בלי לזוז מהמקום.'],
     mc_place_agent: ['הנחת חבילה', 'down: מניח את החבילה על הרצפה מתחת ל-Agent. forward: מניח את החבילה במשבצת שמול ה-Agent.'],
     mc_say: ['הודעה בצ׳אט', 'כותב הודעה בצ׳אט של המשחק.'],
-    mc_repeat: ['חזרה', 'חוזר על הבלוקים שבתוך do מספר פעמים.'],
+    mc_repeat: ['לולאה', 'חוזר על הבלוקים שבתוך do מספר פעמים.'],
     mc_if_route_open: ['תנאי', 'בודק אם הדרך פתוחה (true) או חסומה (false). אם התנאי נכון רץ then, ואחרת רץ else.'],
   };
   function withHebrewLabels(definitions) {
