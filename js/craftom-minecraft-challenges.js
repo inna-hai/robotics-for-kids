@@ -2255,6 +2255,32 @@
     });
   }
 
+  // Lesson 4: exercise 3 only reaches the station, exercise 4 adds the package there, exercise 6 opens with a bug.
+  {
+    const lesson4 = detailsByChallenge[1][3].academy;
+    Object.assign(lesson4.exercises[2], {
+      mission: 'הוסיפו תנועה אחרי הפנייה כך שהשליח יגיע בדיוק לתחנה. בשלב הזה עוד לא מניחים חבילה.',
+      check: 'יש שתי תנועות, והשליח מגיע לתחנה.',
+      criteria: [
+        { label: 'יש שתי תנועות במסלול', type: 'moveCount', min: 2 },
+        { label: 'השליח מגיע לתחנת היעד', type: 'reachedStation' }
+      ],
+    });
+    Object.assign(lesson4.exercises[3], {
+      title: 'תרגיל 4 - מניחים חבילה בתחנה',
+      mission: 'השליח כבר מגיע לתחנה. הוסיפו בסוף הרצף ״הנחת חבילה״ ובחרו למטה, כך שהחבילה תונח על הרצפה בתחנה.',
+      hint: 'בלוק ״הנחת חבילה״ נמצא בקטגוריית Agent. הוא נכנס בסוף, אחרי התנועה האחרונה.',
+      check: 'השליח מגיע לתחנה ומניח בה חבילה למטה.',
+    });
+    Object.assign(lesson4.exercises[5], {
+      mission: 'תרגיל דיבוג: השליח פונה במקום הנכון, אבל ממשיך ועובר את התחנה, והחבילה מונחת רחוק ממנה. הריצו, הסתכלו בהדמיה איפה הוא עוצר, ותקנו רק את המספר שגורם לזה.',
+      debugStart: true,
+    });
+    lesson4.exercises[5].criteria.forEach(criterion => {
+      if (criterion.type === 'secondMove') criterion.label = 'אחרי התיקון השליח עוצר בתחנה';
+    });
+  }
+
   // Lesson 5 exercise 1 places two packages by copying blocks (Loops locked), so exercise 2 is the step that turns
   // the copied code into a loop. Set after the refinements, which would otherwise add a repeat requirement here too.
   Object.assign(detailsByChallenge[2][0].academy.exercises[0], {
