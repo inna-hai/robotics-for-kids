@@ -162,7 +162,7 @@
         type: 'mc_move_agent',
         message0: 'agent move %1 by %2',
         args0: [
-          { type: 'field_dropdown', name: 'DIR', options: [['forward', 'FORWARD'], ['back', 'BACK'], ['left', 'LEFT'], ['right', 'RIGHT']] },
+          { type: 'field_dropdown', name: 'DIR', options: [['forward · קדימה', 'FORWARD'], ['back · אחורה', 'BACK'], ['left · שמאלה', 'LEFT'], ['right · ימינה', 'RIGHT']] },
           { type: 'field_number', name: 'STEPS', value: 5, min: 1, max: 16 }
         ],
         previousStatement: null,
@@ -172,7 +172,7 @@
       {
         type: 'mc_turn_agent',
         message0: 'agent turn %1',
-        args0: [{ type: 'field_dropdown', name: 'TURN', options: [['left', 'LEFT_TURN'], ['right', 'RIGHT_TURN']] }],
+        args0: [{ type: 'field_dropdown', name: 'TURN', options: [['left · שמאלה', 'LEFT_TURN'], ['right · ימינה', 'RIGHT_TURN']] }],
         previousStatement: null,
         nextStatement: null,
         colour: 35,
@@ -180,7 +180,7 @@
       {
         type: 'mc_place_agent',
         message0: 'agent place %1',
-        args0: [{ type: 'field_dropdown', name: 'DIR', options: [['down', 'DOWN'], ['forward', 'FORWARD']] }],
+        args0: [{ type: 'field_dropdown', name: 'DIR', options: [['down · למטה', 'DOWN'], ['forward · קדימה', 'FORWARD']] }],
         previousStatement: null,
         nextStatement: null,
         colour: 35,
@@ -207,7 +207,7 @@
       {
         type: 'mc_if_route_open',
         message0: 'if routeOpen is %1',
-        args0: [{ type: 'field_dropdown', name: 'STATE', options: [['true', 'OPEN'], ['false', 'BLOCKED']] }],
+        args0: [{ type: 'field_dropdown', name: 'STATE', options: [['true · פתוחה', 'OPEN'], ['false · חסומה', 'BLOCKED']] }],
         message1: 'then %1',
         args1: [{ type: 'input_statement', name: 'DO' }],
         message2: 'else %1',
