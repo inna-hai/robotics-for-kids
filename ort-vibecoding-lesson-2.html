@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VibeCoding · מפגש 2 · בריף מוצר והנדסה לאחור</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/platform-home-link.css">
+  <style>
+    :root{--ink:#111827;--muted:#526070;--line:#dbe4ef;--page:#f8fbff;--card:#fff;--violet:#7c3aed;--cyan:#06b6d4;--pink:#ec4899;--lime:#84cc16;--amber:#f59e0b;--dark:#111827;--good:#16a34a;--red:#dc2626}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Rubik,Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at 9% 0,rgba(6,182,212,.22),transparent 28rem),radial-gradient(circle at 94% 8%,rgba(124,58,237,.20),transparent 25rem),radial-gradient(circle at 50% 100%,rgba(245,158,11,.12),transparent 30rem),linear-gradient(180deg,#fbfdff,#eef7ff 58%,#fffaf0);line-height:1.65}.shell{width:min(1320px,calc(100% - 28px));margin:0 auto;padding:18px 0 42px}.topbar{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.85);border-radius:30px;padding:14px 16px;box-shadow:0 18px 50px rgba(15,23,42,.08);position:sticky;top:10px;z-index:10;backdrop-filter:blur(18px)}.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:56px;height:56px;border-radius:20px;background:linear-gradient(135deg,var(--cyan),var(--violet));color:#fff;display:grid;place-items:center;font-size:1.8rem;font-weight:900;box-shadow:0 14px 34px rgba(6,182,212,.24)}.brand h1{margin:0;font-size:clamp(1.25rem,2.4vw,2rem);line-height:1.15}.brand p{margin:3px 0 0;color:var(--muted);font-weight:800}.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:9px 14px;border-radius:999px;background:linear-gradient(135deg,var(--cyan),var(--violet));color:#fff;text-decoration:none;border:0;font-family:inherit;font-weight:900;cursor:pointer;box-shadow:0 12px 28px rgba(6,182,212,.16)}.btn.secondary{background:#fff;color:var(--dark);border:1px solid var(--line);box-shadow:none}.layout{display:grid;grid-template-columns:280px minmax(0,1fr) 320px;gap:16px;margin-top:16px}.panel{background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.9);border-radius:30px;padding:18px;box-shadow:0 18px 48px rgba(15,23,42,.07);backdrop-filter:blur(14px)}.sidebar,.support{position:sticky;top:104px;align-self:start}.progress-list{display:grid;gap:8px}.progress-list button{text-align:right;border:1px solid var(--line);background:#f8fafc;border-radius:16px;padding:10px 12px;font-family:inherit;font-weight:900;color:#334155;cursor:pointer}.progress-list button.active{background:#ecfeff;border-color:#67e8f9;color:#155e75}.progress-list button.done{background:#dcfce7;border-color:#86efac;color:#166534}.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:16px;align-items:stretch;margin-top:16px}.hero-card{position:relative;overflow:hidden;background:linear-gradient(135deg,#083344,#164e63 45%,#4c1d95);color:#fff;border-radius:30px;padding:26px;min-height:300px;display:flex;flex-direction:column;justify-content:center}.hero-card:after{content:"";position:absolute;inset:auto -60px -80px auto;width:260px;height:260px;border-radius:70px;background:rgba(255,255,255,.14);transform:rotate(18deg)}.kicker{display:inline-flex;align-self:flex-start;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:6px 11px;color:#cffafe;font-weight:900;margin-bottom:10px}.hero h2{font-size:clamp(2rem,5vw,4.2rem);line-height:1.04;margin:0 0 12px}.hero p{margin:0;color:#eef2ff;font-weight:800;font-size:1.08rem}.goal-card{display:grid;gap:10px}.stat{border:1px solid var(--line);background:rgba(255,255,255,.94);border-radius:24px;padding:16px}.stat b{display:block;color:#0891b2;font-size:1.55rem}.step{display:none}.step.active{display:block}.step h2{margin:0 0 8px;font-size:clamp(1.7rem,3vw,2.55rem);line-height:1.12}.lead{color:var(--muted);font-weight:800;margin:0 0 16px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:16px;position:relative;overflow:hidden}.card h3{margin:0 0 8px;color:#0e7490}.card p,.card li{color:#475569;font-weight:750}.card ul,.card ol{margin:0;padding-inline-start:22px}.flow-lane{display:grid;gap:10px}.flow-card{border:2px solid #bae6fd;background:#ecfeff;border-radius:18px;padding:13px;font-weight:900;color:#155e75}.flow-card.bad{border-color:#fecaca;background:#fef2f2;color:#991b1b}.arrow{font-size:1.6rem;text-align:center;color:#0891b2;font-weight:900}.callout{border-right:6px solid var(--cyan);background:#ecfeff;border-radius:20px;padding:14px 16px;font-weight:900;color:#155e75;margin:14px 0}.warning{border-right-color:var(--amber);background:#fffbeb;color:#92400e}.danger{border-right-color:var(--red);background:#fef2f2;color:#991b1b}.success{border-right-color:var(--good);background:#f0fdf4;color:#166534}.field{margin:12px 0}.field label{display:block;font-weight:900;margin-bottom:6px}input,textarea,select{width:100%;border:1px solid #cbd5e1;border-radius:16px;padding:11px 12px;font:inherit;background:#fff;color:var(--ink)}textarea{min-height:90px;resize:vertical}.check{display:flex;gap:8px;align-items:flex-start;background:#f8fafc;border:1px solid var(--line);border-radius:16px;padding:10px;font-weight:800;color:#334155;margin-top:10px}.check input{width:auto;margin-top:5px}.prompt{direction:rtl;background:#062635;color:#e0f2fe;border-radius:18px;padding:16px;white-space:pre-wrap;font-weight:800;line-height:1.7;border:1px solid rgba(6,182,212,.36)}.support h3,.sidebar h3{margin:0 0 10px}.pill{display:inline-flex;margin:4px 3px;border-radius:999px;background:#ecfeff;color:#155e75;padding:6px 10px;font-weight:900;font-size:.84rem}.rubric{display:grid;gap:8px}.rubric div{background:#f8fafc;border:1px solid var(--line);border-radius:16px;padding:10px}.rubric b{color:#0e7490}.final-card{background:linear-gradient(135deg,#ecfeff,#f5f3ff,#fffbeb);border:1px solid #bae6fd;border-radius:24px;padding:18px}.footer-note{text-align:center;color:#64748b;font-weight:900;margin-top:18px}@media(max-width:1100px){.layout{grid-template-columns:1fr}.sidebar,.support{position:static}.hero{grid-template-columns:1fr}.grid3{grid-template-columns:1fr}.support-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}}@media(max-width:720px){.topbar{grid-template-columns:1fr}.actions .btn{width:100%}.shell{width:min(100% - 18px,680px)}.panel{padding:14px;border-radius:22px}.grid,.support-grid{grid-template-columns:1fr}.brand-mark{width:48px;height:48px}.btn{min-height:44px}input,textarea,select{font-size:16px}}@media print{body{background:#fff}.topbar,.sidebar,.support,.actions,.platform-home-link,.footer-note{display:none!important}.shell{width:100%;padding:0}.layout{display:block}.panel{box-shadow:none;border:0}.step{display:block;break-inside:avoid;margin-bottom:20px}}
+  </style>
+</head>
+<body>
+  <a class="platform-home-link" href="ort-courses.html" aria-label="חזרה לקורסי אורט"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">קורסי אורט</span></a>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark">🧭</div><div><h1>VibeCoding + AI · מפגש 2</h1><p>בריף מוצר, זרימה לוגית והנדסה לאחור · לומדה מעשית</p></div></div>
+      <div class="actions"><a class="btn secondary" href="ort-courses.html">עמוד אורט</a><a class="btn secondary" href="ort-vibecoding-slides-2.html">מצגת מדריך</a><button class="btn" onclick="window.print()">הדפסה / PDF</button><button class="btn secondary" onclick="resetWork()">איפוס</button></div>
+    </header>
+
+    <section class="hero" aria-label="פתיחה">
+      <div class="hero-card"><span class="kicker">75 דקות · אונליין · כיתות ז׳–ט׳</span><h2>מרעיון יפה לבריף שאפשר לבנות ממנו</h2><p>במפגש הזה מסדרים את הרעיון ממפגש 1 למסמך קצר וברור: מי המשתמש, מה הכאב, אילו מסכים קיימים, ומה זרימת השימוש באפליקציה.</p></div>
+      <div class="goal-card">
+        <div class="stat"><b>תוצר יציאה</b>בריף מוצר גרסה 2 + זרימת מסכים למנהל זמן לימודים חכם.</div>
+        <div class="stat"><b>שאלה מובילה</b>איך הופכים כאב ופתרון למסלול שימוש ברור?</div>
+        <div class="stat"><b>מושגים</b>בריף, flow, מסך ראשי, פעולה מרכזית, דיבוג מושגי.</div>
+      </div>
+    </section>
+
+    <main class="layout">
+      <aside class="panel sidebar"><h3>התקדמות</h3><div class="progress-list" id="nav"></div><div class="callout success" id="scoreBox">0 מתוך 6 שלבים סומנו.</div></aside>
+
+      <section class="panel workspace">
+        <article class="step active" data-title="1 · נחש את הזרימה">
+          <h2>שלב 1 · משחק פתיחה: נחש את הזרימה</h2><p class="lead">המדריך מציג 4 מסכים של אפליקציה פשוטה. סדרו אותם לפי הסדר שבו המשתמש אמור להשתמש באפליקציה.</p>
+          <div class="grid"><div class="flow-lane"><div class="flow-card bad">מסך תוצאה: “התוכנית מוכנה!”</div><div class="flow-card">מסך פתיחה: “בוא נבנה שבוע לימודים”</div><div class="flow-card bad">מסך הזנת מבחנים ועבודות</div><div class="flow-card">מסך תוכנית שבועית</div></div><div class="card"><h3>שאלות חקירה</h3><ul><li>איזה מסך חייב להיות ראשון?</li><li>איזה מידע צריך לפני שמייצרים תוכנית?</li><li>מה מבלבל בזרימה לא נכונה?</li><li>איפה המשתמש עלול להיתקע?</li></ul></div></div>
+          <div class="field"><label>הסדר הנכון לדעתי</label><textarea data-save="flowOrder" placeholder="לדוגמה: פתיחה → הזנת מבחנים → תוכנית שבועית → תוצאה"></textarea></div>
+          <div class="field"><label>מה היה מבלבל בזרימה המקולקלת?</label><textarea data-save="flowConfusion"></textarea></div>
+          <label class="check"><input type="checkbox" data-done="0"> סידרתי זרימת מסכים והסברתי מה מבלבל בזרימה שגויה.</label>
+        </article>
+
+        <article class="step" data-title="2 · To-Do לאחור">
+          <h2>שלב 2 · הנדסה לאחור של אפליקציית משימות</h2><p class="lead">מפרקים אפליקציית To‑Do פשוטה כדי להבין איך מוצר מתרגם כאב למסכים ופעולות.</p>
+          <div class="grid3"><div class="card"><h3>קהל יעד</h3><p>מי צריך לנהל משימות?</p></div><div class="card"><h3>כאב</h3><p>מה קשה לו בלי האפליקציה?</p></div><div class="card"><h3>פעולות</h3><p>הוספה, סימון בוצע, מחיקה, תזכורת.</p></div></div>
+          <div class="grid"><div class="field"><label>מי קהל היעד של אפליקציית המשימות?</label><input data-save="todoAudience" placeholder="לדוגמה: תלמידים עם הרבה שיעורי בית"></div><div class="field"><label>מה הכאב המרכזי?</label><input data-save="todoPain" placeholder="לדוגמה: שוכחים מה צריך לעשות"></div></div>
+          <div class="field"><label>אילו מסכים או פעולות קיימים?</label><textarea data-save="todoActions" placeholder="רשימת משימות, הוסף משימה, סמן בוצע, תזכורת..."></textarea></div>
+          <div class="field"><label>מה הייתי משפר באפליקציה כזו?</label><textarea data-save="todoImprove"></textarea></div>
+          <label class="check"><input type="checkbox" data-done="1"> פירקתי אפליקציית משימות לקהל יעד, כאב, מסכים ושיפור.</label>
+        </article>
+
+        <article class="step" data-title="3 · בריף מוצר">
+          <h2>שלב 3 · כותבים בריף מוצר קצר</h2><p class="lead">בריף הוא מסמך קצר שעוזר לנו לבנות בלי להתפזר. הוא אומר למי בונים, איזה כאב פותרים ומה חייב להיות במוצר.</p>
+          <div class="callout">תבנית: אנחנו בונים ________ עבור ________ כדי לפתור ________. במסך הראשי חייב להיות ________.</div>
+          <div class="grid"><div class="field"><label>שם המוצר</label><input data-save="productName" placeholder="לדוגמה: StudyFlow"></div><div class="field"><label>המשתמש</label><input data-save="productUser" placeholder="גיל / מצב / צורך"></div></div>
+          <div class="field"><label>הכאב שהמוצר פותר</label><textarea data-save="productPain"></textarea></div>
+          <div class="field"><label>המסך הראשי חייב לכלול...</label><textarea data-save="mainScreenMust"></textarea></div>
+          <label class="check"><input type="checkbox" data-done="2"> כתבתי בריף קצר וברור עם משתמש, כאב ומסך ראשי.</label>
+        </article>
+
+        <article class="step" data-title="4 · מנהל זמן">
+          <h2>שלב 4 · מיני־אפליקציה: מנהל זמן לימודים חכם</h2><p class="lead">הכאב: “אין לי מושג איך לחלק זמן למבחנים ועבודות”. נגדיר מצב אמיתי ונבקש מה-AI לעזור לנו לתכנן אפליקציה.</p>
+          <div class="prompt" id="aiPrompt">תעזור לי לתכנן אפליקציה שמנהלת זמני לימוד לתלמיד/ה בכיתה ח׳.
+המצב: ________.
+כתוב: קהל יעד, מסך ראשי, 3 אפשרויות חובה, וזרימת שימוש של 4 צעדים.</div>
+          <div class="actions"><button class="btn secondary" onclick="buildPrompt()">עדכן פרומפט לפי המצב שלי</button><button class="btn secondary" onclick="copyPrompt()">העתק פרומפט</button></div>
+          <div class="field"><label>המצב האמיתי שלי</label><textarea data-save="studySituation" placeholder="לדוגמה: בשבוע הבא יש מבחן במדעים, עבודה באנגלית ושיעורי בית במתמטיקה"></textarea></div>
+          <div class="field"><label>רעיונות שקיבלתי מה-AI</label><textarea data-save="aiPlanIdeas"></textarea></div>
+          <label class="check"><input type="checkbox" data-done="3"> הגדרתי מצב לימודים אמיתי והשתמשתי בו לתכנון אפליקציה.</label>
+        </article>
+
+        <article class="step" data-title="5 · דיבוג בריף">
+          <h2>שלב 5 · דיבוג מושגי: מתקנים בריף מקולקל</h2><p class="lead">דיבוג הוא לא רק תיקון קוד. גם רעיון מוצר יכול להיות “באגי”: כללי מדי, בלי קהל יעד או בלי פעולה ברורה.</p>
+          <div class="callout danger"><b>בריף מקולקל:</b> “אני רוצה אפליקציה שעוזרת בלימודים, עם AI, שתעשה הכל ותהיה נוחה לכולם”.</div>
+          <div class="grid"><div class="card"><h3>מה חסר?</h3><ul><li>מי המשתמש המדויק?</li><li>איזה כאב אחד פותרים?</li><li>מה הפעולה המרכזית?</li><li>איך נראה המסך הראשון?</li></ul></div><div class="card"><h3>איך מתקנים?</h3><p>מחליפים מילים כלליות בפרטים שאפשר לבנות ולבדוק.</p></div></div>
+          <div class="field"><label>מה הבעיות בבריף המקולקל?</label><textarea data-save="badBriefProblems"></textarea></div>
+          <div class="field"><label>הבריף המתוקן שלי</label><textarea data-save="fixedBrief" placeholder="אנחנו בונים... עבור... כדי לפתור..."></textarea></div>
+          <label class="check"><input type="checkbox" data-done="4"> זיהיתי בעיות בבריף כללי ותיקנתי אותו לגרסה ממוקדת.</label>
+        </article>
+
+        <article class="step" data-title="6 · גרסה 2">
+          <h2>שלב 6 · כרטיס יציאה: בריף גרסה 2</h2><p class="lead">מסכמים את העבודה ומכינים גרסה משופרת של הבריף לקראת בנייה מעשית במפגש 3.</p>
+          <div class="final-card"><h3>בריף מוצר גרסה 2</h3><div class="field"><label>שם המוצר</label><input data-save="exitName"></div><div class="field"><label>המשתמש המדויק</label><input data-save="exitUser"></div><div class="field"><label>הכאב המרכזי</label><textarea data-save="exitPain"></textarea></div><div class="field"><label>זרימת שימוש ב־4 צעדים</label><textarea data-save="exitFlow" placeholder="1. ...&#10;2. ...&#10;3. ...&#10;4. ..."></textarea></div><div class="field"><label>מה שיפרתי בבריף ולמה?</label><textarea data-save="exitImproved"></textarea></div></div>
+          <div class="callout success"><b>משימת בית:</b> לשפר את הבריף בעזרת AI ולכתוב בסוף: “מה שיפרתי בבריף ולמה”.</div>
+          <label class="check"><input type="checkbox" data-done="5"> מילאתי בריף גרסה 2 ואני מוכן/ה למפגש Base44.</label>
+        </article>
+      </section>
+
+      <aside class="panel support"><div class="support-grid"><div><h3>מושגים</h3><span class="pill">בריף מוצר</span><span class="pill">Flow</span><span class="pill">To‑Do</span><span class="pill">מסך ראשי</span><span class="pill">דיבוג מושגי</span><span class="pill">גרסה 2</span></div><div><h3>בדיקת איכות</h3><div class="rubric"><div><b>ממוקד:</b> קהל יעד אחד וכאב אחד.</div><div><b>בר־בנייה:</b> יש מסך ראשי ופעולה מרכזית.</div><div><b>זורם:</b> יש סדר שימוש הגיוני.</div><div><b>מתוקן:</b> הבריף עבר שיפור ולא נשאר כללי.</div></div></div></div></aside>
+    </main>
+    <div class="footer-note">המידע נשמר בדפדפן המקומי של המכשיר בלבד.</div>
+  </div>
+<script>
+const key='ortVibecoding.lesson2.v1';
+const steps=[...document.querySelectorAll('.step')];
+const nav=document.getElementById('nav');
+const state=JSON.parse(localStorage.getItem(key)||'{}');
+function save(){document.querySelectorAll('[data-save]').forEach(el=>state[el.dataset.save]=el.value);document.querySelectorAll('[data-done]').forEach(el=>state['done'+el.dataset.done]=el.checked);localStorage.setItem(key,JSON.stringify(state));renderNav()}
+function load(){document.querySelectorAll('[data-save]').forEach(el=>{if(state[el.dataset.save])el.value=state[el.dataset.save]});document.querySelectorAll('[data-done]').forEach(el=>{el.checked=!!state['done'+el.dataset.done]})}
+function show(i){steps.forEach((s,n)=>s.classList.toggle('active',n===i));[...nav.children].forEach((b,n)=>b.classList.toggle('active',n===i));window.scrollTo({top:0,behavior:'smooth'})}
+function renderNav(){nav.innerHTML='';let done=0;steps.forEach((s,i)=>{const isDone=!!state['done'+i];if(isDone)done++;const b=document.createElement('button');b.textContent=(isDone?'✓ ':'')+s.dataset.title;b.className=isDone?'done':'';b.onclick=()=>show(i);nav.appendChild(b)});document.getElementById('scoreBox').textContent=done+' מתוך '+steps.length+' שלבים סומנו.'}
+function buildPrompt(){const situation=document.querySelector('[data-save="studySituation"]').value||'יש לי שבוע עמוס עם מבחנים ועבודות';document.getElementById('aiPrompt').textContent=`תעזור לי לתכנן אפליקציה שמנהלת זמני לימוד לתלמיד/ה בכיתה ח׳.\nהמצב: ${situation}.\nכתוב: קהל יעד, מסך ראשי, 3 אפשרויות חובה, וזרימת שימוש של 4 צעדים.`}
+function copyPrompt(){navigator.clipboard?.writeText(document.getElementById('aiPrompt').textContent)}
+function resetWork(){if(confirm('לאפס את העבודה השמורה במפגש 2?')){localStorage.removeItem(key);location.reload()}}
+document.addEventListener('input',e=>{if(e.target.matches('[data-save]')){save();if(e.target.dataset.save==='studySituation')buildPrompt()}});document.addEventListener('change',e=>{if(e.target.matches('[data-done]'))save()});load();renderNav();show(0);buildPrompt();
+</script>
+<script src="/js/feedback-widget.js?v=20260928-ort-vibecoding-lesson-2"></script>
+</body>
+</html>
