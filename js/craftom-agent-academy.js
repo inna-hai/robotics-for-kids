@@ -568,6 +568,20 @@
     '✅', '✔', '🎉', '👍', '🥳', '😀', '😃', '😊', '📦', '🚚', '⭐', '🏆'
   ].join('|'), 'iu');
   const negativeWords = /((^|[\s,.!?])(לא|אין|בלי)(?=[\s,.!?]|$)|נכשל|כישלון|שגיאה|תקלה|נתקע|אבד|הלך לאיבוד|fail|error|\bnot\b|n't|\bno\b|\bnever\b|lost|stuck|wrong|problem)/i;
+  // An opening / planning message: it says what is about to happen (starting, planning, marking, the city, the delivery).
+  const openingWords = /(מתחיל|מתחילים|נתחיל|התחלה|יוצא|יוצאים|נצא|מוכן|מוכנים|תוכנית|מתכנן|מתכננים|נתכנן|תכנון|מסמן|מסמנים|נסמן|סימון|מפה|ממפים|מערכת|מערכות|עיר|בונים|נבנה|בנייה|הולכים|בודק|בודקים|נבדוק|start|begin|plan|ready|map|city|system|build|let'?s|deliver|going to|check)/i;
+  function isOpeningMessage(text) {
+    const value = String(text || '').trim();
+    // A message that reports the end ("arrived", "delivered") is not an opening.
+    return value.length > 1 && openingWords.test(value) && !/(הגיע|נמסר|הסתיים|arrived|delivered|finished)/i.test(value);
+  }
+  // A message for the open road: it says the road is open or that the courier goes on.
+  const openRoadWords = /(פתוח|פתוחה|פנוי|פנויה|אפשר לעבור|עוברים|עובר|נוסע|נוסעים|יוצא|יוצאים|ממשיך|ממשיכים|בדרך|open|clear|go|drive|pass|on my way)/i;
+  function isOpenRoadMessage(text) {
+    const value = String(text || '').trim();
+    return value.length > 1 && openRoadWords.test(value) && !/(לא פתוח|חסומ|closed|blocked)/i.test(value);
+  }
+
   // A message about the blocked road: it mentions the block, waiting, stopping or taking another way.
   const blockedWords = /(חסו|חסימ|סגור|נסגר|מחסום|ממתינ|ממתין|מחכ|המתנ|עוקפ|עוקף|עקיפ|דרך אחרת|דרך חלופית|מסלול חלופי|מסלול אחר|חוזר|חוזרים|חזרה|נשאר|נשארים|אי אפשר|לא ניתן|לא אפשר|לא פתוח|לא פתוחה|תקוע|עוצר|עצירה|block|closed|wait|detour|another way|other way|around|stop|go back|return|stay|can't|cannot|not open)/i;
   function isBlockedMessage(text) {
@@ -630,7 +644,8 @@
     if (criterion.type === 'placeDirection') return state.packages.some(pkg => pkg.direction === (criterion.direction || 'DOWN'));
     if (criterion.type === 'packageNearStation') return hasPackageNearStation;
     if (criterion.type === 'thenSay') return state.conditions.some(condition => condition.thenHasSay);
-    if (criterion.type === 'openSays') return runProgram(true).says.some(text => String(text || '').trim());
+    if (criterion.type === 'openSays') return runProgram(true).says.some(isOpenRoadMessage);
+    if (criterion.type === 'openingSay') return state.says.some(isOpeningMessage);
     if (criterion.type === 'blockedSaysAbout') return runProgram(false).says.some(isBlockedMessage);
     if (criterion.type === 'blockedSays') return runProgram(false).says.some(isBlockedMessage);
     if (criterion.type === 'openArrivalSay') return runProgram(true).says.some(isSuccessMessage);
@@ -655,7 +670,7 @@
     }
     if (criterion.type === 'endsWithSay') {
       const last = state.actions[state.actions.length - 1];
-      return state.says.length > 1 && last?.type === 'say' && String(last.text || '').trim().length > 0;
+      return state.says.length > 1 && last?.type === 'say' && (isSuccessMessage(last.text) || isOpeningMessage(last.text));
     }
     if (criterion.type === 'maxBlocks') return workspace.getAllBlocks(false).length <= Number(criterion.max);
     if (criterion.type === 'sayCount') return state.says.filter(isSuccessMessage).length >= Number(criterion.min || 1);
@@ -1511,6 +1526,15 @@
     const examples = [];
     if (types.some(type => ['arrivalSay', 'arrivalSayAfterMove', 'openArrivalSay', 'sayAfterLoop', 'sayCount'].includes(type))) {
       examples.push('הודעת הצלחה, למשל: "המשלוח הגיע", "החבילה נמסרה", "סיימנו! 🎉"');
+    }
+    if (types.includes('openingSay')) {
+      examples.push('הודעת פתיחה, למשל: "מתחילים לסמן את המערכות בעיר", "השליח מוכן לצאת"');
+    }
+    if (types.includes('openSays')) {
+      examples.push('הודעה לדרך פתוחה, למשל: "הדרך פתוחה, יוצאים"');
+    }
+    if (types.includes('endsWithSay')) {
+      examples.push('הודעת סיכום, למשל: "סימנו את כל המערכות ואת התחנה"');
     }
     if (types.some(type => ['blockedSays', 'blockedSaysAbout'].includes(type))) {
       examples.push('הודעת חסימה, למשל: "הדרך חסומה", "ממתין לפתיחת הדרך", "עוקף בדרך אחרת"');

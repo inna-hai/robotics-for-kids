@@ -2159,6 +2159,13 @@
     });
   });
 
+  // Opening messages must say what is about to happen, not just any text.
+  Object.values(detailsByChallenge).forEach(lessons => lessons.forEach(detail => {
+    (detail.academy?.exercises || []).forEach(exercise => (exercise.criteria || []).forEach(criterion => {
+      if (criterion.type === 'say' && /פתיחה/.test(criterion.label)) criterion.type = 'openingSay';
+    }));
+  }));
+
   challenges.forEach(challenge => {
     challenge.meetings = challenge.meetings.map((meeting, index) => [
       ...meeting,
