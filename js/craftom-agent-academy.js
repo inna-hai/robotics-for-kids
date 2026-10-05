@@ -594,6 +594,8 @@
       const blocked = runProgram(false);
       return isNear(blocked, start, 20) && blocked.packages.length === 0;
     }
+    if (criterion.type === 'maxBlocks') return workspace.getAllBlocks(false).length <= Number(criterion.max);
+    if (criterion.type === 'sayCount') return state.says.filter(text => String(text || '').trim()).length >= Number(criterion.min || 1);
     if (criterion.type === 'placeBlockCount') return workspace.getAllBlocks(false).filter(block => block.type === 'mc_place_agent').length <= Number(criterion.max || 1);
     if (criterion.type === 'endsAtCell') {
       const facing = ((state.heading % 360) + 360) % 360;
@@ -1187,6 +1189,7 @@
   // Nothing is checked until the student clicks "הרצה ובדיקה".
   function showExercise(message) {
     renderPreviousButton();
+    renderBlockCounter();
     animationRunId += 1;
     runButton.disabled = false;
     renderExercises();
@@ -1235,6 +1238,7 @@
 
   workspace.addChangeListener(event => {
     if (!event.isUiEvent) {
+      renderBlockCounter();
       saveBoard();
       updatePython();
       feedbackEl.textContent = 'שיניתם את הבלוקים. לחצו הרצה ובדיקה.';
@@ -1262,6 +1266,18 @@
 
   runButton.addEventListener('click', runAndCheck);
   resetButton.addEventListener('click', resetExercise);
+  // Exercises with a block limit show a live counter under the board.
+  blocklyDiv.insertAdjacentHTML('afterend', '<div class="academy-block-counter" id="academyBlockCounter" style="display:none"></div>');
+  const blockCounter = document.getElementById('academyBlockCounter');
+  function renderBlockCounter() {
+    const max = academy.exercises[activeExercise]?.maxBlocks;
+    blockCounter.style.display = max ? '' : 'none';
+    if (!max) return;
+    const count = workspace.getAllBlocks(false).length;
+    blockCounter.textContent = `בלוקים: ${count} / ${max}`;
+    blockCounter.classList.toggle('over', count > max);
+  }
+
   // Shows the correct solution the student saved in an earlier visit, only when they ask for it.
   hintButton.insertAdjacentHTML('afterend', '<button class="btn secondary" id="academyPrevious" type="button" style="display:none">הפתרון הקודם שלי</button>');
   const previousButton = document.getElementById('academyPrevious');

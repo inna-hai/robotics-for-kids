@@ -764,18 +764,18 @@
         },
         {
           title: 'אתגר קטן - מקוד ארוך לקוד קצר',
-          freshStartMessage: 'האתגר מתחיל מקוד חדש ולא מהקוד של תרגיל 5: קוד ארוך שבו אותה פעולה כתובה שוב ושוב. קצרו אותו בעזרת repeat.',
-          mission: 'האתגר מתחיל מקוד חדש: קוד ארוך שבו אותה פעולה כתובה כמה פעמים. קצרו אותו כך שישתמש ב-repeat אחד של 3 חזרות. בהדמיה מסומנות שלוש נקודות מסירה לאורך הקו: כל חבילה צריכה לנחות על אחת מהן.',
+          freshStartMessage: 'האתגר מתחיל מקוד חדש ולא מהקוד של תרגיל 5: קוד ארוך שבו אותה פעולה כתובה שוב ושוב.',
+          mission: 'האתגר מתחיל מקוד חדש: קוד ארוך שבו אותה פעולה כתובה שוב ושוב. קצרו אותו כך שיעשה בדיוק אותו דבר, אבל עם 6 בלוקים לכל היותר (כולל on chat command). המונה מתחת ללוח מראה כמה בלוקים יש עכשיו.',
           debugStart: true,
-          dropPoints: [3, 6, 9],
-          hint: 'המטרה היא פחות שכפול ויותר שליטה במספר החזרות.',
-          check: 'יש repeat אחד שמייצג 3 משלוחים חוזרים והודעת סיום.',
-          starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'place', direction: 'DOWN' }, { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'place', direction: 'DOWN' }] },
+          dropPoints: [2, 4, 6, 8],
+          maxBlocks: 6,
+          hint: 'חפשו את הבלוקים שחוזרים על עצמם. אפשר לכתוב אותם פעם אחת בלבד.',
+          check: 'אותה תוצאה, עם 6 בלוקים לכל היותר.',
+          starter: { command: 'start', blocks: [{ type: 'teleport' }, ...[1, 2, 3, 4].flatMap(() => [{ type: 'move', direction: 'FORWARD', steps: 2 }, { type: 'place', direction: 'DOWN' }, { type: 'say', text: 'package delivered' }])] },
           criteria: [
-            { label: 'יש בלוק repeat', type: 'repeat' },
-            { label: 'ה-repeat מוגדר ל-3', type: 'repeatTimes', times: 3 },
             { label: 'כל חבילה הונחה על נקודת מסירה', type: 'onDropPoints' },
-            { label: 'יש הודעת סיום', type: 'say' }
+            { label: 'יש הודעת מסירה אחרי כל חבילה', type: 'sayCount', min: 4 },
+            { label: 'הקוד משתמש ב-6 בלוקים לכל היותר', type: 'maxBlocks', max: 6 }
           ]
         }
       ]

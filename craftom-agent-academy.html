@@ -22,6 +22,9 @@
     .academy-route-toggle.blocked { background: #fee2e2; color: #991b1b; border-color: #ef4444; }
     .academy-restart { margin-inline-start: .6rem; border: 0; background: none; color: #475569; font: inherit; font-size: .82rem; text-decoration: underline; cursor: pointer; }
     .academy-done-before { display: block; margin-top: .25rem; color: #15803d; font-style: normal; font-weight: 800; font-size: .78rem; }
+    #academyExerciseList .academy-done-before { grid-column: 2; white-space: nowrap; }
+    .academy-block-counter { margin-top: 6px; font-weight: 900; color: #166534; text-align: left; direction: rtl; }
+    .academy-block-counter.over { color: #b91c1c; }
   </style>
 </head>
 <body class="agent-academy-page">
@@ -88,7 +91,7 @@
     </section>
   </main>
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="js/craftom-minecraft-challenges.js?v=20261005-academy-l10-12-1"></script>
+  <script src="js/craftom-minecraft-challenges.js?v=20261005-academy-maxblocks-1"></script>
   <script>
     (() => {
       const program = window.CRAFTOM_MINECRAFT_PROGRAM;
@@ -117,7 +120,7 @@
   </script>
   <script src="js/vendor/blockly/blockly.min.js"></script>
   <script src="js/vendor/blockly/msg/he.js"></script>
-  <script src="js/craftom-agent-academy.js?v=20261005-academy-l10-12-1"></script>
+  <script src="js/craftom-agent-academy.js?v=20261005-academy-maxblocks-1"></script>
   <script src="/js/feedback-widget.js?v=20260907-tehila-fixes-1"></script>
 </body>
 </html>
