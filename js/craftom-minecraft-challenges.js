@@ -2165,7 +2165,9 @@
   });
 
   // Opening messages must say what is about to happen, not just any text.
+  // Lesson 1 is the students' first message ever, so there any message counts.
   Object.values(detailsByChallenge).forEach(lessons => lessons.forEach(detail => {
+    if (detail === detailsByChallenge[1][0]) return;
     (detail.academy?.exercises || []).forEach(exercise => (exercise.criteria || []).forEach(criterion => {
       if (criterion.type === 'say' && /פתיחה/.test(criterion.label)) criterion.type = 'openingSay';
     }));
