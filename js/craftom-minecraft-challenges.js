@@ -2196,6 +2196,42 @@
     command: challenge.command
   })));
 
+  // Lesson 1: the station is 7 steps away. Exercise 3 changes the number to 5 and sees the courier stop short;
+  // exercise 4 finds the right number by trial and error (only an exact stop at the station counts).
+  {
+    const lesson1 = detailsByChallenge[1][0].academy;
+    lesson1.world = {
+      start: { x: 112, y: 230 },
+      station: { x: 406, y: 230 },
+      routeTiles: [154, 196, 238, 280, 322, 364].map(x => ({ x, y: 230 })),
+    };
+    Object.assign(lesson1.exercises[2], {
+      mission: 'שנו רק את המספר בבלוק התנועה ל-5, הריצו ובדקו איך המרחק שהשליח עובר משתנה על השביל. השליח עדיין לא יגיע לתחנה, וזה בסדר.',
+      hint: 'אל תחליפו את כל הקוד. שנו רק את המספר בתוך בלוק התנועה.',
+      check: 'מספר הצעדים שונה ל-5, והשליח נשאר על השביל.',
+      criteria: [
+        { label: 'שיניתם את מספר הצעדים ל-5', type: 'firstMove', direction: 'FORWARD', steps: 5 },
+        { label: 'השליח נשאר על השביל', type: 'staysOnStartRow' }
+      ],
+    });
+    Object.assign(lesson1.exercises[3], {
+      mission: 'התחנה רחוקה יותר מ-5 צעדים. מצאו בעצמכם כמה צעדים צריך: נסו מספר, הריצו, ובדקו איפה השליח עוצר. אם הוא עוצר לפני התחנה הוסיפו צעדים, ואם הוא עובר אותה הורידו. כשהשליח עוצר בדיוק בתחנה, הוסיפו אחרי התנועה הודעה שמודיעה שהמשלוח הגיע.',
+      hint: 'ספרו את המשבצות בשביל בין השליח לתחנה, או פשוט נסו: הריצו, שנו את המספר באחד והריצו שוב.',
+      check: 'השליח עוצר בדיוק בתחנה, ואחרי התנועה יש הודעת הגעה.',
+      criteria: [
+        { label: 'השליח עוצר בדיוק בתחנה', type: 'reachedStation', radius: 20 },
+        { label: 'המסלול עדיין מתחיל מ-deliver', type: 'chatDeliver' },
+        { label: 'הודעת ההגעה מופיעה אחרי התנועה', type: 'arrivalSayAfterMove' }
+      ],
+    });
+    lesson1.exercises[3].starter = { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 5 }] };
+    lesson1.exercises[4].starter = { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 7 }] };
+    lesson1.exercises[5].starter = { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 10 }, { type: 'say', text: 'המשלוח הגיע' }] };
+    lesson1.exercises[5].criteria.forEach(criterion => {
+      if (criterion.type === 'firstMove') Object.assign(criterion, { steps: 7, label: 'מספר התנועה תוקן ל-7' });
+    });
+  }
+
   // Lesson 5 exercise 1 places two packages by copying blocks (Loops locked), so exercise 2 is the step that turns
   // the copied code into a loop. Set after the refinements, which would otherwise add a repeat requirement here too.
   Object.assign(detailsByChallenge[2][0].academy.exercises[0], {
