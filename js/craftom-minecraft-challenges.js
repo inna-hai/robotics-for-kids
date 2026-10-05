@@ -1648,26 +1648,25 @@
       ]
     },
     {
-      title: 'תרגיל 5 - חוזרים למחסן',
-      mission: 'כשהדרך פתוחה, אחרי המסירה השליח מודיע שהמשלוח הגיע וחוזר למחסן, כדי שיוכל לצאת שוב למשלוח הבא.',
-      hint: 'אחרי place: הודעה, ואז נסיעה אחורה באותו מרחק שהשליח נסע.',
-      check: 'כשפתוח: מסירה, הודעה וחזרה למחסן.',
+      title: 'תרגיל 5 - הודעות לשני המצבים',
+      mission: 'הוסיפו הודעה גם למצב פתוח: אחרי המסירה השליח מודיע שהמשלוח הגיע.',
+      hint: 'ההודעה נכנסת לתוך then אחרי place.',
+      check: 'בשני המצבים יש הודעה מתאימה.',
       starter: { command: 'rule', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(6), placeDown], else: [say('הדרך חסומה, ממתין')] }] },
       criteria: [
-        { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
         { label: 'כשהדרך פתוחה יש הודעת מסירה', type: 'openArrivalSay' },
-        { label: 'כשהדרך פתוחה השליח חוזר למחסן', type: 'openReturns' }
+        { label: 'כשהדרך חסומה מופיעה הודעה על החסימה', type: 'blockedSays' }
       ]
     },
     {
-      title: 'אתגר קטן - החוק בשני סבבים',
-      mission: 'הפעילו את החוק פעמיים ברצף. כשהדרך פתוחה השליח מוסר שתי חבילות, אחת בכל סבב, וחוזר למחסן אחרי כל אחת. כשהיא חסומה הוא מגיב לפי החוק שלכם, בלי לעבור במחסום.',
-      hint: 'אפשר לחזור על כל החוק כמה פעמים בלי להעתיק אותו.',
-      check: 'בשני מצבי הדרך החוק עובד בשני סבבים.',
-      starter: { command: 'rule', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(6), placeDown, say('המשלוח הגיע'), { type: 'move', direction: 'BACK', steps: 6 }], else: [say('הדרך חסומה, ממתין')] }] },
+      title: 'אתגר קטן - החוק שלי',
+      mission: 'השלימו את החוק האישי שלכם: כשפתוח מוסרים ומודיעים, כשחסום מגיבים בדרך שבחרתם ומודיעים, בלי לעבור במחסום. הבדיקה מריצה את הקוד בשני המצבים.',
+      hint: 'בדקו את שני המצבים בכפתור שמעל ההדמיה לפני שמגישים.',
+      check: 'החוק עובד בשני מצבי הדרך.',
+      starter: { command: 'rule', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(6), placeDown], else: [] }] },
       criteria: [
-        { label: 'כשהדרך פתוחה שתי חבילות מגיעות לתחנה', type: 'openPackagesAtStation', min: 2 },
-        { label: 'כשהדרך פתוחה השליח חוזר למחסן', type: 'openReturns' },
+        { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
+        { label: 'כשהדרך פתוחה יש הודעת מסירה', type: 'openArrivalSay' },
         { label: 'השליח לא עובר דרך המחסום', type: 'blockedAvoidsBarrier' },
         { label: 'כשהדרך חסומה מופיעה הודעה על החסימה', type: 'blockedSays' },
         { label: 'פקודת הצ׳אט היא rule', type: 'command', command: 'rule' }
