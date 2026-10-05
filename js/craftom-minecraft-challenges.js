@@ -1970,6 +1970,15 @@
     });
   });
 
+  // In the loop lessons (5-7), finish/delivery/system messages are success messages, so their content is checked too.
+  [[2, 0], [2, 1], [2, 2]].forEach(([challengeId, lessonIndex]) => {
+    detailsByChallenge[challengeId][lessonIndex].academy.exercises.forEach(exercise => {
+      (exercise.criteria || []).forEach(criterion => {
+        if (criterion.type === 'say' && /סיום|מסירה|הצלחה|מערכת/.test(criterion.label)) criterion.type = 'arrivalSay';
+      });
+    });
+  });
+
   challenges.forEach(challenge => {
     challenge.meetings = challenge.meetings.map((meeting, index) => [
       ...meeting,

@@ -512,18 +512,22 @@
   // A success/delivery message is checked by meaning, not exact text: it must say something positive about
   // arriving, delivering or succeeding, and must not be negative ("לא הצלחתי", "failed").
   const successWords = new RegExp([
-    // Hebrew: arrival, delivery, reporting, success, finishing, thanks and positive wishes
-    'הגיע', 'הגעת', 'הגענו', 'הגעה', 'נמסר', 'מסרתי', 'מסרנו', 'מסירה', 'משלוח', 'חבילה', 'נשלח', 'שלחנו',
-    'דווח', 'דיווח', 'הודענו', 'הודעתי', 'הצלח', 'בהצלחה', 'הושלם', 'השלמנו', 'סיימ', 'גמרנו', 'מוכן', 'בוצע', 'עבד',
-    'תודה', 'תהנ', 'בתאבון', 'כל הכבוד', 'מעולה', 'מצוין', 'נהדר', 'יופי', 'אחלה', 'סבבה', 'הידד', 'יש!', 'ניצחנו', 'ברוך הבא', 'ברוכים הבאים',
+    // Hebrew: arrival, delivery, reporting, finishing, success, thanks, praise and positive wishes
+    'הגיע', 'הגעת', 'הגענו', 'הגעה', 'נמסר', 'מסרתי', 'מסרנו', 'מסירה', 'משלוח', 'חבילה', 'חבילות', 'נשלח', 'שלחנו', 'סופק', 'הובל',
+    'דווח', 'דיווח', 'הודענו', 'הודעתי', 'הצלח', 'בהצלחה', 'מוצלח', 'הושלם', 'השלמנו', 'מושלם', 'סיים', 'סיום', 'הסתיים', 'נגמר', 'גמרנו', 'גמרתי',
+    'מוכן', 'בוצע', 'ביצעתי', 'ביצענו', 'עבד', 'עובד', 'פועל', 'הכל טוב', 'הכול טוב', 'טוב מאוד', 'בדרך', 'יצא', 'יצאנו',
+    'תודה', 'תהנ', 'בתאבון', 'כל הכבוד', 'מעולה', 'מצוין', 'נהדר', 'נפלא', 'יופי', 'אחלה', 'סבבה', 'הידד', 'יש!', 'ניצחנו', 'אלוף', 'אלופ', 'וואו', 'סחתיין', 'כיף', 'שמח',
+    'ברוך הבא', 'ברוכים הבאים',
     // English
-    'arriv', '\\bhere\\b', 'deliver', 'sent', 'report', 'success', 'succeed', 'complete', 'done', 'finish', 'ready', 'worked',
-    'thank', 'enjoy', 'great', 'good', 'awesome', 'yay', 'hooray', 'welcome', 'well done', 'nice', 'perfect', '\\bok\\b'
-  ].join('|'), 'i');
+    'arriv', '\\bhere\\b', 'deliver', 'sent', 'shipped', 'report', 'success', 'succeed', 'complete', 'done', 'finish', 'ready', 'work', 'mission',
+    'thank', 'enjoy', 'great', 'good', 'awesome', 'amazing', 'cool', 'wow', 'yay', 'hooray', 'welcome', 'well done', 'nice', 'perfect', 'win', 'happy', '\\bok\\b', '\\byes\\b',
+    // Positive emoji
+    '✅', '✔', '🎉', '👍', '🥳', '😀', '😃', '😊', '📦', '🚚', '⭐', '🏆'
+  ].join('|'), 'iu');
   const negativeWords = /((^|[\s,.!?])(לא|אין|בלי)(?=[\s,.!?]|$)|נכשל|כישלון|שגיאה|תקלה|נתקע|אבד|הלך לאיבוד|fail|error|\bnot\b|n't|\bno\b|\bnever\b|lost|stuck|wrong|problem)/i;
   function isSuccessMessage(text) {
     const value = String(text || '').trim();
-    return value.length > 1 && successWords.test(value) && !negativeWords.test(value);
+    return value.length > 0 && successWords.test(value) && !negativeWords.test(value);
   }
 
   // A move matches when the step count is right and it goes the intended way. Another direction also counts
@@ -595,7 +599,7 @@
       return isNear(blocked, start, 20) && blocked.packages.length === 0;
     }
     if (criterion.type === 'maxBlocks') return workspace.getAllBlocks(false).length <= Number(criterion.max);
-    if (criterion.type === 'sayCount') return state.says.filter(text => String(text || '').trim()).length >= Number(criterion.min || 1);
+    if (criterion.type === 'sayCount') return state.says.filter(isSuccessMessage).length >= Number(criterion.min || 1);
     if (criterion.type === 'placeBlockCount') return workspace.getAllBlocks(false).filter(block => block.type === 'mc_place_agent').length <= Number(criterion.max || 1);
     if (criterion.type === 'endsAtCell') {
       const facing = ((state.heading % 360) + 360) % 360;
