@@ -2463,16 +2463,16 @@
     ],
   });
 
-  // Lesson 10: its own map with a turn on the main route (5 east, right turn, 4 south), so the trip inside then
-  // is a full route with a turn, not one straight move.
+  // Lesson 10: its own map with two turns on the main route (3 east, right, 4 south, left, 3 east), so the trip
+  // inside then is a full route, not one straight move.
   {
     const lesson10 = detailsByChallenge[3][1].academy;
     lesson10.world = {
       start: { x: 112, y: 104 },
-      station: { x: 322, y: 272 },
-      routeTiles: [154, 196, 238, 280, 322].map(x => ({ x, y: 104 })).concat([146, 188, 230, 272].map(y => ({ x: 322, y }))),
+      station: { x: 364, y: 272 },
+      routeTiles: [154, 196, 238].map(x => ({ x, y: 104 })).concat([146, 188, 230, 272].map(y => ({ x: 238, y })), [280, 322, 364].map(x => ({ x, y: 272 }))),
     };
-    const trip = [{ type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 4 }];
+    const trip = [{ type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'turn', turn: 'LEFT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 3 }];
     const replaceTrip = blocks => {
       const out = [];
       (blocks || []).forEach(block => {
@@ -2485,7 +2485,7 @@
     lesson10.exercises.forEach(exercise => {
       if (exercise.starter?.blocks) exercise.starter.blocks = replaceTrip(exercise.starter.blocks);
     });
-    lesson10.exercises[1].mission = 'בתוך then בנו את הנסיעה עד התחנה. שימו לב: במסלול הזה יש פנייה. כשהדרך חסומה השליח לא זז.';
+    lesson10.exercises[1].mission = 'בתוך then בנו את הנסיעה עד התחנה. שימו לב: במסלול הזה יש שתי פניות. כשהדרך חסומה השליח לא זז.';
   }
 
   // Lesson 5 exercise 1 places two packages by copying blocks (Loops locked), so exercise 2 is the step that turns
