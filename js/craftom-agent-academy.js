@@ -805,6 +805,8 @@
       const after = state.actions.filter(action => action.type === 'say' && !action.inRepeat).map(action => clean(action.text));
       return inside.size > 0 && after.some(text => text && !inside.has(text));
     }
+    // No extra messages: outside the loop there is only the one finish message.
+    if (criterion.type === 'noExtraSays') return state.actions.filter(action => action.type === 'say' && !action.inRepeat).length === 1;
     // Exactly one message during the whole run (a finish message must not repeat every round).
     if (criterion.type === 'sayOnce') return state.says.filter(text => String(text || '').trim()).length === 1;
     // A message inside the loop: it shows once in every round.

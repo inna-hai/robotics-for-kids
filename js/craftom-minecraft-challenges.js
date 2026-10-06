@@ -2439,7 +2439,8 @@
         { label: 'השליח חוזר למחסן', type: 'returnToStart' },
         { label: 'בכל סיבוב מופיעה הודעת מסירה', type: 'sayInRepeat', min: 3 },
         { label: 'הודעת הסיום מופיעה פעם אחת, בסוף', type: 'sayAfterLoop' },
-        { label: 'הודעת הסיום שונה מההודעה של כל סיבוב', type: 'distinctLoopMessages' }
+        { label: 'הודעת הסיום שונה מההודעה של כל סיבוב', type: 'distinctLoopMessages' },
+        { label: 'אין הודעות מיותרות', type: 'noExtraSays' }
       ],
     });
     lesson7.exercises[5].starter = { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [...cycle.slice(0, 2), { type: 'say', text: 'החבילה נמסרה' }, cycle[2]] }] };
