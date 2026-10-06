@@ -53,7 +53,7 @@
       case 'reachedStation': return 'השליח מגיע לתחנה';
       case 'place': return 'השליח מניח חבילה';
       case 'placeDirection': return criterion.direction === 'FORWARD' ? 'החבילה מונחת במשבצת שמול השליח' : 'החבילה מונחת במקום שבו השליח עומד';
-      case 'packageNearStation': return 'החבילה מגיעה לתחנה';
+      case 'packageNearStation': return 'החבילה מונחת בתחנה';
       case 'placeCount': return n > 1 ? `מונחות ${n} חבילות` : 'מונחת חבילה';
       case 'singlePackage': return 'מונחת חבילה אחת בלבד';
       case 'repeat': return 'הפעולה חוזרת בלי להעתיק בלוקים';

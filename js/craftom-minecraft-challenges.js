@@ -1069,7 +1069,7 @@
         check: 'כשפתוח החבילה מגיעה לתחנה, וכשחסום השליח נשאר במחסן.',
         starter: { command: 'status', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [openSay], else: [blockedSay] }] },
         criteria: [
-          { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
+          { label: 'כשהדרך פתוחה החבילה מונחת בתחנה', type: 'openDelivers' },
           { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' }
         ]
       },
@@ -1082,7 +1082,7 @@
         check: 'כשפתוח השליח מוסר, וכשחסום הוא נשאר במקום.',
         starter: { command: 'status', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [blockedSay], else: delivery }] },
         criteria: [
-          { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
+          { label: 'כשהדרך פתוחה החבילה מונחת בתחנה', type: 'openDelivers' },
           { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' }
         ]
       },
@@ -1093,7 +1093,7 @@
         check: 'בשני מצבי הדרך קורה הדבר הנכון.',
         starter: { command: 'status', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [{ type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }], else: [] }] },
         criteria: [
-          { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
+          { label: 'כשהדרך פתוחה החבילה מונחת בתחנה', type: 'openDelivers' },
           { label: 'כשהדרך פתוחה יש הודעת מסירה', type: 'openArrivalSay' },
           { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' },
           { label: 'כשהדרך חסומה מופיעה הודעה על החסימה', type: 'blockedSays' },
@@ -1505,7 +1505,7 @@
       check: 'כשפתוח יש חבילה בתחנה.',
       starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(4)], else: [say('ממתין לפתיחת הדרך')] }] },
       criteria: [
-        { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
+        { label: 'כשהדרך פתוחה החבילה מונחת בתחנה', type: 'openDelivers' },
         { label: 'החבילה מונחת למטה', type: 'placeDirection', direction: 'DOWN' },
         { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' }
       ]
@@ -1517,7 +1517,7 @@
       check: 'בשני מצבי הדרך קורה הדבר הנכון.',
       starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(4), placeDown], else: [] }] },
       criteria: [
-        { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
+        { label: 'כשהדרך פתוחה החבילה מונחת בתחנה', type: 'openDelivers' },
         { label: 'כשהדרך פתוחה יש הודעת מסירה', type: 'openArrivalSay' },
         { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' },
         { label: 'כשהדרך חסומה מופיעה הודעה על החסימה', type: 'blockedSays' },
@@ -1582,8 +1582,8 @@
       check: 'בשני מצבי הדרך החבילה מגיעה לתחנה.',
       starter: { command: 'test', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(7)], else: detour }] },
       criteria: [
-        { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
-        { label: 'כשהדרך חסומה החבילה מגיעה לתחנה', type: 'blockedDelivers' }
+        { label: 'כשהדרך פתוחה החבילה מונחת בתחנה', type: 'openDelivers' },
+        { label: 'כשהדרך חסומה החבילה מונחת בתחנה', type: 'blockedDelivers' }
       ]
     },
     {
@@ -1593,8 +1593,8 @@
       check: 'בשני המצבים יש מסירה, והעקיפה לא עוברת במחסום.',
       starter: { command: 'test', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(7), placeDown], else: [...detour, placeDown] }] },
       criteria: [
-        { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
-        { label: 'כשהדרך חסומה החבילה מגיעה לתחנה', type: 'blockedDelivers' },
+        { label: 'כשהדרך פתוחה החבילה מונחת בתחנה', type: 'openDelivers' },
+        { label: 'כשהדרך חסומה החבילה מונחת בתחנה', type: 'blockedDelivers' },
         { label: 'השליח לא עובר דרך המחסום', type: 'blockedAvoidsBarrier' },
         { label: 'כשהדרך חסומה מופיעה הודעה על החסימה או העקיפה', type: 'blockedSaysAbout' },
         { label: 'פקודת הצ׳אט היא test', type: 'command', command: 'test' }
@@ -1621,7 +1621,7 @@
       check: 'כשפתוח החבילה מגיעה לתחנה.',
       starter: { command: 'rule', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [], else: [] }] },
       criteria: [
-        { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' }
+        { label: 'כשהדרך פתוחה החבילה מונחת בתחנה', type: 'openDelivers' }
       ]
     },
     {
@@ -1643,7 +1643,7 @@
       check: 'כשפתוח יש מסירה, וכשחסום השליח לא עובר במחסום.',
       starter: { command: 'rule', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'BLOCKED', then: [fwd(6), placeDown], else: [say('הדרך חסומה, ממתין')] }] },
       criteria: [
-        { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
+        { label: 'כשהדרך פתוחה החבילה מונחת בתחנה', type: 'openDelivers' },
         { label: 'השליח לא עובר דרך המחסום', type: 'blockedAvoidsBarrier' }
       ]
     },
@@ -1665,7 +1665,7 @@
       check: 'החוק עובד בשני מצבי הדרך.',
       starter: { command: 'rule', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [fwd(6), placeDown], else: [] }] },
       criteria: [
-        { label: 'כשהדרך פתוחה החבילה מגיעה לתחנה', type: 'openDelivers' },
+        { label: 'כשהדרך פתוחה החבילה מונחת בתחנה', type: 'openDelivers' },
         { label: 'כשהדרך פתוחה יש הודעת מסירה', type: 'openArrivalSay' },
         { label: 'השליח לא עובר דרך המחסום', type: 'blockedAvoidsBarrier' },
         { label: 'כשהדרך חסומה מופיעה הודעה על החסימה', type: 'blockedSays' },
@@ -2478,7 +2478,7 @@
     criteria: [
       { label: 'מופיעה הודעה לפני שהשליח יוצא', type: 'sayBeforeFirstMove' },
       { label: 'השליח מגיע לתחנה', type: 'reachedStation' },
-      { label: 'החבילה מגיעה לתחנה', type: 'packageNearStation' }
+      { label: 'החבילה מונחת בתחנה', type: 'packageNearStation' }
     ],
   });
 
