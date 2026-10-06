@@ -35,18 +35,48 @@
     }
   });
 
-  // In debug exercises the check list describes what should happen, not which block to move or change.
-  const debugResultLabels = {
-    teleportOutsideRepeat: 'בכל סיבוב השליח ממשיך הלאה מהמקום שבו עצר',
-    placeInRepeat: 'הקוד עדיין משתמש בלולאה',
-    placeDirection: 'החבילה מונחת בתוך התחנה',
-    moveBeforeTurn: 'השליח פונה בפינה הנכונה',
-    turnBeforeSecondMove: 'השליח פונה בפינה הנכונה',
-  };
+  // The check list shows results to look for in the run, not which block to add or where (the mission says that).
+  // Labels that already describe a result (messages, delivery, road states, "after the fix...") stay as they are.
+  function resultLabel(criterion) {
+    const n = Number(criterion.min || criterion.times || 0);
+    switch (criterion.type) {
+      case 'command':
+      case 'chatDeliver': return 'הקוד מופעל מהפקודה הנכונה בצ׳אט';
+      case 'teleport': return 'השליח יוצא מנקודת ההתחלה';
+      case 'firstMove':
+      case 'secondMove':
+      case 'anyMove': return 'השליח עובר את המרחק הנכון';
+      case 'moveCount': return n > 1 ? 'השליח נוסע בכמה קטעים' : 'השליח זז';
+      case 'turn': return 'השליח משנה כיוון';
+      case 'moveBeforeTurn':
+      case 'turnBeforeSecondMove': return 'השליח פונה בפינה הנכונה';
+      case 'reachedStation': return 'השליח מגיע לתחנה';
+      case 'place': return 'השליח מניח חבילה';
+      case 'placeDirection': return criterion.direction === 'FORWARD' ? 'החבילה מונחת במשבצת שמול השליח' : 'החבילה מונחת במקום שבו השליח עומד';
+      case 'packageNearStation': return 'החבילה מגיעה לתחנה';
+      case 'placeCount': return n > 1 ? `מונחות ${n} חבילות` : 'מונחת חבילה';
+      case 'singlePackage': return 'מונחת חבילה אחת בלבד';
+      case 'repeat': return 'הפעולה חוזרת בלי להעתיק בלוקים';
+      case 'repeatTimes': return `הפעולה חוזרת ${n} פעמים`;
+      case 'returnToStart': return 'השליח חוזר למחסן';
+      case 'placeInRepeat': return 'בכל סיבוב מונחת חבילה';
+      case 'teleportOutsideRepeat': return 'בכל סיבוב השליח ממשיך מהמקום שבו עצר';
+      case 'sayAfterLoop': return 'ההודעה מופיעה פעם אחת, בסוף';
+      case 'condition': return 'הקוד בודק את מצב הדרך';
+      case 'conditionState': return (criterion.state || 'OPEN') === 'OPEN' ? 'הקוד מגיב כשהדרך פתוחה' : 'הקוד מגיב כשהדרך חסומה';
+      case 'thenSay': return 'כשהתנאי מתקיים מופיעה הודעה';
+      case 'elseBranch': return 'כשהתנאי לא מתקיים קורה משהו אחר';
+      case 'elseSay': return 'כשהתנאי לא מתקיים מופיעה הודעה';
+      case 'repeatOrCondition': return 'הקוד משתמש ברעיון תכנותי: לולאה או תנאי';
+      case 'sayBetweenMoves': return 'מופיעה הודעה באמצע הדרך';
+      default: return null;
+    }
+  }
   academy.exercises?.forEach(exercise => {
-    if (!exercise.debugStart) return;
     (exercise.criteria || []).forEach(criterion => {
-      if (debugResultLabels[criterion.type]) criterion.label = debugResultLabels[criterion.type];
+      if (/^אחרי התיקון/.test(criterion.label || '')) return;
+      const label = resultLabel(criterion);
+      if (label) criterion.label = label;
     });
   });
 
@@ -791,7 +821,13 @@
   function evaluate(state) {
     const exercise = academy.exercises[activeExercise];
     if (exercise?.criteria?.length) {
-      return exercise.criteria.map(criterion => ({ label: criterion.label, pass: criterionPass(state, criterion) }));
+      // Checks that end up with the same result label are shown once (passing only if all of them pass).
+      const merged = new Map();
+      exercise.criteria.forEach(criterion => {
+        const pass = criterionPass(state, criterion);
+        merged.set(criterion.label, merged.has(criterion.label) ? merged.get(criterion.label) && pass : pass);
+      });
+      return [...merged].map(([label, pass]) => ({ label, pass }));
     }
     const firstMove = state.moves[0];
     const reachedStation = isNear(state, station, 74);
