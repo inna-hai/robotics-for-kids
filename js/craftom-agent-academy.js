@@ -751,6 +751,15 @@
     }).join(',');
   }
 
+  // A delivery/finish message comes after the delivery: after the last package is placed (or, without a package,
+  // after the last move). A message before the trip is an opening, not a delivery message.
+  function hasDeliveryMessage(state) {
+    const types = state.actions.map(action => action.type);
+    const lastPlace = types.lastIndexOf('place');
+    const anchor = lastPlace > -1 ? lastPlace : types.lastIndexOf('move');
+    return state.actions.some((action, index) => index > anchor && action.type === 'say' && isSuccessMessage(action.text));
+  }
+
   function criterionPass(state, criterion) {
     const firstMove = state.moves[0];
     const secondMove = state.moves[1];
@@ -758,7 +767,7 @@
     const firstTurnAction = state.actions.findIndex(action => action.type === 'turn');
     // The courier (or package) must be on the station cell itself, not on a neighbouring cell.
     const reachedStation = isNear(state, station, criterion.radius || stationRadius);
-    const hasArrivalSay = state.says.some(isSuccessMessage);
+    const hasArrivalSay = hasDeliveryMessage(state);
     const hasPackageNearStation = state.packages.some(pkg => isNear(pkg, station, criterion.radius || stationRadius));
     const hasReturnToStart = isNear(state, start, criterion.radius || stationRadius);
 
@@ -791,7 +800,7 @@
     if (criterion.type === 'openingSay') return state.says.some(isOpeningMessage);
     if (criterion.type === 'blockedSaysAbout') return runProgram(false).says.some(isBlockedMessage);
     if (criterion.type === 'blockedSays') return runProgram(false).says.some(isBlockedMessage);
-    if (criterion.type === 'openArrivalSay') return runProgram(true).says.some(isSuccessMessage);
+    if (criterion.type === 'openArrivalSay') return hasDeliveryMessage(runProgram(true));
     if (criterion.type === 'openReaches') return isNear(runProgram(true), station, criterion.radius || stationRadius);
     if (criterion.type === 'blockedReaches') return isNear(runProgram(false), station, criterion.radius || stationRadius);
     if (criterion.type === 'blockedDelivers') return runProgram(false).packages.some(pkg => isNear(pkg, station, criterion.radius || stationRadius));
@@ -905,7 +914,7 @@
     }
     const firstMove = state.moves[0];
     const reachedStation = isNear(state, station, 74);
-    const hasArrivalSay = state.says.some(isSuccessMessage);
+    const hasArrivalSay = hasDeliveryMessage(state);
     const criteria = [
       [
         ['פקודת deliver קיימת', state.sawChat],

@@ -346,7 +346,7 @@
               criteria: [
                 { label: 'הונחה חבילה אחת בלבד', type: 'singlePackage' },
                 { label: 'החבילה נמצאת ליד התחנה', type: 'packageNearStation' },
-                { label: 'יש הודעת מסירה בסוף', type: 'arrivalSay' }
+                { label: 'יש הודעת מסירה', type: 'arrivalSay' }
               ]
             },
             {
@@ -359,7 +359,7 @@
                 { label: 'הונחה חבילה אחת בלבד', type: 'singlePackage' },
                 { label: 'החבילה מונחת למטה', type: 'placeDirection', direction: 'DOWN' },
                 { label: 'החבילה נמצאת ליד התחנה', type: 'packageNearStation' },
-                { label: 'יש הודעת מסירה בסוף', type: 'arrivalSay' }
+                { label: 'יש הודעת מסירה', type: 'arrivalSay' }
               ]
             }
           ]
