@@ -2301,6 +2301,24 @@
   // Lesson 4: exercise 3 only reaches the station, exercise 4 adds the package there, exercise 6 opens with a bug.
   {
     const lesson4 = detailsByChallenge[1][3].academy;
+    // Its own map: a long first leg (6) and a short leg after the right turn (3), unlike lessons 2-3 (4 and 4).
+    lesson4.world = {
+      start: { x: 112, y: 146 },
+      station: { x: 364, y: 272 },
+      routeTiles: [154, 196, 238, 280, 322, 364].map(x => ({ x, y: 146 })).concat([188, 230, 272].map(y => ({ x: 364, y }))),
+    };
+    const lesson4Route = [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 6 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 3 }];
+    lesson4.exercises[1].starter = { blocks: lesson4Route.slice(0, 2) };
+    lesson4.exercises[2].starter = { blocks: lesson4Route.slice(0, 3) };
+    lesson4.exercises[3].starter = { blocks: lesson4Route };
+    lesson4.exercises[4].starter = { blocks: [...lesson4Route, { type: 'place', direction: 'DOWN' }] };
+    lesson4.exercises[5].starter = { blocks: [...lesson4Route.slice(0, 3), { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }, { type: 'say', text: 'המשלוח הגיע' }] };
+    lesson4.exercises[5].criteria.forEach(criterion => {
+      if (criterion.type === 'secondMove') criterion.steps = 3;
+    });
+    // Exercise 2 only adds the turn; the move after it is exercise 3's step.
+    lesson4.exercises[1].mission = 'הוסיפו פנייה אחת אחרי התנועה הראשונה, בפינה שבה השביל משנה כיוון.';
+    lesson4.exercises[1].criteria = lesson4.exercises[1].criteria.filter(criterion => criterion.type !== 'turnBeforeSecondMove');
     Object.assign(lesson4.exercises[2], {
       mission: 'הוסיפו תנועה אחרי הפנייה כך שהשליח יגיע בדיוק לתחנה. בשלב הזה עוד לא מניחים חבילה.',
       check: 'יש שתי תנועות, והשליח מגיע לתחנה.',
