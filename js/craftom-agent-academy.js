@@ -658,9 +658,8 @@
     return Math.hypot(point.x - target.x, point.y - target.y) <= radius;
   }
 
-  // A success/delivery message is checked by meaning, not exact text: it must say something positive about
-  // arriving, delivering or succeeding, and must not be negative ("לא הצלחתי", "failed").
-  // Hebrew final letters (ם ן ץ ף ך) are compared as regular letters, so "סיימנו" matches "סיים" and "שלומות" matches "שלום".
+  // Open-text messages (success, delivery, finish, opening) are checked only for tone: anything that is not negative.
+  // Hebrew final letters (ם ן ץ ף ך) are compared as regular letters, so "סיימנו" matches "סיים".
   const finalLetters = { 'ם': 'מ', 'ן': 'נ', 'ץ': 'צ', 'ף': 'פ', 'ך': 'כ' };
   function normHe(text) {
     return String(text || '').replace(/[םןץףך]/g, letter => finalLetters[letter]);
@@ -668,26 +667,11 @@
   function heRe(pattern) {
     return new RegExp(normHe(pattern.source), pattern.flags);
   }
-  const successWords = new RegExp([
-    // Hebrew: arrival, delivery, reporting, finishing, success, thanks, praise and positive wishes
-    'הגיע', 'הגעת', 'הגענו', 'הגעה', 'נמסר', 'מסרתי', 'מסרנו', 'מסירה', 'משלוח', 'חבילה', 'חבילות', 'נשלח', 'שלחנו', 'סופק', 'הובל',
-    'דווח', 'דיווח', 'הודענו', 'הודעתי', 'הצלח', 'בהצלחה', 'מוצלח', 'הושלם', 'השלמנו', 'מושלם', 'סיים', 'סיום', 'הסתיים', 'סוף', 'זהו', 'סגרנו', 'ביי', 'להתראות', 'סיכום', 'סה"כ', 'נגמר', 'גמרנו', 'גמרתי',
-    'מוכן', 'בוצע', 'ביצעתי', 'ביצענו', 'עבד', 'עובד', 'פועל', 'הכל טוב', 'הכול טוב', 'טוב מאוד', 'בדרך', 'יצא', 'יצאנו',
-    'תודה', 'תהנ', 'בתאבון', 'כל הכבוד', 'מעולה', 'מצוין', 'נהדר', 'נפלא', 'יופי', 'אחלה', 'סבבה', 'הידד', 'יש!', 'ניצחנו', 'אלוף', 'אלופ', 'וואו', 'סחתיין', 'כיף', 'שמח',
-    'ברוך הבא', 'ברוכים הבאים',
-    // English
-    'arriv', '\\bhere\\b', 'deliver', 'sent', 'shipped', 'report', 'success', 'succeed', 'complete', 'done', 'finish', '\\bend\\b', '\\bbye\\b', 'that\'s it', 'ready', 'work', 'mission',
-    'thank', 'enjoy', 'great', 'good', 'awesome', 'amazing', 'cool', 'wow', 'yay', 'hooray', 'welcome', 'well done', 'nice', 'perfect', 'win', 'happy', '\\bok\\b', '\\byes\\b',
-    // Positive emoji
-    '✅', '✔', '🎉', '👍', '🥳', '😀', '😃', '😊', '📦', '🚚', '⭐', '🏆'
-  ].map(normHe).join('|'), 'iu');
   const negativeWords = heRe(/((^|[\s,.!?])(לא|אין|בלי)(?=[\s,.!?]|$)|נכשל|כישלון|שגיאה|תקלה|נתקע|אבד|הלך לאיבוד|fail|error|\bnot\b|n't|\bno\b|\bnever\b|lost|stuck|wrong|problem)/i);
-  // An opening / planning message: it says what is about to happen (starting, planning, marking, the city, the delivery).
-  const openingWords = heRe(/(מתחיל|מתחילים|נתחיל|התחלה|יוצא|יוצאים|נצא|מוכן|מוכנים|תוכנית|מתכנן|מתכננים|נתכנן|תכנון|מסמן|מסמנים|נסמן|סימון|מפה|ממפים|מערכת|מערכות|עיר|בונים|נבנה|בנייה|הולכים|להניח|מניח|מניחים|נניח|לשלוח|שולח|שולחים|נשלח|להביא|מביא|מביאים|נביא|למסור|מוסר|מוסרים|נמסור|חבילה|חבילות|תחנה|לנסוע|נוסע|נוסעים|ניסע|להגיע|נגיע|לסמן|בודק|בודקים|נבדוק|התחל|תתחיל|יתחיל|יאללה|בוא|שלום|היי|ברוכים|צא|יצא|יוצאת|יציאה|לדרך|בדרך|קדימה|זז|זזים|הולך|הולכת|מתחילה|נוסעת|משלוח|משלוחים|שליח|נעים|נזוז|start|begin|plan|ready|map|city|system|build|let'?s|deliver|going to|check|go|leaving|started|starting|hello|hi|hey|on my way|here we go|move|ride)/i);
   function isOpeningMessage(text) {
     const value = normHe(String(text || '').trim());
-    // A message that reports the end ("arrived", "delivered") is not an opening.
-    return value.length > 1 && openingWords.test(value) && !heRe(/((^|[^ל])הגיע|נמסר|הסתיים|arrived|delivered|finished)/i).test(value);
+    // Open-text messages are checked only for tone (not negative); an opening must also not report the end.
+    return value.length > 1 && !negativeWords.test(value) && !heRe(/((^|[^ל])הגיע|נמסר|הסתיים|arrived|delivered|finished)/i).test(value);
   }
   // A message for the open road: it says the road is open or that the courier goes on.
   const openRoadWords = heRe(/(פתוח|פתוחה|פנוי|פנויה|אפשר לעבור|עוברים|עובר|נוסע|נוסעים|יוצא|יוצאים|ממשיך|ממשיכים|בדרך|open|clear|go|drive|pass|on my way)/i);
@@ -704,7 +688,8 @@
 
   function isSuccessMessage(text) {
     const value = normHe(String(text || '').trim());
-    return value.length > 0 && successWords.test(value) && !negativeWords.test(value);
+    // Open-text messages are checked only for tone: any message that is not negative counts.
+    return value.length > 1 && !negativeWords.test(value);
   }
 
   // A move matches when the step count is right and it goes the intended way. Another direction also counts
