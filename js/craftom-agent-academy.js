@@ -80,6 +80,18 @@
     });
   });
 
+  // Detour exercises: "reaches the station when blocked" and "does not cross the barrier" are shown as one result,
+  // so it is clear the courier has to get there by going around.
+  academy.exercises?.forEach(exercise => {
+    const criteria = exercise.criteria || [];
+    const avoid = criteria.find(criterion => criterion.type === 'blockedAvoidsBarrier');
+    const delivers = criteria.find(criterion => criterion.type === 'blockedDelivers');
+    const reaches = criteria.find(criterion => criterion.type === 'blockedReaches');
+    if (!avoid || (!delivers && !reaches)) return;
+    const label = delivers ? 'כשהדרך חסומה השליח עוקף את המחסום ומניח חבילה בתחנה' : 'כשהדרך חסומה השליח עוקף את המחסום ומגיע לתחנה';
+    [avoid, delivers || reaches].forEach(criterion => { criterion.label = label; });
+  });
+
   // A package on the station cell already means it was placed down there (forward would put it on the next cell),
   // so a separate "placed down" check is dropped where the station-package check exists.
   academy.exercises?.forEach(exercise => {
