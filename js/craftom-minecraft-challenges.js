@@ -2301,29 +2301,31 @@
   // Lesson 4: exercise 3 only reaches the station, exercise 4 adds the package there, exercise 6 opens with a bug.
   {
     const lesson4 = detailsByChallenge[1][3].academy;
-    // Its own map: a long first leg (6) and a short leg after the right turn (3), unlike lessons 2-3 (4 and 4).
+    // Its own map with two turns, a U shape (5 east, right, 3 south, right, 3 west): lesson 2 taught one turn,
+    // lesson 4 sums up challenge 1 with a longer route (lesson 10's two-turn route is a staircase instead).
     lesson4.world = {
       start: { x: 112, y: 146 },
-      station: { x: 364, y: 272 },
-      routeTiles: [154, 196, 238, 280, 322, 364].map(x => ({ x, y: 146 })).concat([188, 230, 272].map(y => ({ x: 364, y }))),
+      station: { x: 196, y: 272 },
+      routeTiles: [154, 196, 238, 280, 322].map(x => ({ x, y: 146 })).concat([188, 230, 272].map(y => ({ x: 322, y })), [280, 238, 196].map(x => ({ x, y: 272 }))),
     };
-    const lesson4Route = [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 6 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 3 }];
+    const lesson4Route = [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 3 }];
     lesson4.exercises[1].starter = { blocks: lesson4Route.slice(0, 2) };
     lesson4.exercises[2].starter = { blocks: lesson4Route.slice(0, 3) };
     lesson4.exercises[3].starter = { blocks: lesson4Route };
     lesson4.exercises[4].starter = { blocks: [...lesson4Route, { type: 'place', direction: 'DOWN' }] };
-    lesson4.exercises[5].starter = { blocks: [...lesson4Route.slice(0, 3), { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }, { type: 'say', text: 'המשלוח הגיע' }] };
-    lesson4.exercises[5].criteria.forEach(criterion => {
-      if (criterion.type === 'secondMove') criterion.steps = 3;
-    });
+    lesson4.exercises[5].starter = { blocks: [...lesson4Route.slice(0, 5), { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }, { type: 'say', text: 'המשלוח הגיע' }] };
+    lesson4.exercises[5].criteria = lesson4.exercises[5].criteria.filter(criterion => criterion.type !== 'secondMove');
+    lesson4.exercises[5].criteria.unshift({ label: 'אחרי התיקון השליח עוצר בתחנה', type: 'reachedStation', radius: 20 });
+    lesson4.exercises[5].hint = 'השליח עובר את התחנה. בדקו את התנועה האחרונה, אחרי הפנייה השנייה.';
     // Exercise 2 only adds the turn; the move after it is exercise 3's step.
     lesson4.exercises[1].mission = 'הוסיפו פנייה אחת אחרי התנועה הראשונה, בפינה שבה השביל משנה כיוון.';
     lesson4.exercises[1].criteria = lesson4.exercises[1].criteria.filter(criterion => criterion.type !== 'turnBeforeSecondMove');
     Object.assign(lesson4.exercises[2], {
-      mission: 'הוסיפו תנועה אחרי הפנייה כך שהשליח יגיע בדיוק לתחנה. בשלב הזה עוד לא מניחים חבילה.',
-      check: 'יש שתי תנועות, והשליח מגיע לתחנה.',
+      mission: 'השלימו את המסלול מהפנייה ועד התחנה. שימו לב: בדרך יש עוד פינה. בשלב הזה עוד לא מניחים חבילה.',
+      hint: 'אחרי הפנייה הראשונה נוסעים עד הפינה הבאה, פונים שוב, וממשיכים עד התחנה. בדקו לאיזה צד הפנייה השנייה.',
+      check: 'המסלול עם שתי הפניות מגיע לתחנה.',
       criteria: [
-        { label: 'יש שתי תנועות במסלול', type: 'moveCount', min: 2 },
+        { label: 'יש שלוש תנועות במסלול', type: 'moveCount', min: 3 },
         { label: 'השליח מגיע לתחנת היעד', type: 'reachedStation' }
       ],
     });
