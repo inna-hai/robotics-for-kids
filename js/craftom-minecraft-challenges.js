@@ -2399,6 +2399,17 @@
       hint: 'אי אפשר להחליף בין הבלוקים שב-then וב-else, אבל אפשר לשנות את השאלה שהתנאי שואל.',
     });
     lesson9.exercises[4].criteria.push({ label: 'שינוי אחד בלבד, בלי להזיז בלוקים', type: 'sameStructure' });
+    // The challenge starts from a fresh board and asks the inverted question ("is the road blocked?"),
+    // so the student has to decide what goes in then and what goes in else.
+    Object.assign(lesson9.exercises[5], {
+      title: 'אתגר קטן - חוק עם שאלה הפוכה',
+      mission: 'האתגר מתחיל מלוח חדש. בנו חוק מלא שבו התנאי שואל "האם הדרך חסומה?" (false) ולא "האם הדרך פתוחה?". כשהדרך חסומה השליח לא זז ומודיע על החסימה. כשהיא פתוחה הוא נוסע, מניח חבילה ומודיע שהמשלוח הגיע. הבדיקה מריצה את הקוד בשני המצבים.',
+      hint: 'כשהתנאי שואל אם הדרך חסומה, then מתבצע כשהיא חסומה, ו-else מתבצע כשהיא פתוחה.',
+      debugStart: true,
+      freshStartMessage: 'האתגר מתחיל מלוח חדש.',
+      starter: { command: 'status', blocks: [{ type: 'teleport' }] },
+    });
+    lesson9.exercises[5].criteria.push({ label: 'התנאי שואל אם הדרך חסומה', type: 'conditionState', state: 'BLOCKED' });
   }
 
   // Lesson 7: the delivery point is 4 steps from the warehouse. Exercise 2 still opens with a 5-step move,

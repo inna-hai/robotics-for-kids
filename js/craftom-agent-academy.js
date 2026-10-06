@@ -63,7 +63,7 @@
       case 'teleportOutsideRepeat': return 'בכל סיבוב השליח ממשיך מהמקום שבו עצר';
       case 'sayAfterLoop': return 'הודעת הסיום מופיעה פעם אחת';
       case 'condition': return 'הקוד בודק את מצב הדרך';
-      case 'conditionState': return (criterion.state || 'OPEN') === 'OPEN' ? 'הקוד מגיב כשהדרך פתוחה' : 'הקוד מגיב כשהדרך חסומה';
+      case 'conditionState': return (criterion.state || 'OPEN') === 'OPEN' ? 'הקוד מגיב כשהדרך פתוחה' : 'התנאי שואל אם הדרך חסומה';
       case 'thenSay': return 'כשהתנאי מתקיים מופיעה הודעה';
       case 'elseBranch': return 'כשהתנאי לא מתקיים קורה משהו אחר';
       case 'elseSay': return 'כשהתנאי לא מתקיים מופיעה הודעה';
