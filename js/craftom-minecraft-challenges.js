@@ -2273,7 +2273,7 @@
       ],
     });
     Object.assign(lesson2.exercises[1], {
-      mission: 'השליח פנה במקום. הוסיפו לפני הפנייה תנועה קדימה של 4 צעדים, כך שהוא יגיע קודם לפינה ורק שם יפנה.',
+      mission: 'השליח פנה במקום. עכשיו הוא צריך להגיע קודם לפינה של השביל, ורק שם לפנות.',
       check: 'התנועה הראשונה היא 4 צעדים, והיא לפני הפנייה.',
       criteria: [
         { label: 'התנועה הראשונה היא 4 צעדים קדימה', type: 'firstMove', direction: 'FORWARD', steps: 4 },
@@ -2331,7 +2331,7 @@
     });
     Object.assign(lesson4.exercises[3], {
       title: 'תרגיל 4 - מניחים חבילה בתחנה',
-      mission: 'השליח כבר מגיע לתחנה. הוסיפו בסוף הרצף ״הנחת חבילה״ ובחרו למטה, כך שהחבילה תונח על הרצפה בתחנה.',
+      mission: 'השליח כבר מגיע לתחנה. עכשיו הוא צריך להשאיר בה חבילה, על הרצפה של התחנה.',
       hint: 'בלוק ״הנחת חבילה״ נמצא בקטגוריית Agent. הוא נכנס בסוף, אחרי התנועה האחרונה.',
       check: 'השליח מגיע לתחנה ומניח בה חבילה למטה.',
     });
@@ -2365,7 +2365,7 @@
   // Lesson 5 exercise 4 only changes the number of rounds; the message after the loop is exercise 5's step.
   {
     const exercise = detailsByChallenge[2][0].academy.exercises[3];
-    exercise.mission = 'שנו את מספר הסיבובים בלולאה ל-3, הריצו וראו שהמספר שולט בכמות העבודה.';
+    exercise.mission = 'עכשיו השליח צריך להניח 3 חבילות במקום 2. הריצו וראו מה שולט בכמות העבודה.';
     exercise.check = 'הלולאה מוגדרת ל-3, ומונחות 3 חבילות.';
     exercise.criteria = exercise.criteria.filter(criterion => criterion.type !== 'arrivalSay');
   }
@@ -2379,7 +2379,7 @@
       criteria: lesson9.exercises[0].criteria.filter(criterion => criterion.type !== 'thenSay'),
     });
     Object.assign(lesson9.exercises[1], {
-      mission: 'בתוך then הוסיפו player say עם הודעה שמדווחת שהדרך פתוחה. ודאו שבבלוק כתוב routeOpen is true, והריצו כשהדרך פתוחה כדי לראות את ההודעה.',
+      mission: 'כשהדרך פתוחה, השליח מודיע שהדרך פתוחה. הריצו כשהדרך פתוחה כדי לראות את ההודעה.',
       criteria: [
         { label: 'התנאי בודק שהדרך פתוחה (true)', type: 'conditionState', state: 'OPEN' },
         { label: 'יש הודעה בתוך then', type: 'thenSay' },
@@ -2417,7 +2417,7 @@
     const cycle = [{ type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'place', direction: 'DOWN' }, { type: 'move', direction: 'BACK', steps: 4 }];
     Object.assign(lesson7.exercises[4], {
       title: 'תרגיל 5 - הודעה בכל סיבוב',
-      mission: 'הפעם ההודעה נכנסת בתוך הלולאה: אחרי הנחת החבילה הוסיפו הודעה שהחבילה נמסרה. הריצו ושימו לב כמה פעמים ההודעה מופיעה, ולמה.',
+      mission: 'הפעם השליח מודיע שהחבילה נמסרה בכל סיבוב, מיד אחרי שהוא מניח אותה. הריצו ושימו לב כמה פעמים ההודעה מופיעה, ולמה.',
       hint: 'בלוק שנמצא בתוך הלולאה רץ בכל סיבוב. גררו את ״הודעה בצ׳אט״ לתוך הלולאה, מתחת ל״הנחת חבילה״.',
       check: 'בכל סיבוב מופיעה הודעת מסירה.',
       criteria: [
@@ -2444,7 +2444,7 @@
   // (lesson 1 ex5, lesson 2 ex6 at the corner) and at the end (lesson 1 ex4, lesson 3 ex5).
   Object.assign(detailsByChallenge[1][1].academy.exercises[5], {
     title: 'אתגר קטן - הודעה בפינה',
-    mission: 'השליח מודיע כשהוא מגיע לפינה. הוסיפו הודעה בפינה, בין שתי התנועות, וודאו שהמסלול ממשיך עד התחנה.',
+    mission: 'כשהשליח מגיע לפינה הוא מודיע על כך, ואז ממשיך עד התחנה.',
     hint: 'ההודעה נכנסת אחרי התנועה הראשונה ולפני התנועה השנייה. אפשר לשים אותה לפני הפנייה או אחריה.',
     check: 'יש הודעה בפינה, והשליח מגיע לתחנה.',
     criteria: [
@@ -2455,7 +2455,7 @@
   });
   Object.assign(detailsByChallenge[1][3].academy.exercises[4], {
     title: 'תרגיל 5 - הודעה לפני היציאה',
-    mission: 'לפני שהשליח יוצא לדרך הוא מודיע לאן הוא נוסע. הוסיפו הודעה בתחילת הקוד, לפני התנועה הראשונה.',
+    mission: 'לפני שהשליח יוצא לדרך, הוא מודיע לאן הוא נוסע.',
     hint: 'ההודעה נכנסת אחרי הזימון ולפני ״תזוזה״ הראשון. למשל: "יוצא לתחנה עם חבילה".',
     check: 'יש הודעה לפני היציאה, והחבילה מגיעה לתחנה.',
     criteria: [
@@ -2487,7 +2487,7 @@
     lesson10.exercises.forEach(exercise => {
       if (exercise.starter?.blocks) exercise.starter.blocks = replaceTrip(exercise.starter.blocks);
     });
-    lesson10.exercises[1].mission = 'בתוך then בנו את הנסיעה עד התחנה. שימו לב: במסלול הזה יש שתי פניות. כשהדרך חסומה השליח לא זז.';
+    lesson10.exercises[1].mission = 'כשהדרך פתוחה השליח נוסע עד התחנה. שימו לב: במסלול הזה יש שתי פניות. כשהדרך חסומה הוא לא זז.';
   }
 
   // Lesson 5 exercise 1 places two packages by copying blocks (Loops locked), so exercise 2 is the step that turns
@@ -2620,6 +2620,31 @@
     detailsByChallenge[4][2].academy.exercises[1].criteria.forEach(criterion => {
       if (criterion.type === 'firstMove') criterion.label = 'אחרי התיקון השליח פונה בפינה הנכונה';
     });
+  }
+
+  // Missions state the goal (what the courier should do), not which block to drag where, so students think it through.
+  // Blocks are named only where they are introduced for the first time.
+  [
+    [1, 0, 1, 'השליח זז 3 צעדים קדימה, עדיין בלי להגיע לתחנה.'],
+    [1, 2, 0, 'השליח מגיע לתחנה ומשאיר בה חבילה. לשם כך יש בלוק חדש: agent place. יש לו שני כיוונים: down מניח את החבילה על הרצפה מתחת ל-Agent, ו-forward מניח אותה במשבצת שמולו.'],
+    [2, 0, 4, 'בסוף כל המשלוחים, השליח מודיע פעם אחת שהם הסתיימו.'],
+    [2, 1, 1, 'כשהשליח מגיע לתחנה, הוא משאיר בה חבילה על הרצפה.'],
+    [2, 1, 2, 'אחרי המסירה השליח חוזר למחסן.'],
+    [2, 2, 0, 'הקו האוטומטי מתחיל: צרו פקודת start, והשליח נוסע קדימה שוב ושוב בעזרת לולאה.'],
+    [2, 3, 4, 'בסוף הקו, אחרי כל המסירות, השליח מודיע פעם אחת שכל החבילות נמסרו.'],
+    [3, 0, 2, 'כשהדרך חסומה, השליח מודיע שהדרך חסומה. שנו בכפתור את מצב הדרך לחסומה והריצו שוב. שימו לב: בתפריט של בלוק התנאי אפשר לבחור מה הוא שואל: האם הדרך פתוחה (true) או האם היא חסומה (false). כשמשנים את השאלה, מה שהיה מתבצע ב-then עובר להתבצע במצב השני, בלי להזיז אף בלוק.'],
+    [3, 0, 3, 'כשהדרך פתוחה השליח נוסע עד התחנה ומניח בה חבילה. כשהיא חסומה הוא לא זז, רק מודיע.'],
+    [3, 1, 0, 'צרו פקודת start. בשיעור הזה השליח מחליט לפני שהוא זז: הקוד בודק קודם אם הדרך פתוחה.'],
+    [3, 1, 2, 'כשהדרך חסומה, השליח מודיע שהוא ממתין לפתיחת הדרך.'],
+    [3, 2, 0, 'צרו פקודת test שבודקת את מצב הדרך. כשהדרך חסומה, השליח מודיע על כך. בשיעור הזה מתמקדים במה שעושים כשהדרך חסומה.'],
+    [3, 2, 1, 'כשהדרך פתוחה השליח נוסע ישר עד התחנה. כשהיא חסומה הוא עדיין רק מודיע ולא זז.'],
+  ].forEach(([challengeId, lessonIndex, exerciseIndex, mission]) => {
+    detailsByChallenge[challengeId][lessonIndex].academy.exercises[exerciseIndex].mission = mission;
+  });
+  // Returning to the warehouse can be done by driving back or by turning around, so only the result is checked.
+  {
+    const exercise = detailsByChallenge[2][1].academy.exercises[2];
+    exercise.criteria = exercise.criteria.filter(criterion => criterion.type !== 'secondMove');
   }
 
   const program = {
