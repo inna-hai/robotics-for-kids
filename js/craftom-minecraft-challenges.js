@@ -2387,6 +2387,19 @@
     lesson9.exercises[1].starter = { command: 'status', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [], else: [] }] };
   }
 
+  // Lesson 7: the delivery point is 4 steps from the warehouse. Exercise 2 still opens with a 5-step move,
+  // so the student has to find the right distance; the later exercises start from the 4-step cycle.
+  detailsByChallenge[2][2].academy.exercises.forEach((exercise, index) => {
+    if (exercise.dropPoints) exercise.dropPoints = exercise.dropPoints.map(point => (point === 5 ? 4 : point));
+    (exercise.criteria || []).forEach(criterion => { if (criterion.dx === 5) criterion.dx = 4; });
+    if (index === 1) return;
+    const walk = blocks => (blocks || []).forEach(block => {
+      if (block.type === 'move' && block.steps === 5) block.steps = 4;
+      walk(block.blocks);
+    });
+    walk(exercise.starter?.blocks);
+  });
+
   // Lesson 5 exercise 1 places two packages by copying blocks (Loops locked), so exercise 2 is the step that turns
   // the copied code into a loop. Set after the refinements, which would otherwise add a repeat requirement here too.
   Object.assign(detailsByChallenge[2][0].academy.exercises[0], {
