@@ -2430,6 +2430,31 @@
     lesson7.exercises[5].starter = { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [...cycle.slice(0, 2), { type: 'say', text: 'החבילה נמסרה' }, cycle[2]] }] };
   }
 
+  // Messages in lessons 1-4 appear in different places: at the start (lesson 1 ex1, lesson 4 ex5), in the middle
+  // (lesson 1 ex5, lesson 2 ex6 at the corner) and at the end (lesson 1 ex4, lesson 3 ex5).
+  Object.assign(detailsByChallenge[1][1].academy.exercises[5], {
+    title: 'אתגר קטן - הודעה בפינה',
+    mission: 'השליח מודיע כשהוא מגיע לפינה. הוסיפו הודעה בפינה, בין שתי התנועות, וודאו שהמסלול ממשיך עד התחנה.',
+    hint: 'ההודעה נכנסת אחרי התנועה הראשונה ולפני התנועה השנייה. אפשר לשים אותה לפני הפנייה או אחריה.',
+    check: 'יש הודעה בפינה, והשליח מגיע לתחנה.',
+    criteria: [
+      { label: 'השליח מגיע לתחנה', type: 'reachedStation' },
+      { label: 'מופיעה הודעה בפינה', type: 'sayBetweenMoves' },
+      { label: 'השליח פונה בפינה הנכונה', type: 'turnBeforeSecondMove' }
+    ],
+  });
+  Object.assign(detailsByChallenge[1][3].academy.exercises[4], {
+    title: 'תרגיל 5 - הודעה לפני היציאה',
+    mission: 'לפני שהשליח יוצא לדרך הוא מודיע לאן הוא נוסע. הוסיפו הודעה בתחילת הקוד, לפני התנועה הראשונה.',
+    hint: 'ההודעה נכנסת אחרי הזימון ולפני ״תזוזה״ הראשון. למשל: "יוצא לתחנה עם חבילה".',
+    check: 'יש הודעה לפני היציאה, והחבילה מגיעה לתחנה.',
+    criteria: [
+      { label: 'מופיעה הודעה לפני שהשליח יוצא', type: 'sayBeforeFirstMove' },
+      { label: 'השליח מגיע לתחנה', type: 'reachedStation' },
+      { label: 'החבילה מגיעה לתחנה', type: 'packageNearStation' }
+    ],
+  });
+
   // Lesson 5 exercise 1 places two packages by copying blocks (Loops locked), so exercise 2 is the step that turns
   // the copied code into a loop. Set after the refinements, which would otherwise add a repeat requirement here too.
   Object.assign(detailsByChallenge[2][0].academy.exercises[0], {

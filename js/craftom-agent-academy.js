@@ -779,6 +779,12 @@
       return state.says.length > 1 && last?.type === 'say' && (isSuccessMessage(last.text) || isOpeningMessage(last.text));
     }
     if (criterion.type === 'maxBlocks') return workspace.getAllBlocks(false).length <= Number(criterion.max);
+    // A message before the courier sets off: it comes before the first move.
+    if (criterion.type === 'sayBeforeFirstMove') {
+      const types = state.actions.map(action => action.type);
+      const firstMove = types.indexOf('move');
+      return firstMove > -1 && state.actions.some((action, index) => index < firstMove && action.type === 'say' && String(action.text || '').trim());
+    }
     // A message inside the loop: it shows once in every round.
     if (criterion.type === 'sayInRepeat') return state.actions.filter(action => action.type === 'say' && action.inRepeat && isSuccessMessage(action.text)).length >= Number(criterion.min || 2);
     if (criterion.type === 'sayCount') return state.says.filter(isSuccessMessage).length >= Number(criterion.min || 1);
