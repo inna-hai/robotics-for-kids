@@ -2391,7 +2391,7 @@
   // the copied code into a loop. Set after the refinements, which would otherwise add a repeat requirement here too.
   Object.assign(detailsByChallenge[2][0].academy.exercises[0], {
     title: 'תרגיל 1 - שתי חבילות',
-    mission: 'צרו פקודת start שבה השליח מניח 2 חבילות בשני מקומות על הדרך: הוא זז קדימה ומניח חבילה, ואז זז שוב קדימה ומניח חבילה נוספת.',
+    mission: 'צרו פקודת start שבה השליח מניח 2 חבילות בשני מקומות שונים על הדרך. בין שתי ההנחות השליח צריך לזוז.',
     hint: 'אחרי ההתחלה צריך פעמיים את אותו זוג בלוקים: move ואחריו place.',
     check: 'יש פקודת start, והשליח מניח שתי חבילות.',
     hideLoops: true,
@@ -2402,6 +2402,12 @@
     ],
   });
   detailsByChallenge[2][0].academy.exercises[1].criteria.push({ label: 'החבילות מונחות בשני מקומות שונים', type: 'packagesApart', min: 2 });
+  // Exercise 2 is about the loop; the chat command was already checked in exercise 1.
+  {
+    const exercise = detailsByChallenge[2][0].academy.exercises[1];
+    exercise.criteria = exercise.criteria.filter(criterion => criterion.type !== 'command');
+    exercise.mission = exercise.mission.replace(/\s*ודאו שפקודת הצ׳אט היא start\./, '');
+  }
   detailsByChallenge[2][0].academy.exercises[1].starter = { command: 'start', blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 2 }, { type: 'place', direction: 'DOWN' }, { type: 'move', direction: 'FORWARD', steps: 2 }, { type: 'place', direction: 'DOWN' }] };
 
   // Lessons 14-16 get detailed missions: what is already on the board, what to add and where, and what to expect in the run.
