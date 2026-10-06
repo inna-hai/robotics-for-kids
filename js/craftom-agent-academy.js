@@ -808,6 +808,11 @@
       const lastMoveAction = state.actions.map(action => action.type).lastIndexOf('move');
       return lastMoveAction > -1 && state.actions.some((action, index) => index > lastMoveAction && action.type === 'say' && isSuccessMessage(action.text));
     }
+    // Packages placed in different places (the courier moved between them), not stacked on one cell.
+    if (criterion.type === 'packagesApart') {
+      const spots = new Set(state.packages.map(pkg => `${Math.round(pkg.x / cell)}:${Math.round(pkg.y / cell)}`));
+      return spots.size >= Number(criterion.min || 2);
+    }
     // A message in the middle of the trip: there is a move before it and another move after it.
     if (criterion.type === 'sayBetweenMoves') {
       const types = state.actions.map(action => action.type);

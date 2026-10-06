@@ -2397,9 +2397,11 @@
     hideLoops: true,
     criteria: [
       { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' },
-      { label: 'השליח מניח 2 חבילות', type: 'placeCount', min: 2 }
+      { label: 'השליח מניח 2 חבילות', type: 'placeCount', min: 2 },
+      { label: 'החבילות מונחות בשני מקומות שונים', type: 'packagesApart', min: 2 }
     ],
   });
+  detailsByChallenge[2][0].academy.exercises[1].criteria.push({ label: 'החבילות מונחות בשני מקומות שונים', type: 'packagesApart', min: 2 });
   detailsByChallenge[2][0].academy.exercises[1].starter = { command: 'start', blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 2 }, { type: 'place', direction: 'DOWN' }, { type: 'move', direction: 'FORWARD', steps: 2 }, { type: 'place', direction: 'DOWN' }] };
 
   // Lessons 14-16 get detailed missions: what is already on the board, what to add and where, and what to expect in the run.
