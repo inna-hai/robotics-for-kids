@@ -2667,6 +2667,14 @@
       { label: 'הודעת הסיום מופיעה פעם אחת', type: 'sayOnce' }
     ]);
   }
+  // Lesson 11 exercise 5: both branches end at the station, so one place block after the if serves both states
+  // (what is outside the condition runs in every state).
+  {
+    const exercise = detailsByChallenge[3][2].academy.exercises[4];
+    exercise.mission = 'בשני המצבים השליח מניח חבילה בתחנה: גם אחרי הנסיעה הישרה וגם אחרי העקיפה. נסו להשתמש בבלוק אחד בלבד של הנחת חבילה.';
+    exercise.hint = 'מה שנמצא מחוץ לתנאי מתבצע בכל מצב, גם כשהדרך פתוחה וגם כשהיא חסומה.';
+    exercise.criteria = exercise.criteria.concat([{ label: 'בקוד יש בלוק אחד בלבד של הנחת חבילה', type: 'placeBlockCount', max: 1 }]);
+  }
   // Returning to the warehouse can be done by driving back or by turning around, so only the result is checked.
   {
     const exercise = detailsByChallenge[2][1].academy.exercises[2];
