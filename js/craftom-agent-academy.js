@@ -80,6 +80,20 @@
     });
   });
 
+  // Exercises that check the code in both road states also require the student to run it in both states
+  // themselves (switching the road with the button), not only the background check.
+  const openStateTypes = ['openSays', 'openDelivers', 'openArrivalSay', 'openReaches'];
+  const blockedStateTypes = ['blockedSays', 'blockedStays', 'blockedReaches', 'blockedDelivers', 'blockedAvoidsBarrier', 'blockedSaysAbout'];
+  academy.exercises?.forEach(exercise => {
+    const types = (exercise.criteria || []).map(criterion => criterion.type);
+    if (types.some(type => openStateTypes.includes(type)) && types.some(type => blockedStateTypes.includes(type))) {
+      exercise.criteria.push({ label: 'הרצתם בשני מצבי הדרך', type: 'ranBothStates' });
+    }
+  });
+  // Road states the student ran with the current code (reset when the code or the exercise changes).
+  let ranStates = new Set();
+  let ranStatesCode = '';
+
   // Only the switch from deliver to start is explained; other lessons keep their missions short on purpose.
   const chatCommand = academy.command || 'deliver';
   const previousLesson = Number(lesson.id) > 1 ? window.getCraftomMinecraftLesson?.(Number(lesson.id) - 1) : null;
@@ -805,6 +819,7 @@
       const after = state.actions.filter(action => action.type === 'say' && !action.inRepeat).map(action => clean(action.text));
       return inside.size > 0 && after.some(text => text && !inside.has(text));
     }
+    if (criterion.type === 'ranBothStates') return ranStates.size >= 2;
     // No extra messages: outside the loop there is only the one finish message.
     if (criterion.type === 'noExtraSays') return state.actions.filter(action => action.type === 'say' && !action.inRepeat).length === 1;
     // Exactly one message during the whole run (a finish message must not repeat every round).
@@ -1437,6 +1452,8 @@
     const boardXml = lastRunBoardXml;
     checksEl.innerHTML = checks.map(check => `<div class="${check.pass ? 'pass' : 'fail'}"><span>${check.pass ? '✓' : '·'}</span>${esc(heText(check.label))}</div>`).join('');
     const passed = checks.length > 0 && checks.every(check => check.pass);
+    const failedChecks = checks.filter(check => !check.pass);
+    const onlyBothStatesMissing = failedChecks.length === 1 && failedChecks[0].label === 'הרצתם בשני מצבי הדרך';
     if (passed) {
       if (boardXml) {
         passedBoards[activeExercise] = boardXml;
@@ -1452,7 +1469,9 @@
       ? 'כל תרגילי האקדמיה הושלמו וההתקדמות נשמרה. אפשר לחזור לשיעור.'
       : passed
         ? 'התרגיל עבר וההצלחה נשמרה.'
-        : 'עוד לא. הסתכלו על ההדמיה, תקנו בלוק אחד והריצו שוב.';
+        : onlyBothStatesMissing
+          ? 'נראה טוב! עכשיו החליפו את מצב הדרך בכפתור שמעל ההדמיה והריצו שוב.'
+          : 'עוד לא. הסתכלו על ההדמיה, תקנו בלוק אחד והריצו שוב.';
     feedbackEl.className = `academy-feedback ${passed ? 'pass' : 'fail'}`;
     renderAcademyCompletion();
   }
@@ -1515,6 +1534,11 @@
   function runAndCheck(options = {}) {
     const animate = options.animate !== false;
     updatePython();
+    if (routeToggle) {
+      const code = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace));
+      if (code !== ranStatesCode) { ranStates = new Set(); ranStatesCode = code; }
+      ranStates.add(worldRouteOpen ? 'open' : 'blocked');
+    }
     const state = runProgram();
     const checks = evaluate(state);
     lastRunBoardXml = currentBoardXml();
@@ -1583,6 +1607,8 @@
   // exercise has a newer correct solution, the exercise restarts from it.
   function openExercise() {
     workspace.updateToolbox(toolboxXml());
+    ranStates = new Set();
+    ranStatesCode = '';
     // Exercises about getting around the barrier open with the road blocked, so the barrier is visible right away.
     const detourCriteria = ['blockedReaches', 'blockedAvoidsBarrier', 'blockedDelivers'];
     if (routeToggle && (academy.exercises[activeExercise]?.criteria || []).some(criterion => detourCriteria.includes(criterion.type))) {
