@@ -1672,6 +1672,18 @@
       gateAngle = gateClosedAngle;
       renderRouteToggle();
     }
+    // Exercises that do not check the road state keep the road open and hide the switch, so a closed barrier
+    // can never be driven through in an exercise that does not deal with it.
+    if (routeToggle) {
+      const stateTypes = [...openStateTypes, ...blockedStateTypes];
+      const checksRoadState = (academy.exercises[activeExercise]?.criteria || []).some(criterion => stateTypes.includes(criterion.type));
+      routeToggle.style.display = checksRoadState ? '' : 'none';
+      if (!checksRoadState && !worldRouteOpen) {
+        worldRouteOpen = true;
+        gateAngle = gateOpenAngle;
+        renderRouteToggle();
+      }
+    }
     const entry = entryBoardXml(activeExercise);
     const keepWork = savedBoards[activeExercise] && (boardBasis[activeExercise] === undefined || boardBasis[activeExercise] === entry);
     boardBasis[activeExercise] = entry;
