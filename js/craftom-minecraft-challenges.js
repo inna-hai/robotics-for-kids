@@ -2289,6 +2289,15 @@
     });
   }
 
+  // Lesson 3: exercise 1 adds a package in any direction; exercise 2 opens with a forward placement to change to down
+  // (the place block defaults to down, so continuing from exercise 1 would already pass).
+  {
+    const lesson3 = detailsByChallenge[1][2].academy;
+    lesson3.exercises[0].mission = lesson3.exercises[0].mission.replace(/\s*ודאו שהחבילה מונחת למטה \(down\)\./, '');
+    lesson3.exercises[0].criteria = lesson3.exercises[0].criteria.filter(criterion => criterion.type !== 'placeDirection');
+    lesson3.exercises[1].debugStart = true;
+  }
+
   // Lesson 4: exercise 3 only reaches the station, exercise 4 adds the package there, exercise 6 opens with a bug.
   {
     const lesson4 = detailsByChallenge[1][3].academy;
