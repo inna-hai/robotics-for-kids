@@ -2749,7 +2749,7 @@
     [2, 1, 3, 'תרגיל 4 - דיבוג', 'אחרי המסירה השליח צריך לחזור עד המחסן, אבל משהו בקוד לא עובד.'],
     [4, 1, 4, 'תרגיל 5 - דיבוג', 'השליח צריך להביא את החבילה עד המערכת החדשה (התחנה), אבל משהו בקוד לא עובד. ההודעה שבסוף כבר קיימת, השאירו אותה.'],
     [4, 2, 1, 'תרגיל 2 - דיבוג', 'הבדיקה צריכה להראות שהחבילה מגיעה לתחנה, אבל היא נכשלת. אחרי התיקון הוסיפו בסוף ״הודעה בצ׳אט״ עם תוצאת הבדיקה.'],
-    [4, 2, 4, 'תרגיל 5 - דיבוג', 'הבדיקה צריכה לעבור: השליח מביא את החבילה עד התחנה. אבל משהו בקוד לא עובד. ההודעה שבסוף כבר קיימת, השאירו אותה.'],
+    [4, 2, 4, 'תרגיל 5 - דיבוג', 'הבדיקה צריכה לעבוד בשני מצבי הדרך: כשהדרך פתוחה השליח מוסר את החבילה בתחנה וחוזר למחסן, וכשהיא חסומה הוא נשאר במחסן. אבל בקוד הזה יש כמה טעויות. הריצו ובדקו בשני מצבי הדרך.'],
     [4, 3, 4, 'תרגיל 5 - דיבוג', 'רגע לפני ההצגה: השליח צריך להביא את החבילה עד התחנה, אבל משהו בקוד לא עובד. ההודעה שבסוף כבר קיימת, השאירו אותה.'],
   ].forEach(([challengeId, lessonIndex, exerciseIndex, title, goal]) => {
     const exercise = detailsByChallenge[challengeId][lessonIndex].academy.exercises[exerciseIndex];
@@ -2815,6 +2815,22 @@
     const exercise = detailsByChallenge[2][1].academy.exercises[2];
     exercise.criteria = exercise.criteria.filter(criterion => criterion.type !== 'secondMove');
   }
+
+  // Lesson 15 exercise 5: a debug exercise with the condition, like the exercises around it. Bugs: the leg after
+  // the turn is too short (twice), and the return trip sits after the if, so it also runs when the road is blocked.
+  Object.assign(detailsByChallenge[4][2].academy.exercises[4], {
+    hint: 'בדקו מה קורה כשהדרך חסומה: האם יש בלוקים שמתבצעים גם אז? ובדקו כמה צעדים יש אחרי הפנייה.',
+    starter: { command: 'test', blocks: [
+      { type: 'teleport' },
+      { type: 'ifRoute', state: 'OPEN', then: [{ type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 1 }, { type: 'place', direction: 'DOWN' }], else: [{ type: 'say', text: 'הבדיקה נעצרה, הדרך חסומה' }] },
+      { type: 'move', direction: 'BACK', steps: 1 }, { type: 'turn', turn: 'LEFT_TURN' }, { type: 'move', direction: 'BACK', steps: 5 }
+    ] },
+    criteria: [
+      { label: 'כשהדרך פתוחה החבילה מונחת בתחנה', type: 'openDelivers' },
+      { label: 'כשהדרך פתוחה השליח חוזר למחסן', type: 'openReturns' },
+      { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' }
+    ],
+  });
 
   const program = {
     title: 'אקדמיית ה-Agent במיינקראפט',
