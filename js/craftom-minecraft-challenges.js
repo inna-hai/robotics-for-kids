@@ -2751,7 +2751,7 @@
     [4, 1, 4, 'תרגיל 5 - דיבוג', 'השליח צריך להביא את החבילה עד המערכת החדשה (התחנה), אבל משהו בקוד לא עובד. ההודעה שבסוף כבר קיימת, השאירו אותה.'],
     [4, 2, 1, 'תרגיל 2 - דיבוג', 'הבדיקה צריכה להראות שהחבילה מגיעה לתחנה, אבל היא נכשלת. אחרי התיקון הוסיפו בסוף ״הודעה בצ׳אט״ עם תוצאת הבדיקה.'],
     [4, 2, 4, 'תרגיל 5 - דיבוג', 'הבדיקה צריכה לעבוד בשני מצבי הדרך: כשהדרך פתוחה השליח מוסר את החבילה בתחנה וחוזר למחסן, וכשהיא חסומה הוא נשאר במחסן. אבל בקוד הזה יש כמה טעויות. הריצו ובדקו בשני מצבי הדרך.'],
-    [4, 3, 4, 'תרגיל 5 - דיבוג', 'רגע לפני ההצגה: השליח צריך להביא את החבילה עד התחנה, אבל משהו בקוד לא עובד. ההודעה שבסוף כבר קיימת, השאירו אותה.'],
+    [4, 3, 4, 'תרגיל 5 - דיבוג', 'רגע לפני ההצגה: כשהדרך פתוחה השליח צריך לנסוע לאורך השביל ולמסור את החבילות בתחנה, וכשהיא חסומה להישאר במחסן ולהסביר למבקרים. אבל בקוד הזה יש כמה טעויות. הריצו ובדקו בשני מצבי הדרך.'],
   ].forEach(([challengeId, lessonIndex, exerciseIndex, title, goal]) => {
     const exercise = detailsByChallenge[challengeId][lessonIndex].academy.exercises[exerciseIndex];
     exercise.title = title;
@@ -2830,6 +2830,23 @@
       { label: 'כשהדרך פתוחה החבילה מונחת בתחנה', type: 'openDelivers' },
       { label: 'כשהדרך פתוחה השליח חוזר למחסן', type: 'openReturns' },
       { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' }
+    ],
+  });
+
+  // Lesson 16 exercise 5: a debug exercise with the condition, like exercise 4 before it. Bugs: the first turn goes
+  // the wrong way, and the last leg and the delivery sit after the if, so they also run when the road is blocked.
+  Object.assign(detailsByChallenge[4][3].academy.exercises[4], {
+    hint: 'בדקו מה קורה כשהדרך חסומה: האם יש בלוקים שמתבצעים גם אז? ועקבו אחרי השליח בכל פינה של השביל.',
+    starter: { command: 'demo', blocks: [
+      { type: 'teleport' },
+      { type: 'ifRoute', state: 'OPEN', then: [{ type: 'move', direction: 'FORWARD', steps: 2 }, { type: 'turn', turn: 'LEFT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'turn', turn: 'LEFT_TURN' }], else: [{ type: 'say', text: 'הדרך חסומה, נחכה' }] },
+      { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'repeat', times: 3, blocks: [{ type: 'place', direction: 'DOWN' }] }
+    ] },
+    criteria: [
+      { label: 'כשהדרך פתוחה החבילה מונחת בתחנה', type: 'openDelivers' },
+      { label: 'השליח נוסע לאורך השביל', type: 'followsRoute' },
+      { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' },
+      { label: 'כשהדרך חסומה מופיעה הודעה על החסימה', type: 'blockedSays' }
     ],
   });
 
