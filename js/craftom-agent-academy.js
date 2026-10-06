@@ -103,7 +103,7 @@
 
   // Exercises that check the code in both road states also require the student to run it in both states
   // themselves (switching the road with the button), not only the background check.
-  const openStateTypes = ['openSays', 'openDelivers', 'openArrivalSay', 'openReaches'];
+  const openStateTypes = ['openSays', 'openDelivers', 'openArrivalSay', 'openReaches', 'openReturns', 'openSayAfterReturn'];
   const blockedStateTypes = ['blockedSays', 'blockedStays', 'blockedReaches', 'blockedDelivers', 'blockedAvoidsBarrier', 'blockedSaysAbout'];
   academy.exercises?.forEach(exercise => {
     const types = (exercise.criteria || []).map(criterion => criterion.type);
@@ -815,6 +815,13 @@
     if (criterion.type === 'blockedSaysAbout') return runProgram(false).says.some(isBlockedMessage);
     if (criterion.type === 'blockedSays') return runProgram(false).says.some(isBlockedMessage);
     if (criterion.type === 'openArrivalSay') return hasDeliveryMessage(runProgram(true));
+    // Open road: the courier ends back at the warehouse, and the result message comes after that return trip.
+    if (criterion.type === 'openReturns') return isNear(runProgram(true), start, criterion.radius || stationRadius);
+    if (criterion.type === 'openSayAfterReturn') {
+      const run = runProgram(true);
+      const lastMove = run.actions.map(action => action.type).lastIndexOf('move');
+      return lastMove > -1 && run.actions.some((action, index) => index > lastMove && action.type === 'say' && isSuccessMessage(action.text));
+    }
     if (criterion.type === 'openReaches') return isNear(runProgram(true), station, criterion.radius || stationRadius);
     if (criterion.type === 'blockedReaches') return isNear(runProgram(false), station, criterion.radius || stationRadius);
     if (criterion.type === 'blockedDelivers') return runProgram(false).packages.some(pkg => isNear(pkg, station, criterion.radius || stationRadius));
