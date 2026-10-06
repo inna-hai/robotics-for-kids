@@ -2648,7 +2648,7 @@
   // Lesson 6 challenge: the finish message appears once only, after all the rounds.
   {
     const exercise = detailsByChallenge[2][1].academy.exercises[5];
-    exercise.mission = 'השלימו מחזור לולאה מלא: יציאה, מסירה, חזרה והודעת סיום. הודעת הסיום צריכה להופיע פעם אחת בלבד, אחרי כל הסיבובים.';
+    exercise.mission = 'השלימו מחזור לולאה מלא: יציאה, מסירה, חזרה והודעת סיום. הודעת הסיום צריכה להופיע פעם אחת בלבד.';
     exercise.criteria = exercise.criteria.filter(criterion => criterion.type !== 'arrivalSay').concat([
       { label: 'הודעת הסיום מופיעה בסוף', type: 'sayAfterLoop' },
       { label: 'ההודעה מופיעה פעם אחת, בסוף', type: 'sayOnce' }
