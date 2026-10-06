@@ -26,6 +26,24 @@
     routeToggle = document.getElementById('academyRouteToggle');
   }
 
+  // Lessons with several barriers (world.gates) give each barrier its own switch and its own condition variable
+  // (gateAOpen, gateBOpen). An exercise lists the barriers it deals with in exercise.gates; the others stay open.
+  const gateDefs = academy.world?.gates || [];
+  const usesGates = gateDefs.length > 0;
+  const gateToggles = {};
+  if (usesGates) {
+    canvas.insertAdjacentHTML('beforebegin', `<div class="academy-gate-toggles">${gateDefs.map(gate => `<button type="button" class="btn secondary academy-route-toggle" data-gate-toggle="${gate.id}"></button>`).join('')}</div>`);
+    gateDefs.forEach(gate => { gateToggles[gate.id] = document.querySelector(`[data-gate-toggle="${gate.id}"]`); });
+  }
+  const gateTypes = ['gatesDeliver', 'gatesReach', 'gatesNoCrossing', 'gatesBestRoute', 'gatesSayWhenClosed', 'gatesArrivalSay', 'gatesRanAll'];
+  // Exercises with switchable barriers require running every combination of them.
+  academy.exercises?.forEach(exercise => {
+    if (usesGates && (exercise.gates || []).length && !(exercise.criteria || []).some(criterion => criterion.type === 'gatesRanAll')) {
+      const count = 2 ** exercise.gates.length;
+      exercise.criteria.push({ label: count === 2 ? 'הרצתם בשני מצבי המחסום' : `הרצתם בכל ${count} מצבי המחסומים`, type: 'gatesRanAll' });
+    }
+  });
+
   // Loop exercises that count packages must place them from inside the repeat, not by copying place blocks after it.
   academy.exercises?.forEach(exercise => {
     const types = (exercise.criteria || []).map(criterion => criterion.type);
@@ -194,7 +212,7 @@
   const cell = 42;
   // Lessons whose exercises never check the station (e.g. loop lessons that drop packages along the line) hide it,
   // so students don't think the courier missed a target.
-  const stationCriteria = ['reachedStation', 'packageNearStation', 'arrivalSayAfterMove', 'openDelivers', 'openReaches', 'blockedReaches', 'blockedDelivers'];
+  const stationCriteria = ['reachedStation', 'packageNearStation', 'arrivalSayAfterMove', 'openDelivers', 'openReaches', 'blockedReaches', 'blockedDelivers', 'gatesDeliver', 'gatesReach'];
   const showStation = (academy.exercises || []).some(exercise => (exercise.criteria || []).some(criterion => stationCriteria.includes(criterion.type)));
   let activeExercise = 0;
   let visibleMode = 'blocks';
@@ -220,6 +238,7 @@
     mc_say: ['הודעה בצ׳אט', 'כותב הודעה בצ׳אט של המשחק.'],
     mc_repeat: ['לולאה', 'חוזר על הבלוקים שבתוך do מספר פעמים.'],
     mc_if_route_open: ['תנאי', 'בודק אם הדרך פתוחה (true) או חסומה (false). אם התנאי נכון רץ then, ואחרת רץ else.'],
+    mc_if_gate: ['תנאי', 'בודק אם המחסום שבחרתם פתוח (true) או סגור (false). אם התנאי נכון רץ then, ואחרת רץ else. אפשר לשים תנאי בתוך then או else של תנאי אחר.'],
   };
   function withHebrewLabels(definitions) {
     return definitions.map(definition => {
@@ -352,6 +371,21 @@
         nextStatement: null,
         colour: 180,
       },
+      {
+        type: 'mc_if_gate',
+        message0: 'if %1 is %2',
+        args0: [
+          { type: 'field_dropdown', name: 'GATE', options: [['gateAOpen · מחסום א', 'A'], ['gateBOpen · מחסום ב', 'B']] },
+          { type: 'field_dropdown', name: 'STATE', options: [['true · פתוח', 'OPEN'], ['false · סגור', 'BLOCKED']] },
+        ],
+        message1: 'then · אז %1',
+        args1: [{ type: 'input_statement', name: 'DO' }],
+        message2: 'else · אחרת %1',
+        args2: [{ type: 'input_statement', name: 'ELSE' }],
+        previousStatement: null,
+        nextStatement: null,
+        colour: 180,
+      },
     ]));
   }
 
@@ -396,6 +430,13 @@
         const thenBody = (spec.then || []).map(blockFromSpec).filter(Boolean);
         const elseBody = (spec.else || []).map(blockFromSpec).filter(Boolean);
         return blockXml('mc_if_route_open', { STATE: spec.state || 'OPEN' }, statement('DO', chain(thenBody)) + statement('ELSE', chain(elseBody)), next(tail));
+      };
+    }
+    if (spec.type === 'ifGate') {
+      return tail => {
+        const thenBody = (spec.then || []).map(blockFromSpec).filter(Boolean);
+        const elseBody = (spec.else || []).map(blockFromSpec).filter(Boolean);
+        return blockXml('mc_if_gate', { GATE: spec.gate || 'A', STATE: spec.state || 'OPEN' }, statement('DO', chain(thenBody)) + statement('ELSE', chain(elseBody)), next(tail));
       };
     }
     return null;
@@ -450,7 +491,8 @@
   function toolboxXml(exercise = academy.exercises[activeExercise]) {
     const showLoops = !exercise?.hideLoops;
     // Condition blocks appear only in lessons whose exercises use conditions (or that an exercise doesn't hide).
-    const showLogic = usesRouteState && !exercise?.hideLogic;
+    const showLogic = (usesRouteState || usesGates) && !exercise?.hideLogic;
+    const conditionBlock = usesGates ? 'mc_if_gate' : 'mc_if_route_open';
     return `<xml xmlns="https://developers.google.com/blockly/xml">
       <category name="Events" colour="215"><block type="mc_on_chat"><field name="COMMAND">${esc(academy.command || 'deliver')}</field></block></category>
       <category name="Agent" colour="35">
@@ -463,7 +505,7 @@
         <block type="mc_repeat"${showLoops ? '' : ' disabled="true"'}></block>
       </category>
       <category name="Logic" colour="180">
-        <block type="mc_if_route_open"${showLogic ? '' : ' disabled="true"'}></block>
+        <block type="${conditionBlock}"${showLogic ? '' : ' disabled="true"'}></block>
       </category>
       <category name="Player" colour="290"><block type="mc_say"></block></category>
     </xml>`;
@@ -521,6 +563,12 @@
       const value = block.getFieldValue('STATE') === 'BLOCKED' ? 'False' : 'True';
       return `${i}if routeOpen == ${value}:  # אם הדרך ${value === 'True' ? 'פתוחה' : 'חסומה'}\n${statementCode(block.getInputTargetBlock('DO'), level)}\n${i}else:  # אחרת\n${statementCode(block.getInputTargetBlock('ELSE'), level)}`;
     }
+    if (block.type === 'mc_if_gate') {
+      const value = block.getFieldValue('STATE') === 'BLOCKED' ? 'False' : 'True';
+      const gate = block.getFieldValue('GATE') || 'A';
+      const gateHe = gate === 'B' ? 'ב' : 'א';
+      return `${i}if gate${gate}Open == ${value}:  # אם מחסום ${gateHe} ${value === 'True' ? 'פתוח' : 'סגור'}\n${statementCode(block.getInputTargetBlock('DO'), level)}\n${i}else:  # אחרת\n${statementCode(block.getInputTargetBlock('ELSE'), level)}`;
+    }
     return '';
   }
 
@@ -530,10 +578,13 @@
 
   // The city's road state, switched with the button above the simulation in lessons that use if routeOpen.
   let worldRouteOpen = true;
+  // Barrier states in multi-barrier lessons (true = open), switched with one button per barrier.
+  const worldGates = Object.fromEntries(gateDefs.map(gate => [gate.id, true]));
 
-  function defaultState(routeOpen = worldRouteOpen) {
+  function defaultState(routeOpen = worldRouteOpen, gates = worldGates) {
     return {
       routeOpen,
+      gates: { ...gates },
       x: start.x,
       y: start.y,
       heading: 0,
@@ -566,6 +617,7 @@
       conditionBubble,
       bubble: state.bubble,
       routeOpen: state.routeOpen,
+      gates: state.gates,
       x: state.x,
       y: state.y,
       heading: state.heading,
@@ -678,16 +730,66 @@
         state.conditionTtl = 4;
         for (let pause = 0; pause < 3; pause += 1) state.frames.push(visualSnapshot(state));
         walkBlocks(current.getInputTargetBlock(conditionHolds ? 'DO' : 'ELSE'), state);
+      } else if (current.type === 'mc_if_gate') {
+        const gate = current.getFieldValue('GATE') || 'A';
+        const gateState = current.getFieldValue('STATE') || 'OPEN';
+        const hasElse = Boolean(current.getInputTargetBlock('ELSE'));
+        state.conditions.push({ gate, state: gateState, hasElse, depth: state.conditionDepth || 0 });
+        state.actions.push({ type: 'condition', gate, state: gateState, hasElse });
+        const gateOpen = state.gates?.[gate] !== false;
+        const conditionHolds = (gateState === 'OPEN') === gateOpen;
+        state.conditionBubble = {
+          gate,
+          reading: `gate${gate}Open = ${gateOpen ? 'true' : 'false'}`,
+          decision: conditionHolds ? 'התנאי נכון ← מתבצע then' : 'התנאי לא נכון ← מתבצע else',
+          holds: conditionHolds,
+        };
+        state.conditionTtl = 4;
+        for (let pause = 0; pause < 3; pause += 1) state.frames.push(visualSnapshot(state));
+        state.conditionDepth = (state.conditionDepth || 0) + 1;
+        walkBlocks(current.getInputTargetBlock(conditionHolds ? 'DO' : 'ELSE'), state);
+        state.conditionDepth -= 1;
       }
       current = current.getNextBlock();
     }
   }
 
-  function runProgram(routeOpen = worldRouteOpen) {
-    const state = defaultState(routeOpen);
+  function runProgram(routeOpen = worldRouteOpen, gates = worldGates) {
+    const state = defaultState(routeOpen, gates);
     workspace.getTopBlocks(true).forEach(block => walkBlocks(block, state));
     return state;
   }
+
+  // Multi-barrier geometry. Barriers and roads are given in cells from the warehouse ([dx, dy], negative dy is up).
+  const cellPoint = ([dx, dy]) => ({ x: start.x + dx * cell, y: start.y + dy * cell });
+  const gatePoint = gate => cellPoint(gate.cell);
+  // The barriers an exercise deals with; every combination of them is checked (the other barriers stay open).
+  function exerciseGateIds(exercise = academy.exercises[activeExercise]) {
+    return usesGates ? (exercise?.gates || []).filter(id => gateDefs.some(gate => gate.id === id)) : [];
+  }
+  function gateCombos(exercise = academy.exercises[activeExercise]) {
+    const ids = exerciseGateIds(exercise);
+    const combos = [];
+    for (let mask = 0; mask < 2 ** ids.length; mask += 1) {
+      const combo = Object.fromEntries(gateDefs.map(gate => [gate.id, true]));
+      ids.forEach((id, index) => { combo[id] = !(mask & (1 << index)); });
+      combos.push(combo);
+    }
+    return combos;
+  }
+  const comboKey = (combo, ids = exerciseGateIds()) => ids.map(id => `${id}${combo[id] ? 1 : 0}`).join('');
+  // Cells the courier may drive on in a given barrier state: the main road, plus the roads that the route plan
+  // opens for that state (e.g. "barrier A closed" opens A's detour). Driving elsewhere is a longer or wrong way.
+  function allowedCells(combo) {
+    const lanes = academy.world?.lanes || {};
+    const names = new Set(['main']);
+    (academy.world?.routePlan || []).forEach(rule => {
+      if (Object.entries(rule.when || {}).every(([id, open]) => combo[id] === open)) rule.lanes.forEach(name => names.add(name));
+    });
+    return [start, station, ...[...names].flatMap(name => (lanes[name] || []).map(cellPoint))];
+  }
+  const pathCells = run => run.path.map(step => ({ x: step.x2, y: step.y2 }));
+  const crossesClosedGate = (run, combo) => gateDefs.some(gate => combo[gate.id] === false && pathCells(run).some(point => isNear(point, gatePoint(gate), stationRadius)));
 
   // The barrier stands on the first leg of the route, this many cells east of the warehouse (lessons can override).
   const barrierCells = academy.world?.barrierCells || 2.5;
@@ -761,6 +863,7 @@
     return blocks.map(spec => {
       if (spec.type === 'repeat') return `repeat{DO:${specShape(spec.blocks)}}`;
       if (spec.type === 'ifRoute') return `if_route_open{DO:${specShape(spec.then)}|ELSE:${specShape(spec.else)}}`;
+      if (spec.type === 'ifGate') return `if_gate{DO:${specShape(spec.then)}|ELSE:${specShape(spec.else)}}`;
       return names[spec.type] || spec.type;
     }).join(',');
   }
@@ -920,6 +1023,29 @@
         && types.slice(0, index).includes('move') && types.slice(index + 1).includes('move'));
     }
     if (criterion.type === 'staysOnStartRow') return Math.abs(state.y - start.y) < Number(criterion.maxDelta || 8);
+    // Multi-barrier checks run the code in every combination of the exercise's barriers.
+    if (gateTypes.includes(criterion.type)) {
+      const combos = gateCombos();
+      const runs = combos.map(combo => ({ combo, run: runProgram(true, combo) }));
+      if (criterion.type === 'gatesRanAll') return combos.every(combo => ranStates.has(comboKey(combo)));
+      if (criterion.type === 'gatesDeliver') return runs.every(({ run }) => run.packages.some(pkg => isNear(pkg, station, stationRadius)));
+      if (criterion.type === 'gatesReach') return runs.every(({ run }) => isNear(run, station, stationRadius));
+      if (criterion.type === 'gatesNoCrossing') return runs.every(({ run, combo }) => run.path.length > 0 && !crossesClosedGate(run, combo));
+      if (criterion.type === 'gatesBestRoute') {
+        return runs.every(({ run, combo }) => {
+          const cells = allowedCells(combo);
+          return run.path.length > 0 && pathCells(run).every(point => cells.some(tile => isNear(point, tile, stationRadius)));
+        });
+      }
+      // Every closed barrier the courier meets (its condition was checked) gets its own message about going around it.
+      if (criterion.type === 'gatesSayWhenClosed') {
+        return runs.every(({ run, combo }) => {
+          const closedMet = new Set(run.conditions.filter(condition => condition.gate && combo[condition.gate] === false).map(condition => condition.gate)).size;
+          return run.says.filter(isBlockedMessage).length >= closedMet;
+        });
+      }
+      if (criterion.type === 'gatesArrivalSay') return runs.every(({ run }) => hasDeliveryMessage(run));
+    }
     return false;
   }
 
@@ -928,6 +1054,15 @@
     if (exercise?.criteria?.length) {
       // Checks that end up with the same result label are shown once (passing only if all of them pass).
       const merged = new Map();
+      // Multi-barrier lessons: every other check has to hold in every barrier combination of the exercise.
+      if (usesGates) {
+        const comboRuns = gateCombos(exercise).map(combo => runProgram(true, combo));
+        exercise.criteria.forEach(criterion => {
+          const pass = gateTypes.includes(criterion.type) ? criterionPass(state, criterion) : comboRuns.every(run => criterionPass(run, criterion));
+          merged.set(criterion.label, merged.has(criterion.label) ? merged.get(criterion.label) && pass : pass);
+        });
+        return [...merged].map(([label, pass]) => ({ label, pass }));
+      }
       // In road-state lessons, checks that are not about a specific road state (package direction, number of
       // packages, messages...) pass if the code does it in either state, not only in the state of the last run.
       const stateFree = criterion => usesRouteState && !openStateTypes.includes(criterion.type) && !blockedStateTypes.includes(criterion.type) && criterion.type !== 'ranBothStates';
@@ -1005,10 +1140,10 @@
     for (let x = gridX0; x < canvas.width; x += cell) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke(); }
     for (let y = gridY0; y < canvas.height; y += cell) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); }
 
-    [
+    (academy.world?.water || [
       { x: 492, y: 35, w: 88, h: 132 },
       { x: 18, y: 310, w: 132, h: 58 },
-    ].forEach(water => {
+    ]).forEach(water => {
       drawBlock(water.x, water.y, water.w, water.h, '#1d8fd1', '#12669d', 7, 'rgba(12, 74, 110, .42)');
       ctx.fillStyle = 'rgba(191, 219, 254, .42)';
       for (let i = 0; i < water.w; i += 24) ctx.fillRect(water.x + i + 6, water.y + 18, 13, 4);
@@ -1239,9 +1374,8 @@
   let gateAngle = gateOpenAngle;
   let gateAnimating = false;
 
-  function drawBoomGate(lift, blocked) {
-    const pivotX = start.x + cell * barrierCells;
-    const pivotY = start.y - 24;
+  function drawBoomGate(lift, blocked, pivotX = start.x + cell * barrierCells, roadY = start.y, showText = true) {
+    const pivotY = roadY - 24;
     const armLength = 50;
     const raise = lift * Math.PI / 2;
     const projected = Math.max(8, armLength * Math.cos(raise));
@@ -1286,18 +1420,40 @@
     ctx.beginPath();
     ctx.arc(pivotX - 1, pivotY - 1, 3.5, 0, Math.PI * 2);
     ctx.fill();
-    if (blocked && !gateAnimating) {
+    if (showText && blocked && !gateAnimating) {
       ctx.fillStyle = '#7f1d1d';
       ctx.font = '900 22px Rubik, Arial';
       ctx.textAlign = 'center';
-      ctx.fillText('דרך חסומה', pivotX, start.y + 48);
+      ctx.fillText('דרך חסומה', pivotX, roadY + 48);
     }
+  }
+
+  // Multi-barrier lessons: each barrier is a boom gate on its road cell with a sign (green open, red closed).
+  const gateLift = Object.fromEntries(gateDefs.map(gate => [gate.id, gateOpenAngle]));
+  let animatingGateId = null;
+  function drawGates(state) {
+    gateDefs.forEach(gate => {
+      const point = gatePoint(gate);
+      const open = state.gates?.[gate.id] !== false;
+      const lift = animatingGateId === gate.id ? gateLift[gate.id] : (open ? gateOpenAngle : gateClosedAngle);
+      drawBoomGate(lift, !open, point.x, point.y, false);
+      const signY = point.y + (gate.labelSide === 'above' ? -42 : 36);
+      const text = `מחסום ${gate.label}`;
+      ctx.font = '900 16px Rubik, Arial';
+      const width = ctx.measureText(text).width + 16;
+      roundedBox(point.x - width / 2, signY - 12, width, 24, 6, open ? '#15803d' : '#b91c1c', '#0f172a');
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.fillText(text, point.x, signY + 6);
+    });
   }
 
   // Bubble above the boom gate: what the if read, and which branch it chose.
   function drawConditionBubble(bubble) {
-    const x = start.x + cell * barrierCells;
-    const y = Math.max(6, start.y - 168);
+    const gate = bubble.gate && gateDefs.find(item => item.id === bubble.gate);
+    const anchor = gate ? gatePoint(gate) : { x: start.x + cell * barrierCells, y: start.y };
+    const x = Math.max(160, Math.min(canvas.width - 160, anchor.x));
+    const y = Math.max(6, anchor.y - 168);
     const width = 310;
     const height = 78;
     ctx.fillStyle = 'rgba(15, 23, 42, .92)';
@@ -1373,8 +1529,9 @@
 
     // Road-state lessons show an automatic boom gate on the road: the arm lies across the road when blocked and
     // is raised upright when open. Switching the road animates the arm.
-    if (usesRouteState && state.conditionBubble) drawConditionBubble(state.conditionBubble);
     if (usesRouteState) drawBoomGate(gateAnimating ? gateAngle : (state.routeOpen === false ? gateClosedAngle : gateOpenAngle), state.routeOpen === false);
+    if (usesGates) drawGates(state);
+    if ((usesRouteState || usesGates) && state.conditionBubble) drawConditionBubble(state.conditionBubble);
 
     dropPointPositions().forEach((point, index) => {
       ctx.fillStyle = 'rgba(250, 204, 21, .35)';
@@ -1509,6 +1666,7 @@
     const passed = checks.length > 0 && checks.every(check => check.pass);
     const failedChecks = checks.filter(check => !check.pass);
     const onlyBothStatesMissing = failedChecks.length === 1 && failedChecks[0].label === 'הרצתם בשני מצבי הדרך';
+    const onlyGateStatesMissing = failedChecks.length === 1 && /^הרצתם ב(שני|כל)/.test(failedChecks[0].label) && usesGates;
     if (passed) {
       if (boardXml) {
         passedBoards[activeExercise] = boardXml;
@@ -1526,6 +1684,8 @@
         ? 'התרגיל עבר וההצלחה נשמרה.'
         : onlyBothStatesMissing
           ? 'נראה טוב! עכשיו החליפו את מצב הדרך בכפתור שמעל ההדמיה והריצו שוב.'
+          : onlyGateStatesMissing
+            ? 'נראה טוב! עכשיו שנו את מצב המחסומים בכפתורים שמעל ההדמיה והריצו שוב, עד שתריצו בכל המצבים.'
           : 'עוד לא. הסתכלו על ההדמיה, תקנו בלוק אחד והריצו שוב.';
     feedbackEl.className = `academy-feedback ${passed ? 'pass' : 'fail'}`;
     renderAcademyCompletion();
@@ -1594,6 +1754,11 @@
       if (code !== ranStatesCode) { ranStates = new Set(); ranStatesCode = code; }
       ranStates.add(worldRouteOpen ? 'open' : 'blocked');
     }
+    if (usesGates && exerciseGateIds().length) {
+      const code = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace));
+      if (code !== ranStatesCode) { ranStates = new Set(); ranStatesCode = code; }
+      ranStates.add(comboKey(worldGates));
+    }
     const state = runProgram();
     const checks = evaluate(state);
     lastRunBoardXml = currentBoardXml();
@@ -1624,6 +1789,8 @@
   function entryBoardXml(index) {
     // Debug exercises always start from their own broken code instead of the previous solution.
     if (academy.exercises[index]?.debugStart) return starterXml(index);
+    // Challenges built from scratch start from their own short scaffold, not from the previous solution.
+    if (academy.exercises[index]?.cleanStart) return starterXml(index);
     // Exercise 1 starts empty, unless its mission says the board already has the chat command and summon.
     if (index === 0) return academy.exercises[0]?.prefilledStart ? starterXml(0) : emptyBoardXml();
     if (passedBoards[index - 1]) return passedBoards[index - 1];
@@ -1684,6 +1851,15 @@
         renderRouteToggle();
       }
     }
+    // Multi-barrier lessons show only the switches of the exercise's barriers; the other barriers are open.
+    if (usesGates) {
+      const ids = exerciseGateIds();
+      gateDefs.forEach(gate => {
+        gateToggles[gate.id].style.display = ids.includes(gate.id) ? '' : 'none';
+        if (!ids.includes(gate.id)) worldGates[gate.id] = true;
+      });
+      renderGateToggles();
+    }
     const entry = entryBoardXml(activeExercise);
     const keepWork = savedBoards[activeExercise] && (boardBasis[activeExercise] === undefined || boardBasis[activeExercise] === entry);
     boardBasis[activeExercise] = entry;
@@ -1692,6 +1868,8 @@
     const exercise = academy.exercises[activeExercise];
     showExercise(exercise?.debugStart
       ? (exercise.freshStartMessage || 'תרגיל דיבוג: הקוד בלוח מכיל באג. הריצו אותו, הסתכלו בהדמיה ומצאו מה לא עובד.')
+      : exercise?.cleanStart
+        ? (exercise.freshStartMessage || 'בונים מההתחלה: בלוח יש רק את פקודת הצ׳אט והזימון.')
       : activeExercise === 0
         ? 'גררו בלוקים ללוח ולחצו הרצה ובדיקה כדי לראות אם צדקתם.'
         : 'ממשיכים מהקוד של התרגיל הקודם. שנו לפי המשימה ולחצו הרצה ובדיקה.');
@@ -1742,6 +1920,40 @@
   });
   renderRouteToggle();
 
+  function renderGateToggles() {
+    gateDefs.forEach(gate => {
+      const open = worldGates[gate.id];
+      gateToggles[gate.id].textContent = open ? `מחסום ${gate.label}: פתוח (true) · לחצו כדי לסגור` : `מחסום ${gate.label}: סגור (false) · לחצו כדי לפתוח`;
+      gateToggles[gate.id].classList.toggle('blocked', !open);
+    });
+  }
+  function animateGateLift(id, target) {
+    const from = gateLift[id];
+    const startedAt = performance.now();
+    animatingGateId = id;
+    function step(now) {
+      const t = Math.min(1, (now - startedAt) / 500);
+      gateLift[id] = from + (target - from) * (1 - Math.pow(1 - t, 3));
+      drawWorld();
+      if (t < 1) { requestAnimationFrame(step); return; }
+      animatingGateId = null;
+      drawWorld();
+    }
+    requestAnimationFrame(step);
+  }
+  gateDefs.forEach(gate => {
+    gateToggles[gate.id].addEventListener('click', () => {
+      worldGates[gate.id] = !worldGates[gate.id];
+      renderGateToggles();
+      animationRunId += 1;
+      runButton.disabled = false;
+      animateGateLift(gate.id, worldGates[gate.id] ? gateOpenAngle : gateClosedAngle);
+      feedbackEl.textContent = `מחסום ${gate.label} ${worldGates[gate.id] ? 'פתוח' : 'סגור'} עכשיו. לחצו הרצה ובדיקה.`;
+      feedbackEl.className = 'academy-feedback';
+    });
+  });
+  if (usesGates) renderGateToggles();
+
 
   runButton.addEventListener('click', runAndCheck);
   resetButton.addEventListener('click', resetExercise);
@@ -1780,7 +1992,7 @@
     // When a message's content is checked, the hint also suggests a few example messages.
     const types = (academy.exercises[activeExercise]?.criteria || []).map(criterion => criterion.type);
     const examples = [];
-    if (types.some(type => ['arrivalSay', 'arrivalSayAfterMove', 'openArrivalSay', 'sayAfterLoop', 'sayCount', 'sayInRepeat'].includes(type))) {
+    if (types.some(type => ['arrivalSay', 'arrivalSayAfterMove', 'openArrivalSay', 'sayAfterLoop', 'sayCount', 'sayInRepeat', 'gatesArrivalSay'].includes(type))) {
       examples.push('הודעת הצלחה, למשל: "המשלוח הגיע", "החבילה נמסרה", "סיימנו! 🎉"');
     }
     if (types.includes('openingSay')) {
@@ -1791,6 +2003,9 @@
     }
     if (types.includes('endsWithSay')) {
       examples.push('הודעת סיכום, למשל: "הנחנו חבילה על כל המערכות ובתחנה"');
+    }
+    if (types.includes('gatesSayWhenClosed')) {
+      examples.push('הודעה על מחסום סגור, למשל: "מחסום א סגור, עוקפים", "עוקף את מחסום ב"');
     }
     if (types.some(type => ['blockedSays', 'blockedSaysAbout'].includes(type))) {
       examples.push('הודעת חסימה, למשל: "הדרך חסומה", "ממתין לפתיחת הדרך", "עוקף בדרך אחרת"');

@@ -2850,6 +2850,249 @@
     ],
   });
 
+  // Lessons 15-16: two barriers (A and B), each with its own switch and condition variable (gateAOpen, gateBOpen).
+  // When a barrier is closed the courier must get to the station by going around it, not only report it.
+  // Lesson 15 brings in the double barrier with one detour per barrier (two conditions one after the other);
+  // lesson 16, the last lesson, combines everything on a map with three roads and needs a condition inside a condition.
+  {
+    const cellXY = (origin, [dx, dy]) => ({ x: origin.x + dx * 42, y: origin.y + dy * 42 });
+    const rowCells = (dy, fromDx, toDx) => Array.from({ length: toDx - fromDx + 1 }, (_, index) => [fromDx + index, dy]);
+    const gateWorld = (origin, stationCell, gates, lanes, routePlan, water) => ({
+      start: origin,
+      station: cellXY(origin, stationCell),
+      gates,
+      lanes,
+      routePlan,
+      water,
+      hidePath: false,
+      routeTiles: Object.values(lanes).flat().map(point => cellXY(origin, point)),
+    });
+    const F = steps => ({ type: 'move', direction: 'FORWARD', steps });
+    const L = steps => ({ type: 'move', direction: 'LEFT', steps });
+    const R = steps => ({ type: 'move', direction: 'RIGHT', steps });
+    const turn = side => ({ type: 'turn', turn: side === 'L' ? 'LEFT_TURN' : 'RIGHT_TURN' });
+    const place = { type: 'place', direction: 'DOWN' };
+    const say = text => ({ type: 'say', text });
+    const ifGate = (gate, thenBlocks, elseBlocks) => ({ type: 'ifGate', gate, state: 'OPEN', then: thenBlocks, else: elseBlocks });
+    const debugSteps15 = 'כך מדבגים: מריצים וצופים בהדמיה, מתארים מה קרה ומה היה צריך לקרות, מוצאים את הבלוק שגורם להבדל ומתקנים אותו. אם נתקעים, לוחצים רמז.';
+
+    // Lesson 15: a straight road with barrier A and barrier B. Barrier A has a short detour above it, barrier B below it.
+    const lesson15 = detailsByChallenge[4][2].academy;
+    lesson15.world = gateWorld({ x: 112, y: 204 }, [8, 0],
+      [{ id: 'A', label: 'א', cell: [2, 0], labelSide: 'below' }, { id: 'B', label: 'ב', cell: [6, 0], labelSide: 'above' }],
+      { main: rowCells(0, 1, 7), detourA: [[1, -1], [2, -1], [3, -1]], detourB: [[5, 1], [6, 1], [7, 1]] },
+      [{ when: { A: false }, lanes: ['detourA'] }, { when: { B: false }, lanes: ['detourB'] }]);
+    lesson15.story = 'מפגש 15 בודק את מערכת המחסומים החדשה בעיר. בדרך מהמחסן לתחנה יש שני מחסומים, א ו-ב, ולכל אחד דרך עוקפת קצרה. בדיקה טובה מריצה את הקוד בכל מצבי המחסומים: כשמחסום פתוח השליח נוסע ישר, וכשהוא סגור השליח עוקף אותו ובכל זאת מגיע לתחנה.';
+    const detourA = [F(1), L(1), F(2), R(1)];
+    const detourB = [R(1), F(2), L(1)];
+    const solution15 = [{ type: 'teleport' }, ifGate('A', [F(3)], detourA), F(2), ifGate('B', [F(2)], detourB), F(1), place];
+    lesson15.exercises = [
+      {
+        title: 'תרגיל 1 - פקודת test',
+        prefilledStart: true,
+        hideLogic: true,
+        mission: 'בשיעור הזה בודקים את מערכת המחסומים החדשה בעיר. בדרך לתחנה יש שני מחסומים, א ו-ב, ולכל אחד דרך עוקפת קצרה. בלוח כבר יש את הפקודה test ואת הזימון של השליח. לפני שהשליח יוצא לדרך הוא מודיע מה בודקים, ואז הוא נוסע בכביש הראשי עד התחנה. בינתיים שני המחסומים פתוחים.',
+        hint: 'ההודעה באה לפני התנועה הראשונה. ספרו את המשבצות מהמחסן עד התחנה. דוגמה להודעה: "בודקים את המחסומים בדרך לתחנה".',
+        check: 'הודעה לפני היציאה, ונסיעה בכביש הראשי עד התחנה.',
+        starter: { command: 'test', blocks: [{ type: 'teleport' }] },
+        criteria: [
+          { label: 'פקודת הצ׳אט היא test', type: 'command', command: 'test' },
+          { label: 'מופיעה הודעה לפני שהשליח יוצא', type: 'sayBeforeFirstMove' },
+          { label: 'השליח מגיע לתחנה', type: 'reachedStation' },
+          { label: 'השליח נוסע בכביש הראשי', type: 'gatesBestRoute' },
+        ],
+      },
+      {
+        title: 'תרגיל 2 - דיבוג',
+        debugStart: true,
+        hideLogic: true,
+        mission: `תרגיל דיבוג: הבדיקה צריכה להראות שהחבילה מגיעה לתחנה, אבל היא נכשלת. אחרי התיקון הוסיפו הודעה עם תוצאת הבדיקה. ${debugSteps15}`,
+        hint: 'השליח עוצר ליד מחסום ב, לפני התחנה. בדקו את מספר הצעדים. דוגמה להודעה: "הבדיקה עברה, החבילה בתחנה".',
+        check: 'החבילה בתחנה והודעת תוצאה אחרי המסירה.',
+        starter: { command: 'test', blocks: [{ type: 'teleport' }, F(6), place] },
+        criteria: [
+          { label: 'אחרי התיקון החבילה מונחת בתחנה', type: 'packageNearStation' },
+          { label: 'השליח נוסע בכביש הראשי', type: 'gatesBestRoute' },
+          { label: 'אחרי המסירה מופיעה הודעה עם תוצאת הבדיקה', type: 'arrivalSay' },
+        ],
+      },
+      {
+        title: 'תרגיל 3 - עוקפים את מחסום א',
+        gates: ['A'],
+        mission: 'מחסום א יכול להיסגר. כשהוא פתוח השליח נוסע ישר בכביש הראשי. כשהוא סגור השליח לא עובר בו, אלא עוקף אותו בדרך העוקפת שמעליו וחוזר לכביש. בשני המצבים החבילה מגיעה לתחנה. הריצו ובדקו בשני המצבים של מחסום א.',
+        hint: 'בלוק ״תנאי״ בקטגוריית Logic בודק אם מחסום א פתוח (gateAOpen). הדרך העוקפת: צעד קדימה, צעד שמאלה (למעלה), 2 צעדים קדימה וצעד ימינה חזרה לכביש. אחרי התנאי ממשיכים יחד עד התחנה.',
+        check: 'בשני המצבים של מחסום א החבילה בתחנה, בלי לעבור במחסום סגור ובלי לעקוף כשהוא פתוח.',
+        starter: { command: 'test', blocks: [{ type: 'teleport' }, F(8), place, say('הבדיקה עברה')] },
+        criteria: [
+          { label: 'בכל מצב החבילה מונחת בתחנה', type: 'gatesDeliver' },
+          { label: 'השליח אף פעם לא עובר במחסום סגור', type: 'gatesNoCrossing' },
+          { label: 'השליח עוקף רק כשהמחסום סגור', type: 'gatesBestRoute' },
+        ],
+      },
+      {
+        title: 'תרגיל 4 - שני מחסומים',
+        gates: ['A', 'B'],
+        mission: 'עכשיו גם מחסום ב יכול להיסגר. כל מחסום נבדק בנפרד: אם הוא פתוח השליח נוסע בו ישר, ואם הוא סגור השליח עוקף אותו בדרך העוקפת שלו. הדרך העוקפת של מחסום ב נמצאת מתחתיו. הריצו ובדקו בכל ארבעת המצבים: שניהם פתוחים, רק א סגור, רק ב סגור ושניהם סגורים.',
+        hint: 'שני תנאים, אחד אחרי השני: הראשון מחליט איך עוברים את מחסום א, והשני איך עוברים את מחסום ב. בין שני התנאים יש קטע כביש שנוסעים בו בכל מצב. בדרך העוקפת של ב יורדים צעד ימינה (למטה) ועולים בחזרה שמאלה.',
+        check: 'בכל ארבעת המצבים החבילה בתחנה, בלי לעבור במחסום סגור ובלי לעקוף מחסום פתוח.',
+        starter: { command: 'test', blocks: [{ type: 'teleport' }, ifGate('A', [F(3)], detourA), F(5), place, say('הבדיקה עברה')] },
+        criteria: [
+          { label: 'בכל מצב החבילה מונחת בתחנה', type: 'gatesDeliver' },
+          { label: 'השליח אף פעם לא עובר במחסום סגור', type: 'gatesNoCrossing' },
+          { label: 'השליח עוקף רק מחסום סגור', type: 'gatesBestRoute' },
+        ],
+      },
+      {
+        title: 'תרגיל 5 - דיבוג',
+        debugStart: true,
+        gates: ['A', 'B'],
+        mission: `תרגיל דיבוג: הבדיקה צריכה לעבור בכל מצבי המחסומים: השליח עוקף כל מחסום סגור בדרך העוקפת שלו ומניח חבילה בתחנה. אבל בקוד הזה יש כמה טעויות. הריצו ובדקו בכל ארבעת המצבים. ${debugSteps15}`,
+        hint: 'סגרו את מחסום ב והריצו: לאן השליח יורד כדי לעקוף, והאם החבילה מונחת? בדקו מה נמצא בתוך then ומה בתוך else.',
+        check: 'בכל ארבעת המצבים החבילה בתחנה, והעקיפה של ב עוברת בדרך העוקפת שמתחתיו.',
+        starter: { command: 'test', blocks: [{ type: 'teleport' }, ifGate('A', [F(3)], detourA), F(2), ifGate('B', [F(3), place], [L(1), F(2), R(1), F(1)]), say('הבדיקה עברה')] },
+        criteria: [
+          { label: 'בכל מצב החבילה מונחת בתחנה', type: 'gatesDeliver' },
+          { label: 'השליח אף פעם לא עובר במחסום סגור', type: 'gatesNoCrossing' },
+          { label: 'השליח עוקף רק מחסום סגור, בדרך העוקפת שלו', type: 'gatesBestRoute' },
+        ],
+      },
+      {
+        title: 'אתגר קטן - בדיקה מלאה',
+        gates: ['A', 'B'],
+        mission: 'בנו בדיקה מלאה של מערכת המחסומים: לפני היציאה השליח מודיע מה בודקים. על כל מחסום סגור הוא מודיע שהוא עוקף אותו, ועוקף. בסוף הוא מניח חבילה בתחנה ומודיע מה הייתה תוצאת הבדיקה. הריצו ובדקו בכל ארבעת המצבים.',
+        hint: 'הודעת הפתיחה באה לפני התנאי הראשון. ההודעה על העקיפה נכנסת לחלק של מחסום סגור, בכל אחד משני התנאים. הודעת התוצאה באה אחרי הנחת החבילה.',
+        check: 'פתיחה, עקיפה עם הודעה לכל מחסום סגור, חבילה בתחנה והודעת תוצאה, בכל ארבעת המצבים.',
+        starter: { command: 'test', blocks: [...solution15, say('הבדיקה עברה')] },
+        criteria: [
+          { label: 'פקודת הצ׳אט היא test', type: 'command', command: 'test' },
+          { label: 'מופיעה הודעה לפני שהשליח יוצא', type: 'sayBeforeFirstMove' },
+          { label: 'בכל מצב החבילה מונחת בתחנה', type: 'gatesDeliver' },
+          { label: 'השליח אף פעם לא עובר במחסום סגור', type: 'gatesNoCrossing' },
+          { label: 'השליח עוקף רק מחסום סגור', type: 'gatesBestRoute' },
+          { label: 'על כל מחסום סגור מופיעה הודעה', type: 'gatesSayWhenClosed' },
+          { label: 'בכל מצב יש הודעת תוצאה אחרי המסירה', type: 'gatesArrivalSay' },
+        ],
+      },
+    ];
+
+    // Lesson 16: three roads from the warehouse to the station. The short road passes barrier A, the upper road
+    // passes barrier B, and the long lower road has no barrier. The courier takes the shortest road that is open.
+    const lesson16 = detailsByChallenge[4][3].academy;
+    lesson16.world = gateWorld({ x: 112, y: 204 }, [8, 0],
+      [{ id: 'A', label: 'א', cell: [4, 0], labelSide: 'below' }, { id: 'B', label: 'ב', cell: [3, -2], labelSide: 'above' }],
+      {
+        main: [[1, 0], [6, 0], [7, 0]],
+        roadA: rowCells(0, 2, 5),
+        roadB: [[1, -1], ...rowCells(-2, 1, 6), [6, -1]],
+        roadC: [[1, 1], [1, 2], ...rowCells(3, 1, 6), [6, 2], [6, 1]],
+      },
+      [{ when: { A: true }, lanes: ['roadA'] }, { when: { A: false, B: true }, lanes: ['roadB'] }, { when: { A: false, B: false }, lanes: ['roadC'] }],
+      [{ x: 492, y: 35, w: 88, h: 132 }, { x: 200, y: 262, w: 128, h: 40 }]);
+    lesson16.story = 'מפגש 16 הוא השיעור האחרון: מכינים הצגה (דמו) של העיר החכמה, שמשלבת את כל מה שלמדנו בקורס. מהמחסן לתחנה יש שלוש דרכים: הדרך הקצרה עוברת במחסום א, הדרך העליונה עוברת במחסום ב, והדרך הארוכה למטה בלי מחסום. השליח בוחר תמיד את הדרך הקצרה ביותר שפתוחה, ולשם כך צריך תנאי בתוך תנאי.';
+    const roadA = [F(8)];
+    const roadB = [F(1), turn('L'), F(2), turn('R'), F(5), turn('R'), F(2), turn('L'), F(2)];
+    const roadC = [F(1), turn('R'), F(3), turn('L'), F(5), turn('L'), F(3), turn('R'), F(2)];
+    const loop3 = { type: 'repeat', times: 3, blocks: [place] };
+    lesson16.exercises = [
+      {
+        title: 'תרגיל 1 - פותחים את הדמו',
+        prefilledStart: true,
+        hideLogic: true,
+        mission: 'בשיעור האחרון מכינים הצגה (דמו) של העיר החכמה. במפה יש שלוש דרכים מהמחסן לתחנה: הדרך הקצרה עם מחסום א, הדרך העליונה עם מחסום ב והדרך הארוכה למטה. בלוח כבר יש את הפקודה demo ואת הזימון של השליח. השליח פותח בהודעה שמספרת למבקרים מה הם עומדים לראות, ואז נוסע בדרך הקצרה עד התחנה. בינתיים שני המחסומים פתוחים.',
+        hint: 'ההודעה באה לפני התנועה הראשונה. הדרך הקצרה היא הכביש הישר מהמחסן לתחנה.',
+        check: 'הודעת פתיחה ונסיעה בדרך הקצרה עד התחנה.',
+        starter: { command: 'demo', blocks: [{ type: 'teleport' }] },
+        criteria: [
+          { label: 'פקודת הצ׳אט היא demo', type: 'command', command: 'demo' },
+          { label: 'מופיעה הודעה לפני שהשליח יוצא', type: 'sayBeforeFirstMove' },
+          { label: 'השליח מגיע לתחנה', type: 'reachedStation' },
+          { label: 'השליח נוסע בדרך הקצרה', type: 'gatesBestRoute' },
+        ],
+      },
+      {
+        title: 'תרגיל 2 - שלוש חבילות',
+        hideLogic: true,
+        mission: 'המבקרים צריכים לראות שהעיר עובדת: בתחנה השליח מניח 3 חבילות, בלי להעתיק את אותו בלוק שלוש פעמים, ואחרי כולן מודיע פעם אחת שהמשלוח הגיע.',
+        hint: 'בלוק ״לולאה״ בקטגוריית Loops. הודעת המסירה באה אחרי הלולאה, לא בתוכה.',
+        check: '3 חבילות בתחנה בעזרת לולאה, והודעה אחת אחריהן.',
+        starter: { command: 'demo', blocks: [{ type: 'teleport' }, say('עכשיו השליח יביא חבילות לתחנה'), ...roadA] },
+        criteria: [
+          { label: 'השליח נוסע בדרך הקצרה', type: 'gatesBestRoute' },
+          { label: 'הפעולה חוזרת בלי להעתיק בלוקים', type: 'repeat' },
+          { label: 'מונחות 3 חבילות', type: 'placeCount', min: 3 },
+          { label: 'החבילה מונחת בתחנה', type: 'packageNearStation' },
+          { label: 'הודעת הסיום מופיעה פעם אחת', type: 'sayAfterLoop' },
+        ],
+      },
+      {
+        title: 'תרגיל 3 - מחסום א נסגר',
+        gates: ['A'],
+        mission: 'מחסום א יכול להיסגר. כשהוא פתוח השליח נוסע בדרך הקצרה. כשהוא סגור השליח לא עובר בו, אלא נוסע בדרך העליונה (מחסום ב בינתיים תמיד פתוח). בשני המצבים 3 החבילות מגיעות לתחנה וההודעה מופיעה בסוף. הריצו ובדקו בשני המצבים של מחסום א.',
+        hint: 'בלוק ״תנאי״ בקטגוריית Logic בודק אם מחסום א פתוח (gateAOpen). ספרו את הדרך העליונה: צעד אחד, פנייה שמאלה, 2 למעלה, פנייה ימינה, 5 קדימה, ועוד שתי פניות עד התחנה. מה שמחוץ לתנאי מתבצע בשני המצבים.',
+        check: 'בשני המצבים של מחסום א 3 חבילות בתחנה, בלי לעבור במחסום סגור.',
+        starter: { command: 'demo', blocks: [{ type: 'teleport' }, say('עכשיו השליח יביא חבילות לתחנה'), ...roadA, loop3, say('המשלוח הגיע')] },
+        criteria: [
+          { label: 'בכל מצב החבילות מונחות בתחנה', type: 'gatesDeliver' },
+          { label: 'השליח אף פעם לא עובר במחסום סגור', type: 'gatesNoCrossing' },
+          { label: 'השליח נוסע בדרך הקצרה ביותר שפתוחה', type: 'gatesBestRoute' },
+          { label: 'מונחות 3 חבילות', type: 'placeCount', min: 3 },
+        ],
+      },
+      {
+        title: 'תרגיל 4 - תנאי בתוך תנאי',
+        gates: ['A', 'B'],
+        mission: 'עכשיו גם מחסום ב יכול להיסגר. השליח בוחר תמיד את הדרך הקצרה ביותר שפתוחה: אם מחסום א פתוח, הדרך הקצרה. אם א סגור ו-ב פתוח, הדרך העליונה. ואם שניהם סגורים, הדרך הארוכה למטה. שימו לב: מצב מחסום ב חשוב רק כשמחסום א סגור. הריצו ובדקו בכל ארבעת המצבים.',
+        hint: 'את ההחלטה על מחסום ב שמים בתוך ״אחרת״ של התנאי על מחסום א: תנאי בתוך תנאי. הדרך הארוכה: צעד אחד, פנייה ימינה, 3 למטה, פנייה שמאלה, 5 קדימה, ועוד שתי פניות עד התחנה.',
+        check: 'בכל ארבעת המצבים 3 חבילות בתחנה, בדרך הקצרה ביותר שפתוחה.',
+        starter: { command: 'demo', blocks: [{ type: 'teleport' }, say('עכשיו השליח יביא חבילות לתחנה'), ifGate('A', roadA, roadB), loop3, say('המשלוח הגיע')] },
+        criteria: [
+          { label: 'בכל מצב החבילות מונחות בתחנה', type: 'gatesDeliver' },
+          { label: 'השליח אף פעם לא עובר במחסום סגור', type: 'gatesNoCrossing' },
+          { label: 'השליח נוסע בדרך הקצרה ביותר שפתוחה', type: 'gatesBestRoute' },
+          { label: 'מונחות 3 חבילות', type: 'placeCount', min: 3 },
+        ],
+      },
+      {
+        title: 'תרגיל 5 - דיבוג',
+        debugStart: true,
+        gates: ['A', 'B'],
+        mission: `תרגיל דיבוג: רגע לפני ההצגה: השליח צריך לבחור בכל מצב את הדרך הקצרה ביותר שפתוחה ולמסור את 3 החבילות בתחנה, אבל בקוד הזה יש כמה טעויות. הריצו ובדקו בכל ארבעת המצבים. ${debugSteps15}`,
+        hint: 'סגרו את מחסום א בלבד והריצו: באיזו דרך השליח נוסע, ומה התנאי הפנימי בודק? אחר כך סגרו את שניהם ועקבו אחרי השליח בדרך הארוכה.',
+        check: 'בכל ארבעת המצבים השליח בדרך הקצרה ביותר שפתוחה, ו-3 חבילות בתחנה.',
+        starter: { command: 'demo', blocks: [{ type: 'teleport' }, say('עכשיו השליח יביא חבילות לתחנה'),
+          ifGate('A', roadA, [ifGate('A', roadB, [F(1), turn('R'), F(3), turn('L'), F(4), turn('L'), F(3), turn('R'), F(2)])]),
+          loop3, say('המשלוח הגיע')] },
+        criteria: [
+          { label: 'בכל מצב החבילות מונחות בתחנה', type: 'gatesDeliver' },
+          { label: 'השליח אף פעם לא עובר במחסום סגור', type: 'gatesNoCrossing' },
+          { label: 'השליח נוסע בדרך הקצרה ביותר שפתוחה', type: 'gatesBestRoute' },
+        ],
+      },
+      {
+        title: 'אתגר מסכם - הדמו המלא',
+        cleanStart: true,
+        gates: ['A', 'B'],
+        freshStartMessage: 'אתגר מסכם: בונים את הדמו המלא מההתחלה. בלוח יש רק את הפקודה demo והזימון.',
+        mission: 'האתגר המסכם של הקורס: בנו מההתחלה את הדמו המלא. השליח פותח בהודעה למבקרים, בוחר את הדרך הקצרה ביותר שפתוחה, ועל כל מחסום סגור שבדרכו הוא מודיע שהוא עוקף. בתחנה הוא מניח 3 חבילות ומודיע פעם אחת שהמשלוח הגיע. בקוד יש בלוק אחד בלבד של הנחת חבילה. הריצו ובדקו בכל ארבעת המצבים.',
+        hint: 'סדר הדמו: הודעת פתיחה, תנאי בתוך תנאי שבוחר דרך (עם הודעה בכל חלק של מחסום סגור), ואחרי התנאים לולאה של חבילות והודעה אחת. מה שמחוץ לתנאים מתבצע בכל מצב.',
+        check: 'כל מה שנלמד: פתיחה, תנאי מקונן עם עקיפה והודעות, לולאה של 3 חבילות והודעת סיום, בכל ארבעת המצבים.',
+        starter: { command: 'demo', blocks: [{ type: 'teleport' }] },
+        criteria: [
+          { label: 'פקודת הצ׳אט היא demo', type: 'command', command: 'demo' },
+          { label: 'מופיעה הודעה לפני שהשליח יוצא', type: 'sayBeforeFirstMove' },
+          { label: 'בכל מצב החבילות מונחות בתחנה', type: 'gatesDeliver' },
+          { label: 'השליח אף פעם לא עובר במחסום סגור', type: 'gatesNoCrossing' },
+          { label: 'השליח נוסע בדרך הקצרה ביותר שפתוחה', type: 'gatesBestRoute' },
+          { label: 'על כל מחסום סגור מופיעה הודעה', type: 'gatesSayWhenClosed' },
+          { label: 'מונחות 3 חבילות', type: 'placeCount', min: 3 },
+          { label: 'הפעולה חוזרת בלי להעתיק בלוקים', type: 'repeat' },
+          { label: 'בקוד יש בלוק אחד בלבד של הנחת חבילה', type: 'placeBlockCount', max: 1 },
+          { label: 'הודעת הסיום מופיעה פעם אחת', type: 'sayAfterLoop' },
+        ],
+      },
+    ];
+  }
+
   const program = {
     title: 'אקדמיית ה-Agent במיינקראפט',
     subtitle: 'לומדה לעבודה עצמית בארבעה אתגרים שנבנים בהמשכים על אותה עיר: משלוח ראשון, קו אוטומטי, החלטות חכמות והוספת אוטומציות.',
