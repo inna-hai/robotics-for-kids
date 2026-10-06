@@ -715,6 +715,24 @@
       : { x: start.x + point * cell, y: start.y });
   }
 
+  // Shapes (block types and nesting, without field values) of the board and of a starter spec, for "one change only".
+  function blockShape(block) {
+    const parts = [];
+    for (let current = block; current; current = current.getNextBlock()) {
+      const inner = ['DO', 'ELSE'].map(name => current.getInput(name) ? `${name}:${current.getInputTargetBlock(name) ? blockShape(current.getInputTargetBlock(name)) : ''}` : null).filter(Boolean);
+      parts.push(current.type.replace(/^mc_/, '').replace(/_agent$/, '') + (inner.length ? `{${inner.join('|')}}` : ''));
+    }
+    return block.type === 'mc_on_chat' ? `on_chat[${block.getInputTargetBlock('DO') ? blockShape(block.getInputTargetBlock('DO')) : ''}]` : parts.join(',');
+  }
+  function specShape(blocks = []) {
+    const names = { teleport: 'teleport', move: 'move', turn: 'turn', place: 'place', say: 'say', repeat: 'repeat', ifRoute: 'if_route_open' };
+    return blocks.map(spec => {
+      if (spec.type === 'repeat') return `repeat{DO:${specShape(spec.blocks)}}`;
+      if (spec.type === 'ifRoute') return `if_route_open{DO:${specShape(spec.then)}|ELSE:${specShape(spec.else)}}`;
+      return names[spec.type] || spec.type;
+    }).join(',');
+  }
+
   function criterionPass(state, criterion) {
     const firstMove = state.moves[0];
     const secondMove = state.moves[1];
@@ -788,6 +806,12 @@
     // A message inside the loop: it shows once in every round.
     if (criterion.type === 'sayInRepeat') return state.actions.filter(action => action.type === 'say' && action.inRepeat && isSuccessMessage(action.text)).length >= Number(criterion.min || 2);
     if (criterion.type === 'sayCount') return state.says.filter(isSuccessMessage).length >= Number(criterion.min || 1);
+    // "One change only": the blocks keep the same order and nesting as the starting code (only values may change).
+    if (criterion.type === 'sameStructure') {
+      const starter = academy.exercises[activeExercise]?.starter;
+      const top = workspace.getTopBlocks(true).find(block => block.type === 'mc_on_chat');
+      return Boolean(starter && top) && blockShape(top) === `on_chat[${specShape(starter.blocks)}]`;
+    }
     if (criterion.type === 'placeBlockCount') return workspace.getAllBlocks(false).filter(block => block.type === 'mc_place_agent').length <= Number(criterion.max || 1);
     if (criterion.type === 'endsAtCell') {
       const facing = ((state.heading % 360) + 360) % 360;

@@ -2385,6 +2385,14 @@
       ],
     });
     lesson9.exercises[1].starter = { command: 'status', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [], else: [] }] };
+    // The condition itself can be flipped: "is the road open?" (true) or "is the road blocked?" (false).
+    lesson9.exercises[2].mission += ' שימו לב: בתפריט של בלוק התנאי אפשר לבחור מה הוא שואל: האם הדרך פתוחה (true) או האם היא חסומה (false). כשמשנים את השאלה, מה שהיה מתבצע ב-then עובר להתבצע במצב השני, בלי להזיז אף בלוק.';
+    // The debug exercise allows one change only (no moving blocks), so the fix is flipping the condition.
+    Object.assign(lesson9.exercises[4], {
+      mission: 'תרגיל דיבוג: הקוד לא מתנהג נכון לפי מצב הדרך. מותר לשנות דבר אחד בלבד, בלי להזיז בלוקים ממקומם. הריצו פעם כשהדרך פתוחה ופעם כשהיא חסומה, מצאו מה צריך לשנות ותקנו. אם נתקעים, לוחצים רמז.',
+      hint: 'אי אפשר להחליף בין הבלוקים שב-then וב-else, אבל אפשר לשנות את השאלה שהתנאי שואל.',
+    });
+    lesson9.exercises[4].criteria.push({ label: 'שינוי אחד בלבד, בלי להזיז בלוקים', type: 'sameStructure' });
   }
 
   // Lesson 7: the delivery point is 4 steps from the warehouse. Exercise 2 still opens with a 5-step move,
