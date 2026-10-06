@@ -668,6 +668,8 @@
     return state;
   }
 
+  // Station, delivery and return checks need the exact cell (a cell is 42px, so 20px means "on the cell").
+  const stationRadius = 20;
   function isNear(point, target, radius = 46) {
     return Math.hypot(point.x - target.x, point.y - target.y) <= radius;
   }
@@ -745,10 +747,11 @@
     const secondMove = state.moves[1];
     const firstMoveAction = state.actions.findIndex(action => action.type === 'move');
     const firstTurnAction = state.actions.findIndex(action => action.type === 'turn');
-    const reachedStation = isNear(state, station, criterion.radius || 74);
+    // The courier (or package) must be on the station cell itself, not on a neighbouring cell.
+    const reachedStation = isNear(state, station, criterion.radius || stationRadius);
     const hasArrivalSay = state.says.some(isSuccessMessage);
-    const hasPackageNearStation = state.packages.some(pkg => isNear(pkg, station, criterion.radius || 52));
-    const hasReturnToStart = isNear(state, start, criterion.radius || 52);
+    const hasPackageNearStation = state.packages.some(pkg => isNear(pkg, station, criterion.radius || stationRadius));
+    const hasReturnToStart = isNear(state, start, criterion.radius || stationRadius);
 
     if (criterion.type === 'chatDeliver') return state.sawChat;
     if (criterion.type === 'command') return state.commands.includes(criterion.command || academy.command || 'deliver');
@@ -780,16 +783,16 @@
     if (criterion.type === 'blockedSaysAbout') return runProgram(false).says.some(isBlockedMessage);
     if (criterion.type === 'blockedSays') return runProgram(false).says.some(isBlockedMessage);
     if (criterion.type === 'openArrivalSay') return runProgram(true).says.some(isSuccessMessage);
-    if (criterion.type === 'openReaches') return isNear(runProgram(true), station, criterion.radius || 52);
-    if (criterion.type === 'blockedReaches') return isNear(runProgram(false), station, criterion.radius || 52);
-    if (criterion.type === 'blockedDelivers') return runProgram(false).packages.some(pkg => isNear(pkg, station, criterion.radius || 52));
+    if (criterion.type === 'openReaches') return isNear(runProgram(true), station, criterion.radius || stationRadius);
+    if (criterion.type === 'blockedReaches') return isNear(runProgram(false), station, criterion.radius || stationRadius);
+    if (criterion.type === 'blockedDelivers') return runProgram(false).packages.some(pkg => isNear(pkg, station, criterion.radius || stationRadius));
     if (criterion.type === 'blockedAvoidsBarrier') {
       // The barrier stands on the road two and a half cells east of the warehouse.
       const barrierX = start.x + cell * 2.5;
       return !runProgram(false).path.some(segment => Math.abs(segment.y1 - start.y) < 4 && Math.abs(segment.y2 - start.y) < 4
         && Math.min(segment.x1, segment.x2) < barrierX && Math.max(segment.x1, segment.x2) > barrierX);
     }
-    if (criterion.type === 'openDelivers') return runProgram(true).packages.some(pkg => isNear(pkg, station, criterion.radius || 52));
+    if (criterion.type === 'openDelivers') return runProgram(true).packages.some(pkg => isNear(pkg, station, criterion.radius || stationRadius));
     if (criterion.type === 'blockedStays') {
       const blocked = runProgram(false);
       return isNear(blocked, start, 20) && blocked.packages.length === 0;
@@ -881,8 +884,12 @@
     if (exercise?.criteria?.length) {
       // Checks that end up with the same result label are shown once (passing only if all of them pass).
       const merged = new Map();
+      // In road-state lessons, checks that are not about a specific road state (package direction, number of
+      // packages, messages...) pass if the code does it in either state, not only in the state of the last run.
+      const stateFree = criterion => usesRouteState && !openStateTypes.includes(criterion.type) && !blockedStateTypes.includes(criterion.type) && criterion.type !== 'ranBothStates';
+      const bothRuns = usesRouteState ? [runProgram(true), runProgram(false)] : [];
       exercise.criteria.forEach(criterion => {
-        const pass = criterionPass(state, criterion);
+        const pass = stateFree(criterion) ? bothRuns.some(run => criterionPass(run, criterion)) : criterionPass(state, criterion);
         merged.set(criterion.label, merged.has(criterion.label) ? merged.get(criterion.label) && pass : pass);
       });
       return [...merged].map(([label, pass]) => ({ label, pass }));
