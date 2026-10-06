@@ -2651,6 +2651,89 @@
     ];
     defs.forEach((def, index) => { if (def) Object.assign(lesson14.exercises[index], def); });
   }
+  // Lessons 15 (test) and 16 (demo) follow the same structure: clear goals, one new step per exercise,
+  // the debug exercises (15: 2 and 5, 16: 5) stay as they are.
+  {
+    const lesson15 = detailsByChallenge[4][2].academy;
+    const route = [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 2 }];
+    const ifOpen = (thenBlocks, elseBlocks) => ({ type: 'ifRoute', state: 'OPEN', then: thenBlocks, else: elseBlocks });
+    const defs = [
+      {
+        title: 'תרגיל 1 - פקודת test',
+        mission: 'בשיעור הזה בודקים שמערכת בעיר עובדת. בלוח כבר יש את הפקודה test (המילה שמפעילה את הבדיקה) ואת הזימון של השליח. השלימו את הבדיקה: לפני שהשליח יוצא לדרך, הוא מודיע מה הולכים לבדוק, ואז הוא נוסע עד התחנה.',
+        hint: 'ההודעה נמצאת בקטגוריית Player והתנועה בקטגוריית Agent. ההודעה באה לפני התנועה. דוגמה: "בודקים את המסלול לתחנה".',
+        criteria: [{ label: 'פקודת הצ׳אט היא test', type: 'command', command: 'test' }, { label: 'מופיעה הודעה לפני שהשליח יוצא', type: 'sayBeforeFirstMove' }, { label: 'השליח מגיע לתחנה', type: 'reachedStation' }],
+      },
+      null,
+      {
+        title: 'תרגיל 3 - בודקים בשני מצבים',
+        mission: 'בדיקה טובה בודקת גם מה קורה כשמשהו משתבש. כשהדרך פתוחה השליח נוסע ומניח חבילה בתחנה. כשהיא חסומה הוא נשאר במחסן ומודיע שהבדיקה נעצרה. הריצו ובדקו בשני מצבי הדרך.',
+        hint: 'בלוק ״תנאי״ בקטגוריית Logic בודק את מצב הדרך. הנסיעה נכנסת לחלק של דרך פתוחה, וההודעה לחלק של דרך חסומה.',
+        criteria: [{ label: 'כשהדרך פתוחה החבילה מונחת בתחנה', type: 'openDelivers' }, { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' }, { label: 'כשהדרך חסומה מופיעה הודעה על החסימה', type: 'blockedSays' }],
+        starter: { command: 'test', blocks: [...route, { type: 'place', direction: 'DOWN' }] },
+      },
+      {
+        title: 'תרגיל 4 - תוצאת הבדיקה',
+        mission: 'בסוף בדיקה מודיעים מה יצא. כשהדרך פתוחה, אחרי המסירה השליח מודיע שהבדיקה עברה. הריצו ובדקו בשני מצבי הדרך.',
+        hint: 'הודעת התוצאה באה אחרי הנחת החבילה, באותו חלק של התנאי.',
+        criteria: [{ label: 'כשהדרך פתוחה החבילה מונחת בתחנה', type: 'openDelivers' }, { label: 'כשהדרך פתוחה יש הודעת מסירה', type: 'openArrivalSay' }, { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' }],
+        starter: { command: 'test', blocks: [{ type: 'teleport' }, ifOpen([...route.slice(1), { type: 'place', direction: 'DOWN' }], [{ type: 'say', text: 'הבדיקה נעצרה, הדרך חסומה' }])] },
+      },
+      null,
+      {
+        title: 'אתגר קטן - בדיקה מלאה',
+        mission: 'בנו בדיקה מלאה: לפני היציאה השליח מודיע מה בודקים. כשהדרך פתוחה הוא מוסר את החבילה ומודיע שהבדיקה עברה. כשהיא חסומה הוא נשאר ומודיע שהבדיקה נעצרה. הריצו ובדקו בשני מצבי הדרך.',
+        hint: 'ההודעה על מה בודקים באה לפני התנאי, כך שהיא מופיעה בשני המצבים.',
+        criteria: [{ label: 'פקודת הצ׳אט היא test', type: 'command', command: 'test' }, { label: 'מופיעה הודעה לפני שהשליח יוצא', type: 'sayBeforeFirstMove' }, { label: 'כשהדרך פתוחה החבילה מונחת בתחנה', type: 'openDelivers' }, { label: 'כשהדרך פתוחה יש הודעת מסירה', type: 'openArrivalSay' }, { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' }, { label: 'כשהדרך חסומה מופיעה הודעה על החסימה', type: 'blockedSays' }],
+        starter: { command: 'test', blocks: [{ type: 'teleport' }, ifOpen([...route.slice(1), { type: 'place', direction: 'DOWN' }, { type: 'say', text: 'הבדיקה עברה' }], [{ type: 'say', text: 'הבדיקה נעצרה, הדרך חסומה' }])] },
+      },
+    ];
+    defs.forEach((def, index) => { if (def) Object.assign(lesson15.exercises[index], def); });
+  }
+  {
+    const lesson16 = detailsByChallenge[4][3].academy;
+    lesson16.world = { ...lesson16.world, barrierCells: 1.5 };
+    const trip = [{ type: 'move', direction: 'FORWARD', steps: 2 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'turn', turn: 'LEFT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 3 }];
+    const loop3 = { type: 'repeat', times: 3, blocks: [{ type: 'place', direction: 'DOWN' }] };
+    const defs = [
+      {
+        title: 'תרגיל 1 - פותחים את הדמו',
+        mission: 'בשיעור הזה מכינים הצגה (דמו) של העיר החכמה למבקרים. בלוח כבר יש את הפקודה demo ואת הזימון של השליח. השליח פותח בהודעה שמספרת למבקרים מה הם עומדים לראות, ואז נוסע עד התחנה.',
+        hint: 'ההודעה באה לפני התנועה הראשונה. ספרו משבצות בהדמיה: במסלול יש שתי פניות.',
+        criteria: [{ label: 'פקודת הצ׳אט היא demo', type: 'command', command: 'demo' }, { label: 'מופיעה הודעה לפני שהשליח יוצא', type: 'sayBeforeFirstMove' }, { label: 'השליח מגיע לתחנה', type: 'reachedStation' }],
+      },
+      {
+        title: 'תרגיל 2 - פעולה שרואים בדמו',
+        mission: 'המבקרים צריכים לראות שקרה משהו בעולם: בתחנה השליח מניח חבילה ומודיע שהמשלוח הגיע.',
+        hint: 'הודעת המסירה באה אחרי הנחת החבילה.',
+        criteria: [{ label: 'החבילה מונחת בתחנה', type: 'packageNearStation' }, { label: 'יש הודעת מסירה', type: 'arrivalSay' }],
+        starter: { command: 'demo', blocks: [{ type: 'teleport' }, ...trip] },
+      },
+      {
+        title: 'תרגיל 3 - לולאה בדמו',
+        mission: 'הדמו מראה גם לולאה: השליח מניח 3 חבילות בתחנה, בלי להעתיק את אותו בלוק שלוש פעמים.',
+        hint: 'בלוק ״לולאה״ נמצא בקטגוריית Loops.',
+        criteria: [{ label: 'הפעולה חוזרת בלי להעתיק בלוקים', type: 'repeat' }, { label: 'מונחות 3 חבילות', type: 'placeCount', min: 3 }, { label: 'החבילה מונחת בתחנה', type: 'packageNearStation' }],
+        starter: { command: 'demo', blocks: [{ type: 'teleport' }, ...trip, { type: 'place', direction: 'DOWN' }] },
+      },
+      {
+        title: 'תרגיל 4 - תנאי בדמו',
+        mission: 'הדמו מראה גם תנאי: כשהדרך פתוחה השליח יוצא ומוסר את החבילות, וכשהיא חסומה הוא נשאר במחסן ומסביר למבקרים שהדרך חסומה. הריצו ובדקו בשני מצבי הדרך.',
+        hint: 'בלוק ״תנאי״ בקטגוריית Logic. הנסיעה והלולאה נכנסות לחלק של דרך פתוחה.',
+        criteria: [{ label: 'כשהדרך פתוחה החבילה מונחת בתחנה', type: 'openDelivers' }, { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' }, { label: 'כשהדרך חסומה מופיעה הודעה על החסימה', type: 'blockedSays' }],
+        starter: { command: 'demo', blocks: [{ type: 'teleport' }, ...trip, loop3] },
+      },
+      null,
+      {
+        title: 'אתגר קטן - הדמו המלא',
+        mission: 'הרכיבו את הדמו המלא: הודעת פתיחה למבקרים. כשהדרך פתוחה השליח מוסר 3 חבילות ומודיע פעם אחת שהמשלוח הגיע. כשהיא חסומה הוא נשאר ומסביר שהדרך חסומה. הריצו ובדקו בשני מצבי הדרך.',
+        hint: 'הודעת הפתיחה באה לפני התנאי. הודעת המסירה באה אחרי הלולאה, בחלק של דרך פתוחה.',
+        criteria: [{ label: 'פקודת הצ׳אט היא demo', type: 'command', command: 'demo' }, { label: 'מופיעה הודעה לפני שהשליח יוצא', type: 'sayBeforeFirstMove' }, { label: 'מונחות 3 חבילות', type: 'placeCount', min: 3 }, { label: 'כשהדרך פתוחה החבילה מונחת בתחנה', type: 'openDelivers' }, { label: 'כשהדרך פתוחה יש הודעת מסירה', type: 'openArrivalSay' }, { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' }, { label: 'כשהדרך חסומה מופיעה הודעה על החסימה', type: 'blockedSays' }],
+        starter: { command: 'demo', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [...trip, loop3], else: [{ type: 'say', text: 'הדרך חסומה, נחכה' }] }] },
+      },
+    ];
+    defs.forEach((def, index) => { if (def) Object.assign(lesson16.exercises[index], def); });
+  }
 
   // Debug missions in lessons 1-4, 6 and 14-16 say only what the code should do; finding what is wrong is the
   // student's job (the hint button still points at the right place). Same wording as the later debug exercises.

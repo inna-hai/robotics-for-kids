@@ -689,6 +689,8 @@
     return state;
   }
 
+  // The barrier stands on the first leg of the route, this many cells east of the warehouse (lessons can override).
+  const barrierCells = academy.world?.barrierCells || 2.5;
   // Station, delivery and return checks need the exact cell (a cell is 42px, so 20px means "on the cell").
   const stationRadius = 20;
   function isNear(point, target, radius = 46) {
@@ -818,7 +820,7 @@
     if (criterion.type === 'blockedDelivers') return runProgram(false).packages.some(pkg => isNear(pkg, station, criterion.radius || stationRadius));
     if (criterion.type === 'blockedAvoidsBarrier') {
       // The barrier stands on the road two and a half cells east of the warehouse.
-      const barrierX = start.x + cell * 2.5;
+      const barrierX = start.x + cell * barrierCells;
       return !runProgram(false).path.some(segment => Math.abs(segment.y1 - start.y) < 4 && Math.abs(segment.y2 - start.y) < 4
         && Math.min(segment.x1, segment.x2) < barrierX && Math.max(segment.x1, segment.x2) > barrierX);
     }
@@ -1226,7 +1228,7 @@
   let gateAnimating = false;
 
   function drawBoomGate(lift, blocked) {
-    const pivotX = start.x + cell * 2.5;
+    const pivotX = start.x + cell * barrierCells;
     const pivotY = start.y - 24;
     const armLength = 50;
     const raise = lift * Math.PI / 2;
@@ -1282,7 +1284,7 @@
 
   // Bubble above the boom gate: what the if read, and which branch it chose.
   function drawConditionBubble(bubble) {
-    const x = start.x + cell * 2.5;
+    const x = start.x + cell * barrierCells;
     const y = Math.max(6, start.y - 168);
     const width = 310;
     const height = 78;
