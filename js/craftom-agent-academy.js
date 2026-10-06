@@ -803,6 +803,8 @@
       const firstMove = types.indexOf('move');
       return firstMove > -1 && state.actions.some((action, index) => index < firstMove && action.type === 'say' && String(action.text || '').trim());
     }
+    // Exactly one message during the whole run (a finish message must not repeat every round).
+    if (criterion.type === 'sayOnce') return state.says.filter(text => String(text || '').trim()).length === 1;
     // A message inside the loop: it shows once in every round.
     if (criterion.type === 'sayInRepeat') return state.actions.filter(action => action.type === 'say' && action.inRepeat && isSuccessMessage(action.text)).length >= Number(criterion.min || 2);
     if (criterion.type === 'sayCount') return state.says.filter(isSuccessMessage).length >= Number(criterion.min || 1);
