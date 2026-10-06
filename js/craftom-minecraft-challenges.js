@@ -2313,10 +2313,14 @@
     lesson4.exercises[2].starter = { blocks: lesson4Route.slice(0, 3) };
     lesson4.exercises[3].starter = { blocks: lesson4Route };
     lesson4.exercises[4].starter = { blocks: [...lesson4Route, { type: 'place', direction: 'DOWN' }] };
-    lesson4.exercises[5].starter = { blocks: [...lesson4Route.slice(0, 5), { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }, { type: 'say', text: 'המשלוח הגיע' }] };
+    // The challenge has three bugs: the first leg is too short, the second turn goes the wrong way, the last leg is too long.
+    lesson4.exercises[5].starter = { blocks: [
+      { type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 3 },
+      { type: 'turn', turn: 'LEFT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }, { type: 'say', text: 'המשלוח הגיע' }
+    ] };
     lesson4.exercises[5].criteria = lesson4.exercises[5].criteria.filter(criterion => criterion.type !== 'secondMove');
     lesson4.exercises[5].criteria.unshift({ label: 'אחרי התיקון השליח עוצר בתחנה', type: 'reachedStation', radius: 20 });
-    lesson4.exercises[5].hint = 'השליח עובר את התחנה. בדקו את התנועה האחרונה, אחרי הפנייה השנייה.';
+    lesson4.exercises[5].hint = 'יש כאן יותר מטעות אחת. בדקו כל קטע בנפרד: האם השליח מגיע לפינה לפני שהוא פונה? לאיזה צד הוא פונה? איפה הוא עוצר?';
     // Exercise 2 only adds the turn; the move after it is exercise 3's step.
     lesson4.exercises[1].mission = 'הוסיפו פנייה אחת אחרי התנועה הראשונה, בפינה שבה השביל משנה כיוון.';
     lesson4.exercises[1].criteria = lesson4.exercises[1].criteria.filter(criterion => criterion.type !== 'turnBeforeSecondMove');
@@ -2593,7 +2597,7 @@
     [1, 2, 2, 'תרגיל 3 - דיבוג', 'השליח צריך להניח את החבילה בתחנה, אבל משהו בקוד לא עובד.'],
     [1, 2, 3, 'תרגיל 4 - דיבוג', 'השליח צריך להגיע לתחנה ולהניח בה את החבילה, אבל משהו בקוד לא עובד.'],
     [1, 2, 5, 'אתגר קטן - דיבוג', 'החבילה צריכה להיות מונחת בתחנה, אבל משהו בקוד לא עובד.'],
-    [1, 3, 5, 'אתגר קטן - דיבוג', 'השליח צריך להגיע לתחנה ולהניח בה את החבילה, אבל משהו בקוד לא עובד.'],
+    [1, 3, 5, 'אתגר קטן - דיבוג', 'השליח צריך להגיע לתחנה ולהניח בה את החבילה, אבל בקוד הזה יש כמה טעויות.'],
     [2, 1, 3, 'תרגיל 4 - דיבוג', 'אחרי המסירה השליח צריך לחזור עד המחסן, אבל משהו בקוד לא עובד.'],
     [4, 1, 4, 'תרגיל 5 - דיבוג', 'השליח צריך להביא את החבילה עד המערכת החדשה (התחנה), אבל משהו בקוד לא עובד. ההודעה שבסוף כבר קיימת, השאירו אותה.'],
     [4, 2, 1, 'תרגיל 2 - דיבוג', 'הבדיקה צריכה להראות שהחבילה מגיעה לתחנה, אבל היא נכשלת. אחרי התיקון הוסיפו בסוף ״הודעה בצ׳אט״ עם תוצאת הבדיקה.'],
