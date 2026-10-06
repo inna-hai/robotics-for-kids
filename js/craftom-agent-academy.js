@@ -445,7 +445,7 @@
     return `<xml xmlns="https://developers.google.com/blockly/xml">${starts[index] || starts[0]}</xml>`;
   }
 
-  // Categories that are not available yet stay visible but grey, and their blocks cannot be dragged out.
+  // Categories that are not available yet keep their colour, but their blocks are grey and cannot be dragged out.
   // Exercises that will later ask to turn long code into a loop lock Loops until then.
   function toolboxXml(exercise = academy.exercises[activeExercise]) {
     const showLoops = !exercise?.hideLoops;
@@ -459,10 +459,10 @@
         <block type="mc_turn_agent"></block>
         <block type="mc_place_agent"></block>
       </category>
-      <category name="Loops" colour="${showLoops ? '120' : '#cbd5e1'}">
+      <category name="Loops" colour="120">
         <block type="mc_repeat"${showLoops ? '' : ' disabled="true"'}></block>
       </category>
-      <category name="Logic" colour="${showLogic ? '180' : '#cbd5e1'}">
+      <category name="Logic" colour="180">
         <block type="mc_if_route_open"${showLogic ? '' : ' disabled="true"'}></block>
       </category>
       <category name="Player" colour="290"><block type="mc_say"></block></category>
