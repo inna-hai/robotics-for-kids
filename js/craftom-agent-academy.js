@@ -35,6 +35,21 @@
     }
   });
 
+  // In debug exercises the check list describes what should happen, not which block to move or change.
+  const debugResultLabels = {
+    teleportOutsideRepeat: 'בכל סיבוב השליח ממשיך הלאה מהמקום שבו עצר',
+    placeInRepeat: 'הקוד עדיין משתמש בלולאה',
+    placeDirection: 'החבילה מונחת בתוך התחנה',
+    moveBeforeTurn: 'השליח פונה בפינה הנכונה',
+    turnBeforeSecondMove: 'השליח פונה בפינה הנכונה',
+  };
+  academy.exercises?.forEach(exercise => {
+    if (!exercise.debugStart) return;
+    (exercise.criteria || []).forEach(criterion => {
+      if (debugResultLabels[criterion.type]) criterion.label = debugResultLabels[criterion.type];
+    });
+  });
+
   // Only the switch from deliver to start is explained; other lessons keep their missions short on purpose.
   const chatCommand = academy.command || 'deliver';
   const previousLesson = Number(lesson.id) > 1 ? window.getCraftomMinecraftLesson?.(Number(lesson.id) - 1) : null;
