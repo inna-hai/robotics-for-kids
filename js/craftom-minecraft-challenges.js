@@ -2463,6 +2463,31 @@
     ],
   });
 
+  // Lesson 10: its own map with a turn on the main route (5 east, right turn, 4 south), so the trip inside then
+  // is a full route with a turn, not one straight move.
+  {
+    const lesson10 = detailsByChallenge[3][1].academy;
+    lesson10.world = {
+      start: { x: 112, y: 104 },
+      station: { x: 322, y: 272 },
+      routeTiles: [154, 196, 238, 280, 322].map(x => ({ x, y: 104 })).concat([146, 188, 230, 272].map(y => ({ x: 322, y }))),
+    };
+    const trip = [{ type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 4 }];
+    const replaceTrip = blocks => {
+      const out = [];
+      (blocks || []).forEach(block => {
+        if (block.type === 'move' && block.steps === 4) out.push(...trip.map(step => ({ ...step })));
+        else if (block.type === 'ifRoute') out.push({ ...block, then: replaceTrip(block.then), else: replaceTrip(block.else) });
+        else out.push(block);
+      });
+      return out;
+    };
+    lesson10.exercises.forEach(exercise => {
+      if (exercise.starter?.blocks) exercise.starter.blocks = replaceTrip(exercise.starter.blocks);
+    });
+    lesson10.exercises[1].mission = 'בתוך then בנו את הנסיעה עד התחנה. שימו לב: במסלול הזה יש פנייה. כשהדרך חסומה השליח לא זז.';
+  }
+
   // Lesson 5 exercise 1 places two packages by copying blocks (Loops locked), so exercise 2 is the step that turns
   // the copied code into a loop. Set after the refinements, which would otherwise add a repeat requirement here too.
   Object.assign(detailsByChallenge[2][0].academy.exercises[0], {
