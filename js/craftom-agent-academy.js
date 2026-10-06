@@ -783,7 +783,9 @@
     if (criterion.type === 'sayAfterLoop') {
       // A success message outside any loop, placed after the last loop has finished.
       const lastRepeat = state.actions.map(action => action.type).lastIndexOf('repeat');
-      return lastRepeat > -1 && state.actions.some((action, index) => index > lastRepeat && action.type === 'say' && !action.inRepeat && isSuccessMessage(action.text));
+      // "Once, at the end": exactly one message after the loop (two finish messages in a row fail too).
+      const after = state.actions.filter((action, index) => index > lastRepeat && action.type === 'say' && !action.inRepeat);
+      return lastRepeat > -1 && after.length === 1 && isSuccessMessage(after[0].text);
     }
     if (criterion.type === 'endsWithSay') {
       const last = state.actions[state.actions.length - 1];
@@ -801,7 +803,7 @@
       const clean = text => normHe(String(text || '').trim()).replace(/[!.?,\s]+/g, ' ').trim();
       const inside = new Set(state.actions.filter(action => action.type === 'say' && action.inRepeat).map(action => clean(action.text)));
       const after = state.actions.filter(action => action.type === 'say' && !action.inRepeat).map(action => clean(action.text));
-      return inside.size > 0 && after.length > 0 && after.every(text => text && !inside.has(text));
+      return inside.size > 0 && after.some(text => text && !inside.has(text));
     }
     // Exactly one message during the whole run (a finish message must not repeat every round).
     if (criterion.type === 'sayOnce') return state.says.filter(text => String(text || '').trim()).length === 1;
