@@ -2354,7 +2354,7 @@
     detailsByChallenge[challengeId][lessonIndex].academy.exercises[exerciseIndex].debugStart = true;
   });
   // Debug check labels describe the result, not the number to type.
-  [[1, 2, 2, 'אחרי התיקון החבילה מונחת בתחנה'], [2, 1, 3, 'אחרי התיקון השליח חוזר עד המחסן']].forEach(([challengeId, lessonIndex, exerciseIndex, label]) => {
+  [[1, 2, 2, 'החבילה מונחת בתחנה'], [2, 1, 3, 'אחרי התיקון השליח חוזר עד המחסן']].forEach(([challengeId, lessonIndex, exerciseIndex, label]) => {
     detailsByChallenge[challengeId][lessonIndex].academy.exercises[exerciseIndex].criteria.forEach(criterion => {
       if (/תוקנה? ל-\d/.test(criterion.label)) criterion.label = label;
     });

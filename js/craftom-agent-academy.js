@@ -80,6 +80,15 @@
     });
   });
 
+  // A package on the station cell already means it was placed down there (forward would put it on the next cell),
+  // so a separate "placed down" check is dropped where the station-package check exists.
+  academy.exercises?.forEach(exercise => {
+    const types = (exercise.criteria || []).map(criterion => criterion.type);
+    if (types.some(type => ['packageNearStation', 'openDelivers', 'blockedDelivers'].includes(type))) {
+      exercise.criteria = exercise.criteria.filter(criterion => !(criterion.type === 'placeDirection' && (criterion.direction || 'DOWN') === 'DOWN'));
+    }
+  });
+
   // Exercises that check the code in both road states also require the student to run it in both states
   // themselves (switching the road with the button), not only the background check.
   const openStateTypes = ['openSays', 'openDelivers', 'openArrivalSay', 'openReaches'];
