@@ -1610,7 +1610,8 @@
   function entryBoardXml(index) {
     // Debug exercises always start from their own broken code instead of the previous solution.
     if (academy.exercises[index]?.debugStart) return starterXml(index);
-    if (index === 0) return emptyBoardXml();
+    // Exercise 1 starts empty, unless its mission says the board already has the chat command and summon.
+    if (index === 0) return academy.exercises[0]?.prefilledStart ? starterXml(0) : emptyBoardXml();
     if (passedBoards[index - 1]) return passedBoards[index - 1];
     if (savedBoards[index - 1]) return savedBoards[index - 1];
     return starterXml(index);

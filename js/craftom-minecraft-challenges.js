@@ -2583,6 +2583,8 @@
       ],
     },
   };
+  // In lessons 14-16 exercise 1 already has the chat command and the summon on the board, as its mission says.
+  [1, 2, 3].forEach(lessonIndex => { detailsByChallenge[4][lessonIndex].academy.exercises[0].prefilledStart = true; });
   Object.entries(detailedProjectMissions).forEach(([lessonIndex, texts]) => {
     const academy = detailsByChallenge[4][Number(lessonIndex)].academy;
     if (texts.story) academy.story = texts.story;
