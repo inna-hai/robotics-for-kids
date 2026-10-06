@@ -142,6 +142,9 @@ test('factory engine checks action plus repeat count and gives loop debugging fe
   assertIncludes(playSource, 'compound-action-slot');
   assertIncludes(playSource, 'איך יודעים כמה פעמים להריץ');
   assertIncludes(playSource, 'מספר החזרות הוא מספר הפריטים שמופיע בסיפור');
+  assertIncludes(playSource, 'function sameActionSet');
+  assertIncludes(playSource, 'כל הפעולות הנכונות');
+  assert.ok(!playSource.includes('סדר הפעולות לא נכון'), 'Compound loops should accept the right actions even when the child picks them in a different order');
   assert.ok(!playSource.includes('קודם בוחרים'), 'Compound UI should not tell the order');
   assert.ok(!playSource.includes('אחר כך בוחרים'), 'Compound UI should not tell the order');
   assertIncludes(playSource, 'data-compound-action');
@@ -158,6 +161,42 @@ test('factory engine checks action plus repeat count and gives loop debugging fe
   assert.ok(!playSource.includes('function showHint()'), 'Factory engine should not keep hint UI logic');
   assert.ok(!playSource.includes("getElementById('hint')"), 'Factory engine should not bind a removed hint button');
   assertIncludes(playSource, 'factory-play.html?lesson=');
+});
+
+test('compound loop challenges accept correct actions in either order', () => {
+  const elements = {};
+  const element = (id) => {
+    if (!elements[id]) {
+      elements[id] = {
+        textContent: '',
+        innerHTML: '',
+        hidden: false,
+        style: {},
+        addEventListener() {},
+      };
+    }
+    return elements[id];
+  };
+  const playSandbox = {
+    window: {
+      ...sandbox.window,
+      SisiCourseCertificate: { show() { playSandbox.success = true; } },
+    },
+    location: { search: '?lesson=10' },
+    document: {
+      getElementById: element,
+      querySelectorAll() { return []; },
+      readyState: 'complete',
+    },
+    URLSearchParams,
+    success: false,
+  };
+  vm.runInNewContext(`${playSource}
+    selectedCompound.count = 5;
+    selectedCompound.actions = ['star', 'window'];
+    runLoop();
+  `, playSandbox, { filename: 'factory-play.js' });
+  assert.equal(playSandbox.success, true, 'Lesson 10 should pass when the child chooses the right actions in reverse order');
 });
 
 test('factory css and plan support a 75-minute loop lesson', () => {

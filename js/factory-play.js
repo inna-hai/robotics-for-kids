@@ -203,9 +203,10 @@ function renderLoopPreview() {
 function renderFactoryLine(animate = false) {
   let delay = 0;
   const targets = compoundLoop ? compoundLoop.actions.map((action, index) => ({ action, count: compoundLoop.count, target: `פעולה ${index + 1}: ${actions[action].label}` })) : loopTargets;
+  const compoundActionsComplete = compoundLoop && compoundOk();
   document.getElementById('factory-line').innerHTML = targets.map((target, index) => {
     const action = actions[target.action];
-    const done = compoundLoop ? (selectedCompound.count === compoundLoop.count && selectedCompound.actions[index] === target.action) : (selectedLoops[index].target === loopTargetLabel(target) && selectedLoops[index].action === target.action && selectedLoops[index].count === target.count);
+    const done = compoundLoop ? compoundActionsComplete : (selectedLoops[index].target === loopTargetLabel(target) && selectedLoops[index].action === target.action && selectedLoops[index].count === target.count);
     const selectedCount = compoundLoop ? selectedCompound.count : selectedLoops[index].count;
     const items = selectedCount ? Array.from({ length: selectedCount }, (_, i) => {
       const filled = done && i < target.count;
@@ -218,7 +219,16 @@ function renderFactoryLine(animate = false) {
 
 function renderAll() { renderTaskGuide(); renderActionOptions(); renderCountOptions(); renderLoopPreview(); renderFactoryLine(runningAnimation); renderDebugChallenge(); renderNextStep(false); setResult(''); }
 function loopOk(loop, target) { return loop.target === loopTargetLabel(target) && loop.action === target.action && loop.count === target.count; }
-function compoundOk() { return compoundLoop && selectedCompound.count === compoundLoop.count && compoundLoop.actions.every((action, index) => selectedCompound.actions[index] === action); }
+function sameActionSet(selectedActions, expectedActions) {
+  const remaining = [...expectedActions];
+  return selectedActions.every((action) => {
+    const index = remaining.indexOf(action);
+    if (index === -1) return false;
+    remaining.splice(index, 1);
+    return true;
+  }) && remaining.length === 0;
+}
+function compoundOk() { return compoundLoop && selectedCompound.count === compoundLoop.count && sameActionSet(selectedCompound.actions, compoundLoop.actions); }
 
 function runLoop() {
   runningAnimation = false;
@@ -228,10 +238,10 @@ function runLoop() {
     if (missingAction !== -1) { setResult(`צריך לבחור את פעולה ${missingAction + 1} בתוך הלולאה.`); return; }
     runningAnimation = compoundOk();
     renderFactoryLine(runningAnimation);
-    if (runningAnimation) { setResult(`מעולה! בניתם לולאה אחת עם כמה פעולות לפי הסדר. ${lesson.result} 🎉`, true); window.SisiCourseCertificate?.show({ lessons, lesson }); renderNextStep(true); return; }
+    if (runningAnimation) { setResult(`מעולה! בניתם לולאה אחת עם כל הפעולות הנכונות. ${lesson.result} 🎉`, true); window.SisiCourseCertificate?.show({ lessons, lesson }); renderNextStep(true); return; }
     if (selectedCompound.count !== compoundLoop.count) { setResult(`מספר הפעמים לא מתאים. צריך לחזור ${compoundLoop.count} פעמים.`); return; }
-    const wrongIndex = selectedCompound.actions.findIndex((action, index) => action !== compoundLoop.actions[index]);
-    setResult(`סדר הפעולות לא נכון: פעולה ${wrongIndex + 1} צריכה להיות ${actions[compoundLoop.actions[wrongIndex]].label}.`);
+    const expectedMissingAction = compoundLoop.actions.find((action) => !selectedCompound.actions.includes(action));
+    setResult(`חסרה פעולה מתאימה בלולאה: ${actions[expectedMissingAction].label}.`);
     renderNextStep(false);
     return;
   }
