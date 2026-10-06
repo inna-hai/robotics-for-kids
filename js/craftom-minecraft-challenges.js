@@ -2692,15 +2692,16 @@
   }
   {
     const lesson16 = detailsByChallenge[4][3].academy;
-    lesson16.world = { ...lesson16.world, barrierCells: 1.5 };
+    // Lesson 16 shows its stone path with two turns, and the courier has to drive along it.
+    lesson16.world = { ...lesson16.world, barrierCells: 1.5, hidePath: false };
     const trip = [{ type: 'move', direction: 'FORWARD', steps: 2 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'turn', turn: 'LEFT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 3 }];
     const loop3 = { type: 'repeat', times: 3, blocks: [{ type: 'place', direction: 'DOWN' }] };
     const defs = [
       {
         title: 'תרגיל 1 - פותחים את הדמו',
-        mission: 'בשיעור הזה מכינים הצגה (דמו) של העיר החכמה למבקרים. בלוח כבר יש את הפקודה demo ואת הזימון של השליח. השליח פותח בהודעה שמספרת למבקרים מה הם עומדים לראות, ואז נוסע עד התחנה.',
-        hint: 'ההודעה באה לפני התנועה הראשונה. ספרו משבצות בהדמיה: במסלול יש שתי פניות.',
-        criteria: [{ label: 'פקודת הצ׳אט היא demo', type: 'command', command: 'demo' }, { label: 'מופיעה הודעה לפני שהשליח יוצא', type: 'sayBeforeFirstMove' }, { label: 'השליח מגיע לתחנה', type: 'reachedStation' }],
+        mission: 'בשיעור הזה מכינים הצגה (דמו) של העיר החכמה למבקרים. בלוח כבר יש את הפקודה demo ואת הזימון של השליח. השליח פותח בהודעה שמספרת למבקרים מה הם עומדים לראות, ואז נוסע לאורך השביל עד התחנה. שימו לב: בשביל יש שתי פניות.',
+        hint: 'ההודעה באה לפני התנועה הראשונה. ספרו את אבני השביל בכל קטע, ובדקו לאיזה צד פונים בכל פינה.',
+        criteria: [{ label: 'פקודת הצ׳אט היא demo', type: 'command', command: 'demo' }, { label: 'מופיעה הודעה לפני שהשליח יוצא', type: 'sayBeforeFirstMove' }, { label: 'השליח מגיע לתחנה', type: 'reachedStation' }, { label: 'השליח נוסע לאורך השביל', type: 'followsRoute' }],
       },
       {
         title: 'תרגיל 2 - פעולה שרואים בדמו',
@@ -2728,7 +2729,7 @@
         title: 'אתגר קטן - הדמו המלא',
         mission: 'הרכיבו את הדמו המלא: הודעת פתיחה למבקרים. כשהדרך פתוחה השליח מוסר 3 חבילות ומודיע פעם אחת שהמשלוח הגיע. כשהיא חסומה הוא נשאר ומסביר שהדרך חסומה. הריצו ובדקו בשני מצבי הדרך.',
         hint: 'הודעת הפתיחה באה לפני התנאי. הודעת המסירה באה אחרי הלולאה, בחלק של דרך פתוחה.',
-        criteria: [{ label: 'פקודת הצ׳אט היא demo', type: 'command', command: 'demo' }, { label: 'מופיעה הודעה לפני שהשליח יוצא', type: 'sayBeforeFirstMove' }, { label: 'מונחות 3 חבילות', type: 'placeCount', min: 3 }, { label: 'כשהדרך פתוחה החבילה מונחת בתחנה', type: 'openDelivers' }, { label: 'כשהדרך פתוחה יש הודעת מסירה', type: 'openArrivalSay' }, { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' }, { label: 'כשהדרך חסומה מופיעה הודעה על החסימה', type: 'blockedSays' }],
+        criteria: [{ label: 'פקודת הצ׳אט היא demo', type: 'command', command: 'demo' }, { label: 'מופיעה הודעה לפני שהשליח יוצא', type: 'sayBeforeFirstMove' }, { label: 'השליח נוסע לאורך השביל', type: 'followsRoute' }, { label: 'מונחות 3 חבילות', type: 'placeCount', min: 3 }, { label: 'כשהדרך פתוחה החבילה מונחת בתחנה', type: 'openDelivers' }, { label: 'כשהדרך פתוחה יש הודעת מסירה', type: 'openArrivalSay' }, { label: 'כשהדרך חסומה השליח נשאר במחסן', type: 'blockedStays' }, { label: 'כשהדרך חסומה מופיעה הודעה על החסימה', type: 'blockedSays' }],
         starter: { command: 'demo', blocks: [{ type: 'teleport' }, { type: 'ifRoute', state: 'OPEN', then: [...trip, loop3], else: [{ type: 'say', text: 'הדרך חסומה, נחכה' }] }] },
       },
     ];

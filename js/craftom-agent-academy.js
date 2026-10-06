@@ -815,6 +815,11 @@
     if (criterion.type === 'blockedSaysAbout') return runProgram(false).says.some(isBlockedMessage);
     if (criterion.type === 'blockedSays') return runProgram(false).says.some(isBlockedMessage);
     if (criterion.type === 'openArrivalSay') return hasDeliveryMessage(runProgram(true));
+    // The courier drives only on the stone path (every step lands on a path tile, the warehouse or the station).
+    if (criterion.type === 'followsRoute') {
+      const cells = [start, station, ...routeTiles];
+      return state.path.length > 0 && state.path.every(step => cells.some(tile => isNear({ x: step.x2, y: step.y2 }, tile, stationRadius)));
+    }
     // Open road: the courier ends back at the warehouse, and the result message comes after that return trip.
     if (criterion.type === 'openReturns') return isNear(runProgram(true), start, criterion.radius || stationRadius);
     if (criterion.type === 'openSayAfterReturn') {
