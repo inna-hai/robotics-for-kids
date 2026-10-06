@@ -2431,14 +2431,15 @@
       ],
     });
     Object.assign(lesson7.exercises[5], {
-      mission: 'האתגר: הקו צריך לעבוד 3 סיבובים. בכל סיבוב השליח מודיע שהחבילה נמסרה, ובסוף כל הסיבובים מופיעה הודעת סיום אחת בלבד. חשבו איפה כל הודעה צריכה להיות.',
+      mission: 'האתגר: הקו צריך לעבוד 3 סיבובים. בכל סיבוב השליח מודיע שהחבילה נמסרה, ובסוף כל הסיבובים מופיעה הודעת סיום אחת בלבד, שונה מההודעה של כל סיבוב. חשבו איפה כל הודעה צריכה להיות.',
       hint: 'הודעה בתוך הלולאה מופיעה בכל סיבוב. הודעה אחרי הלולאה מופיעה פעם אחת, בסוף.',
       criteria: [
         { label: 'הפעולה חוזרת 3 פעמים', type: 'repeatTimes', times: 3 },
         { label: 'שלוש חבילות על נקודת המסירה', type: 'packagesAtCell', dx: 4, dy: 0, min: 3 },
         { label: 'השליח חוזר למחסן', type: 'returnToStart' },
         { label: 'בכל סיבוב מופיעה הודעת מסירה', type: 'sayInRepeat', min: 3 },
-        { label: 'הודעת הסיום מופיעה פעם אחת, בסוף', type: 'sayAfterLoop' }
+        { label: 'הודעת הסיום מופיעה פעם אחת, בסוף', type: 'sayAfterLoop' },
+        { label: 'הודעת הסיום שונה מההודעה של כל סיבוב', type: 'distinctLoopMessages' }
       ],
     });
     lesson7.exercises[5].starter = { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [...cycle.slice(0, 2), { type: 'say', text: 'החבילה נמסרה' }, cycle[2]] }] };

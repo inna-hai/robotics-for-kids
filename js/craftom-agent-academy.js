@@ -811,6 +811,13 @@
       const firstMove = types.indexOf('move');
       return firstMove > -1 && state.actions.some((action, index) => index < firstMove && action.type === 'say' && String(action.text || '').trim());
     }
+    // The message after the loop is different from the message shown in every round.
+    if (criterion.type === 'distinctLoopMessages') {
+      const clean = text => normHe(String(text || '').trim()).replace(/[!.?,\s]+/g, ' ').trim();
+      const inside = new Set(state.actions.filter(action => action.type === 'say' && action.inRepeat).map(action => clean(action.text)));
+      const after = state.actions.filter(action => action.type === 'say' && !action.inRepeat).map(action => clean(action.text));
+      return inside.size > 0 && after.length > 0 && after.every(text => text && !inside.has(text));
+    }
     // Exactly one message during the whole run (a finish message must not repeat every round).
     if (criterion.type === 'sayOnce') return state.says.filter(text => String(text || '').trim()).length === 1;
     // A message inside the loop: it shows once in every round.
