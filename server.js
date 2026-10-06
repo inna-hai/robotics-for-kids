@@ -2477,6 +2477,11 @@ function cleanMinecraftUpn(value) {
 }
 
 async function readBoundedJsonResponse(response, maxBytes = 32 * 1024) {
+  const { data } = await readBoundedJsonResponseWithSize(response, maxBytes);
+  return data;
+}
+
+async function readBoundedJsonResponseWithSize(response, maxBytes = 32 * 1024) {
   if (!response.body) throw new Error('empty_verifier_response');
   const reader = response.body.getReader();
   const chunks = [];
@@ -2492,7 +2497,7 @@ async function readBoundedJsonResponse(response, maxBytes = 32 * 1024) {
   } finally {
     reader.releaseLock();
   }
-  return JSON.parse(Buffer.concat(chunks, total).toString('utf8'));
+  return { data: JSON.parse(Buffer.concat(chunks, total).toString('utf8')), bytes: total };
 }
 
 async function verifyExistingMinecraftIdentity(upn, playerName) {
@@ -2777,11 +2782,17 @@ function requireCurrentPlayerTarget(db, req, teacherId, classroomId, target) {
     JOIN classrooms c ON c.id = s.classroom_id
     JOIN classroom_teachers t ON t.id = c.teacher_id
     JOIN classroom_minecraft_identities i ON i.student_id = s.id AND i.status = 'verified'
-      AND lower(i.player_name) = lower(s.minecraft_player_name)
+      AND (
+        lower(i.player_name) = lower(s.minecraft_player_name)
+        OR (length(s.minecraft_player_name) > 16 AND lower(i.player_name) = lower(substr(s.minecraft_player_name, 1, 16)))
+      )
     WHERE s.classroom_id = ? AND c.teacher_id = ?
       AND s.archived_at IS NULL AND s.disabled_at IS NULL
       AND t.archived_at IS NULL AND t.disabled_at IS NULL
-      AND lower(i.player_name) = lower(?)`).get(classroomId, teacherId, target);
+      AND (
+        lower(i.player_name) = lower(?)
+        OR (length(s.minecraft_player_name) > 16 AND lower(substr(s.minecraft_player_name, 1, 16)) = lower(?))
+      )`).get(classroomId, teacherId, target, target);
   return student
     ? { student, classroom: classroomAuthorization.classroom, session: classroomAuthorization.session }
     : { status: 409, error: 'השחקן, ההרשאה או השיעור הפעיל השתנו בזמן ההמתנה.' };
@@ -3319,7 +3330,7 @@ async function addKugelConnectionStatusToDashboard(dashboard, classroom) {
           FROM kugel_minecraft_compound_assignments
           WHERE monitor_server_name = ?
         `).all(session.monitor_server_name).forEach(assignment => {
-          assignments.set(String(assignment.minecraft_username || '').toLowerCase(), assignment);
+          setKugelMinecraftKey(assignments, assignment.minecraft_username, assignment);
         });
       }
       return { session, students, runs, assignments };
@@ -3339,7 +3350,7 @@ async function addKugelConnectionStatusToDashboard(dashboard, classroom) {
       : rawEvents.filter(row => !['coin_collected', 'finish_button_pressed'].includes(row?.event_type) && !isKugelResetEvent(row));
     const byStudent = new Map(data.students.map(student => {
       const rawSummary = summarizeKugelStudent(student, mazeMode ? data.runs.get(student.id) : null, data.session, events);
-      const assignment = data.assignments?.get(String(rawSummary.minecraftPlayerName || student.minecraft_player_name || '').toLowerCase())
+      const assignment = getKugelMinecraftKey(data.assignments, rawSummary.minecraftPlayerName || student.minecraft_player_name)
         || findKugelLatestCompoundEventAssignment(events, data.session, student);
       const summary = applyKugelAssignmentConnection(rawSummary, assignment);
       return [student.id, {
@@ -3431,6 +3442,32 @@ function cleanMinecraftPlayerName(value) {
   const name = String(value || '').trim();
   if (!name) return '';
   return /^[A-Za-z0-9_]{2,32}$/.test(name) ? name : null;
+}
+
+function kugelMinecraftPlayerKeys(value) {
+  const name = String(value || '').trim();
+  if (!name) return [];
+  const keys = new Set([name.toLowerCase()]);
+  if (name.length > 16) keys.add(name.slice(0, 16).toLowerCase());
+  return [...keys];
+}
+
+function kugelMinecraftNamesMatch(left, right) {
+  const leftKeys = new Set(kugelMinecraftPlayerKeys(left));
+  return kugelMinecraftPlayerKeys(right).some(key => leftKeys.has(key));
+}
+
+function setKugelMinecraftKey(map, playerName, value) {
+  for (const key of kugelMinecraftPlayerKeys(playerName)) {
+    if (!map.has(key)) map.set(key, value);
+  }
+}
+
+function getKugelMinecraftKey(map, playerName) {
+  for (const key of kugelMinecraftPlayerKeys(playerName)) {
+    if (map.has(key)) return map.get(key);
+  }
+  return null;
 }
 
 function consumeKugelActionLimit(key, maxActions) {
@@ -3586,6 +3623,21 @@ function kugelMonitorUserMessage(error) {
   if (error?.monitorStatus === 409 || error?.statusCode === 409) return 'המוניטור עסוק בפעולה אחרת. נסי שוב בעוד רגע.';
   if (error?.name === 'AbortError' || error?.name === 'TimeoutError') return 'הפעולה מול המוניטור לקחה יותר מדי זמן. בדקי שוב בעוד רגע.';
   return 'פעולת Minecraft Monitor נכשלה.';
+}
+
+function kugelMonitorRequestLog(event) {
+  const level = event.ok ? 'info' : 'error';
+  console[level]('kugel_monitor_request', {
+    method: event.method,
+    url: event.url,
+    status: event.status ?? null,
+    durationMs: event.durationMs,
+    responseBytes: event.responseBytes ?? null,
+    timeoutMs: event.timeoutMs,
+    timedOut: Boolean(event.timedOut),
+    error: event.error || null,
+    monitorCode: event.monitorCode || null,
+  });
 }
 
 function kugelLegacyMonitorMutation(serverName, pathname, payload = {}, timeoutMs = KUGEL_WORLD_STATE_TIMEOUT_MS) {
@@ -3860,9 +3912,14 @@ async function kugelMonitorRequest(pathname, options = {}, timeoutMs = 15000) {
   }
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const startedAt = Date.now();
+  const { omitBearerAuthorization = false, maxResponseBytes = 2 * 1024 * 1024, ...fetchOptions } = options;
+  const method = String(fetchOptions.method || 'GET').toUpperCase();
+  const url = `${KUGEL_MONITOR_API_URL}${pathname}`;
+  let status = null;
+  let responseBytes = null;
   try {
-    const { omitBearerAuthorization = false, maxResponseBytes = 2 * 1024 * 1024, ...fetchOptions } = options;
-    const response = await fetch(`${KUGEL_MONITOR_API_URL}${pathname}`, {
+    const response = await fetch(url, {
       ...fetchOptions,
       redirect: 'error',
       signal: controller.signal,
@@ -3872,12 +3929,16 @@ async function kugelMonitorRequest(pathname, options = {}, timeoutMs = 15000) {
         ...(options.headers || {}),
       },
     });
+    status = response.status;
     let data;
     try {
-      data = await readBoundedJsonResponse(response, maxResponseBytes);
+      const result = await readBoundedJsonResponseWithSize(response, maxResponseBytes);
+      data = result.data;
+      responseBytes = result.bytes;
     } catch {
       const error = new Error('Minecraft monitor returned an invalid or oversized response');
       error.statusCode = 502;
+      error.monitorCode = 'monitor_invalid_response';
       throw error;
     }
     if (!response.ok) {
@@ -3894,8 +3955,29 @@ async function kugelMonitorRequest(pathname, options = {}, timeoutMs = 15000) {
       error.statusCode = safeMonitorStatuses.has(response.status) ? response.status : 502;
       throw error;
     }
+    kugelMonitorRequestLog({
+      ok: true,
+      method,
+      url,
+      status,
+      durationMs: Date.now() - startedAt,
+      responseBytes,
+      timeoutMs,
+    });
     return data;
   } catch (error) {
+    kugelMonitorRequestLog({
+      ok: false,
+      method,
+      url,
+      status: error?.monitorStatus ?? status,
+      durationMs: Date.now() - startedAt,
+      responseBytes,
+      timeoutMs,
+      timedOut: ['AbortError', 'TimeoutError'].includes(error?.name),
+      error: error.message,
+      monitorCode: error.monitorCode,
+    });
     if (error?.statusCode || ['AbortError', 'TimeoutError'].includes(error?.name)) throw error;
     const transportError = new Error('Minecraft monitor transport failed');
     transportError.statusCode = 502;
@@ -4603,10 +4685,10 @@ function parseKugelLessonZeroClassReportText(reportText) {
 }
 
 function latestKugelStageReport(events, student) {
-  const playerKey = String(student?.minecraft_player_name || student?.minecraftPlayerName || '').toLowerCase();
-  if (!playerKey) return null;
+  const playerName = student?.minecraft_player_name || student?.minecraftPlayerName || '';
+  if (!playerName) return null;
   const latest = events
-    .filter(row => row?.event_type === 'stage_report' && kugelEventPlayerName(row).toLowerCase() === playerKey)
+    .filter(row => row?.event_type === 'stage_report' && kugelMinecraftNamesMatch(playerName, kugelEventPlayerName(row)))
     .sort((a, b) => kugelEventTime(b) - kugelEventTime(a))[0];
   return kugelStageReportPublic(latest);
 }
@@ -4638,13 +4720,13 @@ function extractKugelMakeCodeShareLink(text) {
 }
 
 function latestKugelChatCodeLink(events, student) {
-  const playerKey = String(student?.minecraft_player_name || student?.minecraftPlayerName || '').toLowerCase();
-  if (!playerKey) return null;
+  const playerName = student?.minecraft_player_name || student?.minecraftPlayerName || '';
+  if (!playerName) return null;
   const latest = events
     .map(row => {
       const eventType = String(row?.event_type || '').toLowerCase();
       if (!eventType.includes('chat')) return null;
-      if (kugelEventPlayerName(row).toLowerCase() !== playerKey) return null;
+      if (!kugelMinecraftNamesMatch(playerName, kugelEventPlayerName(row))) return null;
       const message = kugelChatMessageText(row);
       const url = extractKugelMakeCodeShareLink(message);
       return url ? { row, message, url } : null;
@@ -5028,15 +5110,15 @@ async function kugelGameEvents(session, useCache = false, timeoutMs = 7000) {
 }
 
 function summarizeKugelStudent(student, run, session, events) {
-  const playerKey = String(student.minecraft_player_name || '').toLowerCase();
+  const playerName = student.minecraft_player_name || '';
   const resetAt = Date.parse(run?.reset_at || '') || 0;
   const eventFloor = Math.max(Number(session?.events_since || 0) * 1000, resetAt);
-  const matching = playerKey
+  const matching = playerName
     ? events.filter(row => {
       const payload = kugelEventPayload(row);
       const eventWorld = String(row.world_id || payload.world_id || payload.worldId || '');
       const eventTime = kugelEventTime(row);
-      return kugelEventPlayerName(row).toLowerCase() === playerKey
+      return kugelMinecraftNamesMatch(playerName, kugelEventPlayerName(row))
         && eventTime >= eventFloor
         && eventTime <= Date.now() + 30000
         && (!eventWorld || eventWorld === session?.world_id);
@@ -5237,7 +5319,7 @@ function getStudentKugelClass(req) {
     const identity = db.prepare(`SELECT player_name FROM classroom_minecraft_identities
       WHERE student_id = ? AND status = 'verified'`).get(student.id);
     const identityAllowed = Boolean(identity?.player_name && student.minecraft_player_name
-      && identity.player_name.toLowerCase() === student.minecraft_player_name.toLowerCase());
+      && kugelMinecraftNamesMatch(student.minecraft_player_name, identity.player_name));
     return { classroom, allowed, identityAllowed };
   });
   if (!context.allowed) return { status: 403, error: 'שיעור Minecraft אינו פתוח לכיתה הזו.' };
@@ -5269,7 +5351,10 @@ function requireCurrentKugelView(db, req, context, role, expectedSession) {
       JOIN teacher_courses tc ON tc.teacher_id = t.id AND tc.course_id = ?
       JOIN classroom_courses cc ON cc.classroom_id = c.id AND cc.course_id = ?
       JOIN classroom_minecraft_identities i ON i.student_id = s.id AND i.status = 'verified'
-        AND lower(i.player_name) = lower(s.minecraft_player_name)
+        AND (
+          lower(i.player_name) = lower(s.minecraft_player_name)
+          OR (length(s.minecraft_player_name) > 16 AND lower(i.player_name) = lower(substr(s.minecraft_player_name, 1, 16)))
+        )
       WHERE s.id = ? AND s.classroom_id = ?
         AND s.archived_at IS NULL AND s.disabled_at IS NULL
         AND t.archived_at IS NULL AND t.disabled_at IS NULL`).get(
@@ -5341,7 +5426,7 @@ async function kugelClassView(req, context, role, useEventCache = true, requeste
         FROM kugel_minecraft_compound_assignments
         WHERE monitor_server_name = ?
       `).all(session.monitor_server_name).forEach(assignment => {
-        assignments.set(String(assignment.minecraft_username || '').toLowerCase(), assignment);
+        setKugelMinecraftKey(assignments, assignment.minecraft_username, assignment);
       });
     }
     const completedStudentIds = new Set(db.prepare(`
@@ -5432,7 +5517,7 @@ async function kugelClassView(req, context, role, useEventCache = true, requeste
     || KUGEL_LESSON_ONE;
   const summariesWithReports = await Promise.all(data.students.map(async student => {
     const rawSummary = summarizeKugelStudent(student, mazeMode ? data.runs.get(student.id) : null, data.session, events);
-    const assignment = data.assignments?.get(String(rawSummary.minecraftPlayerName || student.minecraft_player_name || '').toLowerCase())
+    const assignment = getKugelMinecraftKey(data.assignments, rawSummary.minecraftPlayerName || student.minecraft_player_name)
       || findKugelLatestCompoundEventAssignment(events, data.session, student);
     const stageReport = latestKugelStageReport(reportEvents, student);
     const chatCodeLink = latestKugelChatCodeLink(reportEvents, student);
@@ -5770,7 +5855,10 @@ function resolveKugelCompoundStudent(db, compoundId, studentId = '') {
       c.join_code, k.world_id, k.server_state
     FROM kugel_minecraft_compound_assignments a
     JOIN classroom_students s
-      ON lower(s.minecraft_player_name) = lower(a.minecraft_username)
+      ON (
+        lower(s.minecraft_player_name) = lower(a.minecraft_username)
+        OR (length(s.minecraft_player_name) > 16 AND lower(substr(s.minecraft_player_name, 1, 16)) = lower(a.minecraft_username))
+      )
      AND s.archived_at IS NULL
      AND s.disabled_at IS NULL
     JOIN classrooms c
@@ -5782,7 +5870,10 @@ function resolveKugelCompoundStudent(db, compoundId, studentId = '') {
      AND k.server_state = 'running'
     JOIN classroom_minecraft_identities i
       ON i.student_id = s.id AND i.status = 'verified'
-     AND lower(i.player_name) = lower(s.minecraft_player_name)
+     AND (
+       lower(i.player_name) = lower(s.minecraft_player_name)
+       OR (length(s.minecraft_player_name) > 16 AND lower(i.player_name) = lower(substr(s.minecraft_player_name, 1, 16)))
+     )
     WHERE a.compound_id = ? AND (? = '' OR s.id = ?)
     ORDER BY a.last_seen_at DESC
     LIMIT 1
@@ -5795,14 +5886,14 @@ function resolveKugelCompoundStudent(db, compoundId, studentId = '') {
 }
 
 function findKugelCompoundEventAssignment(events, session, student, compoundId) {
-  const playerName = String(student?.minecraft_player_name || '').toLowerCase();
+  const playerName = student?.minecraft_player_name || '';
   const serverName = String(session?.monitor_server_name || '');
   if (!playerName || !serverName || !compoundId) return null;
   return [...(Array.isArray(events) ? events : [])]
     .filter(row => {
       const payload = kugelEventPayload(row);
       return String(payload.compound_id || payload.compoundId || '') === String(compoundId)
-        && kugelEventPlayerName(row).toLowerCase() === playerName
+        && kugelMinecraftNamesMatch(playerName, kugelEventPlayerName(row))
         && String(row.server_name || row.server || serverName) === serverName;
     })
     .sort((a, b) => kugelEventTime(b) - kugelEventTime(a))
@@ -5818,7 +5909,7 @@ function findKugelCompoundEventAssignment(events, session, student, compoundId) 
 }
 
 function findKugelLatestCompoundEventAssignment(events, session, student) {
-  const playerName = String(student?.minecraft_player_name || student?.minecraftPlayerName || '').toLowerCase();
+  const playerName = student?.minecraft_player_name || student?.minecraftPlayerName || '';
   const serverName = String(session?.monitor_server_name || '');
   if (!playerName || !serverName) return null;
   return [...(Array.isArray(events) ? events : [])]
@@ -5826,7 +5917,7 @@ function findKugelLatestCompoundEventAssignment(events, session, student) {
       const payload = kugelEventPayload(row);
       const compoundId = cleanKugelCompoundId(row?.compound_id || row?.compoundId || payload.compound_id || payload.compoundId || payload.compound);
       return compoundId
-        && kugelEventPlayerName(row).toLowerCase() === playerName
+        && kugelMinecraftNamesMatch(playerName, kugelEventPlayerName(row))
         && String(row.server_name || row.server || serverName) === serverName;
     })
     .sort((a, b) => kugelEventTime(b) - kugelEventTime(a))
@@ -6285,8 +6376,11 @@ async function handleKugelApi(req, res) {
           const linked = withSummerDb(db => db.prepare(`
             SELECT id FROM classroom_students WHERE classroom_id = ?
               AND archived_at IS NULL AND disabled_at IS NULL
-              AND lower(minecraft_player_name) = lower(?)
-          `).get(classroomId, target));
+              AND (
+                lower(minecraft_player_name) = lower(?)
+                OR (length(minecraft_player_name) > 16 AND lower(substr(minecraft_player_name, 1, 16)) = lower(?))
+              )
+          `).get(classroomId, target, target));
           if (!linked) return send(res, 404, JSON.stringify({ error: 'השחקן אינו משויך לכיתה הזאת.' }));
         }
         const queued = withSummerDb(db => enqueueKugelLiveCommand(db, {
@@ -6321,8 +6415,11 @@ async function handleKugelApi(req, res) {
         const linked = withSummerDb(db => db.prepare(`
           SELECT id FROM classroom_students WHERE classroom_id = ?
             AND archived_at IS NULL AND disabled_at IS NULL
-            AND lower(minecraft_player_name) = lower(?)
-        `).get(classroomId, target));
+            AND (
+              lower(minecraft_player_name) = lower(?)
+              OR (length(minecraft_player_name) > 16 AND lower(substr(minecraft_player_name, 1, 16)) = lower(?))
+            )
+        `).get(classroomId, target, target));
         if (!linked) return send(res, 404, JSON.stringify({ error: 'השחקן אינו משויך לכיתה הזאת.' }));
         const result = await kugelAuthorizedMonitorMutation(
           req, context.teacher.id, classroomId, target,
@@ -6341,8 +6438,11 @@ async function handleKugelApi(req, res) {
         const linked = withSummerDb(db => db.prepare(`
           SELECT id FROM classroom_students WHERE classroom_id = ?
             AND archived_at IS NULL AND disabled_at IS NULL
-            AND lower(minecraft_player_name) = lower(?)
-        `).get(classroomId, target));
+            AND (
+              lower(minecraft_player_name) = lower(?)
+              OR (length(minecraft_player_name) > 16 AND lower(substr(minecraft_player_name, 1, 16)) = lower(?))
+            )
+        `).get(classroomId, target, target));
         if (!linked) return send(res, 404, JSON.stringify({ error: 'השחקן אינו משויך לכיתה הזאת.' }));
       }
       const queued = withSummerDb(db => enqueueKugelLiveCommand(db, {

@@ -1434,6 +1434,35 @@ try {
   assert.equal(dashboardLiveCoinsLessonZero.minecraftConnection.coins, 8);
   assert.equal(dashboardLiveCoinsLessonZero.lastDurationMs, 12000, 'progress dashboard shows inferred Minecraft finish duration');
   assert.equal(dashboardLiveCoinsLessonZero.bestTimeMs, 12000, 'progress dashboard shows inferred Minecraft best time');
+  const truncatedNameDb = new Database(dbFile);
+  truncatedNameDb.prepare('UPDATE classroom_students SET minecraft_player_name = ?, updated_at = ? WHERE id = ?')
+    .run('miriam_shtilerman', new Date().toISOString(), studentASecond.id);
+  truncatedNameDb.close();
+  const truncatedPlayerName = 'miriam_shtilerma';
+  const truncatedRunAt = new Date(Date.now() + 3000).toISOString();
+  const truncatedFinishAt = new Date(Date.now() + 15000).toISOString();
+  gameEvents = forLease([
+    { id: 195, event_type: 'player_join', player_name: truncatedPlayerName, created_at: truncatedRunAt, payload: JSON.stringify({ minecraft_username: truncatedPlayerName }) },
+    ...Array.from({ length: 8 }, (_, index) => ({
+      id: 196 + index,
+      event_type: 'coin_collected',
+      player_name: truncatedPlayerName,
+      created_at: truncatedRunAt,
+      payload: JSON.stringify({ minecraft_username: truncatedPlayerName, coin_index: index + 1 }),
+    })),
+    { id: 205, event_type: 'finish_button_pressed', player_name: truncatedPlayerName, created_at: truncatedFinishAt, payload: JSON.stringify({ minecraft_username: truncatedPlayerName }) },
+  ]);
+  await new Promise(resolve => setTimeout(resolve, 1100));
+  const teacherTruncatedNameView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
+  assert.equal(teacherTruncatedNameView.status, 200);
+  const teacherTruncatedNameStudent = (await teacherTruncatedNameView.json()).students.find(student => student.id === studentASecond.id);
+  assert.equal(teacherTruncatedNameStudent.minecraftPlayerName, 'miriam_shtilerman');
+  assert.equal(teacherTruncatedNameStudent.coins, 8, 'teacher monitor matches Minecraft Education 16-character truncated player names');
+  assert.equal(teacherTruncatedNameStudent.minecraftStatus, 'completed', 'truncated Minecraft player names still update the student card');
+  const restoreSecondSecureDb = new Database(dbFile);
+  restoreSecondSecureDb.prepare('UPDATE classroom_students SET minecraft_player_name = ?, updated_at = ? WHERE id = ?')
+    .run('SecondSecure', new Date().toISOString(), studentASecond.id);
+  restoreSecondSecureDb.close();
   legacyMonitorState.set('test-kugel-monitor', { running: true, world: 'kugel-50-safe-compounds-v3-20260824' });
   const buildActivityAt = new Date(Date.now() + 1600).toISOString();
   gameEvents = forLease([{
@@ -2572,6 +2601,10 @@ try {
     'Minecraft access codes must not have repository defaults');
   assert.doesNotMatch(source, /KUGEL_MINECRAFT_SERVER_HOST\s*=.*\|\|\s*'[^']+'/,
     'Minecraft hosts must not have repository defaults');
+  assert.match(source, /console\[level\]\('kugel_monitor_request'/,
+    'monitor calls should log endpoint, duration, response size and failures for cross-team debugging');
+  assert.match(source, /function kugelMinecraftPlayerKeys[\s\S]{0,220}slice\(0, 16\)/,
+    'Minecraft Education 16-character player names should match the full lomda player assignment');
   const configuredSource = source.slice(source.indexOf('function kugelMinecraftConfigured()'),
     source.indexOf('function kugelMonitorTransportConfigured()'));
   const transportSource = source.slice(source.indexOf('function kugelMonitorTransportConfigured()'),
