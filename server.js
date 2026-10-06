@@ -88,6 +88,14 @@ const KUGEL_PREVIEW_CLASSROOM_ID = String(process.env.KUGEL_PREVIEW_CLASSROOM_ID
 const KUGEL_COURSE_ID = 'craftom-agent';
 const KUGEL_ACTION_WINDOW_MS = 60 * 1000;
 const KUGEL_EVENTS_CACHE_MS = 1000;
+const KUGEL_TEACHER_DASHBOARD_LIVE_TIMEOUT_MS = Math.max(
+  250,
+  Number(process.env.KUGEL_TEACHER_DASHBOARD_LIVE_TIMEOUT_MS) || 1500,
+);
+const KUGEL_EVENTS_STALE_CACHE_MS = Math.max(
+  KUGEL_EVENTS_CACHE_MS,
+  Number(process.env.KUGEL_EVENTS_STALE_CACHE_MS) || 10 * 60 * 1000,
+);
 const KUGEL_MAKECODE_FETCH_TIMEOUT_MS = Number(process.env.KUGEL_MAKECODE_FETCH_TIMEOUT_MS || 8000);
 const KUGEL_MAKECODE_SOURCE_CACHE_MS = 15 * 60 * 1000;
 const kugelMakeCodeSourceCache = new Map();
@@ -3729,7 +3737,7 @@ function kugelLessonIdFromWorldName(worldName) {
   return kugelWorldModeFromName(worldName) === 'maze' ? 0 : 1;
 }
 
-async function resolveKugelRuntimeWorld(session, classroom = null) {
+async function resolveKugelRuntimeWorld(session, classroom = null, timeoutMs = KUGEL_WORLD_STATE_TIMEOUT_MS) {
   const fallbackWorld = cleanText(session?.world_id || '', 512);
   const fallback = {
     currentWorld: fallbackWorld,
@@ -3744,7 +3752,7 @@ async function resolveKugelRuntimeWorld(session, classroom = null) {
       monitor.monitorServerName,
       '/api/internal/craftom-school/server/status',
       {},
-      KUGEL_WORLD_STATE_TIMEOUT_MS,
+      timeoutMs,
     ));
     const currentWorld = status.currentWorld || fallback.currentWorld;
     return {
@@ -4960,12 +4968,15 @@ function latestKugelClassStageReport(events) {
   };
 }
 
-async function kugelGameEvents(session, useCache = false) {
+async function kugelGameEvents(session, useCache = false, timeoutMs = 7000) {
   if (!session || !kugelMinecraftConfigured()) return [];
   const cacheKey = `${session.monitor_server_name}:${session.classroom_id}:${session.launch_token || ''}:${session.generation}:${session.world_id}`;
   const now = Date.now();
   const cached = kugelEventCache.get(cacheKey);
   if (useCache && cached && cached.expiresAt > now) return cached.promise;
+  const staleRows = useCache && cached && Array.isArray(cached.rows) && cached.staleExpiresAt > now
+    ? cached.rows
+    : null;
   const expected = {
     server: session.monitor_server_name,
     owner_id: session.classroom_id,
@@ -4973,24 +4984,42 @@ async function kugelGameEvents(session, useCache = false) {
     generation: Number(session.generation),
     world: session.world_id,
   };
-  const publicGameEvents = async () => kugelPublicGameEvents(session.monitor_server_name, session.events_since, 7000);
-  const promise = kugelSignedMonitorRequest('/api/internal/craftom-school/v2/world/events', expected, 7000)
+  const cacheRows = rows => {
+    if (useCache) {
+      const refreshedAt = Date.now();
+      kugelEventCache.set(cacheKey, {
+        promise: Promise.resolve(rows),
+        expiresAt: refreshedAt + KUGEL_EVENTS_CACHE_MS,
+        rows,
+        staleExpiresAt: refreshedAt + KUGEL_EVENTS_STALE_CACHE_MS,
+      });
+    }
+    return rows;
+  };
+  const publicGameEvents = async () => kugelPublicGameEvents(session.monitor_server_name, session.events_since, timeoutMs);
+  const promise = kugelSignedMonitorRequest('/api/internal/craftom-school/v2/world/events', expected, timeoutMs)
     .then(data => {
       const rows = Array.isArray(data.events) ? data.events : [];
-      return rows.filter(row => row && typeof row === 'object'
+      return cacheRows(rows.filter(row => row && typeof row === 'object'
         && row.server === expected.server
         && row.owner_id === expected.owner_id
         && row.lease_id === expected.lease_id
         && Number.isInteger(row.generation) && row.generation === expected.generation
-        && row.world === expected.world);
+        && row.world === expected.world));
     })
     .catch(error => {
-      if (session.always_on_monitor || kugelAlwaysOnMonitorForSession(session) || error?.monitorStatus === 404) return publicGameEvents();
+      if (staleRows) return staleRows;
+      if (session.always_on_monitor || kugelAlwaysOnMonitorForSession(session) || error?.monitorStatus === 404) {
+        return publicGameEvents().then(cacheRows);
+      }
       throw error;
     });
   if (useCache) {
     kugelEventCache.set(cacheKey, { promise, expiresAt: now + KUGEL_EVENTS_CACHE_MS });
-    promise.catch(() => kugelEventCache.delete(cacheKey));
+    promise.catch(() => {
+      const current = kugelEventCache.get(cacheKey);
+      if (current?.promise === promise) kugelEventCache.delete(cacheKey);
+    });
     if (kugelEventCache.size > 1000) {
       for (const [key, entry] of kugelEventCache) if (entry.expiresAt <= now) kugelEventCache.delete(key);
     }
@@ -5351,16 +5380,30 @@ async function kugelClassView(req, context, role, useEventCache = true, requeste
     && data.session.server_state === 'running'
     && data.trackedLessonId === Number(data.session.lesson_id),
   );
-  const runtimeWorld = await resolveKugelRuntimeWorld(data.session, context.classroom);
+  const liveTimeoutMs = role === 'teacher' ? KUGEL_TEACHER_DASHBOARD_LIVE_TIMEOUT_MS : 7000;
+  const runtimeWorld = await resolveKugelRuntimeWorld(
+    data.session,
+    context.classroom,
+    role === 'teacher' ? liveTimeoutMs : KUGEL_WORLD_STATE_TIMEOUT_MS,
+  );
   const viewMode = data.trackedLessonId === 0 ? 'maze' : 'build';
   const mazeMode = viewMode === 'maze';
-  const rawEvents = ownsRunningWorld
-    ? await kugelGameEvents(data.session, useEventCache)
-    : [];
+  let rawEvents = [];
+  if (ownsRunningWorld) {
+    try {
+      rawEvents = await kugelGameEvents(data.session, useEventCache, liveTimeoutMs);
+    } catch (error) {
+      if (role !== 'teacher') throw error;
+      console.error('kugel_teacher_live_events_unavailable', {
+        server: data.session?.monitor_server_name || '',
+        message: error.message,
+      });
+    }
+  }
   let closedReportEvents = [];
   if (!ownsRunningWorld && role === 'teacher' && data.session?.monitor_server_name) {
     try {
-      closedReportEvents = await kugelPublicGameEvents(data.session.monitor_server_name, data.session.events_since, 7000);
+      closedReportEvents = await kugelPublicGameEvents(data.session.monitor_server_name, data.session.events_since, liveTimeoutMs);
     } catch (error) {
       console.error('kugel_closed_class_report_events_error', {
         server: data.session.monitor_server_name,

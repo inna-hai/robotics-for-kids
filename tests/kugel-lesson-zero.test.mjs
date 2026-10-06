@@ -1338,6 +1338,17 @@ try {
 
   const recordedView = await fetch(`${baseUrl}/api/kugel/session`, { headers: { Cookie: studentACookie } });
   assert.equal((await recordedView.json()).student.completionRecorded, true);
+  gameEventsDelayMs = 1800;
+  const staleStatusFallbackStartedAt = Date.now();
+  const staleStatusFallbackView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
+  const staleStatusFallbackElapsedMs = Date.now() - staleStatusFallbackStartedAt;
+  gameEventsDelayMs = 0;
+  assert.equal(staleStatusFallbackView.status, 200, 'teacher monitor must load even when live Minecraft events are slow');
+  assert.equal(staleStatusFallbackElapsedMs < 5000, true, 'teacher monitor must not wait for the full slow live Minecraft read');
+  const staleStatusFallbackBody = await staleStatusFallbackView.json();
+  const staleStatusFallbackStudent = staleStatusFallbackBody.students.find(student => student.id === studentA.id);
+  assert.equal(staleStatusFallbackStudent.coins, 8, 'teacher monitor falls back to the last recorded lesson-zero result');
+  assert.equal(staleStatusFallbackStudent.minecraftStatus, 'completed', 'stored completion remains visible when live Minecraft is unavailable');
 
   const malformedScope = await post(baseUrl, `/api/kugel/classes/${classroomA.id}/message`, { text: 'טעות', scope: 'typo' }, teacherACookie);
   assert.equal(malformedScope.status, 400, 'unknown control scope must not become a class-wide action');
@@ -1406,6 +1417,14 @@ try {
   assert.equal(teacherLiveCoinsStudent.startedAt, null, 'Minecraft events can arrive even if the student did not open Minecraft from the lomda button');
   assert.equal(teacherLiveCoinsStudent.minecraftStatus, 'completed', 'live Minecraft finish events should mark lesson zero as completed in the teacher monitor');
   assert.equal(teacherLiveCoinsStudent.lastDurationMs, 12000, 'teacher monitor infers duration from Minecraft events when no lomda run exists');
+  await new Promise(resolve => setTimeout(resolve, 1100));
+  gameEventsDelayMs = 1800;
+  const staleLiveEventsView = await fetch(`${baseUrl}/api/kugel/session?classroomId=${classroomA.id}`, { headers: { Cookie: teacherACookie } });
+  gameEventsDelayMs = 0;
+  assert.equal(staleLiveEventsView.status, 200, 'teacher monitor must reuse recent live statuses when the next live read is slow');
+  const staleLiveEventsStudent = (await staleLiveEventsView.json()).students.find(student => student.id === studentASecond.id);
+  assert.equal(staleLiveEventsStudent.coins, 8, 'recent live coin status remains visible during monitor slowness');
+  assert.equal(staleLiveEventsStudent.minecraftStatus, 'completed', 'recent live completion remains visible during monitor slowness');
   const dashboardLiveCoins = await fetch(`${baseUrl}/api/classroom/classes/${classroomA.id}/progress-dashboard`, { headers: { Cookie: teacherACookie } });
   assert.equal(dashboardLiveCoins.status, 200);
   const dashboardLiveCoinsLessonZero = (await dashboardLiveCoins.json()).dashboard.students
