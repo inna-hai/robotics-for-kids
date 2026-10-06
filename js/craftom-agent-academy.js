@@ -61,7 +61,7 @@
       case 'returnToStart': return 'השליח חוזר למחסן';
       case 'placeInRepeat': return 'בכל סיבוב מונחת חבילה';
       case 'teleportOutsideRepeat': return 'בכל סיבוב השליח ממשיך מהמקום שבו עצר';
-      case 'sayAfterLoop': return 'ההודעה מופיעה פעם אחת, בסוף';
+      case 'sayAfterLoop': return 'הודעת הסיום מופיעה פעם אחת';
       case 'condition': return 'הקוד בודק את מצב הדרך';
       case 'conditionState': return (criterion.state || 'OPEN') === 'OPEN' ? 'הקוד מגיב כשהדרך פתוחה' : 'הקוד מגיב כשהדרך חסומה';
       case 'thenSay': return 'כשהתנאי מתקיים מופיעה הודעה';

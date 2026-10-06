@@ -2438,7 +2438,7 @@
         { label: 'שלוש חבילות על נקודת המסירה', type: 'packagesAtCell', dx: 4, dy: 0, min: 3 },
         { label: 'השליח חוזר למחסן', type: 'returnToStart' },
         { label: 'בכל סיבוב מופיעה הודעת מסירה', type: 'sayInRepeat', min: 3 },
-        { label: 'הודעת הסיום מופיעה פעם אחת, בסוף', type: 'sayAfterLoop' },
+        { label: 'הודעת הסיום מופיעה פעם אחת', type: 'sayAfterLoop' },
         { label: 'הודעת הסיום שונה מההודעה של כל סיבוב', type: 'distinctLoopMessages' },
         { label: 'אין הודעות מיותרות', type: 'noExtraSays' }
       ],
@@ -2653,7 +2653,7 @@
     exercise.mission = 'השלימו מחזור לולאה מלא: יציאה, מסירה, חזרה והודעת סיום. הודעת הסיום צריכה להופיע פעם אחת בלבד.';
     exercise.criteria = exercise.criteria.filter(criterion => criterion.type !== 'arrivalSay').concat([
       { label: 'הודעת הסיום מופיעה בסוף', type: 'sayAfterLoop' },
-      { label: 'ההודעה מופיעה פעם אחת, בסוף', type: 'sayOnce' }
+      { label: 'הודעת הסיום מופיעה פעם אחת', type: 'sayOnce' }
     ]);
   }
   // Returning to the warehouse can be done by driving back or by turning around, so only the result is checked.
