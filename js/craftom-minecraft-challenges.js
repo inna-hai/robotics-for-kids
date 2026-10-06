@@ -2606,6 +2606,51 @@
     exercise.criteria = exercise.criteria.filter(criterion => criterion.type !== 'say');
     exercise.hint = exercise.hint.replace(/\s*דוגמה להודעה:.*$/, '') || 'בחרו רעיון אחד בלבד: לולאה למשהו שחוזר, או תנאי למצב שהעיר בודקת. אחרי השינוי הריצו ובדקו שהחבילה עדיין מגיעה.';
   });
+  // Lesson 14 rebuilt as one clear story: drive to the new system, deliver, deliver 3 packages with a loop,
+  // report once, fix a bug, and a full version with an opening message.
+  {
+    const lesson14 = detailsByChallenge[4][1].academy;
+    const route = [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'turn', turn: 'LEFT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 2 }];
+    const loop3 = { type: 'repeat', times: 3, blocks: [{ type: 'place', direction: 'DOWN' }] };
+    const defs = [
+      {
+        title: 'תרגיל 1 - נוסעים למערכת החדשה',
+        mission: 'בשיעור הזה בונים אוטומציה חדשה: השליח מביא חבילות למערכת חדשה בעיר (התחנה בהדמיה). בלוח כבר יש את הפקודה start ואת הזימון של השליח. השלימו את הנסיעה: השליח נוסע מהמחסן עד המערכת החדשה. שימו לב: בדרך יש פנייה.',
+        hint: 'ספרו משבצות בהדמיה: כמה צעדים עד הפינה, לאיזה צד פונים, וכמה צעדים אחרי הפנייה.',
+        criteria: [{ label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' }, { label: 'השליח מגיע לתחנה', type: 'reachedStation' }],
+      },
+      {
+        title: 'תרגיל 2 - מוסרים חבילה',
+        mission: 'כשהשליח מגיע למערכת החדשה, הוא משאיר בה חבילה.',
+        hint: '״הנחת חבילה״ נמצא בקטגוריית Agent. למטה מניח את החבילה במקום שבו השליח עומד.',
+        criteria: [{ label: 'החבילה מונחת בתחנה', type: 'packageNearStation' }],
+        starter: { command: 'start', blocks: route },
+      },
+      {
+        title: 'תרגיל 3 - שלוש חבילות',
+        mission: 'המערכת החדשה צריכה 3 חבילות. השליח מניח את כולן בתחנה, בלי להעתיק את אותו בלוק שלוש פעמים.',
+        hint: 'בלוק ״לולאה״ נמצא בקטגוריית Loops. מה שבתוכו חוזר כמספר הפעמים שבוחרים.',
+        criteria: [{ label: 'הפעולה חוזרת בלי להעתיק בלוקים', type: 'repeat' }, { label: 'מונחות 3 חבילות', type: 'placeCount', min: 3 }, { label: 'החבילה מונחת בתחנה', type: 'packageNearStation' }],
+        starter: { command: 'start', blocks: [...route, { type: 'place', direction: 'DOWN' }] },
+      },
+      {
+        title: 'תרגיל 4 - המערכת מדווחת',
+        mission: 'מי שמפעיל את האוטומציה צריך לדעת מה קרה. אחרי המסירה השליח מודיע פעם אחת שהמערכת קיבלה את החבילות.',
+        hint: 'הודעה בתוך הלולאה מופיעה בכל סיבוב. הודעה אחרי הלולאה מופיעה פעם אחת.',
+        criteria: [{ label: 'מונחות 3 חבילות', type: 'placeCount', min: 3 }, { label: 'הודעת הסיום מופיעה פעם אחת', type: 'sayAfterLoop' }],
+        starter: { command: 'start', blocks: [...route, loop3] },
+      },
+      null,
+      {
+        title: 'אתגר קטן - האוטומציה המלאה',
+        mission: 'הכינו את הגרסה המלאה של האוטומציה: לפני היציאה השליח מודיע מה הוא עומד לעשות, מוסר 3 חבילות למערכת החדשה, ומודיע פעם אחת שהמשימה הושלמה.',
+        hint: 'יש כאן שתי הודעות: אחת לפני התנועה הראשונה ואחת אחרי הלולאה.',
+        criteria: [{ label: 'מופיעה הודעה לפני שהשליח יוצא', type: 'sayBeforeFirstMove' }, { label: 'מונחות 3 חבילות', type: 'placeCount', min: 3 }, { label: 'החבילה מונחת בתחנה', type: 'packageNearStation' }, { label: 'הודעת הסיום מופיעה פעם אחת', type: 'sayAfterLoop' }],
+        starter: { command: 'start', blocks: [...route, loop3, { type: 'say', text: 'המערכת קיבלה את החבילות' }] },
+      },
+    ];
+    defs.forEach((def, index) => { if (def) Object.assign(lesson14.exercises[index], def); });
+  }
 
   // Debug missions in lessons 1-4, 6 and 14-16 say only what the code should do; finding what is wrong is the
   // student's job (the hint button still points at the right place). Same wording as the later debug exercises.
