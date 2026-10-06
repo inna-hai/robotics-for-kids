@@ -976,16 +976,20 @@
     ctx.fillStyle = '#5f9f3b';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    for (let x = -10; x < canvas.width; x += cell) {
-      for (let y = -8; y < canvas.height; y += cell) {
-        const alt = ((x / cell) + (y / cell)) % 2 === 0;
-        ctx.fillStyle = alt ? '#69ad43' : '#579438';
+    // Grid cells line up with the courier's steps (cell centres at the start point), with clear lines so
+    // students can count steps on the map.
+    const gridX0 = ((start.x - cell / 2) % cell) - cell;
+    const gridY0 = ((start.y - cell / 2) % cell) - cell;
+    for (let x = gridX0, col = 0; x < canvas.width; x += cell, col += 1) {
+      for (let y = gridY0, row = 0; y < canvas.height; y += cell, row += 1) {
+        ctx.fillStyle = (col + row) % 2 === 0 ? '#69ad43' : '#5f9f3b';
         ctx.fillRect(x, y, cell, cell);
-        ctx.strokeStyle = 'rgba(29, 78, 41, .25)';
-        ctx.lineWidth = 1;
-        ctx.strokeRect(x, y, cell, cell);
       }
     }
+    ctx.strokeStyle = 'rgba(20, 55, 28, .7)';
+    ctx.lineWidth = 2;
+    for (let x = gridX0; x < canvas.width; x += cell) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke(); }
+    for (let y = gridY0; y < canvas.height; y += cell) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); }
 
     [
       { x: 492, y: 35, w: 88, h: 132 },
