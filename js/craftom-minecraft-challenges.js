@@ -2400,6 +2400,36 @@
     walk(exercise.starter?.blocks);
   });
 
+  // Lesson 7 contrasts where a message goes: exercise 5 puts it inside the loop (it shows every round),
+  // and the challenge needs both a per-round message and one finish message after the loop.
+  {
+    const lesson7 = detailsByChallenge[2][2].academy;
+    const cycle = [{ type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'place', direction: 'DOWN' }, { type: 'move', direction: 'BACK', steps: 4 }];
+    Object.assign(lesson7.exercises[4], {
+      title: 'תרגיל 5 - הודעה בכל סיבוב',
+      mission: 'הפעם ההודעה נכנסת בתוך הלולאה: אחרי הנחת החבילה הוסיפו הודעה שהחבילה נמסרה. הריצו ושימו לב כמה פעמים ההודעה מופיעה, ולמה.',
+      hint: 'בלוק שנמצא בתוך הלולאה רץ בכל סיבוב. גררו את ״הודעה בצ׳אט״ לתוך הלולאה, מתחת ל״הנחת חבילה״.',
+      check: 'בכל סיבוב מופיעה הודעת מסירה.',
+      criteria: [
+        { label: 'כל החבילות על נקודת המסירה', type: 'packagesAtCell', dx: 4, dy: 0 },
+        { label: 'השליח חוזר למחסן', type: 'returnToStart' },
+        { label: 'בכל סיבוב מופיעה הודעת מסירה', type: 'sayInRepeat', min: 2 }
+      ],
+    });
+    Object.assign(lesson7.exercises[5], {
+      mission: 'האתגר: הקו צריך לעבוד 3 סיבובים. בכל סיבוב השליח מודיע שהחבילה נמסרה, ובסוף כל הסיבובים מופיעה הודעת סיום אחת בלבד. חשבו איפה כל הודעה צריכה להיות.',
+      hint: 'הודעה בתוך הלולאה מופיעה בכל סיבוב. הודעה אחרי הלולאה מופיעה פעם אחת, בסוף.',
+      criteria: [
+        { label: 'הפעולה חוזרת 3 פעמים', type: 'repeatTimes', times: 3 },
+        { label: 'שלוש חבילות על נקודת המסירה', type: 'packagesAtCell', dx: 4, dy: 0, min: 3 },
+        { label: 'השליח חוזר למחסן', type: 'returnToStart' },
+        { label: 'בכל סיבוב מופיעה הודעת מסירה', type: 'sayInRepeat', min: 3 },
+        { label: 'הודעת הסיום מופיעה פעם אחת, בסוף', type: 'sayAfterLoop' }
+      ],
+    });
+    lesson7.exercises[5].starter = { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [...cycle.slice(0, 2), { type: 'say', text: 'החבילה נמסרה' }, cycle[2]] }] };
+  }
+
   // Lesson 5 exercise 1 places two packages by copying blocks (Loops locked), so exercise 2 is the step that turns
   // the copied code into a loop. Set after the refinements, which would otherwise add a repeat requirement here too.
   Object.assign(detailsByChallenge[2][0].academy.exercises[0], {

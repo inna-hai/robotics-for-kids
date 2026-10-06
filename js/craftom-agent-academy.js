@@ -779,6 +779,8 @@
       return state.says.length > 1 && last?.type === 'say' && (isSuccessMessage(last.text) || isOpeningMessage(last.text));
     }
     if (criterion.type === 'maxBlocks') return workspace.getAllBlocks(false).length <= Number(criterion.max);
+    // A message inside the loop: it shows once in every round.
+    if (criterion.type === 'sayInRepeat') return state.actions.filter(action => action.type === 'say' && action.inRepeat && isSuccessMessage(action.text)).length >= Number(criterion.min || 2);
     if (criterion.type === 'sayCount') return state.says.filter(isSuccessMessage).length >= Number(criterion.min || 1);
     if (criterion.type === 'placeBlockCount') return workspace.getAllBlocks(false).filter(block => block.type === 'mc_place_agent').length <= Number(criterion.max || 1);
     if (criterion.type === 'endsAtCell') {
@@ -1648,7 +1650,7 @@
     // When a message's content is checked, the hint also suggests a few example messages.
     const types = (academy.exercises[activeExercise]?.criteria || []).map(criterion => criterion.type);
     const examples = [];
-    if (types.some(type => ['arrivalSay', 'arrivalSayAfterMove', 'openArrivalSay', 'sayAfterLoop', 'sayCount'].includes(type))) {
+    if (types.some(type => ['arrivalSay', 'arrivalSayAfterMove', 'openArrivalSay', 'sayAfterLoop', 'sayCount', 'sayInRepeat'].includes(type))) {
       examples.push('הודעת הצלחה, למשל: "המשלוח הגיע", "החבילה נמסרה", "סיימנו! 🎉"');
     }
     if (types.includes('openingSay')) {
