@@ -2259,6 +2259,36 @@
     });
   }
 
+  // Lesson 2: exercise 1 only adds a turn (the courier turns in place), exercise 2 adds the move before it,
+  // exercise 3 the move after it, and exercise 5 opens with a second move that overshoots.
+  {
+    const lesson2 = detailsByChallenge[1][1].academy;
+    Object.assign(lesson2.exercises[0], {
+      mission: 'צרו פקודת deliver שמזמנת את השליח לנקודת ההתחלה ומוסיפה בלוק ״פנייה״ אחד. הריצו וראו מה קורה: השליח מסתובב במקום, בלי לזוז.',
+      check: 'יש פקודת deliver, זימון ובלוק פנייה.',
+      criteria: [
+        { label: 'פקודת deliver קיימת', type: 'chatDeliver' },
+        { label: 'השליח מזומן לנקודת ההתחלה', type: 'teleport' },
+        { label: 'יש בלוק פנייה', type: 'turn' }
+      ],
+    });
+    Object.assign(lesson2.exercises[1], {
+      mission: 'השליח פנה במקום. הוסיפו לפני הפנייה תנועה קדימה של 4 צעדים, כך שהוא יגיע קודם לפינה ורק שם יפנה.',
+      check: 'התנועה הראשונה היא 4 צעדים, והיא לפני הפנייה.',
+      criteria: [
+        { label: 'התנועה הראשונה היא 4 צעדים קדימה', type: 'firstMove', direction: 'FORWARD', steps: 4 },
+        { label: 'התנועה מגיעה לפני הפנייה', type: 'moveBeforeTurn' }
+      ],
+    });
+    Object.assign(lesson2.exercises[4], {
+      mission: 'תרגיל דיבוג: השליח פונה בפינה הנכונה, אבל אחרי הפנייה הוא ממשיך ועובר את התחנה. הריצו, הסתכלו איפה הוא עוצר, ותקנו רק את המספר שגורם לזה.',
+      debugStart: true,
+    });
+    lesson2.exercises[4].criteria.forEach(criterion => {
+      if (criterion.type === 'secondMove') criterion.label = 'אחרי התיקון השליח עוצר בתחנה';
+    });
+  }
+
   // Lesson 4: exercise 3 only reaches the station, exercise 4 adds the package there, exercise 6 opens with a bug.
   {
     const lesson4 = detailsByChallenge[1][3].academy;
