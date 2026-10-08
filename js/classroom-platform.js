@@ -836,8 +836,10 @@
         const selectedActions = element('div', undefined, 'teacher-course-hub-actions');
         const openCourse = element('a', 'פתיחת סביבת המורה', 'button primary');
         openCourse.href = teacherCourseHref(selectedCourseId);
-        openCourse.target = '_blank';
-        openCourse.rel = 'noopener noreferrer';
+        if (selectedCourseId !== 'craftom-agent') {
+          openCourse.target = '_blank';
+          openCourse.rel = 'noopener noreferrer';
+        }
         selectedActions.append(openCourse);
         teacherCourseGuideLinks(selectedCourseId).forEach((resource) => {
           const link = element('a', resource.label, 'button quiet');
@@ -1257,8 +1259,6 @@
       );
       const allLessonsPage = element('a', 'עמוד כל השיעורים', 'button primary');
       allLessonsPage.href = teacherCourseHref('craftom-agent', classroom.id);
-      allLessonsPage.target = '_blank';
-      allLessonsPage.rel = 'noopener noreferrer';
       top.append(topCopy, allLessonsPage);
       const list = element('div', undefined, 'craftom-lesson-control-list');
 
@@ -1296,21 +1296,35 @@
         }
       }
 
+      const activeLessonId = Math.max(0, ...access.lessons
+        .filter(lesson => Number(lesson.id) === 0 || lesson.open)
+        .map(lesson => Number(lesson.id)));
+
       for (const lesson of access.lessons) {
         const lessonId = Number(lesson.id);
-        const row = element('article', undefined, `craftom-lesson-control-row${lesson.open ? ' is-open' : ''}${lesson.nextToOpen ? ' is-next' : ''}`);
+        const isActiveLesson = lessonId === activeLessonId;
+        const isCompletedLesson = lessonId < activeLessonId && (lessonId === 0 || lesson.open);
+        const row = element('article', undefined, [
+          'craftom-lesson-control-row',
+          lesson.open ? 'is-open' : '',
+          lesson.nextToOpen ? 'is-next' : '',
+          isActiveLesson ? 'is-active-lesson' : '',
+          isCompletedLesson ? 'is-completed-lesson' : '',
+        ].filter(Boolean).join(' '));
         const copy = element('div', undefined, 'craftom-lesson-control-copy');
         const title = element('strong', lessonId === 0 ? `שיעור 0: ${lesson.title || 'שיעור פתיחה'}` : `שיעור ${lessonId}: ${lesson.title || 'ניהול שיעור'}`);
-        const state = lessonId === 0
-          ? 'פתוח תמיד לתלמידים'
-          : (lesson.open ? 'פתוח לתלמידים' : (lesson.nextToOpen ? 'השיעור הבא לפתיחה' : 'נעול עד שהשיעורים הקודמים ייפתחו'));
+        const state = isCompletedLesson
+          ? 'הושלם / עברנו הלאה'
+          : (isActiveLesson
+            ? (lessonId === 0 ? 'שיעור פעיל כרגע' : 'שיעור פעיל עכשיו')
+            : (lessonId === 0
+              ? 'פתוח תמיד לתלמידים'
+              : (lesson.open ? 'פתוח לתלמידים' : (lesson.nextToOpen ? 'השיעור הבא לפתיחה' : 'נעול עד שהשיעורים הקודמים ייפתחו'))));
         copy.append(title, element('span', state));
 
         const actions = element('div', undefined, 'craftom-lesson-control-actions');
         const page = element('a', 'עמוד השיעור', 'button secondary');
         page.href = teacherLessonHref(classroom.id, lessonId);
-        page.target = '_blank';
-        page.rel = 'noopener noreferrer';
         actions.append(page);
 
         if (lessonId > 0) {
@@ -1398,8 +1412,10 @@
           : `כניסה ללומדה: ${courseLabels[courseId] || courseId}`;
         const link = element('a', undefined, courseId === 'craftom-agent' ? 'course-action-card primary-action' : 'course-action-card');
         link.href = teacherCourseHref(courseId, classroom.id);
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
+        if (courseId !== 'craftom-agent') {
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+        }
         const title = element('strong', linkText);
         const description = element(
           'span',
@@ -1497,9 +1513,9 @@
         : [];
 
       const tabs = [
+        { id: 'lesson', label: 'ניהול שיעור', nodes: [craftomLessonControls || courseAccess] },
         { id: 'students', label: 'תלמידים וקודים', nodes: [studentRoster] },
         ...progressTab,
-        { id: 'lesson', label: 'ניהול שיעור', nodes: [craftomLessonControls || courseAccess] },
         { id: 'server', label: 'שרת Minecraft', nodes: [kugelServerControls].filter(Boolean) },
         { id: 'settings', label: 'הגדרות', nodes: [courseSettings] },
       ];

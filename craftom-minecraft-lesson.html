@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260914-meeting-reflection-1">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20261008-lesson1-deliver-no-teleport-1">
   <link rel="stylesheet" href="css/platform-home-link.css">
   <style>
     .lesson-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
@@ -32,6 +32,7 @@
         <p class="goal" id="summary"></p>
         <p><strong>תוצר:</strong> <span id="deliverable"></span></p>
         <div class="actions">
+          <a class="btn hero-academy-link" id="heroAcademyLink" href="#" hidden>מתחילים באקדמיית ה-Agent</a>
           <a class="btn secondary" id="challengeLink" href="#">דף האתגר</a>
         </div>
       </div>
@@ -41,23 +42,30 @@
       </figure>
     </section>
 
+    <section class="lesson-action-plan" id="lessonActionPlan" aria-label="מה עושים עכשיו">
+      <div>
+        <span class="tag">מה עושים עכשיו?</span>
+      </div>
+      <ol id="lessonActionSteps"></ol>
+    </section>
+
+    <section class="card agent-academy-cta" id="agentAcademyCta" style="margin-top:16px" hidden>
+      <span class="tag">חובה: קודם תרגול</span>
+      <h2>אקדמיית ה-Agent לתרגול MakeCode</h2>
+      <p>כאן לא פותחים את ה-Code Builder הרגיל. קודם נכנסים לאקדמיה, בונים את הקוד בבלוקים, עוברים לטאב Python אם רוצים, מריצים את ה-Agent בהדמיה ומקבלים בדיקה אוטומטית.</p>
+      <p class="agent-academy-flow">אחרי שהתרגול עובר בדיקה, חוזרים לשיעור ומיישמים את אותו רעיון בתוך Minecraft Education.</p>
+      <a class="btn agent-academy-primary-link" id="agentAcademyLink" href="#">פתיחת אקדמיית ה-Agent</a>
+    </section>
+
     <section class="grid" style="margin-top:16px">
-      <article class="card build-first"><h2>יעד השיעור</h2><p id="goal"></p></article>
-      <article class="card build-first"><h2>פקודות מרכזיות</h2><p id="command"></p></article>
+      <article class="card build-first"><h2>פקודות מרכזיות</h2><ul id="command" class="command-explain-list"></ul></article>
     </section>
 
     <section class="detail-grid" style="margin-top:16px">
       <article class="detail-box"><h2>איך עובדים לבד</h2><ul id="selfStudy"></ul></article>
       <article class="detail-box"><h2>מה בונים במיינקראפט</h2><ul id="build"></ul></article>
-      <article class="detail-box"><h2>קוד / MakeCode</h2><ul id="code"></ul></article>
-      <article class="detail-box"><h2>מה מעלים בסוף</h2><p id="exitUpload"></p></article>
-    </section>
-
-    <section class="card agent-academy-cta" id="agentAcademyCta" style="margin-top:16px" hidden>
-      <span class="tag">חובה בשיעור הזה</span>
-      <h2>עובדים באקדמיית Agents</h2>
-      <p>את תרגול ה-MakeCode של השיעור עושים באקדמיה: שם בונים בבלוקים, עוברים לטאב Python, מריצים את ה-Agent על ההדמיה ומקבלים בדיקה אוטומטית.</p>
-      <a class="btn agent-academy-primary-link" id="agentAcademyLink" href="#">כניסה לאקדמיית Agents</a>
+      <article class="detail-box" id="codeDetailBox"><h2>קוד / MakeCode</h2><ul id="code"></ul></article>
+      <article class="detail-box"><h2>מה מגישים בסוף</h2><p id="exitUpload"></p></article>
     </section>
 
     <section class="card makecode-workspace" id="makeCodeWorkspace" style="margin-top:16px">
@@ -83,7 +91,8 @@
 
     <section class="card" style="margin-top:16px">
       <h2>כרטיס יציאה</h2>
-      <p><strong>העלאת תמונה:</strong> <span id="exitUploadInline"></span></p>
+      <p><strong>צילום מהמשחק:</strong> <span id="exitUploadInline"></span></p>
+      <div class="existing-submission minecraft-submitted-photo" id="minecraftSubmittedPhoto" hidden></div>
       <form class="exit-ticket-form" id="exitTicketForm">
         <label>
           <span>שאלת כרטיס היציאה</span>
@@ -95,13 +104,10 @@
           <strong id="exitReflectionQuestion" class="exit-ticket-question">מה הדבר המרכזי שלמדתם במפגש הזה, ואיך השתמשתם בו בבנייה או בקוד?</strong>
           <textarea id="exitReflection" name="reflection" required rows="4" placeholder="כתבו תשובה שמתייחסת למה שלמדתם במפגש הזה"></textarea>
         </label>
-        <label>
-          <span>תמונה של מה שבניתם במיינקראפט</span>
-          <input id="exitPhoto" name="photo" type="file" accept="image/png,image/jpeg,image/webp" required>
-        </label>
-        <button class="btn" id="exitSubmit" type="submit">הגשת כרטיס יציאה</button>
+        <button class="btn" id="exitSubmit" type="submit">שמירת כרטיס יציאה</button>
         <p class="submit-status" id="exitSubmitStatus" role="status" aria-live="polite"></p>
       </form>
+      <div class="existing-submission" id="existingSubmission" hidden></div>
     </section>
 
     <div class="actions">
@@ -112,7 +118,7 @@
     </div>
   </main>
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="js/craftom-minecraft-challenges.js?v=20260914-meeting-reflection-1"></script>
-  <script src="js/craftom-minecraft-lesson-page.js?v=20260914-meeting-reflection-1"></script><script src="js/vendor/blockly/blockly.min.js"></script><script src="js/vendor/blockly/msg/he.js"></script><script src="js/craftom-minecraft-code-builder.js?v=20260910-direct-student-copy-1"></script>
+  <script src="js/craftom-minecraft-challenges.js?v=20261008-lesson1-deliver-no-teleport-1"></script>
+  <script src="js/craftom-minecraft-lesson-page.js?v=20261008-lesson1-deliver-no-teleport-1"></script><script src="js/vendor/blockly/blockly.min.js"></script><script src="js/vendor/blockly/msg/he.js"></script><script src="js/craftom-minecraft-code-builder.js?v=20260910-direct-student-copy-1"></script>
 </body>
 </html>

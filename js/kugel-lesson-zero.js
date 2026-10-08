@@ -6,6 +6,8 @@
   const requestedLessonId = Number(query.get('lesson') || '');
   const requestedChallengeId = Number(query.get('challenge') || '');
   const teacherPagePath = 'agent-academy-teacher.html';
+  const TEACHER_REFRESH_MS = 30000;
+  const TEACHER_BACKGROUND_REFRESH_MS = 120000;
   const drafts = new Map();
 
   function canonicalizeTeacherUrl() {
@@ -302,7 +304,11 @@
     const teacherLogout = document.getElementById('kugel-teacher-logout');
     let current = null;
     let activeTeacherStudentModalKey = '';
+    let activeTeacherStudentModalSnapshot = null;
+    let activeTeacherStudentModalSignature = '';
     let latestClosedClassStageReport = null;
+    let teacherRefreshTimer = null;
+    let teacherRefreshInFlight = false;
     const openTeacherStudentIds = new Set();
     const openStageReportFullDetails = new Set();
     function scoped(action) {
@@ -341,6 +347,22 @@
       const next = new URLSearchParams(location.search);
       next.set('classroomId', classroomId);
       history.replaceState(null, '', `${teacherPagePath}?${next.toString()}${location.hash}`);
+    }
+
+    function teacherClassroomRosterStudent(student) {
+      const identity = student?.minecraftIdentity || {};
+      return {
+        id: student?.id || '',
+        name: student?.name || 'תלמיד/ה',
+        minecraftPlayerName: student?.minecraftPlayerName || '',
+        minecraftEmail: identity.email || '',
+        rosterOnly: true,
+      };
+    }
+
+    function findTeacherClassroom(classes) {
+      const items = Array.isArray(classes) ? classes : [];
+      return items.find(item => item.id === classroomId) || null;
     }
 
     async function resolveTeacherClassroomId() {
@@ -383,6 +405,28 @@
 
     function teacherProgramLessons() {
       return withLessonZero(window.CRAFTOM_MINECRAFT_PROGRAM?.lessons || []);
+    }
+
+    function teacherFallbackHomeData(note = 'כדי לפתוח Minecraft ולראות לוח חי צריך להיכנס מתוך כרטיס כיתה.', classroom = null) {
+      const rosterStudents = (classroom?.students || []).map(teacherClassroomRosterStudent);
+      return {
+        classroom: { name: classroom?.name || 'מסך בית מורה' },
+        session: {},
+        lessons: classroom?.lessonAccess?.lessons?.length ? classroom.lessonAccess.lessons : teacherProgramLessons(),
+        students: rosterStudents,
+        metrics: {},
+        loadingClassroom: true,
+        minecraftConfigured: false,
+        minecraftSetupNote: note,
+      };
+    }
+
+    async function renderTeacherRosterFallback() {
+      if (!classroomId || (current?.students || []).length) return;
+      const data = await api('/api/classroom/classes');
+      const classroom = findTeacherClassroom(data.classes);
+      if (!classroom) return;
+      render(teacherFallbackHomeData('סטטוסים חיים נטענים עכשיו. רשימת התלמידים כבר מוצגת מתוך הכיתה.', classroom));
     }
 
     function renderTeacherVideoPreview(src, poster, label, frame = node('div', undefined, 'teacher-video-preview')) {
@@ -430,8 +474,14 @@
       const requested = hasRequestedLesson && Number.isInteger(requestedLessonId) && requestedLessonId >= 0 && requestedLessonId <= 16
         ? requestedLessonId
         : 0;
-      const fallback = activeLessonId >= 0 ? activeLessonId : 0;
-      const selectedId = hasRequestedLesson ? requested : (fallback || 0);
+      const openLessonId = Math.max(0, ...(current?.lessonAccess?.lessons || [])
+        .filter(item => Number(item.id) > 0 && item.open)
+        .map(item => Number(item.id)));
+      const nextLessonId = Number((current?.lessonAccess?.lessons || [])
+        .find(item => Number(item.id) > 0 && item.nextToOpen)?.id || 0);
+      const defaultHomeLessonId = 1;
+      const fallback = openLessonId || (activeLessonId > 0 ? activeLessonId : 0) || nextLessonId || defaultHomeLessonId;
+      const selectedId = hasRequestedLesson ? requested : (fallback || 1);
       return lessons.find(lesson => Number(lesson.id) === selectedId) || lessons.find(lesson => Number(lesson.id) === 0) || lessons[0];
     }
 
@@ -539,11 +589,14 @@
       return Boolean(current?.minecraftConfigured && session.active && session.serverState === 'running');
     }
 
-    function liveMinecraftLifecycleActionsAvailable() {
-      return liveMinecraftControlsAvailable() && !current?.session?.alwaysOnMonitor;
+    function currentTeacherLessonId() {
+      if (hasRequestedLesson && Number.isFinite(requestedLessonId)) return requestedLessonId;
+      return Number(current?.trackedLessonId ?? current?.session?.lessonId ?? 0);
     }
 
     function currentTeacherBuildMode() {
+      const lessonId = currentTeacherLessonId();
+      if (lessonId >= 1) return true;
       return (current?.viewMode || current?.worldMode || current?.session?.worldMode) === 'build';
     }
 
@@ -620,6 +673,31 @@
       const pill = node('span', undefined, `mini-status ${state || 'not-started'}`);
       pill.append(node('strong', label), document.createTextNode(value));
       return pill;
+    }
+
+    function academyProgressTotal(student) {
+      const total = Number(student?.academyTotalExercises || 6);
+      return Number.isFinite(total) && total > 0 ? total : 6;
+    }
+
+    function academyProgressDone(student) {
+      const total = academyProgressTotal(student);
+      const done = Number(student?.academyCompletedExercises || 0);
+      return Math.max(0, Math.min(total, Number.isFinite(done) ? done : 0));
+    }
+
+    function academyProgressState(student) {
+      const done = academyProgressDone(student);
+      const total = academyProgressTotal(student);
+      if (student?.academyStatus === 'completed' || (total > 0 && done >= total)) return 'completed';
+      if (student?.academyStatus === 'started' || done > 0) return 'started';
+      return 'not-started';
+    }
+
+    function academyProgressText(student) {
+      const done = academyProgressDone(student);
+      const total = academyProgressTotal(student);
+      return `${done}/${total} תרגילים`;
     }
 
     function renderBuildFact(label, value, className = '') {
@@ -840,6 +918,50 @@
       return facts.children.length ? facts : null;
     }
 
+    function cleanStagePhotoUrls(urls) {
+      return [...new Set((Array.isArray(urls) ? urls : []).map(safeReportUrl).filter(Boolean))];
+    }
+
+    function renderStagePhotoGallery(urls, label = 'צילומי התלמיד') {
+      const photoUrls = cleanStagePhotoUrls(urls);
+      if (!photoUrls.length) return null;
+      const gallery = node('div', undefined, 'stage-photo-gallery');
+      photoUrls.forEach((url, index) => {
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.className = 'stage-photo-link';
+        const image = document.createElement('img');
+        image.src = url;
+        image.alt = `${label} ${index + 1}`;
+        image.loading = 'lazy';
+        link.append(image);
+        gallery.append(link);
+      });
+      return gallery;
+    }
+
+    function renderStudentStagePhotos(stagePhotos) {
+      const photoUrls = cleanStagePhotoUrls(stagePhotos?.photoUrls);
+      if (!photoUrls.length) return null;
+      const card = node('article', undefined, 'stage-report-card stage-photos-card');
+      card.append(node('h5', 'צילומים מהשיעור'));
+      const statuses = node('div', undefined, 'stage-report-verdicts');
+      statuses.append(renderMiniStatus('צילומים', `${photoUrls.length} תמונות`, 'completed'));
+      if (stagePhotos.generatedAt) statuses.append(renderMiniStatus('עודכן', formatDate(stagePhotos.generatedAt) || stagePhotos.generatedAt, 'not-started'));
+      card.append(statuses);
+      const gallery = renderStagePhotoGallery(photoUrls);
+      if (gallery) card.append(gallery);
+      return card;
+    }
+
+    function studentStagePhotoCount(student) {
+      const stagePhotos = cleanStagePhotoUrls(student.stagePhotos?.photoUrls).length;
+      const reportPhotos = cleanStagePhotoUrls(student.stageReport?.photoUrls).length;
+      return Math.max(stagePhotos, reportPhotos);
+    }
+
     function renderActivityFacts(activity) {
       if (!activity) return null;
       const facts = node('dl', undefined, 'stage-report-facts');
@@ -871,6 +993,13 @@
         renderSnapshotFacts(report.snapshot),
       );
       if (buildSection) card.append(buildSection);
+
+      const reportPhotos = renderStagePhotoGallery(report.photoUrls);
+      const photosSection = renderReportSection(
+        'תמונות מהשיעור',
+        reportPhotos,
+      );
+      if (photosSection) card.append(photosSection);
 
       const activitySection = renderReportSection(
         'פעילות',
@@ -1002,6 +1131,7 @@
       const statuses = node('div', undefined, 'progress-detail-statuses');
       if (buildMode) {
         statuses.append(
+          renderMiniStatus('אקדמיה', academyProgressText(student), academyProgressState(student)),
           renderTeacherConnectionPill(student, liveMinecraftControlsAvailable()),
           renderMiniStatus('מתחם', student.compoundId ? `#${student.compoundId}` : 'אין עדיין', 'not-started'),
         );
@@ -1015,6 +1145,7 @@
       const meta = node('dl', undefined, 'progress-detail-meta');
       const metaItems = buildMode
         ? [
+          ['אקדמיית ה-Agent', academyProgressText(student)],
           ['חיבור', student.connected ? 'מחובר/ת' : 'לא מחובר/ת'],
           ['מתחם', student.compoundId ? `#${student.compoundId}` : 'אין עדיין'],
           ['כניסה אחרונה', formatDate(student.lastSeenAt) || 'אין עדיין'],
@@ -1031,28 +1162,35 @@
       detail.append(meta);
       const chatCodeLink = renderChatCodeLink(student.chatCodeLink);
       if (chatCodeLink) detail.append(chatCodeLink);
+      const stagePhotos = renderStudentStagePhotos(student.stagePhotos);
+      if (stagePhotos) detail.append(stagePhotos);
       const localCodeCheck = renderLocalCodeCheck(student.localCodeCheck);
       if (localCodeCheck) detail.append(localCodeCheck);
       const stageReport = renderStageReport(student.stageReport);
       if (stageReport) detail.append(stageReport);
-      const hasBuildReportData = Boolean(chatCodeLink || localCodeCheck || stageReport);
+      const hasBuildReportData = Boolean(chatCodeLink || stagePhotos || localCodeCheck || stageReport);
       if (student.submission) {
         const submission = node('div', undefined, 'progress-submission');
-        const image = document.createElement('img');
-        image.src = student.submission.photo.url;
-        image.alt = `תמונת העבודה של ${student.name}`;
-        const imageLink = document.createElement('a');
-        imageLink.href = student.submission.photo.url;
-        imageLink.target = '_blank';
-        imageLink.rel = 'noopener';
-        imageLink.append(image);
         const info = node('div');
         info.append(
           node('strong', `כרטיס יציאה - שיעור ${student.submission.lessonId}`),
           node('p', student.submission.exitAnswer || ''),
-          node('small', `עודכן: ${formatDate(student.submission.updatedAt)}${student.submission.replaced ? ' • הוחלף אחרי ההגשה הראשונה' : ''}`),
+          node('small', `עודכן: ${formatDate(student.submission.updatedAt)}${student.submission.replaced ? ' • עודכן אחרי ההגשה הראשונה' : ''}`),
         );
-        submission.append(imageLink, info);
+        if (student.submission.photo?.url) {
+          const image = document.createElement('img');
+          image.src = student.submission.photo.url;
+          image.alt = `תמונת העבודה של ${student.name}`;
+          const imageLink = document.createElement('a');
+          imageLink.href = student.submission.photo.url;
+          imageLink.target = '_blank';
+          imageLink.rel = 'noopener';
+          imageLink.append(image);
+          submission.append(imageLink, info);
+        } else {
+          info.append(node('small', 'הצילום מגיע ממיינקראפט ומוצג למעלה באזור הצילומים.'));
+          submission.append(info);
+        }
         detail.append(submission);
       } else if (buildMode && !hasBuildReportData) {
         detail.append(node('p', 'עדיין אין קישור קוד או דוח מוניטור לתלמיד הזה.', 'progress-empty-note'));
@@ -1068,13 +1206,31 @@
       dialog.className = 'teacher-student-detail-dialog';
       dialog.addEventListener('close', () => {
         activeTeacherStudentModalKey = '';
+        activeTeacherStudentModalSnapshot = null;
+        activeTeacherStudentModalSignature = '';
       });
       document.body.append(dialog);
       return dialog;
     }
 
-    function renderTeacherStudentModalContent(student) {
+    function teacherStudentDetailSignature(student) {
+      return JSON.stringify({
+        id: teacherStudentCardKey(student),
+        connected: Boolean(student.connected),
+        compoundId: student.compoundId || '',
+        minecraftStatus: student.minecraftStatus || '',
+        chatCodeLink: student.chatCodeLink || null,
+        stagePhotos: student.stagePhotos || null,
+        localCodeCheck: student.localCodeCheck || null,
+        stageReport: student.stageReport || null,
+        submission: student.submission || null,
+      });
+    }
+
+    function renderTeacherStudentModalContent(student, options = {}) {
       const dialog = ensureTeacherStudentModal();
+      const previousBody = dialog.querySelector('.teacher-student-detail-modal-body');
+      const previousScrollTop = options.preserveScroll && previousBody ? previousBody.scrollTop : 0;
       const liveMinecraft = liveMinecraftControlsAvailable();
       const shell = node('div', undefined, 'teacher-student-detail-modal');
       const header = node('header', undefined, 'teacher-student-detail-modal-head');
@@ -1095,11 +1251,19 @@
       body.append(actions);
       shell.append(header, body);
       dialog.replaceChildren(shell);
+      activeTeacherStudentModalSignature = teacherStudentDetailSignature(student);
+      if (options.preserveScroll && previousBody) {
+        body.scrollTop = previousScrollTop;
+        requestAnimationFrame(() => {
+          body.scrollTop = previousScrollTop;
+        });
+      }
     }
 
     function openTeacherStudentDetailModal(student) {
       const dialog = ensureTeacherStudentModal();
       activeTeacherStudentModalKey = teacherStudentCardKey(student);
+      activeTeacherStudentModalSnapshot = student;
       renderTeacherStudentModalContent(student);
       if (dialog.open) return;
       if (typeof dialog.showModal === 'function') dialog.showModal();
@@ -1130,12 +1294,15 @@
       essentials.append(renderTeacherConnectionPill(student, liveMinecraft));
       if (buildMode) {
         essentials.append(
+          renderMiniStatus('אקדמיה', academyProgressText(student), academyProgressState(student)),
           renderBuildFact('מתחם', student.compoundId ? `#${student.compoundId}` : 'אין עדיין'),
         );
         if (student.chatCodeLink) essentials.append(renderMiniStatus('קישור קוד', 'התקבל בצ׳אט', 'completed'));
         if (student.localCodeCheck) {
           essentials.append(renderMiniStatus('בדיקת קוד', localCodeCheckStatusText(student.localCodeCheck), student.localCodeCheck.status === 'passed' ? 'completed' : 'started'));
         }
+        const photoCount = studentStagePhotoCount(student);
+        if (photoCount) essentials.append(renderMiniStatus('צילומים', `${photoCount} תמונות`, 'completed'));
         if (student.stageReport) essentials.append(renderMiniStatus('דוח שלב', stageReportStatusText(student.stageReport), 'completed'));
       } else {
         const submission = lessonZeroSubmissionStatus(student);
@@ -1166,11 +1333,15 @@
       teacherConnectionSummary.classList.toggle('is-live', liveMinecraft);
       teacherConnectionSummary.classList.toggle('is-paused', !liveMinecraft);
       teacherConnectionSummary.classList.toggle('is-empty', total === 0);
+      teacherConnectionSummary.classList.toggle('is-loading-statuses', Boolean(current?.loadingClassroom && total));
       teacherConnectionSummary.classList.remove('is-error');
 
       if (!total) {
         title.textContent = 'אין עדיין תלמידים בכיתה';
         detail.textContent = 'כשתלמידים יצטרפו לכיתה, מצב Minecraft שלהם יופיע כאן.';
+      } else if (current?.loadingClassroom) {
+        title.textContent = 'הכיתה נטענה, הסטטוסים בטעינה';
+        detail.textContent = `${total} תלמידים בכיתה. עוד רגע יופיעו מצב Minecraft והתקדמות לכל תלמיד.`;
       } else if (minecraftConfigured === false) {
         title.textContent = `חיבור Minecraft לא מוגדר`;
         detail.textContent = `${total} תלמידים בכיתה. צריך להפעיל את חיבור ה-Monitor כדי לראות סטטוס חי.`;
@@ -1291,17 +1462,9 @@
 
     function renderTeacherHeader(selectedLesson, activeLessonId) {
       if (!teacherCourseHeaderNav) return;
-      const selectedLessonId = Number(selectedLesson?.id ?? activeLessonId ?? 0);
-      const activeChallengeFromUrl = requestedChallengeId || 0;
-      const onTeacherHome = !hasRequestedLesson && !activeChallengeFromUrl;
+      const onTeacherHome = !hasRequestedLesson && !requestedChallengeId;
       const items = [
         ['דף הבית', teacherPageUrl(), onTeacherHome],
-        ['שיעור 0', teacherPageUrl({ lesson: 0 }), hasRequestedLesson && requestedLessonId === 0],
-        ...[1, 2, 3, 4].map(challengeId => [
-          `אתגר ${challengeId}`,
-          teacherPageUrl({ challenge: challengeId }),
-          activeChallengeFromUrl === challengeId,
-        ]),
       ];
       teacherCourseHeaderNav.replaceChildren(...items.map(([label, href, active]) => {
         const link = node('a', label, active ? 'primary' : '');
@@ -1329,41 +1492,6 @@
       }
       const program = window.CRAFTOM_MINECRAFT_PROGRAM;
       if (!teacherHomeChallenges.dataset.rendered) {
-        const lessonZero = lessons.find(lesson => Number(lesson.id) === 0) || lessonZeroOverview();
-        const zeroCard = node('article', undefined, 'card lesson-card teacher-home-challenge teacher-home-zero');
-        zeroCard.append(node('span', 'שיעור 0 • לפני אתגר 1', 'tag'));
-        const zeroHeading = node('h2');
-        const zeroLink = node('a', lessonZero.title || 'שיעור פתיחה', 'minecraft-lesson-title-link');
-        zeroLink.href = teacherPageUrl({ lesson: 0 });
-        zeroLink.dataset.lessonId = '0';
-        zeroHeading.append(zeroLink);
-        zeroCard.append(zeroHeading);
-        zeroCard.append(node('span', lessonAccessText(0), 'lesson-access-badge is-open'));
-        zeroCard.append(node('p', lessonZero.summary || 'משימת פתיחה קצרה לפני שיעור 1.'));
-        const zeroList = node('ul', undefined, 'meeting-list');
-        const zeroItem = node('li');
-        const zeroItemLink = node('a', 'שיעור 0: אוספים 8 מטבעות במבוך');
-        zeroItemLink.href = teacherPageUrl({ lesson: 0 });
-        zeroItemLink.dataset.lessonId = '0';
-        const zeroLead = node('b');
-        zeroLead.append(zeroItemLink);
-        const zeroBadge = node('span', lessonAccessText(0), 'lesson-access-badge is-open');
-        zeroBadge.dataset.accessLessonId = '0';
-        zeroItem.append(
-          zeroLead,
-          zeroBadge,
-          document.createElement('br'),
-          document.createTextNode('פתוח כברירת מחדל לתלמידים, כדי להתחיל מהתמצאות קצרה לפני שיעור 1.'),
-        );
-        zeroList.append(zeroItem);
-        const zeroActions = node('div', undefined, 'challenge-actions');
-        const zeroManage = node('a', 'ניהול שיעור 0', 'btn');
-        zeroManage.href = teacherPageUrl({ lesson: 0 });
-        const zeroPreview = node('a', 'צפייה כתלמיד', 'btn secondary');
-        zeroPreview.href = studentPreviewUrl(0);
-        zeroActions.dataset.openActionsLessonId = '0';
-        zeroActions.append(zeroManage, zeroPreview);
-        zeroCard.append(zeroList, zeroActions);
         const challengeCards = [1, 2, 3, 4].map(challengeId => {
           const challenge = program?.challenges?.find(item => Number(item.id) === challengeId);
           const challengeLessons = lessons.filter(lesson => lessonChallengeId(lesson.id) === challengeId);
@@ -1416,7 +1544,7 @@
           card.append(meetingList, actions);
           return card;
         });
-        const challengeSequence = [zeroCard];
+        const challengeSequence = [];
         challengeCards.forEach((card, index) => {
           const divider = node('div', `אתגר ${index + 1}`, 'teacher-home-challenge-divider');
           divider.setAttribute('aria-hidden', 'true');
@@ -1469,7 +1597,7 @@
       const isLessonZero = lessonId === 0;
       const isActiveLesson = Boolean(session.active && activeLessonId === lessonId);
       const actionLabel = isActiveLesson
-        ? (isLessonZero ? 'סגירת עולם Minecraft לשיעור הפתיחה' : `סגירת עולם Minecraft לשיעור ${lesson.id}`)
+        ? (isLessonZero ? 'סגירת עולם Minecraft לשיעור הפתיחה' : `עולם Minecraft פעיל - סגירה`)
         : (lesson.hasWorld ? (isLessonZero ? 'הפעלת עולם Minecraft לשיעור הפתיחה' : `הפעלת עולם Minecraft לשיעור ${lesson.id}`) : 'חסר עולם Minecraft');
       const launch = node('button', actionLabel, `primary-action start-lesson-action${isActiveLesson ? ' end-lesson-action' : ''}${Number(lesson.id) === 1 ? ' lesson-one-action' : ''}`);
       launch.type = 'button';
@@ -1488,37 +1616,53 @@
           ? (isLessonZero ? 'שיעור 0 נסגר, השרת ירד והדוח נטען ללומדה.' : `עולם Minecraft לשיעור ${lesson.id} נסגר.`)
           : (isLessonZero ? 'עולם Minecraft לשיעור הפתיחה פעיל.' : `עולם Minecraft לשיעור ${lesson.id} פעיל.`)
       ));
-      if (liveMinecraftLifecycleActionsAvailable() && !(isLessonZero && isActiveLesson)) actionRow.append(launch);
+      if (!(isLessonZero && isActiveLesson)) actionRow.append(launch);
       if (Number(lesson.id) >= 1) {
-        const link = node('a', 'תצוגת תלמיד', 'secondary-action link-action teacher-next-lesson');
+        const link = node('a', 'תצוגת תלמיד', 'secondary-action teacher-next-lesson teacher-preview-action');
         link.href = studentPreviewUrl(lesson.id);
         actionRow.append(link);
-        const slides = node('a', 'מצגת מדריך', 'secondary-action link-action');
+        const slides = node('a', 'מצגת מדריך', 'secondary-action teacher-slides-action');
         slides.href = `craftom-minecraft-slides.html?challenge=${lesson.challengeId || Math.ceil(Number(lesson.id) / 4)}&${teacherReturnQuery(lesson.id)}`;
         actionRow.append(slides);
       }
       return actionRow;
     }
 
-    function renderSelectedLesson(lesson, session, activeLessonId, minecraftBlocked) {
+    function teacherLessonAccessNotice(lessonId) {
+      const id = Number(lessonId);
+      if (id < 1 || !lessonAccessInfo(id).open) return null;
+      const notice = node('div', undefined, 'selected-lesson-status is-open');
+      notice.append(
+        node('strong', `שיעור ${id} פתוח לתלמידים`),
+        node('span', `הפעולות כאן שייכות לשיעור ${id}.`)
+      );
+      return notice;
+    }
+
+    function renderSelectedLesson(lesson, session, activeLessonId, minecraftBlocked, updatePageHeader = true, showVideo = true) {
       if (!lesson || !selectedLessonActions) return;
       const lessonId = Number(lesson.id);
       const challengeId = lessonChallengeId(lessonId);
       const videoInfo = selectedLessonVideoInfo(lesson);
       selectedLessonEyebrow.textContent = lessonId === 0 ? 'שיעור פתיחה' : `אתגר ${challengeId} • שיעור ${lessonId}`;
       selectedLessonTitle.textContent = `פעולות לשיעור ${lessonId}`;
-      selectedLessonSummary.textContent = 'פתחו גישה לתלמידים, בדקו איך השיעור נראה לתלמידים או עברו למצגת המדריך.';
-      teacherLessonKicker.textContent = lessonId === 0 ? 'שיעור 0 • משימת פתיחה' : `אתגר ${challengeId} • שיעור ${lessonId}`;
-      teacherLessonTitle.textContent = lesson.title || `שיעור ${lessonId}`;
-      teacherLessonGoal.textContent = lesson.summary || 'מסך ניהול קצר לשיעור: פתיחת גישה, צפייה כתלמיד ומצגת מדריך.';
+      selectedLessonSummary.textContent = '';
+      selectedLessonSummary.hidden = true;
+      if (updatePageHeader) {
+        teacherLessonKicker.textContent = lessonId === 0 ? 'שיעור 0 • משימת פתיחה' : `אתגר ${challengeId} • שיעור ${lessonId}`;
+        teacherLessonTitle.textContent = lesson.title || `שיעור ${lessonId}`;
+        teacherLessonGoal.textContent = lesson.summary || 'מסך ניהול קצר לשיעור: פתיחת גישה, צפייה כתלמיד ומצגת מדריך.';
+      }
       const actions = renderTeacherLessonActions(lesson, session, activeLessonId, minecraftBlocked);
       const openButton = openLessonButton(lessonId, `פתיחת שיעור ${lessonId} לתלמידים`);
       if (openButton) actions.prepend(openButton);
-      const closeButton = closeLessonButton(lessonId, lessonId === 0 ? 'סיום שיעור 0' : `נעילת שיעור ${lessonId}`);
+      const closeButton = closeLessonButton(lessonId, lessonId === 0 ? 'סיום שיעור 0' : `לנעול שיעור ${lessonId}`);
       if (closeButton && lessonId !== 0) actions.prepend(closeButton);
+      const accessNotice = teacherLessonAccessNotice(lessonId);
+      if (accessNotice) actions.prepend(accessNotice);
       selectedLessonActions.replaceChildren(...actions.childNodes);
-      if (selectedLessonVideoPanel) selectedLessonVideoPanel.hidden = !videoInfo;
-      if (videoInfo && selectedLessonVideoPreview) {
+      if (selectedLessonVideoPanel) selectedLessonVideoPanel.hidden = !showVideo || !videoInfo;
+      if (showVideo && videoInfo && selectedLessonVideoPreview) {
         if (selectedLessonVideoEyebrow) selectedLessonVideoEyebrow.textContent = videoInfo.eyebrow;
         if (selectedLessonVideoTitle) selectedLessonVideoTitle.textContent = videoInfo.title;
         if (selectedLessonVideoSummary) selectedLessonVideoSummary.textContent = videoInfo.summary;
@@ -1634,10 +1778,11 @@
       renderTeacherHome(lessons, session, activeLessonId, data);
       renderTeacherChallenge(challenge, lessons, selectedLessonId);
       const showingLessonManagement = !showingChallengeOverview && !showingTeacherHome;
-      if (selectedTeacherLesson) selectedTeacherLesson.hidden = showingChallengeOverview || showingTeacherHome;
+      const showingLessonActions = !showingChallengeOverview && (showingLessonManagement || showingTeacherHome);
+      if (selectedTeacherLesson) selectedTeacherLesson.hidden = !showingLessonActions;
       if (selectedLessonVideoPanel) selectedLessonVideoPanel.hidden = true;
-      if (selectedTeacherLesson && !showingChallengeOverview && !showingTeacherHome) selectedTeacherLesson.hidden = false;
-      if (!showingChallengeOverview && !showingTeacherHome) renderSelectedLesson(selectedLesson, session, activeLessonId, minecraftBlocked);
+      if (selectedTeacherLesson && showingLessonActions) selectedTeacherLesson.hidden = false;
+      if (showingLessonActions) renderSelectedLesson(selectedLesson, session, activeLessonId, minecraftBlocked, showingLessonManagement, showingLessonManagement);
       const liveMinecraft = liveMinecraftControlsAvailable();
       if (teacherStudentBoard) teacherStudentBoard.hidden = !showingLessonManagement;
       if (teacherLiveControls) {
@@ -1664,57 +1809,77 @@
       if (data.classStageReport) latestClosedClassStageReport = data.classStageReport;
       const classReport = renderClassStageReport(data.classStageReport || latestClosedClassStageReport);
       if (classReport) monitorItems.push(classReport);
+      if (data.loadingClassroom && (data.students || []).length) {
+        const loadingNotice = node('div', undefined, 'teacher-status-loading-card');
+        loadingNotice.append(
+          node('strong', 'סטטוסי התלמידים בטעינה'),
+          node('span', 'רשימת התלמידים כבר מוצגת. כשהמוניטור יסיים לטעון, החיבור וההתקדמות יתעדכנו אוטומטית.'),
+        );
+        monitorItems.push(loadingNotice);
+      }
       monitorItems.push(...(data.students || []).map(renderStudent));
       monitor.replaceChildren(...monitorItems);
-      if (!data.students?.length) monitor.append(node('p', 'עדיין אין תלמידים בכיתה.'));
+      if (!data.students?.length) {
+        monitor.append(node('p', data.loadingClassroom ? 'טוענים את תלמידי הכיתה…' : 'עדיין אין תלמידים בכיתה.'));
+      }
       renderLessonZeroEndPanel(showingLessonManagement, selectedLessonId, activeLessonId, session, Boolean(classReport));
       if (activeTeacherStudentModalKey) {
         const modalStudent = (data.students || []).find(student => teacherStudentCardKey(student) === activeTeacherStudentModalKey);
-        if (modalStudent) renderTeacherStudentModalContent(modalStudent);
-        else {
-          const dialog = ensureTeacherStudentModal();
-          if (dialog.open) dialog.close();
+        if (modalStudent && !data.loadingClassroom) {
+          activeTeacherStudentModalSnapshot = modalStudent;
+          const nextSignature = teacherStudentDetailSignature(modalStudent);
+          if (nextSignature !== activeTeacherStudentModalSignature) {
+            renderTeacherStudentModalContent(modalStudent, { preserveScroll: true });
+          }
+        } else if (modalStudent && !activeTeacherStudentModalSnapshot) {
+          activeTeacherStudentModalSnapshot = modalStudent;
         }
       }
     }
 
     async function refresh() {
-      if (!classroomId) {
-        try {
-          if (!await resolveTeacherClassroomId()) {
-            render({
-              classroom: { name: 'כיתה' },
-              session: {},
-              lessons: teacherProgramLessons(),
-              students: [],
-              metrics: {},
-              minecraftConfigured: false,
-              minecraftSetupNote: 'כדי לפתוח Minecraft ולראות לוח חי צריך להיכנס מתוך כרטיס כיתה.',
-            });
+      if (teacherRefreshInFlight) return;
+      teacherRefreshInFlight = true;
+      try {
+        if (!current) render(teacherFallbackHomeData());
+        if (!classroomId) {
+          try {
+            if (!await resolveTeacherClassroomId()) {
+              render(teacherFallbackHomeData());
+              return;
+            }
+          } catch (error) {
+            setStatus(status, error.message || 'חסר מזהה כיתה. יש לפתוח את הלוח מתוך כרטיס הכיתה.', true);
+            render(teacherFallbackHomeData());
             return;
           }
-        } catch (error) {
-          setStatus(status, error.message || 'חסר מזהה כיתה. יש לפתוח את הלוח מתוך כרטיס הכיתה.', true);
-          render({
-            classroom: { name: 'כיתה' },
-            session: {},
-            lessons: teacherProgramLessons(),
-            students: [],
-            metrics: {},
-            minecraftConfigured: false,
-            minecraftSetupNote: 'כדי לפתוח Minecraft ולראות לוח חי צריך להיכנס מתוך כרטיס כיתה.',
-          });
-          return;
         }
-      }
-      try {
         const lessonFilter = hasRequestedLesson ? `&lessonId=${encodeURIComponent(String(requestedLessonId))}` : '';
+        try {
+          await renderTeacherRosterFallback();
+        } catch (error) {
+          // The full lesson session is the source of truth; roster fallback is only a calming interim state.
+        }
         render(await api(`/api/kugel/session?classroomId=${encodeURIComponent(classroomId)}${lessonFilter}`));
       } catch (error) {
         const message = teacherLoadFailureMessage(error);
         setStatus(status, message, true);
         renderTeacherLoadFailure(message);
+      } finally {
+        teacherRefreshInFlight = false;
       }
+    }
+
+    function teacherRefreshDelay() {
+      return document.hidden ? TEACHER_BACKGROUND_REFRESH_MS : TEACHER_REFRESH_MS;
+    }
+
+    function scheduleTeacherRefresh(delay = teacherRefreshDelay()) {
+      if (teacherRefreshTimer) clearTimeout(teacherRefreshTimer);
+      teacherRefreshTimer = setTimeout(async () => {
+        await refresh();
+        scheduleTeacherRefresh();
+      }, delay);
     }
 
     enhanceCommandAction(document.querySelector('#classMessageForm button[type="submit"]'), 'chat');
@@ -1729,7 +1894,11 @@
     });
     document.getElementById('freezeAll').addEventListener('click', () => teacherAction(scoped('/freeze'), { scope: 'all', on: true }, 'עוצרים את הכיתה…', 'הכיתה נעצרה.'));
     document.getElementById('releaseAll').addEventListener('click', () => teacherAction(scoped('/freeze'), { scope: 'all', on: false }, 'משחררים את הכיתה…', 'הכיתה שוחררה.'));
-    document.getElementById('refreshBoard').addEventListener('click', refresh);
+    document.getElementById('refreshBoard').addEventListener('click', async () => {
+      if (teacherRefreshTimer) clearTimeout(teacherRefreshTimer);
+      await refresh();
+      scheduleTeacherRefresh();
+    });
     teacherLogout?.addEventListener('click', async () => {
       teacherLogout.disabled = true;
       setStatus(status, 'מתנתקים…');
@@ -1742,7 +1911,8 @@
       }
     });
     await refresh();
-    setInterval(refresh, 5000);
+    scheduleTeacherRefresh();
+    document.addEventListener('visibilitychange', () => scheduleTeacherRefresh(document.hidden ? TEACHER_BACKGROUND_REFRESH_MS : 0));
   }
 
   canonicalizeTeacherUrl();

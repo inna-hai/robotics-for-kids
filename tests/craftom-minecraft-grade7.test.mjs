@@ -87,7 +87,7 @@ assert.match(challengePage, /craftom-minecraft-lesson-\$\{\(\(challenge\.id - 1\
 const studentsPage = read('craftom-minecraft-students.html');
 assert.match(studentsPage, /דף עבודה עצמית/);
 assert.match(studentsPage, /מגרש 50x50/);
-assert.match(studentsPage, /העלאת תמונה ל-Craftom/);
+assert.match(studentsPage, /צילום מהמשחק/);
 
 const slidesPage = read('craftom-minecraft-slides.html');
 assert.match(slidesPage, /מצגת מדריך/);
@@ -107,7 +107,7 @@ for (let id = 1; id <= 16; id += 1) {
   assert.match(lessonPage, /craftom-minecraft-lesson-page\.js/, `lesson ${id} loads shared renderer`);
   assert.match(lessonPage, /js\/vendor\/blockly\/blockly\.min\.js/, `lesson ${id} loads Blockly`);
   assert.match(lessonPage, /craftom-minecraft-code-builder\.js/, `lesson ${id} loads the embedded Code Builder`);
-  assert.match(lessonPage, /20260914-meeting-reflection-1/, `lesson ${id} cache-busts the direct student copy renderer`);
+  assert.match(lessonPage, /20261008-lesson1-deliver-no-teleport-1/, `lesson ${id} cache-busts the Minecraft lesson 1 deliver renderer`);
 }
 
 const lessonTemplate = read('craftom-minecraft-lesson.html');
@@ -119,7 +119,8 @@ assert.match(lessonTemplate, /agentAcademyCta/, 'lesson template has an Agent ac
 assert.match(lessonTemplate, /בחירת שיעור באתגר הנוכחי/, 'lesson top nav is scoped to the current challenge');
 assert.match(lessonTemplate, /exitTicketForm/, 'lesson template has a real exit ticket form');
 assert.match(lessonTemplate, /exitReflection/, 'lesson template has a second exit-ticket question');
-assert.match(lessonTemplate, /type="file"/, 'lesson template has a real image upload input');
+assert.doesNotMatch(lessonTemplate, /type="file"/, 'lesson template no longer has a manual image upload input');
+assert.match(lessonTemplate, /minecraftSubmittedPhoto/, 'lesson template shows the Minecraft-submitted photo area');
 assert.match(academyPage, /academyBlockly/, 'academy page has a Blockly MakeCode work area');
 assert.match(academyPage, /data-academy-mode="python"/, 'academy page has a Python tab');
 assert.match(academyPage, /academyCanvas/, 'academy page has a result simulation area');

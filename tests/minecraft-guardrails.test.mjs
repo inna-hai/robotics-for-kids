@@ -38,8 +38,8 @@ assert.doesNotMatch(teacherClient, /שיגור אל התלמיד|משגרים א
 assert.match(teacherHtml, /הודעה לכולם מהמורה/, 'teacher board should keep class-wide teacher message visible');
 assert.match(teacherHtml, /עצירת הכיתה/, 'teacher board should keep freeze-class visible');
 assert.match(teacherHtml, /שחרור הכיתה/, 'teacher board should keep release-class visible');
-assert.match(teacherClient, /liveMinecraftLifecycleActionsAvailable\(\)/, 'world lifecycle actions should be separated from live class controls');
-assert.match(teacherClient, /!current\?\.session\?\.alwaysOnMonitor/, 'always-on monitors must not show open\/close lifecycle controls');
+assert.doesNotMatch(teacherClient, /liveMinecraftLifecycleActionsAvailable\(\)/, 'teacher lesson actions should not depend on the live monitor lifecycle');
+assert.match(teacherClient, /if \(!\(isLessonZero && isActiveLesson\)\) actionRow\.append\(launch\)/, 'teacher lesson action buttons should remain visible even without a live monitor');
 assert.match(teacherClient, /teacherLiveControls\.hidden = !showingLessonManagement \|\| !liveMinecraft/, 'always-on monitors should still show message/freeze/release controls when live');
 assert.match(teacherClient, /if \(!teacherLiveControls\.hidden\) teacherLiveControls\.open = true/, 'live class controls should open automatically when available');
 

@@ -299,6 +299,60 @@ h2 {
   font-weight: 700;
 }
 
+.lesson-action-plan {
+  display: grid;
+  grid-template-columns: minmax(220px, .74fr) minmax(0, 1.26fr);
+  gap: 16px;
+  align-items: center;
+  margin-top: 16px;
+  padding: 18px;
+  border: 2px solid rgba(37, 99, 235, .28);
+  border-radius: 16px;
+  background:
+    linear-gradient(135deg, rgba(239, 246, 255, .96), rgba(240, 253, 244, .94)),
+    #ffffff;
+  box-shadow: 0 14px 32px rgba(23, 32, 51, .08);
+}
+
+.lesson-action-plan h2 {
+  margin-bottom: 0;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+}
+
+.lesson-action-plan ol {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lesson-action-plan li {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  min-height: 52px;
+  padding: 10px 12px;
+  border: 1px solid rgba(37, 99, 235, .16);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .82);
+  color: #243246;
+  font-weight: 800;
+}
+
+.lesson-action-plan li strong {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--blue);
+  box-shadow: 0 8px 18px rgba(37, 99, 235, .22);
+}
+
 .makecode-workspace[hidden] {
   display: none !important;
 }
@@ -341,6 +395,10 @@ h2 {
   justify-content: center;
   font-size: 1.08rem;
   margin-top: 8px;
+}
+
+.hero-academy-link[hidden] {
+  display: none !important;
 }
 
 .minecraft-entry-card {
@@ -1095,6 +1153,10 @@ h2 {
   margin-bottom: 6px;
 }
 
+.submission-text-only p {
+  margin-bottom: 6px;
+}
+
 .detail-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1179,6 +1241,7 @@ h2 {
   .grid-4,
   .steps,
   .detail-grid,
+  .lesson-action-plan,
   .academy-steps,
   .academy-lab,
   .challenge-lesson-map {

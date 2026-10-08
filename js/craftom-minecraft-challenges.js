@@ -10,7 +10,7 @@
       poster: 'assets/craftom/challenges/craftom-challenge1-explainer-gemini-live-1.12x-first-frame.webp',
       command: 'deliver',
       meetings: [
-        ['1.1', 'משלוח ראשון', 'בונים מחסן, תחנת יעד ושביל ישר.', 'פקודת deliver שמביאה את ה-Agent מהמחסן לתחנה.'],
+        ['1.1', 'משלוח ראשון', 'בונים מחסן, תחנת יעד ושביל ישר.', 'הילד ממקם את ה-Agent מול השביל, ופקודת deliver גורמת לו לצעוד לתחנה.'],
         ['1.2', 'מסלול עם פנייה', 'מאריכים את העיר ובונים מסלול עם פנייה אחת.', 'רצף קדימה, פנייה, קדימה, ובדיקה שהסדר נכון.'],
         ['1.3', 'החבילה מגיעה', 'מוסיפים נקודת פריקה בתחנת היעד.', 'ה-Agent מניח או מפיל חבילה ומראה שקוד משנה את העולם.'],
         ['1.4', 'שליח עצמאי', 'כל תלמיד בונה מסלול משלוחים אישי במגרש שלו.', 'הרצה, בדיקה ותיקון של מספר, כיוון או מיקום אחד.']
@@ -100,13 +100,13 @@
           exercises: [
             {
               title: 'תרגיל 1 - ה-Agent מתעורר',
-              mission: 'צרו פקודת chat בשם deliver שמזמנת את ה-Agent לשחקן.',
-              hint: 'התחילו מאירוע chat וחפשו ב-Agent פקודה שמחזירה אותו לנקודת ההתחלה.',
-              check: 'כשכותבים deliver בצ׳אט, ה-Agent מופיע לידכם.',
+              mission: 'צרו פקודת chat בשם deliver שגורמת ל-Agent לצעוד קדימה.',
+              hint: 'לפני ההרצה מקמו את ה-Agent בעצמכם מול השביל. בתוך deliver צריכה להיות רק פקודת תנועה.',
+              check: 'כשכותבים deliver בצ׳אט, ה-Agent צועד קדימה מהמקום שבו מיקמתם אותו.',
               starter: { blocks: [] },
               criteria: [
                 { label: 'פקודת deliver קיימת', type: 'chatDeliver' },
-                { label: 'ה-Agent מזומן לנקודת ההתחלה', type: 'teleport' }
+                { label: 'ה-Agent צועד קדימה', type: 'moveCount', min: 1 }
               ]
             },
             {
@@ -114,9 +114,8 @@
               mission: 'הוסיפו תנועה קדימה ב-3 צעדים בלבד, בלי תחנה עדיין.',
               hint: 'בקטגוריית Agent יש בלוק תנועה. התאימו בו כיוון ומספר צעדים לפי המשימה.',
               check: 'ה-Agent זז קדימה, אבל לא רחוק מדי.',
-              starter: { blocks: [{ type: 'teleport' }] },
+              starter: { blocks: [] },
               criteria: [
-                { label: 'ה-Agent מזומן לנקודת ההתחלה', type: 'teleport' },
                 { label: 'הצעד הראשון הוא 3 קוביות', type: 'firstMove', direction: 'FORWARD', steps: 3 }
               ]
             },
@@ -125,7 +124,7 @@
               mission: 'שנו רק את המספר ל-5 ובדקו איך המרחק משתנה על השביל.',
               hint: 'אל תחליפו את כל הקוד. נסו לשנות רק את המספר בתוך בלוק התנועה.',
               check: 'אתם יודעים להסביר איך שינוי מספר משנה את מרחק ה-Agent.',
-              starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 3 }] },
+              starter: { blocks: [{ type: 'move', direction: 'FORWARD', steps: 3 }] },
               criteria: [
                 { label: 'שיניתם את מספר הצעדים ל-5', type: 'firstMove', direction: 'FORWARD', steps: 5 },
                 { label: 'ה-Agent נשאר על השביל', type: 'staysOnStartRow' }
@@ -136,7 +135,7 @@
               mission: 'בנו תחנה קטנה בסוף השביל והריצו שוב את אותה פקודה.',
               hint: 'ההרצה מראה איפה ה-Agent עוצר. תקנו את המרחק עד שהוא מגיע קרוב לתחנה.',
               check: 'ה-Agent מגיע קרוב לתחנה, לא עוצר באמצע ולא עובר אותה.',
-              starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 3 }] },
+              starter: { blocks: [{ type: 'move', direction: 'FORWARD', steps: 3 }] },
               criteria: [
                 { label: 'ה-Agent מגיע לתחנת היעד', type: 'reachedStation' },
                 { label: 'המסלול עדיין מתחיל מ-deliver', type: 'chatDeliver' }
@@ -147,7 +146,7 @@
               mission: 'הוסיפו הודעת player say שמודיעה שהמשלוח הגיע.',
               hint: 'המסלול כבר מוכן. עכשיו חסר בלוק אחד מקטגוריית Player בסוף הרצף.',
               check: 'בסוף ההרצה מופיעה הודעה שמסבירה מה קרה.',
-              starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 5 }] },
+              starter: { blocks: [{ type: 'move', direction: 'FORWARD', steps: 5 }] },
               criteria: [
                 { label: 'ה-Agent מגיע לתחנת היעד', type: 'reachedStation' },
                 { label: 'יש הודעת משלוח', type: 'arrivalSay' }
@@ -158,7 +157,7 @@
               mission: 'שברו בכוונה מספר אחד, הריצו, ואז תקנו רק את אותו מספר.',
               hint: 'זו משימת דיבוג: חפשו מספר אחד שמרחיק את ה-Agent יותר מדי ותקנו רק אותו.',
               check: 'יש לכם לפני/אחרי: מה לא עבד, ומה תיקנתם.',
-              starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 8 }, { type: 'say', text: 'delivery arrived' }] },
+              starter: { blocks: [{ type: 'move', direction: 'FORWARD', steps: 8 }, { type: 'say', text: 'delivery arrived' }] },
               criteria: [
                 { label: 'מספר התנועה תוקן ל-5', type: 'firstMove', direction: 'FORWARD', steps: 5 },
                 { label: 'אחרי התיקון ה-Agent מגיע לתחנה', type: 'reachedStation' },
@@ -167,11 +166,11 @@
             }
           ]
         },
-        goal: 'בשיעור הזה תלמדו שקוד הוא רצף הוראות מדויק: מזמנים את ה-Agent, נותנים לו תנועה אחת, בודקים לאן הגיע, ואז מתקנים מספר או כיוון לפי מה שראיתם בעולם.',
-        teacher: ['פותחים בסרטון האתגר ובונים יחד מילון קצר: מחסן, תחנה, Agent, פקודה.', 'מדגימים פקודת צ׳אט אחת בשם deliver.', 'מבקשים מכל תלמיד לשנות רק מספר אחד ולראות מה משתנה.'],
+        goal: 'בשיעור הזה תלמדו שקוד הוא רצף הוראות מדויק: ממקמים את ה-Agent מול השביל, נותנים לו תנועה אחת, בודקים לאן הגיע, ואז מתקנים מספר או כיוון לפי מה שראיתם בעולם.',
+        teacher: ['פותחים בסרטון האתגר ובונים יחד מילון קצר: מחסן, תחנה, Agent, פקודה.', 'מדגימים איך ממקמים את ה-Agent מול השביל ואז מריצים פקודת צ׳אט בשם deliver.', 'מבקשים מכל תלמיד לשנות רק מספר אחד ולראות מה משתנה.'],
         build: ['מחסן קטן עם דלת ושלט.', 'תחנת יעד מול המחסן.', 'שביל ישר וברור בין שתי הנקודות.'],
-        code: ['on chat command deliver', 'agent.teleportToPlayer()', 'agent.move(FORWARD, מספר צעדים)'],
-        evidence: ['צילום/ראיה של מחסן ותחנה.', 'פקודת deliver קיימת.', 'ה-Agent הגיע או כמעט הגיע לתחנה.', 'יש תיקון מרחק אחד אחרי ניסיון.'],
+        code: ['ממקמים את ה-Agent ידנית מול השביל', 'on chat command deliver', 'agent.move(FORWARD, מספר צעדים)'],
+        evidence: ['צילום/ראיה של מחסן ותחנה.', 'פקודת deliver קיימת.', 'ה-Agent צעד והגיע או כמעט הגיע לתחנה.', 'יש תיקון מרחק אחד אחרי ניסיון.'],
         exit: 'איזה מספר שיניתם בפקודת move, ומה קרה ל-Agent אחרי השינוי?',
         reflection: 'למה חשוב לבחור מספר צעדים מדויק כשנותנים ל-Agent פקודת תנועה?'
       },
@@ -1303,7 +1302,7 @@
       'בכל תקלה מתקנים דבר אחד ומריצים שוב.',
       'בסוף כל מפגש מעלים צילום של מה שנבנה ומה שה-Agent הפעיל, יחד עם תשובת כרטיס יציאה קצרה.'
     ],
-    exitUpload: 'העלו צילום של מה שבניתם במיינקראפט ומה שה-Agent עשה, ואז כתבו תשובה קצרה לכרטיס היציאה.',
+    exitUpload: 'בסוף השיעור לוחצים במיינקראפט על כפתור סיום השיעור. הצילום מהמצלמה נשלח אוטומטית למורה, ואז כותבים תשובה קצרה לכרטיס היציאה.',
     challenges,
     lessons
   };

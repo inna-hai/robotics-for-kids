@@ -759,6 +759,13 @@
   cursor: pointer;
 }
 
+#refreshBoard {
+  width: 46px;
+  height: 46px;
+  font-size: 1.28rem;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, .12);
+}
+
 .primary-action {
   display: inline-flex;
   align-items: center;
@@ -981,11 +988,37 @@
   color: #991b1b;
 }
 
+.teacher-connection-summary.is-loading-statuses {
+  border-color: #bae6fd;
+  background: #f0f9ff;
+}
+
+.teacher-connection-summary.is-loading-statuses strong {
+  color: #0369a1;
+}
+
 .student-monitor {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   grid-auto-flow: dense;
   gap: 12px;
+}
+
+.teacher-status-loading-card {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 6px;
+  padding: 14px 16px;
+  border: 1px solid #bae6fd;
+  border-radius: 10px;
+  background: #f0f9ff;
+  color: #075985;
+  font-weight: 900;
+}
+
+.teacher-status-loading-card span {
+  color: #334155;
+  font-weight: 800;
 }
 
 .teacher-load-error-card {
@@ -1449,12 +1482,15 @@
 
 .teacher-student-detail-dialog {
   width: min(920px, calc(100vw - 28px));
+  height: min(86vh, 860px);
+  height: min(86dvh, 860px);
   max-height: min(86vh, 860px);
   padding: 0;
   border: 0;
   border-radius: 16px;
   background: transparent;
   color: var(--ink);
+  overflow: hidden;
   box-shadow: 0 28px 90px rgba(15, 23, 42, .28);
 }
 
@@ -1464,6 +1500,8 @@
 
 .teacher-student-detail-modal {
   display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  height: 100%;
   max-height: min(86vh, 860px);
   overflow: hidden;
   border: 1px solid #dbeafe;
@@ -1802,6 +1840,42 @@
 .chat-code-link-card {
   border-color: #bbf7d0;
   background: #f7fef9;
+}
+
+.stage-photos-card {
+  border-color: #bae6fd;
+  background: #f0f9ff;
+}
+
+.stage-photo-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 8px;
+}
+
+.stage-photo-link,
+.stage-snapshot-link {
+  display: grid;
+  gap: 6px;
+  color: #1d4ed8;
+  font-size: .78rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.stage-photo-link img,
+.stage-snapshot-link img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  background: #e0f2fe;
+}
+
+.stage-snapshot-link img {
+  aspect-ratio: 16 / 9;
 }
 
 .local-code-check-card {
@@ -2169,8 +2243,65 @@
 }
 
 .selected-lesson-actions {
-  grid-template-columns: minmax(220px, 1fr) repeat(2, minmax(150px, auto));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   align-items: stretch;
+}
+
+.teacher-selected-lesson .selected-lesson-actions > *,
+.teacher-selected-lesson .minecraft-lesson-actions > * {
+  width: 100%;
+  min-height: 48px;
+  border-radius: 12px;
+  text-decoration: none;
+}
+
+.teacher-selected-lesson .selected-lesson-status {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 4px;
+  min-height: 0;
+  padding: 12px 14px;
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #166534;
+  box-shadow: 0 8px 18px rgba(22, 101, 52, .08);
+}
+
+.teacher-selected-lesson .selected-lesson-status strong {
+  font-size: .98rem;
+}
+
+.teacher-selected-lesson .selected-lesson-status span {
+  color: #15803d;
+  font-size: .86rem;
+}
+
+.teacher-selected-lesson .secondary-action {
+  gap: 8px;
+  border-color: #bfdbfe;
+  color: #1e3a8a;
+  background: #eff6ff;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, .10);
+  transition: transform .16s ease, border-color .16s ease, background .16s ease;
+}
+
+.teacher-selected-lesson .secondary-action:hover,
+.teacher-selected-lesson .secondary-action:focus-visible {
+  border-color: #93c5fd;
+  background: #dbeafe;
+  color: #172554;
+  transform: translateY(-1px);
+}
+
+.teacher-selected-lesson .secondary-action::before {
+  content: "";
+  display: inline-grid;
+  width: 10px;
+  height: 10px;
+  place-items: center;
+  border-radius: 999px;
+  background: #2563eb;
+  box-shadow: 0 0 0 5px rgba(37, 99, 235, .12);
 }
 
 .minecraft-lesson-title-link {

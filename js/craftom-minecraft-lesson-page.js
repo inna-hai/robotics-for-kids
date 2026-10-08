@@ -85,15 +85,6 @@
     return items.map(explainCommand).join('');
   }
 
-  function fileToDataUrl(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(String(reader.result || ''));
-      reader.onerror = () => reject(new Error('file_read_failed'));
-      reader.readAsDataURL(file);
-    });
-  }
-
   async function api(path, payload) {
     const response = await fetch(path, {
       method: payload === undefined ? 'GET' : 'POST',
@@ -199,6 +190,7 @@
           : 'פרטי השרת יוצגו לאחר שהעולם יהיה זמין.';
       }
 
+      renderMinecraftSubmittedPhoto(student);
       launch.disabled = !(activeForThisLesson && student.minecraftPlayerName && minecraft);
     }
 
@@ -231,7 +223,6 @@
 
   const makeCodeSnippets = {
     1: `player.onChat("deliver", function () {
-    agent.teleportToPlayer()
     agent.move(FORWARD, 5)
 })`,
     2: `player.onChat("deliver", function () {
@@ -417,6 +408,7 @@ player.onChat("test", function () {
             <p class="goal" id="summary"></p>
             <p><strong>תוצר:</strong> <span id="deliverable"></span></p>
             <div class="actions">
+              <a class="btn hero-academy-link" id="heroAcademyLink" href="#" hidden>מתחילים באקדמיית ה-Agent</a>
               <a class="btn secondary" id="challengeLink" href="#">דף האתגר</a>
             </div>
           </div>
@@ -425,22 +417,27 @@ player.onChat("test", function () {
             <figcaption class="shot-caption"><span id="concept"></span></figcaption>
           </figure>
         </section>
+        <section class="lesson-action-plan" id="lessonActionPlan" aria-label="מה עושים עכשיו">
+          <div>
+            <span class="tag">מה עושים עכשיו?</span>
+          </div>
+          <ol id="lessonActionSteps"></ol>
+        </section>
+        <section class="card agent-academy-cta" id="agentAcademyCta" style="margin-top:16px" hidden>
+          <span class="tag">חובה: קודם תרגול</span>
+          <h2>אקדמיית ה-Agent לתרגול MakeCode</h2>
+          <p>כאן לא פותחים את ה-Code Builder הרגיל. קודם נכנסים לאקדמיה, בונים את הקוד בבלוקים, עוברים לטאב Python אם רוצים, מריצים את ה-Agent בהדמיה ומקבלים בדיקה אוטומטית.</p>
+          <p class="agent-academy-flow">אחרי שהתרגול עובר בדיקה, חוזרים לשיעור ומיישמים את אותו רעיון בתוך Minecraft Education.</p>
+          <a class="btn agent-academy-primary-link" id="agentAcademyLink" href="#">פתיחת אקדמיית ה-Agent</a>
+        </section>
         <section class="grid" style="margin-top:16px">
-          <article class="card build-first"><h2>מה תלמדו בשיעור</h2><p id="goal"></p></article>
           <article class="card build-first"><h2>פקודות מרכזיות</h2><ul id="command" class="command-explain-list"></ul></article>
         </section>
         <section class="detail-grid" style="margin-top:16px">
           <article class="detail-box"><h2>איך עובדים לבד</h2><ul id="selfStudy"></ul></article>
           <article class="detail-box"><h2>מה בונים במיינקראפט</h2><ul id="build"></ul></article>
-          <article class="detail-box"><h2>קוד / MakeCode</h2><ul id="code"></ul></article>
-          <article class="detail-box"><h2>מה מעלים בסוף</h2><p id="exitUpload"></p></article>
-        </section>
-        <section class="card agent-academy-cta" id="agentAcademyCta" style="margin-top:16px" hidden>
-          <span class="tag">חובה: קודם תרגול</span>
-          <h2>אקדמיית Agents לתרגול MakeCode</h2>
-          <p>כאן לא פותחים את ה-Code Builder הרגיל. קודם נכנסים לאקדמיה, בונים את הקוד בבלוקים, עוברים לטאב Python אם רוצים, מריצים את ה-Agent בהדמיה ומקבלים בדיקה אוטומטית.</p>
-          <p class="agent-academy-flow">אחרי שהתרגול עובר בדיקה, חוזרים לשיעור ומיישמים את אותו רעיון בתוך Minecraft Education.</p>
-          <a class="btn agent-academy-primary-link" id="agentAcademyLink" href="#">פתיחת אקדמיית Agents</a>
+          <article class="detail-box" id="codeDetailBox"><h2>קוד / MakeCode</h2><ul id="code"></ul></article>
+          <article class="detail-box"><h2>מה מגישים בסוף</h2><p id="exitUpload"></p></article>
         </section>
         <section class="card makecode-workspace" id="makeCodeWorkspace" style="margin-top:16px">
           <div>
@@ -464,7 +461,8 @@ player.onChat("test", function () {
         </section>
         <section class="card" style="margin-top:16px">
           <h2>כרטיס יציאה</h2>
-          <p><strong>העלאת תמונה:</strong> <span id="exitUploadInline"></span></p>
+          <p><strong>צילום מהמשחק:</strong> <span id="exitUploadInline"></span></p>
+          <div class="existing-submission minecraft-submitted-photo" id="minecraftSubmittedPhoto" hidden></div>
           <form class="exit-ticket-form" id="exitTicketForm">
             <label>
               <span>שאלת כרטיס היציאה</span>
@@ -476,11 +474,7 @@ player.onChat("test", function () {
               <strong id="exitReflectionQuestion" class="exit-ticket-question">${fallbackReflectionQuestion}</strong>
               <textarea id="exitReflection" name="reflection" required rows="4" placeholder="כתבו תשובה שמתייחסת למה שלמדתם במפגש הזה"></textarea>
             </label>
-            <label>
-              <span>תמונה של מה שבניתם במיינקראפט</span>
-              <input id="exitPhoto" name="photo" type="file" accept="image/png,image/jpeg,image/webp" required>
-            </label>
-            <button class="btn" id="exitSubmit" type="submit">הגשת כרטיס יציאה</button>
+            <button class="btn" id="exitSubmit" type="submit">שמירת כרטיס יציאה</button>
             <p class="submit-status" id="exitSubmitStatus" role="status" aria-live="polite"></p>
           </form>
           <div class="existing-submission" id="existingSubmission" hidden></div>
@@ -506,32 +500,60 @@ player.onChat("test", function () {
   document.getElementById('summary').textContent = lesson.summary;
   document.getElementById('deliverable').textContent = lesson.deliverable;
   document.getElementById('concept').textContent = lesson.concept;
-  document.getElementById('goal').textContent = lesson.detail.goal;
+  const goalElement = document.getElementById('goal');
+  if (goalElement) {
+    goalElement.textContent = lesson.detail.goal;
+  }
   document.getElementById('command').innerHTML = commandList(lesson.detail.code || [lesson.command]);
+  const actionSteps = lesson.detail.academy
+    ? [
+        'צופים בדקה הראשונה של הסרטון ומבינים מה ה-Agent צריך לעשות.',
+        'נכנסים לאקדמיית ה-Agent ומריצים את התרגול עד שהבדיקה עוברת.',
+        'חוזרים למיינקראפט ובונים את אותו רעיון בעיר שלכם.'
+      ]
+    : [
+        'צופים בסרטון ומבינים מה צריך לקרות בעיר.',
+        'בונים במיינקראפט רק את החלק הקטן של השיעור.',
+        'מריצים, מתקנים דבר אחד, ומעלים כרטיס יציאה.'
+      ];
+  document.getElementById('lessonActionSteps').innerHTML = actionSteps.map((step, index) => `
+    <li>
+      <strong>${index + 1}</strong>
+      <span>${esc(step)}</span>
+    </li>
+  `).join('');
   const selfStudySteps = lesson.detail.academy
     ? [
         'צפו בסרטון והבינו מה צריך לקרות בעיר.',
-        'היכנסו לאקדמיית Agents ותרגלו שם את קוד ה-MakeCode בבלוקים.',
+        'היכנסו לאקדמיית ה-Agent ותרגלו שם את קוד ה-MakeCode בבלוקים.',
         'הריצו את ה-Agent בהדמיה עד שהבדיקה באקדמיה עוברת.',
         'חזרו לשיעור ויישמו את אותו רעיון בתוך Minecraft Education.',
-        'העלו צילום של מה שבניתם במיינקראפט ומלאו את כרטיס היציאה במילים שלכם.'
+        'לחצו על כפתור סיום השיעור במיינקראפט כדי לשלוח את הצילום, ואז מלאו את כרטיס היציאה במילים שלכם.'
       ]
     : [
         'צפו בסרטון של האתגר והבינו מה צריך לקרות בעיר.',
         'בנו במיינקראפט את החלק הקטן של היום.',
         'פתחו MakeCode וכתבו רק את הקוד שמפעיל את ה-Agent.',
         'הריצו, בדקו מה קרה בעולם, תקנו דבר אחד והריצו שוב.',
-        'העלו צילום של מה שבניתם ומלאו את כרטיס היציאה במילים שלכם.'
+        'לחצו על כפתור סיום השיעור במיינקראפט כדי לשלוח את הצילום, ואז מלאו את כרטיס היציאה במילים שלכם.'
       ];
   document.getElementById('selfStudy').innerHTML = list(selfStudySteps);
   document.getElementById('build').innerHTML = list(lesson.detail.build);
   document.getElementById('code').innerHTML = list(lesson.detail.code);
   const academyCta = document.getElementById('agentAcademyCta');
   const makeCodeWorkspace = document.getElementById('makeCodeWorkspace');
+  const heroAcademyLink = document.getElementById('heroAcademyLink');
+  const codeDetailBox = document.getElementById('codeDetailBox');
   if (lesson.detail.academy && academyCta) {
     academyCta.hidden = false;
-    document.getElementById('agentAcademyLink').href = `craftom-agent-academy.html?lesson=${lesson.id}`;
+    const academyHref = `craftom-agent-academy.html?lesson=${lesson.id}`;
+    document.getElementById('agentAcademyLink').href = academyHref;
+    if (heroAcademyLink) {
+      heroAcademyLink.hidden = false;
+      heroAcademyLink.href = academyHref;
+    }
     if (makeCodeWorkspace) makeCodeWorkspace.hidden = true;
+    if (codeDetailBox) codeDetailBox.hidden = true;
   }
   initMinecraftEntry();
   document.getElementById('makeCodeSnippet').textContent = makeCodeSnippets[lesson.id] || makeCodeSnippets[1];
@@ -581,6 +603,52 @@ player.onChat("test", function () {
   const status = document.getElementById('exitSubmitStatus');
   const submitButton = document.getElementById('exitSubmit');
   const existingSubmission = document.getElementById('existingSubmission');
+  const minecraftSubmittedPhoto = document.getElementById('minecraftSubmittedPhoto');
+
+  function safePhotoUrl(value) {
+    const url = String(value || '').trim();
+    return /^https?:\/\//i.test(url) ? url : '';
+  }
+
+  function minecraftSubmittedPhotoUrl(student) {
+    const stagePhotoUrl = safePhotoUrl(student?.stagePhotos?.photoUrls?.[0]);
+    if (stagePhotoUrl) return stagePhotoUrl;
+    return safePhotoUrl(student?.stageReport?.photoUrls?.[0]);
+  }
+
+  function renderMinecraftSubmittedPhoto(student) {
+    if (!minecraftSubmittedPhoto) return;
+    const url = minecraftSubmittedPhotoUrl(student);
+    minecraftSubmittedPhoto.hidden = false;
+    if (!url) {
+      minecraftSubmittedPhoto.innerHTML = `
+        <h3>הצילום מהמשחק</h3>
+        <p>אחרי שתלחצו במיינקראפט על כפתור סיום השיעור, הצילום האחרון מהמצלמה יישלח אוטומטית ויופיע כאן.</p>
+      `;
+      return;
+    }
+    minecraftSubmittedPhoto.innerHTML = `
+      <h3>הצילום שנשלח ממיינקראפט</h3>
+      <div class="submission-preview">
+        <a href="${esc(url)}" target="_blank" rel="noopener">
+          <img src="${esc(url)}" alt="הצילום שנשלח ממיינקראפט">
+        </a>
+        <div>
+          <p>זה הצילום האחרון שנשלח מהמצלמה בתוך Minecraft.</p>
+          <p>המורה רואה את אותו צילום בכרטיס התלמיד.</p>
+        </div>
+      </div>
+    `;
+  }
+
+  async function refreshMinecraftSubmittedPhoto() {
+    try {
+      const data = await api('/api/kugel/session');
+      renderMinecraftSubmittedPhoto(data.student || null);
+    } catch {
+      renderMinecraftSubmittedPhoto(null);
+    }
+  }
 
   function renderSubmission(submission) {
     if (!existingSubmission) return;
@@ -593,16 +661,15 @@ player.onChat("test", function () {
       nextChallengeLink.hidden = !nextChallengeFirstLesson;
     }
     existingSubmission.hidden = false;
+    const photoUrl = safePhotoUrl(submission.photo?.url);
     existingSubmission.innerHTML = `
       <h3>ההגשה השמורה שלי</h3>
-      <div class="submission-preview">
-        <a href="${esc(submission.photo.url)}" target="_blank" rel="noopener">
-          <img src="${esc(submission.photo.url)}" alt="תמונת העבודה שהוגשה">
-        </a>
+      <div class="${photoUrl ? 'submission-preview' : 'submission-text-only'}">
+        ${photoUrl ? `<a href="${esc(photoUrl)}" target="_blank" rel="noopener"><img src="${esc(photoUrl)}" alt="תמונת העבודה שהוגשה"></a>` : ''}
         <div>
           <p><strong>עודכן:</strong> ${esc(new Date(submission.updatedAt).toLocaleString('he-IL'))}</p>
           <p><strong>תשובה:</strong> ${esc(submission.exitAnswer)}</p>
-          <p>${submission.replaced ? 'התמונה הוחלפה לאחר ההגשה הראשונה.' : 'זו ההגשה הראשונה לשיעור הזה.'}</p>
+          <p>${submission.replaced ? 'כרטיס היציאה עודכן.' : 'כרטיס היציאה נשמר.'}</p>
         </div>
       </div>
     `;
@@ -619,10 +686,10 @@ player.onChat("test", function () {
   }
 
   loadOwnSubmission();
+  refreshMinecraftSubmittedPhoto();
   form.addEventListener('submit', async event => {
     event.preventDefault();
     status.textContent = '';
-    const photo = document.getElementById('exitPhoto').files[0];
     const answer = document.getElementById('exitAnswer').value.trim();
     const reflection = document.getElementById('exitReflection')?.value.trim() || '';
 
@@ -634,19 +701,10 @@ player.onChat("test", function () {
       status.textContent = 'כתבו תשובה לשאלת החשיבה הנוספת לפני ההגשה.';
       return;
     }
-    if (!photo) {
-      status.textContent = 'צרפו תמונה של מה שבניתם לפני ההגשה.';
-      return;
-    }
-    if (photo.size > 5 * 1024 * 1024) {
-      status.textContent = 'התמונה גדולה מדי. אפשר להעלות תמונה עד 5MB.';
-      return;
-    }
 
     submitButton.disabled = true;
     submitButton.textContent = 'שולחים...';
     try {
-      const photoDataUrl = await fileToDataUrl(photo);
       const response = await fetch('/api/craftom/exit-ticket', {
         method: 'POST',
         credentials: 'same-origin',
@@ -658,7 +716,6 @@ player.onChat("test", function () {
           challengeTitle: lesson.challengeTitle,
           exitQuestion: `${lesson.detail.exit}\n${reflectionQuestion}`,
           answer: `שאלת כרטיס היציאה: ${answer}\n\nשאלת חשיבה נוספת: ${reflection}`,
-          photo: { name: photo.name, dataUrl: photoDataUrl },
         }),
       });
       const data = await response.json().catch(() => ({}));
@@ -666,8 +723,9 @@ player.onChat("test", function () {
       form.classList.add('submitted');
       renderSubmission(data.submission || null);
       status.textContent = data.submission?.replaced
-        ? 'כרטיס היציאה והתמונה הוחלפו ונשמרו.'
-        : `כרטיס היציאה הוגש ונשמר. מספר הגשה: ${data.id}`;
+        ? 'כרטיס היציאה עודכן ונשמר.'
+        : `כרטיס היציאה נשמר. מספר הגשה: ${data.id}`;
+      refreshMinecraftSubmittedPhoto();
       if (!nextLesson && nextChallengeLink) {
         nextChallengeLink.hidden = !nextChallengeFirstLesson;
       }
@@ -675,7 +733,7 @@ player.onChat("test", function () {
       status.textContent = error.message || 'לא הצלחנו לשמור את ההגשה.';
     } finally {
       submitButton.disabled = false;
-      submitButton.textContent = 'הגשת כרטיס יציאה';
+      submitButton.textContent = 'שמירת כרטיס יציאה';
     }
   });
 })();

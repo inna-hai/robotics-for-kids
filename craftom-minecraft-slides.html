@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20260914-teacher-return-1">
+  <link rel="stylesheet" href="assets/craftom/craftom-challenges.css?v=20261008-lesson1-deliver-no-teleport-1">
   <style>
     body{background:#071528;color:#fff}
     .shell{width:min(1180px,calc(100% - 28px));padding:20px 0}
@@ -16,8 +16,29 @@
     .slide h1,.slide h2{color:#fff;font-size:clamp(2rem,5vw,4.5rem)}
     .slide p,.slide li{font-size:clamp(1.1rem,2vw,1.5rem);line-height:1.7}
     .slide .tag{width:max-content;background:#d9f99d;color:#17320b}
+    .lesson-slide{align-content:start;gap:12px;padding:clamp(18px,3.5vw,40px)}
+    .lesson-slide h2{font-size:clamp(1.8rem,3.4vw,3.2rem);margin:0}
+    .lesson-lead{font-size:clamp(1rem,1.45vw,1.18rem);line-height:1.5;margin:0}
+    .lesson-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+    .lesson-layout>div{display:grid;gap:12px}
+    .slide-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;align-items:start}
+    .lesson-slide .slide-grid{grid-template-columns:1fr;gap:12px;margin-top:12px}
+    .slide-card{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:14px}
+    .slide-card h3{margin:0 0 8px;font-size:clamp(1.05rem,1.55vw,1.35rem);color:#d9f99d}
+    .slide-list{margin:0;padding-inline-start:1.35em}
+    .slide-list li{font-size:clamp(.95rem,1.32vw,1.12rem);line-height:1.45;margin:0 0 6px}
+    .code-list{display:grid;gap:8px;margin:0}
+    .code-list code{display:block;direction:ltr;text-align:left;unicode-bidi:isolate;background:rgba(7,21,40,.72);border:1px solid rgba(255,255,255,.22);border-radius:12px;padding:10px 12px;font:700 clamp(.9rem,1.3vw,1.08rem)/1.3 ui-monospace,SFMono-Regular,Consolas,monospace;color:#fff;white-space:normal;overflow-wrap:anywhere}
+    .exit-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .lesson-slide .exit-grid{grid-template-columns:1fr;margin-top:12px;gap:12px}
+    .exit-grid p{font-size:clamp(.92rem,1.2vw,1.05rem);line-height:1.45;margin:0}
+    .exit-grid b{color:#d9f99d}
     .video{width:min(760px,100%);aspect-ratio:16/9;border:0;border-radius:16px;background:#000}
     .actions{position:fixed;left:14px;bottom:14px;z-index:3;display:flex;gap:10px;flex-wrap:wrap}
+    @media (max-width: 820px){
+      .lesson-layout,.slide-grid,.exit-grid{grid-template-columns:1fr}
+      .lesson-slide{align-content:start}
+    }
   </style>
 </head>
 <body>
@@ -35,7 +56,7 @@
     <a class="btn secondary" id="backToLesson" href="craftom-minecraft-lesson-1.html">חזרה לשיעור</a>
     <a class="btn secondary" href="craftom-school/preview/index.html">מפת הקורס</a>
   </div>
-  <script src="js/craftom-minecraft-challenges.js?v=20260914-teacher-return-1"></script>
+  <script src="js/craftom-minecraft-challenges.js?v=20261008-lesson1-deliver-no-teleport-1"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const program = window.CRAFTOM_MINECRAFT_PROGRAM;
@@ -61,13 +82,57 @@
       backToTeacher.hidden = false;
       backToTeacher.href = teacherManagementUrl();
     }
+    const listItems = items => `<ul class="slide-list">${items.map(step => `<li>${esc(step)}</li>`).join('')}</ul>`;
+    const codeItems = items => `<div class="code-list">${items.map(step => `<code>${esc(step)}</code>`).join('')}</div>`;
+    const lessonFlowSteps = [
+      'קודם עובדים באקדמיית ה-Agent: בונים את הקוד ומריצים עד שהבדיקה עוברת.',
+      'אחר כך עוברים למיינקראפט ובונים את החלק של העיר.',
+      'במיינקראפט פותחים Code Builder / MakeCode ומכניסים את אותו רעיון בקוד.',
+      'בסוף מריצים מהצ׳אט ובודקים מה ה-Agent עשה בעולם.'
+    ];
+    const minecraftAccessSteps = [
+      'צ׳אט: לוחצים T, כותבים deliver, ואז Enter.',
+      'קוד: לוחצים C כדי לפתוח Code Builder.',
+      'ב-Code Builder בוחרים MakeCode ועובדים עם הפקודה on chat command deliver.'
+    ];
+    const lessonSlide = item => `
+      <section class="slide lesson-slide">
+        <span class="tag">שיעור ${esc(item[0])}</span>
+        <h2>${esc(item[1])}</h2>
+        <div class="lesson-layout">
+          <div>
+            <p class="lesson-lead">${esc(item[2])}</p>
+            <div class="slide-grid">
+              <article class="slide-card">
+                <h3>סדר העבודה</h3>
+                ${listItems(lessonFlowSteps)}
+              </article>
+              <article class="slide-card">
+                <h3>בונים במיינקראפט</h3>
+                ${listItems(item[4].build)}
+              </article>
+            </div>
+          </div>
+          <div>
+            <article class="slide-card">
+              <h3>איך פותחים ומריצים</h3>
+              ${listItems(minecraftAccessSteps)}
+            </article>
+            <article class="slide-card">
+              <h3>MakeCode</h3>
+              ${codeItems(item[4].code)}
+            </article>
+          </div>
+        </div>
+      </section>
+    `;
     document.getElementById('slides').innerHTML = `
       <section class="slide"><span class="tag">אקדמיית ה-Agent</span><h1>${esc(challenge.title)}</h1><p>${esc(challenge.story)}</p></section>
       <section class="slide"><h2>סרטון פתיחה</h2><video class="video" src="${esc(challenge.video)}" poster="${esc(challenge.poster)}" controls playsinline preload="metadata"></video></section>
       <section class="slide"><h2>מה לומדים?</h2><p>${esc(challenge.concept)}</p><p><b>פקודות:</b> ${esc(challenge.command)}</p><p>האתגר ממשיך את אותה עיר: לא מתחילים עולם חדש, אלא מוסיפים שכבה חדשה למה שכבר נבנה.</p></section>
       <section class="slide"><h2>4 מפגשים</h2><ul>${challenge.meetings.map(item => `<li><b>${esc(item[0])} ${esc(item[1])}:</b> ${esc(item[4].goal)}</li>`).join('')}</ul></section>
-      ${challenge.meetings.map(item => `<section class="slide"><span class="tag">שיעור ${esc(item[0])}</span><h2>${esc(item[1])}</h2><p>${esc(item[2])}</p><ul>${item[4].teacher.map(step => `<li>${esc(step)}</li>`).join('')}</ul><p><b>בונים:</b> ${esc(item[4].build.join(' · '))}</p><p><b>MakeCode:</b> ${esc(item[4].code.join(' · '))}</p><p><b>העלאת תמונה:</b> ${esc(program.exitUpload)}</p><p><b>כרטיס יציאה:</b> ${esc(item[4].exit)}</p></section>`).join('')}
-      <section class="slide"><h2>איך יודעים שזה עבד?</h2><ul>${challenge.checks.map(item => `<li>${esc(item)}</li>`).join('')}</ul></section>
+      ${challenge.meetings.map(lessonSlide).join('')}
+      <section class="slide"><h2>איך יודעים שזה עבד?</h2><ul>${challenge.checks.map(item => `<li>${esc(item)}</li>`).join('')}</ul><p><b>צילום מהמשחק:</b> ${esc(program.exitUpload)}</p></section>
     `;
   </script>
 </body>

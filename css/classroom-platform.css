@@ -316,6 +316,30 @@ body.forced-student-login .classroom-card { border-color: #0f766e; }
   border-color: #a5b4fc;
   box-shadow: inset 0 0 0 2px rgba(99, 102, 241, .1);
 }
+.craftom-lesson-control-row.is-completed-lesson {
+  border-color: #e2e8f0;
+  background: #f8fafc;
+  color: #64748b;
+  opacity: .82;
+}
+.craftom-lesson-control-row.is-completed-lesson .craftom-lesson-control-copy strong {
+  color: #64748b;
+}
+.craftom-lesson-control-row.is-completed-lesson .craftom-lesson-control-copy span {
+  color: #94a3b8;
+}
+.craftom-lesson-control-row.is-active-lesson {
+  border-color: #4f46e5;
+  background: linear-gradient(135deg, #eef2ff, #ffffff);
+  box-shadow: 0 14px 32px rgba(79, 70, 229, .16), inset 0 0 0 2px rgba(79, 70, 229, .12);
+  opacity: 1;
+}
+.craftom-lesson-control-row.is-active-lesson .craftom-lesson-control-copy strong {
+  color: #312e81;
+}
+.craftom-lesson-control-row.is-active-lesson .craftom-lesson-control-copy span {
+  color: #4338ca;
+}
 .craftom-lesson-control-copy strong,
 .craftom-lesson-control-copy span {
   display: block;

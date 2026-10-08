@@ -183,6 +183,7 @@ const KUGEL_MINECRAFT_LESSONS = Object.freeze(Object.fromEntries([
     })];
   }),
 ]));
+const KUGEL_ACADEMY_EXERCISE_COUNT = 6;
 
 const KUGEL_LESSON_BUILD_RUBRICS = Object.freeze({
   1: {
@@ -3073,6 +3074,61 @@ function betterLearningStatus(current, next) {
   return statusRank(next) > statusRank(current) ? next : current;
 }
 
+function classroomProgressMetadata(row) {
+  try {
+    return JSON.parse(row?.metadata_json || '{}') || {};
+  } catch {
+    return {};
+  }
+}
+
+function summarizeKugelAcademyProgress(progress) {
+  const completedExercises = new Set();
+  let totalExercises = KUGEL_ACADEMY_EXERCISE_COUNT;
+  let completedAt = null;
+  let updatedAt = null;
+  let hasStarted = false;
+  let hasCompleted = false;
+
+  for (const row of progress.values()) {
+    const activityId = String(row.activity_id || '');
+    const metadata = classroomProgressMetadata(row);
+    if (Number.isFinite(Number(metadata.totalExercises)) && Number(metadata.totalExercises) > 0) {
+      totalExercises = Math.max(totalExercises, Number(metadata.totalExercises));
+    }
+    if (/^academy-exercise-\d+$/.test(activityId)) {
+      hasStarted = true;
+      if (row.status === 'completed') {
+        completedExercises.add(Number(activityId.replace('academy-exercise-', '')));
+        if (row.completed_at && (!completedAt || row.completed_at > completedAt)) completedAt = row.completed_at;
+      }
+      if (row.updated_at && (!updatedAt || row.updated_at > updatedAt)) updatedAt = row.updated_at;
+    } else if (activityId === 'academy-complete') {
+      hasStarted = true;
+      if (Number.isFinite(Number(metadata.completedExercises))) {
+        for (let index = 1; index <= Number(metadata.completedExercises); index += 1) completedExercises.add(index);
+      }
+      if (row.status === 'completed') {
+        hasCompleted = true;
+        if (row.completed_at && (!completedAt || row.completed_at > completedAt)) completedAt = row.completed_at;
+      }
+      if (row.updated_at && (!updatedAt || row.updated_at > updatedAt)) updatedAt = row.updated_at;
+    }
+  }
+
+  const completedCount = Math.min(completedExercises.size, totalExercises);
+  const status = hasCompleted || (totalExercises > 0 && completedCount >= totalExercises)
+    ? 'completed'
+    : (hasStarted || completedCount > 0 ? 'started' : 'missing');
+  return {
+    status,
+    completedExercises: completedCount,
+    totalExercises,
+    completedAt,
+    updatedAt,
+  };
+}
+
 function summaryHasKugelMinecraftActivity(summary) {
   return Boolean(
     summary?.completed
@@ -3664,6 +3720,20 @@ function kugelLegacyMonitorMutation(serverName, pathname, payload = {}, timeoutM
   }, timeoutMs));
 }
 
+function kugelLegacyMonitorStatus(serverName, timeoutMs = KUGEL_WORLD_STATE_TIMEOUT_MS) {
+  const server = cleanText(serverName, 120);
+  if (!server) {
+    const error = new Error('חסר שם שרת Minecraft Monitor.');
+    error.statusCode = 400;
+    throw error;
+  }
+  return kugelMonitorRequest('/api/internal/craftom-school/server/status', {
+    method: 'POST',
+    body: JSON.stringify({ server }),
+    maxResponseBytes: 512 * 1024,
+  }, timeoutMs);
+}
+
 async function requestKugelClassStageReport(monitorServerName) {
   const server = cleanText(monitorServerName, 120);
   if (!server) return null;
@@ -3800,10 +3870,8 @@ async function resolveKugelRuntimeWorld(session, classroom = null, timeoutMs = K
     : (classroom ? kugelAlwaysOnMonitorForClassroom(classroom) : kugelAlwaysOnMonitorForSession(session));
   if (!monitor?.monitorServerName || !kugelMinecraftConfigured()) return fallback;
   try {
-    const status = publicKugelMonitorStatus(await kugelLegacyMonitorMutation(
+    const status = publicKugelMonitorStatus(await kugelLegacyMonitorStatus(
       monitor.monitorServerName,
-      '/api/internal/craftom-school/server/status',
-      {},
       timeoutMs,
     ));
     const currentWorld = status.currentWorld || fallback.currentWorld;
@@ -4498,6 +4566,7 @@ function kugelLessonMonitorRubricPublic(lessonId) {
       'build_summary',
       'snapshot',
       'snapshot_map',
+      'photo_urls',
       'activity_summary',
       'activity',
       'code',
@@ -4616,6 +4685,15 @@ function kugelStageReportPublic(row) {
     const number = Number(value);
     return Number.isFinite(number) ? number : null;
   };
+  const cleanReportUrl = value => {
+    const url = cleanKugelReportText(value, 2000);
+    if (!/^https?:\/\//i.test(url)) return '';
+    return url;
+  };
+  const cleanReportUrlList = value => {
+    const list = Array.isArray(value) ? value : [];
+    return [...new Set(list.map(cleanReportUrl).filter(Boolean))].slice(0, 24);
+  };
   return {
     eventType: cleanText(row.event_type, 60),
     lessonLabel: cleanKugelReportText(payload.lesson_label || payload.lessonLabel, 240),
@@ -4632,6 +4710,7 @@ function kugelStageReportPublic(row) {
       maxHeight: cleanReportNumber(snapshot.max_height ?? snapshot.maxHeight),
     },
     snapshotMap: cleanKugelReportText(payload.snapshot_map || payload.snapshotMap, 12000, { preserveNewlines: true }),
+    photoUrls: cleanReportUrlList(payload.photo_urls || payload.photoUrls),
     activitySummary: cleanKugelReportText(payload.activity_summary || payload.activitySummary, 3000),
     activity: {
       agentPlaced: cleanReportNumber(activity.agent_placed ?? activity.agentPlaced),
@@ -4650,6 +4729,25 @@ function kugelStageReportPublic(row) {
       source: cleanKugelReportText(code.source, 80000, { preserveNewlines: true }),
       error: cleanKugelReportText(code.error, 2000),
     } : null,
+  };
+}
+
+function latestKugelStagePhotos(events, student) {
+  const playerName = student?.minecraft_player_name || student?.minecraftPlayerName || '';
+  if (!playerName) return null;
+  const latest = events
+    .filter(row => row?.event_type === 'stage_photos' && kugelMinecraftNamesMatch(playerName, kugelEventPlayerName(row)))
+    .sort((a, b) => kugelEventTime(b) - kugelEventTime(a))[0];
+  if (!latest) return null;
+  const payload = kugelEventPayload(latest);
+  const urls = Array.isArray(payload.photo_urls) ? payload.photo_urls : (Array.isArray(payload.photoUrls) ? payload.photoUrls : []);
+  const photoUrls = [...new Set(urls
+    .map(value => cleanKugelReportText(value, 2000))
+    .filter(value => /^https?:\/\//i.test(value)))].slice(0, 1);
+  if (!photoUrls.length) return null;
+  return {
+    photoUrls,
+    generatedAt: cleanKugelReportText(payload.generated_at || payload.generatedAt || latest.created_at || latest.createdAt, 120),
   };
 }
 
@@ -4876,8 +4974,7 @@ function kugelCodeLessonChecks(lessonId, source) {
   const rubrics = {
     1: [
       requiredCodeCheck('פקודת deliver', f.chat('deliver'), 'בשיעור 1 ההפעלה המרכזית היא deliver.'),
-      requiredCodeCheck('זימון ה-Agent להתחלה', f.teleport, 'ה-Agent צריך להתחיל מנקודת מוצא ברורה ליד התלמיד.'),
-      requiredCodeCheck('תנועה ישרה לתחנת יעד', f.move, 'נדרש agent.move כדי להגיע מהמחסן לתחנה.'),
+      requiredCodeCheck('תנועה ישרה לתחנת יעד', f.move, 'בשיעור 1 הילד ממקם את ה-Agent בעצמו, ופקודת deliver צריכה לגרום לו לצעוד לתחנה.'),
       bonusCodeCheck('הודעת הגעה', f.say || f.deliverySay, 'כדאי לסיים בהודעה שמסבירה שהמשלוח הגיע.'),
     ],
     2: [
@@ -5520,11 +5617,13 @@ async function kugelClassView(req, context, role, useEventCache = true, requeste
     const assignment = getKugelMinecraftKey(data.assignments, rawSummary.minecraftPlayerName || student.minecraft_player_name)
       || findKugelLatestCompoundEventAssignment(events, data.session, student);
     const stageReport = latestKugelStageReport(reportEvents, student);
+    const stagePhotos = latestKugelStagePhotos(reportEvents, student);
     const chatCodeLink = latestKugelChatCodeLink(reportEvents, student);
     return {
       ...applyKugelAssignmentConnection(rawSummary, assignment),
       compoundId: assignment?.compound_id || null,
       stageReport,
+      stagePhotos,
       chatCodeLink,
       localCodeCheck: await kugelLocalCodeCheckForStudent({ chatCodeLink, stageReport, lesson: codeCheckLesson }),
       completionRecorded: data.completedStudentIds.has(student.id),
@@ -5532,7 +5631,7 @@ async function kugelClassView(req, context, role, useEventCache = true, requeste
   }));
   const summaries = summariesWithReports.map(summary => {
     const progress = data.progressByStudent.get(summary.id) || new Map();
-    const academy = progress.get('academy-complete');
+    const academy = summarizeKugelAcademyProgress(progress);
     const exitTicket = progress.get('exit-ticket');
     const minecraftActivity = progress.get('minecraft-maze');
     const run = data.runs.get(summary.id);
@@ -5553,8 +5652,11 @@ async function kugelClassView(req, context, role, useEventCache = true, requeste
       attemptCount: mazeMode ? summary.attemptCount : 0,
       bestTimeMs: mazeMode ? summary.bestTimeMs : null,
       lastDurationMs: mazeMode ? summary.lastDurationMs : null,
-      academyStatus: academy?.status || 'missing',
-      academyCompletedAt: academy?.completed_at || null,
+      academyStatus: academy.status,
+      academyCompletedExercises: academy.completedExercises,
+      academyTotalExercises: academy.totalExercises,
+      academyCompletedAt: academy.completedAt || null,
+      academyUpdatedAt: academy.updatedAt || null,
       minecraftStatus: minecraftCompleted ? 'completed' : (minecraftStarted ? 'started' : 'missing'),
       exitTicketStatus: exitTicket?.status || 'missing',
       submission: craftomSubmissionPublic(data.submissions.get(summary.id), 'teacher'),
@@ -8456,6 +8558,7 @@ function saveCraftomExitTicketImage(submissionId, attachment) {
 
 function craftomSubmissionPublic(row, viewer = 'student') {
   if (!row) return null;
+  const hasPhoto = Boolean(row.image_path);
   return {
     id: row.id,
     courseId: row.course_id,
@@ -8468,12 +8571,12 @@ function craftomSubmissionPublic(row, viewer = 'student') {
     challengeTitle: row.challenge_title,
     exitQuestion: row.exit_question,
     exitAnswer: row.exit_answer,
-    photo: {
+    photo: hasPhoto ? {
       url: `/api/craftom/submissions/${encodeURIComponent(row.id)}/photo`,
       name: row.image_name,
       mime: row.image_mime,
       size: row.image_size,
-    },
+    } : null,
     replaced: Number(row.replacement_count || 0) > 0,
     replacementCount: Number(row.replacement_count || 0),
     createdAt: row.created_at,
@@ -8613,7 +8716,7 @@ async function handleCraftomApi(req, res) {
     if (req.method === 'POST' && pathname === '/api/craftom/exit-ticket') {
       const studentContext = getStudentKugelClass(req);
       if (studentContext.status) return send(res, studentContext.status, JSON.stringify({ error: studentContext.error }));
-      const raw = await readBody(req, 7 * 1024 * 1024);
+      const raw = await readBody(req, 1024 * 1024);
       const body = JSON.parse(raw || '{}');
       const lessonId = Number(cleanText(body.lessonId, 10));
       const challengeId = Number(cleanText(body.challengeId, 10));
@@ -8630,7 +8733,7 @@ async function handleCraftomApi(req, res) {
       }
 
       const id = crypto.randomUUID();
-      const photo = saveCraftomExitTicketImage(id, body.photo);
+      const photo = body.photo ? saveCraftomExitTicketImage(id, body.photo) : null;
       const now = new Date().toISOString();
       let previousPhotoPath = null;
       let saved;
@@ -8667,8 +8770,8 @@ async function handleCraftomApi(req, res) {
               WHERE id = ?
             `).run(
               studentContext.classroom.id, Number.isInteger(challengeId) ? challengeId : null,
-              lessonTitle, challengeTitle, exitQuestion, answer, photo.path, photo.name,
-              photo.mime, photo.size, now, existing.id,
+              lessonTitle, challengeTitle, exitQuestion, answer, photo?.path || '', photo?.name || '',
+              photo?.mime || 'image/png', photo?.size || 0, now, existing.id,
             );
             recordClassroomProgress(db, studentContext.student.id, KUGEL_COURSE_ID, lessonId, 'exit-ticket', 'completed', 100, { submissionId: existing.id });
             return db.prepare('SELECT * FROM craftom_lesson_submissions WHERE id = ?').get(existing.id);
@@ -8683,14 +8786,16 @@ async function handleCraftomApi(req, res) {
           `).run(
             id, studentContext.classroom.id, studentContext.student.id, KUGEL_COURSE_ID, lessonId,
             Number.isInteger(challengeId) ? challengeId : null, lessonTitle, challengeTitle,
-            exitQuestion, answer, photo.path, photo.name, photo.mime, photo.size, now, now,
+            exitQuestion, answer, photo?.path || '', photo?.name || '', photo?.mime || 'image/png', photo?.size || 0, now, now,
           );
           recordClassroomProgress(db, studentContext.student.id, KUGEL_COURSE_ID, lessonId, 'exit-ticket', 'completed', 100, { submissionId: id });
           return db.prepare('SELECT * FROM craftom_lesson_submissions WHERE id = ?').get(id);
         }).immediate());
       } catch (error) {
-        const unsavedPhotoPath = getCraftomSubmissionPhotoPath({ image_path: photo.path });
-        if (unsavedPhotoPath) fs.rmSync(unsavedPhotoPath, { force: true });
+        if (photo) {
+          const unsavedPhotoPath = getCraftomSubmissionPhotoPath({ image_path: photo.path });
+          if (unsavedPhotoPath) fs.rmSync(unsavedPhotoPath, { force: true });
+        }
         throw error;
       }
       const savedPhotoPath = getCraftomSubmissionPhotoPath(saved);

@@ -1508,7 +1508,7 @@ try {
       code: {
         url: 'https://makecode.com/_abc123',
         name: 'agent-lesson-1',
-        source: 'player.onChat("deliver", function () {\n    agent.teleportToPlayer()\n    agent.move(FORWARD, 5)\n})',
+        source: 'player.onChat("deliver", function () {\n    agent.move(FORWARD, 5)\n})',
         error: '',
       },
       generated_at: buildActivityAt,
@@ -1564,6 +1564,8 @@ try {
     'teacher monitor should locally check MakeCode source against the lesson task');
   assert.match(teacherBuildModeStudent.localCodeCheck.summary, /שיעור 1/,
     'local MakeCode checks should identify the lesson being checked');
+  assert.equal(teacherBuildModeStudent.localCodeCheck.checks.some(check => /זימון|teleport/i.test(check.label)), false,
+    'lesson 1 local code check should not require teleportToPlayer after manual Agent placement');
   assert.equal(teacherBuildModeStudent.stageReport.buildVerdict, 'טוב',
     'teacher monitor should expose the latest stage_report on the student card');
   assert.equal(teacherBuildModeStudent.stageReport.snapshot.blocksCount, 12,
