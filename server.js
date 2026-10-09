@@ -369,6 +369,15 @@ function requestHostname(req) {
   return rawHost.trim().toLowerCase().replace(/:\d+$/, '').replace(/\.$/, '');
 }
 
+function absolutePublicUrl(req, path) {
+  const host = requestHostname(req) || 'robotics15.hai.tech';
+  const forwardedProtocol = String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim().toLowerCase();
+  const protocol = forwardedProtocol === 'http' || forwardedProtocol === 'https'
+    ? forwardedProtocol
+    : (KUGEL_HTTPS_REVERSE_PROXY ? 'https' : 'http');
+  return new URL(path, `${protocol}://${host}`).toString();
+}
+
 function subscriptionGateEnabledForRequest(req) {
   return SUBSCRIPTION_GATE_ENABLED && !SUBSCRIPTION_GATE_OPEN_HOSTS.has(requestHostname(req));
 }
@@ -2617,7 +2626,7 @@ function generateTemporaryTeacherPassword() {
 }
 
 async function deliverClassroomCredentialEmail(recipient, subject, code) {
-  const allowedSubjects = new Set(['הזמנה להוראה ב־HaiTech', 'קוד גישה לניהול HaiTech']);
+  const allowedSubjects = new Set(['הזמנה להוראה ב־HaiTech', 'קוד גישה לניהול HaiTech', 'קישורי כיתת WebCode']);
   if (!allowedSubjects.has(subject)) return 'failed';
   const command = String(process.env.ROBOTICS_CREDENTIAL_MAILER || '').trim();
   if (process.env.NODE_ENV === 'test' && !command) return 'sent';
@@ -3111,29 +3120,71 @@ function ensureWebCodeQuickTeacher(db) {
   return teacher;
 }
 
-function createWebCodeQuickClass(db, name) {
+function ensureWebCodeTeacherAccount(db, name, email) {
   const now = new Date().toISOString();
-  const teacher = ensureWebCodeQuickTeacher(db);
+  const cleanName = cleanText(name, 80);
+  const cleanTeacherEmail = cleanEmail(email);
+  if (cleanName.length < 2 || !/^\S+@\S+\.\S+$/.test(cleanTeacherEmail)) return null;
+  let teacher = db.prepare('SELECT * FROM classroom_teachers WHERE email = ?').get(cleanTeacherEmail);
+  if (!teacher) {
+    const salt = crypto.randomBytes(16).toString('hex');
+    teacher = {
+      id: crypto.randomUUID(),
+      name: cleanName,
+      email: cleanTeacherEmail,
+      password_salt: salt,
+      password_hash: hashClassroomSecret(crypto.randomUUID(), salt),
+      created_at: now,
+      updated_at: now,
+    };
+    db.prepare(`
+      INSERT INTO classroom_teachers (id, name, email, password_salt, password_hash, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(teacher.id, teacher.name, teacher.email, teacher.password_salt, teacher.password_hash, teacher.created_at, teacher.updated_at);
+  } else if (teacher.archived_at || teacher.disabled_at) {
+    return null;
+  } else if (cleanName && cleanText(teacher.name, 80) !== cleanName) {
+    db.prepare('UPDATE classroom_teachers SET name = ?, updated_at = ? WHERE id = ?').run(cleanName, now, teacher.id);
+    teacher = { ...teacher, name: cleanName, updated_at: now };
+  }
+  replaceTeacherCourses(db, teacher.id, ['webcode']);
+  return teacher;
+}
+
+function webcodeTeacherUrl(classroomId, token) {
+  return `/webcode-teacher.html?classroom=${encodeURIComponent(classroomId)}&token=${encodeURIComponent(token)}`;
+}
+
+function upsertWebCodeQuickClassToken(db, classroomId) {
+  const now = new Date().toISOString();
+  const token = crypto.randomBytes(32).toString('base64url');
+  db.prepare(`
+    INSERT INTO webcode_quick_class_tokens (classroom_id, token_hash, created_at, last_seen_at)
+    VALUES (?, ?, ?, ?)
+    ON CONFLICT(classroom_id) DO UPDATE SET token_hash = excluded.token_hash, last_seen_at = excluded.last_seen_at
+  `).run(classroomId, tokenHash(token), now, now);
+  return token;
+}
+
+function createWebCodeQuickClass(db, payload = {}) {
+  const now = new Date().toISOString();
+  const teacher = ensureWebCodeTeacherAccount(db, payload.teacherName, payload.teacherEmail) || ensureWebCodeQuickTeacher(db);
   const classroom = {
     id: crypto.randomUUID(),
     teacher_id: teacher.id,
-    name: cleanText(name, 80) || `כיתת WebCode ${new Date().toLocaleDateString('he-IL')}`,
+    name: cleanText(payload.name, 80) || `כיתת WebCode ${new Date().toLocaleDateString('he-IL')}`,
     join_code: generateNumericClassJoinCode(db),
     created_at: now,
     updated_at: now,
   };
-  const token = crypto.randomBytes(32).toString('base64url');
   db.prepare(`
     INSERT INTO classrooms (id, teacher_id, name, join_code, created_at, updated_at)
     VALUES (?, ?, ?, ?, ?, ?)
   `).run(classroom.id, classroom.teacher_id, classroom.name, classroom.join_code, classroom.created_at, classroom.updated_at);
   db.prepare('INSERT INTO classroom_courses (classroom_id, course_id, created_at) VALUES (?, ?, ?)')
     .run(classroom.id, 'webcode', now);
-  db.prepare(`
-    INSERT INTO webcode_quick_class_tokens (classroom_id, token_hash, created_at, last_seen_at)
-    VALUES (?, ?, ?, ?)
-  `).run(classroom.id, tokenHash(token), now, now);
-  return { classroom, token };
+  const token = upsertWebCodeQuickClassToken(db, classroom.id);
+  return { classroom, teacher, token };
 }
 
 function requireWebCodeQuickClass(db, classroomId, token) {
@@ -3144,10 +3195,37 @@ function requireWebCodeQuickClass(db, classroomId, token) {
     JOIN classrooms c ON c.id = q.classroom_id
     JOIN classroom_teachers t ON t.id = c.teacher_id
     WHERE q.classroom_id = ? AND q.token_hash = ?
-      AND t.email = ? AND t.archived_at IS NULL AND t.disabled_at IS NULL
-  `).get(classroomId, tokenHash(token), WEBCODE_QUICK_TEACHER_EMAIL);
+      AND t.archived_at IS NULL AND t.disabled_at IS NULL
+  `).get(classroomId, tokenHash(token));
   if (row) db.prepare('UPDATE webcode_quick_class_tokens SET last_seen_at = ? WHERE classroom_id = ?').run(now, classroomId);
   return row || null;
+}
+
+function webcodeTeacherEmailBody({ teacher, classes }) {
+  const classLines = classes.map(item => [
+    `כיתה: ${item.classroom.name}`,
+    `קוד לתלמידים: ${item.classroom.join_code}`,
+    `מסך מורה: ${item.teacherUrl}`,
+    `כניסת תלמידים: https://robotics15.hai.tech/webcode.html`,
+  ].join('\n')).join('\n\n');
+  return [
+    `שלום ${teacher.name},`,
+    '',
+    'אלו קישורי הניהול שלך ל-WebCode:',
+    '',
+    classLines,
+    '',
+    'הילדים נכנסים ל-WebCode, בוחרים "אני תלמיד/ה בכיתה", מקלידים את קוד הכיתה, שם וסימון אישי.',
+  ].join('\n');
+}
+
+async function deliverWebCodeTeacherLinksEmail(teacher, classes) {
+  if (!teacher?.email || !classes?.length) return 'failed';
+  return deliverClassroomCredentialEmail(
+    teacher.email,
+    'קישורי כיתת WebCode',
+    webcodeTeacherEmailBody({ teacher, classes })
+  );
 }
 
 function webcodeQuickStudentPublic(row) {
@@ -9475,7 +9553,19 @@ async function handleWebCodeApi(req, res) {
     const body = JSON.parse(await readBody(req, 64 * 1024) || '{}');
 
     if (action === 'quick-class' && segments.length === 3) {
-      const result = withSummerDb(db => db.transaction(() => createWebCodeQuickClass(db, body.name)).immediate());
+      const result = withSummerDb(db => db.transaction(() => createWebCodeQuickClass(db, {
+        name: body.name,
+        teacherName: body.teacherName,
+        teacherEmail: body.teacherEmail,
+      })).immediate());
+      const teacherUrl = webcodeTeacherUrl(result.classroom.id, result.token);
+      let deliveryStatus = 'skipped';
+      if (result.teacher.email !== WEBCODE_QUICK_TEACHER_EMAIL) {
+        deliveryStatus = await deliverWebCodeTeacherLinksEmail(result.teacher, [{
+          classroom: result.classroom,
+          teacherUrl: absolutePublicUrl(req, teacherUrl),
+        }]);
+      }
       return send(res, 200, JSON.stringify({
         ok: true,
         classroom: {
@@ -9483,7 +9573,50 @@ async function handleWebCodeApi(req, res) {
           name: result.classroom.name,
           joinCode: result.classroom.join_code,
         },
-        teacherUrl: `/webcode-teacher.html?classroom=${encodeURIComponent(result.classroom.id)}&token=${encodeURIComponent(result.token)}`,
+        teacher: {
+          id: result.teacher.id,
+          name: result.teacher.name,
+          email: result.teacher.email === WEBCODE_QUICK_TEACHER_EMAIL ? '' : result.teacher.email,
+        },
+        teacherUrl,
+        deliveryStatus,
+      }));
+    }
+
+    if (action === 'teacher-links' && segments.length === 3) {
+      const email = cleanEmail(body.email);
+      if (!/^\S+@\S+\.\S+$/.test(email)) return send(res, 400, JSON.stringify({ error: 'כתובת המייל לא תקינה.' }));
+      const result = withSummerDb(db => db.transaction(() => {
+        const teacher = db.prepare(`
+          SELECT * FROM classroom_teachers
+          WHERE email = ? AND archived_at IS NULL AND disabled_at IS NULL
+        `).get(email);
+        if (!teacher) return { missing: true };
+        const rows = db.prepare(`
+          SELECT c.*
+          FROM classrooms c
+          JOIN classroom_courses cc ON cc.classroom_id = c.id AND cc.course_id = 'webcode'
+          JOIN webcode_quick_class_tokens q ON q.classroom_id = c.id
+          WHERE c.teacher_id = ?
+          ORDER BY c.created_at DESC
+        `).all(teacher.id);
+        const classes = rows.map(classroom => {
+          const token = upsertWebCodeQuickClassToken(db, classroom.id);
+          return {
+            classroom,
+            teacherUrl: absolutePublicUrl(req, webcodeTeacherUrl(classroom.id, token)),
+          };
+        });
+        return { teacher, classes };
+      }).immediate());
+      if (result.missing || !result.classes.length) {
+        return send(res, 404, JSON.stringify({ error: 'לא מצאתי כיתות WebCode למייל הזה.' }));
+      }
+      const deliveryStatus = await deliverWebCodeTeacherLinksEmail(result.teacher, result.classes);
+      return send(res, 200, JSON.stringify({
+        ok: true,
+        deliveryStatus,
+        classCount: result.classes.length,
       }));
     }
 
@@ -9498,9 +9631,10 @@ async function handleWebCodeApi(req, res) {
           SELECT c.* FROM classrooms c
           JOIN classroom_teachers t ON t.id = c.teacher_id
           JOIN classroom_courses cc ON cc.classroom_id = c.id AND cc.course_id = 'webcode'
-          WHERE c.join_code = ? AND t.email = ?
+          JOIN webcode_quick_class_tokens q ON q.classroom_id = c.id
+          WHERE c.join_code = ?
             AND t.archived_at IS NULL AND t.disabled_at IS NULL
-        `).get(classCode, WEBCODE_QUICK_TEACHER_EMAIL);
+        `).get(classCode);
         if (!classroom) return { notFound: true };
         const now = new Date().toISOString();
         let student = db.prepare(`

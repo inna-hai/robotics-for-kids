@@ -61,13 +61,26 @@
       </article>
       <article class="quick-panel">
         <h2>אני מורה</h2>
-        <p>פותחים כיתת WebCode מהירה, כותבים את הקוד על הלוח, והילדים נכנסים עם שם וסימון אישי.</p>
+        <p>פותחים חשבון מורה קל וכיתה מהירה. הקוד מופיע מיד, וקישור הניהול נשלח למייל.</p>
         <form class="quick-form" id="webcodeTeacherForm">
+          <label>שם מורה
+            <input id="webcodeTeacherName" autocomplete="name" placeholder="למשל חני" required>
+          </label>
+          <label>מייל מורה
+            <input id="webcodeTeacherEmail" type="email" autocomplete="email" placeholder="name@example.com" required>
+          </label>
           <label>שם כיתה, לא חובה
             <input id="webcodeClassName" placeholder="כיתה ד׳2 / שיעור ניסיון">
           </label>
-          <button class="btn" type="submit">פתחי כיתה חדשה</button>
+          <button class="btn" type="submit">צרי חשבון ופתחי כיתה</button>
           <div class="quick-status" id="webcodeTeacherStatus" role="status"></div>
+        </form>
+        <form class="quick-form" id="webcodeTeacherLinksForm" style="margin-top:14px;border-top:1px solid #dbeafe;padding-top:14px">
+          <label>כבר פתחת כיתה? שלחי שוב קישורים למייל
+            <input id="webcodeTeacherLinksEmail" type="email" autocomplete="email" placeholder="המייל של המורה">
+          </label>
+          <button class="btn secondary" type="submit">שלחי לי את הכיתות שלי</button>
+          <div class="quick-status" id="webcodeTeacherLinksStatus" role="status"></div>
         </form>
         <div class="quick-result" id="webcodeTeacherResult"></div>
       </article>
@@ -152,14 +165,33 @@
       try {
         const data = await postJson('/api/webcode/quick-class', {
           name: document.getElementById('webcodeClassName').value,
+          teacherName: document.getElementById('webcodeTeacherName').value,
+          teacherEmail: document.getElementById('webcodeTeacherEmail').value,
         });
         const result = document.getElementById('webcodeTeacherResult');
         const teacherUrl = data.teacherUrl || 'webcode-teacher.html';
         result.style.display = 'block';
-        result.innerHTML = `<div>קוד הכיתה:</div><div class="quick-code">${data.classroom.joinCode}</div><div>כתבי את הקוד על הלוח.</div><div class="actions" style="margin-top:10px"><a class="btn" href="${teacherUrl}">פתחי מסך מורה</a></div>`;
-        setStatus('webcodeTeacherStatus', 'הכיתה נוצרה.');
+        const mailText = data.deliveryStatus === 'sent' ? 'שלחנו גם קישור למייל של המורה.' : 'הקישור מוצג כאן. כדאי להעתיק או לשמור אותו.';
+        result.innerHTML = `<div>קוד הכיתה:</div><div class="quick-code">${data.classroom.joinCode}</div><div>כתבי את הקוד על הלוח.</div><div>${mailText}</div><div class="actions" style="margin-top:10px"><a class="btn" href="${teacherUrl}">פתחי מסך מורה</a><button class="btn secondary" type="button" id="copyTeacherLink">העתקת קישור מורה</button></div>`;
+        document.getElementById('copyTeacherLink')?.addEventListener('click', async () => {
+          await navigator.clipboard?.writeText(new URL(teacherUrl, location.href).toString());
+          setStatus('webcodeTeacherStatus', 'קישור המורה הועתק.');
+        });
+        setStatus('webcodeTeacherStatus', data.deliveryStatus === 'sent' ? 'הכיתה נוצרה ונשלחה למייל.' : 'הכיתה נוצרה. שמרי את קישור המורה.');
       } catch(error) {
         setStatus('webcodeTeacherStatus', error.message || 'לא הצלחנו ליצור כיתה.', true);
+      }
+    });
+    document.getElementById('webcodeTeacherLinksForm')?.addEventListener('submit', async event => {
+      event.preventDefault();
+      setStatus('webcodeTeacherLinksStatus', 'שולחים קישורים…');
+      try {
+        const data = await postJson('/api/webcode/teacher-links', {
+          email: document.getElementById('webcodeTeacherLinksEmail').value,
+        });
+        setStatus('webcodeTeacherLinksStatus', data.deliveryStatus === 'sent' ? `נשלחו קישורים ל־${data.classCount} כיתות.` : 'מצאתי כיתות, אבל המייל לא נשלח. נסי שוב או שמרי קישור ממסך הכיתה.');
+      } catch(error) {
+        setStatus('webcodeTeacherLinksStatus', error.message || 'לא הצלחנו לשלוח קישורים.', true);
       }
     });
     function formatMixedText(value){

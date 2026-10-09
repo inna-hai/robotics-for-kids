@@ -19,6 +19,9 @@ const server = read('server.js');
 assert.match(webcode, /אני תלמיד\/ה בכיתה/, 'WebCode should expose a student class login path');
 assert.match(webcode, /כניסה כאורח|להמשיך מהמקום האחרון|להתחיל שיעור 1/, 'WebCode should keep the guest/local path');
 assert.match(webcode, /הסימון שלי/, 'WebCode student login should use a personal marker');
+assert.match(webcode, /webcodeTeacherName/, 'WebCode teacher flow should ask for a teacher name');
+assert.match(webcode, /webcodeTeacherEmail/, 'WebCode teacher flow should ask for a teacher email');
+assert.match(webcode, /\/api\/webcode\/teacher-links/, 'WebCode should let teachers recover management links by email');
 assert.match(webcode, /\/api\/webcode\/student-login/, 'WebCode student login should call the quick WebCode endpoint');
 assert.match(webcode, /\/api\/webcode\/quick-class/, 'WebCode teacher form should create quick classes');
 assert.match(teacher, /כתבי את הקוד על הלוח/, 'teacher dashboard should show the class-code flow');
@@ -89,6 +92,17 @@ try {
   assert.equal(dashboard.students.length, 1);
   assert.equal(dashboard.students[0].name, 'נועה');
   assert.ok(dashboard.students[0].progress.some(row => row.activityId === 'exercise-1' && row.status === 'completed'), 'teacher dashboard should show saved progress');
+
+  const owned = await post('/api/webcode/quick-class', {
+    name: 'כיתה עם מורה',
+    teacherName: 'חני',
+    teacherEmail: 'hani@example.test',
+  });
+  assert.equal(owned.data.teacher.email, 'hani@example.test');
+  assert.equal(owned.data.deliveryStatus, 'sent', 'test mode should report teacher link mail as sent');
+  const links = await post('/api/webcode/teacher-links', { email: 'hani@example.test' });
+  assert.equal(links.data.deliveryStatus, 'sent');
+  assert.equal(links.data.classCount, 1);
 } finally {
   child.kill('SIGTERM');
   rmSync(dataDir, { recursive: true, force: true });
