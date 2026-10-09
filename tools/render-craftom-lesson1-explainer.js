@@ -15,10 +15,10 @@ const ROOT = path.resolve(__dirname, '..');
 const MARKETING = path.join(ROOT, 'marketing');
 const FRAME_DIR = path.join(MARKETING, 'craftom-lesson1-explainer-frames');
 const SCRIPT_PATH = path.join(MARKETING, 'craftom-lesson1-explainer-script.txt');
-const AUDIO_MP3 = path.join(MARKETING, 'craftom-lesson1-explainer-gemini-live.mp3');
-const SILENT_MP4 = path.join(MARKETING, 'craftom-lesson1-explainer-silent.mp4');
-const MUXED_MP4 = path.join(MARKETING, 'craftom-lesson1-explainer-gemini-live.mp4');
-const FINAL_MP4 = path.join(MARKETING, 'craftom-lesson1-explainer-gemini-live-1.12x.mp4');
+const AUDIO_MP3 = path.join(MARKETING, 'craftom-lesson1-explainer-no-teleport-gemini-live.mp3');
+const SILENT_MP4 = path.join(MARKETING, 'craftom-lesson1-explainer-no-teleport-silent.mp4');
+const MUXED_MP4 = path.join(MARKETING, 'craftom-lesson1-explainer-no-teleport-gemini-live.mp4');
+const FINAL_MP4 = path.join(MARKETING, 'craftom-lesson1-explainer-no-teleport-gemini-live-1.12x.mp4');
 
 const MODULE_PATHS = [
   path.join(ROOT, 'node_modules'),
@@ -112,7 +112,7 @@ function geminiLivePrompt(input) {
   return [
     `Language: ${GEMINI_LIVE_LANGUAGE}.`,
     'Read the following Hebrew narration exactly as written.',
-    'Use natural Israeli Hebrew, warm instructor pacing, clear pronunciation, and short natural pauses.',
+    'Use natural Israeli Hebrew, warm instructor pacing, clear pronunciation, and slow kid-friendly pauses.',
     'Do not summarize, do not answer the content, do not add explanations, and do not change words.',
     '',
     input,
@@ -214,21 +214,25 @@ async function createGeminiLiveAudio() {
 function writeScript() {
   const script = `סרטון הסבר לשיעור הראשון בלומדת קראפטום: משלוח ראשון.
 
-בשיעור הזה הילדים מתחילים ישר בפעולה: קודם עובדים באקדמיית ה-Agent. שם מתרגלים רעיון קטן ובטוח: פקודת צ׳אט בשם deliver, שמזמנת את ה-Agent ומזיזה אותו קדימה.
+לפני שפותחים את Minecraft, מתחילים באקדמיית ה-Agent. שם לומדים את הרעיון של הקוד, בונים את הפקודה, ומבינים מה הסוכן אמור לעשות.
 
-המטרה של שיעור 1 היא להבין את רעיון התכנות הראשון: רצף פקודות. קוד הוא הוראות מדויקות, לפי סדר. מזמנים את ה-Agent, מזיזים אותו, בודקים לאן הוא הגיע, ומשנים מספר אחד אם צריך.
+אחר כך עוברים למיינקראפט. בשיעור הזה אנחנו במצב Creative.
 
-אחרי שהתרגול באקדמיה עובר, עוברים למיינקראפט. הילדים בונים מחסן קטן, תחנת יעד ושביל ישר ביניהם. זאת משימה קטנה בכוונה, כדי שהילד יבין בדיוק איפה ה-Agent מתחיל ולאן הוא צריך להגיע.
+פותחים את המלאי, Inventory. בחיפוש כותבים agent. מחפשים פריט שנקרא ביצת זימון סוכן. באנגלית הוא נקרא Agent Spawn Egg.
 
-כדי לפתוח את הקוד במיינקראפט לוחצים על המקש C במקלדת. זה פותח את Code Builder. בתוך Code Builder בוחרים MakeCode, ושם מכניסים את אותו רעיון מהאקדמיה: on chat command deliver, ואז agent teleport to player, ואז agent move forward.
+שמים את ביצת זימון הסוכן בסרגל הכלים, hotbar. אחר כך משתמשים בביצה בתוך העולם, וכך יוצרים את הסוכן ליד תחילת השביל.
 
-כדי להריץ את הפקודה בתוך העולם לוחצים T, כותבים deliver, ואז Enter. עכשיו רואים את ה-Agent זז על השביל. אם הוא נעצר מוקדם מדי או עובר את התחנה, לא מוחקים הכול. משנים רק את המספר בתוך move ומריצים שוב.
+עכשיו בונים במיינקראפט: מחסן קטן, שביל ישר, ותחנת יעד. משתמשים בבלוקים מהמלאי, כמו ב-Creative רגיל.
+
+רק אחרי שיש עולם וסוכן, פותחים Code Builder. לוחצים C, נכנסים ל-MakeCode, ויוצרים פקודת צ׳אט בשם deliver.
+
+בתוך הפקודה כותבים פעולה אחת פשוטה: agent move forward. הסוכן כבר נמצא ליד השביל, ועכשיו הקוד רק מזיז אותו קדימה.
+
+כדי להריץ, לוחצים T, כותבים deliver, ולוחצים Enter. אם הסוכן לא מגיע לתחנה, משנים רק את המספר בתוך move ומריצים שוב.
 
 אחרי שהקוד מוכן, חשוב שהמערכת תקבל גם את הקישור לקוד. ב-Code Builder או MakeCode פותחים Share, לוחצים Publish או Copy Link, ומעתיקים את הקישור שנוצר. אחר כך חוזרים למיינקראפט, פותחים צ׳אט, מדביקים את הקישור, ולוחצים Enter. ברגע שהקישור נשלח בצ׳אט של Minecraft, הוא עובר אוטומטית למורה.
 
-בסוף השיעור הילד חוזר למתחם שלו במיינקראפט ומחפש כפתור סיום שיעור. הוא לוחץ עליו כדי שהדוח יישלח למורה. רק אחרי שיש קוד, קישור, וכפתור סיום שיעור, שיעור 1 באמת סגור.
-
-המסר לילד פשוט: קודם אקדמיית ה-Agent, אחר כך בנייה במיינקראפט, אחר כך MakeCode, מדביקים את קישור הקוד בצ׳אט של Minecraft, ולוחצים על כפתור סיום השיעור במתחם.`;
+בסוף השיעור חוזרים למתחם ולוחצים על כפתור סיום שיעור. זה הסדר: Creative, Inventory, ביצת זימון סוכן, בנייה במיינקראפט, Code Builder, קישור קוד, וסיום שיעור.`;
   fs.writeFileSync(SCRIPT_PATH, script);
 }
 
@@ -282,6 +286,16 @@ function html() {
       #sharePanel h3{margin:0 0 12px;color:#d9f99d;font-size:34px}
       #sharePanel p{margin:0 0 10px;font-size:24px;line-height:1.35;font-weight:800;color:#e8f7ff}
       #shareLink{direction:ltr;text-align:left;background:#fff;color:#0f172a;border-radius:14px;padding:12px 14px;font:900 20px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      #inventoryPanel{position:absolute;left:44px;top:44px;width:650px;height:420px;background:#d9d9d9;border:6px solid #f8fafc;border-radius:18px;box-shadow:0 24px 45px rgba(0,0,0,.38);opacity:0;transform:translateY(18px);transition:.25s;z-index:5;color:#172033;padding:18px}
+      #inventoryPanel.show{opacity:1;transform:translateY(0)}
+      #inventoryPanel h3{margin:0 0 12px;font-size:34px;font-weight:900;color:#111827}
+      #inventoryPanel .search{direction:ltr;text-align:left;background:#fff;border:4px solid #94a3b8;border-radius:12px;padding:9px 12px;font:900 24px/1.1 ui-monospace,SFMono-Regular,Consolas,monospace;margin-bottom:12px}
+      #inventoryGrid{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}
+      .slot{height:62px;border:4px solid #8b8b8b;background:#f8fafc;border-radius:10px;display:grid;place-items:center;font-size:28px;font-weight:900;position:relative}
+      .slot.hot{background:#fef3c7;border-color:#f59e0b;box-shadow:0 0 0 6px rgba(245,158,11,.28)}
+      .slot.hot:after{content:"ביצת זימון סוכן";position:absolute;right:-8px;bottom:-36px;background:#111827;color:white;border-radius:999px;padding:7px 12px;font-size:17px;white-space:nowrap}
+      #hotbar{position:absolute;left:112px;right:112px;bottom:18px;height:66px;background:rgba(17,24,39,.18);border:4px solid #6b7280;border-radius:12px;display:grid;grid-template-columns:repeat(9,1fr);gap:6px;padding:6px}
+      #hotbar .slot{height:46px;font-size:22px}
       #finishButton{position:absolute;left:92px;top:116px;width:250px;height:250px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fef3c7,#f97316 62%,#7c2d12);border:9px solid #fff7ed;color:#fff;display:grid;place-items:center;text-align:center;font:900 34px/1.1 Rubik,Arial,sans-serif;box-shadow:0 0 0 10px rgba(249,115,22,.28),0 28px 46px rgba(0,0,0,.38);opacity:0;transform:scale(.75);transition:.25s;z-index:6}
       #finishButton.show{opacity:1;transform:scale(1)}
     </style>
@@ -296,6 +310,15 @@ function html() {
       <div id="code"><div id="codeTitle">כותבים קוד לאט</div><div id="codeLines"></div></div>
       <div id="keyboard"><div class="keys" id="keys"></div><div id="keyboardLabel"></div></div>
       <div id="sharePanel"><h3>מדביקים את הקישור בצ׳אט</h3><p>ב־MakeCode עושים Share / Copy Link, חוזרים למיינקראפט ומדביקים בצ׳אט.</p><div id="shareLink">https://minecraft.makecode.com/...</div></div>
+      <div id="inventoryPanel">
+        <h3>Creative Inventory</h3>
+        <div class="search">Search: agent</div>
+        <div id="inventoryGrid">
+          <div class="slot">🟫</div><div class="slot">🟩</div><div class="slot">🪨</div><div class="slot">🧱</div><div class="slot hot">🥚</div><div class="slot">🚪</div>
+          <div class="slot">🌳</div><div class="slot">💡</div><div class="slot">🪜</div><div class="slot">⬜</div><div class="slot">📦</div><div class="slot">🚩</div>
+        </div>
+        <div id="hotbar"><div class="slot hot">🥚</div><div class="slot">🟫</div><div class="slot">🟩</div><div class="slot">🧱</div><div class="slot">📦</div><div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div></div>
+      </div>
       <div id="finishButton">סיום<br>שיעור</div>
       <div id="progress"></div>
       <div id="run"></div>
@@ -315,6 +338,7 @@ function html() {
       const keys = document.getElementById('keys');
       const keyboardLabel = document.getElementById('keyboardLabel');
       const sharePanel = document.getElementById('sharePanel');
+      const inventoryPanel = document.getElementById('inventoryPanel');
       const finishButton = document.getElementById('finishButton');
       const run = document.getElementById('run');
       const progress = document.getElementById('progress');
@@ -331,6 +355,7 @@ function html() {
         code.classList.toggle('show', !!s.showCode);
         keyboard.classList.toggle('show', !!s.key);
         sharePanel.classList.toggle('show', !!s.showShare);
+        inventoryPanel.classList.toggle('show', !!s.showInventory);
         finishButton.classList.toggle('show', !!s.showFinish);
         run.classList.toggle('show', !!s.runText);
         progress.classList.toggle('show', !!s.progress);
@@ -386,7 +411,6 @@ const lessonData = [
     ],
     code: [
       'player.onChat("deliver", function () {',
-      '  agent.teleportToPlayer()',
       '  agent.move(FORWARD, 5)',
       '  player.say("המשלוח הגיע")',
       '})',
@@ -407,7 +431,6 @@ const lessonData = [
       { type: 'agentCube', x: 102, y: 146 },
     ],
     code: [
-      'agent.teleportToPlayer()',
       'agent.move(FORWARD, 3)',
       'agent.turn(LEFT_TURN)',
       'agent.move(FORWARD, 2)',
@@ -512,34 +535,72 @@ async function renderVideo() {
   await clearPlot();
   await setScene({
     image: data.image,
-    title: 'שיעור 1: משלוח ראשון',
-    lesson: 'אקדמיית ה-Agent',
-    sub: 'מתחילים בפעולה: פקודת deliver קטנה, בדיקה, ואז עוברים למיינקראפט.',
-    caption: 'כבר מהתחלה רואים את המסלול: Agent, שביל ותחנת יעד.',
-    small: 'deliver • teleport • move',
-    showBuild: true,
+    title: 'אקדמיית ה־Agent',
+    lesson: 'לפני Minecraft',
+    sub: 'קודם לומדים את הרעיון של הקוד ומה הסוכן צריך לעשות.',
+    caption: 'מתחילים באקדמיית ה־Agent: לומדים את הפקודה ומבינים את המשימה.',
+    small: 'קודם לומדים קוד • אחר כך מנסים במיינקראפט',
     showCode: true,
     code: data.code,
+    progress: 1,
+  });
+  await hold(8);
+
+  await clearPlot();
+  await setScene({
+    image: data.image,
+    title: 'שיעור 1: משלוח ראשון',
+    lesson: 'Minecraft + Code Builder',
+    sub: 'אחרי האקדמיה עוברים ל־Minecraft, במצב Creative.',
+    caption: 'אחרי שלמדנו את הקוד, פותחים Minecraft ומכירים את העולם, המלאי והבנייה.',
+    small: 'Creative • Inventory • ביצת זימון סוכן',
+    showBuild: true,
+    showCode: false,
     progress: 1,
   });
   await hold(1);
   for (const cube of data.build) {
     await addCube(cube);
-    await hold(0.34);
+    await hold(0.3);
   }
-  await hold(27);
+  await hold(5);
+
+  await setScene({
+    image: data.image,
+    title: 'פותחים Inventory',
+    lesson: 'Creative',
+    sub: 'במצב Creative פותחים את המלאי ומחפשים Agent.',
+    caption: 'ב־Inventory מחפשים ביצת זימון סוכן. באנגלית: Agent Spawn Egg.',
+    small: 'Inventory → Search: agent → ביצת זימון סוכן → Hotbar',
+    showInventory: true,
+    progress: 1,
+  });
+  await hold(17);
+
+  await setScene({
+    image: data.image,
+    title: 'יוצרים סוכן בעולם',
+    lesson: 'ביצת זימון סוכן',
+    sub: 'משתמשים בביצת הסוכן מתוך ה־hotbar כדי ליצור Agent ליד השביל.',
+    caption: 'משתמשים בביצת הזימון בתוך העולם, וכך מופיע הסוכן ליד השביל.',
+    small: 'בוחרים ביצה בסרגל הכלים ומשתמשים בה ליד תחילת המסלול',
+    showBuild: true,
+    showInventory: true,
+    progress: 1,
+  });
+  await hold(13);
 
   await setScene({
     image: data.image,
     title: data.title,
     lesson: data.lesson,
     sub: data.sub,
-    caption: 'אחרי האקדמיה עוברים למיינקראפט ובונים מחסן, שביל ישר ותחנת משלוחים.',
-    small: 'הילד רואה איפה ה-Agent מתחיל ולאן הוא צריך להגיע',
+    caption: 'עכשיו בונים במיינקראפט: מחסן, שביל ישר ותחנת משלוחים.',
+    small: 'משתמשים בבלוקים מהמלאי ובונים בתוך העולם',
     showBuild: true,
     progress: 1,
   });
-  await hold(14);
+  await hold(12);
 
   await setScene({
     image: data.image,
@@ -551,25 +612,25 @@ async function renderVideo() {
     key: 'C',
     progress: 1,
   });
-  await hold(7.5);
+  await hold(14);
 
   await setScene({
     image: data.image,
     title: 'MakeCode',
     lesson: 'אותו רעיון בקוד',
-    sub: 'מכניסים את פקודת deliver ואת פקודות ה-Agent.',
-    caption: 'זה אותו רעיון מהאקדמיה, רק עכשיו בתוך MakeCode של מיינקראפט.',
-    small: 'on chat command deliver',
+    sub: 'מכניסים פקודת deliver שמזיזה את ה-Agent שכבר נמצא בעולם.',
+    caption: 'הקוד פשוט: פקודת deliver מזיזה את הסוכן קדימה על השביל.',
+    small: 'on chat command deliver → agent move forward',
     showCode: true,
     code: data.code,
     progress: 1,
   });
-  await hold(1.5);
+  await hold(1);
   for (let line = 0; line < data.code.length; line += 1) {
     await highlightCode(line);
-    await hold(1);
+    await hold(1.5);
   }
-  await hold(5.5);
+  await hold(7);
 
   await setScene({
     image: data.image,
@@ -581,7 +642,7 @@ async function renderVideo() {
     key: 'T',
     progress: 1,
   });
-  await hold(5.5);
+  await hold(6);
 
   await setScene({
     image: data.image,
@@ -593,15 +654,15 @@ async function renderVideo() {
     showBuild: true,
     showCode: true,
     code: data.code,
-    runText: 'T → deliver → Enter. ה-Agent מתקדם על השביל עד תחנת המשלוחים.',
+    runText: 'T → deliver → Enter',
     progress: 1,
   });
-  await hold(1);
+  await hold(0.5);
   for (const point of data.path) {
     await moveAgent(point[0], point[1]);
-    await hold(0.65);
+    await hold(0.8);
   }
-  await hold(4.5);
+  await hold(3);
 
   await setScene({
     image: data.image,
@@ -613,7 +674,7 @@ async function renderVideo() {
     showShare: true,
     progress: 1,
   });
-  await hold(21.5);
+  await hold(13);
 
   await setScene({
     image: images.overview,
@@ -625,19 +686,19 @@ async function renderVideo() {
     showFinish: true,
     progress: 1,
   });
-  await hold(13);
+  await hold(5);
 
   await setScene({
     image: images.overview,
     title: 'שיעור 1 נסגר כש...',
     lesson: 'בדיקת הצלחה',
     sub: 'ה-Agent הגיע לתחנה, קישור הקוד הודבק בצ׳אט, וכפתור סיום שיעור נלחץ במתחם.',
-    caption: 'זה הסדר: אקדמיה, Minecraft, MakeCode, קישור בצ׳אט, סיום שיעור.',
+    caption: 'זה הסדר: Creative, Inventory, בנייה במיינקראפט, MakeCode, קישור בצ׳אט, סיום שיעור.',
     small: 'עכשיו המורה מקבלת אוטומטית גם דוח וגם קישור לקוד',
     showFinish: true,
     progress: 1,
   });
-  await hold(12);
+  await hold(5);
   const audioDuration = getMediaDurationSeconds(AUDIO_MP3);
   const currentDuration = frame / FPS;
   if (audioDuration && currentDuration < audioDuration + 2) {

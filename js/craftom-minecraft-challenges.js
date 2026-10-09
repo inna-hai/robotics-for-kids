@@ -94,6 +94,8 @@
   const detailsByChallenge = {
     1: [
       {
+        video: `${videoBase}craftom-lesson1-agent-academy-first.mp4`,
+        poster: 'assets/craftom/challenges/craftom-lesson1-agent-academy-first-frame.webp',
         academy: {
           title: 'אקדמיית ה-Agent - מסלול השליחים',
           story: 'לא מתחילים מפרויקט גדול. מאמנים את ה-Agent בתרגיל קטן, מריצים, משנים מספר אחד, ואז מוסיפים עוד פקודה. בסוף כל התרגילים מתחברים למשלוח ראשון בעיר.',
@@ -131,9 +133,9 @@
               ]
             },
             {
-              title: 'תרגיל 4 - תחנת יעד',
-              mission: 'בנו תחנה קטנה בסוף השביל והריצו שוב את אותה פקודה.',
-              hint: 'ההרצה מראה איפה ה-Agent עוצר. תקנו את המרחק עד שהוא מגיע קרוב לתחנה.',
+              title: 'תרגיל 4 - מגיעים לתחנת היעד',
+              mission: 'התחנה כבר מופיעה באזור התרגול. הריצו שוב את הפקודה וכוונו את מספר הצעדים עד שה-Agent מגיע אליה.',
+              hint: 'ההרצה מראה איפה ה-Agent עוצר ביחס לתחנה. תקנו את המרחק עד שהוא מגיע קרוב אליה.',
               check: 'ה-Agent מגיע קרוב לתחנה, לא עוצר באמצע ולא עובר אותה.',
               starter: { blocks: [{ type: 'move', direction: 'FORWARD', steps: 3 }] },
               criteria: [
@@ -1272,8 +1274,8 @@
     detail: meeting[4],
     challengeTitle: challenge.title,
     concept: challenge.concept,
-    video: challenge.video,
-    poster: challenge.poster,
+    video: meeting[4].video || challenge.video,
+    poster: meeting[4].poster || challenge.poster,
     command: challenge.command
   })));
 

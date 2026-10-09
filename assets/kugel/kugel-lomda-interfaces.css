@@ -2304,6 +2304,31 @@
   box-shadow: 0 0 0 5px rgba(37, 99, 235, .12);
 }
 
+.teacher-selected-lesson .teacher-slides-action {
+  border-color: #f59e0b;
+  color: #7c2d12;
+  background: #fff7ed;
+  box-shadow: 0 10px 22px rgba(245, 158, 11, .18);
+}
+
+.teacher-selected-lesson .teacher-slides-action:hover,
+.teacher-selected-lesson .teacher-slides-action:focus-visible {
+  border-color: #f97316;
+  color: #431407;
+  background: #ffedd5;
+}
+
+.teacher-selected-lesson .teacher-slides-action::before {
+  content: "\25B6";
+  width: 28px;
+  height: 28px;
+  color: #fff;
+  background: #f97316;
+  font-size: .74rem;
+  line-height: 1;
+  box-shadow: 0 0 0 5px rgba(249, 115, 22, .14);
+}
+
 .minecraft-lesson-title-link {
   color: #0f172a;
   font-weight: 900;

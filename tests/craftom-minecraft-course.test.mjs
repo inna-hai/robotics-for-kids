@@ -34,6 +34,16 @@ assert.ok(program.exitUpload.includes('נשלח אוטומטית למורה'), '
 const [challenge1, challenge2, challenge3, challenge4] = program.challenges;
 assert.equal(challenge1.title, 'הרובוט השליח', 'challenge 1 keeps the courier foundation');
 assert.equal(challenge1.meetings[0][4].academy.exercises.length, 6, 'challenge 1 lesson 1 has gradual Agent academy exercises');
+const lesson1 = program.lessons.find(item => item.id === 1);
+const lesson2 = program.lessons.find(item => item.id === 2);
+assert.equal(lesson1.video, 'marketing/craftom-lesson1-agent-academy-first.mp4', 'lesson 1 uses the dedicated student explainer video');
+assert.equal(lesson1.poster, 'assets/craftom/challenges/craftom-lesson1-agent-academy-first-frame.webp', 'lesson 1 uses the matching dedicated explainer poster');
+assert.ok(exists(lesson1.video), 'lesson 1 dedicated student explainer video exists');
+assert.ok(exists(lesson1.poster), 'lesson 1 dedicated student explainer poster exists');
+assert.equal(lesson2.video, challenge1.video, 'later meetings in challenge 1 keep the shared challenge video');
+assert.equal(challenge1.meetings[0][4].academy.exercises[3].title, 'תרגיל 4 - מגיעים לתחנת היעד', 'lesson 1 exercise 4 names the goal as reaching the station');
+assert.ok(challenge1.meetings[0][4].academy.exercises[3].mission.includes('התחנה כבר מופיעה באזור התרגול'), 'lesson 1 exercise 4 explains that the station already exists in the practice area');
+assert.ok(!challenge1.meetings[0][4].academy.exercises[3].mission.includes('בנו תחנה'), 'lesson 1 exercise 4 must not ask students to build a station in the academy practice area');
 assert.ok(!challenge1.meetings[0][4].academy.story.includes('Python Turtle'), 'lesson 1 explains gradual work without assuming a previous Python Turtle course');
 assert.ok(challenge1.meetings[0][4].goal.startsWith('בשיעור הזה'), 'lesson 1 goal speaks directly to students');
 assert.ok(challenge1.meetings[0][4].academy.exercises.every(exercise => exercise.hint && !exercise.python && !exercise.blocks), 'academy exercises guide students without storing full solutions');
@@ -121,7 +131,7 @@ assert.ok(preview.includes('programVideo'), 'preview page renders the program vi
 assert.ok(preview.includes('סרטון פתיחת התוכנית'), 'preview page labels the overview video');
 assert.ok(preview.includes('program.overviewVideo'), 'preview page loads video from program data');
 assert.ok(preview.includes('איך עובדים בלומדה'), 'preview explains the self-study mode before teacher materials');
-assert.ok(preview.includes('20261008-lesson1-deliver-no-teleport-1'), 'preview page cache-busts the Minecraft lesson 1 deliver wording');
+assert.ok(preview.includes('20261009-lesson1-video-1'), 'preview page cache-busts the Minecraft lesson 1 deliver wording');
 assert.ok(preview.includes('אקדמיית ה-Agent'), 'preview uses the neutral Agent academy name');
 assert.ok(!preview.includes('Craftom Challenges • כיתה ז׳'), 'preview no longer presents the course as grade 7 only');
 assert.ok(preview.includes('id="courseHeaderNav"'), 'preview home has a course navigation header');
@@ -133,7 +143,7 @@ assert.ok(preview.includes('craftom-minecraft-challenge.html?challenge=${challen
 assert.ok(academyPage.includes('id="courseHeaderNav"'), 'Agent academy page keeps the course navigation header visible');
 assert.ok(academyPage.includes('craftom-minecraft-lesson-${lessonId}.html'), 'Agent academy current lesson link returns to the matching lesson');
 assert.ok(academyPage.includes('craftom-minecraft-challenge.html?challenge=${challenge.id}'), 'Agent academy header links to all challenges');
-assert.ok(challengePage.includes('20261008-lesson1-deliver-no-teleport-1'), 'challenge pages should load the latest Minecraft lesson 1 deliver data');
+assert.ok(challengePage.includes('20261009-lesson1-video-1'), 'challenge pages should load the latest Minecraft lesson 1 deliver data');
 assert.ok(challengePage.includes('rootAssetPath(challenge.video)'), 'challenge pages should connect the actual mp4 video source');
 assert.ok(challengePage.includes('craftomPosterPath(challenge.poster)'), 'challenge pages should load posters through the MIME-safe endpoint');
 assert.ok(challengePage.includes('video.load()'), 'challenge pages should reload the video element after assigning the source');
@@ -150,10 +160,10 @@ for (const path of [
   'craftom-minecraft-students.html',
   'craftom-agent-academy.html',
 ]) {
-  assert.ok(read(path).includes('20261008-lesson1-deliver-no-teleport-1'), `${path} loads the updated challenge data`);
+  assert.ok(read(path).includes('20261009-lesson1-video-1'), `${path} loads the updated challenge data`);
 }
-assert.ok(read('craftom-minecraft-slides.html').includes('20261008-lesson1-deliver-no-teleport-1'), 'slides cache-bust after switching to lesson 1 deliver flow');
-assert.ok(read('craftom-minecraft-lesson.html').includes('20261008-lesson1-deliver-no-teleport-1'), 'lesson template cache-busts the lesson 1 deliver renderer');
+assert.ok(read('craftom-minecraft-slides.html').includes('20261009-lesson1-video-1'), 'slides cache-bust after switching to lesson 1 deliver flow');
+assert.ok(read('craftom-minecraft-lesson.html').includes('20261009-lesson1-video-1'), 'lesson template cache-busts the lesson 1 deliver renderer');
 
 assert.ok(read('craftom-minecraft-challenge.html').includes('רצף עבודה עצמית'), 'challenge page frames the work as self-study');
 assert.ok(read('craftom-minecraft-lesson.html').includes('איך עובדים לבד'), 'lesson page starts lesson detail with self-study steps');
@@ -251,8 +261,11 @@ assert.ok(read('craftom-minecraft-students.html').includes('צילום מהמש�
 assert.ok(read('craftom-minecraft-slides.html').includes('program.exitUpload'), 'slides remind instructors that the finish button sends the photo');
 assert.ok(read('craftom-minecraft-slides.html').includes('id="backToLesson"'), 'instructor slides include a back-to-lesson button');
 assert.ok(read('craftom-minecraft-slides.html').includes('craftom-minecraft-lesson-${selectedLesson.id}.html'), 'slides back button returns to the selected lesson');
-assert.ok(!read('js/craftom-minecraft-challenges.js').includes('craftom-lesson1-explainer-gemini-live-1.12x.mp4'), 'lesson 1 no longer has a separate embedded explainer video');
-assert.ok(!read('craftom-minecraft-slides.html').includes('lessonVideoCard'), 'instructor slides do not render lesson-specific videos inside lesson slides');
+assert.ok(read('js/craftom-minecraft-challenges.js').includes('craftom-lesson1-agent-academy-first.mp4'), 'lesson 1 has the dedicated student explainer video embedded');
+assert.ok(read('craftom-minecraft-slides.html').includes('item[4].video'), 'instructor slides render a lesson-specific video when one exists');
+assert.ok(read('craftom-minecraft-slides.html').includes('סרטון פתיחה לשיעור'), 'instructor slides label the lesson-specific student video clearly');
+assert.ok(read('craftom-minecraft-slides.html').includes('lessonWithOptionalVideoSlide'), 'instructor slides place lesson-specific videos next to the matching lesson slide');
+assert.ok(read('craftom-minecraft-slides.html').includes("item[0] === selectedLesson.meetingCode"), 'lesson-specific video appears only after the selected lesson in the challenge deck');
 
 for (const path of [
   'craftom-minecraft-challenge.html',

@@ -680,8 +680,8 @@
 
   function renderExercises() {
     exerciseList.innerHTML = academy.exercises.map((exercise, index) => `
-      <button type="button" class="${index === activeExercise ? 'active' : ''}${completedExercises.has(index) ? ' done' : ''}" data-academy-exercise="${index}">
-        <span>${index + 1}</span>
+      <button type="button" class="${index === activeExercise ? 'active' : ''}${completedExercises.has(index) ? ' done' : ''}" data-academy-exercise="${index}" aria-label="${esc(exercise.title)}${completedExercises.has(index) ? ' - הושלם' : ''}">
+        <span>${completedExercises.has(index) ? '✓' : index + 1}</span>
         <strong>${esc(exercise.title)}</strong>
         <small>${esc(exercise.mission)}</small>
       </button>
@@ -716,6 +716,34 @@
     if (allDone && !academyCompletionReported) {
       academyCompletionReported = true;
       reportProgress('academy-complete', { completedExercises: doneCount, totalExercises: total });
+    }
+  }
+
+  async function loadSavedProgress() {
+    try {
+      const params = new URLSearchParams({
+        courseId: 'craftom-agent',
+        lessonId: String(lesson.id),
+      });
+      const response = await fetch(`/api/classroom/progress?${params}`, { credentials: 'same-origin' });
+      if (!response.ok) throw new Error('academy_progress_unavailable');
+      const data = await response.json();
+      (data?.progress || []).forEach(item => {
+        if (item.status !== 'completed') return;
+        const match = String(item.activityId || '').match(/^academy-exercise-(\d+)$/);
+        if (match) {
+          const index = Number(match[1]) - 1;
+          if (index >= 0 && index < academy.exercises.length) completedExercises.add(index);
+        }
+        if (item.activityId === 'academy-complete') {
+          const count = Number(item.metadata?.completedExercises || 0);
+          for (let index = 0; index < Math.min(count, academy.exercises.length); index += 1) completedExercises.add(index);
+        }
+      });
+      renderExercises();
+      renderAcademyCompletion();
+    } catch {
+      // Guest/preview mode can still use the academy; saved progress is optional.
     }
   }
 
@@ -815,4 +843,5 @@
   });
 
   resetExercise();
+  loadSavedProgress();
 })();

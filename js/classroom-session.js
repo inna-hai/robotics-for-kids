@@ -56,6 +56,13 @@
     return request('/api/classroom/progress', payload);
   }
 
+  async function list({ courseId: requestedCourseId, lessonId } = {}) {
+    const params = new URLSearchParams();
+    params.set('courseId', requestedCourseId || courseId);
+    if (lessonId) params.set('lessonId', String(lessonId).slice(0, 80));
+    return request(`/api/classroom/progress?${params}`);
+  }
+
   function ensureStudentLogoutButton() {
     if (document.getElementById?.(logoutButtonId)) return;
     const button = document.createElement('button');
@@ -112,7 +119,7 @@
   }
 
 
-  window.ClassroomProgress = { save, courseId, get lessonId() { return currentLessonId(); } };
+  window.ClassroomProgress = { list, save, courseId, get lessonId() { return currentLessonId(); } };
   window.addEventListener('hai:classroom-progress', (event) => {
     save(event.detail || {}).catch(() => {});
   });

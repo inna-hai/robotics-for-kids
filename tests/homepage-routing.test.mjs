@@ -33,7 +33,7 @@ function assertBefore(source, first, second) {
 test('homepage is now a platform gateway and links to primary learning modules', () => {
   assertIncludes(homepageHtml, '<title>פלטפורמת לומדות טכנולוגיה</title>');
   assertIncludes(homepageHtml, 'מרכז הלומדות');
-  assertIncludes(homepageHtml, 'href="classroom-entry.html?next=sensi-city.html%3Flesson%3D1"');
+  assertIncludes(homepageHtml, 'href="sensi-city.html?lesson=1"');
   assertIncludes(homepageHtml, 'href="pygame.html"');
   assertIncludes(homepageHtml, 'href="roblox.html"');
   assertIncludes(homepageHtml, 'href="classroom-entry.html?next=python-turtle.html"');

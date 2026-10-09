@@ -24,15 +24,15 @@ const server = read('server.js');
 const packageJson = read('package.json');
 
 for (const next of [
-  'sensi-city.html?lesson=1',
   'sisi.html',
   'python-turtle.html',
-  'webcode.html',
   'minecraft.html',
   'craftom-school/preview/index.html',
 ]) {
   assert.ok(index.includes(`classroom-entry.html?next=${encodeURIComponent(next)}`), `Missing shared entry link for ${next}`);
 }
+assert.ok(index.includes('href="sensi-city.html?lesson=1"'), 'Sensi should open freely without classroom entry from the public catalog');
+assert.ok(index.includes('href="webcode.html"'), 'WebCode should open freely without classroom entry from the public catalog');
 
 assert.ok(entry.includes('id="guest-continue"'));
 assert.ok(entry.includes('id="guest-choice-card"'));
@@ -216,7 +216,7 @@ assert.ok(sessionClient.includes('classroom-student-floating-logout'), 'student 
 assert.ok(sessionClient.includes('/api/classroom/logout'), 'shared student logout should clear the classroom session');
 assert.ok(sessionClient.includes("location.assign('classroom-entry.html')"), 'student logout should return to the classroom entry page');
 assert.ok(server.includes('injectClassroomSession'));
-assert.ok(server.includes('classroom-session.js?v=20261001-student-logout-1'), 'injected classroom session script should cache-bust the shared student logout');
+assert.ok(server.includes('classroom-session.js?v=20261008-academy-student-progress-1'), 'injected classroom session script should cache-bust the shared student session features');
 assert.ok(server.includes('function previewDemoStudentLogin'));
 assert.ok(server.includes('function requireCurrentTeacherClassroom'));
 assert.ok((server.match(/requireCurrentTeacherClassroom\(db, req, teacher\.id, classroomId\)/g) || []).length >= 3,

@@ -6889,6 +6889,44 @@ async function handleClassroomApi(req, res) {
     return send(res, 200, JSON.stringify({ ok: true, invitations: result }));
   }
 
+  if (req.method === 'GET' && action === 'progress') {
+    const courseId = cleanText(url.searchParams.get('courseId'), 80);
+    const lessonId = cleanText(url.searchParams.get('lessonId'), 80);
+    const result = withSummerDb(db => db.transaction(() => {
+      const student = requireCurrentClassroomStudent(db, req);
+      if (!student) return { denied: true };
+      if (courseId && !CLASSROOM_COURSES.has(courseId)) return { invalidCourse: true };
+      if (courseId && lessonId) {
+        return {
+          rows: db.prepare(`
+            SELECT * FROM classroom_progress
+            WHERE student_id = ? AND course_id = ? AND lesson_id = ?
+            ORDER BY activity_id
+          `).all(student.id, courseId, lessonId),
+        };
+      }
+      if (courseId) {
+        return {
+          rows: db.prepare(`
+            SELECT * FROM classroom_progress
+            WHERE student_id = ? AND course_id = ?
+            ORDER BY lesson_id, activity_id
+          `).all(student.id, courseId),
+        };
+      }
+      return {
+        rows: db.prepare(`
+          SELECT * FROM classroom_progress
+          WHERE student_id = ?
+          ORDER BY course_id, lesson_id, activity_id
+        `).all(student.id),
+      };
+    }).immediate());
+    if (result.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת תלמיד/ה לכיתה.' }));
+    if (result.invalidCourse) return send(res, 400, JSON.stringify({ error: 'הקורס אינו מוכר.' }));
+    return send(res, 200, JSON.stringify({ ok: true, progress: result.rows.map(classroomProgressPublic) }));
+  }
+
   if (req.method !== 'POST') return send(res, 405, JSON.stringify({ error: 'Method not allowed' }));
 
   try {
@@ -9273,7 +9311,7 @@ function injectUserBadge(html) {
 
 function injectClassroomSession(html) {
   if (!html.includes('</body>') || html.includes('js/classroom-session.js') || html.includes('js/classroom-platform.js')) return html;
-  return replaceLastHtmlTag(html, '</body>', '  <script src="/js/classroom-session.js?v=20261001-student-logout-1"></script>\n</body>');
+  return replaceLastHtmlTag(html, '</body>', '  <script src="/js/classroom-session.js?v=20261008-academy-student-progress-1"></script>\n</body>');
 }
 
 function proxyEnglishBuddy(req, res) {

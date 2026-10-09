@@ -107,7 +107,7 @@ for (let id = 1; id <= 16; id += 1) {
   assert.match(lessonPage, /craftom-minecraft-lesson-page\.js/, `lesson ${id} loads shared renderer`);
   assert.match(lessonPage, /js\/vendor\/blockly\/blockly\.min\.js/, `lesson ${id} loads Blockly`);
   assert.match(lessonPage, /craftom-minecraft-code-builder\.js/, `lesson ${id} loads the embedded Code Builder`);
-  assert.match(lessonPage, /20261008-lesson1-deliver-no-teleport-1/, `lesson ${id} cache-busts the Minecraft lesson 1 deliver renderer`);
+  assert.match(lessonPage, /20261009-lesson1-video-1/, `lesson ${id} cache-busts the Minecraft lesson 1 student video renderer`);
 }
 
 const lessonTemplate = read('craftom-minecraft-lesson.html');
