@@ -3102,6 +3102,28 @@ function createClassroomStudentWithLoginCode(db, classroomId, name) {
 const WEBCODE_QUICK_TEACHER_EMAIL = 'webcode-quick-teacher@hai.tech.local';
 const WEBCODE_MARKER_COLORS = new Set(['blue', 'green', 'yellow', 'pink', 'purple', 'orange']);
 const WEBCODE_MARKER_SHAPES = new Set(['circle', 'star', 'square', 'heart', 'triangle', 'diamond']);
+const QUICK_CLASS_COURSE_IDS = ['webcode', 'python-turtle', 'sensi-city', 'sisi', 'minecraft'];
+const QUICK_CLASS_COURSE_CATALOG = {
+  webcode: { id: 'webcode', label: 'WebCode', startUrl: 'webcode.html' },
+  'python-turtle': { id: 'python-turtle', label: 'Python Turtle', startUrl: 'python-turtle.html?lesson=1' },
+  'sensi-city': { id: 'sensi-city', label: 'סנסי בעיר החכמה', startUrl: 'sensi-city.html?lesson=1' },
+  sisi: { id: 'sisi', label: 'סיסי', startUrl: 'sisi.html' },
+  minecraft: { id: 'minecraft', label: 'מיינקראפט לקטנים', startUrl: 'minecraft.html' },
+};
+
+function quickClassCourse(courseId) {
+  return QUICK_CLASS_COURSE_CATALOG[courseId] || null;
+}
+
+function quickClassCoursePublic(courseId) {
+  const course = quickClassCourse(courseId) || QUICK_CLASS_COURSE_CATALOG.webcode;
+  return { ...course };
+}
+
+function quickClassTeacherCourses(db, teacherId) {
+  const allowed = new Set(teacherCourses(db, teacherId));
+  return QUICK_CLASS_COURSE_IDS.filter(courseId => allowed.has(courseId)).map(quickClassCoursePublic);
+}
 
 function webcodeMarkerPublic(row) {
   return {
@@ -3178,6 +3200,7 @@ function webCodeTeacherPublic(db, teacher) {
     name: teacher.name,
     email: teacher.email,
     courses: teacherCourses(db, teacher.id),
+    quickCourses: quickClassTeacherCourses(db, teacher.id),
   };
 }
 
@@ -3230,11 +3253,14 @@ function upsertWebCodeQuickClassToken(db, classroomId) {
 function createWebCodeQuickClass(db, payload = {}, teacherOverride = null) {
   const now = new Date().toISOString();
   const teacher = teacherOverride || ensureWebCodeTeacherAccount(db, payload.teacherName, payload.teacherEmail) || ensureWebCodeQuickTeacher(db);
-  grantTeacherCourse(db, teacher.id, 'webcode');
+  const requestedCourseId = cleanText(payload.courseId, 80) || 'webcode';
+  const courseId = quickClassCourse(requestedCourseId) ? requestedCourseId : '';
+  if (!courseId) return { invalidCourse: true };
+  if (!teacherHasCourse(db, teacher.id, courseId)) return { deniedCourse: true, teacher, courseId };
   const classroom = {
     id: crypto.randomUUID(),
     teacher_id: teacher.id,
-    name: cleanText(payload.name, 80) || `כיתת WebCode ${new Date().toLocaleDateString('he-IL')}`,
+    name: cleanText(payload.name, 80) || `כיתת ${quickClassCoursePublic(courseId).label} ${new Date().toLocaleDateString('he-IL')}`,
     join_code: generateNumericClassJoinCode(db),
     created_at: now,
     updated_at: now,
@@ -3244,9 +3270,9 @@ function createWebCodeQuickClass(db, payload = {}, teacherOverride = null) {
     VALUES (?, ?, ?, ?, ?, ?)
   `).run(classroom.id, classroom.teacher_id, classroom.name, classroom.join_code, classroom.created_at, classroom.updated_at);
   db.prepare('INSERT INTO classroom_courses (classroom_id, course_id, created_at) VALUES (?, ?, ?)')
-    .run(classroom.id, 'webcode', now);
+    .run(classroom.id, courseId, now);
   const token = upsertWebCodeQuickClassToken(db, classroom.id);
-  return { classroom, teacher, token };
+  return { classroom, teacher, token, course: quickClassCoursePublic(courseId) };
 }
 
 function requireWebCodeQuickClass(db, req, classroomId, token) {
@@ -3269,7 +3295,6 @@ function requireWebCodeQuickClass(db, req, classroomId, token) {
   if (!teacher) return null;
   const row = db.prepare(`
     SELECT c.* FROM classrooms c
-    JOIN classroom_courses cc ON cc.classroom_id = c.id AND cc.course_id = 'webcode'
     JOIN classroom_teachers t ON t.id = c.teacher_id
     WHERE c.id = ? AND c.teacher_id = ?
       AND t.archived_at IS NULL AND t.disabled_at IS NULL
@@ -3280,6 +3305,7 @@ function requireWebCodeQuickClass(db, req, classroomId, token) {
 function webcodeTeacherEmailBody({ teacher, classes }) {
   const classLines = classes.map(item => [
     `כיתה: ${item.classroom.name}`,
+    `לומדה: ${item.course?.label || 'WebCode'}`,
     `קוד לתלמידים: ${item.classroom.join_code}`,
     `מסך מורה: ${item.teacherUrl}`,
     `כניסת תלמידים: https://robotics15.hai.tech/webcode.html`,
@@ -3287,11 +3313,11 @@ function webcodeTeacherEmailBody({ teacher, classes }) {
   return [
     `שלום ${teacher.name},`,
     '',
-    'אלו קישורי הניהול שלך ל-WebCode:',
+    'אלו קישורי הניהול שלך לכיתות הלומדה:',
     '',
     classLines,
     '',
-    'הילדים נכנסים ל-WebCode, בוחרים "אני תלמיד/ה בכיתה", מקלידים את קוד הכיתה, שם וסימון אישי.',
+    'הילדים נכנסים, בוחרים "אני תלמיד/ה בכיתה", מקלידים את קוד הכיתה, שם וסימון אישי.',
   ].join('\n');
 }
 
@@ -9586,6 +9612,8 @@ async function handleWebCodeApi(req, res) {
     const result = withSummerDb(db => db.transaction(() => {
       const classroom = requireWebCodeQuickClass(db, req, segments[3], token);
       if (!classroom) return { denied: true };
+      const courseId = classroomCourses(db, classroom.id).find(id => quickClassCourse(id)) || 'webcode';
+      const course = quickClassCoursePublic(courseId);
       const students = db.prepare(`
         SELECT s.id, s.name, s.created_at, s.updated_at, p.marker_color, p.marker_shape
         FROM classroom_students s
@@ -9597,9 +9625,9 @@ async function handleWebCodeApi(req, res) {
         SELECT cp.student_id, cp.course_id, cp.lesson_id, cp.activity_id, cp.status, cp.score, cp.attempts,
           cp.started_at, cp.completed_at, cp.updated_at
         FROM classroom_progress cp
-        WHERE cp.course_id = 'webcode'
+        WHERE cp.course_id = ?
           AND cp.student_id IN (SELECT id FROM classroom_students WHERE classroom_id = ?)
-      `).all(classroom.id);
+      `).all(courseId, classroom.id);
       const byStudent = new Map();
       for (const row of progressRows) {
         if (!byStudent.has(row.student_id)) byStudent.set(row.student_id, []);
@@ -9610,6 +9638,7 @@ async function handleWebCodeApi(req, res) {
           id: classroom.id,
           name: classroom.name,
           joinCode: classroom.join_code,
+          course,
           createdAt: classroom.created_at,
           updatedAt: classroom.updated_at,
         },
@@ -9627,20 +9656,25 @@ async function handleWebCodeApi(req, res) {
     const result = withSummerDb(db => db.transaction(() => {
       const teacher = requireCurrentClassroomTeacher(db, req);
       if (!teacher) return { denied: true };
-      grantTeacherCourse(db, teacher.id, 'webcode');
       const rows = db.prepare(`
-        SELECT c.*
+        SELECT c.*, cc.course_id
         FROM classrooms c
-        JOIN classroom_courses cc ON cc.classroom_id = c.id AND cc.course_id = 'webcode'
+        JOIN classroom_courses cc ON cc.classroom_id = c.id
         WHERE c.teacher_id = ?
         ORDER BY c.created_at DESC
       `).all(teacher.id);
+      const availableCourses = quickClassTeacherCourses(db, teacher.id);
+      const allowedCourseIds = new Set(availableCourses.map(course => course.id));
       return {
         teacher: webCodeTeacherPublic(db, teacher),
-        classes: rows.map(classroom => ({
+        availableCourses,
+        classes: rows
+          .filter(classroom => allowedCourseIds.has(classroom.course_id))
+          .map(classroom => ({
           id: classroom.id,
           name: classroom.name,
           joinCode: classroom.join_code,
+          course: quickClassCoursePublic(classroom.course_id),
           teacherUrl: webcodeTeacherUrl(classroom.id),
           createdAt: classroom.created_at,
           studentCount: db.prepare(`
@@ -9654,6 +9688,7 @@ async function handleWebCodeApi(req, res) {
     return send(res, 200, JSON.stringify({
       ok: true,
       teacher: result.teacher,
+      availableCourses: result.availableCourses,
       classes: result.classes,
     }));
   }
@@ -9668,12 +9703,16 @@ async function handleWebCodeApi(req, res) {
         name: body.name,
         teacherName: body.teacherName,
         teacherEmail: body.teacherEmail,
+        courseId: body.courseId || 'webcode',
       })).immediate());
+      if (result.invalidCourse) return send(res, 400, JSON.stringify({ error: 'הלומדה שנבחרה לא תקינה.' }));
+      if (result.deniedCourse) return send(res, 403, JSON.stringify({ error: 'הלומדה הזו לא פתוחה למורה.' }));
       const teacherUrl = webcodeTeacherUrl(result.classroom.id, result.token);
       let deliveryStatus = 'skipped';
       if (result.teacher.email !== WEBCODE_QUICK_TEACHER_EMAIL) {
         deliveryStatus = await deliverWebCodeTeacherLinksEmail(result.teacher, [{
           classroom: result.classroom,
+          course: result.course,
           teacherUrl: absolutePublicUrl(req, teacherUrl),
         }]);
       }
@@ -9683,6 +9722,7 @@ async function handleWebCodeApi(req, res) {
           id: result.classroom.id,
           name: result.classroom.name,
           joinCode: result.classroom.join_code,
+          course: result.course,
         },
         teacher: {
           id: result.teacher.id,
@@ -9727,7 +9767,6 @@ async function handleWebCodeApi(req, res) {
         const provided = Buffer.from(hashClassroomSecret(password, teacher?.password_salt || DUMMY_CLASSROOM_TEACHER_SALT), 'hex');
         const expected = Buffer.from(teacher?.password_hash || DUMMY_CLASSROOM_TEACHER_HASH, 'hex');
         if (!teacher || provided.length !== expected.length || !crypto.timingSafeEqual(provided, expected)) return null;
-        grantTeacherCourse(db, teacher.id, 'webcode');
         return { teacher: webCodeTeacherPublic(db, teacher), token: createClassroomTeacherSession(db, teacher.id) };
       }).immediate());
       if (!result) return send(res, 401, JSON.stringify({ error: 'מייל או סיסמה לא נכונים.' }));
@@ -9746,14 +9785,18 @@ async function handleWebCodeApi(req, res) {
       const result = withSummerDb(db => db.transaction(() => {
         const teacher = requireCurrentClassroomTeacher(db, req);
         if (!teacher) return { denied: true };
-        const created = createWebCodeQuickClass(db, { name: body.name }, teacher);
+        const created = createWebCodeQuickClass(db, { name: body.name, courseId: body.courseId }, teacher);
+        if (created.invalidCourse || created.deniedCourse) return created;
         recordClassroomManagementAudit(db, 'teacher', teacher.id, 'classroom.webcode_quick_create', 'classroom', created.classroom.id, 'success');
         return created;
       }).immediate());
       if (result.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת מורה.' }));
+      if (result.invalidCourse) return send(res, 400, JSON.stringify({ error: 'הלומדה שנבחרה לא תקינה.' }));
+      if (result.deniedCourse) return send(res, 403, JSON.stringify({ error: 'הלומדה הזו לא פתוחה לחשבון המורה. מנהלת המערכת צריכה לאפשר אותה קודם.' }));
       const emailTeacherUrl = webcodeTeacherUrl(result.classroom.id, result.token);
       const deliveryStatus = await deliverWebCodeTeacherLinksEmail(result.teacher, [{
         classroom: result.classroom,
+        course: result.course,
         teacherUrl: absolutePublicUrl(req, emailTeacherUrl),
       }]);
       return send(res, 201, JSON.stringify({
@@ -9762,6 +9805,7 @@ async function handleWebCodeApi(req, res) {
           id: result.classroom.id,
           name: result.classroom.name,
           joinCode: result.classroom.join_code,
+          course: result.course,
           teacherUrl: webcodeTeacherUrl(result.classroom.id),
         },
         deliveryStatus,
@@ -9778,17 +9822,18 @@ async function handleWebCodeApi(req, res) {
         `).get(email);
         if (!teacher) return { missing: true };
         const rows = db.prepare(`
-          SELECT c.*
+          SELECT c.*, cc.course_id
           FROM classrooms c
-          JOIN classroom_courses cc ON cc.classroom_id = c.id AND cc.course_id = 'webcode'
+          JOIN classroom_courses cc ON cc.classroom_id = c.id
           JOIN webcode_quick_class_tokens q ON q.classroom_id = c.id
           WHERE c.teacher_id = ?
           ORDER BY c.created_at DESC
-        `).all(teacher.id);
+        `).all(teacher.id).filter(classroom => quickClassCourse(classroom.course_id));
         const classes = rows.map(classroom => {
           const token = upsertWebCodeQuickClassToken(db, classroom.id);
           return {
             classroom,
+            course: quickClassCoursePublic(classroom.course_id),
             teacherUrl: absolutePublicUrl(req, webcodeTeacherUrl(classroom.id, token)),
           };
         });
@@ -9813,14 +9858,15 @@ async function handleWebCodeApi(req, res) {
       if (!classCode || !name) return send(res, 400, JSON.stringify({ error: 'צריך קוד כיתה ושם.' }));
       const result = withSummerDb(db => db.transaction(() => {
         const classroom = db.prepare(`
-          SELECT c.* FROM classrooms c
+          SELECT c.*, cc.course_id FROM classrooms c
           JOIN classroom_teachers t ON t.id = c.teacher_id
-          JOIN classroom_courses cc ON cc.classroom_id = c.id AND cc.course_id = 'webcode'
+          JOIN classroom_courses cc ON cc.classroom_id = c.id
           JOIN webcode_quick_class_tokens q ON q.classroom_id = c.id
           WHERE c.join_code = ?
             AND t.archived_at IS NULL AND t.disabled_at IS NULL
-        `).get(classCode);
+        `).all(classCode).find(row => quickClassCourse(row.course_id));
         if (!classroom) return { notFound: true };
+        const course = quickClassCoursePublic(classroom.course_id);
         const now = new Date().toISOString();
         let student = db.prepare(`
           SELECT s.* FROM classroom_students s
@@ -9845,6 +9891,7 @@ async function handleWebCodeApi(req, res) {
         }
         return {
           classroom,
+          course,
           student,
           created,
           marker: { marker_color: markerColor, marker_shape: markerShape },
@@ -9857,7 +9904,8 @@ async function handleWebCodeApi(req, res) {
         role: 'student',
         created: result.created,
         student: { id: result.student.id, name: result.student.name, marker: webcodeMarkerPublic(result.marker) },
-        classroom: { id: result.classroom.id, name: result.classroom.name, joinCode: result.classroom.join_code, courses: ['webcode'] },
+        classroom: { id: result.classroom.id, name: result.classroom.name, joinCode: result.classroom.join_code, courses: [result.course.id], course: result.course },
+        startUrl: result.course.startUrl,
       }), 'application/json; charset=utf-8', {
         'Set-Cookie': classroomSessionCookie(result.token),
       });

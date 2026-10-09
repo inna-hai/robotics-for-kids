@@ -3,6 +3,7 @@ import { spawn } from 'node:child_process';
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import Database from 'better-sqlite3';
 
 const root = new URL('..', import.meta.url).pathname;
 const port = 4300 + Math.floor(Math.random() * 1000);
@@ -27,6 +28,7 @@ assert.match(webcode, /\/api\/webcode\/teacher-register/, 'WebCode should create
 assert.match(webcode, /\/api\/webcode\/teacher-login/, 'WebCode should let teachers log in');
 assert.match(webcode, /\/api\/webcode\/teacher-class/, 'WebCode should create classes after teacher login');
 assert.match(webcode, /\/api\/webcode\/teacher-home/, 'WebCode should load a teacher home with many classes');
+assert.match(webcode, /webcodeClassCourse/, 'teacher class creation should require choosing an allowed course');
 assert.match(webcode, /\/api\/webcode\/student-login/, 'WebCode student login should call the quick WebCode endpoint');
 assert.match(teacher, /כתבי את הקוד על הלוח/, 'teacher dashboard should show the class-code flow');
 assert.match(teacher, /setInterval\(\(\) => loadClass\(\)\.catch\(\(\) => \{\}\), 60000\)/, 'teacher dashboard should refresh once a minute');
@@ -81,6 +83,7 @@ try {
   }).then(response => response.json());
   assert.equal(homeBeforeClass.ok, true);
   assert.equal(homeBeforeClass.classes.length, 0, 'teacher account should be created before any class');
+  assert.deepEqual(homeBeforeClass.availableCourses.map(course => course.id), ['webcode'], 'new WebCode teachers start with only the default allowed course');
 
   const created = await post('/api/webcode/teacher-class', { name: 'כיתה מהירה' }, registered.cookie);
   assert.match(created.data.classroom.joinCode, /^\d{4}$/, 'quick class code should be child-friendly digits');
@@ -116,6 +119,41 @@ try {
   const second = await post('/api/webcode/teacher-class', { name: 'כיתה שנייה' }, registered.cookie);
   assert.equal(second.data.deliveryStatus, 'sent', 'test mode should email newly created class links');
 
+  const db = new Database(join(dataDir, 'summer-subscriptions.sqlite'));
+  db.prepare('INSERT OR IGNORE INTO teacher_courses (teacher_id, course_id, created_at) VALUES (?, ?, ?)')
+    .run(registered.data.teacher.id, 'python-turtle', new Date().toISOString());
+  db.close();
+
+  const homeAfterAdminGrant = await fetch(`http://127.0.0.1:${port}/api/webcode/teacher-home`, {
+    headers: { Cookie: registered.cookie },
+  }).then(response => response.json());
+  assert.ok(homeAfterAdminGrant.availableCourses.some(course => course.id === 'python-turtle'), 'admin-granted courses should appear in class creation');
+
+  const pythonClass = await post('/api/webcode/teacher-class', { name: 'פייתון צבים', courseId: 'python-turtle' }, registered.cookie);
+  assert.equal(pythonClass.data.classroom.course.id, 'python-turtle', 'teacher can create a class for an admin-allowed course');
+  const pythonStudent = await post('/api/webcode/student-login', {
+    classCode: pythonClass.data.classroom.joinCode,
+    name: 'מאיה',
+    markerColor: 'green',
+    markerShape: 'star',
+  });
+  assert.equal(pythonStudent.data.startUrl, 'python-turtle.html?lesson=1', 'student login should continue to the selected course');
+
+  await post('/api/classroom/progress', {
+    courseId: 'python-turtle',
+    lessonId: '1',
+    activityId: 'exercise-1',
+    status: 'completed',
+    score: 100,
+  }, pythonStudent.cookie);
+
+  const pythonTeacherUrl = new URL(`http://127.0.0.1:${port}${pythonClass.data.classroom.teacherUrl}`);
+  const pythonDashboard = await fetch(`http://127.0.0.1:${port}/api/webcode/quick-class/${pythonTeacherUrl.searchParams.get('classroom')}`, {
+    headers: { Cookie: registered.cookie },
+  }).then(response => response.json());
+  assert.equal(pythonDashboard.classroom.course.id, 'python-turtle');
+  assert.ok(pythonDashboard.students[0].progress.some(row => row.courseId === 'python-turtle'), 'course dashboard should show progress for the selected course');
+
   const loginTeacher = await post('/api/webcode/teacher-login', {
     email: 'hani@example.test',
     password: 'secret1',
@@ -123,7 +161,7 @@ try {
   const homeAfterLogin = await fetch(`http://127.0.0.1:${port}/api/webcode/teacher-home`, {
     headers: { Cookie: loginTeacher.cookie },
   }).then(response => response.json());
-  assert.equal(homeAfterLogin.classes.length, 2, 'teacher should see many classes after login');
+  assert.equal(homeAfterLogin.classes.length, 3, 'teacher should see many classes after login');
 } finally {
   child.kill('SIGTERM');
   rmSync(dataDir, { recursive: true, force: true });
