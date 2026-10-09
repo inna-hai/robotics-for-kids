@@ -372,6 +372,7 @@ assert.ok(lesson30.concept.includes('HTML + CSS + JS'), 'lesson 30 combines HTML
 assert.equal(lesson30.realBlocklyBuilder, true, 'lesson 30 final project still uses draggable English code-like blocks');
 
 const hub = read('webcode.html');
+const server = read('server.js');
 assert.ok(hub.includes('WebCode Lab'), 'hub page exists');
 assert.ok(hub.includes('webcode-play.html?lesson=1'), 'hub links to lesson 1');
 assert.ok(hub.includes('webcode-slides.html?lesson=1'), 'hub links to guide slides');
@@ -379,6 +380,7 @@ assert.ok(hub.includes('25–30'), 'hub explains gradual move to real coding');
 assert.ok(hub.includes('formatMixedText') && hub.includes('tech-term'), 'hub isolates English tech terms so RTL lesson cards do not flip mixed text');
 assert.ok(/js\/webcode-lessons\.js\?v=[^"']+/.test(hub) && !hub.includes('webcode-lessons-code-bridge'), 'hub loads the single canonical lesson-data asset with cache busting');
 assert.ok(!hub.includes('Blockly אמיתי'), 'course-page hero avoids unclear “Blockly אמיתי” phrasing');
+assert.ok(server.includes("hosts.includes('wl.hai.tech')") && server.includes('https://robotics15.hai.tech/webcode.html'), 'wl.hai.tech redirects to the public WebCode page');
 assert.ok(!JSON.stringify(lessons.slice(0, 3).map(lesson => lesson.concept)).includes('Blockly אמיתי'), 'visible course-card concepts avoid unclear “Blockly אמיתי” phrasing');
 
 const play = read('webcode-play.html');
