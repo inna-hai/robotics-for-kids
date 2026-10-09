@@ -187,16 +187,18 @@ assert.match(entryHtml, /id="subscription-continue"/);
 assert.match(entryHtml, /מנוי אישי/);
 assert.match(entryHtml, /התנסות כאורח/);
 assert.match(entryHtml, /classroom-entry\.js\?v=20260927-forced-student-login-1/);
-assert.match(read('teacher-classrooms.html'), /classroom-platform\.js\?v=20261001-kugel-server-class-state-1/);
+assert.match(read('teacher-classrooms.html'), /classroom-platform\.js\?v=20261008-lesson-page-same-tab-1/);
 
 const classroomSession = read('js/classroom-session.js');
 assert.doesNotMatch(classroomSession, /showStudentBadge/, 'the unified access badge must be the only badge');
 assert.match(read('js/user-badge.js'), /\.classroom \.hai-user-dot/, 'classroom mode needs its own visual badge state');
 assert.match(read('js/user-badge.js'), /#\$\{BADGE_ID\}\.teacher\{[^}]*left:auto;right:12px;bottom:12px/, 'teacher badge should move away from the left-side report button');
 assert.match(read('js/user-badge.js'), /#\$\{BADGE_ID\}\.teacher\{[^}]*max-width:min\(260px/, 'teacher badge should stay compact');
+assert.match(read('js/user-badge.js'), /data-hai-logout/, 'connected user badge should expose a logout menu item');
+assert.match(read('js/user-badge.js'), /\/api\/classroom\/logout/, 'classroom badge logout should clear the classroom session');
 const server = read('server.js');
-assert.match(server, /user-badge\.js\?v=20260910-compact-teacher-badge-1/);
-assert.match(server, /classroom-session\.js\?v=20261001-student-logout-1/);
+assert.match(server, /user-badge\.js\?v=20261009-user-logout-menu-1/);
+assert.match(server, /classroom-session\.js\?v=20261009-webcode-quick-class-1/);
 assert.match(server, /const baseOutput = injectUserBadge\(html\);/, 'the unified badge must load even when the subscription gate is disabled');
 assert.doesNotMatch(server, /SUBSCRIPTION_GATE_ENABLED \? injectUserBadge\(html\)/);
 

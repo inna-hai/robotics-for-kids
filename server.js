@@ -9555,7 +9555,7 @@ function injectHeadAssets(html) {
 
 function injectUserBadge(html) {
   if (!html.includes('</body>') || html.includes('js/user-badge.js')) return injectHeadAssets(html);
-  return replaceLastHtmlTag(injectHeadAssets(html), '</body>', '  <script src="/js/user-badge.js?v=20260910-compact-teacher-badge-1"></script>\n</body>');
+  return replaceLastHtmlTag(injectHeadAssets(html), '</body>', '  <script src="/js/user-badge.js?v=20261009-user-logout-menu-1"></script>\n</body>');
 }
 
 function injectClassroomSession(html) {
