@@ -30,6 +30,7 @@ assert.match(webcode, /\/api\/webcode\/teacher-home/, 'WebCode should load a tea
 assert.match(webcode, /\/api\/webcode\/student-login/, 'WebCode student login should call the quick WebCode endpoint');
 assert.match(teacher, /כתבי את הקוד על הלוח/, 'teacher dashboard should show the class-code flow');
 assert.match(teacher, /setInterval\(\(\) => loadClass\(\)\.catch\(\(\) => \{\}\), 60000\)/, 'teacher dashboard should refresh once a minute');
+assert.doesNotMatch(teacher, /!classroomId\s*\|\|\s*!token/, 'teacher dashboard should allow authenticated teacher links without a token');
 assert.match(server, /createWebCodeTeacherAccount/, 'server should create WebCode teacher accounts before classes');
 
 const child = spawn(process.execPath, ['server.js'], {

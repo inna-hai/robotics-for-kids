@@ -48,13 +48,14 @@
       return `${completed} תרגילים הושלמו · ${lessons} שיעורים עם התקדמות`;
     }
     async function loadClass(){
-      if(!classroomId || !token){
-        document.getElementById('loadStatus').textContent = 'קישור מורה חסר.';
+      if(!classroomId){
+        document.getElementById('loadStatus').textContent = 'קישור כיתה חסר.';
         document.getElementById('loadStatus').classList.add('bad');
         return;
       }
       document.getElementById('loadStatus').textContent = 'מתעדכן…';
-      const response = await fetch(`/api/webcode/quick-class/${encodeURIComponent(classroomId)}?token=${encodeURIComponent(token)}`, { credentials:'same-origin' });
+      const query = token ? `?token=${encodeURIComponent(token)}` : '';
+      const response = await fetch(`/api/webcode/quick-class/${encodeURIComponent(classroomId)}${query}`, { credentials:'same-origin' });
       const data = await response.json().catch(() => ({}));
       if(!response.ok) throw new Error(data.error || 'לא הצלחנו לטעון כיתה.');
       document.title = `מסך מורה — ${data.classroom.name}`;
