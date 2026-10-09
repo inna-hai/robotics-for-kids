@@ -6,7 +6,7 @@
   const requestedLessonId = Number(query.get('lesson') || '');
   const requestedChallengeId = Number(query.get('challenge') || '');
   const teacherPagePath = 'agent-academy-teacher.html';
-  const TEACHER_REFRESH_MS = 30000;
+  const TEACHER_REFRESH_MS = 60000;
   const TEACHER_BACKGROUND_REFRESH_MS = 120000;
   const drafts = new Map();
 

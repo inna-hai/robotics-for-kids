@@ -388,7 +388,7 @@ assert.match(client, /renderTeacherStudentModalContent\(modalStudent, \{ preserv
 assert.match(client, /if \(nextSignature !== activeTeacherStudentModalSignature\)/, 'build-mode student detail popups should not rerender on every polling refresh');
 assert.match(client, /if \(modalStudent && !data\.loadingClassroom\)[\s\S]*nextSignature/, 'build-mode student detail popups should update only from real live data, not loading fallbacks');
 assert.doesNotMatch(client, /if \(dialog\.open\) dialog\.close\(\)/, 'polling refreshes must not close an open build-mode student detail popup');
-assert.ok(client.includes('TEACHER_REFRESH_MS = 30000'), 'teacher board should avoid heavy 5-second polling');
+assert.ok(client.includes('TEACHER_REFRESH_MS = 60000'), 'teacher board should refresh at a calm one-minute cadence');
 assert.ok(client.includes('TEACHER_BACKGROUND_REFRESH_MS = 120000'), 'teacher board should slow polling while hidden');
 assert.doesNotMatch(teacherClient, /setInterval\(refresh,\s*5000\)/, 'teacher board must not poll every five seconds');
 assert.match(client, /function academyProgressText\(student\)/, 'teacher board should format Agent Academy progress per student');
