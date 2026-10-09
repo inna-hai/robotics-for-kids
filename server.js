@@ -1168,6 +1168,21 @@ function openSummerDb() {
       UNIQUE(student_id, course_id, lesson_id, activity_id)
     );
 
+    CREATE TABLE IF NOT EXISTS webcode_quick_class_tokens (
+      classroom_id TEXT PRIMARY KEY REFERENCES classrooms(id) ON DELETE CASCADE,
+      token_hash TEXT NOT NULL UNIQUE,
+      created_at TEXT NOT NULL,
+      last_seen_at TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS webcode_quick_student_profiles (
+      student_id TEXT PRIMARY KEY REFERENCES classroom_students(id) ON DELETE CASCADE,
+      marker_color TEXT NOT NULL,
+      marker_shape TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+
     CREATE TABLE IF NOT EXISTS kugel_class_sessions (
       classroom_id TEXT PRIMARY KEY REFERENCES classrooms(id) ON DELETE CASCADE,
       lesson_id INTEGER NOT NULL DEFAULT 0 CHECK (lesson_id BETWEEN 0 AND 16),
@@ -1281,6 +1296,8 @@ function openSummerDb() {
     CREATE INDEX IF NOT EXISTS idx_classroom_minecraft_identities_status ON classroom_minecraft_identities(status, verified_at);
     CREATE INDEX IF NOT EXISTS idx_classroom_student_sessions_token ON classroom_student_sessions(token_hash);
     CREATE INDEX IF NOT EXISTS idx_classroom_progress_student ON classroom_progress(student_id);
+    CREATE INDEX IF NOT EXISTS idx_webcode_quick_class_tokens_token ON webcode_quick_class_tokens(token_hash);
+    CREATE INDEX IF NOT EXISTS idx_webcode_quick_student_profiles_marker ON webcode_quick_student_profiles(marker_color, marker_shape);
     CREATE INDEX IF NOT EXISTS idx_kugel_student_runs_classroom ON kugel_student_runs(classroom_id);
     CREATE INDEX IF NOT EXISTS idx_craftom_submissions_class_lesson ON craftom_lesson_submissions(classroom_id, lesson_id);
     CREATE INDEX IF NOT EXISTS idx_craftom_submissions_student ON craftom_lesson_submissions(student_id);
@@ -3050,6 +3067,97 @@ function createClassroomStudentWithLoginCode(db, classroomId, name) {
     VALUES (?, ?, ?, ?, ?, ?, ?)
   `).run(student.id, student.classroom_id, student.name, student.login_salt, student.login_hash, student.created_at, student.updated_at);
   return { student, loginCode };
+}
+
+const WEBCODE_QUICK_TEACHER_EMAIL = 'webcode-quick-teacher@hai.tech.local';
+const WEBCODE_MARKER_COLORS = new Set(['blue', 'green', 'yellow', 'pink', 'purple', 'orange']);
+const WEBCODE_MARKER_SHAPES = new Set(['circle', 'star', 'square', 'heart', 'triangle', 'diamond']);
+
+function webcodeMarkerPublic(row) {
+  return {
+    color: WEBCODE_MARKER_COLORS.has(row?.marker_color) ? row.marker_color : 'blue',
+    shape: WEBCODE_MARKER_SHAPES.has(row?.marker_shape) ? row.marker_shape : 'circle',
+  };
+}
+
+function generateNumericClassJoinCode(db) {
+  for (let attempt = 0; attempt < 80; attempt += 1) {
+    const code = String(crypto.randomInt(1000, 10000));
+    if (!db.prepare('SELECT id FROM classrooms WHERE join_code = ?').get(code)) return code;
+  }
+  return generateClassJoinCode(db);
+}
+
+function ensureWebCodeQuickTeacher(db) {
+  const now = new Date().toISOString();
+  let teacher = db.prepare('SELECT * FROM classroom_teachers WHERE email = ?').get(WEBCODE_QUICK_TEACHER_EMAIL);
+  if (!teacher) {
+    const salt = crypto.randomBytes(16).toString('hex');
+    teacher = {
+      id: crypto.randomUUID(),
+      name: 'כיתות מהירות WebCode',
+      email: WEBCODE_QUICK_TEACHER_EMAIL,
+      password_salt: salt,
+      password_hash: hashClassroomSecret(crypto.randomUUID(), salt),
+      created_at: now,
+      updated_at: now,
+    };
+    db.prepare(`
+      INSERT INTO classroom_teachers (id, name, email, password_salt, password_hash, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(teacher.id, teacher.name, teacher.email, teacher.password_salt, teacher.password_hash, teacher.created_at, teacher.updated_at);
+  }
+  replaceTeacherCourses(db, teacher.id, ['webcode']);
+  return teacher;
+}
+
+function createWebCodeQuickClass(db, name) {
+  const now = new Date().toISOString();
+  const teacher = ensureWebCodeQuickTeacher(db);
+  const classroom = {
+    id: crypto.randomUUID(),
+    teacher_id: teacher.id,
+    name: cleanText(name, 80) || `כיתת WebCode ${new Date().toLocaleDateString('he-IL')}`,
+    join_code: generateNumericClassJoinCode(db),
+    created_at: now,
+    updated_at: now,
+  };
+  const token = crypto.randomBytes(32).toString('base64url');
+  db.prepare(`
+    INSERT INTO classrooms (id, teacher_id, name, join_code, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `).run(classroom.id, classroom.teacher_id, classroom.name, classroom.join_code, classroom.created_at, classroom.updated_at);
+  db.prepare('INSERT INTO classroom_courses (classroom_id, course_id, created_at) VALUES (?, ?, ?)')
+    .run(classroom.id, 'webcode', now);
+  db.prepare(`
+    INSERT INTO webcode_quick_class_tokens (classroom_id, token_hash, created_at, last_seen_at)
+    VALUES (?, ?, ?, ?)
+  `).run(classroom.id, tokenHash(token), now, now);
+  return { classroom, token };
+}
+
+function requireWebCodeQuickClass(db, classroomId, token) {
+  if (!classroomId || !token) return null;
+  const now = new Date().toISOString();
+  const row = db.prepare(`
+    SELECT c.* FROM webcode_quick_class_tokens q
+    JOIN classrooms c ON c.id = q.classroom_id
+    JOIN classroom_teachers t ON t.id = c.teacher_id
+    WHERE q.classroom_id = ? AND q.token_hash = ?
+      AND t.email = ? AND t.archived_at IS NULL AND t.disabled_at IS NULL
+  `).get(classroomId, tokenHash(token), WEBCODE_QUICK_TEACHER_EMAIL);
+  if (row) db.prepare('UPDATE webcode_quick_class_tokens SET last_seen_at = ? WHERE classroom_id = ?').run(now, classroomId);
+  return row || null;
+}
+
+function webcodeQuickStudentPublic(row) {
+  return {
+    id: row.id,
+    name: row.name,
+    marker: webcodeMarkerPublic(row),
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
 }
 
 function classroomProgressPublic(row) {
@@ -9311,7 +9419,136 @@ function injectUserBadge(html) {
 
 function injectClassroomSession(html) {
   if (!html.includes('</body>') || html.includes('js/classroom-session.js') || html.includes('js/classroom-platform.js')) return html;
-  return replaceLastHtmlTag(html, '</body>', '  <script src="/js/classroom-session.js?v=20261008-academy-student-progress-1"></script>\n</body>');
+  return replaceLastHtmlTag(html, '</body>', '  <script src="/js/classroom-session.js?v=20261009-webcode-quick-class-1"></script>\n</body>');
+}
+
+async function handleWebCodeApi(req, res) {
+  const url = requestUrl(req);
+  const segments = url.pathname.split('/').filter(Boolean);
+  const action = segments[2] || '';
+
+  if (req.method === 'GET' && action === 'quick-class' && segments[3] && segments.length === 4) {
+    const token = String(url.searchParams.get('token') || '');
+    const result = withSummerDb(db => db.transaction(() => {
+      const classroom = requireWebCodeQuickClass(db, segments[3], token);
+      if (!classroom) return { denied: true };
+      const students = db.prepare(`
+        SELECT s.id, s.name, s.created_at, s.updated_at, p.marker_color, p.marker_shape
+        FROM classroom_students s
+        LEFT JOIN webcode_quick_student_profiles p ON p.student_id = s.id
+        WHERE s.classroom_id = ? AND s.archived_at IS NULL AND s.disabled_at IS NULL
+        ORDER BY s.created_at ASC
+      `).all(classroom.id);
+      const progressRows = db.prepare(`
+        SELECT cp.student_id, cp.course_id, cp.lesson_id, cp.activity_id, cp.status, cp.score, cp.attempts,
+          cp.started_at, cp.completed_at, cp.updated_at
+        FROM classroom_progress cp
+        WHERE cp.course_id = 'webcode'
+          AND cp.student_id IN (SELECT id FROM classroom_students WHERE classroom_id = ?)
+      `).all(classroom.id);
+      const byStudent = new Map();
+      for (const row of progressRows) {
+        if (!byStudent.has(row.student_id)) byStudent.set(row.student_id, []);
+        byStudent.get(row.student_id).push(classroomProgressPublic(row));
+      }
+      return {
+        classroom: {
+          id: classroom.id,
+          name: classroom.name,
+          joinCode: classroom.join_code,
+          createdAt: classroom.created_at,
+          updatedAt: classroom.updated_at,
+        },
+        students: students.map(student => ({
+          ...webcodeQuickStudentPublic(student),
+          progress: byStudent.get(student.id) || [],
+        })),
+      };
+    }).immediate());
+    if (result.denied) return send(res, 401, JSON.stringify({ error: 'קישור המורה לא תקין או שפג תוקפו.' }));
+    return send(res, 200, JSON.stringify({ ok: true, ...result }));
+  }
+
+  if (req.method !== 'POST') return send(res, 405, JSON.stringify({ error: 'Method not allowed' }));
+
+  try {
+    const body = JSON.parse(await readBody(req, 64 * 1024) || '{}');
+
+    if (action === 'quick-class' && segments.length === 3) {
+      const result = withSummerDb(db => db.transaction(() => createWebCodeQuickClass(db, body.name)).immediate());
+      return send(res, 200, JSON.stringify({
+        ok: true,
+        classroom: {
+          id: result.classroom.id,
+          name: result.classroom.name,
+          joinCode: result.classroom.join_code,
+        },
+        teacherUrl: `/webcode-teacher.html?classroom=${encodeURIComponent(result.classroom.id)}&token=${encodeURIComponent(result.token)}`,
+      }));
+    }
+
+    if (action === 'student-login' && segments.length === 3) {
+      const classCode = cleanAccessCode(body.classCode);
+      const name = cleanText(body.name, 60);
+      const markerColor = WEBCODE_MARKER_COLORS.has(String(body.markerColor || '')) ? String(body.markerColor) : 'blue';
+      const markerShape = WEBCODE_MARKER_SHAPES.has(String(body.markerShape || '')) ? String(body.markerShape) : 'circle';
+      if (!classCode || !name) return send(res, 400, JSON.stringify({ error: 'צריך קוד כיתה ושם.' }));
+      const result = withSummerDb(db => db.transaction(() => {
+        const classroom = db.prepare(`
+          SELECT c.* FROM classrooms c
+          JOIN classroom_teachers t ON t.id = c.teacher_id
+          JOIN classroom_courses cc ON cc.classroom_id = c.id AND cc.course_id = 'webcode'
+          WHERE c.join_code = ? AND t.email = ?
+            AND t.archived_at IS NULL AND t.disabled_at IS NULL
+        `).get(classCode, WEBCODE_QUICK_TEACHER_EMAIL);
+        if (!classroom) return { notFound: true };
+        const now = new Date().toISOString();
+        let student = db.prepare(`
+          SELECT s.* FROM classroom_students s
+          JOIN webcode_quick_student_profiles p ON p.student_id = s.id
+          WHERE s.classroom_id = ? AND s.name = ? AND p.marker_color = ? AND p.marker_shape = ?
+            AND s.archived_at IS NULL AND s.disabled_at IS NULL
+        `).get(classroom.id, name, markerColor, markerShape);
+        let created = false;
+        if (!student) {
+          const salt = crypto.randomBytes(16).toString('hex');
+          const studentId = crypto.randomUUID();
+          db.prepare(`
+            INSERT INTO classroom_students (id, classroom_id, name, login_salt, login_hash, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+          `).run(studentId, classroom.id, name, salt, hashClassroomSecret(crypto.randomUUID(), salt), now, now);
+          db.prepare(`
+            INSERT INTO webcode_quick_student_profiles (student_id, marker_color, marker_shape, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?)
+          `).run(studentId, markerColor, markerShape, now, now);
+          student = db.prepare('SELECT * FROM classroom_students WHERE id = ?').get(studentId);
+          created = true;
+        }
+        return {
+          classroom,
+          student,
+          created,
+          marker: { marker_color: markerColor, marker_shape: markerShape },
+          token: createClassroomStudentSession(db, student.id),
+        };
+      }).immediate());
+      if (result.notFound) return send(res, 404, JSON.stringify({ error: 'לא מצאתי כיתה עם הקוד הזה.' }));
+      return sendWithHeaders(res, 200, JSON.stringify({
+        ok: true,
+        role: 'student',
+        created: result.created,
+        student: { id: result.student.id, name: result.student.name, marker: webcodeMarkerPublic(result.marker) },
+        classroom: { id: result.classroom.id, name: result.classroom.name, joinCode: result.classroom.join_code, courses: ['webcode'] },
+      }), 'application/json; charset=utf-8', {
+        'Set-Cookie': classroomSessionCookie(result.token),
+      });
+    }
+
+    return send(res, 404, JSON.stringify({ error: 'Not found' }));
+  } catch (error) {
+    console.error('webcode_api_error', error);
+    return send(res, 400, JSON.stringify({ error: 'לא הצלחנו לטפל בבקשה.' }));
+  }
 }
 
 function proxyEnglishBuddy(req, res) {
@@ -9481,6 +9718,7 @@ const server = http.createServer((req, res) => {
   if (req.url.startsWith('/api/craftom/')) return handleCraftomApi(req, res);
   if (req.url.startsWith('/api/feedback')) return handleFeedback(req, res);
   if (req.url.startsWith('/api/summer/')) return handleSummerAuth(req, res);
+  if (req.url.startsWith('/api/webcode/')) return handleWebCodeApi(req, res);
   if (req.url.startsWith('/api/classroom/')) return handleClassroomApi(req, res);
   if (req.url.startsWith('/api/internal/minecraft/') || req.url.startsWith('/api/internal/craftom-school/')) return handleKugelInternalMinecraftApi(req, res);
   if (req.url.startsWith('/api/kugel/')) return handleKugelApi(req, res);
