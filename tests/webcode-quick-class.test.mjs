@@ -19,14 +19,18 @@ const server = read('server.js');
 assert.match(webcode, /אני תלמיד\/ה בכיתה/, 'WebCode should expose a student class login path');
 assert.match(webcode, /כניסה כאורח|להמשיך מהמקום האחרון|להתחיל שיעור 1/, 'WebCode should keep the guest/local path');
 assert.match(webcode, /הסימון שלי/, 'WebCode student login should use a personal marker');
-assert.match(webcode, /webcodeTeacherName/, 'WebCode teacher flow should ask for a teacher name');
-assert.match(webcode, /webcodeTeacherEmail/, 'WebCode teacher flow should ask for a teacher email');
-assert.match(webcode, /\/api\/webcode\/teacher-links/, 'WebCode should let teachers recover management links by email');
+assert.match(webcode, /webcodeRegisterName/, 'WebCode teacher registration should ask for a teacher name');
+assert.match(webcode, /webcodeRegisterEmail/, 'WebCode teacher registration should ask for a teacher email');
+assert.match(webcode, /webcodeRegisterPassword/, 'WebCode teacher registration should ask for a password');
+assert.match(webcode, /webcodeLoginEmail/, 'WebCode should let teachers log in by email');
+assert.match(webcode, /\/api\/webcode\/teacher-register/, 'WebCode should create teacher accounts without a class');
+assert.match(webcode, /\/api\/webcode\/teacher-login/, 'WebCode should let teachers log in');
+assert.match(webcode, /\/api\/webcode\/teacher-class/, 'WebCode should create classes after teacher login');
+assert.match(webcode, /\/api\/webcode\/teacher-home/, 'WebCode should load a teacher home with many classes');
 assert.match(webcode, /\/api\/webcode\/student-login/, 'WebCode student login should call the quick WebCode endpoint');
-assert.match(webcode, /\/api\/webcode\/quick-class/, 'WebCode teacher form should create quick classes');
 assert.match(teacher, /כתבי את הקוד על הלוח/, 'teacher dashboard should show the class-code flow');
 assert.match(teacher, /setInterval\(\(\) => loadClass\(\)\.catch\(\(\) => \{\}\), 60000\)/, 'teacher dashboard should refresh once a minute');
-assert.match(server, /WEBCODE_QUICK_TEACHER_EMAIL/, 'server should isolate WebCode quick classes from regular teacher accounts');
+assert.match(server, /createWebCodeTeacherAccount/, 'server should create WebCode teacher accounts before classes');
 
 const child = spawn(process.execPath, ['server.js'], {
   cwd: root,
@@ -64,9 +68,22 @@ async function post(path, body, cookie = '') {
 
 try {
   await waitForServer();
-  const created = await post('/api/webcode/quick-class', { name: 'כיתה מהירה' });
+  const registered = await post('/api/webcode/teacher-register', {
+    name: 'חני',
+    email: 'hani@example.test',
+    password: 'secret1',
+  });
+  assert.equal(registered.data.teacher.email, 'hani@example.test');
+
+  const homeBeforeClass = await fetch(`http://127.0.0.1:${port}/api/webcode/teacher-home`, {
+    headers: { Cookie: registered.cookie },
+  }).then(response => response.json());
+  assert.equal(homeBeforeClass.ok, true);
+  assert.equal(homeBeforeClass.classes.length, 0, 'teacher account should be created before any class');
+
+  const created = await post('/api/webcode/teacher-class', { name: 'כיתה מהירה' }, registered.cookie);
   assert.match(created.data.classroom.joinCode, /^\d{4}$/, 'quick class code should be child-friendly digits');
-  assert.match(created.data.teacherUrl, /^\/webcode-teacher\.html\?classroom=/, 'teacher should receive a scoped management link');
+  assert.match(created.data.classroom.teacherUrl, /^\/webcode-teacher\.html\?classroom=/, 'teacher should receive a scoped management link');
 
   const login = await post('/api/webcode/student-login', {
     classCode: created.data.classroom.joinCode,
@@ -86,23 +103,26 @@ try {
     score: 100,
   }, login.cookie);
 
-  const teacherUrl = new URL(`http://127.0.0.1:${port}${created.data.teacherUrl}`);
-  const dashboard = await fetch(`http://127.0.0.1:${port}/api/webcode/quick-class/${teacherUrl.searchParams.get('classroom')}?token=${teacherUrl.searchParams.get('token')}`).then(response => response.json());
+  const teacherUrl = new URL(`http://127.0.0.1:${port}${created.data.classroom.teacherUrl}`);
+  const dashboard = await fetch(`http://127.0.0.1:${port}/api/webcode/quick-class/${teacherUrl.searchParams.get('classroom')}`, {
+    headers: { Cookie: registered.cookie },
+  }).then(response => response.json());
   assert.equal(dashboard.ok, true);
   assert.equal(dashboard.students.length, 1);
   assert.equal(dashboard.students[0].name, 'נועה');
   assert.ok(dashboard.students[0].progress.some(row => row.activityId === 'exercise-1' && row.status === 'completed'), 'teacher dashboard should show saved progress');
 
-  const owned = await post('/api/webcode/quick-class', {
-    name: 'כיתה עם מורה',
-    teacherName: 'חני',
-    teacherEmail: 'hani@example.test',
+  const second = await post('/api/webcode/teacher-class', { name: 'כיתה שנייה' }, registered.cookie);
+  assert.equal(second.data.deliveryStatus, 'sent', 'test mode should email newly created class links');
+
+  const loginTeacher = await post('/api/webcode/teacher-login', {
+    email: 'hani@example.test',
+    password: 'secret1',
   });
-  assert.equal(owned.data.teacher.email, 'hani@example.test');
-  assert.equal(owned.data.deliveryStatus, 'sent', 'test mode should report teacher link mail as sent');
-  const links = await post('/api/webcode/teacher-links', { email: 'hani@example.test' });
-  assert.equal(links.data.deliveryStatus, 'sent');
-  assert.equal(links.data.classCount, 1);
+  const homeAfterLogin = await fetch(`http://127.0.0.1:${port}/api/webcode/teacher-home`, {
+    headers: { Cookie: loginTeacher.cookie },
+  }).then(response => response.json());
+  assert.equal(homeAfterLogin.classes.length, 2, 'teacher should see many classes after login');
 } finally {
   child.kill('SIGTERM');
   rmSync(dataDir, { recursive: true, force: true });
