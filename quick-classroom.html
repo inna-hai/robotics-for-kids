@@ -156,28 +156,43 @@
       document.getElementById('registerTab').classList.toggle('active', register);
       document.getElementById('loginTab').classList.toggle('active', !register);
     }
+    let teacherClasses = [];
+    function selectedTeacherCourseId(){
+      return document.getElementById('classCourse')?.value || '';
+    }
     function renderTeacherCourseOptions(courses){
       const select = document.getElementById('classCourse');
       const allowed = Array.isArray(courses) ? courses : [];
+      const previous = select.value;
       select.innerHTML = allowed.length
         ? allowed.map(course => `<option value="${course.id}">${formatMixedText(course.label)}</option>`).join('')
         : '<option value="">אין לומדות פתוחות לחשבון הזה</option>';
       select.disabled = !allowed.length;
+      if(previous && allowed.some(course => course.id === previous)) select.value = previous;
     }
     function renderTeacherHome(data){
       document.getElementById('teacherAuth').hidden = true;
       document.getElementById('teacherHome').hidden = false;
       renderTeacherCourseOptions(data.availableCourses || data.teacher?.quickCourses || []);
       document.getElementById('teacherWelcome').textContent = `שלום ${data.teacher.name}. מכאן פותחים כיתות לפי הלומדות שהאדמין אפשר לחשבון שלך.`;
-      renderTeacherClasses(data.classes || []);
+      teacherClasses = Array.isArray(data.classes) ? data.classes : [];
+      renderTeacherClasses();
     }
-    function renderTeacherClasses(classes){
+    function renderTeacherClasses(){
       const list = document.getElementById('teacherClassList');
-      if(!classes.length){
+      const courseId = selectedTeacherCourseId();
+      const visibleClasses = courseId
+        ? teacherClasses.filter(item => (item.course?.id || 'webcode') === courseId)
+        : teacherClasses;
+      if(!teacherClasses.length){
         list.innerHTML = '<div class="result" style="display:block">עוד אין כיתות. פתחי כיתה ראשונה למעלה.</div>';
         return;
       }
-      list.innerHTML = classes.map(item => `<article class="class-item">
+      if(!visibleClasses.length){
+        list.innerHTML = '<div class="result" style="display:block">אין עדיין כיתות ללומדה שנבחרה. אפשר לפתוח כיתה חדשה למעלה.</div>';
+        return;
+      }
+      list.innerHTML = visibleClasses.map(item => `<article class="class-item">
         <b>${formatMixedText(item.name)}</b>
         <small>לומדה: ${formatMixedText(item.course?.label || 'WebCode')} · קוד כיתה: ${item.joinCode} · ${item.studentCount || 0} תלמידים</small>
         <div class="actions" style="margin-top:8px">
@@ -203,6 +218,7 @@
     renderMarkerChoices();
     document.getElementById('registerTab').addEventListener('click', () => showTeacherTab('register'));
     document.getElementById('loginTab').addEventListener('click', () => showTeacherTab('login'));
+    document.getElementById('classCourse').addEventListener('change', renderTeacherClasses);
     loadTeacherHome().catch(() => {});
     document.getElementById('studentForm').addEventListener('submit', async event => {
       event.preventDefault();

@@ -14,6 +14,7 @@ function read(path) {
 }
 
 const webcode = read('webcode.html');
+const quickClassroom = read('quick-classroom.html');
 const teacher = read('webcode-teacher.html');
 const server = read('server.js');
 
@@ -29,6 +30,10 @@ assert.match(webcode, /\/api\/webcode\/teacher-login/, 'WebCode should let teach
 assert.match(webcode, /\/api\/webcode\/teacher-class/, 'WebCode should create classes after teacher login');
 assert.match(webcode, /\/api\/webcode\/teacher-home/, 'WebCode should load a teacher home with many classes');
 assert.match(webcode, /webcodeClassCourse/, 'teacher class creation should require choosing an allowed course');
+assert.match(webcode, /webcodeTeacherClasses\.filter/, 'WebCode teacher home should filter listed classes by selected course');
+assert.match(webcode, /webcodeClassCourse'\)\?\.addEventListener\('change', renderTeacherClasses\)/, 'WebCode course selector should refresh the class list');
+assert.match(quickClassroom, /teacherClasses\.filter/, 'general quick classroom should filter listed classes by selected course');
+assert.match(quickClassroom, /classCourse'\)\.addEventListener\('change', renderTeacherClasses\)/, 'general quick classroom selector should refresh the class list');
 assert.match(webcode, /\/api\/webcode\/student-login/, 'WebCode student login should call the quick WebCode endpoint');
 assert.match(teacher, /כתבי את הקוד על הלוח/, 'teacher dashboard should show the class-code flow');
 assert.match(teacher, /setInterval\(\(\) => loadClass\(\)\.catch\(\(\) => \{\}\), 60000\)/, 'teacher dashboard should refresh once a minute');
