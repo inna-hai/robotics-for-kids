@@ -110,6 +110,12 @@
     sessionStorage.setItem('futureArchitects.classroomStorageScope.v1', `student:${loginData.classroom.id}:${loginData.student.id}`);
   }
 
+  function rememberClassroomStudentScope(loginData) {
+    const courseId = loginData?.classroom?.course?.id;
+    if (!courseId || !loginData?.student?.id || !loginData?.classroom?.id) return;
+    sessionStorage.setItem('haiTechClassroomStorageScope.v1', `student:${loginData.classroom.id}:${loginData.student.id}:${courseId}`);
+  }
+
   function bindForm(root, markerName) {
     const form = root.querySelector('[data-qce-form]');
     form?.addEventListener('submit', async event => {
@@ -123,6 +129,7 @@
           markerColor: marker.color,
           markerShape: marker.shape,
         });
+        rememberClassroomStudentScope(loginData);
         rememberFutureArchitectsStudent(loginData);
         location.assign(loginData.startUrl || course.courseUrl);
       } catch (error) {

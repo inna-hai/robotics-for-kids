@@ -806,6 +806,11 @@
       if(!loginData?.student?.id || !loginData?.classroom?.id) return;
       sessionStorage.setItem('futureArchitects.classroomStorageScope.v1', `student:${loginData.classroom.id}:${loginData.student.id}`);
     }
+    function rememberClassroomStudentScope(loginData){
+      const courseId = loginData?.classroom?.course?.id;
+      if(!courseId || !loginData?.student?.id || !loginData?.classroom?.id) return;
+      sessionStorage.setItem('haiTechClassroomStorageScope.v1', `student:${loginData.classroom.id}:${loginData.student.id}:${courseId}`);
+    }
     document.getElementById('homeStudentLogin')?.addEventListener('submit', async event => {
       event.preventDefault();
       setHomeStudentStatus('נכנסים לכיתה...');
@@ -817,6 +822,7 @@
           markerColor,
           markerShape,
         });
+        rememberClassroomStudentScope(loginData);
         rememberFutureArchitectsStudent(loginData);
         location.assign(loginData.startUrl || 'quick-classroom.html');
       } catch(error) {

@@ -28,6 +28,7 @@ const futureArchitectsLesson = read('future-architects-lesson.html');
 const futureArchitectsLesson20 = read('future-architects-lesson-20.html');
 const futureArchitectsProgress = read('js/future-architects-classroom-progress.js');
 const futureArchitectsStorage = read('js/future-architects-storage.js');
+const classroomStorageScope = read('js/classroom-storage-scope.js');
 const teacher = read('webcode-teacher.html');
 const server = read('server.js');
 const sisiPlayPages = [
@@ -82,8 +83,12 @@ assert.match(pythonTurtle, /data-course="python-turtle" data-mode="gate"/, 'Pyth
 assert.match(sensiCity, /data-course="sensi-city" data-mode="gate"/, 'Sensi app screen should require a classroom decision at entry');
 assert.match(sensiCity, /js\/classroom-session\.js/, 'Sensi should save classroom progress after quick-classroom student login');
 assert.match(webcodePlay, /js\/classroom-session\.js/, 'WebCode play should save classroom progress after quick-classroom student login');
+assert.match(webcodePlay, /js\/classroom-storage-scope\.js/, 'WebCode play should isolate browser state per classroom student');
 assert.match(pythonTurtle, /js\/classroom-session\.js/, 'Python Turtle should save classroom progress after quick-classroom student login');
+assert.match(pythonTurtle, /js\/classroom-storage-scope\.js/, 'Python Turtle should isolate browser state per classroom student');
 assert.match(minecraftPlay, /js\/classroom-session\.js/, 'Minecraft play should save classroom progress after quick-classroom student login');
+assert.match(minecraftPlay, /js\/classroom-storage-scope\.js/, 'Minecraft play should isolate browser state per classroom student');
+assert.match(sensiCity, /js\/classroom-storage-scope\.js/, 'Sensi should isolate browser state per classroom student');
 assert.match(futureArchitectsLesson, /js\/classroom-session\.js/, 'Future Architects lessons should save classroom progress after quick-classroom student login');
 assert.match(futureArchitectsLesson, /js\/future-architects-storage\.js/, 'Future Architects lessons should scope local state before loading saved work');
 assert.match(futureArchitectsLesson, /js\/future-architects-classroom-progress\.js/, 'Future Architects lesson 1 should report lesson progress to the classroom session');
@@ -96,7 +101,10 @@ assert.match(futureArchitectsStorage, /\/api\/classroom\/portfolio/, 'Future Arc
 assert.match(server, /future-architects/, 'server should know the Future Architects course id');
 for (const [path, html] of sisiPlayPages) {
   assert.match(html, /js\/classroom-session\.js/, `${path} should save Sisi classroom progress after quick-classroom student login`);
+  assert.match(html, /js\/classroom-storage-scope\.js/, `${path} should isolate Sisi browser state per classroom student`);
 }
+assert.match(classroomStorageScope, /student:\$\{me\.classroom\.id\}:\$\{me\.student\.id\}:\$\{courseId\}/, 'generic classroom storage scope should include class, student, and course');
+assert.match(classroomStorageScope, /location\.reload\(\)/, 'generic classroom storage scope should reload once after discovering the student identity');
 assert.match(teacher, /כתבי את הקוד על הלוח/, 'teacher dashboard should show the class-code flow');
 assert.match(teacher, /פרטים נוספים/, 'teacher dashboard should expose student portfolio details');
 assert.match(teacher, /setInterval\(\(\) => loadClass\(\)\.catch\(\(\) => \{\}\), 60000\)/, 'teacher dashboard should refresh once a minute');

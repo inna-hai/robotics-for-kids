@@ -19,6 +19,7 @@
 
   function scopedKey(key) {
     const text = String(key || '');
+    if (/::(?:student|guest|classroom):/.test(text)) return text;
     if (!storageKeyPattern.test(text)) return text;
     return `${text}::${storageScope}`;
   }
