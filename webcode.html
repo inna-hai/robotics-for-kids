@@ -53,13 +53,26 @@
       </article>
       <article class="quick-panel">
         <h2>אני מורה</h2>
-        <p>קודם יוצרים חשבון מורה. אחר כך נכנסים עם מייל וסיסמה, ופותחים כמה כיתות שרוצים.</p>
+        <p>מורה שכבר קיבלה הרשאה נכנסת עם מייל וסיסמה, ואז פותחת כמה כיתות שרוצים.</p>
         <div id="webcodeTeacherAuth">
           <div class="teacher-tabs" role="tablist" aria-label="כניסת מורה">
-            <button class="active" type="button" id="webcodeRegisterTab">יצירת חשבון</button>
-            <button type="button" id="webcodeLoginTab">כניסה</button>
+            <button class="active" type="button" id="webcodeLoginTab">כניסה</button>
+            <button type="button" id="webcodeRegisterTab">יצירת חשבון</button>
           </div>
-          <form class="quick-form teacher-pane" id="webcodeTeacherRegisterForm">
+          <form class="quick-form teacher-pane" id="webcodeTeacherLoginForm">
+            <label>מייל מורה
+              <input id="webcodeLoginEmail" type="email" autocomplete="email" placeholder="name@example.com" required>
+            </label>
+            <label>סיסמה
+              <span class="password-field">
+                <input id="webcodeLoginPassword" type="password" autocomplete="current-password" required>
+                <button class="password-toggle" type="button" data-toggle-password="webcodeLoginPassword" aria-label="הצגת סיסמה" aria-pressed="false">◉</button>
+              </span>
+            </label>
+            <button class="btn" type="submit">כניסה לחשבון מורה</button>
+            <div class="quick-status" id="webcodeLoginStatus" role="status"></div>
+          </form>
+          <form class="quick-form teacher-pane" id="webcodeTeacherRegisterForm" hidden>
             <label>שם מורה
               <input id="webcodeRegisterName" autocomplete="name" placeholder="למשל חני" required>
             </label>
@@ -74,19 +87,6 @@
             </label>
             <button class="btn" type="submit">יצירת חשבון מורה</button>
             <div class="quick-status" id="webcodeRegisterStatus" role="status"></div>
-          </form>
-          <form class="quick-form teacher-pane" id="webcodeTeacherLoginForm" hidden>
-            <label>מייל מורה
-              <input id="webcodeLoginEmail" type="email" autocomplete="email" placeholder="name@example.com" required>
-            </label>
-            <label>סיסמה
-              <span class="password-field">
-                <input id="webcodeLoginPassword" type="password" autocomplete="current-password" required>
-                <button class="password-toggle" type="button" data-toggle-password="webcodeLoginPassword" aria-label="הצגת סיסמה" aria-pressed="false">◉</button>
-              </span>
-            </label>
-            <button class="btn" type="submit">כניסה לחשבון מורה</button>
-            <div class="quick-status" id="webcodeLoginStatus" role="status"></div>
           </form>
         </div>
         <div class="teacher-home" id="webcodeTeacherHome" hidden>

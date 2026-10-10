@@ -45,13 +45,26 @@
 
       <article class="panel">
         <h2>אני מורה</h2>
-        <p>קודם יוצרים חשבון מורה. אחרי כניסה פותחים כיתה ובוחרים איזו לומדה הכיתה לומדת.</p>
+        <p>מורה שכבר קיבלה הרשאה נכנסת עם מייל וסיסמה, ואז פותחת כיתה ובוחרת איזו לומדה הכיתה לומדת.</p>
         <div id="teacherAuth">
           <div class="tabs" role="tablist" aria-label="כניסת מורה">
-            <button class="active" type="button" id="registerTab">יצירת חשבון</button>
-            <button type="button" id="loginTab">כניסה</button>
+            <button class="active" type="button" id="loginTab">כניסה</button>
+            <button type="button" id="registerTab">יצירת חשבון</button>
           </div>
-          <form class="form teacher-pane" id="registerForm">
+          <form class="form teacher-pane" id="loginForm">
+            <label>מייל מורה
+              <input id="loginEmail" type="email" autocomplete="email" placeholder="name@example.com" required>
+            </label>
+            <label>סיסמה
+              <span class="password-field">
+                <input id="loginPassword" type="password" autocomplete="current-password" required>
+                <button class="password-toggle" type="button" data-toggle-password="loginPassword" aria-label="הצגת סיסמה" aria-pressed="false">◉</button>
+              </span>
+            </label>
+            <button class="btn primary" type="submit">כניסה לחשבון מורה</button>
+            <div class="status" id="loginStatus" role="status"></div>
+          </form>
+          <form class="form teacher-pane" id="registerForm" hidden>
             <label>שם מורה
               <input id="registerName" autocomplete="name" placeholder="למשל חני" required>
             </label>
@@ -66,19 +79,6 @@
             </label>
             <button class="btn primary" type="submit">יצירת חשבון מורה</button>
             <div class="status" id="registerStatus" role="status"></div>
-          </form>
-          <form class="form teacher-pane" id="loginForm" hidden>
-            <label>מייל מורה
-              <input id="loginEmail" type="email" autocomplete="email" placeholder="name@example.com" required>
-            </label>
-            <label>סיסמה
-              <span class="password-field">
-                <input id="loginPassword" type="password" autocomplete="current-password" required>
-                <button class="password-toggle" type="button" data-toggle-password="loginPassword" aria-label="הצגת סיסמה" aria-pressed="false">◉</button>
-              </span>
-            </label>
-            <button class="btn primary" type="submit">כניסה לחשבון מורה</button>
-            <div class="status" id="loginStatus" role="status"></div>
           </form>
         </div>
         <div class="teacher-home" id="teacherHome" hidden>
