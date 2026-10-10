@@ -3195,11 +3195,11 @@ const WEBCODE_MARKER_COLORS = new Set(['blue', 'green', 'yellow', 'pink', 'purpl
 const WEBCODE_MARKER_SHAPES = new Set(['circle', 'star', 'square', 'heart', 'triangle', 'diamond']);
 const QUICK_CLASS_COURSE_IDS = ['webcode', 'python-turtle', 'sensi-city', 'sisi', 'minecraft', 'future-architects'];
 const QUICK_CLASS_COURSE_CATALOG = {
-  webcode: { id: 'webcode', label: 'WebCode', startUrl: 'webcode.html' },
-  'python-turtle': { id: 'python-turtle', label: 'Python Turtle', startUrl: 'python-turtle.html?lesson=1' },
+  webcode: { id: 'webcode', label: 'WebCode Lab', startUrl: 'webcode.html' },
+  'python-turtle': { id: 'python-turtle', label: 'פייתון מצייר', startUrl: 'python-turtle.html?lesson=1' },
   'sensi-city': { id: 'sensi-city', label: 'סנסי בעיר החכמה', startUrl: 'sensi-city.html?lesson=1' },
-  sisi: { id: 'sisi', label: 'סיסי', startUrl: 'sisi.html' },
-  minecraft: { id: 'minecraft', label: 'מיינקראפט לקטנים', startUrl: 'minecraft.html' },
+  sisi: { id: 'sisi', label: 'סדרת סיסי לכיתות ב׳', startUrl: 'sisi.html' },
+  minecraft: { id: 'minecraft', label: 'מיינקראפט קידס: מתכנתים קסמים', startUrl: 'minecraft.html' },
   'future-architects': { id: 'future-architects', label: 'אדריכלי המחר', startUrl: 'future-architects.html' },
 };
 

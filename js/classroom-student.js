@@ -1,10 +1,10 @@
 (() => {
   const courseDetails = {
     'sensi-city': { label: 'סנסי בעיר החכמה', href: 'sensi-city.html?lesson=1' },
-    sisi: { label: 'סיסי', href: 'sisi.html' },
-    'python-turtle': { label: 'Python Turtle', href: 'python-turtle.html' },
-    webcode: { label: 'Web Code', href: 'webcode.html' },
-    minecraft: { label: 'Minecraft', href: 'minecraft.html' },
+    sisi: { label: 'סדרת סיסי לכיתות ב׳', href: 'sisi.html' },
+    'python-turtle': { label: 'פייתון מצייר', href: 'python-turtle.html' },
+    webcode: { label: 'WebCode Lab', href: 'webcode.html' },
+    minecraft: { label: 'מיינקראפט קידס: מתכנתים קסמים', href: 'minecraft.html' },
     'craftom-agent': { label: 'אקדמיית ה-Agent', href: 'craftom-school/preview/index.html' },
   };
 

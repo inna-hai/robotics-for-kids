@@ -198,10 +198,10 @@
 
   const courseLabels = {
     'sensi-city': 'סנסי בעיר החכמה',
-    sisi: 'סיסי',
-    'python-turtle': 'Python Turtle',
-    webcode: 'Web Code',
-    minecraft: 'Minecraft',
+    sisi: 'סדרת סיסי לכיתות ב׳',
+    'python-turtle': 'פייתון מצייר',
+    webcode: 'WebCode Lab',
+    minecraft: 'מיינקראפט קידס: מתכנתים קסמים',
     'craftom-agent': 'אקדמיית ה-Agent',
   };
 

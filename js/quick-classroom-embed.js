@@ -2,13 +2,13 @@
   const script = document.currentScript;
   const config = {
     webcode: {
-      label: 'WebCode',
+      label: 'WebCode Lab',
       guestUrl: 'webcode-play.html?lesson=1&v=20',
       courseUrl: 'webcode.html',
       teacherUrl: 'quick-classroom.html?course=webcode',
     },
     'python-turtle': {
-      label: 'Python Turtle',
+      label: 'פייתון מצייר',
       guestUrl: 'python-turtle.html?lesson=1',
       courseUrl: 'python-turtle.html?lesson=1',
       teacherUrl: 'quick-classroom.html?course=python-turtle',
@@ -20,13 +20,13 @@
       teacherUrl: 'quick-classroom.html?course=sensi-city',
     },
     sisi: {
-      label: 'סיסי',
+      label: 'סדרת סיסי לכיתות ב׳',
       guestUrl: 'space.html',
       courseUrl: 'sisi.html',
       teacherUrl: 'quick-classroom.html?course=sisi',
     },
     minecraft: {
-      label: 'מיינקראפט לקטנים',
+      label: 'מיינקראפט קידס: מתכנתים קסמים',
       guestUrl: 'minecraft-play.html?lesson=1',
       courseUrl: 'minecraft.html',
       teacherUrl: 'quick-classroom.html?course=minecraft',

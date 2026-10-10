@@ -124,7 +124,7 @@
     function formatMixedText(value){
       return String(value || '')
         .replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]))
-        .replace(/\b(HTML\/CSS\/JS|JavaScript|Blockly|Python Turtle|Python|WebCode|Minecraft|HTML|CSS|JS)\b/g, '<bdi class="tech-term" dir="ltr">$1</bdi>');
+        .replace(/\b(HTML\/CSS\/JS|JavaScript|Blockly|Python Turtle|Python|WebCode Lab|WebCode|Minecraft|HTML|CSS|JS)\b/g, '<bdi class="tech-term" dir="ltr">$1</bdi>');
     }
     function selectedMarker(){
       const checked = document.querySelector('input[name="marker"]:checked');
@@ -204,7 +204,7 @@
       }
       list.innerHTML = visibleClasses.map(item => `<article class="class-item">
         <b>${formatMixedText(item.name)}</b>
-        <small>לומדה: ${formatMixedText(item.course?.label || 'WebCode')} · קוד כיתה: ${item.joinCode} · ${item.studentCount || 0} תלמידים</small>
+        <small>לומדה: ${formatMixedText(item.course?.label || 'WebCode Lab')} · קוד כיתה: ${item.joinCode} · ${item.studentCount || 0} תלמידים</small>
         <div class="actions" style="margin-top:8px">
           <a class="btn" href="${item.teacherUrl}">מסך מורה</a>
           <button class="btn secondary" type="button" data-copy-class="${item.teacherUrl}">העתקת קישור</button>
@@ -308,7 +308,7 @@
         });
         const result = document.getElementById('teacherResult');
         result.style.display = 'block';
-        result.innerHTML = `<div>לומדה: ${formatMixedText(data.classroom.course?.label || 'WebCode')}</div><div>קוד הכיתה:</div><div class="quick-code">${data.classroom.joinCode}</div><div>כתבי את הקוד על הלוח.</div><div>${data.deliveryStatus === 'sent' ? 'שלחנו גם את פרטי הכיתה למייל.' : 'הכיתה נוצרה. אפשר לפתוח אותה מכאן.'}</div><div class="actions" style="margin-top:10px"><a class="btn" href="${data.classroom.teacherUrl}">פתחי מסך מורה</a></div>`;
+        result.innerHTML = `<div>לומדה: ${formatMixedText(data.classroom.course?.label || 'WebCode Lab')}</div><div>קוד הכיתה:</div><div class="quick-code">${data.classroom.joinCode}</div><div>כתבי את הקוד על הלוח.</div><div>${data.deliveryStatus === 'sent' ? 'שלחנו גם את פרטי הכיתה למייל.' : 'הכיתה נוצרה. אפשר לפתוח אותה מכאן.'}</div><div class="actions" style="margin-top:10px"><a class="btn" href="${data.classroom.teacherUrl}">פתחי מסך מורה</a></div>`;
         document.getElementById('className').value = '';
         setStatus('teacherStatus', 'הכיתה נוצרה.');
         await loadTeacherHome();

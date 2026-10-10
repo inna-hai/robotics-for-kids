@@ -40,10 +40,10 @@
   }
 
   const COURSE_LABELS = {
-    sisi: 'סיסי',
+    sisi: 'סדרת סיסי לכיתות ב׳',
     space: 'חלל',
-    webcode: 'WebCode',
-    minecraft: 'Minecraft Kids',
+    webcode: 'WebCode Lab',
+    minecraft: 'מיינקראפט קידס: מתכנתים קסמים',
     pygame: 'Pygame',
     roblox: 'Roblox',
     sensi: 'סנסי',

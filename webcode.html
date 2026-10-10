@@ -209,7 +209,7 @@
     });
     let webcodeTeacherClasses = [];
     const WEBCODE_COURSE_ID = 'webcode';
-    const WEBCODE_COURSE_LABEL = 'WebCode';
+    const WEBCODE_COURSE_LABEL = 'WebCode Lab';
     const quickClassShell = document.querySelector('.quick-class');
     function setQuickClassMode(mode){
       quickClassShell?.classList.toggle('is-teacher-signed-in', mode === 'teacher');
@@ -225,7 +225,7 @@
       const previous = select.value;
       select.innerHTML = allowed.length
         ? allowed.map(course => `<option value="${course.id}">${formatMixedText(course.label)}</option>`).join('')
-        : '<option value="">WebCode לא פתוח לחשבון הזה</option>';
+        : '<option value="">WebCode Lab לא פתוח לחשבון הזה</option>';
       select.disabled = !allowed.length;
       if(allowed.some(course => course.id === WEBCODE_COURSE_ID)) select.value = WEBCODE_COURSE_ID;
       else if(previous && allowed.some(course => course.id === previous)) select.value = previous;
@@ -248,16 +248,16 @@
         ? webcodeTeacherClasses.filter(item => (item.course?.id || 'webcode') === courseId)
         : webcodeTeacherClasses;
       if(!webcodeTeacherClasses.length){
-        list.innerHTML = '<div class="quick-result" style="display:block">עוד אין לך כיתות WebCode. אפשר לפתוח כיתה חדשה למטה.</div>';
+        list.innerHTML = '<div class="quick-result" style="display:block">עוד אין לך כיתות WebCode Lab. אפשר לפתוח כיתה חדשה למטה.</div>';
         return;
       }
       if(!visibleClasses.length){
-        list.innerHTML = '<div class="quick-result" style="display:block">אין עדיין כיתות WebCode לחשבון הזה. אפשר לפתוח כיתה חדשה למטה.</div>';
+        list.innerHTML = '<div class="quick-result" style="display:block">אין עדיין כיתות WebCode Lab לחשבון הזה. אפשר לפתוח כיתה חדשה למטה.</div>';
         return;
       }
       list.innerHTML = visibleClasses.map(item => `<article class="class-item">
         <b>${formatMixedText(item.name)}</b>
-        <small>לומדה: ${formatMixedText(item.course?.label || 'WebCode')} · קוד כיתה: ${item.joinCode} · ${item.studentCount || 0} תלמידים</small>
+        <small>לומדה: ${formatMixedText(item.course?.label || 'WebCode Lab')} · קוד כיתה: ${item.joinCode} · ${item.studentCount || 0} תלמידים</small>
         <div class="actions" style="margin-top:8px">
           <a class="btn" href="${item.teacherUrl}">מסך מורה</a>
           <button class="btn secondary" type="button" data-copy-class="${item.teacherUrl}">העתקת קישור</button>
@@ -299,8 +299,8 @@
       const hasWebCode = (me.classroom.courses || []).includes(WEBCODE_COURSE_ID);
       const summary = hasWebCode ? await loadStudentProgressSummary() : { lessonId: 1, hasProgress: false };
       const resumeText = hasWebCode
-        ? (summary.hasProgress ? `עצרת בשיעור ${summary.lessonId}. אפשר לקפוץ אליו ולהמשיך מאותו משתמש.` : 'עדיין אין התקדמות שמורה ב-WebCode. אפשר להתחיל משיעור 1.')
-        : 'הכיתה הזו לא משויכת ל-WebCode. צריך להיכנס לקורס שהמורה פתחה לכיתה שלך.';
+        ? (summary.hasProgress ? `עצרת בשיעור ${summary.lessonId}. אפשר לקפוץ אליו ולהמשיך מאותו משתמש.` : 'עדיין אין התקדמות שמורה ב-WebCode Lab. אפשר להתחיל משיעור 1.')
+        : 'הכיתה הזו לא משויכת ל-WebCode Lab. צריך להיכנס לקורס שהמורה פתחה לכיתה שלך.';
       document.getElementById('webcodeStudentResumeText').textContent = resumeText;
       const link = document.getElementById('webcodeStudentResumeLink');
       if(link){
@@ -361,7 +361,7 @@
         });
         const result = document.getElementById('webcodeTeacherResult');
         result.style.display = 'block';
-        result.innerHTML = `<div>לומדה: ${formatMixedText(data.classroom.course?.label || 'WebCode')}</div><div>קוד הכיתה:</div><div class="quick-code">${data.classroom.joinCode}</div><div>כתבי את הקוד על הלוח.</div><div>${data.deliveryStatus === 'sent' ? 'שלחנו גם את פרטי הכיתה למייל.' : 'הכיתה נוצרה. אפשר לפתוח אותה מכאן.'}</div><div class="actions" style="margin-top:10px"><a class="btn" href="${data.classroom.teacherUrl}">פתחי מסך מורה</a></div>`;
+        result.innerHTML = `<div>לומדה: ${formatMixedText(data.classroom.course?.label || 'WebCode Lab')}</div><div>קוד הכיתה:</div><div class="quick-code">${data.classroom.joinCode}</div><div>כתבי את הקוד על הלוח.</div><div>${data.deliveryStatus === 'sent' ? 'שלחנו גם את פרטי הכיתה למייל.' : 'הכיתה נוצרה. אפשר לפתוח אותה מכאן.'}</div><div class="actions" style="margin-top:10px"><a class="btn" href="${data.classroom.teacherUrl}">פתחי מסך מורה</a></div>`;
         document.getElementById('webcodeClassName').value = '';
         setStatus('webcodeTeacherStatus', 'הכיתה נוצרה.');
         await loadTeacherHome();

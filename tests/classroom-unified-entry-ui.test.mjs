@@ -171,7 +171,7 @@ const studentPage = studentVm({
 await new Promise((resolve) => setTimeout(resolve, 0));
 assert.equal(studentPage.elements['classroom-student-name'].textContent, '<img src=x onerror=alert(1)>');
 assert.equal(studentPage.elements['classroom-name'].textContent, '<script>alert(1)</script>');
-assert.deepEqual(studentPage.elements['classroom-student-courses'].children.map((link) => link.textContent), ['סיסי', 'Python Turtle']);
+assert.deepEqual(studentPage.elements['classroom-student-courses'].children.map((link) => link.textContent), ['סדרת סיסי לכיתות ב׳', 'פייתון מצייר']);
 assert.deepEqual(studentPage.elements['classroom-student-courses'].children.map((link) => link.href), ['sisi.html', 'python-turtle.html']);
 await studentPage.elements['classroom-student-logout'].listeners.click();
 assert.equal(studentPage.requests.at(-1).path, '/api/classroom/logout');
