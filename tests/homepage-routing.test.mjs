@@ -51,6 +51,10 @@ test('homepage is now a platform gateway and links to primary learning modules',
   assertIncludes(homepageHtml, 'Venture AI — תוכנית חולון ביזמות עם בינה מלאכותית');
   assertIncludes(homepageHtml, 'אלה נשארים זמינים ב־robotics15, אבל נמצאים בסוף ומסומנים ברור כדי לא לבלבל עם הקטלוג הראשי.');
   assertIncludes(homepageHtml, 'קורסים פעילים');
+  assertIncludes(homepageHtml, 'id="classroom-login"');
+  assertIncludes(homepageHtml, 'id="homeStudentLogin"');
+  assertIncludes(homepageHtml, '/api/webcode/student-login');
+  assertIncludes(homepageHtml, 'מסך כניסה מלא');
   assertIncludes(homepageHtml, 'רחפנים');
   assertIncludes(homepageHtml, 'עומר / Craftom');
   assertIncludes(homepageHtml, 'בפיתוח ופיילוטים נוספים');

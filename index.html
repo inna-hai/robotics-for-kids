@@ -247,6 +247,77 @@
       color: #0f172a;
       border: 1px solid var(--line);
     }
+    .entry-gateway {
+      margin-top: -8px;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, .07);
+    }
+    .entry-gateway .group-head {
+      margin-bottom: 16px;
+    }
+    .entry-grid {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 14px;
+    }
+    .entry-panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      background: #f8fafc;
+    }
+    .entry-panel.teacher {
+      background: #fff7ed;
+      border-color: #fed7aa;
+    }
+    .entry-panel h3 {
+      margin: 0 0 8px;
+      font-size: 1.28rem;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+    .entry-panel p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .entry-form {
+      display: grid;
+      gap: 10px;
+    }
+    .entry-fields {
+      display: grid;
+      grid-template-columns: .7fr 1fr .8fr;
+      gap: 10px;
+    }
+    .entry-form label {
+      display: grid;
+      gap: 5px;
+      color: #334155;
+      font-weight: 900;
+      font-size: .92rem;
+    }
+    .entry-form input,
+    .entry-form select {
+      width: 100%;
+      min-height: 42px;
+      border: 2px solid #dbeafe;
+      border-radius: 8px;
+      padding: 9px 10px;
+      font: 800 .95rem Rubik, Arial, sans-serif;
+      background: #fff;
+    }
+    .entry-status {
+      min-height: 22px;
+      color: #1e3a8a;
+      font-weight: 900;
+    }
+    .entry-status.bad {
+      color: #b91c1c;
+    }
     .footer {
       color: #64748b;
       text-align: center;
@@ -256,6 +327,8 @@
 
     @media (max-width: 980px) {
       .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .entry-grid,
+      .entry-fields { grid-template-columns: 1fr; }
     }
     @media (max-width: 650px) {
       .top { align-items: flex-start; flex-direction: column; }
@@ -274,7 +347,7 @@
         <div class="brand"><span class="mark">H</span><span>hai.tech · מרכז הלומדות · robotics15</span></div>
         <nav class="nav">
           <a href="#active-courses">קורסים פעילים</a>
-          <a href="quick-classroom.html">כניסת כיתה</a>
+          <a href="#classroom-login">כניסת כיתה</a>
           <a href="ort-courses.html">קורסי אורט</a>
           <a href="#cyber-city">סייבר</a>
           <a href="#drones">רחפנים</a>
@@ -286,12 +359,60 @@
       <div class="kicker">robotics15 · סביבת הלמידה של hai.tech</div>
       <h1>לומדות תכנות ורובוטיקה לילדים</h1>
       <p>בחרו קורס פעיל והתחילו לעבוד מיד: סנסי, סיסי, Minecraft, WebCode, Python, רחפנים ועוד סביבות למידה לילדים.</p>
-      <div class="actions" style="margin-top:18px"><a class="btn" href="quick-classroom.html">כניסת כיתה / מורה</a><a class="btn" href="ort-courses.html">קורסי אורט</a><a class="btn" href="summer-subscription.html">מנוי קיץ לילדים</a><a class="btn secondary" href="sisi.html">פתחו את סיסי</a></div>
+      <div class="actions" style="margin-top:18px"><a class="btn" href="#classroom-login">כניסת כיתה / מורה</a><a class="btn" href="ort-courses.html">קורסי אורט</a><a class="btn" href="summer-subscription.html">מנוי קיץ לילדים</a><a class="btn secondary" href="sisi.html">פתחו את סיסי</a></div>
     </div>
   </header>
 
   <main>
     <div class="shell catalog">
+      <section class="entry-gateway" id="classroom-login" aria-label="כניסה לכיתה">
+        <div class="group-head">
+          <div>
+            <h2>כניסה לכיתה</h2>
+            <p>תלמידים נכנסים עם קוד כיתה ושם. מורות נכנסות לפתיחת כיתות ומעקב התקדמות.</p>
+          </div>
+        </div>
+        <div class="entry-grid">
+          <article class="entry-panel">
+            <h3>אני תלמיד/ה</h3>
+            <p>הקלידו את הקוד שהמורה נתנה, בחרו סימון אישי, ותעברו אוטומטית ללומדה של הכיתה.</p>
+            <form class="entry-form" id="homeStudentLogin">
+              <div class="entry-fields">
+                <label>קוד כיתה
+                  <input id="homeClassCode" inputmode="numeric" autocomplete="off" placeholder="4827" required>
+                </label>
+                <label>שם
+                  <input id="homeStudentName" autocomplete="name" placeholder="שם פרטי או כינוי" required>
+                </label>
+                <label>הסימון שלי
+                  <select id="homeStudentMarker">
+                    <option value="blue:circle">עיגול כחול</option>
+                    <option value="green:star">כוכב ירוק</option>
+                    <option value="yellow:square">ריבוע צהוב</option>
+                    <option value="pink:heart">לב ורוד</option>
+                    <option value="purple:triangle">משולש סגול</option>
+                    <option value="orange:diamond">יהלום כתום</option>
+                  </select>
+                </label>
+              </div>
+              <div class="actions">
+                <button class="btn" type="submit">להיכנס לכיתה</button>
+                <a class="btn secondary" href="quick-classroom.html">מסך כניסה מלא</a>
+              </div>
+              <div class="entry-status" id="homeStudentStatus" role="status"></div>
+            </form>
+          </article>
+          <article class="entry-panel teacher">
+            <h3>אני מורה</h3>
+            <p>יצירת חשבון מורה, פתיחת כיתה חדשה, בחירת לומדה וקבלת קוד לתלמידים.</p>
+            <div class="actions">
+              <a class="btn" href="quick-classroom.html">כניסת מורה / פתיחת כיתה</a>
+              <a class="btn secondary" href="quick-classroom.html">ניהול הכיתות שלי</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
       <section id="active-courses">
         <div class="group-head">
           <div>
@@ -590,5 +711,40 @@
   </main>
 
   <footer class="footer">פלטפורמת לומדות טכנולוגיה · hai.tech</footer>
+  <script>
+    function setHomeStudentStatus(text, bad = false){
+      const status = document.getElementById('homeStudentStatus');
+      if(!status) return;
+      status.textContent = text || '';
+      status.classList.toggle('bad', Boolean(bad));
+    }
+    async function postHomeStudentLogin(payload){
+      const response = await fetch('/api/webcode/student-login', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json().catch(() => ({}));
+      if(!response.ok) throw new Error(data.error || 'לא הצלחנו להיכנס לכיתה.');
+      return data;
+    }
+    document.getElementById('homeStudentLogin')?.addEventListener('submit', async event => {
+      event.preventDefault();
+      setHomeStudentStatus('נכנסים לכיתה...');
+      const [markerColor, markerShape] = document.getElementById('homeStudentMarker').value.split(':');
+      try {
+        const loginData = await postHomeStudentLogin({
+          classCode: document.getElementById('homeClassCode').value,
+          name: document.getElementById('homeStudentName').value,
+          markerColor,
+          markerShape,
+        });
+        location.assign(loginData.startUrl || 'quick-classroom.html');
+      } catch(error) {
+        setHomeStudentStatus(error.message || 'לא הצלחנו להיכנס לכיתה.', true);
+      }
+    });
+  </script>
 </body>
 </html>
